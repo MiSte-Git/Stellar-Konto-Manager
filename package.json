@@ -1,0 +1,16 @@
+{
+  "name": "stellar-trustline-manager",
+  "version": "1.0.0",
+  "description": "A tool to manage Stellar trustlines",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "^11.0.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "express-rate-limit": "^6.7.0"
+  }
+}
