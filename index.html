@@ -17,15 +17,12 @@
         const server = new StellarSdk.Horizon.Server('https://horizon.stellar.org');
         const BACKEND_URL = 'http://localhost:3000'; // Update for production
         const ITEMS_PER_PAGE = 333;
+        const MAX_PAGES = 10; // Maximum number of pages to fetch (200 operations per page)
 
         // Available languages with flag emojis
         const availableLanguages = [
             { code: 'en', name: 'English', flag: '🇬🇧' },
             { code: 'de', name: 'German', flag: '🇩🇪' }
-            // Add more languages as needed, e.g.:
-            // { code: 'es', name: 'Spanish', flag: '🇪🇸' },
-            // { code: 'fr', name: 'French', flag: '🇫🇷' },
-            // { code: 'it', name: 'Italian', flag: '🇮🇹' }
         ];
 
         // Translations
@@ -64,7 +61,7 @@
                 assetCode: "Asset Code",
                 issuer: "Issuer",
                 creationDate: "Creation Date",
-                unknownDate: "Unknown (created before available history)",
+                unknownDate: "Not found (possibly too old)",
                 previous: "Previous",
                 next: "Next",
                 backToTop: "Back to Top",
@@ -79,7 +76,6 @@
                 secretKeyCleared: "Secret key has been cleared.",
                 invalidPublicKey: "Invalid public key or federation address.",
                 invalidIssuer: "Invalid issuer address.",
-                // Error handling translations
                 failedFederation: "Failed to resolve federation address: {error}",
                 noBalances: "No balances found for account.",
                 failedLoadAccount: "Failed to load account {publicKey}: {error}",
@@ -122,7 +118,7 @@
                 assetCode: "Asset-Code",
                 issuer: "Emittent",
                 creationDate: "Erstellungsdatum",
-                unknownDate: "Unbekannt (vor verfügbarer Historie erstellt)",
+                unknownDate: "Nicht gefunden (möglicherweise zu alt)",
                 previous: "Vorherige",
                 next: "Nächste",
                 backToTop: "Zurück nach oben",
@@ -137,7 +133,6 @@
                 secretKeyCleared: "Geheimschlüssel wurde gelöscht.",
                 invalidPublicKey: "Ungültiger öffentlicher Schlüssel oder Föderationsadresse.",
                 invalidIssuer: "Ungültige Emittentenadresse.",
-                // Error handling translations
                 failedFederation: "Fehler beim Auflösen der Föderationsadresse: {error}",
                 noBalances: "Keine Guthaben für das Konto gefunden.",
                 failedLoadAccount: "Fehler beim Laden des Kontos {publicKey}: {error}",
@@ -168,6 +163,7 @@
             const [currentPage, setCurrentPage] = useState(0);
             const [showBackToTop, setShowBackToTop] = useState(false);
             const [language, setLanguage] = useState('en');
+            const [hasCreationDates, setHasCreationDates] = useState(false);
 
             const t = (key, params = {}) => {
                 let text = translations[language][key] || key;
@@ -242,6 +238,7 @@
                 setSortColumn('assetCode');
                 setSortDirection('asc');
                 setCurrentPage(0);
+                setHasCreationDates(false);
             };
 
             // Sort trustlines
@@ -287,8 +284,10 @@
                     const trustlines = await loadTrustlines(sourcePublicKey);
                     if (trustlines.length > 0) {
                         setResults(trustlines);
+                        setHasCreationDates(trustlines.some(t => t.creationDate !== null));
                     } else {
                         setResults([t('noTrustlines')]);
+                        setHasCreationDates(false);
                     }
                 } catch (err) {
                     setError(err.message);
@@ -315,6 +314,7 @@
                     );
                     if (duplicates.length > 0) {
                         setResults(duplicates);
+                        setHasCreationDates(duplicates.some(t => t.creationDate !== null));
                         setConfirmAction(() => async () => {
                             if (!sourceSecret) {
                                 setError(t('secretKeyEmpty'));
@@ -343,6 +343,7 @@
                                 setTrustlines(await loadTrustlines(sourcePublicKey));
                                 setSourceSecret('');
                                 setShowSecretKey(false);
+                                setHasCreationDates(false);
                             } catch (err) {
                                 console.error('Fetch error:', err);
                                 setError(err.message.includes('Failed to fetch')
@@ -353,6 +354,7 @@
                         setShowConfirm(true);
                     } else {
                         setResults([t('noDuplicates')]);
+                        setHasCreationDates(false);
                     }
                 } catch (err) {
                     setError(err.message);
@@ -368,7 +370,6 @@
                 try {
                     const trustlines = results; // Use displayed trustlines
                     if (trustlines.length > 0 && typeof trustlines[0] !== 'string') {
-                        // Validate secret key first
                         if (!sourceSecret) {
                             setError(t('secretKeyEmpty'));
                             setIsLoading(false);
@@ -401,6 +402,7 @@
                                 setTrustlines([]);
                                 setSourceSecret('');
                                 setShowSecretKey(false);
+                                setHasCreationDates(false);
                             } catch (err) {
                                 console.error('Fetch error:', err);
                                 setError(err.message.includes('Failed to fetch')
@@ -411,6 +413,7 @@
                         setShowConfirm(true);
                     } else {
                         setResults([t('noTrustlines')]);
+                        setHasCreationDates(false);
                     }
                 } catch (err) {
                     setError(err.message);
@@ -430,7 +433,6 @@
                 try {
                     const issuerTrustlines = results; // Use displayed trustlines
                     if (issuerTrustlines.length > 0 && typeof issuerTrustlines[0] !== 'string') {
-                        // Validate secret key first
                         if (!sourceSecret) {
                             setError(t('secretKeyEmpty'));
                             setIsLoading(false);
@@ -463,6 +465,7 @@
                                 setTrustlines(await loadTrustlines(sourcePublicKey));
                                 setSourceSecret('');
                                 setShowSecretKey(false);
+                                setHasCreationDates(false);
                             } catch (err) {
                                 console.error('Fetch error:', err);
                                 setError(err.message.includes('Failed to fetch')
@@ -473,6 +476,7 @@
                         setShowConfirm(true);
                     } else {
                         setResults([t('noIssuer', { issuer: issuerAddress })]);
+                        setHasCreationDates(false);
                     }
                 } catch (err) {
                     setError(err.message);
@@ -557,7 +561,7 @@
                 }
             }
 
-            // Load account trustlines
+            // Load account trustlines with improved pagination
             async function loadTrustlines(publicKey) {
                 try {
                     const account = await server.loadAccount(publicKey);
@@ -570,12 +574,13 @@
                             creationDate: null // Placeholder for creation date
                         }));
 
-                    // Fetch creation dates from operations endpoint
+                    // Fetch creation dates from operations endpoint with pagination
                     const operations = server.operations().forAccount(publicKey).order('desc').limit(200);
                     let cursor = null;
+                    let pageCount = 0;
                     const trustlineMap = new Map(trustlines.map(t => [`${t.assetCode}:${t.assetIssuer}`, t]));
 
-                    while (trustlineMap.size > 0) {
+                    while (trustlineMap.size > 0 && pageCount < MAX_PAGES) {
                         try {
                             const opResponse = cursor
                                 ? await operations.cursor(cursor).call()
@@ -593,6 +598,7 @@
                             }
                             cursor = opResponse.next ? (await opResponse.next()).cursor : null;
                             if (!cursor) break;
+                            pageCount++;
                         } catch (opError) {
                             console.error('Error fetching operations:', opError);
                             throw new Error(t('errorFetchingOperations', { error: opError.message }));
@@ -816,8 +822,10 @@
                                                         const issuerTrustlines = trustlines.filter(t => t.assetIssuer === issuerAddress);
                                                         if (issuerTrustlines.length > 0) {
                                                             setResults(issuerTrustlines);
+                                                            setHasCreationDates(issuerTrustlines.some(t => t.creationDate !== null));
                                                         } else {
                                                             setResults([t('noIssuer', { issuer: issuerAddress })]);
+                                                            setHasCreationDates(false);
                                                         }
                                                     } catch (err) {
                                                         setError(err.message);
@@ -888,12 +896,14 @@
                                                 >
                                                     {t('issuer')} {sortColumn === 'assetIssuer' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                                                 </th>
-                                                <th
-                                                    className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'creationDate' ? 'font-bold bg-gray-200' : ''}`}
-                                                    onClick={() => handleSort('creationDate')}
-                                                >
-                                                    {t('creationDate')} {sortColumn === 'creationDate' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
-                                                </th>
+                                                {hasCreationDates && (
+                                                    <th
+                                                        className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'creationDate' ? 'font-bold bg-gray-200' : ''}`}
+                                                        onClick={() => handleSort('creationDate')}
+                                                    >
+                                                        {t('creationDate')} {sortColumn === 'creationDate' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                                                    </th>
+                                                )}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -901,11 +911,13 @@
                                                 <tr key={index}>
                                                     <td className="border border-gray-300 p-2">{result.assetCode}</td>
                                                     <td className="border border-gray-300 p-2">{result.assetIssuer}</td>
-                                                    <td className="border border-gray-300 p-2">
-                                                        {result.creationDate
-                                                            ? result.creationDate.toLocaleString()
-                                                            : t('unknownDate')}
-                                                    </td>
+                                                    {hasCreationDates && (
+                                                        <td className="border border-gray-300 p-2">
+                                                            {result.creationDate
+                                                                ? result.creationDate.toLocaleString()
+                                                                : t('unknownDate')}
+                                                        </td>
+                                                    )}
                                                 </tr>
                                             ))}
                                         </tbody>
