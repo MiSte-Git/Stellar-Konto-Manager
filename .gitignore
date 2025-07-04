@@ -1,2 +1,11 @@
+# Verzeichnisse, die wir ignorieren
+backend/
+history/
+ChatGPT - Stellar Trustline Manager_files/
+*.html
+*.jpeg
+*.webp
+*.png
+Unbenanntes*
+dist/
 node_modules/
-.env
