@@ -17,131 +17,19 @@
         const server = new StellarSdk.Horizon.Server('https://horizon.stellar.org');
         const BACKEND_URL = 'http://localhost:3000'; // Update for production
         const ITEMS_PER_PAGE = 333;
-        const MAX_PAGES = 50; // Maximum number of pages to fetch (200 operations per page)
 
         // Available languages with flag emojis
         const availableLanguages = [
             { code: 'en', name: 'English', flag: '🇬🇧' },
-            { code: 'de', name: 'German', flag: '🇩🇪' }
+            { code: 'de', name: 'German', flag: '🇩🇪' },
+            { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+            { code: 'fi', name: 'Finnish', flag: '🇫🇮' },
+            { code: 'fr', name: 'French', flag: '🇫🇷' },
+            { code: 'hr', name: 'Croatian', flag: '🇭🇷' },
+            { code: 'it', name: 'Italian', flag: '🇮🇹' },
+            { code: 'nl', name: 'Dutch', flag: '🇳🇱' },
+            { code: 'ru', name: 'Russian', flag: '🇷🇺' }
         ];
-
-        // Translations
-        const translations = {
-            en: {
-                title: "Stellar Trustline Manager",
-                secretKeyInfo: "Secret keys are securely handled by the backend and never stored.",
-                sourceLabel: "Enter Source Federation Address or Public Key:",
-                sourcePlaceholder: "e.g., user*example.com or GD4TPVR...",
-                submitButton: "Submit",
-                loading: "Loading...",
-                sourceWallet: "Source Wallet:",
-                listAll: "List All Trustlines",
-                compare: "Compare Trustlines",
-                deleteAll: "Delete All Trustlines",
-                deleteByIssuer: "Delete Trustlines by Issuer",
-                backToMenu: "Back to Menu",
-                listTrustlines: "List Trustlines",
-                showAllTrustlines: "Show All Trustlines",
-                destLabel: "Enter Destination Public Key:",
-                destPlaceholder: "e.g., GBZVTOY...",
-                compareTrustlines: "Compare Trustlines",
-                issuerLabel: "Enter Issuer Address:",
-                issuerPlaceholder: "e.g., GA5ZSEJ...",
-                issuerSearchNoMatch: "No issuer addresses found matching '{search}'.",
-                secretKeyLabel: "Enter Source Secret Key (sent securely to backend, not stored):",
-                secretKeyPlaceholder: "e.g., SB...",
-                show: "Show",
-                hide: "Hide",
-                deleteAllButton: "Delete All Trustlines",
-                deleteByIssuerButton: "Delete Trustlines by Issuer",
-                results: "Results:",
-                noTrustlines: "No trustlines found.",
-                noDuplicates: "No duplicate trustlines found.",
-                noIssuer: "No trustlines found for issuer {issuer}.",
-                assetCode: "Asset Code",
-                issuer: "Issuer",
-                creationDate: "Creation Date",
-                unknownDate: "Not found (possibly too old)",
-                previous: "Previous",
-                next: "Next",
-                backToTop: "Back to Top",
-                confirmTitle: "Confirm Action",
-                confirmMessage: "Are you sure you want to delete the listed trustlines? Your secret key will be sent to a secure backend and not stored.",
-                yes: "Yes",
-                cancel: "Cancel",
-                currentMenu: "Current Menu:",
-                secretKeyEmpty: "Secret key field is empty.",
-                secretKeyInvalid: "Invalid secret key.",
-                secretKeyMismatch: "Secret key does not match the public key.",
-                secretKeyCleared: "Secret key has been cleared.",
-                invalidPublicKey: "Invalid public key or federation address.",
-                invalidIssuer: "Invalid issuer address.",
-                failedFederation: "Failed to resolve federation address: {error}",
-                noBalances: "No balances found for account.",
-                failedLoadAccount: "Failed to load account {publicKey}: {error}",
-                backendConnectError: "Cannot connect to backend. Ensure the server is running at {url} and CORS is enabled.",
-                failedDeleteTrustlines: "Failed to delete trustlines: {error}",
-                scriptError: "Script error: {message} at {source}:{lineno}:{colno} - {error}",
-                errorFetchingOperations: "Error fetching operations: {error}"
-            },
-            de: {
-                title: "Stellar Trustline Manager",
-                secretKeyInfo: "Geheime Schlüssel werden sicher vom Backend verarbeitet und nicht gespeichert.",
-                sourceLabel: "Geben Sie die Quell-Föderationsadresse oder den öffentlichen Schlüssel ein:",
-                sourcePlaceholder: "z.B., user*example.com oder GD4TPVR...",
-                submitButton: "Absenden",
-                loading: "Laden...",
-                sourceWallet: "Quell-Wallet:",
-                listAll: "Alle Trustlines auflisten",
-                compare: "Trustlines vergleichen",
-                deleteAll: "Alle Trustlines löschen",
-                deleteByIssuer: "Trustlines nach Emittenten löschen",
-                backToMenu: "Zurück zum Menü",
-                listTrustlines: "Trustlines auflisten",
-                showAllTrustlines: "Alle Trustlines anzeigen",
-                destLabel: "Geben Sie den Ziel-öffentlichen Schlüssel ein:",
-                destPlaceholder: "z.B., GBZVTOY...",
-                compareTrustlines: "Trustlines vergleichen",
-                issuerLabel: "Geben Sie die Emittentenadresse ein:",
-                issuerPlaceholder: "z.B., GA5ZSEJ...",
-                issuerSearchNoMatch: "Keine Emittentenadressen gefunden, die '{search}' entsprechen.",
-                secretKeyLabel: "Geben Sie den Quell-Geheimschlüssel ein (wird sicher an das Backend gesendet, nicht gespeichert):",
-                secretKeyPlaceholder: "z.B., SB...",
-                show: "Anzeigen",
-                hide: "Verbergen",
-                deleteAllButton: "Alle Trustlines löschen",
-                deleteByIssuerButton: "Trustlines nach Emittenten löschen",
-                results: "Ergebnisse:",
-                noTrustlines: "Keine Trustlines gefunden.",
-                noDuplicates: "Keine doppelten Trustlines gefunden.",
-                noIssuer: "Keine Trustlines für Emittenten {issuer} gefunden.",
-                assetCode: "Asset-Code",
-                issuer: "Emittent",
-                creationDate: "Erstellungsdatum",
-                unknownDate: "Nicht gefunden (möglicherweise zu alt)",
-                previous: "Vorherige",
-                next: "Nächste",
-                backToTop: "Zurück nach oben",
-                confirmTitle: "Aktion bestätigen",
-                confirmMessage: "Sind Sie sicher, dass Sie die aufgeführten Trustlines löschen möchten? Ihr geheimer Schlüssel wird sicher an ein Backend gesendet und nicht gespeichert.",
-                yes: "Ja",
-                cancel: "Abbrechen",
-                currentMenu: "Aktuelles Menü:",
-                secretKeyEmpty: "Geheimschlüssel-Feld ist leer.",
-                secretKeyInvalid: "Ungültiger Geheimschlüssel.",
-                secretKeyMismatch: "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
-                secretKeyCleared: "Geheimschlüssel wurde gelöscht.",
-                invalidPublicKey: "Ungültiger öffentlicher Schlüssel oder Föderationsadresse.",
-                invalidIssuer: "Ungültige Emittentenadresse.",
-                failedFederation: "Fehler beim Auflösen der Föderationsadresse: {error}",
-                noBalances: "Keine Guthaben für das Konto gefunden.",
-                failedLoadAccount: "Fehler beim Laden des Kontos {publicKey}: {error}",
-                backendConnectError: "Keine Verbindung zum Backend möglich. Stellen Sie sicher, dass der Server unter {url} läuft und CORS aktiviert ist.",
-                failedDeleteTrustlines: "Fehler beim Löschen der Trustlines: {error}",
-                scriptError: "Skriptfehler: {message} bei {source}:{lineno}:{colno} - {error}",
-                errorFetchingOperations: "Fehler beim Abrufen der Operationen: {error}"
-            }
-        };
 
         const App = () => {
             const [sourceInput, setSourceInput] = useState('');
@@ -163,15 +51,62 @@
             const [currentPage, setCurrentPage] = useState(0);
             const [showBackToTop, setShowBackToTop] = useState(false);
             const [language, setLanguage] = useState('en');
-            const [hasCreationDates, setHasCreationDates] = useState(false);
+            const [translations, setTranslations] = useState({});
+            const [wallets, setWallets] = useState([]);
+            const [showAddModal, setShowAddModal] = useState(false);
+            const [modalAddress, setModalAddress] = useState('');
+            const [modalDescription, setModalDescription] = useState('');
+            const [modalCompromised, setModalCompromised] = useState(false);
+
+            // Load translations
+            useEffect(() => {
+                const loadTranslations = async () => {
+                    try {
+                        const response = await fetch(`locales/${language}.json`);
+                        const data = await response.json();
+                        setTranslations(data);
+                    } catch (err) {
+                        setError(`Failed to load translations: ${err.message}`);
+                    }
+                };
+                loadTranslations();
+            }, [language]);
+
+            // Load initial wallets from config/wallets.json
+            useEffect(() => {
+                const loadWallets = async () => {
+                    try {
+                        const saved = localStorage.getItem('wallets');
+                        if (saved) {
+                            setWallets(JSON.parse(saved));
+                        } else {
+                            const response = await fetch('config/wallets.json');
+                            const data = await response.json();
+                            setWallets(data);
+                        }
+                    } catch (err) {
+                        setError(`Failed to load wallets: ${err.message}`);
+                    }
+                };
+                loadWallets();
+            }, []);
 
             const t = (key, params = {}) => {
-                let text = translations[language][key] || key;
-                Object.keys(params).forEach(param => {
-                    text = text.replace(`{${param}}`, params[param]);
-                });
+                let text = translations[key] || key;
+                if (typeof text === 'string') {
+                    Object.keys(params).forEach(param => {
+                        text = text.replace(`{${param}}`, params[param]);
+                    });
+                }
                 return text;
             };
+
+            // Save wallets to localStorage
+            useEffect(() => {
+                if (wallets.length > 0) {
+                    localStorage.setItem('wallets', JSON.stringify(wallets));
+                }
+            }, [wallets]);
 
             // Toggle language
             const toggleLanguage = (newLang) => {
@@ -193,7 +128,7 @@
                 };
                 window.onerror = handleError;
                 return () => { window.onerror = null; };
-            }, [language]);
+            }, [translations]);
 
             // Handle scroll for Back to Top button
             useEffect(() => {
@@ -235,24 +170,41 @@
                 setIssuerSearchResults([]);
                 setSourceSecret('');
                 setShowSecretKey(false);
-                setSortColumn('assetCode');
+                setSortColumn(option === 'tokenPurchases' ? 'memo' : 'assetCode');
                 setSortDirection('asc');
                 setCurrentPage(0);
-                setHasCreationDates(false);
             };
 
-            // Sort trustlines
-            const getSortedAndFilteredTrustlines = (trustlines) => {
-                return [...trustlines].sort((a, b) => {
+            // Sort data (trustlines or token purchases)
+            const getSortedAndFilteredData = (data, type) => {
+                return [...data].sort((a, b) => {
                     const isAsc = sortDirection === 'asc' ? 1 : -1;
-                    if (sortColumn === 'assetCode') {
-                        return a.assetCode.localeCompare(b.assetCode) * isAsc;
-                    } else if (sortColumn === 'assetIssuer') {
-                        return a.assetIssuer.localeCompare(b.assetIssuer) * isAsc;
-                    } else if (sortColumn === 'creationDate') {
-                        const dateA = a.creationDate ? a.creationDate.getTime() : (isAsc ? Infinity : -Infinity);
-                        const dateB = b.creationDate ? b.creationDate.getTime() : (isAsc ? Infinity : -Infinity);
-                        return (dateA - dateB) * isAsc;
+                    if (type === 'trustlines') {
+                        if (sortColumn === 'assetCode') {
+                            return a.assetCode.localeCompare(b.assetCode) * isAsc;
+                        } else if (sortColumn === 'assetIssuer') {
+                            return a.assetIssuer.localeCompare(b.assetIssuer) * isAsc;
+                        } else if (sortColumn === 'creationDate') {
+                            const dateA = a.creationDate ? a.creationDate.getTime() : (isAsc ? Infinity : -Infinity);
+                            const dateB = b.creationDate ? b.creationDate.getTime() : (isAsc ? Infinity : -Infinity);
+                            return (dateA - dateB) * isAsc;
+                        }
+                    } else if (type === 'tokenPurchases') {
+                        if (sortColumn === 'memo') {
+                            return (a.memo || '').localeCompare(b.memo || '') * isAsc;
+                        } else if (sortColumn === 'amount') {
+                            return (a.amount - b.amount) * isAsc;
+                        } else if (sortColumn === 'recipient') {
+                            return a.recipient.localeCompare(b.recipient) * isAsc;
+                        } else if (sortColumn === 'date') {
+                            const dateA = a.dates[0] ? new Date(a.dates[0].dateTime).getTime() : (isAsc ? Infinity : -Infinity);
+                            const dateB = b.dates[0] ? new Date(b.dates[0].dateTime).getTime() : (isAsc ? Infinity : -Infinity);
+                            return (dateA - dateB) * isAsc;
+                        } else if (sortColumn === 'compromised') {
+                            return (a.compromised ? 1 : 0) - (b.compromised ? 1 : 0) * isAsc;
+                        } else if (sortColumn === 'walletInList') {
+                            return (a.inList ? 1 : 0) - (b.inList ? 1 : 0) * isAsc;
+                        }
                     }
                     return 0;
                 });
@@ -269,11 +221,11 @@
                 setCurrentPage(0);
             };
 
-            // Get paginated trustlines
-            const getPaginatedTrustlines = (trustlines) => {
+            // Get paginated data
+            const getPaginatedData = (data) => {
                 const startIndex = currentPage * ITEMS_PER_PAGE;
                 const endIndex = startIndex + ITEMS_PER_PAGE;
-                return trustlines.slice(startIndex, endIndex);
+                return data.slice(startIndex, endIndex);
             };
 
             // Handle list all trustlines
@@ -284,10 +236,8 @@
                     const trustlines = await loadTrustlines(sourcePublicKey);
                     if (trustlines.length > 0) {
                         setResults(trustlines);
-                        setHasCreationDates(trustlines.some(t => t.creationDate !== null));
                     } else {
                         setResults([t('noTrustlines')]);
-                        setHasCreationDates(false);
                     }
                 } catch (err) {
                     setError(err.message);
@@ -314,7 +264,6 @@
                     );
                     if (duplicates.length > 0) {
                         setResults(duplicates);
-                        setHasCreationDates(duplicates.some(t => t.creationDate !== null));
                         setConfirmAction(() => async () => {
                             if (!sourceSecret) {
                                 setError(t('secretKeyEmpty'));
@@ -330,8 +279,6 @@
                                 return;
                             }
                             try {
-                                console.log('Sending fetch to:', BACKEND_URL + '/delete-trustlines');
-                                console.log('Request body:', { secretKey: sourceSecret, trustlines: duplicates });
                                 const response = await fetch(`${BACKEND_URL}/delete-trustlines`, {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
@@ -343,9 +290,7 @@
                                 setTrustlines(await loadTrustlines(sourcePublicKey));
                                 setSourceSecret('');
                                 setShowSecretKey(false);
-                                setHasCreationDates(false);
                             } catch (err) {
-                                console.error('Fetch error:', err);
                                 setError(err.message.includes('Failed to fetch')
                                     ? t('backendConnectError', { url: BACKEND_URL })
                                     : err.message);
@@ -354,7 +299,6 @@
                         setShowConfirm(true);
                     } else {
                         setResults([t('noDuplicates')]);
-                        setHasCreationDates(false);
                     }
                 } catch (err) {
                     setError(err.message);
@@ -389,8 +333,6 @@
 
                         setConfirmAction(() => async () => {
                             try {
-                                console.log('Sending fetch to:', BACKEND_URL + '/delete-trustlines');
-                                console.log('Request body:', { secretKey: sourceSecret, trustlines });
                                 const response = await fetch(`${BACKEND_URL}/delete-trustlines`, {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
@@ -402,9 +344,7 @@
                                 setTrustlines([]);
                                 setSourceSecret('');
                                 setShowSecretKey(false);
-                                setHasCreationDates(false);
                             } catch (err) {
-                                console.error('Fetch error:', err);
                                 setError(err.message.includes('Failed to fetch')
                                     ? t('backendConnectError', { url: BACKEND_URL })
                                     : err.message);
@@ -413,7 +353,6 @@
                         setShowConfirm(true);
                     } else {
                         setResults([t('noTrustlines')]);
-                        setHasCreationDates(false);
                     }
                 } catch (err) {
                     setError(err.message);
@@ -452,8 +391,6 @@
 
                         setConfirmAction(() => async () => {
                             try {
-                                console.log('Sending fetch to:', BACKEND_URL + '/delete-trustlines');
-                                console.log('Request body:', { secretKey: sourceSecret, trustlines: issuerTrustlines });
                                 const response = await fetch(`${BACKEND_URL}/delete-trustlines`, {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
@@ -465,9 +402,7 @@
                                 setTrustlines(await loadTrustlines(sourcePublicKey));
                                 setSourceSecret('');
                                 setShowSecretKey(false);
-                                setHasCreationDates(false);
                             } catch (err) {
-                                console.error('Fetch error:', err);
                                 setError(err.message.includes('Failed to fetch')
                                     ? t('backendConnectError', { url: BACKEND_URL })
                                     : err.message);
@@ -476,7 +411,6 @@
                         setShowConfirm(true);
                     } else {
                         setResults([t('noIssuer', { issuer: issuerAddress })]);
-                        setHasCreationDates(false);
                     }
                 } catch (err) {
                     setError(err.message);
@@ -510,7 +444,56 @@
                 }
             };
 
-            // Render confirmation modal
+            // Handle token purchases analysis
+            const handleTokenPurchases = async () => {
+                setError('');
+                setIsLoading(true);
+                try {
+                    const payments = await loadPayments(sourcePublicKey);
+                    if (payments.length === 0) {
+                        setResults([t('noPayments')]);
+                        setIsLoading(false);
+                        return;
+                    }
+
+                    // Group payments by memo and recipient
+                    const groupedPayments = {};
+                    payments.forEach(payment => {
+                        const key = `${payment.memo || '(Kein Memo)'}-${payment.recipient}`;
+                        if (!groupedPayments[key]) {
+                            groupedPayments[key] = {
+                                memo: payment.memo || '(Kein Memo)',
+                                recipient: payment.recipient,
+                                amount: 0,
+                                dates: []
+                            };
+                        }
+                        groupedPayments[key].amount += parseFloat(payment.amount);
+                        groupedPayments[key].dates.push({
+                            dateTime: payment.created_at,
+                            amount: payment.amount
+                        });
+                    });
+
+                    // Convert to array and add compromised and inList status
+                    const paymentData = Object.values(groupedPayments).map(payment => {
+                        const wallet = wallets.find(w => w.address === payment.recipient);
+                        return {
+                            ...payment,
+                            compromised: wallet ? wallet.compromised : false,
+                            inList: !!wallet
+                        };
+                    });
+
+                    setResults(paymentData);
+                } catch (err) {
+                    setError(t('errorFetchingOperations', { error: err.message }));
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            // Confirmation modal
             const ConfirmationModal = () => (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -549,6 +532,271 @@
                 </div>
             );
 
+            // Add Wallet Modal
+            const AddWalletModal = () => (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 className="text-xl font-bold mb-4">{t('addToList')}</h2>
+                        <div className="mb-4">
+                            <label className="block mb-2">{t('address')}</label>
+                            <input
+                                type="text"
+                                value={modalAddress}
+                                disabled
+                                className="w-full p-2 border rounded bg-gray-100"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block mb-2">{t('description')}</label>
+                            <input
+                                type="text"
+                                value={modalDescription}
+                                onChange={(e) => setModalDescription(e.target.value)}
+                                className="w-full p-2 border rounded"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block mb-2">{t('compromised')}</label>
+                            <select
+                                value={modalCompromised ? 'yes' : 'no'}
+                                onChange={(e) => setModalCompromised(e.target.value === 'yes')}
+                                className="w-full p-2 border rounded"
+                            >
+                                <option value="no">{t('noOption')}</option>
+                                <option value="yes">{t('yesOption')}</option>
+                            </select>
+                        </div>
+                        <div className="flex justify-end space-x-4">
+                            <button
+                                onClick={() => {
+                                    setWallets([...wallets, {
+                                        address: modalAddress,
+                                        description: modalDescription,
+                                        compromised: modalCompromised
+                                    }]);
+                                    setShowAddModal(false);
+                                    setModalAddress('');
+                                    setModalDescription('');
+                                    setModalCompromised(false);
+                                    handleTokenPurchases(); // Refresh the table
+                                }}
+                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            >
+                                {t('add')}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowAddModal(false);
+                                    setModalAddress('');
+                                    setModalDescription('');
+                                    setModalCompromised(false);
+                                }}
+                                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                            >
+                                {t('cancel')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            // Settings Page Component
+            const SettingsPage = () => {
+                const [newAddress, setNewAddress] = useState('');
+                const [editIndex, setEditIndex] = useState(null);
+                const [editDescription, setEditDescription] = useState('');
+                const [editCompromised, setEditCompromised] = useState(false);
+
+                const handleAddWallet = () => {
+                    if (!newAddress || !StellarSdk.StrKey.isValidEd25519PublicKey(newAddress)) {
+                        setError(t('invalidPublicKey'));
+                        return;
+                    }
+                    if (wallets.some(w => w.address === newAddress)) {
+                        setError('Wallet already exists in the list.');
+                        return;
+                    }
+                    setWallets([...wallets, { address: newAddress, description: '', compromised: false }]);
+                    setNewAddress('');
+                };
+
+                const handleDeleteWallet = (index) => {
+                    setWallets(wallets.filter((_, i) => i !== index));
+                };
+
+                const handleEditWallet = (index) => {
+                    setEditIndex(index);
+                    setEditDescription(wallets[index].description);
+                    setEditCompromised(wallets[index].compromised);
+                };
+
+                const handleSaveEdit = (index) => {
+                    const updatedWallets = [...wallets];
+                    updatedWallets[index] = {
+                        ...updatedWallets[index],
+                        description: editDescription,
+                        compromised: editCompromised
+                    };
+                    setWallets(updatedWallets);
+                    setEditIndex(null);
+                };
+
+                const handleExportSettings = () => {
+                    const dataStr = JSON.stringify(wallets, null, 2);
+                    const blob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'settings.json';
+                    link.click();
+                    URL.revokeObjectURL(url);
+                };
+
+                const handleImportSettings = (event) => {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const importedWallets = JSON.parse(e.target.result);
+                            if (!Array.isArray(importedWallets)) throw new Error('Invalid format');
+                            // Validate imported wallets
+                            const validWallets = importedWallets.filter(wallet =>
+                                wallet.address &&
+                                StellarSdk.StrKey.isValidEd25519PublicKey(wallet.address) &&
+                                typeof wallet.description === 'string' &&
+                                typeof wallet.compromised === 'boolean'
+                            );
+                            setWallets(validWallets);
+                        } catch (err) {
+                            setError('Failed to import settings: Invalid file format.');
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+
+                return (
+                    <div>
+                        <h2 className="text-xl font-bold mb-4">{t('settingsTitle')}</h2>
+                        <div className="mb-4">
+                            <h3 className="text-lg font-semibold mb-2">{t('walletList')}</h3>
+                            <table className="w-full border-collapse border border-gray-300 mb-4">
+                                <thead>
+                                    <tr className="bg-gray-100">
+                                        <th className="border border-gray-300 p-2">{t('address')}</th>
+                                        <th className="border border-gray-300 p-2">{t('description')}</th>
+                                        <th className="border border-gray-300 p-2">{t('compromised')}</th>
+                                        <th className="border border-gray-300 p-2">{t('actions')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {wallets.map((wallet, index) => (
+                                        <tr key={index}>
+                                            <td className="border border-gray-300 p-2">{wallet.address}</td>
+                                            <td className="border border-gray-300 p-2">
+                                                {editIndex === index ? (
+                                                    <input
+                                                        type="text"
+                                                        value={editDescription}
+                                                        onChange={(e) => setEditDescription(e.target.value)}
+                                                        className="w-full p-1 border rounded"
+                                                    />
+                                                ) : (
+                                                    wallet.description || '-'
+                                                )}
+                                            </td>
+                                            <td className="border border-gray-300 p-2">
+                                                {editIndex === index ? (
+                                                    <select
+                                                        value={editCompromised ? 'yes' : 'no'}
+                                                        onChange={(e) => setEditCompromised(e.target.value === 'yes')}
+                                                        className="w-full p-1 border rounded"
+                                                    >
+                                                        <option value="no">{t('noOption')}</option>
+                                                        <option value="yes">{t('yesOption')}</option>
+                                                    </select>
+                                                ) : (
+                                                    wallet.compromised ? t('yesOption') : t('noOption')
+                                                )}
+                                            </td>
+                                            <td className="border border-gray-300 p-2">
+                                                {editIndex === index ? (
+                                                    <div className="flex space-x-2">
+                                                        <button
+                                                            onClick={() => handleSaveEdit(index)}
+                                                            className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                                                        >
+                                                            {t('save')}
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setEditIndex(null)}
+                                                            className="bg-gray-300 px-2 py-1 rounded hover:bg-gray-400"
+                                                        >
+                                                            {t('cancel')}
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex space-x-2">
+                                                        <button
+                                                            onClick={() => handleEditWallet(index)}
+                                                            className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteWallet(index)}
+                                                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                                        >
+                                                            {t('delete')}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <div className="mb-4">
+                                <label className="block mb-2">{t('newAddress')}</label>
+                                <div className="flex space-x-2">
+                                    <input
+                                        type="text"
+                                        value={newAddress}
+                                        onChange={(e) => setNewAddress(e.target.value)}
+                                        className="w-full p-2 border rounded"
+                                        placeholder="e.g., GD4TPVR..."
+                                    />
+                                    <button
+                                        onClick={handleAddWallet}
+                                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                    >
+                                        {t('addWallet')}
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex space-x-4">
+                                <button
+                                    onClick={handleExportSettings}
+                                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                                >
+                                    {t('exportSettings')}
+                                </button>
+                                <label className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer">
+                                    {t('importSettings')}
+                                    <input
+                                        type="file"
+                                        accept=".json"
+                                        onChange={handleImportSettings}
+                                        className="hidden"
+                                    />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
             // Resolve federation address to public key
             async function resolveFederationAddress(federationAddress) {
                 try {
@@ -561,7 +809,7 @@
                 }
             }
 
-            // Load account trustlines with improved pagination
+            // Load account trustlines
             async function loadTrustlines(publicKey) {
                 try {
                     const account = await server.loadAccount(publicKey);
@@ -571,16 +819,14 @@
                         .map(balance => ({
                             assetCode: balance.asset_code,
                             assetIssuer: balance.asset_issuer,
-                            creationDate: null // Placeholder for creation date
+                            creationDate: null
                         }));
 
-                    // Fetch creation dates from operations endpoint with pagination
                     const operations = server.operations().forAccount(publicKey).order('desc').limit(200);
                     let cursor = null;
-                    let pageCount = 0;
                     const trustlineMap = new Map(trustlines.map(t => [`${t.assetCode}:${t.assetIssuer}`, t]));
 
-                    while (trustlineMap.size > 0 && pageCount < MAX_PAGES) {
+                    while (trustlineMap.size > 0) {
                         try {
                             const opResponse = cursor
                                 ? await operations.cursor(cursor).call()
@@ -598,7 +844,6 @@
                             }
                             cursor = opResponse.next ? (await opResponse.next()).cursor : null;
                             if (!cursor) break;
-                            pageCount++;
                         } catch (opError) {
                             console.error('Error fetching operations:', opError);
                             throw new Error(t('errorFetchingOperations', { error: opError.message }));
@@ -611,9 +856,63 @@
                 }
             }
 
+            // Load payments for token purchases
+            async function loadPayments(publicKey) {
+                const payments = [];
+                const operations = server.operations().forAccount(publicKey).order('desc').limit(200);
+                let cursor = null;
+
+                while (true) {
+                    try {
+                        const opResponse = cursor
+                            ? await operations.cursor(cursor).call()
+                            : await operations.call();
+                        if (!opResponse.records || opResponse.records.length === 0) break;
+
+                        for (const op of opResponse.records) {
+                            if (op.type === 'payment' && op.asset_type === 'native' && op.from === publicKey) {
+                                payments.push({
+                                    recipient: op.to,
+                                    amount: op.amount,
+                                    created_at: op.created_at,
+                                    memo: op.transaction_attr?.memo || null
+                                });
+                            }
+                        }
+                        cursor = opResponse.next ? (await opResponse.next()).cursor : null;
+                        if (!cursor) break;
+                    } catch (opError) {
+                        console.error('Error fetching operations:', opError);
+                        throw new Error(t('errorFetchingOperations', { error: opError.message }));
+                    }
+                }
+
+                return payments;
+            }
+
+            // Format dates for display
+            const formatDates = (dates) => {
+                if (!dates || dates.length === 0) return '-';
+                const groupedByDate = {};
+                dates.forEach(date => {
+                    const dt = new Date(date.dateTime);
+                    const dateStr = dt.toLocaleDateString();
+                    if (!groupedByDate[dateStr]) {
+                        groupedByDate[dateStr] = [];
+                    }
+                    groupedByDate[dateStr].push(dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                });
+
+                const dateStrings = Object.entries(groupedByDate).map(([date, times]) => {
+                    return `${date}, ${times.join(', ')}`;
+                });
+
+                return dateStrings.join(' / ');
+            };
+
             return (
                 <div className="container mx-auto p-4">
-                    <div className="flex space-x-2 mb-4">
+                    <div className="flex flex-wrap gap-2 mb-4">
                         {availableLanguages.map(lang => (
                             <button
                                 key={lang.code}
@@ -677,6 +976,18 @@
                                     >
                                         {t('deleteByIssuer')}
                                     </button>
+                                    <button
+                                        onClick={() => handleMenuOption('tokenPurchases')}
+                                        className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 text-lg py-4"
+                                    >
+                                        {t('tokenPurchases')}
+                                    </button>
+                                    <button
+                                        onClick={() => handleMenuOption('settings')}
+                                        className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 text-lg py-4"
+                                    >
+                                        {t('settings')}
+                                    </button>
                                 </div>
                             ) : (
                                 <div>
@@ -691,7 +1002,9 @@
                                             {t('currentMenu')} {menuOption === 'listAll' ? t('listAll') :
                                                             menuOption === 'compare' ? t('compare') :
                                                             menuOption === 'deleteAll' ? t('deleteAll') :
-                                                            t('deleteByIssuer')}
+                                                            menuOption === 'deleteByIssuer' ? t('deleteByIssuer') :
+                                                            menuOption === 'tokenPurchases' ? t('tokenPurchases') :
+                                                            t('settings')}
                                         </p>
                                     )}
                                     {menuOption === 'listAll' && (
@@ -822,10 +1135,8 @@
                                                         const issuerTrustlines = trustlines.filter(t => t.assetIssuer === issuerAddress);
                                                         if (issuerTrustlines.length > 0) {
                                                             setResults(issuerTrustlines);
-                                                            setHasCreationDates(issuerTrustlines.some(t => t.creationDate !== null));
                                                         } else {
                                                             setResults([t('noIssuer', { issuer: issuerAddress })]);
-                                                            setHasCreationDates(false);
                                                         }
                                                     } catch (err) {
                                                         setError(err.message);
@@ -865,6 +1176,18 @@
                                             </button>
                                         </div>
                                     )}
+                                    {menuOption === 'tokenPurchases' && (
+                                        <div>
+                                            <button
+                                                onClick={handleTokenPurchases}
+                                                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                                disabled={isLoading}
+                                            >
+                                                {isLoading ? t('loading') : t('tokenPurchasesTitle')}
+                                            </button>
+                                        </div>
+                                    )}
+                                    {menuOption === 'settings' && <SettingsPage />}
                                 </div>
                             )}
                         </div>
@@ -873,12 +1196,98 @@
                     {results.length > 0 && (
                         <div className="mt-4">
                             <h2 className="text-xl font-bold">{t('results')}</h2>
-                            {typeof results[0] === 'string' ? (
+                            {menuOption !== 'tokenPurchases' && typeof results[0] === 'string' ? (
                                 <ul className="list-disc pl-5">
                                     {results.map((result, index) => (
                                         <li key={index}>{result.includes('No trustlines found for issuer') ? t('noIssuer', { issuer: issuerAddress }) : result}</li>
                                     ))}
                                 </ul>
+                            ) : menuOption === 'tokenPurchases' && typeof results[0] === 'string' ? (
+                                <ul className="list-disc pl-5">
+                                    {results.map((result, index) => (
+                                        <li key={index}>{result}</li>
+                                    ))}
+                                </ul>
+                            ) : menuOption === 'tokenPurchases' ? (
+                                <div>
+                                    <p className="mb-2">
+                                        {t('totalPurchases', { count: results.length })}
+                                    </p>
+                                    <p className="mb-2">
+                                        {t('compromisedPurchases', {
+                                            total: results.reduce((sum, payment) => sum + payment.dates.length, 0),
+                                            compromised: results.filter(payment => payment.compromised).reduce((sum, payment) => sum + payment.dates.length, 0)
+                                        })}
+                                    </p>
+                                    <table className="w-full border-collapse border border-gray-300">
+                                        <thead>
+                                            <tr className="bg-gray-100">
+                                                <th
+                                                    className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'memo' ? 'font-bold bg-gray-200' : ''}`}
+                                                    onClick={() => handleSort('memo')}
+                                                >
+                                                    {t('memo')} {sortColumn === 'memo' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                                                </th>
+                                                <th
+                                                    className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'amount' ? 'font-bold bg-gray-200' : ''}`}
+                                                    onClick={() => handleSort('amount')}
+                                                >
+                                                    {t('amount')} {sortColumn === 'amount' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                                                </th>
+                                                <th
+                                                    className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'recipient' ? 'font-bold bg-gray-200' : ''}`}
+                                                    onClick={() => handleSort('recipient')}
+                                                >
+                                                    {t('recipient')} {sortColumn === 'recipient' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                                                </th>
+                                                <th
+                                                    className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'date' ? 'font-bold bg-gray-200' : ''}`}
+                                                    onClick={() => handleSort('date')}
+                                                >
+                                                    {t('dateTimes')} {sortColumn === 'date' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                                                </th>
+                                                <th
+                                                    className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'compromised' ? 'font-bold bg-gray-200' : ''}`}
+                                                    onClick={() => handleSort('compromised')}
+                                                >
+                                                    {t('compromised')} {sortColumn === 'compromised' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                                                </th>
+                                                <th
+                                                    className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'walletInList' ? 'font-bold bg-gray-200' : ''}`}
+                                                    onClick={() => handleSort('walletInList')}
+                                                >
+                                                    {t('walletInList')} {sortColumn === 'walletInList' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {getPaginatedData(getSortedAndFilteredData(results, 'tokenPurchases')).map((result, index) => (
+                                                <tr key={index}>
+                                                    <td className="border border-gray-300 p-2">{result.memo}</td>
+                                                    <td className="border border-gray-300 p-2">{result.amount.toFixed(2)} XLM</td>
+                                                    <td className="border border-gray-300 p-2">{result.recipient}</td>
+                                                    <td className="border border-gray-300 p-2">{formatDates(result.dates)}</td>
+                                                    <td className="border border-gray-300 p-2">{result.compromised ? t('yesOption') : t('noOption')}</td>
+                                                    <td className="border border-gray-300 p-2">
+                                                        {result.inList ? (
+                                                            t('yesOption')
+                                                        ) : (
+                                                            <button
+                                                                onClick={() => {
+                                                                    setModalAddress(result.recipient);
+                                                                    setShowAddModal(true);
+                                                                }}
+                                                                className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                                                            >
+                                                                {t('add')}
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             ) : (
                                 <div>
                                     <table className="w-full border-collapse border border-gray-300">
@@ -896,53 +1305,49 @@
                                                 >
                                                     {t('issuer')} {sortColumn === 'assetIssuer' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                                                 </th>
-                                                {hasCreationDates && (
-                                                    <th
-                                                        className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'creationDate' ? 'font-bold bg-gray-200' : ''}`}
-                                                        onClick={() => handleSort('creationDate')}
-                                                    >
-                                                        {t('creationDate')} {sortColumn === 'creationDate' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
-                                                    </th>
-                                                )}
+                                                <th
+                                                    className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'creationDate' ? 'font-bold bg-gray-200' : ''}`}
+                                                    onClick={() => handleSort('creationDate')}
+                                                >
+                                                    {t('creationDate')} {sortColumn === 'creationDate' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {getPaginatedTrustlines(getSortedAndFilteredTrustlines(results)).map((result, index) => (
+                                            {getPaginatedData(getSortedAndFilteredData(results, 'trustlines')).map((result, index) => (
                                                 <tr key={index}>
                                                     <td className="border border-gray-300 p-2">{result.assetCode}</td>
                                                     <td className="border border-gray-300 p-2">{result.assetIssuer}</td>
-                                                    {hasCreationDates && (
-                                                        <td className="border border-gray-300 p-2">
-                                                            {result.creationDate
-                                                                ? result.creationDate.toLocaleString()
-                                                                : t('unknownDate')}
-                                                        </td>
-                                                    )}
+                                                    <td className="border border-gray-300 p-2">
+                                                        {result.creationDate
+                                                            ? result.creationDate.toLocaleString()
+                                                            : t('unknownDate')}
+                                                    </td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
-                                    <div className="mt-4 flex items-center justify-between">
-                                        <button
-                                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-300"
-                                            disabled={currentPage === 0}
-                                        >
-                                            {t('previous')}
-                                        </button>
-                                        <span>
-                                            Page {currentPage + 1} ({currentPage * ITEMS_PER_PAGE + 1}-{Math.min((currentPage + 1) * ITEMS_PER_PAGE, results.length)} of {results.length})
-                                        </span>
-                                        <button
-                                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(results.length / ITEMS_PER_PAGE) - 1))}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-300"
-                                            disabled={currentPage >= Math.ceil(results.length / ITEMS_PER_PAGE) - 1}
-                                        >
-                                            {t('next')}
-                                        </button>
-                                    </div>
                                 </div>
                             )}
+                            <div className="mt-4 flex items-center justify-between">
+                                <button
+                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-300"
+                                    disabled={currentPage === 0}
+                                >
+                                    {t('previous')}
+                                </button>
+                                <span>
+                                    Page {currentPage + 1} ({currentPage * ITEMS_PER_PAGE + 1}-{Math.min((currentPage + 1) * ITEMS_PER_PAGE, results.length)} of {results.length})
+                                </span>
+                                <button
+                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(results.length / ITEMS_PER_PAGE) - 1))}
+                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-300"
+                                    disabled={currentPage >= Math.ceil(results.length / ITEMS_PER_PAGE) - 1}
+                                >
+                                    {t('next')}
+                                </button>
+                            </div>
                         </div>
                     )}
                     {showBackToTop && (
@@ -954,6 +1359,7 @@
                         </button>
                     )}
                     {showConfirm && <ConfirmationModal />}
+                    {showAddModal && <AddWalletModal />}
                 </div>
             );
         };
