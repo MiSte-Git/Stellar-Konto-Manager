@@ -1,5 +1,6 @@
 import React from 'react';
 import Main from './main';
+import LanguageSelector from './components/LanguageSelector';
 import './App.css';
 
 console.log('App.jsx loaded');
@@ -29,7 +30,11 @@ class ErrorBoundary extends React.Component {
 function App() {
   return (
     <ErrorBoundary>
-      <Main />
+		<div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
+		  <LanguageSelector />
+		</div>
+        <Main />
+      </div>
     </ErrorBoundary>
   );
 }

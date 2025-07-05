@@ -1,4 +1,6 @@
 import viteLogo from '/vite.svg';
+import './i18n'; // Initialisiert die Sprachunterstützung
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import reactLogo from './assets/react.svg';
 import ReactDOM from 'react-dom/client';
@@ -409,7 +411,7 @@ function Main() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1 className="text-2xl font-bold mb-4">Stellar Trustline Manager</h1>
+      <h1 className="text-2xl font-bold mb-4">{t('title')}</h1>
       <p className="mb-4 text-sm text-gray-600">Secret keys are securely handled by the backend and never stored.</p>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
