@@ -57,7 +57,7 @@
     "scriptError": "Skriptfehler: {message} bei {source}:{lineno}:{colno} - {error}",
     "errorFetchingOperations": "Fehler beim Abrufen der Operationen: {error}",
     "settingsTitle": "Einstellungen",
-    "walletList": "Wallet-Liste",
+    "walletList": "Groupfund Wallet-Liste",
     "address": "Adresse",
     "description": "Beschreibung",
     "compromised": "Kompromittiert",

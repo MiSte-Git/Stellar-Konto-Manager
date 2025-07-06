@@ -1,3 +1,4 @@
+import './i18n';
 import React from 'react';
 import Main from './main';
 import LanguageSelector from './components/LanguageSelector';
@@ -33,8 +34,7 @@ function App() {
 		<div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
 		  <LanguageSelector />
 		</div>
-        <Main />
-      </div>
+      <Main />
     </ErrorBoundary>
   );
 }
