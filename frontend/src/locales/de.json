@@ -79,5 +79,14 @@
     "walletInList": "Wallet in Liste",
     "add": "Hinzufügen",
     "addToList": "Zur Liste hinzufügen",
-    "noPayments": "Keine Zahlungen gefunden."
+    "noPayments": "Keine Zahlungen gefunden.",
+    "deleteError": "Fehler beim Löschen der Trustlines:",
+    "enterIssuer": "Gib die Issuer-Adresse ein:",
+    "noIssuerTrustlinesFound": "Keine Trustlines für diesen Issuer gefunden.",
+    "confirmActionTitle": "Aktion bestätigen",
+    "confirmActionText": "Bist du sicher, dass du die aufgeführten Trustlines löschen möchtest? Dein Secret Key wird sicher an den Server gesendet und nicht gespeichert.",
+    "enterDestinationPublicKey": "Ziel-Wallet-Adresse eingeben",
+    "noDuplicatesFound": "Keine doppelten Trustlines gefunden.",
+    "invalidDestinationKey": "Ungültiger Ziel-Public-Key.",
+    "cannotConnectToBackend": "Verbindung zum Backend fehlgeschlagen. Stelle sicher, dass der Server läuft und CORS aktiviert ist."
 }
