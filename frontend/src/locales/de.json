@@ -33,7 +33,7 @@
     "noIssuer": "Keine Trustlines für Emittenten {issuer} gefunden.",
     "assetCode": "Asset-Code",
     "issuer": "Emittent",
-    "creationDate": "Erstellungsdatum",
+    "creationDate": "Erstellt am",
     "unknownDate": "Unbekannt (vor verfügbarer Historie erstellt)",
     "previous": "Vorherige",
     "next": "Nächste",
@@ -88,5 +88,13 @@
     "enterDestinationPublicKey": "Ziel-Wallet-Adresse eingeben",
     "noDuplicatesFound": "Keine doppelten Trustlines gefunden.",
     "invalidDestinationKey": "Ungültiger Ziel-Public-Key.",
-    "cannotConnectToBackend": "Verbindung zum Backend fehlgeschlagen. Stelle sicher, dass der Server läuft und CORS aktiviert ist."
+    "cannotConnectToBackend": "Verbindung zum Backend fehlgeschlagen. Stelle sicher, dass der Server läuft und CORS aktiviert ist.",
+    "resolveOrValidatePublicKey.empty": "Eingabefeld darf nicht leer sein.",
+    "resolveOrValidatePublicKey.invalid": "Ungültiger öffentlicher Schlüssel oder Federation-Adresse.",
+    "findDuplicateTrustlines.invalidKey": "Ungültiger Quell- oder Ziel-Schlüssel.",
+    "compare.noDuplicates": "Keine doppelten Trustlines gefunden.",
+    "submitTransaction.secretCleared": "Geheimer Schlüssel wurde gelöscht.",
+    "submitTransaction.failed:Invalid source secret key.": "Ungültiger geheimer Quellschlüssel.",
+    "submitTransaction.failed:Unknown error.": "Unbekannter Fehler bei der Transaktion.",
+    "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "Verbindung zum Backend fehlgeschlagen. Stelle sicher, dass der Server läuft unter"
 }

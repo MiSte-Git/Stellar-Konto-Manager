@@ -4,7 +4,15 @@ import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import reactLogo from './assets/react.svg';
 import ReactDOM from 'react-dom/client';
-import { resolveFederationAddress, loadTrustlines } from './services/stellar';
+import { 
+  resolveFederationAddress, 
+  loadTrustlines, 
+  resolveOrValidatePublicKey, 
+  findDuplicateTrustlines,
+  sortTrustlines,
+  paginateTrustlines,
+  validateSecretKey
+ } from './services/stellarUtils.js';
 import App from './App.jsx';
 import SourceInput from './components/SourceInput';
 import DestinationInput from './components/DestinationInput';
@@ -16,7 +24,6 @@ import LanguageSelector from './components/LanguageSelector';
 import DeleteAllTrustlines from './components/DeleteAllTrustlines';
 import DeleteByIssuer from './components/DeleteByIssuer';
 import ConfirmationModal from './components/ConfirmationModal';
-import { resolveFederationAddress, loadTrustlines } from './services/stellar';
 import './App.css';
 
 console.log('main.jsx loaded');
@@ -84,17 +91,12 @@ function Main() {
     try {
       console.log("sourceInput submitted:", sourceInput);
       let publicKey = sourceInput;
-      if (!sourceInput) {
-        setError("Source input is empty.");
-        setIsLoading(false);
-        return;
-      }
-
-      if (sourceInput.includes('*')) {
-        publicKey = await resolveFederationAddress(sourceInput);
-      } else if (!StellarSdk.StrKey.isValidEd25519PublicKey(sourceInput)) {
-        throw new Error('Invalid public key or federation address.');
-      }
+      publicKey = await resolveOrValidatePublicKey(sourceInput);
+    } catch (resolveError) {
+      setError(t(resolveError.message));
+      setIsLoading(false);
+      return;
+    }
       setSourcePublicKey(publicKey);
       setTrustlines(await loadTrustlines(publicKey));
       setMenuOption(null);
@@ -120,113 +122,43 @@ function Main() {
     setCurrentPage(0);
   };
 
-  // TODO: implement sorting/filtering in ResultDisplay
-  // Sort trustlines
-  const getSortedAndFilteredTrustlines = (trustlines) => {
-    return [...trustlines].sort((a, b) => {
-      const isAsc = sortDirection === 'asc' ? 1 : -1;
-      if (sortColumn === 'assetCode') {
-        return a.assetCode.localeCompare(b.assetCode) * isAsc;
-      } else if (sortColumn === 'assetIssuer') {
-        return a.assetIssuer.localeCompare(b.assetIssuer) * isAsc;
-      } else if (sortColumn === 'creationDate') {
-        const dateA = a.creationDate ? a.creationDate.getTime() : (isAsc ? Infinity : -Infinity);
-        const dateB = b.creationDate ? b.creationDate.getTime() : (isAsc ? Infinity : -Infinity);
-        return (dateA - dateB) * isAsc;
-      }
-      return 0;
-    });
-  };
-
-  // TODO: sorting/filtering in ResultDisplay
-  // Handle header click for sorting
-  const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-    setCurrentPage(0); // Reset to first page on sort
-  };
-
-  // TODO: use pagination in ResultDisplay
-  // Get paginated trustlines
-  const getPaginatedTrustlines = (trustlines) => {
-    const startIndex = currentPage * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    return trustlines.slice(startIndex, endIndex);
-  };
-
-  // TODO: Prüfen ob noch irgendwo genutzt 
-  // Handle list all trustlines
-  const handleListAllTrustlines = async () => {
-    setError('');
-    setIsLoading(true);
-    try {
-      const trustlines = await loadTrustlines(sourcePublicKey);
-      if (trustlines.length > 0) {
-        setResults(trustlines);
-      } else {
-        setResults(['No trustlines found.']);
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Handle compare trustlines
   const handleCompareTrustlines = async () => {
-    if (!destinationPublicKey || !StellarSdk.StrKey.isValidEd25519PublicKey(destinationPublicKey)) {
-      setError('Invalid destination public key.');
-      return;
-    }
-    setError('');
-    setIsLoading(true);
     try {
-      const sourceTrustlines = await loadTrustlines(sourcePublicKey);
-      const destTrustlines = await loadTrustlines(destinationPublicKey);
-      const duplicates = sourceTrustlines.filter(source =>
-        destTrustlines.some(dest =>
-          dest.assetCode === source.assetCode && dest.assetIssuer === source.assetIssuer
-        )
-      );
+      const duplicates = await findDuplicateTrustlines(sourcePublicKey, destinationPublicKey);
+
       if (duplicates.length > 0) {
         setResults(duplicates);
         setConfirmAction(() => async () => {
-          if (!sourceSecret || !StellarSdk.StrKey.isValidEd25519SecretSeed(sourceSecret)) {
-            setError('Invalid source secret key.');
+          try {
+            validateSecretKey(sourceSecret);
+          } catch (err) {
+            setError(t(err.message));
             return;
           }
+
           try {
-            console.log('Sending fetch to:', BACKEND_URL + '/delete-trustlines');
-            console.log('Request body:', { secretKey: sourceSecret, trustlines: duplicates });
             const response = await fetch(`${BACKEND_URL}/delete-trustlines`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ secretKey: sourceSecret, trustlines: duplicates })
             });
             const result = await response.json();
-            if (!response.ok) throw new Error(result.error || 'Failed to delete trustlines.');
-            setResults([...result.messages, 'Secret key has been cleared.']);
+            if (!response.ok) throw new Error(result.error || 'submitTransaction.failed:Unknown error.');
+            setResults([...result.messages, t('submitTransaction.secretCleared')]);
             setTrustlines(await loadTrustlines(sourcePublicKey));
             setSourceSecret('');
             setShowSecretKey(false);
           } catch (err) {
-            console.error('Fetch error:', err);
-            setError(err.message.includes('Failed to fetch')
-              ? `Cannot connect to backend. Ensure the server is running at ${BACKEND_URL} and CORS is enabled.`
-              : err.message);
+            const detail = err.message || 'submitTransaction.failed:Unknown error.';
+            throw new Error('submitTransaction.failed:' + detail);
           }
         });
         setShowConfirm(true);
       } else {
-        setResults(['No duplicate trustlines found.']);
+        setResults([t('compare.noDuplicates')]);
       }
     } catch (err) {
-      setError(err.message);
+      setError(t(err.message));
     } finally {
       setIsLoading(false);
     }
@@ -342,8 +274,16 @@ function Main() {
         />
       )}
       {results.length > 0 && (
-        <ResultDisplay results={results} />
+        <ResultDisplay
+          results={results}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+          onSort={handleSort}
+          currentPage={currentPage}
+          itemsPerPage={ITEMS_PER_PAGE}
+        />
       )}
+
       {showBackToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
