@@ -97,27 +97,12 @@ function Main() {
     try {
       setSourcePublicKey(publicKey);
       setTrustlines(await loadTrustlines(publicKey));
-      setMenuOption(null);
+      setMenuSelection(null);
     } catch (err) {
       setError(err.message);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  //TODO: Ist vieleicht für das Menü der Trustline Optionen nötig
-  // Handle menu option selection
-  const handleMenuOption = (option) => {
-    setMenuOption(option);
-    setError('');
-    setResults([]);
-    setDestinationPublicKey('');
-    setIssuerAddress('');
-    setSourceSecret('');
-    setShowSecretKey(false);
-    setSortColumn('assetCode');
-    setSortDirection('asc');
-    setCurrentPage(0);
   };
 
   const handleCompareTrustlines = async () => {
@@ -188,13 +173,27 @@ function Main() {
         </div>
       )}
       {error && <p className="text-red-500 mt-4">{error}</p>}
+      {menuSelection && (
+        <div className="mb-4">
+          <div className="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded shadow text-center mx-auto">
+            <span className="mr-2">📌</span>
+            <span className="font-semibold">
+              {t(menuSelection)}
+            </span>
+          </div>
+        </div>
+      )}
+
       {menuSelection === 'listAll' && (
-        <ListTrustlines
-          sourcePublicKey={sourcePublicKey}
-          backendUrl={BACKEND_URL}
-          setResults={setResults}
-          setError={setError}
-        />
+        <>
+        <p className="text-sm text-gray-400">[DEBUG] listAll selected</p>
+          <ListTrustlines
+            sourcePublicKey={sourcePublicKey}
+            backendUrl={BACKEND_URL}
+            setResults={setResults}
+            setError={setError}
+          />
+        </>
       )}
       {menuSelection === 'compare' && (
         <CompareTrustlines
