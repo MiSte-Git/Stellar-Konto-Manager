@@ -96,5 +96,7 @@
     "submitTransaction.secretCleared": "Geheimer Schlüssel wurde gelöscht.",
     "submitTransaction.failed:Invalid source secret key.": "Ungültiger geheimer Quellschlüssel.",
     "submitTransaction.failed:Unknown error.": "Unbekannter Fehler bei der Transaktion.",
-    "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "Verbindung zum Backend fehlgeschlagen. Stelle sicher, dass der Server läuft unter"
+    "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "Verbindung zum Backend fehlgeschlagen. Stelle sicher, dass der Server läuft unter",
+    "page": "Seite",
+    "filter": "Filtern..."
 }

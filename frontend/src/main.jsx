@@ -196,7 +196,7 @@ function Main() {
           alt="Trustline Manager Logo" />
       </div>
       <h1 className="text-2xl font-bold mb-4">{t('title')}</h1>
-      <p className="mb-4 text-sm text-gray-600">{t('secretKeyInfo')}</p>
+      <p className="mb-4 text-sm text-blue-600 rounded shadow">{t('secretKeyInfo')}</p>
       {!sourcePublicKey ? (
         <SourceInput
           sourceInput={sourceInput}
@@ -226,7 +226,7 @@ function Main() {
 
       {menuSelection === 'listAll' && (
         <>
-        <p className="text-sm text-gray-400">[DEBUG] listAll selected</p>
+        <p className="text-sm text-gray-400">{error}</p>
           <ListTrustlines
             trustlines={trustlines}
             itemsPerPage={ITEMS_PER_PAGE}
