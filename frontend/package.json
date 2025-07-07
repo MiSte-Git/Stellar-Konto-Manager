@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite dev",
+    "dev:old": "concurrently -k -n BACKEND,FRONTEND -c green,cyan \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
     "build": "vite build",
+    "open": "xdg-open http://localhost:5173",
     "lint": "eslint .",
     "preview": "vite preview"
   },

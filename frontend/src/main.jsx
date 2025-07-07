@@ -3,6 +3,7 @@ import './i18n'; // Initialisiert die Sprachunterstützung
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
+import { BACKEND_URL } from './config';
 import { 
   resolveFederationAddress, 
   loadTrustlines, 
@@ -38,7 +39,8 @@ console.log('main.jsx Nach ReactDOM');
 function Main() {
 	console.log('main.jsx In function Main');
   const { t } = useTranslation();
-  const BACKEND_URL = 'http://localhost:3000'; // Update for production
+  const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
+  console.log('[DEBUG] Aktive Horizon URL:', HORIZON_URL);
   const ITEMS_PER_PAGE = 333;
   const [menuSelection, setMenuSelection] = useState(null);
   const [sourceInput, setSourceInput] = useState('');
@@ -156,7 +158,7 @@ function Main() {
           alt="Trustline Manager Logo" />
       </div>
       <h1 className="text-2xl font-bold mb-4">{t('title')}</h1>
-      <p className="mb-4 text-sm text-gray-600">{t('secretKeyInfo')}}</p>
+      <p className="mb-4 text-sm text-gray-600">{t('secretKeyInfo')}</p>
       {!sourcePublicKey ? (
         <SourceInput
           sourceInput={sourceInput}
