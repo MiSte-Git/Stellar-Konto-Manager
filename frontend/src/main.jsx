@@ -41,8 +41,14 @@ function Main() {
   const { t } = useTranslation();
   const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
   console.log('[DEBUG] Aktive Horizon URL:', HORIZON_URL);
-  const ITEMS_PER_PAGE = 333;
-  const [menuSelection, setMenuSelection] = useState(null);
+  // Innerhalb der Main-Funktion (nach useState-Aufrufen):
+  const [trustlines, setTrustlines] = useState([]);
+  const [selectedTrustlines, setSelectedTrustlines] = useState([]);
+  const [filters, setFilters] = useState({ assetCode: '', assetIssuer: '', createdAt: '' });
+  const [sortColumn, setSortColumn] = useState('assetCode');
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [currentPage, setCurrentPage] = useState(0);
+  const ITEMS_PER_PAGE = 333;const [menuSelection, setMenuSelection] = useState(null);
   const [sourceInput, setSourceInput] = useState('');
   const [sourcePublicKey, setSourcePublicKey] = useState('');
   const [sourceSecret, setSourceSecret] = useState('');
@@ -50,16 +56,12 @@ function Main() {
   const [issuerAddress, setIssuerAddress] = useState('');
   // Trustlines und Secret Keys werden nur für Backend-Operationen aktualisiert, aber nicht gerendert
   // Deshalb setzen wir nur setTrustlines, lesen aber trustlines nicht aus → ignorierbare Warnung
-  const [trustlines, setTrustlines] = useState([]);
   const [showSecretKey, setShowSecretKey] = useState(false);
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
-  const [sortColumn, setSortColumn] = useState('assetCode');
-  const [sortDirection, setSortDirection] = useState('asc');
-  const [currentPage, setCurrentPage] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   // Global error handler
@@ -148,6 +150,42 @@ function Main() {
       setIsLoading(false);
     }
   };
+  // Neue Sortierfunktion
+  const handleSort = (column) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
+  // Filter-Update
+  const handleFilterChange = (key, value) => {
+    setFilters({ ...filters, [key]: value });
+    setCurrentPage(0); // Bei Filterwechsel auf Seite 1 zurück
+  };
+
+  // Checkbox-Auswahl pro Trustline
+  const handleToggleTrustline = (tl) => {
+    const exists = selectedTrustlines.includes(tl);
+    if (exists) {
+      setSelectedTrustlines(selectedTrustlines.filter(item => item !== tl));
+    } else {
+      setSelectedTrustlines([...selectedTrustlines, tl]);
+    }
+  };
+
+  // Alle auf aktueller Seite toggeln
+  const handleToggleAll = (paginatedList) => {
+    const allSelected = paginatedList.every(tl => selectedTrustlines.includes(tl));
+    if (allSelected) {
+      setSelectedTrustlines(selectedTrustlines.filter(tl => !paginatedList.includes(tl)));
+    } else {
+      const newSelection = [...selectedTrustlines, ...paginatedList.filter(tl => !selectedTrustlines.includes(tl))];
+      setSelectedTrustlines(newSelection);
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-4 text-center mt-4">
@@ -190,11 +228,23 @@ function Main() {
         <>
         <p className="text-sm text-gray-400">[DEBUG] listAll selected</p>
           <ListTrustlines
+            trustlines={trustlines}
+            itemsPerPage={ITEMS_PER_PAGE}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            sortColumn={sortColumn}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            selectedTrustlines={selectedTrustlines}
+            onToggleTrustline={handleToggleTrustline}
+            onToggleAll={handleToggleAll}
             sourcePublicKey={sourcePublicKey}
             backendUrl={BACKEND_URL}
             setResults={setResults}
             setError={setError}
-          />
+         />
         </>
       )}
       {menuSelection === 'compare' && (
