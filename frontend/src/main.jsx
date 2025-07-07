@@ -1,8 +1,7 @@
-import viteLogo from '/vite.svg';
+import trustlineLogo from './assets/Trustline-Logo.jpg';
 import './i18n'; // Initialisiert die Sprachunterstützung
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
-import reactLogo from './assets/react.svg';
 import ReactDOM from 'react-dom/client';
 import { 
   resolveFederationAddress, 
@@ -24,7 +23,7 @@ import LanguageSelector from './components/LanguageSelector';
 import DeleteAllTrustlines from './components/DeleteAllTrustlines';
 import DeleteByIssuer from './components/DeleteByIssuer';
 import ConfirmationModal from './components/ConfirmationModal';
-import './App.css';
+import './index.css'; // Enthält @tailwind + dein echtes Styling
 
 console.log('main.jsx loaded');
 
@@ -39,21 +38,18 @@ console.log('main.jsx Nach ReactDOM');
 function Main() {
 	console.log('main.jsx In function Main');
   const { t } = useTranslation();
-  const [count, setCount] = useState(0);
-  const server = new Horizon.Server('https://horizon.stellar.org');
   const BACKEND_URL = 'http://localhost:3000'; // Update for production
   const ITEMS_PER_PAGE = 333;
-  const [destination, setDestination] = useState('');
   const [menuSelection, setMenuSelection] = useState(null);
-  
   const [sourceInput, setSourceInput] = useState('');
   const [sourcePublicKey, setSourcePublicKey] = useState('');
   const [sourceSecret, setSourceSecret] = useState('');
-  const [showSecretKey, setShowSecretKey] = useState(false);
   const [destinationPublicKey, setDestinationPublicKey] = useState('');
   const [issuerAddress, setIssuerAddress] = useState('');
-  const [menuOption, setMenuOption] = useState(null);
+  // Trustlines und Secret Keys werden nur für Backend-Operationen aktualisiert, aber nicht gerendert
+  // Deshalb setzen wir nur setTrustlines, lesen aber trustlines nicht aus → ignorierbare Warnung
   const [trustlines, setTrustlines] = useState([]);
+  const [showSecretKey, setShowSecretKey] = useState(false);
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -88,15 +84,17 @@ function Main() {
   const handleSourceSubmit = async () => {
     setError('');
     setIsLoading(true);
+    let publicKey;
     try {
       console.log("sourceInput submitted:", sourceInput);
-      let publicKey = sourceInput;
+      publicKey = sourceInput;
       publicKey = await resolveOrValidatePublicKey(sourceInput);
     } catch (resolveError) {
       setError(t(resolveError.message));
       setIsLoading(false);
       return;
     }
+    try {
       setSourcePublicKey(publicKey);
       setTrustlines(await loadTrustlines(publicKey));
       setMenuOption(null);
@@ -165,29 +163,15 @@ function Main() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        	<a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="max-w-4xl mx-auto p-4 text-center mt-4">
+      <div className="flex flex-col items-center gap-2 mb-6">
+        <img 
+          src={trustlineLogo} 
+          className="h-6 w-auto max-w-none rounded shadow" 
+          alt="Trustline Manager Logo" />
       </div>
-      <LanguageSelector /> {/* Sprachwahl Dropdown oben anzeigen */}
       <h1 className="text-2xl font-bold mb-4">{t('title')}</h1>
-      <p className="mb-4 text-sm text-gray-600">Secret keys are securely handled by the backend and never stored.</p>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <p className="mb-4 text-sm text-gray-600">{t('secretKeyInfo')}}</p>
       {!sourcePublicKey ? (
         <SourceInput
           sourceInput={sourceInput}
@@ -245,13 +229,6 @@ function Main() {
           setConfirmAction={setConfirmAction}
           loadTrustlines={loadTrustlines}
           setIsLoading={setIsLoading}
-        />
-      )}
-      {menuSelection === 'deleteByIssuer' && (
-        <DeleteByIssuer
-          issuerAddress={issuerAddress}
-          setIssuerAddress={setIssuerAddress}
-          isLoading={isLoading}
         />
       )}
       {menuSelection === 'deleteByIssuer' && (

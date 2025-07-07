@@ -2,7 +2,6 @@ import './i18n';
 import React from 'react';
 import Main from './main';
 import LanguageSelector from './components/LanguageSelector';
-import './App.css';
 
 console.log('App.jsx loaded');
 
@@ -31,9 +30,13 @@ class ErrorBoundary extends React.Component {
 function App() {
   return (
     <ErrorBoundary>
-		<div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
-		  <LanguageSelector />
-		</div>
+		  {/* Sprachleiste: garantiert zentriert, unabhängig vom äußeren Layout */}
+      <div className="max-w-4xl mx-auto p-4 mt-4 mb-4 text-center shadow-md bg-white dark:bg-gray-800 dark:shadow-gray-900/50 rounded">
+        <div className="flex justify-center">
+          <LanguageSelector />
+        </div>
+      </div>
+
       <Main />
     </ErrorBoundary>
   );
