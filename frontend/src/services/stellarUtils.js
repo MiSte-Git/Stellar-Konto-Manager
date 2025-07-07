@@ -1,8 +1,8 @@
 import { Horizon, StrKey, FederationServer } from '@stellar/stellar-sdk';
 
 // Horizon-Serverinstanz (kann ggf. parametrisiert werden)
-const HORIZON_URL = 'https://horizon.stellar.org';
-const server = new Horizon.Server(HORIZON_URL);
+const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
+const horizonServer = new Horizon.Server(HORIZON_URL);
 
 /*
 * Optional für spätere Flexibilität: Falls du später auch das Testnet oder andere Horizon-URLs nutzen willst
@@ -34,11 +34,11 @@ export async function loadTrustlines(publicKey) {
   }
 
   try {
-    const account = await server.loadAccount(publicKey);
+    const account = await horizonServer.loadAccount(publicKey);
     const balances = account.balances.filter(b => b.asset_type !== 'native');
 
     // Zusätzliche Informationen: created_at aus den Change Trust-Operationen
-    const operations = await server
+    const operations = await horizonServer
       .operations()
       .forAccount(publicKey)
       .order('desc')
