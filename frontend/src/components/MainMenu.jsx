@@ -5,7 +5,7 @@ function MainMenu({ onSelect }) {
   const { t } = useTranslation();
 
   const buttons = [
-    { label: t('listTrustlines'), value: 'list' },
+    { label: t('listTrustlines'), value: 'listAll' },
     { label: t('compareTrustlines'), value: 'compare' },
     { label: t('deleteByIssuer'), value: 'deleteByIssuer' },
     { label: t('deleteAll'), value: 'deleteAll' },
