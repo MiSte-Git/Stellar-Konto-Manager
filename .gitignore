@@ -1,11 +1,16 @@
-# Verzeichnisse, die wir ignorieren
-backend/
-history/
-ChatGPT - Stellar Trustline Manager_files/
-*.html
-*.jpeg
-*.webp
-*.png
-Unbenanntes*
-dist/
+# Ignoriere sensible Umgebungsdateien
+.env
+backend/.env
+
+# Node.js Abhängigkeiten
 node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Build-Output
+dist/
+frontend/dist/
+
+# System-Dateien
+*.log
+.DS_Store
