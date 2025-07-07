@@ -16,7 +16,10 @@ function ResultDisplay({
   if (typeof results[0] === 'string') {
     return (
       <div className="mt-4">
-        <h2 className="text-xl font-bold">{t('results')}</h2>
+        {/* Titelzeile mit Anzahl der Trustlines */}
+        <h2 className="text-xl font-bold">
+          {t('results')} ({results.length})
+        </h2>
         <ul className="list-disc pl-5">
           {results.map((result, index) => (
             <li key={index}>{result}</li>
