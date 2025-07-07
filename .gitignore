@@ -14,3 +14,6 @@ frontend/dist/
 # System-Dateien
 *.log
 .DS_Store
+
+history
+ChatGPT*
