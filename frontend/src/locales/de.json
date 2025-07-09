@@ -1,14 +1,14 @@
 {
     "title": "Stellar Trustline Manager",
-    "secretKeyInfo": "Geheime Schlüssel werden sicher vom Backend verarbeitet und nicht gespeichert.",
-    "sourceLabel": "Geben Sie die Quell-Föderationsadresse oder den öffentlichen Schlüssel ein:",
+    "secretKeyInfo": "Der Secret Key wird nur temporär an ein Backend zur Ausführung der gewählten Aktion übertragen. Der Schlüssel wird nicht gespeichert, nicht geloggt und nicht analysiert.",
+    "sourceLabel": "Gib bitte die Quell-Föderationsadresse oder den öffentlichen Schlüssel ein:",
     "sourcePlaceholder": "z.B., user*example.com oder GD4TPVR...",
     "submitButton": "Absenden",
     "loading": "Laden...",
     "sourceWallet": "Quell-Wallet:",
     "listAll": "Alle Trustlines auflisten",
     "compare": "Trustlines vergleichen",
-    "deleteAll": "Alle Trustlines löschen",
+    "deleteAll": "Trustline(s) löschen",
     "deleteByIssuer": "Trustlines nach Emittenten löschen",
     "settings": "Einstellungen",
     "tokenPurchases": "Anzahl gekaufter Token",
@@ -25,7 +25,7 @@
     "secretKeyPlaceholder": "z.B., SB...",
     "show": "Anzeigen",
     "hide": "Verbergen",
-    "deleteAllButton": "Alle Trustlines löschen",
+    "deleteAllButton": "Trustline(s) löschen",
     "deleteByIssuerButton": "Trustlines nach Emittenten löschen",
     "results": "Ergebnisse:",
     "noTrustlines": "Keine Trustlines gefunden.",
@@ -98,5 +98,10 @@
     "submitTransaction.failed:Unknown error.": "Unbekannter Fehler bei der Transaktion.",
     "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "Verbindung zum Backend fehlgeschlagen. Stelle sicher, dass der Server läuft unter",
     "page": "Seite",
-    "filter": "Filtern..."
+    "filter": "Filtern...",
+    "removeFromList": "Aus Liste entfernen",
+    "removeFromListTooltip": "Entfernt diese Trustline aus der Auswahl. Sie wird nicht gelöscht.",
+    "reviewSelectionTitle": "Selektierte Trustlines prüfen",
+    "confirmDeletion": "Trustlines wirklich löschen",
+    "secretKeyValid": "✅ Secret Key ist gültig."
 }

@@ -83,6 +83,10 @@ function Main() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+  
+  useEffect(() => {
+    console.debug('[DEBUG] useEffect check: menuSelection is', menuSelection);
+  }, [menuSelection]);
 
   // Handle source address input (federation or public key)
   const handleSourceSubmit = async () => {
@@ -238,12 +242,12 @@ function Main() {
             filters={filters}
             onFilterChange={handleFilterChange}
             selectedTrustlines={selectedTrustlines}
+            setSelectedTrustlines={setSelectedTrustlines} 
             onToggleTrustline={handleToggleTrustline}
             onToggleAll={handleToggleAll}
-            sourcePublicKey={sourcePublicKey}
-            backendUrl={BACKEND_URL}
             setResults={setResults}
             setError={setError}
+            setMenuSelection={setMenuSelection}
          />
         </>
       )}
