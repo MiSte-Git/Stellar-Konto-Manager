@@ -1,102 +1,136 @@
 {
-  "title": "Stellar Trustline Manager",
-  "secretKeyInfo": "Geheime sleutels worden veilig verwerkt door de backend en niet opgeslagen.",
-  "sourceLabel": "Voer het bron federatieadres of de openbare sleutel in:",
-  "sourcePlaceholder": "Bijvoorbeeld, user*example.com of GD4TPVR...",
-  "submitButton": "Verzenden",
-  "loading": "Laden...",
-  "sourceWallet": "Bronportemonnee:",
-  "listAll": "Alle Trustlines weergeven",
-  "compare": "Trustlines vergelijken",
-  "deleteAll": "Alle Trustlines verwijderen",
-  "deleteByIssuer": "Vertrouwenslijnen naar uitgevers verwijderen",
-  "settings": "Instellingen",
-  "tokenPurchases": "Aantal gekochte tokens",
-  "backToMenu": "Terug naar het menu",
-  "listTrustlines": "Trustlines weergeven",
-  "showAllTrustlines": "Toon alle Trustlines",
-  "destLabel": "Voer de doel-publieke sleutel in:",
-  "destPlaceholder": "Bijvoorbeeld, GBZVTOY...",
-  "compareTrustlines": "Trustlines vergelijken",
-  "issuerLabel": "Voer het adres van de uitgever in:",
-  "issuerPlaceholder": "bijv., GA5ZSEJ...",
-  "issuerSearchNoMatch": "Geen uitgevende adressen gevonden die overeenkomen met '{search}'.",
-  "secretKeyLabel": "Voer de bron-geheime sleutel in (wordt veilig naar de backend verzonden, niet opgeslagen):",
-  "secretKeyPlaceholder": "Bijvoorbeeld, SB...",
-  "show": "Advertenties",
-  "hide": "Verbergen",
-  "deleteAllButton": "Alle Trustlines verwijderen",
-  "deleteByIssuerButton": "Vertrouwenslijnen naar uitgevers verwijderen",
-  "results": "Resultaten:",
-  "noTrustlines": "Geen Trustlines gevonden.",
-  "noDuplicates": "Geen dubbele vertrouwenslijnen gevonden.",
-  "noIssuer": "Geen trustlijnen gevonden voor uitgever {issuer}.",
-  "assetCode": "Activa-code",
-  "issuer": "Uitgever",
-  "creationDate": "Aanmaakdatum",
-  "unknownDate": "Onbekend (gemaakt voor beschikbare geschiedenis)",
-  "previous": "Vorige",
-  "next": "Volgende",
-  "backToTop": "Terug naar boven",
-  "confirmTitle": "Actie bevestigen",
-  "confirmMessage": "Weet u zeker dat u de vermelde Trustlines wilt verwijderen? Uw geheime sleutel wordt veilig naar een backend verzonden en niet opgeslagen.",
-  "yes": "Ja",
-  "cancel": "Annuleren",
-  "currentMenu": "Huidig menu:",
-  "secretKeyEmpty": "Veld voor geheime sleutel is leeg.",
-  "secretKeyInvalid": "Ongeldige geheime sleutel.",
-  "secretKeyMismatch": "Geheime sleutel komt niet overeen met het openbare adres.",
-  "secretKeyCleared": "Geheime sleutel is verwijderd.",
-  "invalidPublicKey": "Ongeldige openbare sleutel of federatieadres.",
-  "invalidIssuer": "Ongeldig uitgeversadres.",
-  "failedFederation": "Fout bij het oplossen van het federatieadres: {error}",
-  "noBalances": "Geen tegoed gevonden voor de rekening.",
-  "failedLoadAccount": "Fout bij het laden van het account {publicKey}: {error}",
-  "backendConnectError": "Geen verbinding mogelijk met de backend. Zorg ervoor dat de server draait op {url} en dat CORS is ingeschakeld.",
-  "failedDeleteTrustlines": "Fout bij het verwijderen van de Trustlines: {error}",
-  "scriptError": "Scriptfout: {message} bij {source}:{lineno}:{colno} - {error}",
-  "errorFetchingOperations": "Fout bij het ophalen van de operaties: {error}",
-  "settingsTitle": "Instellingen",
-  "walletList": "Portemonnee-lijst",
+  "assets": {
+    "compromisedPurchases": "{total} totale betalingen",
+    "totalPurchases": "Totaal aantal aankopen: {count}"
+  },
+  "secretKey": {
+    "valid": "✅ Geheime sleutel is geldig.",
+    "info": "De geheime sleutel wordt alleen tijdelijk naar een backend verzonden om de gekozen actie uit te voeren. De sleutel wordt niet opgeslagen.",
+    "label": "Voer de bron-geheime sleutel in (wordt veilig naar de backend verzonden",
+    "mismatch": "Geheime sleutel komt niet overeen met het openbare adres.",
+    "cleared": "Geheime sleutel is verwijderd.",
+    "empty": "Geheime sleutelveld is leeg.",
+    "invalid": "Ongeldige geheime sleutel.",
+    "placeholder": "bijv."
+  },
+  "option": {
+    "cancel": "Annuleren",
+    "confirm": {
+      "action": {
+        "title": "Actie bevestigen",
+        "text": "Weet je het zeker"
+      }
+    },
+    "show": "Advertenties",
+    "description": "Beschrijving",
+    "results": "Resultaten:",
+    "filter": "Filteren...",
+    "add": "Toevoegen",
+    "yes": "Ja",
+    "loading": "Laden...",
+    "delete": "Verwijderen",
+    "memo": "Memo",
+    "no": "Nee",
+    "newAddress": "Nieuw adres",
+    "page": "Pagina",
+    "save": "Opslaan",
+    "hide": "Verbergen",
+    "addToList": "Toevoegen aan lijst"
+  },
+  "publicKey": {
+    "submit": {
+      "button": "Verzenden"
+    },
+    "recipient": "Ontvangstadres",
+    "label": "Voer alstublieft het bronfederatieadres of de openbare sleutel in:",
+    "invalid": "Ongeldige openbare sleutel of federatie-adres.",
+    "destination": {
+      "error": "Ongeldige doelsleutel.",
+      "input": "Voer het doelwalletadres in"
+    },
+    "placeholder": "bijv.",
+    "source": "Bron Wallet Adres"
+  },
   "address": "Adres",
-  "description": "Omschrijving",
-  "compromised": "Gecompromitteerd",
-  "yesOption": "Ja",
-  "noOption": "Nee",
-  "addWallet": "Portemonnee toevoegen",
-  "newAddress": "Nieuw adres",
-  "save": "Opslaan",
-  "delete": "Verwijderen",
-  "exportSettings": "Exporteer instellingen",
-  "importSettings": "Instellingen importeren",
-  "tokenPurchasesTitle": "Aantal gekochte tokens",
-  "totalPurchases": "Totaal aantal aankopen: {count}",
-  "compromisedPurchases": "{total} totale betalingen, waarvan {compromised} gecompromitteerd",
-  "memo": "Memo",
-  "amount": "Bedrag (XLM)",
-  "recipient": "Ontvangstadres",
-  "dateTimes": "Datum en tijden",
-  "walletInList": "Portemonnee in lijst",
-  "add": "Toevoegen",
-  "addToList": "Toevoegen aan lijst",
-  "noPayments": "Geen betalingen gevonden.",
-  "deleteError": "Fout bij het verwijderen van de Trustlines:",
-  "enterIssuer": "Voer het adres van de uitgever in:",
-  "noIssuerTrustlinesFound": "Geen Trustlines gevonden voor deze uitgever.",
-  "confirmActionTitle": "Actie bevestigen",
-  "confirmActionText": "Weet je zeker dat je de vermelde Trustlines wilt verwijderen? Je geheime sleutel wordt veilig naar de server verzonden en niet opgeslagen.",
-  "enterDestinationPublicKey": "Voer het doelwalletadres in",
-  "noDuplicatesFound": "Geen dubbele vertrouwenslijnen gevonden.",
-  "invalidDestinationKey": "Ongeldige doel-publieke sleutel.",
-  "cannotConnectToBackend": "Verbinding met de backend mislukt. Zorg ervoor dat de server draait en CORS is ingeschakeld.",
-  "resolveOrValidatePublicKey.empty": "Invoerveld mag niet leeg zijn.",
-  "resolveOrValidatePublicKey.invalid": "Ongeldige openbare sleutel of federatie-adres.",
-  "findDuplicateTrustlines.invalidKey": "Ongeldige bron- of doelsleutel.",
-  "compare.noDuplicates": "Geen dubbele vertrouwenslijnen gevonden.",
-  "submitTransaction.secretCleared": "Geheime sleutel is verwijderd.",
-  "submitTransaction.failed:Invalid source secret key.": "Ongeldige geheime broncode.",
-  "submitTransaction.failed:Unknown error.": "Onbekende fout bij de transactie.",
-  "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "Verbinding met de backend mislukt. Zorg ervoor dat de server draait onder",
-  "page": "Pagina",
-  "filter": "Filteren..."
+  "navigation": {
+    "current": {
+      "menu": "Huidig menu:"
+    },
+    "next": "Volgende",
+    "previous": "Vorige",
+    "backToTop": "Terug naar boven",
+    "backToMainMenu": "Terug naar het menu"
+  },
+  "trustline": {
+    "all": "Toon alle Trustlines",
+    "removeFromList": "Uit lijst verwijderen",
+    "inputEmpty": "Invoerveld mag niet leeg zijn.",
+    "delete": "Trustline(s) verwijderen",
+    "destination": {
+      "label": "Voer de doel-openbare sleutel in:",
+      "placeholder": "bijv."
+    },
+    "noDuplicates": "Geen dubbele trustlijnen gevonden.",
+    "issuer": {
+      "notFound": "Geen trustlines gevonden voor uitgever {issuer}."
+    },
+    "notFound": "Geen Trustlines gevonden.",
+    "reviewSelection": {
+      "title": "Geselecteerde trustlijnen controleren"
+    },
+    "list": "Trustlines weergeven",
+    "compare": "Trustlines vergelijken",
+    "confirmDeletion": "Trustlines echt verwijderen"
+  },
+  "token": {
+    "purchases": "Aantal gekochte tokens"
+  },
+  "asset": {
+    "code": "Activa-Code",
+    "amount": "Bedrag (XLM)",
+    "issuer": "Uitgever",
+    "creationDate": "Gemaakt op"
+  },
+  "date": {
+    "times": "Datum en tijden"
+  },
+  "settings": {
+    "label": "Instellingen",
+    "export": "Instellingen exporteren",
+    "import": "Instellingen importeren"
+  },
+  "error": {
+    "fetchingOperations": "Fout bij het ophalen van de operaties: {error}",
+    "connection": {
+      "backend": "Geen verbinding mogelijk met de backend. Zorg ervoor"
+    },
+    "script": "Scriptfout: {message} bij {source}:{lineno}:{colno} - {error}",
+    "transaktion": {
+      "unknown": "Onbekende fout bij de transactie."
+    }
+  },
+  "puplicKey": {
+    "failed": "Fout bij het oplossen van de federatieadres/openbare sleutel: {error}"
+  },
+  "account": {
+    "loadFailed": "Fout bij het laden van het account {publicKey}: {error}",
+    "noBalances": "Geen tegoed gevonden voor de rekening."
+  },
+  "issuer": {
+    "label": "Voer het adres van de uitgever in:",
+    "enter": "Voer het adres van de uitgever in:",
+    "notfound": "Geen uitgeversadressen gevonden",
+    "compromised": "Gecompromitteerd",
+    "invalid": "Ongeldig uitgeversadres.",
+    "placeholder": "bijv."
+  },
+  "wallet": {
+    "list": "Groepsfonds Portemonnee-lijst",
+    "noPayments": "Geen betalingen gevonden.",
+    "add": "Portemonnee toevoegen",
+    "inList": "Portemonnee in lijst"
+  },
+  "main": {
+    "title": "Stellar Trustline Beheerder"
+  }
 }

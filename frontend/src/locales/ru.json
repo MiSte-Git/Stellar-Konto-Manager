@@ -1,102 +1,136 @@
 {
-  "title": "Менеджер доверительных линий Stellar",
-  "secretKeyInfo": "Секретные ключи обрабатываются безопасно на сервере и не сохраняются.",
-  "sourceLabel": "Введите адрес исходной федерации или открытый ключ:",
-  "sourcePlaceholder": "например, user*example.com или GD4TPVR...",
-  "submitButton": "Отправить",
-  "loading": "Загрузка...",
-  "sourceWallet": "Кошелек-источник:",
-  "listAll": "Список всех Trustlines",
-  "compare": "Сравнить доверительные линии",
-  "deleteAll": "Удалить все доверительные линии",
-  "deleteByIssuer": "Удалить доверительные линии по эмитентам",
-  "settings": "Настройки",
-  "tokenPurchases": "Количество купленных токенов",
-  "backToMenu": "Вернуться в меню",
-  "listTrustlines": "Список Trustlines",
-  "showAllTrustlines": "Показать все Trustlines",
-  "destLabel": "Введите целевой открытый ключ:",
-  "destPlaceholder": "например, GBZVTOY...",
-  "compareTrustlines": "Сравнить доверительные линии",
-  "issuerLabel": "Введите адрес эмитента:",
-  "issuerPlaceholder": "например, GA5ZSEJ...",
-  "issuerSearchNoMatch": "Не найдено адресов эмитентов, соответствующих '{search}'.",
-  "secretKeyLabel": "Введите исходный секретный ключ (безопасно отправляется на сервер, не сохраняется):",
-  "secretKeyPlaceholder": "например, SB...",
-  "show": "Показать",
-  "hide": "Скрыть",
-  "deleteAllButton": "Удалить все доверительные линии",
-  "deleteByIssuerButton": "Удалить доверительные линии по эмитентам",
-  "results": "Результаты:",
-  "noTrustlines": "Не найдено доверительных линий.",
-  "noDuplicates": "Не найдено дублирующихся линий доверия.",
-  "noIssuer": "Не найдено доверительных линий для эмитента {issuer}.",
-  "assetCode": "Код актива",
-  "issuer": "Эмитент",
-  "creationDate": "Дата создания",
-  "unknownDate": "Неизвестно (создано до доступной истории)",
-  "previous": "Предыдущий",
-  "next": "Следующий",
-  "backToTop": "Назад вверх",
-  "confirmTitle": "Подтвердить действие",
-  "confirmMessage": "Вы уверены, что хотите удалить указанные линии доверия? Ваш секретный ключ будет безопасно отправлен на сервер и не будет сохранен.",
-  "yes": "Да",
-  "cancel": "Отмена",
-  "currentMenu": "Текущее меню:",
-  "secretKeyEmpty": "Поле секретного ключа пустое.",
-  "secretKeyInvalid": "Недействительный секретный ключ.",
-  "secretKeyMismatch": "Секретный ключ не соответствует публичному адресу.",
-  "secretKeyCleared": "Секретный ключ был удален.",
-  "invalidPublicKey": "Недействительный открытый ключ или адрес федерации.",
-  "invalidIssuer": "Недействительный адрес эмитента.",
-  "failedFederation": "Ошибка при разрешении адреса федерации: {error}",
-  "noBalances": "Не найдено кредитов на счету.",
-  "failedLoadAccount": "Ошибка при загрузке аккаунта {publicKey}: {error}",
-  "backendConnectError": "Невозможно подключиться к бэкенду. Убедитесь, что сервер работает по адресу {url} и CORS включен.",
-  "failedDeleteTrustlines": "Ошибка при удалении доверительных линий: {error}",
-  "scriptError": "Ошибка скрипта: {message} в {source}:{lineno}:{colno} - {error}",
-  "errorFetchingOperations": "Ошибка при получении операций: {error}",
-  "settingsTitle": "Настройки",
-  "walletList": "Список кошельков",
+  "assets": {
+    "compromisedPurchases": "{total} общее количество платежей",
+    "totalPurchases": "Общее количество покупок: {count}"
+  },
+  "secretKey": {
+    "valid": "✅ Секретный ключ действителен.",
+    "info": "Секретный ключ временно передается на бэкенд для выполнения выбранного действия. Ключ не сохраняется.",
+    "label": "Введите исходный секретный ключ (безопасно отправляется на сервер)",
+    "mismatch": "Секретный ключ не соответствует публичному адресу.",
+    "cleared": "Секретный ключ был удален.",
+    "empty": "Поле секретного ключа пустое.",
+    "invalid": "Недействительный секретный ключ.",
+    "placeholder": "например"
+  },
+  "option": {
+    "cancel": "Отмена",
+    "confirm": {
+      "action": {
+        "title": "Подтвердить действие",
+        "text": "Ты уверен"
+      }
+    },
+    "show": "Показать",
+    "description": "Описание",
+    "results": "Результаты:",
+    "filter": "Фильтровать...",
+    "add": "Добавить",
+    "yes": "Да",
+    "loading": "Загрузка...",
+    "delete": "Удалить",
+    "memo": "Мемо",
+    "no": "Нет",
+    "newAddress": "Новый адрес",
+    "page": "Страница",
+    "save": "Сохранить",
+    "hide": "Скрыть",
+    "addToList": "Добавить в список"
+  },
+  "publicKey": {
+    "submit": {
+      "button": "Отправить"
+    },
+    "recipient": "Адрес получателя",
+    "label": "Пожалуйста, введите адрес исходной федерации или открытый ключ:",
+    "invalid": "Недействительный открытый ключ или адрес федерации.",
+    "destination": {
+      "error": "Недопустимый ключ назначения.",
+      "input": "Введите адрес целевого кошелька"
+    },
+    "placeholder": "например",
+    "source": "Адрес исходного кошелька"
+  },
   "address": "Адрес",
-  "description": "Описание",
-  "compromised": "Компрометирован",
-  "yesOption": "Да",
-  "noOption": "Нет",
-  "addWallet": "Добавить кошелек",
-  "newAddress": "Новый адрес",
-  "save": "Сохранить",
-  "delete": "Удалить",
-  "exportSettings": "Экспорт настроек",
-  "importSettings": "Импорт настроек",
-  "tokenPurchasesTitle": "Количество купленных токенов",
-  "totalPurchases": "Общее количество покупок: {count}",
-  "compromisedPurchases": "{total} платежей в общем, из них {compromised} скомпрометированы",
-  "memo": "Мемо",
-  "amount": "Сумма (XLM)",
-  "recipient": "Адрес получателя",
-  "dateTimes": "Дата и время",
-  "walletInList": "Кошелек в списке",
-  "add": "Добавить",
-  "addToList": "Добавить в список",
-  "noPayments": "Платежи не найдены.",
-  "deleteError": "Ошибка при удалении доверительных линий:",
-  "enterIssuer": "Введите адрес эмитента:",
-  "noIssuerTrustlinesFound": "Не найдено линий доверия для этого эмитента.",
-  "confirmActionTitle": "Подтвердить действие",
-  "confirmActionText": "Вы уверены, что хотите удалить указанные линии доверия? Ваш секретный ключ будет безопасно отправлен на сервер и не будет сохранен.",
-  "enterDestinationPublicKey": "Введите адрес целевого кошелька",
-  "noDuplicatesFound": "Не найдено дублирующих линий доверия.",
-  "invalidDestinationKey": "Недействительный публичный ключ назначения.",
-  "cannotConnectToBackend": "Не удалось подключиться к бэкенду. Убедитесь, что сервер работает и CORS включен.",
-  "resolveOrValidatePublicKey.empty": "Поле ввода не должно быть пустым.",
-  "resolveOrValidatePublicKey.invalid": "Недействительный открытый ключ или адрес федерации.",
-  "findDuplicateTrustlines.invalidKey": "Недействительный исходный или целевой ключ.",
-  "compare.noDuplicates": "Не найдено дублирующихся линий доверия.",
-  "submitTransaction.secretCleared": "Секретный ключ был удален.",
-  "submitTransaction.failed:Invalid source secret key.": "Недействительный секретный ключ источника.",
-  "submitTransaction.failed:Unknown error.": "Неизвестная ошибка при выполнении транзакции.",
-  "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "Не удалось подключиться к бэкенду. Убедитесь, что сервер работает по адресу",
-  "page": "Страница",
-  "filter": "Фильтровать..."
+  "navigation": {
+    "current": {
+      "menu": "Текущее меню:"
+    },
+    "next": "Следующий",
+    "previous": "Предыдущий",
+    "backToTop": "Назад вверх",
+    "backToMainMenu": "Вернуться в меню"
+  },
+  "trustline": {
+    "all": "Показать все Trustlines",
+    "removeFromList": "Удалить из списка",
+    "inputEmpty": "Поле ввода не должно быть пустым.",
+    "delete": "Удалить линию(ии) доверия",
+    "destination": {
+      "label": "Введите целевой открытый ключ:",
+      "placeholder": "например"
+    },
+    "noDuplicates": "Не найдено дублирующихся линий доверия.",
+    "issuer": {
+      "notFound": "Не найдено доверительных линий для эмитента {issuer}."
+    },
+    "notFound": "Не найдено доверительных линий.",
+    "reviewSelection": {
+      "title": "Проверить выбранные линии доверия"
+    },
+    "list": "Список Trustlines",
+    "compare": "Сравнить Trustlines",
+    "confirmDeletion": "Действительно удалить Trustlines"
+  },
+  "token": {
+    "purchases": "Количество купленных токенов"
+  },
+  "asset": {
+    "code": "Код активов",
+    "amount": "Сумма (XLM)",
+    "issuer": "Эмитент",
+    "creationDate": "Создано"
+  },
+  "date": {
+    "times": "Дата и время"
+  },
+  "settings": {
+    "label": "Настройки",
+    "export": "Экспорт настроек",
+    "import": "Импорт настроек"
+  },
+  "error": {
+    "fetchingOperations": "Ошибка при получении операций: {error}",
+    "connection": {
+      "backend": "Нет подключения к бэкенду. Убедитесь"
+    },
+    "script": "Ошибка скрипта: {message} в {source}:{lineno}:{colno} - {error}",
+    "transaktion": {
+      "unknown": "Неизвестная ошибка при выполнении транзакции."
+    }
+  },
+  "puplicKey": {
+    "failed": "Ошибка при разрешении адреса федерации/открытого ключа: {error}"
+  },
+  "account": {
+    "loadFailed": "Ошибка при загрузке аккаунта {publicKey}: {error}",
+    "noBalances": "Не найдено средств на счету."
+  },
+  "issuer": {
+    "label": "Введите адрес эмитента:",
+    "enter": "Введите адрес эмитента:",
+    "notfound": "Не найдено адресов эмитентов",
+    "compromised": "Компрометирован",
+    "invalid": "Недействительный адрес эмитента.",
+    "placeholder": "например"
+  },
+  "wallet": {
+    "list": "Список кошельков Groupfund",
+    "noPayments": "Платежи не найдены.",
+    "add": "Добавить кошелек",
+    "inList": "Кошелек в списке"
+  },
+  "main": {
+    "title": "Менеджер доверительных линий Stellar"
+  }
 }

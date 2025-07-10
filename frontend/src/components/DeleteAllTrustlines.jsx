@@ -27,7 +27,7 @@ function DeleteAllTrustlines({
         setResults(trustlines);
         setConfirmAction(() => async () => {
           if (!sourceSecret || !StellarSdk.StrKey.isValidEd25519SecretSeed(sourceSecret)) {
-            setError(t('secretKeyInvalid'));
+            setError(t('secretKey.invalid'));
             return;
           }
           try {
@@ -41,8 +41,8 @@ function DeleteAllTrustlines({
             messages: ['[Test-Modus] Trustlines würden jetzt gelöscht werden.']
             };
             /*const result = await response.json();
-            if (!response.ok) throw new Error(result.error || t('failedDeleteTrustlines'));*/
-            setResults([...result.messages, t('secretKeyCleared')]);
+            if (!response.ok) throw new Error(result.error || t('trustline.delete.error'));*/
+            setResults([...result.messages, t('secretKey.cleared')]);
             setTrustlines([]);
             setSourceSecret('');
             setShowSecretKey(false);
@@ -55,7 +55,7 @@ function DeleteAllTrustlines({
         });
         setShowConfirm(true);
       } else {
-        setResults([t('noTrustlines')]);
+        setResults([t('trustline.notFound')]);
       }
     } catch (err) {
       setError(err.message);
@@ -70,7 +70,7 @@ function DeleteAllTrustlines({
         onClick={handleDelete}
         className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
       >
-        {t('deleteAllButton')}
+        {t('trustline.delete.button')}
       </button>
     </div>
   );

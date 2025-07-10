@@ -1,102 +1,136 @@
 {
-  "title": "Stellar Trustline Manager",
-  "secretKeyInfo": "Secret keys are securely processed by the backend and not stored.",
-  "sourceLabel": "Enter the source federation address or public key:",
-  "sourcePlaceholder": "e.g., user*example.com or GD4TPVR...",
-  "submitButton": "Submit",
-  "loading": "Loading...",
-  "sourceWallet": "Source Wallet:",
-  "listAll": "List all Trustlines",
-  "compare": "Compare Trustlines",
-  "deleteAll": "Delete all Trustlines",
-  "deleteByIssuer": "Delete trustlines by issuer",
-  "settings": "Settings",
-  "tokenPurchases": "Number of tokens purchased",
-  "backToMenu": "Back to Menu",
-  "listTrustlines": "List Trustlines",
-  "showAllTrustlines": "Show all Trustlines",
-  "destLabel": "Enter the target public key:",
-  "destPlaceholder": "e.g., GBZVTOY...",
-  "compareTrustlines": "Compare trustlines",
-  "issuerLabel": "Enter the issuer's address:",
-  "issuerPlaceholder": "e.g., GA5ZSEJ...",
-  "issuerSearchNoMatch": "No issuer addresses found that match '{search}'.",
-  "secretKeyLabel": "Enter the source secret key (securely sent to the backend, not stored):",
-  "secretKeyPlaceholder": "e.g., SB...",
-  "show": "Display",
-  "hide": "Hide",
-  "deleteAllButton": "Delete all Trustlines",
-  "deleteByIssuerButton": "Delete trustlines by issuer",
-  "results": "Results:",
-  "noTrustlines": "No Trustlines found.",
-  "noDuplicates": "No duplicate trustlines found.",
-  "noIssuer": "No trustlines found for issuer {issuer}.",
-  "assetCode": "Asset Code",
-  "issuer": "Issuer",
-  "creationDate": "Creation Date",
-  "unknownDate": "Unknown (created before available history)",
-  "previous": "Previous",
-  "next": "Next",
-  "backToTop": "Back to top",
-  "confirmTitle": "Confirm action",
-  "confirmMessage": "Are you sure you want to delete the listed Trustlines? Your secret key will be securely sent to a backend and not stored.",
-  "yes": "Yes",
-  "cancel": "Cancel",
-  "currentMenu": "Current Menu:",
-  "secretKeyEmpty": "Secret key field is empty.",
-  "secretKeyInvalid": "Invalid secret key.",
-  "secretKeyMismatch": "Secret key does not match the public address.",
-  "secretKeyCleared": "Secret key has been deleted.",
-  "invalidPublicKey": "Invalid public key or federation address.",
-  "invalidIssuer": "Invalid issuer address.",
-  "failedFederation": "Error resolving federation address: {error}",
-  "noBalances": "No credit found for the account.",
-  "failedLoadAccount": "Error loading account {publicKey}: {error}",
-  "backendConnectError": "Unable to connect to the backend. Ensure that the server is running at {url} and CORS is enabled.",
-  "failedDeleteTrustlines": "Error deleting Trustlines: {error}",
-  "scriptError": "Script error: {message} at {source}:{lineno}:{colno} - {error}",
-  "errorFetchingOperations": "Error retrieving operations: {error}",
-  "settingsTitle": "Settings",
-  "walletList": "Wallet List",
+  "assets": {
+    "compromisedPurchases": "{total} payments in total",
+    "totalPurchases": "Total number of purchases: {count}"
+  },
+  "secretKey": {
+    "valid": "✅ Secret Key is valid.",
+    "info": "The secret key is only temporarily transmitted to a backend for the execution of the selected action. The key is not stored.",
+    "label": "Enter the source secret key (will be securely sent to the backend",
+    "mismatch": "Secret key does not match the public address.",
+    "cleared": "Secret key has been deleted.",
+    "empty": "Secret key field is empty.",
+    "invalid": "Invalid secret key.",
+    "placeholder": "e.g."
+  },
+  "option": {
+    "cancel": "Cancel",
+    "confirm": {
+      "action": {
+        "title": "Confirm action",
+        "text": "Are you sure"
+      }
+    },
+    "show": "Display",
+    "description": "Description",
+    "results": "Results:",
+    "filter": "Filtering...",
+    "add": "Add",
+    "yes": "Yes",
+    "loading": "Loading...",
+    "delete": "Delete",
+    "memo": "Memo",
+    "no": "No",
+    "newAddress": "New Address",
+    "page": "Page",
+    "save": "Save",
+    "hide": "Hide",
+    "addToList": "Add to list"
+  },
+  "publicKey": {
+    "submit": {
+      "button": "Submit"
+    },
+    "recipient": "Receiving Address",
+    "label": "Please enter the source federation address or public key:",
+    "invalid": "Invalid public key or federation address.",
+    "destination": {
+      "error": "Invalid target key.",
+      "input": "Enter target wallet address"
+    },
+    "placeholder": "e.g.",
+    "source": "Source Wallet Address"
+  },
   "address": "Address",
-  "description": "Description",
-  "compromised": "Compromised",
-  "yesOption": "Yes",
-  "noOption": "No",
-  "addWallet": "Add Wallet",
-  "newAddress": "New Address",
-  "save": "Save",
-  "delete": "Delete",
-  "exportSettings": "Export settings",
-  "importSettings": "Import settings",
-  "tokenPurchasesTitle": "Number of tokens purchased",
-  "totalPurchases": "Total number of purchases: {count}",
-  "compromisedPurchases": "{total} payments in total, of which {compromised} are compromised",
-  "memo": "Memo",
-  "amount": "Amount (XLM)",
-  "recipient": "Receiving address",
-  "dateTimes": "Date and Times",
-  "walletInList": "Wallet in List",
-  "add": "Add",
-  "addToList": "Add to list",
-  "noPayments": "No payments found.",
-  "deleteError": "Error deleting the Trustlines:",
-  "enterIssuer": "Enter the issuer address:",
-  "noIssuerTrustlinesFound": "No trustlines found for this issuer.",
-  "confirmActionTitle": "Confirm action",
-  "confirmActionText": "Are you sure you want to delete the listed Trustlines? Your Secret Key will be securely sent to the server and not stored.",
-  "enterDestinationPublicKey": "Enter target wallet address",
-  "noDuplicatesFound": "No duplicate trustlines found.",
-  "invalidDestinationKey": "Invalid destination public key.",
-  "cannotConnectToBackend": "Connection to the backend failed. Ensure that the server is running and CORS is enabled.",
-  "resolveOrValidatePublicKey.empty": "Input field must not be empty.",
-  "resolveOrValidatePublicKey.invalid": "Invalid public key or federation address.",
-  "findDuplicateTrustlines.invalidKey": "Invalid source or destination key.",
-  "compare.noDuplicates": "No duplicate trustlines found.",
-  "submitTransaction.secretCleared": "Secret key has been deleted.",
-  "submitTransaction.failed:Invalid source secret key.": "Invalid secret source key.",
-  "submitTransaction.failed:Unknown error.": "Unknown error during the transaction.",
-  "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "Connection to the backend failed. Make sure the server is running under",
-  "page": "Page",
-  "filter": "Filtering..."
+  "navigation": {
+    "current": {
+      "menu": "Current Menu:"
+    },
+    "next": "Next",
+    "previous": "Previous",
+    "backToTop": "Back to top",
+    "backToMainMenu": "Back to menu"
+  },
+  "trustline": {
+    "all": "Show all Trustlines",
+    "removeFromList": "Remove from list",
+    "inputEmpty": "Input field must not be empty.",
+    "delete": "Delete Trustline(s)",
+    "destination": {
+      "label": "Enter the target public key:",
+      "placeholder": "e.g."
+    },
+    "noDuplicates": "No duplicate trustlines found.",
+    "issuer": {
+      "notFound": "No Trustlines found for issuer {issuer}."
+    },
+    "notFound": "No Trustlines found.",
+    "reviewSelection": {
+      "title": "Check selected Trustlines"
+    },
+    "list": "List Trustlines",
+    "compare": "Compare Trustlines",
+    "confirmDeletion": "Really delete Trustlines"
+  },
+  "token": {
+    "purchases": "Number of tokens purchased"
+  },
+  "asset": {
+    "code": "Asset Code",
+    "amount": "Amount (XLM)",
+    "issuer": "Issuer",
+    "creationDate": "Created on"
+  },
+  "date": {
+    "times": "Date and Times"
+  },
+  "settings": {
+    "label": "Settings",
+    "export": "Export settings",
+    "import": "Import settings"
+  },
+  "error": {
+    "fetchingOperations": "Error retrieving operations: {error}",
+    "connection": {
+      "backend": "Unable to connect to the backend. Please ensure"
+    },
+    "script": "Script error: {message} at {source}:{lineno}:{colno} - {error}",
+    "transaktion": {
+      "unknown": "Unknown error during the transaction."
+    }
+  },
+  "puplicKey": {
+    "failed": "Error resolving federation address/public key: {error}"
+  },
+  "account": {
+    "loadFailed": "Error loading the account {publicKey}: {error}",
+    "noBalances": "No credit found for the account."
+  },
+  "issuer": {
+    "label": "Enter the issuer address:",
+    "enter": "Enter the issuer's address:",
+    "notfound": "No issuer addresses found",
+    "compromised": "Compromised",
+    "invalid": "Invalid issuer address.",
+    "placeholder": "e.g."
+  },
+  "wallet": {
+    "list": "Groupfund Wallet List",
+    "noPayments": "No payments found.",
+    "add": "Add Wallet",
+    "inList": "Wallet in list"
+  },
+  "main": {
+    "title": "Stellar Trustline Manager"
+  }
 }

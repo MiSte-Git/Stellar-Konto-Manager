@@ -23,7 +23,7 @@ function CompareTrustlines({
 
   const handleCompare = async () => {
     if (!destinationPublicKey || !StellarSdk.StrKey.isValidEd25519PublicKey(destinationPublicKey)) {
-      setError(t('invalidDestinationKey'));
+      setError(t('publicKey.destination.error'));
       return;
     }
 
@@ -42,7 +42,7 @@ function CompareTrustlines({
         setResults(duplicates);
         setConfirmAction(() => async () => {
           if (!sourceSecret || !StellarSdk.StrKey.isValidEd25519SecretSeed(sourceSecret)) {
-            setError(t('invalidSecretKey'));
+            setError(t('secretKey.error'));
             return;
           }
 
@@ -59,23 +59,23 @@ function CompareTrustlines({
             //   body: JSON.stringify({ secretKey: sourceSecret, trustlines: duplicates })
             // });
             // const result = await response.json();
-            // if (!response.ok) throw new Error(result.error || t('failedDeleteTrustlines'));
+            // if (!response.ok) throw new Error(result.error || t('trustline.delete.error'));
 
-            setResults([...result.messages, t('secretKeyCleared')]);
+            setResults([...result.messages, t('secretKey.cleared')]);
             setTrustlines(await loadTrustlines(sourcePublicKey));
             setSourceSecret('');
             setShowSecretKey(false);
           } catch (err) {
             console.error('Fetch error:', err);
             setError(err.message.includes('Failed to fetch')
-              ? `${t('cannotConnectToBackend')} ${backendUrl}`
+              ? `${t('error.connection.backend')} ${backendUrl}`
               : err.message
             );
           }
         });
         setShowConfirm(true);
       } else {
-        setResults([t('noDuplicatesFound')]);
+        setResults([t('trustline.noDuplicates')]);
       }
     } catch (err) {
       setError(err.message);
@@ -86,7 +86,7 @@ function CompareTrustlines({
 
   return (
     <div>
-      <label className="block mb-2">{t('enterDestinationPublicKey')}:</label>
+      <label className="block mb-2">{t('publicKey.destination.input')}:</label>
       <input
         type="text"
         value={destinationPublicKey}
@@ -99,7 +99,7 @@ function CompareTrustlines({
         className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         disabled={isLoading}
       >
-        {isLoading ? t('loading') : t('compareTrustlines')}
+        {isLoading ? t('option.loading') : t('trustline.compare')}
       </button>
     </div>
   );

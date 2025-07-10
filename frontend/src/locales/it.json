@@ -1,102 +1,136 @@
 {
-  "title": "Gestore di Trustline Stellar",
-  "secretKeyInfo": "Le chiavi segrete vengono gestite in modo sicuro dal backend e non vengono salvate.",
-  "sourceLabel": "Inserisci l'indirizzo di federazione di origine o la chiave pubblica:",
-  "sourcePlaceholder": "ad es., user*example.com o GD4TPVR...",
-  "submitButton": "Invia",
-  "loading": "Caricamento...",
-  "sourceWallet": "Portafoglio di origine:",
-  "listAll": "Elenca tutte le Trustlines",
-  "compare": "Confronta le Trustlines",
-  "deleteAll": "Elimina tutte le Trustlines",
-  "deleteByIssuer": "Elimina le linee di credito per l'emittente",
-  "settings": "Impostazioni",
-  "tokenPurchases": "Numero di token acquistati",
-  "backToMenu": "Torna al menu",
-  "listTrustlines": "Elenca Trustlines",
-  "showAllTrustlines": "Mostra tutte le Trustlines",
-  "destLabel": "Inserisci la chiave pubblica di destinazione:",
-  "destPlaceholder": "ad es., GBZVTOY...",
-  "compareTrustlines": "Confronta le Trustlines",
-  "issuerLabel": "Inserisci l'indirizzo dell'emittente:",
-  "issuerPlaceholder": "ad es., GA5ZSEJ...",
-  "issuerSearchNoMatch": "Nessun indirizzo emittente trovato corrispondente a '{search}'.",
-  "secretKeyLabel": "Inserisci la chiave segreta di origine (viene inviata in modo sicuro al backend, non viene salvata):",
-  "secretKeyPlaceholder": "ad es., SB...",
-  "show": "Mostra",
-  "hide": "Nascondi",
-  "deleteAllButton": "Elimina tutte le Trustlines",
-  "deleteByIssuerButton": "Elimina le linee di credito per emittente",
-  "results": "Risultati:",
-  "noTrustlines": "Nessuna Trustline trovata.",
-  "noDuplicates": "Nessuna Trustline duplicata trovata.",
-  "noIssuer": "Nessuna linea di fiducia trovata per l'emittente {issuer}.",
-  "assetCode": "Codice dell'asset",
-  "issuer": "Emittente",
-  "creationDate": "Data di creazione",
-  "unknownDate": "Sconosciuto (creato prima della disponibilità della cronologia)",
-  "previous": "Precedente",
-  "next": "Successivo",
-  "backToTop": "Torna su",
-  "confirmTitle": "Conferma azione",
-  "confirmMessage": "Sei sicuro di voler eliminare le Trustlines elencate? La tua chiave segreta verrà inviata in modo sicuro a un backend e non verrà salvata.",
-  "yes": "Sì",
-  "cancel": "Annulla",
-  "currentMenu": "Menu attuale:",
-  "secretKeyEmpty": "Il campo della chiave segreta è vuoto.",
-  "secretKeyInvalid": "Chiave segreta non valida.",
-  "secretKeyMismatch": "La chiave segreta non corrisponde all'indirizzo pubblico.",
-  "secretKeyCleared": "La chiave segreta è stata eliminata.",
-  "invalidPublicKey": "Chiave pubblica o indirizzo di federazione non validi.",
-  "invalidIssuer": "Indirizzo emittente non valido.",
-  "failedFederation": "Errore durante la risoluzione dell'indirizzo federativo: {error}",
-  "noBalances": "Nessun credito trovato per il conto.",
-  "failedLoadAccount": "Errore durante il caricamento del conto {publicKey}: {error}",
-  "backendConnectError": "Impossibile connettersi al backend. Assicurati che il server sia in esecuzione su {url} e che CORS sia abilitato.",
-  "failedDeleteTrustlines": "Errore durante l'eliminazione delle Trustlines: {error}",
-  "scriptError": "Errore di script: {message} in {source}:{lineno}:{colno} - {error}",
-  "errorFetchingOperations": "Errore nel recupero delle operazioni: {error}",
-  "settingsTitle": "Impostazioni",
-  "walletList": "Elenco di portafogli",
+  "assets": {
+    "compromisedPurchases": "{total} pagamenti totali",
+    "totalPurchases": "Numero totale di acquisti: {count}"
+  },
+  "secretKey": {
+    "valid": "✅ La chiave segreta è valida.",
+    "info": "La chiave segreta viene trasmessa temporaneamente a un backend per l'esecuzione dell'azione scelta. La chiave non viene salvata.",
+    "label": "Inserisci la chiave segreta di origine (verrà inviata in modo sicuro al backend",
+    "mismatch": "La chiave segreta non corrisponde all'indirizzo pubblico.",
+    "cleared": "La chiave segreta è stata eliminata.",
+    "empty": "Il campo della chiave segreta è vuoto.",
+    "invalid": "Chiave segreta non valida.",
+    "placeholder": "ad es."
+  },
+  "option": {
+    "cancel": "Annulla",
+    "confirm": {
+      "action": {
+        "title": "Conferma azione",
+        "text": "Sei sicuro"
+      }
+    },
+    "show": "Mostra",
+    "description": "Descrizione",
+    "results": "Risultati:",
+    "filter": "Filtrando...",
+    "add": "Aggiungi",
+    "yes": "Sì",
+    "loading": "Caricamento...",
+    "delete": "Elimina",
+    "memo": "Promemoria",
+    "no": "No",
+    "newAddress": "Nuovo indirizzo",
+    "page": "Pagina",
+    "save": "Salva",
+    "hide": "Nascondi",
+    "addToList": "Aggiungi alla lista"
+  },
+  "publicKey": {
+    "submit": {
+      "button": "Invia"
+    },
+    "recipient": "Indirizzo di ricezione",
+    "label": "Inserisci l'indirizzo di origine della federazione o la chiave pubblica:",
+    "invalid": "Chiave pubblica non valida o indirizzo di federazione.",
+    "destination": {
+      "error": "Chiave di destinazione non valida.",
+      "input": "Inserisci l'indirizzo del portafoglio di destinazione"
+    },
+    "placeholder": "ad es.",
+    "source": "Indirizzo del portafoglio di origine"
+  },
   "address": "Indirizzo",
-  "description": "Descrizione",
-  "compromised": "Compromesso",
-  "yesOption": "Sì",
-  "noOption": "No",
-  "addWallet": "Aggiungi portafoglio",
-  "newAddress": "Nuovo indirizzo",
-  "save": "Salva",
-  "delete": "Elimina",
-  "exportSettings": "Esporta impostazioni",
-  "importSettings": "Importa impostazioni",
-  "tokenPurchasesTitle": "Numero di token acquistati",
-  "totalPurchases": "Numero totale di acquisti: {count}",
-  "compromisedPurchases": "{total} pagamenti totali, di cui {compromised} compromessi",
-  "memo": "Promemoria",
-  "amount": "Importo (XLM)",
-  "recipient": "Indirizzo di ricezione",
-  "dateTimes": "Data e orari",
-  "walletInList": "Portafoglio in lista",
-  "add": "Aggiungi",
-  "addToList": "Aggiungi alla lista",
-  "noPayments": "Nessun pagamento trovato.",
-  "deleteError": "Errore durante l'eliminazione delle Trustlines:",
-  "enterIssuer": "Inserisci l'indirizzo dell'emittente:",
-  "noIssuerTrustlinesFound": "Nessuna linea di fiducia trovata per questo emittente.",
-  "confirmActionTitle": "Conferma azione",
-  "confirmActionText": "Sei sicuro di voler eliminare le Trustlines elencate? La tua chiave segreta verrà inviata in modo sicuro al server e non verrà memorizzata.",
-  "enterDestinationPublicKey": "Inserisci l'indirizzo del portafoglio di destinazione",
-  "noDuplicatesFound": "Nessuna Trustline duplicata trovata.",
-  "invalidDestinationKey": "Chiave pubblica di destinazione non valida.",
-  "cannotConnectToBackend": "Connessione al backend non riuscita. Assicurati che il server sia in esecuzione e che CORS sia attivato.",
-  "resolveOrValidatePublicKey.empty": "Il campo di input non può essere vuoto.",
-  "resolveOrValidatePublicKey.invalid": "Chiave pubblica non valida o indirizzo di federazione.",
-  "findDuplicateTrustlines.invalidKey": "Chiave di origine o di destinazione non valida.",
-  "compare.noDuplicates": "Nessuna Trustline duplicata trovata.",
-  "submitTransaction.secretCleared": "La chiave segreta è stata eliminata.",
-  "submitTransaction.failed:Invalid source secret key.": "Chiave segreta della fonte non valida.",
-  "submitTransaction.failed:Unknown error.": "Errore sconosciuto durante la transazione.",
-  "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "Connessione al backend fallita. Assicurati che il server sia in esecuzione sotto",
-  "page": "Pagina",
-  "filter": "Filtrando..."
+  "navigation": {
+    "current": {
+      "menu": "Menu attuale:"
+    },
+    "next": "Successivo",
+    "previous": "Precedente",
+    "backToTop": "Torna su",
+    "backToMainMenu": "Torna al menu"
+  },
+  "trustline": {
+    "all": "Mostra tutte le Trustlines",
+    "removeFromList": "Rimuovi dalla lista",
+    "inputEmpty": "Il campo di input non può essere vuoto.",
+    "delete": "Elimina linea(e) di fiducia",
+    "destination": {
+      "label": "Inserisci la chiave pubblica di destinazione:",
+      "placeholder": "ad es."
+    },
+    "noDuplicates": "Nessuna Trustline duplicata trovata.",
+    "issuer": {
+      "notFound": "Nessuna linea di fiducia trovata per l'emittente {issuer}."
+    },
+    "notFound": "Nessuna Trustline trovata.",
+    "reviewSelection": {
+      "title": "Verifica le Trustlines selezionate"
+    },
+    "list": "Elenca Trustlines",
+    "compare": "Confronta Trustlines",
+    "confirmDeletion": "Eliminare davvero le Trustlines"
+  },
+  "token": {
+    "purchases": "Numero di token acquistati"
+  },
+  "asset": {
+    "code": "Codice dell'asset",
+    "amount": "Importo (XLM)",
+    "issuer": "Emittente",
+    "creationDate": "Creato il"
+  },
+  "date": {
+    "times": "Data e orari"
+  },
+  "settings": {
+    "label": "Impostazioni",
+    "export": "Esporta impostazioni",
+    "import": "Importa impostazioni"
+  },
+  "error": {
+    "fetchingOperations": "Errore nel recupero delle operazioni: {error}",
+    "connection": {
+      "backend": "Impossibile connettersi al backend. Assicurati"
+    },
+    "script": "Errore di script: {message} in {source}:{lineno}:{colno} - {error}",
+    "transaktion": {
+      "unknown": "Errore sconosciuto durante la transazione."
+    }
+  },
+  "puplicKey": {
+    "failed": "Errore nel risolvere l'indirizzo della federazione/chiave pubblica: {error}"
+  },
+  "account": {
+    "loadFailed": "Errore durante il caricamento del conto {publicKey}: {error}",
+    "noBalances": "Nessun credito trovato per l'account."
+  },
+  "issuer": {
+    "label": "Inserisci l'indirizzo dell'emittente:",
+    "enter": "Inserisci l'indirizzo dell'emittente:",
+    "notfound": "Nessun indirizzo emittente trovato",
+    "compromised": "Compromesso",
+    "invalid": "Indirizzo emittente non valido.",
+    "placeholder": "ad es."
+  },
+  "wallet": {
+    "list": "Lista dei portafogli Groupfund",
+    "noPayments": "Nessun pagamento trovato.",
+    "add": "Aggiungi portafoglio",
+    "inList": "Portafoglio in lista"
+  },
+  "main": {
+    "title": "Gestore di Trustline Stellar"
+  }
 }

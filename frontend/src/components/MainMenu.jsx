@@ -5,12 +5,10 @@ function MainMenu({ onSelect }) {
   const { t } = useTranslation();
 
   const buttons = [
-    { label: t('listTrustlines'), value: 'listAll' },
-    { label: t('compareTrustlines'), value: 'compare' },
-    { label: t('deleteByIssuer'), value: 'deleteByIssuer' },
-    { label: t('deleteAll'), value: 'deleteAll' },
-    { label: t('tokenPurchasesTitle'), value: 'payments' },
-    { label: t('settings'), value: 'settings' },
+    { label: t('trustline.list'), value: 'listAll' },
+    { label: t('trustline.compare'), value: 'compare' },
+    { label: t('token.purchases'), value: 'payments' },
+    { label: t('settings.label'), value: 'settings' },
   ];
 
   return (

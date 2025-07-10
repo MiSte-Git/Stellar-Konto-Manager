@@ -14,21 +14,21 @@ function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
   return (
     <form onSubmit={handleSubmit} className="mb-4">
       <label htmlFor="source" className="block font-bold mb-1">
-        {t('sourceLabel')}
+        {t('publicKey.label')}
       </label>
       <input
         id="source"
         type="text"
         value={sourceInput}
         onChange={handleChange} // <--- und hier verwenden
-        placeholder={t('sourcePlaceholder')}
+        placeholder={t('publicKey.placeholder')}
         className="w-full border border-gray-300 rounded p-2"
       />
       <button
         type="submit"
         className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
       >
-        {t('submitButton')}
+        {t('publicKey.submit.button')}
       </button>
     </form>
   );

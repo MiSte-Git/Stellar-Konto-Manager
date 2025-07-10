@@ -1,102 +1,136 @@
 {
-  "title": "Gestionnaire de Ligne de Confiance Stellar",
-  "secretKeyInfo": "Les clés secrètes sont traitées en toute sécurité par le backend et ne sont pas stockées.",
-  "sourceLabel": "Entrez l'adresse de la fédération source ou la clé publique :",
-  "sourcePlaceholder": "Par exemple, user*example.com ou GD4TPVR...",
-  "submitButton": "Envoyer",
-  "loading": "Chargement...",
-  "sourceWallet": "Portefeuille source :",
-  "listAll": "Lister toutes les lignes de confiance",
-  "compare": "Comparer les lignes de confiance",
-  "deleteAll": "Supprimer toutes les lignes de confiance",
-  "deleteByIssuer": "Supprimer les lignes de confiance par émetteur",
-  "settings": "Paramètres",
-  "tokenPurchases": "Nombre de tokens achetés",
-  "backToMenu": "Retour au menu",
-  "listTrustlines": "Lister les Trustlines",
-  "showAllTrustlines": "Afficher toutes les lignes de confiance",
-  "destLabel": "Entrez la clé publique de destination :",
-  "destPlaceholder": "par exemple, GBZVTOY...",
-  "compareTrustlines": "Comparer les Trustlines",
-  "issuerLabel": "Entrez l'adresse de l'émetteur :",
-  "issuerPlaceholder": "par exemple, GA5ZSEJ...",
-  "issuerSearchNoMatch": "Aucune adresse d'émetteur trouvée correspondant à '{search}'.",
-  "secretKeyLabel": "Entrez la clé secrète source (elle sera envoyée en toute sécurité au backend, non stockée) :",
-  "secretKeyPlaceholder": "par exemple, SB...",
-  "show": "Afficher",
-  "hide": "Masquer",
-  "deleteAllButton": "Supprimer toutes les lignes de confiance",
-  "deleteByIssuerButton": "Supprimer les lignes de confiance par émetteur",
-  "results": "Résultats :",
-  "noTrustlines": "Aucune ligne de confiance trouvée.",
-  "noDuplicates": "Aucunes Trustlines doubles trouvées.",
-  "noIssuer": "Aucune ligne de confiance trouvée pour l'émetteur {issuer}.",
-  "assetCode": "Code d'actif",
-  "issuer": "Émetteur",
-  "creationDate": "Date de création",
-  "unknownDate": "Inconnu (créé avant l'historique disponible)",
-  "previous": "Précédent",
-  "next": "Suivant",
-  "backToTop": "Retour en haut",
-  "confirmTitle": "Confirmer l'action",
-  "confirmMessage": "Êtes-vous sûr de vouloir supprimer les lignes de confiance listées ? Votre clé secrète sera envoyée en toute sécurité à un backend et ne sera pas stockée.",
-  "yes": "Oui",
-  "cancel": "Annuler",
-  "currentMenu": "Menu actuel :",
-  "secretKeyEmpty": "Le champ de la clé secrète est vide.",
-  "secretKeyInvalid": "Clé secrète invalide.",
-  "secretKeyMismatch": "La clé secrète ne correspond pas à l'adresse publique.",
-  "secretKeyCleared": "La clé secrète a été supprimée.",
-  "invalidPublicKey": "Clé publique ou adresse de fédération invalide.",
-  "invalidIssuer": "Adresse de l'émetteur invalide.",
-  "failedFederation": "Erreur lors de la résolution de l'adresse de la fédération : {error}",
-  "noBalances": "Aucun crédit trouvé pour le compte.",
-  "failedLoadAccount": "Erreur lors du chargement du compte {publicKey} : {error}",
-  "backendConnectError": "Impossible de se connecter au backend. Assurez-vous que le serveur fonctionne à l'adresse {url} et que CORS est activé.",
-  "failedDeleteTrustlines": "Erreur lors de la suppression des lignes de confiance : {error}",
-  "scriptError": "Erreur de script : {message} à {source}:{lineno}:{colno} - {error}",
-  "errorFetchingOperations": "Erreur lors de la récupération des opérations : {error}",
-  "settingsTitle": "Paramètres",
-  "walletList": "Liste de portefeuilles",
+  "assets": {
+    "compromisedPurchases": "{total} paiements au total",
+    "totalPurchases": "Nombre total d'achats : {count}"
+  },
+  "secretKey": {
+    "valid": "✅ La clé secrète est valide.",
+    "info": "La clé secrète n'est transmise temporairement à un backend que pour l'exécution de l'action choisie. La clé n'est pas stockée.",
+    "label": "Entrez la clé secrète source (elle sera envoyée en toute sécurité au backend",
+    "mismatch": "La clé secrète ne correspond pas à l'adresse publique.",
+    "cleared": "La clé secrète a été supprimée.",
+    "empty": "Le champ de la clé secrète est vide.",
+    "invalid": "Clé secrète invalide.",
+    "placeholder": "par exemple"
+  },
+  "option": {
+    "cancel": "Annuler",
+    "confirm": {
+      "action": {
+        "title": "Confirmer l'action",
+        "text": "Es-tu sûr"
+      }
+    },
+    "show": "Afficher",
+    "description": "Description",
+    "results": "Résultats :",
+    "filter": "Filtrer...",
+    "add": "Ajouter",
+    "yes": "Oui",
+    "loading": "Chargement...",
+    "delete": "Supprimer",
+    "memo": "Mémo",
+    "no": "Non",
+    "newAddress": "Nouvelle adresse",
+    "page": "Page",
+    "save": "Enregistrer",
+    "hide": "Masquer",
+    "addToList": "Ajouter à la liste"
+  },
+  "publicKey": {
+    "submit": {
+      "button": "Envoyer"
+    },
+    "recipient": "Adresse de réception",
+    "label": "Veuillez entrer l'adresse de la fédération source ou la clé publique :",
+    "invalid": "Clé publique ou adresse de fédération invalide.",
+    "destination": {
+      "error": "Clé de destination non valide.",
+      "input": "Entrez l'adresse du portefeuille cible"
+    },
+    "placeholder": "par exemple",
+    "source": "Adresse du portefeuille source"
+  },
   "address": "Adresse",
-  "description": "Description",
-  "compromised": "Compromis",
-  "yesOption": "Oui",
-  "noOption": "Non",
-  "addWallet": "Ajouter un portefeuille",
-  "newAddress": "Nouvelle adresse",
-  "save": "Enregistrer",
-  "delete": "Supprimer",
-  "exportSettings": "Exporter les paramètres",
-  "importSettings": "Importer les paramètres",
-  "tokenPurchasesTitle": "Nombre de tokens achetés",
-  "totalPurchases": "Nombre total d'achats : {count}",
-  "compromisedPurchases": "{total} paiements au total, dont {compromised} compromis",
-  "memo": "Mémo",
-  "amount": "Montant (XLM)",
-  "recipient": "Adresse de réception",
-  "dateTimes": "Date et heures",
-  "walletInList": "Portefeuille dans la liste",
-  "add": "Ajouter",
-  "addToList": "Ajouter à la liste",
-  "noPayments": "Aucun paiement trouvé.",
-  "deleteError": "Erreur lors de la suppression des lignes de confiance :",
-  "enterIssuer": "Entrez l'adresse de l'émetteur :",
-  "noIssuerTrustlinesFound": "Aucune ligne de confiance trouvée pour cet émetteur.",
-  "confirmActionTitle": "Confirmer l'action",
-  "confirmActionText": "Êtes-vous sûr de vouloir supprimer les Trustlines listées ? Votre clé secrète sera envoyée en toute sécurité au serveur et ne sera pas enregistrée.",
-  "enterDestinationPublicKey": "Entrez l'adresse du portefeuille cible",
-  "noDuplicatesFound": "Aucune Trustlines en double trouvée.",
-  "invalidDestinationKey": "Clé publique de destination invalide.",
-  "cannotConnectToBackend": "La connexion au backend a échoué. Assurez-vous que le serveur fonctionne et que CORS est activé.",
-  "resolveOrValidatePublicKey.empty": "Le champ de saisie ne doit pas être vide.",
-  "resolveOrValidatePublicKey.invalid": "Clé publique ou adresse de fédération invalide.",
-  "findDuplicateTrustlines.invalidKey": "Clé source ou destination invalide.",
-  "compare.noDuplicates": "Aucune Trustlines en double trouvée.",
-  "submitTransaction.secretCleared": "La clé secrète a été supprimée.",
-  "submitTransaction.failed:Invalid source secret key.": "Clé secrète de source invalide.",
-  "submitTransaction.failed:Unknown error.": "Erreur inconnue lors de la transaction.",
-  "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "La connexion au backend a échoué. Assurez-vous que le serveur fonctionne sous",
-  "page": "Page",
-  "filter": "Filtrer..."
+  "navigation": {
+    "current": {
+      "menu": "Menu actuel :"
+    },
+    "next": "Suivant",
+    "previous": "Précédente",
+    "backToTop": "Retour en haut",
+    "backToMainMenu": "Retour au menu"
+  },
+  "trustline": {
+    "all": "Afficher toutes les lignes de confiance",
+    "removeFromList": "Supprimer de la liste",
+    "inputEmpty": "Le champ de saisie ne doit pas être vide.",
+    "delete": "Supprimer la/les ligne(s) de confiance",
+    "destination": {
+      "label": "Entrez la clé publique de destination :",
+      "placeholder": "par exemple"
+    },
+    "noDuplicates": "Aucunes lignes de confiance en double trouvées.",
+    "issuer": {
+      "notFound": "Aucune ligne de confiance trouvée pour l'émetteur {issuer}."
+    },
+    "notFound": "Aucune ligne de confiance trouvée.",
+    "reviewSelection": {
+      "title": "Vérifier les lignes de confiance sélectionnées"
+    },
+    "list": "Lister les Trustlines",
+    "compare": "Comparer les Trustlines",
+    "confirmDeletion": "Vraiment supprimer les Trustlines"
+  },
+  "token": {
+    "purchases": "Nombre de tokens achetés"
+  },
+  "asset": {
+    "code": "Code d'actif",
+    "amount": "Montant (XLM)",
+    "issuer": "Émetteur",
+    "creationDate": "Créé le"
+  },
+  "date": {
+    "times": "Date et heures"
+  },
+  "settings": {
+    "label": "Paramètres",
+    "export": "Exporter les paramètres",
+    "import": "Importer les paramètres"
+  },
+  "error": {
+    "fetchingOperations": "Erreur lors de la récupération des opérations : {error}",
+    "connection": {
+      "backend": "Impossible de se connecter au backend. Assurez-vous"
+    },
+    "script": "Erreur de script : {message} à {source}:{lineno}:{colno} - {error}",
+    "transaktion": {
+      "unknown": "Erreur inconnue lors de la transaction."
+    }
+  },
+  "puplicKey": {
+    "failed": "Erreur lors de la résolution de l'adresse de fédération / clé publique : {error}"
+  },
+  "account": {
+    "loadFailed": "Erreur lors du chargement du compte {publicKey} : {error}",
+    "noBalances": "Aucun crédit trouvé pour le compte."
+  },
+  "issuer": {
+    "label": "Entrez l'adresse de l'émetteur :",
+    "enter": "Entrez l'adresse de l'émetteur :",
+    "notfound": "Aucune adresse d'émetteur trouvée",
+    "compromised": "Compromis",
+    "invalid": "Adresse de l'émetteur invalide.",
+    "placeholder": "par exemple"
+  },
+  "wallet": {
+    "list": "Liste des portefeuilles Groupfund",
+    "noPayments": "Aucun paiement trouvé.",
+    "add": "Ajouter un portefeuille",
+    "inList": "Portefeuille dans la liste"
+  },
+  "main": {
+    "title": "Gestionnaire de Ligne de Confiance Stellar"
+  }
 }

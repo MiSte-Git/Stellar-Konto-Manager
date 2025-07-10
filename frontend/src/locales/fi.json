@@ -1,102 +1,136 @@
 {
-  "title": "Stellar Trustline -hallinta",
-  "secretKeyInfo": "Salaiset avaimet käsitellään turvallisesti backendissä eikä niitä tallenneta.",
-  "sourceLabel": "Syötä lähiliiton osoite tai julkinen avain:",
-  "sourcePlaceholder": "Esimerkiksi, user*example.com tai GD4TPVR...",
-  "submitButton": "Lähetä",
-  "loading": "Ladataan...",
-  "sourceWallet": "Lähdekukkaro:",
-  "listAll": "Luettelo kaikista Trustlinesista",
-  "compare": "Vertaile luottolinjoja",
-  "deleteAll": "Poista kaikki luottolinjat",
-  "deleteByIssuer": "Poista luottolinjat liikkeeseenlaskijan mukaan",
-  "settings": "Asetukset",
-  "tokenPurchases": "Ostettujen tokenien määrä",
-  "backToMenu": "Takaisin valikkoon",
-  "listTrustlines": "Luetteloi Trustlines",
-  "showAllTrustlines": "Näytä kaikki luottolinjat",
-  "destLabel": "Syötä kohdejulkisen avaimen:",
-  "destPlaceholder": "Esimerkiksi, GBZVTOY...",
-  "compareTrustlines": "Vertaile luottolinjoja",
-  "issuerLabel": "Syötä liikkeeseenlaskijan osoite:",
-  "issuerPlaceholder": "Esimerkiksi, GA5ZSEJ...",
-  "issuerSearchNoMatch": "Ei löytynyt emitenttiosoitteita, jotka vastaavat hakua '{search}'.",
-  "secretKeyLabel": "Syötä lähdesalaisavain (lähetetään turvallisesti taustajärjestelmään, ei tallenneta):",
-  "secretKeyPlaceholder": "Esimerkiksi, SB...",
-  "show": "Näytä",
-  "hide": "Piilota",
-  "deleteAllButton": "Poista kaikki luottolinjat",
-  "deleteByIssuerButton": "Poista luottolinjat liikkeeseenlaskijoiden mukaan",
-  "results": "Tulokset:",
-  "noTrustlines": "Ei löydetty luottolinjoja.",
-  "noDuplicates": "Ei löytynyt kaksoisia luottolinjoja.",
-  "noIssuer": "Ei löydetty luottolinjoja liikkeeseenlaskijalle {issuer}.",
-  "assetCode": "Varallisuuskoodi",
-  "issuer": "Liikkeeseenlaskija",
-  "creationDate": "Luontipäivämäärä",
-  "unknownDate": "Tuntematon (luotu ennen saatavilla olevaa historiaa)",
-  "previous": "Edellinen",
-  "next": "Seuraava",
-  "backToTop": "Takaisin ylös",
-  "confirmTitle": "Vahvista toiminto",
-  "confirmMessage": "Oletko varma, että haluat poistaa luetellut luottolinjat? Salainen avain lähetetään turvallisesti taustajärjestelmään eikä sitä tallenneta.",
-  "yes": "Kyllä",
-  "cancel": "Peruuta",
-  "currentMenu": "Nykyinen valikko:",
-  "secretKeyEmpty": "Salaisen avaimen kenttä on tyhjä.",
-  "secretKeyInvalid": "Virheellinen salainen avain.",
-  "secretKeyMismatch": "Salainen avain ei vastaa julkista osoitetta.",
-  "secretKeyCleared": "Salaisuusavain on poistettu.",
-  "invalidPublicKey": "Virheellinen julkinen avain tai federaatio-osoite.",
-  "invalidIssuer": "Virheellinen liikkeeseenlaskijan osoite.",
-  "failedFederation": "Virhe liiton osoitteen selvittämisessä: {error}",
-  "noBalances": "Tilillä ei ole saldoa.",
-  "failedLoadAccount": "Virhe ladattaessa tiliä {publicKey}: {error}",
-  "backendConnectError": "Yhteyttä taustajärjestelmään ei voida muodostaa. Varmista, että palvelin on käynnissä osoitteessa {url} ja että CORS on aktivoitu.",
-  "failedDeleteTrustlines": "Virhe poistettaessa Trustlines: {error}",
-  "scriptError": "Komentosarjavirhe: {message} kohdassa {source}:{lineno}:{colno} - {error}",
-  "errorFetchingOperations": "Virhe hakiessa toimintoja: {error}",
-  "settingsTitle": "Asetukset",
-  "walletList": "Lompakkoluettelo",
+  "assets": {
+    "compromisedPurchases": "{total} maksua yhteensä",
+    "totalPurchases": "Ostojen kokonaismäärä: {count}"
+  },
+  "secretKey": {
+    "valid": "✅ Salainen avain on voimassa.",
+    "info": "Salainen avain siirretään vain väliaikaisesti backendiin valitun toiminnon suorittamiseksi. Avainta ei tallenneta.",
+    "label": "Syötä lähdesalaisavain (lähetetään turvallisesti backendiin",
+    "mismatch": "Salainen avain ei vastaa julkista osoitetta.",
+    "cleared": "Salaisuusavain on poistettu.",
+    "empty": "Salaisen avaimen kenttä on tyhjä.",
+    "invalid": "Virheellinen salainen avain.",
+    "placeholder": "esim."
+  },
+  "option": {
+    "cancel": "Peruuta",
+    "confirm": {
+      "action": {
+        "title": "Vahvista toiminto",
+        "text": "Oletko varma"
+      }
+    },
+    "show": "Näytä",
+    "description": "Kuvaus",
+    "results": "Tulokset:",
+    "filter": "Suodattaa...",
+    "add": "Lisää",
+    "yes": "Kyllä",
+    "loading": "Ladataan...",
+    "delete": "Poista",
+    "memo": "Muistio",
+    "no": "Ei",
+    "newAddress": "Uusi osoite",
+    "page": "Sivu",
+    "save": "Tallenna",
+    "hide": "Piilota",
+    "addToList": "Lisää luetteloon"
+  },
+  "publicKey": {
+    "submit": {
+      "button": "Lähetä"
+    },
+    "recipient": "Vastaanotto-osoite",
+    "label": "Anna lähteen liittovaltion osoite tai julkinen avain:",
+    "invalid": "Virheellinen julkinen avain tai federaatio-osoite.",
+    "destination": {
+      "error": "Virheellinen kohdeavain.",
+      "input": "Syötä kohdelompakon osoite"
+    },
+    "placeholder": "esim.",
+    "source": "Lähde-lompakon osoite"
+  },
   "address": "Osoite",
-  "description": "Kuvaus",
-  "compromised": "Kompromisoitunut",
-  "yesOption": "Kyllä",
-  "noOption": "Ei",
-  "addWallet": "Lisää lompakko",
-  "newAddress": "Uusi osoite",
-  "save": "Tallenna",
-  "delete": "Poista",
-  "exportSettings": "Vie asetukset",
-  "importSettings": "Tuo asetukset",
-  "tokenPurchasesTitle": "Ostettujen tokenien määrä",
-  "totalPurchases": "Ostojen kokonaismäärä: {count}",
-  "compromisedPurchases": "{total} maksua yhteensä, joista {compromised} kompromisoitunut",
-  "memo": "Muistio",
-  "amount": "Määrä (XLM)",
-  "recipient": "Vastaanotto-osoite",
-  "dateTimes": "Päivämäärät ja kellonajat",
-  "walletInList": "Lompakko listassa",
-  "add": "Lisää",
-  "addToList": "Lisää luetteloon",
-  "noPayments": "Maksuja ei löytynyt.",
-  "deleteError": "Virhe luottolinjoja poistettaessa:",
-  "enterIssuer": "Anna liikkeeseenlaskijan osoite:",
-  "noIssuerTrustlinesFound": "Ei löydetty luottolinjoja tälle liikkeeseenlaskijalle.",
-  "confirmActionTitle": "Vahvista toiminto",
-  "confirmActionText": "Oletko varma, että haluat poistaa luetellut luottolinjat? Salainen avain lähetetään turvallisesti palvelimelle eikä sitä tallenneta.",
-  "enterDestinationPublicKey": "Syötä kohdelompakon osoite",
-  "noDuplicatesFound": "Ei löytynyt kaksoisluottolinjoja.",
-  "invalidDestinationKey": "Virheellinen kohdejulkinen avain.",
-  "cannotConnectToBackend": "Yhteys taustajärjestelmään epäonnistui. Varmista, että palvelin on käynnissä ja CORS on aktivoitu.",
-  "resolveOrValidatePublicKey.empty": "Syöttökenttä ei saa olla tyhjä.",
-  "resolveOrValidatePublicKey.invalid": "Virheellinen julkinen avain tai federaatio-osoite.",
-  "findDuplicateTrustlines.invalidKey": "Virheellinen lähde- tai kohdeavain.",
-  "compare.noDuplicates": "Ei löytynyt kaksoisluottolinjoja.",
-  "submitTransaction.secretCleared": "Salainen avain on poistettu.",
-  "submitTransaction.failed:Invalid source secret key.": "Virheellinen salainen lähdekoodi.",
-  "submitTransaction.failed:Unknown error.": "Tuntematon virhe tapahtumassa.",
-  "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "Yhteys taustajärjestelmään epäonnistui. Varmista, että palvelin on käynnissä osoitteessa",
-  "page": "Sivu",
-  "filter": "Suodata..."
+  "navigation": {
+    "current": {
+      "menu": "Nykyinen valikko:"
+    },
+    "next": "Seuraava",
+    "previous": "Edellinen",
+    "backToTop": "Takaisin ylös",
+    "backToMainMenu": "Takaisin valikkoon"
+  },
+  "trustline": {
+    "all": "Näytä kaikki luottolinjat",
+    "removeFromList": "Poista luettelosta",
+    "inputEmpty": "Syöttökenttä ei saa olla tyhjä.",
+    "delete": "Poista luottolinja(t)",
+    "destination": {
+      "label": "Syötä kohdejulkisen avaimen:",
+      "placeholder": "esim."
+    },
+    "noDuplicates": "Ei löydetty kaksoisia luottolinjoja.",
+    "issuer": {
+      "notFound": "Ei löydetty luottolinjoja liikkeeseenlaskijalle {issuer}."
+    },
+    "notFound": "Ei löydetty luottolinjoja.",
+    "reviewSelection": {
+      "title": "Tarkista valitut luottolinjat"
+    },
+    "list": "Luettelo luottolinjoista",
+    "compare": "Vertaile luottolinjoja",
+    "confirmDeletion": "Todella poista Trustlines"
+  },
+  "token": {
+    "purchases": "Ostettujen tokenien määrä"
+  },
+  "asset": {
+    "code": "Omaisuuskoodi",
+    "amount": "Määrä (XLM)",
+    "issuer": "Liikkeeseenlaskija",
+    "creationDate": "Luotu"
+  },
+  "date": {
+    "times": "Päivämäärät ja kellonajat"
+  },
+  "settings": {
+    "label": "Asetukset",
+    "export": "Vie asetukset",
+    "import": "Tuo asetukset"
+  },
+  "error": {
+    "fetchingOperations": "Virhe hakiessa operaatioita: {error}",
+    "connection": {
+      "backend": "Yhteyttä taustajärjestelmään ei voida muodostaa. Varmista"
+    },
+    "script": "Komentosarjavirhe: {message} kohteessa {source}:{lineno}:{colno} - {error}",
+    "transaktion": {
+      "unknown": "Tuntematon virhe tapahtumassa."
+    }
+  },
+  "puplicKey": {
+    "failed": "Virhe liiton osoitteen/julkisen avaimen selvittämisessä: {error}"
+  },
+  "account": {
+    "loadFailed": "Virhe ladattaessa tiliä {publicKey}: {error}",
+    "noBalances": "Tilille ei löydy saldoa."
+  },
+  "issuer": {
+    "label": "Syötä liikkeeseenlaskijan osoite:",
+    "enter": "Anna lähettäjän osoite:",
+    "notfound": "Ei löydetty liikkeeseenlaskijan osoitteita",
+    "compromised": "Kompromisoitunut",
+    "invalid": "Virheellinen liikkeeseenlaskijan osoite.",
+    "placeholder": "esim."
+  },
+  "wallet": {
+    "list": "Groupfund-lompakon lista",
+    "noPayments": "Maksuja ei löytynyt.",
+    "add": "Lisää lompakko",
+    "inList": "Lompakko listassa"
+  },
+  "main": {
+    "title": "Stellar Trustline -hallinta"
+  }
 }

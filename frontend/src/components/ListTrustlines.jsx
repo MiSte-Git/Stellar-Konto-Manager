@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { validateSecretKey } from '../services/stellarUtils';
+import SecretKeyModal from './SecretKeyModal';
 
 function ListTrustlines({
   trustlines,
@@ -25,8 +26,6 @@ function ListTrustlines({
   const [paginated, setPaginated] = useState([]);
   const [showOverviewModal, setShowOverviewModal] = useState(false);
   const [showSecretModal, setShowSecretModal] = useState(false);
-  const [secretKey, setSecretKey] = useState('');
-  const [modalError, setModalError] = useState('');
   const [overviewSort, setOverviewSort] = useState({ column: 'assetCode', direction: 'asc' });
 
   useEffect(() => {
@@ -63,17 +62,19 @@ function ListTrustlines({
   const isSelected = (item) => selectedTrustlines.some(sel => sel.assetCode === item.assetCode && sel.assetIssuer === item.assetIssuer);
   const allSelected = paginated.length > 0 && paginated.every(isSelected);
 
-  const handleDeleteSimulated = () => {
+  /**
+ * Simuliert das Löschen der ausgewählten Trustlines nach erfolgreicher Secret-Key-Validierung.
+ * Zeigt ein übersetztes Ergebnis im Ergebnisbereich an.
+ * @param {string} secretKey - Der zu validierende Secret Key (SB...)
+ */
+  const handleDeleteSimulated = (secretKey) => {
     try {
       validateSecretKey(secretKey);
       const count = selectedTrustlines.length;
       setResults([`${count} Trustlines wurden simuliert gelöscht.`]);
       setSelectedTrustlines([]);
-      setSecretKey('');
-      setModalError('');
-      setShowSecretModal(false);
     } catch (err) {
-      setModalError(t(err.message));
+      setError(t(err.message)); // Nutze jetzt globales setError
     }
   };
 
@@ -103,11 +104,11 @@ function ListTrustlines({
         onClick={() => setMenuSelection(null)}
         className="mb-4 px-3 py-1 bg-gray-300 dark:bg-gray-700 text-black dark:text-white rounded hover:bg-gray-400 dark:hover:bg-gray-600"
       >
-        {t('backToMenu')}
+        {t('navigation.backToMainMenu')}
       </button>
 
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-        {t('listTrustlines')}: {trustlines?.length || 0}
+        {t('trustline.list')}: {trustlines?.length || 0}
       </p>
 
       {selectedTrustlines.length > 0 && (
@@ -116,7 +117,7 @@ function ListTrustlines({
             onClick={() => setShowOverviewModal(true)}
             className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
-            {t('deleteAllButton')}
+            {t('trustline.delete')}
           </button>
         </div>
       )}
@@ -127,9 +128,9 @@ function ListTrustlines({
             <th className="px-4 py-2 cursor-pointer" onClick={() => onSort('selected')}>
               <input type="checkbox" checked={allSelected} onChange={onToggleAll} />
             </th>
-            <th className="px-4 py-2 cursor-pointer" onClick={() => onSort('assetCode')}>{t('assetCode')}</th>
-            <th className="px-4 py-2 cursor-pointer" onClick={() => onSort('assetIssuer')}>{t('issuer')}</th>
-            <th className="px-4 py-2 cursor-pointer" onClick={() => onSort('createdAt')}>{t('creationDate')}</th>
+            <th className="px-4 py-2 cursor-pointer" onClick={() => onSort('assetCode')}>{t('asset.code')}</th>
+            <th className="px-4 py-2 cursor-pointer" onClick={() => onSort('assetIssuer')}>{t('asset.issuer')}</th>
+            <th className="px-4 py-2 cursor-pointer" onClick={() => onSort('createdAt')}>{t('asset.creationDate')}</th>
           </tr>
         </thead>
         <tbody>
@@ -144,7 +145,7 @@ function ListTrustlines({
               </td>
               <td className="px-4 py-2">{tl.assetCode}</td>
               <td className="px-4 py-2">{tl.assetIssuer}</td>
-              <td className="px-4 py-2">{tl.createdAt ? new Date(tl.createdAt).toLocaleString() : t('unknownDate')}</td>
+              <td className="px-4 py-2">{tl.createdAt ? new Date(tl.createdAt).toLocaleString() : t('asset.creationDate.unknown')}</td>
             </tr>
           ))}
         </tbody>
@@ -156,7 +157,7 @@ function ListTrustlines({
             onClick={() => setShowOverviewModal(true)}
             className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
-            {t('deleteAllButton')}
+            {t('trustline.delete.button')}
           </button>
         </div>
       )}
@@ -164,15 +165,15 @@ function ListTrustlines({
       {showOverviewModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-3xl max-h-[80vh] overflow-y-auto">
-            <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">{t('confirmActionTitle')}</h2>
-            <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">{t('confirmActionText')}</p>
+            <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">{t('option.confirm.action.title')}</h2>
+            <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">{t('option.confirm.action.text')}</p>
 
             <table className="min-w-full text-sm mb-4">
               <thead>
                 <tr>
-                  <th className="px-2 py-1 cursor-pointer" onClick={() => handleSortOverview('assetCode')}>{t('assetCode')}</th>
-                  <th className="px-2 py-1 cursor-pointer" onClick={() => handleSortOverview('assetIssuer')}>{t('issuer')}</th>
-                  <th className="px-2 py-1">{t('delete')}</th>
+                  <th className="px-2 py-1 cursor-pointer" onClick={() => handleSortOverview('assetCode')}>{t('asset.code')}</th>
+                  <th className="px-2 py-1 cursor-pointer" onClick={() => handleSortOverview('assetIssuer')}>{t('asset.issuer')}</th>
+                  <th className="px-2 py-1">{t('option.delete')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -185,7 +186,7 @@ function ListTrustlines({
                         className="text-red-600 hover:underline"
                         onClick={() => handleToggleFromOverview(tl)}
                       >
-                        {t('delete')}
+                        {t('option.delete')}
                       </button>
                     </td>
                   </tr>
@@ -198,7 +199,7 @@ function ListTrustlines({
                 onClick={() => setShowOverviewModal(false)}
                 className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500"
               >
-                {t('cancel')}
+                {t('option.cancel')}
               </button>
               <button
                 onClick={() => {
@@ -207,11 +208,20 @@ function ListTrustlines({
                 }}
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
               >
-                {t('yes')}
+                {t('option.yes')}
               </button>
             </div>
           </div>
         </div>
+      )}
+      {showSecretModal && (
+        <SecretKeyModal
+          onConfirm={(key) => {
+            setShowSecretModal(false);
+            handleDeleteSimulated(key);
+          }}
+          onCancel={() => setShowSecretModal(false)}
+        />
       )}
     </div>
   );

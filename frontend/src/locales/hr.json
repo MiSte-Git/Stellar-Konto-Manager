@@ -1,102 +1,136 @@
 {
-  "title": "Upravitelj Stellar Trustline-a",
-  "secretKeyInfo": "Tajni ključevi se sigurno obrađuju od strane backenda i ne pohranjuju se.",
-  "sourceLabel": "Unesite izvornu federacijsku adresu ili javni ključ:",
-  "sourcePlaceholder": "npr., korisnik*primjer.com ili GD4TPVR...",
-  "submitButton": "Pošalji",
-  "loading": "Učitavanje...",
-  "sourceWallet": "Izvorni novčanik:",
-  "listAll": "Popis svih Trustlines",
-  "compare": "Usporedite Trustlines",
-  "deleteAll": "Izbriši sve Trustlines",
-  "deleteByIssuer": "Izbriši povjerljive linije prema izdavateljima",
-  "settings": "Postavke",
-  "tokenPurchases": "Broj kupljenih tokena",
-  "backToMenu": "Povratak na izbornik",
-  "listTrustlines": "Popis Trustlines",
-  "showAllTrustlines": "Prikaži sve Trustlines",
-  "destLabel": "Unesite ciljani javni ključ:",
-  "destPlaceholder": "npr., GBZVTOY...",
-  "compareTrustlines": "Usporedite povjerljive linije",
-  "issuerLabel": "Unesite adresu izdavatelja:",
-  "issuerPlaceholder": "npr., GA5ZSEJ...",
-  "issuerSearchNoMatch": "Nisu pronađene izdavačke adrese koje odgovaraju '{search}'.",
-  "secretKeyLabel": "Unesite izvorni tajni ključ (sigurno se šalje na backend, ne pohranjuje se):",
-  "secretKeyPlaceholder": "npr., SB...",
-  "show": "Prikazati",
-  "hide": "Sakrij",
-  "deleteAllButton": "Izbriši sve Trustlines",
-  "deleteByIssuerButton": "Izbriši trustlines prema izdavateljima",
-  "results": "Rezultati:",
-  "noTrustlines": "Nisu pronađene Trustlines.",
-  "noDuplicates": "Nisu pronađene dvostruke Trustlines.",
-  "noIssuer": "Nisu pronađene Trustlines za izdavatelja {issuer}.",
-  "assetCode": "Kod imovine",
-  "issuer": "Izdavatelj",
-  "creationDate": "Datum izrade",
-  "unknownDate": "Nepoznato (stvoreno prije dostupne povijesti)",
-  "previous": "Prethodna",
-  "next": "Sljedeće",
-  "backToTop": "Natrag na vrh",
-  "confirmTitle": "Potvrdi akciju",
-  "confirmMessage": "Jeste li sigurni da želite izbrisati navedene Trustlines? Vaš tajni ključ će biti sigurno poslan na backend i neće biti pohranjen.",
-  "yes": "Da",
-  "cancel": "Otkaži",
-  "currentMenu": "Trenutni izbornik:",
-  "secretKeyEmpty": "Polje tajnog ključa je prazno.",
-  "secretKeyInvalid": "Neispravan tajni ključ.",
-  "secretKeyMismatch": "Tajni ključ se ne podudara s javnom adresom.",
-  "secretKeyCleared": "Tajni ključ je izbrisan.",
-  "invalidPublicKey": "Neispravan javni ključ ili federacijska adresa.",
-  "invalidIssuer": "Nevažeća adresa izdavatelja.",
-  "failedFederation": "Pogreška pri rješavanju federacijske adrese: {error}",
-  "noBalances": "Nema kredita za račun.",
-  "failedLoadAccount": "Pogreška pri učitavanju računa {publicKey}: {error}",
-  "backendConnectError": "Nije moguće povezati se s backendom. Provjerite radi li server na {url} i je li CORS aktiviran.",
-  "failedDeleteTrustlines": "Pogreška pri brisanju Trustlines: {error}",
-  "scriptError": "Pogreška u skripti: {message} na {source}:{lineno}:{colno} - {error}",
-  "errorFetchingOperations": "Pogreška prilikom dohvaćanja operacija: {error}",
-  "settingsTitle": "Postavke",
-  "walletList": "Popis novčanika",
+  "assets": {
+    "compromisedPurchases": "{total} ukupno plaćanja",
+    "totalPurchases": "Ukupan broj kupnji: {count}"
+  },
+  "secretKey": {
+    "valid": "✅ Tajni ključ je valjan.",
+    "info": "Tajni ključ privremeno se prenosi na backend za izvršavanje odabrane radnje. Ključ se ne pohranjuje.",
+    "label": "Unesite izvorni tajni ključ (sigurno se šalje na backend)",
+    "mismatch": "Tajni ključ se ne podudara s javnom adresom.",
+    "cleared": "Tajni ključ je izbrisan.",
+    "empty": "Polje tajnog ključa je prazno.",
+    "invalid": "Neispravan tajni ključ.",
+    "placeholder": "npr."
+  },
+  "option": {
+    "cancel": "Otkaži",
+    "confirm": {
+      "action": {
+        "title": "Potvrdi akciju",
+        "text": "Jesi li siguran"
+      }
+    },
+    "show": "Prikazati",
+    "description": "Opis",
+    "results": "Rezultati:",
+    "filter": "Filtriranje...",
+    "add": "Dodaj",
+    "yes": "Da",
+    "loading": "Učitavanje...",
+    "delete": "Izbriši",
+    "memo": "Bilješka",
+    "no": "Ne",
+    "newAddress": "Nova adresa",
+    "page": "Stranica",
+    "save": "Spremi",
+    "hide": "Sakrij",
+    "addToList": "Dodaj na popis"
+  },
+  "publicKey": {
+    "submit": {
+      "button": "Pošalji"
+    },
+    "recipient": "Adresa primatelja",
+    "label": "Molimo unesite adresu izvorne federacije ili javni ključ:",
+    "invalid": "Neispravan javni ključ ili adresa federacije.",
+    "destination": {
+      "error": "Neispravan ciljni ključ.",
+      "input": "Unesite adresu ciljne novčanice"
+    },
+    "placeholder": "npr.",
+    "source": "Adresa izvornog novčanika"
+  },
   "address": "Adresa",
-  "description": "Opis",
-  "compromised": "Kompromitiran",
-  "yesOption": "Da",
-  "noOption": "Ne",
-  "addWallet": "Dodaj novčanik",
-  "newAddress": "Nova adresa",
-  "save": "Spremi",
-  "delete": "Izbriši",
-  "exportSettings": "Izvoz postavki",
-  "importSettings": "Uvoz postavki",
-  "tokenPurchasesTitle": "Broj kupljenih tokena",
-  "totalPurchases": "Ukupan broj kupnji: {count}",
-  "compromisedPurchases": "{total} ukupnih plaćanja, od kojih je {compromised} kompromitirano",
-  "memo": "Bilješka",
-  "amount": "Iznos (XLM)",
-  "recipient": "Adresa primatelja",
-  "dateTimes": "Datum i vrijeme",
-  "walletInList": "Novčanik u popisu",
-  "add": "Dodaj",
-  "addToList": "Dodaj na popis",
-  "noPayments": "Nisu pronađene uplate.",
-  "deleteError": "Pogreška pri brisanju Trustlines:",
-  "enterIssuer": "Unesite adresu izdavatelja:",
-  "noIssuerTrustlinesFound": "Nisu pronađene povjerljive linije za ovog izdavatelja.",
-  "confirmActionTitle": "Potvrdite akciju",
-  "confirmActionText": "Jeste li sigurni da želite izbrisati navedene Trustlines? Vaš tajni ključ će biti sigurno poslan na server i neće biti pohranjen.",
-  "enterDestinationPublicKey": "Unesite adresu ciljne novčanice",
-  "noDuplicatesFound": "Nisu pronađene dvostruke Trustlines.",
-  "invalidDestinationKey": "Neispravan javni ključ odredišta.",
-  "cannotConnectToBackend": "Povezivanje s backendom nije uspjelo. Provjerite radi li server i je li CORS aktiviran.",
-  "resolveOrValidatePublicKey.empty": "Polje za unos ne smije biti prazno.",
-  "resolveOrValidatePublicKey.invalid": "Neispravan javni ključ ili adresa federacije.",
-  "findDuplicateTrustlines.invalidKey": "Nevažeći izvorni ili ciljani ključ.",
-  "compare.noDuplicates": "Nisu pronađene dvostruke linije povjerenja.",
-  "submitTransaction.secretCleared": "Tajni ključ je izbrisan.",
-  "submitTransaction.failed:Invalid source secret key.": "Neispravan tajni ključ izvora.",
-  "submitTransaction.failed:Unknown error.": "Nepoznata greška prilikom transakcije.",
-  "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "Povezivanje s backendom nije uspjelo. Provjerite radi li server pod",
-  "page": "Stranica",
-  "filter": "Filtriraj..."
+  "navigation": {
+    "current": {
+      "menu": "Trenutni izbornik:"
+    },
+    "next": "Sljedeće",
+    "previous": "Prethodna",
+    "backToTop": "Natrag na vrh",
+    "backToMainMenu": "Povratak na izbornik"
+  },
+  "trustline": {
+    "all": "Prikaži sve Trustlines",
+    "removeFromList": "Ukloniti s popisa",
+    "inputEmpty": "Polje za unos ne smije biti prazno.",
+    "delete": "Brisanje povjerenstvenih linija",
+    "destination": {
+      "label": "Unesite ciljani javni ključ:",
+      "placeholder": "npr."
+    },
+    "noDuplicates": "Nisu pronađene dvostruke povjerljive linije.",
+    "issuer": {
+      "notFound": "Nisu pronađene Trustlines za izdavatelja {issuer}."
+    },
+    "notFound": "Nisu pronađene Trustlines.",
+    "reviewSelection": {
+      "title": "Provjerite odabrane linije povjerenja"
+    },
+    "list": "Popis Trustlinesa",
+    "compare": "Usporedite Trustlines",
+    "confirmDeletion": "Stvarno izbrisati Trustlines"
+  },
+  "token": {
+    "purchases": "Broj kupljenih tokena"
+  },
+  "asset": {
+    "code": "Kod imovine",
+    "amount": "Iznos (XLM)",
+    "issuer": "Izdavatelj",
+    "creationDate": "Kreirano dana"
+  },
+  "date": {
+    "times": "Datum i vrijeme"
+  },
+  "settings": {
+    "label": "Postavke",
+    "export": "Izvezi postavke",
+    "import": "Uvoz postavki"
+  },
+  "error": {
+    "fetchingOperations": "Pogreška prilikom dohvaćanja operacija: {error}",
+    "connection": {
+      "backend": "Nije moguće povezati se s backendom. Provjerite"
+    },
+    "script": "Pogreška u skripti: {message} na {source}:{lineno}:{colno} - {error}",
+    "transaktion": {
+      "unknown": "Nepoznata greška prilikom transakcije."
+    }
+  },
+  "puplicKey": {
+    "failed": "Pogreška pri rješavanju federacijske adrese/javni ključ: {error}"
+  },
+  "account": {
+    "loadFailed": "Pogreška pri učitavanju računa {publicKey}: {error}",
+    "noBalances": "Nema kredita za račun."
+  },
+  "issuer": {
+    "label": "Unesite adresu izdavatelja:",
+    "enter": "Unesite adresu izdavatelja:",
+    "notfound": "Nisu pronađene adrese izdavatelja",
+    "compromised": "Kompromitiran",
+    "invalid": "Nevažeća adresa izdavatelja.",
+    "placeholder": "npr."
+  },
+  "wallet": {
+    "list": "Popis novčanika Groupfund",
+    "noPayments": "Nisu pronađene uplate.",
+    "add": "Dodaj novčanik",
+    "inList": "Novčanik u popisu"
+  },
+  "main": {
+    "title": "Upravitelj Stellar Trustline-a"
+  }
 }
