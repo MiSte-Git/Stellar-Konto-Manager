@@ -24,7 +24,7 @@ function DeleteByIssuer({
 
   const handleDelete = async () => {
     if (!issuerAddress || !StellarSdk.StrKey.isValidEd25519PublicKey(issuerAddress)) {
-      setError(t('invalidIssuer'));
+      setError(t('issuer.invalid'));
       return;
     }
 
@@ -39,7 +39,7 @@ function DeleteByIssuer({
 
         setConfirmAction(() => async () => {
           if (!sourceSecret || !StellarSdk.StrKey.isValidEd25519SecretSeed(sourceSecret)) {
-            setError(t('invalidSecret'));
+            setError(t('secretKey.invalid'));
             return;
           }
 
@@ -62,15 +62,15 @@ function DeleteByIssuer({
             
             const response = { ok: true };
 
-            if (!response.ok) throw new Error(result.error || t('failedDeleteTrustlines'));
+            if (!response.ok) throw new Error(result.error || t('trustline.delete.error'));
 
-            setResults([...result.messages, t('secretKeyCleared')]);
+            setResults([...result.messages, t('secretKey.cleared')]);
             setTrustlines(await loadTrustlines(sourcePublicKey));
             setSourceSecret('');
             setShowSecretKey(false);
           } catch (err) {
             console.error('Fetch error:', err);
-            setError(t('deleteError'));
+            setError(t('trustline.delete.error'));
           }
         });
 
@@ -87,7 +87,7 @@ function DeleteByIssuer({
 
   return (
     <div className="mt-4">
-      <label className="block mb-2">{t('enterIssuer')}</label>
+      <label className="block mb-2">{t('issuer.enter')}</label>
       <input
         type="text"
         value={issuerAddress}
@@ -100,7 +100,7 @@ function DeleteByIssuer({
         className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         disabled={isLoading}
       >
-        {isLoading ? t('loading') : t('delete')}
+        {isLoading ? t('option.loading') : t('option.delete')}
       </button>
     </div>
   );

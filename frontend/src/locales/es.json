@@ -1,102 +1,136 @@
 {
-  "title": "Gestor de Líneas de Confianza Stellar",
-  "secretKeyInfo": "Las claves secretas se procesan de manera segura en el backend y no se almacenan.",
-  "sourceLabel": "Ingrese la dirección de la federación de origen o la clave pública:",
-  "sourcePlaceholder": "Por ejemplo, user*example.com o GD4TPVR...",
-  "submitButton": "Enviar",
-  "loading": "Cargando...",
-  "sourceWallet": "Cartera de origen:",
-  "listAll": "Listar todas las líneas de confianza",
-  "compare": "Comparar líneas de confianza",
-  "deleteAll": "Eliminar todas las líneas de confianza",
-  "deleteByIssuer": "Eliminar líneas de confianza por emisor",
-  "settings": "Configuraciones",
-  "tokenPurchases": "Cantidad de tokens comprados",
-  "backToMenu": "Volver al menú",
-  "listTrustlines": "Listar Trustlines",
-  "showAllTrustlines": "Mostrar todas las líneas de confianza",
-  "destLabel": "Ingrese la clave pública de destino:",
-  "destPlaceholder": "por ejemplo, GBZVTOY...",
-  "compareTrustlines": "Comparar líneas de confianza",
-  "issuerLabel": "Ingrese la dirección del emisor:",
-  "issuerPlaceholder": "Por ejemplo, GA5ZSEJ...",
-  "issuerSearchNoMatch": "No se encontraron direcciones de emisores que coincidan con '{search}'.",
-  "secretKeyLabel": "Ingrese la clave secreta de origen (se enviará de forma segura al backend, no se guardará):",
-  "secretKeyPlaceholder": "Por ejemplo, SB...",
-  "show": "Mostrar",
-  "hide": "Ocultar",
-  "deleteAllButton": "Eliminar todas las líneas de confianza",
-  "deleteByIssuerButton": "Eliminar líneas de confianza por emisor",
-  "results": "Resultados:",
-  "noTrustlines": "No se encontraron líneas de confianza.",
-  "noDuplicates": "No se encontraron líneas de confianza duplicadas.",
-  "noIssuer": "No se encontraron líneas de confianza para el emisor {issuer}.",
-  "assetCode": "Código de activo",
-  "issuer": "Emisor",
-  "creationDate": "Fecha de creación",
-  "unknownDate": "Desconocido (creado antes del historial disponible)",
-  "previous": "Anterior",
-  "next": "Siguiente",
-  "backToTop": "Volver arriba",
-  "confirmTitle": "Confirmar acción",
-  "confirmMessage": "¿Está seguro de que desea eliminar las líneas de confianza enumeradas? Su clave secreta se enviará de forma segura a un backend y no se almacenará.",
-  "yes": "Sí",
-  "cancel": "Cancelar",
-  "currentMenu": "Menú actual:",
-  "secretKeyEmpty": "El campo de la clave secreta está vacío.",
-  "secretKeyInvalid": "Clave secreta inválida.",
-  "secretKeyMismatch": "La clave secreta no coincide con la dirección pública.",
-  "secretKeyCleared": "La clave secreta ha sido eliminada.",
-  "invalidPublicKey": "Clave pública o dirección de federación no válida.",
-  "invalidIssuer": "Dirección del emisor no válida.",
-  "failedFederation": "Error al resolver la dirección de la federación: {error}",
-  "noBalances": "No se encontraron créditos para la cuenta.",
-  "failedLoadAccount": "Error al cargar la cuenta {publicKey}: {error}",
-  "backendConnectError": "No se puede conectar con el backend. Asegúrese de que el servidor está funcionando en {url} y que CORS está activado.",
-  "failedDeleteTrustlines": "Error al eliminar las líneas de confianza: {error}",
-  "scriptError": "Error de script: {message} en {source}:{lineno}:{colno} - {error}",
-  "errorFetchingOperations": "Error al recuperar las operaciones: {error}",
-  "settingsTitle": "Configuraciones",
-  "walletList": "Lista de billeteras",
+  "assets": {
+    "compromisedPurchases": "{total} pagos en total",
+    "totalPurchases": "Número total de compras: {count}"
+  },
+  "secretKey": {
+    "valid": "✅ La clave secreta es válida.",
+    "info": "La clave secreta solo se transfiere temporalmente a un backend para ejecutar la acción seleccionada. La clave no se almacena.",
+    "label": "Ingrese la clave secreta de origen (se enviará de forma segura al backend)",
+    "mismatch": "La clave secreta no coincide con la dirección pública.",
+    "cleared": "La clave secreta ha sido eliminada.",
+    "empty": "El campo de la clave secreta está vacío.",
+    "invalid": "Clave secreta inválida.",
+    "placeholder": "p. Ej."
+  },
+  "option": {
+    "cancel": "Cancelar",
+    "confirm": {
+      "action": {
+        "title": "Confirmar acción",
+        "text": "¿Estás seguro?"
+      }
+    },
+    "show": "Mostrar",
+    "description": "Descripción",
+    "results": "Resultados:",
+    "filter": "Filtrando...",
+    "add": "Añadir",
+    "yes": "Sí",
+    "loading": "Cargando...",
+    "delete": "Eliminar",
+    "memo": "Memorándum",
+    "no": "No",
+    "newAddress": "Nueva dirección",
+    "page": "Página",
+    "save": "Guardar",
+    "hide": "Ocultar",
+    "addToList": "Añadir a la lista"
+  },
+  "publicKey": {
+    "submit": {
+      "button": "Enviar"
+    },
+    "recipient": "Dirección de recepción",
+    "label": "Por favor, ingresa la dirección de la federación de origen o la clave pública:",
+    "invalid": "Clave pública o dirección de federación no válida.",
+    "destination": {
+      "error": "Clave de destino no válida.",
+      "input": "Ingrese la dirección de la billetera de destino"
+    },
+    "placeholder": "por ejemplo",
+    "source": "Dirección de la billetera de origen"
+  },
   "address": "Dirección",
-  "description": "Descripción",
-  "compromised": "Comprometido",
-  "yesOption": "Sí",
-  "noOption": "No",
-  "addWallet": "Agregar billetera",
-  "newAddress": "Nueva dirección",
-  "save": "Guardar",
-  "delete": "Eliminar",
-  "exportSettings": "Exportar configuraciones",
-  "importSettings": "Importar configuraciones",
-  "tokenPurchasesTitle": "Cantidad de tokens comprados",
-  "totalPurchases": "Número total de compras: {count}",
-  "compromisedPurchases": "{total} pagos en total, de los cuales {compromised} están comprometidos",
-  "memo": "Memorándum",
-  "amount": "Cantidad (XLM)",
-  "recipient": "Dirección de recepción",
-  "dateTimes": "Fecha y horarios",
-  "walletInList": "Cartera en lista",
-  "add": "Añadir",
-  "addToList": "Añadir a la lista",
-  "noPayments": "No se encontraron pagos.",
-  "deleteError": "Error al eliminar las líneas de confianza:",
-  "enterIssuer": "Introduce la dirección del emisor:",
-  "noIssuerTrustlinesFound": "No se encontraron líneas de confianza para este emisor.",
-  "confirmActionTitle": "Confirmar acción",
-  "confirmActionText": "¿Estás seguro de que deseas eliminar las líneas de confianza enumeradas? Tu clave secreta se enviará de forma segura al servidor y no se guardará.",
-  "enterDestinationPublicKey": "Introduce la dirección de la billetera de destino",
-  "noDuplicatesFound": "No se encontraron líneas de confianza duplicadas.",
-  "invalidDestinationKey": "Clave pública de destino no válida.",
-  "cannotConnectToBackend": "La conexión con el backend ha fallado. Asegúrate de que el servidor esté funcionando y que CORS esté activado.",
-  "resolveOrValidatePublicKey.empty": "El campo de entrada no puede estar vacío.",
-  "resolveOrValidatePublicKey.invalid": "Clave pública o dirección de federación no válida.",
-  "findDuplicateTrustlines.invalidKey": "Clave de origen o destino no válida.",
-  "compare.noDuplicates": "No se encontraron líneas de confianza duplicadas.",
-  "submitTransaction.secretCleared": "La clave secreta ha sido eliminada.",
-  "submitTransaction.failed:Invalid source secret key.": "Clave secreta de origen no válida.",
-  "submitTransaction.failed:Unknown error.": "Error desconocido en la transacción.",
-  "submitTransaction.failed:Cannot connect to backend. Ensure the server is running at": "Fallo en la conexión al backend. Asegúrate de que el servidor esté en funcionamiento bajo",
-  "page": "Página",
-  "filter": "Filtrando..."
+  "navigation": {
+    "current": {
+      "menu": "Menú actual:"
+    },
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "backToTop": "Volver arriba",
+    "backToMainMenu": "Volver al menú"
+  },
+  "trustline": {
+    "all": "Mostrar todas las líneas de confianza",
+    "removeFromList": "Eliminar de la lista",
+    "inputEmpty": "El campo de entrada no puede estar vacío.",
+    "delete": "Eliminar línea(s) de confianza",
+    "destination": {
+      "label": "Ingrese la clave pública de destino:",
+      "placeholder": "p. Ej."
+    },
+    "noDuplicates": "No se encontraron líneas de confianza duplicadas.",
+    "issuer": {
+      "notFound": "No se encontraron líneas de confianza para el emisor {issuer}."
+    },
+    "notFound": "No se encontraron líneas de confianza.",
+    "reviewSelection": {
+      "title": "Verificar líneas de confianza seleccionadas"
+    },
+    "list": "Listar Trustlines",
+    "compare": "Comparar líneas de confianza",
+    "confirmDeletion": "¿Realmente eliminar Trustlines?"
+  },
+  "token": {
+    "purchases": "Número de tokens comprados"
+  },
+  "asset": {
+    "code": "Código de activo",
+    "amount": "Cantidad (XLM)",
+    "issuer": "Emisor",
+    "creationDate": "Creado el"
+  },
+  "date": {
+    "times": "Fecha y horas"
+  },
+  "settings": {
+    "label": "Configuraciones",
+    "export": "Exportar configuraciones",
+    "import": "Importar configuraciones"
+  },
+  "error": {
+    "fetchingOperations": "Error al recuperar las operaciones: {error}",
+    "connection": {
+      "backend": "No se puede conectar con el backend. Asegúrese"
+    },
+    "script": "Error de script: {message} en {source}:{lineno}:{colno} - {error}",
+    "transaktion": {
+      "unknown": "Error desconocido en la transacción."
+    }
+  },
+  "puplicKey": {
+    "failed": "Error al resolver la dirección de la federación/clave pública: {error}"
+  },
+  "account": {
+    "loadFailed": "Error al cargar la cuenta {publicKey}: {error}",
+    "noBalances": "No se encontraron créditos para la cuenta."
+  },
+  "issuer": {
+    "label": "Ingrese la dirección del emisor:",
+    "enter": "Ingresa la dirección del emisor:",
+    "notfound": "No se encontraron direcciones de emisor",
+    "compromised": "Comprometido",
+    "invalid": "Dirección del emisor no válida.",
+    "placeholder": "p. Ej."
+  },
+  "wallet": {
+    "list": "Lista de Carteras de Groupfund",
+    "noPayments": "No se encontraron pagos.",
+    "add": "Añadir cartera",
+    "inList": "Cartera en lista"
+  },
+  "main": {
+    "title": "Gestor de Líneas de Confianza Stellar"
+  }
 }

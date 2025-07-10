@@ -135,7 +135,7 @@ function Main() {
             });
             const result = await response.json();
             if (!response.ok) throw new Error(result.error || 'submitTransaction.failed:Unknown error.');
-            setResults([...result.messages, t('submitTransaction.secretCleared')]);
+            setResults([...result.messages, t('secretKey.cleared')]);
             setTrustlines(await loadTrustlines(sourcePublicKey));
             setSourceSecret('');
             setShowSecretKey(false);
@@ -146,7 +146,7 @@ function Main() {
         });
         setShowConfirm(true);
       } else {
-        setResults([t('compare.noDuplicates')]);
+        setResults([t('trustline.noDuplicates')]);
       }
     } catch (err) {
       setError(t(err.message));
@@ -199,8 +199,8 @@ function Main() {
           className="h-6 w-auto max-w-none rounded shadow" 
           alt="Trustline Manager Logo" />
       </div>
-      <h1 className="text-2xl font-bold mb-4">{t('title')}</h1>
-      <p className="mb-4 text-sm text-blue-600 rounded shadow">{t('secretKeyInfo')}</p>
+      <h1 className="text-2xl font-bold mb-4">{t('main.title')}</h1>
+      <p className="mb-4 text-sm text-blue-600 rounded shadow">{t('secretKey.info')}</p>
       {!sourcePublicKey ? (
         <SourceInput
           sourceInput={sourceInput}
