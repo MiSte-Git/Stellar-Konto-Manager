@@ -192,42 +192,38 @@ function Main() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 text-center mt-4">
-      <div className="flex flex-col items-center gap-2 mb-6">
-        <img 
-          src={trustlineLogo} 
-          className="h-6 w-auto max-w-none rounded shadow" 
-          alt="Trustline Manager Logo" />
-      </div>
-      <h1 className="text-2xl font-bold mb-4">{t('main.title')}</h1>
-      <p className="mb-4 text-sm text-blue-600 rounded shadow">{t('secretKey.info')}</p>
-      {!sourcePublicKey ? (
-        <SourceInput
-          sourceInput={sourceInput}
-          setSourceInput={setSourceInput}
-          onSubmit={handleSourceSubmit}
-          isLoading={isLoading}
-        />
-      ) : (
-        <div>
-          <p className="mb-4">Source Wallet: {sourcePublicKey}</p>
-          {sourcePublicKey && !menuSelection && (
-            <MainMenu onSelect={setMenuSelection} />
-          )}
-        </div>
-      )}
-      {error && <p className="text-red-500 mt-4">{error}</p>}
-      {menuSelection && (
-        <div className="mb-4">
-          <div className="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded shadow text-center mx-auto">
-            <span className="mr-2">📌</span>
-            <span className="font-semibold">
-              {t(menuSelection)}
-            </span>
-          </div>
-        </div>
-      )}
+     <>
+      <div className="max-w-4xl mx-auto px-4 pt-4 pb-0 text-center mt-4-500">
+        {/* 🌍 Global: Titel & Info */}
+        <h1 className="text-2xl font-bold mb-4">{t('main.title')}</h1>
+        <p className="mb-4 text-sm text-blue-200 rounded border">{t('secretKey.info')}</p>
+        {sourcePublicKey && (
+          <p className="mb-4 pb-1 text-sm text-gray-700 dark:text-gray-200 font-mono">
+            {t('publicKey.source')}: {sourcePublicKey}
+          </p>
+        )}
 
+        {/* 🔐 Eingabe oder Menüwahl */}
+        {!sourcePublicKey ? (
+          <SourceInput
+            sourceInput={sourceInput}
+            setSourceInput={setSourceInput}
+            onSubmit={handleSourceSubmit}
+            isLoading={isLoading}
+          />
+        ) : (
+          <div>
+            {/* ✅ Nur Menüauswahl, keine doppelte Wallet-Anzeige */}
+            {sourcePublicKey && !menuSelection && (
+              <MainMenu onSelect={setMenuSelection} />
+            )}
+          </div>
+        )}
+
+        {error && <p className="text-red-500 mt-4">{error}</p>}
+      </div>
+
+      {/* Menüansicht anzeigen (z. B. ListAll) */}
       {menuSelection === 'listAll' && (
         <>
         <p className="text-sm text-gray-400">{error}</p>
@@ -248,6 +244,9 @@ function Main() {
             setResults={setResults}
             setError={setError}
             setMenuSelection={setMenuSelection}
+            menuSelection={menuSelection}
+            setSecretKey={setSourceSecret}
+            publicKey={sourcePublicKey}
          />
         </>
       )}
@@ -336,7 +335,7 @@ function Main() {
           isLoading={isLoading}
         />
       )}
-    </div>
+    </>
   );
 }
 
