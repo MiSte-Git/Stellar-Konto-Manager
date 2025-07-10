@@ -21,6 +21,12 @@
         "text": "Bist du sicher"
       }
     },
+    "copy": "Kopieren",
+    "export": {
+      "csv": "Als CSV speichern",
+      "pdf": "Als PDF speichern"
+    },
+    "close": "Schließen",
     "show": "Anzeigen",
     "description": "Beschreibung",
     "results": "Ergebnisse:",
@@ -35,7 +41,8 @@
     "page": "Seite",
     "save": "Speichern",
     "hide": "Verbergen",
-    "addToList": "Zur Liste hinzufügen"
+    "addToList": "Zur Liste hinzufügen",
+    "ok": "OK"
   },
   "publicKey": {
     "submit": {
@@ -62,34 +69,36 @@
     "backToMainMenu": "Zurück zum Menü"
   },
   "trustline": {
-    "all": "Trustlines anzeigen",
+    "all": "Trustline(s) anzeigen",
     "removeFromList": "Aus Liste entfernen",
     "inputEmpty": "Eingabefeld darf nicht leer sein.",
     "delete": "Trustline(s) löschen",
     "deleted": {
-      "simulated": "{{count}} Trustlines wurden simuliert gelöscht",
-      "success": "{{count}} Trustlines wurden gelöscht"
+      "simulated": "{{count}} Trustline(s) wurden simuliert gelöscht",
+      "success": "{{count}} Trustline(s) wurden gelöscht",
+      "resultTitle": "Gelöschte Trustline(s)",
+      "resultText": "{{count}} Trustline(s) wurden erfolgreich gelöscht ({{mode}}).",
+      "mode": {
+        "real": "Echtmodus",
+        "simulation": "Simulationsmodus",
+        "realWarning": "Achtung: Echte Trustline(s) werden gelöscht"
+      }
     },
     "destination": {
       "label": "Geben Sie den Ziel-Öffentlichen Schlüssel ein:",
       "placeholder": "z.B."
     },
-    "noDuplicates": "Keine doppelten Trustlines gefunden.",
+    "noDuplicates": "Keine doppelten Trustline(s) gefunden.",
     "issuer": {
-      "notFound": "Keine Trustlines für Emittenten {issuer} gefunden."
+      "notFound": "Keine Trustline(s) für Emittenten {issuer} gefunden."
     },
-    "notFound": "Keine Trustlines gefunden.",
+    "notFound": "Keine Trustline(s) gefunden.",
     "reviewSelection": {
-      "title": "Selektierte Trustlines prüfen"
+      "title": "Selektierte Trustline(s) prüfen"
     },
-    "mode": {
-      "simulation": "Simulationsmodus aktiv",
-      "real": "Echter Löschmodus aktiv",
-      "realWarning": "Achtung: Echte Trustlines werden gelöscht"
-    },
-    "list": "Anzahl Trustlines",
-    "compare": "Trustlines vergleichen",
-    "confirmDeletion": "Trustlines wirklich löschen",
+    "list": "Anzahl Trustline(s)",
+    "compare": "Trustline(s) vergleichen",
+    "confirmDeletion": "Trustline(s) wirklich löschen",
     "showSecret": "Geheimschlüssel anzeigen"
   },
   "token": {

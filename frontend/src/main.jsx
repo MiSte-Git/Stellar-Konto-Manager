@@ -37,10 +37,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 console.log('main.jsx Nach ReactDOM');
 
 function Main() {
-	console.log('main.jsx In function Main');
+	//console.log('main.jsx In function Main');
   const { t } = useTranslation();
   const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
-  console.log('[DEBUG] Aktive Horizon URL:', HORIZON_URL);
+  //console.log('[DEBUG] Aktive Horizon URL:', HORIZON_URL);
   // Innerhalb der Main-Funktion (nach useState-Aufrufen):
   const [trustlines, setTrustlines] = useState([]);
   const [selectedTrustlines, setSelectedTrustlines] = useState([]);
@@ -241,6 +241,7 @@ function Main() {
             setSelectedTrustlines={setSelectedTrustlines} 
             onToggleTrustline={handleToggleTrustline}
             onToggleAll={handleToggleAll}
+            results={results}
             setResults={setResults}
             setError={setError}
             setMenuSelection={setMenuSelection}

@@ -6,6 +6,7 @@ import SecretKeyModal from './SecretKeyModal';
 import { deleteTrustlines } from '../services/stellarUtils';
 import { assertKeyPairMatch } from '../services/stellarUtils';
 import MenuHeader from './MenuHeader';
+import ResultModal from './ResultModal'; // ⬅️ Oben importieren
 
 function ListTrustlines({
   trustlines,
@@ -21,6 +22,7 @@ function ListTrustlines({
   onToggleTrustline,
   onToggleAll,
   setSelectedTrustlines,
+  results,
   setResults,
   setError,
   setMenuSelection,
@@ -38,9 +40,10 @@ function ListTrustlines({
   // Fehlerausgabe im Secret-Key-Modal
   const [modalError, setModalError] = useState('');
   // Ergebnisse für Info- oder Fehlermeldungen nach Löschaktionen
-  const [localResults, setLocalResults] = useState([]);
   const hasMultiplePages = trustlines.length > itemsPerPage;
-
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [deletedTrustlines, setDeletedTrustlines] = useState([]);
+  const [isSimulation, setIsSimulation] = useState(false);
 
   // Simulationsmodus aktiv?
   const [simulationMode, setSimulationMode] = useState(true);
@@ -76,6 +79,10 @@ function ListTrustlines({
     setPaginated(filtered.slice(start, end));
   }, [trustlines, filters, sortColumn, sortDirection, currentPage, itemsPerPage, selectedTrustlines]);
 
+  useEffect(() => {
+    console.log('[DEBUG] Komponente ListTrustlines wurde geladen.');
+  }, []); // <-- keine Abhängigkeit
+
   const isSelected = (item) => selectedTrustlines.some(sel => sel.assetCode === item.assetCode && sel.assetIssuer === item.assetIssuer);
   const allSelected = paginated.length > 0 && paginated.every(isSelected);
 
@@ -88,13 +95,26 @@ function ListTrustlines({
     try {
       validateSecretKey(secretKey);
       // Gehört der Secret Key zum aktuell geladenen Wallet?
-      assertKeyPairMatch(secretKey, publicKey);const count = selectedTrustlines.length;
-      setLocalResults([t('trustlines.deleted.simulated', { count })]);
+      assertKeyPairMatch(secretKey, publicKey);
+      
+      //console.log('[DEBUG] results =', results);
+
+      const count = selectedTrustlines.length;
+      
+      //console.log('[DEBUG] Ergebnis setzen...');
+      //setResults(['✅ Simulation erfolgreich']);
+      //console.log('[DEBUG] Simulation aktiviert, count =', count);
+      setResults([t('trustline.deleted.simulated', { count })]);
+      //console.log('[DEBUG] Ergebnis gesetzt:', t('trustline.deleted.simulated', { count }));
+      setIsSimulation(true);
       setSelectedTrustlines([]);
+      setDeletedTrustlines(selectedTrustlines); // ⬅️ oder simulated
+      setShowResultModal(true);
       setSecretKey('');
       setModalError('');
       setShowSecretModal(false);
     } catch (err) {
+      console.error('[Simulate] Fehler:', err);
       setModalError(t(err.message));
     }
   };
@@ -105,8 +125,6 @@ function ListTrustlines({
    * @param {string} secretKey - Secret Key des Absenders
    */
   const handleDeleteTrustlines = async (secretKey) => {
-    let deleted = [];
-
     try {
       // Formatprüfung des Secret Keys
       validateSecretKey(secretKey);
@@ -117,8 +135,7 @@ function ListTrustlines({
       // UI vorbereiten
       setIsProcessing(true);
       setModalError('');
-      setLocalResults([t('trustline.deleted.success', { count: deleted.length }),]);
-      console.log('[UI] localResults gesetzt:', deleted.length);
+      //console.log('[UI] results gesetzt:', deleted.length);
 
       // Trustlines wirklich löschen via Horizon
       const deleted = await deleteTrustlines({
@@ -126,20 +143,24 @@ function ListTrustlines({
         trustlines: selectedTrustlines,
       });
 
-      console.log('[DEBUG] Löschung erfolgreich:', deleted);
+      //console.log('[DEBUG] Löschung erfolgreich:', deleted);
 
       // Erfolgsmeldung anzeigen
-      setLocalResults([
+      setResults([
         t('trustline.deleted.success', { count: deleted.length }),
       ]);
 
       // Auswahl und Modal zurücksetzen
+      
+      setIsSimulation(false);
       setSelectedTrustlines([]);
-      setShowSecretModal(false);
+      setDeletedTrustlines(deleted); // ⬅️ oder simulated
+      setShowResultModal(true);
       setSecretKey('');
+      setShowSecretModal(false);
     } catch (err) {
       console.error('[ERROR] Löschung fehlgeschlagen:', err);
-      setLocalResults([
+      setResults([
         t('transaction.failed') + ': ' + (err.message || 'unknown'),
       ]);
     } finally {
@@ -173,6 +194,12 @@ function ListTrustlines({
       {/* Menükopf mit Zurück-Button + aktuelle Ansicht */}
       <MenuHeader setMenuSelection={setMenuSelection} menuSelection={menuSelection} />
 
+      {results.length > 0 && (
+        <div className="mt-4 text-sm text-blue-600 dark:text-blue-400">
+          {results.map((msg, idx) => <p key={idx}>{msg}</p>)}
+        </div>
+      )}
+ 
       {/* Infoleiste: Wallet, Anzahl, Modusauswahl */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-500 rounded p-3 text-sm mb-4">
         <div className="text-gray-700 dark:text-gray-300 mb-2 sm:mb-0">
@@ -234,19 +261,13 @@ function ListTrustlines({
         </tbody>
       </table>
       
-      {localResults.length > 0 && (
-        <div className="mt-4 text-sm text-blue-600 dark:text-blue-400">
-          {localResults.map((msg, idx) => <p key={idx}>{msg}</p>)}
-        </div>
-      )}
-
       {selectedTrustlines.length > 0 && (
         <div className="mt-4">
           <button
             onClick={() => setShowOverviewModal(true)}
             className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
-            {t('trustline.delete.button')}
+            {t('trustline.delete')}
           </button>
         </div>
       )}
@@ -256,7 +277,7 @@ function ListTrustlines({
             onClick={() => setShowOverviewModal(true)}
             className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
-            {t('trustline.delete.button')}
+            {t('trustline.delete')}
           </button>
         </div>
       )}
@@ -316,7 +337,6 @@ function ListTrustlines({
       {showSecretModal && (
         <SecretKeyModal
           onConfirm={(key) => {
-            setShowSecretModal(false);
             if (simulationMode) {
               handleDeleteSimulated(key);
             } else {
@@ -329,8 +349,15 @@ function ListTrustlines({
       )}
       {isProcessing && (
         <p className="text-blue-600 text-sm mt-2">{t('main.processing')}</p>
-      )}   
-   </div>
+      )}
+      {showResultModal && (
+        <ResultModal
+          deletedTrustlines={deletedTrustlines}
+          isSimulation={isSimulation}
+          onClose={() => setShowResultModal(false)}
+        />
+      )}
+  </div>
   );
 }
 
