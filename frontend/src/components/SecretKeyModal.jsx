@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { validateSecretKey } from '../services/stellarUtils';
 
-function SecretKeyModal({ onConfirm, onCancel }) {
+function SecretKeyModal({ onConfirm, onCancel, errorMessage }) {
   const { t } = useTranslation();
   const [secretKey, setSecretKey] = useState('');
-  const [error, setError] = useState('');
+  const [showSecret, setShowSecret] = useState(false);
+  const [error, setError] = useState(errorMessage || '');
 
   const handleConfirm = () => {
     if (!secretKey.trim()) {
@@ -30,12 +31,21 @@ function SecretKeyModal({ onConfirm, onCancel }) {
           {t('secretKey.label')}
         </h2>
         <input
-          type="password"
+          type={showSecret ? "text" : "password"}
           value={secretKey}
           onChange={(e) => setSecretKey(e.target.value)}
           placeholder={t('secretKey.placeholder')}
           className="w-full px-4 py-2 border rounded mb-2 dark:bg-gray-700 dark:text-white"
         />
+        <label className="flex items-center gap-2 mt-2 text-sm">
+          <input
+            type="checkbox"
+            checked={showSecret}
+            onChange={() => setShowSecret(!showSecret)}
+          />
+          {t('trustline.showSecret')}
+        </label>
+
         {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
         {!error && secretKey && (
           <p className="text-green-600 text-sm mb-2">{t('secretKey.valid')}</p>

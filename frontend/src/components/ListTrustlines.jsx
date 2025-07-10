@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { validateSecretKey } from '../services/stellarUtils';
 import SecretKeyModal from './SecretKeyModal';
+import { deleteTrustlines } from '../services/stellarUtils';
+import { assertKeyPairMatch } from '../services/stellarUtils';
+import MenuHeader from './MenuHeader';
 
 function ListTrustlines({
   trustlines,
@@ -20,13 +23,27 @@ function ListTrustlines({
   setSelectedTrustlines,
   setResults,
   setError,
-  setMenuSelection
+  setMenuSelection,
+  menuSelection,
+  setSecretKey,
+  publicKey
 }) {
   const { t } = useTranslation();
   const [paginated, setPaginated] = useState([]);
   const [showOverviewModal, setShowOverviewModal] = useState(false);
   const [showSecretModal, setShowSecretModal] = useState(false);
   const [overviewSort, setOverviewSort] = useState({ column: 'assetCode', direction: 'asc' });
+  // Steuert die Anzeige eines Ladeindikators beim Löschvorgang
+  const [isProcessing, setIsProcessing] = useState(false);
+  // Fehlerausgabe im Secret-Key-Modal
+  const [modalError, setModalError] = useState('');
+  // Ergebnisse für Info- oder Fehlermeldungen nach Löschaktionen
+  const [localResults, setLocalResults] = useState([]);
+  const hasMultiplePages = trustlines.length > itemsPerPage;
+
+
+  // Simulationsmodus aktiv?
+  const [simulationMode, setSimulationMode] = useState(true);
 
   useEffect(() => {
     let filtered = trustlines.filter((tl) => {
@@ -62,21 +79,74 @@ function ListTrustlines({
   const isSelected = (item) => selectedTrustlines.some(sel => sel.assetCode === item.assetCode && sel.assetIssuer === item.assetIssuer);
   const allSelected = paginated.length > 0 && paginated.every(isSelected);
 
-  /**
- * Simuliert das Löschen der ausgewählten Trustlines nach erfolgreicher Secret-Key-Validierung.
- * Zeigt ein übersetztes Ergebnis im Ergebnisbereich an.
- * @param {string} secretKey - Der zu validierende Secret Key (SB...)
- */
+    /**
+   * Simuliert das Löschen der ausgewählten Trustlines nach erfolgreicher Secret-Key-Validierung.
+   * Zeigt ein übersetztes Ergebnis im Ergebnisbereich an.
+   * @param {string} secretKey - Der zu validierende Secret Key (SB...)
+   */
   const handleDeleteSimulated = (secretKey) => {
     try {
       validateSecretKey(secretKey);
-      const count = selectedTrustlines.length;
-      setResults([`${count} Trustlines wurden simuliert gelöscht.`]);
+      // Gehört der Secret Key zum aktuell geladenen Wallet?
+      assertKeyPairMatch(secretKey, publicKey);const count = selectedTrustlines.length;
+      setLocalResults([t('trustlines.deleted.simulated', { count })]);
       setSelectedTrustlines([]);
+      setSecretKey('');
+      setModalError('');
+      setShowSecretModal(false);
     } catch (err) {
-      setError(t(err.message)); // Nutze jetzt globales setError
+      setModalError(t(err.message));
     }
   };
+
+    /**
+   * Führt eine echte Trustline-Löschung durch, nach Validierung des Secret Keys.
+   * Zeigt Erfolg oder Fehler im UI an.
+   * @param {string} secretKey - Secret Key des Absenders
+   */
+  const handleDeleteTrustlines = async (secretKey) => {
+    let deleted = [];
+
+    try {
+      // Formatprüfung des Secret Keys
+      validateSecretKey(secretKey);
+
+      // Gehört der Secret Key zum aktuell geladenen Wallet?
+      assertKeyPairMatch(secretKey, publicKey);
+
+      // UI vorbereiten
+      setIsProcessing(true);
+      setModalError('');
+      setLocalResults([t('trustline.deleted.success', { count: deleted.length }),]);
+      console.log('[UI] localResults gesetzt:', deleted.length);
+
+      // Trustlines wirklich löschen via Horizon
+      const deleted = await deleteTrustlines({
+        secretKey,
+        trustlines: selectedTrustlines,
+      });
+
+      console.log('[DEBUG] Löschung erfolgreich:', deleted);
+
+      // Erfolgsmeldung anzeigen
+      setLocalResults([
+        t('trustline.deleted.success', { count: deleted.length }),
+      ]);
+
+      // Auswahl und Modal zurücksetzen
+      setSelectedTrustlines([]);
+      setShowSecretModal(false);
+      setSecretKey('');
+    } catch (err) {
+      console.error('[ERROR] Löschung fehlgeschlagen:', err);
+      setLocalResults([
+        t('transaction.failed') + ': ' + (err.message || 'unknown'),
+      ]);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
 
   const handleSortOverview = (column) => {
     const direction = overviewSort.column === column ? (overviewSort.direction === 'asc' ? 'desc' : 'asc') : 'asc';
@@ -100,27 +170,40 @@ function ListTrustlines({
 
   return (
     <div className="mt-4">
-      <button
-        onClick={() => setMenuSelection(null)}
-        className="mb-4 px-3 py-1 bg-gray-300 dark:bg-gray-700 text-black dark:text-white rounded hover:bg-gray-400 dark:hover:bg-gray-600"
-      >
-        {t('navigation.backToMainMenu')}
-      </button>
+      {/* Menükopf mit Zurück-Button + aktuelle Ansicht */}
+      <MenuHeader setMenuSelection={setMenuSelection} menuSelection={menuSelection} />
 
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-        {t('trustline.list')}: {trustlines?.length || 0}
-      </p>
-
-      {selectedTrustlines.length > 0 && (
-        <div className="mb-2">
-          <button
-            onClick={() => setShowOverviewModal(true)}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            {t('trustline.delete')}
-          </button>
+      {/* Infoleiste: Wallet, Anzahl, Modusauswahl */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-500 rounded p-3 text-sm mb-4">
+        <div className="text-gray-700 dark:text-gray-300 mb-2 sm:mb-0">
+          {t('trustline.list')}: {trustlines.length}
         </div>
-      )}
+
+        <div className="flex gap-4 items-center">
+          {/* 🔘 Radiobuttons */}
+          <label className="flex items-center gap-1">
+            <input type="radio" name="mode" value="simulation" checked={simulationMode} onChange={() => setSimulationMode(true)} />
+            {t('trustline.mode.simulation')}
+          </label>
+          <label className="flex items-center gap-1 text-red-700">
+            <input type="radio" name="mode" value="real" checked={!simulationMode} onChange={() => setSimulationMode(false)} />
+            {t('trustline.mode.real')}
+            <span title={t('trustline.mode.realWarning')} className="text-xl">⚠️🚨</span>
+          </label>
+
+          {/* 🗑️ Löschen-Button */}
+          {selectedTrustlines.length > 0 && (
+            <div className="absolute left-1/3 transform -translate-x-1/2">
+              <button
+                onClick={() => setShowOverviewModal(true)}
+                className="ml-4 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                {t('trustline.delete')}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
 
       <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead>
@@ -150,9 +233,25 @@ function ListTrustlines({
           ))}
         </tbody>
       </table>
+      
+      {localResults.length > 0 && (
+        <div className="mt-4 text-sm text-blue-600 dark:text-blue-400">
+          {localResults.map((msg, idx) => <p key={idx}>{msg}</p>)}
+        </div>
+      )}
 
       {selectedTrustlines.length > 0 && (
         <div className="mt-4">
+          <button
+            onClick={() => setShowOverviewModal(true)}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            {t('trustline.delete.button')}
+          </button>
+        </div>
+      )}
+      {hasMultiplePages && selectedTrustlines.length > 0 && (
+        <div className="mt-4 flex justify-end">
           <button
             onClick={() => setShowOverviewModal(true)}
             className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
@@ -218,12 +317,20 @@ function ListTrustlines({
         <SecretKeyModal
           onConfirm={(key) => {
             setShowSecretModal(false);
-            handleDeleteSimulated(key);
+            if (simulationMode) {
+              handleDeleteSimulated(key);
+            } else {
+              handleDeleteTrustlines(key);
+            }
           }}
           onCancel={() => setShowSecretModal(false)}
+          errorMessage={modalError}
         />
       )}
-    </div>
+      {isProcessing && (
+        <p className="text-blue-600 text-sm mt-2">{t('main.processing')}</p>
+      )}   
+   </div>
   );
 }
 

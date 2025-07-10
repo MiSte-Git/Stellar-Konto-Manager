@@ -66,6 +66,10 @@
     "removeFromList": "Aus Liste entfernen",
     "inputEmpty": "Eingabefeld darf nicht leer sein.",
     "delete": "Trustline(s) löschen",
+    "deleted": {
+      "simulated": "{{count}} Trustlines wurden simuliert gelöscht",
+      "success": "{{count}} Trustlines wurden gelöscht"
+    },
     "destination": {
       "label": "Geben Sie den Ziel-Öffentlichen Schlüssel ein:",
       "placeholder": "z.B."
@@ -78,9 +82,15 @@
     "reviewSelection": {
       "title": "Selektierte Trustlines prüfen"
     },
-    "list": "Trustlines auflisten",
+    "mode": {
+      "simulation": "Simulationsmodus aktiv",
+      "real": "Echter Löschmodus aktiv",
+      "realWarning": "Achtung: Echte Trustlines werden gelöscht"
+    },
+    "list": "Anzahl Trustlines",
     "compare": "Trustlines vergleichen",
-    "confirmDeletion": "Trustlines wirklich löschen"
+    "confirmDeletion": "Trustlines wirklich löschen",
+    "showSecret": "Geheimschlüssel anzeigen"
   },
   "token": {
     "purchases": "Anzahl gekaufter Token"
@@ -131,6 +141,13 @@
     "inList": "Wallet in Liste"
   },
   "main": {
-    "title": "Stellar Trustline Manager"
+    "title": "Stellar Trustline Manager",
+    "processing": "Vorgang läuft, bitte warten …"
+
+  },
+  "transaction": {
+    "failed": "Transaktion fehlgeschlagen: {error}",
+    "pending": "Transaktion ausstehend...",
+    "success": "Transaktion erfolgreich: {hash}"
   }
 }
