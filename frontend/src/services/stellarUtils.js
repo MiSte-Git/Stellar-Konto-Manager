@@ -131,13 +131,35 @@ export async function deleteTrustlines({ secretKey, trustlines }) {
 
   try {
     const result = await horizonServer.submitTransaction(transaction);
-    return trustlines;
+
+    return trustlines.map(tl => ({
+      assetCode: tl.assetCode,
+      assetIssuer: tl.assetIssuer,
+      txId: result.id
+    }));
   } catch (err) {
+    const txCode = err.response?.data?.extras?.result_codes?.transaction;
+    const opCodes = err.response?.data?.extras?.result_codes?.operations;
+    const txHash = err.response?.data?.hash;
+
+    const isPossiblySuccessful =
+      (txCode === 'tx_success' || opCodes?.[0] === 'op_success') && txHash;
+
+    if (isPossiblySuccessful) {
+      console.warn('⚠️ Horizon meldet Fehler, aber tx wurde evtl. trotzdem verarbeitet:', txHash);
+      return trustlines.map(tl => ({
+        assetCode: tl.assetCode,
+        assetIssuer: tl.assetIssuer,
+        txId: txHash
+      }));
+    }
+
     console.error("❌ Trustline-Löschung fehlgeschlagen:", err);
-    const code = err.response?.data?.extras?.result_codes?.operations?.[0] || 'unknown';
-    throw new Error('submitTransaction.failed:' + code);
+    const detail = opCodes?.[0] || txCode || 'unknown';
+    throw new Error('submitTransaction.failed:' + detail);
   }
 }
+
 
 /**
  * Prüft und löst Eingabe in Federation-Adresse oder Public Key auf
