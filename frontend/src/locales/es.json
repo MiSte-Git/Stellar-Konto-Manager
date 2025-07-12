@@ -1,136 +1,136 @@
 {
+  "account": {
+    "loadFailed": "Error al cargar la cuenta {publicKey}: {error}",
+    "noBalances": "No se encontraron créditos para la cuenta."
+  },
+  "address": "Dirección",
+  "asset": {
+    "amount": "Cantidad (XLM)",
+    "code": "Código de activo",
+    "creationDate": "Creado el",
+    "issuer": "Emisor"
+  },
   "assets": {
     "compromisedPurchases": "{total} pagos en total",
     "totalPurchases": "Número total de compras: {count}"
   },
-  "secretKey": {
-    "valid": "✅ La clave secreta es válida.",
-    "info": "La clave secreta solo se transfiere temporalmente a un backend para ejecutar la acción seleccionada. La clave no se almacena.",
-    "label": "Ingrese la clave secreta de origen (se enviará de forma segura al backend)",
-    "mismatch": "La clave secreta no coincide con la dirección pública.",
-    "cleared": "La clave secreta ha sido eliminada.",
-    "empty": "El campo de la clave secreta está vacío.",
-    "invalid": "Clave secreta inválida.",
-    "placeholder": "p. Ej."
-  },
-  "option": {
-    "cancel": "Cancelar",
-    "confirm": {
-      "action": {
-        "title": "Confirmar acción",
-        "text": "¿Estás seguro?"
-      }
-    },
-    "show": "Mostrar",
-    "description": "Descripción",
-    "results": "Resultados:",
-    "filter": "Filtrando...",
-    "add": "Añadir",
-    "yes": "Sí",
-    "loading": "Cargando...",
-    "delete": "Eliminar",
-    "memo": "Memorándum",
-    "no": "No",
-    "newAddress": "Nueva dirección",
-    "page": "Página",
-    "save": "Guardar",
-    "hide": "Ocultar",
-    "addToList": "Añadir a la lista"
-  },
-  "publicKey": {
-    "submit": {
-      "button": "Enviar"
-    },
-    "recipient": "Dirección de recepción",
-    "label": "Por favor, ingresa la dirección de la federación de origen o la clave pública:",
-    "invalid": "Clave pública o dirección de federación no válida.",
-    "destination": {
-      "error": "Clave de destino no válida.",
-      "input": "Ingrese la dirección de la billetera de destino"
-    },
-    "placeholder": "por ejemplo",
-    "source": "Dirección de la billetera de origen"
-  },
-  "address": "Dirección",
-  "navigation": {
-    "current": {
-      "menu": "Menú actual:"
-    },
-    "next": "Siguiente",
-    "previous": "Anterior",
-    "backToTop": "Volver arriba",
-    "backToMainMenu": "Volver al menú"
-  },
-  "trustline": {
-    "all": "Mostrar todas las líneas de confianza",
-    "removeFromList": "Eliminar de la lista",
-    "inputEmpty": "El campo de entrada no puede estar vacío.",
-    "delete": "Eliminar línea(s) de confianza",
-    "destination": {
-      "label": "Ingrese la clave pública de destino:",
-      "placeholder": "p. Ej."
-    },
-    "noDuplicates": "No se encontraron líneas de confianza duplicadas.",
-    "issuer": {
-      "notFound": "No se encontraron líneas de confianza para el emisor {issuer}."
-    },
-    "notFound": "No se encontraron líneas de confianza.",
-    "reviewSelection": {
-      "title": "Verificar líneas de confianza seleccionadas"
-    },
-    "list": "Listar Trustlines",
-    "compare": "Comparar líneas de confianza",
-    "confirmDeletion": "¿Realmente eliminar Trustlines?"
-  },
-  "token": {
-    "purchases": "Número de tokens comprados"
-  },
-  "asset": {
-    "code": "Código de activo",
-    "amount": "Cantidad (XLM)",
-    "issuer": "Emisor",
-    "creationDate": "Creado el"
-  },
   "date": {
     "times": "Fecha y horas"
   },
-  "settings": {
-    "label": "Configuraciones",
-    "export": "Exportar configuraciones",
-    "import": "Importar configuraciones"
-  },
   "error": {
-    "fetchingOperations": "Error al recuperar las operaciones: {error}",
     "connection": {
       "backend": "No se puede conectar con el backend. Asegúrese"
     },
+    "fetchingOperations": "Error al recuperar las operaciones: {error}",
     "script": "Error de script: {message} en {source}:{lineno}:{colno} - {error}",
     "transaktion": {
       "unknown": "Error desconocido en la transacción."
     }
   },
-  "puplicKey": {
-    "failed": "Error al resolver la dirección de la federación/clave pública: {error}"
-  },
-  "account": {
-    "loadFailed": "Error al cargar la cuenta {publicKey}: {error}",
-    "noBalances": "No se encontraron créditos para la cuenta."
-  },
   "issuer": {
-    "label": "Ingrese la dirección del emisor:",
-    "enter": "Ingresa la dirección del emisor:",
-    "notfound": "No se encontraron direcciones de emisor",
     "compromised": "Comprometido",
+    "enter": "Ingresa la dirección del emisor:",
     "invalid": "Dirección del emisor no válida.",
+    "label": "Ingrese la dirección del emisor:",
+    "notfound": "No se encontraron direcciones de emisor",
     "placeholder": "p. Ej."
-  },
-  "wallet": {
-    "list": "Lista de Carteras de Groupfund",
-    "noPayments": "No se encontraron pagos.",
-    "add": "Añadir cartera",
-    "inList": "Cartera en lista"
   },
   "main": {
     "title": "Gestor de Líneas de Confianza Stellar"
+  },
+  "navigation": {
+    "backToMainMenu": "Volver al menú",
+    "backToTop": "Volver arriba",
+    "current": {
+      "menu": "Menú actual:"
+    },
+    "next": "Siguiente",
+    "previous": "Anterior"
+  },
+  "option": {
+    "add": "Añadir",
+    "addToList": "Añadir a la lista",
+    "cancel": "Cancelar",
+    "confirm": {
+      "action": {
+        "text": "¿Estás seguro?",
+        "title": "Confirmar acción"
+      }
+    },
+    "delete": "Eliminar",
+    "description": "Descripción",
+    "filter": "Filtrando...",
+    "hide": "Ocultar",
+    "loading": "Cargando...",
+    "memo": "Memorándum",
+    "newAddress": "Nueva dirección",
+    "no": "No",
+    "page": "Página",
+    "results": "Resultados:",
+    "save": "Guardar",
+    "show": "Mostrar",
+    "yes": "Sí"
+  },
+  "publicKey": {
+    "destination": {
+      "error": "Clave de destino no válida.",
+      "input": "Ingrese la dirección de la billetera de destino"
+    },
+    "invalid": "Clave pública o dirección de federación no válida.",
+    "label": "Por favor, ingresa la dirección de la federación de origen o la clave pública:",
+    "placeholder": "por ejemplo",
+    "recipient": "Dirección de recepción",
+    "source": "Dirección de la billetera de origen",
+    "submit": {
+      "button": "Enviar"
+    }
+  },
+  "puplicKey": {
+    "failed": "Error al resolver la dirección de la federación/clave pública: {error}"
+  },
+  "secretKey": {
+    "cleared": "La clave secreta ha sido eliminada.",
+    "empty": "El campo de la clave secreta está vacío.",
+    "info": "La clave secreta solo se transfiere temporalmente a un backend para ejecutar la acción seleccionada. La clave no se almacena.",
+    "invalid": "Clave secreta inválida.",
+    "label": "Ingrese la clave secreta de origen (se enviará de forma segura al backend)",
+    "mismatch": "La clave secreta no coincide con la dirección pública.",
+    "placeholder": "p. Ej.",
+    "valid": "✅ La clave secreta es válida."
+  },
+  "settings": {
+    "export": "Exportar configuraciones",
+    "import": "Importar configuraciones",
+    "label": "Configuraciones"
+  },
+  "token": {
+    "purchases": "Número de tokens comprados"
+  },
+  "trustline": {
+    "all": "Mostrar todas las líneas de confianza",
+    "compare": "Comparar líneas de confianza",
+    "confirmDeletion": "¿Realmente eliminar Trustlines?",
+    "delete": "Eliminar línea(s) de confianza",
+    "destination": {
+      "label": "Ingrese la clave pública de destino:",
+      "placeholder": "p. Ej."
+    },
+    "inputEmpty": "El campo de entrada no puede estar vacío.",
+    "issuer": {
+      "notFound": "No se encontraron líneas de confianza para el emisor {issuer}."
+    },
+    "list": "Listar Trustlines",
+    "noDuplicates": "No se encontraron líneas de confianza duplicadas.",
+    "notFound": "No se encontraron líneas de confianza.",
+    "removeFromList": "Eliminar de la lista",
+    "reviewSelection": {
+      "title": "Verificar líneas de confianza seleccionadas"
+    }
+  },
+  "wallet": {
+    "add": "Añadir cartera",
+    "inList": "Cartera en lista",
+    "list": "Lista de Carteras de Groupfund",
+    "noPayments": "No se encontraron pagos."
   }
 }

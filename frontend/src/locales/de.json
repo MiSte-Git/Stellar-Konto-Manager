@@ -1,162 +1,173 @@
 {
+  "account": {
+    "loadFailed": "Fehler beim Laden des Kontos {publicKey}: {{error}}",
+    "noBalances": "Keine Guthaben für das Konto gefunden."
+  },
+  "address": "Adresse",
+  "asset": {
+    "amount": "Betrag (XLM)",
+    "code": "Asset-Code",
+    "creationDate": "Erstellt am",
+    "issuer": "Emittent",
+    "balance": "Guthaben"
+  },
   "assets": {
     "compromisedPurchases": "{total} Zahlungen gesamt",
     "totalPurchases": "Gesamtzahl der Käufe: {count}"
   },
-  "secretKey": {
-    "valid": "✅ Secret Key ist gültig.",
-    "info": "Der Geheim Schlüssel wird nur temporär an ein Backend zur Ausführung der gewählten Aktion übertragen. Der Schlüssel wird nicht gespeichert",
-    "label": "Geben Sie den Quell-Geheimschlüssel ein (wird sicher an das Backend gesendet",
-    "mismatch": "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
-    "cleared": "Geheimschlüssel wurde gelöscht.",
-    "empty": "Geheimschlüssel-Feld ist leer.",
-    "invalid": "Ungültiger Geheimschlüssel.",
+  "date": {
+    "times": "Datum und Uhrzeiten"
+  },
+  "error": {
+    "connection": {
+      "backend": "Keine Verbindung zum Backend möglich. Stellen Sie sicher"
+    },
+    "fetchingOperations": "Fehler beim Abrufen der Operationen: {{error}}",
+    "op_invalid_limit": "Trustline kann nicht gelöscht werden. Sie hat möglicherweise noch Guthaben oder offene Verpflichtungen.",
+    "script": "Skriptfehler: {message} bei {source}:{lineno}:{colno} - {{error}}",
+    "transaction": {
+      "deleteFail": "[ERROR] Löschung fehlgeschlagen: {{error}}",
+      "failed": "Transaktion fehlgeschlagen",
+      "unknown": "Unbekannter Fehler bei der Transaktion.",
+      "title": "Fehler bei der Transaktion"
+
+    }
+  },
+  "issuer": {
+    "compromised": "Kompromittiert",
+    "enter": "Gib die Emittenten-Adresse ein:",
+    "invalid": "Ungültige Emittentenadresse.",
+    "label": "Geben Sie die Emittentenadresse ein:",
+    "notfound": "Keine Emittentenadressen gefunden",
     "placeholder": "z.B."
   },
-  "option": {
-    "cancel": "Abbrechen",
-    "confirm": {
-      "action": {
-        "title": "Aktion bestätigen",
-        "text": "Bist du sicher"
-      }
-    },
-    "copy": "Kopieren",
-    "export": {
-      "csv": "Als CSV speichern",
-      "pdf": "Als PDF speichern"
-    },
-    "close": "Schließen",
-    "show": "Anzeigen",
-    "description": "Beschreibung",
-    "results": "Ergebnisse:",
-    "filter": "Filtern...",
-    "add": "Hinzufügen",
-    "yes": "Ja",
-    "loading": "Laden...",
-    "delete": "Löschen",
-    "memo": "Memo",
-    "no": "Nein",
-    "newAddress": "Neue Adresse",
-    "page": "Seite",
-    "save": "Speichern",
-    "hide": "Verbergen",
-    "addToList": "Zur Liste hinzufügen",
-    "ok": "OK"
+  "main": {
+    "processing": "Vorgang läuft, bitte warten …",
+    "title": "Stellar Trustline Manager"
   },
-  "publicKey": {
-    "submit": {
-      "button": "Absenden"
-    },
-    "recipient": "Empfangsadresse",
-    "label": "Gib bitte die Quell-Föderationsadresse oder den öffentlichen Schlüssel ein:",
-    "invalid": "Ungültiger öffentlicher Schlüssel oder Federation-Adresse.",
-    "destination": {
-      "error": "Ungültiger Ziel-Schlüssel.",
-      "input": "Ziel-Wallet-Adresse eingeben"
-    },
-    "placeholder": "z.B.",
-    "source": "Quell-Wallet-Adresse"
-  },
-  "address": "Adresse",
   "navigation": {
+    "backToMainMenu": "Zurück zum Menü",
+    "backToTop": "Zurück nach oben",
     "current": {
       "menu": "Aktuelles Menü:"
     },
     "next": "Nächste",
-    "previous": "Vorherige",
-    "backToTop": "Zurück nach oben",
-    "backToMainMenu": "Zurück zum Menü"
+    "previous": "Vorherige"
+  },
+  "option": {
+    "add": "Hinzufügen",
+    "addToList": "Zur Liste hinzufügen",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "confirm": {
+      "action": {
+        "text": "Bist du sicher",
+        "title": "Aktion bestätigen"
+      }
+    },
+    "copy": "Kopieren",
+    "delete": "Löschen",
+    "description": "Beschreibung",
+    "export": {
+      "csv": "Als CSV speichern",
+      "pdf": "Als PDF speichern"
+    },
+    "filter": "Filtern...",
+    "hide": "Verbergen",
+    "loading": "Laden...",
+    "memo": "Memo",
+    "newAddress": "Neue Adresse",
+    "no": "Nein",
+    "ok": "OK",
+    "page": "Seite",
+    "results": "Ergebnisse:",
+    "save": "Speichern",
+    "show": "Anzeigen",
+    "yes": "Ja"
+  },
+  "publicKey": {
+    "destination": {
+      "error": "Ungültiger Ziel-Schlüssel.",
+      "input": "Ziel-Wallet-Adresse eingeben"
+    },
+    "invalid": "Ungültiger öffentlicher Schlüssel oder Federation-Adresse.",
+    "label": "Gib bitte die Quell-Föderationsadresse oder den öffentlichen Schlüssel ein:",
+    "placeholder": "z.B.",
+    "recipient": "Empfangsadresse",
+    "source": "Quell-Wallet-Adresse",
+    "submit": {
+      "button": "Absenden"
+    }
+  },
+  "puplicKey": {
+    "failed": "Fehler beim Auflösen der Föderationsadresse/Öffentlicher Schlüssel: {{error}}"
+  },
+  "secretKey": {
+    "cleared": "Geheimschlüssel wurde gelöscht.",
+    "empty": "Geheimschlüssel-Feld ist leer.",
+    "info": "Der Geheim Schlüssel wird nur temporär an ein Backend zur Ausführung der gewählten Aktion übertragen. Der Schlüssel wird nicht gespeichert",
+    "invalid": "Ungültiger Geheimschlüssel.",
+    "label": "Geben Sie den Quell-Geheimschlüssel ein (wird sicher an das Backend gesendet",
+    "mismatch": "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
+    "placeholder": "z.B.",
+    "valid": "✅ Secret Key ist gültig."
+  },
+  "settings": {
+    "export": "Einstellungen exportieren",
+    "import": "Einstellungen importieren",
+    "label": "Einstellungen"
+  },
+  "token": {
+    "purchases": "Anzahl gekaufter Token"
+  },
+  "transaction": {
+    "pending": "Transaktion ausstehend...",
+    "success": "Transaktion erfolgreich: {hash}"
   },
   "trustline": {
     "all": "Trustline(s) anzeigen",
-    "removeFromList": "Aus Liste entfernen",
-    "inputEmpty": "Eingabefeld darf nicht leer sein.",
+    "compare": "Trustline(s) vergleichen",
+    "confirmDeletion": "Trustline(s) wirklich löschen",
     "delete": "Trustline(s) löschen",
     "deleted": {
-      "simulated": "{{count}} Trustline(s) wurden simuliert gelöscht",
-      "success": "{{count}} Trustline(s) wurden gelöscht",
-      "resultTitle": "Gelöschte Trustline(s)",
-      "resultText": "{{count}} Trustline(s) wurden erfolgreich gelöscht ({{mode}}).",
       "mode": {
         "real": "Echtmodus",
-        "simulation": "Simulationsmodus",
-        "realWarning": "Achtung: Echte Trustline(s) werden gelöscht"
-      }
+        "realWarning": "Achtung: Echte Trustline(s) werden gelöscht",
+        "simulation": "Simulationsmodus"
+      },
+      "deletingProgress": "Lösche {{current}} von {{total}} Trustlines...", 
+      "resultText": "{{count}} Trustline(s) wurden erfolgreich gelöscht ({{mode}}).",
+      "resultTitle": "Gelöschte Trustline(s)",
+      "simulated": "{{count}} Trustline(s) wurden simuliert gelöscht",
+      "success": "{{count}} Trustline(s) wurden gelöscht",
+      "noDeletableFound": "Keine löschbaren Trustlines gefunden – alle enthalten noch Guthaben.",
+      "noTrustlines": "Keine gültigen Trustlines zum Löschen vorhanden.",
+      "skippedDueToLiabilities": "{{count}} Trustline(s) konnten nicht gelöscht werden, da sie noch Verpflichtungen (Liabilities) enthalten.",
+      "skippedDueToBalance": "{{count}} Trustlines wurden übersprungen, da sie Guthaben enthalten."
     },
     "destination": {
       "label": "Geben Sie den Ziel-Öffentlichen Schlüssel ein:",
       "placeholder": "z.B."
     },
-    "noDuplicates": "Keine doppelten Trustline(s) gefunden.",
+    "inputEmpty": "Eingabefeld darf nicht leer sein.",
     "issuer": {
       "notFound": "Keine Trustline(s) für Emittenten {issuer} gefunden."
     },
+    "list": "Anzahl Trustline(s)",
+    "noDuplicates": "Keine doppelten Trustline(s) gefunden.",
+    "nonZeroBalance": "Diese Trustline kann nicht gelöscht werden, da sie noch ein Guthaben enthält.",  
     "notFound": "Keine Trustline(s) gefunden.",
+    "onlyZeroBalanceInfo": "Nur Trustlines mit einem Guthaben von 0 können gelöscht werden.",
+    "removeFromList": "Aus Liste entfernen",
     "reviewSelection": {
       "title": "Selektierte Trustline(s) prüfen"
     },
-    "list": "Anzahl Trustline(s)",
-    "compare": "Trustline(s) vergleichen",
-    "confirmDeletion": "Trustline(s) wirklich löschen",
     "showSecret": "Geheimschlüssel anzeigen"
   },
-  "token": {
-    "purchases": "Anzahl gekaufter Token"
-  },
-  "asset": {
-    "code": "Asset-Code",
-    "amount": "Betrag (XLM)",
-    "issuer": "Emittent",
-    "creationDate": "Erstellt am"
-  },
-  "date": {
-    "times": "Datum und Uhrzeiten"
-  },
-  "settings": {
-    "label": "Einstellungen",
-    "export": "Einstellungen exportieren",
-    "import": "Einstellungen importieren"
-  },
-  "error": {
-    "fetchingOperations": "Fehler beim Abrufen der Operationen: {error}",
-    "connection": {
-      "backend": "Keine Verbindung zum Backend möglich. Stellen Sie sicher"
-    },
-    "script": "Skriptfehler: {message} bei {source}:{lineno}:{colno} - {error}",
-    "transaktion": {
-      "unknown": "Unbekannter Fehler bei der Transaktion."
-    }
-  },
-  "puplicKey": {
-    "failed": "Fehler beim Auflösen der Föderationsadresse/Öffentlicher Schlüssel: {error}"
-  },
-  "account": {
-    "loadFailed": "Fehler beim Laden des Kontos {publicKey}: {error}",
-    "noBalances": "Keine Guthaben für das Konto gefunden."
-  },
-  "issuer": {
-    "label": "Geben Sie die Emittentenadresse ein:",
-    "enter": "Gib die Emittenten-Adresse ein:",
-    "notfound": "Keine Emittentenadressen gefunden",
-    "compromised": "Kompromittiert",
-    "invalid": "Ungültige Emittentenadresse.",
-    "placeholder": "z.B."
-  },
   "wallet": {
-    "list": "Groupfund Wallet-Liste",
-    "noPayments": "Keine Zahlungen gefunden.",
     "add": "Wallet hinzufügen",
-    "inList": "Wallet in Liste"
-  },
-  "main": {
-    "title": "Stellar Trustline Manager",
-    "processing": "Vorgang läuft, bitte warten …"
-
-  },
-  "transaction": {
-    "failed": "Transaktion fehlgeschlagen: {error}",
-    "pending": "Transaktion ausstehend...",
-    "success": "Transaktion erfolgreich: {hash}"
+    "inList": "Wallet in Liste",
+    "list": "Groupfund Wallet-Liste",
+    "noPayments": "Keine Zahlungen gefunden."
   }
 }

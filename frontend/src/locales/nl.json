@@ -1,136 +1,136 @@
 {
+  "account": {
+    "loadFailed": "Fout bij het laden van het account {publicKey}: {error}",
+    "noBalances": "Geen tegoed gevonden voor de rekening."
+  },
+  "address": "Adres",
+  "asset": {
+    "amount": "Bedrag (XLM)",
+    "code": "Activa-Code",
+    "creationDate": "Gemaakt op",
+    "issuer": "Uitgever"
+  },
   "assets": {
     "compromisedPurchases": "{total} totale betalingen",
     "totalPurchases": "Totaal aantal aankopen: {count}"
   },
-  "secretKey": {
-    "valid": "✅ Geheime sleutel is geldig.",
-    "info": "De geheime sleutel wordt alleen tijdelijk naar een backend verzonden om de gekozen actie uit te voeren. De sleutel wordt niet opgeslagen.",
-    "label": "Voer de bron-geheime sleutel in (wordt veilig naar de backend verzonden",
-    "mismatch": "Geheime sleutel komt niet overeen met het openbare adres.",
-    "cleared": "Geheime sleutel is verwijderd.",
-    "empty": "Geheime sleutelveld is leeg.",
-    "invalid": "Ongeldige geheime sleutel.",
-    "placeholder": "bijv."
-  },
-  "option": {
-    "cancel": "Annuleren",
-    "confirm": {
-      "action": {
-        "title": "Actie bevestigen",
-        "text": "Weet je het zeker"
-      }
-    },
-    "show": "Advertenties",
-    "description": "Beschrijving",
-    "results": "Resultaten:",
-    "filter": "Filteren...",
-    "add": "Toevoegen",
-    "yes": "Ja",
-    "loading": "Laden...",
-    "delete": "Verwijderen",
-    "memo": "Memo",
-    "no": "Nee",
-    "newAddress": "Nieuw adres",
-    "page": "Pagina",
-    "save": "Opslaan",
-    "hide": "Verbergen",
-    "addToList": "Toevoegen aan lijst"
-  },
-  "publicKey": {
-    "submit": {
-      "button": "Verzenden"
-    },
-    "recipient": "Ontvangstadres",
-    "label": "Voer alstublieft het bronfederatieadres of de openbare sleutel in:",
-    "invalid": "Ongeldige openbare sleutel of federatie-adres.",
-    "destination": {
-      "error": "Ongeldige doelsleutel.",
-      "input": "Voer het doelwalletadres in"
-    },
-    "placeholder": "bijv.",
-    "source": "Bron Wallet Adres"
-  },
-  "address": "Adres",
-  "navigation": {
-    "current": {
-      "menu": "Huidig menu:"
-    },
-    "next": "Volgende",
-    "previous": "Vorige",
-    "backToTop": "Terug naar boven",
-    "backToMainMenu": "Terug naar het menu"
-  },
-  "trustline": {
-    "all": "Toon alle Trustlines",
-    "removeFromList": "Uit lijst verwijderen",
-    "inputEmpty": "Invoerveld mag niet leeg zijn.",
-    "delete": "Trustline(s) verwijderen",
-    "destination": {
-      "label": "Voer de doel-openbare sleutel in:",
-      "placeholder": "bijv."
-    },
-    "noDuplicates": "Geen dubbele trustlijnen gevonden.",
-    "issuer": {
-      "notFound": "Geen trustlines gevonden voor uitgever {issuer}."
-    },
-    "notFound": "Geen Trustlines gevonden.",
-    "reviewSelection": {
-      "title": "Geselecteerde trustlijnen controleren"
-    },
-    "list": "Trustlines weergeven",
-    "compare": "Trustlines vergelijken",
-    "confirmDeletion": "Trustlines echt verwijderen"
-  },
-  "token": {
-    "purchases": "Aantal gekochte tokens"
-  },
-  "asset": {
-    "code": "Activa-Code",
-    "amount": "Bedrag (XLM)",
-    "issuer": "Uitgever",
-    "creationDate": "Gemaakt op"
-  },
   "date": {
     "times": "Datum en tijden"
   },
-  "settings": {
-    "label": "Instellingen",
-    "export": "Instellingen exporteren",
-    "import": "Instellingen importeren"
-  },
   "error": {
-    "fetchingOperations": "Fout bij het ophalen van de operaties: {error}",
     "connection": {
       "backend": "Geen verbinding mogelijk met de backend. Zorg ervoor"
     },
+    "fetchingOperations": "Fout bij het ophalen van de operaties: {error}",
     "script": "Scriptfout: {message} bij {source}:{lineno}:{colno} - {error}",
     "transaktion": {
       "unknown": "Onbekende fout bij de transactie."
     }
   },
-  "puplicKey": {
-    "failed": "Fout bij het oplossen van de federatieadres/openbare sleutel: {error}"
-  },
-  "account": {
-    "loadFailed": "Fout bij het laden van het account {publicKey}: {error}",
-    "noBalances": "Geen tegoed gevonden voor de rekening."
-  },
   "issuer": {
-    "label": "Voer het adres van de uitgever in:",
-    "enter": "Voer het adres van de uitgever in:",
-    "notfound": "Geen uitgeversadressen gevonden",
     "compromised": "Gecompromitteerd",
+    "enter": "Voer het adres van de uitgever in:",
     "invalid": "Ongeldig uitgeversadres.",
+    "label": "Voer het adres van de uitgever in:",
+    "notfound": "Geen uitgeversadressen gevonden",
     "placeholder": "bijv."
-  },
-  "wallet": {
-    "list": "Groepsfonds Portemonnee-lijst",
-    "noPayments": "Geen betalingen gevonden.",
-    "add": "Portemonnee toevoegen",
-    "inList": "Portemonnee in lijst"
   },
   "main": {
     "title": "Stellar Trustline Beheerder"
+  },
+  "navigation": {
+    "backToMainMenu": "Terug naar het menu",
+    "backToTop": "Terug naar boven",
+    "current": {
+      "menu": "Huidig menu:"
+    },
+    "next": "Volgende",
+    "previous": "Vorige"
+  },
+  "option": {
+    "add": "Toevoegen",
+    "addToList": "Toevoegen aan lijst",
+    "cancel": "Annuleren",
+    "confirm": {
+      "action": {
+        "text": "Weet je het zeker",
+        "title": "Actie bevestigen"
+      }
+    },
+    "delete": "Verwijderen",
+    "description": "Beschrijving",
+    "filter": "Filteren...",
+    "hide": "Verbergen",
+    "loading": "Laden...",
+    "memo": "Memo",
+    "newAddress": "Nieuw adres",
+    "no": "Nee",
+    "page": "Pagina",
+    "results": "Resultaten:",
+    "save": "Opslaan",
+    "show": "Advertenties",
+    "yes": "Ja"
+  },
+  "publicKey": {
+    "destination": {
+      "error": "Ongeldige doelsleutel.",
+      "input": "Voer het doelwalletadres in"
+    },
+    "invalid": "Ongeldige openbare sleutel of federatie-adres.",
+    "label": "Voer alstublieft het bronfederatieadres of de openbare sleutel in:",
+    "placeholder": "bijv.",
+    "recipient": "Ontvangstadres",
+    "source": "Bron Wallet Adres",
+    "submit": {
+      "button": "Verzenden"
+    }
+  },
+  "puplicKey": {
+    "failed": "Fout bij het oplossen van de federatieadres/openbare sleutel: {error}"
+  },
+  "secretKey": {
+    "cleared": "Geheime sleutel is verwijderd.",
+    "empty": "Geheime sleutelveld is leeg.",
+    "info": "De geheime sleutel wordt alleen tijdelijk naar een backend verzonden om de gekozen actie uit te voeren. De sleutel wordt niet opgeslagen.",
+    "invalid": "Ongeldige geheime sleutel.",
+    "label": "Voer de bron-geheime sleutel in (wordt veilig naar de backend verzonden",
+    "mismatch": "Geheime sleutel komt niet overeen met het openbare adres.",
+    "placeholder": "bijv.",
+    "valid": "✅ Geheime sleutel is geldig."
+  },
+  "settings": {
+    "export": "Instellingen exporteren",
+    "import": "Instellingen importeren",
+    "label": "Instellingen"
+  },
+  "token": {
+    "purchases": "Aantal gekochte tokens"
+  },
+  "trustline": {
+    "all": "Toon alle Trustlines",
+    "compare": "Trustlines vergelijken",
+    "confirmDeletion": "Trustlines echt verwijderen",
+    "delete": "Trustline(s) verwijderen",
+    "destination": {
+      "label": "Voer de doel-openbare sleutel in:",
+      "placeholder": "bijv."
+    },
+    "inputEmpty": "Invoerveld mag niet leeg zijn.",
+    "issuer": {
+      "notFound": "Geen trustlines gevonden voor uitgever {issuer}."
+    },
+    "list": "Trustlines weergeven",
+    "noDuplicates": "Geen dubbele trustlijnen gevonden.",
+    "notFound": "Geen Trustlines gevonden.",
+    "removeFromList": "Uit lijst verwijderen",
+    "reviewSelection": {
+      "title": "Geselecteerde trustlijnen controleren"
+    }
+  },
+  "wallet": {
+    "add": "Portemonnee toevoegen",
+    "inList": "Portemonnee in lijst",
+    "list": "Groepsfonds Portemonnee-lijst",
+    "noPayments": "Geen betalingen gevonden."
   }
 }

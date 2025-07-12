@@ -71,7 +71,7 @@ export async function loadTrustlines(publicKey) {
         assetCode: asset.asset_code,
         assetIssuer: asset.asset_issuer,
         assetType: asset.asset_type,
-        balance: asset.balance,
+        assetBalance: asset.balance,
         limit: asset.limit,
         buyingLiabilities: asset.buying_liabilities,
         sellingLiabilities: asset.selling_liabilities,
@@ -110,10 +110,14 @@ export function assertKeyPairMatch(secretKey, expectedPublicKey) {
 export async function deleteTrustlines({ secretKey, trustlines }) {
   const sourceKeypair = Keypair.fromSecret(secretKey);
   const publicKey = sourceKeypair.publicKey();
+  
+  if (trustlines.length === 0) {
+    throw new Error("Keine gültigen Trustlines zum Löschen vorhanden.");
+  }
 
   const account = await horizonServer.loadAccount(publicKey);
   const txBuilder = new TransactionBuilder(account, {
-    fee: await getBaseFee(),
+    fee: Number(await getBaseFee()),
     networkPassphrase: Networks.PUBLIC,
   });
 
@@ -142,11 +146,11 @@ export async function deleteTrustlines({ secretKey, trustlines }) {
     const opCodes = err.response?.data?.extras?.result_codes?.operations;
     const txHash = err.response?.data?.hash;
 
-    const isPossiblySuccessful =
-      (txCode === 'tx_success' || opCodes?.[0] === 'op_success') && txHash;
+    const detail = opCodes?.[0] || txCode || 'unknown';
+    const isRealError = detail !== 'op_success' && detail !== 'tx_success';
 
-    if (isPossiblySuccessful) {
-      console.warn('⚠️ Horizon meldet Fehler, aber tx wurde evtl. trotzdem verarbeitet:', txHash);
+    if (!isRealError && txHash) {
+      console.warn('⚠️ Horizon-Fehler gemeldet, aber tx evtl. erfolgreich:', txHash);
       return trustlines.map(tl => ({
         assetCode: tl.assetCode,
         assetIssuer: tl.assetIssuer,
@@ -155,11 +159,9 @@ export async function deleteTrustlines({ secretKey, trustlines }) {
     }
 
     console.error("❌ Trustline-Löschung fehlgeschlagen:", err);
-    const detail = opCodes?.[0] || txCode || 'unknown';
     throw new Error('submitTransaction.failed:' + detail);
   }
 }
-
 
 /**
  * Prüft und löst Eingabe in Federation-Adresse oder Public Key auf
@@ -258,5 +260,162 @@ export function validateSecretKey(secret) {
  */
 async function getBaseFee() {
   const feeStats = await horizonServer.feeStats();
-  return feeStats?.fee_charged?.mode || "100";
+  return Number(feeStats?.fee_charged?.mode || 100);
 }
+
+// Lädt Trustlines für eine gegebene Federation-Adresse oder Public Key
+// und gibt sowohl die aufgelöste Adresse als auch die Trustlines zurück.
+// Fehler werden als übersetzbare Error-Objekte zurückgegeben.
+export async function handleSourceSubmit(sourceInput, t) {
+  let publicKey = sourceInput;
+
+  try {
+    // Auflösung oder Validierung der Adresse (z. B. Federation → G...)
+    publicKey = await resolveOrValidatePublicKey(sourceInput);
+  } catch (resolveError) {
+    // Fehler beim Auflösen (z. B. Federation-Adresse ungültig)
+    throw new Error(t(resolveError.message));
+  }
+
+  try {
+    const trustlines = await loadTrustlines(publicKey);
+    return { publicKey, trustlines };
+  } catch (loadError) {
+    // Fehler beim Laden der Trustlines (z. B. Netzwerkproblem)
+    throw new Error(t(loadError.message || 'loadTrustlines.failed'));
+  }
+}
+/**
+ * Löscht ausgewählte Trustlines und lädt danach die aktualisierte Liste.
+ * Wird im Realmodus ausgeführt.
+ */
+export async function handleDeleteTrustlines({
+  secretKey,
+  trustlinesToDelete,
+  sourcePublicKey,
+  t,
+  horizonServer,
+}) {
+  const keypair = StellarSdk.Keypair.fromSecret(secretKey);
+  const pubKeyFromSecret = keypair.publicKey();
+
+  if (pubKeyFromSecret !== sourcePublicKey) {
+    throw new Error(t('secretKey.mismatch'));
+  }
+
+  // Optional: Validierung der Trustlines hier ergänzen
+  const deleted = await deleteTrustlines({ secretKey, trustlines: trustlinesToDelete });
+
+  const updatedTrustlines = await loadTrustlines(sourcePublicKey);
+
+  return {
+    deleted,
+    updatedTrustlines,
+  };
+}
+/**
+ * Teilt ein Array in gleich große Blöcke (Chunks) auf
+ */
+export function chunkArray(array, size) {
+  const result = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+  return result;
+}
+export async function deleteTrustlinesInChunks({ secretKey, trustlines, onProgress }) {
+  const sourceKeypair = Keypair.fromSecret(secretKey);
+  const publicKey = sourceKeypair.publicKey();
+  const chunks = chunkArray(trustlines, 100);
+  const allDeleted = [];
+  let processed = 0;
+
+  for (const chunk of chunks) {
+    // Hole frische Live-Daten
+    const liveTrustlines = await loadTrustlines(publicKey);
+
+    // Prüfe, ob Trustlines aus dem Chunk wirklich noch existieren
+    const stillValid = chunk.filter(tl =>
+      liveTrustlines.some(existing =>
+        existing.assetCode === tl.assetCode &&
+        existing.assetIssuer === tl.assetIssuer &&
+        existing.assetType !== 'native' &&
+        parseFloat(existing.assetBalance) === 0 &&
+        parseFloat(existing.buyingLiabilities || 0) === 0 &&
+        parseFloat(existing.sellingLiabilities || 0) === 0
+      )
+    );
+
+    if (stillValid.length === 0) {
+      continue; // Keine gültigen Trustlines im Chunk
+    }
+
+    // Lade aktuellen Account (für korrekte Sequenznummer etc.)
+    const account = await horizonServer.loadAccount(publicKey);
+    const txBuilder = new TransactionBuilder(account, {
+      fee: Number(await getBaseFee()),
+      networkPassphrase: Networks.PUBLIC,
+    });
+
+    stillValid.forEach((tl) => {
+      txBuilder.addOperation(
+        Operation.changeTrust({
+          asset: new Asset(tl.assetCode, tl.assetIssuer),
+          limit: "0",
+        })
+      );
+    });
+
+    const transaction = txBuilder.setTimeout(60).build();
+    transaction.sign(sourceKeypair);
+
+    try {
+      const result = await horizonServer.submitTransaction(transaction);
+
+      const deletedChunk = stillValid.map(tl => ({
+        assetCode: tl.assetCode,
+        assetIssuer: tl.assetIssuer,
+        txId: result.id
+      }));
+
+      allDeleted.push(...deletedChunk);
+    } catch (err) {
+      const txCode = err.response?.data?.extras?.result_codes?.transaction;
+      const opCodes = err.response?.data?.extras?.result_codes?.operations;
+      const txHash = err.response?.data?.hash;
+
+      const detail = opCodes?.[0] || txCode || 'unknown';
+      const isRealError = detail !== 'op_success' && detail !== 'tx_success';
+
+      if (err.response?.data) {
+        console.error('[DEBUG] Horizon Fehlerdaten:', JSON.stringify(err.response.data, null, 2));
+      }
+
+      if (!isRealError && txHash) {
+        console.warn('⚠️ Horizon-Fehler gemeldet, aber tx evtl. erfolgreich:', txHash);
+        const fallbackDeleted = stillValid.map(tl => ({
+          assetCode: tl.assetCode,
+          assetIssuer: tl.assetIssuer,
+          txId: txHash
+        }));
+        allDeleted.push(...fallbackDeleted);
+      } else {
+        console.error("❌ Trustline-Löschung fehlgeschlagen:", err);
+        throw new Error('submitTransaction.failed:' + detail);
+      }
+    }
+
+    processed += chunk.length;
+    if (typeof onProgress === 'function') {
+      onProgress(processed, trustlines.length);
+    }
+  }
+
+  if (allDeleted.length === 0) {
+    throw new Error('noTrustlines');
+  }
+
+  return allDeleted;
+}
+
+

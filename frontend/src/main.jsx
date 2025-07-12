@@ -5,13 +5,9 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BACKEND_URL } from './config';
 import { 
-  resolveFederationAddress, 
   loadTrustlines, 
   resolveOrValidatePublicKey, 
-  findDuplicateTrustlines,
-  sortTrustlines,
-  paginateTrustlines,
-  validateSecretKey
+  handleSourceSubmit as submitSourceInput
  } from './services/stellarUtils.js';
 import App from './App.jsx';
 import SourceInput from './components/SourceInput';
@@ -20,21 +16,27 @@ import MainMenu from './components/MainMenu';
 import ListTrustlines from './components/ListTrustlines';
 import ResultDisplay from './components/ResultDisplay';
 import CompareTrustlines from './components/CompareTrustlines';
-import LanguageSelector from './components/LanguageSelector';
 import DeleteAllTrustlines from './components/DeleteAllTrustlines';
 import DeleteByIssuer from './components/DeleteByIssuer';
 import ConfirmationModal from './components/ConfirmationModal';
 import './index.css'; // Enthält @tailwind + dein echtes Styling
-
-console.log('main.jsx loaded');
+import {
+  toggleAllTrustlines,
+  areAllSelected,
+  isSelected,
+  toggleTrustlineSelection
+} from './services/trustlineUtils';
+import { 
+  handleSort,
+  handleFilterChange 
+} from './services/uiHelpers.js';
+import { handleDeleteTrustlines as deleteAndReload } from './services/stellarUtils.js';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
-
-console.log('main.jsx Nach ReactDOM');
 
 function Main() {
 	//console.log('main.jsx In function Main');
@@ -63,6 +65,58 @@ function Main() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const handleSourceSubmit = async () => {
+    setError('');
+    setIsLoading(true);
+    try {
+      const { publicKey, trustlines } = await submitSourceInput(sourceInput, t);
+      setSourcePublicKey(publicKey);
+      console.log('[DEBUG] Geladene Trustlines:', trustlines);
+      setTrustlines(trustlines);
+      setMenuSelection(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleSortClick = (column) => {
+    handleSort(column, sortColumn, sortDirection, setSortColumn, setSortDirection);
+  };
+  const handleFilterUpdate = (key, value) => {
+    handleFilterChange(key, value, filters, setFilters, setCurrentPage);
+  };
+  const handleToggleTrustline = (tl) => {
+    if (tl.assetBalance !== "0.0000000") return;
+    const newSelection = toggleTrustlineSelection(tl, selectedTrustlines);
+    setSelectedTrustlines(newSelection);
+  };
+  const handleDeleteTrustlines = async (secretKey) => {
+    setIsLoading(true);
+    setError('');
+    try {
+      const { deleted, updatedTrustlines } = await deleteAndReload({
+        secretKey,
+        trustlinesToDelete: selectedTrustlines,
+        sourcePublicKey,
+        t,
+        horizonServer: null, // optional – falls du `horizonServer` explizit übergibst
+      });
+
+      setTrustlines(updatedTrustlines);
+      setResults([{ type: 'success', message: t('trustlines.deleted.success', { count: deleted.length }) }]);
+      setSelectedTrustlines([]);
+      setShowSecretKey(false);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [deleteProgress, setDeleteProgress] = useState(null);
+  const [infoMessage, setInfoMessage] = useState('');
 
   // Global error handler
   useEffect(() => {
@@ -88,96 +142,10 @@ function Main() {
     console.debug('[DEBUG] useEffect check: menuSelection is', menuSelection);
   }, [menuSelection]);
 
-  // Handle source address input (federation or public key)
-  const handleSourceSubmit = async () => {
-    setError('');
-    setIsLoading(true);
-    let publicKey;
-    try {
-      console.log("sourceInput submitted:", sourceInput);
-      publicKey = sourceInput;
-      publicKey = await resolveOrValidatePublicKey(sourceInput);
-    } catch (resolveError) {
-      setError(t(resolveError.message));
-      setIsLoading(false);
-      return;
-    }
-    try {
-      setSourcePublicKey(publicKey);
-      setTrustlines(await loadTrustlines(publicKey));
-      setMenuSelection(null);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCompareTrustlines = async () => {
-    try {
-      const duplicates = await findDuplicateTrustlines(sourcePublicKey, destinationPublicKey);
-
-      if (duplicates.length > 0) {
-        setResults(duplicates);
-        setConfirmAction(() => async () => {
-          try {
-            validateSecretKey(sourceSecret);
-          } catch (err) {
-            setError(t(err.message));
-            return;
-          }
-
-          try {
-            const response = await fetch(`${BACKEND_URL}/delete-trustlines`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ secretKey: sourceSecret, trustlines: duplicates })
-            });
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.error || 'submitTransaction.failed:Unknown error.');
-            setResults([...result.messages, t('secretKey.cleared')]);
-            setTrustlines(await loadTrustlines(sourcePublicKey));
-            setSourceSecret('');
-            setShowSecretKey(false);
-          } catch (err) {
-            const detail = err.message || 'submitTransaction.failed:Unknown error.';
-            throw new Error('submitTransaction.failed:' + detail);
-          }
-        });
-        setShowConfirm(true);
-      } else {
-        setResults([t('trustline.noDuplicates')]);
-      }
-    } catch (err) {
-      setError(t(err.message));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  // Neue Sortierfunktion
-  const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  };
-
   // Filter-Update
   const handleFilterChange = (key, value) => {
     setFilters({ ...filters, [key]: value });
     setCurrentPage(0); // Bei Filterwechsel auf Seite 1 zurück
-  };
-
-  // Checkbox-Auswahl pro Trustline
-  const handleToggleTrustline = (tl) => {
-    const exists = selectedTrustlines.includes(tl);
-    if (exists) {
-      setSelectedTrustlines(selectedTrustlines.filter(item => item !== tl));
-    } else {
-      setSelectedTrustlines([...selectedTrustlines, tl]);
-    }
   };
 
   // Alle auf aktueller Seite toggeln
@@ -231,23 +199,27 @@ function Main() {
             trustlines={trustlines}
             itemsPerPage={ITEMS_PER_PAGE}
             currentPage={currentPage}
-            onPageChange={setCurrentPage}
             sortColumn={sortColumn}
             sortDirection={sortDirection}
-            onSort={handleSort}
+            onSort={handleSortClick}
             filters={filters}
-            onFilterChange={handleFilterChange}
+            onFilterChange={handleFilterUpdate}
             selectedTrustlines={selectedTrustlines}
             setSelectedTrustlines={setSelectedTrustlines} 
             onToggleTrustline={handleToggleTrustline}
             onToggleAll={handleToggleAll}
             results={results}
             setResults={setResults}
-            setError={setError}
             setMenuSelection={setMenuSelection}
             menuSelection={menuSelection}
             setSecretKey={setSourceSecret}
             publicKey={sourcePublicKey}
+            setTrustlines={setTrustlines}
+            setIsProcessing={setIsProcessing}
+            isProcessing={isProcessing} 
+            deleteProgress={deleteProgress}
+            setDeleteProgress={setDeleteProgress}
+            setInfoMessage={setInfoMessage}
          />
         </>
       )}
@@ -310,7 +282,7 @@ function Main() {
           results={results}
           sortColumn={sortColumn}
           sortDirection={sortDirection}
-          onSort={handleSort}
+          onSort={handleSortClick}
           currentPage={currentPage}
           itemsPerPage={ITEMS_PER_PAGE}
         />
@@ -335,6 +307,11 @@ function Main() {
           setResults={setResults}
           isLoading={isLoading}
         />
+      )}
+      {infoMessage && (
+        <p className="text-sm text-yellow-600 mt-2">
+          {infoMessage}
+        </p>
       )}
     </>
   );

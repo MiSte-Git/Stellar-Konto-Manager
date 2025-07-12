@@ -1,136 +1,136 @@
 {
+  "account": {
+    "loadFailed": "Erreur lors du chargement du compte {publicKey} : {error}",
+    "noBalances": "Aucun crédit trouvé pour le compte."
+  },
+  "address": "Adresse",
+  "asset": {
+    "amount": "Montant (XLM)",
+    "code": "Code d'actif",
+    "creationDate": "Créé le",
+    "issuer": "Émetteur"
+  },
   "assets": {
     "compromisedPurchases": "{total} paiements au total",
     "totalPurchases": "Nombre total d'achats : {count}"
   },
-  "secretKey": {
-    "valid": "✅ La clé secrète est valide.",
-    "info": "La clé secrète n'est transmise temporairement à un backend que pour l'exécution de l'action choisie. La clé n'est pas stockée.",
-    "label": "Entrez la clé secrète source (elle sera envoyée en toute sécurité au backend",
-    "mismatch": "La clé secrète ne correspond pas à l'adresse publique.",
-    "cleared": "La clé secrète a été supprimée.",
-    "empty": "Le champ de la clé secrète est vide.",
-    "invalid": "Clé secrète invalide.",
-    "placeholder": "par exemple"
-  },
-  "option": {
-    "cancel": "Annuler",
-    "confirm": {
-      "action": {
-        "title": "Confirmer l'action",
-        "text": "Es-tu sûr"
-      }
-    },
-    "show": "Afficher",
-    "description": "Description",
-    "results": "Résultats :",
-    "filter": "Filtrer...",
-    "add": "Ajouter",
-    "yes": "Oui",
-    "loading": "Chargement...",
-    "delete": "Supprimer",
-    "memo": "Mémo",
-    "no": "Non",
-    "newAddress": "Nouvelle adresse",
-    "page": "Page",
-    "save": "Enregistrer",
-    "hide": "Masquer",
-    "addToList": "Ajouter à la liste"
-  },
-  "publicKey": {
-    "submit": {
-      "button": "Envoyer"
-    },
-    "recipient": "Adresse de réception",
-    "label": "Veuillez entrer l'adresse de la fédération source ou la clé publique :",
-    "invalid": "Clé publique ou adresse de fédération invalide.",
-    "destination": {
-      "error": "Clé de destination non valide.",
-      "input": "Entrez l'adresse du portefeuille cible"
-    },
-    "placeholder": "par exemple",
-    "source": "Adresse du portefeuille source"
-  },
-  "address": "Adresse",
-  "navigation": {
-    "current": {
-      "menu": "Menu actuel :"
-    },
-    "next": "Suivant",
-    "previous": "Précédente",
-    "backToTop": "Retour en haut",
-    "backToMainMenu": "Retour au menu"
-  },
-  "trustline": {
-    "all": "Afficher toutes les lignes de confiance",
-    "removeFromList": "Supprimer de la liste",
-    "inputEmpty": "Le champ de saisie ne doit pas être vide.",
-    "delete": "Supprimer la/les ligne(s) de confiance",
-    "destination": {
-      "label": "Entrez la clé publique de destination :",
-      "placeholder": "par exemple"
-    },
-    "noDuplicates": "Aucunes lignes de confiance en double trouvées.",
-    "issuer": {
-      "notFound": "Aucune ligne de confiance trouvée pour l'émetteur {issuer}."
-    },
-    "notFound": "Aucune ligne de confiance trouvée.",
-    "reviewSelection": {
-      "title": "Vérifier les lignes de confiance sélectionnées"
-    },
-    "list": "Lister les Trustlines",
-    "compare": "Comparer les Trustlines",
-    "confirmDeletion": "Vraiment supprimer les Trustlines"
-  },
-  "token": {
-    "purchases": "Nombre de tokens achetés"
-  },
-  "asset": {
-    "code": "Code d'actif",
-    "amount": "Montant (XLM)",
-    "issuer": "Émetteur",
-    "creationDate": "Créé le"
-  },
   "date": {
     "times": "Date et heures"
   },
-  "settings": {
-    "label": "Paramètres",
-    "export": "Exporter les paramètres",
-    "import": "Importer les paramètres"
-  },
   "error": {
-    "fetchingOperations": "Erreur lors de la récupération des opérations : {error}",
     "connection": {
       "backend": "Impossible de se connecter au backend. Assurez-vous"
     },
+    "fetchingOperations": "Erreur lors de la récupération des opérations : {error}",
     "script": "Erreur de script : {message} à {source}:{lineno}:{colno} - {error}",
     "transaktion": {
       "unknown": "Erreur inconnue lors de la transaction."
     }
   },
-  "puplicKey": {
-    "failed": "Erreur lors de la résolution de l'adresse de fédération / clé publique : {error}"
-  },
-  "account": {
-    "loadFailed": "Erreur lors du chargement du compte {publicKey} : {error}",
-    "noBalances": "Aucun crédit trouvé pour le compte."
-  },
   "issuer": {
-    "label": "Entrez l'adresse de l'émetteur :",
-    "enter": "Entrez l'adresse de l'émetteur :",
-    "notfound": "Aucune adresse d'émetteur trouvée",
     "compromised": "Compromis",
+    "enter": "Entrez l'adresse de l'émetteur :",
     "invalid": "Adresse de l'émetteur invalide.",
+    "label": "Entrez l'adresse de l'émetteur :",
+    "notfound": "Aucune adresse d'émetteur trouvée",
     "placeholder": "par exemple"
-  },
-  "wallet": {
-    "list": "Liste des portefeuilles Groupfund",
-    "noPayments": "Aucun paiement trouvé.",
-    "add": "Ajouter un portefeuille",
-    "inList": "Portefeuille dans la liste"
   },
   "main": {
     "title": "Gestionnaire de Ligne de Confiance Stellar"
+  },
+  "navigation": {
+    "backToMainMenu": "Retour au menu",
+    "backToTop": "Retour en haut",
+    "current": {
+      "menu": "Menu actuel :"
+    },
+    "next": "Suivant",
+    "previous": "Précédente"
+  },
+  "option": {
+    "add": "Ajouter",
+    "addToList": "Ajouter à la liste",
+    "cancel": "Annuler",
+    "confirm": {
+      "action": {
+        "text": "Es-tu sûr",
+        "title": "Confirmer l'action"
+      }
+    },
+    "delete": "Supprimer",
+    "description": "Description",
+    "filter": "Filtrer...",
+    "hide": "Masquer",
+    "loading": "Chargement...",
+    "memo": "Mémo",
+    "newAddress": "Nouvelle adresse",
+    "no": "Non",
+    "page": "Page",
+    "results": "Résultats :",
+    "save": "Enregistrer",
+    "show": "Afficher",
+    "yes": "Oui"
+  },
+  "publicKey": {
+    "destination": {
+      "error": "Clé de destination non valide.",
+      "input": "Entrez l'adresse du portefeuille cible"
+    },
+    "invalid": "Clé publique ou adresse de fédération invalide.",
+    "label": "Veuillez entrer l'adresse de la fédération source ou la clé publique :",
+    "placeholder": "par exemple",
+    "recipient": "Adresse de réception",
+    "source": "Adresse du portefeuille source",
+    "submit": {
+      "button": "Envoyer"
+    }
+  },
+  "puplicKey": {
+    "failed": "Erreur lors de la résolution de l'adresse de fédération / clé publique : {error}"
+  },
+  "secretKey": {
+    "cleared": "La clé secrète a été supprimée.",
+    "empty": "Le champ de la clé secrète est vide.",
+    "info": "La clé secrète n'est transmise temporairement à un backend que pour l'exécution de l'action choisie. La clé n'est pas stockée.",
+    "invalid": "Clé secrète invalide.",
+    "label": "Entrez la clé secrète source (elle sera envoyée en toute sécurité au backend",
+    "mismatch": "La clé secrète ne correspond pas à l'adresse publique.",
+    "placeholder": "par exemple",
+    "valid": "✅ La clé secrète est valide."
+  },
+  "settings": {
+    "export": "Exporter les paramètres",
+    "import": "Importer les paramètres",
+    "label": "Paramètres"
+  },
+  "token": {
+    "purchases": "Nombre de tokens achetés"
+  },
+  "trustline": {
+    "all": "Afficher toutes les lignes de confiance",
+    "compare": "Comparer les Trustlines",
+    "confirmDeletion": "Vraiment supprimer les Trustlines",
+    "delete": "Supprimer la/les ligne(s) de confiance",
+    "destination": {
+      "label": "Entrez la clé publique de destination :",
+      "placeholder": "par exemple"
+    },
+    "inputEmpty": "Le champ de saisie ne doit pas être vide.",
+    "issuer": {
+      "notFound": "Aucune ligne de confiance trouvée pour l'émetteur {issuer}."
+    },
+    "list": "Lister les Trustlines",
+    "noDuplicates": "Aucunes lignes de confiance en double trouvées.",
+    "notFound": "Aucune ligne de confiance trouvée.",
+    "removeFromList": "Supprimer de la liste",
+    "reviewSelection": {
+      "title": "Vérifier les lignes de confiance sélectionnées"
+    }
+  },
+  "wallet": {
+    "add": "Ajouter un portefeuille",
+    "inList": "Portefeuille dans la liste",
+    "list": "Liste des portefeuilles Groupfund",
+    "noPayments": "Aucun paiement trouvé."
   }
 }
