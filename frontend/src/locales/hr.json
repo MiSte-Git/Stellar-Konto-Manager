@@ -8,7 +8,8 @@
     "amount": "Iznos (XLM)",
     "code": "Kod imovine",
     "creationDate": "Kreirano dana",
-    "issuer": "Izdavatelj"
+    "issuer": "Izdavatelj",
+    "balance": "Stanje računa"
   },
   "assets": {
     "compromisedPurchases": "{total} ukupno plaćanja",
@@ -25,6 +26,13 @@
     "script": "Pogreška u skripti: {message} na {source}:{lineno}:{colno} - {error}",
     "transaktion": {
       "unknown": "Nepoznata greška prilikom transakcije."
+    },
+    "op_invalid_limit": "Trustline se ne može izbrisati. Moguće je da još uvijek ima saldo ili otvorene obveze.",
+    "transaction": {
+      "deleteFail": "[POGREŠKA] Brisanje nije uspjelo: {{error}}",
+      "failed": "Transakcija nije uspjela",
+      "unknown": "Nepoznata greška prilikom transakcije.",
+      "title": "Pogreška u transakciji"
     }
   },
   "issuer": {
@@ -36,7 +44,8 @@
     "placeholder": "npr."
   },
   "main": {
-    "title": "Upravitelj Stellar Trustline-a"
+    "title": "Upravitelj Stellar Trustline-a",
+    "processing": "Proces je u tijeku, molimo pričekajte …"
   },
   "navigation": {
     "backToMainMenu": "Povratak na izbornik",
@@ -69,7 +78,14 @@
     "results": "Rezultati:",
     "save": "Spremi",
     "show": "Prikazati",
-    "yes": "Da"
+    "yes": "Da",
+    "close": "Zatvori",
+    "copy": "Kopiraj",
+    "export": {
+      "csv": "Spremi kao CSV",
+      "pdf": "Spremi kao PDF"
+    },
+    "ok": "U redu"
   },
   "publicKey": {
     "destination": {
@@ -125,12 +141,35 @@
     "removeFromList": "Ukloniti s popisa",
     "reviewSelection": {
       "title": "Provjerite odabrane linije povjerenja"
-    }
+    },
+    "deleted": {
+      "mode": {
+        "real": "Stvarni način",
+        "realWarning": "Upozorenje: Stvarne linije povjerenja bit će izbrisane",
+        "simulation": "Modus simulacije"
+      },
+      "deletingProgress": "Brisanje {{current}} od {{total}} Trustlines...",
+      "resultText": "{{count}} Trustline(a) je uspješno izbrisano ({{mode}}).",
+      "resultTitle": "Izbrisana(e) Trustline(s)",
+      "simulated": "{{count}} Trustline(s) su simulirano izbrisane",
+      "success": "{{count}} Trustline(a) je(su) izbrisana(e)",
+      "noDeletableFound": "Nisu pronađene brisive Trustlines - sve još uvijek sadrže saldo.",
+      "noTrustlines": "Nema valjanih Trustlines za brisanje.",
+      "skippedDueToLiabilities": "{{count}} Trustline(s) nije moguće izbrisati jer još uvijek sadrže obveze (Liabilities).",
+      "skippedDueToBalance": "{{count}} Trustlines su preskočene jer sadrže saldo."
+    },
+    "nonZeroBalance": "Ovu povjereničku liniju nije moguće izbrisati jer još uvijek sadrži saldo.",
+    "onlyZeroBalanceInfo": "Samo trustlines s saldom od 0 mogu se izbrisati.",
+    "showSecret": "Prikaži tajni ključ"
   },
   "wallet": {
     "add": "Dodaj novčanik",
     "inList": "Novčanik u popisu",
     "list": "Popis novčanika Groupfund",
     "noPayments": "Nisu pronađene uplate."
+  },
+  "transaction": {
+    "pending": "Transakcija na čekanju...",
+    "success": "Transakcija uspješna: {hash}"
   }
 }

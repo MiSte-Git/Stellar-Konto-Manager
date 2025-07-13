@@ -8,7 +8,8 @@
     "amount": "Bedrag (XLM)",
     "code": "Activa-Code",
     "creationDate": "Gemaakt op",
-    "issuer": "Uitgever"
+    "issuer": "Uitgever",
+    "balance": "Tegoed"
   },
   "assets": {
     "compromisedPurchases": "{total} totale betalingen",
@@ -25,6 +26,13 @@
     "script": "Scriptfout: {message} bij {source}:{lineno}:{colno} - {error}",
     "transaktion": {
       "unknown": "Onbekende fout bij de transactie."
+    },
+    "op_invalid_limit": "Trustline kan niet worden verwijderd. Het heeft mogelijk nog tegoed of openstaande verplichtingen.",
+    "transaction": {
+      "deleteFail": "[FOUT] Verwijdering mislukt: {{fout}}",
+      "failed": "Transactie mislukt",
+      "unknown": "Onbekende fout bij de transactie.",
+      "title": "Fout bij de transactie"
     }
   },
   "issuer": {
@@ -36,7 +44,8 @@
     "placeholder": "bijv."
   },
   "main": {
-    "title": "Stellar Trustline Beheerder"
+    "title": "Stellar Trustline Beheerder",
+    "processing": "Proces loopt, even geduld aub …"
   },
   "navigation": {
     "backToMainMenu": "Terug naar het menu",
@@ -69,7 +78,14 @@
     "results": "Resultaten:",
     "save": "Opslaan",
     "show": "Advertenties",
-    "yes": "Ja"
+    "yes": "Ja",
+    "close": "Sluiten",
+    "copy": "Kopiëren",
+    "export": {
+      "csv": "Opslaan als CSV",
+      "pdf": "Opslaan als PDF"
+    },
+    "ok": "OK"
   },
   "publicKey": {
     "destination": {
@@ -125,12 +141,35 @@
     "removeFromList": "Uit lijst verwijderen",
     "reviewSelection": {
       "title": "Geselecteerde trustlijnen controleren"
-    }
+    },
+    "deleted": {
+      "mode": {
+        "real": "Echte modus",
+        "realWarning": "Let op: Echte Trustline(s) worden verwijderd",
+        "simulation": "Simulatiemodus"
+      },
+      "deletingProgress": "Verwijderen van {{current}} van {{total}} Trustlines...",
+      "resultText": "{{count}} Trustline(s) zijn succesvol verwijderd ({{mode}}).",
+      "resultTitle": "Verwijderde Trustline(s)",
+      "simulated": "{{count}} Trustline(s) zijn gesimuleerd verwijderd",
+      "success": "{{count}} Trustline(s) zijn verwijderd",
+      "noDeletableFound": "Geen verwijderbare Trustlines gevonden - ze bevatten allemaal nog tegoed.",
+      "noTrustlines": "Geen geldige vertrouwenslijnen om te verwijderen.",
+      "skippedDueToLiabilities": "{{count}} Trustline(s) konden niet worden verwijderd omdat ze nog verplichtingen (Liabilities) bevatten.",
+      "skippedDueToBalance": "{{count}} Trustlines zijn overgeslagen omdat ze saldo bevatten."
+    },
+    "nonZeroBalance": "Deze trustline kan niet worden verwijderd omdat er nog een saldo op staat.",
+    "onlyZeroBalanceInfo": "Alleen trustlijnen met een saldo van 0 kunnen worden verwijderd.",
+    "showSecret": "Geheime sleutel weergeven"
   },
   "wallet": {
     "add": "Portemonnee toevoegen",
     "inList": "Portemonnee in lijst",
     "list": "Groepsfonds Portemonnee-lijst",
     "noPayments": "Geen betalingen gevonden."
+  },
+  "transaction": {
+    "pending": "Transactie in afwachting...",
+    "success": "Transactie succesvol: {hash}"
   }
 }

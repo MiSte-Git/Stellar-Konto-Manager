@@ -8,7 +8,8 @@
     "amount": "Amount (XLM)",
     "code": "Asset Code",
     "creationDate": "Created on",
-    "issuer": "Issuer"
+    "issuer": "Issuer",
+    "balance": "Credit"
   },
   "assets": {
     "compromisedPurchases": "{total} payments in total",
@@ -25,6 +26,13 @@
     "script": "Script error: {message} at {source}:{lineno}:{colno} - {error}",
     "transaktion": {
       "unknown": "Unknown error during the transaction."
+    },
+    "op_invalid_limit": "Trustline cannot be deleted. It may still have a balance or outstanding obligations.",
+    "transaction": {
+      "deleteFail": "[ERROR] Deletion failed: {{error}}",
+      "failed": "Transaction failed",
+      "unknown": "Unknown error during the transaction.",
+      "title": "Transaction Error"
     }
   },
   "issuer": {
@@ -36,7 +44,8 @@
     "placeholder": "e.g."
   },
   "main": {
-    "title": "Stellar Trustline Manager"
+    "title": "Stellar Trustline Manager",
+    "processing": "Process is running, please wait …"
   },
   "navigation": {
     "backToMainMenu": "Back to menu",
@@ -69,7 +78,14 @@
     "results": "Results:",
     "save": "Save",
     "show": "Display",
-    "yes": "Yes"
+    "yes": "Yes",
+    "close": "Close",
+    "copy": "Copy",
+    "export": {
+      "csv": "Save as CSV",
+      "pdf": "Save as PDF"
+    },
+    "ok": "OK"
   },
   "publicKey": {
     "destination": {
@@ -125,12 +141,35 @@
     "removeFromList": "Remove from list",
     "reviewSelection": {
       "title": "Check selected Trustlines"
-    }
+    },
+    "deleted": {
+      "mode": {
+        "real": "Real Mode",
+        "realWarning": "Warning: Actual Trustline(s) will be deleted",
+        "simulation": "Simulation Mode"
+      },
+      "deletingProgress": "Deleting {{current}} out of {{total}} trustlines...",
+      "resultText": "{{count}} Trustline(s) were successfully deleted ({{mode}}).",
+      "resultTitle": "Deleted Trustline(s)",
+      "simulated": "{{count}} Trustline(s) were simulated to be deleted",
+      "success": "{{count}} Trustline(s) have been deleted",
+      "noDeletableFound": "No deletable trustlines found - all still contain balance.",
+      "noTrustlines": "No valid trustlines available for deletion.",
+      "skippedDueToLiabilities": "{{count}} Trustline(s) could not be deleted as they still contain liabilities.",
+      "skippedDueToBalance": "{{count}} Trustlines were skipped as they contain balance."
+    },
+    "nonZeroBalance": "This trustline cannot be deleted as it still contains a balance.",
+    "onlyZeroBalanceInfo": "Only trustlines with a balance of 0 can be deleted.",
+    "showSecret": "Show secret key"
   },
   "wallet": {
     "add": "Add Wallet",
     "inList": "Wallet in list",
     "list": "Groupfund Wallet List",
     "noPayments": "No payments found."
+  },
+  "transaction": {
+    "pending": "Transaction pending...",
+    "success": "Transaction successful: {hash}"
   }
 }

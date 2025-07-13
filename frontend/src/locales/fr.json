@@ -8,7 +8,8 @@
     "amount": "Montant (XLM)",
     "code": "Code d'actif",
     "creationDate": "Créé le",
-    "issuer": "Émetteur"
+    "issuer": "Émetteur",
+    "balance": "Crédit"
   },
   "assets": {
     "compromisedPurchases": "{total} paiements au total",
@@ -25,6 +26,13 @@
     "script": "Erreur de script : {message} à {source}:{lineno}:{colno} - {error}",
     "transaktion": {
       "unknown": "Erreur inconnue lors de la transaction."
+    },
+    "op_invalid_limit": "La ligne de confiance ne peut pas être supprimée. Elle peut encore avoir un solde ou des obligations en cours.",
+    "transaction": {
+      "deleteFail": "[ERREUR] Échec de la suppression : {{error}}",
+      "failed": "Transaction échouée",
+      "unknown": "Erreur inconnue lors de la transaction.",
+      "title": "Erreur lors de la transaction"
     }
   },
   "issuer": {
@@ -36,7 +44,8 @@
     "placeholder": "par exemple"
   },
   "main": {
-    "title": "Gestionnaire de Ligne de Confiance Stellar"
+    "title": "Gestionnaire de Ligne de Confiance Stellar",
+    "processing": "Opération en cours, veuillez patienter …"
   },
   "navigation": {
     "backToMainMenu": "Retour au menu",
@@ -69,7 +78,14 @@
     "results": "Résultats :",
     "save": "Enregistrer",
     "show": "Afficher",
-    "yes": "Oui"
+    "yes": "Oui",
+    "close": "Fermer",
+    "copy": "Copier",
+    "export": {
+      "csv": "Enregistrer en CSV",
+      "pdf": "Enregistrer en PDF"
+    },
+    "ok": "OK"
   },
   "publicKey": {
     "destination": {
@@ -125,12 +141,35 @@
     "removeFromList": "Supprimer de la liste",
     "reviewSelection": {
       "title": "Vérifier les lignes de confiance sélectionnées"
-    }
+    },
+    "deleted": {
+      "mode": {
+        "real": "Mode réel",
+        "realWarning": "Attention : Les véritables lignes de confiance seront supprimées",
+        "simulation": "Mode simulation"
+      },
+      "deletingProgress": "Suppression de {{current}} sur {{total}} Trustlines...",
+      "resultText": "{{count}} ligne(s) de confiance ont été supprimées avec succès ({{mode}}).",
+      "resultTitle": "Trustline(s) supprimée(s)",
+      "simulated": "{{count}} ligne(s) de confiance ont été supprimées en simulation",
+      "success": "{{count}} ligne(s) de confiance ont été supprimées",
+      "noDeletableFound": "Aucune ligne de confiance supprimable trouvée - toutes contiennent encore du crédit.",
+      "noTrustlines": "Aucune ligne de confiance valide à supprimer.",
+      "skippedDueToLiabilities": "{{count}} ligne(s) de confiance n'a/n'ont pas pu être supprimée(s) car elle(s) contient/contiennent encore des obligations (Liabilities).",
+      "skippedDueToBalance": "{{count}} Trustlines ont été ignorées car elles contiennent du crédit."
+    },
+    "nonZeroBalance": "Cette ligne de confiance ne peut pas être supprimée car elle contient encore un solde.",
+    "onlyZeroBalanceInfo": "Seules les lignes de confiance avec un solde de 0 peuvent être supprimées.",
+    "showSecret": "Afficher la clé secrète"
   },
   "wallet": {
     "add": "Ajouter un portefeuille",
     "inList": "Portefeuille dans la liste",
     "list": "Liste des portefeuilles Groupfund",
     "noPayments": "Aucun paiement trouvé."
+  },
+  "transaction": {
+    "pending": "Transaction en attente...",
+    "success": "Transaction réussie : {hash}"
   }
 }

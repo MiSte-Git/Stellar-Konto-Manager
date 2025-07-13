@@ -8,7 +8,8 @@
     "amount": "Importo (XLM)",
     "code": "Codice dell'asset",
     "creationDate": "Creato il",
-    "issuer": "Emittente"
+    "issuer": "Emittente",
+    "balance": "Credito"
   },
   "assets": {
     "compromisedPurchases": "{total} pagamenti totali",
@@ -25,6 +26,13 @@
     "script": "Errore di script: {message} in {source}:{lineno}:{colno} - {error}",
     "transaktion": {
       "unknown": "Errore sconosciuto durante la transazione."
+    },
+    "op_invalid_limit": "La Trustline non può essere eliminata. Potrebbe ancora avere un saldo o obbligazioni aperte.",
+    "transaction": {
+      "deleteFail": "[ERRORE] Cancellazione non riuscita: {{error}}",
+      "failed": "Transazione fallita",
+      "unknown": "Errore sconosciuto durante la transazione.",
+      "title": "Errore nella transazione"
     }
   },
   "issuer": {
@@ -36,7 +44,8 @@
     "placeholder": "ad es."
   },
   "main": {
-    "title": "Gestore di Trustline Stellar"
+    "title": "Gestore di Trustline Stellar",
+    "processing": "Operazione in corso, si prega di attendere …"
   },
   "navigation": {
     "backToMainMenu": "Torna al menu",
@@ -69,7 +78,14 @@
     "results": "Risultati:",
     "save": "Salva",
     "show": "Mostra",
-    "yes": "Sì"
+    "yes": "Sì",
+    "close": "Chiudi",
+    "copy": "Copia",
+    "export": {
+      "csv": "Salva come CSV",
+      "pdf": "Salva come PDF"
+    },
+    "ok": "OK"
   },
   "publicKey": {
     "destination": {
@@ -125,12 +141,35 @@
     "removeFromList": "Rimuovi dalla lista",
     "reviewSelection": {
       "title": "Verifica le Trustlines selezionate"
-    }
+    },
+    "deleted": {
+      "mode": {
+        "real": "Modalità reale",
+        "realWarning": "Attenzione: Le vere Trustline(s) verranno eliminate",
+        "simulation": "Modalità simulazione"
+      },
+      "deletingProgress": "Eliminazione di {{current}} su {{total}} Trustlines...",
+      "resultText": "{{count}} Trustline(s) sono state cancellate con successo ({{mode}}).",
+      "resultTitle": "Trustline(s) cancellata(e)",
+      "simulated": "{{count}} Trustline(s) sono state simulate come cancellate",
+      "success": "{{count}} Trustline(s) sono state eliminate",
+      "noDeletableFound": "Nessuna Trustline eliminabile trovata - tutte contengono ancora un saldo.",
+      "noTrustlines": "Nessuna Trustline valida da eliminare disponibile.",
+      "skippedDueToLiabilities": "{{count}} Linea(e) di fiducia non può/potrebbero essere eliminata/e poiché contiene ancora obbligazioni.",
+      "skippedDueToBalance": "{{count}} Trustlines sono state saltate perché contengono credito."
+    },
+    "nonZeroBalance": "Questa linea di fiducia non può essere cancellata perché contiene ancora un saldo.",
+    "onlyZeroBalanceInfo": "Solo le Trustlines con un saldo di 0 possono essere eliminate.",
+    "showSecret": "Mostra chiave segreta"
   },
   "wallet": {
     "add": "Aggiungi portafoglio",
     "inList": "Portafoglio in lista",
     "list": "Lista dei portafogli Groupfund",
     "noPayments": "Nessun pagamento trovato."
+  },
+  "transaction": {
+    "pending": "Transazione in sospeso...",
+    "success": "Transazione riuscita: {hash}"
   }
 }
