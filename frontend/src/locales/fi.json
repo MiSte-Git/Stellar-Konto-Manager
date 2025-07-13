@@ -8,7 +8,8 @@
     "amount": "Määrä (XLM)",
     "code": "Omaisuuskoodi",
     "creationDate": "Luotu",
-    "issuer": "Liikkeeseenlaskija"
+    "issuer": "Liikkeeseenlaskija",
+    "balance": "Saldo"
   },
   "assets": {
     "compromisedPurchases": "{total} maksua yhteensä",
@@ -25,6 +26,13 @@
     "script": "Komentosarjavirhe: {message} kohteessa {source}:{lineno}:{colno} - {error}",
     "transaktion": {
       "unknown": "Tuntematon virhe tapahtumassa."
+    },
+    "op_invalid_limit": "Trustlinea ei voida poistaa. Sillä saattaa olla vielä saldoa tai avoimia velvoitteita.",
+    "transaction": {
+      "deleteFail": "[VIRHE] Poistaminen epäonnistui: {{error}}",
+      "failed": "Transaktio epäonnistui",
+      "unknown": "Tuntematon virhe tapahtumassa.",
+      "title": "Virhe tapahtumassa"
     }
   },
   "issuer": {
@@ -36,7 +44,8 @@
     "placeholder": "esim."
   },
   "main": {
-    "title": "Stellar Trustline -hallinta"
+    "title": "Stellar Trustline -hallinta",
+    "processing": "Toiminto käynnissä, odota hetki …"
   },
   "navigation": {
     "backToMainMenu": "Takaisin valikkoon",
@@ -69,7 +78,14 @@
     "results": "Tulokset:",
     "save": "Tallenna",
     "show": "Näytä",
-    "yes": "Kyllä"
+    "yes": "Kyllä",
+    "close": "Sulje",
+    "copy": "Kopioi",
+    "export": {
+      "csv": "Tallenna CSV-muodossa",
+      "pdf": "Tallenna PDF-muodossa"
+    },
+    "ok": "OK"
   },
   "publicKey": {
     "destination": {
@@ -125,12 +141,35 @@
     "removeFromList": "Poista luettelosta",
     "reviewSelection": {
       "title": "Tarkista valitut luottolinjat"
-    }
+    },
+    "deleted": {
+      "mode": {
+        "real": "Todellinen tila",
+        "realWarning": "Huomio: Todelliset luottolinjat poistetaan",
+        "simulation": "Simulaatiotila"
+      },
+      "deletingProgress": "Poistetaan {{current}}/{{total}} luottolinjaa...",
+      "resultText": "{{count}} luottolinja(a) onnistuneesti poistettu ({{mode}}).",
+      "resultTitle": "Poistetut luottolinja(t)",
+      "simulated": "{{count}} Trustline(a) on simuloidusti poistettu",
+      "success": "{{count}} luottolinja(a) on poistettu",
+      "noDeletableFound": "Ei löydä poistettavia Trustlines - kaikissa on vielä saldoa.",
+      "noTrustlines": "Ei voimassa olevia luottolinjoja poistettavaksi.",
+      "skippedDueToLiabilities": "{{count}} Luottolinjaa ei voitu poistaa, koska ne sisältävät vielä velvoitteita (Liabilities).",
+      "skippedDueToBalance": "{{count}} Trustlinea ohitettiin, koska ne sisältävät saldoa."
+    },
+    "nonZeroBalance": "Tätä luottolinjaa ei voida poistaa, koska siinä on vielä saldoa.",
+    "onlyZeroBalanceInfo": "Vain nollasaldolla olevat luottolinjat voidaan poistaa.",
+    "showSecret": "Näytä salainen avain"
   },
   "wallet": {
     "add": "Lisää lompakko",
     "inList": "Lompakko listassa",
     "list": "Groupfund-lompakon lista",
     "noPayments": "Maksuja ei löytynyt."
+  },
+  "transaction": {
+    "pending": "Transaktio odottaa...",
+    "success": "Transaktio onnistui: {hash}"
   }
 }
