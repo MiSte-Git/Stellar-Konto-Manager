@@ -171,5 +171,58 @@
   "transaction": {
     "pending": "Transactie in afwachting...",
     "success": "Transactie succesvol: {hash}"
+  },
+  "app": {
+    "errorBoundary": {
+      "title": "Er is iets misgegaan."
+    }
+  },
+  "menu": {
+    "xlmByMemo": "XLM naar Memo"
+  },
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Berekenen",
+      "loading": "Bereken..."
+    },
+    "date": {
+      "from": "Van (optioneel)",
+      "to": "Tot (optioneel)"
+    },
+    "memo": {
+      "label": "Memo zoektekst (deel van de string, hoofdlettergevoelig)",
+      "placeholder": "Memo (deel van de string, hoofdlettergevoelig)"
+    },
+    "page": {
+      "title": "XLM-totaal na Memo",
+      "noPublicKey": "Voer eerst een openbare sleutel in."
+    },
+    "result": {
+      "label": "Totaalbedrag:",
+      "range": "Berekend voor periode: {{from}} tot {{to}}",
+      "rangeVerbose": "Periode: {{fromDate}} {{fromTime}} tot {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Tijdstip van (optioneel)",
+      "to": "Tijd tot (optioneel)"
+    },
+    "title": "XLM-totaal na Memo",
+    "tz": {
+      "label": "Tijdzone voor datum/tijd",
+      "cst": "CST (UTC−6)",
+      "cdt": "CDT (UTC−5)",
+      "local": "Lokale tijdzone",
+      "note": "Datum/tijd worden geïnterpreteerd in de gekozen tijdzone en worden automatisch omgezet naar UTC voor de zoekopdracht.",
+      "utc": "UTC"
+    },
+    "failed": "De berekening kon niet worden uitgevoerd.",
+    "failed:account.invalid": "Het wallet-adres is ongeldig.",
+    "failed:date.invalid": "Voer geldige datum/tijd waarden in het formaat YYYY-MM-DD HH:mm[:ss] in (of ISO 8601).",
+    "failed:date.range": "De startdatum mag niet na de einddatum liggen.",
+    "failed:memo.invalid": "Voer een geldige memo-zoektekst in.",
+    "failed:payments.fetch": "Betalingen konden niet worden geladen door Horizon.",
+    "failed:server.invalid": "Horizon-server is ongeldig of ontbreekt.",
+    "failed:unknown": "Onbekende fout bij de berekening."
   }
 }

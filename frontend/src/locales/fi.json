@@ -171,5 +171,58 @@
   "transaction": {
     "pending": "Transaktio odottaa...",
     "success": "Transaktio onnistui: {hash}"
+  },
+  "app": {
+    "errorBoundary": {
+      "title": "Jotain meni pieleen."
+    }
+  },
+  "menu": {
+    "xlmByMemo": "XLM Memoon"
+  },
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Laske",
+      "loading": "Laske…"
+    },
+    "date": {
+      "from": "Lähettäjä (valinnainen)",
+      "to": "Asti (valinnainen)"
+    },
+    "memo": {
+      "label": "Muistion hakuteksti (osamerkkijono, isot/pienet kirjaimet huomioon ottaen)",
+      "placeholder": "Muistio (osamerkkijono, isot/pienet kirjaimet huomioon ottaen)"
+    },
+    "page": {
+      "title": "XLM-summa Memo-kentän mukaan",
+      "noPublicKey": "Anna ensin julkinen avain."
+    },
+    "result": {
+      "label": "Yhteissumma:",
+      "range": "Laskettu ajanjaksolle: {{from}} - {{to}}",
+      "rangeVerbose": "Ajanjakso: {{fromDate}} {{fromTime}} - {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Aika alkaen (valinnainen)",
+      "to": "Aika asti (valinnainen)"
+    },
+    "title": "XLM-summa muistion mukaan",
+    "tz": {
+      "label": "Aika- ja päivämäärävyöhyke",
+      "cst": "CST (UTC−6)",
+      "cdt": "CDT (UTC−5)",
+      "local": "Paikallinen aikavyöhyke",
+      "note": "Päivämäärä/kellonaika tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC:ksi ennen hakua.",
+      "utc": "UTC"
+    },
+    "failed": "Laskentaa ei voitu suorittaa.",
+    "failed:account.invalid": "Lompakon osoite on virheellinen.",
+    "failed:date.invalid": "Anna kelvolliset päivämäärä/aika-arvot muodossa YYYY-MM-DD HH:mm[:ss] (tai ISO 8601).",
+    "failed:date.range": "Aloituspäivämäärä ei saa olla päättymispäivämäärän jälkeen.",
+    "failed:memo.invalid": "Anna kelvollinen muistion hakuteksti.",
+    "failed:payments.fetch": "Maksuja ei voitu ladata Horizonista.",
+    "failed:server.invalid": "Horizon-palvelin on virheellinen tai puuttuu.",
+    "failed:unknown": "Tuntematon virhe laskennassa."
   }
 }

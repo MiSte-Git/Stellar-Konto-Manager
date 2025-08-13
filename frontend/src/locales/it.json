@@ -171,5 +171,58 @@
   "transaction": {
     "pending": "Transazione in sospeso...",
     "success": "Transazione riuscita: {hash}"
+  },
+  "app": {
+    "errorBoundary": {
+      "title": "Qualcosa è andato storto."
+    }
+  },
+  "menu": {
+    "xlmByMemo": "XLM a Memo"
+  },
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Calcolare",
+      "loading": "Calcola..."
+    },
+    "date": {
+      "from": "Da (opzionale)",
+      "to": "Fino a (opzionale)"
+    },
+    "memo": {
+      "label": "Testo di ricerca memo (sottostringa, rispettare maiuscole/minuscole)",
+      "placeholder": "Memo (sottostringa, rispettare maiuscole/minuscole)"
+    },
+    "page": {
+      "title": "Totale XLM dopo Memo",
+      "noPublicKey": "Inserisci prima una chiave pubblica."
+    },
+    "result": {
+      "label": "Totale:",
+      "range": "Calcolato per il periodo: {{from}} a {{to}}",
+      "rangeVerbose": "Periodo: {{fromDate}} {{fromTime}} fino a {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Orario da (opzionale)",
+      "to": "Orario fino a (opzionale)"
+    },
+    "title": "Totale XLM dopo Memo",
+    "tz": {
+      "label": "Fuso orario per data/ora",
+      "cst": "CST (UTC−6)",
+      "cdt": "CDT (UTC−5)",
+      "local": "Fuso orario locale",
+      "note": "La data/ora vengono interpretate nel fuso orario selezionato e convertite automaticamente in UTC prima della ricerca.",
+      "utc": "UTC"
+    },
+    "failed": "Il calcolo non ha potuto essere eseguito.",
+    "failed:account.invalid": "L'indirizzo del portafoglio non è valido.",
+    "failed:date.invalid": "Inserisci valori di data/ora validi nel formato YYYY-MM-DD HH:mm[:ss] (o ISO 8601).",
+    "failed:date.range": "La data di inizio non può essere successiva alla data di fine.",
+    "failed:memo.invalid": "Inserisci un testo di ricerca memo valido.",
+    "failed:payments.fetch": "I pagamenti non sono stati caricati da Horizon.",
+    "failed:server.invalid": "Il server Horizon non è valido o mancante.",
+    "failed:unknown": "Errore sconosciuto durante il calcolo."
   }
 }

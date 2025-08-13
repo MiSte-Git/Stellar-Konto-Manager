@@ -171,5 +171,58 @@
   "transaction": {
     "pending": "Transaction pending...",
     "success": "Transaction successful: {hash}"
+  },
+  "app": {
+    "errorBoundary": {
+      "title": "Something went wrong."
+    }
+  },
+  "menu": {
+    "xlmByMemo": "XLM to Memo"
+  },
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Calculate",
+      "loading": "Calculate..."
+    },
+    "date": {
+      "from": "From (optional)",
+      "to": "Until (optional)"
+    },
+    "memo": {
+      "label": "Memo search text (substring, case sensitive)",
+      "placeholder": "Memo (substring, case sensitive)"
+    },
+    "page": {
+      "title": "XLM Amount after Memo",
+      "noPublicKey": "Please enter a Public Key first."
+    },
+    "result": {
+      "label": "Total sum:",
+      "range": "Calculated for period: {{from}} to {{to}}",
+      "rangeVerbose": "Time period: {{fromDate}} {{fromTime}} to {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Time from (optional)",
+      "to": "Time until (optional)"
+    },
+    "title": "XLM amount after Memo",
+    "tz": {
+      "label": "Timezone for Date/Time",
+      "cst": "CST (UTC-6)",
+      "cdt": "CDT (UTC-5)",
+      "local": "Local Time Zone",
+      "note": "Date/time are interpreted in the chosen time zone and automatically converted to UTC before the search.",
+      "utc": "UTC"
+    },
+    "failed": "The calculation could not be performed.",
+    "failed:account.invalid": "The wallet address is invalid.",
+    "failed:date.invalid": "Please enter valid date/time values in the format YYYY-MM-DD HH:mm[:ss] (or ISO 8601).",
+    "failed:date.range": "The start date cannot be after the end date.",
+    "failed:memo.invalid": "Please enter a valid memo search text.",
+    "failed:payments.fetch": "Payments could not be loaded from Horizon.",
+    "failed:server.invalid": "Horizon server is invalid or missing.",
+    "failed:unknown": "Unknown error during calculation."
   }
 }

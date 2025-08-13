@@ -31,6 +31,8 @@ import {
   handleFilterChange 
 } from './services/uiHelpers.js';
 import { handleDeleteTrustlines as deleteAndReload } from './services/stellarUtils.js';
+import XlmByMemoPanel from './components/XlmByMemoPanel';
+import XlmByMemoPage from './pages/XlmByMemoPage';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -188,7 +190,7 @@ function Main() {
           </div>
         )}
 
-        {error && <p className="text-red-500 mt-4">{error}</p>}
+        {error && <p className="text-red-500 mt-4">{t(error)}</p>}
       </div>
 
       {/* Menüansicht anzeigen (z. B. ListAll) */}
@@ -275,6 +277,12 @@ function Main() {
           backendUrl={BACKEND_URL}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
+        />
+      )}
+      {menuSelection === 'xlmByMemo' && (
+        <XlmByMemoPage
+          publicKey={sourcePublicKey}
+          onBack={() => setMenuSelection(null)}  // oder null, wie du magst
         />
       )}
       {results.length > 0 && (

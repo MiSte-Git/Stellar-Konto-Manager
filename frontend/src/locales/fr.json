@@ -171,5 +171,58 @@
   "transaction": {
     "pending": "Transaction en attente...",
     "success": "Transaction réussie : {hash}"
+  },
+  "app": {
+    "errorBoundary": {
+      "title": "Quelque chose s'est mal passé."
+    }
+  },
+  "menu": {
+    "xlmByMemo": "XLM vers Memo"
+  },
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Calculer",
+      "loading": "Calcule..."
+    },
+    "date": {
+      "from": "De (facultatif)",
+      "to": "Jusqu'à (facultatif)"
+    },
+    "memo": {
+      "label": "Text de recherche de mémo (sous-chaîne, respecter la casse)",
+      "placeholder": "Mémo (sous-chaîne, respecter la casse)"
+    },
+    "page": {
+      "title": "Total XLM après Memo",
+      "noPublicKey": "Veuillez d'abord entrer une clé publique."
+    },
+    "result": {
+      "label": "Total :",
+      "range": "Calculé pour la période : {{from}} à {{to}}",
+      "rangeVerbose": "Période : {{fromDate}} {{fromTime}} à {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Heure de (facultatif)",
+      "to": "Heure jusqu'à (facultatif)"
+    },
+    "title": "Total XLM après Memo",
+    "tz": {
+      "label": "Fuseau horaire pour la date/l'heure",
+      "cst": "CST (UTC−6)",
+      "cdt": "CDT (UTC−5)",
+      "local": "Fuseau horaire local",
+      "note": "La date/l'heure sont interprétées dans le fuseau horaire choisi et sont automatiquement converties en UTC avant la recherche.",
+      "utc": "UTC"
+    },
+    "failed": "Le calcul n'a pas pu être effectué.",
+    "failed:account.invalid": "L'adresse du portefeuille est invalide.",
+    "failed:date.invalid": "Veuillez entrer des valeurs de date/heure valides au format YYYY-MM-DD HH:mm[:ss] (ou ISO 8601).",
+    "failed:date.range": "La date de début ne peut pas être postérieure à la date de fin.",
+    "failed:memo.invalid": "Veuillez entrer un texte de recherche de mémo valide.",
+    "failed:payments.fetch": "Les paiements n'ont pas pu être chargés par Horizon.",
+    "failed:server.invalid": "Le serveur Horizon est invalide ou manquant.",
+    "failed:unknown": "Erreur inconnue lors du calcul."
   }
 }

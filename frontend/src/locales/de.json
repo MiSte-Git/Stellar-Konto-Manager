@@ -11,6 +11,7 @@
     "issuer": "Emittent",
     "balance": "Guthaben"
   },
+  "app": { "errorBoundary": { "title": "Etwas ist schiefgelaufen." } },
   "assets": {
     "compromisedPurchases": "{total} Zahlungen gesamt",
     "totalPurchases": "Gesamtzahl der Käufe: {count}"
@@ -44,6 +45,9 @@
   "main": {
     "processing": "Vorgang läuft, bitte warten …",
     "title": "Stellar Trustline Manager"
+  },
+  "menu": {
+    "xlmByMemo": "XLM nach Memo"
   },
   "navigation": {
     "backToMainMenu": "Zurück zum Menü",
@@ -169,5 +173,50 @@
     "inList": "Wallet in Liste",
     "list": "Groupfund Wallet-Liste",
     "noPayments": "Keine Zahlungen gefunden."
+  },
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Berechnen",
+      "loading": "Berechne…"
+    },
+    "date": {
+      "from": "Von (optional)",
+      "to": "Bis (optional)"
+    },
+    "memo": {
+      "label": "Memo-Suchtext (Teilstring, Groß-/Kleinschreibung beachten)",
+      "placeholder": "Memo (Teilstring, Groß-/Kleinschreibung beachten)"
+    },
+    "page": {
+      "title": "XLM-Summe nach Memo",
+      "noPublicKey": "Bitte gib zuerst einen Public Key ein."
+    },
+    "result": {
+      "label": "Gesamtsumme:",
+      "range": "Berechnet für Zeitraum: {{from}} bis {{to}}",
+      "rangeVerbose": "Zeitraum: {{fromDate}} {{fromTime}} bis {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Uhrzeit von (optional)",
+      "to": "Uhrzeit bis (optional)"
+    },
+    "title": "XLM-Summe nach Memo",
+    "tz": {
+      "label": "Zeitzone für Datum/Uhrzeit",
+      "cst": "CST (UTC−6)",
+      "cdt": "CDT (UTC−5)",
+      "local": "Lokale Zeitzone",
+      "note": "Datum/Uhrzeit werden in der gewählten Zeitzone interpretiert und vor der Suche automatisch in UTC umgerechnet.",
+      "utc": "UTC"
+    },
+    "failed": "Die Berechnung konnte nicht durchgeführt werden.",
+    "failed:account.invalid": "Die Wallet-Adresse ist ungültig.",
+    "failed:date.invalid": "Bitte gib gültige Datum/Uhrzeit-Werte im Format YYYY-MM-DD HH:mm[:ss] ein (oder ISO 8601).",
+    "failed:date.range": "Das Startdatum darf nicht nach dem Enddatum liegen.",
+    "failed:memo.invalid": "Bitte gib einen gültigen Memo-Suchtext ein.",
+    "failed:payments.fetch": "Zahlungen konnten nicht von Horizon geladen werden.",
+    "failed:server.invalid": "Horizon-Server ist ungültig oder fehlt.",
+    "failed:unknown": "Unbekannter Fehler bei der Berechnung."
   }
 }
