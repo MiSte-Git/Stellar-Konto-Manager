@@ -1,6 +1,6 @@
 // src/components/DeleteByIssuer.jsx
 import React from 'react';
-import StellarSdk from '@stellar/stellar-sdk';
+import { StrKey } from '@stellar/stellar-sdk';
 import { useTranslation } from 'react-i18next';
 
 function DeleteByIssuer({
@@ -23,7 +23,7 @@ function DeleteByIssuer({
   const { t } = useTranslation();
 
   const handleDelete = async () => {
-    if (!issuerAddress || !StellarSdk.StrKey.isValidEd25519PublicKey(issuerAddress)) {
+    if (!issuerAddress || !StrKey.isValidEd25519PublicKey(issuerAddress)) {
       setError(t('issuer.invalid'));
       return;
     }
@@ -38,7 +38,7 @@ function DeleteByIssuer({
         setResults(issuerTrustlines);
 
         setConfirmAction(() => async () => {
-          if (!sourceSecret || !StellarSdk.StrKey.isValidEd25519SecretSeed(sourceSecret)) {
+          if (!sourceSecret || !StrKey.isValidEd25519SecretSeed(sourceSecret)) {
             setError(t('secretKey.invalid'));
             return;
           }

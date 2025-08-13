@@ -171,5 +171,58 @@
   "transaction": {
     "pending": "Transakcija na čekanju...",
     "success": "Transakcija uspješna: {hash}"
+  },
+  "app": {
+    "errorBoundary": {
+      "title": "Nešto je pošlo po zlu."
+    }
+  },
+  "menu": {
+    "xlmByMemo": "XLM prema Memo"
+  },
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Izračunaj",
+      "loading": "Izračunaj..."
+    },
+    "date": {
+      "from": "Od (opcionalno)",
+      "to": "Do (opcionalno)"
+    },
+    "memo": {
+      "label": "Tekst za pretragu memoranduma (dio teksta, razlikovanje velikih/malih slova)",
+      "placeholder": "Memo (dio teksta, poštivanje velikih/malih slova)"
+    },
+    "page": {
+      "title": "XLM iznos prema Memo",
+      "noPublicKey": "Molimo prvo unesite javni ključ."
+    },
+    "result": {
+      "label": "Ukupni iznos:",
+      "range": "Izračunato za razdoblje: {{from}} do {{to}}",
+      "rangeVerbose": "Razdoblje: {{fromDate}} {{fromTime}} do {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Vrijeme od (opcionalno)",
+      "to": "Vrijeme do (opcionalno)"
+    },
+    "title": "XLM iznos prema Memo",
+    "tz": {
+      "label": "Vremenska zona za datum/vrijeme",
+      "cst": "CST (UTC−6)",
+      "cdt": "CDT (UTC−5)",
+      "local": "Lokalna vremenska zona",
+      "note": "Datum/vrijeme se tumače u odabranoj vremenskoj zoni i automatski se pretvaraju u UTC prije pretrage.",
+      "utc": "UTC"
+    },
+    "failed": "Izračun nije mogao biti izveden.",
+    "failed:account.invalid": "Adresa novčanika je nevažeća.",
+    "failed:date.invalid": "Molimo unesite valjane vrijednosti datuma/vremena u formatu GGGG-MM-DD HH:mm[:ss] (ili ISO 8601).",
+    "failed:date.range": "Početni datum ne smije biti nakon završnog datuma.",
+    "failed:memo.invalid": "Molimo unesite valjani tekst za pretragu bilješki.",
+    "failed:payments.fetch": "Plaćanja se nisu mogla učitati s Horizon.",
+    "failed:server.invalid": "Horizon poslužitelj je nevažeći ili nedostaje.",
+    "failed:unknown": "Nepoznata greška prilikom izračuna."
   }
 }

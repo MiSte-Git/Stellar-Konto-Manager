@@ -1,5 +1,5 @@
 import React from 'react';
-import StellarSdk from '@stellar/stellar-sdk';
+import { StrKey } from '@stellar/stellar-sdk';
 import { useTranslation } from 'react-i18next';
 
 function DeleteAllTrustlines({
@@ -26,7 +26,7 @@ function DeleteAllTrustlines({
       if (trustlines.length > 0) {
         setResults(trustlines);
         setConfirmAction(() => async () => {
-          if (!sourceSecret || !StellarSdk.StrKey.isValidEd25519SecretSeed(sourceSecret)) {
+          if (!sourceSecret || !StrKey.isValidEd25519SecretSeed(sourceSecret)) {
             setError(t('secretKey.invalid'));
             return;
           }

@@ -14,17 +14,17 @@ const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
 const horizonServer = new Horizon.Server(HORIZON_URL);
 
 /**
- * Gibt eine neue Horizon-Instanz zurück (z. B. für Testnet)
+ * Gibt eine neue Horizon-Instanz zurück (z.B. für Testnet)
  * @param {string} url - Optionale URL, sonst Standard aus Umgebungsvariable
  * @returns {Server} - Horizon-Serverinstanz
  */
 export function getHorizonServer(url = HORIZON_URL) {
-  return new Server(url);
+  return new Horizon.Server(url);
 }
 
 /**
  * Wandelt eine Federation-Adresse (user*domain.tld) in einen Public Key um
- * @param {string} federationAddress - z. B. user*lobstr.co
+ * @param {string} federationAddress - z.B. user*lobstr.co
  * @returns {Promise<string>} - Der zugehörige Public Key (G...)
  * @throws {Error} - Wenn keine account_id gefunden wird
  */
@@ -256,7 +256,7 @@ export function validateSecretKey(secret) {
 
 /**
  * Holt die aktuelle Netzwerk-Fee (mode) vom Horizon-Server
- * @returns {Promise<string>} - Basis-Fee als String (z. B. "100")
+ * @returns {Promise<string>} - Basis-Fee als String (z.B. "100")
  */
 async function getBaseFee() {
   const feeStats = await horizonServer.feeStats();
@@ -270,10 +270,10 @@ export async function handleSourceSubmit(sourceInput, t) {
   let publicKey = sourceInput;
 
   try {
-    // Auflösung oder Validierung der Adresse (z. B. Federation → G...)
+    // Auflösung oder Validierung der Adresse (z.B. Federation → G...)
     publicKey = await resolveOrValidatePublicKey(sourceInput);
   } catch (resolveError) {
-    // Fehler beim Auflösen (z. B. Federation-Adresse ungültig)
+    // Fehler beim Auflösen (z.B. Federation-Adresse ungültig)
     throw new Error(t(resolveError.message));
   }
 
@@ -281,7 +281,7 @@ export async function handleSourceSubmit(sourceInput, t) {
     const trustlines = await loadTrustlines(publicKey);
     return { publicKey, trustlines };
   } catch (loadError) {
-    // Fehler beim Laden der Trustlines (z. B. Netzwerkproblem)
+    // Fehler beim Laden der Trustlines (z.B. Netzwerkproblem)
     throw new Error(t(loadError.message || 'loadTrustlines.failed'));
   }
 }
@@ -296,7 +296,7 @@ export async function handleDeleteTrustlines({
   t,
   horizonServer,
 }) {
-  const keypair = StellarSdk.Keypair.fromSecret(secretKey);
+  const keypair = Keypair.fromSecret(secretKey);
   const pubKeyFromSecret = keypair.publicKey();
 
   if (pubKeyFromSecret !== sourcePublicKey) {
@@ -416,6 +416,192 @@ export async function deleteTrustlinesInChunks({ secretKey, trustlines, onProgre
   }
 
   return allDeleted;
+}
+
+/**
+ * Normalisiert Datumsstrings:
+ * - Leerer Wert -> null (kein Filter)
+ * - "YYYY-MM-DD" -> auf 00:00:00Z (from) bzw. 23:59:59Z (to) erweitert
+ * - ISO 8601 (mit Uhrzeit) wird direkt verwendet
+ * Wirft i18n-Fehler bei ungültigen Eingaben.
+ */
+function normalizeDateISO(value, role /* 'from' | 'to' */) {
+  if (!value) return null;
+  // nur Datum?
+  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(value);
+  const normalized = isDateOnly
+    ? (role === 'from' ? `${value}T00:00:00Z` : `${value}T23:59:59Z`)
+    : value;
+
+  const ts = Date.parse(normalized);
+  if (Number.isNaN(ts)) {
+    throw new Error('xlmByMemo.failed:date.invalid');
+  }
+  return new Date(ts);
+}
+
+/**
+ * Summiert alle eingehenden XLM-Beträge (native asset) für eine Wallet,
+ * deren Transaktion ein Memo enthält, das auf memoQuery passt – optional
+ * gefiltert nach Zeitraum [fromISO, toISO].
+ *
+ * - Nutzt ausschließlich Horizon (Horizon.Server).
+ * - Paginiert alle relevanten Zahlungen (max. 200/Seite).
+ * - Liest pro Operation die zugehörige Transaktion, um das Memo zu prüfen (Cache).
+ * - Unterstützt: "payment", "path_payment_*" und "create_account".
+ * - Fehler werden als i18n-Keys geworfen, damit die UI mit t() übersetzt.
+ *
+ * @param {Object} params
+ * @param {Horizon.Server} params.server
+ * @param {string} params.accountId - Ziel-Wallet (G-…)
+ * @param {string} params.memoQuery - Memo-Teilstring (case-sensitive)
+ * @param {string} [params.fromISO] - Startzeitpunkt (YYYY-MM-DD oder ISO 8601)
+ * @param {string} [params.toISO]   - Endzeitpunkt   (YYYY-MM-DD oder ISO 8601)
+ * @param {number} [params.limitPerPage=200]
+ * @returns {Promise<number>} Gesamtsumme in XLM
+ */
+export async function sumIncomingXLMByMemo({
+  server,
+  accountId,
+  memoQuery,
+  fromISO,
+  toISO,
+  limitPerPage = 200,
+}) {
+  if (!server || !(server instanceof Horizon.Server)) {
+    throw new Error('xlmByMemo.failed:server.invalid');
+  }
+  if (!accountId || !accountId.startsWith('G')) {
+    throw new Error('xlmByMemo.failed:account.invalid');
+  }
+  if (typeof memoQuery !== 'string' || memoQuery.length === 0) {
+    throw new Error('xlmByMemo.failed:memo.invalid');
+  }
+
+  // Zeitfenster vorbereiten (optional)
+  let fromDate = null;
+  let toDate = null;
+  try {
+    fromDate = normalizeDateISO(fromISO, 'from');
+    toDate = normalizeDateISO(toISO, 'to');
+    if (fromDate && toDate && fromDate.getTime() > toDate.getTime()) {
+      throw new Error('xlmByMemo.failed:date.range');
+    }
+  } catch (e) {
+    // Durchreichen unserer i18n-Fehler
+    if (e instanceof Error && String(e.message).startsWith('xlmByMemo.failed:')) {
+      throw e;
+    }
+    throw new Error('xlmByMemo.failed:date.invalid');
+  }
+
+  let total = 0;
+  let page;
+  const txCache = new Map(); // transaction_hash -> txRecord
+
+  try {
+    page = await server
+      .payments()
+      .forAccount(accountId)
+      .order('desc')
+      .limit(Math.min(200, Math.max(1, limitPerPage)))
+      .join('transactions') // ⬅️ Transaktion (inkl. Memo) einbetten
+      .call();
+  } catch {
+    throw new Error('xlmByMemo.failed:payments.fetch');
+  }
+
+  // Transaktion laden + Memo prüfen (Cache)
+  const txMatchesMemo = async (op) => {
+    // 1) Schnellpfad: eingebettete Transaktion nutzen
+    const embedded = op.transaction || op._embedded?.records?.find?.(() => false); // defensive
+    if (embedded?.memo) {
+      return embedded.memo.includes(memoQuery);
+    }
+    // 2) Fallback: einmalig über Cache nachladen (sollte selten passieren)
+    const txHash = op.transaction_hash;
+    if (!txCache.has(txHash)) {
+      try {
+        const tx = await server.transactions().transaction(txHash).call();
+        txCache.set(txHash, tx);
+      } catch {
+        txCache.set(txHash, null);
+      }
+    }
+    const tx = txCache.get(txHash);
+    return !!tx?.memo && tx.memo.includes(memoQuery);
+  };
+
+  // Prüft, ob Operation zeitlich in [fromDate, toDate] liegt (inklusive)
+  const inDateRange = (op) => {
+    if ((!fromDate && !toDate) || !op?.created_at) return true;
+    const ts = Date.parse(op.created_at);
+    if (Number.isNaN(ts)) return true; // Wenn created_at fehlt/komisch -> nicht filtern
+    const d = new Date(ts);
+    if (fromDate && d < fromDate) return false;
+    if (toDate && d > toDate) return false;
+    return true;
+  };
+
+  // Extrahiert eingehenden XLM-Betrag aus Operation
+  const asIncomingXlmAmount = (op) => {
+    if (op.type === 'create_account' && op.account === accountId) {
+      return parseFloat(op.starting_balance || '0');
+    }
+
+    const isNative =
+      op.asset_type === 'native' ||
+      op.into_asset_type === 'native' ||
+      op.source_asset_type === 'native' ||
+      op.dest_asset_type === 'native';
+
+    const toField = op.to || op.to_account || op.destination || op.to_muxed;
+    const goesToAccount = toField === accountId;
+
+    if (isNative && goesToAccount) {
+      const a =
+        op.amount ||
+        op.amount_received ||
+        op.source_amount ||
+        op.dest_amount ||
+        '0';
+      return parseFloat(a);
+    }
+    return 0;
+  };
+
+  // Seitenweise iterieren
+  /* eslint-disable no-constant-condition */
+  while (true) {
+    for (const op of page.records) {
+      if (!inDateRange(op)) continue;
+
+      const amt = asIncomingXlmAmount(op);
+      if (amt > 0) {
+        const ok = await txMatchesMemo(op);
+        if (ok) total += amt;
+      }
+    }
+
+    // ⚡ Performance: Bei 'desc'-Sortierung sind records abnehmend nach created_at.
+   // Wenn die älteste Op der Seite VOR fromDate liegt, sind alle folgenden Seiten noch älter → abbrechen.
+   if (fromDate && page.records?.length) {
+     const oldest = page.records[page.records.length - 1];
+     const oldestTs = Date.parse(oldest?.created_at || '');
+     if (!Number.isNaN(oldestTs) && new Date(oldestTs) < fromDate) {
+       break;
+     }
+   }
+   if (!page.records || page.records.length === 0 || !page.next) break;
+
+    try {
+      page = await page.next();
+    } catch {
+      break; // robust beenden, bisherige Summe liefern
+    }
+  }
+
+  return total;
 }
 
 

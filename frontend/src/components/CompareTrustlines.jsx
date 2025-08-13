@@ -1,5 +1,5 @@
 import React from 'react';
-import StellarSdk from '@stellar/stellar-sdk';
+import { StrKey } from '@stellar/stellar-sdk';
 import { useTranslation } from 'react-i18next';
 
 function CompareTrustlines({
@@ -22,7 +22,7 @@ function CompareTrustlines({
   const { t } = useTranslation();
 
   const handleCompare = async () => {
-    if (!destinationPublicKey || !StellarSdk.StrKey.isValidEd25519PublicKey(destinationPublicKey)) {
+    if (!destinationPublicKey || !StrKey.isValidEd25519PublicKey(destinationPublicKey)) {
       setError(t('publicKey.destination.error'));
       return;
     }
@@ -41,7 +41,7 @@ function CompareTrustlines({
       if (duplicates.length > 0) {
         setResults(duplicates);
         setConfirmAction(() => async () => {
-          if (!sourceSecret || !StellarSdk.StrKey.isValidEd25519SecretSeed(sourceSecret)) {
+          if (!sourceSecret || !StrKey.isValidEd25519SecretSeed(sourceSecret)) {
             setError(t('secretKey.error'));
             return;
           }
