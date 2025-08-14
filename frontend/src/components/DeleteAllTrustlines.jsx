@@ -41,7 +41,7 @@ function DeleteAllTrustlines({
             messages: ['[Test-Modus] Trustlines würden jetzt gelöscht werden.']
             };
             /*const result = await response.json();
-            if (!response.ok) throw new Error(result.error || t('trustline.delete.error'));*/
+            if (!response.ok) throw new Error(result.error || t('error.trustline.unknown'));*/
             setResults([...result.messages, t('secretKey.cleared')]);
             setTrustlines([]);
             setSourceSecret('');
@@ -70,7 +70,7 @@ function DeleteAllTrustlines({
         onClick={handleDelete}
         className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
       >
-        {t('trustline.delete.button')}
+        {t('trustline.delete')}
       </button>
     </div>
   );

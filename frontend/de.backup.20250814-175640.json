@@ -145,8 +145,7 @@
       "title": "XLM-Summe nach Memo"
     },
     "result": {
-      "label": "Gesamtsumme:",
-      "value": "{{amount}} XLM"
+      "label": "Gesamtsumme:"
     },
     "title": "XLM-Summe nach Memo",
     "tz": {

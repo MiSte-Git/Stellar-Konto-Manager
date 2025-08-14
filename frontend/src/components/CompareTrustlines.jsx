@@ -42,7 +42,7 @@ function CompareTrustlines({
         setResults(duplicates);
         setConfirmAction(() => async () => {
           if (!sourceSecret || !StrKey.isValidEd25519SecretSeed(sourceSecret)) {
-            setError(t('secretKey.error'));
+            setError(t('secretKey.invalid'));
             return;
           }
 
@@ -59,7 +59,7 @@ function CompareTrustlines({
             //   body: JSON.stringify({ secretKey: sourceSecret, trustlines: duplicates })
             // });
             // const result = await response.json();
-            // if (!response.ok) throw new Error(result.error || t('trustline.delete.error'));
+            // if (!response.ok) throw new Error(result.error || t('error.trustline.unknown'));
 
             setResults([...result.messages, t('secretKey.cleared')]);
             setTrustlines(await loadTrustlines(sourcePublicKey));

@@ -136,6 +136,12 @@
       "from": "Von (optional)",
       "to": "Bis (optional)"
     },
+    "failed:account.invalid": "Die Wallet-Adresse ist ungültig.",
+    "failed:date.invalid": "Bitte gib gültige Datum/Uhrzeit-Werte im Format YYYY-MM-DD HH:mm[:ss] ein (oder ISO 8601).",
+    "failed:date.range": "Das Startdatum darf nicht nach dem Enddatum liegen.",
+    "failed:memo.invalid": "Bitte gib einen gültigen Memo-Suchtext ein.",
+    "failed:payments.fetch": "Zahlungen konnten nicht von Horizon geladen werden.",
+    "failed:server.invalid": "Horizon-Server ist ungültig oder fehlt.",
     "memo": {
       "label": "Memo-Suchtext (Teilstring, Groß-/Kleinschreibung beachten)",
       "placeholder": "Memo (Teilstring, Groß-/Kleinschreibung beachten)"
@@ -145,8 +151,7 @@
       "title": "XLM-Summe nach Memo"
     },
     "result": {
-      "label": "Gesamtsumme:",
-      "value": "{{amount}} XLM"
+      "label": "Gesamtsumme:"
     },
     "title": "XLM-Summe nach Memo",
     "tz": {

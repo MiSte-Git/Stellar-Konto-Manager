@@ -1,0 +1,269 @@
+{
+  "account": {
+    "loadFailed": "Fehler beim Laden des Kontos {publicKey}: {{error}}",
+    "noBalances": "Keine Guthaben für das Konto gefunden."
+  },
+  "address": "Adresse",
+  "app": {
+    "errorBoundary": {
+      "title": "Etwas ist schiefgelaufen."
+    }
+  },
+  "asset": {
+    "amount": "Betrag (XLM)",
+    "balance": "Guthaben",
+    "code": "Asset-Code",
+    "creationDate": "Erstellt am",
+    "issuer": "Emittent"
+  },
+  "assets": {
+    "compromisedPurchases": "{total} Zahlungen gesamt",
+    "totalPurchases": "Gesamtzahl der Käufe: {count}"
+  },
+  "common": {
+    "loading": "Laden…",
+    "refresh": "Neu laden"
+  },
+  "date": {
+    "times": "Datum und Uhrzeiten"
+  },
+  "error": {
+    "connection": {
+      "backend": "Keine Verbindung zum Backend möglich. Stellen Sie sicher"
+    },
+    "fetchingOperations": "Fehler beim Abrufen der Operationen: {{error}}",
+    "op_invalid_limit": "Trustline kann nicht gelöscht werden. Sie hat möglicherweise noch Guthaben oder offene Verpflichtungen.",
+    "script": "Skriptfehler: {message} bei {source}:{lineno}:{colno} - {{error}}",
+    "transaction": {
+      "deleteFail": "[ERROR] Löschung fehlgeschlagen: {{error}}",
+      "failed": "Transaktion fehlgeschlagen",
+      "title": "Fehler bei der Transaktion",
+      "unknown": "Unbekannter Fehler bei der Transaktion."
+    }
+  },
+  "fetchInvestedTokens": {
+    "failed": "Laden der Investitionsdaten fehlgeschlagen: {{detail}}"
+  },
+  "investedTokens": {
+    "group": {
+      "memo": "Memo",
+      "memoOrToken": "Memo, sonst Token",
+      "token": "Token (CODE:ISSUER)"
+    },
+    "groupBy": "Gruppieren nach",
+    "hintEnterPublicKey": "Bitte gib zuerst einen Public Key ein.",
+    "item": {
+      "memo": "Memo: \"{{memo}}\" (Zahlungen: {{occurrences}})",
+      "token": "Token: {{token}} (Zahlungen: {{occurrences}})"
+    },
+    "moreTruncated": "… und {{extra}} weitere Gruppen",
+    "total": "Anzahl gekaufter Token: {{count}}",
+    "walletCapInfo": "Hinweis: Ein Wallet kann maximal 1000 Trustlines halten."
+  },
+  "investedTokens.error": {
+    "item": {
+      "memo": "Memo: \"{{memo}}\" (Zahlungen: {{occurrences}})",
+      "token": "Token: {{token}} (Zahlungen: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
+    },
+    "missingPublicKey": "Public Key fehlt.",
+    "moreTruncated": "… und {{extra}} weitere Gruppen",
+    "total": "Anzahl gekaufter Token: {{count}}",
+    "totalTokens": "Anzahl investierter Token (Assets): {{count}}",
+    "value": {
+      "units": "{{amount}} Stück",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Ansicht",
+      "memo": "Memos (Groupfund)",
+      "token": "Token (gekaufte Menge)"
+    }
+  },
+  "issuer": {
+    "compromised": "Kompromittiert",
+    "enter": "Gib die Emittenten-Adresse ein:",
+    "invalid": "Ungültige Emittentenadresse.",
+    "label": "Geben Sie die Emittentenadresse ein:",
+    "notfound": "Keine Emittentenadressen gefunden",
+    "placeholder": "z.B."
+  },
+  "main": {
+    "processing": "Vorgang läuft, bitte warten …",
+    "title": "Stellar Trustline Manager"
+  },
+  "menu": {
+    "xlmByMemo": "XLM nach Memo"
+  },
+  "navigation": {
+    "backToMainMenu": "Zurück zum Menü",
+    "backToPublicKey": "Zurück zur öffentlichen Adresse Eingabe",
+    "backToTop": "Zurück nach oben",
+    "current": {
+      "menu": "Aktuelles Menü:"
+    },
+    "next": "Nächste",
+    "previous": "Vorherige"
+  },
+  "option": {
+    "add": "Hinzufügen",
+    "addToList": "Zur Liste hinzufügen",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "confirm": {
+      "action": {
+        "text": "Bist du sicher",
+        "title": "Aktion bestätigen"
+      }
+    },
+    "copy": "Kopieren",
+    "delete": "Löschen",
+    "description": "Beschreibung",
+    "export": {
+      "csv": "Als CSV speichern",
+      "pdf": "Als PDF speichern"
+    },
+    "filter": "Filtern...",
+    "hide": "Verbergen",
+    "loading": "Laden...",
+    "memo": "Memo",
+    "newAddress": "Neue Adresse",
+    "no": "Nein",
+    "ok": "OK",
+    "page": "Seite",
+    "results": "Ergebnisse:",
+    "save": "Speichern",
+    "show": "Anzeigen",
+    "yes": "Ja"
+  },
+  "publicKey": {
+    "destination": {
+      "error": "Ungültiger Ziel-Schlüssel.",
+      "input": "Ziel-Wallet-Adresse eingeben"
+    },
+    "invalid": "Ungültiger öffentlicher Schlüssel oder Federation-Adresse.",
+    "label": "Gib bitte die Quell-Föderationsadresse oder den öffentlichen Schlüssel ein:",
+    "placeholder": "z.B.",
+    "recipient": "Empfangsadresse",
+    "source": "Quell-Wallet-Adresse",
+    "submit": {
+      "button": "Absenden"
+    }
+  },
+  "puplicKey": {
+    "failed": "Fehler beim Auflösen der Föderationsadresse/Öffentlicher Schlüssel: {{error}}"
+  },
+  "secretKey": {
+    "cleared": "Geheimschlüssel wurde gelöscht.",
+    "empty": "Geheimschlüssel-Feld ist leer.",
+    "info": "Der Geheim Schlüssel wird nur temporär an ein Backend zur Ausführung der gewählten Aktion übertragen. Der Schlüssel wird nicht gespeichert",
+    "invalid": "Ungültiger Geheimschlüssel.",
+    "label": "Geben Sie den Quell-Geheimschlüssel ein (wird sicher an das Backend gesendet",
+    "mismatch": "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
+    "placeholder": "z.B.",
+    "valid": "✅ Secret Key ist gültig."
+  },
+  "settings": {
+    "export": "Einstellungen exportieren",
+    "import": "Einstellungen importieren",
+    "label": "Einstellungen"
+  },
+  "token": {
+    "purchases": "Anzahl gekaufter Token"
+  },
+  "transaction": {
+    "pending": "Transaktion ausstehend...",
+    "success": "Transaktion erfolgreich: {hash}"
+  },
+  "trustline": {
+    "all": "Trustline(s) anzeigen",
+    "compare": "Trustline(s) vergleichen",
+    "confirmDeletion": "Trustline(s) wirklich löschen",
+    "delete": "Trustline(s) löschen",
+    "deleted": {
+      "deletingProgress": "Lösche {{current}} von {{total}} Trustlines...",
+      "mode": {
+        "real": "Echtmodus",
+        "realWarning": "Achtung: Echte Trustline(s) werden gelöscht",
+        "simulation": "Simulationsmodus"
+      },
+      "noDeletableFound": "Keine löschbaren Trustlines gefunden – alle enthalten noch Guthaben.",
+      "noTrustlines": "Keine gültigen Trustlines zum Löschen vorhanden.",
+      "resultText": "{{count}} Trustline(s) wurden erfolgreich gelöscht ({{mode}}).",
+      "resultTitle": "Gelöschte Trustline(s)",
+      "simulated": "{{count}} Trustline(s) wurden simuliert gelöscht",
+      "skippedDueToBalance": "{{count}} Trustlines wurden übersprungen, da sie Guthaben enthalten.",
+      "skippedDueToLiabilities": "{{count}} Trustline(s) konnten nicht gelöscht werden, da sie noch Verpflichtungen (Liabilities) enthalten.",
+      "success": "{{count}} Trustline(s) wurden gelöscht"
+    },
+    "destination": {
+      "label": "Geben Sie den Ziel-Öffentlichen Schlüssel ein:",
+      "placeholder": "z.B."
+    },
+    "inputEmpty": "Eingabefeld darf nicht leer sein.",
+    "issuer": {
+      "notFound": "Keine Trustline(s) für Emittenten {issuer} gefunden."
+    },
+    "list": "Anzahl Trustline(s)",
+    "noDuplicates": "Keine doppelten Trustline(s) gefunden.",
+    "nonZeroBalance": "Diese Trustline kann nicht gelöscht werden, da sie noch ein Guthaben enthält.",
+    "notFound": "Keine Trustline(s) gefunden.",
+    "onlyZeroBalanceInfo": "Nur Trustlines mit einem Guthaben von 0 können gelöscht werden.",
+    "removeFromList": "Aus Liste entfernen",
+    "reviewSelection": {
+      "title": "Selektierte Trustline(s) prüfen"
+    },
+    "showSecret": "Geheimschlüssel anzeigen"
+  },
+  "wallet": {
+    "add": "Wallet hinzufügen",
+    "inList": "Wallet in Liste",
+    "list": "Groupfund Wallet-Liste",
+    "noPayments": "Keine Zahlungen gefunden."
+  },
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Berechnen",
+      "loading": "Berechne…"
+    },
+    "date": {
+      "from": "Von (optional)",
+      "to": "Bis (optional)"
+    },
+    "failed": "Die Berechnung konnte nicht durchgeführt werden.",
+    "failed:account.invalid": "Die Wallet-Adresse ist ungültig.",
+    "failed:date.invalid": "Bitte gib gültige Datum/Uhrzeit-Werte im Format YYYY-MM-DD HH:mm[:ss] ein (oder ISO 8601).",
+    "failed:date.range": "Das Startdatum darf nicht nach dem Enddatum liegen.",
+    "failed:memo.invalid": "Bitte gib einen gültigen Memo-Suchtext ein.",
+    "failed:payments.fetch": "Zahlungen konnten nicht von Horizon geladen werden.",
+    "failed:server.invalid": "Horizon-Server ist ungültig oder fehlt.",
+    "failed:unknown": "Unbekannter Fehler bei der Berechnung.",
+    "memo": {
+      "label": "Memo-Suchtext (Teilstring, Groß-/Kleinschreibung beachten)",
+      "placeholder": "Memo (Teilstring, Groß-/Kleinschreibung beachten)"
+    },
+    "page": {
+      "noPublicKey": "Bitte gib zuerst einen Public Key ein.",
+      "title": "XLM-Summe nach Memo"
+    },
+    "result": {
+      "label": "Gesamtsumme:",
+      "range": "Berechnet für Zeitraum: {{from}} bis {{to}}",
+      "rangeVerbose": "Zeitraum: {{fromDate}} {{fromTime}} bis {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Uhrzeit von (optional)",
+      "to": "Uhrzeit bis (optional)"
+    },
+    "title": "XLM-Summe nach Memo",
+    "tz": {
+      "cdt": "CDT (UTC−5)",
+      "cst": "CST (UTC−6)",
+      "label": "Zeitzone für Datum/Uhrzeit",
+      "local": "Lokale Zeitzone",
+      "note": "Datum/Uhrzeit werden in der gewählten Zeitzone interpretiert und vor der Suche automatisch in UTC umgerechnet.",
+      "utc": "UTC"
+    }
+  }
+}
