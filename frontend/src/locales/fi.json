@@ -28,8 +28,14 @@
     "times": "Päivämäärät ja ajat"
   },
   "error": {
+    "asset": {
+      "creationDateUnknown": "Tuntematon luontipäivämäärä"
+    },
     "connection": {
       "backend": "Ei yhteyttä taustapalvelimeen. Varmista, että"
+    },
+    "fetchInvestedTokens": {
+      "failed": "Investointitietojen lataaminen epäonnistui: {{detail}}"
     },
     "fetchingOperations": "Virhe toimenpiteiden hakemisessa: {{error}}",
     "op_invalid_limit": "Luottoraja ei voi poistua. Siinä saattaa edelleen olla saldo tai erääntyneitä velvoitteita.",
@@ -42,6 +48,9 @@
     },
     "transaktion": {
       "unknown": "Tuntematon virhe tapahtumassa."
+    },
+    "trustline": {
+      "unknown": "Tuntematon virhe luottolinjan poistamisessa."
     }
   },
   "fetchInvestedTokens": {
@@ -57,10 +66,22 @@
     "hintEnterPublicKey": "Ole hyvä ja syötä ensin julkinen avain.",
     "item": {
       "memo": "Muistio: \"{{memo}}\" (Maksut: {{occurrences}})",
-      "token": "Token: {{token}} (Maksut: {{occurrences}})"
+      "token": "Token: {{token}} (Maksut: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
     },
+    "missingPublicKey": "Julkinen avain puuttuu.",
     "moreTruncated": "... ja {{extra}} lisää ryhmiä",
     "total": "Ostettujen tokenien määrä: {{count}}",
+    "totalTokens": "Sijoitettujen tokenien (varojen) määrä: {{count}}",
+    "value": {
+      "units": "{{amount}} kappaletta",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Näytä",
+      "memo": "Muistiot (Groupfund)",
+      "token": "Token (ostettu määrä)"
+    },
     "walletCapInfo": "Huomautus: Lompakko voi sisältää enintään 1000 luottolinjaa."
   },
   "issuer": {
@@ -172,6 +193,7 @@
       },
       "noDeletableFound": "Ei poistettavia luottorajoja löytynyt – kaikki sisältävät edelleen saldoa.",
       "noTrustlines": "Ei voimassa olevia luottolinjoja poistettavaksi.",
+      "notFound": "Ei poistettavia luottorajoja löytynyt – kaikki sisältävät edelleen saldoja.",
       "resultText": "{{count}} luottolinja(a) on poistettu onnistuneesti ({{mode}}).",
       "resultTitle": "Poistettu luottoraja(t)",
       "simulated": "{{count}} luottolinja(a) on simuloitu poistettavaksi",

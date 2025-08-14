@@ -28,8 +28,14 @@
     "times": "Datumi i vremena"
   },
   "error": {
+    "asset": {
+      "creationDateUnknown": "Nepoznati datum stvaranja"
+    },
     "connection": {
       "backend": "Nema moguće veze s backendom. Molimo osigurajte"
+    },
+    "fetchInvestedTokens": {
+      "failed": "Nije uspjelo učitati podatke o investicijama: {{detail}}"
     },
     "fetchingOperations": "Greška prilikom preuzimanja operacija: {{error}}",
     "op_invalid_limit": "Trust linija se ne može izbrisati. Možda još uvijek ima saldo ili neizmirene obveze.",
@@ -42,6 +48,9 @@
     },
     "transaktion": {
       "unknown": "Nepoznata greška prilikom transakcije."
+    },
+    "trustline": {
+      "unknown": "Nepoznata greška prilikom brisanja povjerenice."
     }
   },
   "fetchInvestedTokens": {
@@ -57,10 +66,22 @@
     "hintEnterPublicKey": "Molimo unesite javni ključ prvo.",
     "item": {
       "memo": "Memo: \"{{memo}}\" (Plaćanja: {{occurrences}})",
-      "token": "Token: {{token}} (Plaćanja: {{occurrences}})"
+      "token": "Token: {{token}} (Plaćanja: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
     },
+    "missingPublicKey": "Javni ključ nedostaje.",
     "moreTruncated": "... i {{extra}} dodatnih grupa",
     "total": "Broj kupljenih tokena: {{count}}",
+    "totalTokens": "Broj uloženih tokena (imovine): {{count}}",
+    "value": {
+      "units": "{{amount}} komada",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Pogledaj",
+      "memo": "Memos (Groupfund)",
+      "token": "Token (kupljena količina)"
+    },
     "walletCapInfo": "Napomena: Novčanik može sadržavati najviše 1000 povjereničkih linija."
   },
   "issuer": {
@@ -172,6 +193,7 @@
       },
       "noDeletableFound": "Nema obrisivih povjereničkih linija – sve još uvijek sadrže saldo.",
       "noTrustlines": "Nema valjanih linija povjerenja dostupnih za brisanje.",
+      "notFound": "Nema obrisivih povjereničkih linija – sve još uvijek sadrže salda.",
       "resultText": "{{count}} trustlinija(e) su uspješno izbrisane ({{mode}}).",
       "resultTitle": "Izbrisana povjerenja linija(e)",
       "simulated": "{{count}} trustline(a) je simulirano izbrisano",

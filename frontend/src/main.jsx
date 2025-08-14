@@ -251,6 +251,8 @@ function Main() {
           setError={setError}
           setShowSecretKey={setShowSecretKey}
           setSourceSecret={setSourceSecret}
+          setMenuSelection={setMenuSelection}
+          menuSelection={menuSelection}
           setTrustlines={setTrustlines}
           setConfirmAction={setConfirmAction}
           setShowConfirm={setShowConfirm}

@@ -21,6 +21,9 @@
     "connection": {
       "backend": "Keine Verbindung zum Backend möglich. Stellen Sie sicher"
     },
+    "fetchInvestedTokens": {
+      "failed": "Laden der Investitionsdaten fehlgeschlagen: {{detail}}"
+    },
     "op_invalid_limit": "Trustline kann nicht gelöscht werden. Sie hat möglicherweise noch Guthaben oder offene Verpflichtungen.",
     "transaction": {
       "failed": "Transaktion fehlgeschlagen",
@@ -28,19 +31,29 @@
     },
     "trustline": {
       "unknown": "Unbekannter Fehler beim Löschen der Trustline."
-    },
-    "fetchInvestedTokens": {
-      "failed": "Laden der Investitionsdaten fehlgeschlagen: {{detail}}"
     }
   },
   "investedTokens": {
     "hintEnterPublicKey": "Bitte gib zuerst einen Public Key ein.",
-    "walletCapInfo": "Hinweis: Ein Wallet kann maximal 1000 Trustlines halten.",
+    "item": {
+      "memo": "Memo: \"{{memo}}\" (Zahlungen: {{occurrences}})",
+      "token": "Token: {{token}} (Zahlungen: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
+    },
+    "missingPublicKey": "Public Key fehlt.",
+    "moreTruncated": "… und {{extra}} weitere Gruppen",
+    "total": "Anzahl gekaufter Token: {{count}}",
+    "totalTokens": "Anzahl investierter Token (Assets): {{count}}",
+    "value": {
+      "units": "{{amount}} Stück",
+      "xlm": "{{amount}} XLM"
+    },
     "view": {
       "label": "Ansicht",
       "memo": "Memos (Groupfund)",
       "token": "Token (gekaufte Menge)"
-    }
+    },
+    "walletCapInfo": "Hinweis: Ein Wallet kann maximal 1000 Trustlines halten."
   },
   "issuer": {
     "enter": "Gib die Emittenten-Adresse ein:",
