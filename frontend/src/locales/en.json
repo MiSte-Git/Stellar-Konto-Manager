@@ -1,57 +1,89 @@
 {
   "account": {
-    "loadFailed": "Error loading the account {publicKey}: {error}",
-    "noBalances": "No credit found for the account."
+    "loadFailed": "Error loading account {publicKey}: {{error}}",
+    "noBalances": "No balance found for the account."
   },
   "address": "Address",
+  "app": {
+    "errorBoundary": {
+      "title": "Something went wrong."
+    }
+  },
   "asset": {
     "amount": "Amount (XLM)",
-    "code": "Asset Code",
+    "balance": "Balance",
+    "code": "Asset code",
     "creationDate": "Created on",
-    "issuer": "Issuer",
-    "balance": "Credit"
+    "issuer": "Issuer"
   },
   "assets": {
-    "compromisedPurchases": "{total} payments in total",
+    "compromisedPurchases": "{total} total payments",
     "totalPurchases": "Total number of purchases: {count}"
   },
+  "common": {
+    "loading": "Loading…",
+    "refresh": "Reload"
+  },
   "date": {
-    "times": "Date and Times"
+    "times": "Date and times"
   },
   "error": {
     "connection": {
-      "backend": "Unable to connect to the backend. Please ensure"
+      "backend": "No connection to the backend possible. Please ensure"
     },
-    "fetchingOperations": "Error retrieving operations: {error}",
-    "script": "Script error: {message} at {source}:{lineno}:{colno} - {error}",
-    "transaktion": {
-      "unknown": "Unknown error during the transaction."
-    },
-    "op_invalid_limit": "Trustline cannot be deleted. It may still have a balance or outstanding obligations.",
+    "fetchingOperations": "Error retrieving operations: {{error}}",
+    "op_invalid_limit": "The trustline cannot be deleted. It may still have a balance or outstanding obligations.",
+    "script": "Script error: {message} at {source}:{lineno}:{colno} - {{error}}",
     "transaction": {
       "deleteFail": "[ERROR] Deletion failed: {{error}}",
       "failed": "Transaction failed",
-      "unknown": "Unknown error during the transaction.",
-      "title": "Transaction Error"
+      "title": "Transaction error",
+      "unknown": "Unknown error during the transaction."
+    },
+    "transaktion": {
+      "unknown": "Unknown error during the transaction."
     }
+  },
+  "fetchInvestedTokens": {
+    "failed": "Failed to load investment data: {{detail}}"
+  },
+  "investedTokens": {
+    "group": {
+      "memo": "Memo",
+      "memoOrToken": "Memo, otherwise token",
+      "token": "Token (CODE:ISSUER)"
+    },
+    "groupBy": "Group by",
+    "hintEnterPublicKey": "Please enter a public key first.",
+    "item": {
+      "memo": "Memo: \"{{memo}}\" (Payments: {{occurrences}})",
+      "token": "Token: {{token}} (Payments: {{occurrences}})"
+    },
+    "moreTruncated": "... and {{extra}} more groups",
+    "total": "Number of tokens purchased: {{count}}",
+    "walletCapInfo": "Note: A wallet can hold a maximum of 1000 trustlines."
   },
   "issuer": {
     "compromised": "Compromised",
-    "enter": "Enter the issuer's address:",
+    "enter": "Enter the issuer address:",
     "invalid": "Invalid issuer address.",
     "label": "Enter the issuer address:",
     "notfound": "No issuer addresses found",
     "placeholder": "e.g."
   },
   "main": {
-    "title": "Stellar Trustline Manager",
-    "processing": "Process is running, please wait …"
+    "processing": "Process is running, please wait...",
+    "title": "Stellar Trustline Manager"
+  },
+  "menu": {
+    "xlmByMemo": "XLM to Memo"
   },
   "navigation": {
     "backToMainMenu": "Back to menu",
+    "backToPublicKey": "Back to public address input",
     "backToTop": "Back to top",
     "current": {
-      "menu": "Current Menu:"
+      "menu": "Current menu:"
     },
     "next": "Next",
     "previous": "Previous"
@@ -60,32 +92,32 @@
     "add": "Add",
     "addToList": "Add to list",
     "cancel": "Cancel",
+    "close": "Close",
     "confirm": {
       "action": {
-        "text": "Are you sure",
+        "text": "Are you sure?",
         "title": "Confirm action"
       }
     },
+    "copy": "Copy",
     "delete": "Delete",
     "description": "Description",
-    "filter": "Filtering...",
-    "hide": "Hide",
-    "loading": "Loading...",
-    "memo": "Memo",
-    "newAddress": "New Address",
-    "no": "No",
-    "page": "Page",
-    "results": "Results:",
-    "save": "Save",
-    "show": "Display",
-    "yes": "Yes",
-    "close": "Close",
-    "copy": "Copy",
     "export": {
       "csv": "Save as CSV",
       "pdf": "Save as PDF"
     },
-    "ok": "OK"
+    "filter": "Filtering...",
+    "hide": "Hide",
+    "loading": "Loading...",
+    "memo": "Memo",
+    "newAddress": "New address",
+    "no": "No",
+    "ok": "OK",
+    "page": "Page",
+    "results": "Results:",
+    "save": "Save",
+    "show": "Show",
+    "yes": "Yes"
   },
   "publicKey": {
     "destination": {
@@ -93,24 +125,24 @@
       "input": "Enter target wallet address"
     },
     "invalid": "Invalid public key or federation address.",
-    "label": "Please enter the source federation address or public key:",
+    "label": "Please enter the source federation address or the public key:",
     "placeholder": "e.g.",
-    "recipient": "Receiving Address",
-    "source": "Source Wallet Address",
+    "recipient": "Reception address",
+    "source": "Source wallet address",
     "submit": {
       "button": "Submit"
     }
   },
   "puplicKey": {
-    "failed": "Error resolving federation address/public key: {error}"
+    "failed": "Error resolving federation address/public key: {{error}}"
   },
   "secretKey": {
     "cleared": "Secret key has been deleted.",
-    "empty": "Secret key field is empty.",
-    "info": "The secret key is only temporarily transmitted to a backend for the execution of the selected action. The key is not stored.",
+    "empty": "The secret key field is empty.",
+    "info": "The secret key is only temporarily transmitted to a backend to execute the chosen action. The key is not stored.",
     "invalid": "Invalid secret key.",
-    "label": "Enter the source secret key (will be securely sent to the backend",
-    "mismatch": "Secret key does not match the public address.",
+    "label": "Enter the source secret key (will be sent securely to the backend)",
+    "mismatch": "The secret key does not match the public address.",
     "placeholder": "e.g.",
     "valid": "✅ Secret Key is valid."
   },
@@ -122,44 +154,48 @@
   "token": {
     "purchases": "Number of tokens purchased"
   },
+  "transaction": {
+    "pending": "Transaction pending...",
+    "success": "Transaction successful: {hash}"
+  },
   "trustline": {
-    "all": "Show all Trustlines",
-    "compare": "Compare Trustlines",
-    "confirmDeletion": "Really delete Trustlines",
-    "delete": "Delete Trustline(s)",
+    "all": "Show trustline(s)",
+    "compare": "Compare trustline(s)",
+    "confirmDeletion": "Really delete trustline(s)",
+    "delete": "Delete trustline(s)",
+    "deleted": {
+      "deletingProgress": "Delete {{current}} of {{total}} trustlines...",
+      "mode": {
+        "real": "Real mode",
+        "realWarning": "Warning: Real Trustline(s) will be deleted",
+        "simulation": "Simulation mode"
+      },
+      "noDeletableFound": "No deletable trustlines found – all still contain balance.",
+      "noTrustlines": "No valid trustlines available for deletion.",
+      "resultText": "{{count}} trustline(s) have been successfully deleted ({{mode}}).",
+      "resultTitle": "Deleted trustline(s)",
+      "simulated": "{{count}} trustline(s) have been simulated deleted",
+      "skippedDueToBalance": "{{count}} trustlines were skipped because they contain balance.",
+      "skippedDueToLiabilities": "{{count}} Trustline(s) could not be deleted because they still contain obligations (Liabilities).",
+      "success": "{{count}} trustline(s) have been deleted"
+    },
     "destination": {
       "label": "Enter the target public key:",
       "placeholder": "e.g."
     },
     "inputEmpty": "Input field must not be empty.",
     "issuer": {
-      "notFound": "No Trustlines found for issuer {issuer}."
+      "notFound": "No trustline(s) found for issuer {issuer}."
     },
-    "list": "List Trustlines",
-    "noDuplicates": "No duplicate trustlines found.",
-    "notFound": "No Trustlines found.",
+    "list": "Number of Trustline(s)",
+    "noDuplicates": "No duplicate trustline(s) found.",
+    "nonZeroBalance": "This trustline cannot be deleted because it still has a balance.",
+    "notFound": "No trustline(s) found.",
+    "onlyZeroBalanceInfo": "Only trustlines with a balance of 0 can be deleted.",
     "removeFromList": "Remove from list",
     "reviewSelection": {
-      "title": "Check selected Trustlines"
+      "title": "Check selected trustline(s)"
     },
-    "deleted": {
-      "mode": {
-        "real": "Real Mode",
-        "realWarning": "Warning: Actual Trustline(s) will be deleted",
-        "simulation": "Simulation Mode"
-      },
-      "deletingProgress": "Deleting {{current}} out of {{total}} trustlines...",
-      "resultText": "{{count}} Trustline(s) were successfully deleted ({{mode}}).",
-      "resultTitle": "Deleted Trustline(s)",
-      "simulated": "{{count}} Trustline(s) were simulated to be deleted",
-      "success": "{{count}} Trustline(s) have been deleted",
-      "noDeletableFound": "No deletable trustlines found - all still contain balance.",
-      "noTrustlines": "No valid trustlines available for deletion.",
-      "skippedDueToLiabilities": "{{count}} Trustline(s) could not be deleted as they still contain liabilities.",
-      "skippedDueToBalance": "{{count}} Trustlines were skipped as they contain balance."
-    },
-    "nonZeroBalance": "This trustline cannot be deleted as it still contains a balance.",
-    "onlyZeroBalanceInfo": "Only trustlines with a balance of 0 can be deleted.",
     "showSecret": "Show secret key"
   },
   "wallet": {
@@ -168,53 +204,14 @@
     "list": "Groupfund Wallet List",
     "noPayments": "No payments found."
   },
-  "transaction": {
-    "pending": "Transaction pending...",
-    "success": "Transaction successful: {hash}"
-  },
-  "app": {
-    "errorBoundary": {
-      "title": "Something went wrong."
-    }
-  },
-  "menu": {
-    "xlmByMemo": "XLM to Memo"
-  },
   "xlmByMemo": {
     "action": {
       "calculate": "Calculate",
-      "loading": "Calculate..."
+      "loading": "Calculate…"
     },
     "date": {
       "from": "From (optional)",
       "to": "Until (optional)"
-    },
-    "memo": {
-      "label": "Memo search text (substring, case sensitive)",
-      "placeholder": "Memo (substring, case sensitive)"
-    },
-    "page": {
-      "title": "XLM Amount after Memo",
-      "noPublicKey": "Please enter a Public Key first."
-    },
-    "result": {
-      "label": "Total sum:",
-      "range": "Calculated for period: {{from}} to {{to}}",
-      "rangeVerbose": "Time period: {{fromDate}} {{fromTime}} to {{toDate}} {{toTime}} ({{tz}})",
-      "value": "{{amount}} XLM"
-    },
-    "time": {
-      "from": "Time from (optional)",
-      "to": "Time until (optional)"
-    },
-    "title": "XLM amount after Memo",
-    "tz": {
-      "label": "Timezone for Date/Time",
-      "cst": "CST (UTC-6)",
-      "cdt": "CDT (UTC-5)",
-      "local": "Local Time Zone",
-      "note": "Date/time are interpreted in the chosen time zone and automatically converted to UTC before the search.",
-      "utc": "UTC"
     },
     "failed": "The calculation could not be performed.",
     "failed:account.invalid": "The wallet address is invalid.",
@@ -223,6 +220,33 @@
     "failed:memo.invalid": "Please enter a valid memo search text.",
     "failed:payments.fetch": "Payments could not be loaded from Horizon.",
     "failed:server.invalid": "Horizon server is invalid or missing.",
-    "failed:unknown": "Unknown error during calculation."
+    "failed:unknown": "Unknown error during calculation.",
+    "memo": {
+      "label": "Memo search text (substring, case sensitive)",
+      "placeholder": "Memo (substring, case-sensitive)"
+    },
+    "page": {
+      "noPublicKey": "Please enter a public key first.",
+      "title": "XLM total by memo"
+    },
+    "result": {
+      "label": "Total amount:",
+      "range": "Calculated for the period: {{from}} to {{to}}",
+      "rangeVerbose": "Period: {{fromDate}} {{fromTime}} to {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Time from (optional)",
+      "to": "Time until (optional)"
+    },
+    "title": "XLM total by memo",
+    "tz": {
+      "cdt": "CDT (UTC−5)",
+      "cst": "CST (UTC−6)",
+      "label": "Time zone for date/time",
+      "local": "Local time zone",
+      "note": "Date/time is interpreted in the selected time zone and automatically converted to UTC before the search.",
+      "utc": "UTC"
+    }
   }
 }

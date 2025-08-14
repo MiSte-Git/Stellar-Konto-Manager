@@ -1,228 +1,252 @@
 {
   "account": {
-    "loadFailed": "Errore durante il caricamento del conto {publicKey}: {error}",
-    "noBalances": "Nessun credito trovato per l'account."
+    "loadFailed": "Errore nel caricamento dell'account {publicKey}: {{error}}",
+    "noBalances": "Nessun saldo trovato per l'account."
   },
   "address": "Indirizzo",
+  "app": {
+    "errorBoundary": {
+      "title": "Qualcosa è andato storto."
+    }
+  },
   "asset": {
     "amount": "Importo (XLM)",
+    "balance": "Saldo",
     "code": "Codice dell'asset",
     "creationDate": "Creato il",
-    "issuer": "Emittente",
-    "balance": "Credito"
+    "issuer": "Emittente"
   },
   "assets": {
     "compromisedPurchases": "{total} pagamenti totali",
     "totalPurchases": "Numero totale di acquisti: {count}"
   },
+  "common": {
+    "loading": "Caricamento…",
+    "refresh": "Ricarica"
+  },
   "date": {
-    "times": "Data e orari"
+    "times": "Date e orari"
   },
   "error": {
     "connection": {
-      "backend": "Impossibile connettersi al backend. Assicurati"
+      "backend": "Nessuna connessione possibile al backend. Si prega di assicurarsi"
     },
-    "fetchingOperations": "Errore nel recupero delle operazioni: {error}",
-    "script": "Errore di script: {message} in {source}:{lineno}:{colno} - {error}",
-    "transaktion": {
+    "fetchingOperations": "Errore nel recupero delle operazioni: {{error}}",
+    "op_invalid_limit": "La linea di fiducia non può essere eliminata. Potrebbe avere ancora un saldo o obbligazioni in sospeso.",
+    "script": "Errore di script: {message} in {source}:{lineno}:{colno} - {{error}}",
+    "transaction": {
+      "deleteFail": "[ERRORE] Eliminazione non riuscita: {{error}}",
+      "failed": "Transazione fallita",
+      "title": "Errore di transazione",
       "unknown": "Errore sconosciuto durante la transazione."
     },
-    "op_invalid_limit": "La Trustline non può essere eliminata. Potrebbe ancora avere un saldo o obbligazioni aperte.",
-    "transaction": {
-      "deleteFail": "[ERRORE] Cancellazione non riuscita: {{error}}",
-      "failed": "Transazione fallita",
-      "unknown": "Errore sconosciuto durante la transazione.",
-      "title": "Errore nella transazione"
+    "transaktion": {
+      "unknown": "Errore sconosciuto durante la transazione."
     }
+  },
+  "fetchInvestedTokens": {
+    "failed": "Impossibile caricare i dati sugli investimenti: {{detail}}"
+  },
+  "investedTokens": {
+    "group": {
+      "memo": "Promemoria",
+      "memoOrToken": "Memo, altrimenti token",
+      "token": "Token (CODICE:EMITTENTE)"
+    },
+    "groupBy": "Raggruppa per",
+    "hintEnterPublicKey": "Per favore inserisci prima una chiave pubblica.",
+    "item": {
+      "memo": "Memo: \"{{memo}}\" (Pagamenti: {{occurrences}})",
+      "token": "Token: {{token}} (Pagamenti: {{occurrences}})"
+    },
+    "moreTruncated": "... e {{extra}} gruppi in più",
+    "total": "Numero di token acquistati: {{count}}",
+    "walletCapInfo": "Nota: Un portafoglio può contenere un massimo di 1000 linee di fiducia."
   },
   "issuer": {
     "compromised": "Compromesso",
     "enter": "Inserisci l'indirizzo dell'emittente:",
-    "invalid": "Indirizzo emittente non valido.",
+    "invalid": "Indirizzo dell'emittente non valido.",
     "label": "Inserisci l'indirizzo dell'emittente:",
-    "notfound": "Nessun indirizzo emittente trovato",
+    "notfound": "Nessun indirizzo dell'emittente trovato",
     "placeholder": "ad es."
   },
   "main": {
-    "title": "Gestore di Trustline Stellar",
-    "processing": "Operazione in corso, si prega di attendere …"
+    "processing": "Il processo è in esecuzione, attendere prego...",
+    "title": "Gestore di Trustline Stellar"
+  },
+  "menu": {
+    "xlmByMemo": "XLM a Memo"
   },
   "navigation": {
     "backToMainMenu": "Torna al menu",
+    "backToPublicKey": "Torna all'input dell'indirizzo pubblico",
     "backToTop": "Torna su",
     "current": {
       "menu": "Menu attuale:"
     },
-    "next": "Successivo",
+    "next": "Prossimo",
     "previous": "Precedente"
   },
   "option": {
     "add": "Aggiungi",
     "addToList": "Aggiungi alla lista",
     "cancel": "Annulla",
+    "close": "Chiudi",
     "confirm": {
       "action": {
-        "text": "Sei sicuro",
+        "text": "Sei sicuro?",
         "title": "Conferma azione"
       }
     },
+    "copy": "Copia",
     "delete": "Elimina",
     "description": "Descrizione",
-    "filter": "Filtrando...",
+    "export": {
+      "csv": "Salva come CSV",
+      "pdf": "Salva come PDF"
+    },
+    "filter": "Filtraggio...",
     "hide": "Nascondi",
     "loading": "Caricamento...",
     "memo": "Promemoria",
     "newAddress": "Nuovo indirizzo",
     "no": "No",
+    "ok": "Va bene",
     "page": "Pagina",
     "results": "Risultati:",
     "save": "Salva",
     "show": "Mostra",
-    "yes": "Sì",
-    "close": "Chiudi",
-    "copy": "Copia",
-    "export": {
-      "csv": "Salva come CSV",
-      "pdf": "Salva come PDF"
-    },
-    "ok": "OK"
+    "yes": "Sì"
   },
   "publicKey": {
     "destination": {
       "error": "Chiave di destinazione non valida.",
-      "input": "Inserisci l'indirizzo del portafoglio di destinazione"
+      "input": "Inserisci l'indirizzo del wallet di destinazione"
     },
-    "invalid": "Chiave pubblica non valida o indirizzo di federazione.",
-    "label": "Inserisci l'indirizzo di origine della federazione o la chiave pubblica:",
-    "placeholder": "ad es.",
+    "invalid": "Chiave pubblica o indirizzo di federazione non valido.",
+    "label": "Si prega di inserire l'indirizzo della federazione sorgente o la chiave pubblica:",
+    "placeholder": "e.g.",
     "recipient": "Indirizzo di ricezione",
-    "source": "Indirizzo del portafoglio di origine",
+    "source": "Indirizzo del portafoglio sorgente",
     "submit": {
       "button": "Invia"
     }
   },
   "puplicKey": {
-    "failed": "Errore nel risolvere l'indirizzo della federazione/chiave pubblica: {error}"
+    "failed": "Errore nella risoluzione dell'indirizzo di federazione/chiave pubblica: {{error}}"
   },
   "secretKey": {
     "cleared": "La chiave segreta è stata eliminata.",
     "empty": "Il campo della chiave segreta è vuoto.",
-    "info": "La chiave segreta viene trasmessa temporaneamente a un backend per l'esecuzione dell'azione scelta. La chiave non viene salvata.",
+    "info": "La chiave segreta viene trasmessa temporaneamente a un backend per eseguire l'azione scelta. La chiave non viene memorizzata.",
     "invalid": "Chiave segreta non valida.",
-    "label": "Inserisci la chiave segreta di origine (verrà inviata in modo sicuro al backend",
+    "label": "Inserisci la chiave segreta di origine (verrà inviata in modo sicuro al backend)",
     "mismatch": "La chiave segreta non corrisponde all'indirizzo pubblico.",
     "placeholder": "ad es.",
     "valid": "✅ La chiave segreta è valida."
   },
   "settings": {
-    "export": "Esporta impostazioni",
+    "export": "Impostazioni di esportazione",
     "import": "Importa impostazioni",
     "label": "Impostazioni"
   },
   "token": {
     "purchases": "Numero di token acquistati"
   },
+  "transaction": {
+    "pending": "Transazione in attesa...",
+    "success": "Transazione riuscita: {hash}"
+  },
   "trustline": {
-    "all": "Mostra tutte le Trustlines",
-    "compare": "Confronta Trustlines",
-    "confirmDeletion": "Eliminare davvero le Trustlines",
-    "delete": "Elimina linea(e) di fiducia",
+    "all": "Mostra la/e linea/e di fiducia",
+    "compare": "Confronta le linee di fiducia",
+    "confirmDeletion": "Elimina veramente la(s) linea(e) di fiducia",
+    "delete": "Elimina la/e linea/e di fiducia",
+    "deleted": {
+      "deletingProgress": "Elimina {{current}} di {{total}} linee di fiducia...",
+      "mode": {
+        "real": "Modalità reale",
+        "realWarning": "Attenzione: Le vere Trustline verranno eliminate",
+        "simulation": "Modalità simulazione"
+      },
+      "noDeletableFound": "Nessuna linea di fiducia eliminabile trovata: tutte contengono ancora un saldo.",
+      "noTrustlines": "Nessuna linea di fiducia valida disponibile per la cancellazione.",
+      "resultText": "{{count}} trustline(s) sono stati eliminati con successo ({{mode}}).",
+      "resultTitle": "Trustline(i) eliminato(e)",
+      "simulated": "{{count}} linea di fiducia sono state simulate come eliminate",
+      "skippedDueToBalance": "{{count}} linee di fiducia sono state saltate perché contengono un saldo.",
+      "skippedDueToLiabilities": "Non è stato possibile eliminare {{count}} Trustline(s) perché contengono ancora obbligazioni (Passività).",
+      "success": "Sono state eliminate {{count}} linee di fiducia."
+    },
     "destination": {
       "label": "Inserisci la chiave pubblica di destinazione:",
-      "placeholder": "ad es."
+      "placeholder": "e.g."
     },
-    "inputEmpty": "Il campo di input non può essere vuoto.",
+    "inputEmpty": "Il campo di input non deve essere vuoto.",
     "issuer": {
       "notFound": "Nessuna linea di fiducia trovata per l'emittente {issuer}."
     },
-    "list": "Elenca Trustlines",
-    "noDuplicates": "Nessuna Trustline duplicata trovata.",
-    "notFound": "Nessuna Trustline trovata.",
+    "list": "Numero di Trustline(e)",
+    "noDuplicates": "Nessuna linea di fiducia duplicata trovata.",
+    "nonZeroBalance": "Questa linea di fiducia non può essere eliminata perché ha ancora un saldo.",
+    "notFound": "Nessuna linea di fiducia trovata.",
+    "onlyZeroBalanceInfo": "Solo le linee di fiducia con un saldo di 0 possono essere eliminate.",
     "removeFromList": "Rimuovi dalla lista",
     "reviewSelection": {
-      "title": "Verifica le Trustlines selezionate"
+      "title": "Controlla la(s) linea(e) di fiducia selezionata(e)"
     },
-    "deleted": {
-      "mode": {
-        "real": "Modalità reale",
-        "realWarning": "Attenzione: Le vere Trustline(s) verranno eliminate",
-        "simulation": "Modalità simulazione"
-      },
-      "deletingProgress": "Eliminazione di {{current}} su {{total}} Trustlines...",
-      "resultText": "{{count}} Trustline(s) sono state cancellate con successo ({{mode}}).",
-      "resultTitle": "Trustline(s) cancellata(e)",
-      "simulated": "{{count}} Trustline(s) sono state simulate come cancellate",
-      "success": "{{count}} Trustline(s) sono state eliminate",
-      "noDeletableFound": "Nessuna Trustline eliminabile trovata - tutte contengono ancora un saldo.",
-      "noTrustlines": "Nessuna Trustline valida da eliminare disponibile.",
-      "skippedDueToLiabilities": "{{count}} Linea(e) di fiducia non può/potrebbero essere eliminata/e poiché contiene ancora obbligazioni.",
-      "skippedDueToBalance": "{{count}} Trustlines sono state saltate perché contengono credito."
-    },
-    "nonZeroBalance": "Questa linea di fiducia non può essere cancellata perché contiene ancora un saldo.",
-    "onlyZeroBalanceInfo": "Solo le Trustlines con un saldo di 0 possono essere eliminate.",
-    "showSecret": "Mostra chiave segreta"
+    "showSecret": "Mostra la chiave segreta"
   },
   "wallet": {
-    "add": "Aggiungi portafoglio",
-    "inList": "Portafoglio in lista",
-    "list": "Lista dei portafogli Groupfund",
+    "add": "Aggiungi Portafoglio",
+    "inList": "Portafoglio nella lista",
+    "list": "Elenco dei portafogli Groupfund",
     "noPayments": "Nessun pagamento trovato."
-  },
-  "transaction": {
-    "pending": "Transazione in sospeso...",
-    "success": "Transazione riuscita: {hash}"
-  },
-  "app": {
-    "errorBoundary": {
-      "title": "Qualcosa è andato storto."
-    }
-  },
-  "menu": {
-    "xlmByMemo": "XLM a Memo"
   },
   "xlmByMemo": {
     "action": {
-      "calculate": "Calcolare",
-      "loading": "Calcola..."
+      "calculate": "Calcola",
+      "loading": "Calcola…"
     },
     "date": {
       "from": "Da (opzionale)",
       "to": "Fino a (opzionale)"
     },
-    "memo": {
-      "label": "Testo di ricerca memo (sottostringa, rispettare maiuscole/minuscole)",
-      "placeholder": "Memo (sottostringa, rispettare maiuscole/minuscole)"
-    },
-    "page": {
-      "title": "Totale XLM dopo Memo",
-      "noPublicKey": "Inserisci prima una chiave pubblica."
-    },
-    "result": {
-      "label": "Totale:",
-      "range": "Calcolato per il periodo: {{from}} a {{to}}",
-      "rangeVerbose": "Periodo: {{fromDate}} {{fromTime}} fino a {{toDate}} {{toTime}} ({{tz}})",
-      "value": "{{amount}} XLM"
-    },
-    "time": {
-      "from": "Orario da (opzionale)",
-      "to": "Orario fino a (opzionale)"
-    },
-    "title": "Totale XLM dopo Memo",
-    "tz": {
-      "label": "Fuso orario per data/ora",
-      "cst": "CST (UTC−6)",
-      "cdt": "CDT (UTC−5)",
-      "local": "Fuso orario locale",
-      "note": "La data/ora vengono interpretate nel fuso orario selezionato e convertite automaticamente in UTC prima della ricerca.",
-      "utc": "UTC"
-    },
-    "failed": "Il calcolo non ha potuto essere eseguito.",
+    "failed": "Il calcolo non può essere eseguito.",
     "failed:account.invalid": "L'indirizzo del portafoglio non è valido.",
     "failed:date.invalid": "Inserisci valori di data/ora validi nel formato YYYY-MM-DD HH:mm[:ss] (o ISO 8601).",
     "failed:date.range": "La data di inizio non può essere successiva alla data di fine.",
     "failed:memo.invalid": "Inserisci un testo di ricerca memo valido.",
     "failed:payments.fetch": "I pagamenti non sono stati caricati da Horizon.",
     "failed:server.invalid": "Il server Horizon non è valido o mancante.",
-    "failed:unknown": "Errore sconosciuto durante il calcolo."
+    "failed:unknown": "Errore sconosciuto durante il calcolo.",
+    "memo": {
+      "label": "Testo di ricerca memo (sottostringa, sensibile al maiuscolo)",
+      "placeholder": "Memo (sottostringa, sensibile al maiuscolo)"
+    },
+    "page": {
+      "noPublicKey": "Per favore inserisci prima una chiave pubblica.",
+      "title": "XLM totale per memo"
+    },
+    "result": {
+      "label": "Importo totale:",
+      "range": "Calcolato per il periodo: {{from}} a {{to}}",
+      "rangeVerbose": "Periodo: {{fromDate}} {{fromTime}} a {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Tempo da (opzionale)",
+      "to": "Tempo fino a (opzionale)"
+    },
+    "title": "XLM totale per memo",
+    "tz": {
+      "cdt": "CDT (UTC−5)",
+      "cst": "CST (UTC−6)",
+      "label": "Fuso orario per data/ora",
+      "local": "Fuso orario locale",
+      "note": "La data/ora viene interpretata nel fuso orario selezionato e convertita automaticamente in UTC prima della ricerca.",
+      "utc": "UTC"
+    }
   }
 }

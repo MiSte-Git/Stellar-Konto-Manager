@@ -4,5 +4,9 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"editor.fontLigatures": false,
+		"workbench.settings.openDefaultSettings": true,
+		"workbench.colorCustomizations": {}
+	}
 }

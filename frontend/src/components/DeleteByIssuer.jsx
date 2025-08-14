@@ -62,7 +62,7 @@ function DeleteByIssuer({
             
             const response = { ok: true };
 
-            if (!response.ok) throw new Error(result.error || t('trustline.delete.error'));
+            if (!response.ok) throw new Error(result.error || t('error.trustline.unknown'));
 
             setResults([...result.messages, t('secretKey.cleared')]);
             setTrustlines(await loadTrustlines(sourcePublicKey));
@@ -70,7 +70,7 @@ function DeleteByIssuer({
             setShowSecretKey(false);
           } catch (err) {
             console.error('Fetch error:', err);
-            setError(t('trustline.delete.error'));
+            setError(t('error.trustline.unknown'));
           }
         });
 

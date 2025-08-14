@@ -32,7 +32,7 @@ export default function InvestedTokensPanel({ publicKey }) {
     } catch (e) {
       // UI fängt den Fehler ab und übersetzt mit t()
       setData(null);
-      setErr(e?.message || 'fetchInvestedTokens.failed');
+      setErr(e?.message || t('error.fetchInvestedTokens.failed'));
     } finally {
       setLoading(false);
     }

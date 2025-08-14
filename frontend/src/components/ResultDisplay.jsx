@@ -61,7 +61,7 @@ function ResultDisplay({
             <tr key={index}>
               <td className="border px-2 py-1">{item.assetCode}</td>
               <td className="border px-2 py-1">{item.assetIssuer}</td>
-              <td className="border px-2 py-1">{item.createdAt || t('asset.creationDate.unknown')}</td>
+              <td className="border px-2 py-1">{item.createdAt || t('error.asset.creationDateUnknown')}</td>
             </tr>
           ))}
         </tbody>

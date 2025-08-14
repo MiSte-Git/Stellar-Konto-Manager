@@ -138,7 +138,7 @@ function ListTrustlines({
       }
 
       if (deletableTrustlines.length === 0) {
-        setModalError(t('trustlines.noDeletableFound'));
+        setModalError(t('trustline.deleted.notFound'));
         return;
       }
 
@@ -190,7 +190,7 @@ function ListTrustlines({
 
       // Wenn nichts löschbar ist, Dialog schließen
       if (deletableTrustlines.length === 0) {
-        setModalError(t('trustlines.noDeletableFound'));
+        setModalError(t('trustline.deleted.notFound'));
         setIsProcessing(false);
         return;
       }
@@ -201,7 +201,7 @@ function ListTrustlines({
       //console.log('[UI] results gesetzt:', deleted.length);
 
       if (deletableTrustlines.length === 0) {
-        setModalError(t('trustlines.noDeletableFound'));
+        setModalError(t('trustline.deleted.notFound'));
         setIsProcessing(false);
         return;
       }
@@ -219,7 +219,7 @@ function ListTrustlines({
       );
 
       if (stillValid.length === 0) {
-        setModalError(t('trustlines.noDeletableFound'));
+        setModalError(t('trustline.deleted.notFound'));
         setIsProcessing(false);
         return;
       }
@@ -393,7 +393,7 @@ function ListTrustlines({
             <th
               className="px-4 py-2 cursor-pointer"
               onClick={() => onSort('assetBalance')}
-            >
+            >B
               {t('asset.balance')}
             </th>
             <th
@@ -426,7 +426,7 @@ function ListTrustlines({
               <td className="px-4 py-2">{tl.assetCode}</td>
               <td className="px-4 py-2">{tl.assetBalance}</td>
               <td className="px-4 py-2">{tl.assetIssuer}</td>
-              <td className="px-4 py-2">{tl.createdAt ? new Date(tl.createdAt).toLocaleString() : t('asset.creationDate.unknown')}</td>
+              <td className="px-4 py-2">{tl.createdAt ? new Date(tl.createdAt).toLocaleString() : t('error.asset.creationDateUnknown')}</td>
             </tr>
           ))}
         </tbody>

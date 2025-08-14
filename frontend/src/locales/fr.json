@@ -1,39 +1,67 @@
 {
   "account": {
-    "loadFailed": "Erreur lors du chargement du compte {publicKey} : {error}",
-    "noBalances": "Aucun crédit trouvé pour le compte."
+    "loadFailed": "Erreur de chargement du compte {publicKey} : {{error}}",
+    "noBalances": "Aucun solde trouvé pour le compte."
   },
   "address": "Adresse",
+  "app": {
+    "errorBoundary": {
+      "title": "Quelque chose a mal tourné."
+    }
+  },
   "asset": {
     "amount": "Montant (XLM)",
+    "balance": "Solde",
     "code": "Code d'actif",
     "creationDate": "Créé le",
-    "issuer": "Émetteur",
-    "balance": "Crédit"
+    "issuer": "Émetteur"
   },
   "assets": {
-    "compromisedPurchases": "{total} paiements au total",
+    "compromisedPurchases": "{total} paiements totaux",
     "totalPurchases": "Nombre total d'achats : {count}"
   },
+  "common": {
+    "loading": "Chargement…",
+    "refresh": "Recharger"
+  },
   "date": {
-    "times": "Date et heures"
+    "times": "Dates et heures"
   },
   "error": {
     "connection": {
-      "backend": "Impossible de se connecter au backend. Assurez-vous"
+      "backend": "Aucune connexion au backend possible. Veuillez vous assurer"
     },
-    "fetchingOperations": "Erreur lors de la récupération des opérations : {error}",
-    "script": "Erreur de script : {message} à {source}:{lineno}:{colno} - {error}",
-    "transaktion": {
+    "fetchingOperations": "Erreur lors de la récupération des opérations : {{error}}",
+    "op_invalid_limit": "La ligne de confiance ne peut pas être supprimée. Elle peut encore avoir un solde ou des obligations en cours.",
+    "script": "Erreur de script : {message} à {source}:{lineno}:{colno} - {{error}}",
+    "transaction": {
+      "deleteFail": "[ERREUR] La suppression a échoué : {{error}}",
+      "failed": "La transaction a échoué",
+      "title": "Erreur de transaction",
       "unknown": "Erreur inconnue lors de la transaction."
     },
-    "op_invalid_limit": "La ligne de confiance ne peut pas être supprimée. Elle peut encore avoir un solde ou des obligations en cours.",
-    "transaction": {
-      "deleteFail": "[ERREUR] Échec de la suppression : {{error}}",
-      "failed": "Transaction échouée",
-      "unknown": "Erreur inconnue lors de la transaction.",
-      "title": "Erreur lors de la transaction"
+    "transaktion": {
+      "unknown": "Erreur inconnue lors de la transaction."
     }
+  },
+  "fetchInvestedTokens": {
+    "failed": "Échec du chargement des données d'investissement : {{detail}}"
+  },
+  "investedTokens": {
+    "group": {
+      "memo": "Mémo",
+      "memoOrToken": "Mémo, sinon jeton",
+      "token": "Jeton (CODE:ÉMETTEUR)"
+    },
+    "groupBy": "Grouper par",
+    "hintEnterPublicKey": "Veuillez d'abord entrer une clé publique.",
+    "item": {
+      "memo": "Mémo : \"{{memo}}\" (Paiements : {{occurrences}})",
+      "token": "Jeton : {{token}} (Paiements : {{occurrences}})"
+    },
+    "moreTruncated": "... et {{extra}} groupes de plus",
+    "total": "Nombre de jetons achetés : {{count}}",
+    "walletCapInfo": "Remarque : Un portefeuille peut contenir un maximum de 1000 lignes de confiance."
   },
   "issuer": {
     "compromised": "Compromis",
@@ -44,122 +72,130 @@
     "placeholder": "par exemple"
   },
   "main": {
-    "title": "Gestionnaire de Ligne de Confiance Stellar",
-    "processing": "Opération en cours, veuillez patienter …"
+    "processing": "Le processus est en cours, veuillez patienter...",
+    "title": "Gestionnaire de Trustline Stellar"
+  },
+  "menu": {
+    "xlmByMemo": "XLM vers le Memo"
   },
   "navigation": {
     "backToMainMenu": "Retour au menu",
+    "backToPublicKey": "Retour à l'entrée d'adresse publique",
     "backToTop": "Retour en haut",
     "current": {
       "menu": "Menu actuel :"
     },
     "next": "Suivant",
-    "previous": "Précédente"
+    "previous": "Précédent"
   },
   "option": {
     "add": "Ajouter",
     "addToList": "Ajouter à la liste",
     "cancel": "Annuler",
+    "close": "Fermer",
     "confirm": {
       "action": {
-        "text": "Es-tu sûr",
+        "text": "Es-tu sûr ?",
         "title": "Confirmer l'action"
       }
     },
+    "copy": "Copier",
     "delete": "Supprimer",
     "description": "Description",
-    "filter": "Filtrer...",
-    "hide": "Masquer",
+    "export": {
+      "csv": "Enregistrer au format CSV",
+      "pdf": "Enregistrer en tant que PDF"
+    },
+    "filter": "Filtrage...",
+    "hide": "Cacher",
     "loading": "Chargement...",
     "memo": "Mémo",
     "newAddress": "Nouvelle adresse",
     "no": "Non",
+    "ok": "D'accord",
     "page": "Page",
     "results": "Résultats :",
     "save": "Enregistrer",
-    "show": "Afficher",
-    "yes": "Oui",
-    "close": "Fermer",
-    "copy": "Copier",
-    "export": {
-      "csv": "Enregistrer en CSV",
-      "pdf": "Enregistrer en PDF"
-    },
-    "ok": "OK"
+    "show": "Montrer",
+    "yes": "Oui"
   },
   "publicKey": {
     "destination": {
-      "error": "Clé de destination non valide.",
+      "error": "Clé cible invalide.",
       "input": "Entrez l'adresse du portefeuille cible"
     },
     "invalid": "Clé publique ou adresse de fédération invalide.",
     "label": "Veuillez entrer l'adresse de la fédération source ou la clé publique :",
-    "placeholder": "par exemple",
+    "placeholder": "e.g.",
     "recipient": "Adresse de réception",
     "source": "Adresse du portefeuille source",
     "submit": {
-      "button": "Envoyer"
+      "button": "Soumettre"
     }
   },
   "puplicKey": {
-    "failed": "Erreur lors de la résolution de l'adresse de fédération / clé publique : {error}"
+    "failed": "Erreur de résolution de l'adresse de fédération/clé publique : {{error}}"
   },
   "secretKey": {
     "cleared": "La clé secrète a été supprimée.",
-    "empty": "Le champ de la clé secrète est vide.",
-    "info": "La clé secrète n'est transmise temporairement à un backend que pour l'exécution de l'action choisie. La clé n'est pas stockée.",
+    "empty": "Le champ de clé secrète est vide.",
+    "info": "La clé secrète est uniquement transmise temporairement à un backend pour exécuter l'action choisie. La clé n'est pas stockée.",
     "invalid": "Clé secrète invalide.",
-    "label": "Entrez la clé secrète source (elle sera envoyée en toute sécurité au backend",
+    "label": "Entrez la clé secrète source (sera envoyée en toute sécurité au backend)",
     "mismatch": "La clé secrète ne correspond pas à l'adresse publique.",
     "placeholder": "par exemple",
     "valid": "✅ La clé secrète est valide."
   },
   "settings": {
-    "export": "Exporter les paramètres",
+    "export": "Paramètres d'exportation",
     "import": "Importer les paramètres",
     "label": "Paramètres"
   },
   "token": {
-    "purchases": "Nombre de tokens achetés"
+    "purchases": "Nombre de jetons achetés"
+  },
+  "transaction": {
+    "pending": "Transaction en attente...",
+    "success": "Transaction réussie : {hash}"
   },
   "trustline": {
-    "all": "Afficher toutes les lignes de confiance",
-    "compare": "Comparer les Trustlines",
-    "confirmDeletion": "Vraiment supprimer les Trustlines",
-    "delete": "Supprimer la/les ligne(s) de confiance",
+    "all": "Afficher la(les) ligne(s) de confiance",
+    "compare": "Comparer la(s) ligne(s) de confiance",
+    "confirmDeletion": "Vraiment supprimer la(les) ligne(s) de confiance",
+    "delete": "Supprimer la ou les lignes de confiance",
+    "deleted": {
+      "deletingProgress": "Supprimer {{current}} de {{total}} lignes de confiance...",
+      "mode": {
+        "real": "Mode réel",
+        "realWarning": "Avertissement : La ou les véritables lignes de confiance seront supprimées.",
+        "simulation": "Mode simulation"
+      },
+      "noDeletableFound": "Aucune ligne de confiance supprimable trouvée - toutes contiennent encore un solde.",
+      "noTrustlines": "Aucune ligne de confiance valide disponible pour suppression.",
+      "resultText": "{{count}} ligne(s) de confiance ont été supprimées avec succès ({{mode}}).",
+      "resultTitle": "Ligne(s) de confiance supprimée(s)",
+      "simulated": "{{count}} ligne(s) de confiance ont été simulées comme supprimées",
+      "skippedDueToBalance": "{{count}} lignes de confiance ont été ignorées car elles contiennent un solde.",
+      "skippedDueToLiabilities": "{{count}} ligne(s) de confiance n'ont pas pu être supprimée(s) car elles contiennent encore des obligations (passifs).",
+      "success": "{{count}} ligne(s) de confiance ont été supprimée(s)"
+    },
     "destination": {
-      "label": "Entrez la clé publique de destination :",
+      "label": "Entrez la clé publique cible :",
       "placeholder": "par exemple"
     },
     "inputEmpty": "Le champ de saisie ne doit pas être vide.",
     "issuer": {
       "notFound": "Aucune ligne de confiance trouvée pour l'émetteur {issuer}."
     },
-    "list": "Lister les Trustlines",
-    "noDuplicates": "Aucunes lignes de confiance en double trouvées.",
+    "list": "Nombre de ligne(s) de confiance",
+    "noDuplicates": "Aucune ligne de confiance en double trouvée.",
+    "nonZeroBalance": "Cette ligne de confiance ne peut pas être supprimée car elle a encore un solde.",
     "notFound": "Aucune ligne de confiance trouvée.",
-    "removeFromList": "Supprimer de la liste",
-    "reviewSelection": {
-      "title": "Vérifier les lignes de confiance sélectionnées"
-    },
-    "deleted": {
-      "mode": {
-        "real": "Mode réel",
-        "realWarning": "Attention : Les véritables lignes de confiance seront supprimées",
-        "simulation": "Mode simulation"
-      },
-      "deletingProgress": "Suppression de {{current}} sur {{total}} Trustlines...",
-      "resultText": "{{count}} ligne(s) de confiance ont été supprimées avec succès ({{mode}}).",
-      "resultTitle": "Trustline(s) supprimée(s)",
-      "simulated": "{{count}} ligne(s) de confiance ont été supprimées en simulation",
-      "success": "{{count}} ligne(s) de confiance ont été supprimées",
-      "noDeletableFound": "Aucune ligne de confiance supprimable trouvée - toutes contiennent encore du crédit.",
-      "noTrustlines": "Aucune ligne de confiance valide à supprimer.",
-      "skippedDueToLiabilities": "{{count}} ligne(s) de confiance n'a/n'ont pas pu être supprimée(s) car elle(s) contient/contiennent encore des obligations (Liabilities).",
-      "skippedDueToBalance": "{{count}} Trustlines ont été ignorées car elles contiennent du crédit."
-    },
-    "nonZeroBalance": "Cette ligne de confiance ne peut pas être supprimée car elle contient encore un solde.",
     "onlyZeroBalanceInfo": "Seules les lignes de confiance avec un solde de 0 peuvent être supprimées.",
+    "removeFromList": "Retirer de la liste",
+    "reviewSelection": {
+      "title": "Vérifier la(les) ligne(s) de confiance sélectionnée(s)"
+    },
     "showSecret": "Afficher la clé secrète"
   },
   "wallet": {
@@ -168,53 +204,14 @@
     "list": "Liste des portefeuilles Groupfund",
     "noPayments": "Aucun paiement trouvé."
   },
-  "transaction": {
-    "pending": "Transaction en attente...",
-    "success": "Transaction réussie : {hash}"
-  },
-  "app": {
-    "errorBoundary": {
-      "title": "Quelque chose s'est mal passé."
-    }
-  },
-  "menu": {
-    "xlmByMemo": "XLM vers Memo"
-  },
   "xlmByMemo": {
     "action": {
       "calculate": "Calculer",
-      "loading": "Calcule..."
+      "loading": "Calculer…"
     },
     "date": {
       "from": "De (facultatif)",
       "to": "Jusqu'à (facultatif)"
-    },
-    "memo": {
-      "label": "Text de recherche de mémo (sous-chaîne, respecter la casse)",
-      "placeholder": "Mémo (sous-chaîne, respecter la casse)"
-    },
-    "page": {
-      "title": "Total XLM après Memo",
-      "noPublicKey": "Veuillez d'abord entrer une clé publique."
-    },
-    "result": {
-      "label": "Total :",
-      "range": "Calculé pour la période : {{from}} à {{to}}",
-      "rangeVerbose": "Période : {{fromDate}} {{fromTime}} à {{toDate}} {{toTime}} ({{tz}})",
-      "value": "{{amount}} XLM"
-    },
-    "time": {
-      "from": "Heure de (facultatif)",
-      "to": "Heure jusqu'à (facultatif)"
-    },
-    "title": "Total XLM après Memo",
-    "tz": {
-      "label": "Fuseau horaire pour la date/l'heure",
-      "cst": "CST (UTC−6)",
-      "cdt": "CDT (UTC−5)",
-      "local": "Fuseau horaire local",
-      "note": "La date/l'heure sont interprétées dans le fuseau horaire choisi et sont automatiquement converties en UTC avant la recherche.",
-      "utc": "UTC"
     },
     "failed": "Le calcul n'a pas pu être effectué.",
     "failed:account.invalid": "L'adresse du portefeuille est invalide.",
@@ -223,6 +220,33 @@
     "failed:memo.invalid": "Veuillez entrer un texte de recherche de mémo valide.",
     "failed:payments.fetch": "Les paiements n'ont pas pu être chargés par Horizon.",
     "failed:server.invalid": "Le serveur Horizon est invalide ou manquant.",
-    "failed:unknown": "Erreur inconnue lors du calcul."
+    "failed:unknown": "Erreur inconnue lors du calcul.",
+    "memo": {
+      "label": "Texte de recherche de mémo (sous-chaîne, sensible à la casse)",
+      "placeholder": "Mémo (sous-chaîne, sensible à la casse)"
+    },
+    "page": {
+      "noPublicKey": "Veuillez d'abord entrer une clé publique.",
+      "title": "XLM total par mémo"
+    },
+    "result": {
+      "label": "Montant total :",
+      "range": "Calculé pour la période : {{from}} à {{to}}",
+      "rangeVerbose": "Période : {{fromDate}} {{fromTime}} à {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Temps depuis (facultatif)",
+      "to": "Temps restant jusqu'à (facultatif)"
+    },
+    "title": "XLM total par mémo",
+    "tz": {
+      "cdt": "CDT (UTC−5)",
+      "cst": "CST (UTC−6)",
+      "label": "Fuseau horaire pour la date/heure",
+      "local": "Fuseau horaire local",
+      "note": "La date/heure est interprétée dans le fuseau horaire sélectionné et convertie automatiquement en UTC avant la recherche.",
+      "utc": "UTC"
+    }
   }
 }
