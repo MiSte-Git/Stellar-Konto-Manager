@@ -10,6 +10,7 @@ function MainMenu({ onSelect }) {
     { label: t('token.purchases'), value: 'payments' },
     { label: t('menu.xlmByMemo'), value: 'xlmByMemo' },
     { label: t('settings.label'), value: 'settings' },
+    { label: t('navigation.backToPublicKey'), value: 'backToPublicKey' }
   ];
 
   return (

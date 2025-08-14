@@ -16,9 +16,13 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [fromTime, setFromTime] = useState("00:00");
-  const [toTime, setToTime] = useState("23:59:59");
+  const [toTime, setToTime] = useState(() => {
+    const now = new Date();
+    // Formatieren in HH:MM (lokale Zeit)
+    return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  });
   // Zeitzone: 'local' | 'utc' | 'cst' | 'cdt'
-  const [tz, setTz] = useState("cst");
+  const [tz, setTz] = useState("local");
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [errorKey, setErrorKey] = useState("");
@@ -44,7 +48,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   function toUTCISO(dateStr, timeStr, tzMode, role /* 'from' | 'to' */) {
     if (!dateStr) return undefined;
 
-    let t = timeStr || (role === 'from' ? '00:00' : '23:59:59');
+    let t = timeStr || (role === 'from' ? '00:00:00' : '23:59:59');
     if (/^\d{2}:\d{2}$/.test(t)) t = `${t}:00`;
 
     const [hh, mm, ss] = t.split(':').map((x) => parseInt(x, 10));

@@ -96,6 +96,7 @@
     "xlmByMemo": "XLM nach Memo"
   },
   "navigation": {
+    "backToPublicKey": "Zurück zur öffentlichen Adresse Eingabe",
     "backToMainMenu": "Zurück zum Menü",
     "backToTop": "Zurück nach oben",
     "current": {
