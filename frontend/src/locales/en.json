@@ -28,8 +28,14 @@
     "times": "Date and times"
   },
   "error": {
+    "asset": {
+      "creationDateUnknown": "Unknown creation date"
+    },
     "connection": {
       "backend": "No connection to the backend possible. Please ensure"
+    },
+    "fetchInvestedTokens": {
+      "failed": "Failed to load investment data: {{detail}}"
     },
     "fetchingOperations": "Error retrieving operations: {{error}}",
     "op_invalid_limit": "The trustline cannot be deleted. It may still have a balance or outstanding obligations.",
@@ -42,6 +48,9 @@
     },
     "transaktion": {
       "unknown": "Unknown error during the transaction."
+    },
+    "trustline": {
+      "unknown": "Unknown error while deleting the trustline."
     }
   },
   "fetchInvestedTokens": {
@@ -57,10 +66,22 @@
     "hintEnterPublicKey": "Please enter a public key first.",
     "item": {
       "memo": "Memo: \"{{memo}}\" (Payments: {{occurrences}})",
-      "token": "Token: {{token}} (Payments: {{occurrences}})"
+      "token": "Token: {{token}} (Payments: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
     },
+    "missingPublicKey": "Public key is missing.",
     "moreTruncated": "... and {{extra}} more groups",
     "total": "Number of tokens purchased: {{count}}",
+    "totalTokens": "Number of invested tokens (assets): {{count}}",
+    "value": {
+      "units": "{{amount}} pieces",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "View",
+      "memo": "Memos (Groupfund)",
+      "token": "Token (purchased amount)"
+    },
     "walletCapInfo": "Note: A wallet can hold a maximum of 1000 trustlines."
   },
   "issuer": {
@@ -172,6 +193,7 @@
       },
       "noDeletableFound": "No deletable trustlines found – all still contain balance.",
       "noTrustlines": "No valid trustlines available for deletion.",
+      "notFound": "No deletable trustlines found – all still contain balances.",
       "resultText": "{{count}} trustline(s) have been successfully deleted ({{mode}}).",
       "resultTitle": "Deleted trustline(s)",
       "simulated": "{{count}} trustline(s) have been simulated deleted",

@@ -28,8 +28,14 @@
     "times": "Date e orari"
   },
   "error": {
+    "asset": {
+      "creationDateUnknown": "Data di creazione sconosciuta"
+    },
     "connection": {
       "backend": "Nessuna connessione possibile al backend. Si prega di assicurarsi"
+    },
+    "fetchInvestedTokens": {
+      "failed": "Impossibile caricare i dati sugli investimenti: {{detail}}"
     },
     "fetchingOperations": "Errore nel recupero delle operazioni: {{error}}",
     "op_invalid_limit": "La linea di fiducia non può essere eliminata. Potrebbe avere ancora un saldo o obbligazioni in sospeso.",
@@ -42,6 +48,9 @@
     },
     "transaktion": {
       "unknown": "Errore sconosciuto durante la transazione."
+    },
+    "trustline": {
+      "unknown": "Errore sconosciuto durante l'eliminazione della trustline."
     }
   },
   "fetchInvestedTokens": {
@@ -57,10 +66,22 @@
     "hintEnterPublicKey": "Per favore inserisci prima una chiave pubblica.",
     "item": {
       "memo": "Memo: \"{{memo}}\" (Pagamenti: {{occurrences}})",
-      "token": "Token: {{token}} (Pagamenti: {{occurrences}})"
+      "token": "Token: {{token}} (Pagamenti: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
     },
+    "missingPublicKey": "La chiave pubblica è mancante.",
     "moreTruncated": "... e {{extra}} gruppi in più",
     "total": "Numero di token acquistati: {{count}}",
+    "totalTokens": "Numero di token investiti (attivi): {{count}}",
+    "value": {
+      "units": "{{amount}} pezzi",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Visualizza",
+      "memo": "Memos (Groupfund)",
+      "token": "Token (importo acquistato)"
+    },
     "walletCapInfo": "Nota: Un portafoglio può contenere un massimo di 1000 linee di fiducia."
   },
   "issuer": {
@@ -172,6 +193,7 @@
       },
       "noDeletableFound": "Nessuna linea di fiducia eliminabile trovata: tutte contengono ancora un saldo.",
       "noTrustlines": "Nessuna linea di fiducia valida disponibile per la cancellazione.",
+      "notFound": "Nessuna linea di fiducia eliminabile trovata: tutte contengono ancora saldi.",
       "resultText": "{{count}} trustline(s) sono stati eliminati con successo ({{mode}}).",
       "resultTitle": "Trustline(i) eliminato(e)",
       "simulated": "{{count}} linea di fiducia sono state simulate come eliminate",

@@ -28,8 +28,14 @@
     "times": "Datum en tijden"
   },
   "error": {
+    "asset": {
+      "creationDateUnknown": "Onbekende creatiedatum"
+    },
     "connection": {
       "backend": "Geen verbinding met de backend mogelijk. Zorg ervoor"
+    },
+    "fetchInvestedTokens": {
+      "failed": "Kon het investeringsgegevens niet laden: {{detail}}"
     },
     "fetchingOperations": "Fout bij het ophalen van bewerkingen: {{error}}",
     "op_invalid_limit": "De trustlijn kan niet worden verwijderd. Deze kan nog steeds een saldo of openstaande verplichtingen hebben.",
@@ -42,6 +48,9 @@
     },
     "transaktion": {
       "unknown": "Onbekende fout bij de transactie."
+    },
+    "trustline": {
+      "unknown": "Onbekende fout bij het verwijderen van de trustlijn."
     }
   },
   "fetchInvestedTokens": {
@@ -57,10 +66,22 @@
     "hintEnterPublicKey": "Voer eerst een openbare sleutel in.",
     "item": {
       "memo": "Memo: \"{{memo}}\" (Betalingen: {{occurrences}})",
-      "token": "Token: {{token}} (Betalingen: {{occurrences}})"
+      "token": "Token: {{token}} (Betalingen: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
     },
+    "missingPublicKey": "Openbare sleutel ontbreekt.",
     "moreTruncated": "... en {{extra}} meer groepen",
     "total": "Aantal aangekochte tokens: {{count}}",
+    "totalTokens": "Aantal geïnvesteerde tokens (activa): {{count}}",
+    "value": {
+      "units": "{{amount}} stuks",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Bekijk",
+      "memo": "Memos (Groepsfonds)",
+      "token": "Token (aangekocht bedrag)"
+    },
     "walletCapInfo": "Opmerking: Een portemonnee kan maximaal 1000 trustlines bevatten."
   },
   "issuer": {
@@ -172,6 +193,7 @@
       },
       "noDeletableFound": "Geen verwijderbare trustlijnen gevonden - allemaal bevatten nog een saldo.",
       "noTrustlines": "Geen geldige vertrouwenslijnen beschikbaar voor verwijdering.",
+      "notFound": "Geen verwijderbare trustlijnen gevonden - allemaal bevatten ze nog saldi.",
       "resultText": "{{count}} trustlijn(en) zijn succesvol verwijderd ({{mode}}).",
       "resultTitle": "Verwijderde trustlijn(en)",
       "simulated": "{{count}} trustlijn(en) zijn gesimuleerd verwijderd",

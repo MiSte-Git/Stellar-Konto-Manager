@@ -1,6 +1,7 @@
 import React from 'react';
 import { StrKey } from '@stellar/stellar-sdk';
 import { useTranslation } from 'react-i18next';
+import MenuHeader from './MenuHeader';
 
 function CompareTrustlines({
   sourcePublicKey,
@@ -16,10 +17,13 @@ function CompareTrustlines({
   setShowConfirm,
   loadTrustlines,
   backendUrl,
+  setMenuSelection,
+  menuSelection,
   isLoading,
   setIsLoading
 }) {
   const { t } = useTranslation();
+  // Im Parent (Main)
 
   const handleCompare = async () => {
     if (!destinationPublicKey || !StrKey.isValidEd25519PublicKey(destinationPublicKey)) {
@@ -86,6 +90,9 @@ function CompareTrustlines({
 
   return (
     <div>
+      {/* Menükopf mit Zurück-Button + aktuelle Ansicht */}
+      <MenuHeader setMenuSelection={setMenuSelection} menuSelection={menuSelection} />
+
       <label className="block mb-2">{t('publicKey.destination.input')}:</label>
       <input
         type="text"

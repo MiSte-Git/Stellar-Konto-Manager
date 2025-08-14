@@ -28,8 +28,14 @@
     "times": "Dates et heures"
   },
   "error": {
+    "asset": {
+      "creationDateUnknown": "Date de création inconnue"
+    },
     "connection": {
       "backend": "Aucune connexion au backend possible. Veuillez vous assurer"
+    },
+    "fetchInvestedTokens": {
+      "failed": "Échec du chargement des données d'investissement : {{detail}}"
     },
     "fetchingOperations": "Erreur lors de la récupération des opérations : {{error}}",
     "op_invalid_limit": "La ligne de confiance ne peut pas être supprimée. Elle peut encore avoir un solde ou des obligations en cours.",
@@ -42,6 +48,9 @@
     },
     "transaktion": {
       "unknown": "Erreur inconnue lors de la transaction."
+    },
+    "trustline": {
+      "unknown": "Erreur inconnue lors de la suppression de la ligne de confiance."
     }
   },
   "fetchInvestedTokens": {
@@ -57,10 +66,22 @@
     "hintEnterPublicKey": "Veuillez d'abord entrer une clé publique.",
     "item": {
       "memo": "Mémo : \"{{memo}}\" (Paiements : {{occurrences}})",
-      "token": "Jeton : {{token}} (Paiements : {{occurrences}})"
+      "token": "Jeton : {{token}} (Paiements : {{occurrences}})",
+      "tokenShort": "Token : {{token}}"
     },
+    "missingPublicKey": "La clé publique est manquante.",
     "moreTruncated": "... et {{extra}} groupes de plus",
     "total": "Nombre de jetons achetés : {{count}}",
+    "totalTokens": "Nombre de jetons investis (actifs) : {{count}}",
+    "value": {
+      "units": "{{amount}} pièces",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Vue",
+      "memo": "Mémos (Groupfund)",
+      "token": "Jetons (montant acheté)"
+    },
     "walletCapInfo": "Remarque : Un portefeuille peut contenir un maximum de 1000 lignes de confiance."
   },
   "issuer": {
@@ -172,6 +193,7 @@
       },
       "noDeletableFound": "Aucune ligne de confiance supprimable trouvée - toutes contiennent encore un solde.",
       "noTrustlines": "Aucune ligne de confiance valide disponible pour suppression.",
+      "notFound": "Aucune ligne de confiance supprimable trouvée – toutes contiennent encore des soldes.",
       "resultText": "{{count}} ligne(s) de confiance ont été supprimées avec succès ({{mode}}).",
       "resultTitle": "Ligne(s) de confiance supprimée(s)",
       "simulated": "{{count}} ligne(s) de confiance ont été simulées comme supprimées",

@@ -28,8 +28,14 @@
     "times": "Fechas y horas"
   },
   "error": {
+    "asset": {
+      "creationDateUnknown": "Fecha de creación desconocida"
+    },
     "connection": {
       "backend": "No se puede conectar con el backend. Por favor, asegúrese de"
+    },
+    "fetchInvestedTokens": {
+      "failed": "Error al cargar los datos de inversión: {{detail}}"
     },
     "fetchingOperations": "Error al recuperar operaciones: {{error}}",
     "op_invalid_limit": "La línea de confianza no se puede eliminar. Puede que aún tenga un saldo o obligaciones pendientes.",
@@ -42,6 +48,9 @@
     },
     "transaktion": {
       "unknown": "Error desconocido en la transacción."
+    },
+    "trustline": {
+      "unknown": "Error desconocido al eliminar la línea de confianza."
     }
   },
   "fetchInvestedTokens": {
@@ -57,10 +66,22 @@
     "hintEnterPublicKey": "Por favor, introduce primero una clave pública.",
     "item": {
       "memo": "Memo: \"{{memo}}\" (Pagos: {{occurrences}})",
-      "token": "Token: {{token}} (Pagos: {{occurrences}})"
+      "token": "Token: {{token}} (Pagos: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
     },
+    "missingPublicKey": "Falta la clave pública.",
     "moreTruncated": "... y {{extra}} grupos más",
     "total": "Número de tokens comprados: {{count}}",
+    "totalTokens": "Número de tokens (activos) invertidos: {{count}}",
+    "value": {
+      "units": "{{amount}} piezas",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Ver vista",
+      "memo": "Memos (Groupfund)",
+      "token": "Token (cantidad comprada)"
+    },
     "walletCapInfo": "Nota: Una billetera puede contener un máximo de 1000 líneas de confianza."
   },
   "issuer": {
@@ -172,6 +193,7 @@
       },
       "noDeletableFound": "No se encontraron líneas de confianza eliminables: todas aún contienen saldo.",
       "noTrustlines": "No hay líneas de confianza válidas disponibles para eliminar.",
+      "notFound": "No se encontraron líneas de confianza eliminables; todas aún contienen saldos.",
       "resultText": "Se han eliminado con éxito {{count}} línea(s) de confianza ({{mode}}).",
       "resultTitle": "Línea(s) de confianza eliminada(s)",
       "simulated": "Se han simulado {{count}} línea(s) de confianza eliminadas.",
