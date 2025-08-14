@@ -186,7 +186,22 @@ function Main() {
           <div>
             {/* ✅ Nur Menüauswahl, keine doppelte Wallet-Anzeige */}
             {sourcePublicKey && !menuSelection && (
-              <MainMenu onSelect={setMenuSelection} />
+              <MainMenu
+                onSelect={(value) => {
+                  if (value === 'backToPublicKey') {
+                    setMenuSelection(null);       // Menü schließen
+                    setSourcePublicKey('');       // ← wichtig: Input-Screen wird wieder sichtbar
+                    setSourceInput('');           // Eingabefeld leeren (optional)
+                    setTrustlines([]);            // Liste zurücksetzen (optional)
+                    setSelectedTrustlines([]);    // Auswahl leeren (optional)
+                    setResults([]);               // Resultate leeren (optional)
+                    setError('');                 // Fehler zurücksetzen (optional, UI übersetzt via t())
+                    return;
+                  }
+                  // Standardpfad für alle anderen Menüpunkte
+                  setMenuSelection(value);
+                }}
+              />
             )}
           </div>
         )}
