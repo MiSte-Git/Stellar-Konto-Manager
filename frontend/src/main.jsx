@@ -33,6 +33,7 @@ import {
 import { handleDeleteTrustlines as deleteAndReload } from './services/stellarUtils.js';
 import XlmByMemoPanel from './components/XlmByMemoPanel';
 import XlmByMemoPage from './pages/XlmByMemoPage';
+import InvestedTokensPage from './pages/InvestedTokensPage';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -283,6 +284,12 @@ function Main() {
         <XlmByMemoPage
           publicKey={sourcePublicKey}
           onBack={() => setMenuSelection(null)}  // oder null, wie du magst
+        />
+      )}
+      {menuSelection === 'payments' && (
+        <InvestedTokensPage
+          publicKey={sourcePublicKey}
+          onBack={() => setMenuSelection(null)}
         />
       )}
       {results.length > 0 && (

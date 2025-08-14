@@ -6,15 +6,23 @@
   "address": "Adresse",
   "asset": {
     "amount": "Betrag (XLM)",
+    "balance": "Guthaben",
     "code": "Asset-Code",
     "creationDate": "Erstellt am",
-    "issuer": "Emittent",
-    "balance": "Guthaben"
+    "issuer": "Emittent"
   },
-  "app": { "errorBoundary": { "title": "Etwas ist schiefgelaufen." } },
+  "app": { 
+    "errorBoundary": { 
+      "title": "Etwas ist schiefgelaufen." 
+    } 
+  },
   "assets": {
     "compromisedPurchases": "{total} Zahlungen gesamt",
     "totalPurchases": "Gesamtzahl der Käufe: {count}"
+  },
+  "common": {
+    "loading": "Laden…",
+    "refresh": "Neu laden"
   },
   "date": {
     "times": "Datum und Uhrzeiten"
@@ -29,9 +37,47 @@
     "transaction": {
       "deleteFail": "[ERROR] Löschung fehlgeschlagen: {{error}}",
       "failed": "Transaktion fehlgeschlagen",
-      "unknown": "Unbekannter Fehler bei der Transaktion.",
-      "title": "Fehler bei der Transaktion"
-
+      "title": "Fehler bei der Transaktion",
+      "unknown": "Unbekannter Fehler bei der Transaktion."
+    }
+  },
+  "fetchInvestedTokens": {
+    "failed": "Laden der Investitionsdaten fehlgeschlagen: {{detail}}"
+  },
+  "investedTokens": {
+    "group": {
+      "memo": "Memo",
+      "memoOrToken": "Memo, sonst Token",
+      "token": "Token (CODE:ISSUER)"
+    },
+    "groupBy": "Gruppieren nach",
+    "hintEnterPublicKey": "Bitte gib zuerst einen Public Key ein.",
+    "item": {
+      "memo": "Memo: \"{{memo}}\" (Zahlungen: {{occurrences}})",
+      "token": "Token: {{token}} (Zahlungen: {{occurrences}})"
+    },
+    "moreTruncated": "… und {{extra}} weitere Gruppen",
+    "total": "Anzahl gekaufter Token: {{count}}",
+    "walletCapInfo": "Hinweis: Ein Wallet kann maximal 1000 Trustlines halten."
+  },
+  "investedTokens.error": {
+    "item": {
+      "memo": "Memo: \"{{memo}}\" (Zahlungen: {{occurrences}})",
+      "token": "Token: {{token}} (Zahlungen: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
+    },
+    "missingPublicKey": "Public Key fehlt.",
+    "moreTruncated": "… und {{extra}} weitere Gruppen",
+    "total": "Anzahl gekaufter Token: {{count}}",
+    "totalTokens": "Anzahl investierter Token (Assets): {{count}}",
+    "value": {
+      "units": "{{amount}} Stück",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Ansicht",
+      "memo": "Memos (Groupfund)",
+      "token": "Token (gekaufte Menge)"
     }
   },
   "issuer": {
@@ -140,14 +186,14 @@
         "simulation": "Simulationsmodus"
       },
       "deletingProgress": "Lösche {{current}} von {{total}} Trustlines...", 
+      "noDeletableFound": "Keine löschbaren Trustlines gefunden – alle enthalten noch Guthaben.",
+      "noTrustlines": "Keine gültigen Trustlines zum Löschen vorhanden.",
       "resultText": "{{count}} Trustline(s) wurden erfolgreich gelöscht ({{mode}}).",
       "resultTitle": "Gelöschte Trustline(s)",
       "simulated": "{{count}} Trustline(s) wurden simuliert gelöscht",
-      "success": "{{count}} Trustline(s) wurden gelöscht",
-      "noDeletableFound": "Keine löschbaren Trustlines gefunden – alle enthalten noch Guthaben.",
-      "noTrustlines": "Keine gültigen Trustlines zum Löschen vorhanden.",
+      "skippedDueToBalance": "{{count}} Trustlines wurden übersprungen, da sie Guthaben enthalten.",
       "skippedDueToLiabilities": "{{count}} Trustline(s) konnten nicht gelöscht werden, da sie noch Verpflichtungen (Liabilities) enthalten.",
-      "skippedDueToBalance": "{{count}} Trustlines wurden übersprungen, da sie Guthaben enthalten."
+      "success": "{{count}} Trustline(s) wurden gelöscht"
     },
     "destination": {
       "label": "Geben Sie den Ziel-Öffentlichen Schlüssel ein:",
@@ -183,13 +229,21 @@
       "from": "Von (optional)",
       "to": "Bis (optional)"
     },
+    "failed": "Die Berechnung konnte nicht durchgeführt werden.",
+    "failed:account.invalid": "Die Wallet-Adresse ist ungültig.",
+    "failed:date.invalid": "Bitte gib gültige Datum/Uhrzeit-Werte im Format YYYY-MM-DD HH:mm[:ss] ein (oder ISO 8601).",
+    "failed:date.range": "Das Startdatum darf nicht nach dem Enddatum liegen.",
+    "failed:memo.invalid": "Bitte gib einen gültigen Memo-Suchtext ein.",
+    "failed:payments.fetch": "Zahlungen konnten nicht von Horizon geladen werden.",
+    "failed:server.invalid": "Horizon-Server ist ungültig oder fehlt.",
+    "failed:unknown": "Unbekannter Fehler bei der Berechnung.",
     "memo": {
       "label": "Memo-Suchtext (Teilstring, Groß-/Kleinschreibung beachten)",
       "placeholder": "Memo (Teilstring, Groß-/Kleinschreibung beachten)"
     },
     "page": {
-      "title": "XLM-Summe nach Memo",
-      "noPublicKey": "Bitte gib zuerst einen Public Key ein."
+      "noPublicKey": "Bitte gib zuerst einen Public Key ein.",
+      "title": "XLM-Summe nach Memo"
     },
     "result": {
       "label": "Gesamtsumme:",
@@ -209,14 +263,6 @@
       "local": "Lokale Zeitzone",
       "note": "Datum/Uhrzeit werden in der gewählten Zeitzone interpretiert und vor der Suche automatisch in UTC umgerechnet.",
       "utc": "UTC"
-    },
-    "failed": "Die Berechnung konnte nicht durchgeführt werden.",
-    "failed:account.invalid": "Die Wallet-Adresse ist ungültig.",
-    "failed:date.invalid": "Bitte gib gültige Datum/Uhrzeit-Werte im Format YYYY-MM-DD HH:mm[:ss] ein (oder ISO 8601).",
-    "failed:date.range": "Das Startdatum darf nicht nach dem Enddatum liegen.",
-    "failed:memo.invalid": "Bitte gib einen gültigen Memo-Suchtext ein.",
-    "failed:payments.fetch": "Zahlungen konnten nicht von Horizon geladen werden.",
-    "failed:server.invalid": "Horizon-Server ist ungültig oder fehlt.",
-    "failed:unknown": "Unbekannter Fehler bei der Berechnung."
+    }
   }
 }
