@@ -1,10 +1,12 @@
 name: Ping
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
       - name: Echo
-        run: echo "ok"
+        run: echo "ok $GITHUB_REF"
