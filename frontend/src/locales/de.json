@@ -49,7 +49,7 @@
       "xlm": "{{amount}} XLM"
     },
     "view": {
-      "label": "Ansicht",
+      "label": "Filter nach:",
       "memo": "Memos (Groupfund)",
       "token": "Token (gekaufte Menge)"
     },
@@ -64,18 +64,19 @@
     "title": "Stellar Trustline Manager"
   },
   "menu": {
-    "xlmByMemo": "XLM nach Memo"
+    "xlmByMemo": "XLM-Betrag nach Memo/Token Filtern",
+    "unknown": "Unbekannte Menüauswahl"
   },
   "navigation": {
     "backToMainMenu": "Zurück zum Menü",
-    "backToPublicKey": "Zurück zur öffentlichen Adresse Eingabe"
+    "backToPublicKey": "Zurück zur öffentlichen Schlüssel Eingabe"
   },
   "option": {
     "cancel": "Abbrechen",
     "close": "Schließen",
     "confirm": {
       "action": {
-        "text": "Bist du sicher",
+        "text": "Bist du sicher?",
         "title": "Aktion bestätigen"
       }
     },
@@ -106,16 +107,20 @@
     "empty": "Geheimschlüssel-Feld ist leer.",
     "info": "Der Geheim Schlüssel wird nur temporär an ein Backend zur Ausführung der gewählten Aktion übertragen. Der Schlüssel wird nicht gespeichert",
     "invalid": "Ungültiger Geheimschlüssel.",
-    "label": "Geben Sie den Quell-Geheimschlüssel ein (wird sicher an das Backend gesendet",
+    "label": "Geben Sie den Quell-Geheimschlüssel ein (wird sicher an das Backend gesendet)",
     "mismatch": "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
     "placeholder": "z.B.",
     "valid": "✅ Secret Key ist gültig."
   },
   "settings": {
-    "label": "Einstellungen"
+    "label": "Einstellungen",
+    "description": "Aktuell gibt es noch keine Einstellungen",
+    "error": {
+      "fetchFailed": "Laden der Einstellungen fehlgeschlagen: {{detail}}"
+    }
   },
   "token": {
-    "purchases": "Anzahl gekaufter Token"
+    "purchases": "Anzahl der investierten Token"
   },
   "trustline": {
     "all": "Trustline(s) anzeigen",
@@ -170,5 +175,12 @@
       "note": "Datum/Uhrzeit werden in der gewählten Zeitzone interpretiert und vor der Suche automatisch in UTC umgerechnet.",
       "utc": "UTC"
     }
+  },
+  "buildInfo": {
+    "loading": "Build-Informationen werden geladen …",
+    "error": "Build-Informationen konnten nicht geladen werden.",
+    "env": "Umgebung",
+    "commit": "Commit",
+   "branch": "Branch"
   }
 }
