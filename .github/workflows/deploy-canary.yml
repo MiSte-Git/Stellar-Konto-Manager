@@ -1,0 +1,77 @@
+name: Deploy CANARY (/STM_next)
+
+on:
+  workflow_dispatch:
+
+env:
+  # === Build-Variablen ===
+  VITE_BASE: /STM_next/
+  VITE_HORIZON_URL: https://horizon.stellar.org
+  # Optional: nur setzen, wenn vorhanden – sonst Zeile löschen
+  # VITE_BACKEND_URL: https://<DEINE-DOMAIN>/api
+
+  # === Zielpfad auf cyon ===
+  REMOTE_PATH: /home/michael/public_html/STM_next/
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+		with:
+          ref: backup-before-sourceinput
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps (frontend)
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build (VITE_BASE=/STM_next/)
+        working-directory: frontend
+        env:
+          VITE_BASE: ${{ env.VITE_BASE }}
+          VITE_HORIZON_URL: ${{ env.VITE_HORIZON_URL }}
+          VITE_BACKEND_URL: ${{ env.VITE_BACKEND_URL }}
+        run: |
+          # optional: Build-Beweis-Skripte
+          if [ -f ./scripts/gen-build-info.mjs ]; then node ./scripts/gen-build-info.mjs; fi
+          if [ -f ./scripts/hash-dist.mjs ]; then echo "hash-dist will run after build"; fi
+
+          npm run build
+
+          # .htaccess aus Template erzeugen (BASE ohne Slash am Ende!)
+          BASE_NO_TRAIL="${VITE_BASE%/}"
+          sed "s#__BASE__#${BASE_NO_TRAIL}#g" ./.htaccess.template > ./dist/.htaccess
+
+          # Smoke-Check: Base in index.html
+          grep -n "${VITE_BASE}" ./dist/index.html || (echo "Base nicht gefunden" && exit 1)
+
+          # optional: dist nachträglich hashen
+          if [ -f ./scripts/hash-dist.mjs ]; then node ./scripts/hash-dist.mjs ./dist; fi
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.CYON_SSH_KEY }}
+
+      - name: Trust cyon host key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ secrets.CYON_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy via rsync
+        run: |
+          rsync -avz --delete \
+            frontend/dist/ \
+            "${{ secrets.CYON_USER }}@${{ secrets.CYON_HOST }}:${{ env.REMOTE_PATH }}"
+
+      - name: Remote smoke test (index.html & build-info.json)
+        run: |
+          ssh "${{ secrets.CYON_USER }}@${{ secrets.CYON_HOST }}" \
+            "test -f ${REMOTE_PATH}index.html && (test -f ${REMOTE_PATH}build-info.json || true)"
