@@ -1,0 +1,79 @@
+🔎 Durchsuche Quellcode unter: /home/michael/Projekte/Stellar Trustline Manager
+🔁 invalidSecretKey → secretKey.error in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx
+🔁 failedDeleteTrustlines → trustline.delete.error in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx
+🔁 secretKeyCleared → secretKey.cleared in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx
+🔁 noDuplicatesFound → trustline.noDuplicates in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx
+🔁 loading → option.loading in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx
+🔁 compareTrustlines → trustline.compare in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx
+🔁 cannotConnectToBackend → error.connection.backend in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx
+🔁 enterDestinationPublicKey → publicKey.destination.input in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx
+✅ Datei aktualisiert: /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx
+🔁 cancel → option.cancel in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ConfirmationModal.jsx
+🔁 confirmActionTitle → option.confirm.action.title in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ConfirmationModal.jsx
+🔁 confirmActionText → option.confirm.action.text in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ConfirmationModal.jsx
+🔁 secretKeyCleared → secretKey.cleared in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ConfirmationModal.jsx
+🔁 yes → option.yes in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ConfirmationModal.jsx
+✅ Datei aktualisiert: /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ConfirmationModal.jsx
+🔁 failedDeleteTrustlines → trustline.delete.error in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteAllTrustlines.jsx
+🔁 secretKeyCleared → secretKey.cleared in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteAllTrustlines.jsx
+🔁 noTrustlines → trustline.notFound in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteAllTrustlines.jsx
+🔁 deleteAllButton → trustline.delete.button in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteAllTrustlines.jsx
+🔁 secretKeyInvalid → secretKey.invalid in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteAllTrustlines.jsx
+✅ Datei aktualisiert: /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteAllTrustlines.jsx
+🔁 invalidSecret → secretKey.invalid in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx
+🔁 deleteError → trustline.delete.error in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx
+🔁 failedDeleteTrustlines → trustline.delete.error in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx
+🔁 secretKeyCleared → secretKey.cleared in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx
+🔁 enterIssuer → issuer.enter in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx
+🔁 loading → option.loading in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx
+🔁 delete → option.delete in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx
+🔁 invalidIssuer → issuer.invalid in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx
+✅ Datei aktualisiert: /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx
+🔁 submitButton → publicKey.submit.button in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DestinationInput.jsx
+🔁 destLabel → trustline.destination.label in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DestinationInput.jsx
+🔁 destPlaceholder → trustline.destination.placeholder in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DestinationInput.jsx
+✅ Datei aktualisiert: /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DestinationInput.jsx
+🔁 cancel → option.cancel in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 confirmActionTitle → option.confirm.action.title in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 assetCode → asset.code in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 confirmActionText → option.confirm.action.text in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 issuer → asset.issuer in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 creationDate → asset.creationDate in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 yes → option.yes in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 delete → option.delete in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 deleteAllButton → trustline.delete.button in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 listTrustlines → trustline.list in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 unknownDate → asset.creationDate.unknown in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 backToMenu → navigation.backToMainMenu in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+✅ Datei aktualisiert: /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx
+🔁 tokenPurchasesTitle → token.purchases.title in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx
+🔁 settings → settings.label in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx
+🔁 deleteAll → trustline.delete in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx
+🔁 listTrustlines → trustline.list in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx
+🔁 deleteByIssuer → issuer.deleteBy in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx
+🔁 compareTrustlines → trustline.compare in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx
+✅ Datei aktualisiert: /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx
+🔁 assetCode → asset.code in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx
+🔁 issuer → asset.issuer in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx
+🔁 results → option.results in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx
+🔁 creationDate → asset.creationDate in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx
+🔁 unknownDate → asset.creationDate.unknown in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx
+✅ Datei aktualisiert: /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx
+🔁 secretKeyValid → secretKey.valid in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx
+🔁 cancel → option.cancel in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx
+🔁 submitButton → publicKey.submit.button in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx
+🔁 secretKeyInfo → secretKey.info in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx
+🔁 secretKeyLabel → secretKey.label in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx
+🔁 secretKeyEmpty → secretKey.empty in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx
+🔁 secretKeyPlaceholder → secretKey.placeholder in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx
+✅ Datei aktualisiert: /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx
+🔁 submitButton → publicKey.submit.button in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SourceInput.jsx
+🔁 sourceLabel → publicKey.label in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SourceInput.jsx
+🔁 sourcePlaceholder → publicKey.placeholder in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SourceInput.jsx
+✅ Datei aktualisiert: /home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SourceInput.jsx
+🔁 secretKeyInfo → secretKey.info in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/main.jsx
+🔁 submitTransaction.secretCleared → secretKey.cleared in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/main.jsx
+🔁 compare.noDuplicates → trustline.noDuplicates in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/main.jsx
+🔁 title → main.title in /home/michael/Projekte/Stellar Trustline Manager/frontend/src/main.jsx
+✅ Datei aktualisiert: /home/michael/Projekte/Stellar Trustline Manager/frontend/src/main.jsx
+✅ Alle Ersetzungen abgeschlossen.
