@@ -34,6 +34,7 @@ import { handleDeleteTrustlines as deleteAndReload } from './services/stellarUti
 import XlmByMemoPanel from './components/XlmByMemoPanel';
 import XlmByMemoPage from './pages/XlmByMemoPage';
 import InvestedTokensPage from './pages/InvestedTokensPage';
+import SettingsPage from './pages/SettingsPage.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -142,14 +143,15 @@ function Main() {
   }, []);
   
   useEffect(() => {
+    console.log('[menuSelection]', JSON.stringify(menuSelection));
     console.debug('[DEBUG] useEffect check: menuSelection is', menuSelection);
   }, [menuSelection]);
 
   // Filter-Update
-  const handleFilterChange = (key, value) => {
+  function handleFilterChange(key, value) {
     setFilters({ ...filters, [key]: value });
     setCurrentPage(0); // Bei Filterwechsel auf Seite 1 zurück
-  };
+  }
 
   // Alle auf aktueller Seite toggeln
   const handleToggleAll = (paginatedList) => {
@@ -188,7 +190,10 @@ function Main() {
             {sourcePublicKey && !menuSelection && (
               <MainMenu
                 onSelect={(value) => {
-                  if (value === 'backToPublicKey') {
+                  const next = (value ?? '').trim();
+                  console.log('[MainMenu onSelect]', JSON.stringify(next));
+
+                  if (next === 'backToPublicKey') {
                     setMenuSelection(null);       // Menü schließen
                     setSourcePublicKey('');       // ← wichtig: Input-Screen wird wieder sichtbar
                     setSourceInput('');           // Eingabefeld leeren (optional)
@@ -209,7 +214,7 @@ function Main() {
         {error && <p className="text-red-500 mt-4">{t(error)}</p>}
       </div>
 
-      {/* Menüansicht anzeigen (z. B. ListAll) */}
+      {/* Menüansicht anzeigen (z.B. ListAll) */}
       {menuSelection === 'listAll' && (
         <>
         <p className="text-sm text-gray-400">{error}</p>
@@ -309,6 +314,20 @@ function Main() {
           onBack={() => setMenuSelection(null)}
         />
       )}
+      {menuSelection === 'settings' && (
+        <SettingsPage
+          publicKey={sourcePublicKey}
+          onBack={() => setMenuSelection(null)}
+        />
+      )}
+
+      {menuSelection &&
+      !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings'].includes(menuSelection) && (
+        <div className="p-3 text-sm text-red-600">
+          {t('menu.unknown', { value: String(menuSelection) })}
+        </div>
+      )}
+
       {results.length > 0 && (
         <ResultDisplay
           results={results}

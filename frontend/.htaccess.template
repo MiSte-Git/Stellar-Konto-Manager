@@ -1,0 +1,41 @@
+# .htaccess.template — wird im Workflow auf dem Server zu .htaccess mit __BASE__ ersetzt
+# Beispiel-Ersetzung: __BASE__ => /STM_next  (ohne Slash am Ende)
+
+# --- Grundkonfig ---
+Options -Indexes
+RewriteEngine On
+RewriteBase __BASE__/
+
+# --- SPA Routing (Vite / React) ---
+# Wenn Datei/Ordner existiert -> direkt ausliefern
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Alles andere an index.html (mit korrekter Base) umleiten
+RewriteRule ^ __BASE__/index.html [L]
+
+# --- Caching für statische Assets ---
+<IfModule mod_expires.c>
+  ExpiresActive On
+  # Fingerprinted Assets (Vite) – lange cachen
+  <FilesMatch "\.(js|css|png|jpg|jpeg|gif|webp|svg|ico|woff2?)$">
+    ExpiresDefault "access plus 1 year"
+  </FilesMatch>
+  # HTML kurz cachen
+  <FilesMatch "\.(html)$">
+    ExpiresDefault "access plus 0 seconds"
+  </FilesMatch>
+</IfModule>
+
+# --- Kompression (falls aktiv) ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+# --- Security Header (knapp gehalten) ---
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>
