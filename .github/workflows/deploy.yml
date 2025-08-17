@@ -1,0 +1,89 @@
+name: CI • Pages Preview/Staging • cyon Deploy
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages-deploy"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Build (staging defaults)
+        env:
+          VITE_ENV: "staging"
+          VITE_BACKEND_URL: ${{ vars.STAGING_BACKEND_URL }}
+          VITE_HORIZON_URL: ${{ vars.STAGING_HORIZON_URL }}
+          GIT_COMMIT: ${{ github.sha }}
+          GIT_REF: ${{ github.ref_name }}
+        run: |
+          cd frontend
+          npm run build
+          cd ..
+          node scripts/gen-build-info.mjs
+          node scripts/hash-dist.mjs
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/dist
+
+  deploy_pages:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          preview: ${{ github.event_name == 'pull_request' }}
+
+  deploy_cyon:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: dist
+
+      - name: Deploy to cyon via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.CYON_HOST }}
+          username: ${{ secrets.CYON_USER }}
+          password: ${{ secrets.CYON_PASSWORD }}
+          ssh_private_key: ${{ secrets.CYON_SSH_KEY }}
+          local_path: "dist/*"
+          remote_path: ${{ secrets.CYON_REMOTE_PATH }}
+          sftp_only: true
+          exclude: ".git*,**/.DS_Store"
+          args: "-r"

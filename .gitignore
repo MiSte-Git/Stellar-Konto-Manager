@@ -9,4 +9,23 @@ ChatGPT - Stellar Trustline Manager_files/
 *.zip
 Unbenanntes*
 dist/
+# Ignoriere sensible Umgebungsdateien
+.env
+backend/.env
+
+# Node.js Abhängigkeiten
 node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Build-Output
+dist/
+frontend/dist/
+
+# System-Dateien
+*.log
+.DS_Store
+
+history
+ChatGPT*
+*.zip

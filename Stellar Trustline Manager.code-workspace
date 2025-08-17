@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"editor.fontLigatures": false,
+		"workbench.settings.openDefaultSettings": true,
+		"workbench.colorCustomizations": {}
+	}
+}

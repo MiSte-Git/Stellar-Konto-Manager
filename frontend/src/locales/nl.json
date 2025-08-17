@@ -1,0 +1,274 @@
+{
+  "account": {
+    "loadFailed": "Fout bij het laden van account {publicKey}: {{error}}",
+    "noBalances": "Geen saldo gevonden voor de rekening."
+  },
+  "address": "Adres",
+  "app": {
+    "errorBoundary": {
+      "title": "Er is iets misgegaan."
+    }
+  },
+  "asset": {
+    "amount": "Bedrag (XLM)",
+    "balance": "Balans",
+    "code": "Activa-code",
+    "creationDate": "Gemaakt op",
+    "issuer": "Uitgever"
+  },
+  "assets": {
+    "compromisedPurchases": "{total} totale betalingen",
+    "totalPurchases": "Totaal aantal aankopen: {count}"
+  },
+  "common": {
+    "loading": "Laden…",
+    "refresh": "Herladen"
+  },
+  "date": {
+    "times": "Datum en tijden"
+  },
+  "error": {
+    "asset": {
+      "creationDateUnknown": "Onbekende creatiedatum"
+    },
+    "connection": {
+      "backend": "Geen verbinding met de backend mogelijk. Zorg ervoor"
+    },
+    "fetchInvestedTokens": {
+      "failed": "Kon het investeringsgegevens niet laden: {{detail}}"
+    },
+    "fetchingOperations": "Fout bij het ophalen van bewerkingen: {{error}}",
+    "op_invalid_limit": "De trustlijn kan niet worden verwijderd. Deze kan nog steeds een saldo of openstaande verplichtingen hebben.",
+    "script": "Scriptfout: {message} bij {source}:{lineno}:{colno} - {{error}}",
+    "transaction": {
+      "deleteFail": "[ERROR] Verwijdering mislukt: {{error}}",
+      "failed": "Transactie mislukt",
+      "title": "Transactiefout",
+      "unknown": "Onbekende fout tijdens de transactie."
+    },
+    "transaktion": {
+      "unknown": "Onbekende fout bij de transactie."
+    },
+    "trustline": {
+      "unknown": "Onbekende fout bij het verwijderen van de trustlijn."
+    }
+  },
+  "fetchInvestedTokens": {
+    "failed": "Kon het investeringsgegevens niet laden: {{detail}}"
+  },
+  "investedTokens": {
+    "group": {
+      "memo": "Memo",
+      "memoOrToken": "Memo, anders token",
+      "token": "Token (CODE:UITGEVER)"
+    },
+    "groupBy": "Groeperen op",
+    "hintEnterPublicKey": "Voer eerst een openbare sleutel in.",
+    "item": {
+      "memo": "Memo: \"{{memo}}\" (Betalingen: {{occurrences}})",
+      "token": "Token: {{token}} (Betalingen: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
+    },
+    "missingPublicKey": "Openbare sleutel ontbreekt.",
+    "moreTruncated": "... en {{extra}} meer groepen",
+    "total": "Aantal aangekochte tokens: {{count}}",
+    "totalTokens": "Aantal geïnvesteerde tokens (activa): {{count}}",
+    "value": {
+      "units": "{{amount}} stuks",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Bekijk",
+      "memo": "Memos (Groepsfonds)",
+      "token": "Token (aangekocht bedrag)"
+    },
+    "walletCapInfo": "Opmerking: Een portemonnee kan maximaal 1000 trustlines bevatten."
+  },
+  "issuer": {
+    "compromised": "Gecompromitteerd",
+    "enter": "Voer het adres van de uitgever in:",
+    "invalid": "Ongeldige uitgeveradres.",
+    "label": "Voer het adres van de uitgever in:",
+    "notfound": "Geen uitgeversadressen gevonden",
+    "placeholder": "bijv."
+  },
+  "main": {
+    "processing": "Proces is bezig, even geduld...",
+    "title": "Stellar Trustline Manager"
+  },
+  "menu": {
+    "xlmByMemo": "XLM naar Memo"
+  },
+  "navigation": {
+    "backToMainMenu": "Terug naar menu",
+    "backToPublicKey": "Terug naar het openbare adresinvoer",
+    "backToTop": "Terug naar boven",
+    "current": {
+      "menu": "Huidig menu:"
+    },
+    "next": "Volgende",
+    "previous": "Vorige"
+  },
+  "option": {
+    "add": "Toevoegen",
+    "addToList": "Aan lijst toevoegen",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "confirm": {
+      "action": {
+        "text": "Weet je het zeker?",
+        "title": "Bevestig actie"
+      }
+    },
+    "copy": "Kopiëren",
+    "delete": "Verwijderen",
+    "description": "Beschrijving",
+    "export": {
+      "csv": "Opslaan als CSV",
+      "pdf": "Opslaan als PDF"
+    },
+    "filter": "Filteren...",
+    "hide": "Verbergen",
+    "loading": "Laden...",
+    "memo": "Memo",
+    "newAddress": "Nieuw adres",
+    "no": "Nee",
+    "ok": "OK",
+    "page": "Pagina",
+    "results": "Resultaten:",
+    "save": "Opslaan",
+    "show": "Toon",
+    "yes": "Ja"
+  },
+  "publicKey": {
+    "destination": {
+      "error": "Ongeldige doeltoets.",
+      "input": "Voer het doelportemonnee-adres in"
+    },
+    "invalid": "Ongeldige openbare sleutel of federatieadres.",
+    "label": "Voer het bronfederatieadres of de openbare sleutel in:",
+    "placeholder": "bijv.",
+    "recipient": "Ontvangstadres",
+    "source": "Bron walletadres",
+    "submit": {
+      "button": "Indienen"
+    }
+  },
+  "puplicKey": {
+    "failed": "Fout bij het oplossen van het federatieadres/openbare sleutel: {{error}}"
+  },
+  "secretKey": {
+    "cleared": "De geheime sleutel is verwijderd.",
+    "empty": "Het veld voor de geheime sleutel is leeg.",
+    "info": "De geheime sleutel wordt alleen tijdelijk naar een backend verzonden om de gekozen actie uit te voeren. De sleutel wordt niet opgeslagen.",
+    "invalid": "Ongeldig geheim sleutel.",
+    "label": "Voer de bron geheime sleutel in (zal veilig naar de backend worden verzonden)",
+    "mismatch": "De geheime sleutel komt niet overeen met het openbare adres.",
+    "placeholder": "bijv.",
+    "valid": "✅ De geheime sleutel is geldig."
+  },
+  "settings": {
+    "export": "Exportinstellingen",
+    "import": "Instellingen importeren",
+    "label": "Instellingen"
+  },
+  "token": {
+    "purchases": "Aantal aangekochte tokens"
+  },
+  "transaction": {
+    "pending": "Transactie in behandeling...",
+    "success": "Transactie succesvol: {hash}"
+  },
+  "trustline": {
+    "all": "Toon trustline(s)",
+    "compare": "Vergelijk trustline(s)",
+    "confirmDeletion": "Verwijder echt trustline(s)",
+    "delete": "Vertrouwenslijn(en) verwijderen",
+    "deleted": {
+      "deletingProgress": "Verwijder {{current}} van {{total}} vertrouwenslijnen...",
+      "mode": {
+        "real": "Echte modus",
+        "realWarning": "Waarschuwing: Echte Trustline(s) zullen worden verwijderd",
+        "simulation": "Simulatiemodus"
+      },
+      "noDeletableFound": "Geen verwijderbare trustlijnen gevonden - allemaal bevatten nog een saldo.",
+      "noTrustlines": "Geen geldige vertrouwenslijnen beschikbaar voor verwijdering.",
+      "notFound": "Geen verwijderbare trustlijnen gevonden - allemaal bevatten ze nog saldi.",
+      "resultText": "{{count}} trustlijn(en) zijn succesvol verwijderd ({{mode}}).",
+      "resultTitle": "Verwijderde trustlijn(en)",
+      "simulated": "{{count}} trustlijn(en) zijn gesimuleerd verwijderd",
+      "skippedDueToBalance": "{{count}} trustlijnen werden overgeslagen omdat ze een saldo bevatten.",
+      "skippedDueToLiabilities": "{{count}} Trustlijn(en) konden niet worden verwijderd omdat ze nog verplichtingen (Schulden) bevatten.",
+      "success": "{{count}} trustlijn(en) zijn verwijderd"
+    },
+    "destination": {
+      "label": "Voer de doel openbare sleutel in:",
+      "placeholder": "bijv."
+    },
+    "inputEmpty": "Invoerveld mag niet leeg zijn.",
+    "issuer": {
+      "notFound": "Geen trustline(s) gevonden voor uitgever {issuer}."
+    },
+    "list": "Aantal Trustline(s)",
+    "noDuplicates": "Geen dubbele trustlijn(en) gevonden.",
+    "nonZeroBalance": "Deze trustlijn kan niet worden verwijderd omdat deze nog een saldo heeft.",
+    "notFound": "Geen trustline(s) gevonden.",
+    "onlyZeroBalanceInfo": "Alleen trustlijnen met een saldo van 0 kunnen worden verwijderd.",
+    "removeFromList": "Verwijder uit lijst",
+    "reviewSelection": {
+      "title": "Controleer geselecteerde trustlines"
+    },
+    "showSecret": "Toon geheime sleutel"
+  },
+  "wallet": {
+    "add": "Voeg portemonnee toe",
+    "inList": "Portefeuille in lijst",
+    "list": "Groupfund Wallet Lijst",
+    "noPayments": "Geen betalingen gevonden."
+  },
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Bereken",
+      "loading": "Bereken…"
+    },
+    "date": {
+      "from": "Van (optioneel)",
+      "to": "Tot (optioneel)"
+    },
+    "failed": "De berekening kon niet worden uitgevoerd.",
+    "failed:account.invalid": "Het wallet-adres is ongeldig.",
+    "failed:date.invalid": "Voer geldige datum/tijd waarden in het formaat YYYY-MM-DD HH:mm[:ss] in (of ISO 8601).",
+    "failed:date.range": "De startdatum mag niet na de einddatum liggen.",
+    "failed:memo.invalid": "Voer een geldige memo-zoektekst in.",
+    "failed:payments.fetch": "Betalingen konden niet worden geladen door Horizon.",
+    "failed:server.invalid": "Horizon-server is ongeldig of ontbreekt.",
+    "failed:unknown": "Onbekende fout tijdens berekening.",
+    "memo": {
+      "label": "Memo zoektekst (subteken, hoofdlettergevoelig)",
+      "placeholder": "Memo (subreeks, hoofdlettergevoelig)"
+    },
+    "page": {
+      "noPublicKey": "Voer eerst een openbare sleutel in.",
+      "title": "XLM totaal per memo"
+    },
+    "result": {
+      "label": "Totaalbedrag:",
+      "range": "Berekend voor de periode: {{from}} tot {{to}}",
+      "rangeVerbose": "Periode: {{fromDate}} {{fromTime}} tot {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Tijd van (optioneel)",
+      "to": "Tijd tot (optioneel)"
+    },
+    "title": "XLM totaal per memo",
+    "tz": {
+      "cdt": "CDT (UTC−5)",
+      "cst": "CST (UTC−6)",
+      "label": "Tijdzone voor datum/tijd",
+      "local": "Lokale tijdzone",
+      "note": "Datum/tijd wordt geïnterpreteerd in de geselecteerde tijdzone en automatisch omgezet naar UTC voordat de zoekopdracht wordt uitgevoerd.",
+      "utc": "UTC"
+    }
+  }
+}

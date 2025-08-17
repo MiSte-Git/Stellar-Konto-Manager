@@ -1,0 +1,119 @@
+# 🌍 Internationale Übersetzung (i18n) – Migration & Pflege
+
+Dieses Dokument beschreibt die Umstellung auf eine neue Schlüsselstruktur für die Übersetzungen sowie die zukünftige Pflege der Sprachdateien im Projekt **Stellar Trustline Manager**.
+
+---
+
+## 🧭 Übersicht
+
+| Abschnitt | Inhalt |
+|----------|--------|
+| 🔁 Migration | Was wurde geändert & warum |
+| 🛠 Pflegeanleitung | Wie Entwickler neue Texte & Übersetzungen anlegen |
+| 📁 Struktur | Aufbau der Sprachdateien |
+| 🧪 Tools | Wichtige Helfer zur Automatisierung |
+
+---
+
+## 🔁 Migration (Juli 2025)
+
+### Was wurde gemacht
+
+- Alle alten `t('...')`-Keys im Quellcode automatisiert durch neue `suggestedKeys` ersetzt.
+- Duplikate in `mapping_combined.csv` identifiziert und bereinigt.
+- Neue, verschachtelte `de.json` aus Mapping erzeugt.
+- Sprachdateien (`en.json`, `fr.json`, ...) mit OpenAI neu übersetzt.
+- i18n-Hilfsskripte aktualisiert und vereinheitlicht.
+
+### Beispiel alte → neue Struktur
+
+```json
+// Vorher (flach)
+"listAll": "Alle Trustlines auflisten"
+
+// Nachher (strukturiert)
+"menu": {
+  "listAll": "Alle Trustlines auflisten"
+}
+
+📁 Sprachdateien
+
+frontend/src/locales/
+├── de.json     # Referenzsprache (verschachtelt)
+├── en.json     # Englisch
+├── fr.json     # Französisch
+├── ...         # Weitere Sprachen
+
+🛠 Entwickleranleitung: Neue Übersetzungen
+
+1. Texte im Code immer so einbinden:
+
+<p>{t('menu.listAll')}</p>
+
+2. In de.json anlegen:
+
+"menu": {
+  "listAll": "Alle Trustlines auflisten"
+}
+
+3. Übersetzung erzeugen:
+
+cd frontend/src/locales
+python3 UpdateSprachdateienBasierendAufDE.py
+
+🧪 Platzhaltertexte & dynamische Inhalte
+Erlaubt sind Platzhalter wie {count} oder {error}:
+
+"errors": {
+  "backend": "Fehler beim Backend: {error}"
+}
+
+Im Code dann:
+
+t('errors.backend', { error: 'Timeout' })
+
+🧰 Tools & Skripte
+
+Tool                          	Beschreibung
+replace-keys-in-code.js	        Ersetzt alte durch neue Keys im Code
+csv-to-structured-dejson.js	    Erstellt strukturierte de.json aus Mapping
+generate-mapping-suggestions.js	Erstellt Mapping aus CSV & Referenz
+UpdateSprachdateienBasierendAufDE.py	OpenAI-gestützte Übersetzung aller Sprachdateien
+find-unused-translations.js	    Listet ungenutzte Keys aus de.json
+export-mapping-to-csv.js	      Exportiert alle Keys in CSV zur Kontrolle
+
+💬 Neue Sprache hinzufügen
+Leere Datei anlegen: xx.json
+
+Skript starten:
+
+python3 UpdateSprachdateienBasierendAufDE.py
+→ Datei wird automatisch befüllt.
+
+🧼 Aufräumen
+Verwende find-unused-translations.js, um nicht mehr verwendete Keys zu finden.
+
+Entferne sie aus de.json & allen Sprachdateien.
+
+📌 Letzter Migrationsstand
+Letzter Vollabgleich: 9. Juli 2025
+
+Struktur & Übersetzungen sind vollständig migriert
+
+Neue Pflege erfolgt ausschließlich über strukturierte Keys
+
+🙋 Hilfe
+Bei Fragen zur Übersetzungsstruktur:
+
+Siehe Helper Skripts/
+
+Rückfrage bei Michael oder im Projektchannel
+
+👆 **Das ist die Datei. Kein Kommentar mehr. Nur kopieren und einfügen.**  
+Wenn du magst, generiere ich dir jetzt auch ein Inhaltsverzeichnis für `docs/`, z. B. `README.md` mit Verlinkung auf diese Datei. Sag einfach: **„Ja, bitte docs-Übersicht“** ✅
+
+
+
+
+
+

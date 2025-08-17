@@ -1,0 +1,177 @@
+{
+  "invalidDestinationKey": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx:26"
+  ],
+  "invalidSecretKey": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx:45"
+  ],
+  "failedDeleteTrustlines": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx:62",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteAllTrustlines.jsx:44",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx:65"
+  ],
+  "secretKeyCleared": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx:64",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ConfirmationModal.jsx:43",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteAllTrustlines.jsx:45",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx:67"
+  ],
+  "cannotConnectToBackend": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx:71"
+  ],
+  "noDuplicatesFound": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx:78"
+  ],
+  "enterDestinationPublicKey": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx:89"
+  ],
+  "loading": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx:102",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx:103"
+  ],
+  "compareTrustlines": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/CompareTrustlines.jsx:102",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx:9"
+  ],
+  "confirmActionTitle": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ConfirmationModal.jsx:20",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:168"
+  ],
+  "confirmActionText": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ConfirmationModal.jsx:21",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:169"
+  ],
+  "yes": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ConfirmationModal.jsx:38",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:211"
+  ],
+  "cancel": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ConfirmationModal.jsx:49",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:202",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx:50"
+  ],
+  "secretKeyInvalid": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteAllTrustlines.jsx:30"
+  ],
+  "noTrustlines": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteAllTrustlines.jsx:58"
+  ],
+  "deleteAllButton": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteAllTrustlines.jsx:73",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:120",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:160"
+  ],
+  "invalidIssuer": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx:27"
+  ],
+  "invalidSecret": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx:42"
+  ],
+  "deleteError": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx:73"
+  ],
+  "enterIssuer": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx:90"
+  ],
+  "delete": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DeleteByIssuer.jsx:103",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:176",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:189"
+  ],
+  "destLabel": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DestinationInput.jsx:15"
+  ],
+  "destPlaceholder": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DestinationInput.jsx:22"
+  ],
+  "submitButton": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/DestinationInput.jsx:29",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx:56",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SourceInput.jsx:31"
+  ],
+  "backToMenu": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:107"
+  ],
+  "listTrustlines": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:111",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx:8"
+  ],
+  "selected": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:128"
+  ],
+  "assetCode": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:131",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:131",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:174",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx:48",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx:49"
+  ],
+  "assetIssuer": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:132",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx:51"
+  ],
+  "issuer": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:132",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:175",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx:52"
+  ],
+  "createdAt": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:133"
+  ],
+  "creationDate": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:133",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx:54",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx:55"
+  ],
+  "unknownDate": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ListTrustlines.jsx:148",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx:64"
+  ],
+  "deleteByIssuer": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx:10"
+  ],
+  "deleteAll": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx:11"
+  ],
+  "tokenPurchasesTitle": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx:12"
+  ],
+  "settings": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/MainMenu.jsx:13"
+  ],
+  "results": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx:21",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/ResultDisplay.jsx:44"
+  ],
+  "secretKeyEmpty": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx:13"
+  ],
+  "secretKeyLabel": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx:30"
+  ],
+  "secretKeyPlaceholder": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx:36"
+  ],
+  "secretKeyValid": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx:41"
+  ],
+  "secretKeyInfo": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SecretKeyModal.jsx:43",
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/main.jsx:203"
+  ],
+  "sourceLabel": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SourceInput.jsx:17"
+  ],
+  "sourcePlaceholder": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/components/SourceInput.jsx:24"
+  ],
+  "submitTransaction.secretCleared": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/main.jsx:138"
+  ],
+  "compare.noDuplicates": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/main.jsx:149"
+  ],
+  "title": [
+    "/home/michael/Projekte/Stellar Trustline Manager/frontend/src/main.jsx:202"
+  ]
+}
