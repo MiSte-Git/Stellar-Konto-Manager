@@ -1,0 +1,274 @@
+{
+  "account": {
+    "loadFailed": "Virhe ladattaessa tiliä {publicKey}: {{error}}",
+    "noBalances": "Tilille ei löytynyt saldoa."
+  },
+  "address": "Osoite",
+  "app": {
+    "errorBoundary": {
+      "title": "Jotain meni pieleen."
+    }
+  },
+  "asset": {
+    "amount": "Määrä (XLM)",
+    "balance": "Saldo",
+    "code": "Oma koodi",
+    "creationDate": "Luotu",
+    "issuer": "Liiketoimintayksikkö"
+  },
+  "assets": {
+    "compromisedPurchases": "{total} yhteensä maksut",
+    "totalPurchases": "Ostosten kokonaismäärä: {count}"
+  },
+  "common": {
+    "loading": "Lataaminen…",
+    "refresh": "Lataa uudelleen"
+  },
+  "date": {
+    "times": "Päivämäärät ja ajat"
+  },
+  "error": {
+    "asset": {
+      "creationDateUnknown": "Tuntematon luontipäivämäärä"
+    },
+    "connection": {
+      "backend": "Ei yhteyttä taustapalvelimeen. Varmista, että"
+    },
+    "fetchInvestedTokens": {
+      "failed": "Investointitietojen lataaminen epäonnistui: {{detail}}"
+    },
+    "fetchingOperations": "Virhe toimenpiteiden hakemisessa: {{error}}",
+    "op_invalid_limit": "Luottoraja ei voi poistua. Siinä saattaa edelleen olla saldo tai erääntyneitä velvoitteita.",
+    "script": "Skripti virhe: {message} kohdassa {source}:{lineno}:{colno} - {{error}}",
+    "transaction": {
+      "deleteFail": "[ERROR] Poisto epäonnistui: {{error}}",
+      "failed": "Transaktio epäonnistui",
+      "title": "Transaktiovirhe",
+      "unknown": "Tuntematon virhe tapahtuman aikana."
+    },
+    "transaktion": {
+      "unknown": "Tuntematon virhe tapahtumassa."
+    },
+    "trustline": {
+      "unknown": "Tuntematon virhe luottolinjan poistamisessa."
+    }
+  },
+  "fetchInvestedTokens": {
+    "failed": "Investointitietojen lataaminen epäonnistui: {{detail}}"
+  },
+  "investedTokens": {
+    "group": {
+      "memo": "Muistio",
+      "memoOrToken": "Muistio, muuten tunnus",
+      "token": "Token (KOODI:ANTAJAT)"
+    },
+    "groupBy": "Ryhmitä mukaan",
+    "hintEnterPublicKey": "Ole hyvä ja syötä ensin julkinen avain.",
+    "item": {
+      "memo": "Muistio: \"{{memo}}\" (Maksut: {{occurrences}})",
+      "token": "Token: {{token}} (Maksut: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
+    },
+    "missingPublicKey": "Julkinen avain puuttuu.",
+    "moreTruncated": "... ja {{extra}} lisää ryhmiä",
+    "total": "Ostettujen tokenien määrä: {{count}}",
+    "totalTokens": "Sijoitettujen tokenien (varojen) määrä: {{count}}",
+    "value": {
+      "units": "{{amount}} kappaletta",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Näytä",
+      "memo": "Muistiot (Groupfund)",
+      "token": "Token (ostettu määrä)"
+    },
+    "walletCapInfo": "Huomautus: Lompakko voi sisältää enintään 1000 luottolinjaa."
+  },
+  "issuer": {
+    "compromised": "Kompromettoitu",
+    "enter": "Syötä myöntäjän osoite:",
+    "invalid": "Virheellinen myöntäjän osoite.",
+    "label": "Syötä myöntäjän osoite:",
+    "notfound": "Ei myöntäjää osoitteita löytynyt",
+    "placeholder": "esim."
+  },
+  "main": {
+    "processing": "Prosessi on käynnissä, ole hyvä ja odota...",
+    "title": "Stellar Trustline Manager"
+  },
+  "menu": {
+    "xlmByMemo": "XLM:stä Muistioon"
+  },
+  "navigation": {
+    "backToMainMenu": "Takaisin valikkoon",
+    "backToPublicKey": "Takaisin julkisen osoitteen syöttöön",
+    "backToTop": "Takaisin ylös",
+    "current": {
+      "menu": "Nykyinen valikko:"
+    },
+    "next": "Seuraava",
+    "previous": "Edellinen"
+  },
+  "option": {
+    "add": "Lisää",
+    "addToList": "Lisää luetteloon",
+    "cancel": "Peruuta",
+    "close": "Sulje",
+    "confirm": {
+      "action": {
+        "text": "Oletko varma?",
+        "title": "Vahvista toiminto"
+      }
+    },
+    "copy": "Kopioi",
+    "delete": "Poista",
+    "description": "Kuvaus",
+    "export": {
+      "csv": "Tallenna CSV-tiedostona",
+      "pdf": "Tallenna PDF-muodossa"
+    },
+    "filter": "Suodattaminen...",
+    "hide": "Piilota",
+    "loading": "Lataus...",
+    "memo": "Muistio",
+    "newAddress": "Uusi osoite",
+    "no": "Ei",
+    "ok": "Hyvä on",
+    "page": "Sivu",
+    "results": "Tulokset:",
+    "save": "Tallenna",
+    "show": "Näytä",
+    "yes": "Kyllä"
+  },
+  "publicKey": {
+    "destination": {
+      "error": "Virheellinen kohdeavain.",
+      "input": "Syötä kohdelompakon osoite"
+    },
+    "invalid": "Virheellinen julkinen avain tai federaatio-osoite.",
+    "label": "Ole hyvä ja syötä lähdefederation-osoite tai julkinen avain:",
+    "placeholder": "esim.",
+    "recipient": "Vastaanottosoite",
+    "source": "Lähde lompakon osoite",
+    "submit": {
+      "button": "Lähetä"
+    }
+  },
+  "puplicKey": {
+    "failed": "Virhe liittovaltion osoitteen/julkisen avaimen ratkaisemisessa: {{error}}"
+  },
+  "secretKey": {
+    "cleared": "Salainen avain on poistettu.",
+    "empty": "Salainen avain -kenttä on tyhjö.",
+    "info": "Salainen avain siirretään vain tilapäisesti taustapalvelimelle valitun toiminnon suorittamiseksi. Avainta ei tallenneta.",
+    "invalid": "Virheellinen salainen avain.",
+    "label": "Syötä lähteen salainen avain (lähetetään turvallisesti taustajärjestelmään)",
+    "mismatch": "Salainen avain ei vastaa julkista osoitetta.",
+    "placeholder": "esim.",
+    "valid": "✅ Salainen avain on voimassa."
+  },
+  "settings": {
+    "export": "Vientiasetukset",
+    "import": "Tuontiasetukset",
+    "label": "Asetukset"
+  },
+  "token": {
+    "purchases": "Ostettujen tokenien määrä"
+  },
+  "transaction": {
+    "pending": "Transaktio odottaa...",
+    "success": "Transaktio onnistui: {hash}"
+  },
+  "trustline": {
+    "all": "Näytä luottoraja(t)",
+    "compare": "Vertaile luottolinjat",
+    "confirmDeletion": "Poista luottoraja(t) todella",
+    "delete": "Poista luottoraja(t)",
+    "deleted": {
+      "deletingProgress": "Poista {{current}} {{total}} luottolinjaa...",
+      "mode": {
+        "real": "Reaali tila",
+        "realWarning": "Varoitus: Todelliset luottolinjat poistetaan",
+        "simulation": "Simulointitila"
+      },
+      "noDeletableFound": "Ei poistettavia luottorajoja löytynyt – kaikki sisältävät edelleen saldoa.",
+      "noTrustlines": "Ei voimassa olevia luottolinjoja poistettavaksi.",
+      "notFound": "Ei poistettavia luottorajoja löytynyt – kaikki sisältävät edelleen saldoja.",
+      "resultText": "{{count}} luottolinja(a) on poistettu onnistuneesti ({{mode}}).",
+      "resultTitle": "Poistettu luottoraja(t)",
+      "simulated": "{{count}} luottolinja(a) on simuloitu poistettavaksi",
+      "skippedDueToBalance": "{{count}} luottolinjaa ohitettiin, koska niissä on saldo.",
+      "skippedDueToLiabilities": "{{count}} Trustlinjaa ei voitu poistaa, koska ne sisältävät edelleen velvoitteita (velat).",
+      "success": "{{count}} luottolinja(a) on poistettu"
+    },
+    "destination": {
+      "label": "Syötä kohde julkinen avain:",
+      "placeholder": "esim."
+    },
+    "inputEmpty": "Syöttökenttä ei saa olla tyhjää.",
+    "issuer": {
+      "notFound": "Ei luottolinjaa(ita) löytynyt liikkeeseenlaskijalle {issuer}."
+    },
+    "list": "Luottolinjan määrä({count})",
+    "noDuplicates": "Ei kaksoiskappaleita luottolinjoja löytynyt.",
+    "nonZeroBalance": "Tätä luottolinjaa ei voida poistaa, koska sillä on edelleen saldo.",
+    "notFound": "Ei luottolinjaa(linjoja) löytynyt.",
+    "onlyZeroBalanceInfo": "Vain nollataseella olevat luottolinjat voidaan poistaa.",
+    "removeFromList": "Poista listalta",
+    "reviewSelection": {
+      "title": "Tarkista valitut luottorajat"
+    },
+    "showSecret": "Näytä salainen avain"
+  },
+  "wallet": {
+    "add": "Lisää lompakko",
+    "inList": "Lompakko luettelossa",
+    "list": "Groupfund-lompakon lista",
+    "noPayments": "Ei maksua löytynyt."
+  },
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Laske",
+      "loading": "Laske…"
+    },
+    "date": {
+      "from": "Lähettäjä (valinnainen)",
+      "to": "Kunnes (valinnainen)"
+    },
+    "failed": "Laskentaa ei voitu suorittaa.",
+    "failed:account.invalid": "Lompakon osoite on virheellinen.",
+    "failed:date.invalid": "Anna kelvolliset päivämäärä/aika-arvot muodossa YYYY-MM-DD HH:mm[:ss] (tai ISO 8601).",
+    "failed:date.range": "Aloituspäivämäärä ei saa olla päättymispäivämäärän jälkeen.",
+    "failed:memo.invalid": "Anna kelvollinen muistion hakuteksti.",
+    "failed:payments.fetch": "Maksuja ei voitu ladata Horizonista.",
+    "failed:server.invalid": "Horizon-palvelin on virheellinen tai puuttuu.",
+    "failed:unknown": "Tuntematon virhe laskennassa.",
+    "memo": {
+      "label": "Muistion haku teksti (osajono, kirjainkoolla)",
+      "placeholder": "Muistio (osajono, kirjainkoolla)"
+    },
+    "page": {
+      "noPublicKey": "Ole hyvä ja syötä ensin julkinen avain.",
+      "title": "XLM yhteensä muistiinpanolla"
+    },
+    "result": {
+      "label": "Kokonaismäärä:",
+      "range": "Laskettiin ajalle: {{from}} - {{to}}",
+      "rangeVerbose": "Jakso: {{fromDate}} {{fromTime}} - {{toDate}} {{toTime}} ({{tz}})",
+      "value": "{{amount}} XLM"
+    },
+    "time": {
+      "from": "Aika alkaen (valinnainen)",
+      "to": "Aika kunnes (valinnainen)"
+    },
+    "title": "XLM yhteensä muistiinpanoittain",
+    "tz": {
+      "cdt": "CDT (UTC−5)",
+      "cst": "CST (UTC−6)",
+      "label": "Aikavyöhyke päivämäärälle/aikalle",
+      "local": "Paikallinen aikavyöhyke",
+      "note": "Päivämäärä/aika tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC:ksi ennen hakua.",
+      "utc": "UTC"
+    }
+  }
+}

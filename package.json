@@ -4,13 +4,19 @@
   "description": "A tool to manage Stellar trustlines",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "concurrently -k -n BACKEND,FRONTEND -c green,cyan \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
   },
   "dependencies": {
     "@stellar/stellar-sdk": "^11.0.0",
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
     "body-parser": "^1.20.2",
-    "express-rate-limit": "^6.7.0"
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
+    "file-saver": "^2.0.5",
+    "jspdf": "^3.0.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
   }
 }

@@ -1,0 +1,138 @@
+{
+  "changed_keys": [],
+  "new_keys": [
+    "error.asset.creationDateUnknown",
+    "error.fetchInvestedTokens.failed",
+    "error.trustline.unknown",
+    "investedTokens.item.tokenShort",
+    "investedTokens.missingPublicKey",
+    "investedTokens.totalTokens",
+    "investedTokens.value.units",
+    "investedTokens.value.xlm",
+    "investedTokens.view.label",
+    "investedTokens.view.memo",
+    "investedTokens.view.token",
+    "trustline.deleted.notFound"
+  ],
+  "per_language": {
+    "es": {
+      "missing_now_filled": [
+        "error.asset.creationDateUnknown",
+        "error.fetchInvestedTokens.failed",
+        "error.trustline.unknown",
+        "investedTokens.item.tokenShort",
+        "investedTokens.missingPublicKey",
+        "investedTokens.totalTokens",
+        "investedTokens.value.units",
+        "investedTokens.value.xlm",
+        "investedTokens.view.label",
+        "investedTokens.view.memo",
+        "investedTokens.view.token",
+        "trustline.deleted.notFound"
+      ],
+      "updated_due_to_de_change": []
+    },
+    "fi": {
+      "missing_now_filled": [
+        "error.asset.creationDateUnknown",
+        "error.fetchInvestedTokens.failed",
+        "error.trustline.unknown",
+        "investedTokens.item.tokenShort",
+        "investedTokens.missingPublicKey",
+        "investedTokens.totalTokens",
+        "investedTokens.value.units",
+        "investedTokens.value.xlm",
+        "investedTokens.view.label",
+        "investedTokens.view.memo",
+        "investedTokens.view.token",
+        "trustline.deleted.notFound"
+      ],
+      "updated_due_to_de_change": []
+    },
+    "fr": {
+      "missing_now_filled": [
+        "error.asset.creationDateUnknown",
+        "error.fetchInvestedTokens.failed",
+        "error.trustline.unknown",
+        "investedTokens.item.tokenShort",
+        "investedTokens.missingPublicKey",
+        "investedTokens.totalTokens",
+        "investedTokens.value.units",
+        "investedTokens.value.xlm",
+        "investedTokens.view.label",
+        "investedTokens.view.memo",
+        "investedTokens.view.token",
+        "trustline.deleted.notFound"
+      ],
+      "updated_due_to_de_change": []
+    },
+    "hr": {
+      "missing_now_filled": [
+        "error.asset.creationDateUnknown",
+        "error.fetchInvestedTokens.failed",
+        "error.trustline.unknown",
+        "investedTokens.item.tokenShort",
+        "investedTokens.missingPublicKey",
+        "investedTokens.totalTokens",
+        "investedTokens.value.units",
+        "investedTokens.value.xlm",
+        "investedTokens.view.label",
+        "investedTokens.view.memo",
+        "investedTokens.view.token",
+        "trustline.deleted.notFound"
+      ],
+      "updated_due_to_de_change": []
+    },
+    "it": {
+      "missing_now_filled": [
+        "error.asset.creationDateUnknown",
+        "error.fetchInvestedTokens.failed",
+        "error.trustline.unknown",
+        "investedTokens.item.tokenShort",
+        "investedTokens.missingPublicKey",
+        "investedTokens.totalTokens",
+        "investedTokens.value.units",
+        "investedTokens.value.xlm",
+        "investedTokens.view.label",
+        "investedTokens.view.memo",
+        "investedTokens.view.token",
+        "trustline.deleted.notFound"
+      ],
+      "updated_due_to_de_change": []
+    },
+    "nl": {
+      "missing_now_filled": [
+        "error.asset.creationDateUnknown",
+        "error.fetchInvestedTokens.failed",
+        "error.trustline.unknown",
+        "investedTokens.item.tokenShort",
+        "investedTokens.missingPublicKey",
+        "investedTokens.totalTokens",
+        "investedTokens.value.units",
+        "investedTokens.value.xlm",
+        "investedTokens.view.label",
+        "investedTokens.view.memo",
+        "investedTokens.view.token",
+        "trustline.deleted.notFound"
+      ],
+      "updated_due_to_de_change": []
+    },
+    "ru": {
+      "missing_now_filled": [
+        "error.asset.creationDateUnknown",
+        "error.fetchInvestedTokens.failed",
+        "error.trustline.unknown",
+        "investedTokens.item.tokenShort",
+        "investedTokens.missingPublicKey",
+        "investedTokens.totalTokens",
+        "investedTokens.value.units",
+        "investedTokens.value.xlm",
+        "investedTokens.view.label",
+        "investedTokens.view.memo",
+        "investedTokens.view.token",
+        "trustline.deleted.notFound"
+      ],
+      "updated_due_to_de_change": []
+    }
+  }
+}
