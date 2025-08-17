@@ -363,62 +363,68 @@
 
             // Handle delete trustlines by issuer
             const handleDeleteByIssuer = async () => {
-                if (!issuerAddress || !StellarSdk.StrKey.isValidEd25519PublicKey(issuerAddress)) {
-                    setError(t('invalidIssuer'));
-                    return;
-                }
-                setError('');
-                setIsLoading(true);
-                try {
-                    const issuerTrustlines = results; // Use displayed trustlines
-                    if (issuerTrustlines.length > 0 && typeof issuerTrustlines[0] !== 'string') {
-                        if (!sourceSecret) {
-                            setError(t('secretKeyEmpty'));
-                            setIsLoading(false);
-                            return;
-                        }
-                        if (!StellarSdk.StrKey.isValidEd25519SecretSeed(sourceSecret)) {
-                            setError(t('secretKeyInvalid'));
-                            setIsLoading(false);
-                            return;
-                        }
-                        const keyPair = StellarSdk.Keypair.fromSecret(sourceSecret);
-                        if (keyPair.publicKey() !== sourcePublicKey) {
-                            setError(t('secretKeyMismatch'));
-                            setIsLoading(false);
-                            return;
-                        }
+								if (!sourceSecret || !StellarSdk.StrKey.isValidEd25519SecretSeed(sourceSecret)) {
+										setError(t('secretKeyInvalid'));
+										return;
+								}
+								if (results.length === 0 || typeof results[0] === 'string') {
+										setError(t('noTrustlines'));
+										return;
+								}
+								setConfirmAction(() => async () => {
+										setIsLoading(true);
+										try {
+												const account = await server.loadAccount(sourcePublicKey);
+												const keyPair = StellarSdk.Keypair.fromSecret(sourceSecret);
+												let transaction = new StellarSdk.TransactionBuilder(account, {
+												    fee: StellarSdk.BASE_FEE,
+												    networkPassphrase: StellarSdk.Networks.PUBLIC,
+												});
 
-                        setConfirmAction(() => async () => {
-                            try {
-                                const response = await fetch(`${BACKEND_URL}/delete-trustlines`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ secretKey: sourceSecret, trustlines: issuerTrustlines })
-                                });
-                                const result = await response.json();
-                                if (!response.ok) throw new Error(t('failedDeleteTrustlines', { error: result.error || 'Unknown error' }));
-                                setResults([...result.messages, t('secretKeyCleared')]);
-                                setTrustlines(await loadTrustlines(sourcePublicKey));
-                                setSourceSecret('');
-                                setShowSecretKey(false);
-                            } catch (err) {
-                                setError(err.message.includes('Failed to fetch')
-                                    ? t('backendConnectError', { url: BACKEND_URL })
-                                    : err.message);
-                            }
-                        });
-                        setShowConfirm(true);
-                    } else {
-                        setResults([t('noIssuer', { issuer: issuerAddress })]);
-                    }
-                } catch (err) {
-                    setError(err.message);
-                } finally {
-                    setIsLoading(false);
-                }
-            };
+												const issuers = issuerAddress.split(',').map(i => i.trim()).filter(i => i);
+												results.forEach(trustline => {
+												    if (issuers.includes(trustline.assetIssuer)) {
+												        transaction = transaction.addOperation(
+												            StellarSdk.Operation.changeTrust({
+												                asset: new StellarSdk.Asset(trustline.assetCode, trustline.assetIssuer),
+												                limit: '0'
+												            })
+												        );
+												    }
+												});
 
+												transaction = transaction.setTimeout(30).build();
+												transaction.sign(keyPair);
+												await server.submitTransaction(transaction);
+												setResults([]);
+												setTrustlines(await loadTrustlines(sourcePublicKey));
+												setSourceSecret('');
+												setShowSecretKey(false);
+												setError(t('trustlinesDeleted'));
+										} catch (err) {
+												setError(err.message.includes('Failed to fetch')
+												    ? t('backendConnectError', { url: BACKEND_URL })
+												    : err.message);
+										} finally {
+												setIsLoading(false);
+										}
+								});
+								setShowConfirm(true);
+						};
+
+						// Handle file upload
+						const handleFileUpload = (event) => {
+								const file = event.target.files[0];
+								if (file) {
+										const reader = new FileReader();
+										reader.onload = (e) => {
+												const text = e.target.result;
+												const addresses = text.split('\n').map(line => line.trim()).filter(line => line);
+												setIssuerAddress(prev => prev ? `${prev}, ${addresses.join(', ')}` : addresses.join(', '));
+										};
+										reader.readAsText(file);
+								}
+						};
             // Search issuer addresses
             const handleIssuerSearch = async () => {
                 if (!issuerAddress) {
@@ -1008,17 +1014,130 @@
                                         </p>
                                     )}
                                     {menuOption === 'listAll' && (
-                                        <div>
-                                            <button
-                                                onClick={handleListAllTrustlines}
-                                                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                                                disabled={isLoading}
-                                            >
-                                                {isLoading ? t('loading') : t('listTrustlines')}
-                                            </button>
-                                        </div>
-                                    )}
-                                    {menuOption === 'compare' && (
+																				<div>
+																						<div className="mb-4 flex space-x-4">
+																								<input
+																										type="text"
+																										value={assetFilter}
+																										onChange={(e) => setAssetFilter(e.target.value)}
+																										placeholder={t('filterAssetCode')}
+																										className="w-1/3 p-2 border rounded"
+																								/>
+																								<input
+																										type="text"
+																										value={issuerFilter}
+																										onChange={(e) => setIssuerFilter(e.target.value)}
+																										placeholder={t('filterIssuer')}
+																										className="w-1/3 p-2 border rounded"
+																								/>
+																								<button
+																										onClick={handleSelectAll}
+																										className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+																								>
+																										{allSelected ? t('deselectAll') : t('selectAll')}
+																								</button>
+																								<button
+																										onClick={handleDeleteSelected}
+																										className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+																										disabled={!selectedTrustlines.length}
+																								>
+																										{isLoading ? t('loading') : t('deleteSelected')}
+																								</button>
+																						</div>
+																						<button
+																								onClick={handleListAllTrustlines}
+																								className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+																								disabled={isLoading}
+																						>
+																								{isLoading ? t('loading') : t('listTrustlines')}
+																						</button>
+																						{results.length > 0 && typeof results[0] !== 'string' && (
+																								<div className="mt-4">
+																										<table className="w-full border-collapse border border-gray-300">
+																												<thead>
+																														<tr className="bg-gray-100">
+																																<th className="border border-gray-300 p-2"></th>
+																																<th
+																																		className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'assetCode' ? 'font-bold bg-gray-200' : ''}`}
+																																		onClick={() => handleSort('assetCode')}
+																																>
+																																		{t('assetCode')} {sortColumn === 'assetCode' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+																																</th>
+																																<th
+																																		className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'assetIssuer' ? 'font-bold bg-gray-200' : ''}`}
+																																		onClick={() => handleSort('assetIssuer')}
+																																>
+																																		{t('issuer')} {sortColumn === 'assetIssuer' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+																																</th>
+																																<th
+																																		className={`border border-gray-300 p-2 cursor-pointer hover:bg-gray-200 ${sortColumn === 'creationDate' ? 'font-bold bg-gray-200' : ''}`}
+																																		onClick={() => handleSort('creationDate')}
+																																>
+																																		{t('creationDate')} {sortColumn === 'creationDate' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+																																</th>
+																														</tr>
+																												</thead>
+																												<tbody>
+																														{getPaginatedData(getSortedAndFilteredData(results.filter(trustline =>
+																																(!assetFilter || trustline.assetCode.toLowerCase().includes(assetFilter.toLowerCase())) &&
+																																(!issuerFilter || trustline.assetIssuer.toLowerCase().includes(issuerFilter.toLowerCase()))
+																														), 'trustlines')).map((trustline, index) => (
+																																<tr key={index}>
+																																		<td className="border border-gray-300 p-2">
+																																				<input
+																																				    type="checkbox"
+																																				    checked={selectedTrustlines.includes(trustline.assetIssuer + trustline.assetCode)}
+																																				    onChange={() => handleCheckboxChange(trustline)}
+																																				/>
+																																		</td>
+																																		<td className="border border-gray-300 p-2">{trustline.assetCode}</td>
+																																		<td className="border border-gray-300 p-2">{trustline.assetIssuer}</td>
+																																		<td className="border border-gray-300 p-2">
+																																				{trustline.creationDate
+																																				    ? trustline.creationDate.toLocaleString()
+																																				    : t('unknownDate')}
+																																		</td>
+																																</tr>
+																														))}
+																												</tbody>
+																										</table>
+																										<div className="mt-4 flex items-center justify-between">
+																												<button
+																														onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+																														className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-300"
+																														disabled={currentPage === 0}
+																												>
+																														{t('previous')}
+																												</button>
+																												<span>
+																														Page {currentPage + 1} ({currentPage * ITEMS_PER_PAGE + 1}-{Math.min((currentPage + 1) * ITEMS_PER_PAGE, results.filter(trustline =>
+																																(!assetFilter || trustline.assetCode.toLowerCase().includes(assetFilter.toLowerCase())) &&
+																																(!issuerFilter || trustline.assetIssuer.toLowerCase().includes(issuerFilter.toLowerCase()))
+																														).length)} of {results.filter(trustline =>
+																																(!assetFilter || trustline.assetCode.toLowerCase().includes(assetFilter.toLowerCase())) &&
+																																(!issuerFilter || trustline.assetIssuer.toLowerCase().includes(issuerFilter.toLowerCase()))
+																														).length})
+																												</span>
+																												<button
+																														onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(results.filter(trustline =>
+																																(!assetFilter || trustline.assetCode.toLowerCase().includes(assetFilter.toLowerCase())) &&
+																																(!issuerFilter || trustline.assetIssuer.toLowerCase().includes(issuerFilter.toLowerCase()))
+																														).length / ITEMS_PER_PAGE) - 1))}
+																														className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-300"
+																														disabled={currentPage >= Math.ceil(results.filter(trustline =>
+																																(!assetFilter || trustline.assetCode.toLowerCase().includes(assetFilter.toLowerCase())) &&
+																																(!issuerFilter || trustline.assetIssuer.toLowerCase().includes(issuerFilter.toLowerCase()))
+																														).length / ITEMS_PER_PAGE) - 1}
+																												>
+																														{t('next')}
+																												</button>
+																										</div>
+																								</div>
+																						)}
+																				</div>
+																		)}
+																 
+																		{menuOption === 'compare' && (
                                         <div>
                                             <label className="block mb-2">{t('destLabel')}</label>
                                             <input
