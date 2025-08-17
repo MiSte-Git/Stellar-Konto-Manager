@@ -6,6 +6,7 @@ ChatGPT - Stellar Trustline Manager_files/
 *.jpeg
 *.webp
 *.png
+*.zip
 Unbenanntes*
 dist/
 node_modules/
