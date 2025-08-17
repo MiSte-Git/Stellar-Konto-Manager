@@ -25,12 +25,29 @@
       "failed": "Laden der Investitionsdaten fehlgeschlagen: {{detail}}"
     },
     "op_invalid_limit": "Trustline kann nicht gelöscht werden. Sie hat möglicherweise noch Guthaben oder offene Verpflichtungen.",
+    "submitTransaction": {
+      "failed": {
+        "tx_bad_auth": "Transaktion abgelehnt: Ungültige Signatur",
+        "tx_failed": "Transaktion fehlgeschlagen",
+        "unknown": "Unbekannter Fehler bei der Transaktion"
+      }
+    },
     "transaction": {
       "failed": "Transaktion fehlgeschlagen",
       "title": "Fehler bei der Transaktion"
     },
     "trustline": {
-      "unknown": "Unbekannter Fehler beim Löschen der Trustline."
+      "unknown": "Unbekannter Fehler beim Löschen der Trustline.",
+      "submitFailed": "Fehler beim Löschen der Trustline."
+    },
+    "xlmByMemo": {
+      "aborted": "Vorgang vom Benutzer abgebrochen",
+      "serverInvalid": "Ungültiger Server",
+      "accountInvalid": "Ungültiger Account",
+      "memoInvalid": "Ungültiges Memo",
+      "paymentsFetch": "Fehler beim Laden der Zahlungen",
+      "dateInvalid": "Ungültiges Datum",
+      "dateRange": "Ungültiger Datumsbereich"
     }
   },
   "investedTokens": {
@@ -182,5 +199,22 @@
     "env": "Umgebung",
     "commit": "Commit",
    "branch": "Branch"
+  },
+  "progress": {
+    "cancel": "Abbrechen",
+    "eta": "ETA: {{minutes}} Min.",
+    "oldest": "ältestes Datum dieser Seite: {{date}}",
+    "phase": {
+      "idle": "Bereit…",
+      "scan": "Scanne Zahlungen (Seite {{page}})…",
+      "pageDone": "Seite {{page}} abgeschlossen.",
+      "chunkDone": "Chunk verarbeitet.",
+      "chunkSkip": "Chunk übersprungen.",
+      "finalize": "Abgeschlossen",
+      "txFetch": "Lade Transaktionsdetails…"
+    },
+    "counts": "Geprüft: {{ops}} • Treffer: {{matches}}",
+    "firstMatchAt": "Letzte Einzahlung: {{date}}",
+    "oldestMatchInRangeAt": "Erste Einzahlung im Zeitraum: {{date}}"
   }
 }

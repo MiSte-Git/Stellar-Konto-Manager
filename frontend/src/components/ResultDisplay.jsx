@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { sortTrustlines, paginateTrustlines } from '../services/stellarUtils';
+import { sortTrustlines, paginateTrustlines } from '../utils/stellarUtils';
 
 function ResultDisplay({
   results,
