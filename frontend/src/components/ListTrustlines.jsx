@@ -1,5 +1,5 @@
 // src/components/ListTrustlines.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   validateSecretKey, 
@@ -7,7 +7,7 @@ import {
   assertKeyPairMatch, 
   deleteTrustlines, 
   deleteTrustlinesInChunks 
-} from '../services/stellarUtils';
+} from '../utils/stellarUtils';
 import SecretKeyModal from './SecretKeyModal';
 import MenuHeader from './MenuHeader';
 import ResultModal from './ResultModal'; // ⬅️ Oben importieren
@@ -16,7 +16,8 @@ import {
   isSelected, 
   toggleAllTrustlines, 
   areAllSelected 
-} from '../services/trustlineUtils.js';
+} from '../utils/trustlineUtils.js';
+import ProgressBar from "../components/ProgressBar.jsx";
 
 function ListTrustlines({
   trustlines,
@@ -60,7 +61,11 @@ function ListTrustlines({
   const [isSimulation, setIsSimulation] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false); // Zeile 60+
   const [errorMessage, setErrorMessage] = useState('');
- 
+  const delProg = useMemo(() => {
+    const p = deleteProgress?.total ? deleteProgress.current / deleteProgress.total : 0;
+    return { progress: isProcessing ? p : 0, phase: isProcessing ? 'chunkDone' : 'idle', page: 0, etaMs: 0 };
+  }, [deleteProgress, isProcessing]);
+
   // Simulationsmodus aktiv?
   const [simulationMode, setSimulationMode] = useState(true);
 
@@ -206,8 +211,8 @@ function ListTrustlines({
         return;
       }
 
-      const onProgress = (current, total) => {
-        setDeleteProgress({ current, total });
+      const onProgress = ({ processed, total, phase }) => {
+        setDeleteProgress({ current: processed, total });
       };
 
       // Nur Trustlines löschen, die noch im aktuellen Trustlines-Array vorkommen
@@ -325,6 +330,10 @@ function ListTrustlines({
     <div className="mt-4">
       {/* Menükopf mit Zurück-Button + aktuelle Ansicht */}
       <MenuHeader setMenuSelection={setMenuSelection} menuSelection={menuSelection} />
+      {/* Fortschritt der Löschung an der Spitze */}
+      <div className="mb-3">
+        <ProgressBar {...delProg} />
+      </div>
 
       {results.length > 0 && (
         <div className="mt-4 text-sm text-blue-600 dark:text-blue-400">

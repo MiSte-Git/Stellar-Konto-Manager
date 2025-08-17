@@ -1,7 +1,7 @@
 // src/components/SecretKeyModal.jsx
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { validateSecretKey } from '../services/stellarUtils';
+import { validateSecretKey } from '../utils/stellarUtils';
 
 function SecretKeyModal({ onConfirm, onCancel, errorMessage }) {
   const { t } = useTranslation();
