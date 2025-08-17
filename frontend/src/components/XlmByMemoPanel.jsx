@@ -1,8 +1,9 @@
 // components/XlmByMemoPanel.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { getHorizonServer } from "../services/stellarUtils";
-import { sumIncomingXLMByMemo } from "../services/stellarUtils";
+import { getHorizonServer, sumIncomingXLMByMemo } from "../utils/stellarUtils";
+import ProgressBar from "../components/ProgressBar.jsx";
+import { formatLocalDateTime, formatElapsedMmSs, elapsedMinutesRounded } from '../utils/datetime';
 
 /**
  * Panel: Eingabe für Memo + optionales Zeitfenster und Anzeige der XLM-Summe.
@@ -27,9 +28,40 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   const [result, setResult] = useState(null);
   const [errorKey, setErrorKey] = useState("");
   const ROLE = { FROM: 'from', TO: 'to' };
+  const [prog, setProg] = useState({ progress: null, phase: 'idle', page: 0, etaMs: 0, oldest: '' });
+  const abortRef = useRef(null);
+  const heartbeatRef = useRef(null);
+  const startedAtRef = useRef(0);
+  const [elapsedMs, setElapsedMs] = useState(0);
+  const [resultAmount, setResultAmount] = useState(null);
+  const firstMatchLocal = prog.firstMatchAt ? formatLocalDateTime(prog.firstMatchAt) : null;
+  const oldestMatchLocal = prog.oldestMatchInRangeAt ? formatLocalDateTime(prog.oldestMatchInRangeAt) : null;
+
 
   // Horizon-Server (Projektvorgabe: immer Horizon)
   const server = getHorizonServer(horizonUrl);
+
+  useEffect(() => {
+    // Sekündlicher Heartbeat, solange wir "aktiv" sind
+    if (prog.phase !== 'idle' && prog.phase !== 'finalize') {
+      if (!heartbeatRef.current) {
+        heartbeatRef.current = setInterval(() => {
+          setProg(p => {
+            if (p.phase === 'idle' || p.phase === 'finalize') return p;
+            // „weiche“ Fortschrittsbewegung anhand ETA
+            const elapsed = Date.now() - (startedAtRef.current || Date.now());
+            const total = (p.etaMs || 0) + elapsed;
+            const soft = total > 0 ? Math.min(0.98, elapsed / total) : p.progress ?? 0;
+            return { ...p, progress: Number.isFinite(soft) ? soft : p.progress };
+          });
+        }, 1000);
+      }
+    } else if (heartbeatRef.current) {
+      clearInterval(heartbeatRef.current);
+      heartbeatRef.current = null;
+    }
+    return () => { if (heartbeatRef.current) { clearInterval(heartbeatRef.current); heartbeatRef.current = null; } };
+  }, [prog.phase]);
 
   // Setze Default-Zeitraum: gestern → heute
   useEffect(() => {
@@ -80,30 +112,84 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     setResult(null);
 
     try {
+      abortRef.current = new AbortController();
+      startedAtRef.current = Date.now();
       const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
       const toISO   = toUTCISO(toDate,   toTime,   tz, ROLE.TO);
       const rangeInfo = {
         fromLocal: `${fromDate || "-"} ${fromTime || ""} ${tz.toUpperCase()}`,
         toLocal: `${toDate || "-"} ${toTime || ""} ${tz.toUpperCase()}`,
       };
+      const onProgress = (info) => setProg((p) => ({ ...p, ...info }));
+      setProg({ progress: 0, phase: 'scan', page: 1, etaMs: 0, oldest: '' });
       const total = await sumIncomingXLMByMemo({
         server,
         accountId: publicKey,
         memoQuery,
         fromISO,
         toISO,
+        onProgress,
+        signal: abortRef.current.signal
       });
       setResult(total, rangeInfo);
+      setResultAmount(total);
+      setProg((p) => ({ ...p, progress: 1, phase: 'finalize', etaMs: 0 }));
     } catch (e) {
       setErrorKey(e.message || "xlmByMemo.failed:unknown");
+      setErrorKey(e.message || "error.xlmByMemo.paymentsFetch");
+      setProg({ progress: null, phase: 'idle', page: 0, etaMs: 0, oldest: '' });
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleCancel = () => abortRef.current?.abort();
+
   return (
     <div className="p-4 rounded-xl border">
-      <h3 className="font-semibold mb-2">{t("xlmByMemo.title")}</h3>
+      {/* Kopf: 3-Spalten-Grid */}
+      <div className="grid grid-cols-3 items-start mb-2">
+        {/* Links: Titel */}
+        <div className="col-span-1">
+          <h3 className="font-semibold">{t('xlmByMemo.title')}</h3>
+        </div>
+
+        {/* Mitte: Progressbar (zentriert), Summe drunter, Abbrechen drunter */}
+        <div className="col-span-1 flex flex-col items-center">
+          <div className="w-full max-w-[260px]">
+            <ProgressBar {...prog} />
+          </div>
+
+          {/* Summe unter der Progressbar */}
+          {typeof resultAmount === 'number' && (
+            <div className="text-sm font-medium mt-1">
+              {t('xlmByMemo.result.value', { amount: resultAmount.toFixed(7) })}
+            </div>
+          )}
+
+          {/* Abbrechen-Button unter der Progressbar */}
+          {prog.phase !== 'idle' && (
+            <button
+              className="text-sm px-2 py-1 rounded bg-gray-500 text-white mt-2"
+              onClick={handleCancel}
+            >
+              {t('progress.cancel')}
+            </button>
+          )}
+        </div>
+
+        {/* Rechts: (frei) */}
+        <div className="col-span-1" />
+      </div>
+
+      {/* Zusatzinfos unter dem Titel */}
+      {(prog.firstMatchAt || prog.oldestMatchInRangeAt) && (
+        <div className="text-xs text-gray-500 mb-2 text-center">
+          {oldestMatchLocal && t('progress.oldestMatchInRangeAt', { date: oldestMatchLocal })}{' '}
+          {firstMatchLocal && '• '}{firstMatchLocal && t('progress.firstMatchAt', { date: firstMatchLocal })}
+          {' • '}{t('progress.counts', { ops: prog.opsTotal, matches: prog.matches })}
+        </div>
+      )}
 
       {/* Memo */}
       <label className="block text-sm mb-1">{t("xlmByMemo.memo.label")}</label>
@@ -175,27 +261,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       </button>
 
       {errorKey && <div className="mt-3 text-red-600">{t(errorKey)}</div>}
-
-      {result !== null && !isLoading && !errorKey && (() => {
-        const amount = typeof result === 'number' ? result : result?.total;
-        const rangeInfo = typeof result === 'number' ? null : result?.rangeInfo;
-        return Number.isFinite(amount) ? (
-          <div className="mt-3 space-y-1">
-            <div>
-              <span className="font-medium">{t("xlmByMemo.result.label")} </span>
-              <span>{t("xlmByMemo.result.value", { amount: amount.toFixed(7) })}</span>
-            </div>
-            {rangeInfo && (
-              <div className="text-sm text-gray-600">
-                {t("xlmByMemo.result.range", {
-                  from: rangeInfo.fromLocal,
-                  to: rangeInfo.toLocal
-                })}
-              </div>
-            )}
-          </div>
-        ) : null;
-      })()}
 
       <button
         className="mt-6 px-4 py-2 rounded bg-gray-500 text-white hover:bg-gray-600"

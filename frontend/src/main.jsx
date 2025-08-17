@@ -8,7 +8,7 @@ import {
   loadTrustlines, 
   resolveOrValidatePublicKey, 
   handleSourceSubmit as submitSourceInput
- } from './services/stellarUtils.js';
+ } from './utils/stellarUtils.js';
 import App from './App.jsx';
 import SourceInput from './components/SourceInput';
 import DestinationInput from './components/DestinationInput';
@@ -25,12 +25,12 @@ import {
   areAllSelected,
   isSelected,
   toggleTrustlineSelection
-} from './services/trustlineUtils';
+} from './utils/trustlineUtils';
 import { 
   handleSort,
   handleFilterChange 
-} from './services/uiHelpers.js';
-import { handleDeleteTrustlines as deleteAndReload } from './services/stellarUtils.js';
+} from './utils/uiHelpers.js';
+import { handleDeleteTrustlines as deleteAndReload } from './utils/stellarUtils.js';
 import XlmByMemoPanel from './components/XlmByMemoPanel';
 import XlmByMemoPage from './pages/XlmByMemoPage';
 import InvestedTokensPage from './pages/InvestedTokensPage';
