@@ -7,7 +7,7 @@ import {
   assertKeyPairMatch, 
   deleteTrustlines, 
   deleteTrustlinesInChunks 
-} from '../utils/stellarUtils';
+} from '../utils/stellar/stellarUtils';
 import SecretKeyModal from './SecretKeyModal';
 import MenuHeader from './MenuHeader';
 import ResultModal from './ResultModal'; // ⬅️ Oben importieren
@@ -16,8 +16,9 @@ import {
   isSelected, 
   toggleAllTrustlines, 
   areAllSelected 
-} from '../utils/trustlineUtils.js';
+} from '../utils/stellar/trustlineUtils.js';
 import ProgressBar from "../components/ProgressBar.jsx";
+import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
   trustlines,
@@ -65,9 +66,24 @@ function ListTrustlines({
     const p = deleteProgress?.total ? deleteProgress.current / deleteProgress.total : 0;
     return { progress: isProcessing ? p : 0, phase: isProcessing ? 'chunkDone' : 'idle', page: 0, etaMs: 0 };
   }, [deleteProgress, isProcessing]);
+  const [delElapsedMs, setDelElapsedMs] = useState(0);
+  const delStartedAtRef = useRef(0);
 
   // Simulationsmodus aktiv?
   const [simulationMode, setSimulationMode] = useState(true);
+
+  useEffect(() => {
+    let id = null;
+    const active = isProcessing && deleteProgress?.total > 0;
+    if (active) {
+      if (!delStartedAtRef.current) delStartedAtRef.current = Date.now();
+      id = setInterval(() => setDelElapsedMs(Date.now() - delStartedAtRef.current), 1000);
+    } else {
+      delStartedAtRef.current = 0;
+      setDelElapsedMs(0);
+    }
+    return () => id && clearInterval(id);
+  }, [isProcessing, deleteProgress?.total]);
 
   useEffect(() => {
     let filtered = trustlines.filter((tl) => {
@@ -176,6 +192,7 @@ function ListTrustlines({
    */
   const handleDeleteTrustlines = async (secretKey) => {
     try {
+      delStartedAtRef.current = Date.now();
       // Formatprüfung des Secret Keys
       validateSecretKey(secretKey);
 
@@ -295,6 +312,8 @@ function ListTrustlines({
       }
     } finally {
       setIsProcessing(false);
+      delStartedAtRef.current = 0;
+      setDelElapsedMs(0);
     }
   };
 
@@ -333,6 +352,9 @@ function ListTrustlines({
       {/* Fortschritt der Löschung an der Spitze */}
       <div className="mb-3">
         <ProgressBar {...delProg} />
+        <div className="text-xs text-gray-500 mt-1">
+          {t('progress.elapsed', { time: formatElapsedMmSs(delElapsedMs) })}
+        </div>
       </div>
 
       {results.length > 0 && (
