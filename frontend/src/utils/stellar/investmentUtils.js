@@ -1,5 +1,5 @@
 import * as StellarSdk from '@stellar/stellar-sdk';
-import { HORIZON_URL } from '../config';
+import { HORIZON_URL } from '../../config';
 
 /** 
  * Zählt AUSGEHENDE XLM-Zahlungen mit Memo (Groupfund) und summiert XLM je Memo.

@@ -1,9 +1,14 @@
 // components/XlmByMemoPanel.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { getHorizonServer, sumIncomingXLMByMemo } from "../utils/stellarUtils";
+import { getHorizonServer, sumIncomingXLMByMemo } from "../utils/stellar/stellarUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
 import { formatLocalDateTime, formatElapsedMmSs, elapsedMinutesRounded } from '../utils/datetime';
+import { refreshSinceCursor, backfillPayments } from "../utils/stellar/syncUtils";
+import { sumIncomingXLMByMemoCached } from "../utils/stellar/queryUtils";
+import { useSettings } from '../utils/useSettings';
+import { getCursor } from '../utils/db/indexedDbClient';
+
 
 /**
  * Panel: Eingabe für Memo + optionales Zeitfenster und Anzeige der XLM-Summe.
@@ -36,7 +41,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   const [resultAmount, setResultAmount] = useState(null);
   const firstMatchLocal = prog.firstMatchAt ? formatLocalDateTime(prog.firstMatchAt) : null;
   const oldestMatchLocal = prog.oldestMatchInRangeAt ? formatLocalDateTime(prog.oldestMatchInRangeAt) : null;
-
+  const { useCache, prefetchDays } = useSettings();
 
   // Horizon-Server (Projektvorgabe: immer Horizon)
   const server = getHorizonServer(horizonUrl);
@@ -54,11 +59,13 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
             const soft = total > 0 ? Math.min(0.98, elapsed / total) : p.progress ?? 0;
             return { ...p, progress: Number.isFinite(soft) ? soft : p.progress };
           });
+          setElapsedMs(Date.now() - (startedAtRef.current || Date.now()));
         }, 1000);
       }
     } else if (heartbeatRef.current) {
       clearInterval(heartbeatRef.current);
       heartbeatRef.current = null;
+      setElapsedMs(0);
     }
     return () => { if (heartbeatRef.current) { clearInterval(heartbeatRef.current); heartbeatRef.current = null; } };
   }, [prog.phase]);
@@ -107,41 +114,93 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
    * Startet die Summierung mit optionalem Datum-Filter.
    */
   const handleCalculate = async () => {
-    setIsLoading(true);
-    setErrorKey("");
-    setResult(null);
+  setIsLoading(true);
+  setErrorKey("");
+  setResult(null);
 
-    try {
-      abortRef.current = new AbortController();
-      startedAtRef.current = Date.now();
-      const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
-      const toISO   = toUTCISO(toDate,   toTime,   tz, ROLE.TO);
-      const rangeInfo = {
-        fromLocal: `${fromDate || "-"} ${fromTime || ""} ${tz.toUpperCase()}`,
-        toLocal: `${toDate || "-"} ${toTime || ""} ${tz.toUpperCase()}`,
-      };
-      const onProgress = (info) => setProg((p) => ({ ...p, ...info }));
-      setProg({ progress: 0, phase: 'scan', page: 1, etaMs: 0, oldest: '' });
-      const total = await sumIncomingXLMByMemo({
+  try {
+    abortRef.current = new AbortController();
+    startedAtRef.current = Date.now();
+
+    const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
+    const toISO   = toUTCISO(toDate,   toTime,   tz, ROLE.TO);
+
+    const rangeInfo = {
+      fromLocal: `${fromDate || "-"} ${fromTime || ""} ${tz.toUpperCase()}`,
+      toLocal:   `${toDate || "-"} ${toTime || ""} ${tz.toUpperCase()}`,
+    };
+
+    const onProgress = (info) => setProg((p) => ({ ...p, ...info }));
+    setProg({ progress: 0, phase: "scan", page: 1, etaMs: 0, oldest: "" });
+
+    // 👇 WICHTIG: EINMAL hier definieren – außerhalb der if/else-Blöcke
+    let total = 0;
+
+    if (useCache) {
+      // Optional: Sync-Events (UI fängt Fehler via t() ab)
+      window.dispatchEvent(new CustomEvent("stm:cache-sync", {
+        detail: { accountId: publicKey, phase: "start", ts: Date.now() },
+      }));
+
+      const hasCursor = await getCursor(publicKey);
+
+      if (!hasCursor) {
+        const sinceISO = new Date(Date.now() - prefetchDays * 24 * 3600 * 1000).toISOString();
+        await backfillPayments({
+          server,
+          accountId: publicKey,
+          sinceISO,
+          onProgress,
+          signal: abortRef.current.signal,
+        });
+      }
+
+      await refreshSinceCursor({
+        server,
+        accountId: publicKey,
+        onProgress,
+        signal: abortRef.current.signal,
+      });
+
+      window.dispatchEvent(new CustomEvent("stm:cache-sync", {
+        detail: { accountId: publicKey, phase: "done", ts: Date.now() },
+      }));
+
+      // 👇 nur zuweisen, nicht neu deklarieren
+      total = await sumIncomingXLMByMemoCached({
+        accountId: publicKey,
+        memoQuery,
+        fromISO,
+        toISO,
+        onProgress,
+      });
+    } else {
+      setProg({ progress: 0, phase: "scan", page: 1, etaMs: 0, oldest: "" });
+      total = await sumIncomingXLMByMemo({
         server,
         accountId: publicKey,
         memoQuery,
         fromISO,
         toISO,
         onProgress,
-        signal: abortRef.current.signal
+        signal: abortRef.current.signal,
       });
-      setResult(total, rangeInfo);
-      setResultAmount(total);
-      setProg((p) => ({ ...p, progress: 1, phase: 'finalize', etaMs: 0 }));
-    } catch (e) {
-      setErrorKey(e.message || "xlmByMemo.failed:unknown");
-      setErrorKey(e.message || "error.xlmByMemo.paymentsFetch");
-      setProg({ progress: null, phase: 'idle', page: 0, etaMs: 0, oldest: '' });
-    } finally {
-      setIsLoading(false);
     }
-  };
+
+    // Ergebnis setzen (State erwartet ein Objekt, nicht 2 Parameter)
+    setResult({ total, rangeInfo });
+    setResultAmount(total);
+
+    setProg((p) => ({ ...p, progress: 1, phase: "finalize", etaMs: 0 }));
+  } catch (e) {
+    // Einheitlicher, übersetzbarer Fehler-Key
+    setErrorKey(e?.message || "error.xlmByMemo.paymentsFetch");
+    setProg({ progress: null, phase: "idle", page: 0, etaMs: 0, oldest: "" });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const handleCancel = () => abortRef.current?.abort();
 
@@ -158,6 +217,9 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
         <div className="col-span-1 flex flex-col items-center">
           <div className="w-full max-w-[260px]">
             <ProgressBar {...prog} />
+          </div>
+          <div className="text-xs text-gray-500 mt-1">
+            {t('progress.elapsed', { time: formatElapsedMmSs(elapsedMs) })}
           </div>
 
           {/* Summe unter der Progressbar */}
