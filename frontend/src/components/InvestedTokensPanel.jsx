@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { fetchGroupfundByMemo, fetchInvestedPerToken } from '../utils/investmentUtils';
+import { fetchGroupfundByMemo, fetchInvestedPerToken } from '../utils/stellar/investmentUtils';
 
 /**
  * Zeigt zwei Sichten:

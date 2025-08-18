@@ -7,8 +7,9 @@ import { BACKEND_URL } from './config';
 import { 
   loadTrustlines, 
   resolveOrValidatePublicKey, 
-  handleSourceSubmit as submitSourceInput
- } from './utils/stellarUtils.js';
+  handleSourceSubmit as submitSourceInput,
+  handleDeleteTrustlines as deleteAndReload
+ } from './utils/stellar/stellarUtils.js';
 import App from './App.jsx';
 import SourceInput from './components/SourceInput';
 import DestinationInput from './components/DestinationInput';
@@ -25,12 +26,11 @@ import {
   areAllSelected,
   isSelected,
   toggleTrustlineSelection
-} from './utils/trustlineUtils';
+} from './utils/stellar/trustlineUtils';
 import { 
   handleSort,
   handleFilterChange 
 } from './utils/uiHelpers.js';
-import { handleDeleteTrustlines as deleteAndReload } from './utils/stellarUtils.js';
 import XlmByMemoPanel from './components/XlmByMemoPanel';
 import XlmByMemoPage from './pages/XlmByMemoPage';
 import InvestedTokensPage from './pages/InvestedTokensPage';

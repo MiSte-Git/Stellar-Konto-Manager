@@ -11,6 +11,7 @@
     "issuer": "Emittent"
   },
   "common": {
+    "clear": "Eingabe löschen",
     "loading": "Laden…",
     "refresh": "Neu laden"
   },
@@ -47,7 +48,24 @@
       "memoInvalid": "Ungültiges Memo",
       "paymentsFetch": "Fehler beim Laden der Zahlungen",
       "dateInvalid": "Ungültiges Datum",
-      "dateRange": "Ungültiger Datumsbereich"
+      "dateRange": "Ungültiger Datumsbereich",
+      "failedUnknown": "Unbekannter Fehler"
+    },
+    "cache": {
+      "openFailed": "Lokaler Cache konnte nicht geöffnet werden",
+      "writeFailed": "Schreiben in den Cache fehlgeschlagen",
+      "readFailed": "Lesen aus dem Cache fehlgeschlagen"
+    },
+    "sync": {
+      "backfillFailed": "Initiales Laden der Zahlungen fehlgeschlagen",
+      "incrementalFailed": "Aktualisierung der Zahlungen fehlgeschlagen"
+    },
+    "horizon": {
+      "paymentsFetch": "Fehler beim Laden der Zahlungen von Horizon"
+    },
+    "query": {
+      "invalidRange": "Ungültiger Zeitraum",
+      "invalidMemo": "Ungültiges Memo"
     }
   },
   "investedTokens": {
@@ -134,7 +152,13 @@
     "description": "Aktuell gibt es noch keine Einstellungen",
     "error": {
       "fetchFailed": "Laden der Einstellungen fehlgeschlagen: {{detail}}"
-    }
+    },
+    "cache": {
+      "label": "Cache benutzen (Beta)",
+      "help": "Beschleunigt Abfragen durch lokalen Zahlungs-Cache, kann jedoch das initiale Laden verlängern.",
+      "prefetchHelp": "Vorlauf der zu ladenden Einträge/Transaktionen in Tagen (einmalig beim ersten Aktivieren)"
+    },
+    "prefetchDays": "Vorlauf (Tage)"
   },
   "token": {
     "purchases": "Anzahl der investierten Token"
@@ -211,10 +235,22 @@
       "chunkDone": "Chunk verarbeitet.",
       "chunkSkip": "Chunk übersprungen.",
       "finalize": "Abgeschlossen",
-      "txFetch": "Lade Transaktionsdetails…"
+      "txFetch": "Lade Transaktionsdetails…",
+      "sync": "Synchronisiere Zahlungen…",
+      "cacheQuery": "Berechne Ergebnis aus lokalem Cache…"
     },
     "counts": "Geprüft: {{ops}} • Treffer: {{matches}}",
     "firstMatchAt": "Letzte Einzahlung: {{date}}",
-    "oldestMatchInRangeAt": "Erste Einzahlung im Zeitraum: {{date}}"
+    "oldestMatchInRangeAt": "Erste Einzahlung im Zeitraum: {{date}}",
+    "mode": {
+      "live": "Modus: Live (Horizon)",
+      "cache": "Modus: Cache"
+    },
+    "elapsed": "Dauer: {{time}}"
+  },
+  "cache": {
+    "consent": "Lokaler Cache aktivieren, um Abfragen zu beschleunigen?",
+    "clear": "Cache leeren",
+    "lastRefresh": "Letzte Aktualisierung: {{ts}}"
   }
 }

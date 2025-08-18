@@ -1,0 +1,148 @@
+// Sync-Funktionen: Backfill & inkrementelles Update aus Horizon -> IndexedDB
+// Alle Netz-Aufrufe weiterhin über Horizon-Server-Objekt (stellarUtils).
+
+import { bulkUpsertPayments, getCursor, setCursor } from '../db/indexedDbClient';
+import { Horizon } from '@stellar/stellar-sdk'; // für Typen/Doku
+
+/**
+ * Lädt genau EINE Seite aus Horizon.payments (mit join=transactions).
+ * @returns {Promise<{records:any[], next: function|null, lastCursor:string|null}>}
+ */
+async function fetchPaymentsPage({ server, accountId, order='asc', limit=200, cursor }) {
+  try {
+    let q = server.payments().forAccount(accountId).order(order).limit(Math.min(200, Math.max(1, limit))).join('transactions');
+    if (cursor) q = q.cursor(cursor);
+    const page = await q.call();
+    const last = page.records?.[page.records.length-1]?.paging_token || cursor || null;
+    return { records: page.records || [], next: page.next ?? null, lastCursor: last };
+  } catch {
+    throw new Error('error.horizon.paymentsFetch');
+  }
+}
+
+function dispatchSync(accountId, payload) {
+  try { window.dispatchEvent(new CustomEvent('stm:cache-sync', { detail: { accountId, ...payload } })); } catch {}
+}
+
+/**
+ * Backfill bis zu einem gegebenen sinceISO (ältere Zahlungen ignorieren).
+ * Holt rückwärts (desc) und stoppt, sobald created_at < sinceISO.
+ * Alle Texte via UI übersetzen, hier nur Keys werfen.
+ */
+export async function backfillPayments({ server, accountId, sinceISO, onProgress, signal }) {
+  try {
+    // Start bei neuesten Zahlungen und rückwärts laufen
+    let builder = server
+      .payments()
+      .forAccount(accountId)
+      .order('desc')        // rückwärts
+      .limit(200)
+      .join('transactions');
+
+    let page = await builder.call();
+    let pageNo = 0;
+    let stop = false;
+
+    while (!stop) {
+      if (signal?.aborted) throw new Error('cache.backfill.aborted');
+
+      const records = page?.records ?? [];
+      if (records.length === 0) break;
+
+      // Nur Datensätze >= sinceISO verarbeiten
+      const filtered = records.filter(r => !sinceISO || r.created_at >= sinceISO);
+      if (filtered.length > 0) {
+        await bulkUpsertPayments(accountId, filtered);
+      }
+
+      pageNo += 1;
+      const newest = records[0]?.created_at || '';
+      onProgress?.({ phase: 'backfill', page: pageNo, newest });
+
+      // Abbruchbedingung: Wenn die älteste Seite bereits < sinceISO ist
+      const oldestInPage = records[records.length - 1]?.created_at;
+      if (sinceISO && oldestInPage && oldestInPage < sinceISO) {
+        stop = true;
+        break;
+      }
+
+      // Nächste Seite vorbereiten (cursor = ältester Token der aktuellen Seite)
+      const nextCursor = records[records.length - 1].paging_token;
+      builder = server
+        .payments()
+        .forAccount(accountId)
+        .order('desc')
+        .limit(200)
+        .join('transactions')
+        .cursor(nextCursor);
+
+      page = await builder.call();
+    }
+  } catch (e) {
+    throw new Error('cache.backfill.failed:' + (e?.message || 'unknown'));
+  }
+}
+
+
+/**
+ * Aktualisiert den lokalen Cache inkrementell ab dem zuletzt gespeicherten Cursor.
+ * Nutzt *immer* Horizon (Horizon-Verbindung bleibt gewährleistet).
+ * Fehler werden als i18n-Keys geworfen (UI übersetzt mit t()).
+ */
+export async function refreshSinceCursor({ server, accountId, onProgress, signal }) {
+  try {
+    const cursor = await getCursor(accountId); // String oder null
+
+    // ⚠️ WICHTIG: builder *vor* der ersten Nutzung deklarieren
+    let builder = server
+      .payments()
+      .forAccount(accountId)
+      .order('asc')
+      .limit(200)
+      .join('transactions');
+
+    if (cursor && typeof cursor === 'string' && cursor.trim() !== '') {
+      builder = builder.cursor(cursor); // jetzt sicher, da builder bereits existiert
+    }
+
+    let lastToken = null;
+    let page = await builder.call();
+
+    let pageNo = 0;
+    while (true) {
+      if (signal?.aborted) throw new Error('cache.sync.aborted');
+
+      const records = page?.records ?? [];
+      if (records.length === 0) break;
+
+      // Zahlungen in IndexedDB speichern (pro Account)
+      await bulkUpsertPayments(accountId, records);
+
+      // Fortschritt melden (optional)
+      pageNo += 1;
+      const oldest = records[0]?.created_at || '';
+      onProgress?.({ phase: 'sync', page: pageNo, oldest });
+
+      // Nächsten Cursor setzen
+      lastToken = records[records.length - 1].paging_token;
+
+      // Nächste Seite vorbereiten (NEUER builder — sauber initialisiert)
+      builder = server
+        .payments()
+        .forAccount(accountId)
+        .order('asc')
+        .limit(200)
+        .join('transactions')
+        .cursor(lastToken);
+
+      page = await builder.call();
+    }
+
+    if (lastToken) {
+      await setCursor(accountId, lastToken); // nur Strings speichern
+    }
+  } catch (e) {
+    // Einheitlicher Fehler-Key; UI zeigt via t()
+    throw new Error('cache.sync.failed:' + (e?.message || 'unknown'));
+  }
+}
