@@ -5,10 +5,9 @@ import { formatElapsedMmSs } from '../utils/datetime';
 
 function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
   const { t } = useTranslation();
-  const [recentInputs, setRecentInputs] = useState([]);
   const handleChange = (e) => setSourceInput(e.target.value); // <--- hier!
   const handleClear = () => setSourceInput(''); // ❌ Eingabe löschen
-  const { useCache, setUseCache, prefetchDays, setPrefetchDays } = useSettings();
+  const { useCache } = useSettings();
   const [syncing, setSyncing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(null);
   const [elapsedMs, setElapsedMs] = useState(0);
@@ -80,35 +79,7 @@ function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
           </button>
         )}
       </div>
-
-      {/* Cache-Switch + Prefetch-Tage */}
-      {/* <div className="mt-3 flex items-center justify-between gap-3">
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={useCache}
-            onChange={(e) => setUseCache(e.target.checked)}
-          />
-          {t('settings.cache.label')}
-        </label>
-        <div className="text-xs text-gray-500">{t('settings.cache.help')}</div>
-        {useCache && (
-          <label className="flex items-center gap-2 text-xs">
-            {t('settings.prefetchDays')}
-            <input
-              type="number"
-              min={1}
-              max={3650}
-              value={prefetchDays}
-              onChange={(e) => setPrefetchDays(Number(e.target.value) || 90)}
-              className="w-20 px-2 py-1 rounded border"
-            />
-            <div className="text-[11px] text-gray-500">{t('settings.cache.prefetchHelp')}</div>
-          </label>
-        )}
-      </div>
-      */} 
-      
+     
       {useCache && syncing && (
         <div className="mt-1 text-xs text-blue-600">
           {t('progress.phase.sync')} • {t('progress.elapsed', { time: formatElapsedMmSs(elapsedMs) })}
