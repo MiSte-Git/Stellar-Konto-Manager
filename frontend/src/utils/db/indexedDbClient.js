@@ -43,18 +43,6 @@ function toSafePayment(accountId, rec){
   };
 }
 
-function normalizePayment(accountId, rec) {
-  return {
-    ...rec,
-    accountId,
-    // created_at absichern (sollte vorhanden sein, falls nicht leerer String → sortiert ans Ende)
-    created_at: rec?.created_at ?? rec?.transaction?.created_at ?? '',
-    // ⚠️ WICHTIG: Root-Feld 'memo' MUSS existieren, sonst scheitert der Compound-Index ['accountId','memo']
-    memo: extractMemo(rec),
-    memo_norm: normMemo(extractMemo(rec)),   // vorsorglich auch hier
-  };
-}
-
 function openDb() {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -117,7 +105,7 @@ export async function bulkUpsertPayments(accountId, items = []) {
 
 
 /** Liest Zahlungen nach Zeitraum + optionalem Memo-Substring. */
-export async function getPaymentsByRangeAndMemo(accountId, { fromISO, toISO, memo }) {
+export async function getPaymentsByRangeAndMemo(accountId, { fromISO, toISO }) {
   const db = await openDb();
   const out = [];
 
@@ -387,7 +375,9 @@ export async function getNewestCreatedAt(accountId) {
           }
         } catch {void 0;}
       }
-    } catch {void 0;}
+    } catch {
+      // intentionally ignored
+    }
     if (i % 50 === 0) onProgress?.({ phase:'rehydrate', progress: 0.8 + Math.min(0.19, i / Math.max(1, need.length)), scanned, candidates, updated });
   }
   onProgress?.({ phase:'rehydrate', progress: 1, scanned, candidates, updated });
