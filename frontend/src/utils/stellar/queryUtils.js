@@ -1,6 +1,5 @@
 // STM_VER:queryUtils.js@2025-09-10
 // Lokale Abfragen auf IndexedDB (ms-schnell)
-import { iterateByAccountMemoRange, getPaymentsByRangeAndMemo, backfillMemoNorm, iterateByAccountCreatedRange } from '../db/indexedDbClient';
 const normMemo = (s) => String(s||'').replace(/[\u200B-\u200D\uFEFF]/g,'').trim().replace(/\s+/g,' ').toUpperCase();
 
 /**
@@ -26,15 +25,6 @@ function isIncomingNativePayment(rec, accountId) {
   return Number.isFinite(amt) && amt > 0;
 }
 
-/** Exaktes, case-sensitives Transaktions-Memo lesen (ohne Normalisierung) */
-function getExactTxMemo(rec) {
-  // /operations?join=transactions → memo steht i.d.R. in rec.transaction.memo
-  if (rec?.memo != null) return String(rec.memo);
-  if (rec?.transaction_memo != null) return String(rec.transaction_memo);
-  if (rec?.transaction?.memo != null) return String(rec.transaction.memo);
-  return '';
-}
-
 /** Tally für identische Zählweise in beiden Pfaden */
 function createTally() {
   return {
@@ -49,45 +39,13 @@ function createTally() {
   };
 }
 
-// true, wenn eingehende native XLM-Zahlung (payment oder path_payment_*).
-function isIncomingNative(rec, accountId) {
-  // Keine Typprüfung nötig; robust über Feldstruktur
-  if (rec.to !== accountId) return false;
-  if (rec.asset_type !== 'native') return false;
-  const amt = Number.parseFloat(rec.amount || '0');
-  return Number.isFinite(amt) && amt > 0;
-}
-
-// true, wenn es ein erlaubter eingehender XLM-Eingang ist
-function classifyIncomingOp(rec, accountId) {
-  const t = String(rec.type || '');
-  const isPayment = t === 'payment' || t === 'path_payment_strict_receive' || t === 'path_payment_strict_send';
-  const isCreate  = t === 'create_account';
-
-  if (isPayment) {
-    if (rec.asset_type !== 'native') return null;
-    if (rec.to !== accountId) return null;
-    return { amount: Number.parseFloat(rec.amount || '0') || 0, sender: rec.from };
-  }
-  if (isCreate) {
-    if (rec.account !== accountId) return null;
-    return { amount: Number.parseFloat(rec.starting_balance || '0') || 0, sender: rec.funder };
-  }
-  return null;
-}
-
 /**
  * Kaltlauf: /operations + join('transactions'), exakter Memo-Vergleich.
  * Zählt nur payment/path_payment_*, obere Grenze exklusiv.
  */
-export async function sumIncomingXLMByMemoNoCacheExact({
-  server, accountId, memoQuery, fromISO, toISO, onProgress, signal
-}) {
-   
-  return await sumIncomingXLMByMemoNoCacheExact_TxFirst({
-      server, accountId, memoQuery, fromISO, toISO, onProgress, signal
-  });
-}
+// Rückwärtskompatibler Alias auf Tx-First:
+export const sumIncomingXLMByMemoNoCacheExact =
+  sumIncomingXLMByMemoNoCacheExact_TxFirst;
 
 /**
  * Fallback: Tx-first. Holt nur Transaktionen mit exakt passendem Memo und

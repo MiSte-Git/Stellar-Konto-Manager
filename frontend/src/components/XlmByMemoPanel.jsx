@@ -1,13 +1,11 @@
 // STM_VER:XlmByMemoPanel.jsx@2025-09-10
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { getHorizonServer, sumIncomingXLMByMemo } from "../utils/stellar/stellarUtils";
+import { getHorizonServer } from "../utils/stellar/stellarUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
 import { formatLocalDateTime, formatElapsedMmSs } from '../utils/datetime';
-import { ensureCoverage, refreshSinceCursor, initCursorIfMissing } from "../utils/stellar/syncUtils";
-import { diagnoseIncomingByMemoNoCache, sumIncomingXLMByMemoNoCacheExact } from "../utils/stellar/queryUtils";
-import { useSettings } from '../utils/useSettings';
-import { getNewestCreatedAt, rehydrateEmptyMemos, backfillMemoNorm } from '../utils/db/indexedDbClient';
+import { sumIncomingXLMByMemoNoCacheExact } from "../utils/stellar/queryUtils";
+import { getNewestCreatedAt, } from '../utils/db/indexedDbClient';
 
 
 /**
@@ -39,7 +37,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   const startedAtRef = useRef(0);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [resultAmount, setResultAmount] = useState(null);
-  const { useCache, prefetchDays } = useSettings();
   const [lastPaymentISO, setLastPaymentISO] = useState(null);
 
 
@@ -125,13 +122,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     setToTime(nowTimeForInput());
   }
 
-    /** Baut UTC-ISO aus lokaler Eingabe "YYYY-MM-DD" + "HH:mm:ss" */
-  function toUtcIso(dateStr, timeStr) {
-    const [y,m,d] = dateStr.split('-').map(Number);
-    const [hh,mm,ss] = (timeStr || '00:00:00').split(':').map(Number);
-    const dt = new Date(Date.UTC(y, (m-1), d, hh, mm, ss || 0));
-    return dt.toISOString(); // ...Z
-  }
   /** +1 Sekunde, um obere Grenze exklusiv zu machen */
   function plus1sIso(iso) {
     return new Date(new Date(iso).getTime() + 1000).toISOString();
