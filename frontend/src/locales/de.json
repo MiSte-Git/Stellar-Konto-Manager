@@ -54,7 +54,10 @@
     "cache": {
       "openFailed": "Lokaler Cache konnte nicht geöffnet werden",
       "writeFailed": "Schreiben in den Cache fehlgeschlagen",
-      "readFailed": "Lesen aus dem Cache fehlgeschlagen"
+      "readFailed": "Lesen aus dem Cache fehlgeschlagen",
+      "backfillAborted": "Initiales Laden der Zahlungen abgebrochen",
+      "indexIterFailed": "Index-Iteration im Cache fehlgeschlagen",
+      "memoNormBackfillFailed": "Initiales Laden der Zahlungen für normalisierte Memos fehlgeschlagen"
     },
     "sync": {
       "backfillFailed": "Initiales Laden der Zahlungen fehlgeschlagen",
@@ -64,7 +67,8 @@
       "paymentsFetch": "Fehler beim Laden der Zahlungen von Horizon"
     },
     "query": {
-      "invalidRange": "Ungültiger Zeitraum",
+      "invalidTime": "Ungültige Zeitangabe",
+      "invalidRange": "Zeitfenster ist ungültig (Von > Bis)",
       "invalidMemo": "Ungültiges Memo"
     }
   },
@@ -195,10 +199,17 @@
       "from": "Von (optional)",
       "to": "Bis (optional)"
     },
+    "debug": {
+      "memo": "Memos im Fenster: {{any}} • exakte Memos: {{exact}}",
+      "types": "Typen – payment: {{pay}}, path: {{path}}, create: {{create}}, andere: {{other}}",
+      "incoming": "Incoming – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
+      "incomingOverview": "Eingänge: {{total}} • beteiligte Wallets: {{unique}}"
+    },
     "memo": {
       "label": "Memo-Suchtext (Teilstring, Groß-/Kleinschreibung beachten)",
       "placeholder": "Memo (Teilstring, Groß-/Kleinschreibung beachten)"
     },
+    "overviewLine": "Zahlungseingänge: {{total}} • beteiligte Wallets: {{unique}}",
     "page": {
       "noPublicKey": "Bitte gib zuerst einen Public Key ein.",
       "title": "XLM-Summe nach Memo"
@@ -206,6 +217,19 @@
     "result": {
       "label": "Gesamtsumme:",
       "value": "{{amount}} XLM"
+    },
+    "summary": {
+      "correctCount": "Eingänge mit korrektem Memo: {{n}}",
+      "otherCount": "Eingänge mit falschem/ohne Memo: {{n}}",
+      "uniqueWallets": "Eindeutige Wallets: {{n}}",
+      "label": "Vergleich (alle Eingänge)",
+      "count": "Anzahl: {{n}}",
+      "amount": "Summe: {{amount}} XLM",
+      "unique": "Eindeutige Wallets (alle): {{n}}"
+    },
+    "time": {
+      "setToNow": "Aktuelle Zeit setzen",
+      "setToNowHint": "Setzt das Uhrzeit-Feld auf die aktuelle Zeit"
     },
     "title": "XLM-Summe nach Memo",
     "tz": {
@@ -226,18 +250,24 @@
   },
   "progress": {
     "cancel": "Abbrechen",
+    "canceled": "Abgebrochen",
+    "done": "Abgeschlossen",
     "eta": "ETA: {{minutes}} Min.",
     "oldest": "ältestes Datum dieser Seite: {{date}}",
+    "duration": "Dauer: {{val}}",
     "phase": {
       "idle": "Bereit…",
       "scan": "Scanne Zahlungen (Seite {{page}})…",
+      "scan_tx": "Transaktionen scannen",
       "pageDone": "Seite {{page}} abgeschlossen.",
       "chunkDone": "Chunk verarbeitet.",
       "chunkSkip": "Chunk übersprungen.",
       "finalize": "Abgeschlossen",
       "txFetch": "Lade Transaktionsdetails…",
       "sync": "Synchronisiere Zahlungen…",
-      "cacheQuery": "Berechne Ergebnis aus lokalem Cache…"
+      "cacheQuery": "Berechne Ergebnis aus lokalem Cache…",
+      "backfill": "Lade fehlende Zahlungen…",
+      "rehydrate": "Rekonstruire Cache…"
     },
     "counts": "Geprüft: {{ops}} • Treffer: {{matches}}",
     "firstMatchAt": "Letzte Einzahlung: {{date}}",
@@ -251,6 +281,7 @@
   "cache": {
     "consent": "Lokaler Cache aktivieren, um Abfragen zu beschleunigen?",
     "clear": "Cache leeren",
-    "lastRefresh": "Letzte Aktualisierung: {{ts}}"
+    "lastRefresh": "Letzte Aktualisierung: {{ts}}",
+    "lastPaymentAt": "Letzte Zahlung: {{val}}"
   }
 }

@@ -82,7 +82,7 @@ function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
       </div>
 
       {/* Cache-Switch + Prefetch-Tage */}
-      <div className="mt-3 flex items-center justify-between gap-3">
+      {/* <div className="mt-3 flex items-center justify-between gap-3">
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
@@ -107,7 +107,8 @@ function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
           </label>
         )}
       </div>
-
+      */} 
+      
       {useCache && syncing && (
         <div className="mt-1 text-xs text-blue-600">
           {t('progress.phase.sync')} • {t('progress.elapsed', { time: formatElapsedMmSs(elapsedMs) })}

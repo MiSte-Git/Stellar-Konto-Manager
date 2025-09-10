@@ -194,6 +194,8 @@ function Main() {
                   console.log('[MainMenu onSelect]', JSON.stringify(next));
 
                   if (next === 'backToPublicKey') {
+                    console.trace('[MainMenu] backToPublicKey selected');
+                    // ⚠️ TEMP: PublicKey NICHT löschen, um das „Auto-Zurückspringen“ zu verhindern
                     setMenuSelection(null);       // Menü schließen
                     setSourcePublicKey('');       // ← wichtig: Input-Screen wird wieder sichtbar
                     setSourceInput('');           // Eingabefeld leeren (optional)

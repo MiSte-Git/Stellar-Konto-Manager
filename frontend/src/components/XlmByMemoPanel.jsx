@@ -1,13 +1,13 @@
-// components/XlmByMemoPanel.jsx
-import React, { useState, useEffect, useRef } from "react";
+// STM_VER:XlmByMemoPanel.jsx@2025-09-10
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { getHorizonServer, sumIncomingXLMByMemo } from "../utils/stellar/stellarUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
-import { formatLocalDateTime, formatElapsedMmSs, elapsedMinutesRounded } from '../utils/datetime';
-import { refreshSinceCursor, backfillPayments } from "../utils/stellar/syncUtils";
-import { sumIncomingXLMByMemoCached } from "../utils/stellar/queryUtils";
+import { formatLocalDateTime, formatElapsedMmSs } from '../utils/datetime';
+import { ensureCoverage, refreshSinceCursor, initCursorIfMissing } from "../utils/stellar/syncUtils";
+import { diagnoseIncomingByMemoNoCache, sumIncomingXLMByMemoNoCacheExact } from "../utils/stellar/queryUtils";
 import { useSettings } from '../utils/useSettings';
-import { getCursor } from '../utils/db/indexedDbClient';
+import { getNewestCreatedAt, rehydrateEmptyMemos, backfillMemoNorm } from '../utils/db/indexedDbClient';
 
 
 /**
@@ -30,7 +30,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   // Zeitzone: 'local' | 'utc' | 'cst' | 'cdt'
   const [tz, setTz] = useState("local");
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState(null);
+  const [, setResult] = useState(null);
   const [errorKey, setErrorKey] = useState("");
   const ROLE = { FROM: 'from', TO: 'to' };
   const [prog, setProg] = useState({ progress: null, phase: 'idle', page: 0, etaMs: 0, oldest: '' });
@@ -39,9 +39,9 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   const startedAtRef = useRef(0);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [resultAmount, setResultAmount] = useState(null);
-  const firstMatchLocal = prog.firstMatchAt ? formatLocalDateTime(prog.firstMatchAt) : null;
-  const oldestMatchLocal = prog.oldestMatchInRangeAt ? formatLocalDateTime(prog.oldestMatchInRangeAt) : null;
   const { useCache, prefetchDays } = useSettings();
+  const [lastPaymentISO, setLastPaymentISO] = useState(null);
+
 
   // Horizon-Server (Projektvorgabe: immer Horizon)
   const server = getHorizonServer(horizonUrl);
@@ -65,7 +65,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     } else if (heartbeatRef.current) {
       clearInterval(heartbeatRef.current);
       heartbeatRef.current = null;
-      setElapsedMs(0);
     }
     return () => { if (heartbeatRef.current) { clearInterval(heartbeatRef.current); heartbeatRef.current = null; } };
   }, [prog.phase]);
@@ -79,7 +78,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     setToDate(today);
   }, []);
 
- /**
+  /**
    * Konvertiert Date+Time + gewählte TZ in eine UTC-ISO-Zeit (String).
    * - Ohne externe Libs; TZ erfolgt über festen Offset.
    * - CST = UTC-6, CDT = UTC-5, UTC = 0, Local = Browser-Offset.
@@ -110,6 +109,46 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     return new Date(asUTCms - offsetMin * 60 * 1000).toISOString();
   }
 
+  /** Lokale Jetzt-Werte für <input type="date"> und <input type="time"> */
+  function nowDateForInput() {
+    return new Date().toISOString().slice(0, 10); // konsistent zu deinem Default
+  }
+  function nowTimeForInput() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+
+  /**
+   * Setzt das "bis"-Feld auf die aktuelle lokale DAtum und Zeit.
+   */
+  function handleSetToNow() {
+    setToDate(nowDateForInput());
+    setToTime(nowTimeForInput());
+  }
+
+    /** Baut UTC-ISO aus lokaler Eingabe "YYYY-MM-DD" + "HH:mm:ss" */
+  function toUtcIso(dateStr, timeStr) {
+    const [y,m,d] = dateStr.split('-').map(Number);
+    const [hh,mm,ss] = (timeStr || '00:00:00').split(':').map(Number);
+    const dt = new Date(Date.UTC(y, (m-1), d, hh, mm, ss || 0));
+    return dt.toISOString(); // ...Z
+  }
+  /** +1 Sekunde, um obere Grenze exklusiv zu machen */
+  function plus1sIso(iso) {
+    return new Date(new Date(iso).getTime() + 1000).toISOString();
+  }
+
+  // Vereinheitlicht Progress-Updates und merged nested Felder korrekt.
+  const onProgress = useCallback((info = {}) => {
+    setProg((p) => ({
+      ...p,
+      ...info,
+      incomingOverview: {
+        ...(p.incomingOverview || {}),
+        ...(info.incomingOverview || {}),
+      },
+    }));
+  }, []);
+
   /**
    * Startet die Summierung mit optionalem Datum-Filter.
    */
@@ -117,92 +156,87 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   setIsLoading(true);
   setErrorKey("");
   setResult(null);
+  setResultAmount(0);        // ← hier Betrag auf 0 setzen
+  setLastPaymentISO(null);   // optional: „Letzte Zahlung“ zurücksetzen
+
+  console.log('[STM]', 'XlmByMemoPanel.jsx@2025-09-10');
 
   try {
     abortRef.current = new AbortController();
     startedAtRef.current = Date.now();
 
+    // 1) Einheitliche Zeitgrenzen (UTC, obere Grenze exklusiv)
     const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
-    const toISO   = toUTCISO(toDate,   toTime,   tz, ROLE.TO);
+    const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
+    // Optional: nur manuell aktivieren, sonst SLOW
+    // if (import.meta.env.DEV && false) { /* Diagnose deaktiviert */ }
+    const windowMs = Math.max(0, new Date(toISOExc) - new Date(fromISO));
+    const etaMs = Math.min(180000, Math.max(15000, Math.floor(windowMs / 20)));
+    setProg(p => ({ ...p, phase: 'scan', progress: 0, etaMs, page: 0 }));
+    const rangeInfo = { fromISO, toISO: toISOExc, memo: memoQuery };
 
-    const rangeInfo = {
-      fromLocal: `${fromDate || "-"} ${fromTime || ""} ${tz.toUpperCase()}`,
-      toLocal:   `${toDate || "-"} ${toTime || ""} ${tz.toUpperCase()}`,
-    };
+    // 2) Summierung je nach Modus
+    // Immer Live: schnell und korrekt über Horizon
+    const res = await sumIncomingXLMByMemoNoCacheExact({
+      server,
+      accountId: publicKey,
+      memoQuery,
+      fromISO,
+      toISO: toISOExc,
+      onProgress,
+      signal: abortRef.current.signal,
+    });
+    console.log('[STM] path=live-payments join=transactions');
+    console.time('[STM] NoCacheExact');
+    // DEV-Diagnose **deaktiviert**: vermeidet zweiten, teuren Live-Scan
+    // if (import.meta.env.DEV && false) { /* optional manuell aktivierbar */ }
 
-    const onProgress = (info) => setProg((p) => ({ ...p, ...info }));
-    setProg({ progress: 0, phase: "scan", page: 1, etaMs: 0, oldest: "" });
+    console.log('[XlmByMemo] amount =', res.amount);
+    setResult({ total: res.amount, rangeInfo });
+    setResultAmount(res.amount);
 
-    // 👇 WICHTIG: EINMAL hier definieren – außerhalb der if/else-Blöcke
-    let total = 0;
-
-    if (useCache) {
-      // Optional: Sync-Events (UI fängt Fehler via t() ab)
-      window.dispatchEvent(new CustomEvent("stm:cache-sync", {
-        detail: { accountId: publicKey, phase: "start", ts: Date.now() },
-      }));
-
-      const hasCursor = await getCursor(publicKey);
-
-      if (!hasCursor) {
-        const sinceISO = new Date(Date.now() - prefetchDays * 24 * 3600 * 1000).toISOString();
-        await backfillPayments({
-          server,
-          accountId: publicKey,
-          sinceISO,
-          onProgress,
-          signal: abortRef.current.signal,
-        });
-      }
-
-      await refreshSinceCursor({
-        server,
-        accountId: publicKey,
-        onProgress,
-        signal: abortRef.current.signal,
-      });
-
-      window.dispatchEvent(new CustomEvent("stm:cache-sync", {
-        detail: { accountId: publicKey, phase: "done", ts: Date.now() },
-      }));
-
-      // 👇 nur zuweisen, nicht neu deklarieren
-      total = await sumIncomingXLMByMemoCached({
-        accountId: publicKey,
-        memoQuery,
-        fromISO,
-        toISO,
-        onProgress,
-      });
-    } else {
-      setProg({ progress: 0, phase: "scan", page: 1, etaMs: 0, oldest: "" });
-      total = await sumIncomingXLMByMemo({
-        server,
-        accountId: publicKey,
-        memoQuery,
-        fromISO,
-        toISO,
-        onProgress,
-        signal: abortRef.current.signal,
-      });
-    }
-
-    // Ergebnis setzen (State erwartet ein Objekt, nicht 2 Parameter)
-    setResult({ total, rangeInfo });
-    setResultAmount(total);
-
-    setProg((p) => ({ ...p, progress: 1, phase: "finalize", etaMs: 0 }));
+    const durationMs = Date.now() - (startedAtRef.current || Date.now());
+    const newestISO = await getNewestCreatedAt(publicKey);
+    setLastPaymentISO(newestISO);
+    
+    setProg((p) => ({
+      ...p,
+      progress: 1,
+      phase: "finalize",
+      etaMs: 0,
+      durationMs,
+      newestPaymentISO: newestISO
+    }));
   } catch (e) {
     // Einheitlicher, übersetzbarer Fehler-Key
     setErrorKey(e?.message || "error.xlmByMemo.paymentsFetch");
-    setProg({ progress: null, phase: "idle", page: 0, etaMs: 0, oldest: "" });
+    const durationMs = Date.now() - (startedAtRef.current || Date.now());
+    const newestISO = await getNewestCreatedAt(publicKey);
+    setLastPaymentISO(newestISO);
+    setProg((p) => ({
+      ...p,
+      progress: 1,
+      phase: "finalize",
+      etaMs: 0,
+      durationMs,                 // für UI
+      newestPaymentISO: newestISO // für UI
+    }));
+    console.timeEnd('[STM] NoCacheExact');
   } finally {
     setIsLoading(false);
   }
 };
 
 
-  const handleCancel = () => abortRef.current?.abort();
+  // Bricht laufende Requests ab und beendet die UI sauber.
+  // Sichtbarer Text kommt aus i18n (progress.canceled).
+  const handleCancel = () => {
+    try { abortRef.current?.abort(); } catch {void 0;}
+    setIsLoading(false);
+    setProg((p) => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
+    // Optional: Laufzeit zurücksetzen
+    startedAtRef.current = 0;
+  };
 
   return (
     <div className="p-4 rounded-xl border">
@@ -221,6 +255,17 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
           <div className="text-xs text-gray-500 mt-1">
             {t('progress.elapsed', { time: formatElapsedMmSs(elapsedMs) })}
           </div>
+          {prog.phase === 'finalize' && lastPaymentISO && (
+            <div className="text-xs mt-1 opacity-80">
+              {t('cache.lastPaymentAt', { val: formatLocalDateTime(lastPaymentISO) })}
+            </div>
+          )}
+
+          {prog.phase === 'finalize' && (
+            <div className="text-xs mt-1 opacity-80">
+              {t('progress.done')}
+            </div>
+          )}
 
           {/* Summe unter der Progressbar */}
           {typeof resultAmount === 'number' && (
@@ -230,10 +275,11 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
           )}
 
           {/* Abbrechen-Button unter der Progressbar */}
-          {prog.phase !== 'idle' && (
+          {prog.phase !== 'idle' && prog.phase !== 'finalize' && (
             <button
               className="text-sm px-2 py-1 rounded bg-gray-500 text-white mt-2"
               onClick={handleCancel}
+              disabled={prog.phase === 'finalize'}
             >
               {t('progress.cancel')}
             </button>
@@ -245,11 +291,73 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       </div>
 
       {/* Zusatzinfos unter dem Titel */}
-      {(prog.firstMatchAt || prog.oldestMatchInRangeAt) && (
-        <div className="text-xs text-gray-500 mb-2 text-center">
-          {oldestMatchLocal && t('progress.oldestMatchInRangeAt', { date: oldestMatchLocal })}{' '}
-          {firstMatchLocal && '• '}{firstMatchLocal && t('progress.firstMatchAt', { date: firstMatchLocal })}
-          {' • '}{t('progress.counts', { ops: prog.opsTotal, matches: prog.matches })}
+      {/*(prog.firstMatchAt || prog.oldestMatchInRangeAt || prog.memoStats || prog.typeStats) && typeof prog.opsTotal === 'number' && (
+           <div className="text-xs text-gray-500 mb-2 text-center">
+            {t('progress.counts', { ops: prog.opsTotal ?? 0, matches: prog.matches ?? 0 })}
+            {firstMatchLocal && <> • {t('progress.firstMatchAt', { date: firstMatchLocal })}</>}
+            {oldestMatchLocal && <> • {t('progress.oldestMatchInRangeAt', { date: oldestMatchLocal })}</>}
+            {prog.memoStats && (
+              <> • {t('xlmByMemo.debug.memo', { any: prog.memoStats.any ?? 0, exact: prog.memoStats.exact ?? 0 })}
+              </>
+            )}
+            {prog.typeStats && (
+              <> • {t('xlmByMemo.debug.types', {
+                  pay: prog.typeStats.payment ?? 0,
+                  path: prog.typeStats.path ?? 0,
+                  create: prog.typeStats.create ?? 0,
+                  other: prog.typeStats.other ?? 0
+              })}
+              </>
+            )}
+            {prog.incomingStats && (
+              <> • {t('xlmByMemo.debug.incoming', {
+                  toMe: prog.incomingStats.toMe ?? 0,
+                  createToMe: prog.incomingStats.createToMe ?? 0,
+                  nativeInToMe: prog.incomingStats.native ?? 0
+              })}
+              </>
+            )}
+            {prog.incomingOverview && (
+              <> • {t('xlmByMemo.debug.incomingOverview', {
+                  total: prog.incomingOverview.total ?? 0,
+                  unique: prog.incomingOverview.unique ?? 0
+              })}</>
+            )}
+        </div>
+      )*/}
+
+      {/* Kompakte Summary */}
+      {prog.phase === 'finalize' && (
+        <div className="text-gray-500 mb-2 text-sm text-center">
+          <span className="inline-block mx-2">
+            {t('xlmByMemo.summary.correctCount', { n: prog.matches ?? 0 })}
+          </span>
+          <span className="inline-block mx-2">
+            {t('xlmByMemo.summary.otherCount', { n: Math.max(0, (prog.incomingOverview?.total ?? 0) - (prog.matches ?? 0)) })}
+          </span>
+          <span className="inline-block mx-2">
+            {t('xlmByMemo.summary.uniqueWallets', { n: prog.incomingOverview?.unique ?? 0 })}
+          </span>
+        </div>
+      )}
+
+      {/* Vergleich: alle Eingänge ohne Memo-Filter */}
+      {prog.phase === 'finalize' && prog.incomingOverview && (
+        <div className="mt-1 text-sm text-center opacity-90">
+          <span className="inline-block mx-2">
+            {t('xlmByMemo.summary.label')}
+          </span>
+          <span className="inline-block mx-2">
+            {t('xlmByMemo.summary.count', { n: prog.incomingOverview.total ?? 0 })}
+          </span>
+          <span className="inline-block mx-2">
+            {t('xlmByMemo.summary.amount', {
+              amount: (prog.incomingOverview.totalAmount ?? 0).toFixed(7)
+            })}
+          </span>
+          <span className="inline-block mx-2">
+            {t('xlmByMemo.summary.unique', { n: prog.incomingOverview.uniqueAll ?? 0 })}
+          </span>
         </div>
       )}
 
@@ -295,6 +403,16 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
             value={toTime}
             onChange={(e) => setToTime(e.target.value)}
           />
+          <div className="text-right">
+            <button
+              type="button"
+              onClick={handleSetToNow}
+              className="ml-2 px-2 py-1 text-sm rounded border bg-gray-600 hover:bg-gray-500 mt-1"
+              title={t('xlmByMemo.time.setToNowHint')}
+            >
+              {t('xlmByMemo.time.setToNow')}
+            </button>
+          </div>       
         </div>
       </div>
 
@@ -334,3 +452,4 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     </div>
   );
 }
+

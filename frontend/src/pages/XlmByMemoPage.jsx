@@ -4,7 +4,6 @@ import XlmByMemoPanel from '../components/XlmByMemoPanel';
 
 /**
  * Seite: Zeigt die XLM-Summe nach Memo für den aktuell gesetzten Public Key.
- *  - Nutzt ausschließlich die Horizon API.
  *  - Alle sichtbaren Texte gehen über i18n t().
  */
 export default function XlmByMemoPage({ publicKey, horizonUrl = 'https://horizon.stellar.org', onBack }) {

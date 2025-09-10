@@ -34,10 +34,10 @@ npm install
 npm run dev &
 
 # Browser öffnen
-if command -v xdg-open >/dev/null; then
-  echo -e "${BLUE}🌐 Öffne Browser...${NC}"
-  xdg-open http://localhost:$FRONTEND_PORT
-fi
+#if command -v xdg-open >/dev/null; then
+#  echo -e "${BLUE}🌐 Öffne Browser...${NC}"
+#  xdg-open http://localhost:$FRONTEND_PORT
+#fi
 
 echo -e "${GREEN}✅ Beide Server laufen. Mit Ctrl+C kannst du beenden.${NC}"
 wait
