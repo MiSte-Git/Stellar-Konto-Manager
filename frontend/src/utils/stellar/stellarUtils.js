@@ -9,9 +9,26 @@ import {
   Asset
 } from '@stellar/stellar-sdk';
 
-// 🌐 Horizon-Serverinstanz für das aktuelle Netzwerk
+// 🌐 Horizon-Serverinstanz für das aktuelle Netzwerk (DEV: Proxy verwenden)
 const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
-const horizonServer = new Horizon.Server(HORIZON_URL);
+function resolveHorizonUrl(url) {
+  const base = url || HORIZON_URL || 'https://horizon.stellar.org';
+  const isDev = typeof window !== 'undefined' && window.location && /^http:\/\/(localhost|127\.0\.0\.1)/.test(window.location.origin);
+  // Wenn wir im Dev auf localhost laufen und Standard-Horizon verwenden, über den Vite-Proxy gehen
+  if (isDev && (base === 'https://horizon.stellar.org' || base === 'https://horizon.stellar.org/')) {
+    return (window.location.origin || 'http://localhost:5173') + '/horizon';
+  }
+  // Falls in .env bereits '/horizon' steht, in eine absolute URL umwandeln
+  if (typeof base === 'string' && base.startsWith('/')) {
+    return (window?.location?.origin || 'http://localhost:5173') + base;
+  }
+  return base;
+}
+function allowHttpFor(resolvedUrl) {
+  return typeof resolvedUrl === 'string' && resolvedUrl.startsWith('http://');
+}
+const RESOLVED_URL = resolveHorizonUrl(HORIZON_URL);
+const horizonServer = new Horizon.Server(RESOLVED_URL, { allowHttp: allowHttpFor(RESOLVED_URL) });
 
 /**
  * Gibt eine neue Horizon-Instanz zurück (z.B. für Testnet)
@@ -19,7 +36,8 @@ const horizonServer = new Horizon.Server(HORIZON_URL);
  * @returns {Server} - Horizon-Serverinstanz
  */
 export function getHorizonServer(url = HORIZON_URL) {
-  return new Horizon.Server(url);
+  const resolved = resolveHorizonUrl(url);
+  return new Horizon.Server(resolved, { allowHttp: allowHttpFor(resolved) });
 }
 
 /**

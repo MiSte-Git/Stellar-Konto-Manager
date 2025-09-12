@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import { getHorizonServer } from "../utils/stellar/stellarUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
 import { formatLocalDateTime, formatElapsedMmSs } from '../utils/datetime';
-import { sumIncomingXLMByMemoNoCacheExact } from "../utils/stellar/queryUtils";
-import { getNewestCreatedAt, } from '../utils/db/indexedDbClient';
+import { sumIncomingXLMByMemoNoCacheExact_Hybrid as sumIncomingXLMByMemoNoCacheExact } from "../utils/stellar/queryUtils";
+import { getNewestCreatedAt, iterateByAccountMemoRange } from '../utils/db/indexedDbClient';
 
 
 /**
@@ -16,17 +16,18 @@ import { getNewestCreatedAt, } from '../utils/db/indexedDbClient';
 export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizon.stellar.org" , onBack }) {
   const { t } = useTranslation();
   const [memoQuery, setMemoQuery] = useState("");
+  const [memoHistory, setMemoHistory] = useState([]);
   // Datum + Zeit getrennt, damit wir sauber TZ anwenden können
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [fromTime, setFromTime] = useState("00:00");
   const [toTime, setToTime] = useState(() => {
     const now = new Date();
-    // Formatieren in HH:MM (lokale Zeit)
     return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   });
   // Zeitzone: 'local' | 'utc' | 'cst' | 'cdt'
   const [tz, setTz] = useState("local");
+
   const [isLoading, setIsLoading] = useState(false);
   const [, setResult] = useState(null);
   const [errorKey, setErrorKey] = useState("");
@@ -38,7 +39,14 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   const [elapsedMs, setElapsedMs] = useState(0);
   const [resultAmount, setResultAmount] = useState(null);
   const [lastPaymentISO, setLastPaymentISO] = useState(null);
-
+  const rowsRef = useRef([]); // Trefferzeilen für Export „Treffer (Memo)“
+  // Für Extra-Auswertung: Zahlungen mit falschem/leerem Memo
+  const [wrongRows, setWrongRows] = useState([]);
+  const [wrongLoading, setWrongLoading] = useState(false);
+  // Memo-Vergleich: entferne unsichtbare Zeichen + trim (Case-sensitiv wie in queryUtils.cleanMemo)
+  const cleanMemo = useCallback((s) => String(s ?? '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim(), []);
+  const [showWrong, setShowWrong] = useState(false);
+  const [wrongSummary, setWrongSummary] = useState({ count: 0, sum: 0, unique: 0 });
 
   // Horizon-Server (Projektvorgabe: immer Horizon)
   const server = getHorizonServer(horizonUrl);
@@ -50,7 +58,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
         heartbeatRef.current = setInterval(() => {
           setProg(p => {
             if (p.phase === 'idle' || p.phase === 'finalize') return p;
-            // „weiche“ Fortschrittsbewegung anhand ETA
             const elapsed = Date.now() - (startedAtRef.current || Date.now());
             const total = (p.etaMs || 0) + elapsed;
             const soft = total > 0 ? Math.min(0.98, elapsed / total) : p.progress ?? 0;
@@ -75,6 +82,27 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     setToDate(today);
   }, []);
 
+  // Load memo history from localStorage
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('xlmByMemo.memoHistory');
+      if (raw) {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr)) setMemoHistory(arr.filter(x => typeof x === 'string'));
+      }
+    } catch { /* noop */ }
+  }, []);
+
+  function saveMemoToHistory(memo) {
+    const m = String(memo || '').trim();
+    if (!m) return;
+    setMemoHistory(prev => {
+      const next = [m, ...prev.filter(x => x !== m)].slice(0, 20);
+      try { localStorage.setItem('xlmByMemo.memoHistory', JSON.stringify(next)); } catch { /* noop */ }
+      return next;
+    });
+  }
+
   /**
    * Konvertiert Date+Time + gewählte TZ in eine UTC-ISO-Zeit (String).
    * - Ohne externe Libs; TZ erfolgt über festen Offset.
@@ -90,25 +118,41 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     const [y, m, d] = dateStr.split('-').map((x) => parseInt(x, 10));
 
     if (tzMode === 'local') {
-      // Wichtig: als *lokale* Zeit dieses Datums erzeugen (berücksichtigt DST korrekt)
       const local = new Date(y, m - 1, d, hh, mm, ss || 0);
-      return local.toISOString(); // => UTC-ISO
+      return local.toISOString();
     }
 
-    // Für feste Offsets (UTC/CST/CDT) von einer "UTC-Schablone" aus rechnen
     const asUTCms = Date.UTC(y, m - 1, d, hh, mm, ss || 0);
     let offsetMin = 0;
-    if (tzMode === 'utc') offsetMin = 0;
-    else if (tzMode === 'cst') offsetMin = -6 * 60; // UTC-6
-    else if (tzMode === 'cdt') offsetMin = -5 * 60; // UTC-5
+    if (tzMode === 'utc') {
+      offsetMin = 0;
+    } else if (tzMode === 'cst') {
+      offsetMin = -6 * 60;
+    } else if (tzMode === 'cdt') {
+      offsetMin = -5 * 60;
+    } else if (tzMode === 'europe_zurich') {
+      function lastSunday(year, monthIndex) {
+        const last = new Date(Date.UTC(year, monthIndex + 1, 0, 0, 0, 0));
+        const day = last.getUTCDay();
+        const diff = day; // days since Sunday
+        return new Date(Date.UTC(year, monthIndex + 1, 0 - diff, 0, 0, 0));
+      }
+      const lsMar = lastSunday(y, 2);   // March
+      const lsOct = lastSunday(y, 9);   // October
+      const dstStartUTC = new Date(lsMar.getTime() + 1 * 60 * 60 * 1000); // 01:00Z
+      const dstEndUTC   = new Date(lsOct.getTime() + 1 * 60 * 60 * 1000); // 01:00Z
+      // Assume CET (+1h) first to map wall-time to a UTC guess for boundary comparison
+      const guessUTCfromCET = new Date(asUTCms - 60 * 60 * 1000);
+      const inDST = (guessUTCfromCET >= dstStartUTC) && (guessUTCfromCET < dstEndUTC);
+      offsetMin = inDST ? +120 : +60;
+    }
 
-    // Eingabe war "in tzMode" → UTC = Eingabe - Offset
     return new Date(asUTCms - offsetMin * 60 * 1000).toISOString();
   }
 
   /** Lokale Jetzt-Werte für <input type="date"> und <input type="time"> */
   function nowDateForInput() {
-    return new Date().toISOString().slice(0, 10); // konsistent zu deinem Default
+    return new Date().toISOString().slice(0, 10);
   }
   function nowTimeForInput() {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -129,8 +173,8 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
 
   // Vereinheitlicht Progress-Updates und merged nested Felder korrekt.
   const onProgress = useCallback((info = {}) => {
-    setProg((p) => ({
-      ...p,
+      setProg((p) => ({
+        ...p,
       ...info,
       incomingOverview: {
         ...(p.incomingOverview || {}),
@@ -141,82 +185,460 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
 
   /**
    * Startet die Summierung mit optionalem Datum-Filter.
+   * rowsRef.current wird dabei mit Trefferzeilen befüllt.
    */
   const handleCalculate = async () => {
-  setIsLoading(true);
-  setErrorKey("");
-  setResult(null);
-  setResultAmount(0);        // ← hier Betrag auf 0 setzen
-  setLastPaymentISO(null);   // optional: „Letzte Zahlung“ zurücksetzen
+    setIsLoading(true);
+    setErrorKey("");
+    setResult(null);
+    setResultAmount(0);
+    setLastPaymentISO(null);
 
-  console.log('[STM]', 'XlmByMemoPanel.jsx@2025-09-10');
+    // store memo to history
+    saveMemoToHistory(memoQuery);
+    try {
+      abortRef.current = new AbortController();
+      startedAtRef.current = Date.now();
 
-  try {
-    abortRef.current = new AbortController();
-    startedAtRef.current = Date.now();
+      // Zeitgrenzen (UTC, obere Grenze exklusiv)
+      const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
+      const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
+      const windowMs = Math.max(0, new Date(toISOExc) - new Date(fromISO));
+      const etaMs = Math.min(180000, Math.max(15000, Math.floor(windowMs / 20)));
+      setProg(p => ({ ...p, phase: 'scan', progress: 0, etaMs, page: 0 }));
+      const rangeInfo = { fromISO, toISO: toISOExc, memo: memoQuery };
 
-    // 1) Einheitliche Zeitgrenzen (UTC, obere Grenze exklusiv)
-    const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
-    const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
-    // Optional: nur manuell aktivieren, sonst SLOW
-    // if (import.meta.env.DEV && false) { /* Diagnose deaktiviert */ }
-    const windowMs = Math.max(0, new Date(toISOExc) - new Date(fromISO));
-    const etaMs = Math.min(180000, Math.max(15000, Math.floor(windowMs / 20)));
-    setProg(p => ({ ...p, phase: 'scan', progress: 0, etaMs, page: 0 }));
-    const rangeInfo = { fromISO, toISO: toISOExc, memo: memoQuery };
+      // Zeilenspeicher vor Lauf leeren
+      rowsRef.current = [];
 
-    // 2) Summierung je nach Modus
-    // Immer Live: schnell und korrekt über Horizon
-    const res = await sumIncomingXLMByMemoNoCacheExact({
-      server,
-      accountId: publicKey,
-      memoQuery,
-      fromISO,
-      toISO: toISOExc,
-      onProgress,
-      signal: abortRef.current.signal,
-    });
-    console.log('[STM] path=live-payments join=transactions');
-    console.time('[STM] NoCacheExact');
-    // DEV-Diagnose **deaktiviert**: vermeidet zweiten, teuren Live-Scan
-    // if (import.meta.env.DEV && false) { /* optional manuell aktivierbar */ }
+      // Live, Tx-First (bewährt, liefert sicher ein Ergebnis)
+      const res = await sumIncomingXLMByMemoNoCacheExact({
+        server,
+        accountId: publicKey,
+        memoQuery,
+          fromISO,
+          toISO: toISOExc,
+        onProgress,
+        collectRow: (r) => { rowsRef.current.push({ ...r, memo: String(r?.memo ?? r?.transaction_memo ?? '') }); },
+        signal: abortRef.current.signal,
+      });
 
-    console.log('[XlmByMemo] amount =', res.amount);
-    setResult({ total: res.amount, rangeInfo });
-    setResultAmount(res.amount);
+      setResult({ total: res.amount, rangeInfo });
+      setResultAmount(res.amount);
 
-    const durationMs = Date.now() - (startedAtRef.current || Date.now());
-    const newestISO = await getNewestCreatedAt(publicKey);
-    setLastPaymentISO(newestISO);
-    
-    setProg((p) => ({
-      ...p,
-      progress: 1,
-      phase: "finalize",
-      etaMs: 0,
-      durationMs,
-      newestPaymentISO: newestISO
-    }));
-  } catch (e) {
-    // Einheitlicher, übersetzbarer Fehler-Key
-    setErrorKey(e?.message || "error.xlmByMemo.paymentsFetch");
-    const durationMs = Date.now() - (startedAtRef.current || Date.now());
-    const newestISO = await getNewestCreatedAt(publicKey);
-    setLastPaymentISO(newestISO);
-    setProg((p) => ({
-      ...p,
-      progress: 1,
-      phase: "finalize",
-      etaMs: 0,
-      durationMs,                 // für UI
-      newestPaymentISO: newestISO // für UI
-    }));
-    console.timeEnd('[STM] NoCacheExact');
-  } finally {
-    setIsLoading(false);
+      const newestISO = await getNewestCreatedAt(publicKey);
+      setLastPaymentISO(newestISO);
+      setProg((p) => ({
+        ...p,
+        progress: 1,
+        phase: 'finalize',
+        etaMs: 0,
+        durationMs: Date.now() - (startedAtRef.current || Date.now()),
+        newestPaymentISO: newestISO,
+        matches: res.hits,
+        incomingOverview: res.incomingOverview || p.incomingOverview
+      }));
+    } catch (e) {
+      setErrorKey(e?.message || 'error.xlmByMemo.paymentsFetch');
+      const newestISO = await getNewestCreatedAt(publicKey);
+      setLastPaymentISO(newestISO);
+      setProg((p) => ({
+        ...p,
+        progress: 1,
+        phase: 'finalize',
+        etaMs: 0,
+        durationMs: Date.now() - (startedAtRef.current || Date.now()),
+        newestPaymentISO: newestISO,
+      }));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // CSV Builder & Download
+  function toCsv(rows, headersOpt) {
+    const headers = (headersOpt && headersOpt.length)
+      ? headersOpt
+      : ['created_at','tx_hash','from','to','amount','asset_type','memo'];
+    const esc = (v) => {
+      const s = v == null ? '' : String(v);
+      const q = s.includes(';') || s.includes('"') || s.includes('\n');
+      const d = s.replace(/"/g, '""');
+      return q ? `"${d}"` : d;
+    };
+    const lines = [headers.join(';')];
+    for (const r of rows) lines.push(headers.map(h => esc(r[h])).join(';'));
+    return '\uFEFF' + lines.join('\n'); // BOM für Excel
   }
-};
+  function downloadCsv(filename, text) {
+    const blob = new Blob([text], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const click = () => {
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    };
+    if (document.readyState === 'complete') {
+      click();
+    } else {
+      window.requestAnimationFrame(click);
+    }
+  }
 
+  // Hilfsset wie in queryUtils: erlaubte Payment-Operationen
+  const PAY_TYPES = new Set([
+    'payment',
+    'path_payment',
+    'path_payment_strict_receive',
+    'path_payment_strict_send',
+  ]);
+
+  // Export 1: Treffer (exaktes Memo im Zeitraum) – wenn keine Trefferliste vorhanden ist,
+  // werden nur die Treffer (mit passendem Memo) aus dem Cache gezogen. Exportiert wird aber immer die vorhandene Trefferliste unverändert.
+  const handleExportMatchesCsv = useCallback(async () => {
+    try {
+      const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
+      const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
+
+      // Falls rowsRef noch leer (z. B. Export ohne „Berechnen“): schnell aus Cache nachbauen (nur Treffer)
+      if (!rowsRef.current?.length) {
+        const q = String(memoQuery ?? '');
+        const tmp = [];
+        await iterateByAccountMemoRange({
+      accountId: publicKey,
+          memoQuery: q,
+          fromISO,
+          toISO: toISOExc,
+          onRow: (v) => {
+            const memoRaw = String(v.memo ?? v.transaction_memo ?? '');
+            // Eingehende native Payments (Treffer = exaktes Memo, bereits durch iterateByAccountMemoRange gesichert)
+            if (!PAY_TYPES.has(String(v.type || ''))) return;
+            if (v.to !== publicKey) return;
+            if ((v.asset_type || 'native') !== 'native') return;
+            const amt = parseFloat(v.amount || '0');
+            if (!Number.isFinite(amt) || amt <= 0) return;
+            tmp.push({
+              created_at: v.created_at,
+              tx_hash: v.transaction_hash,
+              from: v.from || '',
+              to: v.to || publicKey,
+              amount: v.amount,
+              asset_type: v.asset_type,
+              memo: memoRaw,
+    });
+          }
+        });
+        rowsRef.current = tmp;
+      }
+
+      const csv = toCsv(rowsRef.current);
+      const safeMemo = (memoQuery || 'memo').replace(/[^A-Za-z0-9_-]+/g, '_');
+      const fn = `xlm_by_memo_matches_${safeMemo}_${fromISO}_${toISOExc}.csv`;
+      downloadCsv(fn, csv);
+    } catch (e) {
+      setErrorKey('exportCsv.failed');
+  }
+  }, [memoQuery, fromDate, fromTime, toDate, toTime, tz, publicKey]);
+
+  // Export: Alle eingehenden nativen Payments im Zeitraum (inkl. memo) mit robustem Nachladen
+  const handleExportCsv = useCallback(async () => {
+    try {
+      const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
+      const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
+
+      // Fortschritt initialisieren
+      startedAtRef.current = Date.now();
+      const windowMs = Math.max(0, new Date(toISOExc) - new Date(fromISO));
+      const etaMs = Math.min(180000, Math.max(15000, Math.floor(windowMs / 20)));
+      setProg(p => ({ ...p, phase: 'export', progress: 0, etaMs, page: 0 }));
+
+      // Ungefilterter Export: alle Operations für den Account im Zeitraum
+      let page = await server
+        .operations()
+        .forAccount(publicKey)
+        .order('desc')
+        .limit(200)
+        .join('transactions')
+        .call();
+
+      const rows = [];
+      const pending = []; // fehlende Memos ggf. nachladen
+      let stop = false;
+      let pages = 0;
+
+      const headers = [
+        'created_at','tx_hash','op_id','type','dir','source','from','to','amount','asset_type','asset_code','asset_issuer','starting_balance','account','funder','into','claimable_balance_id','memo','memo_source','raw_len','raw_compact','raw'
+      ];
+
+      while (!stop) {
+        const recs = page?.records || [];
+        for (const r of recs) {
+          const created = r.created_at || r?.transaction?.created_at || '';
+          if (toISOExc && created >= toISOExc) continue;   // obere Grenze exklusiv
+          if (fromISO && created < fromISO) { stop = true; break; }
+
+          const memoTx = r?.transaction?.memo;
+          const memoOp = r?.memo;
+          const memoRaw = String((memoTx != null ? memoTx : (memoOp != null ? memoOp : '')));
+          const memo_source = memoTx != null ? 'tx' : (memoOp != null ? 'op' : '');
+
+          // Richtung heuristisch bestimmen (bezogen auf publicKey)
+          let dir = '';
+          const t = String(r.type || '');
+          if ((t === 'payment' || t.startsWith('path_payment')) && (r.from || r.to)) {
+            if (r.to === publicKey) dir = 'in';
+            else if (r.from === publicKey) dir = 'out';
+          } else if (t === 'create_account') {
+            if (r.account === publicKey) dir = 'in';
+            else if (r.funder === publicKey) dir = 'out';
+          } else if (t === 'account_merge') {
+            if (r.into === publicKey) dir = 'in';
+            else if (r.account === publicKey) dir = 'out';
+          } else if (t === 'claim_claimable_balance') {
+            if ((r.account || r.claimant) === publicKey) dir = 'in';
+          } else if (t === 'change_trust' || t === 'set_options' || t === 'manage_data') {
+            dir = 'self';
+          }
+
+          // RAW und kompakte Variante
+          let rawStr = '';
+          try { rawStr = JSON.stringify(r) || ''; } catch { rawStr = ''; }
+          const rc = { ...r };
+          try { delete rc._links; delete rc.transaction; } catch { /* noop */ }
+          let rawCompact = '';
+          try { rawCompact = JSON.stringify(rc) || ''; } catch { rawCompact = ''; }
+
+          const row = {
+            created_at: r.created_at,
+            tx_hash: r.transaction_hash || '',
+            op_id: r.id || '',
+            type: t,
+            dir,
+            source: r.source_account || '',
+            from: r.from || r.sponsor || '',
+            to: r.to || r.into || r.account || '',
+            amount: r.amount || r.starting_balance || r.buy_amount || r.sell_amount || '',
+            asset_type: r.asset_type || r.buying_asset_type || r.selling_asset_type || '',
+            asset_code: r.asset_code || r.buying_asset_code || r.selling_asset_code || '',
+            asset_issuer: r.asset_issuer || r.buying_asset_issuer || r.selling_asset_issuer || '',
+            starting_balance: r.starting_balance || '',
+            account: r.account || '',
+            funder: r.funder || '',
+            into: r.into || '',
+            claimable_balance_id: r.balance_id || r.claimable_balance_id || '',
+            memo: memoRaw,
+            memo_source,
+            raw_len: String(rawStr.length),
+            raw_compact: rawCompact,
+            raw: rawStr,
+          };
+
+          const rowIndex = rows.length;
+          rows.push(row);
+          if (!memoRaw && r.transaction_hash) {
+            pending.push({ tx_hash: r.transaction_hash, rowIndex });
+          }
+        }
+        if (stop || !page.next) break;
+        pages += 1;
+        if (pages % 5 === 0) setProg(p => ({ ...p, phase: 'export', page: pages }));
+        page = await page.next();
+      }
+
+      // Fehlende Memos nachladen (schonend parallel)
+      if (pending.length) {
+        const limit = Math.min(8, Math.max(2, (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 6));
+        let idx = 0;
+        const worker = async () => {
+          while (idx < pending.length) {
+            const cur = pending[idx++];
+            try {
+              const tx = await server.transactions().transaction(cur.tx_hash).call();
+              const m = tx?.memo != null ? String(tx.memo) : '';
+              if (m) rows[cur.rowIndex].memo = m;
+            } catch { /* ignore */ }
+          }
+        };
+        await Promise.all(Array.from({ length: limit }, worker));
+      }
+
+      const csv = toCsv(rows, headers);
+      const ts = new Date().toISOString().replace(/[:.]/g, '-');
+      const fn = `ops_all_${fromISO}_${toISOExc}_${ts}.csv`;
+      downloadCsv(fn, csv);
+
+      setProg(p => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
+    } catch (e) {
+      setErrorKey('exportCsv.failed');
+      setProg(p => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
+    }
+  }, [fromDate, fromTime, toDate, toTime, tz, publicKey, server]);
+
+  // Optional: Beide auf einmal exportieren
+  const handleExportBothCsv = useCallback(async () => {
+    await handleExportCsv();
+    await handleExportMatchesCsv();
+  }, [handleExportCsv, handleExportMatchesCsv]);
+
+  // Scan: Eingehende native Zahlungen mit falschem/leerem Memo im Zeitraum
+  const handleShowWrongMemos = useCallback(async () => {
+    try {
+      setWrongLoading(true);
+      setProg(p => ({ ...p, phase: 'scan', progress: 0, page: 0 }));
+      setShowWrong(false);
+      setWrongRows([]);
+      setWrongSummary({ count: 0, sum: 0, unique: 0 });
+
+      const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
+      const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
+      const q = String(memoQuery || '');
+
+      // Auf Operations umstellen, um auch create_account (Eingang) zu erfassen
+      let page = await server
+        .operations()
+        .forAccount(publicKey)
+        .order('desc')
+        .limit(200)
+        .join('transactions')
+        .call();
+
+      const rows = [];
+      const uniq = new Set();
+      const pending = []; // Einträge ohne Memo → später per Tx nachladen
+      let stop = false;
+      let pages = 0;
+      const qClean = cleanMemo(q);
+      while (!stop) {
+        const recs = page?.records || [];
+        for (const r of recs) {
+          const created = r.created_at || r?.transaction?.created_at || '';
+          if (toISOExc && created >= toISOExc) continue;   // obere Grenze exklusiv
+          if (fromISO && created < fromISO) { stop = true; break; }
+
+          const t = String(r.type || '');
+
+          let amountStr = '';
+          let fromAddr = '';
+          let toAddr = '';
+
+          if (t === 'payment' || t.startsWith('path_payment')) {
+            if ((r.asset_type || 'native') !== 'native') continue;
+            if (r.to !== publicKey) continue;
+            amountStr = r.amount || '0';
+            fromAddr = r.from || '';
+            toAddr = r.to || publicKey;
+          } else if (t === 'create_account') {
+            if (r.account !== publicKey) continue; // Eingang: Konto wurde erstellt
+            amountStr = r.starting_balance || '0';
+            fromAddr = r.funder || '';
+            toAddr = r.account || publicKey;
+          } else {
+            continue; // andere Typen ignorieren
+          }
+
+          const amt = parseFloat(amountStr);
+          if (!Number.isFinite(amt) || amt <= 0) continue;
+
+          const memoTx = r?.transaction?.memo;
+          const memoOp = r?.memo;
+          const memoRaw = memoTx != null ? String(memoTx) : (memoOp != null ? String(memoOp) : '');
+          const memoClean = cleanMemo(memoRaw);
+
+          if (memoClean === qClean) {
+            // korrekter Treffer → nicht in Liste der falschen/leer Memos
+            continue;
+          }
+
+          if (!memoRaw && r.transaction_hash) {
+            // Memo fehlt trotz join → später per Tx nachladen und erst dann entscheiden
+            pending.push({
+              created_at: r.created_at,
+              from: fromAddr,
+              to: toAddr,
+              amount: amountStr,
+              tx_hash: r.transaction_hash,
+            });
+          } else {
+            // Falsches Memo (nicht leer) → direkt aufnehmen
+            rows.push({
+              created_at: r.created_at,
+              from: fromAddr,
+              to: toAddr,
+              amount: amountStr,
+              memo: memoRaw,
+              tx_hash: r.transaction_hash,
+            });
+            if (fromAddr) uniq.add(fromAddr);
+          }
+        }
+        if (stop || !page.next) break;
+        pages += 1;
+        if (pages % 3 === 0) setProg(p => ({ ...p, phase: 'scan', page: pages }));
+        page = await page.next();
+      }
+
+      // Fehlende Memos per Tx-Details nachladen und danach filtern
+      if (pending.length) {
+        setProg(p => ({ ...p, phase: 'txFetch', progress: 0 }));
+        const limit = Math.min(8, Math.max(2, (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 6));
+        let idx = 0;
+        let done = 0;
+        const total = pending.length;
+        const worker = async () => {
+          while (idx < pending.length) {
+            const cur = pending[idx++];
+            try {
+              const tx = await server.transactions().transaction(cur.tx_hash).call();
+              const memoTx = tx?.memo != null ? String(tx.memo) : '';
+              if (cleanMemo(memoTx) === qClean) {
+                // doch korrektes Memo → nicht in der falsche/leer Liste
+                continue;
+              }
+              rows.push({
+                created_at: cur.created_at,
+                from: cur.from,
+                to: cur.to,
+                amount: cur.amount,
+                memo: memoTx, // kann leer bleiben → als (leer) ausgewiesen
+                tx_hash: cur.tx_hash,
+              });
+              if (cur.from) uniq.add(cur.from);
+              done += 1;
+              if (done % 10 === 0 || done === total) setProg(p => ({ ...p, phase: 'txFetch', progress: total ? done/total : 1 }));
+            } catch {
+              // Bei Fehler: konservativ als (leer) aufnehmen
+              rows.push({
+                created_at: cur.created_at,
+                from: cur.from,
+                to: cur.to,
+                amount: cur.amount,
+                memo: '',
+                tx_hash: cur.tx_hash,
+              });
+              if (cur.from) uniq.add(cur.from);
+              done += 1;
+              if (done % 10 === 0 || done === total) setProg(p => ({ ...p, phase: 'txFetch', progress: total ? done/total : 1 }));
+            }
+          }
+        };
+        await Promise.all(Array.from({ length: limit }, worker));
+      }
+
+      const sum = rows.reduce((a, r) => a + (parseFloat(r.amount) || 0), 0);
+      setWrongRows(rows);
+      setWrongSummary({ count: rows.length, sum, unique: uniq.size });
+      setShowWrong(true);
+      setProg(p => ({ ...p, phase: 'finalize', progress: 1 }));
+    } catch (e) {
+      setErrorKey('xlmByMemo.wrongMemos.failed');
+    } finally {
+      setWrongLoading(false);
+    }
+  }, [fromDate, fromTime, toDate, toTime, tz, memoQuery, publicKey, server]);
 
   // Bricht laufende Requests ab und beendet die UI sauber.
   // Sichtbarer Text kommt aus i18n (progress.canceled).
@@ -224,7 +646,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     try { abortRef.current?.abort(); } catch {void 0;}
     setIsLoading(false);
     setProg((p) => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
-    // Optional: Laufzeit zurücksetzen
     startedAtRef.current = 0;
   };
 
@@ -251,12 +672,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
             </div>
           )}
 
-          {prog.phase === 'finalize' && (
-            <div className="text-xs mt-1 opacity-80">
-              {t('progress.done')}
-            </div>
-          )}
-
           {/* Summe unter der Progressbar */}
           {typeof resultAmount === 'number' && (
             <div className="text-sm font-medium mt-1">
@@ -279,42 +694,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
         {/* Rechts: (frei) */}
         <div className="col-span-1" />
       </div>
-
-      {/* Zusatzinfos unter dem Titel */}
-      {/*(prog.firstMatchAt || prog.oldestMatchInRangeAt || prog.memoStats || prog.typeStats) && typeof prog.opsTotal === 'number' && (
-           <div className="text-xs text-gray-500 mb-2 text-center">
-            {t('progress.counts', { ops: prog.opsTotal ?? 0, matches: prog.matches ?? 0 })}
-            {firstMatchLocal && <> • {t('progress.firstMatchAt', { date: firstMatchLocal })}</>}
-            {oldestMatchLocal && <> • {t('progress.oldestMatchInRangeAt', { date: oldestMatchLocal })}</>}
-            {prog.memoStats && (
-              <> • {t('xlmByMemo.debug.memo', { any: prog.memoStats.any ?? 0, exact: prog.memoStats.exact ?? 0 })}
-              </>
-            )}
-            {prog.typeStats && (
-              <> • {t('xlmByMemo.debug.types', {
-                  pay: prog.typeStats.payment ?? 0,
-                  path: prog.typeStats.path ?? 0,
-                  create: prog.typeStats.create ?? 0,
-                  other: prog.typeStats.other ?? 0
-              })}
-              </>
-            )}
-            {prog.incomingStats && (
-              <> • {t('xlmByMemo.debug.incoming', {
-                  toMe: prog.incomingStats.toMe ?? 0,
-                  createToMe: prog.incomingStats.createToMe ?? 0,
-                  nativeInToMe: prog.incomingStats.native ?? 0
-              })}
-              </>
-            )}
-            {prog.incomingOverview && (
-              <> • {t('xlmByMemo.debug.incomingOverview', {
-                  total: prog.incomingOverview.total ?? 0,
-                  unique: prog.incomingOverview.unique ?? 0
-              })}</>
-            )}
-        </div>
-      )*/}
 
       {/* Kompakte Summary */}
       {prog.phase === 'finalize' && (
@@ -346,19 +725,25 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
             })}
           </span>
           <span className="inline-block mx-2">
-            {t('xlmByMemo.summary.unique', { n: prog.incomingOverview.uniqueAll ?? 0 })}
+            {t('xlmByMemo.summary.unique', { n: prog.incomingOverview?.uniqueAll ?? 0 })}
           </span>
         </div>
       )}
 
-      {/* Memo */}
+      {/* Memo mit History */}
       <label className="block text-sm mb-1">{t("xlmByMemo.memo.label")}</label>
       <input
-        className="w-full border rounded p-2 mb-3"
+        className="w-full border rounded p-2 mb-1"
         placeholder={t("xlmByMemo.memo.placeholder")}
         value={memoQuery}
         onChange={(e) => setMemoQuery(e.target.value)}
+        list="memo-history"
       />
+      <datalist id="memo-history">
+        {memoHistory.map((m, i) => (
+          <option key={i} value={m} />
+        ))}
+      </datalist>
 
       {/* Datum & Zeit (optional) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -417,10 +802,18 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
           <option value="cst">{t("xlmByMemo.tz.cst")}</option>
           <option value="cdt">{t("xlmByMemo.tz.cdt")}</option>
           <option value="utc">{t("xlmByMemo.tz.utc")}</option>
+          <option value="europe_zurich">{t("xlmByMemo.tz.europe_zurich")}</option>
           <option value="local">{t("xlmByMemo.tz.local")}</option>
         </select>
         <p className="text-xs text-gray-500 mt-1">{t("xlmByMemo.tz.note")}</p>
+        <div className="mt-1 text-xs text-gray-500">
+          {t('xlmByMemo.tz.window', {
+            from: fromDate ? toUTCISO(fromDate, fromTime, tz, ROLE.FROM) : '—',
+            to: toDate ? plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO)) : '—'
+          })}
+        </div>
       </div>
+
 
       <button
         className="mt-4 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
@@ -429,6 +822,84 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       >
         {isLoading ? t("xlmByMemo.action.loading") : t("xlmByMemo.action.calculate")}
       </button>
+
+      {/* Export */}
+      <div className="mt-2 flex items-start gap-3">
+        <button onClick={handleExportMatchesCsv} className="btn btn-secondary">
+          {t('xlmByMemo.export.csvMatches')}
+        </button>
+        <button onClick={handleExportCsv} className="btn btn-secondary">
+          {t('xlmByMemo.export.csvAll')}
+        </button>
+        <button onClick={handleExportBothCsv} className="btn btn-secondary">
+          {t('xlmByMemo.export.csvBoth')}
+        </button>
+        <button
+          onClick={handleShowWrongMemos}
+          className="px-2 py-1 text-sm rounded border bg-amber-600 text-white hover:bg-amber-500 disabled:opacity-50"
+          disabled={wrongLoading || !memoQuery}
+          title={t('xlmByMemo.wrongMemos.hint')}
+        >
+          {t('xlmByMemo.wrongMemos.button')}
+        </button>
+        {wrongLoading && <span className="text-xs opacity-80">{t('xlmByMemo.wrongMemos.scanning')}</span>}
+      </div>
+
+      {/* Ergebnis: falsche/leer Memos */}
+      {showWrong && (
+        <div className="mt-3 border rounded p-2">
+          <div className="text-sm font-medium mb-1">{t('xlmByMemo.wrongMemos.title')}</div>
+          <div className="text-xs text-gray-600 mb-2">
+            {t('xlmByMemo.wrongMemos.summary', { count: wrongSummary.count, sum: Number(wrongSummary.sum).toFixed(7), unique: wrongSummary.unique })}
+          </div>
+          <div className="overflow-auto max-h-64 text-xs">
+            <div className="grid grid-cols-5 gap-2 font-semibold">
+              <div>{t('xlmByMemo.wrongMemos.columns.created_at')}</div>
+              <div>{t('xlmByMemo.wrongMemos.columns.from')}</div>
+              <div>{t('xlmByMemo.wrongMemos.columns.amount')}</div>
+              <div>{t('xlmByMemo.wrongMemos.columns.memo')}</div>
+              <div>{t('xlmByMemo.wrongMemos.columns.tx_hash')}</div>
+            </div>
+            <div className="mt-1">
+              {wrongRows.map((r, i) => (
+                <div key={i} className="grid grid-cols-5 gap-2 py-0.5">
+                  <div className="font-mono">{r.created_at}</div>
+                  <div className="font-mono break-all">{r.from}</div>
+                  <div className="font-mono">{r.amount}</div>
+                  <div className="font-mono break-all">{r.memo || '(leer)'}</div>
+                  <div className="font-mono break-all">{r.tx_hash}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-2 flex gap-2">
+            <button
+              className="px-2 py-1 text-sm rounded border bg-gray-600 text-white hover:bg-gray-500"
+              onClick={() => {
+                const headers = ['created_at','from','to','amount','memo','tx_hash'];
+                const csv = toCsv(wrongRows, headers);
+                const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
+                const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
+                const safeMemo = (memoQuery || 'memo').replace(/[^A-Za-z0-9_-]+/g, '_');
+                const fn = `wrong_memos_${safeMemo}_${fromISO}_${toISOExc}.csv`;
+                downloadCsv(fn, csv);
+              }}
+            >
+              {t('xlmByMemo.wrongMemos.csv')}
+            </button>
+            <button
+              className="px-2 py-1 text-sm rounded border"
+              onClick={async () => {
+                const header = `${t('xlmByMemo.wrongMemos.columns.created_at')}\t${t('xlmByMemo.wrongMemos.columns.from')}\t${t('xlmByMemo.wrongMemos.columns.amount')}\t${t('xlmByMemo.wrongMemos.columns.memo')}\t${t('xlmByMemo.wrongMemos.columns.tx_hash')}`;
+                const lines = [header, ...wrongRows.map(r => `${r.created_at}\t${r.from}\t${r.amount}\t${r.memo || '(leer)'}\t${r.tx_hash}`)].join('\n');
+                try { await navigator.clipboard.writeText(lines); } catch { /* noop */ }
+              }}
+            >
+              {t('xlmByMemo.wrongMemos.clipboard')}
+            </button>
+          </div>
+        </div>
+      )}
 
       {errorKey && <div className="mt-3 text-red-600">{t(errorKey)}</div>}
 
@@ -442,4 +913,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     </div>
   );
 }
+
+
 
