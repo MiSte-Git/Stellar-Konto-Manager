@@ -391,24 +391,19 @@ export async function iterateByAccountMemoRange({ accountId, memoQuery, fromISO,
     try {
       const tx = db.transaction([STORE], 'readonly');
       const os = tx.objectStore(STORE);
-      const hasCombo = os.indexNames.contains('by_account_memo_created');
-      const idx = os.index(hasCombo ? 'by_account_memo_created' : 'by_account_memo');
+      // Case-sensitives Matching: immer den 2er-Index ['accountId','memo'] verwenden
+      const idx = os.index('by_account_memo');
 
-      const keyMemo = hasCombo ? normMemo(memoRaw) : memoRaw;
-      const range = hasCombo
-        ? IDBKeyRange.bound([accountId, keyMemo, fromISO || ''], [accountId, keyMemo, toISO || '\uffff'])
-        : IDBKeyRange.only([accountId, keyMemo]);
+      const range = IDBKeyRange.only([accountId, memoRaw]);
 
       const req = idx.openCursor(range, 'next');
       req.onsuccess = () => {
         const cur = req.result;
         if (!cur) return resolve();
         const v = cur.value;
-        // falls alter 2er-Index: Zeitfenster lokal eindampfen
-        if (!hasCombo) {
-          if ((fromISO && v.created_at < fromISO) || (toISO && v.created_at > toISO)) {
-            return cur.continue();
-          }
+        // Zeitfenster lokal filtern
+        if ((fromISO && v.created_at < fromISO) || (toISO && v.created_at > toISO)) {
+          return cur.continue();
         }
         onRow?.(v);
         cur.continue();

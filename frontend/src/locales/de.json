@@ -129,6 +129,9 @@
     "results": "Ergebnisse:",
     "yes": "Ja"
   },
+  "exportCsv": {
+    "failed": "CSV-Export fehlgeschlagen"
+  },
   "publicKey": {
     "destination": {
       "error": "Ungültiger Ziel-Schlüssel.",
@@ -205,6 +208,32 @@
       "incoming": "Incoming – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
       "incomingOverview": "Eingänge: {{total}} • beteiligte Wallets: {{unique}}"
     },
+    "export": {
+      "csv": "CSV prüfen (Treffer)",
+      "csvMatches": "CSV prüfen (Treffer)",
+      "csvAll": "Als CSV exportieren (alle Operationen)",
+      "csvBoth": "Beide CSVs speichern"
+    },
+    "exportCsv": {
+      "failed": "CSV-Export fehlgeschlagen: {{detail}}"
+    },
+    "wrongMemos": {
+      "button": "Wallets mit falschem/leerem Memo anzeigen",
+      "scanning": "… scannt falsche/leere Memos",
+      "hint": "Filtert eingehende Zahlungen im Zeitraum und zeigt Absender mit falschem/leerem Memo",
+      "title": "Falsche/Leere Memos im Zeitraum",
+      "summary": "Anzahl: {{count}} • Summe: {{sum}} XLM • Eindeutige Wallets: {{unique}}",
+      "csv": "CSV herunterladen",
+      "clipboard": "In Zwischenablage kopieren",
+      "failed": "Fehler beim Laden der Zahlungen mit falschem/leerem Memo.",
+      "columns": {
+        "created_at": "created_at",
+        "from": "from",
+        "amount": "amount",
+        "memo": "memo",
+        "tx_hash": "tx_hash"
+      }
+    },
     "memo": {
       "label": "Memo-Suchtext (Teilstring, Groß-/Kleinschreibung beachten)",
       "placeholder": "Memo (Teilstring, Groß-/Kleinschreibung beachten)"
@@ -238,7 +267,9 @@
       "label": "Zeitzone für Datum/Uhrzeit",
       "local": "Lokale Zeitzone",
       "note": "Datum/Uhrzeit werden in der gewählten Zeitzone interpretiert und vor der Suche automatisch in UTC umgerechnet.",
-      "utc": "UTC"
+      "utc": "UTC",
+      "europe_zurich": "Europe/Zurich (CET/CEST)",
+      "window": "Genutztes UTC-Zeitfenster: {{from}} → {{to}} (Bis exklusiv)"
     }
   },
   "buildInfo": {
@@ -259,6 +290,9 @@
       "idle": "Bereit…",
       "scan": "Scanne Zahlungen (Seite {{page}})…",
       "scan_tx": "Transaktionen scannen",
+      "scan_payments": "Scanne Zahlungen (Seite {{page}})…",
+      "scan_payments_fast": "Scanne Zahlungen (schnell) – Seite {{page}}…",
+      "finalizeDiag": "Diagnose abgeschlossen",
       "pageDone": "Seite {{page}} abgeschlossen.",
       "chunkDone": "Chunk verarbeitet.",
       "chunkSkip": "Chunk übersprungen.",
@@ -267,11 +301,16 @@
       "sync": "Synchronisiere Zahlungen…",
       "cacheQuery": "Berechne Ergebnis aus lokalem Cache…",
       "backfill": "Lade fehlende Zahlungen…",
-      "rehydrate": "Rekonstruire Cache…"
+      "rehydrate": "Rekonstruire Cache…",
+      "cover": "Cache-Abdeckung sicherstellen…",
+      "export": "Exportiere Ergebnis…"
     },
     "counts": "Geprüft: {{ops}} • Treffer: {{matches}}",
     "firstMatchAt": "Letzte Einzahlung: {{date}}",
     "oldestMatchInRangeAt": "Erste Einzahlung im Zeitraum: {{date}}",
+    "wrongMemos": {
+      "failed": "Fehler beim Laden der Zahlungen mit falschem/leerem Memo."
+    },
     "mode": {
       "live": "Modus: Live (Horizon)",
       "cache": "Modus: Cache"

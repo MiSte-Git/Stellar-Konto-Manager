@@ -9,5 +9,15 @@ export default defineConfig(({ mode }) => {
   return {
     base,
     plugins: [react()],
+    server: {
+      proxy: {
+        '/horizon': {
+          target: 'https://horizon.stellar.org',
+          changeOrigin: true,
+          secure: true,
+          rewrite: (path) => path.replace(/^\/horizon/, ''),
+        },
+      },
+    },
   }
 })
