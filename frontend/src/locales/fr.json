@@ -20,7 +20,21 @@
     "compromisedPurchases": "{total} paiements totaux",
     "totalPurchases": "Nombre total d'achats : {count}"
   },
+  "buildInfo": {
+    "branch": "Branche",
+    "commit": "Engagement",
+    "env": "Environnement",
+    "error": "Les informations de construction n'ont pas pu être chargées.",
+    "loading": "Chargement des informations de construction …"
+  },
+  "cache": {
+    "clear": "Vider le cache",
+    "consent": "Activer le cache local pour accélérer les requêtes ?",
+    "lastPaymentAt": "Dernier paiement : {{val}}",
+    "lastRefresh": "Dernière mise à jour : {{ts}}"
+  },
   "common": {
+    "clear": "Effacer l'entrée",
     "loading": "Chargement…",
     "refresh": "Recharger"
   },
@@ -31,6 +45,14 @@
     "asset": {
       "creationDateUnknown": "Date de création inconnue"
     },
+    "cache": {
+      "backfillAborted": "Le chargement initial des paiements a été annulé.",
+      "indexIterFailed": "L'itération de l'index dans le cache a échoué",
+      "memoNormBackfillFailed": "Le chargement initial des paiements pour les mémos normalisés a échoué.",
+      "openFailed": "Le cache local n'a pas pu être ouvert.",
+      "readFailed": "Échec de la lecture du cache",
+      "writeFailed": "Échec de l'écriture dans le cache"
+    },
     "connection": {
       "backend": "Aucune connexion au backend possible. Veuillez vous assurer"
     },
@@ -38,8 +60,27 @@
       "failed": "Échec du chargement des données d'investissement : {{detail}}"
     },
     "fetchingOperations": "Erreur lors de la récupération des opérations : {{error}}",
+    "horizon": {
+      "paymentsFetch": "Erreur de chargement des paiements depuis Horizon"
+    },
     "op_invalid_limit": "La ligne de confiance ne peut pas être supprimée. Elle peut encore avoir un solde ou des obligations en cours.",
+    "query": {
+      "invalidMemo": "Mémo invalide",
+      "invalidRange": "La plage horaire est invalide (De > À)",
+      "invalidTime": "Saisie de temps invalide"
+    },
     "script": "Erreur de script : {message} à {source}:{lineno}:{colno} - {{error}}",
+    "submitTransaction": {
+      "failed": {
+        "tx_bad_auth": "Transaction refusée : signature invalide",
+        "tx_failed": "La transaction a échoué",
+        "unknown": "Erreur inconnue lors de la transaction"
+      }
+    },
+    "sync": {
+      "backfillFailed": "Le chargement initial des paiements a échoué.",
+      "incrementalFailed": "La mise à jour du paiement a échoué."
+    },
     "transaction": {
       "deleteFail": "[ERREUR] La suppression a échoué : {{error}}",
       "failed": "La transaction a échoué",
@@ -50,8 +91,22 @@
       "unknown": "Erreur inconnue lors de la transaction."
     },
     "trustline": {
+      "submitFailed": "Erreur lors de la suppression de la ligne de confiance.",
       "unknown": "Erreur inconnue lors de la suppression de la ligne de confiance."
+    },
+    "xlmByMemo": {
+      "aborted": "Opération annulée par l'utilisateur",
+      "accountInvalid": "Compte invalide",
+      "dateInvalid": "Date invalide",
+      "dateRange": "Plage de dates invalide",
+      "failedUnknown": "Erreur inconnue",
+      "memoInvalid": "Mémo invalide",
+      "paymentsFetch": "Erreur de chargement des paiements",
+      "serverInvalid": "Serveur invalide"
     }
+  },
+  "exportCsv": {
+    "failed": "L'exportation CSV a échoué"
   },
   "fetchInvestedTokens": {
     "failed": "Échec du chargement des données d'investissement : {{detail}}"
@@ -78,7 +133,7 @@
       "xlm": "{{amount}} XLM"
     },
     "view": {
-      "label": "Vue",
+      "label": "Filtrer par :",
       "memo": "Mémos (Groupfund)",
       "token": "Jetons (montant acheté)"
     },
@@ -97,11 +152,12 @@
     "title": "Gestionnaire de Trustline Stellar"
   },
   "menu": {
-    "xlmByMemo": "XLM vers le Memo"
+    "unknown": "Sélection de menu inconnue",
+    "xlmByMemo": "Filtrer le montant XLM par mémo/token"
   },
   "navigation": {
     "backToMainMenu": "Retour au menu",
-    "backToPublicKey": "Retour à l'entrée d'adresse publique",
+    "backToPublicKey": "Retour à l'entrée de la clé publique",
     "backToTop": "Retour en haut",
     "current": {
       "menu": "Menu actuel :"
@@ -140,6 +196,44 @@
     "show": "Montrer",
     "yes": "Oui"
   },
+  "progress": {
+    "cancel": "Annuler",
+    "canceled": "Annulé",
+    "counts": "Vérifié : {{ops}} • Résultats : {{matches}}",
+    "done": "Terminé",
+    "duration": "Durée : {{val}}",
+    "elapsed": "Durée : {{time}}",
+    "eta": "ETA : {{minutes}} min.",
+    "firstMatchAt": "Dernier dépôt : {{date}}",
+    "mode": {
+      "cache": "Mode : Cache",
+      "live": "Mode : En direct (Horizon)"
+    },
+    "oldest": "date la plus ancienne de cette page : {{date}}",
+    "oldestMatchInRangeAt": "Premier dépôt dans la période : {{date}}",
+    "phase": {
+      "backfill": "Chargement des paiements manquants…",
+      "cacheQuery": "Calcul en cours à partir du cache local…",
+      "chunkDone": "Chunk traité.",
+      "chunkSkip": "Chunk sautéé.",
+      "cover": "Assurer la couverture du cache...",
+      "export": "Exporter le résultat...",
+      "finalize": "Terminé",
+      "finalizeDiag": "Diagnostic terminé",
+      "idle": "Prêt…",
+      "pageDone": "Page {{page}} terminée.",
+      "rehydrate": "Reconstruire le cache…",
+      "scan": "Analyse des paiements (page {{page}})…",
+      "scan_payments": "Analyse des paiements (page {{page}})…",
+      "scan_payments_fast": "Scanner les paiements (rapidement) – Page {{page}}…",
+      "scan_tx": "Scanner les transactions",
+      "sync": "Synchronisation des paiements…",
+      "txFetch": "Chargement des détails de la transaction…"
+    },
+    "wrongMemos": {
+      "failed": "Erreur de chargement des paiements avec un mémo incorrect ou vide."
+    }
+  },
   "publicKey": {
     "destination": {
       "error": "Clé cible invalide.",
@@ -168,12 +262,22 @@
     "valid": "✅ La clé secrète est valide."
   },
   "settings": {
+    "cache": {
+      "help": "Accélère les requêtes grâce au cache de paiement local, mais peut prolonger le chargement initial.",
+      "label": "Utiliser le cache (Bêta)",
+      "prefetchHelp": "Délai de chargement des entrées/transactions en jours (lors de la première activation)"
+    },
+    "description": "Actuellement, il n'y a aucun paramètre disponible.",
+    "error": {
+      "fetchFailed": "Échec du chargement des paramètres : {{detail}}"
+    },
     "export": "Paramètres d'exportation",
     "import": "Importer les paramètres",
-    "label": "Paramètres"
+    "label": "Paramètres",
+    "prefetchDays": "Délai de livraison (jours)"
   },
   "token": {
-    "purchases": "Nombre de jetons achetés"
+    "purchases": "Nombre de jetons investis"
   },
   "transaction": {
     "pending": "Transaction en attente...",
@@ -235,6 +339,21 @@
       "from": "De (facultatif)",
       "to": "Jusqu'à (facultatif)"
     },
+    "debug": {
+      "incoming": "Entrant – à : {{toMe}}, créer→moi : {{createToMe}}, natif→moi : {{nativeInToMe}}",
+      "incomingOverview": "Inputs : {{total}} • portefeuilles participants : {{unique}}",
+      "memo": "Mémos dans la fenêtre : {{any}} • mémos exacts : {{exact}}",
+      "types": "Types – paiement : {{pay}}, chemin : {{path}}, créer : {{create}}, autre : {{other}}"
+    },
+    "export": {
+      "csv": "Vérifier le CSV (Hits)",
+      "csvAll": "Exporter toutes les opérations",
+      "csvBoth": "Enregistrez les deux CSV.",
+      "csvMatches": "Vérifier le CSV (Hits)"
+    },
+    "exportCsv": {
+      "failed": "L'exportation CSV a échoué : {{detail}}"
+    },
     "failed": "Le calcul n'a pas pu être effectué.",
     "failed:account.invalid": "L'adresse du portefeuille est invalide.",
     "failed:date.invalid": "Veuillez entrer des valeurs de date/heure valides au format YYYY-MM-DD HH:mm[:ss] (ou ISO 8601).",
@@ -247,6 +366,7 @@
       "label": "Texte de recherche de mémo (sous-chaîne, sensible à la casse)",
       "placeholder": "Mémo (sous-chaîne, sensible à la casse)"
     },
+    "overviewLine": "Paiements entrants : {{total}} • portefeuilles impliqués : {{unique}}",
     "page": {
       "noPublicKey": "Veuillez d'abord entrer une clé publique.",
       "title": "XLM total par mémo"
@@ -257,18 +377,48 @@
       "rangeVerbose": "Période : {{fromDate}} {{fromTime}} à {{toDate}} {{toTime}} ({{tz}})",
       "value": "{{amount}} XLM"
     },
+    "summary": {
+      "amount": "Total : {{amount}} XLM",
+      "correctCount": "Entrées avec mémo correct : {{n}}",
+      "count": "Compteur : {{n}}",
+      "label": "Comparaison (toutes les entrées)",
+      "otherCount": "Entrées avec mémo incorrect/absent : {{n}}",
+      "unique": "Portefeuilles uniques (tous) : {{n}}",
+      "uniqueWallets": "Portefeuilles uniques : {{n}}"
+    },
     "time": {
       "from": "Temps depuis (facultatif)",
+      "setToNow": "Définir l'heure actuelle",
+      "setToNowHint": "Définit le champ horaire à l'heure actuelle",
       "to": "Temps restant jusqu'à (facultatif)"
     },
     "title": "XLM total par mémo",
     "tz": {
       "cdt": "CDT (UTC−5)",
       "cst": "CST (UTC−6)",
+      "europe_zurich": "Europe/Zurich (CET/CEST)",
       "label": "Fuseau horaire pour la date/heure",
       "local": "Fuseau horaire local",
       "note": "La date/heure est interprétée dans le fuseau horaire sélectionné et convertie automatiquement en UTC avant la recherche.",
-      "utc": "UTC"
+      "utc": "UTC",
+      "window": "Fenêtre horaire UTC utilisée : {{from}} → {{to}} (Exclusif)"
+    },
+    "wrongMemos": {
+      "button": "Afficher les portefeuilles avec un mémo incorrect/vide",
+      "clipboard": "Copier dans le presse-papiers",
+      "columns": {
+        "amount": "Montant",
+        "created_at": "Créé le",
+        "from": "De",
+        "memo": "Mémo",
+        "tx_hash": "Hash de la transaction"
+      },
+      "csv": "Télécharger CSV",
+      "failed": "Erreur de chargement des paiements avec un mémo incorrect ou vide.",
+      "hint": "Filtre les paiements entrants dans la période et affiche les expéditeurs avec un mémo incorrect/vide.",
+      "scanning": "… scanne des mémos incorrects/vides",
+      "summary": "Compte : {{count}} • Total : {{sum}} XLM • Portefeuilles uniques : {{unique}}",
+      "title": "Mémos incorrects/vides dans la période"
     }
   }
 }

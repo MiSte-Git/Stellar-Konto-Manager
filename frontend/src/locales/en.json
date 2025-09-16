@@ -20,7 +20,21 @@
     "compromisedPurchases": "{total} total payments",
     "totalPurchases": "Total number of purchases: {count}"
   },
+  "buildInfo": {
+    "branch": "Branch",
+    "commit": "Commit",
+    "env": "Environment",
+    "error": "Build information could not be loaded.",
+    "loading": "Loading build information …"
+  },
+  "cache": {
+    "clear": "Clear cache",
+    "consent": "Enable local cache to speed up queries?",
+    "lastPaymentAt": "Last payment: {{val}}",
+    "lastRefresh": "Last updated: {{ts}}"
+  },
   "common": {
+    "clear": "Clear input",
     "loading": "Loading…",
     "refresh": "Reload"
   },
@@ -31,6 +45,14 @@
     "asset": {
       "creationDateUnknown": "Unknown creation date"
     },
+    "cache": {
+      "backfillAborted": "Initial loading of payments aborted",
+      "indexIterFailed": "Index iteration in cache failed",
+      "memoNormBackfillFailed": "Initial loading of payments for normalized memos failed",
+      "openFailed": "Local cache could not be opened.",
+      "readFailed": "Failed to read from cache",
+      "writeFailed": "Failed to write to cache"
+    },
     "connection": {
       "backend": "No connection to the backend possible. Please ensure"
     },
@@ -38,8 +60,27 @@
       "failed": "Failed to load investment data: {{detail}}"
     },
     "fetchingOperations": "Error retrieving operations: {{error}}",
+    "horizon": {
+      "paymentsFetch": "Error loading payments from Horizon"
+    },
     "op_invalid_limit": "The trustline cannot be deleted. It may still have a balance or outstanding obligations.",
+    "query": {
+      "invalidMemo": "Invalid memo",
+      "invalidRange": "Time window is invalid (From > To)",
+      "invalidTime": "Invalid time entry"
+    },
     "script": "Script error: {message} at {source}:{lineno}:{colno} - {{error}}",
+    "submitTransaction": {
+      "failed": {
+        "tx_bad_auth": "Transaction declined: Invalid signature",
+        "tx_failed": "Transaction failed",
+        "unknown": "Unknown error during the transaction"
+      }
+    },
+    "sync": {
+      "backfillFailed": "Initial loading of payments failed",
+      "incrementalFailed": "Payment update failed"
+    },
     "transaction": {
       "deleteFail": "[ERROR] Deletion failed: {{error}}",
       "failed": "Transaction failed",
@@ -50,8 +91,22 @@
       "unknown": "Unknown error during the transaction."
     },
     "trustline": {
+      "submitFailed": "Error deleting the trustline.",
       "unknown": "Unknown error while deleting the trustline."
+    },
+    "xlmByMemo": {
+      "aborted": "Operation canceled by user",
+      "accountInvalid": "Invalid account",
+      "dateInvalid": "Invalid date",
+      "dateRange": "Invalid date range",
+      "failedUnknown": "Unknown error",
+      "memoInvalid": "Invalid memo",
+      "paymentsFetch": "Error loading payments",
+      "serverInvalid": "Invalid server"
     }
+  },
+  "exportCsv": {
+    "failed": "CSV export failed"
   },
   "fetchInvestedTokens": {
     "failed": "Failed to load investment data: {{detail}}"
@@ -78,7 +133,7 @@
       "xlm": "{{amount}} XLM"
     },
     "view": {
-      "label": "View",
+      "label": "Filter by:",
       "memo": "Memos (Groupfund)",
       "token": "Token (purchased amount)"
     },
@@ -97,12 +152,13 @@
     "title": "Stellar Trustline Manager"
   },
   "menu": {
-    "xlmByMemo": "XLM to Memo"
+    "unknown": "Unknown menu selection",
+    "xlmByMemo": "Filter XLM amount by memo/token"
   },
   "navigation": {
     "backToMainMenu": "Back to menu",
-    "backToPublicKey": "Back to public address input",
-    "backToTop": "Back to top",
+    "backToPublicKey": "Back to public key input",
+    "backToTop": "Back to Top",
     "current": {
       "menu": "Current menu:"
     },
@@ -140,6 +196,44 @@
     "show": "Show",
     "yes": "Yes"
   },
+  "progress": {
+    "cancel": "Cancel",
+    "canceled": "Cancelled",
+    "counts": "Checked: {{ops}} • Hits: {{matches}}",
+    "done": "Completed",
+    "duration": "Duration: {{val}}",
+    "elapsed": "Duration: {{time}}",
+    "eta": "ETA: {{minutes}} min.",
+    "firstMatchAt": "Last deposit: {{date}}",
+    "mode": {
+      "cache": "Mode: Cache",
+      "live": "Mode: Live (Horizon)"
+    },
+    "oldest": "oldest date of this page: {{date}}",
+    "oldestMatchInRangeAt": "First deposit in the period: {{date}}",
+    "phase": {
+      "backfill": "Loading missing payments…",
+      "cacheQuery": "Calculating result from local cache…",
+      "chunkDone": "Chunk processed.",
+      "chunkSkip": "Chunk skipped.",
+      "cover": "Ensuring cache coverage...",
+      "export": "Export result...",
+      "finalize": "Completed",
+      "finalizeDiag": "Diagnosis completed",
+      "idle": "Ready…",
+      "pageDone": "Page {{page}} completed.",
+      "rehydrate": "Reconstructing cache…",
+      "scan": "Scanning payments (page {{page}})…",
+      "scan_payments": "Scanning payments (page {{page}})…",
+      "scan_payments_fast": "Scan payments (quickly) – Page {{page}}…",
+      "scan_tx": "Scan transactions",
+      "sync": "Synchronizing payments…",
+      "txFetch": "Loading transaction details…"
+    },
+    "wrongMemos": {
+      "failed": "Error loading payments with incorrect/empty memo."
+    }
+  },
   "publicKey": {
     "destination": {
       "error": "Invalid target key.",
@@ -162,18 +256,28 @@
     "empty": "The secret key field is empty.",
     "info": "The secret key is only temporarily transmitted to a backend to execute the chosen action. The key is not stored.",
     "invalid": "Invalid secret key.",
-    "label": "Enter the source secret key (will be sent securely to the backend)",
+    "label": "Enter the source secret key (will be securely sent to the backend)",
     "mismatch": "The secret key does not match the public address.",
     "placeholder": "e.g.",
     "valid": "✅ Secret Key is valid."
   },
   "settings": {
+    "cache": {
+      "help": "Accelerates queries through local payment cache, but may prolong the initial loading.",
+      "label": "Use cache (Beta)",
+      "prefetchHelp": "Lead time for loading entries/transactions in days (once upon first activation)"
+    },
+    "description": "Currently, there are no settings available.",
+    "error": {
+      "fetchFailed": "Failed to load settings: {{detail}}"
+    },
     "export": "Export settings",
     "import": "Import settings",
-    "label": "Settings"
+    "label": "Settings",
+    "prefetchDays": "Lead time (days)"
   },
   "token": {
-    "purchases": "Number of tokens purchased"
+    "purchases": "Number of invested tokens"
   },
   "transaction": {
     "pending": "Transaction pending...",
@@ -235,6 +339,21 @@
       "from": "From (optional)",
       "to": "Until (optional)"
     },
+    "debug": {
+      "incoming": "Incoming – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
+      "incomingOverview": "Inputs: {{total}} • participating wallets: {{unique}}",
+      "memo": "Memos in the window: {{any}} • exact memos: {{exact}}",
+      "types": "Types – payment: {{pay}}, path: {{path}}, create: {{create}}, other: {{other}}"
+    },
+    "export": {
+      "csv": "Check CSV (Hits)",
+      "csvAll": "Export all operations",
+      "csvBoth": "Save both CSVs",
+      "csvMatches": "Check CSV (Hits)"
+    },
+    "exportCsv": {
+      "failed": "CSV export failed: {{detail}}"
+    },
     "failed": "The calculation could not be performed.",
     "failed:account.invalid": "The wallet address is invalid.",
     "failed:date.invalid": "Please enter valid date/time values in the format YYYY-MM-DD HH:mm[:ss] (or ISO 8601).",
@@ -247,6 +366,7 @@
       "label": "Memo search text (substring, case sensitive)",
       "placeholder": "Memo (substring, case-sensitive)"
     },
+    "overviewLine": "Incoming payments: {{total}} • involved wallets: {{unique}}",
     "page": {
       "noPublicKey": "Please enter a public key first.",
       "title": "XLM total by memo"
@@ -257,18 +377,48 @@
       "rangeVerbose": "Period: {{fromDate}} {{fromTime}} to {{toDate}} {{toTime}} ({{tz}})",
       "value": "{{amount}} XLM"
     },
+    "summary": {
+      "amount": "Total: {{amount}} XLM",
+      "correctCount": "Entries with correct memo: {{n}}",
+      "count": "Count: {{n}}",
+      "label": "Comparison (all inputs)",
+      "otherCount": "Entries with incorrect/without memo: {{n}}",
+      "unique": "Unique wallets (all): {{n}}",
+      "uniqueWallets": "Unique wallets: {{n}}"
+    },
     "time": {
       "from": "Time from (optional)",
+      "setToNow": "Set current time",
+      "setToNowHint": "Sets the time field to the current time",
       "to": "Time until (optional)"
     },
     "title": "XLM total by memo",
     "tz": {
       "cdt": "CDT (UTC−5)",
       "cst": "CST (UTC−6)",
+      "europe_zurich": "Europe/Zurich (CET/CEST)",
       "label": "Time zone for date/time",
       "local": "Local time zone",
       "note": "Date/time is interpreted in the selected time zone and automatically converted to UTC before the search.",
-      "utc": "UTC"
+      "utc": "UTC",
+      "window": "Used UTC time window: {{from}} → {{to}} (Exclusive)"
+    },
+    "wrongMemos": {
+      "button": "Show wallets with incorrect/empty memo",
+      "clipboard": "Copy to clipboard",
+      "columns": {
+        "amount": "Amount",
+        "created_at": "Created on",
+        "from": "From",
+        "memo": "Memo",
+        "tx_hash": "Transaction hash"
+      },
+      "csv": "Download CSV",
+      "failed": "Error loading payments with incorrect/empty memo.",
+      "hint": "Filters incoming payments within the period and shows senders with incorrect/empty memo.",
+      "scanning": "… scans incorrect/empty memos",
+      "summary": "Count: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
+      "title": "Incorrect/Empty memos in the period"
     }
   }
 }
