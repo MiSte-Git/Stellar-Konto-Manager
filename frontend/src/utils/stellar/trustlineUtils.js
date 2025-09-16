@@ -16,47 +16,40 @@ export function isSelected(tl, selectedTrustlines) {
  */
 export function areAllSelected(paginated, selectedTrustlines) {
   return paginated
-    .filter(tl => tl.assetBalance === "0.0000000")
+    .filter(tl => parseFloat(tl.assetBalance) === 0)
     .every(tl => isSelected(tl, selectedTrustlines));
 }
 
 /**
- * Toggle alle Trustlines ohne Guthaben:
- * - Wenn alle löschbaren Trustlines schon ausgewählt sind → abwählen
- * - Sonst → nur löschbare zur Auswahl hinzufügen
+ * Toggle alle Trustlines ohne Guthaben auf der aktuellen Seite:
+ * - Wenn alle löschbaren (Balance 0) bereits ausgewählt sind → abwählen
+ * - Sonst → nur löschbare (Balance 0) hinzufügen
  */
 export function toggleAllTrustlines(paginated, selectedTrustlines) {
-  const deletable = paginated.filter(tl => tl.assetBalance === "0.0000000");
-
-  const isSameTrustline = (a, b) =>
-    a.assetCode === b.assetCode && a.assetIssuer === b.assetIssuer;
+  const deletable = paginated.filter(tl => parseFloat(tl.assetBalance) === 0);
+  const isSame = (a, b) => a.assetCode === b.assetCode && a.assetIssuer === b.assetIssuer;
 
   const allDeletableSelected = deletable.every(tl =>
-    selectedTrustlines.some(sel => isSameTrustline(sel, tl))
+    selectedTrustlines.some(sel => isSame(sel, tl))
   );
 
   if (allDeletableSelected) {
-    return selectedTrustlines.filter(
-      sel => !deletable.some(tl => isSameTrustline(tl, sel))
-    );
-  } else {
-    const combined = [...selectedTrustlines];
-    deletable.forEach(tl => {
-      if (!combined.some(sel => isSameTrustline(sel, tl))) {
-        combined.push(tl);
-      }
-    });
-    return combined;
+    return selectedTrustlines.filter(sel => !deletable.some(tl => isSame(sel, tl)));
   }
+  const combined = [...selectedTrustlines];
+  deletable.forEach(tl => {
+    if (!combined.some(sel => isSame(sel, tl))) combined.push(tl);
+  });
+  return combined;
 }
 
 // Wechselt den Auswahltstatus einer einzelnen Trustline in der Liste.
-// Gibt die aktualisierte Liste zurück (ohne setState selbst aufzurufen).
+// Vergleicht per AssetCode+Issuer, nicht per Objektidentität.
 export function toggleTrustlineSelection(trustline, selectedTrustlines) {
-  const exists = selectedTrustlines.includes(trustline);
+  const isSame = (a, b) => a.assetCode === b.assetCode && a.assetIssuer === b.assetIssuer;
+  const exists = selectedTrustlines.some((item) => isSame(item, trustline));
   if (exists) {
-    return selectedTrustlines.filter((item) => item !== trustline);
-  } else {
-    return [...selectedTrustlines, trustline];
+    return selectedTrustlines.filter((item) => !isSame(item, trustline));
   }
+  return [...selectedTrustlines, trustline];
 }
