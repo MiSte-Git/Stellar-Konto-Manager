@@ -1,5 +1,5 @@
 // src/components/ListTrustlines.jsx
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   validateSecretKey, 
@@ -15,9 +15,11 @@ import ErrorModal from './ErrorModal';
 import { 
   isSelected, 
   toggleAllTrustlines, 
-  areAllSelected 
+  areAllSelected,
+  toggleTrustlineSelection
 } from '../utils/stellar/trustlineUtils.js';
 import ProgressBar from "../components/ProgressBar.jsx";
+import { formatElapsedMmSs } from '../utils/datetime';
 import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
@@ -94,12 +96,14 @@ function ListTrustlines({
       );
     });
 
+    // Optional: nur Trustlines mit Guthaben 0 anzeigen
+    if (filters.zeroOnly) {
+      filtered = filtered.filter(tl => parseFloat(tl.assetBalance) === 0);
+    }
+
     filtered.sort((a, b) => {
       const isAsc = sortDirection === 'asc' ? 1 : -1;
-      const isItemSelected = (item) => selectedTrustlines.some(sel => sel.assetCode === item.assetCode && sel.assetIssuer === item.assetIssuer);
-      if (sortColumn === 'selected') {
-        return (isItemSelected(a) === isItemSelected(b)) ? 0 : isItemSelected(a) ? -1 * isAsc : 1 * isAsc;
-      } else if (sortColumn === 'assetCode') {
+      if (sortColumn === 'assetCode') {
         return a.assetCode.localeCompare(b.assetCode) * isAsc;
       } else if (sortColumn === 'assetBalance') {
         return (parseFloat(a.assetBalance) - parseFloat(b.assetBalance)) * isAsc;
@@ -110,6 +114,7 @@ function ListTrustlines({
         const dateB = new Date(b.createdAt || 0).getTime();
         return (dateA - dateB) * isAsc;
       }
+      // Ignore 'selected' sort to avoid jumping rows
       return 0;
     });
 
@@ -341,7 +346,7 @@ function ListTrustlines({
   });
 
   const handleToggleFromOverview = (tl) => {
-    const stillSelected = selectedTrustlines.filter(item => !(item.assetCode === tl.assetCode && item.assetIssuer === item.assetIssuer));
+    const stillSelected = selectedTrustlines.filter(item => !(item.assetCode === tl.assetCode && item.assetIssuer === tl.assetIssuer));
     setSelectedTrustlines(stillSelected);
   };
 
@@ -365,8 +370,24 @@ function ListTrustlines({
  
       {/* Infoleiste: Wallet, Anzahl, Modusauswahl */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-500 rounded p-3 text-sm mb-4">
-        <div className="text-gray-700 dark:text-gray-300 mb-2 sm:mb-0">
-          {t('trustline.all')}: {trustlines.length}
+        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 sm:mb-0">
+          <span>{t('trustline.all')}: {trustlines.length}</span>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => onFilterChange('zeroOnly', false)}
+              className={`px-3 py-1 rounded border ${!filters.zeroOnly ? 'bg-blue-600 text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+            >
+              Alle anzeigen
+            </button>
+            <button
+              type="button"
+              onClick={() => { onFilterChange('zeroOnly', true); onSort('assetBalance'); }}
+              className={`px-3 py-1 rounded border ${filters.zeroOnly ? 'bg-blue-600 text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+            >
+              Nur löschbare
+            </button>
+          </div>
         </div>
 
         <div className="flex gap-4 items-center">
@@ -400,41 +421,39 @@ function ListTrustlines({
       <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead>
           <tr>
-            <th
-              className="px-4 py-2 cursor-pointer"
-              onClick={(e) => {
-                // Verhindere Sortierung beim Klick auf die Checkbox
-                if (e.target.tagName !== 'INPUT') {
-                  onSort('selected');
-                }
-              }}
-            >
+            <th className="px-4 py-2 text-left">
               <input
                 type="checkbox"
                 checked={areAllSelected(paginated, selectedTrustlines)}
-                onChange={() => onToggleAll(paginated)}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  onToggleAll(paginated);
+                  // UX: Nach "Alle" automatisch Guthaben-Sortierung und nur Guthaben=0 anzeigen
+                  onSort('assetBalance');
+                  onFilterChange('zeroOnly', true);
+                }}
               />
             </th>
             <th
-              className="px-4 py-2 cursor-pointer"
+              className="px-4 py-2 cursor-pointer text-left"
               onClick={() => onSort('assetCode')}
             >
               {t('asset.code')}
             </th>
             <th
-              className="px-4 py-2 cursor-pointer"
+              className="px-4 py-2 cursor-pointer text-left"
               onClick={() => onSort('assetBalance')}
-            >B
+            >
               {t('asset.balance')}
             </th>
             <th
-              className="px-4 py-2 cursor-pointer"
+              className="px-4 py-2 cursor-pointer text-left"
               onClick={() => onSort('assetIssuer')}
             >
               {t('asset.issuer')}
             </th>
             <th
-              className="px-4 py-2 cursor-pointer"
+              className="px-4 py-2 cursor-pointer text-left"
               onClick={() => onSort('createdAt')}
             >
               {t('asset.creationDate')}
@@ -442,16 +461,24 @@ function ListTrustlines({
           </tr>
         </thead>
         <tbody>
-          {paginated.map((tl, index) => (
-            <tr key={index} className="border-b border-gray-200 dark:border-gray-700">
+          {paginated.map((tl) => (
+            <tr key={`${tl.assetCode}__${tl.assetIssuer}`} className="border-b border-gray-200 dark:border-gray-700">
               <td className="px-4 py-2 text-center align-middle">
                 <input
                   type="checkbox"
                   checked={isSelected(tl, selectedTrustlines)}
-                  onChange={() => onToggleTrustline(tl)}
-                  disabled={tl.assetBalance !== "0.0000000"}
-                  className={tl.assetBalance !== "0.0000000" ? 'opacity-50 cursor-not-allowed' : ''}
-                  title={tl.assetBalance !== "0.0000000" ? t('trustline.nonZeroBalance') : ''}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    if (parseFloat(tl.assetBalance) !== 0) {
+                      alert(t('trustline.nonZeroBalance'));
+                      return;
+                    }
+                    setSelectedTrustlines(prev => toggleTrustlineSelection(tl, prev));
+                  }}
+                  disabled={false}
+                  className={parseFloat(tl.assetBalance) !== 0 ? 'opacity-50' : ''}
+                  title={parseFloat(tl.assetBalance) !== 0 ? t('trustline.nonZeroBalance') : ''}
                 />
               </td>
               <td className="px-4 py-2">{tl.assetCode}</td>

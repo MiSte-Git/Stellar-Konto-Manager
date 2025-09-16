@@ -2,6 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Wallet-Input: Deaktiviere Rechtschreib-/Auto-Korrektur und Pfeil bei Datalist */
+.wallet-input {
+  /* Diese Attribute setzen wir zusätzlich direkt am Input als HTML-Attribute */
+}
+
+/* WebKit (Chrome, Edge, Safari) – entfernen des Datalist-Dropdown-Pfeils beim Hover/Fokus */
+.wallet-input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  display: none;
+}
+.wallet-input::-webkit-list-button {
+  display: none;
+}
+
+/* Firefox: Standardmäßig zeigt Firefox keinen Pfeil für datalist, aber wir sichern ab */
+.wallet-input::-moz-list-bullet {
+  list-style-type: none;
+}
+
+/* Optional: Tooltip/Autofill-Overlay unterdrücken, soweit möglich */
+.wallet-input:-webkit-autofill,
+.wallet-input:-webkit-autofill:hover,
+.wallet-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

@@ -11,7 +11,7 @@ import {
   handleDeleteTrustlines as deleteAndReload
  } from './utils/stellar/stellarUtils.js';
 import App from './App.jsx';
-import SourceInput from './components/SourceInput';
+
 import DestinationInput from './components/DestinationInput';
 import MainMenu from './components/MainMenu';
 import ListTrustlines from './components/ListTrustlines';
@@ -50,16 +50,19 @@ function Main() {
   // Innerhalb der Main-Funktion (nach useState-Aufrufen):
   const [trustlines, setTrustlines] = useState([]);
   const [selectedTrustlines, setSelectedTrustlines] = useState([]);
-  const [filters, setFilters] = useState({ assetCode: '', assetIssuer: '', createdAt: '' });
+  const [filters, setFilters] = useState({ assetCode: '', assetIssuer: '', createdAt: '', zeroOnly: false });
   const [sortColumn, setSortColumn] = useState('assetCode');
   const [sortDirection, setSortDirection] = useState('asc');
   const [currentPage, setCurrentPage] = useState(0);
   const ITEMS_PER_PAGE = 333;const [menuSelection, setMenuSelection] = useState(null);
-  const [sourceInput, setSourceInput] = useState('');
+
   const [sourcePublicKey, setSourcePublicKey] = useState('');
   const [sourceSecret, setSourceSecret] = useState('');
   const [destinationPublicKey, setDestinationPublicKey] = useState('');
   const [issuerAddress, setIssuerAddress] = useState('');
+  // Globaler Header: Wallet-Selector (Komfortvariante)
+  const [recentWallets, setRecentWallets] = useState([]);
+  const [walletHeaderInput, setWalletHeaderInput] = useState('');
   // Trustlines und Secret Keys werden nur für Backend-Operationen aktualisiert, aber nicht gerendert
   // Deshalb setzen wir nur setTrustlines, lesen aber trustlines nicht aus → ignorierbare Warnung
   const [showSecretKey, setShowSecretKey] = useState(false);
@@ -69,21 +72,7 @@ function Main() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const handleSourceSubmit = async () => {
-    setError('');
-    setIsLoading(true);
-    try {
-      const { publicKey, trustlines } = await submitSourceInput(sourceInput, t);
-      setSourcePublicKey(publicKey);
-      console.log('[DEBUG] Geladene Trustlines:', trustlines);
-      setTrustlines(trustlines);
-      setMenuSelection(null);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
   const handleSortClick = (column) => {
     handleSort(column, sortColumn, sortDirection, setSortColumn, setSortDirection);
   };
@@ -91,9 +80,15 @@ function Main() {
     handleFilterChange(key, value, filters, setFilters, setCurrentPage);
   };
   const handleToggleTrustline = (tl) => {
-    if (tl.assetBalance !== "0.0000000") return;
-    const newSelection = toggleTrustlineSelection(tl, selectedTrustlines);
-    setSelectedTrustlines(newSelection);
+    if (parseFloat(tl.assetBalance) !== 0) return;
+    setSelectedTrustlines(prev => {
+      const next = toggleTrustlineSelection(tl, prev);
+      try {
+        const wasSelected = prev.some(s => s.assetCode === tl.assetCode && s.assetIssuer === tl.assetIssuer);
+        console.debug('[Toggle One]', tl.assetCode, tl.assetIssuer, 'wasSelected?', wasSelected, '-> newLen', next.length);
+      } catch {}
+      return next;
+    });
   };
   const handleDeleteTrustlines = async (secretKey) => {
     setIsLoading(true);
@@ -121,6 +116,63 @@ function Main() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [deleteProgress, setDeleteProgress] = useState(null);
   const [infoMessage, setInfoMessage] = useState('');
+
+  // Kürzlich verwendete Wallets aus localStorage laden
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('recentWallets');
+      if (raw) {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr)) {
+          setRecentWallets(arr.filter(x => typeof x === 'string'));
+        }
+      }
+    } catch {}
+  }, []);
+
+  function persistRecent(list) {
+    try { localStorage.setItem('recentWallets', JSON.stringify(list)); } catch {}
+  }
+  function addRecent(pk) {
+    if (!pk) return;
+    setRecentWallets(prev => {
+      const next = [pk, ...prev.filter(x => x !== pk)].slice(0, 20);
+      persistRecent(next);
+      return next;
+    });
+  }
+
+  async function handleHeaderApply() {
+    const input = (walletHeaderInput || '').trim();
+    if (!input) return;
+    setIsLoading(true);
+    setError('');
+    try {
+      const { publicKey, trustlines } = await submitSourceInput(input, t);
+      setSourcePublicKey(publicKey);
+      if (Array.isArray(trustlines)) setTrustlines(trustlines);
+      addRecent(publicKey);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function handleRecentDelete() {
+    const key = (walletHeaderInput || '').trim();
+    if (!key) return;
+    setRecentWallets(prev => {
+      const next = prev.filter(x => x !== key);
+      persistRecent(next);
+      return next;
+    });
+  }
+
+  // Aktuelle Wallet automatisch in "Zuletzt verwendet" aufnehmen
+  useEffect(() => {
+    if (sourcePublicKey) addRecent(sourcePublicKey);
+  }, [sourcePublicKey]);
 
   // Global error handler
   useEffect(() => {
@@ -155,13 +207,13 @@ function Main() {
 
   // Alle auf aktueller Seite toggeln
   const handleToggleAll = (paginatedList) => {
-    const allSelected = paginatedList.every(tl => selectedTrustlines.includes(tl));
-    if (allSelected) {
-      setSelectedTrustlines(selectedTrustlines.filter(tl => !paginatedList.includes(tl)));
-    } else {
-      const newSelection = [...selectedTrustlines, ...paginatedList.filter(tl => !selectedTrustlines.includes(tl))];
-      setSelectedTrustlines(newSelection);
-    }
+    const next = toggleAllTrustlines(paginatedList, selectedTrustlines);
+    // Debug
+    try {
+      const deletable = paginatedList.filter(t => parseFloat(t.assetBalance) === 0).length;
+      console.debug('[Toggle All] pageItems', paginatedList.length, 'deletable', deletable, 'before', selectedTrustlines.length, 'after', next.length);
+    } catch {}
+    setSelectedTrustlines(next);
   };
 
   return (
@@ -170,47 +222,77 @@ function Main() {
         {/* 🌍 Global: Titel & Info */}
         <h1 className="text-2xl font-bold mb-4">{t('main.title')}</h1>
         <p className="mb-4 text-sm text-blue-200 rounded border">{t('secretKey.info')}</p>
+        {/* Fixierter Wallet-Header – immer sichtbar */}
+        <div className="sticky top-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b rounded-b px-3 py-2 mb-3">
+          <form onSubmit={(e) => { e.preventDefault(); handleHeaderApply(); }} className="max-w-4xl mx-auto mb-0">
+            <label className="block font-bold mb-1 text-sm">{t('publicKey.label')}</label>
+            <div className="relative">
+              <input
+                type="text"
+                list="recent-wallets"
+                value={walletHeaderInput}
+                onChange={(e) => setWalletHeaderInput(e.target.value)}
+                placeholder={t('publicKey.placeholder')}
+                className="wallet-input w-full border border-gray-300 rounded p-2 pr-8 font-mono text-sm"
+                spellCheck={false}
+                autoCorrect="off"
+                autoCapitalize="off"
+                autoComplete="off"
+                inputMode="text"
+              />
+              {walletHeaderInput && (
+                <button
+                  type="button"
+                  onClick={() => setWalletHeaderInput('')}
+                  title={t('common.clear')}
+                  aria-label={t('common.clear')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center"
+                >
+                  ×
+                </button>
+              )}
+              <datalist id="recent-wallets">
+                {recentWallets.map((w, i) => (
+                  <option key={w + i} value={w} />
+                ))}
+              </datalist>
+            </div>
+            <div className="mt-2 flex gap-2">
+              <button
+                type="submit"
+                disabled={isLoading || !walletHeaderInput.trim()}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                title="Wallet übernehmen"
+              >
+                Übernehmen
+              </button>
+              <button
+                type="button"
+                onClick={handleRecentDelete}
+                disabled={isLoading || !recentWallets.includes((walletHeaderInput || '').trim())}
+                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
+              >
+                Aus Liste löschen
+              </button>
+            </div>
+          </form>
+        </div>
+
         {sourcePublicKey && (
           <p className="mb-4 pb-1 text-sm text-gray-700 dark:text-gray-200 font-mono">
             {t('publicKey.source')}: {sourcePublicKey}
           </p>
         )}
 
-        {/* 🔐 Eingabe oder Menüwahl */}
-        {!sourcePublicKey ? (
-          <SourceInput
-            sourceInput={sourceInput}
-            setSourceInput={setSourceInput}
-            onSubmit={handleSourceSubmit}
-            isLoading={isLoading}
+        {/* Menüauswahl sichtbar, unabhängig davon ob ein Wallet gesetzt ist */}
+        {!menuSelection && (
+          <MainMenu
+            onSelect={(value) => {
+              const next = (value ?? '').trim();
+              console.log('[MainMenu onSelect]', JSON.stringify(next));
+              setMenuSelection(next);
+            }}
           />
-        ) : (
-          <div>
-            {/* ✅ Nur Menüauswahl, keine doppelte Wallet-Anzeige */}
-            {sourcePublicKey && !menuSelection && (
-              <MainMenu
-                onSelect={(value) => {
-                  const next = (value ?? '').trim();
-                  console.log('[MainMenu onSelect]', JSON.stringify(next));
-
-                  if (next === 'backToPublicKey') {
-                    console.trace('[MainMenu] backToPublicKey selected');
-                    // ⚠️ TEMP: PublicKey NICHT löschen, um das „Auto-Zurückspringen“ zu verhindern
-                    setMenuSelection(null);       // Menü schließen
-                    setSourcePublicKey('');       // ← wichtig: Input-Screen wird wieder sichtbar
-                    setSourceInput('');           // Eingabefeld leeren (optional)
-                    setTrustlines([]);            // Liste zurücksetzen (optional)
-                    setSelectedTrustlines([]);    // Auswahl leeren (optional)
-                    setResults([]);               // Resultate leeren (optional)
-                    setError('');                 // Fehler zurücksetzen (optional, UI übersetzt via t())
-                    return;
-                  }
-                  // Standardpfad für alle anderen Menüpunkte
-                  setMenuSelection(value);
-                }}
-              />
-            )}
-          </div>
         )}
 
         {error && <p className="text-red-500 mt-4">{t(error)}</p>}
