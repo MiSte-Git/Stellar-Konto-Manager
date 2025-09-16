@@ -1,138 +1,92 @@
 {
-  "changed_keys": [],
+  "changed_keys": [
+    "xlmByMemo.export.csvAll",
+    "xlmByMemo.wrongMemos.columns.amount",
+    "xlmByMemo.wrongMemos.columns.created_at",
+    "xlmByMemo.wrongMemos.columns.from",
+    "xlmByMemo.wrongMemos.columns.memo",
+    "xlmByMemo.wrongMemos.columns.tx_hash"
+  ],
   "new_keys": [
-    "error.asset.creationDateUnknown",
-    "error.fetchInvestedTokens.failed",
-    "error.trustline.unknown",
-    "investedTokens.item.tokenShort",
-    "investedTokens.missingPublicKey",
-    "investedTokens.totalTokens",
-    "investedTokens.value.units",
-    "investedTokens.value.xlm",
-    "investedTokens.view.label",
-    "investedTokens.view.memo",
-    "investedTokens.view.token",
-    "trustline.deleted.notFound"
+    "navigation.backToTop"
   ],
   "per_language": {
     "es": {
-      "missing_now_filled": [
-        "error.asset.creationDateUnknown",
-        "error.fetchInvestedTokens.failed",
-        "error.trustline.unknown",
-        "investedTokens.item.tokenShort",
-        "investedTokens.missingPublicKey",
-        "investedTokens.totalTokens",
-        "investedTokens.value.units",
-        "investedTokens.value.xlm",
-        "investedTokens.view.label",
-        "investedTokens.view.memo",
-        "investedTokens.view.token",
-        "trustline.deleted.notFound"
-      ],
-      "updated_due_to_de_change": []
+      "missing_now_filled": [],
+      "updated_due_to_de_change": [
+        "xlmByMemo.export.csvAll",
+        "xlmByMemo.wrongMemos.columns.amount",
+        "xlmByMemo.wrongMemos.columns.created_at",
+        "xlmByMemo.wrongMemos.columns.from",
+        "xlmByMemo.wrongMemos.columns.memo",
+        "xlmByMemo.wrongMemos.columns.tx_hash"
+      ]
     },
     "fi": {
-      "missing_now_filled": [
-        "error.asset.creationDateUnknown",
-        "error.fetchInvestedTokens.failed",
-        "error.trustline.unknown",
-        "investedTokens.item.tokenShort",
-        "investedTokens.missingPublicKey",
-        "investedTokens.totalTokens",
-        "investedTokens.value.units",
-        "investedTokens.value.xlm",
-        "investedTokens.view.label",
-        "investedTokens.view.memo",
-        "investedTokens.view.token",
-        "trustline.deleted.notFound"
-      ],
-      "updated_due_to_de_change": []
+      "missing_now_filled": [],
+      "updated_due_to_de_change": [
+        "xlmByMemo.export.csvAll",
+        "xlmByMemo.wrongMemos.columns.amount",
+        "xlmByMemo.wrongMemos.columns.created_at",
+        "xlmByMemo.wrongMemos.columns.from",
+        "xlmByMemo.wrongMemos.columns.memo",
+        "xlmByMemo.wrongMemos.columns.tx_hash"
+      ]
     },
     "fr": {
-      "missing_now_filled": [
-        "error.asset.creationDateUnknown",
-        "error.fetchInvestedTokens.failed",
-        "error.trustline.unknown",
-        "investedTokens.item.tokenShort",
-        "investedTokens.missingPublicKey",
-        "investedTokens.totalTokens",
-        "investedTokens.value.units",
-        "investedTokens.value.xlm",
-        "investedTokens.view.label",
-        "investedTokens.view.memo",
-        "investedTokens.view.token",
-        "trustline.deleted.notFound"
-      ],
-      "updated_due_to_de_change": []
+      "missing_now_filled": [],
+      "updated_due_to_de_change": [
+        "xlmByMemo.export.csvAll",
+        "xlmByMemo.wrongMemos.columns.amount",
+        "xlmByMemo.wrongMemos.columns.created_at",
+        "xlmByMemo.wrongMemos.columns.from",
+        "xlmByMemo.wrongMemos.columns.memo",
+        "xlmByMemo.wrongMemos.columns.tx_hash"
+      ]
     },
     "hr": {
-      "missing_now_filled": [
-        "error.asset.creationDateUnknown",
-        "error.fetchInvestedTokens.failed",
-        "error.trustline.unknown",
-        "investedTokens.item.tokenShort",
-        "investedTokens.missingPublicKey",
-        "investedTokens.totalTokens",
-        "investedTokens.value.units",
-        "investedTokens.value.xlm",
-        "investedTokens.view.label",
-        "investedTokens.view.memo",
-        "investedTokens.view.token",
-        "trustline.deleted.notFound"
-      ],
-      "updated_due_to_de_change": []
+      "missing_now_filled": [],
+      "updated_due_to_de_change": [
+        "xlmByMemo.export.csvAll",
+        "xlmByMemo.wrongMemos.columns.amount",
+        "xlmByMemo.wrongMemos.columns.created_at",
+        "xlmByMemo.wrongMemos.columns.from",
+        "xlmByMemo.wrongMemos.columns.memo",
+        "xlmByMemo.wrongMemos.columns.tx_hash"
+      ]
     },
     "it": {
-      "missing_now_filled": [
-        "error.asset.creationDateUnknown",
-        "error.fetchInvestedTokens.failed",
-        "error.trustline.unknown",
-        "investedTokens.item.tokenShort",
-        "investedTokens.missingPublicKey",
-        "investedTokens.totalTokens",
-        "investedTokens.value.units",
-        "investedTokens.value.xlm",
-        "investedTokens.view.label",
-        "investedTokens.view.memo",
-        "investedTokens.view.token",
-        "trustline.deleted.notFound"
-      ],
-      "updated_due_to_de_change": []
+      "missing_now_filled": [],
+      "updated_due_to_de_change": [
+        "xlmByMemo.export.csvAll",
+        "xlmByMemo.wrongMemos.columns.amount",
+        "xlmByMemo.wrongMemos.columns.created_at",
+        "xlmByMemo.wrongMemos.columns.from",
+        "xlmByMemo.wrongMemos.columns.memo",
+        "xlmByMemo.wrongMemos.columns.tx_hash"
+      ]
     },
     "nl": {
-      "missing_now_filled": [
-        "error.asset.creationDateUnknown",
-        "error.fetchInvestedTokens.failed",
-        "error.trustline.unknown",
-        "investedTokens.item.tokenShort",
-        "investedTokens.missingPublicKey",
-        "investedTokens.totalTokens",
-        "investedTokens.value.units",
-        "investedTokens.value.xlm",
-        "investedTokens.view.label",
-        "investedTokens.view.memo",
-        "investedTokens.view.token",
-        "trustline.deleted.notFound"
-      ],
-      "updated_due_to_de_change": []
+      "missing_now_filled": [],
+      "updated_due_to_de_change": [
+        "xlmByMemo.export.csvAll",
+        "xlmByMemo.wrongMemos.columns.amount",
+        "xlmByMemo.wrongMemos.columns.created_at",
+        "xlmByMemo.wrongMemos.columns.from",
+        "xlmByMemo.wrongMemos.columns.memo",
+        "xlmByMemo.wrongMemos.columns.tx_hash"
+      ]
     },
     "ru": {
-      "missing_now_filled": [
-        "error.asset.creationDateUnknown",
-        "error.fetchInvestedTokens.failed",
-        "error.trustline.unknown",
-        "investedTokens.item.tokenShort",
-        "investedTokens.missingPublicKey",
-        "investedTokens.totalTokens",
-        "investedTokens.value.units",
-        "investedTokens.value.xlm",
-        "investedTokens.view.label",
-        "investedTokens.view.memo",
-        "investedTokens.view.token",
-        "trustline.deleted.notFound"
-      ],
-      "updated_due_to_de_change": []
+      "missing_now_filled": [],
+      "updated_due_to_de_change": [
+        "xlmByMemo.export.csvAll",
+        "xlmByMemo.wrongMemos.columns.amount",
+        "xlmByMemo.wrongMemos.columns.created_at",
+        "xlmByMemo.wrongMemos.columns.from",
+        "xlmByMemo.wrongMemos.columns.memo",
+        "xlmByMemo.wrongMemos.columns.tx_hash"
+      ]
     }
   }
 }

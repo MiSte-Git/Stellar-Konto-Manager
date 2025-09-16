@@ -10,6 +10,19 @@
     "creationDate": "Erstellt am",
     "issuer": "Emittent"
   },
+  "buildInfo": {
+    "branch": "Branch",
+    "commit": "Commit",
+    "env": "Umgebung",
+    "error": "Build-Informationen konnten nicht geladen werden.",
+    "loading": "Build-Informationen werden geladen …"
+  },
+  "cache": {
+    "clear": "Cache leeren",
+    "consent": "Lokaler Cache aktivieren, um Abfragen zu beschleunigen?",
+    "lastPaymentAt": "Letzte Zahlung: {{val}}",
+    "lastRefresh": "Letzte Aktualisierung: {{ts}}"
+  },
   "common": {
     "clear": "Eingabe löschen",
     "loading": "Laden…",
@@ -19,13 +32,29 @@
     "asset": {
       "creationDateUnknown": "Unbekanntes Erstellungsdatum"
     },
+    "cache": {
+      "backfillAborted": "Initiales Laden der Zahlungen abgebrochen",
+      "indexIterFailed": "Index-Iteration im Cache fehlgeschlagen",
+      "memoNormBackfillFailed": "Initiales Laden der Zahlungen für normalisierte Memos fehlgeschlagen",
+      "openFailed": "Lokaler Cache konnte nicht geöffnet werden",
+      "readFailed": "Lesen aus dem Cache fehlgeschlagen",
+      "writeFailed": "Schreiben in den Cache fehlgeschlagen"
+    },
     "connection": {
       "backend": "Keine Verbindung zum Backend möglich. Stellen Sie sicher"
     },
     "fetchInvestedTokens": {
       "failed": "Laden der Investitionsdaten fehlgeschlagen: {{detail}}"
     },
+    "horizon": {
+      "paymentsFetch": "Fehler beim Laden der Zahlungen von Horizon"
+    },
     "op_invalid_limit": "Trustline kann nicht gelöscht werden. Sie hat möglicherweise noch Guthaben oder offene Verpflichtungen.",
+    "query": {
+      "invalidMemo": "Ungültiges Memo",
+      "invalidRange": "Zeitfenster ist ungültig (Von > Bis)",
+      "invalidTime": "Ungültige Zeitangabe"
+    },
     "submitTransaction": {
       "failed": {
         "tx_bad_auth": "Transaktion abgelehnt: Ungültige Signatur",
@@ -33,44 +62,31 @@
         "unknown": "Unbekannter Fehler bei der Transaktion"
       }
     },
+    "sync": {
+      "backfillFailed": "Initiales Laden der Zahlungen fehlgeschlagen",
+      "incrementalFailed": "Aktualisierung der Zahlungen fehlgeschlagen"
+    },
     "transaction": {
       "failed": "Transaktion fehlgeschlagen",
       "title": "Fehler bei der Transaktion"
     },
     "trustline": {
-      "unknown": "Unbekannter Fehler beim Löschen der Trustline.",
-      "submitFailed": "Fehler beim Löschen der Trustline."
+      "submitFailed": "Fehler beim Löschen der Trustline.",
+      "unknown": "Unbekannter Fehler beim Löschen der Trustline."
     },
     "xlmByMemo": {
       "aborted": "Vorgang vom Benutzer abgebrochen",
-      "serverInvalid": "Ungültiger Server",
       "accountInvalid": "Ungültiger Account",
-      "memoInvalid": "Ungültiges Memo",
-      "paymentsFetch": "Fehler beim Laden der Zahlungen",
       "dateInvalid": "Ungültiges Datum",
       "dateRange": "Ungültiger Datumsbereich",
-      "failedUnknown": "Unbekannter Fehler"
-    },
-    "cache": {
-      "openFailed": "Lokaler Cache konnte nicht geöffnet werden",
-      "writeFailed": "Schreiben in den Cache fehlgeschlagen",
-      "readFailed": "Lesen aus dem Cache fehlgeschlagen",
-      "backfillAborted": "Initiales Laden der Zahlungen abgebrochen",
-      "indexIterFailed": "Index-Iteration im Cache fehlgeschlagen",
-      "memoNormBackfillFailed": "Initiales Laden der Zahlungen für normalisierte Memos fehlgeschlagen"
-    },
-    "sync": {
-      "backfillFailed": "Initiales Laden der Zahlungen fehlgeschlagen",
-      "incrementalFailed": "Aktualisierung der Zahlungen fehlgeschlagen"
-    },
-    "horizon": {
-      "paymentsFetch": "Fehler beim Laden der Zahlungen von Horizon"
-    },
-    "query": {
-      "invalidTime": "Ungültige Zeitangabe",
-      "invalidRange": "Zeitfenster ist ungültig (Von > Bis)",
-      "invalidMemo": "Ungültiges Memo"
+      "failedUnknown": "Unbekannter Fehler",
+      "memoInvalid": "Ungültiges Memo",
+      "paymentsFetch": "Fehler beim Laden der Zahlungen",
+      "serverInvalid": "Ungültiger Server"
     }
+  },
+  "exportCsv": {
+    "failed": "CSV-Export fehlgeschlagen"
   },
   "investedTokens": {
     "hintEnterPublicKey": "Bitte gib zuerst einen Public Key ein.",
@@ -103,12 +119,13 @@
     "title": "Stellar Trustline Manager"
   },
   "menu": {
-    "xlmByMemo": "XLM-Betrag nach Memo/Token Filtern",
-    "unknown": "Unbekannte Menüauswahl"
+    "unknown": "Unbekannte Menüauswahl",
+    "xlmByMemo": "XLM-Betrag nach Memo/Token Filtern"
   },
   "navigation": {
     "backToMainMenu": "Zurück zum Menü",
-    "backToPublicKey": "Zurück zur öffentlichen Schlüssel Eingabe"
+    "backToPublicKey": "Zurück zur öffentlichen Schlüssel Eingabe",
+    "backToTop": "Zurück nach Oben"
   },
   "option": {
     "cancel": "Abbrechen",
@@ -129,8 +146,43 @@
     "results": "Ergebnisse:",
     "yes": "Ja"
   },
-  "exportCsv": {
-    "failed": "CSV-Export fehlgeschlagen"
+  "progress": {
+    "cancel": "Abbrechen",
+    "canceled": "Abgebrochen",
+    "counts": "Geprüft: {{ops}} • Treffer: {{matches}}",
+    "done": "Abgeschlossen",
+    "duration": "Dauer: {{val}}",
+    "elapsed": "Dauer: {{time}}",
+    "eta": "ETA: {{minutes}} Min.",
+    "firstMatchAt": "Letzte Einzahlung: {{date}}",
+    "mode": {
+      "cache": "Modus: Cache",
+      "live": "Modus: Live (Horizon)"
+    },
+    "oldest": "ältestes Datum dieser Seite: {{date}}",
+    "oldestMatchInRangeAt": "Erste Einzahlung im Zeitraum: {{date}}",
+    "phase": {
+      "backfill": "Lade fehlende Zahlungen…",
+      "cacheQuery": "Berechne Ergebnis aus lokalem Cache…",
+      "chunkDone": "Chunk verarbeitet.",
+      "chunkSkip": "Chunk übersprungen.",
+      "cover": "Cache-Abdeckung sicherstellen…",
+      "export": "Exportiere Ergebnis…",
+      "finalize": "Abgeschlossen",
+      "finalizeDiag": "Diagnose abgeschlossen",
+      "idle": "Bereit…",
+      "pageDone": "Seite {{page}} abgeschlossen.",
+      "rehydrate": "Rekonstruire Cache…",
+      "scan": "Scanne Zahlungen (Seite {{page}})…",
+      "scan_payments": "Scanne Zahlungen (Seite {{page}})…",
+      "scan_payments_fast": "Scanne Zahlungen (schnell) – Seite {{page}}…",
+      "scan_tx": "Transaktionen scannen",
+      "sync": "Synchronisiere Zahlungen…",
+      "txFetch": "Lade Transaktionsdetails…"
+    },
+    "wrongMemos": {
+      "failed": "Fehler beim Laden der Zahlungen mit falschem/leerem Memo."
+    }
   },
   "publicKey": {
     "destination": {
@@ -155,16 +207,16 @@
     "valid": "✅ Secret Key ist gültig."
   },
   "settings": {
-    "label": "Einstellungen",
+    "cache": {
+      "help": "Beschleunigt Abfragen durch lokalen Zahlungs-Cache, kann jedoch das initiale Laden verlängern.",
+      "label": "Cache benutzen (Beta)",
+      "prefetchHelp": "Vorlauf der zu ladenden Einträge/Transaktionen in Tagen (einmalig beim ersten Aktivieren)"
+    },
     "description": "Aktuell gibt es noch keine Einstellungen",
     "error": {
       "fetchFailed": "Laden der Einstellungen fehlgeschlagen: {{detail}}"
     },
-    "cache": {
-      "label": "Cache benutzen (Beta)",
-      "help": "Beschleunigt Abfragen durch lokalen Zahlungs-Cache, kann jedoch das initiale Laden verlängern.",
-      "prefetchHelp": "Vorlauf der zu ladenden Einträge/Transaktionen in Tagen (einmalig beim ersten Aktivieren)"
-    },
+    "label": "Einstellungen",
     "prefetchDays": "Vorlauf (Tage)"
   },
   "token": {
@@ -203,36 +255,19 @@
       "to": "Bis (optional)"
     },
     "debug": {
-      "memo": "Memos im Fenster: {{any}} • exakte Memos: {{exact}}",
-      "types": "Typen – payment: {{pay}}, path: {{path}}, create: {{create}}, andere: {{other}}",
       "incoming": "Incoming – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
-      "incomingOverview": "Eingänge: {{total}} • beteiligte Wallets: {{unique}}"
+      "incomingOverview": "Eingänge: {{total}} • beteiligte Wallets: {{unique}}",
+      "memo": "Memos im Fenster: {{any}} • exakte Memos: {{exact}}",
+      "types": "Typen – payment: {{pay}}, path: {{path}}, create: {{create}}, andere: {{other}}"
     },
     "export": {
       "csv": "CSV prüfen (Treffer)",
-      "csvMatches": "CSV prüfen (Treffer)",
-      "csvAll": "Als CSV exportieren (alle Operationen)",
-      "csvBoth": "Beide CSVs speichern"
+      "csvAll": "Alle Operationen exportieren",
+      "csvBoth": "Beide CSVs speichern",
+      "csvMatches": "CSV prüfen (Treffer)"
     },
     "exportCsv": {
       "failed": "CSV-Export fehlgeschlagen: {{detail}}"
-    },
-    "wrongMemos": {
-      "button": "Wallets mit falschem/leerem Memo anzeigen",
-      "scanning": "… scannt falsche/leere Memos",
-      "hint": "Filtert eingehende Zahlungen im Zeitraum und zeigt Absender mit falschem/leerem Memo",
-      "title": "Falsche/Leere Memos im Zeitraum",
-      "summary": "Anzahl: {{count}} • Summe: {{sum}} XLM • Eindeutige Wallets: {{unique}}",
-      "csv": "CSV herunterladen",
-      "clipboard": "In Zwischenablage kopieren",
-      "failed": "Fehler beim Laden der Zahlungen mit falschem/leerem Memo.",
-      "columns": {
-        "created_at": "created_at",
-        "from": "from",
-        "amount": "amount",
-        "memo": "memo",
-        "tx_hash": "tx_hash"
-      }
     },
     "memo": {
       "label": "Memo-Suchtext (Teilstring, Groß-/Kleinschreibung beachten)",
@@ -248,13 +283,13 @@
       "value": "{{amount}} XLM"
     },
     "summary": {
-      "correctCount": "Eingänge mit korrektem Memo: {{n}}",
-      "otherCount": "Eingänge mit falschem/ohne Memo: {{n}}",
-      "uniqueWallets": "Eindeutige Wallets: {{n}}",
-      "label": "Vergleich (alle Eingänge)",
-      "count": "Anzahl: {{n}}",
       "amount": "Summe: {{amount}} XLM",
-      "unique": "Eindeutige Wallets (alle): {{n}}"
+      "correctCount": "Eingänge mit korrektem Memo: {{n}}",
+      "count": "Anzahl: {{n}}",
+      "label": "Vergleich (alle Eingänge)",
+      "otherCount": "Eingänge mit falschem/ohne Memo: {{n}}",
+      "unique": "Eindeutige Wallets (alle): {{n}}",
+      "uniqueWallets": "Eindeutige Wallets: {{n}}"
     },
     "time": {
       "setToNow": "Aktuelle Zeit setzen",
@@ -264,63 +299,29 @@
     "tz": {
       "cdt": "CDT (UTC−5)",
       "cst": "CST (UTC−6)",
+      "europe_zurich": "Europe/Zurich (CET/CEST)",
       "label": "Zeitzone für Datum/Uhrzeit",
       "local": "Lokale Zeitzone",
       "note": "Datum/Uhrzeit werden in der gewählten Zeitzone interpretiert und vor der Suche automatisch in UTC umgerechnet.",
       "utc": "UTC",
-      "europe_zurich": "Europe/Zurich (CET/CEST)",
       "window": "Genutztes UTC-Zeitfenster: {{from}} → {{to}} (Bis exklusiv)"
-    }
-  },
-  "buildInfo": {
-    "loading": "Build-Informationen werden geladen …",
-    "error": "Build-Informationen konnten nicht geladen werden.",
-    "env": "Umgebung",
-    "commit": "Commit",
-   "branch": "Branch"
-  },
-  "progress": {
-    "cancel": "Abbrechen",
-    "canceled": "Abgebrochen",
-    "done": "Abgeschlossen",
-    "eta": "ETA: {{minutes}} Min.",
-    "oldest": "ältestes Datum dieser Seite: {{date}}",
-    "duration": "Dauer: {{val}}",
-    "phase": {
-      "idle": "Bereit…",
-      "scan": "Scanne Zahlungen (Seite {{page}})…",
-      "scan_tx": "Transaktionen scannen",
-      "scan_payments": "Scanne Zahlungen (Seite {{page}})…",
-      "scan_payments_fast": "Scanne Zahlungen (schnell) – Seite {{page}}…",
-      "finalizeDiag": "Diagnose abgeschlossen",
-      "pageDone": "Seite {{page}} abgeschlossen.",
-      "chunkDone": "Chunk verarbeitet.",
-      "chunkSkip": "Chunk übersprungen.",
-      "finalize": "Abgeschlossen",
-      "txFetch": "Lade Transaktionsdetails…",
-      "sync": "Synchronisiere Zahlungen…",
-      "cacheQuery": "Berechne Ergebnis aus lokalem Cache…",
-      "backfill": "Lade fehlende Zahlungen…",
-      "rehydrate": "Rekonstruire Cache…",
-      "cover": "Cache-Abdeckung sicherstellen…",
-      "export": "Exportiere Ergebnis…"
     },
-    "counts": "Geprüft: {{ops}} • Treffer: {{matches}}",
-    "firstMatchAt": "Letzte Einzahlung: {{date}}",
-    "oldestMatchInRangeAt": "Erste Einzahlung im Zeitraum: {{date}}",
     "wrongMemos": {
-      "failed": "Fehler beim Laden der Zahlungen mit falschem/leerem Memo."
-    },
-    "mode": {
-      "live": "Modus: Live (Horizon)",
-      "cache": "Modus: Cache"
-    },
-    "elapsed": "Dauer: {{time}}"
-  },
-  "cache": {
-    "consent": "Lokaler Cache aktivieren, um Abfragen zu beschleunigen?",
-    "clear": "Cache leeren",
-    "lastRefresh": "Letzte Aktualisierung: {{ts}}",
-    "lastPaymentAt": "Letzte Zahlung: {{val}}"
+      "button": "Wallets mit falschem/leerem Memo anzeigen",
+      "clipboard": "In Zwischenablage kopieren",
+      "columns": {
+        "amount": "Betrag",
+        "created_at": "Erstellt am",
+        "from": "Von",
+        "memo": "Memo",
+        "tx_hash": "Transaktions-Hash"
+      },
+      "csv": "CSV herunterladen",
+      "failed": "Fehler beim Laden der Zahlungen mit falschem/leerem Memo.",
+      "hint": "Filtert eingehende Zahlungen im Zeitraum und zeigt Absender mit falschem/leerem Memo",
+      "scanning": "… scannt falsche/leere Memos",
+      "summary": "Anzahl: {{count}} • Summe: {{sum}} XLM • Eindeutige Wallets: {{unique}}",
+      "title": "Falsche/Leere Memos im Zeitraum"
+    }
   }
 }
