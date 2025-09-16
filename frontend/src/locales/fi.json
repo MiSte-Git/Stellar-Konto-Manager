@@ -20,7 +20,21 @@
     "compromisedPurchases": "{total} yhteensä maksut",
     "totalPurchases": "Ostosten kokonaismäärä: {count}"
   },
+  "buildInfo": {
+    "branch": "Haara",
+    "commit": "Vahvista",
+    "env": "Ympäristö",
+    "error": "Rakennustietoja ei voitu ladata.",
+    "loading": "Ladataan rakennustietoja …"
+  },
+  "cache": {
+    "clear": "Tyhjennä välimuisti",
+    "consent": "Ota paikallinen välimuisti käyttöön kyselyjen nopeuttamiseksi?",
+    "lastPaymentAt": "Viimeisin maksaminen: {{val}}",
+    "lastRefresh": "Viimeksi päivitetty: {{ts}}"
+  },
   "common": {
+    "clear": "Tyhjennä syöte",
     "loading": "Lataaminen…",
     "refresh": "Lataa uudelleen"
   },
@@ -31,6 +45,14 @@
     "asset": {
       "creationDateUnknown": "Tuntematon luontipäivämäärä"
     },
+    "cache": {
+      "backfillAborted": "Maksujen alustus keskeytettiin",
+      "indexIterFailed": "Indeksin iteraatio välimuistissa epäonnistui",
+      "memoNormBackfillFailed": "Normaalistettujen muistioiden maksujen alustus epäonnistui",
+      "openFailed": "Paikallista välimuistia ei voitu avata.",
+      "readFailed": "Luku välimuistista epäonnistui",
+      "writeFailed": "Kirjoittaminen välimuistiin epäonnistui"
+    },
     "connection": {
       "backend": "Ei yhteyttä taustapalvelimeen. Varmista, että"
     },
@@ -38,8 +60,27 @@
       "failed": "Investointitietojen lataaminen epäonnistui: {{detail}}"
     },
     "fetchingOperations": "Virhe toimenpiteiden hakemisessa: {{error}}",
+    "horizon": {
+      "paymentsFetch": "Virhe maksujen lataamisessa Horizonista"
+    },
     "op_invalid_limit": "Luottoraja ei voi poistua. Siinä saattaa edelleen olla saldo tai erääntyneitä velvoitteita.",
+    "query": {
+      "invalidMemo": "Virheellinen muistiinpano",
+      "invalidRange": "Aikaväli on virheellinen (Alkaen > Jatkuu)",
+      "invalidTime": "Virheellinen aikamerkintä"
+    },
     "script": "Skripti virhe: {message} kohdassa {source}:{lineno}:{colno} - {{error}}",
+    "submitTransaction": {
+      "failed": {
+        "tx_bad_auth": "Transaktio hylätty: Virheellinen allekirjoitus",
+        "tx_failed": "Transaktio epäonnistui",
+        "unknown": "Tuntematon virhe tapahtuman aikana"
+      }
+    },
+    "sync": {
+      "backfillFailed": "Maksujen alustus epäonnistui",
+      "incrementalFailed": "Maksupäivitys epäonnistui"
+    },
     "transaction": {
       "deleteFail": "[ERROR] Poisto epäonnistui: {{error}}",
       "failed": "Transaktio epäonnistui",
@@ -50,8 +91,22 @@
       "unknown": "Tuntematon virhe tapahtumassa."
     },
     "trustline": {
+      "submitFailed": "Virhe luottolinjan poistamisessa.",
       "unknown": "Tuntematon virhe luottolinjan poistamisessa."
+    },
+    "xlmByMemo": {
+      "aborted": "Käyttäjä peruutti toiminnon",
+      "accountInvalid": "Virheellinen tili",
+      "dateInvalid": "Virheellinen päivämäärä",
+      "dateRange": "Virheellinen päivämääräväli",
+      "failedUnknown": "Tuntematon virhe",
+      "memoInvalid": "Virheellinen muistiinpano",
+      "paymentsFetch": "Virhe maksujen lataamisessa",
+      "serverInvalid": "Virheellinen palvelin"
     }
+  },
+  "exportCsv": {
+    "failed": "CSV-vienti epäonnistui"
   },
   "fetchInvestedTokens": {
     "failed": "Investointitietojen lataaminen epäonnistui: {{detail}}"
@@ -78,7 +133,7 @@
       "xlm": "{{amount}} XLM"
     },
     "view": {
-      "label": "Näytä",
+      "label": "Suodata:",
       "memo": "Muistiot (Groupfund)",
       "token": "Token (ostettu määrä)"
     },
@@ -97,11 +152,12 @@
     "title": "Stellar Trustline Manager"
   },
   "menu": {
-    "xlmByMemo": "XLM:stä Muistioon"
+    "unknown": "Tuntematon valintavalikko",
+    "xlmByMemo": "Suodata XLM-määrä muistin/tokenin mukaan"
   },
   "navigation": {
     "backToMainMenu": "Takaisin valikkoon",
-    "backToPublicKey": "Takaisin julkisen osoitteen syöttöön",
+    "backToPublicKey": "Takaisin julkisen avaimen syöttöön",
     "backToTop": "Takaisin ylös",
     "current": {
       "menu": "Nykyinen valikko:"
@@ -140,6 +196,44 @@
     "show": "Näytä",
     "yes": "Kyllä"
   },
+  "progress": {
+    "cancel": "Peruuta",
+    "canceled": "Peruutettu",
+    "counts": "Tarkistettu: {{ops}} • Osumat: {{matches}}",
+    "done": "Valmis",
+    "duration": "Kesto: {{val}}",
+    "elapsed": "Kesto: {{time}}",
+    "eta": "ETA: {{minutes}} min.",
+    "firstMatchAt": "Viimeisin talletus: {{date}}",
+    "mode": {
+      "cache": "Moodi: Välimuisti",
+      "live": "Tila: Live (Horizon)"
+    },
+    "oldest": "sivun vanhin päivämäärä: {{date}}",
+    "oldestMatchInRangeAt": "Ensimmäinen talletus kaudella: {{date}}",
+    "phase": {
+      "backfill": "Ladataan puuttuvia maksuja…",
+      "cacheQuery": "Lasketaan tulosta paikallisesta välimuistista…",
+      "chunkDone": "Chunk käsitelty.",
+      "chunkSkip": "Chunk skipped.",
+      "cover": "Varmistetaan välimuistin kattavuutta...",
+      "export": "Vie vienti...",
+      "finalize": "Valmis",
+      "finalizeDiag": "Diagnostiikka valmis",
+      "idle": "Valmis…",
+      "pageDone": "Sivu {{page}} valmis.",
+      "rehydrate": "Välimuistin uudelleenrakentaminen…",
+      "scan": "Skannataan maksuja (sivu {{page}})…",
+      "scan_payments": "Skannataan maksut (sivu {{page}})…",
+      "scan_payments_fast": "Skannaa maksut (nopeasti) – Sivulla {{page}}…",
+      "scan_tx": "Skannaa tapahtumat",
+      "sync": "Synkronoidaan maksuja…",
+      "txFetch": "Ladataan tapahtumatietoja…"
+    },
+    "wrongMemos": {
+      "failed": "Virhe maksujen lataamisessa virheellisen/tyhjän muistiinpanon vuoksi."
+    }
+  },
   "publicKey": {
     "destination": {
       "error": "Virheellinen kohdeavain.",
@@ -162,18 +256,28 @@
     "empty": "Salainen avain -kenttä on tyhjö.",
     "info": "Salainen avain siirretään vain tilapäisesti taustapalvelimelle valitun toiminnon suorittamiseksi. Avainta ei tallenneta.",
     "invalid": "Virheellinen salainen avain.",
-    "label": "Syötä lähteen salainen avain (lähetetään turvallisesti taustajärjestelmään)",
+    "label": "Syötä lähteen salainen avain (lähetetään turvallisesti taustapalvelimelle)",
     "mismatch": "Salainen avain ei vastaa julkista osoitetta.",
     "placeholder": "esim.",
     "valid": "✅ Salainen avain on voimassa."
   },
   "settings": {
+    "cache": {
+      "help": "Nopeuttaa kyselyitä paikallisen maksuvälinetietokannan avulla, mutta saattaa pidentää alkuperäistä latausaikaa.",
+      "label": "Käytä välimuistia (Beta)",
+      "prefetchHelp": "Latausaika merkintöjen/kuukausitapahtumien lataamiseen päivinä (ensimmäisen aktivoinnin yhteydessä)"
+    },
+    "description": "Tällä hetkellä ei ole käytettävissä olevia asetuksia.",
+    "error": {
+      "fetchFailed": "Asetusten lataaminen epäonnistui: {{detail}}"
+    },
     "export": "Vientiasetukset",
     "import": "Tuontiasetukset",
-    "label": "Asetukset"
+    "label": "Asetukset",
+    "prefetchDays": "Toimitusaika (päivää)"
   },
   "token": {
-    "purchases": "Ostettujen tokenien määrä"
+    "purchases": "Sijoitettujen tokenien määrä"
   },
   "transaction": {
     "pending": "Transaktio odottaa...",
@@ -235,6 +339,21 @@
       "from": "Lähettäjä (valinnainen)",
       "to": "Kunnes (valinnainen)"
     },
+    "debug": {
+      "incoming": "Saapuva – vastaanottaja: {{toMe}}, luo→minulle: {{createToMe}}, natiivi→minulle: {{nativeInToMe}}",
+      "incomingOverview": "Syötteet: {{total}} • osallistuvat lompakot: {{unique}}",
+      "memo": "Muistiot ikkunassa: {{any}} • tarkat muistiot: {{exact}}",
+      "types": "Tyypit – maksaminen: {{pay}}, polku: {{path}}, luo: {{create}}, muu: {{other}}"
+    },
+    "export": {
+      "csv": "Tarkista CSV (Osumat)",
+      "csvAll": "Vie kaikki toiminnot ulos",
+      "csvBoth": "Tallenna molemmat CSV-tiedostot",
+      "csvMatches": "Tarkista CSV (Osumat)"
+    },
+    "exportCsv": {
+      "failed": "CSV-vienti epäonnistui: {{detail}}"
+    },
     "failed": "Laskentaa ei voitu suorittaa.",
     "failed:account.invalid": "Lompakon osoite on virheellinen.",
     "failed:date.invalid": "Anna kelvolliset päivämäärä/aika-arvot muodossa YYYY-MM-DD HH:mm[:ss] (tai ISO 8601).",
@@ -247,6 +366,7 @@
       "label": "Muistion haku teksti (osajono, kirjainkoolla)",
       "placeholder": "Muistio (osajono, kirjainkoolla)"
     },
+    "overviewLine": "Saapuvat maksut: {{total}} • mukana olevat lompakot: {{unique}}",
     "page": {
       "noPublicKey": "Ole hyvä ja syötä ensin julkinen avain.",
       "title": "XLM yhteensä muistiinpanolla"
@@ -257,18 +377,48 @@
       "rangeVerbose": "Jakso: {{fromDate}} {{fromTime}} - {{toDate}} {{toTime}} ({{tz}})",
       "value": "{{amount}} XLM"
     },
+    "summary": {
+      "amount": "Yhteensä: {{amount}} XLM",
+      "correctCount": "Merkinnät oikealla muistilla: {{n}}",
+      "count": "Luku: {{n}}",
+      "label": "Vertailu (kaikki syötteet)",
+      "otherCount": "Merkinnöillä varustamattomat/virheelliset merkinnät: {{n}}",
+      "unique": "Ainutlaatuiset lompakot (kaikki): {{n}}",
+      "uniqueWallets": "Ainutlaatuiset lompakot: {{n}}"
+    },
     "time": {
       "from": "Aika alkaen (valinnainen)",
+      "setToNow": "Aseta nykyinen aika",
+      "setToNowHint": "Asettaa aikakentän nykyiseen aikaan",
       "to": "Aika kunnes (valinnainen)"
     },
     "title": "XLM yhteensä muistiinpanoittain",
     "tz": {
       "cdt": "CDT (UTC−5)",
       "cst": "CST (UTC−6)",
+      "europe_zurich": "Eurooppa/Zürich (CET/CEST)",
       "label": "Aikavyöhyke päivämäärälle/aikalle",
       "local": "Paikallinen aikavyöhyke",
       "note": "Päivämäärä/aika tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC:ksi ennen hakua.",
-      "utc": "UTC"
+      "utc": "UTC",
+      "window": "Käytetty UTC-aikaväli: {{from}} → {{to}} (Ei sisälly)"
+    },
+    "wrongMemos": {
+      "button": "Näytä lompakot, joissa on virheellinen/tyhjää muistiota",
+      "clipboard": "Kopioi leikepöydälle",
+      "columns": {
+        "amount": "Määrä",
+        "created_at": "Luotu",
+        "from": "Alkaen",
+        "memo": "Muistio",
+        "tx_hash": "Transaktionin hash"
+      },
+      "csv": "Lataa CSV",
+      "failed": "Virhe maksujen lataamisessa virheellisen/tyhjän muistiinpanon vuoksi.",
+      "hint": "Suodattaa saapuvat maksut ajanjaksolla ja näyttää lähettäjät, joilla on virheellinen/tyhjentävä muistiinpano.",
+      "scanning": "… skannaa virheelliset/tyhjät muistiinpanot",
+      "summary": "Laskuri: {{count}} • Yhteensä: {{sum}} XLM • Ainulaista lompakkoa: {{unique}}",
+      "title": "Virheelliset/tyhjät muistiot ajanjaksolla"
     }
   }
 }

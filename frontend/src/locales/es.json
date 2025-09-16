@@ -20,7 +20,21 @@
     "compromisedPurchases": "{total} pagos totales",
     "totalPurchases": "Número total de compras: {count}"
   },
+  "buildInfo": {
+    "branch": "Rama",
+    "commit": "Comprometer",
+    "env": "Entorno",
+    "error": "No se pudo cargar la información de la compilación.",
+    "loading": "Cargando información de la compilación …"
+  },
+  "cache": {
+    "clear": "Borrar caché",
+    "consent": "¿Habilitar la caché local para acelerar las consultas?",
+    "lastPaymentAt": "Último pago: {{val}}",
+    "lastRefresh": "Última actualización: {{ts}}"
+  },
   "common": {
+    "clear": "Borrar entrada",
     "loading": "Cargando…",
     "refresh": "Recargar"
   },
@@ -31,6 +45,14 @@
     "asset": {
       "creationDateUnknown": "Fecha de creación desconocida"
     },
+    "cache": {
+      "backfillAborted": "Carga inicial de pagos abortada",
+      "indexIterFailed": "La iteración del índice en la caché falló",
+      "memoNormBackfillFailed": "La carga inicial de pagos para memorandos normalizados falló",
+      "openFailed": "No se pudo abrir la caché local.",
+      "readFailed": "Error al leer desde la caché",
+      "writeFailed": "Error al escribir en la caché"
+    },
     "connection": {
       "backend": "No se puede conectar con el backend. Por favor, asegúrese de"
     },
@@ -38,8 +60,27 @@
       "failed": "Error al cargar los datos de inversión: {{detail}}"
     },
     "fetchingOperations": "Error al recuperar operaciones: {{error}}",
+    "horizon": {
+      "paymentsFetch": "Error al cargar los pagos desde Horizon"
+    },
     "op_invalid_limit": "La línea de confianza no se puede eliminar. Puede que aún tenga un saldo o obligaciones pendientes.",
+    "query": {
+      "invalidMemo": "Memo inválido",
+      "invalidRange": "La ventana de tiempo es inválida (Desde > Hasta)",
+      "invalidTime": "Entrada de tiempo no válida"
+    },
     "script": "Error de script: {message} en {source}:{lineno}:{colno} - {{error}}",
+    "submitTransaction": {
+      "failed": {
+        "tx_bad_auth": "Transacción rechazada: Firma inválida",
+        "tx_failed": "La transacción falló",
+        "unknown": "Error desconocido durante la transacción"
+      }
+    },
+    "sync": {
+      "backfillFailed": "La carga inicial de los pagos falló",
+      "incrementalFailed": "La actualización del pago falló"
+    },
     "transaction": {
       "deleteFail": "[ERROR] La eliminación falló: {{error}}",
       "failed": "La transacción ha fallado",
@@ -50,8 +91,22 @@
       "unknown": "Error desconocido en la transacción."
     },
     "trustline": {
+      "submitFailed": "Error al eliminar la línea de confianza.",
       "unknown": "Error desconocido al eliminar la línea de confianza."
+    },
+    "xlmByMemo": {
+      "aborted": "Operación cancelada por el usuario",
+      "accountInvalid": "Cuenta inválida",
+      "dateInvalid": "Fecha inválida",
+      "dateRange": "Rango de fechas inválido",
+      "failedUnknown": "Error desconocido",
+      "memoInvalid": "Memo inválido",
+      "paymentsFetch": "Error al cargar los pagos",
+      "serverInvalid": "Servidor inválido"
     }
+  },
+  "exportCsv": {
+    "failed": "La exportación de CSV ha fallado."
   },
   "fetchInvestedTokens": {
     "failed": "Error al cargar los datos de inversión: {{detail}}"
@@ -78,7 +133,7 @@
       "xlm": "{{amount}} XLM"
     },
     "view": {
-      "label": "Ver vista",
+      "label": "Filtrar por:",
       "memo": "Memos (Groupfund)",
       "token": "Token (cantidad comprada)"
     },
@@ -97,11 +152,12 @@
     "title": "Administrador de Trustline Stellar"
   },
   "menu": {
-    "xlmByMemo": "XLM a Memo"
+    "unknown": "Selección de menú desconocida",
+    "xlmByMemo": "Filtrar cantidad de XLM por memo/token"
   },
   "navigation": {
     "backToMainMenu": "Volver al menú",
-    "backToPublicKey": "Volver a la entrada de dirección pública",
+    "backToPublicKey": "Volver a la entrada de clave pública",
     "backToTop": "Volver arriba",
     "current": {
       "menu": "Menú actual:"
@@ -140,6 +196,44 @@
     "show": "Mostrar",
     "yes": "Sí"
   },
+  "progress": {
+    "cancel": "Cancelar",
+    "canceled": "Cancelado",
+    "counts": "Verificado: {{ops}} • Resultados: {{matches}}",
+    "done": "Completado",
+    "duration": "Duración: {{val}}",
+    "elapsed": "Duración: {{time}}",
+    "eta": "ETA: {{minutes}} min.",
+    "firstMatchAt": "Último depósito: {{date}}",
+    "mode": {
+      "cache": "Modo: Caché",
+      "live": "Modo: En vivo (Horizonte)"
+    },
+    "oldest": "fecha más antigua de esta página: {{date}}",
+    "oldestMatchInRangeAt": "Primer depósito en el período: {{date}}",
+    "phase": {
+      "backfill": "Cargando pagos faltantes…",
+      "cacheQuery": "Calculando el resultado desde la caché local…",
+      "chunkDone": "Fragmento procesado.",
+      "chunkSkip": "Chunk omitido.",
+      "cover": "Asegurando la cobertura de caché...",
+      "export": "Exportar resultado...",
+      "finalize": "Completado",
+      "finalizeDiag": "Diagnóstico completado",
+      "idle": "Listo…",
+      "pageDone": "Página {{page}} completada.",
+      "rehydrate": "Reconstruyendo caché…",
+      "scan": "Escaneando pagos (página {{page}})…",
+      "scan_payments": "Escaneando pagos (página {{page}})…",
+      "scan_payments_fast": "Escanear pagos (rápidamente) – Página {{page}}…",
+      "scan_tx": "Escanear transacciones",
+      "sync": "Sincronizando pagos…",
+      "txFetch": "Cargando detalles de la transacción…"
+    },
+    "wrongMemos": {
+      "failed": "Error al cargar los pagos con un memo incorrecto/vacío."
+    }
+  },
   "publicKey": {
     "destination": {
       "error": "Clave de destino no válida.",
@@ -168,12 +262,22 @@
     "valid": "✅ La clave secreta es válida."
   },
   "settings": {
+    "cache": {
+      "help": "Acelera las consultas a través de la caché de pagos local, pero puede prolongar la carga inicial.",
+      "label": "Usar caché (Beta)",
+      "prefetchHelp": "Tiempo de espera para cargar entradas/transacciones en días (una vez activada por primera vez)"
+    },
+    "description": "Actualmente, no hay configuraciones disponibles.",
+    "error": {
+      "fetchFailed": "Error al cargar la configuración: {{detail}}"
+    },
     "export": "Configuración de exportación",
     "import": "Importar configuraciones",
-    "label": "Configuraciones"
+    "label": "Configuraciones",
+    "prefetchDays": "Tiempo de entrega (días)"
   },
   "token": {
-    "purchases": "Número de tokens comprados"
+    "purchases": "Número de tokens invertidos"
   },
   "transaction": {
     "pending": "Transacción pendiente...",
@@ -235,6 +339,21 @@
       "from": "De (opcional)",
       "to": "Hasta (opcional)"
     },
+    "debug": {
+      "incoming": "Entrante – a: {{toMe}}, crear→me: {{createToMe}}, nativo→me: {{nativeInToMe}}",
+      "incomingOverview": "Entradas: {{total}} • billeteras participantes: {{unique}}",
+      "memo": "Memos en la ventana: {{any}} • memos exactos: {{exact}}",
+      "types": "Tipos – pago: {{pay}}, ruta: {{path}}, crear: {{create}}, otro: {{other}}"
+    },
+    "export": {
+      "csv": "Verificar CSV (Hits)",
+      "csvAll": "Exportar todas las operaciones",
+      "csvBoth": "Guarda ambos CSVs",
+      "csvMatches": "Verificar CSV (Hits)"
+    },
+    "exportCsv": {
+      "failed": "La exportación de CSV falló: {{detail}}"
+    },
     "failed": "No se pudo realizar el cálculo.",
     "failed:account.invalid": "La dirección de la billetera es inválida.",
     "failed:date.invalid": "Por favor, introduce valores válidos de fecha/hora en el formato YYYY-MM-DD HH:mm[:ss] (o ISO 8601).",
@@ -247,6 +366,7 @@
       "label": "Texto de búsqueda de memo (subcadena, sensible a mayúsculas)",
       "placeholder": "Memo (subcadena, sensible a mayúsculas)"
     },
+    "overviewLine": "Pagos entrantes: {{total}} • billeteras involucradas: {{unique}}",
     "page": {
       "noPublicKey": "Por favor, introduce primero una clave pública.",
       "title": "XLM total por memo"
@@ -257,18 +377,48 @@
       "rangeVerbose": "Período: {{fromDate}} {{fromTime}} a {{toDate}} {{toTime}} ({{tz}})",
       "value": "{{amount}} XLM"
     },
+    "summary": {
+      "amount": "Total: {{amount}} XLM",
+      "correctCount": "Entradas con memo correcto: {{n}}",
+      "count": "Contar: {{n}}",
+      "label": "Comparación (todas las entradas)",
+      "otherCount": "Entradas con memo incorrecto/sin memo: {{n}}",
+      "unique": "Carteras únicas (todas): {{n}}",
+      "uniqueWallets": "Carteras únicas: {{n}}"
+    },
     "time": {
       "from": "Hora desde (opcional)",
+      "setToNow": "Establecer la hora actual",
+      "setToNowHint": "Establece el campo de tiempo a la hora actual",
       "to": "Tiempo hasta (opcional)"
     },
     "title": "XLM total por memo",
     "tz": {
       "cdt": "CDT (UTC−5)",
       "cst": "CST (UTC−6)",
+      "europe_zurich": "Europa/Zúrich (CET/CEST)",
       "label": "Zona horaria para fecha/hora",
       "local": "Zona horaria local",
       "note": "La fecha/hora se interpreta en la zona horaria seleccionada y se convierte automáticamente a UTC antes de la búsqueda.",
-      "utc": "UTC"
+      "utc": "UTC",
+      "window": "Ventana de tiempo UTC utilizada: {{from}} → {{to}} (Exclusivo)"
+    },
+    "wrongMemos": {
+      "button": "Mostrar billeteras con memo incorrecto/vacío",
+      "clipboard": "Copiar al portapapeles",
+      "columns": {
+        "amount": "Cantidad",
+        "created_at": "Creado el",
+        "from": "Desde",
+        "memo": "Memo",
+        "tx_hash": "Hash de la transacción"
+      },
+      "csv": "Descargar CSV",
+      "failed": "Error al cargar los pagos con un memo incorrecto/vacío.",
+      "hint": "Filtra los pagos entrantes dentro del período y muestra a los remitentes con un memo incorrecto/vacío.",
+      "scanning": "… escanea memorandos incorrectos/vacíos",
+      "summary": "Cuenta: {{count}} • Total: {{sum}} XLM • Monederos Únicos: {{unique}}",
+      "title": "Memos incorrectos/vacíos en el período"
     }
   }
 }

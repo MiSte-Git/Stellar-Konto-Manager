@@ -20,7 +20,21 @@
     "compromisedPurchases": "{total} totale betalingen",
     "totalPurchases": "Totaal aantal aankopen: {count}"
   },
+  "buildInfo": {
+    "branch": "Takelijn",
+    "commit": "Invoegen",
+    "env": "Omgeving",
+    "error": "Bouwinformatie kon niet worden geladen.",
+    "loading": "Laad bouwinformatie …"
+  },
+  "cache": {
+    "clear": "Cache wissen",
+    "consent": "Lokale cache inschakelen om zoekopdrachten te versnellen?",
+    "lastPaymentAt": "Laatste betaling: {{val}}",
+    "lastRefresh": "Laatst bijgewerkt: {{ts}}"
+  },
   "common": {
+    "clear": "Vul het invoerveld leeg",
     "loading": "Laden…",
     "refresh": "Herladen"
   },
@@ -31,6 +45,14 @@
     "asset": {
       "creationDateUnknown": "Onbekende creatiedatum"
     },
+    "cache": {
+      "backfillAborted": "Initiële laadtijd van betalingen afgebroken",
+      "indexIterFailed": "Indexiteratie in cache mislukt",
+      "memoNormBackfillFailed": "Initiële laadtijd van betalingen voor genormaliseerde memo's is mislukt",
+      "openFailed": "Lokale cache kon kon niet worden geopend.",
+      "readFailed": "Kon niet uit cache lezen",
+      "writeFailed": "Schrijven naar cache is mislukt"
+    },
     "connection": {
       "backend": "Geen verbinding met de backend mogelijk. Zorg ervoor"
     },
@@ -38,8 +60,27 @@
       "failed": "Kon het investeringsgegevens niet laden: {{detail}}"
     },
     "fetchingOperations": "Fout bij het ophalen van bewerkingen: {{error}}",
+    "horizon": {
+      "paymentsFetch": "Fout bij het laden van betalingen van Horizon"
+    },
     "op_invalid_limit": "De trustlijn kan niet worden verwijderd. Deze kan nog steeds een saldo of openstaande verplichtingen hebben.",
+    "query": {
+      "invalidMemo": "Ongeldig memo",
+      "invalidRange": "Tijdvenster is ongeldig (Van > Tot)",
+      "invalidTime": "Ongeldige tijdinvoer"
+    },
     "script": "Scriptfout: {message} bij {source}:{lineno}:{colno} - {{error}}",
+    "submitTransaction": {
+      "failed": {
+        "tx_bad_auth": "Transactie afgewezen: Ongeldige handtekening",
+        "tx_failed": "Transactie mislukt",
+        "unknown": "Onbekende fout tijdens de transactie"
+      }
+    },
+    "sync": {
+      "backfillFailed": "Initiële laadtijd van betalingen is mislukt",
+      "incrementalFailed": "Betaling bijwerken mislukt"
+    },
     "transaction": {
       "deleteFail": "[ERROR] Verwijdering mislukt: {{error}}",
       "failed": "Transactie mislukt",
@@ -50,8 +91,22 @@
       "unknown": "Onbekende fout bij de transactie."
     },
     "trustline": {
+      "submitFailed": "Fout bij het verwijderen van de trustlijn.",
       "unknown": "Onbekende fout bij het verwijderen van de trustlijn."
+    },
+    "xlmByMemo": {
+      "aborted": "Operatie geannuleerd door gebruiker",
+      "accountInvalid": "Ongeldig account",
+      "dateInvalid": "Ongeldige datum",
+      "dateRange": "Ongeldige datumbereik",
+      "failedUnknown": "Onbekende fout",
+      "memoInvalid": "Ongeldig memo",
+      "paymentsFetch": "Fout bij het laden van betalingen",
+      "serverInvalid": "Ongeldige server"
     }
+  },
+  "exportCsv": {
+    "failed": "CSV-export mislukt"
   },
   "fetchInvestedTokens": {
     "failed": "Kon het investeringsgegevens niet laden: {{detail}}"
@@ -78,7 +133,7 @@
       "xlm": "{{amount}} XLM"
     },
     "view": {
-      "label": "Bekijk",
+      "label": "Filteren op:",
       "memo": "Memos (Groepsfonds)",
       "token": "Token (aangekocht bedrag)"
     },
@@ -97,11 +152,12 @@
     "title": "Stellar Trustline Manager"
   },
   "menu": {
-    "xlmByMemo": "XLM naar Memo"
+    "unknown": "Onbekende menu-optie",
+    "xlmByMemo": "Filter XLM-bedrag op memo/token"
   },
   "navigation": {
     "backToMainMenu": "Terug naar menu",
-    "backToPublicKey": "Terug naar het openbare adresinvoer",
+    "backToPublicKey": "Terug naar invoer van de openbare sleutel",
     "backToTop": "Terug naar boven",
     "current": {
       "menu": "Huidig menu:"
@@ -140,6 +196,44 @@
     "show": "Toon",
     "yes": "Ja"
   },
+  "progress": {
+    "cancel": "Annuleren",
+    "canceled": "Geannuleerd",
+    "counts": "Gecontroleerd: {{ops}} • Hits: {{matches}}",
+    "done": "Voltooid",
+    "duration": "Duur: {{val}}",
+    "elapsed": "Duur: {{time}}",
+    "eta": "ETA: {{minutes}} min.",
+    "firstMatchAt": "Laatste storting: {{date}}",
+    "mode": {
+      "cache": "Modus: Cache",
+      "live": "Modus: Live (Horizon)"
+    },
+    "oldest": "oudste datum van deze pagina: {{date}}",
+    "oldestMatchInRangeAt": "Eerste storting in de periode: {{date}}",
+    "phase": {
+      "backfill": "Laden van ontbrekende betalingen…",
+      "cacheQuery": "Resultaat berekenen vanuit lokale cache…",
+      "chunkDone": "Chunk verwerkt.",
+      "chunkSkip": "Chunk overgeslagen.",
+      "cover": "Cache-dekking verzekeren...",
+      "export": "Exporteer resultaat...",
+      "finalize": "Voltooid",
+      "finalizeDiag": "Diagnose voltooid",
+      "idle": "Klaar…",
+      "pageDone": "Pagina {{page}} voltooid.",
+      "rehydrate": "Cache opnieuw opbouwen…",
+      "scan": "Betalingen scannen (pagina {{page}})…",
+      "scan_payments": "Betalingen scannen (pagina {{page}})…",
+      "scan_payments_fast": "Scan betalingen (snel) – Pagina {{page}}…",
+      "scan_tx": "Scan transacties",
+      "sync": "Betalingen synchroniseren…",
+      "txFetch": "Transactiedetails laden…"
+    },
+    "wrongMemos": {
+      "failed": "Fout bij het laden van betalingen met een onjuiste/leeg memo."
+    }
+  },
   "publicKey": {
     "destination": {
       "error": "Ongeldige doeltoets.",
@@ -168,12 +262,22 @@
     "valid": "✅ De geheime sleutel is geldig."
   },
   "settings": {
+    "cache": {
+      "help": "Versnelt queries via lokale betalingscache, maar kan de initiële laadtijd verlengen.",
+      "label": "Gebruik cache (Beta)",
+      "prefetchHelp": "Levertijd voor het laden van invoer/transacties in dagen (eenmaal bij de eerste activatie)"
+    },
+    "description": "Momenteel zijn er geen instellingen beschikbaar.",
+    "error": {
+      "fetchFailed": "Instellingen konden niet worden geladen: {{detail}}"
+    },
     "export": "Exportinstellingen",
     "import": "Instellingen importeren",
-    "label": "Instellingen"
+    "label": "Instellingen",
+    "prefetchDays": "Levertijd (dagen)"
   },
   "token": {
-    "purchases": "Aantal aangekochte tokens"
+    "purchases": "Aantal geïnvesteerde tokens"
   },
   "transaction": {
     "pending": "Transactie in behandeling...",
@@ -235,6 +339,21 @@
       "from": "Van (optioneel)",
       "to": "Tot (optioneel)"
     },
+    "debug": {
+      "incoming": "Binnenkomend – naar: {{toMe}}, maak→mij: {{createToMe}}, native→mij: {{nativeInToMe}}",
+      "incomingOverview": "Invoeren: {{total}} • deelnemende portefeuilles: {{unique}}",
+      "memo": "Memos in het venster: {{any}} • exacte memos: {{exact}}",
+      "types": "Typen – betaling: {{pay}}, pad: {{path}}, aanmaken: {{create}}, ander: {{other}}"
+    },
+    "export": {
+      "csv": "Controleer CSV (Hits)",
+      "csvAll": "Exporteer alle bewerkingen",
+      "csvBoth": "Sla beide CSV's op",
+      "csvMatches": "Controleer CSV (Hits)"
+    },
+    "exportCsv": {
+      "failed": "CSV-export mislukt: {{detail}}"
+    },
     "failed": "De berekening kon niet worden uitgevoerd.",
     "failed:account.invalid": "Het wallet-adres is ongeldig.",
     "failed:date.invalid": "Voer geldige datum/tijd waarden in het formaat YYYY-MM-DD HH:mm[:ss] in (of ISO 8601).",
@@ -247,6 +366,7 @@
       "label": "Memo zoektekst (subteken, hoofdlettergevoelig)",
       "placeholder": "Memo (subreeks, hoofdlettergevoelig)"
     },
+    "overviewLine": "Binnenkomende betalingen: {{total}} • betrokken wallets: {{unique}}",
     "page": {
       "noPublicKey": "Voer eerst een openbare sleutel in.",
       "title": "XLM totaal per memo"
@@ -257,18 +377,48 @@
       "rangeVerbose": "Periode: {{fromDate}} {{fromTime}} tot {{toDate}} {{toTime}} ({{tz}})",
       "value": "{{amount}} XLM"
     },
+    "summary": {
+      "amount": "Totaal: {{amount}} XLM",
+      "correctCount": "Invoeren met correcte memo: {{n}}",
+      "count": "Aantal: {{n}}",
+      "label": "Vergelijking (alle invoeren)",
+      "otherCount": "Invoeren met onjuiste/zonder memo: {{n}}",
+      "unique": "Unieke portemonnees (alle): {{n}}",
+      "uniqueWallets": "Unieke portemonnees: {{n}}"
+    },
     "time": {
       "from": "Tijd van (optioneel)",
+      "setToNow": "Stel huidige tijd in",
+      "setToNowHint": "Stelt het tijdveld in op de huidige tijd",
       "to": "Tijd tot (optioneel)"
     },
     "title": "XLM totaal per memo",
     "tz": {
       "cdt": "CDT (UTC−5)",
       "cst": "CST (UTC−6)",
+      "europe_zurich": "Europa/Zürich (CET/CEST)",
       "label": "Tijdzone voor datum/tijd",
       "local": "Lokale tijdzone",
       "note": "Datum/tijd wordt geïnterpreteerd in de geselecteerde tijdzone en automatisch omgezet naar UTC voordat de zoekopdracht wordt uitgevoerd.",
-      "utc": "UTC"
+      "utc": "UTC",
+      "window": "Gebruikte UTC-tijdvenster: {{from}} → {{to}} (Exclusief)"
+    },
+    "wrongMemos": {
+      "button": "Toon portemonnees met onjuiste/leeg memo",
+      "clipboard": "Kopiëren naar klembord",
+      "columns": {
+        "amount": "Bedrag",
+        "created_at": "Gemaakt op",
+        "from": "Van",
+        "memo": "Memo",
+        "tx_hash": "Transactiehash"
+      },
+      "csv": "Download CSV",
+      "failed": "Fout bij het laden van betalingen met een onjuiste/leeg memo.",
+      "hint": "Filtert binnenkomende betalingen binnen de periode en toont afzenders met onjuiste/leeg memo.",
+      "scanning": "… scant onjuiste/leeg memo's",
+      "summary": "Aantal: {{count}} • Totaal: {{sum}} XLM • Unieke Wallets: {{unique}}",
+      "title": "Onjuiste/lege memo's in de periode"
     }
   }
 }
