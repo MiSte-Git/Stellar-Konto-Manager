@@ -79,6 +79,7 @@ function CompareTrustlines({
         });
         setShowConfirm(true);
       } else {
+        // Keine Duplikate gefunden: Info-Meldung anzeigen
         setResults([t('trustline.noDuplicates')]);
       }
     } catch (err) {
@@ -94,13 +95,32 @@ function CompareTrustlines({
       <MenuHeader setMenuSelection={setMenuSelection} menuSelection={menuSelection} />
 
       <label className="block mb-2">{t('publicKey.destination.input')}:</label>
-      <input
-        type="text"
-        value={destinationPublicKey}
-        onChange={(e) => setDestinationPublicKey(e.target.value)}
-        className="w-full p-2 border rounded"
-        placeholder="e.g., GBZVTOY..."
-      />
+      <div className="relative">
+        <input
+          type="text"
+          value={destinationPublicKey}
+          onChange={(e) => setDestinationPublicKey(e.target.value)}
+          className="wallet-input w-full p-2 border rounded pr-8 font-mono text-sm"
+          placeholder="e.g., GBZVTOY..."
+          list="recent-wallets"
+          spellCheck={false}
+          autoCorrect="off"
+          autoCapitalize="off"
+          autoComplete="off"
+          inputMode="text"
+        />
+        {destinationPublicKey && (
+          <button
+            type="button"
+            onClick={() => setDestinationPublicKey('')}
+            title={t('common.clear')}
+            aria-label={t('common.clear')}
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center"
+          >
+            ×
+          </button>
+        )}
+      </div>
       <button
         onClick={handleCompare}
         className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"

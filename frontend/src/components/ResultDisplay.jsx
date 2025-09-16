@@ -16,9 +16,9 @@ function ResultDisplay({
   if (typeof results[0] === 'string') {
     return (
       <div className="mt-4">
-        {/* Titelzeile mit Anzahl der Trustlines */}
+        {/* Titelzeile: Bei Textmeldungen zählen wir 0 gefundene Trustlines */}
         <h2 className="text-xl font-bold">
-          {t('option.results')} ({results.length})
+          {t('option.results')} (0)
         </h2>
         <ul className="list-disc pl-5">
           {results.map((result, index) => (
