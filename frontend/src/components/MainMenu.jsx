@@ -9,8 +9,7 @@ function MainMenu({ onSelect }) {
     { label: t('trustline.compare'), value: 'compare' },
     { label: t('token.purchases'), value: 'payments' },
     { label: t('menu.xlmByMemo'), value: 'xlmByMemo' },
-    { label: t('settings.label'), value: 'settings' },
-    { label: t('navigation.backToPublicKey'), value: 'backToPublicKey' }
+    { label: t('settings.label'), value: 'settings' }
   ];
 
   return (
