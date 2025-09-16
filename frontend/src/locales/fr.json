@@ -112,6 +112,21 @@
     "failed": "Échec du chargement des données d'investissement : {{detail}}"
   },
   "investedTokens": {
+    "columns": {
+      "amount": "Montant",
+      "compromised": "Compromis",
+      "deactivated": "Désactivé",
+      "destination": "Portefeuille cible",
+      "issuer": "Émetteur",
+      "label": "Étiquette",
+      "memo": "Mémo",
+      "payments": "Paiements",
+      "token": "Jeton"
+    },
+    "filter": {
+      "memoPlaceholder": "Filtrer par mémo, adresse de portefeuille ou étiquette",
+      "tokenPlaceholder": "Filtrer par jeton (CODE:ÉMETTEUR)"
+    },
     "group": {
       "memo": "Mémo",
       "memoOrToken": "Mémo, sinon jeton",
@@ -126,6 +141,7 @@
     },
     "missingPublicKey": "La clé publique est manquante.",
     "moreTruncated": "... et {{extra}} groupes de plus",
+    "toWallet": "verser dans le portefeuille : {{address}}",
     "total": "Nombre de jetons achetés : {{count}}",
     "totalTokens": "Nombre de jetons investis (actifs) : {{count}}",
     "value": {
@@ -274,7 +290,32 @@
     "export": "Paramètres d'exportation",
     "import": "Importer les paramètres",
     "label": "Paramètres",
-    "prefetchDays": "Délai de livraison (jours)"
+    "prefetchDays": "Délai de livraison (jours)",
+    "trustedWallets": {
+      "buttons": {
+        "export": "Exporter",
+        "import": "Importation en cours",
+        "reset": "Réinitialiser par défaut"
+      },
+      "desc": "Cette liste est stockée localement dans le navigateur. Fichier par défaut : QSI_TrustedWallets.json",
+      "editor": {
+        "apply": "Appliquer",
+        "format": "Format",
+        "invalidFormat": "Format invalide. Un objet avec le champ \"wallets\" (tableau) est attendu.",
+        "label": "Modifier JSON",
+        "parseError": "Le JSON n'a pas pu être analysé.",
+        "placeholder": "Insérez le contenu JSON ici..."
+      },
+      "file": {
+        "hint": "Importez un fichier JSON au format { wallets: [...] }",
+        "label": "Fichier"
+      },
+      "info": {
+        "count": "Entrées : {{n}}",
+        "updatedAt": "Statut : {{date}}"
+      },
+      "title": "Portefeuilles de confiance (QSI)"
+    }
   },
   "token": {
     "purchases": "Nombre de jetons investis"

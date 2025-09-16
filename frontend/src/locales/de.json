@@ -89,6 +89,21 @@
     "failed": "CSV-Export fehlgeschlagen"
   },
   "investedTokens": {
+    "columns": {
+      "amount": "Betrag",
+      "compromised": "Kompromittiert",
+      "deactivated": "Deaktiviert",
+      "destination": "Zielwallet",
+      "issuer": "Issuer",
+      "label": "Label",
+      "memo": "Memo",
+      "payments": "Zahlungen",
+      "token": "Token"
+    },
+    "filter": {
+      "memoPlaceholder": "Filter nach Memo, Wallet-Adresse oder Label",
+      "tokenPlaceholder": "Filter nach Token (CODE:ISSUER)"
+    },
     "hintEnterPublicKey": "Bitte gib zuerst einen Public Key ein.",
     "item": {
       "memo": "Memo: \"{{memo}}\" (Zahlungen: {{occurrences}})",
@@ -97,6 +112,7 @@
     },
     "missingPublicKey": "Public Key fehlt.",
     "moreTruncated": "… und {{extra}} weitere Gruppen",
+    "toWallet": "an Wallet: {{address}}",
     "total": "Anzahl gekaufter Token: {{count}}",
     "totalTokens": "Anzahl investierter Token (Assets): {{count}}",
     "value": {
@@ -143,6 +159,7 @@
       "pdf": "Als PDF speichern"
     },
     "loading": "Laden...",
+    "no": "Nein",
     "results": "Ergebnisse:",
     "yes": "Ja"
   },
@@ -217,7 +234,44 @@
       "fetchFailed": "Laden der Einstellungen fehlgeschlagen: {{detail}}"
     },
     "label": "Einstellungen",
-    "prefetchDays": "Vorlauf (Tage)"
+    "prefetchDays": "Vorlauf (Tage)",
+    "trustedWallets": {
+      "title": "Vertrauenswürdige Wallets (QSI)",
+      "desc": "Diese Liste wird lokal im Browser gespeichert. Standarddatei: QSI_TrustedWallets.json",
+      "buttons": {
+        "import": "Importieren",
+        "export": "Exportieren",
+        "reset": "Auf Standard zurücksetzen"
+      },
+      "info": {
+        "count": "Einträge: {{n}}",
+        "updatedAt": "Stand: {{date}}"
+      },
+      "file": {
+        "label": "Datei",
+        "hint": "Importiere eine JSON-Datei im Format { wallets: [...] }"
+      },
+      "editor": {
+        "parseError": "JSON konnte nicht geparst werden.",
+        "invalidFormat": "Ungültiges Format. Erwartet wird ein Objekt mit Feld \"wallets\" (Array)."
+      },
+      "table": {
+        "addRow": "Zeile hinzufügen",
+        "discard": "Verwerfen",
+        "save": "Speichern",
+        "deleteRow": "Löschen",
+        "columns": {
+          "address": "Adresse",
+          "label": "Label",
+          "compromised": "Kompromittiert",
+          "deactivated": "Deaktiviert",
+          "actions": "Aktionen"
+        }
+      },
+      "validation": {
+        "hint": "Mindestens eine Zeile ist ungültig (fehlende/duplizierte Adresse)."
+      }
+    }
   },
   "token": {
     "purchases": "Anzahl der investierten Token"

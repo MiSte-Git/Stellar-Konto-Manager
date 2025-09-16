@@ -11,9 +11,6 @@ import SettingsPanel from '../components/SettingsPanel';
 export default function SettingsPage({ publicKey, onBack }) {
   const { t } = useTranslation();
 
-  // Sichtbarer Sentinel, um Render zu beweisen
-  console.log('[SettingsPage] render, publicKey=', publicKey);
-  
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-10">
       <div className="flex items-center justify-between mb-6">
@@ -28,7 +25,6 @@ export default function SettingsPage({ publicKey, onBack }) {
         </button>
       </div>
 
-      {/* Inhalt: Panel mit Gruppierungs-/Lade-Logik */}
             <SettingsPanel publicKey={publicKey} />
     </div>
   );

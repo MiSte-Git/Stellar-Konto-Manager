@@ -112,6 +112,21 @@
     "failed": "Error al cargar los datos de inversión: {{detail}}"
   },
   "investedTokens": {
+    "columns": {
+      "amount": "Cantidad",
+      "compromised": "Comprometido",
+      "deactivated": "Deshabilitado",
+      "destination": "Billetera objetivo",
+      "issuer": "Emisor",
+      "label": "Etiqueta",
+      "memo": "Memo",
+      "payments": "Pagos",
+      "token": "Token"
+    },
+    "filter": {
+      "memoPlaceholder": "Filtrar por memo, dirección de billetera o etiqueta",
+      "tokenPlaceholder": "Filtrar por token (CÓDIGO:EMISOR)"
+    },
     "group": {
       "memo": "Memo",
       "memoOrToken": "Memo, de lo contrario token",
@@ -126,6 +141,7 @@
     },
     "missingPublicKey": "Falta la clave pública.",
     "moreTruncated": "... y {{extra}} grupos más",
+    "toWallet": "a la billetera: {{address}}",
     "total": "Número de tokens comprados: {{count}}",
     "totalTokens": "Número de tokens (activos) invertidos: {{count}}",
     "value": {
@@ -274,7 +290,32 @@
     "export": "Configuración de exportación",
     "import": "Importar configuraciones",
     "label": "Configuraciones",
-    "prefetchDays": "Tiempo de entrega (días)"
+    "prefetchDays": "Tiempo de entrega (días)",
+    "trustedWallets": {
+      "buttons": {
+        "export": "Exportar",
+        "import": "Importando",
+        "reset": "Restablecer a los valores predeterminados"
+      },
+      "desc": "Esta lista se almacena localmente en el navegador. Archivo predeterminado: QSI_TrustedWallets.json",
+      "editor": {
+        "apply": "Aplicar",
+        "format": "Formato",
+        "invalidFormat": "Formato inválido. Se espera un objeto con el campo \"wallets\" (array).",
+        "label": "Editar JSON",
+        "parseError": "No se pudo analizar el JSON.",
+        "placeholder": "Inserte el contenido JSON aquí..."
+      },
+      "file": {
+        "hint": "Importar un archivo JSON en el formato { wallets: [...] }",
+        "label": "Archivo"
+      },
+      "info": {
+        "count": "Entradas: {{n}}",
+        "updatedAt": "Estado: {{date}}"
+      },
+      "title": "Carteras de confianza (QSI)"
+    }
   },
   "token": {
     "purchases": "Número de tokens invertidos"

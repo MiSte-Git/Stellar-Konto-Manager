@@ -112,6 +112,21 @@
     "failed": "Nije uspjelo učitati podatke o investicijama: {{detail}}"
   },
   "investedTokens": {
+    "columns": {
+      "amount": "Iznos",
+      "compromised": "Kompromitiran",
+      "deactivated": "Onemogućeno",
+      "destination": "Ciljana novčanika",
+      "issuer": "Izdavatelj",
+      "label": "Oznaka",
+      "memo": "Memo",
+      "payments": "Plaćanja",
+      "token": "Token"
+    },
+    "filter": {
+      "memoPlaceholder": "Filtriraj prema bilješkama, adresi novčanika ili oznaci",
+      "tokenPlaceholder": "Filtriraj prema tokenu (KOD:IZDAJATELJ)"
+    },
     "group": {
       "memo": "Memorandum",
       "memoOrToken": "Memo, inače token",
@@ -126,6 +141,7 @@
     },
     "missingPublicKey": "Javni ključ nedostaje.",
     "moreTruncated": "... i {{extra}} dodatnih grupa",
+    "toWallet": "u novčanik: {{address}}",
     "total": "Broj kupljenih tokena: {{count}}",
     "totalTokens": "Broj uloženih tokena (imovine): {{count}}",
     "value": {
@@ -274,7 +290,32 @@
     "export": "Postavke izvoza",
     "import": "Uvezi postavke",
     "label": "Postavke",
-    "prefetchDays": "Vreme isporuke (dani)"
+    "prefetchDays": "Vreme isporuke (dani)",
+    "trustedWallets": {
+      "buttons": {
+        "export": "Izvoz",
+        "import": "Uvozivanje",
+        "reset": "Vrati na zadano"
+      },
+      "desc": "Ova lista pohranjena je lokalno u pregledniku. Zadana datoteka: QSI_TrustedWallets.json",
+      "editor": {
+        "apply": "Primijeni",
+        "format": "Formatirati",
+        "invalidFormat": "Neispravan format. Očekuje se objekt s poljem \"wallets\" (niz).",
+        "label": "Uredi JSON",
+        "parseError": "JSON se nije mogao analizirati.",
+        "placeholder": "Unesite JSON sadržaj ovdje..."
+      },
+      "file": {
+        "hint": "Uvezite JSON datoteku u formatu { wallets: [...] }",
+        "label": "Datoteka"
+      },
+      "info": {
+        "count": "Unosi: {{n}}",
+        "updatedAt": "Status: {{date}}"
+      },
+      "title": "Povjerene novčanike (QSI)"
+    }
   },
   "token": {
     "purchases": "Broj uloženih tokena"

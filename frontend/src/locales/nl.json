@@ -112,6 +112,21 @@
     "failed": "Kon het investeringsgegevens niet laden: {{detail}}"
   },
   "investedTokens": {
+    "columns": {
+      "amount": "Bedrag",
+      "compromised": "Gecompromitteerd",
+      "deactivated": "Uitgeschakeld",
+      "destination": "Doelportemonnee",
+      "issuer": "Uitgever",
+      "label": "Label",
+      "memo": "Memo",
+      "payments": "Betalingen",
+      "token": "Token"
+    },
+    "filter": {
+      "memoPlaceholder": "Filter op memo, walletadres of label",
+      "tokenPlaceholder": "Filteren op token (CODE:UITGEVER)"
+    },
     "group": {
       "memo": "Memo",
       "memoOrToken": "Memo, anders token",
@@ -126,6 +141,7 @@
     },
     "missingPublicKey": "Openbare sleutel ontbreekt.",
     "moreTruncated": "... en {{extra}} meer groepen",
+    "toWallet": "naar portemonnee: {{address}}",
     "total": "Aantal aangekochte tokens: {{count}}",
     "totalTokens": "Aantal geïnvesteerde tokens (activa): {{count}}",
     "value": {
@@ -274,7 +290,32 @@
     "export": "Exportinstellingen",
     "import": "Instellingen importeren",
     "label": "Instellingen",
-    "prefetchDays": "Levertijd (dagen)"
+    "prefetchDays": "Levertijd (dagen)",
+    "trustedWallets": {
+      "buttons": {
+        "export": "Exporteren",
+        "import": "Importeren",
+        "reset": "Standaardinstellingen herstellen"
+      },
+      "desc": "Deze lijst is lokaal in de browser opgeslagen. Standaardbestand: QSI_TrustedWallets.json",
+      "editor": {
+        "apply": "Toepassen",
+        "format": "Indeling",
+        "invalidFormat": "Ongeldig formaat. Een object met het veld \"wallets\" (array) wordt verwacht.",
+        "label": "Bewerk JSON",
+        "parseError": "JSON kon kon niet worden geparsed.",
+        "placeholder": "Voer hier JSON-inhoud in..."
+      },
+      "file": {
+        "hint": "Importeer een JSON-bestand in het formaat { wallets: [...] }",
+        "label": "Bestand"
+      },
+      "info": {
+        "count": "Invoeren: {{n}}",
+        "updatedAt": "Status: {{date}}"
+      },
+      "title": "Betrouwbare portefeuilles (QSI)"
+    }
   },
   "token": {
     "purchases": "Aantal geïnvesteerde tokens"
