@@ -2,10 +2,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { getHorizonServer } from "../utils/stellar/stellarUtils";
+import { ensureCoverage } from "../utils/stellar/syncUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
 import { formatLocalDateTime, formatElapsedMmSs } from '../utils/datetime';
 import { sumIncomingXLMByMemoNoCacheExact_Hybrid as sumIncomingXLMByMemoNoCacheExact } from "../utils/stellar/queryUtils";
-import { getNewestCreatedAt, iterateByAccountMemoRange } from '../utils/db/indexedDbClient';
+import { getNewestCreatedAt, iterateByAccountMemoRange, iterateByAccountCreatedRange } from '../utils/db/indexedDbClient';
 
 
 /**
@@ -362,7 +363,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
         .forAccount(publicKey)
         .order('desc')
         .limit(200)
-        .join('transactions')
         .call();
 
       const rows = [];
@@ -371,7 +371,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       let pages = 0;
 
       const headers = [
-        'created_at','tx_hash','op_id','type','dir','source','from','to','amount','asset_type','asset_code','asset_issuer','starting_balance','account','funder','into','claimable_balance_id','memo','memo_source','raw_len','raw_compact','raw'
+        'created_at','tx_hash','op_id','type','dir','source','from','to','amount','asset_type','asset_code','asset_issuer','starting_balance','account','funder','into','claimable_balance_id','memo','memo_source'
       ];
 
       while (!stop) {
@@ -404,13 +404,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
             dir = 'self';
           }
 
-          // RAW und kompakte Variante
-          let rawStr = '';
-          try { rawStr = JSON.stringify(r) || ''; } catch { rawStr = ''; }
-          const rc = { ...r };
-          try { delete rc._links; delete rc.transaction; } catch { /* noop */ }
-          let rawCompact = '';
-          try { rawCompact = JSON.stringify(rc) || ''; } catch { rawCompact = ''; }
+
 
           const row = {
             created_at: r.created_at,
@@ -432,9 +426,6 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
             claimable_balance_id: r.balance_id || r.claimable_balance_id || '',
             memo: memoRaw,
             memo_source,
-            raw_len: String(rawStr.length),
-            raw_compact: rawCompact,
-            raw: rawStr,
           };
 
           const rowIndex = rows.length;
@@ -449,21 +440,40 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
         page = await page.next();
       }
 
-      // Fehlende Memos nachladen (schonend parallel)
+      // Fehlende Memos nachladen: effizient über /transactions Feed innerhalb des Fensters
       if (pending.length) {
-        const limit = Math.min(8, Math.max(2, (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 6));
-        let idx = 0;
-        const worker = async () => {
-          while (idx < pending.length) {
-            const cur = pending[idx++];
-            try {
-              const tx = await server.transactions().transaction(cur.tx_hash).call();
-              const m = tx?.memo != null ? String(tx.memo) : '';
-              if (m) rows[cur.rowIndex].memo = m;
-            } catch { /* ignore */ }
+        const need = new Set(pending.map(p => p.tx_hash).filter(Boolean));
+        const byHash = new Map(); // tx_hash -> array of rowIndex
+        for (const p of pending) {
+          if (!p.tx_hash) continue;
+          if (!byHash.has(p.tx_hash)) byHash.set(p.tx_hash, []);
+          byHash.get(p.tx_hash).push(p.rowIndex);
+        }
+        let pageTx = await server
+          .transactions()
+          .forAccount(publicKey)
+          .order('desc')
+          .limit(200)
+          .call();
+        let stopTx = false;
+        while (!stopTx && need.size > 0) {
+          const trecs = pageTx?.records || [];
+          for (const tr of trecs) {
+            const created = tr.created_at || '';
+            if (toISOExc && created >= toISOExc) continue;
+            if (fromISO && created < fromISO) { stopTx = true; break; }
+            const h = tr.hash;
+            if (need.has(h)) {
+              const m = tr?.memo != null ? String(tr.memo) : '';
+              if (byHash.has(h)) {
+                for (const rowIndex of byHash.get(h)) rows[rowIndex].memo = m;
+              }
+              need.delete(h);
+            }
           }
-        };
-        await Promise.all(Array.from({ length: limit }, worker));
+          if (stopTx || !pageTx.next) break;
+          pageTx = await pageTx.next();
+        }
       }
 
       const csv = toCsv(rows, headers);
@@ -497,30 +507,49 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
       const q = String(memoQuery || '');
 
-      // Auf Operations umstellen, um auch create_account (Eingang) zu erfassen
-      let page = await server
-        .operations()
+      // 1) Transaktions-Memos im Zeitfenster vorab einsammeln (Hash -> Memo)
+      const txMemo = new Map();
+      let txPage = await server
+        .transactions()
         .forAccount(publicKey)
         .order('desc')
         .limit(200)
-        .join('transactions')
         .call();
+      let txStop = false;
+      while (!txStop) {
+        const trecs = txPage?.records || [];
+        for (const tr of trecs) {
+          const created = tr.created_at || '';
+          if (toISOExc && created >= toISOExc) continue;
+          if (fromISO && created < fromISO) { txStop = true; break; }
+          txMemo.set(tr.hash, tr?.memo != null ? String(tr.memo) : '');
+        }
+        if (txStop || !txPage.next) break;
+        txPage = await txPage.next();
+      }
 
+      // 2) Scan über payments; Memo aus txMemo-Map beziehen
       const rows = [];
       const uniq = new Set();
-      const pending = []; // Einträge ohne Memo → später per Tx nachladen
+      const qClean = cleanMemo(q);
+
+      let page = await server
+        .payments()
+        .forAccount(publicKey)
+        .order('desc')
+        .limit(200)
+        .call();
+
       let stop = false;
       let pages = 0;
-      const qClean = cleanMemo(q);
       while (!stop) {
         const recs = page?.records || [];
         for (const r of recs) {
-          const created = r.created_at || r?.transaction?.created_at || '';
-          if (toISOExc && created >= toISOExc) continue;   // obere Grenze exklusiv
+          const created = r.created_at || '';
+          if (toISOExc && created >= toISOExc) continue; // obere Grenze exklusiv
           if (fromISO && created < fromISO) { stop = true; break; }
 
           const t = String(r.type || '');
-
           let amountStr = '';
           let fromAddr = '';
           let toAddr = '';
@@ -532,100 +561,36 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
             fromAddr = r.from || '';
             toAddr = r.to || publicKey;
           } else if (t === 'create_account') {
-            if (r.account !== publicKey) continue; // Eingang: Konto wurde erstellt
+            if (r.account !== publicKey) continue;
             amountStr = r.starting_balance || '0';
             fromAddr = r.funder || '';
             toAddr = r.account || publicKey;
           } else {
-            continue; // andere Typen ignorieren
+            continue;
           }
 
           const amt = parseFloat(amountStr);
           if (!Number.isFinite(amt) || amt <= 0) continue;
 
-          const memoTx = r?.transaction?.memo;
-          const memoOp = r?.memo;
-          const memoRaw = memoTx != null ? String(memoTx) : (memoOp != null ? String(memoOp) : '');
+          const memoRaw = txMemo.get(r.transaction_hash) ?? '';
           const memoClean = cleanMemo(memoRaw);
 
-          if (memoClean === qClean) {
-            // korrekter Treffer → nicht in Liste der falschen/leer Memos
-            continue;
-          }
+          if (qClean && memoClean.includes(qClean)) continue; // korrektes Memo (Teilstring) → nicht in Liste
 
-          if (!memoRaw && r.transaction_hash) {
-            // Memo fehlt trotz join → später per Tx nachladen und erst dann entscheiden
-            pending.push({
-              created_at: r.created_at,
-              from: fromAddr,
-              to: toAddr,
-              amount: amountStr,
-              tx_hash: r.transaction_hash,
-            });
-          } else {
-            // Falsches Memo (nicht leer) → direkt aufnehmen
-            rows.push({
-              created_at: r.created_at,
-              from: fromAddr,
-              to: toAddr,
-              amount: amountStr,
-              memo: memoRaw,
-              tx_hash: r.transaction_hash,
-            });
-            if (fromAddr) uniq.add(fromAddr);
-          }
+          rows.push({
+            created_at: r.created_at,
+            from: fromAddr,
+            to: toAddr,
+            amount: amountStr,
+            memo: memoRaw,
+            tx_hash: r.transaction_hash,
+          });
+          if (fromAddr) uniq.add(fromAddr);
         }
         if (stop || !page.next) break;
         pages += 1;
         if (pages % 3 === 0) setProg(p => ({ ...p, phase: 'scan', page: pages }));
         page = await page.next();
-      }
-
-      // Fehlende Memos per Tx-Details nachladen und danach filtern
-      if (pending.length) {
-        setProg(p => ({ ...p, phase: 'txFetch', progress: 0 }));
-        const limit = Math.min(8, Math.max(2, (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 6));
-        let idx = 0;
-        let done = 0;
-        const total = pending.length;
-        const worker = async () => {
-          while (idx < pending.length) {
-            const cur = pending[idx++];
-            try {
-              const tx = await server.transactions().transaction(cur.tx_hash).call();
-              const memoTx = tx?.memo != null ? String(tx.memo) : '';
-              if (cleanMemo(memoTx) === qClean) {
-                // doch korrektes Memo → nicht in der falsche/leer Liste
-                continue;
-              }
-              rows.push({
-                created_at: cur.created_at,
-                from: cur.from,
-                to: cur.to,
-                amount: cur.amount,
-                memo: memoTx, // kann leer bleiben → als (leer) ausgewiesen
-                tx_hash: cur.tx_hash,
-              });
-              if (cur.from) uniq.add(cur.from);
-              done += 1;
-              if (done % 10 === 0 || done === total) setProg(p => ({ ...p, phase: 'txFetch', progress: total ? done/total : 1 }));
-            } catch {
-              // Bei Fehler: konservativ als (leer) aufnehmen
-              rows.push({
-                created_at: cur.created_at,
-                from: cur.from,
-                to: cur.to,
-                amount: cur.amount,
-                memo: '',
-                tx_hash: cur.tx_hash,
-              });
-              if (cur.from) uniq.add(cur.from);
-              done += 1;
-              if (done % 10 === 0 || done === total) setProg(p => ({ ...p, phase: 'txFetch', progress: total ? done/total : 1 }));
-            }
-          }
-        };
-        await Promise.all(Array.from({ length: limit }, worker));
       }
 
       const sum = rows.reduce((a, r) => a + (parseFloat(r.amount) || 0), 0);
@@ -825,14 +790,8 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
 
       {/* Export */}
       <div className="mt-2 flex items-start gap-3">
-        <button onClick={handleExportMatchesCsv} className="btn btn-secondary">
-          {t('xlmByMemo.export.csvMatches')}
-        </button>
         <button onClick={handleExportCsv} className="btn btn-secondary">
           {t('xlmByMemo.export.csvAll')}
-        </button>
-        <button onClick={handleExportBothCsv} className="btn btn-secondary">
-          {t('xlmByMemo.export.csvBoth')}
         </button>
         <button
           onClick={handleShowWrongMemos}
@@ -853,7 +812,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
             {t('xlmByMemo.wrongMemos.summary', { count: wrongSummary.count, sum: Number(wrongSummary.sum).toFixed(7), unique: wrongSummary.unique })}
           </div>
           <div className="overflow-auto max-h-64 text-xs">
-            <div className="grid grid-cols-5 gap-2 font-semibold">
+            <div className="grid grid-cols-5 gap-2 font-semibold sticky top-0 bg-gray z-10 py-1">
               <div>{t('xlmByMemo.wrongMemos.columns.created_at')}</div>
               <div>{t('xlmByMemo.wrongMemos.columns.from')}</div>
               <div>{t('xlmByMemo.wrongMemos.columns.amount')}</div>

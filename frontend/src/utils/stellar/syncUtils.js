@@ -8,19 +8,19 @@ import { Horizon } from '@stellar/stellar-sdk'; // für Typen/Doku
 export async function initCursorIfMissing({ server, accountId }) {
   const cur = await getCursor(accountId);
   if (cur && typeof cur === 'string' && cur.trim()) return cur;
-  const p = await server.payments().forAccount(accountId).order('desc').limit(1).join('transactions').call();
+  const p = await server.payments().forAccount(accountId).order('desc').limit(1).call();
   const latest = p?.records?.[0]?.paging_token || null;
   if (latest) await setCursor(accountId, latest);
   return latest;
 }
 
 /**
- * Lädt genau EINE Seite aus Horizon.payments (mit join=transactions).
+ * Lädt genau EINE Seite aus Horizon.payments (ohne join=transactions für bessere Leistung).
  * @returns {Promise<{records:any[], next: function|null, lastCursor:string|null}>}
  */
 async function fetchPaymentsPage({ server, accountId, order='asc', limit=200, cursor }) {
   try {
-    let q = server.payments().forAccount(accountId).order(order).limit(Math.min(200, Math.max(1, limit))).join('transactions');
+    let q = server.payments().forAccount(accountId).order(order).limit(Math.min(200, Math.max(1, limit)));
     if (cursor) q = q.cursor(cursor);
     const page = await q.call();
     const last = page.records?.[page.records.length-1]?.paging_token || cursor || null;
@@ -52,8 +52,7 @@ export async function backfillPayments({ server, accountId, sinceISO, onProgress
       .payments()
       .forAccount(accountId)
       .order('desc')        // rückwärts
-      .limit(200)
-      .join('transactions');
+      .limit(200);
 
     let page = await builder.call();
     let pageNo = 0;
@@ -96,7 +95,6 @@ export async function backfillPayments({ server, accountId, sinceISO, onProgress
         .forAccount(accountId)
         .order('desc')
         .limit(200)
-        .join('transactions')
         .cursor(nextCursor);
 
       page = await builder.call();
@@ -128,7 +126,7 @@ export async function refreshSinceCursor({ server, accountId, onProgress, signal
     }
 
     // 2) Ab hier normal ASC ab aktuellem Cursor
-    let builder = server.payments().forAccount(accountId).order('asc').limit(200).join('transactions').cursor(cur);
+    let builder = server.payments().forAccount(accountId).order('asc').limit(200).cursor(cur);
     let lastToken = null;
     let pageNo = 0;
 
@@ -154,7 +152,7 @@ export async function refreshSinceCursor({ server, accountId, onProgress, signal
         oldest: records[0]?.created_at || ''
       });
 
-      builder = server.payments().forAccount(accountId).order('asc').limit(200).join('transactions').cursor(lastToken);
+      builder = server.payments().forAccount(accountId).order('asc').limit(200).cursor(lastToken);
     }
 
     if (lastToken) await setCursor(accountId, lastToken);
