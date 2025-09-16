@@ -1,0 +1,167 @@
+{
+  "updatedAt": "2023-08-17T00:00:00Z",
+  "wallets": [
+    {
+      "address": "GDIKMIUVR5D2RTPXS2KFKD3VMQQ3AFSCYYEATKYWFXJUZSMSEZ3OFOXG",
+      "label": "Vanguard Foundation",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GAEJNNXAYFWSHTQOWCWCKCFCGILAMZMRLVFPRUQIIBUDWFRRXL3A3D7K",
+      "label": "Synergy Foundation",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GDXTJYSDL4AOGB3WT4BG3LAV5KJGASHD274UC22WGRKSWESQYERWO63C",
+      "label": "Mr Dot's House",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GCA7JLP62TO2QYLUJBYD5JC6MEUQTNUTMPV4LE52R2KWPAUZ6OXQUBTD",
+      "label": "Mr Dot's House",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GDQT375JIAXHG6XYY7UBBAAOIDOOJQ2JGLIYQXJVF2XKWNI353ONU5RY",
+      "label": "WHH",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GABW4NGFOLUK7DB4UCRLZATFWLQQNPLQU6TDP5PHYG632WW3JHB4CDRH",
+      "label": "William's Stellar Treasury",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GCPLQKNVMMTSL2SMUALMBMEXNFG3SWGLQFQMDHXBU6NFJILU564WDV5M",
+      "label": "QAZ Empire",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GAAXMMGRVBXKXVGU4DK4ZMRBZZZQSMIW4X2LW5V5DVPSQJKI3DG55PKB",
+      "label": "Lumensier",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GCN53ZLABTZ63TMH7YAPA6ACQXYZ7UNQ5R5XUK6B7HS3NTTGKV2LBBWX",
+      "label": "Stellar Moon Bunny Warren",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GDFJWYIIH32FEXPRNEJCK7C632XT4UCHSDTFKZOXZSXA73IKRPM2QKPM",
+      "label": "The Korolev Directive",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GAFQBCA4JSNKGQU5QL5RPIKHI5LOPKU2QSVR7G4AR3J7B5DV35ZUWOEC",
+      "label": "Stellar Russia",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GDKC6JWCAJ7UED7FYWNV527PKPE6L7MIXLR7SNEBFNGHRD4YY5W7NY4W",
+      "label": "QSI Germany Spendenwallet",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GD2OZMNGK2PKMAHP2EPGUDPUW6MI2MKYI4P5SU4R5SVJDVA2276Q4HS3",
+      "label": "QSI NOT currently used",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GCRLUZQQKPUB64BA2LYZAMMXSNB5T7GDTHTVBP4XMHPFCXPKVZCPIS4K",
+      "label": "QSI NOT currently used",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GCEHABZCQ3ZYFEZOOPHUWM6RDMQ2V5ZE3Q2I2E7XNVMLE3KKR2P4YLHO",
+      "label": "Terra Genesis",
+      "compromised": false,
+      "deactivated": true
+    },
+    {
+      "address": "GD3VB6TJHFQZS4NDVEZTCV4FEI7KUJESKTWSBAOZY5BKM2FU4ADMX2PJ",
+      "label": "Terra Genesis",
+      "compromised": false,
+      "deactivated": true
+    },
+    {
+      "address": "GAHZ2UENZUAGWZSQZMQHHAID5GXLC6C6YMNPLJ7WVMAWUAXRFU5AJVXG",
+      "label": "New Era",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GDWMUJH3LRSER7JD64XKW35VKWZTHY3BZ4R34SYPB5LJSWVPSAGVCJ5S",
+      "label": "Stellar Russia & Synergy Foundation(Alby)",
+      "compromised": false,
+      "deactivated": true
+    },
+    {
+      "address": "GAVD4E4LKUYPOOO67MXIK6PUDDREC7BRPACXH7JLVI74DCIQ6XQ3ZBU3",
+      "label": "QSI NOT currently used",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GA32RD7M3DEZ4EWK5ULLY4VHXW7OWGTJO47PKO4232NHXBTUKVEMTKOD",
+      "label": "MrPotato's House (King Kartoshka)",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GDCFG6KLZJIQEB6ED4UWROPNNEGJDMLY46KUV3FTBXFS6DCUJ3SN7HI5",
+      "label": "Tokens Foundation",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GANN23MBYYEVDAKHHW7YAN35WNTX4QIFUT7MH5NTZALGEYU5T74JGSCQ",
+      "label": "Stellar Switzerland",
+      "compromised": true,
+      "deactivated": false
+    },
+    {
+      "address": "GCPKXRIKESYW757XDVP7RO6P53KJC2X6RZ6YFKSDFVCQ5VR2KVJGRQAZ",
+      "label": "QSI Donation Wallet",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GAUL4OGCVXQACHALXWRF4HRC6WJ57LGFRAXAEDHUOZBLGC2C6C4XJ6VU",
+      "label": "QSI primary airdrop Wallet",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GB42ZQXTF6MLAWSNRGFU6M4ARCMPTZW57RYDOWCELGTHFTK4U6F6UW3H",
+      "label": "QSI primary airdrop Wallet",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GDV7HGDG4LKDIQHE7P3FJGDEELZNITWEP7RORGAUKOXRPT2Z67I6SQQW",
+      "label": "StellarRussia & Synergy Foundation (Alby)",
+      "compromised": false,
+      "deactivated": false
+    },
+    {
+      "address": "GBKCHJYIY2G2NQBMJE6ULB4474HLPUDQN2H24BFLOZXUFIFXV5X2WQND",
+      "label": "WHH - 2025-08-17",
+      "compromised": false,
+      "deactivated": true
+    }
+  ]
+}

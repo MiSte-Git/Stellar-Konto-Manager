@@ -112,6 +112,21 @@
     "failed": "Impossibile caricare i dati sugli investimenti: {{detail}}"
   },
   "investedTokens": {
+    "columns": {
+      "amount": "Importo",
+      "compromised": "Compromesso",
+      "deactivated": "Disabilitato",
+      "destination": "Portafoglio di destinazione",
+      "issuer": "Emittente",
+      "label": "Etichetta",
+      "memo": "Promemoria",
+      "payments": "Pagamenti",
+      "token": "Token"
+    },
+    "filter": {
+      "memoPlaceholder": "Filtra per memo, indirizzo del portafoglio o etichetta",
+      "tokenPlaceholder": "Filtra per token (CODICE:EMITTENTE)"
+    },
     "group": {
       "memo": "Promemoria",
       "memoOrToken": "Memo, altrimenti token",
@@ -126,6 +141,7 @@
     },
     "missingPublicKey": "La chiave pubblica è mancante.",
     "moreTruncated": "... e {{extra}} gruppi in più",
+    "toWallet": "al portafoglio: {{address}}",
     "total": "Numero di token acquistati: {{count}}",
     "totalTokens": "Numero di token investiti (attivi): {{count}}",
     "value": {
@@ -274,7 +290,32 @@
     "export": "Impostazioni di esportazione",
     "import": "Importa impostazioni",
     "label": "Impostazioni",
-    "prefetchDays": "Tempo di consegna (giorni)"
+    "prefetchDays": "Tempo di consegna (giorni)",
+    "trustedWallets": {
+      "buttons": {
+        "export": "Esporta",
+        "import": "Importazione",
+        "reset": "Ripristina le impostazioni predefinite"
+      },
+      "desc": "Questa lista è memorizzata localmente nel browser. File predefinito: QSI_TrustedWallets.json",
+      "editor": {
+        "apply": "Applica",
+        "format": "Formato",
+        "invalidFormat": "Formato non valido. Si prevede un oggetto con il campo \"wallets\" (array).",
+        "label": "Modifica JSON",
+        "parseError": "JSON non può essere analizzato.",
+        "placeholder": "Inserisci qui il contenuto JSON..."
+      },
+      "file": {
+        "hint": "Importa un file JSON nel formato { wallets: [...] }",
+        "label": "File"
+      },
+      "info": {
+        "count": "Voci: {{n}}",
+        "updatedAt": "Stato: {{date}}"
+      },
+      "title": "Wallets fidati (QSI)"
+    }
   },
   "token": {
     "purchases": "Numero di token investiti"
