@@ -112,6 +112,21 @@
     "failed": "Investointitietojen lataaminen epäonnistui: {{detail}}"
   },
   "investedTokens": {
+    "columns": {
+      "amount": "Määrä",
+      "compromised": "Kompromettoitu",
+      "deactivated": "Poissa käytöstä",
+      "destination": "Kohde-lompakko",
+      "issuer": "Liiketoimintayksikkö",
+      "label": "Tunnus",
+      "memo": "Muistio",
+      "payments": "Maksut",
+      "token": "Token"
+    },
+    "filter": {
+      "memoPlaceholder": "Suodata muistin, lompakon osoitteen tai tunnisteen mukaan",
+      "tokenPlaceholder": "Suodata tokenin mukaan (KOODI:ANTAJAT)"
+    },
     "group": {
       "memo": "Muistio",
       "memoOrToken": "Muistio, muuten tunnus",
@@ -126,6 +141,7 @@
     },
     "missingPublicKey": "Julkinen avain puuttuu.",
     "moreTruncated": "... ja {{extra}} lisää ryhmiä",
+    "toWallet": "lompakkoon: {{address}}",
     "total": "Ostettujen tokenien määrä: {{count}}",
     "totalTokens": "Sijoitettujen tokenien (varojen) määrä: {{count}}",
     "value": {
@@ -274,7 +290,32 @@
     "export": "Vientiasetukset",
     "import": "Tuontiasetukset",
     "label": "Asetukset",
-    "prefetchDays": "Toimitusaika (päivää)"
+    "prefetchDays": "Toimitusaika (päivää)",
+    "trustedWallets": {
+      "buttons": {
+        "export": "Vienti",
+        "import": "Tuonti",
+        "reset": "Palauta oletusasetukset"
+      },
+      "desc": "Tämä lista tallennetaan paikallisesti selaimeen. Oletustiedosto: QSI_TrustedWallets.json",
+      "editor": {
+        "apply": "Hae käyttöön",
+        "format": "Muotoilu",
+        "invalidFormat": "Virheellinen muoto. Odotetaan objektia, jossa on kenttä \"wallets\" (taulukko).",
+        "label": "Muokkaa JSONia",
+        "parseError": "JSON-tiedostoa ei voitu jäsentää.",
+        "placeholder": "Lisää JSON-sisältö tähän..."
+      },
+      "file": {
+        "hint": "Tuo JSON-tiedosto muodossa { wallets: [...] }",
+        "label": "Tiedosto"
+      },
+      "info": {
+        "count": "Merkinnät: {{n}}",
+        "updatedAt": "Tila: {{date}}"
+      },
+      "title": "Luotettavat lompakot (QSI)"
+    }
   },
   "token": {
     "purchases": "Sijoitettujen tokenien määrä"

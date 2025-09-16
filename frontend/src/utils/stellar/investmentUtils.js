@@ -1,5 +1,7 @@
 import * as StellarSdk from '@stellar/stellar-sdk';
 import { HORIZON_URL } from '../../config';
+import { ensureCoverage } from './syncUtils';
+import { iterateByAccountCreatedRange, getOldestCreatedAt, getNewestCreatedAt, rehydrateEmptyMemos } from '../db/indexedDbClient';
 
 /** 
  * Zählt AUSGEHENDE XLM-Zahlungen mit Memo (Groupfund) und summiert XLM je Memo.
@@ -14,7 +16,7 @@ export async function fetchGroupfundByMemo({
     if (!publicKey) throw new Error('investedTokens.error.missingPublicKey');
 
     const server = new StellarSdk.Horizon.Server(horizonUrl);
-    const memoGroups = new Map(); // key: memo -> { count, totalXlm, firstTx }
+    const memoGroups = new Map(); // key: memo -> { count, totalXlm, firstTx, destinations: Map(address -> count) }
 
     const txMemoCache = new Map(); // txHash -> memo
 
@@ -47,32 +49,134 @@ export async function fetchGroupfundByMemo({
         if (!memo) continue; // nur Memos zählen
 
         const amountXlm = parseFloat(rec.amount || '0');
+        // Zieladresse ermitteln (nur für Ausgänge): payment -> rec.to, create_account -> rec.account
+        let destAddr = null;
+        if (type === 'create_account') destAddr = rec.account || null;
+        else destAddr = rec.to || rec.to_muxed || null;
 
         const g = memoGroups.get(memo);
-        if (!g) memoGroups.set(memo, { count: 1, totalXlm: amountXlm, firstTx: txHash });
-        else {
+        if (!g) {
+          const dests = new Map();
+          if (destAddr) dests.set(destAddr, 1);
+          memoGroups.set(memo, { count: 1, totalXlm: amountXlm, firstTx: txHash, destinations: dests });
+        } else {
           g.count += 1;
           g.totalXlm += amountXlm;
+          if (destAddr) g.destinations.set(destAddr, (g.destinations.get(destAddr) || 0) + 1);
         }
       }
       pagesSeen += 1;
       page = typeof page.next === 'function' ? await page.next() : null;
     }
 
-    const items = [...memoGroups.entries()].map(([memo, v]) => ({
-      type: 'memo',
-      group: memo,                 // Memo-Text
-      occurrences: v.count,        // Anzahl Zahlungen mit diesem Memo
-      totalAmount: v.totalXlm,     // Summe XLM für dieses Memo
-      asset: 'XLM',                // immer XLM
-      sample: { tx: v.firstTx },
-    }));
+    const items = [...memoGroups.entries()].map(([memo, v]) => {
+      const destArr = v.destinations ? [...v.destinations.entries()] : [];
+      destArr.sort((a, b) => b[1] - a[1]);
+      const uniqueDestinations = destArr.length;
+      const topDestination = destArr[0] ? destArr[0][0] : null;
+      return {
+        type: 'memo',
+        group: memo,                 // Memo-Text
+        occurrences: v.count,        // Anzahl Zahlungen mit diesem Memo
+        totalAmount: v.totalXlm,     // Summe XLM für dieses Memo
+        asset: 'XLM',                // immer XLM
+        sample: { tx: v.firstTx },
+        uniqueDestinations,
+        topDestination,
+        destinations: destArr.map(([addr, cnt]) => ({ address: addr, count: cnt })),
+      };
+    });
 
     return {
       mode: 'groupfundByMemo',
       totalGroups: items.length,   // Anzahl unterschiedlicher Memos = Anzahl Investitionen (Projekte)
       items,
     };
+  } catch (e) {
+    const detail = e?.message || 'unknown';
+    throw new Error('fetchInvestedTokens.failed:' + detail);
+  }
+}
+
+/**
+ * Wie fetchGroupfundByMemo – aber nutzt lokalen Cache (IndexedDB) und ist dadurch deutlich schneller.
+ * Stellt zuvor die Cache-Abdeckung sicher und rehydriert leere Memos im betrachteten Zeitraum.
+ */
+export async function fetchGroupfundByMemoCached({
+  publicKey,
+  horizonUrl = HORIZON_URL || 'https://horizon.stellar.org',
+  prefetchDays = 90,
+  requiredFromISO,
+}) {
+  try {
+    if (!publicKey) throw new Error('investedTokens.error.missingPublicKey');
+    const server = new StellarSdk.Horizon.Server(horizonUrl);
+
+    // 1) Abdeckung sicherstellen (lädt fehlende Seiten in den lokalen Cache)
+    await ensureCoverage({ server, accountId: publicKey, prefetchDays, requiredFromISO });
+
+    // 2) Zeitfenster bestimmen (ganze Cache-Spanne)
+    const fromISO = await getOldestCreatedAt(publicKey) || undefined;
+    const toISO   = await getNewestCreatedAt(publicKey) || undefined;
+
+    // 3) Leere Memos im Fenster nachziehen (gezielt, relativ günstig)
+    await rehydrateEmptyMemos({ server, accountId: publicKey, fromISO, toISO });
+
+    // 4) Lokal iterieren und gruppieren
+    const memoGroups = new Map(); // memo -> { count, totalXlm, firstTx, destinations: Map(addr->count) }
+
+    await iterateByAccountCreatedRange({
+      accountId: publicKey,
+      fromISO,
+      toISO,
+      onRow: (v) => {
+        const type = v.type;
+        // Ausgang vom eigenen Konto
+        const isOutgoing = (v.from && v.from === publicKey) || (type === 'create_account' && v.source_account === publicKey);
+        if (!isOutgoing) return;
+        // Nur XLM
+        const isNative = v.asset_type === 'native' || type === 'create_account';
+        if (!isNative) return;
+        // Memo lesen
+        const memo = (v.memo || '').trim();
+        if (!memo) return;
+        // Betrag + Zieladresse
+        const amountXlm = parseFloat(type === 'create_account' ? (v.starting_balance || '0') : (v.amount || '0')) || 0;
+        const destAddr = type === 'create_account' ? (v.account || null) : (v.to || null);
+        const txHash = v.transaction_hash || '';
+
+        const g = memoGroups.get(memo);
+        if (!g) {
+          const dests = new Map();
+          if (destAddr) dests.set(destAddr, 1);
+          memoGroups.set(memo, { count: 1, totalXlm: amountXlm, firstTx: txHash, destinations: dests });
+        } else {
+          g.count += 1;
+          g.totalXlm += amountXlm;
+          if (destAddr) g.destinations.set(destAddr, (g.destinations.get(destAddr) || 0) + 1);
+        }
+      }
+    });
+
+    const items = [...memoGroups.entries()].map(([memo, v]) => {
+      const destArr = v.destinations ? [...v.destinations.entries()] : [];
+      destArr.sort((a, b) => b[1] - a[1]);
+      const uniqueDestinations = destArr.length;
+      const topDestination = destArr[0] ? destArr[0][0] : null;
+      return {
+        type: 'memo',
+        group: memo,
+        occurrences: v.count,
+        totalAmount: v.totalXlm,
+        asset: 'XLM',
+        sample: { tx: v.firstTx },
+        uniqueDestinations,
+        topDestination,
+        destinations: destArr.map(([addr, cnt]) => ({ address: addr, count: cnt })),
+      };
+    });
+
+    return { mode: 'groupfundByMemo.cache', totalGroups: items.length, items };
   } catch (e) {
     const detail = e?.message || 'unknown';
     throw new Error('fetchInvestedTokens.failed:' + detail);

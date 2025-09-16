@@ -112,6 +112,21 @@
     "failed": "Failed to load investment data: {{detail}}"
   },
   "investedTokens": {
+    "columns": {
+      "amount": "Amount",
+      "compromised": "Compromised",
+      "deactivated": "Disabled",
+      "destination": "Target wallet",
+      "issuer": "Issuer",
+      "label": "Label",
+      "memo": "Memo",
+      "payments": "Payments",
+      "token": "Token"
+    },
+    "filter": {
+      "memoPlaceholder": "Filter by memo, wallet address, or label",
+      "tokenPlaceholder": "Filter by token (CODE:ISSUER)"
+    },
     "group": {
       "memo": "Memo",
       "memoOrToken": "Memo, otherwise token",
@@ -126,6 +141,7 @@
     },
     "missingPublicKey": "Public key is missing.",
     "moreTruncated": "... and {{extra}} more groups",
+    "toWallet": "to wallet: {{address}}",
     "total": "Number of tokens purchased: {{count}}",
     "totalTokens": "Number of invested tokens (assets): {{count}}",
     "value": {
@@ -274,7 +290,32 @@
     "export": "Export settings",
     "import": "Import settings",
     "label": "Settings",
-    "prefetchDays": "Lead time (days)"
+    "prefetchDays": "Lead time (days)",
+    "trustedWallets": {
+      "buttons": {
+        "export": "Export",
+        "import": "Importing",
+        "reset": "Reset to default"
+      },
+      "desc": "This list is stored locally in the browser. Default file: QSI_TrustedWallets.json",
+      "editor": {
+        "apply": "Apply",
+        "format": "Format",
+        "invalidFormat": "Invalid format. An object with the field \"wallets\" (array) is expected.",
+        "label": "Edit JSON",
+        "parseError": "JSON could not be parsed.",
+        "placeholder": "Insert JSON content here..."
+      },
+      "file": {
+        "hint": "Import a JSON file in the format { wallets: [...] }",
+        "label": "File"
+      },
+      "info": {
+        "count": "Entries: {{n}}",
+        "updatedAt": "Status: {{date}}"
+      },
+      "title": "Trusted Wallets (QSI)"
+    }
   },
   "token": {
     "purchases": "Number of invested tokens"
