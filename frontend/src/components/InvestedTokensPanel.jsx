@@ -12,14 +12,24 @@ import { useSettings } from '../utils/useSettings';
  * Alle sichtbaren Texte laufen über t().
  */
 export default function InvestedTokensPanel({ publicKey }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [view, setView] = useState('memo'); // 'memo' | 'token'
   const [data, setData] = useState(null);
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
   const [sortKey, setSortKey] = useState('memo'); // memo: 'memo' | 'occurrences' | 'amount' | 'destination' | 'label'; token: 'token' | 'amount' | 'issuer'
   const [sortDir, setSortDir] = useState('asc'); // 'asc' | 'desc'
-  const { useCache, prefetchDays } = useSettings();
+  const { useCache, prefetchDays, decimalsMode } = useSettings();
+
+  // Locale-aware number formatter for token/XLM amounts (with thousands separators and selectable fraction digits)
+  const tokenAmountFmt = useMemo(() => {
+    const isAuto = decimalsMode === 'auto';
+    const n = isAuto ? undefined : Math.max(0, Math.min(7, Number(decimalsMode)));
+    return new Intl.NumberFormat(i18n.language || undefined, {
+      minimumFractionDigits: isAuto ? 0 : n,
+      maximumFractionDigits: isAuto ? 7 : n,
+    });
+  }, [i18n.language, decimalsMode]);
 
   // Map Zieladresse -> Info aus Settings-Datei (Label, compromised, deactivated)
   const walletInfoMap = useMemo(() => {
@@ -34,7 +44,9 @@ export default function InvestedTokensPanel({ publicKey }) {
   }, []);
 
   useEffect(() => {
-    // Reset Sortierung beim Wechsel der Ansicht
+    // Reset Sortierung beim Wechsel der Ansicht und vorherige Daten leeren,
+    // damit keine Token-Daten in der Memo-Tabelle angezeigt werden (und umgekehrt)
+    setData(null);
     if (view === 'memo') {
       setSortKey('memo');
       setSortDir('asc');
@@ -48,31 +60,44 @@ export default function InvestedTokensPanel({ publicKey }) {
   const load = async () => {
     setLoading(true);
     setErr('');
+    const t0 = Date.now();
+    const updateHeartbeat = () => {
+      const elapsedMs = Date.now() - t0;
+      setProgressState((s) => ({ ...s, elapsedMs }));
+    };
+    const hb = setInterval(updateHeartbeat, 1000);
+
     try {
       let res = null;
+      const onProgress = (p) => {
+        setProgressState((s) => ({ ...s, ...p }));
+      };
       if (view === 'memo') {
-        // Groupfund-Sicht: ausgehende XLM mit Memo (Memo-Gruppen + Summe XLM)
         if (useCache) {
           res = await fetchGroupfundByMemoCached({ publicKey, prefetchDays });
         } else {
-          res = await fetchGroupfundByMemo({ publicKey, limitPages: 5000 });
+          res = await fetchGroupfundByMemo({ publicKey, limitPages: 5000, onProgress });
         }
       } else {
-        // Token-Sicht: Summen je Asset (CODE:ISSUER)
-        res = await fetchInvestedPerToken({ publicKey, limitPages: 5000 });
+        res = await fetchInvestedPerToken({ publicKey, limitPages: 5000, onProgress });
       }
       setData(res);
     } catch (e) {
-      // UI fängt den Fehler ab und übersetzt mit t()
       setData(null);
       setErr(e?.message || t('error.fetchInvestedTokens.failed'));
     } finally {
+      clearInterval(hb);
       setLoading(false);
     }
   };
 
+  const [progressState, setProgressState] = useState({ phase: 'idle', page: 0, elapsedMs: 0 });
+
   useEffect(() => {
-    if (publicKey) load();
+    if (publicKey) {
+      setProgressState({ phase: 'idle', page: 0, elapsedMs: 0 });
+      load();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey, view]);
 
@@ -115,9 +140,16 @@ export default function InvestedTokensPanel({ publicKey }) {
 
       {err && <div className="text-red-600 text-sm">{t(err)}</div>}
 
-      {loading && (
+      {(loading || (view === 'memo' && progressState.elapsedMs > 0)) && (
         <div className="mt-2">
-          <ProgressBar progress={null} phase={view === 'memo' ? 'scan_payments' : 'scan_tx'} />
+          <ProgressBar
+            progress={null}
+            phase={progressState.phase || (view === 'memo' ? 'scan_payments' : 'scan_tx')}
+            page={progressState.page}
+            etaMs={progressState.etaMs}
+            oldest={progressState.oldestOnPage}
+            elapsedMs={progressState.elapsedMs}
+          />
         </div>
       )}
 
@@ -184,7 +216,7 @@ export default function InvestedTokensPanel({ publicKey }) {
                     <tr key={r.memo + idx} className={idx % 2 ? 'bg-gray-50 dark:bg-gray-800/40' : ''}>
                       <td className="px-2 py-1 whitespace-pre-wrap break-all">{r.memo}</td>
                       <td className="px-2 py-1">{r.occurrences}</td>
-                      <td className="px-2 py-1">{r.amount.toFixed(7)} XLM</td>
+                      <td className="px-2 py-1">{tokenAmountFmt.format(r.amount)} XLM</td>
                       <td className="px-2 py-1 font-mono break-all">{r.destination}</td>
                       <td className="px-2 py-1">{r.label}</td>
                       <td className="px-2 py-1">{r.compromised ? t('option.yes') : t('option.no')}</td>
@@ -244,7 +276,7 @@ export default function InvestedTokensPanel({ publicKey }) {
                   {sorted.map((r, idx) => (
                     <tr key={r.token + r.issuer + idx} className={idx % 2 ? 'bg-gray-50 dark:bg-gray-800/40' : ''}>
                       <td className="px-2 py-1 break-all">{r.token}</td>
-                      <td className="px-2 py-1">{r.amount}</td>
+                      <td className="px-2 py-1">{tokenAmountFmt.format(r.amount)}</td>
                       <td className="px-2 py-1 font-mono break-all">{r.issuer}</td>
                     </tr>
                   ))}

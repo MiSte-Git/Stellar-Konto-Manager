@@ -38,7 +38,13 @@
       "memoNormBackfillFailed": "Initiales Laden der Zahlungen für normalisierte Memos fehlgeschlagen",
       "openFailed": "Lokaler Cache konnte nicht geöffnet werden",
       "readFailed": "Lesen aus dem Cache fehlgeschlagen",
-      "writeFailed": "Schreiben in den Cache fehlgeschlagen"
+      "writeFailed": "Schreiben in den Cache fehlgeschlagen",
+      "rehydrateFailed": "Nachladen fehlender Memos fehlgeschlagen",
+      "rehydrateWriteFailed": "Schreiben der Memos in den Cache fehlgeschlagen",
+      "coverage": {
+        "oldestFailed": "Ermitteln des ältesten Datums fehlgeschlagen",
+        "newestFailed": "Ermitteln der neuesten Zahlung fehlgeschlagen"
+      }
     },
     "connection": {
       "backend": "Keine Verbindung zum Backend möglich. Stellen Sie sicher"
@@ -124,21 +130,27 @@
       "memo": "Memos (Groupfund)",
       "token": "Token (gekaufte Menge)"
     },
+    "decimals": {
+      "label": "Nachkommastellen:",
+      "auto": "Automatisch"
+    },
     "walletCapInfo": "Hinweis: Ein Wallet kann maximal 1000 Trustlines halten."
   },
   "issuer": {
     "enter": "Gib die Emittenten-Adresse ein:",
     "invalid": "Ungültige Emittentenadresse."
   },
+  "noIssuerTrustlinesFound": "Keine Trustlines für Emittent {{issuer}} gefunden.",
   "main": {
     "processing": "Vorgang läuft, bitte warten …",
     "title": "Stellar Trustline Manager"
   },
   "menu": {
     "unknown": "Unbekannte Menüauswahl",
-    "xlmByMemo": "XLM-Betrag nach Memo/Token Filtern"
+    "xlmByMemo": "XLM-Summe nach Memo"
   },
   "navigation": {
+    "back": "Zurück",
     "backToMainMenu": "Zurück zum Menü",
     "backToPublicKey": "Zurück zur öffentlichen Schlüssel Eingabe",
     "backToTop": "Zurück nach Oben"
@@ -193,6 +205,7 @@
       "scan": "Scanne Zahlungen (Seite {{page}})…",
       "scan_payments": "Scanne Zahlungen (Seite {{page}})…",
       "scan_payments_fast": "Scanne Zahlungen (schnell) – Seite {{page}}…",
+      "scan_ops": "Scanne Operationen…",
       "scan_tx": "Transaktionen scannen",
       "sync": "Synchronisiere Zahlungen…",
       "txFetch": "Lade Transaktionsdetails…"
@@ -228,6 +241,14 @@
       "help": "Beschleunigt Abfragen durch lokalen Zahlungs-Cache, kann jedoch das initiale Laden verlängern.",
       "label": "Cache benutzen (Beta)",
       "prefetchHelp": "Vorlauf der zu ladenden Einträge/Transaktionen in Tagen (einmalig beim ersten Aktivieren)"
+    },
+    "display": {
+      "title": "Anzeige",
+      "desc": "Globale Anzeigeeinstellungen.",
+      "decimals": {
+        "label": "Nachkommastellen",
+        "auto": "Automatisch"
+      }
     },
     "description": "Aktuell gibt es noch keine Einstellungen",
     "error": {
@@ -274,7 +295,7 @@
     }
   },
   "token": {
-    "purchases": "Anzahl der investierten Token"
+    "purchases": "Token-Investments (Anzahl)"
   },
   "trustline": {
     "all": "Trustline(s) anzeigen",
@@ -287,7 +308,10 @@
         "simulation": "Simulationsmodus"
       },
       "notFound": "Keine löschbaren Trustlines gefunden – alle enthalten noch Guthaben.",
-      "resultTitle": "Gelöschte Trustline(s)"
+      "resultTitle": "Gelöschte Trustline(s)",
+      "resultText": "Anzahl: {{count}} • Modus: {{mode}}",
+      "simulated": "Simulation: {{count}} Trustline(s) würden gelöscht werden.",
+      "success": "Erfolg: {{count}} Trustline(s) gelöscht."
     },
     "destination": {
       "label": "Geben Sie den Ziel-Öffentlichen Schlüssel ein:",
@@ -298,6 +322,12 @@
     "notFound": "Keine Trustline(s) gefunden.",
     "onlyZeroBalanceInfo": "Nur Trustlines mit einem Guthaben von 0 können gelöscht werden.",
     "showSecret": "Geheimschlüssel anzeigen"
+  },
+  "trustlines": {
+    "deleted": {
+      "deletingProgress": "Löschen läuft: {{current}} / {{total}}"
+    },
+    "skippedDueToBalance": "{{count}} Trustline(s) übersprungen (noch Guthaben vorhanden)."
   },
   "xlmByMemo": {
     "action": {

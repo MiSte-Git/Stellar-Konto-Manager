@@ -18,10 +18,10 @@ export default function InvestedTokensPage({ publicKey, onBack }) {
         <button
           className="border rounded px-3 py-1"
           onClick={onBack}
-          aria-label={t('navigation.backToMainMenu')}
-          title={t('navigation.backToMainMenu')}
+          aria-label={t('navigation.back', 'Back')}
+          title={t('navigation.back', 'Back')}
         >
-          {t('navigation.backToMainMenu')}
+          {t('navigation.back', 'Back')}
         </button>
       </div>
 
