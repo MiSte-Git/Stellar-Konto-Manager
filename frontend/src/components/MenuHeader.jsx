@@ -12,12 +12,6 @@ function MenuHeader({ setMenuSelection }) {
 
   return (
     <div className="flex justify-between items-center mb-4">
-      <button
-        onClick={() => setMenuSelection(null)}
-        className="px-3 py-1 bg-gray-300 text-black rounded hover:bg-gray-400 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-      >
-        {t('navigation.backToMainMenu')}
-      </button>
     </div>
   );
 }

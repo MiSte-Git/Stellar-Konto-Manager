@@ -11,6 +11,7 @@ ChatGPT - Stellar Trustline Manager_files/
 *.xlsx
 *.pdf
 *.ods
+*.md
 dist/
 # Ignoriere sensible Umgebungsdateien
 .env

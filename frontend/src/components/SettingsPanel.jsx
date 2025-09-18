@@ -213,7 +213,7 @@ export default function SettingsPanel() {
                       className="w-full border rounded px-2 py-1"
                       value={r.label || ''}
                       onChange={(e) => updateCell(idx, 'label', e.target.value)}
-                      placeholder={t('investedTokens.columns.label')}
+                      placeholder={t('settings.trustedWallets.table.columns.label', 'Label')}
                     />
                   </td>
                   <td className="px-2 py-1 text-center">
