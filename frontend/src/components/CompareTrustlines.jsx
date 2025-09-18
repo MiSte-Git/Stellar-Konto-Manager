@@ -93,7 +93,8 @@ function CompareTrustlines({
     <div>
       {/* Menükopf mit Zurück-Button + aktuelle Ansicht */}
       <MenuHeader setMenuSelection={setMenuSelection} menuSelection={menuSelection} />
-
+      {/* Menütitel anzeigen */}
+      <h2 className="text-center text-xl font-semibold">{t('trustline.compare')}</h2>
       <label className="block mb-2">{t('publicKey.destination.input')}:</label>
       <div className="relative">
         <input
