@@ -224,7 +224,10 @@
     "source": "Quell-Wallet-Adresse",
     "submit": {
       "button": "Absenden"
-    }
+    },
+    "load": "Laden…",
+    "deleteFromList": "Aus Liste löschen",
+    "test": "Test"
   },
   "secretKey": {
     "cleared": "Geheimschlüssel wurde gelöscht.",
@@ -325,7 +328,8 @@
   },
   "trustlines": {
     "deleted": {
-      "deletingProgress": "Löschen läuft: {{current}} / {{total}}"
+      "deletingProgress": "Löschen läuft: {{current}} / {{total}}",
+      "success": "Erfolg: {{count}} Trustline(s) gelöscht."
     },
     "skippedDueToBalance": "{{count}} Trustline(s) übersprungen (noch Guthaben vorhanden)."
   },

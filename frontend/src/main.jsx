@@ -257,27 +257,39 @@ function Main() {
                 ))}
               </datalist>
             </div>
-            <div className="mt-2 flex gap-2">
-              <button
-                type="submit"
-                disabled={isLoading || !walletHeaderInput.trim()}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-                title="Wallet übernehmen"
-              >
-                Übernehmen
-              </button>
-              <button
-                type="button"
-                onClick={handleRecentDelete}
-                disabled={isLoading || !recentWallets.includes((walletHeaderInput || '').trim())}
-                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
-              >
-                Aus Liste löschen
-              </button>
+            <div className="mt-2 flex flex-wrap gap-2 justify-start">
+              {/* Linke Buttons */}
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  disabled={isLoading || !walletHeaderInput.trim()}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                  title="Wallet übernehmen"
+                >
+                  {t('publicKey.load')}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRecentDelete}
+                  disabled={isLoading || !recentWallets.includes((walletHeaderInput || '').trim())}
+                  className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
+                >
+                  {t('publicKey.deleteFromList')}
+                </button>
+              </div>
+              {/* Rechter Button */}
+              {menuSelection && (
+                <button
+                  type="button"
+                  onClick={() => setMenuSelection(null)}
+                  className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 ml-auto"
+                >
+                  {t('navigation.backToMainMenu')}
+                </button>
+              )}
             </div>
           </form>
         </div>
-
         {sourcePublicKey && (
           <p className="mb-4 pb-1 text-sm text-gray-700 dark:text-gray-200 font-mono">
             {t('publicKey.source')}: {sourcePublicKey}

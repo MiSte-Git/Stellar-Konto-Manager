@@ -20,6 +20,7 @@ import {
 } from '../utils/stellar/trustlineUtils.js';
 import ProgressBar from "../components/ProgressBar.jsx";
 import { formatElapsedMmSs } from '../utils/datetime';
+import { useSettings } from '../utils/useSettings';
 import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
@@ -48,7 +49,8 @@ function ListTrustlines({
   setDeleteProgress,
   setInfoMessage,
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { decimalsMode } = useSettings();
   const [paginated, setPaginated] = useState([]);
   const [showOverviewModal, setShowOverviewModal] = useState(false);
   const [showSecretModal, setShowSecretModal] = useState(false);
@@ -70,6 +72,15 @@ function ListTrustlines({
   }, [deleteProgress, isProcessing]);
   const [delElapsedMs, setDelElapsedMs] = useState(0);
   const delStartedAtRef = useRef(0);
+
+  const balanceFmt = useMemo(() => {
+    const isAuto = decimalsMode === 'auto';
+    const n = isAuto ? undefined : Math.max(0, Math.min(7, Number(decimalsMode)));
+    return new Intl.NumberFormat(i18n.language || undefined, {
+      minimumFractionDigits: isAuto ? 0 : n,
+      maximumFractionDigits: isAuto ? 7 : n,
+    });
+  }, [i18n.language, decimalsMode]);
 
   // Simulationsmodus aktiv?
   const [simulationMode, setSimulationMode] = useState(true);
@@ -354,6 +365,8 @@ function ListTrustlines({
     <div className="mt-4">
       {/* Menükopf mit Zurück-Button + aktuelle Ansicht */}
       <MenuHeader setMenuSelection={setMenuSelection} menuSelection={menuSelection} />
+      {/* Menütitel anzeigen */}
+      <h2 className="text-center text-xl font-semibold">{t('trustline.all')}</h2>
       {/* Fortschritt der Löschung an der Spitze */}
       <div className="mb-3">
         <ProgressBar {...delProg} />
@@ -370,7 +383,7 @@ function ListTrustlines({
  
       {/* Infoleiste: Wallet, Anzahl, Modusauswahl */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-500 rounded p-3 text-sm mb-4">
-        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 sm:mb-0">
+        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 sm:mb-0 flex-wrap">
           <span>{t('trustline.all')}: {trustlines.length}</span>
           <div className="flex gap-2">
             <button
@@ -390,7 +403,7 @@ function ListTrustlines({
           </div>
         </div>
 
-        <div className="flex gap-4 items-center">
+        <div className="flex flex-wrap gap-4 items-center">
           {/* 🔘 Radiobuttons */}
           <label className="flex items-center gap-1">
             <input type="radio" name="mode" value="simulation" checked={simulationMode} onChange={() => setSimulationMode(true)} />
@@ -404,7 +417,7 @@ function ListTrustlines({
 
           {/* 🗑️ Löschen-Button */}
           {selectedTrustlines.length > 0 && (
-            <div className="absolute left-1/3 transform -translate-x-1/2">
+            <div className="ml-2">
               <button
                 onClick={() => setShowOverviewModal(true)}
                 className="ml-4 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700"
@@ -482,7 +495,7 @@ function ListTrustlines({
                 />
               </td>
               <td className="px-4 py-2">{tl.assetCode}</td>
-              <td className="px-4 py-2">{tl.assetBalance}</td>
+              <td className="px-4 py-2">{balanceFmt.format(Number(tl.assetBalance || 0))}</td>
               <td className="px-4 py-2">{tl.assetIssuer}</td>
               <td className="px-4 py-2">{tl.createdAt ? new Date(tl.createdAt).toLocaleString() : t('error.asset.creationDateUnknown')}</td>
             </tr>
@@ -549,6 +562,9 @@ function ListTrustlines({
                   <th className="px-2 py-1 cursor-pointer" onClick={() => handleSortOverview('assetCode')}>
                     {t('asset.code')}
                   </th>
+                  <th className="px-2 py-1 cursor-pointer" onClick={() => handleSortOverview('assetBalance')}>
+                    {t('asset.balance')}
+                  </th>
                   <th className="px-2 py-1 cursor-pointer" onClick={() => handleSortOverview('assetIssuer')}>
                     {t('asset.issuer')}
                   </th>
@@ -559,7 +575,7 @@ function ListTrustlines({
                 {sortedOverview.map((tl, idx) => (
                   <tr key={idx}>
                     <td className="px-2 py-1">{tl.assetCode}</td>
-                    <td className="px-2 py-1">{tl.assetBalance}</td>
+                    <td className="px-2 py-1">{balanceFmt.format(Number(tl.assetBalance || 0))}</td>
                     <td className="px-2 py-1">{tl.assetIssuer}</td>
                     <td className="px-2 py-1">
                       <button
