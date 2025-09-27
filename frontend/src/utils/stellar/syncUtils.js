@@ -18,24 +18,10 @@ export async function initCursorIfMissing({ server, accountId }) {
  * Lädt genau EINE Seite aus Horizon.payments (ohne join=transactions für bessere Leistung).
  * @returns {Promise<{records:any[], next: function|null, lastCursor:string|null}>}
  */
-async function fetchPaymentsPage({ server, accountId, order='asc', limit=200, cursor }) {
-  try {
-    let q = server.payments().forAccount(accountId).order(order).limit(Math.min(200, Math.max(1, limit)));
-    if (cursor) q = q.cursor(cursor);
-    const page = await q.call();
-    const last = page.records?.[page.records.length-1]?.paging_token || cursor || null;
-    return { records: page.records || [], next: page.next ?? null, lastCursor: last };
-  } catch {
-    throw new Error('error.horizon.paymentsFetch');
-  }
-}
 
 // Vergleicht zwei ISO-Strings (UTC, lexikalisch vergleichbar)
 function isoMin(a, b) { if (!a) return b; if (!b) return a; return a < b ? a : b; }
 
-function dispatchSync(accountId, payload) {
-  try { window.dispatchEvent(new CustomEvent('stm:cache-sync', { detail: { accountId, ...payload } })); } catch {}
-}
 
 /**
  * Backfill bis zu einem gegebenen sinceISO (ältere Zahlungen ignorieren).
@@ -45,7 +31,7 @@ function dispatchSync(accountId, payload) {
 export async function backfillPayments({ server, accountId, sinceISO, onProgress, signal }) {
   try {
     // UI: Start-Event (SourceInput zeigt Timer)
-    try { window.dispatchEvent(new CustomEvent('stm:cache-sync', { detail: { accountId, phase: 'start', kind: 'backfill', ts: Date.now() } })); } catch {}
+    try { window.dispatchEvent(new CustomEvent('stm:cache-sync', { detail: { accountId, phase: 'start', kind: 'backfill', ts: Date.now() } })); } catch { /* noop */ }
 
     // Start bei neuesten Zahlungen und rückwärts laufen
     let builder = server
@@ -71,7 +57,6 @@ export async function backfillPayments({ server, accountId, sinceISO, onProgress
       }
 
       pageNo += 1;
-      const newest = records[0]?.created_at || '';
       onProgress?.({
         phase: 'backfill',
         page: pageNo,
@@ -79,7 +64,7 @@ export async function backfillPayments({ server, accountId, sinceISO, onProgress
         newest: records[0]?.created_at || ''
       });
       // UI: Progress-Event (für laufende Anzeige unter PublicKey)
-      try { window.dispatchEvent(new CustomEvent('stm:cache-sync', { detail: { accountId, phase: 'progress', kind: 'backfill', page: pageNo, ts: Date.now() } })); } catch {}
+      try { window.dispatchEvent(new CustomEvent('stm:cache-sync', { detail: { accountId, phase: 'progress', kind: 'backfill', page: pageNo, ts: Date.now() } })); } catch { /* noop */ }
 
       // Abbruchbedingung: Wenn die älteste Seite bereits < sinceISO ist
       const oldestInPage = records[records.length - 1]?.created_at;
@@ -100,7 +85,7 @@ export async function backfillPayments({ server, accountId, sinceISO, onProgress
       page = await builder.call();
     }
     // UI: Done-Event
-    try { window.dispatchEvent(new CustomEvent('stm:cache-sync', { detail: { accountId, phase: 'done', kind: 'backfill', ts: Date.now() } })); } catch {}
+    try { window.dispatchEvent(new CustomEvent('stm:cache-sync', { detail: { accountId, phase: 'done', kind: 'backfill', ts: Date.now() } })); } catch { /* noop */ }
 
   } catch (e) {
     // konsistente verschachtelte Keys
