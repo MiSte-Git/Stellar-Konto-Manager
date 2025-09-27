@@ -1,14 +1,12 @@
-import trustlineLogo from './assets/Trustline-Logo.jpg';
+// import trustlineLogo from './assets/Trustline-Logo.jpg';
 import './i18n'; // Initialisiert die Sprachunterstützung
 import { useTranslation } from 'react-i18next';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BACKEND_URL } from './config';
 import { 
   loadTrustlines, 
-  resolveOrValidatePublicKey, 
-  handleSourceSubmit as submitSourceInput,
-  handleDeleteTrustlines as deleteAndReload
+  handleSourceSubmit as submitSourceInput
  } from './utils/stellar/stellarUtils.js';
 import App from './App.jsx';
 
@@ -23,13 +21,10 @@ import ConfirmationModal from './components/ConfirmationModal';
 import './index.css'; // Enthält @tailwind + dein echtes Styling
 import {
   toggleAllTrustlines,
-  areAllSelected,
-  isSelected,
   toggleTrustlineSelection
 } from './utils/stellar/trustlineUtils';
 import { 
-  handleSort,
-  handleFilterChange 
+  handleSort
 } from './utils/uiHelpers.js';
 import XlmByMemoPanel from './components/XlmByMemoPanel';
 import XlmByMemoPage from './pages/XlmByMemoPage';
@@ -65,7 +60,7 @@ function Main() {
   const [walletHeaderInput, setWalletHeaderInput] = useState('');
   // Trustlines und Secret Keys werden nur für Backend-Operationen aktualisiert, aber nicht gerendert
   // Deshalb setzen wir nur setTrustlines, lesen aber trustlines nicht aus → ignorierbare Warnung
-  const [showSecretKey, setShowSecretKey] = useState(false);
+  const [, setShowSecretKey] = useState(false);
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -86,33 +81,11 @@ function Main() {
       try {
         const wasSelected = prev.some(s => s.assetCode === tl.assetCode && s.assetIssuer === tl.assetIssuer);
         console.debug('[Toggle One]', tl.assetCode, tl.assetIssuer, 'wasSelected?', wasSelected, '-> newLen', next.length);
-      } catch {}
+      } catch { /* noop */ }
       return next;
     });
   };
-  const handleDeleteTrustlines = async (secretKey) => {
-    setIsLoading(true);
-    setError('');
-    try {
-      const { deleted, updatedTrustlines } = await deleteAndReload({
-        secretKey,
-        trustlinesToDelete: selectedTrustlines,
-        sourcePublicKey,
-        t,
-        horizonServer: null, // optional – falls du `horizonServer` explizit übergibst
-      });
 
-      setTrustlines(updatedTrustlines);
-      setResults([{ type: 'success', message: t('trustlines.deleted.success', { count: deleted.length }) }]);
-      setSelectedTrustlines([]);
-      setShowSecretKey(false);
-
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
   const [isProcessing, setIsProcessing] = useState(false);
   const [deleteProgress, setDeleteProgress] = useState(null);
   const [infoMessage, setInfoMessage] = useState('');
@@ -127,20 +100,20 @@ function Main() {
           setRecentWallets(arr.filter(x => typeof x === 'string'));
         }
       }
-    } catch {}
+    } catch { /* noop */ }
   }, []);
 
-  function persistRecent(list) {
-    try { localStorage.setItem('recentWallets', JSON.stringify(list)); } catch {}
-  }
-  function addRecent(pk) {
+  const persistRecent = useCallback((list) => {
+    try { localStorage.setItem('recentWallets', JSON.stringify(list)); } catch { /* noop */ }
+  }, []);
+  const addRecent = useCallback((pk) => {
     if (!pk) return;
     setRecentWallets(prev => {
       const next = [pk, ...prev.filter(x => x !== pk)].slice(0, 20);
       persistRecent(next);
       return next;
     });
-  }
+  }, [persistRecent]);
 
   async function handleHeaderApply() {
     const input = (walletHeaderInput || '').trim();
@@ -172,7 +145,7 @@ function Main() {
   // Aktuelle Wallet automatisch in "Zuletzt verwendet" aufnehmen
   useEffect(() => {
     if (sourcePublicKey) addRecent(sourcePublicKey);
-  }, [sourcePublicKey]);
+  }, [sourcePublicKey, addRecent]);
 
   // Global error handler
   useEffect(() => {
@@ -212,7 +185,7 @@ function Main() {
     try {
       const deletable = paginatedList.filter(t => parseFloat(t.assetBalance) === 0).length;
       console.debug('[Toggle All] pageItems', paginatedList.length, 'deletable', deletable, 'before', selectedTrustlines.length, 'after', next.length);
-    } catch {}
+    } catch { /* noop */ }
     setSelectedTrustlines(next);
   };
 

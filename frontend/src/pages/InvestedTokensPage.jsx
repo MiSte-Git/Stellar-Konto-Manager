@@ -7,8 +7,9 @@ import InvestedTokensPanel from '../components/InvestedTokensPanel';
  * - Zeigt Titel + Zurück-Button (UI-Texte via t()).
  * - Rendert das Panel, das die Investments über Horizon ermittelt.
  */
-export default function InvestedTokensPage({ publicKey, onBack }) {
+export default function InvestedTokensPage({ publicKey, onBack: _onBack }) {
   const { t } = useTranslation();
+  void _onBack;
 
   return (
     <div className="space-y-4">

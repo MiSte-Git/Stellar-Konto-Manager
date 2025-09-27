@@ -9,7 +9,7 @@ export function useTrustedWallets() {
     try {
       const raw = localStorage.getItem(LS_KEY);
       if (raw) return JSON.parse(raw);
-    } catch {}
+    } catch { /* noop */ }
     return defaultTrusted || { wallets: [] };
   });
   const [error, setError] = useState('');
@@ -17,7 +17,7 @@ export function useTrustedWallets() {
   useEffect(() => {
     try {
       localStorage.setItem(LS_KEY, JSON.stringify(data));
-    } catch {}
+    } catch { /* noop */ }
   }, [data]);
 
   const wallets = useMemo(() => Array.isArray(data?.wallets) ? data.wallets : [], [data]);
@@ -50,7 +50,7 @@ export function useTrustedWallets() {
   const resetToDefault = useCallback(() => {
     setError('');
     setData(defaultTrusted || { wallets: [] });
-    try { localStorage.removeItem(LS_KEY); } catch {}
+    try { localStorage.removeItem(LS_KEY); } catch { /* noop */ }
   }, []);
 
   const exportFile = useCallback(() => {

@@ -1,21 +1,28 @@
 // STM_VER:XlmByMemoPanel.jsx@2025-09-10
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { getHorizonServer } from "../utils/stellar/stellarUtils";
-import { ensureCoverage } from "../utils/stellar/syncUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
 import { formatLocalDateTime, formatElapsedMmSs } from '../utils/datetime';
 import { sumIncomingXLMByMemoNoCacheExact_Hybrid as sumIncomingXLMByMemoNoCacheExact } from "../utils/stellar/queryUtils";
-import { getNewestCreatedAt, iterateByAccountMemoRange, iterateByAccountCreatedRange } from '../utils/db/indexedDbClient';
+import { getNewestCreatedAt } from '../utils/db/indexedDbClient';
 
+// Erlaubte Payment-Operationen (Modulweit; stabil für Hooks)
+const PAY_TYPES = new Set([
+  'payment',
+  'path_payment',
+  'path_payment_strict_receive',
+  'path_payment_strict_send',
+]);
 
 /**
  * Panel: Eingabe für Memo + optionales Zeitfenster und Anzeige der XLM-Summe.
  * - Alle sichtbaren Texte via t()
  * - Errors werden als i18n-Key angezeigt
  */
-export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizon.stellar.org" , onBack }) {
+export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizon.stellar.org" , onBack: ON_BACK }) {
   const { t } = useTranslation();
+  void ON_BACK;
   const [memoQuery, setMemoQuery] = useState("");
   const [memoHistory, setMemoHistory] = useState([]);
   // Datum + Zeit getrennt, damit wir sauber TZ anwenden können
@@ -44,10 +51,17 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   // Für Extra-Auswertung: Zahlungen mit falschem/leerem Memo
   const [wrongRows, setWrongRows] = useState([]);
   const [wrongLoading, setWrongLoading] = useState(false);
+  // Neuer Bereich: Top 20-Eingänge (für dieses Memo)
+  const [topRows, setTopRows] = useState([]);
+  const [topLoading, setTopLoading] = useState(false);
+  const [showTop, setShowTop] = useState(false);
   // Memo-Vergleich: entferne unsichtbare Zeichen + trim (Case-sensitiv wie in queryUtils.cleanMemo)
   const cleanMemo = useCallback((s) => String(s ?? '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim(), []);
   const [showWrong, setShowWrong] = useState(false);
   const [wrongSummary, setWrongSummary] = useState({ count: 0, sum: 0, unique: 0 });
+  // Sortierung für Tabellen
+  const [wrongSort, setWrongSort] = useState({ key: 'created_at', dir: 'desc' });
+  const [topSort, setTopSort] = useState({ key: 'amount', dir: 'desc' });
 
   // Horizon-Server (Projektvorgabe: immer Horizon)
   const server = getHorizonServer(horizonUrl);
@@ -176,13 +190,47 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   const onProgress = useCallback((info = {}) => {
       setProg((p) => ({
         ...p,
-      ...info,
-      incomingOverview: {
-        ...(p.incomingOverview || {}),
-        ...(info.incomingOverview || {}),
-      },
-    }));
+        ...info,
+        incomingOverview: {
+          ...(p.incomingOverview || {}),
+          ...(info.incomingOverview || {}),
+        },
+      }));
   }, []);
+
+  // Hilfsfunktion: Sortierung
+  const sortRows = useCallback((arr, sort) => {
+    const { key, dir } = sort || {};
+    const mul = dir === 'asc' ? 1 : -1;
+    return [...(arr || [])].sort((a, b) => {
+      const va = a?.[key];
+      const vb = b?.[key];
+      if (key === 'amount') {
+        const na = parseFloat(va || '0');
+        const nb = parseFloat(vb || '0');
+        return (na - nb) * mul;
+      }
+      if (key === 'created_at') {
+        // ISO-Strings sind lexikographisch vergleichbar
+        if (va === vb) return 0;
+        return (va > vb ? 1 : -1) * mul;
+      }
+      const sa = String(va ?? '');
+      const sb = String(vb ?? '');
+      return sa.localeCompare(sb) * mul;
+    });
+  }, []);
+
+  const sortedWrongRows = useMemo(() => sortRows(wrongRows, wrongSort), [wrongRows, wrongSort, sortRows]);
+  const sortedTopRows = useMemo(() => sortRows(topRows, topSort), [topRows, topSort, sortRows]);
+
+  const handleWrongSort = useCallback((key) => {
+    setWrongSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
+  }, []);
+  const handleTopSort = useCallback((key) => {
+    setTopSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
+  }, []);
+  const sortArrow = useCallback((state, key) => (state.key === key ? (state.dir === 'asc' ? ' ▲' : ' ▼') : ''), []);
 
   /**
    * Startet die Summierung mit optionalem Datum-Filter.
@@ -290,60 +338,9 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     }
   }
 
-  // Hilfsset wie in queryUtils: erlaubte Payment-Operationen
-  const PAY_TYPES = new Set([
-    'payment',
-    'path_payment',
-    'path_payment_strict_receive',
-    'path_payment_strict_send',
-  ]);
-
   // Export 1: Treffer (exaktes Memo im Zeitraum) – wenn keine Trefferliste vorhanden ist,
   // werden nur die Treffer (mit passendem Memo) aus dem Cache gezogen. Exportiert wird aber immer die vorhandene Trefferliste unverändert.
-  const handleExportMatchesCsv = useCallback(async () => {
-    try {
-      const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
-      const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
-
-      // Falls rowsRef noch leer (z. B. Export ohne „Berechnen“): schnell aus Cache nachbauen (nur Treffer)
-      if (!rowsRef.current?.length) {
-        const q = String(memoQuery ?? '');
-        const tmp = [];
-        await iterateByAccountMemoRange({
-      accountId: publicKey,
-          memoQuery: q,
-          fromISO,
-          toISO: toISOExc,
-          onRow: (v) => {
-            const memoRaw = String(v.memo ?? v.transaction_memo ?? '');
-            // Eingehende native Payments (Treffer = exaktes Memo, bereits durch iterateByAccountMemoRange gesichert)
-            if (!PAY_TYPES.has(String(v.type || ''))) return;
-            if (v.to !== publicKey) return;
-            if ((v.asset_type || 'native') !== 'native') return;
-            const amt = parseFloat(v.amount || '0');
-            if (!Number.isFinite(amt) || amt <= 0) return;
-            tmp.push({
-              created_at: v.created_at,
-              tx_hash: v.transaction_hash,
-              from: v.from || '',
-              to: v.to || publicKey,
-              amount: v.amount,
-              asset_type: v.asset_type,
-              memo: memoRaw,
-    });
-          }
-        });
-        rowsRef.current = tmp;
-      }
-
-      const csv = toCsv(rowsRef.current);
-      const safeMemo = (memoQuery || 'memo').replace(/[^A-Za-z0-9_-]+/g, '_');
-      const fn = `xlm_by_memo_matches_${safeMemo}_${fromISO}_${toISOExc}.csv`;
-      downloadCsv(fn, csv);
-    } catch (e) {
-      setErrorKey('exportCsv.failed');
-  }
-  }, [memoQuery, fromDate, fromTime, toDate, toTime, tz, publicKey]);
+  // Hinweis: Export der exakten Treffer ist derzeit nicht über einen Button erreichbar.
 
   // Export: Alle eingehenden nativen Payments im Zeitraum (inkl. memo) mit robustem Nachladen
   const handleExportCsv = useCallback(async () => {
@@ -483,16 +480,13 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
 
       setProg(p => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
     } catch (e) {
+      void e;
       setErrorKey('exportCsv.failed');
       setProg(p => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
     }
-  }, [fromDate, fromTime, toDate, toTime, tz, publicKey, server]);
+  }, [fromDate, fromTime, toDate, toTime, tz, publicKey, server, ROLE.FROM, ROLE.TO]);
 
   // Optional: Beide auf einmal exportieren
-  const handleExportBothCsv = useCallback(async () => {
-    await handleExportCsv();
-    await handleExportMatchesCsv();
-  }, [handleExportCsv, handleExportMatchesCsv]);
 
   // Scan: Eingehende native Zahlungen mit falschem/leerem Memo im Zeitraum
   const handleShowWrongMemos = useCallback(async () => {
@@ -599,11 +593,121 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       setShowWrong(true);
       setProg(p => ({ ...p, phase: 'finalize', progress: 1 }));
     } catch (e) {
+      void e;
       setErrorKey('xlmByMemo.wrongMemos.failed');
     } finally {
       setWrongLoading(false);
     }
-  }, [fromDate, fromTime, toDate, toTime, tz, memoQuery, publicKey, server]);
+  }, [fromDate, fromTime, toDate, toTime, tz, memoQuery, publicKey, server, ROLE.FROM, ROLE.TO, cleanMemo]);
+
+  // Scan: Top 20 eingehende nativen Zahlungen mit passendem Memo (Teilstring) im Zeitraum
+  const handleShowTopLargest = useCallback(async () => {
+   try {
+   setTopLoading(true);
+   setProg(p => ({ ...p, phase: 'scan', progress: 0, page: 0 }));
+   setShowTop(false);
+   setTopRows([]);
+
+      const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
+      const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
+      const q = String(memoQuery || '');
+      const qClean = cleanMemo(q);
+
+      // 1) Transaktions-Memos im Zeitfenster einsammeln (Hash -> Memo)
+      const txMemo = new Map();
+      let txPage = await server
+        .transactions()
+        .forAccount(publicKey)
+        .order('desc')
+        .limit(200)
+        .call();
+      let txStop = false;
+      while (!txStop) {
+        const trecs = txPage?.records || [];
+        for (const tr of trecs) {
+          const created = tr.created_at || '';
+          if (toISOExc && created >= toISOExc) continue;
+          if (fromISO && created < fromISO) { txStop = true; break; }
+          txMemo.set(tr.hash, tr?.memo != null ? String(tr.memo) : '');
+        }
+        if (txStop || !txPage.next) break;
+        txPage = await txPage.next();
+      }
+
+      // 2) Zahlungen scannen, passende Memos sammeln
+      let page = await server
+        .payments()
+        .forAccount(publicKey)
+        .order('desc')
+        .limit(200)
+        .call();
+
+      const rows = [];
+      let stop = false;
+      let pages = 0;
+      while (!stop) {
+        const recs = page?.records || [];
+        for (const r of recs) {
+          const created = r.created_at || '';
+          if (toISOExc && created >= toISOExc) continue; // obere Grenze exklusiv
+          if (fromISO && created < fromISO) { stop = true; break; }
+
+          const t = String(r.type || '');
+          let amountStr = '';
+          let fromAddr = '';
+          let toAddr = '';
+
+          if (t === 'payment' || t.startsWith('path_payment')) {
+            if ((r.asset_type || 'native') !== 'native') continue;
+            if (r.to !== publicKey) continue;
+            amountStr = r.amount || '0';
+            fromAddr = r.from || '';
+            toAddr = r.to || publicKey;
+          } else if (t === 'create_account') {
+            if (r.account !== publicKey) continue;
+            amountStr = r.starting_balance || '0';
+            fromAddr = r.funder || '';
+            toAddr = r.account || publicKey;
+          } else {
+            continue;
+          }
+
+          const amt = parseFloat(amountStr);
+          if (!Number.isFinite(amt) || amt <= 0) continue;
+
+          const memoRaw = txMemo.get(r.transaction_hash) ?? '';
+          const memoClean = cleanMemo(memoRaw);
+          if (!qClean || !memoClean.includes(qClean)) continue; // nur passende Memos
+
+          rows.push({
+            created_at: r.created_at,
+            from: fromAddr,
+            to: toAddr,
+            amount: amountStr,
+            memo: memoRaw,
+            tx_hash: r.transaction_hash,
+          });
+        }
+        if (stop || !page.next) break;
+        pages += 1;
+        if (pages % 3 === 0) setProg(p => ({ ...p, phase: 'scan', page: pages }));
+        page = await page.next();
+      }
+
+      // 3) Top 20 nach Betrag
+      rows.sort((a, b) => (parseFloat(b.amount || '0') - parseFloat(a.amount || '0')));
+      const top20 = rows.slice(0, 20);
+
+      setTopRows(top20);
+      setShowTop(true);
+      setProg(p => ({ ...p, phase: 'finalize', progress: 1 }));
+    } catch (e) {
+      void e;
+      setErrorKey('error.xlmByMemo.failedUnknown');
+    } finally {
+      setTopLoading(false);
+    }
+  }, [fromDate, fromTime, toDate, toTime, tz, memoQuery, publicKey, server, cleanMemo, ROLE.FROM, ROLE.TO]);
 
   // Bricht laufende Requests ab und beendet die UI sauber.
   // Sichtbarer Text kommt aus i18n (progress.canceled).
@@ -802,6 +906,15 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
           {t('xlmByMemo.wrongMemos.button')}
         </button>
         {wrongLoading && <span className="text-xs opacity-80">{t('xlmByMemo.wrongMemos.scanning')}</span>}
+        {/* Neuer Button: Top 20 Eingänge für dieses Memo */}
+        <button
+          onClick={handleShowTopLargest}
+          className="px-2 py-1 text-sm rounded border bg-emerald-700 text-white hover:bg-emerald-600 disabled:opacity-50"
+          disabled={topLoading || !memoQuery}
+        >
+          {t('xlmByMemo.topLargest.button')}
+        </button>
+        {topLoading && <span className="text-xs opacity-80">{t('xlmByMemo.topLargest.scanning')}</span>}
       </div>
 
       {/* Ergebnis: falsche/leer Memos */}
@@ -813,14 +926,14 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
           </div>
           <div className="overflow-auto max-h-64 text-xs">
             <div className="grid grid-cols-5 gap-2 font-semibold sticky top-0 bg-gray z-10 py-1">
-              <div>{t('xlmByMemo.wrongMemos.columns.created_at')}</div>
-              <div>{t('xlmByMemo.wrongMemos.columns.from')}</div>
-              <div>{t('xlmByMemo.wrongMemos.columns.amount')}</div>
-              <div>{t('xlmByMemo.wrongMemos.columns.memo')}</div>
-              <div>{t('xlmByMemo.wrongMemos.columns.tx_hash')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('created_at')}>{t('xlmByMemo.wrongMemos.columns.created_at')}{sortArrow(wrongSort,'created_at')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('from')}>{t('xlmByMemo.wrongMemos.columns.from')}{sortArrow(wrongSort,'from')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('amount')}>{t('xlmByMemo.wrongMemos.columns.amount')}{sortArrow(wrongSort,'amount')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('memo')}>{t('xlmByMemo.wrongMemos.columns.memo')}{sortArrow(wrongSort,'memo')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('tx_hash')}>{t('xlmByMemo.wrongMemos.columns.tx_hash')}{sortArrow(wrongSort,'tx_hash')}</div>
             </div>
             <div className="mt-1">
-              {wrongRows.map((r, i) => (
+              {sortedWrongRows.map((r, i) => (
                 <div key={i} className="grid grid-cols-5 gap-2 py-0.5">
                   <div className="font-mono">{r.created_at}</div>
                   <div className="font-mono break-all">{r.from}</div>
@@ -855,6 +968,59 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
               }}
             >
               {t('xlmByMemo.wrongMemos.clipboard')}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Ergebnis: Top 20 Eingänge für dieses Memo */}
+      {showTop && (
+        <div className="mt-3 border rounded p-2">
+          <div className="text-sm font-medium mb-1">{t('xlmByMemo.topLargest.title')}</div>
+          <div className="overflow-auto max-h-64 text-xs">
+            <div className="grid grid-cols-5 gap-2 font-semibold sticky top-0 bg-gray z-10 py-1">
+              <div className="cursor-pointer select-none" onClick={() => handleTopSort('created_at')}>{t('xlmByMemo.wrongMemos.columns.created_at')}{sortArrow(topSort,'created_at')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleTopSort('from')}>{t('xlmByMemo.wrongMemos.columns.from')}{sortArrow(topSort,'from')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleTopSort('amount')}>{t('xlmByMemo.wrongMemos.columns.amount')}{sortArrow(topSort,'amount')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleTopSort('memo')}>{t('xlmByMemo.wrongMemos.columns.memo')}{sortArrow(topSort,'memo')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleTopSort('tx_hash')}>{t('xlmByMemo.wrongMemos.columns.tx_hash')}{sortArrow(topSort,'tx_hash')}</div>
+            </div>
+            <div className="mt-1">
+              {sortedTopRows.map((r, i) => (
+                <div key={i} className="grid grid-cols-5 gap-2 py-0.5">
+                  <div className="font-mono">{r.created_at}</div>
+                  <div className="font-mono break-all">{r.from}</div>
+                  <div className="font-mono">{r.amount}</div>
+                  <div className="font-mono break-all">{r.memo || '(leer)'}</div>
+                  <div className="font-mono break-all">{r.tx_hash}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-2 flex gap-2">
+            <button
+              className="px-2 py-1 text-sm rounded border bg-gray-600 text-white hover:bg-gray-500"
+              onClick={() => {
+                const headers = ['created_at','from','to','amount','memo','tx_hash'];
+                const csv = toCsv(sortedTopRows, headers);
+                const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
+                const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
+                const safeMemo = (memoQuery || 'memo').replace(/[^A-Za-z0-9_-]+/g, '_');
+                const fn = `top20_memo_${safeMemo}_${fromISO}_${toISOExc}.csv`;
+                downloadCsv(fn, csv);
+              }}
+            >
+              {t('xlmByMemo.topLargest.csv')}
+            </button>
+            <button
+              className="px-2 py-1 text-sm rounded border"
+              onClick={async () => {
+                const header = `${t('xlmByMemo.wrongMemos.columns.created_at')}\t${t('xlmByMemo.wrongMemos.columns.from')}\t${t('xlmByMemo.wrongMemos.columns.amount')}\t${t('xlmByMemo.wrongMemos.columns.memo')}\t${t('xlmByMemo.wrongMemos.columns.tx_hash')}`;
+                const lines = [header, ...sortedTopRows.map(r => `${r.created_at}\t${r.from}\t${r.amount}\t${r.memo || '(leer)'}\t${r.tx_hash}`)].join('\n');
+                try { await navigator.clipboard.writeText(lines); } catch { /* noop */ }
+              }}
+            >
+              {t('xlmByMemo.topLargest.clipboard')}
             </button>
           </div>
         </div>

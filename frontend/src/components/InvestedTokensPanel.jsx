@@ -130,7 +130,7 @@ export default function InvestedTokensPanel({ publicKey }) {
               try {
                 if (!data?.items) return;
                 if (view === 'memo') exportCsvMemo(); else exportCsvToken();
-              } catch {}
+              } catch { /* noop */ }
             }}
           >
             {t('option.export.csv')}

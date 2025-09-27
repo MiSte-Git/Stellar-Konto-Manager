@@ -37,7 +37,7 @@ export default function SettingsPanel() {
   const onFileSelected = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const res = await importFile(file);
+    await importFile(file);
     // rows will sync via effect
     e.target.value = '';
   };

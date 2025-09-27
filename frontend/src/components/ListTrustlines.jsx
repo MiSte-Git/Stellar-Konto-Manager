@@ -5,7 +5,6 @@ import {
   validateSecretKey, 
   loadTrustlines, 
   assertKeyPairMatch, 
-  deleteTrustlines, 
   deleteTrustlinesInChunks 
 } from '../utils/stellar/stellarUtils';
 import SecretKeyModal from './SecretKeyModal';
@@ -14,14 +13,13 @@ import ResultModal from './ResultModal'; // ⬅️ Oben importieren
 import ErrorModal from './ErrorModal';
 import { 
   isSelected, 
-  toggleAllTrustlines, 
   areAllSelected,
   toggleTrustlineSelection
 } from '../utils/stellar/trustlineUtils.js';
 import ProgressBar from "../components/ProgressBar.jsx";
 import { formatElapsedMmSs } from '../utils/datetime';
 import { useSettings } from '../utils/useSettings';
-import { refreshSinceCursor } from '../utils/stellar/syncUtils';
+// import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
   trustlines,
@@ -33,7 +31,6 @@ function ListTrustlines({
   filters,
   onFilterChange,
   selectedTrustlines,
-  onToggleTrustline,
   onToggleAll,
   setSelectedTrustlines,
   results,
@@ -60,7 +57,6 @@ function ListTrustlines({
   // Fehlerausgabe im Secret-Key-Modal
   const [modalError, setModalError] = useState('');
   // Ergebnisse für Info- oder Fehlermeldungen nach Löschaktionen
-  const hasMultiplePages = trustlines.length > itemsPerPage;
   const [showResultModal, setShowResultModal] = useState(false);
   const [deletedTrustlines, setDeletedTrustlines] = useState([]);
   const [isSimulation, setIsSimulation] = useState(false);
@@ -151,8 +147,6 @@ function ListTrustlines({
   }, [showOverviewModal, showSecretModal, showResultModal]);
 
 
-  const isItemSelected = (item) => selectedTrustlines.some(sel => sel.assetCode === item.assetCode && sel.assetIssuer === item.assetIssuer);
-  const allSelected = paginated.length > 0 && paginated.every(isItemSelected);
 
     /**
    * Simuliert das Löschen der ausgewählten Trustlines nach erfolgreicher Secret-Key-Validierung.
@@ -244,7 +238,7 @@ function ListTrustlines({
         return;
       }
 
-      const onProgress = ({ processed, total, phase }) => {
+      const onProgress = ({ processed, total /*, phase*/ }) => {
         setDeleteProgress({ current: processed, total });
       };
 
