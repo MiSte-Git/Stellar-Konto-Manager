@@ -1,6 +1,5 @@
 // STM_VER:queryUtils.js@2025-09-10
 // Lokale Abfragen auf IndexedDB (ms-schnell)
-const normMemo = (s) => String(s||'').replace(/[\u200B-\u200D\uFEFF]/g,'').trim().replace(/\s+/g,' ').toUpperCase();
 // Sichtbare Vergleichsnormierung: entferne unsichtbare Zeichen + trim, Case bleibt erhalten
 const cleanMemo = (s) => String(s ?? '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
 

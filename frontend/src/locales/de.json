@@ -410,6 +410,13 @@
       "scanning": "… scannt falsche/leere Memos",
       "summary": "Anzahl: {{count}} • Summe: {{sum}} XLM • Eindeutige Wallets: {{unique}}",
       "title": "Falsche/Leere Memos im Zeitraum"
+    },
+    "topLargest": {
+      "button": "Top 20 Eingänge (Memo)",
+      "title": "Top 20-Eingänge für Memo im Zeitraum",
+      "scanning": "… scannt Top-Eingänge",
+      "csv": "CSV herunterladen",
+      "clipboard": "In Zwischenablage kopieren"
     }
   }
 }

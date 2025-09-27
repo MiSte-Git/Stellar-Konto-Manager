@@ -28,7 +28,7 @@ function allowHttpFor(resolvedUrl) {
   return typeof resolvedUrl === 'string' && resolvedUrl.startsWith('http://');
 }
 const RESOLVED_URL = resolveHorizonUrl(HORIZON_URL);
-const horizonServer = new Horizon.Server(RESOLVED_URL, { allowHttp: allowHttpFor(RESOLVED_URL) });
+// Hinweis: Für konsistenten Umgang wird eine neue Instanz via getHorizonServer() erzeugt.
 
 /**
  * Gibt eine neue Horizon-Instanz zurück (z.B. für Testnet)
@@ -65,11 +65,12 @@ export async function loadTrustlines(publicKey) {
   }
 
   try {
-    const account = await horizonServer.loadAccount(publicKey);
+    const server = getHorizonServer();
+    const account = await server.loadAccount(publicKey);
     const balances = account.balances.filter(b => b.asset_type !== 'native');
 
     // Hole zusätzlich die Change-Trust-Operationen für createdAt
-    const operations = await horizonServer
+    const operations = await server
       .operations()
       .forAccount(publicKey)
       .order('desc')
@@ -133,7 +134,8 @@ export async function deleteTrustlines({ secretKey, trustlines }) {
     throw new Error("Keine gültigen Trustlines zum Löschen vorhanden.");
   }
 
-  const account = await horizonServer.loadAccount(publicKey);
+  const server = getHorizonServer();
+  const account = await server.loadAccount(publicKey);
   const txBuilder = new TransactionBuilder(account, {
     fee: Number(await getBaseFee()),
     networkPassphrase: Networks.PUBLIC,
@@ -152,7 +154,8 @@ export async function deleteTrustlines({ secretKey, trustlines }) {
   transaction.sign(sourceKeypair);
 
   try {
-    const result = await horizonServer.submitTransaction(transaction);
+    const server = getHorizonServer();
+    const result = await server.submitTransaction(transaction);
 
     return trustlines.map(tl => ({
       assetCode: tl.assetCode,
@@ -277,7 +280,8 @@ export function validateSecretKey(secret) {
  * @returns {Promise<string>} - Basis-Fee als String (z.B. "100")
  */
 async function getBaseFee() {
-  const feeStats = await horizonServer.feeStats();
+  const server = getHorizonServer();
+  const feeStats = await server.feeStats();
   return Number(feeStats?.fee_charged?.mode || 100);
 }
 
@@ -312,7 +316,6 @@ export async function handleDeleteTrustlines({
   trustlinesToDelete,
   sourcePublicKey,
   t,
-  horizonServer,
 }) {
   const keypair = Keypair.fromSecret(secretKey);
   const pubKeyFromSecret = keypair.publicKey();
@@ -446,7 +449,7 @@ export async function sumIncomingXLMByMemo({
   if (typeof memoQuery !== 'string' || memoQuery.length === 0) {
     throw new Error('error.xlmByMemo.memoInvalid');
   }
-  const emit = (info) => { try { onProgress && onProgress(info); } catch {} };
+  const emit = (info) => { try { onProgress && onProgress(info); } catch { /* noop */ } };
   if (signal?.aborted) throw new Error('error.xlmByMemo.aborted');
 
   // Datumsfenster prüfen
@@ -543,7 +546,6 @@ export async function sumIncomingXLMByMemo({
 
   // Loop über Seiten
   let total = 0;
-  /* eslint-disable no-constant-condition */
   while (true) {
     if (signal?.aborted) throw new Error('error.xlmByMemo.aborted');
 

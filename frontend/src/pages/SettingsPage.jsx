@@ -8,8 +8,9 @@ import SettingsPanel from '../components/SettingsPanel';
  * @param {string} publicKey - Der aktuell geladene Public Key
  * @param {function} onBack - Callback zum Zurückkehren ins Hauptmenü
  */
-export default function SettingsPage({ publicKey, onBack }) {
+export default function SettingsPage({ publicKey, onBack: _onBack }) {
   const { t } = useTranslation();
+  void _onBack;
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-10">
