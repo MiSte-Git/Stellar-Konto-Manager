@@ -18,8 +18,14 @@ export default function InvestedTokensPage({ publicKey, onBack: _onBack }) {
         <h2 className="text-xl font-semibold">{t('token.purchases')}</h2>
       </div>
 
-      {/* Inhalt: Panel mit Gruppierungs-/Lade-Logik */}
-      <InvestedTokensPanel publicKey={publicKey} />
+      {/* Inhalt: Panel / Hinweis */}
+      {publicKey ? (
+        <InvestedTokensPanel publicKey={publicKey} />
+      ) : (
+        <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
+          {t('investedTokens.hintEnterPublicKey')}
+        </div>
+      )}
     </div>
   );
 }
