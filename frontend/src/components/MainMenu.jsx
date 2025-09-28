@@ -8,7 +8,9 @@ function MainMenu({ onSelect }) {
     { label: t('trustline.all'), value: 'listAll' },
     { label: t('trustline.compare'), value: 'compare' },
     { label: t('token.purchases'), value: 'payments' },
+    { label: t('menu.balance'), value: 'balance' },
     { label: t('menu.xlmByMemo'), value: 'xlmByMemo' },
+    { label: t('multisigCreate.menu'), value: 'multisigCreate', title: t('multisigCreate.menuHint') },
     { label: t('settings.label'), value: 'settings' }
   ];
 
@@ -19,6 +21,7 @@ function MainMenu({ onSelect }) {
           key={btn.value}
           onClick={() => onSelect(btn.value)}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          title={btn.title || ''}
         >
           {btn.label}
         </button>

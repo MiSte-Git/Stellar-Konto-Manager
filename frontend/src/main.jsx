@@ -30,6 +30,8 @@ import XlmByMemoPanel from './components/XlmByMemoPanel';
 import XlmByMemoPage from './pages/XlmByMemoPage';
 import InvestedTokensPage from './pages/InvestedTokensPage';
 import SettingsPage from './pages/SettingsPage.jsx';
+import MultisigCreatePage from './pages/MultisigCreatePage.jsx';
+import BalancePage from './pages/BalancePage.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -132,6 +134,16 @@ function Main() {
     }
   }
 
+  function unloadActiveWallet() {
+    setSourcePublicKey('');
+    setTrustlines([]);
+    setSelectedTrustlines([]);
+    setResults([]);
+    setDestinationPublicKey('');
+    setIssuerAddress('');
+    setError('');
+  }
+
   function handleRecentDelete() {
     const key = (walletHeaderInput || '').trim();
     if (!key) return;
@@ -140,6 +152,10 @@ function Main() {
       persistRecent(next);
       return next;
     });
+    // Falls der geladene Key dem gelöschten entspricht: entladen
+    if (sourcePublicKey && sourcePublicKey === key) {
+      unloadActiveWallet();
+    }
   }
 
   // Aktuelle Wallet automatisch in "Zuletzt verwendet" aufnehmen
@@ -216,7 +232,7 @@ function Main() {
               {walletHeaderInput && (
                 <button
                   type="button"
-                  onClick={() => setWalletHeaderInput('')}
+                  onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); }}
                   title={t('common.clear')}
                   aria-label={t('common.clear')}
                   className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center"
@@ -285,56 +301,70 @@ function Main() {
 
       {/* Menüansicht anzeigen (z.B. ListAll) */}
       {menuSelection === 'listAll' && (
-        <>
-        <p className="text-sm text-gray-400">{error}</p>
-          <ListTrustlines
-            trustlines={trustlines}
-            itemsPerPage={ITEMS_PER_PAGE}
-            currentPage={currentPage}
-            sortColumn={sortColumn}
-            sortDirection={sortDirection}
-            onSort={handleSortClick}
-            filters={filters}
-            onFilterChange={handleFilterUpdate}
-            selectedTrustlines={selectedTrustlines}
-            setSelectedTrustlines={setSelectedTrustlines} 
-            onToggleTrustline={handleToggleTrustline}
-            onToggleAll={handleToggleAll}
-            results={results}
-            setResults={setResults}
-            setMenuSelection={setMenuSelection}
-            menuSelection={menuSelection}
-            setSecretKey={setSourceSecret}
-            publicKey={sourcePublicKey}
-            setTrustlines={setTrustlines}
-            setIsProcessing={setIsProcessing}
-            isProcessing={isProcessing} 
-            deleteProgress={deleteProgress}
-            setDeleteProgress={setDeleteProgress}
-            setInfoMessage={setInfoMessage}
-         />
-        </>
+        sourcePublicKey ? (
+          <>
+            <p className="text-sm text-gray-400">{error}</p>
+            <ListTrustlines
+              trustlines={trustlines}
+              itemsPerPage={ITEMS_PER_PAGE}
+              currentPage={currentPage}
+              sortColumn={sortColumn}
+              sortDirection={sortDirection}
+              onSort={handleSortClick}
+              filters={filters}
+              onFilterChange={handleFilterUpdate}
+              selectedTrustlines={selectedTrustlines}
+              setSelectedTrustlines={setSelectedTrustlines}
+              onToggleTrustline={handleToggleTrustline}
+              onToggleAll={handleToggleAll}
+              results={results}
+              setResults={setResults}
+              setMenuSelection={setMenuSelection}
+              menuSelection={menuSelection}
+              setSecretKey={setSourceSecret}
+              publicKey={sourcePublicKey}
+              setTrustlines={setTrustlines}
+              setIsProcessing={setIsProcessing}
+              isProcessing={isProcessing}
+              deleteProgress={deleteProgress}
+              setDeleteProgress={setDeleteProgress}
+              setInfoMessage={setInfoMessage}
+            />
+          </>
+        ) : (
+          <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
+            <div className="text-center mb-2"><h2 className="text-xl font-semibold">{t('trustline.all')}</h2></div>
+            {t('investedTokens.hintEnterPublicKey')}
+          </div>
+        )
       )}
       {menuSelection === 'compare' && (
-        <CompareTrustlines
-          sourcePublicKey={sourcePublicKey}
-          sourceSecret={sourceSecret}
-          destinationPublicKey={destinationPublicKey}
-          setDestinationPublicKey={setDestinationPublicKey}
-          setResults={setResults}
-          setError={setError}
-          setShowSecretKey={setShowSecretKey}
-          setSourceSecret={setSourceSecret}
-          setMenuSelection={setMenuSelection}
-          menuSelection={menuSelection}
-          setTrustlines={setTrustlines}
-          setConfirmAction={setConfirmAction}
-          setShowConfirm={setShowConfirm}
-          loadTrustlines={loadTrustlines}
-          backendUrl={BACKEND_URL}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-        />
+        sourcePublicKey ? (
+          <CompareTrustlines
+            sourcePublicKey={sourcePublicKey}
+            sourceSecret={sourceSecret}
+            destinationPublicKey={destinationPublicKey}
+            setDestinationPublicKey={setDestinationPublicKey}
+            setResults={setResults}
+            setError={setError}
+            setShowSecretKey={setShowSecretKey}
+            setSourceSecret={setSourceSecret}
+            setMenuSelection={setMenuSelection}
+            menuSelection={menuSelection}
+            setTrustlines={setTrustlines}
+            setConfirmAction={setConfirmAction}
+            setShowConfirm={setShowConfirm}
+            loadTrustlines={loadTrustlines}
+            backendUrl={BACKEND_URL}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+          />
+        ) : (
+          <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
+            <div className="text-center mb-2"><h2 className="text-xl font-semibold">{t('trustline.compare')}</h2></div>
+            {t('investedTokens.hintEnterPublicKey')}
+          </div>
+        )
       )}
       {menuSelection === 'deleteAll' && (
         <DeleteAllTrustlines
@@ -372,13 +402,26 @@ function Main() {
         />
       )}
       {menuSelection === 'xlmByMemo' && (
-        <XlmByMemoPage
-          publicKey={sourcePublicKey}
-          onBack={() => setMenuSelection(null)}  // oder null, wie du magst
-        />
+        sourcePublicKey ? (
+          <XlmByMemoPage
+            publicKey={sourcePublicKey}
+            onBack={() => setMenuSelection(null)}  // oder null, wie du magst
+          />
+        ) : (
+          <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
+            <div className="text-center mb-2"><h2 className="text-xl font-semibold">{t('xlmByMemo.page.title')}</h2></div>
+            {t('xlmByMemo.page.noPublicKey')}
+          </div>
+        )
       )}
       {menuSelection === 'payments' && (
         <InvestedTokensPage
+          publicKey={sourcePublicKey}
+          onBack={() => setMenuSelection(null)}
+        />
+      )}
+      {menuSelection === 'balance' && (
+        <BalancePage
           publicKey={sourcePublicKey}
           onBack={() => setMenuSelection(null)}
         />
@@ -389,9 +432,12 @@ function Main() {
           onBack={() => setMenuSelection(null)}
         />
       )}
+      {menuSelection === 'multisigCreate' && (
+        <MultisigCreatePage />
+      )}
 
       {menuSelection &&
-      !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings'].includes(menuSelection) && (
+      !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','balance'].includes(menuSelection) && (
         <div className="p-3 text-sm text-red-600">
           {t('menu.unknown', { value: String(menuSelection) })}
         </div>
