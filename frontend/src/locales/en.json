@@ -169,7 +169,81 @@
   },
   "menu": {
     "unknown": "Unknown menu selection",
-    "xlmByMemo": "Filter XLM amount by memo/token"
+    "xlmByMemo": "Filter XLM amount by memo/token",
+    "balance": "View balance"
+  },
+  "balance": {
+    "title": "View balance",
+    "noPublicKey": "Please enter a public key first.",
+    "current": "Current balances",
+    "empty": "No balances found.",
+    "details": "Details in block explorers",
+    "paymentsHint": "You can filter incoming/outgoing payments in the explorer.",
+    "buttons": {
+      "payments": "Recent operations",
+      "details": "More details",
+      "explorer": "Explorer"
+    },
+    "explorer": {
+      "expert": "stellar.expert",
+      "stellarchain": "Stellarchain.io"
+    },
+    "payments": {
+      "title": "Recent operations",
+      "incoming": "Incoming",
+      "outgoing": "Outgoing",
+      "empty": "No operations found.",
+      "limit": "Count",
+      "all": "All",
+      "columns": {
+        "date": "Date",
+        "direction": "Direction",
+        "type": "Type",
+        "asset": "Asset",
+        "amount": "Amount",
+        "counterparty": "Counterparty",
+        "memo": "Memo",
+        "tx": "Tx"
+      },
+      "from": "From",
+      "to": "Until",
+      "filter": {
+        "memo": "Memo filter",
+        "memoPlaceholder": "Search memo..."
+      }
+    }
+  },
+  "multisigCreate": {
+    "title": "Create account (optional multisig)",
+    "menu": "Create account",
+    "menuHint": "Create accounts for family members, friends, employees...",
+    "hint": "Create a new wallet. Optionally activate now (1 XLM or recommended) and add additional signers (multisig).",
+    "generateKeys": "Generate keys",
+    "instructions": {
+      "public": "Public Key: Your account address, like an IBAN. Safe to share.",
+      "secret": "Secret Key: Your password for the account. Never share, store securely (e.g., on paper)."
+    },
+    "signersTitle": "Multisig (additional signers)",
+    "signersInfo": "Add G... addresses as co-signers. Each signer increases the minimum reserve.",
+    "addSigner": "Add signer",
+    "threshold": "Required signatures (low/med/high)",
+    "activateNow": "Activate account now",
+    "activateHint": "Activation is required for the account to exist. On Testnet via Friendbot, on Mainnet via \"Create Account\" from an existing wallet.",
+    "mainnetActivateNote": "Note: Multisig requires additional reserves. 1 XLM often isn't enough.",
+    "startingBalance": "Starting balance (XLM)",
+    "reserve": {
+      "base": "Base reserve per entry: {{val}} XLM",
+      "required": "Required minimum reserve (new): {{val}} XLM",
+      "recommended": "Recommended starting balance: {{val}} XLM (incl. buffer)"
+    },
+    "createButton": "Create / set multisig",
+    "activateOnly": "Activate only",
+    "generateFirst": "Please generate keys first.",
+    "activated": "Account activated. TX: {{hash}}",
+    "activatedTestnet": "Account activated on Testnet.",
+    "alreadyActive": "Account is already active.",
+    "createdAndConfigured": "Account created/configured. TX: {{hash}}",
+    "createdNoSigners": "Account created. No additional signers specified."
   },
   "navigation": {
     "backToMainMenu": "Back to menu",

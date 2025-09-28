@@ -147,7 +147,40 @@
   },
   "menu": {
     "unknown": "Unbekannte Menüauswahl",
-    "xlmByMemo": "XLM-Summe nach Memo"
+    "xlmByMemo": "XLM-Summe nach Memo",
+    "balance": "Kontostand anzeigen"
+  },
+  "multisigCreate": {
+    "title": "Konto erstellen (optional Multisig)",
+    "menu": "Konto erstellen",
+    "menuHint": "Zum erstellen von Konten für Familienmitglieder, Freunde, Mitarbeiter...",
+    "hint": "Erstellt ein neues Wallet. Optional sofort aktivieren (1 XLM oder empfohlen) und zusätzliche Signer (Multisig) hinzufügen.",
+    "generateKeys": "Schlüssel generieren",
+    "instructions": {
+      "public": "Public Key: Deine Kontoadresse, wie eine IBAN. Sicher zu teilen.",
+      "secret": "Secret Key: Dein Passwort für das Konto. Niemals teilen, sicher speichern (z.B. auf Papier)."
+    },
+    "signersTitle": "Multisig (zusätzliche Signer)",
+    "signersInfo": "Füge G...-Adressen als Mitzeichner hinzu. Jeder Signer erhöht die Mindestreserve.",
+    "addSigner": "Signer hinzufügen",
+    "threshold": "Erforderliche Signaturen (low/med/high)",
+    "activateNow": "Konto sofort aktivieren",
+    "activateHint": "Aktivierung ist notwendig, damit das Konto existiert. Im Testnet per Friendbot, im Mainnet per \"Create Account\" von einem bestehenden Wallet.",
+    "mainnetActivateNote": "Hinweis: Für Multisig sind zusätzliche Reserven nötig. 1 XLM reicht oft nicht.",
+    "startingBalance": "Startguthaben (XLM)",
+    "reserve": {
+      "base": "Basisreserve pro Eintrag: {{val}} XLM",
+      "required": "Benötigte Mindestreserve (neu): {{val}} XLM",
+      "recommended": "Empfohlenes Startguthaben: {{val}} XLM (inkl. Puffer)"
+    },
+    "createButton": "Erstellen / Multisig setzen",
+    "activateOnly": "Nur aktivieren",
+    "generateFirst": "Bitte zuerst Schlüssel generieren.",
+    "activated": "Konto aktiviert. TX: {{hash}}",
+    "activatedTestnet": "Konto im Testnet aktiviert.",
+    "alreadyActive": "Konto ist bereits aktiv.",
+    "createdAndConfigured": "Konto erstellt/konfiguriert. TX: {{hash}}",
+    "createdNoSigners": "Konto erstellt. Es wurden keine zusätzlichen Signer angegeben."
   },
   "navigation": {
     "back": "Zurück",
@@ -332,6 +365,47 @@
       "success": "Erfolg: {{count}} Trustline(s) gelöscht."
     },
     "skippedDueToBalance": "{{count}} Trustline(s) übersprungen (noch Guthaben vorhanden)."
+  },
+  "balance": {
+    "title": "Kontostand anzeigen",
+    "noPublicKey": "Bitte gib zuerst einen Public Key ein.",
+    "current": "Aktuelle Guthaben",
+    "empty": "Keine Guthaben gefunden.",
+    "details": "Details in Block-Explorern",
+    "paymentsHint": "Eingänge/Ausgänge kannst du im Explorer filtern.",
+    "buttons": {
+      "payments": "Letzte Vorgänge",
+      "details": "Mehr Details",
+      "explorer": "Explorer"
+    },
+    "explorer": {
+      "expert": "stellar.expert",
+      "stellarchain": "Stellarchain.io"
+    },
+    "payments": {
+      "title": "Letzte Vorgänge",
+      "incoming": "Eingang",
+      "outgoing": "Ausgang",
+      "empty": "Keine Vorgänge gefunden.",
+      "limit": "Anzahl",
+      "all": "Alle",
+      "columns": {
+        "date": "Datum",
+        "direction": "Richtung",
+        "type": "Typ",
+        "asset": "Asset",
+        "amount": "Betrag",
+        "counterparty": "Gegenkonto",
+        "memo": "Memo",
+        "tx": "Tx"
+      },
+      "from": "Von",
+      "to": "Bis",
+      "filter": {
+        "memo": "Memo-Filter",
+        "memoPlaceholder": "Memo suchen..."
+      }
+    }
   },
   "xlmByMemo": {
     "action": {
