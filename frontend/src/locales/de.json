@@ -150,6 +150,29 @@
     "xlmByMemo": "XLM-Summe nach Memo",
     "balance": "Kontostand anzeigen"
   },
+  "multisigEdit": {
+    "title": "Multisig Konto bearbeiten",
+    "menu": "Konto mit Multisig bearbeiten",
+    "menuHint": "Signer/Schwellen eines bestehenden Kontos anpassen",
+    "hint": "Lade ein bestehendes Konto, passe Signer, Gewichte, Master-Gewicht und Schwellen an und speichere die Änderungen.",
+    "load": "Laden",
+    "reload": "Neu laden",
+    "save": "Änderungen speichern",
+    "loaded": "Geladen. Zusätzliche Signer: {{count}}",
+    "currentConfig": "Aktuelle / geplante Konfiguration",
+    "signers": "Unterzeichner",
+    "noteMaxSigners": "Hinweis: Stellar erlaubt max. 20 zusätzliche Unterzeichner pro Konto.",
+    "validation": {
+      "signerKeyInvalid": "Ungültige Unterzeichner-Adresse. Erwartet wird eine G…-Adresse (ed25519).",
+      "signerKeyHint": "Hinweis: Unterzeichner müssen mit \"G\" beginnen (ed25519-öffentlicher Schlüssel)."
+    },
+    "confirm": {
+      "removeSigner": "Unterzeichner wirklich entfernen?"
+    },
+    "error": {
+      "thresholdTooHigh": "Schwellen dürfen die Summe der Gewichte nicht überschreiten."
+    }
+  },
   "multisigCreate": {
     "title": "Konto erstellen (optional Multisig)",
     "menu": "Konto erstellen",
@@ -160,18 +183,53 @@
       "public": "Public Key: Deine Kontoadresse, wie eine IBAN. Sicher zu teilen.",
       "secret": "Secret Key: Dein Passwort für das Konto. Niemals teilen, sicher speichern (z.B. auf Papier)."
     },
-    "signersTitle": "Multisig (zusätzliche Signer)",
-    "signersInfo": "Füge G...-Adressen als Mitzeichner hinzu. Jeder Signer erhöht die Mindestreserve.",
-    "addSigner": "Signer hinzufügen",
-    "threshold": "Erforderliche Signaturen (low/med/high)",
+    "signersTitle": "Multisig (zusätzliche Unterzeichner)",
+    "signersInfo": "Füge G...-Adressen als Unterzeichner hinzu. Jeder Unterzeichner erhöht die Mindestreserve.",
+    "threshold": "Erforderliche Signaturen (niedrig/mittel/hoch)",
+    "thresholdInfo": "Empfehlung: {{req}} von {{total}} Signaturen (inkl. Master)",
+    "thresholdHelp": "Schwelle: Anzahl der benötigten Unterschriften (Master + Unterzeichner), damit eine Transaktion gültig ist.",
+    "thresholdLevelsHint": "Typischerweise gilt: niedrig = einfache Änderungen (z. B. Memo, Preis), mittel = Zahlungen/Handel, hoch = sicherheitskritische Änderungen (z. B. Signer/Schwellen)",
+    "thresholdStatic": "Erforderlich: {{val}} von {{total}} Unterschriften (niedrig/mittel/hoch)",
+    "thresholdCurrent": "Aktuell gewählt: niedrig={{low}}, mittel={{med}}, hoch={{high}} von {{total}} Signaturen",
+    "thresholdSum": "Summe Gewichte: {{sum}}",
+    "thresholdTooHigh": "Hinweis: Eine Schwelle darf die Summe der Gewichte nicht überschreiten. Bitte Werte anpassen.",
     "activateNow": "Konto sofort aktivieren",
     "activateHint": "Aktivierung ist notwendig, damit das Konto existiert. Im Testnet per Friendbot, im Mainnet per \"Create Account\" von einem bestehenden Wallet.",
     "mainnetActivateNote": "Hinweis: Für Multisig sind zusätzliche Reserven nötig. 1 XLM reicht oft nicht.",
     "startingBalance": "Startguthaben (XLM)",
+    "balanceWarning": "Startguthaben ist wahrscheinlich zu niedrig, um die {{count}} zusätzlichen Signer hinzuzufügen (Mindestreserve: {{req}} XLM)",
     "reserve": {
       "base": "Basisreserve pro Eintrag: {{val}} XLM",
       "required": "Benötigte Mindestreserve (neu): {{val}} XLM",
       "recommended": "Empfohlenes Startguthaben: {{val}} XLM (inkl. Puffer)"
+    },
+    "confirmLowBalance": "Startguthaben ({{bal}} XLM) liegt unter der Mindestreserve ({{req}} XLM) für {{count}} zusätzliche Unterzeichner. Trotzdem fortfahren?",
+    "signersCount": "Anzahl zusätzlicher Unterzeichner",
+    "signersCountHint": "Die Mindestanzahl an Signaturen stellst du unten bei \"Erforderliche Signaturen\" (niedrig/mittel/hoch) ein.",
+    "signersCountLimit": "Hinweis: Netzwerkgrenze (Stellar): max. 20 zusätzliche Unterzeichner.",
+    "info": {
+      "more": "Mehr Info",
+      "text": "So funktioniert es\nDein Geheimschlüssel bleibt immer in deinem Browser. Er wird ausschließlich genutzt, um deine Transaktion lokal zu unterschreiben. An unseren Server oder nach außen wird nur die fertige Signatur gesendet, niemals dein Schlüssel. Wer möchte, kann das mit den Entwickler-Tools im Browser nachprüfen: Dort ist zu sehen, dass kein Schlüssel übertragen wird.",
+      "multisig": "Multisig bedeutet: Für dieses Konto sind mehrere Unterschriften erforderlich. Du wählst zusätzliche Signer und die Schwelle (z. B. 2 von 3). Eine Transaktion ist nur gültig, wenn mindestens so viele Unterschriften vorliegen wie die Schwelle (Master + Mitzeichner)."
+    },
+    "enableMultisig": "Multisig für dieses Konto erstellen",
+    "tooltips": {
+      "masterWeight": "Gewicht des Kontoinhabers (Master) (0-255): Der Hauptschlüssel des Kontos hat ein Stimmrecht. Je höher sein Gewicht, desto mehr Stimmen zählt seine Unterschrift. Diese Stimmen werden zusammen mit den Stimmen anderer Unterzeichner gezählt, um zu prüfen, ob die erforderliche Mehrheit erreicht ist.",
+      "signerWeight": "Gewicht der Unterzeichner (0–255): Auch zusätzliche Unterzeichner haben Stimmrechte. Das Gewicht legt fest, wie viele Stimmen ihre Unterschrift beiträgt. Wenn eine Transaktion gesendet wird, werden alle abgegebenen Stimmen addiert. Ist die festgelegte Mindestanzahl an Stimmen (Threshold) erreicht, gilt die Transaktion als autorisiert.",
+      "low": "Niedrig: einfache Änderungen (z. B. Memo, Preis).",
+      "med": "Mittel: Zahlungen und Handelsaktionen.",
+      "high": "Hoch: sicherheitskritische Änderungen (z. B. Unterzeichner/Schwellen).",
+      "signerWeightHint": "Hinweis: Master- und Unterzeichner-Gewichte bilden die Summe; Schwellen (niedrig/mittel/hoch) dürfen diese Summe nicht überschreiten."
+    },
+    "bestPractices": {
+      "title": "Bewährte Einstellungen",
+      "text": "Empfohlen: 2 von 3 Signaturen. Das bedeutet: Von insgesamt 3 Signaturberechtigten (1 Master + 2 Unterzeichner) sind mindestens 2 Unterschriften erforderlich. Umsetzung: Setze Gewichte für Master/Signer jeweils auf 1 und stelle die Schwellen auf niedrig=1, mittel=2, hoch=2. So sind einfache Änderungen mit 1 Unterschrift möglich; Zahlungen/Handel erfordern 2; sicherheitskritische Änderungen erfordern 2."
+    },
+    "hints": {
+      "byteRange": "(0–255)"
+    },
+    "units": {
+      "signatures": "Unterschrift(en)"
     },
     "createButton": "Erstellen / Multisig setzen",
     "activateOnly": "Nur aktivieren",
@@ -189,6 +247,7 @@
     "backToTop": "Zurück nach Oben"
   },
   "option": {
+    "add": "Hinzufügen",
     "cancel": "Abbrechen",
     "close": "Schließen",
     "confirm": {

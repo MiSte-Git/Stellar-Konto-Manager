@@ -172,6 +172,22 @@
     "xlmByMemo": "Filter XLM amount by memo/token",
     "balance": "View balance"
   },
+  "multisigEdit": {
+    "title": "Edit multisig",
+    "menu": "Edit multisig",
+    "menuHint": "Adjust signers/thresholds of an existing account",
+    "hint": "Load an existing account, adjust signers, weights, master weight and thresholds, then save the changes.",
+    "load": "Load",
+    "reload": "Reload",
+    "save": "Save changes",
+    "loaded": "Loaded. Additional signers: {{count}}",
+    "currentConfig": "Current / planned configuration",
+    "signers": "Signers",
+    "noteMaxSigners": "Note: Stellar allows up to 20 additional signers per account.",
+    "error": {
+      "thresholdTooHigh": "Thresholds must not exceed the sum of weights."
+    }
+  },
   "balance": {
     "title": "View balance",
     "noPublicKey": "Please enter a public key first.",
@@ -225,16 +241,51 @@
     },
     "signersTitle": "Multisig (additional signers)",
     "signersInfo": "Add G... addresses as co-signers. Each signer increases the minimum reserve.",
-    "addSigner": "Add signer",
     "threshold": "Required signatures (low/med/high)",
+    "thresholdInfo": "Recommendation: {{req}} of {{total}} signatures (incl. master)",
+    "thresholdHelp": "Threshold: number of required signatures (master + co-signers) for a transaction to be valid.",
+    "thresholdLevelsHint": "Typical: low = simple changes (e.g., memo/price), medium = payments/trades, high = security-critical (e.g., signers/thresholds)",
+    "thresholdStatic": "Required: {{val}} of {{total}} signatures (low/medium/high)",
+    "thresholdCurrent": "Current selection: low={{low}}, medium={{med}}, high={{high}} of {{total}} signatures",
+    "thresholdSum": "Sum weights: {{sum}}",
+    "thresholdTooHigh": "Note: A threshold must not exceed the sum of weights. Please adjust the values.",
     "activateNow": "Activate account now",
     "activateHint": "Activation is required for the account to exist. On Testnet via Friendbot, on Mainnet via \"Create Account\" from an existing wallet.",
     "mainnetActivateNote": "Note: Multisig requires additional reserves. 1 XLM often isn't enough.",
     "startingBalance": "Starting balance (XLM)",
+    "balanceWarning": "Starting balance is likely too low to add the {{count}} additional signers (minimum reserve: {{req}} XLM)",
     "reserve": {
       "base": "Base reserve per entry: {{val}} XLM",
       "required": "Required minimum reserve (new): {{val}} XLM",
       "recommended": "Recommended starting balance: {{val}} XLM (incl. buffer)"
+    },
+    "confirmLowBalance": "Starting balance ({{bal}} XLM) is below minimum reserve ({{req}} XLM) for {{count}} additional signers. Continue anyway?",
+    "signersCount": "Number of additional signers",
+    "signersCountHint": "You set the minimum number of signatures below in \"Required signatures\" (low/medium/high).",
+    "signersCountLimit": "Note: Quick select up to 10. Manual input is possible. Network limit (Stellar): max 20 additional signers.",
+    "info": {
+      "more": "More info",
+      "text": "How it works\nYour secret key always remains in your browser. It is only used to sign your transaction locally. Only the final signature is sent to our server or outside, never your key. If you want, you can verify this with the browser developer tools: you can see that no key is transmitted.",
+      "multisig": "Multisig means that more than one signature is required for this account. You choose additional signers and the threshold (e.g. 2 of 3). A transaction is valid only if at least the threshold number of signatures (master + co-signers) is present."
+    },
+    "enableMultisig": "Create multisig for this account",
+    "tooltips": {
+      "masterWeight": "Weight of the account owner (master). Contributes to the total weight.",
+      "signerWeight": "Weight of the respective co-signer (0–255). Contributes to the total weight.",
+      "low": "Low: simple changes (e.g., memo, price).",
+      "med": "Medium: payments and trades.",
+      "high": "High: security-critical changes (e.g., signers/thresholds).",
+      "signerWeightHint": "Note: Master and signer weights form the total; thresholds (low/medium/high) must not exceed this total."
+    },
+    "bestPractices": {
+      "title": "Best practices",
+      "text": "Recommended: 2 out of 3 signatures. This means: Out of a total of 3 signers (1 master + 2 co‑signers), at least 2 signatures are required. How to set it up: give master and each signer weight=1 and set thresholds to low=1, medium=2, high=2. This allows simple changes with 1 signature; payments/trades require 2; security‑critical changes require 2."
+    },
+    "hints": {
+      "byteRange": "(0–255)"
+    },
+    "units": {
+      "signatures": "signatures"
     },
     "createButton": "Create / set multisig",
     "activateOnly": "Activate only",

@@ -11,6 +11,7 @@ function MainMenu({ onSelect }) {
     { label: t('menu.balance'), value: 'balance' },
     { label: t('menu.xlmByMemo'), value: 'xlmByMemo' },
     { label: t('multisigCreate.menu'), value: 'multisigCreate', title: t('multisigCreate.menuHint') },
+    { label: t('multisigEdit.menu'), value: 'multisigEdit', title: t('multisigEdit.menuHint') },
     { label: t('settings.label'), value: 'settings' }
   ];
 

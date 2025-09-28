@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
@@ -46,7 +46,9 @@ export default function MultisigCreatePage() {
   const [network, setNetwork] = useState('TESTNET');
   const [generated, setGenerated] = useState(null); // { pub, sec }
   const [signers, setSigners] = useState(['']);
-  const [threshold, setThreshold] = useState(2);
+  const [signerCount, setSignerCount] = useState(1);
+
+  const [enableMultisig, setEnableMultisig] = useState(false);
   const [activateNow, setActivateNow] = useState(false);
   const [busy, setBusy] = useState(false);
   const [resultMsg, setResultMsg] = useState('');
@@ -55,20 +57,71 @@ export default function MultisigCreatePage() {
   const [pendingAction, setPendingAction] = useState(null); // 'activate' | 'createAll'
   const [baseReserve, setBaseReserve] = useState(null); // XLM per entry
   const [startingBalance, setStartingBalance] = useState('1');
+  const [showInfo2, setShowInfo2] = useState(false);
 
   const server = useMemo(() => getHorizonServer(network === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN), [network]);
   const passphrase = network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
 
-  function handleAddSignerField() {
-    setSigners((prev) => [...prev, '']);
+  // Weights & thresholds
+  const [masterWeight, setMasterWeight] = useState(1);
+  const [signerWeights, setSignerWeights] = useState([1]); // aligned with signers
+  const [lowT, setLowT] = useState(1);
+  const [medT, setMedT] = useState(2);
+  const [highT, setHighT] = useState(2);
+
+  // Helper: clamp to byte range 0..255 and coerce to integer
+  function clampByte(n) {
+    const v = Number(n);
+    if (!Number.isFinite(v)) return 0;
+    return Math.max(0, Math.min(255, Math.trunc(v)));
   }
+  function handleMasterWeightChange(val) {
+    setMasterWeight(clampByte(val));
+  }
+  function handleThresholdChange(kind, val) {
+    const v = clampByte(val);
+    if (kind === 'low') setLowT(v);
+    else if (kind === 'med') setMedT(v);
+    else if (kind === 'high') setHighT(v);
+  }
+
+  const sumWeights = useMemo(() => {
+    const mw = Math.max(0, Number(masterWeight) || 0);
+    const sw = (signerWeights || []).reduce((a, b) => a + Math.max(0, Number(b) || 0), 0);
+    return mw + sw;
+  }, [masterWeight, signerWeights]);
+
+  const thLowErr = lowT > sumWeights;
+  const thMedErr = medT > sumWeights;
+  const thHighErr = highT > sumWeights;
+
+
+  // Sync signers length with selected count (and weights too)
+  useEffect(() => {
+    setSigners(prev => {
+      const n = Math.max(0, Number(signerCount) || 0);
+      if (prev.length === n) return prev;
+      if (prev.length < n) return [...prev, ...Array.from({ length: n - prev.length }, () => '')];
+      return prev.slice(0, n);
+    });
+    setSignerWeights(prev => {
+      const n = Math.max(0, Number(signerCount) || 0);
+      if (prev.length === n) return prev;
+      if (prev.length < n) return [...prev, ...Array.from({ length: n - prev.length }, () => 1)];
+      return prev.slice(0, n);
+    });
+  }, [signerCount]);
+
   function handleSignerChange(i, val) {
     const arr = [...signers];
     arr[i] = val.trim();
     setSigners(arr);
   }
-  function handleRemoveSigner(i) {
-    setSigners((prev) => prev.filter((_, idx) => idx !== i));
+  function handleSignerWeightChange(i, val) {
+    const w = Math.max(0, Math.min(255, Number(val) || 0));
+    const arr = [...signerWeights];
+    arr[i] = w;
+    setSignerWeights(arr);
   }
 
   function handleGenerate() {
@@ -153,22 +206,22 @@ export default function MultisigCreatePage() {
       networkPassphrase: passphrase
     });
 
-    // 1) Zusätzliche Signer hinzufügen (Gewicht = 1)
-    for (const s of validSigners) {
-      txb.addOperation(
-        Operation.setOptions({ signer: { ed25519PublicKey: s, weight: 1 } })
-      );
-    }
-    // 2) Schwellenwerte setzen (alle gleich, z.B. 2)
-    const req = Math.max(1, Math.min(validSigners.length + 1, Number(threshold) || 2));
+    // 1) Master-Weight & Schwellen setzen
     txb.addOperation(
       Operation.setOptions({
-        masterWeight: 1, // Master weiterhin 1
-        lowThreshold: req,
-        medThreshold: req,
-        highThreshold: req
+        masterWeight: Math.max(0, Math.min(255, Number(masterWeight) || 0)),
+        lowThreshold: Math.max(0, Math.min(255, Number(lowT) || 0)),
+        medThreshold: Math.max(0, Math.min(255, Number(medT) || 0)),
+        highThreshold: Math.max(0, Math.min(255, Number(highT) || 0)),
       })
     );
+    // 2) Zusätzliche Unterzeichner hinzufügen (jeweils mit Gewicht)
+    validSigners.forEach((s, idx) => {
+      const w = Math.max(0, Math.min(255, Number(signerWeights[idx]) || 0));
+      txb.addOperation(
+        Operation.setOptions({ signer: { ed25519PublicKey: s, weight: w } })
+      );
+    });
 
     const tx = txb.setTimeout(60).build();
     tx.sign(newKp);
@@ -209,6 +262,14 @@ export default function MultisigCreatePage() {
     if (!generated?.pub || !generated?.sec) {
       setError(t('multisigCreate.generateFirst'));
       return;
+    }
+    // Warn-Confirm bei zu geringem Startguthaben im Mainnet
+    if (network === 'PUBLIC' && activateNow) {
+      const bal = parseFloat(startingBalance || '0');
+      if (bal < requiredReserve) {
+        const ok = window.confirm(t('multisigCreate.confirmLowBalance', { bal: bal.toFixed(7), req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) }));
+        if (!ok) return;
+      }
     }
     setBusy(true);
     setResultMsg('');
@@ -258,6 +319,11 @@ export default function MultisigCreatePage() {
         await friendbotActivate(generated.pub);
         setResultMsg(t('multisigCreate.activatedTestnet'));
       } else {
+        const bal = parseFloat(startingBalance || '0');
+        if (bal < requiredReserve) {
+          const ok = window.confirm(t('multisigCreate.confirmLowBalance', { bal: bal.toFixed(7), req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) }));
+          if (!ok) { setBusy(false); return; }
+        }
         setPendingAction({ type: 'activate', destPub: generated.pub, startingBalance });
         setShowSecretModal(true);
       }
@@ -268,15 +334,17 @@ export default function MultisigCreatePage() {
     }
   }
 
-  const validSignerCount = (signers || []).filter((s) => s && s.trim().startsWith('G')).length;
+  // Anzahl bereits gültiger (eingegebener) Signer – aktuell nur für Validierungen verwendet
+  // const validSignerCount = (signers || []).filter((s) => s && s.trim().startsWith('G')).length;
+
 
   // derive reserve numbers
   const requiredReserve = useMemo(() => {
     const base = Number(baseReserve || 0.5);
-    const subentries = validSignerCount; // new account: signers become subentries
-    const min = base * (2 + subentries);
+    const plannedSignerCount = enableMultisig ? Math.max(0, Number(signerCount) || 0) : 0;
+    const min = base * (2 + plannedSignerCount);
     return Number.isFinite(min) ? min : 1;
-  }, [baseReserve, validSignerCount]);
+  }, [baseReserve, enableMultisig, signerCount]);
   const recommended = useMemo(() => {
     // add small buffer (e.g., +0.5 XLM)
     return Math.max(requiredReserve + 0.5, 1);
@@ -293,10 +361,19 @@ export default function MultisigCreatePage() {
       <NetworkSelector value={network} onChange={async (net) => { setNetwork(net); const r = await fetchBaseReserveXLM(); setBaseReserve(r); if (net==='PUBLIC') { setStartingBalance(recommended.toFixed(7)); } else { setStartingBalance('1'); } }} />
 
       <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
-        <div className="flex gap-2 mb-2">
+        <div className="flex flex-wrap items-center gap-3 mb-2">
           <button onClick={handleGenerate} className="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700" disabled={busy}>
             {t('multisigCreate.generateKeys')}
           </button>
+          <label className="inline-flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={enableMultisig} onChange={()=>setEnableMultisig(v=>!v)} />
+            {t('multisigCreate.enableMultisig')}
+          </label>
+          {network === 'TESTNET' && (
+            <button type="button" onClick={()=>setShowInfo2(true)} className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800">
+              {t('multisigCreate.info.more')}
+            </button>
+          )}
         </div>
         {generated && (
           <div className="space-y-2">
@@ -314,43 +391,97 @@ export default function MultisigCreatePage() {
         )}
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
-        <h3 className="font-semibold mb-2">{t('multisigCreate.signersTitle')}</h3>
-        <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{t('multisigCreate.signersInfo')}</p>
-        <div className="space-y-2">
-          {signers.map((s, i) => (
-            <div key={i} className="flex gap-2">
-              <input
-                type="text"
-                value={s}
-                onChange={(e) => handleSignerChange(i, e.target.value)}
-                placeholder="G..."
-                className="w-full border rounded px-2 py-1 font-mono text-sm"
-              />
-              {signers.length > 1 && (
-                <button onClick={() => handleRemoveSigner(i)} className="px-2 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-800">{t('option.delete')}</button>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="mt-2">
-          <button onClick={handleAddSignerField} className="px-2 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-            {t('multisigCreate.addSigner')}
-          </button>
-        </div>
-        <div className="mt-4">
-          <label className="block text-sm font-semibold mb-1">{t('multisigCreate.threshold')}</label>
-          <select
-            className="border rounded px-2 py-1"
-            value={threshold}
-            onChange={(e) => setThreshold(Number(e.target.value))}
-          >
-            {Array.from({ length: Math.max(1, validSignerCount + 1) }, (_, i) => i + 1).map((n) => (
-              <option key={n} value={n}>{n}</option>
+      {enableMultisig && generated && (
+        <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
+          <h3 className="font-semibold mb-2">{t('multisigCreate.signersTitle')}</h3>
+          <div className="mb-3 p-2 bg-blue-50 dark:bg-blue-900/20 border rounded text-xs text-blue-900 dark:text-blue-200">
+            <strong>{t('multisigCreate.bestPractices.title')}:</strong> {t('multisigCreate.bestPractices.text')}
+          </div>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{t('multisigCreate.signersInfo')}</p>
+          <div className="flex items-center gap-2 mb-3">
+            <label className="text-sm font-semibold">{t('multisigCreate.signersCount')}</label>
+            <input
+              type="number"
+              min={1}
+              max={20}
+              value={signerCount}
+              onChange={(e)=>setSignerCount(Math.max(1, Math.min(20, Number(e.target.value) || 1)))}
+              onBlur={(e)=>setSignerCount(Math.max(1, Math.min(20, Number(e.target.value) || 1)))}
+              className="border rounded px-2 py-1 text-sm w-24"
+              title={t('multisigCreate.signersCountLimit')}
+            />
+            <span className="text-xs text-gray-600 dark:text-gray-400">{t('multisigCreate.signersCountLimit')}</span>
+          </div>
+          <div className="space-y-2">
+            {signers.map((s, i) => (
+              <div key={i} className="grid gap-2 sm:grid-cols-5 items-center">
+                <input
+                  type="text"
+                  value={s}
+                  onChange={(e) => handleSignerChange(i, e.target.value)}
+                  placeholder="G..."
+                  className="sm:col-span-4 border rounded px-2 py-1 font-mono text-sm"
+                />
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    min={0}
+                    max={255}
+                    value={signerWeights[i] ?? 1}
+                    onChange={(e)=>handleSignerWeightChange(i, e.target.value)}
+                    onBlur={(e)=>handleSignerWeightChange(i, e.target.value)}
+                    className="border rounded px-2 py-1 text-sm w-20"
+                    title={t('multisigCreate.tooltips.signerWeight')}
+                  />
+                  <span className="text-xs text-gray-500">{t('multisigCreate.hints.byteRange')}</span>
+                  <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.signerWeight')}>ⓘ</span>
+                </div>
+              </div>
             ))}
-          </select>
+          </div>
+          <div className="mt-3 flex items-center gap-3">
+            <label className="text-sm font-semibold inline-flex items-center gap-1">
+              Master-Gewicht
+              <span className="text-xs text-gray-500">{t('multisigCreate.hints.byteRange')}</span>
+              <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.masterWeight')}>ⓘ</span>
+            </label>
+            <input
+              type="number"
+              min={0}
+              max={255}
+              value={masterWeight}
+              onChange={(e)=>handleMasterWeightChange(e.target.value)}
+              onBlur={(e)=>handleMasterWeightChange(e.target.value)}
+              className="border rounded px-2 py-1 text-sm w-24"
+              title={t('multisigCreate.hints.byteRange')}
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-semibold mb-1">{t('multisigCreate.threshold')}</label>
+            <div className="flex flex-wrap items-center gap-3 mt-2">
+              <label className="inline-flex items-center gap-2 text-sm">
+                <span>niedrig <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.low')}>ⓘ</span></span>
+                <input type="number" min={0} max={255} value={lowT} onChange={(e)=>handleThresholdChange('low', e.target.value)} onBlur={(e)=>handleThresholdChange('low', e.target.value)} className={`border rounded px-2 py-1 w-16 ${thLowErr ? 'border-red-500' : ''}`} title={t('multisigCreate.hints.byteRange')} />
+                <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate.units.signatures')}</span>
+              </label>
+              <label className="inline-flex items-center gap-2 text-sm">
+                <span>mittel <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.med')}>ⓘ</span></span>
+                <input type="number" min={0} max={255} value={medT} onChange={(e)=>handleThresholdChange('med', e.target.value)} onBlur={(e)=>handleThresholdChange('med', e.target.value)} className={`border rounded px-2 py-1 w-16 ${thMedErr ? 'border-red-500' : ''}`} title={t('multisigCreate.hints.byteRange')} />
+                <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate.units.signatures')}</span>
+              </label>
+              <label className="inline-flex items-center gap-2 text-sm">
+                <span>hoch <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.high')}>ⓘ</span></span>
+                <input type="number" min={0} max={255} value={highT} onChange={(e)=>handleThresholdChange('high', e.target.value)} onBlur={(e)=>handleThresholdChange('high', e.target.value)} className={`border rounded px-2 py-1 w-16 ${thHighErr ? 'border-red-500' : ''}`} title={t('multisigCreate.hints.byteRange')} />
+                <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate.units.signatures')}</span>
+              </label>
+            </div>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('multisigCreate.thresholdLevelsHint')} • {t('multisigCreate.thresholdSum', { sum: sumWeights })}</p>
+            {(thLowErr || thMedErr || thHighErr) && (
+              <p className="text-xs text-red-600 mt-1">{t('multisigCreate.thresholdTooHigh')}</p>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
         <label className="flex items-start gap-2">
@@ -374,10 +505,15 @@ export default function MultisigCreatePage() {
                   onChange={(e) => setStartingBalance(e.target.value)}
                   className="w-full border rounded px-2 py-1"
                 />
+                {parseFloat(startingBalance || '0') < requiredReserve && (
+                  <p className="text-xs text-red-600 mt-1">
+                    {t('multisigCreate.balanceWarning', { req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) })}
+                  </p>
+                )}
               </div>
               <div className="text-xs text-gray-700 dark:text-gray-300">
                 <div>{t('multisigCreate.reserve.base', { val: (baseReserve ?? 0.5).toFixed(7) })}</div>
-                <div>{t('multisigCreate.reserve.required', { val: requiredReserve.toFixed(7) })}</div>
+                <div className={(parseFloat(startingBalance || '0') < requiredReserve) ? 'font-semibold text-red-700 dark:text-red-400' : 'font-semibold'}>{t('multisigCreate.reserve.required', { val: requiredReserve.toFixed(7) })}</div>
                 <div>{t('multisigCreate.reserve.recommended', { val: recommended.toFixed(7) })}</div>
               </div>
             </div>
@@ -389,7 +525,7 @@ export default function MultisigCreatePage() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button onClick={handleCreateAll} disabled={busy} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50">
+        <button onClick={handleCreateAll} disabled={busy || (enableMultisig && (thLowErr || thMedErr || thHighErr))} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50">
           {t('multisigCreate.createButton')}
         </button>
         <button onClick={handleActivateOnly} disabled={busy} className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50">
@@ -405,6 +541,27 @@ export default function MultisigCreatePage() {
           onConfirm={handleConfirmSecret}
           onCancel={() => { setShowSecretModal(false); setPendingAction(null); }}
         />
+      )}
+
+      {showInfo2 && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded p-4 max-w-2xl w-full mx-3">
+            <h4 className="text-lg font-semibold mb-2">{t('multisigCreate.info.more')}</h4>
+            <p className="text-sm whitespace-pre-line mb-3">{t('multisigCreate.info.text')}</p>
+            <p className="text-sm whitespace-pre-line mb-3">{t('multisigCreate.info.multisig')}</p>
+            <div className="mb-3">
+              <img
+                src="/stellar_signatur_flow.svg"
+                alt="Signatur-Fluss"
+                className="w-full h-auto border rounded"
+                onError={(e)=>{e.currentTarget.style.display='none';}}
+              />
+            </div>
+            <div className="text-right">
+              <button onClick={()=>{ setShowInfo2(false); }} className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700">OK</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
