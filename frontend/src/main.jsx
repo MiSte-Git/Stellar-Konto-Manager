@@ -31,6 +31,7 @@ import XlmByMemoPage from './pages/XlmByMemoPage';
 import InvestedTokensPage from './pages/InvestedTokensPage';
 import SettingsPage from './pages/SettingsPage.jsx';
 import MultisigCreatePage from './pages/MultisigCreatePage.jsx';
+import MultisigEditPage from './pages/MultisigEditPage.jsx';
 import BalancePage from './pages/BalancePage.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -69,6 +70,7 @@ function Main() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [showSecretInfo, setShowSecretInfo] = useState(false);
 
   const handleSortClick = (column) => {
     handleSort(column, sortColumn, sortDirection, setSortColumn, setSortDirection);
@@ -210,7 +212,12 @@ function Main() {
       <div className="max-w-4xl mx-auto px-4 pt-4 pb-0 text-center mt-4-500">
         {/* 🌍 Global: Titel & Info */}
         <h1 className="text-2xl font-bold mb-4">{t('main.title')}</h1>
-        <p className="mb-4 text-sm text-blue-200 rounded border">{t('secretKey.info')}</p>
+        <p className="mb-4 text-sm text-blue-200 rounded border">
+          {t('secretKey.info')}
+          <button type="button" onClick={()=>setShowSecretInfo(true)} className="ml-2 px-2 py-0.5 text-blue-700 underline">
+            {t('multisigCreate.info.more')}
+          </button>
+        </p>
         {/* Fixierter Wallet-Header – immer sichtbar */}
         <div className="sticky top-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b rounded-b px-3 py-2 mb-3">
           <form onSubmit={(e) => { e.preventDefault(); handleHeaderApply(); }} className="max-w-4xl mx-auto mb-0">
@@ -433,11 +440,14 @@ function Main() {
         />
       )}
       {menuSelection === 'multisigCreate' && (
-        <MultisigCreatePage />
+      <MultisigCreatePage />
       )}
-
+           {menuSelection === 'multisigEdit' && (
+        <MultisigEditPage defaultPublicKey={sourcePublicKey} />
+      )}
+      
       {menuSelection &&
-      !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','balance'].includes(menuSelection) && (
+      !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','multisigEdit','balance'].includes(menuSelection) && (
         <div className="p-3 text-sm text-red-600">
           {t('menu.unknown', { value: String(menuSelection) })}
         </div>
@@ -478,6 +488,26 @@ function Main() {
         <p className="text-sm text-yellow-600 mt-2">
           {infoMessage}
         </p>
+      )}
+
+      {showSecretInfo && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded p-4 max-w-2xl w-full mx-3 text-left">
+            <h4 className="text-lg font-semibold mb-2">{t('multisigCreate.info.more')}</h4>
+            <p className="text-sm whitespace-pre-line mb-3">{t('multisigCreate.info.text')}</p>
+            <div className="mb-3">
+              <img
+                src="/stellar_signatur_flow.svg"
+                alt="Signatur-Fluss"
+                className="w-full h-auto border rounded"
+                onError={(e)=>{e.currentTarget.style.display='none';}}
+              />
+            </div>
+            <div className="text-right">
+              <button onClick={()=>setShowSecretInfo(false)} className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700">OK</button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
