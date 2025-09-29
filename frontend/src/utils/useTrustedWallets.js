@@ -53,12 +53,12 @@ export function useTrustedWallets() {
     try { localStorage.removeItem(LS_KEY); } catch { /* noop */ }
   }, []);
 
-  const exportFile = useCallback(() => {
+  const exportFile = useCallback((filename) => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'QSI_TrustedWallets.json';
+    a.download = String(filename || 'QSI_TrustedWallets.json');
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
