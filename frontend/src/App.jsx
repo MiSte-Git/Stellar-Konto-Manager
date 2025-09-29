@@ -31,13 +31,28 @@ class ErrorBoundary extends React.Component {
 
 function App() {
   const { t } = useTranslation();
+  const [devTestnet, setDevTestnet] = React.useState(false);
+  React.useEffect(() => {
+    // Default: PUBLIC on first load (override any stale state)
+    try { if (typeof window !== 'undefined' && window.localStorage) { window.localStorage.setItem('STM_NETWORK', 'PUBLIC'); window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); } } catch { /* noop */ }
+    const handler = (e) => {
+      try { const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC'); setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
+    };
+    window.addEventListener('stm-network-changed', handler);
+    return () => window.removeEventListener('stm-network-changed', handler);
+  }, []);
   return (
     <ErrorBoundary t={t}>
-		  {/* Sprachleiste: garantiert zentriert, unabhängig vom äußeren Layout */}
-      <div className="max-w-4xl mx-auto p-4 mt-4 mb-4 text-center shadow-md bg-white dark:bg-gray-800 dark:shadow-gray-900/50 rounded">
+		  {/* Sprachleiste */}
+      <div className="max-w-4xl mx-auto p-4 mt-4 mb-4 text-center shadow-md bg-white dark:bg-gray-800 dark:shadow-gray-900/50 rounded relative">
         <div className="flex justify-center">
           <LanguageSelector />
         </div>
+        {devTestnet && (
+          <span className="absolute right-3 top-2 inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
+            {t('badges.testnet')}
+          </span>
+        )}
       </div>
 
       <Main />
