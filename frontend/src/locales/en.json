@@ -130,6 +130,7 @@
       "label": "Label",
       "memo": "Memo",
       "payments": "Payments",
+      "date": "Date",
       "token": "Token"
     },
     "filter": {
@@ -161,6 +162,14 @@
       "label": "Filter by:",
       "memo": "Memos (Groupfund)",
       "token": "Token (purchased amount)"
+    },
+    "toggles": {
+      "showTotals": "Show total",
+      "qsiOnly": "QSI GF"
+    },
+    "hints": {
+      "qsiListSet": "List of GF accounts is set in Settings.",
+      "pageTime": "Loading one page takes about 0.2 seconds → 100 pages ≈ 20 seconds → 1000 pages ≈ 200 seconds (≈ 3:20 minutes)."
     },
     "walletCapInfo": "Note: A wallet can hold a maximum of 1000 trustlines.",
     "decimals": {

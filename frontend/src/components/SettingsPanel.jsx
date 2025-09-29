@@ -3,8 +3,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { useSettings } from '../utils/useSettings.js';
+import { buildDefaultFilename } from '../utils/filename';
 
-export default function SettingsPanel() {
+export default function SettingsPanel({ publicKey }) {
   const { t } = useTranslation();
   const { data, wallets, setWallets, resetToDefault, exportFile, importFile, error } = useTrustedWallets();
   const { decimalsMode, setDecimalsMode } = useSettings();
@@ -140,7 +141,10 @@ export default function SettingsPanel() {
           />
           <button
             type="button"
-            onClick={exportFile}
+            onClick={() => {
+              const fn = buildDefaultFilename({ publicKey, menuLabel: t('settings.trustedWallets.title'), ext: 'json' });
+              exportFile(fn);
+            }}
             className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             {t('settings.trustedWallets.buttons.export', 'Export')}

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { getHorizonServer } from "../utils/stellar/stellarUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
 import { formatLocalDateTime, formatElapsedMmSs } from '../utils/datetime';
+import { buildDefaultFilename } from '../utils/filename';
 import { sumIncomingXLMByMemoNoCacheExact_Hybrid as sumIncomingXLMByMemoNoCacheExact } from "../utils/stellar/queryUtils";
 import { getNewestCreatedAt } from '../utils/db/indexedDbClient';
 
@@ -474,8 +475,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       }
 
       const csv = toCsv(rows, headers);
-      const ts = new Date().toISOString().replace(/[:.]/g, '-');
-      const fn = `ops_all_${fromISO}_${toISOExc}_${ts}.csv`;
+      const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo.title'), ext: 'csv' });
       downloadCsv(fn, csv);
 
       setProg(p => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
@@ -950,10 +950,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
               onClick={() => {
                 const headers = ['created_at','from','to','amount','memo','tx_hash'];
                 const csv = toCsv(wrongRows, headers);
-                const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
-                const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
-                const safeMemo = (memoQuery || 'memo').replace(/[^A-Za-z0-9_-]+/g, '_');
-                const fn = `wrong_memos_${safeMemo}_${fromISO}_${toISOExc}.csv`;
+                const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo.title'), ext: 'csv' });
                 downloadCsv(fn, csv);
               }}
             >
@@ -1003,10 +1000,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
               onClick={() => {
                 const headers = ['created_at','from','to','amount','memo','tx_hash'];
                 const csv = toCsv(sortedTopRows, headers);
-                const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
-                const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
-                const safeMemo = (memoQuery || 'memo').replace(/[^A-Za-z0-9_-]+/g, '_');
-                const fn = `top20_memo_${safeMemo}_${fromISO}_${toISOExc}.csv`;
+                const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo.title'), ext: 'csv' });
                 downloadCsv(fn, csv);
               }}
             >

@@ -59,7 +59,7 @@ export async function fetchGroupfundByMemo({
       if (!g) {
         const dests = new Map();
         if (destAddr) dests.set(destAddr, 1);
-        memoGroups.set(memo, { count: 1, totalXlm: amountXlm, firstTx: txHash, destinations: dests });
+        memoGroups.set(memo, { count: 1, totalXlm: amountXlm, firstTx: txHash, firstCreatedAt: rec.created_at || null, destinations: dests });
       } else {
         g.count += 1;
         g.totalXlm += amountXlm;
@@ -99,7 +99,7 @@ export async function fetchGroupfundByMemo({
         occurrences: v.count,        // Anzahl Zahlungen mit diesem Memo
         totalAmount: v.totalXlm,     // Summe XLM für dieses Memo
         asset: 'XLM',                // immer XLM
-        sample: { tx: v.firstTx },
+        sample: { tx: v.firstTx, created_at: v.firstCreatedAt || null },
         uniqueDestinations,
         topDestination,
         destinations: destArr.map(([addr, cnt]) => ({ address: addr, count: cnt })),
@@ -168,7 +168,7 @@ export async function fetchGroupfundByMemoCached({
         if (!g) {
           const dests = new Map();
           if (destAddr) dests.set(destAddr, 1);
-          memoGroups.set(memo, { count: 1, totalXlm: amountXlm, firstTx: txHash, destinations: dests });
+          memoGroups.set(memo, { count: 1, totalXlm: amountXlm, firstTx: txHash, firstCreatedAt: (v.created_at || null), destinations: dests });
         } else {
           g.count += 1;
           g.totalXlm += amountXlm;
@@ -188,7 +188,7 @@ export async function fetchGroupfundByMemoCached({
         occurrences: v.count,
         totalAmount: v.totalXlm,
         asset: 'XLM',
-        sample: { tx: v.firstTx },
+        sample: { tx: v.firstTx, created_at: v.firstCreatedAt || null },
         uniqueDestinations,
         topDestination,
         destinations: destArr.map(([addr, cnt]) => ({ address: addr, count: cnt })),
