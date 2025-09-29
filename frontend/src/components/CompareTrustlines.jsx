@@ -23,19 +23,31 @@ function CompareTrustlines({
   setIsLoading
 }) {
   const { t } = useTranslation();
-  // Im Parent (Main)
+  const [destNotFound, setDestNotFound] = React.useState(false);
 
   const handleCompare = async () => {
     if (!destinationPublicKey || !StrKey.isValidEd25519PublicKey(destinationPublicKey)) {
       setError(t('publicKey.destination.error'));
+      setDestNotFound(false);
       return;
     }
 
     setError('');
+    setDestNotFound(false);
     setIsLoading(true);
     try {
       const sourceTrustlines = await loadTrustlines(sourcePublicKey);
-      const destTrustlines = await loadTrustlines(destinationPublicKey);
+      let destTrustlines;
+      try {
+        destTrustlines = await loadTrustlines(destinationPublicKey);
+      } catch (e) {
+        const msg = String(e?.message || '');
+        if (/nicht gefunden|not found/i.test(msg)) {
+          setDestNotFound(true);
+          return;
+        }
+        throw e;
+      }
       const duplicates = sourceTrustlines.filter(source =>
         destTrustlines.some(dest =>
           dest.assetCode === source.assetCode && dest.assetIssuer === source.assetIssuer
@@ -51,19 +63,9 @@ function CompareTrustlines({
           }
 
           try {
-            // 🔁 Testmodus: Nur simulieren, nichts senden
             const result = {
               messages: ['[Test-Modus] Diese Trustlines würden jetzt gelöscht.']
             };
-
-            // 👉 Wenn du später echtes Löschen aktivieren willst, entferne diese zwei Zeilen und nimm fetch:
-            // const response = await fetch(`${backendUrl}/delete-trustlines`, {
-            //   method: 'POST',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify({ secretKey: sourceSecret, trustlines: duplicates })
-            // });
-            // const result = await response.json();
-            // if (!response.ok) throw new Error(result.error || t('error.trustline.unknown'));
 
             setResults([...result.messages, t('secretKey.cleared')]);
             setTrustlines(await loadTrustlines(sourcePublicKey));
@@ -79,7 +81,6 @@ function CompareTrustlines({
         });
         setShowConfirm(true);
       } else {
-        // Keine Duplikate gefunden: Info-Meldung anzeigen
         setResults([t('trustline.noDuplicates')]);
       }
     } catch (err) {
@@ -89,19 +90,19 @@ function CompareTrustlines({
     }
   };
 
+  const netLabel = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'Testnet' : 'Mainnet';
+
   return (
     <div>
-      {/* Menükopf mit Zurück-Button + aktuelle Ansicht */}
       <MenuHeader setMenuSelection={setMenuSelection} menuSelection={menuSelection} />
-      {/* Menütitel anzeigen */}
       <h2 className="text-center text-xl font-semibold">{t('trustline.compare')}</h2>
       <label className="block mb-2">{t('publicKey.destination.input')}:</label>
       <div className="relative">
         <input
           type="text"
           value={destinationPublicKey}
-          onChange={(e) => setDestinationPublicKey(e.target.value)}
-          className="wallet-input w-full p-2 border rounded pr-8 font-mono text-sm"
+          onChange={(e) => { setDestinationPublicKey(e.target.value); if (destNotFound) setDestNotFound(false); }}
+          className={`wallet-input w-full p-2 border rounded pr-8 font-mono text-sm ${destNotFound ? 'border-red-500 ring-1 ring-red-400' : 'border-gray-300'}`}
           placeholder="e.g., GBZVTOY..."
           list="recent-wallets"
           spellCheck={false}
@@ -129,6 +130,11 @@ function CompareTrustlines({
       >
         {isLoading ? t('option.loading') : t('trustline.compare')}
       </button>
+      {destNotFound && (
+        <div className="text-center text-xs text-red-700 my-2 inline-block border border-red-500 rounded px-2 py-0.5">
+          {t('error.accountNotFoundInNetwork', { net: netLabel })}
+        </div>
+      )}
     </div>
   );
 }

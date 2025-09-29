@@ -2,22 +2,31 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
-import { Keypair, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
+import { Keypair, Networks, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 
 function NetworkSelector({ value, onChange }) {
+  const { t } = useTranslation();
+  const isTestnet = value === 'TESTNET';
   return (
-    <div className="flex gap-4 mb-4">
-      <label className="flex items-center gap-2">
-        <input type="radio" name="network" value="PUBLIC" checked={value === 'PUBLIC'} onChange={() => onChange('PUBLIC')} />
-        Mainnet
-      </label>
-      <label className="flex items-center gap-2">
-        <input type="radio" name="network" value="TESTNET" checked={value === 'TESTNET'} onChange={() => onChange('TESTNET')} />
-        Testnet
-      </label>
+    <div className={`flex items-center justify-between gap-4 mb-4 p-2 border rounded relative ${isTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : ''}`}>
+      <div className="flex items-center gap-4">
+        <label className="flex items-center gap-2">
+          <input type="radio" name="network" value="PUBLIC" checked={value === 'PUBLIC'} onChange={() => { try { window.localStorage.setItem('STM_NETWORK','PUBLIC'); window.localStorage.removeItem('STM_HORIZON_URL'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('PUBLIC'); }} />
+          Mainnet
+        </label>
+        <label className="flex items-center gap-2">
+          <input type="radio" name="network" value="TESTNET" checked={value === 'TESTNET'} onChange={() => { try { window.localStorage.setItem('STM_NETWORK','TESTNET'); window.localStorage.setItem('STM_HORIZON_URL','https://horizon-testnet.stellar.org'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('TESTNET'); }} />
+          Testnet
+        </label>
+      </div>
+      {isTestnet && (
+        <span className="inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
+          {t('badges.testnet')}
+        </span>
+      )}
     </div>
   );
 }
@@ -25,7 +34,9 @@ function NetworkSelector({ value, onChange }) {
 export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const { t } = useTranslation();
 
-  const [network, setNetwork] = useState('TESTNET');
+  const [network, setNetwork] = useState(() => {
+    try { return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
+  });
   const server = useMemo(() => getHorizonServer(network === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN), [network]);
   const passphrase = network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
 
@@ -72,9 +83,19 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       const others = (acct.signers || []).filter(s => s.key !== pk && s.type && s.type.includes('ed25519'));
       setMasterWeight(clampByte(ms?.weight ?? 1));
       setSigners(others.map(s => ({ key: s.key, weight: clampByte(s.weight || 0) })));
-      setLowT(clampByte(acct.thresholds?.low_threshold ?? 1));
-      setMedT(clampByte(acct.thresholds?.med_threshold ?? 2));
-      setHighT(clampByte(acct.thresholds?.high_threshold ?? 2));
+      const fetchedLow = clampByte(acct.thresholds?.low_threshold ?? 1);
+      const fetchedMed = clampByte(acct.thresholds?.med_threshold ?? 2);
+      const fetchedHigh = clampByte(acct.thresholds?.high_threshold ?? 2);
+      if (fetchedLow === 0 && fetchedMed === 0 && fetchedHigh === 0) {
+        // Fallback auf 1/2/2 für neue Konten ohne gesetzte Schwellen
+        setLowT(1);
+        setMedT(2);
+        setHighT(2);
+      } else {
+        setLowT(fetchedLow);
+        setMedT(fetchedMed);
+        setHighT(fetchedHigh);
+      }
       setInfo(t('multisigEdit.loaded', { count: others.length }));
     } catch (e) {
       setError(String(e?.message || e));
@@ -86,6 +107,16 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   useEffect(() => {
     if (defaultPublicKey) loadAccount();
   }, [defaultPublicKey, network]);
+
+  // Sync local network radio with global header toggle
+  useEffect(() => {
+    const handler = (e) => {
+      const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+      setNetwork(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
+    };
+    window.addEventListener('stm-network-changed', handler);
+    return () => window.removeEventListener('stm-network-changed', handler);
+  }, []);
 
   // Editing handlers
   function updateSignerKey(i, val) {
@@ -200,9 +231,17 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
 
   function handleSave() {
     const pk = (defaultPublicKey || '').trim();
-    if (!pk || !pk.startsWith('G')) {
-      setError(t('issuer.invalid'));
+    if (!StrKey.isValidEd25519PublicKey(pk)) {
+      setError(t('publicKey.invalid'));
       return;
+    }
+    // validate signer keys (optional: allow empty rows)
+    for (const s of signers) {
+      const k = (s.key || '').trim();
+      if (k && !StrKey.isValidEd25519PublicKey(k)) {
+        setError(t('multisigEdit.validation.signerKeyInvalid'));
+        return;
+      }
     }
     setPendingAction('save');
     setShowSecretModal(true);
@@ -223,7 +262,43 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
         <h3 className="font-semibold mb-2">{t('multisigEdit.currentConfig')}</h3>
 
-        <div className="mt-2 flex items-center gap-3">
+        {/* Signers first */}
+        <div className="mt-2">
+          <h4 className="font-semibold mb-1">{t('multisigEdit.signers')}</h4>
+          <div className="space-y-2">
+            <div className="hidden sm:grid sm:grid-cols-5 text-xs text-gray-500 px-1">
+              <div className="sm:col-span-4">{t('multisigEdit.signers')}</div>
+              <div className="text-right pr-2">{t('multisigEdit.weight')}</div>
+            </div>
+            {signers.map((s, i) => (
+              <div key={i} className="grid gap-2 sm:grid-cols-5 items-center">
+                <input
+                  type="text"
+                  value={s.key}
+                  onChange={(e)=>updateSignerKey(i, e.target.value)}
+                  placeholder="G..."
+                  className="sm:col-span-4 border rounded px-2 py-1 font-mono text-sm"
+                />
+                <div className="flex items-center gap-1 flex-wrap max-w-full">
+                  <input
+                    type="number"
+                    min={0}
+                    max={255}
+                    value={s.weight}
+                    onChange={(e)=>updateSignerWeight(i, e.target.value)}
+                    className="border rounded px-2 py-1 text-sm w-16"
+                    title={t('multisigCreate.tooltips.signerWeight')}
+                  />
+                  <button type="button" onClick={()=>removeSignerRow(i)} className="px-1.5 py-1 border rounded text-xs whitespace-nowrap hover:bg-gray-100 dark:hover:bg-gray-800">{t('option.delete')}</button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button type="button" onClick={addSignerRow} className="mt-2 px-2 py-1 border rounded text-sm hover:bg-gray-100 dark:hover:bg-gray-800">{t('option.add')}</button>
+        </div>
+
+        {/* Master weight below signers */}
+        <div className="mt-4 flex items-center gap-3">
           <label className="text-sm font-semibold inline-flex items-center gap-1">
             Master-Gewicht
           </label>
@@ -253,36 +328,6 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           {(thLowErr || thMedErr || thHighErr) && (
             <p className="text-xs text-red-600 mt-1">{t('multisigCreate.thresholdTooHigh')}</p>
           )}
-        </div>
-
-        <div className="mt-4">
-          <h4 className="font-semibold mb-1">{t('multisigEdit.signers')}</h4>
-          <div className="space-y-2">
-            {signers.map((s, i) => (
-              <div key={i} className="grid gap-2 sm:grid-cols-5 items-center">
-                <input
-                  type="text"
-                  value={s.key}
-                  onChange={(e)=>updateSignerKey(i, e.target.value)}
-                  placeholder="G..."
-                  className="sm:col-span-4 border rounded px-2 py-1 font-mono text-sm"
-                />
-                <div className="flex items-center gap-1">
-                  <input
-                    type="number"
-                    min={0}
-                    max={255}
-                    value={s.weight}
-                    onChange={(e)=>updateSignerWeight(i, e.target.value)}
-                    className="border rounded px-2 py-1 text-sm w-20"
-                    title={t('multisigCreate.tooltips.signerWeight')}
-                  />
-                  <button type="button" onClick={()=>removeSignerRow(i)} className="px-2 py-1 border rounded text-sm hover:bg-gray-100 dark:hover:bg-gray-800">{t('option.delete')}</button>
-                </div>
-              </div>
-            ))}
-          </div>
-          <button type="button" onClick={addSignerRow} className="mt-2 px-2 py-1 border rounded text-sm hover:bg-gray-100 dark:hover:bg-gray-800">{t('option.add')}</button>
         </div>
       </div>
 

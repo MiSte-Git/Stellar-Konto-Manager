@@ -10,6 +10,47 @@
     "creationDate": "Erstellt am",
     "issuer": "Emittent"
   },
+  "balance": {
+    "buttons": {
+      "details": "Mehr Details",
+      "explorer": "Explorer",
+      "payments": "Letzte Vorgänge"
+    },
+    "current": "Aktuelle Guthaben",
+    "details": "Details in Block-Explorern",
+    "empty": "Keine Guthaben gefunden.",
+    "explorer": {
+      "expert": "stellar.expert",
+      "stellarchain": "Stellarchain.io"
+    },
+    "noPublicKey": "Bitte gib zuerst einen Public Key ein.",
+    "payments": {
+      "all": "Alle",
+      "columns": {
+        "amount": "Betrag",
+        "asset": "Asset",
+        "counterparty": "Gegenkonto",
+        "date": "Datum",
+        "direction": "Richtung",
+        "memo": "Memo",
+        "tx": "Tx",
+        "type": "Typ"
+      },
+      "empty": "Keine Vorgänge gefunden.",
+      "filter": {
+        "memo": "Memo-Filter",
+        "memoPlaceholder": "Memo suchen..."
+      },
+      "from": "Von",
+      "incoming": "Eingang",
+      "limit": "Anzahl",
+      "outgoing": "Ausgang",
+      "title": "Letzte Vorgänge",
+      "to": "Bis"
+    },
+    "paymentsHint": "Eingänge/Ausgänge kannst du im Explorer filtern.",
+    "title": "Kontostand anzeigen"
+  },
   "buildInfo": {
     "branch": "Branch",
     "commit": "Commit",
@@ -34,17 +75,17 @@
     },
     "cache": {
       "backfillAborted": "Initiales Laden der Zahlungen abgebrochen",
+      "coverage": {
+        "newestFailed": "Ermitteln der neuesten Zahlung fehlgeschlagen",
+        "oldestFailed": "Ermitteln des ältesten Datums fehlgeschlagen"
+      },
       "indexIterFailed": "Index-Iteration im Cache fehlgeschlagen",
       "memoNormBackfillFailed": "Initiales Laden der Zahlungen für normalisierte Memos fehlgeschlagen",
       "openFailed": "Lokaler Cache konnte nicht geöffnet werden",
       "readFailed": "Lesen aus dem Cache fehlgeschlagen",
-      "writeFailed": "Schreiben in den Cache fehlgeschlagen",
       "rehydrateFailed": "Nachladen fehlender Memos fehlgeschlagen",
       "rehydrateWriteFailed": "Schreiben der Memos in den Cache fehlgeschlagen",
-      "coverage": {
-        "oldestFailed": "Ermitteln des ältesten Datums fehlgeschlagen",
-        "newestFailed": "Ermitteln der neuesten Zahlung fehlgeschlagen"
-      }
+      "writeFailed": "Schreiben in den Cache fehlgeschlagen"
     },
     "connection": {
       "backend": "Keine Verbindung zum Backend möglich. Stellen Sie sicher"
@@ -55,6 +96,10 @@
     "horizon": {
       "paymentsFetch": "Fehler beim Laden der Zahlungen von Horizon"
     },
+    "loadTrustlines": "Laden der Trustlines fehlgeschlagen",
+    "loadTrustlinesFailed": "Laden der Trustlines fehlgeschlagen",
+    "loadTrustlinesNotFound": "Konto im ausgewählten Netzwerk nicht gefunden. Prüfe Testnet/Public im Header.",
+    "accountNotFoundInNetwork": "Im '{{net}}' nicht gefunden!",
     "op_invalid_limit": "Trustline kann nicht gelöscht werden. Sie hat möglicherweise noch Guthaben oder offene Verpflichtungen.",
     "query": {
       "invalidMemo": "Ungültiges Memo",
@@ -106,6 +151,10 @@
       "payments": "Zahlungen",
       "token": "Token"
     },
+    "decimals": {
+      "auto": "Automatisch",
+      "label": "Nachkommastellen:"
+    },
     "filter": {
       "memoPlaceholder": "Filter nach Memo, Wallet-Adresse oder Label",
       "tokenPlaceholder": "Filter nach Token (CODE:ISSUER)"
@@ -130,115 +179,116 @@
       "memo": "Memos (Groupfund)",
       "token": "Token (gekaufte Menge)"
     },
-    "decimals": {
-      "label": "Nachkommastellen:",
-      "auto": "Automatisch"
-    },
     "walletCapInfo": "Hinweis: Ein Wallet kann maximal 1000 Trustlines halten."
   },
   "issuer": {
     "enter": "Gib die Emittenten-Adresse ein:",
     "invalid": "Ungültige Emittentenadresse."
   },
-  "noIssuerTrustlinesFound": "Keine Trustlines für Emittent {{issuer}} gefunden.",
   "main": {
     "processing": "Vorgang läuft, bitte warten …",
     "title": "Stellar Trustline Manager"
   },
   "menu": {
+    "balance": "Kontostand anzeigen",
+    "devTestnet": "Testnet (für Entwickler)",
     "unknown": "Unbekannte Menüauswahl",
-    "xlmByMemo": "XLM-Summe nach Memo",
-    "balance": "Kontostand anzeigen"
+    "xlmByMemo": "XLM-Summe nach Memo"
   },
-  "multisigEdit": {
-    "title": "Multisig Konto bearbeiten",
-    "menu": "Konto mit Multisig bearbeiten",
-    "menuHint": "Signer/Schwellen eines bestehenden Kontos anpassen",
-    "hint": "Lade ein bestehendes Konto, passe Signer, Gewichte, Master-Gewicht und Schwellen an und speichere die Änderungen.",
-    "load": "Laden",
-    "reload": "Neu laden",
-    "save": "Änderungen speichern",
-    "loaded": "Geladen. Zusätzliche Signer: {{count}}",
-    "currentConfig": "Aktuelle / geplante Konfiguration",
-    "signers": "Unterzeichner",
-    "noteMaxSigners": "Hinweis: Stellar erlaubt max. 20 zusätzliche Unterzeichner pro Konto.",
-    "validation": {
-      "signerKeyInvalid": "Ungültige Unterzeichner-Adresse. Erwartet wird eine G…-Adresse (ed25519).",
-      "signerKeyHint": "Hinweis: Unterzeichner müssen mit \"G\" beginnen (ed25519-öffentlicher Schlüssel)."
-    },
-    "confirm": {
-      "removeSigner": "Unterzeichner wirklich entfernen?"
-    },
-    "error": {
-      "thresholdTooHigh": "Schwellen dürfen die Summe der Gewichte nicht überschreiten."
-    }
+  "badges": {
+    "testnet": "TESTNET"
   },
   "multisigCreate": {
-    "title": "Konto erstellen (optional Multisig)",
-    "menu": "Konto erstellen",
-    "menuHint": "Zum erstellen von Konten für Familienmitglieder, Freunde, Mitarbeiter...",
-    "hint": "Erstellt ein neues Wallet. Optional sofort aktivieren (1 XLM oder empfohlen) und zusätzliche Signer (Multisig) hinzufügen.",
+    "activateHint": "Aktivierung ist notwendig, damit das Konto existiert. Im Testnet per Friendbot, im Mainnet per \"Create Account\" von einem bestehenden Wallet.",
+    "activateNow": "Konto sofort aktivieren",
+    "activateOnly": "Nur aktivieren",
+    "activated": "Konto aktiviert. TX: {{hash}}",
+    "activatedTestnet": "Konto im Testnet aktiviert.",
+    "alreadyActive": "Konto ist bereits aktiv.",
+    "balanceWarning": "Startguthaben ist wahrscheinlich zu niedrig, um die {{count}} zusätzlichen Signer hinzuzufügen (Mindestreserve: {{req}} XLM)",
+    "bestPractices": {
+      "text": "Empfohlen: 2 von 3 Signaturen. Das bedeutet: Von insgesamt 3 Signaturberechtigten (1 Master + 2 Unterzeichner) sind mindestens 2 Unterschriften erforderlich. Umsetzung: Setze Gewichte für Master/Signer jeweils auf 1 und stelle die Schwellen auf niedrig=1, mittel=2, hoch=2. So sind einfache Änderungen mit 1 Unterschrift möglich; Zahlungen/Handel erfordern 2; sicherheitskritische Änderungen erfordern 2.",
+      "title": "Bewährte Einstellungen"
+    },
+    "confirmLowBalance": "Startguthaben ({{bal}} XLM) liegt unter der Mindestreserve ({{req}} XLM) für {{count}} zusätzliche Unterzeichner. Trotzdem fortfahren?",
+    "createButton": "Erstellen / Multisig setzen",
+    "createdAndConfigured": "Konto erstellt/konfiguriert. TX: {{hash}}",
+    "createdNoSigners": "Konto erstellt. Es wurden keine zusätzlichen Signer angegeben.",
+    "enableMultisig": "Multisig für dieses Konto erstellen",
+    "generateFirst": "Bitte zuerst Schlüssel generieren.",
     "generateKeys": "Schlüssel generieren",
+    "hint": "Erstellt ein neues Wallet. Optional sofort aktivieren (1 XLM oder empfohlen) und zusätzliche Signer (Multisig) hinzufügen.",
+    "hints": {
+      "byteRange": "(0–255)"
+    },
+    "info": {
+      "more": "Mehr Info",
+      "multisig": "Multisig bedeutet: Für dieses Konto sind mehrere Unterschriften erforderlich. Du wählst zusätzliche Signer und die Schwelle (z. B. 2 von 3). Eine Transaktion ist nur gültig, wenn mindestens so viele Unterschriften vorliegen wie die Schwelle (Master + Mitzeichner).",
+      "text": "So funktioniert es\nDein Geheimschlüssel bleibt immer in deinem Browser. Er wird ausschließlich genutzt, um deine Transaktion lokal zu unterschreiben. An unseren Server oder nach außen wird nur die fertige Signatur gesendet, niemals dein Schlüssel. Wer möchte, kann das mit den Entwickler-Tools im Browser nachprüfen: Dort ist zu sehen, dass kein Schlüssel übertragen wird."
+    },
     "instructions": {
       "public": "Public Key: Deine Kontoadresse, wie eine IBAN. Sicher zu teilen.",
       "secret": "Secret Key: Dein Passwort für das Konto. Niemals teilen, sicher speichern (z.B. auf Papier)."
     },
-    "signersTitle": "Multisig (zusätzliche Unterzeichner)",
-    "signersInfo": "Füge G...-Adressen als Unterzeichner hinzu. Jeder Unterzeichner erhöht die Mindestreserve.",
-    "threshold": "Erforderliche Signaturen (niedrig/mittel/hoch)",
-    "thresholdInfo": "Empfehlung: {{req}} von {{total}} Signaturen (inkl. Master)",
-    "thresholdHelp": "Schwelle: Anzahl der benötigten Unterschriften (Master + Unterzeichner), damit eine Transaktion gültig ist.",
-    "thresholdLevelsHint": "Typischerweise gilt: niedrig = einfache Änderungen (z. B. Memo, Preis), mittel = Zahlungen/Handel, hoch = sicherheitskritische Änderungen (z. B. Signer/Schwellen)",
-    "thresholdStatic": "Erforderlich: {{val}} von {{total}} Unterschriften (niedrig/mittel/hoch)",
-    "thresholdCurrent": "Aktuell gewählt: niedrig={{low}}, mittel={{med}}, hoch={{high}} von {{total}} Signaturen",
-    "thresholdSum": "Summe Gewichte: {{sum}}",
-    "thresholdTooHigh": "Hinweis: Eine Schwelle darf die Summe der Gewichte nicht überschreiten. Bitte Werte anpassen.",
-    "activateNow": "Konto sofort aktivieren",
-    "activateHint": "Aktivierung ist notwendig, damit das Konto existiert. Im Testnet per Friendbot, im Mainnet per \"Create Account\" von einem bestehenden Wallet.",
     "mainnetActivateNote": "Hinweis: Für Multisig sind zusätzliche Reserven nötig. 1 XLM reicht oft nicht.",
-    "startingBalance": "Startguthaben (XLM)",
-    "balanceWarning": "Startguthaben ist wahrscheinlich zu niedrig, um die {{count}} zusätzlichen Signer hinzuzufügen (Mindestreserve: {{req}} XLM)",
+    "menu": "Konto erstellen",
+    "menuHint": "Zum erstellen von Konten für Familienmitglieder, Freunde, Mitarbeiter...",
     "reserve": {
       "base": "Basisreserve pro Eintrag: {{val}} XLM",
-      "required": "Benötigte Mindestreserve (neu): {{val}} XLM",
-      "recommended": "Empfohlenes Startguthaben: {{val}} XLM (inkl. Puffer)"
+      "recommended": "Empfohlenes Startguthaben: {{val}} XLM (inkl. Puffer)",
+      "required": "Benötigte Mindestreserve (neu): {{val}} XLM"
     },
-    "confirmLowBalance": "Startguthaben ({{bal}} XLM) liegt unter der Mindestreserve ({{req}} XLM) für {{count}} zusätzliche Unterzeichner. Trotzdem fortfahren?",
     "signersCount": "Anzahl zusätzlicher Unterzeichner",
     "signersCountHint": "Die Mindestanzahl an Signaturen stellst du unten bei \"Erforderliche Signaturen\" (niedrig/mittel/hoch) ein.",
     "signersCountLimit": "Hinweis: Netzwerkgrenze (Stellar): max. 20 zusätzliche Unterzeichner.",
-    "info": {
-      "more": "Mehr Info",
-      "text": "So funktioniert es\nDein Geheimschlüssel bleibt immer in deinem Browser. Er wird ausschließlich genutzt, um deine Transaktion lokal zu unterschreiben. An unseren Server oder nach außen wird nur die fertige Signatur gesendet, niemals dein Schlüssel. Wer möchte, kann das mit den Entwickler-Tools im Browser nachprüfen: Dort ist zu sehen, dass kein Schlüssel übertragen wird.",
-      "multisig": "Multisig bedeutet: Für dieses Konto sind mehrere Unterschriften erforderlich. Du wählst zusätzliche Signer und die Schwelle (z. B. 2 von 3). Eine Transaktion ist nur gültig, wenn mindestens so viele Unterschriften vorliegen wie die Schwelle (Master + Mitzeichner)."
-    },
-    "enableMultisig": "Multisig für dieses Konto erstellen",
+    "signersInfo": "Füge G...-Adressen als Unterzeichner hinzu. Jeder Unterzeichner erhöht die Mindestreserve.",
+    "signersTitle": "Multisig (zusätzliche Unterzeichner)",
+    "startingBalance": "Startguthaben (XLM)",
+    "threshold": "Erforderliche Signaturen (niedrig/mittel/hoch)",
+    "thresholdCurrent": "Aktuell gewählt: niedrig={{low}}, mittel={{med}}, hoch={{high}} von {{total}} Signaturen",
+    "thresholdHelp": "Schwelle: Anzahl der benötigten Unterschriften (Master + Unterzeichner), damit eine Transaktion gültig ist.",
+    "thresholdInfo": "Empfehlung: {{req}} von {{total}} Signaturen (inkl. Master)",
+    "thresholdLevelsHint": "Typischerweise gilt: niedrig = einfache Änderungen (z. B. Memo, Preis), mittel = Zahlungen/Handel, hoch = sicherheitskritische Änderungen (z. B. Signer/Schwellen)",
+    "thresholdStatic": "Erforderlich: {{val}} von {{total}} Unterschriften (niedrig/mittel/hoch)",
+    "thresholdSum": "Summe Gewichte: {{sum}}",
+    "thresholdTooHigh": "Hinweis: Eine Schwelle darf die Summe der Gewichte nicht überschreiten. Bitte Werte anpassen.",
+    "title": "Konto erstellen (optional Multisig)",
     "tooltips": {
-      "masterWeight": "Gewicht des Kontoinhabers (Master) (0-255): Der Hauptschlüssel des Kontos hat ein Stimmrecht. Je höher sein Gewicht, desto mehr Stimmen zählt seine Unterschrift. Diese Stimmen werden zusammen mit den Stimmen anderer Unterzeichner gezählt, um zu prüfen, ob die erforderliche Mehrheit erreicht ist.",
-      "signerWeight": "Gewicht der Unterzeichner (0–255): Auch zusätzliche Unterzeichner haben Stimmrechte. Das Gewicht legt fest, wie viele Stimmen ihre Unterschrift beiträgt. Wenn eine Transaktion gesendet wird, werden alle abgegebenen Stimmen addiert. Ist die festgelegte Mindestanzahl an Stimmen (Threshold) erreicht, gilt die Transaktion als autorisiert.",
-      "low": "Niedrig: einfache Änderungen (z. B. Memo, Preis).",
-      "med": "Mittel: Zahlungen und Handelsaktionen.",
       "high": "Hoch: sicherheitskritische Änderungen (z. B. Unterzeichner/Schwellen).",
+      "low": "Niedrig: einfache Änderungen (z. B. Memo, Preis).",
+      "masterWeight": "Gewicht des Kontoinhabers (Master) (0-255): Der Hauptschlüssel des Kontos hat ein Stimmrecht. Je höher sein Gewicht, desto mehr Stimmen zählt seine Unterschrift. Diese Stimmen werden zusammen mit den Stimmen anderer Unterzeichner gezählt, um zu prüfen, ob die erforderliche Mehrheit erreicht ist.",
+      "med": "Mittel: Zahlungen und Handelsaktionen.",
+      "signerWeight": "Gewicht der Unterzeichner (0–255): Auch zusätzliche Unterzeichner haben Stimmrechte. Das Gewicht legt fest, wie viele Stimmen ihre Unterschrift beiträgt. Wenn eine Transaktion gesendet wird, werden alle abgegebenen Stimmen addiert. Ist die festgelegte Mindestanzahl an Stimmen (Threshold) erreicht, gilt die Transaktion als autorisiert.",
       "signerWeightHint": "Hinweis: Master- und Unterzeichner-Gewichte bilden die Summe; Schwellen (niedrig/mittel/hoch) dürfen diese Summe nicht überschreiten."
-    },
-    "bestPractices": {
-      "title": "Bewährte Einstellungen",
-      "text": "Empfohlen: 2 von 3 Signaturen. Das bedeutet: Von insgesamt 3 Signaturberechtigten (1 Master + 2 Unterzeichner) sind mindestens 2 Unterschriften erforderlich. Umsetzung: Setze Gewichte für Master/Signer jeweils auf 1 und stelle die Schwellen auf niedrig=1, mittel=2, hoch=2. So sind einfache Änderungen mit 1 Unterschrift möglich; Zahlungen/Handel erfordern 2; sicherheitskritische Änderungen erfordern 2."
-    },
-    "hints": {
-      "byteRange": "(0–255)"
     },
     "units": {
       "signatures": "Unterschrift(en)"
+    }
+  },
+  "multisigEdit": {
+    "confirm": {
+      "removeSigner": "Unterzeichner wirklich entfernen?"
     },
-    "createButton": "Erstellen / Multisig setzen",
-    "activateOnly": "Nur aktivieren",
-    "generateFirst": "Bitte zuerst Schlüssel generieren.",
-    "activated": "Konto aktiviert. TX: {{hash}}",
-    "activatedTestnet": "Konto im Testnet aktiviert.",
-    "alreadyActive": "Konto ist bereits aktiv.",
-    "createdAndConfigured": "Konto erstellt/konfiguriert. TX: {{hash}}",
-    "createdNoSigners": "Konto erstellt. Es wurden keine zusätzlichen Signer angegeben."
+    "currentConfig": "Aktuelle / geplante Konfiguration",
+    "error": {
+      "thresholdTooHigh": "Schwellen dürfen die Summe der Gewichte nicht überschreiten."
+    },
+    "hint": "Lade ein bestehendes Konto, passe Signer, Gewichte, Master-Gewicht und Schwellen an und speichere die Änderungen.",
+    "load": "Laden",
+    "loaded": "Geladen. Zusätzliche Signer: {{count}}",
+    "menu": "Konto mit Multisig bearbeiten",
+    "menuHint": "Signer/Schwellen eines bestehenden Kontos anpassen",
+    "noteMaxSigners": "Hinweis: Stellar erlaubt max. 20 zusätzliche Unterzeichner pro Konto.",
+    "reload": "Neu laden",
+    "save": "Änderungen speichern",
+    "saved": "Änderungen gespeichert. TX: {{hash}}",
+    "signers": "Unterzeichner",
+    "weight": "Gewichtung",
+    "title": "Multisig Konto bearbeiten",
+    "validation": {
+      "signerKeyHint": "Hinweis: Unterzeichner müssen mit \"G\" beginnen (ed25519-öffentlicher Schlüssel).",
+      "signerKeyInvalid": "Ungültige Unterzeichner-Adresse. Erwartet wird eine G…-Adresse (ed25519)."
+    }
   },
   "navigation": {
     "back": "Zurück",
@@ -246,6 +296,7 @@
     "backToPublicKey": "Zurück zur öffentlichen Schlüssel Eingabe",
     "backToTop": "Zurück nach Oben"
   },
+  "noIssuerTrustlinesFound": "Keine Trustlines für Emittent {{issuer}} gefunden.",
   "option": {
     "add": "Hinzufügen",
     "cancel": "Abbrechen",
@@ -295,9 +346,9 @@
       "pageDone": "Seite {{page}} abgeschlossen.",
       "rehydrate": "Rekonstruire Cache…",
       "scan": "Scanne Zahlungen (Seite {{page}})…",
+      "scan_ops": "Scanne Operationen…",
       "scan_payments": "Scanne Zahlungen (Seite {{page}})…",
       "scan_payments_fast": "Scanne Zahlungen (schnell) – Seite {{page}}…",
-      "scan_ops": "Scanne Operationen…",
       "scan_tx": "Transaktionen scannen",
       "sync": "Synchronisiere Zahlungen…",
       "txFetch": "Lade Transaktionsdetails…"
@@ -307,18 +358,19 @@
     }
   },
   "publicKey": {
+    "deleteFromList": "Aus Liste löschen",
     "destination": {
       "error": "Ungültiger Ziel-Schlüssel.",
       "input": "Ziel-Wallet-Adresse eingeben"
     },
     "label": "Gib bitte die Quell-Föderationsadresse oder den öffentlichen Schlüssel ein:",
+    "load": "Laden…",
     "placeholder": "z.B.",
     "source": "Quell-Wallet-Adresse",
+    "invalid": "Ungültiger öffentlicher Schlüssel.",
     "submit": {
       "button": "Absenden"
     },
-    "load": "Laden…",
-    "deleteFromList": "Aus Liste löschen",
     "test": "Test"
   },
   "secretKey": {
@@ -337,53 +389,53 @@
       "label": "Cache benutzen (Beta)",
       "prefetchHelp": "Vorlauf der zu ladenden Einträge/Transaktionen in Tagen (einmalig beim ersten Aktivieren)"
     },
-    "display": {
-      "title": "Anzeige",
-      "desc": "Globale Anzeigeeinstellungen.",
-      "decimals": {
-        "label": "Nachkommastellen",
-        "auto": "Automatisch"
-      }
-    },
     "description": "Aktuell gibt es noch keine Einstellungen",
+    "display": {
+      "decimals": {
+        "auto": "Automatisch",
+        "label": "Nachkommastellen"
+      },
+      "desc": "Globale Anzeigeeinstellungen.",
+      "title": "Anzeige"
+    },
     "error": {
       "fetchFailed": "Laden der Einstellungen fehlgeschlagen: {{detail}}"
     },
     "label": "Einstellungen",
     "prefetchDays": "Vorlauf (Tage)",
     "trustedWallets": {
-      "title": "Vertrauenswürdige Wallets (QSI)",
-      "desc": "Diese Liste wird lokal im Browser gespeichert. Standarddatei: QSI_TrustedWallets.json",
       "buttons": {
-        "import": "Importieren",
         "export": "Exportieren",
+        "import": "Importieren",
         "reset": "Auf Standard zurücksetzen"
+      },
+      "desc": "Diese Liste wird lokal im Browser gespeichert. Standarddatei: QSI_TrustedWallets.json",
+      "editor": {
+        "invalidFormat": "Ungültiges Format. Erwartet wird ein Objekt mit Feld \"wallets\" (Array).",
+        "parseError": "JSON konnte nicht geparst werden."
+      },
+      "file": {
+        "hint": "Importiere eine JSON-Datei im Format { wallets: [...] }",
+        "label": "Datei"
       },
       "info": {
         "count": "Einträge: {{n}}",
         "updatedAt": "Stand: {{date}}"
       },
-      "file": {
-        "label": "Datei",
-        "hint": "Importiere eine JSON-Datei im Format { wallets: [...] }"
-      },
-      "editor": {
-        "parseError": "JSON konnte nicht geparst werden.",
-        "invalidFormat": "Ungültiges Format. Erwartet wird ein Objekt mit Feld \"wallets\" (Array)."
-      },
       "table": {
         "addRow": "Zeile hinzufügen",
-        "discard": "Verwerfen",
-        "save": "Speichern",
-        "deleteRow": "Löschen",
         "columns": {
+          "actions": "Aktionen",
           "address": "Adresse",
-          "label": "Label",
           "compromised": "Kompromittiert",
           "deactivated": "Deaktiviert",
-          "actions": "Aktionen"
-        }
+          "label": "Label"
+        },
+        "deleteRow": "Löschen",
+        "discard": "Verwerfen",
+        "save": "Speichern"
       },
+      "title": "Vertrauenswürdige Wallets (QSI)",
       "validation": {
         "hint": "Mindestens eine Zeile ist ungültig (fehlende/duplizierte Adresse)."
       }
@@ -403,8 +455,8 @@
         "simulation": "Simulationsmodus"
       },
       "notFound": "Keine löschbaren Trustlines gefunden – alle enthalten noch Guthaben.",
-      "resultTitle": "Gelöschte Trustline(s)",
       "resultText": "Anzahl: {{count}} • Modus: {{mode}}",
+      "resultTitle": "Gelöschte Trustline(s)",
       "simulated": "Simulation: {{count}} Trustline(s) würden gelöscht werden.",
       "success": "Erfolg: {{count}} Trustline(s) gelöscht."
     },
@@ -424,47 +476,6 @@
       "success": "Erfolg: {{count}} Trustline(s) gelöscht."
     },
     "skippedDueToBalance": "{{count}} Trustline(s) übersprungen (noch Guthaben vorhanden)."
-  },
-  "balance": {
-    "title": "Kontostand anzeigen",
-    "noPublicKey": "Bitte gib zuerst einen Public Key ein.",
-    "current": "Aktuelle Guthaben",
-    "empty": "Keine Guthaben gefunden.",
-    "details": "Details in Block-Explorern",
-    "paymentsHint": "Eingänge/Ausgänge kannst du im Explorer filtern.",
-    "buttons": {
-      "payments": "Letzte Vorgänge",
-      "details": "Mehr Details",
-      "explorer": "Explorer"
-    },
-    "explorer": {
-      "expert": "stellar.expert",
-      "stellarchain": "Stellarchain.io"
-    },
-    "payments": {
-      "title": "Letzte Vorgänge",
-      "incoming": "Eingang",
-      "outgoing": "Ausgang",
-      "empty": "Keine Vorgänge gefunden.",
-      "limit": "Anzahl",
-      "all": "Alle",
-      "columns": {
-        "date": "Datum",
-        "direction": "Richtung",
-        "type": "Typ",
-        "asset": "Asset",
-        "amount": "Betrag",
-        "counterparty": "Gegenkonto",
-        "memo": "Memo",
-        "tx": "Tx"
-      },
-      "from": "Von",
-      "to": "Bis",
-      "filter": {
-        "memo": "Memo-Filter",
-        "memoPlaceholder": "Memo suchen..."
-      }
-    }
   },
   "xlmByMemo": {
     "action": {
@@ -517,6 +528,13 @@
       "setToNowHint": "Setzt das Uhrzeit-Feld auf die aktuelle Zeit"
     },
     "title": "XLM-Summe nach Memo",
+    "topLargest": {
+      "button": "Top 20 Eingänge (Memo)",
+      "clipboard": "In Zwischenablage kopieren",
+      "csv": "CSV herunterladen",
+      "scanning": "… scannt Top-Eingänge",
+      "title": "Top 20-Eingänge für Memo im Zeitraum"
+    },
     "tz": {
       "cdt": "CDT (UTC−5)",
       "cst": "CST (UTC−6)",
@@ -543,13 +561,6 @@
       "scanning": "… scannt falsche/leere Memos",
       "summary": "Anzahl: {{count}} • Summe: {{sum}} XLM • Eindeutige Wallets: {{unique}}",
       "title": "Falsche/Leere Memos im Zeitraum"
-    },
-    "topLargest": {
-      "button": "Top 20 Eingänge (Memo)",
-      "title": "Top 20-Eingänge für Memo im Zeitraum",
-      "scanning": "… scannt Top-Eingänge",
-      "csv": "CSV herunterladen",
-      "clipboard": "In Zwischenablage kopieren"
     }
   }
 }

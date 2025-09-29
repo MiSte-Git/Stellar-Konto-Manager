@@ -1,5 +1,5 @@
 // src/components/DeleteByIssuer.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { StrKey } from '@stellar/stellar-sdk';
 import { useTranslation } from 'react-i18next';
 
@@ -21,14 +21,16 @@ function DeleteByIssuer({
   setIsLoading,
 }) {
   const { t } = useTranslation();
-
+   const [localError, setLocalError] = useState('');
+  
   const handleDelete = async () => {
-    if (!issuerAddress || !StrKey.isValidEd25519PublicKey(issuerAddress)) {
-      setError(t('issuer.invalid'));
-      return;
-    }
-
-    setError('');
+  if (!issuerAddress || !StrKey.isValidEd25519PublicKey(issuerAddress)) {
+  setLocalError(t('issuer.invalid'));
+    return;
+     }
+  
+  setLocalError('');
+  setError('');
     setIsLoading(true);
     try {
       const trustlines = await loadTrustlines(sourcePublicKey);
@@ -91,17 +93,24 @@ function DeleteByIssuer({
       <input
         type="text"
         value={issuerAddress}
-        onChange={(e) => setIssuerAddress(e.target.value)}
-        className="w-full p-2 border rounded"
+        onChange={(e) => { setIssuerAddress(e.target.value); if (localError) setLocalError(''); }}
+        className={`w-full p-2 border rounded ${localError ? 'border-red-500 ring-1 ring-red-400' : 'border-gray-300'}`}
         placeholder="e.g., GA5ZSEJ..."
       />
-      <button
-        onClick={handleDelete}
-        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        disabled={isLoading}
-      >
-        {isLoading ? t('option.loading') : t('option.delete')}
-      </button>
+      <div className="mt-2 flex items-center gap-2">
+        <button
+          onClick={handleDelete}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+          disabled={isLoading}
+        >
+          {isLoading ? t('option.loading') : t('option.delete')}
+        </button>
+        {localError && (
+          <span className="text-xs text-red-700 inline-block border border-red-500 rounded px-2 py-0.5">
+            {localError}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
