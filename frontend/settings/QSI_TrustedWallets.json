@@ -27,6 +27,8 @@
         { "address": "GAUL4OGCVXQACHALXWRF4HRC6WJ57LGFRAXAEDHUOZBLGC2C6C4XJ6VU", "label": "QSI primary airdrop Wallet", "compromised": false, "deactivated": false },
         { "address": "GB42ZQXTF6MLAWSNRGFU6M4ARCMPTZW57RYDOWCELGTHFTK4U6F6UW3H", "label": "QSI primary airdrop Wallet", "compromised": false, "deactivated": false },
         { "address": "GDV7HGDG4LKDIQHE7P3FJGDEELZNITWEP7RORGAUKOXRPT2Z67I6SQQW", "label": "StellarRussia & Synergy Foundation (Alby)", "compromised": false, "deactivated": false },
-        { "address": "GBKCHJYIY2G2NQBMJE6ULB4474HLPUDQN2H24BFLOZXUFIFXV5X2WQND", "label": "WHH - 2025-08-17", "compromised": false, "deactivated": true }
+        { "address": "GBKCHJYIY2G2NQBMJE6ULB4474HLPUDQN2H24BFLOZXUFIFXV5X2WQND", "label": "WHH - 2025-08-17", "compromised": false, "deactivated": true },
+        { "address": "GCMYWBB6YZ45NWC6MDPEKO2KMKBANNZRRDNMFHHPAKQTN4GC7LJFBG5E", "label": "The Korolev Directive", "compromised": false, "deactivated": false },
+        { "address": "GB4WS2WB3VYCH33MBSEDSAQBWBF2GVUXGLLPEQ557ERH77SJZSSHCARQ", "label": "BlackRock", "compromised": false, "deactivated": false }
     ]
 }
