@@ -12,14 +12,30 @@ import {
 // 🌐 Horizon-Serverinstanz für das aktuelle Netzwerk (DEV: Proxy verwenden)
 const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
 function resolveHorizonUrl(url) {
-  const base = url || HORIZON_URL || 'https://horizon.stellar.org';
-  const isDev = typeof window !== 'undefined' && window.location && /^http:\/\/(localhost|127\.0\.0\.1)/.test(window.location.origin);
+  // Global/Dev-Override: Hauptschalter über LocalStorage (STM_NETWORK) oder explizite URL (STM_HORIZON_URL)
+  let base = url || HORIZON_URL || 'https://horizon.stellar.org';
+  try {
+    const lsUrl = window?.localStorage?.getItem('STM_HORIZON_URL');
+    const lsNet = window?.localStorage?.getItem('STM_NETWORK'); // 'PUBLIC' | 'TESTNET'
+    if (!url && lsUrl) base = lsUrl;
+    if (!url && lsNet === 'TESTNET') base = 'https://horizon-testnet.stellar.org';
+    if (typeof window !== 'undefined') {
+      try { console.debug('[STM] resolveHorizonUrl →', base, '(net=', lsNet || 'PUBLIC', ')'); } catch { /* noop */ }
+    }
+  } catch { /* noop */ }
+
+  const isDev = typeof window !== 'undefined' && window.location && /^http:\/\/(localhost|127\.0\.1|127\.0\.0\.1)/.test(window.location.origin);
   // Wenn wir im Dev auf localhost laufen und Standard-Horizon verwenden, über den Vite-Proxy gehen
   if (isDev && (base === 'https://horizon.stellar.org' || base === 'https://horizon.stellar.org/')) {
     return (window.location.origin || 'http://localhost:5173') + '/horizon';
   }
   // Falls in .env bereits '/horizon' steht, in eine absolute URL umwandeln
   if (typeof base === 'string' && base.startsWith('/')) {
+    // Allow override via STM_HORIZON_URL; if set, prefer that instead of proxy
+    try {
+      const lsUrl2 = window?.localStorage?.getItem('STM_HORIZON_URL');
+      if (lsUrl2) return lsUrl2;
+    } catch { /* noop */ }
     return (window?.location?.origin || 'http://localhost:5173') + base;
   }
   return base;
@@ -59,13 +75,13 @@ export async function resolveFederationAddress(federationAddress) {
  * @returns {Promise<Array>} - Liste der Trustlines mit Asset-Infos
  * @throws {Error} - Wenn ungültig oder nicht abrufbar
  */
-export async function loadTrustlines(publicKey) {
+export async function loadTrustlines(publicKey, serverOverride) {
   if (!StrKey.isValidEd25519PublicKey(publicKey)) {
     throw new Error('resolveOrValidatePublicKey.invalid');
   }
 
   try {
-    const server = getHorizonServer();
+    const server = serverOverride || getHorizonServer();
     const account = await server.loadAccount(publicKey);
     const balances = account.balances.filter(b => b.asset_type !== 'native');
 
@@ -100,6 +116,10 @@ export async function loadTrustlines(publicKey) {
     });
   } catch (error) {
     console.error('Error loading trustlines:', error);
+    const status = error?.response?.status || error?.status;
+    if (status === 404) {
+      throw new Error('error.loadTrustlinesNotFound');
+    }
     throw new Error('error.loadTrustlines');
   }
 }
@@ -288,7 +308,7 @@ async function getBaseFee() {
 // Lädt Trustlines für eine gegebene Federation-Adresse oder Public Key
 // und gibt sowohl die aufgelöste Adresse als auch die Trustlines zurück.
 // Fehler werden als übersetzbare Error-Objekte zurückgegeben.
-export async function handleSourceSubmit(sourceInput, t) {
+export async function handleSourceSubmit(sourceInput, t, networkOverride /* 'PUBLIC' | 'TESTNET' */) {
   let publicKey = sourceInput;
 
   try {
@@ -300,7 +320,8 @@ export async function handleSourceSubmit(sourceInput, t) {
   }
 
   try {
-    const trustlines = await loadTrustlines(publicKey);
+    const server = networkOverride === 'TESTNET' ? getHorizonServer('https://horizon-testnet.stellar.org') : undefined;
+    const trustlines = await loadTrustlines(publicKey, server);
     return { publicKey, trustlines };
   } catch (loadError) {
     // Fehler beim Laden der Trustlines (z.B. Netzwerkproblem)

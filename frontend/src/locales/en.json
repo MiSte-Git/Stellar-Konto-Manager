@@ -51,7 +51,13 @@
       "memoNormBackfillFailed": "Initial loading of payments for normalized memos failed",
       "openFailed": "Local cache could not be opened.",
       "readFailed": "Failed to read from cache",
-      "writeFailed": "Failed to write to cache"
+      "writeFailed": "Failed to write to cache",
+      "coverage": {
+        "newestFailed": "Failed to determine the latest payment",
+        "oldestFailed": "Failed to determine the oldest date"
+      },
+      "rehydrateFailed": "Failed to reload missing memos",
+      "rehydrateWriteFailed": "Failed to write memos to the cache"
     },
     "connection": {
       "backend": "No connection to the backend possible. Please ensure"
@@ -111,6 +117,9 @@
   "fetchInvestedTokens": {
     "failed": "Failed to load investment data: {{detail}}"
   },
+  "error": {
+    "accountNotFoundInNetwork": "Not found in '{{net}}'!"
+  },
   "investedTokens": {
     "columns": {
       "amount": "Amount",
@@ -153,7 +162,11 @@
       "memo": "Memos (Groupfund)",
       "token": "Token (purchased amount)"
     },
-    "walletCapInfo": "Note: A wallet can hold a maximum of 1000 trustlines."
+    "walletCapInfo": "Note: A wallet can hold a maximum of 1000 trustlines.",
+    "decimals": {
+      "auto": "Automatic",
+      "label": "Decimal places:"
+    }
   },
   "issuer": {
     "compromised": "Compromised",
@@ -170,7 +183,11 @@
   "menu": {
     "unknown": "Unknown menu selection",
     "xlmByMemo": "Filter XLM amount by memo/token",
-    "balance": "View balance"
+    "balance": "View balance",
+    "devTestnet": "Testnet (for developers)"
+  },
+  "badges": {
+    "testnet": "TESTNET"
   },
   "multisigEdit": {
     "title": "Edit multisig",
@@ -180,12 +197,21 @@
     "load": "Load",
     "reload": "Reload",
     "save": "Save changes",
+    "saved": "Changes saved. TX: {{hash}}",
     "loaded": "Loaded. Additional signers: {{count}}",
     "currentConfig": "Current / planned configuration",
     "signers": "Signers",
+    "weight": "Weight",
     "noteMaxSigners": "Note: Stellar allows up to 20 additional signers per account.",
     "error": {
       "thresholdTooHigh": "Thresholds must not exceed the sum of weights."
+    },
+    "confirm": {
+      "removeSigner": "Really remove the signatory?"
+    },
+    "validation": {
+      "signerKeyHint": "Note: Signatories must start with \"G\" (ed25519-public key).",
+      "signerKeyInvalid": "Invalid signatory address. A G... address (ed25519) is expected."
     }
   },
   "balance": {
@@ -304,7 +330,8 @@
       "menu": "Current menu:"
     },
     "next": "Next",
-    "previous": "Previous"
+    "previous": "Previous",
+    "back": "Back"
   },
   "option": {
     "add": "Add",
@@ -369,7 +396,8 @@
       "scan_payments_fast": "Scan payments (quickly) – Page {{page}}…",
       "scan_tx": "Scan transactions",
       "sync": "Synchronizing payments…",
-      "txFetch": "Loading transaction details…"
+      "txFetch": "Loading transaction details…",
+      "scan_ops": "Scan operations..."
     },
     "wrongMemos": {
       "failed": "Error loading payments with incorrect/empty memo."
@@ -387,7 +415,10 @@
     "source": "Source wallet address",
     "submit": {
       "button": "Submit"
-    }
+    },
+    "deleteFromList": "Delete from list",
+    "load": "Loading...",
+    "test": "Test"
   },
   "puplicKey": {
     "failed": "Error resolving federation address/public key: {{error}}"
@@ -439,7 +470,31 @@
         "count": "Entries: {{n}}",
         "updatedAt": "Status: {{date}}"
       },
-      "title": "Trusted Wallets (QSI)"
+      "title": "Trusted Wallets (QSI)",
+      "table": {
+        "addRow": "Add line",
+        "columns": {
+          "actions": "Actions",
+          "address": "Address",
+          "compromised": "Compromised",
+          "deactivated": "Deactivated",
+          "label": "Label"
+        },
+        "deleteRow": "Delete",
+        "discard": "Discard",
+        "save": "Save"
+      },
+      "validation": {
+        "hint": "At least one line is invalid (missing/duplicated address)."
+      }
+    },
+    "display": {
+      "decimals": {
+        "auto": "Automatic",
+        "label": "Decimal places"
+      },
+      "desc": "Global display settings.",
+      "title": "Display"
     }
   },
   "token": {
@@ -585,6 +640,21 @@
       "scanning": "… scans incorrect/empty memos",
       "summary": "Count: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
       "title": "Incorrect/Empty memos in the period"
+    },
+    "topLargest": {
+      "button": "Top 20 inputs (Memo)",
+      "clipboard": "Copy to clipboard",
+      "csv": "Download CSV",
+      "scanning": "... scans top inputs",
+      "title": "Top 20 inputs for Memo in the period"
     }
+  },
+  "noIssuerTrustlinesFound": "No trustlines found for issuer {{issuer}}.",
+  "trustlines": {
+    "deleted": {
+      "deletingProgress": "Delete running: {{current}} / {{total}}",
+      "success": "Success: {{count}} Trustline(s) deleted."
+    },
+    "skippedDueToBalance": "{{count}} Trustline(s) skipped (credit still available)."
   }
 }

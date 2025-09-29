@@ -66,11 +66,21 @@ function Main() {
   const [, setShowSecretKey] = useState(false);
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
+  const [notFound, setNotFound] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [showSecretInfo, setShowSecretInfo] = useState(false);
+  // Dev/Testnet toggle state synced with localStorage
+  const [devTestnet, setDevTestnet] = useState(false);
+  useEffect(() => {
+    // Force default to PUBLIC at app start
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.setItem('STM_NETWORK', 'PUBLIC');
+      window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' }));
+    }
+  }, []);
 
   const handleSortClick = (column) => {
     handleSort(column, sortColumn, sortDirection, setSortColumn, setSortDirection);
@@ -125,16 +135,55 @@ function Main() {
     setIsLoading(true);
     setError('');
     try {
-      const { publicKey, trustlines } = await submitSourceInput(input, t);
+      const { publicKey, trustlines } = await submitSourceInput(input, t, devTestnet ? 'TESTNET' : 'PUBLIC');
       setSourcePublicKey(publicKey);
       if (Array.isArray(trustlines)) setTrustlines(trustlines);
       addRecent(publicKey);
+      setNotFound(false);
     } catch (err) {
-      setError(err.message);
+      const msg = String(err?.message || '');
+      setError(msg);
+      setNotFound(/nicht gefunden|not found/i.test(msg));
     } finally {
       setIsLoading(false);
     }
   }
+
+  // Revalidate active wallet when other parts toggle network
+  async function revalidateActiveWallet() {
+    if (!sourcePublicKey) return;
+    setIsLoading(true);
+    setError('');
+    try {
+      const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+      const { publicKey, trustlines } = await submitSourceInput(sourcePublicKey, t, net);
+      setSourcePublicKey(publicKey);
+      if (Array.isArray(trustlines)) setTrustlines(trustlines);
+      setNotFound(false);
+    } catch (err) {
+      const msg = String(err?.message || '');
+      setError(msg);
+      setNotFound(/nicht gefunden|not found/i.test(msg));
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    const handler = () => { revalidateActiveWallet(); };
+    window.addEventListener('stm-trigger-recheck', handler);
+    return () => window.removeEventListener('stm-trigger-recheck', handler);
+  }, [sourcePublicKey]);
+
+  // Keep header checkbox (devTestnet) in sync with global network changes
+  useEffect(() => {
+    const handler = (e) => {
+      const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+      setDevTestnet(v === 'TESTNET');
+    };
+    window.addEventListener('stm-network-changed', handler);
+    return () => window.removeEventListener('stm-network-changed', handler);
+  }, []);
 
   function unloadActiveWallet() {
     setSourcePublicKey('');
@@ -221,7 +270,17 @@ function Main() {
         {/* Fixierter Wallet-Header – immer sichtbar */}
         <div className="sticky top-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b rounded-b px-3 py-2 mb-3">
           <form onSubmit={(e) => { e.preventDefault(); handleHeaderApply(); }} className="max-w-4xl mx-auto mb-0">
-            <label className="block font-bold mb-1 text-sm">{t('publicKey.label')}</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block font-bold text-sm">{t('publicKey.label')}</label>
+              <label className="inline-flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300">
+                <input
+                  type="checkbox"
+                  checked={devTestnet}
+                  onChange={(e)=>{ const next = !!e.target.checked; setDevTestnet(next); if (typeof window !== 'undefined' && window.localStorage) { if (next) { window.localStorage.setItem('STM_NETWORK', 'TESTNET'); window.localStorage.setItem('STM_HORIZON_URL', 'https://horizon-testnet.stellar.org'); } else { window.localStorage.setItem('STM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('STM_HORIZON_URL'); } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: next ? 'TESTNET' : 'PUBLIC' })); } }}
+                />
+                {t('menu.devTestnet')}
+              </label>
+            </div>
             <div className="relative">
               <input
                 type="text"
@@ -229,7 +288,7 @@ function Main() {
                 value={walletHeaderInput}
                 onChange={(e) => setWalletHeaderInput(e.target.value)}
                 placeholder={t('publicKey.placeholder')}
-                className="wallet-input w-full border border-gray-300 rounded p-2 pr-8 font-mono text-sm"
+                className={`wallet-input w-full border ${notFound ? 'border-red-500 ring-1 ring-red-400' : (devTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : 'border-gray-300')} rounded p-2 pr-8 font-mono text-sm`}
                 spellCheck={false}
                 autoCorrect="off"
                 autoCapitalize="off"
@@ -239,7 +298,7 @@ function Main() {
               {walletHeaderInput && (
                 <button
                   type="button"
-                  onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); }}
+                  onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); setDevTestnet(false); if (typeof window !== 'undefined' && window.localStorage) { window.localStorage.setItem('STM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('STM_HORIZON_URL'); window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); } }}
                   title={t('common.clear')}
                   aria-label={t('common.clear')}
                   className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center"
@@ -284,12 +343,20 @@ function Main() {
                 </button>
               )}
             </div>
+
           </form>
         </div>
         {sourcePublicKey && (
-          <p className="mb-4 pb-1 text-sm text-gray-700 dark:text-gray-200 font-mono">
-            {t('publicKey.source')}: {sourcePublicKey}
-          </p>
+          <>
+            <p className="mb-1 pb-1 text-sm text-gray-700 dark:text-gray-200 font-mono">
+              {t('publicKey.source')}: {sourcePublicKey}
+            </p>
+            {notFound && (
+              <div className="text-center text-xs text-red-700 mb-3 inline-block border border-red-500 rounded px-2 py-0.5">
+                {t('error.accountNotFoundInNetwork', { net: devTestnet ? 'Testnet' : 'Mainnet' })}
+              </div>
+            )}
+          </>
         )}
 
         {/* Menüauswahl sichtbar, unabhängig davon ob ein Wallet gesetzt ist */}

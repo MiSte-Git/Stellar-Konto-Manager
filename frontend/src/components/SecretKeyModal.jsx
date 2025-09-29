@@ -27,15 +27,18 @@ function SecretKeyModal({ onConfirm, onCancel, errorMessage }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">
+        <h2 className={`text-xl font-semibold mb-4 ${error ? 'text-red-700' : 'text-black dark:text-white'}`}>
           {t('secretKey.label')}
         </h2>
+        {error && (
+          <div className="text-center text-xs text-red-700 mb-1">{error}</div>
+        )}
         <input
           type={showSecret ? "text" : "password"}
           value={secretKey}
           onChange={(e) => setSecretKey(e.target.value)}
           placeholder={t('secretKey.placeholder')}
-          className="w-full px-4 py-2 border rounded mb-2 dark:bg-gray-700 dark:text-white"
+          className={`w-full px-4 py-2 border rounded mb-2 dark:bg-gray-700 dark:text-white ${error ? 'border-red-500 ring-1 ring-red-400' : ''}`}
         />
         <label className="flex items-center gap-2 mt-2 text-sm">
           <input
@@ -46,7 +49,6 @@ function SecretKeyModal({ onConfirm, onCancel, errorMessage }) {
           {t('trustline.showSecret')}
         </label>
 
-        {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
         {!error && secretKey && (
           <p className="text-green-600 text-sm mb-2">{t('secretKey.valid')}</p>
         )}
