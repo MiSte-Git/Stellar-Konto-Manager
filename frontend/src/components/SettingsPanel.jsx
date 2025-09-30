@@ -8,7 +8,7 @@ import { buildDefaultFilename } from '../utils/filename';
 export default function SettingsPanel({ publicKey }) {
   const { t } = useTranslation();
   const { data, wallets, setWallets, resetToDefault, exportFile, importFile, error } = useTrustedWallets();
-  const { decimalsMode, setDecimalsMode } = useSettings();
+  const { decimalsMode, setDecimalsMode, fullHorizonUrl, setFullHorizonUrl, autoUseFullHorizon, setAutoUseFullHorizon } = useSettings();
 
   const fileRef = useRef(null);
 
@@ -100,7 +100,26 @@ export default function SettingsPanel({ publicKey }) {
         </div>
       </section>
 
-      {/* Trusted wallets editor */}
+      {/* Network / Horizon settings */}
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold">{t('settings.network.title', 'Netzwerk')}</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('settings.network.desc', 'Optional: Full-History-Horizon für tiefe Historie')}</p>
+        <div className="flex flex-col sm:flex-row gap-3 items-start">
+          <label className="text-sm sm:w-56">{t('settings.network.fullUrl', 'Full-History Horizon URL')}</label>
+          <input
+            className="border rounded px-2 py-1 w-full"
+            placeholder="https://example-full-history-horizon"
+            value={fullHorizonUrl}
+            onChange={(e)=>setFullHorizonUrl(e.target.value)}
+          />
+        </div>
+        <label className="inline-flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={autoUseFullHorizon} onChange={(e)=>setAutoUseFullHorizon(e.target.checked)} />
+          {t('settings.network.autoUseFull', 'Bei Bedarf automatisch verwenden (wenn Von-Datum älter als Server-Historie)')}
+        </label>
+      </section>
+
+       {/* Trusted wallets editor */}
       <section className="space-y-5">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">

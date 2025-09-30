@@ -10,6 +10,8 @@ function MainMenu({ onSelect }) {
     { label: t('token.purchases'), value: 'payments' },
     { label: t('menu.balance'), value: 'balance' },
     { label: t('menu.xlmByMemo'), value: 'xlmByMemo' },
+    { label: t('menu.sendPayment'), value: 'sendPayment' },
+    { label: t('menu.donate'), value: 'donate', title: t('menu.donate') },
     { label: t('multisigCreate.menu'), value: 'multisigCreate', title: t('multisigCreate.menuHint') },
     { label: t('multisigEdit.menu'), value: 'multisigEdit', title: t('multisigEdit.menuHint') },
     { label: t('settings.label'), value: 'settings' }

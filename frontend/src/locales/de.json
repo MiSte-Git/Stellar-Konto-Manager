@@ -181,14 +181,24 @@
       "token": "Token (gekaufte Menge)"
     },
     "toggles": {
-      "showTotals": "Gesamtsumme anzeigen",
+      "showTotals": "Gesamtsumme",
       "qsiOnly": "Summe QSI GF"
     },
     "hints": {
       "qsiListSet": "Hinweis: Die GF-Liste findest du unter Einstellungen → Vertrauenswürdige Wallets (QSI).",
       "pageTime": "Laden einer Seite dauert ca. 0,2 Sekunden → 100 Seiten ≈ 20 Sekunden → 1000 Seiten ≈ 200 Sekunden (≈ 3:20 Minuten)."
     },
-    "walletCapInfo": "Hinweis: Ein Wallet kann maximal 1000 Trustlines halten."
+    "walletCapInfo": "Hinweis: Ein Wallet kann maximal 1000 Trustlines halten.",
+     "action": {
+      "load": "Laden"
+    },
+    "history": {
+      "availableFrom": "Server-Historie ab",
+      "hintFullHistory": "Hinweis: Um vor dieses Datum zu gehen, bitte einen Full-History-Horizon verwenden."
+    }
+   },
+  "account": {
+    "createdAt": "Konto erstellt am"
   },
   "issuer": {
     "enter": "Gib die Emittenten-Adresse ein:",
@@ -199,11 +209,13 @@
     "title": "Stellar Trustline Manager"
   },
   "menu": {
-    "balance": "Kontostand anzeigen",
-    "devTestnet": "Testnet (für Entwickler)",
-    "unknown": "Unbekannte Menüauswahl",
-    "xlmByMemo": "XLM-Summe nach Memo"
-  },
+  "balance": "Kontostand anzeigen",
+  "devTestnet": "Testnet (für Entwickler)",
+  "unknown": "Unbekannte Menüauswahl",
+  "xlmByMemo": "XLM-Summe nach Memo",
+    "sendPayment": "Zahlung senden",
+      "donate": "Spenden"
+    },
   "badges": {
     "testnet": "TESTNET"
   },
@@ -398,6 +410,12 @@
       "label": "Cache benutzen (Beta)",
       "prefetchHelp": "Vorlauf der zu ladenden Einträge/Transaktionen in Tagen (einmalig beim ersten Aktivieren)"
     },
+    "network": {
+      "title": "Netzwerk",
+      "desc": "Optional: Full-History-Horizon für tiefe Historie",
+      "fullUrl": "Full-History Horizon URL",
+      "autoUseFull": "Bei Bedarf automatisch verwenden (wenn Von-Datum älter als Server-Historie)"
+    },
     "description": "Aktuell gibt es noch keine Einstellungen",
     "display": {
       "decimals": {
@@ -486,6 +504,33 @@
     },
     "skippedDueToBalance": "{{count}} Trustline(s) übersprungen (noch Guthaben vorhanden)."
   },
+  "payment": {
+    "send": {
+      "title": "Zahlung senden",
+      "recipient": "Empfänger",
+      "amount": "Betrag",
+      "asset": "Asset",
+      "memo": "Memo",
+      "memoType": "Memo Typ",
+      "memoTypes": { "text": "Text", "id": "ID" },
+      "available": "Verfügbar",
+      "reserved": "Reserved",
+      "baseReserve": "Base reserve",
+      "extra": "Extra",
+      "xlmInOffers": "XLM in offenen Angeboten",
+      "trustlines": "Trustlines ({{n}})",
+      "lpTrustlines": "Liquidity pool trustlines",
+      "offers": "Offers",
+      "signers": "Signers",
+      "accountData": "Account data",
+      "sponsoring": "Sponsoring entries for others",
+      "sponsored": "Entries sponsored for account",
+      "sendButton": "Senden",
+      "success": "Erfolg: Zahlung gesendet. TX: {{hash}}",
+      "error": "Fehler beim Senden: {{detail}}"
+    }
+  },
+
   "xlmByMemo": {
     "action": {
       "calculate": "Berechnen",

@@ -4,6 +4,22 @@ import { getHorizonServer } from './stellarUtils';
 import { ensureCoverage } from './syncUtils';
 import { iterateByAccountCreatedRange, getOldestCreatedAt, getNewestCreatedAt, rehydrateEmptyMemos } from '../db/indexedDbClient';
 
+// Simple retry helper to handle transient Horizon errors (429/5xx)
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+async function withRetry(fn, { tries = 4, baseDelay = 400 } = {}) {
+  let attempt = 0, lastErr;
+  while (attempt < tries) {
+    try { return await fn(); } catch (e) {
+      lastErr = e;
+      const status = e?.response?.status || e?.status || 0;
+      if (status && status !== 429 && status >= 400 && status < 500) break;
+      await sleep(baseDelay * Math.pow(2, attempt));
+      attempt++;
+    }
+  }
+  throw lastErr;
+}
+
 /** 
  * Zählt AUSGEHENDE XLM-Zahlungen mit Memo (Groupfund) und summiert XLM je Memo.
  * Mehrfachzahlungen mit gleichem Memo werden als EIN Investment gezählt.
@@ -12,6 +28,8 @@ export async function fetchGroupfundByMemo({
   publicKey,
   horizonUrl = HORIZON_URL || 'https://horizon.stellar.org',
   limitPages = 2000,
+  fromISO,
+  toISO,
   onProgress,
   signal,
 }) {
@@ -19,75 +37,145 @@ export async function fetchGroupfundByMemo({
     if (!publicKey) throw new Error('investedTokens.error.missingPublicKey');
 
     const server = getHorizonServer(horizonUrl);
-    const memoGroups = new Map(); // key: memo -> { count, totalXlm, firstTx, destinations: Map(address -> count) }
-
-    // 1) Transaktionen mit NICHT-leerem Memo einsammeln (Tx-First)
-    let txPage = await server.transactions().forAccount(publicKey).order('desc').limit(200).call();
-    const hitTx = []; // { hash, memo }
-    let pagesSeen = 0;
+    const memoGroups = new Map(); // memo -> { count, totalXlm, firstTx, firstCreatedAt, destinations: Map(addr->count) }
     const t0 = Date.now();
 
-    while (txPage?.records?.length && pagesSeen < limitPages) {
+    // Scanne Payments-Feed (desc) und lese Memos via eingebetteter TX (join) – Cursor-basiert
+    let builder = server
+      .payments()
+      .forAccount(publicKey)
+      .order('desc')
+      .limit(200)
+      .join('transactions');
+    let page = await withRetry(() => builder.call());
+    let lastCursor = null;
+    const seenCursors = new Set();
+
+    let pagesSeen = 0;
+
+    let lastOldest = '';
+    while (true) {
       if (signal?.aborted) throw new Error('fetch.groupfund.aborted');
-      for (const tx of txPage.records) {
-        const memo = typeof tx.memo === 'string' ? tx.memo.trim() : (tx.memo ? String(tx.memo).trim() : '');
-        if (memo) hitTx.push({ hash: tx.hash, memo });
-      }
-      pagesSeen += 1;
-      onProgress?.({ phase: 'scan_tx', page: pagesSeen, hits: hitTx.length, elapsedMs: Date.now() - t0 });
-      txPage = typeof txPage.next === 'function' ? await txPage.next() : null;
-    }
-
-    // 2) Für alle Treffer-Transaktionen ihre Payments laden und nur ausgehende XLM werten
-    const limit = 6;
-    let done = 0;
-    const runners = [];
-
-    const addOutgoingNative = (rec, memo) => {
-      const type = rec.type;
-      const fromAddr = rec.from || (type === 'create_account' ? rec.funder : null);
-      if (fromAddr !== publicKey) return;
-      const isNative = rec.asset_type === 'native' || type === 'create_account';
-      if (!isNative) return;
-
-      const amountXlm = parseFloat(type === 'create_account' ? (rec.starting_balance || '0') : (rec.amount || '0')) || 0;
-      const txHash = rec.transaction_hash || '';
-      let destAddr = null;
-      if (type === 'create_account') destAddr = rec.account || null; else destAddr = rec.to || rec.to_muxed || null;
-
-      const g = memoGroups.get(memo);
-      if (!g) {
-        const dests = new Map();
-        if (destAddr) dests.set(destAddr, 1);
-        memoGroups.set(memo, { count: 1, totalXlm: amountXlm, firstTx: txHash, firstCreatedAt: rec.created_at || null, destinations: dests });
-      } else {
-        g.count += 1;
-        g.totalXlm += amountXlm;
-        if (destAddr) g.destinations.set(destAddr, (g.destinations.get(destAddr) || 0) + 1);
-      }
-    };
-
-    const queue = [...hitTx];
-    for (let i = 0; i < Math.min(limit, queue.length); i++) {
-      runners.push((async () => {
-        while (queue.length) {
-          if (signal?.aborted) throw new Error('fetch.groupfund.aborted');
-          const next = queue.shift();
-          try {
-            const payPage = await server.payments().forTransaction(next.hash).limit(200).call();
-            const pays = payPage?.records || [];
-            for (const rec of pays) addOutgoingNative(rec, next.memo);
-          } catch {
-            // ignore single tx failures
-          }
-          done += 1;
-          onProgress?.({ phase: 'scan_payments', page: done, total: hitTx.length, elapsedMs: Date.now() - t0 });
+      const recs = page?.records || [];
+      if (recs.length === 0) { break; }
+      for (const rec of recs) {
+        const type = rec.type || '';
+        // Optionaler Zeitfilter (ISO vergleichbar)
+        if (toISO && rec.created_at && rec.created_at >= toISO) {
+          // zu neu für das Fenster, überspringen
+          continue;
         }
-      })());
-    }
-    await Promise.all(runners);
+        // Nur ausgehende Zahlungen vom eigenen Konto berücksichtigen
+        const fromAddr = rec.from || (type === 'create_account' ? rec.funder : null);
+        if (fromAddr !== publicKey) continue;
+        // Nur native (XLM) bzw. create_account
+        const isNative = rec.asset_type === 'native' || type === 'create_account';
+        if (!isNative) continue;
+        // Memo aus eingebetteter TX lesen
+        const memo = rec?.transaction?.memo != null ? String(rec.transaction.memo).trim() : '';
+        if (!memo) continue;
 
-    // 3) Ergebnis bauen
+        const amountXlm = parseFloat(type === 'create_account' ? (rec.starting_balance || '0') : (rec.amount || '0')) || 0;
+        const txHash = rec.transaction_hash || '';
+        const createdAt = rec.created_at || null;
+        let destAddr = null;
+        if (type === 'create_account') destAddr = rec.account || null; else destAddr = rec.to || rec.to_muxed || null;
+
+        const g = memoGroups.get(memo);
+        if (!g) {
+          const dests = new Map();
+          if (destAddr) dests.set(destAddr, 1);
+          memoGroups.set(memo, { count: 1, totalXlm: amountXlm, firstTx: txHash, firstCreatedAt: createdAt, destinations: dests });
+        } else {
+          g.count += 1;
+          g.totalXlm += amountXlm;
+          if (destAddr) g.destinations.set(destAddr, (g.destinations.get(destAddr) || 0) + 1);
+        }
+      }
+
+      pagesSeen += 1;
+      const oldestOnPage = recs[recs.length - 1]?.created_at || '';
+      lastOldest = oldestOnPage;
+      onProgress?.({ phase: 'scan_payments', page: pagesSeen, elapsedMs: Date.now() - t0, oldestOnPage });
+      // Frühabbruch, wenn Zeitfenster erreicht (älteste Seite ist älter als fromISO)
+      if (fromISO && oldestOnPage && oldestOnPage < fromISO) break;
+      if (pagesSeen >= limitPages) break;
+
+      // Cursor bestimmen und nächste Seite holen (robust gegen Horizon-Limits)
+      const nextCursor = recs[recs.length - 1]?.paging_token || null;
+      if (!nextCursor || nextCursor === lastCursor || seenCursors.has(nextCursor)) { break; }
+      seenCursors.add(nextCursor);
+      lastCursor = nextCursor;
+      builder = server
+        .payments()
+        .forAccount(publicKey)
+        .order('desc')
+        .limit(200)
+        .cursor(nextCursor)
+        .join('transactions');
+      try {
+        page = await withRetry(() => builder.call());
+      } catch {
+        break;
+      }
+    }
+
+    // Fallback: Wenn früh gestoppt und wir den fromISO-Rand noch nicht erreicht haben → Tx-First Pfad
+    if (pagesSeen < limitPages && (!fromISO || (lastOldest && lastOldest >= fromISO))) {
+      onProgress?.({ phase: 'fallback_tx', page: pagesSeen, oldestOnPage: lastOldest });
+      // 1) Transaktionen rückwärts scannen und Memos einsammeln
+      let txPage = await withRetry(() => server.transactions().forAccount(publicKey).order('desc').limit(200).call());
+      let stopTx = false; let txPages = 0;
+      const hits = [];
+      while (!stopTx) {
+        const txs = txPage?.records || [];
+        if (!txs.length) break;
+        for (const tx of txs) {
+          const created = tx.created_at || '';
+          if (toISO && created >= toISO) continue;
+          if (fromISO && created < fromISO) { stopTx = true; break; }
+          const memo = tx?.memo != null ? String(tx.memo).trim() : '';
+          if (memo) hits.push({ hash: tx.hash, memo, created });
+        }
+        if (stopTx || !txPage.next) break;
+        txPages += 1;
+        if (txPages % 5 === 0) onProgress?.({ phase: 'scan_tx', pagesTx: txPages, hitsTx: hits.length });
+        txPage = await withRetry(() => txPage.next());
+      }
+      // 2) Für jede Treffer-Tx payments laden und ausgehende native zählen
+      const limit = 6; let done = 0;
+      const q = [...hits];
+      const workers = Array.from({ length: Math.min(limit, q.length) }, async () => {
+        while (q.length) {
+          const h = q.shift();
+          try {
+            const p = await withRetry(() => server.payments().forTransaction(h.hash).limit(200).call());
+            const pays = p?.records || [];
+            for (const rec of pays) {
+              const type = rec.type || '';
+              const fromAddr = rec.from || (type === 'create_account' ? rec.funder : null);
+              if (fromAddr !== publicKey) continue;
+              const isNative = rec.asset_type === 'native' || type === 'create_account';
+              if (!isNative) continue;
+              const amountXlm = parseFloat(type === 'create_account' ? (rec.starting_balance || '0') : (rec.amount || '0')) || 0;
+              const destAddr = type === 'create_account' ? (rec.account || null) : (rec.to || rec.to_muxed || null);
+              const g = memoGroups.get(h.memo);
+              if (!g) {
+                const dests = new Map();
+                if (destAddr) dests.set(destAddr, 1);
+                memoGroups.set(h.memo, { count: 1, totalXlm: amountXlm, firstTx: rec.transaction_hash || h.hash, firstCreatedAt: rec.created_at || h.created, destinations: dests });
+              } else {
+                g.count += 1; g.totalXlm += amountXlm; if (destAddr) g.destinations.set(destAddr, (g.destinations.get(destAddr) || 0) + 1);
+              }
+            }
+          } catch { /* ignore single tx */ }
+          done += 1;
+          if (done % 10 === 0) onProgress?.({ phase: 'scan_payments', page: pagesSeen + Math.ceil(done / 10), elapsedMs: Date.now() - t0 });
+        }
+      });
+      await Promise.all(workers);
+    }
+
     const items = [...memoGroups.entries()].map(([memo, v]) => {
       const destArr = v.destinations ? [...v.destinations.entries()] : [];
       destArr.sort((a, b) => b[1] - a[1]);
@@ -95,10 +183,10 @@ export async function fetchGroupfundByMemo({
       const topDestination = destArr[0] ? destArr[0][0] : null;
       return {
         type: 'memo',
-        group: memo,                 // Memo-Text
-        occurrences: v.count,        // Anzahl Zahlungen mit diesem Memo
-        totalAmount: v.totalXlm,     // Summe XLM für dieses Memo
-        asset: 'XLM',                // immer XLM
+        group: memo,
+        occurrences: v.count,
+        totalAmount: v.totalXlm,
+        asset: 'XLM',
         sample: { tx: v.firstTx, created_at: v.firstCreatedAt || null },
         uniqueDestinations,
         topDestination,
@@ -106,11 +194,7 @@ export async function fetchGroupfundByMemo({
       };
     });
 
-    return {
-      mode: 'groupfundByMemo',
-      totalGroups: items.length,
-      items,
-    };
+    return { mode: 'groupfundByMemo.livePayments', totalGroups: items.length, items };
   } catch (e) {
     const detail = e?.message || 'unknown';
     throw new Error('fetchInvestedTokens.failed:' + detail);

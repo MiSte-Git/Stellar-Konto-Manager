@@ -33,6 +33,7 @@ import SettingsPage from './pages/SettingsPage.jsx';
 import MultisigCreatePage from './pages/MultisigCreatePage.jsx';
 import MultisigEditPage from './pages/MultisigEditPage.jsx';
 import BalancePage from './pages/BalancePage.jsx';
+import SendPaymentPage from './pages/SendPaymentPage.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -74,6 +75,8 @@ function Main() {
   const [showSecretInfo, setShowSecretInfo] = useState(false);
   // Dev/Testnet toggle state synced with localStorage
   const [devTestnet, setDevTestnet] = useState(false);
+  // Send Payment initial values (e.g., for donation)
+  const [sendInit, setSendInit] = useState(null);
   useEffect(() => {
     // Force default to PUBLIC at app start
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -365,7 +368,13 @@ function Main() {
             onSelect={(value) => {
               const next = (value ?? '').trim();
               console.log('[MainMenu onSelect]', JSON.stringify(next));
-              setMenuSelection(next);
+              if (next === 'donate') {
+                setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M' });
+                setMenuSelection('sendPayment');
+              } else {
+                setSendInit(null);
+                setMenuSelection(next);
+              }
             }}
           />
         )}
@@ -498,6 +507,13 @@ function Main() {
         <BalancePage
           publicKey={sourcePublicKey}
           onBack={() => setMenuSelection(null)}
+        />
+      )}
+      {menuSelection === 'sendPayment' && (
+        <SendPaymentPage
+          publicKey={sourcePublicKey}
+          onBack={() => setMenuSelection(null)}
+          initial={sendInit}
         />
       )}
       {menuSelection === 'settings' && (

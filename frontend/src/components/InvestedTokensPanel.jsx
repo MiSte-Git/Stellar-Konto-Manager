@@ -1,10 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { fetchGroupfundByMemo, fetchGroupfundByMemoCached, fetchInvestedPerToken } from '../utils/stellar/investmentUtils';
+import { fetchGroupfundByMemo, fetchInvestedPerToken } from '../utils/stellar/investmentUtils';
 import trustedWallets from '../../settings/QSI_TrustedWallets.json';
 import ProgressBar from './ProgressBar';
 import { useSettings } from '../utils/useSettings';
 import { buildDefaultFilename } from '../utils/filename';
+import { getHorizonServer } from '../utils/stellar/stellarUtils';
+import { fetchGroupfundByMemoExpert, expertEarliestPaymentAt } from '../utils/expert/expertUtils';
+import { BACKEND_URL } from '../config';
 
 /**
  * Zeigt zwei Sichten:
@@ -24,7 +27,11 @@ export default function InvestedTokensPanel({ publicKey }) {
   const [scopeMode, setScopeMode] = useState('totals'); // 'totals' | 'qsi'
   const showTotals = scopeMode === 'totals';
   const qsiOnly = scopeMode === 'qsi';
-  const { useCache, prefetchDays, decimalsMode } = useSettings();
+  const { decimalsMode, fullHorizonUrl, autoUseFullHorizon } = useSettings();
+  // Optionaler Zeitraumfilter (lokales Datum)
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const [usingFull, setUsingFull] = useState(false);
 
   // Locale-aware number formatter for token/XLM amounts (with thousands separators and selectable fraction digits)
   const tokenAmountFmt = useMemo(() => {
@@ -78,10 +85,33 @@ export default function InvestedTokensPanel({ publicKey }) {
         setProgressState((s) => ({ ...s, ...p }));
       };
       if (view === 'memo') {
-        if (useCache) {
-          res = await fetchGroupfundByMemoCached({ publicKey, prefetchDays });
+        const mkISO = (d, end) => {
+          if (!d) return undefined;
+          return end ? `${d}T23:59:59Z` : `${d}T00:00:00Z`;
+        };
+        const fromISO = mkISO(fromDate, false);
+        const toISO = mkISO(toDate, true);
+        let horizonUrl;
+        if (autoUseFullHorizon && fullHorizonUrl && fromISO && historyAvailableFrom && new Date(fromISO) < new Date(historyAvailableFrom)) {
+          // If Expert API provided, use Expert adapter via proxy
+          if (/api\.stellar\.expert/i.test(fullHorizonUrl)) {
+            setUsingFull(true);
+            try {
+              const expertBase = `${(BACKEND_URL || '').replace(/\/$/, '')}/expert/explorer/public`;
+              const earliest = await expertEarliestPaymentAt({ base: expertBase, account: publicKey });
+              if (earliest) setHistoryAvailableFrom(earliest);
+            } catch { /* noop */ }
+            const expertBase2 = `${(BACKEND_URL || '').replace(/\/$/, '')}/expert/explorer/public`;
+            res = await fetchGroupfundByMemoExpert({ account: publicKey, base: expertBase2, fromISO, toISO, limitPages: 5000, onProgress });
+          } else {
+            // Fallback: a true Full-History Horizon provided
+            horizonUrl = fullHorizonUrl;
+            setUsingFull(true);
+            res = await fetchGroupfundByMemo({ publicKey, horizonUrl, limitPages: 5000, onProgress, fromISO, toISO });
+          }
         } else {
-          res = await fetchGroupfundByMemo({ publicKey, limitPages: 5000, onProgress });
+          setUsingFull(false);
+          res = await fetchGroupfundByMemo({ publicKey, limitPages: 5000, onProgress, fromISO, toISO });
         }
       } else {
         res = await fetchInvestedPerToken({ publicKey, limitPages: 5000, onProgress });
@@ -97,14 +127,41 @@ export default function InvestedTokensPanel({ publicKey }) {
   };
 
   const [progressState, setProgressState] = useState({ phase: 'idle', page: 0, elapsedMs: 0 });
+  const [accountCreatedAt, setAccountCreatedAt] = useState('');
+  const [historyAvailableFrom, setHistoryAvailableFrom] = useState('');
 
   useEffect(() => {
     if (publicKey) {
       setProgressState({ phase: 'idle', page: 0, elapsedMs: 0 });
-      load();
+      // Manuell starten über Button
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey, view]);
+
+  // Konto-Erstellungsdatum (älteste Operation) und frühestes Payment ermitteln
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchInfo() {
+      try {
+        setAccountCreatedAt('');
+        setHistoryAvailableFrom('');
+        if (!publicKey) return;
+        const server = getHorizonServer();
+        const [ops, pays] = await Promise.all([
+          server.operations().forAccount(publicKey).order('asc').limit(1).call().catch(()=>null),
+          server.payments().forAccount(publicKey).order('asc').limit(1).call().catch(()=>null),
+        ]);
+        const created = ops?.records?.[0]?.created_at || '';
+        const earliestPay = pays?.records?.[0]?.created_at || '';
+        if (!cancelled) {
+          setAccountCreatedAt(created);
+          setHistoryAvailableFrom(earliestPay);
+        }
+      } catch { /* noop */ }
+    }
+    fetchInfo();
+    return () => { cancelled = true; };
+  }, [publicKey]);
 
   if (!publicKey) return <div className="p-3 text-sm">{t('investedTokens.hintEnterPublicKey')}</div>;
 
@@ -118,23 +175,42 @@ export default function InvestedTokensPanel({ publicKey }) {
           value={view}
           onChange={(e) => setView(e.target.value)}
         >
-          <option value="memo">{t('investedTokens.view.memo')}</option>
-          <option value="token">{t('investedTokens.view.token')}</option>
+        <option value="memo">{t('investedTokens.view.memo')}</option>
+        <option value="token">{t('investedTokens.view.token')}</option>
         </select>
+        {/* Zeitraumfilter (optional) – auf einer Linie mit dem Filter */}
+        {view === 'memo' && (
+        <div className="flex items-center gap-2 text-xs">
+        <label className="inline-flex items-center gap-1">
+        <span>{t('xlmByMemo.date.from')}</span>
+        <input type="date" value={fromDate} onChange={(e)=>setFromDate(e.target.value)} className="border rounded px-1 py-0.5" />
+        </label>
+        <label className="inline-flex items-center gap-1">
+        <span>{t('xlmByMemo.date.to')}</span>
+        <input type="date" value={toDate} onChange={(e)=>setToDate(e.target.value)} className="border rounded px-1 py-0.5" />
+        </label>
+        </div>
+        )}
         <div className="ml-auto flex items-center gap-4">
-          {/* Radio: entweder Gesamtsumme ODER QSI GF */}
-          <div className="text-xs inline-flex items-center gap-2">
-          <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='totals'} onChange={()=>setScopeMode('totals')} />{t('investedTokens.toggles.showTotals')}</label>
-          <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='qsi'} onChange={()=>setScopeMode('qsi')} />{t('investedTokens.toggles.qsiOnly')}</label>
-          </div>
-          <button className="border rounded px-3 py-1" onClick={load} disabled={loading}>
-            {loading ? t('common.loading') : t('common.refresh')}
-          </button>
-          <button className="border rounded px-3 py-1" onClick={() => { try { if (!data?.items) return; if (view === 'memo') exportCsvMemo(); else exportCsvToken(); } catch { /* noop */ } }}>
-            {t('option.export.csv')}
-          </button>
+        {/* Radio: entweder Gesamtsumme ODER QSI GF */}
+        <div className="text-xs inline-flex items-center gap-2">
+        <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='totals'} onChange={()=>setScopeMode('totals')} />{t('investedTokens.toggles.showTotals')}</label>
+        <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='qsi'} onChange={()=>setScopeMode('qsi')} />{t('investedTokens.toggles.qsiOnly')}</label>
+        </div>
+        <button className="border rounded px-3 py-1" onClick={load} disabled={loading}>
+        {loading ? t('common.loading') : t('investedTokens.action.load', 'Laden')}
+        </button>
+        <button className="border rounded px-3 py-1" onClick={() => { try { if (!data?.items) return; if (view === 'memo') exportCsvMemo(); else exportCsvToken(); } catch { /* noop */ } }}>
+        {t('option.export.csv')}
+        </button>
         </div>
         </div>
+
+         {!usingFull && fromDate && historyAvailableFrom && new Date(fromDate) < new Date(historyAvailableFrom) && (
+           <div className="text-xs text-amber-700 dark:text-amber-400 mt-1">
+             {t('investedTokens.history.hintFullHistory')}
+           </div>
+         )}
 
         {err && <div className="text-red-600 text-sm">{t(err)}</div>}
 
@@ -205,9 +281,20 @@ export default function InvestedTokensPanel({ publicKey }) {
               )}
               {(() => {
                 const dates = sorted.map(r => r.date).filter(Boolean).sort((a,b)=>a-b);
-                if (dates.length === 0) return null;
                 const fmt = new Intl.DateTimeFormat(i18n.language || undefined, { dateStyle: 'medium' });
-                return <div className="text-xs text-gray-500 dark:text-gray-400">Zeitraum: {fmt.format(dates[0])} — {fmt.format(dates[dates.length-1])}</div>;
+                const range = dates.length > 0 ? `${fmt.format(dates[0])} — ${fmt.format(dates[dates.length-1])}` : null;
+                const created = accountCreatedAt ? fmt.format(new Date(accountCreatedAt)) : null;
+                const avail = historyAvailableFrom ? fmt.format(new Date(historyAvailableFrom)) : null;
+                return (
+                  <div className="text-xs text-gray-500 dark:text-gray-400 space-y-0.5">
+                    {range && (<div>Zeitraum: {range}</div>)}
+                    {avail && (<div>{t('investedTokens.history.availableFrom')}: {avail}</div>)}
+                    {created && (<div>{t('account.createdAt')}: {created}</div>)}
+                    {(fromDate && avail && new Date(fromDate) < new Date(historyAvailableFrom)) && (
+                      <div className="text-[11px] text-amber-700 dark:text-amber-400">{t('investedTokens.history.hintFullHistory')}</div>
+                    )}
+                  </div>
+                );
               })()}
               {qsiOnly && (
                 <div className="text-xs text-blue-700 dark:text-blue-300">{t('investedTokens.hints.qsiListSet')}</div>
