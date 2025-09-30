@@ -19,6 +19,12 @@ export default defineConfig(({ mode }) => {
           secure: true,
           rewrite: (path) => path.replace(/^\/horizon/, ''),
         },
+        '/expert': {
+          target: 'https://api.stellar.expert',
+          changeOrigin: true,
+          secure: true,
+          rewrite: (path) => path.replace(/^\/expert/, ''),
+        },
       },
     },
   }
