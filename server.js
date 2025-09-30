@@ -9,7 +9,8 @@ const port = 3000;
 const HORIZON_URL = 'https://horizon.stellar.org';
 const horizon = new StellarSdk.Horizon.Server(HORIZON_URL);
 
-app.use(cors({ origin: 'http://localhost:8080' }));
+// Allow dev origins (5173, 8080) and same-origin in production
+app.use(cors({ origin: true }));
 app.use(bodyParser.json());
 
 const limiter = rateLimit({
@@ -51,6 +52,34 @@ app.get('/trustlines', async (req, res) => {
   } catch (error) {
     console.error('Error fetching trustlines:', error.message);
     res.status(500).json({ error: 'Failed to fetch trustlines' });
+  }
+});
+
+// Proxy for StellarExpert Explorer API (Full-History) to avoid CORS in dev/prod
+app.use('/expert', async (req, res) => {
+  try {
+    const tail = req.originalUrl.replace(/^\/expert/, '/explorer/public');
+    const target = `https://api.stellar.expert${tail}`;
+    const method = req.method || 'GET';
+    const headers = { 'accept': 'application/json' };
+    // Forward JSON bodies if present
+    let body;
+    if (method !== 'GET' && method !== 'HEAD' && req.is('application/json')) {
+      body = JSON.stringify(req.body);
+      headers['content-type'] = 'application/json';
+    }
+    const r = await fetch(target, { method, headers, body });
+    const outHeaders = {};
+    r.headers.forEach((v, k) => {
+      if (k.toLowerCase() === 'content-type' || k.toLowerCase() === 'cache-control') outHeaders[k] = v;
+    });
+    res.status(r.status);
+    for (const [k, v] of Object.entries(outHeaders)) res.setHeader(k, v);
+    const buf = await r.arrayBuffer();
+    res.send(Buffer.from(buf));
+  } catch (e) {
+    console.error('Expert proxy failed:', e?.message || e);
+    res.status(502).json({ error: 'expert.proxy.failed' });
   }
 });
 
