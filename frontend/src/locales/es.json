@@ -286,7 +286,10 @@
     },
     "units": {
       "signatures": "Firma(s)"
-    }
+    },
+    "thresholdLow": "bajo",
+    "thresholdMed": "medio",
+    "thresholdHigh": "alto"
   },
   "multisigEdit": {
     "confirm": {
@@ -311,7 +314,8 @@
     "validation": {
       "signerKeyHint": "Nota: Los firmantes deben comenzar con \"G\" (clave pública ed25519).",
       "signerKeyInvalid": "Dirección de firmante no válida. Se espera una dirección G… (ed25519)."
-    }
+    },
+    "masterWeight": "Peso maestro"
   },
   "navigation": {
     "back": "Regresar",
@@ -637,5 +641,9 @@
       "summary": "Cantidad: {{count}} • Suma: {{sum}} XLM • Carteras únicas: {{unique}}",
       "title": "Memorandos falsos/vacíos en el período"
     }
+  },
+  "network": {
+    "mainnet": "Red principal",
+    "testnet": "Red de pruebas"
   }
 }

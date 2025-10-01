@@ -286,7 +286,10 @@
     },
     "units": {
       "signatures": "Allekirjoitus/Allekirjoitukset"
-    }
+    },
+    "thresholdLow": "matala",
+    "thresholdMed": "keskitaso",
+    "thresholdHigh": "korkea"
   },
   "multisigEdit": {
     "confirm": {
@@ -311,7 +314,8 @@
     "validation": {
       "signerKeyHint": "Huomautus: Allekirjoittajien on alettava kirjaimella \"G\" (ed25519-julkinen avain).",
       "signerKeyInvalid": "Virheellinen allekirjoittajan osoite. Odotettiin G-alkuista osoitetta (ed25519)."
-    }
+    },
+    "masterWeight": "Master-paino"
   },
   "navigation": {
     "back": "Takaisin",
@@ -637,5 +641,9 @@
       "summary": "Määrä: {{count}} • Summa: {{sum}} XLM • Yksilölliset lompakot: {{unique}}",
       "title": "Virheelliset/Tyhjiä muistiot ajalta"
     }
+  },
+  "network": {
+    "mainnet": "Pääverkko",
+    "testnet": "Testiverkko"
   }
 }
