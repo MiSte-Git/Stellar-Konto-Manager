@@ -286,7 +286,10 @@
     },
     "units": {
       "signatures": "Подпись(и)"
-    }
+    },
+    "thresholdLow": "низкий",
+    "thresholdMed": "средний",
+    "thresholdHigh": "высокий"
   },
   "multisigEdit": {
     "confirm": {
@@ -311,7 +314,8 @@
     "validation": {
       "signerKeyHint": "Примечание: Подписанты должны начинаться с \"G\" (публичный ключ ed25519).",
       "signerKeyInvalid": "Недействительный адрес подписанта. Ожидаемый адрес должен начинаться с буквы G (ed25519)."
-    }
+    },
+    "masterWeight": "Мастер-вес"
   },
   "navigation": {
     "back": "Назад",
@@ -637,5 +641,9 @@
       "summary": "Количество: {{count}} • Сумма: {{sum}} XLM • Уникальные кошельки: {{unique}}",
       "title": "Неверные/Пустые записки за период"
     }
+  },
+  "network": {
+    "mainnet": "Основная сеть (Mainnet)",
+    "testnet": "Тестовая сеть"
   }
 }
