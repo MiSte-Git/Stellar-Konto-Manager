@@ -1,31 +1,62 @@
 {
-  "account": {
-    "loadFailed": "Error loading account {publicKey}: {{error}}",
-    "noBalances": "No balance found for the account."
-  },
-  "address": "Address",
   "app": {
     "errorBoundary": {
       "title": "Something went wrong."
     }
   },
   "asset": {
-    "amount": "Amount (XLM)",
-    "balance": "Balance",
+    "balance": "Credit balance",
     "code": "Asset code",
     "creationDate": "Created on",
     "issuer": "Issuer"
   },
-  "assets": {
-    "compromisedPurchases": "{total} total payments",
-    "totalPurchases": "Total number of purchases: {count}"
+  "balance": {
+    "buttons": {
+      "details": "More details",
+      "explorer": "Explorer",
+      "payments": "Recent operations"
+    },
+    "current": "Current balance",
+    "details": "Details in block explorers",
+    "empty": "No credits found.",
+    "explorer": {
+      "expert": "stellar.expert",
+      "stellarchain": "Stellarchain.io"
+    },
+    "noPublicKey": "Please enter a public key first.",
+    "payments": {
+      "all": "All",
+      "columns": {
+        "amount": "Amount",
+        "asset": "Asset",
+        "counterparty": "Contra account",
+        "date": "Date",
+        "direction": "Direction",
+        "memo": "Memo",
+        "tx": "I'm sorry, but the provided text \"Tx\" is too ambiguous for translation as it appears to be an abbreviation or incomplete phrase. Could you please provide more context or clarify the intended meaning?",
+        "type": "Type"
+      },
+      "empty": "No operations found.",
+      "filter": {
+        "memo": "Memo filter",
+        "memoPlaceholder": "Searching memo..."
+      },
+      "from": "From",
+      "incoming": "Entrance",
+      "limit": "Number",
+      "outgoing": "Exit",
+      "title": "Recent operations",
+      "to": "Until"
+    },
+    "paymentsHint": "You can filter inputs/outputs in the Explorer.",
+    "title": "Show account balance"
   },
   "buildInfo": {
     "branch": "Branch",
     "commit": "Commit",
     "env": "Environment",
     "error": "Build information could not be loaded.",
-    "loading": "Loading build information …"
+    "loading": "Loading build information..."
   },
   "cache": {
     "clear": "Clear cache",
@@ -34,12 +65,9 @@
     "lastRefresh": "Last updated: {{ts}}"
   },
   "common": {
-    "clear": "Clear input",
-    "loading": "Loading…",
+    "clear": "Delete input",
+    "loading": "Loading...",
     "refresh": "Reload"
-  },
-  "date": {
-    "times": "Date and times"
   },
   "error": {
     "asset": {
@@ -47,17 +75,17 @@
     },
     "cache": {
       "backfillAborted": "Initial loading of payments aborted",
-      "indexIterFailed": "Index iteration in cache failed",
-      "memoNormBackfillFailed": "Initial loading of payments for normalized memos failed",
-      "openFailed": "Local cache could not be opened.",
-      "readFailed": "Failed to read from cache",
-      "writeFailed": "Failed to write to cache",
       "coverage": {
-        "newestFailed": "Failed to determine the latest payment",
-        "oldestFailed": "Failed to determine the oldest date"
+        "newestFailed": "Failed to determine the latest payment.",
+        "oldestFailed": "Failed to determine the earliest date"
       },
-      "rehydrateFailed": "Failed to reload missing memos",
-      "rehydrateWriteFailed": "Failed to write memos to the cache"
+      "indexIterFailed": "Index iteration in the cache failed.",
+      "memoNormBackfillFailed": "Initial loading of payments for normalized memos failed.",
+      "openFailed": "Local cache could not be opened",
+      "readFailed": "Failed to read from cache",
+      "rehydrateFailed": "Loading missing memos failed.",
+      "rehydrateWriteFailed": "Failed to write memos to cache",
+      "writeFailed": "Writing to the cache failed."
     },
     "connection": {
       "backend": "No connection to the backend possible. Please ensure"
@@ -65,17 +93,19 @@
     "fetchInvestedTokens": {
       "failed": "Failed to load investment data: {{detail}}"
     },
-    "fetchingOperations": "Error retrieving operations: {{error}}",
     "horizon": {
       "paymentsFetch": "Error loading payments from Horizon"
     },
-    "op_invalid_limit": "The trustline cannot be deleted. It may still have a balance or outstanding obligations.",
+    "loadTrustlines": "Failed to load trustlines",
+    "loadTrustlinesFailed": "Failed to load trustlines",
+    "loadTrustlinesNotFound": "Account not found in the selected network. Check Testnet/Public in the header.",
+    "accountNotFoundInNetwork": "Not found in '{{net}}'!",
+    "op_invalid_limit": "Trustline cannot be deleted. It may still have a balance or outstanding obligations.",
     "query": {
       "invalidMemo": "Invalid memo",
       "invalidRange": "Time window is invalid (From > To)",
-      "invalidTime": "Invalid time entry"
+      "invalidTime": "Invalid time specification"
     },
-    "script": "Script error: {message} at {source}:{lineno}:{colno} - {{error}}",
     "submitTransaction": {
       "failed": {
         "tx_bad_auth": "Transaction declined: Invalid signature",
@@ -84,24 +114,19 @@
       }
     },
     "sync": {
-      "backfillFailed": "Initial loading of payments failed",
-      "incrementalFailed": "Payment update failed"
+      "backfillFailed": "Initial loading of payments failed.",
+      "incrementalFailed": "Update of payments failed"
     },
     "transaction": {
-      "deleteFail": "[ERROR] Deletion failed: {{error}}",
       "failed": "Transaction failed",
-      "title": "Transaction error",
-      "unknown": "Unknown error during the transaction."
-    },
-    "transaktion": {
-      "unknown": "Unknown error during the transaction."
+      "title": "Transaction error"
     },
     "trustline": {
       "submitFailed": "Error deleting the trustline.",
       "unknown": "Unknown error while deleting the trustline."
     },
     "xlmByMemo": {
-      "aborted": "Operation canceled by user",
+      "aborted": "Operation canceled by the user.",
       "accountInvalid": "Invalid account",
       "dateInvalid": "Invalid date",
       "dateRange": "Invalid date range",
@@ -114,18 +139,12 @@
   "exportCsv": {
     "failed": "CSV export failed"
   },
-  "fetchInvestedTokens": {
-    "failed": "Failed to load investment data: {{detail}}"
-  },
-  "error": {
-    "accountNotFoundInNetwork": "Not found in '{{net}}'!"
-  },
   "investedTokens": {
     "columns": {
       "amount": "Amount",
       "compromised": "Compromised",
-      "deactivated": "Disabled",
-      "destination": "Target wallet",
+      "deactivated": "Deactivated",
+      "destination": "Destination wallet",
       "issuer": "Issuer",
       "label": "Label",
       "memo": "Memo",
@@ -133,25 +152,23 @@
       "date": "Date",
       "token": "Token"
     },
+    "decimals": {
+      "auto": "Automatically",
+      "label": "Decimal places:"
+    },
     "filter": {
-      "memoPlaceholder": "Filter by memo, wallet address, or label",
-      "tokenPlaceholder": "Filter by token (CODE:ISSUER)"
+      "memoPlaceholder": "Filter by memo, wallet address, or label.",
+      "tokenPlaceholder": "Filter by Token (CODE:ISSUER)"
     },
-    "group": {
-      "memo": "Memo",
-      "memoOrToken": "Memo, otherwise token",
-      "token": "Token (CODE:ISSUER)"
-    },
-    "groupBy": "Group by",
     "hintEnterPublicKey": "Please enter a public key first.",
     "item": {
       "memo": "Memo: \"{{memo}}\" (Payments: {{occurrences}})",
       "token": "Token: {{token}} (Payments: {{occurrences}})",
       "tokenShort": "Token: {{token}}"
     },
-    "missingPublicKey": "Public key is missing.",
-    "moreTruncated": "... and {{extra}} more groups",
-    "toWallet": "to wallet: {{address}}",
+    "missingPublicKey": "Public key missing.",
+    "moreTruncated": "... and {{extra}} additional groups",
+    "toWallet": "to Wallet: {{address}}",
     "total": "Number of tokens purchased: {{count}}",
     "totalTokens": "Number of invested tokens (assets): {{count}}",
     "value": {
@@ -161,190 +178,150 @@
     "view": {
       "label": "Filter by:",
       "memo": "Memos (Groupfund)",
-      "token": "Token (purchased amount)"
+      "token": "Token (purchased quantity)"
     },
     "toggles": {
-      "showTotals": "Show total",
-      "qsiOnly": "QSI GF"
+      "showTotals": "Total sum",
+      "qsiOnly": "Sum QSI GF"
     },
     "hints": {
-      "qsiListSet": "List of GF accounts is set in Settings.",
-      "pageTime": "Loading one page takes about 0.2 seconds → 100 pages ≈ 20 seconds → 1000 pages ≈ 200 seconds (≈ 3:20 minutes)."
+      "qsiListSet": "Note: You can find the GF list under Settings → Trusted Wallets (QSI).",
+      "pageTime": "Loading a page takes about 0.2 seconds → 100 pages ≈ 20 seconds → 1000 pages ≈ 200 seconds (≈ 3:20 minutes)."
     },
-    "walletCapInfo": "Note: A wallet can hold a maximum of 1000 trustlines.",
-    "decimals": {
-      "auto": "Automatic",
-      "label": "Decimal places:"
+    "walletCapInfo": "Note: A wallet can hold a maximum of 1000 trust lines.",
+    "action": {
+      "load": "Shop"
+    },
+    "history": {
+      "availableFrom": "Server (Horizon) – History from",
+      "hintFullHistory": "Note: The ledger history from the Horizon server only goes back to {{available}}. Data is displayed only up to that point. Therefore, the chosen \"From\" date is limited. For older data, a (usually paid) full-history provider is required (possibly coming in the future!)."
     }
   },
+  "account": {
+    "createdAt": "Account created on",
+    "createdAtUnknown": "Cannot be determined."
+  },
+  "fetch.groupfund.aborted": "Operation canceled by the user",
   "issuer": {
-    "compromised": "Compromised",
     "enter": "Enter the issuer address:",
-    "invalid": "Invalid issuer address.",
-    "label": "Enter the issuer address:",
-    "notfound": "No issuer addresses found",
-    "placeholder": "e.g."
+    "invalid": "Invalid issuer address."
   },
   "main": {
-    "processing": "Process is running, please wait...",
-    "title": "Stellar Trustline Manager"
+    "processing": "Process running, please wait …",
+    "title": "Stellar Trustline/Account Manager"
   },
   "menu": {
+    "balance": "Show account balance",
+    "devTestnet": "Testnet (for developers)",
     "unknown": "Unknown menu selection",
-    "xlmByMemo": "Filter XLM amount by memo/token",
-    "balance": "View balance",
-    "devTestnet": "Testnet (for developers)"
+    "xlmByMemo": "Filter by memo",
+    "sendPayment": "Send payment",
+    "donate": "Donations"
   },
   "badges": {
     "testnet": "TESTNET"
   },
-  "multisigEdit": {
-    "title": "Edit multisig",
-    "menu": "Edit multisig",
-    "menuHint": "Adjust signers/thresholds of an existing account",
-    "hint": "Load an existing account, adjust signers, weights, master weight and thresholds, then save the changes.",
-    "load": "Load",
-    "reload": "Reload",
-    "save": "Save changes",
-    "saved": "Changes saved. TX: {{hash}}",
-    "loaded": "Loaded. Additional signers: {{count}}",
-    "currentConfig": "Current / planned configuration",
-    "signers": "Signers",
-    "weight": "Weight",
-    "noteMaxSigners": "Note: Stellar allows up to 20 additional signers per account.",
-    "error": {
-      "thresholdTooHigh": "Thresholds must not exceed the sum of weights."
-    },
-    "confirm": {
-      "removeSigner": "Really remove the signatory?"
-    },
-    "validation": {
-      "signerKeyHint": "Note: Signatories must start with \"G\" (ed25519-public key).",
-      "signerKeyInvalid": "Invalid signatory address. A G... address (ed25519) is expected."
-    }
-  },
-  "balance": {
-    "title": "View balance",
-    "noPublicKey": "Please enter a public key first.",
-    "current": "Current balances",
-    "empty": "No balances found.",
-    "details": "Details in block explorers",
-    "paymentsHint": "You can filter incoming/outgoing payments in the explorer.",
-    "buttons": {
-      "payments": "Recent operations",
-      "details": "More details",
-      "explorer": "Explorer"
-    },
-    "explorer": {
-      "expert": "stellar.expert",
-      "stellarchain": "Stellarchain.io"
-    },
-    "payments": {
-      "title": "Recent operations",
-      "incoming": "Incoming",
-      "outgoing": "Outgoing",
-      "empty": "No operations found.",
-      "limit": "Count",
-      "all": "All",
-      "columns": {
-        "date": "Date",
-        "direction": "Direction",
-        "type": "Type",
-        "asset": "Asset",
-        "amount": "Amount",
-        "counterparty": "Counterparty",
-        "memo": "Memo",
-        "tx": "Tx"
-      },
-      "from": "From",
-      "to": "Until",
-      "filter": {
-        "memo": "Memo filter",
-        "memoPlaceholder": "Search memo..."
-      }
-    }
-  },
   "multisigCreate": {
-    "title": "Create account (optional multisig)",
-    "menu": "Create account",
-    "menuHint": "Create accounts for family members, friends, employees...",
-    "hint": "Create a new wallet. Optionally activate now (1 XLM or recommended) and add additional signers (multisig).",
-    "generateKeys": "Generate keys",
-    "instructions": {
-      "public": "Public Key: Your account address, like an IBAN. Safe to share.",
-      "secret": "Secret Key: Your password for the account. Never share, store securely (e.g., on paper)."
-    },
-    "signersTitle": "Multisig (additional signers)",
-    "signersInfo": "Add G... addresses as co-signers. Each signer increases the minimum reserve.",
-    "threshold": "Required signatures (low/med/high)",
-    "thresholdInfo": "Recommendation: {{req}} of {{total}} signatures (incl. master)",
-    "thresholdHelp": "Threshold: number of required signatures (master + co-signers) for a transaction to be valid.",
-    "thresholdLevelsHint": "Typical: low = simple changes (e.g., memo/price), medium = payments/trades, high = security-critical (e.g., signers/thresholds)",
-    "thresholdStatic": "Required: {{val}} of {{total}} signatures (low/medium/high)",
-    "thresholdCurrent": "Current selection: low={{low}}, medium={{med}}, high={{high}} of {{total}} signatures",
-    "thresholdSum": "Sum weights: {{sum}}",
-    "thresholdTooHigh": "Note: A threshold must not exceed the sum of weights. Please adjust the values.",
-    "activateNow": "Activate account now",
-    "activateHint": "Activation is required for the account to exist. On Testnet via Friendbot, on Mainnet via \"Create Account\" from an existing wallet.",
-    "mainnetActivateNote": "Note: Multisig requires additional reserves. 1 XLM often isn't enough.",
-    "startingBalance": "Starting balance (XLM)",
-    "balanceWarning": "Starting balance is likely too low to add the {{count}} additional signers (minimum reserve: {{req}} XLM)",
-    "reserve": {
-      "base": "Base reserve per entry: {{val}} XLM",
-      "required": "Required minimum reserve (new): {{val}} XLM",
-      "recommended": "Recommended starting balance: {{val}} XLM (incl. buffer)"
-    },
-    "confirmLowBalance": "Starting balance ({{bal}} XLM) is below minimum reserve ({{req}} XLM) for {{count}} additional signers. Continue anyway?",
-    "signersCount": "Number of additional signers",
-    "signersCountHint": "You set the minimum number of signatures below in \"Required signatures\" (low/medium/high).",
-    "signersCountLimit": "Note: Quick select up to 10. Manual input is possible. Network limit (Stellar): max 20 additional signers.",
-    "info": {
-      "more": "More info",
-      "text": "How it works\nYour secret key always remains in your browser. It is only used to sign your transaction locally. Only the final signature is sent to our server or outside, never your key. If you want, you can verify this with the browser developer tools: you can see that no key is transmitted.",
-      "multisig": "Multisig means that more than one signature is required for this account. You choose additional signers and the threshold (e.g. 2 of 3). A transaction is valid only if at least the threshold number of signatures (master + co-signers) is present."
-    },
-    "enableMultisig": "Create multisig for this account",
-    "tooltips": {
-      "masterWeight": "Weight of the account owner (master). Contributes to the total weight.",
-      "signerWeight": "Weight of the respective co-signer (0–255). Contributes to the total weight.",
-      "low": "Low: simple changes (e.g., memo, price).",
-      "med": "Medium: payments and trades.",
-      "high": "High: security-critical changes (e.g., signers/thresholds).",
-      "signerWeightHint": "Note: Master and signer weights form the total; thresholds (low/medium/high) must not exceed this total."
-    },
+    "activateHint": "Activation is necessary for the account to exist. In the testnet, this can be done via Friendbot, and in the mainnet, via \"Create Account\" from an existing wallet.",
+    "activateNow": "Activate account immediately",
+    "activateOnly": "Only activate",
+    "activated": "Account activated. TX: {{hash}}",
+    "activatedTestnet": "Account activated on the testnet.",
+    "alreadyActive": "Account is already active.",
+    "balanceWarning": "The starting balance is likely too low to add the {{count}} additional signers (minimum reserve: {{req}} XLM)",
     "bestPractices": {
-      "title": "Best practices",
-      "text": "Recommended: 2 out of 3 signatures. This means: Out of a total of 3 signers (1 master + 2 co‑signers), at least 2 signatures are required. How to set it up: give master and each signer weight=1 and set thresholds to low=1, medium=2, high=2. This allows simple changes with 1 signature; payments/trades require 2; security‑critical changes require 2."
+      "text": "Recommended: 2 out of 3 signatures. This means that out of a total of 3 authorized signatories (1 Master + 2 Signers), at least 2 signatures are required. Implementation: Set the weights for Master/Signer to 1 each and set the thresholds to low=1, medium=2, high=2. This allows simple changes with 1 signature; payments/trades require 2; security-critical changes require 2.",
+      "title": "Proven settings"
     },
+    "confirmLowBalance": "Initial balance ({{bal}} XLM) is below the minimum reserve ({{req}} XLM) for {{count}} additional signers. Continue anyway?",
+    "createButton": "Create / Set Multisig",
+    "createdAndConfigured": "Account created/configured. TX: {{hash}}",
+    "createdNoSigners": "Account created. No additional signers were specified.",
+    "enableMultisig": "Create multisig for this account",
+    "generateFirst": "Please generate the key first.",
+    "generateKeys": "Generate key",
+    "hint": "Create a new wallet. Optionally activate immediately (1 XLM or recommended) and add additional signers (Multisig).",
     "hints": {
       "byteRange": "(0–255)"
     },
-    "units": {
-      "signatures": "signatures"
+    "info": {
+      "more": "More info",
+      "multisig": "Multisig means: Multiple signatures are required for this account. You select additional signers and the threshold (e.g., 2 out of 3). A transaction is only valid if at least as many signatures are present as the threshold (Master + co-signers).",
+      "text": "How it works\nYour private key always stays in your browser. It is only used to sign your transaction locally. Only the completed signature is sent to our server or externally, never your key. Anyone who wants can verify this with the developer tools in the browser: it shows that no key is being transmitted."
     },
-    "createButton": "Create / set multisig",
-    "activateOnly": "Activate only",
-    "generateFirst": "Please generate keys first.",
-    "activated": "Account activated. TX: {{hash}}",
-    "activatedTestnet": "Account activated on Testnet.",
-    "alreadyActive": "Account is already active.",
-    "createdAndConfigured": "Account created/configured. TX: {{hash}}",
-    "createdNoSigners": "Account created. No additional signers specified."
+    "instructions": {
+      "public": "Public Key: Your account address, like an IBAN. Safe to share.",
+      "secret": "Secret Key: Your password for the account. Never share it, store securely (e.g., on paper)."
+    },
+    "mainnetActivateNote": "Note: Additional reserves are needed for multisig. 1 XLM is often not enough.",
+    "menu": "Create account",
+    "menuHint": "To create accounts for family members, friends, employees...",
+    "reserve": {
+      "base": "Base reserve per entry: {{val}} XLM",
+      "recommended": "Recommended starting balance: {{val}} XLM (including buffer)",
+      "required": "Required Minimum Reserve (new): {{val}} XLM"
+    },
+    "signersCount": "Number of additional signatories",
+    "signersCountHint": "You set the minimum number of signatures below under \"Required Signatures\" (low/medium/high).",
+    "signersCountLimit": "Note: Network limit (Stellar): max. 20 additional signers.",
+    "signersInfo": "Add G... addresses as signatories. Each signatory increases the minimum reserve.",
+    "signersTitle": "Multisig (additional signers)",
+    "startingBalance": "Starting balance (XLM)",
+    "threshold": "Required Signatures (low/medium/high)",
+    "thresholdCurrent": "Currently selected: low={{low}}, medium={{med}}, high={{high}} out of {{total}} signatures",
+    "thresholdHelp": "Threshold: The number of required signatures (master + signers) for a transaction to be valid.",
+    "thresholdInfo": "Recommendation: {{req}} out of {{total}} signatures (including Master)",
+    "thresholdLevelsHint": "Typically, the following applies: low = simple changes (e.g., memo, price), medium = payments/trading, high = security-critical changes (e.g., signer/thresholds).",
+    "thresholdStatic": "Required: {{val}} out of {{total}} signatures (low/medium/high)",
+    "thresholdSum": "Sum of weights: {{sum}}",
+    "thresholdTooHigh": "Note: A threshold must not exceed the sum of the weights. Please adjust the values accordingly.",
+    "title": "Create account (optional Multisig)",
+    "tooltips": {
+      "high": "High: security-critical changes (e.g., signers/thresholds).",
+      "low": "Low: simple changes (e.g., memo, price).",
+      "masterWeight": "Weight of the account holder (Master) (0-255): The master key of the account has a voting right. The higher its weight, the more votes its signature counts for. These votes are tallied together with those of other signers to determine if the required majority is reached.",
+      "med": "Means: Payments and trading actions.",
+      "signerWeight": "Signer weight (0–255): Additional signers also have voting rights. The weight determines how many votes their signature contributes. When a transaction is sent, all cast votes are added together. If the predetermined minimum number of votes (threshold) is reached, the transaction is considered authorized.",
+      "signerWeightHint": "Note: Master and signer weights form the total; thresholds (low/medium/high) must not exceed this total."
+    },
+    "units": {
+      "signatures": "Signature(s)"
+    }
+  },
+  "multisigEdit": {
+    "confirm": {
+      "removeSigner": "Really remove signatory?"
+    },
+    "currentConfig": "Current / Planned Configuration",
+    "error": {
+      "thresholdTooHigh": "Thresholds must not exceed the sum of the weights."
+    },
+    "hint": "Load an existing account, adjust signers, weights, master weight, and thresholds, and save the changes.",
+    "load": "Shop",
+    "loaded": "Loaded. Additional signers: {{count}}",
+    "menu": "Edit account with multisig",
+    "menuHint": "Adjusting signers/thresholds of an existing account",
+    "noteMaxSigners": "Note: Stellar allows a maximum of 20 additional signers per account.",
+    "reload": "Reload",
+    "save": "Save changes",
+    "saved": "Changes saved. TX: {{hash}}",
+    "signers": "Signatory",
+    "weight": "Weighting",
+    "title": "Edit multisig account",
+    "validation": {
+      "signerKeyHint": "Note: Signers must start with \"G\" (ed25519 public key).",
+      "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
+    }
   },
   "navigation": {
-    "backToMainMenu": "Back to menu",
-    "backToPublicKey": "Back to public key input",
-    "backToTop": "Back to Top",
-    "current": {
-      "menu": "Current menu:"
-    },
-    "next": "Next",
-    "previous": "Previous",
-    "back": "Back"
+    "back": "Back",
+    "backToMainMenu": "Back to the menu",
+    "backToPublicKey": "Return to public key input",
+    "backToTop": "Back to top"
   },
+  "noIssuerTrustlinesFound": "No trustlines found for issuer {{issuer}}.",
   "option": {
     "add": "Add",
-    "addToList": "Add to list",
     "cancel": "Cancel",
     "close": "Close",
     "confirm": {
@@ -355,28 +332,19 @@
     },
     "copy": "Copy",
     "delete": "Delete",
-    "description": "Description",
     "export": {
       "csv": "Save as CSV",
       "pdf": "Save as PDF"
     },
-    "filter": "Filtering...",
-    "hide": "Hide",
     "loading": "Loading...",
-    "memo": "Memo",
-    "newAddress": "New address",
     "no": "No",
-    "ok": "OK",
-    "page": "Page",
     "results": "Results:",
-    "save": "Save",
-    "show": "Show",
     "yes": "Yes"
   },
   "progress": {
     "cancel": "Cancel",
-    "canceled": "Cancelled",
-    "counts": "Checked: {{ops}} • Hits: {{matches}}",
+    "canceled": "Canceled",
+    "counts": "Reviewed: {{ops}} • Matches: {{matches}}",
     "done": "Completed",
     "duration": "Duration: {{val}}",
     "elapsed": "Duration: {{time}}",
@@ -386,90 +354,100 @@
       "cache": "Mode: Cache",
       "live": "Mode: Live (Horizon)"
     },
-    "oldest": "oldest date of this page: {{date}}",
-    "oldestMatchInRangeAt": "First deposit in the period: {{date}}",
+    "oldest": "earliest date on this page: {{date}}",
+    "oldestMatchInRangeAt": "First deposit within the period: {{date}}",
     "phase": {
-      "backfill": "Loading missing payments…",
-      "cacheQuery": "Calculating result from local cache…",
+      "backfill": "Loading missing payments...",
+      "cacheQuery": "Calculating result from local cache...",
       "chunkDone": "Chunk processed.",
       "chunkSkip": "Chunk skipped.",
-      "cover": "Ensuring cache coverage...",
-      "export": "Export result...",
+      "cover": "Ensuring cache coverage…",
+      "export": "Export result…",
       "finalize": "Completed",
       "finalizeDiag": "Diagnosis completed",
-      "idle": "Ready…",
+      "idle": "Ready...",
       "pageDone": "Page {{page}} completed.",
-      "rehydrate": "Reconstructing cache…",
+      "rehydrate": "Rebuilding cache...",
       "scan": "Scanning payments (page {{page}})…",
+      "scan_ops": "Scanning operations...",
       "scan_payments": "Scanning payments (page {{page}})…",
-      "scan_payments_fast": "Scan payments (quickly) – Page {{page}}…",
+      "scan_payments_fast": "Scanning payments (quickly) – Page {{page}}…",
       "scan_tx": "Scan transactions",
-      "sync": "Synchronizing payments…",
-      "txFetch": "Loading transaction details…",
-      "scan_ops": "Scan operations..."
+      "sync": "Synchronize payments...",
+      "txFetch": "Loading transaction details…"
     },
     "wrongMemos": {
       "failed": "Error loading payments with incorrect/empty memo."
     }
   },
   "publicKey": {
+    "deleteFromList": "Remove from list",
     "destination": {
       "error": "Invalid target key.",
       "input": "Enter target wallet address"
     },
-    "invalid": "Invalid public key or federation address.",
     "label": "Please enter the source federation address or the public key:",
-    "placeholder": "e.g.",
-    "recipient": "Reception address",
-    "source": "Source wallet address",
-    "submit": {
-      "button": "Submit"
-    },
-    "deleteFromList": "Delete from list",
     "load": "Loading...",
+    "placeholder": "e.g.",
+    "source": "Source wallet address",
+    "invalid": "Invalid public key.",
+    "submit": {
+      "button": "Send"
+    },
     "test": "Test"
-  },
-  "puplicKey": {
-    "failed": "Error resolving federation address/public key: {{error}}"
   },
   "secretKey": {
     "cleared": "Secret key has been deleted.",
-    "empty": "The secret key field is empty.",
-    "info": "The secret key is only temporarily transmitted to a backend to execute the chosen action. The key is not stored.",
+    "empty": "Secret key field is empty.",
+    "info": "The secret key is only temporarily transmitted to a backend for the execution of the selected action. The key is not stored.",
     "invalid": "Invalid secret key.",
     "label": "Enter the source secret key (will be securely sent to the backend)",
-    "mismatch": "The secret key does not match the public address.",
+    "mismatch": "Secret key does not match the public address.",
     "placeholder": "e.g.",
-    "valid": "✅ Secret Key is valid."
+    "valid": "✅ Secret key is valid.",
+    "remember": {
+      "label": "Remember the secret key for this session.",
+      "hint": "When activated, the key will be stored until the tab is closed and reused for further payments."
+    },
+    "clearSession": "Delete session key",
+    "clearSessionHint": "Removes the secret key stored in this session (it will be deleted anyway when the tab is closed)."
   },
   "settings": {
     "cache": {
-      "help": "Accelerates queries through local payment cache, but may prolong the initial loading.",
+      "help": "Speeds up queries through a local payment cache but may extend the initial loading time.",
       "label": "Use cache (Beta)",
-      "prefetchHelp": "Lead time for loading entries/transactions in days (once upon first activation)"
+      "prefetchHelp": "Lead time for loading entries/transactions in days (one-time upon initial activation)"
     },
-    "description": "Currently, there are no settings available.",
+    "network": {
+      "title": "Network",
+      "desc": "Optional: Full-History Horizon for Deep History",
+      "fullUrl": "Full-History Horizon URL",
+      "autoUseFull": "Automatically use if needed (when the from-date is older than the server history)"
+    },
+    "description": "There are currently no settings available.",
+    "display": {
+      "decimals": {
+        "auto": "Automatically",
+        "label": "Decimal places"
+      },
+      "desc": "Global display settings.",
+      "title": "Advertisement"
+    },
     "error": {
       "fetchFailed": "Failed to load settings: {{detail}}"
     },
-    "export": "Export settings",
-    "import": "Import settings",
     "label": "Settings",
     "prefetchDays": "Lead time (days)",
     "trustedWallets": {
       "buttons": {
         "export": "Export",
-        "import": "Importing",
+        "import": "Import",
         "reset": "Reset to default"
       },
       "desc": "This list is stored locally in the browser. Default file: QSI_TrustedWallets.json",
       "editor": {
-        "apply": "Apply",
-        "format": "Format",
         "invalidFormat": "Invalid format. An object with the field \"wallets\" (array) is expected.",
-        "label": "Edit JSON",
-        "parseError": "JSON could not be parsed.",
-        "placeholder": "Insert JSON content here..."
+        "parseError": "JSON could not be parsed."
       },
       "file": {
         "hint": "Import a JSON file in the format { wallets: [...] }",
@@ -477,13 +455,12 @@
       },
       "info": {
         "count": "Entries: {{n}}",
-        "updatedAt": "Status: {{date}}"
+        "updatedAt": "Status as of {{date}}"
       },
-      "title": "Trusted Wallets (QSI)",
       "table": {
         "addRow": "Add line",
         "columns": {
-          "actions": "Actions",
+          "actions": "Shares",
           "address": "Address",
           "compromised": "Compromised",
           "deactivated": "Deactivated",
@@ -493,77 +470,92 @@
         "discard": "Discard",
         "save": "Save"
       },
+      "title": "Trusted Wallets (QSI)",
       "validation": {
-        "hint": "At least one line is invalid (missing/duplicated address)."
+        "hint": "At least one line is invalid (missing/duplicate address)."
       }
-    },
-    "display": {
-      "decimals": {
-        "auto": "Automatic",
-        "label": "Decimal places"
-      },
-      "desc": "Global display settings.",
-      "title": "Display"
     }
   },
   "token": {
-    "purchases": "Number of invested tokens"
-  },
-  "transaction": {
-    "pending": "Transaction pending...",
-    "success": "Transaction successful: {hash}"
+    "purchases": "Filter tokens/assets"
   },
   "trustline": {
-    "all": "Show trustline(s)",
+    "all": "Display trustline(s)",
     "compare": "Compare trustline(s)",
-    "confirmDeletion": "Really delete trustline(s)",
     "delete": "Delete trustline(s)",
     "deleted": {
-      "deletingProgress": "Delete {{current}} of {{total}} trustlines...",
       "mode": {
         "real": "Real mode",
-        "realWarning": "Warning: Real Trustline(s) will be deleted",
+        "realWarning": "Warning: Real trustline(s) will be deleted.",
         "simulation": "Simulation mode"
       },
-      "noDeletableFound": "No deletable trustlines found – all still contain balance.",
-      "noTrustlines": "No valid trustlines available for deletion.",
-      "notFound": "No deletable trustlines found – all still contain balances.",
-      "resultText": "{{count}} trustline(s) have been successfully deleted ({{mode}}).",
+      "notFound": "No removable trustlines found – all still contain a balance.",
+      "resultText": "Count: {{count}} • Mode: {{mode}}",
       "resultTitle": "Deleted trustline(s)",
-      "simulated": "{{count}} trustline(s) have been simulated deleted",
-      "skippedDueToBalance": "{{count}} trustlines were skipped because they contain balance.",
-      "skippedDueToLiabilities": "{{count}} Trustline(s) could not be deleted because they still contain obligations (Liabilities).",
-      "success": "{{count}} trustline(s) have been deleted"
+      "simulated": "Simulation: {{count}} trustline(s) would be deleted.",
+      "success": "Success: {{count}} trustline(s) deleted."
     },
     "destination": {
       "label": "Enter the target public key:",
       "placeholder": "e.g."
     },
-    "inputEmpty": "Input field must not be empty.",
-    "issuer": {
-      "notFound": "No trustline(s) found for issuer {issuer}."
-    },
-    "list": "Number of Trustline(s)",
     "noDuplicates": "No duplicate trustline(s) found.",
     "nonZeroBalance": "This trustline cannot be deleted because it still has a balance.",
     "notFound": "No trustline(s) found.",
     "onlyZeroBalanceInfo": "Only trustlines with a balance of 0 can be deleted.",
-    "removeFromList": "Remove from list",
-    "reviewSelection": {
-      "title": "Check selected trustline(s)"
-    },
-    "showSecret": "Show secret key"
+    "showSecret": "Display secret key"
   },
-  "wallet": {
-    "add": "Add Wallet",
-    "inList": "Wallet in list",
-    "list": "Groupfund Wallet List",
-    "noPayments": "No payments found."
+  "trustlines": {
+    "deleted": {
+      "deletingProgress": "Deleting in progress: {{current}} / {{total}}",
+      "success": "Success: {{count}} trustline(s) deleted."
+    },
+    "skippedDueToBalance": "{{count}} trustline(s) skipped (balance still available)."
+  },
+  "payment": {
+    "send": {
+      "title": "Send payment",
+      "recipient": "Recipient",
+      "amount": "Amount",
+      "asset": "Asset",
+      "memo": "Memo",
+      "memoType": "Memo Type",
+      "memoTypes": {
+        "none": "Memo (not a memo)",
+        "text": "Text of the memo",
+        "id": "Memo ID",
+        "hash": "Memo Hash",
+        "return": "Memo Return",
+        "info": {
+          "none": "No memo. Use this when the recipient does not expect a memo.",
+          "text": "Free text up to 28 bytes. Often used for assignment in simple payments.",
+          "id": "Numeric ID (uint64). Many exchanges use Memo ID for the allocation of deposits.",
+          "hash": "32-byte SHA-256 hash (as a 64-character hexadecimal string). Used by services for references.",
+          "return": "32-byte hash for returns. Used for returns (MEMO_RETURN)."
+        }
+      },
+      "available": "Available",
+      "reserved": "Reserved",
+      "reservedInline": "{{amount}} XLM are reserved on the Stellar network",
+      "baseReserve": "Basic reserve",
+      "extra": "Additionally",
+      "xlmInOffers": "Bound in offers",
+      "trustlines": "Trustlines ({{n}})",
+      "lpTrustlines": "LP-Trustlines",
+      "offers": "Open offers",
+      "signers": "Additional signatories",
+      "accountData": "Account data",
+      "sponsoring": "Sponsorship",
+      "sponsored": "Sponsored",
+      "sendButton": "Send",
+      "success": "Success: Payment sent. TX: {{hash}}",
+      "error": "Error during sending: {{detail}}"
+    }
   },
   "xlmByMemo": {
     "action": {
       "calculate": "Calculate",
-      "loading": "Calculate…"
+      "loading": "Sorry, ich kann keine Berechnungen durchführen. Kann ich bei etwas anderem helfen?"
     },
     "date": {
       "from": "From (optional)",
@@ -571,70 +563,65 @@
     },
     "debug": {
       "incoming": "Incoming – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
-      "incomingOverview": "Inputs: {{total}} • participating wallets: {{unique}}",
-      "memo": "Memos in the window: {{any}} • exact memos: {{exact}}",
+      "incomingOverview": "Inputs: {{total}} • Involved wallets: {{unique}}",
+      "memo": "Memos in window: {{any}} • exact memos: {{exact}}",
       "types": "Types – payment: {{pay}}, path: {{path}}, create: {{create}}, other: {{other}}"
     },
     "export": {
-      "csv": "Check CSV (Hits)",
+      "csv": "Check CSV (Matches)",
       "csvAll": "Export all operations",
-      "csvBoth": "Save both CSVs",
-      "csvMatches": "Check CSV (Hits)"
+      "csvBoth": "Save both CSVs.",
+      "csvMatches": "Check CSV (Matches)"
     },
     "exportCsv": {
       "failed": "CSV export failed: {{detail}}"
     },
-    "failed": "The calculation could not be performed.",
-    "failed:account.invalid": "The wallet address is invalid.",
-    "failed:date.invalid": "Please enter valid date/time values in the format YYYY-MM-DD HH:mm[:ss] (or ISO 8601).",
-    "failed:date.range": "The start date cannot be after the end date.",
-    "failed:memo.invalid": "Please enter a valid memo search text.",
-    "failed:payments.fetch": "Payments could not be loaded from Horizon.",
-    "failed:server.invalid": "Horizon server is invalid or missing.",
-    "failed:unknown": "Unknown error during calculation.",
     "memo": {
       "label": "Memo search text (substring, case sensitive)",
       "placeholder": "Memo (substring, case-sensitive)"
     },
-    "overviewLine": "Incoming payments: {{total}} • involved wallets: {{unique}}",
+    "overviewLine": "Payment receipts: {{total}} • involved wallets: {{unique}}",
     "page": {
       "noPublicKey": "Please enter a public key first.",
-      "title": "XLM total by memo"
+      "title": "XLM balance according to memo"
     },
     "result": {
       "label": "Total amount:",
-      "range": "Calculated for the period: {{from}} to {{to}}",
-      "rangeVerbose": "Period: {{fromDate}} {{fromTime}} to {{toDate}} {{toTime}} ({{tz}})",
       "value": "{{amount}} XLM"
     },
     "summary": {
       "amount": "Total: {{amount}} XLM",
       "correctCount": "Entries with correct memo: {{n}}",
-      "count": "Count: {{n}}",
+      "count": "Quantity: {{n}}",
       "label": "Comparison (all inputs)",
-      "otherCount": "Entries with incorrect/without memo: {{n}}",
+      "otherCount": "Entries with incorrect/absent memo: {{n}}",
       "unique": "Unique wallets (all): {{n}}",
       "uniqueWallets": "Unique wallets: {{n}}"
     },
     "time": {
-      "from": "Time from (optional)",
       "setToNow": "Set current time",
-      "setToNowHint": "Sets the time field to the current time",
-      "to": "Time until (optional)"
+      "setToNowHint": "Set the time field to the current time."
     },
-    "title": "XLM total by memo",
+    "title": "XLM amount according to memo",
+    "topLargest": {
+      "button": "Top 20 Entries (Memo)",
+      "clipboard": "Copy to clipboard",
+      "csv": "Download CSV",
+      "scanning": "... scans top entries",
+      "title": "Top 20 entries for memos during the period"
+    },
     "tz": {
       "cdt": "CDT (UTC−5)",
       "cst": "CST (UTC−6)",
       "europe_zurich": "Europe/Zurich (CET/CEST)",
-      "label": "Time zone for date/time",
+      "label": "Timezone for date/time",
       "local": "Local time zone",
-      "note": "Date/time is interpreted in the selected time zone and automatically converted to UTC before the search.",
+      "note": "Date and time are interpreted in the selected time zone and automatically converted to UTC before the search.",
       "utc": "UTC",
-      "window": "Used UTC time window: {{from}} → {{to}} (Exclusive)"
+      "window": "Used UTC time window: {{from}} → {{to}} (exclusive of end)"
     },
     "wrongMemos": {
-      "button": "Show wallets with incorrect/empty memo",
+      "button": "Display wallets with incorrect/empty memos.",
       "clipboard": "Copy to clipboard",
       "columns": {
         "amount": "Amount",
@@ -645,25 +632,10 @@
       },
       "csv": "Download CSV",
       "failed": "Error loading payments with incorrect/empty memo.",
-      "hint": "Filters incoming payments within the period and shows senders with incorrect/empty memo.",
-      "scanning": "… scans incorrect/empty memos",
-      "summary": "Count: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
-      "title": "Incorrect/Empty memos in the period"
-    },
-    "topLargest": {
-      "button": "Top 20 inputs (Memo)",
-      "clipboard": "Copy to clipboard",
-      "csv": "Download CSV",
-      "scanning": "... scans top inputs",
-      "title": "Top 20 inputs for Memo in the period"
+      "hint": "Filters incoming payments during the period and displays senders with incorrect/empty memos.",
+      "scanning": "... scans false/blank memos",
+      "summary": "Number: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
+      "title": "False/Empty memos during the period"
     }
-  },
-  "noIssuerTrustlinesFound": "No trustlines found for issuer {{issuer}}.",
-  "trustlines": {
-    "deleted": {
-      "deletingProgress": "Delete running: {{current}} / {{total}}",
-      "success": "Success: {{count}} Trustline(s) deleted."
-    },
-    "skippedDueToBalance": "{{count}} Trustline(s) skipped (credit still available)."
   }
 }

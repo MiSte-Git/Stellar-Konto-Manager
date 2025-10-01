@@ -6,10 +6,18 @@ import { iterateByAccountCreatedRange, getOldestCreatedAt, getNewestCreatedAt, r
 
 // Simple retry helper to handle transient Horizon errors (429/5xx)
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
-async function withRetry(fn, { tries = 4, baseDelay = 400 } = {}) {
+async function withRetry(fn, { tries = 4, baseDelay = 400, signal } = {}) {
   let attempt = 0, lastErr;
   while (attempt < tries) {
-    try { return await fn(); } catch (e) {
+    if (signal?.aborted) {
+      const err = new Error('withRetry.aborted');
+      err.isAborted = true;
+      throw err;
+    }
+    try {
+      const res = await fn();
+      return res;
+    } catch (e) {
       lastErr = e;
       const status = e?.response?.status || e?.status || 0;
       if (status && status !== 429 && status >= 400 && status < 500) break;
@@ -47,7 +55,7 @@ export async function fetchGroupfundByMemo({
       .order('desc')
       .limit(200)
       .join('transactions');
-    let page = await withRetry(() => builder.call());
+    let page = await withRetry(() => builder.call(), { signal });
     let lastCursor = null;
     const seenCursors = new Set();
 
@@ -114,7 +122,7 @@ export async function fetchGroupfundByMemo({
         .cursor(nextCursor)
         .join('transactions');
       try {
-        page = await withRetry(() => builder.call());
+        page = await withRetry(() => builder.call(), { signal });
       } catch {
         break;
       }
@@ -124,7 +132,7 @@ export async function fetchGroupfundByMemo({
     if (pagesSeen < limitPages && (!fromISO || (lastOldest && lastOldest >= fromISO))) {
       onProgress?.({ phase: 'fallback_tx', page: pagesSeen, oldestOnPage: lastOldest });
       // 1) Transaktionen rückwärts scannen und Memos einsammeln
-      let txPage = await withRetry(() => server.transactions().forAccount(publicKey).order('desc').limit(200).call());
+      let txPage = await withRetry(() => server.transactions().forAccount(publicKey).order('desc').limit(200).call(), { signal });
       let stopTx = false; let txPages = 0;
       const hits = [];
       while (!stopTx) {
@@ -140,7 +148,8 @@ export async function fetchGroupfundByMemo({
         if (stopTx || !txPage.next) break;
         txPages += 1;
         if (txPages % 5 === 0) onProgress?.({ phase: 'scan_tx', pagesTx: txPages, hitsTx: hits.length });
-        txPage = await withRetry(() => txPage.next());
+        if (signal?.aborted) throw new Error('fetch.groupfund.aborted');
+        txPage = await withRetry(() => txPage.next(), { signal });
       }
       // 2) Für jede Treffer-Tx payments laden und ausgehende native zählen
       const limit = 6; let done = 0;
@@ -149,7 +158,8 @@ export async function fetchGroupfundByMemo({
         while (q.length) {
           const h = q.shift();
           try {
-            const p = await withRetry(() => server.payments().forTransaction(h.hash).limit(200).call());
+            if (signal?.aborted) throw new Error('fetch.groupfund.aborted');
+            const p = await withRetry(() => server.payments().forTransaction(h.hash).limit(200).call(), { signal });
             const pays = p?.records || [];
             for (const rec of pays) {
               const type = rec.type || '';
@@ -171,10 +181,20 @@ export async function fetchGroupfundByMemo({
           } catch { /* ignore single tx */ }
           done += 1;
           if (done % 10 === 0) onProgress?.({ phase: 'scan_payments', page: pagesSeen + Math.ceil(done / 10), elapsedMs: Date.now() - t0 });
-        }
-      });
-      await Promise.all(workers);
-    }
+          }
+          });
+          // Warten, aber bei Abbruch schnell raus
+            await Promise.race([
+         Promise.all(workers),
+         new Promise((_, rej) => {
+           if (signal) {
+             const onAbort = () => rej(new Error('fetch.groupfund.aborted'));
+             if (signal.aborted) onAbort();
+             else signal.addEventListener('abort', onAbort, { once: true });
+           }
+         })
+       ]);
+     }
 
     const items = [...memoGroups.entries()].map(([memo, v]) => {
       const destArr = v.destinations ? [...v.destinations.entries()] : [];
@@ -308,7 +328,7 @@ export async function fetchInvestedPerToken({
     const t0 = Date.now();
 
     // --- (1) Trades des Accounts auswerten ---
-    let tradesPage = await server.trades().forAccount(publicKey).order('desc').limit(200).call();
+    let tradesPage = await withRetry(() => server.trades().forAccount(publicKey).order('desc').limit(200).call(), { signal });
     let tradesPagesSeen = 0;
 
     while (tradesPage?.records?.length && tradesPagesSeen < limitPages) {
@@ -338,11 +358,11 @@ export async function fetchInvestedPerToken({
 
       tradesPagesSeen += 1;
       onProgress?.({ phase: 'scan_tx', page: tradesPagesSeen, elapsedMs: Date.now() - t0 });
-      tradesPage = typeof tradesPage.next === 'function' ? await tradesPage.next() : null;
+      tradesPage = typeof tradesPage.next === 'function' ? await withRetry(() => tradesPage.next(), { signal }) : null;
     }
 
     // --- (2) Eingehende Asset-Payments an dich (z. B. path_payment_receive) ---
-    let payPage = await server.payments().forAccount(publicKey).order('desc').limit(200).call();
+    let payPage = await withRetry(() => server.payments().forAccount(publicKey).order('desc').limit(200).call(), { signal });
     let payPagesSeen = 0;
 
     while (payPage?.records?.length && payPagesSeen < limitPages) {
@@ -366,7 +386,7 @@ export async function fetchInvestedPerToken({
 
       payPagesSeen += 1;
       onProgress?.({ phase: 'scan_payments', page: payPagesSeen, elapsedMs: Date.now() - t0 });
-      payPage = typeof payPage.next === 'function' ? await payPage.next() : null;
+      payPage = typeof payPage.next === 'function' ? await withRetry(() => payPage.next(), { signal }) : null;
     }
 
     // --- Ergebnis ---

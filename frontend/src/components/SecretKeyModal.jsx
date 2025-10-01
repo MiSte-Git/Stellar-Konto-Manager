@@ -4,24 +4,25 @@ import { useTranslation } from 'react-i18next';
 import { validateSecretKey } from '../utils/stellar/stellarUtils';
 
 function SecretKeyModal({ onConfirm, onCancel, errorMessage }) {
-  const { t } = useTranslation();
-  const [secretKey, setSecretKey] = useState('');
-  const [showSecret, setShowSecret] = useState(false);
-  const [error, setError] = useState(errorMessage || '');
+const { t } = useTranslation();
+const [secretKey, setSecretKey] = useState('');
+const [showSecret, setShowSecret] = useState(false);
+const [rememberSession, setRememberSession] = useState(true);
+ const [error, setError] = useState(errorMessage || '');
 
-  const handleConfirm = () => {
-    if (!secretKey.trim()) {
-      setError(t('secretKey.empty'));
-      return;
-    }
+const handleConfirm = () => {
+if (!secretKey.trim()) {
+setError(t('secretKey.empty'));
+  return;
+   }
 
-    try {
-      validateSecretKey(secretKey);
-      setError('');
-      onConfirm(secretKey); // Callback an Eltern-Komponente
-    } catch (err) {
-      setError(t(err.message));
-    }
+try {
+validateSecretKey(secretKey);
+setError('');
+  onConfirm(secretKey, rememberSession); // Callback an Eltern-Komponente
+} catch (err) {
+  setError(t(err.message));
+  }
   };
 
   return (
@@ -41,23 +42,32 @@ function SecretKeyModal({ onConfirm, onCancel, errorMessage }) {
           className={`w-full px-4 py-2 border rounded mb-2 dark:bg-gray-700 dark:text-white ${error ? 'border-red-500 ring-1 ring-red-400' : ''}`}
         />
         <label className="flex items-center gap-2 mt-2 text-sm">
-          <input
-            type="checkbox"
-            checked={showSecret}
-            onChange={() => setShowSecret(!showSecret)}
-          />
-          {t('trustline.showSecret')}
+        <input
+        type="checkbox"
+        checked={showSecret}
+        onChange={() => setShowSecret(!showSecret)}
+        />
+        {t('trustline.showSecret')}
         </label>
-
+               <label className="flex items-center gap-2 mt-2 text-sm">
+          <input
+          type="checkbox"
+            checked={rememberSession}
+            onChange={() => setRememberSession(!rememberSession)}
+                 />
+          {t('secretKey.remember.label')}
+        </label>
+        <p className="text-xs text-gray-500 mt-1">{t('secretKey.remember.hint')}</p>
+        
         {!error && secretKey && (
-          <p className="text-green-600 text-sm mb-2">{t('secretKey.valid')}</p>
+        <p className="text-green-600 text-sm mb-2">{t('secretKey.valid')}</p>
         )}
         <p className="text-xs text-gray-500 mt-2">{t('secretKey.info')}</p>
-
+        
         <div className="flex justify-end gap-2 mt-4">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500"
+        <button
+        onClick={onCancel}
+          className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500"
           >
             {t('option.cancel')}
           </button>
