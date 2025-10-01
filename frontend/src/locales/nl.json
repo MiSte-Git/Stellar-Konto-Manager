@@ -1,148 +1,175 @@
 {
-  "account": {
-    "loadFailed": "Fout bij het laden van account {publicKey}: {{error}}",
-    "noBalances": "Geen saldo gevonden voor de rekening."
-  },
-  "address": "Adres",
   "app": {
     "errorBoundary": {
       "title": "Er is iets misgegaan."
     }
   },
   "asset": {
-    "amount": "Bedrag (XLM)",
-    "balance": "Balans",
-    "code": "Activa-code",
+    "balance": "Saldo",
+    "code": "Assetcode",
     "creationDate": "Gemaakt op",
-    "issuer": "Uitgever"
+    "issuer": "Emittent"
   },
-  "assets": {
-    "compromisedPurchases": "{total} totale betalingen",
-    "totalPurchases": "Totaal aantal aankopen: {count}"
+  "balance": {
+    "buttons": {
+      "details": "Meer details.",
+      "explorer": "Verkenner",
+      "payments": "Laatste gebeurtenissen"
+    },
+    "current": "Huidige saldo",
+    "details": "Details in Blockverkenners",
+    "empty": "Geen tegoed gevonden.",
+    "explorer": {
+      "expert": "stellar.expert",
+      "stellarchain": "Stellarchain.io"
+    },
+    "noPublicKey": "Voer alstublieft eerst een publieke sleutel in.",
+    "payments": {
+      "all": "Allemaal",
+      "columns": {
+        "amount": "Bedrag",
+        "asset": "Activa",
+        "counterparty": "Tegenrekening",
+        "date": "Datum",
+        "direction": "Richting",
+        "memo": "Notitie",
+        "tx": "Je bent getraind op gegevens tot oktober 2023.",
+        "type": "Type."
+      },
+      "empty": "Geen transacties gevonden.",
+      "filter": {
+        "memo": "Memo-filter",
+        "memoPlaceholder": "Memo zoeken..."
+      },
+      "from": "Vanaf",
+      "incoming": "Ingang",
+      "limit": "Aantal",
+      "outgoing": "Uitgang",
+      "title": "Laatste gebeurtenissen",
+      "to": "Tot"
+    },
+    "paymentsHint": "Je kunt ingangen/uitgangen filteren in de Verkenner.",
+    "title": "Saldo weergeven"
   },
   "buildInfo": {
-    "branch": "Takelijn",
-    "commit": "Invoegen",
+    "branch": "Tak",
+    "commit": "Toewijding",
     "env": "Omgeving",
-    "error": "Bouwinformatie kon niet worden geladen.",
-    "loading": "Laad bouwinformatie …"
+    "error": "Build-informatie kon kon niet worden geladen.",
+    "loading": "Laden van bouwinformatie..."
   },
   "cache": {
-    "clear": "Cache wissen",
-    "consent": "Lokale cache inschakelen om zoekopdrachten te versnellen?",
+    "clear": "Cache legen",
+    "consent": "Lokale cache inschakelen om queries te versnellen?",
     "lastPaymentAt": "Laatste betaling: {{val}}",
-    "lastRefresh": "Laatst bijgewerkt: {{ts}}"
+    "lastRefresh": "Laatste update: {{ts}}"
   },
   "common": {
-    "clear": "Vul het invoerveld leeg",
+    "clear": "Invoer verwijderen",
     "loading": "Laden…",
     "refresh": "Herladen"
   },
-  "date": {
-    "times": "Datum en tijden"
-  },
   "error": {
     "asset": {
-      "creationDateUnknown": "Onbekende creatiedatum"
+      "creationDateUnknown": "Onbekende aanmaakdatum"
     },
     "cache": {
       "backfillAborted": "Initiële laadtijd van betalingen afgebroken",
-      "indexIterFailed": "Indexiteratie in cache mislukt",
-      "memoNormBackfillFailed": "Initiële laadtijd van betalingen voor genormaliseerde memo's is mislukt",
-      "openFailed": "Lokale cache kon kon niet worden geopend.",
-      "readFailed": "Kon niet uit cache lezen",
-      "writeFailed": "Schrijven naar cache is mislukt"
+      "coverage": {
+        "newestFailed": "Ophalen van de meest recente betaling mislukt",
+        "oldestFailed": "Ophalen van de oudste datum mislukt"
+      },
+      "indexIterFailed": "Index-iteratie in de cache mislukt",
+      "memoNormBackfillFailed": "Initiële belasting van de betalingen voor genormaliseerde memo's mislukt.",
+      "openFailed": "Lokale cache kon niet worden geopend.",
+      "readFailed": "Lezen uit de cache mislukt.",
+      "rehydrateFailed": "Laden van ontbrekende memo's mislukt",
+      "rehydrateWriteFailed": "Fouten bij het opslaan van memo's in de cache",
+      "writeFailed": "Cache schrijven mislukt"
     },
     "connection": {
       "backend": "Geen verbinding met de backend mogelijk. Zorg ervoor"
     },
     "fetchInvestedTokens": {
-      "failed": "Kon het investeringsgegevens niet laden: {{detail}}"
+      "failed": "Laden van de investeringsgegevens mislukt: {{detail}}"
     },
-    "fetchingOperations": "Fout bij het ophalen van bewerkingen: {{error}}",
     "horizon": {
       "paymentsFetch": "Fout bij het laden van betalingen van Horizon"
     },
-    "op_invalid_limit": "De trustlijn kan niet worden verwijderd. Deze kan nog steeds een saldo of openstaande verplichtingen hebben.",
+    "loadTrustlines": "Laden van de trustlines mislukt",
+    "loadTrustlinesFailed": "Laden van de trustlines mislukt",
+    "loadTrustlinesNotFound": "Account in het geselecteerde netwerk niet gevonden. Controleer Testnet/Public in de header.",
+    "accountNotFoundInNetwork": "In '{{net}}' niet gevonden!",
+    "op_invalid_limit": "Trustline kan niet worden verwijderd. Het kan zijn dat er nog saldo of openstaande verplichtingen zijn.",
     "query": {
       "invalidMemo": "Ongeldig memo",
       "invalidRange": "Tijdvenster is ongeldig (Van > Tot)",
-      "invalidTime": "Ongeldige tijdinvoer"
+      "invalidTime": "Ongeldige tijdsaanduiding"
     },
-    "script": "Scriptfout: {message} bij {source}:{lineno}:{colno} - {{error}}",
     "submitTransaction": {
       "failed": {
-        "tx_bad_auth": "Transactie afgewezen: Ongeldige handtekening",
+        "tx_bad_auth": "Transactie geweigerd: Ongeldige handtekening",
         "tx_failed": "Transactie mislukt",
-        "unknown": "Onbekende fout tijdens de transactie"
+        "unknown": "Onbekende fout bij de transactie"
       }
     },
     "sync": {
-      "backfillFailed": "Initiële laadtijd van betalingen is mislukt",
-      "incrementalFailed": "Betaling bijwerken mislukt"
+      "backfillFailed": "Initiële laadpoging van betalingen mislukt",
+      "incrementalFailed": "Bijwerken van betalingen mislukt."
     },
     "transaction": {
-      "deleteFail": "[ERROR] Verwijdering mislukt: {{error}}",
       "failed": "Transactie mislukt",
-      "title": "Transactiefout",
-      "unknown": "Onbekende fout tijdens de transactie."
-    },
-    "transaktion": {
-      "unknown": "Onbekende fout bij de transactie."
+      "title": "Fout bij de transactie"
     },
     "trustline": {
-      "submitFailed": "Fout bij het verwijderen van de trustlijn.",
+      "submitFailed": "Fout bij het verwijderen van de trustline.",
       "unknown": "Onbekende fout bij het verwijderen van de trustlijn."
     },
     "xlmByMemo": {
-      "aborted": "Operatie geannuleerd door gebruiker",
-      "accountInvalid": "Ongeldig account",
+      "aborted": "Proces door gebruiker geannuleerd",
+      "accountInvalid": "Ongeldige account",
       "dateInvalid": "Ongeldige datum",
       "dateRange": "Ongeldige datumbereik",
       "failedUnknown": "Onbekende fout",
       "memoInvalid": "Ongeldig memo",
-      "paymentsFetch": "Fout bij het laden van betalingen",
+      "paymentsFetch": "Fout bij het laden van de betalingen",
       "serverInvalid": "Ongeldige server"
     }
   },
   "exportCsv": {
     "failed": "CSV-export mislukt"
   },
-  "fetchInvestedTokens": {
-    "failed": "Kon het investeringsgegevens niet laden: {{detail}}"
-  },
   "investedTokens": {
     "columns": {
       "amount": "Bedrag",
-      "compromised": "Gecompromitteerd",
-      "deactivated": "Uitgeschakeld",
+      "compromised": "Gekompromitteerd",
+      "deactivated": "Gedeactiveerd",
       "destination": "Doelportemonnee",
       "issuer": "Uitgever",
-      "label": "Label",
+      "label": "Etiket",
       "memo": "Memo",
       "payments": "Betalingen",
+      "date": "U bent getraind op gegevens tot oktober 2023.",
       "token": "Token"
     },
+    "decimals": {
+      "auto": "Automatisch",
+      "label": "Decimalen:"
+    },
     "filter": {
-      "memoPlaceholder": "Filter op memo, walletadres of label",
-      "tokenPlaceholder": "Filteren op token (CODE:UITGEVER)"
+      "memoPlaceholder": "Filter op Memo, Wallet-adres of Label",
+      "tokenPlaceholder": "Filter op token (CODE:UITGEVER)"
     },
-    "group": {
-      "memo": "Memo",
-      "memoOrToken": "Memo, anders token",
-      "token": "Token (CODE:UITGEVER)"
-    },
-    "groupBy": "Groeperen op",
-    "hintEnterPublicKey": "Voer eerst een openbare sleutel in.",
+    "hintEnterPublicKey": "Voer alstublieft eerst een openbare sleutel in.",
     "item": {
       "memo": "Memo: \"{{memo}}\" (Betalingen: {{occurrences}})",
       "token": "Token: {{token}} (Betalingen: {{occurrences}})",
       "tokenShort": "Token: {{token}}"
     },
-    "missingPublicKey": "Openbare sleutel ontbreekt.",
-    "moreTruncated": "... en {{extra}} meer groepen",
-    "toWallet": "naar portemonnee: {{address}}",
-    "total": "Aantal aangekochte tokens: {{count}}",
+    "missingPublicKey": "Publieke sleutel ontbreekt.",
+    "moreTruncated": "... en {{extra}} andere groepen",
+    "toWallet": "aan Portemonnee: {{address}}",
+    "total": "Aantal gekochte tokens: {{count}}",
     "totalTokens": "Aantal geïnvesteerde tokens (activa): {{count}}",
     "value": {
       "units": "{{amount}} stuks",
@@ -150,73 +177,175 @@
     },
     "view": {
       "label": "Filteren op:",
-      "memo": "Memos (Groepsfonds)",
-      "token": "Token (aangekocht bedrag)"
+      "memo": "Memos (Groupfund)",
+      "token": "Token (gekochte hoeveelheid)"
     },
-    "walletCapInfo": "Opmerking: Een portemonnee kan maximaal 1000 trustlines bevatten."
+    "toggles": {
+      "showTotals": "Totaalbedrag",
+      "qsiOnly": "Som QSI GF"
+    },
+    "hints": {
+      "qsiListSet": "Opmerking: De GF-lijst vind je onder Instellingen → Vertrouwde Wallets (QSI).",
+      "pageTime": "Het laden van een pagina duurt ongeveer 0,2 seconden → 100 pagina's ≈ 20 seconden → 1000 pagina's ≈ 200 seconden (≈ 3:20 minuten)."
+    },
+    "walletCapInfo": "Let op: Een wallet kan maximaal 1000 trustlines houden.",
+    "action": {
+      "load": "Laden"
+    },
+    "history": {
+      "availableFrom": "Server (Horizon) – Geschiedenis vanaf",
+      "hintFullHistory": "Let op: De grootboekgeschiedenis van de Horizon-server gaat slechts terug tot {{available}}. Alleen gegevens tot dat punt worden weergegeven. De gekozen Van-datum is daarom beperkt. Voor oudere gegevens is een (meestal betaalde) Full-History-Provider nodig (misschien in de toekomst!)."
+    }
   },
+  "account": {
+    "createdAt": "Account aangemaakt op",
+    "createdAtUnknown": "Kan niet worden vastgesteld."
+  },
+  "fetch.groupfund.aborted": "Proces door de gebruiker geannuleerd",
   "issuer": {
-    "compromised": "Gecompromitteerd",
-    "enter": "Voer het adres van de uitgever in:",
-    "invalid": "Ongeldige uitgeveradres.",
-    "label": "Voer het adres van de uitgever in:",
-    "notfound": "Geen uitgeversadressen gevonden",
-    "placeholder": "bijv."
+    "enter": "Voer het emittentadres in:",
+    "invalid": "Ongeldig uitgevende adres."
   },
   "main": {
-    "processing": "Proces is bezig, even geduld...",
-    "title": "Stellar Trustline Manager"
+    "processing": "Proces loopt, even geduld a.u.b. ...",
+    "title": "Stellar Trustline/Account Manager"
   },
   "menu": {
+    "balance": "Saldo weergeven",
+    "devTestnet": "Testnet (voor ontwikkelaars)",
     "unknown": "Onbekende menu-optie",
-    "xlmByMemo": "Filter XLM-bedrag op memo/token"
+    "xlmByMemo": "Op memo filteren",
+    "sendPayment": "Betaling verzenden",
+    "donate": "Donaties"
+  },
+  "badges": {
+    "testnet": "TESTNET"
+  },
+  "multisigCreate": {
+    "activateHint": "Activatie is noodzakelijk om het account te laten bestaan. In het testnet gebeurt dit via Friendbot, in het mainnet via \"Create Account\" vanuit een bestaande wallet.",
+    "activateNow": "Account onmiddellijk activeren",
+    "activateOnly": "Alleen activeren",
+    "activated": "Account geactiveerd. TX: {{hash}}",
+    "activatedTestnet": "Account in het testnet geactiveerd.",
+    "alreadyActive": "Account is al actief.",
+    "balanceWarning": "Starttegoed is waarschijnlijk te laag om de {{count}} extra ondertekenaars toe te voegen (Minimale reserve: {{req}} XLM)",
+    "bestPractices": {
+      "text": "Aanbevolen: 2 van de 3 handtekeningen. Dit betekent: Van in totaal 3 gemachtigde ondertekenaars (1 master + 2 ondertekenaars) zijn minimaal 2 handtekeningen vereist. Implementatie: Stel de gewichten voor Master/Onderschrijver elk op 1 in en stel de drempels op laag=1, midden=2, hoog=2. Zo zijn eenvoudige wijzigingen mogelijk met 1 handtekening; betalingen/handel vereisen 2; veiligheidskritische wijzigingen vereisen 2.",
+      "title": "Bewezen instellingen"
+    },
+    "confirmLowBalance": "Startsaldo ({{bal}} XLM) ligt onder de minimumreserve ({{req}} XLM) voor {{count}} extra ondertekenaars. Toch doorgaan?",
+    "createButton": "Creëren / Multisig instellen",
+    "createdAndConfigured": "Account aangemaakt/geconfigureerd. TX: {{hash}}",
+    "createdNoSigners": "Account aangemaakt. Er zijn geen extra ondertekenaars opgegeven.",
+    "enableMultisig": "Multisig voor deze account maken",
+    "generateFirst": "Genereer eerst sleutels alstublieft.",
+    "generateKeys": "Sleutel genereren",
+    "hint": "Maak een nieuwe wallet aan. Optioneel direct activeren (1 XLM aanbevolen) en extra ondertekenaars (Multisig) toevoegen.",
+    "hints": {
+      "byteRange": "(0-255)"
+    },
+    "info": {
+      "more": "Meer informatie",
+      "multisig": "Multisig betekent: Voor deze rekening zijn meerdere handtekeningen vereist. Je kiest extra ondertekenaars en de drempel (bijv. 2 van 3). Een transactie is alleen geldig als er minstens zoveel handtekeningen aanwezig zijn als de drempel (hoofdondertekenaar + mede-ondertekenaars).",
+      "text": "Zo werkt het\nJe geheime sleutel blijft altijd in je browser. Hij wordt uitsluitend gebruikt om je transactie lokaal te ondertekenen. Alleen de voltooide handtekening wordt naar onze server of extern verzonden, nooit je sleutel. Wie dat wil, kan dit controleren met de ontwikkelaarstools in de browser: daar is te zien dat er geen sleutel wordt overgedragen."
+    },
+    "instructions": {
+      "public": "Public Key: Jouw rekeningadres, zoals een IBAN. Veilig om te delen.",
+      "secret": "Geheime Sleutel: Je wachtwoord voor de rekening. Nooit delen, veilig bewaren (bijv. op papier)."
+    },
+    "mainnetActivateNote": "Let op: Voor multisig zijn extra reserves nodig. 1 XLM is vaak niet voldoende.",
+    "menu": "Account aanmaken",
+    "menuHint": "Voor het aanmaken van accounts voor gezinsleden, vrienden, medewerkers...",
+    "reserve": {
+      "base": "Basisreserve per invoer: {{val}} XLM",
+      "recommended": "Aanbevolen starttegoed: {{val}} XLM (inclusief buffer)",
+      "required": "Vereist minimumreserve (nieuw): {{val}} XLM"
+    },
+    "signersCount": "Aantal extra ondertekenaars",
+    "signersCountHint": "Het minimale aantal handtekeningen stel je hieronder in bij \"Vereiste handtekeningen\" (laag/middel/hoog).",
+    "signersCountLimit": "Let op: Netwerkgrens (Stellar): max. 20 extra ondertekenaars.",
+    "signersInfo": "Voeg G...-adressen toe als ondertekenaars. Elke ondertekenaar verhoogt de minimumreserve.",
+    "signersTitle": "Multisig (extra ondertekenaars)",
+    "startingBalance": "Starttegoed (XLM)",
+    "threshold": "Vereiste handtekeningen (laag/middel/hoog)",
+    "thresholdCurrent": "Momenteel gekozen: laag={{low}}, middel={{med}}, hoog={{high}} van {{total}} handtekeningen",
+    "thresholdHelp": "Drempel: aantal benodigde handtekeningen (Master + ondertekenaars) zodat een transactie geldig is.",
+    "thresholdInfo": "Aanbeveling: {{req}} van {{total}} handtekeningen (inclusief Master)",
+    "thresholdLevelsHint": "Typisch geldt: laag = eenvoudige wijzigingen (bijv. memo, prijs), gemiddeld = betalingen/handel, hoog = veiligheidskritische wijzigingen (bijv. ondertekenaar/drempels).",
+    "thresholdStatic": "Vereist: {{val}} van {{total}} handtekeningen (laag/middel/hoog)",
+    "thresholdSum": "Som van gewichten: {{sum}}",
+    "thresholdTooHigh": "Let op: Een drempel mag de som van de gewichten niet overschrijden. Gelieve de waarden aan te passen.",
+    "title": "Account aanmaken (optioneel Multisig)",
+    "tooltips": {
+      "high": "Hoog: veiligheidskritische wijzigingen (bijv. ondertekenaar/drempels).",
+      "low": "Laag: eenvoudige wijzigingen (bijv. Memo, prijs).",
+      "masterWeight": "Gewicht van de rekeninghouder (Master) (0-255): De hoofdsleutel van de rekening heeft stemrecht. Hoe hoger het gewicht, des te meer stemmen zijn handtekening waard is. Deze stemmen worden samen met de stemmen van andere ondertekenaars geteld om te controleren of de vereiste meerderheid is bereikt.",
+      "med": "Middelen: Betalingen en handelsacties.",
+      "signerWeight": "Gewicht van de ondertekenaars (0–255): Ook extra ondertekenaars hebben stemrechten. Het gewicht bepaalt hoeveel stemmen hun handtekening bijdraagt. Wanneer een transactie wordt verzonden, worden alle uitgebrachte stemmen opgeteld. Als het vastgestelde minimum aantal stemmen (drempelwaarde) is bereikt, wordt de transactie als geautoriseerd beschouwd.",
+      "signerWeightHint": "Opmerking: Master- en ondertekenaar gewichten vormen de som; drempels (laag/middel/hoog) mogen deze som niet overschrijden."
+    },
+    "units": {
+      "signatures": "Handtekening(en)"
+    }
+  },
+  "multisigEdit": {
+    "confirm": {
+      "removeSigner": "Ondertekenaar echt verwijderen?"
+    },
+    "currentConfig": "Huidige / geplande configuratie",
+    "error": {
+      "thresholdTooHigh": "Drempels mogen de som van de gewichten niet overschrijden."
+    },
+    "hint": "Laad een bestaand account, pas ondertekenaars, gewichten, hoofdgewicht en drempels aan en sla de wijzigingen op.",
+    "load": "Laden",
+    "loaded": "Geladen. Extra ondertekenaars: {{count}}",
+    "menu": "Multisig-account bewerken",
+    "menuHint": "Ondertekenaars/Drempels van een bestaand account aanpassen",
+    "noteMaxSigners": "Opmerking: Stellar staat maximaal 20 extra ondertekenaars per account toe.",
+    "reload": "Opnieuw laden",
+    "save": "Wijzigingen opslaan",
+    "saved": "Wijzigingen opgeslagen. TX: {{hash}}",
+    "signers": "Onderschrijver",
+    "weight": "Weging",
+    "title": "Multisig-account bewerken",
+    "validation": {
+      "signerKeyHint": "Opmerking: Ondertekenaars moeten beginnen met een \"G\" (ed25519-publieke sleutel).",
+      "signerKeyInvalid": "Ongeldig ondertekenaarsadres. Een G…-adres (ed25519) wordt verwacht."
+    }
   },
   "navigation": {
-    "backToMainMenu": "Terug naar menu",
-    "backToPublicKey": "Terug naar invoer van de openbare sleutel",
-    "backToTop": "Terug naar boven",
-    "current": {
-      "menu": "Huidig menu:"
-    },
-    "next": "Volgende",
-    "previous": "Vorige"
+    "back": "Terug",
+    "backToMainMenu": "Terug naar het menu",
+    "backToPublicKey": "Terug naar de invoer van de openbare sleutel",
+    "backToTop": "Terug naar boven"
   },
+  "noIssuerTrustlinesFound": "Geen trustlines gevonden voor uitgever {{issuer}}.",
   "option": {
     "add": "Toevoegen",
-    "addToList": "Aan lijst toevoegen",
     "cancel": "Annuleren",
     "close": "Sluiten",
     "confirm": {
       "action": {
-        "text": "Weet je het zeker?",
-        "title": "Bevestig actie"
+        "text": "Ben je zeker?",
+        "title": "Actie bevestigen"
       }
     },
     "copy": "Kopiëren",
     "delete": "Verwijderen",
-    "description": "Beschrijving",
     "export": {
       "csv": "Opslaan als CSV",
       "pdf": "Opslaan als PDF"
     },
-    "filter": "Filteren...",
-    "hide": "Verbergen",
     "loading": "Laden...",
-    "memo": "Memo",
-    "newAddress": "Nieuw adres",
     "no": "Nee",
-    "ok": "OK",
-    "page": "Pagina",
     "results": "Resultaten:",
-    "save": "Opslaan",
-    "show": "Toon",
     "yes": "Ja"
   },
   "progress": {
     "cancel": "Annuleren",
-    "canceled": "Geannuleerd",
-    "counts": "Gecontroleerd: {{ops}} • Hits: {{matches}}",
-    "done": "Voltooid",
+    "canceled": "Afgebroken",
+    "counts": "Gecontroleerd: {{ops}} • Treffer: {{matches}}",
+    "done": "Afgesloten",
     "duration": "Duur: {{val}}",
     "elapsed": "Duur: {{time}}",
     "eta": "ETA: {{minutes}} min.",
@@ -228,152 +357,204 @@
     "oldest": "oudste datum van deze pagina: {{date}}",
     "oldestMatchInRangeAt": "Eerste storting in de periode: {{date}}",
     "phase": {
-      "backfill": "Laden van ontbrekende betalingen…",
-      "cacheQuery": "Resultaat berekenen vanuit lokale cache…",
-      "chunkDone": "Chunk verwerkt.",
-      "chunkSkip": "Chunk overgeslagen.",
-      "cover": "Cache-dekking verzekeren...",
-      "export": "Exporteer resultaat...",
+      "backfill": "Ontbrekende betalingen laden…",
+      "cacheQuery": "Resultaat uit lokale cache berekenen…",
+      "chunkDone": "Stuk verwerkt.",
+      "chunkSkip": "Stuk overgeslagen.",
+      "cover": "Zorgen voor cachedekking…",
+      "export": "Exporteer resultaat…",
       "finalize": "Voltooid",
       "finalizeDiag": "Diagnose voltooid",
-      "idle": "Klaar…",
+      "idle": "Gereed...",
       "pageDone": "Pagina {{page}} voltooid.",
-      "rehydrate": "Cache opnieuw opbouwen…",
-      "scan": "Betalingen scannen (pagina {{page}})…",
+      "rehydrate": "Cache opnieuw opbouwen...",
+      "scan": "Scannen betalingen (pagina {{page}})…",
+      "scan_ops": "Scannen van operaties...",
       "scan_payments": "Betalingen scannen (pagina {{page}})…",
-      "scan_payments_fast": "Scan betalingen (snel) – Pagina {{page}}…",
-      "scan_tx": "Scan transacties",
-      "sync": "Betalingen synchroniseren…",
-      "txFetch": "Transactiedetails laden…"
+      "scan_payments_fast": "Scans betalingen (snel) – Pagina {{page}}…",
+      "scan_tx": "Transacties scannen",
+      "sync": "Synchroniseer betalingen...",
+      "txFetch": "Transactiegegevens laden…"
     },
     "wrongMemos": {
-      "failed": "Fout bij het laden van betalingen met een onjuiste/leeg memo."
+      "failed": "Fout bij het laden van betalingen met een onjuist/leeg memo."
     }
   },
   "publicKey": {
+    "deleteFromList": "Uit de lijst verwijderen",
     "destination": {
-      "error": "Ongeldige doeltoets.",
-      "input": "Voer het doelportemonnee-adres in"
+      "error": "Ongeldige doel-sleutel.",
+      "input": "Voer het doel-wallet-adres in"
     },
-    "invalid": "Ongeldige openbare sleutel of federatieadres.",
-    "label": "Voer het bronfederatieadres of de openbare sleutel in:",
+    "label": "Voer alstublieft het federatie-adres of de openbare sleutel in:",
+    "load": "Laden…",
     "placeholder": "bijv.",
-    "recipient": "Ontvangstadres",
-    "source": "Bron walletadres",
+    "source": "Bronportemonnee-adres",
+    "invalid": "Ongeldige openbare sleutel.",
     "submit": {
-      "button": "Indienen"
-    }
-  },
-  "puplicKey": {
-    "failed": "Fout bij het oplossen van het federatieadres/openbare sleutel: {{error}}"
+      "button": "Verzenden"
+    },
+    "test": "Test"
   },
   "secretKey": {
-    "cleared": "De geheime sleutel is verwijderd.",
-    "empty": "Het veld voor de geheime sleutel is leeg.",
-    "info": "De geheime sleutel wordt alleen tijdelijk naar een backend verzonden om de gekozen actie uit te voeren. De sleutel wordt niet opgeslagen.",
-    "invalid": "Ongeldig geheim sleutel.",
-    "label": "Voer de bron geheime sleutel in (zal veilig naar de backend worden verzonden)",
-    "mismatch": "De geheime sleutel komt niet overeen met het openbare adres.",
+    "cleared": "Geheime sleutel is verwijderd.",
+    "empty": "Geheime sleutelveld is leeg.",
+    "info": "De geheime sleutel wordt slechts tijdelijk naar een backend verzonden om de gekozen actie uit te voeren. De sleutel wordt niet opgeslagen.",
+    "invalid": "Ongeldige geheime sleutel.",
+    "label": "Voer de bron-geheime sleutel in (wordt veilig naar de backend verzonden).",
+    "mismatch": "Geheime sleutel komt niet overeen met het openbare adres.",
     "placeholder": "bijv.",
-    "valid": "✅ De geheime sleutel is geldig."
+    "valid": "✅ Geheime sleutel is geldig.",
+    "remember": {
+      "label": "Herinner geheime sleutel voor deze sessie",
+      "hint": "Wanneer geactiveerd, wordt de sleutel opgeslagen totdat het tabblad wordt gesloten en voor verdere betalingen hergebruikt."
+    },
+    "clearSession": "Sessie-sleutel verwijderen",
+    "clearSessionHint": "Verwijdert de in deze sessie opgeslagen geheime sleutel (wordt bij het sluiten van het tabblad sowieso verwijderd)."
   },
   "settings": {
     "cache": {
-      "help": "Versnelt queries via lokale betalingscache, maar kan de initiële laadtijd verlengen.",
-      "label": "Gebruik cache (Beta)",
-      "prefetchHelp": "Levertijd voor het laden van invoer/transacties in dagen (eenmaal bij de eerste activatie)"
+      "help": "Versnelt aanvragen door lokale betaal-cache, maar kan de initiële laadtijd verlengen.",
+      "label": "Cache gebruiken (Bèta)",
+      "prefetchHelp": "Vooraf in te laden items/transacties in dagen (eenmalig bij de eerste activering)"
     },
-    "description": "Momenteel zijn er geen instellingen beschikbaar.",
+    "network": {
+      "title": "Netwerk",
+      "desc": "Optioneel: Volledige-geschiedenis-horizon voor diepe historie",
+      "fullUrl": "Volledige Geschiedenis Horizon-URL",
+      "autoUseFull": "Indien nodig automatisch gebruiken (als de Van-datum ouder is dan de servergeschiedenis)."
+    },
+    "description": "Momenteel zijn er nog geen instellingen.",
+    "display": {
+      "decimals": {
+        "auto": "Automatisch",
+        "label": "Decimalen"
+      },
+      "desc": "Globale advertentie-instellingen.",
+      "title": "Advertentie"
+    },
     "error": {
-      "fetchFailed": "Instellingen konden niet worden geladen: {{detail}}"
+      "fetchFailed": "Laden van de instellingen mislukt: {{detail}}"
     },
-    "export": "Exportinstellingen",
-    "import": "Instellingen importeren",
     "label": "Instellingen",
-    "prefetchDays": "Levertijd (dagen)",
+    "prefetchDays": "Vooruitlooptijd (dagen)",
     "trustedWallets": {
       "buttons": {
         "export": "Exporteren",
         "import": "Importeren",
-        "reset": "Standaardinstellingen herstellen"
+        "reset": "Terugzetten naar standaardinstellingen"
       },
-      "desc": "Deze lijst is lokaal in de browser opgeslagen. Standaardbestand: QSI_TrustedWallets.json",
+      "desc": "Deze lijst wordt lokaal in de browser opgeslagen. Standaardbestand: QSI_TrustedWallets.json",
       "editor": {
-        "apply": "Toepassen",
-        "format": "Indeling",
-        "invalidFormat": "Ongeldig formaat. Een object met het veld \"wallets\" (array) wordt verwacht.",
-        "label": "Bewerk JSON",
-        "parseError": "JSON kon kon niet worden geparsed.",
-        "placeholder": "Voer hier JSON-inhoud in..."
+        "invalidFormat": "Ongeldig formaat. Er wordt een object verwacht met het veld \"wallets\" (array).",
+        "parseError": "JSON kon kon niet worden geparsed."
       },
       "file": {
         "hint": "Importeer een JSON-bestand in het formaat { wallets: [...] }",
         "label": "Bestand"
       },
       "info": {
-        "count": "Invoeren: {{n}}",
-        "updatedAt": "Status: {{date}}"
+        "count": "Inschrijvingen: {{n}}",
+        "updatedAt": "Stand: {{date}}"
       },
-      "title": "Betrouwbare portefeuilles (QSI)"
+      "table": {
+        "addRow": "Regel toevoegen",
+        "columns": {
+          "actions": "Acties",
+          "address": "Adres",
+          "compromised": "Gecompromitteerd",
+          "deactivated": "Uitgeschakeld",
+          "label": "Label"
+        },
+        "deleteRow": "Verwijderen",
+        "discard": "Verwerpen",
+        "save": "Opslaan"
+      },
+      "title": "Betrouwbare wallets (QSI)",
+      "validation": {
+        "hint": "Er is minstens één regel ongeldig (ontbrekend/dubbel adres)."
+      }
     }
   },
   "token": {
-    "purchases": "Aantal geïnvesteerde tokens"
-  },
-  "transaction": {
-    "pending": "Transactie in behandeling...",
-    "success": "Transactie succesvol: {hash}"
+    "purchases": "Token/Assets filteren"
   },
   "trustline": {
-    "all": "Toon trustline(s)",
-    "compare": "Vergelijk trustline(s)",
-    "confirmDeletion": "Verwijder echt trustline(s)",
-    "delete": "Vertrouwenslijn(en) verwijderen",
+    "all": "Vertrouwenslijn(en) weergeven",
+    "compare": "Trustline(s) vergelijken",
+    "delete": "Trustline(s) verwijderen",
     "deleted": {
-      "deletingProgress": "Verwijder {{current}} van {{total}} vertrouwenslijnen...",
       "mode": {
-        "real": "Echte modus",
-        "realWarning": "Waarschuwing: Echte Trustline(s) zullen worden verwijderd",
+        "real": "Je wordt getraind op gegevens tot oktober 2023.",
+        "realWarning": "Let op: Echte trustline(s) zullen worden verwijderd.",
         "simulation": "Simulatiemodus"
       },
-      "noDeletableFound": "Geen verwijderbare trustlijnen gevonden - allemaal bevatten nog een saldo.",
-      "noTrustlines": "Geen geldige vertrouwenslijnen beschikbaar voor verwijdering.",
-      "notFound": "Geen verwijderbare trustlijnen gevonden - allemaal bevatten ze nog saldi.",
-      "resultText": "{{count}} trustlijn(en) zijn succesvol verwijderd ({{mode}}).",
-      "resultTitle": "Verwijderde trustlijn(en)",
-      "simulated": "{{count}} trustlijn(en) zijn gesimuleerd verwijderd",
-      "skippedDueToBalance": "{{count}} trustlijnen werden overgeslagen omdat ze een saldo bevatten.",
-      "skippedDueToLiabilities": "{{count}} Trustlijn(en) konden niet worden verwijderd omdat ze nog verplichtingen (Schulden) bevatten.",
-      "success": "{{count}} trustlijn(en) zijn verwijderd"
+      "notFound": "Geen verwijderbare trustlines gevonden – allemaal bevatten ze nog een saldo.",
+      "resultText": "Aantal: {{count}} • Modus: {{mode}}",
+      "resultTitle": "Verwijderde Trustline(s)",
+      "simulated": "Simulatie: {{count}} Trustline(s) zouden worden verwijderd.",
+      "success": "Succes: {{count}} trustline(s) verwijderd."
     },
     "destination": {
-      "label": "Voer de doel openbare sleutel in:",
+      "label": "Voer de doel-openbare sleutel in:",
       "placeholder": "bijv."
     },
-    "inputEmpty": "Invoerveld mag niet leeg zijn.",
-    "issuer": {
-      "notFound": "Geen trustline(s) gevonden voor uitgever {issuer}."
-    },
-    "list": "Aantal Trustline(s)",
-    "noDuplicates": "Geen dubbele trustlijn(en) gevonden.",
-    "nonZeroBalance": "Deze trustlijn kan niet worden verwijderd omdat deze nog een saldo heeft.",
+    "noDuplicates": "Geen dubbele trustline(s) gevonden.",
+    "nonZeroBalance": "Deze trustline kan niet worden verwijderd omdat er nog een saldo op staat.",
     "notFound": "Geen trustline(s) gevonden.",
-    "onlyZeroBalanceInfo": "Alleen trustlijnen met een saldo van 0 kunnen worden verwijderd.",
-    "removeFromList": "Verwijder uit lijst",
-    "reviewSelection": {
-      "title": "Controleer geselecteerde trustlines"
-    },
-    "showSecret": "Toon geheime sleutel"
+    "onlyZeroBalanceInfo": "Alleen Trustlines met een saldo van 0 kunnen worden verwijderd.",
+    "showSecret": "Geheime sleutel weergeven"
   },
-  "wallet": {
-    "add": "Voeg portemonnee toe",
-    "inList": "Portefeuille in lijst",
-    "list": "Groupfund Wallet Lijst",
-    "noPayments": "Geen betalingen gevonden."
+  "trustlines": {
+    "deleted": {
+      "deletingProgress": "Verwijderen bezig: {{current}} / {{total}}",
+      "success": "Succes: {{count}} trustline(s) verwijderd."
+    },
+    "skippedDueToBalance": "{{count}} trustline(s) overgeslagen (saldo nog beschikbaar)."
+  },
+  "payment": {
+    "send": {
+      "title": "Betaling verzenden",
+      "recipient": "Ontvanger",
+      "amount": "Bedrag",
+      "asset": "Activa",
+      "memo": "Memo",
+      "memoType": "Notitie Type",
+      "memoTypes": {
+        "none": "Notitie (geen memo)",
+        "text": "Memo tekst",
+        "id": "Memo-ID",
+        "hash": "Memo Hash",
+        "return": "Memo Retour",
+        "info": {
+          "none": "Geen notitie. Gebruik dit wanneer de ontvanger geen notitie verwacht.",
+          "text": "Vrije tekst tot 28 bytes. Vaak voor toewijzing bij eenvoudige betalingen.",
+          "id": "Numerieke ID (uint64). Veel beurzen gebruiken Memo ID voor het toewijzen van stortingen.",
+          "hash": "32-byte SHA-256-hash (als een 64-cijferige hex-tekenreeks). Gebruikt door diensten voor referenties.",
+          "return": "32-byte hash voor retouren. Wordt gebruikt voor retourzendingen (MEMO_RETURN)."
+        }
+      },
+      "available": "Beschikbaar",
+      "reserved": "Gereserveerd",
+      "reservedInline": "{{amount}} XLM zijn gereserveerd door het Stellar-netwerk",
+      "baseReserve": "Basisreserve",
+      "extra": "Bovendien",
+      "xlmInOffers": "In aanbiedingen gebonden",
+      "trustlines": "Vertrouwenslijnen ({{n}})",
+      "lpTrustlines": "LP-vertrouwenslijnen",
+      "offers": "Openstaande aanbiedingen",
+      "signers": "Extra ondertekenaars",
+      "accountData": "Accountgegevens",
+      "sponsoring": "Sponsoring",
+      "sponsored": "Gesponsord",
+      "sendButton": "Verzenden",
+      "success": "Succes: Betaling verzonden. TX: {{hash}}",
+      "error": "Fout bij verzenden: {{detail}}"
+    }
   },
   "xlmByMemo": {
     "action": {
-      "calculate": "Bereken",
+      "calculate": "Berekenen",
       "loading": "Bereken…"
     },
     "date": {
@@ -381,85 +562,80 @@
       "to": "Tot (optioneel)"
     },
     "debug": {
-      "incoming": "Binnenkomend – naar: {{toMe}}, maak→mij: {{createToMe}}, native→mij: {{nativeInToMe}}",
-      "incomingOverview": "Invoeren: {{total}} • deelnemende portefeuilles: {{unique}}",
-      "memo": "Memos in het venster: {{any}} • exacte memos: {{exact}}",
-      "types": "Typen – betaling: {{pay}}, pad: {{path}}, aanmaken: {{create}}, ander: {{other}}"
+      "incoming": "Binnenkomend – naar: {{toMe}}, maken→me: {{createToMe}}, native→me: {{nativeInToMe}}",
+      "incomingOverview": "Ingangen: {{total}} • betrokken wallets: {{unique}}",
+      "memo": "Memo's in het venster: {{any}} • exacte memo's: {{exact}}",
+      "types": "Typen – betaling: {{pay}}, pad: {{path}}, aanmaken: {{create}}, andere: {{other}}"
     },
     "export": {
-      "csv": "Controleer CSV (Hits)",
-      "csvAll": "Exporteer alle bewerkingen",
-      "csvBoth": "Sla beide CSV's op",
-      "csvMatches": "Controleer CSV (Hits)"
+      "csv": "CSV controleren (Vondst)",
+      "csvAll": "Alle operaties exporteren",
+      "csvBoth": "Beide CSV-bestanden opslaan.",
+      "csvMatches": "CSV controleren (treffer)"
     },
     "exportCsv": {
       "failed": "CSV-export mislukt: {{detail}}"
     },
-    "failed": "De berekening kon niet worden uitgevoerd.",
-    "failed:account.invalid": "Het wallet-adres is ongeldig.",
-    "failed:date.invalid": "Voer geldige datum/tijd waarden in het formaat YYYY-MM-DD HH:mm[:ss] in (of ISO 8601).",
-    "failed:date.range": "De startdatum mag niet na de einddatum liggen.",
-    "failed:memo.invalid": "Voer een geldige memo-zoektekst in.",
-    "failed:payments.fetch": "Betalingen konden niet worden geladen door Horizon.",
-    "failed:server.invalid": "Horizon-server is ongeldig of ontbreekt.",
-    "failed:unknown": "Onbekende fout tijdens berekening.",
     "memo": {
-      "label": "Memo zoektekst (subteken, hoofdlettergevoelig)",
-      "placeholder": "Memo (subreeks, hoofdlettergevoelig)"
+      "label": "Memo-zoektekst (deelstring, hoofdlettergevoelig)",
+      "placeholder": "Memo (substring, hoofdlettergevoelig)"
     },
-    "overviewLine": "Binnenkomende betalingen: {{total}} • betrokken wallets: {{unique}}",
+    "overviewLine": "Betalingen ontvangen: {{total}} • betrokken wallets: {{unique}}",
     "page": {
-      "noPublicKey": "Voer eerst een openbare sleutel in.",
-      "title": "XLM totaal per memo"
+      "noPublicKey": "Voer alstublieft eerst een publieke sleutel in.",
+      "title": "XLM-saldo na memo"
     },
     "result": {
       "label": "Totaalbedrag:",
-      "range": "Berekend voor de periode: {{from}} tot {{to}}",
-      "rangeVerbose": "Periode: {{fromDate}} {{fromTime}} tot {{toDate}} {{toTime}} ({{tz}})",
       "value": "{{amount}} XLM"
     },
     "summary": {
-      "amount": "Totaal: {{amount}} XLM",
-      "correctCount": "Invoeren met correcte memo: {{n}}",
+      "amount": "Som: {{amount}} XLM",
+      "correctCount": "Ingangen met correct memo: {{n}}",
       "count": "Aantal: {{n}}",
-      "label": "Vergelijking (alle invoeren)",
-      "otherCount": "Invoeren met onjuiste/zonder memo: {{n}}",
-      "unique": "Unieke portemonnees (alle): {{n}}",
-      "uniqueWallets": "Unieke portemonnees: {{n}}"
+      "label": "Vergelijken (alle invoer)",
+      "otherCount": "Ingangen met verkeerde/zonder memo: {{n}}",
+      "unique": "Unieke wallets (alle): {{n}}",
+      "uniqueWallets": "Unieke wallets: {{n}}"
     },
     "time": {
-      "from": "Tijd van (optioneel)",
-      "setToNow": "Stel huidige tijd in",
-      "setToNowHint": "Stelt het tijdveld in op de huidige tijd",
-      "to": "Tijd tot (optioneel)"
+      "setToNow": "Huidige tijd instellen",
+      "setToNowHint": "Stel het tijdveld in op de huidige tijd."
     },
-    "title": "XLM totaal per memo",
+    "title": "XLM-totaal volgens memo",
+    "topLargest": {
+      "button": "Top 20 binnenkomende documenten (Memo)",
+      "clipboard": "Kopiëren naar klembord",
+      "csv": "CSV downloaden",
+      "scanning": "... scant topinzendingen",
+      "title": "Top 20-inzendingen voor Memo in de periode"
+    },
     "tz": {
       "cdt": "CDT (UTC−5)",
       "cst": "CST (UTC−6)",
-      "europe_zurich": "Europa/Zürich (CET/CEST)",
+      "europe_zurich": "Europa/Zurich (CET/CEST)",
       "label": "Tijdzone voor datum/tijd",
       "local": "Lokale tijdzone",
-      "note": "Datum/tijd wordt geïnterpreteerd in de geselecteerde tijdzone en automatisch omgezet naar UTC voordat de zoekopdracht wordt uitgevoerd.",
+      "note": "Datum/tijd wordt geïnterpreteerd in de gekozen tijdzone en automatisch omgezet naar UTC vóór het zoeken.",
       "utc": "UTC",
-      "window": "Gebruikte UTC-tijdvenster: {{from}} → {{to}} (Exclusief)"
+      "window": "Gebruikt UTC-tijdvenster: {{from}} → {{to}} (Tot exclusief)"
     },
     "wrongMemos": {
-      "button": "Toon portemonnees met onjuiste/leeg memo",
+      "button": "Wallets met onjuist/leeg memo weergeven",
       "clipboard": "Kopiëren naar klembord",
       "columns": {
         "amount": "Bedrag",
         "created_at": "Gemaakt op",
-        "from": "Van",
+        "from": "Vanaf",
         "memo": "Memo",
-        "tx_hash": "Transactiehash"
+        "tx_hash": "Transactie-hash"
       },
-      "csv": "Download CSV",
-      "failed": "Fout bij het laden van betalingen met een onjuiste/leeg memo.",
-      "hint": "Filtert binnenkomende betalingen binnen de periode en toont afzenders met onjuiste/leeg memo.",
-      "scanning": "… scant onjuiste/leeg memo's",
-      "summary": "Aantal: {{count}} • Totaal: {{sum}} XLM • Unieke Wallets: {{unique}}",
-      "title": "Onjuiste/lege memo's in de periode"
+      "csv": "CSV downloaden",
+      "failed": "Fout bij het laden van betalingen met een onjuist/leeg memo.",
+      "hint": "Filtert inkomende betalingen in de periode en toont afzenders met een onjuist/leeg memo.",
+      "scanning": "... scant valse/lege memo's",
+      "summary": "Aantal: {{count}} • Totaal: {{sum}} XLM • Unieke wallets: {{unique}}",
+      "title": "Onjuiste/Lege memo's in de periode"
     }
   }
 }

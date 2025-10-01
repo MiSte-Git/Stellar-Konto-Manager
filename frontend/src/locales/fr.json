@@ -1,31 +1,62 @@
 {
-  "account": {
-    "loadFailed": "Erreur de chargement du compte {publicKey} : {{error}}",
-    "noBalances": "Aucun solde trouvé pour le compte."
-  },
-  "address": "Adresse",
   "app": {
     "errorBoundary": {
       "title": "Quelque chose a mal tourné."
     }
   },
   "asset": {
-    "amount": "Montant (XLM)",
-    "balance": "Solde",
+    "balance": "Crédit",
     "code": "Code d'actif",
     "creationDate": "Créé le",
     "issuer": "Émetteur"
   },
-  "assets": {
-    "compromisedPurchases": "{total} paiements totaux",
-    "totalPurchases": "Nombre total d'achats : {count}"
+  "balance": {
+    "buttons": {
+      "details": "Plus de détails",
+      "explorer": "Explorer",
+      "payments": "Dernières opérations"
+    },
+    "current": "Soldes actuels",
+    "details": "Détails dans les explorateurs de blocs",
+    "empty": "Aucun crédit trouvé.",
+    "explorer": {
+      "expert": "stellar.expert",
+      "stellarchain": "Stellarchain.io"
+    },
+    "noPublicKey": "Veuillez d'abord entrer une clé publique.",
+    "payments": {
+      "all": "Tous",
+      "columns": {
+        "amount": "Montant",
+        "asset": "Actif",
+        "counterparty": "Compte de contrepartie",
+        "date": "Date",
+        "direction": "Direction",
+        "memo": "Note",
+        "tx": "Tx",
+        "type": "Taper"
+      },
+      "empty": "Aucun processus trouvé.",
+      "filter": {
+        "memo": "Filtre mémo",
+        "memoPlaceholder": "Rechercher des mémos..."
+      },
+      "from": "De",
+      "incoming": "Entrée",
+      "limit": "Nombre",
+      "outgoing": "Sortie",
+      "title": "Dernières opérations",
+      "to": "Jusqu'à"
+    },
+    "paymentsHint": "Vous pouvez filtrer les entrées/sorties dans l'Explorateur.",
+    "title": "Afficher le solde du compte"
   },
   "buildInfo": {
     "branch": "Branche",
-    "commit": "Engagement",
+    "commit": "S'engager",
     "env": "Environnement",
     "error": "Les informations de construction n'ont pas pu être chargées.",
-    "loading": "Chargement des informations de construction …"
+    "loading": "Chargement des informations de construction..."
   },
   "cache": {
     "clear": "Vider le cache",
@@ -38,57 +69,57 @@
     "loading": "Chargement…",
     "refresh": "Recharger"
   },
-  "date": {
-    "times": "Dates et heures"
-  },
   "error": {
     "asset": {
       "creationDateUnknown": "Date de création inconnue"
     },
     "cache": {
-      "backfillAborted": "Le chargement initial des paiements a été annulé.",
-      "indexIterFailed": "L'itération de l'index dans le cache a échoué",
-      "memoNormBackfillFailed": "Le chargement initial des paiements pour les mémos normalisés a échoué.",
-      "openFailed": "Le cache local n'a pas pu être ouvert.",
-      "readFailed": "Échec de la lecture du cache",
-      "writeFailed": "Échec de l'écriture dans le cache"
+      "backfillAborted": "Chargement initial des paiements annulé.",
+      "coverage": {
+        "newestFailed": "Échec de récupération du dernier paiement.",
+        "oldestFailed": "Échec de la détermination de la date la plus ancienne"
+      },
+      "indexIterFailed": "Échec de l'itération de l'index dans le cache",
+      "memoNormBackfillFailed": "Échec du chargement initial des paiements pour les mémos normalisés.",
+      "openFailed": "Impossible d'ouvrir le cache local.",
+      "readFailed": "Échec de la lecture depuis le cache",
+      "rehydrateFailed": "Échec du chargement des mémos manquants",
+      "rehydrateWriteFailed": "Échec de l'écriture des mémos dans le cache",
+      "writeFailed": "Échec de l’écriture dans le cache."
     },
     "connection": {
-      "backend": "Aucune connexion au backend possible. Veuillez vous assurer"
+      "backend": "Aucune connexion au backend possible. Assurez-vous"
     },
     "fetchInvestedTokens": {
       "failed": "Échec du chargement des données d'investissement : {{detail}}"
     },
-    "fetchingOperations": "Erreur lors de la récupération des opérations : {{error}}",
     "horizon": {
-      "paymentsFetch": "Erreur de chargement des paiements depuis Horizon"
+      "paymentsFetch": "Erreur lors du chargement des paiements de Horizon."
     },
-    "op_invalid_limit": "La ligne de confiance ne peut pas être supprimée. Elle peut encore avoir un solde ou des obligations en cours.",
+    "loadTrustlines": "Échec du chargement des Trustlines",
+    "loadTrustlinesFailed": "Échec du chargement des lignes de confiance.",
+    "loadTrustlinesNotFound": "Compte non trouvé dans le réseau sélectionné. Vérifiez Testnet/Public dans l'en-tête.",
+    "accountNotFoundInNetwork": "Introuvable dans le '{{net}}' !",
+    "op_invalid_limit": "La ligne de confiance ne peut pas être supprimée. Elle peut encore avoir un solde ou des engagements en cours.",
     "query": {
       "invalidMemo": "Mémo invalide",
-      "invalidRange": "La plage horaire est invalide (De > À)",
-      "invalidTime": "Saisie de temps invalide"
+      "invalidRange": "Fenêtre de temps invalide (De > À)",
+      "invalidTime": "Heure invalide"
     },
-    "script": "Erreur de script : {message} à {source}:{lineno}:{colno} - {{error}}",
     "submitTransaction": {
       "failed": {
-        "tx_bad_auth": "Transaction refusée : signature invalide",
-        "tx_failed": "La transaction a échoué",
+        "tx_bad_auth": "Transaction refusée : Signature invalide",
+        "tx_failed": "Transaction échouée.",
         "unknown": "Erreur inconnue lors de la transaction"
       }
     },
     "sync": {
-      "backfillFailed": "Le chargement initial des paiements a échoué.",
-      "incrementalFailed": "La mise à jour du paiement a échoué."
+      "backfillFailed": "Échec du chargement initial des paiements.",
+      "incrementalFailed": "Mise à jour des paiements échouée"
     },
     "transaction": {
-      "deleteFail": "[ERREUR] La suppression a échoué : {{error}}",
-      "failed": "La transaction a échoué",
-      "title": "Erreur de transaction",
-      "unknown": "Erreur inconnue lors de la transaction."
-    },
-    "transaktion": {
-      "unknown": "Erreur inconnue lors de la transaction."
+      "failed": "Transaction échouée.",
+      "title": "Erreur lors de la transaction"
     },
     "trustline": {
       "submitFailed": "Erreur lors de la suppression de la ligne de confiance.",
@@ -98,18 +129,15 @@
       "aborted": "Opération annulée par l'utilisateur",
       "accountInvalid": "Compte invalide",
       "dateInvalid": "Date invalide",
-      "dateRange": "Plage de dates invalide",
+      "dateRange": "Plage de dates non valide",
       "failedUnknown": "Erreur inconnue",
       "memoInvalid": "Mémo invalide",
-      "paymentsFetch": "Erreur de chargement des paiements",
+      "paymentsFetch": "Erreur lors du chargement des paiements",
       "serverInvalid": "Serveur invalide"
     }
   },
   "exportCsv": {
-    "failed": "L'exportation CSV a échoué"
-  },
-  "fetchInvestedTokens": {
-    "failed": "Échec du chargement des données d'investissement : {{detail}}"
+    "failed": "Échec de l'exportation CSV."
   },
   "investedTokens": {
     "columns": {
@@ -119,31 +147,30 @@
       "destination": "Portefeuille cible",
       "issuer": "Émetteur",
       "label": "Étiquette",
-      "memo": "Mémo",
+      "memo": "Note de service",
       "payments": "Paiements",
+      "date": "Date",
       "token": "Jeton"
     },
+    "decimals": {
+      "auto": "Automatique",
+      "label": "Chiffres après la virgule :"
+    },
     "filter": {
-      "memoPlaceholder": "Filtrer par mémo, adresse de portefeuille ou étiquette",
+      "memoPlaceholder": "Filtrer par mémo, adresse de portefeuille ou libellé.",
       "tokenPlaceholder": "Filtrer par jeton (CODE:ÉMETTEUR)"
     },
-    "group": {
-      "memo": "Mémo",
-      "memoOrToken": "Mémo, sinon jeton",
-      "token": "Jeton (CODE:ÉMETTEUR)"
-    },
-    "groupBy": "Grouper par",
     "hintEnterPublicKey": "Veuillez d'abord entrer une clé publique.",
     "item": {
-      "memo": "Mémo : \"{{memo}}\" (Paiements : {{occurrences}})",
+      "memo": "Note : « {{memo}} » (Paiements : {{occurrences}})",
       "token": "Jeton : {{token}} (Paiements : {{occurrences}})",
-      "tokenShort": "Token : {{token}}"
+      "tokenShort": "Jeton : {{token}}"
     },
-    "missingPublicKey": "La clé publique est manquante.",
-    "moreTruncated": "... et {{extra}} groupes de plus",
-    "toWallet": "verser dans le portefeuille : {{address}}",
+    "missingPublicKey": "Clé publique manquante.",
+    "moreTruncated": "… et {{extra}} autres groupes",
+    "toWallet": "au portefeuille : {{address}}",
     "total": "Nombre de jetons achetés : {{count}}",
-    "totalTokens": "Nombre de jetons investis (actifs) : {{count}}",
+    "totalTokens": "Nombre de tokens investis (actifs) : {{count}}",
     "value": {
       "units": "{{amount}} pièces",
       "xlm": "{{amount}} XLM"
@@ -151,39 +178,150 @@
     "view": {
       "label": "Filtrer par :",
       "memo": "Mémos (Groupfund)",
-      "token": "Jetons (montant acheté)"
+      "token": "Jeton (quantité achetée)"
     },
-    "walletCapInfo": "Remarque : Un portefeuille peut contenir un maximum de 1000 lignes de confiance."
+    "toggles": {
+      "showTotals": "Somme totale",
+      "qsiOnly": "Somme QSI GF"
+    },
+    "hints": {
+      "qsiListSet": "Remarque : Vous trouverez la liste des GF sous Paramètres → Portefeuilles de confiance (QSI).",
+      "pageTime": "Le chargement d'une page prend environ 0,2 seconde → 100 pages ≈ 20 secondes → 1000 pages ≈ 200 secondes (≈ 3:20 minutes)."
+    },
+    "walletCapInfo": "Remarque : Un portefeuille peut contenir un maximum de 1000 lignes de confiance.",
+    "action": {
+      "load": "Charger"
+    },
+    "history": {
+      "availableFrom": "Serveur (Horizon) – Historique à partir de",
+      "hintFullHistory": "Remarque : L'historique du grand livre à partir du serveur Horizon ne remonte qu'à {{available}}. Seules les données jusqu'à cette date seront affichées. La date de début choisie est donc limitée. Pour des données plus anciennes, un fournisseur de données historique complet (généralement payant) est nécessaire (Peut-être à venir dans le futur!)."
+    }
   },
+  "account": {
+    "createdAt": "Compte créé le",
+    "createdAtUnknown": "Ne peut pas être déterminé."
+  },
+  "fetch.groupfund.aborted": "Processus annulé par l'utilisateur.",
   "issuer": {
-    "compromised": "Compromis",
     "enter": "Entrez l'adresse de l'émetteur :",
-    "invalid": "Adresse de l'émetteur invalide.",
-    "label": "Entrez l'adresse de l'émetteur :",
-    "notfound": "Aucune adresse d'émetteur trouvée",
-    "placeholder": "par exemple"
+    "invalid": "Adresse de l'émetteur invalide."
   },
   "main": {
-    "processing": "Le processus est en cours, veuillez patienter...",
-    "title": "Gestionnaire de Trustline Stellar"
+    "processing": "Opération en cours, veuillez patienter…",
+    "title": "Gestionnaire de lignes de confiance/compte Stellar"
   },
   "menu": {
+    "balance": "Afficher le solde du compte",
+    "devTestnet": "Testnet (pour les développeurs)",
     "unknown": "Sélection de menu inconnue",
-    "xlmByMemo": "Filtrer le montant XLM par mémo/token"
+    "xlmByMemo": "Filtrer par mémo.",
+    "sendPayment": "Envoyer un paiement",
+    "donate": "Dons"
+  },
+  "badges": {
+    "testnet": "RÉSEAU DE TEST"
+  },
+  "multisigCreate": {
+    "activateHint": "L'activation est nécessaire pour que le compte existe. Sur le testnet, cela se fait via Friendbot, et sur le mainnet via \"Create Account\" à partir d'un portefeuille existant.",
+    "activateNow": "Activer le compte immédiatement",
+    "activateOnly": "Activer seulement",
+    "activated": "Compte activé. TX : {{hash}}",
+    "activatedTestnet": "Compte activé dans le testnet.",
+    "alreadyActive": "Le compte est déjà actif.",
+    "balanceWarning": "Le solde initial est probablement insuffisant pour ajouter les {{count}} signataires supplémentaires (réserve minimale : {{req}} XLM)",
+    "bestPractices": {
+      "text": "Recommandé : 2 sur 3 signatures. Cela signifie : Parmi les 3 signataires autorisés (1 maître + 2 signataires), au moins 2 signatures sont requises. Mise en œuvre : Attribuer un poids de 1 pour le maître/signataire respectivement et définir les seuils à bas=1, moyen=2, haut=2. Ainsi, les modifications simples nécessitent 1 signature ; les paiements/transactions exigent 2 signatures ; les changements critiques pour la sécurité nécessitent 2 signatures.",
+      "title": "Paramètres éprouvés"
+    },
+    "confirmLowBalance": "Le solde de départ ({{bal}} XLM) est inférieur à la réserve minimale ({{req}} XLM) pour {{count}} signataires supplémentaires. Voulez-vous quand même continuer ?",
+    "createButton": "Créer / Définir Multisig",
+    "createdAndConfigured": "Compte créé/configuré. TX : {{hash}}",
+    "createdNoSigners": "Compte créé. Aucun signataire supplémentaire n'a été indiqué.",
+    "enableMultisig": "Créer une multisig pour ce compte",
+    "generateFirst": "Veuillez d'abord générer des clés.",
+    "generateKeys": "Générer des clés",
+    "hint": "Créez un nouveau portefeuille. Activez-le immédiatement si vous le souhaitez (1 XLM ou recommandé) et ajoutez des signataires supplémentaires (Multisig).",
+    "hints": {
+      "byteRange": "(0–255)"
+    },
+    "info": {
+      "more": "Plus d'informations.",
+      "multisig": "Multisig signifie : Plusieurs signatures sont requises pour ce compte. Vous choisissez des signataires supplémentaires et le seuil (par exemple, 2 sur 3). Une transaction n'est valide que si elle comporte au moins autant de signatures que le seuil (maître + cosignataires).",
+      "text": "Voici comment cela fonctionne\nTa clé secrète reste toujours dans ton navigateur. Elle est uniquement utilisée pour signer localement ta transaction. Seule la signature achevée est envoyée à notre serveur ou à l'extérieur, jamais ta clé. Si tu le souhaites, tu peux le vérifier avec les outils de développement du navigateur: tu verras ainsi qu'aucune clé n'est transmise."
+    },
+    "instructions": {
+      "public": "Clé publique : Ton adresse de compte, comme un IBAN. Sûre à partager.",
+      "secret": "Clé secrète : Ton mot de passe pour le compte. Ne jamais le partager, le conserver en sécurité (par exemple, sur papier)."
+    },
+    "mainnetActivateNote": "Remarque : Des réserves supplémentaires sont nécessaires pour le multisig. 1 XLM ne suffit souvent pas.",
+    "menu": "Créer un compte",
+    "menuHint": "Pour créer des comptes pour les membres de la famille, les amis, les employés...",
+    "reserve": {
+      "base": "Réserve de base par entrée : {{val}} XLM",
+      "recommended": "Solde de départ recommandé : {{val}} XLM (y compris la marge de sécurité)",
+      "required": "Réserve minimale requise (nouvelle) : {{val}} XLM"
+    },
+    "signersCount": "Nombre de signataires supplémentaires",
+    "signersCountHint": "Vous réglez le nombre minimum de signatures ci-dessous sous \"Signatures requises\" (faible/moyenne/élevée).",
+    "signersCountLimit": "Remarque : Limite du réseau (Stellar) : maximum de 20 signataires supplémentaires.",
+    "signersInfo": "Ajoutez des adresses G... comme signataires. Chaque signataire augmente la réserve minimale.",
+    "signersTitle": "Multisig (signataires supplémentaires)",
+    "startingBalance": "Crédit initial (XLM)",
+    "threshold": "Signatures requises (faible/moyen/élevé)",
+    "thresholdCurrent": "Actuellement sélectionné : bas={{low}}, moyen={{med}}, haut={{high}} sur {{total}} signatures.",
+    "thresholdHelp": "Seuil : Nombre de signatures requises (maître + signataires) pour qu'une transaction soit valide.",
+    "thresholdInfo": "Recommandation : {{req}} sur {{total}} signatures (y compris le maître)",
+    "thresholdLevelsHint": "Typiquement, cela s'applique : faible = modifications simples (par exemple, mémo, prix), moyen = paiements/commerce, élevé = modifications critiques en matière de sécurité (par exemple, signataires/seuils).",
+    "thresholdStatic": "Nécessaire : {{val}} sur {{total}} signatures (faible/moyen/élevé)",
+    "thresholdSum": "Somme des poids : {{sum}}",
+    "thresholdTooHigh": "Remarque : Un seuil ne doit pas dépasser la somme des poids. Veuillez ajuster les valeurs.",
+    "title": "Créer un compte (optionnel Multisig)",
+    "tooltips": {
+      "high": "Élevé : modifications critiques pour la sécurité (par exemple, signataires/seuils).",
+      "low": "Faible : modifications simples (par exemple, mémo, prix).",
+      "masterWeight": "Poids du titulaire du compte (Maître) (0-255) : La clé principale du compte détient un droit de vote. Plus son poids est élevé, plus la signature compte de voix. Ces voix sont comptabilisées avec celles des autres signataires pour vérifier si la majorité requise est atteinte.",
+      "med": "Moyens : paiements et actions commerciales.",
+      "signerWeight": "Poids des signataires (0–255) : Les signataires supplémentaires ont également des droits de vote. Le poids détermine combien de votes leur signature apporte. Lorsqu'une transaction est envoyée, tous les votes exprimés sont ajoutés. Si le nombre de votes requis (seuil) est atteint, la transaction est considérée comme autorisée.",
+      "signerWeightHint": "Remarque : Les poids des maîtres et des signataires forment la somme ; les seuils (faible/moyen/élevé) ne doivent pas dépasser cette somme."
+    },
+    "units": {
+      "signatures": "Signature(s)"
+    }
+  },
+  "multisigEdit": {
+    "confirm": {
+      "removeSigner": "Supprimer réellement le signataire ?"
+    },
+    "currentConfig": "Configuration actuelle / prévue",
+    "error": {
+      "thresholdTooHigh": "Les seuils ne doivent pas dépasser la somme des poids."
+    },
+    "hint": "Chargez un compte existant, ajustez les signataires, les poids, le poids principal et les seuils, puis enregistrez les modifications.",
+    "load": "Charger",
+    "loaded": "Chargé. Signataires supplémentaires : {{count}}",
+    "menu": "Modifier le compte avec multisécurité",
+    "menuHint": "Modifier le signataire/seuil d'un compte existant.",
+    "noteMaxSigners": "Remarque : Stellar permet un maximum de 20 signataires supplémentaires par compte.",
+    "reload": "Recharger",
+    "save": "Enregistrer les modifications",
+    "saved": "Modifications enregistrées. TX : {{hash}}",
+    "signers": "Signataire",
+    "weight": "Pondération",
+    "title": "Modifier un compte multisignature",
+    "validation": {
+      "signerKeyHint": "Remarque : Les signataires doivent commencer par \"G\" (clé publique ed25519).",
+      "signerKeyInvalid": "Adresse de signataire invalide. Une adresse commençant par G… (ed25519) est attendue."
+    }
   },
   "navigation": {
+    "back": "Retour",
     "backToMainMenu": "Retour au menu",
-    "backToPublicKey": "Retour à l'entrée de la clé publique",
-    "backToTop": "Retour en haut",
-    "current": {
-      "menu": "Menu actuel :"
-    },
-    "next": "Suivant",
-    "previous": "Précédent"
+    "backToPublicKey": "Retour à la saisie de la clé publique.",
+    "backToTop": "Retour en haut"
   },
+  "noIssuerTrustlinesFound": "Aucune ligne de confiance trouvée pour l'émetteur {{issuer}}.",
   "option": {
     "add": "Ajouter",
-    "addToList": "Ajouter à la liste",
     "cancel": "Annuler",
     "close": "Fermer",
     "confirm": {
@@ -194,28 +332,19 @@
     },
     "copy": "Copier",
     "delete": "Supprimer",
-    "description": "Description",
     "export": {
-      "csv": "Enregistrer au format CSV",
-      "pdf": "Enregistrer en tant que PDF"
+      "csv": "Enregistrer en tant que CSV",
+      "pdf": "Enregistrer sous forme de PDF"
     },
-    "filter": "Filtrage...",
-    "hide": "Cacher",
     "loading": "Chargement...",
-    "memo": "Mémo",
-    "newAddress": "Nouvelle adresse",
-    "no": "Non",
-    "ok": "D'accord",
-    "page": "Page",
+    "no": "Non.",
     "results": "Résultats :",
-    "save": "Enregistrer",
-    "show": "Montrer",
     "yes": "Oui"
   },
   "progress": {
     "cancel": "Annuler",
-    "canceled": "Annulé",
-    "counts": "Vérifié : {{ops}} • Résultats : {{matches}}",
+    "canceled": "Interrompu",
+    "counts": "Vérifié : {{ops}} • Correspondances : {{matches}}",
     "done": "Terminé",
     "duration": "Durée : {{val}}",
     "elapsed": "Durée : {{time}}",
@@ -223,158 +352,210 @@
     "firstMatchAt": "Dernier dépôt : {{date}}",
     "mode": {
       "cache": "Mode : Cache",
-      "live": "Mode : En direct (Horizon)"
+      "live": "Mode : Live (Horizon)"
     },
     "oldest": "date la plus ancienne de cette page : {{date}}",
-    "oldestMatchInRangeAt": "Premier dépôt dans la période : {{date}}",
+    "oldestMatchInRangeAt": "Premier dépôt durant la période : {{date}}",
     "phase": {
       "backfill": "Chargement des paiements manquants…",
-      "cacheQuery": "Calcul en cours à partir du cache local…",
-      "chunkDone": "Chunk traité.",
-      "chunkSkip": "Chunk sautéé.",
-      "cover": "Assurer la couverture du cache...",
-      "export": "Exporter le résultat...",
+      "cacheQuery": "Calcul du résultat à partir du cache local…",
+      "chunkDone": "Morceau traité.",
+      "chunkSkip": "Morceau sauté.",
+      "cover": "Assurer la couverture du cache…",
+      "export": "Exporter le résultat…",
       "finalize": "Terminé",
       "finalizeDiag": "Diagnostic terminé",
       "idle": "Prêt…",
       "pageDone": "Page {{page}} terminée.",
       "rehydrate": "Reconstruire le cache…",
       "scan": "Analyse des paiements (page {{page}})…",
+      "scan_ops": "Analyser les opérations...",
       "scan_payments": "Analyse des paiements (page {{page}})…",
-      "scan_payments_fast": "Scanner les paiements (rapidement) – Page {{page}}…",
-      "scan_tx": "Scanner les transactions",
-      "sync": "Synchronisation des paiements…",
+      "scan_payments_fast": "Scanner les paiements (rapide) – Page {{page}}…",
+      "scan_tx": "Analyser les transactions",
+      "sync": "Synchroniser les paiements…",
       "txFetch": "Chargement des détails de la transaction…"
     },
     "wrongMemos": {
-      "failed": "Erreur de chargement des paiements avec un mémo incorrect ou vide."
+      "failed": "Erreur lors du chargement des paiements avec un mémo incorrect/vide."
     }
   },
   "publicKey": {
+    "deleteFromList": "Supprimer de la liste",
     "destination": {
-      "error": "Clé cible invalide.",
-      "input": "Entrez l'adresse du portefeuille cible"
+      "error": "Clé de destination non valide.",
+      "input": "Entrez l'adresse du portefeuille de destination"
     },
-    "invalid": "Clé publique ou adresse de fédération invalide.",
-    "label": "Veuillez entrer l'adresse de la fédération source ou la clé publique :",
-    "placeholder": "e.g.",
-    "recipient": "Adresse de réception",
-    "source": "Adresse du portefeuille source",
+    "label": "Veuillez entrer l'adresse de fédération source ou la clé publique :",
+    "load": "Chargement…",
+    "placeholder": "par exemple",
+    "source": "Adresse de portefeuille source",
+    "invalid": "Clé publique invalide.",
     "submit": {
-      "button": "Soumettre"
-    }
-  },
-  "puplicKey": {
-    "failed": "Erreur de résolution de l'adresse de fédération/clé publique : {{error}}"
+      "button": "Envoyer"
+    },
+    "test": "Test"
   },
   "secretKey": {
     "cleared": "La clé secrète a été supprimée.",
-    "empty": "Le champ de clé secrète est vide.",
-    "info": "La clé secrète est uniquement transmise temporairement à un backend pour exécuter l'action choisie. La clé n'est pas stockée.",
+    "empty": "Le champ de la clé secrète est vide.",
+    "info": "La clé secrète est uniquement transmise de manière temporaire à un backend pour exécuter l'action choisie. La clé n'est pas sauvegardée.",
     "invalid": "Clé secrète invalide.",
-    "label": "Entrez la clé secrète source (sera envoyée en toute sécurité au backend)",
+    "label": "Veuillez entrer la clé secrète source (elle sera envoyée en toute sécurité au backend).",
     "mismatch": "La clé secrète ne correspond pas à l'adresse publique.",
-    "placeholder": "par exemple",
-    "valid": "✅ La clé secrète est valide."
+    "placeholder": "par exemple (p. ex.)",
+    "valid": "✅ La clé secrète est valide.",
+    "remember": {
+      "label": "Mémoriser la clé secrète pour cette session.",
+      "hint": "Lorsqu'il est activé, la clé est enregistrée jusqu'à la fermeture de l'onglet et réutilisée pour d'autres paiements."
+    },
+    "clearSession": "Effacer la clé de session",
+    "clearSessionHint": "Supprime la clé secrète enregistrée dans cette session (sera de toute façon supprimée à la fermeture de l'onglet)."
   },
   "settings": {
     "cache": {
-      "help": "Accélère les requêtes grâce au cache de paiement local, mais peut prolonger le chargement initial.",
+      "help": "Accélère les requêtes grâce à un cache de paiement local, mais peut prolonger le chargement initial.",
       "label": "Utiliser le cache (Bêta)",
-      "prefetchHelp": "Délai de chargement des entrées/transactions en jours (lors de la première activation)"
+      "prefetchHelp": "Durée d'anticipation pour charger les entrées/transactions en jours (uniquement lors de la première activation)"
     },
-    "description": "Actuellement, il n'y a aucun paramètre disponible.",
+    "network": {
+      "title": "Réseau",
+      "desc": "Optionnel : Horizon complet de l'historique pour une histoire approfondie",
+      "fullUrl": "URL de l'horizon de l'historique complet",
+      "autoUseFull": "Utiliser automatiquement si nécessaire (si la date de début est antérieure à l'historique du serveur)"
+    },
+    "description": "Actuellement, il n'y a pas encore de réglages.",
+    "display": {
+      "decimals": {
+        "auto": "Automatique",
+        "label": "Décimales"
+      },
+      "desc": "Paramètres d'affichage globaux.",
+      "title": "Annonce"
+    },
     "error": {
       "fetchFailed": "Échec du chargement des paramètres : {{detail}}"
     },
-    "export": "Paramètres d'exportation",
-    "import": "Importer les paramètres",
     "label": "Paramètres",
-    "prefetchDays": "Délai de livraison (jours)",
+    "prefetchDays": "Délai (jours)",
     "trustedWallets": {
       "buttons": {
         "export": "Exporter",
-        "import": "Importation en cours",
-        "reset": "Réinitialiser par défaut"
+        "import": "Importer",
+        "reset": "Réinitialiser aux paramètres par défaut"
       },
-      "desc": "Cette liste est stockée localement dans le navigateur. Fichier par défaut : QSI_TrustedWallets.json",
+      "desc": "Cette liste est enregistrée localement dans le navigateur. Fichier par défaut : QSI_TrustedWallets.json",
       "editor": {
-        "apply": "Appliquer",
-        "format": "Format",
-        "invalidFormat": "Format invalide. Un objet avec le champ \"wallets\" (tableau) est attendu.",
-        "label": "Modifier JSON",
-        "parseError": "Le JSON n'a pas pu être analysé.",
-        "placeholder": "Insérez le contenu JSON ici..."
+        "invalidFormat": "Format non valide. Un objet avec le champ \"wallets\" (tableau) est attendu.",
+        "parseError": "JSON n'a pas pu être analysé."
       },
       "file": {
-        "hint": "Importez un fichier JSON au format { wallets: [...] }",
+        "hint": "Importer un fichier JSON au format { wallets: [...] }",
         "label": "Fichier"
       },
       "info": {
         "count": "Entrées : {{n}}",
-        "updatedAt": "Statut : {{date}}"
+        "updatedAt": "Mise à jour : {{date}}"
       },
-      "title": "Portefeuilles de confiance (QSI)"
+      "table": {
+        "addRow": "Ajouter une ligne",
+        "columns": {
+          "actions": "Actions",
+          "address": "Adresse",
+          "compromised": "Compromis",
+          "deactivated": "Désactivé",
+          "label": "Étiquette"
+        },
+        "deleteRow": "Supprimer",
+        "discard": "Rejeter",
+        "save": "Enregistrer"
+      },
+      "title": "Portefeuilles de confiance (QSI)",
+      "validation": {
+        "hint": "Au moins une ligne est invalide (adresse manquante/dupliquée)."
+      }
     }
   },
   "token": {
-    "purchases": "Nombre de jetons investis"
-  },
-  "transaction": {
-    "pending": "Transaction en attente...",
-    "success": "Transaction réussie : {hash}"
+    "purchases": "Filtrer les jetons/actifs"
   },
   "trustline": {
-    "all": "Afficher la(les) ligne(s) de confiance",
-    "compare": "Comparer la(s) ligne(s) de confiance",
-    "confirmDeletion": "Vraiment supprimer la(les) ligne(s) de confiance",
+    "all": "Afficher la/les ligne(s) de confiance",
+    "compare": "Comparer les trustlines",
     "delete": "Supprimer la ou les lignes de confiance",
     "deleted": {
-      "deletingProgress": "Supprimer {{current}} de {{total}} lignes de confiance...",
       "mode": {
         "real": "Mode réel",
-        "realWarning": "Avertissement : La ou les véritables lignes de confiance seront supprimées.",
+        "realWarning": "Attention : La ou les véritables lignes de confiance seront supprimées.",
         "simulation": "Mode simulation"
       },
-      "noDeletableFound": "Aucune ligne de confiance supprimable trouvée - toutes contiennent encore un solde.",
-      "noTrustlines": "Aucune ligne de confiance valide disponible pour suppression.",
-      "notFound": "Aucune ligne de confiance supprimable trouvée – toutes contiennent encore des soldes.",
-      "resultText": "{{count}} ligne(s) de confiance ont été supprimées avec succès ({{mode}}).",
+      "notFound": "Aucune ligne de confiance effaçable trouvée - elles contiennent toutes encore un solde.",
+      "resultText": "Quantité : {{count}} • Mode : {{mode}}",
       "resultTitle": "Ligne(s) de confiance supprimée(s)",
-      "simulated": "{{count}} ligne(s) de confiance ont été simulées comme supprimées",
-      "skippedDueToBalance": "{{count}} lignes de confiance ont été ignorées car elles contiennent un solde.",
-      "skippedDueToLiabilities": "{{count}} ligne(s) de confiance n'ont pas pu être supprimée(s) car elles contiennent encore des obligations (passifs).",
-      "success": "{{count}} ligne(s) de confiance ont été supprimée(s)"
+      "simulated": "Simulation : {{count}} ligne(s) de confiance seraient supprimée(s).",
+      "success": "Succès : {{count}} trustline(s) supprimée(s)."
     },
     "destination": {
-      "label": "Entrez la clé publique cible :",
+      "label": "Veuillez entrer la clé publique cible :",
       "placeholder": "par exemple"
     },
-    "inputEmpty": "Le champ de saisie ne doit pas être vide.",
-    "issuer": {
-      "notFound": "Aucune ligne de confiance trouvée pour l'émetteur {issuer}."
-    },
-    "list": "Nombre de ligne(s) de confiance",
-    "noDuplicates": "Aucune ligne de confiance en double trouvée.",
-    "nonZeroBalance": "Cette ligne de confiance ne peut pas être supprimée car elle a encore un solde.",
-    "notFound": "Aucune ligne de confiance trouvée.",
-    "onlyZeroBalanceInfo": "Seules les lignes de confiance avec un solde de 0 peuvent être supprimées.",
-    "removeFromList": "Retirer de la liste",
-    "reviewSelection": {
-      "title": "Vérifier la(les) ligne(s) de confiance sélectionnée(s)"
-    },
+    "noDuplicates": "Aucune trustline(s) dupliquée trouvée.",
+    "nonZeroBalance": "Cette ligne de confiance ne peut pas être supprimée car elle contient encore un solde.",
+    "notFound": "Aucune(s) ligne(s) de confiance trouvée(s).",
+    "onlyZeroBalanceInfo": "Seules les lignes de crédit avec un solde de 0 peuvent être supprimées.",
     "showSecret": "Afficher la clé secrète"
   },
-  "wallet": {
-    "add": "Ajouter un portefeuille",
-    "inList": "Portefeuille dans la liste",
-    "list": "Liste des portefeuilles Groupfund",
-    "noPayments": "Aucun paiement trouvé."
+  "trustlines": {
+    "deleted": {
+      "deletingProgress": "Suppression en cours : {{current}} / {{total}}",
+      "success": "Succès : {{count}} trustline(s) supprimée(s)."
+    },
+    "skippedDueToBalance": "{{count}} ligne(s) de confiance ignorée(s) (solde restant disponible)."
+  },
+  "payment": {
+    "send": {
+      "title": "Envoyer un paiement",
+      "recipient": "Destinataire",
+      "amount": "Montant",
+      "asset": "Actif",
+      "memo": "Note de service",
+      "memoType": "Type de mémo",
+      "memoTypes": {
+        "none": "Mémo (pas de mémo)",
+        "text": "Texte mémo",
+        "id": "ID Mémo",
+        "hash": "Mémo Hash",
+        "return": "Retour de mémo",
+        "info": {
+          "none": "Aucun mémo. Utilisez ceci lorsque le destinataire n'attend pas de mémo.",
+          "text": "Texte libre jusqu'à 28 octets. Souvent utilisé pour l'affectation de paiements simples.",
+          "id": "Identifiant numérique (uint64). De nombreuses bourses utilisent l'identifiant Memo pour l'attribution des dépôts.",
+          "hash": "Hachage SHA-256 de 32 octets (sous forme de chaîne hexadécimale de 64 caractères). Utilisé par des services pour des références.",
+          "return": "Hash de 32 octets pour les retours. Utilisé pour les retours (MEMO_RETURN)."
+        }
+      },
+      "available": "Disponible",
+      "reserved": "Réservé",
+      "reservedInline": "{{amount}} XLM sont réservés par le réseau Stellar.",
+      "baseReserve": "Réserve de base",
+      "extra": "De plus,",
+      "xlmInOffers": "Lié par des offres",
+      "trustlines": "Lignes de confiance ({{n}})",
+      "lpTrustlines": "LP‑Trustlines",
+      "offers": "Offres ouvertes",
+      "signers": "Signataires supplémentaires",
+      "accountData": "Données de compte",
+      "sponsoring": "Parrainage",
+      "sponsored": "Sponsorisé",
+      "sendButton": "Envoyer",
+      "success": "Succès : Paiement envoyé. TX : {{hash}}",
+      "error": "Erreur lors de l'envoi : {{detail}}"
+    }
   },
   "xlmByMemo": {
     "action": {
       "calculate": "Calculer",
-      "loading": "Calculer…"
+      "loading": "Calcule…"
     },
     "date": {
       "from": "De (facultatif)",
@@ -382,84 +563,79 @@
     },
     "debug": {
       "incoming": "Entrant – à : {{toMe}}, créer→moi : {{createToMe}}, natif→moi : {{nativeInToMe}}",
-      "incomingOverview": "Inputs : {{total}} • portefeuilles participants : {{unique}}",
+      "incomingOverview": "Entrées : {{total}} • portefeuilles impliqués : {{unique}}",
       "memo": "Mémos dans la fenêtre : {{any}} • mémos exacts : {{exact}}",
       "types": "Types – paiement : {{pay}}, chemin : {{path}}, créer : {{create}}, autre : {{other}}"
     },
     "export": {
-      "csv": "Vérifier le CSV (Hits)",
+      "csv": "Vérification CSV (Correspondance)",
       "csvAll": "Exporter toutes les opérations",
-      "csvBoth": "Enregistrez les deux CSV.",
-      "csvMatches": "Vérifier le CSV (Hits)"
+      "csvBoth": "Enregistrer les deux fichiers CSV.",
+      "csvMatches": "Vérifier le CSV (Correspondance)"
     },
     "exportCsv": {
-      "failed": "L'exportation CSV a échoué : {{detail}}"
+      "failed": "Échec de l'exportation CSV : {{detail}}"
     },
-    "failed": "Le calcul n'a pas pu être effectué.",
-    "failed:account.invalid": "L'adresse du portefeuille est invalide.",
-    "failed:date.invalid": "Veuillez entrer des valeurs de date/heure valides au format YYYY-MM-DD HH:mm[:ss] (ou ISO 8601).",
-    "failed:date.range": "La date de début ne peut pas être postérieure à la date de fin.",
-    "failed:memo.invalid": "Veuillez entrer un texte de recherche de mémo valide.",
-    "failed:payments.fetch": "Les paiements n'ont pas pu être chargés par Horizon.",
-    "failed:server.invalid": "Le serveur Horizon est invalide ou manquant.",
-    "failed:unknown": "Erreur inconnue lors du calcul.",
     "memo": {
-      "label": "Texte de recherche de mémo (sous-chaîne, sensible à la casse)",
-      "placeholder": "Mémo (sous-chaîne, sensible à la casse)"
+      "label": "Texte mémo (sous-chaîne, respect de la casse)",
+      "placeholder": "Mémo (chaîne partielle, respecter la casse)"
     },
-    "overviewLine": "Paiements entrants : {{total}} • portefeuilles impliqués : {{unique}}",
+    "overviewLine": "Entrées de paiement : {{total}} • portefeuilles impliqués : {{unique}}",
     "page": {
       "noPublicKey": "Veuillez d'abord entrer une clé publique.",
-      "title": "XLM total par mémo"
+      "title": "XLM-Somme après note de service"
     },
     "result": {
       "label": "Montant total :",
-      "range": "Calculé pour la période : {{from}} à {{to}}",
-      "rangeVerbose": "Période : {{fromDate}} {{fromTime}} à {{toDate}} {{toTime}} ({{tz}})",
       "value": "{{amount}} XLM"
     },
     "summary": {
-      "amount": "Total : {{amount}} XLM",
+      "amount": "Montant : {{amount}} XLM",
       "correctCount": "Entrées avec mémo correct : {{n}}",
-      "count": "Compteur : {{n}}",
+      "count": "Quantité : {{n}}",
       "label": "Comparaison (toutes les entrées)",
-      "otherCount": "Entrées avec mémo incorrect/absent : {{n}}",
+      "otherCount": "Entrées avec mémo incorrect/sans mémo : {{n}}",
       "unique": "Portefeuilles uniques (tous) : {{n}}",
       "uniqueWallets": "Portefeuilles uniques : {{n}}"
     },
     "time": {
-      "from": "Temps depuis (facultatif)",
-      "setToNow": "Définir l'heure actuelle",
-      "setToNowHint": "Définit le champ horaire à l'heure actuelle",
-      "to": "Temps restant jusqu'à (facultatif)"
+      "setToNow": "Définir l'heure actuelle.",
+      "setToNowHint": "Réglez le champ de l'heure sur l'heure actuelle."
     },
-    "title": "XLM total par mémo",
+    "title": "Somme XLM selon le mémo",
+    "topLargest": {
+      "button": "Top 20 entrées (Mémo)",
+      "clipboard": "Copier dans le presse-papiers",
+      "csv": "Télécharger le CSV",
+      "scanning": "... scanne les meilleures contributions",
+      "title": "Top 20 entrées pour mémo durant la période"
+    },
     "tz": {
-      "cdt": "CDT (UTC−5)",
-      "cst": "CST (UTC−6)",
+      "cdt": "HAC (UTC−5)",
+      "cst": "HNC (UTC−6)",
       "europe_zurich": "Europe/Zurich (CET/CEST)",
-      "label": "Fuseau horaire pour la date/heure",
+      "label": "Fuseau horaire pour la date/heure.",
       "local": "Fuseau horaire local",
-      "note": "La date/heure est interprétée dans le fuseau horaire sélectionné et convertie automatiquement en UTC avant la recherche.",
+      "note": "La date/l'heure sont interprétées dans le fuseau horaire choisi et automatiquement converties en UTC avant la recherche.",
       "utc": "UTC",
       "window": "Fenêtre horaire UTC utilisée : {{from}} → {{to}} (Exclusif)"
     },
     "wrongMemos": {
-      "button": "Afficher les portefeuilles avec un mémo incorrect/vide",
+      "button": "Afficher les portefeuilles avec un mémo incorrect/vide.",
       "clipboard": "Copier dans le presse-papiers",
       "columns": {
         "amount": "Montant",
         "created_at": "Créé le",
         "from": "De",
         "memo": "Mémo",
-        "tx_hash": "Hash de la transaction"
+        "tx_hash": "Hash de transaction"
       },
       "csv": "Télécharger CSV",
-      "failed": "Erreur de chargement des paiements avec un mémo incorrect ou vide.",
-      "hint": "Filtre les paiements entrants dans la période et affiche les expéditeurs avec un mémo incorrect/vide.",
-      "scanning": "… scanne des mémos incorrects/vides",
-      "summary": "Compte : {{count}} • Total : {{sum}} XLM • Portefeuilles uniques : {{unique}}",
-      "title": "Mémos incorrects/vides dans la période"
+      "failed": "Erreur lors du chargement des paiements avec un mémo incorrect/vide.",
+      "hint": "Filtre les paiements entrants sur la période et affiche les expéditeurs avec un mémo incorrect ou vide.",
+      "scanning": "... scanne des mémos faux/vides.",
+      "summary": "Nombre : {{count}} • Somme : {{sum}} XLM • Portefeuilles uniques : {{unique}}",
+      "title": "Mémos erronés/vides pendant la période"
     }
   }
 }

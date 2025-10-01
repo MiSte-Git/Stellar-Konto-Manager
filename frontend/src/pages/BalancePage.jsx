@@ -9,7 +9,9 @@ const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 export default function BalancePage({ publicKey }) {
 const { t, i18n } = useTranslation();
 const { decimalsMode } = useSettings();
-const [network, setNetwork] = useState('PUBLIC');
+const [netLabel, setNetLabel] = useState(() => {
+  try { return (localStorage.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
+});
 const [balances, setBalances] = useState([]);
 const [payments, setPayments] = useState([]);
 const [paymentsLimit, setPaymentsLimit] = useState('100'); // 'all' | number as string
@@ -24,7 +26,7 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
     try { return localStorage.getItem('stm.explorerPref') || 'expert'; } catch { return 'expert'; }
   }); // 'expert' | 'stellarchain'
  
-  const server = useMemo(() => getHorizonServer(network === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN), [network]);
+  const server = useMemo(() => getHorizonServer(), [netLabel]);
 
   // Fetch missing memos for displayed payments
   const [memoMap, setMemoMap] = useState({});
@@ -80,6 +82,18 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
     }
   }, [explorerPref]);
 
+  // listen to global network changes
+  useEffect(() => {
+    const handler = (e) => {
+      try {
+        const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+        setNetLabel(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
+      } catch { /* noop */ }
+    };
+    window.addEventListener('stm-network-changed', handler);
+    return () => window.removeEventListener('stm-network-changed', handler);
+  }, []);
+
   const fmt = (val) => {
     const n = Number(val);
     if (!Number.isFinite(n)) return String(val ?? '');
@@ -117,14 +131,14 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
           setPayments(max === Infinity ? all : all.slice(0, max));
         }
       } catch (e) {
-        if (!cancelled) {
-          setError(String(e?.message || e));
-          if (network === 'TESTNET') {
-            // Wenn im Testnet das Konto nicht existiert: Tabellen leeren
-            setBalances([]);
-            setPayments([]);
-          }
-        }
+      if (!cancelled) {
+      setError(String(e?.message || e));
+      if (netLabel === 'TESTNET') {
+      // Wenn im Testnet das Konto nicht existiert: Tabellen leeren
+      setBalances([]);
+      setPayments([]);
+      }
+      }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -133,9 +147,9 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
     return () => { cancelled = true; };
   }, [publicKey, server, paymentsLimit]);
 
-  const explorer = network === 'TESTNET' ? 'testnet' : 'public';
+  const explorer = netLabel === 'TESTNET' ? 'testnet' : 'public';
   const urlExpert = `https://stellar.expert/explorer/${explorer}/account/${publicKey || ''}`;
-  const urlChain = `https://stellarchain.io/${network === 'TESTNET' ? 'testnet/' : ''}account/${publicKey || ''}`;
+  const urlChain = `https://stellarchain.io/${netLabel === 'TESTNET' ? 'testnet/' : ''}account/${publicKey || ''}`;
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -149,17 +163,8 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-4 mb-4">
-        <div className="flex gap-4">
-          <label className="flex items-center gap-2">
-            <input type="radio" name="net" value="PUBLIC" checked={network==='PUBLIC'} onChange={() => setNetwork('PUBLIC')} />
-            Mainnet
-          </label>
-          <label className="flex items-center gap-2">
-            <input type="radio" name="net" value="TESTNET" checked={network==='TESTNET'} onChange={() => setNetwork('TESTNET')} />
-            Testnet
-          </label>
-        </div>
+      <div className="bg-white dark:bg-gray-800 rounded border p-3 flex flex-wrap items-center gap-4 mb-4">
+
         <div className="flex items-center gap-2">
           <label className="text-sm">{t('balance.payments.limit')}</label>
           <select className="border rounded px-2 py-1" value={paymentsLimit} onChange={(e) => setPaymentsLimit(e.target.value)}>

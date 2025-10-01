@@ -6,8 +6,6 @@ import ProgressBar from './ProgressBar';
 import { useSettings } from '../utils/useSettings';
 import { buildDefaultFilename } from '../utils/filename';
 import { getHorizonServer } from '../utils/stellar/stellarUtils';
-import { fetchGroupfundByMemoExpert, expertEarliestPaymentAt } from '../utils/expert/expertUtils';
-import { BACKEND_URL } from '../config';
 
 /**
  * Zeigt zwei Sichten:
@@ -31,7 +29,25 @@ export default function InvestedTokensPanel({ publicKey }) {
   // Optionaler Zeitraumfilter (lokales Datum)
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
-  const [usingFull, setUsingFull] = useState(false);
+  // History bounds (must be defined before using in useMemo below)
+  const [historyAvailableFrom, setHistoryAvailableFrom] = useState('');
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const abortRef = React.useRef(null);
+  const heartbeatRef = React.useRef(null);
+  // Helpers to handle date bounds
+  const toInputDate = (iso) => { try { return String(iso).slice(0, 10); } catch { return ''; } };
+  const constrainDates = !(autoUseFullHorizon && fullHorizonUrl);
+  const minFrom = useMemo(() => historyAvailableFrom ? toInputDate(historyAvailableFrom) : '', [historyAvailableFrom]);
+  // Clamp fromDate to earliest server history when needed
+  useEffect(() => {
+    try {
+      if (!constrainDates) return;
+      if (!fromDate || !historyAvailableFrom) return;
+      const f = new Date(fromDate);
+      const min = new Date(historyAvailableFrom);
+      if (f < min) setFromDate(toInputDate(historyAvailableFrom));
+    } catch { /* noop */ }
+  }, [fromDate, historyAvailableFrom, constrainDates]);
 
   // Locale-aware number formatter for token/XLM amounts (with thousands separators and selectable fraction digits)
   const tokenAmountFmt = useMemo(() => {
@@ -78,12 +94,20 @@ export default function InvestedTokensPanel({ publicKey }) {
       setProgressState((s) => ({ ...s, elapsedMs }));
     };
     const hb = setInterval(updateHeartbeat, 1000);
+    heartbeatRef.current = hb;
 
     try {
       let res = null;
       const onProgress = (p) => {
         setProgressState((s) => ({ ...s, ...p }));
       };
+      // Setup abort controller
+      if (abortRef.current) {
+        try { abortRef.current.abort(); } catch { /* noop */ }
+      }
+      const controller = new AbortController();
+      abortRef.current = controller;
+
       if (view === 'memo') {
         const mkISO = (d, end) => {
           if (!d) return undefined;
@@ -91,45 +115,39 @@ export default function InvestedTokensPanel({ publicKey }) {
         };
         const fromISO = mkISO(fromDate, false);
         const toISO = mkISO(toDate, true);
-        let horizonUrl;
-        if (autoUseFullHorizon && fullHorizonUrl && fromISO && historyAvailableFrom && new Date(fromISO) < new Date(historyAvailableFrom)) {
-          // If Expert API provided, use Expert adapter via proxy
-          if (/api\.stellar\.expert/i.test(fullHorizonUrl)) {
-            setUsingFull(true);
-            try {
-              const expertBase = `${(BACKEND_URL || '').replace(/\/$/, '')}/expert/explorer/public`;
-              const earliest = await expertEarliestPaymentAt({ base: expertBase, account: publicKey });
-              if (earliest) setHistoryAvailableFrom(earliest);
-            } catch { /* noop */ }
-            const expertBase2 = `${(BACKEND_URL || '').replace(/\/$/, '')}/expert/explorer/public`;
-            res = await fetchGroupfundByMemoExpert({ account: publicKey, base: expertBase2, fromISO, toISO, limitPages: 5000, onProgress });
-          } else {
-            // Fallback: a true Full-History Horizon provided
-            horizonUrl = fullHorizonUrl;
-            setUsingFull(true);
-            res = await fetchGroupfundByMemo({ publicKey, horizonUrl, limitPages: 5000, onProgress, fromISO, toISO });
-          }
-        } else {
-          setUsingFull(false);
-          res = await fetchGroupfundByMemo({ publicKey, limitPages: 5000, onProgress, fromISO, toISO });
-        }
+        res = await fetchGroupfundByMemo({ publicKey, limitPages: 5000, onProgress, fromISO, toISO, signal: controller.signal });
       } else {
-        res = await fetchInvestedPerToken({ publicKey, limitPages: 5000, onProgress });
+        res = await fetchInvestedPerToken({ publicKey, limitPages: 5000, onProgress, signal: controller.signal });
       }
+      // Wenn inzwischen abgebrochen oder ein neuer Controller aktiv ist, Ergebnis ignorieren
+      if (controller.signal.aborted || abortRef.current !== controller) return;
       setData(res);
     } catch (e) {
       setData(null);
-      setErr(e?.message || t('error.fetchInvestedTokens.failed'));
+      const msg = e?.message || '';
+      if (String(msg).includes('aborted')) {
+        setErr('');
+      } else {
+        setErr('error.fetchInvestedTokens.failed');
+      }
     } finally {
       clearInterval(hb);
+      if (heartbeatRef.current) { try { clearInterval(heartbeatRef.current); } catch {} heartbeatRef.current = null; }
       setLoading(false);
     }
   };
 
+  const onCancel = () => {
+    try { abortRef.current?.abort(); } catch { /* noop */ }
+    if (heartbeatRef.current) { try { clearInterval(heartbeatRef.current); } catch {} heartbeatRef.current = null; }
+    setLoading(false);
+    setProgressState({ phase: 'idle', page: 0, elapsedMs: 0 });
+    setErr('');
+  };
+
   const [progressState, setProgressState] = useState({ phase: 'idle', page: 0, elapsedMs: 0 });
   const [accountCreatedAt, setAccountCreatedAt] = useState('');
-  const [historyAvailableFrom, setHistoryAvailableFrom] = useState('');
-
+  
   useEffect(() => {
     if (publicKey) {
       setProgressState({ phase: 'idle', page: 0, elapsedMs: 0 });
@@ -138,26 +156,35 @@ export default function InvestedTokensPanel({ publicKey }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey, view]);
 
-  // Konto-Erstellungsdatum (älteste Operation) und frühestes Payment ermitteln
+  // Konto-Erstellungsdatum (exakte create_account) und frühester verfügbarer Ledger des Servers ermitteln
   useEffect(() => {
     let cancelled = false;
     async function fetchInfo() {
+      setAccountCreatedAt('');
+      setHistoryAvailableFrom('');
+      if (!publicKey) return;
+      setHistoryLoading(true);
+      const server = getHorizonServer();
+      // 1) Ältester Ledger – sofort setzen, damit Hinweis direkt erscheint
       try {
-        setAccountCreatedAt('');
-        setHistoryAvailableFrom('');
-        if (!publicKey) return;
-        const server = getHorizonServer();
-        const [ops, pays] = await Promise.all([
-          server.operations().forAccount(publicKey).order('asc').limit(1).call().catch(()=>null),
-          server.payments().forAccount(publicKey).order('asc').limit(1).call().catch(()=>null),
-        ]);
-        const created = ops?.records?.[0]?.created_at || '';
-        const earliestPay = pays?.records?.[0]?.created_at || '';
-        if (!cancelled) {
-          setAccountCreatedAt(created);
-          setHistoryAvailableFrom(earliestPay);
+        const led = await server.ledgers().order('asc').limit(1).cursor('1').call();
+        const earliestLedger = led?.records?.[0]?.closed_at || '';
+        if (!cancelled) setHistoryAvailableFrom(earliestLedger);
+      } catch { /* noop */ }
+      // 2) create_account suchen (asc, paginiert) – parallel, darf länger dauern
+      try {
+        let page = await server.operations().forAccount(publicKey).order('asc').limit(200).cursor('1').call();
+        let stop = false;
+        while (!stop) {
+          const recs = page?.records || [];
+          for (const r of recs) {
+            if (r.type === 'create_account' && r.account === publicKey) { if (!cancelled) setAccountCreatedAt(r.created_at || ''); stop = true; break; }
+          }
+          if (stop || !page.next) break;
+          page = await page.next();
         }
       } catch { /* noop */ }
+      if (!cancelled) setHistoryLoading(false);
     }
     fetchInfo();
     return () => { cancelled = true; };
@@ -168,51 +195,71 @@ export default function InvestedTokensPanel({ publicKey }) {
   return (
     <div className="p-4 space-y-3">
       {/* Auswahl der Ansicht + Aktionen */}
-      <div className="flex flex-wrap items-center gap-2">
-        <label className="text-sm">{t('investedTokens.view.label')}</label>
-        <select
-          className="border rounded px-2 py-1"
-          value={view}
-          onChange={(e) => setView(e.target.value)}
-        >
-        <option value="memo">{t('investedTokens.view.memo')}</option>
-        <option value="token">{t('investedTokens.view.token')}</option>
-        </select>
-        {/* Zeitraumfilter (optional) – auf einer Linie mit dem Filter */}
-        {view === 'memo' && (
-        <div className="flex items-center gap-2 text-xs">
-        <label className="inline-flex items-center gap-1">
-        <span>{t('xlmByMemo.date.from')}</span>
-        <input type="date" value={fromDate} onChange={(e)=>setFromDate(e.target.value)} className="border rounded px-1 py-0.5" />
-        </label>
-        <label className="inline-flex items-center gap-1">
-        <span>{t('xlmByMemo.date.to')}</span>
-        <input type="date" value={toDate} onChange={(e)=>setToDate(e.target.value)} className="border rounded px-1 py-0.5" />
-        </label>
+      {/* Immer sichtbare Info Box über den Filtern */}
+      {historyAvailableFrom && constrainDates && (
+        <div className="text-xs text-amber-700 dark:text-amber-400 mb-1 text-left">
+          {(() => {
+            const fmt = new Intl.DateTimeFormat(i18n.language || undefined, { dateStyle: 'medium' });
+            const availStr = fmt.format(new Date(historyAvailableFrom));
+            const fromStr = minFrom ? fmt.format(new Date(minFrom)) : availStr;
+            return t('investedTokens.history.hintFullHistory', { from: fromStr, available: availStr });
+          })()}
         </div>
-        )}
-        <div className="ml-auto flex items-center gap-4">
-        {/* Radio: entweder Gesamtsumme ODER QSI GF */}
-        <div className="text-xs inline-flex items-center gap-2">
-        <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='totals'} onChange={()=>setScopeMode('totals')} />{t('investedTokens.toggles.showTotals')}</label>
-        <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='qsi'} onChange={()=>setScopeMode('qsi')} />{t('investedTokens.toggles.qsiOnly')}</label>
-        </div>
-        <button className="border rounded px-3 py-1" onClick={load} disabled={loading}>
-        {loading ? t('common.loading') : t('investedTokens.action.load', 'Laden')}
-        </button>
-        <button className="border rounded px-3 py-1" onClick={() => { try { if (!data?.items) return; if (view === 'memo') exportCsvMemo(); else exportCsvToken(); } catch { /* noop */ } }}>
-        {t('option.export.csv')}
-        </button>
-        </div>
-        </div>
+      )}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        {/* Linker Block: Filterlabel + Ansichtsauswahl + Datum+Radio direkt daneben */}
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            <label className="text-sm">{t('investedTokens.view.label')}</label>
+            <select
+              className="border rounded px-2 py-1"
+              value={view}
+              onChange={(e) => setView(e.target.value)}
+            >
+              <option value="memo">{t('investedTokens.view.memo')}</option>
+              <option value="token">{t('investedTokens.view.token')}</option>
+            </select>
+          </div>
+          {view === 'memo' && (
+            <div className="flex items-center gap-6">
+              <div className="flex flex-col text-xs gap-1 items-start">
+                <label className="inline-flex items-center gap-1">
+                  <span className="inline-block w-28 text-right">{t('xlmByMemo.date.from')}</span>
+                  <input type="date" min={constrainDates ? (minFrom || undefined) : undefined} value={fromDate} onChange={(e)=>{
+                    const v = e.target.value;
+                    if (constrainDates && minFrom && v && new Date(v) < new Date(minFrom)) setFromDate(minFrom); else setFromDate(v);
+                  }} className="border rounded px-1 py-0.5" />
+                </label>
+                <label className="inline-flex items-center gap-1">
+                  <span className="inline-block w-28 text-right">{t('xlmByMemo.date.to')}</span>
+                  <input type="date" value={toDate} onChange={(e)=>setToDate(e.target.value)} className="border rounded px-1 py-0.5" />
+                </label>
+              </div>
+              <div className="flex flex-col text-xs gap-1 items-start">
+                <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='totals'} onChange={()=>setScopeMode('totals')} />{t('investedTokens.toggles.showTotals')}</label>
+                <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='qsi'} onChange={()=>setScopeMode('qsi')} />{t('investedTokens.toggles.qsiOnly')}</label>
+              </div>
+            </div>
+          )}
+          </div>
+          {/* Rechter Block: Buttons rechtsbündig */}
+          <div className="flex items-center gap-2 ml-auto">
+          <button className="border rounded px-3 py-1" onClick={load} disabled={loading}>
+          {loading ? t('common.loading') : t('investedTokens.action.load', 'Laden')}
+          </button>
+          {loading && (
+          <button className="border rounded px-3 py-1" onClick={onCancel}>
+          {t('progress.cancel')}
+          </button>
+          )}
+          <button className="border rounded px-3 py-1" onClick={() => { try { if (!data?.items) return; if (view === 'memo') exportCsvMemo(); else exportCsvToken(); } catch { /* noop */ } }}>
+          {t('option.export.csv')}
+          </button>
+          </div>
+          </div>
+          
 
-         {!usingFull && fromDate && historyAvailableFrom && new Date(fromDate) < new Date(historyAvailableFrom) && (
-           <div className="text-xs text-amber-700 dark:text-amber-400 mt-1">
-             {t('investedTokens.history.hintFullHistory')}
-           </div>
-         )}
-
-        {err && <div className="text-red-600 text-sm">{t(err)}</div>}
+        {err && <div className="text-red-600 text-sm text-center">{t(err)}</div>}
 
       {(loading || (view === 'memo' && progressState.elapsedMs > 0)) && (
         <div className="mt-2">
@@ -289,10 +336,8 @@ export default function InvestedTokensPanel({ publicKey }) {
                   <div className="text-xs text-gray-500 dark:text-gray-400 space-y-0.5">
                     {range && (<div>Zeitraum: {range}</div>)}
                     {avail && (<div>{t('investedTokens.history.availableFrom')}: {avail}</div>)}
-                    {created && (<div>{t('account.createdAt')}: {created}</div>)}
-                    {(fromDate && avail && new Date(fromDate) < new Date(historyAvailableFrom)) && (
-                      <div className="text-[11px] text-amber-700 dark:text-amber-400">{t('investedTokens.history.hintFullHistory')}</div>
-                    )}
+                    <div>{t('account.createdAt')}: {created ? created : t('account.createdAtUnknown')}</div>
+
                   </div>
                 );
               })()}
