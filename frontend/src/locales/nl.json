@@ -286,7 +286,10 @@
     },
     "units": {
       "signatures": "Handtekening(en)"
-    }
+    },
+    "thresholdLow": "laag",
+    "thresholdMed": "gemiddeld",
+    "thresholdHigh": "hoog"
   },
   "multisigEdit": {
     "confirm": {
@@ -311,7 +314,8 @@
     "validation": {
       "signerKeyHint": "Opmerking: Ondertekenaars moeten beginnen met een \"G\" (ed25519-publieke sleutel).",
       "signerKeyInvalid": "Ongeldig ondertekenaarsadres. Een G…-adres (ed25519) wordt verwacht."
-    }
+    },
+    "masterWeight": "Mastergewicht"
   },
   "navigation": {
     "back": "Terug",
@@ -637,5 +641,9 @@
       "summary": "Aantal: {{count}} • Totaal: {{sum}} XLM • Unieke wallets: {{unique}}",
       "title": "Onjuiste/Lege memo's in de periode"
     }
+  },
+  "network": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
   }
 }

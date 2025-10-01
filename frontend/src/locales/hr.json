@@ -286,7 +286,10 @@
     },
     "units": {
       "signatures": "Potpis(i)"
-    }
+    },
+    "thresholdLow": "nizak",
+    "thresholdMed": "sredina",
+    "thresholdHigh": "visok"
   },
   "multisigEdit": {
     "confirm": {
@@ -311,7 +314,8 @@
     "validation": {
       "signerKeyHint": "Napomena: Potpisnici moraju počinjati s \"G\" (ed25519 javni ključ).",
       "signerKeyInvalid": "Nevažeća adresa potpisnika. Očekuje se G…-adresa (ed25519)."
-    }
+    },
+    "masterWeight": "Glavna težina"
   },
   "navigation": {
     "back": "Nazad",
@@ -637,5 +641,9 @@
       "summary": "Broj: {{count}} • Ukupno: {{sum}} XLM • Jedinstveni novčanici: {{unique}}",
       "title": "Pogrešne/Prazne bilješke u razdoblju"
     }
+  },
+  "network": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
   }
 }

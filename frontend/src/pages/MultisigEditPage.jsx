@@ -15,11 +15,11 @@ function NetworkSelector({ value, onChange }) {
       <div className="flex items-center gap-4">
         <label className="flex items-center gap-2">
           <input type="radio" name="network" value="PUBLIC" checked={value === 'PUBLIC'} onChange={() => { try { window.localStorage.setItem('STM_NETWORK','PUBLIC'); window.localStorage.removeItem('STM_HORIZON_URL'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('PUBLIC'); }} />
-          Mainnet
+          {t('network.mainnet')}
         </label>
         <label className="flex items-center gap-2">
           <input type="radio" name="network" value="TESTNET" checked={value === 'TESTNET'} onChange={() => { try { window.localStorage.setItem('STM_NETWORK','TESTNET'); window.localStorage.setItem('STM_HORIZON_URL','https://horizon-testnet.stellar.org'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('TESTNET'); }} />
-          Testnet
+          {t('network.testnet')}
         </label>
       </div>
       {isTestnet && (
@@ -300,7 +300,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         {/* Master weight below signers */}
         <div className="mt-4 flex items-center gap-3">
           <label className="text-sm font-semibold inline-flex items-center gap-1">
-            Master-Gewicht
+            {t('multisigEdit.masterWeight')}
           </label>
           <input type="number" min={0} max={255} value={masterWeight} onChange={(e)=>setMasterWeight(clampByte(e.target.value))} className="border rounded px-2 py-1 text-sm w-20" />
         </div>
@@ -309,17 +309,17 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           <label className="block text-sm font-semibold mb-1">{t('multisigCreate.threshold')}</label>
           <div className="flex flex-wrap items-center gap-3 mt-2">
             <label className="inline-flex items-center gap-2 text-sm">
-              <span>niedrig <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.low')}>ⓘ</span></span>
+              <span>{t('multisigCreate.thresholdLow')} <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.low')}>ⓘ</span></span>
               <input type="number" min={0} max={255} value={lowT} onChange={(e)=>setLowT(clampByte(e.target.value))} className={`border rounded px-2 py-1 w-16 ${thLowErr ? 'border-red-500' : ''}`} />
               <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate.units.signatures')}</span>
             </label>
             <label className="inline-flex items-center gap-2 text-sm">
-              <span>mittel <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.med')}>ⓘ</span></span>
+              <span>{t('multisigCreate.thresholdMed')} <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.med')}>ⓘ</span></span>
               <input type="number" min={0} max={255} value={medT} onChange={(e)=>setMedT(clampByte(e.target.value))} className={`border rounded px-2 py-1 w-16 ${thMedErr ? 'border-red-500' : ''}`} />
               <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate.units.signatures')}</span>
             </label>
             <label className="inline-flex items-center gap-2 text-sm">
-              <span>hoch <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.high')}>ⓘ</span></span>
+              <span>{t('multisigCreate.thresholdHigh')} <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.high')}>ⓘ</span></span>
               <input type="number" min={0} max={255} value={highT} onChange={(e)=>setHighT(clampByte(e.target.value))} className={`border rounded px-2 py-1 w-16 ${thHighErr ? 'border-red-500' : ''}`} />
               <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate.units.signatures')}</span>
             </label>

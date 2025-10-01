@@ -286,7 +286,10 @@
     },
     "units": {
       "signatures": "Signature(s)"
-    }
+    },
+    "thresholdLow": "low",
+    "thresholdMed": "medium",
+    "thresholdHigh": "high"
   },
   "multisigEdit": {
     "confirm": {
@@ -311,7 +314,8 @@
     "validation": {
       "signerKeyHint": "Note: Signers must start with \"G\" (ed25519 public key).",
       "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
-    }
+    },
+    "masterWeight": "Master weight"
   },
   "navigation": {
     "back": "Back",
@@ -637,5 +641,9 @@
       "summary": "Number: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
       "title": "False/Empty memos during the period"
     }
+  },
+  "network": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
   }
 }

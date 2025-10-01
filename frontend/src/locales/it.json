@@ -286,7 +286,10 @@
     },
     "units": {
       "signatures": "Firma/e"
-    }
+    },
+    "thresholdLow": "basso",
+    "thresholdMed": "medio",
+    "thresholdHigh": "alto"
   },
   "multisigEdit": {
     "confirm": {
@@ -311,7 +314,8 @@
     "validation": {
       "signerKeyHint": "Nota: I firmatari devono iniziare con \"G\" (chiave pubblica ed25519).",
       "signerKeyInvalid": "Indirizzo del firmatario non valido. Si prevede un indirizzo che inizi con G... (ed25519)."
-    }
+    },
+    "masterWeight": "Peso master"
   },
   "navigation": {
     "back": "Indietro",
@@ -637,5 +641,9 @@
       "summary": "Quantità: {{count}} • Somma: {{sum}} XLM • Portafogli unici: {{unique}}",
       "title": "Memo errati/vuoti nel periodo"
     }
+  },
+  "network": {
+    "mainnet": "Mainnet",
+    "testnet": "Rete di prova"
   }
 }

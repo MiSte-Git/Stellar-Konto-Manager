@@ -286,7 +286,10 @@
     },
     "units": {
       "signatures": "Signature(s)"
-    }
+    },
+    "thresholdLow": "bas",
+    "thresholdMed": "moyen",
+    "thresholdHigh": "haut"
   },
   "multisigEdit": {
     "confirm": {
@@ -311,7 +314,8 @@
     "validation": {
       "signerKeyHint": "Remarque : Les signataires doivent commencer par \"G\" (clé publique ed25519).",
       "signerKeyInvalid": "Adresse de signataire invalide. Une adresse commençant par G… (ed25519) est attendue."
-    }
+    },
+    "masterWeight": "Poids maître"
   },
   "navigation": {
     "back": "Retour",
@@ -637,5 +641,9 @@
       "summary": "Nombre : {{count}} • Somme : {{sum}} XLM • Portefeuilles uniques : {{unique}}",
       "title": "Mémos erronés/vides pendant la période"
     }
+  },
+  "network": {
+    "mainnet": "Réseau principal",
+    "testnet": "Réseau de test"
   }
 }

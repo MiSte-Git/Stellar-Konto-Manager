@@ -427,7 +427,7 @@ function Main() {
       {/* Menüansicht anzeigen (z.B. ListAll) */}
       {menuSelection === 'listAll' && (
         sourcePublicKey ? (
-          <>
+          <div className="max-w-6xl mx-auto px-3">
             <p className="text-sm text-gray-400">{error}</p>
             <ListTrustlines
               trustlines={trustlines}
@@ -455,7 +455,7 @@ function Main() {
               setDeleteProgress={setDeleteProgress}
               setInfoMessage={setInfoMessage}
             />
-          </>
+          </div>
         ) : (
           <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
             <div className="text-center mb-2"><h2 className="text-xl font-semibold">{t('trustline.all')}</h2></div>
@@ -465,25 +465,27 @@ function Main() {
       )}
       {menuSelection === 'compare' && (
         sourcePublicKey ? (
-          <CompareTrustlines
-            sourcePublicKey={sourcePublicKey}
-            sourceSecret={sourceSecret}
-            destinationPublicKey={destinationPublicKey}
-            setDestinationPublicKey={setDestinationPublicKey}
-            setResults={setResults}
-            setError={setError}
-            setShowSecretKey={setShowSecretKey}
-            setSourceSecret={setSourceSecret}
-            setMenuSelection={setMenuSelection}
-            menuSelection={menuSelection}
-            setTrustlines={setTrustlines}
-            setConfirmAction={setConfirmAction}
-            setShowConfirm={setShowConfirm}
-            loadTrustlines={loadTrustlines}
-            backendUrl={BACKEND_URL}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-          />
+          <div className="max-w-6xl mx-auto px-3">
+            <CompareTrustlines
+              sourcePublicKey={sourcePublicKey}
+              sourceSecret={sourceSecret}
+              destinationPublicKey={destinationPublicKey}
+              setDestinationPublicKey={setDestinationPublicKey}
+              setResults={setResults}
+              setError={setError}
+              setShowSecretKey={setShowSecretKey}
+              setSourceSecret={setSourceSecret}
+              setMenuSelection={setMenuSelection}
+              menuSelection={menuSelection}
+              setTrustlines={setTrustlines}
+              setConfirmAction={setConfirmAction}
+              setShowConfirm={setShowConfirm}
+              loadTrustlines={loadTrustlines}
+              backendUrl={BACKEND_URL}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+            />
+          </div>
         ) : (
           <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
             <div className="text-center mb-2"><h2 className="text-xl font-semibold">{t('trustline.compare')}</h2></div>
@@ -540,10 +542,12 @@ function Main() {
         )
       )}
       {menuSelection === 'payments' && (
-        <InvestedTokensPage
-          publicKey={sourcePublicKey}
-          onBack={() => setMenuSelection(null)}
-        />
+        <div className="max-w-6xl mx-auto px-3">
+          <InvestedTokensPage
+            publicKey={sourcePublicKey}
+            onBack={() => setMenuSelection(null)}
+          />
+        </div>
       )}
       {menuSelection === 'balance' && (
         <BalancePage

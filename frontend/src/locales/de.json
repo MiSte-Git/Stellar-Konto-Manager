@@ -221,6 +221,10 @@
   "badges": {
     "testnet": "TESTNET"
   },
+  "network": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
+  },
   "multisigCreate": {
     "activateHint": "Aktivierung ist notwendig, damit das Konto existiert. Im Testnet per Friendbot, im Mainnet per \"Create Account\" von einem bestehenden Wallet.",
     "activateNow": "Konto sofort aktivieren",
@@ -268,6 +272,9 @@
     "signersTitle": "Multisig (zusätzliche Unterzeichner)",
     "startingBalance": "Startguthaben (XLM)",
     "threshold": "Erforderliche Signaturen (niedrig/mittel/hoch)",
+      "thresholdLow": "niedrig",
+      "thresholdMed": "mittel",
+      "thresholdHigh": "hoch",
     "thresholdCurrent": "Aktuell gewählt: niedrig={{low}}, mittel={{med}}, hoch={{high}} von {{total}} Signaturen",
     "thresholdHelp": "Schwelle: Anzahl der benötigten Unterschriften (Master + Unterzeichner), damit eine Transaktion gültig ist.",
     "thresholdInfo": "Empfehlung: {{req}} von {{total}} Signaturen (inkl. Master)",
@@ -307,6 +314,7 @@
     "saved": "Änderungen gespeichert. TX: {{hash}}",
     "signers": "Unterzeichner",
     "weight": "Gewichtung",
+    "masterWeight": "Master-Gewicht",
     "title": "Multisig Konto bearbeiten",
     "validation": {
       "signerKeyHint": "Hinweis: Unterzeichner müssen mit \"G\" beginnen (ed25519-öffentlicher Schlüssel).",
