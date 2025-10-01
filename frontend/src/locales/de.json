@@ -193,26 +193,28 @@
       "load": "Laden"
     },
     "history": {
-      "availableFrom": "Server-Historie ab",
-      "hintFullHistory": "Hinweis: Um vor dieses Datum zu gehen, bitte einen Full-History-Horizon verwenden."
+      "availableFrom": "Server (Horizon) – Historie ab",
+      "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
     }
    },
   "account": {
-    "createdAt": "Konto erstellt am"
+    "createdAt": "Konto erstellt am",
+    "createdAtUnknown": "Kann nicht ermittelt werden."
   },
+  "fetch.groupfund.aborted": "Vorgang vom Benutzer abgebrochen",
   "issuer": {
     "enter": "Gib die Emittenten-Adresse ein:",
     "invalid": "Ungültige Emittentenadresse."
   },
   "main": {
     "processing": "Vorgang läuft, bitte warten …",
-    "title": "Stellar Trustline Manager"
+    "title": "Stellar Trustline/Konto Manager"
   },
   "menu": {
   "balance": "Kontostand anzeigen",
   "devTestnet": "Testnet (für Entwickler)",
   "unknown": "Unbekannte Menüauswahl",
-  "xlmByMemo": "XLM-Summe nach Memo",
+  "xlmByMemo": "Nach Memo filtern",
     "sendPayment": "Zahlung senden",
       "donate": "Spenden"
     },
@@ -402,7 +404,13 @@
     "label": "Geben Sie den Quell-Geheimschlüssel ein (wird sicher an das Backend gesendet)",
     "mismatch": "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
     "placeholder": "z.B.",
-    "valid": "✅ Secret Key ist gültig."
+    "valid": "✅ Secret Key ist gültig.",
+    "remember": {
+      "label": "Geheimschlüssel für diese Sitzung merken",
+      "hint": "Wenn aktiviert, wird der Schlüssel bis zum Schließen des Tabs gespeichert und für weitere Zahlungen wiederverwendet."
+    },
+    "clearSession": "Sitzungs-Schlüssel löschen",
+    "clearSessionHint": "Entfernt den in dieser Sitzung gespeicherten Geheimschlüssel (wird beim Schließen des Tabs ohnehin gelöscht)."
   },
   "settings": {
     "cache": {
@@ -469,7 +477,7 @@
     }
   },
   "token": {
-    "purchases": "Token-Investments (Anzahl)"
+    "purchases": "Token/Assets filtern"
   },
   "trustline": {
     "all": "Trustline(s) anzeigen",
@@ -512,23 +520,36 @@
       "asset": "Asset",
       "memo": "Memo",
       "memoType": "Memo Typ",
-      "memoTypes": { "text": "Text", "id": "ID" },
+      "memoTypes": {
+        "none": "Memo (kein Memo)",
+        "text": "Memo Text",
+        "id": "Memo ID",
+        "hash": "Memo Hash",
+        "return": "Memo Return",
+        "info": {
+          "none": "Kein Memo. Verwende dies, wenn der Empfänger kein Memo erwartet.",
+          "text": "Freitext bis 28 Byte. Häufig zur Zuordnung bei einfachen Zahlungen.",
+          "id": "Numerische ID (uint64). Viele Börsen nutzen Memo ID zur Zuordnung von Einzahlungen.",
+          "hash": "32-Byte SHA-256-Hash (als 64-stellige Hex-Zeichenfolge). Von Diensten für Referenzen verwendet.",
+          "return": "32-Byte Hash für Rückläufer. Wird für Rücksendungen (MEMO_RETURN) genutzt."
+        }
+      },
       "available": "Verfügbar",
-      "reserved": "Reserved",
-      "baseReserve": "Base reserve",
-      "extra": "Extra",
-      "xlmInOffers": "XLM in offenen Angeboten",
+      "reserved": "Reserviert",
+      "reservedInline": "{{amount}} XLM sind vom Stellar Netzwerk reserviert",
+      "baseReserve": "Basisreserve",
+      "extra": "Zusätzlich",
+      "xlmInOffers": "In Angeboten gebunden",
       "trustlines": "Trustlines ({{n}})",
-      "lpTrustlines": "Liquidity pool trustlines",
-      "offers": "Offers",
-      "signers": "Signers",
-      "accountData": "Account data",
-      "sponsoring": "Sponsoring entries for others",
-      "sponsored": "Entries sponsored for account",
+      "lpTrustlines": "LP‑Trustlines",
+      "offers": "Offene Angebote",
+      "signers": "Zusätzliche Unterzeichner",
+      "accountData": "Account‑Daten",
+      "sponsoring": "Sponsoring",
+      "sponsored": "Gesponsert",
       "sendButton": "Senden",
       "success": "Erfolg: Zahlung gesendet. TX: {{hash}}",
-      "error": "Fehler beim Senden: {{detail}}"
-    }
+      "error": "Fehler beim Senden: {{detail}}"}
   },
 
   "xlmByMemo": {

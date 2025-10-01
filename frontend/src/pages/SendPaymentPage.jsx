@@ -1,19 +1,23 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getHorizonServer, resolveOrValidatePublicKey } from '../utils/stellar/stellarUtils';
-import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo } from '@stellar/stellar-sdk';
+import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
 import SecretKeyModal from '../components/SecretKeyModal';
+import { useSettings } from '../utils/useSettings';
+import trustedWallets from '../../settings/QSI_TrustedWallets.json';
 
 export default function SendPaymentPage({ publicKey, onBack: _onBack, initial }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   void _onBack;
 
   const [dest, setDest] = useState(initial?.recipient || '');
   const [amount, setAmount] = useState('');
+  const [amountFocused, setAmountFocused] = useState(false);
   const [assetKey, setAssetKey] = useState('XLM'); // 'XLM' or 'CODE:ISSUER'
-  const [memoType, setMemoType] = useState('text'); // 'text' | 'id'
+  const [memoType, setMemoType] = useState('text'); // 'none' | 'text' | 'id' | 'hash' | 'return'
   const [memoVal, setMemoVal] = useState('');
   const [showSecretModal, setShowSecretModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [secretError, setSecretError] = useState('');
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
@@ -22,8 +26,20 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [accountInfo, setAccountInfo] = useState(null); // horizon account
   const [offersCount, setOffersCount] = useState(0);
   const [baseReserve, setBaseReserve] = useState(0.5); // default fallback
+  const [showReserveInfo, setShowReserveInfo] = useState(false);
 
   const server = useMemo(() => getHorizonServer(), []);
+  const popupRef = useRef(null);
+
+  // Trusted wallet labels map
+  const walletInfoMap = useMemo(() => {
+    try {
+      if (!trustedWallets?.wallets) return new Map();
+      return new Map(trustedWallets.wallets.map(w => [w.address, { label: w.label, compromised: !!w.compromised, deactivated: !!w.deactivated }]));
+    } catch {
+      return new Map();
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -56,9 +72,34 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     return () => { cancelled = true; };
   }, [publicKey, server, t]);
 
+  // Close popup when clicking outside
+  useEffect(() => {
+    if (!showReserveInfo) return;
+    const onDocClick = (e) => {
+      try {
+        if (popupRef.current && !popupRef.current.contains(e.target)) {
+          setShowReserveInfo(false);
+        }
+      } catch { /* noop */ }
+    };
+    document.addEventListener('mousedown', onDocClick);
+    return () => document.removeEventListener('mousedown', onDocClick);
+  }, [showReserveInfo]);
+
   const native = useMemo(() => (balances || []).find(b => b.asset_type === 'native') || { balance: '0', selling_liabilities: '0' }, [balances]);
   const trustlines = useMemo(() => (balances || []).filter(b => b.asset_type !== 'native' && b.asset_type !== 'liquidity_pool_shares'), [balances]);
   const lpTrusts = useMemo(() => (balances || []).filter(b => b.asset_type === 'liquidity_pool_shares'), [balances]);
+
+  // Zahlformat gemäß Settings
+  const { decimalsMode } = useSettings();
+  const amountFmt = useMemo(() => {
+    const isAuto = decimalsMode === 'auto';
+    const n = isAuto ? undefined : Math.max(0, Math.min(7, Number(decimalsMode)));
+    return new Intl.NumberFormat(i18n.language || undefined, {
+      minimumFractionDigits: isAuto ? 0 : n,
+      maximumFractionDigits: isAuto ? 7 : n,
+    });
+  }, [i18n.language, decimalsMode]);
 
   const trustCount = trustlines.length;
   const lpCount = lpTrusts.length;
@@ -80,14 +121,100 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const nativeBalance = parseFloat(native?.balance || '0') || 0;
   const availableXLM = Math.max(0, nativeBalance - reservedTotal - xlmInOffers);
 
+  // Resolve recipient helpers
+  const [resolvedAccount, setResolvedAccount] = useState('');
+  const [resolvedFederation, setResolvedFederation] = useState('');
+  const [recipientLabel, setRecipientLabel] = useState('');
+  const [inputWasFederation, setInputWasFederation] = useState(false);
+  useEffect(() => {
+    let active = true;
+    async function resolve() {
+      try {
+        const v = (dest || '').trim();
+        setRecipientLabel('');
+        if (!v) { setResolvedAccount(''); setResolvedFederation(''); setInputWasFederation(false); return; }
+        if (v.includes('*')) {
+          const acc = await resolveOrValidatePublicKey(v);
+          if (!active) return;
+          setResolvedAccount(acc);
+          setResolvedFederation(v);
+          setInputWasFederation(true);
+          const info = walletInfoMap.get(acc);
+          if (info?.label) setRecipientLabel(info.label);
+        } else if (StrKey.isValidEd25519PublicKey(v)) {
+          setResolvedAccount(v);
+          setInputWasFederation(false);
+          // Try reverse federation lookup via home_domain → stellar.toml → FEDERATION_SERVER
+          try {
+            const acct = await server.loadAccount(v);
+            const domain = acct?.home_domain || acct?.homeDomain || '';
+            if (domain) {
+              try {
+                const tomlUrl = `https://${domain}/.well-known/stellar.toml`;
+                const resp = await fetch(tomlUrl, { mode: 'cors' });
+                const txt = await resp.text();
+                const m = txt.match(/FEDERATION_SERVER\s*=\s*"([^"]+)"/i);
+                const fedUrl = m && m[1] ? m[1] : null;
+                if (fedUrl) {
+                  const q = `${fedUrl}?q=${encodeURIComponent(v)}&type=id`;
+                  const fr = await fetch(q, { mode: 'cors' });
+                  if (fr.ok) {
+                    const data = await fr.json();
+                    const addr = data?.stellar_address || data?.stellar_address || '';
+                    if (addr && active) setResolvedFederation(addr);
+                  }
+                }
+              } catch { /* ignore reverse federation failures */ }
+            }
+          } catch { /* ignore account/home_domain issues */ }
+          const info = walletInfoMap.get(v);
+          if (info?.label) setRecipientLabel(info.label);
+        } else {
+          setResolvedAccount(''); setResolvedFederation(''); setInputWasFederation(false);
+        }
+      } catch {
+        if (!active) return;
+        setResolvedAccount(''); setResolvedFederation('');
+      }
+    }
+    resolve();
+    return () => { active = false; };
+  }, [dest, walletInfoMap]);
+ 
+  // Histories for inputs
+  const [historyRecipients, setHistoryRecipients] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.recipients')||'[]'); } catch { return []; } });
+  const [historyAmounts, setHistoryAmounts] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.amounts')||'[]'); } catch { return []; } });
+  const [historyMemos, setHistoryMemos] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.memos')||'[]'); } catch { return []; } });
+  const pushHistory = (key, val, setter, limit=15) => {
+    try {
+      const v = String(val||'').trim(); if (!v) return;
+      setter(prev => {
+        const next = [v, ...prev.filter(x => x !== v)].slice(0, limit);
+        localStorage.setItem(key, JSON.stringify(next));
+        return next;
+      });
+    } catch { /* noop */ }
+  };
+ 
   const assetOptions = useMemo(() => {
     const opts = [{ key: 'XLM', label: 'XLM' }];
     for (const b of trustlines) {
       const key = `${b.asset_code}:${b.asset_issuer}`;
-      opts.push({ key, label: `${b.asset_code}:${b.asset_issuer}` });
+      // Anzeige nur der Asset-Bezeichnung (ohne Issuer)
+      opts.push({ key, label: `${b.asset_code}`, title: `${b.asset_code}:${b.asset_issuer}` });
     }
     return opts;
   }, [trustlines]);
+
+  // Update fields when donation is triggered again or initial changes
+  useEffect(() => {
+    try {
+      if (!initial) return;
+      if (initial.recipient) setDest(initial.recipient);
+      if (initial.amount != null) setAmount(String(initial.amount));
+      if (initial.memoText) { setMemoType('text'); setMemoVal(initial.memoText); }
+    } catch { /* noop */ }
+  }, [initial]);
 
   if (!publicKey) {
     return (
@@ -106,65 +233,153 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       {error && <div className="text-red-600 text-sm text-center">{error}</div>}
       {status && <div className="text-green-700 text-sm text-center">{status}</div>}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="bg-white dark:bg-gray-800 rounded border p-4 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 gap-4">
         <div className="space-y-2">
           <label className="block text-sm">{t('payment.send.recipient')}</label>
-          <input className="border rounded w-full p-2 font-mono" value={dest} onChange={(e)=>setDest(e.target.value)} placeholder="G... oder user*domain" />
+          <div className="relative">
+            <input className="border rounded w-full pr-8 px-2 py-1 text-sm font-mono" list="hist-recipients" value={dest} onChange={(e)=>setDest(e.target.value)} onBlur={()=>pushHistory('stm.hist.recipients', dest, setHistoryRecipients)} placeholder="G... oder user*domain" />
+            {dest && (
+              <button type="button" onClick={()=>setDest('')} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center">×</button>
+            )}
+            <datalist id="hist-recipients">
+              {historyRecipients.map((v,i)=>(<option key={v+i} value={v} />))}
+            </datalist>
+          </div>
+          {(resolvedFederation || recipientLabel) && (
+            <div className="mt-1 text-xs text-gray-700 dark:text-gray-300 space-y-0.5">
+              {resolvedFederation && (<div>Föderation: <span className="font-mono break-all">{resolvedFederation}</span></div>)}
+              {resolvedFederation && resolvedAccount && inputWasFederation && (<div>Konto: <span className="font-mono break-all">{resolvedAccount}</span></div>)}
+              {recipientLabel && (<div>Label: <span className="font-semibold">{recipientLabel}</span></div>)}
+            </div>
+          )}
 
-          <label className="block text-sm mt-2">{t('payment.send.amount')}</label>
-          <input type="number" min="0" step="0.0000001" className="border rounded w-full p-2" value={amount} onChange={(e)=>setAmount(e.target.value)} />
-          <div className="text-xs text-gray-600 dark:text-gray-400">{t('payment.send.available')}: {availableXLM.toFixed(7)} XLM</div>
-
-          <label className="block text-sm mt-2">{t('payment.send.asset')}</label>
-          <select className="border rounded w-full p-2" value={assetKey} onChange={(e)=>setAssetKey(e.target.value)}>
-            {assetOptions.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+          <div className="flex flex-nowrap items-end gap-3 mt-2">
+          <div className="flex flex-col basis-[30%] min-w-0">
+          <label className="text-sm">{t('payment.send.amount')}</label>
+          <div className="relative">
+          <input type="text" inputMode="decimal" className="border rounded pr-8 px-2 py-1 text-sm w-full appearance-none [-moz-appearance:textfield]" list="hist-amounts"
+                  value={amountFocused ? amount : (amount ? amountFmt.format(Number(amount) || 0) : '')}
+                  onFocus={()=>setAmountFocused(true)}
+                  onBlur={()=>{ setAmountFocused(false); pushHistory('stm.hist.amounts', amount, setHistoryAmounts); }}
+                  onChange={(e)=>{
+                    let s = e.target.value || '';
+                    s = s.replace(/,/g, '.');
+                    s = s.replace(/[^0-9.]/g, '');
+                    const i = s.indexOf('.');
+                    if (i !== -1) s = s.slice(0, i+1) + s.slice(i+1).replace(/\./g, '');
+                    setAmount(s);
+                  }}
+                />
+          {amount && (
+          <button type="button" onClick={()=>setAmount('')} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center">×</button>
+          )}
+          <datalist id="hist-amounts">
+          {historyAmounts.map((v,i)=>(<option key={v+i} value={v} />))}
+          </datalist>
+          </div>
+          </div>
+          <div className="flex flex-col basis-[70%] min-w-0">
+          <label className="text-sm">{t('payment.send.asset')}</label>
+          <select className="border rounded w-full px-2 py-1 text-sm" value={assetKey} onChange={(e)=>setAssetKey(e.target.value)}>
+          {assetOptions.map(o => <option key={o.key} value={o.key} title={o.title || o.key}>{o.label}</option>)}
           </select>
+          </div>
+          </div>
+          <div className="mt-1 flex items-center justify-between">
+          <div className="relative">
+          <button
+          type="button"
+          onClick={() => setShowReserveInfo(v => !v)}
+          className="w-5 h-5 inline-flex items-center justify-center rounded-full bg-green-600 text-white text-xs hover:bg-green-700"
+          title={t('payment.send.reserved')}
+          aria-label={t('payment.send.reserved')}
+          >
+          !
+          </button>
+          <span className="ml-2 text-xs text-gray-700 dark:text-gray-300 align-middle">{t('payment.send.reservedInline', { amount: amountFmt.format(reservedTotal) })}</span>
+          {showReserveInfo && (
+          <div ref={popupRef} className="absolute left-0 mt-2 w-80 z-40 bg-white dark:bg-gray-800 border rounded shadow-lg p-3 text-left">
+          <div className="flex items-start justify-between">
+          <div className="font-semibold mr-4">{t('payment.send.reserved')}</div>
+          <button className="text-xs px-2 py-0.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowReserveInfo(false)}>×</button>
+          </div>
+          <div className="text-lg font-bold mt-1">{amountFmt.format(reservedTotal)} XLM</div>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs mt-2">
+            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.baseReserve')}</div><div>{amountFmt.format(baseReserve)} XLM</div>
+              <div className="text-gray-600 dark:text-gray-400">{t('payment.send.extra')}</div><div>{amountFmt.format(reservedTotal - baseReserve*2)} XLM</div>
+                <div className="text-gray-600 dark:text-gray-400">{t('payment.send.xlmInOffers')}</div><div>{amountFmt.format(xlmInOffers)} XLM</div>
+                  <div className="text-gray-600 dark:text-gray-400">{t('payment.send.trustlines', { n: trustCount })}</div><div>{amountFmt.format(reservedTrust)} XLM</div>
+                  <div className="text-gray-600 dark:text-gray-400">{t('payment.send.lpTrustlines')}</div><div>{amountFmt.format(reservedLp)} XLM</div>
+                    <div className="text-gray-600 dark:text-gray-400">{t('payment.send.offers')}</div><div>{amountFmt.format(reservedOffers)} XLM</div>
+                             <div className="text-gray-600 dark:text-gray-400">{t('payment.send.signers')}</div><div>{amountFmt.format(reservedSigners)} XLM</div>
+                    <div className="text-gray-600 dark:text-gray-400">{t('payment.send.accountData')}</div><div>{amountFmt.format(reservedData)} XLM</div>
+                    <div className="text-gray-600 dark:text-gray-400">{t('payment.send.sponsoring')}</div><div>{amountFmt.format(reservedSponsor)} XLM</div>
+                  <div className="text-gray-600 dark:text-gray-400">{t('payment.send.sponsored')}</div><div>{amountFmt.format(reservedSponsored)} XLM</div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="text-xs text-gray-600 dark:text-gray-400 ml-2 text-right">{t('payment.send.available')}: {amountFmt.format(availableXLM)} XLM</div>
+          </div>
 
           <div className="grid grid-cols-2 gap-2 mt-2">
             <div>
               <label className="block text-sm">{t('payment.send.memoType')}</label>
-              <select className="border rounded w-full p-2" value={memoType} onChange={(e)=>setMemoType(e.target.value)}>
+              <select className="border rounded w-full px-2 py-1 text-sm" value={memoType} onChange={(e)=>setMemoType(e.target.value)}>
+                <option value="none">{t('payment.send.memoTypes.none')}</option>
                 <option value="text">{t('payment.send.memoTypes.text')}</option>
                 <option value="id">{t('payment.send.memoTypes.id')}</option>
+                <option value="hash">{t('payment.send.memoTypes.hash')}</option>
+                <option value="return">{t('payment.send.memoTypes.return')}</option>
               </select>
+              <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t(`payment.send.memoTypes.info.${memoType}`)}</div>
             </div>
             <div>
               <label className="block text-sm">{t('payment.send.memo')}</label>
-              <input className="border rounded w-full p-2" value={memoVal} onChange={(e)=>setMemoVal(e.target.value)} />
+              <div className="relative">
+                <input className="border rounded w-full pr-8 px-2 py-1 text-sm" list="hist-memos" value={memoVal} onChange={(e)=>setMemoVal(e.target.value)} onBlur={()=>pushHistory('stm.hist.memos', memoVal, setHistoryMemos)} />
+                {memoVal && (
+                  <button type="button" onClick={()=>setMemoVal('')} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center">×</button>
+                )}
+                <datalist id="hist-memos">
+                  {historyMemos.map((v,i)=>(<option key={v+i} value={v} />))}
+                </datalist>
+              </div>
             </div>
           </div>
 
-          <button className="mt-3 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50" disabled={!dest || !amount || parseFloat(amount) <= 0} onClick={()=>setShowSecretModal(true)}>
+          <button className="mt-3 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50" disabled={!dest || !amount || (Number(amount) || 0) <= 0} onClick={()=>setShowConfirmModal(true)}>
             {t('payment.send.sendButton')}
           </button>
         </div>
 
-        <div className="space-y-2 p-3 border rounded">
-          <div className="font-semibold">{t('payment.send.reserved')}</div>
-          <div className="text-2xl font-bold">{reservedTotal.toFixed(7)} XLM</div>
-          <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-sm mt-2">
-            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.baseReserve')}</div><div>{baseReserve.toFixed(7)} XLM</div>
-            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.extra')}</div><div>{(reservedTotal - baseReserve*2).toFixed(7)} XLM</div>
-            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.xlmInOffers')}</div><div>{xlmInOffers.toFixed(7)} XLM</div>
-            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.trustlines', { n: trustCount })}</div><div>{reservedTrust.toFixed(7)} XLM</div>
-            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.lpTrustlines')}</div><div>{reservedLp.toFixed(7)} XLM</div>
-            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.offers')}</div><div>{reservedOffers.toFixed(7)} XLM</div>
-            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.signers')}</div><div>{reservedSigners.toFixed(7)} XLM</div>
-            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.accountData')}</div><div>{reservedData.toFixed(7)} XLM</div>
-            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.sponsoring')}</div><div>{reservedSponsor.toFixed(7)} XLM</div>
-            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.sponsored')}</div><div>{reservedSponsored.toFixed(7)} XLM</div>
-          </div>
-          <div className="text-xs text-gray-600 dark:text-gray-400 mt-2">
-            {t('publicKey.source')}: <span className="font-mono break-all">{publicKey}</span>
+      </div>
+           </div>
+      
+       {showConfirmModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-md mx-3">
+            <h3 className="text-lg font-semibold mb-2">{t('option.confirm.action.title')}</h3>
+            <div className="text-sm space-y-1 mb-3">
+              <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.recipient')}:</span> <span className="font-mono break-all">{dest}</span></div>
+              <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.amount')}:</span> {amountFmt.format(Number(amount))} {(assetKey==='XLM'?'XLM':assetKey.split(':')[0])}</div>
+              <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.memoType')}:</span> {t(`payment.send.memoTypes.${memoType}`)}</div>
+              <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.memo')}:</span> {memoType==='none' || !memoVal ? '-' : memoVal}</div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowConfirmModal(false)}>{t('option.cancel')}</button>
+              <button className="px-3 py-1 rounded bg-blue-600 text-white" onClick={async ()=>{ setShowConfirmModal(false); try { const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`); if (saved) { await (async () => { const kp = Keypair.fromSecret(saved); if (kp.publicKey() !== publicKey) throw new Error('secretKey.mismatch'); const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? Networks.TESTNET : Networks.PUBLIC; const acct = await server.loadAccount(publicKey); const feeStats = await server.feeStats(); const fee = Number(feeStats?.fee_charged?.mode || 100); const memoObj = (() => { const v = (memoVal || '').trim(); if (!v || memoType === 'none') return undefined; try { switch (memoType) { case 'text': return Memo.text(v); case 'id': return Memo.id(v); case 'hash': { const hex = v.replace(/^0x/i, ''); if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo'); return Memo.hash(Buffer.from(hex, 'hex')); } case 'return': { const hex = v.replace(/^0x/i, ''); if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo'); return Memo.return(Buffer.from(hex, 'hex')); } default: return undefined; } } catch { throw new Error('query.invalidMemo'); }})(); const builder = new TransactionBuilder(acct, { fee, networkPassphrase: net, memo: memoObj }); const resolvedDest = await resolveOrValidatePublicKey(dest); let asset; if (assetKey === 'XLM') asset = Asset.native(); else { const [code, issuer] = assetKey.split(':'); asset = new Asset(code, issuer); } builder.addOperation(Operation.payment({ destination: resolvedDest, amount: String(Number(amount)), asset })); const tx = builder.setTimeout(60).build(); tx.sign(kp); const res = await server.submitTransaction(tx); setStatus(t('payment.send.success', { hash: res.hash || res.id || '' })); } )(); } else { setShowSecretModal(true); } } catch (e) { setSecretError(''); setError(t('payment.send.error', { detail: e?.message || 'unknown' })); } }}>{t('option.yes')}</button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {showSecretModal && (
         <SecretKeyModal
           errorMessage={secretError}
           onCancel={()=>{ setShowSecretModal(false); setSecretError(''); }}
-          onConfirm={async (secret) => {
+          onConfirm={async (secret, remember) => {
             try {
               setError(''); setStatus('');
               const kp = Keypair.fromSecret(secret);
@@ -172,11 +387,40 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 setSecretError('secretKey.mismatch');
                 return;
               }
+              if (remember) {
+                try { sessionStorage.setItem(`stm.session.secret.${publicKey}`, secret); } catch { /* noop */ }
+              }
               const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? Networks.TESTNET : Networks.PUBLIC;
               const acct = await server.loadAccount(publicKey);
               const feeStats = await server.feeStats();
               const fee = Number(feeStats?.fee_charged?.mode || 100);
-              const builder = new TransactionBuilder(acct, { fee, networkPassphrase: net, memo: memoType === 'text' && memoVal ? Memo.text(memoVal) : (memoType === 'id' && memoVal ? Memo.id(memoVal) : undefined) });
+              const memoObj = (() => {
+                const v = (memoVal || '').trim();
+                if (!v || memoType === 'none') return undefined;
+                try {
+                  switch (memoType) {
+                    case 'text':
+                      return Memo.text(v);
+                    case 'id':
+                      return Memo.id(v);
+                    case 'hash': {
+                      const hex = v.replace(/^0x/i, '');
+                      if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo');
+                      return Memo.hash(Buffer.from(hex, 'hex'));
+                    }
+                    case 'return': {
+                      const hex = v.replace(/^0x/i, '');
+                      if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo');
+                      return Memo.return(Buffer.from(hex, 'hex'));
+                    }
+                    default:
+                      return undefined;
+                  }
+                } catch {
+                  throw new Error('query.invalidMemo');
+                }
+              })();
+              const builder = new TransactionBuilder(acct, { fee, networkPassphrase: net, memo: memoObj });
               const resolvedDest = await resolveOrValidatePublicKey(dest);
               let asset;
               if (assetKey === 'XLM') asset = Asset.native();

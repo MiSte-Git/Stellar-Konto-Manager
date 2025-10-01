@@ -77,13 +77,32 @@ function Main() {
   const [devTestnet, setDevTestnet] = useState(false);
   // Send Payment initial values (e.g., for donation)
   const [sendInit, setSendInit] = useState(null);
+   // Session secret key presence
+   const [hasSessionKey, setHasSessionKey] = useState(false);
   useEffect(() => {
-    // Force default to PUBLIC at app start
-    if (typeof window !== 'undefined' && window.localStorage) {
-      window.localStorage.setItem('STM_NETWORK', 'PUBLIC');
-      window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' }));
-    }
+  // Force default to PUBLIC at app start
+  if (typeof window !== 'undefined' && window.localStorage) {
+  window.localStorage.setItem('STM_NETWORK', 'PUBLIC');
+  window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' }));
+  }
   }, []);
+
+   // Track if a session secret exists for current source key
+   useEffect(() => {
+     try {
+       if (!sourcePublicKey) { setHasSessionKey(false); return; }
+       const v = sessionStorage.getItem(`stm.session.secret.${sourcePublicKey}`);
+       setHasSessionKey(!!v);
+     } catch { setHasSessionKey(false); }
+   }, [sourcePublicKey]);
+
+   const clearSessionSecret = () => {
+     try {
+       if (sourcePublicKey) sessionStorage.removeItem(`stm.session.secret.${sourcePublicKey}`);
+       setHasSessionKey(false);
+       setInfoMessage(t('secretKey.cleared'));
+     } catch { /* noop */ }
+   };
 
   const handleSortClick = (column) => {
     handleSort(column, sortColumn, sortDirection, setSortColumn, setSortDirection);
@@ -263,7 +282,18 @@ function Main() {
      <>
       <div className="max-w-4xl mx-auto px-4 pt-4 pb-0 text-center mt-4-500">
         {/* 🌍 Global: Titel & Info */}
-        <h1 className="text-2xl font-bold mb-4">{t('main.title')}</h1>
+        <div className="relative mb-4">
+          <h1 className="text-2xl font-bold text-center">{t('main.title')}</h1>
+          <button
+            type="button"
+            onClick={() => { setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('main.title')}` }); setMenuSelection('sendPayment'); }}
+            title={t('menu.donate')}
+            className="absolute right-0 top-1/2 -translate-y-1/2 inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
+          >
+            <span aria-hidden>♥</span>
+            <span>{t('menu.donate')}</span>
+          </button>
+        </div>
         <p className="mb-4 text-sm text-blue-200 rounded border">
           {t('secretKey.info')}
           <button type="button" onClick={()=>setShowSecretInfo(true)} className="ml-2 px-2 py-0.5 text-blue-700 underline">
@@ -335,16 +365,28 @@ function Main() {
                   {t('publicKey.deleteFromList')}
                 </button>
               </div>
-              {/* Rechter Button */}
-              {menuSelection && (
-                <button
-                  type="button"
-                  onClick={() => setMenuSelection(null)}
-                  className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 ml-auto"
-                >
-                  {t('navigation.backToMainMenu')}
-                </button>
-              )}
+              {/* Rechte Buttons */}
+              <div className="flex items-center gap-2 ml-auto">
+                {hasSessionKey && (
+                  <button
+                    type="button"
+                    onClick={clearSessionSecret}
+                    className="px-3 py-2 rounded bg-green-600 text-white border border-red-600 hover:bg-green-700"
+                    title={t('secretKey.clearSessionHint')}
+                  >
+                    {t('secretKey.clearSession')}
+                  </button>
+                )}
+                {menuSelection && (
+                  <button
+                    type="button"
+                    onClick={() => setMenuSelection(null)}
+                    className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    {t('navigation.backToMainMenu')}
+                  </button>
+                )}
+              </div>
             </div>
 
           </form>
@@ -369,7 +411,7 @@ function Main() {
               const next = (value ?? '').trim();
               console.log('[MainMenu onSelect]', JSON.stringify(next));
               if (next === 'donate') {
-                setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M' });
+                setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('main.title')}` });
                 setMenuSelection('sendPayment');
               } else {
                 setSendInit(null);
@@ -530,7 +572,7 @@ function Main() {
       )}
       
       {menuSelection &&
-      !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','multisigEdit','balance'].includes(menuSelection) && (
+      !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','multisigEdit','balance','sendPayment'].includes(menuSelection) && (
         <div className="p-3 text-sm text-red-600">
           {t('menu.unknown', { value: String(menuSelection) })}
         </div>
