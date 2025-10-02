@@ -216,7 +216,8 @@
     "unknown": "Onbekende menu-optie",
     "xlmByMemo": "Op memo filteren",
     "sendPayment": "Betaling verzenden",
-    "donate": "Donaties"
+    "donate": "Donaties",
+    "feedback": "Feedback"
   },
   "badges": {
     "testnet": "TESTNET"
@@ -646,5 +647,23 @@
   "network": {
     "mainnet": "Mainnet",
     "testnet": "Testnet"
+  },
+  "feedback": {
+    "title": "Feedback verzenden",
+    "category": "Categorie",
+    "categories": {
+      "bug": "Fout",
+      "idea": "Idee",
+      "improve": "Verbetering",
+      "other": "Overig"
+    },
+    "subject": "Onderwerp",
+    "message": "Bericht",
+    "contactEmailOptional": "Contact e-mail (optioneel)",
+    "privacyHint": "Uw bericht wordt via uw eigen e-mailprogramma verzonden.",
+    "sendButton": "E-mail opstellen",
+    "openedMailClient": "E-mailclient geopend.",
+    "error": "Fout",
+    "sentTo": "Ontvanger: {{email}}"
   }
 }

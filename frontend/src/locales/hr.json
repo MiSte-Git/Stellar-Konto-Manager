@@ -216,7 +216,8 @@
     "unknown": "Nepoznat odabir izbornika",
     "xlmByMemo": "Filtriraj po memorandumu",
     "sendPayment": "Pošalji uplatu",
-    "donate": "Donacije"
+    "donate": "Donacije",
+    "feedback": "Povratne informacije"
   },
   "badges": {
     "testnet": "TESTNET"
@@ -646,5 +647,23 @@
   "network": {
     "mainnet": "Mainnet",
     "testnet": "Testnet"
+  },
+  "feedback": {
+    "title": "Pošalji povratne informacije.",
+    "category": "kategorija",
+    "categories": {
+      "bug": "Pogreška",
+      "idea": "Ideja",
+      "improve": "Poboljšanje",
+      "other": "Ostalo"
+    },
+    "subject": "Predmet",
+    "message": "Poruka",
+    "contactEmailOptional": "Kontakt e-mail (neobavezno)",
+    "privacyHint": "Vaša poruka bit će poslana putem e-pošte koristeći vaš vlastiti program za e-poštu.",
+    "sendButton": "Kreiraj e-mail",
+    "openedMailClient": "E-Mail klijent otvoren.",
+    "error": "Pogreška",
+    "sentTo": "Primatelj: {{email}}"
   }
 }

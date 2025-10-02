@@ -216,7 +216,8 @@
     "unknown": "Tuntematon valikkovalinta",
     "xlmByMemo": "Suodata muistion perusteella",
     "sendPayment": "Lähetä maksu",
-    "donate": "Lahjoitukset"
+    "donate": "Lahjoitukset",
+    "feedback": "Palaute"
   },
   "badges": {
     "testnet": "TESTIVERKKO"
@@ -646,5 +647,23 @@
   "network": {
     "mainnet": "Pääverkko",
     "testnet": "Testiverkko"
+  },
+  "feedback": {
+    "title": "Lähetä palautetta",
+    "category": "Kategoria",
+    "categories": {
+      "bug": "Virhe",
+      "idea": "Ajatus",
+      "improve": "Parannus",
+      "other": "Muut"
+    },
+    "subject": "Aihe",
+    "message": "Viesti",
+    "contactEmailOptional": "Yhteyssähköposti (vapaaehtoinen)",
+    "privacyHint": "Viesti lähetetään sähköpostitse oman sähköpostiohjelmasi kautta.",
+    "sendButton": "Luo sähköposti",
+    "openedMailClient": "Sähköpostisovellus avattu.",
+    "error": "Virhe",
+    "sentTo": "Vastaanottaja: {{email}}"
   }
 }

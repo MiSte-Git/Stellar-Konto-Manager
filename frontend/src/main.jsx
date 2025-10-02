@@ -34,6 +34,7 @@ import MultisigCreatePage from './pages/MultisigCreatePage.jsx';
 import MultisigEditPage from './pages/MultisigEditPage.jsx';
 import BalancePage from './pages/BalancePage.jsx';
 import SendPaymentPage from './pages/SendPaymentPage.jsx';
+import FeedbackPage from './pages/FeedbackPage.jsx';
 
 // Ensure default network is PUBLIC on each reload before any components mount
 try {
@@ -335,20 +336,32 @@ function Main() {
               {devTestnet ? t('network.testnet') : t('network.mainnet')}
             </span>
           </div>
+          {/* Action buttons under the title, right-aligned */}
+          <div className="mt-2 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setMenuSelection('feedback')}
+              title={t('menu.feedback')}
+              className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-purple-400"
+            >
+              <span>✉</span>
+              <span>{t('menu.feedback')}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => { setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('main.title')}` }); setMenuSelection('sendPayment'); }}
+              title={t('menu.donate')}
+              className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
+            >
+              <span aria-hidden>♥</span>
+              <span>{t('menu.donate')}</span>
+            </button>
+          </div>
           {infoMessage && (
             <div className="mt-2 text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-2 inline-block">
               {infoMessage}
             </div>
           )}
-          <button
-            type="button"
-            onClick={() => { setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('main.title')}` }); setMenuSelection('sendPayment'); }}
-            title={t('menu.donate')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
-          >
-            <span aria-hidden>♥</span>
-            <span>{t('menu.donate')}</span>
-          </button>
         </div>
         <p className="mb-4 text-sm text-blue-200 rounded border">
           {t('secretKey.info')}
@@ -612,14 +625,19 @@ function Main() {
         />
       )}
       {menuSelection === 'sendPayment' && (
-        <SendPaymentPage
-          publicKey={sourcePublicKey}
-          onBack={() => setMenuSelection(null)}
-          initial={sendInit}
-        />
+      <SendPaymentPage
+      publicKey={sourcePublicKey}
+      onBack={() => setMenuSelection(null)}
+      initial={sendInit}
+      />
+      )}
+      {menuSelection === 'feedback' && (
+        <div className="max-w-6xl mx-auto px-3">
+          <FeedbackPage onBack={() => setMenuSelection(null)} />
+        </div>
       )}
       {menuSelection === 'settings' && (
-        <SettingsPage
+      <SettingsPage
           publicKey={sourcePublicKey}
           onBack={() => setMenuSelection(null)}
         />
@@ -628,16 +646,16 @@ function Main() {
       <MultisigCreatePage />
       )}
            {menuSelection === 'multisigEdit' && (
-        <MultisigEditPage defaultPublicKey={sourcePublicKey} />
-      )}
-      
-      {menuSelection &&
-      !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','multisigEdit','balance','sendPayment'].includes(menuSelection) && (
-        <div className="p-3 text-sm text-red-600">
-          {t('menu.unknown', { value: String(menuSelection) })}
-        </div>
-      )}
-
+              <MultisigEditPage defaultPublicKey={sourcePublicKey} />
+       )}
+       
+       {menuSelection &&
+       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','multisigEdit','balance','sendPayment','feedback'].includes(menuSelection) && (
+         <div className="p-3 text-sm text-red-600">
+           {t('menu.unknown', { value: String(menuSelection) })}
+         </div>
+       )}
+ 
       {results.length > 0 && (
         <ResultDisplay
           results={results}
