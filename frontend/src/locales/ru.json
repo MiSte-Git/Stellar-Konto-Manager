@@ -553,7 +553,8 @@
       "sponsored": "Спонсировано",
       "sendButton": "Отправить",
       "success": "Успех: Платеж отправлен. TX: {{hash}}",
-      "error": "Ошибка при отправке: {{detail}}"
+      "error": "Ошибка при отправке: {{detail}}",
+      "successShort": "Успешно отправлено"
     }
   },
   "xlmByMemo": {

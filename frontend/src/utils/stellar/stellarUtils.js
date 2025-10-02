@@ -17,8 +17,20 @@ function resolveHorizonUrl(url) {
   try {
     const lsUrl = window?.localStorage?.getItem('STM_HORIZON_URL');
     const lsNet = window?.localStorage?.getItem('STM_NETWORK'); // 'PUBLIC' | 'TESTNET'
-    if (!url && lsUrl) base = lsUrl;
-    if (!url && lsNet === 'TESTNET') base = 'https://horizon-testnet.stellar.org';
+
+    // Treat calls that pass the default (or nothing) as "not explicit" → network selection wins
+    const isDefault = (url == null) || String(url) === String(HORIZON_URL);
+
+    if (isDefault) {
+      // Network is the source of truth on startup
+      if (lsNet === 'TESTNET') base = 'https://horizon-testnet.stellar.org';
+      else base = 'https://horizon.stellar.org';
+      // Ignore STM_HORIZON_URL when using the default path to avoid stale overrides across reloads
+    } else if (!url && lsUrl) {
+      // Only consider custom override when caller did not pass any url AND we are not in default-path check
+      base = lsUrl;
+    }
+
     if (typeof window !== 'undefined') {
       try { console.debug('[STM] resolveHorizonUrl →', base, '(net=', lsNet || 'PUBLIC', ')'); } catch { /* noop */ }
     }
@@ -320,7 +332,11 @@ export async function handleSourceSubmit(sourceInput, t, networkOverride /* 'PUB
   }
 
   try {
-    const server = networkOverride === 'TESTNET' ? getHorizonServer('https://horizon-testnet.stellar.org') : undefined;
+    const server = networkOverride === 'TESTNET'
+      ? getHorizonServer('https://horizon-testnet.stellar.org')
+      : networkOverride === 'PUBLIC'
+        ? getHorizonServer('https://horizon.stellar.org')
+        : undefined;
     const trustlines = await loadTrustlines(publicKey, server);
     return { publicKey, trustlines };
   } catch (loadError) {

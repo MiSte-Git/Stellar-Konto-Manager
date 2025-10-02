@@ -35,6 +35,14 @@ import MultisigEditPage from './pages/MultisigEditPage.jsx';
 import BalancePage from './pages/BalancePage.jsx';
 import SendPaymentPage from './pages/SendPaymentPage.jsx';
 
+// Ensure default network is PUBLIC on each reload before any components mount
+try {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    window.localStorage.setItem('STM_NETWORK', 'PUBLIC');
+    window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' }));
+  }
+} catch { /* noop */ }
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
@@ -89,13 +97,27 @@ function Main() {
 
    // Track if a session secret exists for current source key
    useEffect(() => {
-     try {
-       if (!sourcePublicKey) { setHasSessionKey(false); return; }
-       const v = sessionStorage.getItem(`stm.session.secret.${sourcePublicKey}`);
-       setHasSessionKey(!!v);
-     } catch { setHasSessionKey(false); }
+   try {
+   if (!sourcePublicKey) { setHasSessionKey(false); return; }
+   const v = sessionStorage.getItem(`stm.session.secret.${sourcePublicKey}`);
+   setHasSessionKey(!!v);
+   } catch { setHasSessionKey(false); }
    }, [sourcePublicKey]);
 
+   // React to session secret changes (e.g., after entering secret in modal)
+   useEffect(() => {
+   const handler = (e) => {
+   try {
+     const pk = (e && e.detail && e.detail.publicKey) ? e.detail.publicKey : sourcePublicKey;
+       if (!pk) { setHasSessionKey(false); return; }
+         const v = sessionStorage.getItem(`stm.session.secret.${pk}`);
+         setHasSessionKey(!!v);
+       } catch { /* noop */ }
+     };
+     window.addEventListener('stm-session-secret-changed', handler);
+     return () => window.removeEventListener('stm-session-secret-changed', handler);
+   }, [sourcePublicKey]);
+ 
    const clearSessionSecret = () => {
      try {
        if (sourcePublicKey) sessionStorage.removeItem(`stm.session.secret.${sourcePublicKey}`);
@@ -103,6 +125,9 @@ function Main() {
        setInfoMessage(t('secretKey.cleared'));
      } catch { /* noop */ }
    };
+
+
+   
 
   const handleSortClick = (column) => {
     handleSort(column, sortColumn, sortDirection, setSortColumn, setSortDirection);
@@ -126,7 +151,25 @@ function Main() {
   const [deleteProgress, setDeleteProgress] = useState(null);
   const [infoMessage, setInfoMessage] = useState('');
 
-  // Kürzlich verwendete Wallets aus localStorage laden
+  // Auto-hide info messages
+  useEffect(() => {
+    if (!infoMessage) return;
+    const id = setTimeout(() => setInfoMessage(''), 4000);
+    return () => clearTimeout(id);
+  }, [infoMessage]);
+
+  // Clear info on new transaction start
+  useEffect(() => {
+    const handler = () => setInfoMessage('');
+    window.addEventListener('stm-transaction-start', handler);
+    return () => window.removeEventListener('stm-transaction-start', handler);
+  }, []);
+
+  // Clear info block whenever page changes or account switches
+  useEffect(() => { setInfoMessage(''); }, [menuSelection]);
+  useEffect(() => { setInfoMessage(''); }, [sourcePublicKey]);
+ 
+   // Kürzlich verwendete Wallets aus localStorage laden
   useEffect(() => {
     try {
       const raw = localStorage.getItem('recentWallets');
@@ -202,6 +245,8 @@ function Main() {
     const handler = (e) => {
       const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
       setDevTestnet(v === 'TESTNET');
+      // Clear info banner on network change
+      setInfoMessage('');
     };
     window.addEventListener('stm-network-changed', handler);
     return () => window.removeEventListener('stm-network-changed', handler);
@@ -284,6 +329,17 @@ function Main() {
         {/* 🌍 Global: Titel & Info */}
         <div className="relative mb-4">
           <h1 className="text-2xl font-bold text-center">{t('main.title')}</h1>
+          {/* Active network banner */}
+          <div className="mt-2 text-xs text-center">
+            <span className={`inline-block px-2 py-0.5 rounded font-semibold ${devTestnet ? 'bg-yellow-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100'}`}>
+              {devTestnet ? t('network.testnet') : t('network.mainnet')}
+            </span>
+          </div>
+          {infoMessage && (
+            <div className="mt-2 text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-2 inline-block">
+              {infoMessage}
+            </div>
+          )}
           <button
             type="button"
             onClick={() => { setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('main.title')}` }); setMenuSelection('sendPayment'); }}
@@ -613,11 +669,7 @@ function Main() {
           isLoading={isLoading}
         />
       )}
-      {infoMessage && (
-        <p className="text-sm text-yellow-600 mt-2">
-          {infoMessage}
-        </p>
-      )}
+      
 
       {showSecretInfo && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">

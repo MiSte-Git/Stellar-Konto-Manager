@@ -553,7 +553,8 @@
       "sponsored": "Sponzorirano",
       "sendButton": "Pošalji",
       "success": "Uspjeh: Plaćanje poslano. TX: {{hash}}",
-      "error": "Pogreška prilikom slanja: {{detail}}"
+      "error": "Pogreška prilikom slanja: {{detail}}",
+      "successShort": "Uspješno poslano"
     }
   },
   "xlmByMemo": {

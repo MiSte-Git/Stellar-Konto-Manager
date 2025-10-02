@@ -553,7 +553,8 @@
       "sponsored": "Sponsoroitu",
       "sendButton": "Lähetä",
       "success": "Menestys: Maksu lähetetty. TX: {{hash}}",
-      "error": "Virhe lähetyksessä: {{detail}}"
+      "error": "Virhe lähetyksessä: {{detail}}",
+      "successShort": "Lähetetty onnistuneesti"
     }
   },
   "xlmByMemo": {
