@@ -208,7 +208,7 @@
   },
   "main": {
     "processing": "Proceso en curso, por favor espere…",
-    "title": "Administrador de cuentas/líneas de confianza Stellar"
+    "title": "Administrador de Cuentas Stellar"
   },
   "menu": {
     "balance": "Mostrar saldo de la cuenta",

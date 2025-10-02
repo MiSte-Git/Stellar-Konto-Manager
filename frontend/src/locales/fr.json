@@ -208,7 +208,7 @@
   },
   "main": {
     "processing": "Opération en cours, veuillez patienter…",
-    "title": "Gestionnaire de lignes de confiance/compte Stellar"
+    "title": "Gestionnaire de compte Stellar"
   },
   "menu": {
     "balance": "Afficher le solde du compte",
