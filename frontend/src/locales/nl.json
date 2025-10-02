@@ -553,7 +553,8 @@
       "sponsored": "Gesponsord",
       "sendButton": "Verzenden",
       "success": "Succes: Betaling verzonden. TX: {{hash}}",
-      "error": "Fout bij verzenden: {{detail}}"
+      "error": "Fout bij verzenden: {{detail}}",
+      "successShort": "Succesvol verzonden"
     }
   },
   "xlmByMemo": {

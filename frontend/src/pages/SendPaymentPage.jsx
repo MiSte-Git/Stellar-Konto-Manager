@@ -20,6 +20,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [secretError, setSecretError] = useState('');
   const [status, setStatus] = useState('');
+  const [sentInfo, setSentInfo] = useState(null);
   const [error, setError] = useState('');
 
   const [balances, setBalances] = useState(null); // array from account.balances
@@ -28,8 +29,23 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [baseReserve, setBaseReserve] = useState(0.5); // default fallback
   const [showReserveInfo, setShowReserveInfo] = useState(false);
 
-  const server = useMemo(() => getHorizonServer(), []);
+  const [netLabel, setNetLabel] = useState(() => {
+    try { return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
+  });
+  const server = useMemo(() => getHorizonServer(), [netLabel]);
   const popupRef = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      try {
+        const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+        setNetLabel(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
+      } catch { /* noop */ }
+    };
+    window.addEventListener('stm-network-changed', handler);
+    return () => window.removeEventListener('stm-network-changed', handler);
+  }, []);
+
 
   // Trusted wallet labels map
   const walletInfoMap = useMemo(() => {
@@ -231,7 +247,17 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       </div>
 
       {error && <div className="text-red-600 text-sm text-center">{error}</div>}
-      {status && <div className="text-green-700 text-sm text-center">{status}</div>}
+      {sentInfo && (
+        <div className="text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-3 max-w-4xl mx-auto">
+          <div className="font-semibold mb-1">{t('payment.send.successShort', 'Erfolgreich gesendet')}</div>
+          <div className="space-y-0.5">
+            <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.recipient')}:</span> <span className="font-mono break-all">{sentInfo.recipient}</span></div>
+            <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.amount')}:</span> {amountFmt.format(sentInfo.amount)} {sentInfo.asset}</div>
+            <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.memo')}:</span> {sentInfo.memo || '-'}</div>
+            {status && (<div><span className="text-gray-600 dark:text-gray-400">TX:</span> <span className="font-mono break-all">{status}</span></div>)}
+          </div>
+        </div>
+      )}
 
       <div className="bg-white dark:bg-gray-800 rounded border p-4 max-w-4xl mx-auto">
         <div className="grid grid-cols-1 gap-4">
@@ -323,7 +349,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             <div className="text-xs text-gray-600 dark:text-gray-400 ml-2 text-right">{t('payment.send.available')}: {amountFmt.format(availableXLM)} XLM</div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 mt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
             <div>
               <label className="block text-sm">{t('payment.send.memoType')}</label>
               <select className="border rounded w-full px-2 py-1 text-sm" value={memoType} onChange={(e)=>setMemoType(e.target.value)}>
@@ -349,7 +375,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             </div>
           </div>
 
-          <button className="mt-3 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50" disabled={!dest || !amount || (Number(amount) || 0) <= 0} onClick={()=>setShowConfirmModal(true)}>
+          <button className="mt-3 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50" disabled={!dest || !amount || (Number(amount) || 0) <= 0} onClick={()=>{ setSentInfo(null); setStatus(''); try{window.dispatchEvent(new Event('stm-transaction-start'));}catch{}; setShowConfirmModal(true); }}>
             {t('payment.send.sendButton')}
           </button>
         </div>
@@ -364,12 +390,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             <div className="text-sm space-y-1 mb-3">
               <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.recipient')}:</span> <span className="font-mono break-all">{dest}</span></div>
               <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.amount')}:</span> {amountFmt.format(Number(amount))} {(assetKey==='XLM'?'XLM':assetKey.split(':')[0])}</div>
-              <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.memoType')}:</span> {t(`payment.send.memoTypes.${memoType}`)}</div>
               <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.memo')}:</span> {memoType==='none' || !memoVal ? '-' : memoVal}</div>
             </div>
             <div className="flex justify-end gap-2">
               <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowConfirmModal(false)}>{t('option.cancel')}</button>
-              <button className="px-3 py-1 rounded bg-blue-600 text-white" onClick={async ()=>{ setShowConfirmModal(false); try { const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`); if (saved) { await (async () => { const kp = Keypair.fromSecret(saved); if (kp.publicKey() !== publicKey) throw new Error('secretKey.mismatch'); const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? Networks.TESTNET : Networks.PUBLIC; const acct = await server.loadAccount(publicKey); const feeStats = await server.feeStats(); const fee = Number(feeStats?.fee_charged?.mode || 100); const memoObj = (() => { const v = (memoVal || '').trim(); if (!v || memoType === 'none') return undefined; try { switch (memoType) { case 'text': return Memo.text(v); case 'id': return Memo.id(v); case 'hash': { const hex = v.replace(/^0x/i, ''); if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo'); return Memo.hash(Buffer.from(hex, 'hex')); } case 'return': { const hex = v.replace(/^0x/i, ''); if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo'); return Memo.return(Buffer.from(hex, 'hex')); } default: return undefined; } } catch { throw new Error('query.invalidMemo'); }})(); const builder = new TransactionBuilder(acct, { fee, networkPassphrase: net, memo: memoObj }); const resolvedDest = await resolveOrValidatePublicKey(dest); let asset; if (assetKey === 'XLM') asset = Asset.native(); else { const [code, issuer] = assetKey.split(':'); asset = new Asset(code, issuer); } builder.addOperation(Operation.payment({ destination: resolvedDest, amount: String(Number(amount)), asset })); const tx = builder.setTimeout(60).build(); tx.sign(kp); const res = await server.submitTransaction(tx); setStatus(t('payment.send.success', { hash: res.hash || res.id || '' })); } )(); } else { setShowSecretModal(true); } } catch (e) { setSecretError(''); setError(t('payment.send.error', { detail: e?.message || 'unknown' })); } }}>{t('option.yes')}</button>
+              <button className="px-3 py-1 rounded bg-blue-600 text-white" onClick={async ()=>{ setShowConfirmModal(false); try { const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`); if (saved) { await (async () => { const kp = Keypair.fromSecret(saved); if (kp.publicKey() !== publicKey) throw new Error('secretKey.mismatch'); const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? Networks.TESTNET : Networks.PUBLIC; const acct = await server.loadAccount(publicKey); const feeStats = await server.feeStats(); const fee = Number(feeStats?.fee_charged?.mode || 100); const memoObj = (() => { const v = (memoVal || '').trim(); if (!v || memoType === 'none') return undefined; try { switch (memoType) { case 'text': return Memo.text(v); case 'id': return Memo.id(v); case 'hash': { const hex = v.replace(/^0x/i, ''); if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo'); return Memo.hash(Buffer.from(hex, 'hex')); } case 'return': { const hex = v.replace(/^0x/i, ''); if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo'); return Memo.return(Buffer.from(hex, 'hex')); } default: return undefined; } } catch { throw new Error('query.invalidMemo'); }})(); const builder = new TransactionBuilder(acct, { fee, networkPassphrase: net, memo: memoObj }); const resolvedDest = await resolveOrValidatePublicKey(dest); let asset; if (assetKey === 'XLM') asset = Asset.native(); else { const [code, issuer] = assetKey.split(':'); asset = new Asset(code, issuer); } builder.addOperation(Operation.payment({ destination: resolvedDest, amount: String(Number(amount)), asset })); const tx = builder.setTimeout(60).build(); tx.sign(kp); const res = await server.submitTransaction(tx); const hash = res.hash || res.id || ''; setStatus(hash); setSentInfo({ recipient: resolvedDest, amount: Number(amount), asset: (assetKey==='XLM' ? 'XLM' : (assetKey.split(':')[0] || '')), memo: (memoType==='none'||!memoVal) ? '' : memoVal }); } )(); } else { setShowSecretModal(true); } } catch (e) { setSecretError(''); setError(t('payment.send.error', { detail: e?.message || 'unknown' })); } }}>{t('option.yes')}</button>
             </div>
           </div>
         </div>
@@ -388,7 +413,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 return;
               }
               if (remember) {
-                try { sessionStorage.setItem(`stm.session.secret.${publicKey}`, secret); } catch { /* noop */ }
+                try {
+                  sessionStorage.setItem(`stm.session.secret.${publicKey}`, secret);
+                  // Notify global header that a session secret is now present
+                  try { window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: { publicKey } })); } catch { /* noop */ }
+                } catch { /* noop */ }
               }
               const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? Networks.TESTNET : Networks.PUBLIC;
               const acct = await server.loadAccount(publicKey);
@@ -432,7 +461,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               const tx = builder.setTimeout(60).build();
               tx.sign(kp);
               const res = await server.submitTransaction(tx);
-              setStatus(t('payment.send.success', { hash: res.hash || res.id || '' }));
+              const hash = res.hash || res.id || '';
+              setStatus(hash);
+              setSentInfo({ recipient: resolvedDest, amount: Number(amount), asset: (assetKey==='XLM' ? 'XLM' : (assetKey.split(':')[0] || '')), memo: (memoType==='none'||!memoVal) ? '' : memoVal });
               setShowSecretModal(false);
             } catch (e) {
               setSecretError('');

@@ -407,7 +407,7 @@
   "secretKey": {
     "cleared": "Geheimschlüssel wurde gelöscht.",
     "empty": "Geheimschlüssel-Feld ist leer.",
-    "info": "Der Geheim Schlüssel wird nur temporär an ein Backend zur Ausführung der gewählten Aktion übertragen. Der Schlüssel wird nicht gespeichert",
+    "info": "Der Geheimschlüssel wird nur temporär an ein Backend zur Ausführung der gewählten Aktion übertragen. Der Schlüssel wird nicht gespeichert",
     "invalid": "Ungültiger Geheimschlüssel.",
     "label": "Geben Sie den Quell-Geheimschlüssel ein (wird sicher an das Backend gesendet)",
     "mismatch": "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
@@ -557,6 +557,7 @@
       "sponsored": "Gesponsert",
       "sendButton": "Senden",
       "success": "Erfolg: Zahlung gesendet. TX: {{hash}}",
+      "successShort": "Erfolgreich gesendet",
       "error": "Fehler beim Senden: {{detail}}"}
   },
 

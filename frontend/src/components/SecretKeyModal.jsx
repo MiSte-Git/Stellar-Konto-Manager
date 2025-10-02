@@ -10,7 +10,11 @@ const [showSecret, setShowSecret] = useState(false);
 const [rememberSession, setRememberSession] = useState(true);
  const [error, setError] = useState(errorMessage || '');
 
-const handleConfirm = () => {
+ React.useEffect(() => {
+   setError(errorMessage || '');
+ }, [errorMessage]);
+ 
+ const handleConfirm = () => {
 if (!secretKey.trim()) {
 setError(t('secretKey.empty'));
   return;

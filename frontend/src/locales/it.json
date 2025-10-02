@@ -553,7 +553,8 @@
       "sponsored": "Sponsorizzato",
       "sendButton": "Inviare",
       "success": "Successo: Pagamento inviato. TX: {{hash}}",
-      "error": "Errore nell'invio: {{detail}}"
+      "error": "Errore nell'invio: {{detail}}",
+      "successShort": "Inviato con successo"
     }
   },
   "xlmByMemo": {
