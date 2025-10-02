@@ -208,7 +208,7 @@
   },
   "main": {
     "processing": "Toimenpide käynnissä, odota ole hyvä ...",
-    "title": "Stellar Trustline/Tilin hallinta"
+    "title": "Stellar-tilinhallinta"
   },
   "menu": {
     "balance": "Näytä tilin saldo.",
