@@ -139,6 +139,24 @@
   "exportCsv": {
     "failed": "CSV export failed"
   },
+  "feedback": {
+    "title": "Send feedback",
+    "category": "Category",
+    "categories": {
+      "bug": "Bug",
+      "idea": "Idea",
+      "improve": "Improvement",
+      "other": "Other"
+    },
+    "subject": "Subject",
+    "message": "Message",
+    "contactEmailOptional": "Contact email (optional)",
+    "privacyHint": "Your message will be sent via your local email client.",
+    "sendButton": "Create email",
+    "openedMailClient": "Email client opened.",
+    "error": "Error",
+    "sentTo": "Recipient: {{email}}"
+  },
   "investedTokens": {
     "columns": {
       "amount": "Amount",
@@ -216,6 +234,7 @@
     "unknown": "Unknown menu selection",
     "xlmByMemo": "Filter by memo",
     "sendPayment": "Send payment",
+    "feedback": "Feedback",
     "donate": "Donations"
   },
   "badges": {
