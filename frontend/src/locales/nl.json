@@ -208,7 +208,7 @@
   },
   "main": {
     "processing": "Proces loopt, even geduld a.u.b. ...",
-    "title": "Stellar Trustline/Account Manager"
+    "title": "Stellar Account Manager"
   },
   "menu": {
     "balance": "Saldo weergeven",

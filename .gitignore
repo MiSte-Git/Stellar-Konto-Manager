@@ -33,3 +33,5 @@ frontend/dist/
 history
 ChatGPT*
 *.zip
+
+__pycache__/

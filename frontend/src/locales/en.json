@@ -226,7 +226,7 @@
   },
   "main": {
     "processing": "Process running, please wait …",
-    "title": "Stellar Trustline/Account Manager"
+    "title": "Stellar Account Manager"
   },
   "menu": {
     "balance": "Show account balance",

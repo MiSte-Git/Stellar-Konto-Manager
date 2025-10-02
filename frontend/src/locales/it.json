@@ -208,7 +208,7 @@
   },
   "main": {
     "processing": "Elaborazione in corso, si prega di attendere…",
-    "title": "Gestore di Trustline/Account Stellar"
+    "title": "Gestore di Conti Stellar"
   },
   "menu": {
     "balance": "Mostra saldo del conto",
