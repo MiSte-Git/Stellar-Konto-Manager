@@ -216,7 +216,8 @@
     "unknown": "Selezione menu sconosciuta",
     "xlmByMemo": "Filtrare per memo",
     "sendPayment": "Inviare pagamento",
-    "donate": "Donazioni"
+    "donate": "Donazioni",
+    "feedback": "Feedback"
   },
   "badges": {
     "testnet": "TESTNET"
@@ -646,5 +647,23 @@
   "network": {
     "mainnet": "Mainnet",
     "testnet": "Rete di prova"
+  },
+  "feedback": {
+    "title": "Inviare feedback",
+    "category": "Categoria",
+    "categories": {
+      "bug": "Errore",
+      "idea": "Idea",
+      "improve": "Miglioramento",
+      "other": "Varie"
+    },
+    "subject": "Oggetto",
+    "message": "Messaggio",
+    "contactEmailOptional": "E-mail di contatto (opzionale)",
+    "privacyHint": "Il tuo messaggio verrà inviato tramite e-mail utilizzando il tuo programma di posta.",
+    "sendButton": "Creare un'e-mail.",
+    "openedMailClient": "Client di posta elettronica aperto.",
+    "error": "Errore",
+    "sentTo": "Destinatario: {{email}}"
   }
 }
