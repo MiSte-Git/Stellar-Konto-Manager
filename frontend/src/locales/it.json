@@ -67,7 +67,8 @@
   "common": {
     "clear": "Cancella l'input.",
     "loading": "Caricamento…",
-    "refresh": "Ricarica"
+    "refresh": "Ricarica",
+    "close": "Chiudere"
   },
   "error": {
     "asset": {
@@ -248,7 +249,23 @@
     "info": {
       "more": "Ulteriori informazioni",
       "multisig": "Multisig bedeutet: Per questo conto sono necessarie più firme. Tu scegli firmatari aggiuntivi e la soglia (ad esempio, 2 su 3). Una transazione è valida solo se sono presenti almeno tante firme quante ne richiede la soglia (Master + co-firmatari).",
-      "text": "Ecco come funziona: \nIl tuo codice segreto rimane sempre nel tuo browser. Viene utilizzato esclusivamente per firmare la tua transazione a livello locale. Al nostro server o all'esterno viene inviata solo la firma finale, mai il tuo codice. Chi lo desidera, può verificarlo con gli strumenti per sviluppatori nel browser: lì si può vedere che nessun codice viene trasmesso."
+      "text": "Ecco come funziona: \nIl tuo codice segreto rimane sempre nel tuo browser. Viene utilizzato esclusivamente per firmare la tua transazione a livello locale. Al nostro server o all'esterno viene inviata solo la firma finale, mai il tuo codice. Chi lo desidera, può verificarlo con gli strumenti per sviluppatori nel browser: lì si può vedere che nessun codice viene trasmesso.",
+      "title": "Informazioni importanti",
+      "secureKeys": {
+        "title": "Proteggere la chiave segreta",
+        "text": "La chiave pubblica può essere condivisa in sicurezza - è come un numero di conto.\n\nLa chiave segreta è l'accesso al tuo conto. Trattala come una password:\n• NON salvarla MAI in servizi cloud, email o note non sicure\n• Annotala su carta o utilizza un hardware wallet\n• Crea diversi backup e conservali in luoghi sicuri e separati\n• In caso di perdita della chiave segreta, l'accesso al conto è irrimediabilmente perduto"
+      },
+      "keysOnPage": {
+        "title": "Chiave segreta su questa pagina",
+        "text": "⚠️ IMPORTANTE: Questo sito web NON memorizza MAI la tua chiave segreta!\n\nLa chiave segreta mostrata qui esiste solo nel tuo browser (localmente nella memoria di lavoro). Una volta che ricarichi o lasci la pagina, viene persa irrimediabilmente.\n\nCopia o annota immediatamente la chiave segreta dopo la generazione, prima di chiudere la pagina.\n\nVerifica: Puoi utilizzare gli strumenti per sviluppatori del browser (F12 → Rete) per verificare che nessuna chiave segreta venga trasmessa esternamente. Vengono inviate solo transazioni firmate, mai la tua chiave segreta."
+      },
+      "multisigSection": {
+        "title": "Multisig (firma multipla)",
+        "text": "Con Multisig, puoi definire più firmatari per il tuo account. Le transazioni richiederanno quindi firme da più chiavi (ad esempio, 2 su 3).\n\nVantaggi:\n• Maggiore sicurezza (una chiave compromessa non è sufficiente)\n• Conti condivisi (ad esempio, aziende, partnership)\n• Recupero di emergenza (più backup presso persone diverse)\n\nATTENZIONE: Prova Multisig prima nel Testnet, prima di utilizzarlo nel Mainnet! Una configurazione errata potrebbe causare la perdita dell'accesso all'account."
+      },
+      "diagram": {
+        "title": "Scadenza della firma"
+      }
     },
     "instructions": {
       "public": "Chiave pubblica: L'indirizzo del tuo conto, come un IBAN. Sicuro da condividere.",
@@ -290,7 +307,16 @@
     },
     "thresholdLow": "basso",
     "thresholdMed": "medio",
-    "thresholdHigh": "alto"
+    "thresholdHigh": "alto",
+    "keyWarning": {
+      "title": "⚠️ Proteggi la chiave adesso!",
+      "text1": "Hai generato una nuova coppia di chiavi.",
+      "text2": "Assicuratevi di salvare ENTRAMBI le chiavi IMMEDIATAMENTE, prima di procedere:",
+      "list1": "Chiave pubblica: il tuo indirizzo del conto, può essere condiviso.",
+      "list2": "Chiave Segreta: La tua password – NON condividerla mai né salvarla online!",
+      "list3": "In caso di perdita della chiave segreta, l'accesso è irrimediabilmente perduto.",
+      "confirm": "Ho assicurato entrambe le chiavi."
+    }
   },
   "multisigEdit": {
     "confirm": {
@@ -404,9 +430,9 @@
   "secretKey": {
     "cleared": "La chiave segreta è stata cancellata.",
     "empty": "Il campo della chiave segreta è vuoto.",
-    "info": "La chiave segreta viene trasferita temporaneamente a un backend per eseguire l'azione scelta. La chiave non viene memorizzata.",
+    "info": "La tua chiave segreta rimane nel tuo browser e viene utilizzata solo localmente per firmare le transazioni. Non viene mai trasmessa o memorizzata.",
     "invalid": "Chiave segreta non valida.",
-    "label": "Inserisci la chiave segreta di origine (verrà inviata in modo sicuro al backend)",
+    "label": "Inserisci la chiave segreta di origine",
     "mismatch": "La chiave privata non corrisponde all'indirizzo pubblico.",
     "placeholder": "ad es. (per esempio)",
     "valid": "✅ La chiave segreta è valida.",

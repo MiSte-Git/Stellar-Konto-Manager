@@ -136,7 +136,9 @@ def _collect_leaf_paths(d: Dict[str, Any], prefix: str = "") -> Set[str]:
     return paths
 
 
-def _diff_changed_paths(old: Dict[str, Any], new: Dict[str, Any], prefix: str = "") -> Set[str]:
+def _diff_changed_paths(old: Dict[str, Any], new: Dict[str, Any], prefix: str = "") -> tuple[Set[str], Set[str]]:
+    """Gibt zwei Sets zurück: (neu_hinzugefügt, geändert)"""
+    added: Set[str] = set()
     changed: Set[str] = set()
     # Keys added or changed
     for k, v_new in new.items():
@@ -144,23 +146,25 @@ def _diff_changed_paths(old: Dict[str, Any], new: Dict[str, Any], prefix: str = 
         if k not in old:
             # Alle Blätter unter k neu
             if isinstance(v_new, dict):
-                changed |= _collect_leaf_paths(v_new, p)
+                added |= _collect_leaf_paths(v_new, p)
             else:
-                changed.add(p)
+                added.add(p)
         else:
             v_old = old[k]
             if isinstance(v_new, dict) and isinstance(v_old, dict):
-                changed |= _diff_changed_paths(v_old, v_new, p)
+                sub_added, sub_changed = _diff_changed_paths(v_old, v_new, p)
+                added |= sub_added
+                changed |= sub_changed
             elif v_new != v_old:
                 # Wert geändert
                 changed.add(p)
     # Entfernte Keys ignorieren (für Übersetzung irrelevant)
-    return changed
+    return added, changed
 
 
-def compute_changed_paths_with_git(base_file: str) -> Set[str]:
-    """Vergleicht de.json gegen HEAD-Version und liefert geänderte/neue Leaf-Pfade.
-    Fällt bei fehlendem Git oder fehlender HEAD-Version auf leere Menge zurück.
+def compute_changed_paths_with_git(base_file: str) -> tuple[Set[str], Set[str]]:
+    """Vergleicht de.json gegen HEAD-Version und liefert (neu_hinzugefügt, geändert).
+    Fällt bei fehlendem Git oder fehlender HEAD-Version auf leere Mengen zurück.
     """
     try:
         # Hol die HEAD-Version der Basisdatei
@@ -172,15 +176,15 @@ def compute_changed_paths_with_git(base_file: str) -> Set[str]:
         )
         if res.returncode != 0 or not res.stdout.strip():
             # Kein HEAD (z. B. initial) oder Datei nicht im HEAD → keine Zwangs-Updates
-            return set()
+            return set(), set()
         old_dict = json.loads(res.stdout)
         new_dict = load_json(base_file)
         if not isinstance(old_dict, dict) or not isinstance(new_dict, dict):
-            return set()
+            return set(), set()
         return _diff_changed_paths(old_dict, new_dict)
     except Exception as e:
         print(f"ℹ️ Git-Diff für {base_file} nicht verfügbar: {e}")
-        return set()
+        return set(), set()
 
 
 def _get_node_by_path(d: Dict[str, Any], path: str):
@@ -343,29 +347,43 @@ def main():
         print(f"❌ Basisdatei {base_file} konnte nicht geladen werden. Abbruch.")
         return
 
-    # Ermittele gezielt geänderte Leaf-Pfade gegenüber HEAD
-    changed_paths = compute_changed_paths_with_git(base_file)
-    if changed_paths:
-        print(f"ℹ️ Geänderte Schlüssel in {BASE_LANG}.json seit HEAD: {len(changed_paths)}")
-        for p in sorted(changed_paths):
-            print(f"   • {p}")
+    # Ermittele gezielt neue und geänderte Leaf-Pfade gegenüber HEAD
+    added_paths, changed_paths = compute_changed_paths_with_git(base_file)
+    
+    if not do_full:
+        if added_paths:
+            print(f"ℹ️ Neu hinzugefügte Schlüssel in {BASE_LANG}.json seit HEAD: {len(added_paths)}")
+            for p in sorted(added_paths):
+                print(f"   + {p}")
+        if changed_paths:
+            print(f"ℹ️ Geänderte Schlüssel in {BASE_LANG}.json seit HEAD: {len(changed_paths)}")
+            for p in sorted(changed_paths):
+                print(f"   ~ {p}")
 
-    # Erzwungene Keys (per Argument) zur Änderungsmenge hinzufügen
-    forced_list: list[str] = []
-    for raw in force_keys_raw:
-        forced_list.extend([s.strip() for s in raw.split(',') if s and s.strip()])
-    if forced_list:
-        forced_paths = expand_forced_paths(base_dict, forced_list)
-        if forced_paths:
-            print(f"ℹ️ Erzwungene Schlüssel (Neuübersetzung): {len(forced_paths)}")
-            for p in sorted(forced_paths):
-                print(f"   • {p}")
-            changed_paths |= forced_paths
+        # Erzwungene Keys (per Argument) zur Änderungsmenge hinzufügen
+        forced_list: list[str] = []
+        for raw in force_keys_raw:
+            forced_list.extend([s.strip() for s in raw.split(',') if s and s.strip()])
+        if forced_list:
+            forced_paths = expand_forced_paths(base_dict, forced_list)
+            if forced_paths:
+                print(f"ℹ️ Erzwungene Schlüssel (Neuübersetzung): {len(forced_paths)}")
+                for p in sorted(forced_paths):
+                    print(f"   ! {p}")
+                changed_paths |= forced_paths
+    
+    # Kombiniere für Übersetzung
+    all_changed = added_paths | changed_paths
 
     # Verarbeite jede Zielsprache
     for lang in TARGET_LANGS:
         path = f"{base_path}/{lang}.json"
-        print(f"\n🔁 Verarbeite {lang} im Modus '{'full' if do_full else 'missing+changed'}' mit Provider '{provider}'...")
+        if do_full:
+            print(f"\n🔁 Verarbeite {lang} im Modus 'full' mit Provider '{provider}'...")
+            total_keys = len(_collect_leaf_paths(base_dict))
+            print(f"   Übersetze alle {total_keys} Schlüssel neu...")
+        else:
+            print(f"\n🔁 Verarbeite {lang} im Modus 'missing+changed' mit Provider '{provider}'...")
         try:
             if not do_full:
                 if not os.path.exists(path):
@@ -380,7 +398,7 @@ def main():
                         provider,
                         openai_key,
                         deepl_key,
-                        changed_paths,
+                        all_changed,
                     )
             else:
                 translated_dict = translate_full(base_dict, lang, provider, openai_key, deepl_key)

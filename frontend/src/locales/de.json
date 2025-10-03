@@ -66,6 +66,7 @@
   },
   "common": {
     "clear": "Eingabe löschen",
+    "close": "Schließen",
     "loading": "Laden…",
     "refresh": "Neu laden"
   },
@@ -157,7 +158,6 @@
     "error": "Fehler",
     "sentTo": "Empfänger: {{email}}"
   },
-
   "investedTokens": {
     "columns": {
       "amount": "Betrag",
@@ -208,14 +208,14 @@
       "pageTime": "Laden einer Seite dauert ca. 0,2 Sekunden → 100 Seiten ≈ 20 Sekunden → 1000 Seiten ≈ 200 Sekunden (≈ 3:20 Minuten)."
     },
     "walletCapInfo": "Hinweis: Ein Wallet kann maximal 1000 Trustlines halten.",
-     "action": {
+    "action": {
       "load": "Laden"
     },
     "history": {
       "availableFrom": "Server (Horizon) – Historie ab",
       "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
     }
-   },
+  },
   "account": {
     "createdAt": "Konto erstellt am",
     "createdAtUnknown": "Kann nicht ermittelt werden."
@@ -230,14 +230,14 @@
     "title": "Stellar Konto Manager"
   },
   "menu": {
-  "balance": "Kontostand anzeigen",
-  "devTestnet": "Testnet (für Entwickler)",
-  "unknown": "Unbekannte Menüauswahl",
-  "xlmByMemo": "Nach Memo filtern",
+    "balance": "Kontostand anzeigen",
+    "devTestnet": "Testnet (für Entwickler)",
+    "unknown": "Unbekannte Menüauswahl",
+    "xlmByMemo": "Nach Memo filtern",
     "sendPayment": "Zahlung senden",
     "feedback": "Feedback",
-      "donate": "Spenden"
-    },
+    "donate": "Spenden"
+  },
   "badges": {
     "testnet": "TESTNET"
   },
@@ -269,9 +269,23 @@
       "byteRange": "(0–255)"
     },
     "info": {
+      "title": "Wichtige Informationen",
       "more": "Mehr Info",
-      "multisig": "Multisig bedeutet: Für dieses Konto sind mehrere Unterschriften erforderlich. Du wählst zusätzliche Signer und die Schwelle (z. B. 2 von 3). Eine Transaktion ist nur gültig, wenn mindestens so viele Unterschriften vorliegen wie die Schwelle (Master + Mitzeichner).",
-      "text": "So funktioniert es\nDein Geheimschlüssel bleibt immer in deinem Browser. Er wird ausschließlich genutzt, um deine Transaktion lokal zu unterschreiben. An unseren Server oder nach außen wird nur die fertige Signatur gesendet, niemals dein Schlüssel. Wer möchte, kann das mit den Entwickler-Tools im Browser nachprüfen: Dort ist zu sehen, dass kein Schlüssel übertragen wird."
+      "secureKeys": {
+        "title": "Geheimschlüssel sichern",
+        "text": "Der Public Key (öffentlicher Schlüssel) kann sicher geteilt werden – er ist wie eine Kontonummer.\n\nDer Secret Key (Geheimschlüssel) ist der Zugang zu Ihrem Konto. Behandeln Sie ihn wie ein Passwort:\n• Speichern Sie ihn NIEMALS in Cloud-Diensten, E-Mails oder unsicheren Notizen\n• Notieren Sie ihn auf Papier oder verwenden Sie einen Hardware-Wallet\n• Erstellen Sie mehrere Backups und lagern Sie diese an sicheren, getrennten Orten\n• Bei Verlust des Secret Keys ist der Zugang zum Konto unwiderruflich verloren"
+      },
+      "keysOnPage": {
+        "title": "Geheimschlüssel auf dieser Seite",
+        "text": "⚠️ WICHTIG: Diese Webseite speichert NIEMALS Ihren Geheimschlüssel!\n\nDer hier angezeigte Secret Key existiert nur in Ihrem Browser (lokal im Arbeitsspeicher). Sobald Sie die Seite neu laden oder verlassen, ist er unwiederbringlich verloren.\n\nKopieren oder notieren Sie den Secret Key sofort nach der Erzeugung, bevor Sie die Seite schließen.\n\nÜberprüfung: Sie können mit den Browser-Entwickler-Tools (F12 → Netzwerk) nachprüfen, dass kein Geheimschlüssel nach außen übermittelt wird. Es werden nur signierte Transaktionen gesendet, niemals Ihr Secret Key."
+      },
+      "multisigSection": {
+        "title": "Multisig (Mehrfachsignatur)",
+        "text": "Mit Multisig können Sie mehrere Unterzeichner für Ihr Konto definieren. Transaktionen erfordern dann Signaturen von mehreren Keys (z. B. 2 von 3).\n\nVorteile:\n• Erhöhte Sicherheit (ein kompromittierter Key reicht nicht)\n• Gemeinsame Konten (z. B. Firmen, Partnerschaften)\n• Notfall-Wiederherstellung (mehrere Backups bei verschiedenen Personen)\n\nACHTUNG: Testen Sie Multisig zuerst im Testnet, bevor Sie es auf dem Mainnet einsetzen! Bei falscher Konfiguration kann der Zugang zum Konto verloren gehen."
+      },
+      "diagram": {
+        "title": "Signatur-Ablauf"
+      }
     },
     "instructions": {
       "public": "Public Key: Deine Kontoadresse, wie eine IBAN. Sicher zu teilen.",
@@ -292,9 +306,9 @@
     "signersTitle": "Multisig (zusätzliche Unterzeichner)",
     "startingBalance": "Startguthaben (XLM)",
     "threshold": "Erforderliche Signaturen (niedrig/mittel/hoch)",
-      "thresholdLow": "niedrig",
-      "thresholdMed": "mittel",
-      "thresholdHigh": "hoch",
+    "thresholdLow": "niedrig",
+    "thresholdMed": "mittel",
+    "thresholdHigh": "hoch",
     "thresholdCurrent": "Aktuell gewählt: niedrig={{low}}, mittel={{med}}, hoch={{high}} von {{total}} Signaturen",
     "thresholdHelp": "Schwelle: Anzahl der benötigten Unterschriften (Master + Unterzeichner), damit eine Transaktion gültig ist.",
     "thresholdInfo": "Empfehlung: {{req}} von {{total}} Signaturen (inkl. Master)",
@@ -303,6 +317,15 @@
     "thresholdSum": "Summe Gewichte: {{sum}}",
     "thresholdTooHigh": "Hinweis: Eine Schwelle darf die Summe der Gewichte nicht überschreiten. Bitte Werte anpassen.",
     "title": "Konto erstellen (optional Multisig)",
+    "keyWarning": {
+      "title": "⚠️ Schlüssel jetzt sichern!",
+      "text1": "Sie haben ein neues Schlüsselpaar erzeugt.",
+      "text2": "Sichern Sie BEIDE Schlüssel SOFORT, bevor Sie fortfahren:",
+      "list1": "Public Key (öffentlicher Schlüssel): Ihre Kontoadresse, kann geteilt werden",
+      "list2": "Secret Key (Geheimschlüssel): Ihr Passwort – NIEMALS teilen oder online speichern!",
+      "list3": "Bei Verlust des Secret Keys ist der Zugang unwiderruflich verloren",
+      "confirm": "Ich habe beide Schlüssel gesichert"
+    },
     "tooltips": {
       "high": "Hoch: sicherheitskritische Änderungen (z. B. Unterzeichner/Schwellen).",
       "low": "Niedrig: einfache Änderungen (z. B. Memo, Preis).",
@@ -427,9 +450,9 @@
   "secretKey": {
     "cleared": "Geheimschlüssel wurde gelöscht.",
     "empty": "Geheimschlüssel-Feld ist leer.",
-    "info": "Der Geheimschlüssel wird nur temporär an ein Backend zur Ausführung der gewählten Aktion übertragen. Der Schlüssel wird nicht gespeichert",
+    "info": "Ihr Geheimschlüssel bleibt in Ihrem Browser und wird nur lokal zum Signieren von Transaktionen verwendet. Er wird niemals übertragen oder gespeichert.",
     "invalid": "Ungültiger Geheimschlüssel.",
-    "label": "Geben Sie den Quell-Geheimschlüssel ein (wird sicher an das Backend gesendet)",
+    "label": "Geben Sie den Quell-Geheimschlüssel ein",
     "mismatch": "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
     "placeholder": "z.B.",
     "valid": "✅ Secret Key ist gültig.",
@@ -578,9 +601,9 @@
       "sendButton": "Senden",
       "success": "Erfolg: Zahlung gesendet. TX: {{hash}}",
       "successShort": "Erfolgreich gesendet",
-      "error": "Fehler beim Senden: {{detail}}"}
+      "error": "Fehler beim Senden: {{detail}}"
+    }
   },
-
   "xlmByMemo": {
     "action": {
       "calculate": "Berechnen",

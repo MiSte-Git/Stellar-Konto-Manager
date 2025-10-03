@@ -67,7 +67,8 @@
   "common": {
     "clear": "Effacer l'entrée",
     "loading": "Chargement…",
-    "refresh": "Recharger"
+    "refresh": "Recharger",
+    "close": "Fermer"
   },
   "error": {
     "asset": {
@@ -248,7 +249,23 @@
     "info": {
       "more": "Plus d'informations.",
       "multisig": "Multisig signifie : Plusieurs signatures sont requises pour ce compte. Vous choisissez des signataires supplémentaires et le seuil (par exemple, 2 sur 3). Une transaction n'est valide que si elle comporte au moins autant de signatures que le seuil (maître + cosignataires).",
-      "text": "Voici comment cela fonctionne\nTa clé secrète reste toujours dans ton navigateur. Elle est uniquement utilisée pour signer localement ta transaction. Seule la signature achevée est envoyée à notre serveur ou à l'extérieur, jamais ta clé. Si tu le souhaites, tu peux le vérifier avec les outils de développement du navigateur: tu verras ainsi qu'aucune clé n'est transmise."
+      "text": "Voici comment cela fonctionne\nTa clé secrète reste toujours dans ton navigateur. Elle est uniquement utilisée pour signer localement ta transaction. Seule la signature achevée est envoyée à notre serveur ou à l'extérieur, jamais ta clé. Si tu le souhaites, tu peux le vérifier avec les outils de développement du navigateur: tu verras ainsi qu'aucune clé n'est transmise.",
+      "title": "Informations importantes",
+      "secureKeys": {
+        "title": "Protéger la clé secrète",
+        "text": "La clé publique peut être partagée en toute sécurité - elle est comme un numéro de compte.\n\nLa clé secrète est l'accès à votre compte. Traitez-la comme un mot de passe :\n• Ne la stockez JAMAIS dans des services cloud, des e-mails ou des notes non sécurisées\n• Notez-la sur papier ou utilisez un portefeuille matériel\n• Créez plusieurs sauvegardes et conservez-les dans des endroits sûrs et séparés\n• En cas de perte de la clé secrète, l'accès au compte est irrémédiablement perdu"
+      },
+      "keysOnPage": {
+        "title": "Clé secrète sur cette page",
+        "text": "⚠️ IMPORTANT : Ce site web ne conserve JAMAIS votre clé secrète !\n\nLa clé secrète affichée ici existe uniquement dans votre navigateur (localement en mémoire). Dès que vous rechargez ou quittez la page, elle est définitivement perdue.\n\nCopiez ou notez la clé secrète immédiatement après sa génération, avant de fermer la page.\n\nVérification : Vous pouvez utiliser les outils de développement du navigateur (F12 → Réseau) pour vérifier qu'aucune clé secrète n'est transmise vers l'extérieur. Seules les transactions signées sont envoyées, jamais votre clé secrète."
+      },
+      "multisigSection": {
+        "title": "Multisignature (Signature multiple)",
+        "text": "Avec la fonctionnalité Multisig, vous pouvez définir plusieurs signataires pour votre compte. Les transactions nécessiteront alors les signatures de plusieurs clés (par exemple, 2 sur 3).\n\nAvantages :\n• Sécurité accrue (une clé compromis n'est pas suffisante)\n• Comptes partagés (par exemple, entreprises, partenariats)\n• Récupération d'urgence (plusieurs sauvegardes chez différentes personnes)\n\nATTENTION : Testez d'abord le Multisig sur le testnet avant de l'utiliser sur le mainnet ! Une mauvaise configuration pourrait entraîner une perte d'accès au compte."
+      },
+      "diagram": {
+        "title": "Expiration de la signature"
+      }
     },
     "instructions": {
       "public": "Clé publique : Ton adresse de compte, comme un IBAN. Sûre à partager.",
@@ -290,7 +307,16 @@
     },
     "thresholdLow": "bas",
     "thresholdMed": "moyen",
-    "thresholdHigh": "haut"
+    "thresholdHigh": "haut",
+    "keyWarning": {
+      "title": "⚠️ Sécurisez votre clé maintenant !",
+      "text1": "Vous avez généré une nouvelle paire de clés.",
+      "text2": "Assurez-vous de sécuriser les DEUX clés IMMÉDIATEMENT avant de continuer :",
+      "list1": "Clé publique : Votre adresse de compte, peut être partagée.",
+      "list2": "Clé secrète (Geheimschlüssel) : votre mot de passe - NE LE PARTAGEZ JAMAIS et ne le sauvegardez pas en ligne !",
+      "list3": "En cas de perte de la clé secrète, l'accès est irrémédiablement perdu.",
+      "confirm": "J'ai sécurisé les deux clés."
+    }
   },
   "multisigEdit": {
     "confirm": {
@@ -404,9 +430,9 @@
   "secretKey": {
     "cleared": "La clé secrète a été supprimée.",
     "empty": "Le champ de la clé secrète est vide.",
-    "info": "La clé secrète est uniquement transmise de manière temporaire à un backend pour exécuter l'action choisie. La clé n'est pas sauvegardée.",
+    "info": "Votre clé secrète reste dans votre navigateur et est utilisée uniquement localement pour signer des transactions. Elle n'est jamais transmise ni stockée.",
     "invalid": "Clé secrète invalide.",
-    "label": "Veuillez entrer la clé secrète source (elle sera envoyée en toute sécurité au backend).",
+    "label": "Entrez la clé secrète source",
     "mismatch": "La clé secrète ne correspond pas à l'adresse publique.",
     "placeholder": "par exemple (p. ex.)",
     "valid": "✅ La clé secrète est valide.",
