@@ -264,9 +264,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         <div className="space-y-2">
           <label className="block text-sm">{t('payment.send.recipient')}</label>
           <div className="relative">
-            <input className="border rounded w-full pr-8 px-2 py-1 text-sm font-mono" list="hist-recipients" value={dest} onChange={(e)=>setDest(e.target.value)} onBlur={()=>pushHistory('stm.hist.recipients', dest, setHistoryRecipients)} placeholder="G... oder user*domain" />
+            <input className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm font-mono" list="hist-recipients" value={dest} onChange={(e)=>setDest(e.target.value)} onBlur={()=>pushHistory('stm.hist.recipients', dest, setHistoryRecipients)} placeholder="G... oder user*domain" />
             {dest && (
-              <button type="button" onClick={()=>setDest('')} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center">×</button>
+              <button type="button" onClick={()=>setDest('')} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
             )}
             <datalist id="hist-recipients">
               {historyRecipients.map((v,i)=>(<option key={v+i} value={v} />))}
@@ -280,11 +280,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             </div>
           )}
 
-          <div className="flex flex-nowrap items-end gap-3 mt-2">
-          <div className="flex flex-col basis-[30%] min-w-0">
+          <div className="grid grid-cols-1 sm:grid-cols-[2fr_3fr] gap-3 mt-2">
+          <div className="flex flex-col min-w-0">
           <label className="text-sm">{t('payment.send.amount')}</label>
           <div className="relative">
-          <input type="text" inputMode="decimal" className="border rounded pr-8 px-2 py-1 text-sm w-full appearance-none [-moz-appearance:textfield]" list="hist-amounts"
+          <input type="text" inputMode="decimal" className="border rounded pr-8 px-2 py-1 text-base md:text-sm w-full appearance-none [-moz-appearance:textfield]" list="hist-amounts"
                   value={amountFocused ? amount : (amount ? amountFmt.format(Number(amount) || 0) : '')}
                   onFocus={()=>setAmountFocused(true)}
                   onBlur={()=>{ setAmountFocused(false); pushHistory('stm.hist.amounts', amount, setHistoryAmounts); }}
@@ -298,16 +298,16 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   }}
                 />
           {amount && (
-          <button type="button" onClick={()=>setAmount('')} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center">×</button>
+          <button type="button" onClick={()=>setAmount('')} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
           )}
           <datalist id="hist-amounts">
           {historyAmounts.map((v,i)=>(<option key={v+i} value={v} />))}
           </datalist>
           </div>
           </div>
-          <div className="flex flex-col basis-[70%] min-w-0">
+          <div className="flex flex-col min-w-0">
           <label className="text-sm">{t('payment.send.asset')}</label>
-          <select className="border rounded w-full px-2 py-1 text-sm" value={assetKey} onChange={(e)=>setAssetKey(e.target.value)}>
+          <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={assetKey} onChange={(e)=>setAssetKey(e.target.value)}>
           {assetOptions.map(o => <option key={o.key} value={o.key} title={o.title || o.key}>{o.label}</option>)}
           </select>
           </div>
@@ -352,7 +352,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
             <div>
               <label className="block text-sm">{t('payment.send.memoType')}</label>
-              <select className="border rounded w-full px-2 py-1 text-sm" value={memoType} onChange={(e)=>setMemoType(e.target.value)}>
+              <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={memoType} onChange={(e)=>setMemoType(e.target.value)}>
                 <option value="none">{t('payment.send.memoTypes.none')}</option>
                 <option value="text">{t('payment.send.memoTypes.text')}</option>
                 <option value="id">{t('payment.send.memoTypes.id')}</option>
@@ -364,9 +364,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             <div>
               <label className="block text-sm">{t('payment.send.memo')}</label>
               <div className="relative">
-                <input className="border rounded w-full pr-8 px-2 py-1 text-sm" list="hist-memos" value={memoVal} onChange={(e)=>setMemoVal(e.target.value)} onBlur={()=>pushHistory('stm.hist.memos', memoVal, setHistoryMemos)} />
+                <input className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm" list="hist-memos" value={memoVal} onChange={(e)=>setMemoVal(e.target.value)} onBlur={()=>pushHistory('stm.hist.memos', memoVal, setHistoryMemos)} />
                 {memoVal && (
-                  <button type="button" onClick={()=>setMemoVal('')} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center">×</button>
+                  <button type="button" onClick={()=>setMemoVal('')} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
                 )}
                 <datalist id="hist-memos">
                   {historyMemos.map((v,i)=>(<option key={v+i} value={v} />))}
@@ -384,8 +384,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
            </div>
       
        {showConfirmModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-md mx-3">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-2">{t('option.confirm.action.title')}</h3>
             <div className="text-sm space-y-1 mb-3">
               <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.recipient')}:</span> <span className="font-mono break-all">{dest}</span></div>

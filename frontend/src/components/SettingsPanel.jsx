@@ -209,15 +209,15 @@ export default function SettingsPanel({ publicKey }) {
           </div>
         ) : null}
 
-        <div className="w-full overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
+        <div className="w-full overflow-x-auto border rounded">
+          <table className="w-full text-sm min-w-[800px]">
+            <thead className="bg-gray-100 dark:bg-gray-700">
               <tr className="text-left border-b">
-                <th className="px-2 py-1">{t('settings.trustedWallets.table.columns.address', 'Address')}</th>
-                <th className="px-2 py-1">{t('settings.trustedWallets.table.columns.label', 'Label')}</th>
-                <th className="px-2 py-1">{t('settings.trustedWallets.table.columns.compromised', 'Compromised')}</th>
-                <th className="px-2 py-1">{t('settings.trustedWallets.table.columns.deactivated', 'Deactivated')}</th>
-                <th className="px-2 py-1">{t('settings.trustedWallets.table.columns.actions', 'Actions')}</th>
+                <th className="px-2 py-2 w-[40%]">{t('settings.trustedWallets.table.columns.address', 'Address')}</th>
+                <th className="px-2 py-2 w-[30%]">{t('settings.trustedWallets.table.columns.label', 'Label')}</th>
+                <th className="px-2 py-2 w-[10%] text-center">{t('settings.trustedWallets.table.columns.compromised', 'Compromised')}</th>
+                <th className="px-2 py-2 w-[10%] text-center">{t('settings.trustedWallets.table.columns.deactivated', 'Deactivated')}</th>
+                <th className="px-2 py-2 w-[10%] text-center">{t('settings.trustedWallets.table.columns.actions', 'Actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -225,7 +225,7 @@ export default function SettingsPanel({ publicKey }) {
                 <tr key={idx} className={idx % 2 ? 'bg-gray-50 dark:bg-gray-800/40' : ''}>
                   <td className="px-2 py-1">
                     <input
-                      className="w-full font-mono border rounded px-2 py-1"
+                      className="w-full min-w-[280px] font-mono text-xs border rounded px-2 py-1"
                       value={r.address}
                       onChange={(e) => updateCell(idx, 'address', e.target.value)}
                       placeholder="G..."
@@ -233,7 +233,7 @@ export default function SettingsPanel({ publicKey }) {
                   </td>
                   <td className="px-2 py-1">
                     <input
-                      className="w-full border rounded px-2 py-1"
+                      className="w-full min-w-[150px] text-xs border rounded px-2 py-1"
                       value={r.label || ''}
                       onChange={(e) => updateCell(idx, 'label', e.target.value)}
                       placeholder={t('settings.trustedWallets.table.columns.label', 'Label')}

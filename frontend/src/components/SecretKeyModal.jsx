@@ -30,8 +30,8 @@ setError('');
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto p-4">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
         <h2 className={`text-xl font-semibold mb-4 ${error ? 'text-red-700' : 'text-black dark:text-white'}`}>
           {t('secretKey.label')}
         </h2>
