@@ -51,7 +51,7 @@ export default function FeedbackPage({ onBack }) {
       <div className="bg-white dark:bg-gray-800 border rounded p-4 space-y-3">
         <div>
           <label className="block text-sm mb-1">{t('feedback.category')}</label>
-          <select className="border rounded w-full px-2 py-1 text-sm" value={category} onChange={(e)=>setCategory(e.target.value)}>
+          <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={category} onChange={(e)=>setCategory(e.target.value)}>
             <option value="bug">{t('feedback.categories.bug')}</option>
             <option value="idea">{t('feedback.categories.idea')}</option>
             <option value="improve">{t('feedback.categories.improve')}</option>
@@ -60,15 +60,15 @@ export default function FeedbackPage({ onBack }) {
         </div>
         <div>
           <label className="block text-sm mb-1">{t('feedback.subject')}</label>
-          <input className="border rounded w-full px-2 py-1 text-sm" value={subject} onChange={(e)=>setSubject(e.target.value)} />
+          <input className="border rounded w-full px-2 py-1 text-base md:text-sm" value={subject} onChange={(e)=>setSubject(e.target.value)} />
         </div>
         <div>
           <label className="block text-sm mb-1">{t('feedback.message')}</label>
-          <textarea className="border rounded w-full px-2 py-1 text-sm min-h-[160px]" value={message} onChange={(e)=>setMessage(e.target.value)} />
+          <textarea className="border rounded w-full px-2 py-1 text-base md:text-sm min-h-[160px]" value={message} onChange={(e)=>setMessage(e.target.value)} />
         </div>
         <div>
           <label className="block text-sm mb-1">{t('feedback.contactEmailOptional')}</label>
-          <input type="email" className="border rounded w-full px-2 py-1 text-sm" placeholder="you@example.com" value={email} onChange={(e)=>setEmail(e.target.value)} />
+          <input type="email" className="border rounded w-full px-2 py-1 text-base md:text-sm" placeholder="you@example.com" value={email} onChange={(e)=>setEmail(e.target.value)} />
           <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('feedback.privacyHint')}</div>
         </div>
         <div className="flex items-center justify-end gap-2">

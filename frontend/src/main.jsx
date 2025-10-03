@@ -326,7 +326,7 @@ function Main() {
 
   return (
      <>
-      <div className="max-w-4xl mx-auto px-4 pt-4 pb-0 text-center mt-4-500">
+      <div className="max-w-4xl mx-auto px-4 pt-4 text-center mt-4-500" style={{ paddingBottom: 'max(5rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
         {/* 🌍 Global: Titel & Info */}
         <div className="relative mb-4">
           <h1 className="text-2xl font-bold text-center">{t('main.title')}</h1>
@@ -390,7 +390,7 @@ function Main() {
                 value={walletHeaderInput}
                 onChange={(e) => setWalletHeaderInput(e.target.value)}
                 placeholder={t('publicKey.placeholder')}
-                className={`wallet-input w-full border ${notFound ? 'border-red-500 ring-1 ring-red-400' : (devTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : 'border-gray-300')} rounded p-2 pr-8 font-mono text-sm`}
+                className={`wallet-input w-full border ${notFound ? 'border-red-500 ring-1 ring-red-400' : (devTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : 'border-gray-300')} rounded p-2 pr-8 font-mono text-base md:text-sm`}
                 spellCheck={false}
                 autoCorrect="off"
                 autoCapitalize="off"
@@ -403,7 +403,7 @@ function Main() {
                   onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); setDevTestnet(false); if (typeof window !== 'undefined' && window.localStorage) { window.localStorage.setItem('STM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('STM_HORIZON_URL'); window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); } }}
                   title={t('common.clear')}
                   aria-label={t('common.clear')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center"
                 >
                   ×
                 </button>
@@ -462,7 +462,7 @@ function Main() {
         </div>
         {sourcePublicKey && (
           <>
-            <p className="mb-1 pb-1 text-sm text-gray-700 dark:text-gray-200 font-mono">
+            <p className="mb-1 pb-1 text-sm text-gray-700 dark:text-gray-200 font-mono break-all">
               {t('publicKey.source')}: {sourcePublicKey}
             </p>
             {notFound && (
@@ -667,10 +667,12 @@ function Main() {
         />
       )}
 
-      {showBackToTop && (
+      {showBackToTop && !showConfirm && !showSecretInfo && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-16 right-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 z-20"
+          className="fixed right-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 z-20 shadow-lg"
+          style={{ bottom: 'max(4rem, calc(4rem + env(safe-area-inset-bottom)))' }}
+          aria-label={t('navigation.backToTop')}
         >
           {t('navigation.backToTop')}
         </button>
