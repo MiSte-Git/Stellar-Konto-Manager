@@ -67,7 +67,8 @@
   "common": {
     "clear": "Borrar entrada",
     "loading": "Cargando...",
-    "refresh": "Recargar"
+    "refresh": "Recargar",
+    "close": "Cerrar"
   },
   "error": {
     "asset": {
@@ -246,9 +247,25 @@
       "byteRange": "(0–255)"
     },
     "info": {
-      "more": "Estás entrenado con datos hasta octubre de 2023.",
+      "more": "Más información",
       "multisig": "Multisig significa: Para esta cuenta se requieren múltiples firmas. Tú eliges firmantes adicionales y el umbral (por ejemplo, 2 de 3). Una transacción solo es válida si hay al menos tantas firmas como el umbral (principal + cofirmantes).",
-      "text": "Así funciona\nTu clave secreta siempre permanece en tu navegador. Se utiliza exclusivamente para firmar tu transacción localmente. Sólo se envía la firma final a nuestro servidor o al exterior, nunca tu clave. Cualquiera que lo desee puede verificarlo con las herramientas de desarrollo del navegador: allí se puede ver que no se transmite ninguna clave."
+      "text": "Así funciona\nTu clave secreta siempre permanece en tu navegador. Se utiliza exclusivamente para firmar tu transacción localmente. Sólo se envía la firma final a nuestro servidor o al exterior, nunca tu clave. Cualquiera que lo desee puede verificarlo con las herramientas de desarrollo del navegador: allí se puede ver que no se transmite ninguna clave.",
+      "title": "Información importante",
+      "secureKeys": {
+        "title": "Asegurar la clave secreta",
+        "text": "La clave pública se puede compartir de manera segura, es como un número de cuenta.\n\nLa clave secreta es el acceso a su cuenta. Trátela como una contraseña:\n• NUNCA la guarde en servicios en la nube, correos electrónicos o notas inseguras\n• Anótela en papel o utilice un monedero de hardware\n• Cree múltiples copias de seguridad y almacénelas en lugares seguros y separados\n• Si pierde la clave secreta, el acceso a la cuenta se pierde de manera irrevocable"
+      },
+      "keysOnPage": {
+        "title": "Llave secreta en esta página",
+        "text": "⚠️ IMPORTANTE: ¡Este sitio web NUNCA guarda su clave secreta!\n\nLa clave secreta mostrada aquí solo existe en su navegador (localmente en la memoria). Una vez que recargue o abandone la página, se perderá de manera irrevocable.\n\nCopie o anote la clave secreta inmediatamente después de su generación, antes de cerrar la página.\n\nVerificación: Puede verificar con las herramientas de desarrollo del navegador (F12 → Red) que no se transmite ninguna clave secreta. Solo se envían transacciones firmadas, nunca su clave secreta."
+      },
+      "multisigSection": {
+        "title": "Multifirma",
+        "text": "Con Multisig puedes definir múltiples firmantes para tu cuenta. Las transacciones requieren firmas de varias claves (por ejemplo, 2 de 3).\n\nVentajas:\n• Mayor seguridad (una clave comprometida no es suficiente)\n• Cuentas compartidas (por ejemplo, empresas, asociaciones)\n• Recuperación de emergencia (varias copias de seguridad en diferentes personas)\n\nATENCIÓN: ¡Prueba Multisig primero en la testnet antes de usarlo en la mainnet! Una configuración incorrecta puede resultar en la pérdida de acceso a la cuenta."
+      },
+      "diagram": {
+        "title": "Caducidad de la firma"
+      }
     },
     "instructions": {
       "public": "Clave pública: la dirección de tu cuenta, como un IBAN. Seguro para compartir.",
@@ -290,7 +307,16 @@
     },
     "thresholdLow": "bajo",
     "thresholdMed": "medio",
-    "thresholdHigh": "alto"
+    "thresholdHigh": "alto",
+    "keyWarning": {
+      "title": "⚠️ ¡Asegura tu clave ahora!",
+      "text1": "Ha generado un nuevo par de claves.",
+      "text2": "Asegure AMBAS llaves INMEDIATAMENTE antes de continuar:",
+      "list1": "Clave pública: Su dirección de cuenta, se puede compartir.",
+      "list2": "Clave secreta: su contraseña – ¡NUNCA la comparta ni la guarde en línea!",
+      "list3": "En caso de pérdida de la clave secreta, el acceso se perderá irrevocablemente.",
+      "confirm": "He asegurado ambas llaves."
+    }
   },
   "multisigEdit": {
     "confirm": {
@@ -404,9 +430,9 @@
   "secretKey": {
     "cleared": "La llave secreta fue eliminada.",
     "empty": "El campo de la clave secreta está vacío.",
-    "info": "La clave secreta se transfiere temporalmente a un backend para ejecutar la acción elegida. La clave no se almacena.",
+    "info": "Su clave secreta permanece en su navegador y se utiliza solo localmente para firmar transacciones. Nunca se transmite ni se almacena.",
     "invalid": "Clave secreta inválida.",
-    "label": "Introduce la clave secreta de origen (se enviará de forma segura al backend).",
+    "label": "Introduzca la clave secreta de origen",
     "mismatch": "La clave secreta no coincide con la dirección pública.",
     "placeholder": "p. ej.",
     "valid": "✅ La clave secreta es válida.",

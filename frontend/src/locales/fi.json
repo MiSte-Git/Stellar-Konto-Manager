@@ -67,7 +67,8 @@
   "common": {
     "clear": "Poista syöte",
     "loading": "Ladataan…",
-    "refresh": "Lataa uudelleen"
+    "refresh": "Lataa uudelleen",
+    "close": "Sulje"
   },
   "error": {
     "asset": {
@@ -248,7 +249,23 @@
     "info": {
       "more": "Lisätietoja",
       "multisig": "Multisig tarkoittaa: Tämä tili vaatii useita allekirjoituksia. Valitset lisäallekirjoittajat ja kynnyksen (esim. 2 kolmesta). Transaktio on kelvollinen vain, jos allekirjoituksia on vähintään yhtä paljon kuin kynnys (pääjäsen + lisäallekirjoittajat).",
-      "text": "Näin se toimii\nSalainen avain pysyy aina selaimessasi. Sitä käytetään ainoastaan paikallisesti allekirjoittamaan tapahtumasi. Palvelimellemme tai ulkopuolelle lähetetään vain valmis allekirjoitus, ei koskaan avainta. Ne, jotka haluavat, voivat tarkistaa tämän selaimen kehittäjätyökaluilla: siellä näkyy, että avainta ei siirretä."
+      "text": "Näin se toimii\nSalainen avain pysyy aina selaimessasi. Sitä käytetään ainoastaan paikallisesti allekirjoittamaan tapahtumasi. Palvelimellemme tai ulkopuolelle lähetetään vain valmis allekirjoitus, ei koskaan avainta. Ne, jotka haluavat, voivat tarkistaa tämän selaimen kehittäjätyökaluilla: siellä näkyy, että avainta ei siirretä.",
+      "title": "Tärkeitä tietoja",
+      "secureKeys": {
+        "title": "Varmuuskopioi salainen avain",
+        "text": "Julkinen avain voidaan jakaa turvallisesti – se on kuin tilinumero.\n\nSalainen avain on pääsy tilillesi. Kohtele sitä kuten salasanaa:\n• Älä KOSKAAN tallenna sitä pilvipalveluihin, sähköpostiin tai epävarmoihin muistiinpanoihin\n• Kirjoita se ylös paperille tai käytä laitteistolompakkoa\n• Luo useita varmuuskopioita ja säilytä niitä turvallisissa, erillisissä paikoissa\n• Jos salainen avain katoaa, pääsy tilille on peruuttamattomasti menetetty"
+      },
+      "keysOnPage": {
+        "title": "Tämän sivun salainen avain",
+        "text": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto EI KOSKAAN tallenna salaisuusavaintasi!\n\nTässä näkyvä salainen avain on olemassa vain selaimessasi (paikallisesti työmuistissa). Heti kun lataat sivun uudelleen tai poistut sivulta, se häviää lopullisesti.\n\nKopioi tai kirjoita muistiin salainen avain heti, kun olet luonut sen, ennen kuin suljet sivun.\n\nVahvistus: Voit tarkistaa selaimen kehittäjätyökalujen avulla (F12 → Verkko), että mitään salaista avainta ei lähetetä ulkopuolelle. Vain allekirjoitettuja tapahtumia lähetetään, ei koskaan salaista avaintasi."
+      },
+      "multisigSection": {
+        "title": "Multisig (moniallekirjoitus)",
+        "text": "Multisig-tekniikan avulla voit määrittää tilillesi useita allekirjoittajia. Tällöin tapahtumat vaativat allekirjoituksia useilta avaimilta (esim. 2 kolmesta).\n\nEdut:\n• Lisääntynyt turvallisuus (yksi vaarantunut avain ei riitä)\n• Yhteiset tilit (esim. yritykset, yhteistyökumppanuudet)\n• Hätäpalautus (useita varmuuskopioita eri henkilöillä)\n\nHUOMIO: Testaa Multisig ensin testiverkossa ennen kuin otat sen käyttöön pääverkossa! Väärin konfiguroituna tilin käyttöoikeus voi kadota."
+      },
+      "diagram": {
+        "title": "Allekirjoituksen voimassaolo päättynyt"
+      }
     },
     "instructions": {
       "public": "Julkinen avain: Sinun tiliosoitteesi, kuten IBAN. Turvallista jakaa.",
@@ -290,7 +307,16 @@
     },
     "thresholdLow": "matala",
     "thresholdMed": "keskitaso",
-    "thresholdHigh": "korkea"
+    "thresholdHigh": "korkea",
+    "keyWarning": {
+      "title": "⚠️ Tallenna avain nyt!",
+      "text1": "Olet luonut uuden avainparin.",
+      "text2": "Varmista MOLEM­MAT avaimet VÄLITTÖMÄSTI ennen kuin jatkat:",
+      "list1": "Julkinen avain: Tiliosoitteesi, jota voidaan jakaa.",
+      "list2": "Salainen avain: Salasanasi – ÄLÄ koskaan jaa tai tallenna verkkoon!",
+      "list3": "Jos salainen avain katoaa, pääsy menetetään lopullisesti.",
+      "confirm": "Olen varmistanut molemmat avaimet."
+    }
   },
   "multisigEdit": {
     "confirm": {
@@ -404,9 +430,9 @@
   "secretKey": {
     "cleared": "Salainen avain poistettiin.",
     "empty": "Salaisuusavainkenttä on tyhjä.",
-    "info": "Salainen avain siirretään vain tilapäisesti taustajärjestelmään valitun toiminnon suorittamista varten. Avainta ei tallenneta.",
+    "info": "Salainen avaimenne pysyy selaimessanne ja sitä käytetään paikallisesti ainoastaan tapahtumien allekirjoittamiseen. Sitä ei koskaan siirretä tai tallenneta.",
     "invalid": "Virheellinen salainen avain.",
-    "label": "Syötä lähdesalausavain (lähetetään turvallisesti taustajärjestelmään)",
+    "label": "Syötä lähde-salainen avain.",
     "mismatch": "Salainen avain ei vastaa julkista osoitetta.",
     "placeholder": "esimerkiksi (esim.)",
     "valid": "✅ Salainen avain on voimassa.",

@@ -43,7 +43,13 @@ function NetworkSelector({ value, onChange }) {
 export default function MultisigCreatePage() {
   const { t } = useTranslation();
 
-  const [network, setNetwork] = useState('TESTNET');
+  const [network, setNetwork] = useState(() => {
+    try {
+      return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+    } catch {
+      return 'PUBLIC';
+    }
+  });
   const [generated, setGenerated] = useState(null); // { pub, sec }
   const [signers, setSigners] = useState(['']);
   const [signerCount, setSignerCount] = useState(1);
@@ -58,6 +64,7 @@ export default function MultisigCreatePage() {
   const [baseReserve, setBaseReserve] = useState(null); // XLM per entry
   const [startingBalance, setStartingBalance] = useState('1');
   const [showInfo2, setShowInfo2] = useState(false);
+  const [showKeyWarning, setShowKeyWarning] = useState(false);
 
   const server = useMemo(() => getHorizonServer(network === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN), [network]);
   const passphrase = network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
@@ -95,6 +102,17 @@ export default function MultisigCreatePage() {
   const thMedErr = medT > sumWeights;
   const thHighErr = highT > sumWeights;
 
+  // Sync with global network changes
+  useEffect(() => {
+    const handler = (e) => {
+      try {
+        const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+        setNetwork(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
+      } catch { /* noop */ }
+    };
+    window.addEventListener('stm-network-changed', handler);
+    return () => window.removeEventListener('stm-network-changed', handler);
+  }, []);
 
   // Sync signers length with selected count (and weights too)
   useEffect(() => {
@@ -263,6 +281,13 @@ export default function MultisigCreatePage() {
       setError(t('multisigCreate.generateFirst'));
       return;
     }
+    // Zeige erst Schlüssel-Sicherungs-Warnung
+    setShowKeyWarning(true);
+    return;
+  }
+
+  async function handleCreateAllAfterWarning() {
+    setShowKeyWarning(false);
     // Warn-Confirm bei zu geringem Startguthaben im Mainnet
     if (network === 'PUBLIC' && activateNow) {
       const bal = parseFloat(startingBalance || '0');
@@ -356,9 +381,32 @@ export default function MultisigCreatePage() {
         <h2 className="text-xl font-semibold">{t('multisigCreate.title')}</h2>
       </div>
 
+      {/* Info-Button ganz oben */}
+      <div className="mb-4 text-center">
+        <button type="button" onClick={()=>setShowInfo2(true)} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
+          {t('multisigCreate.info.more')}
+        </button>
+      </div>
+
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{t('multisigCreate.hint')}</p>
 
-      <NetworkSelector value={network} onChange={async (net) => { setNetwork(net); const r = await fetchBaseReserveXLM(); setBaseReserve(r); if (net==='PUBLIC') { setStartingBalance(recommended.toFixed(7)); } else { setStartingBalance('1'); } }} />
+      <NetworkSelector value={network} onChange={async (net) => {
+        setNetwork(net);
+        // Sync global state
+        try {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.setItem('STM_NETWORK', net);
+            window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: net }));
+          }
+        } catch { /* noop */ }
+        const r = await fetchBaseReserveXLM();
+        setBaseReserve(r);
+        if (net === 'PUBLIC') {
+          setStartingBalance(recommended.toFixed(7));
+        } else {
+          setStartingBalance('1');
+        }
+      }} />
 
       <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
         <div className="flex flex-wrap items-center gap-3 mb-2">
@@ -369,11 +417,6 @@ export default function MultisigCreatePage() {
             <input type="checkbox" checked={enableMultisig} onChange={()=>setEnableMultisig(v=>!v)} />
             {t('multisigCreate.enableMultisig')}
           </label>
-          {network === 'TESTNET' && (
-            <button type="button" onClick={()=>setShowInfo2(true)} className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800">
-              {t('multisigCreate.info.more')}
-            </button>
-          )}
         </div>
         {generated && (
           <div className="space-y-2">
@@ -544,21 +587,56 @@ export default function MultisigCreatePage() {
       )}
 
       {showInfo2 && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded p-4 max-w-2xl w-full mx-3">
-            <h4 className="text-lg font-semibold mb-2">{t('multisigCreate.info.more')}</h4>
-            <p className="text-sm whitespace-pre-line mb-3">{t('multisigCreate.info.text')}</p>
-            <p className="text-sm whitespace-pre-line mb-3">{t('multisigCreate.info.multisig')}</p>
-            <div className="mb-3">
-              <img
-                src="/stellar_signatur_flow.svg"
-                alt="Signatur-Fluss"
-                className="w-full h-auto border rounded"
-                onError={(e)=>{e.currentTarget.style.display='none';}}
-              />
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-3xl w-full mx-auto my-8">
+            <h3 className="text-xl font-bold mb-4">{t('multisigCreate.info.title')}</h3>
+            
+            <div className="space-y-4 text-sm">
+              {/* Geheimschlüssel sichern */}
+              <div>
+                <h4 className="font-bold mb-2">{t('multisigCreate.info.secureKeys.title')}</h4>
+                <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{t('multisigCreate.info.secureKeys.text')}</p>
+              </div>
+
+              {/* Geheimschlüssel auf dieser Seite */}
+              <div>
+                <h4 className="font-bold mb-2">{t('multisigCreate.info.keysOnPage.title')}</h4>
+                <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{t('multisigCreate.info.keysOnPage.text')}</p>
+              </div>
+
+              {/* Multisig */}
+              <div>
+                <h4 className="font-bold mb-2">{t('multisigCreate.info.multisigSection.title')}</h4>
+                <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{t('multisigCreate.info.multisigSection.text')}</p>
+              </div>
             </div>
-            <div className="text-right">
-              <button onClick={()=>{ setShowInfo2(false); }} className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700">OK</button>
+
+            <div className="text-right mt-6">
+              <button onClick={()=>{ setShowInfo2(false); }} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
+                {t('common.close')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showKeyWarning && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-md w-full mx-auto">
+            <h3 className="text-lg font-bold mb-3 text-red-600">{t('multisigCreate.keyWarning.title')}</h3>
+            <div className="text-sm space-y-3 text-gray-700 dark:text-gray-300">
+              <p>{t('multisigCreate.keyWarning.text1')}</p>
+              <p className="font-semibold">{t('multisigCreate.keyWarning.text2')}</p>
+              <ul className="list-disc list-inside space-y-1 text-xs">
+                <li>{t('multisigCreate.keyWarning.list1')}</li>
+                <li>{t('multisigCreate.keyWarning.list2')}</li>
+                <li>{t('multisigCreate.keyWarning.list3')}</li>
+              </ul>
+            </div>
+            <div className="text-right mt-6">
+              <button onClick={handleCreateAllAfterWarning} className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">
+                {t('multisigCreate.keyWarning.confirm')}
+              </button>
             </div>
           </div>
         </div>

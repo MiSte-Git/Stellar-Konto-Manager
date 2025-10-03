@@ -67,7 +67,8 @@
   "common": {
     "clear": "Delete input",
     "loading": "Loading...",
-    "refresh": "Reload"
+    "refresh": "Reload",
+    "close": "Close"
   },
   "error": {
     "asset": {
@@ -266,7 +267,23 @@
     "info": {
       "more": "More info",
       "multisig": "Multisig means: Multiple signatures are required for this account. You select additional signers and the threshold (e.g., 2 out of 3). A transaction is only valid if at least as many signatures are present as the threshold (Master + co-signers).",
-      "text": "How it works\nYour private key always stays in your browser. It is only used to sign your transaction locally. Only the completed signature is sent to our server or externally, never your key. Anyone who wants can verify this with the developer tools in the browser: it shows that no key is being transmitted."
+      "text": "How it works\nYour private key always stays in your browser. It is only used to sign your transaction locally. Only the completed signature is sent to our server or externally, never your key. Anyone who wants can verify this with the developer tools in the browser: it shows that no key is being transmitted.",
+      "title": "Important information",
+      "secureKeys": {
+        "title": "Secure private key",
+        "text": "The public key can be safely shared — it is like an account number.\n\nThe secret key is the access to your account. Treat it like a password:\n• NEVER store it in cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the secret key is lost, access to the account is irrevocably lost"
+      },
+      "keysOnPage": {
+        "title": "Secret key on this page",
+        "text": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe secret key displayed here exists only in your browser (locally in memory). Once you reload or leave the page, it is irretrievably lost.\n\nCopy or record the secret key immediately after its creation, before closing the page.\n\nVerification: You can use the browser developer tools (F12 → Network) to verify that no secret key is transmitted externally. Only signed transactions are sent, never your secret key."
+      },
+      "multisigSection": {
+        "title": "Multisig (multisignature)",
+        "text": "With Multisig, you can define multiple signers for your account. Transactions then require signatures from multiple keys (e.g., 2 out of 3).\n\nAdvantages:\n• Increased security (a compromised key is not sufficient)\n• Shared accounts (e.g., companies, partnerships)\n• Emergency recovery (multiple backups with different individuals)\n\nWARNING: Test Multisig on the testnet first before using it on the mainnet! Incorrect configuration can result in loss of access to the account."
+      },
+      "diagram": {
+        "title": "Signature expiration"
+      }
     },
     "instructions": {
       "public": "Public Key: Your account address, like an IBAN. Safe to share.",
@@ -308,7 +325,16 @@
     },
     "thresholdLow": "low",
     "thresholdMed": "medium",
-    "thresholdHigh": "high"
+    "thresholdHigh": "high",
+    "keyWarning": {
+      "title": "⚠️ Secure your key now!",
+      "text1": "You have generated a new key pair.",
+      "text2": "Secure BOTH keys IMMEDIATELY before proceeding:",
+      "list1": "Public Key: Your account address, can be shared",
+      "list2": "Secret Key: Your password – NEVER share it or store it online!",
+      "list3": "If the secret key is lost, access is irrevocably lost.",
+      "confirm": "I have secured both keys."
+    }
   },
   "multisigEdit": {
     "confirm": {
@@ -422,9 +448,9 @@
   "secretKey": {
     "cleared": "Secret key has been deleted.",
     "empty": "Secret key field is empty.",
-    "info": "The secret key is only temporarily transmitted to a backend for the execution of the selected action. The key is not stored.",
+    "info": "Your private key remains in your browser and is used only locally to sign transactions. It is never transmitted or stored.",
     "invalid": "Invalid secret key.",
-    "label": "Enter the source secret key (will be securely sent to the backend)",
+    "label": "Enter the source secret key",
     "mismatch": "Secret key does not match the public address.",
     "placeholder": "e.g.",
     "valid": "✅ Secret key is valid.",

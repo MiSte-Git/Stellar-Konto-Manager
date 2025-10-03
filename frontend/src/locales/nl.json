@@ -67,7 +67,8 @@
   "common": {
     "clear": "Invoer verwijderen",
     "loading": "Laden…",
-    "refresh": "Herladen"
+    "refresh": "Herladen",
+    "close": "Sluiten"
   },
   "error": {
     "asset": {
@@ -248,7 +249,23 @@
     "info": {
       "more": "Meer informatie",
       "multisig": "Multisig betekent: Voor deze rekening zijn meerdere handtekeningen vereist. Je kiest extra ondertekenaars en de drempel (bijv. 2 van 3). Een transactie is alleen geldig als er minstens zoveel handtekeningen aanwezig zijn als de drempel (hoofdondertekenaar + mede-ondertekenaars).",
-      "text": "Zo werkt het\nJe geheime sleutel blijft altijd in je browser. Hij wordt uitsluitend gebruikt om je transactie lokaal te ondertekenen. Alleen de voltooide handtekening wordt naar onze server of extern verzonden, nooit je sleutel. Wie dat wil, kan dit controleren met de ontwikkelaarstools in de browser: daar is te zien dat er geen sleutel wordt overgedragen."
+      "text": "Zo werkt het\nJe geheime sleutel blijft altijd in je browser. Hij wordt uitsluitend gebruikt om je transactie lokaal te ondertekenen. Alleen de voltooide handtekening wordt naar onze server of extern verzonden, nooit je sleutel. Wie dat wil, kan dit controleren met de ontwikkelaarstools in de browser: daar is te zien dat er geen sleutel wordt overgedragen.",
+      "title": "Belangrijke informatie",
+      "secureKeys": {
+        "title": "Beveilig geheime sleutel",
+        "text": "De openbare sleutel kan veilig worden gedeeld - hij is net als een rekeningnummer.\n\nDe geheime sleutel is de toegang tot uw account. Behandel hem als een wachtwoord:\n• Sla hem NOOIT op in clouddiensten, e-mails of onveilige notities\n• Schrijf hem op papier of gebruik een hardware-wallet\n• Maak meerdere back-ups en bewaar deze op veilige, gescheiden locaties\n• Bij verlies van de geheime sleutel is de toegang tot het account onherroepelijk verloren"
+      },
+      "keysOnPage": {
+        "title": "Geheime sleutel op deze pagina",
+        "text": "⚠️ BELANGRIJK: Deze website slaat uw geheime sleutel NOOIT op!\n\nDe hier weergegeven Secret Key bestaat alleen in uw browser (lokaal in het werkgeheugen). Zodra u de pagina opnieuw laadt of verlaat, is deze onherroepelijk verloren.\n\nKopieer of noteer de Secret Key onmiddellijk na het genereren, voordat u de pagina sluit.\n\nControle: U kunt met de ontwikkelaarstools van de browser (F12 → Netwerk) controleren dat er geen geheime sleutel naar buiten wordt verzonden. Alleen ondertekende transacties worden verzonden, nooit uw Secret Key."
+      },
+      "multisigSection": {
+        "title": "Multisig (meerdere handtekeningen)",
+        "text": "Met Multisig kunt u meerdere ondertekenaars voor uw account definiëren. Transacties vereisen dan handtekeningen van meerdere sleutels (bijv. 2 van de 3).\n\nVoordelen:\n• Verhoogde veiligheid (één gecompromitteerde sleutel is niet voldoende)\n• Gedeelde accounts (bijv. bedrijven, samenwerkingsverbanden)\n• Noodherstel (meerdere back-ups bij verschillende personen)\n\nLET OP: Test Multisig eerst op het testnet voordat u het op het mainnet implementeert! Bij verkeerde configuratie kan de toegang tot de account verloren gaan."
+      },
+      "diagram": {
+        "title": "Handtekening Verloop"
+      }
     },
     "instructions": {
       "public": "Public Key: Jouw rekeningadres, zoals een IBAN. Veilig om te delen.",
@@ -290,7 +307,16 @@
     },
     "thresholdLow": "laag",
     "thresholdMed": "gemiddeld",
-    "thresholdHigh": "hoog"
+    "thresholdHigh": "hoog",
+    "keyWarning": {
+      "title": "⚠️ Beveilig nu je sleutel!",
+      "text1": "U hebt een nieuw sleutelpaar gegenereerd.",
+      "text2": "Beveilig BEIDE sleutels ONMIDDELLIJK voordat u doorgaat:",
+      "list1": "Openbare sleutel: uw rekeningadres, kan gedeeld worden",
+      "list2": "Geheime sleutel (Geheimschlüssel): Uw wachtwoord – NOOIT delen of online opslaan!",
+      "list3": "Bij verlies van de geheime sleutel is de toegang onherroepelijk verloren.",
+      "confirm": "Ik heb beide sleutels beveiligd."
+    }
   },
   "multisigEdit": {
     "confirm": {
@@ -404,9 +430,9 @@
   "secretKey": {
     "cleared": "Geheime sleutel is verwijderd.",
     "empty": "Geheime sleutelveld is leeg.",
-    "info": "De geheime sleutel wordt slechts tijdelijk naar een backend verzonden om de gekozen actie uit te voeren. De sleutel wordt niet opgeslagen.",
+    "info": "Uw geheime sleutel blijft in uw browser en wordt alleen lokaal gebruikt voor het ondertekenen van transacties. Hij wordt nooit verzonden of opgeslagen.",
     "invalid": "Ongeldige geheime sleutel.",
-    "label": "Voer de bron-geheime sleutel in (wordt veilig naar de backend verzonden).",
+    "label": "Voer de brongeheime sleutel in.",
     "mismatch": "Geheime sleutel komt niet overeen met het openbare adres.",
     "placeholder": "bijv.",
     "valid": "✅ Geheime sleutel is geldig.",
