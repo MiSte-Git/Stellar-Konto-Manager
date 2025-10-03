@@ -67,7 +67,8 @@
   "common": {
     "clear": "Izbriši unos",
     "loading": "Učitavanje…",
-    "refresh": "Ponovno učitaj"
+    "refresh": "Ponovno učitaj",
+    "close": "Zatvoriti"
   },
   "error": {
     "asset": {
@@ -248,7 +249,23 @@
     "info": {
       "more": "Više informacija",
       "multisig": "Multisig znači: Za ovaj račun je potrebno više potpisa. Vi birate dodatne potpisnike i prag (npr. 2 od 3). Transakcija je važeća samo ako postoji najmanje toliko potpisa koliko je postavljen prag (glavni + su-potpisnici).",
-      "text": "Tako to funkcioniše\nTvoj tajni ključ ostaje uvek u tvom pregledniku. Koristi se isključivo za lokalno potpisivanje tvoje transakcije. Na naš server ili prema vani šalje se samo gotov potpis, nikada tvoj ključ. Ko želi, može to proveriti pomoću alata za razvojne inženjere u pregledniku: Tamo se može videti da se nijedan ključ ne prenosi."
+      "text": "Tako to funkcioniše\nTvoj tajni ključ ostaje uvek u tvom pregledniku. Koristi se isključivo za lokalno potpisivanje tvoje transakcije. Na naš server ili prema vani šalje se samo gotov potpis, nikada tvoj ključ. Ko želi, može to proveriti pomoću alata za razvojne inženjere u pregledniku: Tamo se može videti da se nijedan ključ ne prenosi.",
+      "title": "Važne informacije",
+      "secureKeys": {
+        "title": "Osiguravanje tajnog ključa",
+        "text": "Javni ključ može se sigurno dijeliti – on je poput broja računa.\n\nTajni ključ je pristup vašem računu. Tretirajte ga kao lozinku:\n• NIKADA ga ne pohranjujte u oblake, e-mailove ili nesigurne bilješke\n• Zapišite ga na papir ili koristite hardverski novčanik\n• Izradite više sigurnosnih kopija i pohranite ih na sigurna, odvojena mjesta\n• U slučaju gubitka tajnog ključa, pristup računu je nepovratno izgubljen"
+      },
+      "keysOnPage": {
+        "title": "Tajni ključ na ovoj stranici",
+        "text": "⚠️ VAŽNO: Ova web stranica NIKADA ne sprema vaš tajni ključ!\n\nPrikazani tajni ključ postoji samo u vašem pregledniku (lokalno u radnoj memoriji). Čim osvježite ili napustite stranicu, on je nepovratno izgubljen.\n\nOdmah kopirajte ili zapišite tajni ključ nakon generiranja, prije nego zatvorite stranicu.\n\nProvjera: Možete koristiti Alate za razvojne programere u pregledniku (F12 → Mreža) za provjeru da se nijedan tajni ključ ne prenosi prema van. Šalju se samo potpisane transakcije, nikada vaš tajni ključ."
+      },
+      "multisigSection": {
+        "title": "Višestruki potpis (Multisig)",
+        "text": "Uz Multisig možete definirati više potpisnikа za svoj račun. Transakcije tada zahtijevaju potpise od više ključeva (npr. 2 od 3).\n\nPrednosti:\n• Povećana sigurnost (kompromitiranje jednog ključa nije dovoljno)\n• Zajednički računi (npr. kompanije, partnerstva)\n• Hitna obnova (više rezervnih kopija kod različitih osoba)\n\nPAŽNJA: Testirajte Multisig prvo na testnetu prije nego ga koristite na mainnetu! Kod pogrešne konfiguracije, pristup računu može biti izgubljen."
+      },
+      "diagram": {
+        "title": "Istek potpisa"
+      }
     },
     "instructions": {
       "public": "Javni ključ: Tvoja adresa računa, poput IBAN-a. Sigurno za dijeljenje.",
@@ -290,7 +307,16 @@
     },
     "thresholdLow": "nizak",
     "thresholdMed": "sredina",
-    "thresholdHigh": "visok"
+    "thresholdHigh": "visok",
+    "keyWarning": {
+      "title": "⚠️ Osigurajte ključ odmah!",
+      "text1": "Generirali ste novi par ključeva.",
+      "text2": "Odmah osigurajte OBA ključa prije nego što nastavite:",
+      "list1": "Javni ključ: Vaša adresa računa, može se dijeliti",
+      "list2": "Tajni ključ: Vaša lozinka – NIKADA nemojte dijeliti niti pohranjivati online!",
+      "list3": "U slučaju gubitka tajnog ključa, pristup je nepovratno izgubljen.",
+      "confirm": "Osigurao sam oba ključa."
+    }
   },
   "multisigEdit": {
     "confirm": {
@@ -404,9 +430,9 @@
   "secretKey": {
     "cleared": "Tajni ključ je izbrisan.",
     "empty": "Polje za tajni ključ je prazno.",
-    "info": "Tajni ključ se samo privremeno prenosi na backend radi izvršenja odabrane radnje. Ključ se ne pohranjuje.",
+    "info": "Vaš tajni ključ ostaje u vašem pregledniku i koristi se isključivo lokalno za potpisivanje transakcija. Nikada se ne prenosi niti pohranjuje.",
     "invalid": "Nevažeći tajni ključ.",
-    "label": "Unesite izvorni tajni ključ (sigurno će biti poslan backendu)",
+    "label": "Unesite izvorni tajni ključ",
     "mismatch": "Tajni ključ ne odgovara javnoj adresi.",
     "placeholder": "npr.",
     "valid": "✅ Tajni ključ je važeći.",

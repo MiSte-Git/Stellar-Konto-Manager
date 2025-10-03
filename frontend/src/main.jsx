@@ -690,20 +690,12 @@ function Main() {
       
 
       {showSecretInfo && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded p-4 max-w-2xl w-full mx-3 text-left">
-            <h4 className="text-lg font-semibold mb-2">{t('multisigCreate.info.more')}</h4>
-            <p className="text-sm whitespace-pre-line mb-3">{t('multisigCreate.info.text')}</p>
-            <div className="mb-3">
-              <img
-                src="/stellar_signatur_flow.svg"
-                alt="Signatur-Fluss"
-                className="w-full h-auto border rounded"
-                onError={(e)=>{e.currentTarget.style.display='none';}}
-              />
-            </div>
-            <div className="text-right">
-              <button onClick={()=>setShowSecretInfo(false)} className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700">OK</button>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-md w-full mx-auto">
+            <h4 className="text-lg font-bold mb-3">{t('multisigCreate.info.keysOnPage.title')}</h4>
+            <p className="text-sm whitespace-pre-line text-gray-700 dark:text-gray-300">{t('multisigCreate.info.keysOnPage.text')}</p>
+            <div className="text-right mt-6">
+              <button onClick={()=>setShowSecretInfo(false)} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">{t('common.close')}</button>
             </div>
           </div>
         </div>
