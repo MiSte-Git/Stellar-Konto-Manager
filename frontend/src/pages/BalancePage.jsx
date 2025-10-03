@@ -209,48 +209,84 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                 XLM: {fmt((balances.find(b=>b.asset_type==='native')||{}).balance || '0')}
               </div>
             </div>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left border-b">
-                  <th className="py-1 pr-2 cursor-pointer select-none" onClick={()=>setBalSort(s=>({key:'code', dir: s.key==='code' && s.dir==='asc' ? 'desc':'asc'}))}>
-                    {t('asset.code')} {balSort.key==='code' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
-                  </th>
-                  <th className="py-1 pr-2 cursor-pointer select-none" onClick={()=>setBalSort(s=>({key:'issuer', dir: s.key==='issuer' && s.dir==='asc' ? 'desc':'asc'}))}>
-                    {t('asset.issuer')} {balSort.key==='issuer' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
-                  </th>
-                  <th className="py-1 pr-2 cursor-pointer select-none" onClick={()=>setBalSort(s=>({key:'balance', dir: s.key==='balance' && s.dir==='asc' ? 'desc':'asc'}))}>
-                    {t('asset.balance')} {balSort.key==='balance' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {[...balances]
-                  .map(b => ({
-                    code: b.asset_type === 'native' ? 'XLM' : b.asset_code,
-                    issuer: b.asset_type === 'native' ? '-' : b.asset_issuer,
-                    balance: b.balance
-                  }))
-                  .sort((a,b)=>{
-                    const dir = balSort.dir === 'asc' ? 1 : -1;
-                    if (balSort.key === 'code') return a.code.localeCompare(b.code) * dir;
-                    if (balSort.key === 'issuer') return a.issuer.localeCompare(b.issuer) * dir;
-                    if (balSort.key === 'balance') return (Number(a.balance)-Number(b.balance)) * dir;
-                    return 0;
-                  })
-                  .map((b, i) => (
-                  <tr key={i} className="border-b last:border-0">
-                    <td className="py-1 pr-2">{b.code}</td>
-                    <td className="py-1 pr-2">{b.issuer}</td>
-                    <td className="py-1 pr-2">{fmt(b.balance)}</td>
+            {/* Desktop: Tabelle mit horizontal scroll */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-sm min-w-[500px]">
+                <thead>
+                  <tr className="text-left border-b">
+                    <th className="py-1 pr-2 cursor-pointer select-none" onClick={()=>setBalSort(s=>({key:'code', dir: s.key==='code' && s.dir==='asc' ? 'desc':'asc'}))}>
+                      {t('asset.code')} {balSort.key==='code' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
+                    </th>
+                    <th className="py-1 pr-2 cursor-pointer select-none" onClick={()=>setBalSort(s=>({key:'issuer', dir: s.key==='issuer' && s.dir==='asc' ? 'desc':'asc'}))}>
+                      {t('asset.issuer')} {balSort.key==='issuer' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
+                    </th>
+                    <th className="py-1 pr-2 cursor-pointer select-none" onClick={()=>setBalSort(s=>({key:'balance', dir: s.key==='balance' && s.dir==='asc' ? 'desc':'asc'}))}>
+                      {t('asset.balance')} {balSort.key==='balance' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
+                    </th>
                   </tr>
+                </thead>
+                <tbody>
+                  {[...balances]
+                    .map(b => ({
+                      code: b.asset_type === 'native' ? 'XLM' : b.asset_code,
+                      issuer: b.asset_type === 'native' ? '-' : b.asset_issuer,
+                      balance: b.balance
+                    }))
+                    .sort((a,b)=>{
+                      const dir = balSort.dir === 'asc' ? 1 : -1;
+                      if (balSort.key === 'code') return a.code.localeCompare(b.code) * dir;
+                      if (balSort.key === 'issuer') return a.issuer.localeCompare(b.issuer) * dir;
+                      if (balSort.key === 'balance') return (Number(a.balance)-Number(b.balance)) * dir;
+                      return 0;
+                    })
+                    .map((b, i) => (
+                    <tr key={i} className="border-b last:border-0">
+                      <td className="py-1 pr-2">{b.code}</td>
+                      <td className="py-1 pr-2 font-mono text-xs break-all">{b.issuer}</td>
+                      <td className="py-1 pr-2">{fmt(b.balance)}</td>
+                    </tr>
+                  ))}
+                  {balances.length === 0 && (
+                    <tr>
+                      <td colSpan={3} className="py-2 text-gray-500">{t('balance.empty')}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            {/* Mobile: Karten-Layout */}
+            <div className="sm:hidden space-y-2">
+              {[...balances]
+                .map(b => ({
+                  code: b.asset_type === 'native' ? 'XLM' : b.asset_code,
+                  issuer: b.asset_type === 'native' ? '-' : b.asset_issuer,
+                  balance: b.balance
+                }))
+                .sort((a,b)=>{
+                  const dir = balSort.dir === 'asc' ? 1 : -1;
+                  if (balSort.key === 'code') return a.code.localeCompare(b.code) * dir;
+                  if (balSort.key === 'issuer') return a.issuer.localeCompare(b.issuer) * dir;
+                  if (balSort.key === 'balance') return (Number(a.balance)-Number(b.balance)) * dir;
+                  return 0;
+                })
+                .map((b, i) => (
+                  <div key={i} className="border rounded p-3 bg-white dark:bg-gray-800">
+                    <div className="flex justify-between items-start mb-1">
+                      <span className="font-semibold">{b.code}</span>
+                      <span className="text-lg">{fmt(b.balance)}</span>
+                    </div>
+                    {b.issuer !== '-' && (
+                      <div className="text-xs text-gray-600 dark:text-gray-400">
+                        <span className="font-semibold">{t('asset.issuer')}:</span>
+                        <div className="font-mono break-all mt-1">{b.issuer}</div>
+                      </div>
+                    )}
+                  </div>
                 ))}
-                {balances.length === 0 && (
-                  <tr>
-                    <td colSpan={3} className="py-2 text-gray-500">{t('balance.empty')}</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+              {balances.length === 0 && (
+                <div className="py-4 text-center text-gray-500">{t('balance.empty')}</div>
+              )}
+            </div>
           </div>
 
           <div id="payments" className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">

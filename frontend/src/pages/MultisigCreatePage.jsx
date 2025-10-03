@@ -621,8 +621,8 @@ export default function MultisigCreatePage() {
       )}
 
       {showKeyWarning && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-md w-full mx-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-md w-full my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <h3 className="text-lg font-bold mb-3 text-red-600">{t('multisigCreate.keyWarning.title')}</h3>
             <div className="text-sm space-y-3 text-gray-700 dark:text-gray-300">
               <p>{t('multisigCreate.keyWarning.text1')}</p>
