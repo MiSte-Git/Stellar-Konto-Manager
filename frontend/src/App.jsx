@@ -3,6 +3,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Main from './main';
 import LanguageSelector from './components/LanguageSelector';
+import BugTrackerAdmin from './routes/BugTrackerAdmin.tsx';
+import SmallAdminLink from './components/SmallAdminLink.jsx';
 
 console.log('App.jsx loaded');
 
@@ -31,6 +33,24 @@ class ErrorBoundary extends React.Component {
 
 function App() {
   const { t } = useTranslation();
+  const [isBugTrackerRoute, setIsBugTrackerRoute] = React.useState(false);
+
+  React.useEffect(() => {
+    try {
+      setIsBugTrackerRoute(window.location.pathname === '/bugtracker');
+    } catch {
+      setIsBugTrackerRoute(false);
+    }
+  }, []);
+
+  if (isBugTrackerRoute) {
+    return (
+      <ErrorBoundary t={t}>
+        <BugTrackerAdmin />
+      </ErrorBoundary>
+    );
+  }
+
   const [devTestnet, setDevTestnet] = React.useState(false);
   React.useEffect(() => {
     // Default: PUBLIC on first load (override any stale state)
@@ -56,6 +76,7 @@ function App() {
       </div>
 
       <Main />
+      <SmallAdminLink />
     </ErrorBoundary>
   );
 }

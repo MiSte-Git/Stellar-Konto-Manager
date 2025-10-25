@@ -1,0 +1,115 @@
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { openMailto } from '../utils/openMailto.js';
+
+/**
+ * FeedbackForm: Bestehendes Feedback-Formular, das den E-Mail-Client öffnet
+ * und parallel still /api/bugreport loggt. Diese Version nutzt den neuen
+ * openMailto-Helfer, damit Claws-Mail unter Linux direkt per Backend geöffnet
+ * werden kann und Windows/macOS wie gewohnt über mailto: laufen.
+ */
+export default function FeedbackForm(props) {
+  const { t } = useTranslation();
+  const [desc, setDesc] = useState('');
+
+  function buildMailto() {
+    const to = import.meta.env.VITE_SUPPORT_EMAIL || 'support@example.org';
+    const subjectText = t('bugReport.title');
+    const lines = [
+      `URL: ${window.location.href}`,
+      `Zeit: ${new Date().toISOString()}`,
+      `Browser: ${navigator.userAgent}`,
+      `Sprache: ${navigator.language}`,
+      desc ? `Beschreibung: ${desc}` : '',
+    ].filter(Boolean);
+    const bodyText = lines.join('\n');
+    return {
+      to,
+      subject: subjectText,
+      body: bodyText,
+      href: `mailto:${to}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText)}`,
+    };
+  }
+
+  async function sendSilentLog() {
+    try {
+      const payload = {
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        description: desc || '',
+        ts: new Date().toISOString(),
+        appVersion: import.meta.env.VITE_APP_VERSION ?? null,
+        status: 'open',
+        priority: 'normal',
+      };
+      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/bugreport', blob);
+      } else {
+        await fetch('/api/bugreport', {
+          method: 'POST',
+          keepalive: true,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
+    } catch (error) {
+      console.warn('bugReport.send.failed', error);
+    }
+  }
+
+  async function handleSubmit(e) {
+    e?.preventDefault?.();
+    try {
+      const mail = buildMailto();
+      const isLikelyLinuxDesktop = navigator.platform?.toLowerCase?.().includes('linux');
+      const allowBackendCompose = Boolean(isLikelyLinuxDesktop && import.meta.env.DEV);
+
+      await openMailto({
+        to: mail.to,
+        subject: mail.subject,
+        body: mail.body,
+        mailtoHref: mail.href,
+        forceBackendCompose: allowBackendCompose,
+      });
+
+      void sendSilentLog();
+      props.onInfo?.(t('bugReport.toast.sent'));
+    } catch (err) {
+      throw new Error('bugReport.mailto.failed:' + (err?.message || 'unknown'));
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <label className="block text-sm font-medium">
+        {t('bugReport.descLabel')}
+      </label>
+      <textarea
+        value={desc}
+        onChange={(e) => setDesc(e.target.value)}
+        placeholder={t('bugReport.descPlaceholder')}
+        className="w-full rounded border p-2"
+        rows={4}
+      />
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          title={t('bugReport.send')}
+        >
+          {t('bugReport.send')}
+        </button>
+        <button
+          type="button"
+          onClick={() => props.onCancel?.()}
+          className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+          title={t('bugReport.cancel')}
+        >
+          {t('bugReport.cancel')}
+        </button>
+      </div>
+    </form>
+  );
+}
