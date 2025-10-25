@@ -4,6 +4,9 @@ const StellarSdk = require('@stellar/stellar-sdk');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { spawn } = require('child_process');
+const os = require('os');
+const path = require('path');
+const fs = require('fs/promises');
 
 // .env-Datei laden
 dotenv.config();
@@ -22,8 +25,29 @@ app.use(bodyParser.json()); // JSON-Body parsen
 
 const composeMailEnabled = process.env.ENABLE_COMPOSE_MAIL !== '0';
 
+const sanitizeHeader = (value = '') => value.replace(/[\r\n]+/g, ' ').trim();
+const normalizeBody = (value = '') => value.replace(/\r\n/g, '\n');
+
+async function createComposeFile({ to, subject, body }) {
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'stm-compose-'));
+    const tmpFile = path.join(tmpDir, 'compose.eml');
+    const payload = [
+        `To: ${sanitizeHeader(to)}`,
+        `Subject: ${sanitizeHeader(subject)}`,
+        '',
+        normalizeBody(body)
+    ].join('\n');
+    await fs.writeFile(tmpFile, payload, 'utf8');
+    const scheduleCleanup = () => {
+        setTimeout(() => {
+            fs.rm(tmpDir, { recursive: true, force: true }).catch(() => {});
+        }, 60_000);
+    };
+    return { tmpFile, scheduleCleanup };
+}
+
 if (composeMailEnabled) {
-    app.post('/api/composeMail', (req, res) => {
+    app.post('/api/composeMail', async (req, res) => {
         try {
             const { to, subject = '', body = '' } = req.body || {};
             if (!to || typeof to !== 'string') {
@@ -31,11 +55,24 @@ if (composeMailEnabled) {
             }
             const target = process.env.COMPOSE_MAIL_BIN || 'claws-mail';
             const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            const child = spawn(target, ['--compose', mailto], {
+
+            let args;
+            let cleanup = () => {};
+            try {
+                const fileInfo = await createComposeFile({ to, subject, body });
+                args = ['--compose-from-file', fileInfo.tmpFile];
+                cleanup = fileInfo.scheduleCleanup;
+            } catch (composeFileError) {
+                console.warn('composeMail temp file failed, falling back to mailto syntax', composeFileError);
+                args = ['--compose', mailto];
+            }
+
+            const child = spawn(target, args, {
                 detached: true,
                 stdio: 'ignore',
             });
             child.unref();
+            cleanup();
             res.json({ ok: true });
         } catch (error) {
             console.error('composeMail error', error);
