@@ -10,10 +10,7 @@ export default function FeedbackPage({ onBack }) {
   const [category, setCategory] = useState('bug');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
-  const [email, setEmail] = useState('');
   const [notices, setNotices] = useState([]);
-  const [mailtoHref, setMailtoHref] = useState('');
-  const [copyFeedback, setCopyFeedback] = useState('');
   const subjectInputRef = useRef(null);
 
   const emailTo = useMemo(() => FEEDBACK_EMAIL || 'support@example.com', []);
@@ -24,7 +21,6 @@ export default function FeedbackPage({ onBack }) {
   const buildMailPayload = useCallback(() => {
     const lines = [];
     lines.push(`Kategorie: ${t(`feedback.categories.${category}`)}`);
-    if (email.trim()) lines.push(`Kontakt: ${email.trim()}`);
     lines.push('');
     lines.push('Nachricht:');
     lines.push(message.trim());
@@ -36,7 +32,7 @@ export default function FeedbackPage({ onBack }) {
     const subj = `[STM Feedback] ${t(`feedback.categories.${category}`)}: ${subject.trim()}`;
     const body = lines.join('\r\n');
     return { subject: subj, body };
-  }, [category, email, message, subject, t]);
+  }, [category, message, subject, t]);
 
   const buildMailto = useCallback(() => {
     const { subject: subj, body } = buildMailPayload();
@@ -84,8 +80,6 @@ export default function FeedbackPage({ onBack }) {
     try {
       setNotices([t('bugReport.toast.sent')]);
       const { href, subject: subj, body } = buildMailto();
-      setMailtoHref(href);
-      setCopyFeedback('');
       await openMailto({
         to: emailTo,
         subject: subj,
@@ -95,8 +89,6 @@ export default function FeedbackPage({ onBack }) {
       });
       const description = [
         `Kategorie: ${t(`feedback.categories.${category}`)}`,
-        email.trim() ? `Kontakt: ${email.trim()}` : '',
-        '',
         message.trim()
       ].filter(Boolean).join('\n');
       try {
@@ -109,18 +101,7 @@ export default function FeedbackPage({ onBack }) {
     } catch (e) {
       setNotices([t('feedback.error') + ': ' + (e?.message || '')]);
     }
-  }, [buildMailto, category, email, emailTo, logBugReport, message, t]);
-
-  const handleCopyMailto = useCallback(async () => {
-    if (!mailtoHref) return;
-    try {
-      await navigator.clipboard.writeText(mailtoHref);
-      setCopyFeedback(t('feedback.copySuccess', 'Link kopiert.'));
-      setTimeout(() => setCopyFeedback(''), 2000);
-    } catch {
-      setCopyFeedback(t('feedback.copyFallback', 'Bitte Link manuell kopieren.'));
-    }
-  }, [mailtoHref, t]);
+  }, [buildMailto, category, emailTo, logBugReport, message, t]);
 
   // Focuses the feedback form when Alt+B is pressed.
   useEffect(() => {
@@ -146,21 +127,6 @@ export default function FeedbackPage({ onBack }) {
           ))}
         </div>
       )}
-      {mailtoHref && (
-        <div className="mb-3 text-sm bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100 rounded p-3 space-y-2">
-          <div>{t('feedback.mailtoFallback', 'Falls sich kein E-Mail-Fenster öffnet, nutze bitte den manuellen Link unten:')}</div>
-          <div className="flex flex-wrap gap-2 items-center">
-            <a href={mailtoHref} className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700" target="_blank" rel="noopener noreferrer">
-              {t('feedback.openMailClient', 'E-Mail manuell öffnen')}
-            </a>
-            <button type="button" onClick={handleCopyMailto} className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700">
-              {t('common.copy', 'Kopieren')}
-            </button>
-            {copyFeedback && <span className="text-xs text-gray-700 dark:text-gray-300">{copyFeedback}</span>}
-          </div>
-          <div className="text-xs break-all">{mailtoHref}</div>
-        </div>
-      )}
       <div className="bg-white dark:bg-gray-800 border rounded p-4 space-y-3">
         <div>
           <label className="block text-sm mb-1">{t('feedback.category')}</label>
@@ -178,11 +144,6 @@ export default function FeedbackPage({ onBack }) {
         <div>
           <label className="block text-sm mb-1">{t('feedback.message')}</label>
           <textarea className="border rounded w-full px-2 py-1 text-base md:text-sm min-h-[160px]" value={message} onChange={(e)=>setMessage(e.target.value)} />
-        </div>
-        <div>
-          <label className="block text-sm mb-1">{t('feedback.contactEmailOptional')}</label>
-          <input type="email" className="border rounded w-full px-2 py-1 text-base md:text-sm" placeholder="you@example.com" value={email} onChange={(e)=>setEmail(e.target.value)} />
-          <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('feedback.privacyHint')}</div>
         </div>
         <div className="flex items-center justify-end gap-2">
           <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={onBack}>{t('option.cancel')}</button>
