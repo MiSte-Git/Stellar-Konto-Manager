@@ -3,6 +3,10 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const StellarSdk = require('@stellar/stellar-sdk');
+const { spawn } = require('child_process');
+const os = require('os');
+const path = require('path');
+const fs = require('fs/promises');
 
 const app = express();
 const port = 3000;
@@ -19,6 +23,63 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.',
 });
 app.use(limiter);
+
+const composeMailEnabled = process.env.ENABLE_COMPOSE_MAIL !== '0';
+const sanitizeHeader = (value = '') => value.replace(/[\r\n]+/g, ' ').trim();
+const normalizeBody = (value = '') => value.replace(/\r\n/g, '\n');
+
+async function createComposeFile({ to, subject, body }) {
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'stm-compose-'));
+  const tmpFile = path.join(tmpDir, 'compose.eml');
+  const payload = [
+    `To: ${sanitizeHeader(to)}`,
+    `Subject: ${sanitizeHeader(subject)}`,
+    '',
+    normalizeBody(body)
+  ].join('\n');
+  await fs.writeFile(tmpFile, payload, 'utf8');
+  const scheduleCleanup = () => {
+    setTimeout(() => {
+      fs.rm(tmpDir, { recursive: true, force: true }).catch(() => {});
+    }, 60_000);
+  };
+  return { tmpFile, scheduleCleanup };
+}
+
+if (composeMailEnabled) {
+  app.post('/api/composeMail', async (req, res) => {
+    try {
+      const { to, subject = '', body = '' } = req.body || {};
+      if (!to || typeof to !== 'string') {
+        return res.status(400).json({ error: 'composeMail.invalidRecipient' });
+      }
+      const target = process.env.COMPOSE_MAIL_BIN || 'claws-mail';
+      const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      let args;
+      let cleanup = () => {};
+      try {
+        const fileInfo = await createComposeFile({ to, subject, body });
+        args = ['--compose-from-file', fileInfo.tmpFile];
+        cleanup = fileInfo.scheduleCleanup;
+      } catch (composeFileError) {
+        console.warn('composeMail temp file failed, falling back to mailto syntax', composeFileError);
+        args = ['--compose', mailto];
+      }
+
+      const child = spawn(target, args, {
+        detached: true,
+        stdio: 'ignore',
+      });
+      child.unref();
+      cleanup();
+      res.json({ ok: true });
+    } catch (error) {
+      console.error('composeMail error', error);
+      res.status(500).json({ error: 'composeMail.spawnFailed' });
+    }
+  });
+}
 
 app.get('/trustlines', async (req, res) => {
   const { publicKey } = req.query;
