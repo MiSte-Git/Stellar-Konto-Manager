@@ -49,7 +49,7 @@
       "to": "Bis"
     },
     "paymentsHint": "Eingänge/Ausgänge kannst du im Explorer filtern.",
-    "title": "Kontostand anzeigen"
+    "title": "Kontoinformation anzeigen"
   },
   "buildInfo": {
     "branch": "Branch",
@@ -57,6 +57,60 @@
     "env": "Umgebung",
     "error": "Build-Informationen konnten nicht geladen werden.",
     "loading": "Build-Informationen werden geladen …"
+  },
+  "bugReport": {
+    "button": "Fehler melden",
+    "title": "Fehler melden",
+    "descLabel": "Kurzbeschreibung (optional)",
+    "descPlaceholder": "Was ist passiert? Schritte, erwartetes Verhalten …",
+    "send": "E-Mail öffnen",
+    "cancel": "Abbrechen",
+    "toast": {
+      "sent": "E-Mail-Entwurf geöffnet.",
+      "logOk": "Bug wurde protokolliert.",
+      "logFallback": "Lokales Loggen fehlgeschlagen.",
+      "validation": "Bitte gib eine kurze Beschreibung ein oder sende ohne Text."
+    },
+    "mail": {
+      "url": "URL",
+      "time": "Zeit",
+      "browser": "Browser",
+      "language": "Sprache",
+      "version": "Version",
+      "descriptionHeading": "Beschreibung"
+    },
+    "admin": {
+      "title": "Bugtracker",
+      "locked": "Zugriff verweigert. Setze das Admin-Secret im lokalen Speicher und lade die Seite neu.",
+      "placeholder": "Admin-UI aktiv. In den nächsten Patches folgen Liste, Filter, Prioritäten und Status-Änderungen.",
+      "link": "Bugtracker öffnen",
+      "secretSaved": "Secret gespeichert.",
+      "enterSecret": "Admin-Secret eingeben",
+      "secretPlaceholder": "••••••••",
+      "confirm": "Öffnen",
+      "cancel": "Abbrechen",
+      "filter": "Filter",
+      "status": "Status",
+      "priority": "Priorität",
+      "open": "offen",
+      "in_progress": "in Bearbeitung",
+      "closed": "geschlossen",
+      "low": "niedrig",
+      "normal": "normal",
+      "high": "hoch",
+      "urgent": "dringend",
+      "id": "ID",
+      "created": "Erstellt",
+      "url": "URL",
+      "language": "Sprache",
+      "userAgent": "Browser",
+      "description": "Beschreibung",
+      "save": "Speichern",
+      "saved": "Änderung gespeichert",
+      "loadError": "Fehler beim Laden der Bugs",
+      "saveError": "Fehler beim Speichern",
+      "empty": "Keine Einträge gefunden."
+    }
   },
   "cache": {
     "clear": "Cache leeren",
@@ -230,7 +284,7 @@
     "title": "Stellar Konto Manager"
   },
   "menu": {
-    "balance": "Kontostand anzeigen",
+    "balance": "Kontoinformation anzeigen",
     "devTestnet": "Testnet (für Entwickler)",
     "unknown": "Unbekannte Menüauswahl",
     "xlmByMemo": "Nach Memo filtern",
@@ -688,6 +742,17 @@
       "scanning": "… scannt falsche/leere Memos",
       "summary": "Anzahl: {{count}} • Summe: {{sum}} XLM • Eindeutige Wallets: {{unique}}",
       "title": "Falsche/Leere Memos im Zeitraum"
+  }
+  },
+  "activation": {
+    "notFound": {
+      "title": "Zielkonto nicht aktiv",
+      "message": "Das Zielkonto existiert noch nicht ({address}). Es muss mit mindestens 1 XLM aktiviert werden. Möchtest du das Konto jetzt aktivieren?"
+    },
+    "actions": {
+      "yes": "Ja – Konto aktivieren",
+      "no": "Nein – Abbrechen",
+      "processing": "Aktiviere…"
     }
   }
 }
