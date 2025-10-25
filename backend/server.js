@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const StellarSdk = require('@stellar/stellar-sdk');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const { spawn } = require('child_process');
 
 // .env-Datei laden
 dotenv.config();
@@ -18,6 +19,30 @@ console.log(`[INFO] Backend startet mit Horizon URL: ${HORIZON_URL}`);
 
 app.use(cors()); // CORS aktivieren (Frontend ↔ Backend)
 app.use(bodyParser.json()); // JSON-Body parsen
+
+const composeMailEnabled = process.env.ENABLE_COMPOSE_MAIL !== '0';
+
+if (composeMailEnabled) {
+    app.post('/api/composeMail', (req, res) => {
+        try {
+            const { to, subject = '', body = '' } = req.body || {};
+            if (!to || typeof to !== 'string') {
+                return res.status(400).json({ error: 'composeMail.invalidRecipient' });
+            }
+            const target = process.env.COMPOSE_MAIL_BIN || 'claws-mail';
+            const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            const child = spawn(target, ['--compose', mailto], {
+                detached: true,
+                stdio: 'ignore',
+            });
+            child.unref();
+            res.json({ ok: true });
+        } catch (error) {
+            console.error('composeMail error', error);
+            res.status(500).json({ error: 'composeMail.spawnFailed' });
+        }
+    });
+}
 
 // Middleware: logge alle eingehenden Requests
 app.use((req, res, next) => {

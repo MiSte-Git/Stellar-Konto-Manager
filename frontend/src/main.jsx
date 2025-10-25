@@ -9,6 +9,11 @@ import {
   handleSourceSubmit as submitSourceInput
  } from './utils/stellar/stellarUtils.js';
 import App from './App.jsx';
+import BugTrackerAdmin from './components/BugTrackerAdmin.jsx';
+import { isBugtrackerPath } from './utils/basePath.js';
+import { confirmAutoClear } from './utils/confirmAutoClear.js';
+import ActivateAccountPrompt from './components/ActivateAccountPrompt.jsx';
+import { emitAccountSelected } from './utils/accountBus.js';
 
 import DestinationInput from './components/DestinationInput';
 import MainMenu from './components/MainMenu';
@@ -36,6 +41,22 @@ import BalancePage from './pages/BalancePage.jsx';
 import SendPaymentPage from './pages/SendPaymentPage.jsx';
 import FeedbackPage from './pages/FeedbackPage.jsx';
 
+// isAdminRoute: Entscheidet, ob die versteckte Admin-Ansicht gerendert wird.
+function isAdminRoute() {
+  try {
+    return isBugtrackerPath();
+  } catch (e) {
+    console.error('Admin route check failed:', e);
+    return false;
+  }
+}
+
+confirmAutoClear();
+
+if (typeof window !== 'undefined') {
+  window.stmSelectAccount = (address, opts) => emitAccountSelected(address, { forceReload: !!(opts && opts.force) });
+}
+
 // Ensure default network is PUBLIC on each reload before any components mount
 try {
   if (typeof window !== 'undefined' && window.localStorage) {
@@ -46,7 +67,10 @@ try {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <>
+      <ActivateAccountPrompt />
+      {isAdminRoute() ? <BugTrackerAdmin /> : <App />}
+    </>
   </React.StrictMode>
 );
 
@@ -86,6 +110,7 @@ function Main() {
   const [devTestnet, setDevTestnet] = useState(false);
   // Send Payment initial values (e.g., for donation)
   const [sendInit, setSendInit] = useState(null);
+  const [refreshToken, setRefreshToken] = useState(0);
    // Session secret key presence
    const [hasSessionKey, setHasSessionKey] = useState(false);
   useEffect(() => {
@@ -206,6 +231,7 @@ function Main() {
       if (Array.isArray(trustlines)) setTrustlines(trustlines);
       addRecent(publicKey);
       setNotFound(false);
+      setRefreshToken(prev => prev + 1);
     } catch (err) {
       const msg = String(err?.message || '');
       setError(msg);
@@ -226,6 +252,7 @@ function Main() {
       setSourcePublicKey(publicKey);
       if (Array.isArray(trustlines)) setTrustlines(trustlines);
       setNotFound(false);
+      setRefreshToken(prev => prev + 1);
     } catch (err) {
       const msg = String(err?.message || '');
       setError(msg);
@@ -499,6 +526,7 @@ function Main() {
           <div className="max-w-6xl mx-auto px-3">
             <p className="text-sm text-gray-400">{error}</p>
             <ListTrustlines
+              key={refreshToken}
               trustlines={trustlines}
               itemsPerPage={ITEMS_PER_PAGE}
               currentPage={currentPage}
@@ -536,6 +564,7 @@ function Main() {
         sourcePublicKey ? (
           <div className="max-w-6xl mx-auto px-3">
             <CompareTrustlines
+              key={refreshToken}
               sourcePublicKey={sourcePublicKey}
               sourceSecret={sourceSecret}
               destinationPublicKey={destinationPublicKey}
@@ -564,6 +593,7 @@ function Main() {
       )}
       {menuSelection === 'deleteAll' && (
         <DeleteAllTrustlines
+          key={refreshToken}
           sourcePublicKey={sourcePublicKey}
           sourceSecret={sourceSecret}
           setSourceSecret={setSourceSecret}
@@ -580,6 +610,7 @@ function Main() {
       )}
       {menuSelection === 'deleteByIssuer' && (
         <DeleteByIssuer
+          key={refreshToken}
           issuerAddress={issuerAddress}
           setIssuerAddress={setIssuerAddress}
           sourcePublicKey={sourcePublicKey}
@@ -600,6 +631,7 @@ function Main() {
       {menuSelection === 'xlmByMemo' && (
         sourcePublicKey ? (
           <XlmByMemoPage
+            key={refreshToken}
             publicKey={sourcePublicKey}
             onBack={() => setMenuSelection(null)}  // oder null, wie du magst
           />
@@ -613,6 +645,7 @@ function Main() {
       {menuSelection === 'payments' && (
         <div className="max-w-6xl mx-auto px-3">
           <InvestedTokensPage
+            key={refreshToken}
             publicKey={sourcePublicKey}
             onBack={() => setMenuSelection(null)}
           />
@@ -620,16 +653,18 @@ function Main() {
       )}
       {menuSelection === 'balance' && (
         <BalancePage
+          key={refreshToken}
           publicKey={sourcePublicKey}
           onBack={() => setMenuSelection(null)}
         />
       )}
       {menuSelection === 'sendPayment' && (
-      <SendPaymentPage
-      publicKey={sourcePublicKey}
-      onBack={() => setMenuSelection(null)}
-      initial={sendInit}
-      />
+        <SendPaymentPage
+          key={refreshToken}
+          publicKey={sourcePublicKey}
+          onBack={() => setMenuSelection(null)}
+          initial={sendInit}
+        />
       )}
       {menuSelection === 'feedback' && (
         <div className="max-w-6xl mx-auto px-3">
@@ -637,17 +672,18 @@ function Main() {
         </div>
       )}
       {menuSelection === 'settings' && (
-      <SettingsPage
+        <SettingsPage
+          key={refreshToken}
           publicKey={sourcePublicKey}
           onBack={() => setMenuSelection(null)}
         />
       )}
       {menuSelection === 'multisigCreate' && (
-      <MultisigCreatePage />
+        <MultisigCreatePage />
       )}
-           {menuSelection === 'multisigEdit' && (
-              <MultisigEditPage defaultPublicKey={sourcePublicKey} />
-       )}
+      {menuSelection === 'multisigEdit' && (
+        <MultisigEditPage key={refreshToken} defaultPublicKey={sourcePublicKey} />
+      )}
        
        {menuSelection &&
        !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','multisigEdit','balance','sendPayment','feedback'].includes(menuSelection) && (
