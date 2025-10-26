@@ -31,7 +31,7 @@ export default function InvestedTokensPanel({ publicKey }) {
   const [toDate, setToDate] = useState('');
   // History bounds (must be defined before using in useMemo below)
   const [historyAvailableFrom, setHistoryAvailableFrom] = useState('');
-  const [historyLoading, setHistoryLoading] = useState(false);
+  const [_historyLoading, setHistoryLoading] = useState(false);
   const abortRef = React.useRef(null);
   const heartbeatRef = React.useRef(null);
   // Helpers to handle date bounds
@@ -132,14 +132,14 @@ export default function InvestedTokensPanel({ publicKey }) {
       }
     } finally {
       clearInterval(hb);
-      if (heartbeatRef.current) { try { clearInterval(heartbeatRef.current); } catch {} heartbeatRef.current = null; }
+      if (heartbeatRef.current) { try { clearInterval(heartbeatRef.current); } catch { /* noop */ } heartbeatRef.current = null; }
       setLoading(false);
     }
   };
 
   const onCancel = () => {
     try { abortRef.current?.abort(); } catch { /* noop */ }
-    if (heartbeatRef.current) { try { clearInterval(heartbeatRef.current); } catch {} heartbeatRef.current = null; }
+    if (heartbeatRef.current) { try { clearInterval(heartbeatRef.current); } catch { /* noop */ } heartbeatRef.current = null; }
     setLoading(false);
     setProgressState({ phase: 'idle', page: 0, elapsedMs: 0 });
     setErr('');
@@ -153,7 +153,6 @@ export default function InvestedTokensPanel({ publicKey }) {
       setProgressState({ phase: 'idle', page: 0, elapsedMs: 0 });
       // Manuell starten über Button
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey, view]);
 
   // Konto-Erstellungsdatum (exakte create_account) und frühester verfügbarer Ledger des Servers ermitteln

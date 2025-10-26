@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "concurrently -k -n BACKEND,FRONTEND -c green,cyan \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
+    "dev": "concurrently -k -n BACKEND,FRONTEND -c green,cyan \"PORT=3000 node server.js\" \"cd frontend && npm run dev\""
   },
   "dependencies": {
     "@stellar/stellar-sdk": "^11.0.0",
@@ -14,6 +14,7 @@
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0",
     "file-saver": "^2.0.5",
+    "flag-icons": "^7.5.0",
     "jspdf": "^3.0.1"
   },
   "devDependencies": {

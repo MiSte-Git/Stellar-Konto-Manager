@@ -1,16 +1,38 @@
 // import trustlineLogo from './assets/Trustline-Logo.jpg';
 import './i18n'; // Initialisiert die Sprachunterstützung
 import { useTranslation } from 'react-i18next';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BACKEND_URL } from './config';
 import { 
   loadTrustlines, 
   handleSourceSubmit as submitSourceInput
  } from './utils/stellar/stellarUtils.js';
+import { useTrustedWallets } from './utils/useTrustedWallets.js';
+import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
+import { isTestnetAccount } from './utils/stellar/accountUtils.js';
+
+
+function normalizeStoredWallet(entry) {
+  if (typeof entry === 'string') {
+    return { publicKey: entry, isTestnet: false };
+  }
+  if (!entry || typeof entry !== 'object') return null;
+  const pk = entry.publicKey || entry.address || entry.value || '';
+  if (!pk) return null;
+  return { publicKey: pk, isTestnet: typeof entry.isTestnet === 'boolean' ? entry.isTestnet : undefined };
+}
+
+function loadRecentWalletsFromStorage() {
+  try {
+    const raw = JSON.parse(localStorage.getItem('recentWallets') || '[]');
+    if (!Array.isArray(raw)) return [];
+    return raw.map(normalizeStoredWallet).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
 import App from './App.jsx';
-import BugTrackerAdmin from './components/BugTrackerAdmin.jsx';
-import { isBugtrackerPath } from './utils/basePath.js';
 import { confirmAutoClear } from './utils/confirmAutoClear.js';
 import ActivateAccountPrompt from './components/ActivateAccountPrompt.jsx';
 import { emitAccountSelected } from './utils/accountBus.js';
@@ -41,15 +63,6 @@ import BalancePage from './pages/BalancePage.jsx';
 import SendPaymentPage from './pages/SendPaymentPage.jsx';
 import FeedbackPage from './pages/FeedbackPage.jsx';
 
-// isAdminRoute: Entscheidet, ob die versteckte Admin-Ansicht gerendert wird.
-function isAdminRoute() {
-  try {
-    return isBugtrackerPath();
-  } catch (e) {
-    console.error('Admin route check failed:', e);
-    return false;
-  }
-}
 
 confirmAutoClear();
 
@@ -69,7 +82,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <>
       <ActivateAccountPrompt />
-      {isAdminRoute() ? <BugTrackerAdmin /> : <App />}
+      <App />
     </>
   </React.StrictMode>
 );
@@ -78,6 +91,7 @@ function Main() {
 	//console.log('main.jsx In function Main');
   const { t } = useTranslation();
   const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
+  const { wallets } = useTrustedWallets();
   //console.log('[DEBUG] Aktive Horizon URL:', HORIZON_URL);
   // Innerhalb der Main-Funktion (nach useState-Aufrufen):
   const [trustlines, setTrustlines] = useState([]);
@@ -93,7 +107,8 @@ function Main() {
   const [destinationPublicKey, setDestinationPublicKey] = useState('');
   const [issuerAddress, setIssuerAddress] = useState('');
   // Globaler Header: Wallet-Selector (Komfortvariante)
-  const [recentWallets, setRecentWallets] = useState([]);
+  const [recentWallets, setRecentWallets] = useState(() => loadRecentWalletsFromStorage());
+  
   const [walletHeaderInput, setWalletHeaderInput] = useState('');
   // Trustlines und Secret Keys werden nur für Backend-Operationen aktualisiert, aber nicht gerendert
   // Deshalb setzen wir nur setTrustlines, lesen aber trustlines nicht aus → ignorierbare Warnung
@@ -108,11 +123,19 @@ function Main() {
   const [showSecretInfo, setShowSecretInfo] = useState(false);
   // Dev/Testnet toggle state synced with localStorage
   const [devTestnet, setDevTestnet] = useState(false);
-  // Send Payment initial values (e.g., for donation)
+   // Send Payment initial values (e.g., for donation)
   const [sendInit, setSendInit] = useState(null);
   const [refreshToken, setRefreshToken] = useState(0);
    // Session secret key presence
    const [hasSessionKey, setHasSessionKey] = useState(false);
+
+  const walletInfoMap = useMemo(() => createWalletInfoMap(wallets), [wallets]);
+  const trimmedHeaderInput = (walletHeaderInput || '').trim();
+  const headerWalletInfo = findWalletInfo(walletInfoMap, trimmedHeaderInput) || findWalletInfo(walletInfoMap, sourcePublicKey);
+  const headerFederationDisplay = trimmedHeaderInput && trimmedHeaderInput.includes('*')
+    ? trimmedHeaderInput
+    : (headerWalletInfo?.federation || '');
+  const headerLabel = headerWalletInfo?.label || '';
   useEffect(() => {
   // Force default to PUBLIC at app start
   if (typeof window !== 'undefined' && window.localStorage) {
@@ -161,6 +184,7 @@ function Main() {
   const handleFilterUpdate = (key, value) => {
     handleFilterChange(key, value, filters, setFilters, setCurrentPage);
   };
+
   const handleToggleTrustline = (tl) => {
     if (parseFloat(tl.assetBalance) !== 0) return;
     setSelectedTrustlines(prev => {
@@ -196,25 +220,42 @@ function Main() {
   useEffect(() => { setInfoMessage(''); }, [sourcePublicKey]);
  
    // Kürzlich verwendete Wallets aus localStorage laden
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('recentWallets');
-      if (raw) {
-        const arr = JSON.parse(raw);
-        if (Array.isArray(arr)) {
-          setRecentWallets(arr.filter(x => typeof x === 'string'));
-        }
-      }
-    } catch { /* noop */ }
-  }, []);
-
   const persistRecent = useCallback((list) => {
     try { localStorage.setItem('recentWallets', JSON.stringify(list)); } catch { /* noop */ }
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function ensureRecentFlags() {
+      if (!recentWallets.some((entry) => entry && typeof entry.isTestnet === 'undefined')) return;
+      try {
+        const annotated = await Promise.all(recentWallets.map(async (entry) => {
+          if (!entry || typeof entry.isTestnet !== 'undefined') return entry;
+          let isTestnet = false;
+          try {
+            isTestnet = await isTestnetAccount(entry.publicKey);
+          } catch {
+            isTestnet = false;
+          }
+          return { ...entry, isTestnet };
+        }));
+        const changed = annotated.some((entry, idx) => (entry?.isTestnet !== recentWallets[idx]?.isTestnet));
+        if (!cancelled && changed) {
+          setRecentWallets(annotated);
+          persistRecent(annotated);
+        }
+      } catch { /* noop */ }
+    }
+    ensureRecentFlags();
+    return () => { cancelled = true; };
+  }, [recentWallets, persistRecent]);
+
   const addRecent = useCallback((pk) => {
-    if (!pk) return;
+    const trimmed = (pk || '').trim();
+    if (!trimmed) return;
     setRecentWallets(prev => {
-      const next = [pk, ...prev.filter(x => x !== pk)].slice(0, 20);
+      const filtered = prev.filter(entry => entry?.publicKey !== trimmed);
+      const next = [{ publicKey: trimmed, isTestnet: undefined }, ...filtered].slice(0, 20);
       persistRecent(next);
       return next;
     });
@@ -242,7 +283,7 @@ function Main() {
   }
 
   // Revalidate active wallet when other parts toggle network
-  async function revalidateActiveWallet() {
+  const revalidateActiveWallet = useCallback(async () => {
     if (!sourcePublicKey) return;
     setIsLoading(true);
     setError('');
@@ -260,13 +301,13 @@ function Main() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [sourcePublicKey, t]);
 
   useEffect(() => {
     const handler = () => { revalidateActiveWallet(); };
     window.addEventListener('stm-trigger-recheck', handler);
     return () => window.removeEventListener('stm-trigger-recheck', handler);
-  }, [sourcePublicKey]);
+  }, [revalidateActiveWallet]);
 
   // Keep header checkbox (devTestnet) in sync with global network changes
   useEffect(() => {
@@ -294,7 +335,7 @@ function Main() {
     const key = (walletHeaderInput || '').trim();
     if (!key) return;
     setRecentWallets(prev => {
-      const next = prev.filter(x => x !== key);
+      const next = prev.filter(entry => entry.publicKey !== key);
       persistRecent(next);
       return next;
     });
@@ -436,10 +477,29 @@ function Main() {
                 </button>
               )}
               <datalist id="recent-wallets">
-                {recentWallets.map((w, i) => (
-                  <option key={w + i} value={w} />
+                {recentWallets.map((entry, i) => (
+                  <option
+                    key={`${entry.publicKey}-${i}`}
+                    value={entry.publicKey}
+                    label={entry.isTestnet ? `${entry.publicKey} ${t('account.testnetLabel')}` : entry.publicKey}
+                  />
                 ))}
               </datalist>
+
+            </div>
+            <div className="mt-2 text-xs text-gray-700 dark:text-gray-300 space-y-0.5">
+              <div>
+                <span className="font-semibold">{t('wallet.federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
+                {headerFederationDisplay
+                  ? <span className="font-mono break-all">{headerFederationDisplay}</span>
+                  : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
+              </div>
+              {headerLabel && (
+                <div>
+                  <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
+                  <span>{headerLabel}</span>
+                </div>
+              )}
             </div>
             <div className="mt-2 flex flex-wrap gap-2 justify-start">
               {/* Linke Buttons */}
@@ -455,7 +515,7 @@ function Main() {
                 <button
                   type="button"
                   onClick={handleRecentDelete}
-                  disabled={isLoading || !recentWallets.includes((walletHeaderInput || '').trim())}
+                  disabled={isLoading || !recentWallets.some((entry) => entry.publicKey === (walletHeaderInput || '').trim())}
                   className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
                 >
                   {t('publicKey.deleteFromList')}

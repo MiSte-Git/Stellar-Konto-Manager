@@ -2,13 +2,16 @@ import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next';
 import { getHorizonServer, resolveOrValidatePublicKey } from '../utils/stellar/stellarUtils';
 import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
+import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
 import { useSettings } from '../utils/useSettings';
-import trustedWallets from '../../settings/QSI_TrustedWallets.json';
+import { useTrustedWallets } from '../utils/useTrustedWallets.js';
+import { createWalletInfoMap, findWalletInfo } from '../utils/walletInfo.js';
 
 export default function SendPaymentPage({ publicKey, onBack: _onBack, initial }) {
   const { t, i18n } = useTranslation();
   void _onBack;
+  const { wallets } = useTrustedWallets();
 
   const [dest, setDest] = useState(initial?.recipient || '');
   const [amount, setAmount] = useState('');
@@ -22,6 +25,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
   const [error, setError] = useState('');
+
+  const walletInfoMap = useMemo(() => createWalletInfoMap(wallets), [wallets]);
 
   const clearSuccess = useCallback(() => {
     setSentInfo(null);
@@ -40,6 +45,149 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const server = useMemo(() => getHorizonServer(), [netLabel]);
   const popupRef = useRef(null);
 
+  const normalizeAmountValue = useCallback(() => {
+    let raw = (amount || '').trim();
+    if (raw.endsWith('.')) raw = raw.slice(0, -1);
+    if (!raw) throw new Error(t('payment.send.amountMissing'));
+    if (!/^\d+(\.\d{1,7})?$/.test(raw)) throw new Error(t('payment.send.amountInvalid'));
+    const [intPartRaw, fracPartRaw = ''] = raw.split('.');
+    const intPart = intPartRaw.replace(/^0+(?=\d)/, '') || '0';
+    const fracPart = fracPartRaw.replace(/0+$/, '');
+    const normalized = fracPart ? `${intPart}.${fracPart}` : intPart;
+    if (parseFloat(normalized) <= 0) throw new Error(t('payment.send.amountPositive'));
+    return normalized;
+  }, [amount, t]);
+
+  const buildMemoObject = useCallback(() => {
+    const value = (memoVal || '').trim();
+    if (!value || memoType === 'none') {
+      return { memo: undefined, display: '' };
+    }
+    try {
+      switch (memoType) {
+        case 'text':
+          return { memo: Memo.text(value), display: value };
+        case 'id':
+          return { memo: Memo.id(value), display: value };
+        case 'hash': {
+          const hex = value.replace(/^0x/i, '');
+          if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('invalid');
+          return { memo: Memo.hash(Buffer.from(hex, 'hex')), display: value };
+        }
+        case 'return': {
+          const hex = value.replace(/^0x/i, '');
+          if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('invalid');
+          return { memo: Memo.return(Buffer.from(hex, 'hex')), display: value };
+        }
+        default:
+          return { memo: undefined, display: '' };
+      }
+    } catch {
+      throw new Error(t('query.invalidMemo'));
+    }
+  }, [memoType, memoVal, t]);
+
+  const describeHorizonError = useCallback((err) => {
+    const extras = err?.response?.data?.extras;
+    if (extras?.result_codes) {
+      const tx = extras.result_codes.transaction;
+      const ops = extras.result_codes.operations;
+      let codes = '';
+      if (tx) codes = tx;
+      if (ops) {
+        const opText = Array.isArray(ops) ? ops.join(', ') : ops;
+        codes = codes ? `${codes} / ${opText}` : opText;
+      }
+      return codes
+        ? `${t('payment.send.horizonError')} (${codes})`
+        : t('payment.send.horizonError');
+    }
+    const status = err?.response?.status;
+    if (status === 504) return t('payment.send.timeout');
+    if (typeof status === 'number') {
+      return t('payment.send.httpError', { status });
+    }
+    return err?.message || 'unknown';
+  }, [t]);
+
+  const handlePaymentError = useCallback((err) => {
+    console.error('Payment submission failed', err);
+    const detail = describeHorizonError(err);
+    setError(t('payment.send.error', { detail }));
+    return detail;
+  }, [describeHorizonError, t]);
+
+  const applySendResult = useCallback((payload) => {
+    setStatus(payload.hash);
+    setSentInfo({
+      account: publicKey,
+      recipient: payload.recipient,
+      amount: Number(payload.amountDisplay),
+      amountDisplay: payload.amountDisplay,
+      asset: payload.asset,
+      memo: payload.memo,
+    });
+  }, [publicKey]);
+
+  const submitPayment = useCallback(async (secret) => {
+    const kp = Keypair.fromSecret(secret);
+    if (kp.publicKey() !== publicKey) throw new Error(t('secretKey.mismatch'));
+    const isTestnet = typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET';
+    const net = isTestnet ? Networks.TESTNET : Networks.PUBLIC;
+    const account = await server.loadAccount(publicKey);
+    const feeStats = await server.feeStats();
+    const fee = Number(feeStats?.fee_charged?.mode || 100);
+    const { memo, display: memoDisplay } = buildMemoObject();
+    let resolvedDest;
+    try {
+      resolvedDest = await resolveOrValidatePublicKey(dest);
+    } catch (resolveError) {
+      throw new Error(t(resolveError?.message || 'resolveOrValidatePublicKey.invalid'));
+    }
+    const paymentAmount = normalizeAmountValue();
+    let asset;
+    let assetLabel = 'XLM';
+    if (assetKey === 'XLM') {
+      asset = Asset.native();
+    } else {
+      const [code, issuer] = assetKey.split(':');
+      asset = new Asset(code, issuer);
+      assetLabel = code || 'XLM';
+    }
+    const tx = new TransactionBuilder(account, { fee, networkPassphrase: net, memo })
+      .addOperation(Operation.payment({ destination: resolvedDest, amount: paymentAmount, asset }))
+      .setTimeout(60)
+      .build();
+    tx.sign(kp);
+    const res = await server.submitTransaction(tx);
+    return {
+      hash: res.hash || res.id || '',
+      recipient: resolvedDest,
+      amountDisplay: paymentAmount,
+      asset: assetLabel,
+      memo: memoDisplay,
+    };
+  }, [assetKey, buildMemoObject, dest, normalizeAmountValue, publicKey, server, t]);
+
+  const handleStoredSecretSend = useCallback(async () => {
+    setShowConfirmModal(false);
+    try {
+      setError('');
+      setStatus('');
+      const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
+      if (saved) {
+        const result = await submitPayment(saved);
+        applySendResult(result);
+        setSecretError('');
+      } else {
+        setSecretError('');
+        setShowSecretModal(true);
+      }
+    } catch (err) {
+      handlePaymentError(err);
+    }
+  }, [applySendResult, handlePaymentError, publicKey, submitPayment]);
+
   useEffect(() => {
     clearSuccess();
   }, [publicKey, initial, clearSuccess]);
@@ -55,16 +203,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     return () => window.removeEventListener('stm-network-changed', handler);
   }, []);
 
-
-  // Trusted wallet labels map
-  const walletInfoMap = useMemo(() => {
-    try {
-      if (!trustedWallets?.wallets) return new Map();
-      return new Map(trustedWallets.wallets.map(w => [w.address, { label: w.label, compromised: !!w.compromised, deactivated: !!w.deactivated }]));
-    } catch {
-      return new Map();
-    }
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -151,14 +289,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   // Resolve recipient helpers
   const [resolvedAccount, setResolvedAccount] = useState('');
   const [resolvedFederation, setResolvedFederation] = useState('');
-  const [recipientLabel, setRecipientLabel] = useState('');
   const [inputWasFederation, setInputWasFederation] = useState(false);
   useEffect(() => {
     let active = true;
     async function resolve() {
       try {
         const v = (dest || '').trim();
-        setRecipientLabel('');
         if (!v) { setResolvedAccount(''); setResolvedFederation(''); setInputWasFederation(false); return; }
         if (v.includes('*')) {
           const acc = await resolveOrValidatePublicKey(v);
@@ -166,8 +302,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           setResolvedAccount(acc);
           setResolvedFederation(v);
           setInputWasFederation(true);
-          const info = walletInfoMap.get(acc);
-          if (info?.label) setRecipientLabel(info.label);
         } else if (StrKey.isValidEd25519PublicKey(v)) {
           setResolvedAccount(v);
           setInputWasFederation(false);
@@ -194,19 +328,29 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               } catch { /* ignore reverse federation failures */ }
             }
           } catch { /* ignore account/home_domain issues */ }
-          const info = walletInfoMap.get(v);
-          if (info?.label) setRecipientLabel(info.label);
         } else {
-          setResolvedAccount(''); setResolvedFederation(''); setInputWasFederation(false);
+          setResolvedAccount('');
+          setResolvedFederation('');
+          setInputWasFederation(false);
         }
       } catch {
         if (!active) return;
-        setResolvedAccount(''); setResolvedFederation('');
+        setResolvedAccount('');
+        setResolvedFederation('');
+        setInputWasFederation(false);
       }
     }
     resolve();
     return () => { active = false; };
-  }, [dest, walletInfoMap]);
+  }, [dest, server]);
+
+  const trimmedRecipient = (dest || '').trim();
+  const walletInfoFromInput = useMemo(() => findWalletInfo(walletInfoMap, trimmedRecipient), [walletInfoMap, trimmedRecipient]);
+  const walletInfoFromAccount = useMemo(() => findWalletInfo(walletInfoMap, resolvedAccount), [walletInfoMap, resolvedAccount]);
+  const effectiveRecipientInfo = walletInfoFromInput || walletInfoFromAccount;
+  const recipientLabel = effectiveRecipientInfo?.label || '';
+  const savedRecipientFederation = effectiveRecipientInfo?.federation || '';
+  const recipientFederationDisplay = resolvedFederation || savedRecipientFederation || (trimmedRecipient && trimmedRecipient.includes('*') ? trimmedRecipient : '');
  
   // Histories for inputs
   const [historyRecipients, setHistoryRecipients] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.recipients')||'[]'); } catch { return []; } });
@@ -244,6 +388,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     } catch { /* noop */ }
   }, [initial, clearSuccess]);
 
+  const sentAmountText = sentInfo
+    ? sentInfo.amountDisplay || (Number.isFinite(sentInfo.amount) ? amountFmt.format(sentInfo.amount) : '')
+    : '';
+
   if (!publicKey) {
     return (
       <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
@@ -264,7 +412,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           <div className="font-semibold mb-1">{t('payment.send.successShort', 'Erfolgreich gesendet')}</div>
           <div className="space-y-0.5">
             <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.recipient')}:</span> <span className="font-mono break-all">{sentInfo.recipient}</span></div>
-            <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.amount')}:</span> {amountFmt.format(sentInfo.amount)} {sentInfo.asset}</div>
+            <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.amount')}:</span> {sentAmountText || '0'} {sentInfo.asset}</div>
             <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.memo')}:</span> {sentInfo.memo || '-'}</div>
             {status && (<div><span className="text-gray-600 dark:text-gray-400">TX:</span> <span className="font-mono break-all">{status}</span></div>)}
           </div>
@@ -284,13 +432,26 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               {historyRecipients.map((v,i)=>(<option key={v+i} value={v} />))}
             </datalist>
           </div>
-          {(resolvedFederation || recipientLabel) && (
-            <div className="mt-1 text-xs text-gray-700 dark:text-gray-300 space-y-0.5">
-              {resolvedFederation && (<div>Föderation: <span className="font-mono break-all">{resolvedFederation}</span></div>)}
-              {resolvedFederation && resolvedAccount && inputWasFederation && (<div>Konto: <span className="font-mono break-all">{resolvedAccount}</span></div>)}
-              {recipientLabel && (<div>Label: <span className="font-semibold">{recipientLabel}</span></div>)}
+          <div className="mt-1 text-xs text-gray-700 dark:text-gray-300 space-y-0.5">
+            <div>
+              <span className="font-semibold">{t('wallet.federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
+              {recipientFederationDisplay
+                ? <span className="font-mono break-all">{recipientFederationDisplay}</span>
+                : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
             </div>
-          )}
+            {resolvedFederation && resolvedAccount && inputWasFederation && (
+              <div>
+                <span className="font-semibold">{t('wallet.federationDisplay.account', 'Konto')}:</span>{' '}
+                <span className="font-mono break-all">{resolvedAccount}</span>
+              </div>
+            )}
+            {recipientLabel && (
+              <div>
+                <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
+                <span>{recipientLabel}</span>
+              </div>
+            )}
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-[2fr_3fr] gap-3 mt-2">
           <div className="flex flex-col min-w-0">
@@ -306,7 +467,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     s = s.replace(/,/g, '.');
                     s = s.replace(/[^0-9.]/g, '');
                     const i = s.indexOf('.');
-                    if (i !== -1) s = s.slice(0, i+1) + s.slice(i+1).replace(/\./g, '');
+                    if (i !== -1) {
+                      s = s.slice(0, i + 1) + s.slice(i + 1).replace(/\./g, '');
+                      const decimals = s.length - i - 1;
+                      if (decimals > 7) s = s.slice(0, i + 1 + 7);
+                    }
                     setAmount(s);
                   }}
                 />
@@ -388,7 +553,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             </div>
           </div>
 
-          <button className="mt-3 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50" disabled={!dest || !amount || (Number(amount) || 0) <= 0} onClick={()=>{ clearSuccess(); try{window.dispatchEvent(new Event('stm-transaction-start'));}catch{}; setShowConfirmModal(true); }}>
+          <button
+            className="mt-3 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
+            disabled={!dest || !amount || (Number(amount) || 0) <= 0}
+            onClick={() => {
+              clearSuccess();
+              try {
+                window.dispatchEvent(new Event('stm-transaction-start'));
+              } catch (dispatchError) {
+                console.debug('stm-transaction-start event failed', dispatchError);
+              }
+              setShowConfirmModal(true);
+            }}
+          >
             {t('payment.send.sendButton')}
           </button>
         </div>
@@ -407,7 +584,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             </div>
             <div className="flex justify-end gap-2">
               <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowConfirmModal(false)}>{t('option.cancel')}</button>
-              <button className="px-3 py-1 rounded bg-blue-600 text-white" onClick={async ()=>{ setShowConfirmModal(false); try { const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`); if (saved) { await (async () => { const kp = Keypair.fromSecret(saved); if (kp.publicKey() !== publicKey) throw new Error('secretKey.mismatch'); const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? Networks.TESTNET : Networks.PUBLIC; const acct = await server.loadAccount(publicKey); const feeStats = await server.feeStats(); const fee = Number(feeStats?.fee_charged?.mode || 100); const memoObj = (() => { const v = (memoVal || '').trim(); if (!v || memoType === 'none') return undefined; try { switch (memoType) { case 'text': return Memo.text(v); case 'id': return Memo.id(v); case 'hash': { const hex = v.replace(/^0x/i, ''); if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo'); return Memo.hash(Buffer.from(hex, 'hex')); } case 'return': { const hex = v.replace(/^0x/i, ''); if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo'); return Memo.return(Buffer.from(hex, 'hex')); } default: return undefined; } } catch { throw new Error('query.invalidMemo'); }})(); const builder = new TransactionBuilder(acct, { fee, networkPassphrase: net, memo: memoObj }); const resolvedDest = await resolveOrValidatePublicKey(dest); let asset; if (assetKey === 'XLM') asset = Asset.native(); else { const [code, issuer] = assetKey.split(':'); asset = new Asset(code, issuer); } builder.addOperation(Operation.payment({ destination: resolvedDest, amount: String(Number(amount)), asset })); const tx = builder.setTimeout(60).build(); tx.sign(kp); const res = await server.submitTransaction(tx); const hash = res.hash || res.id || ''; setStatus(hash); setSentInfo({ account: publicKey, recipient: resolvedDest, amount: Number(amount), asset: (assetKey==='XLM' ? 'XLM' : (assetKey.split(':')[0] || '')), memo: (memoType==='none'||!memoVal) ? '' : memoVal }); } )(); } else { setShowSecretModal(true); } } catch (e) { setSecretError(''); setError(t('payment.send.error', { detail: e?.message || 'unknown' })); } }}>{t('option.yes')}</button>
+              <button className="px-3 py-1 rounded bg-blue-600 text-white" onClick={handleStoredSecretSend}>{t('option.yes')}</button>
             </div>
           </div>
         </div>
@@ -419,68 +596,26 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           onCancel={()=>{ setShowSecretModal(false); setSecretError(''); }}
           onConfirm={async (secret, remember) => {
             try {
-              setError(''); setStatus('');
+              setError('');
+              setStatus('');
               const kp = Keypair.fromSecret(secret);
               if (kp.publicKey() !== publicKey) {
-                setSecretError('secretKey.mismatch');
+                setSecretError(t('secretKey.mismatch'));
                 return;
               }
               if (remember) {
                 try {
                   sessionStorage.setItem(`stm.session.secret.${publicKey}`, secret);
-                  // Notify global header that a session secret is now present
                   try { window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: { publicKey } })); } catch { /* noop */ }
                 } catch { /* noop */ }
               }
-              const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? Networks.TESTNET : Networks.PUBLIC;
-              const acct = await server.loadAccount(publicKey);
-              const feeStats = await server.feeStats();
-              const fee = Number(feeStats?.fee_charged?.mode || 100);
-              const memoObj = (() => {
-                const v = (memoVal || '').trim();
-                if (!v || memoType === 'none') return undefined;
-                try {
-                  switch (memoType) {
-                    case 'text':
-                      return Memo.text(v);
-                    case 'id':
-                      return Memo.id(v);
-                    case 'hash': {
-                      const hex = v.replace(/^0x/i, '');
-                      if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo');
-                      return Memo.hash(Buffer.from(hex, 'hex'));
-                    }
-                    case 'return': {
-                      const hex = v.replace(/^0x/i, '');
-                      if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error('query.invalidMemo');
-                      return Memo.return(Buffer.from(hex, 'hex'));
-                    }
-                    default:
-                      return undefined;
-                  }
-                } catch {
-                  throw new Error('query.invalidMemo');
-                }
-              })();
-              const builder = new TransactionBuilder(acct, { fee, networkPassphrase: net, memo: memoObj });
-              const resolvedDest = await resolveOrValidatePublicKey(dest);
-              let asset;
-              if (assetKey === 'XLM') asset = Asset.native();
-              else {
-                const [code, issuer] = assetKey.split(':');
-                asset = new Asset(code, issuer);
-              }
-              builder.addOperation(Operation.payment({ destination: resolvedDest, amount: String(Number(amount)), asset }));
-              const tx = builder.setTimeout(60).build();
-              tx.sign(kp);
-              const res = await server.submitTransaction(tx);
-              const hash = res.hash || res.id || '';
-              setStatus(hash);
-              setSentInfo({ account: publicKey, recipient: resolvedDest, amount: Number(amount), asset: (assetKey==='XLM' ? 'XLM' : (assetKey.split(':')[0] || '')), memo: (memoType==='none'||!memoVal) ? '' : memoVal });
+              const result = await submitPayment(secret);
+              applySendResult(result);
+              setSecretError('');
               setShowSecretModal(false);
             } catch (e) {
-              setSecretError('');
-              setError(t('payment.send.error', { detail: e?.message || 'unknown' }));
+              const detail = handlePaymentError(e);
+              setSecretError(detail);
             }
           }}
         />

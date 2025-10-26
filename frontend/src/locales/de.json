@@ -82,7 +82,8 @@
     "admin": {
       "title": "Bugtracker",
       "locked": "Zugriff verweigert. Setze das Admin-Secret im lokalen Speicher und lade die Seite neu.",
-      "placeholder": "Admin-UI aktiv. In den nächsten Patches folgen Liste, Filter, Prioritäten und Status-Änderungen.",
+      "placeholderTitle": "Bugtracker",
+      "placeholderBody": "Admin-UI aktiv. In den nächsten Patches folgen Liste, Filter, Prioritäten und Status-Änderungen.",
       "link": "Bugtracker öffnen",
       "secretSaved": "Secret gespeichert.",
       "enterSecret": "Admin-Secret eingeben",
@@ -103,15 +104,36 @@
       "created": "Erstellt",
       "url": "URL",
       "language": "Sprache",
+      "email": "E-Mail",
       "userAgent": "Browser",
       "description": "Beschreibung",
+      "category": "Kategorie",
       "save": "Speichern",
       "saved": "Änderung gespeichert",
       "loadError": "Fehler beim Laden der Bugs",
       "saveError": "Fehler beim Speichern",
-      "empty": "Keine Einträge gefunden."
-    }
-  },
+      "empty": "Keine Einträge gefunden.",
+      "loading": "Laden…",
+      "resize": "Ziehen zum Anpassen",
+      "columns": {
+        "title": "Spalten",
+        "manage": "Spalten anpassen",
+        "hint": "Sichtbarkeit per Haken, Reihenfolge mit ↑/↓, Größen durch Ziehen im Tabellenkopf.",
+        "reset": "Zurücksetzen",
+        "up": "Nach oben",
+        "down": "Nach unten"
+      },
+      "search": "Suche"
+      },
+      "col": {
+        "id": "ID",
+        "status": "Status",
+        "priority": "Priorität",
+        "url": "URL",
+        "desc": "Beschreibung",
+        "ts": "Zeit"
+      }
+    },
   "cache": {
     "clear": "Cache leeren",
     "consent": "Lokaler Cache aktivieren, um Abfragen zu beschleunigen?",
@@ -206,6 +228,8 @@
     "subject": "Betreff",
     "message": "Nachricht",
     "contactEmailOptional": "Kontakt E-Mail (optional)",
+    "emailPlaceholder": "z. B. name@example.com",
+    "emailHint": "Wenn Antwort erwünscht, bitte E‑Mail eintragen.",
     "privacyHint": "Ihre Nachricht wird per E-Mail über Ihr eigenes Mailprogramm gesendet.",
     "sendButton": "E-Mail erstellen",
     "openedMailClient": "E-Mail-Client geöffnet.",
@@ -272,7 +296,8 @@
   },
   "account": {
     "createdAt": "Konto erstellt am",
-    "createdAtUnknown": "Kann nicht ermittelt werden."
+    "createdAtUnknown": "Kann nicht ermittelt werden.",
+    "testnetLabel": "(Testnet)"
   },
   "fetch.groupfund.aborted": "Vorgang vom Benutzer abgebrochen",
   "issuer": {
@@ -403,7 +428,7 @@
     "hint": "Lade ein bestehendes Konto, passe Signer, Gewichte, Master-Gewicht und Schwellen an und speichere die Änderungen.",
     "load": "Laden",
     "loaded": "Geladen. Zusätzliche Signer: {{count}}",
-    "menu": "Konto mit Multisig bearbeiten",
+    "menu": "Multisig Konto bearbeiten",
     "menuHint": "Signer/Schwellen eines bestehenden Kontos anpassen",
     "noteMaxSigners": "Hinweis: Stellar erlaubt max. 20 zusätzliche Unterzeichner pro Konto.",
     "reload": "Neu laden",
@@ -499,7 +524,9 @@
     "submit": {
       "button": "Absenden"
     },
-    "test": "Test"
+    "test": "Test",
+    "historyLabel": "Historie",
+    "historyPlaceholder": "Zuletzt verwendetes Wallet auswählen"
   },
   "secretKey": {
     "cleared": "Geheimschlüssel wurde gelöscht.",
@@ -575,7 +602,7 @@
         "discard": "Verwerfen",
         "save": "Speichern"
       },
-      "title": "Vertrauenswürdige Wallets (QSI)",
+      "title": "Meine Vertrauenswürdigen Wallets",
       "validation": {
         "hint": "Mindestens eine Zeile ist ungültig (fehlende/duplizierte Adresse)."
       }
@@ -655,7 +682,13 @@
       "sendButton": "Senden",
       "success": "Erfolg: Zahlung gesendet. TX: {{hash}}",
       "successShort": "Erfolgreich gesendet",
-      "error": "Fehler beim Senden: {{detail}}"
+      "error": "Fehler beim Senden: {{detail}}",
+      "amountMissing": "Bitte gib einen Betrag ein.",
+      "amountInvalid": "Ungültiger Betrag (max. 7 Nachkommastellen).",
+      "amountPositive": "Der Betrag muss größer als 0 sein.",
+      "timeout": "Horizon-Timeout (504). Bitte versuche es gleich erneut.",
+      "httpError": "Horizon-Fehler (Status {{status}}).",
+      "horizonError": "Stellar hat die Transaktion abgelehnt"
     }
   },
   "xlmByMemo": {
@@ -742,7 +775,7 @@
       "scanning": "… scannt falsche/leere Memos",
       "summary": "Anzahl: {{count}} • Summe: {{sum}} XLM • Eindeutige Wallets: {{unique}}",
       "title": "Falsche/Leere Memos im Zeitraum"
-  }
+    }
   },
   "activation": {
     "notFound": {
@@ -754,5 +787,12 @@
       "no": "Nein – Abbrechen",
       "processing": "Aktiviere…"
     }
-  }
-}
+  },
+  "wallet": {
+    "federationDisplay": {
+      "label": "Föderationsadresse",
+      "none": "Keine Föderationsadresse definiert",
+      "account": "Konto",
+      "accountLabel": "Label"
+    }
+    }}

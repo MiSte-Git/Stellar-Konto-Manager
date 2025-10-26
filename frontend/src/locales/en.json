@@ -218,7 +218,8 @@
   },
   "account": {
     "createdAt": "Account created on",
-    "createdAtUnknown": "Cannot be determined."
+    "createdAtUnknown": "Cannot be determined.",
+    "testnetLabel": "(Testnet)"
   },
   "fetch.groupfund.aborted": "Operation canceled by the user",
   "issuer": {
@@ -443,7 +444,9 @@
     "submit": {
       "button": "Send"
     },
-    "test": "Test"
+    "test": "Test",
+    "historyLabel": "History",
+    "historyPlaceholder": "Select a recent wallet"
   },
   "secretKey": {
     "cleared": "Secret key has been deleted.",
@@ -599,7 +602,13 @@
       "sendButton": "Send",
       "success": "Success: Payment sent. TX: {{hash}}",
       "error": "Error during sending: {{detail}}",
-      "successShort": "Successfully sent"
+      "successShort": "Successfully sent",
+      "amountMissing": "Please enter an amount.",
+      "amountInvalid": "Invalid amount (use up to 7 decimals).",
+      "amountPositive": "Amount must be greater than zero.",
+      "timeout": "Horizon timeout (504). Please try again in a moment.",
+      "httpError": "Horizon error (status {{status}}).",
+      "horizonError": "Stellar rejected the transaction"
     }
   },
   "xlmByMemo": {
@@ -691,5 +700,13 @@
   "network": {
     "mainnet": "Mainnet",
     "testnet": "Testnet"
+  },
+  "wallet": {
+    "federationDisplay": {
+      "label": "Federation address",
+      "none": "No federation address defined",
+      "account": "Account",
+      "accountLabel": "Label"
+    }
   }
 }

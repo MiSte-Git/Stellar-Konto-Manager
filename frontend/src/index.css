@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Flag icons (OS-unabhängige SVG-Flaggen) */
+@import 'flag-icons/css/flag-icons.min.css';
+
 /* Wallet-Input: Deaktiviere Rechtschreib-/Auto-Korrektur und Pfeil bei Datalist */
 .wallet-input {
   /* Diese Attribute setzen wir zusätzlich direkt am Input als HTML-Attribute */

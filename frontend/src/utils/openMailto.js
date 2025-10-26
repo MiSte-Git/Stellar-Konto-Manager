@@ -1,4 +1,5 @@
 import { BACKEND_URL } from '../config.js';
+import { getApiBase } from './apiBase.js';
 
 /**
  * Öffnet einen Mail-Composer via Backend-Compose-Hook (Linux) oder klassischem mailto: Fallback.
@@ -12,10 +13,9 @@ export async function openMailto({
 }) {
   const safeTo = typeof to === 'string' ? to : '';
   const href = mailtoHref || `mailto:${encodeURIComponent(safeTo)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  const composeBase = (BACKEND_URL || '').replace(/\/+$/, '');
-  const composeUrl = composeBase
-    ? `${composeBase}${composeBase.endsWith('/api') ? '' : '/api'}/composeMail`
-    : '/api/composeMail';
+  // const composeBase = (BACKEND_URL || '').trim(); // unused; getApiBase handles it centrally
+  // Prefer central API base resolution for consistency
+  const composeUrl = `${getApiBase().replace(/\/+$/, '')}/composeMail`;
 
   if (forceBackendCompose && safeTo) {
     try {

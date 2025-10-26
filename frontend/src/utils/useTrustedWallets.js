@@ -1,6 +1,7 @@
 // src/utils/useTrustedWallets.js
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import defaultTrusted from '../../settings/QSI_TrustedWallets.json';
+import { isTestnetAccount } from './stellar/accountUtils.js';
 
 const LS_KEY = 'stm_trusted_wallets';
 
@@ -22,36 +23,77 @@ export function useTrustedWallets() {
 
   const wallets = useMemo(() => Array.isArray(data?.wallets) ? data.wallets : [], [data]);
 
-  const setWallets = useCallback((next) => {
+  // Enriches wallet entries with the testnet flag while defaulting to false on failure.
+  const loadAccountsWithTestnetFlag = useCallback(async (list = []) => {
+    return Promise.all(list.map(async (wallet) => {
+      if (!wallet || typeof wallet !== 'object') return wallet;
+      if (typeof wallet.isTestnet !== 'undefined') return wallet;
+      const address = String(wallet.address || wallet.publicKey || '').trim();
+      let isTestnet = false;
+      if (address) {
+        try {
+          isTestnet = await isTestnetAccount(address);
+        } catch {
+          isTestnet = false;
+        }
+      }
+      return { ...wallet, isTestnet };
+    }));
+  }, []);
+
+  const setWallets = useCallback(async (next) => {
     setError('');
     try {
-      const shape = { wallets: Array.isArray(next) ? next : (next?.wallets ?? []) };
+      const incoming = Array.isArray(next) ? next : (next?.wallets ?? []);
+      const annotated = await loadAccountsWithTestnetFlag(incoming);
+      const shape = { wallets: annotated };
       setData(shape);
     } catch (e) {
       setError(e?.message || 'settings.trustedWallets.editor.parseError');
     }
-  }, []);
+  }, [loadAccountsWithTestnetFlag]);
 
-  const setRawJson = useCallback((jsonText) => {
+  useEffect(() => {
+    let cancelled = false;
+    async function ensureFlags() {
+      const list = Array.isArray(data?.wallets) ? data.wallets : [];
+      if (!list.some((wallet) => typeof wallet?.isTestnet === 'undefined')) return;
+      try {
+        const annotated = await loadAccountsWithTestnetFlag(list);
+        if (!cancelled) {
+          setData((prev) => ({ ...(prev || {}), wallets: annotated }));
+        }
+      } catch {
+        // swallow: defaults remain false
+      }
+    }
+    ensureFlags();
+    return () => {
+      cancelled = true;
+    };
+  }, [data, loadAccountsWithTestnetFlag]);
+
+  const setRawJson = useCallback(async (jsonText) => {
     setError('');
     try {
       const parsed = JSON.parse(jsonText);
       if (!parsed || !Array.isArray(parsed.wallets)) {
         throw new Error('settings.trustedWallets.editor.invalidFormat');
       }
-      setData(parsed);
+      await setWallets(parsed.wallets);
       return { ok: true };
     } catch (e) {
       setError(e?.message || 'settings.trustedWallets.editor.parseError');
       return { ok: false, error: e?.message };
     }
-  }, []);
+  }, [setWallets]);
 
   const resetToDefault = useCallback(() => {
     setError('');
-    setData(defaultTrusted || { wallets: [] });
+    const next = defaultTrusted?.wallets || [];
+    setWallets(next);
     try { localStorage.removeItem(LS_KEY); } catch { /* noop */ }
-  }, []);
+  }, [setWallets]);
 
   const exportFile = useCallback((filename) => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8;' });
@@ -74,14 +116,14 @@ export function useTrustedWallets() {
       if (!parsed || !Array.isArray(parsed.wallets)) {
         throw new Error('settings.trustedWallets.editor.invalidFormat');
       }
-      setData(parsed);
+      await setWallets(parsed.wallets);
       return { ok: true };
     } catch (e) {
       const msg = e?.message || 'settings.trustedWallets.editor.parseError';
       setError(msg);
       return { ok: false, error: msg };
     }
-  }, []);
+  }, [setWallets]);
 
   return { data, wallets, setWallets, setRawJson, resetToDefault, exportFile, importFile, error };
 }
