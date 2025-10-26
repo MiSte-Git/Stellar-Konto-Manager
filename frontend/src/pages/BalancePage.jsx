@@ -26,7 +26,10 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
     try { return localStorage.getItem('stm.explorerPref') || 'expert'; } catch { return 'expert'; }
   }); // 'expert' | 'stellarchain'
  
-  const server = useMemo(() => getHorizonServer(), [netLabel]);
+  const server = useMemo(
+    () => getHorizonServer(netLabel === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN),
+    [netLabel]
+  );
 
   // Fetch missing memos for displayed payments
   const [memoMap, setMemoMap] = useState({});
@@ -62,7 +65,7 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
     }
     if (payments && payments.length) fetchMemos();
     return () => { cancelled = true; };
-  }, [payments, server]);
+  }, [payments, server, memoMap]);
 
   const nf = useMemo(() => {
     const digits = decimalsMode === 'auto' ? undefined : Number(decimalsMode);
@@ -145,7 +148,7 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
     }
     load();
     return () => { cancelled = true; };
-  }, [publicKey, server, paymentsLimit]);
+  }, [publicKey, server, paymentsLimit, netLabel]);
 
   const explorer = netLabel === 'TESTNET' ? 'testnet' : 'public';
   const urlExpert = `https://stellar.expert/explorer/${explorer}/account/${publicKey || ''}`;
@@ -413,7 +416,7 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                           <a
                             href={explorerPref==='expert'
                               ? `https://stellar.expert/explorer/${explorer}/tx/${op.transaction_hash}`
-                              : `https://stellarchain.io/${network==='TESTNET'?'testnet/':''}tx/${op.transaction_hash}`}
+                              : `https://stellarchain.io/${netLabel==='TESTNET'?'testnet/':''}tx/${op.transaction_hash}`}
                             target="_blank"
                             rel="noreferrer"
                             className="text-blue-600 hover:underline"

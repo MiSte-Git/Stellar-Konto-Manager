@@ -21,13 +21,19 @@ else
   FRONTEND_PORT=5173
 fi
 
-# Backend starten
-echo -e "${GREEN}🚀 Starte Backend auf http://localhost:$BACKEND_PORT ...${NC}"
-cd "$BACKEND_DIR" || exit 1
-npm install
-npm run dev &
+# Defaults setzen, falls nicht in .env definiert
+: "${BACKEND_PORT:=3000}"
+: "${FRONTEND_PORT:=5173}"
 
-# Frontend starten
+# Backend (Root-Server mit /api/bugreport) starten
+# Hinweis: Wir starten den server.js im Projekt-Root, NICHT backend/server.js
+# Damit stehen die Endpunkte /api/bugreport usw. zur Verfügung.
+echo -e "${GREEN}🚀 Starte Root-Backend auf http://localhost:$BACKEND_PORT ...${NC}"
+cd "$PROJECT_DIR" || exit 1
+npm install
+PORT=$BACKEND_PORT npm start &
+
+# Frontend starten (Vite-Proxy routet /api → http://localhost:$BACKEND_PORT)
 echo -e "${GREEN}🖼️ Starte Frontend auf http://localhost:$FRONTEND_PORT ...${NC}"
 cd "$FRONTEND_DIR" || exit 1
 npm install

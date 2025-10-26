@@ -1,0 +1,57 @@
+{
+  "lastId": 4,
+  "items": [
+    {
+      "id": 4,
+      "ts": "2025-10-26T20:43:08.179Z",
+      "url": "http://localhost:5173/STM/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "language": "de-DE",
+      "reportToken": "e3ea472cb4d930f81bce62792f55fc46",
+      "description": "Kategorie: Verbesserung\nasdfasf",
+      "appVersion": null,
+      "status": "open",
+      "priority": "normal",
+      "category": "improve",
+      "contactEmail": null
+    },
+    {
+      "id": 3,
+      "ts": "2025-10-26T20:31:38.610Z",
+      "url": "http://localhost:5173/STM/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "language": "de-DE",
+      "reportToken": "83e4952ac9b922d84fe0f7e4a39901a5",
+      "description": "Kategorie: Idee\nasdfasdf",
+      "appVersion": null,
+      "status": "open",
+      "priority": "normal",
+      "category": "idea",
+      "contactEmail": null
+    },
+    {
+      "id": 2,
+      "ts": "2025-10-26T15:44:53.873Z",
+      "url": "http://localhost:5173/STM/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "language": "de-DE",
+      "description": "Kategorie: Fehler\nfasdfasf",
+      "appVersion": null,
+      "status": "open",
+      "priority": "normal",
+      "category": "bug"
+    },
+    {
+      "id": 1,
+      "ts": "2025-10-26T15:22:21.455Z",
+      "url": "http://localhost:5173/STM/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "language": "de-DE",
+      "description": "Kategorie: Fehler\nzzzzzzzzzzzzz",
+      "appVersion": null,
+      "status": "closed",
+      "priority": "normal",
+      "category": "bug"
+    }
+  ]
+}
