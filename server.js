@@ -7,9 +7,40 @@ const { spawn } = require('child_process');
 const os = require('os');
 const path = require('path');
 const fs = require('fs/promises');
+const fsSync = require('fs');
+
+// Lightweight .env loader (root .env and backend/.env) without extra deps
+(function loadDotEnv() {
+  const applyDotEnv = (filePath) => {
+    try {
+      if (!fsSync.existsSync(filePath)) return;
+      const text = fsSync.readFileSync(filePath, 'utf8');
+      for (const rawLine of text.split(/\r?\n/)) {
+        const line = rawLine.trim();
+        if (!line || line.startsWith('#')) continue;
+        const m = line.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
+        if (!m) continue;
+        const key = m[1];
+        let val = m[2];
+        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith('\'') && val.endsWith('\''))) {
+          val = val.slice(1, -1);
+        }
+        if (process.env[key] === undefined) process.env[key] = val;
+      }
+    } catch (e) {
+      console.warn('dotenv.load.failed', filePath, e?.message || e);
+    }
+  };
+  try {
+    const rootEnv = path.join(process.cwd(), '.env');
+    const backendEnv = path.join(process.cwd(), 'backend', '.env');
+    applyDotEnv(rootEnv);
+    applyDotEnv(backendEnv);
+  } catch {}
+})();
 
 const app = express();
-const port = 3000;
+const port = parseInt(process.env.PORT, 10) || 3000;
 const HORIZON_URL = 'https://horizon.stellar.org';
 const horizon = new StellarSdk.Horizon.Server(HORIZON_URL);
 
@@ -23,6 +54,8 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.',
 });
 app.use(limiter);
+
+// Health check endpoint removed (no longer used). 
 
 const composeMailEnabled = process.env.ENABLE_COMPOSE_MAIL !== '0';
 const sanitizeHeader = (value = '') => value.replace(/[\r\n]+/g, ' ').trim();
@@ -80,6 +113,153 @@ if (composeMailEnabled) {
     }
   });
 }
+
+// --- Bugreport storage (file-backed) ---
+const DATA_DIR = process.env.BUG_DB_DIR || path.join(process.cwd(), 'data');
+const BUG_DB_PATH = process.env.BUG_DB_PATH || path.join(DATA_DIR, 'bugreports.json');
+console.log('Bug DB path resolved to:', BUG_DB_PATH);
+let bugDb = { lastId: 0, items: [] };
+async function ensureDbDir() {
+  try {
+    await fs.mkdir(path.dirname(BUG_DB_PATH), { recursive: true });
+  } catch (e) {
+    console.error('bugdb.ensureDir.failed', e?.message || e);
+  }
+}
+async function loadBugDb() {
+  await ensureDbDir();
+  try {
+    const txt = await fs.readFile(BUG_DB_PATH, 'utf8');
+    const data = JSON.parse(txt);
+    if (data && Array.isArray(data.items)) {
+      const lastId = Number(data.lastId) || data.items.reduce((m, it) => Math.max(m, Number(it.id) || 0), 0);
+      bugDb = { lastId, items: data.items };
+    }
+  } catch {
+    // first run – no file yet
+  }
+}
+async function saveBugDb() {
+  try {
+    await ensureDbDir();
+    await fs.writeFile(BUG_DB_PATH, JSON.stringify(bugDb, null, 2), 'utf8');
+  } catch (e) {
+    console.error('bugdb.save.failed', e?.message || e);
+  }
+}
+void loadBugDb();
+
+const allowedStatus = new Set(['open', 'in_progress', 'closed']);
+const allowedPriority = new Set(['low', 'normal', 'high', 'urgent']);
+const allowedCategory = new Set(['bug', 'idea', 'improve', 'other']);
+const ADMIN_SECRET = process.env.BUGTRACKER_ADMIN_SECRET || '';
+
+app.post('/api/bugreport', async (req, res) => {
+  try {
+    const { url, userAgent, language, description, ts, appVersion, status, priority, category, reportToken, contactEmail } = req.body || {};
+    const nowIso = new Date().toISOString();
+    const clamp = (s = '') => String(s || '').slice(0, 5000);
+    const emailNorm = typeof contactEmail === 'string' ? contactEmail.trim() : '';
+    const emailValid = emailNorm && /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(emailNorm) ? emailNorm : null;
+    const item = {
+      id: ++bugDb.lastId,
+      ts: typeof ts === 'string' ? ts : nowIso,
+      url: clamp(url),
+      userAgent: clamp(userAgent),
+      language: clamp(language),
+      reportToken: typeof reportToken === 'string' ? clamp(reportToken) : null,
+      description: typeof description === 'string' ? clamp(description) : null,
+      appVersion: appVersion ? clamp(appVersion) : null,
+      status: allowedStatus.has(status) ? status : 'open',
+      priority: allowedPriority.has(priority) ? priority : 'normal',
+      category: allowedCategory.has(category) ? category : 'bug',
+      contactEmail: emailValid,
+    };
+    bugDb.items.unshift(item);
+    await saveBugDb();
+    res.json({ ok: true, id: item.id });
+  } catch (e) {
+    console.error('bugreport.post.failed', e?.message || e);
+    res.status(500).json({ error: 'bugReport.saveFailed' });
+  }
+});
+
+app.get('/api/bugreport', async (req, res) => {
+  try {
+    let { limit = '20', offset = '0', status, priority, category, q, sort, dir } = req.query;
+    let items = bugDb.items.slice();
+    if (status && allowedStatus.has(String(status))) items = items.filter((r) => r.status === status);
+    if (priority && allowedPriority.has(String(priority))) items = items.filter((r) => r.priority === priority);
+    if (category && allowedCategory.has(String(category))) items = items.filter((r) => r.category === category);
+    if (q && String(q).trim()) {
+      const needle = String(q).trim().toLowerCase();
+      items = items.filter((r) => {
+        const desc = String(r.description || '');
+        const email = r.contactEmail || '';
+        const fields = [String(r.id), r.ts, r.url, r.userAgent, r.language, r.category, r.status, r.priority, r.appVersion || '', desc, email];
+        return fields.some((s) => String(s || '').toLowerCase().includes(needle));
+      });
+    }
+    if (sort) {
+      const key = String(sort);
+      const asc = String(dir || 'asc').toLowerCase() !== 'desc';
+      const getVal = (r) => {
+        switch (key) {
+          case 'id': return Number(r.id) || 0;
+          case 'ts': return r.ts || '';
+          case 'url': return r.url || '';
+          case 'language': return r.language || '';
+          case 'email': return r.contactEmail || '';
+          case 'userAgent': return r.userAgent || '';
+          case 'description': return r.description || '';
+          case 'category': return r.category || '';
+          case 'status': return r.status || '';
+          case 'priority': return r.priority || '';
+          case 'appVersion': return r.appVersion || '';
+          default: return '';
+        }
+      };
+      items.sort((a, b) => {
+        const va = getVal(a);
+        const vb = getVal(b);
+        let cmp;
+        if (key === 'id') cmp = (va) - (vb);
+        else if (key === 'ts') cmp = new Date(va).getTime() - new Date(vb).getTime();
+        else cmp = String(va).localeCompare(String(vb));
+        return asc ? cmp : -cmp;
+      });
+    }
+    const total = items.length;
+    const lim = Math.min(100, Math.max(1, parseInt(String(limit), 10) || 20));
+    const off = Math.max(0, parseInt(String(offset), 10) || 0);
+    const pageItems = items.slice(off, off + lim);
+    res.json({ total, items: pageItems });
+  } catch (e) {
+    console.error('bugreport.list.failed', e?.message || e);
+    res.status(500).json({ error: 'bugReport.listFailed' });
+  }
+});
+
+app.patch('/api/bugreport/:id', async (req, res) => {
+  try {
+    const provided = sanitizeHeader(req.headers['x-admin-secret'] || '');
+    if (ADMIN_SECRET && provided !== ADMIN_SECRET) {
+      return res.status(403).json({ error: 'bugReport.admin.forbidden' });
+    }
+    const id = parseInt(String(req.params.id), 10);
+    const item = bugDb.items.find((r) => r.id === id);
+    if (!item) return res.status(404).json({ error: 'bugReport.notFound' });
+    const { status, priority, contactEmail } = req.body || {};
+    if (allowedStatus.has(status)) item.status = status;
+    if (allowedPriority.has(priority)) item.priority = priority;
+    if (typeof contactEmail === 'string' || contactEmail === null) item.contactEmail = contactEmail;
+    await saveBugDb();
+    res.json({ ok: true });
+  } catch (e) {
+    console.error('bugreport.patch.failed', e?.message || e);
+    res.status(500).json({ error: 'bugReport.saveFailed' });
+  }
+});
 
 app.get('/trustlines', async (req, res) => {
   const { publicKey } = req.query;
@@ -189,6 +369,12 @@ app.post('/delete-trustlines', async (req, res) => {
   }
 });
 
+// Inbound-Zuordnung entfernt – nicht mehr erforderlich, da E‑Mail optional direkt mitgesendet wird.
+
+// Webhook-Integration entfernt: Postmark-Inbound wird nicht mehr benötigt.
+
 app.listen(port, () => {
   console.log(`Backend server running at http://localhost:${port}`);
+  console.log(`Bug DB file: ${BUG_DB_PATH}`);
+  try { fs.access(BUG_DB_PATH).then(()=>console.log('Bug DB file exists')).catch(()=>console.log('Bug DB file will be created on first write')); } catch {}
 });

@@ -25,6 +25,12 @@ export default defineConfig(({ mode }) => {
           secure: true,
           rewrite: (path) => path.replace(/^\/expert/, ''),
         },
+        // Proxy backend API during development so /api/* works from Vite dev server
+        '/api': {
+          target: 'http://localhost:3000',
+          changeOrigin: true,
+          secure: false,
+        },
       },
     },
   }
