@@ -1,10 +1,12 @@
 import './i18n';
+import 'flag-icons/css/flag-icons.min.css';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Main from './main';
 import LanguageSelector from './components/LanguageSelector';
 import BugTrackerAdmin from './routes/BugTrackerAdmin.tsx';
 import SmallAdminLink from './components/SmallAdminLink.jsx';
+import { isBugtrackerPath } from './utils/basePath.js';
 
 console.log('App.jsx loaded');
 
@@ -33,24 +35,8 @@ class ErrorBoundary extends React.Component {
 
 function App() {
   const { t } = useTranslation();
-  const [isBugTrackerRoute, setIsBugTrackerRoute] = React.useState(false);
 
-  React.useEffect(() => {
-    try {
-      setIsBugTrackerRoute(window.location.pathname === '/bugtracker');
-    } catch {
-      setIsBugTrackerRoute(false);
-    }
-  }, []);
-
-  if (isBugTrackerRoute) {
-    return (
-      <ErrorBoundary t={t}>
-        <BugTrackerAdmin />
-      </ErrorBoundary>
-    );
-  }
-
+  // Always register hooks in the same order
   const [devTestnet, setDevTestnet] = React.useState(false);
   React.useEffect(() => {
     // Default: PUBLIC on first load (override any stale state)
@@ -61,22 +47,37 @@ function App() {
     window.addEventListener('stm-network-changed', handler);
     return () => window.removeEventListener('stm-network-changed', handler);
   }, []);
+
+  const isBugTrackerRoute = React.useMemo(() => {
+    try {
+      return isBugtrackerPath(typeof window !== 'undefined' ? window.location.pathname : '');
+    } catch {
+      return false;
+    }
+  }, []);
+
   return (
     <ErrorBoundary t={t}>
-		  {/* Sprachleiste */}
-      <div className="max-w-4xl mx-auto p-4 mt-4 mb-4 text-center shadow-md bg-white dark:bg-gray-800 dark:shadow-gray-900/50 rounded relative">
-        <div className="flex justify-center">
-          <LanguageSelector />
-        </div>
-        {devTestnet && (
-          <span className="absolute right-3 top-2 inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
-            {t('badges.testnet')}
-          </span>
-        )}
-      </div>
+      {isBugTrackerRoute ? (
+        <BugTrackerAdmin />
+      ) : (
+        <>
+          {/* Sprachleiste */}
+          <div className="max-w-4xl mx-auto p-4 mt-4 mb-4 text-center shadow-md bg-white dark:bg-gray-800 dark:shadow-gray-900/50 rounded relative">
+            <div className="flex justify-center">
+              <LanguageSelector />
+            </div>
+            {devTestnet && (
+              <span className="absolute right-3 top-2 inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
+                {t('badges.testnet')}
+              </span>
+            )}
+          </div>
 
-      <Main />
-      <SmallAdminLink />
+          <Main />
+          <SmallAdminLink />
+        </>
+      )}
     </ErrorBoundary>
   );
 }

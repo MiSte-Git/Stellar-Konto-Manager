@@ -13,12 +13,11 @@ export default function SmallAdminLink() {
   const [secret, setSecret] = useState('');
   const [portalRoot, setPortalRoot] = useState(null);
 
-  // Öffnet das Modal und lädt das aktuell gespeicherte Secret vor.
+  // Öffnet das Modal mit leerem Eingabefeld.
   const handleLinkClick = (event) => {
     event.preventDefault();
     if (typeof window === 'undefined') return;
-    const current = window.localStorage?.getItem('BUGTRACKER_ADMIN_TOKEN') || '';
-    setSecret(current);
+    setSecret('');
     setIsOpen(true);
   };
 
@@ -65,9 +64,7 @@ export default function SmallAdminLink() {
           className="fixed inset-0 z-[9999] flex items-center justify-center"
           role="dialog"
           aria-modal="true"
-          onKeyDown={(event) => {
-            if (event.key === 'Escape') setIsOpen(false);
-          }}
+          onKeyDown={(e) => { if (e.key === 'Escape') setIsOpen(false); }}
         >
           <div
             className="absolute inset-0 bg-black/40"
@@ -82,7 +79,7 @@ export default function SmallAdminLink() {
               className="w-full border rounded px-2 py-2 mb-4"
               placeholder={t('bugReport.admin.secretPlaceholder')}
               value={secret}
-              onChange={(event) => setSecret(event.target.value)}
+              onChange={(e) => setSecret(e.target.value)}
               autoFocus
             />
             <div className="flex gap-2 justify-end">

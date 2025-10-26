@@ -278,6 +278,7 @@ function copyRow(w) {
     label: w.label || '',
     compromised: !!w.compromised,
     deactivated: !!w.deactivated,
+    isTestnet: typeof w.isTestnet === 'boolean' ? w.isTestnet : false,
   };
 }
 
@@ -287,5 +288,6 @@ function sanitizeRow(w) {
     label: String(w.label || '').trim(),
     compromised: !!w.compromised,
     deactivated: !!w.deactivated,
+    isTestnet: typeof w.isTestnet === 'boolean' ? w.isTestnet : false,
   };
 }
