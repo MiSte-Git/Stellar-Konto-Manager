@@ -5,6 +5,7 @@ import { apiUrl } from '../utils/apiBase.js';
 type BugStatus = 'open' | 'in_progress' | 'closed';
 type BugPriority = 'low' | 'normal' | 'high' | 'urgent';
 type BugCategory = 'bug' | 'idea' | 'improve' | 'other';
+type BugPage = 'start' | 'trustlines' | 'trustlineCompare' | 'balance' | 'xlmByMemo' | 'sendPayment' | 'investedTokens' | 'multisigCreate' | 'multisigEdit' | 'settings' | 'feedback' | 'other';
 
 interface BugReportRow {
   id: number;
@@ -17,17 +18,21 @@ interface BugReportRow {
   status: BugStatus;
   priority: BugPriority;
   category: BugCategory;
+  page: BugPage;
   appVersion: string | null;
 }
 
 interface UpdateDraft {
   status?: BugStatus;
   priority?: BugPriority;
+  category?: BugCategory;
+  page?: BugPage;
 }
 
 const statusOptions: BugStatus[] = ['open', 'in_progress', 'closed'];
 const priorityOptions: BugPriority[] = ['low', 'normal', 'high', 'urgent'];
 const categoryOptions: BugCategory[] = ['bug', 'idea', 'improve', 'other'];
+const pageOptions: BugPage[] = ['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','multisigCreate','multisigEdit','settings','feedback','other'];
 
 const PAGE_SIZE = 20;
 
@@ -36,6 +41,7 @@ const ALL_COLUMN_KEYS = [
   'id',
   'ts',
   'url',
+  'page',
   'language',
   'email',
   'userAgent',
@@ -55,11 +61,12 @@ type ColumnPrefs = {
 };
 
 const DEFAULT_PREFS: ColumnPrefs = {
-  order: ['id', 'ts', 'url', 'language', 'email', 'userAgent', 'description', 'category', 'status', 'priority', 'appVersion'],
+  order: ['id', 'ts', 'url', 'page', 'language', 'email', 'userAgent', 'description', 'category', 'status', 'priority', 'appVersion'],
   visible: {
     id: true,
     ts: true,
     url: true,
+    page: true,
     language: true,
     email: true,
     userAgent: false,
@@ -73,6 +80,7 @@ const DEFAULT_PREFS: ColumnPrefs = {
     id: 70,
     ts: 160,
     url: 320,
+    page: 160,
     language: 100,
     email: 200,
     userAgent: 280,
@@ -142,6 +150,7 @@ const BugTrackerAdmin: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<'all' | BugStatus>('all');
   const [priorityFilter, setPriorityFilter] = useState<'all' | BugPriority>('all');
   const [categoryFilter, setCategoryFilter] = useState<'all' | BugCategory>('all');
+  const [pageFilter, setPageFilter] = useState<'all' | BugPage>('all');
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
@@ -153,6 +162,9 @@ const BugTrackerAdmin: React.FC = () => {
   const [search, setSearch] = useState('');
   const [sortKey, setSortKey] = useState<ColumnKey | null>(null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+  const [secretInput, setSecretInput] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
+  const [csvDelimiter, setCsvDelimiter] = useState<string>(',');
 
   // Determines if the current user is allowed to access the admin view.
   const isAuthorized = useMemo(() => {
@@ -177,6 +189,7 @@ const BugTrackerAdmin: React.FC = () => {
     if (statusFilter !== 'all') params.set('status', statusFilter);
     if (priorityFilter !== 'all') params.set('priority', priorityFilter);
     if (categoryFilter !== 'all') params.set('category', categoryFilter);
+    if (pageFilter !== 'all') params.set('page', pageFilter);
     try {
       if (search.trim()) params.set('q', search.trim());
       if (sortKey) { params.set('sort', sortKey); params.set('dir', sortDir); }
@@ -196,11 +209,11 @@ const BugTrackerAdmin: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthorized, page, priorityFilter, statusFilter, categoryFilter, search, sortKey, sortDir, t]);
+  }, [isAuthorized, page, priorityFilter, statusFilter, categoryFilter, pageFilter, search, sortKey, sortDir, t]);
 
-  // Sends a PATCH request to persist status/priority updates.
-  const saveReport = useCallback(async (id: number) => {
-    const draft = drafts[id];
+  // Sends a PATCH request to persist updates. Optionally accepts an override draft for immediate save.
+  const saveReport = useCallback(async (id: number, override?: UpdateDraft) => {
+    const draft = override ?? drafts[id];
     if (!draft) return;
     try {
       const res = await fetch(apiUrl(`bugreport/${id}`), {
@@ -227,17 +240,45 @@ const BugTrackerAdmin: React.FC = () => {
     }
   }, [drafts, fetchReports, t]);
 
-  // Applies a status change to local state and marks the report as dirty.
+  // Applies a status change and autosaves.
   const updateStatus = useCallback((id: number, value: BugStatus) => {
     setReports((prev) => prev.map((item) => (item.id === id ? { ...item, status: value } : item)));
-    setDrafts((prev) => ({ ...prev, [id]: { ...prev[id], status: value } }));
-  }, []);
+    setDrafts((prev) => {
+      const merged = { ...prev[id], status: value } as UpdateDraft;
+      saveReport(id, merged);
+      return { ...prev, [id]: merged };
+    });
+  }, [saveReport]);
 
-  // Applies a priority change to local state and marks the report as dirty.
+  // Applies a priority change and autosaves.
   const updatePriority = useCallback((id: number, value: BugPriority) => {
     setReports((prev) => prev.map((item) => (item.id === id ? { ...item, priority: value } : item)));
-    setDrafts((prev) => ({ ...prev, [id]: { ...prev[id], priority: value } }));
-  }, []);
+    setDrafts((prev) => {
+      const merged = { ...prev[id], priority: value } as UpdateDraft;
+      saveReport(id, merged);
+      return { ...prev, [id]: merged };
+    });
+  }, [saveReport]);
+
+  // Applies a category change and autosaves.
+  const updateCategory = useCallback((id: number, value: BugCategory) => {
+    setReports((prev) => prev.map((item) => (item.id === id ? { ...item, category: value } : item)));
+    setDrafts((prev) => {
+      const merged = { ...prev[id], category: value } as UpdateDraft;
+      saveReport(id, merged);
+      return { ...prev, [id]: merged };
+    });
+  }, [saveReport]);
+
+  // Applies a page change and autosaves.
+  const updatePage = useCallback((id: number, value: BugPage) => {
+    setReports((prev) => prev.map((item) => (item.id === id ? { ...item, page: value } : item)));
+    setDrafts((prev) => {
+      const merged = { ...prev[id], page: value } as UpdateDraft;
+      saveReport(id, merged);
+      return { ...prev, [id]: merged };
+    });
+  }, [saveReport]);
 
   useEffect(() => {
     fetchReports();
@@ -263,8 +304,56 @@ const BugTrackerAdmin: React.FC = () => {
     };
   }, [resizing]);
 
+
   if (!isAuthorized) {
-    return null;
+    return (
+      <div className="mx-auto max-w-xl p-6">
+        <h1 className="text-2xl font-semibold mb-2">{t('bugReport.admin.title', 'Bugtracker')}</h1>
+        <p className="text-sm mb-4">{t('bugReport.admin.locked', 'Zugriff verweigert. Setze das Admin-Secret im lokalen Speicher und lade die Seite neu.')}</p>
+        <div className="space-y-2">
+          <label className="block text-xs mb-1">{t('bugReport.admin.enterSecret', 'Admin-Secret eingeben')}</label>
+          <input
+            type="password"
+            value={secretInput}
+            onChange={(e) => setSecretInput(e.target.value)}
+            placeholder={t('bugReport.admin.secretPlaceholder', '••••••••')}
+            className="w-full border rounded px-2 py-2"
+            autoFocus
+          />
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+              onClick={() => {
+                try {
+                  const val = String(secretInput || '').trim();
+                  if (!val) return;
+                  window.localStorage?.setItem('BUGTRACKER_ADMIN_TOKEN', val);
+                  window.location.reload();
+                } catch (err) {
+                  console.error('bugReport.admin.navigate.failed', err);
+                }
+              }}
+              title={t('bugReport.admin.confirm', 'Öffnen')}
+            >
+              {t('bugReport.admin.confirm', 'Öffnen')}
+            </button>
+            <button
+              type="button"
+              className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+              onClick={() => { try { window.history.back(); } catch {} }}
+              title={t('bugReport.admin.cancel', 'Abbrechen')}
+            >
+              {t('bugReport.admin.cancel', 'Abbrechen')}
+            </button>
+          </div>
+        </div>
+        <pre className="bg-gray-100 dark:bg-gray-900 rounded p-3 text-xs overflow-auto mt-4">{`// Secret im Browser setzen und Seite neu laden:
+localStorage.setItem('BUGTRACKER_ADMIN_TOKEN', '<DEIN-SECRET>');
+// Aufrufen:
+window.location.assign(window.location.pathname);`}</pre>
+      </div>
+    );
   }
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -274,12 +363,14 @@ const BugTrackerAdmin: React.FC = () => {
   const processedReports = useMemo(() => {
     let items = reports.slice();
     const q = search.trim().toLowerCase();
+    const labelForPage = (p?: string) => t(`feedback.pages.${p || 'other'}`, t('feedback.pages.other', 'Sonstiges')).toLowerCase();
     if (q) {
       items = items.filter((r) => {
         const desc = stripCategoryHeader(r.description);
         const email = r.contactEmail || (r as any).email || extractEmail(desc) || '';
+        const pageLabel = labelForPage(r.page);
         const fields = [
-          String(r.id), r.ts, r.url, r.language, r.userAgent, desc, r.category, r.status, r.priority, r.appVersion || '', email
+          String(r.id), r.ts, r.url, r.language, r.userAgent, desc, r.category, r.status, r.priority, r.appVersion || '', email, r.page, pageLabel
         ].map((s) => String(s || '').toLowerCase());
         return fields.some((s) => s.includes(q));
       });
@@ -292,6 +383,7 @@ const BugTrackerAdmin: React.FC = () => {
                    key === 'appVersion' ? (a.appVersion || '') :
                    key === 'ts' ? a.ts :
                    key === 'url' ? a.url :
+                   key === 'page' ? labelForPage(a.page) :
                    key === 'language' ? a.language :
                    key === 'userAgent' ? a.userAgent :
                    key === 'category' ? a.category :
@@ -303,6 +395,7 @@ const BugTrackerAdmin: React.FC = () => {
                    key === 'appVersion' ? (b.appVersion || '') :
                    key === 'ts' ? b.ts :
                    key === 'url' ? b.url :
+                   key === 'page' ? labelForPage(b.page) :
                    key === 'language' ? b.language :
                    key === 'userAgent' ? b.userAgent :
                    key === 'category' ? b.category :
@@ -321,7 +414,7 @@ const BugTrackerAdmin: React.FC = () => {
       });
     }
     return items;
-  }, [reports, search, sortKey, sortDir]);
+  }, [reports, search, sortKey, sortDir, t]);
 
   const moveColumn = (key: ColumnKey, dir: -1 | 1) => {
     setPrefs((p) => {
@@ -339,10 +432,135 @@ const BugTrackerAdmin: React.FC = () => {
 
   const resetColumns = () => setPrefs(DEFAULT_PREFS);
 
+  const acronym = (s: string) => s.split(/\s+/).map((w) => w[0]).join('').toUpperCase();
+  const appShort = (import.meta.env.VITE_APP_SHORTNAME && String(import.meta.env.VITE_APP_SHORTNAME).trim()) || acronym(t('main.title', 'Stellar Konto Manager'));
+
+  const labelForColumn = useCallback((key: ColumnKey) => (
+    key === 'id' ? t('bugReport.admin.id') :
+    key === 'ts' ? t('bugReport.admin.created') :
+    key === 'url' ? t('bugReport.admin.url') :
+    key === 'page' ? t('feedback.page', 'Bereich') :
+    key === 'language' ? t('bugReport.admin.language') :
+    key === 'email' ? t('bugReport.admin.email', 'E‑Mail') :
+    key === 'userAgent' ? t('bugReport.admin.userAgent') :
+    key === 'description' ? t('bugReport.admin.description') :
+    key === 'category' ? t('bugReport.admin.category') :
+    key === 'status' ? t('bugReport.admin.status') :
+    key === 'priority' ? t('bugReport.admin.priority') :
+    key === 'appVersion' ? 'Version' : String(key)
+  ), [t]);
+
+  const getCellString = useCallback((report: BugReportRow, key: ColumnKey) => {
+    switch (key) {
+      case 'id': return String(report.id);
+      case 'ts': return formatDate(report.ts, i18n?.language);
+      case 'url': return report.url;
+      case 'page': return t(`feedback.pages.${report.page || 'other'}`, t('feedback.pages.other', 'Sonstiges'));
+      case 'language': return report.language;
+      case 'userAgent': return report.userAgent;
+      case 'email': {
+        const email = report.contactEmail || (report as any).email || extractEmail(stripCategoryHeader(report.description)) || '';
+        return email;
+      }
+      case 'description': {
+        const raw = report.description || '';
+        const parts = raw.split(/\r?\n/);
+        const stripped = parts[0]?.trim().toLowerCase().startsWith('kategorie:') ? parts.slice(1).join('\n').trim() : raw.trim();
+        return stripped;
+      }
+      case 'category': return t(`feedback.categories.${report.category}`);
+      case 'status': return t(`bugReport.admin.${report.status}`);
+      case 'priority': return t(`bugReport.admin.${report.priority}`);
+      case 'appVersion': return report.appVersion ? `v${report.appVersion}` : '';
+      default: return '';
+    }
+  }, [i18n?.language, t]);
+
+  const csvEscape = (v: string, delimiter: string) => {
+    const s = String(v ?? '');
+    if (s.includes('"') || s.includes('\n') || s.includes(delimiter)) {
+      return '"' + s.replace(/"/g, '""') + '"';
+    }
+    return s;
+  };
+
+  const buildCsvAndDownload = (items: BugReportRow[], suffix: string, delimiter: string) => {
+    const headers = visibleColumns.map((k) => labelForColumn(k));
+    const rows = items.map((r) => visibleColumns.map((k) => getCellString(r, k)));
+    const lines = [headers, ...rows].map((row) => row.map((cell) => csvEscape(cell, delimiter)).join(delimiter));
+    const csv = lines.join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const ts = new Date().toISOString().replace(/[:.]/g, '-');
+    a.href = url;
+    a.download = `${appShort}-bugreports-${suffix}-${ts}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportCurrentPageCsv = () => {
+    try {
+      buildCsvAndDownload(processedReports, 'page', csvDelimiter);
+    } catch (e) {
+      console.error(e);
+      setNotice(t('bugReport.admin.exportError', 'Export fehlgeschlagen'));
+    }
+  };
+
+  const exportAllCsv = async () => {
+    setIsExporting(true);
+    setNotice(t('bugReport.admin.exporting', 'Exportiere…'));
+    try {
+      const limit = 500;
+      let offset = 0;
+      const all: BugReportRow[] = [];
+      // Build base params with current filters/search/sort
+      const base = new URLSearchParams();
+      if (statusFilter !== 'all') base.set('status', statusFilter);
+      if (priorityFilter !== 'all') base.set('priority', priorityFilter);
+      if (categoryFilter !== 'all') base.set('category', categoryFilter);
+      if (pageFilter !== 'all') base.set('page', pageFilter);
+      if (search.trim()) base.set('q', search.trim());
+      if (sortKey) { base.set('sort', sortKey); base.set('dir', sortDir); }
+      while (true) {
+        const params = new URLSearchParams(base);
+        params.set('limit', String(limit));
+        params.set('offset', String(offset));
+        const res = await fetch(`${apiUrl('bugreport')}?${params.toString()}`, { method: 'GET', headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(`status_${res.status}`);
+        const data = await res.json();
+        const items: BugReportRow[] = Array.isArray(data.items) ? data.items : [];
+        all.push(...items);
+        if (items.length < limit) break;
+        offset += limit;
+      }
+      buildCsvAndDownload(all, 'all', csvDelimiter);
+      setNotice(null);
+    } catch (e) {
+      console.error(e);
+      setNotice(t('bugReport.admin.exportError', 'Export fehlgeschlagen'));
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold">{t('bugReport.admin.title')}</h1>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            onClick={() => { try { window.history.back(); } catch {} }}
+            title={t('common.back', 'Zurück')}
+          >
+            {t('common.back', 'Zurück')}
+          </button>
+          <h1 className="text-2xl font-semibold">{t('bugReport.admin.title')}</h1>
+        </div>
         <div className="flex items-center gap-2">
           <input
             type="search"
@@ -358,6 +576,37 @@ const BugTrackerAdmin: React.FC = () => {
             title={t('bugReport.admin.columns.title', 'Spalten')}
           >
             {t('bugReport.admin.columns.title', 'Spalten')}
+          </button>
+          <label className="flex items-center gap-1 text-xs text-gray-700 dark:text-gray-200">
+            <span>{t('bugReport.admin.csv.delimiter', 'Trennzeichen')}</span>
+            <select
+              value={csvDelimiter}
+              onChange={(e) => setCsvDelimiter(e.target.value)}
+              className="border rounded px-2 py-1 text-sm"
+              title={t('bugReport.admin.csv.delimiter', 'Trennzeichen')}
+            >
+              <option value=",">{t('bugReport.admin.csv.comma', 'Komma (,)')}</option>
+              <option value=";">{t('bugReport.admin.csv.semicolon', 'Semikolon (;)')}</option>
+              <option value="\t">{t('bugReport.admin.csv.tab', 'Tabulator (Tab)')}</option>
+            </select>
+          </label>
+          <button
+            type="button"
+            className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40"
+            onClick={exportCurrentPageCsv}
+            disabled={isExporting || isLoading || processedReports.length === 0}
+            title={t('bugReport.admin.exportPage', 'CSV (Seite)')}
+          >
+            {t('bugReport.admin.exportPage', 'CSV (Seite)')}
+          </button>
+          <button
+            type="button"
+            className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40"
+            onClick={exportAllCsv}
+            disabled={isExporting}
+            title={t('bugReport.admin.exportAll', 'CSV (Alle)')}
+          >
+            {isExporting ? t('bugReport.admin.exporting', 'Exportiere…') : t('bugReport.admin.exportAll', 'CSV (Alle)')}
           </button>
         </div>
       </div>
@@ -406,6 +655,19 @@ const BugTrackerAdmin: React.FC = () => {
             ))}
           </select>
         </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">{t('feedback.page', 'Bereich')}</label>
+          <select
+            value={pageFilter}
+            onChange={(event) => { setPage(0); setPageFilter(event.target.value as BugPage | 'all'); }}
+            className="border rounded px-3 py-2"
+          >
+            <option value="all">{t('bugReport.admin.filter')}</option>
+            {pageOptions.map((value) => (
+              <option key={value} value={value}>{t(`feedback.pages.${value}`, value)}</option>
+            ))}
+          </select>
+        </div>
       </div>
       <div className="overflow-x-auto border rounded">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
@@ -419,6 +681,7 @@ const BugTrackerAdmin: React.FC = () => {
                   key === 'id' ? t('bugReport.admin.id') :
                   key === 'ts' ? t('bugReport.admin.created') :
                   key === 'url' ? t('bugReport.admin.url') :
+                  key === 'page' ? t('feedback.page', 'Bereich') :
                   key === 'language' ? t('bugReport.admin.language') :
                   key === 'email' ? t('bugReport.admin.email', 'E‑Mail') :
                   key === 'userAgent' ? t('bugReport.admin.userAgent') :
@@ -452,18 +715,17 @@ const BugTrackerAdmin: React.FC = () => {
                   </th>
                 );
               })}
-              <th className="px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-200">{t('bugReport.admin.save')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
             {isLoading && (
               <tr>
-                <td colSpan={visibleColumns.length + 1} className="px-3 py-6 text-center text-gray-500">{t('common.loading')}</td>
+                <td colSpan={visibleColumns.length} className="px-3 py-6 text-center text-gray-500">{t('common.loading')}</td>
               </tr>
             )}
             {!isLoading && processedReports.length === 0 && (
               <tr>
-                <td colSpan={visibleColumns.length + 1} className="px-3 py-6 text-center text-gray-500">{t('bugReport.admin.empty')}</td>
+                <td colSpan={visibleColumns.length} className="px-3 py-6 text-center text-gray-500">{t('bugReport.admin.empty')}</td>
               </tr>
             )}
             {!isLoading && processedReports.map((report) => {
@@ -483,6 +745,17 @@ const BugTrackerAdmin: React.FC = () => {
                           {report.appVersion && <div className="text-xs text-gray-500">v{report.appVersion}</div>}
                         </div>
                       ); break;
+                      case 'page': content = (
+                        <select
+                          value={report.page}
+                          onChange={(event) => updatePage(report.id, event.target.value as BugPage)}
+                          className="border rounded px-2 py-1"
+                        >
+                          {pageOptions.map((value) => (
+                            <option key={value} value={value}>{t(`feedback.pages.${value}`, value)}</option>
+                          ))}
+                        </select>
+                      ); break;
                       case 'language': content = report.language; break;
                       case 'userAgent': content = <span className="break-all">{report.userAgent}</span>; break;
                       case 'email': {
@@ -495,7 +768,17 @@ const BugTrackerAdmin: React.FC = () => {
                         const stripped = parts[0]?.trim().toLowerCase().startsWith('kategorie:') ? parts.slice(1).join('\n').trim() : raw.trim();
                         content = <span className="whitespace-pre-wrap break-words">{stripped || '—'}</span>;
                       } break;
-                      case 'category': content = t(`feedback.categories.${report.category}`); break;
+                      case 'category': content = (
+                        <select
+                          value={report.category}
+                          onChange={(event) => updateCategory(report.id, event.target.value as BugCategory)}
+                          className="border rounded px-2 py-1"
+                        >
+                          {categoryOptions.map((value) => (
+                            <option key={value} value={value}>{t(`feedback.categories.${value}`)}</option>
+                          ))}
+                        </select>
+                      ); break;
                       case 'status': content = (
                         <select
                           value={report.status}
@@ -525,16 +808,6 @@ const BugTrackerAdmin: React.FC = () => {
                       <td key={key} className="px-3 py-2 align-top" style={style}>{content}</td>
                     );
                   })}
-                  <td className="px-3 py-2">
-                    <button
-                      type="button"
-                      onClick={() => saveReport(report.id)}
-                      disabled={!dirty}
-                      className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-40"
-                    >
-                      {t('bugReport.admin.save')}
-                    </button>
-                  </td>
                 </tr>
               );
             })}
@@ -564,6 +837,7 @@ const BugTrackerAdmin: React.FC = () => {
                     {key === 'id' ? t('bugReport.admin.id') :
                      key === 'ts' ? t('bugReport.admin.created') :
                      key === 'url' ? t('bugReport.admin.url') :
+                     key === 'page' ? t('feedback.page', 'Bereich') :
                      key === 'language' ? t('bugReport.admin.language') :
                      key === 'email' ? t('bugReport.admin.email', 'E‑Mail') :
                      key === 'userAgent' ? t('bugReport.admin.userAgent') :
