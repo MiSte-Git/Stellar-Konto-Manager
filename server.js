@@ -152,11 +152,12 @@ void loadBugDb();
 const allowedStatus = new Set(['open', 'in_progress', 'closed']);
 const allowedPriority = new Set(['low', 'normal', 'high', 'urgent']);
 const allowedCategory = new Set(['bug', 'idea', 'improve', 'other']);
+const allowedPage = new Set(['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','multisigCreate','multisigEdit','settings','feedback','other']);
 const ADMIN_SECRET = process.env.BUGTRACKER_ADMIN_SECRET || '';
 
 app.post('/api/bugreport', async (req, res) => {
   try {
-    const { url, userAgent, language, description, ts, appVersion, status, priority, category, reportToken, contactEmail } = req.body || {};
+    const { url, userAgent, language, description, ts, appVersion, status, priority, category, page, reportToken, contactEmail } = req.body || {};
     const nowIso = new Date().toISOString();
     const clamp = (s = '') => String(s || '').slice(0, 5000);
     const emailNorm = typeof contactEmail === 'string' ? contactEmail.trim() : '';
@@ -173,6 +174,7 @@ app.post('/api/bugreport', async (req, res) => {
       status: allowedStatus.has(status) ? status : 'open',
       priority: allowedPriority.has(priority) ? priority : 'normal',
       category: allowedCategory.has(category) ? category : 'bug',
+      page: allowedPage.has(page) ? page : 'other',
       contactEmail: emailValid,
     };
     bugDb.items.unshift(item);
@@ -186,17 +188,23 @@ app.post('/api/bugreport', async (req, res) => {
 
 app.get('/api/bugreport', async (req, res) => {
   try {
-    let { limit = '20', offset = '0', status, priority, category, q, sort, dir } = req.query;
+    let { limit = '20', offset = '0', status, priority, category, page, q, sort, dir } = req.query;
     let items = bugDb.items.slice();
     if (status && allowedStatus.has(String(status))) items = items.filter((r) => r.status === status);
     if (priority && allowedPriority.has(String(priority))) items = items.filter((r) => r.priority === priority);
     if (category && allowedCategory.has(String(category))) items = items.filter((r) => r.category === category);
+    if (page) {
+      const pages = Array.isArray(page) ? page.map(String) : [String(page)];
+      const keep = new Set(pages.filter((p) => allowedPage.has(p)));
+      if (keep.size > 0) items = items.filter((r) => keep.has(String(r.page || 'other')));
+    }
     if (q && String(q).trim()) {
       const needle = String(q).trim().toLowerCase();
       items = items.filter((r) => {
         const desc = String(r.description || '');
         const email = r.contactEmail || '';
-        const fields = [String(r.id), r.ts, r.url, r.userAgent, r.language, r.category, r.status, r.priority, r.appVersion || '', desc, email];
+        const page = r.page || '';
+        const fields = [String(r.id), r.ts, r.url, r.userAgent, r.language, r.category, r.status, r.priority, r.appVersion || '', desc, email, page];
         return fields.some((s) => String(s || '').toLowerCase().includes(needle));
       });
     }
@@ -216,6 +224,7 @@ app.get('/api/bugreport', async (req, res) => {
           case 'status': return r.status || '';
           case 'priority': return r.priority || '';
           case 'appVersion': return r.appVersion || '';
+          case 'page': return r.page || '';
           default: return '';
         }
       };

@@ -1,6 +1,50 @@
 {
-  "lastId": 4,
+  "lastId": 7,
   "items": [
+    {
+      "id": 7,
+      "ts": "2025-10-27T20:32:33.953Z",
+      "url": "http://localhost:5173/STM/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "language": "de-DE",
+      "reportToken": "96b0739734cf7f94bcff1fe160cdd449",
+      "description": "Oh my dear Cindy! What a beautiful gift you gave me. 🙏 At the very moment I am sitting speechless on a bench in the city Forbes, in NSW. 'Recovering' ❤️ from your lovely message. 😍 Yes the moment we met yesterday was more than special. In the past it was so difficult to start a conversation, it was as if a kind of blockage stood between us, that made it impossible to make contact. And..... that was gone yesterday! 💥 Yep,  the cause were earfuckers, for sure! And yep, by kicking those assholes out, silence/stillness came. And trust, hope, love and a lot more!! I am so grateful for your words, I dont have the words to express it all! (I promised Emily not to use ChatGPT anymore to 'write' my messages! 😁) Also she said yesterday, independently from you, that I did the work! Can you imagine!??? And from you and from Bossie such a booster! 🚀🚀 Dear Cindy, hope to see you soon and to give a long warm hug. ❤️😘",
+      "appVersion": null,
+      "status": "open",
+      "priority": "normal",
+      "category": "bug",
+      "page": "other",
+      "contactEmail": "afaf@adfadf.com"
+    },
+    {
+      "id": 6,
+      "ts": "2025-10-27T09:51:25.996Z",
+      "url": "http://localhost:5173/STM/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "language": "de-DE",
+      "reportToken": "81cfc227215a43a67dd5fd751308cc88",
+      "description": "asdfasdf",
+      "appVersion": null,
+      "status": "open",
+      "priority": "normal",
+      "category": "idea",
+      "page": "sendPayment",
+      "contactEmail": null
+    },
+    {
+      "id": 5,
+      "ts": "2025-10-27T09:21:19.475Z",
+      "url": "http://localhost:5173/STM/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "language": "de-DE",
+      "reportToken": "c612cae0af0a0e56438cdbad0749bae4",
+      "description": "afdsf",
+      "appVersion": null,
+      "status": "open",
+      "priority": "normal",
+      "category": "idea",
+      "contactEmail": null
+    },
     {
       "id": 4,
       "ts": "2025-10-26T20:43:08.179Z",
@@ -10,7 +54,7 @@
       "reportToken": "e3ea472cb4d930f81bce62792f55fc46",
       "description": "Kategorie: Verbesserung\nasdfasf",
       "appVersion": null,
-      "status": "open",
+      "status": "closed",
       "priority": "normal",
       "category": "improve",
       "contactEmail": null
@@ -24,7 +68,7 @@
       "reportToken": "83e4952ac9b922d84fe0f7e4a39901a5",
       "description": "Kategorie: Idee\nasdfasdf",
       "appVersion": null,
-      "status": "open",
+      "status": "closed",
       "priority": "normal",
       "category": "idea",
       "contactEmail": null
@@ -37,7 +81,7 @@
       "language": "de-DE",
       "description": "Kategorie: Fehler\nfasdfasf",
       "appVersion": null,
-      "status": "open",
+      "status": "closed",
       "priority": "normal",
       "category": "bug"
     },
