@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { openMailto } from '../utils/openMailto.js';
+import { apiUrl } from '../utils/apiBase.js';
 
 /**
- * FeedbackForm: Bestehendes Feedback-Formular, das den E-Mail-Client öffnet
- * und parallel still /api/bugreport loggt. Diese Version nutzt den neuen
- * openMailto-Helfer, damit Claws-Mail unter Linux direkt per Backend geöffnet
- * werden kann und Windows/macOS wie gewohnt über mailto: laufen.
+ * FeedbackForm: Öffnet den E-Mail-Client über mailto: bzw. Backend-Compose (DEV/Linux)
+ * und erstellt parallel still einen Eintrag im Bugtracker.
  */
 export default function FeedbackForm(props) {
   const { t } = useTranslation();
@@ -43,15 +42,17 @@ export default function FeedbackForm(props) {
         status: 'open',
         priority: 'normal',
       };
-      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+      const json = JSON.stringify(payload);
+      const blob = new Blob([json], { type: 'application/json' });
+      const endpoint = apiUrl('bugreport');
       if (navigator.sendBeacon) {
-        navigator.sendBeacon('/api/bugreport', blob);
+        navigator.sendBeacon(endpoint, blob);
       } else {
-        await fetch('/api/bugreport', {
+        await fetch(endpoint, {
           method: 'POST',
           keepalive: true,
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+          body: json,
         });
       }
     } catch (error) {

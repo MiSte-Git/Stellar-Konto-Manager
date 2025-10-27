@@ -432,10 +432,17 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                   const ts = Date.parse(op.created_at || '');
                   if (fromTs) { const f = Date.parse(fromTs); if (!Number.isNaN(f) && ts < f) return false; }
                   if (toTs) { const tlim = Date.parse(toTs); if (!Number.isNaN(tlim) && ts > tlim) return false; }
+                  if (paymentsMemoQuery && paymentsMemoQuery.trim()) {
+                    const q = paymentsMemoQuery.trim().toLowerCase();
+                    const txMemo = op.transaction?.memo || op.transaction?.memo_text || memoMap[op.transaction_hash] || '';
+                    const memoLower = (txMemo || (op.memo ? String(op.memo) : '')).toLowerCase();
+                    const txLower = String(op.transaction_hash || '').toLowerCase();
+                    if (!(memoLower.includes(q) || txLower.includes(q))) return false;
+                  }
                   return true;
                 }).length === 0) && (
                   <tr>
-                    <td colSpan={7} className="py-2 text-gray-500">{t('balance.payments.empty')}</td>
+                    <td colSpan={8} className="py-2 text-gray-500">{t('balance.payments.empty')}</td>
                   </tr>
                 )}
               </tbody>
