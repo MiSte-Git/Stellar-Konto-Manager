@@ -115,6 +115,10 @@
       "empty": "Keine Einträge gefunden.",
       "loading": "Laden…",
       "resize": "Ziehen zum Anpassen",
+      "exportAll": "CSV (Alle)",
+      "exportError": "Export fehlgeschlagen",
+      "exportPage": "CSV (Seite)",
+      "exporting": "Exportiere…",
       "columns": {
         "title": "Spalten",
         "manage": "Spalten anpassen",
@@ -123,8 +127,13 @@
         "up": "Nach oben",
         "down": "Nach unten"
       },
-      "search": "Suche"
+      "csv": {
+        "comma": "Komma (,)",
+        "delimiter": "Trennzeichen",
+        "semicolon": "Semikolon (;)",
+        "tab": "Tabulator (Tab)"
       },
+      "search": "Suche",
       "col": {
         "id": "ID",
         "status": "Status",
@@ -133,7 +142,8 @@
         "desc": "Beschreibung",
         "ts": "Zeit"
       }
-    },
+    }
+  },
   "cache": {
     "clear": "Cache leeren",
     "consent": "Lokaler Cache aktivieren, um Abfragen zu beschleunigen?",
@@ -225,11 +235,26 @@
       "improve": "Verbesserung",
       "other": "Sonstiges"
     },
+    "page": "Bereich",
+    "pages": {
+      "start": "Global",
+      "trustlines": "Trustline(s) anzeigen",
+      "trustlineCompare": "Trustline(s) vergleichen",
+      "balance": "Kontoinformation anzeigen",
+      "xlmByMemo": "Nach Memo filtern",
+      "sendPayment": "Zahlung senden",
+      "investedTokens": "Token/Assets filtern",
+      "multisigCreate": "Konto erstellen",
+      "multisigEdit": "Multisig Konto bearbeiten",
+      "settings": "Einstellungen",
+      "feedback": "Feedback",
+      "other": "Sonstiges"
+    },
     "subject": "Betreff",
     "message": "Nachricht",
     "contactEmailOptional": "Kontakt E-Mail (optional)",
     "emailPlaceholder": "z. B. name@example.com",
-    "emailHint": "Wenn Antwort erwünscht, bitte E‑Mail eintragen.",
+    "emailHint": "Wenn Rückmelduung erwünscht, bitte E‑Mail eintragen.",
     "privacyHint": "Ihre Nachricht wird per E-Mail über Ihr eigenes Mailprogramm gesendet.",
     "sendButton": "E-Mail erstellen",
     "openedMailClient": "E-Mail-Client geöffnet.",
@@ -721,7 +746,7 @@
     },
     "overviewLine": "Zahlungseingänge: {{total}} • beteiligte Wallets: {{unique}}",
     "page": {
-      "noPublicKey": "Bitte gib zuerst einen Public Key ein.",
+      "noPublicKey": "Bitte gib zuerst einen Public Key ein, oder lade das Konto erneut.",
       "title": "XLM-Summe nach Memo"
     },
     "result": {
@@ -795,4 +820,5 @@
       "account": "Konto",
       "accountLabel": "Label"
     }
-    }}
+  }
+}
