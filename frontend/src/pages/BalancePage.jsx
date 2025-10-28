@@ -320,7 +320,7 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                   </th>
                   <th className="py-1 pr-2 whitespace-nowrap">
                     <span className="inline-flex items-center gap-2">
-                      {t('balance.payments.columns.tx')}
+                      {t('balance.payments.columns.txLabel', 'Tx')}
                       <select className="border rounded px-1 py-0.5 text-xs" value={explorerPref} onChange={(e)=>setExplorerPref(e.target.value)}>
                         <option value="expert">{t('balance.explorer.expert')}</option>
                         <option value="stellarchain">{t('balance.explorer.stellarchain')}</option>

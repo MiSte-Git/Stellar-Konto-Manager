@@ -15,6 +15,7 @@ function MainMenu({ onSelect }) {
     // Donate wurde in die Titelleiste verschoben
     { label: t('multisigCreate.menu'), value: 'multisigCreate', title: t('multisigCreate.menuHint') },
     { label: t('multisigEdit.menu'), value: 'multisigEdit', title: t('multisigEdit.menuHint') },
+    { label: t('menu.muxed', 'Muxed-Adressen verwalten'), value: 'muxed' },
     { label: t('settings.label'), value: 'settings' }
   ];
 

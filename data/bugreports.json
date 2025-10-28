@@ -1,6 +1,21 @@
 {
-  "lastId": 7,
+  "lastId": 8,
   "items": [
+    {
+      "id": 8,
+      "ts": "2025-10-28T07:55:17.464Z",
+      "url": "http://localhost:5173/STM/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "language": "de-DE",
+      "reportToken": "66008954875e8a97931b0fb13f12554e",
+      "description": "Eine eigene Seite um die gängigsten SChlagwörter aus der Blockchain und Stellarwelt zu erklären.",
+      "appVersion": null,
+      "status": "open",
+      "priority": "normal",
+      "category": "idea",
+      "page": "other",
+      "contactEmail": null
+    },
     {
       "id": 7,
       "ts": "2025-10-27T20:32:33.953Z",
