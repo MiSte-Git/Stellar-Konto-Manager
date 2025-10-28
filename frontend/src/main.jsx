@@ -62,6 +62,7 @@ import MultisigEditPage from './pages/MultisigEditPage.jsx';
 import BalancePage from './pages/BalancePage.jsx';
 import SendPaymentPage from './pages/SendPaymentPage.jsx';
 import FeedbackPage from './pages/FeedbackPage.jsx';
+import MuxedAccountsPage from './pages/MuxedAccountsPage.jsx';
 
 
 confirmAutoClear();
@@ -720,11 +721,13 @@ function Main() {
       )}
       {menuSelection === 'sendPayment' && (
         <SendPaymentPage
-          key={refreshToken}
           publicKey={sourcePublicKey}
           onBack={() => setMenuSelection(null)}
           initial={sendInit}
         />
+      )}
+      {menuSelection === 'muxed' && (
+        <MuxedAccountsPage publicKey={sourcePublicKey} onBack={() => setMenuSelection(null)} />
       )}
       {menuSelection === 'feedback' && (
         <div className="max-w-6xl mx-auto px-3">
@@ -746,7 +749,7 @@ function Main() {
       )}
        
        {menuSelection &&
-       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','multisigEdit','balance','sendPayment','feedback'].includes(menuSelection) && (
+       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','multisigEdit','balance','sendPayment','feedback','muxed'].includes(menuSelection) && (
          <div className="p-3 text-sm text-red-600">
            {t('menu.unknown', { value: String(menuSelection) })}
          </div>
