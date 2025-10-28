@@ -34,6 +34,7 @@
         "direction": "Richtung",
         "memo": "Memo",
         "tx": "Tx",
+        "txLabel": "Tx",
         "type": "Typ"
       },
       "empty": "Keine Vorgänge gefunden.",
@@ -254,7 +255,7 @@
     "message": "Nachricht",
     "contactEmailOptional": "Kontakt E-Mail (optional)",
     "emailPlaceholder": "z. B. name@example.com",
-    "emailHint": "Wenn Rückmelduung erwünscht, bitte E‑Mail eintragen.",
+          "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
     "privacyHint": "Ihre Nachricht wird per E-Mail über Ihr eigenes Mailprogramm gesendet.",
     "sendButton": "E-Mail erstellen",
     "openedMailClient": "E-Mail-Client geöffnet.",
@@ -340,7 +341,8 @@
     "xlmByMemo": "Nach Memo filtern",
     "sendPayment": "Zahlung senden",
     "feedback": "Feedback",
-    "donate": "Spenden"
+    "donate": "Spenden",
+    "muxed": "Muxed-Adressen verwalten"
   },
   "badges": {
     "testnet": "TESTNET"
@@ -819,6 +821,74 @@
       "none": "Keine Föderationsadresse definiert",
       "account": "Konto",
       "accountLabel": "Label"
+    }
+  },
+  "createAccount": {
+    "muxedId": "Muxed-ID",
+    "muxedInfo": "Mit der Muxed-ID wird eine M-Adresse (M...) erstellt. Sie zeigt auf dasselbe Konto wie die reguläre Adresse (G...).",
+    "muxedIdInvalid": "Die Muxed-ID muss eine Ganzzahl zwischen 0 und 18'446'744'073'709'551'615 sein.",
+    "muxedAddress": "Muxed-Adresse",
+    "muxedActivationInfo": "Muxed-Adressen sind Alias-Adressen. Sie müssen nicht separat aktiviert werden."
+  },
+  "muxed": {
+    "seo": {
+      "title": "Muxed-Konto erstellen/verwalten",
+      "description": "Muxed-Adress-Aliase (M...) für ein Stellar-Konto erstellen und verwalten. IDs generieren, Labels/Notizen hinzufügen, CSV exportieren/importieren."
+    },
+    "title": "Muxed-Konto erstellen/verwalten",
+    "explainer": "Erzeuge Alias-Adressen (M...) mit eigener Muxed-ID für ein bestehendes Konto. Die Alias-Adresse verweist immer auf dasselbe Konto.",
+    "selectBaseAccount": "Basis-Konto (G-Adresse)",
+    "selectPlaceholder": "Bitte Konto auswählen",
+    "baseAccountInfo": "Dieses Konto bleibt technisch der Besitzer. Die Muxed-Adresse (M...) zeigt nur auf dieses Konto.",
+    "generateButton": "Muxed-Konto erstellen",
+    "exportButton": "Exportieren",
+    "importButton": "Importieren",
+    "listTitle": "Vorhandene Muxed-Konten",
+    "none": "Keine Muxed-Konten gespeichert.",
+    "columns": {
+      "id": "Muxed-ID",
+      "address": "Muxed-Adresse",
+      "label": "Bezeichnung",
+      "note": "Notiz",
+      "createdAt": "Erstellt am",
+      "actions": "Aktionen"
+    },
+    "selectAll": "Alle auswählen",
+    "deleteSelected": "Auswahl löschen",
+    "deleteSuccess": "Auswahl gelöscht.",
+    "countLabel": "Anzahl",
+    "countInfo": "Anzahl neuer Muxed-Adressen, fortlaufende IDs.",
+    "invalidCount": "Bitte eine gültige Anzahl (>= 1) eingeben.",
+    "tooMany": "Bitte höchstens 100 auf einmal erstellen.",
+    "rangeOverflow": "Der ID-Bereich überschreitet die maximal zulässige Muxed-ID.",
+    "label": "Bezeichnung",
+    "labelInfo": "z. B. Mitarbeitername oder Zweck",
+    "note": "Notiz (optional)",
+    "noteInfo": "z. B. Abteilung / Projekt",
+    "generateSuccess": "Muxed-Adresse(n) erstellt.",
+    "editSaved": "Änderungen gespeichert.",
+    "save": "Speichern",
+    "edit": "Bearbeiten",
+    "copied": "In Zwischenablage kopiert.",
+    "createDialog": {
+      "confirm": "Erstellen",
+      "cancel": "Abbrechen"
+    },
+    "export": {
+      "filename": "muxed_accounts.csv",
+      "success": "Muxed-Konten erfolgreich exportiert.",
+      "failed": "Fehler beim Export der Muxed-Konten."
+    },
+    "import": {
+      "success": "Importiert: {{imported}} • Übersprungen: {{skipped}} • Fehler: {{errors}}.",
+      "failed": "Fehler beim Import."
+    },
+    "nav": "Muxed Accounts",
+    "error": {
+      "noBaseAccount": "Bitte ein bestehendes Konto auswählen.",
+      "noId": "Bitte eine Muxed-ID angeben.",
+      "invalidBaseAccount": "Die ausgewählte Basisadresse ist ungültig.",
+      "unknown": "Unbekannter Fehler bei der Muxed-Adress-Erzeugung."
     }
   }
 }

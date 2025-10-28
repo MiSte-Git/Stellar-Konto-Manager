@@ -1,0 +1,523 @@
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { buildMuxedAddress } from '../utils/muxed.js';
+import usePageMeta from '../utils/usePageMeta.js';
+import { listMuxed, addMuxed, removeMuxed, exportMuxedCsv, importMuxedCsvText } from '../utils/muxedStore.js';
+
+// TEMP DEBUG for muxed page investigations
+const DBG = {
+  log: (...args) => { try { console.debug('[MuxedAccountsPage]', ...args); } catch { /* noop */ } },
+  warn: (...args) => { try { console.warn('[MuxedAccountsPage]', ...args); } catch { /* noop */ } },
+  error: (...args) => { try { console.error('[MuxedAccountsPage]', ...args); } catch { /* noop */ } },
+};
+
+// Diese Seite holt sich den aktiven Account direkt aus localStorage.
+// So funktioniert die Erstellung von Muxed-Konten auch dann,
+// wenn der Aufrufer kein publicKey-Prop gesetzt hat
+// oder der Main-State noch nicht weitergereicht wurde.
+export default function MuxedAccountsPage({ publicKey }) {
+  const { t, i18n } = useTranslation();
+  const [result, setResult] = React.useState('');
+  const [error, setError] = React.useState('');
+  const [success, setSuccess] = React.useState('');
+  const [rows, setRows] = React.useState([]);
+  const [selected, setSelected] = React.useState(new Set());
+  const [countInput, setCountInput] = React.useState('1');
+  const [labelInput, setLabelInput] = React.useState('');
+  const [noteInput, setNoteInput] = React.useState('');
+
+  const [netLabel, setNetLabel] = React.useState(() => {
+    try {
+      return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET')
+        ? 'TESTNET'
+        : 'PUBLIC';
+    } catch {
+      return 'PUBLIC';
+    }
+  });
+
+  const [editingId, setEditingId] = React.useState(null);
+  const [editLabel, setEditLabel] = React.useState('');
+  const [editNote, setEditNote] = React.useState('');
+
+  const fileInputRef = React.useRef(null);
+
+
+
+  // Initial + bei Änderungen von publicKey / netLabel Liste laden
+  React.useEffect(() => {
+    DBG.log('effect(loadRows)', { publicKey, netLabel });
+    if (!publicKey) {
+      setRows([]);
+      setSelected(new Set());
+      return;
+    }
+    try {
+      const ls = listMuxed(publicKey, netLabel);
+      DBG.log('listMuxed ->', ls);
+      setRows(ls);
+    } catch (e) {
+      DBG.error('listMuxed failed', e);
+    }
+    setSelected(new Set());
+  }, [publicKey, netLabel]);
+
+  React.useEffect(() => {
+    const handler = (e) => {
+      try {
+        const v = (typeof e?.detail === 'string')
+          ? e.detail
+          : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+        DBG.log('stm-network-changed', { detail: e?.detail, resolved: v });
+        setNetLabel(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
+      } catch { /* noop */ }
+    };
+    window.addEventListener('stm-network-changed', handler);
+    return () => window.removeEventListener('stm-network-changed', handler);
+  }, []);
+
+  // SEO: set page title and description using i18n
+  const titleKey = 'muxed.seo.title';
+  const descKey = 'muxed.seo.description';
+  const hasTitleInLang = !!i18n.getResource?.(i18n.language, 'translation', titleKey);
+  const hasDescInLang = !!i18n.getResource?.(i18n.language, 'translation', descKey);
+  const metaTitle = hasTitleInLang ? t(titleKey) : 'Muxed account create/manage';
+  const metaDesc = hasDescInLang ? t(descKey) : 'Create and manage muxed M-address aliases for a Stellar account. Generate IDs, add labels/notes, export/import CSV.';
+  usePageMeta(metaTitle, metaDesc);
+
+  const toggleAll = React.useCallback(() => {
+    if (!rows.length) return;
+    const allIds = rows.map(r => String(r.id));
+    const allSelected = allIds.every(id => selected.has(id));
+    setSelected(new Set(allSelected ? [] : allIds));
+  }, [rows, selected]);
+
+  const toggleOne = React.useCallback((id) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      const k = String(id);
+      if (next.has(k)) next.delete(k); else next.add(k);
+      return next;
+    });
+  }, []);
+
+  const onDeleteSelected = React.useCallback(() => {
+    DBG.log('onDeleteSelected', { selected: Array.from(selected) });
+    if (!publicKey) return;
+    if (selected.size === 0) return;
+    const ids = Array.from(selected);
+    const { removed } = removeMuxed(publicKey, ids, netLabel);
+    DBG.log('removeMuxed ->', { removed });
+    if (removed > 0) {
+      const next = listMuxed(publicKey, netLabel);
+      DBG.log('after delete listMuxed ->', next);
+      setRows(next);
+      setSelected(new Set());
+      setSuccess(t('muxed.deleteSuccess', 'Auswahl gelöscht.'));
+      setError('');
+    }
+  }, [publicKey, selected, netLabel, t]);
+
+  const onExport = React.useCallback(() => {
+    DBG.log('onExport', { publicKey, netLabel });
+    if (!publicKey) {
+      setError(t('muxed.error.noBaseAccount', 'Bitte ein bestehendes Konto auswählen.'));
+      return;
+    }
+    try {
+      exportMuxedCsv(publicKey, t('muxed.export.filename', 'muxed_accounts.csv'), netLabel);
+      setSuccess(t('muxed.export.success', 'Muxed-Konten erfolgreich exportiert.'));
+      setError('');
+    } catch (e) {
+      DBG.error('exportMuxedCsv failed', e);
+      setError(t('muxed.export.failed', 'Fehler beim Export der Muxed-Konten.'));
+    }
+  }, [publicKey, netLabel, t]);
+
+  const onImportClick = React.useCallback(() => {
+    DBG.log('onImportClick');
+    if (!publicKey) {
+      setError(t('muxed.error.noBaseAccount', 'Bitte ein bestehendes Konto auswählen.'));
+      return;
+    }
+    setError('');
+    setSuccess('');
+    fileInputRef.current?.click();
+  }, [publicKey, t]);
+
+  const onImportFileChange = React.useCallback((e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const txt = String(reader.result || '');
+        DBG.log('onImportFileChange loaded file, size', txt.length);
+        const res = importMuxedCsvText(publicKey, txt, netLabel);
+        DBG.log('importMuxedCsvText ->', res);
+        setRows(listMuxed(publicKey, netLabel));
+        setSelected(new Set());
+        setSuccess(t('muxed.import.success', 'Importiert: {{imported}} • Übersprungen: {{skipped}} • Fehler: {{errors}}.', res));
+        setError('');
+      } catch (err) {
+        DBG.error('importMuxedCsvText failed', err);
+        setError(t('muxed.import.failed', 'Fehler beim Import.'));
+      } finally {
+        e.target.value = '';
+      }
+    };
+    reader.onerror = () => {
+      setError(t('muxed.import.failed', 'Fehler beim Import.'));
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  }, [publicKey, netLabel, t]);
+
+  // Direkt erstellen. Kein aufgeklapptes Panel mehr.
+  const onGenerate = React.useCallback(() => {
+    DBG.log('onGenerate start', { publicKey, countInput, netLabel });
+    setResult('');
+    setError('');
+    setSuccess('');
+
+    if (!publicKey) {
+      setError(t('muxed.error.noBaseAccount', 'Please select an existing account.'));
+      return;
+    }
+
+    const rawCount = (countInput || '1').trim();
+    const countNum = parseInt(rawCount, 10);
+    if (!Number.isFinite(countNum) || countNum < 1) {
+      setError(t('muxed.invalidCount', 'Please enter a valid amount (>= 1).'));
+      return;
+    }
+    if (countNum > 100) {
+      setError(t('muxed.tooMany', 'Please create at most 100 at once.'));
+      return;
+    }
+
+    try {
+      // höchste vergebene ID bestimmen
+      const currentMax = rows.reduce((m, r) => {
+        try { const v = BigInt(r.id); return v > m ? v : m; } catch { return m; }
+      }, 0n);
+      const startId = (rows.length === 0 ? 1n : currentMax + 1n);
+      const MAX = 18446744073709551615n;
+      const lastId = startId + BigInt(countNum - 1);
+      if (lastId > MAX) {
+        setError(t('muxed.rangeOverflow', 'The ID range exceeds the maximum allowed muxed ID.'));
+        return;
+      }
+
+      let lastAddress = '';
+      for (let i = 0; i < countNum; i++) {
+        const id = startId + BigInt(i);
+        const idStr = id.toString();
+        DBG.log('buildMuxedAddress()', { idStr });
+        const m = buildMuxedAddress(publicKey, idStr);
+        DBG.log('buildMuxedAddress ->', m);
+        lastAddress = m;
+        addMuxed(
+          publicKey,
+          {
+            id: idStr,
+            address: m,
+            label: labelInput.trim(),
+            note: noteInput.trim(),
+          },
+          netLabel
+        );
+      }
+
+      const next = listMuxed(publicKey, netLabel);
+      DBG.log('after generate listMuxed ->', next);
+      setRows(next);
+      setSelected(new Set());
+      setResult(countNum === 1 ? lastAddress : '');
+      setSuccess(t('muxed.generateSuccess', 'Muxed-Adresse(n) erstellt.'));
+      setLabelInput('');
+      setNoteInput('');
+    } catch (err) {
+      DBG.error('onGenerate failed', err);
+      const msg = String(err?.message || '');
+      const detail = msg.startsWith('submitTransaction.failed:')
+        ? msg.slice('submitTransaction.failed:'.length)
+        : msg;
+      setError(t(detail, t('muxed.error.unknown', 'Unknown error while generating muxed address.')));
+    }
+  }, [publicKey, countInput, rows, labelInput, noteInput, netLabel, t]);
+
+  const onCopy = React.useCallback(async (text) => {
+    DBG.log('onCopy', text);
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      setSuccess(t('muxed.copied', 'Copied to clipboard.'));
+      setError('');
+    } catch (e) {
+      DBG.error('copy failed', e);
+      setError(t('muxed.import.failed', 'Fehler beim Import.'));
+    }
+  }, [t]);
+
+  const startEdit = React.useCallback((row) => {
+    DBG.log('startEdit', row);
+    setEditingId(String(row.id));
+    setEditLabel(row.label || '');
+    setEditNote(row.note || '');
+  }, []);
+
+  const cancelEdit = React.useCallback(() => {
+    DBG.log('cancelEdit');
+    setEditingId(null);
+    setEditLabel('');
+    setEditNote('');
+  }, []);
+
+  const saveEdit = React.useCallback(() => {
+    DBG.log('saveEdit', { editingId, editLabel, editNote });
+    if (!editingId || !publicKey) return;
+    try {
+      const row = rows.find(r => String(r.id) === String(editingId));
+      if (!row) return;
+      addMuxed(publicKey, { id: row.id, address: row.address, label: editLabel, note: editNote }, netLabel);
+      setRows(listMuxed(publicKey, netLabel));
+      setSuccess(t('muxed.editSaved', 'Saved changes.'));
+      setError('');
+      cancelEdit();
+    } catch (e) {
+      DBG.error('saveEdit failed', e);
+      setError(t('muxed.import.failed', 'Fehler beim Import.'));
+    }
+  }, [editingId, editLabel, editNote, publicKey, rows, netLabel, t, cancelEdit]);
+
+  if (!publicKey) {
+    DBG.warn('render with no publicKey');
+    return (
+      <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
+        {t('investedTokens.hintEnterPublicKey')}
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-3xl mx-auto px-3">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-xl font-semibold">{t('muxed.title', 'Muxed account create/manage')}</h2>
+      </div>
+
+      <p className="text-sm text-gray-700 dark:text-gray-200 mb-4">{t('muxed.explainer', 'Create M-addresses that point to the same account, distinguished by ID.')}</p>
+
+      <div className="space-y-3">
+        <div>
+          <label className="block text-sm font-medium mb-1">{t('muxed.selectBaseAccount', 'Base account (G-address)')}</label>
+          {publicKey ? (
+            <div className="w-full border rounded p-2 font-mono bg-gray-50 text-gray-900" aria-readonly="true">
+              {publicKey}
+            </div>
+          ) : (
+            <div className="w-full border rounded p-2 font-mono bg-gray-50 text-gray-400 italic" aria-readonly="true">
+              {t('muxed.selectPlaceholder', 'Please select account')}
+            </div>
+          )}
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+            {t('muxed.baseAccountInfo', 'The M-address will always point to this base account.')}
+          </p>
+        </div>
+
+        {/* Erstellen + Import/Export jetzt in einem festen Block. Kein Aufklappen mehr. */}
+        <div className="border rounded p-3 space-y-3">
+          <div className="flex flex-col md:flex-row md:items-start md:gap-3">
+            <div className="flex-1 mb-3 md:mb-0">
+              <label className="block text-sm font-medium mb-1">{t('muxed.countLabel', 'Anzahl')}</label>
+              <input
+                type="number"
+                min="1"
+                max="100"
+                className="w-full border rounded p-2"
+                placeholder="1"
+                value={countInput}
+                onChange={(e) => setCountInput(e.target.value)}
+              />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                {t('muxed.countInfo', 'Anzahl neuer Muxed-Adressen, fortlaufende IDs.')}
+              </p>
+            </div>
+
+            <div className="flex-1 mb-3 md:mb-0">
+              <label className="block text-sm font-medium mb-1">{t('muxed.label', 'Bezeichnung')}</label>
+              <input
+                type="text"
+                className="w-full border rounded p-2"
+                value={labelInput}
+                onChange={(e) => setLabelInput(e.target.value)}
+              />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                {t('muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}
+              </p>
+            </div>
+
+            <div className="flex-1 mb-3 md:mb-0">
+              <label className="block text-sm font-medium mb-1">{t('muxed.note', 'Notiz (optional)')}</label>
+              <input
+                type="text"
+                className="w-full border rounded p-2"
+                value={noteInput}
+                onChange={(e) => setNoteInput(e.target.value)}
+              />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                {t('muxed.noteInfo', 'z. B. Abteilung / Projekt')}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={onGenerate}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              {t('muxed.generateButton', 'Create muxed account')}
+            </button>
+
+            <button
+              type="button"
+              onClick={onExport}
+              className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
+              disabled={!rows.length}
+            >
+              {t('muxed.exportButton', 'Exportieren')}
+            </button>
+
+            <button
+              type="button"
+              onClick={onImportClick}
+              className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              {t('muxed.importButton', 'Importieren')}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv,text/csv"
+              className="hidden"
+              onChange={onImportFileChange}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <h3 className="font-semibold mb-2">{t('muxed.listTitle', 'Existing muxed accounts')}</h3>
+          {rows.length === 0 ? (
+            <div className="text-sm text-gray-600 dark:text-gray-300">{t('muxed.none', 'No muxed accounts stored.')}</div>
+          ) : (
+            <div className="overflow-x-auto border rounded">
+              <table className="min-w-full text-sm">
+                <thead className="bg-gray-50 dark:bg-gray-800">
+                  <tr>
+                    <th className="p-2 text-left w-10">
+                      <input
+                        type="checkbox"
+                        aria-label={t('muxed.selectAll', 'Select all')}
+                        onChange={toggleAll}
+                        checked={rows.length>0 && rows.every(r => selected.has(String(r.id)))} />
+                    </th>
+                    <th className="p-2 text-left">{t('muxed.columns.id', 'Muxed ID')}</th>
+                    <th className="p-2 text-left">{t('muxed.columns.address', 'Muxed address')}</th>
+                    <th className="p-2 text-left">{t('muxed.columns.label', 'Bezeichnung')}</th>
+                    <th className="p-2 text-left">{t('muxed.columns.note', 'Notiz')}</th>
+                    <th className="p-2 text-left">{t('muxed.columns.createdAt', 'Created')}</th>
+                    <th className="p-2 text-left">{t('muxed.columns.actions', 'Actions')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map(r => (
+                    <tr key={r.id} className="border-t align-top">
+                      <td className="p-2 align-top">
+                        <input
+                          type="checkbox"
+                          checked={selected.has(String(r.id))}
+                          onChange={() => toggleOne(r.id)} />
+                      </td>
+                      <td className="p-2 align-top font-mono">{r.id}</td>
+                      <td className="p-2 align-top font-mono break-all">
+                        <div className="flex items-center gap-2">
+                          <span className="break-all">{r.address}</span>
+                          <button
+                            type="button"
+                            className="px-2 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                            onClick={() => onCopy(r.address)}
+                          >
+                            {t('option.copy', 'Copy')}
+                          </button>
+                        </div>
+                      </td>
+                      <td className="p-2 align-top break-all">
+                        {editingId === String(r.id) ? (
+                          <input type="text" className="w-full border rounded p-1" value={editLabel} onChange={(e) => setEditLabel(e.target.value)} />
+                        ) : (
+                          r.label || (<span className="text-gray-400">{t('muxed.label', 'Bezeichnung')}</span>)
+                        )}
+                      </td>
+                      <td className="p-2 align-top break-all">
+                        {editingId === String(r.id) ? (
+                          <input type="text" className="w-full border rounded p-1" value={editNote} onChange={(e) => setEditNote(e.target.value)} />
+                        ) : (
+                          r.note || ''
+                        )}
+                      </td>
+                      <td className="p-2 align-top">{new Date(r.createdAt).toLocaleString()}</td>
+                      <td className="p-2 align-top">
+                        {editingId === String(r.id) ? (
+                          <div className="flex gap-2">
+                            <button type="button" className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700" onClick={saveEdit}>{t('muxed.save', 'Save')}</button>
+                            <button type="button" className="px-2 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800" onClick={cancelEdit}>{t('muxed.createDialog.cancel', 'Cancel')}</button>
+                          </div>
+                        ) : (
+                          <button type="button" className="px-2 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => startEdit(r)}>{t('muxed.edit', 'Edit')}</button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {rows.length > 0 && (
+            <div className="mt-2 flex items-center gap-2">
+              <button type="button" onClick={onDeleteSelected} className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50" disabled={selected.size===0}>
+                {t('muxed.deleteSelected', 'Delete selected')}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {error && (
+          <div className="text-sm text-red-700 border border-red-400 rounded p-2">{error}</div>
+        )}
+        {success && !error && (
+          <div className="text-sm text-green-700 border border-green-400 rounded p-2">{success}</div>
+        )}
+
+        {result && (
+          <div>
+            <label className="block text-sm font-medium mb-1">{t('createAccount.muxedAddress', 'Muxed address')}</label>
+            <div className="flex items-center gap-2">
+              <input type="text" className="w-full border rounded p-2 font-mono" value={result} readOnly />
+              <button type="button" className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => onCopy(result)}>{t('option.copy', 'Copy')}</button>
+            </div>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('createAccount.muxedActivationInfo', 'Muxed addresses are aliases. They do not need activation.')}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
