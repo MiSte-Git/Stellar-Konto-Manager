@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildMuxedAddress } from '../utils/muxed.js';
 import usePageMeta from '../utils/usePageMeta.js';
-import { listMuxed, addMuxed, removeMuxed, exportMuxedCsv, importMuxedCsvText } from '../utils/muxedStore.js';
+import { listMuxed, addMuxed, removeMuxed, exportMuxedCsv, importMuxedCsvText, exportMuxedTemplateCsv } from '../utils/muxedStore.js';
 
 // TEMP DEBUG for muxed page investigations
 const DBG = {
@@ -23,8 +23,6 @@ export default function MuxedAccountsPage({ publicKey }) {
   const [rows, setRows] = React.useState([]);
   const [selected, setSelected] = React.useState(new Set());
   const [countInput, setCountInput] = React.useState('1');
-  const [labelInput, setLabelInput] = React.useState('');
-  const [noteInput, setNoteInput] = React.useState('');
 
   const [netLabel, setNetLabel] = React.useState(() => {
     try {
@@ -39,8 +37,60 @@ export default function MuxedAccountsPage({ publicKey }) {
   const [editingId, setEditingId] = React.useState(null);
   const [editLabel, setEditLabel] = React.useState('');
   const [editNote, setEditNote] = React.useState('');
+  const [focusField, setFocusField] = React.useState('label');
 
   const fileInputRef = React.useRef(null);
+
+  const labelInputRef = React.useRef(null);
+  const noteInputRef = React.useRef(null);
+
+  const [sort, setSort] = React.useState({ by: 'id', dir: 'asc' });
+
+  const onSort = React.useCallback((key) => {
+    setSort((s) => (
+      s.by === key
+        ? { by: s.by, dir: s.dir === 'asc' ? 'desc' : 'asc' }
+        : { by: key, dir: 'asc' }
+    ));
+  }, []);
+
+  const sortedRows = React.useMemo(() => {
+    const arr = [...rows];
+    const dir = sort.dir === 'asc' ? 1 : -1;
+    const cmpStr = (a, b) => String(a || '').localeCompare(String(b || ''));
+    const cmpBig = (a, b) => {
+      try {
+        const ai = BigInt(a);
+        const bi = BigInt(b);
+        return ai < bi ? -1 : ai > bi ? 1 : 0;
+      } catch {
+        return cmpStr(a, b);
+      }
+    };
+    const cmpDate = (a, b) => {
+      const ta = Date.parse(a || '') || 0;
+      const tb = Date.parse(b || '') || 0;
+      return ta < tb ? -1 : ta > tb ? 1 : 0;
+    };
+    arr.sort((ra, rb) => {
+      let c = 0;
+      switch (sort.by) {
+        case 'id': c = cmpBig(ra.id, rb.id); break;
+        case 'address': c = cmpStr(ra.address, rb.address); break;
+        case 'label': c = cmpStr(ra.label, rb.label); break;
+        case 'note': c = cmpStr(ra.note, rb.note); break;
+        case 'createdAt': c = cmpDate(ra.createdAt, rb.createdAt); break;
+        default: c = 0;
+      }
+      return c * dir;
+    });
+    return arr;
+  }, [rows, sort]);
+
+  const sortIndicator = React.useCallback((col) => {
+    if (sort.by !== col) return null;
+    return (<span aria-hidden="true">{sort.dir === 'asc' ? '▲' : '▼'}</span>);
+  }, [sort]);
 
 
 
@@ -134,6 +184,17 @@ export default function MuxedAccountsPage({ publicKey }) {
     }
   }, [publicKey, netLabel, t]);
 
+  const onExportTemplate = React.useCallback(() => {
+    try {
+      exportMuxedTemplateCsv('muxed_accounts_template.csv');
+      setSuccess(t('muxed.exportTemplateSuccess', 'Template erfolgreich exportiert.'));
+      setError('');
+    } catch (e) {
+      DBG.error('exportMuxedTemplateCsv failed', e);
+      setError(t('muxed.exportTemplateFailed', 'Fehler beim Export des Templates.'));
+    }
+  }, [t]);
+
   const onImportClick = React.useCallback(() => {
     DBG.log('onImportClick');
     if (!publicKey) {
@@ -222,8 +283,8 @@ export default function MuxedAccountsPage({ publicKey }) {
           {
             id: idStr,
             address: m,
-            label: labelInput.trim(),
-            note: noteInput.trim(),
+            label: '',
+            note: '',
           },
           netLabel
         );
@@ -235,8 +296,6 @@ export default function MuxedAccountsPage({ publicKey }) {
       setSelected(new Set());
       setResult(countNum === 1 ? lastAddress : '');
       setSuccess(t('muxed.generateSuccess', 'Muxed-Adresse(n) erstellt.'));
-      setLabelInput('');
-      setNoteInput('');
     } catch (err) {
       DBG.error('onGenerate failed', err);
       const msg = String(err?.message || '');
@@ -245,7 +304,7 @@ export default function MuxedAccountsPage({ publicKey }) {
         : msg;
       setError(t(detail, t('muxed.error.unknown', 'Unknown error while generating muxed address.')));
     }
-  }, [publicKey, countInput, rows, labelInput, noteInput, netLabel, t]);
+  }, [publicKey, countInput, rows, netLabel, t]);
 
   const onCopy = React.useCallback(async (text) => {
     DBG.log('onCopy', text);
@@ -268,11 +327,12 @@ export default function MuxedAccountsPage({ publicKey }) {
     }
   }, [t]);
 
-  const startEdit = React.useCallback((row) => {
-    DBG.log('startEdit', row);
+  const startEdit = React.useCallback((row, field = 'label') => {
+    DBG.log('startEdit', row, field);
     setEditingId(String(row.id));
     setEditLabel(row.label || '');
     setEditNote(row.note || '');
+    setFocusField(field === 'note' ? 'note' : 'label');
   }, []);
 
   const cancelEdit = React.useCallback(() => {
@@ -299,6 +359,25 @@ export default function MuxedAccountsPage({ publicKey }) {
     }
   }, [editingId, editLabel, editNote, publicKey, rows, netLabel, t, cancelEdit]);
 
+  const handleInlineBlur = React.useCallback((e) => {
+    const rt = e?.relatedTarget || null;
+    if (rt && (rt === labelInputRef.current || rt === noteInputRef.current)) {
+      return; // focus remains within the same row's edit inputs; don't save yet
+    }
+    // otherwise, focus left the edit area -> save
+    saveEdit();
+  }, [saveEdit]);
+
+  React.useEffect(() => {
+    if (!editingId) return;
+    const el = focusField === 'note' ? noteInputRef.current : labelInputRef.current;
+    if (el && typeof el.focus === 'function') {
+      setTimeout(() => {
+        try { el.focus({ preventScroll: true }); } catch { el.focus(); }
+      }, 0);
+    }
+  }, [editingId, focusField]);
+
   if (!publicKey) {
     DBG.warn('render with no publicKey');
     return (
@@ -309,7 +388,7 @@ export default function MuxedAccountsPage({ publicKey }) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-3">
+    <div className="max-w-6xl mx-auto px-3">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-xl font-semibold">{t('muxed.title', 'Muxed account create/manage')}</h2>
       </div>
@@ -336,45 +415,19 @@ export default function MuxedAccountsPage({ publicKey }) {
         {/* Erstellen + Import/Export jetzt in einem festen Block. Kein Aufklappen mehr. */}
         <div className="border rounded p-3 space-y-3">
           <div className="flex flex-col md:flex-row md:items-start md:gap-3">
-            <div className="flex-1 mb-3 md:mb-0">
+            <div className="mb-3 md:mb-0">
               <label className="block text-sm font-medium mb-1">{t('muxed.countLabel', 'Anzahl')}</label>
               <input
                 type="number"
                 min="1"
                 max="100"
-                className="w-full border rounded p-2"
+                className="border rounded p-2 w-36 sm:w-44"
                 placeholder="1"
                 value={countInput}
                 onChange={(e) => setCountInput(e.target.value)}
               />
               <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                 {t('muxed.countInfo', 'Anzahl neuer Muxed-Adressen, fortlaufende IDs.')}
-              </p>
-            </div>
-
-            <div className="flex-1 mb-3 md:mb-0">
-              <label className="block text-sm font-medium mb-1">{t('muxed.label', 'Bezeichnung')}</label>
-              <input
-                type="text"
-                className="w-full border rounded p-2"
-                value={labelInput}
-                onChange={(e) => setLabelInput(e.target.value)}
-              />
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                {t('muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}
-              </p>
-            </div>
-
-            <div className="flex-1 mb-3 md:mb-0">
-              <label className="block text-sm font-medium mb-1">{t('muxed.note', 'Notiz (optional)')}</label>
-              <input
-                type="text"
-                className="w-full border rounded p-2"
-                value={noteInput}
-                onChange={(e) => setNoteInput(e.target.value)}
-              />
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                {t('muxed.noteInfo', 'z. B. Abteilung / Projekt')}
               </p>
             </div>
           </div>
@@ -399,6 +452,15 @@ export default function MuxedAccountsPage({ publicKey }) {
 
             <button
               type="button"
+              onClick={onExportTemplate}
+              className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              {t('muxed.exportTemplateButton', 'Template exportieren')}
+            </button>
+
+
+            <button
+              type="button"
               onClick={onImportClick}
               className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
             >
@@ -412,6 +474,10 @@ export default function MuxedAccountsPage({ publicKey }) {
               onChange={onImportFileChange}
             />
           </div>
+
+          <p className="text-xs text-gray-600 dark:text-gray-400">
+            {t('muxed.import.hint', 'Import supports CSV with headers. Delimiters comma, semicolon and tab are auto-detected. Unknown columns are ignored. Formats: extended (network,basePublicKey,muxedId,label,note,createdAt) or template (muxedId,label,note).')}
+          </p>
         </div>
 
         <div className="mt-6">
@@ -430,16 +496,35 @@ export default function MuxedAccountsPage({ publicKey }) {
                         onChange={toggleAll}
                         checked={rows.length>0 && rows.every(r => selected.has(String(r.id)))} />
                     </th>
-                    <th className="p-2 text-left">{t('muxed.columns.id', 'Muxed ID')}</th>
-                    <th className="p-2 text-left">{t('muxed.columns.address', 'Muxed address')}</th>
-                    <th className="p-2 text-left">{t('muxed.columns.label', 'Bezeichnung')}</th>
-                    <th className="p-2 text-left">{t('muxed.columns.note', 'Notiz')}</th>
-                    <th className="p-2 text-left">{t('muxed.columns.createdAt', 'Created')}</th>
-                    <th className="p-2 text-left">{t('muxed.columns.actions', 'Actions')}</th>
+                    <th className="p-2 text-left">
+                      <button type="button" className="inline-flex items-center gap-1" onClick={() => onSort('id')}>
+                        {t('muxed.columns.id', 'Muxed ID')} {sortIndicator('id')}
+                      </button>
+                    </th>
+                    <th className="p-2 text-left">
+                      <button type="button" className="inline-flex items-center gap-1" onClick={() => onSort('address')}>
+                        {t('muxed.columns.address', 'Muxed address')} {sortIndicator('address')}
+                      </button>
+                    </th>
+                    <th className="p-2 text-left" title={t('muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}>
+                      <button type="button" className="inline-flex items-center gap-1" onClick={() => onSort('label')}>
+                        {t('muxed.columns.label', 'Bezeichnung')} {sortIndicator('label')}
+                      </button>
+                    </th>
+                    <th className="p-2 text-left" title={t('muxed.noteInfo', 'z. B. Abteilung / Projekt')}>
+                      <button type="button" className="inline-flex items-center gap-1" onClick={() => onSort('note')}>
+                        {t('muxed.columns.note', 'Notiz')} {sortIndicator('note')}
+                      </button>
+                    </th>
+                    <th className="p-2 text-left">
+                      <button type="button" className="inline-flex items-center gap-1" onClick={() => onSort('createdAt')}>
+                        {t('muxed.columns.createdAt', 'Created')} {sortIndicator('createdAt')}
+                      </button>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.map(r => (
+                  {sortedRows.map(r => (
                     <tr key={r.id} className="border-t align-top">
                       <td className="p-2 align-top">
                         <input
@@ -449,42 +534,59 @@ export default function MuxedAccountsPage({ publicKey }) {
                       </td>
                       <td className="p-2 align-top font-mono">{r.id}</td>
                       <td className="p-2 align-top font-mono break-all">
-                        <div className="flex items-center gap-2">
-                          <span className="break-all">{r.address}</span>
-                          <button
-                            type="button"
-                            className="px-2 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-                            onClick={() => onCopy(r.address)}
-                          >
-                            {t('option.copy', 'Copy')}
-                          </button>
-                        </div>
+                        <span className="break-all">{r.address}</span>
                       </td>
                       <td className="p-2 align-top break-all">
                         {editingId === String(r.id) ? (
-                          <input type="text" className="w-full border rounded p-1" value={editLabel} onChange={(e) => setEditLabel(e.target.value)} />
+                          <input
+                            type="text"
+                            className="w-full border rounded p-1"
+                            title={t('muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}
+                            value={editLabel}
+                            onChange={(e) => setEditLabel(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') cancelEdit(); }}
+                            onBlur={handleInlineBlur}
+                            ref={labelInputRef}
+                          />
                         ) : (
-                          r.label || (<span className="text-gray-400">{t('muxed.label', 'Bezeichnung')}</span>)
+                          <span
+                            className="cursor-text"
+                            title={t('muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}
+                            tabIndex={0}
+                            role="button"
+                            onClick={() => startEdit(r, 'label')}
+                            onKeyDown={(e) => { if (e.key === 'Enter') startEdit(r, 'label'); }}
+                          >
+                            {r.label || (<span className="text-gray-400">{t('muxed.label', 'Bezeichnung')}</span>)}
+                          </span>
                         )}
                       </td>
                       <td className="p-2 align-top break-all">
                         {editingId === String(r.id) ? (
-                          <input type="text" className="w-full border rounded p-1" value={editNote} onChange={(e) => setEditNote(e.target.value)} />
+                          <input
+                            type="text"
+                            className="w-full border rounded p-1"
+                            title={t('muxed.noteInfo', 'z. B. Abteilung / Projekt')}
+                            value={editNote}
+                            onChange={(e) => setEditNote(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') cancelEdit(); }}
+                            onBlur={handleInlineBlur}
+                            ref={noteInputRef}
+                          />
                         ) : (
-                          r.note || ''
+                          <span
+                            className="cursor-text"
+                            title={t('muxed.noteInfo', 'z. B. Abteilung / Projekt')}
+                            tabIndex={0}
+                            role="button"
+                            onClick={() => startEdit(r, 'note')}
+                            onKeyDown={(e) => { if (e.key === 'Enter') startEdit(r, 'note'); }}
+                          >
+                            {r.note || (<span className="text-gray-400">{t('muxed.columns.note', 'Notiz')}</span>)}
+                          </span>
                         )}
                       </td>
                       <td className="p-2 align-top">{new Date(r.createdAt).toLocaleString()}</td>
-                      <td className="p-2 align-top">
-                        {editingId === String(r.id) ? (
-                          <div className="flex gap-2">
-                            <button type="button" className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700" onClick={saveEdit}>{t('muxed.save', 'Save')}</button>
-                            <button type="button" className="px-2 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800" onClick={cancelEdit}>{t('muxed.createDialog.cancel', 'Cancel')}</button>
-                          </div>
-                        ) : (
-                          <button type="button" className="px-2 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => startEdit(r)}>{t('muxed.edit', 'Edit')}</button>
-                        )}
-                      </td>
                     </tr>
                   ))}
                 </tbody>

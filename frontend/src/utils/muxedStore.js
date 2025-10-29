@@ -122,11 +122,11 @@ export function removeMuxed(publicKey, ids, net) {
 // exportMuxedCsv(publicKey, filename, net?)
 // Build and download a CSV for entries of this publicKey
 // Columns: basePublicKey, muxedId, muxedAddress, label, note, createdAt
-export function exportMuxedCsv(publicKey, filename = 'muxed_accounts.csv', net) {
+export function exportMuxedCsv(publicKey, filename = 'muxed_accounts.csv', net, delimiter = ',') {
   if (!publicKey) return;
   const network = _getNet(net);
   const rows = listMuxed(publicKey, network);
-  try { console.debug('[muxedStore.exportMuxedCsv]', { publicKey, network, count: rows.length, filename }); } catch { /* noop */ }
+  try { console.debug('[muxedStore.exportMuxedCsv]', { publicKey, network, count: rows.length, filename, delimiter }); } catch { /* noop */ }
 
   const headers = [
     'network',
@@ -141,14 +141,14 @@ export function exportMuxedCsv(publicKey, filename = 'muxed_accounts.csv', net) 
   function esc(v) {
     if (v === undefined || v === null) return '';
     const s = String(v);
-    if (s.includes('"') || s.includes(',') || s.includes('\n')) {
+    if (s.includes('"') || s.includes(delimiter) || s.includes('\n')) {
       return '"' + s.replace(/"/g, '""') + '"';
     }
     return s;
   }
 
   const lines = [];
-  lines.push(headers.join(','));
+  lines.push(headers.join(delimiter));
   for (const r of rows) {
     lines.push([
       esc(network),
@@ -158,7 +158,7 @@ export function exportMuxedCsv(publicKey, filename = 'muxed_accounts.csv', net) 
       esc(r.label || ''),
       esc(r.note || ''),
       esc(r.createdAt || ''),
-    ].join(','));
+    ].join(delimiter));
   }
 
   const csvContent = lines.join('\n');
@@ -177,17 +177,48 @@ export function exportMuxedCsv(publicKey, filename = 'muxed_accounts.csv', net) 
 
 // importMuxedCsvText(publicKey, csvText, net?)
 // Import CSV rows for the given publicKey and current network.
-// Accepts the same columns as export. Only rows with matching network+basePublicKey are imported.
-// Address is recomputed from basePublicKey + muxedId to ensure integrity.
+// Accepts either:
+//  - Extended CSV: network,basePublicKey,muxedId,label,note,createdAt (others ignored)
+//  - Minimal CSV (template): muxedId,label,note
+// Unknown extra columns are ignored. Address is recomputed from basePublicKey+muxedId.
 export function importMuxedCsvText(publicKey, csvText, net) {
   const result = { imported: 0, skipped: 0, errors: 0 };
   if (!publicKey || !csvText) return result;
   const network = _getNet(net);
   try { console.debug('[muxedStore.importMuxedCsvText] start', { publicKey, network, size: csvText.length }); } catch { /* noop */ }
 
+  function detectDelimiter(text) {
+    // Inspect first non-empty line to detect delimiter among , ; \t
+    let start = 0;
+    if (text.charCodeAt(0) === 0xFEFF) start = 1; // strip BOM if present
+    // Skip initial CR/LF
+    while (start < text.length && (text[start] === '\n' || text[start] === '\r')) start++;
+    const end = text.indexOf('\n', start) >= 0 ? text.indexOf('\n', start) : Math.min(text.length, start + 2000);
+    const line = text.slice(start, end);
+    const candidates = [',', ';', '\t'];
+    const counts = { ',': 0, ';': 0, '\t': 0 };
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (i + 1 < line.length && line[i + 1] === '"') { i++; continue; }
+        inQuotes = !inQuotes;
+        continue;
+      }
+      if (!inQuotes && candidates.includes(ch)) counts[ch]++;
+    }
+    let best = ',';
+    let bestCount = counts[best];
+    for (const c of candidates) {
+      if (counts[c] > bestCount) { best = c; bestCount = counts[c]; }
+    }
+    return bestCount > 0 ? best : ',';
+  }
+
   function parseCsv(text) {
+    const delim = detectDelimiter(text);
     const rows = [];
-    let i = 0;
+    let i = text.charCodeAt(0) === 0xFEFF ? 1 : 0;
     const len = text.length;
     let cur = [];
     let field = '';
@@ -207,7 +238,7 @@ export function importMuxedCsvText(publicKey, csvText, net) {
         }
       } else {
         if (ch === '"') { inQuotes = true; i++; continue; }
-        if (ch === ',') { endField(); i++; continue; }
+        if (ch === delim) { endField(); i++; continue; }
         if (ch === '\n') { endField(); endRow(); i++; continue; }
         if (ch === '\r') { i++; continue; }
         field += ch; i++;
@@ -236,16 +267,28 @@ export function importMuxedCsvText(publicKey, csvText, net) {
   const iNote = idx('note');
   const iCreated = idx('createdAt');
 
-  if (iNet < 0 || iBase < 0 || iId < 0) { result.errors += 1; return result; }
+  // Determine mode: extended (requires network/basePublicKey) or minimal (template)
+  const isExtended = iNet >= 0 && iBase >= 0 && iId >= 0;
+  const isMinimal = iId >= 0 && iNet < 0 && iBase < 0;
+  if (!isExtended && !isMinimal) { result.errors += 1; return result; }
 
   for (let r = 1; r < data.length; r++) {
     const row = data[r];
     if (!row || row.length === 0) { result.skipped++; continue; }
-    const rowNet = String(row[iNet] || '').trim();
-    const rowBase = String(row[iBase] || '').trim();
+
+    let rowNet = network;
+    let rowBase = publicKey;
+    if (isExtended) {
+      rowNet = String(row[iNet] || '').trim();
+      rowBase = String(row[iBase] || '').trim();
+    }
     const rowId = String(row[iId] || '').trim();
-    if (!rowNet || !rowBase || !rowId) { result.skipped++; continue; }
-    if (rowNet !== network || rowBase !== publicKey) { result.skipped++; continue; }
+
+    if (!rowId) { result.skipped++; continue; }
+    if (isExtended) {
+      if (!rowNet || !rowBase) { result.skipped++; continue; }
+      if (rowNet !== network || rowBase !== publicKey) { result.skipped++; continue; }
+    }
 
     const label = iLabel >= 0 ? String(row[iLabel] || '') : '';
     const note = iNote >= 0 ? String(row[iNote] || '') : '';
@@ -281,4 +324,20 @@ export function importMuxedCsvText(publicKey, csvText, net) {
   }
 
   return result;
+}
+
+// exportMuxedTemplateCsv(filename?)
+// Download a minimal CSV template for HR/Payroll with header only: muxedId,label,note
+export function exportMuxedTemplateCsv(filename = 'muxed_accounts_template.csv', delimiter = ',') {
+  const headers = ['muxedId', 'label', 'note'];
+  const csvContent = headers.join(delimiter) + '\n';
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
