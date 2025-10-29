@@ -34,7 +34,8 @@
         "direction": "Direction",
         "memo": "Note",
         "tx": "Tx",
-        "type": "Taper"
+        "type": "Taper",
+        "txLabel": "Tx"
       },
       "empty": "Aucun processus trouvé.",
       "filter": {
@@ -200,7 +201,8 @@
   },
   "account": {
     "createdAt": "Compte créé le",
-    "createdAtUnknown": "Ne peut pas être déterminé."
+    "createdAtUnknown": "Ne peut pas être déterminé.",
+    "testnetLabel": "(Testnet)"
   },
   "fetch.groupfund.aborted": "Processus annulé par l'utilisateur.",
   "issuer": {
@@ -218,7 +220,8 @@
     "xlmByMemo": "Filtrer par mémo.",
     "sendPayment": "Envoyer un paiement",
     "donate": "Dons",
-    "feedback": "Retour d'information"
+    "feedback": "Retour d'information",
+    "muxed": "Créer/gérer des comptes multiplexés"
   },
   "badges": {
     "testnet": "RÉSEAU DE TEST"
@@ -425,7 +428,9 @@
     "submit": {
       "button": "Envoyer"
     },
-    "test": "Test"
+    "test": "Test",
+    "historyLabel": "Histoire",
+    "historyPlaceholder": "Sélectionner le portefeuille récemment utilisé"
   },
   "secretKey": {
     "cleared": "La clé secrète a été supprimée.",
@@ -581,7 +586,23 @@
       "sendButton": "Envoyer",
       "success": "Succès : Paiement envoyé. TX : {{hash}}",
       "error": "Erreur lors de l'envoi : {{detail}}",
-      "successShort": "Envoyé avec succès"
+      "successShort": "Envoyé avec succès",
+      "amountMissing": "Veuillez entrer un montant.",
+      "amountInvalid": "Montant non valide (maximum 7 décimales).",
+      "amountPositive": "Le montant doit être supérieur à 0.",
+      "timeout": "Délai d'attente de l'horizon (504). Veuillez réessayer dans un instant.",
+      "httpError": "Erreur Horizon (Statut {{status}}).",
+      "horizonError": "Stellar a rejeté la transaction.",
+      "destUnfundedNonNative": "Le compte cible n'est pas actif. Veuillez d'abord envoyer des XLM pour l'activer ou changer l'actif en XLM.",
+      "activateConfirm": {
+        "title": "Activation du compte requise",
+        "info": "Le compte cible n'est pas encore actif. Un montant minimum est requis pour l'activation.",
+        "minReserve": "Montant minimum (2 × réserve de base)",
+        "yourAmount": "Le montant que vous avez saisi",
+        "adjustedAmount": "Montant proposé (pour l'activation)",
+        "noteAdjust": "Votre montant est insuffisant pour l'activation. Si vous continuez, le montant minimum sera envoyé automatiquement."
+      },
+      "activated": "Le compte cible a été activé."
     }
   },
   "xlmByMemo": {
@@ -690,6 +711,365 @@
     "sendButton": "Créer un e-mail",
     "openedMailClient": "Client de messagerie ouvert.",
     "error": "Erreur",
-    "sentTo": "Destinataire : {{email}}"
+    "sentTo": "Destinataire : {{email}}",
+    "page": "Domaine",
+    "pages": {
+      "start": "Mondial",
+      "trustlines": "Afficher la/les ligne(s) de confiance.",
+      "trustlineCompare": "Comparer la(es) ligne(s) de crédit",
+      "balance": "Afficher les informations du compte",
+      "xlmByMemo": "Filtrer par mémo",
+      "sendPayment": "Envoyer un paiement",
+      "investedTokens": "Filtrer les jetons/actifs",
+      "multisigCreate": "Créer un compte",
+      "multisigEdit": "Modifier le compte multisignature",
+      "settings": "Paramètres",
+      "feedback": "Retour d'information",
+      "other": "Divers"
+    },
+    "emailPlaceholder": "par ex. nom@exemple.com",
+    "emailHint": "Si un retour est souhaité, veuillez entrer votre adresse e‑mail."
+  },
+  "bugReport": {
+    "button": "Signaler une erreur.",
+    "title": "Signaler une erreur",
+    "descLabel": "Description succincte (facultatif)",
+    "descPlaceholder": "Qu'est-ce qui s'est passé ? Étapes, comportement attendu…",
+    "send": "Ouvrir l'e-mail",
+    "cancel": "Annuler.",
+    "toast": {
+      "sent": "Brouillon d'e-mail ouvert.",
+      "logOk": "Le bug a été consigné.",
+      "logFallback": "Échec de la journalisation locale.",
+      "validation": "Veuillez entrer une brève description ou envoyer sans texte."
+    },
+    "mail": {
+      "url": "URL (Uniform Resource Locator)",
+      "time": "Temps",
+      "browser": "Navigateur",
+      "language": "Langue",
+      "version": "Version",
+      "descriptionHeading": "Description"
+    },
+    "admin": {
+      "title": "Suivi des bugs",
+      "locked": "Accès refusé. Définissez le secret administrateur dans le stockage local et rechargez la page.",
+      "placeholderTitle": "Suivi de bogues",
+      "placeholderBody": "Interface d'administration activé. Les prochaines mises à jour incluront liste, filtres, priorités et modifications de statut.",
+      "link": "Ouvrir le traqueur de bugs",
+      "secretSaved": "Secret enregistré.",
+      "enterSecret": "Saisir Admin-Secret",
+      "secretPlaceholder": "Je suis désolé, aber der bereitgestellte Text enthält keine inhaltlichen Informationen zum Übersetzen. Bitte geben Sie einen Text ein, den ich für Sie übersetzen kann.",
+      "confirm": "Ouvrir",
+      "cancel": "Annuler",
+      "filter": "Filtre",
+      "status": "Statut",
+      "priority": "Priorité",
+      "open": "ouvert",
+      "in_progress": "en cours de traitement",
+      "closed": "fermé",
+      "low": "bas",
+      "normal": "normal",
+      "high": "haut",
+      "urgent": "urgent",
+      "id": "ID",
+      "created": "Créé",
+      "url": "URL",
+      "language": "Langue",
+      "email": "E-mail",
+      "userAgent": "Navigateur",
+      "description": "Description",
+      "category": "Catégorie",
+      "save": "Enregistrer",
+      "saved": "Changement enregistré",
+      "loadError": "Erreur lors du chargement des bugs.",
+      "saveError": "Erreur lors de l'enregistrement",
+      "empty": "Aucun élément trouvé.",
+      "loading": "Chargement…",
+      "resize": "Tirer pour ajuster",
+      "exportAll": "CSV (Tous)",
+      "exportError": "Échec de l'exportation",
+      "exportPage": "CSV (Page)",
+      "exporting": "Exporter…",
+      "columns": {
+        "title": "Colonnes",
+        "manage": "Ajuster les colonnes",
+        "hint": "Visibilité par coche, ordre avec ↑/↓, dimensions en tirant dans l'en-tête du tableau.",
+        "reset": "Réinitialiser",
+        "up": "Vers le haut",
+        "down": "Vers le bas"
+      },
+      "csv": {
+        "comma": "Virgule (,)",
+        "delimiter": "Séparateur",
+        "semicolon": "Point-virgule (;)",
+        "tab": "Tabulateur (Tab)"
+      },
+      "search": "Recherche",
+      "col": {
+        "id": "ID",
+        "status": "Statut",
+        "priority": "Priorité",
+        "url": "URL",
+        "desc": "Description",
+        "ts": "Temps"
+      }
+    }
+  },
+  "activation": {
+    "notFound": {
+      "title": "Compte cible non actif.",
+      "message": "Le compte cible n'existe pas encore ({address}). Il doit être activé avec au moins 1 XLM. Souhaitez-vous activer le compte maintenant ?"
+    },
+    "actions": {
+      "yes": "Oui – Activer le compte",
+      "no": "Non - Annuler",
+      "processing": "Activer…"
+    }
+  },
+  "wallet": {
+    "federationDisplay": {
+      "label": "Adresse de la fédération",
+      "none": "Aucune adresse de fédération définie",
+      "account": "Compte",
+      "accountLabel": "Étiquette"
+    }
+  },
+  "createAccount": {
+    "muxedId": "Muxed-ID",
+    "muxedInfo": "L'ID Muxed génère une adresse M (M...) qui pointe vers le même compte que l'adresse régulière (G...).",
+    "muxedIdInvalid": "L'ID Muxed doit être un entier compris entre 0 et 18'446'744'073'709'551'615.",
+    "muxedAddress": "Adresse multiplexée",
+    "muxedActivationInfo": "Les adresses muxées sont des adresses alias. Elles n'ont pas besoin d'être activées séparément."
+  },
+  "muxed": {
+    "seo": {
+      "title": "Créer/gérer un compte muxed",
+      "description": "Créer et gérer des alias d'adresse multiplexée (M...) pour un compte Stellar. Générer des identifiants, ajouter des étiquettes/des notes, exporter/importer des fichiers CSV."
+    },
+    "title": "Créer/gérer un compte Muxed",
+    "explainer": "Créez des adresses alias (M...) avec un identifiant multiplex unique pour un compte existant. L'adresse alias renvoie toujours au même compte.",
+    "selectBaseAccount": "Compte de base (adresse G)",
+    "selectPlaceholder": "Veuillez sélectionner un compte",
+    "baseAccountInfo": "Ce compte reste techniquement le propriétaire. L'adresse multiplexée (M...) ne fait que pointer vers ce compte.",
+    "generateButton": "Créer un compte Muxed",
+    "exportButton": "Exporter",
+    "importButton": "Importer",
+    "listTitle": "Comptes Muxed existants",
+    "none": "Aucun compte Muxed enregistré.",
+    "columns": {
+      "id": "ID multiplexé",
+      "address": "Adresse muxée",
+      "label": "Dénomination",
+      "note": "Note",
+      "createdAt": "Créé le",
+      "actions": "Actions"
+    },
+    "selectAll": "Tout sélectionner",
+    "deleteSelected": "Effacer la sélection",
+    "deleteSuccess": "Sélection supprimée.",
+    "countLabel": "Nombre",
+    "countInfo": "Nombre de nouvelles adresses multiplexées, identifiants continus.",
+    "invalidCount": "Veuillez saisir un nombre valide (>= 1).",
+    "tooMany": "Veuillez en créer au maximum 100 à la fois.",
+    "rangeOverflow": "La plage d'ID dépasse l'ID multiplexée maximale autorisée.",
+    "label": "Dénomination",
+    "labelInfo": "par exemple, nom de l'employé ou objectif",
+    "note": "Note (facultatif)",
+    "noteInfo": "par exemple, département / projet",
+    "generateSuccess": "Adresses multiplexées créées.",
+    "editSaved": "Modifications enregistrées.",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "copied": "Copié dans le presse-papiers.",
+    "createDialog": {
+      "confirm": "Créer",
+      "cancel": "Annuler"
+    },
+    "export": {
+      "filename": "muxed_accounts.csv",
+      "success": "Comptes muxés exportés avec succès.",
+      "failed": "Erreur lors de l'exportation des comptes multiplexés."
+    },
+    "import": {
+      "success": "Importé : {{imported}} • Ignoré : {{skipped}} • Erreurs : {{errors}}.",
+      "failed": "Erreur lors de l'importation.",
+      "hint": "L'importation prend en charge les fichiers CSV avec en-tête. Les délimiteurs comme la virgule, le point-virgule et la tabulation sont automatiquement détectés. Les colonnes inconnues sont ignorées. Formats : avancé (network, basePublicKey, muxedId, label, note, createdAt) ou modèle (muxedId, label, note)."
+    },
+    "exportTemplateButton": "Exporter le modèle",
+    "exportTemplateSuccess": "Modèle exporté avec succès.",
+    "exportTemplateFailed": "Erreur lors de l'exportation du modèle.",
+    "csv": {
+      "delimiterLabel": "Séparateur CSV",
+      "delimiter": {
+        "comma": "Virgule ,",
+        "semicolon": "Point-virgule ;",
+        "tab": "Tablette"
+      }
+    },
+    "nav": "Comptes multiplexés",
+    "error": {
+      "noBaseAccount": "Veuillez sélectionner un compte existant.",
+      "noId": "Veuillez fournir une ID Muxed.",
+      "invalidBaseAccount": "L'adresse de base sélectionnée est invalide.",
+      "unknown": "Erreur inconnue lors de la génération de l'adresse multiplexée."
+    },
+    "infoButtonLabel": "Info",
+    "info": {
+      "title": "Qu'est-ce qu'un compte muxed ?",
+      "intro1": "Un compte Muxed combine une adresse de compte normale (adresse G) avec un ID Muxed supplémentaire de 64 bits.",
+      "intro2": "Techniquement, c'est un alias qui pointe toujours vers le même compte de base, mais qui peut être distingué de manière unique grâce à l'ID.",
+      "purposeTitle": "Objectif et utilité",
+      "purposeText": "Les comptes multiplexés servent à gérer de nombreux sous-comptes sous une seule adresse Stellar - idéal lorsque de nombreux dépôts/retraits passent par un compte principal commun, mais que chaque transaction doit être attribuée à une personne, un département ou un projet.",
+      "examplesTitle": "Exemples – à quoi servent les comptes Muxed ?",
+      "examples": {
+        "ex1": "Paiements d'entreprise : Chaque employée/employé reçoit une Muxed-ID personnelle afin que les paiements de salaire puissent être attribués de manière claire.",
+        "ex2": "Bourses ou plateformes : Chaque utilisateur/trice reçoit un identifiant multiplexé (Muxed-ID), permettant ainsi de comptabiliser automatiquement les dépôts via un portefeuille commun.",
+        "ex3": "Projets ou sous-comptes : Une organisation peut attribuer des budgets ou des revenus à des projets individuels.",
+        "ex4": "Affectation du client : Une adresse M par client ; l'identifiant correspond à l'ID du client – les paiements sont clairement attribuables, même sans mémo.",
+        "ex5": "Services sans mémo : Distinguez les dépôts lorsque le service ne prend pas en charge les mémos.",
+        "ex6": "Paiements/Exécutions de salaires : Une adresse M par employé/partenaire pour la comptabilité interne et les rapports.",
+        "ex7": "Boutique/Commandes : Une adresse M par commande ; les remboursements peuvent être attribués à la commande.",
+        "ex8": "Départements/Centres de coûts : IDs en tant que centres de coûts ; paiements automatiquement groupés par domaine.",
+        "ex9": "Services multitenants : Chaque locataire reçoit une adresse M distincte sous le même compte de base."
+      },
+      "pageTitle": "Ce que cette page fait dans le SKM",
+      "pageDesc": "Cette page est utilisée pour gérer les comptes multiplexés de votre compte Stellar actuellement sélectionné :",
+      "createTitle": "Créer de nouveaux comptes Muxed",
+      "createItems": {
+        "i1": "Générez de nouvelles adresses Muxed (M...) à partir de votre adresse de base (G...).",
+        "i2": "Optionnel avec étiquette (nom) et note (par exemple, projet ou but)."
+      },
+      "importTitle": "Importation à partir de fichiers CSV",
+      "importItems": {
+        "i1": "Création en masse de comptes muxed, par exemple à partir d'une liste d'employés.",
+        "i2": "Lit les colonnes muxedId, label, note."
+      },
+      "exportTitle": "Exportation des comptes multiplexés existants",
+      "exportItems": {
+        "i1": "Exportez toutes les entrées sauvegardées au format CSV.",
+        "i2": "Champs : basePublicKey, muxedId, muxedAddress, label, note, createdAt."
+      },
+      "templateTitle": "Exportation de modèle",
+      "templateItems": {
+        "i1": "Créez un fichier CSV vide avec les en-têtes de colonnes muxedId,label,note.",
+        "i2": "Utile pour les départements RH ou comptabilité lors de la préparation de nouvelles inscriptions."
+      },
+      "manageTitle": "Gestion & Aperçu",
+      "manageItems": {
+        "i1": "Toutes les adresses multiplexées enregistrées sont affichées dans un tableau.",
+        "i2": "Sélection, suppression ainsi que gestion des étiquettes/notes directement possibles."
+      },
+      "shortTitle": "En résumé",
+      "shortText": "Les comptes multiplexés rendent votre compte Stellar granulaire et traçable - idéal pour les organisations qui traitent un grand nombre de paiements via un compte central, mais souhaitent tout de même attribuer de manière unique chaque transaction."
+    }
+  },
+  "glossary": {
+    "pageTitle": "Glossaire",
+    "pageIntro": "Voici des mots importants du monde de la blockchain et du réseau Stellar. Tout est expliqué en termes simples.",
+    "searchLabel": "Rechercher un terme",
+    "searchPlaceholder": "p. ex. portefeuille, ligne de confiance, mémo…",
+    "searchHint": "La recherche trouve des mots et des explications.",
+    "noResults": "Aucun résultat.",
+    "blockchain": {
+      "title": "Blockchain",
+      "desc": "Une blockchain est comme un registre numérique. De nombreux ordinateurs stockent les mêmes entrées. Ainsi, personne ne peut les modifier en secret."
+    },
+    "wallet": {
+      "title": "Portefeuille",
+      "desc": "Un portefeuille est votre porte-monnaie numérique. Il gère les clés dont vous avez besoin pour accéder à votre compte et envoyer des transactions. Un portefeuille peut être un programme, une application ou même un simple morceau de papier avec votre clé privée."
+    },
+    "account": {
+      "title": "Compte",
+      "desc": "Un compte est l'endroit sur la blockchain où se trouvent vos valeurs. Un compte possède une adresse publique qui commence par G. Plusieurs portefeuilles peuvent accéder au même compte s'ils ont la clé correcte."
+    },
+    "addressG": {
+      "title": "G-Adresse",
+      "desc": "L'adresse G est l'adresse principale d'un compte Stellar. Elle commence par la lettre G. Vous la partagez avec d'autres pour qu'ils puissent vous envoyer quelque chose."
+    },
+    "publicKey": {
+      "title": "Clé publique",
+      "desc": "La clé publique est l'adresse que tu peux montrer. Sur Stellar, c'est l'adresse G. D'autres l'utilisent pour t'envoyer de l'argent."
+    },
+    "privateKey": {
+      "title": "Clé secrète",
+      "desc": "La clé secrète est votre mot de passe pour le compte. Quiconque possède cette clé peut déplacer votre argent. Ne la partagez jamais."
+    },
+    "addressFederation": {
+      "title": "Adresse de la fédération",
+      "desc": "Une adresse de fédération ressemble à une adresse e-mail. Exemple : name*domain.com. Cette adresse courte pointe vers une adresse G normale. C'est plus facile à retenir."
+    },
+    "addressMuxed": {
+      "title": "Compte multiplexé (adresse M)",
+      "desc": "Une adresse M pointe vers un compte Stellar existant, mais elle a également un numéro (ID) distinct. Ainsi, par exemple, on peut distinguer plusieurs personnes ou départements sous la même adresse G. Techniquement, l'argent appartient toujours au compte principal."
+    },
+    "multisig": {
+      "title": "Multi-signature (Multi-Sig)",
+      "desc": "Multi-Sig signifie plusieurs signatures. Une action importante nécessite plus d'une clé. Par exemple : vous et une deuxième clé devez tous deux approuver avant que quelque chose ne soit envoyé. Cela rend le vol plus difficile."
+    },
+    "trustline": {
+      "title": "Ligne de confiance",
+      "desc": "Une trustline est comme un « Oui, j'accepte ce jeton ». Cela signifie que votre compte est prêt à détenir un jeton spécifique d'un émetteur spécifique. Sans trustline, vous ne pouvez pas recevoir ce jeton."
+    },
+    "token": {
+      "title": "Jeton",
+      "desc": "Un jeton est une unité numérique sur la blockchain. Un jeton peut représenter de l'argent, des points ou un crédit pour un service."
+    },
+    "asset": {
+      "title": "Actif",
+      "desc": "Sur Stellar, un jeton est appelé un actif. Un actif est toujours associé à un compte émetteur. Par exemple, un compte peut émettre un jeton euro. Ce jeton euro devient alors un actif."
+    },
+    "xlm": {
+      "title": "XLM",
+      "desc": "Le XLM est la monnaie de base de Stellar. Vous avez besoin de XLM pour payer les frais et créer un nouveau compte."
+    },
+    "memo": {
+      "title": "Note",
+      "desc": "Un mémo est une petite note que vous pouvez envoyer avec une transaction. Souvent, une bourse exige un mémo spécifique pour savoir à qui appartient l'argent."
+    },
+    "transaction": {
+      "title": "Transaction",
+      "desc": "Une transaction est une action sur la blockchain. Par exemple, envoyer de l'argent ou établir une ligne de confiance. Une transaction est stockée de manière permanente lorsqu'elle est confirmée."
+    },
+    "fee": {
+      "title": "Frais",
+      "desc": "La commission est un très petit montant que vous payez à chaque transaction. La commission est versée au réseau. Chez Stellar, les commissions sont très faibles."
+    },
+    "ledger": {
+      "title": "Grand livre",
+      "desc": "Le grand livre est la chaîne de toutes les données confirmées. Il indique quels comptes détiennent combien et quelles transactions ont eu lieu. Tout le monde peut vérifier le grand livre."
+    },
+    "horizon": {
+      "title": "Horizon",
+      "desc": "Horizon est le service par lequel les programmes communiquent avec la blockchain Stellar. Notre outil interroge Horizon pour charger les soldes de compte et les transactions."
+    },
+    "anchor": {
+      "title": "Ancre",
+      "desc": "Un ancrage est une entreprise qui lie de l'argent réel, comme l'euro ou le dollar, à Stellar. Par exemple, vous donnez des euros à l'ancrage et recevez en échange un jeton euro sur Stellar."
+    },
+    "exchange": {
+      "title": "Bourse",
+      "desc": "Une bourse est un endroit où tu peux acheter ou vendre des tokens. De nombreuses bourses exigent une procédure KYC, c'est-à-dire une vérification d'identité, avant que tu puisses retirer de l'argent en euros ou en francs."
+    },
+    "dex": {
+      "title": "DEX",
+      "desc": "DEX signifie « échange décentralisé ». Ici, les gens échangent directement entre eux sur la blockchain. Il n'y a pas d'opérateur unique. Stellar intègre directement une DEX."
+    },
+    "liquidityPool": {
+      "title": "Pool de liquidité",
+      "desc": "Ein pool de liquidité est un réservoir commun avec deux tokens. Les gens déposent les deux tokens à l'intérieur. D'autres peuvent ensuite échanger ces tokens immédiatement. Les déposants gagnent de petites commissions en retour."
+    },
+    "balanceClaimable": {
+      "title": "Solde réclamable",
+      "desc": "Un solde réclamable est de l'argent qui est déjà réservé pour toi, mais tu dois encore le récupérer. Ce n'est que lorsque tu l'acceptes qu'il est transféré sur ton compte."
+    },
+    "protocolUpdate": {
+      "title": "Mise à jour du protocole",
+      "desc": "Une mise à jour du protocole est une amélioration des règles dans le réseau Stellar. Par exemple, de nouvelles fonctionnalités ou des modifications de sécurité. Tous les nœuds du réseau doivent utiliser les mêmes règles."
+    },
+    "soroban": {
+      "title": "Soroban",
+      "desc": "Soroban est le système de contrats intelligents de Stellar. Un contrat intelligent est un code programme sur la blockchain. Le code peut vérifier lui-même des règles et déclencher des actions sans qu'une banque n'intervienne."
+    }
   }
 }

@@ -482,7 +482,7 @@ function Main() {
                   <option
                     key={`${entry.publicKey}-${i}`}
                     value={entry.publicKey}
-                    label={entry.isTestnet ? `${entry.publicKey} ${t('account.testnetLabel')}` : entry.publicKey}
+                    label={entry.isTestnet ? t('account.testnetLabel', 'Testnet') : undefined}
                   />
                 ))}
               </datalist>
