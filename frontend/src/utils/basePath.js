@@ -30,3 +30,16 @@ export function isBugtrackerPath(pathname) {
   const normalize = (value) => String(value || '').replace(/\/+$/, '');
   return normalize(current) === normalize(target) || normalize(current).endsWith('/bugtracker');
 }
+
+/**
+ * isGlossaryPath: Prüft, ob ein Pfad zur Glossar-Seite gehört.
+ * Unterstützt sowohl dev (/glossar) als auch prod (/BASE_URL/glossar).
+ */
+export function isGlossaryPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const target = buildPath('glossar');
+  const normalize = (value) => String(value || '').replace(/\/+$/, '');
+  return normalize(current) === normalize(target) || normalize(current).endsWith('/glossar');
+}

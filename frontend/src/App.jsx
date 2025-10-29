@@ -6,7 +6,9 @@ import Main from './main';
 import LanguageSelector from './components/LanguageSelector';
 import BugTrackerAdmin from './routes/BugTrackerAdmin.tsx';
 import SmallAdminLink from './components/SmallAdminLink.jsx';
-import { isBugtrackerPath } from './utils/basePath.js';
+import { isBugtrackerPath, isGlossaryPath } from './utils/basePath.js';
+import { buildPath } from './utils/basePath.js';
+import GlossaryPage from './pages/GlossaryPage.tsx';
 
 console.log('App.jsx loaded');
 
@@ -56,10 +58,20 @@ function App() {
     }
   }, []);
 
+  const isGlossaryRoute = React.useMemo(() => {
+    try {
+      return isGlossaryPath(typeof window !== 'undefined' ? window.location.pathname : '');
+    } catch {
+      return false;
+    }
+  }, []);
+
   return (
     <ErrorBoundary t={t}>
       {isBugTrackerRoute ? (
         <BugTrackerAdmin />
+      ) : isGlossaryRoute ? (
+        <GlossaryPage />
       ) : (
         <>
           {/* Sprachleiste */}
@@ -67,8 +79,16 @@ function App() {
             <div className="flex justify-center">
               <LanguageSelector />
             </div>
+            {/* Glossary button in the language bar (prominent) */}
+            <a
+              href={buildPath('glossar')}
+              className="absolute right-3 top-2 inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              title={t('glossary.pageTitle', 'Glossary')}
+            >
+              {t('glossary.pageTitle', 'Glossary')}
+            </a>
             {devTestnet && (
-              <span className="absolute right-3 top-2 inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
+              <span className="absolute right-3 top-12 inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
                 {t('badges.testnet')}
               </span>
             )}

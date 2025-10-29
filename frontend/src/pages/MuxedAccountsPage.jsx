@@ -23,6 +23,20 @@ export default function MuxedAccountsPage({ publicKey }) {
   const [rows, setRows] = React.useState([]);
   const [selected, setSelected] = React.useState(new Set());
   const [countInput, setCountInput] = React.useState('1');
+  const [showInfo, setShowInfo] = React.useState(false);
+
+  // i18n example keys (render if present; fall back to English defaults)
+  const EXAMPLE_KEYS = [
+    'muxed.info.examples.ex1',
+    'muxed.info.examples.ex2',
+    'muxed.info.examples.ex3',
+    'muxed.info.examples.ex4',
+    'muxed.info.examples.ex5',
+    'muxed.info.examples.ex6',
+    'muxed.info.examples.ex7',
+    'muxed.info.examples.ex8',
+    'muxed.info.examples.ex9',
+  ];
 
   const [netLabel, setNetLabel] = React.useState(() => {
     try {
@@ -390,8 +404,95 @@ export default function MuxedAccountsPage({ publicKey }) {
   return (
     <div className="max-w-6xl mx-auto px-3">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-xl font-semibold">{t('muxed.title', 'Muxed account create/manage')}</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-xl font-semibold">{t('muxed.title', 'Muxed account create/manage')}</h2>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1 px-3 py-1.5 text-sm md:text-base rounded-md border border-blue-600 text-blue-700 bg-blue-50 hover:bg-blue-100 dark:border-blue-400 dark:text-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label={t('muxed.infoButtonLabel', 'Info')}
+            aria-expanded={showInfo ? 'true' : 'false'}
+            aria-controls="muxed-info-panel"
+            onClick={() => setShowInfo(s => !s)}
+          >
+            {t('muxed.infoButtonLabel', 'Info')}
+          </button>
+        </div>
       </div>
+
+      {showInfo && (
+        <div id="muxed-info-panel" className="mb-3 rounded border p-3 bg-blue-50 dark:bg-blue-900/30 text-sm text-gray-800 dark:text-gray-100">
+          <div className="font-semibold mb-1">{t('muxed.info.title', 'What is a muxed account?')}</div>
+          <p className="mb-2">{t('muxed.info.intro1', 'A muxed account combines a normal account address (G...) with an extra 64-bit muxed ID.')}</p>
+          <p className="mb-3">{t('muxed.info.intro2', 'Technically it is an alias that always points to the same base account, but remains distinguishable by the ID.')}</p>
+
+          <div className="font-semibold mb-1">{t('muxed.info.purposeTitle', 'Purpose and benefits')}</div>
+          <p className="mb-3">{t('muxed.info.purposeText', 'Use muxed addresses to manage many sub-accounts under one Stellar address — ideal when many deposits/withdrawals share one base wallet but each flow must be attributable to a person, department, or project.')}</p>
+
+          <div className="font-semibold mb-1">{t('muxed.info.examplesTitle', 'Examples')}</div>
+          <ul className="list-disc ps-5 mb-3 space-y-1">
+            {EXAMPLE_KEYS.map((k, idx) => (
+              <li key={k}>
+                {t(k, [
+                  'Payroll: one muxed ID per employee so salaries can be attributed.',
+                  'Exchanges/platforms: one muxed ID per user so deposits into a shared wallet are attributed automatically.',
+                  'Projects/sub-accounts: track budgets or revenue per project.',
+                  'Customer mapping: one M-address per customer; the ID matches the customer ID.',
+                  'Services without memos: differentiate deposits when the service does not support memos.',
+                  'Payout runs: one M-address per contractor/partner for internal accounting.',
+                  'Shop/orders: one M-address per order; refunds map to the order.',
+                  'Departments/cost centers: IDs as cost centers; group payments by area.',
+                  'Multi-tenant services: one M-address per tenant under the same base account.',
+                ][idx] || '')}
+              </li>
+            ))}
+          </ul>
+
+          <div className="font-semibold mb-1">{t('muxed.info.pageTitle', 'What this page does (SKM)')}</div>
+          <p className="mb-2">{t('muxed.info.pageDesc', 'Manage muxed addresses for your currently selected Stellar account:')}</p>
+
+          <div className="grid sm:grid-cols-2 gap-3 mb-3">
+            <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
+              <div className="font-semibold mb-1">{t('muxed.info.createTitle', 'Create muxed accounts')}</div>
+              <ul className="list-disc ps-5 space-y-1">
+                <li>{t('muxed.info.createItems.i1', 'Generate new muxed addresses (M...) from your base address (G...).')}</li>
+                <li>{t('muxed.info.createItems.i2', 'Optionally add a label (name) and note (project or purpose).')}</li>
+              </ul>
+            </div>
+            <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
+              <div className="font-semibold mb-1">{t('muxed.info.importTitle', 'Import from CSV')}</div>
+              <ul className="list-disc ps-5 space-y-1">
+                <li>{t('muxed.info.importItems.i1', 'Bulk-create muxed accounts, e.g., from a staff list.')}</li>
+                <li>{t('muxed.info.importItems.i2', 'Reads columns muxedId, label, note.')}</li>
+              </ul>
+            </div>
+            <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
+              <div className="font-semibold mb-1">{t('muxed.info.exportTitle', 'Export existing muxed accounts')}</div>
+              <ul className="list-disc ps-5 space-y-1">
+                <li>{t('muxed.info.exportItems.i1', 'Export all saved entries as CSV.')}</li>
+                <li>{t('muxed.info.exportItems.i2', 'Fields: basePublicKey, muxedId, muxedAddress, label, note, createdAt.')}</li>
+              </ul>
+            </div>
+            <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
+              <div className="font-semibold mb-1">{t('muxed.info.templateTitle', 'Template export')}</div>
+              <ul className="list-disc ps-5 space-y-1">
+                <li>{t('muxed.info.templateItems.i1', 'Create an empty CSV with headers muxedId,label,note.')}</li>
+                <li>{t('muxed.info.templateItems.i2', 'Useful for HR or accounting to prepare new entries.')}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border rounded p-3 bg-white/60 dark:bg-white/5 mb-3">
+            <div className="font-semibold mb-1">{t('muxed.info.manageTitle', 'Management and overview')}</div>
+            <ul className="list-disc ps-5 space-y-1">
+              <li>{t('muxed.info.manageItems.i1', 'See all saved muxed addresses in a table.')}</li>
+              <li>{t('muxed.info.manageItems.i2', 'Selection, deletion, and inline label/note editing.')}</li>
+            </ul>
+          </div>
+
+          <div className="font-semibold mb-1">{t('muxed.info.shortTitle', 'In short')}</div>
+          <p>{t('muxed.info.shortText', 'Muxed accounts make your Stellar wallet granular and bookable — ideal when running many payments through one account while keeping every transaction attributable.')}</p>
+        </div>
+      )}
 
       <p className="text-sm text-gray-700 dark:text-gray-200 mb-4">{t('muxed.explainer', 'Create M-addresses that point to the same account, distinguished by ID.')}</p>
 
