@@ -34,7 +34,8 @@
         "direction": "Suunta",
         "memo": "Muistio",
         "tx": "Olet koulutettu dataan lokakuuhun 2023 asti.",
-        "type": "Tyyppi"
+        "type": "Tyyppi",
+        "txLabel": "Tx"
       },
       "empty": "Toimenpiteitä ei löytynyt.",
       "filter": {
@@ -200,7 +201,8 @@
   },
   "account": {
     "createdAt": "Tili luotu päivämäärällä",
-    "createdAtUnknown": "Ei voida määrittää."
+    "createdAtUnknown": "Ei voida määrittää.",
+    "testnetLabel": "(Testiverkko)"
   },
   "fetch.groupfund.aborted": "Toiminto peruttu käyttäjän toimesta",
   "issuer": {
@@ -218,7 +220,8 @@
     "xlmByMemo": "Suodata muistion perusteella",
     "sendPayment": "Lähetä maksu",
     "donate": "Lahjoitukset",
-    "feedback": "Palaute"
+    "feedback": "Palaute",
+    "muxed": "Luo/hallitse yhdistettyjä tilejä"
   },
   "badges": {
     "testnet": "TESTIVERKKO"
@@ -425,7 +428,9 @@
     "submit": {
       "button": "Lähettää"
     },
-    "test": "Testi"
+    "test": "Testi",
+    "historyLabel": "Historia",
+    "historyPlaceholder": "Valitse viimeksi käytetty lompakko"
   },
   "secretKey": {
     "cleared": "Salainen avain poistettiin.",
@@ -581,7 +586,23 @@
       "sendButton": "Lähetä",
       "success": "Menestys: Maksu lähetetty. TX: {{hash}}",
       "error": "Virhe lähetyksessä: {{detail}}",
-      "successShort": "Lähetetty onnistuneesti"
+      "successShort": "Lähetetty onnistuneesti",
+      "amountMissing": "Anna jokin määrä.",
+      "amountInvalid": "Virheellinen summa (enintään 7 desimaalia).",
+      "amountPositive": "Summan on oltava suurempi kuin 0.",
+      "timeout": "Horizon-aikakatkaisu (504). Yritä uudelleen hetken kuluttua.",
+      "httpError": "Horizon-virhe (Tila {{status}}).",
+      "horizonError": "Stellar hylkäsi tapahtuman.",
+      "destUnfundedNonNative": "Kohdetili ei ole aktiivinen. Lähetä ensin XLM:ää aktivoimista varten tai vaihda varat XLM:ään.",
+      "activateConfirm": {
+        "title": "Tilin aktivointi vaaditaan",
+        "info": "Tilikohde ei ole vielä aktivoitu. Aktivointia varten vaaditaan vähimmäismäärä.",
+        "minReserve": "Vähimmäismäärä (2 × perusvaranto)",
+        "yourAmount": "Syöttämäsi summa",
+        "adjustedAmount": "Ehdotettu summa (aktivointia varten)",
+        "noteAdjust": "Määräsi ei riitä aktivointiin. Jos jatkat, vähimmäismäärä lähetetään automaattisesti."
+      },
+      "activated": "Tilikohde on aktivoitu."
     }
   },
   "xlmByMemo": {
@@ -690,6 +711,365 @@
     "sendButton": "Luo sähköposti",
     "openedMailClient": "Sähköpostisovellus avattu.",
     "error": "Virhe",
-    "sentTo": "Vastaanottaja: {{email}}"
+    "sentTo": "Vastaanottaja: {{email}}",
+    "page": "Alue",
+    "pages": {
+      "start": "Maailmanlaajuinen",
+      "trustlines": "Näytä trustline(t)",
+      "trustlineCompare": "Trustline(t) vertailla",
+      "balance": "Näytä tilitiedot",
+      "xlmByMemo": "Suodata muistiinpanojen mukaan",
+      "sendPayment": "Lähetä maksu",
+      "investedTokens": "Tokenit/varat suodattaa",
+      "multisigCreate": "Luo tili",
+      "multisigEdit": "Muokkaa multisig-tiliä",
+      "settings": "Asetukset",
+      "feedback": "Palaute",
+      "other": "Muut asiat"
+    },
+    "emailPlaceholder": "z. B. name@example.com",
+    "emailHint": "Jos haluat palautetta, syötä sähköpostiosoite."
+  },
+  "bugReport": {
+    "button": "Ilmoita virheestä",
+    "title": "Ilmoita virheestä",
+    "descLabel": "Lyhyt kuvaus (valinnainen)",
+    "descPlaceholder": "Mitä tapahtui? Vaiheet, odotettu käyttäytyminen ...",
+    "send": "Avaa sähköposti",
+    "cancel": "Peruuttaa",
+    "toast": {
+      "sent": "Sähköpostiluonnos avattu.",
+      "logOk": "Virhe on kirjattu.",
+      "logFallback": "Paikallinen kirjaaminen epäonnistui.",
+      "validation": "Ole hyvä ja anna lyhyt kuvaus tai lähetä ilman tekstiä."
+    },
+    "mail": {
+      "url": "URL",
+      "time": "Aika",
+      "browser": "Selain",
+      "language": "Kieli",
+      "version": "Versio",
+      "descriptionHeading": "Kuvaus"
+    },
+    "admin": {
+      "title": "Virhetietojärjestelmä",
+      "locked": "Pääsy evätty. Aseta admin-salasana paikalliseen muistiin ja lataa sivu uudelleen.",
+      "placeholderTitle": "Virheenseurantajärjestelmä",
+      "placeholderBody": "Admin-Käyttöliittymä aktiivinen. Seuraavissa korjauspäivityksissä seuraavat: lista, suodatin, prioriteetit ja tilan muutokset.",
+      "link": "Avaa vikojen seurantasovellus",
+      "secretSaved": "Salaisuus tallennettu.",
+      "enterSecret": "Syötä ylläpitäjän salasana",
+      "secretPlaceholder": "••••••••",
+      "confirm": "Avaa",
+      "cancel": "Peruuttaa.",
+      "filter": "Suodatin",
+      "status": "Tila",
+      "priority": "Prioriteetti",
+      "open": "avoin",
+      "in_progress": "käsittelyssä",
+      "closed": "suljettu",
+      "low": "matala",
+      "normal": "normaali",
+      "high": "korkea",
+      "urgent": "kiireellinen",
+      "id": "ID",
+      "created": "Luotu",
+      "url": "URL",
+      "language": "Kieli",
+      "email": "Sähköposti",
+      "userAgent": "Selain",
+      "description": "Kuvaus",
+      "category": "Kategoria",
+      "save": "Tallenna",
+      "saved": "Muutos tallennettu",
+      "loadError": "Virhe virheiden lataamisessa",
+      "saveError": "Virhe tallennettaessa",
+      "empty": "Ei merkintöjä löytynyt.",
+      "loading": "Lataus…",
+      "resize": "Vedä säätääksesi",
+      "exportAll": "CSV (Kaikki)",
+      "exportError": "Vienti epäonnistui",
+      "exportPage": "CSV (sivu)",
+      "exporting": "Vie…",
+      "columns": {
+        "title": "Sarakkeet",
+        "manage": "Sarakkeiden säätäminen",
+        "hint": "Näkyvyys koukulla, järjestys ↑/↓, kokoa vetämällä taulukon yläreunassa.",
+        "reset": "Aseta uudelleen",
+        "up": "Ylös",
+        "down": "Alas"
+      },
+      "csv": {
+        "comma": "Pilkku (,)",
+        "delimiter": "Erotin",
+        "semicolon": "Puolipiste (;)",
+        "tab": "Sarkain (Tab)"
+      },
+      "search": "Haku",
+      "col": {
+        "id": "Henkilötunnus",
+        "status": "Tila",
+        "priority": "Prioriteetti",
+        "url": "URL",
+        "desc": "Kuvaus",
+        "ts": "Aika"
+      }
+    }
+  },
+  "activation": {
+    "notFound": {
+      "title": "Kohdetili ei ole aktiivinen.",
+      "message": "Kohdetiliä ei ole vielä olemassa ({address}). Se täytyy aktivoida vähintään yhdellä XLM:llä. Haluatko aktivoida tilin nyt?"
+    },
+    "actions": {
+      "yes": "Kyllä – Aktivoi tili",
+      "no": "Ei – Peruuta",
+      "processing": "Aktivoi…"
+    }
+  },
+  "wallet": {
+    "federationDisplay": {
+      "label": "Liittovaltion osoite",
+      "none": "Ei ole määritelty yhtymäosoitetta",
+      "account": "Tili",
+      "accountLabel": "Nimilappu"
+    }
+  },
+  "createAccount": {
+    "muxedId": "Muxed-ID",
+    "muxedInfo": "Muxed-ID:llä luodaan M-osoite (M...), joka viittaa samaan tilille kuin tavallinen osoite (G...).",
+    "muxedIdInvalid": "Muxed-ID:n täytyy olla kokonaisluku välillä 0 ja 18'446'744'073'709'551'615.",
+    "muxedAddress": "Muxed-osoite",
+    "muxedActivationInfo": "Muxed-osoitteet ovat aliasosoitteita. Niitä ei tarvitse aktivoida erikseen."
+  },
+  "muxed": {
+    "seo": {
+      "title": "Luo/hallitse Muxed-tiliä",
+      "description": "Luo ja hallinnoi Muxed-Adress-Aliaksia (M...) Stellar-tilille. Generoi tunnuksia, lisää tunnisteita/huomioita, vie tuo CSV-muodossa."
+    },
+    "title": "Luo/hallinnoi Muxed-tiliä",
+    "explainer": "Luo alias-osoitteita (M...) omalla Muxed-ID:llään olemassa olevalle tilille. Alias-osoite viittaa aina samaan tiliin.",
+    "selectBaseAccount": "Perustili (G-osoite)",
+    "selectPlaceholder": "Valitse tili",
+    "baseAccountInfo": "Tämä tili pysyy teknisesti omistajana. Muxed-osoite (M...) osoittaa vain tähän tiliin.",
+    "generateButton": "Luo Muxed-tili",
+    "exportButton": "Vienti",
+    "importButton": "Tuonti",
+    "listTitle": "Olemassa olevat Muxed-tilit",
+    "none": "Ei tallennettuja Muxed-tilejä.",
+    "columns": {
+      "id": "Muxed-ID",
+      "address": "Muxattu osoite",
+      "label": "Nimitys",
+      "note": "Huomautus",
+      "createdAt": "Luotu",
+      "actions": "Toiminnot"
+    },
+    "selectAll": "Valitse kaikki",
+    "deleteSelected": "Valinnan poistaminen",
+    "deleteSuccess": "Valinta poistettu.",
+    "countLabel": "Määrä",
+    "countInfo": "Uusien Muxed-osoitteiden määrä, juoksevat ID:t.",
+    "invalidCount": "Anna kelvollinen määrä (>= 1).",
+    "tooMany": "Luo enintään 100 kerrallaan.",
+    "rangeOverflow": "ID-alue ylittää sallitun Muxed-ID:n enimmäisarvon.",
+    "label": "Nimike",
+    "labelInfo": "esimerkiksi työntekijän nimi tai tarkoitus",
+    "note": "Huomautus (valinnainen)",
+    "noteInfo": "esim. osasto / projekti",
+    "generateSuccess": "Muxattu osoite/osoitteet luotu.",
+    "editSaved": "Muutokset tallennettu.",
+    "save": "Tallenna",
+    "edit": "Muokkaa",
+    "copied": "Kopioitu leikepöydälle.",
+    "createDialog": {
+      "confirm": "Luo",
+      "cancel": "Peruuttaa"
+    },
+    "export": {
+      "filename": "muxed_accounts.csv",
+      "success": "Muxed-tilit viety onnistuneesti.",
+      "failed": "Virhe yhdistettyjen tilien viennissä."
+    },
+    "import": {
+      "success": "Tuotu: {{imported}} • Ohitettu: {{skipped}} • Virheet: {{errors}}.",
+      "failed": "Tuontivirhe.",
+      "hint": "Tuo tukee CSV-tiedostoja, joissa on otsikkorivi. Erotinmerkkeinä pilkku, puolipiste ja sarkain tunnistetaan automaattisesti. Tuntemattomia sarakkeita ei oteta huomioon. Formaatit: laajennettu (verkko, basePublicKey, muxedId, label, note, createdAt) tai mallipohjainen (muxedId, label, note)."
+    },
+    "exportTemplateButton": "Vie mallipohja ulos",
+    "exportTemplateSuccess": "Malli viety onnistuneesti.",
+    "exportTemplateFailed": "Virhe mallin viennissä.",
+    "csv": {
+      "delimiterLabel": "CSV-erotinmerkki",
+      "delimiter": {
+        "comma": "Pilkku ,",
+        "semicolon": "Puolipiste ;",
+        "tab": "Välilehti"
+      }
+    },
+    "nav": "Muksatut tilit",
+    "error": {
+      "noBaseAccount": "Valitse olemassa oleva tili.",
+      "noId": "Anna Muxed-ID.",
+      "invalidBaseAccount": "Valittu perusosoite on virheellinen.",
+      "unknown": "Tuntematon virhe Muxed-osoitteen luomisessa."
+    },
+    "infoButtonLabel": "Tieto",
+    "info": {
+      "title": "Mikä on Muxed-tili?",
+      "intro1": "Muxed-tili yhdistää normaalin tiliosoitteen (G-osoite) ylimääräisen 64-bittisen Muxed-ID:n kanssa.",
+      "intro2": "Teknisesti se on alias, joka osoittaa aina samaan perustiliin, mutta on ID:n avulla yksiselitteisesti erotettavissa.",
+      "purposeTitle": "Tarkoitus ja hyöty",
+      "purposeText": "Muxed-tilit on tarkoitettu useiden alatilien hallintaan yhden Stellar-osoitteen alla – ihanteellinen, kun useat sisään-/ulosmaksut kulkevat yhteisen päätilin kautta, mutta jokainen tapahtuma täytyy kohdistaa henkilölle, osastolle tai projektille.",
+      "examplesTitle": "Esimerkit – mihin Muxed-tilit ovat hyödyllisiä?",
+      "examples": {
+        "ex1": "Yritysmaksut: Jokainen työntekijä saa oman Muxed-ID:n, jotta palkkamaksut voidaan kohdentaa yksiselitteisesti.",
+        "ex2": "Pörssit tai alustat: Jokainen käyttäjä saa oman Muxed-ID:n, jotta talletukset yhteisen lompakon kautta kirjautuvat automaattisesti oikein.",
+        "ex3": "Projektit tai alatilit: Organisaatio voi kohdistaa budjetit tai tulot yksittäisille projekteille.",
+        "ex4": "Asiakkaan osoitus: Yksi M-osoite asiakasta kohden; ID vastaa asiakas-ID:tä – maksut voidaan yksiselitteisesti yhdistää, myös ilman muistiota.",
+        "ex5": "Palvelut ilman muistiinpanoja: Eroita talletukset, kun palvelu ei tue muistiinpanoja.",
+        "ex6": "Maksut/Palkat: Yksi M‑osoite työntekijää/kumppania kohden sisäiseen kirjanpitoon ja raportteihin.",
+        "ex7": "Kauppa/Tilaukset: Yksi M-osoite tilausta kohti; palautukset voidaan yhdistää tilaukseen.",
+        "ex8": "Osastot/kustannuspaikat: Tunnukset kustannuspaikkoina; maksut ryhmitellään automaattisesti alueittain.",
+        "ex9": "Multi-tenant-palvelut: Jokainen vuokralainen saa oman M-osoitteen saman perustilin alla."
+      },
+      "pageTitle": "Mitä tämä sivu tekee SKM:ssä?",
+      "pageDesc": "Tämä sivu on tarkoitettu valitun Stellar-tilisi Muxed-tilien hallintaan:",
+      "createTitle": "Luo uusi Muxed-tiliä.",
+      "createItems": {
+        "i1": "Luo uusia Muxed-osoitteita (M...) perusosoitteestasi (G...).",
+        "i2": "Valinnainen nimi ja merkintä (esim. projekti tai tarkoitus)."
+      },
+      "importTitle": "CSV-tiedostojen tuonti",
+      "importItems": {
+        "i1": "Muxed-tilien joukkoluonti, esimerkiksi työntekijälistasta.",
+        "i2": "Lue sarakkeet muxedId, label, note."
+      },
+      "exportTitle": "Olemassa olevien Muxed-tilien vienti",
+      "exportItems": {
+        "i1": "Vie kaikki tallennetut merkinnät CSV-muodossa.",
+        "i2": "Kentät: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
+      },
+      "templateTitle": "Mallin vienti",
+      "templateItems": {
+        "i1": "Luo tyhjä CSV-tiedosto, jossa on sarakeotsikot muxedId,label,note.",
+        "i2": "Hyödyllinen HR- tai kirjanpito-osastoille uusien merkintöjen valmisteluun."
+      },
+      "manageTitle": "Hallinto ja yleiskatsaus",
+      "manageItems": {
+        "i1": "Kaikki tallennetut yhdistetyt osoitteet näytetään taulukossa.",
+        "i2": "Valinta, poistaminen sekä merkitsemien ja muistiinpanojen ylläpito suoraan mahdollista."
+      },
+      "shortTitle": "Lyhyesti sanottuna",
+      "shortText": "Muxed-tilit tekevät Stellar-tilistäsi hienojakoisemman ja kirjanpitokelpoisen – ihanteellinen organisaatioille, jotka käsittelevät paljon maksuja keskitetyn tilin kautta, mutta haluavat silti yksilöidä jokaisen transaktion tarkasti."
+    }
+  },
+  "glossary": {
+    "pageTitle": "Sanasto",
+    "pageIntro": "Täältä löydät tärkeitä sanoja lohkoketjumaailmasta ja Stellar-verkostosta. Kaikki on selitetty yksinkertaisin sanoin.",
+    "searchLabel": "Etsi termiä",
+    "searchPlaceholder": "z. B. Lompakko, Trustline, Memo …",
+    "searchHint": "Haku löytää sanoja ja selityksiä.",
+    "noResults": "Ei osumaa.",
+    "blockchain": {
+      "title": "Lohkoketju",
+      "desc": "Lohkoketju on kuin digitaalinen kassakirja. Monet tietokoneet tallentavat samat merkinnät. Näin kukaan ei voi salaa muuttaa mitään."
+    },
+    "wallet": {
+      "title": "Lompakko",
+      "desc": "Lompakko on digitaalinen rahapussisi. Se hallinnoi avaimia, joita tarvitset päästäksesi tiliisi ja lähettääksesi siirtoja. Lompakko voi olla ohjelma tai sovellus tai vain paperilappu, jossa on salainen avaimesi."
+    },
+    "account": {
+      "title": "Tili",
+      "desc": "Tili on paikka lohkoketjussa, jossa arvosi sijaitsevat. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat lompakot voivat käyttää samaa tiliä, jos niillä on oikea avain."
+    },
+    "addressG": {
+      "title": "G-osoite",
+      "desc": "G-osoite on Stellar-tilin pääosoite. Se alkaa kirjaimella G. Annat sen muille, jotta he voivat lähettää sinulle jotain."
+    },
+    "publicKey": {
+      "title": "Julkinen avain",
+      "desc": "Julkinen avain on osoite, jota voit näyttää. Stellarissa se on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
+    },
+    "privateKey": {
+      "title": "Salainen avain",
+      "desc": "Salainen avain on salasanasi tilille. Kuka tahansa, jolla on tämä avain, voi siirtää rahojasi. Älä koskaan luovuta sitä."
+    },
+    "addressFederation": {
+      "title": "Federation-osoite",
+      "desc": "Föderaatio-osoite näyttää sähköpostilta. Esimerkiksi: nimi*verkkotunnus.com. Tämä lyhyt osoite osoittaa normaalille G-osoitteelle. Se on helpompi muistaa."
+    },
+    "addressMuxed": {
+      "title": "Muxed-tili (M-osoite)",
+      "desc": "M-osoite viittaa olemassa olevaan Stellar-tiliin, mutta sillä on lisäksi oma numero (ID). Tämä mahdollistaa esimerkiksi useiden henkilöiden tai osastojen erottamisen saman G-osoitteen alla. Teknisenä yksityiskohtana rahat kuuluvat edelleen päätilille."
+    },
+    "multisig": {
+      "title": "Multi-Sig",
+      "desc": "Multi-Sig tarkoittaa useampia allekirjoituksia. Tärkeä toiminto tarvitsee enemmän kuin yhden avaimen. Esimerkki: Sinä ja toinen avain täytyy molempien hyväksyä ennen kuin jotain lähetetään. Tämä tekee varkauden vaikeammaksi."
+    },
+    "trustline": {
+      "title": "Luottolimiitti",
+      "desc": "Trustline on kuin \"kyllä, hyväksyn tämän tokenin\". Sillä kerrot, että tilisi on valmis pitämään tietyn tokenin tietyn liikkeeseenlaskijan puolesta. Ilman trustlinea et voi vastaanottaa tätä tokenia."
+    },
+    "token": {
+      "title": "Merkki",
+      "desc": "Token on digitaalinen yksikkö lohkoketjussa. Token voi edustaa rahaa tai pisteitä tai saldoa palvelulle."
+    },
+    "asset": {
+      "title": "Varallisuus",
+      "desc": "Stellarissa merkki kutsutaan varaksi. Varan yhteydessä on aina liikkeeseenlaskijan tili. Esimerkiksi tili voi laskea liikkeeseen euro-tokenin. Tämä euro-token on sitten vara."
+    },
+    "xlm": {
+      "title": "XLM",
+      "desc": "XLM on Stellarin perusvaluutta. Tarvitset XLM:ää maksujen suorittamiseen ja uuden tilin luomiseen."
+    },
+    "memo": {
+      "title": "Muistio",
+      "desc": "Memo on pieni viesti, jonka voit lähettää yhdessä tapahtuman kanssa. Usein pörssi vaatii tietyn memon, jotta se tietää, kenelle rahat kuuluvat."
+    },
+    "transaction": {
+      "title": "Tapahtuma",
+      "desc": "Tapahtuma on toiminto lohkoketjussa. Esimerkiksi rahan lähettäminen tai luottolinjan luominen. Tapahtuma tallennetaan pysyvästi, kun se on vahvistettu."
+    },
+    "fee": {
+      "title": "Maksu",
+      "desc": "Maksu on hyvin pieni summa, jonka maksat jokaisesta tapahtumasta. Maksu menee verkolle. Stellarissa maksut ovat erittäin pieniä."
+    },
+    "ledger": {
+      "title": "Kirjanpito",
+      "desc": "Kirjanpito on kaikkien vahvistettujen tietojen ketju. Siellä näkyy, kuinka paljon eri tileillä on ja mitkä tapahtumat ovat tapahtuneet. Jokainen voi tarkistaa kirjanpidon."
+    },
+    "horizon": {
+      "title": "Horisontti",
+      "desc": "Horizon on palvelu, jonka kautta ohjelmat keskustelevat Stellar-lohkoketjun kanssa. Työkalumme pyytää Horizonilta tilin saldoja ja tapahtumia ladattavaksi."
+    },
+    "anchor": {
+      "title": "Ankkuri",
+      "desc": "Anchor on yritys, joka yhdistää oikean rahan, kuten euron tai dollarin, Stellariin. Annat esimerkiksi Anchorille euroja ja saat vastineeksi Stellar-verkossa olevan eurotokenin."
+    },
+    "exchange": {
+      "title": "Pörssi",
+      "desc": "Pörssi on paikka, jossa voit ostaa tai myydä tokeneita. Monet pörssit vaativat KYC-prosessin, eli henkilöllisyyden tarkistuksen, ennen kuin voit nostaa rahaa euroissa tai frangeissa."
+    },
+    "dex": {
+      "title": "DEX",
+      "desc": "DEX tarkoittaa hajautettua pörssiä. Täällä ihmiset käyvät kauppaa suoraan toistensa kanssa lohkoketjussa. Ei ole olemassa yhtä ainoaa ylläpitäjää. Stellarilla on sisäänrakennettu DEX."
+    },
+    "liquidityPool": {
+      "title": "Likviditeettipooli",
+      "desc": "Likviditeettipooli on yhteinen allas, johon on talletettu kaksi tokenia. Ihmiset laittavat molempia tokeneita sinne. Muut saavat vaihtaa näitä tokeneita välittömästi. Talletuksen tekijät ansaitsevat tästä pieniä maksuja."
+    },
+    "balanceClaimable": {
+      "title": "Nostettava saldo",
+      "desc": "Vaatimuksenalainen saldo on rahaa, joka on jo sinulle varattu, mutta sinun täytyy vielä noutaa se. Vasta kun hyväksyt sen, siirtyy se tilillesi."
+    },
+    "protocolUpdate": {
+      "title": "Protokollipäivitys",
+      "desc": "Protokollipäivitys on Stellar-verkon sääntöjen päivitys. Esimerkiksi uusia ominaisuuksia tai turvallisuusmuutoksia. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
+    },
+    "soroban": {
+      "title": "Soroban",
+      "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on lohkoketjuun tallennettu ohjelmakoodi. Koodi voi itse tarkistaa sääntöjä ja käynnistää toimintoja ilman välikätenä toimivaa pankkia."
+    }
   }
 }

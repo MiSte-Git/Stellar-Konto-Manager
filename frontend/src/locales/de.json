@@ -342,7 +342,7 @@
     "sendPayment": "Zahlung senden",
     "feedback": "Feedback",
     "donate": "Spenden",
-    "muxed": "Muxed-Adressen verwalten"
+    "muxed": "Muxed-Konten erstellen/verwalten"
   },
   "badges": {
     "testnet": "TESTNET"
@@ -638,6 +638,139 @@
   "token": {
     "purchases": "Token/Assets filtern"
   },
+  "glossary": {
+    "pageTitle": "Glossar",
+    "pageIntro": "Hier findest du wichtige Wörter aus der Blockchain Welt und aus dem Stellar Netzwerk. Alles ist in einfachen Worten erklärt.",
+    "searchLabel": "Begriff suchen",
+    "searchPlaceholder": "z. B. Wallet, Trustline, Memo …",
+    "searchHint": "Die Suche findet Wörter und Erklärungen.",
+    "noResults": "Kein Treffer.",
+
+    "blockchain": {
+      "title": "Blockchain",
+      "desc": "Eine Blockchain ist wie ein digitales Kassenbuch. Viele Computer speichern dieselben Einträge. So kann niemand heimlich etwas ändern."
+    },
+
+    "wallet": {
+      "title": "Wallet",
+      "desc": "Ein Wallet ist deine digitale Geldbörse. Es verwaltet die Schlüssel die du brauchst um auf dein Konto zuzugreifen und Transaktionen zu senden. Ein Wallet kann ein Programm sein oder eine App oder auch nur ein Zettel mit deinem Geheimschlüssel."
+    },
+
+    "account": {
+      "title": "Konto",
+      "desc": "Ein Konto ist die Stelle auf der Blockchain an der deine Werte liegen. Ein Konto hat eine öffentliche Adresse die mit G beginnt. Mehrere Wallets können auf dasselbe Konto zugreifen wenn sie den richtigen Schlüssel haben."
+    },
+
+    "addressG": {
+      "title": "G-Adresse",
+      "desc": "Die G-Adresse ist die Hauptadresse eines Stellar Kontos. Sie beginnt mit dem Buchstaben G. Du gibst sie anderen damit sie dir etwas schicken können."
+    },
+
+    "publicKey": {
+      "title": "Öffentlicher Schlüssel",
+      "desc": "Der öffentliche Schlüssel ist die Adresse die du zeigen darfst. Bei Stellar ist das die G-Adresse. Andere nutzen ihn um dir Geld zu senden."
+    },
+
+    "privateKey": {
+      "title": "Geheimer Schlüssel",
+      "desc": "Der geheime Schlüssel ist dein Passwort für das Konto. Wer diesen Schlüssel hat kann dein Geld bewegen. Niemals weitergeben."
+    },
+
+    "addressFederation": {
+      "title": "Föderationsadresse",
+      "desc": "Eine Föderationsadresse sieht aus wie eine E-Mail. Beispiel: name*domain.com. Diese kurze Adresse zeigt auf eine normale G-Adresse. Das ist einfacher zu merken."
+    },
+
+    "addressMuxed": {
+      "title": "Muxed-Konto (M-Adresse)",
+      "desc": "Eine M-Adresse zeigt auf ein bestehendes Stellar Konto hat aber zusätzlich eine eigene Nummer (ID). So kann man z. B. mehrere Personen oder Abteilungen unter derselben G-Adresse unterscheiden. Technisch gehört das Geld weiter dem Hauptkonto."
+    },
+
+    "multisig": {
+      "title": "Multi-Sig",
+      "desc": "Multi-Sig steht für mehrere Unterschriften. Eine wichtige Aktion braucht mehr als einen Schlüssel. Beispiel: Du und ein zweiter Schlüssel müssen beide zustimmen bevor etwas gesendet wird. Das macht Diebstahl schwerer."
+    },
+
+    "trustline": {
+      "title": "Trustline",
+      "desc": "Eine Trustline ist wie ein Ja ich akzeptiere diesen Token. Du sagst damit dass dein Konto bereit ist einen bestimmten Token von einem bestimmten Herausgeber zu halten. Ohne Trustline kannst du diesen Token nicht empfangen."
+    },
+
+    "token": {
+      "title": "Token",
+      "desc": "Ein Token ist eine digitale Einheit auf der Blockchain. Ein Token kann Geld darstellen oder Punkte oder Guthaben für einen Dienst."
+    },
+
+    "asset": {
+      "title": "Asset",
+      "desc": "Auf Stellar heißt ein Token Asset. Ein Asset ist immer verknüpft mit einem Herausgeber Konto. Zum Beispiel kann ein Konto einen Euro Token ausgeben. Dieser Euro Token ist dann ein Asset."
+    },
+
+    "xlm": {
+      "title": "XLM",
+      "desc": "XLM ist die Grundwährung von Stellar. Du brauchst XLM um Gebühren zu zahlen und ein neues Konto zu starten."
+    },
+
+    "memo": {
+      "title": "Memo",
+      "desc": "Ein Memo ist eine kleine Notiz die du mit einer Transaktion mitschicken kannst. Oft verlangt eine Börse ein bestimmtes Memo damit sie weiß wem das Geld gehört."
+    },
+
+    "transaction": {
+      "title": "Transaktion",
+      "desc": "Eine Transaktion ist eine Aktion auf der Blockchain. Zum Beispiel Geld senden oder eine Trustline anlegen. Eine Transaktion wird für immer gespeichert wenn sie bestätigt ist."
+    },
+
+    "fee": {
+      "title": "Gebühr",
+      "desc": "Die Gebühr ist ein sehr kleiner Betrag den du bei jeder Transaktion zahlst. Die Gebühr geht an das Netzwerk. Bei Stellar sind die Gebühren sehr klein."
+    },
+
+    "ledger": {
+      "title": "Ledger",
+      "desc": "Das Ledger ist die Kette aller bestätigten Daten. Dort steht welche Konten wie viel besitzen und welche Transaktionen passiert sind. Jeder kann das Ledger prüfen."
+    },
+
+    "horizon": {
+      "title": "Horizon",
+      "desc": "Horizon ist der Service über den Programme mit der Stellar Blockchain reden. Unser Tool fragt Horizon um Kontostände und Transaktionen zu laden."
+    },
+
+    "anchor": {
+      "title": "Anchor",
+      "desc": "Ein Anchor ist eine Firma die echtes Geld wie Euro oder Dollar mit Stellar verbindet. Du gibst dem Anchor z. B. Euro und bekommst dafür einen Euro Token auf Stellar."
+    },
+
+    "exchange": {
+      "title": "Börse",
+      "desc": "Eine Börse ist ein Ort an dem du Token kaufen oder verkaufen kannst. Viele Börsen verlangen ein KYC Verfahren also eine Ausweisprüfung bevor du Geld in Euro oder Franken rausziehen kannst."
+    },
+
+    "dex": {
+      "title": "DEX",
+      "desc": "DEX bedeutet Dezentrale Börse. Hier handeln die Leute direkt miteinander auf der Blockchain. Es gibt keinen einzelnen Betreiber. Stellar hat eine DEX direkt eingebaut."
+    },
+
+    "liquidityPool": {
+      "title": "Liquiditätspool",
+      "desc": "Ein Liquiditätspool ist ein gemeinsamer Topf mit zwei Tokens. Leute legen beide Tokens hinein. Andere dürfen dann diese Tokens sofort tauschen. Die Einzahler verdienen dafür kleine Gebühren."
+    },
+
+    "balanceClaimable": {
+      "title": "Claimable Balance",
+      "desc": "Eine Claimable Balance ist Geld das schon für dich reserviert ist aber du musst es noch abholen. Erst wenn du es annimmst geht es in dein Konto."
+    },
+
+    "protocolUpdate": {
+      "title": "Protocol Update",
+      "desc": "Ein Protocol Update ist ein Upgrade der Regeln im Stellar Netzwerk. Zum Beispiel neue Funktionen oder Sicherheitsänderungen. Alle Knoten im Netzwerk müssen dieselben Regeln benutzen."
+    },
+
+    "soroban": {
+      "title": "Soroban",
+      "desc": "Soroban ist das Smart Contract System von Stellar. Ein Smart Contract ist Programmcode auf der Blockchain. Der Code kann selbst Regeln prüfen und Aktionen auslösen ohne eine Bank dazwischen."
+    }
+  },
   "trustline": {
     "all": "Trustline(s) anzeigen",
     "compare": "Trustline(s) vergleichen",
@@ -715,7 +848,17 @@
       "amountPositive": "Der Betrag muss größer als 0 sein.",
       "timeout": "Horizon-Timeout (504). Bitte versuche es gleich erneut.",
       "httpError": "Horizon-Fehler (Status {{status}}).",
-      "horizonError": "Stellar hat die Transaktion abgelehnt"
+      "horizonError": "Stellar hat die Transaktion abgelehnt",
+      "destUnfundedNonNative": "Zielkonto ist nicht aktiv. Bitte zuerst XLM zur Aktivierung senden oder Asset auf XLM wechseln.",
+      "activateConfirm": {
+        "title": "Konto-Aktivierung erforderlich",
+        "info": "Das Zielkonto ist noch nicht aktiv. Für die Aktivierung ist ein Mindestbetrag erforderlich.",
+        "minReserve": "Mindestbetrag (2 × Basisreserve)",
+        "yourAmount": "Ihr eingegebener Betrag",
+        "adjustedAmount": "Vorgeschlagener Betrag (zum Aktivieren)",
+        "noteAdjust": "Ihr Betrag reicht für die Aktivierung nicht aus. Wenn Sie fortfahren, wird automatisch der Mindestbetrag gesendet."
+      },
+      "activated": "Das Zielkonto wurde aktiviert."
     }
   },
   "xlmByMemo": {
@@ -837,6 +980,55 @@
     },
     "title": "Muxed-Konto erstellen/verwalten",
     "explainer": "Erzeuge Alias-Adressen (M...) mit eigener Muxed-ID für ein bestehendes Konto. Die Alias-Adresse verweist immer auf dasselbe Konto.",
+    "infoButtonLabel": "Info",
+    "info": {
+      "title": "Was ist ein Muxed-Konto?",
+      "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
+      "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
+      "purposeTitle": "Zweck und Nutzen",
+      "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
+      "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
+      "examples": {
+        "ex1": "Firmenzahlungen: Jede Mitarbeiterin/jeder Mitarbeiter erhält eine eigene Muxed‑ID, damit Lohnzahlungen eindeutig zugeordnet werden können.",
+        "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
+        "ex3": "Projekte oder Subkonten: Eine Organisation kann Budgets oder Einnahmen einzelnen Projekten zuordnen.",
+        "ex4": "Kundenzuordnung: Eine M‑Adresse pro Kunde; die ID entspricht der Kunden‑ID – Zahlungen sind eindeutig zuordenbar, auch ohne Memo.",
+        "ex5": "Dienste ohne Memo: Einzahlungen unterscheiden, wenn der Dienst keine Memos unterstützt.",
+        "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
+        "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
+        "ex8": "Abteilungen/Kostenstellen: IDs als Kostenstellen; Zahlungen automatisch nach Bereich gruppieren.",
+        "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
+      },
+      "pageTitle": "Was diese Seite im SKM macht",
+      "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
+      "createTitle": "Neue Muxed‑Konten erstellen",
+      "createItems": {
+        "i1": "Erzeugt neue Muxed‑Adressen (M...) aus deiner Basisadresse (G...).",
+        "i2": "Optional mit Label (Name) und Notiz (z. B. Projekt oder Zweck)."
+      },
+      "importTitle": "Import aus CSV‑Dateien",
+      "importItems": {
+        "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
+        "i2": "Liest Spalten muxedId, label, note."
+      },
+      "exportTitle": "Export vorhandener Muxed‑Konten",
+      "exportItems": {
+        "i1": "Gibt alle gespeicherten Einträge als CSV aus.",
+        "i2": "Felder: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
+      },
+      "templateTitle": "Template‑Export",
+      "templateItems": {
+        "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
+        "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
+      },
+      "manageTitle": "Verwaltung & Übersicht",
+      "manageItems": {
+        "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
+        "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
+      },
+      "shortTitle": "Kurz gesagt",
+      "shortText": "Muxed‑Konten machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
+    },
     "selectBaseAccount": "Basis-Konto (G-Adresse)",
     "selectPlaceholder": "Bitte Konto auswählen",
     "baseAccountInfo": "Dieses Konto bleibt technisch der Besitzer. Die Muxed-Adresse (M...) zeigt nur auf dieses Konto.",
