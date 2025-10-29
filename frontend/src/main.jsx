@@ -6,7 +6,8 @@ import ReactDOM from 'react-dom/client';
 import { BACKEND_URL } from './config';
 import { 
   loadTrustlines, 
-  handleSourceSubmit as submitSourceInput
+  handleSourceSubmit as submitSourceInput,
+  getHorizonServer
  } from './utils/stellar/stellarUtils.js';
 import { useTrustedWallets } from './utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
@@ -129,6 +130,8 @@ function Main() {
   const [refreshToken, setRefreshToken] = useState(0);
    // Session secret key presence
    const [hasSessionKey, setHasSessionKey] = useState(false);
+   const [xlmBalance, setXlmBalance] = useState(null);
+   const [xlmBalanceLoading, setXlmBalanceLoading] = useState(false);
 
   const walletInfoMap = useMemo(() => createWalletInfoMap(wallets), [wallets]);
   const trimmedHeaderInput = (walletHeaderInput || '').trim();
@@ -262,6 +265,24 @@ function Main() {
     });
   }, [persistRecent]);
 
+  async function fetchXlmBalanceFor(pk, net) {
+    if (!pk) { setXlmBalance(null); return; }
+    try {
+      setXlmBalanceLoading(true);
+      const server = net === 'TESTNET'
+        ? getHorizonServer('https://horizon-testnet.stellar.org')
+        : getHorizonServer('https://horizon.stellar.org');
+      const account = await server.loadAccount(pk);
+      const native = (account?.balances || []).find((b) => b.asset_type === 'native');
+      setXlmBalance(native ? native.balance : null);
+    } catch (e) {
+      // Unfunded or error → null
+      setXlmBalance(null);
+    } finally {
+      setXlmBalanceLoading(false);
+    }
+  }
+
   async function handleHeaderApply() {
     const input = (walletHeaderInput || '').trim();
     if (!input) return;
@@ -274,6 +295,8 @@ function Main() {
       addRecent(publicKey);
       setNotFound(false);
       setRefreshToken(prev => prev + 1);
+      // Fetch XLM balance for this account
+      fetchXlmBalanceFor(publicKey, devTestnet ? 'TESTNET' : 'PUBLIC');
     } catch (err) {
       const msg = String(err?.message || '');
       setError(msg);
@@ -295,6 +318,7 @@ function Main() {
       if (Array.isArray(trustlines)) setTrustlines(trustlines);
       setNotFound(false);
       setRefreshToken(prev => prev + 1);
+      fetchXlmBalanceFor(publicKey, net);
     } catch (err) {
       const msg = String(err?.message || '');
       setError(msg);
@@ -317,9 +341,18 @@ function Main() {
       setDevTestnet(v === 'TESTNET');
       // Clear info banner on network change
       setInfoMessage('');
+      // Refresh XLM balance for current account on network change
+      try { if (sourcePublicKey) fetchXlmBalanceFor(sourcePublicKey, v === 'TESTNET' ? 'TESTNET' : 'PUBLIC'); } catch { /* noop */ }
     };
     window.addEventListener('stm-network-changed', handler);
     return () => window.removeEventListener('stm-network-changed', handler);
+  }, []);
+
+  // Listen for settings open requests from the language bar
+  useEffect(() => {
+    const openSettings = () => setMenuSelection('settings');
+    window.addEventListener('stm:openSettings', openSettings);
+    return () => window.removeEventListener('stm:openSettings', openSettings);
   }, []);
 
   function unloadActiveWallet() {
@@ -330,6 +363,7 @@ function Main() {
     setDestinationPublicKey('');
     setIssuerAddress('');
     setError('');
+    setXlmBalance(null);
   }
 
   function handleRecentDelete() {
@@ -488,19 +522,39 @@ function Main() {
               </datalist>
 
             </div>
-            <div className="mt-2 text-xs text-gray-700 dark:text-gray-300 space-y-0.5">
-              <div>
-                <span className="font-semibold">{t('wallet.federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
-                {headerFederationDisplay
-                  ? <span className="font-mono break-all">{headerFederationDisplay}</span>
-                  : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
-              </div>
-              {headerLabel && (
-                <div>
-                  <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
-                  <span>{headerLabel}</span>
+            <div className="mt-2 relative text-xs text-gray-700 dark:text-gray-300">
+              {/* XLM-Balance rechts oben */}
+              <div className="absolute right-0 top-0 shrink-0 text-right">
+                <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded px-2 py-1">
+                  <span className="font-semibold">{t('wallet.xlmBalance', 'XLM')}:</span>
+                  <span className="font-mono">
+                    {xlmBalanceLoading
+                      ? t('common.loading', 'Loading…')
+                      : (sourcePublicKey
+                          ? (xlmBalance != null ? `${xlmBalance}` : t('wallet.unfunded', 'Unfunded'))
+                          : '—')}
+                  </span>
                 </div>
-              )}
+              </div>
+
+              {/* Mittig: Föderationsadresse & Label mit Doppelpunkt-Ausrichtung */}
+              <div className="mx-auto inline-grid grid-cols-[max-content_auto] gap-x-2 gap-y-1">
+                <div className="text-right font-semibold">
+                  {t('wallet.federationDisplay.label', 'Föderationsadresse')}:
+                </div>
+                <div className="text-left">
+                  {headerFederationDisplay
+                    ? <span className="font-mono break-all">{headerFederationDisplay}</span>
+                    : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
+                </div>
+
+                <div className="text-right font-semibold">
+                  {t('wallet.federationDisplay.accountLabel', 'Label')}:
+                </div>
+                <div className="text-left">
+                  {headerLabel ? headerLabel : <span className="text-gray-400">—</span>}
+                </div>
+              </div>
             </div>
             <div className="mt-2 flex flex-wrap gap-2 justify-start">
               {/* Linke Buttons */}

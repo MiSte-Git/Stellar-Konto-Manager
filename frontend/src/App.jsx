@@ -79,16 +79,35 @@ function App() {
             <div className="flex justify-center">
               <LanguageSelector />
             </div>
-            {/* Glossary button in the language bar (prominent) */}
-            <a
-              href={buildPath('glossar')}
-              className="absolute right-3 top-2 inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              title={t('glossary.pageTitle', 'Glossary')}
-            >
-              {t('glossary.pageTitle', 'Glossary')}
-            </a>
+            {/* Glossary and Settings buttons in the language bar (right side) */}
+            <div className="absolute right-3 top-2 flex flex-col items-end gap-2">
+              <a
+                href={buildPath('glossar')}
+                className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                title={t('glossary.pageTitle', 'Glossary')}
+              >
+                {t('glossary.pageTitle', 'Glossary')}
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  try {
+                    const root = document.querySelector('#root');
+                    if (!root) { window.location.hash = '#settings'; return; }
+                    const evt = new CustomEvent('stm:openSettings');
+                    window.dispatchEvent(evt);
+                  } catch {
+                    /* noop */
+                  }
+                }}
+                className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                title={t('settings.label', 'Settings')}
+              >
+                {t('settings.label')}
+              </button>
+            </div>
             {devTestnet && (
-              <span className="absolute right-3 top-12 inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
+              <span className="absolute right-3 top-[72px] inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
                 {t('badges.testnet')}
               </span>
             )}
