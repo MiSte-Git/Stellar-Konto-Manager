@@ -5,17 +5,16 @@ function MainMenu({ onSelect }) {
   const { t } = useTranslation();
 
   const buttons = [
-    { label: t('trustline.all'), value: 'listAll' },
-    { label: t('trustline.compare'), value: 'compare' },
-    { label: t('token.purchases'), value: 'payments' },
-    { label: t('menu.balance'), value: 'balance' },
-    { label: t('menu.xlmByMemo'), value: 'xlmByMemo' },
-    { label: t('menu.sendPayment'), value: 'sendPayment' },
-    // Donate wurde in die Titelleiste verschoben
     { label: t('multisigCreate.menu'), value: 'multisigCreate', title: t('multisigCreate.menuHint') },
+    { label: t('menu.sendPayment'), value: 'sendPayment' },
+    { label: t('menu.balance'), value: 'balance' },
+    { label: t('token.purchases'), value: 'payments' },
+    { label: t('menu.xlmByMemo'), value: 'xlmByMemo' },
+    // Donate wurde in die Titelleiste verschoben
     { label: t('multisigEdit.menu'), value: 'multisigEdit', title: t('multisigEdit.menuHint') },
     { label: t('menu.muxed', 'Muxed-Adressen verwalten'), value: 'muxed' },
-    { label: t('settings.label'), value: 'settings' }
+    { label: t('trustline.all'), value: 'listAll' },
+    { label: t('trustline.compare'), value: 'compare' }
   ];
 
   return (
