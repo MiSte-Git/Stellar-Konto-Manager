@@ -881,7 +881,19 @@
     },
     "import": {
       "success": "Importiert: {{imported}} • Übersprungen: {{skipped}} • Fehler: {{errors}}.",
-      "failed": "Fehler beim Import."
+      "failed": "Fehler beim Import.",
+      "hint": "Import unterstützt CSV mit Kopfzeile. Trennzeichen Komma, Semikolon und Tab werden automatisch erkannt. Unbekannte Spalten werden ignoriert. Formate: erweitert (network,basePublicKey,muxedId,label,note,createdAt) oder Template (muxedId,label,note)."
+    },
+    "exportTemplateButton": "Template exportieren",
+    "exportTemplateSuccess": "Template erfolgreich exportiert.",
+    "exportTemplateFailed": "Fehler beim Export des Templates.",
+    "csv": {
+      "delimiterLabel": "CSV Trennzeichen",
+      "delimiter": {
+        "comma": "Komma ,",
+        "semicolon": "Semikolon ;",
+        "tab": "Tab"
+      }
     },
     "nav": "Muxed Accounts",
     "error": {
