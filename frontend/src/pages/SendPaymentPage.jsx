@@ -25,6 +25,17 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
   const [error, setError] = useState('');
+  const [preflight, setPreflight] = useState({
+    loading: false,
+    err: '',
+    destExists: true,
+    activationRequired: false,
+    minReserve: 0,
+    desired: 0,
+    adjusted: 0,
+    willBump: false,
+    resolvedDest: ''
+  });
 
   const walletInfoMap = useMemo(() => createWalletInfoMap(wallets), [wallets]);
 
@@ -42,7 +53,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [netLabel, setNetLabel] = useState(() => {
     try { return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
   });
-  const server = useMemo(() => getHorizonServer(), [netLabel]);
+  const server = useMemo(() => {
+    const url = netLabel === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org';
+    return getHorizonServer(url);
+  }, [netLabel]);
   const popupRef = useRef(null);
 
   const normalizeAmountValue = useCallback(() => {
@@ -126,8 +140,93 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       amountDisplay: payload.amountDisplay,
       asset: payload.asset,
       memo: payload.memo,
+      activated: !!payload.activated,
     });
   }, [publicKey]);
+
+  const runPreflight = useCallback(async () => {
+    try {
+      setPreflight({
+        loading: true,
+        err: '',
+        destExists: true,
+        activationRequired: false,
+        minReserve: 0,
+        desired: 0,
+        adjusted: 0,
+        willBump: false,
+        resolvedDest: ''
+      });
+      const v = (dest || '').trim();
+      if (!v) {
+        setPreflight(p => ({ ...p, loading: false, err: t('publicKey.destination.error') }));
+        return;
+      }
+      let resolvedDest;
+      try {
+        resolvedDest = await resolveOrValidatePublicKey(v);
+      } catch {
+        setPreflight(p => ({ ...p, loading: false, err: t('publicKey.destination.error') }));
+        return;
+      }
+      let desiredNum = 0;
+      try {
+        desiredNum = Number(normalizeAmountValue());
+      } catch (e) {
+        setPreflight(p => ({ ...p, loading: false, err: e?.message || t('payment.send.amountInvalid') }));
+        return;
+      }
+      const minReserve = (baseReserve || 0.5) * 2;
+      let destExists = true;
+      try {
+        await server.loadAccount(resolvedDest);
+      } catch {
+        destExists = false;
+      }
+      if (!destExists) {
+        if (assetKey !== 'XLM') {
+          setPreflight({
+            loading: false,
+            err: t('payment.send.destUnfundedNonNative', 'Destination account is not active. Please send XLM to activate it first or switch the asset to XLM.'),
+            destExists,
+            activationRequired: true,
+            minReserve,
+            desired: desiredNum,
+            adjusted: desiredNum,
+            willBump: false,
+            resolvedDest
+          });
+          return;
+        }
+        const adjusted = Math.max(desiredNum, minReserve);
+        setPreflight({
+          loading: false,
+          err: '',
+          destExists,
+          activationRequired: true,
+          minReserve,
+          desired: desiredNum,
+          adjusted,
+          willBump: adjusted > desiredNum,
+          resolvedDest
+        });
+        return;
+      }
+      setPreflight({
+        loading: false,
+        err: '',
+        destExists,
+        activationRequired: false,
+        minReserve,
+        desired: desiredNum,
+        adjusted: desiredNum,
+        willBump: false,
+        resolvedDest
+      });
+    } catch (e) {
+      setPreflight(p => ({ ...p, loading: false, err: e?.message || 'unknown' }));
+    }
+  }, [assetKey, baseReserve, dest, normalizeAmountValue, server, t]);
 
   const submitPayment = useCallback(async (secret) => {
     const kp = Keypair.fromSecret(secret);
@@ -154,20 +253,57 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       asset = new Asset(code, issuer);
       assetLabel = code || 'XLM';
     }
-    const tx = new TransactionBuilder(account, { fee, networkPassphrase: net, memo })
-      .addOperation(Operation.payment({ destination: resolvedDest, amount: paymentAmount, asset }))
-      .setTimeout(60)
-      .build();
+
+    // Check if destination account exists; if not and sending XLM, auto-activate via createAccount
+    let destExists = true;
+    try {
+      await server.loadAccount(resolvedDest);
+    } catch {
+      destExists = false;
+    }
+
+    let tx;
+    let activated = false;
+    if (!destExists) {
+      if (assetKey !== 'XLM') {
+        throw new Error(t('payment.send.destUnfundedNonNative', 'Destination account is not active. Please send XLM to activate it first or switch the asset to XLM.'));
+      }
+      // Ensure starting balance covers minimum reserve (2 * baseReserve), fallback baseReserve default is 0.5
+      const desired = parseFloat(paymentAmount);
+      const minStart = Math.max(desired, (baseReserve || 0.5) * 2);
+      const startingBalance = (Math.round(minStart * 1e7) / 1e7).toFixed(7).replace(/\.0+$/, '');
+      tx = new TransactionBuilder(account, { fee, networkPassphrase: net, memo })
+        .addOperation(Operation.createAccount({ destination: resolvedDest, startingBalance }))
+        .setTimeout(60)
+        .build();
+      activated = true;
+      assetLabel = 'XLM';
+    } else {
+      tx = new TransactionBuilder(account, { fee, networkPassphrase: net, memo })
+        .addOperation(Operation.payment({ destination: resolvedDest, amount: paymentAmount, asset }))
+        .setTimeout(60)
+        .build();
+    }
+
     tx.sign(kp);
     const res = await server.submitTransaction(tx);
+    const amountDisplayOut = activated ? (
+      // Show the actual starting balance if we created the account
+      (() => {
+        const desired = parseFloat(paymentAmount);
+        const minStart = Math.max(desired, (baseReserve || 0.5) * 2);
+        return (Math.round(minStart * 1e7) / 1e7).toFixed(7).replace(/\.0+$/, '');
+      })()
+    ) : paymentAmount;
     return {
       hash: res.hash || res.id || '',
       recipient: resolvedDest,
-      amountDisplay: paymentAmount,
+      amountDisplay: amountDisplayOut,
       asset: assetLabel,
       memo: memoDisplay,
+      activated,
     };
-  }, [assetKey, buildMemoObject, dest, normalizeAmountValue, publicKey, server, t]);
+  }, [assetKey, baseReserve, buildMemoObject, dest, normalizeAmountValue, publicKey, server, t]);
 
   const handleStoredSecretSend = useCallback(async () => {
     setShowConfirmModal(false);
@@ -414,6 +550,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.recipient')}:</span> <span className="font-mono break-all">{sentInfo.recipient}</span></div>
             <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.amount')}:</span> {sentAmountText || '0'} {sentInfo.asset}</div>
             <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.memo')}:</span> {sentInfo.memo || '-'}</div>
+            {sentInfo.activated && (
+              <div className="text-green-800 dark:text-green-200 font-medium">{t('payment.send.activated', 'The destination account was activated.')}</div>
+            )}
             {status && (<div><span className="text-gray-600 dark:text-gray-400">TX:</span> <span className="font-mono break-all">{status}</span></div>)}
           </div>
         </div>
@@ -564,6 +703,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 console.debug('stm-transaction-start event failed', dispatchError);
               }
               setShowConfirmModal(true);
+              setPreflight(p => ({ ...p, loading: true, err: '' }));
+              void runPreflight();
             }}
           >
             {t('payment.send.sendButton')}
@@ -579,12 +720,49 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             <h3 className="text-lg font-semibold mb-2">{t('option.confirm.action.title')}</h3>
             <div className="text-sm space-y-1 mb-3">
               <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.recipient')}:</span> <span className="font-mono break-all">{dest}</span></div>
-              <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.amount')}:</span> {amountFmt.format(Number(amount))} {(assetKey==='XLM'?'XLM':assetKey.split(':')[0])}</div>
+              <div>
+                <span className="text-gray-600 dark:text-gray-400">{t('payment.send.amount')}:</span>{' '}
+                <span>
+                  {amountFmt.format(Number(amount))} {(assetKey==='XLM'?'XLM':assetKey.split(':')[0])}
+                  {preflight.activationRequired && assetKey==='XLM' && preflight.willBump && !preflight.loading && !preflight.err && (
+                    <span className="ml-2 text-amber-600 dark:text-amber-400">→ {amountFmt.format(preflight.adjusted)} XLM</span>
+                  )}
+                </span>
+              </div>
               <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.memo')}:</span> {memoType==='none' || !memoVal ? '-' : memoVal}</div>
             </div>
+
+            {preflight.loading && (
+              <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">{t('common.loading')}</div>
+            )}
+            {!!preflight.err && !preflight.loading && (
+              <div className="text-xs text-red-600 mb-2">{preflight.err}</div>
+            )}
+            {preflight.activationRequired && assetKey==='XLM' && !preflight.loading && !preflight.err && (
+              <div className="border rounded p-2 mb-2 text-xs">
+                <div className="font-semibold mb-1">{t('payment.send.activateConfirm.title', 'Account activation required')}</div>
+                <div className="mb-1">{t('payment.send.activateConfirm.info', 'The destination account is not active yet. A minimum amount is required to activate it.')}</div>
+                <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                  <div className="text-gray-600 dark:text-gray-400">{t('payment.send.activateConfirm.minReserve', 'Minimum (2 × base reserve)')}</div>
+                  <div>{amountFmt.format(preflight.minReserve)} XLM</div>
+                  <div className="text-gray-600 dark:text-gray-400">{t('payment.send.activateConfirm.yourAmount', 'Entered amount')}</div>
+                  <div>{amountFmt.format(preflight.desired)} XLM</div>
+                  {preflight.willBump && (
+                    <>
+                      <div className="text-gray-600 dark:text-gray-400">{t('payment.send.activateConfirm.adjustedAmount', 'Proposed amount (to activate)')}</div>
+                      <div className="text-amber-600 dark:text-amber-400 font-medium">{amountFmt.format(preflight.adjusted)} XLM</div>
+                    </>
+                  )}
+                </div>
+                {preflight.willBump && (
+                  <div className="mt-1 text-amber-600 dark:text-amber-400">{t('payment.send.activateConfirm.noteAdjust', 'Your amount is not sufficient for activation. If you continue, the minimum amount will be sent automatically.')}</div>
+                )}
+              </div>
+            )}
+
             <div className="flex justify-end gap-2">
               <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowConfirmModal(false)}>{t('option.cancel')}</button>
-              <button className="px-3 py-1 rounded bg-blue-600 text-white" onClick={handleStoredSecretSend}>{t('option.yes')}</button>
+              <button className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50" disabled={preflight.loading || !!preflight.err} onClick={handleStoredSecretSend}>{t('option.yes')}</button>
             </div>
           </div>
         </div>

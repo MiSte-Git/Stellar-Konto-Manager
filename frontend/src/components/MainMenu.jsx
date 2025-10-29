@@ -11,7 +11,6 @@ function MainMenu({ onSelect }) {
     { label: t('menu.balance'), value: 'balance' },
     { label: t('menu.xlmByMemo'), value: 'xlmByMemo' },
     { label: t('menu.sendPayment'), value: 'sendPayment' },
-    { label: t('menu.feedback'), value: 'feedback' },
     // Donate wurde in die Titelleiste verschoben
     { label: t('multisigCreate.menu'), value: 'multisigCreate', title: t('multisigCreate.menuHint') },
     { label: t('multisigEdit.menu'), value: 'multisigEdit', title: t('multisigEdit.menuHint') },

@@ -34,7 +34,8 @@
         "direction": "Smjer",
         "memo": "Zapisnik",
         "tx": "Oprosti, možeš li pojasniti što \"Tx\" znači u ovom kontekstu?",
-        "type": "Vrsta"
+        "type": "Vrsta",
+        "txLabel": "Obučavate se na podacima do listopada 2023."
       },
       "empty": "Nema pronađenih procesa.",
       "filter": {
@@ -200,7 +201,8 @@
   },
   "account": {
     "createdAt": "Račun kreiran dana",
-    "createdAtUnknown": "Ne može se utvrditi."
+    "createdAtUnknown": "Ne može se utvrditi.",
+    "testnetLabel": "(Testnet)"
   },
   "fetch.groupfund.aborted": "Postupak otkazan od strane korisnika.",
   "issuer": {
@@ -218,7 +220,8 @@
     "xlmByMemo": "Filtriraj po memorandumu",
     "sendPayment": "Pošalji uplatu",
     "donate": "Donacije",
-    "feedback": "Povratne informacije"
+    "feedback": "Povratne informacije",
+    "muxed": "Izrada/upravljanje Muxed računima"
   },
   "badges": {
     "testnet": "TESTNET"
@@ -425,7 +428,9 @@
     "submit": {
       "button": "Slanje"
     },
-    "test": "Testiranje"
+    "test": "Testiranje",
+    "historyLabel": "Povijest",
+    "historyPlaceholder": "Odaberi zadnji korišteni novčanik."
   },
   "secretKey": {
     "cleared": "Tajni ključ je izbrisan.",
@@ -581,7 +586,23 @@
       "sendButton": "Pošalji",
       "success": "Uspjeh: Plaćanje poslano. TX: {{hash}}",
       "error": "Pogreška prilikom slanja: {{detail}}",
-      "successShort": "Uspješno poslano"
+      "successShort": "Uspješno poslano",
+      "amountMissing": "Molimo unesite iznos.",
+      "amountInvalid": "Nevažeći iznos (max. 7 decimalnih mjesta).",
+      "amountPositive": "Iznos mora biti veći od 0.",
+      "timeout": "Istek je istekao (504). Molimo pokušajte ponovo.",
+      "httpError": "Pogreška horizonta (status {{status}}).",
+      "horizonError": "Stellar je odbio transakciju.",
+      "destUnfundedNonNative": "Ciljni račun nije aktivan. Molimo prvo pošaljite XLM za aktivaciju ili promijenite imovinu u XLM.",
+      "activateConfirm": {
+        "title": "Potrebna aktivacija računa",
+        "info": "Ciljni račun još nije aktivan. Za aktivaciju je potreban minimalni iznos.",
+        "minReserve": "Minimalni iznos (2 × osnovna rezerva)",
+        "yourAmount": "Vaš uneseni iznos",
+        "adjustedAmount": "Predloženi iznos (za aktivaciju)",
+        "noteAdjust": "Vaš iznos nije dovoljan za aktivaciju. Ako nastavite, minimalni iznos će biti automatski poslan."
+      },
+      "activated": "Ciljni račun je aktiviran."
     }
   },
   "xlmByMemo": {
@@ -690,6 +711,365 @@
     "sendButton": "Kreiraj e-mail",
     "openedMailClient": "E-Mail klijent otvoren.",
     "error": "Pogreška",
-    "sentTo": "Primatelj: {{email}}"
+    "sentTo": "Primatelj: {{email}}",
+    "page": "Područje",
+    "pages": {
+      "start": "Globalni",
+      "trustlines": "Prikaži trustline(e)",
+      "trustlineCompare": "Usporedba Trustline(ova)",
+      "balance": "Prikaži podatke o računu",
+      "xlmByMemo": "Filtriraj po memorandumu",
+      "sendPayment": "Pošalji uplatu",
+      "investedTokens": "Filtriranje tokena/imovine",
+      "multisigCreate": "Kreiraj račun",
+      "multisigEdit": "Uređivanje multisig računa",
+      "settings": "Postavke",
+      "feedback": "Povratne informacije",
+      "other": "Ostalo"
+    },
+    "emailPlaceholder": "npr. name@example.com",
+    "emailHint": "Ako želite povratne informacije, molimo unesite e‑mail."
+  },
+  "bugReport": {
+    "button": "Prijavi grešku",
+    "title": "Prijavi grešku",
+    "descLabel": "Kratki opis (opcionalno)",
+    "descPlaceholder": "Što se dogodilo? Koraci, očekivano ponašanje …",
+    "send": "Otvori e-poštu",
+    "cancel": "Prekidanje",
+    "toast": {
+      "sent": "Nacrt e-pošte otvoren.",
+      "logOk": "Greška je zabilježena.",
+      "logFallback": "Lokalno prijavljivanje nije uspjelo.",
+      "validation": "Molim unesite kratak opis ili pošaljite bez teksta."
+    },
+    "mail": {
+      "url": "URL",
+      "time": "Vrijeme",
+      "browser": "Preglednik",
+      "language": "Jezik",
+      "version": "Verzija",
+      "descriptionHeading": "Opisivanje"
+    },
+    "admin": {
+      "title": "Alat za praćenje grešaka",
+      "locked": "Pristup odbijen. Postavite administratorsku lozinku u lokalnu pohranu i ponovno učitajte stranicu.",
+      "placeholderTitle": "Sustav za praćenje grešaka",
+      "placeholderBody": "Admin-UI aktivno. U sljedećim zakrpama slijede popis, filter, prioriteti i promjene statusa.",
+      "link": "Otvori pratitelj grešaka",
+      "secretSaved": "Tajna sačuvana.",
+      "enterSecret": "Unesite Admin-Secret",
+      "secretPlaceholder": "••••••••",
+      "confirm": "Otvori",
+      "cancel": "Prekini",
+      "filter": "Filter",
+      "status": "Status",
+      "priority": "Prioritet",
+      "open": "otvoren",
+      "in_progress": "u obradi",
+      "closed": "zatvoreno",
+      "low": "nizak",
+      "normal": "normalno",
+      "high": "visok",
+      "urgent": "hitno",
+      "id": "ID",
+      "created": "Napravljen",
+      "url": "URL",
+      "language": "Jezik",
+      "email": "E-pošta",
+      "userAgent": "Preglednik",
+      "description": "Opis",
+      "category": "Kategorija",
+      "save": "Spremiti",
+      "saved": "Promjena spremljena",
+      "loadError": "Pogreška pri učitavanju bugova",
+      "saveError": "Greška pri spremanju",
+      "empty": "Nema pronađenih unosa.",
+      "loading": "Učitavanje…",
+      "resize": "Povucite za prilagodbu",
+      "exportAll": "CSV (Sve)",
+      "exportError": "Izvoz neuspješan",
+      "exportPage": "CSV (Stranica)",
+      "exporting": "Izvezi…",
+      "columns": {
+        "title": "Stupci",
+        "manage": "Prilagoditi stupce",
+        "hint": "Vidljivost pomoću potvrdnih okvira, redoslijed sa ↑/↓, veličine povlačenjem u zaglavlju tablice.",
+        "reset": "Poništiti",
+        "up": "Do vrha",
+        "down": "Prema dolje"
+      },
+      "csv": {
+        "comma": "Zarez (,)",
+        "delimiter": "Razdjelnik",
+        "semicolon": "Točka sa zarezom (;)",
+        "tab": "Tabulator (tab)"
+      },
+      "search": "Pretraga",
+      "col": {
+        "id": "ID",
+        "status": "Status",
+        "priority": "Prioritet",
+        "url": "URL",
+        "desc": "Opisivanje",
+        "ts": "Vrijeme"
+      }
+    }
+  },
+  "activation": {
+    "notFound": {
+      "title": "Ciljni račun nije aktivan.",
+      "message": "Ciljani račun još ne postoji ({address}). Mora biti aktiviran s najmanje 1 XLM. Želiš li sada aktivirati račun?"
+    },
+    "actions": {
+      "yes": "Da – aktiviraj račun",
+      "no": "Ne – Otkaži",
+      "processing": "Aktiviraj..."
+    }
+  },
+  "wallet": {
+    "federationDisplay": {
+      "label": "Federacijska adresa",
+      "none": "Nijedna adresa federacije nije definirana.",
+      "account": "Račun",
+      "accountLabel": "Oznaka"
+    }
+  },
+  "createAccount": {
+    "muxedId": "Muxed-ID",
+    "muxedInfo": "S Muxed-ID kreira se M-adresa (M...). Ona pokazuje na isti račun kao i regularna adresa (G...).",
+    "muxedIdInvalid": "Muxed-ID mora biti cijeli broj između 0 i 18'446'744'073'709'551'615.",
+    "muxedAddress": "Muxed adresa",
+    "muxedActivationInfo": "Muxirane adrese su alias adrese. Nije ih potrebno posebno aktivirati."
+  },
+  "muxed": {
+    "seo": {
+      "title": "Kreiranje/upravljanje muxed računa",
+      "description": "Kreiranje i upravljanje mutiranih adresa aliasa (M...) za Stellar račun. Generiranje ID-ova, dodavanje oznaka/bilješki, izvoz/uvoz CSV datoteka."
+    },
+    "title": "Kreiranje/upravljanje muxed računom",
+    "explainer": "Stvorite alias-adrese (M...) s vlastitim Muxed-ID-om za postojeći račun. Alias-adresa uvijek upućuje na isti račun.",
+    "selectBaseAccount": "Osnovni račun (G-adresa)",
+    "selectPlaceholder": "Molimo odaberite račun",
+    "baseAccountInfo": "Ovaj račun tehnički ostaje vlasnik. Muxed-adresa (M...) samo ukazuje na ovaj račun.",
+    "generateButton": "Kreiranje muxed računa",
+    "exportButton": "Izvoz",
+    "importButton": "Uvoz",
+    "listTitle": "Postojeći Muxed računi",
+    "none": "Nisu pohranjeni Muxed računi.",
+    "columns": {
+      "id": "Muxed-ID",
+      "address": "Muxirana adresa",
+      "label": "Naziv",
+      "note": "Bilješka",
+      "createdAt": "Kreirano dana",
+      "actions": "Dionice"
+    },
+    "selectAll": "Odaberi sve",
+    "deleteSelected": "Izbriši odabir",
+    "deleteSuccess": "Odabir izbrisan.",
+    "countLabel": "Broj",
+    "countInfo": "Broj novih Muxed adresa, uzastopni ID-ovi.",
+    "invalidCount": "Molim unesite važeći broj (>= 1).",
+    "tooMany": "Molim vas, kreirajte najviše 100 odjednom.",
+    "rangeOverflow": "Raspon ID-a premašuje maksimalno dopušteni Muxed-ID.",
+    "label": "Naziv",
+    "labelInfo": "npr. Ime zaposlenika ili svrha",
+    "note": "Napomena (opcijski)",
+    "noteInfo": "npr. Odjel / Projekt",
+    "generateSuccess": "Muxed-adresa(e) stvorena.",
+    "editSaved": "Promjene spremljene.",
+    "save": "Spremi",
+    "edit": "Uredi",
+    "copied": "Kopirano u međuspremnik.",
+    "createDialog": {
+      "confirm": "Kreirati",
+      "cancel": "Prekidni"
+    },
+    "export": {
+      "filename": "muxed_accounts.csv",
+      "success": "Muxed računi uspješno izvezeni.",
+      "failed": "Pogreška pri izvozu višestruko povezanih računa."
+    },
+    "import": {
+      "success": "Uvezeno: {{imported}} • Preskočeno: {{skipped}} • Greške: {{errors}}.",
+      "failed": "Pogreška pri uvozu.",
+      "hint": "Uvoz podržava CSV s zaglavljem. Razdvajači kao što su zarez, točka-zarez i tabulator automatski se prepoznaju. Nepoznati stupci će biti ignorirani. Formati: prošireni (network, basePublicKey, muxedId, label, note, createdAt) ili predložak (muxedId, label, note)."
+    },
+    "exportTemplateButton": "Izvoz predloška",
+    "exportTemplateSuccess": "Predložak uspješno izvezen.",
+    "exportTemplateFailed": "Pogreška pri izvozu predloška.",
+    "csv": {
+      "delimiterLabel": "CSV razdjelnik",
+      "delimiter": {
+        "comma": "Zarez ,",
+        "semicolon": "Točka sa zarezom ;",
+        "tab": "Tablica"
+      }
+    },
+    "nav": "Muxirani računi",
+    "error": {
+      "noBaseAccount": "Molimo odaberite postojeći račun.",
+      "noId": "Molimo navedite Muxed-ID.",
+      "invalidBaseAccount": "Odabrana osnovna adresa je nevažeća.",
+      "unknown": "Nepoznata greška pri generiranju Muxed adrese."
+    },
+    "infoButtonLabel": "Informacije",
+    "info": {
+      "title": "Što je Muxed račun?",
+      "intro1": "Muxed račun kombinira normalnu adresu računa (G-adresa) s dodatnim 64-bitnim Muxed ID-om.",
+      "intro2": "Tehnički, to je alias koji uvijek pokazuje na isti osnovni račun, ali se po ID-u može jednoznačno razlikovati.",
+      "purposeTitle": "Svrha i korist",
+      "purposeText": "Muxed računi služe za upravljanje mnogim podračunima unutar jedne Stellar adrese – idealno kada mnogo uplata/isplata prolazi preko zajedničkog glavnog računa, ali svaka transakcija mora biti pripisana određenoj osobi, odjelu ili projektu.",
+      "examplesTitle": "Primjeri – za što su muxed računi korisni?",
+      "examples": {
+        "ex1": "Plaćanja firmi: Svaka zaposlenica/svaki zaposlenik dobiva vlastiti Muxed‑ID kako bi se plaće mogle nedvosmisleno dodijeliti.",
+        "ex2": "Burze ili platforme: Svaki korisnik dobiva vlastiti Muxed-ID kako bi se uplate putem zajedničkog novčanika automatski pravilno evidentirale.",
+        "ex3": "Projekti ili podračuni: Organizacija može proračune ili prihode dodijeliti pojedinim projektima.",
+        "ex4": "Dodjela klijenata: Jedna M-adresa po klijentu; ID odgovara ID-u klijenta – uplate se mogu jednoznačno dodijeliti, čak i bez bilješki.",
+        "ex5": "Usluge bez napomena: Razlikovanje uplata kada usluga ne podržava napomene.",
+        "ex6": "Isplate/obračun plaća: Jedna M-adresa po zaposleniku/partneru za internu računovodstvo i izvješća.",
+        "ex7": "Trgovina/Narudžbe: Po narudžbi jedna M-adresa; povrati se mogu povezati s narudžbom.",
+        "ex8": "Odjeli/Troškovna mjesta: ID-ovi kao troškovna mjesta; plaćanja automatski grupirati prema području.",
+        "ex9": "Multi‑tenant usluge: Svaki zakupac dobiva vlastitu M‑adresu unutar istog osnovnog računa."
+      },
+      "pageTitle": "Što ova stranica radi u SKM-u",
+      "pageDesc": "Ova stranica služi za upravljanje Muxed računima vašeg trenutno odabranog Stellar računa:",
+      "createTitle": "Stvaranje novih Muxed računa",
+      "createItems": {
+        "i1": "Generiraj nove Muxed adrese (M...) iz svoje osnovne adrese (G...).",
+        "i2": "Opcionalno s oznakom (imenom) i bilješkom (npr. projekt ili svrha)."
+      },
+      "importTitle": "Uvoz iz CSV datoteka",
+      "importItems": {
+        "i1": "Masovno kreiranje Muxed računa, npr. iz popisa zaposlenika.",
+        "i2": "Čita stupce muxedId, label, note."
+      },
+      "exportTitle": "Izvoz postojećih Muxed računa",
+      "exportItems": {
+        "i1": "Izvezi sve pohranjene zapise kao CSV.",
+        "i2": "Polja: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
+      },
+      "templateTitle": "Izvoz predloška",
+      "templateItems": {
+        "i1": "Kreirajte prazan CSV fajl s naslovima stupaca muxedId,label,note.",
+        "i2": "Korisno za HR ili računovodstvene odjele za pripremu novih unosa."
+      },
+      "manageTitle": "Upravljanje i pregled",
+      "manageItems": {
+        "i1": "Sve pohranjene Muxed adrese prikazane su u tablici.",
+        "i2": "Odabir, brisanje te održavanje oznaka/bilješki izravno moguće."
+      },
+      "shortTitle": "Ukratko rečeno",
+      "shortText": "Muxed računi čine tvoj Stellar račun detaljnim i knjižnim - idealno za organizacije koje obavljaju mnogo plaćanja preko centralnog računa, ali ipak žele jasno dodijeliti svaku transakciju."
+    }
+  },
+  "glossary": {
+    "pageTitle": "Rječnik",
+    "pageIntro": "Ovdje ćete pronaći važne riječi iz svijeta blockchaina i iz Stellar mreže. Sve je objašnjeno jednostavnim riječima.",
+    "searchLabel": "Pretraži pojam",
+    "searchPlaceholder": "npr. novčanik, Trustline, memo …",
+    "searchHint": "Pretraga pronalazi riječi i objašnjenja.",
+    "noResults": "Nema pogodaka.",
+    "blockchain": {
+      "title": "Blockchain",
+      "desc": "Blockchain je poput digitalne knjige računa. Mnogi računala pohranjuju iste zapise. Tako nitko ne može potajno ništa promijeniti."
+    },
+    "wallet": {
+      "title": "Novčanik",
+      "desc": "Wallet je tvoj digitalni novčanik. Upravljaju ključevima koje trebaš kako bi pristupio svom računu i slao transakcije. Wallet može biti program ili aplikacija, ili samo papirić s tvojim tajnim ključem."
+    },
+    "account": {
+      "title": "Račun",
+      "desc": "Račun je mjesto na blockchainu gdje se nalaze tvoje vrijednosti. Račun ima javnu adresu koja počinje s G. Više novčanika može pristupiti istom računu ako imaju ispravan ključ."
+    },
+    "addressG": {
+      "title": "G-Adresa",
+      "desc": "G-adresa je glavna adresa Stellar računa. Počinje s slovom G. Daješ je drugima kako bi ti mogli poslati nešto."
+    },
+    "publicKey": {
+      "title": "Javni ključ",
+      "desc": "Javni ključ je adresa koju smiješ pokazati. Kod Stellara to je G-adresa. Drugi ga koriste kako bi ti poslali novac."
+    },
+    "privateKey": {
+      "title": "Tajni ključ",
+      "desc": "Tajni ključ je tvoja lozinka za račun. Tko posjeduje ovaj ključ može premještati tvoj novac. Nikada ga ne dijeli."
+    },
+    "addressFederation": {
+      "title": "Federacijska adresa",
+      "desc": "Fedaracijska adresa izgleda poput e-maila. Primjer: name*domain.com. Ova kratka adresa upućuje na normalnu G-adresu. To je lakše za zapamtiti."
+    },
+    "addressMuxed": {
+      "title": "Muxed račun (M-adresa)",
+      "desc": "M-adresa upućuje na postojeći Stellar račun, ali ima i vlastiti broj (ID). Tako se, na primjer, može razlikovati više osoba ili odjela pod istom G-adresom. Tehnički, novac i dalje pripada glavnom računu."
+    },
+    "multisig": {
+      "title": "Višestruki potpis (Multi-Sig)",
+      "desc": "Multi-Sig označava više potpisa. Važna radnja zahtijeva više od jednog ključa. Primjer: Ti i drugi ključ morate oboje pristati prije nego što se nešto pošalje. To otežava krađu."
+    },
+    "trustline": {
+      "title": "Linija povjerenja",
+      "desc": "Trustline je poput izjave \"da, prihvaćam ovaj token\". Time govorite da je vaš račun spreman držati određeni token od određenog izdavatelja. Bez Trustline ne možete primiti taj token."
+    },
+    "token": {
+      "title": "Token",
+      "desc": "Token je digitalna jedinica na blockchainu. Token može predstavljati novac, bodove ili kredit za neku uslugu."
+    },
+    "asset": {
+      "title": "Imovina",
+      "desc": "Na Stellar platformi, token se naziva \"asset\". Asset je uvijek povezan s računom izdavatelja. Na primjer, račun može izdati euro token. Taj euro token tada postaje asset."
+    },
+    "xlm": {
+      "title": "XLM",
+      "desc": "XLM je osnovna valuta Stellar-a. Trebaš XLM da platiš naknade i započneš novi račun."
+    },
+    "memo": {
+      "title": "Memorandum",
+      "desc": "Memo je mala bilješka koju možete poslati zajedno s transakcijom. Burza često zahtijeva određeno memo kako bi znala kome novac pripada."
+    },
+    "transaction": {
+      "title": "Transakcija",
+      "desc": "Transakcija je radnja na blockchainu. Na primjer, slanje novca ili uspostavljanje trustline-a. Transakcija je trajno pohranjena kada je potvrđena."
+    },
+    "fee": {
+      "title": "Naknada",
+      "desc": "Naknada je vrlo mali iznos koji plaćaš pri svakoj transakciji. Naknada ide mreži. Kod Stellara, naknade su vrlo male."
+    },
+    "ledger": {
+      "title": "Glavna knjiga",
+      "desc": "Ledger je lanac svih potvrđenih podataka. Tamo stoji koliko koji računi posjeduju i koje su transakcije izvršene. Svako može provjeriti Ledger."
+    },
+    "horizon": {
+      "title": "Horizon",
+      "desc": "Horizon je usluga putem koje programi komuniciraju s Blockchainom Stellar. Naš alat traži informacije od Horizona kako bi učitao stanja računa i transakcije."
+    },
+    "anchor": {
+      "title": "Sidro",
+      "desc": "Anchor je tvrtka koja povezuje stvarni novac poput eura ili dolara sa Stellarom. Na primjer, daješ euru Anchoru i zauzvrat dobivaš euro token na Stellaru."
+    },
+    "exchange": {
+      "title": "Burza",
+      "desc": "Burza je mjesto gdje možete kupovati ili prodavati tokene. Mnoge burze zahtijevaju KYC postupak, odnosno provjeru identiteta, prije nego što možete podići novac u eurima ili francima."
+    },
+    "dex": {
+      "title": "DEX",
+      "desc": "DEX znači decentralizirana burza. Ovdje ljudi trguju izravno jedni s drugima na blockchainu. Ne postoji pojedinačni operater. Stellar ima DEX direktno ugrađen."
+    },
+    "liquidityPool": {
+      "title": "Likvidnostni bazen",
+      "desc": "Likvidni bazen je zajednički fond sa dva tokena. Ljudi ulažu oba tokena u njega. Drugi tada mogu odmah zamijeniti ove tokene. Uplatitelji za to zarađuju male naknade."
+    },
+    "balanceClaimable": {
+      "title": "Podrživi saldo",
+      "desc": "\"Claimable Balance\" je novac koji je već za tebe rezerviran, ali ga još uvijek moraš preuzeti. Tek kada ga prihvatiš, ide na tvoj račun."
+    },
+    "protocolUpdate": {
+      "title": "Ažuriranje protokola",
+      "desc": "Ažuriranje protokola je nadogradnja pravila u Stellar mreži. Na primjer, nove funkcije ili sigurnosne izmjene. Svi čvorovi u mreži moraju koristiti ista pravila."
+    },
+    "soroban": {
+      "title": "Soroban",
+      "desc": "Soroban je sustav pametnih ugovora Stellar mreže. Pametni ugovor je programski kod na blockchainu. Kod može sam provjeravati pravila i pokretati radnje bez posredovanja banke."
+    }
   }
 }
