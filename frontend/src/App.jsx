@@ -58,20 +58,32 @@ function App() {
     }
   }, []);
 
+  // Track current path so we can react to pushState/popstate without full reload
+  const [pathname, setPathname] = React.useState(() => (typeof window !== 'undefined' ? window.location.pathname : '/'));
+  React.useEffect(() => {
+    const onPop = () => {
+      try { setPathname(window.location.pathname); } catch { /* noop */ }
+    };
+    window.addEventListener('popstate', onPop);
+    window.addEventListener('stm:location-changed', onPop);
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      window.removeEventListener('stm:location-changed', onPop);
+    };
+  }, []);
+
   const isGlossaryRoute = React.useMemo(() => {
     try {
-      return isGlossaryPath(typeof window !== 'undefined' ? window.location.pathname : '');
+      return isGlossaryPath(pathname);
     } catch {
       return false;
     }
-  }, []);
+  }, [pathname]);
 
   return (
     <ErrorBoundary t={t}>
       {isBugTrackerRoute ? (
         <BugTrackerAdmin />
-      ) : isGlossaryRoute ? (
-        <GlossaryPage />
       ) : (
         <>
           {/* Sprachleiste */}
@@ -83,6 +95,16 @@ function App() {
             <div className="absolute right-3 top-2 flex flex-col items-end gap-2">
               <a
                 href={buildPath('glossar')}
+                onClick={(e) => {
+                  try {
+                    e.preventDefault();
+                    const url = buildPath('glossar');
+                    // remember previous path to restore on back
+                    try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
+                    window.history.pushState({}, '', url);
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  } catch { /* noop */ }
+                }}
                 className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 title={t('glossary.pageTitle', 'Glossary')}
               >
@@ -113,8 +135,18 @@ function App() {
             )}
           </div>
 
+          {/* Haupt-App bleibt gemountet, damit Eingaben erhalten bleiben */}
           <Main />
           <SmallAdminLink />
+
+          {/* Glossar als Overlay anzeigen, ohne Main zu unmounten */}
+          {isGlossaryRoute && (
+            <div id="stm-glossary-overlay" className="fixed inset-0 z-50 bg-white dark:bg-gray-900 overflow-y-auto">
+              <div className="max-w-5xl mx-auto p-4">
+                <GlossaryPage />
+              </div>
+            </div>
+          )}
         </>
       )}
     </ErrorBoundary>
