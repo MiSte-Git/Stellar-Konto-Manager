@@ -4,6 +4,7 @@ import argparse
 from argparse import RawTextHelpFormatter
 import subprocess
 import sys
+import re
 from typing import Dict, Any, Set
 
 # Optionaler Import nur bei Bedarf
@@ -123,6 +124,24 @@ def translate_text(
         raise RuntimeError(f"Unbekannter Provider: {provider}")
 
 
+# -------- Original-Key Handling (never translate, copy from de.json) --------
+ORIGINAL_RE = re.compile(r'(^|\.)original$')
+
+def is_original_key(path: str) -> bool:
+    return bool(ORIGINAL_RE.search(path))
+
+def _handle_skip_original(path: str, counters: Dict[str, int] | None = None) -> None:
+    # Log and increment skipped counter; raise and catch for UI-compat string
+    print(f"Überspringe Übersetzung für Original-Key: {path}")
+    if counters is not None:
+        counters['skippedOriginalKeysCount'] = counters.get('skippedOriginalKeysCount', 0) + 1
+    try:
+        raise Exception('i18n.translate.skipOriginal:' + path)
+    except Exception:
+        # Swallow to continue processing
+        pass
+
+
 # -------- Git-Diff-gestützte Änderungs-Erkennung --------
 
 def _collect_leaf_paths(d: Dict[str, Any], prefix: str = "") -> Set[str]:
@@ -220,11 +239,15 @@ def merge_keys_missing_or_changed(
     openai_key: str | None,
     deepl_key: str | None,
     changed_paths: Set[str],
+    forced_paths: Set[str],
+    counters: Dict[str, int],
     prefix: str = "",
 ) -> Dict[str, Any]:
     """Füge fehlende Schlüssel hinzu ODER aktualisiere gezielt geänderte Leaf-Pfade aus de.json.
     - Wenn ein Pfad in changed_paths liegt, wird er neu übersetzt (überschreibt bestehende Werte).
     - Fehlende Keys werden wie zuvor ergänzt.
+    - Keys, die auf '.original' enden, werden nie übersetzt. Sie werden aus de.json kopiert;
+      vorhandene Werte werden nur überschrieben, wenn der Pfad in forced_paths liegt.
     """
     out = dict(target_dict)
     for key, value in base_dict.items():
@@ -238,9 +261,22 @@ def merge_keys_missing_or_changed(
                 openai_key,
                 deepl_key,
                 changed_paths,
+                forced_paths,
+                counters,
                 cur_path,
             )
         else:
+            if is_original_key(cur_path):
+                # Skip translation, copy from base; overwrite only if forced
+                _handle_skip_original(cur_path, counters)
+                if key not in out:
+                    out[key] = value
+                    counters['copiedOriginalKeysCount'] = counters.get('copiedOriginalKeysCount', 0) + 1
+                else:
+                    if cur_path in forced_paths and out.get(key) != value:
+                        out[key] = value
+                        counters['copiedOriginalKeysCount'] = counters.get('copiedOriginalKeysCount', 0) + 1
+                continue
             needs_update = (key not in out) or (cur_path in changed_paths)
             if needs_update:
                 translated = translate_text(value, lang, provider, openai_key, deepl_key)
@@ -254,15 +290,46 @@ def translate_full(
     provider: str,
     openai_key: str | None,
     deepl_key: str | None,
+    target_existing: Dict[str, Any] | None = None,
+    forced_paths: Set[str] | None = None,
+    counters: Dict[str, int] | None = None,
+    prefix: str = "",
 ) -> Dict[str, Any]:
-    """Übersetze alle Schlüssel aus base_dict neu in die Zielsprache."""
-    target_dict = {}
+    """Übersetze alle Schlüssel aus base_dict neu in die Zielsprache.
+    Für Keys, die auf '.original' enden, wird niemals übersetzt; sie werden aus de.json kopiert.
+    Bereits bestehende Werte werden nur überschrieben, wenn der Pfad in forced_paths liegt.
+    """
+    target_dict: Dict[str, Any] = {}
+    target_existing = target_existing or {}
+    forced_paths = forced_paths or set()
     for key, value in base_dict.items():
+        cur_path = f"{prefix}.{key}" if prefix else key
+        existing_val = target_existing.get(key)
         if isinstance(value, dict):
-            target_dict[key] = translate_full(value, lang, provider, openai_key, deepl_key)
+            target_dict[key] = translate_full(
+                value,
+                lang,
+                provider,
+                openai_key,
+                deepl_key,
+                (existing_val if isinstance(existing_val, dict) else {}),
+                forced_paths,
+                counters,
+                cur_path,
+            )
         else:
-            translated = translate_text(value, lang, provider, openai_key, deepl_key)
-            target_dict[key] = translated
+            if is_original_key(cur_path):
+                _handle_skip_original(cur_path, counters)
+                if existing_val is None or cur_path in forced_paths:
+                    target_dict[key] = value
+                    if counters is not None:
+                        counters['copiedOriginalKeysCount'] = counters.get('copiedOriginalKeysCount', 0) + 1
+                else:
+                    # keep existing value, do not overwrite
+                    target_dict[key] = existing_val
+            else:
+                translated = translate_text(value, lang, provider, openai_key, deepl_key)
+                target_dict[key] = translated
     return target_dict
 
 
@@ -364,6 +431,7 @@ def main():
         forced_list: list[str] = []
         for raw in force_keys_raw:
             forced_list.extend([s.strip() for s in raw.split(',') if s and s.strip()])
+        forced_paths: Set[str] = set()
         if forced_list:
             forced_paths = expand_forced_paths(base_dict, forced_list)
             if forced_paths:
@@ -371,9 +439,20 @@ def main():
                 for p in sorted(forced_paths):
                     print(f"   ! {p}")
                 changed_paths |= forced_paths
+        else:
+            forced_paths = set()
+    else:
+        # Auch im Full-Mode: forced_paths aus --force-key ermitteln
+        forced_list: list[str] = []
+        for raw in force_keys_raw:
+            forced_list.extend([s.strip() for s in raw.split(',') if s and s.strip()])
+        forced_paths: Set[str] = expand_forced_paths(base_dict, forced_list) if forced_list else set()
     
     # Kombiniere für Übersetzung
     all_changed = added_paths | changed_paths
+
+    # Zähler für Original-Keys
+    counters: Dict[str, int] = {"skippedOriginalKeysCount": 0, "copiedOriginalKeysCount": 0}
 
     # Verarbeite jede Zielsprache
     for lang in TARGET_LANGS:
@@ -381,14 +460,23 @@ def main():
         if do_full:
             print(f"\n🔁 Verarbeite {lang} im Modus 'full' mit Provider '{provider}'...")
             total_keys = len(_collect_leaf_paths(base_dict))
-            print(f"   Übersetze alle {total_keys} Schlüssel neu...")
+            print(f"   Übersetze alle {total_keys} Schlüssel neu (Original-Keys werden nicht übersetzt)...")
         else:
             print(f"\n🔁 Verarbeite {lang} im Modus 'missing+changed' mit Provider '{provider}'...")
         try:
             if not do_full:
                 if not os.path.exists(path):
                     print(f"⚠️ Datei fehlt: {path}. Erstelle neue Datei mit allen Übersetzungen.")
-                    translated_dict = translate_full(base_dict, lang, provider, openai_key, deepl_key)
+                    translated_dict = translate_full(
+                        base_dict,
+                        lang,
+                        provider,
+                        openai_key,
+                        deepl_key,
+                        target_existing={},
+                        forced_paths=forced_paths,
+                        counters=counters,
+                    )
                 else:
                     target_dict = load_json(path)
                     translated_dict = merge_keys_missing_or_changed(
@@ -399,15 +487,29 @@ def main():
                         openai_key,
                         deepl_key,
                         all_changed,
+                        forced_paths,
+                        counters,
                     )
             else:
-                translated_dict = translate_full(base_dict, lang, provider, openai_key, deepl_key)
+                # Full-Mode: vorhandene Datei ggf. einlesen, damit Original-Keys nicht überschrieben werden
+                target_existing = load_json(path) if os.path.exists(path) else {}
+                translated_dict = translate_full(
+                    base_dict,
+                    lang,
+                    provider,
+                    openai_key,
+                    deepl_key,
+                    target_existing=target_existing,
+                    forced_paths=forced_paths,
+                    counters=counters,
+                )
 
             save_json(path, translated_dict)
         except Exception as e:
             print(f"❌ Abbruch für Sprache {lang}: {e}")
             continue
 
+    print(f"\nZusammenfassung: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}}}")
     print("\n✅ Alle Sprachdateien aktualisiert.")
 
 

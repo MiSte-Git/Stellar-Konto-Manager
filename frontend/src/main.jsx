@@ -429,9 +429,9 @@ function Main() {
 
   return (
      <>
-      <div className="max-w-4xl mx-auto px-4 pt-4 text-center mt-4-500" style={{ paddingBottom: 'max(5rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
+      <div className="max-w-4xl mx-auto px-4 pt-4 text-center mt-4-500" style={{ paddingBottom: 'max(1rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
         {/* 🌍 Global: Titel & Info */}
-        <div className="relative mb-4">
+        <div className="relative mb-2">
           <h1 className="text-2xl font-bold text-center">{t('main.title')}</h1>
           {/* Active network banner */}
           <div className="mt-2 text-xs text-center">
@@ -466,14 +466,14 @@ function Main() {
             </div>
           )}
         </div>
-        <p className="mb-4 text-sm text-blue-200 rounded border">
+        <p className="mb-2 text-sm text-blue-200 rounded border">
           {t('secretKey.info')}
           <button type="button" onClick={()=>setShowSecretInfo(true)} className="ml-2 px-2 py-0.5 text-blue-700 underline">
             {t('multisigCreate.info.more')}
           </button>
         </p>
         {/* Fixierter Wallet-Header – immer sichtbar */}
-        <div className="sticky top-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b rounded-b px-3 py-2 mb-3">
+        <div className="sticky top-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b rounded-b px-3 py-2 mb-2">
           <form onSubmit={(e) => { e.preventDefault(); handleHeaderApply(); }} className="max-w-4xl mx-auto mb-0">
             <div className="flex items-center justify-between mb-1">
               <label className="block font-bold text-sm">{t('publicKey.label')}</label>

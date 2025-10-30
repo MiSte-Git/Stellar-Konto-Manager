@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import GlossaryTermCard from '../components/GlossaryTermCard.tsx';
+import { getGlossaryDisplayTitle } from '../utils/glossary.ts';
+import GlossaryToc from '../components/glossary/GlossaryToc.tsx';
 
 // GlossaryPage: Einsteiger-Glossar mit Suche und Grid-Ansicht.
 // Alle Texte kommen aus i18n (glossary.*). Fallbacks sind einfache englische Sätze.
@@ -8,12 +10,24 @@ function GlossaryPage() {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [showBackToTop, setShowBackToTop] = useState(false);
+  // Back-to-top visibility based on the overlay scroll container
   React.useEffect(() => {
-    const onScroll = () => {
-      try { setShowBackToTop(window.scrollY > 200); } catch { /* noop */ }
+    const getContainer = () => {
+      try {
+        return document.getElementById('stm-glossary-overlay') || window;
+      } catch { return window; }
     };
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+    const container = getContainer();
+    const onScroll = () => {
+      try {
+        const top = (container instanceof Window) ? window.scrollY : (container?.scrollTop || 0);
+        setShowBackToTop(top > 200);
+      } catch { /* noop */ }
+    };
+    // initialize state
+    onScroll();
+    (container as any).addEventListener('scroll', onScroll);
+    return () => (container as any).removeEventListener('scroll', onScroll);
   }, []);
   const backHref = React.useMemo(() => {
     try {
@@ -24,6 +38,40 @@ function GlossaryPage() {
       return undefined;
     }
   }, []);
+
+  const goBack = React.useCallback(() => {
+    try {
+      // Wenn wir über die App ins Glossar kamen, wieder auf den gemerkten Pfad zurück
+      const prev = (typeof window !== 'undefined' && window.sessionStorage)
+        ? window.sessionStorage.getItem('STM_PREV_PATH')
+        : '';
+      if (prev) {
+        window.history.pushState({}, '', prev);
+        try { window.dispatchEvent(new PopStateEvent('popstate')); } catch { /* noop */ }
+        return;
+      }
+      // Falls Referrer verfügbar ist: bei gleicher Origin ohne Reload wechseln, sonst echter Redirect
+      if (backHref) {
+        try {
+          const url = new URL(backHref, window.location.origin);
+          if (url.origin === window.location.origin) {
+            window.history.pushState({}, '', url.pathname + url.search + url.hash);
+            try { window.dispatchEvent(new PopStateEvent('popstate')); } catch { /* noop */ }
+            return;
+          }
+        } catch { /* noop */ }
+        window.location.assign(backHref);
+        return;
+      }
+      // Letzter Fallback: back + PopState Event
+      window.history.back();
+      setTimeout(() => {
+        try { window.dispatchEvent(new PopStateEvent('popstate')); } catch { /* noop */ }
+      }, 0);
+    } catch {
+      /* noop */
+    }
+  }, [backHref]);
 
   // Liste der Begriffe. Jeder hat .title und .desc in i18n
   const termKeys = [
@@ -40,6 +88,8 @@ function GlossaryPage() {
     'token',
     'asset',
     'xlm',
+    'mainnet',
+    'testnet',
     'memo',
     'transaction',
     'fee',
@@ -108,6 +158,14 @@ function GlossaryPage() {
       title: 'XLM',
       desc: 'The native currency of Stellar. You need it for fees and to start a new account.'
     },
+    mainnet: {
+      title: 'Mainnet',
+      desc: 'The real Stellar network with real value. Transactions are final and fees are paid in real XLM.'
+    },
+    testnet: {
+      title: 'Testnet',
+      desc: 'A public practice network. Tokens have no real value. Use it to learn and test without risk.'
+    },
     memo: {
       title: 'Memo',
       desc: 'A small note you can send with a transaction. Exchanges often require a specific memo.'
@@ -161,18 +219,28 @@ function GlossaryPage() {
   const items = useMemo(() => {
     return termKeys.map((key) => {
       const def = fallback[key];
-      const title = t(`glossary.${key}.title`, def.title);
-      const desc = t(`glossary.${key}.desc`, def.desc);
-      return { key, title, desc };
+      // visible display title (with original in parens if present)
+      const display = getGlossaryDisplayTitle(key, t);
+      const desc = t(`glossary.${key}.desc`, def?.desc || '');
+      const short = t(`glossary.${key}.short`, '');
+      return { key, display, desc, short };
     });
   }, [t]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return items;
-    return items.filter(({ title, desc }) =>
-      title.toLowerCase().includes(q) || desc.toLowerCase().includes(q)
-    );
+    return items.filter(({ key, display, desc, short }) => {
+      const title = t(`glossary.${key}.title`, '');
+      const original = t(`glossary.${key}.original`, '');
+      return (
+        display.toLowerCase().includes(q) ||
+        title.toLowerCase().includes(q) ||
+        original.toLowerCase().includes(q) ||
+        short.toLowerCase().includes(q) ||
+        desc.toLowerCase().includes(q)
+      );
+    });
   }, [items, query]);
 
   return (
@@ -182,7 +250,7 @@ function GlossaryPage() {
           <div className="shrink-0">
             <button
               type="button"
-              onClick={() => (backHref ? window.location.assign(backHref) : window.history.back())}
+              onClick={goBack}
               className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded"
             >
               ← {t('navigation.back', 'Zurück')}
@@ -219,21 +287,7 @@ function GlossaryPage() {
       </section>
 
       {/* Inhaltsverzeichnis */}
-      <nav className="mb-6">
-        <h2 className="text-base font-semibold mb-2">{t('glossary.toc', 'Inhaltsverzeichnis')}</h2>
-        <ul className="list-disc list-inside grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1">
-          {items.map((it) => (
-            <li key={`toc-${it.key}`}>
-              <a
-                href={`#g-${it.key}`}
-                className="text-blue-600 dark:text-blue-400 hover:underline"
-              >
-                {it.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <GlossaryToc className="mb-6" slugs={items.map((it) => it.key)} idPrefix="g-" />
 
       {filtered.length === 0 ? (
         <p className="text-sm text-gray-700 dark:text-gray-300">
@@ -243,7 +297,7 @@ function GlossaryPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {filtered.map((it) => (
             <section key={it.key} id={`g-${it.key}`}>
-              <GlossaryTermCard title={it.title} desc={it.desc} />
+              <GlossaryTermCard titleNode={<span className="whitespace-nowrap">{it.display}</span>} titleAttr={it.display} desc={it.desc} />
             </section>
           ))}
         </div>
@@ -251,7 +305,16 @@ function GlossaryPage() {
 
       {showBackToTop && (
         <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => {
+            try {
+              const container = document.getElementById('stm-glossary-overlay');
+              if (container) {
+                container.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            } catch { /* noop */ }
+          }}
           className="fixed right-4 bottom-4 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
           aria-label={t('navigation.backToTop', 'Back to top')}
           title={t('navigation.backToTop', 'Back to top')}
