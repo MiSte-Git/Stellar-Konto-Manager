@@ -1020,7 +1020,7 @@
       "desc": "En Stellar, un token se llama activo. Un activo siempre está vinculado a una cuenta emisora. Por ejemplo, una cuenta puede emitir un token de euro. Este token de euro es entonces un activo."
     },
     "xlm": {
-      "title": "No parece que la entrada proporcionada sea un texto continuo para traducir. \"XLM\" podría referirse a una criptomoneda llamada Stellar Lumens. Si necesitas más información o una traducción específica relacionada con \"XLM\", por favor proporciona un contexto adicional.",
+      "title": "XLM",
       "desc": "XLM es la moneda base de Stellar. Necesitas XLM para pagar tarifas y abrir una nueva cuenta."
     },
     "memo": {

@@ -426,6 +426,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [resolvedAccount, setResolvedAccount] = useState('');
   const [resolvedFederation, setResolvedFederation] = useState('');
   const [inputWasFederation, setInputWasFederation] = useState(false);
+  
+  // Destination XLM balance state (resolved recipient account)
+  const [destXlmBalance, setDestXlmBalance] = useState(undefined); // undefined = not resolved yet; null = unfunded/error; string = balance
+  const [destXlmLoading, setDestXlmLoading] = useState(false);
   useEffect(() => {
     let active = true;
     async function resolve() {
@@ -479,6 +483,38 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     resolve();
     return () => { active = false; };
   }, [dest, server]);
+
+  // Load destination account XLM balance for the resolved recipient
+  useEffect(() => {
+    let cancelled = false;
+    async function loadDestBalance() {
+      try {
+        if (!resolvedAccount) {
+          setDestXlmLoading(false);
+          setDestXlmBalance(undefined);
+          return;
+        }
+        setDestXlmLoading(true);
+        try {
+          const acct = await server.loadAccount(resolvedAccount);
+          if (cancelled) return;
+          const native = (acct?.balances || []).find(b => b.asset_type === 'native');
+          setDestXlmBalance(native ? native.balance : null);
+        } catch {
+          if (!cancelled) setDestXlmBalance(null);
+        } finally {
+          if (!cancelled) setDestXlmLoading(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setDestXlmLoading(false);
+          setDestXlmBalance(null);
+        }
+      }
+    }
+    loadDestBalance();
+    return () => { cancelled = true; };
+  }, [resolvedAccount, server]);
 
   const trimmedRecipient = (dest || '').trim();
   const walletInfoFromInput = useMemo(() => findWalletInfo(walletInfoMap, trimmedRecipient), [walletInfoMap, trimmedRecipient]);
@@ -571,25 +607,42 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               {historyRecipients.map((v,i)=>(<option key={v+i} value={v} />))}
             </datalist>
           </div>
-          <div className="mt-1 text-xs text-gray-700 dark:text-gray-300 space-y-0.5">
-            <div>
-              <span className="font-semibold">{t('wallet.federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
-              {recipientFederationDisplay
-                ? <span className="font-mono break-all">{recipientFederationDisplay}</span>
-                : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
+          <div className="mt-1 relative text-xs text-gray-700 dark:text-gray-300">
+            {/* XLM-Balance des Absenders rechts oben, wie im globalen Header */}
+            <div className="absolute right-0 top-0 shrink-0 text-right">
+              <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded px-2 py-1">
+                <span className="font-semibold">{t('wallet.xlmBalance', 'XLM')}:</span>
+                <span className="font-mono">
+                  {destXlmLoading
+                    ? t('common.loading', 'Loading…')
+                    : (resolvedAccount
+                        ? (destXlmBalance != null ? `${destXlmBalance}` : t('wallet.unfunded', 'Unfunded'))
+                        : '—')}
+                </span>
+              </div>
             </div>
-            {resolvedFederation && resolvedAccount && inputWasFederation && (
+
+            {/* Empfänger-Info links */}
+            <div className="space-y-0.5">
               <div>
-                <span className="font-semibold">{t('wallet.federationDisplay.account', 'Konto')}:</span>{' '}
-                <span className="font-mono break-all">{resolvedAccount}</span>
+                <span className="font-semibold">{t('wallet.federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
+                {recipientFederationDisplay
+                  ? <span className="font-mono break-all">{recipientFederationDisplay}</span>
+                  : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
               </div>
-            )}
-            {recipientLabel && (
-              <div>
-                <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
-                <span>{recipientLabel}</span>
-              </div>
-            )}
+              {resolvedFederation && resolvedAccount && inputWasFederation && (
+                <div>
+                  <span className="font-semibold">{t('wallet.federationDisplay.account', 'Konto')}:</span>{' '}
+                  <span className="font-mono break-all">{resolvedAccount}</span>
+                </div>
+              )}
+              {recipientLabel && (
+                <div>
+                  <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
+                  <span>{recipientLabel}</span>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-[2fr_3fr] gap-3 mt-2">
