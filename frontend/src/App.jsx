@@ -87,12 +87,12 @@ function App() {
       ) : (
         <>
           {/* Sprachleiste */}
-          <div className="max-w-4xl mx-auto p-4 mt-4 mb-4 text-center shadow-md bg-white dark:bg-gray-800 dark:shadow-gray-900/50 rounded relative">
+          <div className="max-w-4xl mx-auto p-3 sm:p-4 mt-4 mb-4 text-center shadow-md bg-white dark:bg-gray-800 dark:shadow-gray-900/50 rounded relative">
             <div className="flex justify-center">
               <LanguageSelector />
             </div>
-            {/* Glossary and Settings buttons in the language bar (right side) */}
-            <div className="absolute right-3 top-2 flex flex-col items-end gap-2">
+            {/* Glossary and Settings buttons under the language bar on all screens */}
+            <div className="mt-3 flex flex-wrap justify-center gap-2">
               <a
                 href={buildPath('glossar')}
                 onClick={(e) => {

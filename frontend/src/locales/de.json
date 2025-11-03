@@ -549,7 +549,7 @@
     "source": "Quell-Wallet-Adresse",
     "invalid": "Ungültiger öffentlicher Schlüssel.",
     "submit": {
-      "button": "Absenden"
+      "button": "Senden"
     },
     "test": "Test",
     "historyLabel": "Historie",
