@@ -1,27 +1,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import deFlag from 'flag-icons/flags/4x3/de.svg';
-import usFlag from 'flag-icons/flags/4x3/us.svg';
-import frFlag from 'flag-icons/flags/4x3/fr.svg';
-import esFlag from 'flag-icons/flags/4x3/es.svg';
-import itFlag from 'flag-icons/flags/4x3/it.svg';
-import nlFlag from 'flag-icons/flags/4x3/nl.svg';
-import fiFlag from 'flag-icons/flags/4x3/fi.svg';
-import hrFlag from 'flag-icons/flags/4x3/hr.svg';
-import ruFlag from 'flag-icons/flags/4x3/ru.svg';
+
+// Hinweis: Wir verwenden die CSS-Variante von flag-icons (fi fi-xx),
+// damit auf Mobilgeräten keine Probleme mit Asset-Pfaden auftreten.
+// Die CSS wird global in src/index.css bzw. App.jsx importiert.
 
 const languages = [
-  { code: 'de', name: 'Deutsch', src: deFlag },
-  { code: 'en', name: 'English', src: usFlag },
-  { code: 'fr', name: 'Français', src: frFlag },
-  { code: 'es', name: 'Español', src: esFlag },
-  { code: 'it', name: 'Italiano', src: itFlag },
-  { code: 'nl', name: 'Nederlands', src: nlFlag },
-  { code: 'fi', name: 'Suomi', src: fiFlag },
-  { code: 'hr', name: 'Hrvatski', src: hrFlag },
-  { code: 'ru', name: 'Русский', src: ruFlag }
+  { code: 'de', name: 'Deutsch', flag: 'de' },
+  { code: 'en', name: 'English', flag: 'us' },
+  { code: 'fr', name: 'Français', flag: 'fr' },
+  { code: 'es', name: 'Español', flag: 'es' },
+  { code: 'it', name: 'Italiano', flag: 'it' },
+  { code: 'nl', name: 'Nederlands', flag: 'nl' },
+  { code: 'fi', name: 'Suomi', flag: 'fi' },
+  { code: 'hr', name: 'Hrvatski', flag: 'hr' },
+  { code: 'ru', name: 'Русский', flag: 'ru' }
 ];
-
 
 function LanguageSelector() {
   const { i18n } = useTranslation();
@@ -44,13 +38,27 @@ function LanguageSelector() {
               aria-label={lang.name}
               aria-pressed={isActive}
               className={
-                `shrink-0 inline-flex items-center justify-center rounded-md border px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400 ` +
+                `relative shrink-0 inline-flex items-center justify-center rounded-md border px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400 ` +
                 (isActive
                   ? 'ring-2 ring-indigo-500 border-indigo-500 bg-white dark:bg-gray-800'
                   : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700')
               }
             >
-              <img src={lang.src} alt={lang.name} className="block w-6 h-4 sm:w-7 sm:h-5" />
+              {/* Stern auf dem Button, oben rechts, nicht auf der Flagge */}
+              {isActive && (
+                <span
+                  className="absolute -top-1 -right-1 text-yellow-500"
+                  aria-hidden="true"
+                  title="active"
+                >
+                  ★
+                </span>
+              )}
+              <span
+                className={`fi fi-${lang.flag}`}
+                aria-hidden="true"
+                style={{ fontSize: '18px', lineHeight: 1 }}
+              />
             </button>
           );
         })}
