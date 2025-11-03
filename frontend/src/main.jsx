@@ -445,7 +445,7 @@ function Main() {
               type="button"
               onClick={() => setMenuSelection('feedback')}
               title={t('menu.feedback')}
-              className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="inline-flex items-center gap-1.5 sm:gap-2 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 md:px-4 md:py-2 text-xs sm:text-sm md:text-base rounded-full shadow focus:outline-none focus:ring-2 focus:ring-purple-400"
             >
               <span>✉</span>
               <span>{t('menu.feedback')}</span>
@@ -454,7 +454,7 @@ function Main() {
               type="button"
               onClick={() => { setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('main.title')}` }); setMenuSelection('sendPayment'); }}
               title={t('menu.donate')}
-              className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
+              className="inline-flex items-center gap-1.5 sm:gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 md:px-4 md:py-2 text-xs sm:text-sm md:text-base rounded-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
             >
               <span aria-hidden>♥</span>
               <span>{t('menu.donate')}</span>
@@ -522,11 +522,25 @@ function Main() {
               </datalist>
 
             </div>
-            <div className="mt-2 relative text-xs text-gray-700 dark:text-gray-300">
-              {/* XLM-Balance rechts oben */}
-              <div className="absolute right-0 top-0 shrink-0 text-right">
-                <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded px-2 py-1">
-                  <span className="font-semibold">{t('wallet.xlmBalance', 'XLM')}:</span>
+            <div className="mt-2 text-xs text-gray-700 dark:text-gray-300">
+              <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1">
+                {/* Links: Föderationsadresse & Label linksbündig */}
+                <div className="min-w-0 space-y-0.5 text-left">
+                  <div>
+                    <span className="font-semibold">{t('wallet.federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
+                    {headerFederationDisplay
+                      ? <span className="font-mono break-all">{headerFederationDisplay}</span>
+                      : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
+                  </div>
+                  <div>
+                    <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
+                    {headerLabel ? headerLabel : <span className="text-gray-400">—</span>}
+                  </div>
+                </div>
+
+                {/* Rechts: XLM-Kontostand als Label (rechtsbündig), ohne Überlagerung auf Mobil */}
+                <div className="text-right">
+                  <span className="font-semibold">{t('wallet.xlmBalance', 'XLM')}:</span>{' '}
                   <span className="font-mono">
                     {xlmBalanceLoading
                       ? t('common.loading', 'Loading…')
@@ -534,25 +548,6 @@ function Main() {
                           ? (xlmBalance != null ? `${xlmBalance}` : t('wallet.unfunded', 'Unfunded'))
                           : '—')}
                   </span>
-                </div>
-              </div>
-
-              {/* Mittig: Föderationsadresse & Label mit Doppelpunkt-Ausrichtung */}
-              <div className="mx-auto inline-grid grid-cols-[max-content_auto] gap-x-2 gap-y-1">
-                <div className="text-right font-semibold">
-                  {t('wallet.federationDisplay.label', 'Föderationsadresse')}:
-                </div>
-                <div className="text-left">
-                  {headerFederationDisplay
-                    ? <span className="font-mono break-all">{headerFederationDisplay}</span>
-                    : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
-                </div>
-
-                <div className="text-right font-semibold">
-                  {t('wallet.federationDisplay.accountLabel', 'Label')}:
-                </div>
-                <div className="text-left">
-                  {headerLabel ? headerLabel : <span className="text-gray-400">—</span>}
                 </div>
               </div>
             </div>
