@@ -607,11 +607,35 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               {historyRecipients.map((v,i)=>(<option key={v+i} value={v} />))}
             </datalist>
           </div>
-          <div className="mt-1 relative text-xs text-gray-700 dark:text-gray-300">
-            {/* XLM-Balance des Absenders rechts oben, wie im globalen Header */}
-            <div className="absolute right-0 top-0 shrink-0 text-right">
-              <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded px-2 py-1">
-                <span className="font-semibold">{t('wallet.xlmBalance', 'XLM')}:</span>
+          <div className="mt-1 text-xs text-gray-700 dark:text-gray-300">
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1">
+              {/* Links: Empfänger-Infos linksbündig */}
+              <div className="min-w-0 space-y-0.5 text-left">
+                <div>
+                  <span className="font-semibold">{t('wallet.federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
+                  {recipientFederationDisplay
+                    ? <span className="font-mono break-all">{recipientFederationDisplay}</span>
+                    : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
+                </div>
+
+                {resolvedFederation && resolvedAccount && inputWasFederation && (
+                  <div>
+                    <span className="font-semibold">{t('wallet.federationDisplay.account', 'Konto')}:</span>{' '}
+                    <span className="font-mono break-all">{resolvedAccount}</span>
+                  </div>
+                )}
+
+                {recipientLabel && (
+                  <div>
+                    <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
+                    <span>{recipientLabel}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Rechts: Ziel-XLM-Kontostand als Label, ohne Überlagerung */}
+              <div className="text-right">
+                <span className="font-semibold">{t('wallet.xlmBalance', 'XLM')}:</span>{' '}
                 <span className="font-mono">
                   {destXlmLoading
                     ? t('common.loading', 'Loading…')
@@ -620,28 +644,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                         : '—')}
                 </span>
               </div>
-            </div>
-
-            {/* Empfänger-Info links */}
-            <div className="space-y-0.5">
-              <div>
-                <span className="font-semibold">{t('wallet.federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
-                {recipientFederationDisplay
-                  ? <span className="font-mono break-all">{recipientFederationDisplay}</span>
-                  : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
-              </div>
-              {resolvedFederation && resolvedAccount && inputWasFederation && (
-                <div>
-                  <span className="font-semibold">{t('wallet.federationDisplay.account', 'Konto')}:</span>{' '}
-                  <span className="font-mono break-all">{resolvedAccount}</span>
-                </div>
-              )}
-              {recipientLabel && (
-                <div>
-                  <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
-                  <span>{recipientLabel}</span>
-                </div>
-              )}
             </div>
           </div>
 
