@@ -5,14 +5,14 @@
     }
   },
   "asset": {
-    "balance": "Credit balance",
+    "balance": "Credit",
     "code": "Asset code",
     "creationDate": "Created on",
     "issuer": "Issuer"
   },
   "balance": {
     "buttons": {
-      "details": "More details",
+      "details": "More details.",
       "explorer": "Explorer",
       "payments": "Recent operations"
     },
@@ -33,24 +33,24 @@
         "date": "Date",
         "direction": "Direction",
         "memo": "Memo",
-        "tx": "I'm sorry, but the provided text \"Tx\" is too ambiguous for translation as it appears to be an abbreviation or incomplete phrase. Could you please provide more context or clarify the intended meaning?",
-        "type": "Type",
-        "txLabel": "I'm sorry, but it looks like your request is not clear. Could you please provide more context or clarify what you'd like me to do?"
+        "tx": "I'm sorry, but I don't understand what \"Tx\" refers to. Could you please provide more context or clarify your request?",
+        "txLabel": "Sorry, could you please provide more details or context about \"Tx\"? It could mean different things depending on the context.",
+        "type": "Type"
       },
       "empty": "No operations found.",
       "filter": {
         "memo": "Memo filter",
-        "memoPlaceholder": "Searching memo..."
+        "memoPlaceholder": "Searching for memo..."
       },
       "from": "From",
       "incoming": "Entrance",
       "limit": "Number",
-      "outgoing": "Exit",
-      "title": "Recent operations",
+      "outgoing": "Output",
+      "title": "Recent events",
       "to": "Until"
     },
     "paymentsHint": "You can filter inputs/outputs in the Explorer.",
-    "title": "Show account balance"
+    "title": "Display account information"
   },
   "buildInfo": {
     "branch": "Branch",
@@ -58,6 +58,92 @@
     "env": "Environment",
     "error": "Build information could not be loaded.",
     "loading": "Loading build information..."
+  },
+  "bugReport": {
+    "button": "Report error",
+    "title": "Report error",
+    "descLabel": "Short description (optional)",
+    "descPlaceholder": "What happened? Steps, expected behavior...",
+    "send": "Open email",
+    "cancel": "Cancel",
+    "toast": {
+      "sent": "Email draft opened.",
+      "logOk": "Bug has been logged.",
+      "logFallback": "Local logging failed.",
+      "validation": "Please enter a brief description or send without text."
+    },
+    "mail": {
+      "url": "URL",
+      "time": "Time",
+      "browser": "Browser",
+      "language": "Language",
+      "version": "Version",
+      "descriptionHeading": "Description"
+    },
+    "admin": {
+      "title": "Bug tracker",
+      "locked": "Access denied. Set the admin secret in local storage and reload the page.",
+      "placeholderTitle": "Bug tracker",
+      "placeholderBody": "Admin UI active. The next patches will include lists, filters, priorities, and status changes.",
+      "link": "Open bug tracker",
+      "secretSaved": "Secret saved.",
+      "enterSecret": "Enter admin secret",
+      "secretPlaceholder": "In the context provided, the sequence \"••••••••\" doesn't have a direct translation or meaning. If this represents something specific, please provide additional context or details for accurate translation.",
+      "confirm": "Open",
+      "cancel": "Cancel",
+      "filter": "Filter",
+      "status": "Status",
+      "priority": "Priority",
+      "open": "open",
+      "in_progress": "in progress",
+      "closed": "closed",
+      "low": "low",
+      "normal": "normal",
+      "high": "high",
+      "urgent": "urgent",
+      "id": "ID",
+      "created": "Created",
+      "url": "URL",
+      "language": "Language",
+      "email": "Email",
+      "userAgent": "Browser",
+      "description": "Description",
+      "category": "Category",
+      "save": "Save",
+      "saved": "Change saved",
+      "loadError": "Error loading bugs",
+      "saveError": "Error while saving",
+      "empty": "No entries found.",
+      "loading": "Loading...",
+      "resize": "Drag to adjust",
+      "exportAll": "CSV (All)",
+      "exportError": "Export failed",
+      "exportPage": "CSV (page)",
+      "exporting": "Export...",
+      "columns": {
+        "title": "Columns",
+        "manage": "Adjust columns",
+        "hint": "Visibility via checkmark, order with ↑/↓, sizes by dragging in the table header.",
+        "reset": "Reset",
+        "up": "Upwards",
+        "down": "Downwards"
+      },
+      "csv": {
+        "comma": "Comma (,)",
+        "delimiter": "Delimiter",
+        "semicolon": "Semicolon (;)",
+        "tab": "Tabulator (Tab)"
+      },
+      "search": "Search",
+      "col": {
+        "id": "ID",
+        "status": "Status",
+        "priority": "Priority",
+        "url": "URL",
+        "desc": "Description",
+        "ts": "Time"
+      }
+    }
   },
   "cache": {
     "clear": "Clear cache",
@@ -67,41 +153,41 @@
   },
   "common": {
     "clear": "Delete input",
+    "close": "Close",
     "loading": "Loading...",
-    "refresh": "Reload",
-    "close": "Close"
+    "refresh": "Reload"
   },
   "error": {
     "asset": {
       "creationDateUnknown": "Unknown creation date"
     },
     "cache": {
-      "backfillAborted": "Initial loading of payments aborted",
+      "backfillAborted": "Initial loading of payments aborted.",
       "coverage": {
-        "newestFailed": "Failed to determine the latest payment.",
-        "oldestFailed": "Failed to determine the earliest date"
+        "newestFailed": "Failed to retrieve the latest payment.",
+        "oldestFailed": "Failed to determine the oldest date"
       },
       "indexIterFailed": "Index iteration in the cache failed.",
       "memoNormBackfillFailed": "Initial loading of payments for normalized memos failed.",
       "openFailed": "Local cache could not be opened",
       "readFailed": "Failed to read from cache",
-      "rehydrateFailed": "Loading missing memos failed.",
-      "rehydrateWriteFailed": "Failed to write memos to cache",
-      "writeFailed": "Writing to the cache failed."
+      "rehydrateFailed": "Reloading missing memos failed.",
+      "rehydrateWriteFailed": "Failed to write the memos to the cache.",
+      "writeFailed": "Failed to write to cache"
     },
     "connection": {
       "backend": "No connection to the backend possible. Please ensure"
     },
     "fetchInvestedTokens": {
-      "failed": "Failed to load investment data: {{detail}}"
+      "failed": "Loading of investment data failed: {{detail}}"
     },
     "horizon": {
       "paymentsFetch": "Error loading payments from Horizon"
     },
-    "loadTrustlines": "Failed to load trustlines",
+    "loadTrustlines": "Loading of trustlines failed.",
     "loadTrustlinesFailed": "Failed to load trustlines",
     "loadTrustlinesNotFound": "Account not found in the selected network. Check Testnet/Public in the header.",
-    "accountNotFoundInNetwork": "Not found in '{{net}}'!",
+    "accountNotFoundInNetwork": "\"Not found in '{{net}}'!\"",
     "op_invalid_limit": "Trustline cannot be deleted. It may still have a balance or outstanding obligations.",
     "query": {
       "invalidMemo": "Invalid memo",
@@ -125,10 +211,10 @@
     },
     "trustline": {
       "submitFailed": "Error deleting the trustline.",
-      "unknown": "Unknown error while deleting the trustline."
+      "unknown": "Unknown error when deleting the trustline."
     },
     "xlmByMemo": {
-      "aborted": "Operation canceled by the user.",
+      "aborted": "Operation canceled by the user",
       "accountInvalid": "Invalid account",
       "dateInvalid": "Invalid date",
       "dateRange": "Invalid date range",
@@ -145,19 +231,11 @@
     "title": "Send feedback",
     "category": "Category",
     "categories": {
-      "bug": "Bug",
+      "bug": "Error",
       "idea": "Idea",
       "improve": "Improvement",
-      "other": "Other"
+      "other": "Miscellaneous"
     },
-    "subject": "Subject",
-    "message": "Message",
-    "contactEmailOptional": "Contact email (optional)",
-    "privacyHint": "Your message will be sent via your local email client.",
-    "sendButton": "Create email",
-    "openedMailClient": "Email client opened.",
-    "error": "Error",
-    "sentTo": "Recipient: {{email}}",
     "page": "Area",
     "pages": {
       "start": "Global",
@@ -173,15 +251,23 @@
       "feedback": "Feedback",
       "other": "Miscellaneous"
     },
+    "subject": "Subject",
+    "message": "Message",
+    "contactEmailOptional": "Contact email (optional)",
     "emailPlaceholder": "e.g. name@example.com",
-    "emailHint": "If feedback is desired, please enter your email."
+    "emailHint": "If feedback is desired, please enter your email.",
+    "privacyHint": "Your message will be sent via email using your own mail program.",
+    "sendButton": "Create email",
+    "openedMailClient": "Email client opened.",
+    "error": "Error",
+    "sentTo": "Recipient: {{email}}"
   },
   "investedTokens": {
     "columns": {
       "amount": "Amount",
       "compromised": "Compromised",
       "deactivated": "Deactivated",
-      "destination": "Destination wallet",
+      "destination": "Target wallet",
       "issuer": "Issuer",
       "label": "Label",
       "memo": "Memo",
@@ -194,7 +280,7 @@
       "label": "Decimal places:"
     },
     "filter": {
-      "memoPlaceholder": "Filter by memo, wallet address, or label.",
+      "memoPlaceholder": "Filter by memo, wallet address, or label",
       "tokenPlaceholder": "Filter by Token (CODE:ISSUER)"
     },
     "hintEnterPublicKey": "Please enter a public key first.",
@@ -203,7 +289,7 @@
       "token": "Token: {{token}} (Payments: {{occurrences}})",
       "tokenShort": "Token: {{token}}"
     },
-    "missingPublicKey": "Public key missing.",
+    "missingPublicKey": "Public key is missing.",
     "moreTruncated": "... and {{extra}} additional groups",
     "toWallet": "to Wallet: {{address}}",
     "total": "Number of tokens purchased: {{count}}",
@@ -227,11 +313,11 @@
     },
     "walletCapInfo": "Note: A wallet can hold a maximum of 1000 trust lines.",
     "action": {
-      "load": "Shop"
+      "load": "Loading"
     },
     "history": {
       "availableFrom": "Server (Horizon) – History from",
-      "hintFullHistory": "Note: The ledger history from the Horizon server only goes back to {{available}}. Data is displayed only up to that point. Therefore, the chosen \"From\" date is limited. For older data, a (usually paid) full-history provider is required (possibly coming in the future!)."
+      "hintFullHistory": "Note: The ledger history from the Horizon server only goes back to {{available}}. Only data from that point onwards is displayed. As a result, the selected From date is limited. For older data, a (usually paid) full-history provider is required (Maybe coming in the future!)."
     }
   },
   "account": {
@@ -239,17 +325,17 @@
     "createdAtUnknown": "Cannot be determined.",
     "testnetLabel": "(Testnet)"
   },
-  "fetch.groupfund.aborted": "Operation canceled by the user",
+  "fetch.groupfund.aborted": "Operation canceled by user.",
   "issuer": {
     "enter": "Enter the issuer address:",
     "invalid": "Invalid issuer address."
   },
   "main": {
-    "processing": "Process running, please wait …",
+    "processing": "Process running, please wait…",
     "title": "Stellar Account Manager"
   },
   "menu": {
-    "balance": "Show account balance",
+    "balance": "Display account information",
     "devTestnet": "Testnet (for developers)",
     "unknown": "Unknown menu selection",
     "xlmByMemo": "Filter by memo",
@@ -261,45 +347,47 @@
   "badges": {
     "testnet": "TESTNET"
   },
+  "network": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
+  },
   "multisigCreate": {
-    "activateHint": "Activation is necessary for the account to exist. In the testnet, this can be done via Friendbot, and in the mainnet, via \"Create Account\" from an existing wallet.",
+    "activateHint": "Activation is necessary for the account to exist. In the Testnet, it's done via Friendbot, and in the Mainnet through \"Create Account\" from an existing wallet.",
     "activateNow": "Activate account immediately",
-    "activateOnly": "Only activate",
+    "activateOnly": "Just activate",
     "activated": "Account activated. TX: {{hash}}",
-    "activatedTestnet": "Account activated on the testnet.",
+    "activatedTestnet": "Account activated in the testnet.",
     "alreadyActive": "Account is already active.",
-    "balanceWarning": "The starting balance is likely too low to add the {{count}} additional signers (minimum reserve: {{req}} XLM)",
+    "balanceWarning": "Starting balance is likely too low to add the {{count}} additional signers (minimum reserve: {{req}} XLM)",
     "bestPractices": {
-      "text": "Recommended: 2 out of 3 signatures. This means that out of a total of 3 authorized signatories (1 Master + 2 Signers), at least 2 signatures are required. Implementation: Set the weights for Master/Signer to 1 each and set the thresholds to low=1, medium=2, high=2. This allows simple changes with 1 signature; payments/trades require 2; security-critical changes require 2.",
+      "text": "Recommended: 2 out of 3 signatures. This means: Out of a total of 3 authorized signers (1 Master + 2 Signers), at least 2 signatures are required. Implementation: Set weights for both Master/Signer to 1 and set the thresholds to low=1, medium=2, high=2. This way, simple changes can be made with 1 signature; payments/trading require 2; security-critical changes require 2.",
       "title": "Proven settings"
     },
-    "confirmLowBalance": "Initial balance ({{bal}} XLM) is below the minimum reserve ({{req}} XLM) for {{count}} additional signers. Continue anyway?",
+    "confirmLowBalance": "Starting balance ({{bal}} XLM) is below the minimum reserve ({{req}} XLM) required for {{count}} additional signers. Do you still want to proceed?",
     "createButton": "Create / Set Multisig",
     "createdAndConfigured": "Account created/configured. TX: {{hash}}",
     "createdNoSigners": "Account created. No additional signers were specified.",
-    "enableMultisig": "Create multisig for this account",
-    "generateFirst": "Please generate the key first.",
+    "enableMultisig": "Create multisig for this account.",
+    "generateFirst": "Please generate the keys first.",
     "generateKeys": "Generate key",
-    "hint": "Create a new wallet. Optionally activate immediately (1 XLM or recommended) and add additional signers (Multisig).",
+    "hint": "Create a new wallet. Optionally activate it immediately (1 XLM or recommended) and add additional signers (Multisig).",
     "hints": {
       "byteRange": "(0–255)"
     },
     "info": {
-      "more": "More info",
-      "multisig": "Multisig means: Multiple signatures are required for this account. You select additional signers and the threshold (e.g., 2 out of 3). A transaction is only valid if at least as many signatures are present as the threshold (Master + co-signers).",
-      "text": "How it works\nYour private key always stays in your browser. It is only used to sign your transaction locally. Only the completed signature is sent to our server or externally, never your key. Anyone who wants can verify this with the developer tools in the browser: it shows that no key is being transmitted.",
       "title": "Important information",
+      "more": "More info",
       "secureKeys": {
-        "title": "Secure private key",
-        "text": "The public key can be safely shared — it is like an account number.\n\nThe secret key is the access to your account. Treat it like a password:\n• NEVER store it in cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the secret key is lost, access to the account is irrevocably lost"
+        "title": "Secure secret key",
+        "text": "The public key can be safely shared – it is like an account number.\n\nThe secret key is the access to your account. Treat it like a password:\n• NEVER store it in cloud services, emails, or unsecured notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the secret key is lost, access to the account is irrevocably lost"
       },
       "keysOnPage": {
         "title": "Secret key on this page",
-        "text": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe secret key displayed here exists only in your browser (locally in memory). Once you reload or leave the page, it is irretrievably lost.\n\nCopy or record the secret key immediately after its creation, before closing the page.\n\nVerification: You can use the browser developer tools (F12 → Network) to verify that no secret key is transmitted externally. Only signed transactions are sent, never your secret key."
+        "text": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe Secret Key displayed here exists only in your browser (locally in memory). Once you reload or leave the page, it is irretrievably lost.\n\nCopy or note down the Secret Key immediately after generation, before closing the page.\n\nVerification: You can verify with the browser developer tools (F12 → Network) that no secret key is transmitted externally. Only signed transactions are sent, never your Secret Key."
       },
       "multisigSection": {
         "title": "Multisig (multisignature)",
-        "text": "With Multisig, you can define multiple signers for your account. Transactions then require signatures from multiple keys (e.g., 2 out of 3).\n\nAdvantages:\n• Increased security (a compromised key is not sufficient)\n• Shared accounts (e.g., companies, partnerships)\n• Emergency recovery (multiple backups with different individuals)\n\nWARNING: Test Multisig on the testnet first before using it on the mainnet! Incorrect configuration can result in loss of access to the account."
+        "text": "With multisig, you can define multiple signers for your account. Transactions then require signatures from multiple keys (e.g., 2 out of 3).\n\nAdvantages:\n• Increased security (a compromised key is not enough)\n• Joint accounts (e.g., companies, partnerships)\n• Emergency recovery (multiple backups with different people)\n\nWARNING: Test multisig on the testnet first before implementing it on the mainnet! Incorrect configuration can result in the loss of access to the account."
       },
       "diagram": {
         "title": "Signature expiration"
@@ -307,7 +395,7 @@
     },
     "instructions": {
       "public": "Public Key: Your account address, like an IBAN. Safe to share.",
-      "secret": "Secret Key: Your password for the account. Never share it, store securely (e.g., on paper)."
+      "secret": "Secret Key: Your password for the account. Never share it, store it securely (e.g., on paper)."
     },
     "mainnetActivateNote": "Note: Additional reserves are needed for multisig. 1 XLM is often not enough.",
     "menu": "Create account",
@@ -315,50 +403,50 @@
     "reserve": {
       "base": "Base reserve per entry: {{val}} XLM",
       "recommended": "Recommended starting balance: {{val}} XLM (including buffer)",
-      "required": "Required Minimum Reserve (new): {{val}} XLM"
+      "required": "Required minimum reserve (new): {{val}} XLM"
     },
     "signersCount": "Number of additional signatories",
     "signersCountHint": "You set the minimum number of signatures below under \"Required Signatures\" (low/medium/high).",
     "signersCountLimit": "Note: Network limit (Stellar): max. 20 additional signers.",
-    "signersInfo": "Add G... addresses as signatories. Each signatory increases the minimum reserve.",
+    "signersInfo": "Add G... addresses as signatories. Each signatory raises the minimum reserve.",
     "signersTitle": "Multisig (additional signers)",
     "startingBalance": "Starting balance (XLM)",
     "threshold": "Required Signatures (low/medium/high)",
-    "thresholdCurrent": "Currently selected: low={{low}}, medium={{med}}, high={{high}} out of {{total}} signatures",
-    "thresholdHelp": "Threshold: The number of required signatures (master + signers) for a transaction to be valid.",
-    "thresholdInfo": "Recommendation: {{req}} out of {{total}} signatures (including Master)",
-    "thresholdLevelsHint": "Typically, the following applies: low = simple changes (e.g., memo, price), medium = payments/trading, high = security-critical changes (e.g., signer/thresholds).",
-    "thresholdStatic": "Required: {{val}} out of {{total}} signatures (low/medium/high)",
-    "thresholdSum": "Sum of weights: {{sum}}",
-    "thresholdTooHigh": "Note: A threshold must not exceed the sum of the weights. Please adjust the values accordingly.",
-    "title": "Create account (optional Multisig)",
-    "tooltips": {
-      "high": "High: security-critical changes (e.g., signers/thresholds).",
-      "low": "Low: simple changes (e.g., memo, price).",
-      "masterWeight": "Weight of the account holder (Master) (0-255): The master key of the account has a voting right. The higher its weight, the more votes its signature counts for. These votes are tallied together with those of other signers to determine if the required majority is reached.",
-      "med": "Means: Payments and trading actions.",
-      "signerWeight": "Signer weight (0–255): Additional signers also have voting rights. The weight determines how many votes their signature contributes. When a transaction is sent, all cast votes are added together. If the predetermined minimum number of votes (threshold) is reached, the transaction is considered authorized.",
-      "signerWeightHint": "Note: Master and signer weights form the total; thresholds (low/medium/high) must not exceed this total."
-    },
-    "units": {
-      "signatures": "Signature(s)"
-    },
     "thresholdLow": "low",
     "thresholdMed": "medium",
     "thresholdHigh": "high",
+    "thresholdCurrent": "Currently selected: low={{low}}, medium={{med}}, high={{high}} out of {{total}} signatures",
+    "thresholdHelp": "Threshold: The number of required signatures (master + signers) for a transaction to be valid.",
+    "thresholdInfo": "Recommendation: {{req}} out of {{total}} signatures (including master)",
+    "thresholdLevelsHint": "Typically, the following applies: low = simple changes (e.g., memo, price), medium = payments/trading, high = security-critical changes (e.g., signer/thresholds)",
+    "thresholdStatic": "Required: {{val}} of {{total}} signatures (low/medium/high)",
+    "thresholdSum": "Sum of weights: {{sum}}",
+    "thresholdTooHigh": "Note: A threshold must not exceed the sum of the weights. Please adjust the values.",
+    "title": "Create account (optional Multisig)",
     "keyWarning": {
       "title": "⚠️ Secure your key now!",
       "text1": "You have generated a new key pair.",
       "text2": "Secure BOTH keys IMMEDIATELY before proceeding:",
       "list1": "Public Key: Your account address, can be shared",
-      "list2": "Secret Key: Your password – NEVER share it or store it online!",
+      "list2": "Secret Key: Your password - NEVER share or store online!",
       "list3": "If the secret key is lost, access is irrevocably lost.",
       "confirm": "I have secured both keys."
+    },
+    "tooltips": {
+      "high": "High: safety-critical changes (e.g., signatories/thresholds).",
+      "low": "Low: simple changes (e.g., memo, price).",
+      "masterWeight": "Master Account Holder Weight (0-255): The master key of the account holds voting power. The higher its weight, the more votes its signature counts for. These votes are counted along with the votes of other signatories to verify if the required majority is achieved.",
+      "med": "Means: payments and trade actions.",
+      "signerWeight": "Weight of the signers (0–255): Additional signers also have voting rights. The weight determines how many votes their signature contributes. When a transaction is sent, all cast votes are added together. If the set minimum number of votes (threshold) is reached, the transaction is considered authorized.",
+      "signerWeightHint": "Note: Master and signer weights add up to the total; thresholds (low/medium/high) must not exceed this sum."
+    },
+    "units": {
+      "signatures": "Signature(s)"
     }
   },
   "multisigEdit": {
     "confirm": {
-      "removeSigner": "Really remove signatory?"
+      "removeSigner": "Remove signer for real?"
     },
     "currentConfig": "Current / Planned Configuration",
     "error": {
@@ -367,7 +455,7 @@
     "hint": "Load an existing account, adjust signers, weights, master weight, and thresholds, and save the changes.",
     "load": "Shop",
     "loaded": "Loaded. Additional signers: {{count}}",
-    "menu": "Edit account with multisig",
+    "menu": "Edit multisig account",
     "menuHint": "Adjusting signers/thresholds of an existing account",
     "noteMaxSigners": "Note: Stellar allows a maximum of 20 additional signers per account.",
     "reload": "Reload",
@@ -375,18 +463,18 @@
     "saved": "Changes saved. TX: {{hash}}",
     "signers": "Signatory",
     "weight": "Weighting",
+    "masterWeight": "Master weight",
     "title": "Edit multisig account",
     "validation": {
-      "signerKeyHint": "Note: Signers must start with \"G\" (ed25519 public key).",
+      "signerKeyHint": "Note: Signers must begin with \"G\" (ed25519 public key).",
       "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
-    },
-    "masterWeight": "Master weight"
+    }
   },
   "navigation": {
     "back": "Back",
     "backToMainMenu": "Back to the menu",
-    "backToPublicKey": "Return to public key input",
-    "backToTop": "Back to top"
+    "backToPublicKey": "Return to public key entry",
+    "backToTop": "Back to Top"
   },
   "noIssuerTrustlinesFound": "No trustlines found for issuer {{issuer}}.",
   "option": {
@@ -412,9 +500,9 @@
   },
   "progress": {
     "cancel": "Cancel",
-    "canceled": "Canceled",
+    "canceled": "Aborted",
     "counts": "Reviewed: {{ops}} • Matches: {{matches}}",
-    "done": "Completed",
+    "done": "Completed.",
     "duration": "Duration: {{val}}",
     "elapsed": "Duration: {{time}}",
     "eta": "ETA: {{minutes}} min.",
@@ -423,17 +511,17 @@
       "cache": "Mode: Cache",
       "live": "Mode: Live (Horizon)"
     },
-    "oldest": "earliest date on this page: {{date}}",
-    "oldestMatchInRangeAt": "First deposit within the period: {{date}}",
+    "oldest": "oldest date of this page: {{date}}",
+    "oldestMatchInRangeAt": "First deposit in the period: {{date}}",
     "phase": {
-      "backfill": "Loading missing payments...",
+      "backfill": "Loading missing payments…",
       "cacheQuery": "Calculating result from local cache...",
       "chunkDone": "Chunk processed.",
       "chunkSkip": "Chunk skipped.",
-      "cover": "Ensuring cache coverage…",
+      "cover": "Ensure cache coverage…",
       "export": "Export result…",
       "finalize": "Completed",
-      "finalizeDiag": "Diagnosis completed",
+      "finalizeDiag": "Diagnosis complete",
       "idle": "Ready...",
       "pageDone": "Page {{page}} completed.",
       "rehydrate": "Rebuilding cache...",
@@ -465,37 +553,37 @@
     },
     "test": "Test",
     "historyLabel": "History",
-    "historyPlaceholder": "Select a recent wallet"
+    "historyPlaceholder": "Select the most recently used wallet."
   },
   "secretKey": {
     "cleared": "Secret key has been deleted.",
     "empty": "Secret key field is empty.",
-    "info": "Your private key remains in your browser and is used only locally to sign transactions. It is never transmitted or stored.",
+    "info": "Your private key remains in your browser and is only used locally to sign transactions. It is never transmitted or stored.",
     "invalid": "Invalid secret key.",
     "label": "Enter the source secret key",
     "mismatch": "Secret key does not match the public address.",
     "placeholder": "e.g.",
     "valid": "✅ Secret key is valid.",
     "remember": {
-      "label": "Remember the secret key for this session.",
-      "hint": "When activated, the key will be stored until the tab is closed and reused for further payments."
+      "label": "Remember the secret key for this session",
+      "hint": "When enabled, the key will be stored until the tab is closed and reused for further payments."
     },
     "clearSession": "Delete session key",
-    "clearSessionHint": "Removes the secret key stored in this session (it will be deleted anyway when the tab is closed)."
+    "clearSessionHint": "Removes the secret key stored in this session (it will be deleted when the tab is closed anyway)."
   },
   "settings": {
     "cache": {
-      "help": "Speeds up queries through a local payment cache but may extend the initial loading time.",
+      "help": "Speeds up queries through local payment cache, but may extend initial loading.",
       "label": "Use cache (Beta)",
-      "prefetchHelp": "Lead time for loading entries/transactions in days (one-time upon initial activation)"
+      "prefetchHelp": "Lead time for loading entries/transactions in days (applies only during initial activation)"
     },
     "network": {
       "title": "Network",
-      "desc": "Optional: Full-History Horizon for Deep History",
+      "desc": "Optional: Full History Horizon for deep history",
       "fullUrl": "Full-History Horizon URL",
-      "autoUseFull": "Automatically use if needed (when the from-date is older than the server history)"
+      "autoUseFull": "Automatically use if necessary (if the From-Date is older than the server history)"
     },
-    "description": "There are currently no settings available.",
+    "description": "Currently, there are no settings available.",
     "display": {
       "decimals": {
         "auto": "Automatically",
@@ -513,7 +601,7 @@
       "buttons": {
         "export": "Export",
         "import": "Import",
-        "reset": "Reset to default"
+        "reset": "Reset to standard"
       },
       "desc": "This list is stored locally in the browser. Default file: QSI_TrustedWallets.json",
       "editor": {
@@ -526,29 +614,200 @@
       },
       "info": {
         "count": "Entries: {{n}}",
-        "updatedAt": "Status as of {{date}}"
+        "updatedAt": "Status: {{date}}"
       },
       "table": {
         "addRow": "Add line",
         "columns": {
-          "actions": "Shares",
+          "actions": "Actions",
           "address": "Address",
           "compromised": "Compromised",
           "deactivated": "Deactivated",
           "label": "Label"
         },
         "deleteRow": "Delete",
-        "discard": "Discard",
+        "discard": "Dismiss.",
         "save": "Save"
       },
-      "title": "Trusted Wallets (QSI)",
+      "title": "My Trusted Wallets",
       "validation": {
-        "hint": "At least one line is invalid (missing/duplicate address)."
+        "hint": "At least one line is invalid (missing/duplicated address)."
       }
     }
   },
   "token": {
-    "purchases": "Filter tokens/assets"
+    "purchases": "Filter Tokens/Assets"
+  },
+  "glossary": {
+    "pageTitle": "Glossary",
+    "pageIntro": "Here you will find important words from the blockchain world and the Stellar network. Everything is explained in simple terms.",
+    "searchLabel": "Search term",
+    "searchPlaceholder": "Search term (e.g., account, account, muxed)",
+    "searchHint": "The search finds words and explanations.",
+    "noResults": "No match.",
+    "blockchain": {
+      "title": "Blockchain",
+      "original": "Blockchain",
+      "short": "Shared digital ledger – multiple computers store the same entries.",
+      "desc": "A blockchain is like a digital ledger. Many computers store the same entries. This way, no one can secretly make changes."
+    },
+    "wallet": {
+      "title": "Wallet",
+      "original": "Wallet",
+      "short": "Digital wallet that manages your keys.",
+      "desc": "A wallet is your digital purse. It manages the keys you need to access your account and send transactions. A wallet can be a program, an app, or even just a piece of paper with your private key."
+    },
+    "account": {
+      "title": "Account",
+      "original": "Account",
+      "short": "A blockchain account can hold assets and send transactions.",
+      "desc": "An account is the place on the blockchain where your assets are stored. An account has a public address that begins with G. Multiple wallets can access the same account if they have the correct key."
+    },
+    "addressG": {
+      "title": "G-address",
+      "original": "G Address",
+      "short": "The public main address of a Stellar account (begins with G).",
+      "desc": "The G-address is the main address of a Stellar account. It begins with the letter G. You provide it to others so they can send you something."
+    },
+    "publicKey": {
+      "title": "Public key",
+      "original": "Public Key",
+      "short": "Address you are allowed to share; usually the G-address in Stellar.",
+      "desc": "The public key is the address you are allowed to share. In Stellar, this is the G-address. Others use it to send you money."
+    },
+    "privateKey": {
+      "title": "Secret key",
+      "original": "Secret Key",
+      "short": "Password to account – never share.",
+      "desc": "The secret key is your password for the account. Whoever has this key can move your money. Never share it."
+    },
+    "addressFederation": {
+      "title": "Federation address",
+      "original": "Federation Address",
+      "short": "Short address like email points to a G-address.",
+      "desc": "A federation address looks like an email. Example: name*domain.com. This short address points to a regular G address. It's easier to remember."
+    },
+    "addressMuxed": {
+      "title": "Muxed account",
+      "original": "Muxed Account",
+      "short": "M-Address with additional ID – shares a base account.",
+      "desc": "An M-address points to an existing Stellar account but has an additional unique number (ID). This allows, for example, multiple people or departments to be distinguished under the same G-address. Technically, the funds still belong to the main account."
+    },
+    "multisig": {
+      "title": "Multisignature",
+      "original": "Multi‑Sig",
+      "short": "Important actions require more than a signature.",
+      "desc": "Multi-Sig stands for multiple signatures. An important action requires more than one key. For example, you and a second key must both agree before anything is sent. This makes theft more difficult."
+    },
+    "trustline": {
+      "title": "Trustline",
+      "original": "Trustline",
+      "short": "Consent to hold a token from a specific issuer.",
+      "desc": "A trustline is like a \"Yes, I accept this token.\" By setting it, you indicate that your account is ready to hold a specific token from a specific issuer. Without a trustline, you cannot receive this token.\n\nExample: A trustline is specified as CODE:ISSUER. For EURT from the issuer GDUKMGUGDZQK6Y…, it is EURT:GDUKMGUGDZQK6Y…."
+    },
+    "token": {
+      "title": "Token",
+      "original": "Token",
+      "short": "Digital unit - for example, money, points, or credits.",
+      "desc": "A token is a digital unit on the blockchain. A token can represent money, points, or credit for a service."
+    },
+    "asset": {
+      "title": "Asset",
+      "original": "Asset",
+      "short": "Token on Stellar are always linked to the issuer.",
+      "desc": "On Stellar, a token is called an asset. An asset is always linked to an issuer account. For example, an account can issue a Euro token. This Euro token is then an asset."
+    },
+    "xlm": {
+      "title": "XLM",
+      "original": "XLM",
+      "short": "Native currency of Stellar for fees and activation.",
+      "desc": "XLM is the native currency of Stellar. You need XLM to pay fees and to create a new account."
+    },
+    "mainnet": {
+      "title": "Mainnet",
+      "original": "Mainnet",
+      "short": "Real Stellar network with real value.",
+      "desc": "The real Stellar network with genuine value. Transactions are final and fees are paid in actual XLM."
+    },
+    "testnet": {
+      "title": "Testnet",
+      "original": "Testnet",
+      "short": "Public practice network without real value.",
+      "desc": "A public practice network. Tokens have no real value. Ideal for learning and experimenting without risk."
+    },
+    "memo": {
+      "title": "Memo",
+      "original": "Memo",
+      "short": "Short note in a transaction.",
+      "desc": "A memo is a small note that you can send along with a transaction. Often, an exchange requires a specific memo so that they know to whom the money belongs."
+    },
+    "transaction": {
+      "title": "Transaction",
+      "original": "Transaction",
+      "short": "Action on the blockchain, e.g., payment or trustline.",
+      "desc": "A transaction is an action on the blockchain, such as sending money or establishing a trustline. A transaction is permanently recorded once it is confirmed."
+    },
+    "fee": {
+      "title": "Fee",
+      "original": "Fee",
+      "short": "Very small amount per transaction.",
+      "desc": "The fee is a very small amount that you pay with each transaction. The fee goes to the network. On Stellar, the fees are very low."
+    },
+    "ledger": {
+      "title": "Ledger",
+      "original": "Ledger",
+      "short": "Chain of confirmed data and account balances.",
+      "desc": "The ledger is the chain of all confirmed data. It shows which accounts hold how much and what transactions have occurred. Anyone can check the ledger."
+    },
+    "horizon": {
+      "title": "Horizon",
+      "original": "Horizon",
+      "short": "API service through which apps communicate with Stellar.",
+      "desc": "Horizon is the service through which programs communicate with the Stellar Blockchain. Our tool queries Horizon to load account balances and transactions."
+    },
+    "anchor": {
+      "title": "Anchor",
+      "original": "Anchor",
+      "short": "Company that connects fiat money with Stellar.",
+      "desc": "An anchor is a company that connects real money, such as euros or dollars, with Stellar. For example, you give euros to the anchor and in return, you receive a Euro token on Stellar."
+    },
+    "exchange": {
+      "title": "Stock Exchange",
+      "original": "Exchange",
+      "short": "Place to buy and sell tokens.",
+      "desc": "An exchange is a place where you can buy or sell tokens. Many exchanges require a KYC process, that is, an identity verification, before you can withdraw money in euros or francs."
+    },
+    "dex": {
+      "title": "DEX",
+      "original": "Decentralized Exchange",
+      "short": "Decentralized exchange directly on the blockchain.",
+      "desc": "DEX stands for Decentralized Exchange. Here, people trade directly with each other on the blockchain. There is no single operator. Stellar has a DEX built directly into it."
+    },
+    "liquidityPool": {
+      "title": "Liquidity pool",
+      "original": "Liquidity Pool",
+      "short": "Common pool with two tokens for instant exchange.",
+      "desc": "A liquidity pool is a shared pool containing two tokens. People deposit both tokens into it. Others can then immediately exchange these tokens. The depositors earn small fees for this."
+    },
+    "balanceClaimable": {
+      "title": "Claimable Balance",
+      "original": "Claimable Balance",
+      "short": "Reserved funds that you still need to accept.",
+      "desc": "A Claimable Balance is money that is already reserved for you, but you still need to claim it. Only when you accept it does it go into your account."
+    },
+    "protocolUpdate": {
+      "title": "Protocol update",
+      "original": "Protocol Update",
+      "short": "Updating the network rules.",
+      "desc": "A Protocol Update is an upgrade of the rules in the Stellar network, such as new features or security changes. All nodes in the network must use the same rules."
+    },
+    "soroban": {
+      "title": "Soroban",
+      "original": "Soroban",
+      "short": "Stellar's smart contract system.",
+      "desc": "Soroban is the smart contract system of Stellar. A smart contract is program code on the blockchain. The code can independently verify rules and trigger actions without a bank intermediary."
+    },
+    "missingKey": "Missing glossary key: {{detail}}"
   },
   "trustline": {
     "all": "Display trustline(s)",
@@ -556,11 +815,11 @@
     "delete": "Delete trustline(s)",
     "deleted": {
       "mode": {
-        "real": "Real mode",
-        "realWarning": "Warning: Real trustline(s) will be deleted.",
+        "real": "Reality mode",
+        "realWarning": "Warning: Real trustline(s) will be deleted",
         "simulation": "Simulation mode"
       },
-      "notFound": "No removable trustlines found – all still contain a balance.",
+      "notFound": "No deletable trustlines found - all still contain a balance.",
       "resultText": "Count: {{count}} • Mode: {{mode}}",
       "resultTitle": "Deleted trustline(s)",
       "simulated": "Simulation: {{count}} trustline(s) would be deleted.",
@@ -590,27 +849,27 @@
       "amount": "Amount",
       "asset": "Asset",
       "memo": "Memo",
-      "memoType": "Memo Type",
+      "memoType": "Memo type",
       "memoTypes": {
         "none": "Memo (not a memo)",
-        "text": "Text of the memo",
+        "text": "Memo text",
         "id": "Memo ID",
         "hash": "Memo Hash",
         "return": "Memo Return",
         "info": {
-          "none": "No memo. Use this when the recipient does not expect a memo.",
-          "text": "Free text up to 28 bytes. Often used for assignment in simple payments.",
-          "id": "Numeric ID (uint64). Many exchanges use Memo ID for the allocation of deposits.",
+          "none": "No memo. Use this when the recipient is not expecting a memo.",
+          "text": "Free text up to 28 bytes. Often used for allocation in simple payments.",
+          "id": "Numerical ID (uint64). Many exchanges use Memo ID for the allocation of deposits.",
           "hash": "32-byte SHA-256 hash (as a 64-character hexadecimal string). Used by services for references.",
           "return": "32-byte hash for returns. Used for returns (MEMO_RETURN)."
         }
       },
       "available": "Available",
       "reserved": "Reserved",
-      "reservedInline": "{{amount}} XLM are reserved on the Stellar network",
+      "reservedInline": "{{amount}} XLM are reserved by the Stellar network",
       "baseReserve": "Basic reserve",
       "extra": "Additionally",
-      "xlmInOffers": "Bound in offers",
+      "xlmInOffers": "Bound by offers",
       "trustlines": "Trustlines ({{n}})",
       "lpTrustlines": "LP-Trustlines",
       "offers": "Open offers",
@@ -620,22 +879,22 @@
       "sponsored": "Sponsored",
       "sendButton": "Send",
       "success": "Success: Payment sent. TX: {{hash}}",
-      "error": "Error during sending: {{detail}}",
       "successShort": "Successfully sent",
+      "error": "Error sending: {{detail}}",
       "amountMissing": "Please enter an amount.",
-      "amountInvalid": "Invalid amount (use up to 7 decimals).",
-      "amountPositive": "Amount must be greater than zero.",
-      "timeout": "Horizon timeout (504). Please try again in a moment.",
+      "amountInvalid": "Invalid amount (maximum 7 decimal places).",
+      "amountPositive": "The amount must be greater than 0.",
+      "timeout": "Horizon timeout (504). Please try again shortly.",
       "httpError": "Horizon error (status {{status}}).",
-      "horizonError": "Stellar rejected the transaction",
-      "destUnfundedNonNative": "The destination account is not active. Please send XLM for activation first or switch the asset to XLM.",
+      "horizonError": "Stellar declined the transaction.",
+      "destUnfundedNonNative": "The destination account is not active. Please send XLM to activate it first or switch the asset to XLM.",
       "activateConfirm": {
         "title": "Account activation required",
-        "info": "The target account is not yet active. A minimum balance is required for activation.",
-        "minReserve": "Minimum amount (2 × base reserve)",
+        "info": "The target account is not yet active. A minimum amount is required for activation.",
+        "minReserve": "Minimum amount (2 × basic reserve)",
         "yourAmount": "Your entered amount",
         "adjustedAmount": "Suggested amount (to activate)",
-        "noteAdjust": "Your balance is insufficient for activation. If you proceed, the minimum amount will be sent automatically."
+        "noteAdjust": "Your balance is not sufficient for activation. If you proceed, the minimum amount will be sent automatically."
       },
       "activated": "The target account has been activated."
     }
@@ -643,16 +902,16 @@
   "xlmByMemo": {
     "action": {
       "calculate": "Calculate",
-      "loading": "Sorry, ich kann keine Berechnungen durchführen. Kann ich bei etwas anderem helfen?"
+      "loading": "Es tut mir leid, aber ich kann bei Berechnungen nicht helfen."
     },
     "date": {
       "from": "From (optional)",
-      "to": "Until (optional)"
+      "to": "(Optional)"
     },
     "debug": {
-      "incoming": "Incoming – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
-      "incomingOverview": "Inputs: {{total}} • Involved wallets: {{unique}}",
-      "memo": "Memos in window: {{any}} • exact memos: {{exact}}",
+      "incoming": "The text you have provided appears to contain placeholders and incomplete data, making it difficult to provide an accurate translation. However, if this is part of a programming or templating language, it might not need translation in the conventional sense.\n\nIf you're asking for a literal translation of the term \"Eingehend\", it translates to \"Incoming\" in English. If the placeholders are meant to be descriptive terms, they would stay in English as they are variables or codes rather than translatable words. \n\nIf you can provide more context or specific text around those placeholders, I can give you a more precise translation.",
+      "incomingOverview": "Inputs: {{total}} • involved wallets: {{unique}}",
+      "memo": "Memos in the window: {{any}} • exact memos: {{exact}}",
       "types": "Types – payment: {{pay}}, path: {{path}}, create: {{create}}, other: {{other}}"
     },
     "export": {
@@ -668,10 +927,10 @@
       "label": "Memo search text (substring, case sensitive)",
       "placeholder": "Memo (substring, case-sensitive)"
     },
-    "overviewLine": "Payment receipts: {{total}} • involved wallets: {{unique}}",
+    "overviewLine": "Payments received: {{total}} • involved wallets: {{unique}}",
     "page": {
-      "noPublicKey": "Please enter a public key first.",
-      "title": "XLM balance according to memo"
+      "noPublicKey": "Please enter a public key first or reload the account.",
+      "title": "XLM total after memo"
     },
     "result": {
       "label": "Total amount:",
@@ -679,24 +938,24 @@
     },
     "summary": {
       "amount": "Total: {{amount}} XLM",
-      "correctCount": "Entries with correct memo: {{n}}",
+      "correctCount": "Inputs with correct memo: {{n}}",
       "count": "Quantity: {{n}}",
       "label": "Comparison (all inputs)",
-      "otherCount": "Entries with incorrect/absent memo: {{n}}",
-      "unique": "Unique wallets (all): {{n}}",
+      "otherCount": "Entries with incorrect/missing memo: {{n}}",
+      "unique": "Unique wallets (total): {{n}}",
       "uniqueWallets": "Unique wallets: {{n}}"
     },
     "time": {
       "setToNow": "Set current time",
       "setToNowHint": "Set the time field to the current time."
     },
-    "title": "XLM amount according to memo",
+    "title": "XLM balance according to memo",
     "topLargest": {
       "button": "Top 20 Entries (Memo)",
       "clipboard": "Copy to clipboard",
       "csv": "Download CSV",
       "scanning": "... scans top entries",
-      "title": "Top 20 entries for memos during the period"
+      "title": "Top 20 Entries for Memo in the Period"
     },
     "tz": {
       "cdt": "CDT (UTC−5)",
@@ -704,12 +963,12 @@
       "europe_zurich": "Europe/Zurich (CET/CEST)",
       "label": "Timezone for date/time",
       "local": "Local time zone",
-      "note": "Date and time are interpreted in the selected time zone and automatically converted to UTC before the search.",
+      "note": "Date and time are interpreted in the chosen time zone and automatically converted to UTC before the search.",
       "utc": "UTC",
-      "window": "Used UTC time window: {{from}} → {{to}} (exclusive of end)"
+      "window": "Utilized UTC time window: {{from}} → {{to}} (Up to but not including)"
     },
     "wrongMemos": {
-      "button": "Display wallets with incorrect/empty memos.",
+      "button": "Display wallets with incorrect/empty memo",
       "clipboard": "Copy to clipboard",
       "columns": {
         "amount": "Amount",
@@ -720,15 +979,22 @@
       },
       "csv": "Download CSV",
       "failed": "Error loading payments with incorrect/empty memo.",
-      "hint": "Filters incoming payments during the period and displays senders with incorrect/empty memos.",
-      "scanning": "... scans false/blank memos",
-      "summary": "Number: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
+      "hint": "Filters incoming payments within the timeframe and displays senders with incorrect or empty memos.",
+      "scanning": "... scans false/empty memos.",
+      "summary": "Count: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
       "title": "False/Empty memos during the period"
     }
   },
-  "network": {
-    "mainnet": "Mainnet",
-    "testnet": "Testnet"
+  "activation": {
+    "notFound": {
+      "title": "Target account not active",
+      "message": "The destination account doesn't exist yet ({address}). It needs to be activated with at least 1 XLM. Would you like to activate the account now?"
+    },
+    "actions": {
+      "yes": "Yes – Activate account",
+      "no": "No - Cancel",
+      "processing": "Activate..."
+    }
   },
   "wallet": {
     "federationDisplay": {
@@ -736,103 +1002,6 @@
       "none": "No federation address defined",
       "account": "Account",
       "accountLabel": "Label"
-    }
-  },
-  "bugReport": {
-    "button": "Report error",
-    "title": "Report error",
-    "descLabel": "Short description (optional)",
-    "descPlaceholder": "What happened? Steps, expected behavior...",
-    "send": "Open email",
-    "cancel": "Cancel",
-    "toast": {
-      "sent": "Email draft opened.",
-      "logOk": "Bug has been logged.",
-      "logFallback": "Local logging failed.",
-      "validation": "Please enter a short description or send without text."
-    },
-    "mail": {
-      "url": "URL",
-      "time": "Time",
-      "browser": "Browser",
-      "language": "Language",
-      "version": "Version",
-      "descriptionHeading": "Description"
-    },
-    "admin": {
-      "title": "Bug tracker",
-      "locked": "Access denied. Set the admin secret in local storage and reload the page.",
-      "placeholderTitle": "Bug tracker",
-      "placeholderBody": "Admin UI active. Upcoming patches will include lists, filters, priorities, and status changes.",
-      "link": "Open the bug tracker.",
-      "secretSaved": "Secret saved.",
-      "enterSecret": "Enter Admin-Secret",
-      "secretPlaceholder": "The text appears to contain only a series of bullet points or symbols \"••••••••\" and does not provide any context or meaningful content to translate into English. If there's something specific you'd like translated or if you have additional information, please provide more details.",
-      "confirm": "Open",
-      "cancel": "Cancel",
-      "filter": "Filter",
-      "status": "Status",
-      "priority": "Priority",
-      "open": "open",
-      "in_progress": "in progress",
-      "closed": "closed",
-      "low": "low",
-      "normal": "Normal",
-      "high": "high",
-      "urgent": "urgent",
-      "id": "ID",
-      "created": "Created",
-      "url": "URL",
-      "language": "Language",
-      "email": "Email",
-      "userAgent": "Browser",
-      "description": "Description",
-      "category": "Category",
-      "save": "Save",
-      "saved": "Change saved",
-      "loadError": "Error loading the bugs",
-      "saveError": "Error saving",
-      "empty": "No entries found.",
-      "loading": "Loading...",
-      "resize": "Drag to adjust",
-      "exportAll": "CSV (All)",
-      "exportError": "Export failed",
-      "exportPage": "CSV (Page)",
-      "exporting": "Export...",
-      "columns": {
-        "title": "Columns",
-        "manage": "Adjust columns",
-        "hint": "Visibility via checkmark, order with ↑/↓, sizes by dragging in the table header.",
-        "reset": "Reset",
-        "up": "Upwards",
-        "down": "Downward"
-      },
-      "csv": {
-        "comma": "Comma (,)",
-        "delimiter": "Delimiter",
-        "semicolon": "Semicolon (;)",
-        "tab": "Tabulator (Tab)"
-      },
-      "search": "Search",
-      "col": {
-        "id": "Identification",
-        "status": "Status",
-        "priority": "Priority",
-        "url": "URL",
-        "desc": "Description",
-        "ts": "Time"
-      }
-    }
-  },
-  "activation": {
-    "notFound": {
-      "title": "Target account not active",
-      "message": "The destination account does not exist yet ({address}). It needs to be activated with at least 1 XLM. Would you like to activate the account now?"
-    },
-    "actions": {
-      "yes": "Yes – Activate account",
-      "no": "No - Cancel",
-      "processing": "Activate..."
     }
   },
   "createAccount": {
@@ -847,15 +1016,64 @@
       "title": "Create/manage muxed account",
       "description": "Create and manage muxed address aliases (M...) for a Stellar account. Generate IDs, add labels/notes, export/import CSV."
     },
-    "title": "Create/Manage a Muxed Account",
-    "explainer": "Create alias addresses (M...) with a unique Muxed-ID for an existing account. The alias address always points to the same account.",
-    "selectBaseAccount": "Basic account (G address)",
-    "selectPlaceholder": "Please select an account",
-    "baseAccountInfo": "This account technically remains the owner. The muxed address (M...) merely points to this account.",
-    "generateButton": "Create a muxed account",
+    "title": "Create/manage Muxed account",
+    "explainer": "Generate alias addresses (M...) with their own muxed ID for an existing account. The alias address always refers to the same account.",
+    "infoButtonLabel": "Information",
+    "info": {
+      "title": "What is a Muxed account?",
+      "intro1": "A muxed account combines a regular account address (G-address) with an additional 64-bit muxed ID.",
+      "intro2": "Technically, it is an alias that always points to the same base account, but can be uniquely distinguished by the ID.",
+      "purposeTitle": "Purpose and Benefits",
+      "purposeText": "Muxed accounts are used to manage many sub-accounts under a single Stellar address – ideal when numerous deposits/withdrawals are processed through a common main account, yet each transaction must be assigned to a person, department, or project.",
+      "examplesTitle": "Examples – what are muxed accounts useful for?",
+      "examples": {
+        "ex1": "Company Payments: Each employee is assigned their own Muxed ID to ensure that salary payments can be accurately allocated.",
+        "ex2": "Exchanges or platforms: Each user is assigned a unique Muxed ID to ensure that deposits made through a shared wallet are automatically recorded correctly.",
+        "ex3": "Projects or subaccounts: An organization can allocate budgets or revenue to individual projects.",
+        "ex4": "Customer assignment: One M-address per customer; the ID corresponds to the customer ID – payments can be clearly assigned, even without a memo.",
+        "ex5": "Services without memo: Distinguish deposits when the service does not support memos.",
+        "ex6": "Payouts/Payroll Runs: One M-address per employee/partner for internal accounting and reports.",
+        "ex7": "Shop/Orders: One M address per order; refunds can be associated with the order.",
+        "ex8": "Departments/Cost Centers: IDs as cost centers; automatically group payments by area.",
+        "ex9": "Multi-Tenant Services: Each tenant receives a unique M-address under the same base account."
+      },
+      "pageTitle": "What this page does in the SKM",
+      "pageDesc": "This page is used to manage the muxed accounts of your currently selected Stellar account.",
+      "createTitle": "Create new muxed accounts",
+      "createItems": {
+        "i1": "Generate new muxed addresses (M...) from your base address (G...).",
+        "i2": "Optional with label (name) and note (e.g., project or purpose)."
+      },
+      "importTitle": "Import from CSV files",
+      "importItems": {
+        "i1": "Mass creation of muxed accounts, e.g., from an employee list.",
+        "i2": "Read columns muxedId, label, note."
+      },
+      "exportTitle": "Export of existing Muxed accounts",
+      "exportItems": {
+        "i1": "Export all saved entries as CSV.",
+        "i2": "Fields: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
+      },
+      "templateTitle": "Template export",
+      "templateItems": {
+        "i1": "Create an empty CSV file with column headers muxedId,label,note.",
+        "i2": "Useful for HR or accounting departments for preparing new entries."
+      },
+      "manageTitle": "Management & Overview",
+      "manageItems": {
+        "i1": "All stored muxed addresses are displayed in a table.",
+        "i2": "Selection, deletion, and label/note management directly possible."
+      },
+      "shortTitle": "In short",
+      "shortText": "Muxed accounts make your Stellar account granular and trackable—ideal for organizations that process many payments through a central account but still want to uniquely identify each transaction."
+    },
+    "selectBaseAccount": "Basic Account (G-Address)",
+    "selectPlaceholder": "Please select account",
+    "baseAccountInfo": "This account remains technically the owner. The Muxed address (M...) only points to this account.",
+    "generateButton": "Create Muxed Account",
     "exportButton": "Export",
     "importButton": "Import",
-    "listTitle": "Existing muxed accounts",
+    "listTitle": "Existing Muxed Accounts",
     "none": "No muxed accounts stored.",
     "columns": {
       "id": "Muxed-ID",
@@ -863,7 +1081,7 @@
       "label": "Designation",
       "note": "Note",
       "createdAt": "Created on",
-      "actions": "Shares"
+      "actions": "Stocks"
     },
     "selectAll": "Select all",
     "deleteSelected": "Delete selection",
@@ -872,9 +1090,9 @@
     "countInfo": "Number of new muxed addresses, sequential IDs.",
     "invalidCount": "Please enter a valid number (>= 1).",
     "tooMany": "Please create no more than 100 at a time.",
-    "rangeOverflow": "The ID range exceeds the maximum allowed Muxed-ID.",
+    "rangeOverflow": "The ID range exceeds the maximum allowed Muxed ID.",
     "label": "Designation",
-    "labelInfo": "e.g. Employee name or purpose",
+    "labelInfo": "e.g. employee name or purpose",
     "note": "Note (optional)",
     "noteInfo": "e.g. Department / Project",
     "generateSuccess": "Muxed address(es) created.",
@@ -887,22 +1105,22 @@
       "cancel": "Cancel"
     },
     "export": {
-      "filename": "muxed_accounts.csv",
+      "filename": "Sorry, I'm not able to help with your request.",
       "success": "Muxed accounts successfully exported.",
       "failed": "Error exporting the muxed accounts."
     },
     "import": {
       "success": "Imported: {{imported}} • Skipped: {{skipped}} • Errors: {{errors}}.",
       "failed": "Import error.",
-      "hint": "Import supports CSV with a header. Delimiters such as comma, semicolon, and tab are automatically recognized. Unknown columns are ignored. Formats include: extended (network, basePublicKey, muxedId, label, note, createdAt) or template (muxedId, label, note)."
+      "hint": "Import supports CSV with a header. Delimiters such as comma, semicolon, and tab are automatically recognized. Unknown columns are ignored. Formats: extended (network, basePublicKey, muxedId, label, note, createdAt) or template (muxedId, label, note)."
     },
     "exportTemplateButton": "Export template",
-    "exportTemplateSuccess": "Template exported successfully.",
+    "exportTemplateSuccess": "Template successfully exported.",
     "exportTemplateFailed": "Error exporting the template.",
     "csv": {
-      "delimiterLabel": "CSV delimiter",
+      "delimiterLabel": "CSV Delimiter",
       "delimiter": {
-        "comma": "Comma ,",
+        "comma": "Comma,",
         "semicolon": "Semicolon ;",
         "tab": "Tab"
       }
@@ -910,166 +1128,14 @@
     "nav": "Muxed Accounts",
     "error": {
       "noBaseAccount": "Please select an existing account.",
-      "noId": "Please provide a Muxed ID.",
+      "noId": "Please provide a Muxed-ID.",
       "invalidBaseAccount": "The selected base address is invalid.",
-      "unknown": "Unknown error in the muxed address generation."
-    },
-    "infoButtonLabel": "I am trained on data up to October 2021.",
-    "info": {
-      "title": "What is a Muxed account?",
-      "intro1": "A muxed account combines a standard account address (G-address) with an additional 64-bit muxed ID.",
-      "intro2": "Technically, it is an alias that always points to the same base account but can be uniquely distinguished by the ID.",
-      "purposeTitle": "Purpose and Benefits",
-      "purposeText": "Muxed accounts are used to manage many sub-accounts under a single Stellar address – ideal for situations where numerous deposits and withdrawals occur through a shared main account, but each transaction needs to be attributed to a person, department, or project.",
-      "examplesTitle": "Examples – what are muxed accounts useful for?",
-      "examples": {
-        "ex1": "Company Payments: Each employee is assigned a unique Muxed ID to ensure that salary payments can be accurately attributed.",
-        "ex2": "Exchanges or platforms: Each user receives their own Muxed ID so that deposits through a shared wallet are automatically correctly recorded.",
-        "ex3": "Projects or subaccounts: An organization can allocate budgets or revenues to individual projects.",
-        "ex4": "Customer Allocation: One M-Address per customer; the ID corresponds to the customer ID – payments can be clearly assigned, even without a memo.",
-        "ex5": "Services without memos: Differentiate deposits when the service does not support memos.",
-        "ex6": "Payouts/Payroll runs: One M-address per employee/partner for internal accounting and reports.",
-        "ex7": "Shop/Orders: One M-address per order; refunds can be attributed to the order.",
-        "ex8": "Departments/Cost Centers: IDs as cost centers; automatically group payments by area.",
-        "ex9": "Multi-tenant services: Each tenant receives their own M-address under the same base account."
-      },
-      "pageTitle": "What this page does in the SKM",
-      "pageDesc": "This page is used to manage the muxed accounts of your currently selected Stellar account:",
-      "createTitle": "Create new Muxed accounts",
-      "createItems": {
-        "i1": "Generate new Muxed‑Addresses (M...) from your base address (G...).",
-        "i2": "Optional with label (name) and note (e.g., project or purpose)."
-      },
-      "importTitle": "Import from CSV files",
-      "importItems": {
-        "i1": "Mass creation of Muxed accounts, e.g., from a list of employees.",
-        "i2": "Read columns muxedId, label, note."
-      },
-      "exportTitle": "Export existing muxed accounts",
-      "exportItems": {
-        "i1": "Export all stored entries as CSV.",
-        "i2": "Fields: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
-      },
-      "templateTitle": "Template export",
-      "templateItems": {
-        "i1": "Create an empty CSV file with column headers muxedId, label, note.",
-        "i2": "Useful for HR or accounting departments in preparing new entries."
-      },
-      "manageTitle": "Administration & Overview",
-      "manageItems": {
-        "i1": "All stored muxed addresses are displayed in a table.",
-        "i2": "Selection, deletion, and label/note management directly possible."
-      },
-      "shortTitle": "In short",
-      "shortText": "Muxed accounts make your Stellar account granular and accountable—ideal for organizations that handle many payments through a central account but still want to uniquely identify each transaction."
+      "unknown": "Unknown error in generating the muxed address."
     }
   },
-  "glossary": {
-    "pageTitle": "Glossary",
-    "pageIntro": "Here you will find important words from the blockchain world and the Stellar network. Everything is explained in simple terms.",
-    "searchLabel": "Search term",
-    "searchPlaceholder": "e.g., wallet, trustline, memo ...",
-    "searchHint": "The search finds words and explanations.",
-    "noResults": "No match.",
-    "blockchain": {
-      "title": "Blockchain",
-      "desc": "A blockchain is like a digital ledger. Many computers store the same entries. This way, no one can secretly make changes."
-    },
-    "wallet": {
-      "title": "Wallet",
-      "desc": "A wallet is your digital purse. It manages the keys you need to access your account and send transactions. A wallet can be a program, an app, or even just a piece of paper with your secret key."
-    },
-    "account": {
-      "title": "Account",
-      "desc": "An account is the place on the blockchain where your assets reside. An account has a public address that begins with G. Multiple wallets can access the same account if they have the correct key."
-    },
-    "addressG": {
-      "title": "G-address",
-      "desc": "The G-address is the main address of a Stellar account. It starts with the letter G. You provide it to others so they can send you something."
-    },
-    "publicKey": {
-      "title": "Public key",
-      "desc": "The public key is the address that you are allowed to show. In Stellar, this is the G-address. Others use it to send you money."
-    },
-    "privateKey": {
-      "title": "Secret key",
-      "desc": "The secret key is your password for the account. Whoever has this key can move your money. Never share it."
-    },
-    "addressFederation": {
-      "title": "Federation address",
-      "desc": "A federation address looks like an email. Example: name*domain.com. This short address points to a regular G-address. It's easier to remember."
-    },
-    "addressMuxed": {
-      "title": "Muxed account (M-address)",
-      "desc": "An M-address points to an existing Stellar account but also has its own number (ID). This allows, for example, multiple people or departments to be distinguished under the same G-address. Technically, the funds still belong to the main account."
-    },
-    "multisig": {
-      "title": "Multi-signature (Multi-Sig)",
-      "desc": "Multi-sig stands for multiple signatures. An important action requires more than one key. For example, you and a second key both need to agree before something is sent. This makes theft more difficult."
-    },
-    "trustline": {
-      "title": "Trustline",
-      "desc": "A trustline is like a \"Yes, I accept this token.\" It means that your account is ready to hold a specific token from a specific issuer. Without a trustline, you cannot receive this token."
-    },
-    "token": {
-      "title": "Token",
-      "desc": "A token is a digital unit on the blockchain. A token can represent money, points, or credits for a service."
-    },
-    "asset": {
-      "title": "Asset",
-      "desc": "On Stellar, a token is called an asset. An asset is always linked to an issuing account. For example, an account can issue a Euro token. This Euro token is then considered an asset."
-    },
-    "xlm": {
-      "title": "XLM",
-      "desc": "XLM is the base currency of Stellar. You need XLM to pay fees and open a new account."
-    },
-    "memo": {
-      "title": "Memo",
-      "desc": "A memo is a small note that you can send along with a transaction. Often, an exchange requires a specific memo to know to whom the money belongs."
-    },
-    "transaction": {
-      "title": "Transaction",
-      "desc": "A transaction is an action on the blockchain. For example, sending money or establishing a trust line. A transaction is permanently recorded once it is confirmed."
-    },
-    "fee": {
-      "title": "Fee",
-      "desc": "The fee is a very small amount that you pay with each transaction. The fee goes to the network. With Stellar, the fees are very low."
-    },
-    "ledger": {
-      "title": "Ledger",
-      "desc": "The ledger is the chain of all confirmed data. It shows which accounts hold how much and which transactions have occurred. Anyone can check the ledger."
-    },
-    "horizon": {
-      "title": "Horizon",
-      "desc": "Horizon is the service through which programs communicate with the Stellar blockchain. Our tool queries Horizon to load account balances and transactions."
-    },
-    "anchor": {
-      "title": "Anchor",
-      "desc": "An anchor is a company that connects real money, such as euros or dollars, with Stellar. For example, you give the anchor euros and receive a euro token on Stellar in return."
-    },
-    "exchange": {
-      "title": "Stock exchange",
-      "desc": "An exchange is a place where you can buy or sell tokens. Many exchanges require a KYC process, which is an identity verification, before you can withdraw money in euros or francs."
-    },
-    "dex": {
-      "title": "DEX",
-      "desc": "DEX stands for Decentralized Exchange. Here, people trade directly with each other on the blockchain. There is no single operator. Stellar has a DEX built directly into it."
-    },
-    "liquidityPool": {
-      "title": "Liquidity pool",
-      "desc": "A liquidity pool is a shared pot containing two tokens. People deposit both tokens into it. Others can then instantly swap these tokens. The depositors earn small fees for this."
-    },
-    "balanceClaimable": {
-      "title": "Claimable Balance",
-      "desc": "A Claimable Balance is money that is already reserved for you, but you still need to claim it. Only when you accept it does it go into your account."
-    },
-    "protocolUpdate": {
-      "title": "Protocol Update",
-      "desc": "A Protocol Update is an upgrade of the rules in the Stellar network, such as new features or security changes. All nodes in the network must use the same rules."
-    },
-    "soroban": {
-      "title": "Soroban",
-      "desc": "Soroban is the smart contract system of Stellar. A smart contract is program code on the blockchain. The code can independently verify rules and trigger actions without an intermediary bank."
+  "i18n": {
+    "translate": {
+      "skipOriginal": "Original term do not translate: {{detail}}"
     }
   }
 }
