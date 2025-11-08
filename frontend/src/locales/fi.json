@@ -184,9 +184,9 @@
     "horizon": {
       "paymentsFetch": "Virhe Horizonin maksujen latauksessa"
     },
-    "loadTrustlines": "Trustlinesin lataaminen epäonnistui.",
+    "loadTrustlines": "Trustlinesia ei voitu ladata. Yritä uudelleen.",
     "loadTrustlinesFailed": "Trustlinesin lataus epäonnistui",
-    "loadTrustlinesNotFound": "Tili valitussa verkostossa ei löydy. Tarkista Testnet/Public otsikosta.",
+    "loadTrustlinesNotFound": "Valittuun verkkoon liittyvää tiliä ei löydy.",
     "accountNotFoundInNetwork": "Ei löydy '{{net}}'!",
     "op_invalid_limit": "Trustlinea ei voi poistaa. Sillä saattaa olla vielä saldoa tai avoimia velvoitteita.",
     "query": {
@@ -222,7 +222,8 @@
       "memoInvalid": "Virheellinen muistio",
       "paymentsFetch": "Virhe maksujen latauksessa",
       "serverInvalid": "Virheellinen palvelin"
-    }
+    },
+    "rateLimited": "Horizon-rajoitus ylitetty. Odota muutama sekunti ja yritä uudelleen."
   },
   "exportCsv": {
     "failed": "CSV-vienti epäonnistui"
@@ -1002,6 +1003,10 @@
       "none": "Liittovaltion osoitetta ei määritelty",
       "account": "Tili",
       "accountLabel": "Tarra"
+    },
+    "flag": {
+      "compromised": "Varoitus: Tämä vastaanottaja on merkitty luottamuslistallasi vaarantuneeksi.",
+      "deactivated": "Huomautus: Tämä vastaanottaja on merkitty luettelossasi pois käytöstä olevaksi."
     }
   },
   "createAccount": {

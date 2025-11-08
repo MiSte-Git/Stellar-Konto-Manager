@@ -184,9 +184,9 @@
     "horizon": {
       "paymentsFetch": "Pogreška pri učitavanju uplata iz Horizon-a"
     },
-    "loadTrustlines": "Učitavanje Trustlines nije uspjelo",
+    "loadTrustlines": "Veze povjerenja se nisu mogle učitati. Molimo pokušajte ponovno.",
     "loadTrustlinesFailed": "Učitavanje Trustlinesa nije uspjelo.",
-    "loadTrustlinesNotFound": "Račun u odabranoj mreži nije pronađen. Provjeri Testnet/Public u zaglavlju.",
+    "loadTrustlinesNotFound": "Račun u odabranoj mreži nije pronađen.",
     "accountNotFoundInNetwork": "U '{{net}}' nije pronađeno!",
     "op_invalid_limit": "Trustline se ne može izbrisati. Možda još uvijek ima saldo ili nepodmirene obveze.",
     "query": {
@@ -222,7 +222,8 @@
       "memoInvalid": "Nevažeći dopis",
       "paymentsFetch": "Pogreška pri učitavanju plaćanja",
       "serverInvalid": "Nevažeći server"
-    }
+    },
+    "rateLimited": "Prekoračeno ograničenje brzine na Horizonu. Molimo pričekajte nekoliko sekundi i pokušajte ponovo."
   },
   "exportCsv": {
     "failed": "Neuspjeh izvoza CSV-a"
@@ -1002,6 +1003,10 @@
       "none": "Nema definisane adrese federacije",
       "account": "Račun",
       "accountLabel": "Oznaka"
+    },
+    "flag": {
+      "compromised": "Upozorenje: Ovaj primatelj je na vašem popisu povjerenja označen kao kompromitiran.",
+      "deactivated": "Napomena: Ovaj primatelj je na vašem popisu pouzdanih označen kao deaktiviran."
     }
   },
   "createAccount": {
