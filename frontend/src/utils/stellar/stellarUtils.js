@@ -11,6 +11,90 @@ import {
 
 // 🌐 Horizon-Serverinstanz für das aktuelle Netzwerk (DEV: Proxy verwenden)
 const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
+
+// Simple retry helper for Horizon 429 rate limits
+function sleep(ms) { return new Promise((res) => setTimeout(res, ms)); }
+async function withHorizonRetry(fn, { retries = 3, baseDelay = 1200, maxDelay = 30000 } = {}) {
+  let attempt = 0;
+  while (true) {
+    try {
+      return await fn();
+    } catch (e) {
+      const status = e?.response?.status || e?.status;
+      if (status === 429 && attempt < retries) {
+        // Respect Retry-After / X-RateLimit-Reset style headers if present
+        let headerDelayMs = 0;
+        try {
+          const h = e?.response?.headers;
+          const getHeader = (name) => {
+            if (!h) return null;
+            if (typeof h.get === 'function') return h.get(name);
+            const key = Object.keys(h).find(k => k.toLowerCase() === name.toLowerCase());
+            return key ? h[key] : null;
+          };
+          const ra = parseFloat(getHeader('retry-after') || getHeader('Retry-After') || '0');
+          if (!Number.isNaN(ra) && ra > 0) {
+            headerDelayMs = Math.min(maxDelay, Math.round(ra * 1000));
+          } else {
+            // Some proxies expose x-ratelimit-reset as seconds until reset or as epoch seconds
+            const resetValRaw = getHeader('x-ratelimit-reset') || getHeader('X-RateLimit-Reset');
+            if (resetValRaw) {
+              const resetVal = parseFloat(resetValRaw);
+              if (!Number.isNaN(resetVal) && resetVal > 0) {
+                // Heuristic: treat small numbers as seconds-until-reset; large as epoch seconds
+                if (resetVal < 1e6) {
+                  headerDelayMs = Math.min(maxDelay, Math.round(resetVal * 1000));
+                } else {
+                  const nowSec = Date.now() / 1000;
+                  const delta = Math.max(0, resetVal - nowSec);
+                  headerDelayMs = Math.min(maxDelay, Math.round(delta * 1000));
+                }
+              }
+            }
+          }
+        } catch { /* noop */ }
+
+        const backoffMs = Math.min(maxDelay, Math.round(baseDelay * Math.pow(2, attempt)));
+        const jitter = Math.floor(Math.random() * 400);
+        const delay = Math.max(backoffMs, headerDelayMs) + jitter;
+        try { console.warn('[STM] Horizon 429 – retrying in', delay, 'ms'); } catch { /* noop */ }
+        await sleep(delay);
+        attempt++;
+        continue;
+      }
+      throw e;
+    }
+  }
+}
+// In-memory light cache + de-dup for loadAccount and feeStats
+const _accountCache = new Map(); // key => { ts, data }
+const _inflightAccount = new Map(); // key => Promise
+let _feeCache = { ts: 0, mode: 100 };
+
+async function loadAccountCached(server, publicKey, { ttlMs = 15000 } = {}) {
+  const baseUrl = (server?.serverURL && String(server.serverURL)) || 'unknown';
+  const key = `${baseUrl}::${publicKey}`;
+  const now = Date.now();
+  const cached = _accountCache.get(key);
+  if (cached && now - cached.ts < ttlMs) {
+    return cached.data;
+  }
+  if (_inflightAccount.has(key)) {
+    return _inflightAccount.get(key);
+  }
+  const p = (async () => {
+    try {
+      const data = await withHorizonRetry(() => server.loadAccount(publicKey), { retries: 5, baseDelay: 1500 });
+      _accountCache.set(key, { ts: Date.now(), data });
+      return data;
+    } finally {
+      _inflightAccount.delete(key);
+    }
+  })();
+  _inflightAccount.set(key, p);
+  return p;
+}
+
 function resolveHorizonUrl(url) {
   // Global/Dev-Override: Hauptschalter über LocalStorage (STM_NETWORK) oder explizite URL (STM_HORIZON_URL)
   let base = url || HORIZON_URL || 'https://horizon.stellar.org';
@@ -75,9 +159,10 @@ export function getHorizonServer(url = HORIZON_URL) {
  * @throws {Error} - Wenn keine account_id gefunden wird
  */
 export async function resolveFederationAddress(federationAddress) {
-  const federationServer = new FederationServer('https://federation.stellar.org');
-  const response = await federationServer.resolve(federationAddress);
-  if (!response.account_id) throw new Error('error.noFederationId');
+  // Use domain discovery per SEP-2 via stellar.toml → FEDERATION_SERVER.
+  // The static FederationServer.resolve() performs discovery for the provided address domain.
+  const response = await FederationServer.resolve(federationAddress);
+  if (!response?.account_id) throw new Error('error.noFederationId');
   return response.account_id;
 }
 
@@ -87,27 +172,39 @@ export async function resolveFederationAddress(federationAddress) {
  * @returns {Promise<Array>} - Liste der Trustlines mit Asset-Infos
  * @throws {Error} - Wenn ungültig oder nicht abrufbar
  */
-export async function loadTrustlines(publicKey, serverOverride) {
+export async function loadTrustlines(publicKey, serverOverride, options = {}) {
+  const { includeOps = true } = options;
   if (!StrKey.isValidEd25519PublicKey(publicKey)) {
     throw new Error('resolveOrValidatePublicKey.invalid');
   }
 
   try {
     const server = serverOverride || getHorizonServer();
-    const account = await server.loadAccount(publicKey);
+    // Apply gentle retry/backoff for rate limits
+    const account = await loadAccountCached(server, publicKey, { ttlMs: 10000 });
     const balances = account.balances.filter(b => b.asset_type !== 'native');
 
-    // Hole zusätzlich die Change-Trust-Operationen für createdAt
-    const operations = await server
-      .operations()
-      .forAccount(publicKey)
-      .order('desc')
-      .limit(200)
-      .call();
-
-    const changeTrustOps = operations.records.filter(
-      op => op.type === 'change_trust' && op.trustor === publicKey
-    );
+    // Optional: Hole zusätzlich die Change-Trust-Operationen für createdAt (mit Retry, kleinere Page) – best effort
+    let changeTrustOps = [];
+    if (includeOps) {
+      try {
+        const operations = await withHorizonRetry(
+          () => server
+            .operations()
+            .forAccount(publicKey)
+            .order('desc')
+            .limit(100)
+            .call(),
+          { retries: 3, baseDelay: 1200 }
+        );
+        changeTrustOps = operations.records.filter(
+          op => op.type === 'change_trust' && op.trustor === publicKey
+        );
+      } catch (e) {
+        try { console.warn('[STM] change_trust ops fetch failed; proceeding without createdAt'); } catch { /* noop */ }
+        changeTrustOps = [];
+      }
+    }
 
     return balances.map(asset => {
       const changeOp = changeTrustOps.find(op =>
@@ -123,7 +220,7 @@ export async function loadTrustlines(publicKey, serverOverride) {
         buyingLiabilities: asset.buying_liabilities,
         sellingLiabilities: asset.selling_liabilities,
         isAuthorized: asset.is_authorized,
-        createdAt: changeOp?.created_at || 'unknown',
+        createdAt: includeOps ? (changeOp?.created_at || 'unknown') : undefined,
       };
     });
   } catch (error) {
@@ -131,6 +228,9 @@ export async function loadTrustlines(publicKey, serverOverride) {
     const status = error?.response?.status || error?.status;
     if (status === 404) {
       throw new Error('error.loadTrustlinesNotFound');
+    }
+    if (status === 429) {
+      throw new Error('error.rateLimited');
     }
     throw new Error('error.loadTrustlines');
   }
@@ -312,15 +412,58 @@ export function validateSecretKey(secret) {
  * @returns {Promise<string>} - Basis-Fee als String (z.B. "100")
  */
 async function getBaseFee() {
+  const now = Date.now();
+  if (now - _feeCache.ts < 60000) {
+    return Number(_feeCache.mode || 100);
+  }
   const server = getHorizonServer();
-  const feeStats = await server.feeStats();
-  return Number(feeStats?.fee_charged?.mode || 100);
+  try {
+    const feeStats = await withHorizonRetry(() => server.feeStats(), { retries: 3, baseDelay: 1000 });
+    const mode = Number(feeStats?.fee_charged?.mode || 100);
+    _feeCache = { ts: Date.now(), mode };
+    return mode;
+  } catch {
+    return Number(_feeCache.mode || 100);
+  }
+}
+
+/**
+ * Lädt eine kompakte Konto-Zusammenfassung für Header/Status-Anzeige.
+ * Nutzt nur einen Account-Call und kein Operations-Listing.
+ */
+export async function getAccountSummary(publicKey, serverOverride) {
+  if (!StrKey.isValidEd25519PublicKey(publicKey)) {
+    throw new Error('resolveOrValidatePublicKey.invalid');
+  }
+  try {
+    const server = serverOverride || getHorizonServer();
+    const account = await loadAccountCached(server, publicKey, { ttlMs: 15000 });
+    const native = (account?.balances || []).find(b => b.asset_type === 'native');
+    const nonNative = (account?.balances || []).filter(b => b.asset_type !== 'native');
+    return {
+      xlmBalance: native ? native.balance : null,
+      trustlineCount: nonNative.length,
+      sequence: account.sequence,
+      thresholds: account.thresholds,
+      flags: account.flags,
+    };
+  } catch (error) {
+    const status = error?.response?.status || error?.status;
+    if (status === 404) {
+      throw new Error('error.loadTrustlinesNotFound');
+    }
+    if (status === 429) {
+      throw new Error('error.rateLimited');
+    }
+    throw new Error('error.loadTrustlines');
+  }
 }
 
 // Lädt Trustlines für eine gegebene Federation-Adresse oder Public Key
 // und gibt sowohl die aufgelöste Adresse als auch die Trustlines zurück.
 // Fehler werden als übersetzbare Error-Objekte zurückgegeben.
-export async function handleSourceSubmit(sourceInput, t, networkOverride /* 'PUBLIC' | 'TESTNET' */) {
+export async function handleSourceSubmit(sourceInput, t, networkOverride /* 'PUBLIC' | 'TESTNET' */, options = {}) {
+  const { includeTrustlines = true } = options;
   let publicKey = sourceInput;
 
   try {
@@ -337,11 +480,25 @@ export async function handleSourceSubmit(sourceInput, t, networkOverride /* 'PUB
       : networkOverride === 'PUBLIC'
         ? getHorizonServer('https://horizon.stellar.org')
         : undefined;
+
+    if (!includeTrustlines) {
+      // Nur leichte Zusammenfassung für Header laden (kein ops-Listing)
+      const summary = await getAccountSummary(publicKey, server);
+      return { publicKey, summary };
+    }
+
     const trustlines = await loadTrustlines(publicKey, server);
     return { publicKey, trustlines };
   } catch (loadError) {
     // Fehler beim Laden der Trustlines (z.B. Netzwerkproblem)
-    throw new Error(t(loadError.message || 'loadTrustlines.failed'));
+    const code = String(loadError?.message || '');
+    if (code === 'error.rateLimited') {
+      throw new Error(t('error.rateLimited', 'Horizon rate limit exceeded. Please wait a few seconds and try again.'));
+    }
+    if (code === 'error.loadTrustlinesNotFound') {
+      throw new Error(t('error.loadTrustlinesNotFound', 'Account not found on this network.'));
+    }
+    throw new Error(t('error.loadTrustlines', 'Failed to load trustlines. Please try again.'));
   }
 }
 /**

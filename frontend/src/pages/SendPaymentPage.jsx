@@ -522,6 +522,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const effectiveRecipientInfo = walletInfoFromInput || walletInfoFromAccount;
   const recipientLabel = effectiveRecipientInfo?.label || '';
   const savedRecipientFederation = effectiveRecipientInfo?.federation || '';
+  const recipientCompromised = !!effectiveRecipientInfo?.compromised;
+  const recipientDeactivated = !!effectiveRecipientInfo?.deactivated;
   const recipientFederationDisplay = resolvedFederation || savedRecipientFederation || (trimmedRecipient && trimmedRecipient.includes('*') ? trimmedRecipient : '');
  
   // Histories for inputs
@@ -629,6 +631,17 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   <div>
                     <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
                     <span>{recipientLabel}</span>
+                  </div>
+                )}
+
+                {recipientCompromised && (
+                  <div className="text-red-600 dark:text-red-400 font-semibold">
+                    {t('wallet.flag.compromised', 'Warning: This recipient is marked as compromised in your trusted list.')}
+                  </div>
+                )}
+                {recipientDeactivated && (
+                  <div className="text-amber-600 dark:text-amber-400 font-medium">
+                    {t('wallet.flag.deactivated', 'Note: This recipient is marked as deactivated in your trusted list.')}
                   </div>
                 )}
               </div>
@@ -785,6 +798,16 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 </span>
               </div>
               <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.memo')}:</span> {memoType==='none' || !memoVal ? '-' : memoVal}</div>
+              {recipientCompromised && (
+                <div className="text-red-600 dark:text-red-400">
+                  {t('wallet.flag.compromised', 'Warning: This recipient is marked as compromised in your trusted list.')}
+                </div>
+              )}
+              {recipientDeactivated && (
+                <div className="text-amber-600 dark:text-amber-400">
+                  {t('wallet.flag.deactivated', 'Note: This recipient is marked as deactivated in your trusted list.')}
+                </div>
+              )}
             </div>
 
             {preflight.loading && (

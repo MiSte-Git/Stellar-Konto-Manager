@@ -184,9 +184,9 @@
     "horizon": {
       "paymentsFetch": "Errore durante il caricamento dei pagamenti da Horizon"
     },
-    "loadTrustlines": "Caricamento delle linee di fiducia non riuscito.",
+    "loadTrustlines": "Impossibile caricare le linee di credito. Si prega di riprovare.",
     "loadTrustlinesFailed": "Caricamento delle trustline non riuscito",
-    "loadTrustlinesNotFound": "Account nel network selezionato non trovato. Controlla Testnet/Pubblico nell'intestazione.",
+    "loadTrustlinesNotFound": "Account nel network selezionato non trovato.",
     "accountNotFoundInNetwork": "Nel '{{net}}' non trovato!",
     "op_invalid_limit": "La linea di fiducia non può essere eliminata. Potrebbe avere ancora saldo o obblighi in sospeso.",
     "query": {
@@ -222,7 +222,8 @@
       "memoInvalid": "Memo non valido",
       "paymentsFetch": "Errore durante il caricamento dei pagamenti",
       "serverInvalid": "Server non valido"
-    }
+    },
+    "rateLimited": "Limite di velocità dell'orizzonte superato. Si prega di attendere qualche secondo e riprovare."
   },
   "exportCsv": {
     "failed": "Esportazione CSV non riuscita"
@@ -1002,6 +1003,10 @@
       "none": "Nessun indirizzo di federazione definito",
       "account": "Account",
       "accountLabel": "Etichetta"
+    },
+    "flag": {
+      "compromised": "Avviso: Questo destinatario è contrassegnato come compromesso nell'elenco di attendibilità.",
+      "deactivated": "Nota: Questo destinatario è contrassegnato come disabilitato nella tua lista di fiducia."
     }
   },
   "createAccount": {
