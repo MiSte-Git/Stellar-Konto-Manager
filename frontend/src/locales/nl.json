@@ -184,9 +184,9 @@
     "horizon": {
       "paymentsFetch": "Fout bij het laden van de betalingen van Horizon"
     },
-    "loadTrustlines": "Laden van de vertrouwenslijnen mislukt",
+    "loadTrustlines": "Trustlines konden niet worden geladen. Probeer het alstublieft opnieuw.",
     "loadTrustlinesFailed": "Laden van de Trustlines mislukt",
-    "loadTrustlinesNotFound": "Account in het geselecteerde netwerk niet gevonden. Controleer Testnet/Public in de header.",
+    "loadTrustlinesNotFound": "Account in het geselecteerde netwerk niet gevonden.",
     "accountNotFoundInNetwork": "In '{{net}}' niet gevonden!",
     "op_invalid_limit": "Trustline kan niet worden verwijderd. Het kan nog saldo of openstaande verplichtingen hebben.",
     "query": {
@@ -222,7 +222,8 @@
       "memoInvalid": "Ongeldig memo",
       "paymentsFetch": "Fout bij het laden van de betalingen",
       "serverInvalid": "Ongeldige server"
-    }
+    },
+    "rateLimited": "Horizon snelheidslimiet overschreden. Wacht alstublieft een paar seconden en probeer het opnieuw."
   },
   "exportCsv": {
     "failed": "CSV-export mislukt"
@@ -1002,6 +1003,10 @@
       "none": "Geen federatieadres gedefinieerd",
       "account": "Account",
       "accountLabel": "Label"
+    },
+    "flag": {
+      "compromised": "Waarschuwing: Deze ontvanger is als gecompromitteerd gemarkeerd in uw vertrouwdheidslijst.",
+      "deactivated": "Opmerking: Deze ontvanger is als gedeactiveerd gemarkeerd in uw vertrouwenslijst."
     }
   },
   "createAccount": {

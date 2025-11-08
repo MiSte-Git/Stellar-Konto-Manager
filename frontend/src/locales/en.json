@@ -184,9 +184,9 @@
     "horizon": {
       "paymentsFetch": "Error loading payments from Horizon"
     },
-    "loadTrustlines": "Loading of trustlines failed.",
+    "loadTrustlines": "Trustlines could not be loaded. Please try again.",
     "loadTrustlinesFailed": "Failed to load trustlines",
-    "loadTrustlinesNotFound": "Account not found in the selected network. Check Testnet/Public in the header.",
+    "loadTrustlinesNotFound": "Account not found on the selected network.",
     "accountNotFoundInNetwork": "\"Not found in '{{net}}'!\"",
     "op_invalid_limit": "Trustline cannot be deleted. It may still have a balance or outstanding obligations.",
     "query": {
@@ -222,7 +222,8 @@
       "memoInvalid": "Invalid memo",
       "paymentsFetch": "Error loading payments",
       "serverInvalid": "Invalid server"
-    }
+    },
+    "rateLimited": "Horizon rate limit exceeded. Please wait a few seconds and try again."
   },
   "exportCsv": {
     "failed": "CSV export failed"
@@ -1002,6 +1003,10 @@
       "none": "No federation address defined",
       "account": "Account",
       "accountLabel": "Label"
+    },
+    "flag": {
+      "compromised": "Warning: This recipient is marked as compromised in your trust list.",
+      "deactivated": "Note: This recipient is marked as disabled in your trust list."
     }
   },
   "createAccount": {

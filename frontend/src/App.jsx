@@ -41,12 +41,13 @@ function App() {
   // Always register hooks in the same order
   const [devTestnet, setDevTestnet] = React.useState(false);
   React.useEffect(() => {
-    // Default: PUBLIC on first load (override any stale state)
-    try { if (typeof window !== 'undefined' && window.localStorage) { window.localStorage.setItem('STM_NETWORK', 'PUBLIC'); window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); } } catch { /* noop */ }
+    // Only listen for changes; default is set before mount in main.jsx
     const handler = (e) => {
       try { const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC'); setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
     };
     window.addEventListener('stm-network-changed', handler);
+    // Initialize state based on current storage without emitting a new event
+    try { const v = window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC'; setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
     return () => window.removeEventListener('stm-network-changed', handler);
   }, []);
 

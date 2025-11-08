@@ -7,7 +7,8 @@ import { BACKEND_URL } from './config';
 import { 
   loadTrustlines, 
   handleSourceSubmit as submitSourceInput,
-  getHorizonServer
+  getHorizonServer,
+  getAccountSummary
  } from './utils/stellar/stellarUtils.js';
 import { useTrustedWallets } from './utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
@@ -72,11 +73,15 @@ if (typeof window !== 'undefined') {
   window.stmSelectAccount = (address, opts) => emitAccountSelected(address, { forceReload: !!(opts && opts.force) });
 }
 
-// Ensure default network is PUBLIC on each reload before any components mount
+// Ensure default network is PUBLIC on first load only; avoid re-emitting during remounts in dev
 try {
   if (typeof window !== 'undefined' && window.localStorage) {
-    window.localStorage.setItem('STM_NETWORK', 'PUBLIC');
-    window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' }));
+    const alreadyInit = window.localStorage.getItem('STM_NET_INIT') === '1';
+    if (!alreadyInit) {
+      window.localStorage.setItem('STM_NETWORK', 'PUBLIC');
+      window.localStorage.setItem('STM_NET_INIT', '1');
+      window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' }));
+    }
   }
 } catch { /* noop */ }
 
@@ -97,6 +102,7 @@ function Main() {
   //console.log('[DEBUG] Aktive Horizon URL:', HORIZON_URL);
   // Innerhalb der Main-Funktion (nach useState-Aufrufen):
   const [trustlines, setTrustlines] = useState([]);
+  const [trustlinesOwner, setTrustlinesOwner] = useState('');
   const [selectedTrustlines, setSelectedTrustlines] = useState([]);
   const [filters, setFilters] = useState({ assetCode: '', assetIssuer: '', createdAt: '', zeroOnly: false });
   const [sortColumn, setSortColumn] = useState('assetCode');
@@ -140,12 +146,14 @@ function Main() {
     ? trimmedHeaderInput
     : (headerWalletInfo?.federation || '');
   const headerLabel = headerWalletInfo?.label || '';
+  const headerCompromised = !!headerWalletInfo?.compromised;
+  const headerDeactivated = !!headerWalletInfo?.deactivated;
   useEffect(() => {
-  // Force default to PUBLIC at app start
-  if (typeof window !== 'undefined' && window.localStorage) {
-  window.localStorage.setItem('STM_NETWORK', 'PUBLIC');
-  window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' }));
-  }
+    // Do not force network again here; App.jsx listens and shows banner
+    try {
+      const v = window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC';
+      setDevTestnet(v === 'TESTNET');
+    } catch { /* noop */ }
   }, []);
 
    // Track if a session secret exists for current source key
@@ -272,9 +280,8 @@ function Main() {
       const server = net === 'TESTNET'
         ? getHorizonServer('https://horizon-testnet.stellar.org')
         : getHorizonServer('https://horizon.stellar.org');
-      const account = await server.loadAccount(pk);
-      const native = (account?.balances || []).find((b) => b.asset_type === 'native');
-      setXlmBalance(native ? native.balance : null);
+      const summary = await getAccountSummary(pk, server);
+      setXlmBalance(summary?.xlmBalance ?? null);
     } catch (e) {
       // Unfunded or error → null
       setXlmBalance(null);
@@ -289,14 +296,15 @@ function Main() {
     setIsLoading(true);
     setError('');
     try {
-      const { publicKey, trustlines } = await submitSourceInput(input, t, devTestnet ? 'TESTNET' : 'PUBLIC');
+      // Phase 1: nur leichte Konto-Zusammenfassung (verhindert Burst beim bloßen Laden)
+      const { publicKey, summary } = await submitSourceInput(input, t, devTestnet ? 'TESTNET' : 'PUBLIC', { includeTrustlines: false });
       setSourcePublicKey(publicKey);
-      if (Array.isArray(trustlines)) setTrustlines(trustlines);
+      // XLM direkt aus summary
+      setXlmBalance(summary?.xlmBalance ?? null);
       addRecent(publicKey);
       setNotFound(false);
       setRefreshToken(prev => prev + 1);
-      // Fetch XLM balance for this account
-      fetchXlmBalanceFor(publicKey, devTestnet ? 'TESTNET' : 'PUBLIC');
+      // Trustlines werden erst geladen, wenn der Nutzer „Alle anzeigen“ oder andere Funktionen öffnet
     } catch (err) {
       const msg = String(err?.message || '');
       setError(msg);
@@ -313,12 +321,12 @@ function Main() {
     setError('');
     try {
       const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
-      const { publicKey, trustlines } = await submitSourceInput(sourcePublicKey, t, net);
+      // Nur leichte Zusammenfassung nach Netzwechsel neu laden
+      const { publicKey, summary } = await submitSourceInput(sourcePublicKey, t, net, { includeTrustlines: false });
       setSourcePublicKey(publicKey);
-      if (Array.isArray(trustlines)) setTrustlines(trustlines);
+      setXlmBalance(summary?.xlmBalance ?? null);
       setNotFound(false);
       setRefreshToken(prev => prev + 1);
-      fetchXlmBalanceFor(publicKey, net);
     } catch (err) {
       const msg = String(err?.message || '');
       setError(msg);
@@ -339,14 +347,16 @@ function Main() {
     const handler = (e) => {
       const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
       setDevTestnet(v === 'TESTNET');
-      // Clear info banner on network change
       setInfoMessage('');
-      // Refresh XLM balance for current account on network change
       try { if (sourcePublicKey) fetchXlmBalanceFor(sourcePublicKey, v === 'TESTNET' ? 'TESTNET' : 'PUBLIC'); } catch { /* noop */ }
+      // Invalidate trustlines cache owner on network change
+      setTrustlinesOwner('');
     };
     window.addEventListener('stm-network-changed', handler);
+    // Initialize once from storage without emitting
+    try { const v = window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC'; setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
     return () => window.removeEventListener('stm-network-changed', handler);
-  }, []);
+  }, [sourcePublicKey]);
 
   // Listen for settings open requests from the language bar
   useEffect(() => {
@@ -355,9 +365,36 @@ function Main() {
     return () => window.removeEventListener('stm:openSettings', openSettings);
   }, []);
 
+  // Lazy-load trustlines when needed by specific views
+  useEffect(() => {
+    const needsTrustlines = ['listAll','compare','deleteAll','deleteByIssuer'].includes(menuSelection);
+    if (!needsTrustlines) return;
+    if (!sourcePublicKey) return;
+    if (trustlinesOwner === sourcePublicKey && trustlines.length >= 0) {
+      // Already loaded for this account (including empty list)
+      return;
+    }
+    setIsLoading(true);
+    (async () => {
+      try {
+        const server = devTestnet
+          ? getHorizonServer('https://horizon-testnet.stellar.org')
+          : getHorizonServer('https://horizon.stellar.org');
+        const tls = await loadTrustlines(sourcePublicKey, server);
+        setTrustlines(tls);
+        setTrustlinesOwner(sourcePublicKey);
+      } catch (e) {
+        setError(String(e?.message || ''));
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [menuSelection, sourcePublicKey, devTestnet]);
+
   function unloadActiveWallet() {
     setSourcePublicKey('');
     setTrustlines([]);
+    setTrustlinesOwner('');
     setSelectedTrustlines([]);
     setResults([]);
     setDestinationPublicKey('');
@@ -536,6 +573,18 @@ function Main() {
                     <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
                     {headerLabel ? headerLabel : <span className="text-gray-400">—</span>}
                   </div>
+
+                  {headerCompromised && (
+                    <div className="text-red-600 dark:text-red-400 font-semibold">
+                      {t('wallet.flag.compromised', 'Warning: This wallet is marked as compromised in your trusted list.')}
+                    </div>
+                  )}
+
+                  {headerDeactivated && (
+                    <div className="text-amber-600 dark:text-amber-400 font-medium">
+                      {t('wallet.flag.deactivated', 'Note: This wallet is marked as deactivated in your trusted list.')}
+                    </div>
+                  )}
                 </div>
 
                 {/* Rechts: XLM-Kontostand als Label (rechtsbündig), ohne Überlagerung auf Mobil */}
