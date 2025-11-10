@@ -8,18 +8,18 @@ function MainMenu({ onSelect }) {
   const buttons = [
     // Gruppe 1
     { label: t('multisigCreate.menu'), value: 'multisigCreate', title: t('multisigCreate.menuHint'), group: 1 },
-    { label: t('menu.sendPayment'), value: 'sendPayment', group: 1 },
-    { label: t('menu.balance'), value: 'balance', group: 1 },
+    { label: t('menu:sendPayment', 'Zahlung senden'), value: 'sendPayment', group: 1 },
+    { label: t('menu:balance', 'Kontoinformation anzeigen'), value: 'balance', group: 1 },
 
     // Gruppe 2
     { label: t('token.purchases'), value: 'payments', group: 2 },
-    { label: t('menu.xlmByMemo'), value: 'xlmByMemo', group: 2 },
+    { label: t('menu:xlmByMemo', 'XLM-Betrag nach Memo/Token filtern'), value: 'xlmByMemo', group: 2 },
     // Lernseite als eigener Menüpunkt (öffnet Overlay-Route /learn)
     { label: t('learn:menu', 'Learn'), value: 'learn', group: 2, title: t('learn:menuHint', 'Open learning page') },
 
     // Gruppe 3
     { label: t('multisigEdit.menu'), value: 'multisigEdit', title: t('multisigEdit.menuHint'), group: 3 },
-    { label: t('menu.muxed', 'Muxed-Adressen verwalten'), value: 'muxed', group: 3 },
+    { label: t('menu:muxed', 'Muxed-Adressen verwalten'), value: 'muxed', group: 3 },
 
     // Gruppe 4
     { label: t('trustline.all'), value: 'listAll', group: 4 },
