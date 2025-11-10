@@ -9,7 +9,8 @@
     "build": "vite build",
     "open": "xdg-open http://localhost:5173",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "i18n:ack": "BASE_REF=origin/main node ../scripts/i18n_ack_update.mjs"
   },
   "dependencies": {
     "@stellar/stellar-sdk": "^13.3.0",
