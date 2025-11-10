@@ -60,7 +60,9 @@ def translate_text_openai(text: str, target_lang: str, api_key: str) -> str:
                 {"role": "user", "content": text},
             ],
         )
-        translated = response.choices[0].message.content.strip()
+        msg = response.choices[0].message if response and response.choices else None
+        content = (msg.content if msg and hasattr(msg, "content") and isinstance(msg.content, str) else "")
+        translated = content.strip()
         return translated if translated else text
     except Exception as e:
         print(f"❌ Fehler bei OpenAI-Übersetzung nach {target_lang}: {e}")
@@ -76,7 +78,9 @@ def translate_text_deepl(text: str, target_lang: str, api_key: str, api_url: str
     import urllib.request
     import urllib.error
 
-    url = (api_url or os.getenv("DEEPL_API_URL") or "https://api-free.deepl.com/v2/translate").strip()
+    raw_url = api_url if api_url is not None else os.getenv("DEEPL_API_URL")
+    url: str = (raw_url or "https://api-free.deepl.com/v2/translate")
+    url = url.strip()
     params = {
         "auth_key": api_key,
         "text": text,
@@ -400,6 +404,11 @@ def main():
         action="append",
         help="Erzwingt Neuübersetzung für bestimmte Schlüssel (dot-Pfade, mehrfach nutzbar oder komma-separiert)",
     )
+    parser.add_argument(
+        "--namespaced-only",
+        action="store_true",
+        help="Verarbeite ausschließlich Namespaces aus de/* und schreibe in <lang>/<ns>.json. Lässt <lang>.json unangetastet.",
+    )
     # Wenn ohne Argumente aufgerufen: vollständige Hilfe zeigen und beenden
     if len(sys.argv) == 1:
         parser.print_help()
@@ -426,6 +435,58 @@ def main():
             print("❌ DEEPL_API_KEY/DEEPL_AUTH_KEY nicht gesetzt. Abbruch.")
             return
         print(f"ℹ️ DeepL endpoint: {(os.getenv('DEEPL_API_URL') or 'https://api-free.deepl.com/v2/translate')}")
+
+    # Namespaced-only Modus: de/* -> <lang>/<ns>.json
+    if args.namespaced_only:
+        de_ns_dir = os.path.join(base_path, BASE_LANG)
+        if not os.path.isdir(de_ns_dir):
+            print(f"❌ Namespace-Verzeichnis fehlt: {de_ns_dir}")
+            return
+
+        # API-Keys aus Umgebungsvariablen lesen (bereits oben geprüft, hier nur Variablen verwenden)
+        openai_key = os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_KEY")
+        deepl_key = os.getenv("DEEPL_API_KEY") or os.getenv("DEEPL_AUTH_KEY")
+        counters: Dict[str, int] = {"skippedOriginalKeysCount": 0, "copiedOriginalKeysCount": 0}
+
+        ns_files = [f for f in os.listdir(de_ns_dir) if f.endswith('.json')]
+        if not ns_files:
+            print(f"ℹ️ Keine Namespaces in {de_ns_dir} gefunden. Nichts zu tun.")
+            return
+
+        for ns_file in sorted(ns_files):
+            ns_name = ns_file[:-5]
+            ns_base_path = os.path.join(de_ns_dir, ns_file)
+            ns_base = load_json(ns_base_path)
+            if not isinstance(ns_base, dict):
+                print(f"ℹ️ Überspringe ungültigen Namespace {ns_name} ({ns_file})")
+                continue
+
+            print(f"\n🧩 Namespace '{ns_name}':")
+            for lang in TARGET_LANGS:
+                try:
+                    out_dir = os.path.join(base_path, lang)
+                    os.makedirs(out_dir, exist_ok=True)
+                    out_file = os.path.join(out_dir, f"{ns_name}.json")
+                    existing = load_json(out_file)
+                    translated = translate_full(
+                        ns_base,
+                        lang,
+                        provider,
+                        openai_key,
+                        deepl_key,
+                        target_existing=existing,
+                        forced_paths=set(),
+                        counters=counters,
+                    )
+                    save_json(out_file, translated)
+                    print(f"   → {lang}/{ns_name}.json aktualisiert")
+                except Exception as e:
+                    print(f"❌ Abbruch für Sprache {lang} / Namespace {ns_name}: {e}")
+                    continue
+
+        print(f"\nZusammenfassung Namespaces: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}}}")
+        print("\n✅ Namespaced-Verarbeitung abgeschlossen.")
+        return
 
     # Lade die Basisdatei (de.json)
     base_file = f"{base_path}/{BASE_LANG}.json"
@@ -476,7 +537,8 @@ def main():
         existing = load_json(de_ns_file)
         next_obj = json.loads(json.dumps(existing)) if existing else {}
         diffs_ns_de: list[str] = []
-        learn_subtree = base_dict.get("learn") if isinstance(base_dict.get("learn"), dict) else {}
+        learn_any = base_dict.get("learn")
+        learn_subtree: Dict[str, Any] = learn_any if isinstance(learn_any, dict) else {}
         deep_merge_missing(next_obj, learn_subtree, diffs_ns_de)
         if json.dumps(existing, ensure_ascii=False, sort_keys=True) != json.dumps(next_obj, ensure_ascii=False, sort_keys=True):
             save_json(de_ns_file, next_obj)
@@ -579,7 +641,8 @@ def main():
 
             # Nach dem Speichern: learn-Teil in locales/<lang>/learn.json spiegeln (nur fehlende Keys erg czen)
             try:
-                learn_subtree = base_dict.get("learn") if isinstance(base_dict.get("learn"), dict) else {}
+                learn_any2 = base_dict.get("learn")
+                learn_subtree: Dict[str, Any] = learn_any2 if isinstance(learn_any2, dict) else {}
                 ns_file = f"{base_path}/{lang}/learn.json"
                 existing_ns = load_json(ns_file)
                 next_ns = json.loads(json.dumps(existing_ns)) if existing_ns else {}

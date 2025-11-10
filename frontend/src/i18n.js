@@ -18,6 +18,18 @@ import deHome from './locales/de/home.json';
 import deErrors from './locales/de/errors.json';
 import deCommon from './locales/de/common.json';
 import deMenu from './locales/de/menu.json';
+import deTrustline from './locales/de/trustline.json';
+import deToken from './locales/de/token.json';
+import deMultisigCreate from './locales/de/multisigCreate.json';
+import deMultisigEdit from './locales/de/multisigEdit.json';
+import dePublicKey from './locales/de/publicKey.json';
+import deNetwork from './locales/de/network.json';
+import deWallet from './locales/de/wallet.json';
+import deNavigation from './locales/de/navigation.json';
+import deSecretKey from './locales/de/secretKey.json';
+import deSubmitTransaction from './locales/de/submitTransaction.json';
+import deXlmByMemo from './locales/de/xlmByMemo.json';
+import deInvestedTokens from './locales/de/investedTokens.json';
 
 const resources = {
   de: {
@@ -27,7 +39,19 @@ const resources = {
     home: deHome,
     errors: deErrors,
     common: deCommon,
-    menu: deMenu
+    menu: deMenu,
+    trustline: deTrustline,
+    token: deToken,
+    multisigCreate: deMultisigCreate,
+    multisigEdit: deMultisigEdit,
+    publicKey: dePublicKey,
+    network: deNetwork,
+    wallet: deWallet,
+    navigation: deNavigation,
+    secretKey: deSecretKey,
+    submitTransaction: deSubmitTransaction,
+    xlmByMemo: deXlmByMemo,
+    investedTokens: deInvestedTokens
   },
   // Other languages keep a single default namespace for now.
   // Missing keys and namespaces will fall back to German due to fallbackLng below.
@@ -42,7 +66,7 @@ const resources = {
 };
 
 // Register known namespaces to allow t('ns:key') access without dynamic loading.
-const namespaces = ['translation', 'learn', 'glossary', 'home', 'errors', 'common', 'menu'];
+const namespaces = ['translation', 'learn', 'glossary', 'home', 'errors', 'common', 'menu', 'trustline', 'token', 'multisigCreate', 'multisigEdit', 'publicKey', 'network', 'wallet', 'navigation', 'secretKey', 'submitTransaction', 'xlmByMemo', 'investedTokens'];
 
 i18n
   .use(initReactI18next)
