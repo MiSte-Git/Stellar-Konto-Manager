@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "concurrently -k -n BACKEND,FRONTEND -c green,cyan \"PORT=3000 node server.js\" \"cd frontend && npm run dev\""
+    "dev": "concurrently -k -n BACKEND,FRONTEND -c green,cyan \"PORT=3000 node server.js\" \"cd frontend && npm run dev\"",
+    "i18n:extract-glossary-keys": "node scripts/dev/extractGlossaryKeys.js",
+    "i18n:sync-glossary": "node scripts/dev/syncGlossaryNamespace.mjs",
+    "i18n:sync-learn": "node scripts/dev/syncLearnNamespace.mjs"
   },
   "dependencies": {
     "@stellar/stellar-sdk": "^14.3.0",

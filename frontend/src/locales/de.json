@@ -1142,5 +1142,91 @@
     "translate": {
       "skipOriginal": "Original-Begriff nicht übersetzen: {{detail}}"
     }
+  },
+  "learn": {
+    "lesson1": {
+      "title": "Was ist eine Blockchain",
+      "goal": "Prinzip der Blockchain begreifen",
+      "task": "Bausteine (Transaktionen) zu einer Kette zusammensetzen",
+      "learningOutcome": "Eine Blockchain ist ein unveränderbares digitales Heft, in dem alle gemeinsam prüfen.",
+      "reward": "⭐ 1 – Block-Bauer"
+    },
+    "lesson2": {
+      "title": "Stellar verstehen",
+      "goal": "Unterschied zu anderen Blockchains kennen",
+      "task": "Token an Freund schicken (Simulation) und Geschwindigkeit sehen",
+      "learningOutcome": "Stellar ist schnell, günstig und ohne Mining.",
+      "reward": "⭐ 1 – Schnell-Sender"
+    },
+    "lesson3": {
+      "title": "Öffentlichkeit & Privatsphäre",
+      "goal": "Pseudonymität begreifen",
+      "task": "Öffentliche Transaktion ansehen und raten, ob man weiß, wer sendet",
+      "learningOutcome": "Alles ist sichtbar, aber niemand kennt den echten Namen.",
+      "reward": "⭐ 1 – Datenschutz-Detektiv"
+    },
+    "lesson4": {
+      "title": "Dein Konto",
+      "goal": "Aufbau und Bedeutung von Public/Secret Key verstehen",
+      "task": "Zuordnungs-Spiel: Was ist öffentlich, was geheim",
+      "learningOutcome": "Nur der Secret Key gibt Zugriff, Public Key darf geteilt werden.",
+      "reward": "⭐ 1 – Schlüssel-Wächter"
+    },
+    "lesson5": {
+      "title": "Senden & Empfangen",
+      "goal": "Funktionsweise von Transaktionen und Trustlines verstehen",
+      "task": "Test-Sendung ausführen und Gebühr sehen",
+      "learningOutcome": "Jede Transaktion kostet eine kleine Gebühr; Trustline = Erlaubnis zum Empfangen.",
+      "reward": "⭐ 2 – Trustline-Starter"
+    },
+    "lesson6": {
+      "title": "Token & Handel",
+      "goal": "Marktmechanismen kennenlernen",
+      "task": "Token auf virtuellen Marktplatz legen und Preisänderung beobachten",
+      "learningOutcome": "Preis entsteht durch Angebot und Nachfrage.",
+      "reward": "⭐ 2 – Marktplatz-Kenner"
+    },
+    "lesson7": {
+      "title": "Sicherheit",
+      "goal": "Sichere Verhaltensweisen lernen",
+      "task": "Richtige/falsche Handlungen sortieren; Fake-Token erkennen",
+      "learningOutcome": "Geheimhaltung des Keys, sichere Aufbewahrung und Testnet nutzen.",
+      "reward": "⭐ 2 – Sicherheits-Wächter"
+    },
+    "lesson8": {
+      "title": "Verifizierung & Identität",
+      "goal": "Vertrauen und Regeln verstehen",
+      "task": "Echten vs. gefälschten Token vergleichen",
+      "learningOutcome": "KYC = Ausweisprüfung, Verifizierung zeigt vertrauenswürdige Token.",
+      "reward": "⭐ 2 – Prüf-Profi"
+    },
+    "lesson9": {
+      "title": "Zero Knowledge",
+      "goal": "Datenschutz-Konzepte verstehen",
+      "task": "Beispiel-Szenario 'Ich bin über 18' ohne Geburtsdatum zeigen",
+      "learningOutcome": "Man kann etwas beweisen, ohne Geheimnisse zu verraten.",
+      "reward": "⭐ 2 – ZK-Versteher"
+    },
+    "lesson10": {
+      "title": "Praxis mit SKM",
+      "goal": "Erlerntes praktisch anwenden",
+      "task": "Konto im Testnet erstellen, aktivieren, Trustline setzen, Token senden",
+      "learningOutcome": "Technische Abläufe einer Transaktion nachvollziehen.",
+      "reward": "⭐ 3 – Blockchain-Pilot"
+    },
+    "lesson11": {
+      "title": "Verantwortung",
+      "goal": "Konsequenzen von Fehlern verstehen",
+      "task": "Entscheidungsspiel: richtig handeln oder nicht",
+      "learningOutcome": "Blockchain ist endgültig; Sorgfalt ist Pflicht.",
+      "reward": "⭐ 1 – Verantwortungs-Held"
+    },
+    "lesson12": {
+      "title": "Abschluss / Spielerisches Lernen",
+      "goal": "Wiederholung und Motivation",
+      "task": "Mini-Quiz + Abzeichenanzeige",
+      "learningOutcome": "Gelerntes wiederholen, eigene Fortschritte erkennen.",
+      "reward": "🎖 Stellar-Profi"
+    }
   }
 }

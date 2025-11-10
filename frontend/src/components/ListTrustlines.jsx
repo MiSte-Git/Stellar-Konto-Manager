@@ -19,6 +19,7 @@ import {
 import ProgressBar from "../components/ProgressBar.jsx";
 import { formatElapsedMmSs } from '../utils/datetime';
 import { useSettings } from '../utils/useSettings';
+import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
@@ -185,12 +186,13 @@ function ListTrustlines({
       setShowSecretModal(false);
     } catch (err) {
       console.error('[Simulate] Fehler:', err);
-      const translated = t(err.message);
-
-      setModalError(translated);
-
-      if (err.message === 'secretKey.mismatch') {
-        alert(translated); // ✅ Pop-up Hinweis für Benutzer
+      const rawMsg = String(err?.message || '');
+      if (rawMsg === 'secretKey.mismatch') {
+        const translated = t(rawMsg, rawMsg);
+        setModalError(translated);
+        alert(translated);
+      } else {
+        setModalError(formatErrorForUi(t, err));
       }
     }
   };
@@ -230,7 +232,6 @@ function ListTrustlines({
       // UI vorbereiten
       setIsProcessing(true);
       setModalError('');
-      //console.log('[UI] results gesetzt:', deleted.length);
 
       if (deletableTrustlines.length === 0) {
         setModalError(t('trustline.deleted.notFound'));
@@ -290,36 +291,28 @@ function ListTrustlines({
       setSecretKey('');
       setShowSecretModal(false);
     } catch (err) {
-      const translated = t(err.message);
+      const rawMsg = String(err?.message || '');
+      const translatedOriginal = t(rawMsg, rawMsg);
+      const { formatted, detail } = formatErrorForUi(t, err, { returnParts: true });
 
-      // Logging & einfache Fehleranzeige im Modal
-      console.error('[ERROR]', translated);
-      setModalError(translated);
+      console.error('[ERROR]', formatted);
 
-      // Zusätzliche visuelle Fehleranzeige im ErrorModal
-      if (
-        err.message?.includes('op_invalid_limit') ||
-        err.message?.includes('op_has_balance') ||
-        err.message?.includes('op_has_trustline_offer')
-      ) {
-        setErrorMessage(translated); // ➜ öffnet ErrorModal
-      }
-
-      // Nur für SecretKey-Fehler extra Alert
-      if (err.message === 'secretKey.mismatch') {
-        alert(translated);
-      }
-
-      // Rückmeldung unten in der Seite
-      if (err.message?.includes('op_invalid_limit')) {
-        setResults([
-          t('error.transaction.failed') + ': ' + t('error.op_invalid_limit')
-        ]);
+      if (rawMsg === 'secretKey.mismatch') {
+        setModalError(translatedOriginal);
+        alert(translatedOriginal);
       } else {
-        setResults([
-          t('error.transaction.failed') + ': ' + translated
-        ]);
+        setModalError(formatted);
       }
+
+      if (
+        detail.includes('op_invalid_limit') ||
+        detail.includes('op_has_balance') ||
+        detail.includes('op_has_trustline_offer')
+      ) {
+        setErrorMessage(formatted); // ➜ öffnet ErrorModal
+      }
+
+      setResults([formatted]);
     } finally {
       setIsProcessing(false);
       delStartedAtRef.current = 0;

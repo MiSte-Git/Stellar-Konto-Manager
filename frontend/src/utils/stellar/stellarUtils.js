@@ -303,7 +303,7 @@ export async function deleteTrustlines({ secretKey, trustlines }) {
     const isRealError = detail !== 'op_success' && detail !== 'tx_success';
 
     if (!isRealError && txHash) {
-      console.warn('⚠️ Horizon-Fehler gemeldet, aber tx evtl. erfolgreich:', txHash);
+      console.warn('[STM] Horizon reported error but tx might have succeeded:', txHash);
       return trustlines.map(tl => ({
         assetCode: tl.assetCode,
         assetIssuer: tl.assetIssuer,
@@ -311,8 +311,9 @@ export async function deleteTrustlines({ secretKey, trustlines }) {
       }));
     }
 
-    console.error("❌ Trustline-Löschung fehlgeschlagen:", err);
-    throw new Error('error.trustline.submitFailed:' + detail);
+    console.error('[STM] Trustline deletion failed:', err);
+    // Keep throw format: submitTransaction.failed:<detail>
+    throw new Error('submitTransaction.failed:' + detail);
   }
 }
 
