@@ -335,16 +335,6 @@
     "processing": "Vorgang läuft, bitte warten …",
     "title": "Stellar Konto Manager"
   },
-  "menu": {
-    "balance": "Kontoinformation anzeigen",
-    "devTestnet": "Testnet (für Entwickler)",
-    "unknown": "Unbekannte Menüauswahl",
-    "xlmByMemo": "Nach Memo filtern",
-    "sendPayment": "Zahlung senden",
-    "feedback": "Feedback",
-    "donate": "Spenden",
-    "muxed": "Muxed-Konten erstellen/verwalten"
-  },
   "badges": {
     "testnet": "TESTNET"
   },

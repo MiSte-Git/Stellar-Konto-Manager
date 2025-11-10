@@ -1,0 +1,26 @@
+{
+  "all": "Alle Trustlines auflisten",
+  "compare": "Trustlines vergleichen",
+  "delete": "Trustlines löschen",
+  "onlyZeroBalanceInfo": "Es können nur Trustlines mit Kontostand 0 gelöscht werden.",
+  "nonZeroBalance": "Diese Trustline hat einen Kontostand ungleich 0 und kann nicht gelöscht werden.",
+  "destination": {
+    "label": "Ziel-Adresse",
+    "placeholder": "Ziel-Public Key oder Föderationsadresse",
+    "error": "Ungültige Ziel-Adresse"
+  },
+  "deleted": {
+    "resultTitle": "Lösch-Ergebnis",
+    "resultText": "{count} Trustlines wurden im Modus {mode} verarbeitet.",
+    "mode": {
+      "simulation": "Simulation",
+      "real": "Echtbetrieb",
+      "realWarning": "Achtung! Dies löscht Trustlines endgültig auf der Blockchain."
+    },
+    "notFound": "Keine passenden Trustlines zum Löschen gefunden.",
+    "simulated": "Simulation: {count} Trustlines würden gelöscht werden.",
+    "success": "Erfolgreich: {count} Trustlines gelöscht."
+  },
+  "noDuplicates": "Keine doppelten Trustlines gefunden.",
+  "showSecret": "Secret Key anzeigen"
+}
