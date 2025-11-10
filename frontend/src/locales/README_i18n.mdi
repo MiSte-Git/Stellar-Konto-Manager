@@ -48,11 +48,11 @@ frontend/src/locales/
 
 1. Texte im Code immer so einbinden:
 
-<p>{t('menu.listAll')}</p>
+<p>{t('menu:listAll')}</p>
 
-2. In de.json anlegen:
+2. In de/menu.json anlegen:
 
-"menu": {
+{
   "listAll": "Alle Trustlines auflisten"
 }
 

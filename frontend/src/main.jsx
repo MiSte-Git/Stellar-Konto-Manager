@@ -282,7 +282,7 @@ function Main() {
         : getHorizonServer('https://horizon.stellar.org');
       const summary = await getAccountSummary(pk, server);
       setXlmBalance(summary?.xlmBalance ?? null);
-    } catch (e) {
+    } catch {
       // Unfunded or error → null
       setXlmBalance(null);
     } finally {
