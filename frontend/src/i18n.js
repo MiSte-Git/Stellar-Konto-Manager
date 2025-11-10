@@ -17,6 +17,7 @@ import deGlossary from './locales/de/glossary.json';
 import deHome from './locales/de/home.json';
 import deErrors from './locales/de/errors.json';
 import deCommon from './locales/de/common.json';
+import deMenu from './locales/de/menu.json';
 
 const resources = {
   de: {
@@ -25,7 +26,8 @@ const resources = {
     glossary: deGlossary,
     home: deHome,
     errors: deErrors,
-    common: deCommon
+    common: deCommon,
+    menu: deMenu
   },
   // Other languages keep a single default namespace for now.
   // Missing keys and namespaces will fall back to German due to fallbackLng below.
@@ -40,7 +42,7 @@ const resources = {
 };
 
 // Register known namespaces to allow t('ns:key') access without dynamic loading.
-const namespaces = ['translation', 'learn', 'glossary', 'home', 'errors', 'common'];
+const namespaces = ['translation', 'learn', 'glossary', 'home', 'errors', 'common', 'menu'];
 
 i18n
   .use(initReactI18next)

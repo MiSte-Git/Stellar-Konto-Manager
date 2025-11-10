@@ -1,0 +1,11 @@
+{
+  "balance": "Kontoinformation anzeigen",
+  "devTestnet": "Testnet (für Entwickler)",
+  "sendPayment": "Zahlung senden",
+  "donate": "Spenden",
+  "feedback": "Feedback",
+  "xlmByMemo": "XLM-Betrag nach Memo/Token filtern",
+  "muxed": "Muxed-Adressen verwalten",
+  "glossary": "Glossar",
+  "unknown": "Unbekannte Menüauswahl"
+}
