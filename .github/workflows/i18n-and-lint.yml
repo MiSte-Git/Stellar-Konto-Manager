@@ -1,0 +1,69 @@
+name: i18n and Lint
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - 'frontend/src/locales/**'
+      - 'scripts/**'
+  push:
+    branches:
+      - main
+      - 'content/update-*'
+    paths:
+      - 'frontend/**'
+      - 'frontend/src/locales/**'
+      - 'scripts/**'
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-i18n:
+    name: ESLint + i18n checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install deps (frontend)
+        working-directory: frontend
+        run: npm ci
+
+      - name: ESLint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: i18n key tree check (existing)
+        run: node scripts/i18n_ci_check.js
+
+      - name: i18n stale check (Phase 1)
+        env:
+          BASE_REF: ${{ github.base_ref || 'origin/main' }}
+        run: node scripts/i18n_stale_check.mjs
+
+      - name: i18n review ack (Phase 2)
+        if: always() # show report even if previous step failed; phase 2 may still report
+        env:
+          BASE_REF: ${{ github.base_ref || 'origin/main' }}
+        run: node scripts/i18n_phase2_ack.mjs
+
+      - name: Upload i18n reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: i18n-reports-${{ github.run_id }}
+          path: |
+            content_backups/missing_keys_*.txt
+            content_backups/stale_keys_*.txt
+            content_backups/ack_required_en.txt
+          if-no-files-found: ignore

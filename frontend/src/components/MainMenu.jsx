@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { buildPath } from '../utils/basePath.js';
 
 function MainMenu({ onSelect }) {
   const { t } = useTranslation();
@@ -13,6 +14,8 @@ function MainMenu({ onSelect }) {
     // Gruppe 2
     { label: t('token.purchases'), value: 'payments', group: 2 },
     { label: t('menu.xlmByMemo'), value: 'xlmByMemo', group: 2 },
+    // Lernseite als eigener Menüpunkt (öffnet Overlay-Route /learn)
+    { label: t('learn:menu', 'Learn'), value: 'learn', group: 2, title: t('learn:menuHint', 'Open learning page') },
 
     // Gruppe 3
     { label: t('multisigEdit.menu'), value: 'multisigEdit', title: t('multisigEdit.menuHint'), group: 3 },
@@ -38,14 +41,35 @@ function MainMenu({ onSelect }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
       {buttons.map((btn) => (
-        <button
-          key={btn.value}
-          onClick={() => onSelect(btn.value)}
-          className={`${baseBtn} ${groupStyle[btn.group]}`}
-          title={btn.title || ''}
-        >
-          {btn.label}
-        </button>
+        btn.value === 'learn' ? (
+          <a
+            key={btn.value}
+            href={buildPath('learn')}
+            onClick={(e) => {
+              e.preventDefault();
+              try {
+                const url = buildPath('learn');
+                window.history.pushState({}, '', url);
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              } catch { /* noop */ }
+            }}
+            className={`${baseBtn} ${groupStyle[btn.group]} inline-flex items-center justify-center`}
+            title={btn.title || ''}
+            aria-label={btn.title || btn.label}
+            role="button"
+          >
+            {btn.label}
+          </a>
+        ) : (
+          <button
+            key={btn.value}
+            onClick={() => onSelect(btn.value)}
+            className={`${baseBtn} ${groupStyle[btn.group]}`}
+            title={btn.title || ''}
+          >
+            {btn.label}
+          </button>
+        )
       ))}
     </div>
   );

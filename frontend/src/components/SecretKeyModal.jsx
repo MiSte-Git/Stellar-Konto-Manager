@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { validateSecretKey } from '../utils/stellar/stellarUtils';
+import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 
 function SecretKeyModal({ onConfirm, onCancel, errorMessage }) {
 const { t } = useTranslation();
@@ -25,7 +26,7 @@ validateSecretKey(secretKey);
 setError('');
   onConfirm(secretKey, rememberSession); // Callback an Eltern-Komponente
 } catch (err) {
-  setError(t(err.message));
+  setError(formatErrorForUi(t, err));
   }
   };
 

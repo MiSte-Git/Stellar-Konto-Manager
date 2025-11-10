@@ -1,0 +1,10 @@
+{
+  "learn.offline": "Offline: Praxisprüfungen werden nach Wiederverbindung geprüft.",
+  "learn.validationFailed": "Validierung fehlgeschlagen",
+  "learn.missingParams": "Erforderliche Parameter fehlen",
+  "submitTransaction.failed": "Transaktion fehlgeschlagen",
+  "learn.error.unknown_action": "Unbekannte Praxisaktion",
+  "learn.error.rate_limited": "Bitte warten und erneut versuchen.",
+  "learn.error.horizon_timeout": "Horizon-Zeitüberschreitung. Bitte erneut versuchen.",
+  "learn.error.network": "Netzwerkfehler. Bitte erneut versuchen."
+}
