@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { buildPath } from '../utils/basePath.js';
 
 function MainMenu({ onSelect }) {
-  const { t } = useTranslation();
+  // Explicitly request the namespaces used here to ensure they are loaded
+  const { t } = useTranslation(['menu', 'learn']);
 
   const buttons = [
     // Gruppe 1
