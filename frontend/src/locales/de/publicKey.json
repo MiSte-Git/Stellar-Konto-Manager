@@ -1,0 +1,13 @@
+{
+  "label": "Public Key oder Föderationsadresse",
+  "placeholder": "Gib deinen Public Key oder eine Föderationsadresse ein",
+  "load": "Laden",
+  "deleteFromList": "Aus Liste entfernen",
+  "source": "Quelle",
+  "destination": {
+    "input": "Ziel",
+    "error": "Ungültiger Public Key eingegeben.",
+    "label": "Ziel-Public Key",
+    "placeholder": "Gib den Ziel-Public Key ein"
+  }
+}

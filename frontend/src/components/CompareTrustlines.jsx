@@ -128,7 +128,7 @@ function CompareTrustlines({
         className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         disabled={isLoading}
       >
-        {isLoading ? t('option.loading') : t('trustline.compare')}
+        {isLoading ? t('option.loading', 'Loading…') : t('trustline.compare')}
       </button>
       {destNotFound && (
         <div className="text-center text-xs text-red-700 my-2 inline-block border border-red-500 rounded px-2 py-0.5">
