@@ -492,20 +492,20 @@ function Main() {
             <button
               type="button"
               onClick={() => setMenuSelection('feedback')}
-              title={t('menu.feedback')}
+              title={t('menu:feedback', 'Feedback')}
               className="inline-flex items-center gap-1.5 sm:gap-2 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 md:px-4 md:py-2 text-xs sm:text-sm md:text-base rounded-full shadow focus:outline-none focus:ring-2 focus:ring-purple-400"
             >
               <span>✉</span>
-              <span>{t('menu.feedback')}</span>
+              <span>{t('menu:feedback', 'Feedback')}</span>
             </button>
             <button
               type="button"
               onClick={() => { setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('main.title')}` }); setMenuSelection('sendPayment'); }}
-              title={t('menu.donate')}
+              title={t('menu:donate', 'Spenden')}
               className="inline-flex items-center gap-1.5 sm:gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 md:px-4 md:py-2 text-xs sm:text-sm md:text-base rounded-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
             >
               <span aria-hidden>♥</span>
-              <span>{t('menu.donate')}</span>
+              <span>{t('menu:donate', 'Spenden')}</span>
             </button>
           </div>
           {infoMessage && (
@@ -531,7 +531,7 @@ function Main() {
                   checked={devTestnet}
                   onChange={(e)=>{ const next = !!e.target.checked; setDevTestnet(next); if (typeof window !== 'undefined' && window.localStorage) { if (next) { window.localStorage.setItem('STM_NETWORK', 'TESTNET'); window.localStorage.setItem('STM_HORIZON_URL', 'https://horizon-testnet.stellar.org'); } else { window.localStorage.setItem('STM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('STM_HORIZON_URL'); } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: next ? 'TESTNET' : 'PUBLIC' })); } }}
                 />
-                {t('menu.devTestnet')}
+                {t('menu:devTestnet', 'Testnet (für Entwickler)')}
               </label>
             </div>
             <div className="relative">
@@ -860,7 +860,7 @@ function Main() {
        {menuSelection &&
        !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','multisigEdit','balance','sendPayment','feedback','muxed'].includes(menuSelection) && (
          <div className="p-3 text-sm text-red-600">
-           {t('menu.unknown', { value: String(menuSelection) })}
+           {t('menu:unknown', { value: String(menuSelection) }, 'Unbekannte Menüauswahl')}
          </div>
        )}
  

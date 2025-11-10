@@ -23,10 +23,11 @@ export default function SmallGlossaryLink() {
           } catch { /* noop */ }
         }}
         className="underline decoration-dotted"
-        aria-label={t('menu.glossary', 'Glossary')}
-        title={t('menu.glossary', 'Glossary')}
-      >
-        {t('menu.glossary', 'Glossary')}
+              aria-label={t('menu:glossary', 'Glossar')}
+      title={t('menu:glossary', 'Glossar')}
+    >
+      {t('menu:glossary', 'Glossar')}
+
       </a>
     </div>
   );
