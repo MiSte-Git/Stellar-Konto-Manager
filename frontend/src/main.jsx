@@ -447,6 +447,17 @@ function Main() {
     console.debug('[DEBUG] useEffect check: menuSelection is', menuSelection);
   }, [menuSelection]);
 
+  const errorDisplay = React.useMemo(() => {
+    const raw = String(error || '');
+    if (!raw) return '';
+    const base = t('submitTransaction.failed', 'Transaction failed');
+    if (raw.startsWith('submitTransaction.failed:')) {
+      const detail = raw.slice('submitTransaction.failed:'.length);
+      return base + ': ' + t(detail, detail);
+    }
+    return t(raw, raw);
+  }, [error, t]);
+
   // Filter-Update
   function handleFilterChange(key, value) {
     setFilters({ ...filters, [key]: value });
@@ -676,14 +687,14 @@ function Main() {
           />
         )}
 
-        {error && <p className="text-red-500 mt-4">{t(error)}</p>}
+        {error && <p className="text-red-500 mt-4">{errorDisplay}</p>}
       </div>
 
       {/* Menüansicht anzeigen (z.B. ListAll) */}
       {menuSelection === 'listAll' && (
         sourcePublicKey ? (
           <div className="max-w-6xl mx-auto px-3">
-            <p className="text-sm text-gray-400">{error}</p>
+            {error && <p className="text-sm text-gray-400">{errorDisplay}</p>}
             <ListTrustlines
               key={refreshToken}
               trustlines={trustlines}

@@ -43,3 +43,16 @@ export function isGlossaryPath(pathname) {
   const normalize = (value) => String(value || '').replace(/\/+$/, '');
   return normalize(current) === normalize(target) || normalize(current).endsWith('/glossar');
 }
+
+/**
+ * isLearnPath: Prüft, ob ein Pfad zur Lern-Seite gehört.
+ * Unterstützt sowohl dev (/learn) als auch prod (/BASE_URL/learn).
+ */
+export function isLearnPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const target = buildPath('learn');
+  const normalize = (value) => String(value || '').replace(/\/+$/, '');
+  return normalize(current) === normalize(target) || normalize(current).endsWith('/learn');
+}

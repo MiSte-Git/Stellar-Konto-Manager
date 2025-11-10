@@ -6,9 +6,10 @@ import Main from './main';
 import LanguageSelector from './components/LanguageSelector';
 import BugTrackerAdmin from './routes/BugTrackerAdmin.tsx';
 import SmallAdminLink from './components/SmallAdminLink.jsx';
-import { isBugtrackerPath, isGlossaryPath } from './utils/basePath.js';
-import { buildPath } from './utils/basePath.js';
+import { isBugtrackerPath, isGlossaryPath, isLearnPath, buildPath } from './utils/basePath.js';
 import GlossaryPage from './pages/GlossaryPage.tsx';
+import LearnPage from './pages/LearnPage.jsx';
+import { formatErrorForUi } from './utils/formatErrorForUi.js';
 
 console.log('App.jsx loaded');
 
@@ -24,10 +25,11 @@ class ErrorBoundary extends React.Component {
   render() {
     const { t } = this.props;
     if (this.state.error) {
+      const display = formatErrorForUi(t, this.state.error);
       return (
         <div className="text-red-500 p-4">
           <h2>{t('app.errorBoundary.title')}</h2>
-          <p>{t(this.state.error, this.state.error)}</p>
+          <p>{display}</p>
         </div>
       );
     }
@@ -81,6 +83,14 @@ function App() {
     }
   }, [pathname]);
 
+  const isLearnRoute = React.useMemo(() => {
+    try {
+      return isLearnPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
   return (
     <ErrorBoundary t={t}>
       {isBugTrackerRoute ? (
@@ -92,7 +102,7 @@ function App() {
             <div className="flex justify-center">
               <LanguageSelector />
             </div>
-            {/* Glossary and Settings buttons under the language bar on all screens */}
+            {/* Glossary, Learn and Settings buttons under the language bar on all screens */}
             <div className="mt-3 flex flex-wrap justify-center gap-2">
               <a
                 href={buildPath('glossar')}
@@ -110,6 +120,22 @@ function App() {
                 title={t('glossary.pageTitle', 'Glossary')}
               >
                 {t('glossary.pageTitle', 'Glossary')}
+              </a>
+              <a
+                href={buildPath('learn')}
+                onClick={(e) => {
+                  try {
+                    e.preventDefault();
+                    const url = buildPath('learn');
+                    try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
+                    window.history.pushState({}, '', url);
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  } catch { /* noop */ }
+                }}
+                className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                title={t('learn.pageTitle', 'Learn')}
+              >
+                {t('learn.pageTitle', 'Learn')}
               </a>
               <button
                 type="button"
@@ -145,6 +171,15 @@ function App() {
             <div id="stm-glossary-overlay" className="fixed inset-0 z-50 bg-white dark:bg-gray-900 overflow-y-auto">
               <div className="max-w-5xl mx-auto p-4">
                 <GlossaryPage />
+              </div>
+            </div>
+          )}
+
+          {/* Lernseite als Overlay anzeigen, ohne Main zu unmounten */}
+          {isLearnRoute && (
+            <div id="stm-learn-overlay" className="fixed inset-0 z-50 bg-white dark:bg-gray-900 overflow-y-auto">
+              <div className="max-w-5xl mx-auto p-4">
+                <LearnPage />
               </div>
             </div>
           )}

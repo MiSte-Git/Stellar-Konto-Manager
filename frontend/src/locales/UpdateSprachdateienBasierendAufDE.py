@@ -333,6 +333,26 @@ def translate_full(
     return target_dict
 
 
+# -------- Learn-Namespace: fehlende Keys aus lessons.json ergänzen + Spiegel erzeugen --------
+
+def deep_merge_missing(target: Dict[str, Any], source: Dict[str, Any], diffs: list[str] | None = None, prefix: str = "") -> None:
+    """Fügt nur fehlende Keys aus source in target ein. Bei unterschiedlichen vorhandenen Werten wird NICHT überschrieben,
+    sondern der Pfad in diffs vermerkt.
+    """
+    for k, v in (source or {}).items():
+        cur = f"{prefix}.{k}" if prefix else k
+        if isinstance(v, dict):
+            if k not in target or not isinstance(target.get(k), dict):
+                target[k] = {}
+            deep_merge_missing(target[k], v, diffs, cur)
+        else:
+            if k not in target:
+                target[k] = v
+            else:
+                if target[k] != v and diffs is not None:
+                    diffs.append(cur)
+
+
 def main():
     # Argumente parsen
     parser = argparse.ArgumentParser(
@@ -413,6 +433,57 @@ def main():
     if not base_dict:
         print(f"❌ Basisdatei {base_file} konnte nicht geladen werden. Abbruch.")
         return
+
+    # 1) Lerninhalte aus lessons.json als learn.* in de.json sicherstellen (nur fehlende Keys ergänzen)
+    try:
+        lessons_path = os.path.normpath(os.path.join(base_path, "..", "data", "learn", "lessons.json"))
+        lessons_raw = load_json(lessons_path)
+        if isinstance(lessons_raw, list):
+            learn_from_lessons: Dict[str, Any] = {}
+            for l in lessons_raw:
+                if not isinstance(l, dict):
+                    continue
+                lid = l.get("id")
+                if not isinstance(lid, str) or not lid:
+                    continue
+                learn_from_lessons[lid] = {
+                    "title": l.get("title", ""),
+                    "goal": l.get("goal", ""),
+                    "task": l.get("task", ""),
+                    "learningOutcome": l.get("learningOutcome", ""),
+                    "reward": l.get("reward", ""),
+                }
+            before = json.dumps(base_dict, ensure_ascii=False, sort_keys=True)
+            if not isinstance(base_dict.get("learn"), dict):
+                base_dict["learn"] = {}
+            diffs_learn_de: list[str] = []
+            deep_merge_missing(base_dict["learn"], learn_from_lessons, diffs_learn_de, prefix="learn")
+            after = json.dumps(base_dict, ensure_ascii=False, sort_keys=True)
+            if before != after:
+                save_json(base_file, base_dict)
+                print(f"ℹ️ de.json um fehlende learn.*-Keys aus lessons.json ergänzt ({len(diffs_learn_de)} Konflikte ohne Überschreiben)")
+            if diffs_learn_de:
+                for p in diffs_learn_de:
+                    print(f"   ~ Bestehender Wert abweichend, nicht überschrieben: {p}")
+        else:
+            print("ℹ️ Keine gültige lessons.json-Liste gefunden; Überspringe Learn-Sync.")
+    except Exception as e:
+        print(f"ℹ️ Learn-Sync übersprungen (Fehler): {e}")
+
+    # 2) Spiegel-Datei für de/learn.json erstellen/aktualisieren (nur fehlende Keys ergänzen)
+    try:
+        de_ns_file = f"{base_path}/{BASE_LANG}/learn.json"
+        existing = load_json(de_ns_file)
+        next_obj = json.loads(json.dumps(existing)) if existing else {}
+        diffs_ns_de: list[str] = []
+        learn_subtree = base_dict.get("learn") if isinstance(base_dict.get("learn"), dict) else {}
+        deep_merge_missing(next_obj, learn_subtree, diffs_ns_de)
+        if json.dumps(existing, ensure_ascii=False, sort_keys=True) != json.dumps(next_obj, ensure_ascii=False, sort_keys=True):
+            save_json(de_ns_file, next_obj)
+        if diffs_ns_de:
+            print(f"ℹ️ de/learn.json ergänzt. Abweichende bestehende Werte nicht überschrieben: {len(diffs_ns_de)}")
+    except Exception as e:
+        print(f"ℹ️ Spiegel-Erstellung de/learn.json übersprungen (Fehler): {e}")
 
     # Ermittele gezielt neue und geänderte Leaf-Pfade gegenüber HEAD
     added_paths, changed_paths = compute_changed_paths_with_git(base_file)
@@ -505,6 +576,21 @@ def main():
                 )
 
             save_json(path, translated_dict)
+
+            # Nach dem Speichern: learn-Teil in locales/<lang>/learn.json spiegeln (nur fehlende Keys erg czen)
+            try:
+                learn_subtree = base_dict.get("learn") if isinstance(base_dict.get("learn"), dict) else {}
+                ns_file = f"{base_path}/{lang}/learn.json"
+                existing_ns = load_json(ns_file)
+                next_ns = json.loads(json.dumps(existing_ns)) if existing_ns else {}
+                diffs_lang_ns: list[str] = []
+                deep_merge_missing(next_ns, learn_subtree, diffs_lang_ns)
+                if json.dumps(existing_ns, ensure_ascii=False, sort_keys=True) != json.dumps(next_ns, ensure_ascii=False, sort_keys=True):
+                    save_json(ns_file, next_ns)
+                if diffs_lang_ns:
+                    print(f"ℹ️ {lang}/learn.json ergänzt. Abweichende bestehende Werte nicht  cberschrieben: {len(diffs_lang_ns)}")
+            except Exception as e:
+                print(f"ℹ️ Spiegel-Erstellung {lang}/learn.json übersprungen (Fehler): {e}")
         except Exception as e:
             print(f"❌ Abbruch für Sprache {lang}: {e}")
             continue

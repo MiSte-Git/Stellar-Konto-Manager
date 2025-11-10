@@ -1,0 +1,55 @@
+name: i18n backup on push
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - 'frontend/src/locales/**'
+      - 'scripts/backup_locales.sh'
+
+permissions:
+  contents: read
+
+jobs:
+  backup-locales:
+    runs-on: ubuntu-latest
+    # Only run the backup if the primary i18n and Lint workflow succeeded for this commit on main or content branches.
+    if: ${{ always() && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/content/update-')) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run stale+lint status gate
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/{owner}/{repo}/commits/{ref}/check-runs
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          ref: ${{ github.sha }}
+        id: checks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Evaluate checks
+        id: eval
+        run: |
+          echo "${{ steps.checks.outputs.data }}" > checks.json
+          # Require that there are no failed check-runs for this commit
+          if jq -e '.check_runs[] | select(.status == "completed") | select(.conclusion != "success")' checks.json > /dev/null; then
+            echo "Some checks failed for this commit; skipping backup."; echo "ok=false" >> $GITHUB_OUTPUT; exit 0; fi
+          echo "ok=true" >> $GITHUB_OUTPUT
+
+      - name: Create backup archive
+        if: steps.eval.outputs.ok == 'true'
+        run: bash scripts/backup_locales.sh
+
+      - name: Upload backup artifact
+        if: steps.eval.outputs.ok == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: locales-backup-${{ github.run_id }}
+          path: content_backups/locales_*.tar.gz
+          if-no-files-found: error
