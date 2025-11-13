@@ -246,7 +246,7 @@
       "xlmByMemo": "Suodata muistiinpanojen perusteella",
       "sendPayment": "Lähetä maksu",
       "investedTokens": "Suodata tunnukset/varat",
-      "multisigCreate": "Luo tili",
+      "createAccount": "Luo tili",
       "multisigEdit": "Muokkaa multisig-tiliä",
       "settings": "Asetukset",
       "feedback": "Palaute",
@@ -352,7 +352,7 @@
     "mainnet": "Pääverkko",
     "testnet": "Testiverkko"
   },
-  "multisigCreate": {
+  "createAccount": {
     "activateHint": "Aktivointi on tarpeen, jotta tili voi olla olemassa. Testiverkossa Friendbotin kautta, pääverkossa olemassa olevan lompakon \"Luo tili\" toiminnolla.",
     "activateNow": "Aktivoi tili heti",
     "activateOnly": "Vain aktivointi",

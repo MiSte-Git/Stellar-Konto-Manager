@@ -1,0 +1,18 @@
+{
+  "balance": "Afficher les informations du compte",
+  "devTestnet": "Réseau de test (pour développeurs)",
+  "sendPayment": "Envoyer un paiement",
+  "donate": "Dons",
+  "feedback": "Retour d'information",
+  "xlmByMemo": "Filtrer le montant XLM selon Memo/Jeton",
+  "muxed": "Gérer les adresses muxées",
+  "glossary": "Glossaire",
+  "createAccount": "Créer un compte + Multisig",
+  "multisigEdit": "Modifier le multisig",
+  "listAll": "Répertorier toutes les lignes de confiance",
+  "compareTrustlines": "Comparer les trustlines",
+  "settings": "Paramètres",
+  "tokenPurchases": "Achats de tokens",
+  "learn": "Quiz stellaire pour débutants",
+  "unknown": "Sélection de menu inconnue"
+}

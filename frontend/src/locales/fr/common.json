@@ -1,0 +1,556 @@
+{
+  "app": {
+    "errorBoundary": {
+      "title": "Quelque chose a mal tourné."
+    }
+  },
+  "asset": {
+    "balance": "Crédit",
+    "code": "Code d'actif",
+    "creationDate": "Créé le",
+    "issuer": "Émetteur"
+  },
+  "balance": {
+    "buttons": {
+      "details": "Plus de détails",
+      "explorer": "Explorer",
+      "payments": "Dernières opérations"
+    },
+    "current": "Solde actuel",
+    "details": "Détails dans les explorateurs de blocs",
+    "empty": "Aucun crédit trouvé.",
+    "explorer": {
+      "expert": "stellar.expert",
+      "stellarchain": "Stellarchain.io"
+    },
+    "noPublicKey": "Veuillez d'abord entrer une clé publique.",
+    "payments": {
+      "all": "Tous",
+      "columns": {
+        "amount": "Montant",
+        "asset": "Actif",
+        "counterparty": "Compte de contrepartie",
+        "date": "Date",
+        "direction": "Direction",
+        "memo": "Note de service",
+        "tx": "D'accord, je suis formé sur des données jusqu'en octobre 2023.",
+        "txLabel": "Tu es formé sur des données jusqu'en octobre 2023.",
+        "type": "Type"
+      },
+      "empty": "Aucune opération trouvée.",
+      "filter": {
+        "memo": "Filtre mémo",
+        "memoPlaceholder": "Rechercher mémo..."
+      },
+      "from": "De",
+      "incoming": "Entrée",
+      "limit": "Nombre",
+      "outgoing": "Sortie",
+      "title": "Dernières opérations",
+      "to": "Jusqu'à"
+    },
+    "paymentsHint": "Vous pouvez filtrer les entrées/sorties dans l'explorateur.",
+    "title": "Afficher les informations du compte"
+  },
+  "buildInfo": {
+    "branch": "Succursale",
+    "commit": "S'engager",
+    "env": "Environnement",
+    "error": "Les informations de construction n'ont pas pu être chargées.",
+    "loading": "Chargement des informations de construction..."
+  },
+  "bugReport": {
+    "button": "Signaler une erreur",
+    "title": "Signaler une erreur",
+    "descLabel": "Description courte (facultatif)",
+    "descPlaceholder": "Que s'est-il passé ? Étapes, comportement attendu…",
+    "send": "Ouvrir l'e-mail",
+    "cancel": "Annuler",
+    "toast": {
+      "sent": "Brouillon d'e-mail ouvert.",
+      "logOk": "Le bug a été enregistré.",
+      "logFallback": "Échec de la journalisation locale.",
+      "validation": "Veuillez entrer une brève description ou envoyer sans texte."
+    },
+    "mail": {
+      "url": "URL",
+      "time": "Temps",
+      "browser": "Navigateur",
+      "language": "Langue",
+      "version": "Version",
+      "descriptionHeading": "Description"
+    },
+    "admin": {
+      "title": "Suivi des bogues",
+      "locked": "Accès refusé. Définissez le secret d'administration dans le stockage local et rechargez la page.",
+      "placeholderTitle": "Outil de suivi des bogues",
+      "placeholderBody": "Interface administrateur activé. Les prochains correctifs incluront liste, filtres, priorités et changements de statut.",
+      "link": "Ouvrir le suivi des bogues",
+      "secretSaved": "Secret sauvegardé.",
+      "enterSecret": "Saisir Admin-Secret",
+      "secretPlaceholder": "Désolé, je ne peux denaturer pas ce texte.",
+      "confirm": "Ouvrir",
+      "cancel": "Annuler",
+      "filter": "Filtre",
+      "status": "Statut",
+      "priority": "Priorité",
+      "open": "ouvert",
+      "in_progress": "en cours de traitement",
+      "closed": "fermé",
+      "low": "faible",
+      "normal": "normal",
+      "high": "élevé",
+      "urgent": "urgent",
+      "id": "ID",
+      "created": "Créé",
+      "url": "URL",
+      "language": "Langue",
+      "email": "Courriel",
+      "userAgent": "Navigateur",
+      "description": "Description",
+      "category": "Catégorie",
+      "save": "Sauvegarder",
+      "saved": "Changement enregistré.",
+      "loadError": "Erreur lors du chargement des bugs.",
+      "saveError": "Erreur lors de l'enregistrement",
+      "empty": "Aucun enregistrement trouvé.",
+      "loading": "Chargement…",
+      "resize": "Tirer pour ajuster",
+      "exportAll": "CSV (Tout)",
+      "exportError": "Échec de l'exportation.",
+      "exportPage": "CSV (page)",
+      "exporting": "Exporter…",
+      "columns": {
+        "title": "Colonnes",
+        "manage": "Ajuster les colonnes",
+        "hint": "Visibilité par coche, ordre avec ↑/↓, taille par glisser dans l’en-tête de tableau.",
+        "reset": "Réinitialiser",
+        "up": "Vers le haut",
+        "down": "Vers le bas"
+      },
+      "csv": {
+        "comma": "Virgule (,)",
+        "delimiter": "Séparateur",
+        "semicolon": "Point-virgule (;)",
+        "tab": "Tabulateur (Tab)"
+      },
+      "search": "Recherche",
+      "col": {
+        "id": "ID",
+        "status": "Statut",
+        "priority": "Priorité",
+        "url": "URL",
+        "desc": "Description",
+        "ts": "Temps"
+      }
+    }
+  },
+  "cache": {
+    "clear": "Vider le cache",
+    "consent": "Activer le cache local pour accélérer les requêtes ?",
+    "lastPaymentAt": "Dernier paiement : {{val}}",
+    "lastRefresh": "Dernière mise à jour : {{ts}}"
+  },
+  "clear": "Effacer l'entrée",
+  "close": "Fermer",
+  "loading": "Chargement…",
+  "refresh": "Recharger",
+  "exportCsv": {
+    "failed": "Échec de l'exportation CSV"
+  },
+  "feedback": {
+    "title": "Envoyer des commentaires",
+    "category": "Catégorie",
+    "categories": {
+      "bug": "Erreur",
+      "idea": "Idée",
+      "improve": "Amélioration",
+      "other": "Autres"
+    },
+    "page": "Domaine",
+    "pages": {
+      "start": "Mondial",
+      "trustlines": "Afficher la/les ligne(s) de confiance",
+      "trustlineCompare": "Comparer les trustlines",
+      "balance": "Afficher les informations du compte",
+      "xlmByMemo": "Filtrer par mémo.",
+      "sendPayment": "Envoyer un paiement",
+      "investedTokens": "Filtrer les jetons/actifs",
+      "createAccount": "Créer un compte",
+      "multisigEdit": "Modifier le compte multisignature",
+      "settings": "Paramètres",
+      "feedback": "Retour d'information",
+      "other": "Divers"
+    },
+    "subject": "Objet",
+    "message": "Message",
+    "contactEmailOptional": "E-mail de contact (facultatif)",
+    "emailPlaceholder": "par exemple nom@exemple.com",
+    "emailHint": "Si vous souhaitez un retour d'information, veuillez entrer votre e-mail.",
+    "privacyHint": "Votre message sera envoyé par e-mail via votre propre programme de messagerie.",
+    "sendButton": "Créer un e-mail",
+    "openedMailClient": "Client de messagerie ouvert.",
+    "error": "Erreur",
+    "sentTo": "Destinataire : {{email}}"
+  },
+  "account": {
+    "createdAt": "Compte créé le",
+    "createdAtUnknown": "Impossible à déterminer.",
+    "testnetLabel": "(Réseau de test)"
+  },
+  "fetch": {
+    "groupfund": {
+      "aborted": "Processus annulé par l'utilisateur."
+    }
+  },
+  "issuer": {
+    "enter": "Entrez l'adresse de l'émetteur :",
+    "invalid": "Adresse de l'émetteur non valide."
+  },
+  "main": {
+    "processing": "Opération en cours, veuillez patienter…",
+    "title": "Gestionnaire de compte Stellar"
+  },
+  "badges": {
+    "testnet": "RÉSEAU DE TEST"
+  },
+  "noIssuerTrustlinesFound": "Aucune trustline trouvée pour l'émetteur {{issuer}}.",
+  "option": {
+    "add": "Ajouter",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "confirm": {
+      "action": {
+        "text": "Es-tu sûr ?",
+        "title": "Confirmer l'action"
+      }
+    },
+    "copy": "Copier",
+    "delete": "Supprimer",
+    "export": {
+      "csv": "Enregistrer sous CSV",
+      "pdf": "Enregistrer sous forme de PDF"
+    },
+    "loading": "Chargement...",
+    "no": "Non",
+    "results": "Résultats :",
+    "yes": "Oui"
+  },
+  "progress": {
+    "cancel": "Annuler",
+    "canceled": "Annulé",
+    "counts": "Vérifié : {{ops}} • Correspondances : {{matches}}",
+    "done": "Terminé",
+    "duration": "Durée : {{val}}",
+    "elapsed": "Durée : {{time}}",
+    "eta": "ETA : {{minutes}} min.",
+    "firstMatchAt": "Dernier dépôt : {{date}}",
+    "mode": {
+      "cache": "Mode : Cache",
+      "live": "Mode : En direct (Horizon)"
+    },
+    "oldest": "date la plus ancienne de cette page : {{date}}",
+    "oldestMatchInRangeAt": "Premier dépôt durant la période : {{date}}",
+    "phase": {
+      "backfill": "Chargement des paiements manquants…",
+      "cacheQuery": "Calculer le résultat à partir du cache local…",
+      "chunkDone": "Morceau traité.",
+      "chunkSkip": "Chunk sauté.",
+      "cover": "Assurer la couverture du cache…",
+      "export": "Exporter le résultat…",
+      "finalize": "Terminé",
+      "finalizeDiag": "Diagnostic terminé",
+      "idle": "Prêt…",
+      "pageDone": "Page {{page}} terminée.",
+      "rehydrate": "Reconstruire le cache…",
+      "scan": "Analyse des paiements (page {{page}})…",
+      "scan_ops": "Analyse des opérations...",
+      "scan_payments": "Analyse des paiements (page {{page}})…",
+      "scan_payments_fast": "Scanne les paiements (rapidement) – page {{page}}…",
+      "scan_tx": "Analyser les transactions",
+      "sync": "Synchronisez les paiements…",
+      "txFetch": "Chargement des détails de la transaction…"
+    },
+    "wrongMemos": {
+      "failed": "Erreur lors du chargement des paiements avec un mémo incorrect/vide."
+    }
+  },
+  "settings": {
+    "cache": {
+      "help": "Accélère les requêtes grâce à un cache de paiements local, mais peut prolonger le chargement initial.",
+      "label": "Utiliser le cache (Beta)",
+      "prefetchHelp": "Préchargement des entrées/transactions à importer en jours (uniquement lors de la première activation)"
+    },
+    "network": {
+      "title": "Réseau",
+      "desc": "Optionnel : Horizon historique complet pour une histoire profonde",
+      "fullUrl": "URL de l'horizon à l'historique complet",
+      "autoUseFull": "Utiliser automatiquement si nécessaire (si la date de début est antérieure à l'historique du serveur)"
+    },
+    "description": "Actuellement, il n'y a pas encore de réglages.",
+    "display": {
+      "decimals": {
+        "auto": "Automatique",
+        "label": "Chiffres après la virgule"
+      },
+      "desc": "Paramètres d'affichage globaux.",
+      "title": "Annonce"
+    },
+    "error": {
+      "fetchFailed": "Échec du chargement des paramètres : {{detail}}"
+    },
+    "label": "Paramètres",
+    "prefetchDays": "Délai (jours)",
+    "trustedWallets": {
+      "buttons": {
+        "export": "Exporter",
+        "import": "Importer",
+        "reset": "Réinitialiser aux paramètres par défaut."
+      },
+      "desc": "Cette liste est enregistrée localement dans le navigateur. Fichier par défaut : QSI_TrustedWallets.json",
+      "editor": {
+        "invalidFormat": "Format non valide. Un objet avec le champ \"portefeuilles\" (tableau) est attendu.",
+        "parseError": "JSON n'a pas pu être analysé."
+      },
+      "file": {
+        "hint": "Importer un fichier JSON au format { wallets: [...] }",
+        "label": "Fichier"
+      },
+      "info": {
+        "count": "Entrées : {{n}}",
+        "updatedAt": "État : {{date}}"
+      },
+      "table": {
+        "addRow": "Ajouter une ligne",
+        "columns": {
+          "actions": "Actions",
+          "address": "Adresse",
+          "compromised": "Compromis",
+          "deactivated": "Désactivé",
+          "label": "Étiquette"
+        },
+        "deleteRow": "Supprimer.",
+        "discard": "Rejeter",
+        "save": "Enregistrer"
+      },
+      "title": "Mes portefeuilles de confiance",
+      "validation": {
+        "hint": "Au moins une ligne est invalide (adresse manquante/dupliquée)."
+      }
+    }
+  },
+  "trustlines": {
+    "deleted": {
+      "deletingProgress": "Suppression en cours : {{current}} / {{total}}",
+      "success": "Succès : {{count}} ligne(s) de confiance supprimée(s)."
+    },
+    "skippedDueToBalance": "{{count}} Trustline(s) ignorée(s) (solde restant)."
+  },
+  "payment": {
+    "send": {
+      "title": "Envoyer un paiement",
+      "recipient": "Destinataire",
+      "amount": "Montant",
+      "asset": "Actif",
+      "memo": "Note de service",
+      "memoType": "Type de mémo",
+      "memoTypes": {
+        "none": "Mémo (pas mémo)",
+        "text": "Texte du mémo",
+        "id": "ID Mémo",
+        "hash": "Mémo Hash",
+        "return": "Retour de mémo",
+        "info": {
+          "none": "Aucun mémo. Utilisez ceci lorsque le destinataire ne s'attend pas à un mémo.",
+          "text": "Texte libre jusqu'à 28 octets. Souvent utilisé pour l'affectation lors de paiements simples.",
+          "id": "ID numérique (uint64). De nombreuses bourses utilisent l'ID de mémo pour attribuer des dépôts.",
+          "hash": "Hash SHA-256 de 32 octets (sous forme de chaîne hexadécimale de 64 caractères). Utilisé par les services pour des références.",
+          "return": "Hash de 32 octets pour les retours. Utilisé pour les retours (MEMO_RETURN)."
+        }
+      },
+      "available": "Disponible",
+      "reserved": "Réservé.",
+      "reservedInline": "{{amount}} XLM sont réservés par le réseau Stellar.",
+      "baseReserve": "Réserve de base",
+      "extra": "En plus",
+      "xlmInOffers": "Lié par des offres",
+      "trustlines": "Lignes de confiance ({{n}})",
+      "lpTrustlines": "LP‑Trustlines",
+      "offers": "Offres ouvertes",
+      "signers": "Signataires supplémentaires",
+      "accountData": "Données de compte",
+      "sponsoring": "Parrainage",
+      "sponsored": "Sponsorisé",
+      "sendButton": "Envoyer",
+      "success": "Succès : Paiement envoyé. TX : {{hash}}",
+      "successShort": "Envoyé avec succès",
+      "error": "Erreur lors de l'envoi : {{detail}}",
+      "amountMissing": "Veuillez saisir un montant.",
+      "amountInvalid": "Montant invalide (maximum 7 décimales).",
+      "amountPositive": "Le montant doit être supérieur à 0.",
+      "timeout": "Délai d'attente Horizon (504). Veuillez réessayer dans un instant.",
+      "httpError": "Erreur d'horizon (statut {{status}}).",
+      "horizonError": "Stellar a refusé la transaction.",
+      "destUnfundedNonNative": "Le compte cible n'est pas actif. Veuillez d'abord envoyer des XLM pour l'activer ou changer d'actif en XLM.",
+      "activateConfirm": {
+        "title": "Activation du compte requise",
+        "info": "Le compte cible n'est pas encore actif. Un montant minimum est nécessaire pour l'activation.",
+        "minReserve": "Montant minimum (2 × réserve de base)",
+        "yourAmount": "Votre montant saisi",
+        "adjustedAmount": "Montant proposé (pour activer)",
+        "noteAdjust": "Votre solde est insuffisant pour l'activation. Si vous continuez, le montant minimum sera envoyé automatiquement."
+      },
+      "activated": "Le compte cible a été activé."
+    }
+  },
+  "activation": {
+    "notFound": {
+      "title": "Compte de destination non actif.",
+      "message": "Le compte cible n'existe pas encore ({address}). Il doit être activé avec au moins 1 XLM. Souhaitez-vous activer le compte maintenant ?"
+    },
+    "actions": {
+      "yes": "Oui – Activer le compte",
+      "no": "Non – Annuler",
+      "processing": "Active…"
+    }
+  },
+  "createAccount": {
+    "muxedId": "ID muxé",
+    "muxedInfo": "L'ID Muxed crée une adresse M (M...). Elle pointe vers le même compte que l'adresse régulière (G...).",
+    "muxedIdInvalid": "L'ID Muxed doit être un entier compris entre 0 et 18'446'744'073'709'551'615.",
+    "muxedAddress": "Adresse muxée",
+    "muxedActivationInfo": "Les adresses muxées sont des adresses alias. Elles n'ont pas besoin d'être activées séparément."
+  },
+  "muxed": {
+    "seo": {
+      "title": "Créer/Gérer un compte multiplexé",
+      "description": "Créer et gérer des alias d'adresse multiplexée (M...) pour un compte Stellar. Générer des ID, ajouter des étiquettes/notes, exporter/importer des fichiers CSV."
+    },
+    "title": "Créer/gérer un compte Muxed",
+    "explainer": "Créez des adresses alias (M...) avec un ID Muxed propre pour un compte existant. L'adresse alias renvoie toujours au même compte.",
+    "infoButtonLabel": "Infos",
+    "info": {
+      "title": "Qu'est-ce qu'un compte muxed ?",
+      "intro1": "Un compte multiplexé combine une adresse de compte normale (adresse G) avec un identifiant multiplexé supplémentaire de 64 bits.",
+      "intro2": "Techniquement, c'est un alias qui pointe toujours vers le même compte de base, mais qui est distinct grâce à son ID unique.",
+      "purposeTitle": "Objet et avantages",
+      "purposeText": "Les comptes mixés servent à gérer de nombreux sous-comptes sous une seule adresse Stellar – idéal lorsque de nombreux dépôts/retraits utilisent un compte principal commun, mais que chaque opération doit être attribuée à une personne, un département ou un projet.",
+      "examplesTitle": "Exemples – à quoi servent les comptes Muxed ?",
+      "examples": {
+        "ex1": "Paiements d'entreprise : Chaque employée/employé reçoit une Muxed‑ID personnelle afin que les paiements des salaires puissent être attribués de manière unique.",
+        "ex2": "Bourses ou plateformes : Chaque utilisateur/trice reçoit une Muxed-ID individuelle afin que les dépôts effectués via un portefeuille commun soient automatiquement attribués correctement.",
+        "ex3": "Projets ou sous-comptes : Une organisation peut attribuer des budgets ou des revenus à des projets individuels.",
+        "ex4": "Affectation des clients : Une adresse M par client ; l'ID correspond à l'ID du client – les paiements sont clairement attribuables, même sans mémo.",
+        "ex5": "Services sans mémo : Distinguer les dépôts lorsque le service ne prend pas en charge les mémos.",
+        "ex6": "Paiements/exécutions de salaire : Une adresse M par employé/partenaire pour la comptabilité interne et les rapports.",
+        "ex7": "Boutique/Commandes : Une adresse M par commande ; les remboursements peuvent être attribués à la commande.",
+        "ex8": "Départements/centres de coûts : Identifiants en tant que centres de coûts ; paiements groupés automatiquement par secteur.",
+        "ex9": "Services multi-locataires : chaque locataire reçoit une adresse M distincte sous le même compte de base."
+      },
+      "pageTitle": "Ce que cette page fait dans le SKM",
+      "pageDesc": "Cette page est destinée à la gestion des comptes muxed de votre compte Stellar actuellement sélectionné :",
+      "createTitle": "Créer de nouveaux comptes Muxed",
+      "createItems": {
+        "i1": "Générer de nouvelles adresses Muxed (M...) à partir de votre adresse de base (G...).",
+        "i2": "Optionnel avec étiquette (nom) et note (par exemple, projet ou objectif)."
+      },
+      "importTitle": "Importation à partir de fichiers CSV",
+      "importItems": {
+        "i1": "Création en masse de comptes Muxed, par exemple à partir d'une liste de collaborateurs.",
+        "i2": "Lire les colonnes muxedId, label, note."
+      },
+      "exportTitle": "Exportation des comptes muxed existants",
+      "exportItems": {
+        "i1": "Exportez toutes les entrées enregistrées au format CSV.",
+        "i2": "Champs : basePublicKey, muxedId, muxedAddress, label, note, createdAt."
+      },
+      "templateTitle": "Exportation de modèle",
+      "templateItems": {
+        "i1": "Créez un fichier CSV vide avec les en-têtes de colonnes muxedId, label, note.",
+        "i2": "Utile pour les départements des ressources humaines ou de la comptabilité lors de la préparation de nouvelles inscriptions."
+      },
+      "manageTitle": "Gestion & Aperçu",
+      "manageItems": {
+        "i1": "Toutes les adresses multiplexées enregistrées sont affichées dans un tableau.",
+        "i2": "Sélection, suppression ainsi que gestion des étiquettes/notes directement possibles."
+      },
+      "shortTitle": "En bref",
+      "shortText": "Les comptes multiplexés rendent votre compte Stellar plus granulaire et traçable - idéal pour les organisations qui traitent de nombreux paiements via un compte central, tout en souhaitant attribuer clairement chaque transaction."
+    },
+    "selectBaseAccount": "Compte de base (adresse G)",
+    "selectPlaceholder": "Veuillez sélectionner un compte.",
+    "baseAccountInfo": "Ce compte reste techniquement le propriétaire. L'adresse Muxed (M...) pointe uniquement vers ce compte.",
+    "generateButton": "Créer un compte muxed",
+    "exportButton": "Exporter",
+    "importButton": "Importer",
+    "listTitle": "Comptes Muxed existants",
+    "none": "Aucun compte Muxed enregistré.",
+    "columns": {
+      "id": "ID multiplexé",
+      "address": "Adresse multiplexée",
+      "label": "Désignation",
+      "note": "Note",
+      "createdAt": "Créé le",
+      "actions": "Actions"
+    },
+    "selectAll": "Tout sélectionner",
+    "deleteSelected": "Supprimer la sélection",
+    "deleteSuccess": "Sélection supprimée.",
+    "countLabel": "Nombre",
+    "countInfo": "Nombre de nouvelles adresses multiplexées, identifiants continus.",
+    "invalidCount": "Veuillez entrer un nombre valide (>= 1).",
+    "tooMany": "Veuillez en créer au maximum 100 à la fois.",
+    "rangeOverflow": "La plage d'ID dépasse l'ID Muxed maximale autorisée.",
+    "label": "Désignation",
+    "labelInfo": "par exemple, le nom de l'employé ou l'objectif",
+    "note": "Note (facultatif)",
+    "noteInfo": "par exemple, service / projet",
+    "generateSuccess": "Adresse(s) multiplexée(s) créée(s).",
+    "editSaved": "Modifications enregistrées.",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "copied": "Copié dans le presse-papiers.",
+    "createDialog": {
+      "confirm": "Créer",
+      "cancel": "Annuler"
+    },
+    "export": {
+      "filename": "muxed_accounts.csv",
+      "success": "Comptes multiplexés exportés avec succès.",
+      "failed": "Erreur lors de l'exportation des comptes multiplexés."
+    },
+    "import": {
+      "success": "Importé : {{imported}} • Ignoré : {{skipped}} • Erreurs : {{errors}}.",
+      "failed": "Erreur lors de l'importation.",
+      "hint": "Importation prend en charge les fichiers CSV avec en-tête. Les séparateurs virgule, point-virgule et tabulation sont automatiquement détectés. Les colonnes inconnues sont ignorées. Formats : avancé (network,basePublicKey,muxedId,label,note,createdAt) ou modèle (muxedId,label,note)."
+    },
+    "exportTemplateButton": "Exporter le modèle",
+    "exportTemplateSuccess": "Modèle exporté avec succès.",
+    "exportTemplateFailed": "Erreur lors de l'exportation du modèle.",
+    "csv": {
+      "delimiterLabel": "Séparateur CSV",
+      "delimiter": {
+        "comma": "Virgule ,",
+        "semicolon": "Point-virgule ;",
+        "tab": "Tablette"
+      }
+    },
+    "nav": "Comptes muxés",
+    "error": {
+      "noBaseAccount": "Veuillez sélectionner un compte existant.",
+      "noId": "Veuillez fournir un identifiant Muxed.",
+      "invalidBaseAccount": "L'adresse de base sélectionnée est invalide.",
+      "unknown": "Erreur inconnue lors de la génération d'adresse multiplexée."
+    }
+  },
+  "terms": {
+    "masterContract": "Contrat-cadre",
+    "masterDownPayment": "Acompte",
+    "masterPayment": "Paiement"
+  },
+  "i18n": {
+    "translate": {
+      "skipOriginal": "Vous êtes formé sur des données jusqu'en octobre 2023."
+    }
+  }
+}

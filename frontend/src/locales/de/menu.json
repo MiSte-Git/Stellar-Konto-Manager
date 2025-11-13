@@ -7,5 +7,12 @@
   "xlmByMemo": "XLM-Betrag nach Memo/Token filtern",
   "muxed": "Muxed-Adressen verwalten",
   "glossary": "Glossar",
+  "createAccount": "Konto erstellen + Multisig",
+  "multisigEdit": "Multisig bearbeiten",
+  "listAll": "Alle Trustlines auflisten",
+  "compareTrustlines": "Trustlines vergleichen",
+  "settings": "Einstellungen",
+  "tokenPurchases": "Token-Käufe",
+  "learn": "Stellar-Quiz für Anfänger",
   "unknown": "Unbekannte Menüauswahl"
 }

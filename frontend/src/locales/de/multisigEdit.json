@@ -1,4 +1,26 @@
 {
   "menu": "Multisig bearbeiten",
-  "menuHint": "Signierer und Schwellenwerte eines bestehenden Kontos anpassen"
+  "menuHint": "Signierer und Schwellenwerte eines bestehenden Kontos anpassen",
+  "confirm": {
+    "removeSigner": "Unterzeichner wirklich entfernen?"
+  },
+  "currentConfig": "Aktuelle / geplante Konfiguration",
+  "error": {
+    "thresholdTooHigh": "Schwellen dürfen die Summe der Gewichte nicht überschreiten."
+  },
+  "hint": "Lade ein bestehendes Konto, passe Signer, Gewichte, Master-Gewicht und Schwellen an und speichere die Änderungen.",
+  "load": "Laden",
+  "loaded": "Geladen. Zusätzliche Signer: {{count}}",
+  "noteMaxSigners": "Hinweis: Stellar erlaubt max. 20 zusätzliche Unterzeichner pro Konto.",
+  "reload": "Neu laden",
+  "save": "Änderungen speichern",
+  "saved": "Änderungen gespeichert. TX: {{hash}}",
+  "signers": "Unterzeichner",
+  "weight": "Gewichtung",
+  "masterWeight": "Master-Gewicht",
+  "title": "Multisig Konto bearbeiten",
+  "validation": {
+    "signerKeyHint": "Hinweis: Unterzeichner müssen mit \"G\" beginnen (ed25519-öffentlicher Schlüssel).",
+    "signerKeyInvalid": "Ungültige Unterzeichner-Adresse. Erwartet wird eine G…-Adresse (ed25519)."
+  }
 }

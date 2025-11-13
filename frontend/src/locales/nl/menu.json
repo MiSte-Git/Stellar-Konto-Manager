@@ -1,0 +1,18 @@
+{
+  "balance": "Accountgegevens weergeven",
+  "devTestnet": "Testnet (voor ontwikkelaars)",
+  "sendPayment": "Betaling verzenden",
+  "donate": "Donaties",
+  "feedback": "Terugkoppeling",
+  "xlmByMemo": "XLM-bedrag filteren op memo/token",
+  "muxed": "Beheer van samengevoegde adressen",
+  "glossary": "Woordenlijst",
+  "createAccount": "Account aanmaken + Multisig",
+  "multisigEdit": "Multisig bewerken",
+  "listAll": "Alle Trustlines weergeven",
+  "compareTrustlines": "Trustlines vergelijken",
+  "settings": "Instellingen",
+  "tokenPurchases": "Tokenaankopen",
+  "learn": "Stellaire quiz voor beginners",
+  "unknown": "Onbekende menuoptie"
+}

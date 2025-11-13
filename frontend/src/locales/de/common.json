@@ -1,1 +1,556 @@
-{}
+{
+  "app": {
+    "errorBoundary": {
+      "title": "Etwas ist schiefgelaufen."
+    }
+  },
+  "asset": {
+    "balance": "Guthaben",
+    "code": "Asset-Code",
+    "creationDate": "Erstellt am",
+    "issuer": "Emittent"
+  },
+  "balance": {
+    "buttons": {
+      "details": "Mehr Details",
+      "explorer": "Explorer",
+      "payments": "Letzte Vorgänge"
+    },
+    "current": "Aktuelle Guthaben",
+    "details": "Details in Block-Explorern",
+    "empty": "Keine Guthaben gefunden.",
+    "explorer": {
+      "expert": "stellar.expert",
+      "stellarchain": "Stellarchain.io"
+    },
+    "noPublicKey": "Bitte gib zuerst einen Public Key ein.",
+    "payments": {
+      "all": "Alle",
+      "columns": {
+        "amount": "Betrag",
+        "asset": "Asset",
+        "counterparty": "Gegenkonto",
+        "date": "Datum",
+        "direction": "Richtung",
+        "memo": "Memo",
+        "tx": "Tx",
+        "txLabel": "Tx",
+        "type": "Typ"
+      },
+      "empty": "Keine Vorgänge gefunden.",
+      "filter": {
+        "memo": "Memo-Filter",
+        "memoPlaceholder": "Memo suchen..."
+      },
+      "from": "Von",
+      "incoming": "Eingang",
+      "limit": "Anzahl",
+      "outgoing": "Ausgang",
+      "title": "Letzte Vorgänge",
+      "to": "Bis"
+    },
+    "paymentsHint": "Eingänge/Ausgänge kannst du im Explorer filtern.",
+    "title": "Kontoinformation anzeigen"
+  },
+  "buildInfo": {
+    "branch": "Branch",
+    "commit": "Commit",
+    "env": "Umgebung",
+    "error": "Build-Informationen konnten nicht geladen werden.",
+    "loading": "Build-Informationen werden geladen …"
+  },
+  "bugReport": {
+    "button": "Fehler melden",
+    "title": "Fehler melden",
+    "descLabel": "Kurzbeschreibung (optional)",
+    "descPlaceholder": "Was ist passiert? Schritte, erwartetes Verhalten …",
+    "send": "E-Mail öffnen",
+    "cancel": "Abbrechen",
+    "toast": {
+      "sent": "E-Mail-Entwurf geöffnet.",
+      "logOk": "Bug wurde protokolliert.",
+      "logFallback": "Lokales Loggen fehlgeschlagen.",
+      "validation": "Bitte gib eine kurze Beschreibung ein oder sende ohne Text."
+    },
+    "mail": {
+      "url": "URL",
+      "time": "Zeit",
+      "browser": "Browser",
+      "language": "Sprache",
+      "version": "Version",
+      "descriptionHeading": "Beschreibung"
+    },
+    "admin": {
+      "title": "Bugtracker",
+      "locked": "Zugriff verweigert. Setze das Admin-Secret im lokalen Speicher und lade die Seite neu.",
+      "placeholderTitle": "Bugtracker",
+      "placeholderBody": "Admin-UI aktiv. In den nächsten Patches folgen Liste, Filter, Prioritäten und Status-Änderungen.",
+      "link": "Bugtracker öffnen",
+      "secretSaved": "Secret gespeichert.",
+      "enterSecret": "Admin-Secret eingeben",
+      "secretPlaceholder": "••••••••",
+      "confirm": "Öffnen",
+      "cancel": "Abbrechen",
+      "filter": "Filter",
+      "status": "Status",
+      "priority": "Priorität",
+      "open": "offen",
+      "in_progress": "in Bearbeitung",
+      "closed": "geschlossen",
+      "low": "niedrig",
+      "normal": "normal",
+      "high": "hoch",
+      "urgent": "dringend",
+      "id": "ID",
+      "created": "Erstellt",
+      "url": "URL",
+      "language": "Sprache",
+      "email": "E-Mail",
+      "userAgent": "Browser",
+      "description": "Beschreibung",
+      "category": "Kategorie",
+      "save": "Speichern",
+      "saved": "Änderung gespeichert",
+      "loadError": "Fehler beim Laden der Bugs",
+      "saveError": "Fehler beim Speichern",
+      "empty": "Keine Einträge gefunden.",
+      "loading": "Laden…",
+      "resize": "Ziehen zum Anpassen",
+      "exportAll": "CSV (Alle)",
+      "exportError": "Export fehlgeschlagen",
+      "exportPage": "CSV (Seite)",
+      "exporting": "Exportiere…",
+      "columns": {
+        "title": "Spalten",
+        "manage": "Spalten anpassen",
+        "hint": "Sichtbarkeit per Haken, Reihenfolge mit ↑/↓, Größen durch Ziehen im Tabellenkopf.",
+        "reset": "Zurücksetzen",
+        "up": "Nach oben",
+        "down": "Nach unten"
+      },
+      "csv": {
+        "comma": "Komma (,)",
+        "delimiter": "Trennzeichen",
+        "semicolon": "Semikolon (;)",
+        "tab": "Tabulator (Tab)"
+      },
+      "search": "Suche",
+      "col": {
+        "id": "ID",
+        "status": "Status",
+        "priority": "Priorität",
+        "url": "URL",
+        "desc": "Beschreibung",
+        "ts": "Zeit"
+      }
+    }
+  },
+  "cache": {
+    "clear": "Cache leeren",
+    "consent": "Lokaler Cache aktivieren, um Abfragen zu beschleunigen?",
+    "lastPaymentAt": "Letzte Zahlung: {{val}}",
+    "lastRefresh": "Letzte Aktualisierung: {{ts}}"
+  },
+  "clear": "Eingabe löschen",
+  "close": "Schließen",
+  "loading": "Laden…",
+  "refresh": "Neu laden",
+  "exportCsv": {
+    "failed": "CSV-Export fehlgeschlagen"
+  },
+  "feedback": {
+    "title": "Feedback senden",
+    "category": "Kategorie",
+    "categories": {
+      "bug": "Fehler",
+      "idea": "Idee",
+      "improve": "Verbesserung",
+      "other": "Sonstiges"
+    },
+    "page": "Bereich",
+    "pages": {
+      "start": "Global",
+      "trustlines": "Trustline(s) anzeigen",
+      "trustlineCompare": "Trustline(s) vergleichen",
+      "balance": "Kontoinformation anzeigen",
+      "xlmByMemo": "Nach Memo filtern",
+      "sendPayment": "Zahlung senden",
+      "investedTokens": "Token/Assets filtern",
+      "createAccount": "Konto erstellen",
+      "multisigEdit": "Multisig Konto bearbeiten",
+      "settings": "Einstellungen",
+      "feedback": "Feedback",
+      "other": "Sonstiges"
+    },
+    "subject": "Betreff",
+    "message": "Nachricht",
+    "contactEmailOptional": "Kontakt E-Mail (optional)",
+    "emailPlaceholder": "z. B. name@example.com",
+    "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
+    "privacyHint": "Ihre Nachricht wird per E-Mail über Ihr eigenes Mailprogramm gesendet.",
+    "sendButton": "E-Mail erstellen",
+    "openedMailClient": "E-Mail-Client geöffnet.",
+    "error": "Fehler",
+    "sentTo": "Empfänger: {{email}}"
+  },
+  "account": {
+    "createdAt": "Konto erstellt am",
+    "createdAtUnknown": "Kann nicht ermittelt werden.",
+    "testnetLabel": "(Testnet)"
+  },
+  "fetch": {
+    "groupfund": {
+      "aborted": "Vorgang vom Benutzer abgebrochen"
+    }
+  },
+  "issuer": {
+    "enter": "Gib die Emittenten-Adresse ein:",
+    "invalid": "Ungültige Emittentenadresse."
+  },
+  "main": {
+    "processing": "Vorgang läuft, bitte warten …",
+    "title": "Stellar Konto Manager"
+  },
+  "badges": {
+    "testnet": "TESTNET"
+  },
+  "noIssuerTrustlinesFound": "Keine Trustlines für Emittent {{issuer}} gefunden.",
+  "option": {
+    "add": "Hinzufügen",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "confirm": {
+      "action": {
+        "text": "Bist du sicher?",
+        "title": "Aktion bestätigen"
+      }
+    },
+    "copy": "Kopieren",
+    "delete": "Löschen",
+    "export": {
+      "csv": "Als CSV speichern",
+      "pdf": "Als PDF speichern"
+    },
+    "loading": "Laden...",
+    "no": "Nein",
+    "results": "Ergebnisse:",
+    "yes": "Ja"
+  },
+  "progress": {
+    "cancel": "Abbrechen",
+    "canceled": "Abgebrochen",
+    "counts": "Geprüft: {{ops}} • Treffer: {{matches}}",
+    "done": "Abgeschlossen",
+    "duration": "Dauer: {{val}}",
+    "elapsed": "Dauer: {{time}}",
+    "eta": "ETA: {{minutes}} Min.",
+    "firstMatchAt": "Letzte Einzahlung: {{date}}",
+    "mode": {
+      "cache": "Modus: Cache",
+      "live": "Modus: Live (Horizon)"
+    },
+    "oldest": "ältestes Datum dieser Seite: {{date}}",
+    "oldestMatchInRangeAt": "Erste Einzahlung im Zeitraum: {{date}}",
+    "phase": {
+      "backfill": "Lade fehlende Zahlungen…",
+      "cacheQuery": "Berechne Ergebnis aus lokalem Cache…",
+      "chunkDone": "Chunk verarbeitet.",
+      "chunkSkip": "Chunk übersprungen.",
+      "cover": "Cache-Abdeckung sicherstellen…",
+      "export": "Exportiere Ergebnis…",
+      "finalize": "Abgeschlossen",
+      "finalizeDiag": "Diagnose abgeschlossen",
+      "idle": "Bereit…",
+      "pageDone": "Seite {{page}} abgeschlossen.",
+      "rehydrate": "Rekonstruire Cache…",
+      "scan": "Scanne Zahlungen (Seite {{page}})…",
+      "scan_ops": "Scanne Operationen…",
+      "scan_payments": "Scanne Zahlungen (Seite {{page}})…",
+      "scan_payments_fast": "Scanne Zahlungen (schnell) – Seite {{page}}…",
+      "scan_tx": "Transaktionen scannen",
+      "sync": "Synchronisiere Zahlungen…",
+      "txFetch": "Lade Transaktionsdetails…"
+    },
+    "wrongMemos": {
+      "failed": "Fehler beim Laden der Zahlungen mit falschem/leerem Memo."
+    }
+  },
+  "settings": {
+    "cache": {
+      "help": "Beschleunigt Abfragen durch lokalen Zahlungs-Cache, kann jedoch das initiale Laden verlängern.",
+      "label": "Cache benutzen (Beta)",
+      "prefetchHelp": "Vorlauf der zu ladenden Einträge/Transaktionen in Tagen (einmalig beim ersten Aktivieren)"
+    },
+    "network": {
+      "title": "Netzwerk",
+      "desc": "Optional: Full-History-Horizon für tiefe Historie",
+      "fullUrl": "Full-History Horizon URL",
+      "autoUseFull": "Bei Bedarf automatisch verwenden (wenn Von-Datum älter als Server-Historie)"
+    },
+    "description": "Aktuell gibt es noch keine Einstellungen",
+    "display": {
+      "decimals": {
+        "auto": "Automatisch",
+        "label": "Nachkommastellen"
+      },
+      "desc": "Globale Anzeigeeinstellungen.",
+      "title": "Anzeige"
+    },
+    "error": {
+      "fetchFailed": "Laden der Einstellungen fehlgeschlagen: {{detail}}"
+    },
+    "label": "Einstellungen",
+    "prefetchDays": "Vorlauf (Tage)",
+    "trustedWallets": {
+      "buttons": {
+        "export": "Exportieren",
+        "import": "Importieren",
+        "reset": "Auf Standard zurücksetzen"
+      },
+      "desc": "Diese Liste wird lokal im Browser gespeichert. Standarddatei: QSI_TrustedWallets.json",
+      "editor": {
+        "invalidFormat": "Ungültiges Format. Erwartet wird ein Objekt mit Feld \"wallets\" (Array).",
+        "parseError": "JSON konnte nicht geparst werden."
+      },
+      "file": {
+        "hint": "Importiere eine JSON-Datei im Format { wallets: [...] }",
+        "label": "Datei"
+      },
+      "info": {
+        "count": "Einträge: {{n}}",
+        "updatedAt": "Stand: {{date}}"
+      },
+      "table": {
+        "addRow": "Zeile hinzufügen",
+        "columns": {
+          "actions": "Aktionen",
+          "address": "Adresse",
+          "compromised": "Kompromittiert",
+          "deactivated": "Deaktiviert",
+          "label": "Label"
+        },
+        "deleteRow": "Löschen",
+        "discard": "Verwerfen",
+        "save": "Speichern"
+      },
+      "title": "Meine Vertrauenswürdigen Wallets",
+      "validation": {
+        "hint": "Mindestens eine Zeile ist ungültig (fehlende/duplizierte Adresse)."
+      }
+    }
+  },
+  "trustlines": {
+    "deleted": {
+      "deletingProgress": "Löschen läuft: {{current}} / {{total}}",
+      "success": "Erfolg: {{count}} Trustline(s) gelöscht."
+    },
+    "skippedDueToBalance": "{{count}} Trustline(s) übersprungen (noch Guthaben vorhanden)."
+  },
+  "payment": {
+    "send": {
+      "title": "Zahlung senden",
+      "recipient": "Empfänger",
+      "amount": "Betrag",
+      "asset": "Asset",
+      "memo": "Memo",
+      "memoType": "Memo Typ",
+      "memoTypes": {
+        "none": "Memo (kein Memo)",
+        "text": "Memo Text",
+        "id": "Memo ID",
+        "hash": "Memo Hash",
+        "return": "Memo Return",
+        "info": {
+          "none": "Kein Memo. Verwende dies, wenn der Empfänger kein Memo erwartet.",
+          "text": "Freitext bis 28 Byte. Häufig zur Zuordnung bei einfachen Zahlungen.",
+          "id": "Numerische ID (uint64). Viele Börsen nutzen Memo ID zur Zuordnung von Einzahlungen.",
+          "hash": "32-Byte SHA-256-Hash (als 64-stellige Hex-Zeichenfolge). Von Diensten für Referenzen verwendet.",
+          "return": "32-Byte Hash für Rückläufer. Wird für Rücksendungen (MEMO_RETURN) genutzt."
+        }
+      },
+      "available": "Verfügbar",
+      "reserved": "Reserviert",
+      "reservedInline": "{{amount}} XLM sind vom Stellar Netzwerk reserviert",
+      "baseReserve": "Basisreserve",
+      "extra": "Zusätzlich",
+      "xlmInOffers": "In Angeboten gebunden",
+      "trustlines": "Trustlines ({{n}})",
+      "lpTrustlines": "LP‑Trustlines",
+      "offers": "Offene Angebote",
+      "signers": "Zusätzliche Unterzeichner",
+      "accountData": "Account‑Daten",
+      "sponsoring": "Sponsoring",
+      "sponsored": "Gesponsert",
+      "sendButton": "Senden",
+      "success": "Erfolg: Zahlung gesendet. TX: {{hash}}",
+      "successShort": "Erfolgreich gesendet",
+      "error": "Fehler beim Senden: {{detail}}",
+      "amountMissing": "Bitte gib einen Betrag ein.",
+      "amountInvalid": "Ungültiger Betrag (max. 7 Nachkommastellen).",
+      "amountPositive": "Der Betrag muss größer als 0 sein.",
+      "timeout": "Horizon-Timeout (504). Bitte versuche es gleich erneut.",
+      "httpError": "Horizon-Fehler (Status {{status}}).",
+      "horizonError": "Stellar hat die Transaktion abgelehnt",
+      "destUnfundedNonNative": "Zielkonto ist nicht aktiv. Bitte zuerst XLM zur Aktivierung senden oder Asset auf XLM wechseln.",
+      "activateConfirm": {
+        "title": "Konto-Aktivierung erforderlich",
+        "info": "Das Zielkonto ist noch nicht aktiv. Für die Aktivierung ist ein Mindestbetrag erforderlich.",
+        "minReserve": "Mindestbetrag (2 × Basisreserve)",
+        "yourAmount": "Ihr eingegebener Betrag",
+        "adjustedAmount": "Vorgeschlagener Betrag (zum Aktivieren)",
+        "noteAdjust": "Ihr Betrag reicht für die Aktivierung nicht aus. Wenn Sie fortfahren, wird automatisch der Mindestbetrag gesendet."
+      },
+      "activated": "Das Zielkonto wurde aktiviert."
+    }
+  },
+  "activation": {
+    "notFound": {
+      "title": "Zielkonto nicht aktiv",
+      "message": "Das Zielkonto existiert noch nicht ({address}). Es muss mit mindestens 1 XLM aktiviert werden. Möchtest du das Konto jetzt aktivieren?"
+    },
+    "actions": {
+      "yes": "Ja – Konto aktivieren",
+      "no": "Nein – Abbrechen",
+      "processing": "Aktiviere…"
+    }
+  },
+  "createAccount": {
+    "muxedId": "Muxed-ID",
+    "muxedInfo": "Mit der Muxed-ID wird eine M-Adresse (M...) erstellt. Sie zeigt auf dasselbe Konto wie die reguläre Adresse (G...).",
+    "muxedIdInvalid": "Die Muxed-ID muss eine Ganzzahl zwischen 0 und 18'446'744'073'709'551'615 sein.",
+    "muxedAddress": "Muxed-Adresse",
+    "muxedActivationInfo": "Muxed-Adressen sind Alias-Adressen. Sie müssen nicht separat aktiviert werden."
+  },
+  "muxed": {
+    "seo": {
+      "title": "Muxed-Konto erstellen/verwalten",
+      "description": "Muxed-Adress-Aliase (M...) für ein Stellar-Konto erstellen und verwalten. IDs generieren, Labels/Notizen hinzufügen, CSV exportieren/importieren."
+    },
+    "title": "Muxed-Konto erstellen/verwalten",
+    "explainer": "Erzeuge Alias-Adressen (M...) mit eigener Muxed-ID für ein bestehendes Konto. Die Alias-Adresse verweist immer auf dasselbe Konto.",
+    "infoButtonLabel": "Info",
+    "info": {
+      "title": "Was ist ein Muxed-Konto?",
+      "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
+      "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
+      "purposeTitle": "Zweck und Nutzen",
+      "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
+      "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
+      "examples": {
+        "ex1": "Firmenzahlungen: Jede Mitarbeiterin/jeder Mitarbeiter erhält eine eigene Muxed‑ID, damit Lohnzahlungen eindeutig zugeordnet werden können.",
+        "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
+        "ex3": "Projekte oder Subkonten: Eine Organisation kann Budgets oder Einnahmen einzelnen Projekten zuordnen.",
+        "ex4": "Kundenzuordnung: Eine M‑Adresse pro Kunde; die ID entspricht der Kunden‑ID – Zahlungen sind eindeutig zuordenbar, auch ohne Memo.",
+        "ex5": "Dienste ohne Memo: Einzahlungen unterscheiden, wenn der Dienst keine Memos unterstützt.",
+        "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
+        "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
+        "ex8": "Abteilungen/Kostenstellen: IDs als Kostenstellen; Zahlungen automatisch nach Bereich gruppieren.",
+        "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
+      },
+      "pageTitle": "Was diese Seite im SKM macht",
+      "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
+      "createTitle": "Neue Muxed‑Konten erstellen",
+      "createItems": {
+        "i1": "Erzeugt neue Muxed‑Adressen (M...) aus deiner Basisadresse (G...).",
+        "i2": "Optional mit Label (Name) und Notiz (z. B. Projekt oder Zweck)."
+      },
+      "importTitle": "Import aus CSV‑Dateien",
+      "importItems": {
+        "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
+        "i2": "Liest Spalten muxedId, label, note."
+      },
+      "exportTitle": "Export vorhandener Muxed‑Konten",
+      "exportItems": {
+        "i1": "Gibt alle gespeicherten Einträge als CSV aus.",
+        "i2": "Felder: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
+      },
+      "templateTitle": "Template‑Export",
+      "templateItems": {
+        "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
+        "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
+      },
+      "manageTitle": "Verwaltung & Übersicht",
+      "manageItems": {
+        "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
+        "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
+      },
+      "shortTitle": "Kurz gesagt",
+      "shortText": "Muxed‑Konten machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
+    },
+    "selectBaseAccount": "Basis-Konto (G-Adresse)",
+    "selectPlaceholder": "Bitte Konto auswählen",
+    "baseAccountInfo": "Dieses Konto bleibt technisch der Besitzer. Die Muxed-Adresse (M...) zeigt nur auf dieses Konto.",
+    "generateButton": "Muxed-Konto erstellen",
+    "exportButton": "Exportieren",
+    "importButton": "Importieren",
+    "listTitle": "Vorhandene Muxed-Konten",
+    "none": "Keine Muxed-Konten gespeichert.",
+    "columns": {
+      "id": "Muxed-ID",
+      "address": "Muxed-Adresse",
+      "label": "Bezeichnung",
+      "note": "Notiz",
+      "createdAt": "Erstellt am",
+      "actions": "Aktionen"
+    },
+    "selectAll": "Alle auswählen",
+    "deleteSelected": "Auswahl löschen",
+    "deleteSuccess": "Auswahl gelöscht.",
+    "countLabel": "Anzahl",
+    "countInfo": "Anzahl neuer Muxed-Adressen, fortlaufende IDs.",
+    "invalidCount": "Bitte eine gültige Anzahl (>= 1) eingeben.",
+    "tooMany": "Bitte höchstens 100 auf einmal erstellen.",
+    "rangeOverflow": "Der ID-Bereich überschreitet die maximal zulässige Muxed-ID.",
+    "label": "Bezeichnung",
+    "labelInfo": "z. B. Mitarbeitername oder Zweck",
+    "note": "Notiz (optional)",
+    "noteInfo": "z. B. Abteilung / Projekt",
+    "generateSuccess": "Muxed-Adresse(n) erstellt.",
+    "editSaved": "Änderungen gespeichert.",
+    "save": "Speichern",
+    "edit": "Bearbeiten",
+    "copied": "In Zwischenablage kopiert.",
+    "createDialog": {
+      "confirm": "Erstellen",
+      "cancel": "Abbrechen"
+    },
+    "export": {
+      "filename": "muxed_accounts.csv",
+      "success": "Muxed-Konten erfolgreich exportiert.",
+      "failed": "Fehler beim Export der Muxed-Konten."
+    },
+    "import": {
+      "success": "Importiert: {{imported}} • Übersprungen: {{skipped}} • Fehler: {{errors}}.",
+      "failed": "Fehler beim Import.",
+      "hint": "Import unterstützt CSV mit Kopfzeile. Trennzeichen Komma, Semikolon und Tab werden automatisch erkannt. Unbekannte Spalten werden ignoriert. Formate: erweitert (network,basePublicKey,muxedId,label,note,createdAt) oder Template (muxedId,label,note)."
+    },
+    "exportTemplateButton": "Template exportieren",
+    "exportTemplateSuccess": "Template erfolgreich exportiert.",
+    "exportTemplateFailed": "Fehler beim Export des Templates.",
+    "csv": {
+      "delimiterLabel": "CSV Trennzeichen",
+      "delimiter": {
+        "comma": "Komma ,",
+        "semicolon": "Semikolon ;",
+        "tab": "Tab"
+      }
+    },
+    "nav": "Muxed Accounts",
+    "error": {
+      "noBaseAccount": "Bitte ein bestehendes Konto auswählen.",
+      "noId": "Bitte eine Muxed-ID angeben.",
+      "invalidBaseAccount": "Die ausgewählte Basisadresse ist ungültig.",
+      "unknown": "Unbekannter Fehler bei der Muxed-Adress-Erzeugung."
+    }
+  },
+  "terms": {
+    "masterContract": "Rahmenvertrag",
+    "masterDownPayment": "Anzahlung",
+    "masterPayment": "Zahlung"
+  },
+  "i18n": {
+    "translate": {
+      "skipOriginal": "Original-Begriff nicht übersetzen: {{detail}}"
+    }
+  }
+}

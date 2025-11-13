@@ -133,9 +133,9 @@ function App() {
                   } catch { /* noop */ }
                 }}
                 className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                title={t('learn.pageTitle', 'Learn')}
+                title={t('learn.pageTitle', 'Stellar-Quiz für Anfänger')}
               >
-                {t('learn.pageTitle', 'Learn')}
+                {t('menu:learn', 'Stellar-Quiz für Anfänger')}
               </a>
               <button
                 type="button"
@@ -152,8 +152,9 @@ function App() {
                 className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 title={t('settings.label', 'Settings')}
               >
-                {t('settings.label')}
+                {t('settings.label', 'Settings')}
               </button>
+
             </div>
             {devTestnet && (
               <span className="absolute right-3 top-[72px] inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">

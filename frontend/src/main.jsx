@@ -517,7 +517,7 @@ function Main() {
         <p className="mb-2 text-sm text-blue-200 rounded border">
           {t('secretKey.info')}
           <button type="button" onClick={()=>setShowSecretInfo(true)} className="ml-2 px-2 py-0.5 text-blue-700 underline">
-            {t('multisigCreate.info.more')}
+            {t('createAccount.info.more')}
           </button>
         </p>
         {/* Fixierter Wallet-Header – immer sichtbar */}
@@ -850,7 +850,7 @@ function Main() {
           onBack={() => setMenuSelection(null)}
         />
       )}
-      {menuSelection === 'multisigCreate' && (
+      {menuSelection === 'createAccount' && (
         <MultisigCreatePage />
       )}
       {menuSelection === 'multisigEdit' && (
@@ -858,7 +858,7 @@ function Main() {
       )}
        
        {menuSelection &&
-       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','multisigCreate','multisigEdit','balance','sendPayment','feedback','muxed'].includes(menuSelection) && (
+       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','createAccount','multisigEdit','balance','sendPayment','feedback','muxed'].includes(menuSelection) && (
          <div className="p-3 text-sm text-red-600">
            {t('menu:unknown', { value: String(menuSelection) }, 'Unbekannte Menüauswahl')}
          </div>
@@ -902,8 +902,8 @@ function Main() {
       {showSecretInfo && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-md w-full mx-auto">
-            <h4 className="text-lg font-bold mb-3">{t('multisigCreate.info.keysOnPage.title')}</h4>
-            <p className="text-sm whitespace-pre-line text-gray-700 dark:text-gray-300">{t('multisigCreate.info.keysOnPage.text')}</p>
+            <h4 className="text-lg font-bold mb-3">{t('createAccount.info.keysOnPage.title')}</h4>
+            <p className="text-sm whitespace-pre-line text-gray-700 dark:text-gray-300">{t('createAccount.info.keysOnPage.text')}</p>
             <div className="text-right mt-6">
               <button onClick={()=>setShowSecretInfo(false)} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">{t('common.close')}</button>
             </div>

@@ -1,0 +1,26 @@
+{
+  "menu": "Multisig muokkaaminen",
+  "menuHint": "Muokkaa olemassa olevan tilin allekirjoittajia ja kynnysarvoja",
+  "confirm": {
+    "removeSigner": "Poistetaanko allekirjoittaja todella?"
+  },
+  "currentConfig": "Nykyinen/suunniteltu konfiguraatio",
+  "error": {
+    "thresholdTooHigh": "Kynnykset eivät saa ylittää painojen summaa."
+  },
+  "hint": "Lataa olemassa oleva tili, säädä allekirjoittajia, painotuksia, pääpainoa ja kynnyksiä ja tallenna muutokset.",
+  "load": "Lataaminen",
+  "loaded": "Ladattu. Lisäallekirjoittajia: {{count}}",
+  "noteMaxSigners": "Huomautus: Stellar sallii enintään 20 lisäallekirjoittajaa per tili.",
+  "reload": "Lataa uudelleen",
+  "save": "Tallenna muutokset",
+  "saved": "Muutokset tallennettu. TX: {{hash}}",
+  "signers": "Allekirjoittaja",
+  "weight": "Painotus",
+  "masterWeight": "Master-paino",
+  "title": "Muokkaa multisig-tiliä",
+  "validation": {
+    "signerKeyHint": "Huomautus: Allekirjoittajien on alettava kirjaimella \"G\" (ed25519-julkinen avain).",
+    "signerKeyInvalid": "Virheellinen allekirjoittajan osoite. Odotetaan G-alkuista osoitetta (ed25519)."
+  }
+}

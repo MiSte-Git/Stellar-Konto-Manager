@@ -1,0 +1,58 @@
+{
+  "hintEnterPublicKey": "Voer eerst een public key in.",
+  "columns": {
+    "amount": "Bedrag",
+    "compromised": "Gecompromitteerd",
+    "deactivated": "Gedeactiveerd",
+    "destination": "Doelportemonnee",
+    "issuer": "Uitgever",
+    "label": "Etiket",
+    "memo": "Memo",
+    "payments": "Betalingen",
+    "date": "Datum",
+    "token": "Token"
+  },
+  "decimals": {
+    "auto": "Automatisch",
+    "label": "Decimale plaatsen:"
+  },
+  "filter": {
+    "memoPlaceholder": "Filter op Memo, Wallet-adres of Label",
+    "tokenPlaceholder": "Filter op token (CODE:UITGEVER)"
+  },
+  "item": {
+    "memo": "Memo: \"{{memo}}\" (Betalingen: {{occurrences}})",
+    "token": "Token: {{token}} (Betalingen: {{occurrences}})",
+    "tokenShort": "Token: {{token}}"
+  },
+  "missingPublicKey": "Openbare sleutel ontbreekt.",
+  "moreTruncated": "... en {{extra}} andere groepen",
+  "toWallet": "aan Portemonnee: {{address}}",
+  "total": "Aantal gekochte tokens: {{count}}",
+  "totalTokens": "Aantal geïnvesteerde tokens (assets): {{count}}",
+  "value": {
+    "units": "{{amount}} stuks",
+    "xlm": "{{amount}} XLM"
+  },
+  "view": {
+    "label": "Filteren op:",
+    "memo": "Memo's (Groupfund)",
+    "token": "Token (aangekochte hoeveelheid)"
+  },
+  "toggles": {
+    "showTotals": "Totaalbedrag",
+    "qsiOnly": "Totale QSI GF"
+  },
+  "hints": {
+    "qsiListSet": "Opmerking: Je kunt de GF-lijst vinden onder Instellingen → Vertrouwde Wallets (QSI).",
+    "pageTime": "Het laden van een pagina duurt ongeveer 0,2 seconden → 100 pagina's ≈ 20 seconden → 1000 pagina's ≈ 200 seconden (≈ 3:20 minuten)."
+  },
+  "walletCapInfo": "Opmerking: Een wallet kan maximaal 1000 trustlines hebben.",
+  "action": {
+    "load": "Laden"
+  },
+  "history": {
+    "availableFrom": "Server (Horizon) – Geschiedenis vanaf",
+    "hintFullHistory": "Let op: De grootboekgeschiedenis van de Horizon-server gaat slechts terug tot {{available}}. Alleen gegevens tot die datum worden weergegeven. De gekozen startdatum is daarom beperkt. Voor oudere gegevens is een (meestal betaalde) Full-History-Provider nodig (misschien in de toekomst!)."
+  }
+}

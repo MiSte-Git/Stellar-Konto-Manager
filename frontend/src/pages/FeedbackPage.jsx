@@ -28,7 +28,7 @@ export default function FeedbackPage({ onBack }) {
       if (s.includes('send')) return 'sendPayment';
       if (s.includes('invested')) return 'investedTokens';
       if (s.includes('multisig') && s.includes('edit')) return 'multisigEdit';
-      if (s.includes('multisig')) return 'multisigCreate';
+      if (s.includes('multisig')) return 'createAccount';
       if (s.includes('settings')) return 'settings';
       if (s.includes('feedback')) return 'feedback';
       return 'other';
@@ -64,7 +64,7 @@ export default function FeedbackPage({ onBack }) {
         xlmByMemo: t('feedback.pages.xlmByMemo', 'XLM by memo'),
         sendPayment: t('feedback.pages.sendPayment', 'Send payment'),
         investedTokens: t('feedback.pages.investedTokens', 'Invested tokens'),
-        multisigCreate: t('feedback.pages.multisigCreate', 'Multisig create'),
+        createAccount: t('menu:createAccount', 'Create account + Multisig'),
         multisigEdit: t('feedback.pages.multisigEdit', 'Multisig edit'),
         settings: t('feedback.pages.settings', 'Settings'),
         feedback: t('feedback.pages.feedback', 'Feedback'),
@@ -199,7 +199,7 @@ export default function FeedbackPage({ onBack }) {
             <option value="xlmByMemo">{t('feedback.pages.xlmByMemo', 'XLM by memo')}</option>
             <option value="sendPayment">{t('feedback.pages.sendPayment', 'Send payment')}</option>
             <option value="investedTokens">{t('feedback.pages.investedTokens', 'Invested tokens')}</option>
-            <option value="multisigCreate">{t('feedback.pages.multisigCreate', 'Multisig create')}</option>
+            <option value="createAccount">{t('menu:createAccount', 'Create account + Multisig')}</option>
             <option value="multisigEdit">{t('feedback.pages.multisigEdit', 'Multisig edit')}</option>
             <option value="settings">{t('feedback.pages.settings', 'Settings')}</option>
             <option value="feedback">{t('feedback.pages.feedback', 'Feedback')}</option>

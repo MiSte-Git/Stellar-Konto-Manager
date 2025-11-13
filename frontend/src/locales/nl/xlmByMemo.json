@@ -1,0 +1,86 @@
+{
+  "page": {
+    "title": "XLM filteren op memo",
+    "noPublicKey": "Geen openbare sleutel geladen. Voer eerst een openbare sleutel in."
+  },
+  "action": {
+    "calculate": "Berekenen",
+    "loading": "Bereken…"
+  },
+  "date": {
+    "from": "Van (optioneel)",
+    "to": "Tot (optioneel)"
+  },
+  "debug": {
+    "incoming": "Binnenkomend – naar: {{toMe}}, maak→me: {{createToMe}}, native→me: {{nativeInToMe}}",
+    "incomingOverview": "Ingangen: {{total}} • betrokken wallets: {{unique}}",
+    "memo": "Memo's in het venster: {{any}} • exacte memo's: {{exact}}",
+    "types": "Typen – betaling: {{pay}}, pad: {{path}}, creëren: {{create}}, ander: {{other}}"
+  },
+  "export": {
+    "csv": "CSV controleren (hits)",
+    "csvAll": "Alle operaties exporteren",
+    "csvBoth": "Beide CSV's opslaan",
+    "csvMatches": "CSV controleren (overeenkomst)"
+  },
+  "exportCsv": {
+    "failed": "CSV-export mislukt: {{detail}}"
+  },
+  "memo": {
+    "label": "Memo-zoektekst (deelstring, hoofdlettergevoelig)",
+    "placeholder": "Memo (deelstring, hoofdlettergebruik in acht nemen)"
+  },
+  "overviewLine": "Betalingen ontvangen: {{total}} • betrokken wallets: {{unique}}",
+  "result": {
+    "label": "Totale som:",
+    "value": "{{amount}} XLM"
+  },
+  "summary": {
+    "amount": "Som: {{amount}} XLM",
+    "correctCount": "Ingangen met correct memo: {{n}}",
+    "count": "Aantal: {{n}}",
+    "label": "Vergelijking (alle ingangen)",
+    "otherCount": "Invoer met onjuist/zonder memo: {{n}}",
+    "unique": "Unieke wallets (alle): {{n}}",
+    "uniqueWallets": "Unieke wallets: {{n}}"
+  },
+  "time": {
+    "setToNow": "Huidige tijd instellen",
+    "setToNowHint": "Stel het tijdveld in op de huidige tijd."
+  },
+  "title": "XLM-saldo na memo",
+  "topLargest": {
+    "button": "Top 20 binnenkomsten (Memo)",
+    "clipboard": "Kopiëren naar klembord",
+    "csv": "CSV downloaden",
+    "scanning": "... scant topinzendingen",
+    "title": "Top 20-inzendingen voor Memo in de periode"
+  },
+  "tz": {
+    "cdt": "CDT (UTC−5)",
+    "cst": "CST (UTC−6)",
+    "europe_zurich": "Europa/Zürich (CET/CEST)",
+    "label": "Tijdzone voor datum/tijd",
+    "local": "Lokale tijdzone",
+    "note": "Datum/tijd worden geïnterpreteerd in de geselecteerde tijdzone en automatisch omgezet naar UTC voordat er naar gezocht wordt.",
+    "utc": "UTC",
+    "window": "Gebruikt UTC-tijdvenster: {{from}} → {{to}} (Uitsluitend tot)"
+  },
+  "wrongMemos": {
+    "button": "Portemonnees met onjuist/leeg memo weergeven.",
+    "clipboard": "Kopiëren naar klembord",
+    "columns": {
+      "amount": "Bedrag",
+      "created_at": "Aangemaakt op",
+      "from": "Van",
+      "memo": "Memo",
+      "tx_hash": "Transactie-hash"
+    },
+    "csv": "CSV downloaden",
+    "failed": "Fout bij het laden van de betalingen met onjuist/leeg memo.",
+    "hint": "Filter inkomende betalingen in de periode en toon afzenders met onjuist/leeg memo.",
+    "scanning": "... scant valse/leegge memos",
+    "summary": "Aantal: {{count}} • Som: {{sum}} XLM • Unieke wallets: {{unique}}",
+    "title": "Onjuiste/Lege memo's in de periode"
+  }
+}

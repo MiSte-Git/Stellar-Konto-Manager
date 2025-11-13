@@ -1,86 +1,146 @@
 {
+  "menu": "Stellar-kviz za početnike",
+  "menuHint": "Otvori pregled učenja",
+  "pageTitle": "Stranica za učenje",
+  "pageIntro": "Kratke, jednostavne lekcije o blockchainu i Stellar mreži. Nije potrebno prethodno znanje.",
+  "labels": {
+    "goal": "Cilj",
+    "task": "Zadatak",
+    "outcome": "Rezultat",
+    "reward": "Nagrada"
+  },
+  "glossary": {
+    "link": "Otvori pojmovnik",
+    "pageTitle": "Pojmovnik"
+  },
+  "progress": {
+    "saved": "Progres sačuvan",
+    "starsLabel": "{count} ★",
+    "error": "Napredak nije mogao biti sačuvan.",
+    "clearAll": "Izbrisati napredak",
+    "cleared": "Napredak izbrisan",
+    "setStarsGroup": "Dodijeliti zvjezdice",
+    "setStars": "Postavi {count} zvjezdica",
+    "completed": "Dovršeno",
+    "markComplete": "Označi kao dovršeno",
+    "export": "Izvoziti",
+    "exported": "Izvoz napretka",
+    "import": "Uvoz",
+    "imported": "Napredak uvožen"
+  },
+  "back": "Nazad",
+  "backToTop": "Prema gore",
+  "badges": {
+    "title": "Značka",
+    "chapters": {
+      "grundlagen": "Osnove",
+      "sicherheit": "Sigurnost",
+      "praxis": "Praksa"
+    },
+    "pro": "Stellar profesionalac"
+  },
+  "status": {
+    "success": "Uspjeh",
+    "validation": "Validacija",
+    "pending": "Čeka se na validaciju",
+    "retry": "Obučeni ste na podacima do listopada 2023."
+  },
+  "import": {
+    "title": "Uvoz napretka",
+    "summary": "Sažetak: {lessons} lekcija, ukupno {stars} zvjezdica. Metapodaci prakse: {meta}",
+    "metaYes": "da",
+    "metaNo": "ne",
+    "createdAt": "Datoteka kreirana",
+    "strategy": "Kako uvesti?",
+    "merge": "Spoji (zadrži postojeće, dopuni iz datoteke)",
+    "replace": "Zamijeniti (prebrisati postojeći napredak)",
+    "includePracticeMeta": "Preuzimanje metapodataka prakse",
+    "cancel": "Prekini",
+    "confirm": "Uvoz",
+    "invalid": "Neispravna ili nekompatibilna datoteka"
+  },
   "lesson1": {
-    "title": "Was ist eine Blockchain",
-    "goal": "Prinzip der Blockchain begreifen",
-    "task": "Bausteine (Transaktionen) zu einer Kette zusammensetzen",
-    "learningOutcome": "Eine Blockchain ist ein unveränderbares digitales Heft, in dem alle gemeinsam prüfen.",
-    "reward": "⭐ 1 – Block-Bauer"
+    "title": "Što je blockchain?",
+    "goal": "Razumijevanje principa blockchaina",
+    "task": "Sastavljanje blokova (transakcija) u lanac",
+    "learningOutcome": "Blockchain je nepromjenjiva digitalna knjiga koju svi zajednički provjeravaju.",
+    "reward": "⭐ 1 – graditelj blokova"
   },
   "lesson2": {
-    "title": "Stellar verstehen",
-    "goal": "Unterschied zu anderen Blockchains kennen",
-    "task": "Token an Freund schicken (Simulation) und Geschwindigkeit sehen",
-    "learningOutcome": "Stellar ist schnell, günstig und ohne Mining.",
-    "reward": "⭐ 1 – Schnell-Sender"
+    "title": "Razumjeti Stellar",
+    "goal": "Razlika u odnosu na druge blockchaine.",
+    "task": "Simulirati slanje tokena prijatelju i vidjeti brzinu",
+    "learningOutcome": "Stellar je brz, jeftin i bez rudarenja.",
+    "reward": "⭐ 1 – Brzi pošiljatelj"
   },
   "lesson3": {
-    "title": "Öffentlichkeit & Privatsphäre",
-    "goal": "Pseudonymität begreifen",
-    "task": "Öffentliche Transaktion ansehen und raten, ob man weiß, wer sendet",
-    "learningOutcome": "Alles ist sichtbar, aber niemand kennt den echten Namen.",
-    "reward": "⭐ 1 – Datenschutz-Detektiv"
+    "title": "Javnost i privatnost",
+    "goal": "Razumijevanje pseudonimiteta",
+    "task": "Pregledati javnu transakciju i procijeniti može li se znati tko je pošiljatelj.",
+    "learningOutcome": "Sve je vidljivo, ali nitko ne zna pravo ime.",
+    "reward": "⭐ 1 – Detektiv za zaštitu podataka"
   },
   "lesson4": {
-    "title": "Dein Konto",
-    "goal": "Aufbau und Bedeutung von Public/Secret Key verstehen",
-    "task": "Zuordnungs-Spiel: Was ist öffentlich, was geheim",
-    "learningOutcome": "Nur der Secret Key gibt Zugriff, Public Key darf geteilt werden.",
-    "reward": "⭐ 1 – Schlüssel-Wächter"
+    "title": "Tvoj račun",
+    "goal": "Razumijevanje strukture i značenja javnog/tajnog ključa",
+    "task": "Igra povezivanja: Što je javno, a što tajno",
+    "learningOutcome": "Samo tajni ključ omogućuje pristup, javni ključ se može dijeliti.",
+    "reward": "⭐ 1 – Čuvar ključeva"
   },
   "lesson5": {
-    "title": "Senden & Empfangen",
-    "goal": "Funktionsweise von Transaktionen und Trustlines verstehen",
-    "task": "Test-Sendung ausführen und Gebühr sehen",
-    "learningOutcome": "Jede Transaktion kostet eine kleine Gebühr; Trustline = Erlaubnis zum Empfangen.",
+    "title": "Slanje i primanje",
+    "goal": "Funkcionisanje transakcija i trustline-ova razumeti",
+    "task": "Izvrši probnu pošiljku i vidi naknadu",
+    "learningOutcome": "Svaka transakcija nosi malu naknadu; Trustline = dozvola za primanje.",
     "reward": "⭐ 2 – Trustline-Starter"
   },
   "lesson6": {
-    "title": "Token & Handel",
-    "goal": "Marktmechanismen kennenlernen",
-    "task": "Token auf virtuellen Marktplatz legen und Preisänderung beobachten",
-    "learningOutcome": "Preis entsteht durch Angebot und Nachfrage.",
-    "reward": "⭐ 2 – Marktplatz-Kenner"
+    "title": "Token & Trgovanje",
+    "goal": "Upoznavanje s tržišnim mehanizmima",
+    "task": "Postavite token na virtualnu tržnicu i pratite promjenu cijene.",
+    "learningOutcome": "Cijena nastaje kroz ponudu i potražnju.",
+    "reward": "⭐ 2 – Stručnjak za tržište"
   },
   "lesson7": {
-    "title": "Sicherheit",
-    "goal": "Sichere Verhaltensweisen lernen",
-    "task": "Richtige/falsche Handlungen sortieren; Fake-Token erkennen",
-    "learningOutcome": "Geheimhaltung des Keys, sichere Aufbewahrung und Testnet nutzen.",
-    "reward": "⭐ 2 – Sicherheits-Wächter"
+    "title": "Sigurnost",
+    "goal": "Učenje sigurnih ponašanja",
+    "task": "Razvrstavanje ispravnih/pogrešnih radnji; prepoznavanje lažnih tokena",
+    "learningOutcome": "Čuvanje tajnosti ključa, sigurno skladištenje i korištenje testnet mreže.",
+    "reward": "⭐ 2 – Sigurnosni čuvar"
   },
   "lesson8": {
-    "title": "Verifizierung & Identität",
-    "goal": "Vertrauen und Regeln verstehen",
-    "task": "Echten vs. gefälschten Token vergleichen",
-    "learningOutcome": "KYC = Ausweisprüfung, Verifizierung zeigt vertrauenswürdige Token.",
-    "reward": "⭐ 2 – Prüf-Profi"
+    "title": "Verifikacija i identitet",
+    "goal": "Povjerenje i razumijevanje pravila.",
+    "task": "Usporedba pravih i lažnih tokena",
+    "learningOutcome": "KYC = provjera identiteta, verifikacija pokazuje pouzdane tokene.",
+    "reward": "⭐ 2 – Ispitni stručnjak"
   },
   "lesson9": {
-    "title": "Zero Knowledge",
-    "goal": "Datenschutz-Konzepte verstehen",
-    "task": "Beispiel-Szenario 'Ich bin über 18' ohne Geburtsdatum zeigen",
-    "learningOutcome": "Man kann etwas beweisen, ohne Geheimnisse zu verraten.",
-    "reward": "⭐ 2 – ZK-Versteher"
+    "title": "Nula znanja",
+    "goal": "Razumijevanje koncepta zaštite podataka",
+    "task": "Primjer scenarija 'Imam više od 18 godina' bez prikazivanja datuma rođenja.",
+    "learningOutcome": "Može se nešto dokazati, a da se pritom ne otkriju tajne.",
+    "reward": "⭐ 2 – ZK-Shvaćatelj"
   },
   "lesson10": {
-    "title": "Praxis mit SKM",
-    "goal": "Erlerntes praktisch anwenden",
-    "task": "Konto im Testnet erstellen, aktivieren, Trustline setzen, Token senden",
-    "learningOutcome": "Technische Abläufe einer Transaktion nachvollziehen.",
-    "reward": "⭐ 3 – Blockchain-Pilot"
+    "title": "Praksa s SKM",
+    "goal": "Primjena naučenog u praksi",
+    "task": "Kreirati račun na Testnetu, aktivirati, postaviti Trustline, poslati tokene",
+    "learningOutcome": "Praćenje tehničkih postupaka transakcije.",
+    "reward": "⭐ 3 – Blockchain pilot-projekt"
   },
   "lesson11": {
-    "title": "Verantwortung",
-    "goal": "Konsequenzen von Fehlern verstehen",
-    "task": "Entscheidungsspiel: richtig handeln oder nicht",
-    "learningOutcome": "Blockchain ist endgültig; Sorgfalt ist Pflicht.",
-    "reward": "⭐ 1 – Verantwortungs-Held"
+    "title": "Odgovornost",
+    "goal": "Razumijevanje posljedica pogrešaka",
+    "task": "Odlučujuća utakmica: djelovati ispravno ili ne.",
+    "learningOutcome": "Blockchain je konačan; obavezna je pažnja.",
+    "reward": "⭐ 1 – Junak odgovornosti"
   },
   "lesson12": {
-    "title": "Abschluss / Spielerisches Lernen",
-    "goal": "Wiederholung und Motivation",
-    "task": "Mini-Quiz + Abzeichenanzeige",
-    "learningOutcome": "Gelerntes wiederholen, eigene Fortschritte erkennen.",
-    "reward": "🎖 Stellar-Profi"
+    "title": "Završetak / Učenje kroz igru",
+    "goal": "Ponavljanje i motivacija",
+    "task": "Mini-kviz + prikaz značke",
+    "learningOutcome": "Ponoviti naučeno, prepoznati vlastiti napredak.",
+    "reward": "🎖 Zvjezdani profesionalac"
   }
 }
