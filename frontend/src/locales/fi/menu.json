@@ -1,0 +1,18 @@
+{
+  "balance": "Näytä tilitiedot",
+  "devTestnet": "Testiverkko (kehittäjille)",
+  "sendPayment": "Lähetä maksu",
+  "donate": "Lahjoitukset",
+  "feedback": "Palaute",
+  "xlmByMemo": "XLM-määrää suodatetaan muistiinpanon/tokenin perusteella.",
+  "muxed": "Muxed-osoitteiden hallinta",
+  "glossary": "Sanasto",
+  "createAccount": "Luo tili + Multisig",
+  "multisigEdit": "Muokkaa multisig",
+  "listAll": "Luettele kaikki trustlinet.",
+  "compareTrustlines": "Trustlines vertailla",
+  "settings": "Asetukset",
+  "tokenPurchases": "Token-ostot",
+  "learn": "Stellar-visailu aloittelijoille.",
+  "unknown": "Tuntematon valikkovalinta"
+}

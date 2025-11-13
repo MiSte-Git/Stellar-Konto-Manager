@@ -2,5 +2,85 @@
   "page": {
     "title": "XLM nach Memo filtern",
     "noPublicKey": "Kein Public Key geladen. Bitte zuerst einen Public Key eingeben."
+  },
+  "action": {
+    "calculate": "Berechnen",
+    "loading": "Berechne…"
+  },
+  "date": {
+    "from": "Von (optional)",
+    "to": "Bis (optional)"
+  },
+  "debug": {
+    "incoming": "Incoming – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
+    "incomingOverview": "Eingänge: {{total}} • beteiligte Wallets: {{unique}}",
+    "memo": "Memos im Fenster: {{any}} • exakte Memos: {{exact}}",
+    "types": "Typen – payment: {{pay}}, path: {{path}}, create: {{create}}, andere: {{other}}"
+  },
+  "export": {
+    "csv": "CSV prüfen (Treffer)",
+    "csvAll": "Alle Operationen exportieren",
+    "csvBoth": "Beide CSVs speichern",
+    "csvMatches": "CSV prüfen (Treffer)"
+  },
+  "exportCsv": {
+    "failed": "CSV-Export fehlgeschlagen: {{detail}}"
+  },
+  "memo": {
+    "label": "Memo-Suchtext (Teilstring, Groß-/Kleinschreibung beachten)",
+    "placeholder": "Memo (Teilstring, Groß-/Kleinschreibung beachten)"
+  },
+  "overviewLine": "Zahlungseingänge: {{total}} • beteiligte Wallets: {{unique}}",
+  "result": {
+    "label": "Gesamtsumme:",
+    "value": "{{amount}} XLM"
+  },
+  "summary": {
+    "amount": "Summe: {{amount}} XLM",
+    "correctCount": "Eingänge mit korrektem Memo: {{n}}",
+    "count": "Anzahl: {{n}}",
+    "label": "Vergleich (alle Eingänge)",
+    "otherCount": "Eingänge mit falschem/ohne Memo: {{n}}",
+    "unique": "Eindeutige Wallets (alle): {{n}}",
+    "uniqueWallets": "Eindeutige Wallets: {{n}}"
+  },
+  "time": {
+    "setToNow": "Aktuelle Zeit setzen",
+    "setToNowHint": "Setzt das Uhrzeit-Feld auf die aktuelle Zeit"
+  },
+  "title": "XLM-Summe nach Memo",
+  "topLargest": {
+    "button": "Top 20 Eingänge (Memo)",
+    "clipboard": "In Zwischenablage kopieren",
+    "csv": "CSV herunterladen",
+    "scanning": "… scannt Top-Eingänge",
+    "title": "Top 20-Eingänge für Memo im Zeitraum"
+  },
+  "tz": {
+    "cdt": "CDT (UTC−5)",
+    "cst": "CST (UTC−6)",
+    "europe_zurich": "Europe/Zurich (CET/CEST)",
+    "label": "Zeitzone für Datum/Uhrzeit",
+    "local": "Lokale Zeitzone",
+    "note": "Datum/Uhrzeit werden in der gewählten Zeitzone interpretiert und vor der Suche automatisch in UTC umgerechnet.",
+    "utc": "UTC",
+    "window": "Genutztes UTC-Zeitfenster: {{from}} → {{to}} (Bis exklusiv)"
+  },
+  "wrongMemos": {
+    "button": "Wallets mit falschem/leerem Memo anzeigen",
+    "clipboard": "In Zwischenablage kopieren",
+    "columns": {
+      "amount": "Betrag",
+      "created_at": "Erstellt am",
+      "from": "Von",
+      "memo": "Memo",
+      "tx_hash": "Transaktions-Hash"
+    },
+    "csv": "CSV herunterladen",
+    "failed": "Fehler beim Laden der Zahlungen mit falschem/leerem Memo.",
+    "hint": "Filtert eingehende Zahlungen im Zeitraum und zeigt Absender mit falschem/leerem Memo",
+    "scanning": "… scannt falsche/leere Memos",
+    "summary": "Anzahl: {{count}} • Summe: {{sum}} XLM • Eindeutige Wallets: {{unique}}",
+    "title": "Falsche/Leere Memos im Zeitraum"
   }
 }

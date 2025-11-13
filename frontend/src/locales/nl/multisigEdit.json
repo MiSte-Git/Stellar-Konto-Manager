@@ -1,0 +1,26 @@
+{
+  "menu": "Multisig bewerken",
+  "menuHint": "De ondertekenaars en drempelwaarden van een bestaand account aanpassen",
+  "confirm": {
+    "removeSigner": "Onderschrijver echt verwijderen?"
+  },
+  "currentConfig": "Huidige / geplande configuratie",
+  "error": {
+    "thresholdTooHigh": "Drempels mogen de som van de gewichten niet overschrijden."
+  },
+  "hint": "Laad een bestaand account, pas de ondertekenaars, gewichten, mastergewicht en drempels aan en sla de wijzigingen op.",
+  "load": "Laden",
+  "loaded": "Geladen. Extra ondertekenaars: {{count}}",
+  "noteMaxSigners": "Let op: Stellar staat maximaal 20 extra ondertekenaars per account toe.",
+  "reload": "Opnieuw laden",
+  "save": "Wijzigingen opslaan",
+  "saved": "Wijzigingen opgeslagen. TX: {{hash}}",
+  "signers": "Ondertekenaar",
+  "weight": "Weging",
+  "masterWeight": "Mastergewicht",
+  "title": "Multisig-account bewerken",
+  "validation": {
+    "signerKeyHint": "Opmerking: Ondertekenaars moeten beginnen met een \"G\" (ed25519-publieke sleutel).",
+    "signerKeyInvalid": "Ongeldig ondertekenaaradres. Er wordt een G…-adres (ed25519) verwacht."
+  }
+}

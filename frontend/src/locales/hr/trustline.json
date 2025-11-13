@@ -1,0 +1,27 @@
+{
+  "all": "Popisati sve povjereničke linije.",
+  "compare": "Usporedba Trustlinesa",
+  "delete": "Brisanje trustlines",
+  "onlyZeroBalanceInfo": "Mogu se obrisati samo trustline-ovi s nulom na računu.",
+  "nonZeroBalance": "Ova trustna linija ima stanje različito od 0 i ne može se izbrisati.",
+  "destination": {
+    "label": "Ciljana adresa",
+    "placeholder": "Ciljani javni ključ ili federacijska adresa",
+    "error": "Nevažeća odredišna adresa"
+  },
+  "deleted": {
+    "resultTitle": "Rezultat brisanja",
+    "resultText": "{count} Trustlines su obrađene u modu {mode}.",
+    "mode": {
+      "simulation": "Simulacija",
+      "real": "Stvarni rad",
+      "realWarning": "Upozorenje! Ovo trajno briše Trustlines na blockchainu."
+    },
+    "notFound": "Nisu pronađene odgovarajuće Trustline za brisanje.",
+    "simulated": "Simulacija: {count} Trustlines bi bile izbrisane.",
+    "success": "Uspješno: izbrisano {count} trustlinija."
+  },
+  "noDuplicates": "Nisu pronađene dvostruke trust linije.",
+  "showSecret": "Prikaži tajni ključ",
+  "notFound": "Nema pronađenih Trustline(ova)."
+}

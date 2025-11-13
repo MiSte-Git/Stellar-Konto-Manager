@@ -1,0 +1,20 @@
+{
+  "label": "Chiave pubblica o indirizzo di federazione",
+  "placeholder": "Inserisci la tua chiave pubblica o un indirizzo di federazione",
+  "load": "Caricare",
+  "deleteFromList": "Rimuovere dalla lista",
+  "source": "Fonte",
+  "destination": {
+    "input": "Obiettivo",
+    "error": "Chiave pubblica non valida inserita.",
+    "label": "Chiave pubblica di destinazione",
+    "placeholder": "Inserisci la chiave pubblica di destinazione"
+  },
+  "invalid": "Chiave pubblica non valida.",
+  "submit": {
+    "button": "Inviare"
+  },
+  "test": "Prova",
+  "historyLabel": "Storia",
+  "historyPlaceholder": "Seleziona l'ultimo portafoglio utilizzato"
+}

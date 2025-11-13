@@ -1,0 +1,27 @@
+{
+  "all": "List all Trustlines",
+  "compare": "Comparing Trustlines",
+  "delete": "Delete trustlines",
+  "onlyZeroBalanceInfo": "Only trust lines with a balance of 0 can be deleted.",
+  "nonZeroBalance": "This trustline has a non-zero balance and cannot be deleted.",
+  "destination": {
+    "label": "Target address",
+    "placeholder": "Destination public key or federation address",
+    "error": "Invalid destination address"
+  },
+  "deleted": {
+    "resultTitle": "Delete result",
+    "resultText": "{count} trustlines were processed in {mode} mode.",
+    "mode": {
+      "simulation": "Simulation",
+      "real": "Live operation",
+      "realWarning": "Warning! This will permanently delete trustlines on the blockchain."
+    },
+    "notFound": "No matching trustlines found to delete.",
+    "simulated": "Simulation: {count} trustlines would be deleted.",
+    "success": "Successfully deleted {count} trustlines."
+  },
+  "noDuplicates": "No duplicate trustlines found.",
+  "showSecret": "Display Secret Key",
+  "notFound": "No trustline(s) found."
+}

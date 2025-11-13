@@ -21,27 +21,27 @@ function DeleteByIssuer({
   setIsLoading,
 }) {
   const { t } = useTranslation();
-   const [localError, setLocalError] = useState('');
-  
+  const [localError, setLocalError] = useState('');
+
   const handleDelete = async () => {
-  if (!issuerAddress || !StrKey.isValidEd25519PublicKey(issuerAddress)) {
-  setLocalError(t('issuer.invalid'));
-    return;
-     }
-  
-  setLocalError('');
-  setError('');
+    if (!issuerAddress || !StrKey.isValidEd25519PublicKey(issuerAddress)) {
+      setLocalError(t('issuer.invalid', 'Invalid issuer address.'));
+      return;
+    }
+
+    setLocalError('');
+    setError('');
     setIsLoading(true);
     try {
       const trustlines = await loadTrustlines(sourcePublicKey);
-      const issuerTrustlines = trustlines.filter(t => t.assetIssuer === issuerAddress);
+      const issuerTrustlines = trustlines.filter(tl => tl.assetIssuer === issuerAddress);
 
       if (issuerTrustlines.length > 0) {
         setResults(issuerTrustlines);
 
         setConfirmAction(() => async () => {
           if (!sourceSecret || !StrKey.isValidEd25519SecretSeed(sourceSecret)) {
-            setError(t('secretKey.invalid'));
+            setError(t('secretKey.invalid', 'Invalid secret key.'));
             return;
           }
 
@@ -64,21 +64,21 @@ function DeleteByIssuer({
             
             const response = { ok: true };
 
-            if (!response.ok) throw new Error(result.error || t('error.trustline.unknown'));
+            if (!response.ok) throw new Error(result.error || t('error.trustline.unknown', 'Unknown error when deleting the trustline.'));
 
-            setResults([...result.messages, t('secretKey.cleared')]);
+            setResults([...result.messages, t('secretKey.cleared', 'Secret key has been deleted.')]);
             setTrustlines(await loadTrustlines(sourcePublicKey));
             setSourceSecret('');
             setShowSecretKey(false);
           } catch (err) {
             console.error('Fetch error:', err);
-            setError(t('error.trustline.unknown'));
+            setError(t('error.trustline.unknown', 'Unknown error when deleting the trustline.'));
           }
         });
 
         setShowConfirm(true);
       } else {
-        setResults([t('noIssuerTrustlinesFound', { issuer: issuerAddress })]);
+        setResults([t('noIssuerTrustlinesFound', { issuer: issuerAddress, defaultValue: 'No trustlines found for issuer {{issuer}}.' })]);
       }
     } catch (err) {
       setError(err.message);
@@ -103,7 +103,7 @@ function DeleteByIssuer({
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
           disabled={isLoading}
         >
-          {isLoading ? t('option.loading') : t('option.delete')}
+          {isLoading ? t('option.loading', 'Loading…') : t('option.delete')}
         </button>
         {localError && (
           <span className="text-xs text-red-700 inline-block border border-red-500 rounded px-2 py-0.5">

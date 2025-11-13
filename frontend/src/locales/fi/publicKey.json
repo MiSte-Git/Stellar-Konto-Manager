@@ -1,0 +1,20 @@
+{
+  "label": "Julkinen avain tai federointiosoite",
+  "placeholder": "Syötä julkinen avain tai federaatio-osoite",
+  "load": "Lataus",
+  "deleteFromList": "Poista listalta",
+  "source": "Lähde",
+  "destination": {
+    "input": "Tavoite",
+    "error": "Virheellinen julkinen avain syötetty.",
+    "label": "Kohde-julkinen avain",
+    "placeholder": "Anna tavoitteen julkinen avain"
+  },
+  "invalid": "Virheellinen julkinen avain.",
+  "submit": {
+    "button": "Lähetä"
+  },
+  "test": "Testi",
+  "historyLabel": "Historia",
+  "historyPlaceholder": "Valitse viimeksi käytetty lompakko"
+}

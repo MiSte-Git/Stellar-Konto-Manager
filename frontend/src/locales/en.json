@@ -246,7 +246,7 @@
       "xlmByMemo": "Filter by memo",
       "sendPayment": "Send payment",
       "investedTokens": "Filter tokens/assets",
-      "multisigCreate": "Create account",
+      "createAccount": "Create account",
       "multisigEdit": "Edit multisig account",
       "settings": "Settings",
       "feedback": "Feedback",
@@ -352,7 +352,7 @@
     "mainnet": "Mainnet",
     "testnet": "Testnet"
   },
-  "multisigCreate": {
+  "createAccount": {
     "activateHint": "Activation is necessary for the account to exist. In the Testnet, it's done via Friendbot, and in the Mainnet through \"Create Account\" from an existing wallet.",
     "activateNow": "Activate account immediately",
     "activateOnly": "Just activate",

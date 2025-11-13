@@ -603,7 +603,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           <div className="relative">
             <input className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm font-mono" list="hist-recipients" value={dest} onChange={(e)=>{ clearSuccess(); setDest(e.target.value); }} onBlur={()=>pushHistory('stm.hist.recipients', dest, setHistoryRecipients)} placeholder="G... oder user*domain" />
             {dest && (
-              <button type="button" onClick={()=>{ clearSuccess(); setDest(''); }} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
+              <button type="button" onClick={()=>{ clearSuccess(); setDest(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
             )}
             <datalist id="hist-recipients">
               {historyRecipients.map((v,i)=>(<option key={v+i} value={v} />))}
@@ -683,7 +683,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   }}
                 />
           {amount && (
-          <button type="button" onClick={()=>{ clearSuccess(); setAmount(''); }} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
+          <button type="button" onClick={()=>{ clearSuccess(); setAmount(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
           )}
           <datalist id="hist-amounts">
           {historyAmounts.map((v,i)=>(<option key={v+i} value={v} />))}
@@ -751,7 +751,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               <div className="relative">
                 <input className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm" list="hist-memos" value={memoVal} onChange={(e)=>{ clearSuccess(); setMemoVal(e.target.value); }} onBlur={()=>pushHistory('stm.hist.memos', memoVal, setHistoryMemos)} />
                 {memoVal && (
-                  <button type="button" onClick={()=>{ clearSuccess(); setMemoVal(''); }} title={t('common.clear')} aria-label={t('common.clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
+                  <button type="button" onClick={()=>{ clearSuccess(); setMemoVal(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
                 )}
                 <datalist id="hist-memos">
                   {historyMemos.map((v,i)=>(<option key={v+i} value={v} />))}
@@ -785,7 +785,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
        {showConfirmModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
           <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
-            <h3 className="text-lg font-semibold mb-2">{t('option.confirm.action.title')}</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('common:option.confirm.action.title', 'Confirm action')}</h3>
             <div className="text-sm space-y-1 mb-3">
               <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.recipient')}:</span> <span className="font-mono break-all">{dest}</span></div>
               <div>
@@ -839,8 +839,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             )}
 
             <div className="flex justify-end gap-2">
-              <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowConfirmModal(false)}>{t('option.cancel')}</button>
-              <button className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50" disabled={preflight.loading || !!preflight.err} onClick={handleStoredSecretSend}>{t('option.yes')}</button>
+              <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowConfirmModal(false)}>{t('common:option.cancel', 'Cancel')}</button>
+              <button className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50" disabled={preflight.loading || !!preflight.err} onClick={handleStoredSecretSend}>{t('common:option.yes', 'Yes')}</button>
             </div>
           </div>
         </div>

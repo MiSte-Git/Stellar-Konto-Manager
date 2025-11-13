@@ -6,5 +6,71 @@
   "learn.error.unknown_action": "Unbekannte Praxisaktion",
   "learn.error.rate_limited": "Bitte warten und erneut versuchen.",
   "learn.error.horizon_timeout": "Horizon-Zeitüberschreitung. Bitte erneut versuchen.",
-  "learn.error.network": "Netzwerkfehler. Bitte erneut versuchen."
+  "learn.error.network": "Netzwerkfehler. Bitte erneut versuchen.",
+  "asset": {
+    "creationDateUnknown": "Unbekanntes Erstellungsdatum"
+  },
+  "cache": {
+    "backfillAborted": "Initiales Laden der Zahlungen abgebrochen",
+    "coverage": {
+      "newestFailed": "Ermitteln der neuesten Zahlung fehlgeschlagen",
+      "oldestFailed": "Ermitteln des ältesten Datums fehlgeschlagen"
+    },
+    "indexIterFailed": "Index-Iteration im Cache fehlgeschlagen",
+    "memoNormBackfillFailed": "Initiales Laden der Zahlungen für normalisierte Memos fehlgeschlagen",
+    "openFailed": "Lokaler Cache konnte nicht geöffnet werden",
+    "readFailed": "Lesen aus dem Cache fehlgeschlagen",
+    "rehydrateFailed": "Nachladen fehlender Memos fehlgeschlagen",
+    "rehydrateWriteFailed": "Schreiben der Memos in den Cache fehlgeschlagen",
+    "writeFailed": "Schreiben in den Cache fehlgeschlagen"
+  },
+  "connection": {
+    "backend": "Keine Verbindung zum Backend möglich. Stellen Sie sicher"
+  },
+  "fetchInvestedTokens": {
+    "failed": "Laden der Investitionsdaten fehlgeschlagen: {{detail}}"
+  },
+  "horizon": {
+    "paymentsFetch": "Fehler beim Laden der Zahlungen von Horizon"
+  },
+  "loadTrustlines": "Trustlines konnten nicht geladen werden. Bitte erneut versuchen.",
+  "loadTrustlinesFailed": "Laden der Trustlines fehlgeschlagen",
+  "loadTrustlinesNotFound": "Konto im ausgewählten Netzwerk nicht gefunden.",
+  "accountNotFoundInNetwork": "Im '{{net}}' nicht gefunden!",
+  "op_invalid_limit": "Trustline kann nicht gelöscht werden. Sie hat möglicherweise noch Guthaben oder offene Verpflichtungen.",
+  "query": {
+    "invalidMemo": "Ungültiges Memo",
+    "invalidRange": "Zeitfenster ist ungültig (Von > Bis)",
+    "invalidTime": "Ungültige Zeitangabe"
+  },
+  "submitTransaction": {
+    "failed": {
+      "tx_bad_auth": "Transaktion abgelehnt: Ungültige Signatur",
+      "tx_failed": "Transaktion fehlgeschlagen",
+      "unknown": "Unbekannter Fehler bei der Transaktion"
+    }
+  },
+  "sync": {
+    "backfillFailed": "Initiales Laden der Zahlungen fehlgeschlagen",
+    "incrementalFailed": "Aktualisierung der Zahlungen fehlgeschlagen"
+  },
+  "transaction": {
+    "failed": "Transaktion fehlgeschlagen",
+    "title": "Fehler bei der Transaktion"
+  },
+  "trustline": {
+    "submitFailed": "Fehler beim Löschen der Trustline.",
+    "unknown": "Unbekannter Fehler beim Löschen der Trustline."
+  },
+  "xlmByMemo": {
+    "aborted": "Vorgang vom Benutzer abgebrochen",
+    "accountInvalid": "Ungültiger Account",
+    "dateInvalid": "Ungültiges Datum",
+    "dateRange": "Ungültiger Datumsbereich",
+    "failedUnknown": "Unbekannter Fehler",
+    "memoInvalid": "Ungültiges Memo",
+    "paymentsFetch": "Fehler beim Laden der Zahlungen",
+    "serverInvalid": "Ungültiger Server"
+  },
+  "rateLimited": "Horizon-Rate-Limit überschritten. Bitte ein paar Sekunden warten und erneut versuchen."
 }

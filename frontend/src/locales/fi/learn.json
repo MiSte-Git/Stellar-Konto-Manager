@@ -1,86 +1,146 @@
 {
+  "menu": "Stellar-visailu aloittelijoille",
+  "menuHint": "Avaa oppimisyhteenveto",
+  "pageTitle": "Oppimissivu",
+  "pageIntro": "Lyhyitä, aloittelijaystävällisiä oppitunteja lohkoketjusta ja Stellar-verkoista. Ei ennakkotietoja tarvita.",
+  "labels": {
+    "goal": "Tavoite",
+    "task": "Tehtävä",
+    "outcome": "Tulos",
+    "reward": "Palkinto"
+  },
+  "glossary": {
+    "link": "Avaa sanasto",
+    "pageTitle": "Sanasto"
+  },
+  "progress": {
+    "saved": "Edistyminen tallennettu",
+    "starsLabel": "{count} ★",
+    "error": "Edistystä ei voitu tallentaa",
+    "clearAll": "Poista edistys",
+    "cleared": "Edistys poistettu",
+    "setStarsGroup": "Antaa tähtiä",
+    "setStars": "{count} tähteä asetettu",
+    "completed": "Valmistunut",
+    "markComplete": "Merkitse valmiiksi",
+    "export": "Vie vientiä",
+    "exported": "Edistyminen viety",
+    "import": "Tuonti",
+    "imported": "Edistys tuo maahan"
+  },
+  "back": "Takaisin",
+  "backToTop": "Ylös",
+  "badges": {
+    "title": "Merkki",
+    "chapters": {
+      "grundlagen": "Perusteet",
+      "sicherheit": "Turvallisuus",
+      "praxis": "Käytäntö"
+    },
+    "pro": "Stellar-ammattilainen"
+  },
+  "status": {
+    "success": "Menestys",
+    "validation": "Vahvistus",
+    "pending": "Odottaa validointia",
+    "retry": "Yritä uudelleen."
+  },
+  "import": {
+    "title": "Tuoda edistymistä",
+    "summary": "Yhteenveto: {lessons} oppituntia, yhteensä {stars} tähteä. Käytännön metatiedot: {meta}",
+    "metaYes": "kyllä",
+    "metaNo": "ei",
+    "createdAt": "Tiedosto luotu",
+    "strategy": "Kuinka tuoda?",
+    "merge": "Yhdistä (säilytä olemassa oleva, täydennä tiedostosta)",
+    "replace": "Korvaa (korvaa nykyinen edistys)",
+    "includePracticeMeta": "Käytäntömetatietojen käyttöönotto",
+    "cancel": "Peruuttaa",
+    "confirm": "Tuo maahan",
+    "invalid": "Virheellinen tai yhteensopimaton tiedosto"
+  },
   "lesson1": {
-    "title": "Was ist eine Blockchain",
-    "goal": "Prinzip der Blockchain begreifen",
-    "task": "Bausteine (Transaktionen) zu einer Kette zusammensetzen",
-    "learningOutcome": "Eine Blockchain ist ein unveränderbares digitales Heft, in dem alle gemeinsam prüfen.",
-    "reward": "⭐ 1 – Block-Bauer"
+    "title": "Mikä on lohkoketju?",
+    "goal": "Ymmärrä lohkoketjun periaate",
+    "task": "Yhdistä rakennuspalikat (transaktiot) ketjuksi",
+    "learningOutcome": "Lohkoketju on muuttumaton digitaalinen kirja, jota kaikki tarkastavat yhdessä.",
+    "reward": "⭐ 1 – Blockkien rakentaja"
   },
   "lesson2": {
-    "title": "Stellar verstehen",
-    "goal": "Unterschied zu anderen Blockchains kennen",
-    "task": "Token an Freund schicken (Simulation) und Geschwindigkeit sehen",
-    "learningOutcome": "Stellar ist schnell, günstig und ohne Mining.",
-    "reward": "⭐ 1 – Schnell-Sender"
+    "title": "Ymmärtää Stellar",
+    "goal": "Eroa muihin lohkoketjuihin verrattuna tuntea",
+    "task": "Lähetä token ystävälle (simulaatio) ja näe nopeus.",
+    "learningOutcome": "Stellar on nopea, edullinen ja ilman louhintaa.",
+    "reward": "⭐ 1 – Pikaviestin"
   },
   "lesson3": {
-    "title": "Öffentlichkeit & Privatsphäre",
-    "goal": "Pseudonymität begreifen",
-    "task": "Öffentliche Transaktion ansehen und raten, ob man weiß, wer sendet",
-    "learningOutcome": "Alles ist sichtbar, aber niemand kennt den echten Namen.",
-    "reward": "⭐ 1 – Datenschutz-Detektiv"
+    "title": "Julkisuus ja yksityisyys",
+    "goal": "Ymmärtää pseudonymiteettiä",
+    "task": "Tarkista julkinen tapahtuma ja arvioi, tiedätkö, kuka lähettää sen.",
+    "learningOutcome": "Kaikki on näkyvissä, mutta kukaan ei tiedä oikeaa nimeä.",
+    "reward": "⭐ 1 – Tietosuojatutkija"
   },
   "lesson4": {
-    "title": "Dein Konto",
-    "goal": "Aufbau und Bedeutung von Public/Secret Key verstehen",
-    "task": "Zuordnungs-Spiel: Was ist öffentlich, was geheim",
-    "learningOutcome": "Nur der Secret Key gibt Zugriff, Public Key darf geteilt werden.",
-    "reward": "⭐ 1 – Schlüssel-Wächter"
+    "title": "Tilisi",
+    "goal": "Julkisen ja salaisen avaimen rakenteen ja merkityksen ymmärtäminen",
+    "task": "Yhdistämispeli: Mikä on julkista, mikä salassa pidettävää",
+    "learningOutcome": "Vain salainen avain antaa pääsyn, julkinen avain voidaan jakaa.",
+    "reward": "⭐ 1 – Avaimen vartija"
   },
   "lesson5": {
-    "title": "Senden & Empfangen",
-    "goal": "Funktionsweise von Transaktionen und Trustlines verstehen",
-    "task": "Test-Sendung ausführen und Gebühr sehen",
-    "learningOutcome": "Jede Transaktion kostet eine kleine Gebühr; Trustline = Erlaubnis zum Empfangen.",
-    "reward": "⭐ 2 – Trustline-Starter"
+    "title": "Lähetä & Vastaanota",
+    "goal": "Transaktioiden ja luottolimiittien toiminnan ymmärtäminen",
+    "task": "Suorita testilähetys ja näe maksu",
+    "learningOutcome": "Jokainen tapahtuma maksaa pienen maksun; Trustline = Lupa vastaanottaa.",
+    "reward": "⭐ 2 – Trustline-aloittelija"
   },
   "lesson6": {
-    "title": "Token & Handel",
-    "goal": "Marktmechanismen kennenlernen",
-    "task": "Token auf virtuellen Marktplatz legen und Preisänderung beobachten",
-    "learningOutcome": "Preis entsteht durch Angebot und Nachfrage.",
-    "reward": "⭐ 2 – Marktplatz-Kenner"
+    "title": "Tokenit ja kaupankäynti",
+    "goal": "Tutustua markkinamekanismeihin",
+    "task": "Aseta token virtuaaliselle markkinapaikalle ja seuraa hinnan muutoksia.",
+    "learningOutcome": "Hinta muodostuu kysynnän ja tarjonnan perusteella.",
+    "reward": "⭐ 2 – Markkinapaikan asiantuntija"
   },
   "lesson7": {
-    "title": "Sicherheit",
-    "goal": "Sichere Verhaltensweisen lernen",
-    "task": "Richtige/falsche Handlungen sortieren; Fake-Token erkennen",
-    "learningOutcome": "Geheimhaltung des Keys, sichere Aufbewahrung und Testnet nutzen.",
-    "reward": "⭐ 2 – Sicherheits-Wächter"
+    "title": "Turvallisuus",
+    "goal": "Turvallisten käyttäytymistapojen oppiminen",
+    "task": "Lajittele oikeat/väärät toimet; tunnista väärennöstunnukset",
+    "learningOutcome": "Avaimen salassapito, turvallinen säilytys ja testiverkon käyttö.",
+    "reward": "⭐ 2 – Turvavartija"
   },
   "lesson8": {
-    "title": "Verifizierung & Identität",
-    "goal": "Vertrauen und Regeln verstehen",
-    "task": "Echten vs. gefälschten Token vergleichen",
-    "learningOutcome": "KYC = Ausweisprüfung, Verifizierung zeigt vertrauenswürdige Token.",
-    "reward": "⭐ 2 – Prüf-Profi"
+    "title": "Vahvistus & Identiteetti",
+    "goal": "Luottamus ja sääntöjen ymmärtäminen",
+    "task": "Aitojen ja väärennettyjen polettien vertailu",
+    "learningOutcome": "KYC = henkilöllisyyden tarkistus, vahvistus näyttää luotettavat tokenit.",
+    "reward": "⭐ 2 – Tarkastuksen ammattilainen"
   },
   "lesson9": {
-    "title": "Zero Knowledge",
-    "goal": "Datenschutz-Konzepte verstehen",
-    "task": "Beispiel-Szenario 'Ich bin über 18' ohne Geburtsdatum zeigen",
-    "learningOutcome": "Man kann etwas beweisen, ohne Geheimnisse zu verraten.",
-    "reward": "⭐ 2 – ZK-Versteher"
+    "title": "Nolla tietoa",
+    "goal": "Tietosuojakäsitteiden ymmärtäminen",
+    "task": "Esimerkki-skenaario 'Olen yli 18-vuotias' ilman syntymäaikaa näyttää",
+    "learningOutcome": "Voi todistaa jotain paljastamatta salaisuuksia.",
+    "reward": "⭐ 2 – ZK-tulkki"
   },
   "lesson10": {
-    "title": "Praxis mit SKM",
-    "goal": "Erlerntes praktisch anwenden",
-    "task": "Konto im Testnet erstellen, aktivieren, Trustline setzen, Token senden",
-    "learningOutcome": "Technische Abläufe einer Transaktion nachvollziehen.",
-    "reward": "⭐ 3 – Blockchain-Pilot"
+    "title": "Harjoittelu SKM:n kanssa",
+    "goal": "Sovellettua oppimaansa käytäntöön.",
+    "task": "Luo tili Testnetissä, aktivoi se, aseta Trustline ja lähetä tokeneita",
+    "learningOutcome": "Teknisen tapahtuman kulun seuraaminen.",
+    "reward": "⭐ 3 – Blockchain-pilotti"
   },
   "lesson11": {
-    "title": "Verantwortung",
-    "goal": "Konsequenzen von Fehlern verstehen",
-    "task": "Entscheidungsspiel: richtig handeln oder nicht",
-    "learningOutcome": "Blockchain ist endgültig; Sorgfalt ist Pflicht.",
-    "reward": "⭐ 1 – Verantwortungs-Held"
+    "title": "Vastuu",
+    "goal": "Virheiden seurauksien ymmärtäminen",
+    "task": "Päätöspeli: toimia oikein tai ei",
+    "learningOutcome": "Lohkoketju on lopullinen; huolellisuus on velvollisuus.",
+    "reward": "⭐ 1 – Vastuullisuus Sankari"
   },
   "lesson12": {
-    "title": "Abschluss / Spielerisches Lernen",
-    "goal": "Wiederholung und Motivation",
-    "task": "Mini-Quiz + Abzeichenanzeige",
-    "learningOutcome": "Gelerntes wiederholen, eigene Fortschritte erkennen.",
-    "reward": "🎖 Stellar-Profi"
+    "title": "Päätöt / Leikkimielinen oppiminen",
+    "goal": "Toisto ja motivaatio",
+    "task": "Mini-visailu + Merkin näyttö",
+    "learningOutcome": "Toiston oppiminen, omien edistysaskeleiden tunnistaminen.",
+    "reward": "🎖 Tähtiammattilainen"
   }
 }

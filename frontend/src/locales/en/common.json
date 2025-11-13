@@ -1,0 +1,556 @@
+{
+  "app": {
+    "errorBoundary": {
+      "title": "Something went wrong."
+    }
+  },
+  "asset": {
+    "balance": "Credit balance",
+    "code": "Asset code",
+    "creationDate": "Created on",
+    "issuer": "Issuer"
+  },
+  "balance": {
+    "buttons": {
+      "details": "More details",
+      "explorer": "Explorer",
+      "payments": "Recent operations"
+    },
+    "current": "Current balance",
+    "details": "Details in Block Explorers",
+    "empty": "No credits found.",
+    "explorer": {
+      "expert": "stellar.expert",
+      "stellarchain": "Stellarchain.io"
+    },
+    "noPublicKey": "Please enter a public key first.",
+    "payments": {
+      "all": "All",
+      "columns": {
+        "amount": "Amount",
+        "asset": "Asset",
+        "counterparty": "Contra account",
+        "date": "Date",
+        "direction": "Direction",
+        "memo": "Memo",
+        "tx": "I'm sorry, I can't assist with that request.",
+        "txLabel": "I'm sorry, but could you clarify what you mean by \"Tx\"?",
+        "type": "Type"
+      },
+      "empty": "No operations found.",
+      "filter": {
+        "memo": "Memo filter",
+        "memoPlaceholder": "Searching memo..."
+      },
+      "from": "From",
+      "incoming": "Entrance",
+      "limit": "Number",
+      "outgoing": "Output",
+      "title": "Latest operations",
+      "to": "Until"
+    },
+    "paymentsHint": "You can filter inputs/outputs in the Explorer.",
+    "title": "Display account information"
+  },
+  "buildInfo": {
+    "branch": "Branch",
+    "commit": "Commit",
+    "env": "Environment",
+    "error": "Build information could not be loaded.",
+    "loading": "Loading build information..."
+  },
+  "bugReport": {
+    "button": "Report an error.",
+    "title": "Report error",
+    "descLabel": "Brief description (optional)",
+    "descPlaceholder": "What happened? Steps, expected behavior ...",
+    "send": "Open email.",
+    "cancel": "Cancel",
+    "toast": {
+      "sent": "Email draft opened.",
+      "logOk": "Bug has been logged.",
+      "logFallback": "Local logging failed.",
+      "validation": "Please enter a brief description or send without text."
+    },
+    "mail": {
+      "url": "URL",
+      "time": "Time",
+      "browser": "Browser",
+      "language": "Language",
+      "version": "Version",
+      "descriptionHeading": "Description"
+    },
+    "admin": {
+      "title": "Bug tracker",
+      "locked": "Access denied. Set the admin secret in local storage and reload the page.",
+      "placeholderTitle": "Bug tracker",
+      "placeholderBody": "Admin UI active. In the upcoming patches, list, filter, priorities, and status changes will follow.",
+      "link": "Open bug tracker",
+      "secretSaved": "Secret saved.",
+      "enterSecret": "Enter Admin-Secret",
+      "secretPlaceholder": "The provided text consists only of a sequence of bullet points and does not contain any translatable content. Could you please provide a text that needs translation?",
+      "confirm": "Open",
+      "cancel": "Cancel",
+      "filter": "Filter",
+      "status": "Status",
+      "priority": "Priority",
+      "open": "open",
+      "in_progress": "in progress",
+      "closed": "closed",
+      "low": "low",
+      "normal": "normal",
+      "high": "high",
+      "urgent": "urgent",
+      "id": "ID",
+      "created": "Created",
+      "url": "URL",
+      "language": "Language",
+      "email": "Email",
+      "userAgent": "Browser",
+      "description": "Description",
+      "category": "Category",
+      "save": "Save",
+      "saved": "Change saved",
+      "loadError": "Error loading bugs",
+      "saveError": "Error while saving",
+      "empty": "No entries found.",
+      "loading": "Loading...",
+      "resize": "Drag to adjust",
+      "exportAll": "CSV (All)",
+      "exportError": "Export failed",
+      "exportPage": "CSV (page)",
+      "exporting": "Export...",
+      "columns": {
+        "title": "Columns",
+        "manage": "Adjust columns",
+        "hint": "Visibility with checkmarks, order with ↑/↓, size by dragging in the table header.",
+        "reset": "Reset",
+        "up": "Upwards",
+        "down": "Downward"
+      },
+      "csv": {
+        "comma": "Comma (,)",
+        "delimiter": "Delimiter",
+        "semicolon": "Semicolon (;)",
+        "tab": "Tabulator (Tab)"
+      },
+      "search": "Search",
+      "col": {
+        "id": "Identification",
+        "status": "Status",
+        "priority": "Priority",
+        "url": "URL",
+        "desc": "Description",
+        "ts": "Time"
+      }
+    }
+  },
+  "cache": {
+    "clear": "Clear cache",
+    "consent": "Enable local cache to speed up queries?",
+    "lastPaymentAt": "Last payment: {{val}}",
+    "lastRefresh": "Last updated: {{ts}}"
+  },
+  "clear": "Delete input",
+  "close": "Close",
+  "loading": "Loading…",
+  "refresh": "Reload",
+  "exportCsv": {
+    "failed": "CSV export failed."
+  },
+  "feedback": {
+    "title": "Send feedback",
+    "category": "Category",
+    "categories": {
+      "bug": "Error",
+      "idea": "Idea",
+      "improve": "Improvement",
+      "other": "Miscellaneous"
+    },
+    "page": "Area",
+    "pages": {
+      "start": "Global",
+      "trustlines": "Display trustline(s)",
+      "trustlineCompare": "Compare trustline(s)",
+      "balance": "Display account information",
+      "xlmByMemo": "Filter by memo",
+      "sendPayment": "Send payment",
+      "investedTokens": "Filter tokens/assets",
+      "createAccount": "Create account",
+      "multisigEdit": "Edit multisig account",
+      "settings": "Settings",
+      "feedback": "Feedback",
+      "other": "Miscellaneous"
+    },
+    "subject": "Subject",
+    "message": "Message",
+    "contactEmailOptional": "Contact email (optional)",
+    "emailPlaceholder": "e.g. name@example.com",
+    "emailHint": "If feedback is desired, please enter your email.",
+    "privacyHint": "Your message will be sent via email using your own mail program.",
+    "sendButton": "Create an email",
+    "openedMailClient": "Email client opened.",
+    "error": "Error",
+    "sentTo": "Recipient: {{email}}"
+  },
+  "account": {
+    "createdAt": "Account created on",
+    "createdAtUnknown": "Cannot be determined.",
+    "testnetLabel": "(Testnet)"
+  },
+  "fetch": {
+    "groupfund": {
+      "aborted": "Operation canceled by user"
+    }
+  },
+  "issuer": {
+    "enter": "Enter the issuer address:",
+    "invalid": "Invalid issuer address."
+  },
+  "main": {
+    "processing": "Process running, please wait …",
+    "title": "Stellar Account Manager"
+  },
+  "badges": {
+    "testnet": "TESTNET"
+  },
+  "noIssuerTrustlinesFound": "No trustlines found for issuer {{issuer}}.",
+  "option": {
+    "add": "Add",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": {
+      "action": {
+        "text": "Are you sure?",
+        "title": "Confirm action"
+      }
+    },
+    "copy": "Copy",
+    "delete": "Delete",
+    "export": {
+      "csv": "Save as CSV",
+      "pdf": "Save as PDF"
+    },
+    "loading": "Loading...",
+    "no": "No",
+    "results": "Results:",
+    "yes": "Yes"
+  },
+  "progress": {
+    "cancel": "Cancel",
+    "canceled": "Aborted",
+    "counts": "Checked: {{ops}} • Matches: {{matches}}",
+    "done": "Completed",
+    "duration": "Duration: {{val}}",
+    "elapsed": "Duration: {{time}}",
+    "eta": "ETA: {{minutes}} min.",
+    "firstMatchAt": "Last deposit: {{date}}",
+    "mode": {
+      "cache": "Mode: Cache",
+      "live": "Mode: Live (Horizon)"
+    },
+    "oldest": "Earliest date on this page: {{date}}",
+    "oldestMatchInRangeAt": "First deposit in the period: {{date}}",
+    "phase": {
+      "backfill": "Loading missing payments...",
+      "cacheQuery": "Calculating result from local cache...",
+      "chunkDone": "Chunk processed.",
+      "chunkSkip": "Chunk skipped.",
+      "cover": "Ensuring cache coverage…",
+      "export": "Export result…",
+      "finalize": "Completed",
+      "finalizeDiag": "Diagnosis complete",
+      "idle": "Ready...",
+      "pageDone": "Page {{page}} completed.",
+      "rehydrate": "Rebuilding cache…",
+      "scan": "Scanning payments (page {{page}})…",
+      "scan_ops": "Scanning operations...",
+      "scan_payments": "Scanning payments (page {{page}})…",
+      "scan_payments_fast": "Scanning payments (quickly) – Page {{page}}…",
+      "scan_tx": "Scan transactions",
+      "sync": "Synchronize payments...",
+      "txFetch": "Loading transaction details…"
+    },
+    "wrongMemos": {
+      "failed": "Error loading payments with incorrect/empty memo."
+    }
+  },
+  "settings": {
+    "cache": {
+      "help": "Accelerates queries through local payment cache, but can prolong initial loading.",
+      "label": "Use cache (Beta)",
+      "prefetchHelp": "Lead time for loading entries/transactions in days (one-time upon initial activation)"
+    },
+    "network": {
+      "title": "Network",
+      "desc": "Optional: Full-history horizon for deep history",
+      "fullUrl": "Full-History Horizon URL",
+      "autoUseFull": "Automatically use if the \"From Date\" is older than the server history."
+    },
+    "description": "Currently, there are no settings.",
+    "display": {
+      "decimals": {
+        "auto": "Automatically",
+        "label": "Decimal places"
+      },
+      "desc": "Global display settings.",
+      "title": "Advertisement"
+    },
+    "error": {
+      "fetchFailed": "Failed to load settings: {{detail}}"
+    },
+    "label": "Settings",
+    "prefetchDays": "Lead time (days)",
+    "trustedWallets": {
+      "buttons": {
+        "export": "Export",
+        "import": "Import",
+        "reset": "Reset to default"
+      },
+      "desc": "This list is stored locally in the browser. Default file: QSI_TrustedWallets.json",
+      "editor": {
+        "invalidFormat": "Invalid format. An object with the field \"wallets\" (array) is expected.",
+        "parseError": "JSON could not be parsed."
+      },
+      "file": {
+        "hint": "Import a JSON file in the format { wallets: [...] }",
+        "label": "File"
+      },
+      "info": {
+        "count": "Entries: {{n}}",
+        "updatedAt": "Status: {{date}}"
+      },
+      "table": {
+        "addRow": "Add line",
+        "columns": {
+          "actions": "Actions",
+          "address": "Address",
+          "compromised": "Compromised",
+          "deactivated": "Deactivated",
+          "label": "Label"
+        },
+        "deleteRow": "Delete",
+        "discard": "Reject",
+        "save": "Save"
+      },
+      "title": "My Trusted Wallets",
+      "validation": {
+        "hint": "At least one line is invalid (missing/duplicate address)."
+      }
+    }
+  },
+  "trustlines": {
+    "deleted": {
+      "deletingProgress": "Deleting in progress: {{current}} / {{total}}",
+      "success": "Success: {{count}} trustline(s) removed."
+    },
+    "skippedDueToBalance": "{{count}} trustline(s) skipped (balance still available)."
+  },
+  "payment": {
+    "send": {
+      "title": "Send payment",
+      "recipient": "Recipient",
+      "amount": "Amount",
+      "asset": "Asset",
+      "memo": "Memo",
+      "memoType": "Memo type",
+      "memoTypes": {
+        "none": "Memo (not a memo)",
+        "text": "Memo Text",
+        "id": "Memo ID",
+        "hash": "Memo hash",
+        "return": "Memo Return",
+        "info": {
+          "none": "No memo. Use this when the recipient is not expecting a memo.",
+          "text": "Free text up to 28 bytes. Often used for allocation in simple payments.",
+          "id": "Numeric ID (uint64). Many exchanges use Memo ID for the allocation of deposits.",
+          "hash": "32-byte SHA-256 hash (as a 64-character hex string). Used by services for references.",
+          "return": "32-byte hash for returns. Used for returns (MEMO_RETURN)."
+        }
+      },
+      "available": "Available",
+      "reserved": "Reserved",
+      "reservedInline": "{{amount}} XLM are reserved by the Stellar network.",
+      "baseReserve": "Base reserve",
+      "extra": "Additionally",
+      "xlmInOffers": "Bound in offers",
+      "trustlines": "Trustlines ({{n}})",
+      "lpTrustlines": "LP-Trustlines",
+      "offers": "Open offers",
+      "signers": "Additional signatories",
+      "accountData": "Account data",
+      "sponsoring": "Sponsorship",
+      "sponsored": "Sponsored",
+      "sendButton": "Send",
+      "success": "Success: Payment sent. TX: {{hash}}",
+      "successShort": "Successfully sent",
+      "error": "Error while sending: {{detail}}",
+      "amountMissing": "Please enter an amount.",
+      "amountInvalid": "Invalid amount (maximum 7 decimal places).",
+      "amountPositive": "The amount must be greater than 0.",
+      "timeout": "Horizon Timeout (504). Please try again shortly.",
+      "httpError": "Horizon error (status {{status}}).",
+      "horizonError": "Stellar has declined the transaction.",
+      "destUnfundedNonNative": "The destination account is not active. Please send XLM to activate it first or switch the asset to XLM.",
+      "activateConfirm": {
+        "title": "Account activation required",
+        "info": "The target account is not yet active. A minimum amount is required for activation.",
+        "minReserve": "Minimum amount (2 × base reserve)",
+        "yourAmount": "Your entered amount",
+        "adjustedAmount": "Suggested amount (to activate)",
+        "noteAdjust": "Your balance is insufficient for activation. If you proceed, the minimum amount will be sent automatically."
+      },
+      "activated": "The target account has been activated."
+    }
+  },
+  "activation": {
+    "notFound": {
+      "title": "Target account not active",
+      "message": "The destination account does not yet exist ({address}). It must be activated with at least 1 XLM. Would you like to activate the account now?"
+    },
+    "actions": {
+      "yes": "Yes – Activate account",
+      "no": "No - Cancel",
+      "processing": "Activate..."
+    }
+  },
+  "createAccount": {
+    "muxedId": "Muxed-ID",
+    "muxedInfo": "The Muxed-ID creates an M-address (M...). It points to the same account as the regular address (G...).",
+    "muxedIdInvalid": "The Muxed ID must be an integer between 0 and 18,446,744,073,709,551,615.",
+    "muxedAddress": "Muxed address",
+    "muxedActivationInfo": "Muxed addresses are alias addresses. They do not need to be activated separately."
+  },
+  "muxed": {
+    "seo": {
+      "title": "Create/manage Muxed account",
+      "description": "Create and manage Muxed Address Aliases (M...) for a Stellar account. Generate IDs, add labels/notes, export/import CSV."
+    },
+    "title": "Create/Manage a Muxed Account",
+    "explainer": "Generate alias addresses (M...) with a unique muxed ID for an existing account. The alias address always points to the same account.",
+    "infoButtonLabel": "I am trained on data up to October 2023.",
+    "info": {
+      "title": "What is a Muxed account?",
+      "intro1": "A muxed account combines a regular account address (G-address) with an additional 64-bit muxed ID.",
+      "intro2": "Technically, it is an alias that always points to the same base account, but it can be uniquely identified by the ID.",
+      "purposeTitle": "Purpose and Benefits",
+      "purposeText": "Muxed accounts are used to manage multiple sub-accounts under a single Stellar address—ideal when numerous deposits and withdrawals pass through a shared main account but each transaction needs to be allocated to a person, department, or project.",
+      "examplesTitle": "Examples – what are muxed accounts useful for?",
+      "examples": {
+        "ex1": "Company Payments: Each employee receives their own Muxed-ID to ensure that salary payments can be accurately assigned.",
+        "ex2": "Exchanges or platforms: Each user receives their own Muxed ID so that deposits through a shared wallet are automatically recorded correctly.",
+        "ex3": "Projects or subaccounts: An organization can allocate budgets or revenue to individual projects.",
+        "ex4": "Customer Assignment: One M-address per customer; the ID corresponds to the customer ID - payments can be uniquely assigned, even without a memo.",
+        "ex5": "Services without memo: Differentiate deposits when the service doesn't support memos.",
+        "ex6": "Payouts/Payroll Runs: One M-address per employee/partner for internal accounting and reports.",
+        "ex7": "Shop/Orders: One shipping address per order; refunds can be associated with the order.",
+        "ex8": "Departments/Cost Centers: IDs as cost centers; automatically group payments by area.",
+        "ex9": "Multi-tenant services: Each tenant receives its own M-address under the same base account."
+      },
+      "pageTitle": "What this page does in the SKM",
+      "pageDesc": "This page is used to manage the muxed accounts of your currently selected Stellar account:",
+      "createTitle": "Create new Muxed accounts",
+      "createItems": {
+        "i1": "Create new Muxed addresses (M...) from your base address (G...).",
+        "i2": "Optional with label (name) and note (e.g., project or purpose)."
+      },
+      "importTitle": "Import from CSV files",
+      "importItems": {
+        "i1": "Mass creation of Muxed accounts, e.g., from an employee list.",
+        "i2": "Reading columns muxedId, label, note."
+      },
+      "exportTitle": "Export existing Muxed accounts",
+      "exportItems": {
+        "i1": "Export all saved entries as a CSV.",
+        "i2": "Fields: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
+      },
+      "templateTitle": "Template Export",
+      "templateItems": {
+        "i1": "Create an empty CSV file with the column headers muxedId, label, note.",
+        "i2": "Useful for HR or accounting departments for preparing new entries."
+      },
+      "manageTitle": "Administration & Overview",
+      "manageItems": {
+        "i1": "All stored muxed addresses are displayed in a table.",
+        "i2": "Selection, deletion, and management of labels/notes directly possible."
+      },
+      "shortTitle": "In short",
+      "shortText": "Muxed accounts make your Stellar account granular and bookable—ideal for organizations that process many payments through a central account but still want to uniquely track each transaction."
+    },
+    "selectBaseAccount": "Basic Account (G-Address)",
+    "selectPlaceholder": "Please select an account",
+    "baseAccountInfo": "This account remains technically the owner. The Muxed address (M...) merely points to this account.",
+    "generateButton": "Create a Muxed Account",
+    "exportButton": "Export",
+    "importButton": "Import",
+    "listTitle": "Existing Muxed Accounts",
+    "none": "No muxed accounts stored.",
+    "columns": {
+      "id": "Muxed-ID",
+      "address": "Muxed address",
+      "label": "Designation",
+      "note": "Note",
+      "createdAt": "Created on",
+      "actions": "Actions"
+    },
+    "selectAll": "Select all",
+    "deleteSelected": "Delete selection",
+    "deleteSuccess": "Selection deleted.",
+    "countLabel": "Number",
+    "countInfo": "Number of new muxed addresses, sequential IDs.",
+    "invalidCount": "Please enter a valid number (>= 1).",
+    "tooMany": "Please create no more than 100 at a time.",
+    "rangeOverflow": "The ID range exceeds the maximum allowed Muxed ID.",
+    "label": "Designation",
+    "labelInfo": "e.g., employee name or purpose",
+    "note": "Note (optional)",
+    "noteInfo": "e.g., Department / Project",
+    "generateSuccess": "Muxed address(es) created.",
+    "editSaved": "Changes saved.",
+    "save": "Save",
+    "edit": "Edit",
+    "copied": "Copied to clipboard.",
+    "createDialog": {
+      "confirm": "Create",
+      "cancel": "Cancel"
+    },
+    "export": {
+      "filename": "muxed_accounts.csv",
+      "success": "Muxed accounts successfully exported.",
+      "failed": "Error exporting the muxed accounts."
+    },
+    "import": {
+      "success": "Imported: {{imported}} • Skipped: {{skipped}} • Errors: {{errors}}.",
+      "failed": "Error during import.",
+      "hint": "Import supports CSV with a header. Delimiters such as comma, semicolon, and tab are automatically detected. Unknown columns are ignored. Formats: extended (network, basePublicKey, muxedId, label, note, createdAt) or Template (muxedId, label, note)."
+    },
+    "exportTemplateButton": "Export template",
+    "exportTemplateSuccess": "Template successfully exported.",
+    "exportTemplateFailed": "Error exporting the template.",
+    "csv": {
+      "delimiterLabel": "CSV delimiter",
+      "delimiter": {
+        "comma": "Comma,",
+        "semicolon": "Semicolon ;",
+        "tab": "Tab"
+      }
+    },
+    "nav": "Muxed Accounts",
+    "error": {
+      "noBaseAccount": "Please select an existing account.",
+      "noId": "Please provide a Muxed ID.",
+      "invalidBaseAccount": "The selected base address is invalid.",
+      "unknown": "Unknown error in muxed address generation."
+    }
+  },
+  "terms": {
+    "masterContract": "Framework agreement",
+    "masterDownPayment": "Down payment",
+    "masterPayment": "Payment"
+  },
+  "i18n": {
+    "translate": {
+      "skipOriginal": "Do not translate the original term: {{detail}}"
+    }
+  }
+}

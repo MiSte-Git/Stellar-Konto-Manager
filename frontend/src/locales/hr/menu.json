@@ -1,0 +1,18 @@
+{
+  "balance": "Prikazati informacije o računu",
+  "devTestnet": "Testnet (za programere)",
+  "sendPayment": "Slanje uplate",
+  "donate": "Donacije",
+  "feedback": "Povratne informacije",
+  "xlmByMemo": "Filtrirajte iznos XLM-a prema memo/tokenu",
+  "muxed": "Upravljanje s muxed adresama",
+  "glossary": "Rječnik",
+  "createAccount": "Izradite račun + Multisig",
+  "multisigEdit": "Uređivanje multisiga",
+  "listAll": "Popisati sve povjereničke linije",
+  "compareTrustlines": "Usporedba povjereničkih linija",
+  "settings": "Postavke",
+  "tokenPurchases": "Kupnja tokena",
+  "learn": "Kviz o zvijezdama za početnike",
+  "unknown": "Nepoznata stavka izbornika"
+}

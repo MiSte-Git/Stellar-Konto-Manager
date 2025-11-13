@@ -1,0 +1,58 @@
+{
+  "hintEnterPublicKey": "Please enter a public key first.",
+  "columns": {
+    "amount": "Amount",
+    "compromised": "Compromised",
+    "deactivated": "Deactivated",
+    "destination": "Target wallet",
+    "issuer": "Issuer",
+    "label": "Label",
+    "memo": "Memo",
+    "payments": "Payments",
+    "date": "Date",
+    "token": "Token"
+  },
+  "decimals": {
+    "auto": "Automatically",
+    "label": "Decimal places:"
+  },
+  "filter": {
+    "memoPlaceholder": "Filter by memo, wallet address, or label.",
+    "tokenPlaceholder": "Filter by Token (CODE:ISSUER)"
+  },
+  "item": {
+    "memo": "Memo: \"{{memo}}\" (Payments: {{occurrences}})",
+    "token": "Token: {{token}} (Payments: {{occurrences}})",
+    "tokenShort": "Token: {{token}}"
+  },
+  "missingPublicKey": "Public key is missing.",
+  "moreTruncated": "... and {{extra}} additional groups",
+  "toWallet": "to Wallet: {{address}}",
+  "total": "Number of tokens purchased: {{count}}",
+  "totalTokens": "Number of invested tokens (assets): {{count}}",
+  "value": {
+    "units": "{{amount}} pieces",
+    "xlm": "{{amount}} XLM"
+  },
+  "view": {
+    "label": "Filter by:",
+    "memo": "Memos (Groupfund)",
+    "token": "Token (purchased quantity)"
+  },
+  "toggles": {
+    "showTotals": "Total sum",
+    "qsiOnly": "Sum QSI GF"
+  },
+  "hints": {
+    "qsiListSet": "Note: You can find the GF list under Settings → Trusted Wallets (QSI).",
+    "pageTime": "Loading a page takes approximately 0.2 seconds → 100 pages ≈ 20 seconds → 1000 pages ≈ 200 seconds (≈ 3:20 minutes)."
+  },
+  "walletCapInfo": "Note: A wallet can hold a maximum of 1000 trustlines.",
+  "action": {
+    "load": "Shop"
+  },
+  "history": {
+    "availableFrom": "Server (Horizon) – History starting from",
+    "hintFullHistory": "Note: The ledger history from the Horizon server only goes back to {{available}}. Only data up to that point will be displayed. The chosen start date is therefore limited. For older data, a (usually paid) full-history provider is required (might come in the future!)."
+  }
+}

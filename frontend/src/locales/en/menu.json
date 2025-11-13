@@ -1,0 +1,18 @@
+{
+  "balance": "Display account information",
+  "devTestnet": "Testnet (for developers)",
+  "sendPayment": "Send payment",
+  "donate": "Donations",
+  "feedback": "Feedback",
+  "xlmByMemo": "Filter XLM amount by memo/token",
+  "muxed": "Managing muxed addresses",
+  "glossary": "Glossary",
+  "createAccount": "Create account + Multisig",
+  "multisigEdit": "Edit multisig",
+  "listAll": "List all trustlines",
+  "compareTrustlines": "Compare Trustlines",
+  "settings": "Settings",
+  "tokenPurchases": "Token purchases",
+  "learn": "Stellar Quiz for Beginners",
+  "unknown": "Unknown menu selection"
+}
