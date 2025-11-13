@@ -15,7 +15,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-10">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">{t('settings.label')}</h1>
+        <h1 className="text-2xl font-bold">{t('settings.label', 'Settings')}</h1>
       </div>
 
             <SettingsPanel publicKey={publicKey} />

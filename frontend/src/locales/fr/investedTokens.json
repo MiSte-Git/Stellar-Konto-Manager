@@ -1,0 +1,58 @@
+{
+  "hintEnterPublicKey": "Veuillez d'abord entrer une clé publique.",
+  "columns": {
+    "amount": "Montant",
+    "compromised": "Compromis",
+    "deactivated": "Désactivé",
+    "destination": "Portefeuille cible",
+    "issuer": "Émetteur",
+    "label": "Étiquette",
+    "memo": "Note de service",
+    "payments": "Paiements",
+    "date": "Date",
+    "token": "Jeton"
+  },
+  "decimals": {
+    "auto": "Automatiquement",
+    "label": "Décimales :"
+  },
+  "filter": {
+    "memoPlaceholder": "Filtrer par mémo, adresse de portefeuille ou étiquette.",
+    "tokenPlaceholder": "Filtrer par jeton (CODE:ÉMETTEUR)"
+  },
+  "item": {
+    "memo": "Mémo : « {{memo}} » (Paiements : {{occurrences}})",
+    "token": "Jeton : {{token}} (Paiements : {{occurrences}})",
+    "tokenShort": "Jeton : {{jeton}}"
+  },
+  "missingPublicKey": "Clé publique manquante.",
+  "moreTruncated": "… et {{extra}} autres groupes",
+  "toWallet": "au portefeuille : {{address}}",
+  "total": "Nombre de jetons achetés : {{count}}",
+  "totalTokens": "Nombre de jetons investis (actifs) : {{count}}",
+  "value": {
+    "units": "{{amount}} pièces",
+    "xlm": "{{amount}} XLM"
+  },
+  "view": {
+    "label": "Filtrer par :",
+    "memo": "Mémos (Groupfund)",
+    "token": "Token (quantité achetée)"
+  },
+  "toggles": {
+    "showTotals": "Somme totale",
+    "qsiOnly": "Somme QSI GF"
+  },
+  "hints": {
+    "qsiListSet": "Remarque : Vous pouvez trouver la liste GF sous Paramètres → Portefeuilles de confiance (QSI).",
+    "pageTime": "Le chargement d'une page prend environ 0,2 seconde → 100 pages ≈ 20 secondes → 1000 pages ≈ 200 secondes (≈ 3:20 minutes)."
+  },
+  "walletCapInfo": "Remarque : Un portefeuille peut contenir au maximum 1000 lignes de confiance.",
+  "action": {
+    "load": "Charger"
+  },
+  "history": {
+    "availableFrom": "Serveur (Horizon) – Historique à partir de",
+    "hintFullHistory": "Remarque : L'historique des journaux du serveur Horizon ne remonte que jusqu'à {{available}}. Seules les données jusqu'à cette date seront affichées. La date choisie pour le début est donc limitée. Pour des données plus anciennes, un fournisseur de données avec un historique complet (généralement payant) est nécessaire (peut-être à l'avenir !)."
+  }
+}

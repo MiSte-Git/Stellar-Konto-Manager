@@ -1,0 +1,93 @@
+{
+  "title": "Crear una cuenta multisig",
+  "menu": "Crear cuenta + Multisig",
+  "menuHint": "Crear nueva cuenta y establecer Multisig opcionalmente.",
+  "hint": "Crea una nueva cuenta, actívala y configura opcionalmente Multisig.",
+  "generateKeys": "Generar clave",
+  "enableMultisig": "Activar multisig",
+  "signersTitle": "Firmante",
+  "signersInfo": "Agrega más firmantes y establece umbrales apropiados.",
+  "signersCount": "Número de firmantes",
+  "bestPractices": {
+    "title": "Mejores prácticas",
+    "text": "Guarda las claves secretas de forma segura y no las distribuyas innecesariamente."
+  },
+  "instructions": {
+    "public": "Comparte esta clave pública con otros para pagos.",
+    "secret": "Guarda esta clave secreta de manera segura; nunca la compartas."
+  },
+  "generateFirst": "Primero, genera un par de claves.",
+  "confirmLowBalance": "El saldo inicial de {bal} XLM está por debajo de la reserva recomendada de {req} XLM (Firmantes: {count}). ¿Desea continuar?",
+  "activated": "La cuenta ha sido activada. Hash: {hash}",
+  "activatedTestnet": "La cuenta fue activada en la red de prueba a través de Friendbot.",
+  "alreadyActive": "La cuenta ya está activada.",
+  "createdNoSigners": "Cuenta creada, multisig no configurado.",
+  "createdAndConfigured": "Cuenta creada y Multisig configurado. Hash: {hash}",
+  "info": {
+    "more": "Más información",
+    "keysOnPage": {
+      "title": "Clave en esta página",
+      "text": "En esta página se generan claves. Guárdalas de forma segura y no las compartas."
+    },
+    "title": "Información importante",
+    "secureKeys": {
+      "title": "Asegurar clave secreta",
+      "text": "La clave pública puede compartirse de forma segura - es como un número de cuenta.\n\nLa clave secreta es el acceso a su cuenta. Trátela como una contraseña:\n• NUNCA la almacene en servicios en la nube, correos electrónicos o notas no seguras\n• Escríbala en papel o use un monedero de hardware\n• Cree múltiples copias de seguridad y guárdelas en lugares seguros y separados\n• Si se pierde la clave secreta, el acceso a la cuenta se pierde de forma irrevocable"
+    },
+    "multisigSection": {
+      "title": "Multifirma (multisig)",
+      "text": "Con Multisig puedes definir múltiples firmantes para tu cuenta. Las transacciones requieren entonces firmas de varias claves (por ejemplo, 2 de 3).\n\nVentajas:\n• Mayor seguridad (una clave comprometida no es suficiente)\n• Cuentas compartidas (por ejemplo, empresas, asociaciones)\n• Recuperación de emergencia (múltiples copias de seguridad con diferentes personas)\n\nATENCIÓN: ¡Prueba Multisig primero en la testnet antes de implementarlo en la mainnet! Una configuración incorrecta puede llevar a la pérdida de acceso a la cuenta."
+    },
+    "diagram": {
+      "title": "Caducidad de la firma"
+    }
+  },
+  "activateHint": "La activación es necesaria para que la cuenta exista. En la red de prueba a través de Friendbot, en la red principal a través de \"Create Account\" desde una billetera existente.",
+  "activateNow": "Activar cuenta inmediatamente",
+  "activateOnly": "Solo activar",
+  "balanceWarning": "Es probable que el saldo inicial sea demasiado bajo para añadir a los {{count}} firmantes adicionales (reserva mínima: {{req}} XLM)",
+  "createButton": "Crear / Configurar multisig",
+  "hints": {
+    "byteRange": "(0–255)"
+  },
+  "mainnetActivateNote": "Nota: Para Multisig se necesitan reservas adicionales. 1 XLM a menudo no es suficiente.",
+  "reserve": {
+    "base": "Reserva básica por entrada: {{val}} XLM",
+    "recommended": "Saldo inicial recomendado: {{val}} XLM (incluido margen)",
+    "required": "Reserva mínima requerida (nueva): {{val}} XLM"
+  },
+  "signersCountHint": "La cantidad mínima de firmas la estableces abajo en \"Firmas requeridas\" (baja/media/alta).",
+  "signersCountLimit": "Nota: Límite de red (Stellar): máximo 20 firmantes adicionales.",
+  "startingBalance": "Saldo inicial (XLM)",
+  "threshold": "Firmas requeridas (baja/media/alta)",
+  "thresholdLow": "bajo",
+  "thresholdMed": "medio",
+  "thresholdHigh": "alto",
+  "thresholdCurrent": "Actualmente seleccionado: bajo={{low}}, medio={{med}}, alto={{high}} de {{total}} firmas",
+  "thresholdHelp": "Umbral: Número de firmas requeridas (Principal + Firmantes) para que una transacción sea válida.",
+  "thresholdInfo": "Recomendación: {{req}} de {{total}} firmas (incl. Maestro)",
+  "thresholdLevelsHint": "Típicamente se considera: bajo = cambios simples (p. ej., memo, precio), medio = pagos/comercio, alto = cambios críticos de seguridad (p. ej., firmantes/umbrales).",
+  "thresholdStatic": "Requerido: {{val}} de {{total}} firmas (bajo/medio/alto)",
+  "thresholdSum": "Suma pesos: {{sum}}",
+  "thresholdTooHigh": "Nota: Un umbral no debe exceder la suma de los pesos. Por favor, ajuste los valores.",
+  "keyWarning": {
+    "title": "¡Asegura la clave ahora!",
+    "text1": "Has generado un nuevo par de claves.",
+    "text2": "Asegure AMBAS llaves INMEDIATAMENTE antes de continuar:",
+    "list1": "Clave pública: la dirección de su cuenta, se puede compartir.",
+    "list2": "Clave secreta: tu contraseña - ¡NUNCA la compartas ni la guardes en línea!",
+    "list3": "Si se pierde la clave secreta, el acceso se pierde de manera irrevocable.",
+    "confirm": "He asegurado ambas llaves."
+  },
+  "tooltips": {
+    "high": "Elevado: cambios críticos de seguridad (por ejemplo, firmante/umbrales).",
+    "low": "Bajo: cambios sencillos (p. ej., memo, precio).",
+    "masterWeight": "Peso del titular de la cuenta (Principal) (0-255): La clave principal de la cuenta tiene derecho a voto. Cuanto mayor sea su peso, más votos contará su firma. Estos votos se contarán junto con los votos de otros firmantes para verificar si se ha alcanzado la mayoría requerida.",
+    "med": "Medios: Pagos y acciones comerciales.",
+    "signerWeight": "Peso de los firmantes (0–255): Los firmantes adicionales también tienen derechos de voto. El peso determina cuántos votos aporta su firma. Cuando se envía una transacción, se suman todos los votos emitidos. Si se alcanza el número mínimo establecido de votos (umbral), la transacción se considera autorizada.",
+    "signerWeightHint": "Nota: Los pesos de maestro y firmante suman el total; los umbrales (bajo/medio/alto) no deben exceder esta suma."
+  },
+  "units": {
+    "signatures": "Firma(s)"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "learn.offline": "Offline: Gli esami pratici verranno verificati dopo il ripristino della connessione.",
+  "learn.validationFailed": "Convalida non riuscita.",
+  "learn.missingParams": "Parametri richiesti mancanti",
+  "submitTransaction.failed": "Transazione non riuscita.",
+  "learn.error.unknown_action": "Azione pratica sconosciuta",
+  "learn.error.rate_limited": "Attendere e riprovare.",
+  "learn.error.horizon_timeout": "Timeout dell'orizzonte. Per favore, prova di nuovo.",
+  "learn.error.network": "Errore di rete. Riprova.",
+  "asset": {
+    "creationDateUnknown": "Data di creazione sconosciuta"
+  },
+  "cache": {
+    "backfillAborted": "Caricamento iniziale dei pagamenti interrotto.",
+    "coverage": {
+      "newestFailed": "Errore nel recuperare l'ultimo pagamento.",
+      "oldestFailed": "Impossibile determinare la data più vecchia."
+    },
+    "indexIterFailed": "Iterazione di indice nella cache non riuscita",
+    "memoNormBackfillFailed": "Caricamento iniziale dei pagamenti per memo normalizzati non riuscito.",
+    "openFailed": "Impossibile aprire la cache locale",
+    "readFailed": "Lettura dalla cache non riuscita",
+    "rehydrateFailed": "Caricamento fallito dei promemoria mancanti.",
+    "rehydrateWriteFailed": "Error di scrittura dei memo nella cache.",
+    "writeFailed": "Scrittura nella cache fallita"
+  },
+  "connection": {
+    "backend": "Impossibile connettersi al backend. Assicurati"
+  },
+  "fetchInvestedTokens": {
+    "failed": "Caricamento dei dati d'investimento fallito: {{detail}}"
+  },
+  "horizon": {
+    "paymentsFetch": "Errore nel caricamento dei pagamenti da Horizon"
+  },
+  "loadTrustlines": "Impossibile caricare le linee di fiducia. Per favore, riprova.",
+  "loadTrustlinesFailed": "Caricamento delle linee di fiducia fallito",
+  "loadTrustlinesNotFound": "Account nella rete selezionata non trovato.",
+  "accountNotFoundInNetwork": "Non trovato in '{{net}}'!",
+  "op_invalid_limit": "La linea di fiducia non può essere eliminata. Potrebbe avere ancora un saldo o obblighi aperti.",
+  "query": {
+    "invalidMemo": "Memorandum non valido.",
+    "invalidRange": "L'intervallo di tempo non è valido (Da > A)",
+    "invalidTime": "Orario non valido"
+  },
+  "submitTransaction": {
+    "failed": {
+      "tx_bad_auth": "Transazione rifiutata: Firma non valida",
+      "tx_failed": "Transazione non riuscita",
+      "unknown": "Errore sconosciuto nella transazione"
+    }
+  },
+  "sync": {
+    "backfillFailed": "Caricamento iniziale dei pagamenti non riuscito.",
+    "incrementalFailed": "Aggiornamento dei pagamenti non riuscito."
+  },
+  "transaction": {
+    "failed": "Transazione fallita",
+    "title": "Errore nella transazione"
+  },
+  "trustline": {
+    "submitFailed": "Errore durante l'eliminazione della trustline.",
+    "unknown": "Errore sconosciuto durante l'eliminazione della linea di fiducia."
+  },
+  "xlmByMemo": {
+    "aborted": "Operazione annullata dall'utente.",
+    "accountInvalid": "Account non valido",
+    "dateInvalid": "Data non valida",
+    "dateRange": "Intervallo di date non valido",
+    "failedUnknown": "Errore sconosciuto",
+    "memoInvalid": "Memorandum non valido",
+    "paymentsFetch": "Errore durante il caricamento dei pagamenti",
+    "serverInvalid": "Server non valido"
+  },
+  "rateLimited": "Limite di Horizon superato. Attendere qualche secondo e riprovare."
+}

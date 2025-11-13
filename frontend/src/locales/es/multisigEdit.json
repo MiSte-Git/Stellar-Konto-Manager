@@ -1,0 +1,26 @@
+{
+  "menu": "Editar multisig",
+  "menuHint": "Ajustar los firmantes y los umbrales de una cuenta existente.",
+  "confirm": {
+    "removeSigner": "¿Realmente eliminar firmante?"
+  },
+  "currentConfig": "Configuración actual / planificada",
+  "error": {
+    "thresholdTooHigh": "Los umbrales no deben exceder la suma de los pesos."
+  },
+  "hint": "Carga una cuenta existente, ajusta firmantes, pesos, peso maestro y umbrales, y guarda los cambios.",
+  "load": "Cargar",
+  "loaded": "Cargado. Firmantes adicionales: {{count}}",
+  "noteMaxSigners": "Nota: Stellar permite un máximo de 20 firmantes adicionales por cuenta.",
+  "reload": "Recargar",
+  "save": "Guardar cambios",
+  "saved": "Cambios guardados. TX: {{hash}}",
+  "signers": "Firmante",
+  "weight": "Ponderación",
+  "masterWeight": "Peso maestro",
+  "title": "Editar cuenta multisig",
+  "validation": {
+    "signerKeyHint": "Nota: Los firmantes deben comenzar con \"G\" (clave pública ed25519).",
+    "signerKeyInvalid": "Dirección de firmante no válida. Se espera una dirección que comience con G… (ed25519)."
+  }
+}

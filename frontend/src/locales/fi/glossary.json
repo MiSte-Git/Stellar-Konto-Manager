@@ -1,171 +1,171 @@
 {
-  "pageTitle": "Glossar",
-  "pageIntro": "Hier findest du wichtige Wörter aus der Blockchain Welt und aus dem Stellar Netzwerk. Alles ist in einfachen Worten erklärt.",
-  "searchLabel": "Begriff suchen",
-  "searchPlaceholder": "Begriff suchen (z. B. Konto, Account, Muxed)",
-  "searchHint": "Die Suche findet Wörter und Erklärungen.",
-  "noResults": "Kein Treffer.",
+  "pageTitle": "Sanasto",
+  "pageIntro": "Täältä löydät tärkeitä sanoja lohkoketjun maailmasta ja Stellar-verkostosta. Kaikki on selitetty yksinkertaisin sanoin.",
+  "searchLabel": "Etsi termiä",
+  "searchPlaceholder": "Etsi termi (esim. tili, Account, Muxed)",
+  "searchHint": "Haku löytää sanoja ja selityksiä.",
+  "noResults": "Ei osumia.",
   "blockchain": {
-    "title": "Blockchain",
+    "title": "Lohkoketju",
     "original": "Blockchain",
-    "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
-    "desc": "Eine Blockchain ist wie ein digitales Kassenbuch. Viele Computer speichern dieselben Einträge. So kann niemand heimlich etwas ändern."
+    "short": "Yhteinen digitaalinen kassakirja – useat tietokoneet tallentavat samat merkinnät.",
+    "desc": "Lohkoketju on kuin digitaalinen kirjanpito. Monet tietokoneet tallentavat samat merkinnät. Näin kukaan ei voi salaa muuttaa mitään."
   },
   "wallet": {
-    "title": "Wallet",
+    "title": "Lompakko",
     "original": "Wallet",
-    "short": "Digitale Geldbörse, die deine Schlüssel verwaltet.",
-    "desc": "Ein Wallet ist deine digitale Geldbörse. Es verwaltet die Schlüssel die du brauchst um auf dein Konto zuzugreifen und Transaktionen zu senden. Ein Wallet kann ein Programm sein oder eine App oder auch nur ein Zettel mit deinem Geheimschlüssel."
+    "short": "Digitaalinen lompakko, joka hallinnoi avaimiasi.",
+    "desc": "Lompakko on digitaalinen rahapussisi. Se hallinnoi avaimia, joita tarvitset päästäksesi tilillesi ja lähettääksesi tapahtumia. Lompakko voi olla ohjelma tai sovellus tai jopa vain paperilappu, jossa on salainen avain."
   },
   "account": {
-    "title": "Konto",
+    "title": "Tili",
     "original": "Account",
-    "short": "Ein Blockchain-Konto kann Vermögenswerte halten und Transaktionen senden.",
-    "desc": "Ein Konto ist die Stelle auf der Blockchain an der deine Werte liegen. Ein Konto hat eine öffentliche Adresse die mit G beginnt. Mehrere Wallets können auf dasselbe Konto zugreifen wenn sie den richtigen Schlüssel haben."
+    "short": "Blockchain-tili voi pitää hallussaan varoja ja lähettää tapahtumia.",
+    "desc": "Tili on paikka lohkoketjussa, jossa arvosi sijaitsevat. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat lompakot voivat käyttää samaa tiliä, jos niillä on oikea avain."
   },
   "addressG": {
-    "title": "G-Adresse",
+    "title": "G-osoite",
     "original": "G Address",
-    "short": "Die öffentliche Hauptadresse eines Stellar-Kontos (beginnt mit G).",
-    "desc": "Die G-Adresse ist die Hauptadresse eines Stellar Kontos. Sie beginnt mit dem Buchstaben G. Du gibst sie anderen damit sie dir etwas schicken können."
+    "short": "Stellarin tilin julkinen pääosoite (alkaa kirjaimella G).",
+    "desc": "G-osoite on Stellar-tilin pääosoite. Se alkaa kirjaimella G. Annat sen muille, jotta he voivat lähettää sinulle jotain."
   },
   "publicKey": {
-    "title": "Öffentlicher Schlüssel",
+    "title": "Julkinen avain",
     "original": "Public Key",
-    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
-    "desc": "Der öffentliche Schlüssel ist die Adresse die du zeigen darfst. Bei Stellar ist das die G-Adresse. Andere nutzen ihn um dir Geld zu senden."
+    "short": "Osoite, jonka voit jakaa; Stellarissa yleensä G-osoite.",
+    "desc": "Julkinen avain on osoite, jonka voit näyttää. Stellarissa se on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
   },
   "privateKey": {
-    "title": "Geheimer Schlüssel",
+    "title": "Salainen avain",
     "original": "Secret Key",
-    "short": "Passwort zum Konto – niemals weitergeben.",
-    "desc": "Der geheime Schlüssel ist dein Passwort für das Konto. Wer diesen Schlüssel hat kann dein Geld bewegen. Niemals weitergeben."
+    "short": "Salasana tilille – älä koskaan jaa sitä eteenpäin.",
+    "desc": "Salainen avain on tilisi salasana. Kenellä on tämä avain, voi siirtää rahojasi. Älä koskaan anna sitä eteenpäin."
   },
   "addressFederation": {
-    "title": "Föderationsadresse",
+    "title": "\"Liittovaltion osoite\"",
     "original": "Federation Address",
-    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
-    "desc": "Eine Föderationsadresse sieht aus wie eine E-Mail. Beispiel: name*domain.com. Diese kurze Adresse zeigt auf eine normale G-Adresse. Das ist einfacher zu merken."
+    "short": "Lyhyt osoite, kuten sähköpostiosoite, osoittaa G-osoitteeseen.",
+    "desc": "Federation-osoite näyttää sähköpostiosoitteelta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa normaaliin G-osoitteeseen. Se on helpompi muistaa."
   },
   "addressMuxed": {
-    "title": "Muxed-Konto",
+    "title": "Muxed-tili",
     "original": "Muxed Account",
-    "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
-    "desc": "Eine M-Adresse zeigt auf ein bestehendes Stellar Konto hat aber zusätzlich eine eigene Nummer (ID). So kann man z. B. mehrere Personen oder Abteilungen unter derselben G-Adresse unterscheiden. Technisch gehört das Geld weiter dem Hauptkonto."
+    "short": "M‑osoite lisä-ID:llä – jakaa perusakun.",
+    "desc": "M-osoite viittaa olemassa olevaan Stellar-tiliin, mutta sillä on lisäksi oma numero (ID). Näin voidaan erottaa esimerkiksi useita henkilöitä tai osastoja saman G-osoitteen alla. Teknisesti rahat kuuluvat edelleen päätilille."
   },
   "multisig": {
-    "title": "Mehrfachsignatur",
+    "title": "Moniallekirjoitus",
     "original": "Multi‑Sig",
-    "short": "Wichtige Aktionen brauchen mehr als eine Unterschrift.",
-    "desc": "Multi-Sig steht für mehrere Unterschriften. Eine wichtige Aktion braucht mehr als einen Schlüssel. Beispiel: Du und ein zweiter Schlüssel müssen beide zustimmen bevor etwas gesendet wird. Das macht Diebstahl schwerer."
+    "short": "Tärkeät toimet vaativat enemmän kuin yhden allekirjoituksen.",
+    "desc": "Multi-Sig tarkoittaa useita allekirjoituksia. Tärkeä toimenpide tarvitsee useamman kuin yhden avaimen. Esimerkki: Sinun ja toisen avaimen on molempien suostuttava ennen kuin jotain lähetetään. Tämä tekee varkauden vaikeammaksi."
   },
   "trustline": {
-    "title": "Trustline",
+    "title": "Luottolimiitti",
     "original": "Trustline",
-    "short": "Zustimmung, einen Token eines bestimmten Herausgebers zu halten.",
-    "desc": "Eine Trustline ist wie ein Ja ich akzeptiere diesen Token. Du sagst damit dass dein Konto bereit ist einen bestimmten Token von einem bestimmten Herausgeber zu halten. Ohne Trustline kannst du diesen Token nicht empfangen.\n\nBeispiel: Eine Trustline wird als CODE:ISSUER angegeben. Für EURT vom Herausgeber GDUKMGUGDZQK6Y… lautet sie EURT:GDUKMGUGDZQK6Y…"
+    "short": "Suostumus tietyn liikkeeseenlaskijan tokenin hallussapitoon.",
+    "desc": "Trustline on kuin \"Kyllä, hyväksyn tämän tokenin\". Tämän avulla sanotaan, että tilisi on valmis vastaanottamaan tietyn tokenin tietystä liikkeeseenlaskijasta. Ilman trustlinea et voi vastaanottaa tätä tokenia.\n\nEsimerkki: Trustline merkitään muodossa KOODI:LIKKEESEENLASKIJA. EURT-tokenille, jonka liikkeeseenlaskija on GDUKMGUGDZQK6Y…, se merkitään muotoon EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
-    "title": "Token",
+    "title": "Merkki",
     "original": "Token",
-    "short": "Digitale Einheit – z. B. Geld, Punkte oder Guthaben.",
-    "desc": "Ein Token ist eine digitale Einheit auf der Blockchain. Ein Token kann Geld darstellen oder Punkte oder Guthaben für einen Dienst."
+    "short": "Digitaalinen yksikkö – esim. rahaa, pisteitä tai saldoa.",
+    "desc": "Token on digitaalinen yksikkö lohkoketjussa. Token voi edustaa rahaa tai pisteitä tai palvelun saldoja."
   },
   "asset": {
-    "title": "Asset",
+    "title": "Omaisuus",
     "original": "Asset",
-    "short": "Token auf Stellar, immer mit Herausgeber verknüpft.",
-    "desc": "Auf Stellar heißt ein Token Asset. Ein Asset ist immer verknüpft mit einem Herausgeber Konto. Zum Beispiel kann ein Konto einen Euro Token ausgeben. Dieser Euro Token ist dann ein Asset."
+    "short": "Tokenit Stellarin verkossa ovat aina liitettynä liikkeellelaskijaan.",
+    "desc": "Stellarissa tokenia kutsutaan omaisuudeksi. Omaisuus on aina liitetty liikkeeseenlaskijan tiliin. Esimerkiksi tili voi laskea liikkeelle euron tokenin. Tämä euron token on silloin omaisuus."
   },
   "xlm": {
     "title": "XLM",
     "original": "XLM",
-    "short": "Native Währung von Stellar für Gebühren und Aktivierung.",
-    "desc": "XLM ist die Grundwährung von Stellar. Du brauchst XLM um Gebühren zu zahlen und ein neues Konto zu starten."
+    "short": "Stellarin oma valuutta maksuihin ja aktivointiin.",
+    "desc": "XLM on Stellarin perustavaluutta. Tarvitset XLM:ää maksujen maksamiseen ja uuden tilin avaamiseen."
   },
   "mainnet": {
     "title": "Mainnet",
     "original": "Mainnet",
-    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
-    "desc": "Das echte Stellar Netzwerk mit realem Wert. Transaktionen sind endgültig und Gebühren werden in echtem XLM bezahlt."
+    "short": "Todellinen Stellar-verkko, jolla on todellista arvoa.",
+    "desc": "Aito Stellar-verkko, jolla on todellista arvoa. Tapahtumat ovat lopullisia ja maksut suoritetaan oikeilla XLM:llä."
   },
   "testnet": {
-    "title": "Testnet",
+    "title": "Testiverkko",
     "original": "Testnet",
-    "short": "Öffentliches Übungsnetzwerk ohne echten Wert.",
-    "desc": "Ein öffentliches Übungsnetzwerk. Tokens haben keinen echten Wert. Ideal zum Lernen und Ausprobieren ohne Risiko."
+    "short": "Julkinen harjoitusverkosto ilman todellista arvoa.",
+    "desc": "Julkinen harjoitteluverkko. Tunnuksilla ei ole todellista arvoa. Ihanteellinen oppimiseen ja kokeiluun ilman riskiä."
   },
   "memo": {
-    "title": "Memo",
+    "title": "Muistio",
     "original": "Memo",
-    "short": "Kurze Notiz in einer Transaktion.",
-    "desc": "Ein Memo ist eine kleine Notiz die du mit einer Transaktion mitschicken kannst. Oft verlangt eine Börse ein bestimmtes Memo damit sie weiß wem das Geld gehört."
+    "short": "Lyhyt huomautus transaktiossa.",
+    "desc": "Muistio on pieni huomautus, jonka voit lähettää tapahtuman mukana. Usein pörssi vaatii tietyn muistion tietääkseen, kenelle rahat kuuluvat."
   },
   "transaction": {
-    "title": "Transaktion",
+    "title": "Tapahtuma",
     "original": "Transaction",
-    "short": "Aktion auf der Blockchain, z. B. Zahlung oder Trustline.",
-    "desc": "Eine Transaktion ist eine Aktion auf der Blockchain. Zum Beispiel Geld senden oder eine Trustline anlegen. Eine Transaktion wird für immer gespeichert wenn sie bestätigt ist."
+    "short": "Toiminta lohkoketjussa, kuten maksu tai luottolimiitti.",
+    "desc": "Transaktio on toiminto lohkoketjussa. Esimerkiksi rahan lähettäminen tai luottolinjan avaaminen. Transaktio tallennetaan pysyvästi, kun se on vahvistettu."
   },
   "fee": {
-    "title": "Gebühr",
+    "title": "Maksu",
     "original": "Fee",
-    "short": "Sehr kleiner Betrag pro Transaktion.",
-    "desc": "Die Gebühr ist ein sehr kleiner Betrag den du bei jeder Transaktion zahlst. Die Gebühr geht an das Netzwerk. Bei Stellar sind die Gebühren sehr klein."
+    "short": "Hyvin pieni summa per tapahtuma.",
+    "desc": "Maksu on hyvin pieni summa, jonka maksat jokaisesta tapahtumasta. Maksu menee verkostolle. Stellarilla maksut ovat hyvin pieniä."
   },
   "ledger": {
-    "title": "Ledger",
+    "title": "Pääkirja",
     "original": "Ledger",
-    "short": "Kette der bestätigten Daten und Kontostände.",
-    "desc": "Das Ledger ist die Kette aller bestätigten Daten. Dort steht welche Konten wie viel besitzen und welche Transaktionen passiert sind. Jeder kann das Ledger prüfen."
+    "short": "Vahvistettujen tietojen ja tilien ketju.",
+    "desc": "Pääkirja on kaikkien vahvistettujen tietojen ketju. Siellä näkyy, kuinka paljon tileillä on ja mitkä tapahtumat ovat tapahtuneet. Jokainen voi tarkistaa pääkirjan."
   },
   "horizon": {
-    "title": "Horizon",
+    "title": "Horisontti",
     "original": "Horizon",
-    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
-    "desc": "Horizon ist der Service über den Programme mit der Stellar Blockchain reden. Unser Tool fragt Horizon um Kontostände und Transaktionen zu laden."
+    "short": "API-palvelu, jonka kautta sovellukset voivat keskustella Stellarin kanssa.",
+    "desc": "Horizon on palvelu, jonka kautta ohjelmat voivat kommunikoida Stellar-lohkoketjun kanssa. Työkalumme käyttää Horizon-palvelua tilien saldon ja tapahtumien lataamiseen."
   },
   "anchor": {
-    "title": "Anchor",
+    "title": "Ankkuri",
     "original": "Anchor",
-    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Ein Anchor ist eine Firma die echtes Geld wie Euro oder Dollar mit Stellar verbindet. Du gibst dem Anchor z. B. Euro und bekommst dafür einen Euro Token auf Stellar."
+    "short": "Yritys, joka yhdistää Fiat-rahaa Stellariin.",
+    "desc": "Anchor on yritys, joka yhdistää oikean rahan, kuten euron tai dollarin, Stellariin. Annat esimerkiksi anchorelle euroja ja saat vastineeksi Stellarissa olevan eurotokenin."
   },
   "exchange": {
-    "title": "Börse",
+    "title": "Pörssi",
     "original": "Exchange",
-    "short": "Ort zum Kaufen und Verkaufen von Tokens.",
-    "desc": "Eine Börse ist ein Ort an dem du Token kaufen oder verkaufen kannst. Viele Börsen verlangen ein KYC Verfahren also eine Ausweisprüfung bevor du Geld in Euro oder Franken rausziehen kannst."
+    "short": "Paikka tokenien ostamiseen ja myymiseen.",
+    "desc": "Pörssi on paikka, jossa voit ostaa tai myydä tokeneita. Monet pörssit vaativat KYC-menettelyn, eli henkilöllisyyden tarkistuksen, ennen kuin voit nostaa rahaa euroina tai frangeina."
   },
   "dex": {
     "title": "DEX",
     "original": "Decentralized Exchange",
-    "short": "Dezentrale Börse direkt auf der Blockchain.",
-    "desc": "DEX bedeutet Dezentrale Börse. Hier handeln die Leute direkt miteinander auf der Blockchain. Es gibt keinen einzelnen Betreiber. Stellar hat eine DEX direkt eingebaut."
+    "short": "Hajautettu pörssi suoraan lohkoketjussa.",
+    "desc": "DEX tarkoittaa hajautettua pörssiä. Tässä ihmiset käyvät kauppaa suoraan toistensa kanssa lohkoketjussa. Ei ole yksittäistä operaattoria. Stellarilla on sisäänrakennettu DEX."
   },
   "liquidityPool": {
-    "title": "Liquiditätspool",
+    "title": "Likviditeettipooli",
     "original": "Liquidity Pool",
-    "short": "Gemeinsamer Topf mit zwei Tokens zum sofortigen Tausch.",
-    "desc": "Ein Liquiditätspool ist ein gemeinsamer Topf mit zwei Tokens. Leute legen beide Tokens hinein. Andere dürfen dann diese Tokens sofort tauschen. Die Einzahler verdienen dafür kleine Gebühren."
+    "short": "Yhteinen rahasto, jossa on kaksi tokenia välittömään vaihtoon.",
+    "desc": "Likviditeettipooli on yhteinen säiliö kahdelle tokenille. Ihmiset laittavat molempia tokeneita siihen. Muut saavat sitten vaihtaa näitä tokeneita heti. Tallettajat ansaitsevat tästä pieniä maksuja."
   },
   "balanceClaimable": {
-    "title": "Claimable Balance",
+    "title": "Vaatimuksenalainen saldo",
     "original": "Claimable Balance",
-    "short": "Reserviertes Geld, das du noch annehmen musst.",
-    "desc": "Eine Claimable Balance ist Geld das schon für dich reserviert ist aber du musst es noch abholen. Erst wenn du es annimmst geht es in dein Konto."
+    "short": "Varatut rahat, jotka sinun on vielä vastaanotettava.",
+    "desc": "Voitettava saldo on rahaa, joka on jo varattu sinulle, mutta sinun täytyy vielä noutaa se. Vasta kun hyväksyt sen, se siirtyy tilillesi."
   },
   "protocolUpdate": {
-    "title": "Protocol Update",
+    "title": "Protokollipäivitys",
     "original": "Protocol Update",
-    "short": "Aktualisierung der Netzwerk‑Regeln.",
-    "desc": "Ein Protocol Update ist ein Upgrade der Regeln im Stellar Netzwerk. Zum Beispiel neue Funktionen oder Sicherheitsänderungen. Alle Knoten im Netzwerk müssen dieselben Regeln benutzen."
+    "short": "Verkostosääntöjen päivitys.",
+    "desc": "Protokollipäivitys on sääntöjen parannus Stellar-verkossa. Esimerkiksi uudet ominaisuudet tai tietoturvamuutokset. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Stellars Smart‑Contract‑System.",
-    "desc": "Soroban ist das Smart Contract System von Stellar. Ein Smart Contract ist Programmcode auf der Blockchain. Der Code kann selbst Regeln prüfen und Aktionen auslösen ohne eine Bank dazwischen."
+    "short": "Stellarin älysopimusjärjestelmä.",
+    "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on lohkoketjussa oleva ohjelmakoodi. Koodi voi tarkistaa sääntöjä ja käynnistää toimintoja ilman välikätenä toimivaa pankkia."
   },
-  "missingKey": "Fehlender Glossar-Schlüssel: {{detail}}"
+  "missingKey": "Puuttuva sanaston avain: {{detail}}"
 }

@@ -1,0 +1,27 @@
+{
+  "all": "Lister toutes les lignes de confiance",
+  "compare": "Comparer les lignes de confiance",
+  "delete": "Supprimer les lignes de confiance",
+  "onlyZeroBalanceInfo": "Seules les lignes de confiance avec un solde de 0 peuvent être supprimées.",
+  "nonZeroBalance": "Cette ligne de crédit a un solde différent de 0 et ne peut pas être supprimée.",
+  "destination": {
+    "label": "Adresse cible",
+    "placeholder": "Clé publique de destination ou adresse de fédération",
+    "error": "Adresse de destination non valide"
+  },
+  "deleted": {
+    "resultTitle": "Résultat de suppression",
+    "resultText": "{count} lignes de confiance ont été traitées en mode {mode}.",
+    "mode": {
+      "simulation": "Simulation",
+      "real": "Exploitation réelle",
+      "realWarning": "Attention ! Cela supprimera définitivement les « trustlines » sur la blockchain."
+    },
+    "notFound": "Aucune trustline correspondante à supprimer trouvée.",
+    "simulated": "Simulation : {count} Trustlines seraient supprimées.",
+    "success": "Réussi : {count} trustlines supprimées."
+  },
+  "noDuplicates": "Aucune ligne de confiance en double trouvée.",
+  "showSecret": "Afficher la clé secrète",
+  "notFound": "Aucune ligne de confiance trouvée."
+}

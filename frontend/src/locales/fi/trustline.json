@@ -1,0 +1,27 @@
+{
+  "all": "Listaa kaikki luottolinjat.",
+  "compare": "Trustlines vertailla",
+  "delete": "Poista luottolinjat",
+  "onlyZeroBalanceInfo": "Vain trustlinet, joiden saldo on 0, voidaan poistaa.",
+  "nonZeroBalance": "Tämä luottoraja ei ole nolla, eikä sitä voi poistaa.",
+  "destination": {
+    "label": "Kohdeosoite",
+    "placeholder": "Kohdejulkinen avain tai federaatio-osoite",
+    "error": "Virheellinen kohdeosoite"
+  },
+  "deleted": {
+    "resultTitle": "Poistotulos",
+    "resultText": "{count} luottolinjaa käsiteltiin tilassa {mode}.",
+    "mode": {
+      "simulation": "Simulointi",
+      "real": "Todellinen käyttöympäristö",
+      "realWarning": "Varoitus! Tämä poistaa Trustlines lopullisesti lohkoketjulta."
+    },
+    "notFound": "Ei poistettavia trustline-yhteyksiä löytynyt.",
+    "simulated": "Simulointi: {count} Trustlinea poistettaisiin.",
+    "success": "Erfolgreich: {count} Trustlines poistettu."
+  },
+  "noDuplicates": "Ei löytynyt kaksoisluottolinjoja.",
+  "showSecret": "Näytä salainen avain",
+  "notFound": "Ei löytynyt luottolinjaa/luottolinjoja."
+}

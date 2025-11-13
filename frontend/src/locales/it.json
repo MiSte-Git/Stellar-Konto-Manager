@@ -246,7 +246,7 @@
       "xlmByMemo": "Filtrare per promemoria",
       "sendPayment": "Inviare pagamento",
       "investedTokens": "Filtrare token/asset",
-      "multisigCreate": "Creare un account",
+      "createAccount": "Creare un account",
       "multisigEdit": "Modificare il conto multisig",
       "settings": "Impostazioni",
       "feedback": "Feedback",
@@ -352,7 +352,7 @@
     "mainnet": "Mainnet",
     "testnet": "Testnet"
   },
-  "multisigCreate": {
+  "createAccount": {
     "activateHint": "L'attivazione è necessaria affinché l'account esista. Nel Testnet tramite Friendbot, nel Mainnet tramite \"Create Account\" da un portafoglio esistente.",
     "activateNow": "Attiva immediatamente il conto.",
     "activateOnly": "Solo attivare",

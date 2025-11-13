@@ -1,0 +1,76 @@
+{
+  "learn.offline": "Offline: Practical exams will be reviewed after reconnection.",
+  "learn.validationFailed": "Validation failed",
+  "learn.missingParams": "Required parameters are missing.",
+  "submitTransaction.failed": "Transaction failed",
+  "learn.error.unknown_action": "Unknown practice action",
+  "learn.error.rate_limited": "Please wait and try again.",
+  "learn.error.horizon_timeout": "Horizon timeout. Please try again.",
+  "learn.error.network": "Network error. Please try again.",
+  "asset": {
+    "creationDateUnknown": "Unknown creation date"
+  },
+  "cache": {
+    "backfillAborted": "Initial loading of payments aborted",
+    "coverage": {
+      "newestFailed": "Failed to retrieve the latest payment",
+      "oldestFailed": "Failed to determine the oldest date"
+    },
+    "indexIterFailed": "Index iteration failed in the cache.",
+    "memoNormBackfillFailed": "Initial loading of payments for normalized memos failed.",
+    "openFailed": "Local cache could not be opened",
+    "readFailed": "Failed to read from cache",
+    "rehydrateFailed": "Failed to load missing memos",
+    "rehydrateWriteFailed": "Failed to write the memos to the cache",
+    "writeFailed": "Failed to write to cache"
+  },
+  "connection": {
+    "backend": "Unable to connect to the backend. Please ensure"
+  },
+  "fetchInvestedTokens": {
+    "failed": "Loading of investment data failed: {{detail}}"
+  },
+  "horizon": {
+    "paymentsFetch": "Error loading payments from Horizon"
+  },
+  "loadTrustlines": "Trustlines could not be loaded. Please try again.",
+  "loadTrustlinesFailed": "Loading of trustlines failed.",
+  "loadTrustlinesNotFound": "Account not found in the selected network.",
+  "accountNotFoundInNetwork": "Not found in '{{net}}'!",
+  "op_invalid_limit": "Trustline cannot be deleted. It may still have a balance or outstanding obligations.",
+  "query": {
+    "invalidMemo": "Invalid memo",
+    "invalidRange": "The time window is invalid (From > To)",
+    "invalidTime": "Invalid time specification"
+  },
+  "submitTransaction": {
+    "failed": {
+      "tx_bad_auth": "Transaction declined: Invalid signature",
+      "tx_failed": "Transaction failed",
+      "unknown": "Unknown error during the transaction"
+    }
+  },
+  "sync": {
+    "backfillFailed": "Initial loading of payments failed.",
+    "incrementalFailed": "Payment update failed"
+  },
+  "transaction": {
+    "failed": "Transaction failed",
+    "title": "Transaction error"
+  },
+  "trustline": {
+    "submitFailed": "Error deleting the trustline.",
+    "unknown": "Unknown error occurred while deleting the trustline."
+  },
+  "xlmByMemo": {
+    "aborted": "Operation canceled by user",
+    "accountInvalid": "Invalid account",
+    "dateInvalid": "Invalid date",
+    "dateRange": "Invalid date range",
+    "failedUnknown": "Unknown error",
+    "memoInvalid": "Invalid memo",
+    "paymentsFetch": "Error loading payments",
+    "serverInvalid": "Invalid server"
+  },
+  "rateLimited": "Horizon rate limit exceeded. Please wait a few seconds and try again."
+}

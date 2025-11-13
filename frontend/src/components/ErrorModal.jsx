@@ -10,7 +10,7 @@ function ErrorModal({ message, onClose }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md shadow-xl">
         <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-4">
-          ❌ {t('error.transaction.title')}
+          ❌ {t('errors:transaction.title', 'Transaction error')}
         </h2>
         <p className="text-sm text-gray-800 dark:text-gray-200 mb-6 whitespace-pre-line">
           {message}

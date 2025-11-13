@@ -5,7 +5,7 @@ import { apiUrl } from '../utils/apiBase.js';
 type BugStatus = 'open' | 'in_progress' | 'closed';
 type BugPriority = 'low' | 'normal' | 'high' | 'urgent';
 type BugCategory = 'bug' | 'idea' | 'improve' | 'other';
-type BugPage = 'start' | 'trustlines' | 'trustlineCompare' | 'balance' | 'xlmByMemo' | 'sendPayment' | 'investedTokens' | 'multisigCreate' | 'multisigEdit' | 'settings' | 'feedback' | 'other';
+type BugPage = 'start' | 'trustlines' | 'trustlineCompare' | 'balance' | 'xlmByMemo' | 'sendPayment' | 'investedTokens' | 'createAccount' | 'multisigEdit' | 'settings' | 'feedback' | 'other';
 
 interface BugReportRow {
   id: number;
@@ -32,7 +32,7 @@ interface UpdateDraft {
 const statusOptions: BugStatus[] = ['open', 'in_progress', 'closed'];
 const priorityOptions: BugPriority[] = ['low', 'normal', 'high', 'urgent'];
 const categoryOptions: BugCategory[] = ['bug', 'idea', 'improve', 'other'];
-const pageOptions: BugPage[] = ['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','multisigCreate','multisigEdit','settings','feedback','other'];
+const pageOptions: BugPage[] = ['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','createAccount','multisigEdit','settings','feedback','other'];
 
 const PAGE_SIZE = 20;
 

@@ -1,0 +1,76 @@
+{
+  "learn.offline": "Offline-tilassa: Käytännön kokeet tarkistetaan, kun yhteys palautuu.",
+  "learn.validationFailed": "Vahvistaminen epäonnistui",
+  "learn.missingParams": "Pakolliset parametrit puuttuvat",
+  "submitTransaction.failed": "Tapahtuma epäonnistui",
+  "learn.error.unknown_action": "Tuntematon käytäntökampanja",
+  "learn.error.rate_limited": "Odota ja yritä uudelleen.",
+  "learn.error.horizon_timeout": "Horisontin aikakatkaisu. Yritä uudelleen.",
+  "learn.error.network": "Verkkovirhe. Yritä uudelleen.",
+  "asset": {
+    "creationDateUnknown": "Tuntematon luomispäivämäärä"
+  },
+  "cache": {
+    "backfillAborted": "Ensimmäinen maksujen lataus keskeytetty.",
+    "coverage": {
+      "newestFailed": "Uusimman maksun selvittäminen epäonnistui",
+      "oldestFailed": "Vanhimman päivämäärän selvittäminen epäonnistui"
+    },
+    "indexIterFailed": "Välimuistin indeksin iteraatio epäonnistui",
+    "memoNormBackfillFailed": "Alustava maksujen lataaminen normalisoitujen muistiinpanojen osalta epäonnistui.",
+    "openFailed": "Paikallista välimuistia ei voitu avata",
+    "readFailed": "Välimuistin luku epäonnistui.",
+    "rehydrateFailed": "Puuttuvien muistioiden lataaminen epäonnistui.",
+    "rehydrateWriteFailed": "Virhe tallennettaessa muistiinpanoja välimuistiin",
+    "writeFailed": "Välimuistiin kirjoittaminen epäonnistui"
+  },
+  "connection": {
+    "backend": "Yhteyttä ei voida muodostaa taustajärjestelmään. Varmista"
+  },
+  "fetchInvestedTokens": {
+    "failed": "Investointitietojen lataaminen epäonnistui: {{detail}}"
+  },
+  "horizon": {
+    "paymentsFetch": "Virhe ladattaessa maksutietoja Horizonista"
+  },
+  "loadTrustlines": "Trustlinesia ei voitu ladata. Yritä uudelleen.",
+  "loadTrustlinesFailed": "Trustlinesin lataus epäonnistui",
+  "loadTrustlinesNotFound": "Tili valitussa verkossa ei löytynyt.",
+  "accountNotFoundInNetwork": "Ei löydy '{{net}}'!",
+  "op_invalid_limit": "Trustlinea ei voi poistaa. Siinä saattaa olla vielä saldoa tai avoimia velvoitteita.",
+  "query": {
+    "invalidMemo": "Virheellinen muistiinpano",
+    "invalidRange": "Aikaväli on virheellinen (Alku > Loppu)",
+    "invalidTime": "Virheellinen aikatieto"
+  },
+  "submitTransaction": {
+    "failed": {
+      "tx_bad_auth": "Tapahtuma hylätty: Virheellinen allekirjoitus",
+      "tx_failed": "Tapahtuma epäonnistui",
+      "unknown": "Tuntematon virhe tapahtumassa"
+    }
+  },
+  "sync": {
+    "backfillFailed": "Maksujen alkuperäinen lataus epäonnistui.",
+    "incrementalFailed": "Maksujen päivitys epäonnistui"
+  },
+  "transaction": {
+    "failed": "Tapahtuma epäonnistui",
+    "title": "Virhe tapahtumassa"
+  },
+  "trustline": {
+    "submitFailed": "Virhe luottorajan poistamisessa.",
+    "unknown": "Tuntematon virhe Trustline-yhteyden poistamisessa."
+  },
+  "xlmByMemo": {
+    "aborted": "Keskeytetty käyttäjän toimesta",
+    "accountInvalid": "Epäkelpo tili",
+    "dateInvalid": "Virheellinen päivämäärä",
+    "dateRange": "Virheellinen päivämääräalue",
+    "failedUnknown": "Tuntematon virhe",
+    "memoInvalid": "Virheellinen muistiinpano",
+    "paymentsFetch": "Virhe maksujen lataamisessa",
+    "serverInvalid": "Virheellinen palvelin"
+  },
+  "rateLimited": "Horizon-rajalimiitti ylitetty. Odota muutama sekunti ja yritä uudelleen."
+}

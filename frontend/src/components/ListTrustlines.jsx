@@ -438,25 +438,25 @@ function ListTrustlines({
               className="px-4 py-2 cursor-pointer text-left"
               onClick={() => onSort('assetCode')}
             >
-              {t('asset.code')}
+              {t('common:asset.code', 'Asset code')}
             </th>
             <th
               className="px-4 py-2 cursor-pointer text-left"
               onClick={() => onSort('assetBalance')}
             >
-              {t('asset.balance')}
+              {t('common:asset.balance', 'Balance')}
             </th>
             <th
               className="px-4 py-2 cursor-pointer text-left"
               onClick={() => onSort('assetIssuer')}
             >
-              {t('asset.issuer')}
+              {t('common:asset.issuer', 'Issuer')}
             </th>
             <th
               className="px-4 py-2 cursor-pointer text-left"
               onClick={() => onSort('createdAt')}
             >
-              {t('asset.creationDate')}
+              {t('common:asset.creationDate', 'Created at')}
             </th>
           </tr>
         </thead>
@@ -484,7 +484,7 @@ function ListTrustlines({
               <td className="px-4 py-2">{tl.assetCode}</td>
               <td className="px-4 py-2">{balanceFmt.format(Number(tl.assetBalance || 0))}</td>
               <td className="px-4 py-2">{tl.assetIssuer}</td>
-              <td className="px-4 py-2">{tl.createdAt ? new Date(tl.createdAt).toLocaleString() : t('error.asset.creationDateUnknown')}</td>
+              <td className="px-4 py-2">{tl.createdAt ? new Date(tl.createdAt).toLocaleString() : t('errors:asset.creationDateUnknown', 'Unknown creation date')}</td>
             </tr>
           ))}
         </tbody>
@@ -519,14 +519,14 @@ function ListTrustlines({
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-black dark:text-white">
-                {t('option.confirm.action.title')}
+                {t('common:option.confirm.action.title', 'Confirm action')}
               </h2>
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowOverviewModal(false)}
                   className="px-3 py-1 bg-gray-400 text-black rounded hover:bg-gray-500"
                 >
-                  {t('option.cancel')}
+                  {t('common:option.cancel', 'Cancel')}
                 </button>
                 <button
                   onClick={() => {
@@ -535,27 +535,27 @@ function ListTrustlines({
                   }}
                   className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
                 >
-                  {t('option.yes')}
+                  {t('common:option.yes', 'Yes')}
                 </button>
               </div>
             </div>
             <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">
-              {t('option.confirm.action.text')}
+              {t('common:option.confirm.action.text', 'Are you sure?')}
             </p>
 
             <table className="min-w-full text-sm mb-4">
               <thead>
                 <tr>
                   <th className="px-2 py-1 cursor-pointer" onClick={() => handleSortOverview('assetCode')}>
-                    {t('asset.code')}
+                    {t('common:asset.code', 'Asset code')}
                   </th>
                   <th className="px-2 py-1 cursor-pointer" onClick={() => handleSortOverview('assetBalance')}>
-                    {t('asset.balance')}
+                    {t('common:asset.balance', 'Balance')}
                   </th>
                   <th className="px-2 py-1 cursor-pointer" onClick={() => handleSortOverview('assetIssuer')}>
-                    {t('asset.issuer')}
+                    {t('common:asset.issuer', 'Issuer')}
                   </th>
-                  <th className="px-2 py-1">{t('option.delete')}</th>
+                  <th className="px-2 py-1">{t('common:option.delete', 'Delete')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -569,7 +569,7 @@ function ListTrustlines({
                         className="text-red-600 hover:underline"
                         onClick={() => handleToggleFromOverview(tl)}
                       >
-                        {t('option.delete')}
+                        {t('common:option.delete', 'Delete')}
                       </button>
                     </td>
                   </tr>
@@ -583,7 +583,7 @@ function ListTrustlines({
                   onClick={() => setShowOverviewModal(false)}
                   className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500"
                 >
-                  {t('option.cancel')}
+                  {t('common:option.cancel', 'Cancel')}
                 </button>
                 <button
                   onClick={() => {
@@ -592,7 +592,7 @@ function ListTrustlines({
                   }}
                   className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
                 >
-                  {t('option.yes')}
+                  {t('common:option.yes', 'Yes')}
                 </button>
               </div>
             )}

@@ -1,0 +1,86 @@
+{
+  "page": {
+    "title": "Filtrer XLM par mémo",
+    "noPublicKey": "Aucun clé publique chargée. Veuillez d'abord entrer une clé publique."
+  },
+  "action": {
+    "calculate": "Calculer",
+    "loading": "Calcule…"
+  },
+  "date": {
+    "from": "De (facultatif)",
+    "to": "Jusqu'à (facultatif)"
+  },
+  "debug": {
+    "incoming": "Entrant – à : {{toMe}}, créer→moi : {{createToMe}}, natif→moi : {{nativeInToMe}}",
+    "incomingOverview": "Entrées : {{total}} • portefeuilles impliqués : {{unique}}",
+    "memo": "Mémos dans la fenêtre : {{any}} • mémos exacts : {{exact}}",
+    "types": "Types – paiement : {{pay}}, chemin : {{path}}, créer : {{create}}, autre : {{other}}"
+  },
+  "export": {
+    "csv": "Vérifier CSV (Correspondances)",
+    "csvAll": "Exporter toutes les opérations.",
+    "csvBoth": "Enregistrer les deux fichiers CSV",
+    "csvMatches": "Vérifier le CSV (Correspondances)"
+  },
+  "exportCsv": {
+    "failed": "Échec de l'exportation CSV : {{detail}}"
+  },
+  "memo": {
+    "label": "Texte de recherche mémo (sous-chaîne, respecter la casse)",
+    "placeholder": "Mémo (sous-chaîne, respecter la casse)"
+  },
+  "overviewLine": "Paiements reçus : {{total}} • portefeuilles impliqués : {{unique}}",
+  "result": {
+    "label": "Montant total :",
+    "value": "{{amount}} XLM"
+  },
+  "summary": {
+    "amount": "Montant : {{amount}} XLM",
+    "correctCount": "Entrées avec mémo correct : {{n}}",
+    "count": "Quantité : {{n}}",
+    "label": "Comparaison (toutes les entrées)",
+    "otherCount": "Entrées avec mémo incorrect/sans mémo : {{n}}",
+    "unique": "Portefeuilles uniques (total) : {{n}}",
+    "uniqueWallets": "Portefeuilles uniques : {{n}}"
+  },
+  "time": {
+    "setToNow": "Régler l'heure actuelle",
+    "setToNowHint": "Réglez le champ de l'heure sur l'heure actuelle."
+  },
+  "title": "Somme XLM selon note de service",
+  "topLargest": {
+    "button": "Top 20 entrées (Note)",
+    "clipboard": "Copier dans le presse-papiers",
+    "csv": "Télécharger CSV",
+    "scanning": "... scanne les principales entrées",
+    "title": "Les 20 premières entrées pour Memo pendant la période."
+  },
+  "tz": {
+    "cdt": "HAE (UTC−5)",
+    "cst": "CST (UTC−6)",
+    "europe_zurich": "Europe/Zurich (CET/CEST)",
+    "label": "Fuseau horaire pour la date/heure",
+    "local": "Fuseau horaire local",
+    "note": "La date/heure est interprétée dans le fuseau horaire choisi et convertie automatiquement en UTC avant la recherche.",
+    "utc": "UTC",
+    "window": "Intervalle de temps UTC utilisé : {{from}} → {{to}} (Exclusif)"
+  },
+  "wrongMemos": {
+    "button": "Afficher les portefeuilles avec un mémo incorrect/vide.",
+    "clipboard": "Copier dans le presse-papiers",
+    "columns": {
+      "amount": "Montant",
+      "created_at": "Créé le",
+      "from": "De",
+      "memo": "Note de service",
+      "tx_hash": "Hash de transaction"
+    },
+    "csv": "Télécharger le CSV",
+    "failed": "Erreur lors du chargement des paiements avec un mémo incorrect/vide.",
+    "hint": "Filtre les paiements entrants sur la période et affiche les expéditeurs avec un mémo incorrect/vide.",
+    "scanning": "… numérise des mémos faux/vides",
+    "summary": "Nombre : {{count}} • Somme : {{sum}} XLM • Portefeuilles uniques : {{unique}}",
+    "title": "Mémos incorrects/vides pendant la période"
+  }
+}

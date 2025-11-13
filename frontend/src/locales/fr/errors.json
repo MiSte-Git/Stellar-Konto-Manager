@@ -1,0 +1,76 @@
+{
+  "learn.offline": "Hors ligne : Les examens pratiques seront vérifiés après la reconnexion.",
+  "learn.validationFailed": "Échec de la validation",
+  "learn.missingParams": "Des paramètres requis manquent.",
+  "submitTransaction.failed": "Transaction échouée.",
+  "learn.error.unknown_action": "Action de pratique inconnue",
+  "learn.error.rate_limited": "Veuillez patienter et réessayer.",
+  "learn.error.horizon_timeout": "Dépassement du délai d'attente de l'horizon. Veuillez réessayer.",
+  "learn.error.network": "Erreur réseau. Veuillez réessayer.",
+  "asset": {
+    "creationDateUnknown": "Date de création inconnue"
+  },
+  "cache": {
+    "backfillAborted": "Chargement initial des paiements annulé.",
+    "coverage": {
+      "newestFailed": "Échec de l'identification du dernier paiement",
+      "oldestFailed": "Échec de la détermination de la date la plus ancienne."
+    },
+    "indexIterFailed": "Échec de l'itération de l'index dans le cache",
+    "memoNormBackfillFailed": "Chargement initial des paiements pour les mémos normalisés échoué.",
+    "openFailed": "Impossible d'ouvrir le cache local.",
+    "readFailed": "Échec de la lecture du cache.",
+    "rehydrateFailed": "Échec du rechargement des mémos manquants",
+    "rehydrateWriteFailed": "Échec de l'écriture des mémos dans le cache.",
+    "writeFailed": "Échec de l'écriture dans le cache"
+  },
+  "connection": {
+    "backend": "Aucune connexion au backend possible. Assurez-vous"
+  },
+  "fetchInvestedTokens": {
+    "failed": "Échec du chargement des données d'investissement : {{detail}}"
+  },
+  "horizon": {
+    "paymentsFetch": "Erreur lors du chargement des paiements de Horizon."
+  },
+  "loadTrustlines": "Les lignes de crédit n'ont pas pu être chargées. Veuillez réessayer.",
+  "loadTrustlinesFailed": "Échec du chargement des lignes de confiance",
+  "loadTrustlinesNotFound": "Compte non trouvé dans le réseau sélectionné.",
+  "accountNotFoundInNetwork": "Dans '{{net}}' non trouvé !",
+  "op_invalid_limit": "La ligne de confiance ne peut pas être supprimée. Elle peut encore avoir un solde ou des engagements en cours.",
+  "query": {
+    "invalidMemo": "Mémo invalide",
+    "invalidRange": "Plage horaire invalide (De > À)",
+    "invalidTime": "Heure invalide"
+  },
+  "submitTransaction": {
+    "failed": {
+      "tx_bad_auth": "Transaction refusée : Signature invalide",
+      "tx_failed": "Transaction échouée.",
+      "unknown": "Erreur inconnue lors de la transaction"
+    }
+  },
+  "sync": {
+    "backfillFailed": "Échec du chargement initial des paiements.",
+    "incrementalFailed": "Échec de la mise à jour des paiements."
+  },
+  "transaction": {
+    "failed": "Transaction échouée",
+    "title": "Erreur lors de la transaction"
+  },
+  "trustline": {
+    "submitFailed": "Erreur lors de la suppression de la ligne de confiance.",
+    "unknown": "Erreur inconnue lors de la suppression de la Trustline."
+  },
+  "xlmByMemo": {
+    "aborted": "Processus annulé par l'utilisateur",
+    "accountInvalid": "Compte invalide",
+    "dateInvalid": "Date non valide.",
+    "dateRange": "Plage de dates non valide.",
+    "failedUnknown": "Erreur inconnue",
+    "memoInvalid": "Mémo non valide",
+    "paymentsFetch": "Erreur lors du chargement des paiements.",
+    "serverInvalid": "Serveur non valide"
+  },
+  "rateLimited": "Limite de taux Horizon dépassée. Veuillez attendre quelques secondes et réessayer."
+}

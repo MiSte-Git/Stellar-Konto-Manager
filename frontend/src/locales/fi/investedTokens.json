@@ -1,0 +1,58 @@
+{
+  "hintEnterPublicKey": "Syötä ensin julkinen avain.",
+  "columns": {
+    "amount": "Määrä",
+    "compromised": "Kompromettoitu",
+    "deactivated": "Poistettu käytöstä",
+    "destination": "Kohdelompakko",
+    "issuer": "Liikkeeseenlaskija",
+    "label": "Label",
+    "memo": "Muistio",
+    "payments": "Maksut",
+    "date": "Päivämäärä",
+    "token": "Poletti"
+  },
+  "decimals": {
+    "auto": "Automatisoitu",
+    "label": "Desimaalinumerot:"
+  },
+  "filter": {
+    "memoPlaceholder": "Suodata muistiolla, lompakko-osoitteella tai tunnisteella",
+    "tokenPlaceholder": "Suodata tunnuksen mukaan (KOODI: LIIKKEELLELASKIJA)"
+  },
+  "item": {
+    "memo": "Muistio: \"{{memo}}\" (Maksut: {{occurrences}})",
+    "token": "Token: {{token}} (Maksut: {{occurrences}})",
+    "tokenShort": "Tokeni: {{token}}"
+  },
+  "missingPublicKey": "Julkinen avain puuttuu.",
+  "moreTruncated": "… ja {{extra}} muuta ryhmää",
+  "toWallet": "lompakkoon: {{address}}",
+  "total": "Ostettujen tokenien määrä: {{count}}",
+  "totalTokens": "Sijoitettujen tokenien (omaisuuserien) määrä: {{count}}",
+  "value": {
+    "units": "{{amount}} kappaletta",
+    "xlm": "{{amount}} XLM"
+  },
+  "view": {
+    "label": "Suodata:",
+    "memo": "Muistiot (Groupfund)",
+    "token": "Token (ostettu määrä)"
+  },
+  "toggles": {
+    "showTotals": "Kokonaissumma",
+    "qsiOnly": "QSI GF:n summa"
+  },
+  "hints": {
+    "qsiListSet": "Huomautus: GF-listan löydät kohdasta Asetukset → Luotettavat lompakot (QSI).",
+    "pageTime": "Sivun lataaminen kestää noin 0,2 sekuntia → 100 sivua ≈ 20 sekuntia → 1000 sivua ≈ 200 sekuntia (≈ 3:20 minuuttia)."
+  },
+  "walletCapInfo": "Huomaa: Lompakko voi pitää enintään 1000 trustlinea.",
+  "action": {
+    "load": "Lataus"
+  },
+  "history": {
+    "availableFrom": "Palvelin (Horizon) – Historia alkaen",
+    "hintFullHistory": "Huomautus: Horizon-palvelimen pääkirjahistoria ulottuu vain {{available}} asti. Vain tähän asti saatavat tiedot näytetään. Valittua lähtöpäivämäärää on siksi rajattu. Vanhempia tietoja varten tarvitaan (yleensä maksullinen) Full-History-palveluntarjoaja (saattaa tulla tulevaisuudessa!)."
+  }
+}

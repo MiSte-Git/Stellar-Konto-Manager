@@ -16,7 +16,10 @@ except Exception:  # pragma: no cover
 
 BASE_LANG = "de"
 TARGET_LANGS = ["en", "nl", "es", "fr", "it", "fi", "hr", "ru"]
-BASE_PATH = "."  # Anpassen, falls nötig, z. B. "./src/lib/i18n"
+# Standard-Basispfad: Verzeichnis dieser Datei, damit Aufruf von überall funktioniert
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+# Verzeichnis für Hash-Manifeste
+HASH_DIR = os.path.join(BASE_PATH, ".i18n_hash")
 
 
 def load_json(file: str) -> Dict[str, Any]:
@@ -146,7 +149,7 @@ def _handle_skip_original(path: str, counters: Dict[str, int] | None = None) -> 
         pass
 
 
-# -------- Git-Diff-gestützte Änderungs-Erkennung --------
+# -------- Hash-basierte Änderungs-Erkennung --------
 
 def _collect_leaf_paths(d: Dict[str, Any], prefix: str = "") -> Set[str]:
     paths: Set[str] = set()
@@ -159,55 +162,45 @@ def _collect_leaf_paths(d: Dict[str, Any], prefix: str = "") -> Set[str]:
     return paths
 
 
-def _diff_changed_paths(old: Dict[str, Any], new: Dict[str, Any], prefix: str = "") -> tuple[Set[str], Set[str]]:
-    """Gibt zwei Sets zurück: (neu_hinzugefügt, geändert)"""
-    added: Set[str] = set()
-    changed: Set[str] = set()
-    # Keys added or changed
-    for k, v_new in new.items():
+def _flatten_dict(d: Dict[str, Any], prefix: str = "") -> Dict[str, Any]:
+    out: Dict[str, Any] = {}
+    for k, v in d.items():
         p = f"{prefix}.{k}" if prefix else k
-        if k not in old:
-            # Alle Blätter unter k neu
-            if isinstance(v_new, dict):
-                added |= _collect_leaf_paths(v_new, p)
-            else:
-                added.add(p)
+        if isinstance(v, dict):
+            out.update(_flatten_dict(v, p))
         else:
-            v_old = old[k]
-            if isinstance(v_new, dict) and isinstance(v_old, dict):
-                sub_added, sub_changed = _diff_changed_paths(v_old, v_new, p)
-                added |= sub_added
-                changed |= sub_changed
-            elif v_new != v_old:
-                # Wert geändert
-                changed.add(p)
-    # Entfernte Keys ignorieren (für Übersetzung irrelevant)
-    return added, changed
+            out[p] = v
+    return out
 
 
-def compute_changed_paths_with_git(base_file: str) -> tuple[Set[str], Set[str]]:
-    """Vergleicht de.json gegen HEAD-Version und liefert (neu_hinzugefügt, geändert).
-    Fällt bei fehlendem Git oder fehlender HEAD-Version auf leere Mengen zurück.
-    """
+def _sha256(s: str) -> str:
+    import hashlib
+    return hashlib.sha256(s.encode("utf-8")).hexdigest()
+
+
+def _load_manifest(lang: str, from_pivot: str) -> Dict[str, str]:
+    path = os.path.join(HASH_DIR, f"{lang}_from_{from_pivot}.json")
     try:
-        # Hol die HEAD-Version der Basisdatei
-        res = subprocess.run(
-            ["git", "show", f"HEAD:{base_file}"],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if res.returncode != 0 or not res.stdout.strip():
-            # Kein HEAD (z. B. initial) oder Datei nicht im HEAD → keine Zwangs-Updates
-            return set(), set()
-        old_dict = json.loads(res.stdout)
-        new_dict = load_json(base_file)
-        if not isinstance(old_dict, dict) or not isinstance(new_dict, dict):
-            return set(), set()
-        return _diff_changed_paths(old_dict, new_dict)
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+            if isinstance(data, dict):
+                return {str(k): str(v) for k, v in data.items()}
+            return {}
+    except FileNotFoundError:
+        return {}
+    except Exception:
+        return {}
+
+
+def _save_manifest(lang: str, from_pivot: str, data: Dict[str, str]) -> None:
+    os.makedirs(HASH_DIR, exist_ok=True)
+    path = os.path.join(HASH_DIR, f"{lang}_from_{from_pivot}.json")
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        print(f"💾 Manifest gespeichert: {path}")
     except Exception as e:
-        print(f"ℹ️ Git-Diff für {base_file} nicht verfügbar: {e}")
-        return set(), set()
+        print(f"❌ Fehler beim Speichern von Manifest {path}: {e}")
 
 
 def _get_node_by_path(d: Dict[str, Any], path: str):
@@ -226,7 +219,7 @@ def expand_forced_paths(base_dict: Dict[str, Any], forced_list: list[str]) -> Se
             continue
         node = _get_node_by_path(base_dict, p)
         if node is None:
-            print(f"ℹ️ Warnung: erzwungener Schlüssel nicht gefunden: {p}")
+            print(f"INFO: Warnung: erzwungener Schlüssel nicht gefunden: {p}")
             continue
         if isinstance(node, dict):
             out |= _collect_leaf_paths(node, p)
@@ -300,7 +293,7 @@ def translate_full(
     prefix: str = "",
 ) -> Dict[str, Any]:
     """Übersetze alle Schlüssel aus base_dict neu in die Zielsprache.
-    Für Keys, die auf '.original' enden, wird niemals übersetzt; sie werden aus de.json kopiert.
+    Für Keys, die auf '.original' enden, wird niemals übersetzt; sie werden aus der Basis kopiert.
     Bereits bestehende Werte werden nur überschrieben, wenn der Pfad in forced_paths liegt.
     """
     target_dict: Dict[str, Any] = {}
@@ -329,11 +322,15 @@ def translate_full(
                     if counters is not None:
                         counters['copiedOriginalKeysCount'] = counters.get('copiedOriginalKeysCount', 0) + 1
                 else:
-                    # keep existing value, do not overwrite
+                    # bestehenden Wert behalten
                     target_dict[key] = existing_val
             else:
-                translated = translate_text(value, lang, provider, openai_key, deepl_key)
-                target_dict[key] = translated
+                # Bestehende Übersetzungen nur überschreiben, wenn erzwungen
+                if existing_val is None or cur_path in forced_paths:
+                    translated = translate_text(value, lang, provider, openai_key, deepl_key)
+                    target_dict[key] = translated
+                else:
+                    target_dict[key] = existing_val
     return target_dict
 
 
@@ -361,23 +358,21 @@ def main():
     # Argumente parsen
     parser = argparse.ArgumentParser(
         description=(
-            "Aktualisiert Sprachdateien basierend auf de.json.\n"
-            "\n"
-            "Standard (ohne Zusatz-Flags):\n"
-            "  • Fehlende Schlüssel werden ergänzt.\n"
-            "  • Geänderte Schlüssel in de.json seit HEAD (Git-Diff) werden gezielt neu übersetzt.\n"
+            "Aktualisiert Sprachdateien auf Basis der Namespace-Struktur.\n"
+            "Standard: de/<ns>.json → en/<ns>.json → andere/<ns>.json (missing+changed per Hash-Manifest).\n"
             "\n"
             "Optionen:\n"
             "  --force-key <pfad>   Erzwingt Neuübersetzung einzelner Schlüssel (dot-Pfade).\n"
             "                       Mehrfach nutzbar oder komma-separiert.\n"
             "                       Beispiele: feedback.title  |  menu.feedback  |  feedback\n"
             "  --full               Übersetzt alle Schlüssel komplett neu.\n"
+            "  --legacy-root        Verarbeite die alte Legacy-Struktur (de.json). Nicht empfohlen.\n"
             "\n"
             "Beispiele:\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --force-key feedback.title --force-key menu.feedback\n"
-            "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --force-key feedback,menu.feedback\n"
-            "  python3 UpdateSprachdateienBasierendAufDE.py --provider openai --full\n"
+            "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --full\n"
+            "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --legacy-root\n"
         ),
         formatter_class=RawTextHelpFormatter,
     )
@@ -407,7 +402,12 @@ def main():
     parser.add_argument(
         "--namespaced-only",
         action="store_true",
-        help="Verarbeite ausschließlich Namespaces aus de/* und schreibe in <lang>/<ns>.json. Lässt <lang>.json unangetastet.",
+        help="[veraltet] Namespaces verarbeiten. Standard ist bereits Namespaces; für Legacy de.json siehe --legacy-root.",
+    )
+    parser.add_argument(
+        "--legacy-root",
+        action="store_true",
+        help="Verarbeite die alte Legacy-Struktur (de.json). Standard ist Namespaces de/<ns>.json → en → andere.",
     )
     # Wenn ohne Argumente aufgerufen: vollständige Hilfe zeigen und beenden
     if len(sys.argv) == 1:
@@ -434,23 +434,63 @@ def main():
         if not deepl_key:
             print("❌ DEEPL_API_KEY/DEEPL_AUTH_KEY nicht gesetzt. Abbruch.")
             return
-        print(f"ℹ️ DeepL endpoint: {(os.getenv('DEEPL_API_URL') or 'https://api-free.deepl.com/v2/translate')}")
+        print(f"INFO: DeepL endpoint: {(os.getenv('DEEPL_API_URL') or 'https://api-free.deepl.com/v2/translate')}")
 
-    # Namespaced-only Modus: de/* -> <lang>/<ns>.json
-    if args.namespaced_only:
+    # Standard: Namespaces verarbeiten (de/<ns>.json → en/<ns>.json → andere/<ns>.json)
+    if not args.legacy_root:
         de_ns_dir = os.path.join(base_path, BASE_LANG)
         if not os.path.isdir(de_ns_dir):
             print(f"❌ Namespace-Verzeichnis fehlt: {de_ns_dir}")
             return
+
+        # Learn-Sync: lessons.json → de/learn.json (nur fehlende Keys ergänzen)
+        try:
+            lessons_path = os.path.normpath(os.path.join(base_path, "..", "data", "learn", "lessons.json"))
+            lessons_raw = load_json(lessons_path)
+            if isinstance(lessons_raw, list):
+                learn_from_lessons: Dict[str, Any] = {}
+                for l in lessons_raw:
+                    if not isinstance(l, dict):
+                        continue
+                    lid = l.get("id")
+                    if not isinstance(lid, str) or not lid:
+                        continue
+                    learn_from_lessons[lid] = {
+                        "title": l.get("title", ""),
+                        "goal": l.get("goal", ""),
+                        "task": l.get("task", ""),
+                        "learningOutcome": l.get("learningOutcome", ""),
+                        "reward": l.get("reward", ""),
+                    }
+                de_learn_file = os.path.join(de_ns_dir, "learn.json")
+                existing_learn = load_json(de_learn_file)
+                next_learn = json.loads(json.dumps(existing_learn)) if existing_learn else {}
+                diffs_ns_de: list[str] = []
+                deep_merge_missing(next_learn, learn_from_lessons, diffs_ns_de)
+                if json.dumps(existing_learn, ensure_ascii=False, sort_keys=True) != json.dumps(next_learn, ensure_ascii=False, sort_keys=True):
+                    os.makedirs(os.path.dirname(de_learn_file), exist_ok=True)
+                    save_json(de_learn_file, next_learn)
+                if diffs_ns_de:
+                    print(f"INFO: de/learn.json ergänzt. Abweichende bestehende Werte nicht überschrieben: {len(diffs_ns_de)}")
+            else:
+                print("INFO: Keine gültige lessons.json-Liste gefunden; Überspringe Learn-Sync.")
+        except Exception as e:
+            print(f"INFO: Learn-Sync (de/learn.json) übersprungen: {e}")
 
         # API-Keys aus Umgebungsvariablen lesen (bereits oben geprüft, hier nur Variablen verwenden)
         openai_key = os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_KEY")
         deepl_key = os.getenv("DEEPL_API_KEY") or os.getenv("DEEPL_AUTH_KEY")
         counters: Dict[str, int] = {"skippedOriginalKeysCount": 0, "copiedOriginalKeysCount": 0}
 
+        # Force-Keys einsammeln (dot-Pfade, können Subtrees sein)
+        force_keys_raw = args.force_keys or []
+        forced_list: list[str] = []
+        for raw in force_keys_raw:
+            forced_list.extend([s.strip() for s in raw.split(',') if s and s.strip()])
+
         ns_files = [f for f in os.listdir(de_ns_dir) if f.endswith('.json')]
         if not ns_files:
-            print(f"ℹ️ Keine Namespaces in {de_ns_dir} gefunden. Nichts zu tun.")
+            print(f"INFO: Keine Namespaces in {de_ns_dir} gefunden. Nichts zu tun.")
             return
 
         for ns_file in sorted(ns_files):
@@ -458,28 +498,123 @@ def main():
             ns_base_path = os.path.join(de_ns_dir, ns_file)
             ns_base = load_json(ns_base_path)
             if not isinstance(ns_base, dict):
-                print(f"ℹ️ Überspringe ungültigen Namespace {ns_name} ({ns_file})")
+                print(f"INFO: Überspringe ungültigen Namespace {ns_name} ({ns_file})")
                 continue
 
             print(f"\n🧩 Namespace '{ns_name}':")
+
+            # Force-Keys für diesen Namespace
+            forced_paths = expand_forced_paths(ns_base, forced_list) if forced_list else set()
+
+            # Phase A: de -> en (hash-basiert)
+            try:
+                en_dir = os.path.join(base_path, "en")
+                os.makedirs(en_dir, exist_ok=True)
+                en_out = os.path.join(en_dir, f"{ns_name}.json")
+                en_existing = load_json(en_out)
+
+                # Flatten DE-NS (relativ) und bilde Präfix für Manifest
+                de_flat_rel = _flatten_dict(ns_base, prefix="")
+                de_flat_pref = {f"{ns_name}.{k}": v for k, v in de_flat_rel.items()}
+                man_en = _load_manifest("en", "de")
+
+                if args.full:
+                    changed_rel = set(de_flat_rel.keys())
+                else:
+                    changed_rel = set(
+                        k for k, v in de_flat_rel.items()
+                        if man_en.get(f"{ns_name}.{k}") != _sha256(str(v))
+                    )
+                    changed_rel |= forced_paths
+
+                if args.full:
+                    en_translated = translate_full(
+                        ns_base,
+                        "en",
+                        provider,
+                        openai_key,
+                        deepl_key,
+                        target_existing={},
+                        forced_paths=forced_paths,
+                        counters=counters,
+                    )
+                else:
+                    en_translated = merge_keys_missing_or_changed(
+                        ns_base,
+                        en_existing,
+                        "en",
+                        provider,
+                        openai_key,
+                        deepl_key,
+                        changed_paths=changed_rel,
+                        forced_paths=forced_paths,
+                        counters=counters,
+                    )
+                save_json(en_out, en_translated)
+                print(f"   → en/{ns_name}.json aktualisiert")
+
+                # Manifest aktualisieren (EN from DE)
+                for k, v in de_flat_pref.items():
+                    man_en[k] = _sha256(str(v))
+                _save_manifest("en", "de", man_en)
+            except Exception as e:
+                print(f"❌ Abbruch für Sprache en / Namespace {ns_name}: {e}")
+                continue
+
+            # Phase B: en -> andere (hash-basiert, Pivot EN-NS)
+            en_ns = load_json(en_out) or {}
+            en_flat_rel = _flatten_dict(en_ns, prefix="")
+            en_flat_pref = {f"{ns_name}.{k}": v for k, v in en_flat_rel.items()}
+
             for lang in TARGET_LANGS:
+                if lang == "en":
+                    continue
                 try:
                     out_dir = os.path.join(base_path, lang)
                     os.makedirs(out_dir, exist_ok=True)
                     out_file = os.path.join(out_dir, f"{ns_name}.json")
                     existing = load_json(out_file)
-                    translated = translate_full(
-                        ns_base,
-                        lang,
-                        provider,
-                        openai_key,
-                        deepl_key,
-                        target_existing=existing,
-                        forced_paths=set(),
-                        counters=counters,
-                    )
+
+                    man_lang = _load_manifest(lang, "en")
+
+                    if args.full:
+                        changed_rel_lang = set(en_flat_rel.keys())
+                    else:
+                        changed_rel_lang = set(
+                            k for k, v in en_flat_rel.items()
+                            if man_lang.get(f"{ns_name}.{k}") != _sha256(str(v))
+                        )
+
+                    if args.full:
+                        translated = translate_full(
+                            en_ns,
+                            lang,
+                            provider,
+                            openai_key,
+                            deepl_key,
+                            target_existing={},
+                            forced_paths=set(),
+                            counters=counters,
+                        )
+                    else:
+                        translated = merge_keys_missing_or_changed(
+                            en_ns,
+                            existing,
+                            lang,
+                            provider,
+                            openai_key,
+                            deepl_key,
+                            changed_paths=changed_rel_lang,
+                            forced_paths=set(),
+                            counters=counters,
+                        )
                     save_json(out_file, translated)
                     print(f"   → {lang}/{ns_name}.json aktualisiert")
+
+                    # Manifest aktualisieren (lang from EN)
+                    for k, v in en_flat_pref.items():
+                        man_lang[k] = _sha256(str(v))
+                    _save_manifest(lang, "en", man_lang)
                 except Exception as e:
                     print(f"❌ Abbruch für Sprache {lang} / Namespace {ns_name}: {e}")
                     continue
@@ -522,14 +657,14 @@ def main():
             after = json.dumps(base_dict, ensure_ascii=False, sort_keys=True)
             if before != after:
                 save_json(base_file, base_dict)
-                print(f"ℹ️ de.json um fehlende learn.*-Keys aus lessons.json ergänzt ({len(diffs_learn_de)} Konflikte ohne Überschreiben)")
+                print(f"INFO: de.json um fehlende learn.*-Keys aus lessons.json ergänzt ({len(diffs_learn_de)} Konflikte ohne Überschreiben)")
             if diffs_learn_de:
                 for p in diffs_learn_de:
                     print(f"   ~ Bestehender Wert abweichend, nicht überschrieben: {p}")
         else:
-            print("ℹ️ Keine gültige lessons.json-Liste gefunden; Überspringe Learn-Sync.")
+            print("INFO: Keine gültige lessons.json-Liste gefunden; Überspringe Learn-Sync.")
     except Exception as e:
-        print(f"ℹ️ Learn-Sync übersprungen (Fehler): {e}")
+        print(f"INFO: Learn-Sync übersprungen (Fehler): {e}")
 
     # 2) Spiegel-Datei für de/learn.json erstellen/aktualisieren (nur fehlende Keys ergänzen)
     try:
@@ -543,120 +678,136 @@ def main():
         if json.dumps(existing, ensure_ascii=False, sort_keys=True) != json.dumps(next_obj, ensure_ascii=False, sort_keys=True):
             save_json(de_ns_file, next_obj)
         if diffs_ns_de:
-            print(f"ℹ️ de/learn.json ergänzt. Abweichende bestehende Werte nicht überschrieben: {len(diffs_ns_de)}")
+            print(f"INFO: de/learn.json ergänzt. Abweichende bestehende Werte nicht überschrieben: {len(diffs_ns_de)}")
     except Exception as e:
-        print(f"ℹ️ Spiegel-Erstellung de/learn.json übersprungen (Fehler): {e}")
+        print(f"INFO: Spiegel-Erstellung de/learn.json übersprungen (Fehler): {e}")
 
-    # Ermittele gezielt neue und geänderte Leaf-Pfade gegenüber HEAD
-    added_paths, changed_paths = compute_changed_paths_with_git(base_file)
-    
-    if not do_full:
-        if added_paths:
-            print(f"ℹ️ Neu hinzugefügte Schlüssel in {BASE_LANG}.json seit HEAD: {len(added_paths)}")
-            for p in sorted(added_paths):
-                print(f"   + {p}")
-        if changed_paths:
-            print(f"ℹ️ Geänderte Schlüssel in {BASE_LANG}.json seit HEAD: {len(changed_paths)}")
-            for p in sorted(changed_paths):
-                print(f"   ~ {p}")
+    # Hash-basierte Trigger auch im Legacy-Root-Modus verwenden
 
-        # Erzwungene Keys (per Argument) zur Änderungsmenge hinzufügen
-        forced_list: list[str] = []
-        for raw in force_keys_raw:
-            forced_list.extend([s.strip() for s in raw.split(',') if s and s.strip()])
-        forced_paths: Set[str] = set()
-        if forced_list:
-            forced_paths = expand_forced_paths(base_dict, forced_list)
-            if forced_paths:
-                print(f"ℹ️ Erzwungene Schlüssel (Neuübersetzung): {len(forced_paths)}")
-                for p in sorted(forced_paths):
-                    print(f"   ! {p}")
-                changed_paths |= forced_paths
-        else:
-            forced_paths = set()
-    else:
-        # Auch im Full-Mode: forced_paths aus --force-key ermitteln
-        forced_list: list[str] = []
-        for raw in force_keys_raw:
-            forced_list.extend([s.strip() for s in raw.split(',') if s and s.strip()])
-        forced_paths: Set[str] = expand_forced_paths(base_dict, forced_list) if forced_list else set()
-    
-    # Kombiniere für Übersetzung
-    all_changed = added_paths | changed_paths
+    # Erzwungene Keys (per Argument)
+    forced_list: list[str] = []
+    for raw in force_keys_raw:
+        forced_list.extend([s.strip() for s in raw.split(',') if s and s.strip()])
+    forced_paths: Set[str] = expand_forced_paths(base_dict, forced_list) if forced_list else set()
 
     # Zähler für Original-Keys
     counters: Dict[str, int] = {"skippedOriginalKeysCount": 0, "copiedOriginalKeysCount": 0}
 
-    # Verarbeite jede Zielsprache
-    for lang in TARGET_LANGS:
-        path = f"{base_path}/{lang}.json"
-        if do_full:
-            print(f"\n🔁 Verarbeite {lang} im Modus 'full' mit Provider '{provider}'...")
-            total_keys = len(_collect_leaf_paths(base_dict))
-            print(f"   Übersetze alle {total_keys} Schlüssel neu (Original-Keys werden nicht übersetzt)...")
+    # Phase A (Legacy): DE → EN anhand Hash-Manifest
+    en_path = f"{base_path}/en.json"
+    en_existing = load_json(en_path) if os.path.exists(en_path) else {}
+    de_flat = _flatten_dict(base_dict)
+    man_en = _load_manifest("en", "de")
+
+    if do_full:
+        changed_paths_en = set(de_flat.keys())
+    else:
+        changed_paths_en = set(k for k, v in de_flat.items() if man_en.get(k) != _sha256(str(v))) | forced_paths
+
+    try:
+        if not do_full and not os.path.exists(en_path):
+            print(f"⚠️ Datei fehlt: {en_path}. Erstelle neue Datei mit allen Übersetzungen.")
+            en_translated = translate_full(
+                base_dict,
+                "en",
+                provider,
+                openai_key,
+                deepl_key,
+                target_existing={},
+                forced_paths=forced_paths,
+                counters=counters,
+            )
         else:
-            print(f"\n🔁 Verarbeite {lang} im Modus 'missing+changed' mit Provider '{provider}'...")
+            if do_full:
+                en_translated = translate_full(
+                    base_dict,
+                    "en",
+                    provider,
+                    openai_key,
+                    deepl_key,
+                    target_existing={},
+                    forced_paths=forced_paths,
+                    counters=counters,
+                )
+            else:
+                en_translated = merge_keys_missing_or_changed(
+                    base_dict,
+                    en_existing,
+                    "en",
+                    provider,
+                    openai_key,
+                    deepl_key,
+                    changed_paths=changed_paths_en,
+                    forced_paths=forced_paths,
+                    counters=counters,
+                )
+        save_json(en_path, en_translated)
+        # Manifest aktualisieren (EN from DE)
+        for k, v in de_flat.items():
+            man_en[k] = _sha256(str(v))
+        _save_manifest("en", "de", man_en)
+    except Exception as e:
+        print(f"❌ Abbruch für Sprache en (legacy): {e}")
+
+    # Phase B (Legacy): EN → andere anhand Hash-Manifest
+    en_flat_after = _flatten_dict(load_json(en_path) or {})
+
+    for lang in TARGET_LANGS:
+        if lang == "en":
+            continue
+        out_path = f"{base_path}/{lang}.json"
+        existing = load_json(out_path) if os.path.exists(out_path) else {}
+        man_lang = _load_manifest(lang, "en")
+
+        if do_full:
+            changed_paths_lang = set(en_flat_after.keys())
+        else:
+            changed_paths_lang = set(k for k, v in en_flat_after.items() if man_lang.get(k) != _sha256(str(v)))
+
         try:
-            if not do_full:
-                if not os.path.exists(path):
-                    print(f"⚠️ Datei fehlt: {path}. Erstelle neue Datei mit allen Übersetzungen.")
-                    translated_dict = translate_full(
-                        base_dict,
+            if not do_full and not os.path.exists(out_path):
+                print(f"⚠️ Datei fehlt: {out_path}. Erstelle neue Datei mit allen Übersetzungen.")
+                translated = translate_full(
+                    load_json(en_path) or {},
+                    lang,
+                    provider,
+                    openai_key,
+                    deepl_key,
+                    target_existing={},
+                    forced_paths=set(),
+                    counters=counters,
+                )
+            else:
+                if do_full:
+                    translated = translate_full(
+                        load_json(en_path) or {},
                         lang,
                         provider,
                         openai_key,
                         deepl_key,
                         target_existing={},
-                        forced_paths=forced_paths,
+                        forced_paths=set(),
                         counters=counters,
                     )
                 else:
-                    target_dict = load_json(path)
-                    translated_dict = merge_keys_missing_or_changed(
-                        base_dict,
-                        target_dict,
+                    translated = merge_keys_missing_or_changed(
+                        load_json(en_path) or {},
+                        existing,
                         lang,
                         provider,
                         openai_key,
                         deepl_key,
-                        all_changed,
-                        forced_paths,
-                        counters,
+                        changed_paths=changed_paths_lang,
+                        forced_paths=set(),
+                        counters=counters,
                     )
-            else:
-                # Full-Mode: vorhandene Datei ggf. einlesen, damit Original-Keys nicht überschrieben werden
-                target_existing = load_json(path) if os.path.exists(path) else {}
-                translated_dict = translate_full(
-                    base_dict,
-                    lang,
-                    provider,
-                    openai_key,
-                    deepl_key,
-                    target_existing=target_existing,
-                    forced_paths=forced_paths,
-                    counters=counters,
-                )
-
-            save_json(path, translated_dict)
-
-            # Nach dem Speichern: learn-Teil in locales/<lang>/learn.json spiegeln (nur fehlende Keys erg czen)
-            try:
-                learn_any2 = base_dict.get("learn")
-                learn_subtree: Dict[str, Any] = learn_any2 if isinstance(learn_any2, dict) else {}
-                ns_file = f"{base_path}/{lang}/learn.json"
-                existing_ns = load_json(ns_file)
-                next_ns = json.loads(json.dumps(existing_ns)) if existing_ns else {}
-                diffs_lang_ns: list[str] = []
-                deep_merge_missing(next_ns, learn_subtree, diffs_lang_ns)
-                if json.dumps(existing_ns, ensure_ascii=False, sort_keys=True) != json.dumps(next_ns, ensure_ascii=False, sort_keys=True):
-                    save_json(ns_file, next_ns)
-                if diffs_lang_ns:
-                    print(f"ℹ️ {lang}/learn.json ergänzt. Abweichende bestehende Werte nicht  cberschrieben: {len(diffs_lang_ns)}")
-            except Exception as e:
-                print(f"ℹ️ Spiegel-Erstellung {lang}/learn.json übersprungen (Fehler): {e}")
+            save_json(out_path, translated)
+            # Manifest aktualisieren (lang from EN)
+            for k, v in en_flat_after.items():
+                man_lang[k] = _sha256(str(v))
+            _save_manifest(lang, "en", man_lang)
         except Exception as e:
-            print(f"❌ Abbruch für Sprache {lang}: {e}")
-            continue
+            print(f"❌ Abbruch für Sprache {lang} (legacy): {e}")
 
     print(f"\nZusammenfassung: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}}}")
     print("\n✅ Alle Sprachdateien aktualisiert.")

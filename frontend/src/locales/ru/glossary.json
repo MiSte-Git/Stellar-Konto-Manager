@@ -1,171 +1,171 @@
 {
-  "pageTitle": "Glossar",
-  "pageIntro": "Hier findest du wichtige Wörter aus der Blockchain Welt und aus dem Stellar Netzwerk. Alles ist in einfachen Worten erklärt.",
-  "searchLabel": "Begriff suchen",
-  "searchPlaceholder": "Begriff suchen (z. B. Konto, Account, Muxed)",
-  "searchHint": "Die Suche findet Wörter und Erklärungen.",
-  "noResults": "Kein Treffer.",
+  "pageTitle": "Глоссарий",
+  "pageIntro": "Здесь вы найдете важные термины из мира блокчейн и сети Stellar. Все объяснено простыми словами.",
+  "searchLabel": "Искать термин",
+  "searchPlaceholder": "Поиск термина (например, учетная запись, аккаунт, мультиплексированный)",
+  "searchHint": "Поиск находит слова и объяснения.",
+  "noResults": "Совпадений не найдено.",
   "blockchain": {
-    "title": "Blockchain",
+    "title": "Блокчейн",
     "original": "Blockchain",
-    "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
-    "desc": "Eine Blockchain ist wie ein digitales Kassenbuch. Viele Computer speichern dieselben Einträge. So kann niemand heimlich etwas ändern."
+    "short": "Общая цифровая кассовая книга – многие компьютеры сохраняют одни и те же записи.",
+    "desc": "Блокчейн подобен цифровой книге учёта. Многие компьютеры хранят одни и те же записи. Таким образом, никто не может тайно что-либо изменить."
   },
   "wallet": {
-    "title": "Wallet",
+    "title": "Кошелек",
     "original": "Wallet",
-    "short": "Digitale Geldbörse, die deine Schlüssel verwaltet.",
-    "desc": "Ein Wallet ist deine digitale Geldbörse. Es verwaltet die Schlüssel die du brauchst um auf dein Konto zuzugreifen und Transaktionen zu senden. Ein Wallet kann ein Programm sein oder eine App oder auch nur ein Zettel mit deinem Geheimschlüssel."
+    "short": "Цифровой кошелек, управляющий вашими ключами.",
+    "desc": "Кошелек - это ваш цифровой бумажник. Он управляет ключами, которые необходимы для доступа к вашему счету и отправки транзакций. Кошелек может быть программой, приложением или даже просто листом бумаги с вашим секретным ключом."
   },
   "account": {
-    "title": "Konto",
+    "title": "Учетная запись",
     "original": "Account",
-    "short": "Ein Blockchain-Konto kann Vermögenswerte halten und Transaktionen senden.",
-    "desc": "Ein Konto ist die Stelle auf der Blockchain an der deine Werte liegen. Ein Konto hat eine öffentliche Adresse die mit G beginnt. Mehrere Wallets können auf dasselbe Konto zugreifen wenn sie den richtigen Schlüssel haben."
+    "short": "Блокчейн-аккаунт может хранить активы и отправлять транзакции.",
+    "desc": "Аккаунт — это место в блокчейне, где хранятся ваши ценности. Аккаунт имеет публичный адрес, который начинается с буквы G. Несколько кошельков могут получить доступ к одному и тому же аккаунту, если у них есть правильный ключ."
   },
   "addressG": {
-    "title": "G-Adresse",
+    "title": "G-адрес",
     "original": "G Address",
-    "short": "Die öffentliche Hauptadresse eines Stellar-Kontos (beginnt mit G).",
-    "desc": "Die G-Adresse ist die Hauptadresse eines Stellar Kontos. Sie beginnt mit dem Buchstaben G. Du gibst sie anderen damit sie dir etwas schicken können."
+    "short": "Основной публичный адрес Stellar-счёта (начинается с G).",
+    "desc": "G-адрес — это основной адрес Stellar-аккаунта. Он начинается с буквы G. Вы предоставляете его другим людям, чтобы они могли отправить вам что-то."
   },
   "publicKey": {
-    "title": "Öffentlicher Schlüssel",
+    "title": "Открытый ключ",
     "original": "Public Key",
-    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
-    "desc": "Der öffentliche Schlüssel ist die Adresse die du zeigen darfst. Bei Stellar ist das die G-Adresse. Andere nutzen ihn um dir Geld zu senden."
+    "short": "Адрес, который можно поделиться; в Stellar это обычно адрес, начинающийся с G.",
+    "desc": "Открытый ключ - это адрес, который вы можете показать. В Stellar это G-адрес. Другие используют его, чтобы отправить вам деньги."
   },
   "privateKey": {
-    "title": "Geheimer Schlüssel",
+    "title": "Секретный ключ",
     "original": "Secret Key",
-    "short": "Passwort zum Konto – niemals weitergeben.",
-    "desc": "Der geheime Schlüssel ist dein Passwort für das Konto. Wer diesen Schlüssel hat kann dein Geld bewegen. Niemals weitergeben."
+    "short": "Пароль от учетной записи — никогда не передавайте.",
+    "desc": "Секретный ключ - это ваш пароль к счету. Тот, кто обладает этим ключом, может распоряжаться вашими деньгами. Никогда не передавайте его другим."
   },
   "addressFederation": {
-    "title": "Föderationsadresse",
+    "title": "Федеральный адрес",
     "original": "Federation Address",
-    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
-    "desc": "Eine Föderationsadresse sieht aus wie eine E-Mail. Beispiel: name*domain.com. Diese kurze Adresse zeigt auf eine normale G-Adresse. Das ist einfacher zu merken."
+    "short": "Короткий адрес, например, электронная почта, указывает на G-адрес.",
+    "desc": "Федеративный адрес выглядит как электронная почта. Пример: имя*домен.com. Этот короткий адрес указывает на обычный G-адрес. Это проще запомнить."
   },
   "addressMuxed": {
-    "title": "Muxed-Konto",
+    "title": "Muxed-счет",
     "original": "Muxed Account",
-    "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
-    "desc": "Eine M-Adresse zeigt auf ein bestehendes Stellar Konto hat aber zusätzlich eine eigene Nummer (ID). So kann man z. B. mehrere Personen oder Abteilungen unter derselben G-Adresse unterscheiden. Technisch gehört das Geld weiter dem Hauptkonto."
+    "short": "М‑адрес с дополнительным идентификатором – делит базовый аккаунт.",
+    "desc": "M-адрес указывает на существующий счет Stellar, но дополнительно имеет собственный номер (ID). Таким образом, можно, например, различать нескольких человек или отделы под одним и тем же G-адресом. Технически деньги по-прежнему принадлежат основному счету."
   },
   "multisig": {
-    "title": "Mehrfachsignatur",
+    "title": "Мультиподпись",
     "original": "Multi‑Sig",
-    "short": "Wichtige Aktionen brauchen mehr als eine Unterschrift.",
-    "desc": "Multi-Sig steht für mehrere Unterschriften. Eine wichtige Aktion braucht mehr als einen Schlüssel. Beispiel: Du und ein zweiter Schlüssel müssen beide zustimmen bevor etwas gesendet wird. Das macht Diebstahl schwerer."
+    "short": "Важные действия требуют большего, чем просто подпись.",
+    "desc": "Multi-Sig обозначает использование нескольких подписей. Для выполнения важного действия требуется более одного ключа. Например, ты и второй ключ должны оба согласиться, прежде чем что-то будет отправлено. Это усложняет кражу."
   },
   "trustline": {
-    "title": "Trustline",
+    "title": "Трастлайн",
     "original": "Trustline",
-    "short": "Zustimmung, einen Token eines bestimmten Herausgebers zu halten.",
-    "desc": "Eine Trustline ist wie ein Ja ich akzeptiere diesen Token. Du sagst damit dass dein Konto bereit ist einen bestimmten Token von einem bestimmten Herausgeber zu halten. Ohne Trustline kannst du diesen Token nicht empfangen.\n\nBeispiel: Eine Trustline wird als CODE:ISSUER angegeben. Für EURT vom Herausgeber GDUKMGUGDZQK6Y… lautet sie EURT:GDUKMGUGDZQK6Y…"
+    "short": "Согласие на удержание токена определенного эмитента.",
+    "desc": "Трастлайн — это как \"Да, я принимаю этот токен\". Таким образом, вы заявляете, что ваш аккаунт готов держать определенный токен от определенного эмитента. Без трастлайна вы не сможете получить этот токен.\n\nПример: Трастлайн обозначается как CODE:ISSUER. Для EURT от эмитента GDUKMGUGDZQK6Y… он выглядит как EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
-    "title": "Token",
+    "title": "Токен",
     "original": "Token",
-    "short": "Digitale Einheit – z. B. Geld, Punkte oder Guthaben.",
-    "desc": "Ein Token ist eine digitale Einheit auf der Blockchain. Ein Token kann Geld darstellen oder Punkte oder Guthaben für einen Dienst."
+    "short": "Цифровая единица – например, деньги, баллы или кредит.",
+    "desc": "Токен — это цифровая единица в блокчейне. Токен может представлять собой деньги, очки или баланс для какой-либо услуги."
   },
   "asset": {
-    "title": "Asset",
+    "title": "Актив",
     "original": "Asset",
-    "short": "Token auf Stellar, immer mit Herausgeber verknüpft.",
-    "desc": "Auf Stellar heißt ein Token Asset. Ein Asset ist immer verknüpft mit einem Herausgeber Konto. Zum Beispiel kann ein Konto einen Euro Token ausgeben. Dieser Euro Token ist dann ein Asset."
+    "short": "Токен на Stellar всегда связан с эмитентом.",
+    "desc": "В Stellar токен называется активом. Актив всегда связан с учетной записью эмитента. Например, одна учетная запись может выпустить токен в евро. Этот токен евро затем становится активом."
   },
   "xlm": {
-    "title": "XLM",
+    "title": "Вы обучены на данных по октябрь 2023 года.",
     "original": "XLM",
-    "short": "Native Währung von Stellar für Gebühren und Aktivierung.",
-    "desc": "XLM ist die Grundwährung von Stellar. Du brauchst XLM um Gebühren zu zahlen und ein neues Konto zu starten."
+    "short": "Нативная валюта Stellar для комиссий и активации.",
+    "desc": "XLM является основной валютой Stellar. Вам нужны XLM для оплаты комиссий и открытия нового счета."
   },
   "mainnet": {
-    "title": "Mainnet",
+    "title": "Основная сеть",
     "original": "Mainnet",
-    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
-    "desc": "Das echte Stellar Netzwerk mit realem Wert. Transaktionen sind endgültig und Gebühren werden in echtem XLM bezahlt."
+    "short": "Настоящая Stellar‑сеть с реальной ценностью.",
+    "desc": "Настоящая сеть Stellar с реальной стоимостью. Транзакции являются окончательными, и комиссии оплачиваются в настоящих XLM."
   },
   "testnet": {
-    "title": "Testnet",
+    "title": "Тестовая сеть",
     "original": "Testnet",
-    "short": "Öffentliches Übungsnetzwerk ohne echten Wert.",
-    "desc": "Ein öffentliches Übungsnetzwerk. Tokens haben keinen echten Wert. Ideal zum Lernen und Ausprobieren ohne Risiko."
+    "short": "Общедоступная тренировочная сеть без реальной ценности.",
+    "desc": "Публичная тренировочная сеть. Токены не имеют реальной стоимости. Идеально для обучения и экспериментов без риска."
   },
   "memo": {
-    "title": "Memo",
+    "title": "Служебная записка",
     "original": "Memo",
-    "short": "Kurze Notiz in einer Transaktion.",
-    "desc": "Ein Memo ist eine kleine Notiz die du mit einer Transaktion mitschicken kannst. Oft verlangt eine Börse ein bestimmtes Memo damit sie weiß wem das Geld gehört."
+    "short": "Краткая заметка в транзакции.",
+    "desc": "Мемо - это небольшая заметка, которую вы можете отправить вместе с транзакцией. Часто биржа требует указать определенное мемо, чтобы понять, кому принадлежат деньги."
   },
   "transaction": {
-    "title": "Transaktion",
+    "title": "Транзакция",
     "original": "Transaction",
-    "short": "Aktion auf der Blockchain, z. B. Zahlung oder Trustline.",
-    "desc": "Eine Transaktion ist eine Aktion auf der Blockchain. Zum Beispiel Geld senden oder eine Trustline anlegen. Eine Transaktion wird für immer gespeichert wenn sie bestätigt ist."
+    "short": "Действие на блокчейне, например, платеж или доверенная линия.",
+    "desc": "Транзакция – это действие в блокчейне. Например, отправка денег или создание доверительной линии. Транзакция сохраняется навсегда, если она подтверждена."
   },
   "fee": {
-    "title": "Gebühr",
+    "title": "Плата",
     "original": "Fee",
-    "short": "Sehr kleiner Betrag pro Transaktion.",
-    "desc": "Die Gebühr ist ein sehr kleiner Betrag den du bei jeder Transaktion zahlst. Die Gebühr geht an das Netzwerk. Bei Stellar sind die Gebühren sehr klein."
+    "short": "Очень небольшая сумма за транзакцию.",
+    "desc": "Комиссия - это очень небольшая сумма, которую вы платите при каждой транзакции. Комиссия идет в сеть. В Stellar комиссии очень малы."
   },
   "ledger": {
-    "title": "Ledger",
+    "title": "Главная книга",
     "original": "Ledger",
-    "short": "Kette der bestätigten Daten und Kontostände.",
-    "desc": "Das Ledger ist die Kette aller bestätigten Daten. Dort steht welche Konten wie viel besitzen und welche Transaktionen passiert sind. Jeder kann das Ledger prüfen."
+    "short": "Цепочка подтвержденных данных и балансов.",
+    "desc": "Ledger - это цепочка всех подтвержденных данных. Там указано, сколько находится на каждом счете и какие транзакции произошли. Каждый может проверить Ledger."
   },
   "horizon": {
-    "title": "Horizon",
+    "title": "Горизонт",
     "original": "Horizon",
-    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
-    "desc": "Horizon ist der Service über den Programme mit der Stellar Blockchain reden. Unser Tool fragt Horizon um Kontostände und Transaktionen zu laden."
+    "short": "Служба API, через которую приложения взаимодействуют с Stellar.",
+    "desc": "Horizon — это сервис, через который программы взаимодействуют с блокчейном Stellar. Наш инструмент запрашивает у Horizon данные о балансах счетов и транзакциях."
   },
   "anchor": {
-    "title": "Anchor",
+    "title": "Я обучен на данных до октября 2023 года.",
     "original": "Anchor",
-    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Ein Anchor ist eine Firma die echtes Geld wie Euro oder Dollar mit Stellar verbindet. Du gibst dem Anchor z. B. Euro und bekommst dafür einen Euro Token auf Stellar."
+    "short": "Компания, которая соединяет фиатные деньги с сетью Stellar.",
+    "desc": "Анкор - это компания, которая связывает реальные деньги, такие как евро или доллары, со Stellar. Вы даете анкору, например, евро, и за это получаете токен евро на платформе Stellar."
   },
   "exchange": {
-    "title": "Börse",
+    "title": "Фондовая биржа",
     "original": "Exchange",
-    "short": "Ort zum Kaufen und Verkaufen von Tokens.",
-    "desc": "Eine Börse ist ein Ort an dem du Token kaufen oder verkaufen kannst. Viele Börsen verlangen ein KYC Verfahren also eine Ausweisprüfung bevor du Geld in Euro oder Franken rausziehen kannst."
+    "short": "Место для покупки и продажи токенов.",
+    "desc": "Биржа — это место, где можно покупать или продавать токены. Многие биржи требуют процедуру KYC, то есть проверку удостоверения личности, прежде чем вы сможете вывести деньги в евро или франках."
   },
   "dex": {
-    "title": "DEX",
+    "title": "Вы обучены на данных до октября 2023 года.",
     "original": "Decentralized Exchange",
-    "short": "Dezentrale Börse direkt auf der Blockchain.",
-    "desc": "DEX bedeutet Dezentrale Börse. Hier handeln die Leute direkt miteinander auf der Blockchain. Es gibt keinen einzelnen Betreiber. Stellar hat eine DEX direkt eingebaut."
+    "short": "Децентрализованная биржа непосредственно на блокчейне.",
+    "desc": "DEX означает децентрализованная биржа. Здесь люди торгуют напрямую друг с другом на блокчейне. Единого оператора нет. В Stellar децентрализованная биржа встроена напрямую."
   },
   "liquidityPool": {
-    "title": "Liquiditätspool",
+    "title": "Пул ликвидности",
     "original": "Liquidity Pool",
-    "short": "Gemeinsamer Topf mit zwei Tokens zum sofortigen Tausch.",
-    "desc": "Ein Liquiditätspool ist ein gemeinsamer Topf mit zwei Tokens. Leute legen beide Tokens hinein. Andere dürfen dann diese Tokens sofort tauschen. Die Einzahler verdienen dafür kleine Gebühren."
+    "short": "Общий пул с двумя токенами для немедленного обмена.",
+    "desc": "Ликвидный пул - это общий резервуар с двумя токенами. Люди вносят оба токена в этот пул. Другие могут мгновенно обменивать эти токены. Вкладчики за это зарабатывают небольшие комиссии."
   },
   "balanceClaimable": {
-    "title": "Claimable Balance",
+    "title": "Доступный баланс для предъявления",
     "original": "Claimable Balance",
-    "short": "Reserviertes Geld, das du noch annehmen musst.",
-    "desc": "Eine Claimable Balance ist Geld das schon für dich reserviert ist aber du musst es noch abholen. Erst wenn du es annimmst geht es in dein Konto."
+    "short": "Зарезервированные средства, которые ты еще должен принять.",
+    "desc": "Claimable Balance - это деньги, которые уже зарезервированы для вас, но вы должны их забрать. Только когда вы их примете, они поступят на ваш счет."
   },
   "protocolUpdate": {
-    "title": "Protocol Update",
+    "title": "Обновление протокола",
     "original": "Protocol Update",
-    "short": "Aktualisierung der Netzwerk‑Regeln.",
-    "desc": "Ein Protocol Update ist ein Upgrade der Regeln im Stellar Netzwerk. Zum Beispiel neue Funktionen oder Sicherheitsänderungen. Alle Knoten im Netzwerk müssen dieselben Regeln benutzen."
+    "short": "Обновление сетевых правил.",
+    "desc": "Обновление протокола – это апгрейд правил в сети Stellar, например, новые функции или изменения безопасности. Все узлы в сети должны использовать одни и те же правила."
   },
   "soroban": {
-    "title": "Soroban",
+    "title": "Соробан",
     "original": "Soroban",
-    "short": "Stellars Smart‑Contract‑System.",
-    "desc": "Soroban ist das Smart Contract System von Stellar. Ein Smart Contract ist Programmcode auf der Blockchain. Der Code kann selbst Regeln prüfen und Aktionen auslösen ohne eine Bank dazwischen."
+    "short": "Система смарт-контрактов Stellars.",
+    "desc": "Соробан - это система смарт-контрактов на платформе Stellar. Смарт-контракт - это программный код на блокчейне. Этот код может самостоятельно проверять правила и выполнять действия без участия банка."
   },
-  "missingKey": "Fehlender Glossar-Schlüssel: {{detail}}"
+  "missingKey": "Отсутствующий ключ глоссария: {{detail}}"
 }

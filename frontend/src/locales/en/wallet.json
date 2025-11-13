@@ -1,0 +1,14 @@
+{
+  "federationDisplay": {
+    "label": "Federation address",
+    "none": "No federation address defined",
+    "account": "Account",
+    "accountLabel": "Label"
+  },
+  "flag": {
+    "compromised": "Warning: This wallet is marked as compromised on your TrustList.",
+    "deactivated": "Note: This wallet is marked as deactivated in your trust list."
+  },
+  "xlmBalance": "XLM",
+  "unfunded": "Not activated"
+}

@@ -9,5 +9,12 @@
     "error": "Ungültiger Public Key eingegeben.",
     "label": "Ziel-Public Key",
     "placeholder": "Gib den Ziel-Public Key ein"
-  }
+  },
+  "invalid": "Ungültiger öffentlicher Schlüssel.",
+  "submit": {
+    "button": "Senden"
+  },
+  "test": "Test",
+  "historyLabel": "Historie",
+  "historyPlaceholder": "Zuletzt verwendetes Wallet auswählen"
 }

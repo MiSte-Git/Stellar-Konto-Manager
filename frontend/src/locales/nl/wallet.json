@@ -1,0 +1,14 @@
+{
+  "federationDisplay": {
+    "label": "Federatieadres",
+    "none": "Geen federatieadres gedefinieerd",
+    "account": "Rekening",
+    "accountLabel": "Label"
+  },
+  "flag": {
+    "compromised": "Waarschuwing: Deze wallet is in je vertrouwenslijst als gecompromitteerd gemarkeerd.",
+    "deactivated": "Opmerking: Deze wallet is in je Vertrouwenslijst als gedeactiveerd gemarkeerd."
+  },
+  "xlmBalance": "XLM",
+  "unfunded": "Niet geactiveerd"
+}
