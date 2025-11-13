@@ -1,0 +1,14 @@
+{
+  "federationDisplay": {
+    "label": "Adresse de fédération",
+    "none": "Aucune adresse de fédération définie.",
+    "account": "Compte",
+    "accountLabel": "Étiquette"
+  },
+  "flag": {
+    "compromised": "Avertissement : Ce portefeuille est marqué comme compromis dans votre liste de confiance.",
+    "deactivated": "Remarque : Ce portefeuille est marqué comme désactivé dans ta liste de confiance."
+  },
+  "xlmBalance": "Je suis entraîné sur des données jusqu'en octobre 2023.",
+  "unfunded": "Non activé"
+}

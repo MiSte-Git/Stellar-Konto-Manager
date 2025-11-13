@@ -1,0 +1,58 @@
+{
+  "hintEnterPublicKey": "Molimo unesite prvi javni ključ.",
+  "columns": {
+    "amount": "Iznos",
+    "compromised": "Kompromitiran",
+    "deactivated": "Deaktivirano",
+    "destination": "Ciljani novčanik",
+    "issuer": "Izdavatelj",
+    "label": "Oznaka",
+    "memo": "Memorandum",
+    "payments": "Plaćanja",
+    "date": "Datum",
+    "token": "Token"
+  },
+  "decimals": {
+    "auto": "Automatski",
+    "label": "Decimale:"
+  },
+  "filter": {
+    "memoPlaceholder": "Filtriraj prema memorandumu, adresi novčanika ili oznaci.",
+    "tokenPlaceholder": "Filtriraj prema tokenu (KOD:IZDAVAČ)"
+  },
+  "item": {
+    "memo": "Memorandum: \"{{memo}}\" (Plaćanja: {{occurrences}})",
+    "token": "Token: {{token}} (Plaćanja: {{occurrences}})",
+    "tokenShort": "Token: {{token}}"
+  },
+  "missingPublicKey": "Nedostaje javan ključ.",
+  "moreTruncated": "… i {{extra}} drugih grupa",
+  "toWallet": "na novčanik: {{address}}",
+  "total": "Broj kupljenih tokena: {{count}}",
+  "totalTokens": "Broj uloženih tokena (imovina): {{count}}",
+  "value": {
+    "units": "{{amount}} komada",
+    "xlm": "{{amount}} XLM"
+  },
+  "view": {
+    "label": "Filtriraj prema:",
+    "memo": "Memos (Groupfund)",
+    "token": "Token (kupljena količina)"
+  },
+  "toggles": {
+    "showTotals": "Ukupni iznos",
+    "qsiOnly": "Zbir QSI GF"
+  },
+  "hints": {
+    "qsiListSet": "Napomena: Popis GF-a možete pronaći pod Postavke → Pouzdani novčanici (QSI).",
+    "pageTime": "Učitavanje jedne stranice traje oko 0,2 sekunde → 100 stranica ≈ 20 sekundi → 1000 stranica ≈ 200 sekundi (≈ 3:20 minuta)."
+  },
+  "walletCapInfo": "Napomena: Novčanik može imati najviše 1000 trust linija.",
+  "action": {
+    "load": "Trgovina"
+  },
+  "history": {
+    "availableFrom": "Server (Horizon) – Povijest od",
+    "hintFullHistory": "Napomena: Povijest glavne knjige sa Horizon servera dostupna je samo od {{available}} nadalje. Prikazuju se samo podaci do tog trenutka. Zato je odabrani početni datum ograničen. Za starije podatke potreban je (uglavnom plaćeni) pružatelj kompletne povijesti (možda će biti dostupan u budućnosti!)."
+  }
+}

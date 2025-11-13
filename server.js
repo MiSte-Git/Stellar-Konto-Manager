@@ -152,7 +152,7 @@ void loadBugDb();
 const allowedStatus = new Set(['open', 'in_progress', 'closed']);
 const allowedPriority = new Set(['low', 'normal', 'high', 'urgent']);
 const allowedCategory = new Set(['bug', 'idea', 'improve', 'other']);
-const allowedPage = new Set(['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','multisigCreate','multisigEdit','settings','feedback','other']);
+const allowedPage = new Set(['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','createAccount','multisigEdit','settings','feedback','other']);
 const ADMIN_SECRET = process.env.BUGTRACKER_ADMIN_SECRET || '';
 
 app.post('/api/bugreport', async (req, res) => {

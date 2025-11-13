@@ -1,3 +1,58 @@
 {
-  "hintEnterPublicKey": "Bitte gib zuerst einen Public Key ein."
+  "hintEnterPublicKey": "Bitte gib zuerst einen Public Key ein.",
+  "columns": {
+    "amount": "Betrag",
+    "compromised": "Kompromittiert",
+    "deactivated": "Deaktiviert",
+    "destination": "Zielwallet",
+    "issuer": "Issuer",
+    "label": "Label",
+    "memo": "Memo",
+    "payments": "Zahlungen",
+    "date": "Datum",
+    "token": "Token"
+  },
+  "decimals": {
+    "auto": "Automatisch",
+    "label": "Nachkommastellen:"
+  },
+  "filter": {
+    "memoPlaceholder": "Filter nach Memo, Wallet-Adresse oder Label",
+    "tokenPlaceholder": "Filter nach Token (CODE:ISSUER)"
+  },
+  "item": {
+    "memo": "Memo: \"{{memo}}\" (Zahlungen: {{occurrences}})",
+    "token": "Token: {{token}} (Zahlungen: {{occurrences}})",
+    "tokenShort": "Token: {{token}}"
+  },
+  "missingPublicKey": "Public Key fehlt.",
+  "moreTruncated": "… und {{extra}} weitere Gruppen",
+  "toWallet": "an Wallet: {{address}}",
+  "total": "Anzahl gekaufter Token: {{count}}",
+  "totalTokens": "Anzahl investierter Token (Assets): {{count}}",
+  "value": {
+    "units": "{{amount}} Stück",
+    "xlm": "{{amount}} XLM"
+  },
+  "view": {
+    "label": "Filter nach:",
+    "memo": "Memos (Groupfund)",
+    "token": "Token (gekaufte Menge)"
+  },
+  "toggles": {
+    "showTotals": "Gesamtsumme",
+    "qsiOnly": "Summe QSI GF"
+  },
+  "hints": {
+    "qsiListSet": "Hinweis: Die GF-Liste findest du unter Einstellungen → Vertrauenswürdige Wallets (QSI).",
+    "pageTime": "Laden einer Seite dauert ca. 0,2 Sekunden → 100 Seiten ≈ 20 Sekunden → 1000 Seiten ≈ 200 Sekunden (≈ 3:20 Minuten)."
+  },
+  "walletCapInfo": "Hinweis: Ein Wallet kann maximal 1000 Trustlines halten.",
+  "action": {
+    "load": "Laden"
+  },
+  "history": {
+    "availableFrom": "Server (Horizon) – Historie ab",
+    "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+  }
 }

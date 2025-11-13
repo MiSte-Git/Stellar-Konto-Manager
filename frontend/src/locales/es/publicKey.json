@@ -1,0 +1,20 @@
+{
+  "label": "Clave pública o dirección de federación",
+  "placeholder": "Escribe tu clave pública o una dirección de federación",
+  "load": "Tienda",
+  "deleteFromList": "Eliminar de la lista",
+  "source": "Fuente",
+  "destination": {
+    "input": "Meta",
+    "error": "Clave pública inválida ingresada.",
+    "label": "Clave pública de destino",
+    "placeholder": "Introduce la llave pública de destino."
+  },
+  "invalid": "Clave pública no válida.",
+  "submit": {
+    "button": "Enviar"
+  },
+  "test": "Prueba",
+  "historyLabel": "Historia",
+  "historyPlaceholder": "Seleccionar la billetera utilizada más recientemente"
+}

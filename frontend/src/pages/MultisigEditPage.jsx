@@ -287,7 +287,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
                     value={s.weight}
                     onChange={(e)=>updateSignerWeight(i, e.target.value)}
                     className="border rounded px-2 py-1 text-sm w-16"
-                    title={t('multisigCreate.tooltips.signerWeight')}
+                    title={t('createAccount.tooltips.signerWeight')}
                   />
                   <button type="button" onClick={()=>removeSignerRow(i)} className="px-1.5 py-1 border rounded text-xs whitespace-nowrap hover:bg-gray-100 dark:hover:bg-gray-800">{t('option.delete')}</button>
                 </div>
@@ -306,27 +306,27 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         </div>
 
         <div className="mt-4">
-          <label className="block text-sm font-semibold mb-1">{t('multisigCreate.threshold')}</label>
+          <label className="block text-sm font-semibold mb-1">{t('createAccount.threshold')}</label>
           <div className="flex flex-wrap items-center gap-3 mt-2">
             <label className="inline-flex items-center gap-2 text-sm">
-              <span>{t('multisigCreate.thresholdLow')} <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.low')}>ⓘ</span></span>
+              <span>{t('createAccount.thresholdLow')} <span className="text-xs cursor-help" title={t('createAccount.tooltips.low')}>ⓘ</span></span>
               <input type="number" min={0} max={255} value={lowT} onChange={(e)=>setLowT(clampByte(e.target.value))} className={`border rounded px-2 py-1 w-16 ${thLowErr ? 'border-red-500' : ''}`} />
-              <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate.units.signatures')}</span>
+              <span className="text-xs text-gray-700 dark:text-gray-300">{t('createAccount.units.signatures')}</span>
             </label>
             <label className="inline-flex items-center gap-2 text-sm">
-              <span>{t('multisigCreate.thresholdMed')} <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.med')}>ⓘ</span></span>
+              <span>{t('createAccount.thresholdMed')} <span className="text-xs cursor-help" title={t('createAccount.tooltips.med')}>ⓘ</span></span>
               <input type="number" min={0} max={255} value={medT} onChange={(e)=>setMedT(clampByte(e.target.value))} className={`border rounded px-2 py-1 w-16 ${thMedErr ? 'border-red-500' : ''}`} />
-              <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate.units.signatures')}</span>
+              <span className="text-xs text-gray-700 dark:text-gray-300">{t('createAccount.units.signatures')}</span>
             </label>
             <label className="inline-flex items-center gap-2 text-sm">
-              <span>{t('multisigCreate.thresholdHigh')} <span className="text-xs cursor-help" title={t('multisigCreate.tooltips.high')}>ⓘ</span></span>
+              <span>{t('createAccount.thresholdHigh')} <span className="text-xs cursor-help" title={t('createAccount.tooltips.high')}>ⓘ</span></span>
               <input type="number" min={0} max={255} value={highT} onChange={(e)=>setHighT(clampByte(e.target.value))} className={`border rounded px-2 py-1 w-16 ${thHighErr ? 'border-red-500' : ''}`} />
-              <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate.units.signatures')}</span>
+              <span className="text-xs text-gray-700 dark:text-gray-300">{t('createAccount.units.signatures')}</span>
             </label>
           </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('multisigCreate.thresholdLevelsHint')} • {t('multisigCreate.thresholdSum', { sum: sumWeights })}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('createAccount.thresholdLevelsHint')} • {t('createAccount.thresholdSum', { sum: sumWeights })}</p>
           {(thLowErr || thMedErr || thHighErr) && (
-            <p className="text-xs text-red-600 mt-1">{t('multisigCreate.thresholdTooHigh')}</p>
+            <p className="text-xs text-red-600 mt-1">{t('createAccount.thresholdTooHigh')}</p>
           )}
         </div>
       </div>

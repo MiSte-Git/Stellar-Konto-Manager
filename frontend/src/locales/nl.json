@@ -246,7 +246,7 @@
       "xlmByMemo": "Op memo filteren",
       "sendPayment": "Betaling verzenden",
       "investedTokens": "Token/assets filteren",
-      "multisigCreate": "Account aanmaken",
+      "createAccount": "Account aanmaken",
       "multisigEdit": "Multisig-account bewerken",
       "settings": "Instellingen",
       "feedback": "Feedback",
@@ -352,7 +352,7 @@
     "mainnet": "Mainnet",
     "testnet": "Testnet"
   },
-  "multisigCreate": {
+  "createAccount": {
     "activateHint": "Activering is noodzakelijk zodat de account kan bestaan. In het Testnet via Friendbot, in het Mainnet via \"Account Aanmaken\" vanaf een bestaande wallet.",
     "activateNow": "Activeer account onmiddellijk",
     "activateOnly": "Alleen inschakelen",

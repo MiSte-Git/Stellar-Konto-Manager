@@ -1,0 +1,86 @@
+{
+  "page": {
+    "title": "Filtrare XLM per Memo",
+    "noPublicKey": "Nessuna chiave pubblica caricata. Si prega di inserire prima una chiave pubblica."
+  },
+  "action": {
+    "calculate": "Calcolare",
+    "loading": "Calcola…"
+  },
+  "date": {
+    "from": "Da (opzionale)",
+    "to": "Fino a (facoltativo)"
+  },
+  "debug": {
+    "incoming": "In arrivo – a: {{toMe}}, crea→me: {{createToMe}}, nativo→me: {{nativeInToMe}}",
+    "incomingOverview": "Ingressi: {{total}} • wallet coinvolti: {{unique}}",
+    "memo": "Memo nella finestra: {{any}} • memo esatti: {{exact}}",
+    "types": "Tipi – pagamento: {{pay}}, percorso: {{path}}, creazione: {{create}}, altri: {{other}}"
+  },
+  "export": {
+    "csv": "Controlla CSV (corrispondenze)",
+    "csvAll": "Esportare tutte le operazioni.",
+    "csvBoth": "Salva entrambi i file CSV.",
+    "csvMatches": "Controllo CSV (Corrispondenze)"
+  },
+  "exportCsv": {
+    "failed": "Esportazione CSV non riuscita: {{detail}}"
+  },
+  "memo": {
+    "label": "Testo di ricerca memo (segmento parziale, rispettare maiuscole e minuscole)",
+    "placeholder": "Memo (sottostringa, attenzione a maiuscole/minuscole)"
+  },
+  "overviewLine": "Pagamenti ricevuti: {{total}} • Wallet coinvolti: {{unique}}",
+  "result": {
+    "label": "Somma totale:",
+    "value": "{{amount}} XLM"
+  },
+  "summary": {
+    "amount": "Somma: {{amount}} XLM",
+    "correctCount": "Ingressi con memo corretto: {{n}}",
+    "count": "Quantità: {{n}}",
+    "label": "Confronto (tutti gli ingressi)",
+    "otherCount": "Ingressi con memo errato/senza memo: {{n}}",
+    "unique": "Portafogli univoci (tutti): {{n}}",
+    "uniqueWallets": "Wallet univoche: {{n}}"
+  },
+  "time": {
+    "setToNow": "Impostare l'ora corrente",
+    "setToNowHint": "Imposta il campo dell'ora sull'ora attuale."
+  },
+  "title": "Somma XLM dopo memo",
+  "topLargest": {
+    "button": "I 20 migliori ingressi (Promemoria)",
+    "clipboard": "Copia negli appunti",
+    "csv": "Scarica CSV",
+    "scanning": "… esamina le migliori voci",
+    "title": "Le 20 principali voci per Memo nel periodo"
+  },
+  "tz": {
+    "cdt": "CDT (UTC−5)",
+    "cst": "CST (UTC−6)",
+    "europe_zurich": "Europa/Zurigo (CET/CEST)",
+    "label": "Fuso orario per data/ora",
+    "local": "Fuso orario locale",
+    "note": "La data e l'ora vengono interpretate nel fuso orario selezionato e convertite automaticamente in UTC prima della ricerca.",
+    "utc": "UTC (Tempo Coordinato Universale)",
+    "window": "Finestra temporale UTC utilizzata: {{from}} → {{to}} (Esclusa)"
+  },
+  "wrongMemos": {
+    "button": "Visualizzare i portafogli con memo errato/vuoto",
+    "clipboard": "Copia negli appunti",
+    "columns": {
+      "amount": "Importo",
+      "created_at": "Creato il",
+      "from": "Da",
+      "memo": "Promemoria",
+      "tx_hash": "Hash della transazione"
+    },
+    "csv": "Scarica CSV",
+    "failed": "Errore nel caricamento dei pagamenti con memo errato/vuoto.",
+    "hint": "Filtra i pagamenti in entrata nel periodo e mostra i mittenti con memo errato/vuoto.",
+    "scanning": "… esegue la scansione di memo falsi/vuoti",
+    "summary": "Quantità: {{count}} • Somma: {{sum}} XLM • Wallet unici: {{unique}}",
+    "title": "Memorandum falsi/vuoti nel periodo"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "label": "Public Key of federatieadres",
+  "placeholder": "Voer je publieke sleutel of federatieadres in",
+  "load": "Laden",
+  "deleteFromList": "Uit lijst verwijderen",
+  "source": "Bron",
+  "destination": {
+    "input": "Doelstelling",
+    "error": "Ongeldige openbare sleutel ingevoerd.",
+    "label": "Doel-public key",
+    "placeholder": "Voer de doel-public key in."
+  },
+  "invalid": "Ongeldige openbare sleutel.",
+  "submit": {
+    "button": "Verzenden"
+  },
+  "test": "Test",
+  "historyLabel": "Geschiedenis",
+  "historyPlaceholder": "Selecteer laatst gebruikte portemonnee"
+}

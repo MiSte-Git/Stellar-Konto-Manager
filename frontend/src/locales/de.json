@@ -246,7 +246,7 @@
       "xlmByMemo": "Nach Memo filtern",
       "sendPayment": "Zahlung senden",
       "investedTokens": "Token/Assets filtern",
-      "multisigCreate": "Konto erstellen",
+      "createAccount": "Konto erstellen",
       "multisigEdit": "Multisig Konto bearbeiten",
       "settings": "Einstellungen",
       "feedback": "Feedback",
@@ -342,7 +342,7 @@
     "mainnet": "Mainnet",
     "testnet": "Testnet"
   },
-  "multisigCreate": {
+  "createAccount": {
     "activateHint": "Aktivierung ist notwendig, damit das Konto existiert. Im Testnet per Friendbot, im Mainnet per \"Create Account\" von einem bestehenden Wallet.",
     "activateNow": "Konto sofort aktivieren",
     "activateOnly": "Nur aktivieren",

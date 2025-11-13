@@ -1,0 +1,93 @@
+{
+  "title": "Kreiranje multisig računa",
+  "menu": "Kreiranje računa + Multisig",
+  "menuHint": "Kreiraj novi račun i postavi opcionalni Multisig",
+  "hint": "Kreirajte novi račun, aktivirajte ga i opcionalno konfigurirajte Multisig.",
+  "generateKeys": "Generirati ključ",
+  "enableMultisig": "Omogućiti multisig",
+  "signersTitle": "Potpisnik",
+  "signersInfo": "Dodajte više potpisnika i postavite odgovarajuće pragove.",
+  "signersCount": "Broj potpisnika",
+  "bestPractices": {
+    "title": "Najbolje prakse",
+    "text": "Čuvajte tajne ključeve sigurno i nemojte ih nepotrebno dijeliti."
+  },
+  "instructions": {
+    "public": "Podijelite ovaj javni ključ s drugima za plaćanja.",
+    "secret": "Ovaj tajni ključ čuvajte na sigurnom; nikada ga ne dijelite."
+  },
+  "generateFirst": "Molimo generirajte par ključeva.",
+  "confirmLowBalance": "Početni saldo {bal} XLM je ispod preporučene rezerve {req} XLM (potpisnici: {count}). Nastaviti?",
+  "activated": "Račun je aktiviran. Hash: {hash}",
+  "activatedTestnet": "Račun je aktiviran na testnetu putem Friendbota.",
+  "alreadyActive": "Račun je već aktiviran.",
+  "createdNoSigners": "Račun kreiran, multisig nije konfiguriran.",
+  "createdAndConfigured": "Korisnički račun je kreiran i Multisig je konfiguriran. Hash: {hash}",
+  "info": {
+    "more": "Više informacija",
+    "keysOnPage": {
+      "title": "Ključ na ovoj stranici",
+      "text": "Na ovoj stranici se generiraju ključevi. Čuvaj ih sigurno i nemoj ih dijeliti."
+    },
+    "title": "Važne informacije",
+    "secureKeys": {
+      "title": "Osiguravanje tajnog ključa",
+      "text": "Javni ključ može se sigurno dijeliti – on je poput broja računa.\n\nTajni ključ je pristup vašem računu. Postupajte s njim kao s lozinkom:\n• NIKADA ga ne pohranjujte u uslugama u oblaku, putem e-pošte ili nesigurnih bilješki\n• Zapišite ga na papir ili koristite hardverski novčanik\n• Napravite više sigurnosnih kopija i pohranite ih na sigurnim, odvojenim mjestima\n• Ako izgubite tajni ključ, pristup računu je nepovratno izgubljen"
+    },
+    "multisigSection": {
+      "title": "Multisig (višestruki potpis)",
+      "text": "S multisig možete definirati više potpisnika za svoj račun. Transakcije tada zahtijevaju potpise s više ključeva (npr. 2 od 3).\n\nPrednosti:\n• Povećana sigurnost (kompromitiran ključ nije dovoljan)\n• Zajednički računi (npr. tvrtke, partnerstva)\n• Hitni oporavak (više sigurnosnih kopija kod različitih osoba)\n\nPAŽNJA: Prvo testirajte multisig na testnetu prije nego što ga koristite na mainnetu! U slučaju pogrešne konfiguracije može doći do gubitka pristupa računu."
+    },
+    "diagram": {
+      "title": "Istek potpisa"
+    }
+  },
+  "activateHint": "Aktivacija je neophodna kako bi račun postojao. U Testnetu putem Friendbota, u Mainnetu putem \"Create Account\" opcije iz postojećeg novčanika.",
+  "activateNow": "Odmah aktivirajte račun.",
+  "activateOnly": "Samo aktiviraj",
+  "balanceWarning": "Početni saldo je vjerojatno prenizak da bi se dodali {{count}} dodatni potpisnici (minimalna rezerva: {{req}} XLM)",
+  "createButton": "Izradi / postavi multisig",
+  "hints": {
+    "byteRange": "(0–255)"
+  },
+  "mainnetActivateNote": "Napomena: Za Multisig su potrebne dodatne rezerve. 1 XLM često nije dovoljan.",
+  "reserve": {
+    "base": "Osnovna rezerva po unosu: {{val}} XLM",
+    "recommended": "Preporučeni početni saldo: {{val}} XLM (uključujući rezervu)",
+    "required": "Potrebna minimalna rezerva (nova): {{val}} XLM"
+  },
+  "signersCountHint": "Minimalni broj potpisa postavljate dolje pod \"Potrebni potpisi\" (nizak/srednji/visok).",
+  "signersCountLimit": "Napomena: Granica mreže (Stellar): maksimalno 20 dodatnih potpisnika.",
+  "startingBalance": "Početni kredit (XLM)",
+  "threshold": "Potrebni potpisi (nizak/srednji/visok)",
+  "thresholdLow": "nisko",
+  "thresholdMed": "srednji",
+  "thresholdHigh": "visok",
+  "thresholdCurrent": "Trenutno odabrano: nisko={{low}}, srednje={{med}}, visoko={{high}} od ukupno {{total}} potpisa",
+  "thresholdHelp": "Prag: Broj potrebnih potpisa (glavni potpisnik + potpisnici), kako bi transakcija bila važeća.",
+  "thresholdInfo": "Preporuka: {{req}} od {{total}} potpisa (uključujući glavni)",
+  "thresholdLevelsHint": "Tipično vrijedi: nisko = jednostavne promjene (npr. dopis, cijena), srednje = plaćanja/trgovanje, visoko = sigurnosno kritične promjene (npr. potpisnik/pragovi)",
+  "thresholdStatic": "Potrebno: {{val}} od {{total}} potpisa (nisko/srednje/visoko)",
+  "thresholdSum": "Zbroj težina: {{sum}}",
+  "thresholdTooHigh": "Napomena: Prag ne smije premašiti zbroj težina. Molimo prilagodite vrijednosti.",
+  "keyWarning": {
+    "title": "⚠️ Osigurajte ključ sada!",
+    "text1": "Generirali ste novi par ključeva.",
+    "text2": "Odmah osigurajte OBA ključa prije nego što nastavite:",
+    "list1": "Javni ključ: Vaša adresa računa, može se dijeliti",
+    "list2": "Tajni ključ: Vaša lozinka – NIKADA je nemojte dijeliti niti pohranjivati online!",
+    "list3": "U slučaju gubitka Secret Key-a, pristup je nepovratno izgubljen.",
+    "confirm": "Osigurao sam oba ključa."
+  },
+  "tooltips": {
+    "high": "Visok: promjene vezane uz sigurnost (npr. potpisnici/praovi).",
+    "low": "Nisko: jednostavne promjene (npr. dopis, cijena).",
+    "masterWeight": "Težina vlasnika računa (Master) (0-255): Glavni ključ računa ima pravo glasa. Što je veća njegova težina, to više glasova vrijedi njegov potpis. Ti se glasovi broje zajedno s glasovima drugih potpisnika kako bi se provjerilo je li postignuta potrebna većina.",
+    "med": "Sredstva: Plaćanja i trgovinske akcije.",
+    "signerWeight": "Težina potpisnika (0–255): Dodatni potpisnici također imaju prava glasa. Težina određuje koliko glasova njihov potpis doprinosi. Kada se transakcija pošalje, svi dati glasovi se zbrajaju. Ako se postigne zadani minimalni broj glasova (prag), transakcija se smatra autoriziranom.",
+    "signerWeightHint": "Napomena: Težine glavnog i potpisujućeg moraju zbrojem činiti ukupnu vrijednost; pragovi (nizak/srednji/visok) ne smiju premašiti taj zbroj."
+  },
+  "units": {
+    "signatures": "Potpis(i)"
+  }
+}

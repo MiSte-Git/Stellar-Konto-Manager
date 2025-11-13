@@ -218,13 +218,13 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                 <thead>
                   <tr className="text-left border-b">
                     <th className="py-1 pr-2 cursor-pointer select-none" onClick={()=>setBalSort(s=>({key:'code', dir: s.key==='code' && s.dir==='asc' ? 'desc':'asc'}))}>
-                      {t('asset.code')} {balSort.key==='code' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
+                      {t('common:asset.code', 'Asset code')} {balSort.key==='code' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
                     </th>
                     <th className="py-1 pr-2 cursor-pointer select-none" onClick={()=>setBalSort(s=>({key:'issuer', dir: s.key==='issuer' && s.dir==='asc' ? 'desc':'asc'}))}>
-                      {t('asset.issuer')} {balSort.key==='issuer' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
+                      {t('common:asset.issuer', 'Issuer')} {balSort.key==='issuer' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
                     </th>
                     <th className="py-1 pr-2 cursor-pointer select-none" onClick={()=>setBalSort(s=>({key:'balance', dir: s.key==='balance' && s.dir==='asc' ? 'desc':'asc'}))}>
-                      {t('asset.balance')} {balSort.key==='balance' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
+                      {t('common:asset.balance', 'Balance')} {balSort.key==='balance' ? (balSort.dir==='asc' ? '▲' : '▼') : '↕'}
                     </th>
                   </tr>
                 </thead>
@@ -280,7 +280,7 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                     </div>
                     {b.issuer !== '-' && (
                       <div className="text-xs text-gray-600 dark:text-gray-400">
-                        <span className="font-semibold">{t('asset.issuer')}:</span>
+                        <span className="font-semibold">{t('common:asset.issuer', 'Issuer')}:</span>
                         <div className="font-mono break-all mt-1">{b.issuer}</div>
                       </div>
                     )}
@@ -322,8 +322,8 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                     <span className="inline-flex items-center gap-2">
                       {t('balance.payments.columns.txLabel', 'Tx')}
                       <select className="border rounded px-1 py-0.5 text-xs" value={explorerPref} onChange={(e)=>setExplorerPref(e.target.value)}>
-                        <option value="expert">{t('balance.explorer.expert')}</option>
-                        <option value="stellarchain">{t('balance.explorer.stellarchain')}</option>
+                        <option value="expert">{t('balance.explorer.expert', 'stellar.expert')}</option>
+                        <option value="stellarchain">{t('balance.explorer.stellarchain', 'Stellarchain')}</option>
                       </select>
                     </span>
                   </th>

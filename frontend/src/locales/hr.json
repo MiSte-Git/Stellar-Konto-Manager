@@ -246,7 +246,7 @@
       "xlmByMemo": "Filtriraj po bilješci",
       "sendPayment": "Pošalji uplatu",
       "investedTokens": "Filtriranje tokena/imovine",
-      "multisigCreate": "Kreiraj račun",
+      "createAccount": "Kreiraj račun",
       "multisigEdit": "Uredite multisig račun",
       "settings": "Postavke",
       "feedback": "Povratne informacije",
@@ -352,7 +352,7 @@
     "mainnet": "Glavna mreža",
     "testnet": "Testna mreža"
   },
-  "multisigCreate": {
+  "createAccount": {
     "activateHint": "Aktivacija je neophodna kako bi račun postojao. U testnetu putem Friendbota, na mainnetu putem \"Create Account\" iz postojećeg novčanika.",
     "activateNow": "Odmah aktivirajte račun.",
     "activateOnly": "Samo aktivirati",

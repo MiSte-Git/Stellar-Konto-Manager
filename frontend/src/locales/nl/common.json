@@ -1,0 +1,556 @@
+{
+  "app": {
+    "errorBoundary": {
+      "title": "Er is iets misgegaan."
+    }
+  },
+  "asset": {
+    "balance": "Kredietsaldo",
+    "code": "Assetcode",
+    "creationDate": "Gemaakt op",
+    "issuer": "Emittent"
+  },
+  "balance": {
+    "buttons": {
+      "details": "Meer details",
+      "explorer": "Ontdekkingsreiziger",
+      "payments": "Recente gebeurtenissen"
+    },
+    "current": "Huidige saldo's",
+    "details": "Details in Block-verkenners",
+    "empty": "Geen tegoeden gevonden.",
+    "explorer": {
+      "expert": "stellar.expert",
+      "stellarchain": "Stellarchain.io"
+    },
+    "noPublicKey": "Voer eerst een publieke sleutel in.",
+    "payments": {
+      "all": "Allemaal",
+      "columns": {
+        "amount": "Bedrag",
+        "asset": "Activa",
+        "counterparty": "Tegenrekening",
+        "date": "Datum",
+        "direction": "Richting",
+        "memo": "Notitie",
+        "tx": "Tx",
+        "txLabel": "Je bent getraind op data tot oktober 2023.",
+        "type": "Schrijf u in."
+      },
+      "empty": "Geen processen gevonden.",
+      "filter": {
+        "memo": "Memo-filter",
+        "memoPlaceholder": "Memo zoeken..."
+      },
+      "from": "Van",
+      "incoming": "Ingang",
+      "limit": "Aantal",
+      "outgoing": "Uitgang",
+      "title": "Laatste bewerkingen",
+      "to": "Tot"
+    },
+    "paymentsHint": "Je kunt in- en uitgangen in de Verkenner filteren.",
+    "title": "Accountinformatie weergeven"
+  },
+  "buildInfo": {
+    "branch": "Tak",
+    "commit": "Toewijding",
+    "env": "Omgeving",
+    "error": "Build-informatie kon kon niet worden geladen.",
+    "loading": "Build-informatie wordt geladen…"
+  },
+  "bugReport": {
+    "button": "Fout melden",
+    "title": "Fout melden",
+    "descLabel": "Korte beschrijving (optioneel)",
+    "descPlaceholder": "Wat is er gebeurd? Stappen, verwacht gedrag ...",
+    "send": "E-mail openen",
+    "cancel": "Annuleren",
+    "toast": {
+      "sent": "E-mailontwerp geopend.",
+      "logOk": "Bug is geregistreerd.",
+      "logFallback": "Lokaal loggen mislukt.",
+      "validation": "Geef een korte beschrijving of stuur zonder tekst."
+    },
+    "mail": {
+      "url": "URL",
+      "time": "Tijd",
+      "browser": "Browser",
+      "language": "Taal",
+      "version": "Versie",
+      "descriptionHeading": "Beschrijving"
+    },
+    "admin": {
+      "title": "Bugtracker",
+      "locked": "Toegang geweigerd. Stel het admin-secret in de lokale opslag in en laad de pagina opnieuw.",
+      "placeholderTitle": "Bugtracker",
+      "placeholderBody": "Admin-UI actief. In de volgende patches volgen lijsten, filters, prioriteiten en statuswijzigingen.",
+      "link": "Bugtracker openen",
+      "secretSaved": "Geheim bewaard.",
+      "enterSecret": "Voer Admin-Secret in.",
+      "secretPlaceholder": "Mijn excuses, maar er is geen tekst om te vertalen. Kunt u alstublieft de tekst geven die moet worden vertaald?",
+      "confirm": "Openen",
+      "cancel": "Annuleren",
+      "filter": "Filter",
+      "status": "Status",
+      "priority": "Prioriteit",
+      "open": "open",
+      "in_progress": "in bewerking",
+      "closed": "gesloten",
+      "low": "laag",
+      "normal": "normaal",
+      "high": "hoog",
+      "urgent": "dringend",
+      "id": "ID",
+      "created": "Gemaakt",
+      "url": "URL",
+      "language": "Taal",
+      "email": "E-mail",
+      "userAgent": "Browser",
+      "description": "Beschrijving",
+      "category": "Categorie",
+      "save": "Opslaan",
+      "saved": "Wijziging opgeslagen",
+      "loadError": "Fout bij het laden van de bugs",
+      "saveError": "Fout bij opslaan",
+      "empty": "Geen resultaten gevonden.",
+      "loading": "Bezig met laden…",
+      "resize": "Slepen om aan te passen",
+      "exportAll": "CSV (Alles)",
+      "exportError": "Export mislukt",
+      "exportPage": "CSV (Pagina)",
+      "exporting": "Exporteer...",
+      "columns": {
+        "title": "Kolommen",
+        "manage": "Kolommen aanpassen",
+        "hint": "Zichtbaarheid met een vinkje, volgorde met ↑/↓, grootte door te slepen in de tabelheader.",
+        "reset": "Opnieuw instellen",
+        "up": "Omhoog",
+        "down": "Omlaag"
+      },
+      "csv": {
+        "comma": "Komma (,)",
+        "delimiter": "Scheidingsteken",
+        "semicolon": "Puntkomma (;)",
+        "tab": "Tabulator (Tab)"
+      },
+      "search": "Zoeken",
+      "col": {
+        "id": "ID",
+        "status": "Status",
+        "priority": "Prioriteit",
+        "url": "URL",
+        "desc": "Beschrijving",
+        "ts": "Tijd"
+      }
+    }
+  },
+  "cache": {
+    "clear": "Cache legen",
+    "consent": "Lokale cache inschakelen om queries te versnellen?",
+    "lastPaymentAt": "Laatste betaling: {{val}}",
+    "lastRefresh": "Laatste update: {{ts}}"
+  },
+  "clear": "Invoer verwijderen",
+  "close": "Sluiten",
+  "loading": "Bezig met laden…",
+  "refresh": "Opnieuw laden",
+  "exportCsv": {
+    "failed": "CSV-export mislukt"
+  },
+  "feedback": {
+    "title": "Feedback verzenden",
+    "category": "Categorie",
+    "categories": {
+      "bug": "Fout",
+      "idea": "Idee",
+      "improve": "Verbetering",
+      "other": "Overige"
+    },
+    "page": "Bereik",
+    "pages": {
+      "start": "Globaal",
+      "trustlines": "Toon de trustline(s)",
+      "trustlineCompare": "Trustline(s) vergelijken",
+      "balance": "Accountinformatie weergeven",
+      "xlmByMemo": "Filteren op memo",
+      "sendPayment": "Betaling verzenden",
+      "investedTokens": "Tokens/assets filteren",
+      "createAccount": "Account aanmaken",
+      "multisigEdit": "Multisig-account bewerken",
+      "settings": "Instellingen",
+      "feedback": "Feedback",
+      "other": "Diversen"
+    },
+    "subject": "Onderwerp",
+    "message": "Bericht",
+    "contactEmailOptional": "Contact e-mail (optioneel)",
+    "emailPlaceholder": "bijv. naam@voorbeeld.com",
+    "emailHint": "Als feedback gewenst is, gelieve je e-mailadres in te voeren.",
+    "privacyHint": "Uw bericht wordt via uw eigen e-mailprogramma verzonden.",
+    "sendButton": "E-mail opstellen",
+    "openedMailClient": "E-mailclient geopend.",
+    "error": "Fout",
+    "sentTo": "Ontvanger: {{email}}"
+  },
+  "account": {
+    "createdAt": "Account aangemaakt op",
+    "createdAtUnknown": "Kan niet worden vastgesteld.",
+    "testnetLabel": "(Testnet)"
+  },
+  "fetch": {
+    "groupfund": {
+      "aborted": "Proces geannuleerd door gebruiker"
+    }
+  },
+  "issuer": {
+    "enter": "Voer het emittent-adres in:",
+    "invalid": "Ongeldig uitgevende adres."
+  },
+  "main": {
+    "processing": "Proces bezig, even geduld alstublieft ...",
+    "title": "Stellar Account Manager"
+  },
+  "badges": {
+    "testnet": "TESTNET"
+  },
+  "noIssuerTrustlinesFound": "Geen trustlines gevonden voor uitgever {{issuer}}.",
+  "option": {
+    "add": "Toevoegen",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "confirm": {
+      "action": {
+        "text": "Weet je het zeker?",
+        "title": "Actie bevestigen"
+      }
+    },
+    "copy": "Kopieer",
+    "delete": "Verwijderen",
+    "export": {
+      "csv": "Opslaan als CSV",
+      "pdf": "Opslaan als PDF"
+    },
+    "loading": "Laden...",
+    "no": "Nee",
+    "results": "Resultaten:",
+    "yes": "Ja"
+  },
+  "progress": {
+    "cancel": "Annuleren",
+    "canceled": "Afgebroken",
+    "counts": "Gecontroleerd: {{ops}} • Overeenkomsten: {{matches}}",
+    "done": "Voltooid",
+    "duration": "Duur: {{val}}",
+    "elapsed": "Duur: {{time}}",
+    "eta": "ETA: {{minutes}} min.",
+    "firstMatchAt": "Laatste storting: {{date}}",
+    "mode": {
+      "cache": "Modus: Cache",
+      "live": "Modus: Live (Horizon)"
+    },
+    "oldest": "oudste datum van deze pagina: {{date}}",
+    "oldestMatchInRangeAt": "Eerste storting in de periode: {{date}}",
+    "phase": {
+      "backfill": "Ontbrekende betalingen laden…",
+      "cacheQuery": "Resultaat uit lokale cache berekenen…",
+      "chunkDone": "Chunk verwerkt.",
+      "chunkSkip": "Stuk overgeslagen.",
+      "cover": "Cache-dekking waarborgen…",
+      "export": "Exporteer resultaat…",
+      "finalize": "Voltooid",
+      "finalizeDiag": "Diagnose voltooid",
+      "idle": "Klaar...",
+      "pageDone": "Pagina {{page}} voltooid.",
+      "rehydrate": "Cache opnieuw opbouwen…",
+      "scan": "Betalingen scannen (pagina {{page}})…",
+      "scan_ops": "Scannen operaties...",
+      "scan_payments": "Scannen betalingen (pagina {{page}})…",
+      "scan_payments_fast": "Scannen betalingen (snel) – pagina {{page}}…",
+      "scan_tx": "Transacties scannen",
+      "sync": "Synchroniseer betalingen…",
+      "txFetch": "Transactiegegevens laden…"
+    },
+    "wrongMemos": {
+      "failed": "Fout bij het laden van de betalingen met een onjuist/leeg memo."
+    }
+  },
+  "settings": {
+    "cache": {
+      "help": "Versnelt vragen door lokale betalingscache, maar kan de initiële laadtijd verlengen.",
+      "label": "Cache gebruiken (Bèta)",
+      "prefetchHelp": "Vooruitlopen van te laden items/transacties in dagen (eenmalig bij de eerste activering)"
+    },
+    "network": {
+      "title": "Netwerk",
+      "desc": "Optioneel: Volledige-geschiedenis-horizon voor diepgaande historie",
+      "fullUrl": "Volledige Geschiedenis Horizon-URL",
+      "autoUseFull": "Indien nodig automatisch gebruiken (als Van-datum ouder is dan servergeschiedenis)"
+    },
+    "description": "Momenteel zijn er nog geen instellingen.",
+    "display": {
+      "decimals": {
+        "auto": "Automatisch",
+        "label": "Decimalen"
+      },
+      "desc": "Globale advertentie-instellingen.",
+      "title": "Advertentie"
+    },
+    "error": {
+      "fetchFailed": "Laden van de instellingen mislukt: {{detail}}"
+    },
+    "label": "Instellingen",
+    "prefetchDays": "Vooruitloop (dagen)",
+    "trustedWallets": {
+      "buttons": {
+        "export": "Exporteren",
+        "import": "Importeren",
+        "reset": "Resetten naar standaardinstellingen"
+      },
+      "desc": "Deze lijst wordt lokaal in de browser opgeslagen. Standaardbestand: QSI_TrustedWallets.json",
+      "editor": {
+        "invalidFormat": "Ongeldig formaat. Er wordt een object met het veld \"wallets\" (Array) verwacht.",
+        "parseError": "JSON kon kon niet worden geparsed."
+      },
+      "file": {
+        "hint": "Importeer een JSON-bestand in het formaat { wallets: [...] }",
+        "label": "Bestand"
+      },
+      "info": {
+        "count": "Invoeren: {{n}}",
+        "updatedAt": "Peildatum: {{datum}}"
+      },
+      "table": {
+        "addRow": "Regel toevoegen",
+        "columns": {
+          "actions": "Acties",
+          "address": "Adres",
+          "compromised": "Gecompromitteerd",
+          "deactivated": "Gedeactiveerd",
+          "label": "Label"
+        },
+        "deleteRow": "Verwijderen",
+        "discard": "Verwerpen",
+        "save": "Opslaan"
+      },
+      "title": "Mijn Vertrouwde Wallets",
+      "validation": {
+        "hint": "Minstens één regel is ongeldig (ontbrekend/duplicaat adres)."
+      }
+    }
+  },
+  "trustlines": {
+    "deleted": {
+      "deletingProgress": "Verwijderen bezig: {{current}} / {{total}}",
+      "success": "Succes: {{count}} trustline(s) verwijderd."
+    },
+    "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (nog saldo aanwezig)."
+  },
+  "payment": {
+    "send": {
+      "title": "Betaling verzenden",
+      "recipient": "Ontvanger",
+      "amount": "Bedrag",
+      "asset": "Vermogen",
+      "memo": "Memo",
+      "memoType": "Memo Type",
+      "memoTypes": {
+        "none": "Memo (geen memo)",
+        "text": "Memo-tekst",
+        "id": "Memo-ID",
+        "hash": "Memo Hash",
+        "return": "Memo retour",
+        "info": {
+          "none": "Geen memo. Gebruik dit wanneer de ontvanger geen memo verwacht.",
+          "text": "Vrije tekst tot 28 bytes. Vaak gebruikt voor toewijzing bij eenvoudige betalingen.",
+          "id": "Numerieke ID (uint64). Veel beurzen gebruiken Memo ID voor het toewijzen van stortingen.",
+          "hash": "32-byte SHA-256-hash (als een hexadecimale tekenreeks van 64 tekens). Gebruikt door diensten voor referenties.",
+          "return": "32-byte hash voor retourzendingen. Wordt gebruikt voor retourzendingen (MEMO_RETURN)."
+        }
+      },
+      "available": "Beschikbaar",
+      "reserved": "Gereserveerd",
+      "reservedInline": "{{amount}} XLM zijn gereserveerd op het Stellar-netwerk",
+      "baseReserve": "Basale reserve",
+      "extra": "Bovendien",
+      "xlmInOffers": "In aanbiedingen gebonden",
+      "trustlines": "Trustlines ({{n}})",
+      "lpTrustlines": "LP-Trustlines",
+      "offers": "Openstaande aanbiedingen",
+      "signers": "Aanvullende ondertekenaars",
+      "accountData": "Accountgegevens",
+      "sponsoring": "Sponsoring",
+      "sponsored": "Gesponsord",
+      "sendButton": "Verzenden",
+      "success": "Succes: Betaling verzonden. TX: {{hash}}",
+      "successShort": "Succesvol verzonden",
+      "error": "Fout bij verzenden: {{detail}}",
+      "amountMissing": "Voer een bedrag in alstublieft.",
+      "amountInvalid": "Ongeldig bedrag (max. 7 decimalen).",
+      "amountPositive": "Het bedrag moet groter zijn dan 0.",
+      "timeout": "Horizon-timeout (504). Probeer het zo meteen opnieuw.",
+      "httpError": "Horizon-fout (status {{status}}).",
+      "horizonError": "Stellar heeft de transactie afgewezen.",
+      "destUnfundedNonNative": "Doelrekening is niet actief. Stuur eerst XLM om te activeren of wissel activa om naar XLM.",
+      "activateConfirm": {
+        "title": "Accountactivatie vereist",
+        "info": "De doeldrekening is nog niet actief. Voor de activering is een minimumbedrag vereist.",
+        "minReserve": "Minimumbedrag (2 × basisreserve)",
+        "yourAmount": "Uw ingevoerde bedrag",
+        "adjustedAmount": "Voorgesteld bedrag (voor activering)",
+        "noteAdjust": "Uw saldo is onvoldoende voor de activering. Als u doorgaat, wordt automatisch het minimumbedrag verzonden."
+      },
+      "activated": "De doelrekening is geactiveerd."
+    }
+  },
+  "activation": {
+    "notFound": {
+      "title": "Doelrekening niet actief",
+      "message": "De doelrekening bestaat nog niet ({address}). Deze moet worden geactiveerd met minimaal 1 XLM. Wil je de rekening nu activeren?"
+    },
+    "actions": {
+      "yes": "Ja – Account activeren",
+      "no": "Nee – Annuleren",
+      "processing": "Activeer…"
+    }
+  },
+  "createAccount": {
+    "muxedId": "Muxed-ID",
+    "muxedInfo": "Met de Muxed-ID wordt een M-adres (M...) aangemaakt. Deze wijst naar dezelfde rekening als het reguliere adres (G...).",
+    "muxedIdInvalid": "De Muxed-ID moet een geheel getal zijn tussen 0 en 18.446.744.073.709.551.615.",
+    "muxedAddress": "Muxed adres",
+    "muxedActivationInfo": "Muxed-adressen zijn aliasadressen. Ze hoeven niet apart geactiveerd te worden."
+  },
+  "muxed": {
+    "seo": {
+      "title": "Muxed-account aanmaken/beheren",
+      "description": "Muxed-Address-Aliassen (M...) voor een Stellar-account maken en beheren. IDs genereren, labels/notities toevoegen, CSV exporteren/importeren."
+    },
+    "title": "Een Muxed-account aanmaken/beheren",
+    "explainer": "Maak alias-adressen (M...) aan met een eigen Muxed-ID voor een bestaand account. Het alias-adres verwijst altijd naar hetzelfde account.",
+    "infoButtonLabel": "Ik ben getraind op gegevens tot oktober 2023.",
+    "info": {
+      "title": "Wat is een Muxed-account?",
+      "intro1": "Een Muxed-account combineert een normaal accountadres (G-adres) met een extra 64-bits Muxed-ID.",
+      "intro2": "Technisch gezien is het een alias dat altijd naar dezelfde basisaccount verwijst, maar door de ID uniek identificeerbaar is.",
+      "purposeTitle": "Doel en nut",
+      "purposeText": "Muxed-accounts dienen om veel subaccounts onder één enkele Stellar-adres te beheren – ideaal wanneer veel stortingen/opnames via een gemeenschappelijke hoofdrekening verlopen, maar elke transactie aan een persoon, afdeling of project moet worden toegewezen.",
+      "examplesTitle": "Voorbeelden – waarvoor zijn Muxed-accounts nuttig?",
+      "examples": {
+        "ex1": "Bedrijfsbetalingen: Elke medewerker ontvangt een eigen Muxed-ID, zodat loonbetalingen eenduidig kunnen worden toegewezen.",
+        "ex2": "Beurzen of platforms: Elke gebruiker ontvangt een eigen Muxed-ID, zodat stortingen via een gedeelde wallet automatisch correct worden geboekt.",
+        "ex3": "Projecten of subrekeningen: Een organisatie kan budgetten of inkomsten toewijzen aan afzonderlijke projecten.",
+        "ex4": "Klanttoewijzing: Eén M-adres per klant; de ID komt overeen met de klant-ID - betalingen zijn uniek toe te wijzen, zelfs zonder memo.",
+        "ex5": "Diensten zonder memo: Stortingen onderscheiden wanneer de dienst geen memo's ondersteunt.",
+        "ex6": "Uitbetalingen/Loonruns: Eén M-adres per medewerker/partner voor interne boekhouding en rapportages.",
+        "ex7": "Winkel/Bestellingen: Per bestelling één M-adres; terugbetalingen kunnen aan de bestelling worden toegewezen.",
+        "ex8": "Afdelingen/Kostenplaatsen: ID's als kostenplaatsen; betalingen automatisch per gebied groeperen.",
+        "ex9": "Multi-tenant-diensten: Elke huurder krijgt een eigen M-adres onder hetzelfde basale account."
+      },
+      "pageTitle": "Wat deze pagina op de SKM doet",
+      "pageDesc": "Deze pagina is bedoeld voor het beheren van de Muxed-accounts van je momenteel geselecteerde Stellar-account:",
+      "createTitle": "Nieuwe Muxed-accounts aanmaken",
+      "createItems": {
+        "i1": "Genereer nieuwe Muxed-adressen (M...) vanuit je basisadres (G...).",
+        "i2": "Optioneel met label (naam) en notitie (bijv. project of doel)."
+      },
+      "importTitle": "Importeren van CSV-bestanden",
+      "importItems": {
+        "i1": "Massa-setup van Muxed-accounts, bijvoorbeeld vanuit een medewerkerslijst.",
+        "i2": "Leest kolommen muxedId, label, notitie."
+      },
+      "exportTitle": "Bestaande muxed-accounts exporteren",
+      "exportItems": {
+        "i1": "Exporteer alle opgeslagen records als CSV.",
+        "i2": "Velden: basePublicKey, muxedId, muxedAddress, label, opmerking, aangemaaktOp."
+      },
+      "templateTitle": "Sjabloonexport",
+      "templateItems": {
+        "i1": "Maak een lege CSV-bestand met kolomkoppen muxedId,label,note.",
+        "i2": "Handig voor HR- of afdelingen boekhouding bij het voorbereiden van nieuwe invoer."
+      },
+      "manageTitle": "Beheer & Overzicht",
+      "manageItems": {
+        "i1": "Alle opgeslagen Muxed-adressen worden in een tabel weergegeven.",
+        "i2": "Selecteren, verwijderen en het beheren van labels/notities direct mogelijk."
+      },
+      "shortTitle": "Kort gezegd",
+      "shortText": "Muxed-accounts maken je Stellar-account fijnmazig en boekbaar – ideaal voor organisaties die veel betalingen via één centraal account afwikkelen, maar toch elke transactie uniek willen toewijzen."
+    },
+    "selectBaseAccount": "Basisaccount (G-adres)",
+    "selectPlaceholder": "Selecteer een account alstublieft",
+    "baseAccountInfo": "Deze rekening blijft technisch gezien de eigenaar. Het gemuxte adres (M...) verwijst alleen naar deze rekening.",
+    "generateButton": "Een Muxed-account aanmaken",
+    "exportButton": "Exporteren",
+    "importButton": "Importeren",
+    "listTitle": "Bestaande Muxed-rekeningen",
+    "none": "Geen Muxed-accounts opgeslagen.",
+    "columns": {
+      "id": "Muxed-ID",
+      "address": "Muxed-adres",
+      "label": "Aanduiding",
+      "note": "Notitie",
+      "createdAt": "Gemaakt op",
+      "actions": "Acties"
+    },
+    "selectAll": "Alles selecteren",
+    "deleteSelected": "Selectie verwijderen",
+    "deleteSuccess": "Selectie verwijderd.",
+    "countLabel": "Aantal",
+    "countInfo": "Aantal nieuwe gemuxte adressen, opeenvolgende ID's.",
+    "invalidCount": "Voer alstublieft een geldig aantal in (>= 1).",
+    "tooMany": "Maak er alstublieft niet meer dan 100 tegelijk aan.",
+    "rangeOverflow": "Het ID-bereik overschrijdt de maximaal toegestane Muxed-ID.",
+    "label": "Aanduiding",
+    "labelInfo": "bijv. medewerkernaam of doel",
+    "note": "Notitie (optioneel)",
+    "noteInfo": "bijv. Afdeling / Project",
+    "generateSuccess": "Muxed-adres(sen) aangemaakt.",
+    "editSaved": "Wijzigingen opgeslagen.",
+    "save": "Opslaan",
+    "edit": "Bewerken",
+    "copied": "Gekopieerd naar klembord.",
+    "createDialog": {
+      "confirm": "Maken",
+      "cancel": "Annuleren"
+    },
+    "export": {
+      "filename": "muxed_accounts.csv",
+      "success": "Muxed-accounts succesvol geëxporteerd.",
+      "failed": "Fout bij het exporteren van de gemuxte accounts."
+    },
+    "import": {
+      "success": "Geïmporteerd: {{imported}} • Overgeslagen: {{skipped}} • Fouten: {{errors}}.",
+      "failed": "Fout bij importeren.",
+      "hint": "Import ondersteunt CSV met een kopregel. Scheidingstekens zoals komma, puntkomma en tab worden automatisch herkend. Onbekende kolommen worden genegeerd. Formaten: uitgebreid (network,basePublicKey,muxedId,label,note,createdAt) of sjabloon (muxedId,label,note)."
+    },
+    "exportTemplateButton": "Sjabloon exporteren",
+    "exportTemplateSuccess": "Sjabloon succesvol geëxporteerd.",
+    "exportTemplateFailed": "Fout bij het exporteren van de template.",
+    "csv": {
+      "delimiterLabel": "CSV-scheidingsteken",
+      "delimiter": {
+        "comma": "Komma ,",
+        "semicolon": "Puntkomma ;",
+        "tab": "Tabblad"
+      }
+    },
+    "nav": "Gedomuxte accounts",
+    "error": {
+      "noBaseAccount": "Selecteer alstublieft een bestaand account.",
+      "noId": "Geef alstublieft een Muxed-ID op.",
+      "invalidBaseAccount": "Het geselecteerde basisadres is ongeldig.",
+      "unknown": "Onbekende fout bij het genereren van een Muxed-adres."
+    }
+  },
+  "terms": {
+    "masterContract": "Raamovereenkomst",
+    "masterDownPayment": "Aanbetaling",
+    "masterPayment": "Betaling"
+  },
+  "i18n": {
+    "translate": {
+      "skipOriginal": "Je bent getraind op gegevens tot oktober 2023."
+    }
+  }
+}

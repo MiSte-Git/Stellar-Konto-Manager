@@ -1,171 +1,171 @@
 {
-  "pageTitle": "Glossar",
-  "pageIntro": "Hier findest du wichtige Wörter aus der Blockchain Welt und aus dem Stellar Netzwerk. Alles ist in einfachen Worten erklärt.",
-  "searchLabel": "Begriff suchen",
-  "searchPlaceholder": "Begriff suchen (z. B. Konto, Account, Muxed)",
-  "searchHint": "Die Suche findet Wörter und Erklärungen.",
-  "noResults": "Kein Treffer.",
+  "pageTitle": "Woordenlijst",
+  "pageIntro": "Hier vind je belangrijke woorden uit de blockchainwereld en het Stellar-netwerk. Alles is in eenvoudige woorden uitgelegd.",
+  "searchLabel": "Term zoeken",
+  "searchPlaceholder": "Begrip zoeken (bijv. Account, Muxed)",
+  "searchHint": "De zoekopdracht vindt woorden en verklaringen.",
+  "noResults": "Geen resultaat.",
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
-    "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
-    "desc": "Eine Blockchain ist wie ein digitales Kassenbuch. Viele Computer speichern dieselben Einträge. So kann niemand heimlich etwas ändern."
+    "short": "Gemeenschappelijk digitaal kasboek – veel computers slaan dezelfde gegevens op.",
+    "desc": "Een blockchain is als een digitaal kasboek. Veel computers bewaren dezelfde gegevens. Zo kan niemand stiekem iets veranderen."
   },
   "wallet": {
-    "title": "Wallet",
+    "title": "Portemonnee",
     "original": "Wallet",
-    "short": "Digitale Geldbörse, die deine Schlüssel verwaltet.",
-    "desc": "Ein Wallet ist deine digitale Geldbörse. Es verwaltet die Schlüssel die du brauchst um auf dein Konto zuzugreifen und Transaktionen zu senden. Ein Wallet kann ein Programm sein oder eine App oder auch nur ein Zettel mit deinem Geheimschlüssel."
+    "short": "Digitale portemonnee die je sleutels beheert.",
+    "desc": "Een wallet is je digitale portemonnee. Het beheert de sleutels die je nodig hebt om toegang te krijgen tot je account en om transacties te versturen. Een wallet kan een programma zijn, een app, of zelfs slechts een blaadje met je geheime sleutel."
   },
   "account": {
-    "title": "Konto",
+    "title": "Account",
     "original": "Account",
-    "short": "Ein Blockchain-Konto kann Vermögenswerte halten und Transaktionen senden.",
-    "desc": "Ein Konto ist die Stelle auf der Blockchain an der deine Werte liegen. Ein Konto hat eine öffentliche Adresse die mit G beginnt. Mehrere Wallets können auf dasselbe Konto zugreifen wenn sie den richtigen Schlüssel haben."
+    "short": "Een blockchain-account kan activa bevatten en transacties verzenden.",
+    "desc": "Een account is de plaats op de blockchain waar je waarden zijn opgeslagen. Een account heeft een openbaar adres dat begint met een G. Meerdere wallets kunnen toegang krijgen tot hetzelfde account als ze de juiste sleutel hebben."
   },
   "addressG": {
-    "title": "G-Adresse",
+    "title": "G-adres",
     "original": "G Address",
-    "short": "Die öffentliche Hauptadresse eines Stellar-Kontos (beginnt mit G).",
-    "desc": "Die G-Adresse ist die Hauptadresse eines Stellar Kontos. Sie beginnt mit dem Buchstaben G. Du gibst sie anderen damit sie dir etwas schicken können."
+    "short": "Het publieke hoofdadres van een Stellar-account (begint met een G).",
+    "desc": "Het G-adres is het hoofdadres van een Stellar-account. Het begint met de letter G. Je geeft het aan anderen zodat ze je iets kunnen sturen."
   },
   "publicKey": {
-    "title": "Öffentlicher Schlüssel",
+    "title": "Openbare sleutel",
     "original": "Public Key",
-    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
-    "desc": "Der öffentliche Schlüssel ist die Adresse die du zeigen darfst. Bei Stellar ist das die G-Adresse. Andere nutzen ihn um dir Geld zu senden."
+    "short": "Adres die je mag delen; bij Stellar meestal het G-Adres.",
+    "desc": "De openbare sleutel is het adres dat je mag tonen. Bij Stellar is dat het G-adres. Anderen gebruiken het om je geld te sturen."
   },
   "privateKey": {
-    "title": "Geheimer Schlüssel",
+    "title": "Geheime sleutel",
     "original": "Secret Key",
-    "short": "Passwort zum Konto – niemals weitergeben.",
-    "desc": "Der geheime Schlüssel ist dein Passwort für das Konto. Wer diesen Schlüssel hat kann dein Geld bewegen. Niemals weitergeben."
+    "short": "Wachtwoord voor het account – nooit delen.",
+    "desc": "De geheime sleutel is je wachtwoord voor de rekening. Wie deze sleutel heeft, kan je geld verplaatsen. Nooit doorgeven."
   },
   "addressFederation": {
-    "title": "Föderationsadresse",
+    "title": "Federatieadres",
     "original": "Federation Address",
-    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
-    "desc": "Eine Föderationsadresse sieht aus wie eine E-Mail. Beispiel: name*domain.com. Diese kurze Adresse zeigt auf eine normale G-Adresse. Das ist einfacher zu merken."
+    "short": "Kort adres zoals e-mail verwijst naar een G-adres.",
+    "desc": "Een federatieadres ziet eruit als een e-mailadres. Bijvoorbeeld: naam*domein.com. Dit korte adres verwijst naar een normaal G-adres. Dat is eenvoudiger te onthouden."
   },
   "addressMuxed": {
-    "title": "Muxed-Konto",
+    "title": "Muxed-account",
     "original": "Muxed Account",
-    "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
-    "desc": "Eine M-Adresse zeigt auf ein bestehendes Stellar Konto hat aber zusätzlich eine eigene Nummer (ID). So kann man z. B. mehrere Personen oder Abteilungen unter derselben G-Adresse unterscheiden. Technisch gehört das Geld weiter dem Hauptkonto."
+    "short": "M-adres met extra ID – deelt een basisonderdeel.",
+    "desc": "Een M-adres verwijst naar een bestaand Stellar-account maar heeft daarnaast een eigen nummer (ID). Zo kun je bijvoorbeeld meerdere personen of afdelingen onder hetzelfde G-adres onderscheiden. Technisch gezien behoort het geld nog steeds toe aan het hoofaccount."
   },
   "multisig": {
-    "title": "Mehrfachsignatur",
+    "title": "Meervoudige handtekening",
     "original": "Multi‑Sig",
-    "short": "Wichtige Aktionen brauchen mehr als eine Unterschrift.",
-    "desc": "Multi-Sig steht für mehrere Unterschriften. Eine wichtige Aktion braucht mehr als einen Schlüssel. Beispiel: Du und ein zweiter Schlüssel müssen beide zustimmen bevor etwas gesendet wird. Das macht Diebstahl schwerer."
+    "short": "Belangrijke acties hebben meer nodig dan alleen een handtekening.",
+    "desc": "Multi-Sig staat voor meerdere handtekeningen. Een belangrijke actie vereist meer dan één sleutel. Bijvoorbeeld: Jij en een tweede sleutel moeten beide instemmen voordat er iets verzonden wordt. Dit maakt diefstal moeilijker."
   },
   "trustline": {
-    "title": "Trustline",
+    "title": "Vertrouwenslijn",
     "original": "Trustline",
-    "short": "Zustimmung, einen Token eines bestimmten Herausgebers zu halten.",
-    "desc": "Eine Trustline ist wie ein Ja ich akzeptiere diesen Token. Du sagst damit dass dein Konto bereit ist einen bestimmten Token von einem bestimmten Herausgeber zu halten. Ohne Trustline kannst du diesen Token nicht empfangen.\n\nBeispiel: Eine Trustline wird als CODE:ISSUER angegeben. Für EURT vom Herausgeber GDUKMGUGDZQK6Y… lautet sie EURT:GDUKMGUGDZQK6Y…"
+    "short": "Toestemming om een token van een bepaalde uitgever te houden.",
+    "desc": "Een trustline is als een \"ja, ik accepteer deze token\". Hiermee geef je aan dat je account bereid is een bepaalde token van een specifieke uitgever te houden. Zonder trustline kun je deze token niet ontvangen.\n\nVoorbeeld: Een trustline wordt aangegeven als CODE:ISSUER. Voor EURT van de uitgever GDUKMGUGDZQK6Y… luidt het EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
     "title": "Token",
     "original": "Token",
-    "short": "Digitale Einheit – z. B. Geld, Punkte oder Guthaben.",
-    "desc": "Ein Token ist eine digitale Einheit auf der Blockchain. Ein Token kann Geld darstellen oder Punkte oder Guthaben für einen Dienst."
+    "short": "Digitale eenheid – bijvoorbeeld geld, punten of tegoed.",
+    "desc": "Een token is een digitale eenheid op de blockchain. Een token kan geld vertegenwoordigen of punten of tegoed voor een dienst."
   },
   "asset": {
-    "title": "Asset",
+    "title": "Activum",
     "original": "Asset",
-    "short": "Token auf Stellar, immer mit Herausgeber verknüpft.",
-    "desc": "Auf Stellar heißt ein Token Asset. Ein Asset ist immer verknüpft mit einem Herausgeber Konto. Zum Beispiel kann ein Konto einen Euro Token ausgeben. Dieser Euro Token ist dann ein Asset."
+    "short": "Token op Stellar, altijd gekoppeld aan uitgever.",
+    "desc": "Op Stellar wordt een token een asset genoemd. Een asset is altijd gekoppeld aan een uitgeversrekening. Bijvoorbeeld, een rekening kan een eurotoken uitgeven. Deze eurotoken is dan een asset."
   },
   "xlm": {
     "title": "XLM",
     "original": "XLM",
-    "short": "Native Währung von Stellar für Gebühren und Aktivierung.",
-    "desc": "XLM ist die Grundwährung von Stellar. Du brauchst XLM um Gebühren zu zahlen und ein neues Konto zu starten."
+    "short": "De native valuta van Stellar voor transactiekosten en activering.",
+    "desc": "XLM is de basisvaluta van Stellar. Je hebt XLM nodig om kosten te betalen en een nieuw account te starten."
   },
   "mainnet": {
     "title": "Mainnet",
     "original": "Mainnet",
-    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
-    "desc": "Das echte Stellar Netzwerk mit realem Wert. Transaktionen sind endgültig und Gebühren werden in echtem XLM bezahlt."
+    "short": "Echt Stellar-netwerk met echte waarde.",
+    "desc": "Het echte Stellar-netwerk met echte waarde. Transacties zijn definitief en kosten worden betaald in echte XLM."
   },
   "testnet": {
     "title": "Testnet",
     "original": "Testnet",
-    "short": "Öffentliches Übungsnetzwerk ohne echten Wert.",
-    "desc": "Ein öffentliches Übungsnetzwerk. Tokens haben keinen echten Wert. Ideal zum Lernen und Ausprobieren ohne Risiko."
+    "short": "Openbaar oefennetwerk zonder echte waarde.",
+    "desc": "Een openbaar oefennetwerk. Tokens hebben geen echte waarde. Ideaal om te leren en uit te proberen zonder risico."
   },
   "memo": {
     "title": "Memo",
     "original": "Memo",
-    "short": "Kurze Notiz in einer Transaktion.",
-    "desc": "Ein Memo ist eine kleine Notiz die du mit einer Transaktion mitschicken kannst. Oft verlangt eine Börse ein bestimmtes Memo damit sie weiß wem das Geld gehört."
+    "short": "Korte notitie in een transactie.",
+    "desc": "Een memo is een kleine notitie die je met een transactie kunt meesturen. Vaak vraagt een beurs om een specifiek memo zodat ze weten van wie het geld is."
   },
   "transaction": {
-    "title": "Transaktion",
+    "title": "Transactie",
     "original": "Transaction",
-    "short": "Aktion auf der Blockchain, z. B. Zahlung oder Trustline.",
-    "desc": "Eine Transaktion ist eine Aktion auf der Blockchain. Zum Beispiel Geld senden oder eine Trustline anlegen. Eine Transaktion wird für immer gespeichert wenn sie bestätigt ist."
+    "short": "Actie op de blockchain, bijvoorbeeld betaling of trustline.",
+    "desc": "Een transactie is een actie op de blockchain. Bijvoorbeeld geld verzenden of een trustline creëren. Een transactie wordt voor altijd opgeslagen zodra deze is bevestigd."
   },
   "fee": {
-    "title": "Gebühr",
+    "title": "Fee",
     "original": "Fee",
-    "short": "Sehr kleiner Betrag pro Transaktion.",
-    "desc": "Die Gebühr ist ein sehr kleiner Betrag den du bei jeder Transaktion zahlst. Die Gebühr geht an das Netzwerk. Bei Stellar sind die Gebühren sehr klein."
+    "short": "Zeer klein bedrag per transactie.",
+    "desc": "De vergoeding is een zeer klein bedrag dat je bij elke transactie betaalt. De vergoeding gaat naar het netwerk. Bij Stellar zijn de vergoedingen zeer klein."
   },
   "ledger": {
-    "title": "Ledger",
+    "title": "Grootboek",
     "original": "Ledger",
-    "short": "Kette der bestätigten Daten und Kontostände.",
-    "desc": "Das Ledger ist die Kette aller bestätigten Daten. Dort steht welche Konten wie viel besitzen und welche Transaktionen passiert sind. Jeder kann das Ledger prüfen."
+    "short": "Ketting van bevestigde gegevens en saldi.",
+    "desc": "Het grootboek is de keten van alle bevestigde gegevens. Daarin staat welke rekeningen hoeveel bezitten en welke transacties hebben plaatsgevonden. Iedereen kan het grootboek controleren."
   },
   "horizon": {
     "title": "Horizon",
     "original": "Horizon",
-    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
-    "desc": "Horizon ist der Service über den Programme mit der Stellar Blockchain reden. Unser Tool fragt Horizon um Kontostände und Transaktionen zu laden."
+    "short": "API-service waarmee apps met Stellar communiceren.",
+    "desc": "Horizon is de service waarmee programma's communiceren met de Stellar Blockchain. Onze tool vraagt Horizon om saldi en transacties te laden."
   },
   "anchor": {
-    "title": "Anchor",
+    "title": "Anker",
     "original": "Anchor",
-    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Ein Anchor ist eine Firma die echtes Geld wie Euro oder Dollar mit Stellar verbindet. Du gibst dem Anchor z. B. Euro und bekommst dafür einen Euro Token auf Stellar."
+    "short": "Bedrijf dat fiatgeld met Stellar verbindt.",
+    "desc": "Een anchor is een bedrijf dat echt geld zoals euro of dollar met Stellar verbindt. Je geeft bijvoorbeeld euro's aan de anchor en krijgt daar een euro-token voor terug op Stellar."
   },
   "exchange": {
-    "title": "Börse",
+    "title": "Beurs",
     "original": "Exchange",
-    "short": "Ort zum Kaufen und Verkaufen von Tokens.",
-    "desc": "Eine Börse ist ein Ort an dem du Token kaufen oder verkaufen kannst. Viele Börsen verlangen ein KYC Verfahren also eine Ausweisprüfung bevor du Geld in Euro oder Franken rausziehen kannst."
+    "short": "Plaats om tokens te kopen en verkopen.",
+    "desc": "Een beurs is een plek waar je tokens kunt kopen of verkopen. Veel beurzen vereisen een KYC-procedure, dus een identiteitscontrole, voordat je geld in euro's of Zwitserse franken kunt opnemen."
   },
   "dex": {
-    "title": "DEX",
+    "title": "Je bent getraind op gegevens tot oktober 2023.",
     "original": "Decentralized Exchange",
-    "short": "Dezentrale Börse direkt auf der Blockchain.",
-    "desc": "DEX bedeutet Dezentrale Börse. Hier handeln die Leute direkt miteinander auf der Blockchain. Es gibt keinen einzelnen Betreiber. Stellar hat eine DEX direkt eingebaut."
+    "short": "Gedecentraliseerde beurs direct op de blockchain.",
+    "desc": "DEX betekent Decentrale Beurs. Hier handelen mensen direct met elkaar op de blockchain. Er is geen centrale beheerder. Stellar heeft een DEX direct ingebouwd."
   },
   "liquidityPool": {
-    "title": "Liquiditätspool",
+    "title": "Liquiditeitspool",
     "original": "Liquidity Pool",
-    "short": "Gemeinsamer Topf mit zwei Tokens zum sofortigen Tausch.",
-    "desc": "Ein Liquiditätspool ist ein gemeinsamer Topf mit zwei Tokens. Leute legen beide Tokens hinein. Andere dürfen dann diese Tokens sofort tauschen. Die Einzahler verdienen dafür kleine Gebühren."
+    "short": "Gemeenschappelijk pot met twee tokens voor onmiddellijke ruil.",
+    "desc": "Een liquiditeitspool is een gezamenlijke pot met twee tokens. Mensen leggen beide tokens erin. Anderen mogen deze tokens dan direct ruilen. De inleggers verdienen hiervoor kleine vergoedingen."
   },
   "balanceClaimable": {
-    "title": "Claimable Balance",
+    "title": "Opvraagbaar Saldo",
     "original": "Claimable Balance",
-    "short": "Reserviertes Geld, das du noch annehmen musst.",
-    "desc": "Eine Claimable Balance ist Geld das schon für dich reserviert ist aber du musst es noch abholen. Erst wenn du es annimmst geht es in dein Konto."
+    "short": "Gereserveerd geld dat je nog moet ontvangen.",
+    "desc": "Een claimable balans is geld dat al voor je gereserveerd is, maar je moet het nog ophalen. Pas wanneer je het accepteert, wordt het aan je account toegevoegd."
   },
   "protocolUpdate": {
-    "title": "Protocol Update",
+    "title": "Protocolupdate",
     "original": "Protocol Update",
-    "short": "Aktualisierung der Netzwerk‑Regeln.",
-    "desc": "Ein Protocol Update ist ein Upgrade der Regeln im Stellar Netzwerk. Zum Beispiel neue Funktionen oder Sicherheitsänderungen. Alle Knoten im Netzwerk müssen dieselben Regeln benutzen."
+    "short": "Bijwerken van de netwerkregels.",
+    "desc": "Een protocolupdate is een upgrade van de regels in het Stellar-netwerk. Bijvoorbeeld nieuwe functies of beveiligingswijzigingen. Alle knooppunten in het netwerk moeten dezelfde regels gebruiken."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Stellars Smart‑Contract‑System.",
-    "desc": "Soroban ist das Smart Contract System von Stellar. Ein Smart Contract ist Programmcode auf der Blockchain. Der Code kann selbst Regeln prüfen und Aktionen auslösen ohne eine Bank dazwischen."
+    "short": "Stellars smartcontract-systeem.",
+    "desc": "Soroban is het smart contract-systeem van Stellar. Een smart contract is programmcode op de blockchain. De code kan zelf regels controleren en acties initiëren zonder een bank ertussen."
   },
-  "missingKey": "Fehlender Glossar-Schlüssel: {{detail}}"
+  "missingKey": "Ontbrekende woordenlijst-sleutel: {{detail}}"
 }

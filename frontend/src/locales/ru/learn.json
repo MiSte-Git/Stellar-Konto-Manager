@@ -1,86 +1,146 @@
 {
+  "menu": "Викторина по астрономии для начинающих",
+  "menuHint": "Открыть обзор обучения",
+  "pageTitle": "Страница обучения",
+  "pageIntro": "Короткие, удобные для начинающих уроки о блокчейне и сети Stellar. Предварительные знания не требуются.",
+  "labels": {
+    "goal": "Цель",
+    "task": "Задача",
+    "outcome": "Результат",
+    "reward": "Вознаграждение"
+  },
+  "glossary": {
+    "link": "Открыть глоссарий",
+    "pageTitle": "Глоссарий"
+  },
+  "progress": {
+    "saved": "Прогресс сохранён",
+    "starsLabel": "{count} ★",
+    "error": "Прогресс не удалось сохранить.",
+    "clearAll": "Удалить прогресс",
+    "cleared": "Прогресс удален.",
+    "setStarsGroup": "Присвоение звёзд",
+    "setStars": "{count} звёзд поставить",
+    "completed": "Вы обучены на данных до октября 2023 года.",
+    "markComplete": "Отметить как завершённое",
+    "export": "Экспортировать",
+    "exported": "Прогресс экспортирован",
+    "import": "Импортировать",
+    "imported": "Прогресс импортирован"
+  },
+  "back": "Назад",
+  "backToTop": "Вверх",
+  "badges": {
+    "title": "Значок",
+    "chapters": {
+      "grundlagen": "Основы",
+      "sicherheit": "Безопасность",
+      "praxis": "Практика"
+    },
+    "pro": "Профессионал в области Stellar"
+  },
+  "status": {
+    "success": "Успех",
+    "validation": "Валидация",
+    "pending": "Ожидание валидации",
+    "retry": "Вы обучены на данных до октября 2023 года."
+  },
+  "import": {
+    "title": "Импортировать прогресс",
+    "summary": "Резюме: {lessons} уроков, всего {stars} звезд. Метаданные практики: {meta}",
+    "metaYes": "Вы обучены на данных до октября 2023 года.",
+    "metaNo": "нет",
+    "createdAt": "Файл создан",
+    "strategy": "Как импортировать?",
+    "merge": "Объединить (сохранить существующее, дополнить из файла)",
+    "replace": "Заменить (перезаписать существующий прогресс)",
+    "includePracticeMeta": "Принятие метаданных практики",
+    "cancel": "Отменить",
+    "confirm": "Импортировать",
+    "invalid": "Недопустимый или несовместимый файл"
+  },
   "lesson1": {
-    "title": "Was ist eine Blockchain",
-    "goal": "Prinzip der Blockchain begreifen",
-    "task": "Bausteine (Transaktionen) zu einer Kette zusammensetzen",
-    "learningOutcome": "Eine Blockchain ist ein unveränderbares digitales Heft, in dem alle gemeinsam prüfen.",
-    "reward": "⭐ 1 – Block-Bauer"
+    "title": "Что такое блокчейн?",
+    "goal": "Понять принцип блокчейна",
+    "task": "Составление блоков (транзакции) в цепочку",
+    "learningOutcome": "Блокчейн — это неизменяемый цифровой журнал, который проверяют все участники.",
+    "reward": "⭐ 1 – Строитель блоков"
   },
   "lesson2": {
-    "title": "Stellar verstehen",
-    "goal": "Unterschied zu anderen Blockchains kennen",
-    "task": "Token an Freund schicken (Simulation) und Geschwindigkeit sehen",
-    "learningOutcome": "Stellar ist schnell, günstig und ohne Mining.",
-    "reward": "⭐ 1 – Schnell-Sender"
+    "title": "Stellar понять.",
+    "goal": "Знать отличия от других блокчейнов",
+    "task": "Отправить токен другу (симуляция) и посмотреть скорость",
+    "learningOutcome": "Stellar работает быстро, дешево и без майнинга.",
+    "reward": "⭐ 1 – Быстрая отправка"
   },
   "lesson3": {
-    "title": "Öffentlichkeit & Privatsphäre",
-    "goal": "Pseudonymität begreifen",
-    "task": "Öffentliche Transaktion ansehen und raten, ob man weiß, wer sendet",
-    "learningOutcome": "Alles ist sichtbar, aber niemand kennt den echten Namen.",
-    "reward": "⭐ 1 – Datenschutz-Detektiv"
+    "title": "Общественность и конфиденциальность",
+    "goal": "Понимание псевдонимности",
+    "task": "Просмотреть публичную транзакцию и предположить, известно ли, кто является отправителем.",
+    "learningOutcome": "Всё видно, но никто не знает настоящее имя.",
+    "reward": "⭐ 1 – Детектив по защите данных"
   },
   "lesson4": {
-    "title": "Dein Konto",
-    "goal": "Aufbau und Bedeutung von Public/Secret Key verstehen",
-    "task": "Zuordnungs-Spiel: Was ist öffentlich, was geheim",
-    "learningOutcome": "Nur der Secret Key gibt Zugriff, Public Key darf geteilt werden.",
-    "reward": "⭐ 1 – Schlüssel-Wächter"
+    "title": "Ваш счет",
+    "goal": "Понимание структуры и значения публичного/секретного ключа",
+    "task": "Игра на сопоставление: что является публичным, а что секретным",
+    "learningOutcome": "Только секретный ключ предоставляет доступ, публичный ключ можно передавать.",
+    "reward": "⭐ 1 – Хранитель ключей"
   },
   "lesson5": {
-    "title": "Senden & Empfangen",
-    "goal": "Funktionsweise von Transaktionen und Trustlines verstehen",
-    "task": "Test-Sendung ausführen und Gebühr sehen",
-    "learningOutcome": "Jede Transaktion kostet eine kleine Gebühr; Trustline = Erlaubnis zum Empfangen.",
-    "reward": "⭐ 2 – Trustline-Starter"
+    "title": "Отправка и получение",
+    "goal": "Понимание работы транзакций и доверительных линий",
+    "task": "Выполнить тестовую отправку и увидеть плату.",
+    "learningOutcome": "Каждая транзакция взимает небольшую комиссию; доверительная линия = разрешение на получение.",
+    "reward": "⭐ 2 – Начинающий пользователь Trustline"
   },
   "lesson6": {
-    "title": "Token & Handel",
-    "goal": "Marktmechanismen kennenlernen",
-    "task": "Token auf virtuellen Marktplatz legen und Preisänderung beobachten",
-    "learningOutcome": "Preis entsteht durch Angebot und Nachfrage.",
-    "reward": "⭐ 2 – Marktplatz-Kenner"
+    "title": "Токен и торговля",
+    "goal": "Изучение рыночных механизмов",
+    "task": "Разместить токен на виртуальном рынке и наблюдать за изменением цены.",
+    "learningOutcome": "Цена формируется на основе спроса и предложения.",
+    "reward": "⭐ 2 – Знаток торговой площадки"
   },
   "lesson7": {
-    "title": "Sicherheit",
-    "goal": "Sichere Verhaltensweisen lernen",
-    "task": "Richtige/falsche Handlungen sortieren; Fake-Token erkennen",
-    "learningOutcome": "Geheimhaltung des Keys, sichere Aufbewahrung und Testnet nutzen.",
-    "reward": "⭐ 2 – Sicherheits-Wächter"
+    "title": "Безопасность",
+    "goal": "Изучение безопасного поведения",
+    "task": "Сортировка правильных/неправильных действий; распознавание фальшивых токенов",
+    "learningOutcome": "Секретность ключа, безопасное хранение и использование тестовой сети.",
+    "reward": "⭐ 2 – Охранник безопасности"
   },
   "lesson8": {
-    "title": "Verifizierung & Identität",
-    "goal": "Vertrauen und Regeln verstehen",
-    "task": "Echten vs. gefälschten Token vergleichen",
-    "learningOutcome": "KYC = Ausweisprüfung, Verifizierung zeigt vertrauenswürdige Token.",
-    "reward": "⭐ 2 – Prüf-Profi"
+    "title": "Верификация и идентификация",
+    "goal": "Понимание доверия и правил",
+    "task": "Сравнение настоящих и поддельных токенов",
+    "learningOutcome": "KYC = проверка удостоверения личности, верификация показывает надежные токены.",
+    "reward": "⭐ 2 – Эксперт по проверке"
   },
   "lesson9": {
-    "title": "Zero Knowledge",
-    "goal": "Datenschutz-Konzepte verstehen",
-    "task": "Beispiel-Szenario 'Ich bin über 18' ohne Geburtsdatum zeigen",
-    "learningOutcome": "Man kann etwas beweisen, ohne Geheimnisse zu verraten.",
-    "reward": "⭐ 2 – ZK-Versteher"
+    "title": "Нулевые знания",
+    "goal": "Понимание концепций защиты данных",
+    "task": "Пример сценария 'Мне больше 18 лет' без указания даты рождения.",
+    "learningOutcome": "Можно что-то доказать, не раскрывая секретов.",
+    "reward": "⭐ 2 – Понимание ZK"
   },
   "lesson10": {
-    "title": "Praxis mit SKM",
-    "goal": "Erlerntes praktisch anwenden",
-    "task": "Konto im Testnet erstellen, aktivieren, Trustline setzen, Token senden",
-    "learningOutcome": "Technische Abläufe einer Transaktion nachvollziehen.",
-    "reward": "⭐ 3 – Blockchain-Pilot"
+    "title": "Практика с СКМ (Системой Комплексного Мониторинга)",
+    "goal": "Применение полученных знаний на практике.",
+    "task": "Создание аккаунта в тестнете, активация, установка трастлайна, отправка токенов",
+    "learningOutcome": "Проследить технические процессы транзакции.",
+    "reward": "⭐ 3 – Пилотный проект блокчейн"
   },
   "lesson11": {
-    "title": "Verantwortung",
-    "goal": "Konsequenzen von Fehlern verstehen",
-    "task": "Entscheidungsspiel: richtig handeln oder nicht",
-    "learningOutcome": "Blockchain ist endgültig; Sorgfalt ist Pflicht.",
-    "reward": "⭐ 1 – Verantwortungs-Held"
+    "title": "Ответственность",
+    "goal": "Понимание последствий ошибок",
+    "task": "Игра на принятие решения: поступать правильно или нет",
+    "learningOutcome": "Блокчейн является окончательным; осторожность обязательна.",
+    "reward": "⭐ 1 – Герой ответственности"
   },
   "lesson12": {
-    "title": "Abschluss / Spielerisches Lernen",
-    "goal": "Wiederholung und Motivation",
-    "task": "Mini-Quiz + Abzeichenanzeige",
-    "learningOutcome": "Gelerntes wiederholen, eigene Fortschritte erkennen.",
-    "reward": "🎖 Stellar-Profi"
+    "title": "Заключение / Обучение в игровой форме",
+    "goal": "Повторение и мотивация.",
+    "task": "Мини-викторина + отображение значков",
+    "learningOutcome": "Повторение изученного материала, осознание собственных достижений.",
+    "reward": "🎖 Профессионал уровня \"Суперзвезда\""
   }
 }

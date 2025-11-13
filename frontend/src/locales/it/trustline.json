@@ -1,0 +1,27 @@
+{
+  "all": "Elenca tutte le linee di fiducia",
+  "compare": "Confronta Trustlines",
+  "delete": "Eliminare le linee di credito",
+  "onlyZeroBalanceInfo": "È possibile eliminare solo le linee di credito con saldo 0.",
+  "nonZeroBalance": "Questa trustline ha un saldo diverso da 0 e non può essere eliminata.",
+  "destination": {
+    "label": "Indirizzo di destinazione",
+    "placeholder": "Chiave pubblica di destinazione o indirizzo di federazione",
+    "error": "Indirizzo di destinazione non valido."
+  },
+  "deleted": {
+    "resultTitle": "Risultato della cancellazione",
+    "resultText": "{count} Trustlines sono state elaborate in modalità {mode}.",
+    "mode": {
+      "simulation": "Simulazione",
+      "real": "Operatività reale",
+      "realWarning": "Attenzione! Questo eliminerà definitivamente le Trustlines sulla blockchain."
+    },
+    "notFound": "Nessuna trustline corrispondente trovata da eliminare.",
+    "simulated": "Simulazione: verrebbero eliminate {count} linee di fiducia.",
+    "success": "Eliminazione riuscita: {count} trustlines cancellate."
+  },
+  "noDuplicates": "Nessuna trustline duplicata trovata.",
+  "showSecret": "Visualizza chiave segreta",
+  "notFound": "Nessuna linea di fiducia trovata."
+}

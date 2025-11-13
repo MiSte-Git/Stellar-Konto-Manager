@@ -1,0 +1,27 @@
+{
+  "all": "Alle trustlines opsommen.",
+  "compare": "Trustlines vergelijken",
+  "delete": "Trustlines verwijderen",
+  "onlyZeroBalanceInfo": "Alleen trustlines met een saldo van 0 kunnen worden verwijderd.",
+  "nonZeroBalance": "Deze trustline heeft een saldo dat niet nul is en kan niet worden verwijderd.",
+  "destination": {
+    "label": "Doeladres",
+    "placeholder": "Doel-Public Key of federatieadres",
+    "error": "Ongeldig doeladres"
+  },
+  "deleted": {
+    "resultTitle": "Verwijderingsresultaat",
+    "resultText": "{count} trustlines zijn verwerkt in de modus {mode}.",
+    "mode": {
+      "simulation": "Simulatie",
+      "real": "Live-operatie",
+      "realWarning": "Let op! Dit verwijdert Trustlines permanent van de blockchain."
+    },
+    "notFound": "Geen bijpassende trustlines gevonden om te verwijderen.",
+    "simulated": "Simulatie: {count} trustlijnen zouden worden verwijderd.",
+    "success": "Succesvol: {count} trustlines verwijderd."
+  },
+  "noDuplicates": "Geen dubbele trustlines gevonden.",
+  "showSecret": "Geheime Sleutel weergeven",
+  "notFound": "Geen trustline(s) gevonden."
+}

@@ -22,5 +22,6 @@
     "success": "Erfolgreich: {count} Trustlines gelöscht."
   },
   "noDuplicates": "Keine doppelten Trustlines gefunden.",
-  "showSecret": "Secret Key anzeigen"
+  "showSecret": "Secret Key anzeigen",
+  "notFound": "Keine Trustline(s) gefunden."
 }

@@ -18,7 +18,7 @@ function ResultDisplay({
       <div className="mt-4">
         {/* Titelzeile: Bei Textmeldungen zählen wir 0 gefundene Trustlines */}
         <h2 className="text-xl font-bold">
-          {t('option.results')} (0)
+          {t('common:option.results', 'Results:')} (0)
         </h2>
         <ul className="list-disc pl-5">
           {results.map((result, index) => (
@@ -41,18 +41,18 @@ function ResultDisplay({
 
   return (
     <div className="mt-4">
-      <h2 className="text-xl font-bold">{t('option.results')}</h2>
+      <h2 className="text-xl font-bold">{t('common:option.results', 'Results:')}</h2>
       <table className="table-auto w-full mt-4 border">
         <thead>
           <tr>
             <th className="border px-2 py-1 cursor-pointer" onClick={() => onSort('assetCode')}>
-              {t('asset.code')}{sortIndicator('assetCode')}
+              {t('common:asset.code', 'Asset code')}{sortIndicator('assetCode')}
             </th>
             <th className="border px-2 py-1 cursor-pointer" onClick={() => onSort('assetIssuer')}>
-              {t('asset.issuer')}{sortIndicator('assetIssuer')}
+              {t('common:asset.issuer', 'Issuer')}{sortIndicator('assetIssuer')}
             </th>
             <th className="border px-2 py-1 cursor-pointer" onClick={() => onSort('creationDate')}>
-              {t('asset.creationDate')}{sortIndicator('creationDate')}
+              {t('common:asset.creationDate', 'Created at')}{sortIndicator('creationDate')}
             </th>
           </tr>
         </thead>
@@ -61,7 +61,7 @@ function ResultDisplay({
             <tr key={index}>
               <td className="border px-2 py-1">{item.assetCode}</td>
               <td className="border px-2 py-1">{item.assetIssuer}</td>
-              <td className="border px-2 py-1">{item.createdAt || t('error.asset.creationDateUnknown')}</td>
+              <td className="border px-2 py-1">{item.createdAt || t('errors:asset.creationDateUnknown', 'Unknown creation date')}</td>
             </tr>
           ))}
         </tbody>

@@ -1,0 +1,76 @@
+{
+  "learn.offline": "Desconectado: Los exámenes prácticos se verificarán una vez restablecida la conexión.",
+  "learn.validationFailed": "Validación fallida",
+  "learn.missingParams": "Faltan parámetros requeridos",
+  "submitTransaction.failed": "Transacción fallida",
+  "learn.error.unknown_action": "Acción de práctica desconocida",
+  "learn.error.rate_limited": "Por favor, espera y vuelve a intentarlo.",
+  "learn.error.horizon_timeout": "Tiempo de espera de horizonte superado. Por favor, inténtalo de nuevo.",
+  "learn.error.network": "Error de red. Por favor, inténtalo de nuevo.",
+  "asset": {
+    "creationDateUnknown": "Fecha de creación desconocida"
+  },
+  "cache": {
+    "backfillAborted": "Carga inicial de pagos interrumpida.",
+    "coverage": {
+      "newestFailed": "No se pudo determinar el último pago.",
+      "oldestFailed": "Fallo al determinar la fecha más antigua."
+    },
+    "indexIterFailed": "Fallo en la iteración de índices en la caché",
+    "memoNormBackfillFailed": "Error al cargar inicialmente los pagos para memorandos normalizados",
+    "openFailed": "No se pudo abrir la caché local.",
+    "readFailed": "Error al leer desde la caché.",
+    "rehydrateFailed": "Error al cargar los memos faltantes.",
+    "rehydrateWriteFailed": "Error al escribir los memos en el caché.",
+    "writeFailed": "Error al escribir en la caché."
+  },
+  "connection": {
+    "backend": "No es posible conectar con el backend. Asegúrese de"
+  },
+  "fetchInvestedTokens": {
+    "failed": "Error al cargar los datos de inversión: {{detalle}}"
+  },
+  "horizon": {
+    "paymentsFetch": "Error al cargar los pagos de Horizon"
+  },
+  "loadTrustlines": "No se pudieron cargar las líneas de confianza. Por favor, intenta de nuevo.",
+  "loadTrustlinesFailed": "Error al cargar las líneas de confianza.",
+  "loadTrustlinesNotFound": "Cuenta no encontrada en la red seleccionada.",
+  "accountNotFoundInNetwork": "¡No se encontró en '{{net}}'!",
+  "op_invalid_limit": "La línea de confianza no se puede borrar. Es posible que todavía tenga saldo o compromisos pendientes.",
+  "query": {
+    "invalidMemo": "Memorándum no válido",
+    "invalidRange": "El rango de tiempo no es válido (De > Hasta).",
+    "invalidTime": "Fecha no válida."
+  },
+  "submitTransaction": {
+    "failed": {
+      "tx_bad_auth": "Transacción rechazada: Firma no válida",
+      "tx_failed": "Transacción fallida",
+      "unknown": "Error desconocido en la transacción"
+    }
+  },
+  "sync": {
+    "backfillFailed": "Carga inicial de los pagos fallida.",
+    "incrementalFailed": "Actualización de pagos fallida."
+  },
+  "transaction": {
+    "failed": "Transacción fallida",
+    "title": "Error en la transacción"
+  },
+  "trustline": {
+    "submitFailed": "Error al eliminar la línea de confianza.",
+    "unknown": "Error desconocido al eliminar la línea de confianza."
+  },
+  "xlmByMemo": {
+    "aborted": "Proceso cancelado por el usuario.",
+    "accountInvalid": "Cuenta no válida",
+    "dateInvalid": "Fecha no válida",
+    "dateRange": "Rango de fechas no válido",
+    "failedUnknown": "Error desconocido",
+    "memoInvalid": "Memo no válido",
+    "paymentsFetch": "Error al cargar los pagos",
+    "serverInvalid": "Servidor no válido"
+  },
+  "rateLimited": "Límite de tasa de Horizon excedido. Por favor, espere unos segundos e intente nuevamente."
+}
