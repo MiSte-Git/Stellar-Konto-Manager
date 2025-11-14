@@ -4,8 +4,9 @@ from typing import Dict, Set, List, Tuple
 
 # ==== KONFIG ====
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-LOCALES_DIR = os.path.join(PROJECT_ROOT, "frontend")
-DE_FILE = os.path.join(LOCALES_DIR, "src/locales/de.json")
+LOCALES_DIR = os.path.join(PROJECT_ROOT, "frontend", "src", "locales")
+DE_FILE = os.path.join(LOCALES_DIR, "de.json")
+DE_DIR = os.path.join(LOCALES_DIR, "de")
 
 SRC_ROOT = os.path.join(PROJECT_ROOT, "frontend")
 
@@ -63,11 +64,37 @@ def rel_frontend(path: str) -> str:
     
 def load_json(path: str) -> Dict:
     if not os.path.exists(path):
-        print(f"❌ de.json nicht gefunden: {path}")
-        sys.exit(1)
+        print(f"⚠️ JSON nicht gefunden: {path}")
+        return {}
     with open(path, encoding="utf-8") as f:
         s = f.read().strip()
         return json.loads(s) if s else {}
+
+def deep_merge_dict(dst: Dict, src: Dict) -> Dict:
+    """Rekursiv src in dst mergen (Dicts werden tief zusammengeführt)."""
+    for k, v in src.items():
+        if isinstance(v, dict) and isinstance(dst.get(k), dict):
+            deep_merge_dict(dst[k], v)
+        else:
+            dst[k] = v
+    return dst
+
+def load_de_merged() -> Dict:
+    """
+    Lädt de.json und merged alle JSON-Dateien aus de/*.json hinein.
+    So werden sowohl der monolithische Stand als auch Namespaces berücksichtigt.
+    """
+    base = load_json(DE_FILE) or {}
+    if os.path.isdir(DE_DIR):
+        for fn in os.listdir(DE_DIR):
+            if not fn.endswith('.json'):
+                continue
+            ns = os.path.splitext(fn)[0]  # dateiname ohne .json als Namespace
+            part = load_json(os.path.join(DE_DIR, fn))
+            if isinstance(part, dict):
+                # unter Namespace einsortieren, damit t('ns.key') erkannt wird
+                deep_merge_dict(base, { ns: part })
+    return base
 
 def flatten_dict(d: Dict, prefix: str = "") -> Dict[str, str]:
     out = {}
@@ -197,7 +224,7 @@ def normalize_key(k: str) -> str:
 
 # ==== Analyse ====
 def main():
-    de = load_json(DE_FILE)
+    de = load_de_merged()
     de_flat = flatten_i18n(de)
     de_keys = set(de_flat.keys())
 
