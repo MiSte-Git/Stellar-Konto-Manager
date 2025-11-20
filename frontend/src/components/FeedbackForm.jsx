@@ -13,7 +13,7 @@ export default function FeedbackForm(props) {
 
   function buildMailto() {
     const to = import.meta.env.VITE_SUPPORT_EMAIL || 'support@example.org';
-    const subjectText = t('bugReport.title');
+    const subjectText = t('common:bugReport.title');
     const lines = [
       `URL: ${window.location.href}`,
       `Zeit: ${new Date().toISOString()}`,
@@ -76,7 +76,7 @@ export default function FeedbackForm(props) {
       });
 
       void sendSilentLog();
-      props.onInfo?.(t('bugReport.toast.sent'));
+      props.onInfo?.(t('common:bugReport.toast.sent'));
     } catch (err) {
       throw new Error('bugReport.mailto.failed:' + (err?.message || 'unknown'));
     }
@@ -85,12 +85,12 @@ export default function FeedbackForm(props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <label className="block text-sm font-medium">
-        {t('bugReport.descLabel')}
+        {t('common:bugReport.descLabel')}
       </label>
       <textarea
         value={desc}
         onChange={(e) => setDesc(e.target.value)}
-        placeholder={t('bugReport.descPlaceholder')}
+        placeholder={t('common:bugReport.descPlaceholder')}
         className="w-full rounded border p-2"
         rows={4}
       />
@@ -98,17 +98,17 @@ export default function FeedbackForm(props) {
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          title={t('bugReport.send')}
+          title={t('common:bugReport.send')}
         >
-          {t('bugReport.send')}
+          {t('common:bugReport.send')}
         </button>
         <button
           type="button"
           onClick={() => props.onCancel?.()}
           className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
-          title={t('bugReport.cancel')}
+          title={t('common:bugReport.cancel')}
         >
-          {t('bugReport.cancel')}
+          {t('common:bugReport.cancel')}
         </button>
       </div>
     </form>

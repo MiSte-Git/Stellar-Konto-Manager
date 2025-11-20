@@ -18,6 +18,10 @@ export function buildPath(subpath = '') {
   return base + clean;
 }
 
+function normalizePath(value) {
+  return String(value || '').replace(/\/+$/, '');
+}
+
 /**
  * isBugtrackerPath: Prüft, ob ein Pfad zur Bugtracker-Ansicht gehört.
  * Unterstützt sowohl dev (/bugtracker) als auch prod (/BASE_URL/bugtracker).
@@ -27,8 +31,7 @@ export function isBugtrackerPath(pathname) {
     ? pathname
     : (typeof window !== 'undefined' ? window.location.pathname : '');
   const target = buildPath('bugtracker');
-  const normalize = (value) => String(value || '').replace(/\/+$/, '');
-  return normalize(current) === normalize(target) || normalize(current).endsWith('/bugtracker');
+  return normalizePath(current) === normalizePath(target) || normalizePath(current).endsWith('/bugtracker');
 }
 
 /**
@@ -40,8 +43,7 @@ export function isGlossaryPath(pathname) {
     ? pathname
     : (typeof window !== 'undefined' ? window.location.pathname : '');
   const target = buildPath('glossar');
-  const normalize = (value) => String(value || '').replace(/\/+$/, '');
-  return normalize(current) === normalize(target) || normalize(current).endsWith('/glossar');
+  return normalizePath(current) === normalizePath(target) || normalizePath(current).endsWith('/glossar');
 }
 
 /**
@@ -53,6 +55,97 @@ export function isLearnPath(pathname) {
     ? pathname
     : (typeof window !== 'undefined' ? window.location.pathname : '');
   const target = buildPath('learn');
-  const normalize = (value) => String(value || '').replace(/\/+$/, '');
-  return normalize(current) === normalize(target) || normalize(current).endsWith('/learn');
+  return normalizePath(current) === normalizePath(target) || normalizePath(current).endsWith('/learn');
+}
+
+/**
+ * isLessonQuizPath: Pfad zu einem Quiz einer Lektion (/learn/lesson/:id/quiz)
+ */
+export function isLessonQuizPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const base = buildPath('learn/lesson/');
+  const p = normalizePath(current);
+  return p.startsWith(normalizePath(base)) && p.endsWith('/quiz');
+}
+
+/**
+ * isQuizRunPath: Pfad zur neuen Runner-Route (/quiz/:id/run)
+ */
+export function isQuizRunPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const p = normalizePath(current);
+  const base = normalizePath(buildPath('quiz/'));
+  if (!p.startsWith(base)) return false;
+  const rest = p.slice(base.length); // e.g. "1/run"
+  return /^\d+\/run$/.test(rest);
+}
+
+/**
+ * isQuizLandingPath: Pfad zur Quiz-Landing-Route (/quiz/:id)
+ * (ohne /run, /settings oder /achievements)
+ */
+export function isQuizLandingPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const p = normalizePath(current);
+  const base = normalizePath(buildPath('quiz/'));
+  if (!p.startsWith(base)) return false;
+  const rest = p.slice(base.length); // e.g. "1"
+  return /^\d+$/.test(rest);
+}
+
+/**
+ * isQuizSettingsPath: Pfad zur Quiz-Einstellungen-Route (/quiz/:id/settings)
+ */
+export function isQuizSettingsPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const p = normalizePath(current);
+  const base = normalizePath(buildPath('quiz/'));
+  if (!p.startsWith(base)) return false;
+  const rest = p.slice(base.length); // e.g. "1/settings"
+  return /^\d+\/settings$/.test(rest);
+}
+
+/**
+ * isQuizAchievementsPath: Pfad zur Quiz-Erfolge-Route (/quiz/:id/achievements)
+ */
+export function isQuizAchievementsPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const p = normalizePath(current);
+  const base = normalizePath(buildPath('quiz/'));
+  if (!p.startsWith(base)) return false;
+  const rest = p.slice(base.length); // e.g. "1/achievements"
+  return /^\d+\/achievements$/.test(rest);
+}
+
+/**
+ * isLessonPracticePath: Pfad zur Praxis einer Lektion (/learn/lesson/:id/practice)
+ */
+export function isLessonPracticePath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const base = buildPath('learn/lesson/');
+  const p = normalizePath(current);
+  return p.startsWith(normalizePath(base)) && p.endsWith('/practice');
+}
+
+/**
+ * isSettingsBackupPath: Pfad zur Sicherung in den App-Einstellungen (/settings/backup)
+ */
+export function isSettingsBackupPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const target = buildPath('settings/backup');
+  return normalizePath(current) === normalizePath(target) || normalizePath(current).endsWith('/settings/backup');
 }

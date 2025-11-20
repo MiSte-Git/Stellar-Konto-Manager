@@ -201,12 +201,17 @@ function computeDerivedCompletion(state, id) {
   const hasAllRequired = required.length === 0 ? true : required.every((c) => !!checks[c]);
   const hasAnyPractice = checksTrueCount > 0;
 
+  // Dynamische Bestehensgrenze (nur für Theorie-Teile)
+  const passRaw = state?.thresholds?.passPercent;
+  const passThreshold = typeof passRaw === 'number' ? (passRaw <= 1 ? Math.round(passRaw * 100) : passRaw) : 80;
+
   let completed = false;
   if (type === 'theory') {
-    completed = score >= 80;
+    completed = score >= passThreshold;
   } else if (type === 'practice') {
     completed = hasAllRequired;
   } else { // mixed
+    // Mixed behält die konservative Regel (Score >= 60 und mind. ein Praxis-Check)
     completed = (score >= 60) && hasAnyPractice;
   }
 
@@ -220,20 +225,27 @@ function computeStars(state, id) {
   const { completed, hasAllRequired } = computeDerivedCompletion(state, id);
   if (!completed) return 0;
 
-  // 3 Sterne: Abschluss ohne Fehler, alle Teilziele, Quiz >= 90 % (wenn vorhanden)
   const hasQuiz = (type === 'theory' || type === 'mixed');
-  const quizOk90 = !hasQuiz || score >= 90;
-  if (quizOk90 && errors === 0 && (type !== 'practice' || hasAllRequired)) {
+
+  // Dynamische 3★-Grenze (Standard 90%) und Bestehensgrenze
+  const passRaw = state?.thresholds?.passPercent;
+  const threeRaw = state?.thresholds?.threeStarPercent;
+  const passThreshold = typeof passRaw === 'number' ? (passRaw <= 1 ? Math.round(passRaw * 100) : passRaw) : 80;
+  const threeThreshold = typeof threeRaw === 'number' ? (threeRaw <= 1 ? Math.round(threeRaw * 100) : threeRaw) : 90;
+
+  // 3 Sterne: Abschluss ohne Fehler, alle Teilziele, Quiz >= threeThreshold (falls Quiz existiert)
+  const quizOk = !hasQuiz || score >= threeThreshold;
+  if (quizOk && errors === 0 && (type !== 'practice' || hasAllRequired)) {
     return 3;
   }
 
-  // 2 Sterne: Abschluss mit einem Fehler-Retry ODER Quiz 80–89 %
-  const quiz80to89 = hasQuiz && score >= 80 && score < 90;
-  if (errors === 1 || quiz80to89) {
+  // 2 Sterne: Abschluss mit einem Fehler-Retry ODER Score zwischen Pass- und 3★-Grenze
+  const inBand = hasQuiz && score >= passThreshold && score < threeThreshold;
+  if (errors === 1 || inBand) {
     return 2;
   }
 
-  // 1 Stern: Mindestabschluss (unter 80 % oder ≥ 2 Retries)
+  // 1 Stern: Mindestabschluss sonst
   return 1;
 }
 
@@ -326,16 +338,40 @@ export function toggleManualCompleted(id) {
   return { v1: next, flat: getFlattenedProgress() };
 }
 
-export function recordQuizResult(id, { score, answersHash, aborted } = {}) {
+import { getAchievements, setAchievements } from './quiz/storage.js';
+
+function grantLocalLessonAchievement(lessonNumericId, achId) {
+  try {
+    if (!lessonNumericId || !achId) return;
+    const list = getAchievements(lessonNumericId) || [];
+    const exists = Array.isArray(list) && list.some((a) => a && (a.id === achId));
+    if (exists) return;
+    const item = { id: achId, date: new Date().toISOString() };
+    const next = Array.isArray(list) ? [...list, item] : [item];
+    setAchievements(lessonNumericId, next);
+  } catch { /* noop */ }
+}
+
+export function recordQuizResult(id, { score, answersHash, aborted, passPercent, threeStarPercent } = {}) {
   const prev = readProgressV1().lessons[id] || {};
   const prevHash = prev.lastHashes?.quiz || '';
   const idempotent = answersHash && prevHash && answersHash === prevHash && prev.score === score;
   const incAttempt = 1;
   const incError = aborted ? 1 : 0;
+
+  // Schwellwerte optional übernehmen (auf 0-100 normalisieren)
+  const passP = typeof passPercent === 'number' ? (passPercent <= 1 ? passPercent * 100 : passPercent) : undefined;
+  const threeP = typeof threeStarPercent === 'number' ? (threeStarPercent <= 1 ? threeStarPercent * 100 : threeStarPercent) : undefined;
+  const thresholds = {
+    passPercent: typeof passP === 'number' ? passP : (prev.thresholds?.passPercent),
+    threeStarPercent: typeof threeP === 'number' ? threeP : (prev.thresholds?.threeStarPercent),
+  };
+
   const patch = {
     attempts: Math.max(0, Number(prev.attempts || 0)) + incAttempt,
     errors: Math.max(0, Number(prev.errors || 0)) + incError,
     score: Math.max(0, Math.min(100, Number(score || 0))),
+    thresholds,
     lastHashes: { ...(prev.lastHashes || {}), quiz: answersHash || prevHash },
   };
   if (idempotent) {
@@ -344,6 +380,23 @@ export function recordQuizResult(id, { score, answersHash, aborted } = {}) {
     patch.errors = prev.errors || 0;
   }
   const next = writeLesson(id, patch);
+
+  // Achievements ableiten und lokal je Lektion speichern (nicht bei idempotenten Läufen)
+  try {
+    if (!idempotent) {
+      const lessonNum = String(id || '').replace(/[^0-9]/g, '') || '1';
+      const st = next?.lessons?.[id] || {};
+      const stars = Math.max(0, Math.min(3, Number(st.stars || 0)));
+      const passT = typeof thresholds.passPercent === 'number' ? thresholds.passPercent : 80;
+      const didPass = (Number(patch.score) >= passT);
+      const isFirstRun = (Number(prev.attempts || 0) === 0);
+      if (isFirstRun) grantLocalLessonAchievement(lessonNum, 'first_run');
+      if (didPass) grantLocalLessonAchievement(lessonNum, 'passed');
+      if (stars >= 3) grantLocalLessonAchievement(lessonNum, 'three_stars');
+      if (Number(patch.score) === 100) grantLocalLessonAchievement(lessonNum, 'perfect_score');
+    }
+  } catch { /* noop */ }
+
   return { v1: next, flat: getFlattenedProgress(), idempotent };
 }
 
@@ -354,7 +407,7 @@ export async function recordPracticeCheck(id, checkId, params = {}, t /* i18n */
     const next = writeLesson(id, { pending: { [checkId]: true } });
     return {
       status: 'pending',
-      message: (t && typeof t === 'function') ? t('learn:offline.waitingForValidation', 'Waiting for connection to validate…') : 'Waiting for connection to validate…',
+      message: (t && typeof t === 'function') ? t('learn:status.pending', 'Waiting for validation') : 'Waiting for validation',
       v1: next,
       flat: getFlattenedProgress(),
     };

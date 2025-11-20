@@ -253,7 +253,7 @@ function GlossaryPage() {
               onClick={goBack}
               className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded"
             >
-              ← {t('navigation.back', 'Zurück')}
+              ← {t('navigation:back', 'Zurück')}
             </button>
           </div>
           <h1 className="text-2xl font-bold text-center flex-1">
@@ -316,10 +316,11 @@ function GlossaryPage() {
             } catch { /* noop */ }
           }}
           className="fixed right-4 bottom-4 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
-          aria-label={t('navigation.backToTop', 'Back to top')}
-          title={t('navigation.backToTop', 'Back to top')}
-        >
-          ↑ {t('navigation.backToTop', 'Back to top')}
+                aria-label={t('navigation:backToTop', 'Back to top')}
+      title={t('navigation:backToTop', 'Back to top')}
+    >
+      ↑ {t('navigation:backToTop', 'Back to top')}
+
         </button>
       )}
     </div>
@@ -327,3 +328,4 @@ function GlossaryPage() {
 }
 
 export default GlossaryPage;
+

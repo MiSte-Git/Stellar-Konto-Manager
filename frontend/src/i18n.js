@@ -1,15 +1,8 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import de from './locales/de.json';
-import en from './locales/en.json';
-import es from './locales/es.json';
-import fr from './locales/fr.json';
-import it from './locales/it.json';
-import nl from './locales/nl.json';
-import ru from './locales/ru.json';
-import fi from './locales/fi.json';
-import hr from './locales/hr.json';
+// Legacy root files (de.json, en.json, nl.json, ...) are no longer used.
+// We load only namespaced resources under ./locales/<lang>/*.json
 
 // Extra namespaces for other languages
 // EN
@@ -53,7 +46,7 @@ import hrLearn from './locales/hr/learn.json';
 import hrGlossary from './locales/hr/glossary.json';
 import hrMultisigEdit from './locales/hr/multisigEdit.json';
 
-// Additional German namespaces (do not touch en.json; English stays via defaults in t())
+// German namespaces (source of truth). Do not modify other languages here; they fall back to DE as needed.
 import deLearn from './locales/de/learn.json';
 import deGlossary from './locales/de/glossary.json';
 import deHome from './locales/de/home.json';
@@ -72,10 +65,12 @@ import deSecretKey from './locales/de/secretKey.json';
 import deSubmitTransaction from './locales/de/submitTransaction.json';
 import deXlmByMemo from './locales/de/xlmByMemo.json';
 import deInvestedTokens from './locales/de/investedTokens.json';
+import deQuiz from './locales/de/quiz.json';
+import deSettings from './locales/de/settings.json';
+import deSettingsBackup from './locales/de/settings.backup.json';
 
 const resources = {
   de: {
-    translation: de,
     learn: deLearn,
     glossary: deGlossary,
     home: deHome,
@@ -93,30 +88,31 @@ const resources = {
     secretKey: deSecretKey,
     submitTransaction: deSubmitTransaction,
     xlmByMemo: deXlmByMemo,
-    investedTokens: deInvestedTokens
+    investedTokens: deInvestedTokens,
+    quiz: deQuiz,
+    settings: { ...deSettings, backup: deSettingsBackup }
   },
-  // Other languages keep a single default namespace for now.
-  // Missing keys and namespaces will fall back to German due to fallbackLng below.
-  en: { translation: en, menu: enMenu, learn: enLearn, glossary: enGlossary, multisigEdit: enMultisigEdit },
-  es: { translation: es, menu: esMenu, learn: esLearn, glossary: esGlossary, multisigEdit: esMultisigEdit },
-  fr: { translation: fr, menu: frMenu, learn: frLearn, glossary: frGlossary, multisigEdit: frMultisigEdit },
-  it: { translation: it, menu: itMenu, learn: itLearn, glossary: itGlossary, multisigEdit: itMultisigEdit },
-  nl: { translation: nl, menu: nlMenu, learn: nlLearn, glossary: nlGlossary, multisigEdit: nlMultisigEdit },
-  ru: { translation: ru, menu: ruMenu, learn: ruLearn, glossary: ruGlossary, multisigEdit: ruMultisigEdit },
-  fi: { translation: fi, menu: fiMenu, learn: fiLearn, glossary: fiGlossary, multisigEdit: fiMultisigEdit },
-  hr: { translation: hr, menu: hrMenu, learn: hrLearn, glossary: hrGlossary, multisigEdit: hrMultisigEdit }
+  // Other languages provide selected namespaces; all missing keys fall back to German (fallbackLng: 'de').
+  en: { menu: enMenu, learn: enLearn, glossary: enGlossary, multisigEdit: enMultisigEdit },
+  es: { menu: esMenu, learn: esLearn, glossary: esGlossary, multisigEdit: esMultisigEdit },
+  fr: { menu: frMenu, learn: frLearn, glossary: frGlossary, multisigEdit: frMultisigEdit },
+  it: { menu: itMenu, learn: itLearn, glossary: itGlossary, multisigEdit: itMultisigEdit },
+  nl: { menu: nlMenu, learn: nlLearn, glossary: nlGlossary, multisigEdit: nlMultisigEdit },
+  ru: { menu: ruMenu, learn: ruLearn, glossary: ruGlossary, multisigEdit: ruMultisigEdit },
+  fi: { menu: fiMenu, learn: fiLearn, glossary: fiGlossary, multisigEdit: fiMultisigEdit },
+  hr: { menu: hrMenu, learn: hrLearn, glossary: hrGlossary, multisigEdit: hrMultisigEdit }
 };
 
 // Register known namespaces to allow t('ns:key') access without dynamic loading.
-const namespaces = ['translation', 'learn', 'glossary', 'home', 'errors', 'common', 'menu', 'trustline', 'token', 'createAccount', 'multisigEdit', 'publicKey', 'network', 'wallet', 'navigation', 'secretKey', 'submitTransaction', 'xlmByMemo', 'investedTokens'];
+const namespaces = ['learn', 'glossary', 'home', 'errors', 'common', 'menu', 'trustline', 'token', 'createAccount', 'multisigEdit', 'publicKey', 'network', 'wallet', 'navigation', 'secretKey', 'submitTransaction', 'xlmByMemo', 'investedTokens', 'quiz', 'settings'];
 
 i18n
   .use(initReactI18next)
   .init({
     resources,
     ns: namespaces,
-    defaultNS: 'translation',
-    fallbackNS: 'translation',
+    defaultNS: 'common',
+    fallbackNS: ['common'],
     lng: 'de', // Standardsprache
     fallbackLng: 'de',
     interpolation: {

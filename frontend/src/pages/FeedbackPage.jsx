@@ -57,21 +57,21 @@ export default function FeedbackPage({ onBack }) {
     const lines = [];
     const pageLabel = (
       {
-        start: t('feedback.pages.start', 'Start'),
-        trustlines: t('feedback.pages.trustlines', 'Trustline(s) anzeigen'),
-        trustlineCompare: t('feedback.pages.trustlineCompare', 'Trustline(s) vergleichen'),
-        balance: t('feedback.pages.balance', 'Balance'),
-        xlmByMemo: t('feedback.pages.xlmByMemo', 'XLM by memo'),
-        sendPayment: t('feedback.pages.sendPayment', 'Send payment'),
-        investedTokens: t('feedback.pages.investedTokens', 'Invested tokens'),
+        start: t('common:feedback.pages.start', 'Start'),
+        trustlines: t('common:feedback.pages.trustlines', 'Trustline(s) anzeigen'),
+        trustlineCompare: t('common:feedback.pages.trustlineCompare', 'Trustline(s) vergleichen'),
+        balance: t('common:feedback.pages.balance', 'Balance'),
+        xlmByMemo: t('common:feedback.pages.xlmByMemo', 'XLM by memo'),
+        sendPayment: t('common:feedback.pages.sendPayment', 'Send payment'),
+        investedTokens: t('common:feedback.pages.investedTokens', 'Invested tokens'),
         createAccount: t('menu:createAccount', 'Create account + Multisig'),
-        multisigEdit: t('feedback.pages.multisigEdit', 'Multisig edit'),
-        settings: t('feedback.pages.settings', 'Settings'),
-        feedback: t('feedback.pages.feedback', 'Feedback'),
-        other: t('feedback.pages.other', 'Other')
-      }[pageId] || t('feedback.pages.other', 'Other')
+        multisigEdit: t('common:feedback.pages.multisigEdit', 'Multisig edit'),
+        settings: t('common:feedback.pages.settings', 'Settings'),
+        feedback: t('common:feedback.pages.feedback', 'Feedback'),
+        other: t('common:feedback.pages.other', 'Other')
+      }[pageId] || t('common:feedback.pages.other', 'Other')
     );
-    lines.push(`Kategorie: ${t(`feedback.categories.${category}`)}`);
+    lines.push(`Kategorie: ${t(`common:feedback.categories.${category}`)}`);
     lines.push(`Seite: ${pageLabel}`);
     lines.push('');
     lines.push('Nachricht:');
@@ -87,7 +87,7 @@ export default function FeedbackPage({ onBack }) {
     lines.push('App: Stellar Trustline Manager');
     try { lines.push(`URL: ${window.location.href}`); } catch { /* noop */ }
     try { lines.push(`Browser: ${navigator.userAgent}`); } catch { /* noop */ }
-    const subj = `[STM Feedback] ${t(`feedback.categories.${category}`)}: ${subject.trim()}`;
+    const subj = `[STM Feedback] ${t(`common:feedback.categories.${category}`)}: ${subject.trim()}`;
     const body = lines.join('\r\n');
     return { subject: subj, body };
   }, [category, message, subject, t, reportToken, contactEmail, pageId]);
@@ -131,7 +131,7 @@ export default function FeedbackPage({ onBack }) {
   // Handles sending the feedback mail only (no backend bugtracker).
   const handleSend = useCallback(async () => {
     try {
-      setNotices([t('bugReport.toast.sent')]);
+      setNotices([t('common:bugReport.toast.sent')]);
       // 1) Log first to avoid browser mailto/unload cancelling the request
       const description = message.trim();
       try {
@@ -151,7 +151,7 @@ export default function FeedbackPage({ onBack }) {
         forceBackendCompose: allowBackendCompose,
       });
     } catch (e) {
-      setNotices([t('feedback.error') + ': ' + (e?.message || '')]);
+      setNotices([t('common:feedback.error') + ': ' + (e?.message || '')]);
     }
   }, [buildMailto, emailTo, t, message, logBugReport]);
 
@@ -170,7 +170,7 @@ export default function FeedbackPage({ onBack }) {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-3">
-        <h2 className="text-xl font-semibold">{t('feedback.title')}</h2>
+        <h2 className="text-xl font-semibold">{t('common:feedback.title')}</h2>
       </div>
       {notices.length > 0 && (
         <div className="mb-3 space-y-1">
@@ -181,58 +181,58 @@ export default function FeedbackPage({ onBack }) {
       )}
       <div className="bg-white dark:bg-gray-800 border rounded p-4 space-y-3">
         <div>
-          <label className="block text-sm mb-1">{t('feedback.category')}</label>
+          <label className="block text-sm mb-1">{t('common:feedback.category')}</label>
           <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={category} onChange={(e)=>setCategory(e.target.value)}>
-            <option value="bug">{t('feedback.categories.bug')}</option>
-            <option value="idea">{t('feedback.categories.idea')}</option>
-            <option value="improve">{t('feedback.categories.improve')}</option>
-            <option value="other">{t('feedback.categories.other')}</option>
+            <option value="bug">{t('common:feedback.categories.bug')}</option>
+            <option value="idea">{t('common:feedback.categories.idea')}</option>
+            <option value="improve">{t('common:feedback.categories.improve')}</option>
+            <option value="other">{t('common:feedback.categories.other')}</option>
           </select>
         </div>
         <div>
-          <label className="block text-sm mb-1">{t('feedback.page', 'Seite')}</label>
+          <label className="block text-sm mb-1">{t('common:feedback.page', 'Seite')}</label>
           <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={pageId} onChange={(e)=>setPageId(e.target.value)}>
-            <option value="start">{t('feedback.pages.start', 'Start')}</option>
-            <option value="trustlines">{t('feedback.pages.trustlines', 'Trustline(s) anzeigen')}</option>
-            <option value="trustlineCompare">{t('feedback.pages.trustlineCompare', 'Trustline(s) vergleichen')}</option>
-            <option value="balance">{t('feedback.pages.balance', 'Balance')}</option>
-            <option value="xlmByMemo">{t('feedback.pages.xlmByMemo', 'XLM by memo')}</option>
-            <option value="sendPayment">{t('feedback.pages.sendPayment', 'Send payment')}</option>
-            <option value="investedTokens">{t('feedback.pages.investedTokens', 'Invested tokens')}</option>
+            <option value="start">{t('common:feedback.pages.start', 'Start')}</option>
+            <option value="trustlines">{t('common:feedback.pages.trustlines', 'Trustline(s) anzeigen')}</option>
+            <option value="trustlineCompare">{t('common:feedback.pages.trustlineCompare', 'Trustline(s) vergleichen')}</option>
+            <option value="balance">{t('common:feedback.pages.balance', 'Balance')}</option>
+            <option value="xlmByMemo">{t('common:feedback.pages.xlmByMemo', 'XLM by memo')}</option>
+            <option value="sendPayment">{t('common:feedback.pages.sendPayment', 'Send payment')}</option>
+            <option value="investedTokens">{t('common:feedback.pages.investedTokens', 'Invested tokens')}</option>
             <option value="createAccount">{t('menu:createAccount', 'Create account + Multisig')}</option>
-            <option value="multisigEdit">{t('feedback.pages.multisigEdit', 'Multisig edit')}</option>
-            <option value="settings">{t('feedback.pages.settings', 'Settings')}</option>
-            <option value="feedback">{t('feedback.pages.feedback', 'Feedback')}</option>
-            <option value="other">{t('feedback.pages.other', 'Other')}</option>
+            <option value="multisigEdit">{t('common:feedback.pages.multisigEdit', 'Multisig edit')}</option>
+            <option value="settings">{t('common:feedback.pages.settings', 'Settings')}</option>
+            <option value="feedback">{t('common:feedback.pages.feedback', 'Feedback')}</option>
+            <option value="other">{t('common:feedback.pages.other', 'Other')}</option>
           </select>
         </div>
         <div>
-          <label className="block text-sm mb-1">{t('feedback.subject')}</label>
+          <label className="block text-sm mb-1">{t('common:feedback.subject')}</label>
           <input ref={subjectInputRef} className="border rounded w-full px-2 py-1 text-base md:text-sm" value={subject} onChange={(e)=>setSubject(e.target.value)} />
         </div>
         <div>
-          <label className="block text-sm mb-1">{t('feedback.message')}</label>
+          <label className="block text-sm mb-1">{t('common:feedback.message')}</label>
           <textarea className="border rounded w-full px-2 py-1 text-base md:text-sm min-h-[160px]" value={message} onChange={(e)=>setMessage(e.target.value)} />
         </div>
         <div>
-          <label className="block text-sm mb-1">{t('feedback.contactEmailOptional', 'Email (optional)')}</label>
+          <label className="block text-sm mb-1">{t('common:feedback.contactEmailOptional', 'Email (optional)')}</label>
           <input
             type="email"
             className="border rounded w-full px-2 py-1 text-base md:text-sm"
             value={contactEmail}
             onChange={(e)=>setContactEmail(e.target.value)}
-            placeholder={t('feedback.emailPlaceholder', 'e.g. name@example.com')}
+            placeholder={t('common:feedback.emailPlaceholder', 'e.g. name@example.com')}
           />
           <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-            {t('feedback.emailHint', 'Optional: If you want a reply, add your email.')}
+            {t('common:feedback.emailHint', 'Optional: If you want a reply, add your email.')}
           </div>
         </div>
         <div className="flex items-center justify-end gap-2">
-          <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={onBack}>{t('option.cancel')}</button>
-          <button className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50" disabled={!canSend} onClick={handleSend}>{t('feedback.sendButton')}</button>
+          <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={onBack}>{t('common:option.cancel')}</button>
+          <button className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50" disabled={!canSend} onClick={handleSend}>{t('common:feedback.sendButton')}</button>
         </div>
         <div className="text-xs text-gray-600 dark:text-gray-400">
-          {t('feedback.sentTo', { email: emailTo })}
+          {t('common:feedback.sentTo', { email: emailTo })}
         </div>
       </div>
     </div>

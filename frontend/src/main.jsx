@@ -183,7 +183,7 @@ function Main() {
      try {
        if (sourcePublicKey) sessionStorage.removeItem(`stm.session.secret.${sourcePublicKey}`);
        setHasSessionKey(false);
-       setInfoMessage(t('secretKey.cleared'));
+       setInfoMessage(t('secretKey:cleared'));
      } catch { /* noop */ }
    };
 
@@ -389,7 +389,7 @@ function Main() {
         setIsLoading(false);
       }
     })();
-  }, [menuSelection, sourcePublicKey, devTestnet]);
+  }, [menuSelection, sourcePublicKey, devTestnet, trustlinesOwner, trustlines.length]);
 
   function unloadActiveWallet() {
     setSourcePublicKey('');
@@ -450,7 +450,7 @@ function Main() {
   const errorDisplay = React.useMemo(() => {
     const raw = String(error || '');
     if (!raw) return '';
-    const base = t('submitTransaction.failed', 'Transaction failed');
+    const base = t('submitTransaction:failed', 'Transaction failed');
     if (raw.startsWith('submitTransaction.failed:')) {
       const detail = raw.slice('submitTransaction.failed:'.length);
       return base + ': ' + t(detail, detail);
@@ -480,11 +480,11 @@ function Main() {
       <div className="max-w-4xl mx-auto px-4 pt-4 text-center mt-4-500" style={{ paddingBottom: 'max(1rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
         {/* 🌍 Global: Titel & Info */}
         <div className="relative mb-2">
-          <h1 className="text-2xl font-bold text-center">{t('main.title')}</h1>
+          <h1 className="text-2xl font-bold text-center">{t('common:main.title')}</h1>
           {/* Active network banner */}
           <div className="mt-2 text-xs text-center">
             <span className={`inline-block px-2 py-0.5 rounded font-semibold ${devTestnet ? 'bg-yellow-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100'}`}>
-              {devTestnet ? t('network.testnet') : t('network.mainnet')}
+              {devTestnet ? t('network:testnet') : t('network:mainnet')}
             </span>
           </div>
           {/* Action buttons under the title, right-aligned */}
@@ -500,7 +500,7 @@ function Main() {
             </button>
             <button
               type="button"
-              onClick={() => { setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('main.title')}` }); setMenuSelection('sendPayment'); }}
+              onClick={() => { setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('common:main.title')}` }); setMenuSelection('sendPayment'); }}
               title={t('menu:donate', 'Spenden')}
               className="inline-flex items-center gap-1.5 sm:gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 md:px-4 md:py-2 text-xs sm:text-sm md:text-base rounded-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
             >
@@ -515,16 +515,16 @@ function Main() {
           )}
         </div>
         <p className="mb-2 text-sm text-blue-200 rounded border">
-          {t('secretKey.info')}
+          {t('secretKey:info')}
           <button type="button" onClick={()=>setShowSecretInfo(true)} className="ml-2 px-2 py-0.5 text-blue-700 underline">
-            {t('createAccount.info.more')}
+            {t('createAccount:info.more')}
           </button>
         </p>
         {/* Fixierter Wallet-Header – immer sichtbar */}
         <div className="sticky top-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b rounded-b px-3 py-2 mb-2">
           <form onSubmit={(e) => { e.preventDefault(); handleHeaderApply(); }} className="max-w-4xl mx-auto mb-0">
             <div className="flex items-center justify-between mb-1">
-              <label className="block font-bold text-sm">{t('publicKey.label')}</label>
+              <label className="block font-bold text-sm">{t('publicKey:label')}</label>
               <label className="inline-flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300">
                 <input
                   type="checkbox"
@@ -540,7 +540,7 @@ function Main() {
                 list="recent-wallets"
                 value={walletHeaderInput}
                 onChange={(e) => setWalletHeaderInput(e.target.value)}
-                placeholder={t('publicKey.placeholder')}
+                placeholder={t('publicKey:placeholder')}
                 className={`wallet-input w-full border ${notFound ? 'border-red-500 ring-1 ring-red-400' : (devTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : 'border-gray-300')} rounded p-2 pr-8 font-mono text-base md:text-sm`}
                 spellCheck={false}
                 autoCorrect="off"
@@ -552,8 +552,8 @@ function Main() {
                 <button
                   type="button"
                   onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); setDevTestnet(false); if (typeof window !== 'undefined' && window.localStorage) { window.localStorage.setItem('STM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('STM_HORIZON_URL'); window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); } }}
-                  title={t('common.clear')}
-                  aria-label={t('common.clear')}
+                  title={t('common:clear')}
+                  aria-label={t('common:clear')}
                   className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center"
                 >
                   ×
@@ -564,7 +564,7 @@ function Main() {
                   <option
                     key={`${entry.publicKey}-${i}`}
                     value={entry.publicKey}
-                    label={entry.isTestnet ? t('account.testnetLabel', 'Testnet') : undefined}
+                    label={entry.isTestnet ? t('common:account.testnetLabel', 'Testnet') : undefined}
                   />
                 ))}
               </datalist>
@@ -575,37 +575,37 @@ function Main() {
                 {/* Links: Föderationsadresse & Label linksbündig */}
                 <div className="min-w-0 space-y-0.5 text-left">
                   <div>
-                    <span className="font-semibold">{t('wallet.federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
+                    <span className="font-semibold">{t('wallet:federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
                     {headerFederationDisplay
                       ? <span className="font-mono break-all">{headerFederationDisplay}</span>
-                      : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
+                      : <span className="italic text-gray-500">{t('wallet:federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
                   </div>
                   <div>
-                    <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
+                    <span className="font-semibold">{t('wallet:federationDisplay.accountLabel', 'Label')}:</span>{' '}
                     {headerLabel ? headerLabel : <span className="text-gray-400">—</span>}
                   </div>
 
                   {headerCompromised && (
                     <div className="text-red-600 dark:text-red-400 font-semibold">
-                      {t('wallet.flag.compromised', 'Warning: This wallet is marked as compromised in your trusted list.')}
+                      {t('wallet:flag.compromised', 'Warning: This wallet is marked as compromised in your trusted list.')}
                     </div>
                   )}
 
                   {headerDeactivated && (
                     <div className="text-amber-600 dark:text-amber-400 font-medium">
-                      {t('wallet.flag.deactivated', 'Note: This wallet is marked as deactivated in your trusted list.')}
+                      {t('wallet:flag.deactivated', 'Note: This wallet is marked as deactivated in your trusted list.')}
                     </div>
                   )}
                 </div>
 
                 {/* Rechts: XLM-Kontostand als Label (rechtsbündig), ohne Überlagerung auf Mobil */}
                 <div className="text-right">
-                  <span className="font-semibold">{t('wallet.xlmBalance', 'XLM')}:</span>{' '}
+                  <span className="font-semibold">{t('wallet:xlmBalance', 'XLM')}:</span>{' '}
                   <span className="font-mono">
                     {xlmBalanceLoading
-                      ? t('common.loading', 'Loading…')
+                      ? t('common:loading', 'Loading…')
                       : (sourcePublicKey
-                          ? (xlmBalance != null ? `${xlmBalance}` : t('wallet.unfunded', 'Unfunded'))
+                          ? (xlmBalance != null ? `${xlmBalance}` : t('wallet:unfunded', 'Unfunded'))
                           : '—')}
                   </span>
                 </div>
@@ -620,7 +620,7 @@ function Main() {
                   className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
                   title="Wallet übernehmen"
                 >
-                  {t('publicKey.load')}
+                  {t('publicKey:load')}
                 </button>
                 <button
                   type="button"
@@ -628,7 +628,7 @@ function Main() {
                   disabled={isLoading || !recentWallets.some((entry) => entry.publicKey === (walletHeaderInput || '').trim())}
                   className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
                 >
-                  {t('publicKey.deleteFromList')}
+                  {t('publicKey:deleteFromList')}
                 </button>
               </div>
               {/* Rechte Buttons */}
@@ -638,9 +638,9 @@ function Main() {
                     type="button"
                     onClick={clearSessionSecret}
                     className="px-3 py-2 rounded bg-green-600 text-white border border-red-600 hover:bg-green-700"
-                    title={t('secretKey.clearSessionHint')}
+                    title={t('secretKey:clearSessionHint')}
                   >
-                    {t('secretKey.clearSession')}
+                    {t('secretKey:clearSession')}
                   </button>
                 )}
                 {menuSelection && (
@@ -649,7 +649,7 @@ function Main() {
                     onClick={() => setMenuSelection(null)}
                     className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
-                    {t('navigation.backToMainMenu')}
+                    {t('navigation:backToMainMenu')}
                   </button>
                 )}
               </div>
@@ -660,11 +660,11 @@ function Main() {
         {sourcePublicKey && (
           <>
             <p className="mb-1 pb-1 text-sm text-gray-700 dark:text-gray-200 font-mono break-all">
-              {t('publicKey.source')}: {sourcePublicKey}
+              {t('publicKey:source')}: {sourcePublicKey}
             </p>
             {notFound && (
               <div className="text-center text-xs text-red-700 mb-3 inline-block border border-red-500 rounded px-2 py-0.5">
-                {t('error.accountNotFoundInNetwork', { net: devTestnet ? 'Testnet' : 'Mainnet' })}
+                {t('errors:accountNotFoundInNetwork', { net: devTestnet ? 'Testnet' : 'Mainnet' })}
               </div>
             )}
           </>
@@ -677,7 +677,7 @@ function Main() {
               const next = (value ?? '').trim();
               console.log('[MainMenu onSelect]', JSON.stringify(next));
               if (next === 'donate') {
-                setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('main.title')}` });
+                setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('common:main.title')}` });
                 setMenuSelection('sendPayment');
               } else {
                 setSendInit(null);
@@ -725,8 +725,8 @@ function Main() {
           </div>
         ) : (
           <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
-            <div className="text-center mb-2"><h2 className="text-xl font-semibold">{t('trustline.all')}</h2></div>
-            {t('investedTokens.hintEnterPublicKey')}
+            <div className="text-center mb-2"><h2 className="text-xl font-semibold">{t('trustline:all')}</h2></div>
+            {t('investedTokens:hintEnterPublicKey')}
           </div>
         )
       )}
@@ -756,8 +756,8 @@ function Main() {
           </div>
         ) : (
           <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
-            <div className="text-center mb-2"><h2 className="text-xl font-semibold">{t('trustline.compare')}</h2></div>
-            {t('investedTokens.hintEnterPublicKey')}
+            <div className="text-center mb-2"><h2 className="text-xl font-semibold">{t('trustline:compare')}</h2></div>
+            {t('investedTokens:hintEnterPublicKey')}
           </div>
         )
       )}
@@ -807,8 +807,8 @@ function Main() {
           />
         ) : (
           <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
-            <div className="text-center mb-2"><h2 className="text-xl font-semibold">{t('xlmByMemo.page.title')}</h2></div>
-            {t('xlmByMemo.page.noPublicKey')}
+            <div className="text-center mb-2"><h2 className="text-xl font-semibold">{t('xlmByMemo:page.title')}</h2></div>
+            {t('xlmByMemo:page.noPublicKey')}
           </div>
         )
       )}
@@ -880,9 +880,9 @@ function Main() {
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="fixed right-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 z-20 shadow-lg"
           style={{ bottom: 'max(4rem, calc(4rem + env(safe-area-inset-bottom)))' }}
-          aria-label={t('navigation.backToTop')}
+          aria-label={t('navigation:backToTop')}
         >
-          {t('navigation.backToTop')}
+          {t('navigation:backToTop')}
         </button>
       )}
       {showConfirm && (
@@ -902,10 +902,10 @@ function Main() {
       {showSecretInfo && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-md w-full mx-auto">
-            <h4 className="text-lg font-bold mb-3">{t('createAccount.info.keysOnPage.title')}</h4>
-            <p className="text-sm whitespace-pre-line text-gray-700 dark:text-gray-300">{t('createAccount.info.keysOnPage.text')}</p>
+            <h4 className="text-lg font-bold mb-3">{t('createAccount:info.keysOnPage.title')}</h4>
+            <p className="text-sm whitespace-pre-line text-gray-700 dark:text-gray-300">{t('createAccount:info.keysOnPage.text')}</p>
             <div className="text-right mt-6">
-              <button onClick={()=>setShowSecretInfo(false)} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">{t('common.close')}</button>
+              <button onClick={()=>setShowSecretInfo(false)} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">{t('common:close')}</button>
             </div>
           </div>
         </div>
