@@ -2,13 +2,16 @@ import './i18n';
 import 'flag-icons/css/flag-icons.min.css';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Main from './main';
+import Main from './main.jsx';
 import LanguageSelector from './components/LanguageSelector';
 import BugTrackerAdmin from './routes/BugTrackerAdmin.tsx';
 import SmallAdminLink from './components/SmallAdminLink.jsx';
-import { isBugtrackerPath, isGlossaryPath, isLearnPath, buildPath } from './utils/basePath.js';
+import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizLandingPath } from './utils/basePath.js';
 import GlossaryPage from './pages/GlossaryPage.tsx';
 import LearnPage from './pages/LearnPage.jsx';
+import QuizPage from './pages/QuizPage.jsx';
+import BackupSettings from './pages/BackupSettings.jsx';
+
 import { formatErrorForUi } from './utils/formatErrorForUi.js';
 
 console.log('App.jsx loaded');
@@ -91,6 +94,55 @@ function App() {
     }
   }, [pathname]);
 
+  const isQuizRunRoute = React.useMemo(() => {
+    try {
+      return isQuizRunPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
+  const isQuizLandingRoute = React.useMemo(() => {
+    try {
+      return isQuizLandingPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
+  const isQuizSettingsRoute = React.useMemo(() => {
+    try {
+      return isQuizSettingsPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
+  const isQuizAchievementsRoute = React.useMemo(() => {
+    try {
+      return isQuizAchievementsPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
+  // Backward compatibility for legacy quiz route: /learn/lesson/:id/quiz
+  const isLessonQuizRoute = React.useMemo(() => {
+    try {
+      return isLessonQuizPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
+  const isSettingsBackupRoute = React.useMemo(() => {
+    try {
+      return isSettingsBackupPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
   return (
     <ErrorBoundary t={t}>
       {isBugTrackerRoute ? (
@@ -141,10 +193,10 @@ function App() {
                 type="button"
                 onClick={() => {
                   try {
-                    const root = document.querySelector('#root');
-                    if (!root) { window.location.hash = '#settings'; return; }
-                    const evt = new CustomEvent('stm:openSettings');
-                    window.dispatchEvent(evt);
+                    const url = buildPath('settings/backup');
+                    try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
+                    window.history.pushState({}, '', url);
+                    window.dispatchEvent(new PopStateEvent('popstate'));
                   } catch {
                     /* noop */
                   }
@@ -181,6 +233,23 @@ function App() {
             <div id="stm-learn-overlay" className="fixed inset-0 z-50 bg-white dark:bg-gray-900 overflow-y-auto">
               <div className="max-w-5xl mx-auto p-4">
                 <LearnPage />
+              </div>
+            </div>
+          )}
+
+          {/* Quiz Routen als Overlay (/quiz/:id | /quiz/:id/run | /quiz/:id/settings | /quiz/:id/achievements) und legacy (/learn/lesson/:id/quiz) */}
+          {(isQuizLandingRoute || isQuizRunRoute || isLessonQuizRoute || isQuizSettingsRoute || isQuizAchievementsRoute) && (
+            <div id="stm-quiz-overlay" className="fixed inset-0 z-50 bg-white dark:bg-gray-900 overflow-y-auto">
+              <div className="max-w-4xl mx-auto p-4">
+                <QuizPage />
+              </div>
+            </div>
+          )}
+
+          {isSettingsBackupRoute && (
+            <div id="stm-settings-backup-overlay" className="fixed inset-0 z-50 bg-white dark:bg-gray-900 overflow-y-auto">
+              <div className="max-w-4xl mx-auto p-4">
+                <BackupSettings />
               </div>
             </div>
           )}

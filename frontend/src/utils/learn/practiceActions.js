@@ -8,7 +8,7 @@
 // - All user-facing strings must be provided via t(key, default)
 
 import { Horizon, StrKey } from '@stellar/stellar-sdk';
-import { getHorizonServer, loadTrustlines, getAccountSummary } from '../stellar/stellarUtils.js';
+import { getHorizonServer, loadTrustlines } from '../stellar/stellarUtils.js';
 import { withBackoff, classifyError } from '../net/retry.js';
 
 const TESTNET = 'https://horizon-testnet.stellar.org';
@@ -250,7 +250,7 @@ export async function runPracticeValidation(actionId, params = {}, t) {
   try { localStorage.setItem(kMeta, JSON.stringify(meta)); } catch { /* noop */ }
 
   // Status: validating
-  const startMsg = t?.('learn.status.validating', 'Validating…');
+  // const startMsg = t?.('learn.status.validating', 'Validating…');
 
   try {
     const proof = await fn(params, server);

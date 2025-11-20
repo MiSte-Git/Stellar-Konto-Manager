@@ -2,7 +2,7 @@
   "menu": "Stellar-visailu aloittelijoille",
   "menuHint": "Avaa oppimisyhteenveto",
   "pageTitle": "Oppimissivu",
-  "pageIntro": "Lyhyitä, aloittelijaystävällisiä oppitunteja lohkoketjusta ja Stellar-verkoista. Ei ennakkotietoja tarvita.",
+  "pageIntro": "Lyhyitä, aloittelijaystävällisiä oppitunteja lohkoketjusta ja Stellar-verkosta. Ei ennakkotietoja tarvita.",
   "labels": {
     "goal": "Tavoite",
     "task": "Tehtävä",
@@ -23,10 +23,10 @@
     "setStars": "{count} tähteä asetettu",
     "completed": "Valmistunut",
     "markComplete": "Merkitse valmiiksi",
-    "export": "Vie vientiä",
+    "export": "Vie",
     "exported": "Edistyminen viety",
-    "import": "Tuonti",
-    "imported": "Edistys tuo maahan"
+    "import": "Tuo",
+    "imported": "Edistys tuotu"
   },
   "back": "Takaisin",
   "backToTop": "Ylös",

@@ -552,5 +552,596 @@
     "translate": {
       "skipOriginal": "Original-Begriff nicht übersetzen: {{detail}}"
     }
+  },
+  "common": {
+    "clear": "Eingabe löschen",
+    "close": "Schließen",
+    "loading": "Laden…",
+    "refresh": "Neu laden"
+  },
+  "error": {
+    "asset": {
+      "creationDateUnknown": "Unbekanntes Erstellungsdatum"
+    },
+    "cache": {
+      "backfillAborted": "Initiales Laden der Zahlungen abgebrochen",
+      "coverage": {
+        "newestFailed": "Ermitteln der neuesten Zahlung fehlgeschlagen",
+        "oldestFailed": "Ermitteln des ältesten Datums fehlgeschlagen"
+      },
+      "indexIterFailed": "Index-Iteration im Cache fehlgeschlagen",
+      "memoNormBackfillFailed": "Initiales Laden der Zahlungen für normalisierte Memos fehlgeschlagen",
+      "openFailed": "Lokaler Cache konnte nicht geöffnet werden",
+      "readFailed": "Lesen aus dem Cache fehlgeschlagen",
+      "rehydrateFailed": "Nachladen fehlender Memos fehlgeschlagen",
+      "rehydrateWriteFailed": "Schreiben der Memos in den Cache fehlgeschlagen",
+      "writeFailed": "Schreiben in den Cache fehlgeschlagen"
+    },
+    "connection": {
+      "backend": "Keine Verbindung zum Backend möglich. Stellen Sie sicher"
+    },
+    "fetchInvestedTokens": {
+      "failed": "Laden der Investitionsdaten fehlgeschlagen: {{detail}}"
+    },
+    "horizon": {
+      "paymentsFetch": "Fehler beim Laden der Zahlungen von Horizon"
+    },
+    "loadTrustlines": "Trustlines konnten nicht geladen werden. Bitte erneut versuchen.",
+    "loadTrustlinesFailed": "Laden der Trustlines fehlgeschlagen",
+    "loadTrustlinesNotFound": "Konto im ausgewählten Netzwerk nicht gefunden.",
+    "accountNotFoundInNetwork": "Im '{{net}}' nicht gefunden!",
+    "op_invalid_limit": "Trustline kann nicht gelöscht werden. Sie hat möglicherweise noch Guthaben oder offene Verpflichtungen.",
+    "query": {
+      "invalidMemo": "Ungültiges Memo",
+      "invalidRange": "Zeitfenster ist ungültig (Von > Bis)",
+      "invalidTime": "Ungültige Zeitangabe"
+    },
+    "submitTransaction": {
+      "failed": {
+        "tx_bad_auth": "Transaktion abgelehnt: Ungültige Signatur",
+        "tx_failed": "Transaktion fehlgeschlagen",
+        "unknown": "Unbekannter Fehler bei der Transaktion"
+      }
+    },
+    "sync": {
+      "backfillFailed": "Initiales Laden der Zahlungen fehlgeschlagen",
+      "incrementalFailed": "Aktualisierung der Zahlungen fehlgeschlagen"
+    },
+    "transaction": {
+      "failed": "Transaktion fehlgeschlagen",
+      "title": "Fehler bei der Transaktion"
+    },
+    "trustline": {
+      "submitFailed": "Fehler beim Löschen der Trustline.",
+      "unknown": "Unbekannter Fehler beim Löschen der Trustline."
+    },
+    "xlmByMemo": {
+      "aborted": "Vorgang vom Benutzer abgebrochen",
+      "accountInvalid": "Ungültiger Account",
+      "dateInvalid": "Ungültiges Datum",
+      "dateRange": "Ungültiger Datumsbereich",
+      "failedUnknown": "Unbekannter Fehler",
+      "memoInvalid": "Ungültiges Memo",
+      "paymentsFetch": "Fehler beim Laden der Zahlungen",
+      "serverInvalid": "Ungültiger Server"
+    },
+    "rateLimited": "Horizon-Rate-Limit überschritten. Bitte ein paar Sekunden warten und erneut versuchen."
+  },
+  "investedTokens": {
+    "columns": {
+      "amount": "Betrag",
+      "compromised": "Kompromittiert",
+      "deactivated": "Deaktiviert",
+      "destination": "Zielwallet",
+      "issuer": "Issuer",
+      "label": "Label",
+      "memo": "Memo",
+      "payments": "Zahlungen",
+      "date": "Datum",
+      "token": "Token"
+    },
+    "decimals": {
+      "auto": "Automatisch",
+      "label": "Nachkommastellen:"
+    },
+    "filter": {
+      "memoPlaceholder": "Filter nach Memo, Wallet-Adresse oder Label",
+      "tokenPlaceholder": "Filter nach Token (CODE:ISSUER)"
+    },
+    "hintEnterPublicKey": "Bitte gib zuerst einen Public Key ein.",
+    "item": {
+      "memo": "Memo: \"{{memo}}\" (Zahlungen: {{occurrences}})",
+      "token": "Token: {{token}} (Zahlungen: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
+    },
+    "missingPublicKey": "Public Key fehlt.",
+    "moreTruncated": "… und {{extra}} weitere Gruppen",
+    "toWallet": "an Wallet: {{address}}",
+    "total": "Anzahl gekaufter Token: {{count}}",
+    "totalTokens": "Anzahl investierter Token (Assets): {{count}}",
+    "value": {
+      "units": "{{amount}} Stück",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Filter nach:",
+      "memo": "Memos (Groupfund)",
+      "token": "Token (gekaufte Menge)"
+    },
+    "toggles": {
+      "showTotals": "Gesamtsumme",
+      "qsiOnly": "Summe QSI GF"
+    },
+    "hints": {
+      "qsiListSet": "Hinweis: Die GF-Liste findest du unter Einstellungen → Vertrauenswürdige Wallets (QSI).",
+      "pageTime": "Laden einer Seite dauert ca. 0,2 Sekunden → 100 Seiten ≈ 20 Sekunden → 1000 Seiten ≈ 200 Sekunden (≈ 3:20 Minuten)."
+    },
+    "walletCapInfo": "Hinweis: Ein Wallet kann maximal 1000 Trustlines halten.",
+    "action": {
+      "load": "Laden"
+    },
+    "history": {
+      "availableFrom": "Server (Horizon) – Historie ab",
+      "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+    }
+  },
+  "network": {
+    "mainnet": "Mainnet",
+    "testnet": "Testnet"
+  },
+  "multisigEdit": {
+    "confirm": {
+      "removeSigner": "Unterzeichner wirklich entfernen?"
+    },
+    "currentConfig": "Aktuelle / geplante Konfiguration",
+    "error": {
+      "thresholdTooHigh": "Schwellen dürfen die Summe der Gewichte nicht überschreiten."
+    },
+    "hint": "Lade ein bestehendes Konto, passe Signer, Gewichte, Master-Gewicht und Schwellen an und speichere die Änderungen.",
+    "load": "Laden",
+    "loaded": "Geladen. Zusätzliche Signer: {{count}}",
+    "menu": "Multisig Konto bearbeiten",
+    "menuHint": "Signer/Schwellen eines bestehenden Kontos anpassen",
+    "noteMaxSigners": "Hinweis: Stellar erlaubt max. 20 zusätzliche Unterzeichner pro Konto.",
+    "reload": "Neu laden",
+    "save": "Änderungen speichern",
+    "saved": "Änderungen gespeichert. TX: {{hash}}",
+    "signers": "Unterzeichner",
+    "weight": "Gewichtung",
+    "masterWeight": "Master-Gewicht",
+    "title": "Multisig Konto bearbeiten",
+    "validation": {
+      "signerKeyHint": "Hinweis: Unterzeichner müssen mit \"G\" beginnen (ed25519-öffentlicher Schlüssel).",
+      "signerKeyInvalid": "Ungültige Unterzeichner-Adresse. Erwartet wird eine G…-Adresse (ed25519)."
+    }
+  },
+  "navigation": {
+    "back": "Zurück",
+    "backToMainMenu": "Zurück zum Menü",
+    "backToPublicKey": "Zurück zur öffentlichen Schlüssel Eingabe",
+    "backToTop": "Zurück nach Oben"
+  },
+  "publicKey": {
+    "deleteFromList": "Aus Liste löschen",
+    "destination": {
+      "error": "Ungültiger Ziel-Schlüssel.",
+      "input": "Ziel-Wallet-Adresse eingeben"
+    },
+    "label": "Gib bitte die Quell-Föderationsadresse oder den öffentlichen Schlüssel ein:",
+    "load": "Laden…",
+    "placeholder": "z.B.",
+    "source": "Quell-Wallet-Adresse",
+    "invalid": "Ungültiger öffentlicher Schlüssel.",
+    "submit": {
+      "button": "Senden"
+    },
+    "test": "Test",
+    "historyLabel": "Historie",
+    "historyPlaceholder": "Zuletzt verwendetes Wallet auswählen"
+  },
+  "secretKey": {
+    "cleared": "Geheimschlüssel wurde gelöscht.",
+    "empty": "Geheimschlüssel-Feld ist leer.",
+    "info": "Ihr Geheimschlüssel bleibt in Ihrem Browser und wird nur lokal zum Signieren von Transaktionen verwendet. Er wird niemals übertragen oder gespeichert.",
+    "invalid": "Ungültiger Geheimschlüssel.",
+    "label": "Geben Sie den Quell-Geheimschlüssel ein",
+    "mismatch": "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
+    "placeholder": "z.B.",
+    "valid": "✅ Secret Key ist gültig.",
+    "remember": {
+      "label": "Geheimschlüssel für diese Sitzung merken",
+      "hint": "Wenn aktiviert, wird der Schlüssel bis zum Schließen des Tabs gespeichert und für weitere Zahlungen wiederverwendet."
+    },
+    "clearSession": "Sitzungs-Schlüssel löschen",
+    "clearSessionHint": "Entfernt den in dieser Sitzung gespeicherten Geheimschlüssel (wird beim Schließen des Tabs ohnehin gelöscht)."
+  },
+  "token": {
+    "purchases": "Token/Assets filtern"
+  },
+  "glossary": {
+    "pageTitle": "Glossar",
+    "pageIntro": "Hier findest du wichtige Wörter aus der Blockchain Welt und aus dem Stellar Netzwerk. Alles ist in einfachen Worten erklärt.",
+    "searchLabel": "Begriff suchen",
+    "searchPlaceholder": "Begriff suchen (z. B. Konto, Account, Muxed)",
+    "searchHint": "Die Suche findet Wörter und Erklärungen.",
+    "noResults": "Kein Treffer.",
+    "blockchain": {
+      "title": "Blockchain",
+      "original": "Blockchain",
+      "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
+      "desc": "Eine Blockchain ist wie ein digitales Kassenbuch. Viele Computer speichern dieselben Einträge. So kann niemand heimlich etwas ändern."
+    },
+    "wallet": {
+      "title": "Wallet",
+      "original": "Wallet",
+      "short": "Digitale Geldbörse, die deine Schlüssel verwaltet.",
+      "desc": "Ein Wallet ist deine digitale Geldbörse. Es verwaltet die Schlüssel die du brauchst um auf dein Konto zuzugreifen und Transaktionen zu senden. Ein Wallet kann ein Programm sein oder eine App oder auch nur ein Zettel mit deinem Geheimschlüssel."
+    },
+    "account": {
+      "title": "Konto",
+      "original": "Account",
+      "short": "Ein Blockchain-Konto kann Vermögenswerte halten und Transaktionen senden.",
+      "desc": "Ein Konto ist die Stelle auf der Blockchain an der deine Werte liegen. Ein Konto hat eine öffentliche Adresse die mit G beginnt. Mehrere Wallets können auf dasselbe Konto zugreifen wenn sie den richtigen Schlüssel haben."
+    },
+    "addressG": {
+      "title": "G-Adresse",
+      "original": "G Address",
+      "short": "Die öffentliche Hauptadresse eines Stellar-Kontos (beginnt mit G).",
+      "desc": "Die G-Adresse ist die Hauptadresse eines Stellar Kontos. Sie beginnt mit dem Buchstaben G. Du gibst sie anderen damit sie dir etwas schicken können."
+    },
+    "publicKey": {
+      "title": "Öffentlicher Schlüssel",
+      "original": "Public Key",
+      "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+      "desc": "Der öffentliche Schlüssel ist die Adresse die du zeigen darfst. Bei Stellar ist das die G-Adresse. Andere nutzen ihn um dir Geld zu senden."
+    },
+    "privateKey": {
+      "title": "Geheimer Schlüssel",
+      "original": "Secret Key",
+      "short": "Passwort zum Konto – niemals weitergeben.",
+      "desc": "Der geheime Schlüssel ist dein Passwort für das Konto. Wer diesen Schlüssel hat kann dein Geld bewegen. Niemals weitergeben."
+    },
+    "addressFederation": {
+      "title": "Föderationsadresse",
+      "original": "Federation Address",
+      "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+      "desc": "Eine Föderationsadresse sieht aus wie eine E-Mail. Beispiel: name*domain.com. Diese kurze Adresse zeigt auf eine normale G-Adresse. Das ist einfacher zu merken."
+    },
+    "addressMuxed": {
+      "title": "Muxed-Konto",
+      "original": "Muxed Account",
+      "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
+      "desc": "Eine M-Adresse zeigt auf ein bestehendes Stellar Konto hat aber zusätzlich eine eigene Nummer (ID). So kann man z. B. mehrere Personen oder Abteilungen unter derselben G-Adresse unterscheiden. Technisch gehört das Geld weiter dem Hauptkonto."
+    },
+    "multisig": {
+      "title": "Mehrfachsignatur",
+      "original": "Multi‑Sig",
+      "short": "Wichtige Aktionen brauchen mehr als eine Unterschrift.",
+      "desc": "Multi-Sig steht für mehrere Unterschriften. Eine wichtige Aktion braucht mehr als einen Schlüssel. Beispiel: Du und ein zweiter Schlüssel müssen beide zustimmen bevor etwas gesendet wird. Das macht Diebstahl schwerer."
+    },
+    "trustline": {
+      "title": "Trustline",
+      "original": "Trustline",
+      "short": "Zustimmung, einen Token eines bestimmten Herausgebers zu halten.",
+      "desc": "Eine Trustline ist wie ein Ja ich akzeptiere diesen Token. Du sagst damit dass dein Konto bereit ist einen bestimmten Token von einem bestimmten Herausgeber zu halten. Ohne Trustline kannst du diesen Token nicht empfangen.\n\nBeispiel: Eine Trustline wird als CODE:ISSUER angegeben. Für EURT vom Herausgeber GDUKMGUGDZQK6Y… lautet sie EURT:GDUKMGUGDZQK6Y…"
+    },
+    "token": {
+      "title": "Token",
+      "original": "Token",
+      "short": "Digitale Einheit – z. B. Geld, Punkte oder Guthaben.",
+      "desc": "Ein Token ist eine digitale Einheit auf der Blockchain. Ein Token kann Geld darstellen oder Punkte oder Guthaben für einen Dienst."
+    },
+    "asset": {
+      "title": "Asset",
+      "original": "Asset",
+      "short": "Token auf Stellar, immer mit Herausgeber verknüpft.",
+      "desc": "Auf Stellar heißt ein Token Asset. Ein Asset ist immer verknüpft mit einem Herausgeber Konto. Zum Beispiel kann ein Konto einen Euro Token ausgeben. Dieser Euro Token ist dann ein Asset."
+    },
+    "xlm": {
+      "title": "XLM",
+      "original": "XLM",
+      "short": "Native Währung von Stellar für Gebühren und Aktivierung.",
+      "desc": "XLM ist die Grundwährung von Stellar. Du brauchst XLM um Gebühren zu zahlen und ein neues Konto zu starten."
+    },
+    "mainnet": {
+      "title": "Mainnet",
+      "original": "Mainnet",
+      "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+      "desc": "Das echte Stellar Netzwerk mit realem Wert. Transaktionen sind endgültig und Gebühren werden in echtem XLM bezahlt."
+    },
+    "testnet": {
+      "title": "Testnet",
+      "original": "Testnet",
+      "short": "Öffentliches Übungsnetzwerk ohne echten Wert.",
+      "desc": "Ein öffentliches Übungsnetzwerk. Tokens haben keinen echten Wert. Ideal zum Lernen und Ausprobieren ohne Risiko."
+    },
+    "memo": {
+      "title": "Memo",
+      "original": "Memo",
+      "short": "Kurze Notiz in einer Transaktion.",
+      "desc": "Ein Memo ist eine kleine Notiz die du mit einer Transaktion mitschicken kannst. Oft verlangt eine Börse ein bestimmtes Memo damit sie weiß wem das Geld gehört."
+    },
+    "transaction": {
+      "title": "Transaktion",
+      "original": "Transaction",
+      "short": "Aktion auf der Blockchain, z. B. Zahlung oder Trustline.",
+      "desc": "Eine Transaktion ist eine Aktion auf der Blockchain. Zum Beispiel Geld senden oder eine Trustline anlegen. Eine Transaktion wird für immer gespeichert wenn sie bestätigt ist."
+    },
+    "fee": {
+      "title": "Gebühr",
+      "original": "Fee",
+      "short": "Sehr kleiner Betrag pro Transaktion.",
+      "desc": "Die Gebühr ist ein sehr kleiner Betrag den du bei jeder Transaktion zahlst. Die Gebühr geht an das Netzwerk. Bei Stellar sind die Gebühren sehr klein."
+    },
+    "ledger": {
+      "title": "Ledger",
+      "original": "Ledger",
+      "short": "Kette der bestätigten Daten und Kontostände.",
+      "desc": "Das Ledger ist die Kette aller bestätigten Daten. Dort steht welche Konten wie viel besitzen und welche Transaktionen passiert sind. Jeder kann das Ledger prüfen."
+    },
+    "horizon": {
+      "title": "Horizon",
+      "original": "Horizon",
+      "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+      "desc": "Horizon ist der Service über den Programme mit der Stellar Blockchain reden. Unser Tool fragt Horizon um Kontostände und Transaktionen zu laden."
+    },
+    "anchor": {
+      "title": "Anchor",
+      "original": "Anchor",
+      "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+      "desc": "Ein Anchor ist eine Firma die echtes Geld wie Euro oder Dollar mit Stellar verbindet. Du gibst dem Anchor z. B. Euro und bekommst dafür einen Euro Token auf Stellar."
+    },
+    "exchange": {
+      "title": "Börse",
+      "original": "Exchange",
+      "short": "Ort zum Kaufen und Verkaufen von Tokens.",
+      "desc": "Eine Börse ist ein Ort an dem du Token kaufen oder verkaufen kannst. Viele Börsen verlangen ein KYC Verfahren also eine Ausweisprüfung bevor du Geld in Euro oder Franken rausziehen kannst."
+    },
+    "dex": {
+      "title": "DEX",
+      "original": "Decentralized Exchange",
+      "short": "Dezentrale Börse direkt auf der Blockchain.",
+      "desc": "DEX bedeutet Dezentrale Börse. Hier handeln die Leute direkt miteinander auf der Blockchain. Es gibt keinen einzelnen Betreiber. Stellar hat eine DEX direkt eingebaut."
+    },
+    "liquidityPool": {
+      "title": "Liquiditätspool",
+      "original": "Liquidity Pool",
+      "short": "Gemeinsamer Topf mit zwei Tokens zum sofortigen Tausch.",
+      "desc": "Ein Liquiditätspool ist ein gemeinsamer Topf mit zwei Tokens. Leute legen beide Tokens hinein. Andere dürfen dann diese Tokens sofort tauschen. Die Einzahler verdienen dafür kleine Gebühren."
+    },
+    "balanceClaimable": {
+      "title": "Claimable Balance",
+      "original": "Claimable Balance",
+      "short": "Reserviertes Geld, das du noch annehmen musst.",
+      "desc": "Eine Claimable Balance ist Geld das schon für dich reserviert ist aber du musst es noch abholen. Erst wenn du es annimmst geht es in dein Konto."
+    },
+    "protocolUpdate": {
+      "title": "Protocol Update",
+      "original": "Protocol Update",
+      "short": "Aktualisierung der Netzwerk‑Regeln.",
+      "desc": "Ein Protocol Update ist ein Upgrade der Regeln im Stellar Netzwerk. Zum Beispiel neue Funktionen oder Sicherheitsänderungen. Alle Knoten im Netzwerk müssen dieselben Regeln benutzen."
+    },
+    "soroban": {
+      "title": "Soroban",
+      "original": "Soroban",
+      "short": "Stellars Smart‑Contract‑System.",
+      "desc": "Soroban ist das Smart Contract System von Stellar. Ein Smart Contract ist Programmcode auf der Blockchain. Der Code kann selbst Regeln prüfen und Aktionen auslösen ohne eine Bank dazwischen."
+    },
+    "missingKey": "Fehlender Glossar-Schlüssel: {{detail}}"
+  },
+  "trustline": {
+    "all": "Trustline(s) anzeigen",
+    "compare": "Trustline(s) vergleichen",
+    "delete": "Trustline(s) löschen",
+    "deleted": {
+      "mode": {
+        "real": "Echtmodus",
+        "realWarning": "Achtung: Echte Trustline(s) werden gelöscht",
+        "simulation": "Simulationsmodus"
+      },
+      "notFound": "Keine löschbaren Trustlines gefunden – alle enthalten noch Guthaben.",
+      "resultText": "Anzahl: {{count}} • Modus: {{mode}}",
+      "resultTitle": "Gelöschte Trustline(s)",
+      "simulated": "Simulation: {{count}} Trustline(s) würden gelöscht werden.",
+      "success": "Erfolg: {{count}} Trustline(s) gelöscht."
+    },
+    "destination": {
+      "label": "Geben Sie den Ziel-Öffentlichen Schlüssel ein:",
+      "placeholder": "z.B."
+    },
+    "noDuplicates": "Keine doppelten Trustline(s) gefunden.",
+    "nonZeroBalance": "Diese Trustline kann nicht gelöscht werden, da sie noch ein Guthaben enthält.",
+    "notFound": "Keine Trustline(s) gefunden.",
+    "onlyZeroBalanceInfo": "Nur Trustlines mit einem Guthaben von 0 können gelöscht werden.",
+    "showSecret": "Geheimschlüssel anzeigen"
+  },
+  "deleted": {
+    "deletingProgress": "Löschen läuft: {{current}} / {{total}}",
+    "success": "Erfolg: {{count}} Trustline(s) gelöscht."
+  },
+  "skippedDueToBalance": "{{count}} Trustline(s) übersprungen (noch Guthaben vorhanden).",
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Berechnen",
+      "loading": "Berechne…"
+    },
+    "date": {
+      "from": "Von (optional)",
+      "to": "Bis (optional)"
+    },
+    "debug": {
+      "incoming": "Incoming – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
+      "incomingOverview": "Eingänge: {{total}} • beteiligte Wallets: {{unique}}",
+      "memo": "Memos im Fenster: {{any}} • exakte Memos: {{exact}}",
+      "types": "Typen – payment: {{pay}}, path: {{path}}, create: {{create}}, andere: {{other}}"
+    },
+    "export": {
+      "csv": "CSV prüfen (Treffer)",
+      "csvAll": "Alle Operationen exportieren",
+      "csvBoth": "Beide CSVs speichern",
+      "csvMatches": "CSV prüfen (Treffer)"
+    },
+    "exportCsv": {
+      "failed": "CSV-Export fehlgeschlagen: {{detail}}"
+    },
+    "memo": {
+      "label": "Memo-Suchtext (Teilstring, Groß-/Kleinschreibung beachten)",
+      "placeholder": "Memo (Teilstring, Groß-/Kleinschreibung beachten)"
+    },
+    "overviewLine": "Zahlungseingänge: {{total}} • beteiligte Wallets: {{unique}}",
+    "page": {
+      "noPublicKey": "Bitte gib zuerst einen Public Key ein, oder lade das Konto erneut.",
+      "title": "XLM-Summe nach Memo"
+    },
+    "result": {
+      "label": "Gesamtsumme:",
+      "value": "{{amount}} XLM"
+    },
+    "summary": {
+      "amount": "Summe: {{amount}} XLM",
+      "correctCount": "Eingänge mit korrektem Memo: {{n}}",
+      "count": "Anzahl: {{n}}",
+      "label": "Vergleich (alle Eingänge)",
+      "otherCount": "Eingänge mit falschem/ohne Memo: {{n}}",
+      "unique": "Eindeutige Wallets (alle): {{n}}",
+      "uniqueWallets": "Eindeutige Wallets: {{n}}"
+    },
+    "time": {
+      "setToNow": "Aktuelle Zeit setzen",
+      "setToNowHint": "Setzt das Uhrzeit-Feld auf die aktuelle Zeit"
+    },
+    "title": "XLM-Summe nach Memo",
+    "topLargest": {
+      "button": "Top 20 Eingänge (Memo)",
+      "clipboard": "In Zwischenablage kopieren",
+      "csv": "CSV herunterladen",
+      "scanning": "… scannt Top-Eingänge",
+      "title": "Top 20-Eingänge für Memo im Zeitraum"
+    },
+    "tz": {
+      "cdt": "CDT (UTC−5)",
+      "cst": "CST (UTC−6)",
+      "europe_zurich": "Europe/Zurich (CET/CEST)",
+      "label": "Zeitzone für Datum/Uhrzeit",
+      "local": "Lokale Zeitzone",
+      "note": "Datum/Uhrzeit werden in der gewählten Zeitzone interpretiert und vor der Suche automatisch in UTC umgerechnet.",
+      "utc": "UTC",
+      "window": "Genutztes UTC-Zeitfenster: {{from}} → {{to}} (Bis exklusiv)"
+    },
+    "wrongMemos": {
+      "button": "Wallets mit falschem/leerem Memo anzeigen",
+      "clipboard": "In Zwischenablage kopieren",
+      "columns": {
+        "amount": "Betrag",
+        "created_at": "Erstellt am",
+        "from": "Von",
+        "memo": "Memo",
+        "tx_hash": "Transaktions-Hash"
+      },
+      "csv": "CSV herunterladen",
+      "failed": "Fehler beim Laden der Zahlungen mit falschem/leerem Memo.",
+      "hint": "Filtert eingehende Zahlungen im Zeitraum und zeigt Absender mit falschem/leerem Memo",
+      "scanning": "… scannt falsche/leere Memos",
+      "summary": "Anzahl: {{count}} • Summe: {{sum}} XLM • Eindeutige Wallets: {{unique}}",
+      "title": "Falsche/Leere Memos im Zeitraum"
+    }
+  },
+  "wallet": {
+    "federationDisplay": {
+      "label": "Föderationsadresse",
+      "none": "Keine Föderationsadresse definiert",
+      "account": "Konto",
+      "accountLabel": "Label"
+    },
+    "flag": {
+      "compromised": "Warnung: Dieser Empfänger ist in Ihrer Vertrauensliste als kompromittiert markiert.",
+      "deactivated": "Hinweis: Dieser Empfänger ist in Ihrer Vertrauensliste als deaktiviert markiert."
+    }
+  },
+  "learn": {
+    "lesson1": {
+      "title": "Was ist eine Blockchain",
+      "goal": "Prinzip der Blockchain begreifen",
+      "task": "Bausteine (Transaktionen) zu einer Kette zusammensetzen",
+      "learningOutcome": "Eine Blockchain ist ein unveränderbares digitales Heft, in dem alle gemeinsam prüfen.",
+      "reward": "⭐ 1 – Block-Bauer"
+    },
+    "lesson2": {
+      "title": "Stellar verstehen",
+      "goal": "Unterschied zu anderen Blockchains kennen",
+      "task": "Token an Freund schicken (Simulation) und Geschwindigkeit sehen",
+      "learningOutcome": "Stellar ist schnell, günstig und ohne Mining.",
+      "reward": "⭐ 1 – Schnell-Sender"
+    },
+    "lesson3": {
+      "title": "Öffentlichkeit & Privatsphäre",
+      "goal": "Pseudonymität begreifen",
+      "task": "Öffentliche Transaktion ansehen und raten, ob man weiß, wer sendet",
+      "learningOutcome": "Alles ist sichtbar, aber niemand kennt den echten Namen.",
+      "reward": "⭐ 1 – Datenschutz-Detektiv"
+    },
+    "lesson4": {
+      "title": "Dein Konto",
+      "goal": "Aufbau und Bedeutung von Public/Secret Key verstehen",
+      "task": "Zuordnungs-Spiel: Was ist öffentlich, was geheim",
+      "learningOutcome": "Nur der Secret Key gibt Zugriff, Public Key darf geteilt werden.",
+      "reward": "⭐ 1 – Schlüssel-Wächter"
+    },
+    "lesson5": {
+      "title": "Senden & Empfangen",
+      "goal": "Funktionsweise von Transaktionen und Trustlines verstehen",
+      "task": "Test-Sendung ausführen und Gebühr sehen",
+      "learningOutcome": "Jede Transaktion kostet eine kleine Gebühr; Trustline = Erlaubnis zum Empfangen.",
+      "reward": "⭐ 2 – Trustline-Starter"
+    },
+    "lesson6": {
+      "title": "Token & Handel",
+      "goal": "Marktmechanismen kennenlernen",
+      "task": "Token auf virtuellen Marktplatz legen und Preisänderung beobachten",
+      "learningOutcome": "Preis entsteht durch Angebot und Nachfrage.",
+      "reward": "⭐ 2 – Marktplatz-Kenner"
+    },
+    "lesson7": {
+      "title": "Sicherheit",
+      "goal": "Sichere Verhaltensweisen lernen",
+      "task": "Richtige/falsche Handlungen sortieren; Fake-Token erkennen",
+      "learningOutcome": "Geheimhaltung des Keys, sichere Aufbewahrung und Testnet nutzen.",
+      "reward": "⭐ 2 – Sicherheits-Wächter"
+    },
+    "lesson8": {
+      "title": "Verifizierung & Identität",
+      "goal": "Vertrauen und Regeln verstehen",
+      "task": "Echten vs. gefälschten Token vergleichen",
+      "learningOutcome": "KYC = Ausweisprüfung, Verifizierung zeigt vertrauenswürdige Token.",
+      "reward": "⭐ 2 – Prüf-Profi"
+    },
+    "lesson9": {
+      "title": "Zero Knowledge",
+      "goal": "Datenschutz-Konzepte verstehen",
+      "task": "Beispiel-Szenario 'Ich bin über 18' ohne Geburtsdatum zeigen",
+      "learningOutcome": "Man kann etwas beweisen, ohne Geheimnisse zu verraten.",
+      "reward": "⭐ 2 – ZK-Versteher"
+    },
+    "lesson10": {
+      "title": "Praxis mit SKM",
+      "goal": "Erlerntes praktisch anwenden",
+      "task": "Konto im Testnet erstellen, aktivieren, Trustline setzen, Token senden",
+      "learningOutcome": "Technische Abläufe einer Transaktion nachvollziehen.",
+      "reward": "⭐ 3 – Blockchain-Pilot"
+    },
+    "lesson11": {
+      "title": "Verantwortung",
+      "goal": "Konsequenzen von Fehlern verstehen",
+      "task": "Entscheidungsspiel: richtig handeln oder nicht",
+      "learningOutcome": "Blockchain ist endgültig; Sorgfalt ist Pflicht.",
+      "reward": "⭐ 1 – Verantwortungs-Held"
+    },
+    "lesson12": {
+      "title": "Abschluss / Spielerisches Lernen",
+      "goal": "Wiederholung und Motivation",
+      "task": "Mini-Quiz + Abzeichenanzeige",
+      "learningOutcome": "Gelerntes wiederholen, eigene Fortschritte erkennen.",
+      "reward": "🎖 Stellar-Profi"
+    }
   }
 }

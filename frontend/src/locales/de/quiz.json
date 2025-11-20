@@ -1,0 +1,231 @@
+{
+  "l1": {
+    "title": "Blockchain Grundlagen",
+    "q1": {
+      "question": "Was ist eine Blockchain?",
+      "hint": "Stell dir ein öffentliches Notizbuch vor. Viele Seiten (Blöcke) sind verknüpft.",
+      "a": "Eine öffentliche Liste von Datenseiten, verknüpft durch Mathematik (Blöcke in einer Kette).",
+      "b": "Ein Videospiel mit Münzen und Levels.",
+      "c": "Die geheime Datenbank einer Firma.",
+      "d": "Eine App, die nur auf deinem Handy läuft.",
+      "a.fb": "Richtig. Die Kette macht alte Seiten schwer änderbar.",
+      "b.fb": "Nicht ganz. Es ist eine geteilte Datenbank, kein Spiel.",
+      "c.fb": "Nein. Viele können sie prüfen, sie ist nicht geheim.",
+      "d.fb": "Nein. Sie läuft auf vielen Computern (Nodes), nicht nur deinem."
+    },
+    "q2": {
+      "question": "Wer kann auf Stellar Transaktionen sehen?",
+      "hint": "Öffentliches Netzwerk ≠ öffentliche Namen.",
+      "a": "Alle können sie sehen, aber nicht deinen echten Namen (nur Public Keys).",
+      "b": "Nur der Sender kann sie sehen.",
+      "c": "Nur Banken können sie sehen.",
+      "a.fb": "Richtig. Die Daten sind öffentlich, aber Identitäten stehen nicht drin.",
+      "b.fb": "Nein. Das Ledger ist öffentlich für Transparenz.",
+      "c.fb": "Nein. Jeder kann Transaktionen nachschlagen."
+    },
+    "q3": {
+      "question": "Warum sind Blöcke miteinander ‚verkettet‘?",
+      "hint": "Alte Seiten sollten schwer zu ändern sein.",
+      "a": "Damit das Ändern alter Daten sehr schwer wird.",
+      "b": "Damit die App cooler aussieht.",
+      "c": "Damit alles ewig offline funktioniert.",
+      "a.fb": "Ja. Jeder Block sichert den vorherigen durch Mathematik (Hashes).",
+      "b.fb": "Nein. Es geht um Sicherheit, nicht um Style.",
+      "c.fb": "Nein. Nodes müssen sich trotzdem synchronisieren."
+    },
+    "q4": {
+      "question": "Kann man einen Fehler in einer Transaktion einfach löschen?",
+      "hint": "Denk an: nur anhängen, nicht löschen.",
+      "a": "Nein. Man macht eine neue, korrigierende Transaktion.",
+      "b": "Ja, man löscht sie einfach aus der Kette.",
+      "a.fb": "Richtig. Das Ledger ist anhänge-only. Wir korrigieren mit neuen Einträgen.",
+      "b.fb": "Nein. Vergangene Einträge werden nicht gelöscht."
+    }
+  },
+  "l4": {
+    "title": "Keys, Gebühren und Trustlines",
+    "q1": {
+      "question": "Was ist ein Public Key?",
+      "hint": "Wie deine Briefkasten-Adresse.",
+      "a": "Eine Adresse zum Empfangen. Du darfst sie teilen.",
+      "b": "Ein geheimes Passwort, um dein Konto zu steuern.",
+      "a.fb": "Ja. Deinen Public Key darfst du teilen.",
+      "b.fb": "Das beschreibt den Secret Key, nicht den Public Key."
+    },
+    "q2": {
+      "question": "Du solltest deinen Secret Key niemals teilen.",
+      "hint": "Er ist der Schlüssel zu deinem Geld.",
+      "true": "Wahr",
+      "false": "Falsch",
+      "true.fb": "Richtig. Secret Key = Kontrolle. Gib ihn nie auf fremden Seiten ein.",
+      "false.fb": "Falsch. Bewahre ihn privat. Zum Lernen nur Testnet nutzen."
+    },
+    "q3": {
+      "question": "Warum verlangt Stellar winzige Gebühren?",
+      "hint": "Denk an Spam-Schutz.",
+      "a": "Um Spam zu stoppen und das Netzwerk gesund zu halten.",
+      "b": "Damit eine Firma reich wird.",
+      "c": "Weil Transaktionen immer langsam sind.",
+      "a.fb": "Richtig. Kleine Gebühren verhindern Spam und belohnen Validierer.",
+      "b.fb": "Nein. Die Gebühren sind minimal und dienen der Sicherheit.",
+      "c.fb": "Nein. Stellar ist schnell und günstig."
+    },
+    "q4": {
+      "question": "Was ist eine Trustline?",
+      "hint": "Es ist wie eine Erlaubnis.",
+      "a": "Eine Erlaubnis, einen Token eines Issuers zu halten.",
+      "b": "Eine geheime Chat-Leitung zwischen zwei Konten.",
+      "c": "Ein besonderer Gebührenrabatt beim Handeln.",
+      "a.fb": "Ja. Du wählst, welchen Issuern/Tokens du vertraust.",
+      "b.fb": "Nein. Es ist kein Chat, sondern eine Halte-Erlaubnis.",
+      "c.fb": "Nein. Trustlines betreffen das Halten von Assets."
+    }
+  },
+  "l7": {
+    "title": "Sicherheit, Phishing und Vertrauen",
+    "q1": {
+      "question": "Eine Website will deinen Secret Key, um dein Guthaben zu ‚prüfen‘. Was tust du?",
+      "hint": "Teile deinen Secret Key niemals.",
+      "a": "Seite verlassen. Secret Key nie eingeben.",
+      "b": "Eingeben, aber nur einmal.",
+      "c": "Stattdessen einen Screenshot deines Keys teilen.",
+      "a.fb": "Richtig. Das ist Phishing. Nutze nur vertrauenswürdige Wallets.",
+      "b.fb": "Nein. Einmal reicht, um die Kontrolle zu verlieren.",
+      "c.fb": "Nein. Teile ihn in keiner Form."
+    },
+    "q2": {
+      "question": "Du siehst zwei Tokens namens USDX. Wie findest du den echten?",
+      "hint": "Namen kann man kopieren. Issuer und Domains zählen.",
+      "a": "Issuer-Konto und verifizierte Domain/Asset-Infos prüfen.",
+      "b": "Das mit dem hübscheren Logo nehmen.",
+      "c": "Münze werfen. Sie sind gleich.",
+      "a.fb": "Ja. Asset-Code reicht nicht. Issuer und Domain prüfen.",
+      "b.fb": "Logos kann man fälschen. Issuer/Domain prüfen.",
+      "c.fb": "Nein. Sie können sehr verschieden sein. Immer prüfen."
+    },
+    "q3": {
+      "question": "Was ist ‚Verifizierung/KYC‘ in einfachen Worten?",
+      "hint": "Manche Dienste müssen wissen, wer du bist.",
+      "a": "Ein Prozess, bei dem ein Dienst deine Identität prüft.",
+      "b": "Eine Methode, die Blockchain zu beschleunigen.",
+      "c": "Seinen Secret Key mit einer Bank teilen.",
+      "a.fb": "Richtig. Das hilft gegen Betrug und erfüllt Gesetze.",
+      "b.fb": "Nein. Es geht um Identität, nicht um Geschwindigkeit.",
+      "c.fb": "Nein. Teile niemals deinen Secret Key. KYC braucht ihn nicht."
+    },
+    "q4": {
+      "question": "Was ist ein ‚Zero-Knowledge Proof‘ (ZK) in einfachen Worten?",
+      "hint": "Beweise, dass du etwas weißt, ohne das Geheimnis zu verraten.",
+      "a": "Ein Beweis, dass etwas stimmt, ohne das Geheimnis zu zeigen.",
+      "b": "Ein Werkzeug, das alle Transaktionen für immer versteckt.",
+      "c": "Eine schnellere Art, Zahlungen zu senden.",
+      "a.fb": "Ja. Beispiel: Beweise, dass du über 13 bist, ohne dein Geburtsdatum zu sagen.",
+      "b.fb": "Nein. ZK beweist Fakten, löscht aber keine Einträge.",
+      "c.fb": "Nein. Es geht um datensparsame Beweise."
+    }
+  },
+  "ui": {
+    "startQuiz": "Quiz starten",
+    "startPractice": "Praxis starten",
+    "practice": "Praxis",
+    "quiz": "Quiz",
+    "hint": "Tipp",
+    "next": "Weiter",
+    "prev": "Zurück",
+    "finish": "Fertig",
+    "yourScore": "Dein Ergebnis",
+    "passed": "Bestanden",
+    "failed": "Nicht bestanden",
+    "explanation": "Warum?",
+    "correct": "Richtig",
+    "incorrect": "Falsch",
+    "of": "von",
+    "retry": "Nochmal versuchen",
+    "viewResults": "Ergebnis ansehen",
+    "routeTitle": "Quiz zu Lektion {{id}}",
+    "backToLearn": "Zur Lernübersicht",
+    "summaryCount": "{{correct}}/{{total}} richtig",
+    "noDataHelp": "Öffne die Lernübersicht, um die passende Lektion auszuwählen.",
+    "jump": "Springen",
+    "jumpToQuestion": "Zu Frage springen",
+    "question": "Frage",
+    "cancel": "Abbrechen",
+    "stickyNav": "Sticky-Navigation",
+    "on": "An",
+    "off": "Aus",
+    "timeRemaining": "Zeit verbleibend",
+    "beforeUnloadMessage": "Du hast dieses Quiz noch nicht beendet. Wenn du die Seite verlässt, können aktuelle Antworten verloren gehen.",
+    "openInNewTab": "In neuem Tab öffnen",
+    "openInNewTab.default": "Quiz standardmäßig in neuem Tab öffnen",
+    "openInNewTab.once": "In neuem Tab öffnen",
+    "startInNewTab": "Quiz in neuem Tab starten",
+    "warnOnActiveQuiz": "Warnung bei laufendem Quiz anzeigen"
+  },
+  "meta": {
+    "estimatedMinutes": "Geschätzte Minuten",
+    "passThreshold": "Bestehensgrenze",
+    "threeStarThreshold": "3★ Grenze"
+  },
+  "landing": {
+    "title": "Quiz Übersicht",
+    "description": "Kurzer Einstieg in die Lektion. Überprüfe dein Wissen und sammle Sterne.",
+    "questionsLabel": "Fragen",
+    "estimatedMinutesLabel": "Geschätzte Minuten",
+    "passThresholdLabel": "Bestehensgrenze",
+    "threeStarThresholdLabel": "3★-Schwelle",
+    "start": "Quiz starten",
+    "startPractice": "Übungsmodus starten",
+    "settings": "Einstellungen",
+    "settingsLink": "Einstellungen",
+    "achievements": "Erfolge"
+  },
+  "achievements": {
+    "title": "Erfolge",
+    "list": "Deine Abzeichen",
+    "none": "Noch keine Abzeichen freigeschaltet. Weiter so!",
+    "link": "Erfolge",
+    "badge": "Abzeichen: {{name}}",
+    "unlockedAt": "Freigeschaltet am: {{date}}",
+    "first_run": "Erster Lauf",
+    "passed": "Bestanden",
+    "three_stars": "Drei Sterne",
+    "perfect_score": "Perfekte Punktzahl"
+  },
+  "result": {
+    "score": "Dein Ergebnis: {{score}}%",
+    "summary": "{{correct}}/{{total}} richtig",
+    "passInfo": "Bestehensgrenze: {{pass}}% — Status: {{status}}",
+    "passed": "Bestanden",
+    "failed": "Nicht bestanden",
+    "threeStarThreshold": "3★-Schwelle: {{value}}%",
+    "stars": "Sterne: {{stars}}",
+    "newAchievementsTitle": "Neu erhaltene Abzeichen",
+    "noNewAchievements": "Keine neuen Abzeichen in diesem Durchlauf.",
+    "retry": "Nochmal versuchen",
+    "backToOverview": "Zurück zur Übersicht",
+    "nextLesson": "Weiter zur nächsten Lektion",
+    "toast": {
+      "newAchievement": "Neues Abzeichen: {{name}}",
+      "close": "Schließen"
+    }
+  },
+  "settings": {
+    "title": "Quiz-Einstellungen",
+    "stickyNav": "Sticky-Navigation",
+    "stickyNav.desc": "Navigationsleiste bleibt mobil am unteren Rand",
+    "hints": "Hinweise (Hints)",
+    "hints.desc": "Zeige Lernhinweise zu den Fragen",
+    "haptics": "Haptik/Vibration",
+    "haptics.desc": "Vibrieren bei Auswahl und Abschluss",
+    "shuffle": "Fragen mischen",
+    "shuffle.desc": "Reihenfolge der Fragen zufällig anordnen",
+    "timeLimit": "Zeitlimit",
+    "timeLimit.desc": "Optionales Limit in Minuten (0 = kein Limit)",
+    "timeLimit.input": "Zeitlimit einstellen",
+    "minutes": "Minuten",
+    "on": "An",
+    "off": "Aus",
+    "warnOnActiveQuiz": "Warnung bei laufendem Quiz anzeigen",
+    "warnOnActiveQuiz.desc": "Bei bereits beantworteten Fragen vor dem Verlassen der Seite warnen"
+  }
+}
