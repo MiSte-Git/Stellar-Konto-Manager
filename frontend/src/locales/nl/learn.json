@@ -43,7 +43,7 @@
     "success": "Succes",
     "validation": "Validatie",
     "pending": "Wachten op validatie",
-    "retry": "Uw training is gebaseerd op gegevens tot oktober 2023."
+    "retry": "Probeer het alstublieft opnieuw"
   },
   "import": {
     "title": "Vooruitgang importeren",

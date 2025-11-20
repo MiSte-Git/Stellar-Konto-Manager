@@ -1,5 +1,5 @@
 {
-  "title": "Multisig-Konto erstellen",
+  "title": "Konto + Multisig erstellen",
   "menu": "Konto erstellen + Multisig",
   "menuHint": "Neues Konto erzeugen und optional Multisig setzen",
   "hint": "Erzeuge ein neues Konto, aktiviere es und konfiguriere optional Multisig.",
@@ -89,5 +89,10 @@
   },
   "units": {
     "signatures": "Unterschrift(en)"
-  }
+  },
+  "muxedId": "Muxed-ID",
+  "muxedInfo": "Mit der Muxed-ID wird eine M-Adresse (M...) erstellt. Sie zeigt auf dasselbe Konto wie die reguläre Adresse (G...).",
+  "muxedIdInvalid": "Die Muxed-ID muss eine Ganzzahl zwischen 0 und 18'446'744'073'709'551'615 sein.",
+  "muxedAddress": "Muxed-Adresse",
+  "muxedActivationInfo": "Muxed-Adressen sind Alias-Adressen. Sie müssen nicht separat aktiviert werden."
 }

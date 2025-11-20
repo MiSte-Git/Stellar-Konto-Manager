@@ -14,15 +14,15 @@
     "pageTitle": "Glossario"
   },
   "progress": {
-    "saved": "Progresso salvato.",
-    "starsLabel": "{count} stelle ★",
+    "saved": "Progresso salvato",
+    "starsLabel": "{count} ★",
     "error": "Impossibile salvare i progressi.",
     "clearAll": "Cancellare i progressi",
     "cleared": "Progresso cancellato",
     "setStarsGroup": "Assegnare stelle",
     "setStars": "Impostare {count} stelle",
     "completed": "Completato",
-    "markComplete": "Contrassegna come completato.",
+    "markComplete": "Contrassegna come completato",
     "export": "Esportare",
     "exported": "Esportato progresso",
     "import": "Importare",

@@ -42,7 +42,7 @@ export async function fetchGroupfundByMemo({
   signal,
 }) {
   try {
-    if (!publicKey) throw new Error('investedTokens.error.missingPublicKey');
+    if (!publicKey) throw new Error('investedTokens:error.missingPublicKey');
 
     const server = getHorizonServer(horizonUrl);
     const memoGroups = new Map(); // memo -> { count, totalXlm, firstTx, firstCreatedAt, destinations: Map(addr->count) }
@@ -232,7 +232,7 @@ export async function fetchGroupfundByMemoCached({
   requiredFromISO,
 }) {
   try {
-    if (!publicKey) throw new Error('investedTokens.error.missingPublicKey');
+    if (!publicKey) throw new Error('investedTokens:error.missingPublicKey');
     const server = getHorizonServer(horizonUrl);
 
     // 1) Abdeckung sicherstellen (lädt fehlende Seiten in den lokalen Cache)
@@ -320,7 +320,7 @@ export async function fetchInvestedPerToken({
   signal,
 }) {
   try {
-    if (!publicKey) throw new Error('investedTokens.error.missingPublicKey');
+    if (!publicKey) throw new Error('investedTokens:error.missingPublicKey');
 
     const server = getHorizonServer(horizonUrl);
     const totals = new Map(); // "CODE:ISSUER" -> number (gekaufte Menge)

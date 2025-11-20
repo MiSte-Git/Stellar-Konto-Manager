@@ -227,10 +227,10 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
 
   const handleWrongSort = useCallback((key) => {
     setWrongSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
-  }, []);
+  }, [setWrongSort]);
   const handleTopSort = useCallback((key) => {
     setTopSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
-  }, []);
+  }, [setTopSort]);
   const sortArrow = useCallback((state, key) => (state.key === key ? (state.dir === 'asc' ? ' ▲' : ' ▼') : ''), []);
 
   /**
@@ -484,7 +484,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       setErrorKey('exportCsv.failed');
       setProg(p => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
     }
-  }, [fromDate, fromTime, toDate, toTime, tz, publicKey, server, ROLE.FROM, ROLE.TO]);
+  }, [fromDate, fromTime, toDate, toTime, tz, publicKey, server, ROLE.FROM, ROLE.TO, t]);
 
   // Optional: Beide auf einmal exportieren
 

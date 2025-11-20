@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
@@ -15,11 +15,11 @@ function NetworkSelector({ value, onChange }) {
       <div className="flex items-center gap-4">
         <label className="flex items-center gap-2">
           <input type="radio" name="network" value="PUBLIC" checked={value === 'PUBLIC'} onChange={() => { try { window.localStorage.setItem('STM_NETWORK','PUBLIC'); window.localStorage.removeItem('STM_HORIZON_URL'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('PUBLIC'); }} />
-          {t('network.mainnet')}
+          {t('network:mainnet')}
         </label>
         <label className="flex items-center gap-2">
           <input type="radio" name="network" value="TESTNET" checked={value === 'TESTNET'} onChange={() => { try { window.localStorage.setItem('STM_NETWORK','TESTNET'); window.localStorage.setItem('STM_HORIZON_URL','https://horizon-testnet.stellar.org'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('TESTNET'); }} />
-          {t('network.testnet')}
+          {t('network:testnet')}
         </label>
       </div>
       {isTestnet && (
@@ -71,7 +71,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const thHighErr = highT > sumWeights;
 
   // Load account
-  async function loadAccount() {
+  const loadAccount = useCallback(async () => {
     const pk = (defaultPublicKey || '').trim();
     if (!pk) return;
     setLoading(true);
@@ -102,11 +102,11 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [defaultPublicKey, server, t]);
 
   useEffect(() => {
     if (defaultPublicKey) loadAccount();
-  }, [defaultPublicKey, network]);
+  }, [defaultPublicKey, network, loadAccount]);
 
   // Sync local network radio with global header toggle
   useEffect(() => {
@@ -348,3 +348,4 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     </div>
   );
 }
+

@@ -1,6 +1,36 @@
 {
-  "lastId": 8,
+  "lastId": 10,
   "items": [
+    {
+      "id": 10,
+      "ts": "2025-11-16T06:10:24.659Z",
+      "url": "http://localhost:5173/STM/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+      "language": "de-DE",
+      "reportToken": "6f2b4043dcada4d497d5f4f27c74b77c",
+      "description": "network.mainnet\nsecretKey.info\ncreateAccount.info.more\npublicKey.label\npublicKey.placeholder\npublicKey.load\npublicKey.deletFromList\nnavigation.backToMainMenu",
+      "appVersion": null,
+      "status": "open",
+      "priority": "normal",
+      "category": "bug",
+      "page": "start",
+      "contactEmail": null
+    },
+    {
+      "id": 9,
+      "ts": "2025-11-16T06:04:06.772Z",
+      "url": "http://localhost:5173/STM/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+      "language": "de-DE",
+      "reportToken": "ec4200c63916dace6fe6ac69343a076e",
+      "description": "Die spanische und kroatische Flaggen werden nicht mehr angezeigt",
+      "appVersion": null,
+      "status": "open",
+      "priority": "normal",
+      "category": "bug",
+      "page": "other",
+      "contactEmail": null
+    },
     {
       "id": 8,
       "ts": "2025-10-28T07:55:17.464Z",

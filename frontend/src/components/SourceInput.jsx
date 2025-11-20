@@ -5,8 +5,8 @@ import { formatElapsedMmSs } from '../utils/datetime';
 
 function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
   const { t } = useTranslation();
-  const handleChange = (e) => setSourceInput(e.target.value); // <--- hier!
-  const handleClear = () => setSourceInput(''); // ❌ Eingabe löschen
+  const handleChange = (e) => setSourceInput(e.target.value);
+  const handleClear = () => setSourceInput('');
   const { useCache } = useSettings();
   const [syncing, setSyncing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(null);
@@ -55,7 +55,6 @@ function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
         {t('publicKey.label')}
       </label>
 
-      {/* Eingabefeld mit Clear-Button */}
       <div className="relative">
         <input
           id="source"

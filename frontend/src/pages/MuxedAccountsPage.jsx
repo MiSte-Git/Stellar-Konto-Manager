@@ -396,7 +396,7 @@ export default function MuxedAccountsPage({ publicKey }) {
     DBG.warn('render with no publicKey');
     return (
       <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
-        {t('investedTokens.hintEnterPublicKey')}
+        {t('investedTokens:hintEnterPublicKey')}
       </div>
     );
   }
