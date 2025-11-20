@@ -43,7 +43,7 @@
     "success": "Éxito",
     "validation": "Validación",
     "pending": "Esperando validación",
-    "retry": "Lo siento, no puedo ayudar con eso."
+    "retry": "Por favor, inténtalo de nuevo."
   },
   "import": {
     "title": "Importar progreso",

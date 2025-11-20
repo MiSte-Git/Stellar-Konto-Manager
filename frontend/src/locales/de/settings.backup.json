@@ -1,0 +1,39 @@
+{
+  "desc": "Exportiere oder importiere deine Quiz-Daten (Einstellungen, Fortschritt, Abzeichen).",
+  "export": {
+    "button": "Export starten",
+    "fileName": "quiz-backup.json",
+    "success": "Export erstellt"
+  },
+  "import": {
+    "backupCreated": "Automatisches Backup gespeichert",
+    "done": "Import abgeschlossen",
+    "invalid": "Ungültige Importdatei",
+    "noFile": "Keine Datei ausgewählt",
+    "preview": {
+      "stats": {
+        "achievements": "Abzeichen: {{count}} Quiz(e)",
+        "progress": "Fortschritte: {{count}} Quiz(e)",
+        "settings": "Einstellungen: {{count}} Quiz(e)"
+      },
+      "title": "Vorschau"
+    },
+    "selectFile": "Datei auswählen",
+    "strategy": {
+      "label": "Strategie",
+      "merge": "Zusammenführen",
+      "replace": "Ersetzen"
+    },
+    "title": "Import"
+  },
+  "nav": {
+    "back": "Zurück"
+  },
+  "title": "Backup & Wiederherstellung",
+  "toast": {
+    "backupBeforeImport": "Vor Import wurde ein Backup gespeichert",
+    "exported": "Backup exportiert",
+    "exportFailed": "Export fehlgeschlagen",
+    "importFailed": "Import fehlgeschlagen"
+  }
+}

@@ -200,7 +200,7 @@ export async function loadTrustlines(publicKey, serverOverride, options = {}) {
         changeTrustOps = operations.records.filter(
           op => op.type === 'change_trust' && op.trustor === publicKey
         );
-      } catch (e) {
+      } catch {
         try { console.warn('[STM] change_trust ops fetch failed; proceeding without createdAt'); } catch { /* noop */ }
         changeTrustOps = [];
       }

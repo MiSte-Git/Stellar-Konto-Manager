@@ -189,7 +189,7 @@ export default function InvestedTokensPanel({ publicKey }) {
     return () => { cancelled = true; };
   }, [publicKey]);
 
-  if (!publicKey) return <div className="p-3 text-sm">{t('investedTokens.hintEnterPublicKey')}</div>;
+  if (!publicKey) return <div className="p-3 text-sm">{t('InvestedTokens:hintEnterPublicKey')}</div>;
 
   return (
     <div className="p-4 space-y-3">
@@ -201,7 +201,7 @@ export default function InvestedTokensPanel({ publicKey }) {
             const fmt = new Intl.DateTimeFormat(i18n.language || undefined, { dateStyle: 'medium' });
             const availStr = fmt.format(new Date(historyAvailableFrom));
             const fromStr = minFrom ? fmt.format(new Date(minFrom)) : availStr;
-            return t('investedTokens.history.hintFullHistory', { from: fromStr, available: availStr });
+            return t('InvestedTokens:history:hintFullHistory', { from: fromStr, available: availStr });
           })()}
         </div>
       )}
@@ -209,14 +209,14 @@ export default function InvestedTokensPanel({ publicKey }) {
         {/* Linker Block: Filterlabel + Ansichtsauswahl + Datum+Radio direkt daneben */}
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
-            <label className="text-sm">{t('investedTokens.view.label')}</label>
+            <label className="text-sm">{t('InvestedTokens:view.label')}</label>
             <select
               className="border rounded px-2 py-1"
               value={view}
               onChange={(e) => setView(e.target.value)}
             >
-              <option value="memo">{t('investedTokens.view.memo')}</option>
-              <option value="token">{t('investedTokens.view.token')}</option>
+              <option value="memo">{t('InvestedTokens:view.memo')}</option>
+              <option value="token">{t('InvestedTokens:view.token')}</option>
             </select>
           </div>
           {view === 'memo' && (
@@ -235,8 +235,8 @@ export default function InvestedTokensPanel({ publicKey }) {
                 </label>
               </div>
               <div className="flex flex-col text-xs gap-1 items-start">
-                <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='totals'} onChange={()=>setScopeMode('totals')} />{t('investedTokens.toggles.showTotals')}</label>
-                <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='qsi'} onChange={()=>setScopeMode('qsi')} />{t('investedTokens.toggles.qsiOnly')}</label>
+                <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='totals'} onChange={()=>setScopeMode('totals')} />{t('InvestedTokens:toggles.showTotals')}</label>
+                <label className="inline-flex items-center gap-1"><input type="radio" name="scopeMode" checked={scopeMode==='qsi'} onChange={()=>setScopeMode('qsi')} />{t('InvestedTokens:toggles.qsiOnly')}</label>
               </div>
             </div>
           )}
@@ -244,7 +244,7 @@ export default function InvestedTokensPanel({ publicKey }) {
           {/* Rechter Block: Buttons rechtsbündig */}
           <div className="flex items-center gap-2 ml-auto">
           <button className="border rounded px-3 py-1" onClick={load} disabled={loading}>
-          {loading ? t('common.loading') : t('investedTokens.action.load', 'Laden')}
+          {loading ? t('common.loading') : t('InvestedTokens:action.load', 'Laden')}
           </button>
           {loading && (
           <button className="border rounded px-3 py-1" onClick={onCancel}>
@@ -321,7 +321,7 @@ export default function InvestedTokensPanel({ publicKey }) {
           <div className="space-y-2">
             {/* Summary container centered */}
             <div className="text-center space-y-1">
-              <div className="text-lg font-semibold">{t('investedTokens.total', { count: sorted.length })}</div>
+              <div className="text-lg font-semibold">{t('InvestedTokens:total', { count: sorted.length })}</div>
               {(showTotals || qsiOnly) && (
                 <div className="text-sm">Summe: {tokenAmountFmt.format(sorted.reduce((s, r) => s + (r.amount || 0), 0))} XLM</div>
               )}
@@ -334,28 +334,28 @@ export default function InvestedTokensPanel({ publicKey }) {
                 return (
                   <div className="text-xs text-gray-500 dark:text-gray-400 space-y-0.5">
                     {range && (<div>Zeitraum: {range}</div>)}
-                    {avail && (<div>{t('investedTokens.history.availableFrom')}: {avail}</div>)}
+                    {avail && (<div>{t('InvestedTokens:history.availableFrom')}: {avail}</div>)}
                     <div>{t('account.createdAt')}: {created ? created : t('account.createdAtUnknown')}</div>
 
                   </div>
                 );
               })()}
               {qsiOnly && (
-                <div className="text-xs text-blue-700 dark:text-blue-300">{t('investedTokens.hints.qsiListSet')}</div>
+                <div className="text-xs text-blue-700 dark:text-blue-300">{t('InvestedTokens:hints.qsiListSet')}</div>
               )}
             </div>
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">
                 <thead>
                   <tr className="text-left border-b">
-                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('memo')}>{t('investedTokens.columns.memo')}</th>
-                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('occurrences')}>{t('investedTokens.columns.payments')}</th>
-                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('amount')}>{t('investedTokens.columns.amount')}</th>
-                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('destination')}>{t('investedTokens.columns.destination')}</th>
-                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('label')}>{t('investedTokens.columns.label')}</th>
-                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('date')}>{t('investedTokens.columns.date')}</th>
-                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('compromised')}>{t('investedTokens.columns.compromised')}</th>
-                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('deactivated')}>{t('investedTokens.columns.deactivated')}</th>
+                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('memo')}>{t('InvestedTokens:columns.memo')}</th>
+                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('occurrences')}>{t('InvestedTokens:columns.payments')}</th>
+                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('amount')}>{t('InvestedTokens:columns.amount')}</th>
+                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('destination')}>{t('InvestedTokens:columns.destination')}</th>
+                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('label')}>{t('InvestedTokens:columns.label')}</th>
+                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('date')}>{t('InvestedTokens:columns.date')}</th>
+                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('compromised')}>{t('InvestedTokens:columns.compromised')}</th>
+                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('deactivated')}>{t('InvestedTokens:columns.deactivated')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -409,15 +409,15 @@ export default function InvestedTokensPanel({ publicKey }) {
         return (
           <div className="space-y-2">
             <div className="text-lg font-semibold">
-              {t('investedTokens.totalTokens', { count: sorted.length })}
+              {t('InvestedTokens:totalTokens', { count: sorted.length })}
             </div>
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">
                 <thead>
                   <tr className="text-left border-b">
-                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('token')}>{t('investedTokens.columns.token')}</th>
-                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('amount')}>{t('investedTokens.columns.amount')}</th>
-                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('issuer')}>{t('investedTokens.columns.issuer')}</th>
+                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('token')}>{t('InvestedTokens:columns.token')}</th>
+                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('amount')}>{t('InvestedTokens:columns.amount')}</th>
+                    <th className="px-2 py-1 cursor-pointer" onClick={() => onSort('issuer')}>{t('InvestedTokens:columns.issuer')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -432,7 +432,7 @@ export default function InvestedTokensPanel({ publicKey }) {
               </table>
             </div>
             <div className="text-xs text-gray-500">
-              {t('investedTokens.walletCapInfo')}
+              {t('InvestedTokens:walletCapInfo')}
             </div>
           </div>
         );
@@ -452,14 +452,14 @@ export default function InvestedTokensPanel({ publicKey }) {
       return [it.group, it.occurrences, Number(it.totalAmount || 0).toFixed(7), addr, label, dateIso, compromised, deactivated];
     });
     const header = [
-      t('investedTokens.columns.memo'),
-      t('investedTokens.columns.payments'),
-      t('investedTokens.columns.amount'),
-      t('investedTokens.columns.destination'),
-      t('investedTokens.columns.label'),
-      t('investedTokens.columns.date'),
-      t('investedTokens.columns.compromised'),
-      t('investedTokens.columns.deactivated'),
+      t('InvestedTokens:columns.memo'),
+      t('InvestedTokens:columns.payments'),
+      t('InvestedTokens:columns.amount'),
+      t('InvestedTokens:columns.destination'),
+      t('InvestedTokens:columns.label'),
+      t('InvestedTokens:columns.date'),
+      t('InvestedTokens:columns.compromised'),
+      t('InvestedTokens:columns.deactivated'),
     ];
     downloadCsv([header, ...rows]);
   }
@@ -474,9 +474,9 @@ export default function InvestedTokensPanel({ publicKey }) {
       return [token, Number(it.totalAmount || 0), issuer];
     });
     const header = [
-      t('investedTokens.columns.token'),
-      t('investedTokens.columns.amount'),
-      t('investedTokens.columns.issuer'),
+      t('InvestedTokens:columns.token'),
+      t('InvestedTokens:columns.amount'),
+      t('InvestedTokens:columns.issuer'),
     ];
     downloadCsv([header, ...rows]);
   }
@@ -494,7 +494,7 @@ export default function InvestedTokensPanel({ publicKey }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    const menuName = t('token.purchases');
+    const menuName = t('token:purchases');
     a.download = buildDefaultFilename({ publicKey, menuLabel: menuName, ext: 'csv' });
     document.body.appendChild(a);
     a.click();

@@ -9,6 +9,9 @@
     "outcome": "Ergebnis",
     "reward": "Belohnung"
   },
+  "actions": {
+    "startQuiz": "Quiz starten"
+  },
   "glossary": {
     "link": "Glossar öffnen",
     "pageTitle": "Glossar"
@@ -43,7 +46,10 @@
     "success": "Erfolg",
     "validation": "Validierung",
     "pending": "Wartet auf Validierung",
-    "retry": "Bitte erneut versuchen"
+    "retry": "Bitte erneut versuchen",
+    "noData": "Kein Quiz verfügbar",
+    "comingSoon": "Praxis für diese Lektion folgt in Kürze.",
+    "testnetOnly": "Nur TESTNET verwenden. Niemals echte Secret Keys eingeben. Wir speichern keine Geheimnisse."
   },
   "import": {
     "title": "Fortschritt importieren",

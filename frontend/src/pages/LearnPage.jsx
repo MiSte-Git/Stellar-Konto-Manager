@@ -310,6 +310,44 @@ function LearnPage() {
                   >
                     {state.completed ? t('learn:progress.completed', 'Completed') : t('learn:progress.markComplete', 'Mark as complete')}
                   </button>
+                  <a
+                    href={buildPath(`quiz/${String(pid).match(/\d+/)?.[0] || '1'}/settings`)}
+                    onClick={(e) => {
+                      try {
+                        e.preventDefault();
+                        const id = String(pid).match(/\d+/)?.[0] || '1';
+                        const url = buildPath(`quiz/${id}/settings`);
+                        // remember previous path to restore on back
+                        try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
+                        window.history.pushState({}, '', url);
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      } catch { /* noop */ }
+                    }}
+                    className="px-3 py-1.5 rounded text-xs font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
+                    title={t('quiz:landing.settings', 'Einstellungen')}
+                    aria-label={t('quiz:landing.settings', 'Einstellungen')}
+                  >
+                    {t('quiz:landing.settings', 'Einstellungen')}
+                  </a>
+                  <a
+                    href={buildPath(`quiz/${String(pid).match(/\d+/)?.[0] || '1'}`)}
+                    onClick={(e) => {
+                      try {
+                        e.preventDefault();
+                        const id = String(pid).match(/\d+/)?.[0] || '1';
+                        const url = buildPath(`quiz/${id}`);
+                        // remember previous path to restore on back
+                        try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
+                        window.history.pushState({}, '', url);
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      } catch { /* noop */ }
+                    }}
+                    className="px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
+                    title={t('learn:actions.startQuiz', 'Start quiz')}
+                    aria-label={t('learn:actions.startQuiz', 'Start quiz')}
+                  >
+                    {t('learn:actions.startQuiz', 'Start quiz')}
+                  </a>
                 </div>
               </div>
             </article>
