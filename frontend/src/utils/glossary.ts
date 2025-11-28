@@ -11,7 +11,7 @@ export function getGlossaryParts(slug: string, t: TFunction) {
   // Do NOT pass a default for title so a missing de.json key becomes visible
   const title = t(titleKey) as string;
   if (!title || title === titleKey) {
-    // Let the ErrorBoundary/UI handle translation via t('glossary.missingKey')
+    // Let the ErrorBoundary/UI handle translation via t('common:glossary.missingKey')
     throw new Error('glossary.missingKey:' + slug);
   }
   // original can be missing; then we simply do not show the parenthetical

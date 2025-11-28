@@ -166,16 +166,16 @@ function ListTrustlines({
 
       const skippedCount = selectedTrustlines.length - deletableTrustlines.length;
       if (skippedCount > 0) {
-        setInfoMessage(t('trustlines.skippedDueToBalance', { count: skippedCount }));
+        setInfoMessage(t('common:trustlines.skippedDueToBalance', { count: skippedCount }));
       }
 
       if (deletableTrustlines.length === 0) {
-        setModalError(t('trustline.deleted.notFound'));
+        setModalError(t('trustline:deleted.notFound'));
         return;
       }
 
       setResults([
-        t('trustline.deleted.simulated', { count: deletableTrustlines.length })
+        t('trustline:deleted.simulated', { count: deletableTrustlines.length })
       ]);
       setIsSimulation(true);
       setSelectedTrustlines([]);
@@ -219,12 +219,12 @@ function ListTrustlines({
       // 💬 Hinweis anzeigen, wenn Trustlines übersprungen werden
       const skippedCount = selectedTrustlines.length - deletableTrustlines.length;
       if (skippedCount > 0) {
-        setInfoMessage(t('trustlines.skippedDueToBalance', { count: skippedCount }));
+        setInfoMessage(t('common:trustlines.skippedDueToBalance', { count: skippedCount }));
       }
 
       // Wenn nichts löschbar ist, Dialog schließen
       if (deletableTrustlines.length === 0) {
-        setModalError(t('trustline.deleted.notFound'));
+        setModalError(t('trustline:deleted.notFound'));
         setIsProcessing(false);
         return;
       }
@@ -234,7 +234,7 @@ function ListTrustlines({
       setModalError('');
 
       if (deletableTrustlines.length === 0) {
-        setModalError(t('trustline.deleted.notFound'));
+        setModalError(t('trustline:deleted.notFound'));
         setIsProcessing(false);
         return;
       }
@@ -252,7 +252,7 @@ function ListTrustlines({
       );
 
       if (stillValid.length === 0) {
-        setModalError(t('trustline.deleted.notFound'));
+        setModalError(t('trustline:deleted.notFound'));
         setIsProcessing(false);
         return;
       }
@@ -269,7 +269,7 @@ function ListTrustlines({
 
       // Erfolgsmeldung anzeigen
       setResults([
-        t('trustline.deleted.success', { count: deleted.length }),
+        t('trustline:deleted.success', { count: deleted.length }),
       ]);
 
       // 🔄 Trustlines vollständig neu von Horizon laden
@@ -353,12 +353,12 @@ function ListTrustlines({
       {/* Menükopf mit Zurück-Button + aktuelle Ansicht */}
       <MenuHeader setMenuSelection={setMenuSelection} menuSelection={menuSelection} />
       {/* Menütitel anzeigen */}
-      <h2 className="text-center text-xl font-semibold">{t('trustline.all')}</h2>
+      <h2 className="text-center text-xl font-semibold">{t('trustline:all')}</h2>
       {/* Fortschritt der Löschung an der Spitze */}
       <div className="mb-3">
         <ProgressBar {...delProg} />
         <div className="text-xs text-gray-500 mt-1">
-          {t('progress.elapsed', { time: formatElapsedMmSs(delElapsedMs) })}
+          {t('common:progress.elapsed', { time: formatElapsedMmSs(delElapsedMs) })}
         </div>
       </div>
 
@@ -371,7 +371,7 @@ function ListTrustlines({
       {/* Infoleiste: Wallet, Anzahl, Modusauswahl */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-500 rounded p-3 text-sm mb-4">
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 sm:mb-0 flex-wrap">
-          <span>{t('trustline.all')}: {trustlines.length}</span>
+          <span>{t('trustline:all')}: {trustlines.length}</span>
           <div className="flex gap-2">
             <button
               type="button"
@@ -394,12 +394,12 @@ function ListTrustlines({
           {/* 🔘 Radiobuttons */}
           <label className="flex items-center gap-1">
             <input type="radio" name="mode" value="simulation" checked={simulationMode} onChange={() => setSimulationMode(true)} />
-            {t('trustline.deleted.mode.simulation')}
+            {t('trustline:deleted.mode.simulation')}
           </label>
           <label className="flex items-center gap-1 text-red-700">
             <input type="radio" name="mode" value="real" checked={!simulationMode} onChange={() => setSimulationMode(false)} />
-            {t('trustline.deleted.mode.real')}
-            <span title={t('trustline.deleted.mode.realWarning')} className="text-xl">⚠️🚨</span>
+            {t('trustline:deleted.mode.real')}
+            <span title={t('trustline:deleted.mode.realWarning')} className="text-xl">⚠️🚨</span>
           </label>
 
           {/* 🗑️ Löschen-Button */}
@@ -409,14 +409,14 @@ function ListTrustlines({
                 onClick={() => setShowOverviewModal(true)}
                 className="ml-4 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700"
               >
-                {t('trustline.delete')}
+                {t('trustline:delete')}
               </button>
             </div>
           )}
         </div>
       </div>
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-        {t('trustline.onlyZeroBalanceInfo')}
+        {t('trustline:onlyZeroBalanceInfo')}
       </p>
       <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead>
@@ -471,14 +471,14 @@ function ListTrustlines({
                   onChange={(e) => {
                     e.stopPropagation();
                     if (parseFloat(tl.assetBalance) !== 0) {
-                      alert(t('trustline.nonZeroBalance'));
+                      alert(t('trustline:nonZeroBalance'));
                       return;
                     }
                     setSelectedTrustlines(prev => toggleTrustlineSelection(tl, prev));
                   }}
                   disabled={false}
                   className={parseFloat(tl.assetBalance) !== 0 ? 'opacity-50' : ''}
-                  title={parseFloat(tl.assetBalance) !== 0 ? t('trustline.nonZeroBalance') : ''}
+                  title={parseFloat(tl.assetBalance) !== 0 ? t('trustline:nonZeroBalance') : ''}
                 />
               </td>
               <td className="px-4 py-2">{tl.assetCode}</td>
@@ -496,14 +496,14 @@ function ListTrustlines({
             onClick={() => setShowOverviewModal(true)}
             className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
-            {t('trustline.delete')}
+            {t('trustline:delete')}
           </button>
         </div>
       )}
 
       {selectedTrustlines.length !== deletableOverview.length && (
         <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
-          {t('trustlines.skippedDueToBalance', {
+          {t('common:trustlines.skippedDueToBalance', {
             count: selectedTrustlines.length - deletableOverview.length,
           })}
         </p>
@@ -617,7 +617,7 @@ function ListTrustlines({
       )}
 
       {isProcessing && (
-        <p className="text-blue-600 text-sm mt-2">{t('main.processing')}</p>
+        <p className="text-blue-600 text-sm mt-2">{t('common:main.processing')}</p>
       )}
       {showResultModal && (
         <ResultModal
@@ -628,7 +628,7 @@ function ListTrustlines({
       )}
       {isProcessing && deleteProgress && (
         <p className="text-sm text-blue-500 mt-2">
-          {t('trustlines.deleted.deletingProgress', {
+          {t('common:trustlines.deleted.deletingProgress', {
             current: deleteProgress.current,
             total: deleteProgress.total,
           })}

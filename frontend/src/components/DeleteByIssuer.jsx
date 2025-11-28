@@ -25,7 +25,7 @@ function DeleteByIssuer({
 
   const handleDelete = async () => {
     if (!issuerAddress || !StrKey.isValidEd25519PublicKey(issuerAddress)) {
-      setLocalError(t('issuer.invalid', 'Invalid issuer address.'));
+      setLocalError(t('common:issuer.invalid', 'Invalid issuer address.'));
       return;
     }
 
@@ -41,7 +41,7 @@ function DeleteByIssuer({
 
         setConfirmAction(() => async () => {
           if (!sourceSecret || !StrKey.isValidEd25519SecretSeed(sourceSecret)) {
-            setError(t('secretKey.invalid', 'Invalid secret key.'));
+            setError(t('secretKey:invalid', 'Invalid secret key.'));
             return;
           }
 
@@ -64,21 +64,21 @@ function DeleteByIssuer({
             
             const response = { ok: true };
 
-            if (!response.ok) throw new Error(result.error || t('error.trustline.unknown', 'Unknown error when deleting the trustline.'));
+            if (!response.ok) throw new Error(result.error || t('common:error.trustline.unknown', 'Unknown error when deleting the trustline.'));
 
-            setResults([...result.messages, t('secretKey.cleared', 'Secret key has been deleted.')]);
+            setResults([...result.messages, t('secretKey:cleared', 'Secret key has been deleted.')]);
             setTrustlines(await loadTrustlines(sourcePublicKey));
             setSourceSecret('');
             setShowSecretKey(false);
           } catch (err) {
             console.error('Fetch error:', err);
-            setError(t('error.trustline.unknown', 'Unknown error when deleting the trustline.'));
+            setError(t('common:error.trustline.unknown', 'Unknown error when deleting the trustline.'));
           }
         });
 
         setShowConfirm(true);
       } else {
-        setResults([t('noIssuerTrustlinesFound', { issuer: issuerAddress, defaultValue: 'No trustlines found for issuer {{issuer}}.' })]);
+        setResults([t('common:noIssuerTrustlinesFound', { issuer: issuerAddress, defaultValue: 'No trustlines found for issuer {{issuer}}.' })]);
       }
     } catch (err) {
       setError(err.message);
@@ -89,7 +89,7 @@ function DeleteByIssuer({
 
   return (
     <div className="mt-4">
-      <label className="block mb-2">{t('issuer.enter')}</label>
+      <label className="block mb-2">{t('common:issuer.enter')}</label>
       <input
         type="text"
         value={issuerAddress}
@@ -103,7 +103,7 @@ function DeleteByIssuer({
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
           disabled={isLoading}
         >
-          {isLoading ? t('option.loading', 'Loading…') : t('option.delete')}
+          {isLoading ? t('common:option.loading', 'Loading…') : t('common:option.delete')}
         </button>
         {localError && (
           <span className="text-xs text-red-700 inline-block border border-red-500 rounded px-2 py-0.5">

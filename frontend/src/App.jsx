@@ -31,7 +31,7 @@ class ErrorBoundary extends React.Component {
       const display = formatErrorForUi(t, this.state.error);
       return (
         <div className="text-red-500 p-4">
-          <h2>{t('app.errorBoundary.title')}</h2>
+          <h2>{t('common:app.errorBoundary.title')}</h2>
           <p>{display}</p>
         </div>
       );
@@ -169,9 +169,9 @@ function App() {
                   } catch { /* noop */ }
                 }}
                 className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                title={t('glossary.pageTitle', 'Glossary')}
+                title={t('glossary:pageTitle', 'Glossary')}
               >
-                {t('glossary.pageTitle', 'Glossary')}
+                {t('glossary:pageTitle', 'Glossary')}
               </a>
               <a
                 href={buildPath('learn')}
@@ -185,7 +185,7 @@ function App() {
                   } catch { /* noop */ }
                 }}
                 className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                title={t('learn.pageTitle', 'Stellar-Quiz für Anfänger')}
+                title={t('learn:pageTitle', 'Stellar-Quiz für Anfänger')}
               >
                 {t('menu:learn', 'Stellar-Quiz für Anfänger')}
               </a>
@@ -202,15 +202,15 @@ function App() {
                   }
                 }}
                 className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                title={t('settings.label', 'Settings')}
+                title={t('settings:label', 'Settings')}
               >
-                {t('settings.label', 'Settings')}
+                {t('settings:label', 'Settings')}
               </button>
 
             </div>
             {devTestnet && (
               <span className="absolute right-3 top-[72px] inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
-                {t('badges.testnet')}
+                {t('common:badges.testnet')}
               </span>
             )}
           </div>

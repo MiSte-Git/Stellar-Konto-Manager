@@ -40,7 +40,7 @@ function ConfirmationModal({
           <button
             onClick={() => {
               setShowConfirm(false);
-              setResults([t('secretKey.cleared')]);
+              setResults([t('secretKey:cleared')]);
               setSourceSecret('');
               setShowSecretKey(false);
             }}

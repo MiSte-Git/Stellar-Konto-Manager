@@ -72,5 +72,6 @@
     "paymentsFetch": "Fehler beim Laden der Zahlungen",
     "serverInvalid": "Ungültiger Server"
   },
+  "backendConnectError": "Verbindung zum Backend fehlgeschlagen: {{url}}",
   "rateLimited": "Horizon-Rate-Limit überschritten. Bitte ein paar Sekunden warten und erneut versuchen."
 }

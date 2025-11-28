@@ -1,171 +1,171 @@
 {
   "pageTitle": "Sanasto",
-  "pageIntro": "Täältä löydät tärkeitä sanoja lohkoketjun maailmasta ja Stellar-verkostosta. Kaikki on selitetty yksinkertaisin sanoin.",
-  "searchLabel": "Etsi termiä",
-  "searchPlaceholder": "Etsi termi (esim. tili, Account, Muxed)",
-  "searchHint": "Haku löytää sanoja ja selityksiä.",
-  "noResults": "Ei osumia.",
+  "pageIntro": "Täältä löydät tärkeitä sanoja lohkoketjun maailmasta ja Stellar-verkosta. Kaikki on selitetty yksinkertaisilla termeillä.",
+  "searchLabel": "Hakusana",
+  "searchPlaceholder": "Hae termillä (esim. tili, Muxed)",
+  "searchHint": "Haku löytää sanat ja selitykset.",
+  "noResults": "Ei vastinetta.",
   "blockchain": {
     "title": "Lohkoketju",
     "original": "Blockchain",
-    "short": "Yhteinen digitaalinen kassakirja – useat tietokoneet tallentavat samat merkinnät.",
-    "desc": "Lohkoketju on kuin digitaalinen kirjanpito. Monet tietokoneet tallentavat samat merkinnät. Näin kukaan ei voi salaa muuttaa mitään."
+    "short": "Jaettu digitaalinen pääkirja – monet tietokoneet tallentavat samat merkinnät.",
+    "desc": "Lohkoketju on kuin digitaalinen kirjanpito. Monet tietokoneet tallentavat samat merkinnät, mikä varmistaa, ettei kukaan voi salaa muuttaa mitään."
   },
   "wallet": {
     "title": "Lompakko",
     "original": "Wallet",
     "short": "Digitaalinen lompakko, joka hallinnoi avaimiasi.",
-    "desc": "Lompakko on digitaalinen rahapussisi. Se hallinnoi avaimia, joita tarvitset päästäksesi tilillesi ja lähettääksesi tapahtumia. Lompakko voi olla ohjelma tai sovellus tai jopa vain paperilappu, jossa on salainen avain."
+    "desc": "Lompakko on digitaalinen kukkarosi. Se hallinnoi avaimia, joita tarvitset kirjautuaksesi tilillesi ja lähettääksesi transaktioita. Lompakko voi olla ohjelma, sovellus tai jopa pelkkä paperi, jossa on yksityinen avaimesi."
   },
   "account": {
     "title": "Tili",
     "original": "Account",
-    "short": "Blockchain-tili voi pitää hallussaan varoja ja lähettää tapahtumia.",
-    "desc": "Tili on paikka lohkoketjussa, jossa arvosi sijaitsevat. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat lompakot voivat käyttää samaa tiliä, jos niillä on oikea avain."
+    "short": "Lohkoketjutili voi pitää hallussaan varoja ja lähettää tapahtumia.",
+    "desc": "Tili on paikka lohkoketjussa, jossa omaisuutesi on tallennettu. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat lompakot voivat päästä samaan tiliin, jos niillä on oikea avain."
   },
   "addressG": {
     "title": "G-osoite",
     "original": "G Address",
-    "short": "Stellarin tilin julkinen pääosoite (alkaa kirjaimella G).",
+    "short": "Stellar-tilin julkinen pääosoite (alkaa kirjaimella G).",
     "desc": "G-osoite on Stellar-tilin pääosoite. Se alkaa kirjaimella G. Annat sen muille, jotta he voivat lähettää sinulle jotain."
   },
   "publicKey": {
     "title": "Julkinen avain",
     "original": "Public Key",
-    "short": "Osoite, jonka voit jakaa; Stellarissa yleensä G-osoite.",
-    "desc": "Julkinen avain on osoite, jonka voit näyttää. Stellarissa se on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
+    "short": "Osoite, jota voit jakaa; yleensä G-osoite Stellarille.",
+    "desc": "Julkinen avain on osoite, jonka voit jakaa. Stellarissa tämä on G-osoite. Toiset käyttävät sitä lähettääkseen sinulle rahaa."
   },
   "privateKey": {
     "title": "Salainen avain",
     "original": "Secret Key",
-    "short": "Salasana tilille – älä koskaan jaa sitä eteenpäin.",
-    "desc": "Salainen avain on tilisi salasana. Kenellä on tämä avain, voi siirtää rahojasi. Älä koskaan anna sitä eteenpäin."
+    "short": "Älä koskaan jaa tilin salasanaa.",
+    "desc": "Salainen avain on salasanasi tilille. Kenellä tahansa, jolla on tämä avain, voi siirtää rahojasi. Älä koskaan jaa sitä."
   },
   "addressFederation": {
-    "title": "\"Liittovaltion osoite\"",
+    "title": "Federationin osoite",
     "original": "Federation Address",
-    "short": "Lyhyt osoite, kuten sähköpostiosoite, osoittaa G-osoitteeseen.",
-    "desc": "Federation-osoite näyttää sähköpostiosoitteelta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa normaaliin G-osoitteeseen. Se on helpompi muistaa."
+    "short": "Lyhyt osoite, kuten sähköposti, viittaa G-osoitteeseen.",
+    "desc": "Federation-osoite näyttää sähköpostilta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa tavalliseen G-osoitteeseen. Se on helpompi muistaa."
   },
   "addressMuxed": {
-    "title": "Muxed-tili",
+    "title": "Muxattu tili",
     "original": "Muxed Account",
-    "short": "M‑osoite lisä-ID:llä – jakaa perusakun.",
-    "desc": "M-osoite viittaa olemassa olevaan Stellar-tiliin, mutta sillä on lisäksi oma numero (ID). Näin voidaan erottaa esimerkiksi useita henkilöitä tai osastoja saman G-osoitteen alla. Teknisesti rahat kuuluvat edelleen päätilille."
+    "short": "M-osoite lisätunnuksella – jakaa perustilin.",
+    "desc": "M-osoite viittaa olemassa olevaan Stellar-tiliin, mutta sillä on lisänumero (ID). Tämä mahdollistaa esimerkiksi useiden henkilöiden tai osastojen erottamisen saman G-osoitteen alla. Teknisten yksityiskohtien osalta rahat kuuluvat yhä päätilille."
   },
   "multisig": {
     "title": "Moniallekirjoitus",
     "original": "Multi‑Sig",
-    "short": "Tärkeät toimet vaativat enemmän kuin yhden allekirjoituksen.",
-    "desc": "Multi-Sig tarkoittaa useita allekirjoituksia. Tärkeä toimenpide tarvitsee useamman kuin yhden avaimen. Esimerkki: Sinun ja toisen avaimen on molempien suostuttava ennen kuin jotain lähetetään. Tämä tekee varkauden vaikeammaksi."
+    "short": "Tärkeät toimet vaativat enemmän kuin allekirjoituksen.",
+    "desc": "Multi-Sig tarkoittaa useampia allekirjoituksia. Tärkeä toimenpide vaatii useamman kuin yhden avaimen. Esimerkiksi sinun ja toisen avaimen täytyy molempien hyväksyä ennen kuin jotain voidaan lähettää. Tämä tekee varkaudesta vaikeampaa."
   },
   "trustline": {
     "title": "Luottolimiitti",
     "original": "Trustline",
     "short": "Suostumus tietyn liikkeeseenlaskijan tokenin hallussapitoon.",
-    "desc": "Trustline on kuin \"Kyllä, hyväksyn tämän tokenin\". Tämän avulla sanotaan, että tilisi on valmis vastaanottamaan tietyn tokenin tietystä liikkeeseenlaskijasta. Ilman trustlinea et voi vastaanottaa tätä tokenia.\n\nEsimerkki: Trustline merkitään muodossa KOODI:LIKKEESEENLASKIJA. EURT-tokenille, jonka liikkeeseenlaskija on GDUKMGUGDZQK6Y…, se merkitään muotoon EURT:GDUKMGUGDZQK6Y…"
+    "desc": "Luottolimiitti on kuin \"kyllä, hyväksyn tämän tokenin.\" Tällä tavoin osoitat, että tilisi on valmis pitämään tietyn tokenin tietyltä liikkeeseenlaskijalta. Ilman luottolimiittiä et voi vastaanottaa tätä tokenia.\n\nEsimerkki: Luottolimiitti on määritelty muodossa KOODI:LIIKKEESEENLASKIJA. EURT-tokenille liikkeeseenlaskijalta GDUKMGUGDZQK6Y… se on EURT:GDUKMGUGDZQK6Y…."
   },
   "token": {
-    "title": "Merkki",
+    "title": "Poletti",
     "original": "Token",
-    "short": "Digitaalinen yksikkö – esim. rahaa, pisteitä tai saldoa.",
-    "desc": "Token on digitaalinen yksikkö lohkoketjussa. Token voi edustaa rahaa tai pisteitä tai palvelun saldoja."
+    "short": "Digitaalinen yksikkö – esimerkiksi raha, pisteet tai luotto.",
+    "desc": "Tokeni on lohkoketjussa oleva digitaalinen yksikkö. Tokeni voi edustaa rahaa, pisteitä tai palvelun käyttöoikeuksia."
   },
   "asset": {
-    "title": "Omaisuus",
+    "title": "Varallisuus",
     "original": "Asset",
-    "short": "Tokenit Stellarin verkossa ovat aina liitettynä liikkeellelaskijaan.",
-    "desc": "Stellarissa tokenia kutsutaan omaisuudeksi. Omaisuus on aina liitetty liikkeeseenlaskijan tiliin. Esimerkiksi tili voi laskea liikkeelle euron tokenin. Tämä euron token on silloin omaisuus."
+    "short": "Stellarissa olevat tokenit ovat aina liitetty liikkeeseenlaskijaan.",
+    "desc": "Stellar-järjestelmässä tokenia kutsutaan omaisuuseräksi. Omaisuuserä on aina yhdistetty liikkeeseenlaskijatilin kanssa. Esimerkiksi tili voi laskea liikkeeseen eurotokenin. Tämä eurotoken on sitten omaisuuserä."
   },
   "xlm": {
     "title": "XLM",
     "original": "XLM",
-    "short": "Stellarin oma valuutta maksuihin ja aktivointiin.",
-    "desc": "XLM on Stellarin perustavaluutta. Tarvitset XLM:ää maksujen maksamiseen ja uuden tilin avaamiseen."
+    "short": "Stellarin alkuperäinen valuutta maksujen ja aktivoinnin suorittamiseksi.",
+    "desc": "XLM on Stellarin oma valuutta. Tarvitset XLM:ää maksujen suorittamiseen ja uuden tilin luomiseen."
   },
   "mainnet": {
-    "title": "Mainnet",
+    "title": "Pääverkko",
     "original": "Mainnet",
-    "short": "Todellinen Stellar-verkko, jolla on todellista arvoa.",
-    "desc": "Aito Stellar-verkko, jolla on todellista arvoa. Tapahtumat ovat lopullisia ja maksut suoritetaan oikeilla XLM:llä."
+    "short": "Todellinen Stellar-verkosto, jolla on todellista arvoa.",
+    "desc": "Todellinen Stellar-verkko, jossa on todellista arvoa. Tapahtumat ovat lopullisia, ja maksut suoritetaan aidolla XLM:llä."
   },
   "testnet": {
     "title": "Testiverkko",
     "original": "Testnet",
-    "short": "Julkinen harjoitusverkosto ilman todellista arvoa.",
-    "desc": "Julkinen harjoitteluverkko. Tunnuksilla ei ole todellista arvoa. Ihanteellinen oppimiseen ja kokeiluun ilman riskiä."
+    "short": "Julkinen koulutusverkosto ilman todellista arvoa.",
+    "desc": "Julkinen harjoitusverkosto. Tokeneilla ei ole todellista arvoa. Ihanteellinen oppimiseen ja kokeiluun ilman riskiä."
   },
   "memo": {
     "title": "Muistio",
     "original": "Memo",
-    "short": "Lyhyt huomautus transaktiossa.",
-    "desc": "Muistio on pieni huomautus, jonka voit lähettää tapahtuman mukana. Usein pörssi vaatii tietyn muistion tietääkseen, kenelle rahat kuuluvat."
+    "short": "Lyhyt merkintä tapahtumassa.",
+    "desc": "Muistio on pieni huomautus, jonka voit lähettää tapahtuman mukana. Usein vaihto vaatii tietyn muistion, jotta tiedetään, kenelle rahat kuuluvat."
   },
   "transaction": {
     "title": "Tapahtuma",
     "original": "Transaction",
-    "short": "Toiminta lohkoketjussa, kuten maksu tai luottolimiitti.",
-    "desc": "Transaktio on toiminto lohkoketjussa. Esimerkiksi rahan lähettäminen tai luottolinjan avaaminen. Transaktio tallennetaan pysyvästi, kun se on vahvistettu."
+    "short": "Toiminto lohkoketjussa, esim. maksu tai luottolimiitti.",
+    "desc": "Tapahtuma on toiminto lohkoketjussa, kuten rahan lähettäminen tai luottolinjan luominen. Tapahtuma tallennetaan pysyvästi, kun se on vahvistettu."
   },
   "fee": {
-    "title": "Maksu",
+    "title": "Palkkio",
     "original": "Fee",
-    "short": "Hyvin pieni summa per tapahtuma.",
-    "desc": "Maksu on hyvin pieni summa, jonka maksat jokaisesta tapahtumasta. Maksu menee verkostolle. Stellarilla maksut ovat hyvin pieniä."
+    "short": "Erittäin pieni summa per tapahtuma.",
+    "desc": "Maksu on hyvin pieni summa, jonka maksat jokaisen tapahtuman yhteydessä. Maksu menee verkolle. Stellarissa maksut ovat erittäin pieniä."
   },
   "ledger": {
-    "title": "Pääkirja",
+    "title": "Tilikirja",
     "original": "Ledger",
-    "short": "Vahvistettujen tietojen ja tilien ketju.",
-    "desc": "Pääkirja on kaikkien vahvistettujen tietojen ketju. Siellä näkyy, kuinka paljon tileillä on ja mitkä tapahtumat ovat tapahtuneet. Jokainen voi tarkistaa pääkirjan."
+    "short": "Vahvistettujen tietojen ja tilisaldojen ketju.",
+    "desc": "Kirjanpito on kaikkien vahvistettujen tietojen ketju. Se näyttää, kuinka paljon varoja kukin tili omistaa ja mitkä tapahtumat ovat tapahtuneet. Kuka tahansa voi tarkistaa kirjanpidon."
   },
   "horizon": {
     "title": "Horisontti",
     "original": "Horizon",
-    "short": "API-palvelu, jonka kautta sovellukset voivat keskustella Stellarin kanssa.",
-    "desc": "Horizon on palvelu, jonka kautta ohjelmat voivat kommunikoida Stellar-lohkoketjun kanssa. Työkalumme käyttää Horizon-palvelua tilien saldon ja tapahtumien lataamiseen."
+    "short": "API-palvelu, jonka avulla sovellukset kommunikoivat Stellar-järjestelmän kanssa.",
+    "desc": "Horizon on palvelu, jonka kautta ohjelmat ovat vuorovaikutuksessa Stellar-lohkoketjun kanssa. Työkalumme kysyy Horizonilta tilien saldot ja tapahtumat."
   },
   "anchor": {
     "title": "Ankkuri",
     "original": "Anchor",
-    "short": "Yritys, joka yhdistää Fiat-rahaa Stellariin.",
-    "desc": "Anchor on yritys, joka yhdistää oikean rahan, kuten euron tai dollarin, Stellariin. Annat esimerkiksi anchorelle euroja ja saat vastineeksi Stellarissa olevan eurotokenin."
+    "short": "Yritys, joka yhdistää fiat-rahan Stellariin.",
+    "desc": "Anchor on yritys, joka yhdistää oikean rahan, kuten eurot tai dollarit, Stellariin. Esimerkiksi annat ankkurille euroja, ja vastineeksi saat eurotokenin Stellarilla."
   },
   "exchange": {
     "title": "Pörssi",
     "original": "Exchange",
-    "short": "Paikka tokenien ostamiseen ja myymiseen.",
-    "desc": "Pörssi on paikka, jossa voit ostaa tai myydä tokeneita. Monet pörssit vaativat KYC-menettelyn, eli henkilöllisyyden tarkistuksen, ennen kuin voit nostaa rahaa euroina tai frangeina."
+    "short": "Paikka ostaa ja myydä tokeneita.",
+    "desc": "Pörssi on paikka, jossa voit ostaa tai myydä tokeneita. Monet pörssit vaativat KYC-menettelyn, joka on henkilöllisyyden varmistus, ennen kuin voit nostaa rahaa euroissa tai frangeissa."
   },
   "dex": {
     "title": "DEX",
     "original": "Decentralized Exchange",
-    "short": "Hajautettu pörssi suoraan lohkoketjussa.",
-    "desc": "DEX tarkoittaa hajautettua pörssiä. Tässä ihmiset käyvät kauppaa suoraan toistensa kanssa lohkoketjussa. Ei ole yksittäistä operaattoria. Stellarilla on sisäänrakennettu DEX."
+    "short": "Hajautettu vaihto suoraan lohkoketjussa.",
+    "desc": "DEX tarkoittaa hajautettua pörssiä. Täällä ihmiset käyvät kauppaa suoraan keskenään lohkoketjussa. Ei ole yhtä yksittäistä operaattoria. Stellarilla on sisäänrakennettu DEX."
   },
   "liquidityPool": {
-    "title": "Likviditeettipooli",
+    "title": "Likviditeettiallas",
     "original": "Liquidity Pool",
-    "short": "Yhteinen rahasto, jossa on kaksi tokenia välittömään vaihtoon.",
-    "desc": "Likviditeettipooli on yhteinen säiliö kahdelle tokenille. Ihmiset laittavat molempia tokeneita siihen. Muut saavat sitten vaihtaa näitä tokeneita heti. Tallettajat ansaitsevat tästä pieniä maksuja."
+    "short": "Yhteinen pooli kahdella tokenilla välitöntä vaihtoa varten.",
+    "desc": "Likviditeettipooli on yhteinen pooli, joka sisältää kaksi tokenia. Ihmiset lisäävät molemmat tokenit pooliin. Muut voivat sitten vaihtaa näitä tokeneita välittömästi. Osallistujat ansaitsevat pieniä palkkioita vastineeksi."
   },
   "balanceClaimable": {
-    "title": "Vaatimuksenalainen saldo",
+    "title": "Vaatimiskelpoiset saldot",
     "original": "Claimable Balance",
-    "short": "Varatut rahat, jotka sinun on vielä vastaanotettava.",
-    "desc": "Voitettava saldo on rahaa, joka on jo varattu sinulle, mutta sinun täytyy vielä noutaa se. Vasta kun hyväksyt sen, se siirtyy tilillesi."
+    "short": "Varatut rahat, jotka sinun on vielä hyväksyttävä.",
+    "desc": "Vaatimuksenalainen saldo on raha, joka on jo varattu sinulle, mutta sinun on vielä vaadittava se. Vasta kun hyväksyt sen, se siirtyy tilillesi."
   },
   "protocolUpdate": {
     "title": "Protokollipäivitys",
     "original": "Protocol Update",
-    "short": "Verkostosääntöjen päivitys.",
-    "desc": "Protokollipäivitys on sääntöjen parannus Stellar-verkossa. Esimerkiksi uudet ominaisuudet tai tietoturvamuutokset. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
+    "short": "Päivitetään verkon sääntöjä.",
+    "desc": "Protokollipäivitys on Stellar-verkon sääntöjen päivitys. Esimerkiksi uusia ominaisuuksia tai tietoturvamuutoksia. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
     "short": "Stellarin älysopimusjärjestelmä.",
-    "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on lohkoketjussa oleva ohjelmakoodi. Koodi voi tarkistaa sääntöjä ja käynnistää toimintoja ilman välikätenä toimivaa pankkia."
+    "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on ohjelmakoodi lohkoketjussa. Koodi voi itsenäisesti varmistaa sääntöjä ja laukaista toimia ilman tarvetta pankille välissä."
   },
   "missingKey": "Puuttuva sanaston avain: {{detail}}"
 }

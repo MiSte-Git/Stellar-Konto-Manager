@@ -13,9 +13,9 @@ import { useTranslation } from 'react-i18next';
 export default function ProgressBar({ progress, phase, page, etaMs, oldest, elapsedMs }) {
   const { t } = useTranslation();
   const pct = typeof progress === 'number' ? Math.round(progress * 100) : null;
-  const etaText = (etaMs && etaMs > 0) ? t('progress.eta', { minutes: Math.ceil(etaMs/60000) }) : '';
-  const elapsedText = (elapsedMs && elapsedMs > 0) ? t('progress.elapsed', { time: `${Math.ceil(elapsedMs/1000)}s` }) : '';
-  const oldestText = oldest ? t('progress.oldest', { date: oldest }) : '';
+  const etaText = (etaMs && etaMs > 0) ? t('common:progress.eta', { minutes: Math.ceil(etaMs/60000) }) : '';
+  const elapsedText = (elapsedMs && elapsedMs > 0) ? t('common:progress.elapsed', { time: `${Math.ceil(elapsedMs/1000)}s` }) : '';
+  const oldestText = oldest ? t('common:progress.oldest', { date: oldest }) : '';
   return (
     <div className="mt-2">
       <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">

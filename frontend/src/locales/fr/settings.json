@@ -1,0 +1,104 @@
+{
+  "backup": {
+    "title": "Sauvegarde et récupération",
+    "desc": "Exporter ou importer vos données de quiz (paramètres, progression, badges).",
+    "export": {
+      "button": "Commencer l'exportation",
+      "success": "Exportation créée",
+      "error": "Échec de l'exportation",
+      "fileName": "quiz-backup.json"
+    },
+    "import": {
+      "title": "Importer",
+      "selectFile": "Sélectionner le fichier",
+      "noFile": "Aucun fichier sélectionné",
+      "strategy": {
+        "label": "Stratégie",
+        "merge": "Fusionner",
+        "replace": "Remplacer"
+      },
+      "preview": {
+        "title": "Aperçu",
+        "stats": {
+          "settings": "Paramètres : {{count}} quiz(zes)",
+          "progress": "Progrès : {{count}} quizzez",
+          "achievements": "Badge : {{count}} quiz(quiz)"
+        }
+      },
+      "perform": "Effectuer l'importation",
+      "done": "Importation terminée",
+      "backupCreated": "Sauvegarde automatique enregistrée",
+      "invalid": "Fichier d'importation invalide",
+      "error": "Importation échouée"
+    },
+    "toast": {
+      "exported": "Sauvegarde exportée",
+      "backupBeforeImport": "Une sauvegarde a été enregistrée avant l'importation."
+    },
+    "nav": {
+      "back": "Retour"
+    }
+  },
+  "cache": {
+    "help": "Accélère les requêtes grâce à un cache de paiement local, mais peut prolonger le temps de chargement initial.",
+    "label": "Utiliser le cache (Bêta)",
+    "prefetchHelp": "Délai de chargement des entrées/transactions en jours (une fois lors de l'activation initiale)"
+  },
+  "network": {
+    "title": "Réseau",
+    "desc": "Facultatif : Horizon de l'historique complet pour l'historique approfondi",
+    "fullUrl": "URL de l'horizon de l'historique complet",
+    "autoUseFull": "Utiliser automatiquement si la date de début est antérieure à l'historique du serveur."
+  },
+  "description": "Actuellement, il n'y a pas encore de paramètres.",
+  "display": {
+    "decimals": {
+      "auto": "Automatiquement",
+      "label": "Chiffres décimaux"
+    },
+    "desc": "Paramètres d'affichage globaux.",
+    "title": "Publicité"
+  },
+  "error": {
+    "fetchFailed": "Échec du chargement des paramètres : {{detail}}"
+  },
+  "label": "Paramètres",
+  "prefetchDays": "Délai de livraison (jours)",
+  "trustedWallets": {
+    "buttons": {
+      "export": "Exportation",
+      "import": "Importer",
+      "reset": "Réinitialiser aux paramètres par défaut"
+    },
+    "desc": "Cette liste est stockée localement dans le navigateur. Fichier par défaut : QSI_TrustedWallets.json",
+    "editor": {
+      "invalidFormat": "Format non valide. Un objet avec un champ \"wallets\" (tableau) est attendu.",
+      "parseError": "Le JSON n'a pas pu être analysé."
+    },
+    "file": {
+      "hint": "Importer un fichier JSON au format { \"wallets\": [...] }",
+      "label": "Fichier"
+    },
+    "info": {
+      "count": "Entrées : {{n}}",
+      "updatedAt": "À partir du {{date}}"
+    },
+    "table": {
+      "addRow": "Ajoutez une ligne.",
+      "columns": {
+        "actions": "Actions",
+        "address": "Adresse",
+        "compromised": "Compromis",
+        "deactivated": "Désactivé",
+        "label": "Étiquette"
+      },
+      "deleteRow": "Supprimer",
+      "discard": "Jeter",
+      "save": "Enregistrer"
+    },
+    "title": "Mes portefeuilles de confiance",
+    "validation": {
+      "hint": "Au moins une ligne est invalide (adresse manquante/dupliquée)."
+    }
+  }
+}

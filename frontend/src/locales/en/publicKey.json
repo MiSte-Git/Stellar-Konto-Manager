@@ -1,7 +1,7 @@
 {
   "label": "Public key or federation address",
-  "placeholder": "Enter your public key or a federation address",
-  "load": "Shop",
+  "placeholder": "Enter your public key or a federation address.",
+  "load": "Loading",
   "deleteFromList": "Remove from list",
   "source": "Source",
   "destination": {

@@ -7,8 +7,8 @@ import React from 'react';
  * Call it from any page component with already translated strings.
  *
  * Example:
- *   const title = t('page.key.title', 'Default title');
- *   const desc = t('page.key.description', 'Default description');
+ *   const title = t('page:key.title', 'Default title');
+ *   const desc = t('page:key.description', 'Default description');
  *   usePageMeta(title, desc);
  */
 export default function usePageMeta(title, description) {

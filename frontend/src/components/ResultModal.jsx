@@ -47,7 +47,7 @@ function ResultModal({ deletedTrustlines, isSimulation = false, onClose }) {
     const jsPDF = (await import('jspdf')).default;
     const doc = new jsPDF();
     doc.setFontSize(12);
-    doc.text(t('trustline.deleted.resultTitle'), 10, 10);
+    doc.text(t('trustline:deleted.resultTitle'), 10, 10);
 
     deletedTrustlines.forEach((tl, index) => {
         const y = 20 + index * 10;
@@ -83,14 +83,14 @@ function ResultModal({ deletedTrustlines, isSimulation = false, onClose }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-2xl max-h-[80vh] overflow-y-auto">
         <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">
-          {t('trustline.deleted.resultTitle')}
+          {t('trustline:deleted.resultTitle')}
         </h2>
         <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
-          {t('trustline.deleted.resultText', {
+          {t('trustline:deleted.resultText', {
             count: deletedTrustlines.length,
             mode: isSimulation
-              ? t('trustline.deleted.mode.simulation')
-              : t('trustline.deleted.mode.real')
+              ? t('trustline:deleted.mode.simulation')
+              : t('trustline:deleted.mode.real')
           })}
         </p>
 

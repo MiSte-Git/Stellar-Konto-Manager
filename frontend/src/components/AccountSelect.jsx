@@ -16,7 +16,7 @@ export default function AccountSelect({ accounts = [], value, onChange, classNam
         const key = account?.publicKey || account?.address || `account-${index}`;
         const labelBase = account?.name || account?.label || account?.publicKey || account?.address || '';
         const isTestnet = !!account?.isTestnet;
-        const label = isTestnet ? `${labelBase} ${t('account.testnetLabel')}` : labelBase;
+        const label = isTestnet ? `${labelBase} ${t('common:account.testnetLabel')}` : labelBase;
         const optionStyle = isTestnet ? { color: '#ca8a04', fontWeight: 600 } : undefined;
         return (
           <option

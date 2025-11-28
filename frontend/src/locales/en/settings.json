@@ -1,0 +1,104 @@
+{
+  "backup": {
+    "title": "Backup & Recovery",
+    "desc": "Export or import your quiz data (settings, progress, badges).",
+    "export": {
+      "button": "Start export",
+      "success": "Export created",
+      "error": "Export failed",
+      "fileName": "quiz-backup.json"
+    },
+    "import": {
+      "title": "Import",
+      "selectFile": "Select file",
+      "noFile": "No file selected",
+      "strategy": {
+        "label": "Strategy",
+        "merge": "Merge",
+        "replace": "Replace"
+      },
+      "preview": {
+        "title": "Preview",
+        "stats": {
+          "settings": "Settings: {{count}} quiz(zes)",
+          "progress": "Progress: {{count}} quiz(zes)",
+          "achievements": "Badge: {{count}} quiz(zes)"
+        }
+      },
+      "perform": "Perform import",
+      "done": "Import completed",
+      "backupCreated": "Automatic backup saved",
+      "invalid": "Invalid import file",
+      "error": "Import failed"
+    },
+    "toast": {
+      "exported": "Backup exported",
+      "backupBeforeImport": "A backup was saved before the import."
+    },
+    "nav": {
+      "back": "Back"
+    }
+  },
+  "cache": {
+    "help": "Speeds up queries through local payment cache, but may extend the initial loading time.",
+    "label": "Use cache (Beta)",
+    "prefetchHelp": "Lead time for loading entries/transactions in days (once during the initial activation)"
+  },
+  "network": {
+    "title": "Network",
+    "desc": "Optional: Full-History Horizon for Deep History",
+    "fullUrl": "Full-History Horizon URL",
+    "autoUseFull": "Automatically use if the from-date is older than the server history."
+  },
+  "description": "Currently, there are no settings yet.",
+  "display": {
+    "decimals": {
+      "auto": "Automatically",
+      "label": "Decimal places"
+    },
+    "desc": "Global display settings.",
+    "title": "Advertisement"
+  },
+  "error": {
+    "fetchFailed": "Failed to load settings: {{detail}}"
+  },
+  "label": "Settings",
+  "prefetchDays": "Lead time (days)",
+  "trustedWallets": {
+    "buttons": {
+      "export": "Export",
+      "import": "Import",
+      "reset": "Reset to default"
+    },
+    "desc": "This list is stored locally in the browser. Default file: QSI_TrustedWallets.json",
+    "editor": {
+      "invalidFormat": "Invalid format. An object with a \"wallets\" field (array) is expected.",
+      "parseError": "JSON could not be parsed."
+    },
+    "file": {
+      "hint": "Import a JSON file in the format { \"wallets\": [...] }",
+      "label": "File"
+    },
+    "info": {
+      "count": "Entries: {{n}}",
+      "updatedAt": "As of {{date}}"
+    },
+    "table": {
+      "addRow": "Add line",
+      "columns": {
+        "actions": "Actions",
+        "address": "Address",
+        "compromised": "Compromised",
+        "deactivated": "Deactivated",
+        "label": "Label"
+      },
+      "deleteRow": "Delete",
+      "discard": "Discard",
+      "save": "Save"
+    },
+    "title": "My Trusted Wallets",
+    "validation": {
+      "hint": "At least one line is invalid (missing/duplicated address)."
+    }
+  }
+}

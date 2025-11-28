@@ -205,7 +205,7 @@ const BugTrackerAdmin: React.FC = () => {
       setTotal(typeof data.total === 'number' ? data.total : 0);
     } catch (error) {
       console.error(error);
-      setNotice(t('bugReport.admin.loadError'));
+      setNotice(t('common:bugReport.admin.loadError'));
     } finally {
       setIsLoading(false);
     }
@@ -227,7 +227,7 @@ const BugTrackerAdmin: React.FC = () => {
       if (!res.ok) {
         throw new Error(`status_${res.status}`);
       }
-      setNotice(t('bugReport.admin.saved'));
+      setNotice(t('common:bugReport.admin.saved'));
       setDrafts((prev) => {
         const copy = { ...prev };
         delete copy[id];
@@ -236,7 +236,7 @@ const BugTrackerAdmin: React.FC = () => {
       await fetchReports();
     } catch (error) {
       console.error(error);
-      setNotice(t('bugReport.admin.saveError'));
+      setNotice(t('common:bugReport.admin.saveError'));
     }
   }, [drafts, fetchReports, t]);
 
@@ -308,15 +308,15 @@ const BugTrackerAdmin: React.FC = () => {
   if (!isAuthorized) {
     return (
       <div className="mx-auto max-w-xl p-6">
-        <h1 className="text-2xl font-semibold mb-2">{t('bugReport.admin.title', 'Bugtracker')}</h1>
-        <p className="text-sm mb-4">{t('bugReport.admin.locked', 'Zugriff verweigert. Setze das Admin-Secret im lokalen Speicher und lade die Seite neu.')}</p>
+        <h1 className="text-2xl font-semibold mb-2">{t('common:bugReport.admin.title', 'Bugtracker')}</h1>
+        <p className="text-sm mb-4">{t('common:bugReport.admin.locked', 'Zugriff verweigert. Setze das Admin-Secret im lokalen Speicher und lade die Seite neu.')}</p>
         <div className="space-y-2">
-          <label className="block text-xs mb-1">{t('bugReport.admin.enterSecret', 'Admin-Secret eingeben')}</label>
+          <label className="block text-xs mb-1">{t('common:bugReport.admin.enterSecret', 'Admin-Secret eingeben')}</label>
           <input
             type="password"
             value={secretInput}
             onChange={(e) => setSecretInput(e.target.value)}
-            placeholder={t('bugReport.admin.secretPlaceholder', '••••••••')}
+            placeholder={t('common:bugReport.admin.secretPlaceholder', '••••••••')}
             className="w-full border rounded px-2 py-2"
             autoFocus
           />
@@ -334,17 +334,17 @@ const BugTrackerAdmin: React.FC = () => {
                   console.error('bugReport.admin.navigate.failed', err);
                 }
               }}
-              title={t('bugReport.admin.confirm', 'Öffnen')}
+              title={t('common:bugReport.admin.confirm', 'Öffnen')}
             >
-              {t('bugReport.admin.confirm', 'Öffnen')}
+              {t('common:bugReport.admin.confirm', 'Öffnen')}
             </button>
             <button
               type="button"
               className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
               onClick={() => { try { window.history.back(); } catch {} }}
-              title={t('bugReport.admin.cancel', 'Abbrechen')}
+              title={t('common:bugReport.admin.cancel', 'Abbrechen')}
             >
-              {t('bugReport.admin.cancel', 'Abbrechen')}
+              {t('common:bugReport.admin.cancel', 'Abbrechen')}
             </button>
           </div>
         </div>
@@ -363,7 +363,7 @@ window.location.assign(window.location.pathname);`}</pre>
   const processedReports = useMemo(() => {
     let items = reports.slice();
     const q = search.trim().toLowerCase();
-    const labelForPage = (p?: string) => t(`feedback.pages.${p || 'other'}`, t('feedback.pages.other', 'Sonstiges')).toLowerCase();
+    const labelForPage = (p?: string) => t(`feedback.pages.${p || 'other'}`, t('common:feedback.pages.other', 'Sonstiges')).toLowerCase();
     if (q) {
       items = items.filter((r) => {
         const desc = stripCategoryHeader(r.description);
@@ -433,20 +433,20 @@ window.location.assign(window.location.pathname);`}</pre>
   const resetColumns = () => setPrefs(DEFAULT_PREFS);
 
   const acronym = (s: string) => s.split(/\s+/).map((w) => w[0]).join('').toUpperCase();
-  const appShort = (import.meta.env.VITE_APP_SHORTNAME && String(import.meta.env.VITE_APP_SHORTNAME).trim()) || acronym(t('main.title', 'Stellar Konto Manager'));
+  const appShort = (import.meta.env.VITE_APP_SHORTNAME && String(import.meta.env.VITE_APP_SHORTNAME).trim()) || acronym(t('common:main.title', 'Stellar Konto Manager'));
 
   const labelForColumn = useCallback((key: ColumnKey) => (
-    key === 'id' ? t('bugReport.admin.id') :
-    key === 'ts' ? t('bugReport.admin.created') :
-    key === 'url' ? t('bugReport.admin.url') :
-    key === 'page' ? t('feedback.page', 'Bereich') :
-    key === 'language' ? t('bugReport.admin.language') :
-    key === 'email' ? t('bugReport.admin.email', 'E‑Mail') :
-    key === 'userAgent' ? t('bugReport.admin.userAgent') :
-    key === 'description' ? t('bugReport.admin.description') :
-    key === 'category' ? t('bugReport.admin.category') :
-    key === 'status' ? t('bugReport.admin.status') :
-    key === 'priority' ? t('bugReport.admin.priority') :
+    key === 'id' ? t('common:bugReport.admin.id') :
+    key === 'ts' ? t('common:bugReport.admin.created') :
+    key === 'url' ? t('common:bugReport.admin.url') :
+    key === 'page' ? t('common:feedback.page', 'Bereich') :
+    key === 'language' ? t('common:bugReport.admin.language') :
+    key === 'email' ? t('common:bugReport.admin.email', 'E‑Mail') :
+    key === 'userAgent' ? t('common:bugReport.admin.userAgent') :
+    key === 'description' ? t('common:bugReport.admin.description') :
+    key === 'category' ? t('common:bugReport.admin.category') :
+    key === 'status' ? t('common:bugReport.admin.status') :
+    key === 'priority' ? t('common:bugReport.admin.priority') :
     key === 'appVersion' ? 'Version' : String(key)
   ), [t]);
 
@@ -455,7 +455,7 @@ window.location.assign(window.location.pathname);`}</pre>
       case 'id': return String(report.id);
       case 'ts': return formatDate(report.ts, i18n?.language);
       case 'url': return report.url;
-      case 'page': return t(`feedback.pages.${report.page || 'other'}`, t('feedback.pages.other', 'Sonstiges'));
+      case 'page': return t(`feedback.pages.${report.page || 'other'}`, t('common:feedback.pages.other', 'Sonstiges'));
       case 'language': return report.language;
       case 'userAgent': return report.userAgent;
       case 'email': {
@@ -506,13 +506,13 @@ window.location.assign(window.location.pathname);`}</pre>
       buildCsvAndDownload(processedReports, 'page', csvDelimiter);
     } catch (e) {
       console.error(e);
-      setNotice(t('bugReport.admin.exportError', 'Export fehlgeschlagen'));
+      setNotice(t('common:bugReport.admin.exportError', 'Export fehlgeschlagen'));
     }
   };
 
   const exportAllCsv = async () => {
     setIsExporting(true);
-    setNotice(t('bugReport.admin.exporting', 'Exportiere…'));
+    setNotice(t('common:bugReport.admin.exporting', 'Exportiere…'));
     try {
       const limit = 500;
       let offset = 0;
@@ -541,7 +541,7 @@ window.location.assign(window.location.pathname);`}</pre>
       setNotice(null);
     } catch (e) {
       console.error(e);
-      setNotice(t('bugReport.admin.exportError', 'Export fehlgeschlagen'));
+      setNotice(t('common:bugReport.admin.exportError', 'Export fehlgeschlagen'));
     } finally {
       setIsExporting(false);
     }
@@ -555,17 +555,17 @@ window.location.assign(window.location.pathname);`}</pre>
             type="button"
             className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={() => { try { window.history.back(); } catch {} }}
-            title={t('common.back', 'Zurück')}
+            title={t('common:back', 'Zurück')}
           >
-            {t('common.back', 'Zurück')}
+            {t('common:back', 'Zurück')}
           </button>
-          <h1 className="text-2xl font-semibold">{t('bugReport.admin.title')}</h1>
+          <h1 className="text-2xl font-semibold">{t('common:bugReport.admin.title')}</h1>
         </div>
         <div className="flex items-center gap-2">
           <input
             type="search"
             value={search}
-            placeholder={t('bugReport.admin.search', 'Suche')}
+            placeholder={t('common:bugReport.admin.search', 'Suche')}
             onChange={(e) => { setSearch(e.target.value); setPage(0); }}
             className="border rounded px-2 py-1"
           />
@@ -573,21 +573,21 @@ window.location.assign(window.location.pathname);`}</pre>
             type="button"
             className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={() => setShowColumnManager(true)}
-            title={t('bugReport.admin.columns.title', 'Spalten')}
+            title={t('common:bugReport.admin.columns.title', 'Spalten')}
           >
-            {t('bugReport.admin.columns.title', 'Spalten')}
+            {t('common:bugReport.admin.columns.title', 'Spalten')}
           </button>
           <label className="flex items-center gap-1 text-xs text-gray-700 dark:text-gray-200">
-            <span>{t('bugReport.admin.csv.delimiter', 'Trennzeichen')}</span>
+            <span>{t('common:bugReport.admin.csv.delimiter', 'Trennzeichen')}</span>
             <select
               value={csvDelimiter}
               onChange={(e) => setCsvDelimiter(e.target.value)}
               className="border rounded px-2 py-1 text-sm"
-              title={t('bugReport.admin.csv.delimiter', 'Trennzeichen')}
+              title={t('common:bugReport.admin.csv.delimiter', 'Trennzeichen')}
             >
-              <option value=",">{t('bugReport.admin.csv.comma', 'Komma (,)')}</option>
-              <option value=";">{t('bugReport.admin.csv.semicolon', 'Semikolon (;)')}</option>
-              <option value="\t">{t('bugReport.admin.csv.tab', 'Tabulator (Tab)')}</option>
+              <option value=",">{t('common:bugReport.admin.csv.comma', 'Komma (,)')}</option>
+              <option value=";">{t('common:bugReport.admin.csv.semicolon', 'Semikolon (;)')}</option>
+              <option value="\t">{t('common:bugReport.admin.csv.tab', 'Tabulator (Tab)')}</option>
             </select>
           </label>
           <button
@@ -595,18 +595,18 @@ window.location.assign(window.location.pathname);`}</pre>
             className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40"
             onClick={exportCurrentPageCsv}
             disabled={isExporting || isLoading || processedReports.length === 0}
-            title={t('bugReport.admin.exportPage', 'CSV (Seite)')}
+            title={t('common:bugReport.admin.exportPage', 'CSV (Seite)')}
           >
-            {t('bugReport.admin.exportPage', 'CSV (Seite)')}
+            {t('common:bugReport.admin.exportPage', 'CSV (Seite)')}
           </button>
           <button
             type="button"
             className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40"
             onClick={exportAllCsv}
             disabled={isExporting}
-            title={t('bugReport.admin.exportAll', 'CSV (Alle)')}
+            title={t('common:bugReport.admin.exportAll', 'CSV (Alle)')}
           >
-            {isExporting ? t('bugReport.admin.exporting', 'Exportiere…') : t('bugReport.admin.exportAll', 'CSV (Alle)')}
+            {isExporting ? t('common:bugReport.admin.exporting', 'Exportiere…') : t('common:bugReport.admin.exportAll', 'CSV (Alle)')}
           </button>
         </div>
       </div>
@@ -617,52 +617,52 @@ window.location.assign(window.location.pathname);`}</pre>
       )}
       <div className="flex flex-wrap gap-4 mb-6">
         <div>
-          <label className="block text-sm font-medium mb-1">{t('bugReport.admin.status')}</label>
+          <label className="block text-sm font-medium mb-1">{t('common:bugReport.admin.status')}</label>
           <select
             value={statusFilter}
             onChange={(event) => { setPage(0); setStatusFilter(event.target.value as BugStatus | 'all'); }}
             className="border rounded px-3 py-2"
           >
-            <option value="all">{t('bugReport.admin.filter')}</option>
+            <option value="all">{t('common:bugReport.admin.filter')}</option>
             {statusOptions.map((value) => (
               <option key={value} value={value}>{t(`bugReport.admin.${value}`)}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">{t('bugReport.admin.priority')}</label>
+          <label className="block text-sm font-medium mb-1">{t('common:bugReport.admin.priority')}</label>
           <select
             value={priorityFilter}
             onChange={(event) => { setPage(0); setPriorityFilter(event.target.value as BugPriority | 'all'); }}
             className="border rounded px-3 py-2"
           >
-            <option value="all">{t('bugReport.admin.filter')}</option>
+            <option value="all">{t('common:bugReport.admin.filter')}</option>
             {priorityOptions.map((value) => (
               <option key={value} value={value}>{t(`bugReport.admin.${value}`)}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">{t('bugReport.admin.category')}</label>
+          <label className="block text-sm font-medium mb-1">{t('common:bugReport.admin.category')}</label>
           <select
             value={categoryFilter}
             onChange={(event) => { setPage(0); setCategoryFilter(event.target.value as BugCategory | 'all'); }}
             className="border rounded px-3 py-2"
           >
-            <option value="all">{t('bugReport.admin.filter')}</option>
+            <option value="all">{t('common:bugReport.admin.filter')}</option>
             {categoryOptions.map((value) => (
               <option key={value} value={value}>{t(`feedback.categories.${value}`)}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">{t('feedback.page', 'Bereich')}</label>
+          <label className="block text-sm font-medium mb-1">{t('common:feedback.page', 'Bereich')}</label>
           <select
             value={pageFilter}
             onChange={(event) => { setPage(0); setPageFilter(event.target.value as BugPage | 'all'); }}
             className="border rounded px-3 py-2"
           >
-            <option value="all">{t('bugReport.admin.filter')}</option>
+            <option value="all">{t('common:bugReport.admin.filter')}</option>
             {pageOptions.map((value) => (
               <option key={value} value={value}>{t(`feedback.pages.${value}`, value)}</option>
             ))}
@@ -678,17 +678,17 @@ window.location.assign(window.location.pathname);`}</pre>
                 const common = 'px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-200 relative';
                 const style = width ? { width: `${width}px`, minWidth: `${width}px` } as React.CSSProperties : undefined;
                 const label = (
-                  key === 'id' ? t('bugReport.admin.id') :
-                  key === 'ts' ? t('bugReport.admin.created') :
-                  key === 'url' ? t('bugReport.admin.url') :
-                  key === 'page' ? t('feedback.page', 'Bereich') :
-                  key === 'language' ? t('bugReport.admin.language') :
-                  key === 'email' ? t('bugReport.admin.email', 'E‑Mail') :
-                  key === 'userAgent' ? t('bugReport.admin.userAgent') :
-                  key === 'description' ? t('bugReport.admin.description') :
-                  key === 'category' ? t('bugReport.admin.category') :
-                  key === 'status' ? t('bugReport.admin.status') :
-                  key === 'priority' ? t('bugReport.admin.priority') :
+                  key === 'id' ? t('common:bugReport.admin.id') :
+                  key === 'ts' ? t('common:bugReport.admin.created') :
+                  key === 'url' ? t('common:bugReport.admin.url') :
+                  key === 'page' ? t('common:feedback.page', 'Bereich') :
+                  key === 'language' ? t('common:bugReport.admin.language') :
+                  key === 'email' ? t('common:bugReport.admin.email', 'E‑Mail') :
+                  key === 'userAgent' ? t('common:bugReport.admin.userAgent') :
+                  key === 'description' ? t('common:bugReport.admin.description') :
+                  key === 'category' ? t('common:bugReport.admin.category') :
+                  key === 'status' ? t('common:bugReport.admin.status') :
+                  key === 'priority' ? t('common:bugReport.admin.priority') :
                   key === 'appVersion' ? 'Version' : key
                 );
                 const arrow = sortKey === key ? (sortDir === 'asc' ? ' ▲' : ' ▼') : '';
@@ -710,7 +710,7 @@ window.location.assign(window.location.pathname);`}</pre>
                         const startW = (prefs.widths[key] || (e.currentTarget.parentElement?.getBoundingClientRect().width ?? 140));
                         setResizing({ key, startX, startW });
                       }}
-                      title={t('bugReport.admin.resize', 'Ziehen zum Anpassen')}
+                      title={t('common:bugReport.admin.resize', 'Ziehen zum Anpassen')}
                     />
                   </th>
                 );
@@ -720,12 +720,12 @@ window.location.assign(window.location.pathname);`}</pre>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
             {isLoading && (
               <tr>
-                <td colSpan={visibleColumns.length} className="px-3 py-6 text-center text-gray-500">{t('common.loading')}</td>
+                <td colSpan={visibleColumns.length} className="px-3 py-6 text-center text-gray-500">{t('common:common.loading')}</td>
               </tr>
             )}
             {!isLoading && processedReports.length === 0 && (
               <tr>
-                <td colSpan={visibleColumns.length} className="px-3 py-6 text-center text-gray-500">{t('bugReport.admin.empty')}</td>
+                <td colSpan={visibleColumns.length} className="px-3 py-6 text-center text-gray-500">{t('common:bugReport.admin.empty')}</td>
               </tr>
             )}
             {!isLoading && processedReports.map((report) => {
@@ -820,10 +820,10 @@ window.location.assign(window.location.pathname);`}</pre>
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowColumnManager(false)} aria-hidden />
           <div className="relative max-h-[90vh] w-[min(92vw,560px)] overflow-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-4">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-base font-semibold">{t('bugReport.admin.columns.manage', 'Spalten anpassen')}</h2>
-              <button className="px-2 py-1 border rounded" onClick={() => setShowColumnManager(false)}>{t('common.close', 'Schließen')}</button>
+              <h2 className="text-base font-semibold">{t('common:bugReport.admin.columns.manage', 'Spalten anpassen')}</h2>
+              <button className="px-2 py-1 border rounded" onClick={() => setShowColumnManager(false)}>{t('common:common.close', 'Schließen')}</button>
             </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{t('bugReport.admin.columns.hint', 'Sichtbarkeit per Haken, Reihenfolge mit ↑/↓, Größen durch Ziehen im Tabellenkopf.')}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{t('common:bugReport.admin.columns.hint', 'Sichtbarkeit per Haken, Reihenfolge mit ↑/↓, Größen durch Ziehen im Tabellenkopf.')}</p>
             <div className="space-y-2">
               {prefs.order.map((key) => (
                 <div key={key} className="flex items-center gap-2 border rounded p-2">
@@ -834,29 +834,29 @@ window.location.assign(window.location.pathname);`}</pre>
                     aria-label={String(key)}
                   />
                   <div className="flex-1 text-sm">
-                    {key === 'id' ? t('bugReport.admin.id') :
-                     key === 'ts' ? t('bugReport.admin.created') :
-                     key === 'url' ? t('bugReport.admin.url') :
-                     key === 'page' ? t('feedback.page', 'Bereich') :
-                     key === 'language' ? t('bugReport.admin.language') :
-                     key === 'email' ? t('bugReport.admin.email', 'E‑Mail') :
-                     key === 'userAgent' ? t('bugReport.admin.userAgent') :
-                     key === 'description' ? t('bugReport.admin.description') :
-                     key === 'category' ? t('bugReport.admin.category') :
-                     key === 'status' ? t('bugReport.admin.status') :
-                     key === 'priority' ? t('bugReport.admin.priority') :
+                    {key === 'id' ? t('common:bugReport.admin.id') :
+                     key === 'ts' ? t('common:bugReport.admin.created') :
+                     key === 'url' ? t('common:bugReport.admin.url') :
+                     key === 'page' ? t('common:feedback.page', 'Bereich') :
+                     key === 'language' ? t('common:bugReport.admin.language') :
+                     key === 'email' ? t('common:bugReport.admin.email', 'E‑Mail') :
+                     key === 'userAgent' ? t('common:bugReport.admin.userAgent') :
+                     key === 'description' ? t('common:bugReport.admin.description') :
+                     key === 'category' ? t('common:bugReport.admin.category') :
+                     key === 'status' ? t('common:bugReport.admin.status') :
+                     key === 'priority' ? t('common:bugReport.admin.priority') :
                      key === 'appVersion' ? 'Version' : key}
                   </div>
                   <div className="flex items-center gap-1">
-                    <button className="px-2 py-1 border rounded" onClick={() => moveColumn(key, -1)} title={t('bugReport.admin.columns.up', 'Nach oben')}>↑</button>
-                    <button className="px-2 py-1 border rounded" onClick={() => moveColumn(key, 1)} title={t('bugReport.admin.columns.down', 'Nach unten')}>↓</button>
+                    <button className="px-2 py-1 border rounded" onClick={() => moveColumn(key, -1)} title={t('common:bugReport.admin.columns.up', 'Nach oben')}>↑</button>
+                    <button className="px-2 py-1 border rounded" onClick={() => moveColumn(key, 1)} title={t('common:bugReport.admin.columns.down', 'Nach unten')}>↓</button>
                   </div>
                 </div>
               ))}
             </div>
             <div className="flex items-center justify-between mt-4">
-              <button className="px-3 py-2 border rounded" onClick={resetColumns}>{t('bugReport.admin.columns.reset', 'Zurücksetzen')}</button>
-              <button className="px-3 py-2 border rounded" onClick={() => setShowColumnManager(false)}>{t('common.close', 'Schließen')}</button>
+              <button className="px-3 py-2 border rounded" onClick={resetColumns}>{t('common:bugReport.admin.columns.reset', 'Zurücksetzen')}</button>
+              <button className="px-3 py-2 border rounded" onClick={() => setShowColumnManager(false)}>{t('common:common.close', 'Schließen')}</button>
             </div>
           </div>
         </div>
@@ -887,4 +887,3 @@ window.location.assign(window.location.pathname);`}</pre>
 };
 
 export default BugTrackerAdmin;
-

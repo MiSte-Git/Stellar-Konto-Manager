@@ -108,7 +108,7 @@ export default function QuizLanding({
             checked={startInNewTab}
             onChange={(e) => toggleStartInNewTab(e.target.checked)}
           />
-          {t('quiz:ui.openInNewTab.default', 'Quiz standardmäßig in neuem Tab öffnen')}
+          {t('quiz.ui:openInNewTab.default', 'Quiz standardmäßig in neuem Tab öffnen')}
         </label>
       </div>
 
@@ -122,7 +122,7 @@ export default function QuizLanding({
             onClick={() => handle(onStartQuiz)}
             className="inline-flex items-center gap-2 px-4 py-2 rounded text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow"
           >
-            {t('quiz:ui.startInNewTab', 'Quiz in neuem Tab starten')}
+            {t('quiz.ui:startInNewTab', 'Quiz in neuem Tab starten')}
           </a>
         ) : (
           <>
@@ -131,7 +131,7 @@ export default function QuizLanding({
               onClick={() => handle(onStartQuiz)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow"
             >
-              {t('quiz:ui.startQuiz', 'Quiz starten')}
+              {t('quiz.ui:startQuiz', 'Quiz starten')}
             </button>
             <a
               href={runPath}
@@ -139,7 +139,7 @@ export default function QuizLanding({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-3 py-2 rounded text-sm font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
             >
-              {t('quiz:ui.openInNewTab.once', 'In neuem Tab öffnen')}
+              {t('quiz.ui:openInNewTab.once', 'In neuem Tab öffnen')}
             </a>
           </>
         )}

@@ -54,9 +54,9 @@ export default function ActivateAccountPrompt() {
     <div className="fixed inset-0 z-[9999] flex items-center justify-center" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
       <div className="relative w-[min(92vw,520px)] max-h-[90vh] overflow-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-5">
-        <h2 className="text-lg font-semibold mb-3">{t('activation.notFound.title')}</h2>
+        <h2 className="text-lg font-semibold mb-3">{t('common:activation.notFound.title')}</h2>
         <p className="text-sm mb-4">
-          {t('activation.notFound.message', { address: destination })}
+          {t('common:activation.notFound.message', { address: destination })}
         </p>
         <div className="flex justify-end gap-2">
           <button
@@ -64,18 +64,18 @@ export default function ActivateAccountPrompt() {
             className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={handleClose}
             disabled={busy}
-            title={t('activation.actions.no')}
+            title={t('common:activation.actions.no')}
           >
-            {t('activation.actions.no')}
+            {t('common:activation.actions.no')}
           </button>
           <button
             type="button"
             className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
             onClick={handleConfirm}
             disabled={busy}
-            title={t('activation.actions.yes')}
+            title={t('common:activation.actions.yes')}
           >
-            {busy ? t('activation.actions.processing') : t('activation.actions.yes')}
+            {busy ? t('common:activation.actions.processing') : t('common:activation.actions.yes')}
           </button>
         </div>
       </div>

@@ -3,7 +3,7 @@
   "columns": {
     "amount": "Amount",
     "compromised": "Compromised",
-    "deactivated": "Deactivated",
+    "deactivated": "Disabled",
     "destination": "Target wallet",
     "issuer": "Issuer",
     "label": "Label",
@@ -25,11 +25,11 @@
     "token": "Token: {{token}} (Payments: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
-  "missingPublicKey": "Public key is missing.",
+  "missingPublicKey": "Public key missing.",
   "moreTruncated": "... and {{extra}} additional groups",
-  "toWallet": "to Wallet: {{address}}",
+  "toWallet": "To Wallet: {{address}}",
   "total": "Number of tokens purchased: {{count}}",
-  "totalTokens": "Number of invested tokens (assets): {{count}}",
+  "totalTokens": "Number of tokens (assets) invested: {{count}}",
   "value": {
     "units": "{{amount}} pieces",
     "xlm": "{{amount}} XLM"
@@ -44,15 +44,15 @@
     "qsiOnly": "Sum QSI GF"
   },
   "hints": {
-    "qsiListSet": "Note: You can find the GF list under Settings → Trusted Wallets (QSI).",
-    "pageTime": "Loading a page takes approximately 0.2 seconds → 100 pages ≈ 20 seconds → 1000 pages ≈ 200 seconds (≈ 3:20 minutes)."
+    "qsiListSet": "Note: You can find the whitelist under Settings → Trusted Wallets (QSI).",
+    "pageTime": "Loading a page takes about 0.2 seconds → 100 pages ≈ 20 seconds → 1000 pages ≈ 200 seconds (≈ 3:20 minutes)."
   },
   "walletCapInfo": "Note: A wallet can hold a maximum of 1000 trustlines.",
   "action": {
-    "load": "Shop"
+    "load": "Loading"
   },
   "history": {
-    "availableFrom": "Server (Horizon) – History starting from",
-    "hintFullHistory": "Note: The ledger history from the Horizon server only goes back to {{available}}. Only data up to that point will be displayed. The chosen start date is therefore limited. For older data, a (usually paid) full-history provider is required (might come in the future!)."
+    "availableFrom": "Server (Horizon) – History from",
+    "hintFullHistory": "Note: The ledger history from the Horizon server only goes back to {{available}}. Only data up to that point will be displayed. Therefore, the chosen From date is limited. For older data, a (usually paid) full-history provider is required (possibly coming in the future!)."
   }
 }

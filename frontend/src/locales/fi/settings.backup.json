@@ -1,0 +1,39 @@
+{
+  "desc": "Vie tai tuo tietokilpailudatasi (asetukset, edistyminen, merkit).",
+  "export": {
+    "button": "Aloita vienti",
+    "fileName": "quiz-backup.json",
+    "success": "Vienti luotu"
+  },
+  "import": {
+    "backupCreated": "Automaattinen varmuuskopio tallennettu",
+    "done": "Tuonti suoritettu",
+    "invalid": "Virheellinen tuontitiedosto",
+    "noFile": "Ei tiedostoa valittuna",
+    "preview": {
+      "stats": {
+        "achievements": "Merkki: {{count}} visa(a)",
+        "progress": "Eteneminen: {{count}} visailu(a)",
+        "settings": "Asetukset: {{count}} visailu(a)"
+      },
+      "title": "Esikatselu"
+    },
+    "selectFile": "Valitse tiedosto",
+    "strategy": {
+      "label": "Strategia",
+      "merge": "Yhdistä",
+      "replace": "Korvata"
+    },
+    "title": "Tuonti"
+  },
+  "nav": {
+    "back": "Takaisin"
+  },
+  "title": "Varmuuskopiointi ja palautus",
+  "toast": {
+    "backupBeforeImport": "Varmuuskopio tallennettiin ennen tuontia.",
+    "exported": "Varmuuskopio viety",
+    "exportFailed": "Vienti epäonnistui",
+    "importFailed": "Tuonti epäonnistui"
+  }
+}

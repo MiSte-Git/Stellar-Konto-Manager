@@ -1,9 +1,9 @@
 {
   "hintEnterPublicKey": "Per favore, inserisci prima una chiave pubblica.",
   "columns": {
-    "amount": "Importo",
+    "amount": "Quantità",
     "compromised": "Compromesso",
-    "deactivated": "Disattivato",
+    "deactivated": "Disabilitato",
     "destination": "Portafoglio di destinazione",
     "issuer": "Emittente",
     "label": "Etichetta",
@@ -13,11 +13,11 @@
     "token": "Gettone"
   },
   "decimals": {
-    "auto": "Automatico",
+    "auto": "Automaticamente",
     "label": "Cifre decimali:"
   },
   "filter": {
-    "memoPlaceholder": "Filtra per memo, indirizzo del wallet o etichetta.",
+    "memoPlaceholder": "Filtra per memo, indirizzo del portafoglio o etichetta.",
     "tokenPlaceholder": "Filtra per Token (CODICE:EMITTENTE)"
   },
   "item": {
@@ -26,17 +26,17 @@
     "tokenShort": "Token: {{token}}"
   },
   "missingPublicKey": "Chiave pubblica mancante.",
-  "moreTruncated": "... e {{extra}} altri gruppi",
-  "toWallet": "a Portafoglio: {{address}}",
+  "moreTruncated": "... e {{extra}} gruppi aggiuntivi",
+  "toWallet": "Al portafoglio: {{address}}",
   "total": "Numero di token acquistati: {{count}}",
-  "totalTokens": "Numero di token investiti (asset): {{count}}",
+  "totalTokens": "Numero di token (beni) investiti: {{count}}",
   "value": {
     "units": "{{amount}} pezzi",
     "xlm": "{{amount}} XLM"
   },
   "view": {
     "label": "Filtra per:",
-    "memo": "Memo (Groupfund)",
+    "memo": "Memos (Groupfund)",
     "token": "Token (quantità acquistata)"
   },
   "toggles": {
@@ -44,15 +44,15 @@
     "qsiOnly": "Somma QSI GF"
   },
   "hints": {
-    "qsiListSet": "Nota: Puoi trovare l'elenco GF sotto Impostazioni → Portafogli fidati (QSI).",
-    "pageTime": "Il caricamento di una pagina impiega circa 0,2 secondi → 100 pagine ≈ 20 secondi → 1000 pagine ≈ 200 secondi (≈ 3:20 minuti)."
+    "qsiListSet": "Nota: Puoi trovare la whitelist sotto Impostazioni → Portafogli Fidati (QSI).",
+    "pageTime": "Il caricamento di una pagina richiede circa 0,2 secondi → 100 pagine ≈ 20 secondi → 1000 pagine ≈ 200 secondi (≈ 3:20 minuti)."
   },
-  "walletCapInfo": "Nota: Un wallet può contenere un massimo di 1000 linee di fiducia.",
+  "walletCapInfo": "Nota: Un portafoglio può contenere un massimo di 1000 linee di fiducia.",
   "action": {
     "load": "Caricamento"
   },
   "history": {
-    "availableFrom": "Server (Horizon) – Cronologia da",
-    "hintFullHistory": "Nota: La cronologia del registro dal server Horizon risale solo fino a {{available}}. Verranno visualizzati solo i dati fino a quella data. Pertanto, la data di inizio selezionata è limitata. Per dati più vecchi è necessario un provider di cronologia completa (spesso a pagamento) (potrebbe arrivare in futuro!)."
+    "availableFrom": "Server (Horizon) – Storia da",
+    "hintFullHistory": "Nota: La cronologia del libro mastro dal server Horizon risale solo a {{available}}. Verranno quindi visualizzati solo i dati fino a quel momento. Pertanto, la data di inizio scelta è limitata. Per i dati più vecchi, è necessario un fornitore di cronologia completa (solitamente a pagamento) (possibilmente in arrivo in futuro!)."
   }
 }

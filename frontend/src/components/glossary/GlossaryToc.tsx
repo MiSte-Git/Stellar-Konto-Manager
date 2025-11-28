@@ -25,7 +25,7 @@ export default function GlossaryToc({ slugs, idPrefix = 'g-', className = '', so
 
   return (
     <nav className={className}>
-      <h2 className="text-base font-semibold mb-2">{t('glossary.toc', 'Inhaltsverzeichnis')}</h2>
+      <h2 className="text-base font-semibold mb-2">{t('glossary:toc', 'Inhaltsverzeichnis')}</h2>
       <ul className="list-disc list-inside grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1">
         {orderedSlugs.map((slug) => {
           const display = getGlossaryDisplayTitle(slug, t);

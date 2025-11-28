@@ -1,0 +1,4 @@
+{
+  "warnOnActiveQuiz": "Näytä varoitus keskeneräisen tietovisan aikana.",
+  "warnOnActiveQuiz.desc": "Varoita, kun poistut sivulta, jossa on jo vastatut kysymykset."
+}

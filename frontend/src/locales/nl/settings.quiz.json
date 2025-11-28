@@ -1,0 +1,4 @@
+{
+  "warnOnActiveQuiz": "Waarschuwing weergeven tijdens lopende quiz",
+  "warnOnActiveQuiz.desc": "Waarschuw wanneer u de pagina verlaat met reeds beantwoorde vragen."
+}
