@@ -177,7 +177,7 @@ export default function MuxedAccountsPage({ publicKey }) {
       DBG.log('after delete listMuxed ->', next);
       setRows(next);
       setSelected(new Set());
-      setSuccess(t('muxed.deleteSuccess', 'Auswahl gelöscht.'));
+      setSuccess(t('common:muxed.deleteSuccess', 'Auswahl gelöscht.'));
       setError('');
     }
   }, [publicKey, selected, netLabel, t]);
@@ -185,34 +185,34 @@ export default function MuxedAccountsPage({ publicKey }) {
   const onExport = React.useCallback(() => {
     DBG.log('onExport', { publicKey, netLabel });
     if (!publicKey) {
-      setError(t('muxed.error.noBaseAccount', 'Bitte ein bestehendes Konto auswählen.'));
+      setError(t('common:muxed.error.noBaseAccount', 'Bitte ein bestehendes Konto auswählen.'));
       return;
     }
     try {
-      exportMuxedCsv(publicKey, t('muxed.export.filename', 'muxed_accounts.csv'), netLabel);
-      setSuccess(t('muxed.export.success', 'Muxed-Konten erfolgreich exportiert.'));
+      exportMuxedCsv(publicKey, t('common:muxed.export.filename', 'muxed_accounts.csv'), netLabel);
+      setSuccess(t('common:muxed.export.success', 'Muxed-Konten erfolgreich exportiert.'));
       setError('');
     } catch (e) {
       DBG.error('exportMuxedCsv failed', e);
-      setError(t('muxed.export.failed', 'Fehler beim Export der Muxed-Konten.'));
+      setError(t('common:muxed.export.failed', 'Fehler beim Export der Muxed-Konten.'));
     }
   }, [publicKey, netLabel, t]);
 
   const onExportTemplate = React.useCallback(() => {
     try {
       exportMuxedTemplateCsv('muxed_accounts_template.csv');
-      setSuccess(t('muxed.exportTemplateSuccess', 'Template erfolgreich exportiert.'));
+      setSuccess(t('common:muxed.exportTemplateSuccess', 'Template erfolgreich exportiert.'));
       setError('');
     } catch (e) {
       DBG.error('exportMuxedTemplateCsv failed', e);
-      setError(t('muxed.exportTemplateFailed', 'Fehler beim Export des Templates.'));
+      setError(t('common:muxed.exportTemplateFailed', 'Fehler beim Export des Templates.'));
     }
   }, [t]);
 
   const onImportClick = React.useCallback(() => {
     DBG.log('onImportClick');
     if (!publicKey) {
-      setError(t('muxed.error.noBaseAccount', 'Bitte ein bestehendes Konto auswählen.'));
+      setError(t('common:muxed.error.noBaseAccount', 'Bitte ein bestehendes Konto auswählen.'));
       return;
     }
     setError('');
@@ -232,17 +232,17 @@ export default function MuxedAccountsPage({ publicKey }) {
         DBG.log('importMuxedCsvText ->', res);
         setRows(listMuxed(publicKey, netLabel));
         setSelected(new Set());
-        setSuccess(t('muxed.import.success', 'Importiert: {{imported}} • Übersprungen: {{skipped}} • Fehler: {{errors}}.', res));
+        setSuccess(t('common:muxed.import.success', 'Importiert: {{imported}} • Übersprungen: {{skipped}} • Fehler: {{errors}}.', res));
         setError('');
       } catch (err) {
         DBG.error('importMuxedCsvText failed', err);
-        setError(t('muxed.import.failed', 'Fehler beim Import.'));
+        setError(t('common:muxed.import.failed', 'Fehler beim Import.'));
       } finally {
         e.target.value = '';
       }
     };
     reader.onerror = () => {
-      setError(t('muxed.import.failed', 'Fehler beim Import.'));
+      setError(t('common:muxed.import.failed', 'Fehler beim Import.'));
       e.target.value = '';
     };
     reader.readAsText(file);
@@ -256,18 +256,18 @@ export default function MuxedAccountsPage({ publicKey }) {
     setSuccess('');
 
     if (!publicKey) {
-      setError(t('muxed.error.noBaseAccount', 'Please select an existing account.'));
+      setError(t('common:muxed.error.noBaseAccount', 'Please select an existing account.'));
       return;
     }
 
     const rawCount = (countInput || '1').trim();
     const countNum = parseInt(rawCount, 10);
     if (!Number.isFinite(countNum) || countNum < 1) {
-      setError(t('muxed.invalidCount', 'Please enter a valid amount (>= 1).'));
+      setError(t('common:muxed.invalidCount', 'Please enter a valid amount (>= 1).'));
       return;
     }
     if (countNum > 100) {
-      setError(t('muxed.tooMany', 'Please create at most 100 at once.'));
+      setError(t('common:muxed.tooMany', 'Please create at most 100 at once.'));
       return;
     }
 
@@ -280,7 +280,7 @@ export default function MuxedAccountsPage({ publicKey }) {
       const MAX = 18446744073709551615n;
       const lastId = startId + BigInt(countNum - 1);
       if (lastId > MAX) {
-        setError(t('muxed.rangeOverflow', 'The ID range exceeds the maximum allowed muxed ID.'));
+        setError(t('common:muxed.rangeOverflow', 'The ID range exceeds the maximum allowed muxed ID.'));
         return;
       }
 
@@ -309,14 +309,14 @@ export default function MuxedAccountsPage({ publicKey }) {
       setRows(next);
       setSelected(new Set());
       setResult(countNum === 1 ? lastAddress : '');
-      setSuccess(t('muxed.generateSuccess', 'Muxed-Adresse(n) erstellt.'));
+      setSuccess(t('common:muxed.generateSuccess', 'Muxed-Adresse(n) erstellt.'));
     } catch (err) {
       DBG.error('onGenerate failed', err);
       const msg = String(err?.message || '');
       const detail = msg.startsWith('submitTransaction.failed:')
         ? msg.slice('submitTransaction.failed:'.length)
         : msg;
-      setError(t(detail, t('muxed.error.unknown', 'Unknown error while generating muxed address.')));
+      setError(t(detail, t('common:muxed.error.unknown', 'Unknown error while generating muxed address.')));
     }
   }, [publicKey, countInput, rows, netLabel, t]);
 
@@ -333,11 +333,11 @@ export default function MuxedAccountsPage({ publicKey }) {
         document.execCommand('copy');
         document.body.removeChild(ta);
       }
-      setSuccess(t('muxed.copied', 'Copied to clipboard.'));
+      setSuccess(t('common:muxed.copied', 'Copied to clipboard.'));
       setError('');
     } catch (e) {
       DBG.error('copy failed', e);
-      setError(t('muxed.import.failed', 'Fehler beim Import.'));
+      setError(t('common:muxed.import.failed', 'Fehler beim Import.'));
     }
   }, [t]);
 
@@ -364,12 +364,12 @@ export default function MuxedAccountsPage({ publicKey }) {
       if (!row) return;
       addMuxed(publicKey, { id: row.id, address: row.address, label: editLabel, note: editNote }, netLabel);
       setRows(listMuxed(publicKey, netLabel));
-      setSuccess(t('muxed.editSaved', 'Saved changes.'));
+      setSuccess(t('common:muxed.editSaved', 'Saved changes.'));
       setError('');
       cancelEdit();
     } catch (e) {
       DBG.error('saveEdit failed', e);
-      setError(t('muxed.import.failed', 'Fehler beim Import.'));
+      setError(t('common:muxed.import.failed', 'Fehler beim Import.'));
     }
   }, [editingId, editLabel, editNote, publicKey, rows, netLabel, t, cancelEdit]);
 
@@ -405,30 +405,30 @@ export default function MuxedAccountsPage({ publicKey }) {
     <div className="max-w-6xl mx-auto px-3">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold">{t('muxed.title', 'Muxed account create/manage')}</h2>
+          <h2 className="text-xl font-semibold">{t('common:muxed.title', 'Muxed account create/manage')}</h2>
           <button
             type="button"
             className="inline-flex items-center gap-1 px-3 py-1.5 text-sm md:text-base rounded-md border border-blue-600 text-blue-700 bg-blue-50 hover:bg-blue-100 dark:border-blue-400 dark:text-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            aria-label={t('muxed.infoButtonLabel', 'Info')}
+            aria-label={t('common:muxed.infoButtonLabel', 'Info')}
             aria-expanded={showInfo ? 'true' : 'false'}
             aria-controls="muxed-info-panel"
             onClick={() => setShowInfo(s => !s)}
           >
-            {t('muxed.infoButtonLabel', 'Info')}
+            {t('common:muxed.infoButtonLabel', 'Info')}
           </button>
         </div>
       </div>
 
       {showInfo && (
         <div id="muxed-info-panel" className="mb-3 rounded border p-3 bg-blue-50 dark:bg-blue-900/30 text-sm text-gray-800 dark:text-gray-100">
-          <div className="font-semibold mb-1">{t('muxed.info.title', 'What is a muxed account?')}</div>
-          <p className="mb-2">{t('muxed.info.intro1', 'A muxed account combines a normal account address (G...) with an extra 64-bit muxed ID.')}</p>
-          <p className="mb-3">{t('muxed.info.intro2', 'Technically it is an alias that always points to the same base account, but remains distinguishable by the ID.')}</p>
+          <div className="font-semibold mb-1">{t('common:muxed.info.title', 'What is a muxed account?')}</div>
+          <p className="mb-2">{t('common:muxed.info.intro1', 'A muxed account combines a normal account address (G...) with an extra 64-bit muxed ID.')}</p>
+          <p className="mb-3">{t('common:muxed.info.intro2', 'Technically it is an alias that always points to the same base account, but remains distinguishable by the ID.')}</p>
 
-          <div className="font-semibold mb-1">{t('muxed.info.purposeTitle', 'Purpose and benefits')}</div>
-          <p className="mb-3">{t('muxed.info.purposeText', 'Use muxed addresses to manage many sub-accounts under one Stellar address — ideal when many deposits/withdrawals share one base wallet but each flow must be attributable to a person, department, or project.')}</p>
+          <div className="font-semibold mb-1">{t('common:muxed.info.purposeTitle', 'Purpose and benefits')}</div>
+          <p className="mb-3">{t('common:muxed.info.purposeText', 'Use muxed addresses to manage many sub-accounts under one Stellar address — ideal when many deposits/withdrawals share one base wallet but each flow must be attributable to a person, department, or project.')}</p>
 
-          <div className="font-semibold mb-1">{t('muxed.info.examplesTitle', 'Examples')}</div>
+          <div className="font-semibold mb-1">{t('common:muxed.info.examplesTitle', 'Examples')}</div>
           <ul className="list-disc ps-5 mb-3 space-y-1">
             {EXAMPLE_KEYS.map((k, idx) => (
               <li key={k}>
@@ -447,69 +447,69 @@ export default function MuxedAccountsPage({ publicKey }) {
             ))}
           </ul>
 
-          <div className="font-semibold mb-1">{t('muxed.info.pageTitle', 'What this page does (SKM)')}</div>
-          <p className="mb-2">{t('muxed.info.pageDesc', 'Manage muxed addresses for your currently selected Stellar account:')}</p>
+          <div className="font-semibold mb-1">{t('common:muxed.info.pageTitle', 'What this page does (SKM)')}</div>
+          <p className="mb-2">{t('common:muxed.info.pageDesc', 'Manage muxed addresses for your currently selected Stellar account:')}</p>
 
           <div className="grid sm:grid-cols-2 gap-3 mb-3">
             <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
-              <div className="font-semibold mb-1">{t('muxed.info.createTitle', 'Create muxed accounts')}</div>
+              <div className="font-semibold mb-1">{t('common:muxed.info.createTitle', 'Create muxed accounts')}</div>
               <ul className="list-disc ps-5 space-y-1">
-                <li>{t('muxed.info.createItems.i1', 'Generate new muxed addresses (M...) from your base address (G...).')}</li>
-                <li>{t('muxed.info.createItems.i2', 'Optionally add a label (name) and note (project or purpose).')}</li>
+                <li>{t('common:muxed.info.createItems.i1', 'Generate new muxed addresses (M...) from your base address (G...).')}</li>
+                <li>{t('common:muxed.info.createItems.i2', 'Optionally add a label (name) and note (project or purpose).')}</li>
               </ul>
             </div>
             <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
-              <div className="font-semibold mb-1">{t('muxed.info.importTitle', 'Import from CSV')}</div>
+              <div className="font-semibold mb-1">{t('common:muxed.info.importTitle', 'Import from CSV')}</div>
               <ul className="list-disc ps-5 space-y-1">
-                <li>{t('muxed.info.importItems.i1', 'Bulk-create muxed accounts, e.g., from a staff list.')}</li>
-                <li>{t('muxed.info.importItems.i2', 'Reads columns muxedId, label, note.')}</li>
+                <li>{t('common:muxed.info.importItems.i1', 'Bulk-create muxed accounts, e.g., from a staff list.')}</li>
+                <li>{t('common:muxed.info.importItems.i2', 'Reads columns muxedId, label, note.')}</li>
               </ul>
             </div>
             <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
-              <div className="font-semibold mb-1">{t('muxed.info.exportTitle', 'Export existing muxed accounts')}</div>
+              <div className="font-semibold mb-1">{t('common:muxed.info.exportTitle', 'Export existing muxed accounts')}</div>
               <ul className="list-disc ps-5 space-y-1">
-                <li>{t('muxed.info.exportItems.i1', 'Export all saved entries as CSV.')}</li>
-                <li>{t('muxed.info.exportItems.i2', 'Fields: basePublicKey, muxedId, muxedAddress, label, note, createdAt.')}</li>
+                <li>{t('common:muxed.info.exportItems.i1', 'Export all saved entries as CSV.')}</li>
+                <li>{t('common:muxed.info.exportItems.i2', 'Fields: basePublicKey, muxedId, muxedAddress, label, note, createdAt.')}</li>
               </ul>
             </div>
             <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
-              <div className="font-semibold mb-1">{t('muxed.info.templateTitle', 'Template export')}</div>
+              <div className="font-semibold mb-1">{t('common:muxed.info.templateTitle', 'Template export')}</div>
               <ul className="list-disc ps-5 space-y-1">
-                <li>{t('muxed.info.templateItems.i1', 'Create an empty CSV with headers muxedId,label,note.')}</li>
-                <li>{t('muxed.info.templateItems.i2', 'Useful for HR or accounting to prepare new entries.')}</li>
+                <li>{t('common:muxed.info.templateItems.i1', 'Create an empty CSV with headers muxedId,label,note.')}</li>
+                <li>{t('common:muxed.info.templateItems.i2', 'Useful for HR or accounting to prepare new entries.')}</li>
               </ul>
             </div>
           </div>
 
           <div className="border rounded p-3 bg-white/60 dark:bg-white/5 mb-3">
-            <div className="font-semibold mb-1">{t('muxed.info.manageTitle', 'Management and overview')}</div>
+            <div className="font-semibold mb-1">{t('common:muxed.info.manageTitle', 'Management and overview')}</div>
             <ul className="list-disc ps-5 space-y-1">
-              <li>{t('muxed.info.manageItems.i1', 'See all saved muxed addresses in a table.')}</li>
-              <li>{t('muxed.info.manageItems.i2', 'Selection, deletion, and inline label/note editing.')}</li>
+              <li>{t('common:muxed.info.manageItems.i1', 'See all saved muxed addresses in a table.')}</li>
+              <li>{t('common:muxed.info.manageItems.i2', 'Selection, deletion, and inline label/note editing.')}</li>
             </ul>
           </div>
 
-          <div className="font-semibold mb-1">{t('muxed.info.shortTitle', 'In short')}</div>
-          <p>{t('muxed.info.shortText', 'Muxed accounts make your Stellar wallet granular and bookable — ideal when running many payments through one account while keeping every transaction attributable.')}</p>
+          <div className="font-semibold mb-1">{t('common:muxed.info.shortTitle', 'In short')}</div>
+          <p>{t('common:muxed.info.shortText', 'Muxed accounts make your Stellar wallet granular and bookable — ideal when running many payments through one account while keeping every transaction attributable.')}</p>
         </div>
       )}
 
-      <p className="text-sm text-gray-700 dark:text-gray-200 mb-4">{t('muxed.explainer', 'Create M-addresses that point to the same account, distinguished by ID.')}</p>
+      <p className="text-sm text-gray-700 dark:text-gray-200 mb-4">{t('common:muxed.explainer', 'Create M-addresses that point to the same account, distinguished by ID.')}</p>
 
       <div className="space-y-3">
         <div>
-          <label className="block text-sm font-medium mb-1">{t('muxed.selectBaseAccount', 'Base account (G-address)')}</label>
+          <label className="block text-sm font-medium mb-1">{t('common:muxed.selectBaseAccount', 'Base account (G-address)')}</label>
           {publicKey ? (
             <div className="w-full border rounded p-2 font-mono bg-gray-50 text-gray-900" aria-readonly="true">
               {publicKey}
             </div>
           ) : (
             <div className="w-full border rounded p-2 font-mono bg-gray-50 text-gray-400 italic" aria-readonly="true">
-              {t('muxed.selectPlaceholder', 'Please select account')}
+              {t('common:muxed.selectPlaceholder', 'Please select account')}
             </div>
           )}
           <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-            {t('muxed.baseAccountInfo', 'The M-address will always point to this base account.')}
+            {t('common:muxed.baseAccountInfo', 'The M-address will always point to this base account.')}
           </p>
         </div>
 
@@ -517,7 +517,7 @@ export default function MuxedAccountsPage({ publicKey }) {
         <div className="border rounded p-3 space-y-3">
           <div className="flex flex-col md:flex-row md:items-start md:gap-3">
             <div className="mb-3 md:mb-0">
-              <label className="block text-sm font-medium mb-1">{t('muxed.countLabel', 'Anzahl')}</label>
+              <label className="block text-sm font-medium mb-1">{t('common:muxed.countLabel', 'Anzahl')}</label>
               <input
                 type="number"
                 min="1"
@@ -528,7 +528,7 @@ export default function MuxedAccountsPage({ publicKey }) {
                 onChange={(e) => setCountInput(e.target.value)}
               />
               <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                {t('muxed.countInfo', 'Anzahl neuer Muxed-Adressen, fortlaufende IDs.')}
+                {t('common:muxed.countInfo', 'Anzahl neuer Muxed-Adressen, fortlaufende IDs.')}
               </p>
             </div>
           </div>
@@ -539,7 +539,7 @@ export default function MuxedAccountsPage({ publicKey }) {
               onClick={onGenerate}
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
-              {t('muxed.generateButton', 'Create muxed account')}
+              {t('common:muxed.generateButton', 'Create muxed account')}
             </button>
 
             <button
@@ -548,7 +548,7 @@ export default function MuxedAccountsPage({ publicKey }) {
               className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
               disabled={!rows.length}
             >
-              {t('muxed.exportButton', 'Exportieren')}
+              {t('common:muxed.exportButton', 'Exportieren')}
             </button>
 
             <button
@@ -556,7 +556,7 @@ export default function MuxedAccountsPage({ publicKey }) {
               onClick={onExportTemplate}
               className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              {t('muxed.exportTemplateButton', 'Template exportieren')}
+              {t('common:muxed.exportTemplateButton', 'Template exportieren')}
             </button>
 
 
@@ -565,7 +565,7 @@ export default function MuxedAccountsPage({ publicKey }) {
               onClick={onImportClick}
               className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              {t('muxed.importButton', 'Importieren')}
+              {t('common:muxed.importButton', 'Importieren')}
             </button>
             <input
               ref={fileInputRef}
@@ -577,14 +577,14 @@ export default function MuxedAccountsPage({ publicKey }) {
           </div>
 
           <p className="text-xs text-gray-600 dark:text-gray-400">
-            {t('muxed.import.hint', 'Import supports CSV with headers. Delimiters comma, semicolon and tab are auto-detected. Unknown columns are ignored. Formats: extended (network,basePublicKey,muxedId,label,note,createdAt) or template (muxedId,label,note).')}
+            {t('common:muxed.import.hint', 'Import supports CSV with headers. Delimiters comma, semicolon and tab are auto-detected. Unknown columns are ignored. Formats: extended (network,basePublicKey,muxedId,label,note,createdAt) or template (muxedId,label,note).')}
           </p>
         </div>
 
         <div className="mt-6">
-          <h3 className="font-semibold mb-2">{t('muxed.listTitle', 'Existing muxed accounts')}</h3>
+          <h3 className="font-semibold mb-2">{t('common:muxed.listTitle', 'Existing muxed accounts')}</h3>
           {rows.length === 0 ? (
-            <div className="text-sm text-gray-600 dark:text-gray-300">{t('muxed.none', 'No muxed accounts stored.')}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">{t('common:muxed.none', 'No muxed accounts stored.')}</div>
           ) : (
             <div className="overflow-x-auto border rounded">
               <table className="min-w-full text-sm">
@@ -593,33 +593,33 @@ export default function MuxedAccountsPage({ publicKey }) {
                     <th className="p-2 text-left w-10">
                       <input
                         type="checkbox"
-                        aria-label={t('muxed.selectAll', 'Select all')}
+                        aria-label={t('common:muxed.selectAll', 'Select all')}
                         onChange={toggleAll}
                         checked={rows.length>0 && rows.every(r => selected.has(String(r.id)))} />
                     </th>
                     <th className="p-2 text-left">
                       <button type="button" className="inline-flex items-center gap-1" onClick={() => onSort('id')}>
-                        {t('muxed.columns.id', 'Muxed ID')} {sortIndicator('id')}
+                        {t('common:muxed.columns.id', 'Muxed ID')} {sortIndicator('id')}
                       </button>
                     </th>
                     <th className="p-2 text-left">
                       <button type="button" className="inline-flex items-center gap-1" onClick={() => onSort('address')}>
-                        {t('muxed.columns.address', 'Muxed address')} {sortIndicator('address')}
+                        {t('common:muxed.columns.address', 'Muxed address')} {sortIndicator('address')}
                       </button>
                     </th>
-                    <th className="p-2 text-left" title={t('muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}>
+                    <th className="p-2 text-left" title={t('common:muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}>
                       <button type="button" className="inline-flex items-center gap-1" onClick={() => onSort('label')}>
-                        {t('muxed.columns.label', 'Bezeichnung')} {sortIndicator('label')}
+                        {t('common:muxed.columns.label', 'Bezeichnung')} {sortIndicator('label')}
                       </button>
                     </th>
-                    <th className="p-2 text-left" title={t('muxed.noteInfo', 'z. B. Abteilung / Projekt')}>
+                    <th className="p-2 text-left" title={t('common:muxed.noteInfo', 'z. B. Abteilung / Projekt')}>
                       <button type="button" className="inline-flex items-center gap-1" onClick={() => onSort('note')}>
-                        {t('muxed.columns.note', 'Notiz')} {sortIndicator('note')}
+                        {t('common:muxed.columns.note', 'Notiz')} {sortIndicator('note')}
                       </button>
                     </th>
                     <th className="p-2 text-left">
                       <button type="button" className="inline-flex items-center gap-1" onClick={() => onSort('createdAt')}>
-                        {t('muxed.columns.createdAt', 'Created')} {sortIndicator('createdAt')}
+                        {t('common:muxed.columns.createdAt', 'Created')} {sortIndicator('createdAt')}
                       </button>
                     </th>
                   </tr>
@@ -642,7 +642,7 @@ export default function MuxedAccountsPage({ publicKey }) {
                           <input
                             type="text"
                             className="w-full border rounded p-1"
-                            title={t('muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}
+                            title={t('common:muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}
                             value={editLabel}
                             onChange={(e) => setEditLabel(e.target.value)}
                             onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') cancelEdit(); }}
@@ -652,13 +652,13 @@ export default function MuxedAccountsPage({ publicKey }) {
                         ) : (
                           <span
                             className="cursor-text"
-                            title={t('muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}
+                            title={t('common:muxed.labelInfo', 'z. B. Mitarbeitername oder Zweck')}
                             tabIndex={0}
                             role="button"
                             onClick={() => startEdit(r, 'label')}
                             onKeyDown={(e) => { if (e.key === 'Enter') startEdit(r, 'label'); }}
                           >
-                            {r.label || (<span className="text-gray-400">{t('muxed.label', 'Bezeichnung')}</span>)}
+                            {r.label || (<span className="text-gray-400">{t('common:muxed.label', 'Bezeichnung')}</span>)}
                           </span>
                         )}
                       </td>
@@ -667,7 +667,7 @@ export default function MuxedAccountsPage({ publicKey }) {
                           <input
                             type="text"
                             className="w-full border rounded p-1"
-                            title={t('muxed.noteInfo', 'z. B. Abteilung / Projekt')}
+                            title={t('common:muxed.noteInfo', 'z. B. Abteilung / Projekt')}
                             value={editNote}
                             onChange={(e) => setEditNote(e.target.value)}
                             onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') cancelEdit(); }}
@@ -677,13 +677,13 @@ export default function MuxedAccountsPage({ publicKey }) {
                         ) : (
                           <span
                             className="cursor-text"
-                            title={t('muxed.noteInfo', 'z. B. Abteilung / Projekt')}
+                            title={t('common:muxed.noteInfo', 'z. B. Abteilung / Projekt')}
                             tabIndex={0}
                             role="button"
                             onClick={() => startEdit(r, 'note')}
                             onKeyDown={(e) => { if (e.key === 'Enter') startEdit(r, 'note'); }}
                           >
-                            {r.note || (<span className="text-gray-400">{t('muxed.columns.note', 'Notiz')}</span>)}
+                            {r.note || (<span className="text-gray-400">{t('common:muxed.columns.note', 'Notiz')}</span>)}
                           </span>
                         )}
                       </td>
@@ -697,7 +697,7 @@ export default function MuxedAccountsPage({ publicKey }) {
           {rows.length > 0 && (
             <div className="mt-2 flex items-center gap-2">
               <button type="button" onClick={onDeleteSelected} className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50" disabled={selected.size===0}>
-                {t('muxed.deleteSelected', 'Delete selected')}
+                {t('common:muxed.deleteSelected', 'Delete selected')}
               </button>
             </div>
           )}
@@ -712,12 +712,12 @@ export default function MuxedAccountsPage({ publicKey }) {
 
         {result && (
           <div>
-            <label className="block text-sm font-medium mb-1">{t('createAccount.muxedAddress', 'Muxed address')}</label>
+            <label className="block text-sm font-medium mb-1">{t('common:createAccount.muxedAddress', 'Muxed address')}</label>
             <div className="flex items-center gap-2">
               <input type="text" className="w-full border rounded p-2 font-mono" value={result} readOnly />
-              <button type="button" className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => onCopy(result)}>{t('option.copy', 'Copy')}</button>
+              <button type="button" className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => onCopy(result)}>{t('common:option.copy', 'Copy')}</button>
             </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('createAccount.muxedActivationInfo', 'Muxed addresses are aliases. They do not need activation.')}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('common:createAccount.muxedActivationInfo', 'Muxed addresses are aliases. They do not need activation.')}</p>
           </div>
         )}
       </div>

@@ -223,14 +223,14 @@ export default function InvestedTokensPanel({ publicKey }) {
             <div className="flex items-center gap-6">
               <div className="flex flex-col text-xs gap-1 items-start">
                 <label className="inline-flex items-center gap-1">
-                  <span className="inline-block w-28 text-right">{t('xlmByMemo.date.from')}</span>
+                  <span className="inline-block w-28 text-right">{t('xlmByMemo:date.from')}</span>
                   <input type="date" min={constrainDates ? (minFrom || undefined) : undefined} value={fromDate} onChange={(e)=>{
                     const v = e.target.value;
                     if (constrainDates && minFrom && v && new Date(v) < new Date(minFrom)) setFromDate(minFrom); else setFromDate(v);
                   }} className="border rounded px-1 py-0.5" />
                 </label>
                 <label className="inline-flex items-center gap-1">
-                  <span className="inline-block w-28 text-right">{t('xlmByMemo.date.to')}</span>
+                  <span className="inline-block w-28 text-right">{t('xlmByMemo:date.to')}</span>
                   <input type="date" value={toDate} onChange={(e)=>setToDate(e.target.value)} className="border rounded px-1 py-0.5" />
                 </label>
               </div>
@@ -244,15 +244,15 @@ export default function InvestedTokensPanel({ publicKey }) {
           {/* Rechter Block: Buttons rechtsbündig */}
           <div className="flex items-center gap-2 ml-auto">
           <button className="border rounded px-3 py-1" onClick={load} disabled={loading}>
-          {loading ? t('common.loading') : t('InvestedTokens:action.load', 'Laden')}
+          {loading ? t('common:common.loading') : t('InvestedTokens:action.load', 'Laden')}
           </button>
           {loading && (
           <button className="border rounded px-3 py-1" onClick={onCancel}>
-          {t('progress.cancel')}
+          {t('common:progress.cancel')}
           </button>
           )}
           <button className="border rounded px-3 py-1" onClick={() => { try { if (!data?.items) return; if (view === 'memo') exportCsvMemo(); else exportCsvToken(); } catch { /* noop */ } }}>
-          {t('option.export.csv')}
+          {t('common:option.export.csv')}
           </button>
           </div>
           </div>
@@ -335,7 +335,7 @@ export default function InvestedTokensPanel({ publicKey }) {
                   <div className="text-xs text-gray-500 dark:text-gray-400 space-y-0.5">
                     {range && (<div>Zeitraum: {range}</div>)}
                     {avail && (<div>{t('InvestedTokens:history.availableFrom')}: {avail}</div>)}
-                    <div>{t('account.createdAt')}: {created ? created : t('account.createdAtUnknown')}</div>
+                    <div>{t('common:account.createdAt')}: {created ? created : t('common:account.createdAtUnknown')}</div>
 
                   </div>
                 );
@@ -367,8 +367,8 @@ export default function InvestedTokensPanel({ publicKey }) {
                       <td className="px-2 py-1 font-mono break-all">{r.destination}</td>
                       <td className="px-2 py-1">{r.label}</td>
                       <td className="px-2 py-1">{r.date ? new Intl.DateTimeFormat(i18n.language || undefined, { dateStyle: 'medium' }).format(r.date) : '-'}</td>
-                      <td className="px-2 py-1">{r.compromised ? t('option.yes') : t('option.no')}</td>
-                      <td className="px-2 py-1">{r.deactivated ? t('option.yes') : t('option.no')}</td>
+                      <td className="px-2 py-1">{r.compromised ? t('common:option.yes') : t('common:option.no')}</td>
+                      <td className="px-2 py-1">{r.deactivated ? t('common:option.yes') : t('common:option.no')}</td>
                     </tr>
                   ))}
                 </tbody>

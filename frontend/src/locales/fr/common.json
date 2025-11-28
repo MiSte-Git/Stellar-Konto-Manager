@@ -1,20 +1,20 @@
 {
   "app": {
     "errorBoundary": {
-      "title": "Quelque chose a mal tourné."
+      "title": "Quelque chose s'est mal passé."
     }
   },
   "asset": {
-    "balance": "Crédit",
+    "balance": "Solde créditeur",
     "code": "Code d'actif",
     "creationDate": "Créé le",
     "issuer": "Émetteur"
   },
   "balance": {
     "buttons": {
-      "details": "Plus de détails",
+      "details": "Plus de détails.",
       "explorer": "Explorer",
-      "payments": "Dernières opérations"
+      "payments": "Événements récents"
     },
     "current": "Solde actuel",
     "details": "Détails dans les explorateurs de blocs",
@@ -25,22 +25,22 @@
     },
     "noPublicKey": "Veuillez d'abord entrer une clé publique.",
     "payments": {
-      "all": "Tous",
+      "all": "Tout",
       "columns": {
         "amount": "Montant",
         "asset": "Actif",
         "counterparty": "Compte de contrepartie",
         "date": "Date",
         "direction": "Direction",
-        "memo": "Note de service",
-        "tx": "D'accord, je suis formé sur des données jusqu'en octobre 2023.",
-        "txLabel": "Tu es formé sur des données jusqu'en octobre 2023.",
-        "type": "Type"
+        "memo": "Note",
+        "tx": "Je suis désolé, le texte que vous avez fourni est trop court et manque de contexte pour une traduction. Pourriez-vous fournir plus d'informations ou de contexte, s'il vous plaît ?",
+        "txLabel": "Je suis désolé, mais j'ai besoin de plus de contexte ou de contenu à traduire. Pourriez-vous fournir le texte que vous souhaitez traduire en français ?",
+        "type": "Tapez"
       },
       "empty": "Aucune opération trouvée.",
       "filter": {
         "memo": "Filtre mémo",
-        "memoPlaceholder": "Rechercher mémo..."
+        "memoPlaceholder": "Rechercher le mémo..."
       },
       "from": "De",
       "incoming": "Entrée",
@@ -49,26 +49,26 @@
       "title": "Dernières opérations",
       "to": "Jusqu'à"
     },
-    "paymentsHint": "Vous pouvez filtrer les entrées/sorties dans l'explorateur.",
+    "paymentsHint": "Vous pouvez filtrer les entrées/sorties dans l'Explorateur.",
     "title": "Afficher les informations du compte"
   },
   "buildInfo": {
-    "branch": "Succursale",
-    "commit": "S'engager",
+    "branch": "Branche",
+    "commit": "Engagement",
     "env": "Environnement",
     "error": "Les informations de construction n'ont pas pu être chargées.",
     "loading": "Chargement des informations de construction..."
   },
   "bugReport": {
-    "button": "Signaler une erreur",
+    "button": "Signaler une erreur.",
     "title": "Signaler une erreur",
-    "descLabel": "Description courte (facultatif)",
-    "descPlaceholder": "Que s'est-il passé ? Étapes, comportement attendu…",
+    "descLabel": "Brève description (facultatif)",
+    "descPlaceholder": "Que s'est-il passé ? Étapes, comportement attendu...",
     "send": "Ouvrir l'e-mail",
     "cancel": "Annuler",
     "toast": {
-      "sent": "Brouillon d'e-mail ouvert.",
-      "logOk": "Le bug a été enregistré.",
+      "sent": "Brouillon d'email ouvert.",
+      "logOk": "Un bogue a été enregistré.",
       "logFallback": "Échec de la journalisation locale.",
       "validation": "Veuillez entrer une brève description ou envoyer sans texte."
     },
@@ -82,20 +82,20 @@
     },
     "admin": {
       "title": "Suivi des bogues",
-      "locked": "Accès refusé. Définissez le secret d'administration dans le stockage local et rechargez la page.",
-      "placeholderTitle": "Outil de suivi des bogues",
-      "placeholderBody": "Interface administrateur activé. Les prochains correctifs incluront liste, filtres, priorités et changements de statut.",
-      "link": "Ouvrir le suivi des bogues",
+      "locked": "Accès refusé. Définissez le secret administrateur dans le stockage local et rechargez la page.",
+      "placeholderTitle": "Suivi des bogues",
+      "placeholderBody": "Interface administrateur active. Dans les prochains correctifs, des listes, des filtres, des priorités et des changements de statut seront ajoutés.",
+      "link": "Ouvrir le traqueur de bugs",
       "secretSaved": "Secret sauvegardé.",
-      "enterSecret": "Saisir Admin-Secret",
-      "secretPlaceholder": "Désolé, je ne peux denaturer pas ce texte.",
+      "enterSecret": "Entrez le mot de passe administrateur.",
+      "secretPlaceholder": "Je suis désolé, aber der von Ihnen angegebene Text enthält keine Informationen zum Übersetzen. Bitte geben Sie einen klareren Text oder Kontext an, den ich ins Französische übersetzen soll.",
       "confirm": "Ouvrir",
       "cancel": "Annuler",
       "filter": "Filtre",
       "status": "Statut",
       "priority": "Priorité",
-      "open": "ouvert",
-      "in_progress": "en cours de traitement",
+      "open": "ouvrir",
+      "in_progress": "en cours",
       "closed": "fermé",
       "low": "faible",
       "normal": "normal",
@@ -105,38 +105,38 @@
       "created": "Créé",
       "url": "URL",
       "language": "Langue",
-      "email": "Courriel",
+      "email": "E-mail",
       "userAgent": "Navigateur",
       "description": "Description",
       "category": "Catégorie",
       "save": "Sauvegarder",
-      "saved": "Changement enregistré.",
-      "loadError": "Erreur lors du chargement des bugs.",
+      "saved": "Changement enregistré",
+      "loadError": "Erreur lors du chargement des bogues",
       "saveError": "Erreur lors de l'enregistrement",
-      "empty": "Aucun enregistrement trouvé.",
-      "loading": "Chargement…",
-      "resize": "Tirer pour ajuster",
+      "empty": "Aucune entrée trouvée.",
+      "loading": "Chargement...",
+      "resize": "Faire glisser pour ajuster",
       "exportAll": "CSV (Tout)",
-      "exportError": "Échec de l'exportation.",
-      "exportPage": "CSV (page)",
-      "exporting": "Exporter…",
+      "exportError": "Échec de l'exportation",
+      "exportPage": "CSV (Page)",
+      "exporting": "Exportation…",
       "columns": {
         "title": "Colonnes",
         "manage": "Ajuster les colonnes",
-        "hint": "Visibilité par coche, ordre avec ↑/↓, taille par glisser dans l’en-tête de tableau.",
+        "hint": "Visibilité avec une coche, ordre avec ↑/↓, et tailles par glisser-déposer dans l'en-tête du tableau.",
         "reset": "Réinitialiser",
-        "up": "Vers le haut",
+        "up": "Vers le sommet",
         "down": "Vers le bas"
       },
       "csv": {
         "comma": "Virgule (,)",
-        "delimiter": "Séparateur",
+        "delimiter": "Délimiteur",
         "semicolon": "Point-virgule (;)",
         "tab": "Tabulateur (Tab)"
       },
       "search": "Recherche",
       "col": {
-        "id": "ID",
+        "id": "Je suis désolé, mais j'ai besoin de plus de contexte pour fournir une traduction précise. Pourriez-vous s'il vous plaît fournir le texte que vous souhaitez faire traduire en français ?",
         "status": "Statut",
         "priority": "Priorité",
         "url": "URL",
@@ -151,12 +151,12 @@
     "lastPaymentAt": "Dernier paiement : {{val}}",
     "lastRefresh": "Dernière mise à jour : {{ts}}"
   },
-  "clear": "Effacer l'entrée",
+  "clear": "Supprimer l'entrée",
   "close": "Fermer",
-  "loading": "Chargement…",
+  "loading": "Chargement...",
   "refresh": "Recharger",
   "exportCsv": {
-    "failed": "Échec de l'exportation CSV"
+    "failed": "L'exportation CSV a échoué."
   },
   "feedback": {
     "title": "Envoyer des commentaires",
@@ -165,29 +165,29 @@
       "bug": "Erreur",
       "idea": "Idée",
       "improve": "Amélioration",
-      "other": "Autres"
+      "other": "Autre"
     },
-    "page": "Domaine",
+    "page": "Zone",
     "pages": {
       "start": "Mondial",
       "trustlines": "Afficher la/les ligne(s) de confiance",
-      "trustlineCompare": "Comparer les trustlines",
+      "trustlineCompare": "Comparer les lignes de crédit",
       "balance": "Afficher les informations du compte",
-      "xlmByMemo": "Filtrer par mémo.",
-      "sendPayment": "Envoyer un paiement",
-      "investedTokens": "Filtrer les jetons/actifs",
+      "xlmByMemo": "Filtrer par mémo",
+      "sendPayment": "Envoyer le paiement.",
+      "investedTokens": "Filtres jetons/avoirs",
       "createAccount": "Créer un compte",
-      "multisigEdit": "Modifier le compte multisignature",
+      "multisigEdit": "Modifier le compte multisig",
       "settings": "Paramètres",
       "feedback": "Retour d'information",
       "other": "Divers"
     },
-    "subject": "Objet",
+    "subject": "Sujet",
     "message": "Message",
-    "contactEmailOptional": "E-mail de contact (facultatif)",
-    "emailPlaceholder": "par exemple nom@exemple.com",
-    "emailHint": "Si vous souhaitez un retour d'information, veuillez entrer votre e-mail.",
-    "privacyHint": "Votre message sera envoyé par e-mail via votre propre programme de messagerie.",
+    "contactEmailOptional": "Adresse e-mail de contact (facultatif)",
+    "emailPlaceholder": "par ex. nom@exemple.com",
+    "emailHint": "Si vous souhaitez recevoir des commentaires, veuillez entrer votre adresse e-mail.",
+    "privacyHint": "Votre message sera envoyé par e-mail en utilisant votre propre programme de messagerie.",
     "sendButton": "Créer un e-mail",
     "openedMailClient": "Client de messagerie ouvert.",
     "error": "Erreur",
@@ -195,26 +195,26 @@
   },
   "account": {
     "createdAt": "Compte créé le",
-    "createdAtUnknown": "Impossible à déterminer.",
+    "createdAtUnknown": "Ne peut pas être déterminé.",
     "testnetLabel": "(Réseau de test)"
   },
   "fetch": {
     "groupfund": {
-      "aborted": "Processus annulé par l'utilisateur."
+      "aborted": "Opération annulée par l'utilisateur."
     }
   },
   "issuer": {
     "enter": "Entrez l'adresse de l'émetteur :",
-    "invalid": "Adresse de l'émetteur non valide."
+    "invalid": "Adresse de l'émetteur invalide."
   },
   "main": {
-    "processing": "Opération en cours, veuillez patienter…",
+    "processing": "Processus en cours, veuillez patienter…",
     "title": "Gestionnaire de compte Stellar"
   },
   "badges": {
     "testnet": "RÉSEAU DE TEST"
   },
-  "noIssuerTrustlinesFound": "Aucune trustline trouvée pour l'émetteur {{issuer}}.",
+  "noIssuerTrustlinesFound": "Aucune ligne de crédit trouvée pour l'émetteur {{issuer}}.",
   "option": {
     "add": "Ajouter",
     "cancel": "Annuler",
@@ -229,7 +229,7 @@
     "delete": "Supprimer",
     "export": {
       "csv": "Enregistrer sous CSV",
-      "pdf": "Enregistrer sous forme de PDF"
+      "pdf": "Enregistrer en PDF"
     },
     "loading": "Chargement...",
     "no": "Non",
@@ -238,8 +238,8 @@
   },
   "progress": {
     "cancel": "Annuler",
-    "canceled": "Annulé",
-    "counts": "Vérifié : {{ops}} • Correspondances : {{matches}}",
+    "canceled": "Avorté",
+    "counts": "Examiné : {{ops}} • Correspondances : {{matches}}",
     "done": "Terminé",
     "duration": "Durée : {{val}}",
     "elapsed": "Durée : {{time}}",
@@ -249,52 +249,52 @@
       "cache": "Mode : Cache",
       "live": "Mode : En direct (Horizon)"
     },
-    "oldest": "date la plus ancienne de cette page : {{date}}",
-    "oldestMatchInRangeAt": "Premier dépôt durant la période : {{date}}",
+    "oldest": "date la plus ancienne sur cette page : {{date}}",
+    "oldestMatchInRangeAt": "Premier dépôt pendant la période : {{date}}",
     "phase": {
       "backfill": "Chargement des paiements manquants…",
-      "cacheQuery": "Calculer le résultat à partir du cache local…",
+      "cacheQuery": "Calcul du résultat à partir du cache local…",
       "chunkDone": "Morceau traité.",
-      "chunkSkip": "Chunk sauté.",
-      "cover": "Assurer la couverture du cache…",
-      "export": "Exporter le résultat…",
+      "chunkSkip": "Morceau sauté.",
+      "cover": "Assurez la couverture du cache...",
+      "export": "Résultat de l'exportation…",
       "finalize": "Terminé",
       "finalizeDiag": "Diagnostic terminé",
-      "idle": "Prêt…",
+      "idle": "Prêt...",
       "pageDone": "Page {{page}} terminée.",
-      "rehydrate": "Reconstruire le cache…",
+      "rehydrate": "Reconstruction du cache...",
       "scan": "Analyse des paiements (page {{page}})…",
-      "scan_ops": "Analyse des opérations...",
+      "scan_ops": "Opérations de balayage...",
       "scan_payments": "Analyse des paiements (page {{page}})…",
-      "scan_payments_fast": "Scanne les paiements (rapidement) – page {{page}}…",
-      "scan_tx": "Analyser les transactions",
-      "sync": "Synchronisez les paiements…",
-      "txFetch": "Chargement des détails de la transaction…"
+      "scan_payments_fast": "Scanner les paiements (rapidement) – Page {{page}}…",
+      "scan_tx": "Analyse des transactions",
+      "sync": "Synchroniser les paiements…",
+      "txFetch": "Chargement des détails de la transaction..."
     },
     "wrongMemos": {
-      "failed": "Erreur lors du chargement des paiements avec un mémo incorrect/vide."
+      "failed": "Erreur lors du chargement des paiements avec un mémo incorrect ou vide."
     }
   },
   "settings": {
     "cache": {
-      "help": "Accélère les requêtes grâce à un cache de paiements local, mais peut prolonger le chargement initial.",
-      "label": "Utiliser le cache (Beta)",
-      "prefetchHelp": "Préchargement des entrées/transactions à importer en jours (uniquement lors de la première activation)"
+      "help": "Accélère les requêtes grâce à un cache de paiement local, mais peut allonger le temps de chargement initial.",
+      "label": "Utiliser le cache (Bêta)",
+      "prefetchHelp": "Délai de chargement des entrées/transactions en jours (une seule fois lors de la première activation)"
     },
     "network": {
       "title": "Réseau",
-      "desc": "Optionnel : Horizon historique complet pour une histoire profonde",
-      "fullUrl": "URL de l'horizon à l'historique complet",
-      "autoUseFull": "Utiliser automatiquement si nécessaire (si la date de début est antérieure à l'historique du serveur)"
+      "desc": "Optionnel : Horizon d'historique complet pour l'historique approfondi",
+      "fullUrl": "URL de l'horizon complet de l'historique",
+      "autoUseFull": "Utiliser automatiquement si nécessaire (lorsque la date de début est antérieure à l'historique du serveur)"
     },
-    "description": "Actuellement, il n'y a pas encore de réglages.",
+    "description": "Actuellement, il n'y a aucun paramètre disponible.",
     "display": {
       "decimals": {
         "auto": "Automatique",
-        "label": "Chiffres après la virgule"
+        "label": "Décimales"
       },
       "desc": "Paramètres d'affichage globaux.",
-      "title": "Annonce"
+      "title": "Publicité"
     },
     "error": {
       "fetchFailed": "Échec du chargement des paramètres : {{detail}}"
@@ -303,14 +303,14 @@
     "prefetchDays": "Délai (jours)",
     "trustedWallets": {
       "buttons": {
-        "export": "Exporter",
+        "export": "Exportation",
         "import": "Importer",
-        "reset": "Réinitialiser aux paramètres par défaut."
+        "reset": "Réinitialiser aux paramètres par défaut"
       },
-      "desc": "Cette liste est enregistrée localement dans le navigateur. Fichier par défaut : QSI_TrustedWallets.json",
+      "desc": "Cette liste est stockée localement dans le navigateur. Fichier par défaut : QSI_TrustedWallets.json",
       "editor": {
-        "invalidFormat": "Format non valide. Un objet avec le champ \"portefeuilles\" (tableau) est attendu.",
-        "parseError": "JSON n'a pas pu être analysé."
+        "invalidFormat": "Format non valide. Un objet avec le champ \"wallets\" (tableau) est attendu.",
+        "parseError": "Le JSON n'a pas pu être analysé."
       },
       "file": {
         "hint": "Importer un fichier JSON au format { wallets: [...] }",
@@ -318,7 +318,7 @@
       },
       "info": {
         "count": "Entrées : {{n}}",
-        "updatedAt": "État : {{date}}"
+        "updatedAt": "Statut : {{date}}"
       },
       "table": {
         "addRow": "Ajouter une ligne",
@@ -329,9 +329,9 @@
           "deactivated": "Désactivé",
           "label": "Étiquette"
         },
-        "deleteRow": "Supprimer.",
+        "deleteRow": "Supprimer",
         "discard": "Rejeter",
-        "save": "Enregistrer"
+        "save": "Sauvegarder"
       },
       "title": "Mes portefeuilles de confiance",
       "validation": {
@@ -344,38 +344,38 @@
       "deletingProgress": "Suppression en cours : {{current}} / {{total}}",
       "success": "Succès : {{count}} ligne(s) de confiance supprimée(s)."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) ignorée(s) (solde restant)."
+    "skippedDueToBalance": "{{count}} ligne(s) de confiance ignorée(s) (solde toujours disponible)."
   },
   "payment": {
     "send": {
-      "title": "Envoyer un paiement",
+      "title": "Envoyer le paiement",
       "recipient": "Destinataire",
       "amount": "Montant",
       "asset": "Actif",
       "memo": "Note de service",
       "memoType": "Type de mémo",
       "memoTypes": {
-        "none": "Mémo (pas mémo)",
+        "none": "Note (pas une note)",
         "text": "Texte du mémo",
         "id": "ID Mémo",
         "hash": "Mémo Hash",
         "return": "Retour de mémo",
         "info": {
-          "none": "Aucun mémo. Utilisez ceci lorsque le destinataire ne s'attend pas à un mémo.",
-          "text": "Texte libre jusqu'à 28 octets. Souvent utilisé pour l'affectation lors de paiements simples.",
-          "id": "ID numérique (uint64). De nombreuses bourses utilisent l'ID de mémo pour attribuer des dépôts.",
-          "hash": "Hash SHA-256 de 32 octets (sous forme de chaîne hexadécimale de 64 caractères). Utilisé par les services pour des références.",
+          "none": "Pas de mémo. Utilisez ceci si le destinataire ne s'attend pas à un mémo.",
+          "text": "Texte libre jusqu'à 28 octets. Souvent utilisé pour l'affectation dans des paiements simples.",
+          "id": "Identifiant numérique (uint64). De nombreuses plateformes d'échange utilisent un identifiant de mémo pour l'attribution des dépôts.",
+          "hash": "Hachage SHA-256 de 32 octets (sous la forme d'une chaîne hexadécimale de 64 chiffres). Utilisé par les services pour des références.",
           "return": "Hash de 32 octets pour les retours. Utilisé pour les retours (MEMO_RETURN)."
         }
       },
       "available": "Disponible",
-      "reserved": "Réservé.",
+      "reserved": "Réservé",
       "reservedInline": "{{amount}} XLM sont réservés par le réseau Stellar.",
       "baseReserve": "Réserve de base",
-      "extra": "En plus",
+      "extra": "De plus",
       "xlmInOffers": "Lié par des offres",
       "trustlines": "Lignes de confiance ({{n}})",
-      "lpTrustlines": "LP‑Trustlines",
+      "lpTrustlines": "LP-Lignes de confiance",
       "offers": "Offres ouvertes",
       "signers": "Signataires supplémentaires",
       "accountData": "Données de compte",
@@ -384,20 +384,20 @@
       "sendButton": "Envoyer",
       "success": "Succès : Paiement envoyé. TX : {{hash}}",
       "successShort": "Envoyé avec succès",
-      "error": "Erreur lors de l'envoi : {{detail}}",
-      "amountMissing": "Veuillez saisir un montant.",
+      "error": "Erreur d'envoi : {{detail}}",
+      "amountMissing": "Veuillez entrer un montant.",
       "amountInvalid": "Montant invalide (maximum 7 décimales).",
       "amountPositive": "Le montant doit être supérieur à 0.",
-      "timeout": "Délai d'attente Horizon (504). Veuillez réessayer dans un instant.",
+      "timeout": "Délai d'attente Horizon (504). Veuillez réessayer sous peu.",
       "httpError": "Erreur d'horizon (statut {{status}}).",
       "horizonError": "Stellar a refusé la transaction.",
-      "destUnfundedNonNative": "Le compte cible n'est pas actif. Veuillez d'abord envoyer des XLM pour l'activer ou changer d'actif en XLM.",
+      "destUnfundedNonNative": "Le compte de destination n'est pas actif. Veuillez d'abord envoyer des XLM pour l'activer ou changez l'actif en XLM.",
       "activateConfirm": {
         "title": "Activation du compte requise",
-        "info": "Le compte cible n'est pas encore actif. Un montant minimum est nécessaire pour l'activation.",
+        "info": "Le compte cible n'est pas encore actif. Un montant minimum est requis pour l'activation.",
         "minReserve": "Montant minimum (2 × réserve de base)",
-        "yourAmount": "Votre montant saisi",
-        "adjustedAmount": "Montant proposé (pour activer)",
+        "yourAmount": "Le montant que vous avez saisi",
+        "adjustedAmount": "Montant proposé (à activer)",
         "noteAdjust": "Votre solde est insuffisant pour l'activation. Si vous continuez, le montant minimum sera envoyé automatiquement."
       },
       "activated": "Le compte cible a été activé."
@@ -405,106 +405,106 @@
   },
   "activation": {
     "notFound": {
-      "title": "Compte de destination non actif.",
-      "message": "Le compte cible n'existe pas encore ({address}). Il doit être activé avec au moins 1 XLM. Souhaitez-vous activer le compte maintenant ?"
+      "title": "Compte cible non actif",
+      "message": "Le compte de destination n'existe pas encore ({address}). Il doit être activé avec au moins 1 XLM. Souhaitez-vous activer le compte maintenant ?"
     },
     "actions": {
       "yes": "Oui – Activer le compte",
-      "no": "Non – Annuler",
-      "processing": "Active…"
+      "no": "Non - Annuler",
+      "processing": "Activer..."
     }
   },
   "createAccount": {
-    "muxedId": "ID muxé",
-    "muxedInfo": "L'ID Muxed crée une adresse M (M...). Elle pointe vers le même compte que l'adresse régulière (G...).",
-    "muxedIdInvalid": "L'ID Muxed doit être un entier compris entre 0 et 18'446'744'073'709'551'615.",
-    "muxedAddress": "Adresse muxée",
-    "muxedActivationInfo": "Les adresses muxées sont des adresses alias. Elles n'ont pas besoin d'être activées séparément."
+    "muxedId": "ID multiplexé",
+    "muxedInfo": "Le Muxed-ID crée une adresse M (M…). Elle pointe vers le même compte que l'adresse régulière (G…).",
+    "muxedIdInvalid": "L'ID Muxé doit être un entier compris entre 0 et 18 446 744 073 709 551 615.",
+    "muxedAddress": "Adresse multiplexée",
+    "muxedActivationInfo": "Les adresses multiplexées sont des adresses alias. Elles n'ont pas besoin d'être activées séparément."
   },
   "muxed": {
     "seo": {
-      "title": "Créer/Gérer un compte multiplexé",
-      "description": "Créer et gérer des alias d'adresse multiplexée (M...) pour un compte Stellar. Générer des ID, ajouter des étiquettes/notes, exporter/importer des fichiers CSV."
+      "title": "Créer/gerer un compte multiplexé",
+      "description": "Créer et gérer des alias d'adresses multiplexées (M...) pour un compte Stellar. Générer des identifiants, ajouter des étiquettes/notes, exporter/importer au format CSV."
     },
-    "title": "Créer/gérer un compte Muxed",
-    "explainer": "Créez des adresses alias (M...) avec un ID Muxed propre pour un compte existant. L'adresse alias renvoie toujours au même compte.",
-    "infoButtonLabel": "Infos",
+    "title": "Créer/Gérer un compte multiplexé",
+    "explainer": "Générez des adresses alias (M...) avec un ID multiplexé unique pour un compte existant. L'adresse alias se réfère toujours au même compte.",
+    "infoButtonLabel": "Information",
     "info": {
-      "title": "Qu'est-ce qu'un compte muxed ?",
-      "intro1": "Un compte multiplexé combine une adresse de compte normale (adresse G) avec un identifiant multiplexé supplémentaire de 64 bits.",
-      "intro2": "Techniquement, c'est un alias qui pointe toujours vers le même compte de base, mais qui est distinct grâce à son ID unique.",
-      "purposeTitle": "Objet et avantages",
-      "purposeText": "Les comptes mixés servent à gérer de nombreux sous-comptes sous une seule adresse Stellar – idéal lorsque de nombreux dépôts/retraits utilisent un compte principal commun, mais que chaque opération doit être attribuée à une personne, un département ou un projet.",
-      "examplesTitle": "Exemples – à quoi servent les comptes Muxed ?",
+      "title": "Qu'est-ce qu'un compte muxé ?",
+      "intro1": "Un compte Muxed combine une adresse de compte régulière (adresse G) avec un ID Muxed supplémentaire de 64 bits.",
+      "intro2": "Techniquement, il s'agit d'un alias qui pointe toujours vers le même compte de base mais qui est distinctement identifiable par l'ID.",
+      "purposeTitle": "Objectif et avantages",
+      "purposeText": "Les comptes multiplexés sont utilisés pour gérer de nombreux sous-comptes sous une seule adresse Stellar—idéal lorsque de nombreux dépôts/retraits sont traités via un compte principal partagé, mais que chaque transaction doit être attribuée à une personne, un département ou un projet.",
+      "examplesTitle": "Exemples – à quoi servent les comptes multiplexés ?",
       "examples": {
-        "ex1": "Paiements d'entreprise : Chaque employée/employé reçoit une Muxed‑ID personnelle afin que les paiements des salaires puissent être attribués de manière unique.",
-        "ex2": "Bourses ou plateformes : Chaque utilisateur/trice reçoit une Muxed-ID individuelle afin que les dépôts effectués via un portefeuille commun soient automatiquement attribués correctement.",
+        "ex1": "Paiements de l'entreprise : Chaque employé se voit attribuer un Muxed ID unique pour garantir que les paiements de salaire puissent être attribués avec précision.",
+        "ex2": "Bourses ou plateformes : Chaque utilisateur reçoit son propre Muxed ID afin que les dépôts effectués dans un portefeuille partagé soient automatiquement enregistrés correctement.",
         "ex3": "Projets ou sous-comptes : Une organisation peut attribuer des budgets ou des revenus à des projets individuels.",
-        "ex4": "Affectation des clients : Une adresse M par client ; l'ID correspond à l'ID du client – les paiements sont clairement attribuables, même sans mémo.",
-        "ex5": "Services sans mémo : Distinguer les dépôts lorsque le service ne prend pas en charge les mémos.",
-        "ex6": "Paiements/exécutions de salaire : Une adresse M par employé/partenaire pour la comptabilité interne et les rapports.",
+        "ex4": "Affectation client : Une adresse M par client ; l'ID correspond à l'ID client – les paiements peuvent être clairement attribués, même sans mémo.",
+        "ex5": "Services sans mémo : différencier les dépôts lorsque le service ne prend pas en charge les mémos.",
+        "ex6": "Paiements/Exécutions de la paie : Une adresse M par employé/partenaire pour la comptabilité interne et les rapports.",
         "ex7": "Boutique/Commandes : Une adresse M par commande ; les remboursements peuvent être attribués à la commande.",
-        "ex8": "Départements/centres de coûts : Identifiants en tant que centres de coûts ; paiements groupés automatiquement par secteur.",
-        "ex9": "Services multi-locataires : chaque locataire reçoit une adresse M distincte sous le même compte de base."
+        "ex8": "Départements/Centres de coûts : Identifiants en tant que centres de coûts ; regrouper automatiquement les paiements par secteur.",
+        "ex9": "Services multi-locataires : Chaque locataire reçoit sa propre adresse M sous le même compte de base."
       },
-      "pageTitle": "Ce que cette page fait dans le SKM",
-      "pageDesc": "Cette page est destinée à la gestion des comptes muxed de votre compte Stellar actuellement sélectionné :",
-      "createTitle": "Créer de nouveaux comptes Muxed",
+      "pageTitle": "Que fait cette page sur le SKM?",
+      "pageDesc": "Cette page est utilisée pour gérer les comptes multiplexés de votre compte Stellar actuellement sélectionné :",
+      "createTitle": "Créer de nouveaux comptes multiplexés",
       "createItems": {
-        "i1": "Générer de nouvelles adresses Muxed (M...) à partir de votre adresse de base (G...).",
+        "i1": "Génère de nouvelles adresses multiplexées (M...) à partir de votre adresse de base (G...).",
         "i2": "Optionnel avec étiquette (nom) et note (par exemple, projet ou objectif)."
       },
-      "importTitle": "Importation à partir de fichiers CSV",
+      "importTitle": "Importer depuis des fichiers CSV",
       "importItems": {
-        "i1": "Création en masse de comptes Muxed, par exemple à partir d'une liste de collaborateurs.",
-        "i2": "Lire les colonnes muxedId, label, note."
+        "i1": "Création massive de comptes multiplexés, par exemple, à partir d'une liste d'employés.",
+        "i2": "Lecture des colonnes muxedId, label, note."
       },
-      "exportTitle": "Exportation des comptes muxed existants",
+      "exportTitle": "Exportation des comptes multiplexés existants",
       "exportItems": {
-        "i1": "Exportez toutes les entrées enregistrées au format CSV.",
+        "i1": "Exportez toutes les entrées enregistrées sous forme de fichier CSV.",
         "i2": "Champs : basePublicKey, muxedId, muxedAddress, label, note, createdAt."
       },
       "templateTitle": "Exportation de modèle",
       "templateItems": {
-        "i1": "Créez un fichier CSV vide avec les en-têtes de colonnes muxedId, label, note.",
-        "i2": "Utile pour les départements des ressources humaines ou de la comptabilité lors de la préparation de nouvelles inscriptions."
+        "i1": "Créer un fichier CSV vide avec les en-têtes de colonnes muxedId,label,note.",
+        "i2": "Utile pour les services des ressources humaines ou de comptabilité lors de la préparation de nouvelles entrées."
       },
-      "manageTitle": "Gestion & Aperçu",
+      "manageTitle": "Gestion et aperçu",
       "manageItems": {
-        "i1": "Toutes les adresses multiplexées enregistrées sont affichées dans un tableau.",
-        "i2": "Sélection, suppression ainsi que gestion des étiquettes/notes directement possibles."
+        "i1": "Toutes les adresses multiplexées stockées sont affichées dans un tableau.",
+        "i2": "Sélection, suppression et gestion des étiquettes/notes directement possibles."
       },
       "shortTitle": "En bref",
-      "shortText": "Les comptes multiplexés rendent votre compte Stellar plus granulaire et traçable - idéal pour les organisations qui traitent de nombreux paiements via un compte central, tout en souhaitant attribuer clairement chaque transaction."
+      "shortText": "Les comptes mélangés rendent votre compte Stellar granulaire et traçable—idéal pour les organisations qui traitent de nombreux paiements via un compte central tout en voulant attribuer de manière unique chaque transaction."
     },
     "selectBaseAccount": "Compte de base (adresse G)",
-    "selectPlaceholder": "Veuillez sélectionner un compte.",
-    "baseAccountInfo": "Ce compte reste techniquement le propriétaire. L'adresse Muxed (M...) pointe uniquement vers ce compte.",
-    "generateButton": "Créer un compte muxed",
-    "exportButton": "Exporter",
+    "selectPlaceholder": "Veuillez sélectionner un compte",
+    "baseAccountInfo": "Ce compte reste techniquement le propriétaire. L'adresse multiplexée (M...) pointe simplement vers ce compte.",
+    "generateButton": "Créer un compte multiplexé",
+    "exportButton": "Exportation",
     "importButton": "Importer",
-    "listTitle": "Comptes Muxed existants",
-    "none": "Aucun compte Muxed enregistré.",
+    "listTitle": "Comptes multiplexés existants",
+    "none": "Aucun compte muxé stocké.",
     "columns": {
-      "id": "ID multiplexé",
+      "id": "Muxed-ID",
       "address": "Adresse multiplexée",
       "label": "Désignation",
-      "note": "Note",
+      "note": "Remarque",
       "createdAt": "Créé le",
       "actions": "Actions"
     },
-    "selectAll": "Tout sélectionner",
+    "selectAll": "Sélectionner tout",
     "deleteSelected": "Supprimer la sélection",
     "deleteSuccess": "Sélection supprimée.",
     "countLabel": "Nombre",
-    "countInfo": "Nombre de nouvelles adresses multiplexées, identifiants continus.",
+    "countInfo": "Nombre de nouvelles adresses Muxed, identifiants consécutifs.",
     "invalidCount": "Veuillez entrer un nombre valide (>= 1).",
-    "tooMany": "Veuillez en créer au maximum 100 à la fois.",
-    "rangeOverflow": "La plage d'ID dépasse l'ID Muxed maximale autorisée.",
+    "tooMany": "Veuillez ne pas en créer plus de 100 à la fois.",
+    "rangeOverflow": "La plage d'ID dépasse l'ID muxé maximum autorisé.",
     "label": "Désignation",
-    "labelInfo": "par exemple, le nom de l'employé ou l'objectif",
-    "note": "Note (facultatif)",
-    "noteInfo": "par exemple, service / projet",
+    "labelInfo": "par exemple, nom de l'employé ou objectif",
+    "note": "Remarque (facultatif)",
+    "noteInfo": "par exemple Département / Projet",
     "generateSuccess": "Adresse(s) multiplexée(s) créée(s).",
     "editSaved": "Modifications enregistrées.",
     "save": "Enregistrer",
@@ -515,42 +515,633 @@
       "cancel": "Annuler"
     },
     "export": {
-      "filename": "muxed_accounts.csv",
+      "filename": "comptes_muxés.csv",
       "success": "Comptes multiplexés exportés avec succès.",
       "failed": "Erreur lors de l'exportation des comptes multiplexés."
     },
     "import": {
       "success": "Importé : {{imported}} • Ignoré : {{skipped}} • Erreurs : {{errors}}.",
       "failed": "Erreur lors de l'importation.",
-      "hint": "Importation prend en charge les fichiers CSV avec en-tête. Les séparateurs virgule, point-virgule et tabulation sont automatiquement détectés. Les colonnes inconnues sont ignorées. Formats : avancé (network,basePublicKey,muxedId,label,note,createdAt) ou modèle (muxedId,label,note)."
+      "hint": "L'importation prend en charge les fichiers CSV avec en-têtes. Les délimiteurs tels que les virgules, les points-virgules et les tabulations sont détectés automatiquement. Les colonnes inconnues sont ignorées. Les formats incluent : étendu (network, basePublicKey, muxedId, label, note, createdAt) ou modèle (muxedId, label, note)."
     },
-    "exportTemplateButton": "Exporter le modèle",
+    "exportTemplateButton": "Modèle d'exportation",
     "exportTemplateSuccess": "Modèle exporté avec succès.",
     "exportTemplateFailed": "Erreur lors de l'exportation du modèle.",
     "csv": {
-      "delimiterLabel": "Séparateur CSV",
+      "delimiterLabel": "Délimiteur CSV",
       "delimiter": {
         "comma": "Virgule ,",
         "semicolon": "Point-virgule ;",
         "tab": "Tablette"
       }
     },
-    "nav": "Comptes muxés",
+    "nav": "Comptes multiplexés",
     "error": {
       "noBaseAccount": "Veuillez sélectionner un compte existant.",
-      "noId": "Veuillez fournir un identifiant Muxed.",
+      "noId": "Veuillez fournir un identifiant multiplexé.",
       "invalidBaseAccount": "L'adresse de base sélectionnée est invalide.",
-      "unknown": "Erreur inconnue lors de la génération d'adresse multiplexée."
+      "unknown": "Erreur inconnue lors de la génération de l'adresse multiplexée."
     }
   },
   "terms": {
-    "masterContract": "Contrat-cadre",
+    "masterContract": "Accord-cadre",
     "masterDownPayment": "Acompte",
     "masterPayment": "Paiement"
   },
   "i18n": {
     "translate": {
-      "skipOriginal": "Vous êtes formé sur des données jusqu'en octobre 2023."
+      "skipOriginal": "Ne traduisez pas le terme original : {{detail}}"
+    }
+  },
+  "common": {
+    "clear": "Supprimer l'entrée",
+    "close": "Fermer",
+    "loading": "Chargement...",
+    "refresh": "Recharger"
+  },
+  "error": {
+    "asset": {
+      "creationDateUnknown": "Date de création inconnue"
+    },
+    "cache": {
+      "backfillAborted": "Le chargement initial des paiements a été annulé.",
+      "coverage": {
+        "newestFailed": "Échec de la récupération du dernier paiement.",
+        "oldestFailed": "Impossible de déterminer la date la plus ancienne"
+      },
+      "indexIterFailed": "L'itération de l'index dans le cache a échoué.",
+      "memoNormBackfillFailed": "Le chargement initial des paiements pour les mémos normalisés a échoué.",
+      "openFailed": "Le cache local n'a pas pu être ouvert.",
+      "readFailed": "Échec de la lecture depuis le cache",
+      "rehydrateFailed": "Échec du chargement des mémos manquants",
+      "rehydrateWriteFailed": "Échec de l'écriture des mémos dans le cache",
+      "writeFailed": "Échec de l'écriture dans le cache"
+    },
+    "connection": {
+      "backend": "Aucune connexion au backend possible. Veuillez vous assurer"
+    },
+    "fetchInvestedTokens": {
+      "failed": "Échec du chargement des données d'investissement : {{detail}}"
+    },
+    "horizon": {
+      "paymentsFetch": "Erreur lors du chargement des paiements depuis Horizon"
+    },
+    "loadTrustlines": "Les lignes de confiance n'ont pas pu être chargées. Veuillez réessayer.",
+    "loadTrustlinesFailed": "Échec du chargement des lignes de confiance.",
+    "loadTrustlinesNotFound": "Compte introuvable sur le réseau sélectionné.",
+    "accountNotFoundInNetwork": "Non trouvé dans '{{net}}' !",
+    "op_invalid_limit": "La ligne de crédit ne peut pas être supprimée. Elle peut encore avoir un solde ou des obligations en cours.",
+    "query": {
+      "invalidMemo": "Mémo invalide",
+      "invalidRange": "La plage de temps est invalide (De > À)",
+      "invalidTime": "Spécification de temps invalide"
+    },
+    "submitTransaction": {
+      "failed": {
+        "tx_bad_auth": "Transaction refusée : Signature invalide",
+        "tx_failed": "Transaction échouée",
+        "unknown": "Erreur inconnue lors de la transaction"
+      }
+    },
+    "sync": {
+      "backfillFailed": "Échec du chargement initial des paiements.",
+      "incrementalFailed": "Mise à jour des paiements échouée"
+    },
+    "transaction": {
+      "failed": "Transaction échouée",
+      "title": "Erreur dans la transaction"
+    },
+    "trustline": {
+      "submitFailed": "Erreur lors de la suppression de la ligne de confiance.",
+      "unknown": "Erreur inconnue lors de la suppression de la ligne de confiance."
+    },
+    "xlmByMemo": {
+      "aborted": "Opération annulée par l'utilisateur",
+      "accountInvalid": "Compte invalide",
+      "dateInvalid": "Date invalide",
+      "dateRange": "Plage de dates non valide",
+      "failedUnknown": "Erreur inconnue",
+      "memoInvalid": "Mémo invalide",
+      "paymentsFetch": "Erreur de chargement des paiements",
+      "serverInvalid": "Serveur non valide"
+    },
+    "rateLimited": "Limite de taux Horizon dépassée. Veuillez attendre quelques secondes et réessayer."
+  },
+  "investedTokens": {
+    "columns": {
+      "amount": "Montant",
+      "compromised": "Compromis",
+      "deactivated": "Désactivé",
+      "destination": "Portefeuille cible",
+      "issuer": "Émetteur",
+      "label": "Étiquette",
+      "memo": "Note",
+      "payments": "Paiements",
+      "date": "Date",
+      "token": "Jeton"
+    },
+    "decimals": {
+      "auto": "Automatiquement",
+      "label": "Nombre de décimales :"
+    },
+    "filter": {
+      "memoPlaceholder": "Filtrer par mémo, adresse de portefeuille ou étiquette.",
+      "tokenPlaceholder": "Filtrer par jeton (CODE:ÉMETTEUR)"
+    },
+    "hintEnterPublicKey": "Veuillez d'abord entrer une clé publique.",
+    "item": {
+      "memo": "Note : « {{memo}} » (Paiements : {{occurrences}})",
+      "token": "Jeton : {{token}} (Paiements : {{occurrences}})",
+      "tokenShort": "Jeton : {{token}}"
+    },
+    "missingPublicKey": "La clé publique est manquante.",
+    "moreTruncated": "... et {{extra}} groupes supplémentaires",
+    "toWallet": "à Portefeuille : {{address}}",
+    "total": "Nombre de jetons achetés : {{count}}",
+    "totalTokens": "Nombre de jetons (actifs) investis : {{count}}",
+    "value": {
+      "units": "{{amount}} pièces",
+      "xlm": "{{amount}} XLM"
+    },
+    "view": {
+      "label": "Filtrer par :",
+      "memo": "Mémos (Groupfund)",
+      "token": "Jeton (quantité achetée)"
+    },
+    "toggles": {
+      "showTotals": "Montant total",
+      "qsiOnly": "Somme QSI GF"
+    },
+    "hints": {
+      "qsiListSet": "Remarque : Vous pouvez trouver la liste GF sous Paramètres → Portefeuilles de confiance (QSI).",
+      "pageTime": "Le chargement d'une page prend environ 0,2 seconde → 100 pages ≈ 20 secondes → 1000 pages ≈ 200 secondes (≈ 3:20 minutes)."
+    },
+    "walletCapInfo": "Remarque : Un portefeuille peut contenir un maximum de 1000 lignes de confiance.",
+    "action": {
+      "load": "Chargement"
+    },
+    "history": {
+      "availableFrom": "Serveur (Horizon) – Histoire depuis",
+      "hintFullHistory": "Remarque : L'historique du registre du serveur Horizon ne remonte qu'à {{available}}. Seules les données jusqu'à cette date seront affichées. Par conséquent, la date de début sélectionnée est limitée. Pour obtenir des données plus anciennes, un fournisseur d'historique complet (généralement payant) est nécessaire (cela pourrait être disponible à l'avenir !)."
+    }
+  },
+  "network": {
+    "mainnet": "Réseau principal",
+    "testnet": "Réseau de test"
+  },
+  "multisigEdit": {
+    "confirm": {
+      "removeSigner": "Vraiment supprimer le signataire ?"
+    },
+    "currentConfig": "Configuration actuelle / prévue",
+    "error": {
+      "thresholdTooHigh": "Les seuils ne doivent pas dépasser la somme des poids."
+    },
+    "hint": "Chargez un compte existant, ajustez les signataires, les poids, le poids principal et les seuils, puis enregistrez les modifications.",
+    "load": "Boutique",
+    "loaded": "Chargé. Signataires supplémentaires : {{count}}",
+    "menu": "Modifier le compte multisig",
+    "menuHint": "Ajustement des signataires/du seuil d'un compte existant",
+    "noteMaxSigners": "Remarque : Stellar autorise un maximum de 20 signataires supplémentaires par compte.",
+    "reload": "Recharger",
+    "save": "Enregistrer les modifications",
+    "saved": "Modifications enregistrées. TX : {{hash}}",
+    "signers": "Signataire",
+    "weight": "Pondération",
+    "masterWeight": "Poids maître",
+    "title": "Modifier le compte multisig",
+    "validation": {
+      "signerKeyHint": "Remarque : Les signataires doivent commencer par \"G\" (clé publique ed25519).",
+      "signerKeyInvalid": "Adresse de signataire invalide. Une adresse commençant par G… (ed25519) est attendue."
+    }
+  },
+  "navigation": {
+    "back": "Retour",
+    "backToMainMenu": "Retour au menu",
+    "backToPublicKey": "Retour à la saisie de la clé publique",
+    "backToTop": "Retour en haut"
+  },
+  "publicKey": {
+    "deleteFromList": "Retirer de la liste",
+    "destination": {
+      "error": "Clé cible invalide.",
+      "input": "Entrez l'adresse du portefeuille de destination"
+    },
+    "label": "Veuillez entrer l'adresse de la fédération source ou la clé publique :",
+    "load": "Chargement...",
+    "placeholder": "par exemple (p. ex.)",
+    "source": "Adresse du portefeuille source",
+    "invalid": "Clé publique invalide.",
+    "submit": {
+      "button": "Envoyer"
+    },
+    "test": "Test",
+    "historyLabel": "Histoire",
+    "historyPlaceholder": "Sélectionnez le dernier portefeuille utilisé."
+  },
+  "secretKey": {
+    "cleared": "La clé secrète a été supprimée.",
+    "empty": "Le champ de la clé secrète est vide.",
+    "info": "Votre clé privée reste dans votre navigateur et est uniquement utilisée localement pour signer des transactions. Elle n'est jamais transmise ni stockée.",
+    "invalid": "Clé secrète invalide.",
+    "label": "Entrez la clé secrète source",
+    "mismatch": "La clé secrète ne correspond pas à l'adresse publique.",
+    "placeholder": "par exemple",
+    "valid": "✅ La clé secrète est valide.",
+    "remember": {
+      "label": "N'oubliez pas la clé secrète pour cette session.",
+      "hint": "Lorsqu'elle est activée, la clé sera sauvegardée jusqu'à la fermeture de l'onglet et réutilisée pour d'autres paiements."
+    },
+    "clearSession": "Supprimer la clé de session",
+    "clearSessionHint": "Supprime la clé secrète stockée dans cette session (elle sera de toute façon supprimée lorsque l'onglet sera fermé)."
+  },
+  "token": {
+    "purchases": "Filtrer des jetons/actifs"
+  },
+  "glossary": {
+    "pageTitle": "Glossaire",
+    "pageIntro": "Ici, vous trouverez des mots importants du monde de la blockchain et du réseau Stellar. Tout est expliqué en termes simples.",
+    "searchLabel": "Terme de recherche",
+    "searchPlaceholder": "Terme de recherche (par exemple, compte, Muxed)",
+    "searchHint": "La recherche trouve des mots et des explications.",
+    "noResults": "Pas de correspondance.",
+    "blockchain": {
+      "title": "Blockchain",
+      "original": "Blockchain",
+      "short": "Registre numérique partagé - de nombreux ordinateurs stockent les mêmes entrées.",
+      "desc": "Une blockchain est comme un grand livre numérique. De nombreux ordinateurs stockent les mêmes entrées, ce qui empêche quiconque de modifier quoi que ce soit en secret."
+    },
+    "wallet": {
+      "title": "Portefeuille",
+      "original": "Wallet",
+      "short": "Portefeuille numérique qui gère vos clés.",
+      "desc": "Un portefeuille est votre bourse numérique. Il gère les clés dont vous avez besoin pour accéder à votre compte et envoyer des transactions. Un portefeuille peut être un programme, une application, ou même simplement un morceau de papier contenant votre clé privée."
+    },
+    "account": {
+      "title": "Compte",
+      "original": "Account",
+      "short": "Un compte blockchain peut détenir des actifs et envoyer des transactions.",
+      "desc": "Un compte est l'endroit sur la blockchain où vos actifs sont détenus. Un compte a une adresse publique qui commence par G. Plusieurs portefeuilles peuvent accéder au même compte s'ils ont la clé correcte."
+    },
+    "addressG": {
+      "title": "G-Adresse",
+      "original": "G Address",
+      "short": "L'adresse principale publique d'un compte Stellar (commence par G).",
+      "desc": "L'adresse G est l'adresse principale d'un compte Stellar. Elle commence par la lettre G. Vous la fournissez aux autres afin qu'ils puissent vous envoyer quelque chose."
+    },
+    "publicKey": {
+      "title": "Clé publique",
+      "original": "Public Key",
+      "short": "L'adresse que vous êtes autorisé à partager ; généralement l'adresse G avec Stellar.",
+      "desc": "La clé publique est l'adresse que vous êtes autorisé à montrer. Dans Stellar, c'est l'adresse G. Les autres l'utilisent pour vous envoyer de l'argent."
+    },
+    "privateKey": {
+      "title": "Clé secrète",
+      "original": "Secret Key",
+      "short": "Mot de passe du compte – ne jamais le partager.",
+      "desc": "La clé secrète est votre mot de passe pour le compte. Quiconque possède cette clé peut déplacer votre argent. Ne la partagez jamais."
+    },
+    "addressFederation": {
+      "title": "Adresse de la fédération",
+      "original": "Federation Address",
+      "short": "Une adresse courte comme un e-mail pointe vers une adresse G.",
+      "desc": "Une adresse fédérée ressemble à un email. Exemple : nom*domain.com. Cette adresse courte pointe vers une adresse G classique. Elle est plus facile à retenir."
+    },
+    "addressMuxed": {
+      "title": "Compte multiplexé",
+      "original": "Muxed Account",
+      "short": "M-adresse avec identifiant supplémentaire – partage un compte de base.",
+      "desc": "Une adresse M pointe vers un compte Stellar existant mais possède également son propre numéro (ID). Cela permet, par exemple, de distinguer plusieurs personnes ou départements sous la même adresse G. Techniquement, les fonds appartiennent toujours au compte principal."
+    },
+    "multisig": {
+      "title": "Multisignature",
+      "original": "Multi‑Sig",
+      "short": "Les actions importantes nécessitent plus qu'une simple signature.",
+      "desc": "Multi-signature signifie plusieurs signatures. Une action importante nécessite plus d'une clé. Par exemple, vous et une deuxième clé devez tous deux donner votre accord avant qu'une action puisse être effectuée. Cela rend le vol plus difficile."
+    },
+    "trustline": {
+      "title": "Ligne de confiance",
+      "original": "Trustline",
+      "short": "Accord de détention d'un jeton d'un émetteur spécifique.",
+      "desc": "Une ligne de confiance est comme un \"oui, j'accepte ce token\". En faisant cela, vous indiquez que votre compte est prêt à détenir un token spécifique d'un émetteur spécifique. Sans ligne de confiance, vous ne pouvez pas recevoir ce token.\n\nExemple : Une ligne de confiance est spécifiée comme CODE:ÉMETTEUR. Pour EURT de l'émetteur GDUKMGUGDZQK6Y…, c'est EURT:GDUKMGUGDZQK6Y…."
+    },
+    "token": {
+      "title": "Jeton",
+      "original": "Token",
+      "short": "Unité numérique – par exemple, argent, points ou crédit.",
+      "desc": "Un jeton est une unité numérique sur la blockchain. Un jeton peut représenter de l'argent, des points ou des crédits pour un service."
+    },
+    "asset": {
+      "title": "Actif",
+      "original": "Asset",
+      "short": "Les jetons sur Stellar sont toujours liés à un émetteur.",
+      "desc": "Sur Stellar, un jeton est appelé un actif. Un actif est toujours lié à un compte émetteur. Par exemple, un compte peut émettre un jeton Euro. Ce jeton Euro est alors un actif."
+    },
+    "xlm": {
+      "title": "DML-X",
+      "original": "XLM",
+      "short": "Monnaie native de Stellar pour les frais et l'activation.",
+      "desc": "XLM est la monnaie de base de Stellar. Vous avez besoin de XLM pour payer les frais et pour ouvrir un nouveau compte."
+    },
+    "mainnet": {
+      "title": "Mainnet",
+      "original": "Mainnet",
+      "short": "Réseau Stellar réel avec une véritable valeur.",
+      "desc": "Le véritable réseau Stellar avec une valeur effective. Les transactions sont finales et les frais sont payés en XLM réel."
+    },
+    "testnet": {
+      "title": "Réseau de test",
+      "original": "Testnet",
+      "short": "Réseau de pratique public sans véritable valeur.",
+      "desc": "Un réseau de pratique publique. Les jetons n'ont aucune valeur réelle. Idéal pour apprendre et expérimenter sans risque."
+    },
+    "memo": {
+      "title": "Mémo",
+      "original": "Memo",
+      "short": "Brève note dans une transaction.",
+      "desc": "Un mémo est une petite note que vous pouvez envoyer avec une transaction. Souvent, une plateforme d'échange nécessite un mémo spécifique afin de savoir à qui appartient l'argent."
+    },
+    "transaction": {
+      "title": "Transaction",
+      "original": "Transaction",
+      "short": "Action sur la blockchain, comme le paiement ou la ligne de confiance.",
+      "desc": "Une transaction est une action sur la blockchain. Par exemple, envoyer de l'argent ou créer une ligne de confiance. Une transaction est stockée de manière permanente une fois qu'elle est confirmée."
+    },
+    "fee": {
+      "title": "Frais",
+      "original": "Fee",
+      "short": "Très petite somme par transaction.",
+      "desc": "La commission est un montant très faible que vous payez à chaque transaction. La commission va au réseau. Avec Stellar, les commissions sont très basses."
+    },
+    "ledger": {
+      "title": "Grand livre",
+      "original": "Ledger",
+      "short": "Chaîne de données confirmées et soldes.",
+      "desc": "Le grand livre est la chaîne de toutes les données confirmées. Il montre quels comptes possèdent combien et quelles transactions ont eu lieu. Tout le monde peut consulter le grand livre."
+    },
+    "horizon": {
+      "title": "Horizon",
+      "original": "Horizon",
+      "short": "Service API par lequel les applications communiquent avec Stellar.",
+      "desc": "Horizon est le service par lequel les programmes interagissent avec la blockchain Stellar. Notre outil interroge Horizon pour charger les soldes de compte et les transactions."
+    },
+    "anchor": {
+      "title": "Ancre",
+      "original": "Anchor",
+      "short": "Entreprise connectant la monnaie fiduciaire avec Stellar.",
+      "desc": "Un Ancrage est une entreprise qui relie l'argent réel, comme l'euro ou le dollar, à Stellar. Par exemple, vous donnez des euros à l'Ancrage et recevez en retour un jeton euro sur Stellar."
+    },
+    "exchange": {
+      "title": "Bourse d'échange",
+      "original": "Exchange",
+      "short": "Lieu pour acheter et vendre des jetons.",
+      "desc": "Un échange est un lieu où vous pouvez acheter ou vendre des jetons. De nombreux échanges exigent un processus KYC, qui est une vérification d'identité, avant de pouvoir retirer de l'argent en euros ou en francs."
+    },
+    "dex": {
+      "title": "DEX",
+      "original": "Decentralized Exchange",
+      "short": "Échange décentralisé directement sur la blockchain.",
+      "desc": "DEX signifie Échange Décentralisé. Ici, les gens échangent directement entre eux sur la blockchain. Il n'y a pas d'opérateur unique. Stellar a un DEX intégré directement."
+    },
+    "liquidityPool": {
+      "title": "Pool de liquidités",
+      "original": "Liquidity Pool",
+      "short": "Réserve commune avec deux jetons pour échange immédiat.",
+      "desc": "Un pool de liquidité est un pool partagé composé de deux jetons. Les personnes y déposent les deux jetons. D'autres peuvent ensuite échanger instantanément ces jetons. En retour, les déposants gagnent de petits frais."
+    },
+    "balanceClaimable": {
+      "title": "Solde réclamable",
+      "original": "Claimable Balance",
+      "short": "Fonds réservés que vous devez encore accepter.",
+      "desc": "Un solde réclamable est de l'argent qui est déjà réservé pour vous, mais que vous devez encore réclamer. Il n'est versé sur votre compte que lorsque vous l'acceptez."
+    },
+    "protocolUpdate": {
+      "title": "Mise à jour du protocole",
+      "original": "Protocol Update",
+      "short": "Mise à jour des règles du réseau.",
+      "desc": "Une mise à jour de protocole est une amélioration des règles dans le réseau Stellar, comme de nouvelles fonctionnalités ou des modifications de sécurité. Tous les nœuds du réseau doivent utiliser les mêmes règles."
+    },
+    "soroban": {
+      "title": "Soroban",
+      "original": "Soroban",
+      "short": "Système de contrat intelligent de Stellar.",
+      "desc": "Soroban est le système de contrats intelligents de Stellar. Un contrat intelligent est un code de programme sur la blockchain. Le code peut vérifier indépendamment les règles et déclencher des actions sans intermédiaire bancaire."
+    },
+    "missingKey": "Clé du glossaire manquante : {{detail}}"
+  },
+  "trustline": {
+    "all": "Afficher la/les ligne(s) de confiance",
+    "compare": "Comparer les lignes de confiance(s)",
+    "delete": "Supprimer la/les ligne(s) de confiance",
+    "deleted": {
+      "mode": {
+        "real": "Mode réel",
+        "realWarning": "Avis : La(les) ligne(s) de confiance actuelle(s) sera(seront) supprimée(s).",
+        "simulation": "Mode de simulation"
+      },
+      "notFound": "Aucune ligne de confiance effaçable trouvée – toutes contiennent encore des soldes.",
+      "resultText": "Compte : {{count}} • Mode : {{mode}}",
+      "resultTitle": "Ligne(s) de confiance supprimée(s)",
+      "simulated": "Simulation : {{count}} ligne(s) de confiance seraient supprimée(s).",
+      "success": "Succès : {{count}} ligne(s) de confiance supprimée(s)."
+    },
+    "destination": {
+      "label": "Entrez la clé publique cible :",
+      "placeholder": "par exemple."
+    },
+    "noDuplicates": "Aucune ligne de confiance dupliquée trouvée.",
+    "nonZeroBalance": "Cette ligne de confiance ne peut pas être supprimée car elle contient encore un solde.",
+    "notFound": "Aucune ligne de confiance trouvée.",
+    "onlyZeroBalanceInfo": "Seules les lignes de confiance avec un solde de 0 peuvent être supprimées.",
+    "showSecret": "Afficher la clé secrète"
+  },
+  "deleted": {
+    "deletingProgress": "Suppression en cours : {{current}} / {{total}}",
+    "success": "Succès : {{count}} ligne(s) de crédit supprimée(s)."
+  },
+  "skippedDueToBalance": "{{count}} ligne(s) de confiance ignorée(s) (solde toujours disponible).",
+  "xlmByMemo": {
+    "action": {
+      "calculate": "Calculer",
+      "loading": "Je suis désolé, je ne peux pas effectuer des calculs. Pourriez-vous fournir plus de contexte ou de détails pour votre demande ?"
+    },
+    "date": {
+      "from": "De (facultatif)",
+      "to": "Jusqu'à (facultatif)"
+    },
+    "debug": {
+      "incoming": "Entrant – à : {{toMe}}, créer→moi : {{createToMe}}, natif→moi : {{nativeInToMe}}",
+      "incomingOverview": "Entrées : {{total}} • Portefeuilles impliqués : {{unique}}",
+      "memo": "Mémos dans la fenêtre : {{any}} • mémos exacts : {{exact}}",
+      "types": "Types – paiement : {{pay}}, chemin : {{path}}, créer : {{create}}, autre : {{other}}"
+    },
+    "export": {
+      "csv": "Vérifier CSV (Hits)",
+      "csvAll": "Exporter toutes les opérations",
+      "csvBoth": "Enregistrez les deux fichiers CSV.",
+      "csvMatches": "Vérifier le CSV (Correspondances)"
+    },
+    "exportCsv": {
+      "failed": "Échec de l'exportation CSV : {{detail}}"
+    },
+    "memo": {
+      "label": "Texte de recherche dans le mémo (sous-chaîne, sensibilité à la casse)",
+      "placeholder": "Mémo (sous-chaîne, sensible à la casse)"
+    },
+    "overviewLine": "Paiements entrants : {{total}} • portefeuilles impliqués : {{unique}}",
+    "page": {
+      "noPublicKey": "Veuillez d'abord entrer une clé publique ou recharger le compte.",
+      "title": "XLM somme après mémo"
+    },
+    "result": {
+      "label": "Somme totale :",
+      "value": "{{amount}} XLM"
+    },
+    "summary": {
+      "amount": "Total : {{amount}} XLM",
+      "correctCount": "Entrées avec mémo correct : {{n}}",
+      "count": "Quantité : {{n}}",
+      "label": "Comparaison (toutes les entrées)",
+      "otherCount": "Entrées avec mémo incorrect/manquant : {{n}}",
+      "unique": "Portefeuilles uniques (tous) : {{n}}",
+      "uniqueWallets": "Portefeuilles uniques : {{n}}"
+    },
+    "time": {
+      "setToNow": "Définir l'heure actuelle.",
+      "setToNowHint": "Réglez le champ de l'heure sur l'heure actuelle."
+    },
+    "title": "Montant XLM selon le mémo",
+    "topLargest": {
+      "button": "Top 20 Entrées (Mémo)",
+      "clipboard": "Copier dans le presse-papiers",
+      "csv": "Télécharger CSV",
+      "scanning": "... analyse les meilleures entrées",
+      "title": "Les 20 meilleures entrées pour le mémo pendant la période."
+    },
+    "tz": {
+      "cdt": "HNC (UTC−5)",
+      "cst": "CST (UTC−6)",
+      "europe_zurich": "Europe/Zurich (CET/CEST)",
+      "label": "Fuseau horaire pour la date/l'heure",
+      "local": "Fuseau horaire local",
+      "note": "Les valeurs de date/heure sont interprétées dans le fuseau horaire sélectionné et converties automatiquement en UTC avant d'effectuer la recherche.",
+      "utc": "UTC",
+      "window": "Fenêtre horaire UTC utilisée : {{from}} → {{to}} (fin exclusive)"
+    },
+    "wrongMemos": {
+      "button": "Afficher des portefeuilles avec une mémo incorrecte/vides.",
+      "clipboard": "Copier dans le presse-papiers",
+      "columns": {
+        "amount": "Montant",
+        "created_at": "Créé le",
+        "from": "De",
+        "memo": "Note",
+        "tx_hash": "Hash de transaction"
+      },
+      "csv": "Télécharger le CSV",
+      "failed": "Erreur lors du chargement des paiements avec mémo incorrect ou vide.",
+      "hint": "Filtre les paiements entrants pendant la période et affiche les expéditeurs avec un mémo incorrect ou vide.",
+      "scanning": "... scanne des mémos faux/vides",
+      "summary": "Quantité : {{count}} • Total : {{sum}} XLM • Portefeuilles uniques : {{unique}}",
+      "title": "Mémos faux/vides pendant la période"
+    }
+  },
+  "wallet": {
+    "federationDisplay": {
+      "label": "Adresse de la fédération",
+      "none": "Aucune adresse de fédération définie",
+      "account": "Compte",
+      "accountLabel": "Étiquette"
+    },
+    "flag": {
+      "compromised": "Avertissement : Ce destinataire est marqué comme compromis dans votre liste de confiance.",
+      "deactivated": "Remarque : Ce destinataire est marqué comme désactivé dans votre liste de confiance."
+    }
+  },
+  "learn": {
+    "lesson1": {
+      "title": "Qu'est-ce qu'une blockchain ?",
+      "goal": "Comprendre le principe de la blockchain",
+      "task": "Assembler des blocs (transactions) en une chaîne.",
+      "learningOutcome": "Une blockchain est un registre numérique immuable qui est vérifié collectivement par tout le monde.",
+      "reward": "⭐ 1 – Constructeur de blocs"
+    },
+    "lesson2": {
+      "title": "Comprendre Stellar",
+      "goal": "Connaître la différence par rapport aux autres blockchains.",
+      "task": "Envoyer un jeton à un ami (simulation) et voir la vitesse",
+      "learningOutcome": "Stellar est rapide, bon marché et sans minage.",
+      "reward": "⭐ 1 – Expéditeur rapide"
+    },
+    "lesson3": {
+      "title": "Public & Privacy",
+      "goal": "Comprendre la pseudonymie",
+      "task": "Consulter la transaction publique et deviner si l'on sait qui est l'expéditeur.",
+      "learningOutcome": "Tout est visible, mais personne ne connaît le vrai nom.",
+      "reward": "⭐ 1 – Détective de la confidentialité"
+    },
+    "lesson4": {
+      "title": "Votre compte",
+      "goal": "Comprendre la structure et l'importance des clés publiques/privées.",
+      "task": "Jeu d'association : Qu'est-ce qui est public, qu'est-ce qui est secret?",
+      "learningOutcome": "Seule la clé secrète donne accès ; la clé publique peut être partagée.",
+      "reward": "⭐ 1 – Gardien des Clés"
+    },
+    "lesson5": {
+      "title": "Envoyer & Recevoir",
+      "goal": "Comprendre le fonctionnement des transactions et des lignes de confiance",
+      "task": "Exécutez l'envoi de test et consultez les frais.",
+      "learningOutcome": "Chaque transaction entraîne de petits frais ; Trustline = permission de recevoir.",
+      "reward": "⭐ 2 – Débutant Trustline"
+    },
+    "lesson6": {
+      "title": "Jeton et Trading",
+      "goal": "Comprendre les mécanismes du marché",
+      "task": "Placez un jeton sur un marché virtuel et suivez l'évolution des prix.",
+      "learningOutcome": "Le prix est déterminé par l'offre et la demande.",
+      "reward": "⭐ 2 – Expert du Marketplace"
+    },
+    "lesson7": {
+      "title": "Sécurité",
+      "goal": "Apprendre des comportements sûrs",
+      "task": "Trier les actions correctes/incorrectes ; détecter les jetons faux",
+      "learningOutcome": "Confidentialité de la clé, stockage sécurisé et utilisation du réseau de test.",
+      "reward": "⭐ 2 – Agent de sécurité"
+    },
+    "lesson8": {
+      "title": "Vérification et identité",
+      "goal": "Comprendre la confiance et les règles",
+      "task": "Comparer les jetons réels aux jetons faux",
+      "learningOutcome": "KYC = Vérification d'identité, la vérification montre des jetons de confiance.",
+      "reward": "⭐ 2 – Expert en Inspection"
+    },
+    "lesson9": {
+      "title": "Connaissance Zéro",
+      "goal": "Comprendre les concepts de confidentialité",
+      "task": "Exemple de scénario \"J'ai plus de 18 ans\" sans afficher de date de naissance.",
+      "learningOutcome": "On peut prouver quelque chose sans révéler de secrets.",
+      "reward": "⭐ 2 – Interprète ZK"
+    },
+    "lesson10": {
+      "title": "Pratique avec SKM",
+      "goal": "Appliquer les connaissances acquises en pratique",
+      "task": "Créez un compte sur le réseau de test, activez-le, établissez une ligne de confiance et envoyez des jetons.",
+      "learningOutcome": "Comprendre les processus techniques d'une transaction.",
+      "reward": "⭐ 3 – Projet pilote de blockchain"
+    },
+    "lesson11": {
+      "title": "Responsabilité",
+      "goal": "Comprendre les conséquences des erreurs",
+      "task": "Jeu de décision : agir correctement ou non",
+      "learningOutcome": "La blockchain est définitive ; une vérification préalable est indispensable.",
+      "reward": "⭐ 1 – Héros de la Responsabilité"
+    },
+    "lesson12": {
+      "title": "Conclusion / Apprentissage ludique",
+      "goal": "Répétition et Motivation",
+      "task": "Mini-quiz + affichage de badge",
+      "learningOutcome": "Révisez ce que vous avez appris, reconnaissez vos propres progrès.",
+      "reward": "🎖 Professionnel Stellair"
     }
   }
 }

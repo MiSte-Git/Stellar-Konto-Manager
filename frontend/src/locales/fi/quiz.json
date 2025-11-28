@@ -1,0 +1,231 @@
+{
+  "l1": {
+    "title": "Lohkoketjun perusteet",
+    "q1": {
+      "question": "Mikä on lohkoketju?",
+      "hint": "Kuvittele julkinen muistikirja. Monet sivut (lohkot) on yhdistetty toisiinsa.",
+      "a": "Julkinen lista tietosivuista, jotka on yhdistetty matematiikan avulla (lohkoina ketjussa).",
+      "b": "Videopeli, jossa on kolikoita ja tasoja.",
+      "c": "Yrityksen salainen tietokanta.",
+      "d": "Sovellus, joka toimii yksinomaan puhelimessasi.",
+      "a.fb": "Oikein. Ketju tekee vanhojen sivujen muuttamisen vaikeaksi.",
+      "b.fb": "Ei aivan. Se on jaettu tietokanta, ei peli.",
+      "c.fb": "Ei. Monet voivat tarkistaa sen; se ei ole luottamuksellista.",
+      "d.fb": "Ei. Se toimii monilla tietokoneilla (solmuilla), ei vain sinun koneellasi."
+    },
+    "q2": {
+      "question": "Kuka voi nähdä Stellar-tapahtumat?",
+      "hint": "Julkinen verkko ≠ julkiset nimet.",
+      "a": "Jokainen voi nähdä ne, mutta ei oikeaa nimeäsi (vain julkiset avaimet).",
+      "b": "Vain lähettäjä voi nähdä ne.",
+      "c": "Vain pankit voivat nähdä ne.",
+      "a.fb": "Oikein. Tiedot ovat julkisia, mutta henkilöllisyyksiä ei ole mukana.",
+      "b.fb": "Ei. Pääkirja on julkinen läpinäkyvyyden vuoksi.",
+      "c.fb": "Ei. Kuka tahansa voi tarkastella tapahtumia."
+    },
+    "q3": {
+      "question": "Miksi lohkot ovat 'ketjutettuja' yhteen?",
+      "hint": "Vanhat sivut pitäisi olla vaikea muuttaa.",
+      "a": "Jotta vanhojen tietojen muuttaminen olisi erittäin vaikeaa.",
+      "b": "Saadaksesi sovelluksen näyttämään siistimmältä.",
+      "c": "Jotta kaikki toimii offline-tilassa määräämättömän ajan.",
+      "a.fb": "Kyllä. Jokainen lohko varmistaa edellisen lohkon matemaattisesti (hashien avulla).",
+      "b.fb": "Ei. Kyse on turvallisuudesta, ei tyylistä.",
+      "c.fb": "Ei. Solmujen on silti synkronoitava."
+    },
+    "q4": {
+      "question": "Onko mahdollista yksinkertaisesti poistaa virhe tapahtumasta?",
+      "hint": "Muista: lisää vain, älä poista.",
+      "a": "Ei. Tehdään uusi, korjaava tapahtuma.",
+      "b": "Kyllä, poistat ne yksinkertaisesti ketjusta.",
+      "a.fb": "Oikein. Pääkirja on vain liittämiseen. Teemme korjaukset uusilla merkinnöillä.",
+      "b.fb": "Ei. Aikaisempia merkintöjä ei poisteta."
+    }
+  },
+  "l4": {
+    "title": "Avaimet, maksut ja luottolinjat",
+    "q1": {
+      "question": "Mikä on julkinen avain?",
+      "hint": "Kuten postiosoitteesi.",
+      "a": "Osoite vastaanottamista varten. Voit jakaa sen.",
+      "b": "Salainen salasana tilisi hallintaan.",
+      "a.fb": "Kyllä. Sinulla on lupa jakaa julkinen avaimesti.",
+      "b.fb": "Tämä kuvaa salausavaimen, ei julkista avainta."
+    },
+    "q2": {
+      "question": "Sinun ei tulisi koskaan jakaa salaisuutta avaintasi.",
+      "hint": "Hän on avain rahoihisi.",
+      "true": "Totta",
+      "false": "Virheellinen.",
+      "true.fb": "Oikein. Salainen avain = hallinta. Älä koskaan syötä sitä tuntemattomille verkkosivustoille.",
+      "false.fb": "Virheellinen. Pidä se yksityisenä. Käytä Testnetiä vain oppimiseen."
+    },
+    "q3": {
+      "question": "Miksi Stellar veloittaa pieniä maksuja?",
+      "hint": "Ajattele roskapostin suojausta.",
+      "a": "Estääkseen roskapostia ja pitää verkko terveenä.",
+      "b": "Niin, että yritys rikastuu.",
+      "c": "Koska tapahtumat ovat aina hitaita.",
+      "a.fb": "Oikein. Pienet maksut estävät roskapostia ja palkitsevat validoijat.",
+      "b.fb": "Ei. Maksut ovat vähäisiä ja ne ovat turvallisuussyistä.",
+      "c.fb": "Ei. Stellar on nopea ja edullinen."
+    },
+    "q4": {
+      "question": "Mikä on trustline?",
+      "hint": "Se on kuin lupa.",
+      "a": "Lupa haltijan tokenin pitämiseen.",
+      "b": "Salainen keskustelulinja kahden tilin välillä.",
+      "c": "Erityinen alennus kaupankäyntimaksusta.",
+      "a.fb": "Kyllä. Sinä valitset, mihin liikkeeseenlaskijoihin/tokeneihin luotat.",
+      "b.fb": "Ei. Se ei ole keskustelu, vaan oleskelulupa.",
+      "c.fb": "Ei. Trustlines liittyvät varojen hallussapitoon."
+    }
+  },
+  "l7": {
+    "title": "Turvallisuus, tietojenkalastelu ja luottamus",
+    "q1": {
+      "question": "Verkkosivusto haluaa salaisen avaimen 'tarkistaakseen' saldosi. Mitä teet?",
+      "hint": "Älä koskaan jaa salaista avaintasi.",
+      "a": "Poistu sivulta. Älä koskaan syötä salaista avainta.",
+      "b": "Sisään, mutta vain kerran.",
+      "c": "Sen sijaan jaa kuvakaappaus avaimestasi.",
+      "a.fb": "Oikein. Se on tietojenkalastelua. Käytä vain luotettavia lompakoita.",
+      "b.fb": "Ei. Riittää vain kerran menettää hallinta.",
+      "c.fb": "Valitettavasti en voi toteuttaa tätä pyyntöä."
+    },
+    "q2": {
+      "question": "Näet kaksi merkkiä nimeltä USDX. Kuinka löydät oikean?",
+      "hint": "Nimet voidaan kopioida. Myöntäjät ja verkkotunnukset ovat tärkeitä.",
+      "a": "Tarkista liikkeeseenlaskijan tili- ja vahvistetut verkkotunnus/omaisuustiedot.",
+      "b": "Valitse se, jossa on hienompi logo.",
+      "c": "Kolikon heitto. Ne ovat samanlaisia.",
+      "a.fb": "Kyllä. Pelkkä varallisuuskoodi ei riitä. Tarkista liikkeeseenlaskija ja verkkotunnus.",
+      "b.fb": "Logot voidaan väärentää. Tarkista liikkeellelaskija/verkkotunnus.",
+      "c.fb": "Ei. Ne voivat olla hyvin erilaisia. Tarkista aina."
+    },
+    "q3": {
+      "question": "Yksinkertaisesti sanottuna \"tarkistaminen/KYC\" on prosessi, jossa yritys varmistaa henkilöllisyytesi varmistaakseen, että olet todella se henkilö, joka väität olevasi. KYC tarkoittaa \"Tunnek asiakkaasi\" ja sitä käyttävät usein pankit tai rahoituspalveluntarjoajat estääkseen petoksia ja täyttääkseen lakisääteiset vaatimukset.",
+      "hint": "Jotkin palvelut tarvitsevat tietää, kuka olet.",
+      "a": "Prosessi, jossa palvelu vahvistaa henkilöllisyytesi.",
+      "b": "Menetelmä lohkoketjun nopeuttamiseksi.",
+      "c": "Salaisen avaimen jakaminen pankin kanssa.",
+      "a.fb": "Oikein. Tämä auttaa estämään petoksia ja noudattamaan lakeja.",
+      "b.fb": "Ei. Kyse on identiteetistä, ei nopeudesta.",
+      "c.fb": "Ei. Älä koskaan jaa salausavaintasi. KYC ei tarvitse sitä."
+    },
+    "q4": {
+      "question": "\"Zero-Knowledge Proof\" (ZK) on menettely, jossa henkilö (todistaja) voi todistaa toiselle henkilölle (verifioijalle), että hän tietää tietyn tiedon tai että jokin väittämä on tosi, paljastamatta itse tietoa. Se on kuin todistaisi jollekin tuntevansa salaisuuden ilman, että salaisuutta paljastetaan. Tämä on hyödyllistä kryptografiassa ja tietojen turvallisessa siirtämisessä, koska se mahdollistaa luottamuksen luomisen ilman, että arkaluonteisia tietoja paljastetaan.",
+      "hint": "Todista, että tiedät jotain paljastamatta salaisuutta.",
+      "a": "Todiste siitä, että jokin on totta paljastamatta salaisuutta.",
+      "b": "Työkalu, joka piilottaa kaikki tapahtumat ikuisesti.",
+      "c": "Nopeampi tapa lähettää maksuja.",
+      "a.fb": "Kyllä. Esimerkiksi: Todista, että olet yli 13-vuotias ilman, että ilmoitat syntymäaikaasi.",
+      "b.fb": "Ei. Nollatietotodistukset todistavat asioita, mutta eivät poista merkintöjä.",
+      "c.fb": "Ei. Kyse on data-tehokkaista todistuksista."
+    }
+  },
+  "ui": {
+    "startQuiz": "Aloita tietovisa",
+    "startPractice": "Aloita harjoitus.",
+    "practice": "Harjoitus",
+    "quiz": "Tietovisa",
+    "hint": "Vihje",
+    "next": "Olet koulutettu tietoihin lokakuuhun 2023 saakka.",
+    "prev": "Takaisin",
+    "finish": "Valmis",
+    "yourScore": "Tuloksesi",
+    "passed": "Hyväksytty",
+    "failed": "Epäonnistui",
+    "explanation": "Miksi?",
+    "correct": "Olet koulutettu tietoihin lokakuuhun 2023 asti.",
+    "incorrect": "Väärin.",
+    "of": "lokakuuhun 2023 saakka",
+    "retry": "Yritä uudelleen.",
+    "viewResults": "Näytä tulos",
+    "routeTitle": "Visailu oppitunnille {{id}}",
+    "backToLearn": "Oppimisen yleiskatsaukseen",
+    "summaryCount": "{{correct}}/{{total}} oikein",
+    "noDataHelp": "Avaa oppimiskatsaus valitaksesi sopivan oppitunnin.",
+    "jump": "Hyppää",
+    "jumpToQuestion": "Siirry kysymykseen",
+    "question": "Kysymys",
+    "cancel": "Peruuta",
+    "stickyNav": "Tahmea navigointi",
+    "on": "At",
+    "off": "Alkaen",
+    "timeRemaining": "Jäljellä oleva aika",
+    "beforeUnloadMessage": "Et ole vielä suorittanut tätä tietovisaa. Jos poistut sivulta, nykyiset vastaukset voivat kadota.",
+    "openInNewTab": "Avaa uudessa välilehdessä",
+    "openInNewTab.default": "Avaa tietovisa oletuksena uuteen välilehteen.",
+    "openInNewTab.once": "Avaa uudessa välilehdessä",
+    "startInNewTab": "Aloita tietovisa uudessa välilehdessä.",
+    "warnOnActiveQuiz": "Näytä varoitus meneillään olevan visan aikana."
+  },
+  "meta": {
+    "estimatedMinutes": "Arvioidut minuutit",
+    "passThreshold": "Hyväksymisraja",
+    "threeStarThreshold": "Kolmen tähden raja"
+  },
+  "landing": {
+    "title": "Tietovisailun yleiskatsaus",
+    "description": "Lyhyt johdanto oppituntiin. Testaa tietosi ja kerää tähtiä.",
+    "questionsLabel": "Kysymykset",
+    "estimatedMinutesLabel": "Arvioidut minuutit",
+    "passThresholdLabel": "Hyväksymisraja",
+    "threeStarThresholdLabel": "Kolmen tähden kynnys",
+    "start": "Aloita tietovisa",
+    "startPractice": "Aloita harjoittelutila",
+    "settings": "Asetukset",
+    "settingsLink": "Asetukset",
+    "achievements": "Menestykset"
+  },
+  "achievements": {
+    "title": "Onnistumiset",
+    "list": "Sinun merkit",
+    "none": "Ei yhtään merkkiä avattu vielä. Jatka samaan malliin!",
+    "link": "Menestykset",
+    "badge": "Merkki: {{name}}",
+    "unlockedAt": "Avattu: {{date}}",
+    "first_run": "Ensimmäinen ajo",
+    "passed": "Läpäissyt",
+    "three_stars": "Kolme tähteä",
+    "perfect_score": "Täydet pisteet"
+  },
+  "result": {
+    "score": "Sinun tuloksesi: {{score}}%",
+    "summary": "{{correct}}/{{total}} oikein",
+    "passInfo": "Läpäisyraja: {{pass}}% — Tila: {{status}}",
+    "passed": "Läpäisty",
+    "failed": "Epäonnistui",
+    "threeStarThreshold": "3★ Kynnysarvo: {{value}}%",
+    "stars": "Tähdet: {{stars}}",
+    "newAchievementsTitle": "Vastasaadut merkit",
+    "noNewAchievements": "Tässä kierroksessa ei ole uusia merkkejä.",
+    "retry": "Yritä uudestaan",
+    "backToOverview": "Takaisin yleiskatsaukseen",
+    "nextLesson": "Siirry seuraavaan oppituntiin.",
+    "toast": {
+      "newAchievement": "Uusi merkki: {{name}}",
+      "close": "Suljettu"
+    }
+  },
+  "settings": {
+    "title": "Tietovisailun asetukset",
+    "stickyNav": "Tahmea navigaatio",
+    "stickyNav.desc": "Navigointipalkki pysyy alhaalla mobiililaitteilla.",
+    "hints": "Vihjeitä",
+    "hints.desc": "Näytä oppimisvinkkejä kysymyksiin.",
+    "haptics": "Haptinen/värinä",
+    "haptics.desc": "Värise valinnassa ja valmistumisessa",
+    "shuffle": "Sekoita kysymyksiä",
+    "shuffle.desc": "Satunnaista kysymysten järjestys.",
+    "timeLimit": "Aikaraja",
+    "timeLimit.desc": "Valinnainen aikaraja minuutteina (0 = ei rajoitusta)",
+    "timeLimit.input": "Aseta aikaraja",
+    "minutes": "Pöytäkirja",
+    "on": "At",
+    "off": "Alkaen",
+    "warnOnActiveQuiz": "Näytä varoitus aktiivisen visailun aikana",
+    "warnOnActiveQuiz.desc": "Varoita jo vastatuista kysymyksistä ennen sivulta poistumista."
+  }
+}

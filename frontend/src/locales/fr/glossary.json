@@ -1,171 +1,171 @@
 {
   "pageTitle": "Glossaire",
-  "pageIntro": "Voici des mots importants du monde de la blockchain et du réseau Stellar. Tout est expliqué en des termes simples.",
-  "searchLabel": "Rechercher un terme",
-  "searchPlaceholder": "Rechercher un terme (par exemple, compte, account, muxed)",
+  "pageIntro": "Vous trouverez ici des mots importants du monde de la blockchain et du réseau Stellar. Tout est expliqué en termes simples.",
+  "searchLabel": "Terme de recherche",
+  "searchPlaceholder": "Recherchez le terme (par exemple, compte, Muxed)",
   "searchHint": "La recherche trouve des mots et des explications.",
-  "noResults": "Pas de résultat.",
+  "noResults": "Pas de correspondance.",
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
-    "short": "Carnet de comptes numérique commun – de nombreux ordinateurs enregistrent les mêmes entrées.",
-    "desc": "Une blockchain est comme un registre de caisse numérique. De nombreux ordinateurs stockent les mêmes entrées. Ainsi, personne ne peut modifier quoi que ce soit en secret."
+    "short": "Registre numérique partagé – de nombreux ordinateurs stockent les mêmes entrées.",
+    "desc": "Une blockchain est comme un grand livre numérique. De nombreux ordinateurs stockent les mêmes entrées, garantissant que personne ne peut modifier quoi que ce soit en secret."
   },
   "wallet": {
     "title": "Portefeuille",
     "original": "Wallet",
-    "short": "Portefeuille numérique qui gère tes clés.",
-    "desc": "Un portefeuille est ton porte-monnaie numérique. Il gère les clés dont tu as besoin pour accéder à ton compte et envoyer des transactions. Un portefeuille peut être un programme, une application ou même simplement un morceau de papier contenant ta clé secrète."
+    "short": "Portefeuille numérique qui gère vos clés.",
+    "desc": "Un portefeuille est votre porte-monnaie numérique. Il gère les clés dont vous avez besoin pour accéder à votre compte et envoyer des transactions. Un portefeuille peut être un programme, une application, ou même simplement un morceau de papier avec votre clé privée."
   },
   "account": {
     "title": "Compte",
     "original": "Account",
     "short": "Un compte blockchain peut détenir des actifs et envoyer des transactions.",
-    "desc": "Un compte est l'endroit sur la blockchain où se trouvent vos actifs. Un compte possède une adresse publique qui commence par un G. Plusieurs portefeuilles peuvent accéder au même compte s'ils disposent de la clé correcte."
+    "desc": "Un compte est l'emplacement sur la blockchain où vos actifs sont stockés. Un compte possède une adresse publique qui commence par G. Plusieurs portefeuilles peuvent accéder au même compte s'ils disposent de la clé correcte."
   },
   "addressG": {
     "title": "Adresse G",
     "original": "G Address",
     "short": "L'adresse principale publique d'un compte Stellar (commence par G).",
-    "desc": "L'adresse G est l'adresse principale d'un compte Stellar. Elle commence par la lettre G. Vous la communiquez aux autres pour qu'ils puissent vous envoyer quelque chose."
+    "desc": "L'adresse G est l'adresse principale d'un compte Stellar. Elle commence par la lettre G. Vous la fournissez aux autres pour qu'ils puissent vous envoyer quelque chose."
   },
   "publicKey": {
     "title": "Clé publique",
     "original": "Public Key",
-    "short": "Adresse que tu peux partager ; généralement l'adresse G sur Stellar.",
-    "desc": "La clé publique est l'adresse que tu peux montrer. Sur Stellar, c'est l'adresse G. Les autres l'utilisent pour t'envoyer de l'argent."
+    "short": "Adresse que vous pouvez partager; généralement l'adresse G pour Stellar.",
+    "desc": "La clé publique est l'adresse que vous pouvez partager. Dans Stellar, c'est l'adresse G. Les autres l'utilisent pour vous envoyer de l'argent."
   },
   "privateKey": {
     "title": "Clé secrète",
     "original": "Secret Key",
-    "short": "Mot de passe du compte – ne jamais le divulguer.",
+    "short": "Mot de passe du compte – ne jamais partager.",
     "desc": "La clé secrète est votre mot de passe pour le compte. Quiconque possède cette clé peut déplacer votre argent. Ne la partagez jamais."
   },
   "addressFederation": {
-    "title": "Adresse fédérale",
+    "title": "Adresse de la fédération",
     "original": "Federation Address",
-    "short": "Adresse courte comme e-mail, pointe vers une adresse G.",
-    "desc": "Une adresse de fédération ressemble à une adresse e-mail. Par exemple : nom*domain.com. Cette courte adresse pointe vers une adresse G normale. C'est plus facile à retenir."
+    "short": "Une adresse courte comme un email pointe vers une adresse G.",
+    "desc": "Une adresse de fédération ressemble à un email. Exemple : nom*domain.com. Cette adresse courte renvoie à une adresse G standard. Elle est plus facile à retenir."
   },
   "addressMuxed": {
-    "title": "Compte multiplexé",
+    "title": "Compte mixte",
     "original": "Muxed Account",
-    "short": "M-adresse avec ID supplémentaire – partage un compte de base.",
-    "desc": "Une adresse M pointe vers un compte Stellar existant mais possède en plus un numéro propre (ID). Cela permet, par exemple, de distinguer plusieurs personnes ou départements sous la même adresse G. Techniquement, l'argent reste la propriété du compte principal."
+    "short": "M-adresse avec identifiant supplémentaire – partage un compte de base.",
+    "desc": "Une adresse M pointe vers un compte Stellar existant mais possède un numéro supplémentaire (ID). Cela permet, par exemple, de distinguer plusieurs personnes ou départements sous la même adresse G. Techniquement, l'argent appartient toujours au compte principal."
   },
   "multisig": {
-    "title": "Signature multiple",
+    "title": "Multisignature",
     "original": "Multi‑Sig",
     "short": "Des actions importantes nécessitent plus qu'une signature.",
-    "desc": "Multi-Sig signifie plusieurs signatures. Une action importante nécessite plus d'une clé. Par exemple : vous et une deuxième clé devez tous deux approuver avant que quelque chose ne soit envoyé. Cela rend le vol plus difficile."
+    "desc": "Le terme Multi-Sig signifie signatures multiples. Une action importante nécessite plus d'une clé. Par exemple, vous et une deuxième clé devez tous deux donner votre accord avant que quelque chose puisse être envoyé. Cela rend le vol plus difficile."
   },
   "trustline": {
     "title": "Ligne de confiance",
     "original": "Trustline",
-    "short": "Consentement à détenir un jeton d'un éditeur spécifique.",
-    "desc": "Eine Trustline est comme un \"oui, j'accepte ce jeton\". Cela signifie que votre compte est prêt à détenir un certain jeton d'un émetteur spécifique. Sans Trustline, vous ne pouvez pas recevoir ce jeton.\n\nExemple : Une Trustline est indiquée comme CODE:ISSUER. Pour EURT de l'émetteur GDUKMGUGDZQK6Y…, elle est EURT:GDUKMGUGDZQK6Y…."
+    "short": "Consentement pour détenir un jeton d'un émetteur spécifique.",
+    "desc": "Une ligne de confiance est comme un \"oui, j'accepte ce jeton\". En faisant cela, vous indiquez que votre compte est prêt à détenir un jeton spécifique d'un émetteur spécifique. Sans une ligne de confiance, vous ne pouvez pas recevoir ce jeton.\n\nExemple : Une ligne de confiance est spécifiée comme CODE:EMETTEUR. Pour l'EURT de l'émetteur GDUKMGUGDZQK6Y…, cela se présente sous la forme EURT:GDUKMGUGDZQK6Y…."
   },
   "token": {
     "title": "Jeton",
     "original": "Token",
     "short": "Unité numérique – par exemple, argent, points ou crédit.",
-    "desc": "Un jeton est une unité numérique sur la blockchain. Un jeton peut représenter de l'argent, des points ou un crédit pour un service."
+    "desc": "Un jeton est une unité numérique sur la blockchain. Un jeton peut représenter de l'argent, des points ou des crédits pour un service."
   },
   "asset": {
     "title": "Actif",
     "original": "Asset",
-    "short": "Jeton sur Stellar, toujours lié à l'émetteur.",
-    "desc": "Sur Stellar, un jeton est appelé actif. Un actif est toujours associé à un compte émetteur. Par exemple, un compte peut émettre un jeton en euros. Ce jeton en euros est alors un actif."
+    "short": "Les jetons sur Stellar sont toujours liés à un émetteur.",
+    "desc": "Sur Stellar, un jeton est appelé un actif. Un actif est toujours lié à un compte émetteur. Par exemple, un compte peut émettre un jeton Euro. Ce jeton Euro est alors un actif."
   },
   "xlm": {
     "title": "XLM",
     "original": "XLM",
     "short": "Monnaie native de Stellar pour les frais et l'activation.",
-    "desc": "XLM est la monnaie de base de Stellar. Vous avez besoin de XLM pour payer les frais et créer un nouveau compte."
+    "desc": "Le XLM est la monnaie native de Stellar. Vous avez besoin de XLM pour payer les frais et pour créer un nouveau compte."
   },
   "mainnet": {
     "title": "Mainnet",
     "original": "Mainnet",
-    "short": "Réseau Stellar authentique avec une véritable valeur.",
-    "desc": "Le véritable réseau Stellar avec une valeur réelle. Les transactions sont définitives et les frais sont payés en XLM réel."
+    "short": "Réseau Stellar réel avec une valeur réelle.",
+    "desc": "Le véritable réseau Stellar avec une valeur réelle. Les transactions sont définitives et les frais sont payés en véritables XLM."
   },
   "testnet": {
     "title": "Réseau de test",
     "original": "Testnet",
-    "short": "Réseau d'exercice public sans réelle valeur.",
-    "desc": "Un réseau d'exercice public. Les jetons n'ont pas de valeur réelle. Idéal pour apprendre et essayer sans risque."
+    "short": "Réseau de formation public sans valeur réelle.",
+    "desc": "Un réseau de pratiques publiques. Les jetons n'ont aucune valeur réelle. Idéal pour apprendre et expérimenter sans risque."
   },
   "memo": {
-    "title": "Mémo",
+    "title": "Note",
     "original": "Memo",
     "short": "Brève note dans une transaction.",
-    "desc": "Un mémo est une petite note que vous pouvez envoyer avec une transaction. Souvent, une bourse exige un mémo spécifique pour savoir à qui appartient l'argent."
+    "desc": "Un mémo est une petite note que vous pouvez envoyer avec une transaction. Souvent, une plateforme d'échange exige un mémo spécifique afin de savoir à qui appartient l'argent."
   },
   "transaction": {
     "title": "Transaction",
     "original": "Transaction",
-    "short": "Action sur la blockchain, par exemple paiement ou ligne de crédit.",
-    "desc": "Une transaction est une action sur la blockchain. Par exemple, envoyer de l'argent ou établir une ligne de confiance. Une transaction est stockée de façon permanente une fois qu'elle est confirmée."
+    "short": "Action sur la blockchain, par exemple, le paiement ou la ligne de crédit.",
+    "desc": "Une transaction est une action sur la blockchain, comme envoyer de l'argent ou créer une ligne de crédit. Une transaction est stockée de manière permanente une fois qu'elle est confirmée."
   },
   "fee": {
     "title": "Frais",
     "original": "Fee",
     "short": "Montant très faible par transaction.",
-    "desc": "La commission est un très petit montant que tu paies à chaque transaction. La commission va au réseau. Avec Stellar, les commissions sont très faibles."
+    "desc": "La redevance est un montant très minime que vous payez avec chaque transaction. La redevance va au réseau. Sur Stellar, les frais sont très faibles."
   },
   "ledger": {
     "title": "Grand livre",
     "original": "Ledger",
-    "short": "Chaîne des données et soldes confirmés.",
-    "desc": "Le grand livre est la chaîne de toutes les données confirmées. Il indique quels comptes possèdent combien et quelles transactions ont eu lieu. Chacun peut vérifier le grand livre."
+    "short": "Chaîne de données confirmées et soldes de comptes.",
+    "desc": "Le grand livre est la chaîne de toutes les données confirmées. Il indique quels comptes possèdent combien et quelles transactions ont eu lieu. N'importe qui peut consulter le grand livre."
   },
   "horizon": {
     "title": "Horizon",
     "original": "Horizon",
-    "short": "Service API permettant aux applications de communiquer avec Stellar.",
-    "desc": "Horizon est le service par lequel les programmes communiquent avec la blockchain Stellar. Notre outil interroge Horizon pour charger les soldes de comptes et les transactions."
+    "short": "Service API par lequel les applications communiquent avec Stellar.",
+    "desc": "Horizon est le service par lequel les programmes interagissent avec la Blockchain Stellar. Notre outil interroge Horizon pour charger les soldes de compte et les transactions."
   },
   "anchor": {
     "title": "Ancre",
     "original": "Anchor",
-    "short": "Entreprise qui connecte la monnaie fiduciaire avec Stellar.",
-    "desc": "Un Anchor est une entreprise qui relie de l'argent réel, comme l'euro ou le dollar, à Stellar. Par exemple, vous donnez des euros à l'Anchor et en échange, vous recevez un token euro sur Stellar."
+    "short": "Entreprise qui relie la monnaie fiduciaire à Stellar.",
+    "desc": "Une ancre est une entreprise qui connecte de l'argent réel, tel que des euros ou des dollars, à Stellar. Par exemple, vous donnez des euros à l'ancre, et en retour, vous recevez un jeton euro sur Stellar."
   },
   "exchange": {
-    "title": "Bourse",
+    "title": "Bourse d'échange",
     "original": "Exchange",
     "short": "Lieu pour acheter et vendre des jetons.",
-    "desc": "Une bourse est un endroit où vous pouvez acheter ou vendre des tokens. De nombreuses bourses exigent une procédure KYC, c'est-à-dire une vérification d'identité, avant que vous puissiez retirer de l'argent en euros ou en francs."
+    "desc": "Un échange est un lieu où vous pouvez acheter ou vendre des tokens. De nombreux échanges exigent une procédure de KYC, qui est une vérification d'identité, avant que vous puissiez retirer de l'argent en euros ou en francs."
   },
   "dex": {
     "title": "DEX",
     "original": "Decentralized Exchange",
-    "short": "Bourse décentralisée directement sur la blockchain.",
-    "desc": "DEX signifie Bourse Décentralisée. Ici, les gens échangent directement entre eux sur la blockchain. Il n'y a pas d'opérateur unique. Stellar a intégré une DEX directement."
+    "short": "Échange décentralisé directement sur la blockchain.",
+    "desc": "DEX signifie Échange Décentralisé. Ici, les personnes échangent directement entre elles sur la blockchain. Il n'y a pas d'opérateur unique. Stellar possède un DEX intégré directement."
   },
   "liquidityPool": {
-    "title": "Pool de liquidité",
+    "title": "Pool de liquidités",
     "original": "Liquidity Pool",
-    "short": "Pot commun avec deux tokens pour un échange immédiat.",
-    "desc": "Un pool de liquidité est un pot commun de deux tokens. Des personnes y déposent les deux tokens. D'autres peuvent ensuite échanger ces tokens immédiatement. Les déposants gagnent ainsi de petites commissions."
+    "short": "Pool commun avec deux jetons pour échange immédiat.",
+    "desc": "Un pool de liquidités est un pool partagé contenant deux jetons. Les personnes contribuent les deux jetons au pool. D'autres peuvent ensuite échanger ces jetons instantanément. Les contributeurs gagnent en retour de petites commissions."
   },
   "balanceClaimable": {
     "title": "Solde réclamable",
     "original": "Claimable Balance",
-    "short": "Argent réservé que tu dois encore accepter.",
-    "desc": "Un solde réclamable est de l'argent qui a déjà été réservé pour vous, mais vous devez encore le récupérer. Ce n'est que lorsque vous l'acceptez qu'il est transféré sur votre compte."
+    "short": "Argent réservé que vous devez encore accepter.",
+    "desc": "Un solde réclamable est de l'argent qui est déjà réservé pour vous, mais que vous devez encore réclamer. Ce n'est que lorsque vous l'acceptez qu'il est crédité sur votre compte."
   },
   "protocolUpdate": {
     "title": "Mise à jour du protocole",
     "original": "Protocol Update",
     "short": "Mise à jour des règles du réseau.",
-    "desc": "Une mise à jour de protocole est une amélioration des règles dans le réseau Stellar. Par exemple, de nouvelles fonctionnalités ou des modifications de sécurité. Tous les nœuds du réseau doivent utiliser les mêmes règles."
+    "desc": "Une mise à jour de protocole est une amélioration des règles du réseau Stellar. Par exemple, de nouvelles fonctionnalités ou des modifications de sécurité. Tous les nœuds du réseau doivent utiliser les mêmes règles."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Système de contrats intelligents de Stellar.",
-    "desc": "Soroban est le système de contrats intelligents de Stellar. Un contrat intelligent est un code de programme sur la blockchain. Le code peut vérifier des règles et déclencher des actions sans qu'une banque intervienne."
+    "short": "Le système de contrats intelligents de Stellar.",
+    "desc": "Soroban est le système de contrats intelligents de Stellar. Un contrat intelligent est un code de programme sur la blockchain. Ce code peut vérifier indépendamment les règles et déclencher des actions sans la nécessité d'une banque intermédiaire."
   },
   "missingKey": "Clé de glossaire manquante : {{detail}}"
 }

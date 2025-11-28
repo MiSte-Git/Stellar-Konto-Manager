@@ -1,18 +1,18 @@
 {
   "balance": "Mostrar información de la cuenta",
-  "devTestnet": "Testnet (para desarrolladores)",
+  "devTestnet": "Red de prueba (para desarrolladores)",
   "sendPayment": "Enviar pago",
   "donate": "Donaciones",
   "feedback": "Retroalimentación",
-  "xlmByMemo": "Filtrar la cantidad de XLM según el memo/token.",
-  "muxed": "Administración de direcciones mezcladas",
+  "xlmByMemo": "Filtrar la cantidad de XLM por memo/token.",
+  "muxed": "Gestión de direcciones multiplexadas",
   "glossary": "Glosario",
   "createAccount": "Crear cuenta + Multisig",
   "multisigEdit": "Editar multisig",
-  "listAll": "Listar todas las líneas de confianza.",
-  "compareTrustlines": "Comparar Trustlines",
+  "listAll": "Enumera todas las líneas de confianza.",
+  "compareTrustlines": "Comparar líneas de confianza",
   "settings": "Configuraciones",
   "tokenPurchases": "Compras de tokens",
-  "learn": "Cuestionario estelar para principiantes",
-  "unknown": "Selección de menú desconocida."
+  "learn": "Cuestionario Estelar para Principiantes",
+  "unknown": "Selección de menú desconocida"
 }

@@ -1,0 +1,39 @@
+{
+  "desc": "Izvezite ili uvezite podatke o kvizu (postavke, napredak, značke).",
+  "export": {
+    "button": "Počni izvoz",
+    "fileName": "kviz-sigurnosna-kopija.json",
+    "success": "Izvoz je stvoren"
+  },
+  "import": {
+    "backupCreated": "Automatska sigurnosna kopija spremljena",
+    "done": "Uvoz dovršen",
+    "invalid": "Nevažeća datoteka za uvoz",
+    "noFile": "Datoteka nije odabrana",
+    "preview": {
+      "stats": {
+        "achievements": "Značka: {{count}} kviz(ova)",
+        "progress": "Napredak: {{count}} kviz(a)",
+        "settings": "Postavke: {{count}} kviz(a)"
+      },
+      "title": "Pregled"
+    },
+    "selectFile": "Odaberi datoteku",
+    "strategy": {
+      "label": "Strategija",
+      "merge": "Spoji",
+      "replace": "Zamijeniti"
+    },
+    "title": "Uvoz"
+  },
+  "nav": {
+    "back": "Nazad"
+  },
+  "title": "Sigurnosna kopija i obnova",
+  "toast": {
+    "backupBeforeImport": "Sigurnosna kopija je spremljena prije uvoza.",
+    "exported": "Izvoz sigurnosne kopije izvršen",
+    "exportFailed": "Izvoz nije uspio",
+    "importFailed": "Uvoz nije uspio"
+  }
+}

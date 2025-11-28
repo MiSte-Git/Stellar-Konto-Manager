@@ -1,35 +1,35 @@
 {
-  "hintEnterPublicKey": "Molimo unesite prvi javni ključ.",
+  "hintEnterPublicKey": "Molimo prvo unesite javni ključ.",
   "columns": {
     "amount": "Iznos",
     "compromised": "Kompromitiran",
-    "deactivated": "Deaktivirano",
+    "deactivated": "Onemogućen",
     "destination": "Ciljani novčanik",
     "issuer": "Izdavatelj",
     "label": "Oznaka",
-    "memo": "Memorandum",
+    "memo": "Podsjetnik",
     "payments": "Plaćanja",
     "date": "Datum",
     "token": "Token"
   },
   "decimals": {
     "auto": "Automatski",
-    "label": "Decimale:"
+    "label": "Decimalna mjesta:"
   },
   "filter": {
-    "memoPlaceholder": "Filtriraj prema memorandumu, adresi novčanika ili oznaci.",
-    "tokenPlaceholder": "Filtriraj prema tokenu (KOD:IZDAVAČ)"
+    "memoPlaceholder": "Filtriraj prema memo, adresi novčanika ili oznaci.",
+    "tokenPlaceholder": "Filtriraj prema Tokenu (KOD:IZDAVAČ)"
   },
   "item": {
-    "memo": "Memorandum: \"{{memo}}\" (Plaćanja: {{occurrences}})",
+    "memo": "Memo: \"{{memo}}\" (Uplate: {{occurrences}})",
     "token": "Token: {{token}} (Plaćanja: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
-  "missingPublicKey": "Nedostaje javan ključ.",
-  "moreTruncated": "… i {{extra}} drugih grupa",
-  "toWallet": "na novčanik: {{address}}",
+  "missingPublicKey": "Nedostaje javni ključ.",
+  "moreTruncated": "... i {{extra}} dodatne grupe",
+  "toWallet": "Na novčanik: {{address}}",
   "total": "Broj kupljenih tokena: {{count}}",
-  "totalTokens": "Broj uloženih tokena (imovina): {{count}}",
+  "totalTokens": "Broj tokena (imovine) u koji se ulaže: {{count}}",
   "value": {
     "units": "{{amount}} komada",
     "xlm": "{{amount}} XLM"
@@ -37,22 +37,22 @@
   "view": {
     "label": "Filtriraj prema:",
     "memo": "Memos (Groupfund)",
-    "token": "Token (kupljena količina)"
+    "token": "Token (kupovana količina)"
   },
   "toggles": {
-    "showTotals": "Ukupni iznos",
-    "qsiOnly": "Zbir QSI GF"
+    "showTotals": "Ukupan iznos",
+    "qsiOnly": "Zbroj QSI GF"
   },
   "hints": {
-    "qsiListSet": "Napomena: Popis GF-a možete pronaći pod Postavke → Pouzdani novčanici (QSI).",
+    "qsiListSet": "Napomena: Popis dopuštenih možete pronaći pod Postavke → Pouzdani Novčanici (QSI).",
     "pageTime": "Učitavanje jedne stranice traje oko 0,2 sekunde → 100 stranica ≈ 20 sekundi → 1000 stranica ≈ 200 sekundi (≈ 3:20 minuta)."
   },
-  "walletCapInfo": "Napomena: Novčanik može imati najviše 1000 trust linija.",
+  "walletCapInfo": "Napomena: Novčanik može držati najviše 1000 trustlinea.",
   "action": {
-    "load": "Trgovina"
+    "load": "Učitavanje"
   },
   "history": {
     "availableFrom": "Server (Horizon) – Povijest od",
-    "hintFullHistory": "Napomena: Povijest glavne knjige sa Horizon servera dostupna je samo od {{available}} nadalje. Prikazuju se samo podaci do tog trenutka. Zato je odabrani početni datum ograničen. Za starije podatke potreban je (uglavnom plaćeni) pružatelj kompletne povijesti (možda će biti dostupan u budućnosti!)."
+    "hintFullHistory": "Napomena: Povijest knjige glavne iz Horizon servera seže samo do {{available}}. Prikazivat će se samo podaci do tog trenutka. Stoga je odabrani datum Od ograničen. Za starije podatke potreban je (obično plaćeni) pružatelj usluga za cjelovitu povijest (možda će biti dostupan u budućnosti!)."
   }
 }

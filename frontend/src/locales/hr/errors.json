@@ -1,76 +1,77 @@
 {
-  "learn.offline": "Izvan mreže: Praktični ispiti će biti provjereni nakon ponovnog povezivanja.",
-  "learn.validationFailed": "Provjera nije uspjela",
-  "learn.missingParams": "Nedostaju potrebni parametri.",
-  "submitTransaction.failed": "Transakcija nije uspjela.",
-  "learn.error.unknown_action": "Nepoznata praksa akcija",
+  "learn.offline": "Izvan mreže: Praktični ispiti bit će pregledani nakon ponovnog povezivanja.",
+  "learn.validationFailed": "Provjera nije uspjela.",
+  "learn.missingParams": "Nedostaju potrebni parametri",
+  "submitTransaction.failed": "Transakcija nije uspjela",
+  "learn.error.unknown_action": "Nepoznata praksa radnje",
   "learn.error.rate_limited": "Molimo pričekajte i pokušajte ponovno.",
-  "learn.error.horizon_timeout": "Vremensko prekoračenje horizonta. Molimo pokušajte ponovo.",
-  "learn.error.network": "Mreža je u kvaru. Molimo pokušajte ponovno.",
+  "learn.error.horizon_timeout": "Horizon je isteklo vrijeme. Molimo pokušajte ponovno.",
+  "learn.error.network": "Pogreška u mreži. Molimo pokušajte ponovo.",
   "asset": {
-    "creationDateUnknown": "Nepoznat datum izrade"
+    "creationDateUnknown": "Nepoznat datum kreiranja"
   },
   "cache": {
-    "backfillAborted": "Inicijalno učitavanje uplata je prekinuto.",
+    "backfillAborted": "Početno učitavanje uplata je prekinuto.",
     "coverage": {
-      "newestFailed": "Neuspjeh pri određivanju najnovije uplate",
-      "oldestFailed": "Neuspješno određivanje najstarijeg datuma"
+      "newestFailed": "Nije uspjelo preuzimanje najnovije uplate",
+      "oldestFailed": "Nije uspjelo utvrđivanje najranijeg datuma"
     },
-    "indexIterFailed": "Indeksna iteracija u predmemoriji nije uspjela.",
-    "memoNormBackfillFailed": "Početno učitavanje uplata za normalizirane napomene nije uspjelo.",
-    "openFailed": "Nije moguće otvoriti lokalnu predmemoriju",
+    "indexIterFailed": "Došlo je do pogreške prilikom iteracije indeksa u predmemoriji.",
+    "memoNormBackfillFailed": "Početno učitavanje plaćanja za normalizirane bilješke nije uspjelo.",
+    "openFailed": "Nije moguće otvoriti lokalni predmemoriju",
     "readFailed": "Čitanje iz predmemorije nije uspjelo.",
-    "rehydrateFailed": "Učitavanje nedostajućih memoranduma nije uspjelo.",
-    "rehydrateWriteFailed": "Neuspješno zapisivanje memoranduma u predmemoriju",
-    "writeFailed": "Neuspjelo pisanje u predmemoriju"
+    "rehydrateFailed": "Nije uspjelo ponovno učitavanje nestalih bilješki.",
+    "rehydrateWriteFailed": "Nije uspjelo pisanje memoranduma u predmemoriju",
+    "writeFailed": "Neuspješno zapisivanje u predmemoriju"
   },
   "connection": {
-    "backend": "Nije moguće uspostaviti vezu s backendom. Molimo osigurajte"
+    "backend": "Nije moguće povezati se s backendom. Molimo vas, osigurajte"
   },
   "fetchInvestedTokens": {
     "failed": "Učitavanje podataka o investicijama nije uspjelo: {{detail}}"
   },
   "horizon": {
-    "paymentsFetch": "Pogreška pri učitavanju uplata iz Horizon-a"
+    "paymentsFetch": "Pogreška pri učitavanju plaćanja iz Horizona"
   },
-  "loadTrustlines": "Trustlines nisu mogli biti učitani. Molimo pokušajte ponovo.",
+  "loadTrustlines": "Povjereničke linije nije bilo moguće učitati. Molimo pokušajte ponovo.",
   "loadTrustlinesFailed": "Učitavanje Trustlines nije uspjelo.",
-  "loadTrustlinesNotFound": "Račun u odabranoj mreži nije pronađen.",
-  "accountNotFoundInNetwork": "U '{{net}}' nije pronađen!",
-  "op_invalid_limit": "Nije moguće obrisati trustline. Možda još uvijek ima sredstva ili nepodmirene obveze.",
+  "loadTrustlinesNotFound": "Račun nije pronađen u odabranoj mreži.",
+  "accountNotFoundInNetwork": "Nije pronađeno u '{{net}}'!",
+  "op_invalid_limit": "Povjerenje se ne može izbrisati. Može još uvijek imati stanje ili nepodmirene obveze.",
   "query": {
-    "invalidMemo": "Nevažeći dopis",
-    "invalidRange": "Vremenski okvir nije valjan (Od > Do)",
-    "invalidTime": "Nevažeća vremenska oznaka"
+    "invalidMemo": "Nevažeća bilješka",
+    "invalidRange": "Vremenski interval je nevažeći (Početak > Kraj)",
+    "invalidTime": "Nevažeća specifikacija vremena."
   },
   "submitTransaction": {
     "failed": {
       "tx_bad_auth": "Transakcija odbijena: Nevažeći potpis",
-      "tx_failed": "Transakcija nije uspjela.",
-      "unknown": "Nepoznata greška prilikom transakcije"
+      "tx_failed": "Transakcija nije uspjela",
+      "unknown": "Nepoznata greška tijekom transakcije"
     }
   },
   "sync": {
-    "backfillFailed": "Početno učitavanje plaćanja nije uspjelo.",
+    "backfillFailed": "Početno učitavanje uplata nije uspjelo.",
     "incrementalFailed": "Ažuriranje plaćanja nije uspjelo."
   },
   "transaction": {
     "failed": "Transakcija nije uspjela",
-    "title": "Greška prilikom transakcije"
+    "title": "Pogreška transakcije"
   },
   "trustline": {
-    "submitFailed": "Pogreška pri brisanju povjereničke linije.",
-    "unknown": "Nepoznata greška prilikom brisanja Trustline-a."
+    "submitFailed": "Pogreška pri brisanju linije povjerenja.",
+    "unknown": "Nepoznata greška prilikom brisanja povjereničke linije."
   },
   "xlmByMemo": {
-    "aborted": "Radnju je prekinuo korisnik.",
+    "aborted": "Operacija otkazana od strane korisnika.",
     "accountInvalid": "Nevažeći račun",
     "dateInvalid": "Nevažeći datum",
     "dateRange": "Nevažeći raspon datuma",
-    "failedUnknown": "Nepoznata greška.",
-    "memoInvalid": "Nevažeći dopis",
-    "paymentsFetch": "Pogreška pri učitavanju plaćanja",
+    "failedUnknown": "Nepoznata greška",
+    "memoInvalid": "Nevažeća bilješka",
+    "paymentsFetch": "Pogreška prilikom učitavanja uplata",
     "serverInvalid": "Nevažeći poslužitelj"
   },
-  "rateLimited": "Premašeno je ograničenje brzine Horizon. Molimo pričekajte nekoliko sekundi i pokušajte ponovno."
+  "rateLimited": "Prekoračena je granična vrijednost za Horizon. Molimo pričekajte nekoliko sekundi i pokušajte ponovno.",
+  "backendConnectError": "Veza s poslužiteljem nije uspjela: {{url}}"
 }

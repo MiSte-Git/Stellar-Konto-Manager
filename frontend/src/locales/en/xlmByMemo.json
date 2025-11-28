@@ -1,11 +1,11 @@
 {
   "page": {
-    "title": "Filter XLM by memo",
+    "title": "Filter XLM by Memo",
     "noPublicKey": "No public key loaded. Please enter a public key first."
   },
   "action": {
     "calculate": "Calculate",
-    "loading": "I'm sorry, you didn't provide enough information for me to assist. Could you please specify what you would like to calculate?"
+    "loading": "Ich kann bei allgemeinen Anfragen und Erklärungen helfen, aber für spezifische Berechnungen oder aktuelle Datenanalysen benötige ich eine konkrete Aufgabe oder ein Thema. Könnten Sie bitte mehr Informationen oder Details bereitstellen?"
   },
   "date": {
     "from": "From (optional)",
@@ -13,7 +13,7 @@
   },
   "debug": {
     "incoming": "Incoming – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
-    "incomingOverview": "Inputs: {{total}} • Unique wallets involved: {{unique}}",
+    "incomingOverview": "Inputs: {{total}} • Involved wallets: {{unique}}",
     "memo": "Memos in window: {{any}} • exact memos: {{exact}}",
     "types": "Types – payment: {{pay}}, path: {{path}}, create: {{create}}, other: {{other}}"
   },
@@ -30,18 +30,18 @@
     "label": "Memo search text (substring, case sensitive)",
     "placeholder": "Memo (substring, case-sensitive)"
   },
-  "overviewLine": "Payment received: {{total}} • involved wallets: {{unique}}",
+  "overviewLine": "Payments received: {{total}} • wallets involved: {{unique}}",
   "result": {
     "label": "Total amount:",
     "value": "{{amount}} XLM"
   },
   "summary": {
-    "amount": "Amount: {{amount}} XLM",
+    "amount": "Sum: {{amount}} XLM",
     "correctCount": "Entries with correct memo: {{n}}",
     "count": "Quantity: {{n}}",
     "label": "Comparison (all inputs)",
     "otherCount": "Entries with incorrect/missing memo: {{n}}",
-    "unique": "Unique wallets (total): {{n}}",
+    "unique": "Unique wallets (all): {{n}}",
     "uniqueWallets": "Unique wallets: {{n}}"
   },
   "time": {
@@ -53,18 +53,18 @@
     "button": "Top 20 Entries (Memo)",
     "clipboard": "Copy to clipboard",
     "csv": "Download CSV",
-    "scanning": "... scans top submissions",
-    "title": "Top 20 Entries for Memo during the Period"
+    "scanning": "... scans top entries",
+    "title": "Top 20 Entries for Memo in the Period"
   },
   "tz": {
     "cdt": "CDT (UTC−5)",
     "cst": "CST (UTC−6)",
     "europe_zurich": "Europe/Zurich (CET/CEST)",
-    "label": "Timezone for date/time",
+    "label": "Time zone for date/time",
     "local": "Local time zone",
-    "note": "Date/time is interpreted in the selected time zone and automatically converted to UTC before searching.",
-    "utc": "Coordinated Universal Time (UTC)",
-    "window": "Used UTC time window: {{from}} → {{to}} (Exclusive end)"
+    "note": "Date/time will be interpreted in the selected time zone and automatically converted to UTC before searching.",
+    "utc": "UTC",
+    "window": "Used UTC time window: {{from}} → {{to}} (Exclusive)"
   },
   "wrongMemos": {
     "button": "Display wallets with incorrect/empty memos.",
@@ -78,9 +78,9 @@
     },
     "csv": "Download CSV",
     "failed": "Error loading payments with incorrect/empty memo.",
-    "hint": "Filters incoming payments within the time frame and shows senders with an incorrect/empty memo.",
+    "hint": "Filters incoming payments within the period and displays senders with incorrect/empty memos.",
     "scanning": "... scans false/empty memos",
-    "summary": "Quantity: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
+    "summary": "Count: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
     "title": "False/Empty Memos during the period"
   }
 }

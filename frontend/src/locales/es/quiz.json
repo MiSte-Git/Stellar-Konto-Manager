@@ -1,0 +1,231 @@
+{
+  "l1": {
+    "title": "Conceptos Básicos de Blockchain",
+    "q1": {
+      "question": "¿Qué es una blockchain?",
+      "hint": "Imagina un cuaderno público. Muchas páginas (bloques) están conectadas entre sí.",
+      "a": "Una lista pública de páginas de datos, enlazada a través de matemáticas (bloques en una cadena).",
+      "b": "Un videojuego con monedas y niveles.",
+      "c": "La base de datos secreta de una empresa.",
+      "d": "Una aplicación que se ejecuta exclusivamente en tu teléfono.",
+      "a.fb": "Correcto. La cadena dificulta la alteración de las páginas antiguas.",
+      "b.fb": "No del todo. Es una base de datos compartida, no un juego.",
+      "c.fb": "No. Muchos pueden revisarlo; no es confidencial.",
+      "d.fb": "No. Funciona en muchas computadoras (nodos), no solo en la tuya."
+    },
+    "q2": {
+      "question": "¿Quién puede ver las transacciones de Stellar?",
+      "hint": "Red pública ≠ nombres públicos.",
+      "a": "Todos pueden verlos, pero no tu nombre real (solo las claves públicas).",
+      "b": "Solo el remitente puede verlos.",
+      "c": "Solo los bancos pueden verlos.",
+      "a.fb": "Correcto. Los datos son públicos, pero las identidades no están incluidas.",
+      "b.fb": "No. El libro mayor es público por transparencia.",
+      "c.fb": "No. Cualquiera puede buscar transacciones."
+    },
+    "q3": {
+      "question": "¿Por qué los bloques están 'encadenados' entre sí?",
+      "hint": "Las páginas antiguas deberían ser difíciles de cambiar.",
+      "a": "Para que alterar los datos antiguos se vuelva muy difícil.",
+      "b": "Para hacer que la aplicación se vea más genial.",
+      "c": "Para que todo funcione sin conexión indefinidamente.",
+      "a.fb": "Sí. Cada bloque asegura el anterior mediante matemáticas (hashes).",
+      "b.fb": "No. Se trata de seguridad, no de estilo.",
+      "c.fb": "No. Los nodos aún necesitan sincronizarse."
+    },
+    "q4": {
+      "question": "¿Es posible simplemente eliminar un error en una transacción?",
+      "hint": "Recuerda: solo añadir, no borrar.",
+      "a": "No. Se realiza una nueva transacción correctiva.",
+      "b": "Sí, simplemente los quitas de la cadena.",
+      "a.fb": "Correcto. El libro mayor es de solo anexar. Hacemos correcciones con nuevas entradas.",
+      "b.fb": "No, las entradas anteriores no se eliminan."
+    }
+  },
+  "l4": {
+    "title": "Claves, tarifas y líneas de confianza",
+    "q1": {
+      "question": "¿Qué es una clave pública?",
+      "hint": "Como tu dirección postal.",
+      "a": "Una dirección para recibir. Puedes compartirla.",
+      "b": "Una contraseña secreta para controlar tu cuenta.",
+      "a.fb": "Sí, se te permite compartir tu clave pública.",
+      "b.fb": "Eso describe la Clave Secreta, no la Clave Pública."
+    },
+    "q2": {
+      "question": "Nunca debes compartir tu clave secreta.",
+      "hint": "Él es la clave para tu dinero.",
+      "true": "Verdadero",
+      "false": "Incorrecto.",
+      "true.fb": "Correcto. Llave Secreta = Control. Nunca la ingreses en sitios web desconocidos.",
+      "false.fb": "Incorrecto. Manténlo privado. Utiliza Testnet solo para aprendizaje."
+    },
+    "q3": {
+      "question": "¿Por qué Stellar cobra tarifas pequeñas?",
+      "hint": "Piensa en la protección contra el spam.",
+      "a": "Para detener el spam y mantener la red saludable.",
+      "b": "Para que una empresa se vuelva próspera.",
+      "c": "Porque las transacciones siempre son lentas.",
+      "a.fb": "Correcto. Las pequeñas tarifas previenen el spam y recompensan a los validadores.",
+      "b.fb": "No. Las tarifas son mínimas y son por razones de seguridad.",
+      "c.fb": "No. Stellar es rápido y asequible."
+    },
+    "q4": {
+      "question": "¿Qué es una línea de confianza?",
+      "hint": "Es como un permiso.",
+      "a": "Permiso para poseer un token de un emisor.",
+      "b": "Una línea de chat secreta entre dos cuentas.",
+      "c": "Un descuento especial en las tarifas de negociación.",
+      "a.fb": "Sí. Tú eliges qué emisores/tokens confías.",
+      "b.fb": "No. No es un chat, sino un permiso de retención.",
+      "c.fb": "No. Las líneas de confianza se refieren a la tenencia de activos."
+    }
+  },
+  "l7": {
+    "title": "Seguridad, Phishing y Confianza",
+    "q1": {
+      "question": "Un sitio web quiere tu clave secreta para 'verificar' tu saldo. ¿Qué haces?",
+      "hint": "Nunca compartas tu clave secreta.",
+      "a": "Deja la página. Nunca introduzcas la clave secreta.",
+      "b": "Entra, pero solo una vez.",
+      "c": "En su lugar, comparte una captura de pantalla de tu llave.",
+      "a.fb": "Correcto. Eso es phishing. Utiliza solo billeteras de confianza.",
+      "b.fb": "No. Solo se necesita una vez para perder el control.",
+      "c.fb": "Lo siento, no puedo cumplir con esta solicitud."
+    },
+    "q2": {
+      "question": "Ves dos tokens llamados USDX. ¿Cómo encuentras el verdadero?",
+      "hint": "Los nombres se pueden copiar. Los emisores y los dominios cuentan.",
+      "a": "Verifica la cuenta del emisor y la información verificada del dominio/activo.",
+      "b": "Elige el que tiene el logo más bonito.",
+      "c": "Lanzamiento de moneda. Son lo mismo.",
+      "a.fb": "Sí. El código del activo no es suficiente. Verifica el emisor y el dominio.",
+      "b.fb": "Los logotipos pueden ser falsificados. Verifica el emisor/dominio.",
+      "c.fb": "No. Pueden ser muy diferentes. Siempre verifica."
+    },
+    "q3": {
+      "question": "En términos sencillos, la \"verificación/KYC\" es el proceso mediante el cual una empresa verifica tu identidad para asegurar que realmente eres la persona que dices ser. KYC significa \"Conoce a tu Cliente\" y a menudo es utilizado por bancos o proveedores de servicios financieros para prevenir fraudes y cumplir con requisitos legales.",
+      "hint": "Algunos servicios necesitan saber quién eres.",
+      "a": "Un proceso en el que un servicio verifica tu identidad.",
+      "b": "Un método para acelerar la cadena de bloques.",
+      "c": "Compartir la clave secreta con un banco.",
+      "a.fb": "Correcto. Esto ayuda a prevenir el fraude y cumple con las leyes.",
+      "b.fb": "No. Se trata de identidad, no de velocidad.",
+      "c.fb": "No. Nunca compartas tu clave secreta. KYC no la necesita."
+    },
+    "q4": {
+      "question": "Una \"prueba de conocimiento cero\" (ZK, por sus siglas en inglés) es un procedimiento en el que una persona (el demostrador) puede demostrarle a otra persona (el verificador) que conoce determinada información o que una declaración específica es verdadera, sin revelar la información en sí. Es como demostrarle a alguien que conoces un secreto, sin realmente revelar el secreto. Esto es útil en criptografía y en la transmisión segura de datos, ya que permite crear confianza sin divulgar información sensible.",
+      "hint": "Demuestra que sabes algo sin revelar el secreto.",
+      "a": "Una prueba de que algo es cierto sin revelar el secreto.",
+      "b": "Una herramienta que oculta todas las transacciones para siempre.",
+      "c": "Una forma más rápida de enviar pagos.",
+      "a.fb": "Sí. Por ejemplo: Demuestra que tienes más de 13 años sin indicar tu fecha de nacimiento.",
+      "b.fb": "No. Las pruebas de conocimiento cero (ZK) verifican hechos, pero no eliminan entradas.",
+      "c.fb": "No. Se trata de demostraciones eficientes en términos de datos."
+    }
+  },
+  "ui": {
+    "startQuiz": "Iniciar cuestionario",
+    "startPractice": "Comienza la práctica.",
+    "practice": "Práctica",
+    "quiz": "Concurso",
+    "hint": "Pista",
+    "next": "Se te ha entrenado con datos hasta octubre de 2023.",
+    "prev": "De vuelta",
+    "finish": "Has completado el entrenamiento con datos hasta octubre de 2023.",
+    "yourScore": "Tu resultado",
+    "passed": "Pasado",
+    "failed": "Fallido",
+    "explanation": "¿Por qué?",
+    "correct": "Estás entrenado con datos hasta octubre de 2023.",
+    "incorrect": "Incorrecto.",
+    "of": "hasta",
+    "retry": "Lo siento, pero no tengo suficiente información para realizar esa traducción. ¿Podrías proporcionar más contexto o detalles?",
+    "viewResults": "Ver resultado",
+    "routeTitle": "Cuestionario para la Lección {{id}}",
+    "backToLearn": "A la vista general del aprendizaje",
+    "summaryCount": "{{correct}}/{{total}} correcto",
+    "noDataHelp": "Abre la vista general del aprendizaje para seleccionar la lección adecuada.",
+    "jump": "Saltar",
+    "jumpToQuestion": "Saltar a la pregunta.",
+    "question": "Pregunta",
+    "cancel": "Cancelar",
+    "stickyNav": "Navegación adhesiva",
+    "on": "En",
+    "off": "Hasta",
+    "timeRemaining": "Tiempo restante",
+    "beforeUnloadMessage": "Aún no has terminado este cuestionario. Si sales de la página, las respuestas actuales podrían perderse.",
+    "openInNewTab": "Abrir en una nueva pestaña",
+    "openInNewTab.default": "Abrir el cuestionario en una nueva pestaña de forma predeterminada.",
+    "openInNewTab.once": "Abrir en una nueva pestaña",
+    "startInNewTab": "Iniciar cuestionario en una nueva pestaña.",
+    "warnOnActiveQuiz": "Mostrar advertencia durante un cuestionario en curso."
+  },
+  "meta": {
+    "estimatedMinutes": "Minutos estimados",
+    "passThreshold": "Umbral de aprobación",
+    "threeStarThreshold": "Borde de 3 estrellas"
+  },
+  "landing": {
+    "title": "Descripción del cuestionario",
+    "description": "Breve introducción a la lección. Pon a prueba tus conocimientos y recoge estrellas.",
+    "questionsLabel": "Preguntas",
+    "estimatedMinutesLabel": "Minutos estimados",
+    "passThresholdLabel": "Umbral de aprobación",
+    "threeStarThresholdLabel": "Umbral de 3 estrellas",
+    "start": "Iniciar cuestionario",
+    "startPractice": "Iniciar modo de práctica",
+    "settings": "Configuraciones",
+    "settingsLink": "Configuraciones",
+    "achievements": "Éxitos"
+  },
+  "achievements": {
+    "title": "Éxitos",
+    "list": "Tus insignias",
+    "none": "Aún no has desbloqueado insignias. ¡Sigue así!",
+    "link": "Éxitos",
+    "badge": "Insignia: {{name}}",
+    "unlockedAt": "Desbloqueado en: {{date}}",
+    "first_run": "Primera ejecución",
+    "passed": "Aprobado",
+    "three_stars": "Tres estrellas",
+    "perfect_score": "Puntuación perfecta"
+  },
+  "result": {
+    "score": "Tu resultado: {{score}}%",
+    "summary": "{{correct}}/{{total}} correctos",
+    "passInfo": "Umbral de aprobación: {{pass}}% — Estado: {{status}}",
+    "passed": "Aprobado",
+    "failed": "Fallado",
+    "threeStarThreshold": "Umbral de 3★: {{value}}%",
+    "stars": "Estrellas: {{stars}}",
+    "newAchievementsTitle": "Insignias recién recibidas",
+    "noNewAchievements": "No hay nuevas insignias en esta ronda.",
+    "retry": "Lo siento, intentémoslo de nuevo.",
+    "backToOverview": "Volver al resumen",
+    "nextLesson": "Procede a la siguiente lección.",
+    "toast": {
+      "newAchievement": "Nueva insignia: {{name}}",
+      "close": "Estás entrenado con datos hasta octubre de 2023."
+    }
+  },
+  "settings": {
+    "title": "Configuración del cuestionario",
+    "stickyNav": "Navegación pegajosa",
+    "stickyNav.desc": "La barra de navegación permanece en la parte inferior en dispositivos móviles.",
+    "hints": "Pistas",
+    "hints.desc": "Mostrar consejos de aprendizaje para las preguntas.",
+    "haptics": "Háptica/Vibración",
+    "haptics.desc": "Vibrar al seleccionar y completar",
+    "shuffle": "Preguntas mixtas",
+    "shuffle.desc": "Aleatoriza el orden de las preguntas.",
+    "timeLimit": "Límite de tiempo",
+    "timeLimit.desc": "Límite opcional en minutos (0 = sin límite)",
+    "timeLimit.input": "Establecer límite de tiempo",
+    "minutes": "Minutos",
+    "on": "En",
+    "off": "Desde",
+    "warnOnActiveQuiz": "Mostrar advertencia durante el cuestionario activo",
+    "warnOnActiveQuiz.desc": "Advertir sobre preguntas ya respondidas antes de salir de la página"
+  }
+}

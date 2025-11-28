@@ -257,13 +257,12 @@ function GlossaryPage() {
             </button>
           </div>
           <h1 className="text-2xl font-bold text-center flex-1">
-            {t('glossary.pageTitle', 'Glossary')}
+            {t('glossary:pageTitle', 'Glossary')}
           </h1>
           <div className="w-[76px] shrink-0" aria-hidden />
         </div>
         <p className="mt-2 text-sm text-gray-700 dark:text-gray-300 text-center">
-          {t(
-            'glossary.pageIntro',
+          {t('common:glossary.pageIntro',
             'Here you find key words from the blockchain world and the Stellar network. Simple explanations.'
           )}
         </p>
@@ -271,18 +270,18 @@ function GlossaryPage() {
 
       <section className="mb-6">
         <label className="block text-sm font-medium mb-1" htmlFor="glossary-search">
-          {t('glossary.searchLabel', 'Search term')}
+          {t('glossary:searchLabel', 'Search term')}
         </label>
         <input
           id="glossary-search"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={t('glossary.searchPlaceholder', 'e.g., Wallet, Trustline, Memo …')}
+          placeholder={t('glossary:searchPlaceholder', 'e.g., Wallet, Trustline, Memo …')}
           className="w-full border border-gray-300 dark:border-gray-700 rounded p-2"
         />
         <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
-          {t('glossary.searchHint', 'Search matches words and explanations.')}
+          {t('glossary:searchHint', 'Search matches words and explanations.')}
         </p>
       </section>
 
@@ -291,7 +290,7 @@ function GlossaryPage() {
 
       {filtered.length === 0 ? (
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          {t('glossary.noResults', 'No results.')}
+          {t('glossary:noResults', 'No results.')}
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -328,4 +327,3 @@ function GlossaryPage() {
 }
 
 export default GlossaryPage;
-

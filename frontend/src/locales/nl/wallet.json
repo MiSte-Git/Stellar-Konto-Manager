@@ -2,13 +2,13 @@
   "federationDisplay": {
     "label": "Federatieadres",
     "none": "Geen federatieadres gedefinieerd",
-    "account": "Rekening",
+    "account": "Account",
     "accountLabel": "Label"
   },
   "flag": {
-    "compromised": "Waarschuwing: Deze wallet is in je vertrouwenslijst als gecompromitteerd gemarkeerd.",
-    "deactivated": "Opmerking: Deze wallet is in je Vertrouwenslijst als gedeactiveerd gemarkeerd."
+    "compromised": "Waarschuwing: Deze wallet is als gecompromitteerd gemarkeerd in uw vertrouwenslijst.",
+    "deactivated": "Opmerking: Deze portemonnee is gemarkeerd als inactief in uw Vertrouwenslijst."
   },
-  "xlmBalance": "XLM",
+  "xlmBalance": "Ik ben getraind op gegevens tot oktober 2023.",
   "unfunded": "Niet geactiveerd"
 }

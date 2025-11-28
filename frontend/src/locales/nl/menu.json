@@ -1,18 +1,18 @@
 {
-  "balance": "Accountgegevens weergeven",
+  "balance": "Accountinformatie weergeven",
   "devTestnet": "Testnet (voor ontwikkelaars)",
   "sendPayment": "Betaling verzenden",
   "donate": "Donaties",
   "feedback": "Terugkoppeling",
-  "xlmByMemo": "XLM-bedrag filteren op memo/token",
-  "muxed": "Beheer van samengevoegde adressen",
+  "xlmByMemo": "Bedrag in XLM filteren op memo/token",
+  "muxed": "Beheren van gemultiplexeerde adressen",
   "glossary": "Woordenlijst",
   "createAccount": "Account aanmaken + Multisig",
-  "multisigEdit": "Multisig bewerken",
-  "listAll": "Alle Trustlines weergeven",
-  "compareTrustlines": "Trustlines vergelijken",
+  "multisigEdit": "Bewerk multisig",
+  "listAll": "Lijst alle trustlijnen op.",
+  "compareTrustlines": "Vergelijk trustlines",
   "settings": "Instellingen",
   "tokenPurchases": "Tokenaankopen",
-  "learn": "Stellaire quiz voor beginners",
-  "unknown": "Onbekende menuoptie"
+  "learn": "Sterrenquiz voor Beginners",
+  "unknown": "Onbekende menuselectie"
 }

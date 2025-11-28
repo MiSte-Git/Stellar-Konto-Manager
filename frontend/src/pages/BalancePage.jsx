@@ -157,57 +157,57 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
   return (
     <div className="max-w-6xl mx-auto p-4">
       <div className="mb-4 text-center">
-        <h2 className="text-xl font-semibold">{t('balance.title')}</h2>
+        <h2 className="text-xl font-semibold">{t('common:balance.title')}</h2>
       </div>
 
       {!publicKey && (
         <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
-          {t('balance.noPublicKey')}
+          {t('common:balance.noPublicKey')}
         </div>
       )}
 
       <div className="bg-white dark:bg-gray-800 rounded border p-3 flex flex-wrap items-center gap-4 mb-4">
 
         <div className="flex items-center gap-2">
-          <label className="text-sm">{t('balance.payments.limit')}</label>
+          <label className="text-sm">{t('common:balance.payments.limit')}</label>
           <select className="border rounded px-2 py-1" value={paymentsLimit} onChange={(e) => setPaymentsLimit(e.target.value)}>
             <option value="20">20</option>
             <option value="50">50</option>
             <option value="100">100</option>
             <option value="200">200</option>
-            <option value="all">{t('balance.payments.all')}</option>
+            <option value="all">{t('common:balance.payments.all')}</option>
           </select>
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm">{t('balance.payments.from')}</label>
+          <label className="text-sm">{t('common:balance.payments.from')}</label>
           <input type="datetime-local" className="border rounded px-2 py-1" value={fromTs} onChange={(e)=>setFromTs(e.target.value)} />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm">{t('balance.payments.to')}</label>
+          <label className="text-sm">{t('common:balance.payments.to')}</label>
           <input type="datetime-local" className="border rounded px-2 py-1" value={toTs} onChange={(e)=>setToTs(e.target.value)} />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm">{t('balance.payments.filter.memo')}</label>
-          <input type="text" className="border rounded px-2 py-1" value={paymentsMemoQuery} placeholder={t('balance.payments.filter.memoPlaceholder')} onChange={(e)=>setPaymentsMemoQuery(e.target.value)} />
+          <label className="text-sm">{t('common:balance.payments.filter.memo')}</label>
+          <input type="text" className="border rounded px-2 py-1" value={paymentsMemoQuery} placeholder={t('common:balance.payments.filter.memoPlaceholder')} onChange={(e)=>setPaymentsMemoQuery(e.target.value)} />
         </div>
         <div className="ml-auto flex items-center gap-2">
           <button type="button" onClick={()=>document.getElementById('payments')?.scrollIntoView({ behavior:'smooth' })} className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800">
-            {t('balance.buttons.payments')}
+            {t('common:balance.buttons.payments')}
           </button>
           <button type="button" onClick={()=>document.getElementById('details')?.scrollIntoView({ behavior:'smooth' })} className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800">
-            {t('balance.buttons.details')}
+            {t('common:balance.buttons.details')}
           </button>
         </div>
       </div>
 
-      {loading && <p className="text-sm text-gray-500">{t('common.loading')}</p>}
+      {loading && <p className="text-sm text-gray-500">{t('common:common.loading')}</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {publicKey && (
         <>
           <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="font-semibold">{t('balance.current')}</h3>
+              <h3 className="font-semibold">{t('common:balance.current')}</h3>
               <div className="text-sm text-gray-700 dark:text-gray-300">
                 XLM: {fmt((balances.find(b=>b.asset_type==='native')||{}).balance || '0')}
               </div>
@@ -251,7 +251,7 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                   ))}
                   {balances.length === 0 && (
                     <tr>
-                      <td colSpan={3} className="py-2 text-gray-500">{t('balance.empty')}</td>
+                      <td colSpan={3} className="py-2 text-gray-500">{t('common:balance.empty')}</td>
                     </tr>
                   )}
                 </tbody>
@@ -287,43 +287,43 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                   </div>
                 ))}
               {balances.length === 0 && (
-                <div className="py-4 text-center text-gray-500">{t('balance.empty')}</div>
+                <div className="py-4 text-center text-gray-500">{t('common:balance.empty')}</div>
               )}
             </div>
           </div>
 
           <div id="payments" className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
-            <h3 className="font-semibold mb-2">{t('balance.payments.title')}</h3>
+            <h3 className="font-semibold mb-2">{t('common:balance.payments.title')}</h3>
             <div className="overflow-x-auto"><table className="min-w-full text-sm">
               <thead>
                 <tr className="text-left border-b">
                   <th className="py-1 pr-2 cursor-pointer select-none" onClick={()=>setPaySort(s=>({key:'date', dir:s.key==='date' && s.dir==='asc'?'desc':'asc'}))}>
-                    {t('balance.payments.columns.date')} {paySort.key==='date' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}
+                    {t('common:balance.payments.columns.date')} {paySort.key==='date' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}
                   </th>
                   <th className="py-1 pr-2 cursor-pointer select-none whitespace-nowrap" onClick={()=>setPaySort(s=>({key:'direction', dir:s.key==='direction' && s.dir==='asc'?'desc':'asc'}))}>
-                    <span className="inline-flex items-center gap-1">{t('balance.payments.columns.direction')}<span>{paySort.key==='direction' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
+                    <span className="inline-flex items-center gap-1">{t('common:balance.payments.columns.direction')}<span>{paySort.key==='direction' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
                   </th>
                   <th className="py-1 pr-2 cursor-pointer select-none whitespace-nowrap" onClick={()=>setPaySort(s=>({key:'type', dir:s.key==='type' && s.dir==='asc'?'desc':'asc'}))}>
-                    <span className="inline-flex items-center gap-1">{t('balance.payments.columns.type')}<span>{paySort.key==='type' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
+                    <span className="inline-flex items-center gap-1">{t('common:balance.payments.columns.type')}<span>{paySort.key==='type' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
                   </th>
                   <th className="py-1 pr-2 cursor-pointer select-none whitespace-nowrap" onClick={()=>setPaySort(s=>({key:'asset', dir:s.key==='asset' && s.dir==='asc'?'desc':'asc'}))}>
-                    <span className="inline-flex items-center gap-1">{t('balance.payments.columns.asset')}<span>{paySort.key==='asset' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
+                    <span className="inline-flex items-center gap-1">{t('common:balance.payments.columns.asset')}<span>{paySort.key==='asset' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
                   </th>
                   <th className="py-1 pr-2 cursor-pointer select-none whitespace-nowrap" onClick={()=>setPaySort(s=>({key:'amount', dir:s.key==='amount' && s.dir==='asc'?'desc':'asc'}))}>
-                    <span className="inline-flex items-center gap-1">{t('balance.payments.columns.amount')}<span>{paySort.key==='amount' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
+                    <span className="inline-flex items-center gap-1">{t('common:balance.payments.columns.amount')}<span>{paySort.key==='amount' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
                   </th>
                   <th className="py-1 pr-2 cursor-pointer select-none whitespace-nowrap" onClick={()=>setPaySort(s=>({key:'counterparty', dir:s.key==='counterparty' && s.dir==='asc'?'desc':'asc'}))}>
-                    <span className="inline-flex items-center gap-1">{t('balance.payments.columns.counterparty')}<span>{paySort.key==='counterparty' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
+                    <span className="inline-flex items-center gap-1">{t('common:balance.payments.columns.counterparty')}<span>{paySort.key==='counterparty' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
                   </th>
                   <th className="py-1 pr-2 cursor-pointer select-none whitespace-nowrap" onClick={()=>setPaySort(s=>({key:'memo', dir:s.key==='memo' && s.dir==='asc'?'desc':'asc'}))}>
-                    <span className="inline-flex items-center gap-1">{t('balance.payments.columns.memo')}<span>{paySort.key==='memo' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
+                    <span className="inline-flex items-center gap-1">{t('common:balance.payments.columns.memo')}<span>{paySort.key==='memo' ? (paySort.dir==='asc' ? '▲' : '▼') : '↕'}</span></span>
                   </th>
                   <th className="py-1 pr-2 whitespace-nowrap">
                     <span className="inline-flex items-center gap-2">
-                      {t('balance.payments.columns.txLabel', 'Tx')}
+                      {t('common:balance.payments.columns.txLabel', 'Tx')}
                       <select className="border rounded px-1 py-0.5 text-xs" value={explorerPref} onChange={(e)=>setExplorerPref(e.target.value)}>
-                        <option value="expert">{t('balance.explorer.expert', 'stellar.expert')}</option>
-                        <option value="stellarchain">{t('balance.explorer.stellarchain', 'Stellarchain')}</option>
+                        <option value="expert">{t('common:balance.explorer.expert', 'stellar.expert')}</option>
+                        <option value="stellarchain">{t('common:balance.explorer.stellarchain', 'Stellarchain')}</option>
                       </select>
                     </span>
                   </th>
@@ -390,15 +390,15 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                   const from = op.from || op.from_account || op.source_account;
                   let direction = '';
                   if (op.type === 'create_account') {
-                    direction = op.account === publicKey ? t('balance.payments.incoming') : (op.funder === publicKey ? t('balance.payments.outgoing') : '');
+                    direction = op.account === publicKey ? t('common:balance.payments.incoming') : (op.funder === publicKey ? t('common:balance.payments.outgoing') : '');
                   } else {
-                    if (to === publicKey) direction = t('balance.payments.incoming');
-                    else if (from === publicKey) direction = t('balance.payments.outgoing');
+                    if (to === publicKey) direction = t('common:balance.payments.incoming');
+                    else if (from === publicKey) direction = t('common:balance.payments.outgoing');
                   }
                   const amount = op.amount || op.amount_received || op.source_amount || op.dest_amount || op.starting_balance || '';
                   const isNative = op.asset_type === 'native' || op.dest_asset_type === 'native' || op.source_asset_type === 'native' || op.into_asset_type === 'native';
                   const asset = isNative ? 'XLM' : (op.asset_code || op.dest_asset_code || op.source_asset_code || op.into_asset_code || '');
-                  const counterparty = direction === t('balance.payments.incoming') ? (from || '') : (to || '');
+                  const counterparty = direction === t('common:balance.payments.incoming') ? (from || '') : (to || '');
                   const txMemo = op.transaction?.memo || op.transaction?.memo_text || memoMap[op.transaction_hash] || '';
                   const memo = txMemo || (op.memo ? String(op.memo) : '') || (op.transaction?.memo_type && op.transaction.memo_type !== 'none' ? op.transaction.memo_type : '');
                   const date = op.created_at || '';
@@ -442,7 +442,7 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                   return true;
                 }).length === 0) && (
                   <tr>
-                    <td colSpan={8} className="py-2 text-gray-500">{t('balance.payments.empty')}</td>
+                    <td colSpan={8} className="py-2 text-gray-500">{t('common:balance.payments.empty')}</td>
                   </tr>
                 )}
               </tbody>
@@ -450,12 +450,12 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
           </div>
 
           <div id="details" className="bg-white dark:bg-gray-800 rounded border p-4">
-            <h3 className="font-semibold mb-2">{t('balance.details')}</h3>
+            <h3 className="font-semibold mb-2">{t('common:balance.details')}</h3>
             <div className="flex flex-wrap gap-2">
               <a href={urlExpert} target="_blank" rel="noreferrer" className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800">stellar.expert</a>
               <a href={urlChain} target="_blank" rel="noreferrer" className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800">Stellarchain.io</a>
             </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">{t('balance.paymentsHint')}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">{t('common:balance.paymentsHint')}</p>
           </div>
         </>
       )}

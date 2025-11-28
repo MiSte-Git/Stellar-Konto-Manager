@@ -52,7 +52,7 @@ function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
   return (
     <form onSubmit={handleSubmit} className="mb-4">
       <label htmlFor="source" className="block font-bold mb-1">
-        {t('publicKey.label')}
+        {t('publicKey:label')}
       </label>
 
       <div className="relative">
@@ -61,7 +61,7 @@ function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
           type="text"
           value={sourceInput}
           onChange={handleChange}
-          placeholder={t('publicKey.placeholder')}
+          placeholder={t('publicKey:placeholder')}
           className="w-full border border-gray-300 rounded p-2 pr-8"
         />
 
@@ -69,8 +69,8 @@ function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
           <button
             type="button"
             onClick={handleClear}
-            title={t('common.clear')}
-            aria-label={t('common.clear')}
+            title={t('common:common.clear')}
+            aria-label={t('common:common.clear')}
             className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500
                text-gray-600 hover:text-white text-xs flex items-center justify-center"
           >
@@ -81,12 +81,12 @@ function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
      
       {useCache && syncing && (
         <div className="mt-1 text-xs text-blue-600">
-          {t('progress.phase.sync')} • {t('progress.elapsed', { time: formatElapsedMmSs(elapsedMs) })}
+          {t('common:progress.phase.sync')} • {t('common:progress.elapsed', { time: formatElapsedMmSs(elapsedMs) })}
         </div>
       )}
       {useCache && !syncing && lastRefresh && (
         <div className="mt-1 text-[11px] text-gray-500">
-          {t('cache.lastRefresh', { ts: lastRefresh })}
+          {t('common:cache.lastRefresh', { ts: lastRefresh })}
         </div>
       )}
 
@@ -94,7 +94,7 @@ function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
         type="submit"
         className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
       >
-        {t('publicKey.submit.button')}
+        {t('publicKey:submit.button')}
       </button>
     </form>
   );

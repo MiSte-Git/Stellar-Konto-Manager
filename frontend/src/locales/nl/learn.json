@@ -1,146 +1,152 @@
 {
-  "menu": "Stellar-quiz voor beginners",
-  "menuHint": "Leeroverzicht openen",
+  "menu": "Stellar Quiz voor Beginners",
+  "menuHint": "Overzicht van open leren",
   "pageTitle": "Leerpagina",
   "pageIntro": "Korte, gebruiksvriendelijke lessen over blockchain en het Stellar-netwerk. Geen voorkennis vereist.",
   "labels": {
-    "goal": "Doel",
+    "goal": "Doelstelling",
     "task": "Taak",
     "outcome": "Resultaat",
     "reward": "Beloning"
   },
   "glossary": {
-    "link": "Woordenlijst openen",
+    "link": "Open woordenlijst",
     "pageTitle": "Woordenlijst"
   },
   "progress": {
     "saved": "Voortgang opgeslagen",
-    "starsLabel": "{count} ★",
+    "starsLabel": "{count} sterren",
     "error": "Vooruitgang kon niet worden opgeslagen.",
-    "clearAll": "Voortgang wissen",
+    "clearAll": "Voortgang verwijderen",
     "cleared": "Voortgang verwijderd",
     "setStarsGroup": "Sterren toekennen",
-    "setStars": "{count} sterren geven",
-    "completed": "Voltooid",
+    "setStars": "Stel {count} sterren in",
+    "completed": "Je bent getraind op gegevens tot oktober 2023.",
     "markComplete": "Als voltooid markeren",
     "export": "Exporteren",
-    "exported": "Voortgang geëxporteerd",
+    "exported": "Vooruitgang geëxporteerd",
     "import": "Importeren",
-    "imported": "Vooruitgang geïmporteerd"
+    "imported": "Voortgang geïmporteerd"
   },
   "back": "Terug",
-  "backToTop": "Omhoog",
+  "backToTop": "Opwaarts",
   "badges": {
-    "title": "Insigne",
+    "title": "Badge",
     "chapters": {
-      "grundlagen": "Fundamenten",
-      "sicherheit": "Veiligheid",
-      "praxis": "Praktijk"
+      "grundlagen": "Basisprincipes",
+      "sicherheit": "Beveiliging",
+      "praxis": "Oefenen"
     },
-    "pro": "Stellar-professional"
+    "pro": "Sterke professional"
   },
   "status": {
     "success": "Succes",
     "validation": "Validatie",
     "pending": "Wachten op validatie",
-    "retry": "Probeer het alstublieft opnieuw"
+    "retry": "Probeer het alstublieft opnieuw.",
+    "noData": "Geen quiz beschikbaar.",
+    "comingSoon": "Oefeningen voor deze les volgen binnenkort.",
+    "testnetOnly": "Gebruik alleen TESTNET. Voer nooit echte geheime sleutels in. Wij bewaren geen geheimen."
   },
   "import": {
-    "title": "Vooruitgang importeren",
-    "summary": "Samenvatting: {lessons} lessen, {stars} sterren in totaal. Praktijkmetadata: {meta}",
-    "metaYes": "Ja",
+    "title": "Importvoortgang",
+    "summary": "Samenvatting: {lessons} lessen, {stars} sterren in totaal. Oefenmetadata: {meta}",
+    "metaYes": "ja",
     "metaNo": "nee",
     "createdAt": "Bestand gemaakt",
-    "strategy": "Hoe importeren?",
-    "merge": "Samenvoegen (Bestaande behouden, uit bestand aanvullen)",
-    "replace": "Vervangen (bestaande voortgang overschrijven)",
-    "includePracticeMeta": "Praktijkmetadata overnemen",
+    "strategy": "Hoe importeer je?",
+    "merge": "Samenvoegen (Bestaande behouden, aanvullen vanuit bestand)",
+    "replace": "Overschrijven (bestaande voortgang vervangen)",
+    "includePracticeMeta": "Adopteer praktijkmetadata",
     "cancel": "Annuleren",
     "confirm": "Importeren",
     "invalid": "Ongeldig of incompatibel bestand"
   },
   "lesson1": {
-    "title": "Wat is een blockchain?",
+    "title": "Een blockchain is een gedecentraliseerd digitaal grootboek dat transacties registreert over veel computers, op een manier dat de geregistreerde transacties niet met terugwerkende kracht kunnen worden gewijzigd. Elk blok in de keten bevat meerdere transacties, en elke keer als er een nieuwe transactie op de blockchain plaatsvindt, wordt een record van die transactie toegevoegd aan het grootboek van elke deelnemer. Dit zorgt voor transparantie en veiligheid, aangezien de gegevens verspreid en geverifieerd worden over meerdere nodes, waardoor het moeilijk is voor een enkele entiteit om de informatie te manipuleren.",
     "goal": "Het principe van blockchain begrijpen",
-    "task": "Bouwstenen (transacties) samenvoegen tot een keten",
-    "learningOutcome": "Een blockchain is een onveranderlijk digitaal grootboek dat door iedereen gezamenlijk wordt gecontroleerd.",
-    "reward": "⭐ 1 – Blokbouwer"
+    "task": "Stel bouwstenen (transacties) samen tot een keten",
+    "learningOutcome": "Een blockchain is een onveranderlijk digitaal grootboek dat collectief wordt geverifieerd door alle deelnemers.",
+    "reward": "⭐ 1 – Blokkenbouwer"
   },
   "lesson2": {
-    "title": "Stellar begrijpen",
-    "goal": "Verschil met andere blockchains kennen",
-    "task": "Token naar vriend sturen (simulatie) en snelheid bekijken.",
+    "title": "Begrijpen van Sterrenkunde",
+    "goal": "Ken het verschil met andere blockchains.",
+    "task": "Stuur token naar een vriend (simulatie) en bekijk de snelheid.",
     "learningOutcome": "Stellar is snel, goedkoop en zonder mining.",
-    "reward": "⭐ 1 – Snelle zender"
+    "reward": "⭐ 1 – Snelle Zender"
   },
   "lesson3": {
-    "title": "Openbaarheid & Privacy",
-    "goal": "Pseudonimiteit begrijpen",
-    "task": "Bekijk openbare transactie en schat in of men weet wie de afzender is.",
+    "title": "Openbaar & Privacy",
+    "goal": "Begrip van pseudonimiteit",
+    "task": "Bekijk openbare transacties en raad of de verzender bekend is.",
     "learningOutcome": "Alles is zichtbaar, maar niemand kent de echte naam.",
-    "reward": "⭐ 1 – Privacy Detective"
+    "reward": "⭐ 1 – Gegevensprivacy-detective"
   },
   "lesson4": {
-    "title": "Uw account",
-    "goal": "Begrijpen van de structuur en betekenis van de Public/Secret Key",
-    "task": "Toewijzingsspel: Wat is openbaar, wat is geheim",
-    "learningOutcome": "Alleen de geheime sleutel geeft toegang, de publieke sleutel mag gedeeld worden.",
-    "reward": "⭐ 1 – Sleutelwachter"
+    "title": "Je account",
+    "goal": "Begrijp de structuur en betekenis van publieke/prive sleutels.",
+    "task": "Overeenkomstspel: Wat is Openbaar, Wat is Geheim",
+    "learningOutcome": "Alleen de geheime sleutel biedt toegang; de openbare sleutel mag gedeeld worden.",
+    "reward": "⭐ 1 – Sleutelbewaarder"
   },
   "lesson5": {
-    "title": "Verzenden & Ontvangen",
-    "goal": "Werking van transacties en trustlijnen begrijpen",
-    "task": "Testverzending uitvoeren en kosten bekijken.",
-    "learningOutcome": "Elke transactie kost een kleine vergoeding; Trustline = toestemming om te ontvangen.",
-    "reward": "⭐ 2 – Trustline Beginner"
+    "title": "Versturen & Ontvangen",
+    "goal": "Het begrijpen van de functionaliteit van transacties en trustlijnen",
+    "task": "Uitvoeren testzending en kosten bekijken",
+    "learningOutcome": "Elke transactie brengt een kleine vergoeding met zich mee; Trustline = toestemming om te ontvangen.",
+    "reward": "⭐ 2 – Trustline Starter"
   },
   "lesson6": {
-    "title": "Token & Handel",
-    "goal": "Leren over marktmechanismen",
-    "task": "Token op een virtuele marktplaats plaatsen en prijsverandering observeren.",
-    "learningOutcome": "Prijs wordt bepaald door vraag en aanbod.",
-    "reward": "⭐ 2 – Marktplaatskenner"
+    "title": "Token & Trading",
+    "goal": "Kennismaken met marktmechanismen",
+    "task": "Plaats een token op een virtuele marktplaats en houd de prijsverandering in de gaten.",
+    "learningOutcome": "De prijs wordt bepaald door vraag en aanbod.",
+    "reward": "⭐ 2 – Marketplace-expert"
   },
   "lesson7": {
-    "title": "Veiligheid",
+    "title": "Beveiliging",
     "goal": "Veilige gedragingen leren",
-    "task": "Juiste/onjuiste handelingen sorteren; nep-tokens herkennen",
-    "learningOutcome": "Geheimhouding van de sleutel, veilige opslag en gebruik van het testnet.",
-    "reward": "⭐ 2 – Beveiligingswachter"
+    "task": "Het sorteren van correcte/onjuiste acties; het detecteren van nep-tokens",
+    "learningOutcome": "Vertrouwelijkheid van de sleutel, veilige opslag en gebruik van het testnet.",
+    "reward": "⭐ 2 – Beveiligingsbeambte"
   },
   "lesson8": {
     "title": "Verificatie & Identiteit",
     "goal": "Vertrouwen en regels begrijpen",
-    "task": "Echte versus vervalste tokens vergelijken",
-    "learningOutcome": "KYC = Identiteitsverificatie, verificatie toont vertrouwde tokens.",
-    "reward": "⭐ 2 – Beoordelingsdeskundige"
+    "task": "Vergelijk echte versus neppe tokens.",
+    "learningOutcome": "KYC = Identiteitsverificatie, verificatie laat betrouwbare tokens zien.",
+    "reward": "⭐ 2 – Examenexpert"
   },
   "lesson9": {
     "title": "Nul kennis",
-    "goal": "Begrip van gegevensbeschermingsconcepten",
-    "task": "Voorbeeldscenario 'Ik ben ouder dan 18' zonder geboortedatum tonen.",
-    "learningOutcome": "Je kunt iets bewijzen zonder geheimen te onthullen.",
-    "reward": "⭐ 2 – ZK-begrijper"
+    "goal": "Begrip van concepten voor gegevensprivacy",
+    "task": "Voorbeeldscenario 'Ik ben ouder dan 18' zonder een geboortedatum te tonen.",
+    "learningOutcome": "Het is mogelijk om iets te bewijzen zonder geheimen te onthullen.",
+    "reward": "⭐ 2 – ZK-Begrip"
   },
   "lesson10": {
-    "title": "Praktijk met SKM",
-    "goal": "Geleerde praktisch toepassen",
-    "task": "Een account aanmaken in het testnet, activeren, trustline instellen, tokens versturen.",
-    "learningOutcome": "Technische processen van een transactie begrijpen.",
+    "title": "Oefenen met SKM",
+    "goal": "Toepassen van geleerde kennis in de praktijk",
+    "task": "Maak een account aan in het testnet, activeer het, stel een trustline in, stuur tokens.",
+    "learningOutcome": "Begrijp de technische processen van een transactie.",
     "reward": "⭐ 3 – Blockchain-pilot"
   },
   "lesson11": {
     "title": "Verantwoordelijkheid",
-    "goal": "Gevolgen van fouten begrijpen",
-    "task": "Besluitvormingsspel: goed handelen of niet",
+    "goal": "Begrijpen van de gevolgen van fouten",
+    "task": "Beslisspel: Correct of Niet Handelen",
     "learningOutcome": "Blockchain is definitief; zorgvuldigheid is verplicht.",
-    "reward": "⭐ 1 – Verantwoordelijkheidsheld"
+    "reward": "⭐ 1 – Verantwoordelijkheid Held"
   },
   "lesson12": {
-    "title": "Afsluiting / Leren door Spelletjes",
+    "title": "Voltooiing / Speels Leren",
     "goal": "Herhaling en motivatie",
-    "task": "Miniquiz + Badgeweergave",
-    "learningOutcome": "Herhaling van geleerd materiaal, eigen vooruitgang herkennen.",
-    "reward": "🎖 Stellar-professional"
+    "task": "Mini-quiz + Badge Weergave",
+    "learningOutcome": "Herzie het geleerde materiaal, erken je eigen vooruitgang.",
+    "reward": "🎖 Uitmuntende Professional"
+  },
+  "actions": {
+    "startQuiz": "Quiz starten"
   }
 }

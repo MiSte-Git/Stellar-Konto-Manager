@@ -1,76 +1,77 @@
 {
-  "learn.offline": "Offline: Praktijkexamens worden na herstel van de verbinding gecontroleerd.",
-  "learn.validationFailed": "Validatie mislukt",
-  "learn.missingParams": "Vereiste parameters ontbreken",
+  "learn.offline": "Offline: Praktische examens worden na de herverbinding beoordeeld.",
+  "learn.validationFailed": "Validatie mislukt.",
+  "learn.missingParams": "Vereiste parameters ontbreken.",
   "submitTransaction.failed": "Transactie mislukt",
-  "learn.error.unknown_action": "Onbekende praktijkactie",
-  "learn.error.rate_limited": "Even geduld alstublieft en probeer het opnieuw.",
-  "learn.error.horizon_timeout": "Horizon-tijdoverschrijding. Probeer het opnieuw.",
+  "learn.error.unknown_action": "Onbekende oefenactie",
+  "learn.error.rate_limited": "Probeer het alstublieft later opnieuw.",
+  "learn.error.horizon_timeout": "Horizon time-out. Probeer het opnieuw.",
   "learn.error.network": "Netwerkfout. Probeer het opnieuw.",
   "asset": {
     "creationDateUnknown": "Onbekende aanmaakdatum"
   },
   "cache": {
-    "backfillAborted": "Initiële lading van de betalingen afgebroken.",
+    "backfillAborted": "Initiële laden van betalingen afgebroken",
     "coverage": {
-      "newestFailed": "Het opzoeken van de meest recente betaling is mislukt.",
-      "oldestFailed": "Achterhalen van de oudste datum mislukt"
+      "newestFailed": "Het ophalen van de laatste betaling is mislukt.",
+      "oldestFailed": "Niet in staat om de vroegste datum te bepalen."
     },
-    "indexIterFailed": "Index-iteratie in de cache mislukt",
-    "memoNormBackfillFailed": "Initiële lading van betalingen voor genormaliseerde memo's mislukt.",
+    "indexIterFailed": "Indexiteratie in de cache is mislukt.",
+    "memoNormBackfillFailed": "Initiële verwerking van betalingen voor genormaliseerde memo's is mislukt.",
     "openFailed": "Lokale cache kon niet worden geopend",
-    "readFailed": "Cache lezen mislukt",
-    "rehydrateFailed": "Mislukt om ontbrekende memo's te laden",
-    "rehydrateWriteFailed": "Opslaan van memo's in de cache mislukt",
-    "writeFailed": "Schrijven naar de cache mislukt"
+    "readFailed": "Lezen uit de cache is mislukt.",
+    "rehydrateFailed": "Kon niet ontbrekende memo's opnieuw laden",
+    "rehydrateWriteFailed": "Kon niet schrijven naar de cachememo's",
+    "writeFailed": "Kon niet naar cache schrijven"
   },
   "connection": {
-    "backend": "Geen verbinding met de backend mogelijk. Zorg ervoor"
+    "backend": "Kan geen verbinding maken met de backend. Zorg ervoor dat"
   },
   "fetchInvestedTokens": {
-    "failed": "Laden van de investeringsgegevens mislukt: {{detail}}"
+    "failed": "Kon niet de investeringsgegevens laden: {{detail}}"
   },
   "horizon": {
     "paymentsFetch": "Fout bij het laden van betalingen van Horizon"
   },
-  "loadTrustlines": "Trustlines konden niet worden geladen. Probeer het opnieuw.",
-  "loadTrustlinesFailed": "Laden van de trustlines mislukt",
-  "loadTrustlinesNotFound": "Account in het geselecteerde netwerk niet gevonden.",
+  "loadTrustlines": "Trustlines konden niet worden geladen. Probeer het alstublieft opnieuw.",
+  "loadTrustlinesFailed": "Laden van Trustlines mislukt",
+  "loadTrustlinesNotFound": "Account niet gevonden in het geselecteerde netwerk.",
   "accountNotFoundInNetwork": "Niet gevonden in '{{net}}'!",
-  "op_invalid_limit": "Trustline kan niet worden verwijderd. Er kunnen nog tegoeden of openstaande verplichtingen zijn.",
+  "op_invalid_limit": "Trustline kan niet worden verwijderd. Het kan nog een saldo of openstaande verplichtingen hebben.",
   "query": {
-    "invalidMemo": "Ongeldig memo",
+    "invalidMemo": "Ongeldige memo",
     "invalidRange": "Tijdvenster is ongeldig (Van > Tot)",
-    "invalidTime": "Ongeldige tijdsaanduiding"
+    "invalidTime": "Ongeldige tijdspecificatie."
   },
   "submitTransaction": {
     "failed": {
       "tx_bad_auth": "Transactie geweigerd: Ongeldige handtekening",
       "tx_failed": "Transactie mislukt",
-      "unknown": "Onbekende fout bij de transactie"
+      "unknown": "Onbekende fout tijdens de transactie"
     }
   },
   "sync": {
-    "backfillFailed": "Initiële lading van betalingen mislukt",
+    "backfillFailed": "Initiële laadproces van betalingen is mislukt.",
     "incrementalFailed": "Bijwerken van betalingen mislukt."
   },
   "transaction": {
     "failed": "Transactie mislukt",
-    "title": "Fout bij de transactie"
+    "title": "Transactiefout"
   },
   "trustline": {
     "submitFailed": "Fout bij het verwijderen van de trustline.",
     "unknown": "Onbekende fout bij het verwijderen van de trustline."
   },
   "xlmByMemo": {
-    "aborted": "Gebruiker heeft het proces geannuleerd.",
+    "aborted": "Operatie geannuleerd door gebruiker",
     "accountInvalid": "Ongeldig account",
     "dateInvalid": "Ongeldige datum",
     "dateRange": "Ongeldige datumbereik",
     "failedUnknown": "Onbekende fout",
-    "memoInvalid": "Ongeldig memo",
-    "paymentsFetch": "Fout bij het laden van de betalingen",
+    "memoInvalid": "Ongeldige notitie",
+    "paymentsFetch": "Fout bij het laden van betalingen",
     "serverInvalid": "Ongeldige server"
   },
-  "rateLimited": "Horizon-tarieflimiet overschreden. Wacht alstublieft een paar seconden en probeer het opnieuw."
+  "rateLimited": "Horizon-verzoekslimiet overschreden. Wacht een paar seconden en probeer het opnieuw.",
+  "backendConnectError": "Verbinding met de backend is mislukt: {{url}}"
 }

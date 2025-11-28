@@ -75,7 +75,7 @@ export default function PracticePage() {
         >
           ← {t('learn:back', 'Back')}
         </button>
-        <h1 className="text-2xl font-bold flex-1 text-center">{t('quiz:ui.practice')} · L{lessonNum}</h1>
+        <h1 className="text-2xl font-bold flex-1 text-center">{t('quiz.ui:practice')} · L{lessonNum}</h1>
         <div className="w-[76px]" aria-hidden />
       </div>
 

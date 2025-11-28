@@ -1,0 +1,4 @@
+{
+  "warnOnActiveQuiz": "Visualizza avviso durante il quiz in corso.",
+  "warnOnActiveQuiz.desc": "Avvisa quando si lascia la pagina con domande già risposte."
+}

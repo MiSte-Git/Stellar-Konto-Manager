@@ -15,7 +15,7 @@ export default function InvestedTokensPage({ publicKey, onBack: _onBack }) {
     <div className="space-y-4">
       {/* Kopfbereich mit zentriertem Titel */}
       <div className="text-center">
-        <h2 className="text-xl font-semibold">{t('token.purchases')}</h2>
+        <h2 className="text-xl font-semibold">{t('token:purchases')}</h2>
       </div>
 
       {/* Inhalt: Panel / Hinweis */}
@@ -23,7 +23,7 @@ export default function InvestedTokensPage({ publicKey, onBack: _onBack }) {
         <InvestedTokensPanel publicKey={publicKey} />
       ) : (
         <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
-          {t('investedTokens.hintEnterPublicKey')}
+          {t('investedTokens:hintEnterPublicKey')}
         </div>
       )}
     </div>

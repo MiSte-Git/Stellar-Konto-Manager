@@ -1,13 +1,13 @@
 {
   "federationDisplay": {
-    "label": "Federacijska adresa",
-    "none": "Nije definirana federacijska adresa",
+    "label": "Adresa federacije",
+    "none": "Nije definirana adresa federacije",
     "account": "Račun",
     "accountLabel": "Oznaka"
   },
   "flag": {
-    "compromised": "Upozorenje: Ovaj novčanik je na tvojoj listi povjerenja označen kao kompromitiran.",
-    "deactivated": "Napomena: Ovaj novčanik je na vašoj listi pouzdanih označen kao deaktiviran."
+    "compromised": "Upozorenje: Ovaj novčanik je označen kao kompromitiran na vašoj listi povjerenja.",
+    "deactivated": "Napomena: Ovaj novčanik je označen kao neaktivan na vašoj listi povjerenja."
   },
   "xlmBalance": "XLM",
   "unfunded": "Nije aktivirano"

@@ -1,8 +1,8 @@
 {
-  "menu": "Stellar-visailu aloittelijoille",
-  "menuHint": "Avaa oppimisyhteenveto",
+  "menu": "Aloitustason Tähtivisa",
+  "menuHint": "Avoimen oppimisen katsausta",
   "pageTitle": "Oppimissivu",
-  "pageIntro": "Lyhyitä, aloittelijaystävällisiä oppitunteja lohkoketjusta ja Stellar-verkosta. Ei ennakkotietoja tarvita.",
+  "pageIntro": "Lyhyitä, aloittelijaystävällisiä oppitunteja lohkoketjusta ja Stellar-verkostosta. Ei vaadita aikaisempaa tietoa.",
   "labels": {
     "goal": "Tavoite",
     "task": "Tehtävä",
@@ -15,132 +15,138 @@
   },
   "progress": {
     "saved": "Edistyminen tallennettu",
-    "starsLabel": "{count} ★",
-    "error": "Edistystä ei voitu tallentaa",
+    "starsLabel": "{count} tähteä",
+    "error": "Edistystä ei voitu tallentaa.",
     "clearAll": "Poista edistys",
-    "cleared": "Edistys poistettu",
-    "setStarsGroup": "Antaa tähtiä",
-    "setStars": "{count} tähteä asetettu",
-    "completed": "Valmistunut",
+    "cleared": "Edistys poistettu.",
+    "setStarsGroup": "Anna tähtiä",
+    "setStars": "Aseta {count} tähteä",
+    "completed": "Valmis",
     "markComplete": "Merkitse valmiiksi",
-    "export": "Vie",
-    "exported": "Edistyminen viety",
+    "export": "Vienti",
+    "exported": "Edistyminen viety ulos",
     "import": "Tuo",
-    "imported": "Edistys tuotu"
+    "imported": "Tuonti etenee"
   },
   "back": "Takaisin",
-  "backToTop": "Ylös",
+  "backToTop": "Ylöspäin",
   "badges": {
     "title": "Merkki",
     "chapters": {
       "grundlagen": "Perusteet",
       "sicherheit": "Turvallisuus",
-      "praxis": "Käytäntö"
+      "praxis": "Harjoitus"
     },
-    "pro": "Stellar-ammattilainen"
+    "pro": "Tähtiammattilainen"
   },
   "status": {
     "success": "Menestys",
     "validation": "Vahvistus",
-    "pending": "Odottaa validointia",
-    "retry": "Yritä uudelleen."
+    "pending": "Odottaa vahvistusta",
+    "retry": "Yritä uudelleen.",
+    "noData": "Ei kyselyä saatavilla.",
+    "comingSoon": "Harjoitus tälle oppitunnille seuraa pian.",
+    "testnetOnly": "Käytä vain TESTNET-verkkoa. Älä koskaan syötä oikeita salaisia avaimia. Emme tallenna salaisuuksia."
   },
   "import": {
-    "title": "Tuoda edistymistä",
-    "summary": "Yhteenveto: {lessons} oppituntia, yhteensä {stars} tähteä. Käytännön metatiedot: {meta}",
+    "title": "Tuontiprosessi",
+    "summary": "Yhteenveto: {lebens} oppituntia, yhteensä {tähdet} tähteä. Harjoittelun metatiedot: {meta}",
     "metaYes": "kyllä",
     "metaNo": "ei",
     "createdAt": "Tiedosto luotu",
     "strategy": "Kuinka tuoda?",
-    "merge": "Yhdistä (säilytä olemassa oleva, täydennä tiedostosta)",
-    "replace": "Korvaa (korvaa nykyinen edistys)",
-    "includePracticeMeta": "Käytäntömetatietojen käyttöönotto",
+    "merge": "Yhdistä (Pidä olemassa olevat, täydennä tiedostosta)",
+    "replace": "Korvaa (korvaa olemassa oleva edistyminen)",
+    "includePracticeMeta": "Ota käyttöön käytännön metatiedot",
     "cancel": "Peruuttaa",
-    "confirm": "Tuo maahan",
+    "confirm": "Tuonti",
     "invalid": "Virheellinen tai yhteensopimaton tiedosto"
   },
   "lesson1": {
-    "title": "Mikä on lohkoketju?",
-    "goal": "Ymmärrä lohkoketjun periaate",
-    "task": "Yhdistä rakennuspalikat (transaktiot) ketjuksi",
-    "learningOutcome": "Lohkoketju on muuttumaton digitaalinen kirja, jota kaikki tarkastavat yhdessä.",
-    "reward": "⭐ 1 – Blockkien rakentaja"
+    "title": "Lohkoketju on hajautettu digitaalinen tilikirja, joka tallentaa tapahtumia monille tietokoneille siten, että rekisteröityjä tapahtumia ei voida muuttaa jälkikäteen. Jokainen ketjun lohko sisältää useita tapahtumia, ja aina kun lohkoketjussa tapahtuu uusi tapahtuma, tallennetaan siitä merkintä jokaisen osallistujan tilikirjaan. Tämä varmistaa läpinäkyvyyden ja turvallisuuden, koska tiedot ovat jaettuja ja varmennettuja useiden solmujen kesken, mikä tekee vaikeaksi minkään yksittäisen tahon manipuloida tietoja.",
+    "goal": "Blockchainin periaatteen ymmärtäminen",
+    "task": "Kokoa rakennuspalikoita (tapahtumia) ketjuksi",
+    "learningOutcome": "Lohkoketju on muuttumaton digitaalinen kirjanpito, jonka kaikki osallistujat yhdessä vahvistavat.",
+    "reward": "⭐ 1 – Lohkokehittäjä"
   },
   "lesson2": {
-    "title": "Ymmärtää Stellar",
-    "goal": "Eroa muihin lohkoketjuihin verrattuna tuntea",
-    "task": "Lähetä token ystävälle (simulaatio) ja näe nopeus.",
+    "title": "Stellaarin ymmärtäminen",
+    "goal": "Tunne ero muihin lohkoketjuihin verrattuna.",
+    "task": "Lähetä kaverille token (simulaatio) ja tarkastele nopeutta.",
     "learningOutcome": "Stellar on nopea, edullinen ja ilman louhintaa.",
-    "reward": "⭐ 1 – Pikaviestin"
+    "reward": "⭐ 1 – Nopea-lähettäjä"
   },
   "lesson3": {
-    "title": "Julkisuus ja yksityisyys",
-    "goal": "Ymmärtää pseudonymiteettiä",
-    "task": "Tarkista julkinen tapahtuma ja arvioi, tiedätkö, kuka lähettää sen.",
-    "learningOutcome": "Kaikki on näkyvissä, mutta kukaan ei tiedä oikeaa nimeä.",
-    "reward": "⭐ 1 – Tietosuojatutkija"
+    "title": "Julkinen ja yksityisyys",
+    "goal": "Pseudonymiteetin ymmärtäminen",
+    "task": "Tarkastele julkista tapahtumaa ja arvaa, onko lähettäjä tunnettu.",
+    "learningOutcome": "Kaikki on näkyvillä, mutta kukaan ei tiedä oikeaa nimeä.",
+    "reward": "⭐ 1 – Tietosuojatietäjä"
   },
   "lesson4": {
     "title": "Tilisi",
-    "goal": "Julkisen ja salaisen avaimen rakenteen ja merkityksen ymmärtäminen",
-    "task": "Yhdistämispeli: Mikä on julkista, mikä salassa pidettävää",
-    "learningOutcome": "Vain salainen avain antaa pääsyn, julkinen avain voidaan jakaa.",
-    "reward": "⭐ 1 – Avaimen vartija"
+    "goal": "Ymmärrä julkisten/ yksityisten avainten rakenne ja merkitys.",
+    "task": "Yhteensopelupeli: Mikä on julkista, mikä on salaisuutta",
+    "learningOutcome": "Vain salainen avain antaa pääsyn; julkinen avain voidaan jakaa.",
+    "reward": "⭐ 1 – Avainvartija"
   },
   "lesson5": {
-    "title": "Lähetä & Vastaanota",
-    "goal": "Transaktioiden ja luottolimiittien toiminnan ymmärtäminen",
-    "task": "Suorita testilähetys ja näe maksu",
-    "learningOutcome": "Jokainen tapahtuma maksaa pienen maksun; Trustline = Lupa vastaanottaa.",
-    "reward": "⭐ 2 – Trustline-aloittelija"
+    "title": "Lähetä ja vastaanota",
+    "goal": "Transaktioiden ja luottolinjojen toiminnan ymmärtäminen",
+    "task": "Suorita testilähetys ja tarkastele maksua",
+    "learningOutcome": "Jokaisesta tapahtumasta aiheutuu pieni maksu; Trustline = lupa vastaanottaa.",
+    "reward": "⭐ 2 – Trustline-aloittaja"
   },
   "lesson6": {
     "title": "Tokenit ja kaupankäynti",
-    "goal": "Tutustua markkinamekanismeihin",
+    "goal": "Markkinamekanismien tunteminen",
     "task": "Aseta token virtuaaliselle markkinapaikalle ja seuraa hinnan muutoksia.",
-    "learningOutcome": "Hinta muodostuu kysynnän ja tarjonnan perusteella.",
-    "reward": "⭐ 2 – Markkinapaikan asiantuntija"
+    "learningOutcome": "Hinta määräytyy tarjonnan ja kysynnän mukaan.",
+    "reward": "⭐ 2 – Marketplace-asiantuntija"
   },
   "lesson7": {
     "title": "Turvallisuus",
     "goal": "Turvallisten käyttäytymistapojen oppiminen",
-    "task": "Lajittele oikeat/väärät toimet; tunnista väärennöstunnukset",
-    "learningOutcome": "Avaimen salassapito, turvallinen säilytys ja testiverkon käyttö.",
-    "reward": "⭐ 2 – Turvavartija"
+    "task": "Lajittelemaan oikeat/virheelliset toimet; havaitsemaan väärennetyt tunnisteet",
+    "learningOutcome": "Avaimen luottamuksellisuus, turvallinen tallennus ja testnetin käyttö.",
+    "reward": "⭐ 2 - Vartija"
   },
   "lesson8": {
-    "title": "Vahvistus & Identiteetti",
-    "goal": "Luottamus ja sääntöjen ymmärtäminen",
-    "task": "Aitojen ja väärennettyjen polettien vertailu",
-    "learningOutcome": "KYC = henkilöllisyyden tarkistus, vahvistus näyttää luotettavat tokenit.",
-    "reward": "⭐ 2 – Tarkastuksen ammattilainen"
+    "title": "Varmennus ja henkilöllisyys",
+    "goal": "Luottamuksen ja sääntöjen ymmärtäminen",
+    "task": "Vertaa aitoja ja väärennettyjä tokeneita.",
+    "learningOutcome": "KYC = Henkilöllisyyden varmentaminen, varmentaminen osoittaa luotettavia tokeneita.",
+    "reward": "⭐ 2 – Kokeiden asiantuntija"
   },
   "lesson9": {
-    "title": "Nolla tietoa",
-    "goal": "Tietosuojakäsitteiden ymmärtäminen",
-    "task": "Esimerkki-skenaario 'Olen yli 18-vuotias' ilman syntymäaikaa näyttää",
-    "learningOutcome": "Voi todistaa jotain paljastamatta salaisuuksia.",
-    "reward": "⭐ 2 – ZK-tulkki"
+    "title": "Nolla tietoisuus",
+    "goal": "Tietosuojan käsitteiden ymmärtäminen",
+    "task": "Esimerkki tilanteesta 'Olen yli 18-vuotias' ilman syntymäajan näyttämistä.",
+    "learningOutcome": "On mahdollista todistaa jotain paljastamatta salaisuuksia.",
+    "reward": "⭐ 2 – ZK-Ymmärtäminen"
   },
   "lesson10": {
-    "title": "Harjoittelu SKM:n kanssa",
-    "goal": "Sovellettua oppimaansa käytäntöön.",
-    "task": "Luo tili Testnetissä, aktivoi se, aseta Trustline ja lähetä tokeneita",
-    "learningOutcome": "Teknisen tapahtuman kulun seuraaminen.",
-    "reward": "⭐ 3 – Blockchain-pilotti"
+    "title": "Harjoittele SKM:n kanssa",
+    "goal": "Soveltamalla opittua tietoa käytännössä",
+    "task": "Luo tili testiverkossa, aktivoi se, aseta luottolimiitti, lähetä tokeneita.",
+    "learningOutcome": "Ymmärrä tapahtuman tekniset prosessit.",
+    "reward": "⭐ 3 – Lohkoketjun pilotti"
   },
   "lesson11": {
     "title": "Vastuu",
-    "goal": "Virheiden seurauksien ymmärtäminen",
-    "task": "Päätöspeli: toimia oikein tai ei",
-    "learningOutcome": "Lohkoketju on lopullinen; huolellisuus on velvollisuus.",
-    "reward": "⭐ 1 – Vastuullisuus Sankari"
+    "goal": "Virheiden seurausten ymmärtäminen",
+    "task": "Päätöspeli: Toimi oikein tai ei",
+    "learningOutcome": "Lohkoketju on lopullinen; huolellinen tarkastus on pakollinen.",
+    "reward": "⭐ 1 – Vastuullisuussankari"
   },
   "lesson12": {
-    "title": "Päätöt / Leikkimielinen oppiminen",
+    "title": "Valmistuminen / Leikkisä oppiminen",
     "goal": "Toisto ja motivaatio",
-    "task": "Mini-visailu + Merkin näyttö",
-    "learningOutcome": "Toiston oppiminen, omien edistysaskeleiden tunnistaminen.",
-    "reward": "🎖 Tähtiammattilainen"
+    "task": "Mini-visa + merkki-näyttö",
+    "learningOutcome": "Kertaa opittua materiaalia ja tunnista oma edistymisesi.",
+    "reward": "🎖 Tähtiluokan ammattilainen"
+  },
+  "actions": {
+    "startQuiz": "Aloita tietovisa"
   }
 }

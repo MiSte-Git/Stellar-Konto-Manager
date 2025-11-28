@@ -5,7 +5,6 @@ from typing import Dict, Set, List, Tuple
 # ==== KONFIG ====
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 LOCALES_DIR = os.path.join(PROJECT_ROOT, "frontend", "src", "locales")
-DE_FILE = os.path.join(LOCALES_DIR, "de.json")
 DE_DIR = os.path.join(LOCALES_DIR, "de")
 
 SRC_ROOT = os.path.join(PROJECT_ROOT, "frontend")
@@ -25,10 +24,6 @@ IGNORE_DIRS = {
 }
 # Dateiendungen, die wir prüfen
 CODE_EXTS = {".js", ".jsx", ".ts", ".tsx"}
-
-PRUNE_DE = "--prune-de" in sys.argv
-PRUNE_ALL = "--prune-all" in sys.argv
-
 
 # ==== Helper ====
 def save_json(path, data):
@@ -79,29 +74,15 @@ def deep_merge_dict(dst: Dict, src: Dict) -> Dict:
             dst[k] = v
     return dst
 
-def load_de_merged() -> Dict:
-    """
-    Lädt de.json und merged alle JSON-Dateien aus de/*.json hinein.
-    So werden sowohl der monolithische Stand als auch Namespaces berücksichtigt.
-    """
-    base = load_json(DE_FILE) or {}
-    if os.path.isdir(DE_DIR):
-        for fn in os.listdir(DE_DIR):
-            if not fn.endswith('.json'):
-                continue
-            ns = os.path.splitext(fn)[0]  # dateiname ohne .json als Namespace
-            part = load_json(os.path.join(DE_DIR, fn))
-            if isinstance(part, dict):
-                # unter Namespace einsortieren, damit t('ns.key') erkannt wird
-                deep_merge_dict(base, { ns: part })
-    return base
-
-def flatten_dict(d: Dict, prefix: str = "") -> Dict[str, str]:
-    out = {}
-    for k, v in d.items():
-        p = f"{prefix}.{k}" if prefix else k
+def flatten_keys(data: Dict, prefix: str = "") -> Dict[str, str]:
+    """Flacht verschachtelte Schlüssel zu Punkt-Pfaden ab (z. B. a.b.c)."""
+    out: Dict[str, str] = {}
+    if not isinstance(data, dict):
+        return out
+    for k, v in data.items():
+        p = f"{prefix}.{k}" if prefix else str(k)
         if isinstance(v, dict):
-            out.update(flatten_dict(v, p))
+            out.update(flatten_keys(v, p))
         else:
             out[p] = v
     return out
@@ -141,13 +122,16 @@ def iter_code_files(root: str):
             if ext.lower() in CODE_EXTS:
                 yield os.path.join(dirpath, fn)
 
+# Namespace-Mapping: Code-Namespaces (case-insensitiv) -> echte Namespaces
+ns_map: Dict[str, str] = {}
+
 # Regexe für i18n-Keys:
 #  - t('path.to.key'), t("path.to.key"), t(`path.to.key`)
 #  - <Trans i18nKey="path.to.key">
 #  - i18nKey={'path.to.key'} / i18nKey={`path.to.key`}
 # t('...'), t("..."), t(`...`)
 # erlaubt: foo, foo.bar, foo_bar, foo1.bar2 (mind. 2 Zeichen insgesamt)
-VALID_KEY = r"[A-Za-z][A-Za-z0-9_.]{1,}"
+VALID_KEY = r"[A-Za-z][A-Za-z0-9_.:]{1,}"
 
 RE_T_SINGLE = re.compile(rf"""(?<![A-Za-z0-9_])t\s*\(\s*'({VALID_KEY})'\s*\)""")
 RE_T_DOUBLE = re.compile(rf"""(?<![A-Za-z0-9_])t\s*\(\s*"({VALID_KEY})"\s*\)""")
@@ -217,35 +201,38 @@ def extract_keys_from_file(path: str) -> Tuple[Set[str], Set[str]]:
     return used, dynamic
 
 def normalize_key(k: str) -> str:
-    # Falls Namespaces wie "common:foo.bar" verwendet werden,
-    # kannst du hier optional den Namespace abschneiden:
-    # if ":" in k: k = k.split(":", 1)[1]
-    return k.strip()
+    """
+    Formt einen Roh-Key in das Vergleichsformat um:
+    - "ns:foo.bar" -> "ns.foo.bar" (Namespace case-insensitiv auf tatsächliche Datei mappen)
+    - "ns.foo.bar" bleibt unverändert
+    """
+    k = k.strip()
+    if ":" in k:
+        ns_raw, inner = k.split(":", 1)
+        ns_final = ns_map.get(ns_raw.strip().lower(), ns_raw.strip())
+        return f"{ns_final}.{inner}"
+    return k
+
+def load_all_de_keys() -> Set[str]:
+    """Lädt alle Namespaces unter de/*.json und liefert vollständige Keys ns.path; baut auch ein Namespace-Mapping."""
+    keys: Set[str] = set()
+    if not os.path.isdir(DE_DIR):
+        print(f"⚠️ Verzeichnis fehlt: {DE_DIR}")
+        return keys
+    for fn in os.listdir(DE_DIR):
+        if not fn.endswith(".json"):
+            continue
+        ns = os.path.splitext(fn)[0]
+        ns_map[ns.lower()] = ns  # mappt Namespace-Namen aus Code auf echte Namespace-Dateien (case-insensitiv)
+        data = load_json(os.path.join(DE_DIR, fn))
+        flat = flatten_keys(data)
+        for inner in flat.keys():
+            keys.add(f"{ns}.{inner}")
+    return keys
 
 # ==== Analyse ====
 def main():
-    de = load_de_merged()
-    de_flat = flatten_i18n(de)
-    de_keys = set(de_flat.keys())
-
-    probe_keys = [
-        "investedTokens.view.label",
-        "investedTokens.view.memo",
-        "investedTokens.view.token",
-        "investedTokens.error.item.memo",
-    ]
-    for pk in probe_keys:
-        print("🔍 Probe", pk, "→", "OK" if pk in de_flat else "FEHLT")
-
-    def warn_on_top_level_dotted_keys(d: dict):
-        bad = [k for k in d.keys() if isinstance(k, str) and "." in k]
-        if bad:
-            print("⚠️ Top-Level Keys mit Punkt gefunden (bitte in verschachtelte Form migrieren):")
-            for k in bad:
-                print(f"   - {k}")
-
-    # nach de = load_json(DE_FILE)
-    warn_on_top_level_dotted_keys(de)
+    de_keys = load_all_de_keys()
 
     used_keys: Set[str] = set()
     key_locations = {}  # key -> Liste[(file, lineno, line)]
@@ -253,6 +240,11 @@ def main():
     files_scanned = 0
 
     for fp in iter_code_files(SRC_ROOT):
+        norm = fp.replace("\\", "/")
+        if "/locales/" in norm:
+            continue
+        if re.search(r"\.(test|spec)\.(js|jsx|ts|tsx)$", os.path.basename(fp), re.IGNORECASE):
+            continue
         files_scanned += 1
         # Normale Extraktion für dynamische Prefix-Erkennung
         kset, dyn = extract_keys_from_file(fp)
@@ -291,7 +283,7 @@ def main():
     # Report ausgeben
     print("\n===== i18n Usage Report =====")
     print(f"📄 Files scanned: {files_scanned}")
-    print(f"🗝️  Keys in de.json: {len(de_keys)}")
+    print(f"🗝️  Keys in de/*: {len(de_keys)}")
     print(f"🔎 Keys used in code: {len(used_keys)}")
     print(f"❗ Missing keys (used but not in de.json): {len(missing_keys)}")
     if missing_keys:
@@ -332,65 +324,7 @@ def main():
             print(f"✅ Dynamic prefix whitelist (not counted as missing): {len(DYNAMIC_PREFIX_WHITELIST)}")
             for p in sorted(DYNAMIC_PREFIX_WHITELIST):
                 print(f"   - {p}")
-    # --- Unused-Keys aus de.json (und optional allen Sprachen) entfernen ---
-    if PRUNE_DE or PRUNE_ALL:
-        # Schutz: dynamisch abgedeckte Keys nicht entfernen (falls du ALL_DYNAMIC_PREFIXES nutzt)
-        def covered_by_any_dynamic(k: str) -> bool:
-            try:
-                return any(k.startswith(p) for p in ALL_DYNAMIC_PREFIXES)
-            except NameError:
-                return False  # falls du keine Dynamik nutzt
-
-        candidates = [k for k in unused_keys if not covered_by_any_dynamic(k)]
-        if not candidates:
-            print("\n🧹 Nichts zu entfernen – keine ungenutzten Keys.")
-        else:
-            # 1) de.json laden & sichern
-            de_dict = load_json(DE_FILE)
-            ts = time.strftime("%Y%m%d-%H%M%S")
-            backup_de = os.path.join(LOCALES_DIR, f"de.backup.{ts}.json")
-            save_json(backup_de, de_dict)
-            print(f"\n💾 Backup erstellt: {backup_de}")
-
-            removed = []
-            for key in candidates:
-                if delete_path(de_dict, key):
-                    removed.append(key)
-            prune_empty_dicts(de_dict)
-            save_json(DE_FILE, de_dict)
-
-            print(f"🗑️  Aus de.json entfernt: {len(removed)} Keys")
-            for k in removed[:50]:
-                print(f"   - {k}")
-            if len(removed) > 50:
-                print(f"   … und {len(removed)-50} weitere")
-
-            # 2) Optional alle anderen Sprachdateien synchron mit aufräumen
-            if PRUNE_ALL:
-                skip = {
-                    os.path.basename(DE_FILE),
-                    "i18n_changes_report.json",
-                    "i18n_usage_report.json",
-                    "de.snapshot.json",
-                }
-                other_jsons = [
-                    f for f in os.listdir(LOCALES_DIR)
-                    if f.endswith(".json") and f not in skip
-                ]
-                for fname in other_jsons:
-                    path = os.path.join(LOCALES_DIR, fname)
-                    data = load_json(path)
-                    changed = False
-                    for key in removed:  # gleiche Liste wie in DE entfernt
-                        if delete_path(data, key):
-                            changed = True
-                    if changed:
-                        prune_empty_dicts(data)
-                        save_json(path, data)
-                        print(f"   🔄 Gesäubert: {fname}")
-            print("✅ Aufräumen abgeschlossen.")
-    else:
-        print("\n(Info) Keine Löschung durchgeführt. Starte mit --prune-de oder --prune-all, um ungenutzte Keys zu entfernen.")
+    print("\n(Info) Kein automatisches Pruning aktiviert; Skript analysiert nur die Namespaces unter de/*.json.")
 
     # Optional JSON speichern
     out_path = os.path.join(LOCALES_DIR, "i18n_usage_report.json")
