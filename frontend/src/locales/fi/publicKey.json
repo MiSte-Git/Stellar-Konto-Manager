@@ -1,14 +1,14 @@
 {
-  "label": "Julkinen avain tai federointiosoite",
-  "placeholder": "Syötä julkinen avain tai federaatio-osoite",
-  "load": "Lataus",
+  "label": "Julkinen avain tai liittoutumisosoite",
+  "placeholder": "Anna julkinen avaimesi tai federaatio-osoitteesi.",
+  "load": "Ladataan",
   "deleteFromList": "Poista listalta",
   "source": "Lähde",
   "destination": {
     "input": "Tavoite",
     "error": "Virheellinen julkinen avain syötetty.",
-    "label": "Kohde-julkinen avain",
-    "placeholder": "Anna tavoitteen julkinen avain"
+    "label": "Kohdejulkinen avain",
+    "placeholder": "Anna kohdeyleisön julkinen avain"
   },
   "invalid": "Virheellinen julkinen avain.",
   "submit": {

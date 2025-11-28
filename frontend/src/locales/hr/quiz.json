@@ -1,0 +1,231 @@
+{
+  "l1": {
+    "title": "Osnove blockchaina",
+    "q1": {
+      "question": "Što je blockchain?",
+      "hint": "Zamislite javnu bilježnicu. Mnoge stranice (blokovi) su međusobno povezane.",
+      "a": "Javni popis podataka stranica, povezanih putem matematike (blokovi u lancu).",
+      "b": "Videoigra s kovanicama i razinama.",
+      "c": "Tajna baza podataka tvrtke.",
+      "d": "Aplikacija koja radi isključivo na vašem telefonu.",
+      "a.fb": "Točno. Lanac čini stare stranice teško promjenjivima.",
+      "b.fb": "Ne sasvim. To je zajednička baza podataka, a ne igra.",
+      "c.fb": "Ne. Mnogi ga mogu pregledati; nije povjerljivo.",
+      "d.fb": "Ne. Radi na mnogim računalima (čvorovima), ne samo na vašem."
+    },
+    "q2": {
+      "question": "Tko može vidjeti Stellar transakcije?",
+      "hint": "Javna mreža ≠ javna imena.",
+      "a": "Svi ih mogu vidjeti, ali ne vaše pravo ime (samo javni ključevi).",
+      "b": "Samo ih pošiljatelj može vidjeti.",
+      "c": "Samo banke ih mogu vidjeti.",
+      "a.fb": "Tačno. Podaci su javni, ali identiteti nisu uključeni.",
+      "b.fb": "Ne. Knjiga je javna radi transparentnosti.",
+      "c.fb": "Ne. Svatko može pogledati transakcije."
+    },
+    "q3": {
+      "question": "Zašto su blokovi 'povezani' zajedno?",
+      "hint": "Stare stranice trebaju biti teške za izmjenu.",
+      "a": "Tako da postaje vrlo teško mijenjati stare podatke.",
+      "b": "Da aplikacija izgleda zanimljivije.",
+      "c": "Tako da sve radi offline neograničeno.",
+      "a.fb": "Da. Svaki blok osigurava prethodni putem matematike (hashova).",
+      "b.fb": "Ne. Radi se o sigurnosti, ne o stilu.",
+      "c.fb": "Ne. Čvorovi i dalje trebaju biti usklađeni."
+    },
+    "q4": {
+      "question": "Je li moguće jednostavno izbrisati pogrešku u transakciji?",
+      "hint": "Zapamti: samo dodaj, ne brisati.",
+      "a": "Ne. Izvršava se nova, korektivna transakcija.",
+      "b": "Da, jednostavno ih uklonite iz lanca.",
+      "a.fb": "Tačno. Knjiga je samo za dodatke. Ispravke pravimo novim unosima.",
+      "b.fb": "Ne. Prošli unosi nisu izbrisani."
+    }
+  },
+  "l4": {
+    "title": "Ključevi, naknade i linije povjerenja",
+    "q1": {
+      "question": "Što je javni ključ?",
+      "hint": "Kao vaša poštanska adresa.",
+      "a": "Adresa za primanje. Možete je podijeliti.",
+      "b": "Tajna lozinka za upravljanje vašim računom.",
+      "a.fb": "Da, smijete podijeliti svoj javni ključ.",
+      "b.fb": "To opisuje tajni ključ, a ne javni ključ."
+    },
+    "q2": {
+      "question": "Nikada ne biste trebali dijeliti svoj tajni ključ.",
+      "hint": "On je ključ vašeg novca.",
+      "true": "Tačno",
+      "false": "Netočno.",
+      "true.fb": "Tako je. Tajni ključ = Kontrola. Nikada ga ne unosite na nepoznate web stranice.",
+      "false.fb": "Netočno. Držite to privatno. Koristite samo Testnet za učenje."
+    },
+    "q3": {
+      "question": "Zašto Stellar naplaćuje male naknade?",
+      "hint": "Razmislite o zaštiti od neželjene pošte.",
+      "a": "Zaustavljanje neželjene pošte i održavanje mreže zdravom.",
+      "b": "Kako bi tvrtka postala bogata.",
+      "c": "Zato što su transakcije uvijek spore.",
+      "a.fb": "Točno. Male naknade sprječavaju neželjene poruke i nagrađuju validatore.",
+      "b.fb": "Ne. Naknade su minimalne i služe u sigurnosne svrhe.",
+      "c.fb": "Ne. Stellar je brz i povoljan."
+    },
+    "q4": {
+      "question": "Što je trustline?",
+      "hint": "To je kao dozvola.",
+      "a": "Dozvola za držanje tokena od izdavatelja.",
+      "b": "Tajna linija za chat između dva računa.",
+      "c": "Posebni popust na naknadu za trgovanje.",
+      "a.fb": "Da. Vi birate kojim izdavateljima/tokenima vjerujete.",
+      "b.fb": "Ne. To nije razgovor, već dozvola za boravak.",
+      "c.fb": "Ne. Trustlines se odnose na držanje imovine."
+    }
+  },
+  "l7": {
+    "title": "Sigurnost, phishing i povjerenje",
+    "q1": {
+      "question": "Web stranica traži vaš tajni ključ kako bi 'provjerila' vaš saldo. Što radite?",
+      "hint": "Nikada ne dijelite svoj tajni ključ.",
+      "a": "Napusti stranicu. Nikada ne unosi tajni ključ.",
+      "b": "Uđite, ali samo jednom.",
+      "c": "Umjesto toga, podijelite snimku zaslona svog ključa.",
+      "a.fb": "Točno. To je phishing. Koristite samo pouzdane novčanike.",
+      "b.fb": "Ne. Dovoljno je samo jednom izgubiti kontrolu.",
+      "c.fb": "Žao mi je, ne mogu ispuniti ovaj zahtjev."
+    },
+    "q2": {
+      "question": "Vidite dva tokena pod nazivom USDX. Kako pronaći pravi?",
+      "hint": "Imena se mogu kopirati. Izdavatelji i domene su bitni.",
+      "a": "Provjerite račun izdavatelja i verificirane informacije o domeni/imovini.",
+      "b": "Uzmi onaj s ljepšim logom.",
+      "c": "Bacanje novčića. Oni su isti.",
+      "a.fb": "Da. Kôd imovine nije dovoljan. Provjeri izdavatelja i domenu.",
+      "b.fb": "Logotipi se mogu krivotvoriti. Provjerite izdavača/domen.",
+      "c.fb": "Ne. Oni mogu biti vrlo različiti. Uvijek provjeri."
+    },
+    "q3": {
+      "question": "U jednostavnim riječima, „Verifikacija/KYC“ je proces kojim kompanija provjerava tvoj identitet kako bi se osigurala da si zaista osoba za koju se predstavljaš. KYC označava „Upoznaj svog klijenta“ i često ga koriste banke ili pružatelji financijskih usluga kako bi spriječili prijevaru i ispunili zakonske zahtjeve.",
+      "hint": "Neke usluge trebaju znati tko ste.",
+      "a": "Postupak u kojem usluga potvrđuje vaš identitet.",
+      "b": "Metoda za ubrzanje blockchaina.",
+      "c": "Dijeljenje nečijeg tajnog ključa s bankom.",
+      "a.fb": "Tačno. Ovo pomaže u prevenciji prijevara i usklađuje se sa zakonima.",
+      "b.fb": "Ne. Riječ je o identitetu, a ne brzini.",
+      "c.fb": "Ne. Nikada ne dijelite svoj tajni ključ. KYC ga ne zahtijeva."
+    },
+    "q4": {
+      "question": "„Zero-Knowledge Proof“ (ZK) je postupak u kojem jedna osoba (dokazivač) može dokazati drugoj osobi (verifikatoru) da zna određene informacije ili da je neka izjava istinita, a da pritom ne otkrije same informacije. To je poput dokazivanja nekome da poznajete tajnu, a da samu tajnu zapravo ne otkrivate. Ovo je korisno u kriptografiji i pri sigurnom prijenosu podataka jer omogućuje stvaranje povjerenja bez otkrivanja osjetljivih informacija.",
+      "hint": "Dokaži da znaš nešto bez otkrivanja tajne.",
+      "a": "Dokaz da je nešto istinito bez otkrivanja tajne.",
+      "b": "Alat koji skriva sve transakcije zauvijek.",
+      "c": "Brži način za slanje uplata.",
+      "a.fb": "Da biste dokazali da imate više od 13 godina, možete navesti druge informacije koje ukazuju na vaše godine, poput: \"Završio/la sam osnovnu školu prije 4 godine\" ili \"Već nekoliko godina posjedujem vozačku dozvolu\" bez direktnog otkrivanja vašeg datuma rođenja.",
+      "b.fb": "Ne. ZK dokazuje činjenice, ali ne briše unose.",
+      "c.fb": "Ne. Radi se o dokazima koji su efikasni s obzirom na podatke."
+    }
+  },
+  "ui": {
+    "startQuiz": "Započni kviz",
+    "startPractice": "Počni praksu.",
+    "practice": "Praksa",
+    "quiz": "Kviz",
+    "hint": "Nagovještaj",
+    "next": "Vi ste obučeni na podacima do listopada 2023.",
+    "prev": "Nazad",
+    "finish": "Završen",
+    "yourScore": "Vaš rezultat",
+    "passed": "Prošao",
+    "failed": "Neuspjelo",
+    "explanation": "Zašto?",
+    "correct": "Točno",
+    "incorrect": "Pogrešno.",
+    "of": "od",
+    "retry": "Obučeni ste na podacima do listopada 2023.",
+    "viewResults": "Pogledaj rezultat",
+    "routeTitle": "Kviz za lekciju {{id}}",
+    "backToLearn": "Sažetak učenja",
+    "summaryCount": "{{correct}}/{{total}} točno",
+    "noDataHelp": "Otvorite pregled učenja kako biste odabrali odgovarajuću lekciju.",
+    "jump": "Skok",
+    "jumpToQuestion": "Skoči na pitanje",
+    "question": "Pitanje",
+    "cancel": "Otkaži",
+    "stickyNav": "Ljepljiva navigacija",
+    "on": "U",
+    "off": "Od",
+    "timeRemaining": "Preostalo vrijeme",
+    "beforeUnloadMessage": "Još niste završili ovaj kviz. Ako napustite stranicu, trenutni odgovori mogu biti izgubljeni.",
+    "openInNewTab": "Otvori u novom karticu",
+    "openInNewTab.default": "Otvori kviz u novoj kartici prema zadanim postavkama",
+    "openInNewTab.once": "Otvori u novoj kartici",
+    "startInNewTab": "Pokreni kviz u novom prozoru.",
+    "warnOnActiveQuiz": "Prikaži upozorenje tijekom tekućeg kviza."
+  },
+  "meta": {
+    "estimatedMinutes": "Procijenjene minute",
+    "passThreshold": "Prag prelaska",
+    "threeStarThreshold": "3-zvjezdasta granica"
+  },
+  "landing": {
+    "title": "Pregled kviza",
+    "description": "Kratak uvod u lekciju. Testirajte svoje znanje i sakupljajte zvjezdice.",
+    "questionsLabel": "Pitanja",
+    "estimatedMinutesLabel": "Procijenjene minute",
+    "passThresholdLabel": "Prag prolaznosti",
+    "threeStarThresholdLabel": "prag od 3 zvjezdice",
+    "start": "Započni kviz",
+    "startPractice": "Započni način vežbanja.",
+    "settings": "Postavke",
+    "settingsLink": "Postavke",
+    "achievements": "Uspjesi"
+  },
+  "achievements": {
+    "title": "Uspjesi",
+    "list": "Vaše značke",
+    "none": "Još nema otključanih bedževa. Nastavi tako!",
+    "link": "Uspjesi",
+    "badge": "Značka: {{name}}",
+    "unlockedAt": "Otključano dana: {{date}}",
+    "first_run": "Prvo pokretanje",
+    "passed": "Prošao",
+    "three_stars": "Tri zvijezde",
+    "perfect_score": "Savršen rezultat"
+  },
+  "result": {
+    "score": "Vaš rezultat: {{score}}%",
+    "summary": "{{correct}}/{{total}} točno",
+    "passInfo": "Prag vrijednosti za prolazak: {{pass}}% — Status: {{status}}",
+    "passed": "Prošao",
+    "failed": "Neuspjeh",
+    "threeStarThreshold": "3★ Prag: {{value}}%",
+    "stars": "Zvijezde: {{stars}}",
+    "newAchievementsTitle": "Nedavno primljene značke",
+    "noNewAchievements": "Nema novih znački u ovom krugu.",
+    "retry": "Pokušaj ponovno",
+    "backToOverview": "Povratak na pregled",
+    "nextLesson": "Nastavite na sljedeću lekciju.",
+    "toast": {
+      "newAchievement": "Nova značka: {{name}}",
+      "close": "Zatvoren"
+    }
+  },
+  "settings": {
+    "title": "Postavke kviza",
+    "stickyNav": "Ljepljiva navigacija",
+    "stickyNav.desc": "Navigacijska traka ostaje na dnu na mobilnim uređajima.",
+    "hints": "Nagovještaji",
+    "hints.desc": "Prikaži savjete za učenje za pitanja.",
+    "haptics": "Haptika/Vibracija",
+    "haptics.desc": "Vibriraj na odabir i završetak",
+    "shuffle": "Miješana pitanja",
+    "shuffle.desc": "Nasumično promiješajte redoslijed pitanja.",
+    "timeLimit": "Vremensko ograničenje",
+    "timeLimit.desc": "Opcionalno ograničenje u minutama (0 = bez ograničenja)",
+    "timeLimit.input": "Postavi vremensko ograničenje.",
+    "minutes": "Zapisnik",
+    "on": "Na",
+    "off": "Od",
+    "warnOnActiveQuiz": "Prikaži upozorenje tijekom aktivnog kviza.",
+    "warnOnActiveQuiz.desc": "Upozorite na već odgovorena pitanja prije napuštanja stranice."
+  }
+}

@@ -1,0 +1,231 @@
+{
+  "l1": {
+    "title": "Basisprincipes van Blockchain",
+    "q1": {
+      "question": "Wat is een blockchain?",
+      "hint": "Stel je een openbaar notitieboek voor. Veel pagina's (blokken) zijn aan elkaar gekoppeld.",
+      "a": "Een openbare lijst van datapagina's, verbonden door middel van wiskunde (blokken in een keten).",
+      "b": "Een videospel met munten en niveaus.",
+      "c": "De geheime database van een bedrijf.",
+      "d": "Een app die exclusief op je telefoon draait.",
+      "a.fb": "Correct. De keten maakt het moeilijk om oude pagina's te wijzigen.",
+      "b.fb": "Niet helemaal. Het is een gedeelde database, geen spel.",
+      "c.fb": "Nee. Velen kunnen het bekijken; het is niet vertrouwelijk.",
+      "d.fb": "Nee. Het draait op veel computers (nodes), niet alleen op die van jou."
+    },
+    "q2": {
+      "question": "Wie kan Stellar-transacties bekijken?",
+      "hint": "Openbaar netwerk ≠ openbare namen.",
+      "a": "Iedereen kan ze zien, maar niet je echte naam (alleen openbare sleutels).",
+      "b": "Alleen de afzender kan ze zien.",
+      "c": "Alleen banken kunnen ze zien.",
+      "a.fb": "Correct. De gegevens zijn openbaar, maar identiteiten zijn niet inbegrepen.",
+      "b.fb": "Nee. Het grootboek is openbaar voor transparantie.",
+      "c.fb": "Nee. Iedereen kan transacties opzoeken."
+    },
+    "q3": {
+      "question": "Waarom worden blokken aan elkaar 'gekoppeld'?",
+      "hint": "Oude pagina's zouden moeilijk te veranderen moeten zijn.",
+      "a": "Zodat het wijzigen van oude gegevens erg moeilijk wordt.",
+      "b": "Om de app er cooler uit te laten zien.",
+      "c": "Zodat alles offline voor onbepaalde tijd werkt.",
+      "a.fb": "Ja. Elk blok beveiligt het vorige door middel van wiskunde (hashes).",
+      "b.fb": "Nee. Het gaat om veiligheid, niet om stijl.",
+      "c.fb": "Nee. Nodes moeten nog steeds synchroniseren."
+    },
+    "q4": {
+      "question": "Is het mogelijk om een fout in een transactie gewoon te verwijderen?",
+      "hint": "Vergeet niet: alleen toevoegen, niet verwijderen.",
+      "a": "Nee. Men maakt een nieuwe, corrigerende transactie.",
+      "b": "Ja, je verwijdert ze gewoon uit de keten.",
+      "a.fb": "Correct. De grootboek is alleen toevoegen. We maken correcties met nieuwe invoer.",
+      "b.fb": "Nee. Eerdere invoeren worden niet verwijderd."
+    }
+  },
+  "l4": {
+    "title": "Sleutels, kosten en vertrouwenslijnen",
+    "q1": {
+      "question": "Wat is een openbare sleutel?",
+      "hint": "Net als je postadres.",
+      "a": "Een adres om te ontvangen. U mag het delen.",
+      "b": "Een geheim wachtwoord om uw account te beheren.",
+      "a.fb": "Ja. Het is toegestaan om je openbare sleutel te delen.",
+      "b.fb": "Dat beschrijft de geheime sleutel, niet de openbare sleutel."
+    },
+    "q2": {
+      "question": "Je moet je geheime sleutel nooit delen.",
+      "hint": "Hij is de sleutel tot je geld.",
+      "true": "Waar",
+      "false": "Onjuist.",
+      "true.fb": "Correct. Geheime sleutel = Controle. Voer het nooit in op onbekende websites.",
+      "false.fb": "Onjuist. Houd het privé. Gebruik Testnet alleen voor leerdoeleinden."
+    },
+    "q3": {
+      "question": "Waarom rekent Stellar kleine kosten?",
+      "hint": "Denk na over spambeveiliging.",
+      "a": "Om spam te stoppen en het netwerk gezond te houden.",
+      "b": "Zodat een bedrijf welvarend wordt.",
+      "c": "Omdat transacties altijd traag zijn.",
+      "a.fb": "Correct. Kleine vergoedingen voorkomen spam en belonen validators.",
+      "b.fb": "Nee. De kosten zijn minimaal en zijn voor beveiligingsdoeleinden.",
+      "c.fb": "Nee. Stellar is snel en betaalbaar."
+    },
+    "q4": {
+      "question": "Wat is een trustline?",
+      "hint": "Het is als een toestemming.",
+      "a": "Toestemming om een token van een uitgever te houden.",
+      "b": "Een geheime chatlijn tussen twee accounts.",
+      "c": "Een speciale korting op handelskosten.",
+      "a.fb": "Ja. Je kiest welke uitgevende instanties/tokens je vertrouwt.",
+      "b.fb": "Nee. Het is geen chat, maar een verblijfsvergunning.",
+      "c.fb": "Nee. Trustlines hebben betrekking op het aanhouden van activa."
+    }
+  },
+  "l7": {
+    "title": "Beveiliging, Phishing en Vertrouwen",
+    "q1": {
+      "question": "Een website wil je geheime sleutel om je saldo te 'verifiëren'. Wat doe je?",
+      "hint": "Nooit je geheime sleutel delen.",
+      "a": "Verlaat de pagina. Voer nooit de geheime sleutel in.",
+      "b": "Binnenkomen, maar slechts één keer.",
+      "c": "Deel in plaats daarvan een screenshot van je sleutel.",
+      "a.fb": "Correct. Dat is phishing. Gebruik alleen vertrouwde wallets.",
+      "b.fb": "Nee. Het kost maar één keer om de controle te verliezen.",
+      "c.fb": "Het spijt me, ik kan dit verzoek niet inwilligen."
+    },
+    "q2": {
+      "question": "Je ziet twee tokens met de naam USDX. Hoe vind je de echte?",
+      "hint": "Namen kunnen worden gekopieerd. Uitgevers en domeinen tellen mee.",
+      "a": "Controleer de rekening van de uitgever en de geverifieerde domein-/assetinformatie.",
+      "b": "Neem degene met het mooiere logo.",
+      "c": "Muntopwerp. Ze zijn hetzelfde.",
+      "a.fb": "Ja. De assetcode is niet voldoende. Controleer de uitgever en het domein.",
+      "b.fb": "Logo's kunnen vervalst worden. Controleer de uitgever/domein.",
+      "c.fb": "Nee. Ze kunnen heel verschillend zijn. Controleer altijd."
+    },
+    "q3": {
+      "question": "In eenvoudige woorden is \"verificatie/KYC\" het proces waarbij een bedrijf je identiteit controleert om ervoor te zorgen dat je echt de persoon bent die je zegt te zijn. KYC staat voor \"Know Your Customer\" en wordt vaak gebruikt door banken of financiële dienstverleners om fraude te voorkomen en om te voldoen aan wettelijke vereisten.",
+      "hint": "Sommige diensten moeten weten wie je bent.",
+      "a": "Een proces waarin een dienst uw identiteit verifieert.",
+      "b": "Een methode om blockchain te versnellen.",
+      "c": "Het delen van iemands geheime sleutel met een bank.",
+      "a.fb": "Correct. Dit helpt fraude te voorkomen en voldoet aan de wetgeving.",
+      "b.fb": "Nee. Het gaat om identiteit, niet om snelheid.",
+      "c.fb": "Nee. Deel nooit je geheime sleutel. KYC heeft het niet nodig."
+    },
+    "q4": {
+      "question": "Een \"Zero-Knowledge Proof\" (ZK) is een procedure waarbij een persoon (de bewijslastdrager) aan een andere persoon (de verifieerder) kan bewijzen dat hij bepaalde informatie kent of dat een bepaalde bewering waar is, zonder de informatie zelf prijs te geven. Het is alsof je iemand bewijst dat je een geheim kent, zonder het geheim daadwerkelijk te onthullen. Dit is nuttig in de cryptografie en bij de veilige overdracht van gegevens, omdat het mogelijk maakt om vertrouwen op te bouwen zonder gevoelige informatie bloot te geven.",
+      "hint": "Bewijs dat je iets weet zonder het geheim te onthullen.",
+      "a": "Een bewijs dat iets waar is zonder het geheim te onthullen.",
+      "b": "Een hulpmiddel dat alle transacties voor altijd verbergt.",
+      "c": "Een snellere manier om betalingen te verzenden.",
+      "a.fb": "Ja. Bijvoorbeeld: Bewijs dat je ouder bent dan 13 zonder je geboortedatum te vermelden.",
+      "b.fb": "Nee. ZK bewijst feiten maar verwijdert geen gegevens.",
+      "c.fb": "Nee. Het gaat om data-efficiënte bewijzen."
+    }
+  },
+  "ui": {
+    "startQuiz": "Quiz starten",
+    "startPractice": "Oefening starten.",
+    "practice": "Oefening",
+    "quiz": "Quiz",
+    "hint": "Aanwijzing",
+    "next": "Je bent getraind op gegevens tot oktober 2023.",
+    "prev": "Terug",
+    "finish": "Voltooid",
+    "yourScore": "Uw resultaat",
+    "passed": "Geslaagd",
+    "failed": "Mislukt",
+    "explanation": "Waarom?",
+    "correct": "Correct",
+    "incorrect": "Fout.",
+    "of": "van",
+    "retry": "U bent getraind op gegevens tot oktober 2023.",
+    "viewResults": "Resultaat bekijken",
+    "routeTitle": "Quiz voor Les {{id}}",
+    "backToLearn": "Naar het leeroverzicht",
+    "summaryCount": "{{correct}}/{{total}} correct",
+    "noDataHelp": "Open het leeroverzicht om de juiste les te selecteren.",
+    "jump": "Springen",
+    "jumpToQuestion": "Spring naar vraag",
+    "question": "Vraag",
+    "cancel": "Annuleren",
+    "stickyNav": "Klevende navigatie",
+    "on": "Bij",
+    "off": "Vanaf",
+    "timeRemaining": "Resterende tijd",
+    "beforeUnloadMessage": "Je hebt deze quiz nog niet voltooid. Als je de pagina verlaat, kunnen de huidige antwoorden verloren gaan.",
+    "openInNewTab": "Open in nieuw tabblad",
+    "openInNewTab.default": "Open quiz standaard in een nieuw tabblad",
+    "openInNewTab.once": "Open in een nieuw tabblad",
+    "startInNewTab": "Start de quiz in een nieuw tabblad.",
+    "warnOnActiveQuiz": "Toon waarschuwing tijdens een lopende quiz."
+  },
+  "meta": {
+    "estimatedMinutes": "Geschatte minuten",
+    "passThreshold": "Drempelwaarde overschrijden",
+    "threeStarThreshold": "3-sterren grens"
+  },
+  "landing": {
+    "title": "Quiz Overzicht",
+    "description": "Korte introductie op de les. Test je kennis en verzamel sterren.",
+    "questionsLabel": "Vragen",
+    "estimatedMinutesLabel": "Geschatte minuten",
+    "passThresholdLabel": "Drempelwaarde halen",
+    "threeStarThresholdLabel": "Driedubbele sterrendrempel",
+    "start": "Quiz starten",
+    "startPractice": "Oefenmodus starten",
+    "settings": "Instellingen",
+    "settingsLink": "Instellingen",
+    "achievements": "Successen"
+  },
+  "achievements": {
+    "title": "Successen",
+    "list": "Jouw badges",
+    "none": "Nog geen badges ontgrendeld. Ga zo door!",
+    "link": "Successen",
+    "badge": "Badge: {{naam}}",
+    "unlockedAt": "Ontgrendeld op: {{date}}",
+    "first_run": "Eerste run",
+    "passed": "Geslaagd",
+    "three_stars": "Drie sterren",
+    "perfect_score": "Perfecte score"
+  },
+  "result": {
+    "score": "Uw resultaat: {{score}}%",
+    "summary": "{{correct}}/{{total}} correct antwoord",
+    "passInfo": "Drempelwaarde voor slagen: {{pass}}% — Status: {{status}}",
+    "passed": "Geslaagd",
+    "failed": "Mislukt",
+    "threeStarThreshold": "3★ Drempel: {{value}}%",
+    "stars": "Sterren: {{stars}}",
+    "newAchievementsTitle": "Nieuw ontvangen badges",
+    "noNewAchievements": "Geen nieuwe badges in deze ronde.",
+    "retry": "Je bent getraind op gegevens tot oktober 2023.",
+    "backToOverview": "Terug naar het overzicht",
+    "nextLesson": "Ga door naar de volgende les.",
+    "toast": {
+      "newAchievement": "Nieuwe Badge: {{name}}",
+      "close": "Nauwkeurig"
+    }
+  },
+  "settings": {
+    "title": "Quizinstellingen",
+    "stickyNav": "Plakkerige navigatie",
+    "stickyNav.desc": "Navigatiebalk blijft onderaan op mobiel",
+    "hints": "Hints",
+    "hints.desc": "Geef leertips voor de vragen.",
+    "haptics": "Haptiek/Trilling",
+    "haptics.desc": "Trillen bij selectie en voltooiing",
+    "shuffle": "Vragen mixen",
+    "shuffle.desc": "Willekeurig de volgorde van de vragen.",
+    "timeLimit": "Tijdslimiet",
+    "timeLimit.desc": "Optionele limiet in minuten (0 = geen limiet)",
+    "timeLimit.input": "Tijdslimiet instellen",
+    "minutes": "Notulen",
+    "on": "Bij",
+    "off": "Vanaf",
+    "warnOnActiveQuiz": "Waarschuwingsmelding tijdens actieve quiz weergeven",
+    "warnOnActiveQuiz.desc": "Waarschuw voor reeds beantwoorde vragen voordat de pagina wordt verlaten."
+  }
+}

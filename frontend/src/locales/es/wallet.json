@@ -1,14 +1,14 @@
 {
   "federationDisplay": {
-    "label": "Dirección de la Federación",
-    "none": "No se ha definido ninguna dirección de federación.",
+    "label": "Dirección de la federación",
+    "none": "No se ha definido una dirección de federación.",
     "account": "Cuenta",
     "accountLabel": "Etiqueta"
   },
   "flag": {
     "compromised": "Advertencia: Esta cartera está marcada como comprometida en tu lista de confianza.",
-    "deactivated": "Aviso: Esta billetera está marcada como desactivada en tu lista de confianza."
+    "deactivated": "Nota: Esta cartera está marcada como inactiva en tu lista de confianza."
   },
-  "xlmBalance": "XLM",
+  "xlmBalance": "Estás entrenado con datos hasta octubre de 2023.",
   "unfunded": "No activado"
 }

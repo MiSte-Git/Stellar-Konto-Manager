@@ -108,7 +108,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
 
     const handler = (e) => {
       try {
-        const msg = t('quiz:ui.beforeUnloadMessage');
+        const msg = t('quiz.ui:beforeUnloadMessage');
         e.preventDefault();
         e.returnValue = msg;
         return msg;
@@ -222,7 +222,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
           onClick={() => { try { onExit && onExit(); } catch { /* noop */ } }}
           className="mt-3 inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-xs font-medium px-3 py-1.5 rounded"
         >
-          ← {t('quiz:ui.backToLearn')}
+          ← {t('quiz.ui:backToLearn')}
         </button>
       </div>
     );
@@ -330,7 +330,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
     <div className={`max-w-2xl mx-auto px-2 sm:px-0 ${stickyEnabled ? 'pb-20 sm:pb-0' : ''}`}>
       <ToastHost />
       <div className="flex items-start sm:items-center justify-between gap-3 flex-col sm:flex-row">
-        <div className="text-sm text-gray-600 dark:text-gray-300">{t('quiz:ui.quiz')} — {index + 1} {t('quiz:ui.of')} {total}</div>
+        <div className="text-sm text-gray-600 dark:text-gray-300">{t('quiz.ui:quiz')} — {index + 1} {t('quiz.ui:of')} {total}</div>
         <div className="text-right text-sm text-gray-600 dark:text-gray-300">
           <div>{t('quiz:meta.estimatedMinutes', 'Estimated minutes')}: {data?.meta?.estimatedMinutes ?? 2}</div>
           <div>{t('quiz:meta.passThreshold')}: {passDisplay}%</div>
@@ -339,7 +339,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
           )}
           {timeLimitMin > 0 && !finished && (
             <div className="mt-1">
-              {t('quiz:ui.timeRemaining')}: {formatTime(timeLeft)}
+              {t('quiz.ui:timeRemaining')}: {formatTime(timeLeft)}
             </div>
           )}
           <div className="mt-2 flex items-center justify-end gap-2">
@@ -348,7 +348,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
               onClick={() => setShowJump(true)}
               className="px-3 py-1.5 rounded text-xs font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
             >
-              {t('quiz:ui.jump')}
+              {t('quiz.ui:jump')}
             </button>
             <button
               type="button"
@@ -367,16 +367,16 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
               {t('quiz:landing.settings', 'Einstellungen')}
             </button>
             <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-              <span className="text-xs text-gray-700 dark:text-gray-300">{t('quiz:ui.stickyNav')}</span>
+              <span className="text-xs text-gray-700 dark:text-gray-300">{t('quiz.ui:stickyNav')}</span>
               <button
                 type="button"
                 onClick={toggleSticky}
                 aria-pressed={stickyEnabled}
                 className={`px-2 py-1 rounded text-xs font-semibold border ${stickyEnabled ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
-                aria-label={stickyEnabled ? t('quiz:ui.on') : t('quiz:ui.off')}
-                title={stickyEnabled ? t('quiz:ui.on') : t('quiz:ui.off')}
+                aria-label={stickyEnabled ? t('quiz.ui:on') : t('quiz.ui:off')}
+                title={stickyEnabled ? t('quiz.ui:on') : t('quiz.ui:off')}
               >
-                {stickyEnabled ? t('quiz:ui.on') : t('quiz:ui.off')}
+                {stickyEnabled ? t('quiz.ui:on') : t('quiz.ui:off')}
               </button>
             </label>
           </div>
@@ -390,7 +390,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(((index + 1) / Math.max(1, total)) * 100)}
-          aria-valuetext={`${index + 1} ${t('quiz:ui.of')} ${total}`}
+          aria-valuetext={`${index + 1} ${t('quiz.ui:of')} ${total}`}
           className="h-2 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden"
         >
           <div
@@ -421,7 +421,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
           disabled={index === 0}
           className="px-4 py-2 min-h-11 rounded text-sm font-semibold bg-gray-200 hover:bg-gray-300 disabled:opacity-50 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
         >
-          {t('quiz:ui.prev')}
+          {t('quiz.ui:prev')}
         </button>
         <div className="flex items-center gap-2">
           <button
@@ -429,7 +429,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
             onClick={() => setShowJump(true)}
             className="px-3 py-2 min-h-11 rounded text-sm font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
           >
-            {t('quiz:ui.jump')}
+            {t('quiz.ui:jump')}
           </button>
         </div>
         <button
@@ -439,7 +439,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
           ref={nextBtnRef}
           className="px-4 py-2 min-h-11 rounded text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white"
         >
-          {index < total - 1 ? t('quiz:ui.next') : t('quiz:ui.finish')}
+          {index < total - 1 ? t('quiz.ui:next') : t('quiz.ui:finish')}
         </button>
       </div>
 
@@ -453,14 +453,14 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
               disabled={index === 0}
               className="flex-1 px-4 py-2 min-h-11 rounded text-sm font-semibold bg-gray-200 hover:bg-gray-300 disabled:opacity-50 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
             >
-              {t('quiz:ui.prev')}
+              {t('quiz.ui:prev')}
             </button>
             <button
               type="button"
               onClick={() => setShowJump(true)}
               className="px-3 py-2 min-h-11 rounded text-sm font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
             >
-              {t('quiz:ui.jump')}
+              {t('quiz.ui:jump')}
             </button>
             <button
               type="button"
@@ -469,7 +469,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
               ref={nextBtnRef}
               className="flex-1 px-4 py-2 min-h-11 rounded text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white"
             >
-              {index < total - 1 ? t('quiz:ui.next') : t('quiz:ui.finish')}
+              {index < total - 1 ? t('quiz.ui:next') : t('quiz.ui:finish')}
             </button>
           </div>
         </div>
@@ -480,7 +480,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
         <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="jump-title">
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowJump(false)} />
           <div className="relative mx-auto mt-[10vh] max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4">
-            <div id="jump-title" className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('quiz:ui.jumpToQuestion')}</div>
+            <div id="jump-title" className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('quiz.ui:jumpToQuestion')}</div>
             <div className="grid grid-cols-5 gap-2" role="list">
               {q.map((_, i) => {
                 const answered = !!selected[q[i].id];
@@ -490,7 +490,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
                     type="button"
                     onClick={() => { setIndex(i); setShowJump(false); setShowFeedback(false); vibrate(10); }}
                     className={`px-2 py-2 rounded text-sm font-medium border transition-colors ${answered ? 'border-indigo-500 text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/20' : 'border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700/60'}`}
-                    aria-label={`${t('quiz:ui.question')} ${i + 1}`}
+                    aria-label={`${t('quiz.ui:question')} ${i + 1}`}
                   >
                     {i + 1}
                   </button>
@@ -503,7 +503,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
                 onClick={() => setShowJump(false)}
                 className="px-3 py-1.5 rounded text-xs font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
               >
-                {t('quiz:ui.cancel')}
+                {t('quiz.ui:cancel')}
               </button>
             </div>
           </div>

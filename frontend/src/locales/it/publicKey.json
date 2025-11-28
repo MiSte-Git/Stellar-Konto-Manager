@@ -1,8 +1,8 @@
 {
   "label": "Chiave pubblica o indirizzo di federazione",
-  "placeholder": "Inserisci la tua chiave pubblica o un indirizzo di federazione",
-  "load": "Caricare",
-  "deleteFromList": "Rimuovere dalla lista",
+  "placeholder": "Inserisci la tua chiave pubblica o un indirizzo di federazione.",
+  "load": "Caricamento",
+  "deleteFromList": "Rimuovi dalla lista",
   "source": "Fonte",
   "destination": {
     "input": "Obiettivo",
@@ -12,9 +12,9 @@
   },
   "invalid": "Chiave pubblica non valida.",
   "submit": {
-    "button": "Inviare"
+    "button": "Invia"
   },
-  "test": "Prova",
+  "test": "Test",
   "historyLabel": "Storia",
-  "historyPlaceholder": "Seleziona l'ultimo portafoglio utilizzato"
+  "historyPlaceholder": "Seleziona l'ultimo portafoglio utilizzato."
 }

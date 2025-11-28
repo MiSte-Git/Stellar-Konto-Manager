@@ -1,27 +1,27 @@
 {
   "all": "Listaa kaikki luottolinjat.",
-  "compare": "Trustlines vertailla",
+  "compare": "Luottolinjojen vertailu",
   "delete": "Poista luottolinjat",
-  "onlyZeroBalanceInfo": "Vain trustlinet, joiden saldo on 0, voidaan poistaa.",
-  "nonZeroBalance": "Tämä luottoraja ei ole nolla, eikä sitä voi poistaa.",
+  "onlyZeroBalanceInfo": "Vain sellaiset luottolinjat, joiden saldo on 0, voidaan poistaa.",
+  "nonZeroBalance": "Tätä luottolinjaa ei voida poistaa, sillä siinä on ei-nolla saldo.",
   "destination": {
     "label": "Kohdeosoite",
-    "placeholder": "Kohdejulkinen avain tai federaatio-osoite",
+    "placeholder": "Kohde-julkinen avain tai federointiosoite",
     "error": "Virheellinen kohdeosoite"
   },
   "deleted": {
-    "resultTitle": "Poistotulos",
-    "resultText": "{count} luottolinjaa käsiteltiin tilassa {mode}.",
+    "resultTitle": "Poiston tulos",
+    "resultText": "{count} luottolinjaa käsiteltiin {mode}-tilassa.",
     "mode": {
       "simulation": "Simulointi",
-      "real": "Todellinen käyttöympäristö",
-      "realWarning": "Varoitus! Tämä poistaa Trustlines lopullisesti lohkoketjulta."
+      "real": "Käyttöönotto livenä",
+      "realWarning": "Varoitus! Tämä poistaa pysyvästi trustlines-lohkoketjusta."
     },
-    "notFound": "Ei poistettavia trustline-yhteyksiä löytynyt.",
-    "simulated": "Simulointi: {count} Trustlinea poistettaisiin.",
-    "success": "Erfolgreich: {count} Trustlines poistettu."
+    "notFound": "Ei löytynyt poistettavia luottamuslinjoja.",
+    "simulated": "Simulaatio: {count} trustline-yhteyttä poistettaisiin.",
+    "success": "Onnistuneesti: {count} trustlineä poistettu."
   },
-  "noDuplicates": "Ei löytynyt kaksoisluottolinjoja.",
+  "noDuplicates": "Ei päällekkäisiä luottolinjoja löytynyt.",
   "showSecret": "Näytä salainen avain",
-  "notFound": "Ei löytynyt luottolinjaa/luottolinjoja."
+  "notFound": "Luottolinja(a) ei löytynyt."
 }

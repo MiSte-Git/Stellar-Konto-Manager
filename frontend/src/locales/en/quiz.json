@@ -1,0 +1,231 @@
+{
+  "l1": {
+    "title": "Blockchain Basics",
+    "q1": {
+      "question": "What is a blockchain?",
+      "hint": "Imagine a public notebook. Many pages (blocks) are linked together.",
+      "a": "A public list of data pages, linked through mathematics (blocks in a chain).",
+      "b": "A video game with coins and levels.",
+      "c": "The secret database of a company.",
+      "d": "An app that runs exclusively on your phone.",
+      "a.fb": "Correct. The chain makes old pages difficult to alter.",
+      "b.fb": "Not quite. It is a shared database, not a game.",
+      "c.fb": "No. Many can review it; it is not confidential.",
+      "d.fb": "No. It runs on many computers (nodes), not just yours."
+    },
+    "q2": {
+      "question": "Who can see Stellar transactions?",
+      "hint": "Public network ≠ public names.",
+      "a": "Everyone can see them, but not your real name (only public keys).",
+      "b": "Only the sender can see them.",
+      "c": "Only banks can see them.",
+      "a.fb": "Correct. The data is public, but identities are not included.",
+      "b.fb": "No. The ledger is public for transparency.",
+      "c.fb": "No. Anyone can look up transactions."
+    },
+    "q3": {
+      "question": "Why are blocks 'chained' together?",
+      "hint": "Old pages should be hard to change.",
+      "a": "So that altering old data becomes very difficult.",
+      "b": "To make the app look cooler.",
+      "c": "So that everything works offline indefinitely.",
+      "a.fb": "Yes. Each block secures the previous one through mathematics (hashes).",
+      "b.fb": "No. It's about safety, not style.",
+      "c.fb": "No. Nodes still need to synchronize."
+    },
+    "q4": {
+      "question": "Is it possible to simply delete an error in a transaction?",
+      "hint": "Remember: only append, do not delete.",
+      "a": "No. One makes a new, corrective transaction.",
+      "b": "Yes, you simply remove them from the chain.",
+      "a.fb": "Correct. The ledger is append-only. We make corrections with new entries.",
+      "b.fb": "No. Past entries are not deleted."
+    }
+  },
+  "l4": {
+    "title": "Keys, fees, and trustlines",
+    "q1": {
+      "question": "What is a public key?",
+      "hint": "Like your mailing address.",
+      "a": "An address to receive. You may share it.",
+      "b": "A secret password to control your account.",
+      "a.fb": "Yes. You are allowed to share your public key.",
+      "b.fb": "That describes the Secret Key, not the Public Key."
+    },
+    "q2": {
+      "question": "You should never share your secret key.",
+      "hint": "He is the key to your money.",
+      "true": "True",
+      "false": "Incorrect.",
+      "true.fb": "Correct. Secret Key = Control. Never enter it on unfamiliar websites.",
+      "false.fb": "Incorrect. Keep it private. Use Testnet only for learning."
+    },
+    "q3": {
+      "question": "Why does Stellar charge tiny fees?",
+      "hint": "Think about spam protection.",
+      "a": "To stop spam and keep the network healthy.",
+      "b": "So that a company becomes wealthy.",
+      "c": "Because transactions are always slow.",
+      "a.fb": "Correct. Small fees prevent spam and reward validators.",
+      "b.fb": "No. The fees are minimal and are for security purposes.",
+      "c.fb": "No. Stellar is fast and affordable."
+    },
+    "q4": {
+      "question": "What is a trustline?",
+      "hint": "It's like a permission.",
+      "a": "Permission to hold a token from an issuer.",
+      "b": "A secret chat line between two accounts.",
+      "c": "A special fee discount on trading.",
+      "a.fb": "Yes. You choose which issuers/tokens you trust.",
+      "b.fb": "No. It is not a chat, but a holding permit.",
+      "c.fb": "No. Trustlines pertain to the holding of assets."
+    }
+  },
+  "l7": {
+    "title": "Security, Phishing, and Trust",
+    "q1": {
+      "question": "A website wants your secret key in order to 'verify' your balance. What do you do?",
+      "hint": "Never share your secret key.",
+      "a": "Leave the page. Never enter the secret key.",
+      "b": "Enter, but only once.",
+      "c": "Instead, share a screenshot of your key.",
+      "a.fb": "Correct. That is phishing. Use only trusted wallets.",
+      "b.fb": "No. It only takes once to lose control.",
+      "c.fb": "I'm sorry, I can't fulfill this request."
+    },
+    "q2": {
+      "question": "You see two tokens named USDX. How do you find the real one?",
+      "hint": "Names can be copied. Issuers and domains count.",
+      "a": "Check issuer account and verified domain/asset information.",
+      "b": "Take the one with the nicer logo.",
+      "c": "Coin toss. They are the same.",
+      "a.fb": "Yes. Asset code is not enough. Check issuer and domain.",
+      "b.fb": "Logos can be forged. Verify the issuer/domain.",
+      "c.fb": "No. They can be very different. Always check."
+    },
+    "q3": {
+      "question": "In einfachen Worten ist „Verifizierung/KYC“ der Prozess, bei dem ein Unternehmen deine Identität überprüft, um sicherzustellen, dass du wirklich die Person bist, die du vorgibst zu sein. KYC steht für „Know Your Customer“ und wird oft von Banken oder Finanzdienstleistern genutzt, um Betrug zu verhindern und gesetzliche Anforderungen zu erfüllen.",
+      "hint": "Some services need to know who you are.",
+      "a": "A process in which a service verifies your identity.",
+      "b": "A method to speed up blockchain.",
+      "c": "Sharing one's secret key with a bank.",
+      "a.fb": "Correct. This helps prevent fraud and complies with laws.",
+      "b.fb": "No. It's about identity, not speed.",
+      "c.fb": "No. Never share your Secret Key. KYC does not need it."
+    },
+    "q4": {
+      "question": "Ein „Zero-Knowledge Proof“ (ZK) ist ein Verfahren, bei dem eine Person (der Beweisführende) einer anderen Person (dem Verifizierenden) beweisen kann, dass sie bestimmte Informationen kennt oder eine bestimmte Aussage wahr ist, ohne dabei die Informationen selbst preiszugeben. Es ist, als ob man jemandem beweist, dass man ein Geheimnis kennt, ohne das Geheimnis tatsächlich zu verraten. Dies ist nützlich in der Kryptographie und bei der sicheren Übertragung von Daten, da es ermöglicht, Vertrauen zu schaffen, ohne sensible Informationen offenzulegen.",
+      "hint": "Prove that you know something without revealing the secret.",
+      "a": "A proof that something is true without revealing the secret.",
+      "b": "A tool that hides all transactions forever.",
+      "c": "A faster way to send payments.",
+      "a.fb": "Yes. For example: Prove that you are over 13 without stating your birth date.",
+      "b.fb": "No. ZK proves facts but does not delete entries.",
+      "c.fb": "No. It is about data-efficient proofs."
+    }
+  },
+  "ui": {
+    "startQuiz": "Start quiz",
+    "startPractice": "Start practice.",
+    "practice": "Practice",
+    "quiz": "Quiz",
+    "hint": "Hint",
+    "next": "Continue",
+    "prev": "Back",
+    "finish": "Finished",
+    "yourScore": "Your result",
+    "passed": "Passed",
+    "failed": "Failed",
+    "explanation": "Why?",
+    "correct": "Correct",
+    "incorrect": "Wrong.",
+    "of": "from",
+    "retry": "Try again.",
+    "viewResults": "View result",
+    "routeTitle": "Quiz for Lesson {{id}}",
+    "backToLearn": "To the learning overview",
+    "summaryCount": "{{correct}}/{{total}} correct",
+    "noDataHelp": "Open the learning overview to select the appropriate lesson.",
+    "jump": "Jump",
+    "jumpToQuestion": "Jump to question",
+    "question": "Question",
+    "cancel": "Cancel",
+    "stickyNav": "Sticky navigation",
+    "on": "At",
+    "off": "From",
+    "timeRemaining": "Time remaining",
+    "beforeUnloadMessage": "You have not finished this quiz yet. If you leave the page, current answers may be lost.",
+    "openInNewTab": "Open in new tab",
+    "openInNewTab.default": "Open quiz in a new tab by default",
+    "openInNewTab.once": "Open in new tab",
+    "startInNewTab": "Start quiz in a new tab.",
+    "warnOnActiveQuiz": "Display warning during an ongoing quiz."
+  },
+  "meta": {
+    "estimatedMinutes": "Estimated minutes",
+    "passThreshold": "Passing threshold",
+    "threeStarThreshold": "3-star border"
+  },
+  "landing": {
+    "title": "Quiz Overview",
+    "description": "Brief introduction to the lesson. Test your knowledge and collect stars.",
+    "questionsLabel": "Questions",
+    "estimatedMinutesLabel": "Estimated minutes",
+    "passThresholdLabel": "Passing threshold",
+    "threeStarThresholdLabel": "3-star threshold",
+    "start": "Start quiz",
+    "startPractice": "Start practice mode",
+    "settings": "Settings",
+    "settingsLink": "Settings",
+    "achievements": "Successes"
+  },
+  "achievements": {
+    "title": "Successes",
+    "list": "Your badges",
+    "none": "No badges unlocked yet. Keep it up!",
+    "link": "Successes",
+    "badge": "Badge: {{name}}",
+    "unlockedAt": "Unlocked on: {{date}}",
+    "first_run": "First run",
+    "passed": "Passed",
+    "three_stars": "Three stars",
+    "perfect_score": "Perfect score"
+  },
+  "result": {
+    "score": "Your result: {{score}}%",
+    "summary": "{{correct}}/{{total}} correct",
+    "passInfo": "Passing threshold: {{pass}}% — Status: {{status}}",
+    "passed": "Passed",
+    "failed": "Failed",
+    "threeStarThreshold": "3★ Threshold: {{value}}%",
+    "stars": "Stars: {{stars}}",
+    "newAchievementsTitle": "Newly received badges",
+    "noNewAchievements": "No new badges in this round.",
+    "retry": "Try again",
+    "backToOverview": "Back to the overview",
+    "nextLesson": "Proceed to the next lesson.",
+    "toast": {
+      "newAchievement": "New Badge: {{name}}",
+      "close": "Close"
+    }
+  },
+  "settings": {
+    "title": "Quiz settings",
+    "stickyNav": "Sticky navigation",
+    "stickyNav.desc": "Navigation bar remains at the bottom on mobile",
+    "hints": "Hints",
+    "hints.desc": "Show learning tips for the questions.",
+    "haptics": "Haptics/Vibration",
+    "haptics.desc": "Vibrate on selection and completion",
+    "shuffle": "Mix questions",
+    "shuffle.desc": "Randomize the order of the questions.",
+    "timeLimit": "Time limit",
+    "timeLimit.desc": "Optional limit in minutes (0 = no limit)",
+    "timeLimit.input": "Set time limit",
+    "minutes": "Minutes",
+    "on": "At",
+    "off": "From",
+    "warnOnActiveQuiz": "Display warning during active quiz",
+    "warnOnActiveQuiz.desc": "Warn about already answered questions before leaving the page"
+  }
+}

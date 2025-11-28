@@ -47,7 +47,7 @@ export default function QuestionCard({
         role="status"
         aria-live="polite"
       >
-        <div className="font-semibold">{ok ? t('quiz:ui.correct') : t('quiz:ui.incorrect')}</div>
+        <div className="font-semibold">{ok ? t('quiz.ui:correct') : t('quiz.ui:incorrect')}</div>
         <div className="mt-1">{t(sel.feedbackKey)}</div>
       </div>
     );
@@ -66,7 +66,7 @@ export default function QuestionCard({
             aria-expanded={showHint}
             aria-controls={hintId}
           >
-            {t('quiz:ui.hint')}
+            {t('quiz.ui:hint')}
           </button>
         </div>
       )}

@@ -2,22 +2,22 @@
   "hintEnterPublicKey": "Syötä ensin julkinen avain.",
   "columns": {
     "amount": "Määrä",
-    "compromised": "Kompromettoitu",
-    "deactivated": "Poistettu käytöstä",
+    "compromised": "Kompromissi",
+    "deactivated": "Pois käytöstä",
     "destination": "Kohdelompakko",
-    "issuer": "Liikkeeseenlaskija",
-    "label": "Label",
+    "issuer": "Liikkeellelaskija",
+    "label": "Merkintä",
     "memo": "Muistio",
     "payments": "Maksut",
     "date": "Päivämäärä",
-    "token": "Poletti"
+    "token": "Poletin"
   },
   "decimals": {
-    "auto": "Automatisoitu",
-    "label": "Desimaalinumerot:"
+    "auto": "Automattisesti",
+    "label": "Desimaalit:"
   },
   "filter": {
-    "memoPlaceholder": "Suodata muistiolla, lompakko-osoitteella tai tunnisteella",
+    "memoPlaceholder": "Suodata muistiolla, lompakko-osoitteella tai nimikkeellä.",
     "tokenPlaceholder": "Suodata tunnuksen mukaan (KOODI: LIIKKEELLELASKIJA)"
   },
   "item": {
@@ -26,10 +26,10 @@
     "tokenShort": "Tokeni: {{token}}"
   },
   "missingPublicKey": "Julkinen avain puuttuu.",
-  "moreTruncated": "… ja {{extra}} muuta ryhmää",
-  "toWallet": "lompakkoon: {{address}}",
+  "moreTruncated": "... ja {{extra}} lisäryhmää",
+  "toWallet": "Lompakkoon: {{address}}",
   "total": "Ostettujen tokenien määrä: {{count}}",
-  "totalTokens": "Sijoitettujen tokenien (omaisuuserien) määrä: {{count}}",
+  "totalTokens": "Tokenien (varojen) määrä, joka on sijoitettu: {{count}}",
   "value": {
     "units": "{{amount}} kappaletta",
     "xlm": "{{amount}} XLM"
@@ -37,22 +37,22 @@
   "view": {
     "label": "Suodata:",
     "memo": "Muistiot (Groupfund)",
-    "token": "Token (ostettu määrä)"
+    "token": "Polette (ostettu määrä)"
   },
   "toggles": {
     "showTotals": "Kokonaissumma",
-    "qsiOnly": "QSI GF:n summa"
+    "qsiOnly": "Sum QSI GF"
   },
   "hints": {
-    "qsiListSet": "Huomautus: GF-listan löydät kohdasta Asetukset → Luotettavat lompakot (QSI).",
+    "qsiListSet": "Huom: Löydät sallittujen listan siirtymällä kohtaan Asetukset → Luotetut lompakot (QSI).",
     "pageTime": "Sivun lataaminen kestää noin 0,2 sekuntia → 100 sivua ≈ 20 sekuntia → 1000 sivua ≈ 200 sekuntia (≈ 3:20 minuuttia)."
   },
-  "walletCapInfo": "Huomaa: Lompakko voi pitää enintään 1000 trustlinea.",
+  "walletCapInfo": "Huom: Lompakko voi sisältää enintään 1000 trustlinea.",
   "action": {
-    "load": "Lataus"
+    "load": "Ladataan"
   },
   "history": {
-    "availableFrom": "Palvelin (Horizon) – Historia alkaen",
-    "hintFullHistory": "Huomautus: Horizon-palvelimen pääkirjahistoria ulottuu vain {{available}} asti. Vain tähän asti saatavat tiedot näytetään. Valittua lähtöpäivämäärää on siksi rajattu. Vanhempia tietoja varten tarvitaan (yleensä maksullinen) Full-History-palveluntarjoaja (saattaa tulla tulevaisuudessa!)."
+    "availableFrom": "Serveri (Horizon) – Historia vuodesta",
+    "hintFullHistory": "Huom: Horizon-palvelimen pääkirjahistoria ulottuu vain {{saatavilla}} asti. Vain siihen asti ulottuvat tiedot näytetään. Tästä syystä valittu Alku-päivämäärä on rajoitettu. Vanhempien tietojen saamiseksi tarvitaan (yleensä maksullinen) täydellisen historian tarjoaja (mahdollisesti tulossa tulevaisuudessa!)."
   }
 }

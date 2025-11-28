@@ -62,13 +62,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const normalizeAmountValue = useCallback(() => {
     let raw = (amount || '').trim();
     if (raw.endsWith('.')) raw = raw.slice(0, -1);
-    if (!raw) throw new Error(t('payment.send.amountMissing'));
-    if (!/^\d+(\.\d{1,7})?$/.test(raw)) throw new Error(t('payment.send.amountInvalid'));
+    if (!raw) throw new Error(t('common:payment.send.amountMissing'));
+    if (!/^\d+(\.\d{1,7})?$/.test(raw)) throw new Error(t('common:payment.send.amountInvalid'));
     const [intPartRaw, fracPartRaw = ''] = raw.split('.');
     const intPart = intPartRaw.replace(/^0+(?=\d)/, '') || '0';
     const fracPart = fracPartRaw.replace(/0+$/, '');
     const normalized = fracPart ? `${intPart}.${fracPart}` : intPart;
-    if (parseFloat(normalized) <= 0) throw new Error(t('payment.send.amountPositive'));
+    if (parseFloat(normalized) <= 0) throw new Error(t('common:payment.send.amountPositive'));
     return normalized;
   }, [amount, t]);
 
@@ -97,7 +97,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           return { memo: undefined, display: '' };
       }
     } catch {
-      throw new Error(t('query.invalidMemo'));
+      throw new Error(t('errors:query.invalidMemo'));
     }
   }, [memoType, memoVal, t]);
 
@@ -113,13 +113,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         codes = codes ? `${codes} / ${opText}` : opText;
       }
       return codes
-        ? `${t('payment.send.horizonError')} (${codes})`
-        : t('payment.send.horizonError');
+        ? `${t('common:payment.send.horizonError')} (${codes})`
+        : t('common:payment.send.horizonError');
     }
     const status = err?.response?.status;
-    if (status === 504) return t('payment.send.timeout');
+    if (status === 504) return t('common:payment.send.timeout');
     if (typeof status === 'number') {
-      return t('payment.send.httpError', { status });
+      return t('common:payment.send.httpError', { status });
     }
     return err?.message || 'unknown';
   }, [t]);
@@ -127,7 +127,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const handlePaymentError = useCallback((err) => {
     console.error('Payment submission failed', err);
     const detail = describeHorizonError(err);
-    setError(t('payment.send.error', { detail }));
+    setError(t('common:payment.send.error', { detail }));
     return detail;
   }, [describeHorizonError, t]);
 
@@ -159,21 +159,21 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       });
       const v = (dest || '').trim();
       if (!v) {
-        setPreflight(p => ({ ...p, loading: false, err: t('publicKey.destination.error') }));
+        setPreflight(p => ({ ...p, loading: false, err: t('publicKey:destination.error') }));
         return;
       }
       let resolvedDest;
       try {
         resolvedDest = await resolveOrValidatePublicKey(v);
       } catch {
-        setPreflight(p => ({ ...p, loading: false, err: t('publicKey.destination.error') }));
+        setPreflight(p => ({ ...p, loading: false, err: t('publicKey:destination.error') }));
         return;
       }
       let desiredNum = 0;
       try {
         desiredNum = Number(normalizeAmountValue());
       } catch (e) {
-        setPreflight(p => ({ ...p, loading: false, err: e?.message || t('payment.send.amountInvalid') }));
+        setPreflight(p => ({ ...p, loading: false, err: e?.message || t('common:payment.send.amountInvalid') }));
         return;
       }
       const minReserve = (baseReserve || 0.5) * 2;
@@ -187,7 +187,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         if (assetKey !== 'XLM') {
           setPreflight({
             loading: false,
-            err: t('payment.send.destUnfundedNonNative', 'Destination account is not active. Please send XLM to activate it first or switch the asset to XLM.'),
+            err: t('common:payment.send.destUnfundedNonNative', 'Destination account is not active. Please send XLM to activate it first or switch the asset to XLM.'),
             destExists,
             activationRequired: true,
             minReserve,
@@ -230,7 +230,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
   const submitPayment = useCallback(async (secret) => {
     const kp = Keypair.fromSecret(secret);
-    if (kp.publicKey() !== publicKey) throw new Error(t('secretKey.mismatch'));
+    if (kp.publicKey() !== publicKey) throw new Error(t('secretKey:mismatch'));
     const isTestnet = typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET';
     const net = isTestnet ? Networks.TESTNET : Networks.PUBLIC;
     const account = await server.loadAccount(publicKey);
@@ -266,7 +266,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     let activated = false;
     if (!destExists) {
       if (assetKey !== 'XLM') {
-        throw new Error(t('payment.send.destUnfundedNonNative', 'Destination account is not active. Please send XLM to activate it first or switch the asset to XLM.'));
+        throw new Error(t('common:payment.send.destUnfundedNonNative', 'Destination account is not active. Please send XLM to activate it first or switch the asset to XLM.'));
       }
       // Ensure starting balance covers minimum reserve (2 * baseReserve), fallback baseReserve default is 0.5
       const desired = parseFloat(paymentAmount);
@@ -366,7 +366,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           if (!Number.isNaN(br)) setBaseReserve(br);
         } catch { /* keep default */ }
       } catch (e) {
-        if (!cancelled) setError(t('error.loadTrustlines') + ': ' + (e?.message || ''));
+        if (!cancelled) setError(t('common:error.loadTrustlines') + ': ' + (e?.message || ''));
       }
     }
     load();
@@ -569,7 +569,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   if (!publicKey) {
     return (
       <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
-        {t('investedTokens.hintEnterPublicKey')}
+        {t('investedTokens:hintEnterPublicKey')}
       </div>
     );
   }
@@ -577,19 +577,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-xl font-semibold">{t('payment.send.title')}</h2>
+        <h2 className="text-xl font-semibold">{t('common:payment.send.title')}</h2>
       </div>
 
       {error && <div className="text-red-600 text-sm text-center">{error}</div>}
       {sentInfo && sentInfo.account === publicKey && (
         <div className="text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-3 max-w-4xl mx-auto">
-          <div className="font-semibold mb-1">{t('payment.send.successShort', 'Erfolgreich gesendet')}</div>
+          <div className="font-semibold mb-1">{t('common:payment.send.successShort', 'Erfolgreich gesendet')}</div>
           <div className="space-y-0.5">
-            <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.recipient')}:</span> <span className="font-mono break-all">{sentInfo.recipient}</span></div>
-            <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.amount')}:</span> {sentAmountText || '0'} {sentInfo.asset}</div>
-            <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.memo')}:</span> {sentInfo.memo || '-'}</div>
+            <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span> <span className="font-mono break-all">{sentInfo.recipient}</span></div>
+            <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.amount')}:</span> {sentAmountText || '0'} {sentInfo.asset}</div>
+            <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span> {sentInfo.memo || '-'}</div>
             {sentInfo.activated && (
-              <div className="text-green-800 dark:text-green-200 font-medium">{t('payment.send.activated', 'The destination account was activated.')}</div>
+              <div className="text-green-800 dark:text-green-200 font-medium">{t('common:payment.send.activated', 'The destination account was activated.')}</div>
             )}
             {status && (<div><span className="text-gray-600 dark:text-gray-400">TX:</span> <span className="font-mono break-all">{status}</span></div>)}
           </div>
@@ -599,7 +599,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       <div className="bg-white dark:bg-gray-800 rounded border p-4 max-w-4xl mx-auto">
         <div className="grid grid-cols-1 gap-4">
         <div className="space-y-2">
-          <label className="block text-sm">{t('payment.send.recipient')}</label>
+          <label className="block text-sm">{t('common:payment.send.recipient')}</label>
           <div className="relative">
             <input className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm font-mono" list="hist-recipients" value={dest} onChange={(e)=>{ clearSuccess(); setDest(e.target.value); }} onBlur={()=>pushHistory('stm.hist.recipients', dest, setHistoryRecipients)} placeholder="G... oder user*domain" />
             {dest && (
@@ -614,46 +614,46 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               {/* Links: Empfänger-Infos linksbündig */}
               <div className="min-w-0 space-y-0.5 text-left">
                 <div>
-                  <span className="font-semibold">{t('wallet.federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
+                  <span className="font-semibold">{t('wallet:federationDisplay.label', 'Föderationsadresse')}:</span>{' '}
                   {recipientFederationDisplay
                     ? <span className="font-mono break-all">{recipientFederationDisplay}</span>
-                    : <span className="italic text-gray-500">{t('wallet.federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
+                    : <span className="italic text-gray-500">{t('wallet:federationDisplay.none', 'Keine Föderationsadresse definiert')}</span>}
                 </div>
 
                 {resolvedFederation && resolvedAccount && inputWasFederation && (
                   <div>
-                    <span className="font-semibold">{t('wallet.federationDisplay.account', 'Konto')}:</span>{' '}
+                    <span className="font-semibold">{t('wallet:federationDisplay.account', 'Konto')}:</span>{' '}
                     <span className="font-mono break-all">{resolvedAccount}</span>
                   </div>
                 )}
 
                 {recipientLabel && (
                   <div>
-                    <span className="font-semibold">{t('wallet.federationDisplay.accountLabel', 'Label')}:</span>{' '}
+                    <span className="font-semibold">{t('wallet:federationDisplay.accountLabel', 'Label')}:</span>{' '}
                     <span>{recipientLabel}</span>
                   </div>
                 )}
 
                 {recipientCompromised && (
                   <div className="text-red-600 dark:text-red-400 font-semibold">
-                    {t('wallet.flag.compromised', 'Warning: This recipient is marked as compromised in your trusted list.')}
+                    {t('wallet:flag.compromised', 'Warning: This recipient is marked as compromised in your trusted list.')}
                   </div>
                 )}
                 {recipientDeactivated && (
                   <div className="text-amber-600 dark:text-amber-400 font-medium">
-                    {t('wallet.flag.deactivated', 'Note: This recipient is marked as deactivated in your trusted list.')}
+                    {t('wallet:flag.deactivated', 'Note: This recipient is marked as deactivated in your trusted list.')}
                   </div>
                 )}
               </div>
 
               {/* Rechts: Ziel-XLM-Kontostand als Label, ohne Überlagerung */}
               <div className="text-right">
-                <span className="font-semibold">{t('wallet.xlmBalance', 'XLM')}:</span>{' '}
+                <span className="font-semibold">{t('wallet:xlmBalance', 'XLM')}:</span>{' '}
                 <span className="font-mono">
                   {destXlmLoading
-                    ? t('common.loading', 'Loading…')
+                    ? t('common:common.loading', 'Loading…')
                     : (resolvedAccount
-                        ? (destXlmBalance != null ? `${destXlmBalance}` : t('wallet.unfunded', 'Unfunded'))
+                        ? (destXlmBalance != null ? `${destXlmBalance}` : t('wallet:unfunded', 'Unfunded'))
                         : '—')}
                 </span>
               </div>
@@ -662,7 +662,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
           <div className="grid grid-cols-1 sm:grid-cols-[2fr_3fr] gap-3 mt-2">
           <div className="flex flex-col min-w-0">
-          <label className="text-sm">{t('payment.send.amount')}</label>
+          <label className="text-sm">{t('common:payment.send.amount')}</label>
           <div className="relative">
           <input type="text" inputMode="decimal" className="border rounded pr-8 px-2 py-1 text-base md:text-sm w-full appearance-none [-moz-appearance:textfield]" list="hist-amounts"
                   value={amountFocused ? amount : (amount ? amountFmt.format(Number(amount) || 0) : '')}
@@ -691,7 +691,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           </div>
           </div>
           <div className="flex flex-col min-w-0">
-          <label className="text-sm">{t('payment.send.asset')}</label>
+          <label className="text-sm">{t('common:payment.send.asset')}</label>
           <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={assetKey} onChange={(e)=>{ clearSuccess(); setAssetKey(e.target.value); }}>
           {assetOptions.map(o => <option key={o.key} value={o.key} title={o.title || o.key}>{o.label}</option>)}
           </select>
@@ -703,51 +703,51 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           type="button"
           onClick={() => setShowReserveInfo(v => !v)}
           className="w-5 h-5 inline-flex items-center justify-center rounded-full bg-green-600 text-white text-xs hover:bg-green-700"
-          title={t('payment.send.reserved')}
-          aria-label={t('payment.send.reserved')}
+          title={t('common:payment.send.reserved')}
+          aria-label={t('common:payment.send.reserved')}
           >
           !
           </button>
-          <span className="ml-2 text-xs text-gray-700 dark:text-gray-300 align-middle">{t('payment.send.reservedInline', { amount: amountFmt.format(reservedTotal) })}</span>
+          <span className="ml-2 text-xs text-gray-700 dark:text-gray-300 align-middle">{t('common:payment.send.reservedInline', { amount: amountFmt.format(reservedTotal) })}</span>
           {showReserveInfo && (
           <div ref={popupRef} className="absolute left-0 mt-2 w-80 z-40 bg-white dark:bg-gray-800 border rounded shadow-lg p-3 text-left">
           <div className="flex items-start justify-between">
-          <div className="font-semibold mr-4">{t('payment.send.reserved')}</div>
+          <div className="font-semibold mr-4">{t('common:payment.send.reserved')}</div>
           <button className="text-xs px-2 py-0.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowReserveInfo(false)}>×</button>
           </div>
           <div className="text-lg font-bold mt-1">{amountFmt.format(reservedTotal)} XLM</div>
           <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs mt-2">
-            <div className="text-gray-600 dark:text-gray-400">{t('payment.send.baseReserve')}</div><div>{amountFmt.format(baseReserve)} XLM</div>
-              <div className="text-gray-600 dark:text-gray-400">{t('payment.send.extra')}</div><div>{amountFmt.format(reservedTotal - baseReserve*2)} XLM</div>
-                <div className="text-gray-600 dark:text-gray-400">{t('payment.send.xlmInOffers')}</div><div>{amountFmt.format(xlmInOffers)} XLM</div>
-                  <div className="text-gray-600 dark:text-gray-400">{t('payment.send.trustlines', { n: trustCount })}</div><div>{amountFmt.format(reservedTrust)} XLM</div>
-                  <div className="text-gray-600 dark:text-gray-400">{t('payment.send.lpTrustlines')}</div><div>{amountFmt.format(reservedLp)} XLM</div>
-                    <div className="text-gray-600 dark:text-gray-400">{t('payment.send.offers')}</div><div>{amountFmt.format(reservedOffers)} XLM</div>
-                             <div className="text-gray-600 dark:text-gray-400">{t('payment.send.signers')}</div><div>{amountFmt.format(reservedSigners)} XLM</div>
-                    <div className="text-gray-600 dark:text-gray-400">{t('payment.send.accountData')}</div><div>{amountFmt.format(reservedData)} XLM</div>
-                    <div className="text-gray-600 dark:text-gray-400">{t('payment.send.sponsoring')}</div><div>{amountFmt.format(reservedSponsor)} XLM</div>
-                  <div className="text-gray-600 dark:text-gray-400">{t('payment.send.sponsored')}</div><div>{amountFmt.format(reservedSponsored)} XLM</div>
+            <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.baseReserve')}</div><div>{amountFmt.format(baseReserve)} XLM</div>
+              <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.extra')}</div><div>{amountFmt.format(reservedTotal - baseReserve*2)} XLM</div>
+                <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.xlmInOffers')}</div><div>{amountFmt.format(xlmInOffers)} XLM</div>
+                  <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.trustlines', { n: trustCount })}</div><div>{amountFmt.format(reservedTrust)} XLM</div>
+                  <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.lpTrustlines')}</div><div>{amountFmt.format(reservedLp)} XLM</div>
+                    <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.offers')}</div><div>{amountFmt.format(reservedOffers)} XLM</div>
+                             <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.signers')}</div><div>{amountFmt.format(reservedSigners)} XLM</div>
+                    <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.accountData')}</div><div>{amountFmt.format(reservedData)} XLM</div>
+                    <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.sponsoring')}</div><div>{amountFmt.format(reservedSponsor)} XLM</div>
+                  <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.sponsored')}</div><div>{amountFmt.format(reservedSponsored)} XLM</div>
                   </div>
                 </div>
               )}
             </div>
-            <div className="text-xs text-gray-600 dark:text-gray-400 ml-2 text-right">{t('payment.send.available')}: {amountFmt.format(availableXLM)} XLM</div>
+            <div className="text-xs text-gray-600 dark:text-gray-400 ml-2 text-right">{t('common:payment.send.available')}: {amountFmt.format(availableXLM)} XLM</div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
             <div>
-              <label className="block text-sm">{t('payment.send.memoType')}</label>
+              <label className="block text-sm">{t('common:payment.send.memoType')}</label>
               <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={memoType} onChange={(e)=>{ clearSuccess(); setMemoType(e.target.value); }}>
-                <option value="none">{t('payment.send.memoTypes.none')}</option>
-                <option value="text">{t('payment.send.memoTypes.text')}</option>
-                <option value="id">{t('payment.send.memoTypes.id')}</option>
-                <option value="hash">{t('payment.send.memoTypes.hash')}</option>
-                <option value="return">{t('payment.send.memoTypes.return')}</option>
+                <option value="none">{t('common:payment.send.memoTypes.none')}</option>
+                <option value="text">{t('common:payment.send.memoTypes.text')}</option>
+                <option value="id">{t('common:payment.send.memoTypes.id')}</option>
+                <option value="hash">{t('common:payment.send.memoTypes.hash')}</option>
+                <option value="return">{t('common:payment.send.memoTypes.return')}</option>
               </select>
               <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t(`payment.send.memoTypes.info.${memoType}`)}</div>
             </div>
             <div>
-              <label className="block text-sm">{t('payment.send.memo')}</label>
+              <label className="block text-sm">{t('common:payment.send.memo')}</label>
               <div className="relative">
                 <input className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm" list="hist-memos" value={memoVal} onChange={(e)=>{ clearSuccess(); setMemoVal(e.target.value); }} onBlur={()=>pushHistory('stm.hist.memos', memoVal, setHistoryMemos)} />
                 {memoVal && (
@@ -775,7 +775,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               void runPreflight();
             }}
           >
-            {t('payment.send.sendButton')}
+            {t('common:payment.send.sendButton')}
           </button>
         </div>
 
@@ -787,9 +787,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-2">{t('common:option.confirm.action.title', 'Confirm action')}</h3>
             <div className="text-sm space-y-1 mb-3">
-              <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.recipient')}:</span> <span className="font-mono break-all">{dest}</span></div>
+              <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span> <span className="font-mono break-all">{dest}</span></div>
               <div>
-                <span className="text-gray-600 dark:text-gray-400">{t('payment.send.amount')}:</span>{' '}
+                <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.amount')}:</span>{' '}
                 <span>
                   {amountFmt.format(Number(amount))} {(assetKey==='XLM'?'XLM':assetKey.split(':')[0])}
                   {preflight.activationRequired && assetKey==='XLM' && preflight.willBump && !preflight.loading && !preflight.err && (
@@ -797,43 +797,43 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   )}
                 </span>
               </div>
-              <div><span className="text-gray-600 dark:text-gray-400">{t('payment.send.memo')}:</span> {memoType==='none' || !memoVal ? '-' : memoVal}</div>
+              <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span> {memoType==='none' || !memoVal ? '-' : memoVal}</div>
               {recipientCompromised && (
                 <div className="text-red-600 dark:text-red-400">
-                  {t('wallet.flag.compromised', 'Warning: This recipient is marked as compromised in your trusted list.')}
+                  {t('wallet:flag.compromised', 'Warning: This recipient is marked as compromised in your trusted list.')}
                 </div>
               )}
               {recipientDeactivated && (
                 <div className="text-amber-600 dark:text-amber-400">
-                  {t('wallet.flag.deactivated', 'Note: This recipient is marked as deactivated in your trusted list.')}
+                  {t('wallet:flag.deactivated', 'Note: This recipient is marked as deactivated in your trusted list.')}
                 </div>
               )}
             </div>
 
             {preflight.loading && (
-              <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">{t('common.loading')}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">{t('common:common.loading')}</div>
             )}
             {!!preflight.err && !preflight.loading && (
               <div className="text-xs text-red-600 mb-2">{preflight.err}</div>
             )}
             {preflight.activationRequired && assetKey==='XLM' && !preflight.loading && !preflight.err && (
               <div className="border rounded p-2 mb-2 text-xs">
-                <div className="font-semibold mb-1">{t('payment.send.activateConfirm.title', 'Account activation required')}</div>
-                <div className="mb-1">{t('payment.send.activateConfirm.info', 'The destination account is not active yet. A minimum amount is required to activate it.')}</div>
+                <div className="font-semibold mb-1">{t('common:payment.send.activateConfirm.title', 'Account activation required')}</div>
+                <div className="mb-1">{t('common:payment.send.activateConfirm.info', 'The destination account is not active yet. A minimum amount is required to activate it.')}</div>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-                  <div className="text-gray-600 dark:text-gray-400">{t('payment.send.activateConfirm.minReserve', 'Minimum (2 × base reserve)')}</div>
+                  <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.activateConfirm.minReserve', 'Minimum (2 × base reserve)')}</div>
                   <div>{amountFmt.format(preflight.minReserve)} XLM</div>
-                  <div className="text-gray-600 dark:text-gray-400">{t('payment.send.activateConfirm.yourAmount', 'Entered amount')}</div>
+                  <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.activateConfirm.yourAmount', 'Entered amount')}</div>
                   <div>{amountFmt.format(preflight.desired)} XLM</div>
                   {preflight.willBump && (
                     <>
-                      <div className="text-gray-600 dark:text-gray-400">{t('payment.send.activateConfirm.adjustedAmount', 'Proposed amount (to activate)')}</div>
+                      <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.activateConfirm.adjustedAmount', 'Proposed amount (to activate)')}</div>
                       <div className="text-amber-600 dark:text-amber-400 font-medium">{amountFmt.format(preflight.adjusted)} XLM</div>
                     </>
                   )}
                 </div>
                 {preflight.willBump && (
-                  <div className="mt-1 text-amber-600 dark:text-amber-400">{t('payment.send.activateConfirm.noteAdjust', 'Your amount is not sufficient for activation. If you continue, the minimum amount will be sent automatically.')}</div>
+                  <div className="mt-1 text-amber-600 dark:text-amber-400">{t('common:payment.send.activateConfirm.noteAdjust', 'Your amount is not sufficient for activation. If you continue, the minimum amount will be sent automatically.')}</div>
                 )}
               </div>
             )}
@@ -856,7 +856,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               setStatus('');
               const kp = Keypair.fromSecret(secret);
               if (kp.publicKey() !== publicKey) {
-                setSecretError(t('secretKey.mismatch'));
+                setSecretError(t('secretKey:mismatch'));
                 return;
               }
               if (remember) {

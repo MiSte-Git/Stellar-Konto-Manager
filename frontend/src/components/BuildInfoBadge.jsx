@@ -27,13 +27,13 @@ export default function BuildInfoBadge() {
     })();
   }, []);
 
-  if (err) return <div className="text-xs text-red-600">{t('buildInfo.error')}</div>;
-  if (!info) return <div className="text-xs opacity-60">{t('buildInfo.loading')}</div>;
+  if (err) return <div className="text-xs text-red-600">{t('common:buildInfo.error')}</div>;
+  if (!info) return <div className="text-xs opacity-60">{t('common:buildInfo.loading')}</div>;
 
   const short = info.commit?.slice(0, 7);
   return (
     <div className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800">
-      {t('buildInfo.env')}: {info.environment} · {t('buildInfo.commit')}: {short} · {t('buildInfo.branch')}: {info.branch}
+      {t('common:buildInfo.env')}: {info.environment} · {t('common:buildInfo.commit')}: {short} · {t('common:buildInfo.branch')}: {info.branch}
     </div>
   );
 }

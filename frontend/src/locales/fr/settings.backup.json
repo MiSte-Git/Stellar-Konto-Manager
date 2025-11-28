@@ -1,0 +1,39 @@
+{
+  "desc": "Exporter ou importer vos données de quiz (paramètres, progression, badges).",
+  "export": {
+    "button": "Commencer l'exportation",
+    "fileName": "quiz-backup.json",
+    "success": "Exportation créée"
+  },
+  "import": {
+    "backupCreated": "Sauvegarde automatique enregistrée",
+    "done": "Importation terminée",
+    "invalid": "Fichier d'importation invalide",
+    "noFile": "Aucun fichier sélectionné",
+    "preview": {
+      "stats": {
+        "achievements": "Badge : {{count}} quiz(zez)",
+        "progress": "Progrès : {{count}} quiz(s)",
+        "settings": "Paramètres : {{count}} questionnaire(s)"
+      },
+      "title": "Aperçu"
+    },
+    "selectFile": "Sélectionner un fichier",
+    "strategy": {
+      "label": "Stratégie",
+      "merge": "Fusionner",
+      "replace": "Remplacer"
+    },
+    "title": "Importation"
+  },
+  "nav": {
+    "back": "Retour"
+  },
+  "title": "Sauvegarde et Restauration",
+  "toast": {
+    "backupBeforeImport": "Une sauvegarde a été effectuée avant l'importation.",
+    "exported": "Sauvegarde exportée",
+    "exportFailed": "Échec de l'exportation",
+    "importFailed": "Échec de l'importation"
+  }
+}

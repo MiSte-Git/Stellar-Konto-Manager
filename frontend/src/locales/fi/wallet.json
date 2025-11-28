@@ -1,13 +1,13 @@
 {
   "federationDisplay": {
-    "label": "Federation-osoite",
-    "none": "Föderaatio-osoitetta ei ole määritelty.",
+    "label": "Federationin osoite",
+    "none": "Liittovaltion osoitetta ei ole määritelty",
     "account": "Tili",
     "accountLabel": "Tarra"
   },
   "flag": {
-    "compromised": "Varoitus: Tämä lompakko on merkitty luotettavuuslistallasi vaarantuneeksi.",
-    "deactivated": "Huomautus: Tämä lompakko on merkitty luottamuslistallasi poistetuksi käytöstä."
+    "compromised": "Varoitus: Tämä lompakko on merkitty vaarantuneeksi luotettavuuslistallasi.",
+    "deactivated": "Huom: Tämä lompakko on merkitty epäaktiiviseksi luottamuslistallasi."
   },
   "xlmBalance": "XLM",
   "unfunded": "Ei aktivoitu"

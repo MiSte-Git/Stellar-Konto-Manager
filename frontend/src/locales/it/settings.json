@@ -1,0 +1,104 @@
+{
+  "backup": {
+    "title": "Backup e ripristino",
+    "desc": "Esporta o importa i dati del tuo quiz (impostazioni, progressi, badge).",
+    "export": {
+      "button": "Avvia esportazione",
+      "success": "Esportazione creata.",
+      "error": "Esportazione fallita",
+      "fileName": "quiz-backup.json"
+    },
+    "import": {
+      "title": "Importazione",
+      "selectFile": "Seleziona file",
+      "noFile": "Nessun file selezionato",
+      "strategy": {
+        "label": "Strategia",
+        "merge": "Unisci",
+        "replace": "Sostituire"
+      },
+      "preview": {
+        "title": "Anteprima",
+        "stats": {
+          "settings": "Impostazioni: {{count}} quiz",
+          "progress": "Progresso: {{count}} quiz/quizzi",
+          "achievements": "Badge: {{count}} quiz"
+        }
+      },
+      "perform": "Esegui l'importazione",
+      "done": "Importazione completata",
+      "backupCreated": "Backup automatico salvato",
+      "invalid": "File di importazione non valido",
+      "error": "Importazione non riuscita"
+    },
+    "toast": {
+      "exported": "Backup esportato",
+      "backupBeforeImport": "Un backup è stato salvato prima dell'importazione."
+    },
+    "nav": {
+      "back": "Indietro"
+    }
+  },
+  "cache": {
+    "help": "Accelera le interrogazioni tramite una cache dei pagamenti locale, ma potrebbe estendere il tempo di caricamento iniziale.",
+    "label": "Usa cache (Beta)",
+    "prefetchHelp": "Tempo di attesa per il caricamento delle voci/transazioni in giorni (una volta durante l'attivazione iniziale)"
+  },
+  "network": {
+    "title": "Rete",
+    "desc": "Opzionale: Orizzonte a Storia Completa per la Storia Profonda",
+    "fullUrl": "URL dell'orizzonte a storia completa",
+    "autoUseFull": "Utilizzare automaticamente se la data di inizio è anteriore alla cronologia del server."
+  },
+  "description": "Attualmente, non ci sono ancora impostazioni.",
+  "display": {
+    "decimals": {
+      "auto": "Automaticamente",
+      "label": "Cifre decimali"
+    },
+    "desc": "Impostazioni globali del display.",
+    "title": "Pubblicità"
+  },
+  "error": {
+    "fetchFailed": "Caricamento delle impostazioni non riuscito: {{detail}}"
+  },
+  "label": "Impostazioni",
+  "prefetchDays": "Tempo di consegna (giorni)",
+  "trustedWallets": {
+    "buttons": {
+      "export": "Esportazione",
+      "import": "Importazione",
+      "reset": "Reimposta ai valori predefiniti"
+    },
+    "desc": "Questo elenco è memorizzato localmente nel browser. File predefinito: QSI_TrustedWallets.json",
+    "editor": {
+      "invalidFormat": "Formato non valido. È previsto un oggetto con un campo \"portafogli\" (array).",
+      "parseError": "JSON non può essere analizzato."
+    },
+    "file": {
+      "hint": "Importa un file JSON nel formato { \"wallets\": [...] }",
+      "label": "Archivio"
+    },
+    "info": {
+      "count": "Voci: {{n}}",
+      "updatedAt": "A partire da {{date}}"
+    },
+    "table": {
+      "addRow": "Aggiungi linea",
+      "columns": {
+        "actions": "Azioni",
+        "address": "Indirizzo",
+        "compromised": "Compromesso",
+        "deactivated": "Disattivato",
+        "label": "Etichetta"
+      },
+      "deleteRow": "Elimina",
+      "discard": "Scartare",
+      "save": "Salva"
+    },
+    "title": "I miei portafogli affidabili",
+    "validation": {
+      "hint": "Almeno una riga è non valida (indirizzo mancante/duplicato)."
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "title": "Kreiraj račun + višestruki potpis",
+  "menu": "Kreiraj račun + Multisig",
+  "menuHint": "Kreirajte novi račun i po želji postavite multisig.",
+  "hint": "Kreirajte novi račun, aktivirajte ga i opcionalno konfigurirajte multisig.",
+  "generateKeys": "Generiraj ključ",
+  "enableMultisig": "Omogući multisig",
+  "signersTitle": "Potpisnik",
+  "signersInfo": "Dodajte dodatne potpisnike i postavite odgovarajuće pragove.",
+  "signersCount": "Broj potpisnika",
+  "bestPractices": {
+    "title": "Najbolje prakse",
+    "text": "Čuvajte tajne ključeve sigurno i nemojte ih nepotrebno dijeliti."
+  },
+  "instructions": {
+    "public": "Podijelite ovaj javni ključ s drugima za plaćanja.",
+    "secret": "Drži ovaj tajni ključ sigurnim; nikad ga ne dijeli."
+  },
+  "generateFirst": "Prvo generirajte par ključeva.",
+  "confirmLowBalance": "Početno stanje {bal} XLM je ispod preporučene rezerve {req} XLM (Potpisnik: {count}). Nastaviti?",
+  "activated": "Račun je aktiviran. Hash: {hash}",
+  "activatedTestnet": "Račun je aktiviran na testnoj mreži putem Friendbota.",
+  "alreadyActive": "Račun je već aktiviran.",
+  "createdNoSigners": "Račun kreiran, multisig nije konfiguriran.",
+  "createdAndConfigured": "Račun je kreiran i multisig konfiguriran. Hash: {hash}",
+  "info": {
+    "more": "Više informacija",
+    "keysOnPage": {
+      "title": "Ključ na ovoj stranici",
+      "text": "Na ovoj stranici se generiraju ključevi. Čuvajte ih na sigurnom i nemojte ih dijeliti."
+    },
+    "title": "Važne informacije",
+    "secureKeys": {
+      "title": "Sigurni tajni ključ",
+      "text": "Javni ključ se može sigurno dijeliti – on je poput broja računa.\n\nTajni ključ je pristup vašem računu. Postupajte s njim kao s lozinkom:\n• NIKADA ga ne pohranjujte na uslugama u oblaku, u e-poštama ili u nesigurnim bilješkama\n• Zapišite ga na papir ili koristite hardverski novčanik\n• Izradite više sigurnosnih kopija i pohranite ih na sigurna, odvojena mjesta\n• Ako se tajni ključ izgubi, pristup računu je nepovratno izgubljen"
+    },
+    "multisigSection": {
+      "title": "Multisig (višestruki potpis)",
+      "text": "Uz multisig možete definirati više potpisnika za vaš račun. Transakcije tada zahtijevaju potpise s više ključeva (npr., 2 od 3).\n\nPrednosti:\n• Povećana sigurnost (kompromitirani ključ nije dovoljan)\n• Zajednički računi (npr. tvrtke, partnerstva)\n• Hitni oporavak (više sigurnosnih kopija kod različitih osoba)\n\nOPREZ: Prvo testirajte multisig na testnetu prije nego što ga implementirate na mainnet! Neispravna konfiguracija može rezultirati gubitkom pristupa računu."
+    },
+    "diagram": {
+      "title": "Istek potpisa"
+    }
+  },
+  "activateHint": "Aktivacija je potrebna da bi račun postojao. Na testnetu to se radi putem Friendbot-a, a na mainnetu putem \"Create Account\" iz postojećeg novčanika.",
+  "activateNow": "Odmah aktivirajte račun",
+  "activateOnly": "Samo aktiviraj",
+  "balanceWarning": "Početno stanje vjerojatno je prenisko za dodavanje {{count}} dodatnih potpisnika (minimalna rezerva: {{req}} XLM).",
+  "createButton": "Kreiraj / Postavi Multisig",
+  "hints": {
+    "byteRange": "(0–255)"
+  },
+  "mainnetActivateNote": "Napomena: Dodatne rezerve su potrebne za Multisig. 1 XLM često nije dovoljan.",
+  "reserve": {
+    "base": "Osnovna rezerva po unosu: {{val}} XLM",
+    "recommended": "Preporučeni početni saldo: {{val}} XLM (uključujući rezervu)",
+    "required": "Obavezna minimalna rezerva (nova): {{val}} XLM"
+  },
+  "signersCountHint": "Ispod \"Potreban broj potpisa\" postavljate minimalni broj potpisa (nizak/srednji/visok).",
+  "signersCountLimit": "Hinweis: Netzwerkgrenze (Stellar): maximal 20 zusätzliche Unterzeichner.",
+  "startingBalance": "Početno stanje (XLM)",
+  "threshold": "Potrebni potpisi (nizak/srednji/visok)",
+  "thresholdLow": "nizak",
+  "thresholdMed": "srednje",
+  "thresholdHigh": "visok",
+  "thresholdCurrent": "Trenutno odabrano: niska={{low}}, srednja={{med}}, visoka={{high}} od ukupno {{total}} potpisa",
+  "thresholdHelp": "Prag: Broj potrebnih potpisa (glavni + potpisnici) da bi transakcija bila važeća.",
+  "thresholdInfo": "Preporuka: {{req}} od {{total}} potpisa (uključujući Master)",
+  "thresholdLevelsHint": "Obično se primjenjuje sljedeće: nisko = jednostavne promjene (npr. bilješka, cijena), srednje = plaćanja/trgovina, visoko = promjene kritične za sigurnost (npr. potpisnik/pragovi).",
+  "thresholdStatic": "Potrebno: {{val}} od {{total}} potpisa (nisko/srednje/visoko)",
+  "thresholdSum": "Zbroj težina: {{sum}}",
+  "thresholdTooHigh": "Napomena: Prag ne smije prelaziti zbroj težina. Molimo vas da prilagodite vrijednosti.",
+  "keyWarning": {
+    "title": "⚠️ Osigurajte svoj ključ sada!",
+    "text1": "Generirali ste novi par ključeva.",
+    "text2": "Odmah osiguraj OBA ključa prije nego što nastaviš:",
+    "list1": "Javni ključ: Adresa vašeg računa, može se dijeliti",
+    "list2": "Tajni ključ: Vaša lozinka – NIKADA je nemojte dijeliti niti pohranjivati online!",
+    "list3": "Ako se tajni ključ izgubi, pristup je nepovratno izgubljen.",
+    "confirm": "Osigurao sam oba ključa."
+  },
+  "tooltips": {
+    "high": "Visok: promjene od kritične sigurnosti (npr., potpisnici/pragovi).",
+    "low": "Nizak: jednostavne promjene (npr., dopis, cijena).",
+    "masterWeight": "Težina vlasnika računa (Glavni) (0-255): Glavni ključ računa ima pravo glasa. Što je njegova težina veća, to se njegov potpis broji za više glasova. Ovi se glasovi zbrajaju zajedno s glasovima drugih potpisnika kako bi se provjerilo je li postignuta potrebna većina.",
+    "med": "Sredstva: Plaćanja i trgovačke radnje.",
+    "signerWeight": "Težina potpisnika (0-255): Dodatni potpisnici također imaju pravo glasa. Težina određuje koliko glasova njihov potpis pridonosi. Kada se transakcija šalje, svi dani glasovi se zbrajaju. Ako se dostigne navedeni minimalni broj glasova (prag), transakcija se smatra odobrenom.",
+    "signerWeightHint": "Napomena: Zbroj činimo s master i potpisničkim težinama; pragovi (nizak/srednji/visok) ne smiju premašiti ovaj zbroj."
+  },
+  "units": {
+    "signatures": "Potpis(i)"
+  },
+  "muxedId": "Muxed ID",
+  "muxedInfo": "Muxed-ID kreira M-adresu (M...). Ona upućuje na isti račun kao i obična adresa (G...).",
+  "muxedIdInvalid": "Muxed-ID mora biti cijeli broj između 0 i 18.446.744.073.709.551.615.",
+  "muxedAddress": "Multiplirana adresa",
+  "muxedActivationInfo": "Muxirane adrese su pseudonim adrese. Nije ih potrebno posebno omogućavati."
+}

@@ -1,0 +1,104 @@
+{
+  "backup": {
+    "title": "Sigurnosna kopija i oporavak",
+    "desc": "Izvezite ili uvezite svoje podatke kviza (postavke, napredak, značke).",
+    "export": {
+      "button": "Početak izvoza",
+      "success": "Izvoz je stvoren",
+      "error": "Izvoz nije uspio",
+      "fileName": "kviz-sigurnosna-kopija.json"
+    },
+    "import": {
+      "title": "Uvoz",
+      "selectFile": "Odaberi datoteku",
+      "noFile": "Nijedna datoteka nije odabrana",
+      "strategy": {
+        "label": "Strategija",
+        "merge": "Spoji",
+        "replace": "Zamijeni"
+      },
+      "preview": {
+        "title": "Pregled",
+        "stats": {
+          "settings": "Postavke: {{count}} kviz(ova)",
+          "progress": "Napredak: {{count}} kviz(ova)",
+          "achievements": "Bedž: {{count}} kviz(a)"
+        }
+      },
+      "perform": "Izvršite uvoz",
+      "done": "Uvoz dovršen",
+      "backupCreated": "Automatska sigurnosna kopija spremljena",
+      "invalid": "Nevažeća uvozna datoteka",
+      "error": "Uvoz nije uspio"
+    },
+    "toast": {
+      "exported": "Izvoz rezervne kopije",
+      "backupBeforeImport": "Sigurna kopija je spremljena prije uvoza."
+    },
+    "nav": {
+      "back": "Nazad"
+    }
+  },
+  "cache": {
+    "help": "Ubrzava upite kroz lokalnu predmemoriju plaćanja, ali može produžiti početno vrijeme učitavanja.",
+    "label": "Koristi predmemoriju (Beta)",
+    "prefetchHelp": "Vrijeme potrebno za učitavanje unosa/transakcija u danima (jednom tijekom početne aktivacije)"
+  },
+  "network": {
+    "title": "Mreža",
+    "desc": "Neobavezno: Potpuni horizont povijesti za duboku povijest",
+    "fullUrl": "URL potpunog povijesnog horizonata",
+    "autoUseFull": "Automatski koristite ako je datum početka stariji od povijesti poslužitelja."
+  },
+  "description": "Trenutno još nema postavki.",
+  "display": {
+    "decimals": {
+      "auto": "Automatski",
+      "label": "Decimalna mjesta"
+    },
+    "desc": "Globalne postavke zaslona.",
+    "title": "Oglašavanje"
+  },
+  "error": {
+    "fetchFailed": "Učitavanje postavki nije uspjelo: {{detail}}"
+  },
+  "label": "Postavke",
+  "prefetchDays": "Vodeće vrijeme (dani)",
+  "trustedWallets": {
+    "buttons": {
+      "export": "Izvoz",
+      "import": "Uvoz",
+      "reset": "Vrati na zadane postavke"
+    },
+    "desc": "Ovaj je popis pohranjen lokalno u pregledniku. Zadana datoteka: QSI_TrustedWallets.json",
+    "editor": {
+      "invalidFormat": "Nevažeći format. Očekuje se objekt s poljem \"wallets\" (niz).",
+      "parseError": "JSON se nije mogao parsirati."
+    },
+    "file": {
+      "hint": "Uvezite JSON datoteku u formatu { \"wallets\": [...] }",
+      "label": "Datoteka"
+    },
+    "info": {
+      "count": "Unosi: {{n}}",
+      "updatedAt": "Od {{date}}"
+    },
+    "table": {
+      "addRow": "Dodaj liniju",
+      "columns": {
+        "actions": "Radnje",
+        "address": "Adresa",
+        "compromised": "Ugrožen",
+        "deactivated": "Deaktivirano",
+        "label": "Oznaka"
+      },
+      "deleteRow": "Izbrisati",
+      "discard": "Odbaci",
+      "save": "Sačuvaj"
+    },
+    "title": "Moji pouzdani novčanici",
+    "validation": {
+      "hint": "Najmanje jedan redak je nevažeći (nedostaje/adresa je duplicirana)."
+    }
+  }
+}
