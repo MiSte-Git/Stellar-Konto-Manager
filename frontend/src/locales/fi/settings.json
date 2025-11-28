@@ -1,0 +1,104 @@
+{
+  "backup": {
+    "title": "Varmuuskopiointi ja palautus",
+    "desc": "Vie tai tuo tietovisa-tietosi (asetukset, edistyminen, merkit).",
+    "export": {
+      "button": "Aloita vienti.",
+      "success": "Vienti luotu",
+      "error": "Vienti epäonnistui",
+      "fileName": "quiz-backup.json"
+    },
+    "import": {
+      "title": "Tuonti",
+      "selectFile": "Valitse tiedosto",
+      "noFile": "Ei tiedostoa valittu",
+      "strategy": {
+        "label": "Strategia",
+        "merge": "Yhdistä",
+        "replace": "Korvaa"
+      },
+      "preview": {
+        "title": "Esikatselu",
+        "stats": {
+          "settings": "Asetukset: {{count}} visailu(a)",
+          "progress": "Edistys: {{count}} visailu(a)",
+          "achievements": "Merkki: {{count}} tietovisa(a)"
+        }
+      },
+      "perform": "Suorita tuonti",
+      "done": "Tuönti on valmis",
+      "backupCreated": "Automaattinen varmuuskopio tallennettu",
+      "invalid": "Virheellinen tuontitiedosto",
+      "error": "Tuonti epäonnistui"
+    },
+    "toast": {
+      "exported": "Varmuuskopio viety",
+      "backupBeforeImport": "Varmuuskopio tallennettiin ennen tuontia."
+    },
+    "nav": {
+      "back": "Takaisin"
+    }
+  },
+  "cache": {
+    "help": "Nopeuttaa kyselyitä paikallisen maksuvälimuistin avulla, mutta saattaa pidentää alkuperäistä latausaikaa.",
+    "label": "Käytä välimuistia (Beta)",
+    "prefetchHelp": "Latausaika syötteiden/tapahtumien osalta päivissä (kerran alkuperäisen aktivoinnin yhteydessä)"
+  },
+  "network": {
+    "title": "Verkko",
+    "desc": "Valinnainen: Koko historian aikajänne syvälle historialle",
+    "fullUrl": "Täysi historian horisontti URL",
+    "autoUseFull": "Käytä automaattisesti, jos aloituspäivämäärä on vanhempi kuin palvelimen historia."
+  },
+  "description": "Tällä hetkellä ei ole vielä asetuksia.",
+  "display": {
+    "decimals": {
+      "auto": "Automatisoituesti",
+      "label": "Desimaalitarkkuus"
+    },
+    "desc": "Globaalit näyttöasetukset.",
+    "title": "Mainos"
+  },
+  "error": {
+    "fetchFailed": "Asetusten lataaminen epäonnistui: {{detail}}"
+  },
+  "label": "Asetukset",
+  "prefetchDays": "Toimitusaika (päivinä)",
+  "trustedWallets": {
+    "buttons": {
+      "export": "Vienti",
+      "import": "Tuoja",
+      "reset": "Palauta oletusasetukset"
+    },
+    "desc": "Tämä luettelo tallennetaan paikallisesti selaimeen. Oletustiedosto: QSI_TrustedWallets.json",
+    "editor": {
+      "invalidFormat": "Virheellinen muoto. Odotetaan objektia, jossa on \"wallets\"-kenttä (taulukko).",
+      "parseError": "JSON-tietoja ei voitu jäsentää."
+    },
+    "file": {
+      "hint": "Tuo JSON-tiedosto muodossa { \"wallets\": [...] }",
+      "label": "Tiedosto"
+    },
+    "info": {
+      "count": "Kirjaukset: {{n}}",
+      "updatedAt": "Tällä hetkellä {{date}}"
+    },
+    "table": {
+      "addRow": "Lisää viiva",
+      "columns": {
+        "actions": "Toiminnot",
+        "address": "Osoite",
+        "compromised": "Paljastettu",
+        "deactivated": "Deaktivoitu",
+        "label": "Tunniste"
+      },
+      "deleteRow": "Poista",
+      "discard": "Hylätä",
+      "save": "Tallenna"
+    },
+    "title": "Luotettavat lompakkoni",
+    "validation": {
+      "hint": "Vähintään yksi rivi on virheellinen (osoite puuttuu/osoite on kaksinkertainen)."
+    }
+  }
+}

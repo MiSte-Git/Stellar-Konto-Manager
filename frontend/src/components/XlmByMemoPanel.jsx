@@ -475,7 +475,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       }
 
       const csv = toCsv(rows, headers);
-      const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo.title'), ext: 'csv' });
+      const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo:title'), ext: 'csv' });
       downloadCsv(fn, csv);
 
       setProg(p => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
@@ -724,7 +724,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       <div className="grid grid-cols-3 items-start mb-2">
         {/* Links: Titel */}
         <div className="col-span-1">
-          <h3 className="font-semibold">{t('xlmByMemo.title')}</h3>
+          <h3 className="font-semibold">{t('xlmByMemo:title')}</h3>
         </div>
 
         {/* Mitte: Progressbar (zentriert), Summe drunter, Abbrechen drunter */}
@@ -733,18 +733,18 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
             <ProgressBar {...prog} />
           </div>
           <div className="text-xs text-gray-500 mt-1">
-            {t('progress.elapsed', { time: formatElapsedMmSs(elapsedMs) })}
+            {t('common:progress.elapsed', { time: formatElapsedMmSs(elapsedMs) })}
           </div>
           {prog.phase === 'finalize' && lastPaymentISO && (
             <div className="text-xs mt-1 opacity-80">
-              {t('cache.lastPaymentAt', { val: formatLocalDateTime(lastPaymentISO) })}
+              {t('common:cache.lastPaymentAt', { val: formatLocalDateTime(lastPaymentISO) })}
             </div>
           )}
 
           {/* Summe unter der Progressbar */}
           {typeof resultAmount === 'number' && (
             <div className="text-sm font-medium mt-1">
-              {t('xlmByMemo.result.value', { amount: resultAmount.toFixed(7) })}
+              {t('xlmByMemo:result.value', { amount: resultAmount.toFixed(7) })}
             </div>
           )}
 
@@ -755,7 +755,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
               onClick={handleCancel}
               disabled={prog.phase === 'finalize'}
             >
-              {t('progress.cancel')}
+              {t('common:progress.cancel')}
             </button>
           )}
         </div>
@@ -768,13 +768,13 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       {prog.phase === 'finalize' && (
         <div className="text-gray-500 mb-2 text-sm text-center">
           <span className="inline-block mx-2">
-            {t('xlmByMemo.summary.correctCount', { n: prog.matches ?? 0 })}
+            {t('xlmByMemo:summary.correctCount', { n: prog.matches ?? 0 })}
           </span>
           <span className="inline-block mx-2">
-            {t('xlmByMemo.summary.otherCount', { n: Math.max(0, (prog.incomingOverview?.total ?? 0) - (prog.matches ?? 0)) })}
+            {t('xlmByMemo:summary.otherCount', { n: Math.max(0, (prog.incomingOverview?.total ?? 0) - (prog.matches ?? 0)) })}
           </span>
           <span className="inline-block mx-2">
-            {t('xlmByMemo.summary.uniqueWallets', { n: prog.incomingOverview?.unique ?? 0 })}
+            {t('xlmByMemo:summary.uniqueWallets', { n: prog.incomingOverview?.unique ?? 0 })}
           </span>
         </div>
       )}
@@ -783,27 +783,27 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       {prog.phase === 'finalize' && prog.incomingOverview && (
         <div className="mt-1 text-sm text-center opacity-90">
           <span className="inline-block mx-2">
-            {t('xlmByMemo.summary.label')}
+            {t('xlmByMemo:summary.label')}
           </span>
           <span className="inline-block mx-2">
-            {t('xlmByMemo.summary.count', { n: prog.incomingOverview.total ?? 0 })}
+            {t('xlmByMemo:summary.count', { n: prog.incomingOverview.total ?? 0 })}
           </span>
           <span className="inline-block mx-2">
-            {t('xlmByMemo.summary.amount', {
+            {t('xlmByMemo:summary.amount', {
               amount: (prog.incomingOverview.totalAmount ?? 0).toFixed(7)
             })}
           </span>
           <span className="inline-block mx-2">
-            {t('xlmByMemo.summary.unique', { n: prog.incomingOverview?.uniqueAll ?? 0 })}
+            {t('xlmByMemo:summary.unique', { n: prog.incomingOverview?.uniqueAll ?? 0 })}
           </span>
         </div>
       )}
 
       {/* Memo mit History */}
-      <label className="block text-sm mb-1">{t("xlmByMemo.memo.label")}</label>
+      <label className="block text-sm mb-1">{t("xlmByMemo:memo.label")}</label>
       <input
         className="w-full border rounded p-2 mb-1"
-        placeholder={t("xlmByMemo.memo.placeholder")}
+        placeholder={t("xlmByMemo:memo.placeholder")}
         value={memoQuery}
         onChange={(e) => setMemoQuery(e.target.value)}
         list="memo-history"
@@ -817,7 +817,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       {/* Datum & Zeit (optional) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm mb-1">{t("xlmByMemo.date.from")}</label>
+          <label className="block text-sm mb-1">{t("xlmByMemo:date.from")}</label>
           <input
             type="date"
             className="w-full border rounded p-2"
@@ -833,7 +833,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
           />
         </div>
         <div>
-          <label className="block text-sm mb-1">{t("xlmByMemo.date.to")}</label>
+          <label className="block text-sm mb-1">{t("xlmByMemo:date.to")}</label>
           <input
             type="date"
             className="w-full border rounded p-2"
@@ -852,9 +852,9 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
               type="button"
               onClick={handleSetToNow}
               className="ml-2 px-2 py-1 text-sm rounded border bg-gray-600 hover:bg-gray-500 mt-1"
-              title={t('xlmByMemo.time.setToNowHint')}
+              title={t('xlmByMemo:time.setToNowHint')}
             >
-              {t('xlmByMemo.time.setToNow')}
+              {t('xlmByMemo:time.setToNow')}
             </button>
           </div>       
         </div>
@@ -862,21 +862,21 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
 
       {/* Zeitzone */}
       <div className="mt-3">
-        <label className="block text-sm mb-1">{t("xlmByMemo.tz.label")}</label>
+        <label className="block text-sm mb-1">{t("xlmByMemo:tz.label")}</label>
         <select
           className="w-full border rounded p-2"
           value={tz}
           onChange={(e) => setTz(e.target.value)}
         >
-          <option value="cst">{t("xlmByMemo.tz.cst")}</option>
-          <option value="cdt">{t("xlmByMemo.tz.cdt")}</option>
-          <option value="utc">{t("xlmByMemo.tz.utc")}</option>
-          <option value="europe_zurich">{t("xlmByMemo.tz.europe_zurich")}</option>
-          <option value="local">{t("xlmByMemo.tz.local")}</option>
+          <option value="cst">{t("xlmByMemo:tz.cst")}</option>
+          <option value="cdt">{t("xlmByMemo:tz.cdt")}</option>
+          <option value="utc">{t("xlmByMemo:tz.utc")}</option>
+          <option value="europe_zurich">{t("xlmByMemo:tz.europe_zurich")}</option>
+          <option value="local">{t("xlmByMemo:tz.local")}</option>
         </select>
-        <p className="text-xs text-gray-500 mt-1">{t("xlmByMemo.tz.note")}</p>
+        <p className="text-xs text-gray-500 mt-1">{t("xlmByMemo:tz.note")}</p>
         <div className="mt-1 text-xs text-gray-500">
-          {t('xlmByMemo.tz.window', {
+          {t('xlmByMemo:tz.window', {
             from: fromDate ? toUTCISO(fromDate, fromTime, tz, ROLE.FROM) : '—',
             to: toDate ? plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO)) : '—'
           })}
@@ -889,48 +889,48 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
         onClick={handleCalculate}
         disabled={isLoading || !memoQuery}
       >
-        {isLoading ? t("xlmByMemo.action.loading") : t("xlmByMemo.action.calculate")}
+        {isLoading ? t("xlmByMemo:action.loading") : t("xlmByMemo:action.calculate")}
       </button>
 
       {/* Export */}
       <div className="mt-2 flex items-start gap-3">
         <button onClick={handleExportCsv} className="btn btn-secondary">
-          {t('xlmByMemo.export.csvAll')}
+          {t('xlmByMemo:export.csvAll')}
         </button>
         <button
           onClick={handleShowWrongMemos}
           className="px-2 py-1 text-sm rounded border bg-amber-600 text-white hover:bg-amber-500 disabled:opacity-50"
           disabled={wrongLoading || !memoQuery}
-          title={t('xlmByMemo.wrongMemos.hint')}
+          title={t('xlmByMemo:wrongMemos.hint')}
         >
-          {t('xlmByMemo.wrongMemos.button')}
+          {t('xlmByMemo:wrongMemos.button')}
         </button>
-        {wrongLoading && <span className="text-xs opacity-80">{t('xlmByMemo.wrongMemos.scanning')}</span>}
+        {wrongLoading && <span className="text-xs opacity-80">{t('xlmByMemo:wrongMemos.scanning')}</span>}
         {/* Neuer Button: Top 20 Eingänge für dieses Memo */}
         <button
           onClick={handleShowTopLargest}
           className="px-2 py-1 text-sm rounded border bg-emerald-700 text-white hover:bg-emerald-600 disabled:opacity-50"
           disabled={topLoading || !memoQuery}
         >
-          {t('xlmByMemo.topLargest.button')}
+          {t('xlmByMemo:topLargest.button')}
         </button>
-        {topLoading && <span className="text-xs opacity-80">{t('xlmByMemo.topLargest.scanning')}</span>}
+        {topLoading && <span className="text-xs opacity-80">{t('xlmByMemo:topLargest.scanning')}</span>}
       </div>
 
       {/* Ergebnis: falsche/leer Memos */}
       {showWrong && (
         <div className="mt-3 border rounded p-2">
-          <div className="text-sm font-medium mb-1">{t('xlmByMemo.wrongMemos.title')}</div>
+          <div className="text-sm font-medium mb-1">{t('xlmByMemo:wrongMemos.title')}</div>
           <div className="text-xs text-gray-600 mb-2">
-            {t('xlmByMemo.wrongMemos.summary', { count: wrongSummary.count, sum: Number(wrongSummary.sum).toFixed(7), unique: wrongSummary.unique })}
+            {t('xlmByMemo:wrongMemos.summary', { count: wrongSummary.count, sum: Number(wrongSummary.sum).toFixed(7), unique: wrongSummary.unique })}
           </div>
           <div className="overflow-auto max-h-64 text-xs">
             <div className="grid grid-cols-5 gap-2 font-semibold sticky top-0 bg-gray z-10 py-1">
-              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('created_at')}>{t('xlmByMemo.wrongMemos.columns.created_at')}{sortArrow(wrongSort,'created_at')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('from')}>{t('xlmByMemo.wrongMemos.columns.from')}{sortArrow(wrongSort,'from')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('amount')}>{t('xlmByMemo.wrongMemos.columns.amount')}{sortArrow(wrongSort,'amount')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('memo')}>{t('xlmByMemo.wrongMemos.columns.memo')}{sortArrow(wrongSort,'memo')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('tx_hash')}>{t('xlmByMemo.wrongMemos.columns.tx_hash')}{sortArrow(wrongSort,'tx_hash')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('created_at')}>{t('xlmByMemo:wrongMemos.columns.created_at')}{sortArrow(wrongSort,'created_at')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('from')}>{t('xlmByMemo:wrongMemos.columns.from')}{sortArrow(wrongSort,'from')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('amount')}>{t('xlmByMemo:wrongMemos.columns.amount')}{sortArrow(wrongSort,'amount')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('memo')}>{t('xlmByMemo:wrongMemos.columns.memo')}{sortArrow(wrongSort,'memo')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleWrongSort('tx_hash')}>{t('xlmByMemo:wrongMemos.columns.tx_hash')}{sortArrow(wrongSort,'tx_hash')}</div>
             </div>
             <div className="mt-1">
               {sortedWrongRows.map((r, i) => (
@@ -950,21 +950,21 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
               onClick={() => {
                 const headers = ['created_at','from','to','amount','memo','tx_hash'];
                 const csv = toCsv(wrongRows, headers);
-                const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo.title'), ext: 'csv' });
+                const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo:title'), ext: 'csv' });
                 downloadCsv(fn, csv);
               }}
             >
-              {t('xlmByMemo.wrongMemos.csv')}
+              {t('xlmByMemo:wrongMemos.csv')}
             </button>
             <button
               className="px-2 py-1 text-sm rounded border"
               onClick={async () => {
-                const header = `${t('xlmByMemo.wrongMemos.columns.created_at')}\t${t('xlmByMemo.wrongMemos.columns.from')}\t${t('xlmByMemo.wrongMemos.columns.amount')}\t${t('xlmByMemo.wrongMemos.columns.memo')}\t${t('xlmByMemo.wrongMemos.columns.tx_hash')}`;
+                const header = `${t('xlmByMemo:wrongMemos.columns.created_at')}\t${t('xlmByMemo:wrongMemos.columns.from')}\t${t('xlmByMemo:wrongMemos.columns.amount')}\t${t('xlmByMemo:wrongMemos.columns.memo')}\t${t('xlmByMemo:wrongMemos.columns.tx_hash')}`;
                 const lines = [header, ...wrongRows.map(r => `${r.created_at}\t${r.from}\t${r.amount}\t${r.memo || '(leer)'}\t${r.tx_hash}`)].join('\n');
                 try { await navigator.clipboard.writeText(lines); } catch { /* noop */ }
               }}
             >
-              {t('xlmByMemo.wrongMemos.clipboard')}
+              {t('xlmByMemo:wrongMemos.clipboard')}
             </button>
           </div>
         </div>
@@ -973,14 +973,14 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       {/* Ergebnis: Top 20 Eingänge für dieses Memo */}
       {showTop && (
         <div className="mt-3 border rounded p-2">
-          <div className="text-sm font-medium mb-1">{t('xlmByMemo.topLargest.title')}</div>
+          <div className="text-sm font-medium mb-1">{t('xlmByMemo:topLargest.title')}</div>
           <div className="overflow-auto max-h-64 text-xs">
             <div className="grid grid-cols-5 gap-2 font-semibold sticky top-0 bg-gray z-10 py-1">
-              <div className="cursor-pointer select-none" onClick={() => handleTopSort('created_at')}>{t('xlmByMemo.wrongMemos.columns.created_at')}{sortArrow(topSort,'created_at')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleTopSort('from')}>{t('xlmByMemo.wrongMemos.columns.from')}{sortArrow(topSort,'from')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleTopSort('amount')}>{t('xlmByMemo.wrongMemos.columns.amount')}{sortArrow(topSort,'amount')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleTopSort('memo')}>{t('xlmByMemo.wrongMemos.columns.memo')}{sortArrow(topSort,'memo')}</div>
-              <div className="cursor-pointer select-none" onClick={() => handleTopSort('tx_hash')}>{t('xlmByMemo.wrongMemos.columns.tx_hash')}{sortArrow(topSort,'tx_hash')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleTopSort('created_at')}>{t('xlmByMemo:wrongMemos.columns.created_at')}{sortArrow(topSort,'created_at')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleTopSort('from')}>{t('xlmByMemo:wrongMemos.columns.from')}{sortArrow(topSort,'from')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleTopSort('amount')}>{t('xlmByMemo:wrongMemos.columns.amount')}{sortArrow(topSort,'amount')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleTopSort('memo')}>{t('xlmByMemo:wrongMemos.columns.memo')}{sortArrow(topSort,'memo')}</div>
+              <div className="cursor-pointer select-none" onClick={() => handleTopSort('tx_hash')}>{t('xlmByMemo:wrongMemos.columns.tx_hash')}{sortArrow(topSort,'tx_hash')}</div>
             </div>
             <div className="mt-1">
               {sortedTopRows.map((r, i) => (
@@ -1000,21 +1000,21 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
               onClick={() => {
                 const headers = ['created_at','from','to','amount','memo','tx_hash'];
                 const csv = toCsv(sortedTopRows, headers);
-                const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo.title'), ext: 'csv' });
+                const fn = buildDefaultFilename({ publicKey, menuLabel: t('xlmByMemo:title'), ext: 'csv' });
                 downloadCsv(fn, csv);
               }}
             >
-              {t('xlmByMemo.topLargest.csv')}
+              {t('xlmByMemo:topLargest.csv')}
             </button>
             <button
               className="px-2 py-1 text-sm rounded border"
               onClick={async () => {
-                const header = `${t('xlmByMemo.wrongMemos.columns.created_at')}\t${t('xlmByMemo.wrongMemos.columns.from')}\t${t('xlmByMemo.wrongMemos.columns.amount')}\t${t('xlmByMemo.wrongMemos.columns.memo')}\t${t('xlmByMemo.wrongMemos.columns.tx_hash')}`;
+                const header = `${t('xlmByMemo:wrongMemos.columns.created_at')}\t${t('xlmByMemo:wrongMemos.columns.from')}\t${t('xlmByMemo:wrongMemos.columns.amount')}\t${t('xlmByMemo:wrongMemos.columns.memo')}\t${t('xlmByMemo:wrongMemos.columns.tx_hash')}`;
                 const lines = [header, ...sortedTopRows.map(r => `${r.created_at}\t${r.from}\t${r.amount}\t${r.memo || '(leer)'}\t${r.tx_hash}`)].join('\n');
                 try { await navigator.clipboard.writeText(lines); } catch { /* noop */ }
               }}
             >
-              {t('xlmByMemo.topLargest.clipboard')}
+              {t('xlmByMemo:topLargest.clipboard')}
             </button>
           </div>
         </div>
@@ -1025,6 +1025,5 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     </div>
   );
 }
-
 
 

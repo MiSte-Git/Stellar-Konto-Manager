@@ -1,6 +1,6 @@
 {
   "menu": "Stellar Quiz for Beginners",
-  "menuHint": "Open learning summary",
+  "menuHint": "Open learning overview",
   "pageTitle": "Learning page",
   "pageIntro": "Short, beginner-friendly lessons on blockchain and the Stellar network. No prior knowledge required.",
   "labels": {
@@ -15,12 +15,12 @@
   },
   "progress": {
     "saved": "Progress saved",
-    "starsLabel": "{count} ★",
+    "starsLabel": "{count} stars",
     "error": "Progress could not be saved.",
     "clearAll": "Delete progress",
     "cleared": "Progress deleted",
     "setStarsGroup": "Assign stars",
-    "setStars": "Rate {count} stars",
+    "setStars": "Set {count} stars",
     "completed": "Completed",
     "markComplete": "Mark as completed",
     "export": "Export",
@@ -33,7 +33,7 @@
   "badges": {
     "title": "Badge",
     "chapters": {
-      "grundlagen": "Fundamentals",
+      "grundlagen": "Basics",
       "sicherheit": "Security",
       "praxis": "Practice"
     },
@@ -42,105 +42,111 @@
   "status": {
     "success": "Success",
     "validation": "Validation",
-    "pending": "Waiting for validation",
-    "retry": "Please try again."
+    "pending": "Awaiting validation",
+    "retry": "Please try again.",
+    "noData": "No quiz available.",
+    "comingSoon": "Practice for this lesson will follow shortly.",
+    "testnetOnly": "Use TESTNET only. Never enter real secret keys. We do not store secrets."
   },
   "import": {
     "title": "Import progress",
-    "summary": "Summary: {lessons} lessons, {stars} total stars. Practice Metadata: {meta}",
+    "summary": "Summary: {lessons} lessons, {stars} stars in total. Practice metadata: {meta}",
     "metaYes": "yes",
     "metaNo": "no",
     "createdAt": "File created",
     "strategy": "How to import?",
     "merge": "Merge (Keep existing, supplement from file)",
-    "replace": "Overwrite existing progress",
+    "replace": "Overwrite (replace existing progress)",
     "includePracticeMeta": "Adopt practice metadata",
     "cancel": "Cancel",
-    "confirm": "Import.",
+    "confirm": "Import",
     "invalid": "Invalid or incompatible file"
   },
   "lesson1": {
-    "title": "What is a blockchain?",
-    "goal": "Understanding the principle of blockchain",
-    "task": "Constructing blocks (transactions) into a chain",
-    "learningOutcome": "A blockchain is an immutable digital ledger that everyone can jointly verify.",
+    "title": "A blockchain is a decentralized digital ledger that records transactions across many computers in such a way that the registered transactions cannot be altered retroactively. Each block in the chain contains multiple transactions, and every time a new transaction occurs on the blockchain, a record of that transaction is added to every participant's ledger. This ensures transparency and security, as the data is distributed and verified across multiple nodes, making it difficult for any single entity to manipulate the information.",
+    "goal": "Understanding the Principle of Blockchain",
+    "task": "Assemble building blocks (transactions) into a chain",
+    "learningOutcome": "A blockchain is an immutable digital ledger that is collectively verified by all participants.",
     "reward": "⭐ 1 – Block Builder"
   },
   "lesson2": {
-    "title": "Understand Stellar",
-    "goal": "Difference from other blockchains known",
-    "task": "Send token to friend (simulation) and see speed",
-    "learningOutcome": "Stellar is fast, inexpensive, and mining-free.",
-    "reward": "⭐ 1 – Quick Sender"
+    "title": "Understanding Stellar",
+    "goal": "Know the difference from other blockchains.",
+    "task": "Send token to friend (simulation) and view speed.",
+    "learningOutcome": "Stellar is fast, cheap, and without mining.",
+    "reward": "⭐ 1 – Quick-Sender"
   },
   "lesson3": {
     "title": "Public & Privacy",
-    "goal": "Understanding pseudonymity",
-    "task": "View the public transaction and guess if you know who is sending it.",
-    "learningOutcome": "Everything is visible, but no one knows the true name.",
-    "reward": "⭐ 1 – Privacy Detective"
+    "goal": "Understanding Pseudonymity",
+    "task": "View public transaction and guess if the sender is known",
+    "learningOutcome": "Everything is visible, but no one knows the real name.",
+    "reward": "⭐ 1 – Data Privacy Detective"
   },
   "lesson4": {
     "title": "Your account",
-    "goal": "Understand the structure and significance of public/private keys",
+    "goal": "Understand the structure and significance of public/private keys.",
     "task": "Matching Game: What is Public, What is Secret",
-    "learningOutcome": "Only the secret key provides access; the public key can be shared.",
+    "learningOutcome": "Only the secret key provides access; the public key may be shared.",
     "reward": "⭐ 1 – Key Guardian"
   },
   "lesson5": {
     "title": "Send & Receive",
-    "goal": "Understanding the Functionality of Transactions and Trustlines",
-    "task": "Execute test transmission and view fee.",
-    "learningOutcome": "Each transaction incurs a small fee; trustline = permission to receive.",
+    "goal": "Understanding the functionality of transactions and trustlines",
+    "task": "Execute test shipment and view fee",
+    "learningOutcome": "Each transaction incurs a small fee; Trustline = permission to receive.",
     "reward": "⭐ 2 – Trustline Starter"
   },
   "lesson6": {
     "title": "Token & Trading",
-    "goal": "Understanding market mechanisms",
-    "task": "Place token on virtual marketplace and observe price changes.",
+    "goal": "Getting to Know Market Mechanisms",
+    "task": "Place a token on a virtual marketplace and monitor the price change.",
     "learningOutcome": "Price is determined by supply and demand.",
     "reward": "⭐ 2 – Marketplace Expert"
   },
   "lesson7": {
     "title": "Security",
     "goal": "Learning safe behaviors",
-    "task": "Sorting correct/incorrect actions; Identifying fake tokens",
-    "learningOutcome": "Secrecy of the key, secure storage, and using a testnet.",
+    "task": "Sorting correct/incorrect actions; detecting fake tokens",
+    "learningOutcome": "Confidentiality of the key, secure storage, and use of the testnet.",
     "reward": "⭐ 2 – Security Guard"
   },
   "lesson8": {
     "title": "Verification & Identity",
-    "goal": "Understanding trust and rules",
-    "task": "Comparing real vs. fake tokens",
-    "learningOutcome": "KYC = Identity check, verification shows trusted tokens.",
-    "reward": "⭐ 2 – Test Expert"
+    "goal": "Understanding Trust and Rules",
+    "task": "Compare real versus fake tokens",
+    "learningOutcome": "KYC = Identity verification, verification shows trustworthy tokens.",
+    "reward": "⭐ 2 – Exam Expert"
   },
   "lesson9": {
     "title": "Zero Knowledge",
-    "goal": "Understanding data privacy concepts",
-    "task": "Example scenario: 'I am over 18' without displaying a birth date.",
+    "goal": "Understanding Data Privacy Concepts",
+    "task": "Example scenario 'I am over 18' without displaying a birth date.",
     "learningOutcome": "It is possible to prove something without revealing secrets.",
-    "reward": "⭐ 2 – ZK-Expert"
+    "reward": "⭐ 2 – ZK-Understanding"
   },
   "lesson10": {
     "title": "Practice with SKM",
-    "goal": "Apply learned skills in practice",
-    "task": "Create account in the testnet, activate it, set trustline, send token",
+    "goal": "Applying learned knowledge in practice",
+    "task": "Create an account in the testnet, activate it, set a trustline, send tokens.",
     "learningOutcome": "Understand the technical processes of a transaction.",
     "reward": "⭐ 3 – Blockchain Pilot"
   },
   "lesson11": {
     "title": "Responsibility",
     "goal": "Understanding the consequences of mistakes",
-    "task": "Decision Game: Act Correctly or Not?",
-    "learningOutcome": "Blockchain is final; diligence is a duty.",
+    "task": "Decision Game: Act Correctly or Not",
+    "learningOutcome": "Blockchain is final; due diligence is mandatory.",
     "reward": "⭐ 1 – Responsibility Hero"
   },
   "lesson12": {
-    "title": "Conclusion / Playful Learning",
-    "goal": "Repetition and Motivation",
-    "task": "Mini-quiz + badge display",
-    "learningOutcome": "Review learned material, recognize personal progress.",
+    "title": "Completion / Playful Learning",
+    "goal": "Repetition and motivation",
+    "task": "Mini-Quiz + Badge Display",
+    "learningOutcome": "Review learned material, recognize your own progress.",
     "reward": "🎖 Stellar Professional"
+  },
+  "actions": {
+    "startQuiz": "Start quiz"
   }
 }

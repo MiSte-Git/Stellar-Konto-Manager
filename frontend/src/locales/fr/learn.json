@@ -1,8 +1,8 @@
 {
-  "menu": "Quiz stellaire pour débutants",
-  "menuHint": "Ouvrir l'aperçu d'apprentissage",
+  "menu": "Quiz Stellaire pour Débutants",
+  "menuHint": "Aperçu de l'apprentissage ouvert",
   "pageTitle": "Page d'apprentissage",
-  "pageIntro": "Courtes leçons adaptées aux débutants sur la blockchain et le réseau Stellar. Aucune connaissance préalable requise.",
+  "pageIntro": "Des leçons courtes et accessibles pour débutants sur la blockchain et le réseau Stellar. Aucune connaissance préalable requise.",
   "labels": {
     "goal": "Objectif",
     "task": "Tâche",
@@ -10,20 +10,20 @@
     "reward": "Récompense"
   },
   "glossary": {
-    "link": "Ouvrir le glossaire",
+    "link": "Glossaire ouvert",
     "pageTitle": "Glossaire"
   },
   "progress": {
-    "saved": "Progrès sauvegardé",
-    "starsLabel": "{count} ★",
-    "error": "Les progrès n'ont pas pu être sauvegardés.",
-    "clearAll": "Effacer le progrès",
+    "saved": "Progrès enregistré",
+    "starsLabel": "{count} étoiles",
+    "error": "Les progrès ne peuvent pas être enregistrés.",
+    "clearAll": "Supprimer les progrès",
     "cleared": "Progrès supprimé",
     "setStarsGroup": "Attribuer des étoiles",
-    "setStars": "Attribuer {count} étoiles",
+    "setStars": "Définir {count} étoiles",
     "completed": "Terminé",
     "markComplete": "Marquer comme terminé",
-    "export": "Exporter",
+    "export": "Exportation",
     "exported": "Progrès exporté",
     "import": "Importer",
     "imported": "Progrès importé"
@@ -33,114 +33,120 @@
   "badges": {
     "title": "Insigne",
     "chapters": {
-      "grundlagen": "Fondements",
+      "grundlagen": "Notions de base",
       "sicherheit": "Sécurité",
       "praxis": "Pratique"
     },
-    "pro": "Professionnel de Stellar."
+    "pro": "Professionnel exceptionnel"
   },
   "status": {
     "success": "Succès",
     "validation": "Validation",
     "pending": "En attente de validation",
-    "retry": "Veuillez réessayer."
+    "retry": "Veuillez réessayer.",
+    "noData": "Aucun quiz disponible.",
+    "comingSoon": "La pratique pour cette leçon suivra sous peu.",
+    "testnetOnly": "Utilisez uniquement TESTNET. N'entrez jamais de vraies clés secrètes. Nous ne stockons pas les secrets."
   },
   "import": {
-    "title": "Importer le progrès",
-    "summary": "Résumé : {lessons} leçons, {stars} étoiles au total. Métadonnées de la pratique : {meta}",
+    "title": "Progrès de l'importation",
+    "summary": "Résumé : {lessons} leçons, {stars} étoiles au total. Métadonnées de pratique : {meta}",
     "metaYes": "oui",
     "metaNo": "non",
     "createdAt": "Fichier créé",
     "strategy": "Comment importer ?",
-    "merge": "Fusionner (conserver l'existant, compléter à partir du fichier)",
-    "replace": "Remplacer (écraser les progrès existants)",
-    "includePracticeMeta": "Adopter les métadonnées de la pratique.",
+    "merge": "Fusionner (Conserver l'existant, compléter à partir du fichier)",
+    "replace": "Écraser (remplacer la progression existante)",
+    "includePracticeMeta": "Adopter la métadonnée de pratique",
     "cancel": "Annuler",
     "confirm": "Importer",
     "invalid": "Fichier invalide ou incompatible"
   },
   "lesson1": {
-    "title": "Qu'est-ce qu'une blockchain ?",
+    "title": "Une blockchain est un registre numérique décentralisé qui enregistre des transactions sur de nombreux ordinateurs de manière à ce que les transactions enregistrées ne puissent pas être modifiées rétroactivement. Chaque bloc de la chaîne contient plusieurs transactions et chaque fois qu'une nouvelle transaction a lieu sur la blockchain, un enregistrement de cette transaction est ajouté au registre de chaque participant. Cela garantit la transparence et la sécurité, car les données sont distribuées et vérifiées à travers plusieurs nœuds, rendant ainsi difficile pour une entité unique de manipuler l'information.",
     "goal": "Comprendre le principe de la blockchain",
-    "task": "Assembler des blocs (transactions) pour former une chaîne.",
-    "learningOutcome": "Une blockchain est un registre numérique immuable, que tout le monde peut vérifier conjointement.",
+    "task": "Assembler des blocs de construction (transactions) dans une chaîne",
+    "learningOutcome": "Une blockchain est un registre numérique immuable qui est vérifié collectivement par tous les participants.",
     "reward": "⭐ 1 – Constructeur de blocs"
   },
   "lesson2": {
     "title": "Comprendre Stellar",
     "goal": "Connaître la différence par rapport aux autres blockchains.",
-    "task": "Envoyer un jeton à un ami (simulation) et voir la vitesse",
+    "task": "Envoyer un jeton à un ami (simulation) et voir la vitesse.",
     "learningOutcome": "Stellar est rapide, peu coûteux et sans minage.",
-    "reward": "⭐ 1 – Expéditeur Rapide"
+    "reward": "⭐ 1 – Expéditeur-Rapide"
   },
   "lesson3": {
-    "title": "Publicité et vie privée",
-    "goal": "Comprendre la pseudonymité",
-    "task": "Voir une transaction publique et deviner si l'on sait qui l'envoie",
+    "title": "Public & Confidentialité",
+    "goal": "Comprendre la pseudonymie",
+    "task": "Afficher la transaction publique et deviner si l'expéditeur est connu.",
     "learningOutcome": "Tout est visible, mais personne ne connaît le vrai nom.",
-    "reward": "⭐ 1 – Détective de la Protection des Données"
+    "reward": "⭐ 1 – Détective de la confidentialité des données"
   },
   "lesson4": {
     "title": "Votre compte",
-    "goal": "Comprendre la structure et la signification de la clé publique/privée",
-    "task": "Jeu d'association : Qu'est-ce qui est public, qu'est-ce qui est secret ?",
-    "learningOutcome": "Seul le secret key donne accès, le public key peut être partagé.",
-    "reward": "⭐ 1 – Gardien des clés"
+    "goal": "Comprendre la structure et l'importance des clés publiques/privées.",
+    "task": "Jeu d'appariement : Qu'est-ce qui est public, qu'est-ce qui est secret ?",
+    "learningOutcome": "Seule la clé secrète donne l'accès ; la clé publique peut être partagée.",
+    "reward": "⭐ 1 – Gardien Clé"
   },
   "lesson5": {
-    "title": "Envoyer et recevoir",
-    "goal": "Comprendre le fonctionnement des transactions et des lignes de confiance",
-    "task": "Exécuter un envoi de test et voir les frais",
+    "title": "Envoyer & Recevoir",
+    "goal": "Compréhension de la fonctionnalité des transactions et des lignes de confiance",
+    "task": "Exécuter l'envoi de test et consulter les frais.",
     "learningOutcome": "Chaque transaction entraîne des frais minimes ; Trustline = permission de recevoir.",
-    "reward": "⭐ 2 – Débutant Trustline"
+    "reward": "⭐ 2 – Démarreur de Trustline"
   },
   "lesson6": {
-    "title": "Jeton & Commerce",
-    "goal": "Découvrir les mécanismes du marché",
-    "task": "Déposer un jeton sur une place de marché virtuelle et observer le changement de prix.",
-    "learningOutcome": "Le prix résulte de l'offre et de la demande.",
-    "reward": "⭐ 2 – Expert du marché"
+    "title": "Fiche & Négociation",
+    "goal": "Comprendre les mécanismes du marché",
+    "task": "Placez un jeton sur une place de marché virtuelle et surveillez l'évolution de son prix.",
+    "learningOutcome": "Le prix est déterminé par l'offre et la demande.",
+    "reward": "⭐ 2 – Expert en Marketplace"
   },
   "lesson7": {
     "title": "Sécurité",
     "goal": "Apprendre des comportements sûrs",
-    "task": "Trier les actions correctes/incorrectes ; déceler les faux jetons",
-    "learningOutcome": "Confidentialité de la clé, conservation sécurisée et utilisation du testnet.",
-    "reward": "⭐ 2 – Gardien de sécurité"
+    "task": "Tri des actions correctes/incorrectes; détection des jetons falsifiés",
+    "learningOutcome": "Confidentialité de la clé, stockage sécurisé et utilisation du réseau de test.",
+    "reward": "⭐ 2 – Agent de sécurité"
   },
   "lesson8": {
-    "title": "Vérification & Identité",
+    "title": "Vérification et identité",
     "goal": "Comprendre la confiance et les règles",
-    "task": "Comparer les jetons authentiques et contrefaits",
+    "task": "Comparez les jetons réels aux jetons faux.",
     "learningOutcome": "KYC = Vérification d'identité, la vérification montre des jetons de confiance.",
-    "reward": "⭐ 2 – Expert en vérification"
+    "reward": "⭐ 2 – Expert en examen"
   },
   "lesson9": {
-    "title": "Zero Knowledge",
-    "goal": "Comprendre les concepts de protection des données",
-    "task": "Exemple de scénario 'J'ai plus de 18 ans' sans afficher la date de naissance.",
-    "learningOutcome": "On peut prouver quelque chose sans révéler de secrets.",
+    "title": "Connaissance Zéro",
+    "goal": "Comprendre les concepts de la protection des données",
+    "task": "Exemple de scénario 'J'ai plus de 18 ans' sans indiquer de date de naissance.",
+    "learningOutcome": "Il est possible de prouver quelque chose sans révéler de secrets.",
     "reward": "⭐ 2 – Compréhension des ZK"
   },
   "lesson10": {
     "title": "Pratique avec SKM",
-    "goal": "Appliquer les connaissances acquises dans la pratique",
-    "task": "Créer un compte dans le Testnet, l'activer, définir une Trustline, envoyer des tokens",
+    "goal": "Appliquer les connaissances acquises en pratique",
+    "task": "Créer un compte dans le testnet, l'activer, établir une ligne de confiance, envoyer des tokens.",
     "learningOutcome": "Comprendre les processus techniques d'une transaction.",
-    "reward": "⭐ 3 – Projet pilote de blockchain"
+    "reward": "⭐ 3 – Projet pilote de la blockchain"
   },
   "lesson11": {
     "title": "Responsabilité",
     "goal": "Comprendre les conséquences des erreurs",
-    "task": "Jeu de décision : agir correctement ou non",
-    "learningOutcome": "La blockchain est définitive; la diligence est de rigueur.",
-    "reward": "⭐ 1 – Héros de la responsabilité"
+    "task": "Jeu de Décision : Agir Correctement ou Non",
+    "learningOutcome": "La blockchain est définitive ; une vérification préalable est obligatoire.",
+    "reward": "⭐ 1 – Héros de la Responsabilité"
   },
   "lesson12": {
-    "title": "Achèvement / Apprentissage ludique",
+    "title": "Achèvement / Apprentissage Ludique",
     "goal": "Répétition et motivation",
-    "task": "Mini-quiz + affichage des badges",
-    "learningOutcome": "Réviser ce qui a été appris, reconnaître ses propres progrès.",
-    "reward": "🎖 Professionnel stellaire"
+    "task": "Mini-quiz + Affichage des badges",
+    "learningOutcome": "Révisez le matériel appris, reconnaissez vos propres progrès.",
+    "reward": "🎖 Professionnel Exceptionnel"
+  },
+  "actions": {
+    "startQuiz": "Commencer le quiz"
   }
 }

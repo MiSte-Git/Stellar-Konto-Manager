@@ -1,15 +1,15 @@
 {
-  "menu": "Modificare Multisig",
-  "menuHint": "Modificare i firmatari e le soglie di un conto esistente",
+  "menu": "Modifica multisig",
+  "menuHint": "Modifica i firmatari e le soglie di un account esistente.",
   "confirm": {
-    "removeSigner": "Rimuovere veramente il firmatario?"
+    "removeSigner": "Eliminare davvero il firmatario?"
   },
   "currentConfig": "Configurazione attuale / pianificata",
   "error": {
     "thresholdTooHigh": "Le soglie non devono superare la somma dei pesi."
   },
-  "hint": "Carica un account esistente, modifica i firmatari, i pesi, il peso principale e le soglie, quindi salva le modifiche.",
-  "load": "Caricare",
+  "hint": "Carica un account esistente, regola i firmatari, i pesi, il peso master e le soglie, e salva le modifiche.",
+  "load": "Negozio",
   "loaded": "Caricato. Firmatari aggiuntivi: {{count}}",
   "noteMaxSigners": "Nota: Stellar consente un massimo di 20 firmatari aggiuntivi per account.",
   "reload": "Ricaricare",
@@ -17,8 +17,8 @@
   "saved": "Modifiche salvate. TX: {{hash}}",
   "signers": "Firmatario",
   "weight": "Ponderazione",
-  "masterWeight": "Peso master",
-  "title": "Modificare account multisig",
+  "masterWeight": "Peso principale",
+  "title": "Modifica account multisig",
   "validation": {
     "signerKeyHint": "Nota: I firmatari devono iniziare con \"G\" (chiave pubblica ed25519).",
     "signerKeyInvalid": "Indirizzo del firmatario non valido. Si prevede un indirizzo G... (ed25519)."

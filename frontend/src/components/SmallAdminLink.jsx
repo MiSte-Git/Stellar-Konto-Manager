@@ -53,10 +53,10 @@ export default function SmallAdminLink() {
         href={buildPath('bugtracker')}
         onClick={handleLinkClick}
         className="underline decoration-dotted"
-        aria-label={t('bugReport.admin.link')}
-        title={t('bugReport.admin.link')}
+        aria-label={t('common:bugReport.admin.link')}
+        title={t('common:bugReport.admin.link')}
       >
-        {t('bugReport.admin.link')}
+        {t('common:bugReport.admin.link')}
       </a>
 
       {isOpen && portalRoot && createPortal(
@@ -72,12 +72,12 @@ export default function SmallAdminLink() {
             aria-hidden
           />
           <div className="relative max-h-[90vh] w-[min(92vw,420px)] overflow-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-4">
-            <h2 className="text-base font-semibold mb-3">{t('bugReport.admin.enterSecret')}</h2>
-            <label className="block text-xs mb-1">{t('bugReport.admin.enterSecret')}</label>
+            <h2 className="text-base font-semibold mb-3">{t('common:bugReport.admin.enterSecret')}</h2>
+            <label className="block text-xs mb-1">{t('common:bugReport.admin.enterSecret')}</label>
             <input
               type="password"
               className="w-full border rounded px-2 py-2 mb-4"
-              placeholder={t('bugReport.admin.secretPlaceholder')}
+              placeholder={t('common:bugReport.admin.secretPlaceholder')}
               value={secret}
               onChange={(e) => setSecret(e.target.value)}
               autoFocus
@@ -87,17 +87,17 @@ export default function SmallAdminLink() {
                 type="button"
                 className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
                 onClick={() => setIsOpen(false)}
-                title={t('bugReport.admin.cancel')}
+                title={t('common:bugReport.admin.cancel')}
               >
-                {t('bugReport.admin.cancel')}
+                {t('common:bugReport.admin.cancel')}
               </button>
               <button
                 type="button"
                 className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
                 onClick={handleConfirm}
-                title={t('bugReport.admin.confirm')}
+                title={t('common:bugReport.admin.confirm')}
               >
-                {t('bugReport.admin.confirm')}
+                {t('common:bugReport.admin.confirm')}
               </button>
             </div>
           </div>

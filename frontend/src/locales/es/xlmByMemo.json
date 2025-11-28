@@ -1,38 +1,38 @@
 {
   "page": {
-    "title": "Filtrar XLM por Memo",
-    "noPublicKey": "No se ha cargado ninguna clave pública. Por favor, introduce primero una clave pública."
+    "title": "Filtrar XLM por memo",
+    "noPublicKey": "No se ha cargado una clave pública. Por favor, introduzca primero una clave pública."
   },
   "action": {
     "calculate": "Calcular",
-    "loading": "Calcular…"
+    "loading": "Puedo ayudar con consultas generales y explicaciones, pero para cálculos específicos o análisis de datos actuales necesito una tarea concreta o un tema. ¿Podría proporcionar más información o detalles, por favor?"
   },
   "date": {
-    "from": "De (opcional)",
+    "from": "Desde (opcional)",
     "to": "Hasta (opcional)"
   },
   "debug": {
     "incoming": "Entrante - a: {{toMe}}, crear→me: {{createToMe}}, nativo→me: {{nativeInToMe}}",
-    "incomingOverview": "Entradas: {{total}} • billeteras involucradas: {{unique}}",
-    "memo": "Memorandos en la ventana: {{any}} • memorandos exactos: {{exact}}",
-    "types": "Tipos: pago: {{pay}}, ruta: {{path}}, crear: {{create}}, otros: {{other}}"
+    "incomingOverview": "Entradas: {{total}} • Carteras involucradas: {{unique}}",
+    "memo": "Memorandos en ventana: {{any}} • memorandos exactos: {{exact}}",
+    "types": "Tipos – pago: {{pay}}, ruta: {{path}}, crear: {{create}}, otro: {{other}}"
   },
   "export": {
-    "csv": "Verificar CSV (Coincidencia)",
+    "csv": "Verificar CSV (Coincidencias)",
     "csvAll": "Exportar todas las operaciones",
-    "csvBoth": "Guardar ambos archivos CSV.",
-    "csvMatches": "Revisar CSV (Coincidencias)"
+    "csvBoth": "Guarda ambos archivos CSV.",
+    "csvMatches": "Verificar CSV (Coincidencias)"
   },
   "exportCsv": {
-    "failed": "Error de exportación CSV: {{detail}}"
+    "failed": "La exportación CSV falló: {{detail}}"
   },
   "memo": {
-    "label": "Texto de búsqueda de memo (subcadena, respetar mayúsculas y minúsculas)",
-    "placeholder": "Memo (segmento de cadena, respetar mayúsculas y minúsculas)"
+    "label": "Texto de búsqueda de memo (subcadena, sensible a mayúsculas y minúsculas)",
+    "placeholder": "Memo (subcadena, distingue entre mayúsculas y minúsculas)"
   },
   "overviewLine": "Pagos recibidos: {{total}} • monederos involucrados: {{unique}}",
   "result": {
-    "label": "Suma total:",
+    "label": "Cantidad total:",
     "value": "{{amount}} XLM"
   },
   "summary": {
@@ -40,47 +40,47 @@
     "correctCount": "Entradas con memo correcto: {{n}}",
     "count": "Cantidad: {{n}}",
     "label": "Comparación (todas las entradas)",
-    "otherCount": "Entradas con memo incorrecto/sin memo: {{n}}",
-    "unique": "Carteras únicas (todas): {{n}}",
+    "otherCount": "Entradas con memorando incorrecto/faltante: {{n}}",
+    "unique": "Monederos únicos (todos): {{n}}",
     "uniqueWallets": "Monederos únicos: {{n}}"
   },
   "time": {
-    "setToNow": "Establecer la hora actual",
-    "setToNowHint": "Establece el campo de hora a la hora actual."
+    "setToNow": "Lo siento, pero no tengo la capacidad de establecer o percibir el tiempo actual. Mi entrenamiento se basa en datos hasta octubre de 2023. ¿En qué más puedo ayudarte?",
+    "setToNowHint": "Configure el campo de hora a la hora actual."
   },
-  "title": "Suma XLM según el memorando",
+  "title": "XLM total después de memo",
   "topLargest": {
-    "button": "Los 20 principales ingresos (Memo)",
-    "clipboard": "Copiar al portapapeles.",
+    "button": "Los 20 principales registros (Memo)",
+    "clipboard": "Copiar al portapapeles",
     "csv": "Descargar CSV",
-    "scanning": "… escanea las mejores entradas",
-    "title": "Principales 20 entradas para Memo en el período"
+    "scanning": "... escanea las principales entradas",
+    "title": "Los 20 principales registros para el memo en el período."
   },
   "tz": {
     "cdt": "CDT (UTC−5)",
     "cst": "CST (UTC−6)",
-    "europe_zurich": "Europa/Zúrich (CET/CEST)",
+    "europe_zurich": "Europa/Zurich (CET/CEST)",
     "label": "Zona horaria para fecha/hora",
     "local": "Zona horaria local",
-    "note": "Fecha/hora se interpretarán en la zona horaria elegida y se convertirán automáticamente a UTC antes de la búsqueda.",
+    "note": "La fecha/hora se interpretará en la zona horaria seleccionada y se convertirá automáticamente a UTC antes de buscar.",
     "utc": "UTC",
-    "window": "Ventana de tiempo UTC utilizada: {{from}} → {{to}} (Hasta exclusivo)"
+    "window": "Ventana de tiempo UTC utilizada: {{from}} → {{to}} (Exclusivo)"
   },
   "wrongMemos": {
-    "button": "Mostrar billeteras con memo incorrecto/vacío.",
-    "clipboard": "Copiar al portapapeles.",
+    "button": "Mostrar carteras con memorandos incorrectos/vacíos.",
+    "clipboard": "Copiar al portapapeles",
     "columns": {
-      "amount": "Importe",
-      "created_at": "Creado en Octubre de 2023.",
-      "from": "De",
-      "memo": "Memorando",
+      "amount": "Cantidad",
+      "created_at": "Creado en",
+      "from": "Hasta",
+      "memo": "Memorándum",
       "tx_hash": "Hash de transacción"
     },
     "csv": "Descargar CSV",
-    "failed": "Error al cargar los pagos con un memo incorrecto/vacío.",
-    "hint": "Filtra los pagos entrantes en el período y muestra los remitentes con un memo incorrecto/vacío.",
-    "scanning": "… escanea memorandos falsos/vacíos.",
-    "summary": "Cantidad: {{count}} • Total: {{sum}} XLM • Billeteras únicas: {{unique}}",
-    "title": "\"Notas falsas/vacías en el período\""
+    "failed": "Error al cargar pagos con memorándum incorrecto/vacío.",
+    "hint": "Filtra los pagos entrantes dentro del período y muestra a los remitentes con memorandos incorrectos/vacíos.",
+    "scanning": "... escanea memorandos falsos/vacíos",
+    "summary": "Recuento: {{count}} • Total: {{sum}} XLM • Carteras Únicas: {{unique}}",
+    "title": "Memorandos falsos/vacíos durante el período"
   }
 }

@@ -7,7 +7,7 @@
     "destination": "Portefeuille cible",
     "issuer": "Émetteur",
     "label": "Étiquette",
-    "memo": "Note de service",
+    "memo": "Mémo",
     "payments": "Paiements",
     "date": "Date",
     "token": "Jeton"
@@ -23,13 +23,13 @@
   "item": {
     "memo": "Mémo : « {{memo}} » (Paiements : {{occurrences}})",
     "token": "Jeton : {{token}} (Paiements : {{occurrences}})",
-    "tokenShort": "Jeton : {{jeton}}"
+    "tokenShort": "Jeton : {{token}}"
   },
   "missingPublicKey": "Clé publique manquante.",
-  "moreTruncated": "… et {{extra}} autres groupes",
-  "toWallet": "au portefeuille : {{address}}",
+  "moreTruncated": "... et {{extra}} groupes supplémentaires",
+  "toWallet": "Vers le portefeuille : {{adresse}}",
   "total": "Nombre de jetons achetés : {{count}}",
-  "totalTokens": "Nombre de jetons investis (actifs) : {{count}}",
+  "totalTokens": "Nombre de jetons (actifs) investis : {{count}}",
   "value": {
     "units": "{{amount}} pièces",
     "xlm": "{{amount}} XLM"
@@ -37,22 +37,22 @@
   "view": {
     "label": "Filtrer par :",
     "memo": "Mémos (Groupfund)",
-    "token": "Token (quantité achetée)"
+    "token": "Jeton (quantité achetée)"
   },
   "toggles": {
     "showTotals": "Somme totale",
     "qsiOnly": "Somme QSI GF"
   },
   "hints": {
-    "qsiListSet": "Remarque : Vous pouvez trouver la liste GF sous Paramètres → Portefeuilles de confiance (QSI).",
+    "qsiListSet": "Remarque : Vous pouvez trouver la liste blanche sous Paramètres → Portefeuilles de confiance (QSI).",
     "pageTime": "Le chargement d'une page prend environ 0,2 seconde → 100 pages ≈ 20 secondes → 1000 pages ≈ 200 secondes (≈ 3:20 minutes)."
   },
-  "walletCapInfo": "Remarque : Un portefeuille peut contenir au maximum 1000 lignes de confiance.",
+  "walletCapInfo": "Remarque : Un portefeuille peut contenir un maximum de 1000 lignes de confiance.",
   "action": {
-    "load": "Charger"
+    "load": "Chargement"
   },
   "history": {
-    "availableFrom": "Serveur (Horizon) – Historique à partir de",
-    "hintFullHistory": "Remarque : L'historique des journaux du serveur Horizon ne remonte que jusqu'à {{available}}. Seules les données jusqu'à cette date seront affichées. La date choisie pour le début est donc limitée. Pour des données plus anciennes, un fournisseur de données avec un historique complet (généralement payant) est nécessaire (peut-être à l'avenir !)."
+    "availableFrom": "Serveur (Horizon) – Histoire depuis",
+    "hintFullHistory": "Remarque : L'historique du grand livre du serveur Horizon ne remonte qu'à {{available}}. Seules les données jusqu'à ce point seront affichées. Par conséquent, la date de départ choisie est limitée. Pour des données plus anciennes, un fournisseur d'historique complet (généralement payant) est nécessaire (cela pourrait être disponible à l'avenir !)."
   }
 }

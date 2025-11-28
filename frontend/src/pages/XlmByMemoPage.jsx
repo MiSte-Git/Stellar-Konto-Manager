@@ -13,14 +13,14 @@ export default function XlmByMemoPage({ publicKey, horizonUrl: _horizonUrl = 'ht
   if (!publicKey) {
     return (
       <div className="p-4">
-        {t('xlmByMemo.page.noPublicKey')}
+        {t('xlmByMemo:page.noPublicKey')}
       </div>
     );
   }
 
   return (
     <div className="p-4 space-y-4 max-w-4xl mx-auto">
-      <h2 className="text-center text-xl font-semibold">{t('xlmByMemo.page.title')}</h2>
+      <h2 className="text-center text-xl font-semibold">{t('xlmByMemo:page.title')}</h2>
       <XlmByMemoPanel publicKey={publicKey} horizonUrl="https://horizon.stellar.org" onBack={onBack} />
     </div>
   );

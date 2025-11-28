@@ -1,17 +1,17 @@
 {
-  "menu": "Modifier le multisig",
-  "menuHint": "Modifier les signataires et les seuils d'un compte existant",
+  "menu": "Modifier multisig",
+  "menuHint": "Ajuster les signataires et les seuils d'un compte existant",
   "confirm": {
-    "removeSigner": "Supprimer vraiment le signataire ?"
+    "removeSigner": "Voulez-vous vraiment supprimer le signataire ?"
   },
   "currentConfig": "Configuration actuelle / prévue",
   "error": {
     "thresholdTooHigh": "Les seuils ne doivent pas dépasser la somme des poids."
   },
   "hint": "Chargez un compte existant, ajustez les signataires, les poids, le poids principal et les seuils, puis enregistrez les modifications.",
-  "load": "Chargement",
+  "load": "Magasin",
   "loaded": "Chargé. Signataires supplémentaires : {{count}}",
-  "noteMaxSigners": "Remarque : Stellar permet un maximum de 20 signataires supplémentaires par compte.",
+  "noteMaxSigners": "Remarque : Stellar autorise un maximum de 20 signataires supplémentaires par compte.",
   "reload": "Recharger",
   "save": "Enregistrer les modifications",
   "saved": "Modifications enregistrées. TX : {{hash}}",
@@ -21,6 +21,6 @@
   "title": "Modifier le compte multisig",
   "validation": {
     "signerKeyHint": "Remarque : Les signataires doivent commencer par \"G\" (clé publique ed25519).",
-    "signerKeyInvalid": "Adresse de signataire invalide. Une adresse commençant par G… (ed25519) est attendue."
+    "signerKeyInvalid": "Adresse du signataire invalide. Une adresse G... (ed25519) était attendue."
   }
 }

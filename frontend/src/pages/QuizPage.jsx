@@ -111,7 +111,7 @@ export default function QuizPage() {
         >
           ← {t('learn:back', 'Back')}
         </button>
-        <h1 className="text-2xl font-bold flex-1 text-center">{isSettingsRoute() ? t('quiz:settings.title') : isAchievementsRoute() ? t('quiz:achievements.title') : t('quiz:ui.routeTitle', { id: lessonNum })}</h1>
+        <h1 className="text-2xl font-bold flex-1 text-center">{isSettingsRoute() ? t('quiz:settings.title') : isAchievementsRoute() ? t('quiz:achievements.title') : t('quiz.ui:routeTitle', { id: lessonNum })}</h1>
         <div className="w-[76px]" aria-hidden />
       </div>
 
@@ -122,18 +122,18 @@ export default function QuizPage() {
       ) : isRunRoute() ? (
         <>
           {loading && (
-            <div className="text-sm text-gray-600 dark:text-gray-300">{t('common.loading', 'Loading…')}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">{t('common:common.loading', 'Loading…')}</div>
           )}
           {error && !loading && (
             <div className="text-sm text-gray-600 dark:text-gray-300">
               <div>{error}</div>
-              <div className="mt-1">{t('quiz:ui.noDataHelp')}</div>
+              <div className="mt-1">{t('quiz.ui:noDataHelp')}</div>
               <button
                 type="button"
                 onClick={goBack}
                 className="mt-3 inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-xs font-medium px-3 py-1.5 rounded"
               >
-                ← {t('quiz:ui.backToLearn')}
+                ← {t('quiz.ui:backToLearn')}
               </button>
             </div>
           )}
@@ -149,18 +149,18 @@ export default function QuizPage() {
       ) : (
         <>
           {loading && (
-            <div className="text-sm text-gray-600 dark:text-gray-300">{t('common.loading', 'Loading…')}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">{t('common:common.loading', 'Loading…')}</div>
           )}
           {error && !loading && (
             <div className="text-sm text-gray-600 dark:text-gray-300">
               <div>{error}</div>
-              <div className="mt-1">{t('quiz:ui.noDataHelp')}</div>
+              <div className="mt-1">{t('quiz.ui:noDataHelp')}</div>
               <button
                 type="button"
                 onClick={goBack}
                 className="mt-3 inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-xs font-medium px-3 py-1.5 rounded"
               >
-                ← {t('quiz:ui.backToLearn')}
+                ← {t('quiz.ui:backToLearn')}
               </button>
             </div>
           )}

@@ -27,7 +27,7 @@ function CompareTrustlines({
 
   const handleCompare = async () => {
     if (!destinationPublicKey || !StrKey.isValidEd25519PublicKey(destinationPublicKey)) {
-      setError(t('publicKey.destination.error'));
+      setError(t('publicKey:destination.error'));
       setDestNotFound(false);
       return;
     }
@@ -58,7 +58,7 @@ function CompareTrustlines({
         setResults(duplicates);
         setConfirmAction(() => async () => {
           if (!sourceSecret || !StrKey.isValidEd25519SecretSeed(sourceSecret)) {
-            setError(t('secretKey.invalid'));
+            setError(t('secretKey:invalid'));
             return;
           }
 
@@ -67,21 +67,21 @@ function CompareTrustlines({
               messages: ['[Test-Modus] Diese Trustlines würden jetzt gelöscht.']
             };
 
-            setResults([...result.messages, t('secretKey.cleared')]);
+            setResults([...result.messages, t('secretKey:cleared')]);
             setTrustlines(await loadTrustlines(sourcePublicKey));
             setSourceSecret('');
             setShowSecretKey(false);
           } catch (err) {
             console.error('Fetch error:', err);
             setError(err.message.includes('Failed to fetch')
-              ? `${t('error.connection.backend')} ${backendUrl}`
+              ? `${t('common:error.connection.backend')} ${backendUrl}`
               : err.message
             );
           }
         });
         setShowConfirm(true);
       } else {
-        setResults([t('trustline.noDuplicates')]);
+        setResults([t('trustline:noDuplicates')]);
       }
     } catch (err) {
       setError(err.message);
@@ -95,8 +95,8 @@ function CompareTrustlines({
   return (
     <div>
       <MenuHeader setMenuSelection={setMenuSelection} menuSelection={menuSelection} />
-      <h2 className="text-center text-xl font-semibold">{t('trustline.compare')}</h2>
-      <label className="block mb-2">{t('publicKey.destination.input')}:</label>
+      <h2 className="text-center text-xl font-semibold">{t('trustline:compare')}</h2>
+      <label className="block mb-2">{t('publicKey:destination.input')}:</label>
       <div className="relative">
         <input
           type="text"
@@ -115,8 +115,8 @@ function CompareTrustlines({
           <button
             type="button"
             onClick={() => setDestinationPublicKey('')}
-            title={t('common.clear')}
-            aria-label={t('common.clear')}
+            title={t('common:common.clear')}
+            aria-label={t('common:common.clear')}
             className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-xs flex items-center justify-center"
           >
             ×
@@ -128,11 +128,11 @@ function CompareTrustlines({
         className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         disabled={isLoading}
       >
-        {isLoading ? t('option.loading', 'Loading…') : t('trustline.compare')}
+        {isLoading ? t('common:option.loading', 'Loading…') : t('trustline:compare')}
       </button>
       {destNotFound && (
         <div className="text-center text-xs text-red-700 my-2 inline-block border border-red-500 rounded px-2 py-0.5">
-          {t('error.accountNotFoundInNetwork', { net: netLabel })}
+          {t('common:error.accountNotFoundInNetwork', { net: netLabel })}
         </div>
       )}
     </div>

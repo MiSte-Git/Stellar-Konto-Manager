@@ -1,0 +1,104 @@
+{
+  "backup": {
+    "title": "Back-up en herstel",
+    "desc": "Exporteer of importeer je quizgegevens (instellingen, voortgang, badges).",
+    "export": {
+      "button": "Begin met exporteren",
+      "success": "Export aangemaakt",
+      "error": "Export mislukt",
+      "fileName": "quiz-backup.json"
+    },
+    "import": {
+      "title": "Import",
+      "selectFile": "Bestand selecteren",
+      "noFile": "Geen bestand geselecteerd",
+      "strategy": {
+        "label": "Strategie",
+        "merge": "Samenvoegen",
+        "replace": "Vervangen"
+      },
+      "preview": {
+        "title": "Voorbeschouwing",
+        "stats": {
+          "settings": "Instellingen: {{count}} quiz(zen)",
+          "progress": "Voortgang: {{count}} quiz(zen)",
+          "achievements": "Badge: {{count}} quiz(zen)"
+        }
+      },
+      "perform": "Import uitvoeren",
+      "done": "Import voltooid",
+      "backupCreated": "Automatische back-up opgeslagen",
+      "invalid": "Ongeldig importbestand",
+      "error": "Import mislukt"
+    },
+    "toast": {
+      "exported": "Back-up geëxporteerd",
+      "backupBeforeImport": "Er werd een back-up opgeslagen voor de import."
+    },
+    "nav": {
+      "back": "Terug"
+    }
+  },
+  "cache": {
+    "help": "Versnelt queries door middel van een lokale betalingscache, maar kan de initiële laadtijd verlengen.",
+    "label": "Cache gebruiken (Bèta)",
+    "prefetchHelp": "Levertijd voor het laden van invoeren/transacties in dagen (eenmalig tijdens de eerste activatie)"
+  },
+  "network": {
+    "title": "Netwerk",
+    "desc": "Optioneel: Volledige-geschiedenis Horizon voor Diepe Geschiedenis",
+    "fullUrl": "Volledige Geschiedenis Horizon URL",
+    "autoUseFull": "Automatisch gebruiken als de vanaf-datum ouder is dan de servergeschiedenis."
+  },
+  "description": "Momenteel zijn er nog geen instellingen.",
+  "display": {
+    "decimals": {
+      "auto": "Automatisch",
+      "label": "Decimale plaatsen"
+    },
+    "desc": "Globale beeldscherminstellingen.",
+    "title": "Advertentie"
+  },
+  "error": {
+    "fetchFailed": "Het is niet gelukt om de instellingen te laden: {{detail}}"
+  },
+  "label": "Instellingen",
+  "prefetchDays": "Levertijd (dagen)",
+  "trustedWallets": {
+    "buttons": {
+      "export": "Exporteren",
+      "import": "Importeren",
+      "reset": "Reset naar standaardinstellingen"
+    },
+    "desc": "Deze lijst wordt lokaal in de browser opgeslagen. Standaardbestand: QSI_TrustedWallets.json",
+    "editor": {
+      "invalidFormat": "Ongeldig formaat. Er wordt een object met een veld \"wallets\" (reeks) verwacht.",
+      "parseError": "JSON kon niet worden geparsed."
+    },
+    "file": {
+      "hint": "Importeer een JSON-bestand in het formaat { \"wallets\": [...] }",
+      "label": "Bestand"
+    },
+    "info": {
+      "count": "Invoeringen: {{n}}",
+      "updatedAt": "Vanaf {{date}}"
+    },
+    "table": {
+      "addRow": "Voeg regel toe",
+      "columns": {
+        "actions": "Acties",
+        "address": "Adres",
+        "compromised": "Gecompromitteerd",
+        "deactivated": "Gedeactiveerd",
+        "label": "Etiket"
+      },
+      "deleteRow": "Verwijderen",
+      "discard": "Weggooien",
+      "save": "Opslaan"
+    },
+    "title": "Mijn Vertrouwde Portemonnees",
+    "validation": {
+      "hint": "Minstens één regel is ongeldig (ontbrekend/gedupliceerd adres)."
+    }
+  }
+}

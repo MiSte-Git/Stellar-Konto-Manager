@@ -494,12 +494,12 @@ export async function handleSourceSubmit(sourceInput, t, networkOverride /* 'PUB
     // Fehler beim Laden der Trustlines (z.B. Netzwerkproblem)
     const code = String(loadError?.message || '');
     if (code === 'error.rateLimited') {
-      throw new Error(t('error.rateLimited', 'Horizon rate limit exceeded. Please wait a few seconds and try again.'));
+      throw new Error(t('common:error.rateLimited', 'Horizon rate limit exceeded. Please wait a few seconds and try again.'));
     }
     if (code === 'error.loadTrustlinesNotFound') {
-      throw new Error(t('error.loadTrustlinesNotFound', 'Account not found on this network.'));
+      throw new Error(t('common:error.loadTrustlinesNotFound', 'Account not found on this network.'));
     }
-    throw new Error(t('error.loadTrustlines', 'Failed to load trustlines. Please try again.'));
+    throw new Error(t('common:error.loadTrustlines', 'Failed to load trustlines. Please try again.'));
   }
 }
 /**
@@ -516,7 +516,7 @@ export async function handleDeleteTrustlines({
   const pubKeyFromSecret = keypair.publicKey();
 
   if (pubKeyFromSecret !== sourcePublicKey) {
-    throw new Error(t('secretKey.mismatch'));
+    throw new Error(t('secretKey:mismatch'));
   }
 
   // Optional: Validierung der Trustlines hier ergänzen
@@ -877,4 +877,3 @@ export async function sumIncomingXLMByMemo({
 
   return total;
 }
-

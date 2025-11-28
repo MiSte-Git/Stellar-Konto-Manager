@@ -1,27 +1,27 @@
 {
-  "all": "Elenca tutte le linee di fiducia",
-  "compare": "Confronta Trustlines",
-  "delete": "Eliminare le linee di credito",
-  "onlyZeroBalanceInfo": "È possibile eliminare solo le linee di credito con saldo 0.",
-  "nonZeroBalance": "Questa trustline ha un saldo diverso da 0 e non può essere eliminata.",
+  "all": "Elenca tutte le linee di fiducia.",
+  "compare": "Confronto delle linee di fiducia",
+  "delete": "Elimina le linee di fiducia",
+  "onlyZeroBalanceInfo": "Solo le linee di fiducia con un saldo di 0 possono essere eliminate.",
+  "nonZeroBalance": "Questa linea di fiducia ha un saldo diverso da zero e non può essere eliminata.",
   "destination": {
     "label": "Indirizzo di destinazione",
-    "placeholder": "Chiave pubblica di destinazione o indirizzo di federazione",
-    "error": "Indirizzo di destinazione non valido."
+    "placeholder": "Chiave pubblica di destinazione o indirizzo federato",
+    "error": "Indirizzo di destinazione non valido"
   },
   "deleted": {
     "resultTitle": "Risultato della cancellazione",
-    "resultText": "{count} Trustlines sono state elaborate in modalità {mode}.",
+    "resultText": "{count} linee di fiducia sono state elaborate in modalità {mode}.",
     "mode": {
       "simulation": "Simulazione",
-      "real": "Operatività reale",
-      "realWarning": "Attenzione! Questo eliminerà definitivamente le Trustlines sulla blockchain."
+      "real": "Operazione dal vivo",
+      "realWarning": "Avvertimento! Questo eliminerà definitivamente le linee di fiducia sulla blockchain."
     },
-    "notFound": "Nessuna trustline corrispondente trovata da eliminare.",
+    "notFound": "Nessuna linea di fiducia corrispondente trovata da eliminare.",
     "simulated": "Simulazione: verrebbero eliminate {count} linee di fiducia.",
-    "success": "Eliminazione riuscita: {count} trustlines cancellate."
+    "success": "Con successo: {count} linee di fiducia eliminate."
   },
-  "noDuplicates": "Nessuna trustline duplicata trovata.",
-  "showSecret": "Visualizza chiave segreta",
+  "noDuplicates": "Nessuna linea di fiducia duplicata trovata.",
+  "showSecret": "Visualizza Chiave Segreta",
   "notFound": "Nessuna linea di fiducia trovata."
 }

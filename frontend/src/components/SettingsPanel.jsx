@@ -72,14 +72,14 @@ export default function SettingsPanel({ publicKey }) {
       {/* Display / Global settings */}
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">
-          {t('settings.display.title', 'Display')}
+          {t('settings:display.title', 'Display')}
         </h2>
         <p className="text-sm text-gray-600 dark:text-gray-300">
-          {t('settings.display.desc', 'Global display preferences.')}
+          {t('settings:display.desc', 'Global display preferences.')}
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <label className="text-sm" htmlFor="decimals-mode">
-            {t('settings.display.decimals.label', 'Decimals')}
+            {t('settings:display.decimals.label', 'Decimals')}
           </label>
           <select
             id="decimals-mode"
@@ -87,7 +87,7 @@ export default function SettingsPanel({ publicKey }) {
             value={decimalsMode}
             onChange={(e) => setDecimalsMode(e.target.value)}
           >
-            <option value="auto">{t('settings.display.decimals.auto', 'Automatic')}</option>
+            <option value="auto">{t('settings:display.decimals.auto', 'Automatic')}</option>
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -102,10 +102,10 @@ export default function SettingsPanel({ publicKey }) {
 
       {/* Network / Horizon settings */}
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold">{t('settings.network.title', 'Netzwerk')}</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-300">{t('settings.network.desc', 'Optional: Full-History-Horizon für tiefe Historie')}</p>
+        <h2 className="text-lg font-semibold">{t('settings:network.title', 'Netzwerk')}</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('settings:network.desc', 'Optional: Full-History-Horizon für tiefe Historie')}</p>
         <div className="flex flex-col sm:flex-row gap-3 items-start">
-          <label className="text-sm sm:w-56">{t('settings.network.fullUrl', 'Full-History Horizon URL')}</label>
+          <label className="text-sm sm:w-56">{t('settings:network.fullUrl', 'Full-History Horizon URL')}</label>
           <input
             className="border rounded px-2 py-1 w-full"
             placeholder="https://example-full-history-horizon"
@@ -115,7 +115,7 @@ export default function SettingsPanel({ publicKey }) {
         </div>
         <label className="inline-flex items-center gap-2 text-sm">
           <input type="checkbox" checked={autoUseFullHorizon} onChange={(e)=>setAutoUseFullHorizon(e.target.checked)} />
-          {t('settings.network.autoUseFull', 'Bei Bedarf automatisch verwenden (wenn Von-Datum älter als Server-Historie)')}
+          {t('settings:network.autoUseFull', 'Bei Bedarf automatisch verwenden (wenn Von-Datum älter als Server-Historie)')}
         </label>
       </section>
 
@@ -123,22 +123,22 @@ export default function SettingsPanel({ publicKey }) {
       <section className="space-y-5">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">
-            {t('settings.trustedWallets.title', 'Trusted wallets (QSI)')}
+            {t('settings:trustedWallets.title', 'Trusted wallets (QSI)')}
           </h2>
           <div className="text-sm text-gray-600 dark:text-gray-300">
             <span className="mr-3">
-              {t('settings.trustedWallets.info.count', 'Entries: {{n}}', { n: infoCount })}
+              {t('settings:trustedWallets.info.count', 'Entries: {{n}}', { n: infoCount })}
             </span>
             {infoUpdatedAt && (
               <span>
-                {t('settings.trustedWallets.info.updatedAt', 'As of: {{date}}', { date: infoUpdatedAt })}
+                {t('settings:trustedWallets.info.updatedAt', 'As of: {{date}}', { date: infoUpdatedAt })}
               </span>
             )}
           </div>
         </div>
 
         <p className="text-sm text-gray-600 dark:text-gray-300">
-          {t('settings.trustedWallets.desc', 'This list is stored locally (browser). Default file: QSI_TrustedWallets.json')}
+          {t('settings:trustedWallets.desc', 'This list is stored locally (browser). Default file: QSI_TrustedWallets.json')}
         </p>
 
         <div className="flex flex-wrap gap-2">
@@ -147,7 +147,7 @@ export default function SettingsPanel({ publicKey }) {
             onClick={onImportClick}
             className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
           >
-            {t('settings.trustedWallets.buttons.import', 'Import')}
+            {t('settings:trustedWallets.buttons.import', 'Import')}
           </button>
           <input
             ref={fileRef}
@@ -155,25 +155,25 @@ export default function SettingsPanel({ publicKey }) {
             accept="application/json,.json"
             onChange={onFileSelected}
             className="hidden"
-            aria-label={t('settings.trustedWallets.file.label', 'File')}
-            title={t('settings.trustedWallets.file.hint', 'Import a JSON file of shape { wallets: [...] }')}
+            aria-label={t('settings:trustedWallets.file.label', 'File')}
+            title={t('settings:trustedWallets.file.hint', 'Import a JSON file of shape { wallets: [...] }')}
           />
           <button
             type="button"
             onClick={() => {
-              const fn = buildDefaultFilename({ publicKey, menuLabel: t('settings.trustedWallets.title'), ext: 'json' });
+              const fn = buildDefaultFilename({ publicKey, menuLabel: t('settings:trustedWallets.title'), ext: 'json' });
               exportFile(fn);
             }}
             className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
           >
-            {t('settings.trustedWallets.buttons.export', 'Export')}
+            {t('settings:trustedWallets.buttons.export', 'Export')}
           </button>
           <button
             type="button"
             onClick={resetToDefault}
             className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
           >
-            {t('settings.trustedWallets.buttons.reset', 'Reset to default')}
+            {t('settings:trustedWallets.buttons.reset', 'Reset to default')}
           </button>
           <div className="ml-auto flex gap-2">
             <button
@@ -181,7 +181,7 @@ export default function SettingsPanel({ publicKey }) {
               onClick={addRow}
               className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              {t('settings.trustedWallets.table.addRow', 'Add row')}
+              {t('settings:trustedWallets.table.addRow', 'Add row')}
             </button>
             <button
               type="button"
@@ -189,16 +189,16 @@ export default function SettingsPanel({ publicKey }) {
               disabled={!hasChanges}
               className="px-3 py-2 rounded-lg border text-sm disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              {t('settings.trustedWallets.table.discard', 'Discard')}
+              {t('settings:trustedWallets.table.discard', 'Discard')}
             </button>
             <button
               type="button"
               onClick={applyChanges}
               disabled={!hasChanges || !!invalidReason}
-              title={invalidReason ? t('settings.trustedWallets.validation.hint', 'At least one row is invalid (missing/duplicate address).') : ''}
+              title={invalidReason ? t('settings:trustedWallets.validation.hint', 'At least one row is invalid (missing/duplicate address).') : ''}
               className="px-3 py-2 rounded-lg border text-sm disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              {t('settings.trustedWallets.table.save', 'Save')}
+              {t('settings:trustedWallets.table.save', 'Save')}
             </button>
           </div>
         </div>
@@ -213,11 +213,11 @@ export default function SettingsPanel({ publicKey }) {
           <table className="w-full text-sm min-w-[800px]">
             <thead className="bg-gray-100 dark:bg-gray-700">
               <tr className="text-left border-b">
-                <th className="px-2 py-2 w-[40%]">{t('settings.trustedWallets.table.columns.address', 'Address')}</th>
-                <th className="px-2 py-2 w-[30%]">{t('settings.trustedWallets.table.columns.label', 'Label')}</th>
-                <th className="px-2 py-2 w-[10%] text-center">{t('settings.trustedWallets.table.columns.compromised', 'Compromised')}</th>
-                <th className="px-2 py-2 w-[10%] text-center">{t('settings.trustedWallets.table.columns.deactivated', 'Deactivated')}</th>
-                <th className="px-2 py-2 w-[10%] text-center">{t('settings.trustedWallets.table.columns.actions', 'Actions')}</th>
+                <th className="px-2 py-2 w-[40%]">{t('settings:trustedWallets.table.columns.address', 'Address')}</th>
+                <th className="px-2 py-2 w-[30%]">{t('settings:trustedWallets.table.columns.label', 'Label')}</th>
+                <th className="px-2 py-2 w-[10%] text-center">{t('settings:trustedWallets.table.columns.compromised', 'Compromised')}</th>
+                <th className="px-2 py-2 w-[10%] text-center">{t('settings:trustedWallets.table.columns.deactivated', 'Deactivated')}</th>
+                <th className="px-2 py-2 w-[10%] text-center">{t('settings:trustedWallets.table.columns.actions', 'Actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -236,7 +236,7 @@ export default function SettingsPanel({ publicKey }) {
                       className="w-full min-w-[150px] text-xs border rounded px-2 py-1"
                       value={r.label || ''}
                       onChange={(e) => updateCell(idx, 'label', e.target.value)}
-                      placeholder={t('settings.trustedWallets.table.columns.label', 'Label')}
+                      placeholder={t('settings:trustedWallets.table.columns.label', 'Label')}
                     />
                   </td>
                   <td className="px-2 py-1 text-center">
@@ -259,7 +259,7 @@ export default function SettingsPanel({ publicKey }) {
                       onClick={() => removeRow(idx)}
                       className="px-2 py-1 rounded border text-xs hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
-                      {t('settings.trustedWallets.table.deleteRow', 'Delete')}
+                      {t('settings:trustedWallets.table.deleteRow', 'Delete')}
                     </button>
                   </td>
                 </tr>

@@ -1,0 +1,104 @@
+{
+  "backup": {
+    "title": "Copia de seguridad y recuperación",
+    "desc": "Exporta o importa tus datos de cuestionarios (configuraciones, progreso, insignias).",
+    "export": {
+      "button": "Iniciar exportación",
+      "success": "Exportación creada",
+      "error": "La exportación falló",
+      "fileName": "quiz-backup.json"
+    },
+    "import": {
+      "title": "Importación",
+      "selectFile": "Seleccionar archivo",
+      "noFile": "Ningún archivo seleccionado",
+      "strategy": {
+        "label": "Estrategia",
+        "merge": "Fusionar",
+        "replace": "Reemplazar"
+      },
+      "preview": {
+        "title": "Vista previa",
+        "stats": {
+          "settings": "Configuraciones: {{count}} cuestionario(s)",
+          "progress": "Progreso: {{count}} cuestionario(s)",
+          "achievements": "Insignia: {{count}} cuestionario(s)"
+        }
+      },
+      "perform": "Realizar importación",
+      "done": "Importación completada",
+      "backupCreated": "Copia de seguridad automática guardada",
+      "invalid": "Archivo de importación no válido",
+      "error": "Importación fallida"
+    },
+    "toast": {
+      "exported": "Copia de seguridad exportada",
+      "backupBeforeImport": "Se guardó una copia de seguridad antes de la importación."
+    },
+    "nav": {
+      "back": "Atrás"
+    }
+  },
+  "cache": {
+    "help": "Acelera las consultas a través de la caché de pagos local, pero puede aumentar el tiempo de carga inicial.",
+    "label": "Usar caché (Beta)",
+    "prefetchHelp": "Tiempo de procesamiento para cargar entradas/transacciones en días (una vez durante la activación inicial)"
+  },
+  "network": {
+    "title": "Red de comunicaciones",
+    "desc": "Opcional: Horizonte de Historial Completo para Historia Profunda",
+    "fullUrl": "URL del horizonte de historia completa",
+    "autoUseFull": "Utilizar automáticamente si la fecha de inicio es anterior al historial del servidor."
+  },
+  "description": "Actualmente, no hay configuraciones aún.",
+  "display": {
+    "decimals": {
+      "auto": "Automáticamente",
+      "label": "Lugares decimales"
+    },
+    "desc": "Configuración global de pantalla.",
+    "title": "Anuncio"
+  },
+  "error": {
+    "fetchFailed": "Error al cargar la configuración: {{detail}}"
+  },
+  "label": "Configuraciones",
+  "prefetchDays": "Plazo de entrega (días)",
+  "trustedWallets": {
+    "buttons": {
+      "export": "Exportación",
+      "import": "Importar",
+      "reset": "Restablecer a los valores predeterminados"
+    },
+    "desc": "Esta lista se almacena localmente en el navegador. Archivo predeterminado: QSI_TrustedWallets.json.",
+    "editor": {
+      "invalidFormat": "Formato no válido. Se espera un objeto con un campo \"wallets\" (arreglo).",
+      "parseError": "No se pudo analizar el JSON."
+    },
+    "file": {
+      "hint": "Importar un archivo JSON en el formato { \"wallets\": [...] }",
+      "label": "Archivo"
+    },
+    "info": {
+      "count": "Entradas: {{n}}",
+      "updatedAt": "A partir de {{date}}"
+    },
+    "table": {
+      "addRow": "Añadir línea",
+      "columns": {
+        "actions": "Acciones",
+        "address": "Dirección",
+        "compromised": "Comprometido",
+        "deactivated": "Desactivado",
+        "label": "Etiqueta"
+      },
+      "deleteRow": "Eliminar",
+      "discard": "Descartar",
+      "save": "Guardar"
+    },
+    "title": "Mis billeteras confiables",
+    "validation": {
+      "hint": "Al menos una línea es inválida (dirección faltante/duplicada)."
+    }
+  }
+}

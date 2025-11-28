@@ -1,35 +1,35 @@
 {
-  "hintEnterPublicKey": "Por favor, introduce primero una clave pública.",
+  "hintEnterPublicKey": "Primero, ingrese una clave pública.",
   "columns": {
-    "amount": "Importe",
+    "amount": "Cantidad",
     "compromised": "Comprometido",
     "deactivated": "Desactivado",
-    "destination": "Billetera de destino",
+    "destination": "Cartera objetivo",
     "issuer": "Emisor",
-    "label": "Etiqueta",
-    "memo": "Memorando",
+    "label": "Etiqueta.",
+    "memo": "Memorándum",
     "payments": "Pagos",
     "date": "Fecha",
     "token": "Ficha"
   },
   "decimals": {
-    "auto": "automáticamente",
-    "label": "Decimales:"
+    "auto": "Automáticamente",
+    "label": "Lugares decimales:"
   },
   "filter": {
-    "memoPlaceholder": "Filtrar por Memo, dirección de billetera o etiqueta",
-    "tokenPlaceholder": "Filtro por Token (CÓDIGO:EMISOR)"
+    "memoPlaceholder": "Filtrar por nota, dirección de billetera o etiqueta.",
+    "tokenPlaceholder": "Filtrar por Token (CÓDIGO:EMISOR)"
   },
   "item": {
-    "memo": "Memorando: \"{{memo}}\" (Pagos: {{occurrences}})",
+    "memo": "Memo: \"{{memo}}\" (Pagos: {{occurrences}})",
     "token": "Token: {{token}} (Pagos: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
-  "missingPublicKey": "Falta la clave pública.",
-  "moreTruncated": "… y {{extra}} otros grupos",
-  "toWallet": "una cartera: {{address}}",
-  "total": "Cantidad de tokens comprados: {{count}}",
-  "totalTokens": "Número de tokens invertidos (activos): {{count}}",
+  "missingPublicKey": "Clave pública ausente.",
+  "moreTruncated": "... y {{extra}} grupos adicionales",
+  "toWallet": "A Monedero: {{address}}",
+  "total": "Número de tokens comprados: {{count}}",
+  "totalTokens": "Número de tokens (activos) invertidos: {{count}}",
   "value": {
     "units": "{{amount}} piezas",
     "xlm": "{{amount}} XLM"
@@ -41,18 +41,18 @@
   },
   "toggles": {
     "showTotals": "Suma total",
-    "qsiOnly": "Suma QSI GF"
+    "qsiOnly": "Lo siento, no estoy seguro de qué se refiere \"Sum QSI GF\". ¿Podrías proporcionar más contexto o detalles? Así podré ayudarte mejor."
   },
   "hints": {
-    "qsiListSet": "Nota: La lista de GF se encuentra en Configuración → Carteras de confianza (QSI).",
-    "pageTime": "Cargar una página tarda aproximadamente 0,2 segundos → 100 páginas ≈ 20 segundos → 1000 páginas ≈ 200 segundos (≈ 3:20 minutos)."
+    "qsiListSet": "Nota: Puedes encontrar la lista blanca en Configuración → Carteras de confianza (QSI).",
+    "pageTime": "Cargar una página tarda aproximadamente 0.2 segundos → 100 páginas ≈ 20 segundos → 1000 páginas ≈ 200 segundos (≈ 3:20 minutos)."
   },
-  "walletCapInfo": "Nota: Una billetera puede tener un máximo de 1000 líneas de confianza.",
+  "walletCapInfo": "Nota: Una billetera puede contener un máximo de 1000 líneas de confianza.",
   "action": {
-    "load": "Cargar"
+    "load": "Cargando"
   },
   "history": {
     "availableFrom": "Servidor (Horizon) – Historia desde",
-    "hintFullHistory": "Nota: El historial del libro mayor del servidor Horizon solo se remonta hasta {{available}}. Solo se mostrarán los datos hasta esa fecha. Por lo tanto, la fecha de inicio seleccionada está limitada. Para datos más antiguos, se necesita un proveedor de historial completo (generalmente de pago) (¡Tal vez esté disponible en el futuro!)."
+    "hintFullHistory": "Nota: El historial del libro mayor del servidor Horizon solo se remonta hasta {{available}}. Solo se mostrarán los datos hasta ese punto. Por lo tanto, la fecha de inicio elegida está limitada. Para obtener datos más antiguos, se requiere un proveedor de historial completo (generalmente de pago), que podría estar disponible en el futuro."
   }
 }

@@ -1,0 +1,98 @@
+{
+  "title": "Account aanmaken + multisig",
+  "menu": "Account aanmaken + Multisig",
+  "menuHint": "Maak een nieuw account aan en stel optioneel multisig in.",
+  "hint": "Maak een nieuw account aan, activeer het en configureer desgewenst multisig.",
+  "generateKeys": "Sleutel genereren",
+  "enableMultisig": "Schakel multisig in",
+  "signersTitle": "Je bent getraind op gegevens tot oktober 2023.",
+  "signersInfo": "Voeg extra ondertekenaars toe en stel de juiste drempelwaarden in.",
+  "signersCount": "Aantal ondertekenaars",
+  "bestPractices": {
+    "title": "Beste praktijken",
+    "text": "Houd geheime sleutels veilig en verspreid ze niet onnodig."
+  },
+  "instructions": {
+    "public": "Deel deze openbare sleutel met anderen voor betalingen.",
+    "secret": "Bewaar deze geheime sleutel veilig; deel hem nooit."
+  },
+  "generateFirst": "Maak eerst een sleutelpaar aan.",
+  "confirmLowBalance": "Initieel saldo van {bal} XLM is lager dan de aanbevolen reserve van {req} XLM (Ondertekenaar: {count}). Doorgaan?",
+  "activated": "Account is geactiveerd. Hash: {hash}",
+  "activatedTestnet": "Account werd geactiveerd op het testnet via Friendbot.",
+  "alreadyActive": "Account is al geactiveerd.",
+  "createdNoSigners": "Account aangemaakt, multisig niet geconfigureerd.",
+  "createdAndConfigured": "Account aangemaakt en multisig geconfigureerd. Hash: {hash}",
+  "info": {
+    "more": "Meer informatie",
+    "keysOnPage": {
+      "title": "Sleutel op deze pagina",
+      "text": "Op deze pagina worden sleutels gegenereerd. Houd ze veilig en deel ze niet."
+    },
+    "title": "Belangrijke informatie",
+    "secureKeys": {
+      "title": "Beveilig geheime sleutel",
+      "text": "De publieke sleutel kan veilig gedeeld worden – het is te vergelijken met een rekeningnummer.\n\nDe geheime sleutel geeft toegang tot je account. Behandel het als een wachtwoord:\n• Bewaar het NOOIT in clouddiensten, e-mails of onveilige notities\n• Schrijf het op papier of gebruik een hardware wallet\n• Maak meerdere back-ups en bewaar ze op veilige, aparte locaties\n• Als de geheime sleutel verloren gaat, is de toegang tot het account onherroepelijk verloren"
+    },
+    "multisigSection": {
+      "title": "Multisig (meervoudige handtekening)",
+      "text": "Met multisig kun je meerdere ondertekenaars voor je account definiëren. Transacties vereisen dan handtekeningen van meerdere sleutels (bijv., 2 van de 3).\n\nVoordelen:\n• Verhoogde veiligheid (een gecompromitteerde sleutel is niet voldoende)\n• Gedeelde accounts (bijv., bedrijven, samenwerkingsverbanden)\n• Noodherstel (meerdere back-ups bij verschillende mensen)\n\nLET OP: Test multisig eerst op het testnet voordat je het op het mainnet implementeert! Een verkeerde configuratie kan leiden tot verlies van toegang tot het account."
+    },
+    "diagram": {
+      "title": "Verlopen handtekening"
+    }
+  },
+  "activateHint": "Activering is noodzakelijk voor het bestaan van de account. In het testnet via Friendbot, in het mainnet via \"Account aanmaken\" vanuit een bestaande wallet.",
+  "activateNow": "Account onmiddellijk activeren",
+  "activateOnly": "Alleen activeren",
+  "balanceWarning": "Het beginsaldo is waarschijnlijk te laag om de {{count}} extra ondertekenaars toe te voegen (minimale reserve: {{req}} XLM).",
+  "createButton": "Multisig Aanmaken / Instellen",
+  "hints": {
+    "byteRange": "(0-255)"
+  },
+  "mainnetActivateNote": "Opmerking: Extra reserves zijn noodzakelijk voor Multisig. 1 XLM is vaak niet genoeg.",
+  "reserve": {
+    "base": "Basisreserve per invoer: {{val}} XLM",
+    "recommended": "Aanbevolen beginsaldo: {{val}} XLM (inclusief buffer)",
+    "required": "Vereiste minimumreserve (nieuw): {{val}} XLM"
+  },
+  "signersCountHint": "U stelt het minimum aantal handtekeningen hieronder in onder \"Vereiste Handtekeningen\" (laag/middel/hoog).",
+  "signersCountLimit": "Opmerking: Netwerklimiet (Stellar): maximaal 20 bijkomende ondertekenaars.",
+  "startingBalance": "Beginsaldo (XLM)",
+  "threshold": "Vereiste Handtekeningen (laag/middel/hoog)",
+  "thresholdLow": "laag",
+  "thresholdMed": "gemiddeld",
+  "thresholdHigh": "hoog",
+  "thresholdCurrent": "Momenteel geselecteerd: laag={{low}}, medium={{med}}, hoog={{high}} van {{total}} handtekeningen",
+  "thresholdHelp": "Drempel: Aantal vereiste handtekeningen (meester + ondertekenaars) voor een transactie om geldig te zijn.",
+  "thresholdInfo": "Aanbeveling: {{req}} van {{total}} handtekeningen (inclusief Master)",
+  "thresholdLevelsHint": "Typisch geldt het volgende: laag = simpele wijzigingen (bijv. notitie, prijs), gemiddeld = betalingen/handel, hoog = veiligheidskritische wijzigingen (bijv. ondertekenaar/drempels).",
+  "thresholdStatic": "Vereist: {{val}} van de {{total}} handtekeningen (laag/middel/hoog)",
+  "thresholdSum": "Som gewichten: {{sum}}",
+  "thresholdTooHigh": "Let op: Een drempel mag de som van de gewichten niet overschrijden. Pas de waarden aan.",
+  "keyWarning": {
+    "title": "⚠️ Beveilig je sleutel nu!",
+    "text1": "Je hebt een nieuw sleutelpaar gegenereerd.",
+    "text2": "Zorg ervoor dat BEIDE sleutels ONMIDDELLIJK veilig zijn voordat u verdergaat:",
+    "list1": "Publieke Sleutel: Uw accountadres, kan worden gedeeld.",
+    "list2": "Geheime Sleutel: Uw wachtwoord – Deel het NOOIT of sla het online op!",
+    "list3": "Als de geheime sleutel verloren gaat, is de toegang onherroepelijk verloren.",
+    "confirm": "Ik heb beide sleutels veiliggesteld."
+  },
+  "tooltips": {
+    "high": "Hoog: beveiligingskritieke wijzigingen (bijv. ondertekenaars/drempels).",
+    "low": "Laag: eenvoudige wijzigingen (bijv. memo, prijs).",
+    "masterWeight": "Gewicht van de rekeninghouder (Meester) (0-255): De meesterkey van de rekening heeft stemrechten. Hoe hoger zijn gewicht, des te meer stemmen de handtekening telt. Deze stemmen worden opgeteld samen met de stemmen van andere ondertekenaars om te verifiëren of de vereiste meerderheid is bereikt.",
+    "med": "Betekent: betalingen en handelsacties.",
+    "signerWeight": "Gewicht van de ondertekenaars (0-255): Extra ondertekenaars hebben ook stemrechten. Het gewicht bepaalt hoeveel stemmen hun handtekening bijdraagt. Wanneer een transactie wordt verzonden, worden alle uitgebrachte stemmen bij elkaar opgeteld. Als het gespecificeerde minimale aantal stemmen (drempel) is bereikt, wordt de transactie als goedgekeurd beschouwd.",
+    "signerWeightHint": "Opmerking: De gewichten van de master en ondertekenaar vormen samen de som; drempels (laag/middel/hoog) mogen deze som niet overschrijden."
+  },
+  "units": {
+    "signatures": "Handtekening(en)"
+  },
+  "muxedId": "Muxed ID",
+  "muxedInfo": "De Muxed-ID creëert een M-adres (M...). Dit wijst naar dezelfde account als het reguliere adres (G...).",
+  "muxedIdInvalid": "De Muxed-ID moet een geheel getal zijn tussen 0 en 18.446.744.073.709.551.615.",
+  "muxedAddress": "Gemuxed adres",
+  "muxedActivationInfo": "Gerapporteerde adressen zijn aliasadressen. Ze hoeven niet afzonderlijk te worden ingeschakeld."
+}
