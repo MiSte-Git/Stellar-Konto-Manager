@@ -16,7 +16,7 @@ function DeleteAllTrustlines({
   loadTrustlines,
   setIsLoading
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['secretKey', 'common', 'errors', 'trustline']);
 
   const handleDelete = async () => {
     setError('');

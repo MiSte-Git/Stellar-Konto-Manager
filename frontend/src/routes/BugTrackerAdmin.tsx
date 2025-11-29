@@ -145,7 +145,7 @@ function extractEmail(text: string | null | undefined): string | null {
 
 // Renders the hidden bug tracker admin panel.
 const BugTrackerAdmin: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(['common']);
   const [reports, setReports] = useState<BugReportRow[]>([]);
   const [statusFilter, setStatusFilter] = useState<'all' | BugStatus>('all');
   const [priorityFilter, setPriorityFilter] = useState<'all' | BugPriority>('all');

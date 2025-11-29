@@ -16,7 +16,7 @@ const DBG = {
 // wenn der Aufrufer kein publicKey-Prop gesetzt hat
 // oder der Main-State noch nicht weitergereicht wurde.
 export default function MuxedAccountsPage({ publicKey }) {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(['common', 'investedTokens']);
   const [result, setResult] = React.useState('');
   const [error, setError] = React.useState('');
   const [success, setSuccess] = React.useState('');

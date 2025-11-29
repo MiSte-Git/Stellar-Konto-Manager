@@ -14,7 +14,7 @@ const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 
 function NetworkSelector({ value, onChange }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['multisigCreate', 'network', 'common']);
   return (
     <div className="flex gap-4 mb-4">
       <label className="flex items-center gap-2">
@@ -42,7 +42,7 @@ function NetworkSelector({ value, onChange }) {
 }
 
 export default function MultisigCreatePage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['multisigCreate', 'network', 'common']);
 
   const [network, setNetwork] = useState(() => {
     try {
@@ -260,14 +260,14 @@ export default function MultisigCreatePage() {
       setError('');
       if (type === 'activate') {
         const hash = await activateWithFunderSecret(funderSecret, destPub, startingBalance || '1');
-        setResultMsg(t('createAccount:activated', { hash }));
+        setResultMsg(t('multisigCreate:activated', { hash }));
       } else if (type === 'createAll') {
         // 1) Aktivieren
         await activateWithFunderSecret(funderSecret, destPub, startingBalance || '1');
         // 2) Multisig setzen
         const setRes = await setMultisigOnNewAccount(generated.sec);
         setResultMsg(
-          t('createAccount:createdAndConfigured', { hash: setRes.hash || '' })
+          t('multisigCreate:createdAndConfigured', { hash: setRes.hash || '' })
         );
       }
     } catch (e) {
@@ -279,7 +279,7 @@ export default function MultisigCreatePage() {
 
   async function handleCreateAll() {
     if (!generated?.pub || !generated?.sec) {
-      setError(t('createAccount:generateFirst'));
+      setError(t('multisigCreate:generateFirst'));
       return;
     }
     // Zeige erst Schlüssel-Sicherungs-Warnung
@@ -293,7 +293,7 @@ export default function MultisigCreatePage() {
     if (network === 'PUBLIC' && activateNow) {
       const bal = parseFloat(startingBalance || '0');
       if (bal < requiredReserve) {
-        const ok = window.confirm(t('createAccount:confirmLowBalance', { bal: bal.toFixed(7), req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) }));
+        const ok = window.confirm(t('multisigCreate:confirmLowBalance', { bal: bal.toFixed(7), req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) }));
         if (!ok) return;
       }
     }
@@ -316,9 +316,9 @@ export default function MultisigCreatePage() {
       // 2) Multisig setzen (falls Signer vorhanden)
       const setRes = await setMultisigOnNewAccount(generated.sec);
       if (setRes.skipped) {
-        setResultMsg(t('createAccount:createdNoSigners'));
+        setResultMsg(t('multisigCreate:createdNoSigners'));
       } else {
-        setResultMsg(t('createAccount:createdAndConfigured', { hash: setRes.hash || '' }));
+        setResultMsg(t('multisigCreate:createdAndConfigured', { hash: setRes.hash || '' }));
       }
     } catch (e) {
       setError(String(e?.message || e));
@@ -329,7 +329,7 @@ export default function MultisigCreatePage() {
 
   async function handleActivateOnly() {
     if (!generated?.pub) {
-      setError(t('createAccount:generateFirst'));
+      setError(t('multisigCreate:generateFirst'));
       return;
     }
     try {
@@ -338,16 +338,16 @@ export default function MultisigCreatePage() {
       setError('');
       const existed = await ensureAccountExists(generated.pub, server);
       if (existed) {
-        setResultMsg(t('createAccount:alreadyActive'));
+        setResultMsg(t('multisigCreate:alreadyActive'));
         return;
       }
       if (network === 'TESTNET') {
         await friendbotActivate(generated.pub);
-        setResultMsg(t('createAccount:activatedTestnet'));
+        setResultMsg(t('multisigCreate:activatedTestnet'));
       } else {
         const bal = parseFloat(startingBalance || '0');
         if (bal < requiredReserve) {
-          const ok = window.confirm(t('createAccount:confirmLowBalance', { bal: bal.toFixed(7), req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) }));
+          const ok = window.confirm(t('multisigCreate:confirmLowBalance', { bal: bal.toFixed(7), req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) }));
           if (!ok) { setBusy(false); return; }
         }
         setPendingAction({ type: 'activate', destPub: generated.pub, startingBalance });
@@ -379,17 +379,17 @@ export default function MultisigCreatePage() {
   return (
     <div className="max-w-3xl mx-auto p-4">
       <div className="mb-4 text-center">
-        <h2 className="text-xl font-semibold">{t('createAccount:title')}</h2>
+        <h2 className="text-xl font-semibold">{t('multisigCreate:title')}</h2>
       </div>
 
       {/* Info-Button ganz oben */}
       <div className="mb-4 text-center">
         <button type="button" onClick={()=>setShowInfo2(true)} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
-          {t('createAccount:info.more')}
+          {t('multisigCreate:info.more')}
         </button>
       </div>
 
-      <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{t('createAccount:hint')}</p>
+      <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{t('multisigCreate:hint')}</p>
 
       <NetworkSelector value={network} onChange={async (net) => {
         setNetwork(net);
@@ -412,11 +412,11 @@ export default function MultisigCreatePage() {
       <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
         <div className="flex flex-wrap items-center gap-3 mb-2">
           <button onClick={handleGenerate} className="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700" disabled={busy}>
-            {t('createAccount:generateKeys')}
+            {t('multisigCreate:generateKeys')}
           </button>
           <label className="inline-flex items-center gap-2 text-sm">
             <input type="checkbox" checked={enableMultisig} onChange={()=>setEnableMultisig(v=>!v)} />
-            {t('createAccount:enableMultisig')}
+            {t('multisigCreate:enableMultisig')}
           </label>
         </div>
         {generated && (
@@ -424,12 +424,12 @@ export default function MultisigCreatePage() {
             <div>
               <label className="block text-sm font-semibold">Public Key</label>
               <div className="font-mono break-all text-sm">{generated.pub}</div>
-              <p className="text-xs text-gray-600 dark:text-gray-400">{t('createAccount:instructions.public')}</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">{t('multisigCreate:instructions.public')}</p>
             </div>
             <div>
               <label className="block text-sm font-semibold">Secret Key</label>
               <div className="font-mono break-all text-sm">{generated.sec}</div>
-              <p className="text-xs text-gray-600 dark:text-gray-400">{t('createAccount:instructions.secret')}</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">{t('multisigCreate:instructions.secret')}</p>
             </div>
           </div>
         )}
@@ -437,13 +437,13 @@ export default function MultisigCreatePage() {
 
       {enableMultisig && generated && (
         <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
-          <h3 className="font-semibold mb-2">{t('createAccount:signersTitle')}</h3>
+          <h3 className="font-semibold mb-2">{t('multisigCreate:signersTitle')}</h3>
           <div className="mb-3 p-2 bg-blue-50 dark:bg-blue-900/20 border rounded text-xs text-blue-900 dark:text-blue-200">
-            <strong>{t('createAccount:bestPractices.title')}:</strong> {t('createAccount:bestPractices.text')}
+            <strong>{t('multisigCreate:bestPractices.title')}:</strong> {t('multisigCreate:bestPractices.text')}
           </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{t('createAccount:signersInfo')}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{t('multisigCreate:signersInfo')}</p>
           <div className="flex items-center gap-2 mb-3">
-            <label className="text-sm font-semibold">{t('createAccount:signersCount')}</label>
+            <label className="text-sm font-semibold">{t('multisigCreate:signersCount')}</label>
             <input
               type="number"
               min={1}
@@ -452,9 +452,9 @@ export default function MultisigCreatePage() {
               onChange={(e)=>setSignerCount(Math.max(1, Math.min(20, Number(e.target.value) || 1)))}
               onBlur={(e)=>setSignerCount(Math.max(1, Math.min(20, Number(e.target.value) || 1)))}
               className="border rounded px-2 py-1 text-sm w-24"
-              title={t('createAccount:signersCountLimit')}
+              title={t('multisigCreate:signersCountLimit')}
             />
-            <span className="text-xs text-gray-600 dark:text-gray-400">{t('createAccount:signersCountLimit')}</span>
+            <span className="text-xs text-gray-600 dark:text-gray-400">{t('multisigCreate:signersCountLimit')}</span>
           </div>
           <div className="space-y-2">
             {signers.map((s, i) => (
@@ -475,10 +475,10 @@ export default function MultisigCreatePage() {
                     onChange={(e)=>handleSignerWeightChange(i, e.target.value)}
                     onBlur={(e)=>handleSignerWeightChange(i, e.target.value)}
                     className="border rounded px-2 py-1 text-sm w-20"
-                    title={t('createAccount:tooltips.signerWeight')}
+                    title={t('multisigCreate:tooltips.signerWeight')}
                   />
-                  <span className="text-xs text-gray-500">{t('createAccount:hints.byteRange')}</span>
-                  <span className="text-xs cursor-help" title={t('createAccount:tooltips.signerWeight')}>ⓘ</span>
+                  <span className="text-xs text-gray-500">{t('multisigCreate:hints.byteRange')}</span>
+                  <span className="text-xs cursor-help" title={t('multisigCreate:tooltips.signerWeight')}>ⓘ</span>
                 </div>
               </div>
             ))}
@@ -486,8 +486,8 @@ export default function MultisigCreatePage() {
           <div className="mt-3 flex items-center gap-3">
             <label className="text-sm font-semibold inline-flex items-center gap-1">
               Master-Gewicht
-              <span className="text-xs text-gray-500">{t('createAccount:hints.byteRange')}</span>
-              <span className="text-xs cursor-help" title={t('createAccount:tooltips.masterWeight')}>ⓘ</span>
+              <span className="text-xs text-gray-500">{t('multisigCreate:hints.byteRange')}</span>
+              <span className="text-xs cursor-help" title={t('multisigCreate:tooltips.masterWeight')}>ⓘ</span>
             </label>
             <input
               type="number"
@@ -497,31 +497,31 @@ export default function MultisigCreatePage() {
               onChange={(e)=>handleMasterWeightChange(e.target.value)}
               onBlur={(e)=>handleMasterWeightChange(e.target.value)}
               className="border rounded px-2 py-1 text-sm w-24"
-              title={t('createAccount:hints.byteRange')}
+              title={t('multisigCreate:hints.byteRange')}
             />
           </div>
           <div className="mt-4">
-            <label className="block text-sm font-semibold mb-1">{t('createAccount:threshold')}</label>
+            <label className="block text-sm font-semibold mb-1">{t('multisigCreate:threshold')}</label>
             <div className="flex flex-wrap items-center gap-3 mt-2">
               <label className="inline-flex items-center gap-2 text-sm">
-                <span>niedrig <span className="text-xs cursor-help" title={t('createAccount:tooltips.low')}>ⓘ</span></span>
-                <input type="number" min={0} max={255} value={lowT} onChange={(e)=>handleThresholdChange('low', e.target.value)} onBlur={(e)=>handleThresholdChange('low', e.target.value)} className={`border rounded px-2 py-1 w-16 ${thLowErr ? 'border-red-500' : ''}`} title={t('createAccount:hints.byteRange')} />
-                <span className="text-xs text-gray-700 dark:text-gray-300">{t('createAccount:units.signatures')}</span>
+                <span>niedrig <span className="text-xs cursor-help" title={t('multisigCreate:tooltips.low')}>ⓘ</span></span>
+                <input type="number" min={0} max={255} value={lowT} onChange={(e)=>handleThresholdChange('low', e.target.value)} onBlur={(e)=>handleThresholdChange('low', e.target.value)} className={`border rounded px-2 py-1 w-16 ${thLowErr ? 'border-red-500' : ''}`} title={t('multisigCreate:hints.byteRange')} />
+                <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate:units.signatures')}</span>
               </label>
               <label className="inline-flex items-center gap-2 text-sm">
-                <span>mittel <span className="text-xs cursor-help" title={t('createAccount:tooltips.med')}>ⓘ</span></span>
-                <input type="number" min={0} max={255} value={medT} onChange={(e)=>handleThresholdChange('med', e.target.value)} onBlur={(e)=>handleThresholdChange('med', e.target.value)} className={`border rounded px-2 py-1 w-16 ${thMedErr ? 'border-red-500' : ''}`} title={t('createAccount:hints.byteRange')} />
-                <span className="text-xs text-gray-700 dark:text-gray-300">{t('createAccount:units.signatures')}</span>
+                <span>mittel <span className="text-xs cursor-help" title={t('multisigCreate:tooltips.med')}>ⓘ</span></span>
+                <input type="number" min={0} max={255} value={medT} onChange={(e)=>handleThresholdChange('med', e.target.value)} onBlur={(e)=>handleThresholdChange('med', e.target.value)} className={`border rounded px-2 py-1 w-16 ${thMedErr ? 'border-red-500' : ''}`} title={t('multisigCreate:hints.byteRange')} />
+                <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate:units.signatures')}</span>
               </label>
               <label className="inline-flex items-center gap-2 text-sm">
-                <span>hoch <span className="text-xs cursor-help" title={t('createAccount:tooltips.high')}>ⓘ</span></span>
-                <input type="number" min={0} max={255} value={highT} onChange={(e)=>handleThresholdChange('high', e.target.value)} onBlur={(e)=>handleThresholdChange('high', e.target.value)} className={`border rounded px-2 py-1 w-16 ${thHighErr ? 'border-red-500' : ''}`} title={t('createAccount:hints.byteRange')} />
-                <span className="text-xs text-gray-700 dark:text-gray-300">{t('createAccount:units.signatures')}</span>
+                <span>hoch <span className="text-xs cursor-help" title={t('multisigCreate:tooltips.high')}>ⓘ</span></span>
+                <input type="number" min={0} max={255} value={highT} onChange={(e)=>handleThresholdChange('high', e.target.value)} onBlur={(e)=>handleThresholdChange('high', e.target.value)} className={`border rounded px-2 py-1 w-16 ${thHighErr ? 'border-red-500' : ''}`} title={t('multisigCreate:hints.byteRange')} />
+                <span className="text-xs text-gray-700 dark:text-gray-300">{t('multisigCreate:units.signatures')}</span>
               </label>
             </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('createAccount:thresholdLevelsHint')} • {t('createAccount:thresholdSum', { sum: sumWeights })}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('multisigCreate:thresholdLevelsHint')} • {t('multisigCreate:thresholdSum', { sum: sumWeights })}</p>
             {(thLowErr || thMedErr || thHighErr) && (
-              <p className="text-xs text-red-600 mt-1">{t('createAccount:thresholdTooHigh')}</p>
+              <p className="text-xs text-red-600 mt-1">{t('multisigCreate:thresholdTooHigh')}</p>
             )}
           </div>
         </div>
@@ -531,16 +531,16 @@ export default function MultisigCreatePage() {
         <label className="flex items-start gap-2">
           <input type="checkbox" checked={activateNow} onChange={() => setActivateNow(!activateNow)} />
           <span>
-            <span className="font-semibold">{t('createAccount:activateNow')}</span>
+            <span className="font-semibold">{t('multisigCreate:activateNow')}</span>
             <br />
-            <span className="text-xs text-gray-600 dark:text-gray-400">{t('createAccount:activateHint')}</span>
+            <span className="text-xs text-gray-600 dark:text-gray-400">{t('multisigCreate:activateHint')}</span>
           </span>
         </label>
         {network === 'PUBLIC' && activateNow && (
           <>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-semibold mb-1">{t('createAccount:startingBalance')}</label>
+                <label className="block text-sm font-semibold mb-1">{t('multisigCreate:startingBalance')}</label>
                 <input
                   type="number"
                   step="0.0000001"
@@ -551,18 +551,18 @@ export default function MultisigCreatePage() {
                 />
                 {parseFloat(startingBalance || '0') < requiredReserve && (
                   <p className="text-xs text-red-600 mt-1">
-                    {t('createAccount:balanceWarning', { req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) })}
+                    {t('multisigCreate:balanceWarning', { req: requiredReserve.toFixed(7), count: Math.max(0, Number(signerCount)||0) })}
                   </p>
                 )}
               </div>
               <div className="text-xs text-gray-700 dark:text-gray-300">
-                <div>{t('createAccount:reserve.base', { val: (baseReserve ?? 0.5).toFixed(7) })}</div>
-                <div className={(parseFloat(startingBalance || '0') < requiredReserve) ? 'font-semibold text-red-700 dark:text-red-400' : 'font-semibold'}>{t('createAccount:reserve.required', { val: requiredReserve.toFixed(7) })}</div>
-                <div>{t('createAccount:reserve.recommended', { val: recommended.toFixed(7) })}</div>
+                <div>{t('multisigCreate:reserve.base', { val: (baseReserve ?? 0.5).toFixed(7) })}</div>
+                <div className={(parseFloat(startingBalance || '0') < requiredReserve) ? 'font-semibold text-red-700 dark:text-red-400' : 'font-semibold'}>{t('multisigCreate:reserve.required', { val: requiredReserve.toFixed(7) })}</div>
+                <div>{t('multisigCreate:reserve.recommended', { val: recommended.toFixed(7) })}</div>
               </div>
             </div>
             <p className="text-xs text-yellow-700 dark:text-yellow-400 mt-2">
-              {t('createAccount:mainnetActivateNote')}
+              {t('multisigCreate:mainnetActivateNote')}
             </p>
           </>
         )}
@@ -570,10 +570,10 @@ export default function MultisigCreatePage() {
 
       <div className="flex flex-wrap gap-2">
         <button onClick={handleCreateAll} disabled={busy || (enableMultisig && (thLowErr || thMedErr || thHighErr))} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50">
-          {t('createAccount:createButton')}
+          {t('multisigCreate:createButton')}
         </button>
         <button onClick={handleActivateOnly} disabled={busy} className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50">
-          {t('createAccount:activateOnly')}
+          {t('multisigCreate:activateOnly')}
         </button>
       </div>
 
@@ -590,25 +590,25 @@ export default function MultisigCreatePage() {
       {showInfo2 && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
           <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-3xl w-full mx-auto my-8">
-            <h3 className="text-xl font-bold mb-4">{t('createAccount:info.title')}</h3>
+            <h3 className="text-xl font-bold mb-4">{t('multisigCreate:info.title')}</h3>
             
             <div className="space-y-4 text-sm">
               {/* Geheimschlüssel sichern */}
               <div>
-                <h4 className="font-bold mb-2">{t('createAccount:info.secureKeys.title')}</h4>
-                <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{t('createAccount:info.secureKeys.text')}</p>
+                <h4 className="font-bold mb-2">{t('multisigCreate:info.secureKeys.title')}</h4>
+                <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{t('multisigCreate:info.secureKeys.text')}</p>
               </div>
 
               {/* Geheimschlüssel auf dieser Seite */}
               <div>
-                <h4 className="font-bold mb-2">{t('createAccount:info.keysOnPage.title')}</h4>
-                <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{t('createAccount:info.keysOnPage.text')}</p>
+                <h4 className="font-bold mb-2">{t('multisigCreate:info.keysOnPage.title')}</h4>
+                <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{t('multisigCreate:info.keysOnPage.text')}</p>
               </div>
 
               {/* Multisig */}
               <div>
-                <h4 className="font-bold mb-2">{t('createAccount:info.multisigSection.title')}</h4>
-                <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{t('createAccount:info.multisigSection.text')}</p>
+                <h4 className="font-bold mb-2">{t('multisigCreate:info.multisigSection.title')}</h4>
+                <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{t('multisigCreate:info.multisigSection.text')}</p>
               </div>
             </div>
 
@@ -624,19 +624,19 @@ export default function MultisigCreatePage() {
       {showKeyWarning && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
           <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-md w-full my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
-            <h3 className="text-lg font-bold mb-3 text-red-600">{t('createAccount:keyWarning.title')}</h3>
+            <h3 className="text-lg font-bold mb-3 text-red-600">{t('multisigCreate:keyWarning.title')}</h3>
             <div className="text-sm space-y-3 text-gray-700 dark:text-gray-300">
-              <p>{t('createAccount:keyWarning.text1')}</p>
-              <p className="font-semibold">{t('createAccount:keyWarning.text2')}</p>
+              <p>{t('multisigCreate:keyWarning.text1')}</p>
+              <p className="font-semibold">{t('multisigCreate:keyWarning.text2')}</p>
               <ul className="list-disc list-inside space-y-1 text-xs">
-                <li>{t('createAccount:keyWarning.list1')}</li>
-                <li>{t('createAccount:keyWarning.list2')}</li>
-                <li>{t('createAccount:keyWarning.list3')}</li>
+                <li>{t('multisigCreate:keyWarning.list1')}</li>
+                <li>{t('multisigCreate:keyWarning.list2')}</li>
+                <li>{t('multisigCreate:keyWarning.list3')}</li>
               </ul>
             </div>
             <div className="text-right mt-6">
               <button onClick={handleCreateAllAfterWarning} className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">
-                {t('createAccount:keyWarning.confirm')}
+                {t('multisigCreate:keyWarning.confirm')}
               </button>
             </div>
           </div>

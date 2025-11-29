@@ -7,7 +7,7 @@ import GlossaryToc from '../components/glossary/GlossaryToc.tsx';
 // GlossaryPage: Einsteiger-Glossar mit Suche und Grid-Ansicht.
 // Alle Texte kommen aus i18n (glossary.*). Fallbacks sind einfache englische Sätze.
 function GlossaryPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['navigation', 'glossary', 'common']);
   const [query, setQuery] = useState('');
   const [showBackToTop, setShowBackToTop] = useState(false);
   // Back-to-top visibility based on the overlay scroll container

@@ -28,7 +28,7 @@ export default function QuizLanding({
   showPractice,
   lessonId
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['quiz', 'quiz.ui']);
 
   const totalQuestions = Array.isArray(data?.questions) ? data.questions.length : 0;
   const estimatedMinutes = data?.meta?.estimatedMinutes ?? 2;

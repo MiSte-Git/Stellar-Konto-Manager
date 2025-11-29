@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 function ResultModal({ deletedTrustlines, isSimulation = false, onClose }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['trustline', 'TX', 'common']);
 
   if (!deletedTrustlines || deletedTrustlines.length === 0) return null;
 

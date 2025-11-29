@@ -7,7 +7,7 @@ import { buildPath } from '../utils/basePath.js';
  * Similar style to the SmallAdminLink, positioned slightly above it.
  */
 export default function SmallGlossaryLink() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['menu']);
   return (
     <div className="fixed bottom-8 right-3 text-xs opacity-60 hover:opacity-100 transition-opacity pointer-events-auto">
       <a

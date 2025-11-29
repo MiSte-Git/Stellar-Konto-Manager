@@ -114,7 +114,7 @@ function downloadJson(content, filename) {
 }
 
 export default function BackupSettings() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['settings', 'quiz']);
   const { notify, ToastHost } = useToast();
   const [fileData, setFileData] = React.useState(null);
   const [strategy, setStrategy] = React.useState('merge');
