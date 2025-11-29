@@ -7,7 +7,7 @@ const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 
 export default function BalancePage({ publicKey }) {
-const { t, i18n } = useTranslation();
+const { t, i18n } = useTranslation(['common']);
 const { decimalsMode } = useSettings();
 const [netLabel, setNetLabel] = useState(() => {
   try { return (localStorage.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }

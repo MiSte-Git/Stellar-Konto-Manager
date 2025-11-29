@@ -10,7 +10,7 @@ function ResultDisplay({
   currentPage,
   itemsPerPage
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'errors']);
 
   if (!results || results.length === 0) return null;
   if (typeof results[0] === 'string') {

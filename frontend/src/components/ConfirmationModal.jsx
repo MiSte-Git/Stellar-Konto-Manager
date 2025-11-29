@@ -12,7 +12,7 @@ function ConfirmationModal({
   setResults,
   isLoading
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'secretKey']);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">

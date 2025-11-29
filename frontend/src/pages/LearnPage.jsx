@@ -13,7 +13,7 @@ function sortByLessonId(list) {
 
 function LearnPage() {
   // Ensure all used namespaces are available for translations
-  const { t } = useTranslation(['learn']);
+  const { t } = useTranslation(['learn', 'quiz']);
   const [showBackToTop, setShowBackToTop] = React.useState(false);
   const [progress, setProgress] = React.useState(() => getFlattenedProgress());
   const [badges, setBadges] = React.useState(() => computeBadges());

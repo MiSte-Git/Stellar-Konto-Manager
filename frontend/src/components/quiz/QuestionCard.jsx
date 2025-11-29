@@ -12,7 +12,7 @@ export default function QuestionCard({
   disabled = false,
   hintsEnabled = true,
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['quiz.ui']);
   const [showHint, setShowHint] = React.useState(false);
 
   React.useEffect(() => {

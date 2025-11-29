@@ -7,7 +7,7 @@ import XlmByMemoPanel from '../components/XlmByMemoPanel';
  *  - Alle sichtbaren Texte gehen über i18n t().
  */
 export default function XlmByMemoPage({ publicKey, horizonUrl: _horizonUrl = 'https://horizon.stellar.org', onBack }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['xlmByMemo']);
   void _horizonUrl;
 
   if (!publicKey) {

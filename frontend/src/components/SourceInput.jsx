@@ -4,7 +4,7 @@ import { useSettings } from '../utils/useSettings';
 import { formatElapsedMmSs } from '../utils/datetime';
 
 function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['publicKey', 'common']);
   const handleChange = (e) => setSourceInput(e.target.value);
   const handleClear = () => setSourceInput('');
   const { useCache } = useSettings();

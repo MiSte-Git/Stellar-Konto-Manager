@@ -96,7 +96,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
 function Main() {
 	//console.log('main.jsx In function Main');
-  const { t } = useTranslation();
+  const { t } = useTranslation(['secretKey', 'submitTransaction', 'common', 'network', 'menu', 'createAccount', 'publicKey', 'wallet', 'navigation', 'errors', 'trustline', 'investedTokens', 'xlmByMemo']);
   const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
   const { wallets } = useTrustedWallets();
   //console.log('[DEBUG] Aktive Horizon URL:', HORIZON_URL);

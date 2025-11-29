@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { StrKey } from '@stellar/stellar-sdk';
 
 function DestinationInput({ destination, setDestination, onSubmit }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['trustline', 'publicKey']);
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {

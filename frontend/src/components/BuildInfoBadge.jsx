@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
  * Alle Texte werden über i18n t() gesteuert.
  */
 export default function BuildInfoBadge() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common']);
   const [info, setInfo] = useState(null);
   const [err, setErr] = useState('');
 

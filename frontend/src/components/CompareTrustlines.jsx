@@ -22,7 +22,7 @@ function CompareTrustlines({
   isLoading,
   setIsLoading
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['publicKey', 'secretKey', 'common', 'trustline']);
   const [destNotFound, setDestNotFound] = React.useState(false);
 
   const handleCompare = async () => {

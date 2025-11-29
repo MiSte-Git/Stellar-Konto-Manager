@@ -6,7 +6,7 @@ import { apiUrl } from '../utils/apiBase.js';
 
 // Renders the feedback page allowing users to send issues via email.
 export default function FeedbackPage({ onBack }) {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(['common', 'menu']);
   void i18n;
   const [category, setCategory] = useState('bug');
   const [subject, setSubject] = useState('');
