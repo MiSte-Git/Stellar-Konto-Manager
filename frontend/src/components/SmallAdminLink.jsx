@@ -8,7 +8,7 @@ import { buildPath } from '../utils/basePath.js';
  * Öffnet ein kleines Secret-Modal und navigiert anschließend zur Admin-Ansicht.
  */
 export default function SmallAdminLink() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common']);
   const [isOpen, setIsOpen] = useState(false);
   const [secret, setSecret] = useState('');
   const [portalRoot, setPortalRoot] = useState(null);

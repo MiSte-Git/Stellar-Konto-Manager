@@ -8,7 +8,7 @@ const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 
 function NetworkSelector({ value, onChange }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount']);
   const isTestnet = value === 'TESTNET';
   return (
     <div className={`flex items-center justify-between gap-4 mb-4 p-2 border rounded relative ${isTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : ''}`}>
@@ -32,7 +32,7 @@ function NetworkSelector({ value, onChange }) {
 }
 
 export default function MultisigEditPage({ defaultPublicKey = '' }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount']);
 
   const [network, setNetwork] = useState(() => {
     try { return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }

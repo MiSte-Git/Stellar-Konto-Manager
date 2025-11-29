@@ -21,7 +21,8 @@ function LanguageSelector() {
   const { i18n } = useTranslation();
 
   const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
+    const match = languages.find((l) => lng && lng.toLowerCase().startsWith(l.code));
+    i18n.changeLanguage(match?.code || 'de');
   };
 
   return (

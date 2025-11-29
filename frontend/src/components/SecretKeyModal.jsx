@@ -5,7 +5,7 @@ import { validateSecretKey } from '../utils/stellar/stellarUtils';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 
 function SecretKeyModal({ onConfirm, onCancel, errorMessage }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey']);
   const [secretKey, setSecretKey] = useState('');
   const [showSecret, setShowSecret] = useState(false);
   const [rememberSession, setRememberSession] = useState(true);

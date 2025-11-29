@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default function GlossaryToc({ slugs, idPrefix = 'g-', className = '', sortByTitle = true }: Props) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['glossary']);
 
   const orderedSlugs = React.useMemo(() => {
     if (!sortByTitle) return slugs;

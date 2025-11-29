@@ -41,7 +41,7 @@ class ErrorBoundary extends React.Component {
 }
 
 function App() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'glossary', 'learn', 'menu', 'settings']);
 
   // Always register hooks in the same order
   const [devTestnet, setDevTestnet] = React.useState(false);

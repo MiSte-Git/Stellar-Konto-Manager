@@ -47,7 +47,7 @@ function ListTrustlines({
   setDeleteProgress,
   setInfoMessage,
 }) {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(['common', 'trustline', 'errors']);
   const { decimalsMode } = useSettings();
   const [paginated, setPaginated] = useState([]);
   const [showOverviewModal, setShowOverviewModal] = useState(false);

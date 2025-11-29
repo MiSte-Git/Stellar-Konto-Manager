@@ -8,7 +8,7 @@ import { apiUrl } from '../utils/apiBase.js';
  * und erstellt parallel still einen Eintrag im Bugtracker.
  */
 export default function FeedbackForm(props) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common']);
   const [desc, setDesc] = useState('');
 
   function buildMailto() {

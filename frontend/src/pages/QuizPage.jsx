@@ -61,7 +61,7 @@ function isRunRoute() {
 }
 
 export default function QuizPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['learn', 'quiz', 'quiz.ui', 'common']);
   const lessonNum = useLessonIdFromPath();
   const [data, setData] = React.useState(null);
   const [loading, setLoading] = React.useState(true);

@@ -9,7 +9,7 @@ import SettingsPanel from '../components/SettingsPanel';
  * @param {function} onBack - Callback zum Zurückkehren ins Hauptmenü
  */
 export default function SettingsPage({ publicKey, onBack: _onBack }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['settings']);
   void _onBack;
 
   return (

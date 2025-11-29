@@ -20,7 +20,7 @@ function DeleteByIssuer({
   isLoading,
   setIsLoading,
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'secretKey']);
   const [localError, setLocalError] = useState('');
 
   const handleDelete = async () => {

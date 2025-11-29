@@ -8,7 +8,7 @@ import InvestedTokensPanel from '../components/InvestedTokensPanel';
  * - Rendert das Panel, das die Investments über Horizon ermittelt.
  */
 export default function InvestedTokensPage({ publicKey, onBack: _onBack }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['token', 'investedTokens']);
   void _onBack;
 
   return (

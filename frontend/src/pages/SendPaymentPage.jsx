@@ -9,7 +9,7 @@ import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from '../utils/walletInfo.js';
 
 export default function SendPaymentPage({ publicKey, onBack: _onBack, initial }) {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(['common', 'errors', 'publicKey', 'secretKey', 'investedTokens', 'wallet']);
   void _onBack;
   const { wallets } = useTrustedWallets();
 
