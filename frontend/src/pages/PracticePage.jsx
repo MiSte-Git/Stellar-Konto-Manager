@@ -26,7 +26,7 @@ function useLessonIdFromPath() {
 }
 
 export default function PracticePage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['learn', 'quiz.ui']);
   const lessonNum = useLessonIdFromPath();
   const [accountId, setAccountId] = React.useState('');
   const [assetCode, setAssetCode] = React.useState('SKM');

@@ -6,7 +6,7 @@ import { useSettings } from '../utils/useSettings.js';
 import { buildDefaultFilename } from '../utils/filename';
 
 export default function SettingsPanel({ publicKey }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['settings']);
   const { data, wallets, setWallets, resetToDefault, exportFile, importFile, error } = useTrustedWallets();
   const { decimalsMode, setDecimalsMode, fullHorizonUrl, setFullHorizonUrl, autoUseFullHorizon, setAutoUseFullHorizon } = useSettings();
 

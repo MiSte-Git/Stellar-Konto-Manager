@@ -14,7 +14,7 @@ import { getHorizonServer } from '../utils/stellar/stellarUtils';
  * Alle sichtbaren Texte laufen über t().
  */
 export default function InvestedTokensPanel({ publicKey }) {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(['InvestedTokens', 'xlmByMemo', 'common', 'token']);
   const [view, setView] = useState('memo'); // 'memo' | 'token'
   const [data, setData] = useState(null);
   const [err, setErr] = useState('');

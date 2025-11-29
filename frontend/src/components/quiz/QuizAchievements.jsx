@@ -18,7 +18,7 @@ function loadAchievements(id) {
 }
 
 export default function QuizAchievements() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['quiz']);
   const lessonId = React.useMemo(() => parseLessonIdFromPath(typeof window !== 'undefined' ? window.location.pathname : ''), []);
   const [items, setItems] = React.useState([]);
 

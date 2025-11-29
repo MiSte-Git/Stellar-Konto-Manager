@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 function ErrorModal({ message, onClose }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['errors', 'common']);
 
   if (!message) return null;
 

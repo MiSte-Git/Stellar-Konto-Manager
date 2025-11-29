@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
 export default function ToastContainer({ toasts, onClose }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['quiz']);
   if (typeof document === 'undefined') return null;
   return createPortal(
     <div className="fixed inset-x-0 top-3 z-[100] flex flex-col items-center gap-2 pointer-events-none">

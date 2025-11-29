@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
  * Adds a "(Testnet)" suffix via i18n and highlights entries in yellow.
  */
 export default function AccountSelect({ accounts = [], value, onChange, className = '', children, ...rest }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common']);
   const combinedClassName = ['w-full p-2 border rounded bg-white dark:bg-gray-900', className].filter(Boolean).join(' ');
 
   return (

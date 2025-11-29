@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
  * und zeigt ein Modal zum Aktivieren des Zielkontos.
  */
 export default function ActivateAccountPrompt() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common']);
   const [open, setOpen] = useState(false);
   const [destination, setDestination] = useState('');
   const [busy, setBusy] = useState(false);

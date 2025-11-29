@@ -22,7 +22,7 @@ const PAY_TYPES = new Set([
  * - Errors werden als i18n-Key angezeigt
  */
 export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizon.stellar.org" , onBack: ON_BACK }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['xlmByMemo', 'common']);
   void ON_BACK;
   const [memoQuery, setMemoQuery] = useState("");
   const [memoHistory, setMemoHistory] = useState([]);

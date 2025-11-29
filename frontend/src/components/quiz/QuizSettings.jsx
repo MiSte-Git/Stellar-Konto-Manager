@@ -24,7 +24,7 @@ function saveSettings(id, s) {
 }
 
 export default function QuizSettings() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['quiz']);
   const lessonId = React.useMemo(() => parseLessonIdFromPath(typeof window !== 'undefined' ? window.location.pathname : ''), []);
 
   const [stickyNav, setStickyNav] = React.useState(true);

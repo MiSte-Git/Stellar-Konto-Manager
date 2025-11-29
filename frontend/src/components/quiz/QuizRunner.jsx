@@ -19,7 +19,7 @@ function computeHash(str) {
 }
 
 export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyFooterEnabled = true }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['quiz.ui', 'quiz', 'learn']);
   const { notify, ToastHost } = useToast();
   const [index, setIndex] = React.useState(0);
   const [selected, setSelected] = React.useState({});
