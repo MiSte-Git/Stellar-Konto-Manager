@@ -359,13 +359,13 @@ def main():
     parser = argparse.ArgumentParser(
         description=(
             "Aktualisiert Sprachdateien auf Basis der Namespace-Struktur.\n"
-            "Standard: de/<ns>.json → en/<ns>.json → andere/<ns>.json (missing+changed per Hash-Manifest).\n"
+            "Standard: de/<ns>.json → en/<ns>.json → andere/<ns>.json (inkrementell: nur fehlende/ geänderte Keys laut Hash-Manifest).\n"
             "\n"
             "Optionen:\n"
             "  --force-key <pfad>   Erzwingt Neuübersetzung einzelner Schlüssel (dot-Pfade).\n"
             "                       Mehrfach nutzbar oder komma-separiert.\n"
             "                       Beispiele: feedback.title  |  menu.feedback  |  feedback\n"
-            "  --full               Übersetzt alle Schlüssel komplett neu.\n"
+            "  --full               Vollständiger Lauf: alle Schlüssel neu übersetzen (langsamer/teurer).\n"
             "  --legacy-root        Verarbeite die alte Legacy-Struktur (de.json). Nicht empfohlen.\n"
             "\n"
             "Beispiele:\n"
@@ -419,6 +419,7 @@ def main():
 
     base_path = args.base_path
     provider = args.provider
+    # --full schaltet bewusst in den Voll-Lauf; ohne Flag wird inkrementell (nur neue/geänderte Keys laut Hash) gearbeitet.
     do_full = bool(args.full)
     force_keys_raw = args.force_keys or []
 
@@ -518,7 +519,8 @@ def main():
                 de_flat_pref = {f"{ns_name}.{k}": v for k, v in de_flat_rel.items()}
                 man_en = _load_manifest("en", "de")
 
-                if args.full:
+                # Inkrementell: nur Keys mit geändertem Hash (oder erzwungene) übersetzen; Full-Lauf übersetzt alles.
+                if do_full:
                     changed_rel = set(de_flat_rel.keys())
                 else:
                     changed_rel = set(
@@ -527,7 +529,7 @@ def main():
                     )
                     changed_rel |= forced_paths
 
-                if args.full:
+                if do_full:
                     en_translated = translate_full(
                         ns_base,
                         "en",
@@ -577,7 +579,7 @@ def main():
 
                     man_lang = _load_manifest(lang, "en")
 
-                    if args.full:
+                    if do_full:
                         changed_rel_lang = set(en_flat_rel.keys())
                     else:
                         changed_rel_lang = set(
@@ -585,7 +587,7 @@ def main():
                             if man_lang.get(f"{ns_name}.{k}") != _sha256(str(v))
                         )
 
-                    if args.full:
+                    if do_full:
                         translated = translate_full(
                             en_ns,
                             lang,
