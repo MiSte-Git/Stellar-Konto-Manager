@@ -1,4 +1,7 @@
 {
+  "entry": {
+    "beginnerQuizTitle": "Stellar-Quiz für Anfänger"
+  },
   "l1": {
     "title": "Blockchain Grundlagen",
     "q1": {

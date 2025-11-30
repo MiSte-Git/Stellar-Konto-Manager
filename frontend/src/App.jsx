@@ -94,6 +94,15 @@ function App() {
     }
   }, [pathname]);
 
+  // Backward compatibility for legacy quiz route: /learn/lesson/:id/quiz
+  const isLessonQuizRoute = React.useMemo(() => {
+    try {
+      return isLessonQuizPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
   const isQuizRunRoute = React.useMemo(() => {
     try {
       return isQuizRunPath(pathname);
@@ -104,7 +113,18 @@ function App() {
 
   const isQuizLandingRoute = React.useMemo(() => {
     try {
-      return isQuizLandingPath(pathname);
+      const match = isQuizLandingPath(pathname);
+      if (import.meta.env?.DEV) {
+        console.debug('DEBUG quiz matchers', {
+          path: pathname,
+          landing: match,
+          run: isQuizRunPath(pathname),
+          settings: isQuizSettingsPath(pathname),
+          achievements: isQuizAchievementsPath(pathname),
+          legacy: isLessonQuizPath(pathname)
+        });
+      }
+      return match;
     } catch {
       return false;
     }
@@ -126,14 +146,21 @@ function App() {
     }
   }, [pathname]);
 
-  // Backward compatibility for legacy quiz route: /learn/lesson/:id/quiz
-  const isLessonQuizRoute = React.useMemo(() => {
-    try {
-      return isLessonQuizPath(pathname);
-    } catch {
-      return false;
-    }
-  }, [pathname]);
+  const isQuizRoute = React.useMemo(
+    () =>
+      isQuizLandingRoute ||
+      isQuizRunRoute ||
+      isQuizSettingsRoute ||
+      isQuizAchievementsRoute ||
+      isLessonQuizRoute,
+    [
+      isQuizLandingRoute,
+      isQuizRunRoute,
+      isQuizSettingsRoute,
+      isQuizAchievementsRoute,
+      isLessonQuizRoute
+    ]
+  );
 
   const isSettingsBackupRoute = React.useMemo(() => {
     try {
@@ -143,10 +170,27 @@ function App() {
     }
   }, [pathname]);
 
+  if (import.meta.env?.DEV) {
+    console.log('DEBUG STM Router', {
+      pathname,
+      isBugTrackerRoute,
+      isLessonQuizRoute,
+      isQuizLandingRoute,
+      isQuizRunRoute,
+      isQuizSettingsRoute,
+      isQuizAchievementsRoute,
+      isQuizRoute,
+    });
+  }
+
   return (
     <ErrorBoundary t={t}>
       {isBugTrackerRoute ? (
         <BugTrackerAdmin />
+      ) : isQuizRoute ? (
+        <div className="max-w-4xl mx-auto p-4">
+          <QuizPage />
+        </div>
       ) : (
         <>
           {/* Sprachleiste */}
@@ -154,41 +198,7 @@ function App() {
             <div className="flex justify-center">
               <LanguageSelector />
             </div>
-            {/* Glossary, Learn and Settings buttons under the language bar on all screens */}
-            <div className="mt-3 flex flex-wrap justify-center gap-2">
-              <a
-                href={buildPath('glossar')}
-                onClick={(e) => {
-                  try {
-                    e.preventDefault();
-                    const url = buildPath('glossar');
-                    // remember previous path to restore on back
-                    try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
-                    window.history.pushState({}, '', url);
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  } catch { /* noop */ }
-                }}
-                className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                title={t('glossary:pageTitle', 'Glossary')}
-              >
-                {t('glossary:pageTitle', 'Glossary')}
-              </a>
-              <a
-                href={buildPath('learn')}
-                onClick={(e) => {
-                  try {
-                    e.preventDefault();
-                    const url = buildPath('learn');
-                    try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
-                    window.history.pushState({}, '', url);
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  } catch { /* noop */ }
-                }}
-                className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                title={t('learn:pageTitle', 'Stellar-Quiz für Anfänger')}
-              >
-                {t('menu:learn', 'Stellar-Quiz für Anfänger')}
-              </a>
+            <div className="mt-3 relative flex items-center justify-center">
               <button
                 type="button"
                 onClick={() => {
@@ -197,16 +207,33 @@ function App() {
                     try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
                     window.history.pushState({}, '', url);
                     window.dispatchEvent(new PopStateEvent('popstate'));
-                  } catch {
-                    /* noop */
-                  }
+                  } catch { /* noop */ }
                 }}
                 className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 title={t('settings:label', 'Settings')}
               >
                 {t('settings:label', 'Settings')}
               </button>
-
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent('stm:openMenu', { detail: 'feedback' }))}
+                  title={t('menu:feedback', 'Feedback')}
+                  className="inline-flex items-center gap-1.5 bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 text-[11px] sm:text-xs rounded-full shadow focus:outline-none focus:ring-2 focus:ring-purple-400"
+                >
+                  <span>✉</span>
+                  <span>{t('menu:feedback', 'Feedback')}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent('stm:openMenu', { detail: 'donate' }))}
+                  title={t('menu:donate', 'Spenden')}
+                  className="inline-flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white px-2 py-1 text-[11px] sm:text-xs rounded-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
+                >
+                  <span aria-hidden>♥</span>
+                  <span>{t('menu:donate', 'Spenden')}</span>
+                </button>
+              </div>
             </div>
             {devTestnet && (
               <span className="absolute right-3 top-[72px] inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
@@ -233,15 +260,6 @@ function App() {
             <div id="stm-learn-overlay" className="fixed inset-0 z-50 bg-white dark:bg-gray-900 overflow-y-auto">
               <div className="max-w-5xl mx-auto p-4">
                 <LearnPage />
-              </div>
-            </div>
-          )}
-
-          {/* Quiz Routen als Overlay (/quiz/:id | /quiz/:id/run | /quiz/:id/settings | /quiz/:id/achievements) und legacy (/learn/lesson/:id/quiz) */}
-          {(isQuizLandingRoute || isQuizRunRoute || isLessonQuizRoute || isQuizSettingsRoute || isQuizAchievementsRoute) && (
-            <div id="stm-quiz-overlay" className="fixed inset-0 z-50 bg-white dark:bg-gray-900 overflow-y-auto">
-              <div className="max-w-4xl mx-auto p-4">
-                <QuizPage />
               </div>
             </div>
           )}

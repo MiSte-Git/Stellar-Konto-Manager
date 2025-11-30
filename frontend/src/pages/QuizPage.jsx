@@ -4,7 +4,7 @@ import QuizRunner from '../components/quiz/QuizRunner.jsx';
 import QuizSettings from '../components/quiz/QuizSettings.jsx';
 import QuizAchievements from '../components/quiz/QuizAchievements.jsx';
 import QuizLanding from '../components/quiz/QuizLanding.jsx';
-import { buildPath } from '../utils/basePath.js';
+import { buildPath, quizRunPath, quizSettingsPath, quizAchievementsPath } from '../utils/basePath.js';
 
 function useLessonIdFromPath() {
   const parseId = (p) => {
@@ -61,11 +61,21 @@ function isRunRoute() {
 }
 
 export default function QuizPage() {
-  const { t } = useTranslation(['learn', 'quiz', 'quiz.ui', 'common']);
+  const { t } = useTranslation(['learn', 'quiz', 'quiz.ui', 'common', 'navigation']);
   const lessonNum = useLessonIdFromPath();
   const [data, setData] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState('');
+
+  if (import.meta.env?.DEV) {
+    console.log('DEBUG QuizPage render', {
+      pathname: typeof window !== 'undefined' ? window.location.pathname : '',
+      lessonNum,
+      isSettings: isSettingsRoute(),
+      isAchievements: isAchievementsRoute(),
+      isRun: isRunRoute(),
+    });
+  }
 
   React.useEffect(() => {
     let alive = true;
@@ -87,12 +97,8 @@ export default function QuizPage() {
 
   const goBack = React.useCallback(() => {
     try {
-      const prev = (typeof window !== 'undefined' && window.sessionStorage)
-        ? window.sessionStorage.getItem('STM_PREV_PATH')
-        : '';
-      if (prev) {
-        window.history.pushState({}, '', prev);
-        window.dispatchEvent(new PopStateEvent('popstate'));
+      if (typeof window !== 'undefined' && window.history.length > 1) {
+        window.history.back();
         return;
       }
       const url = buildPath('learn');
@@ -104,13 +110,28 @@ export default function QuizPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
       <div className="flex items-center justify-between gap-3 mb-3">
-        <button
-          type="button"
-          onClick={goBack}
-          className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded"
-        >
-          ← {t('learn:back', 'Back')}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={goBack}
+            className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded"
+          >
+            ← {t('learn:back', 'Back')}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              try {
+                const url = buildPath('');
+                window.history.pushState({}, '', url);
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              } catch { /* noop */ }
+            }}
+            className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded"
+          >
+            {t('navigation:home', 'Startseite')}
+          </button>
+        </div>
         <h1 className="text-2xl font-bold flex-1 text-center">{isSettingsRoute() ? t('quiz:settings.title') : isAchievementsRoute() ? t('quiz:achievements.title') : t('quiz.ui:routeTitle', { id: lessonNum })}</h1>
         <div className="w-[76px]" aria-hidden />
       </div>
@@ -170,30 +191,21 @@ export default function QuizPage() {
               lessonId={lessonNum}
               onStartQuiz={() => {
                 try {
-                  const url = buildPath(`quiz/${lessonNum}/run`);
-                  if (typeof window !== 'undefined' && window.sessionStorage) {
-                    window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname);
-                  }
+                  const url = quizRunPath(lessonNum);
                   window.history.pushState({}, '', url);
                   window.dispatchEvent(new PopStateEvent('popstate'));
                 } catch { /* noop */ }
               }}
               onOpenSettings={() => {
                 try {
-                  const url = buildPath(`quiz/${lessonNum}/settings`);
-                  if (typeof window !== 'undefined' && window.sessionStorage) {
-                    window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname);
-                  }
+                  const url = quizSettingsPath(lessonNum);
                   window.history.pushState({}, '', url);
                   window.dispatchEvent(new PopStateEvent('popstate'));
                 } catch { /* noop */ }
               }}
               onOpenAchievements={() => {
                 try {
-                  const url = buildPath(`quiz/${lessonNum}/achievements`);
-                  if (typeof window !== 'undefined' && window.sessionStorage) {
-                    window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname);
-                  }
+                  const url = quizAchievementsPath(lessonNum);
                   window.history.pushState({}, '', url);
                   window.dispatchEvent(new PopStateEvent('popstate'));
                 } catch { /* noop */ }
