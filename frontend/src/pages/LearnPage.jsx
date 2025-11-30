@@ -100,7 +100,7 @@ function LearnPage() {
   const sortedLessons = React.useMemo(() => sortByLessonId(lessons), []);
 
   return (
-    <div className="max-w-5xl mx-auto p-4">
+    <div className="max-w-[1140px] mx-auto p-4">
       <header className="mb-4">
         <div className="flex items-center justify-between gap-3">
           <div className="shrink-0">
@@ -284,18 +284,21 @@ function LearnPage() {
 
               {/* Fortschritt: Sterne & Abschluss */}
               <div className="mt-3 flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1" role="group" aria-label={t('learn:progress.setStarsGroup', 'Set stars')}>
+                <div className="flex flex-wrap md:flex-nowrap items-center gap-1" role="group" aria-label={t('learn:progress.setStarsGroup', 'Set stars')}>
                   {[0,1,2,3].map((cnt) => (
                     <button
                       key={cnt}
                       type="button"
                       onClick={() => handleSetStars(pid, cnt)}
-                      className={`px-2 py-1 rounded text-xs font-semibold border ${cnt === stars ? 'bg-yellow-400 text-black border-yellow-500' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
+                      className={`px-1.5 py-1 rounded text-xs font-semibold border leading-tight ${cnt === stars ? 'bg-yellow-400 text-black border-yellow-500' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600'}`}
                       aria-pressed={cnt === stars}
                       aria-label={t('learn:progress.setStars', 'Set {count} stars').replace('{count}', String(cnt))}
                       title={t('learn:progress.setStars', 'Set {count} stars').replace('{count}', String(cnt))}
                     >
-                      {t('learn:progress.starsLabel', '{count} ★').replace('{count}', String(cnt))}
+                      <span className="flex flex-col items-center leading-tight text-center">
+                        <span>{String(cnt)}</span>
+                        <span aria-hidden>★</span>
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -303,7 +306,7 @@ function LearnPage() {
                   <button
                     type="button"
                     onClick={() => handleToggleCompleted(pid)}
-                    className={`px-3 py-1.5 rounded text-xs font-semibold ${state.completed ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100'}`}
+                    className={`inline-flex items-center justify-center px-1 py-1 max-w-[120px] whitespace-normal break-words rounded text-xs font-semibold leading-tight text-center ${state.completed ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100'}`}
                     aria-pressed={state.completed}
                     aria-label={state.completed ? t('learn:progress.completed', 'Completed') : t('learn:progress.markComplete', 'Mark as complete')}
                     title={state.completed ? t('learn:progress.completed', 'Completed') : t('learn:progress.markComplete', 'Mark as complete')}
@@ -323,7 +326,7 @@ function LearnPage() {
                         window.dispatchEvent(new PopStateEvent('popstate'));
                       } catch { /* noop */ }
                     }}
-                    className="px-3 py-1.5 rounded text-xs font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
+                    className="inline-flex items-center justify-center px-1 py-1 rounded text-xs font-semibold leading-tight text-center bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
                     title={t('quiz:landing.settings', 'Einstellungen')}
                     aria-label={t('quiz:landing.settings', 'Einstellungen')}
                   >
@@ -342,7 +345,7 @@ function LearnPage() {
                         window.dispatchEvent(new PopStateEvent('popstate'));
                       } catch { /* noop */ }
                     }}
-                    className="px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
+                    className="inline-flex items-center justify-center px-1 py-1 rounded text-xs font-semibold leading-tight text-center bg-indigo-600 hover:bg-indigo-700 text-white"
                     title={t('learn:actions.startQuiz', 'Start quiz')}
                     aria-label={t('learn:actions.startQuiz', 'Start quiz')}
                   >
