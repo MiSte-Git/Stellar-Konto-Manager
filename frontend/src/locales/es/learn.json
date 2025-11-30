@@ -15,7 +15,7 @@
   },
   "progress": {
     "saved": "Progreso guardado",
-    "starsLabel": "{count} estrellas",
+    "starsLabel": "{count} ★",
     "error": "No se pudo guardar el progreso.",
     "clearAll": "Eliminar progreso",
     "cleared": "Progreso eliminado",

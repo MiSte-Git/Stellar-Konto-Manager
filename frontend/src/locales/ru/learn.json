@@ -15,7 +15,7 @@
   },
   "progress": {
     "saved": "Прогресс сохранён",
-    "starsLabel": "{count} звёзд",
+    "starsLabel": "{count} ★",
     "error": "Прогресс не удалось сохранить.",
     "clearAll": "Удалить прогресс",
     "cleared": "Прогресс удален",

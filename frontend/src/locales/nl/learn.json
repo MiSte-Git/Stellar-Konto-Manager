@@ -15,7 +15,7 @@
   },
   "progress": {
     "saved": "Voortgang opgeslagen",
-    "starsLabel": "{count} sterren",
+    "starsLabel": "{count} ★",
     "error": "Vooruitgang kon niet worden opgeslagen.",
     "clearAll": "Voortgang verwijderen",
     "cleared": "Voortgang verwijderd",

@@ -15,7 +15,7 @@
   },
   "progress": {
     "saved": "Progrès enregistré",
-    "starsLabel": "{count} étoiles",
+    "starsLabel": "{count} ★",
     "error": "Les progrès ne peuvent pas être enregistrés.",
     "clearAll": "Supprimer les progrès",
     "cleared": "Progrès supprimé",

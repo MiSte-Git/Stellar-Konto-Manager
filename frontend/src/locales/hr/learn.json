@@ -15,7 +15,7 @@
   },
   "progress": {
     "saved": "Napredak spremljen",
-    "starsLabel": "{count} zvjezdice",
+    "starsLabel": "{count} ★",
     "error": "Napredak nije mogao biti sačuvan.",
     "clearAll": "Izbriši napredak",
     "cleared": "Napredak izbrisan",

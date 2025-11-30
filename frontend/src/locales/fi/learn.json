@@ -15,7 +15,7 @@
   },
   "progress": {
     "saved": "Edistyminen tallennettu",
-    "starsLabel": "{count} tähteä",
+    "starsLabel": "{count} ★",
     "error": "Edistystä ei voitu tallentaa.",
     "clearAll": "Poista edistys",
     "cleared": "Edistys poistettu.",
