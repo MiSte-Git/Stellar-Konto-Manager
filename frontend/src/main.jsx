@@ -13,7 +13,7 @@ import {
 import { useTrustedWallets } from './utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
 import { isTestnetAccount } from './utils/stellar/accountUtils.js';
-
+import { buildPath, quizLandingPath } from './utils/basePath.js';
 
 function normalizeStoredWallet(entry) {
   if (typeof entry === 'string') {
@@ -96,7 +96,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
 function Main() {
 	//console.log('main.jsx In function Main');
-  const { t } = useTranslation(['secretKey', 'submitTransaction', 'common', 'network', 'menu', 'createAccount', 'publicKey', 'wallet', 'navigation', 'errors', 'trustline', 'investedTokens', 'xlmByMemo']);
+  const { t } = useTranslation(['common', 'quiz', 'learn', 'glossary']);
   const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
   const { wallets } = useTrustedWallets();
   //console.log('[DEBUG] Aktive Horizon URL:', HORIZON_URL);
@@ -365,6 +365,25 @@ function Main() {
     return () => window.removeEventListener('stm:openSettings', openSettings);
   }, []);
 
+  // Listen for menu open requests from the language bar (e.g., feedback, donate)
+  useEffect(() => {
+    const openMenu = (e) => {
+      const target = typeof e?.detail === 'string' ? e.detail : '';
+      if (target === 'feedback') {
+        setMenuSelection('feedback');
+      } else if (target === 'donate') {
+        setSendInit({
+          recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M',
+          amount: 5,
+          memoText: `Spende ${t('common:main.title')}`,
+        });
+        setMenuSelection('sendPayment');
+      }
+    };
+    window.addEventListener('stm:openMenu', openMenu);
+    return () => window.removeEventListener('stm:openMenu', openMenu);
+  }, [t, setMenuSelection, setSendInit]);
+
   // Lazy-load trustlines when needed by specific views
   useEffect(() => {
     const needsTrustlines = ['listAll','compare','deleteAll','deleteByIssuer'].includes(menuSelection);
@@ -475,6 +494,22 @@ function Main() {
     setSelectedTrustlines(next);
   };
 
+  const navigateTo = (subpath) => {
+    try {
+      const cleanSubpath = String(subpath).trim().replace(/^\/+/, '');
+      const url = buildPath(cleanSubpath);
+      if (typeof window !== 'undefined') {
+        if (window.sessionStorage) {
+          window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname);
+        }
+        window.history.pushState({}, '', url);
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
+    } catch (err) {
+        console.error('navigateTo failed', err);
+    }
+  };
+
   return (
      <>
       <div className="max-w-4xl mx-auto px-4 pt-4 text-center mt-4-500" style={{ paddingBottom: 'max(1rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
@@ -487,26 +522,48 @@ function Main() {
               {devTestnet ? t('network:testnet') : t('network:mainnet')}
             </span>
           </div>
-          {/* Action buttons under the title, right-aligned */}
-          <div className="mt-2 flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => setMenuSelection('feedback')}
-              title={t('menu:feedback', 'Feedback')}
-              className="inline-flex items-center gap-1.5 sm:gap-2 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 md:px-4 md:py-2 text-xs sm:text-sm md:text-base rounded-full shadow focus:outline-none focus:ring-2 focus:ring-purple-400"
-            >
-              <span>✉</span>
-              <span>{t('menu:feedback', 'Feedback')}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => { setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('common:main.title')}` }); setMenuSelection('sendPayment'); }}
-              title={t('menu:donate', 'Spenden')}
-              className="inline-flex items-center gap-1.5 sm:gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 md:px-4 md:py-2 text-xs sm:text-sm md:text-base rounded-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
-            >
-              <span aria-hidden>♥</span>
-              <span>{t('menu:donate', 'Spenden')}</span>
-            </button>
+          {/* Action buttons unter dem Titel (gemeinsame Zeile) */}
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  try {
+                    const url = quizLandingPath(1);
+                    if (typeof window !== 'undefined') {
+                      if (window.sessionStorage) {
+                        window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname);
+                      }
+                      window.history.pushState({}, '', url);
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }
+                  } catch { /* noop */ }
+                }}
+                title={t('learn:menu', 'Stellar-Quiz für Anfänger')}
+                className="inline-flex items-center gap-1 sm:gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-0.5 md:px-3 md:py-1 text-[11px] sm:text-xs md:text-sm rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              >
+                <span aria-hidden>★</span>
+                <span>{t('learn:menu', 'Stellar-Quiz für Anfänger')}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo('learn')}
+                title={t('learn:menuHint', 'Lernübersicht öffnen')}
+                className="inline-flex items-center gap-1 sm:gap-1.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 px-2.5 py-0.5 md:px-3 md:py-1 text-[11px] sm:text-xs md:text-sm rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              >
+                <span aria-hidden>↗</span>
+                <span>{t('learn:menuHint', 'Lernübersicht öffnen')}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo('glossar')}
+                title={t('glossary:pageTitle', 'Glossar')}
+                className="inline-flex items-center gap-1 sm:gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-0.5 md:px-3 md:py-1 text-[11px] sm:text-xs md:text-sm rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              >
+                <span aria-hidden>ℹ</span>
+                <span>{t('glossary:pageTitle', 'Glossar')}</span>
+              </button>
+            </div>
           </div>
           {infoMessage && (
             <div className="mt-2 text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-2 inline-block">
