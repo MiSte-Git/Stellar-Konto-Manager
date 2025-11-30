@@ -17,6 +17,7 @@
     "pageTitle": "Glossar"
   },
   "progress": {
+    "title": "Lernfortschritt",
     "saved": "Fortschritt gespeichert",
     "starsLabel": "{count} ★",
     "error": "Fortschritt konnte nicht gespeichert werden",

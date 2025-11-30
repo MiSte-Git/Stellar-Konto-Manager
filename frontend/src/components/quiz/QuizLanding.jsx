@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { buildPath } from '../../utils/basePath.js';
 import { getStartInNewTabGlobal, getStartInNewTabForId, setStartInNewTabForId } from '../../utils/quiz/startInNewTab.js';
+import { quizRunPath } from '../../utils/basePath.js';
 
 /**
  * QuizLanding
@@ -51,20 +51,26 @@ export default function QuizLanding({
     return '1';
   }, [lessonId]);
 
-  const startInNewTab = React.useMemo(() => {
+  const initialOpenInNewTab = React.useMemo(() => {
     const per = getStartInNewTabForId(numericId);
     if (per == null) return getStartInNewTabGlobal();
     return !!per;
   }, [numericId]);
+  const [openInNewTab, setOpenInNewTab] = React.useState(initialOpenInNewTab);
+
+  React.useEffect(() => {
+    setOpenInNewTab(initialOpenInNewTab);
+  }, [initialOpenInNewTab]);
 
   const toggleStartInNewTab = (checked) => {
+    setOpenInNewTab(checked);
     try {
       // Prefer per-quiz setting
       setStartInNewTabForId(numericId, checked);
     } catch { /* noop */ }
   };
 
-  const runPath = React.useMemo(() => buildPath(`quiz/${numericId}/run`), [numericId]);
+  const runUrl = React.useMemo(() => quizRunPath(numericId), [numericId]);
 
   return (
     <section className="max-w-2xl mx-auto p-4 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
@@ -105,7 +111,7 @@ export default function QuizLanding({
         <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
           <input
             type="checkbox"
-            checked={startInNewTab}
+            checked={openInNewTab}
             onChange={(e) => toggleStartInNewTab(e.target.checked)}
           />
           {t('quiz.ui:openInNewTab.default', 'Quiz standardmäßig in neuem Tab öffnen')}
@@ -114,12 +120,15 @@ export default function QuizLanding({
 
       {/* Aktionen */}
       <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-        {startInNewTab ? (
-          <a
-            href={runPath}
+            {openInNewTab ? (
+              <a
+            href={runUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => handle(onStartQuiz)}
+            onClick={(e) => {
+              try { e.preventDefault(); } catch { /* noop */ }
+              try { window.open(runUrl, '_blank', 'noopener'); } catch { /* noop */ }
+            }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow"
           >
             {t('quiz.ui:startInNewTab', 'Quiz in neuem Tab starten')}
@@ -134,13 +143,17 @@ export default function QuizLanding({
               {t('quiz.ui:startQuiz', 'Quiz starten')}
             </button>
             <a
-              href={runPath}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-2 rounded text-sm font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
-            >
-              {t('quiz.ui:openInNewTab.once', 'In neuem Tab öffnen')}
-            </a>
+            href={runUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              try { e.preventDefault(); } catch { /* noop */ }
+              try { window.open(runUrl, '_blank', 'noopener'); } catch { /* noop */ }
+            }}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded text-sm font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
+          >
+            {t('quiz.ui:openInNewTab.once', 'In neuem Tab öffnen')}
+          </a>
           </>
         )}
 
@@ -156,14 +169,7 @@ export default function QuizLanding({
 
         <button
           type="button"
-          onClick={() => {
-            handle(onOpenSettings);
-            try {
-              const url = buildPath(`quiz/${numericId}/settings`);
-              window.history.pushState({}, '', url);
-              window.dispatchEvent(new PopStateEvent('popstate'));
-            } catch { /* noop */ }
-          }}
+          onClick={() => handle(onOpenSettings)}
           className="inline-flex items-center gap-2 px-3 py-2 rounded text-sm font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
           aria-label={t('quiz:landing.settingsLink')}
           title={t('quiz:landing.settingsLink')}
@@ -173,14 +179,7 @@ export default function QuizLanding({
 
         <button
           type="button"
-          onClick={() => {
-            handle(onOpenAchievements);
-            try {
-              const url = buildPath(`quiz/${numericId}/achievements`);
-              window.history.pushState({}, '', url);
-              window.dispatchEvent(new PopStateEvent('popstate'));
-            } catch { /* noop */ }
-          }}
+          onClick={() => handle(onOpenAchievements)}
           className="inline-flex items-center gap-2 px-3 py-2 rounded text-sm font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
           aria-label={t('quiz:achievements.link')}
           title={t('quiz:achievements.link')}
