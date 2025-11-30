@@ -15,7 +15,7 @@
   },
   "progress": {
     "saved": "Progress saved",
-    "starsLabel": "{count} stars",
+    "starsLabel": "{count} ★",
     "error": "Progress could not be saved.",
     "clearAll": "Delete progress",
     "cleared": "Progress deleted",

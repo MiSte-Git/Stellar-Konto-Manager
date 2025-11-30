@@ -133,6 +133,8 @@ def translate_text(
 
 # -------- Original-Key Handling (never translate, copy from de.json) --------
 ORIGINAL_RE = re.compile(r'(^|\.)original$')
+# Sonderzeichen-Erkennung (z.B. ★, Emojis), die wir nicht verlieren dürfen
+SPECIAL_CHAR_RE = re.compile(r"[^\w\s.,;:!?'\"()\[\]{}<>\\\-\/]")
 
 def is_original_key(path: str) -> bool:
     return bool(ORIGINAL_RE.search(path))
@@ -147,6 +149,31 @@ def _handle_skip_original(path: str, counters: Dict[str, int] | None = None) -> 
     except Exception:
         # Swallow to continue processing
         pass
+
+
+def _extract_special_chars(text: str) -> Set[str]:
+    """Finde Sonderzeichen, die nicht zu Standard-Punktuation gehören (z.B. ★, Emojis)."""
+    return set(re.findall(SPECIAL_CHAR_RE, text or ""))
+
+
+def _preserve_special_chars(source: Any, translated: str, path: str, counters: Dict[str, int] | None = None) -> str:
+    """
+    Stellt sicher, dass Sonderzeichen (z.B. ★) aus dem Quelltext nicht verloren gehen.
+    Falls Zeichen fehlen, wird der Quelltext zurückgegeben, um Layout/Ikonen zu bewahren.
+    """
+    if not isinstance(source, str):
+        return translated
+    specials = _extract_special_chars(source)
+    if not specials:
+        return translated
+    translated_str = translated if isinstance(translated, str) else str(translated)
+    missing = [ch for ch in specials if ch not in translated_str]
+    if missing:
+        if counters is not None:
+            counters['preservedSpecialCharKeys'] = counters.get('preservedSpecialCharKeys', 0) + 1
+        print(f"INFO: Bewahre Sonderzeichen für {path}: {''.join(missing)} → Originaltext übernommen")
+        return source
+    return translated_str
 
 
 # -------- Hash-basierte Änderungs-Erkennung --------
@@ -277,6 +304,7 @@ def merge_keys_missing_or_changed(
             needs_update = (key not in out) or (cur_path in changed_paths)
             if needs_update:
                 translated = translate_text(value, lang, provider, openai_key, deepl_key)
+                translated = _preserve_special_chars(value, translated, cur_path, counters)
                 out[key] = translated
     return out
 
@@ -328,6 +356,7 @@ def translate_full(
                 # Bestehende Übersetzungen nur überschreiben, wenn erzwungen
                 if existing_val is None or cur_path in forced_paths:
                     translated = translate_text(value, lang, provider, openai_key, deepl_key)
+                    translated = _preserve_special_chars(value, translated, cur_path, counters)
                     target_dict[key] = translated
                 else:
                     target_dict[key] = existing_val
