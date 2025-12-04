@@ -1,6 +1,6 @@
 {
   "backup": {
-    "title": "Sauvegarde et récupération",
+    "title": "Backup & Recovery",
     "desc": "Exporter ou importer vos données de quiz (paramètres, progression, badges).",
     "export": {
       "button": "Commencer l'exportation",
@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Sauvegarde exportée",
-      "backupBeforeImport": "Une sauvegarde a été enregistrée avant l'importation."
+      "backupBeforeImport": "Une sauvegarde a été effectuée avant l'importation."
     },
     "nav": {
       "back": "Retour"

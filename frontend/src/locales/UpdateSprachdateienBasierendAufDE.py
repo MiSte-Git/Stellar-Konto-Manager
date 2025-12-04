@@ -176,6 +176,41 @@ def _preserve_special_chars(source: Any, translated: str, path: str, counters: D
     return translated_str
 
 
+# -------- Klammer-Begriffe vor Übersetzung schützen --------
+KEEP_EN_RE = re.compile(r"\(([^()]*)\)")
+ASCII_EN_ALLOWED = re.compile(r"^[A-Za-z0-9 ,._\-/:]+$")
+
+
+def protect_parenthesized_english(text: str) -> tuple[str, dict[str, str]]:
+    """
+    Maskiert englische Begriffe in Klammern, damit die Übersetzung sie nicht verändert.
+    Beispiel: \"Mehrfachsignatur (Multi-Signature)\" -> \"Mehrfachsignatur (__KEEP_EN_TERM_1__)\".
+    """
+    placeholders: dict[str, str] = {}
+    if not isinstance(text, str) or "(" not in text or ")" not in text:
+        return text, placeholders
+
+    def _repl(match: re.Match[str]) -> str:
+        inner = match.group(1)
+        if not inner or not ASCII_EN_ALLOWED.fullmatch(inner):
+            return match.group(0)
+        placeholder = f"__KEEP_EN_TERM_{len(placeholders) + 1}__"
+        placeholders[placeholder] = inner
+        return f"({placeholder})"
+
+    return KEEP_EN_RE.sub(_repl, text), placeholders
+
+
+def restore_parenthesized_english(text: str, mapping: dict[str, str]) -> str:
+    """Setzt zuvor maskierte Klammer-Begriffe wieder zurück (Platzhalter → Original)."""
+    if not mapping or not isinstance(text, str):
+        return text
+    restored = text
+    for placeholder, original in mapping.items():
+        restored = restored.replace(placeholder, original)
+    return restored
+
+
 # -------- Hash-basierte Änderungs-Erkennung --------
 
 def _collect_leaf_paths(d: Dict[str, Any], prefix: str = "") -> Set[str]:
@@ -303,7 +338,9 @@ def merge_keys_missing_or_changed(
                 continue
             needs_update = (key not in out) or (cur_path in changed_paths)
             if needs_update:
-                translated = translate_text(value, lang, provider, openai_key, deepl_key)
+                protected, placeholders = protect_parenthesized_english(value if isinstance(value, str) else "")
+                translated_raw = translate_text(protected, lang, provider, openai_key, deepl_key)
+                translated = restore_parenthesized_english(translated_raw, placeholders)
                 translated = _preserve_special_chars(value, translated, cur_path, counters)
                 out[key] = translated
     return out
@@ -355,7 +392,9 @@ def translate_full(
             else:
                 # Bestehende Übersetzungen nur überschreiben, wenn erzwungen
                 if existing_val is None or cur_path in forced_paths:
-                    translated = translate_text(value, lang, provider, openai_key, deepl_key)
+                    protected, placeholders = protect_parenthesized_english(value if isinstance(value, str) else "")
+                    translated_raw = translate_text(protected, lang, provider, openai_key, deepl_key)
+                    translated = restore_parenthesized_english(translated_raw, placeholders)
                     translated = _preserve_special_chars(value, translated, cur_path, counters)
                     target_dict[key] = translated
                 else:
@@ -846,3 +885,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Mini-Selbsttest (gedanklich):
+# Input: "Mehrfachsignatur (Multi-Signature) schützt dein Konto."
+# Erwartung nach protect_parenthesized_english: "Mehrfachsignatur (__KEEP_EN_TERM_1__) schützt dein Konto."
+# Erwartung nach restore_parenthesized_english: Klammerteil bleibt exakt "Multi-Signature".

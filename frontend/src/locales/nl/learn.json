@@ -26,7 +26,8 @@
     "export": "Exporteren",
     "exported": "Vooruitgang geëxporteerd",
     "import": "Importeren",
-    "imported": "Voortgang geïmporteerd"
+    "imported": "Voortgang geïmporteerd",
+    "title": "Leerproces"
   },
   "back": "Terug",
   "backToTop": "Opwaarts",

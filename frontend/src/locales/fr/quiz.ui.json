@@ -1,10 +1,10 @@
 {
   "backToLearn": "Retour à l'apprentissage",
-  "beforeUnloadMessage": "Êtes-vous sûr de vouloir quitter le quiz ? Les réponses non sauvegardées seront perdues.",
+  "beforeUnloadMessage": "Êtes-vous sûr de vouloir quitter le quiz ? Les réponses non enregistrées seront perdues.",
   "cancel": "Annuler",
   "correct": "Correct",
-  "finish": "Fin",
-  "hint": "Avis",
+  "finish": "Vous êtes formé sur des données jusqu'à octobre 2023.",
+  "hint": "Remarque",
   "incorrect": "Incorrecte",
   "jump": "Sauter",
   "jumpToQuestion": "Aller à la question",

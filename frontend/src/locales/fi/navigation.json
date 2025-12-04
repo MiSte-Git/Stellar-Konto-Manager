@@ -2,5 +2,6 @@
   "backToMainMenu": "Takaisin päävalikkoon",
   "backToTop": "Ylöspäin",
   "back": "Takaisin",
-  "backToPublicKey": "Takaisin julkisen avaimen syöttöön"
+  "backToPublicKey": "Takaisin julkisen avaimen syöttöön",
+  "home": "Etusivu"
 }
