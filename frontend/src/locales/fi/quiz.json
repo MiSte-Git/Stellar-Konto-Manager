@@ -129,7 +129,7 @@
     "startPractice": "Aloita harjoitus.",
     "practice": "Harjoitus",
     "quiz": "Tietovisa",
-    "hint": "Vihje",
+    "hint": "Vinkki",
     "next": "Olet koulutettu tietoihin lokakuuhun 2023 saakka.",
     "prev": "Takaisin",
     "finish": "Valmis",
@@ -143,7 +143,7 @@
     "retry": "Yritä uudelleen.",
     "viewResults": "Näytä tulos",
     "routeTitle": "Visailu oppitunnille {{id}}",
-    "backToLearn": "Oppimisen yleiskatsaukseen",
+    "backToLearn": "Oppimisen yleiskuvaus",
     "summaryCount": "{{correct}}/{{total}} oikein",
     "noDataHelp": "Avaa oppimiskatsaus valitaksesi sopivan oppitunnin.",
     "jump": "Hyppää",
@@ -153,10 +153,10 @@
     "stickyNav": "Tahmea navigointi",
     "on": "At",
     "off": "Alkaen",
-    "timeRemaining": "Jäljellä oleva aika",
-    "beforeUnloadMessage": "Et ole vielä suorittanut tätä tietovisaa. Jos poistut sivulta, nykyiset vastaukset voivat kadota.",
+    "timeRemaining": "Aikaa jäljellä",
+    "beforeUnloadMessage": "Et ole vielä suorittanut tätä tietovisaa. Jos poistut sivulta, nykyiset vastaukset saattavat kadota.",
     "openInNewTab": "Avaa uudessa välilehdessä",
-    "openInNewTab.default": "Avaa tietovisa oletuksena uuteen välilehteen.",
+    "openInNewTab.default": "Avaa visa oletuksena uuteen välilehteen.",
     "openInNewTab.once": "Avaa uudessa välilehdessä",
     "startInNewTab": "Aloita tietovisa uudessa välilehdessä.",
     "warnOnActiveQuiz": "Näytä varoitus meneillään olevan visan aikana."
@@ -227,5 +227,8 @@
     "off": "Alkaen",
     "warnOnActiveQuiz": "Näytä varoitus aktiivisen visailun aikana",
     "warnOnActiveQuiz.desc": "Varoita jo vastatuista kysymyksistä ennen sivulta poistumista."
+  },
+  "entry": {
+    "beginnerQuizTitle": "Stellarin tietovisa aloittelijoille"
   }
 }

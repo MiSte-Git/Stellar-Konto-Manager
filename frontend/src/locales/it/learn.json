@@ -26,7 +26,8 @@
     "export": "Esportare",
     "exported": "Progresso esportato",
     "import": "Importazione",
-    "imported": "Progresso importato"
+    "imported": "Progresso importato",
+    "title": "Progresso dell'apprendimento"
   },
   "back": "Indietro",
   "backToTop": "Verso l'alto",

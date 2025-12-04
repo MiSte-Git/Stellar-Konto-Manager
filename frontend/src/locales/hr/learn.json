@@ -26,7 +26,8 @@
     "export": "Izvoz",
     "exported": "Napredak izvezen",
     "import": "Uvoz",
-    "imported": "Uvezen napredak"
+    "imported": "Uvezen napredak",
+    "title": "Napredak učenja"
   },
   "back": "Nazad",
   "backToTop": "Naviše",

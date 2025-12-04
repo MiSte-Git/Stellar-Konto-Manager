@@ -129,7 +129,7 @@
     "startPractice": "Start practice.",
     "practice": "Practice",
     "quiz": "Quiz",
-    "hint": "Hint",
+    "hint": "Tip",
     "next": "Continue",
     "prev": "Back",
     "finish": "Finished",
@@ -143,7 +143,7 @@
     "retry": "Try again.",
     "viewResults": "View result",
     "routeTitle": "Quiz for Lesson {{id}}",
-    "backToLearn": "To the learning overview",
+    "backToLearn": "To the Learning Overview",
     "summaryCount": "{{correct}}/{{total}} correct",
     "noDataHelp": "Open the learning overview to select the appropriate lesson.",
     "jump": "Jump",
@@ -227,5 +227,8 @@
     "off": "From",
     "warnOnActiveQuiz": "Display warning during active quiz",
     "warnOnActiveQuiz.desc": "Warn about already answered questions before leaving the page"
+  },
+  "entry": {
+    "beginnerQuizTitle": "Stellar Quiz for Beginners"
   }
 }
