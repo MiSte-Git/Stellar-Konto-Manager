@@ -31,7 +31,7 @@
   },
   "title": "Backup & Restore",
   "toast": {
-    "backupBeforeImport": "Un backup è stato salvato prima dell'importazione.",
+    "backupBeforeImport": "È stato salvato un backup prima dell'importazione.",
     "exported": "Backup esportato",
     "exportFailed": "Esportazione fallita",
     "importFailed": "Importazione fallita"

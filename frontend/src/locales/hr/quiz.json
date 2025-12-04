@@ -132,7 +132,7 @@
     "hint": "Savjet",
     "next": "Vi ste obučeni na podacima do listopada 2023.",
     "prev": "Nazad",
-    "finish": "Završeno",
+    "finish": "Spreman",
     "yourScore": "Vaš rezultat",
     "passed": "Prošao",
     "failed": "Neuspjelo",
@@ -154,11 +154,11 @@
     "on": "U",
     "off": "Od",
     "timeRemaining": "Preostalo vrijeme",
-    "beforeUnloadMessage": "Niste još završili ovaj kviz. Ako napustite stranicu, trenutni odgovori mogu biti izgubljeni.",
+    "beforeUnloadMessage": "Još niste završili s ovim kvizom. Ako napustite stranicu, trenutni odgovori mogu biti izgubljeni.",
     "openInNewTab": "Otvori u novom karticu",
-    "openInNewTab.default": "Otvorite kviz u novoj kartici prema zadanim postavkama.",
+    "openInNewTab.default": "Otvori kviz u novoj kartici po defaultu.",
     "openInNewTab.once": "Otvori u novoj kartici",
-    "startInNewTab": "Pokreni kviz u novoj kartici.",
+    "startInNewTab": "Pokreni kviz u novom prozoru.",
     "warnOnActiveQuiz": "Prikaži upozorenje tijekom tekućeg kviza."
   },
   "meta": {

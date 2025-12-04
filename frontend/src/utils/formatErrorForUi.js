@@ -18,15 +18,22 @@
  * @returns {string|{ formatted: string, raw: string, detail: string }}
  */
 export function formatErrorForUi(t, errorOrMessage, opts = {}) {
-  const baseKey = opts.baseKey || 'submitTransaction.failed';
   const baseDefault = opts.baseDefault || 'Transaction failed';
   const prefix = 'submitTransaction.failed:';
 
   const raw = String((errorOrMessage && errorOrMessage.message) ? errorOrMessage.message : errorOrMessage || '');
 
   if (raw.startsWith(prefix)) {
-    const detail = raw.slice(prefix.length);
-    const formatted = t(baseKey, baseDefault) + ': ' + t(detail, detail);
+    const detail = raw.slice(prefix.length).trim();
+    let detailText = detail;
+    if (detail) {
+      const detailKeyFull = `errors:submitTransaction.failed.${detail}`;
+      const translated = t(detailKeyFull, detailKeyFull);
+      if (translated && translated !== detailKeyFull) {
+        detailText = translated;
+      }
+    }
+    const formatted = `${baseDefault}: ${detailText || detail || ''}`.trim();
     return opts.returnParts ? { formatted, raw, detail } : formatted;
   }
 

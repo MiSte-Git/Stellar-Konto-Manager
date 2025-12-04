@@ -744,7 +744,7 @@
     "empty": "Secret key field is empty.",
     "info": "Your private key remains in your browser and is only used locally to sign transactions. It is never transmitted or stored.",
     "invalid": "Invalid secret key.",
-    "label": "Enter the source secret key",
+    "label": "Enter the source secret key (S-Key)",
     "mismatch": "Secret key does not match the public address.",
     "placeholder": "e.g.",
     "valid": "✅ Secret key is valid.",

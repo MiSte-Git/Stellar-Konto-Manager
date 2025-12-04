@@ -47,7 +47,15 @@
     "failed": {
       "tx_bad_auth": "Transazione rifiutata: Firma non valida",
       "tx_failed": "Transazione fallita",
-      "unknown": "Errore sconosciuto durante la transazione"
+      "unknown": "Errore sconosciuto durante la transazione",
+      "multisig": {
+        "invalidSecret": "Una delle chiavi segrete inserite non è valida.",
+        "notASigner": "Una delle chiavi segrete inserite non appartiene ai firmatari registrati.",
+        "noKeysProvided": "Non sono state inserite chiavi segrete valide.",
+        "insufficientWeight": "Le firme raccolte non sono sufficienti per autorizzare questa modifica. Richieste: {{required}}, presenti: {{current}}.",
+        "txBadAuth": "Transazione rifiutata: Firme insufficienti (tx_bad_auth).",
+        "zeroWeightSigner": "La chiave segreta inserita appartiene a un firmatario con un peso di 0 e non può autorizzare alcuna transazione."
+      }
     }
   },
   "sync": {

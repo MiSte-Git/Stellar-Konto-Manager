@@ -4,6 +4,7 @@ import { getHorizonServer, resolveOrValidatePublicKey } from '../utils/stellar/s
 import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
+import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { useSettings } from '../utils/useSettings';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from '../utils/walletInfo.js';
@@ -228,9 +229,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
   }, [assetKey, baseReserve, dest, normalizeAmountValue, server, t]);
 
-  const submitPayment = useCallback(async (secret) => {
-    const kp = Keypair.fromSecret(secret);
-    if (kp.publicKey() !== publicKey) throw new Error(t('secretKey:mismatch'));
+  const submitPayment = useCallback(async (signerKeypairs) => {
+    const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
+    const primary = signerList[0];
+    if (!primary) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
+    const kp = Keypair.fromSecret(primary.secret());
     const isTestnet = typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET';
     const net = isTestnet ? Networks.TESTNET : Networks.PUBLIC;
     const account = await server.loadAccount(publicKey);
@@ -285,7 +288,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         .build();
     }
 
-    tx.sign(kp);
+    signerList.forEach((kpItem) => {
+      try {
+        tx.sign(kpItem);
+      } catch (err) {
+        console.debug?.('sign failed', err);
+      }
+    });
+    if (process.env.NODE_ENV !== 'production') {
+      const required = requiredThreshold || 0;
+      const signerMeta = signerList.map((s) => ({ publicKey: s.publicKey(), weight: (signersForModal.find((si)=>si.public_key===s.publicKey())?.weight)||0 }));
+      const current = signerMeta.reduce((acc, s) => acc + Number(s.weight || 0), 0);
+      console.debug('multisig payment signing', { required, current, signers: signerMeta });
+    }
     const res = await server.submitTransaction(tx);
     const amountDisplayOut = activated ? (
       // Show the actual starting balance if we created the account
@@ -312,7 +327,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       setStatus('');
       const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
       if (saved) {
-        const result = await submitPayment(saved);
+        const result = await submitPayment(Keypair.fromSecret(saved));
         applySendResult(result);
         setSecretError('');
       } else {
@@ -390,6 +405,25 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const native = useMemo(() => (balances || []).find(b => b.asset_type === 'native') || { balance: '0', selling_liabilities: '0' }, [balances]);
   const trustlines = useMemo(() => (balances || []).filter(b => b.asset_type !== 'native' && b.asset_type !== 'liquidity_pool_shares'), [balances]);
   const lpTrusts = useMemo(() => (balances || []).filter(b => b.asset_type === 'liquidity_pool_shares'), [balances]);
+  const thresholdsForModal = useMemo(() => {
+    if (!accountInfo?.thresholds) return null;
+    return {
+      low_threshold: Number(accountInfo.thresholds.low_threshold ?? 0),
+      med_threshold: Number(accountInfo.thresholds.med_threshold ?? 0),
+      high_threshold: Number(accountInfo.thresholds.high_threshold ?? 0),
+    };
+  }, [accountInfo]);
+  const signersForModal = useMemo(
+    () => (accountInfo?.signers || []).map((s) => ({
+      public_key: s.key || s.public_key || s.ed25519PublicKey || '',
+      weight: Number(s.weight || 0),
+    })).filter((s) => !!s.public_key),
+    [accountInfo]
+  );
+  const requiredThreshold = useMemo(
+    () => getRequiredThreshold('payment', thresholdsForModal),
+    [thresholdsForModal]
+  );
 
   // Zahlformat gemäß Settings
   const { decimalsMode } = useSettings();
@@ -850,22 +884,37 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         <SecretKeyModal
           errorMessage={secretError}
           onCancel={()=>{ setShowSecretModal(false); setSecretError(''); }}
-          onConfirm={async (secret, remember) => {
+          thresholds={thresholdsForModal}
+          signers={signersForModal}
+          operationType="payment"
+          requiredThreshold={requiredThreshold}
+          onConfirm={async (collected, remember) => {
             try {
               setError('');
               setStatus('');
-              const kp = Keypair.fromSecret(secret);
-              if (kp.publicKey() !== publicKey) {
-                setSecretError(t('secretKey:mismatch'));
-                return;
+              const primarySecret = collected?.[0]?.keypair?.secret?.();
+              if (!primarySecret) {
+                throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
               }
+              const kp = Keypair.fromSecret(primarySecret);
+              const required = requiredThreshold || 0;
+              const current = Array.isArray(collected)
+                ? collected.reduce((acc, s) => acc + Number(s?.weight || 0), 0)
+                : 0;
+              if (current < required) {
+                throw new Error('submitTransaction.failed:' + 'multisig.insufficientWeight');
+              }
+              if (current <= 0) {
+                throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
+              }
+
               if (remember) {
                 try {
-                  sessionStorage.setItem(`stm.session.secret.${publicKey}`, secret);
+                  sessionStorage.setItem(`stm.session.secret.${publicKey}`, primarySecret);
                   try { window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: { publicKey } })); } catch { /* noop */ }
                 } catch { /* noop */ }
               }
-              const result = await submitPayment(secret);
+              const result = await submitPayment(collected.map((s) => s.keypair));
               applySendResult(result);
               setSecretError('');
               setShowSecretModal(false);

@@ -744,7 +744,7 @@
     "empty": "Polje za tajni ključ je prazno.",
     "info": "Vaš privatni ključ ostaje u vašem pregledniku i koristi se samo lokalno za potpisivanje transakcija. Nikada se ne prenosi niti pohranjuje.",
     "invalid": "Neispravan tajni ključ.",
-    "label": "Unesite izvorni tajni ključ",
+    "label": "Unesite izvorni tajni ključ (S-Key)",
     "mismatch": "Tajni ključ ne odgovara javnoj adresi.",
     "placeholder": "z.B. (zum Beispiel)",
     "valid": "✅ Tajni ključ je valjan.",

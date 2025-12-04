@@ -744,7 +744,7 @@
     "empty": "Geheimveld is leeg.",
     "info": "Je privésleutel blijft in je browser en wordt alleen lokaal gebruikt om transacties te ondertekenen. Hij wordt nooit verzonden of opgeslagen.",
     "invalid": "Ongeldige geheime sleutel.",
-    "label": "Voer de bron geheime sleutel in.",
+    "label": "Voer de bron geheime sleutel in (S-Key)",
     "mismatch": "Geheime sleutel komt niet overeen met het openbare adres.",
     "placeholder": "bijv.",
     "valid": "✅ Geheime sleutel is geldig.",
