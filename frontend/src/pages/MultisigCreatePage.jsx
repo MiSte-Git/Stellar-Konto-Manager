@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
+import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import {
   Keypair,
   Networks,
@@ -76,6 +77,23 @@ export default function MultisigCreatePage() {
   const [lowT, setLowT] = useState(1);
   const [medT, setMedT] = useState(2);
   const [highT, setHighT] = useState(2);
+  const thresholdsForModal = useMemo(() => ({
+    low_threshold: Math.max(0, Number(lowT) || 0),
+    med_threshold: Math.max(0, Number(medT) || 0),
+    high_threshold: Math.max(0, Number(highT) || 0),
+  }), [lowT, medT, highT]);
+  const signersForModal = useMemo(() => {
+    const master = generated?.pub ? [{ public_key: generated.pub, weight: Math.max(0, Number(masterWeight) || 0) }] : [];
+    const others = (signers || []).map((s, idx) => ({
+      public_key: (s || '').trim(),
+      weight: Math.max(0, Number(signerWeights[idx] ?? 0) || 0)
+    })).filter((s) => !!s.public_key);
+    return [...master, ...others];
+  }, [generated?.pub, masterWeight, signers, signerWeights]);
+  const requiredThreshold = useMemo(
+    () => getRequiredThreshold('setOptions', thresholdsForModal),
+    [thresholdsForModal]
+  );
 
   // Helper: clamp to byte range 0..255 and coerce to integer
   function clampByte(n) {
@@ -249,7 +267,8 @@ export default function MultisigCreatePage() {
   }
 
 
-  async function handleConfirmSecret(funderSecret) {
+  async function handleConfirmSecret(collectedSigners) {
+    const funderSecret = collectedSigners?.[0]?.keypair?.secret?.() || '';
     setShowSecretModal(false);
     if (!pendingAction) return;
     const { type, destPub, startingBalance } = pendingAction;
@@ -584,6 +603,10 @@ export default function MultisigCreatePage() {
         <SecretKeyModal
           onConfirm={handleConfirmSecret}
           onCancel={() => { setShowSecretModal(false); setPendingAction(null); }}
+          thresholds={thresholdsForModal}
+          signers={signersForModal}
+          operationType="setOptions"
+          requiredThreshold={requiredThreshold}
         />
       )}
 

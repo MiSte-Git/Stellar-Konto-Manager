@@ -47,7 +47,15 @@
     "failed": {
       "tx_bad_auth": "Transaction refusée : Signature invalide",
       "tx_failed": "Transaction échouée",
-      "unknown": "Erreur inconnue lors de la transaction"
+      "unknown": "Erreur inconnue lors de la transaction",
+      "multisig": {
+        "invalidSecret": "L'une des clés secrètes saisies est invalide.",
+        "notASigner": "L'une des clés secrètes saisies n'appartient pas aux signataires enregistrés.",
+        "noKeysProvided": "Aucune clé secrète valide n'a été entrée.",
+        "insufficientWeight": "Les signatures recueillies ne sont pas suffisantes pour autoriser ce changement. Requis : {{required}}, présent : {{current}}.",
+        "txBadAuth": "Transaction refusée : Les signatures sont insuffisantes (tx_bad_auth).",
+        "zeroWeightSigner": "La clé secrète saisie appartient à un signataire avec un poids de 0 et ne peut autoriser aucune transaction."
+      }
     }
   },
   "sync": {

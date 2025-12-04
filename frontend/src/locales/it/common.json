@@ -744,7 +744,7 @@
     "empty": "Il campo della chiave segreta è vuoto.",
     "info": "La tua chiave privata rimane nel tuo browser ed è utilizzata solo localmente per firmare le transazioni. Non viene mai trasmessa o memorizzata.",
     "invalid": "Chiave segreta non valida.",
-    "label": "Inserisci la chiave segreta sorgente",
+    "label": "Geben Sie den geheimen Quellschlüssel (S-Key) ein",
     "mismatch": "La chiave segreta non corrisponde all'indirizzo pubblico.",
     "placeholder": "ad esempio",
     "valid": "✅ La chiave segreta è valida.",
