@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
+import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { Keypair, Networks, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
@@ -55,6 +56,24 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const [lowT, setLowT] = useState(1);
   const [medT, setMedT] = useState(2);
   const [highT, setHighT] = useState(2);
+  const thresholdsForModal = useMemo(() => ({
+    low_threshold: clampByte(lowT),
+    med_threshold: clampByte(medT),
+    high_threshold: clampByte(highT),
+  }), [lowT, medT, highT]);
+  const signersForModal = useMemo(() => {
+    const pk = (defaultPublicKey || '').trim();
+    const master = pk ? [{ public_key: pk, weight: clampByte(masterWeight) }] : [];
+    const others = (signers || []).map((s) => ({
+      public_key: (s.key || '').trim(),
+      weight: clampByte(s.weight),
+    })).filter((s) => !!s.public_key);
+    return [...master, ...others];
+  }, [defaultPublicKey, masterWeight, signers]);
+  const requiredThreshold = useMemo(
+    () => getRequiredThreshold('setOptions', thresholdsForModal),
+    [thresholdsForModal]
+  );
 
   // Helper: clamp to 0..255 integer
   function clampByte(n) {
@@ -139,9 +158,18 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   }
 
   // Build and submit transaction
-  async function submitChanges(secret) {
+  async function submitChanges(collectedSigners) {
     setShowSecretModal(false);
-    const kp = Keypair.fromSecret(secret);
+    const required = requiredThreshold || clampByte(highT);
+    const current = Array.isArray(collectedSigners)
+      ? collectedSigners.reduce((acc, s) => acc + clampByte(s?.weight || 0), 0)
+      : 0;
+    if (current <= 0) {
+      throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
+    }
+    if (current < required) {
+      throw new Error('submitTransaction.failed:' + 'multisig.insufficientWeight');
+    }
     const pk = (defaultPublicKey || '').trim();
     if (!pk) { setError(t('publicKey:invalid')); return; }
     // ok, self-signing if kp.publicKey() === pk; else allowed if weight sufficient
@@ -221,11 +249,25 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       }
 
       const tx = txb.setTimeout(60).build();
-      tx.sign(kp);
+      collectedSigners.forEach((s) => {
+        try { tx.sign(s.keypair); } catch (e) { console.debug?.('sign failed', e); }
+      });
+      if (process.env.NODE_ENV !== 'production') {
+        console.debug('multisig setOptions signing', {
+          required,
+          current,
+          signers: collectedSigners.map((s) => ({ publicKey: s.publicKey, weight: s.weight })),
+        });
+      }
       const res = await server.submitTransaction(tx);
       setInfo(t('common:multisigEdit.saved', { hash: res?.hash || res?.id || '' }));
     } catch (e) {
-      setError(String(e?.message || e));
+      const msg = String(e?.message || e);
+      if (msg.includes('tx_bad_auth')) {
+        setError(t('errors:submitTransaction.failed.multisig.txBadAuth'));
+      } else {
+        setError(msg);
+      }
     } finally {
       setLoading(false);
     }
@@ -351,8 +393,12 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
 
       {showSecretModal && (
         <SecretKeyModal
-          onConfirm={(sec)=>{ if (pendingAction==='save') submitChanges(sec); }}
+          onConfirm={(collected)=>{ if (pendingAction==='save') submitChanges(collected); }}
           onCancel={()=>{ setShowSecretModal(false); setPendingAction(null); }}
+          thresholds={thresholdsForModal}
+          signers={signersForModal}
+          operationType="setOptions"
+          requiredThreshold={requiredThreshold}
         />
       )}
       <MultiSigHelpDialog isOpen={isHelpOpen} onClose={()=>setIsHelpOpen(false)} />

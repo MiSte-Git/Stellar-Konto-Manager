@@ -235,11 +235,6 @@ function App() {
                 </button>
               </div>
             </div>
-            {devTestnet && (
-              <span className="absolute right-3 top-[72px] inline-block bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
-                {t('common:badges.testnet')}
-              </span>
-            )}
           </div>
 
           {/* Haupt-App bleibt gemountet, damit Eingaben erhalten bleiben */}

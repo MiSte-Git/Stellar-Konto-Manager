@@ -744,7 +744,7 @@
     "empty": "Le champ de la clé secrète est vide.",
     "info": "Votre clé privée reste dans votre navigateur et est uniquement utilisée localement pour signer des transactions. Elle n'est jamais transmise ni stockée.",
     "invalid": "Clé secrète invalide.",
-    "label": "Entrez la clé secrète source",
+    "label": "Entrez la clé secrète source (S-Key)",
     "mismatch": "La clé secrète ne correspond pas à l'adresse publique.",
     "placeholder": "par exemple",
     "valid": "✅ La clé secrète est valide.",

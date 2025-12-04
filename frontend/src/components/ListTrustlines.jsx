@@ -20,6 +20,7 @@ import ProgressBar from "../components/ProgressBar.jsx";
 import { formatElapsedMmSs } from '../utils/datetime';
 import { useSettings } from '../utils/useSettings';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
+import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
@@ -63,6 +64,12 @@ function ListTrustlines({
   const [isSimulation, setIsSimulation] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false); // Zeile 60+
   const [errorMessage, setErrorMessage] = useState('');
+  const thresholdsForModal = useMemo(() => null, []);
+  const signersForModal = useMemo(() => [], []);
+  const requiredThreshold = useMemo(
+    () => getRequiredThreshold('changeTrust', thresholdsForModal),
+    [thresholdsForModal]
+  );
   const delProg = useMemo(() => {
     const p = deleteProgress?.total ? deleteProgress.current / deleteProgress.total : 0;
     return { progress: isProcessing ? p : 0, phase: isProcessing ? 'chunkDone' : 'idle', page: 0, etaMs: 0 };
@@ -602,7 +609,8 @@ function ListTrustlines({
       
       {showSecretModal && (
         <SecretKeyModal
-          onConfirm={(key) => {
+          onConfirm={(collected) => {
+            const key = collected?.[0]?.keypair?.secret?.() || '';
             if (simulationMode) {
               handleDeleteSimulated(key);
             } else {
@@ -613,6 +621,10 @@ function ListTrustlines({
           errorMessage={modalError}
           isProcessing={isProcessing}               // ⬅️ Fortschritt aktiv?
           deleteProgress={deleteProgress}           // ⬅️ Aktueller Fortschritt
+          thresholds={thresholdsForModal}
+          signers={signersForModal}
+          operationType="changeTrust"
+          requiredThreshold={requiredThreshold}
         />
       )}
 
