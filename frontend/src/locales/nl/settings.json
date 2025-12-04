@@ -1,6 +1,6 @@
 {
   "backup": {
-    "title": "Back-up en herstel",
+    "title": "Back-up & Herstel",
     "desc": "Exporteer of importeer je quizgegevens (instellingen, voortgang, badges).",
     "export": {
       "button": "Begin met exporteren",
@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Back-up geëxporteerd",
-      "backupBeforeImport": "Er werd een back-up opgeslagen voor de import."
+      "backupBeforeImport": "Er is een back-up gemaakt voordat de import plaatsvond."
     },
     "nav": {
       "back": "Terug"

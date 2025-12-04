@@ -129,7 +129,7 @@
     "startPractice": "Oefening starten.",
     "practice": "Oefening",
     "quiz": "Quiz",
-    "hint": "Aanwijzing",
+    "hint": "Tip",
     "next": "Je bent getraind op gegevens tot oktober 2023.",
     "prev": "Terug",
     "finish": "Voltooid",
@@ -138,15 +138,15 @@
     "failed": "Mislukt",
     "explanation": "Waarom?",
     "correct": "Correct",
-    "incorrect": "Fout.",
+    "incorrect": "Verkeerd.",
     "of": "van",
     "retry": "U bent getraind op gegevens tot oktober 2023.",
     "viewResults": "Resultaat bekijken",
     "routeTitle": "Quiz voor Les {{id}}",
-    "backToLearn": "Naar het leeroverzicht",
+    "backToLearn": "Naar het Leeroverzicht",
     "summaryCount": "{{correct}}/{{total}} correct",
     "noDataHelp": "Open het leeroverzicht om de juiste les te selecteren.",
-    "jump": "Springen",
+    "jump": "Spring",
     "jumpToQuestion": "Spring naar vraag",
     "question": "Vraag",
     "cancel": "Annuleren",
@@ -158,7 +158,7 @@
     "openInNewTab": "Open in nieuw tabblad",
     "openInNewTab.default": "Open quiz standaard in een nieuw tabblad",
     "openInNewTab.once": "Open in een nieuw tabblad",
-    "startInNewTab": "Start de quiz in een nieuw tabblad.",
+    "startInNewTab": "Quiz starten in een nieuw tabblad.",
     "warnOnActiveQuiz": "Toon waarschuwing tijdens een lopende quiz."
   },
   "meta": {
@@ -227,5 +227,8 @@
     "off": "Vanaf",
     "warnOnActiveQuiz": "Waarschuwingsmelding tijdens actieve quiz weergeven",
     "warnOnActiveQuiz.desc": "Waarschuw voor reeds beantwoorde vragen voordat de pagina wordt verlaten."
+  },
+  "entry": {
+    "beginnerQuizTitle": "Stellaire Quiz voor Beginners"
   }
 }

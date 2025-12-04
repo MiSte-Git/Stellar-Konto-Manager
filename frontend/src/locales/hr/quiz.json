@@ -129,10 +129,10 @@
     "startPractice": "Počni praksu.",
     "practice": "Praksa",
     "quiz": "Kviz",
-    "hint": "Nagovještaj",
+    "hint": "Savjet",
     "next": "Vi ste obučeni na podacima do listopada 2023.",
     "prev": "Nazad",
-    "finish": "Završen",
+    "finish": "Završeno",
     "yourScore": "Vaš rezultat",
     "passed": "Prošao",
     "failed": "Neuspjelo",
@@ -143,7 +143,7 @@
     "retry": "Obučeni ste na podacima do listopada 2023.",
     "viewResults": "Pogledaj rezultat",
     "routeTitle": "Kviz za lekciju {{id}}",
-    "backToLearn": "Sažetak učenja",
+    "backToLearn": "Na pregled učenja",
     "summaryCount": "{{correct}}/{{total}} točno",
     "noDataHelp": "Otvorite pregled učenja kako biste odabrali odgovarajuću lekciju.",
     "jump": "Skok",
@@ -154,11 +154,11 @@
     "on": "U",
     "off": "Od",
     "timeRemaining": "Preostalo vrijeme",
-    "beforeUnloadMessage": "Još niste završili ovaj kviz. Ako napustite stranicu, trenutni odgovori mogu biti izgubljeni.",
+    "beforeUnloadMessage": "Niste još završili ovaj kviz. Ako napustite stranicu, trenutni odgovori mogu biti izgubljeni.",
     "openInNewTab": "Otvori u novom karticu",
-    "openInNewTab.default": "Otvori kviz u novoj kartici prema zadanim postavkama",
+    "openInNewTab.default": "Otvorite kviz u novoj kartici prema zadanim postavkama.",
     "openInNewTab.once": "Otvori u novoj kartici",
-    "startInNewTab": "Pokreni kviz u novom prozoru.",
+    "startInNewTab": "Pokreni kviz u novoj kartici.",
     "warnOnActiveQuiz": "Prikaži upozorenje tijekom tekućeg kviza."
   },
   "meta": {
@@ -227,5 +227,8 @@
     "off": "Od",
     "warnOnActiveQuiz": "Prikaži upozorenje tijekom aktivnog kviza.",
     "warnOnActiveQuiz.desc": "Upozorite na već odgovorena pitanja prije napuštanja stranice."
+  },
+  "entry": {
+    "beginnerQuizTitle": "Zvjezdani kviz za početnike"
   }
 }

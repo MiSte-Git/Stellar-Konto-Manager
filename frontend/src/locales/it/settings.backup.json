@@ -29,7 +29,7 @@
   "nav": {
     "back": "Indietro"
   },
-  "title": "Backup e Ripristino",
+  "title": "Backup & Restore",
   "toast": {
     "backupBeforeImport": "Un backup è stato salvato prima dell'importazione.",
     "exported": "Backup esportato",

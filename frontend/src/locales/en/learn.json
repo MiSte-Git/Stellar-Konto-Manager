@@ -26,7 +26,8 @@
     "export": "Export",
     "exported": "Progress exported",
     "import": "Import",
-    "imported": "Progress imported"
+    "imported": "Progress imported",
+    "title": "Learning progress"
   },
   "back": "Back",
   "backToTop": "Upwards",
