@@ -47,7 +47,15 @@
     "failed": {
       "tx_bad_auth": "Transakcija odbijena: Nevažeći potpis",
       "tx_failed": "Transakcija nije uspjela",
-      "unknown": "Nepoznata greška tijekom transakcije"
+      "unknown": "Nepoznata greška tijekom transakcije",
+      "multisig": {
+        "invalidSecret": "Jedan od unesenih tajnih ključeva je nevažeći.",
+        "notASigner": "Jedan od unesenih tajnih ključeva ne pripada registriranim potpisnicima.",
+        "noKeysProvided": "Nije unesen ni jedan važeći tajni ključ.",
+        "insufficientWeight": "Prikupljeni potpisi nisu dovoljni za odobrenje ove promjene. Potrebno: {{required}}, prisutno: {{current}}.",
+        "txBadAuth": "Transakcija odbijena: Potpisi su nedovoljni (tx_bad_auth).",
+        "zeroWeightSigner": "Uneseni tajni ključ pripada potpisniku s težinom 0 i ne može odobriti nijednu transakciju."
+      }
     }
   },
   "sync": {

@@ -513,7 +513,7 @@
   "common.secretKey.empty": "cf04bbef0c79535e4d233fc0eeb2877f1d104cfbc5fde1eeff62a83fd2f883f9",
   "common.secretKey.info": "503122fd546a6d1a99ceb902749de28481e90f3c280f89072ab11e36ed3269e7",
   "common.secretKey.invalid": "0558a76965e3cf017651c684312683a6c0919e025bee761c21293e1ebd4cef37",
-  "common.secretKey.label": "945830ece0549074bb2cb76bb4f6de1ebedf2a601b5a6aa44440056ebc49f34d",
+  "common.secretKey.label": "4a5207ddcad816674cf1b2b200f9dabdb294d93e924414613a755506702b53d6",
   "common.secretKey.mismatch": "1e95c17b65347be3d4fdf2b2d954a9b37c04f5fb90a716e494f2b12649ab3e91",
   "common.secretKey.placeholder": "1199adc3e78ffb93a831d0a648956b787a2616f7fedde0f8bb290164df6e9fda",
   "common.secretKey.valid": "901e3ebb8c919165ac3c9f3fbebd579c0b046625e7ed84b0b72ca4615cd95ee6",
@@ -1412,7 +1412,7 @@
   "secretKey.cleared": "03c56476d56d11ac263c18e3dac33a7ac21b2be4c3488e6de8dbde4ebd6fa702",
   "secretKey.empty": "cf04bbef0c79535e4d233fc0eeb2877f1d104cfbc5fde1eeff62a83fd2f883f9",
   "secretKey.invalid": "0558a76965e3cf017651c684312683a6c0919e025bee761c21293e1ebd4cef37",
-  "secretKey.label": "945830ece0549074bb2cb76bb4f6de1ebedf2a601b5a6aa44440056ebc49f34d",
+  "secretKey.label": "4a5207ddcad816674cf1b2b200f9dabdb294d93e924414613a755506702b53d6",
   "secretKey.placeholder": "1199adc3e78ffb93a831d0a648956b787a2616f7fedde0f8bb290164df6e9fda",
   "secretKey.valid": "901e3ebb8c919165ac3c9f3fbebd579c0b046625e7ed84b0b72ca4615cd95ee6",
   "secretKey.remember.label": "4a875f30acbc7cbe9a8d66e0115d85dfd0d166db569340adb5bb198b1c42adbb",
@@ -1687,5 +1687,11 @@
   "multisigHelp.closeLabel": "b808f6e97075772fe36de2ee4ea0eb310550f84baa9ea8aa88314f21e467616d",
   "multisigHelp.linkLabel": "f1389d2f72790a19f37d1752ed567ac5f4d71fefa70da753888a25a0ac93880e",
   "navigation.home": "e04d24c52b3d2893ac140c8aa2f0a0d678d8114d421a1cbbd34da154bee23ec5",
-  "quiz.entry.beginnerQuizTitle": "2b3b037387871ef20b35e1d7fbcd5d40a27e1f0c88ac07d69b3e6e16cd7b5e08"
+  "quiz.entry.beginnerQuizTitle": "2b3b037387871ef20b35e1d7fbcd5d40a27e1f0c88ac07d69b3e6e16cd7b5e08",
+  "errors.submitTransaction.failed.multisig.invalidSecret": "1136cce8d95196e7e6c95d6505618ae29de730007cb15d4a2308683ab9849135",
+  "errors.submitTransaction.failed.multisig.notASigner": "882419f646c6bc77468e8b870c788c749f3615a092bb17b84e321261d303fcf5",
+  "errors.submitTransaction.failed.multisig.noKeysProvided": "2368dbecd1daec69d54eba0b911af6950ee48e67d27ac37eb7a9adf5f0fce2c0",
+  "errors.submitTransaction.failed.multisig.insufficientWeight": "ccf2bded5e435cdf10f568cf75588e25b54f70bfc5018eb584488d8c5aec1a7d",
+  "errors.submitTransaction.failed.multisig.txBadAuth": "f2e9a6f7fc116ca0dd9471fe149db7e18b118137c837523e69fb7fdee84390fa",
+  "errors.submitTransaction.failed.multisig.zeroWeightSigner": "08eb541fc4ea54365dec4c3197a6435a00a49d44c92bc153f4943f4695180fc7"
 }

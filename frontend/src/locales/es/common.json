@@ -744,7 +744,7 @@
     "empty": "El campo de clave secreta está vacío.",
     "info": "Su clave privada permanece en su navegador y solo se utiliza localmente para firmar transacciones. Nunca se transmite ni se almacena.",
     "invalid": "Clave secreta no válida.",
-    "label": "Introduce la clave secreta de origen.",
+    "label": "Introduce la clave secreta de origen (S-Key)",
     "mismatch": "La clave secreta no coincide con la dirección pública.",
     "placeholder": "por ejemplo.",
     "valid": "✅ La clave secreta es válida.",

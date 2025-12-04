@@ -744,7 +744,7 @@
     "empty": "Geheimschlüssel-Feld ist leer.",
     "info": "Ihr Geheimschlüssel bleibt in Ihrem Browser und wird nur lokal zum Signieren von Transaktionen verwendet. Er wird niemals übertragen oder gespeichert.",
     "invalid": "Ungültiger Geheimschlüssel.",
-    "label": "Geben Sie den Quell-Geheimschlüssel ein",
+    "label": "Geben Sie den Quell-Geheimschlüssel (S-Key) ein",
     "mismatch": "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
     "placeholder": "z.B.",
     "valid": "✅ Secret Key ist gültig.",

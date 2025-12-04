@@ -47,7 +47,15 @@
     "failed": {
       "tx_bad_auth": "Transactie geweigerd: Ongeldige handtekening",
       "tx_failed": "Transactie mislukt",
-      "unknown": "Onbekende fout tijdens de transactie"
+      "unknown": "Onbekende fout tijdens de transactie",
+      "multisig": {
+        "invalidSecret": "Een van de ingevoerde geheime sleutels is ongeldig.",
+        "notASigner": "Een van de ingevoerde geheime sleutels behoort niet tot de geregistreerde ondertekenaars.",
+        "noKeysProvided": "Er zijn geen geldige geheime sleutels ingevoerd.",
+        "insufficientWeight": "De verzamelde handtekeningen zijn niet voldoende om deze wijziging te autoriseren. Vereist: {{required}}, aanwezig: {{current}}.",
+        "txBadAuth": "Transactie geweigerd: Handtekeningen zijn onvoldoende (tx_bad_auth).",
+        "zeroWeightSigner": "De ingevoerde geheime sleutel behoort tot een ondertekenaar met een gewicht van 0 en kan geen enkele transactie autoriseren."
+      }
     }
   },
   "sync": {

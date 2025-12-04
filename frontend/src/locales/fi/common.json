@@ -744,7 +744,7 @@
     "empty": "Salaisen avaimen kenttä on tyhjä.",
     "info": "Yksityinen avaimenne pysyy selaimessanne ja sitä käytetään vain paikallisesti tapahtumien allekirjoittamiseen. Sitä ei koskaan lähetetä tai tallenneta.",
     "invalid": "Virheellinen salainen avain.",
-    "label": "Syötä lähdetietoavain",
+    "label": "Syötä lähdeturva-avain (S-Key)",
     "mismatch": "Salainen avain ei vastaa julkista osoitetta.",
     "placeholder": "esim.",
     "valid": "✅ Salainen avain on kelvollinen.",
