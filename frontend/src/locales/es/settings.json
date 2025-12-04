@@ -1,6 +1,6 @@
 {
   "backup": {
-    "title": "Copia de seguridad y recuperación",
+    "title": "Backup & Recovery",
     "desc": "Exporta o importa tus datos de cuestionarios (configuraciones, progreso, insignias).",
     "export": {
       "button": "Iniciar exportación",

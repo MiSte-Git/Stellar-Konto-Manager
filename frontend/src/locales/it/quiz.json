@@ -138,15 +138,15 @@
     "failed": "Fallito",
     "explanation": "Perché?",
     "correct": "Corretto",
-    "incorrect": "Errato.",
+    "incorrect": "Sbagliato.",
     "of": "da",
     "retry": "Prova di nuovo.",
     "viewResults": "Visualizza risultato",
     "routeTitle": "Quiz per la lezione {{id}}",
-    "backToLearn": "Alla panoramica dell'apprendimento",
+    "backToLearn": "All'Indice di Apprendimento",
     "summaryCount": "{{correct}}/{{total}} corretto",
     "noDataHelp": "Apri la panoramica dell'apprendimento per selezionare la lezione appropriata.",
-    "jump": "Salto.",
+    "jump": "Salto",
     "jumpToQuestion": "Salta alla domanda",
     "question": "Domanda",
     "cancel": "Annulla",
@@ -227,5 +227,8 @@
     "off": "Da",
     "warnOnActiveQuiz": "Visualizza avviso durante il quiz attivo",
     "warnOnActiveQuiz.desc": "Avvisa riguardo alle domande già risposte prima di lasciare la pagina."
+  },
+  "entry": {
+    "beginnerQuizTitle": "Quiz stellare per principianti"
   }
 }

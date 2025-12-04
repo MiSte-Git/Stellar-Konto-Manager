@@ -29,7 +29,7 @@
   "nav": {
     "back": "Regreso"
   },
-  "title": "Copia de seguridad y restauración",
+  "title": "Backup & Restore",
   "toast": {
     "backupBeforeImport": "Se guardó una copia de seguridad antes de la importación.",
     "exported": "Copia de seguridad exportada",

@@ -26,7 +26,8 @@
     "export": "Vienti",
     "exported": "Edistyminen viety ulos",
     "import": "Tuo",
-    "imported": "Tuonti etenee"
+    "imported": "Tuonti etenee",
+    "title": "Oppimisen edistyminen"
   },
   "back": "Takaisin",
   "backToTop": "Ylöspäin",

@@ -29,7 +29,7 @@
   "nav": {
     "back": "Takaisin"
   },
-  "title": "Varmuuskopiointi ja palautus",
+  "title": "Backup & Restore",
   "toast": {
     "backupBeforeImport": "Varmuuskopio tallennettiin ennen tuontia.",
     "exported": "Varmuuskopio viety",

@@ -1,6 +1,6 @@
 {
   "backup": {
-    "title": "Varmuuskopiointi ja palautus",
+    "title": "Backup & Recovery",
     "desc": "Vie tai tuo tietovisa-tietosi (asetukset, edistyminen, merkit).",
     "export": {
       "button": "Aloita vienti.",

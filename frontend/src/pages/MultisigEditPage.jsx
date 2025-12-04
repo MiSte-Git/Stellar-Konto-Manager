@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
+import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { Keypair, Networks, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
 
@@ -32,7 +33,7 @@ function NetworkSelector({ value, onChange }) {
 }
 
 export default function MultisigEditPage({ defaultPublicKey = '' }) {
-  const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount']);
+  const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount', 'multisigHelp']);
 
   const [network, setNetwork] = useState(() => {
     try { return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
@@ -46,6 +47,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const [info, setInfo] = useState('');
   const [showSecretModal, setShowSecretModal] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   // Account state
   const [masterWeight, setMasterWeight] = useState(1);
@@ -249,8 +251,16 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
 
   return (
     <div className="max-w-3xl mx-auto p-4">
-      <div className="mb-4 text-center">
+      <div className="mb-4 flex flex-wrap items-center justify-center gap-3 text-center">
         <h2 className="text-xl font-semibold">{t('common:multisigEdit.title')}</h2>
+        <button
+          type="button"
+          onClick={() => setIsHelpOpen(true)}
+          className="inline-flex items-center gap-2 rounded border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm text-blue-800 transition hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100"
+        >
+          <span aria-hidden="true">ℹ️</span>
+          <span>{t('multisigHelp:linkLabel')}</span>
+        </button>
       </div>
 
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{t('common:multisigEdit.hint')}</p>
@@ -345,6 +355,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           onCancel={()=>{ setShowSecretModal(false); setPendingAction(null); }}
         />
       )}
+      <MultiSigHelpDialog isOpen={isHelpOpen} onClose={()=>setIsHelpOpen(false)} />
     </div>
   );
 }

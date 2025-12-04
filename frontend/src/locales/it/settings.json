@@ -1,6 +1,6 @@
 {
   "backup": {
-    "title": "Backup e ripristino",
+    "title": "Backup & Recovery",
     "desc": "Esporta o importa i dati del tuo quiz (impostazioni, progressi, badge).",
     "export": {
       "button": "Avvia esportazione",

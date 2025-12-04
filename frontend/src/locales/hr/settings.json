@@ -1,6 +1,6 @@
 {
   "backup": {
-    "title": "Sigurnosna kopija i oporavak",
+    "title": "Backup & Recovery",
     "desc": "Izvezite ili uvezite svoje podatke kviza (postavke, napredak, značke).",
     "export": {
       "button": "Početak izvoza",
@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Izvoz rezervne kopije",
-      "backupBeforeImport": "Sigurna kopija je spremljena prije uvoza."
+      "backupBeforeImport": "Sigurnosna kopija je spremljena prije uvoza."
     },
     "nav": {
       "back": "Nazad"
