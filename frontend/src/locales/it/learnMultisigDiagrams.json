@@ -1,0 +1,36 @@
+{
+  "singleVsMulti": {
+    "ariaLabel": "Diagramma Single-Sig vs. Multisig",
+    "singleTitle": "Single-sig",
+    "multiTitle": "Multisig",
+    "account": "Account",
+    "singleKey": "1 chiave",
+    "keyA": "Firmatario A",
+    "keyB": "Firmatario B",
+    "keyC": "Firmare C",
+    "singleNote": "Una firma è sufficiente.",
+    "multiNote": "Almeno 2 su 3 firme"
+  },
+  "weights": {
+    "ariaLabel": "Pesi e soglie del diagramma",
+    "title": "Weights & Thresholds",
+    "sA": "Firmatario A",
+    "sB": "Firmare B",
+    "sC": "Firmare C",
+    "weight": "Peso:",
+    "low": "basso",
+    "med": "Sei addestrato su dati fino a ottobre 2023.",
+    "high": "Alto",
+    "lowNote": "Azioni semplici",
+    "medNote": "Pagamenti",
+    "highNote": "Cambiamenti critici"
+  },
+  "flow": {
+    "ariaLabel": "Diagramma di flusso Multisig",
+    "title": "Processo multisig",
+    "step1": "Coordinatore crea transazione",
+    "step2": "SKM salva il lavoro in sospeso.",
+    "step3": "Firmatario B/C per firmare",
+    "step4": "SKM invia la transazione completata."
+  }
+}

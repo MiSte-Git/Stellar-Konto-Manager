@@ -2,10 +2,13 @@ import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
+import MultisigPrepareDialog from '../components/MultisigPrepareDialog.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { validateMultisigConfig } from '../utils/validateMultisigConfig.js';
 import { Keypair, Networks, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
+import { BACKEND_URL } from '../config.js';
+import { createPendingMultisigJob } from '../utils/multisigApi.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
@@ -35,7 +38,7 @@ function NetworkSelector({ value, onChange }) {
 }
 
 export default function MultisigEditPage({ defaultPublicKey = '' }) {
-  const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount', 'multisigHelp']);
+  const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount', 'multisigHelp', 'multisig']);
 
   const [network, setNetwork] = useState(() => {
     try { return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
@@ -48,6 +51,10 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [showSecretModal, setShowSecretModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [preparedTx, setPreparedTx] = useState(null);
+  // Multisig mode controls UI; test keeps legacy direct-sign flow, prod prepares XDR/Pending Jobs in next steps.
+  const [mode, setMode] = useState('test'); // 'test' | 'prod'
   const [pendingAction, setPendingAction] = useState(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
 
@@ -159,109 +166,96 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   }
 
   // Build and submit transaction
-  async function submitChanges(collectedSigners) {
-    setShowSecretModal(false);
+  async function buildSetOptionsTx(collectedSigners, { signTx = false, requireSigners = false } = {}) {
     const required = requiredThreshold || clampByte(highT);
     const current = Array.isArray(collectedSigners)
       ? collectedSigners.reduce((acc, s) => acc + clampByte(s?.weight || 0), 0)
       : 0;
-    if (current <= 0) {
+    if (requireSigners && current <= 0) {
       throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
     }
-    if (current < required) {
+    if (requireSigners && current < required) {
       throw new Error('submitTransaction.failed:' + 'multisig.insufficientWeight');
     }
     const pk = (defaultPublicKey || '').trim();
-    if (!pk) { setError(t('publicKey:invalid')); return; }
-    // ok, self-signing if kp.publicKey() === pk; else allowed if weight sufficient
-    setLoading(true);
-    setError('');
-    setInfo('');
-    try {
-      const acct = await server.loadAccount(pk);
-      const feeStats = await server.feeStats();
-      const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    if (!pk) { throw new Error(t('publicKey:invalid')); }
 
-      // Current state
-      const currentMaster = (acct.signers || []).find(s => s.key === pk)?.weight ?? 1;
-      const currentMap = new Map();
-      (acct.signers || []).forEach(s => { if (s.key !== pk && s.type && s.type.includes('ed25519')) currentMap.set(s.key, s.weight); });
-      const plannedMap = new Map();
-      (signers || []).forEach(s => { const k = (s.key || '').trim(); if (k && k.startsWith('G')) plannedMap.set(k, clampByte(s.weight)); });
-      const plannedMaster = clampByte(masterWeight);
-      const plannedThresholds = { low: clampByte(lowT), med: clampByte(medT), high: clampByte(highT) };
+    const acct = await server.loadAccount(pk);
+    const feeStats = await server.feeStats();
+    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
 
-      const plannedSigners = [
-        { key: pk, weight: plannedMaster },
-        ...Array.from(plannedMap.entries()).map(([key, weight]) => ({ key, weight })),
-      ];
-      const sanity = validateMultisigConfig(plannedSigners, plannedThresholds);
-      if (!sanity.valid) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.warn('multisig invalid config', { reason: sanity.reason, thresholds: plannedThresholds, signers: plannedSigners });
-        }
-        throw new Error('submitTransaction.failed:' + 'multisig.invalidConfig');
+    const currentMaster = (acct.signers || []).find(s => s.key === pk)?.weight ?? 1;
+    const currentMap = new Map();
+    (acct.signers || []).forEach(s => { if (s.key !== pk && s.type && s.type.includes('ed25519')) currentMap.set(s.key, s.weight); });
+    const plannedMap = new Map();
+    (signers || []).forEach(s => { const k = (s.key || '').trim(); if (k && k.startsWith('G')) plannedMap.set(k, clampByte(s.weight)); });
+    const plannedMaster = clampByte(masterWeight);
+    const plannedThresholds = { low: clampByte(lowT), med: clampByte(medT), high: clampByte(highT) };
+
+    const plannedSigners = [
+      { key: pk, weight: plannedMaster },
+      ...Array.from(plannedMap.entries()).map(([key, weight]) => ({ key, weight })),
+    ];
+    const sanity = validateMultisigConfig(plannedSigners, plannedThresholds);
+    if (!sanity.valid) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('multisig invalid config', { reason: sanity.reason, thresholds: plannedThresholds, signers: plannedSigners });
       }
+      throw new Error('submitTransaction.failed:' + 'multisig.invalidConfig');
+    }
 
-      // Validation: thresholds ≤ sumWeights
-      const sumW = clampByte(plannedMaster) + Array.from(plannedMap.values()).reduce((a, b) => a + clampByte(b), 0);
-      if (plannedThresholds.low > sumW || plannedThresholds.med > sumW || plannedThresholds.high > sumW) {
-        throw new Error(t('common:multisigEdit.error.thresholdTooHigh'));
+    const sumW = clampByte(plannedMaster) + Array.from(plannedMap.values()).reduce((a, b) => a + clampByte(b), 0);
+    if (plannedThresholds.low > sumW || plannedThresholds.med > sumW || plannedThresholds.high > sumW) {
+      throw new Error(t('common:multisigEdit.error.thresholdTooHigh'));
+    }
+
+    const txb = new TransactionBuilder(acct, { fee, networkPassphrase: passphrase });
+
+    const curTh = acct.thresholds || { low_threshold: 1, med_threshold: 2, high_threshold: 2 };
+    const relaxedLow = Math.min(curTh.low_threshold ?? 1, plannedThresholds.low);
+    const relaxedMed = Math.min(curTh.med_threshold ?? 2, plannedThresholds.med);
+    const relaxedHigh = Math.min(curTh.high_threshold ?? 2, plannedThresholds.high);
+    if (relaxedLow < (curTh.low_threshold ?? 1) || relaxedMed < (curTh.med_threshold ?? 2) || relaxedHigh < (curTh.high_threshold ?? 2)) {
+      txb.addOperation(Operation.setOptions({
+        lowThreshold: relaxedLow,
+        medThreshold: relaxedMed,
+        highThreshold: relaxedHigh,
+      }));
+    }
+
+    if (plannedMaster > currentMaster) {
+      txb.addOperation(Operation.setOptions({ masterWeight: plannedMaster }));
+    }
+
+    for (const [k, wPlanned] of plannedMap.entries()) {
+      const wCur = currentMap.get(k) || 0;
+      if (wPlanned > wCur) {
+        txb.addOperation(Operation.setOptions({ signer: { ed25519PublicKey: k, weight: wPlanned } }));
       }
+    }
 
-      const txb = new TransactionBuilder(acct, { fee, networkPassphrase: passphrase });
-
-      // 1) Relax thresholds first if needed
-      const curTh = acct.thresholds || { low_threshold: 1, med_threshold: 2, high_threshold: 2 };
-      const relaxedLow = Math.min(curTh.low_threshold ?? 1, plannedThresholds.low);
-      const relaxedMed = Math.min(curTh.med_threshold ?? 2, plannedThresholds.med);
-      const relaxedHigh = Math.min(curTh.high_threshold ?? 2, plannedThresholds.high);
-      if (relaxedLow < (curTh.low_threshold ?? 1) || relaxedMed < (curTh.med_threshold ?? 2) || relaxedHigh < (curTh.high_threshold ?? 2)) {
-        txb.addOperation(Operation.setOptions({
-          lowThreshold: relaxedLow,
-          medThreshold: relaxedMed,
-          highThreshold: relaxedHigh,
-        }));
+    for (const [k, wCur] of currentMap.entries()) {
+      const has = plannedMap.has(k);
+      const wPlanned = plannedMap.get(k) || 0;
+      if (!has || wPlanned < wCur) {
+        txb.addOperation(Operation.setOptions({ signer: { ed25519PublicKey: k, weight: has ? wPlanned : 0 } }));
       }
+    }
 
-      // 2) Increase master weight early if raising
-      if (plannedMaster > currentMaster) {
-        txb.addOperation(Operation.setOptions({ masterWeight: plannedMaster }));
-      }
+    if (plannedMaster < currentMaster) {
+      txb.addOperation(Operation.setOptions({ masterWeight: plannedMaster }));
+    }
 
-      // 3) Add new signers or increase weights
-      for (const [k, wPlanned] of plannedMap.entries()) {
-        const wCur = currentMap.get(k) || 0;
-        if (wPlanned > wCur) {
-          txb.addOperation(Operation.setOptions({ signer: { ed25519PublicKey: k, weight: wPlanned } }));
-        }
-      }
+    if (plannedThresholds.low > relaxedLow || plannedThresholds.med > relaxedMed || plannedThresholds.high > relaxedHigh) {
+      txb.addOperation(Operation.setOptions({
+        lowThreshold: plannedThresholds.low,
+        medThreshold: plannedThresholds.med,
+        highThreshold: plannedThresholds.high,
+      }));
+    }
 
-      // 4) Decrease weights / remove signers
-      for (const [k, wCur] of currentMap.entries()) {
-        const has = plannedMap.has(k);
-        const wPlanned = plannedMap.get(k) || 0;
-        if (!has || wPlanned < wCur) {
-          // removal if !has (weight=0)
-          txb.addOperation(Operation.setOptions({ signer: { ed25519PublicKey: k, weight: has ? wPlanned : 0 } }));
-        }
-      }
-
-      // 5) Lower master weight late if reducing
-      if (plannedMaster < currentMaster) {
-        txb.addOperation(Operation.setOptions({ masterWeight: plannedMaster }));
-      }
-
-      // 6) Raise thresholds last if needed
-      if (plannedThresholds.low > relaxedLow || plannedThresholds.med > relaxedMed || plannedThresholds.high > relaxedHigh) {
-        txb.addOperation(Operation.setOptions({
-          lowThreshold: plannedThresholds.low,
-          medThreshold: plannedThresholds.med,
-          highThreshold: plannedThresholds.high,
-        }));
-      }
-
-      const tx = txb.setTimeout(60).build();
+    const tx = txb.setTimeout(60).build();
+    if (signTx && Array.isArray(collectedSigners)) {
       collectedSigners.forEach((s) => {
         try { tx.sign(s.keypair); } catch (e) { console.debug?.('sign failed', e); }
       });
@@ -269,9 +263,20 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         console.debug('multisig setOptions signing', {
           required,
           current,
-          signers: collectedSigners.map((s) => ({ publicKey: s.publicKey, weight: s.weight })),
+          signers: (collectedSigners || []).map((s) => ({ publicKey: s.publicKey, weight: s.weight })),
         });
       }
+    }
+    return { tx, plannedThresholds, plannedMaster, plannedSigners };
+  }
+
+  async function submitChanges(collectedSigners) {
+    setShowSecretModal(false);
+    setLoading(true);
+    setError('');
+    setInfo('');
+    try {
+      const { tx } = await buildSetOptionsTx(collectedSigners, { signTx: true, requireSigners: true });
       const res = await server.submitTransaction(tx);
       setInfo(t('common:multisigEdit.saved', { hash: res?.hash || res?.id || '' }));
     } catch (e) {
@@ -301,8 +306,94 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       }
     }
     setPendingAction('save');
-    setShowSecretModal(true);
+    setShowConfirmModal(true);
   }
+
+  const handleConfirmTestMode = useCallback(() => {
+    setShowConfirmModal(false);
+    setShowSecretModal(true);
+  }, []);
+
+  const handlePrepareMultisig = useCallback(async () => {
+    try {
+      const { tx, plannedThresholds, plannedMaster, plannedSigners } = await buildSetOptionsTx(null, { signTx: false, requireSigners: false });
+      const hashHex = tx.hash().toString('hex');
+      const xdr = tx.toXDR();
+      let job = null;
+      try {
+        const r = await fetch(`${BACKEND_URL}/api/multisig/jobs`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            network: network === 'TESTNET' ? 'testnet' : 'public',
+            accountId: (defaultPublicKey || '').trim(),
+            txXdr: xdr,
+            createdBy: 'local',
+          }),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data?.error || 'multisig.jobs.create_failed');
+        job = data;
+      } catch (err) {
+        setError(String(err?.message || err));
+        return;
+      }
+
+      setPreparedTx({
+        id: job?.id,
+        hash: job?.txHash || hashHex,
+        xdr: job?.txXdrCurrent || xdr,
+        summary: {
+          title: t('multisig:prepare.title'),
+          subtitle: t('multisig:prepare.subtitle'),
+          items: [
+            { label: t('common:account.source', 'Quelle'), value: (defaultPublicKey || '').trim() },
+            { label: t('common:multisigEdit.masterWeight'), value: String(plannedMaster) },
+            { label: t('createAccount:thresholdLow'), value: String(plannedThresholds.low) },
+            { label: t('createAccount:thresholdMed'), value: String(plannedThresholds.med) },
+            { label: t('createAccount:thresholdHigh'), value: String(plannedThresholds.high) },
+            { label: t('common:signers', 'Signer'), value: String(plannedSigners.length) },
+            { label: t('common:network', 'Netzwerk'), value: network },
+            job?.id ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: job.id } : null,
+          ].filter(Boolean),
+        },
+      });
+    } catch (err) {
+      setError(String(err?.message || err));
+    } finally {
+      setShowConfirmModal(false);
+    }
+  }, [BACKEND_URL, buildSetOptionsTx, defaultPublicKey, network, t]);
+
+  const buildPlannedChanges = useCallback(() => {
+    const pk = (defaultPublicKey || '').trim();
+    const plannedMap = new Map();
+    (signers || []).forEach(s => { const k = (s.key || '').trim(); if (k && k.startsWith('G')) plannedMap.set(k, clampByte(s.weight)); });
+    const plannedThresholds = { low: clampByte(lowT), med: clampByte(medT), high: clampByte(highT) };
+    const currentMaster = clampByte(masterWeight);
+    const changes = [];
+    changes.push({ type: 'set_threshold', thresholds: plannedThresholds });
+    changes.push({ type: 'set_master_weight', weight: currentMaster });
+    plannedMap.forEach((w, key) => {
+      changes.push({ type: 'set_signer', accountId: key, weight: w });
+    });
+    return { accountId: pk, changes, thresholds: plannedThresholds, masterWeight: currentMaster };
+  }, [defaultPublicKey, lowT, medT, highT, masterWeight, signers]);
+
+  const handleCreateMultisigJob = useCallback(async () => {
+    try {
+      const planned = buildPlannedChanges();
+      const payload = {
+        accountId: planned.accountId,
+        network: network === 'TESTNET' ? 'testnet' : 'public',
+        changes: planned.changes,
+      };
+      const res = await createPendingMultisigJob(payload);
+      setInfo(t('multisig:job.create.success.title') + ' ' + t('multisig:job.create.success.body', { id: res?.id || '' }));
+    } catch (err) {
+      setError(String(err?.message || err));
+    }
+  }, [buildPlannedChanges, network, t]);
 
   return (
     <div className="max-w-3xl mx-auto p-4">
@@ -326,6 +417,22 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
 
       <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
         <h3 className="font-semibold mb-2">{t('common:multisigEdit.currentConfig')}</h3>
+        <div className="flex flex-wrap gap-3 mb-4">
+          <label className="inline-flex items-center gap-2 text-sm">
+            <input type="radio" name="ms-mode" value="test" checked={mode === 'test'} onChange={() => setMode('test')} />
+            {t('multisig:mode.test.label')}
+          </label>
+          <label className="inline-flex items-center gap-2 text-sm">
+            <input type="radio" name="ms-mode" value="prod" checked={mode === 'prod'} onChange={() => setMode('prod')} />
+            {t('multisig:mode.prod.label')}
+          </label>
+        </div>
+        {mode === 'prod' && (
+          <div className="mb-4 border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded p-3">
+            <div className="text-sm font-semibold text-amber-900 dark:text-amber-100">{t('multisig:mode.prod.banner.title')}</div>
+            <p className="text-xs text-amber-800 dark:text-amber-200 mt-1">{t('multisig:mode.prod.banner.body')}</p>
+          </div>
+        )}
 
         {/* Signers first */}
         <div className="mt-2">
@@ -404,6 +511,69 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       {info && <p className="mt-3 text-sm text-green-700 dark:text-green-400">{info}</p>}
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <h3 className="text-lg font-semibold">{t('common:option.confirm.action.title', 'Confirm action')}</h3>
+              <button
+                type="button"
+                className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={() => { setShowConfirmModal(false); setPendingAction(null); }}
+              >
+                {t('common:option.cancel', 'Cancel')}
+              </button>
+            </div>
+            <div className="text-sm space-y-1 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="text-gray-700 dark:text-gray-300">{t('common:multisigEdit.masterWeight')}</span>
+                <span className="font-mono">{masterWeight}</span>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <span className="text-gray-700 dark:text-gray-300">{t('createAccount:thresholdLow')}:</span>
+                <span className="font-mono">{lowT}</span>
+                <span className="text-gray-700 dark:text-gray-300">{t('createAccount:thresholdMed')}:</span>
+                <span className="font-mono">{medT}</span>
+                <span className="text-gray-700 dark:text-gray-300">{t('createAccount:thresholdHigh')}:</span>
+                <span className="font-mono">{highT}</span>
+              </div>
+            </div>
+              <div className="grid gap-3">
+              <div className="border rounded p-3">
+                <div className="font-semibold mb-1">{t('multisig:confirm.testModeTitle')}</div>
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.testModeDescription')}</p>
+                <button
+                  type="button"
+                  onClick={handleConfirmTestMode}
+                  className="w-full px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+                  disabled={mode === 'prod'}
+                >
+                  {t('multisig:confirm.testModeButton')}
+                </button>
+                {mode === 'prod' && (
+                  <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">{t('multisig:mode.prod.banner.body')}</p>
+                )}
+              </div>
+              <div className="border rounded p-3">
+                <div className="font-semibold mb-1">
+                  {mode === 'prod' ? t('multisig:actions.createMultisigJob') : t('multisig:confirm.prepareTitle')}
+                </div>
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                  {mode === 'prod' ? t('multisig:confirm.prepareDescription') : t('multisig:confirm.prepareDescription')}
+                </p>
+                <button
+                  type="button"
+                  onClick={mode === 'prod' ? handleCreateMultisigJob : handlePrepareMultisig}
+                  className="w-full px-3 py-2 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
+                >
+                  {mode === 'prod' ? t('multisig:actions.createMultisigJob') : t('multisig:confirm.prepareButton')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showSecretModal && (
         <SecretKeyModal
           onConfirm={(collected)=>{ if (pendingAction==='save') submitChanges(collected); }}
@@ -412,6 +582,15 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           signers={signersForModal}
           operationType="setOptions"
           requiredThreshold={requiredThreshold}
+        />
+      )}
+      {preparedTx && (
+        <MultisigPrepareDialog
+          open={!!preparedTx}
+          onClose={() => setPreparedTx(null)}
+          hash={preparedTx.hash}
+          xdr={preparedTx.xdr}
+          summary={preparedTx.summary}
         />
       )}
       <MultiSigHelpDialog isOpen={isHelpOpen} onClose={()=>setIsHelpOpen(false)} />

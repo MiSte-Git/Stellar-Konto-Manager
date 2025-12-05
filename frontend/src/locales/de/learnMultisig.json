@@ -1,0 +1,32 @@
+{
+  "title": "Multisig für Anfänger",
+  "menuTitle": "Multisig verstehen",
+  "teaser": "Warum mehrere Signaturen, wie Thresholds funktionieren und wie SKM hilft.",
+  "why": {
+    "title": "Warum Multisig?",
+    "text": "Mehrere Signaturen verringern das Risiko einzelner Fehler oder Diebstahl."
+  },
+  "singleVsMulti": {
+    "title": "Single-Sig vs Multisig",
+    "text": "Single-Sig = 1 Schlüssel reicht. Multisig = mehrere Signaturen nötig (z. B. 2 von 3)."
+  },
+  "stellarHow": {
+    "title": "Wie Stellar Multisig umsetzt",
+    "text": "Stellar nutzt Signer mit Gewichten und Thresholds. Jede Operation braucht ein Schwellengewicht."
+  },
+  "examples": {
+    "title": "Beispiele aus der Praxis",
+    "item1": "Firmenkonto: Zwei Teammitglieder müssen jede Zahlung signieren.",
+    "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
+    "item3": "Sicherer Tresor: Hardware-Key plus Backup-Key nötig."
+  },
+  "skmSupport": {
+    "title": "Wie SKM Multisig unterstützt",
+    "text": "SKM baut Multisig-Transaktionen, sammelt Signaturen und speichert vorbereitete Jobs."
+  },
+  "diagram": {
+    "singleVsMulti": "Diagramm: Single-Sig vs. Multisig",
+    "stellarHow": "Diagramm: Signer, Gewicht, Threshold",
+    "skmFlow": "Diagramm: SKM-Flow Vorbereitung → Signieren → Senden"
+  }
+}

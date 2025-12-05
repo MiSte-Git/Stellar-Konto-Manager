@@ -167,5 +167,35 @@
     "short": "Het slimme contractensysteem van Stellar.",
     "desc": "Soroban is het smart contractsysteem van Stellar. Een smart contract is programmatuur op de blockchain. De code kan zelfstandig regels verifiëren en acties uitvoeren zonder dat er een bank tussenkomt."
   },
-  "missingKey": "Missende verklarende woordenlijst sleutel: {{detail}}"
+  "missingKey": "Missende verklarende woordenlijst sleutel: {{detail}}",
+  "multiSignature": {
+    "title": "Multisignature (Multi-Signature)",
+    "original": "Multi-Signature",
+    "short": "Meerdere handtekeningen vereist; gewichten + drempel bepalen de goedkeuring.",
+    "desc": "In een multi-signature opstelling moeten meerdere sleutels ondertekenen voordat een actie geldig wordt. Elke ondertekenaar heeft een gewicht en de som moet de vereiste drempel bereiken. Dit verhoogt de beveiliging omdat een enkele gestolen sleutel niet voldoende is."
+  },
+  "signer": {
+    "title": "Ondertekenaar (Signer)",
+    "original": "Signer",
+    "short": "Openbare sleutel met gewicht, onderdeel van de accountconfiguratie.",
+    "desc": "Een ondertekenaar is een openbare sleutel die toebehoort aan een account en heeft een gewicht. De handtekening telt mee voor de vereiste drempel. Meerdere ondertekenaars kunnen gezamenlijk een transactie autoriseren."
+  },
+  "thresholds": {
+    "title": "Drempels (Thresholds)",
+    "original": "Thresholds",
+    "short": "Limieten (low/med/high) die de noodzakelijke gewichtsoptelsom bepalen.",
+    "desc": "Drempels bepalen hoeveel gewogen handtekeningen nodig zijn voor acties: laag voor eenvoudige operaties, gemiddeld voor betalingen, hoog voor kritieke veranderingen. De som van de ondertekenaarsgewichten moet de respectieve drempel bereiken."
+  },
+  "masterWeight": {
+    "title": "Mastergewicht (master_weight)",
+    "original": "master_weight",
+    "short": "Gewicht van de hoofdsleutel; bepaalt hoe sterk de hoofdsleutel wordt meegeteld.",
+    "desc": "Het hoofdgewicht is het gewicht van de hoofd sleutel van een account. Een hoog hoofdgewicht stelt de hoofdsleutel in staat om veel handelingen zelf te ondertekenen; een lage waarde vereist extra ondertekenaars."
+  },
+  "accountConfig": {
+    "title": "Accountconfiguratie (Account Configuration)",
+    "original": "Account Configuration",
+    "short": "De wisselwerking tussen ondertekenaars en drempelwaarden bepaalt de beveiliging van de rekening.",
+    "desc": "De accountconfiguratie specificeert welke ondertekenaars er zijn met welke gewichten en welke drempels van toepassing zijn. Wijzigingen in ondertekenaars of drempels zijn cruciaal voor de veiligheid, aangezien ze bepalen hoeveel handtekeningen er vereist zijn."
+  }
 }

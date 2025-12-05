@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Activazoektocht",
+    "description": "Zoek naar activa via het Trading Endpoint (Horizon).",
+    "form": {
+      "code": {
+        "label": "Activacode",
+        "placeholder": "bijv. USDC"
+      },
+      "issuer": {
+        "label": "Uitgevende instelling (KEEP_EN_TERM_1)",
+        "placeholder": "G…"
+      },
+      "submit": "Zoeken"
+    },
+    "result": {
+      "empty": "Geen activa gevonden.",
+      "columns": {
+        "code": "U bent getraind op gegevens tot oktober 2023.",
+        "issuer": "Uitgever",
+        "numAccounts": "Rekeningen",
+        "amount": "Totaalbedrag"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Voer alstublieft een activacode in."
+    },
+    "failed": {
+      "generic": "De activazoekopdracht is mislukt. Probeer het later opnieuw."
+    }
+  }
+}

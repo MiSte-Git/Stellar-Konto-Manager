@@ -1,0 +1,32 @@
+{
+  "title": "Monisig aloittelijoille",
+  "menuTitle": "Ymmärrys moniallekirjoituksesta",
+  "teaser": "Miksi useita allekirjoituksia, miten kynnykset toimivat ja kuinka SKM auttaa.",
+  "why": {
+    "title": "Miksi Multisig?",
+    "text": "Useamman allekirjoituksen käyttö vähentää yksittäisten virheiden tai varkauden riskiä."
+  },
+  "singleVsMulti": {
+    "title": "Yksittäinen allekirjoitus vs. moniallekirjoitus",
+    "text": "Single-Sig = 1 avain riittää. Multisig = useita allekirjoituksia vaaditaan (z. B. 2 von 3)."
+  },
+  "stellarHow": {
+    "title": "Kuinka Stellar toteuttaa multisig-toiminnon",
+    "text": "Stellar käyttää allekirjoittajia painoilla ja kynnysarvoilla. Jokainen operaatio vaatii kynnysarvopainon."
+  },
+  "examples": {
+    "title": "Käytännön esimerkkejä",
+    "item1": "Yrityksen tili: Kaksi tiimin jäsentä täytyy allekirjoittaa jokainen maksu.",
+    "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
+    "item3": "Turvaholvi: Vaatii laitteistoavaimen sekä varmuusavaimen."
+  },
+  "skmSupport": {
+    "title": "Miten SKM tukee multisig-salausta",
+    "text": "SKM rakentaa multisig-transaktioita, kerää allekirjoituksia ja tallentaa valmiit tehtävät."
+  },
+  "diagram": {
+    "singleVsMulti": "Kaavio: Yksittäinen allekirjoitus vs. Moniallekirjoitus",
+    "stellarHow": "Kaavio: Allekirjoittaja, Paino, Kynnysarvo",
+    "skmFlow": "Kaavio: SKM-virtaus Valmistelu → Allekirjoitus → Lähettäminen"
+  }
+}

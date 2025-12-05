@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import lessons from '../data/learn/lessons.json';
+import MultisigIntro from './learn/MultisigIntro.jsx';
 import { buildPath } from '../utils/basePath.js';
 import { getFlattenedProgress, setManualStars, toggleManualCompleted, computeBadges } from '../utils/learnProgress.js';
 
@@ -13,7 +14,7 @@ function sortByLessonId(list) {
 
 function LearnPage() {
   // Ensure all used namespaces are available for translations
-  const { t } = useTranslation(['learn', 'quiz']);
+  const { t } = useTranslation(['learn', 'quiz', 'learnMultisig']);
   const [showBackToTop, setShowBackToTop] = React.useState(false);
   const [progress, setProgress] = React.useState(() => getFlattenedProgress());
   const [badges, setBadges] = React.useState(() => computeBadges());
@@ -98,6 +99,25 @@ function LearnPage() {
   }, [infoMsg]);
 
   const sortedLessons = React.useMemo(() => sortByLessonId(lessons), []);
+  const [focusLesson, setFocusLesson] = React.useState(null);
+
+  React.useEffect(() => {
+    try {
+      const p = typeof window !== 'undefined' ? window.location.pathname : '';
+      if (p && p.includes('/learn/multisig')) {
+        setFocusLesson('lesson13');
+        setTimeout(() => {
+          const el = document.getElementById('lesson13-card');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    } catch { /* noop */ }
+  }, []);
+
+  const renderCustomLesson = React.useCallback((id) => {
+    if (id === 'lesson13') return <MultisigIntro />;
+    return null;
+  }, []);
 
   return (
     <div className="max-w-[1140px] mx-auto p-4">
@@ -253,11 +273,16 @@ function LearnPage() {
           const state = progress[pid] || { completed: false, stars: 0 };
           const stars = Math.max(0, Math.min(3, Number(state.stars || 0)));
           return (
-            <article key={pid} className="border border-gray-200 dark:border-gray-700 rounded p-3 bg-white dark:bg-gray-800 shadow-sm">
+            <article id={`${pid}-card`} key={pid} className={`border border-gray-200 dark:border-gray-700 rounded p-3 bg-white dark:bg-gray-800 shadow-sm ${focusLesson === pid ? 'ring-2 ring-indigo-400' : ''}`}>
               <div className="flex items-start justify-between gap-2">
-                <h2 className="text-lg font-semibold mb-1">
-                  {t(`learn:${pid}.title`, lesson.title)}
-                </h2>
+                <div>
+                  <h2 className="text-lg font-semibold mb-1">
+                    {lesson.titleKey ? t(lesson.titleKey, lesson.title) : t(`learn:${pid}.title`, lesson.title)}
+                  </h2>
+                  {lesson.teaserKey && (
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{t(lesson.teaserKey)}</p>
+                  )}
+                </div>
                 {state.completed && (
                   <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-300 text-xs font-semibold" aria-label={t('learn:progress.completed', 'Completed')}>
                     ✓ {t('learn:progress.completed', 'Completed')}
@@ -281,6 +306,27 @@ function LearnPage() {
                 <span className="font-medium">{t('learn:labels.reward', 'Reward')}:</span>{' '}
                 {t(`learn:${pid}.reward`, lesson.reward)}
               </p>
+              {renderCustomLesson(pid)}
+              {lesson.path && (
+                <div className="mt-2">
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow"
+                    onClick={() => {
+                      try {
+                        const url = buildPath(lesson.path);
+                        window.history.pushState({}, '', url);
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                        setFocusLesson(pid);
+                        const el = document.getElementById(`${pid}-card`);
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      } catch { /* noop */ }
+                    }}
+                  >
+                    {t('learnMultisig:menuTitle', 'Multisig verstehen')}
+                  </button>
+                </div>
+              )}
 
               {/* Fortschritt: Sterne & Abschluss */}
               <div className="mt-3 flex items-center justify-between gap-2">

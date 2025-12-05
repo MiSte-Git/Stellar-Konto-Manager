@@ -167,5 +167,35 @@
     "short": "Stellars Smart‑Contract‑System.",
     "desc": "Soroban ist das Smart Contract System von Stellar. Ein Smart Contract ist Programmcode auf der Blockchain. Der Code kann selbst Regeln prüfen und Aktionen auslösen ohne eine Bank dazwischen."
   },
+  "multiSignature": {
+    "title": "Mehrfachsignatur (Multi-Signature)",
+    "original": "Multi-Signature",
+    "short": "Mehrere Unterschriften nötig; Gewichte + Threshold bestimmen die Freigabe.",
+    "desc": "Bei einer Mehrfachsignatur müssen mehrere Schlüssel unterschreiben, bevor eine Aktion gültig wird. Jeder Signer hat ein Gewicht, und die Summe muss das erforderliche Threshold erreichen. Das erhöht die Sicherheit, weil ein einzelner gestohlener Schlüssel nicht reicht."
+  },
+  "signer": {
+    "title": "Unterzeichner (Signer)",
+    "original": "Signer",
+    "short": "Öffentlicher Schlüssel mit Gewicht, Teil der Kontokonfiguration.",
+    "desc": "Ein Signer ist ein öffentlicher Schlüssel, der zu einem Konto gehört und ein Gewicht hat. Seine Signatur zählt zum benötigten Threshold. Mehrere Signer können gemeinsam eine Transaktion freigeben."
+  },
+  "thresholds": {
+    "title": "Schwellenwerte (Thresholds)",
+    "original": "Thresholds",
+    "short": "Grenzwerte (low/med/high), die die nötige Gewichtssumme festlegen.",
+    "desc": "Thresholds definieren, wie viele gewichtete Signaturen für Aktionen nötig sind: low für einfache Operationen, med für Zahlungen, high für kritische Änderungen. Die Summe der Signer-Gewichte muss den jeweiligen Schwellenwert erreichen."
+  },
+  "masterWeight": {
+    "title": "Mastergewicht (master_weight)",
+    "original": "master_weight",
+    "short": "Gewicht des Master-Schlüssels; steuert, wie stark der Hauptschlüssel zählt.",
+    "desc": "Das Mastergewicht ist das Gewicht des Hauptschlüssels eines Kontos. Ein hohes master_weight erlaubt dem Master-Key, viele Aktionen allein zu signieren; ein niedriger Wert zwingt zu zusätzlichen Signern."
+  },
+  "accountConfig": {
+    "title": "Kontokonfiguration (Account Configuration)",
+    "original": "Account Configuration",
+    "short": "Zusammenspiel von Signern und Thresholds, bestimmt die Sicherheit des Kontos.",
+    "desc": "Die Kontokonfiguration legt fest, welche Signer mit welchen Gewichten existieren und welche Thresholds gelten. Änderungen an Signern oder Thresholds sind sicherheitskritisch, weil sie bestimmen, wie viele Unterschriften nötig sind."
+  },
   "missingKey": "Fehlender Glossar-Schlüssel: {{detail}}"
 }

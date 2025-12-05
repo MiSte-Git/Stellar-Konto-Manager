@@ -65,6 +65,7 @@ import BalancePage from './pages/BalancePage.jsx';
 import SendPaymentPage from './pages/SendPaymentPage.jsx';
 import FeedbackPage from './pages/FeedbackPage.jsx';
 import MuxedAccountsPage from './pages/MuxedAccountsPage.jsx';
+import MultisigJobList from './pages/MultisigJobList.jsx';
 
 
 confirmAutoClear();
@@ -913,9 +914,14 @@ function Main() {
       {menuSelection === 'multisigEdit' && (
         <MultisigEditPage key={refreshToken} defaultPublicKey={sourcePublicKey} />
       )}
+      {menuSelection === 'multisigJobs' && (
+        <div className="max-w-5xl mx-auto px-3">
+          <MultisigJobList onBack={() => setMenuSelection(null)} />
+        </div>
+      )}
        
        {menuSelection &&
-       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','createAccount','multisigEdit','balance','sendPayment','feedback','muxed'].includes(menuSelection) && (
+       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','createAccount','multisigEdit','multisigJobs','balance','sendPayment','feedback','muxed'].includes(menuSelection) && (
          <div className="p-3 text-sm text-red-600">
            {t('menu:unknown', { value: String(menuSelection) }, 'Unbekannte Menüauswahl')}
          </div>

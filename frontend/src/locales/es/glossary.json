@@ -167,5 +167,35 @@
     "short": "Sistema de contratos inteligentes de Stellar.",
     "desc": "Soroban es el sistema de contratos inteligentes de Stellar. Un contrato inteligente es un código de programa en la blockchain. El código puede verificar reglas de manera independiente y desencadenar acciones sin la necesidad de un banco intermediario."
   },
-  "missingKey": "Llave de glosario faltante: {{detail}}"
+  "missingKey": "Llave de glosario faltante: {{detail}}",
+  "multiSignature": {
+    "title": "Multisignature (Multi-Signature)",
+    "original": "Multi-Signature",
+    "short": "Multiple signatures required; weights + threshold determine the approval.",
+    "desc": "En una configuración de firma múltiple, varias claves deben firmar antes de que una acción se vuelva válida. Cada firmante tiene un peso, y la suma debe alcanzar el umbral requerido. Esto aumenta la seguridad porque una sola clave robada no es suficiente."
+  },
+  "signer": {
+    "title": "Signatario (Signer)",
+    "original": "Signer",
+    "short": "Clave pública con peso, parte de la configuración de la cuenta.",
+    "desc": "Un firmante es una clave pública que pertenece a una cuenta y tiene un peso. Su firma cuenta para alcanzar el umbral requerido. Varios firmantes pueden autorizar colectivamente una transacción."
+  },
+  "thresholds": {
+    "title": "Umbrales (Thresholds)",
+    "original": "Thresholds",
+    "short": "Límites (low/med/high), que determinan la suma de peso necesaria.",
+    "desc": "Los umbrales definen cuántas firmas ponderadas se requieren para las acciones: bajo para operaciones simples, medio para pagos, alto para cambios críticos. La suma de los pesos de los firmantes debe alcanzar el umbral respectivo."
+  },
+  "masterWeight": {
+    "title": "Peso maestro (master_weight)",
+    "original": "master_weight",
+    "short": "Peso de la clave maestra; determina cuán fuertemente se cuenta la clave maestra.",
+    "desc": "El peso maestro es el peso de la clave principal de una cuenta. Un peso maestro alto permite que la clave maestra firme muchas acciones por sí misma; un valor bajo requiere firmantes adicionales."
+  },
+  "accountConfig": {
+    "title": "Configuración de la cuenta (Account Configuration)",
+    "original": "Account Configuration",
+    "short": "La interacción de los firmantes y los umbrales determina la seguridad de la cuenta.",
+    "desc": "La configuración de la cuenta especifica qué firmantes existen con qué pesos y qué umbrales se aplican. Los cambios en los firmantes o umbrales son críticos para la seguridad, ya que determinan cuántas firmas se requieren."
+  }
 }

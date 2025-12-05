@@ -17,6 +17,7 @@ function MainMenu({ onSelect }) {
 
     // Gruppe 3
     { label: t('menu:multisigEdit', 'Edit multisig'), value: 'multisigEdit', title: t('multisigEdit:menuHint', 'Edit existing account / signers'), group: 3 },
+    { label: t('menu:multisigJobs', 'Multisig-Jobs'), value: 'multisigJobs', group: 3 },
     { label: t('menu:muxed', 'Manage muxed addresses'), value: 'muxed', group: 3 },
 
     // Gruppe 4
