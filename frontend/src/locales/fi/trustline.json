@@ -23,5 +23,21 @@
   },
   "noDuplicates": "Ei päällekkäisiä luottolinjoja löytynyt.",
   "showSecret": "Näytä salainen avain",
-  "notFound": "Luottolinja(a) ei löytynyt."
+  "notFound": "Luottolinja(a) ei löytynyt.",
+  "add": {
+    "button": "Lisää luottolimiitti",
+    "title": "Luo uusi luottolinja",
+    "assetCodeLabel": "Omaisuuskoodi",
+    "assetCodePlaceholder": "esim. USDC",
+    "assetCodeHelp": "Varallisuuden lyhyt nimi (1–12 merkkiä, esim. TESTUSD).",
+    "issuerLabel": "Liikkeeseenlaskija",
+    "issuerPlaceholder": "esim. G...Liikkeeseenlaskija",
+    "issuerHelp": "Liikkeellelaskijan tilin julkinen avain (G-Adresse), joka laskee liikkeelle omaisuuden.",
+    "limitLabel": "Rajoitus",
+    "limitPlaceholder": "z. B. 1 000 000 (eine Million)",
+    "limitHelp": "Raja on tämän omaisuuden enimmäismäärä, johon tämä tili luottaa. Käytännössä sen tulisi olla asetettu niin korkealle kuin odotettu enimmäissaldosi tässä omaisuudessa.",
+    "submit": "Luo luottolimiitti",
+    "cancel": "Peruuta",
+    "success": "Trustline valuutalle {{code}} on onnistuneesti perustettu."
+  }
 }

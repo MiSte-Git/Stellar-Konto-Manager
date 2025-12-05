@@ -173,7 +173,7 @@ export async function resolveFederationAddress(federationAddress) {
  * @throws {Error} - Wenn ungültig oder nicht abrufbar
  */
 export async function loadTrustlines(publicKey, serverOverride, options = {}) {
-  const { includeOps = true } = options;
+  const { includeOps = true, ttlMs = 10000 } = options;
   if (!StrKey.isValidEd25519PublicKey(publicKey)) {
     throw new Error('resolveOrValidatePublicKey.invalid');
   }
@@ -181,7 +181,7 @@ export async function loadTrustlines(publicKey, serverOverride, options = {}) {
   try {
     const server = serverOverride || getHorizonServer();
     // Apply gentle retry/backoff for rate limits
-    const account = await loadAccountCached(server, publicKey, { ttlMs: 10000 });
+    const account = await loadAccountCached(server, publicKey, { ttlMs });
     const balances = account.balances.filter(b => b.asset_type !== 'native');
 
     // Optional: Hole zusätzlich die Change-Trust-Operationen für createdAt (mit Retry, kleinere Page) – best effort
@@ -539,25 +539,31 @@ export function chunkArray(array, size) {
   }
   return result;
 }
-export async function deleteTrustlinesInChunks({ 
-  secretKey, 
-  trustlines, 
-  onProgress, 
-  validateLiveEvery = 3 // <-- NEU: nur jede n-te Runde live prüfen (1 = immer) 
+export async function deleteTrustlinesInChunks({
+  signerKeypairs,
+  trustlines,
+  onProgress,
+  validateLiveEvery = 3, // <-- NEU: nur jede n-te Runde live prüfen (1 = immer)
+  accountPublicKey,
 }) {
-  const sourceKeypair = Keypair.fromSecret(secretKey);
-  const publicKey = sourceKeypair.publicKey();
+  const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
+  const primary = signerList[0];
+  if (!primary) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
+  const targetAccount = accountPublicKey || primary.publicKey();
+  if (!targetAccount) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
+  const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+  const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
   const chunks = chunkArray(trustlines, 100);
   const allDeleted = [];
   let processed = 0;
 
-  let liveTrustlines = await loadTrustlines(publicKey); // initial einmal
+  let liveTrustlines = await loadTrustlines(targetAccount, server); // initial einmal
   for (let idx = 0; idx < chunks.length; idx++) {
     const chunk = chunks[idx];
 
     // nur jede n-te Runde live neu laden
     if (idx === 0 || (validateLiveEvery > 0 && idx % validateLiveEvery === 0)) {
-      liveTrustlines = await loadTrustlines(publicKey);
+      liveTrustlines = await loadTrustlines(targetAccount, server);
     }
 
     const stillValid = chunk.filter(tl =>
@@ -577,13 +583,41 @@ export async function deleteTrustlinesInChunks({
       continue;
     }
 
-    // … (TX bauen/submit wie bei dir – unverändert)
-    // onProgress nach jedem Chunk:
+    // Build and submit TX for this chunk using the loaded account as source
+    const account = await server.loadAccount(targetAccount);
+    const feeStats = await server.feeStats();
+    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    const txb = new TransactionBuilder(account, {
+      fee,
+      networkPassphrase: net === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+    });
+
+    stillValid.forEach((tl) => {
+      txb.addOperation(Operation.changeTrust({
+        asset: new Asset(tl.assetCode, tl.assetIssuer),
+        limit: '0',
+      }));
+    });
+
+    const tx = txb.setTimeout(60).build();
+    signerList.forEach((kp) => {
+      try { tx.sign(kp); } catch (e) { console.debug?.('sign failed', e); }
+    });
+
+    const res = await server.submitTransaction(tx);
+    const txId = res?.id || res?.hash || '';
+    allDeleted.push(...stillValid.map((tl) => ({ ...tl, txId })));
+
     processed += chunk.length;
     onProgress?.({ phase:'chunkDone', processed, total: trustlines.length });
   }
 
-  if (allDeleted.length === 0) throw new Error('error.trustline.notFound');
+  if (allDeleted.length === 0) {
+    if (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production') {
+      try { console.error('[Trustline delete] no matching balance on account', targetAccount, { trustlines }); } catch { /* noop */ }
+    }
+    throw new Error('error.trustline.notFound');
+  }
   return allDeleted;
 }
 

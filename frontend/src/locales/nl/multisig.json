@@ -1,0 +1,14 @@
+{
+  "accountMode": {
+    "single": "Deze account maakt gebruik van een enkele handtekening.",
+    "multi": "Deze account gebruikt meerdere handtekeningen (Multisig)."
+  },
+  "requiredThreshold": "Vereiste drempel ({{level}}): {{value}}",
+  "operationLabel": {
+    "payment": "Betaling",
+    "setOptions": "Configuratie (Ondertekenaars & Drempels)",
+    "changeTrust": "Wijzig vertrouwenslijn",
+    "unknown": "Actie"
+  },
+  "multipleSignersInfo": "Deze actie vereist meerdere handtekeningen. Gelieve voldoende geheime sleutels te verstrekken om aan de drempel te voldoen."
+}

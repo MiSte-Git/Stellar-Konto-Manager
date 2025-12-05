@@ -10,7 +10,7 @@
   "createAccount": "Luo tili + Moniallekirjoitus",
   "multisigEdit": "Muokkaa multisig-sopimusta",
   "listAll": "Listaa kaikki luottolinjat.",
-  "compareTrustlines": "Vertaa trustlineja.",
+  "compareTrustlines": "Vertaa luottolinjoja tilien välillä.",
   "settings": "Asetukset",
   "tokenPurchases": "Token-ostot",
   "learn": "Stellar-visailu aloittelijoille",

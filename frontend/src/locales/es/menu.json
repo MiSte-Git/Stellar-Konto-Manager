@@ -10,7 +10,7 @@
   "createAccount": "Crear cuenta + Multisig",
   "multisigEdit": "Editar multisig",
   "listAll": "Enumera todas las líneas de confianza.",
-  "compareTrustlines": "Comparar líneas de confianza",
+  "compareTrustlines": "Compara las líneas de confianza entre cuentas.",
   "settings": "Configuraciones",
   "tokenPurchases": "Compras de tokens",
   "learn": "Cuestionario Estelar para Principiantes",
