@@ -8,6 +8,7 @@ const os = require('os');
 const path = require('path');
 const fs = require('fs/promises');
 const fsSync = require('fs');
+const { searchAssets } = require('./backend/src/services/tradeService.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
 (function loadDotEnv() {
@@ -302,6 +303,18 @@ app.get('/trustlines', async (req, res) => {
   } catch (error) {
     console.error('Error fetching trustlines:', error.message);
     res.status(500).json({ error: 'Failed to fetch trustlines' });
+  }
+});
+
+app.get('/api/trade/assets/search', async (req, res) => {
+  const { code, issuer } = req.query;
+  try {
+    const items = await searchAssets({ assetCode: code, issuer, horizon });
+    res.json({ items });
+  } catch (error) {
+    const message = error?.message || 'assetSearch.failed:generic';
+    const status = String(message).startsWith('assetSearch.invalidInput') ? 400 : 502;
+    res.status(status).json({ error: message });
   }
 });
 
