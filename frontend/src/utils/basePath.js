@@ -64,7 +64,8 @@ export function isLearnPath(pathname) {
     ? pathname
     : (typeof window !== 'undefined' ? window.location.pathname : '');
   const target = buildPath('learn');
-  return normalizePath(current) === normalizePath(target) || normalizePath(current).endsWith('/learn');
+  const norm = normalizePath(current);
+  return norm === normalizePath(target) || norm.endsWith('/learn') || norm.startsWith(normalizePath(target + '/'));
 }
 
 /**
@@ -88,7 +89,7 @@ export function isQuizRunPath(pathname) {
     : (typeof window !== 'undefined' ? window.location.pathname : '');
   const p = normalizePath(stripBase(current));
   const rest = p.replace(/^\/?quiz\//, ''); // e.g. "1/run"
-  return /^(\d+\/run)$/.test(rest);
+  return /^([A-Za-z0-9_-]+\/run)$/.test(rest);
 }
 
 /**
@@ -101,7 +102,7 @@ export function isQuizLandingPath(pathname) {
     : (typeof window !== 'undefined' ? window.location.pathname : '');
   const p = normalizePath(stripBase(current));
   const rest = p.replace(/^\/?quiz\//, ''); // e.g. "1"
-  return /^\d+$/.test(rest);
+  return /^([A-Za-z0-9_-]+)$/.test(rest);
 }
 
 /**
@@ -113,7 +114,7 @@ export function isQuizSettingsPath(pathname) {
     : (typeof window !== 'undefined' ? window.location.pathname : '');
   const p = normalizePath(stripBase(current));
   const rest = p.replace(/^\/?quiz\//, ''); // e.g. "1/settings"
-  return /^(\d+\/settings)$/.test(rest);
+  return /^([A-Za-z0-9_-]+\/settings)$/.test(rest);
 }
 
 /**
@@ -125,7 +126,7 @@ export function isQuizAchievementsPath(pathname) {
     : (typeof window !== 'undefined' ? window.location.pathname : '');
   const p = normalizePath(stripBase(current));
   const rest = p.replace(/^\/?quiz\//, ''); // e.g. "1/achievements"
-  return /^(\d+\/achievements)$/.test(rest);
+  return /^([A-Za-z0-9_-]+\/achievements)$/.test(rest);
 }
 
 export function quizLandingPath(lessonId) {
@@ -142,6 +143,18 @@ export function quizSettingsPath(lessonId) {
 
 export function quizAchievementsPath(lessonId) {
   return buildPath(`quiz/${lessonId}/achievements`);
+}
+
+/**
+ * Extracts multisig job id from path /multisig/jobs/:id
+ */
+export function getMultisigJobId(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const p = normalizePath(stripBase(current));
+  const m = p.match(/^\/?multisig\/jobs\/([^/]+)$/);
+  return m ? m[1] : null;
 }
 
 /**

@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Pretraga imovine",
+    "description": "Pretraži imovinu putem Trading Endpoint (Horizon).",
+    "form": {
+      "code": {
+        "label": "Kod imovine",
+        "placeholder": "z.B., USDC"
+      },
+      "issuer": {
+        "label": "Izdavatelj",
+        "placeholder": "G…"
+      },
+      "submit": "Pretraga"
+    },
+    "result": {
+      "empty": "Nisu pronađena sredstva.",
+      "columns": {
+        "code": "Kôd",
+        "issuer": "Izdavatelj",
+        "numAccounts": "Korisnički računi",
+        "amount": "Ukupni iznos"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Molimo unesite šifru imovine."
+    },
+    "failed": {
+      "generic": "Pretraga imovine nije uspjela. Molimo pokušajte ponovno kasnije."
+    }
+  }
+}

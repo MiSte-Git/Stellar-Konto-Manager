@@ -167,5 +167,35 @@
     "short": "Sistema di smart contract di Stellar.",
     "desc": "Soroban è il sistema di contratti intelligenti di Stellar. Un contratto intelligente è un codice di programma sulla blockchain. Il codice può verificare autonomamente le regole e innescare azioni senza la necessità di una banca intermediaria."
   },
-  "missingKey": "Chiave del glossario mancante: {{detail}}"
+  "missingKey": "Chiave del glossario mancante: {{detail}}",
+  "multiSignature": {
+    "title": "Multisignature (Multi-Signature)",
+    "original": "Multi-Signature",
+    "short": "Multiple signatures required; weights + threshold determine the approval.",
+    "desc": "In un'impostazione multi-firma, più chiavi devono firmare prima che un'azione diventi valida. Ogni firmatario ha un peso, e la somma deve raggiungere la soglia richiesta. Ciò aumenta la sicurezza perché una singola chiave rubata non è sufficiente."
+  },
+  "signer": {
+    "title": "Firmatario (Signer)",
+    "original": "Signer",
+    "short": "Chiave pubblica con peso, parte della configurazione dell'account.",
+    "desc": "Un firmatario è una chiave pubblica che appartiene a un conto e ha un peso. La sua firma contribuisce al raggiungimento della soglia richiesta. Molteplici firmatari possono autorizzare una transazione collettivamente."
+  },
+  "thresholds": {
+    "title": "Soglie (Thresholds)",
+    "original": "Thresholds",
+    "short": "Limiti, che determinano la somma necessaria dei pesi.",
+    "desc": "Le soglie definiscono quante firme ponderate sono richieste per le azioni: basse per operazioni semplici, medie per i pagamenti, alte per cambiamenti critici. La somma dei pesi dei firmatari deve raggiungere la soglia rispettiva."
+  },
+  "masterWeight": {
+    "title": "Mastergewicht (master_weight)",
+    "original": "master_weight",
+    "short": "Peso della chiave principale; determina quanto fortemente viene considerata la chiave principale.",
+    "desc": "Il peso principale è il peso della chiave principale di un conto. Un peso principale elevato consente alla chiave principale di firmare molte azioni autonomamente; un valore basso richiede firmatari aggiuntivi."
+  },
+  "accountConfig": {
+    "title": "Configurazione dell'account (Account Configuration)",
+    "original": "Account Configuration",
+    "short": "L'interazione tra firmatari e soglie determina la sicurezza dell'account.",
+    "desc": "La configurazione dell'account specifica quali firmatari esistono con quali pesi e quali soglie si applicano. Le modifiche ai firmatari o alle soglie sono fondamentali per la sicurezza, poiché determinano quante firme sono necessarie."
+  }
 }

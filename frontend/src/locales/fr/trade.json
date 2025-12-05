@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Recherche d'actifs",
+    "description": "Recherchez des actifs via le Trading Endpoint (Horizon).",
+    "form": {
+      "code": {
+        "label": "Code d'actif",
+        "placeholder": "par exemple, USDC"
+      },
+      "issuer": {
+        "label": "Émetteur (KEEP_EN_TERM_1)",
+        "placeholder": "G…"
+      },
+      "submit": "Recherche"
+    },
+    "result": {
+      "empty": "Aucun actif trouvé.",
+      "columns": {
+        "code": "Code",
+        "issuer": "Émetteur",
+        "numAccounts": "Comptes",
+        "amount": "Montant total"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Veuillez entrer un code d'actif."
+    },
+    "failed": {
+      "generic": "La recherche d'actifs a échoué. Veuillez réessayer plus tard."
+    }
+  }
+}

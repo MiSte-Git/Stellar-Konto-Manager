@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Sauvegarde exportée",
-      "backupBeforeImport": "Une sauvegarde a été enregistrée avant l'importation."
+      "backupBeforeImport": "Une sauvegarde a été effectuée avant l'importation."
     },
     "nav": {
       "back": "Retour"

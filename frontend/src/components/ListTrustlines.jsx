@@ -22,6 +22,8 @@ import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import AddTrustlineModal from './AddTrustlineModal.jsx';
 import { Networks, TransactionBuilder, Operation, Asset } from '@stellar/stellar-sdk';
+import MultisigPrepareDialog from './MultisigPrepareDialog.jsx';
+import { BACKEND_URL } from '../config.js';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
@@ -49,7 +51,7 @@ function ListTrustlines({
   setDeleteProgress,
   setInfoMessage,
 }) {
-  const { t, i18n } = useTranslation(['common', 'trustline', 'errors']);
+  const { t, i18n } = useTranslation(['common', 'trustline', 'errors', 'multisig']);
   const { decimalsMode } = useSettings();
   const [paginated, setPaginated] = useState([]);
   const [showOverviewModal, setShowOverviewModal] = useState(false);
@@ -65,6 +67,7 @@ function ListTrustlines({
   const [showAddModal, setShowAddModal] = useState(false);
   const [pendingAdd, setPendingAdd] = useState(null);
   const [pendingAction, setPendingAction] = useState(null); // 'delete' | 'add'
+  const [preparedTx, setPreparedTx] = useState(null);
   const [accountInfo, setAccountInfo] = useState(null);
   const thresholdsForModal = useMemo(() => accountInfo?.thresholds || null, [accountInfo]);
   const signersForModal = useMemo(() => accountInfo?.signers || [], [accountInfo]);
@@ -221,6 +224,71 @@ function ListTrustlines({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [showOverviewModal, showSecretModal]);
+
+  const handlePrepareMultisig = async () => {
+    try {
+      if (deletableOverview.length === 0) {
+        setErrorMessage(t('common:trustlines.deleteConfirm', 'Delete the selected trustlines?'));
+        return;
+      }
+      const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+      const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+      const account = await server.loadAccount(publicKey);
+      const feeStats = await server.feeStats();
+      const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+      const txb = new TransactionBuilder(account, {
+        fee,
+        networkPassphrase: net === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+      });
+      deletableOverview.forEach((tl) => {
+        txb.addOperation(Operation.changeTrust({
+          asset: new Asset(tl.assetCode, tl.assetIssuer),
+          limit: '0',
+        }));
+      });
+      const tx = txb.setTimeout(60).build();
+      const hashHex = tx.hash().toString('hex');
+      const xdr = tx.toXDR();
+      let job = null;
+      try {
+        const r = await fetch(`${BACKEND_URL}/api/multisig/jobs`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            network: net === 'TESTNET' ? 'testnet' : 'public',
+            accountId: publicKey,
+            txXdr: xdr,
+            createdBy: 'local',
+          }),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data?.error || 'multisig.jobs.create_failed');
+        job = data;
+      } catch (e) {
+        setErrorMessage(formatErrorForUi(t, e));
+        return;
+      }
+
+      setPreparedTx({
+        id: job?.id,
+        hash: job?.txHash || hashHex,
+        xdr: job?.txXdrCurrent || xdr,
+        summary: {
+          title: t('multisig:prepare.title'),
+          subtitle: t('multisig:prepare.subtitle'),
+          items: [
+            { label: t('common:account.source', 'Quelle'), value: publicKey },
+            { label: t('trustline:delete'), value: `${deletableOverview.length}` },
+            { label: t('common:network', 'Netzwerk'), value: net },
+            job?.id ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: job.id } : null,
+          ].filter(Boolean),
+        },
+      });
+      setShowOverviewModal(false);
+    } catch (e) {
+      setErrorMessage(formatErrorForUi(t, e));
+    }
+  };
 
 
 
@@ -635,23 +703,39 @@ function ListTrustlines({
               <p className="text-sm text-red-700 dark:text-red-300 mb-3">
                 {t('common:trustlines.deleteConfirm', 'Delete the selected trustlines?')}
               </p>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end mb-3">
                 <button
                   onClick={() => { setShowOverviewModal(false); setPendingAction(null); }}
                   className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500"
                 >
                   {t('common:option.cancel', 'Cancel')}
                 </button>
-                <button
-                  onClick={() => {
-                    setShowOverviewModal(false);
-                    setPendingAction('delete');
-                    setShowSecretModal(true);
-                  }}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                >
-                  {t('common:option.yes', 'Yes')}
-                </button>
+              </div>
+              <div className="grid gap-3">
+                <div className="border rounded p-3">
+                  <div className="font-semibold mb-1">{t('multisig:confirm.testModeTitle')}</div>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.testModeDescription')}</p>
+                  <button
+                    onClick={() => {
+                      setShowOverviewModal(false);
+                      setPendingAction('delete');
+                      setShowSecretModal(true);
+                    }}
+                    className="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                  >
+                    {t('multisig:confirm.testModeButton')}
+                  </button>
+                </div>
+                <div className="border rounded p-3">
+                  <div className="font-semibold mb-1">{t('multisig:confirm.prepareTitle')}</div>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.prepareDescription')}</p>
+                  <button
+                    onClick={handlePrepareMultisig}
+                    className="w-full px-4 py-2 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
+                  >
+                    {t('multisig:confirm.prepareButton')}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -705,6 +789,15 @@ function ListTrustlines({
         message={errorMessage}
         onClose={() => setErrorMessage('')}
       />
+      {preparedTx && (
+        <MultisigPrepareDialog
+          open={!!preparedTx}
+          onClose={() => setPreparedTx(null)}
+          hash={preparedTx.hash}
+          xdr={preparedTx.xdr}
+          summary={preparedTx.summary}
+        />
+      )}
   </div>
   );
 }

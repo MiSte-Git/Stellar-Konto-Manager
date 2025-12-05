@@ -149,5 +149,12 @@
   },
   "actions": {
     "startQuiz": "Aloita tietovisa"
+  },
+  "lesson13": {
+    "title": "Multisig aloittelijoille",
+    "goal": "Moniallekirjoituksen perusperiaatteiden ymmärtäminen",
+    "task": "Yhden allekirjoituksen (Single-Sig) ja moniallekirjoituksen (Multisig) vertailu esimerkki-idean avulla.",
+    "learningOutcome": "Useat allekirjoitukset lisäävät turvallisuutta; kynnysarvot määrittävät, kuinka monta allekirjoitusta tarvitaan.",
+    "reward": "⭐ 2 – Moniallekirjoitus Aloittelijoille"
   }
 }

@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Omaisuushaku",
+    "description": "Etsi varoja Trading Endpointin (Horizon) kautta.",
+    "form": {
+      "code": {
+        "label": "Omaisuuskoodi",
+        "placeholder": "z. B. USDC"
+      },
+      "issuer": {
+        "label": "Liikkeeseenlaskija (KEEP_EN_TERM_1)",
+        "placeholder": "G…"
+      },
+      "submit": "Haku"
+    },
+    "result": {
+      "empty": "Varoja ei löytynyt.",
+      "columns": {
+        "code": "Koodi",
+        "issuer": "Laskija",
+        "numAccounts": "Tilit",
+        "amount": "Kokonaismäärä"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Anna oma varallisuustunnus."
+    },
+    "failed": {
+      "generic": "Omaisuuden haku epäonnistui. Yritä uudelleen myöhemmin."
+    }
+  }
+}

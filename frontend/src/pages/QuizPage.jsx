@@ -9,10 +9,10 @@ import { buildPath, quizRunPath, quizSettingsPath, quizAchievementsPath } from '
 function useLessonIdFromPath() {
   const parseId = (p) => {
     try {
-      // Support both legacy and new routes: /learn/lesson/:id/quiz and /quiz/:id/run
-      let m = String(p || '').match(/lesson\/(\d+)/);
+      // Support both legacy and new routes: /learn/lesson/:id/quiz and /quiz/:id/run (slug or numeric)
+      let m = String(p || '').match(/lesson\/([A-Za-z0-9_-]+)/);
       if (m) return m[1];
-      m = String(p || '').match(/quiz\/(\d+)/);
+      m = String(p || '').match(/quiz\/([A-Za-z0-9_-]+)/);
       if (m) return m[1];
     } catch { /* noop */ }
     return '1';
@@ -41,14 +41,14 @@ function useLessonIdFromPath() {
 function isSettingsRoute() {
   try {
     const p = typeof window !== 'undefined' ? window.location.pathname : '';
-    return /\/quiz\/\d+\/settings$/.test(p);
+    return /\/quiz\/[A-Za-z0-9_-]+\/settings$/.test(p);
   } catch { return false; }
 }
 
 function isAchievementsRoute() {
   try {
     const p = typeof window !== 'undefined' ? window.location.pathname : '';
-    return /\/quiz\/\d+\/achievements$/.test(p);
+    return /\/quiz\/[A-Za-z0-9_-]+\/achievements$/.test(p);
   } catch { return false; }
 }
 
@@ -56,12 +56,12 @@ function isRunRoute() {
   try {
     const p = typeof window !== 'undefined' ? window.location.pathname : '';
     // support new /quiz/:id/run and legacy /learn/lesson/:id/quiz
-    return (/\/quiz\/\d+\/run$/.test(p) || /\/learn\/lesson\/\d+\/quiz$/.test(p));
+    return (/\/quiz\/[A-Za-z0-9_-]+\/run$/.test(p) || /\/learn\/lesson\/\d+\/quiz$/.test(p));
   } catch { return false; }
 }
 
 export default function QuizPage() {
-  const { t } = useTranslation(['learn', 'quiz', 'quiz.ui', 'common', 'navigation']);
+  const { t } = useTranslation(['learn', 'quiz', 'quiz.ui', 'quizMultisig', 'common', 'navigation']);
   const lessonNum = useLessonIdFromPath();
   const [data, setData] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
@@ -82,7 +82,10 @@ export default function QuizPage() {
     setLoading(true);
     setError('');
     const id = String(lessonNum);
-    import(`../data/learn/quiz/lesson${id}.json`).then((mod) => {
+    const loader = id === 'multisig'
+      ? () => import('../data/quiz/quizMultisig.json')
+      : () => import(`../data/learn/quiz/lesson${id}.json`);
+    loader().then((mod) => {
       if (!alive) return;
       setData(mod.default || mod);
       setLoading(false);

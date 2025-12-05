@@ -94,5 +94,17 @@
     "task": "Mini-Quiz + Abzeichenanzeige",
     "learningOutcome": "Gelerntes wiederholen, eigene Fortschritte erkennen.",
     "reward": "🎖 Stellar-Profi"
+  },
+  {
+    "id": "lesson13",
+    "title": "Multisig für Anfänger",
+    "titleKey": "learnMultisig:menuTitle",
+    "teaserKey": "learnMultisig:teaser",
+    "path": "learn/multisig",
+    "prerequisites": ["lesson4", "lesson5", "lesson7"],
+    "goal": "Grundprinzipien von Multisig verstehen",
+    "task": "Single-Sig vs. Multisig vergleichen, Beispielablauf anschauen",
+    "learningOutcome": "Mehrere Signaturen erhöhen Sicherheit; Schwellen steuern, wie viele Signaturen nötig sind.",
+    "reward": "⭐ 2 – Multisig-Starter"
   }
 ]

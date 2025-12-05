@@ -14,7 +14,7 @@ function SecretKeyModal({
   operationType = '',
   requiredThreshold = 0
 }) {
-  const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey']);
+  const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey', 'multisig']);
   const [secretInputs, setSecretInputs] = useState(['']);
   const [showSecret, setShowSecret] = useState(false);
   const [rememberSession, setRememberSession] = useState(true);
@@ -129,6 +129,10 @@ function SecretKeyModal({
         <h2 className={`text-xl font-semibold mb-4 ${error ? 'text-red-700' : 'text-black dark:text-white'}`}>
           {t('secretKey:label', 'Secret key')}
         </h2>
+        <div className="mb-3 rounded border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100">
+          <div className="font-semibold">{t('multisig:testMode.modalTitle')}</div>
+          <p className="text-xs mt-1">{t('multisig:testMode.modalDescription')}</p>
+        </div>
         {error && (
           <div className="text-center text-xs text-red-700 mb-2">{error}</div>
         )}

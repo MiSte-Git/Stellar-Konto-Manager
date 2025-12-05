@@ -8,6 +8,7 @@ const os = require('os');
 const path = require('path');
 const fs = require('fs/promises');
 const fsSync = require('fs');
+const crypto = require('crypto');
 const { searchAssets } = require('./backend/src/services/tradeService.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
@@ -118,8 +119,10 @@ if (composeMailEnabled) {
 // --- Bugreport storage (file-backed) ---
 const DATA_DIR = process.env.BUG_DB_DIR || path.join(process.cwd(), 'data');
 const BUG_DB_PATH = process.env.BUG_DB_PATH || path.join(DATA_DIR, 'bugreports.json');
+const MULTISIG_DB_PATH = process.env.MULTISIG_DB_PATH || path.join(DATA_DIR, 'multisig_jobs.json');
 console.log('Bug DB path resolved to:', BUG_DB_PATH);
 let bugDb = { lastId: 0, items: [] };
+let multisigDb = { items: [] };
 async function ensureDbDir() {
   try {
     await fs.mkdir(path.dirname(BUG_DB_PATH), { recursive: true });
@@ -148,13 +151,35 @@ async function saveBugDb() {
     console.error('bugdb.save.failed', e?.message || e);
   }
 }
+async function loadMultisigDb() {
+  await ensureDbDir();
+  try {
+    const txt = await fs.readFile(MULTISIG_DB_PATH, 'utf8');
+    const data = JSON.parse(txt);
+    if (data && Array.isArray(data.items)) {
+      multisigDb = { items: data.items };
+    }
+  } catch {
+    // first run – no file yet
+  }
+}
+async function saveMultisigDb() {
+  try {
+    await ensureDbDir();
+    await fs.writeFile(MULTISIG_DB_PATH, JSON.stringify(multisigDb, null, 2), 'utf8');
+  } catch (e) {
+    console.error('multisigdb.save.failed', e?.message || e);
+  }
+}
 void loadBugDb();
+void loadMultisigDb();
 
 const allowedStatus = new Set(['open', 'in_progress', 'closed']);
 const allowedPriority = new Set(['low', 'normal', 'high', 'urgent']);
 const allowedCategory = new Set(['bug', 'idea', 'improve', 'other']);
 const allowedPage = new Set(['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','createAccount','multisigEdit','settings','feedback','other']);
 const ADMIN_SECRET = process.env.BUGTRACKER_ADMIN_SECRET || '';
+const multisigStatus = new Set(['pending_signatures', 'ready_to_submit', 'submitted_success', 'submitted_failed', 'expired', 'obsolete_seq']);
 
 app.post('/api/bugreport', async (req, res) => {
   try {
@@ -268,6 +293,150 @@ app.patch('/api/bugreport/:id', async (req, res) => {
   } catch (e) {
     console.error('bugreport.patch.failed', e?.message || e);
     res.status(500).json({ error: 'bugReport.saveFailed' });
+  }
+});
+
+// --- Pending multisig jobs (file-backed, no secrets stored) ---
+function normalizeNetwork(raw) {
+  const v = String(raw || '').trim().toLowerCase();
+  if (v === 'public' || v === 'publicnet') return 'public';
+  if (v === 'testnet' || v === 'test') return 'testnet';
+  return null;
+}
+
+function parseTxAndHash(txXdr, network) {
+  try {
+    const passphrase = network === 'public' ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET;
+    const tx = new StellarSdk.Transaction(txXdr, passphrase);
+    const hashHex = tx.hash().toString('hex');
+    return { tx, hashHex };
+  } catch (e) {
+    const msg = e?.message || 'invalid_xdr';
+    const err = new Error(msg);
+    err.code = 'invalid_xdr';
+    throw err;
+  }
+}
+
+function newJobId() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return `${Date.now().toString(36)}-${Math.random().toString(16).slice(2, 10)}`;
+}
+
+app.post('/api/multisig/jobs', async (req, res) => {
+  try {
+    const { network, accountId, txXdr, createdBy } = req.body || {};
+    const net = normalizeNetwork(network);
+    if (!net) return res.status(400).json({ error: 'invalid_network' });
+    if (!accountId || typeof accountId !== 'string') return res.status(400).json({ error: 'invalid_account' });
+    if (!txXdr || typeof txXdr !== 'string') return res.status(400).json({ error: 'invalid_xdr' });
+    let parsed;
+    try {
+      parsed = parseTxAndHash(txXdr, net);
+    } catch (e) {
+      return res.status(400).json({ error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' });
+    }
+    const nowIso = new Date().toISOString();
+    const job = {
+      id: newJobId(),
+      network: net,
+      accountId: accountId.trim(),
+      txHash: parsed.hashHex,
+      txXdrOriginal: txXdr,
+      txXdrCurrent: txXdr,
+      status: 'pending_signatures',
+      createdAt: nowIso,
+      createdBy: typeof createdBy === 'string' && createdBy.trim() ? createdBy.trim() : 'local',
+    };
+    multisigDb.items.unshift(job);
+    await saveMultisigDb();
+    res.json(job);
+  } catch (e) {
+    console.error('multisig.jobs.post.failed', e);
+    res.status(500).json({ error: 'multisig.jobs.save_failed' });
+  }
+});
+
+app.get('/api/multisig/jobs', async (req, res) => {
+  try {
+    const { network, accountId, status } = req.query;
+    let items = multisigDb.items.slice();
+    if (network) {
+      const net = normalizeNetwork(network);
+      if (net) items = items.filter((j) => j.network === net);
+    }
+    if (accountId) {
+      const acc = String(accountId).trim();
+      items = items.filter((j) => j.accountId === acc);
+    }
+    if (status && multisigStatus.has(String(status))) {
+      items = items.filter((j) => j.status === status);
+    }
+    res.json(items.map(({ txXdrCurrent, txXdrOriginal, ...meta }) => meta));
+  } catch (e) {
+    console.error('multisig.jobs.list.failed', e);
+    res.status(500).json({ error: 'multisig.jobs.list_failed' });
+  }
+});
+
+app.get('/api/multisig/jobs/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = multisigDb.items.find((j) => j.id === id);
+    if (!job) return res.status(404).json({ error: 'not_found' });
+    res.json(job);
+  } catch (e) {
+    console.error('multisig.jobs.get.failed', e);
+    res.status(500).json({ error: 'multisig.jobs.get_failed' });
+  }
+});
+
+app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { signedXdr } = req.body || {};
+    const job = multisigDb.items.find((j) => j.id === id);
+    if (!job) return res.status(404).json({ error: 'not_found' });
+    if (!signedXdr || typeof signedXdr !== 'string') {
+      return res.status(400).json({ error: 'invalid_xdr' });
+    }
+    const net = job.network === 'public' ? 'public' : 'testnet';
+    let incoming;
+    try {
+      incoming = parseTxAndHash(signedXdr, net);
+    } catch (e) {
+      return res.status(400).json({ error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' });
+    }
+    if (incoming.hashHex !== job.txHash) {
+      return res.status(400).json({ error: 'mismatched_hash' });
+    }
+    const current = parseTxAndHash(job.txXdrCurrent || job.txXdrOriginal, net);
+
+    const existingKeys = new Set(
+      current.tx.signatures.map((s) => `${s.hint().toString('base64')}:${s.signature().toString('base64')}`)
+    );
+    let added = 0;
+    incoming.tx.signatures.forEach((sig) => {
+      const key = `${sig.hint().toString('base64')}:${sig.signature().toString('base64')}`;
+      if (!existingKeys.has(key)) {
+        current.tx.signatures.push(sig);
+        existingKeys.add(key);
+        added += 1;
+      }
+    });
+
+    if (added === 0) {
+      return res.json({ ...job, txXdrCurrent: current.tx.toXDR(), txHash: job.txHash });
+    }
+
+    const newXdr = current.tx.toXDR();
+    const updated = { ...job, txXdrCurrent: newXdr };
+    multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? updated : j));
+    await saveMultisigDb();
+    res.json(updated);
+  } catch (e) {
+    console.error('multisig.jobs.merge.failed', e);
+    res.status(500).json({ error: 'multisig.jobs.merge_failed' });
   }
 });
 

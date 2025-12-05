@@ -1,0 +1,36 @@
+{
+  "singleVsMulti": {
+    "ariaLabel": "Diagram Eenmalige Handtekening versus Multisignatuur",
+    "singleTitle": "Single-sig",
+    "multiTitle": "Multisig",
+    "account": "Account",
+    "singleKey": "1 sleutel",
+    "keyA": "Ondertekenaar A",
+    "keyB": "Undertekener B",
+    "keyC": "Signer C",
+    "singleNote": "Een handtekening is voldoende.",
+    "multiNote": "Minstens 2 van de 3 handtekeningen"
+  },
+  "weights": {
+    "ariaLabel": "Diagram gewichten en drempelwaarden",
+    "title": "Gewichten & Drempels",
+    "sA": "Ondertekenaar A",
+    "sB": "Signer B",
+    "sC": "Onderteken C",
+    "weight": "Gewicht:",
+    "low": "laag",
+    "med": "Helaas kan ik het verzoek niet vervullen, omdat er niet genoeg context of informatie is om effectief te vertalen. Geef alstublieft meer context of aanvullende informatie voor een nauwkeurige vertaling.",
+    "high": "Hoog",
+    "lowNote": "Eenvoudige handelingen",
+    "medNote": "Betalingen",
+    "highNote": "Kritieke veranderingen"
+  },
+  "flow": {
+    "ariaLabel": "Multisig-stroomdiagram",
+    "title": "Multisig-proces",
+    "step1": "Coördinator maakt transactie aan",
+    "step2": "SKM slaat lopende taak op.",
+    "step3": "Ondertekenaar B/C moet ondertekenen",
+    "step4": "SKM verzendt voltooide transactie"
+  }
+}

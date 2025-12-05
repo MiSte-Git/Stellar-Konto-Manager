@@ -1,0 +1,32 @@
+{
+  "title": "Multisig voor Beginners",
+  "menuTitle": "Inzicht in Multisig",
+  "teaser": "Waarom meerdere handtekeningen, hoe drempels werken en hoe SKM helpt.",
+  "why": {
+    "title": "Waarom Multisig?",
+    "text": "Meerdere handtekeningen verminderen het risico op individuele fouten of diefstal."
+  },
+  "singleVsMulti": {
+    "title": "Single-sig vs multisig",
+    "text": "Single-Sig = 1 sleutel is voldoende. Multisig = meerdere handtekeningen vereist (z. B. 2 von 3)."
+  },
+  "stellarHow": {
+    "title": "Hoe Stellar Multisig Implementeert",
+    "text": "Stellar gebruikt ondertekenaars met gewichten en drempels. Elke bewerking vereist een drempelgewicht."
+  },
+  "examples": {
+    "title": "Praktische voorbeelden",
+    "item1": "Bedrijfsrekening: Twee teamleden moeten elke betaling ondertekenen.",
+    "item2": "Verenigingsrekening: penningmeester + voorzitter ondertekenen gezamenlijk.",
+    "item3": "Beveiligde kluis: Vereist hardware sleutel plus back-up sleutel."
+  },
+  "skmSupport": {
+    "title": "Hoe SKM Multisig Ondersteunt",
+    "text": "SKM construeert multisig-transacties, verzamelt handtekeningen en slaat voorbereide taken op."
+  },
+  "diagram": {
+    "singleVsMulti": "Diagram: Single-Sig vs. Multisig",
+    "stellarHow": "Diagram: Ondertekenaar, Gewicht, Drempel",
+    "skmFlow": "Diagram: SKM-stroom Voorbereiding → Ondertekening → Verzending"
+  }
+}
