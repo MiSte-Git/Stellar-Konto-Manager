@@ -1,0 +1,14 @@
+{
+  "accountMode": {
+    "single": "Ce compte utilise une seule signature.",
+    "multi": "Ce compte utilise plusieurs signatures (Multisig)."
+  },
+  "requiredThreshold": "Seuil requis ({{level}}) : {{value}}",
+  "operationLabel": {
+    "payment": "Paiement",
+    "setOptions": "Configuration (Signataires & Seuils)",
+    "changeTrust": "Modifier la ligne de confiance",
+    "unknown": "Action"
+  },
+  "multipleSignersInfo": "Cette action nécessite plusieurs signatures. Veuillez fournir suffisamment de clés secrètes pour atteindre le seuil."
+}

@@ -54,7 +54,11 @@
         "noKeysProvided": "Yhtään kelvollista salausavainta ei annettu.",
         "insufficientWeight": "Kerätyt allekirjoitukset eivät riitä tämän muutoksen hyväksymiseen. Tarvitaan: {{required}}, nykyiset: {{current}}.",
         "txBadAuth": "Tapahtuma hylätty: Allekirjoitukset eivät ole riittäviä (tx_bad_auth).",
-        "zeroWeightSigner": "Syötetty salainen avain kuuluu allekirjoittajalle, jonka painoarvo on 0, eikä se voi valtuuttaa mitään tapahtumaa."
+        "zeroWeightSigner": "Syötetty salainen avain kuuluu allekirjoittajalle, jonka painoarvo on 0, eikä se voi valtuuttaa mitään tapahtumaa.",
+        "invalidConfig": "Suunniteltua allekirjoittajien ja kynnysarvojen kokoonpanoa ei voida allekirjoittaa. Tarkista painot ja kynnysarvot.",
+        "trustlines": {
+          "invalidInput": "Tarkista varain tunnus, liikkeeseenlaskija ja raja. Vähintään yksi kentistä on virheellinen."
+        }
       }
     }
   },

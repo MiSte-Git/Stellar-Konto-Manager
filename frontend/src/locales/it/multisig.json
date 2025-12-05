@@ -1,0 +1,14 @@
+{
+  "accountMode": {
+    "single": "Questo account utilizza una singola firma.",
+    "multi": "Questo account utilizza più firme (Multisig)."
+  },
+  "requiredThreshold": "Soglia richiesta ({{level}}): {{value}}",
+  "operationLabel": {
+    "payment": "Pagamento",
+    "setOptions": "Configuration (Signers & Thresholds)",
+    "changeTrust": "Cambia linea di fiducia",
+    "unknown": "Azione"
+  },
+  "multipleSignersInfo": "Questa azione richiede più firme. Si prega di fornire un numero sufficiente di chiavi segrete per soddisfare la soglia."
+}

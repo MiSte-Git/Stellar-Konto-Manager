@@ -54,7 +54,11 @@
         "noKeysProvided": "Nije unesen ni jedan važeći tajni ključ.",
         "insufficientWeight": "Prikupljeni potpisi nisu dovoljni za odobrenje ove promjene. Potrebno: {{required}}, prisutno: {{current}}.",
         "txBadAuth": "Transakcija odbijena: Potpisi su nedovoljni (tx_bad_auth).",
-        "zeroWeightSigner": "Uneseni tajni ključ pripada potpisniku s težinom 0 i ne može odobriti nijednu transakciju."
+        "zeroWeightSigner": "Uneseni tajni ključ pripada potpisniku s težinom 0 i ne može odobriti nijednu transakciju.",
+        "invalidConfig": "Planirana konfiguracija potpisnika i pragova nije potpisiva. Molimo provjerite težine i pragove.",
+        "trustlines": {
+          "invalidInput": "Molimo provjerite šifru imovine, izdavatelja i ograničenje. Najmanje jedno od polja je nevažeće."
+        }
       }
     }
   },

@@ -23,5 +23,21 @@
   },
   "noDuplicates": "Nessuna linea di fiducia duplicata trovata.",
   "showSecret": "Visualizza Chiave Segreta",
-  "notFound": "Nessuna linea di fiducia trovata."
+  "notFound": "Nessuna linea di fiducia trovata.",
+  "add": {
+    "button": "Aggiungi linea di fiducia",
+    "title": "Crea una nuova linea di fiducia",
+    "assetCodeLabel": "Codice dell'assetto",
+    "assetCodePlaceholder": "ad esempio, USDC",
+    "assetCodeHelp": "Nome breve dell'asset (1–12 caratteri, ad esempio, TESTUSD).",
+    "issuerLabel": "Emittente",
+    "issuerPlaceholder": "ad es. E...Emittente",
+    "issuerHelp": "Chiave pubblica (G-Adresse) dell'account dell'emittente che emette l'asset.",
+    "limitLabel": "Limite",
+    "limitPlaceholder": "ad esempio, 1.000.000 (eine Million)",
+    "limitHelp": "Il limite è la quantità massima di questo asset che questo conto ritiene affidabile. In pratica, dovrebbe essere impostato al massimo valore previsto del tuo saldo in questo asset.",
+    "submit": "Crea una linea di fiducia",
+    "cancel": "Annulla",
+    "success": "La linea di fiducia per {{code}} è stata stabilita con successo."
+  }
 }

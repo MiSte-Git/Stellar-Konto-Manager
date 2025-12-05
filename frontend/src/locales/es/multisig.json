@@ -1,0 +1,14 @@
+{
+  "accountMode": {
+    "single": "Esta cuenta utiliza una única firma.",
+    "multi": "Esta cuenta utiliza múltiples firmas (Multisig)."
+  },
+  "requiredThreshold": "Umbral requerido ({{level}}): {{value}}",
+  "operationLabel": {
+    "payment": "Pago",
+    "setOptions": "Configuration (Signers & Thresholds)",
+    "changeTrust": "Cambiar la línea de confianza.",
+    "unknown": "Acción"
+  },
+  "multipleSignersInfo": "Esta acción requiere múltiples firmas. Por favor, proporcione suficientes claves secretas para alcanzar el umbral."
+}

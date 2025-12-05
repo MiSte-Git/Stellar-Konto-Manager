@@ -1,0 +1,14 @@
+{
+  "accountMode": {
+    "single": "This account uses a single signature.",
+    "multi": "This account uses multiple signatures (Multisig)."
+  },
+  "requiredThreshold": "Required threshold ({{level}}): {{value}}",
+  "operationLabel": {
+    "payment": "Payment",
+    "setOptions": "Configuration (Signers & Thresholds)",
+    "changeTrust": "Change trustline",
+    "unknown": "Action"
+  },
+  "multipleSignersInfo": "This action requires multiple signatures. Please provide enough secret keys to meet the threshold."
+}

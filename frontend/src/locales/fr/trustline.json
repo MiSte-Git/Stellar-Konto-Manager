@@ -23,5 +23,21 @@
   },
   "noDuplicates": "Aucune ligne de confiance en double trouvée.",
   "showSecret": "Afficher la clé secrète",
-  "notFound": "Aucune ligne de confiance trouvée."
+  "notFound": "Aucune ligne de confiance trouvée.",
+  "add": {
+    "button": "Ajouter une ligne de confiance",
+    "title": "Créer une nouvelle ligne de confiance",
+    "assetCodeLabel": "Code d'actif",
+    "assetCodePlaceholder": "par exemple, l'USDC",
+    "assetCodeHelp": "Asset short name (1–12 characters, e.g., TESTUSD).",
+    "issuerLabel": "Émetteur",
+    "issuerPlaceholder": "p. ex. E...Émetteur",
+    "issuerHelp": "Clé publique (G-Adresse) du compte de l'émetteur qui émet l'actif.",
+    "limitLabel": "Limite",
+    "limitPlaceholder": "par exemple, 1,000,000 (eine Million)",
+    "limitHelp": "La limite est le montant maximum de cet actif que ce compte peut approuver. En pratique, elle doit être fixée aussi haut que votre solde maximum anticipé pour cet actif.",
+    "submit": "Créer une ligne de confiance",
+    "cancel": "Annuler",
+    "success": "La ligne de confiance pour {{code}} a été établie avec succès."
+  }
 }

@@ -54,7 +54,11 @@
         "noKeysProvided": "Aucune clé secrète valide n'a été entrée.",
         "insufficientWeight": "Les signatures recueillies ne sont pas suffisantes pour autoriser ce changement. Requis : {{required}}, présent : {{current}}.",
         "txBadAuth": "Transaction refusée : Les signatures sont insuffisantes (tx_bad_auth).",
-        "zeroWeightSigner": "La clé secrète saisie appartient à un signataire avec un poids de 0 et ne peut autoriser aucune transaction."
+        "zeroWeightSigner": "La clé secrète saisie appartient à un signataire avec un poids de 0 et ne peut autoriser aucune transaction.",
+        "invalidConfig": "La configuration prévue des signataires et des seuils n'est pas signable. Veuillez vérifier les poids et les seuils.",
+        "trustlines": {
+          "invalidInput": "Veuillez vérifier le code de l'actif, l'émetteur et la limite. Au moins un des champs est invalide."
+        }
       }
     }
   },

@@ -54,7 +54,11 @@
         "noKeysProvided": "No se ingresaron claves secretas válidas.",
         "insufficientWeight": "Las firmas recogidas no son suficientes para autorizar este cambio. Requerido: {{required}}, presente: {{current}}.",
         "txBadAuth": "Transacción rechazada: Las firmas son insuficientes (tx_bad_auth).",
-        "zeroWeightSigner": "La clave secreta introducida pertenece a un firmante con un peso de 0 y no puede autorizar ninguna transacción."
+        "zeroWeightSigner": "La clave secreta introducida pertenece a un firmante con un peso de 0 y no puede autorizar ninguna transacción.",
+        "invalidConfig": "La configuración planeada de firmantes y umbrales no se puede firmar. Por favor, revise los pesos y los umbrales.",
+        "trustlines": {
+          "invalidInput": "Por favor, verifica el código de activo, el emisor y el límite. Al menos uno de los campos es inválido."
+        }
       }
     }
   },
