@@ -149,5 +149,12 @@
   },
   "actions": {
     "startQuiz": "Inizia il quiz"
+  },
+  "lesson13": {
+    "title": "Multisig per principianti",
+    "goal": "Comprendere i principi fondamentali del Multisig",
+    "task": "Confronto tra Single-Sig e Multisig con esempio di flusso",
+    "learningOutcome": "Più firme aumentano la sicurezza; le soglie determinano quante firme sono necessarie.",
+    "reward": "⭐ 2 – Inizio con Multisig"
   }
 }

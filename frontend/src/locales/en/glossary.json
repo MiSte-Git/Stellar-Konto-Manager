@@ -167,5 +167,35 @@
     "short": "Stellar's smart contract system.",
     "desc": "Soroban is the smart contract system of Stellar. A smart contract is program code on the blockchain. The code can independently verify rules and trigger actions without the need for a bank in between."
   },
-  "missingKey": "Missing glossary key: {{detail}}"
+  "missingKey": "Missing glossary key: {{detail}}",
+  "multiSignature": {
+    "title": "Multisignature (Multi-Signature)",
+    "original": "Multi-Signature",
+    "short": "Multiple signatures required; weights + threshold determine the approval.",
+    "desc": "In a multi-signature setup, multiple keys must sign before an action becomes valid. Each signer has a weight, and the sum must reach the required threshold. This increases security because a single stolen key is not sufficient."
+  },
+  "signer": {
+    "title": "Signatory (Signer)",
+    "original": "Signer",
+    "short": "Public key with weight, part of the account configuration.",
+    "desc": "A signer is a public key that belongs to an account and has a weight. Its signature counts towards the required threshold. Multiple signers can collectively authorize a transaction."
+  },
+  "thresholds": {
+    "title": "Thresholds (Thresholds)",
+    "original": "Thresholds",
+    "short": "Limits (low/med/high), which determine the necessary weight sum.",
+    "desc": "Thresholds define how many weighted signatures are required for actions: low for simple operations, med for payments, high for critical changes. The sum of the signer weights must reach the respective threshold."
+  },
+  "masterWeight": {
+    "title": "Master weight (master_weight)",
+    "original": "master_weight",
+    "short": "Weight of the master key; determines how strongly the master key is counted.",
+    "desc": "The master weight is the weight of the main key of an account. A high master weight allows the master key to sign many actions on its own; a low value requires additional signers."
+  },
+  "accountConfig": {
+    "title": "Account configuration (Account Configuration)",
+    "original": "Account Configuration",
+    "short": "The interplay of signers and thresholds determines the security of the account.",
+    "desc": "The account configuration specifies which signers exist with what weights and what thresholds apply. Changes to signers or thresholds are critical for security, as they determine how many signatures are required."
+  }
 }

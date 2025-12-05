@@ -1,0 +1,32 @@
+{
+  "title": "Multisig per principianti",
+  "menuTitle": "Comprendere il Multisig",
+  "teaser": "Perché firme multiple, come funzionano le soglie e come aiuta SKM.",
+  "why": {
+    "title": "Perché Multisig?",
+    "text": "Le firme multiple riducono il rischio di errori individuali o furti."
+  },
+  "singleVsMulti": {
+    "title": "Single-sig vs multisig",
+    "text": "Single-Sig = 1 chiave è sufficiente. Multisig = firme multiple richieste (z. B. 2 von 3)."
+  },
+  "stellarHow": {
+    "title": "Come Stellar Implementa Multisig",
+    "text": "Stellar utilizza firmatari con pesi e soglie. Ogni operazione richiede un peso soglia."
+  },
+  "examples": {
+    "title": "Esempi pratici",
+    "item1": "Conto aziendale: Due membri del team devono firmare ciascun pagamento.",
+    "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
+    "item3": "Caveau sicuro: richiede una chiave hardware più una chiave di backup."
+  },
+  "skmSupport": {
+    "title": "Come SKM Supporta Multisig",
+    "text": "SKM costruisce transazioni multisig, raccoglie firme e memorizza lavori preparati."
+  },
+  "diagram": {
+    "singleVsMulti": "Diagramma: Single-Sig vs. Multisig",
+    "stellarHow": "Diagramma: Firmatario, Peso, Soglia",
+    "skmFlow": "Diagramma: Preparazione flusso SKM → Firma → Invio"
+  }
+}

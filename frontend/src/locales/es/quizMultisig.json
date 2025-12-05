@@ -1,0 +1,54 @@
+{
+  "title": "Multisig & Security",
+  "introText": "Pon a prueba tus conocimientos sobre firmas, umbrales y almacenamiento seguro.",
+  "q1": {
+    "question": "¿Por qué usar multisig?",
+    "hint": "Piensa en la responsabilidad compartida.",
+    "a1": "Para reducir el riesgo de pérdidas individuales de llaves.",
+    "a1fb": "Correcto: Múltiples firmas reducen el riesgo individual.",
+    "a2": "Para ahorrar en tarifas.",
+    "a2fb": "Incorrecto: Multisig mejora la seguridad, no las tarifas.",
+    "a3": "Para enviar más rápidamente.",
+    "a3fb": "Incorrecto: Multisig no está diseñado para la velocidad."
+  },
+  "q2": {
+    "question": "¿Cuándo es válida una transacción en una cuenta multigrado?",
+    "hint": "Mira las firmas ponderadas.",
+    "a1": "Si las firmas alcanzan el umbral requerido.",
+    "a1fb": "Correcto: La suma de los pesos debe cumplir con el umbral.",
+    "a2": "Tan pronto como haya cualquier firma presente.",
+    "a2fb": "Incorrecto: Una sola firma no es suficiente si el umbral es más alto.",
+    "a3": "Solo con la llave maestra, independientemente del umbral.",
+    "a3fb": "Incorrecto: La llave maestra también está sujeta a umbrales."
+  },
+  "q3": {
+    "question": "¿Qué ocurre si los umbrales se establecen incorrectamente?",
+    "hint": "Valores que son demasiado altos o demasiado bajos tienen consecuencias.",
+    "a1": "Las transacciones podrían ser bloqueadas o aprobadas con demasiada facilidad.",
+    "a1fb": "Correcto: Los umbrales incorrectos conducen a bloqueos o seguridad insuficiente.",
+    "a2": "Nada en absoluto, los umbrales son solo información.",
+    "a2fb": "Incorrecto: Los umbrales controlan cuántas firmas se requieren.",
+    "a3": "El número de secuencia de la cuenta se está restableciendo.",
+    "a3fb": "Incorrecto: Los umbrales no tienen impacto en la secuencia."
+  },
+  "q4": {
+    "question": "¿Cuántas firmas se requieren para una transacción con Threshold med?",
+    "hint": "Umbral med = umbral mediano.",
+    "a1": "Los pesos de las firmas deben al menos alcanzar el umbral medio.",
+    "a1fb": "Correcto: El umbral mediano se aplica a los pagos.",
+    "a2": "Solo una firma.",
+    "a2fb": "Incorrecto: Depende de pesos y umbrales.",
+    "a3": "Siempre todos los firmantes.",
+    "a3fb": "Incorrecto: Solo suficientes firmas para cumplir con el umbral."
+  },
+  "q5": {
+    "question": "¿Cómo se deben almacenar las claves secretas en configuraciones reales de multifirma?",
+    "hint": "La separación es seguridad.",
+    "a1": "Separado en diferentes dispositivos/ubicaciones.",
+    "a1fb": "Correcto: Las firmas deben recogerse por separado.",
+    "a2": "Todo en el mismo portátil por conveniencia.",
+    "a2fb": "Incorrecto: Un dispositivo representa un único punto de falla.",
+    "a3": "Comparte claramente en un chat.",
+    "a3fb": "Incorrecto: Nunca compartas claves secretas."
+  }
+}

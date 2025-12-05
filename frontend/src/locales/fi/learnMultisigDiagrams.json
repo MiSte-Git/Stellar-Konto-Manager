@@ -1,0 +1,36 @@
+{
+  "singleVsMulti": {
+    "ariaLabel": "Yhden allekirjoituksen avain (Single-Sig) vs. Moniallekirjoituksen avain (Multisig) -kaavio",
+    "singleTitle": "Yksittäinen allekirjoitus",
+    "multiTitle": "Moniallekirjoitus",
+    "account": "Tili",
+    "singleKey": "1 avain",
+    "keyA": "Allekirjoittaja A",
+    "keyB": "Signer B",
+    "keyC": "Allekirjoittaja C",
+    "singleNote": "Allekirjoitus riittää.",
+    "multiNote": "Ainakin 2 kolmesta allekirjoituksesta"
+  },
+  "weights": {
+    "ariaLabel": "Kaavio painoista ja kynnysarvoista",
+    "title": "Weights & Thresholds",
+    "sA": "Allekirjoittaja A",
+    "sB": "Allekirjoittaja B",
+    "sC": "Allekirjoittaja C",
+    "weight": "Paino:",
+    "low": "matala",
+    "med": "Valitettavasti en voi täyttää pyyntöä, koska se ei tarjoa tarpeeksi kontekstia tai tietoa kääntämiseen tehokkaasti. Ole hyvä ja anna enemmän kontekstia tai lisätietoja tarkkaa käännöstä varten.",
+    "high": "Korkea",
+    "lowNote": "Yksinkertaiset toimet",
+    "medNote": "Maksut",
+    "highNote": "Kriittiset muutokset"
+  },
+  "flow": {
+    "ariaLabel": "Moniallekirjoituskaavion kaavio",
+    "title": "Multisig-prosessi",
+    "step1": "Koordinaattori luo tapahtuman",
+    "step2": "SKM tallentaa odottavan työn.",
+    "step3": "Allekirjoittaja B/C allekirjoittamaan",
+    "step4": "SKM lähettää suoritetun tapahtuman"
+  }
+}

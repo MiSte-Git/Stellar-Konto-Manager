@@ -167,5 +167,35 @@
     "short": "Stellarov sustav pametnih ugovora.",
     "desc": "Soroban je sustav pametnih ugovora Stellara. Pametni ugovor je programski kod na blockchainu. Kod može samostalno provjeravati pravila i pokretati radnje bez potrebe za bankom između."
   },
-  "missingKey": "Nedostaje ključ rječnika: {{detail}}"
+  "missingKey": "Nedostaje ključ rječnika: {{detail}}",
+  "multiSignature": {
+    "title": "Višestruki potpis (Multi-Signature)",
+    "original": "Multi-Signature",
+    "short": "Potrebni su višestruki potpisi; težine + prag određuju odobrenje.",
+    "desc": "U postavci s više potpisa, više ključeva mora potpisati prije nego što neka radnja postane valjana. Svaki potpisnik ima težinu, a zbroj mora doseći potrebni prag. To povećava sigurnost jer jedan ukradeni ključ nije dovoljan."
+  },
+  "signer": {
+    "title": "Potpisnik (Signer)",
+    "original": "Signer",
+    "short": "Javni ključ s težinom, dio konfiguracije računa.",
+    "desc": "Potpisnik je javni ključ koji pripada računu i ima određenu težinu. Njegov potpis se računa prema potrebnom pragu. Više potpisnika zajedno može ovlastiti transakciju."
+  },
+  "thresholds": {
+    "title": "Pragovi (Thresholds)",
+    "original": "Thresholds",
+    "short": "Limiti (low/med/high), koji određuju potrebnu sumu težina.",
+    "desc": "Pragovi određuju koliko je težinskih potpisa potrebno za radnje: nizak prag za jednostavne operacije, srednji za plaćanja, visok za kritične promjene. Zbroj težina potpisnika mora dostići odgovarajući prag."
+  },
+  "masterWeight": {
+    "title": "Glavna težina (master_weight)",
+    "original": "master_weight",
+    "short": "Težina glavnog ključa; određuje koliko se snažno glavni ključ uzima u obzir.",
+    "desc": "Glavna težina je težina glavnog ključa računa. Visoka glavna težina omogućuje glavnom ključu da samostalno potpisuje mnoge radnje; niska vrijednost zahtijeva dodatne potpisnike."
+  },
+  "accountConfig": {
+    "title": "Konfiguracija računa (Account Configuration)",
+    "original": "Account Configuration",
+    "short": "Međusobno djelovanje potpisnika i pragova određuje sigurnost računa.",
+    "desc": "Konfiguracija računa specificira koji potpisnici postoje s kojim težinama i koji pragovi vrijede. Promjene potpisnika ili pragova su kritične za sigurnost, jer određuju koliko je potpisa potrebno."
+  }
 }

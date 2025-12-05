@@ -1,0 +1,54 @@
+{
+  "title": "Multisig & Sécurité",
+  "introText": "Testez vos connaissances sur les signatures, les seuils et le stockage sécurisé.",
+  "q1": {
+    "question": "Pourquoi utiliser un système multisignature ?",
+    "hint": "Pensez à la responsabilité partagée.",
+    "a1": "Pour réduire le risque de perte de clés individuelles.",
+    "a1fb": "Correct : Plusieurs signatures réduisent le risque individuel.",
+    "a2": "Pour économiser sur les frais.",
+    "a2fb": "Incorrect : Le multisig améliore la sécurité, pas les frais.",
+    "a3": "Pour envoyer plus rapidement.",
+    "a3fb": "Faux : Le multisig n'est pas conçu pour la rapidité."
+  },
+  "q2": {
+    "question": "Quand une transaction sur un compte multisignature est-elle valide ?",
+    "hint": "Regardez les signatures pondérées.",
+    "a1": "Si les signatures atteignent le seuil requis.",
+    "a1fb": "Corrigé : La somme des poids doit atteindre le seuil.",
+    "a2": "Dès qu'une signature est présente.",
+    "a2fb": "Incorrect: Une seule signature ne suffit pas si le seuil est plus élevé.",
+    "a3": "Seulement avec la clé principale, quel que soit le seuil.",
+    "a3fb": "Incorrect : La clé principale est également soumise à des seuils."
+  },
+  "q3": {
+    "question": "Que se passe-t-il si les seuils sont mal définis ?",
+    "hint": "Des valeurs trop élevées ou trop basses ont des conséquences.",
+    "a1": "Les transactions pourraient être bloquées ou être approuvées trop facilement.",
+    "a1fb": "Correct : Des seuils incorrects entraînent des verrouillages ou une sécurité insuffisante.",
+    "a2": "Rien du tout, les seuils ne sont que des informations.",
+    "a2fb": "Incorrect : Les seuils déterminent combien de signatures sont nécessaires.",
+    "a3": "Le numéro de séquence du compte est en cours de réinitialisation.",
+    "a3fb": "Incorrect : Les seuils n'ont aucun impact sur la séquence."
+  },
+  "q4": {
+    "question": "Combien de signatures sont requises pour une transaction avec Threshold med ?",
+    "hint": "Seuil méd = seuil médian.",
+    "a1": "Les poids des signatures doivent au moins atteindre le seuil médian.",
+    "a1fb": "Correct : Le seuil médian s'applique aux paiements.",
+    "a2": "Une seule signature à chaque fois.",
+    "a2fb": "Incorrect : Cela dépend des poids et des seuils.",
+    "a3": "Toujours tous les signataires.",
+    "a3fb": "Incorrect : Juste assez de signatures pour atteindre le seuil."
+  },
+  "q5": {
+    "question": "Comment les clés secrètes doivent-elles être stockées dans des configurations multisignature réelles ?",
+    "hint": "La séparation est la sécurité.",
+    "a1": "Séparés sur différents appareils/emplacements.",
+    "a1fb": "Corrigé : Les signatures doivent être recueillies séparément.",
+    "a2": "Tout sur le même ordinateur portable pour plus de commodité.",
+    "a2fb": "Incorrect : Un appareil constitue un point de défaillance unique.",
+    "a3": "Partager simplement dans un chat.",
+    "a3fb": "Incorrect : Ne partagez jamais de clés secrètes."
+  }
+}

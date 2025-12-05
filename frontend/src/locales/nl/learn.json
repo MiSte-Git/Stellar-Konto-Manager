@@ -149,5 +149,12 @@
   },
   "actions": {
     "startQuiz": "Quiz starten"
+  },
+  "lesson13": {
+    "title": "Multisig voor beginners",
+    "goal": "Begrijpen van de Basisprincipes van Multisig",
+    "task": "Vergelijking van Single-Sig vs. Multisig met voorbeeldstroom.",
+    "learningOutcome": "Meerdere handtekeningen verhogen de veiligheid; drempelwaarden bepalen hoeveel handtekeningen nodig zijn.",
+    "reward": "⭐ 2 – Multisig Starter"
   }
 }

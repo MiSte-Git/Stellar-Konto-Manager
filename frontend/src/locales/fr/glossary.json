@@ -167,5 +167,35 @@
     "short": "Le système de contrats intelligents de Stellar.",
     "desc": "Soroban est le système de contrats intelligents de Stellar. Un contrat intelligent est un code de programme sur la blockchain. Ce code peut vérifier indépendamment les règles et déclencher des actions sans la nécessité d'une banque intermédiaire."
   },
-  "missingKey": "Clé de glossaire manquante : {{detail}}"
+  "missingKey": "Clé de glossaire manquante : {{detail}}",
+  "multiSignature": {
+    "title": "Multisignature (Multi-Signature)",
+    "original": "Multi-Signature",
+    "short": "Signatures multiples requises ; les poids + le seuil déterminent l'approbation.",
+    "desc": "Dans une configuration multi-signatures, plusieurs clés doivent signer avant qu'une action ne devienne valide. Chaque signataire a un poids, et la somme doit atteindre le seuil requis. Cela renforce la sécurité car une seule clé volée n'est pas suffisante."
+  },
+  "signer": {
+    "title": "Signataire (Signer)",
+    "original": "Signer",
+    "short": "Clé publique avec poids, partie de la configuration du compte.",
+    "desc": "Un signataire est une clé publique qui appartient à un compte et possède un poids. Sa signature compte pour atteindre le seuil requis. Plusieurs signataires peuvent collectivement autoriser une transaction."
+  },
+  "thresholds": {
+    "title": "Seuils (Thresholds)",
+    "original": "Thresholds",
+    "short": "Limites (low/med/high), qui déterminent la somme de poids nécessaire.",
+    "desc": "Les seuils définissent combien de signatures pondérées sont nécessaires pour des actions : bas pour les opérations simples, moyen pour les paiements, élevé pour les changements critiques. La somme des poids des signataires doit atteindre le seuil respectif."
+  },
+  "masterWeight": {
+    "title": "Maîtrise du poids (master_weight)",
+    "original": "master_weight",
+    "short": "Poids de la clé principale ; détermine l'importance de la prise en compte de la clé principale.",
+    "desc": "Le poids maître est le poids de la clé principale d'un compte. Un poids maître élevé permet à la clé principale de signer de nombreuses actions par elle-même ; une valeur faible nécessite des signataires supplémentaires."
+  },
+  "accountConfig": {
+    "title": "Configuration du compte (Account Configuration)",
+    "original": "Account Configuration",
+    "short": "L'interaction entre les signataires et les seuils détermine la sécurité du compte.",
+    "desc": "La configuration du compte spécifie quels signataires existent avec quels poids et quels seuils s'appliquent. Les modifications des signataires ou des seuils sont cruciales pour la sécurité, car elles déterminent combien de signatures sont nécessaires."
+  }
 }

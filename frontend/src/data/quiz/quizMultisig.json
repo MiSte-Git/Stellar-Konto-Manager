@@ -1,0 +1,67 @@
+{
+  "lessonId": "multisig",
+  "titleKey": "quizMultisig:title",
+  "meta": {
+    "estimatedMinutes": 3,
+    "passPercent": 0.8,
+    "threeStarPercent": 0.95
+  },
+  "introKey": "quizMultisig:introText",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "single",
+      "questionKey": "quizMultisig:q1.question",
+      "hintKey": "quizMultisig:q1.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizMultisig:q1.a1", "correct": true, "feedbackKey": "quizMultisig:q1.a1fb" },
+        { "id": "a2", "textKey": "quizMultisig:q1.a2", "correct": false, "feedbackKey": "quizMultisig:q1.a2fb" },
+        { "id": "a3", "textKey": "quizMultisig:q1.a3", "correct": false, "feedbackKey": "quizMultisig:q1.a3fb" }
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "single",
+      "questionKey": "quizMultisig:q2.question",
+      "hintKey": "quizMultisig:q2.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizMultisig:q2.a1", "correct": true, "feedbackKey": "quizMultisig:q2.a1fb" },
+        { "id": "a2", "textKey": "quizMultisig:q2.a2", "correct": false, "feedbackKey": "quizMultisig:q2.a2fb" },
+        { "id": "a3", "textKey": "quizMultisig:q2.a3", "correct": false, "feedbackKey": "quizMultisig:q2.a3fb" }
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "single",
+      "questionKey": "quizMultisig:q3.question",
+      "hintKey": "quizMultisig:q3.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizMultisig:q3.a1", "correct": true, "feedbackKey": "quizMultisig:q3.a1fb" },
+        { "id": "a2", "textKey": "quizMultisig:q3.a2", "correct": false, "feedbackKey": "quizMultisig:q3.a2fb" },
+        { "id": "a3", "textKey": "quizMultisig:q3.a3", "correct": false, "feedbackKey": "quizMultisig:q3.a3fb" }
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "single",
+      "questionKey": "quizMultisig:q4.question",
+      "hintKey": "quizMultisig:q4.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizMultisig:q4.a1", "correct": true, "feedbackKey": "quizMultisig:q4.a1fb" },
+        { "id": "a2", "textKey": "quizMultisig:q4.a2", "correct": false, "feedbackKey": "quizMultisig:q4.a2fb" },
+        { "id": "a3", "textKey": "quizMultisig:q4.a3", "correct": false, "feedbackKey": "quizMultisig:q4.a3fb" }
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "single",
+      "questionKey": "quizMultisig:q5.question",
+      "hintKey": "quizMultisig:q5.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizMultisig:q5.a1", "correct": true, "feedbackKey": "quizMultisig:q5.a1fb" },
+        { "id": "a2", "textKey": "quizMultisig:q5.a2", "correct": false, "feedbackKey": "quizMultisig:q5.a2fb" },
+        { "id": "a3", "textKey": "quizMultisig:q5.a3", "correct": false, "feedbackKey": "quizMultisig:q5.a3fb" }
+      ]
+    }
+  ]
+}

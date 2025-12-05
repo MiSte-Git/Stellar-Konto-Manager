@@ -35,6 +35,15 @@ export default function QuestionCard({
     try { onAnswer && onAnswer(id); } catch { /* noop */ }
   };
 
+  const shuffledOptions = React.useMemo(() => {
+    const arr = Array.isArray(options) ? [...options] : [];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, [questionKey, options]);
+
   const renderFeedback = () => {
     if (!showFeedback || !selectedOptionId) return null;
     const sel = options.find((o) => o.id === selectedOptionId);
@@ -82,7 +91,7 @@ export default function QuestionCard({
             aria-describedby={describedBy.join(' ') || undefined}
             className="grid grid-cols-1 sm:grid-cols-2 gap-2"
           >
-            {options.map((opt) => {
+            {shuffledOptions.map((opt) => {
               const isTrue = String(opt.id).toLowerCase() === 'true';
               const isSelected = selectedOptionId === opt.id;
               const base = isTrue
@@ -112,10 +121,10 @@ export default function QuestionCard({
         ) : (
           <div
             role="radiogroup"
-            aria-labelledby={headingId}
-            aria-describedby={describedBy.join(' ') || undefined}
+          aria-labelledby={headingId}
+          aria-describedby={describedBy.join(' ') || undefined}
           >
-            {options.map((opt) => (
+            {shuffledOptions.map((opt) => (
               <label
                 key={opt.id}
                 className={`block border rounded px-4 py-3 mb-2 cursor-pointer transition-colors ${selectedOptionId === opt.id ? 'border-indigo-500 ring-2 ring-indigo-300 bg-indigo-50 dark:bg-indigo-900/20' : 'border-gray-300 dark:border-gray-600 hover:border-indigo-300 hover:bg-gray-50 dark:hover:bg-gray-700/60'}`}

@@ -4,13 +4,15 @@ import { getHorizonServer, resolveOrValidatePublicKey } from '../utils/stellar/s
 import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
+import MultisigPrepareDialog from '../components/MultisigPrepareDialog.jsx';
+import { BACKEND_URL } from '../config.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { useSettings } from '../utils/useSettings';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from '../utils/walletInfo.js';
 
 export default function SendPaymentPage({ publicKey, onBack: _onBack, initial }) {
-  const { t, i18n } = useTranslation(['common', 'errors', 'publicKey', 'secretKey', 'investedTokens', 'wallet']);
+  const { t, i18n } = useTranslation(['common', 'errors', 'publicKey', 'secretKey', 'investedTokens', 'wallet', 'multisig']);
   void _onBack;
   const { wallets } = useTrustedWallets();
 
@@ -26,6 +28,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
   const [error, setError] = useState('');
+  const [preparedTx, setPreparedTx] = useState(null);
   const [preflight, setPreflight] = useState({
     loading: false,
     err: '',
@@ -229,11 +232,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
   }, [assetKey, baseReserve, dest, normalizeAmountValue, server, t]);
 
-  const submitPayment = useCallback(async (signerKeypairs) => {
-    const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
+  const buildPaymentTx = useCallback(async ({ signers, signTx = false, requireSigners = false } = {}) => {
+    const signerList = Array.isArray(signers) ? signers.filter(Boolean) : [];
     const primary = signerList[0];
-    if (!primary) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
-    const kp = Keypair.fromSecret(primary.secret());
+    if (requireSigners && !primary) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
+    if (primary) {
+      const sec = primary.secret?.();
+      if (sec) Keypair.fromSecret(sec); // validate
+    }
     const isTestnet = typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET';
     const net = isTestnet ? Networks.TESTNET : Networks.PUBLIC;
     const account = await server.loadAccount(publicKey);
@@ -257,7 +263,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       assetLabel = code || 'XLM';
     }
 
-    // Check if destination account exists; if not and sending XLM, auto-activate via createAccount
     let destExists = true;
     try {
       await server.loadAccount(resolvedDest);
@@ -271,7 +276,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       if (assetKey !== 'XLM') {
         throw new Error(t('common:payment.send.destUnfundedNonNative', 'Destination account is not active. Please send XLM to activate it first or switch the asset to XLM.'));
       }
-      // Ensure starting balance covers minimum reserve (2 * baseReserve), fallback baseReserve default is 0.5
       const desired = parseFloat(paymentAmount);
       const minStart = Math.max(desired, (baseReserve || 0.5) * 2);
       const startingBalance = (Math.round(minStart * 1e7) / 1e7).toFixed(7).replace(/\.0+$/, '');
@@ -288,37 +292,51 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         .build();
     }
 
-    signerList.forEach((kpItem) => {
-      try {
-        tx.sign(kpItem);
-      } catch (err) {
-        console.debug?.('sign failed', err);
+    if (signTx && signerList.length) {
+      signerList.forEach((kpItem) => {
+        try { tx.sign(kpItem); } catch (err) { console.debug?.('sign failed', err); }
+      });
+      if (process.env.NODE_ENV !== 'production') {
+        const required = requiredThreshold || 0;
+        const signerMeta = signerList.map((s) => ({ publicKey: s.publicKey(), weight: (signersForModal.find((si)=>si.public_key===s.publicKey())?.weight)||0 }));
+        const current = signerMeta.reduce((acc, s) => acc + Number(s.weight || 0), 0);
+        console.debug('multisig payment signing', { required, current, signers: signerMeta });
       }
-    });
-    if (process.env.NODE_ENV !== 'production') {
-      const required = requiredThreshold || 0;
-      const signerMeta = signerList.map((s) => ({ publicKey: s.publicKey(), weight: (signersForModal.find((si)=>si.public_key===s.publicKey())?.weight)||0 }));
-      const current = signerMeta.reduce((acc, s) => acc + Number(s.weight || 0), 0);
-      console.debug('multisig payment signing', { required, current, signers: signerMeta });
     }
-    const res = await server.submitTransaction(tx);
+
     const amountDisplayOut = activated ? (
-      // Show the actual starting balance if we created the account
       (() => {
         const desired = parseFloat(paymentAmount);
         const minStart = Math.max(desired, (baseReserve || 0.5) * 2);
         return (Math.round(minStart * 1e7) / 1e7).toFixed(7).replace(/\.0+$/, '');
       })()
     ) : paymentAmount;
+
     return {
-      hash: res.hash || res.id || '',
-      recipient: resolvedDest,
-      amountDisplay: amountDisplayOut,
-      asset: assetLabel,
-      memo: memoDisplay,
-      activated,
+      tx,
+      meta: {
+        recipient: resolvedDest,
+        amountDisplay: amountDisplayOut,
+        asset: assetLabel,
+        memo: memoDisplay,
+        activated,
+      },
     };
   }, [assetKey, baseReserve, buildMemoObject, dest, normalizeAmountValue, publicKey, server, t]);
+
+  const submitPayment = useCallback(async (signerKeypairs) => {
+    const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
+    const { tx, meta } = await buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true });
+    const res = await server.submitTransaction(tx);
+    return {
+      hash: res.hash || res.id || '',
+      recipient: meta.recipient,
+      amountDisplay: meta.amountDisplay,
+      asset: meta.asset,
+      memo: meta.memo,
+      activated: meta.activated,
+    };
+  }, [buildPaymentTx, server]);
 
   const handleStoredSecretSend = useCallback(async () => {
     setShowConfirmModal(false);
@@ -338,6 +356,62 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       handlePaymentError(err);
     }
   }, [applySendResult, handlePaymentError, publicKey, submitPayment]);
+
+  const handlePrepareMultisig = useCallback(async () => {
+    try {
+      if (preflight.loading || preflight.err) {
+        setError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
+        return;
+      }
+      const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
+      const signer = saved ? Keypair.fromSecret(saved) : null;
+      const { tx, meta } = await buildPaymentTx({ signers: signer ? [signer] : [], signTx: !!signer, requireSigners: false });
+      const hashHex = tx.hash().toString('hex');
+      const xdr = tx.toXDR();
+      const payload = {
+        network: netLabel === 'TESTNET' ? 'testnet' : 'public',
+        accountId: publicKey,
+        txXdr: xdr,
+        createdBy: 'local',
+      };
+      let job = null;
+      try {
+        const r = await fetch(`${BACKEND_URL}/api/multisig/jobs`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          throw new Error(data?.error || 'multisig.jobs.create_failed');
+        }
+        job = data;
+      } catch (e) {
+        handlePaymentError(e);
+        return;
+      }
+      setPreparedTx({
+        id: job?.id,
+        hash: job?.txHash || hashHex,
+        xdr: job?.txXdrCurrent || xdr,
+        summary: {
+          title: t('multisig:prepare.title'),
+          subtitle: t('multisig:prepare.subtitle'),
+          items: [
+            { label: t('common:account.source', 'Quelle'), value: publicKey },
+            { label: t('common:payment.send.recipient'), value: meta.recipient },
+            { label: t('common:payment.send.amount'), value: `${meta.amountDisplay} ${meta.asset}` },
+            { label: t('common:payment.send.memo'), value: meta.memo || '-' },
+            { label: t('common:network', 'Netzwerk'), value: netLabel },
+            job?.id ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: job.id } : null,
+          ].filter(Boolean),
+        },
+      });
+      setShowConfirmModal(false);
+    } catch (err) {
+      handlePaymentError(err);
+    }
+  }, [buildPaymentTx, handlePaymentError, netLabel, preflight, publicKey, t]);
 
   useEffect(() => {
     clearSuccess();
@@ -819,7 +893,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
        {showConfirmModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
           <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
-            <h3 className="text-lg font-semibold mb-2">{t('common:option.confirm.action.title', 'Confirm action')}</h3>
+            <div className="flex items-start justify-between gap-3 mb-2">
+              <h3 className="text-lg font-semibold">{t('common:option.confirm.action.title', 'Confirm action')}</h3>
+              <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowConfirmModal(false)}>{t('common:option.cancel', 'Cancel')}</button>
+            </div>
             <div className="text-sm space-y-1 mb-3">
               <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span> <span className="font-mono break-all">{dest}</span></div>
               <div>
@@ -872,9 +949,29 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               </div>
             )}
 
-            <div className="flex justify-end gap-2">
-              <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowConfirmModal(false)}>{t('common:option.cancel', 'Cancel')}</button>
-              <button className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50" disabled={preflight.loading || !!preflight.err} onClick={handleStoredSecretSend}>{t('common:option.yes', 'Yes')}</button>
+            <div className="space-y-3">
+              <div className="border rounded p-3">
+                <div className="font-semibold mb-1">{t('multisig:confirm.testModeTitle')}</div>
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.testModeDescription')}</p>
+                <button
+                  className="w-full px-3 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
+                  disabled={preflight.loading || !!preflight.err}
+                  onClick={handleStoredSecretSend}
+                >
+                  {t('multisig:confirm.testModeButton')}
+                </button>
+              </div>
+              <div className="border rounded p-3">
+                <div className="font-semibold mb-1">{t('multisig:confirm.prepareTitle')}</div>
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.prepareDescription')}</p>
+                <button
+                  className="w-full px-3 py-2 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900 disabled:opacity-50"
+                  disabled={preflight.loading || !!preflight.err}
+                  onClick={handlePrepareMultisig}
+                >
+                  {t('multisig:confirm.prepareButton')}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -923,6 +1020,15 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               setSecretError(detail);
             }
           }}
+        />
+      )}
+      {preparedTx && (
+        <MultisigPrepareDialog
+          open={!!preparedTx}
+          onClose={() => setPreparedTx(null)}
+          hash={preparedTx.hash}
+          xdr={preparedTx.xdr}
+          summary={preparedTx.summary}
         />
       )}
     </div>

@@ -167,5 +167,35 @@
     "short": "Stellarin älysopimusjärjestelmä.",
     "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on ohjelmakoodi lohkoketjussa. Koodi voi itsenäisesti varmistaa sääntöjä ja laukaista toimia ilman tarvetta pankille välissä."
   },
-  "missingKey": "Puuttuva sanaston avain: {{detail}}"
+  "missingKey": "Puuttuva sanaston avain: {{detail}}",
+  "multiSignature": {
+    "title": "Multisignature (Multi-Signature)",
+    "original": "Multi-Signature",
+    "short": "Useita allekirjoituksia vaaditaan; painot + kynnysarvo määrittävät hyväksynnän.",
+    "desc": "Moniallekirjoitusjärjestelyssä useiden avainten on allekirjoitettava ennen kuin toimenpide hyväksytään. Jokaisella allekirjoittajalla on painoarvo, ja summan on yllettävä vaadittuun kynnysarvoon. Tämä lisää turvallisuutta, koska yksi varastettu avain ei riitä."
+  },
+  "signer": {
+    "title": "Allekirjoittaja (Signer)",
+    "original": "Signer",
+    "short": "Julkinen avain painotuksella, osa tilin määrityksiä.",
+    "desc": "Allekirjoittaja on tiliin kuuluva julkinen avain, jolla on painoarvo. Sen allekirjoitus lasketaan osaksi vaadittavaa kynnysarvoa. Useat allekirjoittajat voivat yhdessä valtuuttaa tapahtuman."
+  },
+  "thresholds": {
+    "title": "Kynnysarvot (Thresholds)",
+    "original": "Thresholds",
+    "short": "Rajat (low/med/high), jotka määrittävät tarvittavan painon summan.",
+    "desc": "Kynnykset määrittelevät, kuinka monta painotettua allekirjoitusta vaaditaan toimille: matala yksinkertaisille toiminnoille, keskitason maksuille, korkea kriittisille muutoksille. Allekirjoittajien painojen summan on ylitettävä vastaava kynnysarvo."
+  },
+  "masterWeight": {
+    "title": "Pääpaino (master_weight)",
+    "original": "master_weight",
+    "short": "Pääavaimen paino; määrittää, kuinka vahvasti pääavain otetaan huomioon.",
+    "desc": "Pääpaino on tilin pääavaimen paino. Korkea pääpaino mahdollistaa pääavaimen allekirjoittavan monia toimintoja itsenäisesti; matala arvo vaatii lisäallekirjoittajia."
+  },
+  "accountConfig": {
+    "title": "Tilin määritys (Account Configuration)",
+    "original": "Account Configuration",
+    "short": "Allekirjoittajien ja kynnysarvojen vuorovaikutus määrittää tilin turvallisuuden.",
+    "desc": "Tilin kokoonpano määrittää, mitkä allekirjoittajat ovat olemassa millä painotuksilla ja mitkä kynnykset soveltuvat. Allekirjoittajien tai kynnysten muutokset ovat kriittisiä turvallisuuden kannalta, sillä ne määrittävät, kuinka monta allekirjoitusta tarvitaan."
+  }
 }
