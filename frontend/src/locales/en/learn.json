@@ -149,5 +149,12 @@
   },
   "actions": {
     "startQuiz": "Start quiz"
+  },
+  "lesson13": {
+    "title": "Multisig for Beginners",
+    "goal": "Understanding the Basic Principles of Multisig",
+    "task": "Comparison of Single-Sig vs. Multisig with example flow",
+    "learningOutcome": "Multiple signatures increase security; thresholds determine how many signatures are required.",
+    "reward": "⭐ 2 – Multisig Starter"
   }
 }

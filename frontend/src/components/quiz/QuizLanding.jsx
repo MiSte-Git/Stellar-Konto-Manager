@@ -28,7 +28,7 @@ export default function QuizLanding({
   showPractice,
   lessonId
 }) {
-  const { t } = useTranslation(['quiz', 'quiz.ui']);
+  const { t } = useTranslation(['quiz', 'quiz.ui', 'quizMultisig']);
 
   const totalQuestions = Array.isArray(data?.questions) ? data.questions.length : 0;
   const estimatedMinutes = data?.meta?.estimatedMinutes ?? 2;
@@ -39,11 +39,11 @@ export default function QuizLanding({
 
   const handle = (fn) => { try { fn && fn(); } catch { /* noop */ } };
 
-  const numericId = React.useMemo(() => {
+  const quizId = React.useMemo(() => {
     try {
       if (lessonId != null) return String(lessonId).replace(/[^0-9]/g, '') || '1';
       const p = typeof window !== 'undefined' ? window.location.pathname : '';
-      let m = String(p || '').match(/quiz\/(\d+)/);
+      let m = String(p || '').match(/quiz\/([A-Za-z0-9_-]+)/);
       if (m) return m[1];
       m = String(p || '').match(/lesson\/(\d+)/);
       if (m) return m[1];
@@ -52,10 +52,10 @@ export default function QuizLanding({
   }, [lessonId]);
 
   const initialOpenInNewTab = React.useMemo(() => {
-    const per = getStartInNewTabForId(numericId);
+    const per = getStartInNewTabForId(quizId);
     if (per == null) return getStartInNewTabGlobal();
     return !!per;
-  }, [numericId]);
+  }, [quizId]);
   const [openInNewTab, setOpenInNewTab] = React.useState(initialOpenInNewTab);
 
   React.useEffect(() => {
@@ -66,11 +66,11 @@ export default function QuizLanding({
     setOpenInNewTab(checked);
     try {
       // Prefer per-quiz setting
-      setStartInNewTabForId(numericId, checked);
-    } catch { /* noop */ }
+    setStartInNewTabForId(quizId, checked);
+  } catch { /* noop */ }
   };
 
-  const runUrl = React.useMemo(() => quizRunPath(numericId), [numericId]);
+  const runUrl = React.useMemo(() => quizRunPath(quizId), [quizId]);
 
   return (
     <section className="max-w-2xl mx-auto p-4 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
@@ -187,6 +187,32 @@ export default function QuizLanding({
           {t('quiz:achievements.link')}
         </button>
       </div>
+
+      {quizId !== 'multisig' && (
+        <div className="mt-6 border border-indigo-200 dark:border-indigo-800 rounded-lg p-3 bg-indigo-50 dark:bg-indigo-900/40">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <div className="text-sm font-semibold text-indigo-900 dark:text-indigo-100">{t('quizMultisig:title')}</div>
+              <p className="text-xs text-indigo-800 dark:text-indigo-200">{t('quizMultisig:introText')}</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow"
+                onClick={() => {
+                  try {
+                    const url = quizRunPath('multisig');
+                    window.history.pushState({}, '', url);
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  } catch { /* noop */ }
+                }}
+              >
+                {t('quiz.ui:startQuiz', 'Quiz starten')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

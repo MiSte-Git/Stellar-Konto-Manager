@@ -1,0 +1,54 @@
+{
+  "title": "Multisig & Security",
+  "introText": "Metti alla prova la tua conoscenza sulle firme, le soglie e l'archiviazione sicura.",
+  "q1": {
+    "question": "Perché utilizzare multisig?",
+    "hint": "Pensa alla responsabilità condivisa.",
+    "a1": "Per ridurre il rischio di perdite di chiavi individuali.",
+    "a1fb": "Corretto: Più firme riducono il rischio individuale.",
+    "a2": "Per risparmiare sulle tasse.",
+    "a2fb": "Errato: Multisig migliora la sicurezza, non le commissioni.",
+    "a3": "Per inviare più velocemente.",
+    "a3fb": "Errato: Il multisig non è progettato per la velocità."
+  },
+  "q2": {
+    "question": "Quando è valida una transazione su un conto multisig?",
+    "hint": "Guarda le firme ponderate.",
+    "a1": "Se le firme raggiungono la soglia richiesta.",
+    "a1fb": "Corretto: La somma dei pesi deve soddisfare la soglia.",
+    "a2": "Non appena è presente una firma.",
+    "a2fb": "Errato: Una singola firma non è sufficiente se la soglia è più alta.",
+    "a3": "Solo con la chiave principale, indipendentemente dalla soglia.",
+    "a3fb": "Errato: Anche la chiave master è soggetta a soglie."
+  },
+  "q3": {
+    "question": "Cosa succede se le soglie sono impostate in modo errato?",
+    "hint": "Valori che sono troppo alti o troppo bassi hanno conseguenze.",
+    "a1": "Le transazioni potrebbero essere bloccate o approvate troppo facilmente.",
+    "a1fb": "Corretto: Soglie errate portano a blocchi o a una sicurezza insufficiente.",
+    "a2": "Niente affatto, le soglie sono solo informazioni.",
+    "a2fb": "Errato: Le soglie controllano quante firme sono richieste.",
+    "a3": "Il numero di sequenza dell'account viene reimpostato.",
+    "a3fb": "Errato: Le soglie non hanno alcun impatto sulla sequenza."
+  },
+  "q4": {
+    "question": "Quante firme sono necessarie per una transazione con Threshold med?",
+    "hint": "Med threshold = soglia mediana.",
+    "a1": "I pesi delle firme devono almeno raggiungere la soglia media.",
+    "a1fb": "Corretto: La soglia mediana si applica ai pagamenti.",
+    "a2": "Solo una firma e basta.",
+    "a2fb": "Incorretto: Dipende dai pesi e dalle soglie.",
+    "a3": "Sempre tutti i firmatari.",
+    "a3fb": "Non corretto: Solo abbastanza firme per raggiungere la soglia."
+  },
+  "q5": {
+    "question": "Come dovrebbero essere conservate le chiavi segrete in configurazioni multisig reali?",
+    "hint": "La separazione è sicurezza.",
+    "a1": "Separati su dispositivi/luoghi diversi.",
+    "a1fb": "Corretto: Le firme dovrebbero essere raccolte separatamente.",
+    "a2": "Tutto sullo stesso laptop per comodità.",
+    "a2fb": "Errato: Un dispositivo rappresenta un singolo punto di guasto.",
+    "a3": "Condividi semplicemente in una chat.",
+    "a3fb": "Errato: Non condividere mai le chiavi segrete."
+  }
+}

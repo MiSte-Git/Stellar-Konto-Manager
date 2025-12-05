@@ -10,5 +10,123 @@
     "changeTrust": "Trustline ändern",
     "unknown": "Aktion"
   },
-  "multipleSignersInfo": "Für diese Aktion sind mehrere Signaturen erforderlich. Bitte gib genügend Secret Keys ein, um das Threshold zu erreichen."
+  "multipleSignersInfo": "Für diese Aktion sind mehrere Signaturen erforderlich. Bitte gib genügend Secret Keys ein, um das Threshold zu erreichen.",
+  "confirm": {
+    "testModeTitle": "Testmodus (alle Signaturen lokal)",
+    "testModeDescription": "Bestehender Flow: Geheimschlüssel eingeben, alle benötigten Signaturen sammeln und direkt an Horizon senden.",
+    "testModeButton": "Direkt signieren & senden",
+    "prepareTitle": "Transaktion für Multisig vorbereiten",
+    "prepareDescription": "Nur XDR vorbereiten für Produktiv-Multisig. Nichts wird sofort gesendet.",
+    "prepareButton": "XDR vorbereiten (nicht senden)"
+  },
+  "prepare": {
+    "title": "Transaktion für Multisig vorbereitet",
+    "subtitle": "Die Transaktion ist gebaut und kann extern signiert werden.",
+    "hashLabel": "Transaktions-Hash",
+    "xdrLabel": "Transaktions-XDR",
+    "copyXdrButton": "XDR kopieren",
+    "copied": "Kopiert",
+    "notSentHint": "Diese Transaktion wurde noch nicht an das Netzwerk gesendet."
+  },
+  "testMode": {
+    "modalTitle": "Testmodus / Single-User-Signatur",
+    "modalDescription": "Hier kannst du alle benötigten Secret Keys auf einem Gerät eingeben und die Transaktion direkt senden. In echten Mehrparteien-Setups sollten die Keys auf getrennten Geräten bleiben."
+  },
+  "mode": {
+    "test": {
+      "label": "Testmodus (alle S-Schlüssel lokal verwenden)"
+    },
+    "prod": {
+      "label": "Produktivmodus (echtes Multisig mit XDR)",
+      "banner": {
+        "title": "Produktivmodus für Mehrfachsignatur",
+        "body": "In diesem Modus verwendet der Stellar Konto Manager nur Ihren eigenen geheimen Schlüssel. Weitere Signaturen werden über exportierte XDR-Dateien gesammelt. Sichern Sie Ihre XDR-Dateien und teilen Sie sie nur mit vertrauenswürdigen Unterzeichnern."
+      }
+    }
+  },
+  "detail": {
+    "title": "Pending-Multisig-Job",
+    "idLabel": "Job-ID",
+    "accountLabel": "Quellkonto",
+    "statusLabel": "Status",
+    "txHashLabel": "Transaktions-Hash",
+    "xdrLabel": "Transaktions-XDR",
+    "copyXdrButton": "XDR kopieren",
+    "importSignedXdrTitle": "Signierte XDR importieren",
+    "importSignedXdrDescription": "Füge eine signierte XDR ein. Neue Signaturen werden in die aktuelle Transaktion übernommen.",
+    "importSignedXdrPlaceholder": "Base64-kodierte signierte XDR",
+    "importSignedXdrButton": "Signierte XDR übernehmen",
+    "updatedAt": "Aktualisiert am",
+    "signers": {
+      "required": "Benötigte Signaturen",
+      "collected": "Bereits gesammelte Signaturen"
+    },
+    "changes": {
+      "title": "Geplante Änderungen",
+      "addSigner": "Signer hinzufügen: {{account}} (Gewichtung {{weight}})",
+      "removeSigner": "Signer entfernen: {{account}}",
+      "setThresholds": "Schwellwerte setzen: low={{low}}, med={{med}}, high={{high}}"
+    },
+    "xdr": {
+      "title": "Transaktion (XDR)",
+      "hint": "Dieses XDR können andere Unterzeichner in kompatiblen Wallets laden und signieren.",
+      "copy": "XDR kopieren",
+      "copy": "XDR kopieren",
+      "copy.success": "XDR in die Zwischenablage kopiert.",
+      "copy.error": "XDR konnte nicht in die Zwischenablage kopiert werden."
+    },
+    "signedXdr": {
+      "title": "Signiertes XDR importieren",
+      "hint": "Fügen Sie hier ein von einem anderen Unterzeichner signiertes XDR ein, um die Signaturen mit diesem Multisig-Job zu mergen.",
+      "label": "Signiertes XDR",
+      "submit": "Signiertes XDR mergen",
+      "success": {
+        "title": "Signaturen aktualisiert",
+        "body": "Die Signaturen wurden erfolgreich mit diesem Multisig-Job gemergt. Aktueller Status: {{status}}."
+      }
+    }
+  },
+  "errors": {
+    "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion."
+  },
+  "list": {
+    "title": "Multisig-Jobs",
+    "empty": "Keine Multisig-Jobs gefunden.",
+    "details": "Details anzeigen",
+    "status": {
+      "pending_signatures": "Wartet auf Signaturen",
+      "ready_to_submit": "Bereit zum Senden",
+      "submitted_success": "Gesendet",
+      "submitted_failed": "Senden fehlgeschlagen",
+      "expired": "Abgelaufen",
+      "obsolete_seq": "Veraltete Sequence"
+    }
+  },
+  "actions": {
+    "createMultisigJob": "Multisig-Job erstellen"
+  },
+  "job": {
+    "create": {
+      "success": {
+        "title": "Multisig-Job erstellt",
+        "body": "Der Multisig-Job mit der ID {{id}} wurde erstellt. Weitere Unterzeichner können die XDR-Datei signieren, sobald sie exportiert wurde."
+      }
+    },
+    "status": {
+      "pending": "Ausstehend",
+      "partiallySigned": "Teilweise signiert",
+      "readyToSubmit": "Bereit zum Senden",
+      "submitted": "Gesendet",
+      "failed": "Fehlgeschlagen",
+      "unknown": "Unbekannt"
+    },
+    "statusHelp": {
+      "pending": "Der Multisig-Job wurde erstellt, aber es sind noch keine Signaturen vorhanden.",
+      "partiallySigned": "Einige Unterzeichner haben bereits signiert. Es fehlen noch weitere Signaturen.",
+      "readyToSubmit": "Es liegen genügend Signaturen vor. Die Transaktion kann an Horizon gesendet werden.",
+      "submitted": "Die Transaktion wurde an das Netzwerk gesendet. Prüfen Sie bei Bedarf den endgültigen Kontostand.",
+      "failed": "Beim Senden der Transaktion ist ein Fehler aufgetreten. Details finden Sie im Fehlerprotokoll.",
+      "unknown": "Status unbekannt."
+    }
+  }
 }

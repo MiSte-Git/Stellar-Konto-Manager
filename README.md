@@ -79,3 +79,7 @@ Dieses Repository enthält den Stellar Trustline Manager, eine Webanwendung zur 
 ## Support
 
 - **Issues**: https://github.com/MiSte-Git/Stellar-Trustline-Manager/issues
+
+## API-Notizen
+
+- Pending-Multisig-Jobs (Datei-basiert, keine Secrets): `POST /api/multisig/jobs` speichert txXdr + Hash mit Status `pending_signatures`, `GET /api/multisig/jobs` mit optionalen Filtern (network, accountId, status), `GET /api/multisig/jobs/:id` liefert Details inkl. aktueller XDR. Daten liegen in `data/multisig_jobs.json`.

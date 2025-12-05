@@ -1,10 +1,10 @@
 {
   "backToLearn": "Back to Learn",
-  "beforeUnloadMessage": "Are you sure you want to leave the quiz? Unsaved answers will be lost.",
+  "beforeUnloadMessage": "Do you really want to leave the quiz? Unsaved answers will be lost.",
   "cancel": "Cancel",
   "correct": "Correct",
   "finish": "End",
-  "hint": "Notice",
+  "hint": "Note",
   "incorrect": "Incorrect",
   "jump": "Jumping",
   "jumpToQuestion": "Jump to question",

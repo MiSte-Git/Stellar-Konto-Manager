@@ -1,0 +1,54 @@
+{
+  "title": "Multisig & Sicherheit",
+  "introText": "Teste dein Wissen zu Signaturen, Thresholds und sicherer Aufbewahrung.",
+  "q1": {
+    "question": "Warum verwendet man Multisig?",
+    "hint": "Denke an geteilte Verantwortung.",
+    "a1": "Um das Risiko einzelner Schlüsselverluste zu reduzieren.",
+    "a1fb": "Richtig: Mehrere Signaturen verringern das Einzelrisiko.",
+    "a2": "Um Gebühren zu sparen.",
+    "a2fb": "Falsch: Multisig erhöht die Sicherheit, nicht die Gebühren.",
+    "a3": "Um schneller zu senden.",
+    "a3fb": "Falsch: Multisig ist nicht für Geschwindigkeit gedacht."
+  },
+  "q2": {
+    "question": "Wann ist eine Transaktion auf einem Multisig-Konto gültig?",
+    "hint": "Schau auf die gewichteten Signaturen.",
+    "a1": "Wenn die Signaturen das erforderliche Threshold erreichen.",
+    "a1fb": "Richtig: Die Summe der Gewichte muss das Threshold erfüllen.",
+    "a2": "Sobald eine beliebige Signatur vorhanden ist.",
+    "a2fb": "Falsch: Eine einzelne Signatur reicht nicht, wenn das Threshold höher ist.",
+    "a3": "Nur mit Master-Key, unabhängig vom Threshold.",
+    "a3fb": "Falsch: Auch der Master-Key unterliegt den Thresholds."
+  },
+  "q3": {
+    "question": "Was passiert, wenn man Thresholds falsch setzt?",
+    "hint": "Zu hohe oder zu niedrige Werte haben Folgen.",
+    "a1": "Transaktionen könnten blockiert oder zu leicht freigegeben werden.",
+    "a1fb": "Richtig: Falsche Thresholds führen zu Sperren oder zu wenig Sicherheit.",
+    "a2": "Gar nichts, Thresholds sind nur Infos.",
+    "a2fb": "Falsch: Thresholds steuern, wie viele Signaturen nötig sind.",
+    "a3": "Die Account-Sequenznummer wird zurückgesetzt.",
+    "a3fb": "Falsch: Thresholds haben keinen Einfluss auf die Sequence."
+  },
+  "q4": {
+    "question": "Wie viele Signaturen braucht ein Zahlungsvorgang bei Threshold med?",
+    "hint": "med threshold = mittlere Schwelle.",
+    "a1": "Gewichte der Signaturen müssen mindestens das med-Threshold erreichen.",
+    "a1fb": "Richtig: Das mittlere Threshold gilt für Zahlungen.",
+    "a2": "Immer nur eine Signatur.",
+    "a2fb": "Falsch: Es hängt von Gewichten und Threshold ab.",
+    "a3": "Immer alle Signer.",
+    "a3fb": "Falsch: Nur genug Signaturen, um das Threshold zu erfüllen."
+  },
+  "q5": {
+    "question": "Wie sollten Secret Keys in echten Multisig-Setups aufbewahrt werden?",
+    "hint": "Trennung ist Sicherheit.",
+    "a1": "Getrennt auf unterschiedlichen Geräten/Orten.",
+    "a1fb": "Richtig: Signaturen sollten getrennt gesammelt werden.",
+    "a2": "Alle auf demselben Laptop für Komfort.",
+    "a2fb": "Falsch: Ein Gerät birgt Single-Point-of-Failure.",
+    "a3": "Im Klartext in einem Chat teilen.",
+    "a3fb": "Falsch: Secret Keys niemals teilen."
+  }
+}

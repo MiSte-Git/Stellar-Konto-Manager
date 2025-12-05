@@ -149,5 +149,12 @@
   },
   "actions": {
     "startQuiz": "Comenzar cuestionario"
+  },
+  "lesson13": {
+    "title": "Multifirma para principiantes",
+    "goal": "Comprender los principios básicos de Multisig",
+    "task": "Comparación de Single-Sig vs. Multisig con ejemplo de flujo",
+    "learningOutcome": "Múltiples firmas aumentan la seguridad; los umbrales determinan cuántas firmas se requieren.",
+    "reward": "⭐ 2 – Iniciador de Multisig"
   }
 }

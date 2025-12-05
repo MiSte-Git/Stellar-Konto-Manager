@@ -149,5 +149,12 @@
   },
   "actions": {
     "startQuiz": "Pokreni kviz"
+  },
+  "lesson13": {
+    "title": "Multisig za početnike",
+    "goal": "Razumijevanje osnovnih principa multisignature (multisig) sustava",
+    "task": "Usporedba između Single-Sig i Multisig s primjerom toka",
+    "learningOutcome": "Višestruki potpisi povećavaju sigurnost; pragovi određuju koliko potpisa je potrebno.",
+    "reward": "⭐ 2 – Početnik za multisig"
   }
 }

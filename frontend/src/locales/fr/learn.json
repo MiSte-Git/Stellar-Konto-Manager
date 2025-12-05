@@ -149,5 +149,12 @@
   },
   "actions": {
     "startQuiz": "Commencer le quiz"
+  },
+  "lesson13": {
+    "title": "Multisig pour les débutants",
+    "goal": "Comprendre les principes de base du multisig",
+    "task": "Comparaison entre la signature unique et la multisignature avec un exemple de flux",
+    "learningOutcome": "Plusieurs signatures augmentent la sécurité ; les seuils déterminent combien de signatures sont nécessaires.",
+    "reward": "⭐ 2 – Initiation au Multisig"
   }
 }
