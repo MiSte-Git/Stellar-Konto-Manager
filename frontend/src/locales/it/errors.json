@@ -54,7 +54,11 @@
         "noKeysProvided": "Non sono state inserite chiavi segrete valide.",
         "insufficientWeight": "Le firme raccolte non sono sufficienti per autorizzare questa modifica. Richieste: {{required}}, presenti: {{current}}.",
         "txBadAuth": "Transazione rifiutata: Firme insufficienti (tx_bad_auth).",
-        "zeroWeightSigner": "La chiave segreta inserita appartiene a un firmatario con un peso di 0 e non può autorizzare alcuna transazione."
+        "zeroWeightSigner": "La chiave segreta inserita appartiene a un firmatario con un peso di 0 e non può autorizzare alcuna transazione.",
+        "invalidConfig": "La configurazione pianificata di firmatari e soglie non è firmabile. Si prega di controllare i pesi e le soglie.",
+        "trustlines": {
+          "invalidInput": "Si prega di controllare il codice dell'asset, l'emittente e il limite. Almeno uno dei campi non è valido."
+        }
       }
     }
   },

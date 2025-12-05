@@ -29,9 +29,9 @@
   "nav": {
     "back": "Retour"
   },
-  "title": "Sauvegarde & Restauration",
+  "title": "Backup & Restore",
   "toast": {
-    "backupBeforeImport": "Une sauvegarde a été enregistrée avant l'importation.",
+    "backupBeforeImport": "Une sauvegarde a été effectuée avant l'importation.",
     "exported": "Sauvegarde exportée",
     "exportFailed": "Échec de l'exportation",
     "importFailed": "Échec de l'importation"

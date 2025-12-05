@@ -54,7 +54,11 @@
         "noKeysProvided": "No valid secret keys were entered.",
         "insufficientWeight": "The collected signatures are not sufficient to authorize this change. Required: {{required}}, present: {{current}}.",
         "txBadAuth": "Transaction declined: Signatures are insufficient (tx_bad_auth).",
-        "zeroWeightSigner": "The entered secret key belongs to a signer with a weight of 0 and cannot authorize any transaction."
+        "zeroWeightSigner": "The entered secret key belongs to a signer with a weight of 0 and cannot authorize any transaction.",
+        "invalidConfig": "The planned configuration of signers and thresholds is not signable. Please check weights and thresholds.",
+        "trustlines": {
+          "invalidInput": "Please check the asset code, issuer, and limit. At least one of the fields is invalid."
+        }
       }
     }
   },

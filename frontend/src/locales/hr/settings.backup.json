@@ -31,7 +31,7 @@
   },
   "title": "Backup & Restore",
   "toast": {
-    "backupBeforeImport": "Sigurnosna kopija je spremljena prije uvoza.",
+    "backupBeforeImport": "Sigurna kopija je spremljena prije uvoza.",
     "exported": "Izvoz sigurnosne kopije izvršen",
     "exportFailed": "Izvoz nije uspio",
     "importFailed": "Uvoz nije uspio"

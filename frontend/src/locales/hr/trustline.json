@@ -23,5 +23,21 @@
   },
   "noDuplicates": "Nema dupliciranih linija povjerenja pronađenih.",
   "showSecret": "Prikaži tajni ključ",
-  "notFound": "Nema pronađenih linija povjerenja."
+  "notFound": "Nema pronađenih linija povjerenja.",
+  "add": {
+    "button": "Dodaj povjereničku liniju",
+    "title": "Stvorite novu liniju povjerenja",
+    "assetCodeLabel": "Šifra imovine",
+    "assetCodePlaceholder": "z.B. USDC",
+    "assetCodeHelp": "Kratki naziv imovine (1–12 znakova, npr. TESTUSD).",
+    "issuerLabel": "Izdavatelj",
+    "issuerPlaceholder": "z. B. Izdavatelj G...",
+    "issuerHelp": "Javni ključ (G-Adresse) računa izdavatelja koji izdaje sredstvo.",
+    "limitLabel": "Ograničenje",
+    "limitPlaceholder": "z.B., 1,000,000 (eine Million)",
+    "limitHelp": "Limit je maksimalni iznos ove imovine kojem ovaj račun vjeruje. U praksi, trebao bi biti postavljen tako visoko kao što je vaš očekivani maksimalni saldo u ovoj imovini.",
+    "submit": "Kreiraj povjereničku liniju.",
+    "cancel": "Otkazati",
+    "success": "Povjerenička linija za {{code}} uspješno je uspostavljena."
+  }
 }

@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Back-up geëxporteerd",
-      "backupBeforeImport": "Er is een back-up opgeslagen voordat de import plaatsvond."
+      "backupBeforeImport": "Er werd een back-up opgeslagen voordat de import werd uitgevoerd."
     },
     "nav": {
       "back": "Terug"

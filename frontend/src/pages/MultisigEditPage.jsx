@@ -4,6 +4,7 @@ import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
+import { validateMultisigConfig } from '../utils/validateMultisigConfig.js';
 import { Keypair, Networks, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
@@ -189,6 +190,18 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       (signers || []).forEach(s => { const k = (s.key || '').trim(); if (k && k.startsWith('G')) plannedMap.set(k, clampByte(s.weight)); });
       const plannedMaster = clampByte(masterWeight);
       const plannedThresholds = { low: clampByte(lowT), med: clampByte(medT), high: clampByte(highT) };
+
+      const plannedSigners = [
+        { key: pk, weight: plannedMaster },
+        ...Array.from(plannedMap.entries()).map(([key, weight]) => ({ key, weight })),
+      ];
+      const sanity = validateMultisigConfig(plannedSigners, plannedThresholds);
+      if (!sanity.valid) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('multisig invalid config', { reason: sanity.reason, thresholds: plannedThresholds, signers: plannedSigners });
+        }
+        throw new Error('submitTransaction.failed:' + 'multisig.invalidConfig');
+      }
 
       // Validation: thresholds ≤ sumWeights
       const sumW = clampByte(plannedMaster) + Array.from(plannedMap.values()).reduce((a, b) => a + clampByte(b), 0);
