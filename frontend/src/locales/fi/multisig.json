@@ -1,0 +1,14 @@
+{
+  "accountMode": {
+    "single": "Tämä tili käyttää yhtä allekirjoitusta.",
+    "multi": "Tämä tili käyttää useita allekirjoituksia (Multisig)."
+  },
+  "requiredThreshold": "Vaadittu kynnysarvo ({{level}}): {{value}}",
+  "operationLabel": {
+    "payment": "Maksu",
+    "setOptions": "Configuration (Signers & Thresholds)",
+    "changeTrust": "Muuta luottolinjaa",
+    "unknown": "Toiminta"
+  },
+  "multipleSignersInfo": "Tämä toimenpide vaatii useita allekirjoituksia. Ole hyvä ja anna riittävästi salausavaimia kynnyksen täyttämiseksi."
+}

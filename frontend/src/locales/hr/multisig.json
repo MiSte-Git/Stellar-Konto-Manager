@@ -1,0 +1,14 @@
+{
+  "accountMode": {
+    "single": "Ovaj račun koristi jedan potpis.",
+    "multi": "Ovaj račun koristi više potpisa (Multisig)."
+  },
+  "requiredThreshold": "Potrebni prag ({{level}}): {{value}}",
+  "operationLabel": {
+    "payment": "Plaćanje",
+    "setOptions": "Configuration (Signers & Thresholds)",
+    "changeTrust": "Promijeni povjereničku liniju",
+    "unknown": "Akcija"
+  },
+  "multipleSignersInfo": "Ova radnja zahtijeva više potpisa. Molimo osigurajte dovoljno tajnih ključeva da se postigne prag."
+}

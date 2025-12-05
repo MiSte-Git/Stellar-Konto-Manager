@@ -23,5 +23,21 @@
   },
   "noDuplicates": "No duplicate trustlines found.",
   "showSecret": "Display Secret Key",
-  "notFound": "No trustline(s) found."
+  "notFound": "No trustline(s) found.",
+  "add": {
+    "button": "Add trustline",
+    "title": "Create new trustline",
+    "assetCodeLabel": "Asset code",
+    "assetCodePlaceholder": "e.g., USDC",
+    "assetCodeHelp": "Asset short name (1–12 characters, e.g., TESTUSD).",
+    "issuerLabel": "Issuer",
+    "issuerPlaceholder": "e.g. G...Issuer",
+    "issuerHelp": "Public key (G-Adresse) of the issuer account that issues the asset.",
+    "limitLabel": "Limit",
+    "limitPlaceholder": "e.g., 1,000,000 (eine Million)",
+    "limitHelp": "The limit is the maximum amount of this asset that this account trusts. In practice, it should be set as high as your anticipated maximum balance in this asset.",
+    "submit": "Create a trustline",
+    "cancel": "Cancel",
+    "success": "Trustline for {{code}} has been successfully established."
+  }
 }

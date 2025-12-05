@@ -4,12 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { 
   validateSecretKey, 
   loadTrustlines, 
-  assertKeyPairMatch, 
   deleteTrustlinesInChunks 
 } from '../utils/stellar/stellarUtils';
 import SecretKeyModal from './SecretKeyModal';
 import MenuHeader from './MenuHeader';
-import ResultModal from './ResultModal'; // ⬅️ Oben importieren
 import ErrorModal from './ErrorModal';
 import { 
   isSelected, 
@@ -21,6 +19,9 @@ import { formatElapsedMmSs } from '../utils/datetime';
 import { useSettings } from '../utils/useSettings';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
+import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
+import AddTrustlineModal from './AddTrustlineModal.jsx';
+import { Networks, TransactionBuilder, Operation, Asset } from '@stellar/stellar-sdk';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
@@ -58,14 +59,15 @@ function ListTrustlines({
   //const [isProcessing, setIsProcessing] = useState(false);
   // Fehlerausgabe im Secret-Key-Modal
   const [modalError, setModalError] = useState('');
+  const [statusMessages, setStatusMessages] = useState([]);
   // Ergebnisse für Info- oder Fehlermeldungen nach Löschaktionen
-  const [showResultModal, setShowResultModal] = useState(false);
-  const [deletedTrustlines, setDeletedTrustlines] = useState([]);
-  const [isSimulation, setIsSimulation] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false); // Zeile 60+
   const [errorMessage, setErrorMessage] = useState('');
-  const thresholdsForModal = useMemo(() => null, []);
-  const signersForModal = useMemo(() => [], []);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [pendingAdd, setPendingAdd] = useState(null);
+  const [pendingAction, setPendingAction] = useState(null); // 'delete' | 'add'
+  const [accountInfo, setAccountInfo] = useState(null);
+  const thresholdsForModal = useMemo(() => accountInfo?.thresholds || null, [accountInfo]);
+  const signersForModal = useMemo(() => accountInfo?.signers || [], [accountInfo]);
   const requiredThreshold = useMemo(
     () => getRequiredThreshold('changeTrust', thresholdsForModal),
     [thresholdsForModal]
@@ -86,8 +88,75 @@ function ListTrustlines({
     });
   }, [i18n.language, decimalsMode]);
 
-  // Simulationsmodus aktiv?
-  const [simulationMode, setSimulationMode] = useState(true);
+  // Account laden für Thresholds/Signer
+  useEffect(() => {
+    let cancelled = false;
+    async function loadAccountInfo() {
+      if (!publicKey) return;
+      try {
+        const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+        const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+        const acct = await server.loadAccount(publicKey);
+        if (!cancelled) setAccountInfo(acct);
+      } catch {
+        if (!cancelled) setAccountInfo(null);
+      }
+    }
+    loadAccountInfo();
+    return () => { cancelled = true; };
+  }, [publicKey]);
+
+  const reloadTrustlinesForCurrentAccount = async () => {
+    const refreshed = await loadTrustlines(publicKey, undefined, { includeOps: true, ttlMs: 0 });
+    setTrustlines(refreshed);
+  };
+
+  const submitChangeTrustTx = async ({ asset, limit, collectedSigners }) => {
+    const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+    const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const account = await server.loadAccount(publicKey);
+    const thresholds = account?.thresholds || {};
+    const required = getRequiredThreshold('changeTrust', thresholds);
+    const horizonSigners = account?.signers || [];
+    const current = (Array.isArray(collectedSigners) ? collectedSigners : []).reduce((acc, s) => {
+      try {
+        const pub = s.keypair?.publicKey?.();
+        const match = horizonSigners.find((sg) => sg.key === pub || sg.public_key === pub);
+        const w = Number(match?.weight || 0);
+        return acc + (w > 0 ? w : 0);
+      } catch {
+        return acc;
+      }
+    }, 0);
+    if (current <= 0) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
+    if (current < required) throw new Error('submitTransaction.failed:' + 'multisig.insufficientWeight');
+
+    const feeStats = await server.feeStats();
+    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    const txb = new TransactionBuilder(account, {
+      fee,
+      networkPassphrase: net === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+    });
+    txb.addOperation(Operation.changeTrust({ asset, limit }));
+    const tx = txb.setTimeout(60).build();
+    (Array.isArray(collectedSigners) ? collectedSigners : []).forEach((s) => {
+      try { tx.sign(s.keypair); } catch (e) { console.debug?.('sign failed', e); }
+    });
+    if (process.env.NODE_ENV !== 'production') {
+      try {
+        console.debug('multisig changeTrust signing', {
+          required,
+          current,
+          signers: (Array.isArray(collectedSigners) ? collectedSigners : []).map((s) => ({
+            publicKey: s.publicKey,
+            weight: horizonSigners.find((sg) => sg.key === s.publicKey || sg.public_key === s.publicKey)?.weight || 0
+          })),
+          asset: asset.getCode ? asset.getCode() : '',
+        });
+      } catch { /* noop */ }
+    }
+    return server.submitTransaction(tx);
+  };
 
   useEffect(() => {
     let id = null;
@@ -147,76 +216,41 @@ function ListTrustlines({
       if (e.key === 'Escape') {
         if (showOverviewModal) setShowOverviewModal(false);
         if (showSecretModal) setShowSecretModal(false);
-        if (showResultModal) setShowResultModal(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showOverviewModal, showSecretModal, showResultModal]);
+  }, [showOverviewModal, showSecretModal]);
 
 
 
-    /**
-   * Simuliert das Löschen der ausgewählten Trustlines nach erfolgreicher Secret-Key-Validierung.
-   * Zeigt ein übersetztes Ergebnis im Ergebnisbereich an.
-   * @param {string} secretKey - Der zu validierende Secret Key (SB...)
-   */
-  const handleDeleteSimulated = (secretKey) => {
-    try {
-      validateSecretKey(secretKey);
-      assertKeyPairMatch(secretKey, publicKey);
-
-      // 🔍 Nur Trustlines ohne Guthaben simulieren
-      const deletableTrustlines = selectedTrustlines.filter(
-        (tl) => parseFloat(tl.assetBalance) === 0
-      );
-
-      const skippedCount = selectedTrustlines.length - deletableTrustlines.length;
-      if (skippedCount > 0) {
-        setInfoMessage(t('common:trustlines.skippedDueToBalance', { count: skippedCount }));
-      }
-
-      if (deletableTrustlines.length === 0) {
-        setModalError(t('trustline:deleted.notFound'));
-        return;
-      }
-
-      setResults([
-        t('trustline:deleted.simulated', { count: deletableTrustlines.length })
-      ]);
-      setIsSimulation(true);
-      setSelectedTrustlines([]);
-      setDeletedTrustlines(deletableTrustlines);
-      setShowResultModal(true);
-      setSecretKey('');
-      setModalError('');
-      setShowSecretModal(false);
-    } catch (err) {
-      console.error('[Simulate] Fehler:', err);
-      const rawMsg = String(err?.message || '');
-      if (rawMsg === 'secretKey.mismatch') {
-        const translated = t(rawMsg, rawMsg);
-        setModalError(translated);
-        alert(translated);
-      } else {
-        setModalError(formatErrorForUi(t, err));
-      }
-    }
-  };
-
-    /**
-   * Führt eine echte Trustline-Löschung durch, nach Validierung des Secret Keys.
+  /**
+   * Führt eine echte Trustline-Löschung durch, nach Validierung der gesammelten Signer.
    * Zeigt Erfolg oder Fehler im UI an.
-   * @param {string} secretKey - Secret Key des Absenders
    */
-  const handleDeleteTrustlines = async (secretKey) => {
+  const handleDeleteReal = async (signerKeypairs) => {
     try {
       delStartedAtRef.current = Date.now();
-      // Formatprüfung des Secret Keys
-      validateSecretKey(secretKey);
+      const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
+      const primary = signerList?.[0];
+      const sec = primary?.secret ? primary.secret() : (typeof primary === 'string' ? primary : '');
+      // Formatprüfung des ersten Secret Keys
+      if (sec) validateSecretKey(sec);
 
-      // Gehört der Secret Key zum aktuell geladenen Wallet?
-      assertKeyPairMatch(secretKey, publicKey);
+      const hasAccountData = !!(accountInfo?.thresholds && accountInfo?.signers);
+      if (hasAccountData) {
+        const required = getRequiredThreshold('changeTrust', accountInfo?.thresholds);
+        const current = signerList.reduce((acc, kp) => {
+          try {
+            const pub = kp.publicKey();
+            const s = (accountInfo?.signers || []).find((sg) => sg.key === pub || sg.public_key === pub);
+            const w = Number(s?.weight || 0);
+            return acc + (w > 0 ? w : 0);
+          } catch { return acc; }
+        }, 0);
+        if (current <= 0) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
+        if (current < required) throw new Error('submitTransaction.failed:' + 'multisig.insufficientWeight');
+      }
 
       // 🔍 Nur Trustlines ohne Guthaben weiterverarbeiten
       const deletableTrustlines = selectedTrustlines.filter(
@@ -269,34 +303,32 @@ function ListTrustlines({
 
       // Trustlines wirklich löschen via Horizon
       const deleted = await deleteTrustlinesInChunks({
-        secretKey,
+        signerKeypairs,
         trustlines: deletableTrustlines,
         onProgress,
+        accountPublicKey: publicKey,
       });
+      await reloadTrustlinesForCurrentAccount();
 
       // Erfolgsmeldung anzeigen
-      setResults([
-        t('trustline:deleted.success', { count: deleted.length }),
-      ]);
+      const count = Math.max(1,
+        Number(deleted?.length || 0),
+        Number(deletableTrustlines.length || 0)
+      );
+      setStatusMessages([t('trustline:deleted.success', { count })]);
+      setResults([]);
 
-      // 🔄 Trustlines vollständig neu von Horizon laden
-      const refreshedTrustlines = await loadTrustlines(publicKey);
-      setTrustlines(refreshedTrustlines);
-          
       // UI zurücksetzen
       setIsProcessing(false);      
-      setIsSimulation(false);
       onFilterChange({ ...filters }); // Optional: filter neu anwenden
       setSelectedTrustlines((prev) =>
         prev.filter(tl => !deleted.some(d =>
           d.assetCode === tl.assetCode && d.assetIssuer === tl.assetIssuer
         ))
       );
-
-      setDeletedTrustlines(deleted); // ⬅️ oder simulated
-      setShowResultModal(true);
       setSecretKey('');
       setShowSecretModal(false);
+      setPendingAction(null);
     } catch (err) {
       const rawMsg = String(err?.message || '');
       const translatedOriginal = t(rawMsg, rawMsg);
@@ -319,11 +351,51 @@ function ListTrustlines({
         setErrorMessage(formatted); // ➜ öffnet ErrorModal
       }
 
-      setResults([formatted]);
+      setStatusMessages([formatted]);
+      setResults([]);
     } finally {
       setIsProcessing(false);
       delStartedAtRef.current = 0;
       setDelElapsedMs(0);
+    }
+  };
+
+  const handleCreateTrustline = async (collectedSigners) => {
+    try {
+      setIsProcessing(true);
+      setModalError('');
+      if (!pendingAdd) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('[Trustline create] missing pendingAdd', { pendingAdd });
+        }
+        return;
+      }
+      const codeStr = String(pendingAdd.code ?? '').trim();
+      const issuerStr = String(pendingAdd.issuer ?? '').trim();
+      const limitStr = String(pendingAdd.limit ?? '').trim();
+      if (process.env.NODE_ENV !== 'production') {
+        console.debug('[AddTrustline create payload]', { code: codeStr, issuer: issuerStr, limit: limitStr });
+      }
+      const asset = new Asset(codeStr, issuerStr);
+      const res = await submitChangeTrustTx({ asset, limit: String(limitStr), collectedSigners });
+
+      setStatusMessages([t('trustline:add.success', { code: codeStr, issuer: issuerStr, count: 1 })]);
+      setResults([]);
+      await reloadTrustlinesForCurrentAccount();
+      setShowSecretModal(false);
+      setPendingAdd(null);
+      setPendingAction(null);
+      setShowAddModal(false);
+    } catch (err) {
+      const formatted = formatErrorForUi(t, err);
+      setModalError(formatted);
+      setStatusMessages([formatted]);
+      setResults([]);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('[AddTrustline exception]', err);
+      }
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -369,9 +441,9 @@ function ListTrustlines({
         </div>
       </div>
 
-      {results.length > 0 && (
+      { (statusMessages.length > 0 || results.length > 0) && (
         <div className="mt-4 text-sm text-blue-600 dark:text-blue-400">
-          {results.map((msg, idx) => <p key={idx}>{msg}</p>)}
+          {(statusMessages.length ? statusMessages : results).map((msg, idx) => <p key={idx}>{msg}</p>)}
         </div>
       )}
  
@@ -398,28 +470,26 @@ function ListTrustlines({
         </div>
 
         <div className="flex flex-wrap gap-4 items-center">
-          {/* 🔘 Radiobuttons */}
-          <label className="flex items-center gap-1">
-            <input type="radio" name="mode" value="simulation" checked={simulationMode} onChange={() => setSimulationMode(true)} />
-            {t('trustline:deleted.mode.simulation')}
-          </label>
-          <label className="flex items-center gap-1 text-red-700">
-            <input type="radio" name="mode" value="real" checked={!simulationMode} onChange={() => setSimulationMode(false)} />
-            {t('trustline:deleted.mode.real')}
-            <span title={t('trustline:deleted.mode.realWarning')} className="text-xl">⚠️🚨</span>
-          </label>
-
           {/* 🗑️ Löschen-Button */}
           {selectedTrustlines.length > 0 && (
             <div className="ml-2">
               <button
-                onClick={() => setShowOverviewModal(true)}
+                onClick={() => { setPendingAction('delete'); setShowOverviewModal(true); }}
                 className="ml-4 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700"
               >
                 {t('trustline:delete')}
               </button>
             </div>
           )}
+          <div className="ml-2">
+            <button
+              type="button"
+              onClick={() => { setShowAddModal(true); setPendingAdd(null); setPendingAction('add'); }}
+              className="px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              {t('trustline:add.button')}
+            </button>
+          </div>
         </div>
       </div>
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
@@ -500,7 +570,7 @@ function ListTrustlines({
       {selectedTrustlines.length > 0 && (
         <div className="mt-4 flex justify-center">
           <button
-            onClick={() => setShowOverviewModal(true)}
+            onClick={() => { setPendingAction('delete'); setShowOverviewModal(true); }}
             className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
             {t('trustline:delete')}
@@ -518,36 +588,14 @@ function ListTrustlines({
 
       {showOverviewModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-3xl max-h-[80vh] overflow-y-auto"
-            onScroll={(e) => {
-              const el = e.currentTarget;
-              setIsScrolled(el.scrollHeight > el.clientHeight && el.scrollTop > 20);
-            }}
-          >
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-3xl max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-black dark:text-white">
                 {t('common:option.confirm.action.title', 'Confirm action')}
               </h2>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowOverviewModal(false)}
-                  className="px-3 py-1 bg-gray-400 text-black rounded hover:bg-gray-500"
-                >
-                  {t('common:option.cancel', 'Cancel')}
-                </button>
-                <button
-                  onClick={() => {
-                    setShowOverviewModal(false);
-                    setShowSecretModal(true);
-                  }}
-                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                >
-                  {t('common:option.yes', 'Yes')}
-                </button>
-              </div>
             </div>
             <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">
-              {t('common:option.confirm.action.text', 'Are you sure?')}
+              {t('common:trustlines.deleteConfirm', 'Delete the selected trustlines?')}
             </p>
 
             <table className="min-w-full text-sm mb-4">
@@ -583,11 +631,13 @@ function ListTrustlines({
                 ))}
               </tbody>
             </table>
-            {/* Button-Leiste unten nur anzeigen, wenn gescrollt */}
-            {isScrolled && (
-              <div className="flex justify-end gap-2 mt-6">
+            <div className="mt-6">
+              <p className="text-sm text-red-700 dark:text-red-300 mb-3">
+                {t('common:trustlines.deleteConfirm', 'Delete the selected trustlines?')}
+              </p>
+              <div className="flex justify-end gap-2">
                 <button
-                  onClick={() => setShowOverviewModal(false)}
+                  onClick={() => { setShowOverviewModal(false); setPendingAction(null); }}
                   className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500"
                 >
                   {t('common:option.cancel', 'Cancel')}
@@ -595,6 +645,7 @@ function ListTrustlines({
                 <button
                   onClick={() => {
                     setShowOverviewModal(false);
+                    setPendingAction('delete');
                     setShowSecretModal(true);
                   }}
                   className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
@@ -602,22 +653,33 @@ function ListTrustlines({
                   {t('common:option.yes', 'Yes')}
                 </button>
               </div>
-            )}
+            </div>
           </div>
         </div>
       )}
-      
+
+      {showAddModal && (
+        <AddTrustlineModal
+          onSubmit={(payload) => {
+            setPendingAdd(payload);
+            setPendingAction('add');
+            setShowAddModal(false);
+            setShowSecretModal(true);
+          }}
+          onCancel={() => { setShowAddModal(false); setPendingAdd(null); setPendingAction(null); }}
+        />
+      )}
+
       {showSecretModal && (
         <SecretKeyModal
           onConfirm={(collected) => {
-            const key = collected?.[0]?.keypair?.secret?.() || '';
-            if (simulationMode) {
-              handleDeleteSimulated(key);
+            if (pendingAction === 'add') {
+              handleCreateTrustline(collected);
             } else {
-              handleDeleteTrustlines(key);
+              handleDeleteReal(collected.map((s) => s.keypair));
             }
           }}
-          onCancel={() => setShowSecretModal(false)}
+          onCancel={() => { setShowSecretModal(false); setPendingAction(null); }}
           errorMessage={modalError}
           isProcessing={isProcessing}               // ⬅️ Fortschritt aktiv?
           deleteProgress={deleteProgress}           // ⬅️ Aktueller Fortschritt
@@ -630,13 +692,6 @@ function ListTrustlines({
 
       {isProcessing && (
         <p className="text-blue-600 text-sm mt-2">{t('common:main.processing')}</p>
-      )}
-      {showResultModal && (
-        <ResultModal
-          deletedTrustlines={deletedTrustlines}
-          isSimulation={isSimulation}
-          onClose={() => setShowResultModal(false)}
-        />
       )}
       {isProcessing && deleteProgress && (
         <p className="text-sm text-blue-500 mt-2">

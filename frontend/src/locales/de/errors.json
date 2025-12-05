@@ -54,7 +54,11 @@
         "noKeysProvided": "Es wurden keine gültigen Secret Keys eingegeben.",
         "insufficientWeight": "Die gesammelten Signaturen reichen nicht aus, um diese Änderung zu autorisieren. Benötigt: {{required}}, vorhanden: {{current}}.",
         "txBadAuth": "Transaktion abgelehnt: Signaturen reichen nicht aus (tx_bad_auth).",
-        "zeroWeightSigner": "Der eingegebene Secret Key gehört zu einem Signer mit Gewicht 0 und kann keine Transaktion autorisieren."
+        "zeroWeightSigner": "Der eingegebene Secret Key gehört zu einem Signer mit Gewicht 0 und kann keine Transaktion autorisieren.",
+        "invalidConfig": "Die geplante Konfiguration der Signer und Thresholds ist nicht signierbar. Bitte überprüfen Sie Gewichte und Thresholds.",
+        "trustlines": {
+          "invalidInput": "Bitte Asset-Code, Issuer und Limit prüfen. Mindestens eines der Felder ist ungültig."
+        }
       }
     }
   },

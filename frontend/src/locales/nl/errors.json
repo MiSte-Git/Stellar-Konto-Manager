@@ -54,7 +54,11 @@
         "noKeysProvided": "Er zijn geen geldige geheime sleutels ingevoerd.",
         "insufficientWeight": "De verzamelde handtekeningen zijn niet voldoende om deze wijziging te autoriseren. Vereist: {{required}}, aanwezig: {{current}}.",
         "txBadAuth": "Transactie geweigerd: Handtekeningen zijn onvoldoende (tx_bad_auth).",
-        "zeroWeightSigner": "De ingevoerde geheime sleutel behoort tot een ondertekenaar met een gewicht van 0 en kan geen enkele transactie autoriseren."
+        "zeroWeightSigner": "De ingevoerde geheime sleutel behoort tot een ondertekenaar met een gewicht van 0 en kan geen enkele transactie autoriseren.",
+        "invalidConfig": "De geplande configuratie van ondertekenaars en drempels is niet ondertekenbaar. Controleer de gewichten en drempels.",
+        "trustlines": {
+          "invalidInput": "Controleer de activacode, de uitgever en de limiet. Ten minste één van de velden is ongeldig."
+        }
       }
     }
   },

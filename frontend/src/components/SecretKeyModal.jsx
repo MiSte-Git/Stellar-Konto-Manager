@@ -40,6 +40,20 @@ function SecretKeyModal({
     return Math.max(1, count || 1);
   }, [requiredThreshold, effectiveSigners]);
 
+  const isMultisigAccount = useMemo(() => {
+    if (!effectiveSigners.length) return false;
+    if (effectiveSigners.length > 1) return true;
+    const singleWeight = Number(effectiveSigners[0]?.weight || 0);
+    return requiredThreshold > singleWeight;
+  }, [effectiveSigners, requiredThreshold]);
+
+  const thresholdLevel = useMemo(() => {
+    if (operationType === 'payment') return 'med';
+    if (operationType === 'setOptions') return 'high';
+    if (operationType === 'changeTrust') return 'med';
+    return 'med';
+  }, [operationType]);
+
   useEffect(() => {
     setSecretInputs((prev) => {
       if (prev.length >= minSignerCount) return prev;
@@ -120,6 +134,11 @@ function SecretKeyModal({
         )}
 
         <div className="mb-3 rounded border border-gray-200 bg-gray-50 p-3 text-xs dark:border-gray-700 dark:bg-gray-900">
+          <div className="flex flex-col gap-1 mb-2 text-gray-800 dark:text-gray-200">
+            <div>{isMultisigAccount ? t('multisig:accountMode.multi') : t('multisig:accountMode.single')}</div>
+            <div>{t('multisig:requiredThreshold', { level: thresholdLevel, value: requiredThreshold || 0 })}</div>
+            <div>{t(`multisig:operationLabel.${operationType || 'unknown'}`, operationType || '')}</div>
+          </div>
           <div className="flex flex-wrap gap-2">
             <span className="font-semibold">{t('common:threshold', 'Threshold')}:</span>
             <span>{requiredThreshold || 'n/a'}</span>
@@ -137,7 +156,7 @@ function SecretKeyModal({
               <div className="space-y-1 max-h-24 overflow-y-auto pr-1">
                 {allSigners.map((s, idx) => (
                   <div key={idx} className="flex justify-between text-[11px]">
-                    <span className="font-mono break-all">{s.public_key}</span>
+                    <span className="font-mono break-all">{s.public_key || s.key || s.publicKey}</span>
                     <span className="ml-2">{s.weight ?? 0}</span>
                   </div>
                 ))}
@@ -145,6 +164,12 @@ function SecretKeyModal({
             </div>
           )}
         </div>
+
+        {minSignerCount > 1 && (
+          <div className="mb-3 text-xs text-amber-700 dark:text-amber-300">
+            {t('multisig:multipleSignersInfo')}
+          </div>
+        )}
 
         <div className="space-y-2">
           {secretInputs.map((val, idx) => (
