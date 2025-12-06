@@ -67,7 +67,7 @@ PORT=$BACKEND_PORT npm start &
 echo -e "${GREEN}🖼️ Starte Frontend auf http://localhost:$FRONTEND_PORT ...${NC}"
 cd "$FRONTEND_DIR" || exit 1
 npm install
-npm run dev &
+VITE_BUILD_DATE=$(date -Iseconds) npm run dev &
 
 # Browser öffnen
 #if command -v xdg-open >/dev/null; then
@@ -76,4 +76,5 @@ npm run dev &
 #fi
 
 echo -e "${GREEN}✅ Beide Server laufen. Mit Ctrl+C kannst du beenden.${NC}"
+# Hinweis: Legal-Seite zeigt jetzt „Zuletzt aktualisiert: <aktuelles Datum>“ basierend auf VITE_BUILD_DATE.
 wait

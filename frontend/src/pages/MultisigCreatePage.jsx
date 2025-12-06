@@ -47,7 +47,7 @@ export default function MultisigCreatePage() {
 
   const [network, setNetwork] = useState(() => {
     try {
-      return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+      return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
     } catch {
       return 'PUBLIC';
     }
@@ -125,7 +125,7 @@ export default function MultisigCreatePage() {
   useEffect(() => {
     const handler = (e) => {
       try {
-        const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+        const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
         setNetwork(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
       } catch { /* noop */ }
     };
@@ -415,7 +415,7 @@ export default function MultisigCreatePage() {
         // Sync global state
         try {
           if (typeof window !== 'undefined' && window.localStorage) {
-            window.localStorage.setItem('STM_NETWORK', net);
+            window.localStorage.setItem('SKM_NETWORK', net);
             window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: net }));
           }
         } catch { /* noop */ }

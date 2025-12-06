@@ -5,6 +5,7 @@ import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo, StrKey }
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
 import MultisigPrepareDialog from '../components/MultisigPrepareDialog.jsx';
+import { isMultisigAccount } from '../utils/stellar/isMultisigAccount.js';
 import { BACKEND_URL } from '../config.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { useSettings } from '../utils/useSettings';
@@ -27,6 +28,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [secretError, setSecretError] = useState('');
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false); // Zeigt einen globalen Processing-Indikator während des Payment-Flows an.
   const [error, setError] = useState('');
   const [preparedTx, setPreparedTx] = useState(null);
   const [preflight, setPreflight] = useState({
@@ -55,7 +57,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [showReserveInfo, setShowReserveInfo] = useState(false);
 
   const [netLabel, setNetLabel] = useState(() => {
-    try { return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
+    try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
   });
   const server = useMemo(() => {
     const url = netLabel === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org';
@@ -149,36 +151,40 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   }, [publicKey]);
 
   const runPreflight = useCallback(async () => {
+    let nextState = {
+      loading: true,
+      err: '',
+      destExists: true,
+      activationRequired: false,
+      minReserve: 0,
+      desired: 0,
+      adjusted: 0,
+      willBump: false,
+      resolvedDest: ''
+    };
     try {
-      setPreflight({
-        loading: true,
-        err: '',
-        destExists: true,
-        activationRequired: false,
-        minReserve: 0,
-        desired: 0,
-        adjusted: 0,
-        willBump: false,
-        resolvedDest: ''
-      });
+      setPreflight(nextState);
       const v = (dest || '').trim();
       if (!v) {
-        setPreflight(p => ({ ...p, loading: false, err: t('publicKey:destination.error') }));
-        return;
+        nextState = { ...nextState, loading: false, err: t('publicKey:destination.error') };
+        setPreflight(nextState);
+        return nextState;
       }
       let resolvedDest;
       try {
         resolvedDest = await resolveOrValidatePublicKey(v);
       } catch {
-        setPreflight(p => ({ ...p, loading: false, err: t('publicKey:destination.error') }));
-        return;
+        nextState = { ...nextState, loading: false, err: t('publicKey:destination.error') };
+        setPreflight(nextState);
+        return nextState;
       }
       let desiredNum = 0;
       try {
         desiredNum = Number(normalizeAmountValue());
       } catch (e) {
-        setPreflight(p => ({ ...p, loading: false, err: e?.message || t('common:payment.send.amountInvalid') }));
-        return;
+        nextState = { ...nextState, loading: false, err: e?.message || t('common:payment.send.amountInvalid') };
+        setPreflight(nextState);
+        return nextState;
       }
       const minReserve = (baseReserve || 0.5) * 2;
       let destExists = true;
@@ -189,7 +195,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       }
       if (!destExists) {
         if (assetKey !== 'XLM') {
-          setPreflight({
+          nextState = {
             loading: false,
             err: t('common:payment.send.destUnfundedNonNative', 'Destination account is not active. Please send XLM to activate it first or switch the asset to XLM.'),
             destExists,
@@ -199,11 +205,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             adjusted: desiredNum,
             willBump: false,
             resolvedDest
-          });
-          return;
+          };
+          setPreflight(nextState);
+          return nextState;
         }
         const adjusted = Math.max(desiredNum, minReserve);
-        setPreflight({
+        nextState = {
           loading: false,
           err: '',
           destExists,
@@ -213,10 +220,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           adjusted,
           willBump: adjusted > desiredNum,
           resolvedDest
-        });
-        return;
+        };
+        setPreflight(nextState);
+        return nextState;
       }
-      setPreflight({
+      nextState = {
         loading: false,
         err: '',
         destExists,
@@ -226,9 +234,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         adjusted: desiredNum,
         willBump: false,
         resolvedDest
-      });
+      };
+      setPreflight(nextState);
+      return nextState;
     } catch (e) {
-      setPreflight(p => ({ ...p, loading: false, err: e?.message || 'unknown' }));
+      nextState = { ...nextState, loading: false, err: e?.message || 'unknown' };
+      setPreflight(nextState);
+      return nextState;
     }
   }, [assetKey, baseReserve, dest, normalizeAmountValue, server, t]);
 
@@ -240,7 +252,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const sec = primary.secret?.();
       if (sec) Keypair.fromSecret(sec); // validate
     }
-    const isTestnet = typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET';
+    const isTestnet = typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET';
     const net = isTestnet ? Networks.TESTNET : Networks.PUBLIC;
     const account = await server.loadAccount(publicKey);
     const feeStats = await server.feeStats();
@@ -344,28 +356,33 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       setError('');
       setStatus('');
       const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
-      if (saved) {
-        const result = await submitPayment(Keypair.fromSecret(saved));
-        applySendResult(result);
-        setSecretError('');
-      } else {
+      if (!saved) {
         setSecretError('');
         setShowSecretModal(true);
+        return;
       }
+      setIsProcessing(true);
+      const result = await submitPayment(Keypair.fromSecret(saved));
+      applySendResult(result);
+      setSecretError('');
     } catch (err) {
       handlePaymentError(err);
+    } finally {
+      setIsProcessing(false);
     }
   }, [applySendResult, handlePaymentError, publicKey, submitPayment]);
 
-  const handlePrepareMultisig = useCallback(async () => {
+  const handlePrepareMultisig = useCallback(async (initialSigners = []) => {
     try {
       if (preflight.loading || preflight.err) {
         setError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
         return;
       }
       const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
-      const signer = saved ? Keypair.fromSecret(saved) : null;
-      const { tx, meta } = await buildPaymentTx({ signers: signer ? [signer] : [], signTx: !!signer, requireSigners: false });
+      const storedSigner = saved ? Keypair.fromSecret(saved) : null;
+      const providedSigners = Array.isArray(initialSigners) ? initialSigners.filter(Boolean) : [];
+      const signers = providedSigners.length ? providedSigners : (storedSigner ? [storedSigner] : []);
+      const { tx, meta } = await buildPaymentTx({ signers, signTx: signers.length > 0, requireSigners: false });
       const hashHex = tx.hash().toString('hex');
       const xdr = tx.toXDR();
       const payload = {
@@ -413,6 +430,31 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
   }, [buildPaymentTx, handlePaymentError, netLabel, preflight, publicKey, t]);
 
+  const isMultisig = useMemo(() => isMultisigAccount(accountInfo), [accountInfo]);
+
+  const handleSendClick = useCallback(async () => {
+    clearSuccess();
+    setError('');
+    try {
+      window.dispatchEvent(new Event('stm-transaction-start'));
+    } catch (dispatchError) {
+      console.debug('stm-transaction-start event failed', dispatchError);
+    }
+
+    if (isMultisig) {
+      setShowConfirmModal(true);
+      await runPreflight();
+      return;
+    }
+
+    const preflightResult = await runPreflight();
+    if (preflightResult?.err) {
+      setError(preflightResult.err);
+      return;
+    }
+    await handleStoredSecretSend();
+  }, [clearSuccess, handleStoredSecretSend, isMultisig, runPreflight, setError, setShowConfirmModal]);
+
   useEffect(() => {
     clearSuccess();
   }, [publicKey, initial, clearSuccess]);
@@ -420,7 +462,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   useEffect(() => {
     const handler = (e) => {
       try {
-        const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+        const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
         setNetLabel(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
       } catch { /* noop */ }
     };
@@ -677,7 +719,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   if (!publicKey) {
     return (
       <div className="my-8 text-center text-sm text-gray-700 dark:text-gray-200">
-        {t('investedTokens:hintEnterPublicKey')}
+        {t('common:balance.noPublicKey')}
       </div>
     );
   }
@@ -871,26 +913,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           <button
             className="mt-3 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
             disabled={!dest || !amount || (Number(amount) || 0) <= 0}
-            onClick={() => {
-              clearSuccess();
-              try {
-                window.dispatchEvent(new Event('stm-transaction-start'));
-              } catch (dispatchError) {
-                console.debug('stm-transaction-start event failed', dispatchError);
-              }
-              setShowConfirmModal(true);
-              setPreflight(p => ({ ...p, loading: true, err: '' }));
-              void runPreflight();
-            }}
+            onClick={handleSendClick}
           >
             {t('common:payment.send.sendButton')}
           </button>
+          {isProcessing && (
+            <p className="text-blue-600 text-sm mt-2 text-center">{t('common:main.processing')}</p>
+          )}
         </div>
 
       </div>
            </div>
       
-       {showConfirmModal && (
+       {showConfirmModal && isMultisig && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
           <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-2">
@@ -985,10 +1020,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           signers={signersForModal}
           operationType="payment"
           requiredThreshold={requiredThreshold}
-          onConfirm={async (collected, remember) => {
+          isProcessing={isProcessing}
+          onConfirm={async (collected, remember, options = {}) => {
             try {
               setError('');
               setStatus('');
+              setIsProcessing(true);
               const primarySecret = collected?.[0]?.keypair?.secret?.();
               if (!primarySecret) {
                 throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
@@ -1011,6 +1048,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   try { window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: { publicKey } })); } catch { /* noop */ }
                 } catch { /* noop */ }
               }
+              const collectLocally = !!options.collectAllSignaturesLocally;
+              if (isMultisig && !collectLocally) {
+                await handlePrepareMultisig(collected.map((s) => s.keypair));
+                setSecretError('');
+                setShowSecretModal(false);
+                return;
+              }
               const result = await submitPayment(collected.map((s) => s.keypair));
               applySendResult(result);
               setSecretError('');
@@ -1018,6 +1062,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             } catch (e) {
               const detail = handlePaymentError(e);
               setSecretError(detail);
+            } finally {
+              setIsProcessing(false);
             }
           }}
         />

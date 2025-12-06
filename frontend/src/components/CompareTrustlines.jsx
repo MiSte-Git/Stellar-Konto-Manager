@@ -90,7 +90,7 @@ function CompareTrustlines({
     }
   };
 
-  const netLabel = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'Testnet' : 'Mainnet';
+  const netLabel = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'Testnet' : 'Mainnet';
 
   return (
     <div>

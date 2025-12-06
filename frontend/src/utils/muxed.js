@@ -18,7 +18,7 @@ export function buildMuxedAddress(basePublicKey, muxedIdStr) {
   // den Key via t() übersetzen kann.
 
   try {
-    const net = typeof window !== 'undefined' ? window.localStorage?.getItem('STM_NETWORK') : undefined;
+    const net = typeof window !== 'undefined' ? window.localStorage?.getItem('SKM_NETWORK') : undefined;
     // Use console.log so it shows even when DevTools isn't in Verbose mode
     console.log('[muxed.buildMuxedAddress] called', { basePublicKey, muxedIdStr: String(muxedIdStr), net });
   } catch { /* noop */ }

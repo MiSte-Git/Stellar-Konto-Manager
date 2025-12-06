@@ -10,7 +10,7 @@ export default function BalancePage({ publicKey }) {
 const { t, i18n } = useTranslation(['common']);
 const { decimalsMode } = useSettings();
 const [netLabel, setNetLabel] = useState(() => {
-  try { return (localStorage.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
+  try { return (localStorage.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
 });
 const [balances, setBalances] = useState([]);
 const [payments, setPayments] = useState([]);
@@ -89,7 +89,7 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
   useEffect(() => {
     const handler = (e) => {
       try {
-        const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+        const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
         setNetLabel(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
       } catch { /* noop */ }
     };

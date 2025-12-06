@@ -2,6 +2,7 @@ import './i18n';
 import 'flag-icons/css/flag-icons.min.css';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 import Main from './main.jsx';
 import LanguageSelector from './components/LanguageSelector';
 import BugTrackerAdmin from './routes/BugTrackerAdmin.tsx';
@@ -12,6 +13,7 @@ import LearnPage from './pages/LearnPage.jsx';
 import QuizPage from './pages/QuizPage.jsx';
 import BackupSettings from './pages/BackupSettings.jsx';
 import MultisigJobDetail from './pages/MultisigJobDetail.jsx';
+import Legal from './pages/Legal.jsx';
 
 import { formatErrorForUi } from './utils/formatErrorForUi.js';
 
@@ -41,19 +43,20 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-function App() {
+function AppShell() {
   const { t } = useTranslation(['common', 'glossary', 'learn', 'menu', 'settings']);
+  const location = useLocation();
 
   // Always register hooks in the same order
   const [devTestnet, setDevTestnet] = React.useState(false);
   React.useEffect(() => {
     // Only listen for changes; default is set before mount in main.jsx
     const handler = (e) => {
-      try { const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC'); setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
+      try { const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC'); setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
     };
     window.addEventListener('stm-network-changed', handler);
     // Initialize state based on current storage without emitting a new event
-    try { const v = window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC'; setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
+    try { const v = window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC'; setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
     return () => window.removeEventListener('stm-network-changed', handler);
   }, []);
 
@@ -65,19 +68,7 @@ function App() {
     }
   }, []);
 
-  // Track current path so we can react to pushState/popstate without full reload
-  const [pathname, setPathname] = React.useState(() => (typeof window !== 'undefined' ? window.location.pathname : '/'));
-  React.useEffect(() => {
-    const onPop = () => {
-      try { setPathname(window.location.pathname); } catch { /* noop */ }
-    };
-    window.addEventListener('popstate', onPop);
-    window.addEventListener('stm:location-changed', onPop);
-    return () => {
-      window.removeEventListener('popstate', onPop);
-      window.removeEventListener('stm:location-changed', onPop);
-    };
-  }, []);
+  const pathname = location?.pathname || '/';
 
   const isGlossaryRoute = React.useMemo(() => {
     try {
@@ -179,8 +170,19 @@ function App() {
     }
   }, [pathname]);
 
+  const isLegalRoute = React.useMemo(() => {
+    try {
+      const target = buildPath('legal');
+      const normTarget = target.replace(/\/+$/, '');
+      const normCurrent = String(pathname || '').replace(/\/+$/, '');
+      return normCurrent === normTarget || normCurrent.endsWith('/legal');
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
   if (import.meta.env?.DEV) {
-    console.log('DEBUG STM Router', {
+    console.log('DEBUG SKM Router', {
       pathname,
       isBugTrackerRoute,
       isLessonQuizRoute,
@@ -193,7 +195,7 @@ function App() {
     });
   }
 
-  return (
+  const content = (
     <ErrorBoundary t={t}>
       {isBugTrackerRoute ? (
         <BugTrackerAdmin />
@@ -204,6 +206,10 @@ function App() {
       ) : isQuizRoute ? (
         <div className="max-w-4xl mx-auto p-4">
           <QuizPage />
+        </div>
+      ) : isLegalRoute ? (
+        <div className="max-w-4xl mx-auto p-4">
+          <Legal />
         </div>
       ) : (
         <>
@@ -218,7 +224,7 @@ function App() {
                 onClick={() => {
                   try {
                     const url = buildPath('settings/backup');
-                    try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
+                    try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
                     window.history.pushState({}, '', url);
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   } catch { /* noop */ }
@@ -284,6 +290,16 @@ function App() {
       )}
     </ErrorBoundary>
   );
+
+  return (
+    content
+  );
 }
 
-export default App;
+export default function App() {
+  return (
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <AppShell />
+    </BrowserRouter>
+  );
+}

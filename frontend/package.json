@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "VITE_BUILD_DATE=$(date -Iseconds) vite dev",
     "dev:old": "concurrently -k -n BACKEND,FRONTEND -c green,cyan \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
-    "build": "vite build",
+    "build": "VITE_BUILD_DATE=$(date -Iseconds) vite build",
     "open": "xdg-open http://localhost:5173",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -19,7 +19,8 @@
     "openai": "^5.8.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-i18next": "^15.6.0"
+    "react-i18next": "^15.6.0",
+    "react-router-dom": "^7.10.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
