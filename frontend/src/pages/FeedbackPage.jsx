@@ -87,7 +87,7 @@ export default function FeedbackPage({ onBack }) {
     lines.push('App: Stellar Trustline Manager');
     try { lines.push(`URL: ${window.location.href}`); } catch { /* noop */ }
     try { lines.push(`Browser: ${navigator.userAgent}`); } catch { /* noop */ }
-    const subj = `[STM Feedback] ${t(`common:feedback.categories.${category}`)}: ${subject.trim()}`;
+    const subj = `[SKM Feedback] ${t(`common:feedback.categories.${category}`)}: ${subject.trim()}`;
     const body = lines.join('\r\n');
     return { subject: subj, body };
   }, [category, message, subject, t, reportToken, contactEmail, pageId]);

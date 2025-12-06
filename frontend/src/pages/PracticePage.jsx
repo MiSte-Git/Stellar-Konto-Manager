@@ -37,7 +37,7 @@ export default function PracticePage() {
   const goBack = React.useCallback(() => {
     try {
       const prev = (typeof window !== 'undefined' && window.sessionStorage)
-        ? window.sessionStorage.getItem('STM_PREV_PATH')
+        ? window.sessionStorage.getItem('SKM_PREV_PATH')
         : '';
       if (prev) {
         window.history.pushState({}, '', prev);

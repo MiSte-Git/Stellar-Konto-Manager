@@ -20,11 +20,11 @@ function NetworkSelector({ value, onChange }) {
     <div className={`flex items-center justify-between gap-4 mb-4 p-2 border rounded relative ${isTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : ''}`}>
       <div className="flex items-center gap-4">
         <label className="flex items-center gap-2">
-          <input type="radio" name="network" value="PUBLIC" checked={value === 'PUBLIC'} onChange={() => { try { window.localStorage.setItem('STM_NETWORK','PUBLIC'); window.localStorage.removeItem('STM_HORIZON_URL'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('PUBLIC'); }} />
+        <input type="radio" name="network" value="PUBLIC" checked={value === 'PUBLIC'} onChange={() => { try { window.localStorage.setItem('SKM_NETWORK','PUBLIC'); window.localStorage.removeItem('SKM_HORIZON_URL'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('PUBLIC'); }} />
           {t('network:mainnet')}
         </label>
         <label className="flex items-center gap-2">
-          <input type="radio" name="network" value="TESTNET" checked={value === 'TESTNET'} onChange={() => { try { window.localStorage.setItem('STM_NETWORK','TESTNET'); window.localStorage.setItem('STM_HORIZON_URL','https://horizon-testnet.stellar.org'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('TESTNET'); }} />
+        <input type="radio" name="network" value="TESTNET" checked={value === 'TESTNET'} onChange={() => { try { window.localStorage.setItem('SKM_NETWORK','TESTNET'); window.localStorage.setItem('SKM_HORIZON_URL','https://horizon-testnet.stellar.org'); } catch (e) { void e; } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'TESTNET' })); window.dispatchEvent(new Event('stm-trigger-recheck')); onChange('TESTNET'); }} />
           {t('network:testnet')}
         </label>
       </div>
@@ -41,7 +41,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount', 'multisigHelp', 'multisig']);
 
   const [network, setNetwork] = useState(() => {
-    try { return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
+  try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
   });
   const server = useMemo(() => getHorizonServer(network === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN), [network]);
   const passphrase = network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
@@ -140,7 +140,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   // Sync local network radio with global header toggle
   useEffect(() => {
     const handler = (e) => {
-      const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+      const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
       setNetwork(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
     };
     window.addEventListener('stm-network-changed', handler);

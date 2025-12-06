@@ -14,7 +14,7 @@ function ResultModal({ deletedTrustlines, isSimulation = false, onClose }) {
 
   // Dateiname generieren
   const getFileName = (ext) => {
-    const prefix = 'STM_' + getFormattedTimestamp();
+    const prefix = 'SKM_' + getFormattedTimestamp();
     return `${prefix}${isSimulation ? '_Simuliert' : ''}.${ext}`;
   };
 

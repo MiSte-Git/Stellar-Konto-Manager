@@ -1,0 +1,74 @@
+{
+  "title": "Impressum & Datenschutz",
+  "subtitle": "Informationen zum Anbieter, Haftungsausschluss und zur Verarbeitung personenbezogener Daten.",
+  "imprint": {
+    "title": "Impressum",
+    "providerLabel": "Anbieter:",
+    "providerName": "Stellar Konto Manager (privates Projekt)",
+    "addressLabel": "Anschrift:",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Schweiz"
+    ],
+    "emailLabel": "E-Mail:",
+    "email": "support@skm.steei.de"
+  },
+  "disclaimer": {
+    "title": "Haftungsausschluss",
+    "body": [
+      "Die Inhalte dieser Anwendung wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden.",
+      "Als Diensteanbieter sind wir für eigene Inhalte verantwortlich. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.",
+      "Diese Anwendung kann Links zu externen Webseiten Dritter enthalten, auf deren Inhalte wir keinen Einfluss haben. Für diese fremden Inhalte können wir keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber verantwortlich."
+    ]
+  },
+  "privacy": {
+    "title": "Datenschutzerklärung",
+    "intro": "Wir nehmen den Schutz Ihrer personenbezogenen Daten ernst. Nachfolgend informieren wir Sie über die Verarbeitung personenbezogener Daten bei der Nutzung dieser Anwendung.",
+    "sections": [
+      {
+        "title": "Verantwortlicher",
+        "body": [
+          "Verantwortlich für die Datenverarbeitung ist der im Impressum genannte Anbieter.",
+          "Bei Fragen zum Datenschutz können Sie uns unter der angegebenen E-Mail-Adresse kontaktieren."
+        ]
+      },
+      {
+        "title": "Erhebung und Nutzung von Daten",
+        "body": [
+          "Die Nutzung dieser Anwendung ist grundsätzlich ohne Angabe personenbezogener Daten möglich.",
+          "Soweit personenbezogene Daten (z. B. E-Mail-Adresse) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis und nur zur Bearbeitung Ihrer Anfrage."
+        ]
+      },
+      {
+        "title": "Protokolldaten",
+        "body": [
+          "Beim Zugriff auf diese Anwendung können technische Daten (z. B. IP-Adresse, Zeitpunkt des Zugriffs, verwendeter Browser) automatisch durch Ihren Browser übermittelt werden. Diese Informationen werden ausschließlich zur Sicherstellung des technischen Betriebs verwendet."
+        ]
+      },
+      {
+        "title": "Weitergabe von Daten",
+        "body": [
+          "Eine Übermittlung Ihrer personenbezogenen Daten an Dritte erfolgt nur, wenn dies gesetzlich erlaubt ist oder Sie eingewilligt haben."
+        ]
+      },
+      {
+        "title": "Ihre Rechte",
+        "body": [
+          "Sie haben das Recht auf Auskunft über die zu Ihrer Person gespeicherten Daten sowie das Recht auf Berichtigung, Löschung oder Einschränkung der Verarbeitung dieser Daten.",
+          "Bitte wenden Sie sich hierzu an die im Impressum angegebene E-Mail-Adresse."
+        ]
+      }
+    ]
+  },
+  "lastUpdated": "Zuletzt aktualisiert: {{date}}",
+  "meta": {
+    "lastUpdated": {
+      "fallbackDate": "März 2026"
+    }
+  },
+  "backToApp": "Zurück",
+  "footer": {
+    "imprintLink": "Impressum & Datenschutz"
+  }
+}
