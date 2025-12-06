@@ -57,7 +57,7 @@ async function withHorizonRetry(fn, { retries = 3, baseDelay = 1200, maxDelay = 
         const backoffMs = Math.min(maxDelay, Math.round(baseDelay * Math.pow(2, attempt)));
         const jitter = Math.floor(Math.random() * 400);
         const delay = Math.max(backoffMs, headerDelayMs) + jitter;
-        try { console.warn('[STM] Horizon 429 – retrying in', delay, 'ms'); } catch { /* noop */ }
+        try { console.warn('[SKM] Horizon 429 – retrying in', delay, 'ms'); } catch { /* noop */ }
         await sleep(delay);
         attempt++;
         continue;
@@ -96,11 +96,11 @@ async function loadAccountCached(server, publicKey, { ttlMs = 15000 } = {}) {
 }
 
 function resolveHorizonUrl(url) {
-  // Global/Dev-Override: Hauptschalter über LocalStorage (STM_NETWORK) oder explizite URL (STM_HORIZON_URL)
+  // Global/Dev-Override: Hauptschalter über LocalStorage (SKM_NETWORK) oder explizite URL (SKM_HORIZON_URL)
   let base = url || HORIZON_URL || 'https://horizon.stellar.org';
   try {
-    const lsUrl = window?.localStorage?.getItem('STM_HORIZON_URL');
-    const lsNet = window?.localStorage?.getItem('STM_NETWORK'); // 'PUBLIC' | 'TESTNET'
+    const lsUrl = window?.localStorage?.getItem('SKM_HORIZON_URL');
+    const lsNet = window?.localStorage?.getItem('SKM_NETWORK'); // 'PUBLIC' | 'TESTNET'
 
     // Treat calls that pass the default (or nothing) as "not explicit" → network selection wins
     const isDefault = (url == null) || String(url) === String(HORIZON_URL);
@@ -109,14 +109,14 @@ function resolveHorizonUrl(url) {
       // Network is the source of truth on startup
       if (lsNet === 'TESTNET') base = 'https://horizon-testnet.stellar.org';
       else base = 'https://horizon.stellar.org';
-      // Ignore STM_HORIZON_URL when using the default path to avoid stale overrides across reloads
+      // Ignore SKM_HORIZON_URL when using the default path to avoid stale overrides across reloads
     } else if (!url && lsUrl) {
       // Only consider custom override when caller did not pass any url AND we are not in default-path check
       base = lsUrl;
     }
 
     if (typeof window !== 'undefined') {
-      try { console.debug('[STM] resolveHorizonUrl →', base, '(net=', lsNet || 'PUBLIC', ')'); } catch { /* noop */ }
+      try { console.debug('[SKM] resolveHorizonUrl →', base, '(net=', lsNet || 'PUBLIC', ')'); } catch { /* noop */ }
     }
   } catch { /* noop */ }
 
@@ -127,9 +127,9 @@ function resolveHorizonUrl(url) {
   }
   // Falls in .env bereits '/horizon' steht, in eine absolute URL umwandeln
   if (typeof base === 'string' && base.startsWith('/')) {
-    // Allow override via STM_HORIZON_URL; if set, prefer that instead of proxy
+    // Allow override via SKM_HORIZON_URL; if set, prefer that instead of proxy
     try {
-      const lsUrl2 = window?.localStorage?.getItem('STM_HORIZON_URL');
+      const lsUrl2 = window?.localStorage?.getItem('SKM_HORIZON_URL');
       if (lsUrl2) return lsUrl2;
     } catch { /* noop */ }
     return (window?.location?.origin || 'http://localhost:5173') + base;
@@ -201,7 +201,7 @@ export async function loadTrustlines(publicKey, serverOverride, options = {}) {
           op => op.type === 'change_trust' && op.trustor === publicKey
         );
       } catch {
-        try { console.warn('[STM] change_trust ops fetch failed; proceeding without createdAt'); } catch { /* noop */ }
+        try { console.warn('[SKM] change_trust ops fetch failed; proceeding without createdAt'); } catch { /* noop */ }
         changeTrustOps = [];
       }
     }
@@ -303,7 +303,7 @@ export async function deleteTrustlines({ secretKey, trustlines }) {
     const isRealError = detail !== 'op_success' && detail !== 'tx_success';
 
     if (!isRealError && txHash) {
-      console.warn('[STM] Horizon reported error but tx might have succeeded:', txHash);
+      console.warn('[SKM] Horizon reported error but tx might have succeeded:', txHash);
       return trustlines.map(tl => ({
         assetCode: tl.assetCode,
         assetIssuer: tl.assetIssuer,
@@ -311,7 +311,7 @@ export async function deleteTrustlines({ secretKey, trustlines }) {
       }));
     }
 
-    console.error('[STM] Trustline deletion failed:', err);
+    console.error('[SKM] Trustline deletion failed:', err);
     // Keep throw format: submitTransaction.failed:<detail>
     throw new Error('submitTransaction.failed:' + detail);
   }
@@ -551,7 +551,7 @@ export async function deleteTrustlinesInChunks({
   if (!primary) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
   const targetAccount = accountPublicKey || primary.publicKey();
   if (!targetAccount) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
-  const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+  const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
   const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
   const chunks = chunkArray(trustlines, 100);
   const allDeleted = [];

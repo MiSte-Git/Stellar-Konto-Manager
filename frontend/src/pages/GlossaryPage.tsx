@@ -43,7 +43,7 @@ function GlossaryPage() {
     try {
       // Wenn wir über die App ins Glossar kamen, wieder auf den gemerkten Pfad zurück
       const prev = (typeof window !== 'undefined' && window.sessionStorage)
-        ? window.sessionStorage.getItem('STM_PREV_PATH')
+        ? window.sessionStorage.getItem('SKM_PREV_PATH')
         : '';
       if (prev) {
         window.history.pushState({}, '', prev);

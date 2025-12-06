@@ -10,7 +10,7 @@ function MultisigJobList({ onBack }) {
   const [error, setError] = useState('');
 
   const netLabel = (() => {
-    try { return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'testnet' : 'public'; } catch { return 'public'; }
+    try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'testnet' : 'public'; } catch { return 'public'; }
   })();
 
   const loadJobs = useCallback(async () => {

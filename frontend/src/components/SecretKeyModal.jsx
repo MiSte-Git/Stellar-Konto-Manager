@@ -12,13 +12,16 @@ function SecretKeyModal({
   thresholds = null,
   signers = [],
   operationType = '',
-  requiredThreshold = 0
+  requiredThreshold = 0,
+  isProcessing = false,
+  deleteProgress = null
 }) {
   const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey', 'multisig']);
   const [secretInputs, setSecretInputs] = useState(['']);
   const [showSecret, setShowSecret] = useState(false);
   const [rememberSession, setRememberSession] = useState(true);
   const [error, setError] = useState(errorMessage || '');
+  const [collectAllSignaturesLocally, setCollectAllSignaturesLocally] = useState(false); // Ermöglicht optional, alle Multisig-Signaturen lokal in einem Dialog zu sammeln (nur verwenden, wenn der Benutzer alle Schlüssel kontrolliert).
   const allSigners = useMemo(() => (Array.isArray(signers) ? [...signers] : []), [signers]);
   const effectiveSigners = useMemo(
     () => allSigners
@@ -101,7 +104,7 @@ function SecretKeyModal({
         throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
       }
       setError('');
-      onConfirm(collected, rememberSession); // Callback an Eltern-Komponente
+      onConfirm(collected, rememberSession, { collectAllSignaturesLocally }); // Callback an Eltern-Komponente
     } catch (err) {
       setError(formatErrorForUi(t, err));
     }
@@ -129,10 +132,33 @@ function SecretKeyModal({
         <h2 className={`text-xl font-semibold mb-4 ${error ? 'text-red-700' : 'text-black dark:text-white'}`}>
           {t('secretKey:label', 'Secret key')}
         </h2>
-        <div className="mb-3 rounded border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100">
-          <div className="font-semibold">{t('multisig:testMode.modalTitle')}</div>
-          <p className="text-xs mt-1">{t('multisig:testMode.modalDescription')}</p>
-        </div>
+        {isMultisigAccount && (
+          <div className="mb-3 rounded border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100 space-y-2">
+            <div className="font-semibold">{t('multisig:secretModal.options.title')}</div>
+            <div>
+              <div className="font-semibold text-sm">{t('multisig:secretModal.option.distributed.title')}</div>
+              <p className="text-xs mt-0.5">{t('multisig:secretModal.option.distributed.body')}</p>
+            </div>
+            <div>
+              <div className="font-semibold text-sm">{t('multisig:secretModal.option.localAll.title')}</div>
+              <p className="text-xs mt-0.5">{t('multisig:secretModal.option.localAll.body')}</p>
+              <div className="mt-1 flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={collectAllSignaturesLocally}
+                  onChange={() => setCollectAllSignaturesLocally((v) => !v)}
+                />
+                <span>{t('multisig:secretModal.option.localAll.checkboxLabel')}</span>
+              </div>
+              <p className="text-[11px] mt-1 text-amber-700 dark:text-amber-300">{t('multisig:secretModal.option.localAll.warning')}</p>
+            </div>
+          </div>
+        )}
+        {isProcessing && (
+          <div className="mb-3 text-sm text-blue-700 dark:text-blue-300">
+            {t('common:main.processing')}
+          </div>
+        )}
         {error && (
           <div className="text-center text-xs text-red-700 mb-2">{error}</div>
         )}

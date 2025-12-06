@@ -4,6 +4,7 @@
   "description": "A tool to manage Stellar trustlines",
   "main": "server.js",
   "scripts": {
+    "// Hinweis": "// Für automatisches Build-Datum in Dev/Prod kann man beim Build Folgendes setzen: \\n//   VITE_BUILD_DATE=$(date -Iseconds) npm run dev \\n//   VITE_BUILD_DATE=$(date -Iseconds) npm run build \\n// Der Legal-Text liest dann import.meta.env.VITE_BUILD_DATE aus.",
     "start": "node server.js",
     "dev": "concurrently -k -n BACKEND,FRONTEND -c green,cyan \"PORT=3000 node server.js\" \"cd frontend && npm run dev\"",
     "i18n:extract-glossary-keys": "node scripts/dev/extractGlossaryKeys.js",

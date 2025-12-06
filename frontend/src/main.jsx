@@ -3,6 +3,7 @@ import './i18n'; // Initialisiert die Sprachunterstützung
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import ReactDOM from 'react-dom/client';
+import { Link } from 'react-router-dom';
 import { BACKEND_URL } from './config';
 import { 
   loadTrustlines, 
@@ -14,6 +15,35 @@ import { useTrustedWallets } from './utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
 import { isTestnetAccount } from './utils/stellar/accountUtils.js';
 import { buildPath, quizLandingPath } from './utils/basePath.js';
+
+function migrateLegacyStorageKeys() {
+  if (typeof window === 'undefined') return;
+  try {
+    const ls = window.localStorage;
+    const ss = window.sessionStorage;
+
+    if (ls.getItem('STM_NETWORK') && !ls.getItem('SKM_NETWORK')) {
+      ls.setItem('SKM_NETWORK', ls.getItem('STM_NETWORK'));
+    }
+    if (ls.getItem('STM_HORIZON_URL') && !ls.getItem('SKM_HORIZON_URL')) {
+      ls.setItem('SKM_HORIZON_URL', ls.getItem('STM_HORIZON_URL'));
+    }
+    if (ls.getItem('STM_NET_INIT') && !ls.getItem('SKM_NET_INIT')) {
+      ls.setItem('SKM_NET_INIT', ls.getItem('STM_NET_INIT'));
+    }
+
+    if (ss.getItem('STM_PREV_PATH') && !ss.getItem('SKM_PREV_PATH')) {
+      ss.setItem('SKM_PREV_PATH', ss.getItem('STM_PREV_PATH'));
+    }
+
+    ls.removeItem('STM_NETWORK');
+    ls.removeItem('STM_HORIZON_URL');
+    ls.removeItem('STM_NET_INIT');
+    ss.removeItem('STM_PREV_PATH');
+  } catch (e) {
+    /* noop */
+  }
+}
 
 function normalizeStoredWallet(entry) {
   if (typeof entry === 'string') {
@@ -68,6 +98,7 @@ import MuxedAccountsPage from './pages/MuxedAccountsPage.jsx';
 import MultisigJobList from './pages/MultisigJobList.jsx';
 
 
+migrateLegacyStorageKeys();
 confirmAutoClear();
 
 if (typeof window !== 'undefined') {
@@ -77,10 +108,10 @@ if (typeof window !== 'undefined') {
 // Ensure default network is PUBLIC on first load only; avoid re-emitting during remounts in dev
 try {
   if (typeof window !== 'undefined' && window.localStorage) {
-    const alreadyInit = window.localStorage.getItem('STM_NET_INIT') === '1';
+    const alreadyInit = window.localStorage.getItem('SKM_NET_INIT') === '1';
     if (!alreadyInit) {
-      window.localStorage.setItem('STM_NETWORK', 'PUBLIC');
-      window.localStorage.setItem('STM_NET_INIT', '1');
+      window.localStorage.setItem('SKM_NETWORK', 'PUBLIC');
+      window.localStorage.setItem('SKM_NET_INIT', '1');
       window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' }));
     }
   }
@@ -97,7 +128,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
 function Main() {
 	//console.log('main.jsx In function Main');
-  const { t } = useTranslation(['common', 'quiz', 'learn', 'glossary']);
+  const { t } = useTranslation(['common', 'quiz', 'learn', 'glossary', 'legal']);
   const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
   const { wallets } = useTrustedWallets();
   //console.log('[DEBUG] Aktive Horizon URL:', HORIZON_URL);
@@ -152,7 +183,7 @@ function Main() {
   useEffect(() => {
     // Do not force network again here; App.jsx listens and shows banner
     try {
-      const v = window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC';
+      const v = window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC';
       setDevTestnet(v === 'TESTNET');
     } catch { /* noop */ }
   }, []);
@@ -321,7 +352,7 @@ function Main() {
     setIsLoading(true);
     setError('');
     try {
-      const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+      const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
       // Nur leichte Zusammenfassung nach Netzwechsel neu laden
       const { publicKey, summary } = await submitSourceInput(sourcePublicKey, t, net, { includeTrustlines: false });
       setSourcePublicKey(publicKey);
@@ -346,7 +377,7 @@ function Main() {
   // Keep header checkbox (devTestnet) in sync with global network changes
   useEffect(() => {
     const handler = (e) => {
-      const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+      const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
       setDevTestnet(v === 'TESTNET');
       setInfoMessage('');
       try { if (sourcePublicKey) fetchXlmBalanceFor(sourcePublicKey, v === 'TESTNET' ? 'TESTNET' : 'PUBLIC'); } catch { /* noop */ }
@@ -355,7 +386,7 @@ function Main() {
     };
     window.addEventListener('stm-network-changed', handler);
     // Initialize once from storage without emitting
-    try { const v = window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC'; setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
+    try { const v = window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC'; setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
     return () => window.removeEventListener('stm-network-changed', handler);
   }, [sourcePublicKey]);
 
@@ -501,7 +532,7 @@ function Main() {
       const url = buildPath(cleanSubpath);
       if (typeof window !== 'undefined') {
         if (window.sessionStorage) {
-          window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname);
+          window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname);
         }
         window.history.pushState({}, '', url);
         window.dispatchEvent(new PopStateEvent('popstate'));
@@ -533,7 +564,7 @@ function Main() {
                     const url = quizLandingPath(1);
                     if (typeof window !== 'undefined') {
                       if (window.sessionStorage) {
-                        window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname);
+                        window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname);
                       }
                       window.history.pushState({}, '', url);
                       window.dispatchEvent(new PopStateEvent('popstate'));
@@ -587,7 +618,7 @@ function Main() {
                 <input
                   type="checkbox"
                   checked={devTestnet}
-                  onChange={(e)=>{ const next = !!e.target.checked; setDevTestnet(next); if (typeof window !== 'undefined' && window.localStorage) { if (next) { window.localStorage.setItem('STM_NETWORK', 'TESTNET'); window.localStorage.setItem('STM_HORIZON_URL', 'https://horizon-testnet.stellar.org'); } else { window.localStorage.setItem('STM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('STM_HORIZON_URL'); } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: next ? 'TESTNET' : 'PUBLIC' })); } }}
+                  onChange={(e)=>{ const next = !!e.target.checked; setDevTestnet(next); if (typeof window !== 'undefined' && window.localStorage) { if (next) { window.localStorage.setItem('SKM_NETWORK', 'TESTNET'); window.localStorage.setItem('SKM_HORIZON_URL', 'https://horizon-testnet.stellar.org'); } else { window.localStorage.setItem('SKM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('SKM_HORIZON_URL'); } window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: next ? 'TESTNET' : 'PUBLIC' })); } }}
                 />
                 {t('menu:devTestnet', 'Testnet (für Entwickler)')}
               </label>
@@ -609,7 +640,7 @@ function Main() {
               {walletHeaderInput && (
                 <button
                   type="button"
-                  onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); setDevTestnet(false); if (typeof window !== 'undefined' && window.localStorage) { window.localStorage.setItem('STM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('STM_HORIZON_URL'); window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); } }}
+                  onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); setDevTestnet(false); if (typeof window !== 'undefined' && window.localStorage) { window.localStorage.setItem('SKM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('SKM_HORIZON_URL'); window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); } }}
                   title={t('common:clear')}
                   aria-label={t('common:clear')}
                   className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center"
@@ -925,9 +956,9 @@ function Main() {
          <div className="p-3 text-sm text-red-600">
            {t('menu:unknown', { value: String(menuSelection) }, 'Unbekannte Menüauswahl')}
          </div>
-       )}
- 
-      {results.length > 0 && (
+      )}
+
+     {results.length > 0 && (
         <ResultDisplay
           results={results}
           sortColumn={sortColumn}
@@ -937,6 +968,12 @@ function Main() {
           itemsPerPage={ITEMS_PER_PAGE}
         />
       )}
+
+      <div className="mt-8 text-center text-xs text-gray-600 dark:text-gray-300">
+        <Link to="/legal" className="hover:underline">
+          {t('legal:footer.imprintLink')}
+        </Link>
+      </div>
 
       {showBackToTop && !showConfirm && !showSecretInfo && (
         <button

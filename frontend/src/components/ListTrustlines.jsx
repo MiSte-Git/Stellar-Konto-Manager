@@ -97,7 +97,7 @@ function ListTrustlines({
     async function loadAccountInfo() {
       if (!publicKey) return;
       try {
-        const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+        const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
         const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
         const acct = await server.loadAccount(publicKey);
         if (!cancelled) setAccountInfo(acct);
@@ -115,7 +115,7 @@ function ListTrustlines({
   };
 
   const submitChangeTrustTx = async ({ asset, limit, collectedSigners }) => {
-    const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+    const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
     const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
     const account = await server.loadAccount(publicKey);
     const thresholds = account?.thresholds || {};
@@ -231,7 +231,7 @@ function ListTrustlines({
         setErrorMessage(t('common:trustlines.deleteConfirm', 'Delete the selected trustlines?'));
         return;
       }
-      const net = (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+      const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
       const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
       const account = await server.loadAccount(publicKey);
       const feeStats = await server.feeStats();

@@ -86,6 +86,23 @@
       }
     }
   },
+  "secretModal": {
+    "options": {
+      "title": "Signatur-Optionen für dieses Multisig-Konto"
+    },
+    "option": {
+      "distributed": {
+        "title": "Standard: Verteilter Multisig-Flow",
+        "body": "In der Standardeinstellung signiert diese Sitzung nur mit Ihrem eigenen geheimen Schlüssel. Weitere Signaturen werden über exportierte XDR-Dateien oder eine Job-ID von anderen Unterzeichnern ergänzt."
+      },
+      "localAll": {
+        "title": "Alle Signaturen lokal eingeben",
+        "body": "Wählen Sie diese Option nur, wenn Sie alle zu diesem Konto gehörenden geheimen Schlüssel kontrollieren (z. B. nach einer Kontorettung mit mehreren Signern). Der Stellar Konto Manager sammelt dann alle Signaturen lokal und sendet die Transaktion direkt an Horizon.",
+        "checkboxLabel": "Alle Signaturen in diesem Dialog lokal eingeben und direkt senden",
+        "warning": "Hinweis: Wenn Sie alle Signaturen lokal eingeben, liegen alle geheimen Schlüssel in dieser Sitzung vor. Verwenden Sie diese Option nur auf vertrauenswürdigen Geräten."
+      }
+    }
+  },
   "errors": {
     "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion."
   },

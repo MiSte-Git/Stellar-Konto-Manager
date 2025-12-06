@@ -1,85 +1,73 @@
-# Stellar Trustline Manager
+# Stellar Konto Manager (SKM)
 
-Ein Tool zum Verwalten von Stellar-Trustlines, um Trustlines anzuzeigen, zu vergleichen und zu löschen.
+Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accounts, Multisig (Produktivmodus), Lerninhalte, Glossar, Quiz und Bugtracker. Open Source, lokal ausführbar, keine zentrale Datenspeicherung.
 
-## Überblick
+## Funktionsübersicht
 
-Dieses Repository enthält den Stellar Trustline Manager, eine Webanwendung zur Verwaltung von Trustlines auf der Stellar-Blockchain. Derzeit wird eine lokale, zentralisierte Lösung für Tests eingerichtet, die später in eine dezentralisierte Anwendung (dApp) umgewandelt wird.
+### A. Wallet / Basisfunktionen
+- SecretKeyModal für S-Key-Eingabe, optionales Speichern in der Sitzung (nur lokal).
+- Zahlungen senden (XLM/Assets), Memos, Preflight inkl. Aktivierung nicht finanzierter Konten.
+- Sichtbarer Processing-Indikator (`common:main.processing`), Explorer-Links zu StellarExpert/LumenScan.
 
-## Lokale Einrichtung (Debian)
+### B. Trustlines
+- Trustlines anzeigen, hinzufügen, löschen (chunked), Limits berücksichtigen.
+- Vergleich zweier Konten (Duplikate erkennen, keine Alt/Neu-Vergleiche).
+- Multisig-Prepare-Flow für ChangeTrust möglich.
 
-### Voraussetzungen
+### C. Muxed Accounts
+- M-Adresse aus G-Adresse + ID erzeugen, anzeigen und konvertieren.
+- Zahlungen an/von M-Accounts; XDR-Unterstützung im Flow.
 
-- **Node.js** (v20.19.0): `sudo apt install -y nodejs npm`
-- **Git** (v2.47.2): `sudo apt install -y git`
-- **Python 3** (v3.10.13): Vorinstalliert oder `sudo apt install -y python3`
-- Moderner Browser (Chrome, Firefox).
-- Internetzugang.
+### D. Multisig – Produktivmodus
+- Signer/Weights/Thresholds verwalten, inkl. MasterKey=0-Szenarien.
+- PendingMultisigJobs mit XDR-Export/Import, Status-Badges und Signatur-Fortschritt.
+- Signieren auf mehreren Geräten (PC/Laptop/Handy); optional alle Signaturen lokal sammeln (Checkbox im SecretKeyModal).
+- Zahlungen im Multisig-Produktivmodus (Job/XDR) oder lokal (wenn alle Keys vorhanden).
 
-### Einrichtung
+### E. Lernbereich / Glossar / Quiz
+- Learn-Seiten mit Diagrammen (z. B. Multisig Single vs Multi Signer).
+- Glossary mit Originalbegriffen in Klammern, SmallGlossaryLink.
+- Quiz mit zufälliger Antwortreihenfolge und Fortschrittsspeicherung.
 
-1. **Repository klonen**:
-   ```bash
-   git clone https://github.com/MiSte-Git/Stellar-Trustline-Manager.git
-   cd Stellar-Trustline-Manager
-   ```
-   - Alternativ: Kopiere `index.html`, `server.js`, `package.json`, `README.md`, `.gitignore` ins Verzeichnis.
+### F. Bugtracker
+- Fehler melden über UI; Speicherung in `data/bugreports.json`.
+- Admin-Modus zum Anzeigen/Löschen (S-Key-geschützt).
 
-2. **Backend einrichten**:
-   ```bash
-   npm install
-   node server.js
-   ```
-   - Läuft auf `http://localhost:3000`.
+### G. Spenden
+- Menüpunkt „Spenden“ öffnet den regulären Zahlungsdialog (freiwillig).
 
-3. **Frontend einrichten**:
-   - Öffne ein neues Terminal:
-     ```bash
-     cd /media/michael/Michis_All/Projects/Java\ Skript/Stellar\ Trustline\ Manager
-     python3 -m http.server 8080
-     ```
-   - Öffne `http://localhost:8080` im Browser.
+## Architekturüberblick
+- Frontend: React + Vite.
+- Backend: Node.js/Express, lokale Dateiablage.
+- Daten: `data/multisig_jobs.json`, `data/bugreports.json`.
+- Keine externen Server, keine zentrale Datenspeicherung.
 
-### Testen
-
-1. **PC-Test** (Chrome/Firefox):
-   - Öffne `http://localhost:8080`.
-   - Gib einen Stellar-Public-Key (Testnet) ein.
-   - Überprüfe 333 Trustlines pro Seite, Sortierung, Pagination, „Back to Top“, Secret-Key-Toggle, Löschung.
-
-2. **Mobile-Test** (Android/iOS):
-   - Finde lokale IP: `ip addr show | grep inet`.
-   - Greife auf `http://<deine-IP>:8080` zu.
-   - Wiederhole PC-Tests, prüfe Responsivität.
-
-## GitHub-Speicherung
-
-- **Dateien hochladen**:
+## Installation & Start (lokal)
+- Voraussetzungen: Node.js 20+, npm/pnpm, moderner Browser.
+- Schritte:
   ```bash
-  git add .
-  git commit -m "Lokale Lösung"
-  git push origin main
+  git clone https://github.com/MiSte-Git/Stellar-Trustline-Manager.git
+  cd Stellar-Trustline-Manager
+  ./start-dev.sh   # startet Backend (Port 3000) und Frontend (Port 5173)
   ```
-- **Release**:
-  - Erstelle `v1.0.0` auf GitHub mit ZIP (`index.html`, `server.js`, etc.).
+  Alternativ: `npm install && npm start` (Backend), `cd frontend && npm install && npm run dev` (Frontend).
 
-## Zukünftige dApp
+## i18n-System
+- Namespaced JSON unter `frontend/src/locales/<lang>/*.json`, DE als Referenzsprache.
+- Autoload aller Namespaces, keine Hardcoded-Texte.
+- Automatisches Übersetzungsskript: `UpdateSprachdateienBasierendAufDE.py` (bzw. Sync-Skripte im Repo).
 
-- **Zeitplan**: Juni/Juli 2025.
-- **Plan**:
-  - Wallet-Integration (Freighter/Albedo).
-  - Frontend auf IPFS.
-  - Entferne Backend, clientseitige Logik.
+## Sicherheitshinweise
+- Geheimnisse bleiben lokal; keine Secret-Übertragung an Server.
+- Multisig-XDR-Signaturen können vollständig lokal gehandhabt werden.
+- Empfehlung: echte Wallet-Keys nur auf vertrauenswürdigen Geräten, Backups offline halten.
 
-## Veröffentlichung
+## Rechtliches
+- Öffentliche Nutzung erfordert Impressum/Datenschutz: Seite `/legal` verlinkt im Footer und Menü.
+- Open-Source-Lizenz: siehe Lizenzdatei im Repo.
 
-- Mit Web3-Firmen-Webseite (Juni/July 2025).
-- Deployment-Optionen: Vercel/Railway (zentralisiert), IPFS (dApp).
-
-## Support
-
-- **Issues**: https://github.com/MiSte-Git/Stellar-Trustline-Manager/issues
-
-## API-Notizen
-
-- Pending-Multisig-Jobs (Datei-basiert, keine Secrets): `POST /api/multisig/jobs` speichert txXdr + Hash mit Status `pending_signatures`, `GET /api/multisig/jobs` mit optionalen Filtern (network, accountId, status), `GET /api/multisig/jobs/:id` liefert Details inkl. aktueller XDR. Daten liegen in `data/multisig_jobs.json`.
+## Roadmap (Ausblick)
+- Soroban-Smart-Contract-Unterstützung.
+- dApp/IPFS-Variante.
+- Erweiterte Multisig-Flows.
+- Mobile UI-Optimierung.
