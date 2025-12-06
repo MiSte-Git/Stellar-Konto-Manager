@@ -8,7 +8,7 @@ const STORAGE_KEY = 'muxedAccounts_v3';
 
 function _getNet(explicitNet) {
   try {
-    const n = explicitNet || window.localStorage.getItem('STM_NETWORK') || 'PUBLIC';
+    const n = explicitNet || window.localStorage.getItem('SKM_NETWORK') || 'PUBLIC';
     const resolved = n === 'TESTNET' ? 'TESTNET' : 'PUBLIC';
     try { console.debug('[muxedStore._getNet]', { explicitNet, stored: n, resolved }); } catch { /* noop */ }
     return resolved;

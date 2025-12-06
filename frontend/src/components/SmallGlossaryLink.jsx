@@ -17,7 +17,7 @@ export default function SmallGlossaryLink() {
             e.preventDefault();
             const url = buildPath('glossar');
             // remember previous path to restore on back
-            try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
+            try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
             window.history.pushState({}, '', url);
             window.dispatchEvent(new PopStateEvent('popstate'));
           } catch { /* noop */ }

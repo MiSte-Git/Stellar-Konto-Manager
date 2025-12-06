@@ -40,7 +40,7 @@ export default function MuxedAccountsPage({ publicKey }) {
 
   const [netLabel, setNetLabel] = React.useState(() => {
     try {
-      return (typeof window !== 'undefined' && window.localStorage?.getItem('STM_NETWORK') === 'TESTNET')
+      return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET')
         ? 'TESTNET'
         : 'PUBLIC';
     } catch {
@@ -131,7 +131,7 @@ export default function MuxedAccountsPage({ publicKey }) {
       try {
         const v = (typeof e?.detail === 'string')
           ? e.detail
-          : (window.localStorage?.getItem('STM_NETWORK') || 'PUBLIC');
+          : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC');
         DBG.log('stm-network-changed', { detail: e?.detail, resolved: v });
         setNetLabel(v === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
       } catch { /* noop */ }

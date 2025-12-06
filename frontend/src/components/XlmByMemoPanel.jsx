@@ -1,4 +1,4 @@
-// STM_VER:XlmByMemoPanel.jsx@2025-09-10
+// SKM_VER:XlmByMemoPanel.jsx@2025-09-10
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { getHorizonServer } from "../utils/stellar/stellarUtils";
@@ -1025,5 +1025,4 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
     </div>
   );
 }
-
 

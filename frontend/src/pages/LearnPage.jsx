@@ -44,7 +44,7 @@ function LearnPage() {
   const goBack = React.useCallback(() => {
     try {
       const prev = (typeof window !== 'undefined' && window.sessionStorage)
-        ? window.sessionStorage.getItem('STM_PREV_PATH')
+        ? window.sessionStorage.getItem('SKM_PREV_PATH')
         : '';
       if (prev) {
         window.history.pushState({}, '', prev);
@@ -367,7 +367,7 @@ function LearnPage() {
                         const id = String(pid).match(/\d+/)?.[0] || '1';
                         const url = buildPath(`quiz/${id}/settings`);
                         // remember previous path to restore on back
-                        try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
+                        try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
                         window.history.pushState({}, '', url);
                         window.dispatchEvent(new PopStateEvent('popstate'));
                       } catch { /* noop */ }
@@ -386,7 +386,7 @@ function LearnPage() {
                         const id = String(pid).match(/\d+/)?.[0] || '1';
                         const url = buildPath(`quiz/${id}`);
                         // remember previous path to restore on back
-                        try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('STM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
+                        try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
                         window.history.pushState({}, '', url);
                         window.dispatchEvent(new PopStateEvent('popstate'));
                       } catch { /* noop */ }
