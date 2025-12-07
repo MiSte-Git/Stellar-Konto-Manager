@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Pretraga imovine",
+    "description": "Traži sredstva putem trgovačkog krajnje točke (Horizon).",
+    "form": {
+      "code": {
+        "label": "Šifra imovine",
+        "placeholder": "z.B., USDC"
+      },
+      "issuer": {
+        "label": "Izdavatelj (optional)",
+        "placeholder": "G… (optional)"
+      },
+      "submit": "Pretraži"
+    },
+    "result": {
+      "empty": "Nema pronađene imovine.",
+      "columns": {
+        "code": "Kod",
+        "issuer": "Izdavatelj",
+        "numAccounts": "Računi",
+        "amount": "Ukupni iznos"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Molimo unesite šifru imovine."
+    },
+    "failed": {
+      "generic": "Pretraga imovine nije uspjela. Molimo pokušajte ponovo kasnije."
+    }
+  }
+}

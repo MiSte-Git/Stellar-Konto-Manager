@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Varallisuuden etsintä",
+    "description": "Etsi varoja kaupankäyntipisteen (Horizon) kautta.",
+    "form": {
+      "code": {
+        "label": "Omaisuuskoodi",
+        "placeholder": "z. B. USDC"
+      },
+      "issuer": {
+        "label": "Lainan liikkeeseenlaskija (optional)",
+        "placeholder": "G… (optional)"
+      },
+      "submit": "Haku"
+    },
+    "result": {
+      "empty": "Varoja ei löytynyt.",
+      "columns": {
+        "code": "Koodi",
+        "issuer": "Liikkeellelaskija",
+        "numAccounts": "Tilinpäätökset",
+        "amount": "Kokonaissumma"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Anna oma varainhallintakoodi."
+    },
+    "failed": {
+      "generic": "Omaisuuden haku epäonnistui. Yritä uudelleen myöhemmin."
+    }
+  }
+}

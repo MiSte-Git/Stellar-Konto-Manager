@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Sauvegarde exportée",
-      "backupBeforeImport": "Une sauvegarde a été effectuée avant l'importation."
+      "backupBeforeImport": "Une sauvegarde a été enregistrée avant l'importation."
     },
     "nav": {
       "back": "Retour"
@@ -48,7 +48,8 @@
     "title": "Réseau",
     "desc": "Facultatif : Horizon de l'historique complet pour l'historique approfondi",
     "fullUrl": "URL de l'horizon de l'historique complet",
-    "autoUseFull": "Utiliser automatiquement si la date de début est antérieure à l'historique du serveur."
+    "autoUseFull": "Utiliser automatiquement si la date de début est antérieure à l'historique du serveur.",
+    "historyInfo": "Les serveurs Horizon gratuits exploités par la Stellar Development Foundation fournissent seulement environ un an d'historique. Pour des données plus anciennes, vous devrez soit exploiter votre propre nœud Horizon, soit vous fier à des services tiers/payants."
   },
   "description": "Actuellement, il n'y a pas encore de paramètres.",
   "display": {
@@ -100,5 +101,51 @@
     "validation": {
       "hint": "Au moins une ligne est invalide (adresse manquante/dupliquée)."
     }
+  },
+  "back": "Retour",
+  "aria": {
+    "back": "Retourner à la page précédente."
+  },
+  "tabs": {
+    "general": "Général",
+    "app": "Application/interface",
+    "accounts": "Liste des comptes",
+    "network": "Réseau",
+    "quiz": "Quiz",
+    "explorer": "Explorer"
+  },
+  "sections": {
+    "general": "Paramètres généraux",
+    "app": "Paramètres de l'application",
+    "accounts": "Liste des comptes",
+    "network": "Réseau",
+    "quiz": "Paramètres du quiz",
+    "explorer": "Stellar Explorer"
+  },
+  "explorer": {
+    "sectionTitle": "Stellar Explorer",
+    "description": "Sélectionnez l'explorateur par défaut pour les liens de compte et gérez la liste des explorateurs.",
+    "defaultLabel": "Explorateur Standard",
+    "nameLabel": "Nom",
+    "urlLabel": "URL",
+    "testnetUrlLabel": "URL du réseau de test (optional)",
+    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
+    "addButton": "Ajouter un explorateur",
+    "removeButton": "Retirer",
+    "setDefault": "Définir par défaut",
+    "noEntries": "Aucun explorateur configuré.",
+    "validation": {
+      "nameRequired": "Veuillez entrer un nom.",
+      "urlRequired": "Veuillez entrer une URL.",
+      "urlInvalid": "Veuillez entrer une URL valide.",
+      "testnetUrlInvalid": "Veuillez entrer une URL valide de testnet."
+    },
+    "mainnetLabel": "Mainnet",
+    "testnetLabel": "Réseau de test",
+    "edit": "Modifier"
+  },
+  "export": {
+    "title": "Paramètres d'exportation",
+    "button": "Enregistrer les paramètres dans un fichier"
   }
 }

@@ -1,14 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { useSettings } from '../utils/useSettings.js';
+import { buildExplorerUrl } from '../utils/stellar/accountUtils.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 
 export default function BalancePage({ publicKey }) {
 const { t, i18n } = useTranslation(['common']);
-const { decimalsMode } = useSettings();
+const { decimalsMode, explorers: explorerList, defaultExplorerKey } = useSettings();
 const [netLabel, setNetLabel] = useState(() => {
   try { return (localStorage.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
 });
@@ -16,15 +17,18 @@ const [balances, setBalances] = useState([]);
 const [payments, setPayments] = useState([]);
 const [paymentsLimit, setPaymentsLimit] = useState('100'); // 'all' | number as string
 const [paymentsMemoQuery, setPaymentsMemoQuery] = useState('');
+const [paymentsCounterpartyQuery, setPaymentsCounterpartyQuery] = useState('');
 const [error, setError] = useState('');
 const [loading, setLoading] = useState(false);
 const [fromTs, setFromTs] = useState(''); // datetime-local
 const [toTs, setToTs] = useState('');
 const [balSort, setBalSort] = useState({ key: 'code', dir: 'asc' });
 const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
-  const [explorerPref, setExplorerPref] = useState(() => {
-    try { return localStorage.getItem('stm.explorerPref') || 'expert'; } catch { return 'expert'; }
-  }); // 'expert' | 'stellarchain'
+const [selectedExplorerKey, setSelectedExplorerKey] = useState(() => {
+  if (defaultExplorerKey) return defaultExplorerKey;
+  if (explorerList && explorerList.length > 0) return explorerList[0].key;
+  return '';
+});
  
   const server = useMemo(
     () => getHorizonServer(netLabel === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN),
@@ -78,12 +82,18 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
   }, [decimalsMode, i18n.language]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('stm.explorerPref', explorerPref);
-    } catch {
-      /* noop */
+    if (!selectedExplorerKey && explorerList?.length) {
+      setSelectedExplorerKey(defaultExplorerKey || explorerList[0].key);
     }
-  }, [explorerPref]);
+  }, [selectedExplorerKey, explorerList, defaultExplorerKey]);
+  const clearMemoFilter = () => setPaymentsMemoQuery('');
+  const clearCounterpartyFilter = () => setPaymentsCounterpartyQuery('');
+  const clearAllPaymentFilters = () => {
+    setPaymentsMemoQuery('');
+    setPaymentsCounterpartyQuery('');
+    setFromTs('');
+    setToTs('');
+  };
 
   // listen to global network changes
   useEffect(() => {
@@ -150,9 +160,54 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
     return () => { cancelled = true; };
   }, [publicKey, server, paymentsLimit, netLabel]);
 
-  const explorer = netLabel === 'TESTNET' ? 'testnet' : 'public';
-  const urlExpert = `https://stellar.expert/explorer/${explorer}/account/${publicKey || ''}`;
-  const urlChain = `https://stellarchain.io/${netLabel === 'TESTNET' ? 'testnet/' : ''}account/${publicKey || ''}`;
+  const selectedExplorer = useMemo(() => {
+    return (explorerList || []).find((e) => e.key === selectedExplorerKey) || (explorerList && explorerList[0]) || null;
+  }, [explorerList, selectedExplorerKey]);
+  const txUrlFor = (hash) => {
+    if (!hash || !selectedExplorer) return '';
+    return buildExplorerUrl(selectedExplorer, hash, netLabel, { type: 'tx' });
+  };
+  const passesPaymentFilters = useCallback((op) => {
+    if (!op) return false;
+    const ts = Date.parse(op.created_at || '');
+    if (fromTs) {
+      const f = Date.parse(fromTs);
+      if (!Number.isNaN(f) && ts < f) return false;
+    }
+    if (toTs) {
+      const tlim = Date.parse(toTs);
+      if (!Number.isNaN(tlim) && ts > tlim) return false;
+    }
+    const memoQuery = paymentsMemoQuery.trim().toLowerCase();
+    if (memoQuery) {
+      const txMemo = op.transaction?.memo || op.transaction?.memo_text || memoMap[op.transaction_hash];
+      const memoCandidates = [
+        txMemo,
+        op.memo,
+        op.transaction?.memo_type && op.transaction.memo_type !== 'none' ? op.transaction.memo_type : '',
+        op.transaction_hash,
+      ];
+      const memoMatch = memoCandidates.some((m) => m && String(m).toLowerCase().includes(memoQuery));
+      if (!memoMatch) return false;
+    }
+    const counterpartyQuery = paymentsCounterpartyQuery.trim().toLowerCase();
+    if (counterpartyQuery) {
+      const parties = [
+        op.to,
+        op.to_account,
+        op.destination,
+        op.account,
+        op.from,
+        op.from_account,
+        op.source_account,
+        op.funder,
+      ];
+      const partyMatch = parties.some((p) => p && String(p).toLowerCase().includes(counterpartyQuery));
+      if (!partyMatch) return false;
+    }
+    return true;
+  }, [fromTs, toTs, paymentsMemoQuery, paymentsCounterpartyQuery, memoMap]);
+  const filteredPayments = useMemo(() => (payments || []).filter(passesPaymentFilters), [payments, passesPaymentFilters]);
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -168,34 +223,9 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
 
       <div className="bg-white dark:bg-gray-800 rounded border p-3 flex flex-wrap items-center gap-4 mb-4">
 
-        <div className="flex items-center gap-2">
-          <label className="text-sm">{t('common:balance.payments.limit')}</label>
-          <select className="border rounded px-2 py-1" value={paymentsLimit} onChange={(e) => setPaymentsLimit(e.target.value)}>
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-            <option value="200">200</option>
-            <option value="all">{t('common:balance.payments.all')}</option>
-          </select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm">{t('common:balance.payments.from')}</label>
-          <input type="datetime-local" className="border rounded px-2 py-1" value={fromTs} onChange={(e)=>setFromTs(e.target.value)} />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm">{t('common:balance.payments.to')}</label>
-          <input type="datetime-local" className="border rounded px-2 py-1" value={toTs} onChange={(e)=>setToTs(e.target.value)} />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm">{t('common:balance.payments.filter.memo')}</label>
-          <input type="text" className="border rounded px-2 py-1" value={paymentsMemoQuery} placeholder={t('common:balance.payments.filter.memoPlaceholder')} onChange={(e)=>setPaymentsMemoQuery(e.target.value)} />
-        </div>
         <div className="ml-auto flex items-center gap-2">
           <button type="button" onClick={()=>document.getElementById('payments')?.scrollIntoView({ behavior:'smooth' })} className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800">
             {t('common:balance.buttons.payments')}
-          </button>
-          <button type="button" onClick={()=>document.getElementById('details')?.scrollIntoView({ behavior:'smooth' })} className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800">
-            {t('common:balance.buttons.details')}
           </button>
         </div>
       </div>
@@ -294,6 +324,74 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
 
           <div id="payments" className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
             <h3 className="font-semibold mb-2">{t('common:balance.payments.title')}</h3>
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <label className="text-sm">{t('common:balance.payments.limit')}</label>
+                  <select className="border rounded px-2 py-1" value={paymentsLimit} onChange={(e) => setPaymentsLimit(e.target.value)}>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="all">{t('common:balance.payments.all')}</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm">{t('common:balance.payments.from')}</label>
+                  <input type="datetime-local" className="border rounded px-2 py-1" value={fromTs} onChange={(e)=>setFromTs(e.target.value)} />
+                </div>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm">{t('common:balance.payments.to')}</label>
+                  <input type="datetime-local" className="border rounded px-2 py-1" value={toTs} onChange={(e)=>setToTs(e.target.value)} />
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <label className="text-sm">{t('common:balance.payments.filter.memo')}</label>
+                  <div className="flex items-center gap-1">
+                    <input type="text" className="border rounded px-2 py-1" value={paymentsMemoQuery} placeholder={t('common:balance.payments.filter.memoPlaceholder')} onChange={(e)=>setPaymentsMemoQuery(e.target.value)} />
+                    {paymentsMemoQuery ? (
+                      <button
+                        type="button"
+                        className="px-2 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                        onClick={clearMemoFilter}
+                      >
+                        {t('common:balance.payments.filter.clear', 'Löschen')}
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <label className="text-sm">{t('common:balance.payments.filter.counterparty')}</label>
+                  <div className="flex items-center gap-1 flex-1">
+                    <input
+                      type="text"
+                      className="border rounded px-2 py-1 w-full"
+                      value={paymentsCounterpartyQuery}
+                      placeholder={t('common:balance.payments.filter.counterpartyPlaceholder')}
+                      onChange={(e) => setPaymentsCounterpartyQuery(e.target.value)}
+                    />
+                    {paymentsCounterpartyQuery ? (
+                      <button
+                        type="button"
+                        className="px-2 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                        onClick={clearCounterpartyFilter}
+                      >
+                        {t('common:balance.payments.filter.clear', 'Löschen')}
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className="ml-auto px-3 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={clearAllPaymentFilters}
+                >
+                  {t('common:balance.payments.filter.resetAll', 'Alle Filter löschen')}
+                </button>
+              </div>
+            </div>
             <div className="overflow-x-auto"><table className="min-w-full text-sm">
               <thead>
                 <tr className="text-left border-b">
@@ -321,16 +419,30 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                   <th className="py-1 pr-2 whitespace-nowrap">
                     <span className="inline-flex items-center gap-2">
                       {t('common:balance.payments.columns.txLabel', 'Tx')}
-                      <select className="border rounded px-1 py-0.5 text-xs" value={explorerPref} onChange={(e)=>setExplorerPref(e.target.value)}>
-                        <option value="expert">{t('common:balance.explorer.expert', 'stellar.expert')}</option>
-                        <option value="stellarchain">{t('common:balance.explorer.stellarchain', 'Stellarchain')}</option>
+                      <select
+                        className="border rounded px-1 py-0.5 text-xs"
+                        value={selectedExplorerKey}
+                        onChange={(e)=>setSelectedExplorerKey(e.target.value)}
+                      >
+                        {(explorerList || []).map((exp) => (
+                          <option key={exp.key} value={exp.key}>{exp.name}</option>
+                        ))}
+                        {(!explorerList || explorerList.length === 0) && (
+                          <option value="" disabled>{t('common:balance.explorer.noneConfigured')}</option>
+                        )}
                       </select>
+                      <span
+                        className="text-xs text-gray-500 cursor-help"
+                        title={t('common:balance.explorer.settingsHint')}
+                      >
+                        ⓘ
+                      </span>
                     </span>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {[...(payments || [])]
+                {[...filteredPayments]
                   .sort((a,b)=>{
                     const dir = paySort.dir==='asc' ? 1 : -1;
                     const get = (op, key) => {
@@ -414,12 +526,10 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                       <td className="py-1 pr-2 break-all">
                         {op.transaction_hash ? (
                           <a
-                            href={explorerPref==='expert'
-                              ? `https://stellar.expert/explorer/${explorer}/tx/${op.transaction_hash}`
-                              : `https://stellarchain.io/${netLabel==='TESTNET'?'testnet/':''}tx/${op.transaction_hash}`}
+                            href={txUrlFor(op.transaction_hash)}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-blue-600 hover:underline"
+                            className={`text-blue-600 ${txUrlFor(op.transaction_hash) ? 'hover:underline' : 'opacity-50 pointer-events-none cursor-not-allowed'}`}
                           >
                             {op.transaction_hash}
                           </a>
@@ -428,19 +538,7 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
                     </tr>
                   );
                 })}
-                {((payments || []).filter(op => {
-                  const ts = Date.parse(op.created_at || '');
-                  if (fromTs) { const f = Date.parse(fromTs); if (!Number.isNaN(f) && ts < f) return false; }
-                  if (toTs) { const tlim = Date.parse(toTs); if (!Number.isNaN(tlim) && ts > tlim) return false; }
-                  if (paymentsMemoQuery && paymentsMemoQuery.trim()) {
-                    const q = paymentsMemoQuery.trim().toLowerCase();
-                    const txMemo = op.transaction?.memo || op.transaction?.memo_text || memoMap[op.transaction_hash] || '';
-                    const memoLower = (txMemo || (op.memo ? String(op.memo) : '')).toLowerCase();
-                    const txLower = String(op.transaction_hash || '').toLowerCase();
-                    if (!(memoLower.includes(q) || txLower.includes(q))) return false;
-                  }
-                  return true;
-                }).length === 0) && (
+                {(filteredPayments.length === 0) && (
                   <tr>
                     <td colSpan={8} className="py-2 text-gray-500">{t('common:balance.payments.empty')}</td>
                   </tr>
@@ -449,14 +547,6 @@ const [paySort, setPaySort] = useState({ key: 'date', dir: 'desc' });
             </table></div>
           </div>
 
-          <div id="details" className="bg-white dark:bg-gray-800 rounded border p-4">
-            <h3 className="font-semibold mb-2">{t('common:balance.details')}</h3>
-            <div className="flex flex-wrap gap-2">
-              <a href={urlExpert} target="_blank" rel="noreferrer" className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800">stellar.expert</a>
-              <a href={urlChain} target="_blank" rel="noreferrer" className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800">Stellarchain.io</a>
-            </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">{t('common:balance.paymentsHint')}</p>
-          </div>
         </>
       )}
     </div>

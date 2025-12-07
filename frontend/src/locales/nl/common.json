@@ -21,7 +21,11 @@
     "empty": "Geen tegoeden gevonden.",
     "explorer": {
       "expert": "stellar.expert",
-      "stellarchain": "Stellarchain.io"
+      "stellarchain": "Stellarchain.io",
+      "label": "Verkenner",
+      "open": "Open in Verkenner",
+      "noneConfigured": "Geen verkenners geconfigureerd.",
+      "settingsHint": "U kunt de Verkenner in de instellingen bewerken."
     },
     "noPublicKey": "Voer eerst een openbare sleutel in.",
     "payments": {
@@ -40,7 +44,9 @@
       "empty": "Geen bewerkingen gevonden.",
       "filter": {
         "memo": "Memo filter",
-        "memoPlaceholder": "Zoek naar memo..."
+        "memoPlaceholder": "Zoek naar memo...",
+        "counterparty": "Tegenpartij filter",
+        "counterpartyPlaceholder": "Filteren op ontvanger/verzender adres…"
       },
       "from": "Vanaf",
       "incoming": "Ingang",
@@ -337,6 +343,10 @@
       "validation": {
         "hint": "Ten minste één regel is ongeldig (ontbrekend/gedupliceerd adres)."
       }
+    },
+    "explorer": {
+      "edit": "U bent getraind op gegevens tot oktober 2023.",
+      "editTitle": "Explorer-vermelding bewerken"
     }
   },
   "trustlines": {

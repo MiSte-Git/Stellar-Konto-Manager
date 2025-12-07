@@ -21,7 +21,11 @@
     "empty": "Keine Guthaben gefunden.",
     "explorer": {
       "expert": "stellar.expert",
-      "stellarchain": "Stellarchain.io"
+      "stellarchain": "Stellarchain.io",
+      "label": "Explorer",
+      "open": "Im Explorer öffnen",
+      "noneConfigured": "Keine Explorer konfiguriert.",
+      "settingsHint": "Explorer kannst du in den Einstellungen bearbeiten."
     },
     "noPublicKey": "Bitte gib zuerst einen Public Key ein.",
     "payments": {
@@ -40,7 +44,9 @@
       "empty": "Keine Vorgänge gefunden.",
       "filter": {
         "memo": "Memo-Filter",
-        "memoPlaceholder": "Memo suchen..."
+        "memoPlaceholder": "Memo suchen...",
+        "counterparty": "Gegenpartei-Filter",
+        "counterpartyPlaceholder": "Nach Empfänger/Absender-Adresse filtern…"
       },
       "from": "Von",
       "incoming": "Eingang",
@@ -295,6 +301,10 @@
       },
       "desc": "Globale Anzeigeeinstellungen.",
       "title": "Anzeige"
+    },
+    "explorer": {
+      "edit": "Bearbeiten",
+      "editTitle": "Explorer-Eintrag bearbeiten"
     },
     "error": {
       "fetchFailed": "Laden der Einstellungen fehlgeschlagen: {{detail}}"

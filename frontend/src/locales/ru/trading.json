@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Поиск активов",
+    "description": "Поиск активов через конечную точку торговли (Horizon).",
+    "form": {
+      "code": {
+        "label": "Код актива",
+        "placeholder": "например, USDC"
+      },
+      "issuer": {
+        "label": "Эмитент (optional)",
+        "placeholder": "G… (optional)"
+      },
+      "submit": "Поиск"
+    },
+    "result": {
+      "empty": "Активы не найдены.",
+      "columns": {
+        "code": "Код",
+        "issuer": "Эмитент",
+        "numAccounts": "Учетные записи",
+        "amount": "Общая сумма"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Пожалуйста, введите код актива."
+    },
+    "failed": {
+      "generic": "Поиск актива не удался. Пожалуйста, попробуйте еще раз позже."
+    }
+  }
+}

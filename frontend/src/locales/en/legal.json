@@ -1,0 +1,32 @@
+{
+  "title": "Imprint & Privacy Policy",
+  "subtitle": "Information about the provider, disclaimer, and the processing of personal data.",
+  "imprint": {
+    "title": "Imprint",
+    "providerLabel": "Provider:",
+    "providerName": "Stellar Account Manager (privates Projekt)",
+    "addressLabel": "Address:",
+    "addressLines": "I'm sorry, it seems there was an error in your message. Could you please provide the text you'd like translated?",
+    "emailLabel": "Email:",
+    "email": "support@skm.steei.de"
+  },
+  "disclaimer": {
+    "title": "Disclaimer",
+    "body": "Es gibt keinen Text, den ich übersetzen kann. Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "We take the protection of your personal data seriously. Below, we inform you about the processing of personal data when using this application.",
+    "sections": "I'm sorry, it seems there is no text provided. Could you please provide the text you need to be translated into English?"
+  },
+  "lastUpdated": "Last updated: {{date}}",
+  "meta": {
+    "lastUpdated": {
+      "fallbackDate": "March 2026"
+    }
+  },
+  "backToApp": "Back",
+  "footer": {
+    "imprintLink": "Imprint & Privacy Policy"
+  }
+}

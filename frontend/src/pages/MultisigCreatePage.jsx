@@ -607,6 +607,7 @@ export default function MultisigCreatePage() {
           signers={signersForModal}
           operationType="setOptions"
           requiredThreshold={requiredThreshold}
+          account={{ signers: signersForModal, thresholds: thresholdsForModal }}
         />
       )}
 

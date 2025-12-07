@@ -21,7 +21,11 @@
     "empty": "Кредиты не найдены.",
     "explorer": {
       "expert": "stellar.expert",
-      "stellarchain": "Stellarchain.io"
+      "stellarchain": "Stellarchain.io",
+      "label": "Исследователь",
+      "open": "Открыть в Проводнике",
+      "noneConfigured": "Исследователи не настроены.",
+      "settingsHint": "Вы можете изменить Проводник в настройках."
     },
     "noPublicKey": "Пожалуйста, сначала введите открытый ключ.",
     "payments": {
@@ -40,7 +44,9 @@
       "empty": "Операции не найдены.",
       "filter": {
         "memo": "Фильтр записок",
-        "memoPlaceholder": "Искать записку..."
+        "memoPlaceholder": "Искать записку...",
+        "counterparty": "Фильтр контрагента",
+        "counterpartyPlaceholder": "Фильтровать по адресу получателя/отправителя…"
       },
       "from": "С",
       "incoming": "Вход",
@@ -337,6 +343,10 @@
       "validation": {
         "hint": "По крайней мере, одна строка недействительна (отсутствует/дублировано адрес)."
       }
+    },
+    "explorer": {
+      "edit": "Вы обучены на данных до октября 2023 года.",
+      "editTitle": "Редактировать запись в Explorer"
     }
   },
   "trustlines": {

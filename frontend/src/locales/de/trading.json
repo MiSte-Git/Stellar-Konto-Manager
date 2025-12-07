@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Asset-Suche",
+    "description": "Suche nach Assets über den Trading-Endpunkt (Horizon).",
+    "form": {
+      "code": {
+        "label": "Asset-Code",
+        "placeholder": "z. B. USDC"
+      },
+      "issuer": {
+        "label": "Issuer (optional)",
+        "placeholder": "G… (optional)"
+      },
+      "submit": "Suchen"
+    },
+    "result": {
+      "empty": "Keine Assets gefunden.",
+      "columns": {
+        "code": "Code",
+        "issuer": "Issuer",
+        "numAccounts": "Accounts",
+        "amount": "Gesamtmenge"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Bitte einen Asset-Code eingeben."
+    },
+    "failed": {
+      "generic": "Die Asset-Suche ist fehlgeschlagen. Bitte später erneut versuchen."
+    }
+  }
+}

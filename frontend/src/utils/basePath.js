@@ -146,6 +146,21 @@ export function quizAchievementsPath(lessonId) {
 }
 
 /**
+ * isTradingAssetsPath: Pfad zur Trading-Asset-Suche (/trading/assets)
+ */
+export function isTradingAssetsPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const target = buildPath('trading/assets');
+  return normalizePath(current) === normalizePath(target) || normalizePath(current).endsWith('/trading/assets');
+}
+
+export function tradingAssetsPath() {
+  return buildPath('trading/assets');
+}
+
+/**
  * Extracts multisig job id from path /multisig/jobs/:id
  */
 export function getMultisigJobId(pathname) {
@@ -154,7 +169,7 @@ export function getMultisigJobId(pathname) {
     : (typeof window !== 'undefined' ? window.location.pathname : '');
   const p = normalizePath(stripBase(current));
   const m = p.match(/^\/?multisig\/jobs\/([^/]+)$/);
-  return m ? m[1] : null;
+ return m ? m[1] : null;
 }
 
 /**
@@ -167,6 +182,19 @@ export function isLessonPracticePath(pathname) {
   const base = buildPath('learn/lesson/');
   const p = normalizePath(current);
   return p.startsWith(normalizePath(base)) && p.endsWith('/practice');
+}
+
+/**
+ * isSettingsPath: Pfad zur gemeinsamen Einstellungsseite (/settings)
+ */
+export function isSettingsPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const target = buildPath('settings');
+  const normCurrent = normalizePath(current);
+  const normTarget = normalizePath(target);
+  return normCurrent === normTarget || normCurrent.endsWith('/settings');
 }
 
 /**

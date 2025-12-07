@@ -1,0 +1,32 @@
+{
+  "title": "Imprint & Privacy Policy",
+  "subtitle": "Informations sur le fournisseur, avertissement et traitement des données personnelles.",
+  "imprint": {
+    "title": "Mentions légales",
+    "providerLabel": "Fournisseur :",
+    "providerName": "Gestionnaire de compte Stellar (privates Projekt)",
+    "addressLabel": "Adresse :",
+    "addressLines": "Je suis désolé, il semble qu'il y ait eu une erreur dans votre message. Pouvez-vous s'il vous plaît fournir le texte que vous souhaitez traduire ?",
+    "emailLabel": "E-mail :",
+    "email": "support@skm.steei.de"
+  },
+  "disclaimer": {
+    "title": "Avertissement",
+    "body": "Es tut mir leid, ich kann keinen Text zum Übersetzen sehen. Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
+  },
+  "privacy": {
+    "title": "Politique de Confidentialité",
+    "intro": "Nous prenons la protection de vos données personnelles au sérieux. Vous trouverez ci-dessous des informations sur le traitement des données personnelles lors de l'utilisation de cette application.",
+    "sections": "Je suis désolé, il semble qu'aucun texte n'ait été fourni. Pourriez-vous s'il vous plaît fournir le texte que vous souhaitez traduire en français ?"
+  },
+  "lastUpdated": "Dernière mise à jour : {{date}}",
+  "meta": {
+    "lastUpdated": {
+      "fallbackDate": "mars 2026"
+    }
+  },
+  "backToApp": "Retour",
+  "footer": {
+    "imprintLink": "Mentions légales & Politique de confidentialité"
+  }
+}

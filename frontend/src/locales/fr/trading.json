@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Recherche d'actifs",
+    "description": "Recherchez des actifs via le point de terminaison de trading (Horizon).",
+    "form": {
+      "code": {
+        "label": "Code d'actif",
+        "placeholder": "par exemple, USDC"
+      },
+      "issuer": {
+        "label": "Émetteur (optional)",
+        "placeholder": "G… (optional)"
+      },
+      "submit": "Recherche"
+    },
+    "result": {
+      "empty": "Aucun actif trouvé.",
+      "columns": {
+        "code": "Code",
+        "issuer": "Émetteur",
+        "numAccounts": "Comptes",
+        "amount": "Montant total"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Veuillez saisir un code d'actif."
+    },
+    "failed": {
+      "generic": "La recherche d'actifs a échoué. Veuillez réessayer plus tard."
+    }
+  }
+}

@@ -17,3 +17,23 @@ export async function isTestnetAccount(publicKey) {
     return false;
   }
 }
+
+export function buildExplorerUrl(entry, value, netLabel, opts = {}) {
+  if (!entry || !value) return '';
+  const isTx = opts.type === 'tx';
+  const isTestnet = netLabel === 'TESTNET';
+  let tpl = '';
+  if (isTx) {
+    tpl = isTestnet
+      ? (entry.testnetTxTemplate || entry.txTemplate || entry.urlTemplate || '')
+      : (entry.txTemplate || entry.urlTemplate || '');
+  } else {
+    tpl = isTestnet
+      ? (entry.testnetUrlTemplate || entry.urlTemplate || '')
+      : (entry.urlTemplate || '');
+  }
+  if (!tpl) return '';
+  return tpl
+    .replace('{address}', value)
+    .replace('{tx}', value);
+}

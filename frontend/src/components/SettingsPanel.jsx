@@ -4,19 +4,18 @@ import { useTranslation } from 'react-i18next';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { useSettings } from '../utils/useSettings.js';
 import { buildDefaultFilename } from '../utils/filename';
-import { BACKEND_URL } from '../config';
 
-export default function SettingsPanel({ publicKey }) {
-  const { t } = useTranslation(['settings', 'trade', 'common']);
+export default function SettingsPanel({
+  publicKey,
+  showDisplay = true,
+  showNetwork = true,
+  showTrustedWallets = true,
+}) {
+  const { t } = useTranslation(['settings', 'common']);
   const { data, wallets, setWallets, resetToDefault, exportFile, importFile, error } = useTrustedWallets();
   const { decimalsMode, setDecimalsMode, fullHorizonUrl, setFullHorizonUrl, autoUseFullHorizon, setAutoUseFullHorizon } = useSettings();
 
   const fileRef = useRef(null);
-  const [assetCode, setAssetCode] = useState('');
-  const [assetIssuer, setAssetIssuer] = useState('');
-  const [assetResults, setAssetResults] = useState([]);
-  const [assetError, setAssetError] = useState('');
-  const [assetLoading, setAssetLoading] = useState(false);
 
   // Editable rows state
   const [rows, setRows] = useState(() => wallets.map(copyRow));
@@ -73,318 +72,213 @@ export default function SettingsPanel({ publicKey }) {
   const infoCount = wallets.length;
   const infoUpdatedAt = data?.updatedAt || '';
 
-  // Führt eine einfache Asset-Suche über den Backend-Endpoint aus.
-  const handleAssetSearch = async (e) => {
-    e.preventDefault();
-    const code = assetCode.trim();
-    const issuer = assetIssuer.trim();
-    if (!code) {
-      setAssetError(t('trade:assetSearch.invalidInput.codeMissing'));
-      return;
-    }
-    setAssetError('');
-    setAssetResults([]);
-    setAssetLoading(true);
-    try {
-      const baseUrl = BACKEND_URL || '';
-      const searchUrl = `${baseUrl}/api/trade/assets/search?code=${encodeURIComponent(code)}${issuer ? `&issuer=${encodeURIComponent(issuer)}` : ''}`;
-      const resp = await fetch(searchUrl);
-      const data = await resp.json().catch(() => ({}));
-      if (!resp.ok) {
-        const message = data?.error || 'assetSearch.failed:generic';
-        throw new Error(message);
-      }
-      setAssetResults(Array.isArray(data?.items) ? data.items : []);
-    } catch (err) {
-      const msg = err?.message || '';
-      if (msg.startsWith('assetSearch.invalidInput:codeMissing')) {
-        setAssetError(t('trade:assetSearch.invalidInput.codeMissing'));
-      } else {
-        setAssetError(t('trade:assetSearch.failed.generic'));
-      }
-    } finally {
-      setAssetLoading(false);
-    }
-  };
-
   return (
     <div className="rounded-2xl border p-6 space-y-8 w-full">
       {/* Display / Global settings */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">
-          {t('settings:display.title', 'Display')}
-        </h2>
-        <p className="text-sm text-gray-600 dark:text-gray-300">
-          {t('settings:display.desc', 'Global display preferences.')}
-        </p>
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="text-sm" htmlFor="decimals-mode">
-            {t('settings:display.decimals.label', 'Decimals')}
-          </label>
-          <select
-            id="decimals-mode"
-            className="border rounded px-2 py-1"
-            value={decimalsMode}
-            onChange={(e) => setDecimalsMode(e.target.value)}
-          >
-            <option value="auto">{t('settings:display.decimals.auto', 'Automatic')}</option>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-          </select>
-        </div>
-      </section>
+      {showDisplay && (
+        <section className="space-y-3">
+          <h2 className="text-lg font-semibold">
+            {t('settings:display.title', 'Display')}
+          </h2>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            {t('settings:display.desc', 'Global display preferences.')}
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="text-sm" htmlFor="decimals-mode">
+              {t('settings:display.decimals.label', 'Decimals')}
+            </label>
+            <select
+              id="decimals-mode"
+              className="border rounded px-2 py-1"
+              value={decimalsMode}
+              onChange={(e) => setDecimalsMode(e.target.value)}
+            >
+              <option value="auto">{t('settings:display.decimals.auto', 'Automatic')}</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+            </select>
+          </div>
+        </section>
+      )}
 
       {/* Network / Horizon settings */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">{t('settings:network.title', 'Netzwerk')}</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-300">{t('settings:network.desc', 'Optional: Full-History-Horizon für tiefe Historie')}</p>
-        <div className="flex flex-col sm:flex-row gap-3 items-start">
-          <label className="text-sm sm:w-56">{t('settings:network.fullUrl', 'Full-History Horizon URL')}</label>
-          <input
-            className="border rounded px-2 py-1 w-full"
-            placeholder="https://example-full-history-horizon"
-            value={fullHorizonUrl}
-            onChange={(e)=>setFullHorizonUrl(e.target.value)}
-          />
-        </div>
-        <label className="inline-flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={autoUseFullHorizon} onChange={(e)=>setAutoUseFullHorizon(e.target.checked)} />
-          {t('settings:network.autoUseFull', 'Bei Bedarf automatisch verwenden (wenn Von-Datum älter als Server-Historie)')}
-        </label>
-      </section>
+      {showNetwork && (
+        <section className="space-y-3">
+          <h2 className="text-lg font-semibold">{t('settings:network.title', 'Netzwerk')}</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('settings:network.desc', 'Optional: Full-History-Horizon für tiefe Historie')}</p>
+          <div className="flex flex-col sm:flex-row gap-3 items-start">
+            <label className="text-sm sm:w-56">{t('settings:network.fullUrl', 'Full-History Horizon URL')}</label>
+            <input
+              className="border rounded px-2 py-1 w-full"
+              placeholder="https://example-full-history-horizon"
+              value={fullHorizonUrl}
+              onChange={(e)=>setFullHorizonUrl(e.target.value)}
+            />
+          </div>
+          <label className="inline-flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={autoUseFullHorizon} onChange={(e)=>setAutoUseFullHorizon(e.target.checked)} />
+            {t('settings:network.autoUseFull', 'Bei Bedarf automatisch verwenden (wenn Von-Datum älter als Server-Historie)')}
+          </label>
+        </section>
+      )}
 
        {/* Trusted wallets editor */}
-      <section className="space-y-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">
-            {t('settings:trustedWallets.title', 'Trusted wallets (QSI)')}
-          </h2>
-          <div className="text-sm text-gray-600 dark:text-gray-300">
-            <span className="mr-3">
-              {t('settings:trustedWallets.info.count', 'Entries: {{n}}', { n: infoCount })}
-            </span>
-            {infoUpdatedAt && (
-              <span>
-                {t('settings:trustedWallets.info.updatedAt', 'As of: {{date}}', { date: infoUpdatedAt })}
+      {showTrustedWallets && (
+        <section className="space-y-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">
+              {t('settings:trustedWallets.title', 'Trusted wallets (QSI)')}
+            </h2>
+            <div className="text-sm text-gray-600 dark:text-gray-300">
+              <span className="mr-3">
+                {t('settings:trustedWallets.info.count', 'Entries: {{n}}', { n: infoCount })}
               </span>
-            )}
+              {infoUpdatedAt && (
+                <span>
+                  {t('settings:trustedWallets.info.updatedAt', 'As of: {{date}}', { date: infoUpdatedAt })}
+                </span>
+              )}
+            </div>
           </div>
-        </div>
 
-        <p className="text-sm text-gray-600 dark:text-gray-300">
-          {t('settings:trustedWallets.desc', 'This list is stored locally (browser). Default file: QSI_TrustedWallets.json')}
-        </p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            {t('settings:trustedWallets.desc', 'This list is stored locally (browser). Default file: QSI_TrustedWallets.json')}
+          </p>
 
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={onImportClick}
-            className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            {t('settings:trustedWallets.buttons.import', 'Import')}
-          </button>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="application/json,.json"
-            onChange={onFileSelected}
-            className="hidden"
-            aria-label={t('settings:trustedWallets.file.label', 'File')}
-            title={t('settings:trustedWallets.file.hint', 'Import a JSON file of shape { wallets: [...] }')}
-          />
-          <button
-            type="button"
-            onClick={() => {
-              const fn = buildDefaultFilename({ publicKey, menuLabel: t('settings:trustedWallets.title'), ext: 'json' });
-              exportFile(fn);
-            }}
-            className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            {t('settings:trustedWallets.buttons.export', 'Export')}
-          </button>
-          <button
-            type="button"
-            onClick={resetToDefault}
-            className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            {t('settings:trustedWallets.buttons.reset', 'Reset to default')}
-          </button>
-          <div className="ml-auto flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={addRow}
+              onClick={onImportClick}
               className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              {t('settings:trustedWallets.table.addRow', 'Add row')}
+              {t('settings:trustedWallets.buttons.import', 'Import')}
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="application/json,.json"
+              onChange={onFileSelected}
+              className="hidden"
+              aria-label={t('settings:trustedWallets.file.label', 'File')}
+              title={t('settings:trustedWallets.file.hint', 'Import a JSON file of shape { wallets: [...] }')}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const fn = buildDefaultFilename({ publicKey, menuLabel: t('settings:trustedWallets.title'), ext: 'json' });
+                exportFile(fn);
+              }}
+              className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              {t('settings:trustedWallets.buttons.export', 'Export')}
             </button>
             <button
               type="button"
-              onClick={discardChanges}
-              disabled={!hasChanges}
-              className="px-3 py-2 rounded-lg border text-sm disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-800"
+              onClick={resetToDefault}
+              className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              {t('settings:trustedWallets.table.discard', 'Discard')}
+              {t('settings:trustedWallets.buttons.reset', 'Reset to default')}
             </button>
-            <button
-              type="button"
-              onClick={applyChanges}
-              disabled={!hasChanges || !!invalidReason}
-              title={invalidReason ? t('settings:trustedWallets.validation.hint', 'At least one row is invalid (missing/duplicate address).') : ''}
-              className="px-3 py-2 rounded-lg border text-sm disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
-              {t('settings:trustedWallets.table.save', 'Save')}
-            </button>
+            <div className="ml-auto flex gap-2">
+              <button
+                type="button"
+                onClick={addRow}
+                className="px-3 py-2 rounded-lg border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                {t('settings:trustedWallets.table.addRow', 'Add row')}
+              </button>
+              <button
+                type="button"
+                onClick={discardChanges}
+                disabled={!hasChanges}
+                className="px-3 py-2 rounded-lg border text-sm disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                {t('settings:trustedWallets.table.discard', 'Discard')}
+              </button>
+              <button
+                type="button"
+                onClick={applyChanges}
+                disabled={!hasChanges || !!invalidReason}
+                title={invalidReason ? t('settings:trustedWallets.validation.hint', 'At least one row is invalid (missing/duplicate address).') : ''}
+                className="px-3 py-2 rounded-lg border text-sm disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                {t('settings:trustedWallets.table.save', 'Save')}
+              </button>
+            </div>
           </div>
-        </div>
 
-        {error ? (
-          <div className="text-sm text-red-600">
-            {t(error, error)}
-          </div>
-        ) : null}
+          {error ? (
+            <div className="text-sm text-red-600">
+              {t(error, error)}
+            </div>
+          ) : null}
 
-        <div className="w-full overflow-x-auto border rounded">
-          <table className="w-full text-sm min-w-[800px]">
-            <thead className="bg-gray-100 dark:bg-gray-700">
-              <tr className="text-left border-b">
-                <th className="px-2 py-2 w-[40%]">{t('settings:trustedWallets.table.columns.address', 'Address')}</th>
-                <th className="px-2 py-2 w-[30%]">{t('settings:trustedWallets.table.columns.label', 'Label')}</th>
-                <th className="px-2 py-2 w-[10%] text-center">{t('settings:trustedWallets.table.columns.compromised', 'Compromised')}</th>
-                <th className="px-2 py-2 w-[10%] text-center">{t('settings:trustedWallets.table.columns.deactivated', 'Deactivated')}</th>
-                <th className="px-2 py-2 w-[10%] text-center">{t('settings:trustedWallets.table.columns.actions', 'Actions')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r, idx) => (
-                <tr key={idx} className={idx % 2 ? 'bg-gray-50 dark:bg-gray-800/40' : ''}>
-                  <td className="px-2 py-1">
-                    <input
-                      className="w-full min-w-[280px] font-mono text-xs border rounded px-2 py-1"
-                      value={r.address}
-                      onChange={(e) => updateCell(idx, 'address', e.target.value)}
-                      placeholder="G..."
-                    />
-                  </td>
-                  <td className="px-2 py-1">
-                    <input
-                      className="w-full min-w-[150px] text-xs border rounded px-2 py-1"
-                      value={r.label || ''}
-                      onChange={(e) => updateCell(idx, 'label', e.target.value)}
-                      placeholder={t('settings:trustedWallets.table.columns.label', 'Label')}
-                    />
-                  </td>
-                  <td className="px-2 py-1 text-center">
-                    <input
-                      type="checkbox"
-                      checked={!!r.compromised}
-                      onChange={(e) => updateCell(idx, 'compromised', e.target.checked)}
-                    />
-                  </td>
-                  <td className="px-2 py-1 text-center">
-                    <input
-                      type="checkbox"
-                      checked={!!r.deactivated}
-                      onChange={(e) => updateCell(idx, 'deactivated', e.target.checked)}
-                    />
-                  </td>
-                  <td className="px-2 py-1">
-                    <button
-                      type="button"
-                      onClick={() => removeRow(idx)}
-                      className="px-2 py-1 rounded border text-xs hover:bg-gray-100 dark:hover:bg-gray-800"
-                    >
-                      {t('settings:trustedWallets.table.deleteRow', 'Delete')}
-                    </button>
-                  </td>
+          <div className="w-full overflow-x-auto border rounded">
+            <table className="w-full text-sm min-w-[800px]">
+              <thead className="bg-gray-100 dark:bg-gray-700">
+                <tr className="text-left border-b">
+                  <th className="px-2 py-2 w-[40%]">{t('settings:trustedWallets.table.columns.address', 'Address')}</th>
+                  <th className="px-2 py-2 w-[30%]">{t('settings:trustedWallets.table.columns.label', 'Label')}</th>
+                  <th className="px-2 py-2 w-[10%] text-center">{t('settings:trustedWallets.table.columns.compromised', 'Compromised')}</th>
+                  <th className="px-2 py-2 w-[10%] text-center">{t('settings:trustedWallets.table.columns.deactivated', 'Deactivated')}</th>
+                  <th className="px-2 py-2 w-[10%] text-center">{t('settings:trustedWallets.table.columns.actions', 'Actions')}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">{t('trade:assetSearch.title')}</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-300">
-          {t('trade:assetSearch.description', 'Suche nach Assets über den Horizon-basierten Trading-Endpunkt.')}
-        </p>
-        <form className="space-y-3" onSubmit={handleAssetSearch}>
-          <div className="flex flex-col md:flex-row gap-3 items-start">
-            <label className="text-sm md:w-48" htmlFor="asset-code-input">
-              {t('trade:assetSearch.form.code.label')}
-            </label>
-            <input
-              id="asset-code-input"
-              className="border rounded px-2 py-1 w-full md:max-w-xs"
-              value={assetCode}
-              onChange={(e) => setAssetCode(e.target.value)}
-              placeholder={t('trade:assetSearch.form.code.placeholder', 'z. B. USDC')}
-            />
-          </div>
-          <div className="flex flex-col md:flex-row gap-3 items-start">
-            <label className="text-sm md:w-48" htmlFor="asset-issuer-input">
-              {t('trade:assetSearch.form.issuer.label')}
-            </label>
-            <input
-              id="asset-issuer-input"
-              className="border rounded px-2 py-1 w-full"
-              value={assetIssuer}
-              onChange={(e) => setAssetIssuer(e.target.value)}
-              placeholder={t('trade:assetSearch.form.issuer.placeholder', 'optional')}
-            />
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              type="submit"
-              disabled={assetLoading}
-              className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
-            >
-              {assetLoading ? t('common:loading', 'Loading…') : t('trade:assetSearch.form.submit')}
-            </button>
-            {assetError && (
-              <span className="text-sm text-red-600">{assetError}</span>
-            )}
-          </div>
-        </form>
-
-        <div className="border rounded px-3 py-2">
-          {assetResults.length === 0 && !assetError && !assetLoading && (
-            <div className="text-sm text-gray-600 dark:text-gray-300">
-              {t('trade:assetSearch.result.empty')}
-            </div>
-          )}
-          {assetResults.length > 0 && (
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
-                <thead>
-                  <tr className="text-left">
-                    <th className="py-2 pr-3">{t('trade:assetSearch.result.columns.code')}</th>
-                    <th className="py-2 pr-3">{t('trade:assetSearch.result.columns.issuer')}</th>
-                    <th className="py-2 pr-3">{t('trade:assetSearch.result.columns.numAccounts', 'Accounts')}</th>
-                    <th className="py-2 pr-3">{t('trade:assetSearch.result.columns.amount', 'Amount')}</th>
+              </thead>
+              <tbody>
+                {rows.map((r, idx) => (
+                  <tr key={idx} className={idx % 2 ? 'bg-gray-50 dark:bg-gray-800/40' : ''}>
+                    <td className="px-2 py-1">
+                      <input
+                        className="w-full min-w-[280px] font-mono text-xs border rounded px-2 py-1"
+                        value={r.address}
+                        onChange={(e) => updateCell(idx, 'address', e.target.value)}
+                        placeholder="G..."
+                      />
+                    </td>
+                    <td className="px-2 py-1">
+                      <input
+                        className="w-full min-w-[150px] text-xs border rounded px-2 py-1"
+                        value={r.label || ''}
+                        onChange={(e) => updateCell(idx, 'label', e.target.value)}
+                        placeholder={t('settings:trustedWallets.table.columns.label', 'Label')}
+                      />
+                    </td>
+                    <td className="px-2 py-1 text-center">
+                      <input
+                        type="checkbox"
+                        checked={!!r.compromised}
+                        onChange={(e) => updateCell(idx, 'compromised', e.target.checked)}
+                      />
+                    </td>
+                    <td className="px-2 py-1 text-center">
+                      <input
+                        type="checkbox"
+                        checked={!!r.deactivated}
+                        onChange={(e) => updateCell(idx, 'deactivated', e.target.checked)}
+                      />
+                    </td>
+                    <td className="px-2 py-1">
+                      <button
+                        type="button"
+                        onClick={() => removeRow(idx)}
+                        className="px-2 py-1 rounded border text-xs hover:bg-gray-100 dark:hover:bg-gray-800"
+                      >
+                        {t('settings:trustedWallets.table.deleteRow', 'Delete')}
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {assetResults.map((r, idx) => (
-                    <tr key={`${r.assetCode}-${r.assetIssuer}-${idx}`} className="border-t">
-                      <td className="py-1 pr-3 font-mono">{r.assetCode}</td>
-                      <td className="py-1 pr-3 font-mono break-all">{r.assetIssuer || '—'}</td>
-                      <td className="py-1 pr-3">{r.numAccounts ?? '—'}</td>
-                      <td className="py-1 pr-3">{r.amount ?? '—'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </section>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

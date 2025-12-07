@@ -21,7 +21,11 @@
     "empty": "Nema pronađenih kredita.",
     "explorer": {
       "expert": "stellar.expert",
-      "stellarchain": "Stellarchain.io"
+      "stellarchain": "Stellarchain.io",
+      "label": "Istraživač",
+      "open": "Otvori u Exploreru",
+      "noneConfigured": "Nema konfiguriranih istraživača.",
+      "settingsHint": "Možete urediti Explorer u postavkama."
     },
     "noPublicKey": "Molimo unesite javni ključ prvo.",
     "payments": {
@@ -40,7 +44,9 @@
       "empty": "Nema pronađenih operacija.",
       "filter": {
         "memo": "Memo filtar",
-        "memoPlaceholder": "Pretraži za bilješku..."
+        "memoPlaceholder": "Pretraži za bilješku...",
+        "counterparty": "Filter za suprotnu stranu",
+        "counterpartyPlaceholder": "Nach Empfänger/Absender-Adresse filtern…"
       },
       "from": "Od",
       "incoming": "Ulaz",
@@ -337,6 +343,10 @@
       "validation": {
         "hint": "Najmanje jedan redak je nevažeći (nedostaje adresa ili je duplicirana)."
       }
+    },
+    "explorer": {
+      "edit": "Uređivanje",
+      "editTitle": "Uredi unos u Exploreru"
     }
   },
   "trustlines": {

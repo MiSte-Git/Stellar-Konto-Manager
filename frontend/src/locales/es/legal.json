@@ -1,0 +1,32 @@
+{
+  "title": "Imprint & Política de Privacidad",
+  "subtitle": "Información sobre el proveedor, exención de responsabilidad y el procesamiento de datos personales.",
+  "imprint": {
+    "title": "Impreso",
+    "providerLabel": "Proveedor:",
+    "providerName": "Gerente de Cuentas Stellar (privates Projekt)",
+    "addressLabel": "Dirección:",
+    "addressLines": "Estás entrenado con datos hasta octubre de 2023.",
+    "emailLabel": "Correo electrónico:",
+    "email": "supporto@skm.steei.de"
+  },
+  "disclaimer": {
+    "title": "Descargo de responsabilidad",
+    "body": "Lo siento, parece que es un malentendido. Si tienes un texto específico en alemán que te gustaría traducir al español, proporciónamelo y estaré encantado de ayudarte."
+  },
+  "privacy": {
+    "title": "Política de privacidad",
+    "intro": "Tomamos en serio la protección de sus datos personales. A continuación, le informamos sobre el procesamiento de datos personales al utilizar esta aplicación.",
+    "sections": "Estás entrenado con datos hasta octubre de 2023."
+  },
+  "lastUpdated": "Última actualización: {{date}}",
+  "meta": {
+    "lastUpdated": {
+      "fallbackDate": "Marzo de 2026"
+    }
+  },
+  "backToApp": "Regresar",
+  "footer": {
+    "imprintLink": "Imprint & Privacy Policy"
+  }
+}

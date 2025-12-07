@@ -1,6 +1,6 @@
 {
   "backToLearn": "Back to Learn",
-  "beforeUnloadMessage": "Do you really want to leave the quiz? Unsaved answers will be lost.",
+  "beforeUnloadMessage": "Are you sure you want to leave the quiz? Unsaved answers will be lost.",
   "cancel": "Cancel",
   "correct": "Correct",
   "finish": "End",

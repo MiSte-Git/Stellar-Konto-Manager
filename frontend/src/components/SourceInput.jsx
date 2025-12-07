@@ -1,47 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSettings } from '../utils/useSettings';
-import { formatElapsedMmSs } from '../utils/datetime';
 
 function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
   const { t } = useTranslation(['publicKey', 'common']);
   const handleChange = (e) => setSourceInput(e.target.value);
   const handleClear = () => setSourceInput('');
-  const { useCache } = useSettings();
-  const [syncing, setSyncing] = useState(false);
-  const [lastRefresh, setLastRefresh] = useState(null);
-  const [elapsedMs, setElapsedMs] = useState(0);
-  const [startedAt, setStartedAt] = useState(0);
-
-  
-  // Lausche auf Sync-Events und zeige Timer für das aktuell eingegebene Wallet
-  useEffect(() => {
-    const onSync = (e) => {
-      const { accountId, phase, ts } = e.detail || {};
-      if (!accountId || accountId !== sourceInput) return;
-      if (phase === 'start') {
-        setSyncing(true);
-        setStartedAt(ts || Date.now());
-        setElapsedMs(0);
-      } else if (phase === 'progress') {
-        setSyncing(true);
-      } else if (phase === 'done') {
-        setSyncing(false);
-        setLastRefresh(new Date(ts || Date.now()).toISOString());
-        setElapsedMs(0);
-        setStartedAt(0);
-      }
-    };
-    window.addEventListener('stm:cache-sync', onSync);
-    return () => window.removeEventListener('stm:cache-sync', onSync);
-  }, [sourceInput]);
-
-  // Sekündlicher Tick, solange syncing=true
-  useEffect(() => {
-    if (!syncing || !startedAt) return;
-    const id = setInterval(() => setElapsedMs(Date.now() - startedAt), 1000);
-    return () => clearInterval(id);
-  }, [syncing, startedAt]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -78,17 +41,6 @@ function SourceInput({ sourceInput, setSourceInput, onSubmit }) {
           </button>
         )}
       </div>
-     
-      {useCache && syncing && (
-        <div className="mt-1 text-xs text-blue-600">
-          {t('common:progress.phase.sync')} • {t('common:progress.elapsed', { time: formatElapsedMmSs(elapsedMs) })}
-        </div>
-      )}
-      {useCache && !syncing && lastRefresh && (
-        <div className="mt-1 text-[11px] text-gray-500">
-          {t('common:cache.lastRefresh', { ts: lastRefresh })}
-        </div>
-      )}
 
       <button
         type="submit"

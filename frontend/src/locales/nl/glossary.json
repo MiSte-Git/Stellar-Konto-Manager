@@ -197,5 +197,12 @@
     "original": "Account Configuration",
     "short": "De wisselwerking tussen ondertekenaars en drempelwaarden bepaalt de beveiliging van de rekening.",
     "desc": "De accountconfiguratie specificeert welke ondertekenaars er zijn met welke gewichten en welke drempels van toepassing zijn. Wijzigingen in ondertekenaars of drempels zijn cruciaal voor de veiligheid, aangezien ze bepalen hoeveel handtekeningen er vereist zijn."
+  },
+  "horizonHistory": {
+    "title": "Horizongeschiedenis",
+    "original": "Horizon history depth",
+    "short": "Beschrijft hoe ver terug de transactiegeschiedenis gaat die door openbare Horizon-servers wordt geleverd.",
+    "desc": "De openbare Horizon-servers (Mainnet und Testnet) beheerd door de Stellar Development Foundation bieden slechts een beperkte geschiedenis aan – momenteel ongeveer één jaar terug. Oudere gegevens zijn niet meer toegankelijk via deze gratis eindpunten. Als je verder terug in de tijd moet, heb je in wezen twee opties: (1) je beheert je eigen Horizon-node met volledige geschiedenis (inklusive History Archives), of (2) je maakt gebruik van derde partijen of betaalde diensten die historische Stellar-gegevens langdurig opslaan en beschikbaar stellen.",
+    "seeAlso": "Ik ben getraind op gegevens tot oktober 2023."
   }
 }

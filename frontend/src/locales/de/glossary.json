@@ -125,6 +125,17 @@
     "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
     "desc": "Horizon ist der Service über den Programme mit der Stellar Blockchain reden. Unser Tool fragt Horizon um Kontostände und Transaktionen zu laden."
   },
+  "horizonHistory": {
+    "title": "Horizon-Historie",
+    "original": "Horizon history depth",
+    "short": "Beschreibt, wie weit die von öffentlichen Horizon-Servern bereitgestellte Transaktionshistorie zurückreicht.",
+    "desc": "Die von der Stellar Development Foundation betriebenen öffentlichen Horizon-Server (Mainnet und Testnet) stellen nur eine begrenzte Historie zur Verfügung – derzeit ungefähr ein Jahr rückwirkend. Ältere Daten sind über diese kostenlosen Endpunkte nicht mehr abrufbar. Wenn du weiter in die Vergangenheit zurück musst, hast du im Wesentlichen zwei Optionen: (1) du betreibst einen eigenen Horizon-Node mit vollständiger History (inklusive History Archives), oder (2) du nutzt Drittanbieter- bzw. Bezahldienste, die historische Stellar-Daten langfristig speichern und zur Verfügung stellen.",
+    "seeAlso": [
+      "horizon",
+      "serverHorizon",
+      "historyArchive"
+    ]
+  },
   "anchor": {
     "title": "Anchor",
     "original": "Anchor",

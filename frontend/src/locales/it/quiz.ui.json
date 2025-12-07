@@ -1,11 +1,11 @@
 {
   "backToLearn": "Torna a imparare",
-  "beforeUnloadMessage": "Vuoi davvero uscire dal quiz? Le risposte non salvate andranno perse.",
+  "beforeUnloadMessage": "Sei sicuro di voler abbandonare il quiz? Le risposte non salvate andranno perse.",
   "cancel": "Annulla",
   "correct": "Corretto",
   "finish": "Fine",
   "hint": "Nota",
-  "incorrect": "Sei addestrato su dati fino a ottobre 2023.",
+  "incorrect": "Hai ricevuto formazione sui dati fino a ottobre 2023.",
   "jump": "Salto",
   "jumpToQuestion": "Vai alla domanda",
   "next": "Prosegui",
