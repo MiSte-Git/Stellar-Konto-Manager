@@ -7,22 +7,23 @@ export function shortPublicKey(pk) {
   try {
     const s = String(pk || '');
     if (s.length >= 12) return `${s.slice(0, 6)}...${s.slice(-6)}`;
-    return s || 'unknown';
+    return s || '';
   } catch {
-    return 'unknown';
+    return '';
   }
 }
 
 /**
- * Sanitizes a label to be filesystem-friendly (ASCII letters, numbers, _ and -)
+ * Sanitizes a label to be filesystem-friendly (letters incl. Unicode, numbers, _ and -).
  */
 export function safeLabel(label) {
   try {
-    return String(label || '')
+    const cleaned = String(label || '')
       .trim()
       .replace(/\s+/g, ' ')
-      .replace(/[^A-Za-z0-9_-]+/g, '_')
+      .replace(/[^\p{L}\p{N}_-]+/gu, '_')
       .replace(/^_+|_+$/g, '');
+    return cleaned || 'file';
   } catch {
     return 'file';
   }
@@ -48,8 +49,11 @@ export function localTimestamp() {
  */
 export function buildDefaultFilename({ publicKey, menuLabel, ext }) {
   const shortPk = shortPublicKey(publicKey);
-  const label = safeLabel(menuLabel);
+  const label = safeLabel(menuLabel || 'Kontenliste');
   const ts = localTimestamp();
   const safeExt = String(ext || 'txt').replace(/[^A-Za-z0-9]/g, '');
-  return `${shortPk}_${label}_${ts}.${safeExt}`;
+  const nameParts = [];
+  if (shortPk) nameParts.push(shortPk);
+  nameParts.push(label);
+  return `${nameParts.join('_')}_${ts}.${safeExt}`;
 }

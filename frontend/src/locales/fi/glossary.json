@@ -197,5 +197,12 @@
     "original": "Account Configuration",
     "short": "Allekirjoittajien ja kynnysarvojen vuorovaikutus määrittää tilin turvallisuuden.",
     "desc": "Tilin kokoonpano määrittää, mitkä allekirjoittajat ovat olemassa millä painotuksilla ja mitkä kynnykset soveltuvat. Allekirjoittajien tai kynnysten muutokset ovat kriittisiä turvallisuuden kannalta, sillä ne määrittävät, kuinka monta allekirjoitusta tarvitaan."
+  },
+  "horizonHistory": {
+    "title": "Horisontin historia",
+    "original": "Horizon history depth",
+    "short": "Kuvaa, kuinka kauas taaksepäin julkisten Horizon-palvelimien tarjoama tapahtumahistoria ulottuu.",
+    "desc": "Die von der Stellar Development Foundation betriebenen öffentlichen Horizon-Server (Mainnet und Testnet) stellen nur eine begrenzte Historie zur Verfügung – derzeit ungefähr ein Jahr rückwirkend. Ältere Daten sind über diese kostenlosen Endpunkte nicht mehr abrufbar. Wenn du weiter in die Vergangenheit zurück musst, hast du im Wesentlichen zwei Optionen: (1) du betreibst einen eigenen Horizon-Node mit vollständiger History (inklusive History Archives), oder (2) du nutzt Drittanbieter- bzw. Bezahldienste, die historische Stellar-Daten langfristig speichern und zur Verfügung stellen.",
+    "seeAlso": "Olen koulutettu tietoihin lokakuuhun 2023 asti."
   }
 }

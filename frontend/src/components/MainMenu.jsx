@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 function MainMenu({ onSelect }) {
   // Explicitly request the namespaces used here to ensure they are loaded
-  const { t } = useTranslation(['menu', 'createAccount', 'multisigEdit']);
+  const { t } = useTranslation(['menu', 'createAccount', 'multisigEdit', 'trading']);
 
   const buttons = [
     // Gruppe 1
@@ -14,6 +14,7 @@ function MainMenu({ onSelect }) {
     // Gruppe 2
     { label: t('menu:tokenPurchases', 'Token purchases'), value: 'payments', group: 2 },
     { label: t('menu:xlmByMemo', 'Filter XLM amount by memo/token'), value: 'xlmByMemo', group: 2 },
+    { label: t('trading:assetSearch.title', 'Asset-Suche'), value: 'tradingAssets', group: 2 },
 
     // Gruppe 3
     { label: t('menu:multisigEdit', 'Edit multisig'), value: 'multisigEdit', title: t('multisigEdit:menuHint', 'Edit existing account / signers'), group: 3 },

@@ -48,7 +48,8 @@
     "title": "Verkko",
     "desc": "Valinnainen: Koko historian aikajänne syvälle historialle",
     "fullUrl": "Täysi historian horisontti URL",
-    "autoUseFull": "Käytä automaattisesti, jos aloituspäivämäärä on vanhempi kuin palvelimen historia."
+    "autoUseFull": "Käytä automaattisesti, jos aloituspäivämäärä on vanhempi kuin palvelimen historia.",
+    "historyInfo": "Stellar Development Foundationin ylläpitämät ilmaiset Horizon-palvelimet tarjoavat vain noin yhden vuoden historian. Vanhempia tietoja varten sinun on joko käytettävä omaa Horizon-solmua tai turvauduttava kolmannen osapuolen/maksullisiin palveluihin."
   },
   "description": "Tällä hetkellä ei ole vielä asetuksia.",
   "display": {
@@ -100,5 +101,51 @@
     "validation": {
       "hint": "Vähintään yksi rivi on virheellinen (osoite puuttuu/osoite on kaksinkertainen)."
     }
+  },
+  "back": "Takaisin",
+  "aria": {
+    "back": "Palaa edelliselle sivulle."
+  },
+  "tabs": {
+    "general": "Yleinen",
+    "app": "Sovellus/käyttöliittymä",
+    "accounts": "Tililuettelo",
+    "network": "Verkko",
+    "quiz": "Tietovisa",
+    "explorer": "Tutkija"
+  },
+  "sections": {
+    "general": "Yleiset asetukset",
+    "app": "Sovelluksen asetukset",
+    "accounts": "Tililuettelo",
+    "network": "Verkko",
+    "quiz": "Tietokilpailun asetukset",
+    "explorer": "Stellar Explorer"
+  },
+  "explorer": {
+    "sectionTitle": "Stellar Explorer",
+    "description": "Valitse oletusselain tililinkkejä varten ja hallitse selainluetteloa.",
+    "defaultLabel": "Standard Explorer",
+    "nameLabel": "Nimi",
+    "urlLabel": "URL",
+    "testnetUrlLabel": "Testnet URL (optional)",
+    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
+    "addButton": "Lisää Explorer",
+    "removeButton": "Poista",
+    "setDefault": "Aseta oletukseksi",
+    "noEntries": "Tutkijoita ei ole määritetty.",
+    "validation": {
+      "nameRequired": "Anna nimi.",
+      "urlRequired": "Anna URL-osoite.",
+      "urlInvalid": "Anna kelvollinen URL-osoite.",
+      "testnetUrlInvalid": "Syötä kelvollinen testnet-URL-osoite."
+    },
+    "mainnetLabel": "Mainnet",
+    "testnetLabel": "Testiverkko",
+    "edit": "Muokkaa"
+  },
+  "export": {
+    "title": "Vientiasetukset",
+    "button": "Tallenna asetukset tiedostona"
   }
 }

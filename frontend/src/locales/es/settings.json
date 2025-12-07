@@ -48,7 +48,8 @@
     "title": "Red de comunicaciones",
     "desc": "Opcional: Horizonte de Historial Completo para Historia Profunda",
     "fullUrl": "URL del horizonte de historia completa",
-    "autoUseFull": "Utilizar automáticamente si la fecha de inicio es anterior al historial del servidor."
+    "autoUseFull": "Utilizar automáticamente si la fecha de inicio es anterior al historial del servidor.",
+    "historyInfo": "Los servidores Horizon gratuitos operados por la Stellar Development Foundation proporcionan solo alrededor de un año de historial. Para obtener datos más antiguos, deberás operar tu propio nodo Horizon o depender de servicios de terceros/pagos."
   },
   "description": "Actualmente, no hay configuraciones aún.",
   "display": {
@@ -100,5 +101,51 @@
     "validation": {
       "hint": "Al menos una línea es inválida (dirección faltante/duplicada)."
     }
+  },
+  "back": "Atrás",
+  "aria": {
+    "back": "Volver a la página anterior."
+  },
+  "tabs": {
+    "general": "General",
+    "app": "Aplicación/interfaz",
+    "accounts": "Lista de cuentas",
+    "network": "Red",
+    "quiz": "Cuestionario",
+    "explorer": "Explorador"
+  },
+  "sections": {
+    "general": "Configuración general",
+    "app": "Configuración de la aplicación",
+    "accounts": "Lista de cuentas",
+    "network": "Red neuronal",
+    "quiz": "Configuraciones del cuestionario",
+    "explorer": "Explorador Estelar"
+  },
+  "explorer": {
+    "sectionTitle": "Explorador Estelar",
+    "description": "Seleccione el explorador predeterminado para los enlaces de cuenta y gestione la lista de exploradores.",
+    "defaultLabel": "Explorador Estándar",
+    "nameLabel": "Nombre",
+    "urlLabel": "URL",
+    "testnetUrlLabel": "URL de Testnet (optional)",
+    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
+    "addButton": "Agregar explorador",
+    "removeButton": "Eliminar",
+    "setDefault": "Establecer como predeterminado",
+    "noEntries": "No se han configurado exploradores.",
+    "validation": {
+      "nameRequired": "Por favor, introduzca un nombre.",
+      "urlRequired": "Por favor, introduce una URL.",
+      "urlInvalid": "Por favor, ingrese una URL válida.",
+      "testnetUrlInvalid": "Por favor, introduce una URL válida de testnet."
+    },
+    "mainnetLabel": "Red principal",
+    "testnetLabel": "Red de prueba",
+    "edit": "Editar"
+  },
+  "export": {
+    "title": "Configuración de exportación",
+    "button": "Guardar configuraciones como un archivo"
   }
 }

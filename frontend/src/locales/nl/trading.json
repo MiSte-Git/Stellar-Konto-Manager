@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Vermogenszoektocht",
+    "description": "Zoek naar activa via het trading endpoint (Horizon).",
+    "form": {
+      "code": {
+        "label": "Activacode",
+        "placeholder": "bijv. USDC"
+      },
+      "issuer": {
+        "label": "Issuer (optional)",
+        "placeholder": "G… (optional)"
+      },
+      "submit": "Zoeken"
+    },
+    "result": {
+      "empty": "Geen middelen gevonden.",
+      "columns": {
+        "code": "Code",
+        "issuer": "Uitgever",
+        "numAccounts": "Accounts",
+        "amount": "Totaalbedrag"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Voer een asset-code in."
+    },
+    "failed": {
+      "generic": "De activazoekopdracht is mislukt. Probeer het later opnieuw."
+    }
+  }
+}

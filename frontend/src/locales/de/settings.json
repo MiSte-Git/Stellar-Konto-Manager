@@ -48,7 +48,8 @@
     "title": "Netzwerk",
     "desc": "Optional: Full-History-Horizon für tiefe Historie",
     "fullUrl": "Full-History Horizon URL",
-    "autoUseFull": "Bei Bedarf automatisch verwenden (wenn Von-Datum älter als Server-Historie)"
+    "autoUseFull": "Bei Bedarf automatisch verwenden (wenn Von-Datum älter als Server-Historie)",
+    "historyInfo": "Die von der Stellar Development Foundation betriebenen kostenlosen Horizon-Server stellen nur ungefähr ein Jahr Historie bereit. Für ältere Daten musst du entweder einen eigenen Horizon-Node betreiben oder auf Drittanbieter/Bezahldienste zurückgreifen."
   },
   "description": "Aktuell gibt es noch keine Einstellungen",
   "display": {
@@ -64,6 +65,52 @@
   },
   "label": "Einstellungen",
   "prefetchDays": "Vorlauf (Tage)",
+  "back": "Zurück",
+  "aria": {
+    "back": "Zur vorherigen Seite zurückkehren"
+  },
+  "tabs": {
+    "general": "Allgemein",
+    "app": "App/Oberfläche",
+    "accounts": "Konten-Liste",
+    "network": "Netzwerk",
+    "quiz": "Quiz",
+    "explorer": "Explorer"
+  },
+  "sections": {
+    "general": "Allgemeine Einstellungen",
+    "app": "App-Einstellungen",
+    "accounts": "Konten-Liste",
+    "network": "Netzwerk",
+    "quiz": "Quiz-Einstellungen",
+    "explorer": "Stellar Explorer"
+  },
+  "explorer": {
+    "sectionTitle": "Stellar Explorer",
+    "description": "Wähle den Standard-Explorer für Kontolinks und verwalte die Explorer-Liste.",
+    "defaultLabel": "Standard-Explorer",
+    "nameLabel": "Name",
+    "urlLabel": "URL",
+    "testnetUrlLabel": "Testnet-URL (optional)",
+    "testnetUrlPlaceholder": "https://…{address} (leer lassen, um die Mainnet-URL auch für Testnet zu verwenden)",
+    "addButton": "Explorer hinzufügen",
+    "removeButton": "Entfernen",
+    "setDefault": "Als Standard setzen",
+    "noEntries": "Keine Explorer konfiguriert.",
+    "validation": {
+      "nameRequired": "Bitte einen Namen eingeben.",
+      "urlRequired": "Bitte eine URL eingeben.",
+      "urlInvalid": "Bitte eine gültige URL eingeben.",
+      "testnetUrlInvalid": "Bitte eine gültige Testnet-URL eingeben."
+    },
+    "mainnetLabel": "Mainnet",
+    "testnetLabel": "Testnet",
+    "edit": "Editieren"
+  },
+  "export": {
+    "title": "Einstellungen exportieren",
+    "button": "Einstellungen als Datei speichern"
+  },
   "trustedWallets": {
     "buttons": {
       "export": "Exportieren",

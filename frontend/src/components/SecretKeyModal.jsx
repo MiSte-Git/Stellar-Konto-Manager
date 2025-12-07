@@ -14,15 +14,25 @@ function SecretKeyModal({
   operationType = '',
   requiredThreshold = 0,
   isProcessing = false,
-  deleteProgress = null
+  deleteProgress = null,
+  account = null
 }) {
-  const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey', 'multisig']);
+  const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey']);
   const [secretInputs, setSecretInputs] = useState(['']);
   const [showSecret, setShowSecret] = useState(false);
   const [rememberSession, setRememberSession] = useState(true);
   const [error, setError] = useState(errorMessage || '');
   const [collectAllSignaturesLocally, setCollectAllSignaturesLocally] = useState(false); // Ermöglicht optional, alle Multisig-Signaturen lokal in einem Dialog zu sammeln (nur verwenden, wenn der Benutzer alle Schlüssel kontrolliert).
-  const allSigners = useMemo(() => (Array.isArray(signers) ? [...signers] : []), [signers]);
+  const [showInfo, setShowInfo] = useState(false);
+  const accountData = useMemo(() => {
+    if (account?.signers || account?.thresholds) return account;
+    if (Array.isArray(signers) || thresholds) return { signers, thresholds };
+    return null;
+  }, [account, signers, thresholds]);
+  const allSigners = useMemo(() => {
+    const src = Array.isArray(accountData?.signers) ? accountData.signers : signers;
+    return Array.isArray(src) ? [...src] : [];
+  }, [accountData, signers]);
   const effectiveSigners = useMemo(
     () => allSigners
       .filter(s => !!(s?.public_key || s?.key))
@@ -44,11 +54,10 @@ function SecretKeyModal({
   }, [requiredThreshold, effectiveSigners]);
 
   const isMultisigAccount = useMemo(() => {
-    if (!effectiveSigners.length) return false;
-    if (effectiveSigners.length > 1) return true;
-    const singleWeight = Number(effectiveSigners[0]?.weight || 0);
-    return requiredThreshold > singleWeight;
-  }, [effectiveSigners, requiredThreshold]);
+    const signerCount = Array.isArray(accountData?.signers) ? accountData.signers.length : 0;
+    const medThreshold = Number(accountData?.thresholds?.med_threshold ?? 0);
+    return signerCount > 1 || medThreshold > 0;
+  }, [accountData]);
 
   const thresholdLevel = useMemo(() => {
     if (operationType === 'payment') return 'med';
@@ -132,28 +141,6 @@ function SecretKeyModal({
         <h2 className={`text-xl font-semibold mb-4 ${error ? 'text-red-700' : 'text-black dark:text-white'}`}>
           {t('secretKey:label', 'Secret key')}
         </h2>
-        {isMultisigAccount && (
-          <div className="mb-3 rounded border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100 space-y-2">
-            <div className="font-semibold">{t('multisig:secretModal.options.title')}</div>
-            <div>
-              <div className="font-semibold text-sm">{t('multisig:secretModal.option.distributed.title')}</div>
-              <p className="text-xs mt-0.5">{t('multisig:secretModal.option.distributed.body')}</p>
-            </div>
-            <div>
-              <div className="font-semibold text-sm">{t('multisig:secretModal.option.localAll.title')}</div>
-              <p className="text-xs mt-0.5">{t('multisig:secretModal.option.localAll.body')}</p>
-              <div className="mt-1 flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={collectAllSignaturesLocally}
-                  onChange={() => setCollectAllSignaturesLocally((v) => !v)}
-                />
-                <span>{t('multisig:secretModal.option.localAll.checkboxLabel')}</span>
-              </div>
-              <p className="text-[11px] mt-1 text-amber-700 dark:text-amber-300">{t('multisig:secretModal.option.localAll.warning')}</p>
-            </div>
-          </div>
-        )}
         {isProcessing && (
           <div className="mb-3 text-sm text-blue-700 dark:text-blue-300">
             {t('common:main.processing')}
@@ -163,42 +150,76 @@ function SecretKeyModal({
           <div className="text-center text-xs text-red-700 mb-2">{error}</div>
         )}
 
-        <div className="mb-3 rounded border border-gray-200 bg-gray-50 p-3 text-xs dark:border-gray-700 dark:bg-gray-900">
-          <div className="flex flex-col gap-1 mb-2 text-gray-800 dark:text-gray-200">
-            <div>{isMultisigAccount ? t('multisig:accountMode.multi') : t('multisig:accountMode.single')}</div>
-            <div>{t('multisig:requiredThreshold', { level: thresholdLevel, value: requiredThreshold || 0 })}</div>
-            <div>{t(`multisig:operationLabel.${operationType || 'unknown'}`, operationType || '')}</div>
+        {isMultisigAccount && (
+          <div className="mb-3 flex justify-end">
+            <button
+              type="button"
+              className="text-sm text-blue-700 dark:text-blue-300 hover:underline"
+              onClick={() => setShowInfo((v) => !v)}
+            >
+              {showInfo ? t('secretKey:hideMultisigInfo') : t('secretKey:showMultisigInfo')}
+            </button>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="font-semibold">{t('common:threshold', 'Threshold')}:</span>
-            <span>{requiredThreshold || 'n/a'}</span>
-            <span className="font-semibold">{t('common:weight', 'Weight')}:</span>
-            <span>{effectiveSigners.length ? currentWeight : 'n/a'}</span>
-            {operationType && (
-              <span className="rounded bg-blue-100 px-2 py-0.5 text-blue-800 dark:bg-blue-900 dark:text-blue-100 text-[11px] uppercase tracking-wide">
-                {operationType}
-              </span>
-            )}
-          </div>
-          {allSigners.length > 0 && (
-            <div className="mt-2">
-              <div className="text-gray-600 dark:text-gray-300 mb-1">{t('common:signers', 'Signers')}:</div>
-              <div className="space-y-1 max-h-24 overflow-y-auto pr-1">
-                {allSigners.map((s, idx) => (
-                  <div key={idx} className="flex justify-between text-[11px]">
-                    <span className="font-mono break-all">{s.public_key || s.key || s.publicKey}</span>
-                    <span className="ml-2">{s.weight ?? 0}</span>
-                  </div>
-                ))}
+        )}
+        {isMultisigAccount && showInfo && (
+          <>
+            <div className="mb-3 rounded border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100 space-y-2">
+              <div className="font-semibold">{t('secretKey:multisigOptions.title')}</div>
+              <div>
+                <div className="font-semibold text-sm">{t('secretKey:multisigOptions.distributed.title')}</div>
+                <p className="text-xs mt-0.5">{t('secretKey:multisigOptions.distributed.body')}</p>
+              </div>
+              <div>
+                <div className="font-semibold text-sm">{t('secretKey:multisigOptions.localAll.title')}</div>
+                <p className="text-xs mt-0.5">{t('secretKey:multisigOptions.localAll.body')}</p>
+                <div className="mt-1 flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={collectAllSignaturesLocally}
+                    onChange={() => setCollectAllSignaturesLocally((v) => !v)}
+                  />
+                  <span>{t('secretKey:multisigOptions.localAll.checkboxLabel')}</span>
+                </div>
+                <p className="text-[11px] mt-1 text-amber-700 dark:text-amber-300">{t('secretKey:multisigOptions.localAll.warning')}</p>
               </div>
             </div>
-          )}
-        </div>
-
-        {minSignerCount > 1 && (
-          <div className="mb-3 text-xs text-amber-700 dark:text-amber-300">
-            {t('multisig:multipleSignersInfo')}
-          </div>
+            <div className="mb-3 rounded border border-gray-200 bg-gray-50 p-3 text-xs dark:border-gray-700 dark:bg-gray-900">
+              <div className="flex flex-col gap-1 mb-2 text-gray-800 dark:text-gray-200">
+                <div>{t('secretKey:multisigInfo.summary.multi')}</div>
+                <div>{t('secretKey:multisigInfo.requiredThreshold', { level: thresholdLevel, value: requiredThreshold || 0 })}</div>
+                <div>{t(`secretKey:operations.${operationType || 'unknown'}`, operationType || '')}</div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <span className="font-semibold">{t('secretKey:multisigInfo.thresholdLabel')}:</span>
+                <span>{requiredThreshold || 'n/a'}</span>
+                <span className="font-semibold">{t('secretKey:multisigInfo.weightLabel')}:</span>
+                <span>{effectiveSigners.length ? currentWeight : 'n/a'}</span>
+                {operationType && (
+                  <span className="rounded bg-blue-100 px-2 py-0.5 text-blue-800 dark:bg-blue-900 dark:text-blue-100 text-[11px] uppercase tracking-wide">
+                    {t(`secretKey:operations.${operationType || 'unknown'}`, operationType || '')}
+                  </span>
+                )}
+              </div>
+              {allSigners.length > 0 && (
+                <div className="mt-2">
+                  <div className="text-gray-600 dark:text-gray-300 mb-1">{t('secretKey:multisigInfo.signers')}:</div>
+                  <div className="space-y-1 max-h-24 overflow-y-auto pr-1">
+                    {allSigners.map((s, idx) => (
+                      <div key={idx} className="flex justify-between text-[11px]">
+                        <span className="font-mono break-all">{s.public_key || s.key || s.publicKey}</span>
+                        <span className="ml-2">{s.weight ?? 0}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            {minSignerCount > 1 && (
+              <div className="mb-3 text-xs text-amber-700 dark:text-amber-300">
+                {t('secretKey:multipleSignersInfo')}
+              </div>
+            )}
+          </>
         )}
 
         <div className="space-y-2">
@@ -217,15 +238,17 @@ function SecretKeyModal({
             />
           ))}
         </div>
-        <div className="mt-2">
-          <button
-            type="button"
-            className="text-sm text-blue-700 dark:text-blue-300 hover:underline"
-            onClick={() => setSecretInputs((prev) => [...prev, ''])}
-          >
-            {t('secretKey:addSigner', 'Weiteren Signer hinzufügen')}
-          </button>
-        </div>
+        {isMultisigAccount && (
+          <div className="mt-2">
+            <button
+              type="button"
+              className="text-sm text-blue-700 dark:text-blue-300 hover:underline"
+              onClick={() => setSecretInputs((prev) => [...prev, ''])}
+            >
+              {t('secretKey:addSigner', 'Weiteren Signer hinzufügen')}
+            </button>
+          </div>
+        )}
 
         <label className="flex items-center gap-2 mt-3 text-sm">
           <input

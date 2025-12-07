@@ -10,5 +10,139 @@
     "changeTrust": "Wijzig vertrouwenslijn",
     "unknown": "Actie"
   },
-  "multipleSignersInfo": "Deze actie vereist meerdere handtekeningen. Gelieve voldoende geheime sleutels te verstrekken om aan de drempel te voldoen."
+  "multipleSignersInfo": "Deze actie vereist meerdere handtekeningen. Gelieve voldoende geheime sleutels te verstrekken om aan de drempel te voldoen.",
+  "confirm": {
+    "testModeTitle": "Testmodus (alle Signaturen lokal)",
+    "testModeDescription": "Bestaande flow: Voer geheime sleutel in, verzamel alle vereiste handtekeningen en stuur direct naar Horizon.",
+    "testModeButton": "Directly sign & send",
+    "prepareTitle": "Bereid transactie voor multisig voor",
+    "prepareDescription": "Bereid alleen XDR voor productie multisig voor. Er zal niets onmiddellijk worden verzonden.",
+    "prepareButton": "Bereid XDR (nicht senden) voor"
+  },
+  "prepare": {
+    "title": "Transactie voorbereid voor multisig",
+    "subtitle": "De transactie is opgebouwd en kan extern ondertekend worden.",
+    "hashLabel": "Transactie-hash",
+    "xdrLabel": "Transactie XDR",
+    "copyXdrButton": "Kopieer XDR",
+    "copied": "Gekopieerd",
+    "notSentHint": "Deze transactie is nog niet naar het netwerk verzonden."
+  },
+  "testMode": {
+    "modalTitle": "Testmodus / Handtekening voor een enkele gebruiker",
+    "modalDescription": "Hier kunt u alle benodigde geheime sleutels op één apparaat invoeren en de transactie direct verzenden. In echte multi-party-opstellingen moeten de sleutels op afzonderlijke apparaten blijven."
+  },
+  "mode": {
+    "test": {
+      "label": "Testmodus (use all S-keys locally)"
+    },
+    "prod": {
+      "label": "Productiviteitsmodus",
+      "banner": {
+        "title": "Productieve modus voor multi-handtekening",
+        "body": "In deze modus gebruikt de Stellar Account Manager alleen je eigen geheime sleutel. Extra handtekeningen worden verzameld via geëxporteerde XDR-bestanden. Beveilig je XDR-bestanden en deel ze alleen met vertrouwde ondertekenaars."
+      }
+    }
+  },
+  "detail": {
+    "title": "In afwachting van multi-handtekening-taak",
+    "idLabel": "Vacature-ID",
+    "accountLabel": "Bronaccount",
+    "statusLabel": "Status",
+    "txHashLabel": "Transactiehash",
+    "xdrLabel": "Transactie XDR",
+    "copyXdrButton": "XDR kopiëren",
+    "importSignedXdrTitle": "Importeer ondertekende XDR",
+    "importSignedXdrDescription": "Voeg een ondertekende XDR in. Nieuwe handtekeningen zullen worden opgenomen in de huidige transactie.",
+    "importSignedXdrPlaceholder": "Base64-gecodeerde ondertekende XDR",
+    "importSignedXdrButton": "Aangenomen ondertekende XDR",
+    "updatedAt": "Bijgewerkt op",
+    "signers": {
+      "required": "Vereiste handtekeningen",
+      "collected": "Al verzamelde handtekeningen"
+    },
+    "changes": {
+      "title": "Geplande wijzigingen",
+      "addSigner": "Ondertekenaar toevoegen: {{account}} (Gewicht {{weight}})",
+      "removeSigner": "Verwijder ondertekenaar: {{account}}",
+      "setThresholds": "Stel drempelwaarden in: laag={{low}}, middel={{med}}, hoog={{high}}"
+    },
+    "xdr": {
+      "title": "Transactie",
+      "hint": "Deze XDR kan worden geladen en ondertekend door andere ondertekenaars in compatibele wallets.",
+      "copy": "Kopieer XDR",
+      "copy.success": "XDR naar klembord gekopieerd.",
+      "copy.error": "XDR kon niet naar het klembord gekopieerd worden."
+    },
+    "signedXdr": {
+      "title": "Importeer ondertekende XDR",
+      "hint": "Voeg hier een XDR in die is ondertekend door een andere ondertekenaar om de handtekeningen te combineren met deze multisig-taak.",
+      "label": "Ondertekende SDR",
+      "submit": "Onderteken samengevoegde XDR",
+      "success": {
+        "title": "Handtekeningen bijgewerkt",
+        "body": "De handtekeningen zijn succesvol samengevoegd met deze multisig-taak. Huidige status: {{status}}."
+      }
+    }
+  },
+  "secretModal": {
+    "options": {
+      "title": "Handtekeningopties voor deze multisig-rekening"
+    },
+    "option": {
+      "distributed": {
+        "title": "Standaard: Gedistribueerde Multisig Flow",
+        "body": "Standaard ondertekent deze sessie alleen met uw eigen privésleutel. Extra handtekeningen worden toegevoegd via geëxporteerde XDR-bestanden of een job-ID van andere ondertekenaars."
+      },
+      "localAll": {
+        "title": "Voer alle handtekeningen lokaal in.",
+        "body": "Kies deze optie alleen als je alle geheime sleutels die aan deze rekening zijn gekoppeld (z. B. nach einer Kontorettung mit mehreren Signern) onder controle hebt. De Stellar Account Manager verzamelt dan alle handtekeningen lokaal en stuurt de transactie direct naar Horizon.",
+        "checkboxLabel": "Voer alle handtekeningen lokaal in dit dialoogvenster in en verzend ze direct.",
+        "warning": "Opmerking: Als je alle handtekeningen lokaal invoert, zullen alle geheime sleutels in deze sessie aanwezig zijn. Gebruik deze optie alleen op vertrouwde apparaten."
+      }
+    }
+  },
+  "errors": {
+    "mismatchedHash": "De ondertekende XDR behoort niet tot deze transactie."
+  },
+  "list": {
+    "title": "Multisig Banen",
+    "empty": "Geen multisig-taken gevonden.",
+    "details": "Toon details.",
+    "status": {
+      "pending_signatures": "Wachten op handtekeningen",
+      "ready_to_submit": "Klaar om te verzenden",
+      "submitted_success": "Verzonden",
+      "submitted_failed": "Verzenden mislukt",
+      "expired": "Verlopen",
+      "obsolete_seq": "Verouderde Volgorde"
+    }
+  },
+  "actions": {
+    "createMultisigJob": "Maak Multisig-taak"
+  },
+  "job": {
+    "create": {
+      "success": {
+        "title": "Multisig-taak aangemaakt",
+        "body": "De multisig-taak met de ID {{id}} is aangemaakt. Extra ondertekenaars kunnen het XDR-bestand ondertekenen zodra het is geëxporteerd."
+      }
+    },
+    "status": {
+      "pending": "In behandeling",
+      "partiallySigned": "Gedeeltelijk ondertekend",
+      "readyToSubmit": "Klaar om te verzenden",
+      "submitted": "Verzonden",
+      "failed": "Mislukt",
+      "unknown": "Onbekend"
+    },
+    "statusHelp": {
+      "pending": "De multisig-taak is aangemaakt, maar er zijn nog geen handtekeningen.",
+      "partiallySigned": "Sommige ondertekenaars hebben al getekend. Er zijn nog meer handtekeningen nodig.",
+      "readyToSubmit": "Er zijn genoeg handtekeningen aanwezig. De transactie kan naar Horizon worden verzonden.",
+      "submitted": "De transactie is naar het netwerk verzonden. Controleer indien nodig het uiteindelijke rekeningsaldo.",
+      "failed": "Er is een fout opgetreden bij het verzenden van de transactie. Raadpleeg het foutlogboek voor meer details.",
+      "unknown": "Status onbekend."
+    }
+  }
 }

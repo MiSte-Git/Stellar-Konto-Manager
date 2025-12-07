@@ -7,13 +7,15 @@ import Main from './main.jsx';
 import LanguageSelector from './components/LanguageSelector';
 import BugTrackerAdmin from './routes/BugTrackerAdmin.tsx';
 import SmallAdminLink from './components/SmallAdminLink.jsx';
-import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizLandingPath, getMultisigJobId } from './utils/basePath.js';
+import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizLandingPath, getMultisigJobId, isSettingsPath, isTradingAssetsPath } from './utils/basePath.js';
 import GlossaryPage from './pages/GlossaryPage.tsx';
 import LearnPage from './pages/LearnPage.jsx';
 import QuizPage from './pages/QuizPage.jsx';
 import BackupSettings from './pages/BackupSettings.jsx';
 import MultisigJobDetail from './pages/MultisigJobDetail.jsx';
 import Legal from './pages/Legal.jsx';
+import SettingsPage from './pages/SettingsPage.jsx';
+import TradingAssetsPage from './pages/TradingAssetsPage.jsx';
 
 import { formatErrorForUi } from './utils/formatErrorForUi.js';
 
@@ -170,6 +172,22 @@ function AppShell() {
     }
   }, [pathname]);
 
+  const isSettingsRoute = React.useMemo(() => {
+    try {
+      return isSettingsPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
+  const isTradingAssetsRoute = React.useMemo(() => {
+    try {
+      return isTradingAssetsPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
   const isLegalRoute = React.useMemo(() => {
     try {
       const target = buildPath('legal');
@@ -191,6 +209,8 @@ function AppShell() {
       isQuizSettingsRoute,
       isQuizAchievementsRoute,
       isQuizRoute,
+      isSettingsRoute,
+      isTradingAssetsRoute,
       multisigJobId,
     });
   }
@@ -206,6 +226,12 @@ function AppShell() {
       ) : isQuizRoute ? (
         <div className="max-w-4xl mx-auto p-4">
           <QuizPage />
+        </div>
+      ) : isTradingAssetsRoute ? (
+        <TradingAssetsPage />
+      ) : isSettingsRoute ? (
+        <div className="max-w-4xl mx-auto p-4">
+          <SettingsPage />
         </div>
       ) : isLegalRoute ? (
         <div className="max-w-4xl mx-auto p-4">
@@ -223,7 +249,7 @@ function AppShell() {
                 type="button"
                 onClick={() => {
                   try {
-                    const url = buildPath('settings/backup');
+                    const url = buildPath('settings');
                     try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
                     window.history.pushState({}, '', url);
                     window.dispatchEvent(new PopStateEvent('popstate'));
