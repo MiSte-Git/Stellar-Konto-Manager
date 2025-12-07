@@ -771,6 +771,7 @@ function ListTrustlines({
           signers={signersForModal}
           operationType="changeTrust"
           requiredThreshold={requiredThreshold}
+          account={accountInfo}
         />
       )}
 

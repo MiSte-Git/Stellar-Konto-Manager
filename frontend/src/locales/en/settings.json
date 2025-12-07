@@ -48,7 +48,8 @@
     "title": "Network",
     "desc": "Optional: Full-History Horizon for Deep History",
     "fullUrl": "Full-History Horizon URL",
-    "autoUseFull": "Automatically use if the from-date is older than the server history."
+    "autoUseFull": "Automatically use if the from-date is older than the server history.",
+    "historyInfo": "The free Horizon servers operated by the Stellar Development Foundation provide only about one year of history. For older data, you will need to either operate your own Horizon node or rely on third-party/paid services."
   },
   "description": "Currently, there are no settings yet.",
   "display": {
@@ -100,5 +101,51 @@
     "validation": {
       "hint": "At least one line is invalid (missing/duplicated address)."
     }
+  },
+  "back": "Back",
+  "aria": {
+    "back": "Return to the previous page."
+  },
+  "tabs": {
+    "general": "General",
+    "app": "App/interface",
+    "accounts": "Account list",
+    "network": "Network",
+    "quiz": "Quiz",
+    "explorer": "Explorer"
+  },
+  "sections": {
+    "general": "General Settings",
+    "app": "App Settings",
+    "accounts": "Accounts list",
+    "network": "Network",
+    "quiz": "Quiz settings",
+    "explorer": "Stellar Explorer"
+  },
+  "explorer": {
+    "sectionTitle": "Stellar Explorer",
+    "description": "Select the default explorer for account links and manage the explorer list.",
+    "defaultLabel": "Standard Explorer",
+    "nameLabel": "Name",
+    "urlLabel": "URL",
+    "testnetUrlLabel": "Testnet URL (optional)",
+    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
+    "addButton": "Add explorer",
+    "removeButton": "Remove",
+    "setDefault": "Set as default",
+    "noEntries": "No explorers configured.",
+    "validation": {
+      "nameRequired": "Please enter a name.",
+      "urlRequired": "Please enter a URL.",
+      "urlInvalid": "Please enter a valid URL.",
+      "testnetUrlInvalid": "Please enter a valid testnet URL."
+    },
+    "mainnetLabel": "Mainnet",
+    "testnetLabel": "Testnet",
+    "edit": "Edit"
+  },
+  "export": {
+    "title": "Export settings",
+    "button": "Save settings as a file"
   }
 }

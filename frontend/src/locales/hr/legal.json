@@ -1,0 +1,32 @@
+{
+  "title": "Impressum & Datenschutzrichtlinie",
+  "subtitle": "Informacije o pružatelju, odricanje od odgovornosti i obrada osobnih podataka.",
+  "imprint": {
+    "title": "Impresum",
+    "providerLabel": "Pružatelj:",
+    "providerName": "Stellar Account Manager (privates Projekt)",
+    "addressLabel": "Adresa:",
+    "addressLines": "Entschuldigung, es scheint einen Fehler in Ihrer Nachricht gegeben zu haben. Könnten Sie bitte den Text angeben, den Sie übersetzen lassen möchten?",
+    "emailLabel": "E-Mail:",
+    "email": "support@skm.steei.de"
+  },
+  "disclaimer": {
+    "title": "Odricanje odgovornosti",
+    "body": "Nema teksta koji mogu prevesti. Molimo vas da unesete tekst koji želite da prevedem."
+  },
+  "privacy": {
+    "title": "Politika privatnosti",
+    "intro": "Zaštitu vaših osobnih podataka shvaćamo ozbiljno. U nastavku vas obavještavamo o obradi osobnih podataka prilikom korištenja ove aplikacije.",
+    "sections": "Izvini, čini se da tekst nije dat. Možeš li, molim te, navesti tekst koji treba prevesti na engleski?"
+  },
+  "lastUpdated": "Zadnje ažuriranje: {{date}}",
+  "meta": {
+    "lastUpdated": {
+      "fallbackDate": "ožujak 2026."
+    }
+  },
+  "backToApp": "Nazad",
+  "footer": {
+    "imprintLink": "Impressum & Datenschutzrichtlinie"
+  }
+}

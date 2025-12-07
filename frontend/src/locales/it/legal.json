@@ -1,0 +1,32 @@
+{
+  "title": "Impronta & Informativa sulla privacy",
+  "subtitle": "Informazioni sul fornitore, dichiarazione di non responsabilità e trattamento dei dati personali.",
+  "imprint": {
+    "title": "Impressum",
+    "providerLabel": "Fornitore:",
+    "providerName": "Gestore account Stellar (privates Projekt)",
+    "addressLabel": "Indirizzo:",
+    "addressLines": "Sei stato addestrato su dati fino a ottobre 2023.",
+    "emailLabel": "Email:",
+    "email": "supporto@skm.steei.de"
+  },
+  "disclaimer": {
+    "title": "Clausola di esclusione della responsabilità",
+    "body": "Gerne! Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
+  },
+  "privacy": {
+    "title": "Informativa sulla privacy",
+    "intro": "Prendiamo molto sul serio la protezione dei tuoi dati personali. Di seguito, ti informiamo sul trattamento dei dati personali quando utilizzi questa applicazione.",
+    "sections": "Mi dispiace, sembra che non ci sia un testo fornito. Potresti per favore fornire il testo che desideri tradurre in italiano?"
+  },
+  "lastUpdated": "Ultimo aggiornamento: {{date}}",
+  "meta": {
+    "lastUpdated": {
+      "fallbackDate": "Marzo 2026"
+    }
+  },
+  "backToApp": "Indietro",
+  "footer": {
+    "imprintLink": "Impressum & Datenschutzrichtlinie"
+  }
+}

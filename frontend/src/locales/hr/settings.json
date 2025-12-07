@@ -48,7 +48,8 @@
     "title": "Mreža",
     "desc": "Neobavezno: Potpuni horizont povijesti za duboku povijest",
     "fullUrl": "URL potpunog povijesnog horizonata",
-    "autoUseFull": "Automatski koristite ako je datum početka stariji od povijesti poslužitelja."
+    "autoUseFull": "Automatski koristite ako je datum početka stariji od povijesti poslužitelja.",
+    "historyInfo": "Besplatni Horizon serveri koje upravlja Stellar Development Foundation pružaju samo oko godinu dana povijesti. Za starije podatke, trebat ćete ili upravljati vlastitim Horizon čvorom ili se osloniti na usluge trećih strana/plaćene usluge."
   },
   "description": "Trenutno još nema postavki.",
   "display": {
@@ -100,5 +101,51 @@
     "validation": {
       "hint": "Najmanje jedan redak je nevažeći (nedostaje/adresa je duplicirana)."
     }
+  },
+  "back": "Natrag",
+  "aria": {
+    "back": "Vrati se na prethodnu stranicu."
+  },
+  "tabs": {
+    "general": "Općenito",
+    "app": "Aplikacija/sučelje",
+    "accounts": "Popis računa",
+    "network": "Mreža",
+    "quiz": "Kviz",
+    "explorer": "Istraživač"
+  },
+  "sections": {
+    "general": "Opće postavke",
+    "app": "Postavke aplikacije",
+    "accounts": "Popis računa",
+    "network": "Mreža",
+    "quiz": "Postavke kviza",
+    "explorer": "Stellar Explorer"
+  },
+  "explorer": {
+    "sectionTitle": "Stellar Explorer",
+    "description": "Odaberite zadani preglednik za veze računa i upravljajte popisom preglednika.",
+    "defaultLabel": "Standard Explorer",
+    "nameLabel": "Ime",
+    "urlLabel": "URL",
+    "testnetUrlLabel": "Testnet URL (optional)",
+    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
+    "addButton": "Dodaj istraživača",
+    "removeButton": "Ukloniti",
+    "setDefault": "Postavi kao zadano",
+    "noEntries": "Nisu konfigurirani istraživači.",
+    "validation": {
+      "nameRequired": "Molimo unesite ime.",
+      "urlRequired": "Molimo unesite URL.",
+      "urlInvalid": "Molimo unesite valjanu URL adresu.",
+      "testnetUrlInvalid": "Unesite važeći testnet URL."
+    },
+    "mainnetLabel": "Mainnet",
+    "testnetLabel": "Testna mreža",
+    "edit": "Uređivanje"
+  },
+  "export": {
+    "title": "Postavke izvoza",
+    "button": "Spremi postavke kao datoteku"
   }
 }

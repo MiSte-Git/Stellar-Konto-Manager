@@ -10,5 +10,139 @@
     "changeTrust": "Promijeni povjereničku liniju",
     "unknown": "Akcija"
   },
-  "multipleSignersInfo": "Ova radnja zahtijeva više potpisa. Molimo osigurajte dovoljno tajnih ključeva da se postigne prag."
+  "multipleSignersInfo": "Ova radnja zahtijeva više potpisa. Molimo osigurajte dovoljno tajnih ključeva da se postigne prag.",
+  "confirm": {
+    "testModeTitle": "Testni način (alle Signaturen lokal)",
+    "testModeDescription": "Postojeći tijek: Unesite tajni ključ, prikupite sve potrebne potpise i pošaljite izravno na Horizon.",
+    "testModeButton": "Directly sign & send",
+    "prepareTitle": "Pripremi transakciju za multisig",
+    "prepareDescription": "Pripremite samo XDR za proizvodnju s više potpisa. Ništa neće biti poslano odmah.",
+    "prepareButton": "Pripremite XDR (nicht senden)"
+  },
+  "prepare": {
+    "title": "Transakcija pripremljena za multisig",
+    "subtitle": "Transakcija je kreirana i može biti potpisana izvana.",
+    "hashLabel": "Hash transakcije",
+    "xdrLabel": "XDR transakcija",
+    "copyXdrButton": "Kopiraj XDR",
+    "copied": "Kopirano",
+    "notSentHint": "Ova transakcija još nije poslana na mrežu."
+  },
+  "testMode": {
+    "modalTitle": "Testni način rada / Potpis za jednog korisnika",
+    "modalDescription": "Ovdje možete unijeti sve potrebne tajne ključeve na jednom uređaju i poslati transakciju izravno. U pravim višestranačkim postavkama, ključevi bi trebali ostati na zasebnim uređajima."
+  },
+  "mode": {
+    "test": {
+      "label": "Testni način (use all S-keys locally)"
+    },
+    "prod": {
+      "label": "Način produktivnosti",
+      "banner": {
+        "title": "Produktivni način za višestruki potpis",
+        "body": "U ovom načinu, Stellar Account Manager koristi samo vaš vlastiti tajni ključ. Dodatni potpisi se prikupljaju putem izvezenih XDR datoteka. Osigurajte svoje XDR datoteke i dijelite ih samo s pouzdanim potpisnicima."
+      }
+    }
+  },
+  "detail": {
+    "title": "U tijeku je posao s višestrukim potpisom",
+    "idLabel": "ID posla",
+    "accountLabel": "Izvorni račun",
+    "statusLabel": "Status",
+    "txHashLabel": "Hash transakcije",
+    "xdrLabel": "Transakcija XDR",
+    "copyXdrButton": "Kopiraj XDR",
+    "importSignedXdrTitle": "Uvezeni potpisani XDR",
+    "importSignedXdrDescription": "Umetnite potpisani XDR. Novi potpisi bit će uključeni u trenutnu transakciju.",
+    "importSignedXdrPlaceholder": "Base64-kodirani potpisani XDR",
+    "importSignedXdrButton": "Usvajanje potpisanih XDR-a",
+    "updatedAt": "ažurirano u",
+    "signers": {
+      "required": "Potrebni potpisi",
+      "collected": "Već prikupljeni potpisi"
+    },
+    "changes": {
+      "title": "Planirane promjene",
+      "addSigner": "Dodajte potpisnika: {{account}} (Težina {{weight}})",
+      "removeSigner": "Ukloni potpisnika: {{account}}",
+      "setThresholds": "Postavi pragove: nizak={{low}}, srednji={{med}}, visok={{high}}"
+    },
+    "xdr": {
+      "title": "Transakcija",
+      "hint": "Ovaj XDR može biti učitan i potpisan od strane drugih potpisnika u kompatibilnim novčanicima.",
+      "copy": "Kopiraj XDR",
+      "copy.success": "XDR kopirano u međuspremnik.",
+      "copy.error": "XDR nije mogao biti kopiran u međuspremnik."
+    },
+    "signedXdr": {
+      "title": "Uvezeni potpisani XDR",
+      "hint": "Umetnite XDR potpisan od strane drugog potpisnika ovdje kako biste spojili potpise s ovim višestrukim potpisom.",
+      "label": "Potpisani XDR",
+      "submit": "Spoji potpisani XDR",
+      "success": {
+        "title": "Potpisi ažurirani",
+        "body": "Potpisi su uspješno spojeni s ovim višepotpisnim zadatkom. Trenutni status: {{status}}."
+      }
+    }
+  },
+  "secretModal": {
+    "options": {
+      "title": "Opcije potpisa za ovaj multisig račun"
+    },
+    "option": {
+      "distributed": {
+        "title": "Standard: Distribuirani Multisig Flow",
+        "body": "Po zadanim postavkama, ova sesija potpisuje samo vašim privatnim ključem. Dodatni potpisi se dodaju putem izvezenih XDR datoteka ili ID-a posla od drugih potpisnika."
+      },
+      "localAll": {
+        "title": "Unesite sve potpise lokalno.",
+        "body": "Odaberite ovu opciju samo ako imate kontrolu nad svim tajnim ključevima povezanim s ovim računom (z. B. nach einer Kontorettung mit mehreren Signern). Stellar Account Manager će tada prikupiti sve potpise lokalno i poslati transakciju direktno na Horizon.",
+        "checkboxLabel": "Unesite sve potpise lokalno u ovaj dijalog i pošaljite ih izravno.",
+        "warning": "Napomena: Ako unosite sve potpise lokalno, svi tajni ključevi bit će prisutni u ovoj sesiji. Koristite ovu opciju samo na pouzdanim uređajima."
+      }
+    }
+  },
+  "errors": {
+    "mismatchedHash": "Potpisani XDR ne pripada ovoj transakciji."
+  },
+  "list": {
+    "title": "Poslovi s višestrukim potpisom",
+    "empty": "Nisu pronađeni poslovi s više potpisa.",
+    "details": "Obučeni ste na podatke do listopada 2023.",
+    "status": {
+      "pending_signatures": "Čekanje na potpise",
+      "ready_to_submit": "Spremno za slanje",
+      "submitted_success": "Poslano",
+      "submitted_failed": "Slanje nije uspjelo",
+      "expired": "Istekao",
+      "obsolete_seq": "Zastarjela sekvenca"
+    }
+  },
+  "actions": {
+    "createMultisigJob": "Kreiraj Multisig posao."
+  },
+  "job": {
+    "create": {
+      "success": {
+        "title": "Kreiran multisig posao",
+        "body": "Multisig zadatak sa ID-om {{id}} je kreiran. Dodatni potpisnici mogu potpisati XDR datoteku nakon što bude izvezena."
+      }
+    },
+    "status": {
+      "pending": "Na čekanju",
+      "partiallySigned": "Djelomično potpisano",
+      "readyToSubmit": "Spremno za slanje",
+      "submitted": "Poslano",
+      "failed": "Neuspjeh",
+      "unknown": "Nepoznato"
+    },
+    "statusHelp": {
+      "pending": "Multisig posao je kreiran, ali još uvijek nema potpisa.",
+      "partiallySigned": "Neki potpisnici su već potpisali. Još uvijek su potrebni dodatni potpisi.",
+      "readyToSubmit": "Postoji dovoljan broj potpisa. Transakcija se može poslati na Horizon.",
+      "submitted": "Transakcija je poslana na mrežu. Provjerite konačno stanje računa ako je potrebno.",
+      "failed": "Došlo je do pogreške prilikom slanja transakcije. Molimo pogledajte dnevnik pogrešaka za detalje.",
+      "unknown": "Status nepoznat."
+    }
+  }
 }

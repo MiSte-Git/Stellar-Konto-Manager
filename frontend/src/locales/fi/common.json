@@ -21,7 +21,11 @@
     "empty": "Ei löytynyt hyvityksiä.",
     "explorer": {
       "expert": "stellar.expert",
-      "stellarchain": "Stellarchain.io"
+      "stellarchain": "Stellarchain.io",
+      "label": "Tutkimusmatkailija",
+      "open": "Avaa Resurssienhallinnassa",
+      "noneConfigured": "Ei tutkijoita määritetty.",
+      "settingsHint": "Voit muokata Exploreria asetuksissa."
     },
     "noPublicKey": "Syötä ensin julkinen avain.",
     "payments": {
@@ -40,7 +44,9 @@
       "empty": "Toimintoja ei löytynyt.",
       "filter": {
         "memo": "Muistisuodatin",
-        "memoPlaceholder": "Etsi muistio..."
+        "memoPlaceholder": "Etsi muistio...",
+        "counterparty": "Vastapuolen suodatin",
+        "counterpartyPlaceholder": "Suodata vastaanottajan/lähettäjän osoitteen mukaan…"
       },
       "from": "Alkaen",
       "incoming": "Sisäänkäynti",
@@ -337,6 +343,10 @@
       "validation": {
         "hint": "Ainakin yksi rivi on virheellinen (puuttuva/duplicoitu osoite)."
       }
+    },
+    "explorer": {
+      "edit": "Muokkaa",
+      "editTitle": "Muokkaa Explorer-merkintää"
     }
   },
   "trustlines": {

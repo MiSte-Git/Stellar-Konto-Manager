@@ -96,6 +96,7 @@ import SendPaymentPage from './pages/SendPaymentPage.jsx';
 import FeedbackPage from './pages/FeedbackPage.jsx';
 import MuxedAccountsPage from './pages/MuxedAccountsPage.jsx';
 import MultisigJobList from './pages/MultisigJobList.jsx';
+import TradingAssetsPage from './pages/TradingAssetsPage.jsx';
 
 
 migrateLegacyStorageKeys();
@@ -908,6 +909,11 @@ function Main() {
             publicKey={sourcePublicKey}
             onBack={() => setMenuSelection(null)}
           />
+        </div>
+      )}
+      {menuSelection === 'tradingAssets' && (
+        <div className="max-w-6xl mx-auto px-3">
+          <TradingAssetsPage />
         </div>
       )}
       {menuSelection === 'balance' && (

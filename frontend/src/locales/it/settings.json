@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Backup esportato",
-      "backupBeforeImport": "Un backup è stato salvato prima dell'importazione."
+      "backupBeforeImport": "È stato salvato un backup prima dell'importazione."
     },
     "nav": {
       "back": "Indietro"
@@ -48,7 +48,8 @@
     "title": "Rete",
     "desc": "Opzionale: Orizzonte a Storia Completa per la Storia Profonda",
     "fullUrl": "URL dell'orizzonte a storia completa",
-    "autoUseFull": "Utilizzare automaticamente se la data di inizio è anteriore alla cronologia del server."
+    "autoUseFull": "Utilizzare automaticamente se la data di inizio è anteriore alla cronologia del server.",
+    "historyInfo": "I server Horizon gratuiti gestiti dalla Stellar Development Foundation forniscono solo circa un anno di cronologia. Per dati più vecchi, sarà necessario gestire il proprio nodo Horizon o affidarsi a servizi di terze parti/a pagamento."
   },
   "description": "Attualmente, non ci sono ancora impostazioni.",
   "display": {
@@ -100,5 +101,51 @@
     "validation": {
       "hint": "Almeno una riga è non valida (indirizzo mancante/duplicato)."
     }
+  },
+  "back": "Indietro",
+  "aria": {
+    "back": "Torna alla pagina precedente."
+  },
+  "tabs": {
+    "general": "Generale",
+    "app": "App/interfaccia",
+    "accounts": "Elenco dei conti",
+    "network": "Rete",
+    "quiz": "Quiz",
+    "explorer": "Esploratore"
+  },
+  "sections": {
+    "general": "Impostazioni generali",
+    "app": "Impostazioni dell'app",
+    "accounts": "Lista dei conti",
+    "network": "Rete",
+    "quiz": "Impostazioni del quiz",
+    "explorer": "Esploratore Stellare"
+  },
+  "explorer": {
+    "sectionTitle": "Stellar Explorer",
+    "description": "Seleziona l'esploratore predefinito per i collegamenti dell'account e gestisci l'elenco degli esploratori.",
+    "defaultLabel": "Esploratore standard",
+    "nameLabel": "Nome",
+    "urlLabel": "URL",
+    "testnetUrlLabel": "URL Testnet (optional)",
+    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
+    "addButton": "Aggiungi esploratore",
+    "removeButton": "Rimuovi",
+    "setDefault": "Imposta come predefinito",
+    "noEntries": "Esploratori non configurati.",
+    "validation": {
+      "nameRequired": "Per favore inserisci un nome.",
+      "urlRequired": "Per favore inserisci un URL.",
+      "urlInvalid": "Per favore inserisci un URL valido.",
+      "testnetUrlInvalid": "Per favore, inserisci un URL testnet valido."
+    },
+    "mainnetLabel": "Mainnet",
+    "testnetLabel": "Rete di test",
+    "edit": "Modifica"
+  },
+  "export": {
+    "title": "Impostazioni di esportazione",
+    "button": "Salva le impostazioni come file"
   }
 }

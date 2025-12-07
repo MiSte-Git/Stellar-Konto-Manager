@@ -582,6 +582,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           signers={signersForModal}
           operationType="setOptions"
           requiredThreshold={requiredThreshold}
+          account={{ signers: signersForModal, thresholds: thresholdsForModal }}
         />
       )}
       {preparedTx && (

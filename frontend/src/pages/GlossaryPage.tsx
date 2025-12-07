@@ -95,6 +95,7 @@ function GlossaryPage() {
     'fee',
     'ledger',
     'horizon',
+    'horizonHistory',
     'anchor',
     'exchange',
     'dex',

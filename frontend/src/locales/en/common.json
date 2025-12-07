@@ -21,7 +21,11 @@
     "empty": "No credits found.",
     "explorer": {
       "expert": "stellar.expert",
-      "stellarchain": "Stellarchain.io"
+      "stellarchain": "Stellarchain.io",
+      "label": "Explorer",
+      "open": "Open in Explorer",
+      "noneConfigured": "No explorers configured.",
+      "settingsHint": "You can edit Explorer in the settings."
     },
     "noPublicKey": "Please enter a public key first.",
     "payments": {
@@ -40,7 +44,9 @@
       "empty": "No operations found.",
       "filter": {
         "memo": "Memo filter",
-        "memoPlaceholder": "Search for memo..."
+        "memoPlaceholder": "Search for memo...",
+        "counterparty": "Counterparty filter",
+        "counterpartyPlaceholder": "Nach Empfänger/Absender-Adresse filtern…"
       },
       "from": "From",
       "incoming": "Entrance",
@@ -337,6 +343,10 @@
       "validation": {
         "hint": "At least one line is invalid (missing/duplicated address)."
       }
+    },
+    "explorer": {
+      "edit": "Edit",
+      "editTitle": "Edit Explorer entry"
     }
   },
   "trustlines": {

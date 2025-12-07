@@ -197,5 +197,12 @@
     "original": "Account Configuration",
     "short": "L'interazione tra firmatari e soglie determina la sicurezza dell'account.",
     "desc": "La configurazione dell'account specifica quali firmatari esistono con quali pesi e quali soglie si applicano. Le modifiche ai firmatari o alle soglie sono fondamentali per la sicurezza, poiché determinano quante firme sono necessarie."
+  },
+  "horizonHistory": {
+    "title": "Storia dell'orizzonte",
+    "original": "Horizon history depth",
+    "short": "Descrive fino a che punto risale la cronologia delle transazioni fornita dai server pubblici Horizon.",
+    "desc": "I server pubblici Horizon gestiti dalla Stellar Development Foundation (Mainnet und Testnet) offrono solo una cronologia limitata – attualmente circa un anno indietro nel tempo. I dati più vecchi non sono più accessibili attraverso questi endpoint gratuiti. Se hai bisogno di tornare indietro nel passato, hai essenzialmente due opzioni: (1) gestire un tuo nodo Horizon con la cronologia completa (inklusive History Archives), oppure (2) utilizzare servizi di terze parti o a pagamento che memorizzano e forniscono dati storici di Stellar a lungo termine.",
+    "seeAlso": "Sono addestrato su dati fino a ottobre 2023."
   }
 }
