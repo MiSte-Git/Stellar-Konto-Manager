@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Ricerca di beni",
+    "description": "Cerca asset tramite l'endpoint di trading (Horizon).",
+    "form": {
+      "code": {
+        "label": "Codice assetto",
+        "placeholder": "ad esempio, USDC"
+      },
+      "issuer": {
+        "label": "Emittente (optional)",
+        "placeholder": "G… (optional)"
+      },
+      "submit": "Cerca"
+    },
+    "result": {
+      "empty": "Nessun bene trovato.",
+      "columns": {
+        "code": "Codice",
+        "issuer": "Emittente",
+        "numAccounts": "Conti",
+        "amount": "Importo totale"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Per favore, inserisci un codice di asset."
+    },
+    "failed": {
+      "generic": "La ricerca dell'asset è fallita. Si prega di riprovare più tardi."
+    }
+  }
+}

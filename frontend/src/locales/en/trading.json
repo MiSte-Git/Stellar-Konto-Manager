@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Asset search",
+    "description": "Search for assets via the trading endpoint (Horizon).",
+    "form": {
+      "code": {
+        "label": "Asset code",
+        "placeholder": "e.g., USDC"
+      },
+      "issuer": {
+        "label": "Issuer (optional)",
+        "placeholder": "G… (optional)"
+      },
+      "submit": "Search"
+    },
+    "result": {
+      "empty": "No assets found.",
+      "columns": {
+        "code": "Code",
+        "issuer": "Issuer",
+        "numAccounts": "Accounts",
+        "amount": "Total amount"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Please enter an asset code."
+    },
+    "failed": {
+      "generic": "The asset search has failed. Please try again later."
+    }
+  }
+}

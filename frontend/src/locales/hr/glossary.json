@@ -197,5 +197,12 @@
     "original": "Account Configuration",
     "short": "Međusobno djelovanje potpisnika i pragova određuje sigurnost računa.",
     "desc": "Konfiguracija računa specificira koji potpisnici postoje s kojim težinama i koji pragovi vrijede. Promjene potpisnika ili pragova su kritične za sigurnost, jer određuju koliko je potpisa potrebno."
+  },
+  "horizonHistory": {
+    "title": "Povijest horizonta",
+    "original": "Horizon history depth",
+    "short": "Opisuje koliko daleko unatrag povijest transakcija dostupna putem javnih Horizon servera seže.",
+    "desc": "Javni Horizon serveri (Mainnet und Testnet) koje upravlja Stellar Development Foundation pružaju samo ograničenu povijest – trenutno otprilike godinu unazad. Stariji podaci nisu dostupni putem ovih besplatnih krajnjih točaka. Ako trebaš pristupiti starijim podacima, imaš uglavnom dvije opcije: (1) možeš upravljati vlastitim Horizon čvorom s potpunom povijesti (inklusive History Archives), ili (2) možeš koristiti usluge trećih strana ili plaćene usluge koje dugoročno pohranjuju i pružaju povijesne Stellar podatke.",
+    "seeAlso": "Moja obuka na podacima završila je do listopada 2023. godine."
   }
 }

@@ -21,7 +21,11 @@
     "empty": "No se encontraron créditos.",
     "explorer": {
       "expert": "stellar.expert",
-      "stellarchain": "Stellarchain.io"
+      "stellarchain": "Stellarchain.io",
+      "label": "Explorador",
+      "open": "Abrir en el Explorador",
+      "noneConfigured": "No se han configurado exploradores.",
+      "settingsHint": "Puedes editar el Explorador en la configuración."
     },
     "noPublicKey": "Primero ingrese una clave pública.",
     "payments": {
@@ -40,7 +44,9 @@
       "empty": "No se encontraron operaciones.",
       "filter": {
         "memo": "Filtro de memo",
-        "memoPlaceholder": "Buscar memo..."
+        "memoPlaceholder": "Buscar memo...",
+        "counterparty": "Filtro de contraparte",
+        "counterpartyPlaceholder": "Filtrar por dirección de destinatario/remitente…"
       },
       "from": "Hasta",
       "incoming": "Entrada",
@@ -337,6 +343,10 @@
       "validation": {
         "hint": "Al menos una línea es inválida (dirección faltante/duplicada)."
       }
+    },
+    "explorer": {
+      "edit": "Editar",
+      "editTitle": "Editar entrada del Explorador"
     }
   },
   "trustlines": {

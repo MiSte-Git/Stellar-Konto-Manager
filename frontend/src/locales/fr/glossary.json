@@ -197,5 +197,12 @@
     "original": "Account Configuration",
     "short": "L'interaction entre les signataires et les seuils détermine la sécurité du compte.",
     "desc": "La configuration du compte spécifie quels signataires existent avec quels poids et quels seuils s'appliquent. Les modifications des signataires ou des seuils sont cruciales pour la sécurité, car elles déterminent combien de signatures sont nécessaires."
+  },
+  "horizonHistory": {
+    "title": "Histoire de l'horizon",
+    "original": "Horizon history depth",
+    "short": "Décrit jusqu'à quelle date remonte l'historique des transactions fourni par les serveurs Horizon publics.",
+    "desc": "Les serveurs publics Horizon (Mainnet und Testnet), opérés par la Stellar Development Foundation, n'offrent qu'un historique limité – actuellement environ un an en arrière. Les données plus anciennes ne sont plus accessibles via ces points de terminaison gratuits. Si tu dois remonter plus loin dans le passé, tu as essentiellement deux options : (1) tu gères ton propre nœud Horizon avec une historique complète (inklusive History Archives), ou (2) tu utilises des services tiers payants qui stockent et fournissent des données historiques Stellar à long terme.",
+    "seeAlso": "Je suis formé sur des données jusqu'en octobre 2023."
   }
 }

@@ -10,5 +10,139 @@
     "changeTrust": "Change trustline",
     "unknown": "Action"
   },
-  "multipleSignersInfo": "This action requires multiple signatures. Please provide enough secret keys to meet the threshold."
+  "multipleSignersInfo": "This action requires multiple signatures. Please provide enough secret keys to meet the threshold.",
+  "confirm": {
+    "testModeTitle": "Test mode (alle Signaturen lokal)",
+    "testModeDescription": "Existing flow: Enter secret key, gather all required signatures, and send directly to Horizon.",
+    "testModeButton": "Directly sign & send",
+    "prepareTitle": "Prepare transaction for multisig",
+    "prepareDescription": "Only prepare XDR for production multisig. Nothing will be sent immediately.",
+    "prepareButton": "Prepare XDR (nicht senden)"
+  },
+  "prepare": {
+    "title": "Transaction prepared for multisig",
+    "subtitle": "The transaction is built and can be externally signed.",
+    "hashLabel": "Transaction hash",
+    "xdrLabel": "Transaction XDR",
+    "copyXdrButton": "Copy XDR",
+    "copied": "Copied",
+    "notSentHint": "This transaction has not yet been sent to the network."
+  },
+  "testMode": {
+    "modalTitle": "Test mode / Single-user signature",
+    "modalDescription": "Here you can enter all the necessary secret keys on a single device and send the transaction directly. In real multi-party setups, the keys should remain on separate devices."
+  },
+  "mode": {
+    "test": {
+      "label": "Test mode (use all S-keys locally)"
+    },
+    "prod": {
+      "label": "Productivity mode",
+      "banner": {
+        "title": "Productive mode for multi-signature",
+        "body": "In this mode, the Stellar Account Manager only uses your own secret key. Additional signatures are collected through exported XDR files. Secure your XDR files and only share them with trusted signers."
+      }
+    }
+  },
+  "detail": {
+    "title": "Pending-Multisig-Job",
+    "idLabel": "Job ID",
+    "accountLabel": "Source account",
+    "statusLabel": "Status",
+    "txHashLabel": "Transaction hash",
+    "xdrLabel": "Transaction XDR",
+    "copyXdrButton": "Copy XDR",
+    "importSignedXdrTitle": "Import signed XDR",
+    "importSignedXdrDescription": "Insert a signed XDR. New signatures will be incorporated into the current transaction.",
+    "importSignedXdrPlaceholder": "Base64-encoded signed XDR",
+    "importSignedXdrButton": "Signed XDR adoption",
+    "updatedAt": "Updated on",
+    "signers": {
+      "required": "Required Signatures",
+      "collected": "Already collected signatures"
+    },
+    "changes": {
+      "title": "Planned changes",
+      "addSigner": "Add signer: {{account}} (Weight {{weight}})",
+      "removeSigner": "Remove signer: {{account}}",
+      "setThresholds": "Set thresholds: low={{low}}, med={{med}}, high={{high}}"
+    },
+    "xdr": {
+      "title": "Transaction",
+      "hint": "This XDR can be loaded and signed by other signers in compatible wallets.",
+      "copy": "Copy XDR",
+      "copy.success": "XDR copied to clipboard.",
+      "copy.error": "XDR could not be copied to the clipboard."
+    },
+    "signedXdr": {
+      "title": "Import signed XDR",
+      "hint": "Insert an XDR signed by another signer here to merge the signatures with this multisig job.",
+      "label": "Signed XDR",
+      "submit": "Merge signed XDR",
+      "success": {
+        "title": "Signatures updated",
+        "body": "The signatures were successfully merged with this multisig job. Current status: {{status}}."
+      }
+    }
+  },
+  "secretModal": {
+    "options": {
+      "title": "Signature options for this multisig account"
+    },
+    "option": {
+      "distributed": {
+        "title": "Standard: Distributed Multisig Flow",
+        "body": "By default, this session only signs with your own private key. Additional signatures are added via exported XDR files or a job ID from other signers."
+      },
+      "localAll": {
+        "title": "Enter all signatures locally.",
+        "body": "Choose this option only if you control all secret keys associated with this account (z. B. nach einer Kontorettung mit mehreren Signern). The Stellar Account Manager will then collect all signatures locally and send the transaction directly to Horizon.",
+        "checkboxLabel": "Enter all signatures locally in this dialog and send them directly.",
+        "warning": "Note: If you enter all signatures locally, all secret keys will be present in this session. Use this option only on trusted devices."
+      }
+    }
+  },
+  "errors": {
+    "mismatchedHash": "The signed XDR does not belong to this transaction."
+  },
+  "list": {
+    "title": "Multisig Jobs",
+    "empty": "No multisig jobs found.",
+    "details": "Show details",
+    "status": {
+      "pending_signatures": "Waiting for signatures",
+      "ready_to_submit": "Ready to send",
+      "submitted_success": "Sent",
+      "submitted_failed": "Sending failed",
+      "expired": "Expired",
+      "obsolete_seq": "Outdated Sequence"
+    }
+  },
+  "actions": {
+    "createMultisigJob": "Create Multisig Job"
+  },
+  "job": {
+    "create": {
+      "success": {
+        "title": "Multisig job created",
+        "body": "The multisig job with the ID {{id}} has been created. Additional signers can sign the XDR file once it has been exported."
+      }
+    },
+    "status": {
+      "pending": "Pending",
+      "partiallySigned": "Partially signed",
+      "readyToSubmit": "Ready to send",
+      "submitted": "Sent",
+      "failed": "Failed",
+      "unknown": "Unknown"
+    },
+    "statusHelp": {
+      "pending": "The multisig job has been created, but there are no signatures yet.",
+      "partiallySigned": "Some signatories have already signed. More signatures are still needed.",
+      "readyToSubmit": "There are enough signatures present. The transaction can be sent to Horizon.",
+      "submitted": "The transaction has been sent to the network. Check the final account balance if necessary.",
+      "failed": "An error occurred while sending the transaction. Please refer to the error log for details.",
+      "unknown": "Status unknown."
+    }
+  }
 }

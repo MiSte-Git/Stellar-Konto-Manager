@@ -1021,6 +1021,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           operationType="payment"
           requiredThreshold={requiredThreshold}
           isProcessing={isProcessing}
+          account={accountInfo}
           onConfirm={async (collected, remember, options = {}) => {
             try {
               setError('');

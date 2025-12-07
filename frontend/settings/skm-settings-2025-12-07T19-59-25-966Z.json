@@ -1,0 +1,31 @@
+{
+  "prefetchDays": 90,
+  "decimalsMode": "3",
+  "fullHorizonUrl": "https://api.stellar.expert/explorer/public/",
+  "autoUseFullHorizon": false,
+  "explorers": [
+    {
+      "key": "stellarchain",
+      "name": "Stellarchain.io",
+      "urlTemplate": "https://stellarchain.io/address/{address}",
+      "txTemplate": "https://stellarchain.io/tx/{tx}",
+      "testnetUrlTemplate": "https://testnet.stellarchain.io/address/{address}",
+      "testnetTxTemplate": "https://testnet.stellarchain.io/transactions/{tx}"
+    },
+    {
+      "key": "stellar_expert",
+      "name": "StellarExpert",
+      "urlTemplate": "https://stellar.expert/explorer/public/account/{address}",
+      "txTemplate": "https://stellar.expert/explorer/public/tx/{tx}",
+      "testnetUrlTemplate": "https://stellar.expert/explorer/testnet/account/{address}",
+      "testnetTxTemplate": "https://stellar.expert/explorer/testnet/tx/{tx}"
+    },
+    {
+      "key": "scopuly---nur-mainnet-https://scopuly.com/explorer",
+      "name": "Scopuly - Nur Mainnet",
+      "urlTemplate": "https://scopuly.com/explorer",
+      "testnetUrlTemplate": "https://scopuly.com/explorer"
+    }
+  ],
+  "defaultExplorer": "stellarchain"
+}

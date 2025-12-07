@@ -23,7 +23,7 @@ function saveSettings(id, s) {
   } catch { /* noop */ }
 }
 
-export default function QuizSettings() {
+export default function QuizSettings({ showTitle = true }) {
   const { t } = useTranslation(['quiz']);
   const lessonId = React.useMemo(() => parseLessonIdFromPath(typeof window !== 'undefined' ? window.location.pathname : ''), []);
 
@@ -50,7 +50,9 @@ export default function QuizSettings() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-xl font-bold mb-3">{t('quiz:settings.title', 'Quiz-Einstellungen')}</h2>
+      {showTitle && (
+        <h2 className="text-xl font-bold mb-3">{t('quiz:settings.title', 'Quiz-Einstellungen')}</h2>
+      )}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>

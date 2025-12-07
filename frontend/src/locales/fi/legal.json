@@ -1,0 +1,32 @@
+{
+  "title": "Impressum & Datenschutzrichtlinie",
+  "subtitle": "Tiedot palveluntarjoajasta, vastuuvapauslauseke ja henkilötietojen käsittely.",
+  "imprint": {
+    "title": "Jälki",
+    "providerLabel": "Tarjoaja:",
+    "providerName": "Stellar Account Manager (privates Projekt)",
+    "addressLabel": "Osoite:",
+    "addressLines": "Olen pahoillani, vaikuttaa siltä, että viestissäsi oli virhe. Voisitko ystävällisesti antaa tekstin, jonka haluat käännettävän?",
+    "emailLabel": "Sähköposti:",
+    "email": "support@skm.steei.de"
+  },
+  "disclaimer": {
+    "title": "Vastuuvapauslauseke",
+    "body": "Es gibt keinen Text, den ich übersetzen kann. Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
+  },
+  "privacy": {
+    "title": "Tietosuojakäytäntö",
+    "intro": "Otamme henkilötietojesi suojan vakavasti. Alla kerromme sinulle henkilötietojen käsittelystä tämän sovelluksen käytön yhteydessä.",
+    "sections": "Sinulta ei näytä olevan annettu tekstiä käännettäväksi suomeksi. Voisitko ystävällisesti antaa tekstin, jonka haluat käännettävän englanniksi?"
+  },
+  "lastUpdated": "Päivitetty viimeksi: {{date}}",
+  "meta": {
+    "lastUpdated": {
+      "fallbackDate": "Maaliskuu 2026"
+    }
+  },
+  "backToApp": "Takaisin",
+  "footer": {
+    "imprintLink": "Jälki & Tietosuojakäytäntö"
+  }
+}

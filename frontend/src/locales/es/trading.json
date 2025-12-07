@@ -1,0 +1,32 @@
+{
+  "assetSearch": {
+    "title": "Búsqueda de activos",
+    "description": "Buscar activos a través del punto de acceso de operaciones (Horizon).",
+    "form": {
+      "code": {
+        "label": "Código de activo",
+        "placeholder": "p. ej., USDC"
+      },
+      "issuer": {
+        "label": "Emisor (optional)",
+        "placeholder": "G… (optional)"
+      },
+      "submit": "Buscar"
+    },
+    "result": {
+      "empty": "No se encontraron activos.",
+      "columns": {
+        "code": "Código",
+        "issuer": "Emisor",
+        "numAccounts": "Cuentas",
+        "amount": "Monto total"
+      }
+    },
+    "invalidInput": {
+      "codeMissing": "Por favor, introduce un código de activo."
+    },
+    "failed": {
+      "generic": "La búsqueda de activos ha fallado. Por favor, inténtalo de nuevo más tarde."
+    }
+  }
+}

@@ -21,7 +21,11 @@
     "empty": "Crediti non trovati.",
     "explorer": {
       "expert": "stellar.expert",
-      "stellarchain": "Stellarchain.io"
+      "stellarchain": "Stellarchain.io",
+      "label": "Esploratore",
+      "open": "Apri in Esplora risorse",
+      "noneConfigured": "Nessun esploratore configurato.",
+      "settingsHint": "Puoi modificare Explorer nelle impostazioni."
     },
     "noPublicKey": "Si prega di inserire prima una chiave pubblica.",
     "payments": {
@@ -40,7 +44,9 @@
       "empty": "Nessuna operazione trovata.",
       "filter": {
         "memo": "Filtro memo",
-        "memoPlaceholder": "Cerca il promemoria..."
+        "memoPlaceholder": "Cerca il promemoria...",
+        "counterparty": "Filtro controparti",
+        "counterpartyPlaceholder": "Filtrare per indirizzo del destinatario/mittente…"
       },
       "from": "Da",
       "incoming": "Ingresso",
@@ -337,6 +343,10 @@
       "validation": {
         "hint": "Almeno una riga è non valida (indirizzo mancante/duplicato)."
       }
+    },
+    "explorer": {
+      "edit": "Sei addestrato su dati fino a ottobre 2023.",
+      "editTitle": "Modifica voce Explorer"
     }
   },
   "trustlines": {

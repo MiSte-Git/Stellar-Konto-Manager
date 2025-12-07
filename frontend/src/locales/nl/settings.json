@@ -48,7 +48,8 @@
     "title": "Netwerk",
     "desc": "Optioneel: Volledige-geschiedenis Horizon voor Diepe Geschiedenis",
     "fullUrl": "Volledige Geschiedenis Horizon URL",
-    "autoUseFull": "Automatisch gebruiken als de vanaf-datum ouder is dan de servergeschiedenis."
+    "autoUseFull": "Automatisch gebruiken als de vanaf-datum ouder is dan de servergeschiedenis.",
+    "historyInfo": "De gratis Horizon-servers beheerd door de Stellar Development Foundation bieden slechts ongeveer één jaar aan geschiedenis. Voor oudere gegevens moet je ofwel je eigen Horizon-node beheren of gebruikmaken van externe/betaalde diensten."
   },
   "description": "Momenteel zijn er nog geen instellingen.",
   "display": {
@@ -100,5 +101,51 @@
     "validation": {
       "hint": "Minstens één regel is ongeldig (ontbrekend/gedupliceerd adres)."
     }
+  },
+  "back": "Terug",
+  "aria": {
+    "back": "Keer terug naar de vorige pagina."
+  },
+  "tabs": {
+    "general": "Algemeen",
+    "app": "App/interface",
+    "accounts": "Rekeningenlijst",
+    "network": "Netwerk",
+    "quiz": "Quiz",
+    "explorer": "Verkenner"
+  },
+  "sections": {
+    "general": "Algemene instellingen",
+    "app": "App-instellingen",
+    "accounts": "Rekeningenlijst",
+    "network": "Netwerk",
+    "quiz": "Quizinstellingen",
+    "explorer": "Stellar Verkenner"
+  },
+  "explorer": {
+    "sectionTitle": "Stellar Verkenner",
+    "description": "Selecteer de standaard verkenner voor accountlinks en beheer de verkennerlijst.",
+    "defaultLabel": "Standaard Verkenner",
+    "nameLabel": "Naam",
+    "urlLabel": "URL",
+    "testnetUrlLabel": "Testnet-URL (optional)",
+    "testnetUrlPlaceholder": "https://…{adres} (leave blank to use the Mainnet URL for Testnet as well)",
+    "addButton": "Voeg verkenner toe",
+    "removeButton": "Verwijderen",
+    "setDefault": "Als standaard instellen",
+    "noEntries": "Geen verkenners geconfigureerd.",
+    "validation": {
+      "nameRequired": "Voer alstublieft een naam in.",
+      "urlRequired": "Voer alstublieft een URL in.",
+      "urlInvalid": "Voer alstublieft een geldige URL in.",
+      "testnetUrlInvalid": "Voer een geldige testnet-URL in."
+    },
+    "mainnetLabel": "Mainnet",
+    "testnetLabel": "Testnet",
+    "edit": "U bent getraind op gegevens tot oktober 2023."
+  },
+  "export": {
+    "title": "Exporteerinstellingen",
+    "button": "Instellingen opslaan als een bestand"
   }
 }
