@@ -159,6 +159,7 @@
   },
   "clear": "Eingabe löschen",
   "close": "Schließen",
+  "networkLabel": "Netzwerk",
   "loading": "Laden…",
   "refresh": "Neu laden",
   "exportCsv": {
