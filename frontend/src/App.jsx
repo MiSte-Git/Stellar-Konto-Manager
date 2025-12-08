@@ -18,6 +18,7 @@ import SettingsPage from './pages/SettingsPage.jsx';
 import TradingAssetsPage from './pages/TradingAssetsPage.jsx';
 
 import { formatErrorForUi } from './utils/formatErrorForUi.js';
+import { SHOW_DONATE_BUTTON } from './config.js';
 
 console.log('App.jsx loaded');
 
@@ -270,15 +271,17 @@ function AppShell() {
                   <span>✉</span>
                   <span>{t('menu:feedback', 'Feedback')}</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => window.dispatchEvent(new CustomEvent('stm:openMenu', { detail: 'donate' }))}
-                  title={t('menu:donate', 'Spenden')}
-                  className="inline-flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white px-2 py-1 text-[11px] sm:text-xs rounded-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
-                >
-                  <span aria-hidden>♥</span>
-                  <span>{t('menu:donate', 'Spenden')}</span>
-                </button>
+                {SHOW_DONATE_BUTTON && (
+                  <button
+                    type="button"
+                    onClick={() => window.dispatchEvent(new CustomEvent('stm:openMenu', { detail: 'donate' }))}
+                    title={t('menu:donate', 'Spenden')}
+                    className="inline-flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white px-2 py-1 text-[11px] sm:text-xs rounded-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
+                  >
+                    <span aria-hidden>♥</span>
+                    <span>{t('menu:donate', 'Spenden')}</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>

@@ -167,6 +167,13 @@
   "feedback": {
     "title": "Feedback senden",
     "category": "Kategorie",
+    "categoryPlaceholder": "Kategorie auswählen",
+    "area": "Bereich",
+    "areaPlaceholder": "Bereich auswählen",
+    "noCategoriesConfigured": "Noch keine Kategorien konfiguriert. Bitte in den Einstellungen anlegen.",
+    "noAreasConfigured": "Noch keine Bereiche konfiguriert. Bitte in den Einstellungen anlegen.",
+    "categoryUnknown": "Unbekannte Kategorie",
+    "areaUnknown": "Unbekannter Bereich",
     "categories": {
       "bug": "Fehler",
       "idea": "Idee",
@@ -193,6 +200,10 @@
     "contactEmailOptional": "Kontakt E-Mail (optional)",
     "emailPlaceholder": "z. B. name@example.com",
     "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
+    "form": {
+      "clearButton": "Felder leeren",
+      "multiEntryHint": "Bitte pro Fehler, Vorschlag oder Idee nur eine Nachricht erstellen, damit die Bearbeitung übersichtlich bleibt."
+    },
     "privacyHint": "Ihre Nachricht wird per E-Mail über Ihr eigenes Mailprogramm gesendet.",
     "sendButton": "E-Mail erstellen",
     "openedMailClient": "E-Mail-Client geöffnet.",

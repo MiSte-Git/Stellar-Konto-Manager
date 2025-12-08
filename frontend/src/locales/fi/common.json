@@ -197,7 +197,18 @@
     "sendButton": "Luo sähköposti",
     "openedMailClient": "Sähköpostiohjelma avattu.",
     "error": "Virhe",
-    "sentTo": "Vastaanottaja: {{email}}"
+    "sentTo": "Vastaanottaja: {{email}}",
+    "categoryPlaceholder": "Valitse luokka",
+    "area": "Alue",
+    "areaPlaceholder": "Valitse alue",
+    "noCategoriesConfigured": "Kategorioita ei ole vielä määritetty. Ole hyvä ja luo ne asetuksissa.",
+    "noAreasConfigured": "Alueita ei ole vielä määritetty. Luo ne asetuksissa.",
+    "categoryUnknown": "Tuntematon kategoria",
+    "areaUnknown": "Tuntematon alue",
+    "form": {
+      "clearButton": "Tyhjennä kentät",
+      "multiEntryHint": "Luo vain yksi viesti virhettä, ehdotusta tai ideaa kohden, jotta muokkausprosessi pysyy selkeänä."
+    }
   },
   "account": {
     "createdAt": "Tili luotu päälle",
@@ -752,7 +763,7 @@
   "secretKey": {
     "cleared": "Salainen avain on poistettu.",
     "empty": "Salaisen avaimen kenttä on tyhjä.",
-    "info": "Yksityinen avaimenne pysyy selaimessanne ja sitä käytetään vain paikallisesti tapahtumien allekirjoittamiseen. Sitä ei koskaan lähetetä tai tallenneta.",
+    "info": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto EI KOSKAAN tallenna salaisuutta avaintasi!\n\nTässä näytetty salainen avain on olemassa vain selaimessasi (lokal im Arbeitsspeicher). Kun lataat sivun uudelleen tai poistut sivulta, se häviää peruuttamattomasti.\n\nKopioi tai kirjaa muistiin salainen avain heti sen luomisen jälkeen ennen sivun sulkemista.\n\nVarmistus: Voit käyttää selaimen kehittäjätyökaluja (F12 → Verkko) varmistaaksesi, että mitään salaista avainta ei lähetetä ulkoisesti. Vain allekirjoitetut tapahtumat lähetetään, ei koskaan salaista avaintasi.",
     "invalid": "Virheellinen salainen avain.",
     "label": "Syötä lähdeturva-avain (S-Key)",
     "mismatch": "Salainen avain ei vastaa julkista osoitetta.",

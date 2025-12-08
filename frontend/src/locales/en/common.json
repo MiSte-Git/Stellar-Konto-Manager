@@ -197,7 +197,18 @@
     "sendButton": "Create email",
     "openedMailClient": "Email client opened.",
     "error": "Error",
-    "sentTo": "Recipient: {{email}}"
+    "sentTo": "Recipient: {{email}}",
+    "categoryPlaceholder": "Select category",
+    "area": "Area",
+    "areaPlaceholder": "Select area",
+    "noCategoriesConfigured": "No categories configured yet. Please create them in the settings.",
+    "noAreasConfigured": "No areas configured yet. Please create them in the settings.",
+    "categoryUnknown": "Unknown category",
+    "areaUnknown": "Unknown area",
+    "form": {
+      "clearButton": "Clear fields",
+      "multiEntryHint": "Please create only one message per error, suggestion, or idea to keep the editing process clear."
+    }
   },
   "account": {
     "createdAt": "Account created on",
@@ -752,7 +763,7 @@
   "secretKey": {
     "cleared": "Secret key has been deleted.",
     "empty": "Secret key field is empty.",
-    "info": "Your private key remains in your browser and is only used locally to sign transactions. It is never transmitted or stored.",
+    "info": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe Secret Key displayed here exists only in your browser (lokal im Arbeitsspeicher). Once you reload or leave the page, it is irretrievably lost.\n\nCopy or note down the Secret Key immediately after it is generated, before closing the page.\n\nVerification: You can use the browser developer tools (F12 → Network) to verify that no secret key is transmitted externally. Only signed transactions are sent, never your Secret Key.",
     "invalid": "Invalid secret key.",
     "label": "Enter the source secret key (S-Key)",
     "mismatch": "Secret key does not match the public address.",

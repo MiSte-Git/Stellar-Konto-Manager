@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Sauvegarde exportée",
-      "backupBeforeImport": "Une sauvegarde a été enregistrée avant l'importation."
+      "backupBeforeImport": "Une sauvegarde a été effectuée avant l'importation."
     },
     "nav": {
       "back": "Retour"
@@ -147,5 +147,16 @@
   "export": {
     "title": "Paramètres d'exportation",
     "button": "Enregistrer les paramètres dans un fichier"
+  },
+  "import": {
+    "title": "Paramètres d'importation",
+    "button": "Charger les paramètres depuis le fichier",
+    "ariaLabel": "Paramètres d'importation",
+    "hint": "Sélectionnez un fichier de paramètres précédemment exporté (.json).",
+    "success": "Paramètres importés.",
+    "error": {
+      "invalid": "L'importation a échoué : Le fichier est invalide ou n'a pas pu être lu.",
+      "invalidType": "L'importation a échoué : Format inattendu dans le fichier."
+    }
   }
 }

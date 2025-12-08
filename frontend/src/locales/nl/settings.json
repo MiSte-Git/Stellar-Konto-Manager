@@ -1,6 +1,6 @@
 {
   "backup": {
-    "title": "Back-up & Herstel",
+    "title": "Backup & Recovery",
     "desc": "Exporteer of importeer je quizgegevens (instellingen, voortgang, badges).",
     "export": {
       "button": "Begin met exporteren",
@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Back-up geëxporteerd",
-      "backupBeforeImport": "Er werd een back-up opgeslagen voordat de import plaatsvond."
+      "backupBeforeImport": "Er is een back-up opgeslagen voordat de import werd uitgevoerd."
     },
     "nav": {
       "back": "Terug"
@@ -147,5 +147,16 @@
   "export": {
     "title": "Exporteerinstellingen",
     "button": "Instellingen opslaan als een bestand"
+  },
+  "import": {
+    "title": "Instellingen importeren",
+    "button": "Instellingen laden vanuit bestand",
+    "ariaLabel": "Importinstellingen",
+    "hint": "Selecteer een eerder geëxporteerd instellingenbestand (.json).",
+    "success": "Instellingen geïmporteerd.",
+    "error": {
+      "invalid": "Import mislukt: Bestand is ongeldig of kon niet worden gelezen.",
+      "invalidType": "Import mislukt: Onverwacht formaat in het bestand."
+    }
   }
 }

@@ -27,7 +27,7 @@
     "more": "Meer informatie",
     "keysOnPage": {
       "title": "Sleutel op deze pagina",
-      "text": "Op deze pagina worden sleutels gegenereerd. Houd ze veilig en deel ze niet."
+      "text": "⚠️ BELANGRIJK: Deze website slaat uw geheime sleutel NOOIT op!\n\nDe hier weergegeven geheime sleutel bestaat alleen in uw browser. Zodra u de pagina opnieuw laadt of verlaat, gaat deze onherroepelijk verloren.\n\nKopieer of schrijf de geheime sleutel onmiddellijk na de generatie op, voordat u de pagina sluit.\n\nVerificatie: U kunt de ontwikkelaarstools van de browser gebruiken (F12 → Netwerk) om te controleren dat er geen geheime sleutel extern wordt verzonden. Alleen ondertekende transacties worden verzonden, nooit uw geheime sleutel."
     },
     "title": "Belangrijke informatie",
     "secureKeys": {

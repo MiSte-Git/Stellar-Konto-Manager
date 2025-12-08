@@ -147,5 +147,16 @@
   "export": {
     "title": "Configuración de exportación",
     "button": "Guardar configuraciones como un archivo"
+  },
+  "import": {
+    "title": "Configuración de importación",
+    "button": "Cargar configuraciones desde archivo",
+    "ariaLabel": "Configuración de importación",
+    "hint": "Seleccione un archivo de configuración exportado previamente (.json).",
+    "success": "Configuraciones importadas.",
+    "error": {
+      "invalid": "Error de importación: El archivo es inválido o no se pudo leer.",
+      "invalidType": "Error de importación: Formato inesperado en el archivo."
+    }
   }
 }

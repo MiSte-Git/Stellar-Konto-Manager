@@ -147,5 +147,16 @@
   "export": {
     "title": "Export settings",
     "button": "Save settings as a file"
+  },
+  "import": {
+    "title": "Import settings",
+    "button": "Load settings from file",
+    "ariaLabel": "Import settings",
+    "hint": "Select a previously exported settings file (.json).",
+    "success": "Settings imported.",
+    "error": {
+      "invalid": "Import failed: File is invalid or could not be read.",
+      "invalidType": "Import failed: Unexpected format in the file."
+    }
   }
 }
