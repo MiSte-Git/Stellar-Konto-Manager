@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Backup esportato",
-      "backupBeforeImport": "È stato salvato un backup prima dell'importazione."
+      "backupBeforeImport": "Un backup è stato salvato prima dell'importazione."
     },
     "nav": {
       "back": "Indietro"
@@ -147,5 +147,16 @@
   "export": {
     "title": "Impostazioni di esportazione",
     "button": "Salva le impostazioni come file"
+  },
+  "import": {
+    "title": "Impostazioni di importazione",
+    "button": "Carica impostazioni dal file",
+    "ariaLabel": "Impostazioni di importazione",
+    "hint": "Seleziona un file di impostazioni precedentemente esportato (.json).",
+    "success": "Impostazioni importate.",
+    "error": {
+      "invalid": "Importazione fallita: il file non è valido o non può essere letto.",
+      "invalidType": "Importazione non riuscita: Formato del file inatteso."
+    }
   }
 }

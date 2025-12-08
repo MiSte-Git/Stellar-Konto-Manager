@@ -27,7 +27,7 @@
     "more": "Estás entrenado con datos hasta octubre de 2023.",
     "keysOnPage": {
       "title": "Clave en esta página",
-      "text": "En esta página, se generan llaves. Manténgalas seguras y no las comparta."
+      "text": "⚠️ IMPORTANTE: ¡Este sitio web NUNCA almacena tu clave secreta!\n\nLa clave secreta que se muestra aquí existe solo en tu navegador. Una vez que recargues o abandones la página, se perderá irremediablemente.\n\nCopia o anota la clave secreta inmediatamente después de su generación, antes de cerrar la página.\n\nVerificación: Puedes usar las herramientas de desarrollador del navegador (F12 → Red) para verificar que ninguna clave secreta se transmite externamente. Solo se envían transacciones firmadas, nunca tu clave secreta."
     },
     "title": "Información importante",
     "secureKeys": {

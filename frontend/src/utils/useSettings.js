@@ -4,6 +4,32 @@ import defaultExplorers from '../config/defaultExplorers.json';
 
 const KEY_EXPLORERS = 'stm.explorers';
 const KEY_DEFAULT_EXPLORER = 'stm.defaultExplorerKey';
+// Feedback lists are static and i18n-driven; add new entries here plus translations (Settings-Tab removed for consistency).
+export const KNOWN_FEEDBACK_CATEGORIES = [
+  { id: 'bug', labelKey: 'common:feedback.categories.bug', fallback: 'Fehler' },
+  { id: 'idea', labelKey: 'common:feedback.categories.idea', fallback: 'Idee' },
+  { id: 'improve', labelKey: 'common:feedback.categories.improve', fallback: 'Verbesserung' },
+  { id: 'other', labelKey: 'common:feedback.categories.other', fallback: 'Sonstiges' },
+];
+// Only explicitly defined areas are listed here; helper/tooltip texts (e.g., history info) are intentionally excluded.
+export const KNOWN_FEEDBACK_AREAS = [
+  { id: 'language-bar', labelKey: 'common:feedback.areaLabels.languageBar', fallback: 'Sprachleiste' },
+  { id: 'create-account', labelKey: 'menu:createAccount', fallback: 'Konto erstellen + Multisig' },
+  { id: 'send-payment', labelKey: 'menu:sendPayment', fallback: 'Zahlung senden' },
+  { id: 'balance', labelKey: 'menu:balance', fallback: 'Kontoinformation' },
+  { id: 'token-purchases', labelKey: 'menu:tokenPurchases', fallback: 'Token-Käufe' },
+  { id: 'xlm-by-memo', labelKey: 'menu:xlmByMemo', fallback: 'XLM nach Memo filtern' },
+  { id: 'trading-assets', labelKey: 'trading:assetSearch.title', fallback: 'Asset-Suche' },
+  { id: 'multisig-edit', labelKey: 'menu:multisigEdit', fallback: 'Multisig bearbeiten' },
+  { id: 'multisig-jobs', labelKey: 'menu:multisigJobs', fallback: 'Multisig-Jobs' },
+  { id: 'muxed', labelKey: 'menu:muxed', fallback: 'Muxed-Adressen' },
+  { id: 'trustlines-list', labelKey: 'menu:listAll', fallback: 'Trustlines auflisten' },
+  { id: 'trustlines-compare', labelKey: 'menu:compareTrustlines', fallback: 'Trustlines vergleichen' },
+  { id: 'feedback-form', labelKey: 'common:feedback.title', fallback: 'Feedback-Formular' },
+  { id: 'glossary', labelKey: 'menu:glossary', fallback: 'Glossar' },
+  { id: 'settings', labelKey: 'settings:label', fallback: 'Einstellungen' },
+  { id: 'quiz', labelKey: 'settings:sections.quiz', fallback: 'Quiz & Lernen' },
+];
 
 function sanitizeExplorer(item) {
   if (!item || typeof item !== 'object') return null;
@@ -108,6 +134,21 @@ export function useSettings() {
     defaultExplorer: defaultExplorerKey,
   });
 
+  // Applies a snapshot from export/import to the current settings state (with validation/sanitization).
+  const applySettingsSnapshot = (snapshot) => {
+    if (!snapshot || typeof snapshot !== 'object') throw new Error('settings:import.error.invalidType');
+    if (typeof snapshot.prefetchDays === 'number' && Number.isFinite(snapshot.prefetchDays)) {
+      setPrefetchDays(snapshot.prefetchDays);
+    }
+    if (typeof snapshot.decimalsMode === 'string' && ['auto', '0', '1', '2', '3', '4', '5', '6', '7'].includes(snapshot.decimalsMode)) {
+      setDecimalsMode(snapshot.decimalsMode);
+    }
+    if (typeof snapshot.fullHorizonUrl === 'string') setFullHorizonUrl(snapshot.fullHorizonUrl);
+    if (typeof snapshot.autoUseFullHorizon === 'boolean') setAutoUseFullHorizon(snapshot.autoUseFullHorizon);
+    if (Array.isArray(snapshot.explorers)) setExplorers(snapshot.explorers);
+    if (typeof snapshot.defaultExplorer === 'string') setDefaultExplorer(snapshot.defaultExplorer);
+  };
+
   return {
     prefetchDays, setPrefetchDays,
     decimalsMode, setDecimalsMode,
@@ -117,6 +158,10 @@ export function useSettings() {
     setExplorers,
     defaultExplorer: defaultExplorerKey,
     setDefaultExplorer,
+    feedbackCategories: KNOWN_FEEDBACK_CATEGORIES,
+    feedbackAreas: KNOWN_FEEDBACK_AREAS,
+    availableFeedbackAreas: KNOWN_FEEDBACK_AREAS,
     getSettingsSnapshot,
+    applySettingsSnapshot,
   };
 }

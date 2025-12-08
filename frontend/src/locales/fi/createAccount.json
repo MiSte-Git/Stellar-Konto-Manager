@@ -27,7 +27,7 @@
     "more": "Lisätietoja",
     "keysOnPage": {
       "title": "Avain tällä sivulla",
-      "text": "Tällä sivulla luodaan avaimet. Pidä ne turvassa äläkä jaa niitä."
+      "text": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto EI KOSKAAN tallenna salausavaintasi!\n\nTäällä näkyvä salausavain on olemassa vain selaimessasi. Kun päivität tai poistut sivulta, se häviää peruuttamattomasti.\n\nKopioi tai kirjoita muistiin salausavain välittömästi luomisen jälkeen, ennen sivun sulkemista.\n\nVarmistus: Voit käyttää selaimen kehittäjätyökaluja (F12 → Verkko) varmistaaksesi, ettei salausavainta siirretä ulkopuolelle. Vain allekirjoitetut tapahtumat lähetetään, ei koskaan salausavaintasi."
     },
     "title": "Tärkeä tieto",
     "secureKeys": {

@@ -27,7 +27,7 @@
     "more": "Plus d'informations",
     "keysOnPage": {
       "title": "Clé sur cette page",
-      "text": "Sur cette page, des clés sont générées. Gardez-les en sécurité et ne les partagez pas."
+      "text": "⚠️ IMPORTANT : Ce site web ne stocke JAMAIS votre clé secrète !\n\nLa clé secrète affichée ici existe uniquement dans votre navigateur. Une fois que vous rechargez ou quittez la page, elle est irrémédiablement perdue.\n\nCopiez ou notez la clé secrète immédiatement après sa génération, avant de fermer la page.\n\nVérification : Vous pouvez utiliser les outils de développement du navigateur (F12 → Réseau) pour vérifier qu'aucune clé secrète n'est transmise à l'extérieur. Seules les transactions signées sont envoyées, jamais votre clé secrète."
     },
     "title": "Informations importantes",
     "secureKeys": {

@@ -27,7 +27,7 @@
     "more": "More information",
     "keysOnPage": {
       "title": "Key on this page",
-      "text": "On this page, keys are generated. Keep them secure and do not share them."
+      "text": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe secret key displayed here exists only in your browser. Once you reload or leave the page, it is irretrievably lost.\n\nCopy or write down the secret key immediately after generation, before closing the page.\n\nVerification: You can use the browser developer tools (F12 → Network) to verify that no secret key is transmitted externally. Only signed transactions are sent, never your secret key."
     },
     "title": "Important information",
     "secureKeys": {

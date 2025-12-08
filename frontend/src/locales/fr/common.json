@@ -197,7 +197,18 @@
     "sendButton": "Créer un e-mail",
     "openedMailClient": "Client de messagerie ouvert.",
     "error": "Erreur",
-    "sentTo": "Destinataire : {{email}}"
+    "sentTo": "Destinataire : {{email}}",
+    "categoryPlaceholder": "Sélectionner la catégorie",
+    "area": "Zone",
+    "areaPlaceholder": "Sélectionner la zone",
+    "noCategoriesConfigured": "Aucune catégorie n'a été configurée pour le moment. Veuillez les créer dans les paramètres.",
+    "noAreasConfigured": "Aucune zone n'est encore configurée. Veuillez les créer dans les paramètres.",
+    "categoryUnknown": "Catégorie inconnue",
+    "areaUnknown": "Zone inconnue",
+    "form": {
+      "clearButton": "Champs dégagés",
+      "multiEntryHint": "Veuillez créer un seul message par erreur, suggestion ou idée afin de garder le processus d'édition clair."
+    }
   },
   "account": {
     "createdAt": "Compte créé le",
@@ -752,7 +763,7 @@
   "secretKey": {
     "cleared": "La clé secrète a été supprimée.",
     "empty": "Le champ de la clé secrète est vide.",
-    "info": "Votre clé privée reste dans votre navigateur et est uniquement utilisée localement pour signer des transactions. Elle n'est jamais transmise ni stockée.",
+    "info": "⚠️ IMPORTANT : Ce site web NE stocke JAMAIS votre clé secrète !\n\nLa clé secrète affichée ici existe uniquement dans votre navigateur (lokal im Arbeitsspeicher). Une fois que vous rechargez ou quittez la page, elle est irrémédiablement perdue.\n\nCopiez ou notez immédiatement la clé secrète après sa génération, avant de fermer la page.\n\nVérification : Vous pouvez utiliser les outils de développement du navigateur (F12 → Réseau) pour vérifier qu'aucune clé secrète n'est transmise extérieurement. Seules les transactions signées sont envoyées, jamais votre clé secrète.",
     "invalid": "Clé secrète invalide.",
     "label": "Entrez la clé secrète source (S-Key)",
     "mismatch": "La clé secrète ne correspond pas à l'adresse publique.",

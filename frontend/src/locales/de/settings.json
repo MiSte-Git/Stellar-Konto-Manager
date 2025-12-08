@@ -111,6 +111,17 @@
     "title": "Einstellungen exportieren",
     "button": "Einstellungen als Datei speichern"
   },
+  "import": {
+    "title": "Einstellungen importieren",
+    "button": "Einstellungen aus Datei laden",
+    "ariaLabel": "Einstellungen importieren",
+    "hint": "Wähle eine zuvor exportierte Einstellungen-Datei (.json).",
+    "success": "Einstellungen importiert.",
+    "error": {
+      "invalid": "Import fehlgeschlagen: Datei ungültig oder konnte nicht gelesen werden.",
+      "invalidType": "Import fehlgeschlagen: Unerwartetes Format in der Datei."
+    }
+  },
   "trustedWallets": {
     "buttons": {
       "export": "Exportieren",
