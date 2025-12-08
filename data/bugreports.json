@@ -1,6 +1,21 @@
 {
-  "lastId": 15,
+  "lastId": 16,
   "items": [
+    {
+      "id": 16,
+      "ts": "2025-12-08T05:13:00.800Z",
+      "url": "http://localhost:5173/STM/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "language": "de-DE",
+      "reportToken": "7d2bd8b8f56588c51b232d7272aa4592",
+      "description": "Im Glossary sollten die Begriffe wie Token, Coin, AltCoin, Stablecoin und was ist der Unterschied zwieschen Coin und Token...",
+      "appVersion": null,
+      "status": "open",
+      "priority": "normal",
+      "category": "improve",
+      "page": "other",
+      "contactEmail": null
+    },
     {
       "id": 15,
       "ts": "2025-12-07T09:29:09.876Z",

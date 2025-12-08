@@ -27,7 +27,7 @@
     "more": "Mehr Infos",
     "keysOnPage": {
       "title": "Schlüssel auf dieser Seite",
-      "text": "Auf dieser Seite werden Schlüssel generiert. Bewahre sie sicher auf und teile sie nicht."
+      "text": "⚠️ WICHTIG: Diese Webseite speichert NIEMALS Deinen Geheimschlüssel!\n\nDer hier angezeigte Secret Key existiert nur in Deinem Browser (lokal im Arbeitsspeicher). Sobald Du die Seite neu lädst oder verlässt, ist er unwiederbringlich verloren.\n\nKopiere oder notiere den Secret Key sofort nach der Erzeugung, bevor Du die Seite schließt.\n\nÜberprüfung: Du kannst mit den Browser-Entwickler-Tools (F12 → Netzwerk) nachprüfen, dass kein Geheimschlüssel nach außen übermittelt wird. Es werden nur signierte Transaktionen gesendet, niemals Dein Secret Key."
     },
     "title": "Wichtige Informationen",
     "secureKeys": {
