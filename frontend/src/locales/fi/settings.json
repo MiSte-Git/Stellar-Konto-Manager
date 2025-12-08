@@ -147,5 +147,16 @@
   "export": {
     "title": "Vientiasetukset",
     "button": "Tallenna asetukset tiedostona"
+  },
+  "import": {
+    "title": "Tuo asetukset",
+    "button": "Lataa asetukset tiedostosta",
+    "ariaLabel": "Tuo asetukset",
+    "hint": "Valitse aiemmin viety asetustiedosto (.json).",
+    "success": "Asetukset tuotu.",
+    "error": {
+      "invalid": "Tuonti epäonnistui: Tiedosto on virheellinen tai sitä ei voitu lukea.",
+      "invalidType": "Tuonti epäonnistui: Tiedostossa on odottamaton muoto."
+    }
   }
 }

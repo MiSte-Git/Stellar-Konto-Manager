@@ -197,7 +197,18 @@
     "sendButton": "Crear correo electrónico",
     "openedMailClient": "Cliente de correo electrónico abierto.",
     "error": "Error",
-    "sentTo": "Destinatario: {{email}}"
+    "sentTo": "Destinatario: {{email}}",
+    "categoryPlaceholder": "Seleccionar categoría",
+    "area": "Área",
+    "areaPlaceholder": "Seleccionar área",
+    "noCategoriesConfigured": "Aún no se han configurado categorías. Por favor, créalas en la configuración.",
+    "noAreasConfigured": "Aún no hay áreas configuradas. Por favor, créalas en la configuración.",
+    "categoryUnknown": "Categoría desconocida",
+    "areaUnknown": "Área desconocida",
+    "form": {
+      "clearButton": "Campos despejados.",
+      "multiEntryHint": "Por favor, crea solo un mensaje por error, sugerencia o idea para mantener el proceso de edición claro."
+    }
   },
   "account": {
     "createdAt": "Cuenta creada el",
@@ -752,7 +763,7 @@
   "secretKey": {
     "cleared": "La clave secreta ha sido eliminada.",
     "empty": "El campo de clave secreta está vacío.",
-    "info": "Su clave privada permanece en su navegador y solo se utiliza localmente para firmar transacciones. Nunca se transmite ni se almacena.",
+    "info": "⚠️ IMPORTANTE: ¡Este sitio web NUNCA almacena tu clave secreta!\n\nLa Clave Secreta que se muestra aquí solo existe en tu navegador (lokal im Arbeitsspeicher). Una vez que recargues o abandones la página, se pierde irremediablemente.\n\nCopia o anota la Clave Secreta inmediatamente después de que se genere, antes de cerrar la página.\n\nVerificación: Puedes usar las herramientas para desarrolladores del navegador (F12 → Red) para verificar que no se transmita ninguna clave secreta externamente. Solo se envían transacciones firmadas, nunca tu Clave Secreta.",
     "invalid": "Clave secreta no válida.",
     "label": "Introduce la clave secreta de origen (S-Key)",
     "mismatch": "La clave secreta no coincide con la dirección pública.",

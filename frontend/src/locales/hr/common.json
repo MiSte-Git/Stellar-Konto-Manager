@@ -197,7 +197,18 @@
     "sendButton": "Izradi email",
     "openedMailClient": "Klijent e-pošte otvoren.",
     "error": "Pogreška",
-    "sentTo": "Primatelj: {{email}}"
+    "sentTo": "Primatelj: {{email}}",
+    "categoryPlaceholder": "Odaberite kategoriju",
+    "area": "Područje",
+    "areaPlaceholder": "Odaberite područje",
+    "noCategoriesConfigured": "Kategorije još nisu konfigurirane. Molimo vas da ih kreirate u postavkama.",
+    "noAreasConfigured": "Još nema konfiguriranih područja. Molimo vas da ih kreirate u postavkama.",
+    "categoryUnknown": "Nepoznata kategorija",
+    "areaUnknown": "Nepoznato područje",
+    "form": {
+      "clearButton": "Očisti polja",
+      "multiEntryHint": "Molimo vas da za svaku grešku, prijedlog ili ideju stvorite samo jednu poruku kako bi proces uređivanja bio jasan."
+    }
   },
   "account": {
     "createdAt": "Račun kreiran na",
@@ -752,7 +763,7 @@
   "secretKey": {
     "cleared": "Tajni ključ je izbrisan.",
     "empty": "Polje za tajni ključ je prazno.",
-    "info": "Vaš privatni ključ ostaje u vašem pregledniku i koristi se samo lokalno za potpisivanje transakcija. Nikada se ne prenosi niti pohranjuje.",
+    "info": "⚠️ VAŽNO: Ova web stranica NIKADA ne pohranjuje vaš tajni ključ!\n\nTajni ključ prikazan ovdje postoji samo u vašem pregledniku (lokal im Arbeitsspeicher). Jednom kada ponovno učitate ili napustite stranicu, on je nepovratno izgubljen.\n\nKopirajte ili zapišite tajni ključ odmah nakon što je generiran, prije nego što zatvorite stranicu.\n\nProvjera: Možete koristiti alate za razvojne programere u pregledniku (F12 → Mreža) da provjerite da se nijedan tajni ključ ne prenosi vanjski. Samo potpisane transakcije se šalju, nikada vaš tajni ključ.",
     "invalid": "Neispravan tajni ključ.",
     "label": "Unesite izvorni tajni ključ (S-Key)",
     "mismatch": "Tajni ključ ne odgovara javnoj adresi.",

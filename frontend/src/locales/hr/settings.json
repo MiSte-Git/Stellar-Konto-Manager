@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Izvoz rezervne kopije",
-      "backupBeforeImport": "Sigurnosna kopija je spremljena prije uvoza."
+      "backupBeforeImport": "Sigurnosna kopija je sačuvana prije uvoza."
     },
     "nav": {
       "back": "Nazad"
@@ -147,5 +147,16 @@
   "export": {
     "title": "Postavke izvoza",
     "button": "Spremi postavke kao datoteku"
+  },
+  "import": {
+    "title": "Postavke uvoza",
+    "button": "Učitaj postavke iz datoteke",
+    "ariaLabel": "Postavke uvoza",
+    "hint": "Odaberite prethodno izvezenu datoteku postavki (.json).",
+    "success": "Postavke su uvezene.",
+    "error": {
+      "invalid": "Uvoz nije uspio: Datoteka je nevažeća ili se ne može pročitati.",
+      "invalidType": "Uvoz nije uspio: Neočekivani format u datoteci."
+    }
   }
 }

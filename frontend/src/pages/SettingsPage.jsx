@@ -21,6 +21,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
     defaultExplorer,
     setDefaultExplorer,
     getSettingsSnapshot,
+    applySettingsSnapshot,
   } = useSettings();
   const [activeTab, setActiveTab] = useState('general');
   const [newExplorerName, setNewExplorerName] = useState('');
@@ -29,6 +30,9 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
   const [explorerError, setExplorerError] = useState('');
   const [editingExplorerId, setEditingExplorerId] = useState(null);
   const isEditingExplorer = Boolean(editingExplorerId);
+  const [importError, setImportError] = useState('');
+  const [importSuccess, setImportSuccess] = useState('');
+  const importFileRef = React.useRef(null);
   void _onBack;
 
   const handleExportSettings = () => {
@@ -48,6 +52,25 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Settings export failed', err);
+    }
+  };
+
+  // Handles reading and applying a settings import file.
+  const handleImportSettings = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImportError('');
+    setImportSuccess('');
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      applySettingsSnapshot(parsed);
+      setImportSuccess(t('settings:import.success'));
+    } catch (err) {
+      const key = typeof err?.message === 'string' && err.message.startsWith('settings:') ? err.message : 'settings:import.error.invalid';
+      setImportError(key);
+    } finally {
+      e.target.value = '';
     }
   };
 
@@ -172,6 +195,33 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
             >
               {t('settings:export.button')}
             </button>
+            <div className="space-y-2">
+              <h3 className="font-semibold mt-4">{t('settings:import.title')}</h3>
+              <div className="flex flex-wrap gap-2 items-center">
+                <button
+                  type="button"
+                  className="px-3 py-1 rounded border text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => importFileRef.current?.click()}
+                >
+                  {t('settings:import.button')}
+                </button>
+                <input
+                  ref={importFileRef}
+                  type="file"
+                  accept="application/json,.json"
+                  className="hidden"
+                  onChange={handleImportSettings}
+                  aria-label={t('settings:import.ariaLabel')}
+                />
+                {importSuccess && (
+                  <span className="text-sm text-green-700 dark:text-green-400">{importSuccess}</span>
+                )}
+                {importError && (
+                  <span className="text-sm text-red-600">{t(importError)}</span>
+                )}
+              </div>
+              <p className="text-xs text-gray-600 dark:text-gray-400">{t('settings:import.hint')}</p>
+            </div>
           </section>
         </section>
       )}
@@ -303,6 +353,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
           <QuizSettings showTitle={false} />
         </section>
       )}
+
     </div>
   );
 }

@@ -27,7 +27,7 @@
     "more": "Maggiori informazioni",
     "keysOnPage": {
       "title": "Chiave su questa pagina",
-      "text": "Su questa pagina vengono generati chiavi. Mantienile al sicuro e non condividerle."
+      "text": "⚠️ IMPORTANTE: Questo sito web NON memorizza mai la tua chiave segreta!\n\nLa chiave segreta visualizzata qui esiste solo nel tuo browser. Una volta che ricarichi o esci dalla pagina, essa viene persa irrimediabilmente.\n\nCopia o annota la chiave segreta immediatamente dopo la generazione, prima di chiudere la pagina.\n\nVerifica: Puoi utilizzare gli strumenti per sviluppatori del browser (F12 → Rete) per verificare che nessuna chiave segreta venga trasmessa esternamente. Vengono inviate solo transazioni firmate, mai la tua chiave segreta."
     },
     "title": "Informazioni importanti",
     "secureKeys": {

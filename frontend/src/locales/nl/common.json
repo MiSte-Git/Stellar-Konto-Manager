@@ -197,7 +197,18 @@
     "sendButton": "E-mail opstellen",
     "openedMailClient": "E-mailclient geopend.",
     "error": "Fout",
-    "sentTo": "Ontvanger: {{email}}"
+    "sentTo": "Ontvanger: {{email}}",
+    "categoryPlaceholder": "Categorie selecteren",
+    "area": "Gebied",
+    "areaPlaceholder": "Selecteer gebied",
+    "noCategoriesConfigured": "Nog geen categorieën geconfigureerd. Maak deze aan in de instellingen.",
+    "noAreasConfigured": "Er zijn nog geen gebieden geconfigureerd. Maak ze aan in de instellingen.",
+    "categoryUnknown": "Onbekende categorie",
+    "areaUnknown": "Onbekend gebied",
+    "form": {
+      "clearButton": "Velden wissen",
+      "multiEntryHint": "Maak alstublieft slechts één bericht per fout, suggestie of idee om het bewerkingsproces duidelijk te houden."
+    }
   },
   "account": {
     "createdAt": "Account aangemaakt op",
@@ -752,7 +763,7 @@
   "secretKey": {
     "cleared": "Geheime sleutel is verwijderd.",
     "empty": "Geheimveld is leeg.",
-    "info": "Je privésleutel blijft in je browser en wordt alleen lokaal gebruikt om transacties te ondertekenen. Hij wordt nooit verzonden of opgeslagen.",
+    "info": "⚠️ BELANGRIJK: Deze website slaat jouw geheime sleutel NOOIT op!\n\nDe hier getoonde geheime sleutel bestaat alleen in jouw browser (lokal im Arbeitsspeicher). Zodra je de pagina herlaadt of verlaat, is deze onherroepelijk verloren.\n\nKopieer of noteer de geheime sleutel onmiddellijk nadat deze is gegenereerd, voordat je de pagina sluit.\n\nVerificatie: Je kunt de ontwikkelaarstools van de browser gebruiken (F12 → Netwerk) om te verifiëren dat er geen geheime sleutel extern wordt verzonden. Alleen ondertekende transacties worden verzonden, nooit jouw geheime sleutel.",
     "invalid": "Ongeldige geheime sleutel.",
     "label": "Voer de bron geheime sleutel in (S-Key)",
     "mismatch": "Geheime sleutel komt niet overeen met het openbare adres.",

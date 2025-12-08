@@ -31,7 +31,7 @@
   },
   "title": "Back-up & Herstel",
   "toast": {
-    "backupBeforeImport": "Er is een back-up opgeslagen vóór de import.",
+    "backupBeforeImport": "Een back-up is opgeslagen vóór de import.",
     "exported": "Back-up geëxporteerd",
     "exportFailed": "Export mislukt",
     "importFailed": "Import mislukt"

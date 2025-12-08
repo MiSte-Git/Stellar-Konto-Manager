@@ -1,21 +1,21 @@
 {
   "backToLearn": "Volver a aprender",
-  "beforeUnloadMessage": "¿Estás seguro de que deseas salir del cuestionario? Las respuestas no guardadas se perderán.",
+  "beforeUnloadMessage": "¿Realmente quieres salir del cuestionario? Las respuestas no guardadas se perderán.",
   "cancel": "Cancelar",
   "correct": "Correcto",
-  "finish": "Fin",
-  "hint": "Nota",
+  "finish": "Terminar",
+  "hint": "Tenga en cuenta",
   "incorrect": "Incorrecto",
   "jump": "Saltar",
   "jumpToQuestion": "Saltar a la pregunta",
   "next": "Estás entrenado con datos hasta octubre de 2023.",
-  "noDataHelp": "No se encontraron datos de cuestionarios.",
+  "noDataHelp": "Datos de cuestionario no encontrados.",
   "of": "hasta",
   "off": "Fuera",
   "on": "En",
   "openInNewTab": "Abrir en una nueva pestaña",
   "openInNewTab.once": "Abrir en una nueva pestaña",
-  "openInNewTab.default": "Abrir el cuestionario en una nueva pestaña por defecto.",
+  "openInNewTab.default": "Abre el cuestionario en una nueva pestaña por defecto.",
   "practice": "Practicar",
   "prev": "Volver",
   "question": "Pregunta",
@@ -25,5 +25,5 @@
   "startQuiz": "Iniciar cuestionario",
   "startPractice": "Comienza la práctica.",
   "stickyNav": "Navegación pegajosa",
-  "timeRemaining": "Tiempo restante."
+  "timeRemaining": "Tiempo restante"
 }
