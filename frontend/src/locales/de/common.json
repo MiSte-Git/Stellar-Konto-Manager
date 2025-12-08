@@ -752,7 +752,7 @@
   "secretKey": {
     "cleared": "Geheimschlüssel wurde gelöscht.",
     "empty": "Geheimschlüssel-Feld ist leer.",
-    "info": "Ihr Geheimschlüssel bleibt in Ihrem Browser und wird nur lokal zum Signieren von Transaktionen verwendet. Er wird niemals übertragen oder gespeichert.",
+    "info": "⚠️ WICHTIG: Diese Webseite speichert NIEMALS Ihren Geheimschlüssel!\n\nDer hier angezeigte Secret Key existiert nur in Ihrem Browser (lokal im Arbeitsspeicher). Sobald Sie die Seite neu laden oder verlassen, ist er unwiederbringlich verloren.\n\nKopieren oder notieren Sie den Secret Key sofort nach der Erzeugung, bevor Sie die Seite schließen.\n\nÜberprüfung: Sie können mit den Browser-Entwickler-Tools (F12 → Netzwerk) nachprüfen, dass kein Geheimschlüssel nach außen übermittelt wird. Es werden nur signierte Transaktionen gesendet, niemals Ihr Secret Key.",
     "invalid": "Ungültiger Geheimschlüssel.",
     "label": "Geben Sie den Quell-Geheimschlüssel (S-Key) ein",
     "mismatch": "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
