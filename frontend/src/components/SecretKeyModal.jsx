@@ -15,14 +15,15 @@ function SecretKeyModal({
   requiredThreshold = 0,
   isProcessing = false,
   deleteProgress = null,
-  account = null
+  account = null,
+  initialCollectAllSignaturesLocally = false,
 }) {
   const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey']);
   const [secretInputs, setSecretInputs] = useState(['']);
   const [showSecret, setShowSecret] = useState(false);
   const [rememberSession, setRememberSession] = useState(true);
   const [error, setError] = useState(errorMessage || '');
-  const [collectAllSignaturesLocally, setCollectAllSignaturesLocally] = useState(false); // Ermöglicht optional, alle Multisig-Signaturen lokal in einem Dialog zu sammeln (nur verwenden, wenn der Benutzer alle Schlüssel kontrolliert).
+  const [collectAllSignaturesLocally, setCollectAllSignaturesLocally] = useState(initialCollectAllSignaturesLocally); // Ermöglicht optional, alle Multisig-Signaturen lokal zu sammeln.
   const [showInfo, setShowInfo] = useState(false);
   const accountData = useMemo(() => {
     if (account?.signers || account?.thresholds) return account;
@@ -33,6 +34,21 @@ function SecretKeyModal({
     const src = Array.isArray(accountData?.signers) ? accountData.signers : signers;
     return Array.isArray(src) ? [...src] : [];
   }, [accountData, signers]);
+  // Sorts signers with master first, then active (weight>0), then deactivated (weight<=0).
+  const sortedSigners = useMemo(() => {
+    const masterKey = accountData?.account_id || accountData?.id || accountData?.accountId || '';
+    const normalized = allSigners
+      .map((s) => ({
+        publicKey: s.public_key || s.key || s.publicKey,
+        weight: Number(s.weight || 0),
+        isMaster: masterKey && (s.public_key === masterKey || s.key === masterKey || s.publicKey === masterKey),
+      }))
+      .filter((s) => !!s.publicKey);
+    const masterList = normalized.filter((s) => s.isMaster);
+    const active = normalized.filter((s) => !s.isMaster && (s.weight || 0) > 0).sort((a, b) => (b.weight || 0) - (a.weight || 0));
+    const disabled = normalized.filter((s) => (s.weight || 0) <= 0 && !s.isMaster);
+    return [...masterList, ...active, ...disabled];
+  }, [accountData, allSigners]);
   const effectiveSigners = useMemo(
     () => allSigners
       .filter(s => !!(s?.public_key || s?.key))
@@ -76,6 +92,10 @@ function SecretKeyModal({
   React.useEffect(() => {
     setError(errorMessage || '');
   }, [errorMessage]);
+
+  React.useEffect(() => {
+    setCollectAllSignaturesLocally(initialCollectAllSignaturesLocally);
+  }, [initialCollectAllSignaturesLocally]);
 
   const handleConfirm = () => {
     try {
@@ -200,13 +220,17 @@ function SecretKeyModal({
                   </span>
                 )}
               </div>
-              {allSigners.length > 0 && (
+              {sortedSigners.length > 0 && (
                 <div className="mt-2">
                   <div className="text-gray-600 dark:text-gray-300 mb-1">{t('secretKey:multisigInfo.signers')}:</div>
                   <div className="space-y-1 max-h-24 overflow-y-auto pr-1">
-                    {allSigners.map((s, idx) => (
+                    {sortedSigners.map((s, idx) => (
                       <div key={idx} className="flex justify-between text-[11px]">
-                        <span className="font-mono break-all">{s.public_key || s.key || s.publicKey}</span>
+                        <span className="font-mono break-all">
+                          {s.publicKey}
+                          {s.isMaster ? ` (${t('secretKey:multisigInfo.master')})` : ''}
+                          {!s.isMaster && s.weight <= 0 ? ` (${t('secretKey:multisigInfo.signerDisabled')})` : ''}
+                        </span>
                         <span className="ml-2">{s.weight ?? 0}</span>
                       </div>
                     ))}

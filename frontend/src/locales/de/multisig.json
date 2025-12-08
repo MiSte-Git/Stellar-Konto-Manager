@@ -12,12 +12,95 @@
   },
   "multipleSignersInfo": "Für diese Aktion sind mehrere Signaturen erforderlich. Bitte gib genügend Secret Keys ein, um das Threshold zu erreichen.",
   "confirm": {
+    "options": {
+      "recommended": "Empfohlen",
+      "infoButton": "Mehr Infos zu den Optionen",
+      "infoDialog": {
+        "title": "Optionen erklärt"
+      },
+      "proceed": "Weiter",
+      "job": {
+        "title": "Multisig-Job erstellen (Standard)",
+        "desc": "Standard-Workflow für produktives Multisig. Erstellt eine Job-ID und sammelt Signaturen verteilt.",
+        "short": "Erstellt einen Multisig-Job (Job-ID) und sammelt Signaturen verteilt.",
+        "moreInfo": "Mehr Infos",
+        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoBody": {
+          "one": "Die Transaktion wird als Multisig-Job im Backend gespeichert und erhält eine Job-ID. Es wird nichts direkt gesendet.",
+          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Sobald genügend Signaturen vorliegen (Threshold erreicht), wird die Transaktion gesendet oder kann gesendet werden.",
+          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+        },
+        "steps": {
+          "one": "Schritt 1: Multisig-Job wird erstellt und erhält eine Job-ID.",
+          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "four": "Schritt 4: Sobald genug Signaturen gesammelt sind, wird die Transaktion gesendet oder kann gesendet werden."
+        }
+      },
+      "local": {
+        "title": "Alle Signaturen lokal eingeben & direkt senden",
+        "desc": "Nur nutzen, wenn alle Secret Keys sicher auf diesem Gerät eingegeben werden können (Tests/Recovery/Admin).",
+        "warning": "Warnung: Alle Secret Keys werden in dieser Sitzung gesammelt. Nur auf vertrauenswürdigen Geräten verwenden.",
+        "moreInfo": "Mehr Infos",
+        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoBody": {
+          "one": "Du gibst alle benötigten Secret Keys nacheinander auf diesem Gerät ein, bis das Threshold erreicht ist.",
+          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "three": "Sobald genügend Signaturen vorliegen, wird die Transaktion direkt an Horizon gesendet (ohne Multisig-Job)."
+        }
+      },
+      "xdr": {
+        "title": "XDR exportieren (nicht senden)",
+        "desc": "Erzeuge eine rohe XDR-Transaktion für Offline-Tools oder Hardware-Wallets.",
+        "short": "Transaktion als XDR exportieren, ohne sie direkt zu senden.",
+        "moreInfo": "Mehr Infos",
+        "infoTitle": "Wie funktioniert der XDR-Export?",
+        "infoBody": {
+          "one": "XDR ist das rohe Transaktionsformat von Stellar. Es wird nichts automatisch gesendet.",
+          "two": "Nutze XDR für Hardware-Wallets, Offline-Rechner oder andere Wallets/Tools, die XDR importieren können.",
+          "three": "Du bist selbst verantwortlich, den XDR später zu signieren und/oder zu senden (z. B. über Multisig-Jobs oder ein externes Tool)."
+        },
+        "steps": {
+          "one": "Es wird eine XDR erzeugt, aber nichts gesendet.",
+          "two": "Du kannst die XDR extern signieren (Offline-Rechner, Hardware-Wallet, anderes Tool).",
+          "three": "Für das Senden musst du die XDR wieder importieren (z. B. über Multisig-Jobs oder ein anderes Tool) und dort signieren/senden."
+        }
+      }
+    },
+    "result": {
+      "backToSelection": "Zur Auswahl zurück",
+      "copyXdr": "XDR kopieren",
+      "job": {
+        "title": "Transaktion für Multisig vorbereitet",
+        "status": "Multisig-Job wurde erstellt. Die Transaktion wurde noch nicht gesendet.",
+        "jobIdLabel": "Job-ID",
+        "hashLabel": "Transaktions-Hash"
+      },
+      "sent": {
+        "title": "Transaktion gesendet",
+        "status": "Transaktion erfolgreich an das Netzwerk gesendet.",
+        "hashLabel": "Transaktions-Hash"
+      },
+      "xdr": {
+        "title": "XDR vorbereitet (nicht gesendet)",
+        "status": "Es wurde nur eine XDR erzeugt. Es wurde nichts an das Netzwerk gesendet.",
+        "noJob": "Es wurde kein Multisig-Job angelegt.",
+        "hashLabel": "Transaktions-Hash"
+      }
+    }
+    ,
     "testModeTitle": "Testmodus (alle Signaturen lokal)",
     "testModeDescription": "Bestehender Flow: Geheimschlüssel eingeben, alle benötigten Signaturen sammeln und direkt an Horizon senden.",
     "testModeButton": "Direkt signieren & senden",
     "prepareTitle": "Transaktion für Multisig vorbereiten",
     "prepareDescription": "Nur XDR vorbereiten für Produktiv-Multisig. Nichts wird sofort gesendet.",
     "prepareButton": "XDR vorbereiten (nicht senden)"
+  },
+  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "errors": {
+    "network": "Backend nicht erreichbar (Netzwerkfehler).",
+    "createFailed": "Multisig-Job konnte nicht erstellt werden."
   },
   "prepare": {
     "title": "Transaktion für Multisig vorbereitet",
@@ -78,9 +161,9 @@
     "signedXdr": {
       "title": "Signiertes XDR importieren",
       "hint": "Fügen Sie hier ein von einem anderen Unterzeichner signiertes XDR ein, um die Signaturen mit diesem Multisig-Job zu mergen.",
-      "label": "Signiertes XDR",
-      "submit": "Signiertes XDR mergen",
-      "success": {
+    "label": "Signiertes XDR",
+    "submit": "Signiertes XDR mergen",
+    "success": {
         "title": "Signaturen aktualisiert",
         "body": "Die Signaturen wurden erfolgreich mit diesem Multisig-Job gemergt. Aktueller Status: {{status}}."
       }
@@ -102,6 +185,10 @@
         "warning": "Hinweis: Wenn Sie alle Signaturen lokal eingeben, liegen alle geheimen Schlüssel in dieser Sitzung vor. Verwenden Sie diese Option nur auf vertrauenswürdigen Geräten."
       }
     }
+  },
+  "multisigInfo": {
+    "master": "Master-Key",
+    "signerDisabled": "Signer deaktiviert (weight = 0)"
   },
   "errors": {
     "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion."
