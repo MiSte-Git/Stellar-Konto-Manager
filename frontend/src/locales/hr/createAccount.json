@@ -27,7 +27,7 @@
     "more": "Više informacija",
     "keysOnPage": {
       "title": "Ključ na ovoj stranici",
-      "text": "Na ovoj stranici se generiraju ključevi. Čuvajte ih na sigurnom i nemojte ih dijeliti."
+      "text": "⚠️ VAŽNO: Ova web stranica NIKADA ne pohranjuje vaš tajni ključ!\n\nTajni ključ prikazan ovdje postoji samo u vašem pregledniku. Nakon što ponovno učitate ili napustite stranicu, nepovratno je izgubljen.\n\nOdmah nakon generiranja kopirajte ili zapišite tajni ključ prije nego zatvorite stranicu.\n\nProvjera: Možete koristiti alate za razvojne programere preglednika (F12 → Mreža) da provjerite kako nijedan tajni ključ nije prenesen vanjski. Samo potpisane transakcije se šalju, nikada vaš tajni ključ."
     },
     "title": "Važne informacije",
     "secureKeys": {

@@ -197,7 +197,18 @@
     "sendButton": "Crea email",
     "openedMailClient": "Client di posta elettronica aperto.",
     "error": "Errore",
-    "sentTo": "Destinatario: {{email}}"
+    "sentTo": "Destinatario: {{email}}",
+    "categoryPlaceholder": "Seleziona categoria",
+    "area": "Area",
+    "areaPlaceholder": "Seleziona area",
+    "noCategoriesConfigured": "Nessuna categoria ancora configurata. Si prega di crearle nelle impostazioni.",
+    "noAreasConfigured": "Nessuna area configurata. Si prega di crearle nelle impostazioni.",
+    "categoryUnknown": "Categoria sconosciuta",
+    "areaUnknown": "Area sconosciuta",
+    "form": {
+      "clearButton": "Campi liberi",
+      "multiEntryHint": "Per favore, crea solo un messaggio per ogni errore, suggerimento o idea per mantenere il processo di revisione chiaro."
+    }
   },
   "account": {
     "createdAt": "Account creato il",
@@ -752,7 +763,7 @@
   "secretKey": {
     "cleared": "La chiave segreta è stata eliminata.",
     "empty": "Il campo della chiave segreta è vuoto.",
-    "info": "La tua chiave privata rimane nel tuo browser ed è utilizzata solo localmente per firmare le transazioni. Non viene mai trasmessa o memorizzata.",
+    "info": "⚠️ IMPORTANTE: Questo sito web NON memorizza mai la tua chiave segreta!\n\nLa Chiave Segreta visualizzata qui esiste solo nel tuo browser (lokal im Arbeitsspeicher). Una volta ricaricata o lasciata la pagina, è persa irrimediabilmente.\n\nCopia o annota la Chiave Segreta immediatamente dopo che è stata generata, prima di chiudere la pagina.\n\nVerifica: Puoi utilizzare gli strumenti per sviluppatori del browser (F12 → Network) per verificare che nessuna chiave segreta venga trasmessa esternamente. Solo le transazioni firmate vengono inviate, mai la tua Chiave Segreta.",
     "invalid": "Chiave segreta non valida.",
     "label": "Geben Sie den geheimen Quellschlüssel (S-Key) ein",
     "mismatch": "La chiave segreta non corrisponde all'indirizzo pubblico.",

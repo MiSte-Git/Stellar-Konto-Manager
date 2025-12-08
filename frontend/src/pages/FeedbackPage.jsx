@@ -3,12 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { FEEDBACK_EMAIL } from '../config.js';
 import { openMailto } from '../utils/openMailto.js';
 import { apiUrl } from '../utils/apiBase.js';
+import { KNOWN_FEEDBACK_AREAS } from '../utils/useSettings.js';
+import { useSettings } from '../utils/useSettings.js';
 
 // Renders the feedback page allowing users to send issues via email.
 export default function FeedbackPage({ onBack }) {
   const { t, i18n } = useTranslation(['common', 'menu']);
   void i18n;
-  const [category, setCategory] = useState('bug');
+  const { feedbackCategories = [], feedbackAreas = [] } = useSettings();
+  const [category, setCategory] = useState(() => feedbackCategories[0]?.id || '');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [notices, setNotices] = useState([]);
@@ -36,7 +39,7 @@ export default function FeedbackPage({ onBack }) {
       return 'other';
     }
   }, []);
-  const [pageId, setPageId] = useState(defaultPage);
+  const [areaId, setAreaId] = useState(() => feedbackAreas[0]?.id || defaultPage);
 
   const [reportToken] = useState(() => {
     try {
@@ -50,29 +53,60 @@ export default function FeedbackPage({ onBack }) {
 
   const emailTo = useMemo(() => FEEDBACK_EMAIL || 'support@example.com', []);
 
-  const canSend = subject.trim().length > 0 && message.trim().length > 0;
+  const canSend = subject.trim().length > 0 && message.trim().length > 0 && Boolean(category) && Boolean(areaId);
+
+  // Resolves a feedback category id to a translated label (falls back to the id if unknown).
+  const getCategoryLabel = (id) => {
+    if (!id) return '';
+    const cat = (feedbackCategories || []).find((c) => c.id === id);
+    if (!cat) return id;
+    if (cat.labelKey) return t(cat.labelKey, cat.fallback || cat.id);
+    return cat.label || cat.id;
+  };
+
+  // Resolves a feedback area id to a translated label (falls back to the id if unknown).
+  const getAreaLabel = (id) => {
+    if (!id) return '';
+    const known = KNOWN_FEEDBACK_AREAS.find((a) => a.id === id);
+    if (known) return t(known.labelKey, known.fallback || known.id);
+    const fromSettings = (feedbackAreas || []).find((i) => i.id === id);
+    if (fromSettings?.label) return fromSettings.label;
+    return id;
+  };
+
+  // Keeps selected category/area in sync with current lists and resets invalid selections.
+  React.useEffect(() => {
+    if (category && feedbackCategories.some((c) => c.id === category)) return;
+    setCategory(feedbackCategories[0]?.id || '');
+  }, [category, feedbackCategories]);
+
+  React.useEffect(() => {
+    if (areaId && feedbackAreas.some((c) => c.id === areaId)) return;
+    // try to preserve the default page guess when available
+    if (!areaId && defaultPage && feedbackAreas.some((c) => c.id === defaultPage)) {
+      setAreaId(defaultPage);
+      return;
+    }
+    setAreaId(feedbackAreas[0]?.id || '');
+  }, [areaId, feedbackAreas, defaultPage]);
+
+  // Resets all form fields back to their initial state for quick successive entries.
+  const handleClearForm = () => {
+    setCategory(feedbackCategories[0]?.id || '');
+    setAreaId(feedbackAreas.some((c) => c.id === defaultPage) ? defaultPage : (feedbackAreas[0]?.id || ''));
+    setSubject('');
+    setMessage('');
+    setContactEmail('');
+    subjectInputRef.current?.focus();
+  };
 
   // Builds the support mail payload including contextual information.
   const buildMailPayload = useCallback(() => {
     const lines = [];
-    const pageLabel = (
-      {
-        start: t('common:feedback.pages.start', 'Start'),
-        trustlines: t('common:feedback.pages.trustlines', 'Trustline(s) anzeigen'),
-        trustlineCompare: t('common:feedback.pages.trustlineCompare', 'Trustline(s) vergleichen'),
-        balance: t('common:feedback.pages.balance', 'Balance'),
-        xlmByMemo: t('common:feedback.pages.xlmByMemo', 'XLM by memo'),
-        sendPayment: t('common:feedback.pages.sendPayment', 'Send payment'),
-        investedTokens: t('common:feedback.pages.investedTokens', 'Invested tokens'),
-        createAccount: t('menu:createAccount', 'Create account + Multisig'),
-        multisigEdit: t('common:feedback.pages.multisigEdit', 'Multisig edit'),
-        settings: t('common:feedback.pages.settings', 'Settings'),
-        feedback: t('common:feedback.pages.feedback', 'Feedback'),
-        other: t('common:feedback.pages.other', 'Other')
-      }[pageId] || t('common:feedback.pages.other', 'Other')
-    );
-    lines.push(`Kategorie: ${t(`common:feedback.categories.${category}`)}`);
-    lines.push(`Seite: ${pageLabel}`);
+    const categoryLabel = getCategoryLabel(category) || t('common:feedback.categoryUnknown');
+    const areaLabel = getAreaLabel(areaId) || t('common:feedback.areaUnknown');
+    lines.push(`Kategorie: ${categoryLabel}`);
+    lines.push(`Bereich: ${areaLabel}`);
     lines.push('');
     lines.push('Nachricht:');
     lines.push(message.trim());
@@ -87,10 +121,10 @@ export default function FeedbackPage({ onBack }) {
     lines.push('App: Stellar Trustline Manager');
     try { lines.push(`URL: ${window.location.href}`); } catch { /* noop */ }
     try { lines.push(`Browser: ${navigator.userAgent}`); } catch { /* noop */ }
-    const subj = `[SKM Feedback] ${t(`common:feedback.categories.${category}`)}: ${subject.trim()}`;
+    const subj = `[SKM Feedback] ${categoryLabel}: ${subject.trim()}`;
     const body = lines.join('\r\n');
     return { subject: subj, body };
-  }, [category, message, subject, t, reportToken, contactEmail, pageId]);
+  }, [category, message, subject, t, reportToken, contactEmail, areaId, feedbackAreas, feedbackCategories]);
 
   const buildMailto = useCallback(() => {
     const { subject: subj, body } = buildMailPayload();
@@ -112,7 +146,7 @@ export default function FeedbackPage({ onBack }) {
         status: 'open',
         priority: 'normal',
         category,
-        page: pageId,
+        page: areaId,
       };
       const emailTrim = (contactEmail || '').trim();
       if (emailTrim) payload.contactEmail = emailTrim;
@@ -126,7 +160,7 @@ export default function FeedbackPage({ onBack }) {
     } catch (err) {
       console.warn('bugReport.send.failed', err);
     }
-  }, [category, reportToken, contactEmail, pageId]);
+  }, [category, reportToken, contactEmail, areaId]);
 
   // Handles sending the feedback mail only (no backend bugtracker).
   const handleSend = useCallback(async () => {
@@ -171,6 +205,9 @@ export default function FeedbackPage({ onBack }) {
     <div className="max-w-3xl mx-auto">
       <div className="mb-3">
         <h2 className="text-xl font-semibold">{t('common:feedback.title')}</h2>
+        <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+          {t('common:feedback.form.multiEntryHint')}
+        </p>
       </div>
       {notices.length > 0 && (
         <div className="mb-3 space-y-1">
@@ -182,29 +219,29 @@ export default function FeedbackPage({ onBack }) {
       <div className="bg-white dark:bg-gray-800 border rounded p-4 space-y-3">
         <div>
           <label className="block text-sm mb-1">{t('common:feedback.category')}</label>
-          <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={category} onChange={(e)=>setCategory(e.target.value)}>
-            <option value="bug">{t('common:feedback.categories.bug')}</option>
-            <option value="idea">{t('common:feedback.categories.idea')}</option>
-            <option value="improve">{t('common:feedback.categories.improve')}</option>
-            <option value="other">{t('common:feedback.categories.other')}</option>
-          </select>
+          {feedbackCategories.length ? (
+            <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={category} onChange={(e)=>setCategory(e.target.value)}>
+              <option value="">{t('common:feedback.categoryPlaceholder')}</option>
+              {feedbackCategories.map((c) => (
+                <option key={c.id} value={c.id}>{getCategoryLabel(c.id)}</option>
+              ))}
+            </select>
+          ) : (
+            <div className="text-sm text-gray-600 dark:text-gray-400">{t('common:feedback.noCategoriesConfigured')}</div>
+          )}
         </div>
         <div>
-          <label className="block text-sm mb-1">{t('common:feedback.page', 'Seite')}</label>
-          <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={pageId} onChange={(e)=>setPageId(e.target.value)}>
-            <option value="start">{t('common:feedback.pages.start', 'Start')}</option>
-            <option value="trustlines">{t('common:feedback.pages.trustlines', 'Trustline(s) anzeigen')}</option>
-            <option value="trustlineCompare">{t('common:feedback.pages.trustlineCompare', 'Trustline(s) vergleichen')}</option>
-            <option value="balance">{t('common:feedback.pages.balance', 'Balance')}</option>
-            <option value="xlmByMemo">{t('common:feedback.pages.xlmByMemo', 'XLM by memo')}</option>
-            <option value="sendPayment">{t('common:feedback.pages.sendPayment', 'Send payment')}</option>
-            <option value="investedTokens">{t('common:feedback.pages.investedTokens', 'Invested tokens')}</option>
-            <option value="createAccount">{t('menu:createAccount', 'Create account + Multisig')}</option>
-            <option value="multisigEdit">{t('common:feedback.pages.multisigEdit', 'Multisig edit')}</option>
-            <option value="settings">{t('common:feedback.pages.settings', 'Settings')}</option>
-            <option value="feedback">{t('common:feedback.pages.feedback', 'Feedback')}</option>
-            <option value="other">{t('common:feedback.pages.other', 'Other')}</option>
-          </select>
+          <label className="block text-sm mb-1">{t('common:feedback.area')}</label>
+          {feedbackAreas.length ? (
+            <select className="border rounded w-full px-2 py-1 text-base md:text-sm" value={areaId} onChange={(e)=>setAreaId(e.target.value)}>
+              <option value="">{t('common:feedback.areaPlaceholder')}</option>
+              {feedbackAreas.map((c) => (
+                <option key={c.id} value={c.id}>{getAreaLabel(c.id) || c.id}</option>
+              ))}
+            </select>
+          ) : (
+            <div className="text-sm text-gray-600 dark:text-gray-400">{t('common:feedback.noAreasConfigured')}</div>
+          )}
         </div>
         <div>
           <label className="block text-sm mb-1">{t('common:feedback.subject')}</label>
@@ -228,6 +265,13 @@ export default function FeedbackPage({ onBack }) {
           </div>
         </div>
         <div className="flex items-center justify-end gap-2">
+          <button
+            className="px-3 py-1 rounded border text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+            type="button"
+            onClick={handleClearForm}
+          >
+            {t('common:feedback.form.clearButton')}
+          </button>
           <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={onBack}>{t('common:option.cancel')}</button>
           <button className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50" disabled={!canSend} onClick={handleSend}>{t('common:feedback.sendButton')}</button>
         </div>
