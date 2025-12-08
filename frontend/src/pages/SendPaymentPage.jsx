@@ -4,7 +4,6 @@ import { getHorizonServer, resolveOrValidatePublicKey } from '../utils/stellar/s
 import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
-import MultisigPrepareDialog from '../components/MultisigPrepareDialog.jsx';
 import { isMultisigAccount } from '../utils/stellar/isMultisigAccount.js';
 import { BACKEND_URL } from '../config.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
@@ -13,7 +12,7 @@ import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from '../utils/walletInfo.js';
 
 export default function SendPaymentPage({ publicKey, onBack: _onBack, initial }) {
-  const { t, i18n } = useTranslation(['common', 'errors', 'publicKey', 'secretKey', 'investedTokens', 'wallet', 'multisig']);
+  const { t, i18n } = useTranslation(['common', 'errors', 'publicKey', 'secretKey', 'investedTokens', 'wallet', 'multisig', 'network']);
   void _onBack;
   const { wallets } = useTrustedWallets();
 
@@ -25,12 +24,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [memoVal, setMemoVal] = useState('');
   const [showSecretModal, setShowSecretModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showOptionInfo, setShowOptionInfo] = useState(false);
+  const [confirmChoice, setConfirmChoice] = useState('job');
+  const [resultDialog, setResultDialog] = useState(null);
+  const [copiedXdr, setCopiedXdr] = useState(false);
+  const closeConfirmDialogs = useCallback(() => {
+    setShowConfirmModal(false);
+    setShowOptionInfo(false);
+  }, []);
   const [secretError, setSecretError] = useState('');
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false); // Zeigt einen globalen Processing-Indikator während des Payment-Flows an.
   const [error, setError] = useState('');
-  const [preparedTx, setPreparedTx] = useState(null);
   const [preflight, setPreflight] = useState({
     loading: false,
     err: '',
@@ -244,6 +250,50 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
   }, [assetKey, baseReserve, dest, normalizeAmountValue, server, t]);
 
+  const formatNetworkLabel = useCallback((net) => {
+    const v = String(net || '').toUpperCase();
+    if (v === 'TESTNET') return t('network:testnet', 'Testnet');
+    if (v === 'PUBLIC') return t('network:mainnet', 'Mainnet');
+    return net || '';
+  }, [t]);
+
+  const buildSummaryItems = useCallback((summary) => {
+    if (!summary) return [];
+    const items = [
+      { label: t('common:account.source', 'Quelle'), value: summary.source },
+      { label: t('common:payment.send.recipient'), value: summary.recipient },
+      { label: t('common:payment.send.amount'), value: summary.amount },
+      { label: t('common:payment.send.memo'), value: summary.memo || '-' },
+    ];
+    if (summary.network) {
+      items.push({ label: t('common:networkLabel', 'Netzwerk'), value: formatNetworkLabel(summary.network) });
+    }
+    return items;
+  }, [formatNetworkLabel, t]);
+
+  const reopenSelection = useCallback((choice) => {
+    setResultDialog(null);
+    setCopiedXdr(false);
+    if (choice) setConfirmChoice(choice);
+    setShowConfirmModal(true);
+    void runPreflight();
+  }, [runPreflight]);
+
+  const handleCopyXdr = useCallback(async (text) => {
+    try {
+      await navigator.clipboard.writeText(text || '');
+      setCopiedXdr(true);
+      setTimeout(() => setCopiedXdr(false), 1500);
+    } catch (e) {
+      console.error('copy failed', e);
+    }
+  }, []);
+
+  const closeResultDialog = useCallback(() => {
+    setResultDialog(null);
+    setCopiedXdr(false);
+  }, []);
+
   const buildPaymentTx = useCallback(async ({ signers, signTx = false, requireSigners = false } = {}) => {
     const signerList = Array.isArray(signers) ? signers.filter(Boolean) : [];
     const primary = signerList[0];
@@ -347,11 +397,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       asset: meta.asset,
       memo: meta.memo,
       activated: meta.activated,
+      network: netLabel,
     };
-  }, [buildPaymentTx, server]);
+  }, [buildPaymentTx, netLabel, server]);
 
   const handleStoredSecretSend = useCallback(async () => {
-    setShowConfirmModal(false);
+    closeConfirmDialogs();
     try {
       setError('');
       setStatus('');
@@ -364,13 +415,24 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       setIsProcessing(true);
       const result = await submitPayment(Keypair.fromSecret(saved));
       applySendResult(result);
+      setResultDialog({
+        type: 'sent',
+        summary: {
+          source: publicKey,
+          recipient: result.recipient,
+          amount: `${result.amountDisplay} ${result.asset}`,
+          memo: result.memo || '-',
+          network: result.network,
+        },
+        hash: result.hash,
+      });
       setSecretError('');
     } catch (err) {
       handlePaymentError(err);
     } finally {
       setIsProcessing(false);
     }
-  }, [applySendResult, handlePaymentError, publicKey, submitPayment]);
+  }, [applySendResult, closeConfirmDialogs, handlePaymentError, publicKey, submitPayment]);
 
   const handlePrepareMultisig = useCallback(async (initialSigners = []) => {
     try {
@@ -407,28 +469,63 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         handlePaymentError(e);
         return;
       }
-      setPreparedTx({
-        id: job?.id,
+      setResultDialog({
+        type: 'job',
+        summary: {
+          source: publicKey,
+          recipient: meta.recipient,
+          amount: `${meta.amountDisplay} ${meta.asset}`,
+          memo: meta.memo || '-',
+          network: netLabel,
+        },
+        jobId: job?.id,
         hash: job?.txHash || hashHex,
         xdr: job?.txXdrCurrent || xdr,
-        summary: {
-          title: t('multisig:prepare.title'),
-          subtitle: t('multisig:prepare.subtitle'),
-          items: [
-            { label: t('common:account.source', 'Quelle'), value: publicKey },
-            { label: t('common:payment.send.recipient'), value: meta.recipient },
-            { label: t('common:payment.send.amount'), value: `${meta.amountDisplay} ${meta.asset}` },
-            { label: t('common:payment.send.memo'), value: meta.memo || '-' },
-            { label: t('common:network', 'Netzwerk'), value: netLabel },
-            job?.id ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: job.id } : null,
-          ].filter(Boolean),
-        },
       });
-      setShowConfirmModal(false);
+      closeConfirmDialogs();
     } catch (err) {
       handlePaymentError(err);
     }
-  }, [buildPaymentTx, handlePaymentError, netLabel, preflight, publicKey, t]);
+  }, [buildPaymentTx, closeConfirmDialogs, handlePaymentError, netLabel, preflight, publicKey, t]);
+
+  const handleExportXdr = useCallback(async () => {
+    try {
+      if (preflight.loading || preflight.err) {
+        setError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
+        return;
+      }
+      const { tx, meta } = await buildPaymentTx({ signTx: false, requireSigners: false });
+      const hashHex = tx.hash().toString('hex');
+      const xdr = tx.toXDR();
+      setResultDialog({
+        type: 'xdr',
+        summary: {
+          source: publicKey,
+          recipient: meta.recipient,
+          amount: `${meta.amountDisplay} ${meta.asset}`,
+          memo: meta.memo || '-',
+          network: netLabel,
+        },
+        hash: hashHex,
+        xdr,
+      });
+      closeConfirmDialogs();
+    } catch (err) {
+      handlePaymentError(err);
+    }
+  }, [buildPaymentTx, closeConfirmDialogs, handlePaymentError, netLabel, preflight, publicKey, t]);
+
+  const handleConfirmProceed = useCallback(async () => {
+    if (confirmChoice === 'local') {
+      await handleStoredSecretSend();
+      return;
+    }
+    if (confirmChoice === 'xdr') {
+      await handleExportXdr();
+      return;
+    }
+    await handlePrepareMultisig();
+  }, [confirmChoice, handleExportXdr, handlePrepareMultisig, handleStoredSecretSend]);
 
   const isMultisig = useMemo(() => isMultisigAccount(accountInfo), [accountInfo]);
 
@@ -442,6 +539,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
 
     if (isMultisig) {
+      setConfirmChoice('job');
+      setShowOptionInfo(false);
       setShowConfirmModal(true);
       await runPreflight();
       return;
@@ -926,24 +1025,44 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
            </div>
       
        {showConfirmModal && isMultisig && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
+       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
           <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
-            <div className="flex items-start justify-between gap-3 mb-2">
+            <div className="flex items-start justify-between gap-3 mb-3">
               <h3 className="text-lg font-semibold">{t('common:option.confirm.action.title', 'Confirm action')}</h3>
-              <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={()=>setShowConfirmModal(false)}>{t('common:option.cancel', 'Cancel')}</button>
+              <button
+                type="button"
+                className="px-2 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={closeConfirmDialogs}
+                aria-label={t('common:option.cancel', 'Cancel')}
+              >
+                ×
+              </button>
             </div>
-            <div className="text-sm space-y-1 mb-3">
-              <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span> <span className="font-mono break-all">{dest}</span></div>
-              <div>
-                <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.amount')}:</span>{' '}
-                <span>
+
+            <div className="text-sm space-y-1 mb-4">
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span>
+                <span className="font-mono break-all text-right">{dest}</span>
+              </div>
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.amount')}:</span>
+                <span className="text-right">
                   {amountFmt.format(Number(amount))} {(assetKey==='XLM'?'XLM':assetKey.split(':')[0])}
                   {preflight.activationRequired && assetKey==='XLM' && preflight.willBump && !preflight.loading && !preflight.err && (
                     <span className="ml-2 text-amber-600 dark:text-amber-400">→ {amountFmt.format(preflight.adjusted)} XLM</span>
                   )}
                 </span>
               </div>
-              <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span> {memoType==='none' || !memoVal ? '-' : memoVal}</div>
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span>
+                <span className="text-right break-all">{memoType==='none' || !memoVal ? '-' : memoVal}</span>
+              </div>
+              {netLabel && (
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-gray-600 dark:text-gray-400">{t('common:network', 'Netzwerk')}:</span>
+                  <span className="font-mono text-right">{netLabel}</span>
+                </div>
+              )}
               {recipientCompromised && (
                 <div className="text-red-600 dark:text-red-400">
                   {t('wallet:flag.compromised', 'Warning: This recipient is marked as compromised in your trusted list.')}
@@ -984,29 +1103,246 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               </div>
             )}
 
-            <div className="space-y-3">
-              <div className="border rounded p-3">
-                <div className="font-semibold mb-1">{t('multisig:confirm.testModeTitle')}</div>
-                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.testModeDescription')}</p>
-                <button
-                  className="w-full px-3 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
-                  disabled={preflight.loading || !!preflight.err}
-                  onClick={handleStoredSecretSend}
+            <div className="space-y-2">
+              {[
+                { key: 'job', label: t('multisig:confirm.options.job.title'), recommended: true },
+                { key: 'local', label: t('multisig:confirm.options.local.title') },
+                { key: 'xdr', label: t('multisig:confirm.options.xdr.title') },
+              ].map((option) => (
+                <label
+                  key={option.key}
+                  className={`flex items-center gap-3 border rounded p-3 cursor-pointer transition hover:border-blue-400 ${confirmChoice === option.key ? 'border-blue-500 ring-1 ring-blue-200 dark:ring-blue-800' : 'border-gray-200 dark:border-gray-700'}`}
                 >
-                  {t('multisig:confirm.testModeButton')}
-                </button>
+                  <input
+                    type="radio"
+                    name="multisig-flow-choice"
+                    value={option.key}
+                    checked={confirmChoice === option.key}
+                    onChange={() => setConfirmChoice(option.key)}
+                    className="form-radio text-blue-600 h-4 w-4"
+                  />
+                  <div className="flex items-center justify-between gap-3 w-full">
+                    <span className="font-semibold">{option.label}</span>
+                    {option.recommended && (
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-100">
+                        {t('multisig:confirm.options.recommended')}
+                      </span>
+                    )}
+                  </div>
+                </label>
+              ))}
+            </div>
+
+            <div className="flex justify-end mt-2">
+              <button
+                type="button"
+                className="text-sm text-blue-700 dark:text-blue-200 hover:underline"
+                onClick={()=>setShowOptionInfo(true)}
+              >
+                {t('multisig:confirm.options.infoButton')}
+              </button>
+            </div>
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={closeConfirmDialogs}
+              >
+                {t('common:option.cancel', 'Cancel')}
+              </button>
+              <button
+                className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
+                disabled={preflight.loading || !!preflight.err}
+                onClick={handleConfirmProceed}
+              >
+                {t('multisig:confirm.options.proceed')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {resultDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[55] overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <h3 className="text-lg font-semibold">
+                {resultDialog.type === 'job' && t('multisig:confirm.result.job.title')}
+                {resultDialog.type === 'xdr' && t('multisig:confirm.result.xdr.title')}
+                {resultDialog.type === 'sent' && t('multisig:confirm.result.sent.title')}
+              </h3>
+              <button
+                type="button"
+                className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={closeResultDialog}
+              >
+                {t('common:close')}
+              </button>
+            </div>
+
+            {resultDialog.type === 'sent' && (
+              <div className="text-sm text-green-700 dark:text-green-300 mb-3">
+                {t('multisig:confirm.result.sent.status')}
               </div>
+            )}
+            {resultDialog.type === 'job' && (
+              <div className="text-sm text-blue-700 dark:text-blue-200 mb-3">
+                {t('multisig:confirm.result.job.status')}
+              </div>
+            )}
+            {resultDialog.type === 'xdr' && (
+              <div className="text-sm text-amber-700 dark:text-amber-300 mb-3 space-y-1">
+                <div>{t('multisig:confirm.result.xdr.status')}</div>
+                <div>{t('multisig:confirm.result.xdr.noJob')}</div>
+              </div>
+            )}
+
+            {buildSummaryItems(resultDialog.summary).length > 0 && (
+              <div className="border rounded p-3 mb-3 space-y-1">
+                {buildSummaryItems(resultDialog.summary).map((item, idx) => (
+                  <div key={idx} className="text-sm flex flex-wrap gap-2">
+                    <span className="text-gray-600 dark:text-gray-400">{item.label}:</span>
+                    <span className="font-mono break-all">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {(resultDialog.jobId || resultDialog.hash) && (
+              <div className="grid gap-2 mb-3">
+                {resultDialog.jobId && (
+                  <div className="flex flex-wrap gap-2 text-sm items-center">
+                    <span className="text-gray-600 dark:text-gray-400">{t('multisig:confirm.result.job.jobIdLabel')}</span>
+                    <span className="font-mono break-all">{resultDialog.jobId}</span>
+                  </div>
+                )}
+                {resultDialog.hash && (
+                  <div className="flex flex-wrap gap-2 text-sm items-center">
+                    <span className="text-gray-600 dark:text-gray-400">
+                      {resultDialog.type === 'sent'
+                        ? t('multisig:confirm.result.sent.hashLabel')
+                        : resultDialog.type === 'xdr'
+                          ? t('multisig:confirm.result.xdr.hashLabel')
+                          : t('multisig:confirm.result.job.hashLabel')}
+                    </span>
+                    <span className="font-mono break-all">{resultDialog.hash}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {(resultDialog.type === 'job' || resultDialog.type === 'xdr') && resultDialog.xdr && (
               <div className="border rounded p-3">
-                <div className="font-semibold mb-1">{t('multisig:confirm.prepareTitle')}</div>
-                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{t('multisig:confirm.prepareDescription')}</p>
-                <button
-                  className="w-full px-3 py-2 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900 disabled:opacity-50"
-                  disabled={preflight.loading || !!preflight.err}
-                  onClick={handlePrepareMultisig}
-                >
-                  {t('multisig:confirm.prepareButton')}
-                </button>
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <div className="text-sm text-gray-700 dark:text-gray-300">{t('multisig:prepare.xdrLabel')}</div>
+                  <button
+                    type="button"
+                    className="px-3 py-1 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
+                    onClick={() => handleCopyXdr(resultDialog.xdr)}
+                  >
+                    {copiedXdr ? t('multisig:prepare.copied', 'Kopiert') : t('multisig:confirm.result.copyXdr')}
+                  </button>
+                </div>
+                <textarea
+                  className="w-full h-32 text-xs font-mono bg-gray-50 dark:bg-gray-900 border rounded px-2 py-1"
+                  readOnly
+                  value={resultDialog.xdr || ''}
+                />
               </div>
+            )}
+
+            {resultDialog.type === 'job' && (
+              <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{t('multisig:prepare.notSentHint')}</p>
+            )}
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={closeResultDialog}
+              >
+                {t('common:close')}
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                onClick={() => reopenSelection(resultDialog.type === 'sent' ? 'local' : resultDialog.type)}
+              >
+                {t('multisig:confirm.result.backToSelection')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showOptionInfo && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <h3 className="text-lg font-semibold">{t('multisig:confirm.options.infoDialog.title')}</h3>
+              <button
+                type="button"
+                className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={()=>setShowOptionInfo(false)}
+              >
+                {t('common:close')}
+              </button>
+            </div>
+
+            <div className="space-y-3 text-sm">
+              {[
+                {
+                  key: 'job',
+                  title: t('multisig:confirm.options.job.title'),
+                  desc: t('multisig:confirm.options.job.desc'),
+                  bullets: [
+                    t('multisig:confirm.options.job.infoBody.one'),
+                    t('multisig:confirm.options.job.infoBody.two'),
+                    t('multisig:confirm.options.job.infoBody.three'),
+                    t('multisig:confirm.options.job.infoBody.four'),
+                  ],
+                },
+                {
+                  key: 'local',
+                  title: t('multisig:confirm.options.local.title'),
+                  desc: t('multisig:confirm.options.local.desc'),
+                  bullets: [
+                    t('multisig:confirm.options.local.infoBody.one'),
+                    t('multisig:confirm.options.local.infoBody.two'),
+                    t('multisig:confirm.options.local.infoBody.three'),
+                  ],
+                },
+                {
+                  key: 'xdr',
+                  title: t('multisig:confirm.options.xdr.title'),
+                  desc: t('multisig:confirm.options.xdr.desc'),
+                  bullets: [
+                    t('multisig:confirm.options.xdr.infoBody.one'),
+                    t('multisig:confirm.options.xdr.infoBody.two'),
+                    t('multisig:confirm.options.xdr.infoBody.three'),
+                  ],
+                },
+              ].map((section) => (
+                <div key={section.key} className="border rounded p-3">
+                  <div className="font-semibold">{section.title}</div>
+                  <p className="text-gray-700 dark:text-gray-300 mt-1">{section.desc}</p>
+                  <ul className="list-disc ml-5 mt-2 space-y-1 text-gray-700 dark:text-gray-300">
+                    {section.bullets.map((line, idx) => (
+                      <li key={idx}>{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 flex justify-end">
+              <button
+                type="button"
+                className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={()=>setShowOptionInfo(false)}
+              >
+                {t('common:close')}
+              </button>
             </div>
           </div>
         </div>
@@ -1058,6 +1394,17 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               }
               const result = await submitPayment(collected.map((s) => s.keypair));
               applySendResult(result);
+              setResultDialog({
+                type: 'sent',
+                summary: {
+                  source: publicKey,
+                  recipient: result.recipient,
+                  amount: `${result.amountDisplay} ${result.asset}`,
+                  memo: result.memo || '-',
+                  network: result.network,
+                },
+                hash: result.hash,
+              });
               setSecretError('');
               setShowSecretModal(false);
             } catch (e) {
@@ -1067,15 +1414,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               setIsProcessing(false);
             }
           }}
-        />
-      )}
-      {preparedTx && (
-        <MultisigPrepareDialog
-          open={!!preparedTx}
-          onClose={() => setPreparedTx(null)}
-          hash={preparedTx.hash}
-          xdr={preparedTx.xdr}
-          summary={preparedTx.summary}
         />
       )}
     </div>
