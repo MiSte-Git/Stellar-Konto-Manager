@@ -581,11 +581,11 @@ function Main() {
               <button
                 type="button"
                 onClick={() => navigateTo('learn')}
-                title={t('learn:menuHint', 'Lernübersicht öffnen')}
+                title={t('learn:menuHint', 'Lernübersicht')}
                 className="inline-flex items-center gap-1 sm:gap-1.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 px-2.5 py-0.5 md:px-3 md:py-1 text-[11px] sm:text-xs md:text-sm rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
               >
                 <span aria-hidden>↗</span>
-                <span>{t('learn:menuHint', 'Lernübersicht öffnen')}</span>
+                <span>{t('learn:menuHint', 'Lernübersicht')}</span>
               </button>
               <button
                 type="button"
