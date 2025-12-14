@@ -14,7 +14,8 @@
   "confirm": {
     "options": {
       "recommended": "Empfohlen",
-      "infoButton": "Mehr Infos zu den Optionen",
+      "infoButton": "Info",
+      "selectTitle": "Option wählen",
       "infoDialog": {
         "title": "Optionen erklärt"
       },
@@ -69,13 +70,22 @@
       }
     },
     "result": {
-      "backToSelection": "Zur Auswahl zurück",
+      "backToSelection": "Zurück",
       "copyXdr": "XDR kopieren",
       "job": {
         "title": "Transaktion für Multisig vorbereitet",
         "status": "Multisig-Job wurde erstellt. Die Transaktion wurde noch nicht gesendet.",
         "jobIdLabel": "Job-ID",
-        "hashLabel": "Transaktions-Hash"
+        "hashLabel": "Transaktions-Hash",
+        "infoButton": "Nächste Schritte",
+        "infoTitle": "Was jetzt zu tun ist",
+        "info": {
+          "share": "Job-ID oder XDR an die nächsten Unterzeichner weitergeben (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
+          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+        },
+        "copyJobId": "Job-ID kopieren",
+        "copiedJobId": "Kopiert"
       },
       "sent": {
         "title": "Transaktion gesendet",
@@ -86,7 +96,8 @@
         "title": "XDR vorbereitet (nicht gesendet)",
         "status": "Es wurde nur eine XDR erzeugt. Es wurde nichts an das Netzwerk gesendet.",
         "noJob": "Es wurde kein Multisig-Job angelegt.",
-        "hashLabel": "Transaktions-Hash"
+        "hashLabel": "Transaktions-Hash",
+        "hint": "Gib die XDR an andere Unterzeichner oder Tools weiter (z. B. Hardware-Wallet, Offline-Rechner). Zum Senden importierst du die (ggf. signierte) XDR später im SKM erneut (z. B. Option 3) und sendest sie an das Netzwerk."
       }
     }
     ,
