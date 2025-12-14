@@ -183,7 +183,7 @@
     },
     "page": "Bereich",
     "pages": {
-      "start": "Global",
+      "start": "Hauptseite",
       "trustlines": "Trustline(s) anzeigen",
       "trustlineCompare": "Trustline(s) vergleichen",
       "balance": "Kontoinformation anzeigen",
@@ -194,7 +194,8 @@
       "multisigEdit": "Multisig Konto bearbeiten",
       "settings": "Einstellungen",
       "feedback": "Feedback",
-      "other": "Sonstiges"
+      "other": "Sonstiges",
+      "bugtracker": "Bugtracker"
     },
     "subject": "Betreff",
     "message": "Nachricht",
@@ -237,6 +238,8 @@
     "add": "Hinzufügen",
     "cancel": "Abbrechen",
     "close": "Schließen",
+    "back": "Zurück",
+    "backToSelection": "Zur Auswahl zurück",
     "confirm": {
       "action": {
         "text": "Bist du sicher?",

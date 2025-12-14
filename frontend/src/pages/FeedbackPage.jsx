@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { FEEDBACK_EMAIL } from '../config.js';
 import { openMailto } from '../utils/openMailto.js';
 import { apiUrl } from '../utils/apiBase.js';
-import { KNOWN_FEEDBACK_AREAS } from '../utils/useSettings.js';
 import { useSettings } from '../utils/useSettings.js';
 
 // Renders the feedback page allowing users to send issues via email.
@@ -64,14 +63,12 @@ export default function FeedbackPage({ onBack }) {
     return cat.label || cat.id;
   };
 
-  // Resolves a feedback area id to a translated label (falls back to the id if unknown).
-  const getAreaLabel = (id) => {
-    if (!id) return '';
-    const known = KNOWN_FEEDBACK_AREAS.find((a) => a.id === id);
-    if (known) return t(known.labelKey, known.fallback || known.id);
-    const fromSettings = (feedbackAreas || []).find((i) => i.id === id);
-    if (fromSettings?.label) return fromSettings.label;
-    return id;
+  // Resolves a feedback area value to a translated label (falls back to the value if unknown).
+  const getAreaLabel = (value) => {
+    if (!value) return '';
+    const opt = (feedbackAreas || []).find((a) => a.id === value);
+    if (opt?.labelKey) return t(opt.labelKey, opt.fallback || opt.value);
+    return value;
   };
 
   // Keeps selected category/area in sync with current lists and resets invalid selections.
@@ -82,7 +79,6 @@ export default function FeedbackPage({ onBack }) {
 
   React.useEffect(() => {
     if (areaId && feedbackAreas.some((c) => c.id === areaId)) return;
-    // try to preserve the default page guess when available
     if (!areaId && defaultPage && feedbackAreas.some((c) => c.id === defaultPage)) {
       setAreaId(defaultPage);
       return;

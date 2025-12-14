@@ -3,6 +3,14 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { buildPath } from '../utils/basePath.js';
 
+export const ADMIN_NAV = [
+  {
+    id: 'bugtracker',
+    to: 'bugtracker',
+    labelKey: 'common:feedback.pages.bugtracker',
+  },
+];
+
 /**
  * SmallAdminLink zeigt einen unauffälligen Bugtracker-Link unten rechts.
  * Öffnet ein kleines Secret-Modal und navigiert anschließend zur Admin-Ansicht.
@@ -47,16 +55,18 @@ export default function SmallAdminLink() {
     };
   }, [isOpen]);
 
+  const linkLabel = t(ADMIN_NAV[0].labelKey);
+
   return (
     <div className="fixed bottom-2 right-3 text-xs opacity-60 hover:opacity-100 transition-opacity pointer-events-auto">
       <a
-        href={buildPath('bugtracker')}
+        href={buildPath(ADMIN_NAV[0].to)}
         onClick={handleLinkClick}
         className="underline decoration-dotted"
-        aria-label={t('common:bugReport.admin.link')}
-        title={t('common:bugReport.admin.link')}
+        aria-label={linkLabel}
+        title={linkLabel}
       >
-        {t('common:bugReport.admin.link')}
+        {linkLabel}
       </a>
 
       {isOpen && portalRoot && createPortal(
