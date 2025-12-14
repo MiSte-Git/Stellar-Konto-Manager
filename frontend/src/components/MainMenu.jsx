@@ -1,30 +1,18 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { MAIN_MENU_NAV } from '../config/mainNavigation.js';
+
 function MainMenu({ onSelect }) {
   // Explicitly request the namespaces used here to ensure they are loaded
   const { t } = useTranslation(['menu', 'createAccount', 'multisigEdit', 'trading']);
 
-  const buttons = [
-    // Gruppe 1
-    { label: t('menu:createAccount', 'Create account + Multisig'), value: 'createAccount', title: t('createAccount:menuHint', 'Create a new account and optionally configure multisig'), group: 1 },
-    { label: t('menu:sendPayment', 'Send payment'), value: 'sendPayment', group: 1 },
-    { label: t('menu:balance', 'Show account info'), value: 'balance', group: 1 },
-
-    // Gruppe 2
-    { label: t('menu:tokenPurchases', 'Token purchases'), value: 'payments', group: 2 },
-    { label: t('menu:xlmByMemo', 'Filter XLM amount by memo/token'), value: 'xlmByMemo', group: 2 },
-    { label: t('trading:assetSearch.title', 'Asset-Suche'), value: 'tradingAssets', group: 2 },
-
-    // Gruppe 3
-    { label: t('menu:multisigEdit', 'Edit multisig'), value: 'multisigEdit', title: t('multisigEdit:menuHint', 'Edit existing account / signers'), group: 3 },
-    { label: t('menu:multisigJobs', 'Multisig-Jobs'), value: 'multisigJobs', group: 3 },
-    { label: t('menu:muxed', 'Manage muxed addresses'), value: 'muxed', group: 3 },
-
-    // Gruppe 4
-    { label: t('menu:listAll', 'List all trustlines'), value: 'listAll', group: 4 },
-    { label: t('menu:compareTrustlines', 'Compare trustlines'), value: 'compare', group: 4 }
-  ];
+  const buttons = MAIN_MENU_NAV.map((item) => ({
+    ...item,
+    value: item.id,
+    label: t(item.labelKey, item.fallback || item.id),
+    title: item.titleKey ? t(item.titleKey, item.titleFallback || '') : '',
+  }));
 
   const baseBtn =
     'text-white px-4 py-2 rounded font-medium shadow-sm transition-colors ' +

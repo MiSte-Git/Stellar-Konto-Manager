@@ -28,6 +28,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [confirmChoice, setConfirmChoice] = useState('job');
   const [resultDialog, setResultDialog] = useState(null);
   const [copiedXdr, setCopiedXdr] = useState(false);
+  const [copiedJobId, setCopiedJobId] = useState(false);
+  const [showJobInfo, setShowJobInfo] = useState(false);
   const closeConfirmDialogs = useCallback(() => {
     setShowConfirmModal(false);
     setShowOptionInfo(false);
@@ -289,9 +291,21 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
   }, []);
 
+  const handleCopyJobId = useCallback(async (text) => {
+    try {
+      await navigator.clipboard.writeText(text || '');
+      setCopiedJobId(true);
+      setTimeout(() => setCopiedJobId(false), 1500);
+    } catch (e) {
+      console.error('copy job id failed', e);
+    }
+  }, []);
+
   const closeResultDialog = useCallback(() => {
     setResultDialog(null);
     setCopiedXdr(false);
+    setCopiedJobId(false);
+    setShowJobInfo(false);
   }, []);
 
   const buildPaymentTx = useCallback(async ({ signers, signTx = false, requireSigners = false } = {}) => {
@@ -1028,7 +1042,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
           <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-3">
-              <h3 className="text-lg font-semibold">{t('common:option.confirm.action.title', 'Confirm action')}</h3>
+              <h3 className="text-lg font-semibold">{t('multisig:confirm.options.selectTitle', 'Option wählen')}</h3>
               <button
                 type="button"
                 className="px-2 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -1059,8 +1073,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               </div>
               {netLabel && (
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-gray-600 dark:text-gray-400">{t('common:network', 'Netzwerk')}:</span>
-                  <span className="font-mono text-right">{netLabel}</span>
+                  <span className="text-gray-600 dark:text-gray-400">{t('common:networkLabel', 'Netzwerk')}:</span>
+                  <span className="font-mono text-right">{formatNetworkLabel(netLabel)}</span>
                 </div>
               )}
               {recipientCompromised && (
@@ -1173,10 +1187,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               </h3>
               <button
                 type="button"
-                className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="p-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
                 onClick={closeResultDialog}
+                aria-label={t('common:close')}
               >
-                {t('common:close')}
+                ×
               </button>
             </div>
 
@@ -1190,10 +1205,33 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 {t('multisig:confirm.result.job.status')}
               </div>
             )}
+            {resultDialog.type === 'job' && (
+              <div className="flex justify-end mb-3">
+                <button
+                  type="button"
+                  className="px-3 py-1 text-sm rounded border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                  onClick={() => setShowJobInfo((v) => !v)}
+                  aria-expanded={showJobInfo}
+                >
+                  {t('multisig:confirm.result.job.infoButton')}
+                </button>
+              </div>
+            )}
+            {resultDialog.type === 'job' && showJobInfo && (
+              <div className="border rounded p-3 mb-3 bg-blue-50 dark:bg-blue-900/30 text-sm text-gray-800 dark:text-gray-100">
+                <div className="font-semibold mb-1">{t('multisig:confirm.result.job.infoTitle')}</div>
+                <ul className="list-disc ml-5 space-y-1">
+                  <li>{t('multisig:confirm.result.job.info.share')}</li>
+                  <li>{t('multisig:confirm.result.job.info.sign')}</li>
+                  <li>{t('multisig:confirm.result.job.info.submit')}</li>
+                </ul>
+              </div>
+            )}
             {resultDialog.type === 'xdr' && (
               <div className="text-sm text-amber-700 dark:text-amber-300 mb-3 space-y-1">
                 <div>{t('multisig:confirm.result.xdr.status')}</div>
                 <div>{t('multisig:confirm.result.xdr.noJob')}</div>
+                <div className="text-gray-700 dark:text-gray-200">{t('multisig:confirm.result.xdr.hint')}</div>
               </div>
             )}
 
@@ -1214,6 +1252,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   <div className="flex flex-wrap gap-2 text-sm items-center">
                     <span className="text-gray-600 dark:text-gray-400">{t('multisig:confirm.result.job.jobIdLabel')}</span>
                     <span className="font-mono break-all">{resultDialog.jobId}</span>
+                    <button
+                      type="button"
+                      className="px-2 py-1 rounded border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                      onClick={() => handleCopyJobId(resultDialog.jobId)}
+                    >
+                      {copiedJobId ? t('multisig:confirm.result.job.copiedJobId') : t('multisig:confirm.result.job.copyJobId')}
+                    </button>
                   </div>
                 )}
                 {resultDialog.hash && (
@@ -1255,25 +1300,27 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{t('multisig:prepare.notSentHint')}</p>
             )}
 
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                type="button"
-                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
-                onClick={closeResultDialog}
-              >
-                {t('common:close')}
-              </button>
-              <button
-                type="button"
-                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-                onClick={() => reopenSelection(resultDialog.type === 'sent' ? 'local' : resultDialog.type)}
-              >
-                {t('multisig:confirm.result.backToSelection')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+	            <div className="mt-4 flex justify-end gap-2">
+	              <button
+	                type="button"
+	                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+	                onClick={closeResultDialog}
+	              >
+	                {t('common:close')}
+	              </button>
+	              {isMultisig === true && (
+	                <button
+	                  type="button"
+	                  className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+	                  onClick={() => reopenSelection(resultDialog.type === 'sent' ? 'local' : resultDialog.type)}
+	                >
+	                  {t('common:option.back', 'Zurück')}
+	                </button>
+	              )}
+	            </div>
+	          </div>
+	        </div>
+	      )}
 
       {showOptionInfo && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] overflow-y-auto p-4">
@@ -1282,10 +1329,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               <h3 className="text-lg font-semibold">{t('multisig:confirm.options.infoDialog.title')}</h3>
               <button
                 type="button"
-                className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="p-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
                 onClick={()=>setShowOptionInfo(false)}
+                aria-label={t('common:close')}
               >
-                {t('common:close')}
+                ×
               </button>
             </div>
 
@@ -1358,6 +1406,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           requiredThreshold={requiredThreshold}
           isProcessing={isProcessing}
           account={accountInfo}
+          onBackToSelection={isMultisig ? (() => {
+            setShowSecretModal(false);
+            setSecretError('');
+            setShowOptionInfo(false);
+            setShowConfirmModal(true);
+          }) : null}
           onConfirm={async (collected, remember, options = {}) => {
             try {
               setError('');

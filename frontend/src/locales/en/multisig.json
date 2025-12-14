@@ -12,12 +12,51 @@
   },
   "multipleSignersInfo": "This action requires multiple signatures. Please provide enough secret keys to meet the threshold.",
   "confirm": {
+    "options": {
+      "recommended": "Recommended",
+      "infoButton": "Info",
+      "selectTitle": "Choose option",
+      "infoDialog": {
+        "title": "Options explained"
+      }
+    },
     "testModeTitle": "Test mode (alle Signaturen lokal)",
     "testModeDescription": "Existing flow: Enter secret key, gather all required signatures, and send directly to Horizon.",
     "testModeButton": "Directly sign & send",
     "prepareTitle": "Prepare transaction for multisig",
     "prepareDescription": "Only prepare XDR for production multisig. Nothing will be sent immediately.",
-    "prepareButton": "Prepare XDR (nicht senden)"
+    "prepareButton": "Prepare XDR (nicht senden)",
+    "result": {
+      "backToSelection": "Back",
+      "copyXdr": "Copy XDR",
+      "job": {
+        "title": "Transaction prepared for multisig",
+        "status": "A multisig job was created. The transaction has not been sent yet.",
+        "jobIdLabel": "Job ID",
+        "hashLabel": "Transaction hash",
+        "infoButton": "Next steps",
+        "infoTitle": "What to do now",
+        "info": {
+          "share": "Share the job ID or the XDR with the next signers (email or messengers like Telegram/WhatsApp).",
+          "sign": "Signers either use Option 3 in SKM (\"Import XDR\") to sign the XDR, OR open the \"Job ID\" menu, load the job, and sign there.",
+          "submit": "After enough signatures are collected, one signer submits the job to the network from the SKM \"Job ID\" menu."
+        },
+        "copyJobId": "Copy job ID",
+        "copiedJobId": "Copied"
+      },
+      "sent": {
+        "title": "Transaction sent",
+        "status": "Transaction successfully sent to the network.",
+        "hashLabel": "Transaction hash"
+      },
+      "xdr": {
+        "title": "XDR prepared (not sent)",
+        "status": "Only an XDR was created. Nothing was sent to the network.",
+        "noJob": "No multisig job was created.",
+        "hashLabel": "Transaction hash",
+        "hint": "Share the XDR with other signers or tools (e.g., hardware wallet, offline computer). To send, re-import the (possibly signed) XDR in SKM later (e.g., Option 3) and submit it to the network."
+      }
+    }
   },
   "prepare": {
     "title": "Transaction prepared for multisig",

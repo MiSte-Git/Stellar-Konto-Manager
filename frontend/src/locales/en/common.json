@@ -236,6 +236,8 @@
     "add": "Add",
     "cancel": "Cancel",
     "close": "Close",
+    "back": "Back",
+    "backToSelection": "Back to selection",
     "confirm": {
       "action": {
         "text": "Are you sure?",

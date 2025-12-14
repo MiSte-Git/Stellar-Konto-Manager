@@ -8,6 +8,7 @@
 /* Wallet-Input: Deaktiviere Rechtschreib-/Auto-Korrektur und Pfeil bei Datalist */
 .wallet-input {
   /* Diese Attribute setzen wir zusätzlich direkt am Input als HTML-Attribute */
+  font-family: Arial, sans-serif;
 }
 
 /* WebKit (Chrome, Edge, Safari) – entfernen des Datalist-Dropdown-Pfeils beim Hover/Fokus */
@@ -28,13 +29,37 @@
 .wallet-input:-webkit-autofill,
 .wallet-input:-webkit-autofill:hover,
 .wallet-input:-webkit-autofill:focus {
+  font-family: Arial, sans-serif;
+  -webkit-text-fill-color: inherit;
+  caret-color: inherit;
+
   -webkit-box-shadow: 0 0 0px 1000px transparent inset;
   transition: background-color 9999s ease-in-out 0s;
 }
 
+/* Global: Form-Controls sollen immer den Projekt-Font nutzen */
+input, textarea, select, button {
+  font-family: inherit;
+}
+
+/* Global: Chromium Autofill darf Font/Rendering nicht “umkippen” */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  font-family: inherit;
+  -webkit-text-fill-color: inherit;
+  caret-color: inherit;
+}
+
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 

@@ -1,6 +1,12 @@
 // Speichert kleine UI-Settings (z. B. Cache-Switch) in localStorage.
 import { useState, useEffect } from 'react';
 import defaultExplorers from '../config/defaultExplorers.json';
+import {
+  MAIN_MENU_NAV,
+  MAINPAGE_EXTRA_NAV,
+  ADMIN_NAV,
+  STATIC_FEEDBACK_AREAS,
+} from '../config/mainNavigation.js';
 
 const KEY_EXPLORERS = 'stm.explorers';
 const KEY_DEFAULT_EXPLORER = 'stm.defaultExplorerKey';
@@ -12,24 +18,35 @@ export const KNOWN_FEEDBACK_CATEGORIES = [
   { id: 'other', labelKey: 'common:feedback.categories.other', fallback: 'Sonstiges' },
 ];
 // Only explicitly defined areas are listed here; helper/tooltip texts (e.g., history info) are intentionally excluded.
-export const KNOWN_FEEDBACK_AREAS = [
-  { id: 'language-bar', labelKey: 'common:feedback.areaLabels.languageBar', fallback: 'Sprachleiste' },
-  { id: 'create-account', labelKey: 'menu:createAccount', fallback: 'Konto erstellen + Multisig' },
-  { id: 'send-payment', labelKey: 'menu:sendPayment', fallback: 'Zahlung senden' },
-  { id: 'balance', labelKey: 'menu:balance', fallback: 'Kontoinformation' },
-  { id: 'token-purchases', labelKey: 'menu:tokenPurchases', fallback: 'Token-Käufe' },
-  { id: 'xlm-by-memo', labelKey: 'menu:xlmByMemo', fallback: 'XLM nach Memo filtern' },
-  { id: 'trading-assets', labelKey: 'trading:assetSearch.title', fallback: 'Asset-Suche' },
-  { id: 'multisig-edit', labelKey: 'menu:multisigEdit', fallback: 'Multisig bearbeiten' },
-  { id: 'multisig-jobs', labelKey: 'menu:multisigJobs', fallback: 'Multisig-Jobs' },
-  { id: 'muxed', labelKey: 'menu:muxed', fallback: 'Muxed-Adressen' },
-  { id: 'trustlines-list', labelKey: 'menu:listAll', fallback: 'Trustlines auflisten' },
-  { id: 'trustlines-compare', labelKey: 'menu:compareTrustlines', fallback: 'Trustlines vergleichen' },
-  { id: 'feedback-form', labelKey: 'common:feedback.title', fallback: 'Feedback-Formular' },
-  { id: 'glossary', labelKey: 'menu:glossary', fallback: 'Glossar' },
-  { id: 'settings', labelKey: 'settings:label', fallback: 'Einstellungen' },
-  { id: 'quiz', labelKey: 'settings:sections.quiz', fallback: 'Quiz & Lernen' },
-];
+// DEPRECATED/LEGACY: kept only for backwards compatibility with older imports.
+// Do not use as a data source; use AVAILABLE_FEEDBACK_AREAS (returned by useSettings()).
+export const KNOWN_FEEDBACK_AREAS = [];
+
+const dynamicNavAreas = [...MAIN_MENU_NAV, ...MAINPAGE_EXTRA_NAV, ...ADMIN_NAV].map((item) => ({
+  id: item.id,
+  labelKey: item.labelKey,
+}));
+
+function dedupeAreasById(areas) {
+  const seen = new Set();
+  const out = [];
+  for (const a of areas) {
+    const id = a?.id;
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    out.push(a);
+  }
+  return out;
+}
+
+const globalArea = (STATIC_FEEDBACK_AREAS || []).find((a) => a.id === 'global') || { id: 'global', labelKey: 'common:feedback.pages.global' };
+const otherArea = (STATIC_FEEDBACK_AREAS || []).find((a) => a.id === 'other') || { id: 'other', labelKey: 'common:feedback.pages.other' };
+
+export const AVAILABLE_FEEDBACK_AREAS = dedupeAreasById([
+  globalArea,
+  ...dynamicNavAreas,
+  otherArea,
+]);
 
 function sanitizeExplorer(item) {
   if (!item || typeof item !== 'object') return null;
@@ -159,8 +176,8 @@ export function useSettings() {
     defaultExplorer: defaultExplorerKey,
     setDefaultExplorer,
     feedbackCategories: KNOWN_FEEDBACK_CATEGORIES,
-    feedbackAreas: KNOWN_FEEDBACK_AREAS,
-    availableFeedbackAreas: KNOWN_FEEDBACK_AREAS,
+    feedbackAreas: AVAILABLE_FEEDBACK_AREAS,
+    availableFeedbackAreas: AVAILABLE_FEEDBACK_AREAS,
     getSettingsSnapshot,
     applySettingsSnapshot,
   };
