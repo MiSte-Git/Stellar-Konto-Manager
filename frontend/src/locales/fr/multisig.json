@@ -17,7 +17,95 @@
     "testModeButton": "Directly sign & send",
     "prepareTitle": "Préparer une transaction pour multisig",
     "prepareDescription": "Préparez uniquement le XDR pour la multisignature de production. Rien ne sera envoyé immédiatement.",
-    "prepareButton": "Préparer le XDR (nicht senden)"
+    "prepareButton": "Préparer le XDR (nicht senden)",
+    "options": {
+      "recommended": "Recommandé",
+      "infoButton": "Je suis formé sur des données jusqu'en octobre 2023. Comment puis-je vous aider ?",
+      "selectTitle": "Choisissez une option",
+      "infoDialog": {
+        "title": "Options expliquées"
+      },
+      "proceed": "Je suis formé sur des données jusqu'en octobre 2023.",
+      "job": {
+        "title": "Créer un emploi multisig (Standard)",
+        "desc": "Flux de travail standard pour un multisig productif. Crée un identifiant de tâche et collecte les signatures distribuées.",
+        "short": "Créez un job Multisig (Job-ID) et recueillez les signatures distribuées.",
+        "moreInfo": "Plus d'infos",
+        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoBody": {
+          "one": "La transaction est enregistrée en tant que tâche multisig dans le backend et reçoit un identifiant de tâche. Rien n'est envoyé directement.",
+          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Une fois qu'il y a suffisamment de signatures (Threshold erreicht), la transaction est envoyée ou peut être envoyée.",
+          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+        },
+        "steps": {
+          "one": "Étape 1 : Un travail multisig est créé et reçoit un identifiant de travail.",
+          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "four": "Étape 4 : Une fois qu'un nombre suffisant de signatures a été collecté, la transaction est envoyée ou peut être envoyée."
+        }
+      },
+      "local": {
+        "title": "Enter all signatures locally & send directly",
+        "desc": "À utiliser uniquement si toutes les clés secrètes peuvent être saisies en toute sécurité sur cet appareil (Tests/Recovery/Admin).",
+        "warning": "Avertissement : Toutes les clés secrètes sont collectées au cours de cette session. Utilisez uniquement sur des appareils de confiance.",
+        "moreInfo": "Plus d'informations",
+        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoBody": {
+          "one": "Vous entrez toutes les clés secrètes requises séquentiellement sur cet appareil jusqu'à ce que le seuil soit atteint.",
+          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "three": "Une fois qu'un nombre suffisant de signatures est recueilli, la transaction sera envoyée directement à Horizon (ohne Multisig-Job)."
+        }
+      },
+      "xdr": {
+        "title": "Exportation XDR (nicht senden)",
+        "desc": "Générez une transaction XDR brute pour des outils hors ligne ou des portefeuilles matériels.",
+        "short": "Exportez la transaction en XDR sans l'envoyer directement.",
+        "moreInfo": "Plus d'informations",
+        "infoTitle": "Comment fonctionne l'exportation XDR ?",
+        "infoBody": {
+          "one": "XDR est le format brut des transactions de Stellar. Rien n'est envoyé automatiquement.",
+          "two": "Utilisez XDR pour les portefeuilles matériels, les ordinateurs hors ligne ou d'autres portefeuilles/outils pouvant importer XDR.",
+          "three": "Vous êtes responsable de la signature et/ou de l'envoi de l'XDR par la suite (e.g., via multisig jobs or an external tool)."
+        },
+        "steps": {
+          "one": "Un XDR est généré, mais rien n'est envoyé.",
+          "two": "Vous pouvez signer le XDR (Offline-Rechner, Hardware-Wallet, anderes Tool) de manière externe.",
+          "three": "Pour envoyer, vous devez réimporter le XDR (for example, via multisig jobs or another tool) puis le signer/l'envoyer là-bas."
+        }
+      }
+    },
+    "result": {
+      "backToSelection": "Retour",
+      "copyXdr": "Copie XDR",
+      "job": {
+        "title": "Transaction préparée pour multisig",
+        "status": "Travail multisig créé. La transaction n'a pas encore été envoyée.",
+        "jobIdLabel": "ID de poste",
+        "hashLabel": "Hachage de transaction",
+        "infoButton": "Prochaines étapes",
+        "infoTitle": "Que faire maintenant?",
+        "info": {
+          "share": "Transmettez l'ID du poste ou le XDR aux prochains signataires (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
+          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+        },
+        "copyJobId": "Copier l'identifiant du travail",
+        "copiedJobId": "Copié"
+      },
+      "sent": {
+        "title": "Transaction envoyée",
+        "status": "Transaction envoyée avec succès au réseau.",
+        "hashLabel": "Hachage de transaction"
+      },
+      "xdr": {
+        "title": "XDR prêt (nicht gesendet)",
+        "status": "Un seul XDR a été généré. Rien n'a été envoyé au réseau.",
+        "noJob": "Aucun travail multisig n'a été créé.",
+        "hashLabel": "Hash de transaction",
+        "hint": "Transférez le XDR à d'autres signataires ou outils (z. B. Hardware-Wallet, Offline-Rechner). Pour l'envoyer, importez à nouveau l’XDR (ggf. signierte) dans SKM (z. B. Option 3) et envoyez-le au réseau."
+      }
+    }
   },
   "prepare": {
     "title": "Transaction préparée pour multisécurisation",
@@ -144,5 +232,10 @@
       "failed": "Une erreur s'est produite lors de l'envoi de la transaction. Veuillez consulter le journal des erreurs pour plus de détails.",
       "unknown": "Statut inconnu."
     }
+  },
+  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "multisigInfo": {
+    "master": "Clé principale",
+    "signerDisabled": "Le signataire est désactivé (poids = 0)."
   }
 }

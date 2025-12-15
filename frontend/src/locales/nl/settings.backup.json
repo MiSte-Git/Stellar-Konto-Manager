@@ -29,9 +29,9 @@
   "nav": {
     "back": "Terug"
   },
-  "title": "Back-up & Herstel",
+  "title": "Back-up & Herstellen",
   "toast": {
-    "backupBeforeImport": "Een back-up is opgeslagen vóór de import.",
+    "backupBeforeImport": "Er is een back-up opgeslagen voor de import.",
     "exported": "Back-up geëxporteerd",
     "exportFailed": "Export mislukt",
     "importFailed": "Import mislukt"

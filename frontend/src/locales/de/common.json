@@ -87,6 +87,9 @@
       "descriptionHeading": "Beschreibung"
     },
     "admin": {
+      "rejected": "Abgelehnt",
+      "rejectedReasonTitle": "Ablehnungsgrund",
+      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
       "title": "Bugtracker",
       "locked": "Zugriff verweigert. Setze das Admin-Secret im lokalen Speicher und lade die Seite neu.",
       "placeholderTitle": "Bugtracker",
@@ -115,6 +118,7 @@
       "userAgent": "Browser",
       "description": "Beschreibung",
       "category": "Kategorie",
+      "bugTitle": "Titel",
       "save": "Speichern",
       "saved": "Änderung gespeichert",
       "loadError": "Fehler beim Laden der Bugs",
@@ -148,6 +152,10 @@
         "url": "URL",
         "desc": "Beschreibung",
         "ts": "Zeit"
+      },
+      "rejectionReason": {
+        "label": "Grund",
+        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
       }
     }
   },
@@ -195,7 +203,8 @@
       "settings": "Einstellungen",
       "feedback": "Feedback",
       "other": "Sonstiges",
-      "bugtracker": "Bugtracker"
+      "bugtracker": "Bugtracker",
+      "global": "Hauptseite"
     },
     "subject": "Betreff",
     "message": "Nachricht",

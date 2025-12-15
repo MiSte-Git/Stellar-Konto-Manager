@@ -148,6 +148,14 @@
         "url": "URL",
         "desc": "Opis",
         "ts": "Vrijeme"
+      },
+      "rejected": "Odbijeno",
+      "rejectedReasonTitle": "Razlog odbijanja",
+      "rejectedReasonRequired": "Molimo navedite razlog odbijanja ako je status „Odbijen“.",
+      "bugTitle": "Naslov",
+      "rejectionReason": {
+        "label": "Razlog",
+        "required": "Navedite razlog ako je status „Odbijeno“."
       }
     }
   },
@@ -175,7 +183,7 @@
     },
     "page": "Područje",
     "pages": {
-      "start": "Globalno",
+      "start": "Glavna stranica",
       "trustlines": "Prikaži trustline(s)",
       "trustlineCompare": "Usporedi trustline(ove)",
       "balance": "Prikaži informacije o računu",
@@ -186,7 +194,9 @@
       "multisigEdit": "Uredite multisig račun",
       "settings": "Postavke",
       "feedback": "Povratne informacije",
-      "other": "Razno"
+      "other": "Razno",
+      "bugtracker": "Sustav za praćenje grešaka",
+      "global": "Glavna stranica"
     },
     "subject": "Predmet",
     "message": "Poruka",
@@ -251,7 +261,9 @@
     "loading": "Učitavanje...",
     "no": "Ne",
     "results": "Rezultati:",
-    "yes": "Da"
+    "yes": "Da",
+    "back": "Natrag",
+    "backToSelection": "Povratak na izbor"
   },
   "progress": {
     "cancel": "Otkazati",
@@ -1164,5 +1176,6 @@
       "learningOutcome": "Pregledajte što ste naučili, prepoznajte vlastiti napredak.",
       "reward": "🎖 Izvanredan profesionalac"
     }
-  }
+  },
+  "networkLabel": "Mreža"
 }
