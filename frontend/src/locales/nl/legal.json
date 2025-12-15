@@ -4,9 +4,13 @@
   "imprint": {
     "title": "Colofon",
     "providerLabel": "Aanbieder:",
-    "providerName": "Stellar Account Manager (privates Projekt)",
+    "providerName": "Michael Stegmann",
     "addressLabel": "Adres:",
-    "addressLines": "U bent getraind op gegevens tot oktober 2023.",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Schweiz"
+    ],
     "emailLabel": "E-mail:",
     "email": "support@skm.steei.de"
   },

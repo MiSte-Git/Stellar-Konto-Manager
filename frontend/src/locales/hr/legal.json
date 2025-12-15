@@ -4,9 +4,13 @@
   "imprint": {
     "title": "Impresum",
     "providerLabel": "Pružatelj:",
-    "providerName": "Stellar Account Manager (privates Projekt)",
+    "providerName": "Michael Stegmann",
     "addressLabel": "Adresa:",
-    "addressLines": "Entschuldigung, es scheint einen Fehler in Ihrer Nachricht gegeben zu haben. Könnten Sie bitte den Text angeben, den Sie übersetzen lassen möchten?",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Schweiz"
+    ],
     "emailLabel": "E-Mail:",
     "email": "support@skm.steei.de"
   },
