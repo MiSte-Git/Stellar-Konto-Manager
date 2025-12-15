@@ -33,7 +33,7 @@
     },
     "toast": {
       "exported": "Backup esportato",
-      "backupBeforeImport": "Un backup è stato salvato prima dell'importazione."
+      "backupBeforeImport": "È stato salvato un backup prima dell'importazione."
     },
     "nav": {
       "back": "Indietro"

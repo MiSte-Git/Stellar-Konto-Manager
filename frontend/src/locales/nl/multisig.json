@@ -17,7 +17,95 @@
     "testModeButton": "Directly sign & send",
     "prepareTitle": "Bereid transactie voor multisig voor",
     "prepareDescription": "Bereid alleen XDR voor productie multisig voor. Er zal niets onmiddellijk worden verzonden.",
-    "prepareButton": "Bereid XDR (nicht senden) voor"
+    "prepareButton": "Bereid XDR (nicht senden) voor",
+    "options": {
+      "recommended": "Aanbevolen",
+      "infoButton": "Ik ben getraind op gegevens tot oktober 2021. Hoe kan ik u helpen?",
+      "selectTitle": "Optie kiezen",
+      "infoDialog": {
+        "title": "Opties uitgelegd"
+      },
+      "proceed": "U bent getraind op gegevens tot oktober 2023.",
+      "job": {
+        "title": "Maak een multisig-taak (Standard)",
+        "desc": "Standaard workflow voor productieve multisig. Creëert een taak-ID en verzamelt verdeelde handtekeningen.",
+        "short": "Maak een Multisig-taak (Job-ID) en verzamel verdeelde handtekeningen.",
+        "moreInfo": "Meer informatie",
+        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoBody": {
+          "one": "De transactie wordt opgeslagen als een multisig-taak in de backend en ontvangt een taak-ID. Er wordt niets direct verzonden.",
+          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Zodra er voldoende handtekeningen (Threshold erreicht) zijn, wordt de transactie verzonden of kan deze worden verzonden.",
+          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+        },
+        "steps": {
+          "one": "Stap 1: Een multisig-taak wordt aangemaakt en ontvangt een taak-ID.",
+          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "four": "Stap 4: Zodra er voldoende handtekeningen zijn verzameld, wordt de transactie verzonden of kan deze verzonden worden."
+        }
+      },
+      "local": {
+        "title": "Enter all signatures locally & send directly",
+        "desc": "Alleen gebruiken als alle geheime sleutels veilig op dit apparaat kunnen worden ingevoerd (Tests/Recovery/Admin).",
+        "warning": "Waarschuwing: Alle geheime sleutels worden in deze sessie verzameld. Gebruik dit alleen op vertrouwde apparaten.",
+        "moreInfo": "Meer informatie",
+        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoBody": {
+          "one": "Je voert alle vereiste geheime sleutels opeenvolgend in op dit apparaat totdat de drempel is bereikt.",
+          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "three": "Zodra er voldoende handtekeningen zijn verzameld, wordt de transactie rechtstreeks naar Horizon (ohne Multisig-Job) verzonden."
+        }
+      },
+      "xdr": {
+        "title": "Exporteer XDR (nicht senden)",
+        "desc": "Genereer een ruwe XDR-transactie voor offline tools of hardware wallets.",
+        "short": "Exporteer de transactie als XDR zonder deze direct te verzenden.",
+        "moreInfo": "Meer informatie",
+        "infoTitle": "Hoe werkt de XDR-export?",
+        "infoBody": {
+          "one": "XDR is het ruwe transactieformaat van Stellar. Er wordt niets automatisch verzonden.",
+          "two": "Gebruik XDR voor hardware wallets, offline computers of andere wallets/tools die XDR kunnen importeren.",
+          "three": "Je bent verantwoordelijk voor het ondertekenen en/of verzenden van de XDR later (e.g., via multisig jobs or an external tool)."
+        },
+        "steps": {
+          "one": "Er wordt een XDR gegenereerd, maar er wordt niets verzonden.",
+          "two": "U kunt de XDR extern ondertekenen (Offline-Rechner, Hardware-Wallet, anderes Tool).",
+          "three": "Om te verzenden moet u de XDR (for example, via multisig jobs or another tool) opnieuw importeren en deze dan daar ondertekenen/versturen."
+        }
+      }
+    },
+    "result": {
+      "backToSelection": "Terug",
+      "copyXdr": "Kopieer XDR",
+      "job": {
+        "title": "Transactie voorbereid voor multisig",
+        "status": "Multisig-taak aangemaakt. De transactie is nog niet verzonden.",
+        "jobIdLabel": "Vacaturenummer",
+        "hashLabel": "Transactie-hash",
+        "infoButton": "Volgende stappen",
+        "infoTitle": "Wat nu te doen?",
+        "info": {
+          "share": "Stuur de job-ID of XDR door naar de volgende ondertekenaars (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
+          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+        },
+        "copyJobId": "Kopieer Job-ID",
+        "copiedJobId": "Gekopieerd"
+      },
+      "sent": {
+        "title": "Transactie verzonden",
+        "status": "Transactie succesvol naar het netwerk verzonden.",
+        "hashLabel": "Transactiehash"
+      },
+      "xdr": {
+        "title": "XDR klaar (nicht gesendet)",
+        "status": "Er werd slechts één XDR gegenereerd. Er werd niets naar het netwerk verzonden.",
+        "noJob": "Er is geen multisig-taak aangemaakt.",
+        "hashLabel": "Transactiehash",
+        "hint": "Geef de XDR door aan andere ondertekenaars of tools (z. B. Hardware-Wallet, Offline-Rechner). Om te verzenden, importeer de (ggf. signierte) XDR opnieuw in SKM (z. B. Option 3) en verstuur het naar het netwerk."
+      }
+    }
   },
   "prepare": {
     "title": "Transactie voorbereid voor multisig",
@@ -144,5 +232,10 @@
       "failed": "Er is een fout opgetreden bij het verzenden van de transactie. Raadpleeg het foutlogboek voor meer details.",
       "unknown": "Status onbekend."
     }
+  },
+  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "multisigInfo": {
+    "master": "Hoofdsleutel",
+    "signerDisabled": "Ondertekenaar gedeactiveerd (gewicht = 0)"
   }
 }

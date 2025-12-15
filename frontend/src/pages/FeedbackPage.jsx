@@ -136,6 +136,8 @@ export default function FeedbackPage({ onBack }) {
         userAgent: navigator.userAgent,
         language: navigator.language,
         reportToken,
+        // Variante A: historisch wird nur "Betreff" gepflegt. Wir senden ihn als "subject".
+        subject: subject.trim(),
         description,
         ts: new Date().toISOString(),
         appVersion: import.meta.env.VITE_APP_VERSION ?? null,
@@ -156,7 +158,7 @@ export default function FeedbackPage({ onBack }) {
     } catch (err) {
       console.warn('bugReport.send.failed', err);
     }
-  }, [category, reportToken, contactEmail, areaId]);
+  }, [category, reportToken, contactEmail, areaId, subject]);
 
   // Handles sending the feedback mail only (no backend bugtracker).
   const handleSend = useCallback(async () => {

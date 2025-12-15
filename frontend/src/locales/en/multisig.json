@@ -14,10 +14,59 @@
   "confirm": {
     "options": {
       "recommended": "Recommended",
-      "infoButton": "Info",
+      "infoButton": "I'm trained on data up to October 2021. How can I assist you?",
       "selectTitle": "Choose option",
       "infoDialog": {
         "title": "Options explained"
+      },
+      "proceed": "Continue",
+      "job": {
+        "title": "Create a multisig job (Standard)",
+        "desc": "Standard workflow for productive multisig. Creates a job ID and collects signatures distributed.",
+        "short": "Create a Multisig job (Job-ID) and collect distributed signatures.",
+        "moreInfo": "More info",
+        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoBody": {
+          "one": "The transaction is stored as a multisig job in the backend and receives a job ID. Nothing is sent directly.",
+          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Once there are enough signatures (Threshold erreicht), the transaction is sent or can be sent.",
+          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+        },
+        "steps": {
+          "one": "Step 1: A multisig job is created and receives a job ID.",
+          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "four": "Step 4: Once enough signatures have been collected, the transaction is sent or can be sent."
+        }
+      },
+      "local": {
+        "title": "Enter all signatures locally & send directly",
+        "desc": "Only use if all secret keys can be securely entered on this device (Tests/Recovery/Admin).",
+        "warning": "Warning: All secret keys are being collected in this session. Use only on trusted devices.",
+        "moreInfo": "More info",
+        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoBody": {
+          "one": "You enter all required secret keys sequentially on this device until the threshold is reached.",
+          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "three": "Once enough signatures are collected, the transaction will be sent directly to Horizon (ohne Multisig-Job)."
+        }
+      },
+      "xdr": {
+        "title": "Export XDR (nicht senden)",
+        "desc": "Generate a raw XDR transaction for offline tools or hardware wallets.",
+        "short": "Export the transaction as XDR without sending it directly.",
+        "moreInfo": "More information",
+        "infoTitle": "How does the XDR export work?",
+        "infoBody": {
+          "one": "XDR is the raw transaction format of Stellar. Nothing is sent automatically.",
+          "two": "Use XDR for hardware wallets, offline computers, or other wallets/tools that can import XDR.",
+          "three": "You are responsible for signing and/or sending the XDR later (e.g., via multisig jobs or an external tool)."
+        },
+        "steps": {
+          "one": "An XDR is generated, but nothing is sent.",
+          "two": "You can externally sign the XDR (Offline-Rechner, Hardware-Wallet, anderes Tool).",
+          "three": "To send, you need to re-import the XDR (for example, via multisig jobs or another tool) and then sign/send it there."
+        }
       }
     },
     "testModeTitle": "Test mode (alle Signaturen lokal)",
@@ -31,17 +80,17 @@
       "copyXdr": "Copy XDR",
       "job": {
         "title": "Transaction prepared for multisig",
-        "status": "A multisig job was created. The transaction has not been sent yet.",
+        "status": "Multisig job created. The transaction has not been sent yet.",
         "jobIdLabel": "Job ID",
         "hashLabel": "Transaction hash",
         "infoButton": "Next steps",
         "infoTitle": "What to do now",
         "info": {
-          "share": "Share the job ID or the XDR with the next signers (email or messengers like Telegram/WhatsApp).",
-          "sign": "Signers either use Option 3 in SKM (\"Import XDR\") to sign the XDR, OR open the \"Job ID\" menu, load the job, and sign there.",
-          "submit": "After enough signatures are collected, one signer submits the job to the network from the SKM \"Job ID\" menu."
+          "share": "Forward the job ID or XDR to the next signatories (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
+          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
         },
-        "copyJobId": "Copy job ID",
+        "copyJobId": "Copy Job ID",
         "copiedJobId": "Copied"
       },
       "sent": {
@@ -50,11 +99,11 @@
         "hashLabel": "Transaction hash"
       },
       "xdr": {
-        "title": "XDR prepared (not sent)",
-        "status": "Only an XDR was created. Nothing was sent to the network.",
+        "title": "XDR ready (nicht gesendet)",
+        "status": "Only one XDR was generated. Nothing was sent to the network.",
         "noJob": "No multisig job was created.",
         "hashLabel": "Transaction hash",
-        "hint": "Share the XDR with other signers or tools (e.g., hardware wallet, offline computer). To send, re-import the (possibly signed) XDR in SKM later (e.g., Option 3) and submit it to the network."
+        "hint": "Pass the XDR to other signers or tools (z. B. Hardware-Wallet, Offline-Rechner). To send, import the (ggf. signierte) XDR into SKM again (z. B. Option 3) and send it to the network."
       }
     }
   },
@@ -183,5 +232,10 @@
       "failed": "An error occurred while sending the transaction. Please refer to the error log for details.",
       "unknown": "Status unknown."
     }
+  },
+  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "multisigInfo": {
+    "master": "Master key",
+    "signerDisabled": "Signer deactivated (weight = 0)"
   }
 }

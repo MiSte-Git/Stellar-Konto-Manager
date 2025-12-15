@@ -148,6 +148,14 @@
         "url": "URL",
         "desc": "Description",
         "ts": "Temps"
+      },
+      "rejected": "Refusé",
+      "rejectedReasonTitle": "Raison du rejet",
+      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "bugTitle": "Titre",
+      "rejectionReason": {
+        "label": "Raison",
+        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
       }
     }
   },
@@ -175,7 +183,7 @@
     },
     "page": "Zone",
     "pages": {
-      "start": "Mondial",
+      "start": "Page principale",
       "trustlines": "Afficher la/les ligne(s) de confiance",
       "trustlineCompare": "Comparer les lignes de crédit",
       "balance": "Afficher les informations du compte",
@@ -186,7 +194,9 @@
       "multisigEdit": "Modifier le compte multisig",
       "settings": "Paramètres",
       "feedback": "Retour d'information",
-      "other": "Divers"
+      "other": "Divers",
+      "bugtracker": "Suivi des bogues",
+      "global": "Page principale"
     },
     "subject": "Sujet",
     "message": "Message",
@@ -251,7 +261,9 @@
     "loading": "Chargement...",
     "no": "Non",
     "results": "Résultats :",
-    "yes": "Oui"
+    "yes": "Oui",
+    "back": "Retour",
+    "backToSelection": "Retour à la sélection"
   },
   "progress": {
     "cancel": "Annuler",
@@ -1164,5 +1176,6 @@
       "learningOutcome": "Révisez ce que vous avez appris, reconnaissez vos propres progrès.",
       "reward": "🎖 Professionnel Stellair"
     }
-  }
+  },
+  "networkLabel": "Réseau"
 }
