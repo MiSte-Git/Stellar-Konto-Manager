@@ -148,6 +148,14 @@
         "url": "URL",
         "desc": "Kuvaus",
         "ts": "Aika"
+      },
+      "rejected": "Hylätty",
+      "rejectedReasonTitle": "Hylkäämisen syy",
+      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "bugTitle": "Otsikko",
+      "rejectionReason": {
+        "label": "Syy",
+        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
       }
     }
   },
@@ -175,7 +183,7 @@
     },
     "page": "Alue",
     "pages": {
-      "start": "Globaali",
+      "start": "Etusivu",
       "trustlines": "Näytä luottoraja(t)",
       "trustlineCompare": "Vertaa luottolimiittilinjoja.",
       "balance": "Näytä tilitiedot",
@@ -186,7 +194,9 @@
       "multisigEdit": "Muokkaa multisig-tiliä",
       "settings": "Asetukset",
       "feedback": "Palaute",
-      "other": "Sekalaiset"
+      "other": "Sekalaiset",
+      "bugtracker": "Virheenseurantajärjestelmä",
+      "global": "Etusivu"
     },
     "subject": "Aihe",
     "message": "Viesti",
@@ -251,7 +261,9 @@
     "loading": "Ladataan...",
     "no": "Ei",
     "results": "Tulokset:",
-    "yes": "Kyllä"
+    "yes": "Kyllä",
+    "back": "Takaisin",
+    "backToSelection": "Takaisin valintaan"
   },
   "progress": {
     "cancel": "Peruuttaa",
@@ -1164,5 +1176,6 @@
       "learningOutcome": "Tarkastele oppimaasi, tunnista oma edistyksesi.",
       "reward": "🎖 Tähtiluokan ammattilainen"
     }
-  }
+  },
+  "networkLabel": "Verkko"
 }

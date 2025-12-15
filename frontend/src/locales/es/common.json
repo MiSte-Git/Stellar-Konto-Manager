@@ -148,6 +148,14 @@
         "url": "URL",
         "desc": "Descripción",
         "ts": "Tiempo"
+      },
+      "rejected": "Rechazado",
+      "rejectedReasonTitle": "Motivo de rechazo",
+      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "bugTitle": "Título",
+      "rejectionReason": {
+        "label": "Razón",
+        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
       }
     }
   },
@@ -175,7 +183,7 @@
     },
     "page": "Área",
     "pages": {
-      "start": "Global",
+      "start": "Página principal",
       "trustlines": "Mostrar línea(s) de confianza",
       "trustlineCompare": "Comparar línea(s) de confianza",
       "balance": "Mostrar información de la cuenta",
@@ -186,7 +194,9 @@
       "multisigEdit": "Editar cuenta multigrado",
       "settings": "Configuraciones",
       "feedback": "Retroalimentación",
-      "other": "Misceláneo"
+      "other": "Misceláneo",
+      "bugtracker": "Sistema de seguimiento de errores",
+      "global": "Página principal"
     },
     "subject": "Asunto",
     "message": "Mensaje",
@@ -251,7 +261,9 @@
     "loading": "Cargando...",
     "no": "No",
     "results": "Resultados:",
-    "yes": "Sí"
+    "yes": "Sí",
+    "back": "Atrás",
+    "backToSelection": "Volver a la selección"
   },
   "progress": {
     "cancel": "Cancelar",
@@ -1164,5 +1176,6 @@
       "learningOutcome": "Revisa lo que has aprendido, reconoce tu propio progreso.",
       "reward": "🎖 Profesional Estelar"
     }
-  }
+  },
+  "networkLabel": "Red Netzwerk"
 }

@@ -148,6 +148,14 @@
         "url": "URL",
         "desc": "Description",
         "ts": "Time"
+      },
+      "rejected": "Declined",
+      "rejectedReasonTitle": "Reason for rejection",
+      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "bugTitle": "Title",
+      "rejectionReason": {
+        "label": "Reason",
+        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
       }
     }
   },
@@ -175,7 +183,7 @@
     },
     "page": "Area",
     "pages": {
-      "start": "Global",
+      "start": "Main page",
       "trustlines": "Show trustline(s)",
       "trustlineCompare": "Compare trustline(s)",
       "balance": "Display account information",
@@ -186,7 +194,9 @@
       "multisigEdit": "Edit multisig account",
       "settings": "Settings",
       "feedback": "Feedback",
-      "other": "Miscellaneous"
+      "other": "Miscellaneous",
+      "bugtracker": "Bug tracker",
+      "global": "Main page"
     },
     "subject": "Subject",
     "message": "Message",
@@ -1166,5 +1176,6 @@
       "learningOutcome": "Review what you've learned, recognize your own progress.",
       "reward": "🎖 Stellar Professional"
     }
-  }
+  },
+  "networkLabel": "Network"
 }
