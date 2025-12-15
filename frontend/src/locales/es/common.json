@@ -156,7 +156,8 @@
       "rejectionReason": {
         "label": "Razón",
         "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
-      }
+      },
+      "secretVisibilityToggle": "Mostrar/Ocultar Secreto de Administrador"
     }
   },
   "cache": {

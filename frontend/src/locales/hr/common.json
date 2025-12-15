@@ -156,7 +156,8 @@
       "rejectionReason": {
         "label": "Razlog",
         "required": "Navedite razlog ako je status „Odbijeno“."
-      }
+      },
+      "secretVisibilityToggle": "Prikaži/Sakrij Administratorsku Tajnu"
     }
   },
   "cache": {

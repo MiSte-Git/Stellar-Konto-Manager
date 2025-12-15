@@ -148,7 +148,7 @@ export default function FeedbackPage({ onBack }) {
       };
       const emailTrim = (contactEmail || '').trim();
       if (emailTrim) payload.contactEmail = emailTrim;
-      const res = await fetch(apiUrl('bugreport'), {
+      const res = await fetch(apiUrl('bugreport.php'), {
         method: 'POST',
         keepalive: true,
         headers: { 'Content-Type': 'application/json' },

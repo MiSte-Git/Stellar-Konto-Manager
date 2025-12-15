@@ -156,7 +156,8 @@
       "rejectionReason": {
         "label": "Reden",
         "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
-      }
+      },
+      "secretVisibilityToggle": "Admin-geheim laten zien/verbergen"
     }
   },
   "cache": {
