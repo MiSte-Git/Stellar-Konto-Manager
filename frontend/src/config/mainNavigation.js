@@ -7,17 +7,24 @@
 
 /** @type {MainNavItem[]} */
 export const MAIN_MENU_NAV = [
-  { id: 'createAccount', labelKey: 'menu:createAccount' },
-  { id: 'sendPayment', labelKey: 'menu:sendPayment' },
-  { id: 'balance', labelKey: 'menu:balance' },
-  { id: 'payments', labelKey: 'menu:tokenPurchases' },
-  { id: 'xlmByMemo', labelKey: 'menu:xlmByMemo' },
-  { id: 'tradingAssets', labelKey: 'trading:assetSearch.title' },
-  { id: 'multisigEdit', labelKey: 'menu:multisigEdit' },
-  { id: 'multisigJobs', labelKey: 'menu:multisigJobs' },
-  { id: 'muxed', labelKey: 'menu:muxed' },
-  { id: 'listAll', labelKey: 'menu:listAll' },
-  { id: 'compare', labelKey: 'menu:compareTrustlines' },
+  // Gruppe 1
+  { id: 'createAccount', labelKey: 'menu:createAccount', group: 1 },
+  { id: 'sendPayment', labelKey: 'menu:sendPayment', group: 1 },
+  { id: 'balance', labelKey: 'menu:balance', group: 1 },
+
+  // Gruppe 2
+  { id: 'payments', labelKey: 'menu:tokenPurchases', group: 2 },
+  { id: 'xlmByMemo', labelKey: 'menu:xlmByMemo', group: 2 },
+  { id: 'tradingAssets', labelKey: 'trading:assetSearch.title', group: 2 },
+
+  // Gruppe 3
+  { id: 'multisigEdit', labelKey: 'menu:multisigEdit', group: 3 },
+  { id: 'multisigJobs', labelKey: 'menu:multisigJobs', group: 3 },
+  { id: 'muxed', labelKey: 'menu:muxed', group: 3 },
+
+  // Gruppe 4
+  { id: 'listAll', labelKey: 'menu:listAll', group: 4 },
+  { id: 'compare', labelKey: 'menu:compareTrustlines', group: 4 },
 ];
 
 /** @type {MainNavItem[]} */

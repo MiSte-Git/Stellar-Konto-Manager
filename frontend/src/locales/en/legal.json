@@ -4,9 +4,13 @@
   "imprint": {
     "title": "Imprint",
     "providerLabel": "Provider:",
-    "providerName": "Stellar Account Manager (privates Projekt)",
+    "providerName": "Michael Stegmann",
     "addressLabel": "Address:",
-    "addressLines": "I'm sorry, it seems there was an error in your message. Could you please provide the text you'd like translated?",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Schweiz"
+    ],
     "emailLabel": "Email:",
     "email": "support@skm.steei.de"
   },

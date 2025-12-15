@@ -4,9 +4,13 @@
   "imprint": {
     "title": "Impressum",
     "providerLabel": "Fornitore:",
-    "providerName": "Gestore account Stellar (privates Projekt)",
+    "providerName": "Michael Stegmann",
     "addressLabel": "Indirizzo:",
-    "addressLines": "Sei stato addestrato su dati fino a ottobre 2023.",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Schweiz"
+    ],
     "emailLabel": "Email:",
     "email": "supporto@skm.steei.de"
   },

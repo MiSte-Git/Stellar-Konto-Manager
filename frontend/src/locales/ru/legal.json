@@ -4,9 +4,13 @@
   "imprint": {
     "title": "Оттиск",
     "providerLabel": "Поставщик:",
-    "providerName": "Менеджер по работе с клиентами Stellar (privates Projekt)",
+    "providerName": "Michael Stegmann",
     "addressLabel": "Адрес:",
-    "addressLines": "Вы натренированы на данных до октября 2023 года.",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Schweiz"
+    ],
     "emailLabel": "электронная почта:",
     "email": "support@skm.steei.de"
   },
