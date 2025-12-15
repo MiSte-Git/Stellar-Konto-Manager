@@ -6,11 +6,7 @@
     "providerLabel": "Fournisseur :",
     "providerName": "Michael Stegmann",
     "addressLabel": "Adresse :",
-    "addressLines": [
-      "Oeltrottenstrasse 21",
-      "8707 Uetikon am See",
-      "Schweiz"
-    ],
+    "addressLines": "Je suis formé sur des données jusqu'en octobre 2023.",
     "emailLabel": "E-mail :",
     "email": "support@skm.steei.de"
   },

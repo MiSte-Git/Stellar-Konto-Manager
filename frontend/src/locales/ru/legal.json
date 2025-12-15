@@ -4,13 +4,9 @@
   "imprint": {
     "title": "Оттиск",
     "providerLabel": "Поставщик:",
-    "providerName": "Michael Stegmann",
+    "providerName": "Майкл Штегманн",
     "addressLabel": "Адрес:",
-    "addressLines": [
-      "Oeltrottenstrasse 21",
-      "8707 Uetikon am See",
-      "Schweiz"
-    ],
+    "addressLines": "Вы обучены на данных по октябрь 2023 года.",
     "emailLabel": "электронная почта:",
     "email": "support@skm.steei.de"
   },

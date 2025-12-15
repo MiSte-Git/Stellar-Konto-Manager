@@ -37,3 +37,4 @@ ChatGPT*
 __pycache__/
 
 data/multisig_jobs.json
+api/_config.php
