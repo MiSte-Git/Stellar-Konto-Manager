@@ -15,15 +15,18 @@ function MainMenu({ onSelect }) {
   }));
 
   const baseBtn =
-    'text-white px-4 py-2 rounded font-medium shadow-sm transition-colors ' +
+    'text-white bg-black hover:bg-zinc-900 ' +
+    'px-4 py-2 rounded font-medium shadow-sm transition-colors ' +
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ' +
-    'dark:focus-visible:ring-offset-gray-900';
+    'focus-visible:ring-zinc-400 focus-visible:ring-offset-white ' +
+    'dark:focus-visible:ring-offset-gray-900 ' +
+    'border';
 
-  const groupStyle = {
-    1: 'bg-blue-600 hover:bg-blue-700 focus-visible:ring-blue-500',
-    2: 'bg-indigo-600 hover:bg-indigo-700 focus-visible:ring-indigo-500',
-    3: 'bg-violet-500 hover:bg-violet-600 focus-visible:ring-violet-400',
-    4: 'bg-violet-700 hover:bg-violet-800 focus-visible:ring-violet-600'
+  const groupBorder = {
+    1: 'border-green-400',
+    2: 'border-orange-400',
+    3: 'border-amber-400',
+    4: 'border-sky-400',
   };
 
   return (
@@ -32,7 +35,7 @@ function MainMenu({ onSelect }) {
         <button
           key={btn.value}
           onClick={() => onSelect(btn.value)}
-          className={`${baseBtn} ${groupStyle[btn.group]}`}
+          className={`${baseBtn} ${groupBorder[btn.group] || 'border-zinc-700'}`}
           title={btn.title || ''}
         >
           {btn.label}
