@@ -10,6 +10,7 @@ interface InsertBugInput {
   url: string;
   userAgent: string;
   language: string;
+  title: string;
   description: string | null;
   status: BugStatus;
   priority: BugPriority;
@@ -51,6 +52,7 @@ db.exec(`
     url TEXT,
     userAgent TEXT,
     language TEXT,
+    title TEXT,
     description TEXT,
     status TEXT DEFAULT 'open',
     priority TEXT DEFAULT 'normal',
@@ -58,11 +60,22 @@ db.exec(`
   )
 `);
 
+// Lightweight migration for existing installations.
+try {
+  const columns = db.prepare(`PRAGMA table_info(bug_reports)`).all() as Array<{ name: string }>;
+  const hasTitle = columns.some((c) => c.name === 'title');
+  if (!hasTitle) {
+    db.exec(`ALTER TABLE bug_reports ADD COLUMN title TEXT`);
+  }
+} catch {
+  // Ignore migration failures; the app can still run without the column.
+}
+
 // Inserts a bug report row and returns its generated identifier.
 export const insertBug = (input: InsertBugInput): number => {
   const stmt = db.prepare(`
-    INSERT INTO bug_reports (ts, url, userAgent, language, description, status, priority, appVersion)
-    VALUES (@ts, @url, @userAgent, @language, @description, @status, @priority, @appVersion)
+    INSERT INTO bug_reports (ts, url, userAgent, language, title, description, status, priority, appVersion)
+    VALUES (@ts, @url, @userAgent, @language, @title, @description, @status, @priority, @appVersion)
   `);
   const info = stmt.run(input);
   return Number(info.lastInsertRowid);
@@ -85,7 +98,7 @@ export const listBugs = (filters: ListFilters = {}): { items: BugReportRecord[];
   const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   const queryParams = { ...baseParams, limit, offset };
   const rows = db.prepare(`
-    SELECT id, ts, url, userAgent, language, description, status, priority, appVersion
+    SELECT id, ts, url, userAgent, language, title, description, status, priority, appVersion
     FROM bug_reports
     ${whereClause}
     ORDER BY id DESC

@@ -148,6 +148,14 @@
         "url": "URL",
         "desc": "Beschrijving",
         "ts": "Tijd"
+      },
+      "rejected": "Afgewezen",
+      "rejectedReasonTitle": "Reden voor afwijzing",
+      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "bugTitle": "Titel",
+      "rejectionReason": {
+        "label": "Reden",
+        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
       }
     }
   },
@@ -175,7 +183,7 @@
     },
     "page": "Gebied",
     "pages": {
-      "start": "Mondiaal",
+      "start": "Hoofdpagina",
       "trustlines": "Toon vertrouwen(s)",
       "trustlineCompare": "Vergelijk vertrouwen(s)",
       "balance": "Accountinformatie weergeven",
@@ -186,7 +194,9 @@
       "multisigEdit": "Bewerk multisig-account",
       "settings": "Instellingen",
       "feedback": "Terugkoppeling",
-      "other": "Diversen"
+      "other": "Diversen",
+      "bugtracker": "Bugtracker",
+      "global": "Hoofdpagina"
     },
     "subject": "Onderwerp",
     "message": "Bericht",
@@ -251,7 +261,9 @@
     "loading": "Bezig met laden...",
     "no": "Nee",
     "results": "Resultaten:",
-    "yes": "Ja"
+    "yes": "Ja",
+    "back": "Terug",
+    "backToSelection": "Terug naar selectie"
   },
   "progress": {
     "cancel": "Annuleren",
@@ -1164,5 +1176,6 @@
       "learningOutcome": "Evalueer wat je hebt geleerd, erken je eigen vooruitgang.",
       "reward": "🎖 Uitstekende Professional"
     }
-  }
+  },
+  "networkLabel": "Netwerk"
 }

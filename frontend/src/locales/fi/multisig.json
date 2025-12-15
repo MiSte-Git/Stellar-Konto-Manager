@@ -17,7 +17,95 @@
     "testModeButton": "Directly sign & send",
     "prepareTitle": "Valmistele tapahtuma moniallekirjoitukselle.",
     "prepareDescription": "Valmistele vain XDR tuotannon multisigille. Mitään ei lähetetä välittömästi.",
-    "prepareButton": "Valmistele XDR (nicht senden)"
+    "prepareButton": "Valmistele XDR (nicht senden)",
+    "options": {
+      "recommended": "Suositeltu",
+      "infoButton": "Olen koulutettu tietoihin lokakuuhun 2021 asti. Kuinka voin auttaa sinua?",
+      "selectTitle": "Valitse vaihtoehto",
+      "infoDialog": {
+        "title": "Vaihtoehdot selitettynä"
+      },
+      "proceed": "Olet koulutettu dataan lokakuuhun 2023 asti.",
+      "job": {
+        "title": "Luo multisig-työ (Standard)",
+        "desc": "Vakio työnkulku tuottavalle multisigille. Luo työtehtävän ID:n ja kerää jaetut allekirjoitukset.",
+        "short": "Luo multisig-tehtävä (Job-ID) ja kerää jaettuja allekirjoituksia.",
+        "moreInfo": "Lisätietoja",
+        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoBody": {
+          "one": "Tapahtuma tallennetaan backend-järjestelmään multisig-tehtävänä ja sille annetaan tehtävän tunnus. Mitään ei lähetetä suoraan.",
+          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Kun allekirjoituksia (Threshold erreicht) on tarpeeksi, transaktio lähetetään tai se voidaan lähettää.",
+          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+        },
+        "steps": {
+          "one": "Vaihe 1: Moniallekirjoitustyö luodaan ja saa työtunnuksen.",
+          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "four": "Vaihe 4: Kun tarpeeksi allekirjoituksia on kerätty, tapahtuma lähetetään tai se voidaan lähettää."
+        }
+      },
+      "local": {
+        "title": "Enter all signatures locally & send directly",
+        "desc": "Käytä vain, jos kaikki salaiset avaimet voidaan syöttää turvallisesti tähän laitteeseen (Tests/Recovery/Admin).",
+        "warning": "Varoitus: Kaikki salaiset avaimet kerätään tässä istunnossa. Käytä vain luotetuilla laitteilla.",
+        "moreInfo": "Lisätietoja",
+        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoBody": {
+          "one": "Syötät kaikki vaaditut salaiset avaimet tälle laitteelle peräkkäin, kunnes kynnysarvo saavutetaan.",
+          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "three": "Kun tarpeeksi allekirjoituksia on kerätty, tapahtuma lähetetään suoraan Horizonille (ohne Multisig-Job)."
+        }
+      },
+      "xdr": {
+        "title": "Vie XDR (nicht senden)",
+        "desc": "Luo raaka XDR-tapahtuma offline-työkaluille tai laitteistolompakoille.",
+        "short": "Vie tapahtuma XDR-muodossa ilman, että lähetät sitä suoraan.",
+        "moreInfo": "Lisätietoja",
+        "infoTitle": "Miten XDR-vienti toimii?",
+        "infoBody": {
+          "one": "XDR on Stellarin raakatransaktioformaatti. Mitään ei lähetetä automaattisesti.",
+          "two": "Käytä XDR:ää laitteistolompakoille, offline-tietokoneille tai muille lompakoille/työkaluille, jotka voivat tuoda XDR:ää.",
+          "three": "Olet vastuussa XDR:n allekirjoittamisesta ja/tai lähettämisestä myöhemmin (e.g., via multisig jobs or an external tool)."
+        },
+        "steps": {
+          "one": "XDR luodaan, mutta mitään ei lähetetä.",
+          "two": "Voit allekirjoittaa XDR:n (Offline-Rechner, Hardware-Wallet, anderes Tool) ulkoisesti.",
+          "three": "Lähettämistä varten sinun täytyy tuoda XDR (for example, via multisig jobs or another tool) uudelleen ja sitten allekirjoittaa/lähettää se sinne."
+        }
+      }
+    },
+    "result": {
+      "backToSelection": "Takaisin",
+      "copyXdr": "Kopioi XDR",
+      "job": {
+        "title": "Tapahtuma valmisteltu moniallekirjoitukseen varten",
+        "status": "Moniallekirjoitustehtävä luotu. Tapahtumaa ei ole vielä lähetetty.",
+        "jobIdLabel": "Työtunnus",
+        "hashLabel": "Tapahtuman tiiviste",
+        "infoButton": "Seuraavat askeleet",
+        "infoTitle": "Mitä tehdä nyt",
+        "info": {
+          "share": "Lähetä työtehtävän tunnus tai XDR seuraaville allekirjoittajille (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
+          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+        },
+        "copyJobId": "Kopioi työn tunnus",
+        "copiedJobId": "Kopioitu"
+      },
+      "sent": {
+        "title": "Tapahtuma lähetetty",
+        "status": "Tapahtuma lähetettiin onnistuneesti verkkoon.",
+        "hashLabel": "Tapahtuman tiiviste"
+      },
+      "xdr": {
+        "title": "XDR valmis (nicht gesendet)",
+        "status": "Vain yksi XDR luotiin. Mitään ei lähetetty verkkoon.",
+        "noJob": "Yhtään multisig-tehtävää ei luotu.",
+        "hashLabel": "Tapahtuman tiiviste",
+        "hint": "Siirrä XDR muille allekirjoittajille tai työkaluille (z. B. Hardware-Wallet, Offline-Rechner). Lähettääksesi tuo (ggf. signierte) XDR uudelleen SKM:ään (z. B. Option 3) ja lähetä se verkkoon."
+      }
+    }
   },
   "prepare": {
     "title": "Moniallekirjoituksen transaktio valmisteltu",
@@ -144,5 +232,10 @@
       "failed": "Tapahtui virhe maksutapahtuman lähetyksessä. Katso lisätietoja virhelokista.",
       "unknown": "Tila tuntematon."
     }
+  },
+  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "multisigInfo": {
+    "master": "Pääavain",
+    "signerDisabled": "Allekirjoittaja deaktivoitu (paino = 0)"
   }
 }

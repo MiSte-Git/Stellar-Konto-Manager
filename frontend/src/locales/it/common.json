@@ -148,6 +148,14 @@
         "url": "URL",
         "desc": "Descrizione",
         "ts": "Tempo"
+      },
+      "rejected": "Rifiutato",
+      "rejectedReasonTitle": "Motivo del rifiuto",
+      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "bugTitle": "Titolo",
+      "rejectionReason": {
+        "label": "Ragione",
+        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
       }
     }
   },
@@ -175,7 +183,7 @@
     },
     "page": "Zona",
     "pages": {
-      "start": "Globale",
+      "start": "Pagina principale",
       "trustlines": "Mostra linea(e) di fiducia",
       "trustlineCompare": "Confronta i trustline(s)",
       "balance": "Visualizza le informazioni dell'account",
@@ -186,7 +194,9 @@
       "multisigEdit": "Modifica il conto multisig",
       "settings": "Impostazioni",
       "feedback": "Feedback",
-      "other": "Varie"
+      "other": "Varie",
+      "bugtracker": "Strumento di tracciamento dei bug",
+      "global": "Pagina principale"
     },
     "subject": "Soggetto",
     "message": "Messaggio",
@@ -251,7 +261,9 @@
     "loading": "Caricamento...",
     "no": "No",
     "results": "Risultati:",
-    "yes": "Sì"
+    "yes": "Sì",
+    "back": "Indietro",
+    "backToSelection": "Ritorna alla selezione"
   },
   "progress": {
     "cancel": "Annulla",
@@ -1164,5 +1176,6 @@
       "learningOutcome": "Rivedi ciò che hai imparato, riconosci i tuoi progressi.",
       "reward": "🎖 Professionista Stellare"
     }
-  }
+  },
+  "networkLabel": "Rete"
 }

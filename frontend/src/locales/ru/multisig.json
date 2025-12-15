@@ -17,7 +17,95 @@
     "testModeButton": "Directly sign & send",
     "prepareTitle": "Подготовить транзакцию для мультиподписи",
     "prepareDescription": "Подготовьте XDR только для производственного мультиподписи. Ничего не будет отправлено немедленно.",
-    "prepareButton": "Подготовьте XDR (nicht senden)"
+    "prepareButton": "Подготовьте XDR (nicht senden)",
+    "options": {
+      "recommended": "Рекомендуется",
+      "infoButton": "Я обучен на данных до октября 2021 года. Чем я могу вам помочь?",
+      "selectTitle": "Выберите вариант",
+      "infoDialog": {
+        "title": "Пояснение опций"
+      },
+      "proceed": "Вы обучены на данных вплоть до октября 2023 года.",
+      "job": {
+        "title": "Создать работу с мультиподписью (Standard)",
+        "desc": "Стандартный рабочий процесс для продуктивного мультиподписания. Создает идентификатор задания и собирает распределенные подписи.",
+        "short": "Создайте работу Multisig (Job-ID) и соберите распределенные подписи.",
+        "moreInfo": "Вы обучены на данных до октября 2023 года.",
+        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoBody": {
+          "one": "Транзакция сохраняется как задание с мультиподписью на серверной стороне и получает идентификатор задания. Ничего не отправляется напрямую.",
+          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Как только будет собрано достаточно подписей (Threshold erreicht), транзакция будет отправлена или может быть отправлена.",
+          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+        },
+        "steps": {
+          "one": "Шаг 1: Создается задача с несколькими подписями и получает идентификатор задачи.",
+          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "three": "Шаг 3: Второй подпись расписывается, открывает пункт меню „Мультиси-Задачи“ в своей инстанции SKM, загружает задачу и подписывает.",
+          "four": "Шаг 4: После того, как собрано достаточное количество подписей, транзакция отправляется или может быть отправлена."
+        }
+      },
+      "local": {
+        "title": "Enter all signatures locally & send directly",
+        "desc": "Используйте только в том случае, если все секретные ключи могут быть безопасно введены на этом устройстве (Tests/Recovery/Admin).",
+        "warning": "Предупреждение: Все секретные ключи собираются в этой сессии. Используйте только на доверенных устройствах.",
+        "moreInfo": "Вы обучены на данных до октября 2023 года.",
+        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoBody": {
+          "one": "Вы вводите все необходимые секретные ключи последовательно на этом устройстве до достижения порога.",
+          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "three": "После того как будет собрано достаточное количество подписей, транзакция будет отправлена непосредственно на Horizon (ohne Multisig-Job)."
+        }
+      },
+      "xdr": {
+        "title": "Экспорт XDR (nicht senden)",
+        "desc": "Создайте необработанную XDR-транзакцию для автономных инструментов или аппаратных кошельков.",
+        "short": "Экспортируйте транзакцию в формате XDR без отправки непосредственно.",
+        "moreInfo": "Вы обучены данным до октября 2023 года.",
+        "infoTitle": "Как работает экспорт XDR?",
+        "infoBody": {
+          "one": "XDR является исходным форматом транзакций Stellar. Ничего не отправляется автоматически.",
+          "two": "Используйте XDR для аппаратных кошельков, офлайн-компьютеров или других кошельков/инструментов, которые могут импортировать XDR.",
+          "three": "Вы несете ответственность за подписание и/или отправку XDR позднее (e.g., via multisig jobs or an external tool)."
+        },
+        "steps": {
+          "one": "XDR создается, но ничего не отправляется.",
+          "two": "Вы можете выполнить внешнюю подпись XDR (Offline-Rechner, Hardware-Wallet, anderes Tool).",
+          "three": "Чтобы отправить, вам необходимо повторно импортировать XDR (for example, via multisig jobs or another tool), а затем подписать/отправить его туда."
+        }
+      }
+    },
+    "result": {
+      "backToSelection": "Назад",
+      "copyXdr": "Копировать XDR",
+      "job": {
+        "title": "Транзакция подготовлена для мультиподписи.",
+        "status": "Создана мультиподпись. Транзакция еще не отправлена.",
+        "jobIdLabel": "ID работы",
+        "hashLabel": "Хэш транзакции",
+        "infoButton": "Следующие шаги",
+        "infoTitle": "Что делать сейчас?",
+        "info": {
+          "share": "Передайте идентификатор задания или XDR следующему подписанту (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
+          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+        },
+        "copyJobId": "Скопировать ID задания",
+        "copiedJobId": "Скопировано"
+      },
+      "sent": {
+        "title": "Транзакция отправлена",
+        "status": "Транзакция успешно отправлена в сеть.",
+        "hashLabel": "Хеш транзакции"
+      },
+      "xdr": {
+        "title": "XDR готов (nicht gesendet)",
+        "status": "Был сгенерирован только один XDR. Ничего не было отправлено в сеть.",
+        "noJob": "Мультиподпись не была создана.",
+        "hashLabel": "Хеш транзакции",
+        "hint": "Передайте XDR другим подписантам или инструментам (z. B. Hardware-Wallet, Offline-Rechner). Чтобы отправить, импортируйте XDR (ggf. signierte) обратно в SKM (z. B. Option 3) и отправьте его в сеть."
+      }
+    }
   },
   "prepare": {
     "title": "Транзакция подготовлена для мультиподписей",
@@ -144,5 +232,10 @@
       "failed": "Во время отправки транзакции произошла ошибка. Обратитесь к журналу ошибок для получения подробной информации.",
       "unknown": "Статус неизвестен."
     }
+  },
+  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "multisigInfo": {
+    "master": "Мастер-ключ",
+    "signerDisabled": "Подписант деактивирован (вес = 0)"
   }
 }

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiUrl } from '../utils/apiBase.js';
 
-type BugStatus = 'open' | 'in_progress' | 'closed';
+type BugStatus = 'open' | 'in_progress' | 'closed' | 'rejected';
 type BugPriority = 'low' | 'normal' | 'high' | 'urgent';
 type BugCategory = 'bug' | 'idea' | 'improve' | 'other';
 type BugPage = 'start' | 'trustlines' | 'trustlineCompare' | 'balance' | 'xlmByMemo' | 'sendPayment' | 'investedTokens' | 'createAccount' | 'multisigEdit' | 'settings' | 'feedback' | 'other';
@@ -14,7 +14,10 @@ interface BugReportRow {
   userAgent: string;
   language: string;
   contactEmail: string | null;
+  title?: string | null;
   description: string | null;
+  rejectionReason?: string | null;
+  comment?: string | null;
   status: BugStatus;
   priority: BugPriority;
   category: BugCategory;
@@ -27,9 +30,11 @@ interface UpdateDraft {
   priority?: BugPriority;
   category?: BugCategory;
   page?: BugPage;
+  rejectionReason?: string | null;
+  comment?: string | null;
 }
 
-const statusOptions: BugStatus[] = ['open', 'in_progress', 'closed'];
+const statusOptions: BugStatus[] = ['open', 'in_progress', 'closed', 'rejected'];
 const priorityOptions: BugPriority[] = ['low', 'normal', 'high', 'urgent'];
 const categoryOptions: BugCategory[] = ['bug', 'idea', 'improve', 'other'];
 const pageOptions: BugPage[] = ['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','createAccount','multisigEdit','settings','feedback','other'];
@@ -45,9 +50,12 @@ const ALL_COLUMN_KEYS = [
   'language',
   'email',
   'userAgent',
+  'title',
   'description',
   'category',
   'status',
+  'rejectionReason',
+  'comment',
   'priority',
   'appVersion',
 ] as const;
@@ -61,7 +69,7 @@ type ColumnPrefs = {
 };
 
 const DEFAULT_PREFS: ColumnPrefs = {
-  order: ['id', 'ts', 'url', 'page', 'language', 'email', 'userAgent', 'description', 'category', 'status', 'priority', 'appVersion'],
+  order: ['id', 'ts', 'url', 'page', 'language', 'email', 'userAgent', 'title', 'description', 'category', 'status', 'rejectionReason', 'comment', 'priority', 'appVersion'],
   visible: {
     id: true,
     ts: true,
@@ -70,9 +78,12 @@ const DEFAULT_PREFS: ColumnPrefs = {
     language: true,
     email: true,
     userAgent: false,
+    title: true,
     description: true,
     category: true,
     status: true,
+    rejectionReason: true,
+    comment: true,
     priority: true,
     appVersion: false,
   },
@@ -84,9 +95,12 @@ const DEFAULT_PREFS: ColumnPrefs = {
     language: 100,
     email: 200,
     userAgent: 280,
+    title: 220,
     description: 260,
     category: 120,
     status: 140,
+    rejectionReason: 220,
+    comment: 240,
     priority: 120,
     appVersion: 110,
   },
@@ -240,11 +254,23 @@ const BugTrackerAdmin: React.FC = () => {
     }
   }, [drafts, fetchReports, t]);
 
-  // Applies a status change and autosaves.
+  // Applies a status change. Autosaves unless the status is "rejected" (needs a reason).
   const updateStatus = useCallback((id: number, value: BugStatus) => {
-    setReports((prev) => prev.map((item) => (item.id === id ? { ...item, status: value } : item)));
+    setNotice(null);
+
+    setReports((prev) => prev.map((item) => {
+      if (item.id !== id) return item;
+      if (value === 'rejected') return { ...item, status: value, rejectionReason: item.rejectionReason ?? '' };
+      return { ...item, status: value };
+    }));
+
     setDrafts((prev) => {
-      const merged = { ...prev[id], status: value } as UpdateDraft;
+      const prevDraft = prev[id] || {};
+      const merged = { ...prevDraft, status: value } as UpdateDraft;
+      // If rejected is selected, require a reason before saving.
+      if (value === 'rejected') {
+        return { ...prev, [id]: merged };
+      }
       saveReport(id, merged);
       return { ...prev, [id]: merged };
     });
@@ -308,7 +334,7 @@ const BugTrackerAdmin: React.FC = () => {
   if (!isAuthorized) {
     return (
       <div className="mx-auto max-w-xl p-6">
-        <h1 className="text-2xl font-semibold mb-2">{t('common:bugReport.admin.title', 'Bugtracker')}</h1>
+        <h1 className="text-2xl font-semibold mb-2">{t('common:bugReport.admin.title')}</h1>
         <p className="text-sm mb-4">{t('common:bugReport.admin.locked', 'Zugriff verweigert. Setze das Admin-Secret im lokalen Speicher und lade die Seite neu.')}</p>
         <div className="space-y-2">
           <label className="block text-xs mb-1">{t('common:bugReport.admin.enterSecret', 'Admin-Secret eingeben')}</label>
@@ -362,6 +388,12 @@ window.location.assign(window.location.pathname);`}</pre>
 
   const processedReports = useMemo(() => {
     let items = reports.slice();
+
+    // Default view hides rejected reports (only show them if explicitly filtered).
+    if (statusFilter === 'all') {
+      items = items.filter((r) => r.status !== 'rejected');
+    }
+
     const q = search.trim().toLowerCase();
     const labelForPage = (p?: string) => t(`feedback.pages.${p || 'other'}`, t('common:feedback.pages.other', 'Sonstiges')).toLowerCase();
     if (q) {
@@ -370,7 +402,7 @@ window.location.assign(window.location.pathname);`}</pre>
         const email = r.contactEmail || (r as any).email || extractEmail(desc) || '';
         const pageLabel = labelForPage(r.page);
         const fields = [
-          String(r.id), r.ts, r.url, r.language, r.userAgent, desc, r.category, r.status, r.priority, r.appVersion || '', email, r.page, pageLabel
+          String(r.id), r.ts, r.url, r.language, r.userAgent, String(r.title || ''), desc, r.category, r.status, r.priority, r.appVersion || '', email, r.page, pageLabel, String(r.rejectionReason || ''), String(r.comment || '')
         ].map((s) => String(s || '').toLowerCase());
         return fields.some((s) => s.includes(q));
       });
@@ -378,7 +410,8 @@ window.location.assign(window.location.pathname);`}</pre>
     if (sortKey) {
       const key = sortKey;
       items.sort((a, b) => {
-        const va = key === 'description' ? stripCategoryHeader(a.description) :
+        const va = key === 'title' ? String(a.title || '').trim() :
+                   key === 'description' ? stripCategoryHeader(a.description) :
                    key === 'email' ? (a.contactEmail || (a as any).email || extractEmail(stripCategoryHeader(a.description)) || '') :
                    key === 'appVersion' ? (a.appVersion || '') :
                    key === 'ts' ? a.ts :
@@ -388,9 +421,12 @@ window.location.assign(window.location.pathname);`}</pre>
                    key === 'userAgent' ? a.userAgent :
                    key === 'category' ? a.category :
                    key === 'status' ? a.status :
+                   key === 'rejectionReason' ? String(a.rejectionReason || '') :
+                   key === 'comment' ? String(a.comment || '') :
                    key === 'priority' ? a.priority :
                    key === 'id' ? a.id : '' as any;
-        const vb = key === 'description' ? stripCategoryHeader(b.description) :
+        const vb = key === 'title' ? String(b.title || '').trim() :
+                   key === 'description' ? stripCategoryHeader(b.description) :
                    key === 'email' ? (b.contactEmail || (b as any).email || extractEmail(stripCategoryHeader(b.description)) || '') :
                    key === 'appVersion' ? (b.appVersion || '') :
                    key === 'ts' ? b.ts :
@@ -400,6 +436,8 @@ window.location.assign(window.location.pathname);`}</pre>
                    key === 'userAgent' ? b.userAgent :
                    key === 'category' ? b.category :
                    key === 'status' ? b.status :
+                   key === 'rejectionReason' ? String(b.rejectionReason || '') :
+                   key === 'comment' ? String(b.comment || '') :
                    key === 'priority' ? b.priority :
                    key === 'id' ? b.id : '' as any;
         let cmp = 0;
@@ -414,7 +452,7 @@ window.location.assign(window.location.pathname);`}</pre>
       });
     }
     return items;
-  }, [reports, search, sortKey, sortDir, t]);
+  }, [reports, search, sortKey, sortDir, t, statusFilter]);
 
   const moveColumn = (key: ColumnKey, dir: -1 | 1) => {
     setPrefs((p) => {
@@ -443,9 +481,12 @@ window.location.assign(window.location.pathname);`}</pre>
     key === 'language' ? t('common:bugReport.admin.language') :
     key === 'email' ? t('common:bugReport.admin.email', 'E‑Mail') :
     key === 'userAgent' ? t('common:bugReport.admin.userAgent') :
+    key === 'title' ? t('common:bugReport.admin.bugTitle', 'Titel') :
     key === 'description' ? t('common:bugReport.admin.description') :
     key === 'category' ? t('common:bugReport.admin.category') :
     key === 'status' ? t('common:bugReport.admin.status') :
+    key === 'rejectionReason' ? t('common:bugReport.admin.rejectionReasonTitle', 'Ablehnungsgrund') :
+    key === 'comment' ? t('common:bugReport.admin.comment', 'Kommentar') :
     key === 'priority' ? t('common:bugReport.admin.priority') :
     key === 'appVersion' ? 'Version' : String(key)
   ), [t]);
@@ -462,6 +503,7 @@ window.location.assign(window.location.pathname);`}</pre>
         const email = report.contactEmail || (report as any).email || extractEmail(stripCategoryHeader(report.description)) || '';
         return email;
       }
+      case 'title': return String(report.title || '').trim();
       case 'description': {
         const raw = report.description || '';
         const parts = raw.split(/\r?\n/);
@@ -469,8 +511,10 @@ window.location.assign(window.location.pathname);`}</pre>
         return stripped;
       }
       case 'category': return t(`feedback.categories.${report.category}`);
-      case 'status': return t(`bugReport.admin.${report.status}`);
-      case 'priority': return t(`bugReport.admin.${report.priority}`);
+      case 'status': return t(`common:bugReport.admin.${report.status}`, report.status);
+      case 'rejectionReason': return String(report.rejectionReason || '');
+      case 'comment': return String(report.comment || '');
+      case 'priority': return t(`common:bugReport.admin.${report.priority}`, report.priority);
       case 'appVersion': return report.appVersion ? `v${report.appVersion}` : '';
       default: return '';
     }
@@ -625,7 +669,7 @@ window.location.assign(window.location.pathname);`}</pre>
           >
             <option value="all">{t('common:bugReport.admin.filter')}</option>
             {statusOptions.map((value) => (
-              <option key={value} value={value}>{t(`bugReport.admin.${value}`)}</option>
+              <option key={value} value={value}>{t(`common:bugReport.admin.${value}`, value)}</option>
             ))}
           </select>
         </div>
@@ -638,7 +682,7 @@ window.location.assign(window.location.pathname);`}</pre>
           >
             <option value="all">{t('common:bugReport.admin.filter')}</option>
             {priorityOptions.map((value) => (
-              <option key={value} value={value}>{t(`bugReport.admin.${value}`)}</option>
+              <option key={value} value={value}>{t(`common:bugReport.admin.${value}`, value)}</option>
             ))}
           </select>
         </div>
@@ -669,13 +713,13 @@ window.location.assign(window.location.pathname);`}</pre>
           </select>
         </div>
       </div>
-      <div className="overflow-x-auto border rounded">
+      <div className="overflow-auto max-h-[70vh] border rounded relative">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
               {visibleColumns.map((key) => {
                 const width = prefs.widths[key];
-                const common = 'px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-200 relative';
+                const common = 'px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-200 relative sticky top-0 z-20 bg-gray-50 dark:bg-gray-800';
                 const style = width ? { width: `${width}px`, minWidth: `${width}px` } as React.CSSProperties : undefined;
                 const label = (
                   key === 'id' ? t('common:bugReport.admin.id') :
@@ -685,9 +729,12 @@ window.location.assign(window.location.pathname);`}</pre>
                   key === 'language' ? t('common:bugReport.admin.language') :
                   key === 'email' ? t('common:bugReport.admin.email', 'E‑Mail') :
                   key === 'userAgent' ? t('common:bugReport.admin.userAgent') :
+                  key === 'title' ? t('common:bugReport.admin.bugTitle', 'Titel') :
                   key === 'description' ? t('common:bugReport.admin.description') :
                   key === 'category' ? t('common:bugReport.admin.category') :
                   key === 'status' ? t('common:bugReport.admin.status') :
+                  key === 'rejectionReason' ? t('common:bugReport.admin.rejectionReasonTitle', 'Ablehnungsgrund') :
+                  key === 'comment' ? t('common:bugReport.admin.comment', 'Kommentar') :
                   key === 'priority' ? t('common:bugReport.admin.priority') :
                   key === 'appVersion' ? 'Version' : key
                 );
@@ -762,6 +809,10 @@ window.location.assign(window.location.pathname);`}</pre>
                         const email = report.contactEmail || (report as any).email || extractEmail(stripCategoryHeader(report.description)) || null;
                         content = <span className="break-all">{email || '—'}</span>;
                       } break;
+                      case 'title': {
+                        const title = String(report.title || '').trim();
+                        content = <span className="whitespace-pre-wrap break-words">{title || '—'}</span>;
+                      } break;
                       case 'description': {
                         const raw = report.description || '';
                         const parts = raw.split(/\r?\n/);
@@ -779,17 +830,84 @@ window.location.assign(window.location.pathname);`}</pre>
                           ))}
                         </select>
                       ); break;
-                      case 'status': content = (
-                        <select
-                          value={report.status}
-                          onChange={(event) => updateStatus(report.id, event.target.value as BugStatus)}
-                          className="border rounded px-2 py-1"
-                        >
-                          {statusOptions.map((value) => (
-                            <option key={value} value={value}>{t(`bugReport.admin.${value}`)}</option>
-                          ))}
-                        </select>
-                      ); break;
+                      case 'status': {
+                        content = (
+                          <select
+                            value={report.status}
+                            onChange={(event) => updateStatus(report.id, event.target.value as BugStatus)}
+                            className="border rounded px-2 py-1"
+                          >
+                            {statusOptions.map((value) => (
+                              <option key={value} value={value}>{t(`common:bugReport.admin.${value}`, value)}</option>
+                            ))}
+                          </select>
+                        );
+                      } break;
+                      case 'rejectionReason': {
+                        const isRejected = report.status === 'rejected';
+                        const draft = drafts[report.id];
+                        const value = String(draft?.rejectionReason ?? report.rejectionReason ?? '');
+                        const missing = isRejected && value.trim().length === 0;
+
+                        content = (
+                          <div className="space-y-1">
+                            <input
+                              type="text"
+                              value={value}
+                              disabled={!isRejected}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setReports((prev) => prev.map((it) => (it.id === report.id ? { ...it, rejectionReason: val } : it)));
+                                setDrafts((prev) => ({
+                                  ...prev,
+                                  [report.id]: { ...(prev[report.id] || {}), rejectionReason: val }
+                                }));
+                              }}
+                              onBlur={() => {
+                                const trimmed = String(value || '').trim();
+                                if (isRejected && !trimmed) {
+                                  setNotice(t('common:bugReport.admin.rejectionReasonRequired', 'Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist.'));
+                                  return;
+                                }
+                                const next = trimmed ? trimmed : null;
+                                saveReport(report.id, { ...(drafts[report.id] || {}), rejectionReason: next });
+                              }}
+                              className={(missing ? 'border-red-400 ' : '') + 'border rounded px-2 py-1 w-full disabled:bg-gray-100 dark:disabled:bg-gray-800'}
+                              placeholder={t('common:bugReport.admin.rejectionReasonTitle', 'Ablehnungsgrund')}
+                              title={t('common:bugReport.admin.rejectionReasonTitle', 'Ablehnungsgrund')}
+                            />
+                            {missing && (
+                              <div className="text-xs text-red-700 dark:text-red-300">
+                                {t('common:bugReport.admin.rejectionReasonRequired', 'Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist.')}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      } break;
+                      case 'comment': {
+                        const draft = drafts[report.id];
+                        const value = String(draft?.comment ?? report.comment ?? '');
+                        content = (
+                          <textarea
+                            value={value}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setReports((prev) => prev.map((it) => (it.id === report.id ? { ...it, comment: val } : it)));
+                              setDrafts((prev) => ({
+                                ...prev,
+                                [report.id]: { ...(prev[report.id] || {}), comment: val }
+                              }));
+                            }}
+                            onBlur={() => {
+                              const trimmed = String(value || '').trim();
+                              const next = trimmed ? trimmed : null;
+                              saveReport(report.id, { ...(drafts[report.id] || {}), comment: next });
+                            }}
+                            className="border rounded px-2 py-1 w-full min-h-[70px]"
+                            placeholder={t('common:bugReport.admin.comment', 'Kommentar')}
+                          />
+                        );
+                      } break;
                       case 'priority': content = (
                         <select
                           value={report.priority}
@@ -797,7 +915,7 @@ window.location.assign(window.location.pathname);`}</pre>
                           className="border rounded px-2 py-1"
                         >
                           {priorityOptions.map((value) => (
-                            <option key={value} value={value}>{t(`bugReport.admin.${value}`)}</option>
+                            <option key={value} value={value}>{t(`common:bugReport.admin.${value}`, value)}</option>
                           ))}
                         </select>
                       ); break;
@@ -841,9 +959,12 @@ window.location.assign(window.location.pathname);`}</pre>
                      key === 'language' ? t('common:bugReport.admin.language') :
                      key === 'email' ? t('common:bugReport.admin.email', 'E‑Mail') :
                      key === 'userAgent' ? t('common:bugReport.admin.userAgent') :
+                     key === 'title' ? t('common:bugReport.admin.bugTitle', 'Titel') :
                      key === 'description' ? t('common:bugReport.admin.description') :
                      key === 'category' ? t('common:bugReport.admin.category') :
                      key === 'status' ? t('common:bugReport.admin.status') :
+                     key === 'rejectionReason' ? t('common:bugReport.admin.rejectionReasonTitle', 'Ablehnungsgrund') :
+                     key === 'comment' ? t('common:bugReport.admin.comment', 'Kommentar') :
                      key === 'priority' ? t('common:bugReport.admin.priority') :
                      key === 'appVersion' ? 'Version' : key}
                   </div>

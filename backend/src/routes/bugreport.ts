@@ -36,6 +36,12 @@ router.post('/', (req: Request, res: Response, next: NextFunction) => {
     if (!isNonEmptyString(body.language)) {
       return res.status(400).json({ error: 'bugReport.invalidPayload.language' });
     }
+    const title = isNonEmptyString(body.title)
+      ? body.title.trim()
+      : (isNonEmptyString(body.subject) ? body.subject.trim() : '');
+    if (!title) {
+      return res.status(400).json({ error: 'bugReport.invalidPayload.title' });
+    }
     const ts = isNonEmptyString(body.ts) ? body.ts.trim() : new Date().toISOString();
     const description = typeof body.description === 'string' && body.description.trim().length > 0
       ? body.description.trim()
@@ -50,6 +56,7 @@ router.post('/', (req: Request, res: Response, next: NextFunction) => {
       url: body.url.trim(),
       userAgent: body.userAgent.trim(),
       language: body.language.trim(),
+      title,
       description,
       status,
       priority,

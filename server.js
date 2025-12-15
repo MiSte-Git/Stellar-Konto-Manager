@@ -174,7 +174,7 @@ async function saveMultisigDb() {
 void loadBugDb();
 void loadMultisigDb();
 
-const allowedStatus = new Set(['open', 'in_progress', 'closed']);
+const allowedStatus = new Set(['open', 'in_progress', 'closed', 'rejected']);
 const allowedPriority = new Set(['low', 'normal', 'high', 'urgent']);
 const allowedCategory = new Set(['bug', 'idea', 'improve', 'other']);
 const allowedPage = new Set(['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','createAccount','multisigEdit','settings','feedback','other']);
@@ -183,11 +183,35 @@ const multisigStatus = new Set(['pending_signatures', 'ready_to_submit', 'submit
 
 app.post('/api/bugreport', async (req, res) => {
   try {
-    const { url, userAgent, language, description, ts, appVersion, status, priority, category, page, reportToken, contactEmail } = req.body || {};
+    const { url, userAgent, language, title, subject, description, ts, appVersion, status, priority, category, page, reportToken, contactEmail, rejectionReason, comment } = req.body || {};
     const nowIso = new Date().toISOString();
     const clamp = (s = '') => String(s || '').slice(0, 5000);
     const emailNorm = typeof contactEmail === 'string' ? contactEmail.trim() : '';
     const emailValid = emailNorm && /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(emailNorm) ? emailNorm : null;
+    const normalizedStatus = allowedStatus.has(String(status)) ? String(status) : 'open';
+    const normalizedRejectionReason = typeof rejectionReason === 'string' ? clamp(rejectionReason) : null;
+    const normalizedComment = typeof comment === 'string' ? clamp(comment).trim() : null;
+
+    // Variant A compatibility: frontend historically sends "subject" (Betreff). Map it to "title".
+    const normalizedTitle = typeof title === 'string'
+      ? clamp(title).trim()
+      : (typeof subject === 'string' ? clamp(subject).trim() : null);
+
+    if (!normalizedTitle) {
+      return res.status(400).json({ error: 'bugReport.invalidPayload.title' });
+    }
+
+    // Backward compatibility: some clients send "rejection_reason" instead of "rejectionReason"
+    const rejectionReasonSnake = req.body && typeof req.body.rejection_reason === 'string' ? clamp(req.body.rejection_reason) : null;
+    const normalizedRejectionReasonFinal = normalizedRejectionReason ?? rejectionReasonSnake;
+
+    if (normalizedStatus === 'rejected') {
+      const reason = String(normalizedRejectionReasonFinal || '').trim();
+      if (!reason) {
+        return res.status(400).json({ error: 'bugReport.rejectionReason.required' });
+      }
+    }
+
     const item = {
       id: ++bugDb.lastId,
       ts: typeof ts === 'string' ? ts : nowIso,
@@ -195,9 +219,12 @@ app.post('/api/bugreport', async (req, res) => {
       userAgent: clamp(userAgent),
       language: clamp(language),
       reportToken: typeof reportToken === 'string' ? clamp(reportToken) : null,
+      title: normalizedTitle,
+      comment: normalizedComment,
       description: typeof description === 'string' ? clamp(description) : null,
+      rejectionReason: normalizedRejectionReasonFinal,
       appVersion: appVersion ? clamp(appVersion) : null,
-      status: allowedStatus.has(status) ? status : 'open',
+      status: normalizedStatus,
       priority: allowedPriority.has(priority) ? priority : 'normal',
       category: allowedCategory.has(category) ? category : 'bug',
       page: allowedPage.has(page) ? page : 'other',
@@ -230,7 +257,7 @@ app.get('/api/bugreport', async (req, res) => {
         const desc = String(r.description || '');
         const email = r.contactEmail || '';
         const page = r.page || '';
-        const fields = [String(r.id), r.ts, r.url, r.userAgent, r.language, r.category, r.status, r.priority, r.appVersion || '', desc, email, page];
+        const fields = [String(r.id), r.ts, r.url, r.userAgent, r.language, r.title || '', r.category, r.status, r.priority, r.appVersion || '', desc, email, page];
         return fields.some((s) => String(s || '').toLowerCase().includes(needle));
       });
     }
@@ -284,10 +311,21 @@ app.patch('/api/bugreport/:id', async (req, res) => {
     const id = parseInt(String(req.params.id), 10);
     const item = bugDb.items.find((r) => r.id === id);
     if (!item) return res.status(404).json({ error: 'bugReport.notFound' });
-    const { status, priority, contactEmail } = req.body || {};
+    const { status, priority, contactEmail, rejectionReason, comment } = req.body || {};
+
     if (allowedStatus.has(status)) item.status = status;
     if (allowedPriority.has(priority)) item.priority = priority;
     if (typeof contactEmail === 'string' || contactEmail === null) item.contactEmail = contactEmail;
+    if (typeof rejectionReason === 'string' || rejectionReason === null) item.rejectionReason = rejectionReason;
+    if (typeof comment === 'string' || comment === null) item.comment = (typeof comment === 'string' ? comment.trim() : null);
+
+    if (String(item.status) === 'rejected') {
+      const reason = String(item.rejectionReason || '').trim();
+      if (!reason) {
+        return res.status(400).json({ error: 'bugReport.rejectionReason.required' });
+      }
+    }
+
     await saveBugDb();
     res.json({ ok: true });
   } catch (e) {
