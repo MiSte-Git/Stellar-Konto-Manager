@@ -4,9 +4,13 @@
   "imprint": {
     "title": "Jälki",
     "providerLabel": "Tarjoaja:",
-    "providerName": "Stellar Account Manager (privates Projekt)",
+    "providerName": "Michael Stegmann",
     "addressLabel": "Osoite:",
-    "addressLines": "Olen pahoillani, vaikuttaa siltä, että viestissäsi oli virhe. Voisitko ystävällisesti antaa tekstin, jonka haluat käännettävän?",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Schweiz"
+    ],
     "emailLabel": "Sähköposti:",
     "email": "support@skm.steei.de"
   },
