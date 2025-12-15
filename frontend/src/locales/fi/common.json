@@ -156,7 +156,8 @@
       "rejectionReason": {
         "label": "Syy",
         "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
-      }
+      },
+      "secretVisibilityToggle": "Näytä/Piilota ylläpitäjän salaisuus"
     }
   },
   "cache": {
