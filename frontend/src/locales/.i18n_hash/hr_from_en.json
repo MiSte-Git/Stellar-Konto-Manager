@@ -1862,9 +1862,9 @@
   "legal.subtitle": "df7eebb155e51ce9cc62fb29424678b57ce4a480685dd7589210ce5edc45dc18",
   "legal.imprint.title": "d198ed30d09ba8c6b43f736a65dd4e3b7649cd120e0fe1d83f52c60ea6d02ad5",
   "legal.imprint.providerLabel": "672f1efd8b87117f0e940d729de500fed6e8b6e919265ea994789b26d397c71c",
-  "legal.imprint.providerName": "7282a9951d37496b1046135e1153bdf62ce68f9b984f270e69a11b4353eeb47d",
+  "legal.imprint.providerName": "079058db080d9676a8dd50d93fa4c4af09696def07f3318c12bafd7ba06a6733",
   "legal.imprint.addressLabel": "fa0882e21637cbe7c0a19edfd5a01054822768cdc81ca66f639d3c4568c669a0",
-  "legal.imprint.addressLines": "f529319b4d0471f6535b6144b49dae4cbaef4446c3249688d6144dce6f80c66b",
+  "legal.imprint.addressLines": "799a5da49ed88018b99bf38b5ed3b0efa65e1f741b404e64d8e3a2a26a10a8bf",
   "legal.imprint.emailLabel": "17507dcf845793fab0da66594804a4ca956ba284bcf36f4cef09e0a0a50c421a",
   "legal.imprint.email": "485f94cfbe25b34a520db3f7f785ada49d2e0768e03223244f32ab3cb2cb4ce2",
   "legal.disclaimer.title": "129c678fce59acee7ac6a6fdb67b63107a6fece4ff4dbbcaca8bb40bcc92874a",
@@ -2124,5 +2124,6 @@
   "secretKey.multisigInfo.currentWeightLabel": "e4e27395d146f07e6cdd3fcbce5a3c170ea3b0ba994525251e50fec8ef8c6953",
   "secretKey.multisigInfo.masterExplanation": "2e974ba2367bc3dc0abfb0f117ea03d8b49980ad1ab0b2cc302f55e5660b50c4",
   "secretKey.multisigInfo.master": "5a42a98288604412880cc8fa63d972eb450650bff31d820f8e721d2cc3c4a5ff",
-  "secretKey.multisigInfo.signerDisabled": "ab2f0eb58ea64e704a7ca2608bed5e50e3a93e4718097f76306146d53e2d122b"
+  "secretKey.multisigInfo.signerDisabled": "ab2f0eb58ea64e704a7ca2608bed5e50e3a93e4718097f76306146d53e2d122b",
+  "common.bugReport.admin.secretVisibilityToggle": "83c494f962a9642cbba6afc982939ebda30174f3c5c01b8521e288354c2551ac"
 }

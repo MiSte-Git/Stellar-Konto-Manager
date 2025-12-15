@@ -1,6 +1,6 @@
 {
   "backup": {
-    "title": "Back-up & Herstel",
+    "title": "Backup & Recovery",
     "desc": "Exporteer of importeer je quizgegevens (instellingen, voortgang, badges).",
     "export": {
       "button": "Begin met exporteren",

@@ -44,7 +44,7 @@ fi
 : "${I18N_PY_SYNC:=}"
 : "${BASE_REF:=origin/main}"
 : "${PROD_API_URL:=}"
-: "${DEFAULT_PROD_API_URL:=https://skm.steei.de/api}"
+: "${DEFAULT_PROD_API_URL:=https://www.skm.steei.de}"
 
 # Interaktive Abfrage, falls kein expliziter Modus gewählt wurde
 if [ "$EXPLICIT_MODE" -eq 0 ]; then
@@ -121,7 +121,7 @@ if [ "$USE_PROD_BACKEND" -eq 1 ] && [ -z "$PROD_API_URL" ]; then
     fi
   done
   # Optional Reachability-Check (warn only)
-  HEALTH_URL="${PROD_API_URL%/}/health"
+  HEALTH_URL="${PROD_API_URL%/}/api/health.php"
   if command -v curl >/dev/null 2>&1; then
     if ! curl -fsSL --max-time 3 "$HEALTH_URL" >/dev/null 2>&1; then
       echo -e "${YELLOW}⚠️ Hinweis: Konnte ${HEALTH_URL} nicht erreichen. Prüfe URL/Netzwerk (nur Warnung, wird trotzdem verwendet).${NC}"
@@ -153,7 +153,7 @@ if [ "$USE_PROD_BACKEND" -eq 1 ]; then
 fi
 cd "$FRONTEND_DIR" || exit 1
 npm install
-VITE_BUILD_DATE=$(date -Iseconds) VITE_API_BASE_URL="$API_BASE_FOR_FE" npm run dev &
+VITE_BUILD_DATE=$(date -Iseconds) VITE_BACKEND_URL="$API_BASE_FOR_FE" npm run dev &
 
 # Browser öffnen
 #if command -v xdg-open >/dev/null; then

@@ -1862,7 +1862,7 @@
   "legal.subtitle": "565220cab9f340234a81f7ff590239b2b5d56d651ce01f9753f776aeea06076a",
   "legal.imprint.title": "b8a6051923e6a6494006784ea7e367dd4cefe964281e8d32a5464f56798a76d2",
   "legal.imprint.providerLabel": "1299a5644ad1c0c059ab7d8070d463dd1dc2e007d166cb92025614d26f245124",
-  "legal.imprint.providerName": "5d3598c53c873955cf5c202cbd2246565b41822a5f2d63b1e2020e048f8dcda0",
+  "legal.imprint.providerName": "079058db080d9676a8dd50d93fa4c4af09696def07f3318c12bafd7ba06a6733",
   "legal.imprint.addressLabel": "c9f42e78af801afe6f823323e78ca743344c0b2873ba89f77a405c57afb51a6d",
   "legal.imprint.addressLines": "799a5da49ed88018b99bf38b5ed3b0efa65e1f741b404e64d8e3a2a26a10a8bf",
   "legal.imprint.emailLabel": "ef34d93f31a76f7a4f4f7025a73b00a4b544a2b488972ff3ccd3a004e3e3c833",
@@ -2124,5 +2124,6 @@
   "secretKey.multisigInfo.currentWeightLabel": "ce969ac771ebc37a68114d3d3990ecc009fb2193047f474dcd2ce6ac4f1e62b9",
   "secretKey.multisigInfo.master": "5f15d71c2f712443eb3d5aebe04b48e8361825f61d7c95c2e22e00330762aa30",
   "secretKey.multisigInfo.signerDisabled": "6e5b629ffd46f5c88c96cfabb9b24095ff38ddf2cf611afe7d5f76643a6ed1b2",
-  "secretKey.multisigInfo.masterExplanation": "5b98c75c1f0ced9c1f04bcb0834b9e74effe3bf1e4eea80d19c887d430a84208"
+  "secretKey.multisigInfo.masterExplanation": "5b98c75c1f0ced9c1f04bcb0834b9e74effe3bf1e4eea80d19c887d430a84208",
+  "common.bugReport.admin.secretVisibilityToggle": "f6b3cb2f222b071633c2cee525cf4d8cf4a4078637ea16e042a31a7a298fa3ff"
 }

@@ -177,6 +177,7 @@ const BugTrackerAdmin: React.FC = () => {
   const [sortKey, setSortKey] = useState<ColumnKey | null>(null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [secretInput, setSecretInput] = useState('');
+  const [showAdminSecret, setShowAdminSecret] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [csvDelimiter, setCsvDelimiter] = useState<string>(',');
 
@@ -207,7 +208,7 @@ const BugTrackerAdmin: React.FC = () => {
     try {
       if (search.trim()) params.set('q', search.trim());
       if (sortKey) { params.set('sort', sortKey); params.set('dir', sortDir); }
-      const res = await fetch(`${apiUrl('bugreport')}?${params.toString()}`, {
+      const res = await fetch(`${apiUrl('bugreport.php')}?${params.toString()}`, {
         method: 'GET',
         headers: { Accept: 'application/json' }
       });
@@ -225,18 +226,18 @@ const BugTrackerAdmin: React.FC = () => {
     }
   }, [isAuthorized, page, priorityFilter, statusFilter, categoryFilter, pageFilter, search, sortKey, sortDir, t]);
 
-  // Sends a PATCH request to persist updates. Optionally accepts an override draft for immediate save.
+  // Persists updates via POST to the PHP endpoint. Optionally accepts an override draft for immediate save.
   const saveReport = useCallback(async (id: number, override?: UpdateDraft) => {
     const draft = override ?? drafts[id];
     if (!draft) return;
     try {
-      const res = await fetch(apiUrl(`bugreport/${id}`), {
-        method: 'PATCH',
+      const res = await fetch(apiUrl('bugreport.php'), {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-admin-secret': import.meta.env.VITE_BUGTRACKER_ADMIN_SECRET ?? ''
         },
-        body: JSON.stringify(draft)
+        body: JSON.stringify({ action: 'update', id, ...draft })
       });
       if (!res.ok) {
         throw new Error(`status_${res.status}`);
@@ -338,14 +339,37 @@ const BugTrackerAdmin: React.FC = () => {
         <p className="text-sm mb-4">{t('common:bugReport.admin.locked', 'Zugriff verweigert. Setze das Admin-Secret im lokalen Speicher und lade die Seite neu.')}</p>
         <div className="space-y-2">
           <label className="block text-xs mb-1">{t('common:bugReport.admin.enterSecret', 'Admin-Secret eingeben')}</label>
-          <input
-            type="password"
-            value={secretInput}
-            onChange={(e) => setSecretInput(e.target.value)}
-            placeholder={t('common:bugReport.admin.secretPlaceholder', '••••••••')}
-            className="w-full border rounded px-2 py-2"
-            autoFocus
-          />
+          <div className="relative">
+            <input
+              type={showAdminSecret ? 'text' : 'password'}
+              value={secretInput}
+              onChange={(e) => setSecretInput(e.target.value)}
+              placeholder={t('common:bugReport.admin.secretPlaceholder', '••••••••')}
+              className="w-full border rounded px-2 py-2 pr-10"
+              autoFocus
+            />
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+              onClick={() => setShowAdminSecret((v) => !v)}
+              aria-label={t('common:bugReport.admin.secretVisibilityToggle', 'Admin-Secret anzeigen/ausblenden')}
+              title={t('common:bugReport.admin.secretVisibilityToggle', 'Admin-Secret anzeigen/ausblenden')}
+            >
+              {showAdminSecret ? (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                  <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C7 20 2.73 16.11 1 12c.67-1.6 1.62-3.05 2.78-4.27" />
+                  <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c5 0 9.27 3.89 11 8-0.62 1.49-1.49 2.86-2.56 4.05" />
+                  <path d="M14.12 14.12A3 3 0 0 1 9.88 9.88" />
+                  <path d="M1 1l22 22" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </button>
+          </div>
           <div className="flex gap-2">
             <button
               type="button"
@@ -573,7 +597,10 @@ window.location.assign(window.location.pathname);`}</pre>
         const params = new URLSearchParams(base);
         params.set('limit', String(limit));
         params.set('offset', String(offset));
-        const res = await fetch(`${apiUrl('bugreport')}?${params.toString()}`, { method: 'GET', headers: { Accept: 'application/json' } });
+              const res = await fetch(`${apiUrl('bugreport.php')}?${params.toString()}`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' }
+      });
         if (!res.ok) throw new Error(`status_${res.status}`);
         const data = await res.json();
         const items: BugReportRow[] = Array.isArray(data.items) ? data.items : [];
