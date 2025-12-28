@@ -12,6 +12,9 @@ const path = require('path');
 const fs = require('fs');
 const dotenv = require('dotenv');
 
+const IS_WIN = process.platform === 'win32';
+const CMD_EXE = process.env.comspec || 'cmd.exe';
+
 function loadEnvFile(p) {
   try {
     if (fs.existsSync(p)) dotenv.config({ path: p });
@@ -30,7 +33,25 @@ const backendCwd = process.cwd();
 const frontendCwd = path.join(process.cwd(), 'frontend');
 
 function npmCmd() {
-  return process.platform === 'win32' ? 'npm.cmd' : 'npm';
+  return IS_WIN ? 'npm.cmd' : 'npm';
+}
+
+function quoteForCmd(arg = '') {
+  if (!arg) return '""';
+  if (!/[ \t"]/u.test(arg)) return arg;
+  return `"${arg.replace(/(["\\])/g, '\\$1')}"`;
+}
+
+function spawnPortable(command, args = [], opts = {}) {
+  if (!IS_WIN) return spawn(command, args, opts);
+  const line = [command, ...args].map(quoteForCmd).join(' ');
+  return spawn(CMD_EXE, ['/d', '/s', '/c', line], opts);
+}
+
+function spawnPortableSync(command, args = [], opts = {}) {
+  if (!IS_WIN) return spawnSync(command, args, opts);
+  const line = [command, ...args].map(quoteForCmd).join(' ');
+  return spawnSync(CMD_EXE, ['/d', '/s', '/c', line], opts);
 }
 
 function checkNodeAndNpm() {
@@ -44,15 +65,8 @@ function checkNodeAndNpm() {
     }
   }
   try {
-    const res = spawnSync(npmCmd(), ['--version'], {
-      stdio: 'ignore',
-      shell: process.platform === 'win32',
-    });
+    const res = spawnPortableSync(npmCmd(), ['--version'], { stdio: 'ignore' });
     let ok = !res.error && res.status === 0;
-    if (!ok && process.platform === 'win32' && res.error && res.error.code === 'EINVAL') {
-      const fallback = spawnSync('cmd.exe', ['/d', '/s', '/c', 'npm --version'], { stdio: 'ignore' });
-      ok = !fallback.error && fallback.status === 0;
-    }
 
     if (!ok) {
       // When invoked via `npm run`, npm may not be directly invokable as `npm` in the child env,
@@ -74,7 +88,7 @@ checkNodeAndNpm();
 function startProcess(cmd, args, opts) {
   try {
     console.log('Spawning:', cmd, args.join(' '), 'cwd=', opts && opts.cwd);
-    return spawn(cmd, args, opts);
+    return spawnPortable(cmd, args, opts);
   } catch (err) {
     console.error('spawn failed for', cmd, args, 'error:', err && err.message ? err.message : err);
     console.error('process.execPath=', process.execPath);
@@ -85,9 +99,7 @@ function startProcess(cmd, args, opts) {
 }
 
 const backend = startProcess(process.execPath, [path.join(process.cwd(), 'server.js')], { cwd: backendCwd, env, stdio: 'inherit' });
-// On Windows spawning npm.cmd directly can sometimes fail depending on how npm was invoked.
-// Use shell invocation for the frontend npm command for maximum compatibility.
-const frontend = startProcess(`${npmCmd()} run dev`, [], { cwd: frontendCwd, env, stdio: 'inherit', shell: true });
+const frontend = startProcess(npmCmd(), ['run', 'dev'], { cwd: frontendCwd, env, stdio: 'inherit' });
 
 let exiting = false;
 function shutdown(code = 0) {
@@ -126,7 +138,7 @@ async function waitForFrontend(url = 'http://localhost:5173', timeout = 30000) {
           await open(url);
         } catch (e) {
           // fallback to npx open (will fetch if needed)
-          const opener = spawn(npmCmd(), ['exec', '--no-install', 'open', url], { stdio: 'ignore', detached: true });
+          const opener = spawnPortable(npmCmd(), ['exec', '--no-install', 'open', url], { stdio: 'ignore', detached: true });
           opener.unref();
         }
       } catch (e) {
