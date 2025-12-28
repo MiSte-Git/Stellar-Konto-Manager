@@ -270,6 +270,27 @@ function SecretKeyModal({
             {t('secretKey:multipleSignersThresholdInfo', { threshold: requiredThreshold || 0, requiredSigners: minSignerCount })}
           </div>
         )}
+        {isMultisigAccount && (
+          <div className="mt-3 border rounded p-3 bg-gray-50 dark:bg-gray-900">
+            <label className="flex items-start gap-2 text-sm text-gray-800 dark:text-gray-100">
+              <input
+                type="checkbox"
+                checked={collectAllSignaturesLocally}
+                onChange={(e) => setCollectAllSignaturesLocally(e.target.checked)}
+                className="mt-1"
+              />
+              <span className="space-y-1">
+                <span className="font-semibold">{t('secretKey:multisigOptions.localAll.title')}</span>
+                <span className="text-xs text-gray-700 dark:text-gray-300">
+                  {t('secretKey:multisigOptions.localAll.checkboxLabel')}
+                </span>
+              </span>
+            </label>
+            <p className="mt-2 text-[11px] text-amber-700 dark:text-amber-300">
+              {t('secretKey:multisigOptions.localAll.warning')}
+            </p>
+          </div>
+        )}
 
         <label className="flex items-center gap-2 mt-3 text-sm">
           <input

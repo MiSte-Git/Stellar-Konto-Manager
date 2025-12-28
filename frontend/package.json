@@ -4,13 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "VITE_BUILD_DATE=$(date -Iseconds) vite dev",
+    "dev": "vite dev",
     "dev:old": "concurrently -k -n BACKEND,FRONTEND -c green,cyan \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
-    "build": "VITE_BUILD_DATE=$(date -Iseconds) vite build",
-    "open": "xdg-open http://localhost:5173",
+    "build": "vite build",
+    "open": "npx open http://localhost:5173",
     "lint": "eslint .",
     "preview": "vite preview",
-    "i18n:ack": "BASE_REF=origin/main node ../scripts/i18n_ack_update.mjs"
+    "i18n:ack": "node ../scripts/i18n_ack_update.mjs"
   },
   "dependencies": {
     "@stellar/stellar-sdk": "^13.3.0",

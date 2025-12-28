@@ -6,7 +6,8 @@
   "scripts": {
     "// Hinweis": "// Für automatisches Build-Datum in Dev/Prod kann man beim Build Folgendes setzen: \\n//   VITE_BUILD_DATE=$(date -Iseconds) npm run dev \\n//   VITE_BUILD_DATE=$(date -Iseconds) npm run build \\n// Der Legal-Text liest dann import.meta.env.VITE_BUILD_DATE aus.",
     "start": "node server.js",
-    "dev": "concurrently -k -n BACKEND,FRONTEND -c green,cyan \"PORT=3000 node server.js\" \"cd frontend && npm run dev\"",
+    "dev": "node scripts/start-dev.js",
+    "start-build": "node scripts/start-build.js",
     "i18n:extract-glossary-keys": "node scripts/dev/extractGlossaryKeys.js",
     "i18n:sync-glossary": "node scripts/dev/syncGlossaryNamespace.mjs",
     "i18n:sync-learn": "node scripts/dev/syncLearnNamespace.mjs"
@@ -22,6 +23,8 @@
     "jspdf": "^3.0.1"
   },
   "devDependencies": {
-    "concurrently": "^9.2.0"
+    "concurrently": "^9.2.0",
+    "dotenv": "^16.0.0",
+    "open": "^9.0.0"
   }
 }
