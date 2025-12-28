@@ -35,6 +35,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setShowOptionInfo(false);
   }, []);
   const [secretError, setSecretError] = useState('');
+  const [forceLocalFlow, setForceLocalFlow] = useState(false);
+
+  const openSecretModal = useCallback((forceLocal = false) => {
+    setForceLocalFlow(!!forceLocal);
+    setSecretError('');
+    setShowSecretModal(true);
+  }, []);
+
+  const closeSecretModal = useCallback(() => {
+    setShowSecretModal(false);
+    setSecretError('');
+    setForceLocalFlow(false);
+  }, []);
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false); // Zeigt einen globalen Processing-Indikator während des Payment-Flows an.
@@ -422,8 +435,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       setStatus('');
       const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
       if (!saved) {
-        setSecretError('');
-        setShowSecretModal(true);
+        openSecretModal(false);
         return;
       }
       setIsProcessing(true);
@@ -446,7 +458,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     } finally {
       setIsProcessing(false);
     }
-  }, [applySendResult, closeConfirmDialogs, handlePaymentError, publicKey, submitPayment]);
+  }, [applySendResult, closeConfirmDialogs, handlePaymentError, openSecretModal, publicKey, submitPayment]);
 
   const handlePrepareMultisig = useCallback(async (initialSigners = []) => {
     try {
@@ -531,7 +543,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
   const handleConfirmProceed = useCallback(async () => {
     if (confirmChoice === 'local') {
-      await handleStoredSecretSend();
+      closeConfirmDialogs();
+      openSecretModal(true);
       return;
     }
     if (confirmChoice === 'xdr') {
@@ -539,7 +552,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       return;
     }
     await handlePrepareMultisig();
-  }, [confirmChoice, handleExportXdr, handlePrepareMultisig, handleStoredSecretSend]);
+  }, [closeConfirmDialogs, confirmChoice, handleExportXdr, handlePrepareMultisig, openSecretModal]);
 
   const isMultisig = useMemo(() => isMultisigAccount(accountInfo), [accountInfo]);
 
@@ -1399,16 +1412,16 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       {showSecretModal && (
         <SecretKeyModal
           errorMessage={secretError}
-          onCancel={()=>{ setShowSecretModal(false); setSecretError(''); }}
+          onCancel={closeSecretModal}
           thresholds={thresholdsForModal}
           signers={signersForModal}
           operationType="payment"
           requiredThreshold={requiredThreshold}
           isProcessing={isProcessing}
           account={accountInfo}
+          initialCollectAllSignaturesLocally={forceLocalFlow}
           onBackToSelection={isMultisig ? (() => {
-            setShowSecretModal(false);
-            setSecretError('');
+            closeSecretModal();
             setShowOptionInfo(false);
             setShowConfirmModal(true);
           }) : null}
@@ -1443,7 +1456,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               if (isMultisig && !collectLocally) {
                 await handlePrepareMultisig(collected.map((s) => s.keypair));
                 setSecretError('');
-                setShowSecretModal(false);
+                closeSecretModal();
                 return;
               }
               const result = await submitPayment(collected.map((s) => s.keypair));
@@ -1460,7 +1473,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 hash: result.hash,
               });
               setSecretError('');
-              setShowSecretModal(false);
+              closeSecretModal();
             } catch (e) {
               const detail = handlePaymentError(e);
               setSecretError(detail);
