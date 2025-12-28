@@ -1,0 +1,21 @@
+# Auto-detect text files and ensure consistent line endings
+* text=auto
+
+# Force LF for source files / scripts used on Unix-like systems
+*.js text eol=lf
+*.mjs text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sh text eol=lf
+
+# Keep Windows helper scripts on CRLF
+*.cmd text eol=crlf
+*.bat text eol=crlf

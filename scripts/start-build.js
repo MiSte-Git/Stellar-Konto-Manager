@@ -11,6 +11,9 @@ const path = require('path');
 const fs = require('fs');
 const dotenv = require('dotenv');
 
+const IS_WIN = process.platform === 'win32';
+const CMD_EXE = process.env.comspec || 'cmd.exe';
+
 function loadEnvFile(p) {
   try {
     if (fs.existsSync(p)) dotenv.config({ path: p });
@@ -24,7 +27,25 @@ const VITE_BUILD_DATE = new Date().toISOString();
 const env = Object.assign({}, process.env, { VITE_BUILD_DATE });
 
 function npmCmd() {
-  return process.platform === 'win32' ? 'npm.cmd' : 'npm';
+  return IS_WIN ? 'npm.cmd' : 'npm';
+}
+
+function quoteForCmd(arg = '') {
+  if (!arg) return '""';
+  if (!/[ \t"]/u.test(arg)) return arg;
+  return `"${arg.replace(/(["\\])/g, '\\$1')}"`;
+}
+
+function spawnPortable(command, args = [], opts = {}) {
+  if (!IS_WIN) return spawn(command, args, opts);
+  const line = [command, ...args].map(quoteForCmd).join(' ');
+  return spawn(CMD_EXE, ['/d', '/s', '/c', line], opts);
+}
+
+function spawnPortableSync(command, args = [], opts = {}) {
+  if (!IS_WIN) return spawnSync(command, args, opts);
+  const line = [command, ...args].map(quoteForCmd).join(' ');
+  return spawnSync(CMD_EXE, ['/d', '/s', '/c', line], opts);
 }
 
 function checkNodeAndNpm() {
@@ -38,15 +59,8 @@ function checkNodeAndNpm() {
     }
   }
   try {
-    const res = spawnSync(npmCmd(), ['--version'], {
-      stdio: 'ignore',
-      shell: process.platform === 'win32',
-    });
+    const res = spawnPortableSync(npmCmd(), ['--version'], { stdio: 'ignore' });
     let ok = !res.error && res.status === 0;
-    if (!ok && process.platform === 'win32' && res.error && res.error.code === 'EINVAL') {
-      const fallback = spawnSync('cmd.exe', ['/d', '/s', '/c', 'npm --version'], { stdio: 'ignore' });
-      ok = !fallback.error && fallback.status === 0;
-    }
 
     if (!ok) {
       if (process.env.npm_execpath || process.env.npm_config_user_agent) {
@@ -65,7 +79,7 @@ checkNodeAndNpm();
 
 function run(cmd, args, opts = {}) {
   return new Promise((resolve, reject) => {
-    const p = spawn(cmd, args, Object.assign({ stdio: 'inherit' }, opts));
+    const p = spawnPortable(cmd, args, Object.assign({ stdio: 'inherit' }, opts));
     p.on('close', (code) => {
       if (code === 0) resolve();
       else reject(new Error('exit ' + code));
