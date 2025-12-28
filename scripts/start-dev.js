@@ -1,0 +1,141 @@
+#!/usr/bin/env node
+/*
+  Cross-platform dev launcher
+  - loads .env (root and backend/.env) using dotenv
+  - sets VITE_BUILD_DATE and PORT for children
+  - spawns backend (node server.js) and frontend (npm run dev)
+  - waits for frontend to respond and opens browser
+  - forwards SIGINT/SIGTERM and cleans up children
+*/
+const { spawn, spawnSync } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+const dotenv = require('dotenv');
+
+function loadEnvFile(p) {
+  try {
+    if (fs.existsSync(p)) dotenv.config({ path: p });
+  } catch (e) {}
+}
+
+loadEnvFile(path.resolve(process.cwd(), '.env'));
+loadEnvFile(path.resolve(process.cwd(), 'backend', '.env'));
+
+const VITE_BUILD_DATE = new Date().toISOString();
+const BACKEND_PORT = process.env.PORT || process.env.BACKEND_PORT || '3000';
+
+const env = Object.assign({}, process.env, { VITE_BUILD_DATE, PORT: BACKEND_PORT });
+
+const backendCwd = process.cwd();
+const frontendCwd = path.join(process.cwd(), 'frontend');
+
+function npmCmd() {
+  return process.platform === 'win32' ? 'npm.cmd' : 'npm';
+}
+
+function checkNodeAndNpm() {
+  const min = [20, 0, 0];
+  const ver = (process.version || 'v0.0.0').replace(/^v/, '').split('.').map((n) => parseInt(n, 10) || 0);
+  for (let i = 0; i < min.length; i++) {
+    if ((ver[i] || 0) > min[i]) break;
+    if ((ver[i] || 0) < min[i]) {
+      console.error(`Node.js ${min.join('.')}+ is required. Current: ${process.version}`);
+      process.exit(1);
+    }
+  }
+  try {
+    const res = spawnSync(npmCmd(), ['--version'], {
+      stdio: 'ignore',
+      shell: process.platform === 'win32',
+    });
+    let ok = !res.error && res.status === 0;
+    if (!ok && process.platform === 'win32' && res.error && res.error.code === 'EINVAL') {
+      const fallback = spawnSync('cmd.exe', ['/d', '/s', '/c', 'npm --version'], { stdio: 'ignore' });
+      ok = !fallback.error && fallback.status === 0;
+    }
+
+    if (!ok) {
+      // When invoked via `npm run`, npm may not be directly invokable as `npm` in the child env,
+      // but npm sets `npm_execpath` / `npm_config_user_agent` in the environment. Accept that.
+      if (process.env.npm_execpath || process.env.npm_config_user_agent) {
+        return;
+      }
+      console.error('`npm` not found or not working. Please install Node.js (includes npm) and ensure it is in your PATH.');
+      process.exit(1);
+    }
+  } catch (e) {
+    console.error('`npm` check failed:', e && e.message ? e.message : e);
+    process.exit(1);
+  }
+}
+
+checkNodeAndNpm();
+
+function startProcess(cmd, args, opts) {
+  try {
+    console.log('Spawning:', cmd, args.join(' '), 'cwd=', opts && opts.cwd);
+    return spawn(cmd, args, opts);
+  } catch (err) {
+    console.error('spawn failed for', cmd, args, 'error:', err && err.message ? err.message : err);
+    console.error('process.execPath=', process.execPath);
+    console.error('cwd=', process.cwd());
+    console.error('env.PATH length:', String(process.env.PATH || '').length);
+    process.exit(1);
+  }
+}
+
+const backend = startProcess(process.execPath, [path.join(process.cwd(), 'server.js')], { cwd: backendCwd, env, stdio: 'inherit' });
+// On Windows spawning npm.cmd directly can sometimes fail depending on how npm was invoked.
+// Use shell invocation for the frontend npm command for maximum compatibility.
+const frontend = startProcess(`${npmCmd()} run dev`, [], { cwd: frontendCwd, env, stdio: 'inherit', shell: true });
+
+let exiting = false;
+function shutdown(code = 0) {
+  if (exiting) return;
+  exiting = true;
+  try { backend.kill(); } catch (e) {}
+  try { frontend.kill(); } catch (e) {}
+  setTimeout(() => process.exit(code), 200);
+}
+
+process.on('SIGINT', () => shutdown(0));
+process.on('SIGTERM', () => shutdown(0));
+
+async function waitForFrontend(url = 'http://localhost:5173', timeout = 30000) {
+  const start = Date.now();
+  // Node 18+ has global fetch
+  while (Date.now() - start < timeout) {
+    try {
+      const res = await fetch(url, { method: 'GET' });
+      if (res && res.status < 400) return true;
+    } catch (e) {}
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  return false;
+}
+
+(async () => {
+  try {
+    const url = `http://localhost:5173`;
+    const ok = await waitForFrontend(url, 30000);
+    if (ok) {
+      try {
+        // use the open package if available, otherwise fall back to npx open
+        try {
+          const open = require('open');
+          await open(url);
+        } catch (e) {
+          // fallback to npx open (will fetch if needed)
+          const opener = spawn(npmCmd(), ['exec', '--no-install', 'open', url], { stdio: 'ignore', detached: true });
+          opener.unref();
+        }
+      } catch (e) {
+        // ignore
+      }
+    } else {
+      console.warn('Frontend did not become available within timeout.');
+    }
+  } catch (e) {
+    console.error('start-dev launcher error', e && e.message ? e.message : e);
+  }
+})();
