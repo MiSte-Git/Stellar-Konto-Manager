@@ -26,8 +26,15 @@ loadEnvFile(path.resolve(process.cwd(), 'backend', '.env'));
 
 const VITE_BUILD_DATE = new Date().toISOString();
 const BACKEND_PORT = process.env.PORT || process.env.BACKEND_PORT || '3000';
+const PROD_API_URL = (process.env.PROD_API_URL || '').trim();
+// Prefer explicit PROD_API_URL for the frontend; fall back to local backend.
+const VITE_BACKEND_URL = PROD_API_URL || `http://localhost:${BACKEND_PORT}`;
 
-const env = Object.assign({}, process.env, { VITE_BUILD_DATE, PORT: BACKEND_PORT });
+const env = Object.assign({}, process.env, {
+  VITE_BUILD_DATE,
+  PORT: BACKEND_PORT,
+  VITE_BACKEND_URL,
+});
 
 const backendCwd = process.cwd();
 const frontendCwd = path.join(process.cwd(), 'frontend');
