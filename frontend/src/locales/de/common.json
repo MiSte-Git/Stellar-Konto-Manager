@@ -70,10 +70,10 @@
     "title": "Fehler melden",
     "descLabel": "Kurzbeschreibung (optional)",
     "descPlaceholder": "Was ist passiert? Schritte, erwartetes Verhalten …",
-    "send": "E-Mail öffnen",
+    "send": "Feedback senden",
     "cancel": "Abbrechen",
     "toast": {
-      "sent": "E-Mail-Entwurf geöffnet.",
+      "sent": "Feedback gespeichert.",
       "logOk": "Bug wurde protokolliert.",
       "logFallback": "Lokales Loggen fehlgeschlagen.",
       "validation": "Bitte gib eine kurze Beschreibung ein oder sende ohne Text."
@@ -216,11 +216,11 @@
       "clearButton": "Felder leeren",
       "multiEntryHint": "Bitte pro Fehler, Vorschlag oder Idee nur eine Nachricht erstellen, damit die Bearbeitung übersichtlich bleibt."
     },
-    "privacyHint": "Ihre Nachricht wird per E-Mail über Ihr eigenes Mailprogramm gesendet.",
-    "sendButton": "E-Mail erstellen",
-    "openedMailClient": "E-Mail-Client geöffnet.",
+    "privacyHint": "Ihre Nachricht wird direkt im Bugtracker gespeichert.",
+    "sendButton": "Feedback senden",
+    "openedMailClient": "Feedback gespeichert.",
     "error": "Fehler",
-    "sentTo": "Empfänger: {{email}}"
+    "sentTo": "Eintrag im Bugtracker gespeichert."
   },
   "account": {
     "createdAt": "Konto erstellt am",

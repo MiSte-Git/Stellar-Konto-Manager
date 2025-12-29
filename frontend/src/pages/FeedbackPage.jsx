@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FEEDBACK_EMAIL } from '../config.js';
-import { openMailto } from '../utils/openMailto.js';
 import { apiUrl } from '../utils/apiBase.js';
 import { useSettings } from '../utils/useSettings.js';
 
-// Renders the feedback page allowing users to send issues via email.
+// Renders the feedback page and writes entries directly into the bug tracker (no email).
 export default function FeedbackPage({ onBack }) {
   const { t, i18n } = useTranslation(['common', 'menu']);
   void i18n;
@@ -15,6 +13,7 @@ export default function FeedbackPage({ onBack }) {
   const [message, setMessage] = useState('');
   const [notices, setNotices] = useState([]);
   const [contactEmail, setContactEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const subjectInputRef = useRef(null);
 
   // Try to guess the current page for better bug reports
@@ -49,8 +48,6 @@ export default function FeedbackPage({ onBack }) {
       return Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
     }
   });
-
-  const emailTo = useMemo(() => FEEDBACK_EMAIL || 'support@example.com', []);
 
   const canSend = subject.trim().length > 0 && message.trim().length > 0 && Boolean(category) && Boolean(areaId);
 
@@ -87,58 +84,25 @@ export default function FeedbackPage({ onBack }) {
   }, [areaId, feedbackAreas, defaultPage]);
 
   // Resets all form fields back to their initial state for quick successive entries.
-  const handleClearForm = () => {
+  const handleClearForm = React.useCallback(() => {
     setCategory(feedbackCategories[0]?.id || '');
     setAreaId(feedbackAreas.some((c) => c.id === defaultPage) ? defaultPage : (feedbackAreas[0]?.id || ''));
     setSubject('');
     setMessage('');
     setContactEmail('');
     subjectInputRef.current?.focus();
-  };
+  }, [defaultPage, feedbackAreas, feedbackCategories]);
 
-  // Builds the support mail payload including contextual information.
-  const buildMailPayload = useCallback(() => {
-    const lines = [];
-    const categoryLabel = getCategoryLabel(category) || t('common:feedback.categoryUnknown');
-    const areaLabel = getAreaLabel(areaId) || t('common:feedback.areaUnknown');
-    lines.push(`Kategorie: ${categoryLabel}`);
-    lines.push(`Bereich: ${areaLabel}`);
-    lines.push('');
-    lines.push('Nachricht:');
-    lines.push(message.trim());
-    const emailTrim = (contactEmail || '').trim();
-    if (emailTrim) {
-      lines.push('');
-      lines.push(`Kontakt: ${emailTrim}`);
-    }
-    lines.push('');
-    lines.push('---');
-    lines.push(`Report-ID: ${reportToken}`);
-    lines.push('App: Stellar Trustline Manager');
-    try { lines.push(`URL: ${window.location.href}`); } catch { /* noop */ }
-    try { lines.push(`Browser: ${navigator.userAgent}`); } catch { /* noop */ }
-    const subj = `[SKM Feedback] ${categoryLabel}: ${subject.trim()}`;
-    const body = lines.join('\r\n');
-    return { subject: subj, body };
-  }, [category, message, subject, t, reportToken, contactEmail, areaId, feedbackAreas, feedbackCategories]);
-
-  const buildMailto = useCallback(() => {
-    const { subject: subj, body } = buildMailPayload();
-    const href = `mailto:${emailTo}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
-    return { href, subject: subj, body };
-  }, [buildMailPayload, emailTo]);
-
-  // Create a silent bugtracker entry on the backend
-  const logBugReport = useCallback(async (description) => {
+  // Send the feedback directly to the bugtracker backend.
+  const submitBugReport = useCallback(async () => {
     try {
       const payload = {
         url: window.location.href,
         userAgent: navigator.userAgent,
         language: navigator.language,
         reportToken,
-        // Variante A: historisch wird nur "Betreff" gepflegt. Wir senden ihn als "subject".
         subject: subject.trim(),
-        description,
+        description: message.trim(),
         ts: new Date().toISOString(),
         appVersion: import.meta.env.VITE_APP_VERSION ?? null,
         status: 'open',
@@ -148,44 +112,58 @@ export default function FeedbackPage({ onBack }) {
       };
       const emailTrim = (contactEmail || '').trim();
       if (emailTrim) payload.contactEmail = emailTrim;
-      const res = await fetch(apiUrl('bugreport.php'), {
-        method: 'POST',
-        keepalive: true,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error(`status_${res.status}`);
+      const endpoints = ['bugreport.php', 'bugreport'];
+      let lastError = null;
+      for (const endpoint of endpoints) {
+        try {
+          const res = await fetch(apiUrl(endpoint), {
+            method: 'POST',
+            keepalive: true,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          let data = null;
+          try {
+            data = await res.json();
+          } catch {
+            data = null;
+          }
+          if (res.ok && data?.ok !== false) {
+            return data;
+          }
+          lastError = new Error(data?.error || `status_${res.status}`);
+        } catch (err) {
+          lastError = err;
+        }
+      }
+      if (lastError) throw lastError;
+      throw new Error('bugreport.unknown');
     } catch (err) {
       console.warn('bugReport.send.failed', err);
+      throw err;
     }
-  }, [category, reportToken, contactEmail, areaId, subject]);
+  }, [areaId, category, contactEmail, message, reportToken, subject]);
 
-  // Handles sending the feedback mail only (no backend bugtracker).
+  // Handles sending the feedback by writing directly into the bugtracker DB.
   const handleSend = useCallback(async () => {
+    if (!canSend || isSubmitting) return;
+    setIsSubmitting(true);
+    setNotices([]);
     try {
-      setNotices([t('common:bugReport.toast.sent')]);
-      // 1) Log first to avoid browser mailto/unload cancelling the request
-      const description = message.trim();
-      try {
-        await logBugReport(description);
-      } catch (e) {
-        console.warn('bugReport.log.beforeMailto.failed', e);
-      }
-      // 2) Open the user's mail client
-      const { href, subject: subj, body } = buildMailto();
-      const isLikelyLinuxDesktop = navigator.platform?.toLowerCase?.().includes('linux');
-      const allowBackendCompose = Boolean(isLikelyLinuxDesktop && import.meta.env.DEV);
-      await openMailto({
-        to: emailTo,
-        subject: subj,
-        body,
-        mailtoHref: href,
-        forceBackendCompose: allowBackendCompose,
-      });
+      await submitBugReport();
+      setNotices([t('common:bugReport.toast.logOk')]);
+      handleClearForm();
     } catch (e) {
-      setNotices([t('common:feedback.error') + ': ' + (e?.message || '')]);
+      const errorCode = String(e?.message || '');
+      const validationErrors = ['missing_title', 'missing_url', 'invalid_email'];
+      const msg = validationErrors.includes(errorCode)
+        ? t('common:bugReport.toast.validation')
+        : `${t('common:feedback.error')}${errorCode && !errorCode.startsWith('status_') ? `: ${errorCode}` : ''}`;
+      setNotices([msg]);
+    } finally {
+      setIsSubmitting(false);
     }
-  }, [buildMailto, emailTo, t, message, logBugReport]);
+  }, [canSend, handleClearForm, isSubmitting, submitBugReport, t]);
 
   // Focuses the feedback form when Alt+B is pressed.
   React.useEffect(() => {
@@ -271,10 +249,16 @@ export default function FeedbackPage({ onBack }) {
             {t('common:feedback.form.clearButton')}
           </button>
           <button className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700" onClick={onBack}>{t('common:option.cancel')}</button>
-          <button className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50" disabled={!canSend} onClick={handleSend}>{t('common:feedback.sendButton')}</button>
+          <button
+            className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50"
+            disabled={!canSend || isSubmitting}
+            onClick={handleSend}
+          >
+            {isSubmitting ? t('common:main.processing', 'Bitte warten…') : t('common:feedback.sendButton')}
+          </button>
         </div>
         <div className="text-xs text-gray-600 dark:text-gray-400">
-          {t('common:feedback.sentTo', { email: emailTo })}
+          {t('common:feedback.privacyHint')}
         </div>
       </div>
     </div>
