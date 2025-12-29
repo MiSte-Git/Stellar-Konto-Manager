@@ -1,84 +1,69 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { openMailto } from '../utils/openMailto.js';
 import { apiUrl } from '../utils/apiBase.js';
 
 /**
- * FeedbackForm: Öffnet den E-Mail-Client über mailto: bzw. Backend-Compose (DEV/Linux)
- * und erstellt parallel still einen Eintrag im Bugtracker.
+ * FeedbackForm: Schreibt das Feedback direkt in den Bugtracker (kein Mailto).
  */
 export default function FeedbackForm(props) {
   const { t } = useTranslation(['common']);
   const [desc, setDesc] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function buildMailto() {
-    const to = import.meta.env.VITE_SUPPORT_EMAIL || 'support@example.org';
-    const subjectText = t('common:bugReport.title');
-    const lines = [
-      `URL: ${window.location.href}`,
-      `Zeit: ${new Date().toISOString()}`,
-      `Browser: ${navigator.userAgent}`,
-      `Sprache: ${navigator.language}`,
-      desc ? `Beschreibung: ${desc}` : '',
-    ].filter(Boolean);
-    const bodyText = lines.join('\n');
-    return {
-      to,
-      subject: subjectText,
-      body: bodyText,
-      href: `mailto:${to}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText)}`,
-    };
-  }
-
-  async function sendSilentLog() {
+  async function submitBugReport() {
+    const description = (desc || '').trim();
+    const title = description || t('common:bugReport.title');
     try {
       const payload = {
         url: window.location.href,
         userAgent: navigator.userAgent,
         language: navigator.language,
-        description: desc || '',
-        ts: new Date().toISOString(),
+        subject: title,
+        description,
         appVersion: import.meta.env.VITE_APP_VERSION ?? null,
         status: 'open',
         priority: 'normal',
+        page: 'feedback',
       };
-      const json = JSON.stringify(payload);
-      const blob = new Blob([json], { type: 'application/json' });
-      const endpoint = apiUrl('bugreport');
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(endpoint, blob);
-      } else {
-        await fetch(endpoint, {
-          method: 'POST',
-          keepalive: true,
-          headers: { 'Content-Type': 'application/json' },
-          body: json,
-        });
+      const endpoints = ['bugreport.php', 'bugreport'];
+      let lastError = null;
+      for (const endpoint of endpoints) {
+        try {
+          const res = await fetch(apiUrl(endpoint), {
+            method: 'POST',
+            keepalive: true,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          let data = null;
+          try { data = await res.json(); } catch { data = null; }
+          if (res.ok && data?.ok !== false) return;
+          lastError = new Error(data?.error || `status_${res.status}`);
+        } catch (err) {
+          lastError = err;
+        }
       }
+      if (lastError) throw lastError;
+      throw new Error('bugreport.unknown');
     } catch (error) {
       console.warn('bugReport.send.failed', error);
+      throw error;
     }
   }
 
   async function handleSubmit(e) {
     e?.preventDefault?.();
+    if (isSubmitting) return;
     try {
-      const mail = buildMailto();
-      const isLikelyLinuxDesktop = navigator.platform?.toLowerCase?.().includes('linux');
-      const allowBackendCompose = Boolean(isLikelyLinuxDesktop && import.meta.env.DEV);
-
-      await openMailto({
-        to: mail.to,
-        subject: mail.subject,
-        body: mail.body,
-        mailtoHref: mail.href,
-        forceBackendCompose: allowBackendCompose,
-      });
-
-      void sendSilentLog();
-      props.onInfo?.(t('common:bugReport.toast.sent'));
+      setIsSubmitting(true);
+      await submitBugReport();
+      setDesc('');
+      props.onInfo?.(t('common:bugReport.toast.logOk'));
     } catch (err) {
-      throw new Error('bugReport.mailto.failed:' + (err?.message || 'unknown'));
+      props.onError?.(err);
+      throw new Error('bugReport.submit.failed:' + (err?.message || 'unknown'));
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -97,11 +82,12 @@ export default function FeedbackForm(props) {
       <div className="flex gap-2">
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          title={t('common:bugReport.send')}
-        >
-          {t('common:bugReport.send')}
-        </button>
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        disabled={isSubmitting}
+        title={t('common:bugReport.send')}
+      >
+        {isSubmitting ? t('common:main.processing', 'Bitte warten…') : t('common:bugReport.send')}
+      </button>
         <button
           type="button"
           onClick={() => props.onCancel?.()}
