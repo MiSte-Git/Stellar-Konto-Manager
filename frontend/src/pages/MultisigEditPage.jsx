@@ -57,6 +57,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const [mode, setMode] = useState('test'); // 'test' | 'prod'
   const [pendingAction, setPendingAction] = useState(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [currentAccount, setCurrentAccount] = useState(null); // Snapshot der aktuellen Kettenwerte fürs Signieren
 
   // Account state
   const [masterWeight, setMasterWeight] = useState(1);
@@ -79,8 +80,8 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     return [...master, ...others];
   }, [defaultPublicKey, masterWeight, signers]);
   const requiredThreshold = useMemo(
-    () => getRequiredThreshold('setOptions', thresholdsForModal),
-    [thresholdsForModal]
+    () => getRequiredThreshold('setOptions', currentAccount?.thresholds || thresholdsForModal),
+    [currentAccount, thresholdsForModal]
   );
 
   // Helper: clamp to 0..255 integer
@@ -106,8 +107,10 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     setLoading(true);
     setError('');
     setInfo('');
+    setCurrentAccount(null);
     try {
       const acct = await server.loadAccount(pk);
+      setCurrentAccount(acct);
       const ms = (acct.signers || []).find(s => s.key === pk);
       const others = (acct.signers || []).filter(s => s.key !== pk && s.type && s.type.includes('ed25519'));
       setMasterWeight(clampByte(ms?.weight ?? 1));
@@ -167,7 +170,11 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
 
   // Build and submit transaction
   async function buildSetOptionsTx(collectedSigners, { signTx = false, requireSigners = false } = {}) {
-    const required = requiredThreshold || clampByte(highT);
+    const pk = (defaultPublicKey || '').trim();
+    if (!pk) { throw new Error(t('publicKey:invalid')); }
+
+    const acct = await server.loadAccount(pk);
+    const required = getRequiredThreshold('setOptions', acct.thresholds) || clampByte(acct.thresholds?.high_threshold ?? highT);
     const current = Array.isArray(collectedSigners)
       ? collectedSigners.reduce((acc, s) => acc + clampByte(s?.weight || 0), 0)
       : 0;
@@ -177,10 +184,6 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     if (requireSigners && current < required) {
       throw new Error('submitTransaction.failed:' + 'multisig.insufficientWeight');
     }
-    const pk = (defaultPublicKey || '').trim();
-    if (!pk) { throw new Error(t('publicKey:invalid')); }
-
-    const acct = await server.loadAccount(pk);
     const feeStats = await server.feeStats();
     const fee = String(Number(feeStats?.fee_charged?.mode || 100));
 
@@ -578,11 +581,11 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         <SecretKeyModal
           onConfirm={(collected)=>{ if (pendingAction==='save') submitChanges(collected); }}
           onCancel={()=>{ setShowSecretModal(false); setPendingAction(null); }}
-          thresholds={thresholdsForModal}
-          signers={signersForModal}
+          thresholds={currentAccount?.thresholds || thresholdsForModal}
+          signers={currentAccount?.signers || signersForModal}
           operationType="setOptions"
           requiredThreshold={requiredThreshold}
-          account={{ signers: signersForModal, thresholds: thresholdsForModal }}
+          account={currentAccount || { signers: signersForModal, thresholds: thresholdsForModal }}
         />
       )}
       {preparedTx && (
