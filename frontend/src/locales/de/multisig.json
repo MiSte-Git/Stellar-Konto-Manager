@@ -101,7 +101,7 @@
       }
     }
     ,
-    "testModeTitle": "Testmodus (alle Signaturen lokal)",
+    "testModeTitle": "Alle Signaturen lokal",
     "testModeDescription": "Bestehender Flow: Geheimschlüssel eingeben, alle benötigten Signaturen sammeln und direkt an Horizon senden.",
     "testModeButton": "Direkt signieren & senden",
     "prepareTitle": "Transaktion für Multisig vorbereiten",
@@ -123,12 +123,12 @@
     "notSentHint": "Diese Transaktion wurde noch nicht an das Netzwerk gesendet."
   },
   "testMode": {
-    "modalTitle": "Testmodus / Single-User-Signatur",
+    "modalTitle": "Single-User-Signatur",
     "modalDescription": "Hier kannst du alle benötigten Secret Keys auf einem Gerät eingeben und die Transaktion direkt senden. In echten Mehrparteien-Setups sollten die Keys auf getrennten Geräten bleiben."
   },
   "mode": {
     "test": {
-      "label": "Testmodus (alle S-Schlüssel lokal verwenden)"
+      "label": "Alle S-Schlüssel lokal verwenden"
     },
     "prod": {
       "label": "Produktivmodus (echtes Multisig mit XDR)",
