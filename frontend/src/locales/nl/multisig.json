@@ -12,7 +12,7 @@
   },
   "multipleSignersInfo": "Deze actie vereist meerdere handtekeningen. Gelieve voldoende geheime sleutels te verstrekken om aan de drempel te voldoen.",
   "confirm": {
-    "testModeTitle": "Testmodus (alle Signaturen lokal)",
+    "testModeTitle": "Alle Signaturen lokal)",
     "testModeDescription": "Bestaande flow: Voer geheime sleutel in, verzamel alle vereiste handtekeningen en stuur direct naar Horizon.",
     "testModeButton": "Directly sign & send",
     "prepareTitle": "Bereid transactie voor multisig voor",
@@ -117,12 +117,12 @@
     "notSentHint": "Deze transactie is nog niet naar het netwerk verzonden."
   },
   "testMode": {
-    "modalTitle": "Testmodus / Handtekening voor een enkele gebruiker",
+    "modalTitle": "Handtekening voor een enkele gebruiker",
     "modalDescription": "Hier kunt u alle benodigde geheime sleutels op één apparaat invoeren en de transactie direct verzenden. In echte multi-party-opstellingen moeten de sleutels op afzonderlijke apparaten blijven."
   },
   "mode": {
     "test": {
-      "label": "Testmodus (use all S-keys locally)"
+      "label": "Use all S-keys locally"
     },
     "prod": {
       "label": "Productiviteitsmodus",
