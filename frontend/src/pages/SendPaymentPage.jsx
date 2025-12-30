@@ -30,6 +30,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [copiedXdr, setCopiedXdr] = useState(false);
   const [copiedJobId, setCopiedJobId] = useState(false);
   const [showJobInfo, setShowJobInfo] = useState(false);
+  const [pendingLocalPreflight, setPendingLocalPreflight] = useState(null);
+  const [reviewDialog, setReviewDialog] = useState({ open: false, signers: [], preflight: null, snapshot: null });
+  const [reviewError, setReviewError] = useState('');
+  const [reviewProcessing, setReviewProcessing] = useState(false);
   const closeConfirmDialogs = useCallback(() => {
     setShowConfirmModal(false);
     setShowOptionInfo(false);
@@ -321,6 +325,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setShowJobInfo(false);
   }, []);
 
+  const closeReviewDialog = useCallback(() => {
+    setReviewDialog({ open: false, signers: [], preflight: null, snapshot: null });
+    setReviewError('');
+    setReviewProcessing(false);
+  }, []);
+
   const buildPaymentTx = useCallback(async ({ signers, signTx = false, requireSigners = false } = {}) => {
     const signerList = Array.isArray(signers) ? signers.filter(Boolean) : [];
     const primary = signerList[0];
@@ -428,38 +438,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     };
   }, [buildPaymentTx, netLabel, server]);
 
-  const handleStoredSecretSend = useCallback(async () => {
-    closeConfirmDialogs();
-    try {
-      setError('');
-      setStatus('');
-      const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
-      if (!saved) {
-        openSecretModal(false);
-        return;
-      }
-      setIsProcessing(true);
-      const result = await submitPayment(Keypair.fromSecret(saved));
-      applySendResult(result);
-      setResultDialog({
-        type: 'sent',
-        summary: {
-          source: publicKey,
-          recipient: result.recipient,
-          amount: `${result.amountDisplay} ${result.asset}`,
-          memo: result.memo || '-',
-          network: result.network,
-        },
-        hash: result.hash,
-      });
-      setSecretError('');
-    } catch (err) {
-      handlePaymentError(err);
-    } finally {
-      setIsProcessing(false);
-    }
-  }, [applySendResult, closeConfirmDialogs, handlePaymentError, openSecretModal, publicKey, submitPayment]);
-
   const handlePrepareMultisig = useCallback(async (initialSigners = []) => {
     try {
       if (preflight.loading || preflight.err) {
@@ -556,31 +534,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
   const isMultisig = useMemo(() => isMultisigAccount(accountInfo), [accountInfo]);
 
-  const handleSendClick = useCallback(async () => {
-    clearSuccess();
-    setError('');
-    try {
-      window.dispatchEvent(new Event('stm-transaction-start'));
-    } catch (dispatchError) {
-      console.debug('stm-transaction-start event failed', dispatchError);
-    }
-
-    if (isMultisig) {
-      setConfirmChoice('job');
-      setShowOptionInfo(false);
-      setShowConfirmModal(true);
-      await runPreflight();
-      return;
-    }
-
-    const preflightResult = await runPreflight();
-    if (preflightResult?.err) {
-      setError(preflightResult.err);
-      return;
-    }
-    await handleStoredSecretSend();
-  }, [clearSuccess, handleStoredSecretSend, isMultisig, runPreflight, setError, setShowConfirmModal]);
-
   useEffect(() => {
     clearSuccess();
   }, [publicKey, initial, clearSuccess]);
@@ -666,37 +619,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     () => getRequiredThreshold('payment', thresholdsForModal),
     [thresholdsForModal]
   );
-
-  // Zahlformat gemäß Settings
-  const { decimalsMode } = useSettings();
-  const amountFmt = useMemo(() => {
-    const isAuto = decimalsMode === 'auto';
-    const n = isAuto ? undefined : Math.max(0, Math.min(7, Number(decimalsMode)));
-    return new Intl.NumberFormat(i18n.language || undefined, {
-      minimumFractionDigits: isAuto ? 0 : n,
-      maximumFractionDigits: isAuto ? 7 : n,
-    });
-  }, [i18n.language, decimalsMode]);
-
-  const trustCount = trustlines.length;
-  const lpCount = lpTrusts.length;
-  const signerCount = Math.max(0, (accountInfo?.signers?.length || 1) - 1);
-  const dataCount = Object.keys(accountInfo?.data_attr || {}).length;
-  const sponsoring = Number(accountInfo?.num_sponsoring || 0);
-  const sponsored = Number(accountInfo?.num_sponsored || 0);
-
-  const reservedBase = baseReserve * 2;
-  const reservedTrust = baseReserve * trustCount;
-  const reservedLp = baseReserve * lpCount;
-  const reservedOffers = baseReserve * offersCount;
-  const reservedSigners = baseReserve * signerCount;
-  const reservedData = baseReserve * dataCount;
-  const reservedSponsor = baseReserve * sponsoring;
-  const reservedSponsored = baseReserve * sponsored;
-  const reservedTotal = Math.max(0, reservedBase + reservedTrust + reservedLp + reservedOffers + reservedSigners + reservedData + reservedSponsor - reservedSponsored);
-  const xlmInOffers = parseFloat(native?.selling_liabilities || '0') || 0;
-  const nativeBalance = parseFloat(native?.balance || '0') || 0;
-  const availableXLM = Math.max(0, nativeBalance - reservedTotal - xlmInOffers);
 
   // Resolve recipient helpers
   const [resolvedAccount, setResolvedAccount] = useState('');
@@ -801,7 +723,155 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const recipientCompromised = !!effectiveRecipientInfo?.compromised;
   const recipientDeactivated = !!effectiveRecipientInfo?.deactivated;
   const recipientFederationDisplay = resolvedFederation || savedRecipientFederation || (trimmedRecipient && trimmedRecipient.includes('*') ? trimmedRecipient : '');
- 
+
+  // Zahlformat gemäß Settings
+  const { decimalsMode } = useSettings();
+  const amountFmt = useMemo(() => {
+    const isAuto = decimalsMode === 'auto';
+    const n = isAuto ? undefined : Math.max(0, Math.min(7, Number(decimalsMode)));
+    return new Intl.NumberFormat(i18n.language || undefined, {
+      minimumFractionDigits: isAuto ? 0 : n,
+      maximumFractionDigits: isAuto ? 7 : n,
+    });
+  }, [i18n.language, decimalsMode]);
+
+  const openReviewDialog = useCallback((signers, preflightResult) => {
+    try {
+      const { display: memoDisplay } = buildMemoObject();
+      const assetLabel = assetKey === 'XLM' ? 'XLM' : (assetKey.split(':')[0] || 'XLM');
+      const desiredAmount = Number.isFinite(preflightResult?.desired)
+        ? preflightResult.desired
+        : Number(normalizeAmountValue());
+      const adjustedAmount = (preflightResult?.activationRequired && assetKey === 'XLM' && preflightResult?.willBump)
+        ? preflightResult.adjusted
+        : null;
+      const amountEnteredDisplay = amountFmt.format(desiredAmount);
+      const amountToSendDisplay = amountFmt.format(adjustedAmount ?? desiredAmount);
+      setReviewDialog({
+        open: true,
+        signers: Array.isArray(signers) ? signers.filter(Boolean) : [],
+        preflight: preflightResult || null,
+        snapshot: {
+          source: publicKey,
+          recipient: preflightResult?.resolvedDest || (dest || '').trim(),
+          amountDisplay: amountEnteredDisplay,
+          amountEntered: amountEnteredDisplay,
+          amountToSend: amountToSendDisplay,
+          adjustedAmount: adjustedAmount != null ? amountFmt.format(adjustedAmount) : null,
+          memo: memoDisplay || '-',
+          assetLabel,
+          network: netLabel,
+          activationNotice: !!(preflightResult?.activationRequired && assetKey === 'XLM' && preflightResult?.willBump),
+          compromised: recipientCompromised,
+          deactivated: recipientDeactivated,
+        },
+      });
+      setReviewError('');
+      setReviewProcessing(false);
+    } catch (e) {
+      setError(e?.message || t('errors:unknown', 'Unbekannter Fehler'));
+    }
+  }, [amountFmt, assetKey, buildMemoObject, dest, netLabel, normalizeAmountValue, publicKey, recipientCompromised, recipientDeactivated, t]);
+
+  const openSentResultDialog = useCallback((result) => {
+    if (!result) return;
+    setResultDialog({
+      type: 'sent',
+      summary: {
+        source: publicKey,
+        recipient: result.recipient,
+        amount: `${result.amountDisplay} ${result.asset}`,
+        memo: result.memo || '-',
+        network: result.network,
+      },
+      hash: result.hash,
+    });
+  }, [publicKey]);
+
+  const handleReviewConfirm = useCallback(async () => {
+    if (!Array.isArray(reviewDialog?.signers) || reviewDialog.signers.length < 1) {
+      setReviewError(t('secretKey:errorMissing', 'Secret Key fehlt für den Versand.'));
+      return;
+    }
+    try {
+      setReviewProcessing(true);
+      setIsProcessing(true);
+      const result = await submitPayment(reviewDialog.signers);
+      applySendResult(result);
+      openSentResultDialog(result);
+      closeReviewDialog();
+      setSecretError('');
+    } catch (err) {
+      const detail = handlePaymentError(err);
+      setReviewError(detail);
+    } finally {
+      setReviewProcessing(false);
+      setIsProcessing(false);
+    }
+  }, [applySendResult, closeReviewDialog, handlePaymentError, openSentResultDialog, reviewDialog, submitPayment, t]);
+
+  const handleSendClick = useCallback(async () => {
+    clearSuccess();
+    setError('');
+    try {
+      window.dispatchEvent(new Event('stm-transaction-start'));
+    } catch (dispatchError) {
+      console.debug('stm-transaction-start event failed', dispatchError);
+    }
+
+    if (isMultisig) {
+      setConfirmChoice('job');
+      setShowOptionInfo(false);
+      setShowConfirmModal(true);
+      await runPreflight();
+      return;
+    }
+
+    const preflightResult = await runPreflight();
+    if (preflightResult?.err) {
+      setError(preflightResult.err);
+      return;
+    }
+    setPendingLocalPreflight(preflightResult);
+    try {
+      buildMemoObject(); // validate memo before showing review
+    } catch (memoErr) {
+      setError(memoErr?.message || t('errors:unknown', 'Unbekannter Fehler'));
+      return;
+    }
+    const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
+    if (saved) {
+      try {
+        openReviewDialog([Keypair.fromSecret(saved)], preflightResult);
+        return;
+      } catch (err) {
+        setError(err?.message || t('errors:unknown', 'Unbekannter Fehler'));
+        return;
+      }
+    }
+    openSecretModal(false);
+  }, [buildMemoObject, clearSuccess, isMultisig, openReviewDialog, openSecretModal, publicKey, runPreflight, setError, setShowConfirmModal, t]);
+
+  const trustCount = trustlines.length;
+  const lpCount = lpTrusts.length;
+  const signerCount = Math.max(0, (accountInfo?.signers?.length || 1) - 1);
+  const dataCount = Object.keys(accountInfo?.data_attr || {}).length;
+  const sponsoring = Number(accountInfo?.num_sponsoring || 0);
+  const sponsored = Number(accountInfo?.num_sponsored || 0);
+
+  const reservedBase = baseReserve * 2;
+  const reservedTrust = baseReserve * trustCount;
+  const reservedLp = baseReserve * lpCount;
+  const reservedOffers = baseReserve * offersCount;
+  const reservedSigners = baseReserve * signerCount;
+  const reservedData = baseReserve * dataCount;
+  const reservedSponsor = baseReserve * sponsoring;
+  const reservedSponsored = baseReserve * sponsored;
+  const reservedTotal = Math.max(0, reservedBase + reservedTrust + reservedLp + reservedOffers + reservedSigners + reservedData + reservedSponsor - reservedSponsored);
+  const xlmInOffers = parseFloat(native?.selling_liabilities || '0') || 0;
+  const nativeBalance = parseFloat(native?.balance || '0') || 0;
+  const availableXLM = Math.max(0, nativeBalance - reservedTotal - xlmInOffers);
+
   // Histories for inputs
   const [historyRecipients, setHistoryRecipients] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.recipients')||'[]'); } catch { return []; } });
   const [historyAmounts, setHistoryAmounts] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.amounts')||'[]'); } catch { return []; } });
@@ -1051,7 +1121,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       </div>
            </div>
       
-       {showConfirmModal && isMultisig && (
+      {showConfirmModal && isMultisig && (
        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4">
           <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-md my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-3">
@@ -1183,6 +1253,109 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 onClick={handleConfirmProceed}
               >
                 {t('multisig:confirm.options.proceed')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {reviewDialog.open && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[54] overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-lg my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <h3 className="text-lg font-semibold">{t('common:payment.send.reviewTitle', 'Transaktion bestätigen')}</h3>
+              <button
+                type="button"
+                className="p-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-50"
+                onClick={closeReviewDialog}
+                disabled={reviewProcessing}
+                aria-label={t('common:close')}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="space-y-2 text-sm mb-3">
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-gray-600 dark:text-gray-400">{t('common:account.source', 'Quelle')}:</span>
+                <span className="font-mono break-all text-right">{reviewDialog.snapshot?.source}</span>
+              </div>
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span>
+                <span className="font-mono break-all text-right">{reviewDialog.snapshot?.recipient}</span>
+              </div>
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.amount')}:</span>
+                <span className="text-right">
+                  {reviewDialog.snapshot?.amountDisplay} {reviewDialog.snapshot?.assetLabel}
+                  {reviewDialog.snapshot?.activationNotice && reviewDialog.snapshot?.amountToSend && (
+                    <span className="ml-2 text-amber-600 dark:text-amber-400">→ {reviewDialog.snapshot?.amountToSend} XLM</span>
+                  )}
+                </span>
+              </div>
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span>
+                <span className="text-right break-all">{reviewDialog.snapshot?.memo || '-'}</span>
+              </div>
+              {reviewDialog.snapshot?.network && (
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-gray-600 dark:text-gray-400">{t('common:networkLabel', 'Netzwerk')}:</span>
+                  <span className="font-mono text-right">{formatNetworkLabel(reviewDialog.snapshot.network)}</span>
+                </div>
+              )}
+              {reviewDialog.snapshot?.compromised && (
+                <div className="text-red-600 dark:text-red-400">
+                  {t('wallet:flag.compromised', 'Warning: This recipient is marked as compromised in your trusted list.')}
+                </div>
+              )}
+              {reviewDialog.snapshot?.deactivated && (
+                <div className="text-amber-600 dark:text-amber-400">
+                  {t('wallet:flag.deactivated', 'Note: This recipient is marked as deactivated in your trusted list.')}
+                </div>
+              )}
+            </div>
+
+            {reviewDialog.preflight?.activationRequired && reviewDialog.snapshot?.assetLabel === 'XLM' && reviewDialog.preflight?.desired != null && (
+              <div className="border rounded p-2 mb-3 text-xs">
+                <div className="font-semibold mb-1">{t('common:payment.send.activateConfirm.title', 'Account activation required')}</div>
+                <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                  <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.activateConfirm.minReserve', 'Minimum (2 × base reserve)')}</div>
+                  <div>{amountFmt.format(reviewDialog.preflight.minReserve)} XLM</div>
+                  <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.activateConfirm.yourAmount', 'Entered amount')}</div>
+                  <div>{amountFmt.format(reviewDialog.preflight.desired)} XLM</div>
+                  {reviewDialog.preflight.willBump && (
+                    <>
+                      <div className="text-gray-600 dark:text-gray-400">{t('common:payment.send.activateConfirm.adjustedAmount', 'Proposed amount (to activate)')}</div>
+                      <div className="text-amber-600 dark:text-amber-400 font-medium">{amountFmt.format(reviewDialog.preflight.adjusted)} XLM</div>
+                    </>
+                  )}
+                </div>
+                {reviewDialog.preflight.willBump && (
+                  <div className="mt-1 text-amber-600 dark:text-amber-400">{t('common:payment.send.activateConfirm.noteAdjust', 'Your amount is not sufficient for activation. If you continue, the minimum amount will be sent automatically.')}</div>
+                )}
+              </div>
+            )}
+
+            {reviewError && (
+              <div className="text-xs text-red-600 mb-2">{reviewError}</div>
+            )}
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+                onClick={closeReviewDialog}
+                disabled={reviewProcessing}
+              >
+                {t('common:option.cancel', 'Cancel')}
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+                onClick={handleReviewConfirm}
+                disabled={reviewProcessing}
+              >
+                {reviewProcessing ? t('common:main.processing') : t('common:option.confirm.action.text', 'Bestätigen')}
               </button>
             </div>
           </div>
@@ -1453,6 +1626,18 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 } catch { /* noop */ }
               }
               const collectLocally = !!options.collectAllSignaturesLocally;
+              if (!isMultisig) {
+                const preflightResult = pendingLocalPreflight || await runPreflight();
+                if (preflightResult?.err) {
+                  setSecretError(preflightResult.err);
+                  return;
+                }
+                setPendingLocalPreflight(preflightResult);
+                openReviewDialog(collected.map((s) => s.keypair), preflightResult);
+                setSecretError('');
+                closeSecretModal();
+                return;
+              }
               if (isMultisig && !collectLocally) {
                 await handlePrepareMultisig(collected.map((s) => s.keypair));
                 setSecretError('');
@@ -1461,17 +1646,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               }
               const result = await submitPayment(collected.map((s) => s.keypair));
               applySendResult(result);
-              setResultDialog({
-                type: 'sent',
-                summary: {
-                  source: publicKey,
-                  recipient: result.recipient,
-                  amount: `${result.amountDisplay} ${result.asset}`,
-                  memo: result.memo || '-',
-                  network: result.network,
-                },
-                hash: result.hash,
-              });
+              openSentResultDialog(result);
               setSecretError('');
               closeSecretModal();
             } catch (e) {
