@@ -1,0 +1,3 @@
+RewriteEngine On
+# Route /api/multisig/... to multisig.php
+RewriteRule ^multisig($|/.*$) /api/multisig.php [L,QSA]
