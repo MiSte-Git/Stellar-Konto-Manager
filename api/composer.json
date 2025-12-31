@@ -1,0 +1,14 @@
+{
+  "name": "skm/multisig-backend",
+  "description": "Lightweight PHP API for multisig jobs (Stellar)",
+  "type": "project",
+  "require": {
+    "php": ">=8.1",
+    "soneso/stellar-php-sdk": "^1.9"
+  },
+  "autoload": {
+    "psr-4": {
+      "SKM\\": "src/"
+    }
+  }
+}
