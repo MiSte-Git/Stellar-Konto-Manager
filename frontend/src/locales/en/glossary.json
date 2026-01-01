@@ -202,7 +202,11 @@
     "title": "Horizon history",
     "original": "Horizon history depth",
     "short": "Describes how far back the transaction history provided by public Horizon servers goes.",
-    "desc": "Die von der Stellar Development Foundation betriebenen öffentlichen Horizon-Server (Mainnet und Testnet) stellen nur eine begrenzte Historie zur Verfügung – derzeit ungefähr ein Jahr rückwirkend. Ältere Daten sind über diese kostenlosen Endpunkte nicht mehr abrufbar. Wenn du weiter in die Vergangenheit zurück musst, hast du im Wesentlichen zwei Optionen: (1) du betreibst einen eigenen Horizon-Node mit vollständiger History (inklusive History Archives), oder (2) du nutzt Drittanbieter- bzw. Bezahldienste, die historische Stellar-Daten langfristig speichern und zur Verfügung stellen.",
-    "seeAlso": "I am trained on data up to October 2023."
+    "desc": "Public Horizon servers run by the Stellar Development Foundation (mainnet and testnet) expose only a limited transaction history — currently roughly one year. Older data is no longer available from these free endpoints. If you need to go further back, you basically have two options: (1) run your own Horizon node with full history (including History Archives), or (2) use third‑party/paid services that store and serve historical Stellar data long term.",
+    "seeAlso": [
+      "horizon",
+      "serverHorizon",
+      "historyArchive"
+    ]
   }
 }

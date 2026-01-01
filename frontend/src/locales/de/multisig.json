@@ -121,7 +121,7 @@
     "copyXdrButton": "XDR kopieren",
     "copied": "Kopiert",
     "notSentHint": "Diese Transaktion wurde noch nicht an das Netzwerk gesendet.",
-    "closeHint": "Du kannst diesen Dialog schließen; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
+    "closeHint": "Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
   },
   "testMode": {
     "modalTitle": "Single-User-Signatur",
@@ -192,9 +192,9 @@
       },
       "localAll": {
         "title": "Alle Signaturen lokal eingeben",
-        "body": "Wählen Sie diese Option nur, wenn Sie alle zu diesem Konto gehörenden geheimen Schlüssel kontrollieren (z. B. nach einer Kontorettung mit mehreren Signern). Der Stellar Konto Manager sammelt dann alle Signaturen lokal und sendet die Transaktion direkt an Horizon.",
+        "body": "Wähle diese Option nur, wenn Du alle zu diesem Konto gehörenden geheimen Schlüssel kontrollierst (z. B. nach einer Kontorettung mit mehreren Unterzeichnern). Der Stellar Konto Manager sammelt dann alle Signaturen lokal und sendet die Transaktion direkt an Horizon.",
         "checkboxLabel": "Alle Signaturen in diesem Dialog lokal eingeben und direkt senden",
-        "warning": "Hinweis: Wenn Sie alle Signaturen lokal eingeben, liegen alle geheimen Schlüssel in dieser Sitzung vor. Verwenden Sie diese Option nur auf vertrauenswürdigen Geräten."
+        "warning": "Hinweis: Wenn Du alle Signaturen lokal eingibst, liegen alle geheimen Schlüssel in dieser Sitzung vor. Verwende diese Option nur auf vertrauenswürdigen Geräten."
       }
     }
   },

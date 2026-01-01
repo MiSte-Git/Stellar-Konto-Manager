@@ -170,7 +170,11 @@ export function exportMuxedCsv(publicKey, filename = 'muxed_accounts.csv', net, 
   a.download = filename;
   document.body.appendChild(a);
   a.click();
-  document.body.removeChild(a);
+  try {
+    if (a.parentNode) a.parentNode.removeChild(a);
+  } catch {
+    /* ignore */
+  }
 
   URL.revokeObjectURL(url);
 }
@@ -338,6 +342,10 @@ export function exportMuxedTemplateCsv(filename = 'muxed_accounts_template.csv',
   a.download = filename;
   document.body.appendChild(a);
   a.click();
-  document.body.removeChild(a);
+  try {
+    if (a.parentNode) a.parentNode.removeChild(a);
+  } catch {
+    /* ignore */
+  }
   URL.revokeObjectURL(url);
 }

@@ -565,7 +565,11 @@ window.location.assign(window.location.pathname);`}</pre>
     a.download = `${appShort}-bugreports-${suffix}-${ts}.csv`;
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    try {
+      if (a.parentNode) a.parentNode.removeChild(a);
+    } catch {
+      /* ignore */
+    }
     URL.revokeObjectURL(url);
   };
 

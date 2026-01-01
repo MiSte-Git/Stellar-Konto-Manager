@@ -7,7 +7,9 @@ import GlossaryToc from '../components/glossary/GlossaryToc.tsx';
 // GlossaryPage: Einsteiger-Glossar mit Suche und Grid-Ansicht.
 // Alle Texte kommen aus i18n (glossary.*). Fallbacks sind einfache englische Sätze.
 function GlossaryPage() {
-  const { t } = useTranslation(['navigation', 'glossary', 'common']);
+  const { t: tGlossary } = useTranslation('glossary');
+  const { t: tNav } = useTranslation('navigation');
+  const { t: tCommon } = useTranslation('common');
   const [query, setQuery] = useState('');
   const [showBackToTop, setShowBackToTop] = useState(false);
   // Back-to-top visibility based on the overlay scroll container
@@ -187,6 +189,10 @@ function GlossaryPage() {
       title: 'Horizon',
       desc: 'The service that apps use to talk to the Stellar network. We query Horizon for balances and transactions.'
     },
+    horizonHistory: {
+      title: 'Horizon history',
+      desc: 'Public Horizon servers expose only a limited transaction history (about one year). For older data you need your own full-history Horizon node or a third-party provider.'
+    },
     anchor: {
       title: 'Anchor',
       desc: 'A company that bridges real money, like EUR or USD, to Stellar. You give them fiat and get a token on Stellar.'
@@ -221,19 +227,19 @@ function GlossaryPage() {
     return termKeys.map((key) => {
       const def = fallback[key];
       // visible display title (with original in parens if present)
-      const display = getGlossaryDisplayTitle(key, t);
-      const desc = t(`glossary.${key}.desc`, def?.desc || '');
-      const short = t(`glossary.${key}.short`, '');
+      const display = getGlossaryDisplayTitle(key, tGlossary);
+      const desc = tGlossary(`${key}.desc`, def?.desc || '');
+      const short = tGlossary(`${key}.short`, '');
       return { key, display, desc, short };
     });
-  }, [t]);
+  }, [tGlossary]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return items;
     return items.filter(({ key, display, desc, short }) => {
-      const title = t(`glossary.${key}.title`, '');
-      const original = t(`glossary.${key}.original`, '');
+      const title = tGlossary(`${key}.title`, '');
+      const original = tGlossary(`${key}.original`, '');
       return (
         display.toLowerCase().includes(q) ||
         title.toLowerCase().includes(q) ||
@@ -242,7 +248,7 @@ function GlossaryPage() {
         desc.toLowerCase().includes(q)
       );
     });
-  }, [items, query]);
+  }, [items, query, tGlossary]);
 
   return (
     <div className="max-w-5xl mx-auto p-4">
@@ -254,16 +260,16 @@ function GlossaryPage() {
               onClick={goBack}
               className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-sm font-medium px-3 py-1.5 rounded"
             >
-              ← {t('navigation:back', 'Zurück')}
+              ← {tNav('back', 'Zurück')}
             </button>
           </div>
           <h1 className="text-2xl font-bold text-center flex-1">
-            {t('glossary:pageTitle', 'Glossary')}
+            {tGlossary('pageTitle', 'Glossary')}
           </h1>
           <div className="w-[76px] shrink-0" aria-hidden />
         </div>
         <p className="mt-2 text-sm text-gray-700 dark:text-gray-300 text-center">
-          {t('common:glossary.pageIntro',
+          {tCommon('glossary.pageIntro',
             'Here you find key words from the blockchain world and the Stellar network. Simple explanations.'
           )}
         </p>
@@ -271,18 +277,18 @@ function GlossaryPage() {
 
       <section className="mb-6">
         <label className="block text-sm font-medium mb-1" htmlFor="glossary-search">
-          {t('glossary:searchLabel', 'Search term')}
+          {tGlossary('searchLabel', 'Search term')}
         </label>
         <input
           id="glossary-search"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={t('glossary:searchPlaceholder', 'e.g., Wallet, Trustline, Memo …')}
+          placeholder={tGlossary('searchPlaceholder', 'e.g., Wallet, Trustline, Memo …')}
           className="w-full border border-gray-300 dark:border-gray-700 rounded p-2"
         />
         <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
-          {t('glossary:searchHint', 'Search matches words and explanations.')}
+          {tGlossary('searchHint', 'Search matches words and explanations.')}
         </p>
       </section>
 
@@ -291,7 +297,7 @@ function GlossaryPage() {
 
       {filtered.length === 0 ? (
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          {t('glossary:noResults', 'No results.')}
+          {tGlossary('noResults', 'No results.')}
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -316,10 +322,10 @@ function GlossaryPage() {
             } catch { /* noop */ }
           }}
           className="fixed right-4 bottom-4 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
-                aria-label={t('navigation:backToTop', 'Back to top')}
-      title={t('navigation:backToTop', 'Back to top')}
+                aria-label={tNav('backToTop', 'Back to top')}
+      title={tNav('backToTop', 'Back to top')}
     >
-      ↑ {t('navigation:backToTop', 'Back to top')}
+      ↑ {tNav('backToTop', 'Back to top')}
 
         </button>
       )}

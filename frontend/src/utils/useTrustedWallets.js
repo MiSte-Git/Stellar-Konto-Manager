@@ -103,7 +103,11 @@ export function useTrustedWallets() {
     a.download = String(filename || 'QSI_TrustedWallets.json');
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    try {
+      if (a.parentNode) a.parentNode.removeChild(a);
+    } catch {
+      /* ignore */
+    }
     URL.revokeObjectURL(url);
   }, [data]);
 
