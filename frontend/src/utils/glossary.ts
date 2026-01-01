@@ -5,14 +5,15 @@ import type { TFunction } from 'i18next';
  * Throws if the required title key is missing, so the UI can translate the error.
  */
 export function getGlossaryParts(slug: string, t: TFunction) {
-  const titleKey = `glossary.${slug}.title`;
-  const originalKey = `glossary.${slug}.original`;
+  const titleKey = `${slug}.title`;
+  const originalKey = `${slug}.original`;
 
   // Do NOT pass a default for title so a missing de.json key becomes visible
   const title = t(titleKey) as string;
   if (!title || title === titleKey) {
-    // Let the ErrorBoundary/UI handle translation via t('common:glossary.missingKey')
-    throw new Error('glossary.missingKey:' + slug);
+    // Fallback gracefully to the slug to avoid crashing the page if a key is missing
+    try { console.warn('Missing glossary key', slug); } catch { /* noop */ }
+    return { title: slug, original: undefined } as const;
   }
   // original can be missing; then we simply do not show the parenthetical
   // We do pass a blank default to avoid echoing the key on screen

@@ -555,20 +555,6 @@ function Main() {
               {devTestnet ? t('network:testnet') : t('network:mainnet')}
             </span>
           </div>
-          {/* Action buttons unter dem Titel (gemeinsame Zeile) */}
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <button
-                type="button"
-                onClick={() => navigateTo('glossar')}
-                title={t('glossary:pageTitle', 'Glossar')}
-                className="inline-flex items-center gap-1 sm:gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-0.5 md:px-3 md:py-1 text-[11px] sm:text-xs md:text-sm rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              >
-                <span aria-hidden>ℹ</span>
-                <span>{t('glossary:pageTitle', 'Glossar')}</span>
-              </button>
-            </div>
-          </div>
           {infoMessage && (
             <div className="mt-2 text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-2 inline-block">
               {infoMessage}

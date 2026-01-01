@@ -498,7 +498,11 @@ export default function InvestedTokensPanel({ publicKey }) {
     a.download = buildDefaultFilename({ publicKey, menuLabel: menuName, ext: 'csv' });
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    try {
+      if (a.parentNode) a.parentNode.removeChild(a);
+    } catch {
+      /* ignore */
+    }
     URL.revokeObjectURL(url);
   }
 }

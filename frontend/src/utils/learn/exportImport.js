@@ -55,7 +55,11 @@ export function downloadJsonFile(obj, filename = 'learn-progress.json') {
   document.body.appendChild(a);
   a.click();
   setTimeout(() => {
-    document.body.removeChild(a);
+    try {
+      if (a.parentNode) a.parentNode.removeChild(a);
+    } catch {
+      /* ignore */
+    }
     URL.revokeObjectURL(url);
   }, 0);
 }
