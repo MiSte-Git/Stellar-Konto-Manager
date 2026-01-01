@@ -20,6 +20,7 @@ function SecretKeyModal({
   account = null,
   initialCollectAllSignaturesLocally = false,
   onBackToSelection = null,
+  secretContext = '',
 }) {
   const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey']);
   const [secretInputs, setSecretInputs] = useState(['']);
@@ -32,33 +33,42 @@ function SecretKeyModal({
     if (Array.isArray(signers) || thresholds) return { signers, thresholds };
     return null;
   }, [account, signers, thresholds]);
+  const masterPublicKey = useMemo(
+    () => accountData?.account_id || accountData?.id || accountData?.accountId || '',
+    [accountData]
+  );
   const allSigners = useMemo(() => {
     const src = Array.isArray(accountData?.signers) ? accountData.signers : signers;
     return Array.isArray(src) ? [...src] : [];
   }, [accountData, signers]);
-  // Sorts signers with master first, then active (weight>0), then deactivated (weight<=0).
   const sortedSigners = useMemo(() => {
-    const masterKey = accountData?.account_id || accountData?.id || accountData?.accountId || '';
     const normalized = allSigners
       .map((s) => ({
         publicKey: s.public_key || s.key || s.publicKey,
         weight: Number(s.weight || 0),
-        isMaster: masterKey && (s.public_key === masterKey || s.key === masterKey || s.publicKey === masterKey),
+        isMaster: masterPublicKey && (s.public_key === masterPublicKey || s.key === masterPublicKey || s.publicKey === masterPublicKey),
       }))
       .filter((s) => !!s.publicKey);
     const masterList = normalized.filter((s) => s.isMaster);
     const active = normalized.filter((s) => !s.isMaster && (s.weight || 0) > 0).sort((a, b) => (b.weight || 0) - (a.weight || 0));
     const disabled = normalized.filter((s) => (s.weight || 0) <= 0 && !s.isMaster);
     return [...masterList, ...active, ...disabled];
-  }, [accountData, allSigners]);
-  const effectiveSigners = useMemo(
-    () => allSigners
-      .filter(s => !!(s?.public_key || s?.key))
-      .map((s) => ({ public_key: s.public_key || s.key, weight: Number(s.weight || 0) }))
-      .filter((s) => (s.weight || 0) > 0)
-      .sort((a, b) => (b.weight || 0) - (a.weight || 0)),
-    [allSigners]
-  );
+  }, [accountData, allSigners, masterPublicKey]);
+  const masterWeight = useMemo(() => {
+    const master = sortedSigners.find((s) => s.isMaster);
+    return Number(master?.weight || 0);
+  }, [sortedSigners]);
+  const effectiveSigners = useMemo(() => {
+    const base = allSigners
+      .filter((s) => !!(s?.public_key || s?.key || s?.publicKey))
+      .map((s) => ({ public_key: s.public_key || s.key || s.publicKey, weight: Number(s.weight || 0) }))
+      .filter((s) => (s.weight || 0) > 0);
+    let filtered = base;
+    if (secretContext === 'job' && masterWeight > 0 && masterPublicKey) {
+      filtered = base.filter((s) => s.public_key === masterPublicKey);
+    }
+    return [...filtered].sort((a, b) => (b.weight || 0) - (a.weight || 0));
+  }, [allSigners, secretContext, masterWeight, masterPublicKey]);
   const minSignerCount = useMemo(() => {
     if (forceSignerCount && Number(forceSignerCount) > 0) {
       return Number(forceSignerCount);
@@ -84,10 +94,20 @@ function SecretKeyModal({
     return isMultisigAccount === true && typeof onBackToSelection === 'function';
   }, [isMultisigAccount, onBackToSelection]);
 
-  const masterWeight = useMemo(() => {
-    const master = sortedSigners.find((s) => s.isMaster);
-    return Number(master?.weight || 0);
-  }, [sortedSigners]);
+  const displaySigners = useMemo(() => {
+    if (!sortedSigners.length) return [];
+    if (secretContext === 'job') {
+      if (masterWeight > 0) return sortedSigners.filter((s) => s.isMaster);
+      return sortedSigners.filter((s) => (s.weight || 0) > 0);
+    }
+    return sortedSigners;
+  }, [sortedSigners, secretContext, masterWeight]);
+
+  const jobSignerHint = useMemo(() => {
+    if (secretContext !== 'job') return '';
+    if (masterWeight > 0) return t('secretKey:jobSign.masterOnly');
+    return t('secretKey:jobSign.anyActive');
+  }, [secretContext, masterWeight, t]);
 
   const thresholdLevel = useMemo(() => {
     if (operationType === 'payment') return 'med';
@@ -192,19 +212,6 @@ function SecretKeyModal({
           </div>
         )}
 
-        {Array.isArray(allowedSigners) && allowedSigners.length > 0 && (
-          <div className="mb-3 text-xs text-gray-700 dark:text-gray-300">
-            <div className="font-semibold mb-1">{t('secretKey:allowedSigners', 'Erlaubte Signer')}</div>
-            <ul className="space-y-1">
-              {allowedSigners.map((s, idx) => (
-                <li key={idx} className="flex gap-2">
-                  <span className="font-mono break-all">{s.public_key || s.publicKey || s.key}</span>
-                  <span className="text-gray-500 dark:text-gray-400">({t('secretKey:weight', 'Gewicht')}: {s.weight})</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
         {isMultisigAccount && showInfo && (
           <>
             <div className="mb-3 rounded border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100 space-y-2">
@@ -246,7 +253,7 @@ function SecretKeyModal({
           </>
         )}
 
-        {isMultisigAccount && sortedSigners.length > 0 && (
+        {isMultisigAccount && displaySigners.length > 0 && (
           <div className="mb-3 rounded border border-gray-200 bg-gray-50 p-3 text-xs dark:border-gray-700 dark:bg-gray-900">
             <div className="flex items-center justify-between mb-1 text-gray-700 dark:text-gray-300">
               <span className="font-semibold">{t('secretKey:multisigInfo.signers')}:</span>
@@ -254,15 +261,20 @@ function SecretKeyModal({
                 {t('secretKey:multisigInfo.thresholdLabel')}: {requiredThreshold || 'n/a'}
               </span>
             </div>
+            {jobSignerHint && (
+              <div className="mb-2 text-[11px] text-amber-700 dark:text-amber-300">{jobSignerHint}</div>
+            )}
             <div className="space-y-1 max-h-24 overflow-y-auto pr-1">
-              {sortedSigners.map((s, idx) => (
-                <div key={idx} className="flex justify-between text-[11px]">
-                  <span className="font-mono break-all">
+              {displaySigners.map((s, idx) => (
+                <div key={idx} className="flex justify-between text-[12px]">
+                  <span className="font-mono break-all text-[12px] md:text-[13px]">
                     {s.publicKey}
                     {s.isMaster ? ` (${t('secretKey:multisigInfo.master')})` : ''}
                     {!s.isMaster && s.weight <= 0 ? ` (${t('secretKey:multisigInfo.signerDisabled')})` : ''}
                   </span>
-                  <span className="ml-2">{s.weight ?? 0}</span>
+                  <span className="ml-2 whitespace-nowrap text-gray-700 dark:text-gray-300">
+                    {t('secretKey:multisigInfo.weightLabel', 'Gewichtung')}: {s.weight ?? 0}
+                  </span>
                 </div>
               ))}
             </div>

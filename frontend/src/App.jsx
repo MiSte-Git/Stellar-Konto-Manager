@@ -26,9 +26,16 @@ console.log('App.jsx loaded');
 class ErrorBoundary extends React.Component {
   state = { error: null };
   static getDerivedStateFromError(error) {
+    if (error?.name === 'NotFoundError' || String(error?.message || '').includes('removeChild')) {
+      return { error: null };
+    }
     return { error: error.message };
   }
   componentDidCatch(error, info) {
+    if (error?.name === 'NotFoundError' || String(error?.message || '').includes('removeChild')) {
+      console.warn('Ignored NotFound/removeChild error', error);
+      return;
+    }
     console.error('Uncaught error:', error, info);
   }
   render() {
@@ -245,23 +252,45 @@ function AppShell() {
             <div className="flex justify-center">
               <LanguageSelector />
             </div>
-            <div className="mt-3 relative flex items-center justify-center">
-              <button
-                type="button"
-                onClick={() => {
-                  try {
-                    const url = buildPath('settings');
-                    try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
-                    window.history.pushState({}, '', url);
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  } catch { /* noop */ }
-                }}
-                className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                title={t('settings:label', 'Settings')}
-              >
-                {t('settings:label', 'Settings')}
-              </button>
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    try {
+                      const url = buildPath('glossar');
+                      try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
+                      window.history.pushState({}, '', url);
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    } catch { /* noop */ }
+                  }}
+                  className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  title={t('menu:glossary', 'Glossar')}
+                >
+                  <span aria-hidden>i</span>
+                  <span>{t('menu:glossary', 'Glossar')}</span>
+                </button>
+              </div>
+
+              <div className="flex items-center justify-center flex-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    try {
+                      const url = buildPath('settings');
+                      try { if (typeof window !== 'undefined' && window.sessionStorage) { window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname); } } catch { /* noop */ }
+                      window.history.pushState({}, '', url);
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    } catch { /* noop */ }
+                  }}
+                  className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  title={t('settings:label', 'Settings')}
+                >
+                  {t('settings:label', 'Settings')}
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => window.dispatchEvent(new CustomEvent('stm:openMenu', { detail: 'feedback' }))}

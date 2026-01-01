@@ -48,7 +48,11 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
       a.download = `skm-settings-${ts}.json`;
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
+      try {
+        if (a.parentNode) a.parentNode.removeChild(a);
+      } catch {
+        /* ignore */
+      }
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Settings export failed', err);
