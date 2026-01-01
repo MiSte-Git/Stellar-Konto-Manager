@@ -622,7 +622,7 @@
     },
     "loadTrustlines": "Nisu moguće učitati Trustlines. Molimo pokušajte ponovo.",
     "loadTrustlinesFailed": "Učitavanje trustlines nije uspjelo.",
-    "loadTrustlinesNotFound": "Račun nije pronađen na odabranoj mreži.",
+    "loadTrustlinesNotFound": "Račun nije pronađen na mreži '{{network}}'.",
     "accountNotFoundInNetwork": "Nije pronađeno u '{{net}}'!",
     "op_invalid_limit": "Trustline se ne može izbrisati. Možda još uvijek ima saldo ili nerazmirene obveze.",
     "query": {

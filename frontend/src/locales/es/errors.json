@@ -35,7 +35,7 @@
   },
   "loadTrustlines": "Las líneas de confianza no se pudieron cargar. Por favor, inténtalo de nuevo.",
   "loadTrustlinesFailed": "Error al cargar las líneas de confianza",
-  "loadTrustlinesNotFound": "Cuenta no encontrada en la red seleccionada.",
+  "loadTrustlinesNotFound": "Cuenta no encontrada en la red '{{network}}'.",
   "accountNotFoundInNetwork": "No encontrado en '{{net}}'!",
   "op_invalid_limit": "La línea de crédito no se puede eliminar. Puede que aún tenga un saldo o obligaciones pendientes.",
   "query": {

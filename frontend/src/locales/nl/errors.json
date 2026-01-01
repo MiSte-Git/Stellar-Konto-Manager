@@ -35,7 +35,7 @@
   },
   "loadTrustlines": "Trustlines konden niet worden geladen. Probeer het alstublieft opnieuw.",
   "loadTrustlinesFailed": "Laden van Trustlines mislukt",
-  "loadTrustlinesNotFound": "Account niet gevonden in het geselecteerde netwerk.",
+  "loadTrustlinesNotFound": "Account niet gevonden in netwerk '{{network}}'.",
   "accountNotFoundInNetwork": "Niet gevonden in '{{net}}'!",
   "op_invalid_limit": "Trustline kan niet worden verwijderd. Het kan nog een saldo of openstaande verplichtingen hebben.",
   "query": {

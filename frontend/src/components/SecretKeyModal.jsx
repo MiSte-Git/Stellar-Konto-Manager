@@ -11,6 +11,8 @@ function SecretKeyModal({
   errorMessage,
   thresholds = null,
   signers = [],
+  forceSignerCount = null,
+  allowedSigners = null,
   operationType = '',
   requiredThreshold = 0,
   isProcessing = false,
@@ -58,6 +60,9 @@ function SecretKeyModal({
     [allSigners]
   );
   const minSignerCount = useMemo(() => {
+    if (forceSignerCount && Number(forceSignerCount) > 0) {
+      return Number(forceSignerCount);
+    }
     if (!requiredThreshold || !effectiveSigners.length) return 1;
     let sum = 0;
     let count = 0;
@@ -67,7 +72,7 @@ function SecretKeyModal({
       if (sum >= requiredThreshold) break;
     }
     return Math.max(1, count || 1);
-  }, [requiredThreshold, effectiveSigners]);
+  }, [forceSignerCount, requiredThreshold, effectiveSigners]);
 
   const isMultisigAccount = useMemo(() => {
     const signerCount = Array.isArray(accountData?.signers) ? accountData.signers.length : 0;
@@ -93,7 +98,7 @@ function SecretKeyModal({
 
   useEffect(() => {
     setSecretInputs((prev) => {
-      if (prev.length >= minSignerCount) return prev;
+      if (prev.length >= minSignerCount) return prev.slice(0, minSignerCount);
       return [...prev, ...Array.from({ length: minSignerCount - prev.length }, () => '')];
     });
   }, [minSignerCount]);
@@ -184,6 +189,20 @@ function SecretKeyModal({
             >
               {showInfo ? t('secretKey:hideMultisigInfo') : t('secretKey:showMultisigInfo')}
             </button>
+          </div>
+        )}
+
+        {Array.isArray(allowedSigners) && allowedSigners.length > 0 && (
+          <div className="mb-3 text-xs text-gray-700 dark:text-gray-300">
+            <div className="font-semibold mb-1">{t('secretKey:allowedSigners', 'Erlaubte Signer')}</div>
+            <ul className="space-y-1">
+              {allowedSigners.map((s, idx) => (
+                <li key={idx} className="flex gap-2">
+                  <span className="font-mono break-all">{s.public_key || s.publicKey || s.key}</span>
+                  <span className="text-gray-500 dark:text-gray-400">({t('secretKey:weight', 'Gewicht')}: {s.weight})</span>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
         {isMultisigAccount && showInfo && (

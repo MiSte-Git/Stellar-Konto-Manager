@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const StellarSdk = require('@stellar/stellar-sdk');
+const { verifyTxSignedBy } = require('@stellar/stellar-sdk/lib/webauth/utils');
 const { spawn } = require('child_process');
 const os = require('os');
 const path = require('path');
@@ -49,6 +50,15 @@ const horizon = new StellarSdk.Horizon.Server(HORIZON_URL);
 // Allow dev origins (5173, 8080) and same-origin in production
 app.use(cors({ origin: true }));
 app.use(bodyParser.json());
+
+// Explicit CORS headers for multisig routes to ensure preflight succeeds behind proxies
+app.use('/api/multisig', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  return next();
+});
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -361,6 +371,52 @@ function newJobId() {
   return `${Date.now().toString(36)}-${Math.random().toString(16).slice(2, 10)}`;
 }
 
+async function loadAccount(server, accountId) {
+  return server.loadAccount(accountId);
+}
+
+function extractSignerMeta(account) {
+  const signers = Array.isArray(account?.signers) ? account.signers : [];
+  const thresholds = account?.thresholds || {};
+  return {
+    signers: signers
+      .map((s) => ({
+        publicKey: s.key || s.public_key || s.ed25519PublicKey || '',
+        weight: Number(s.weight || 0),
+      }))
+      .filter((s) => s.publicKey),
+    thresholds: {
+      low: Number(thresholds.low_threshold ?? 0),
+      med: Number(thresholds.med_threshold ?? 0),
+      high: Number(thresholds.high_threshold ?? 0),
+    },
+  };
+}
+
+function requiredWeightForPayment(thresholds) {
+  return Number(thresholds?.med || 0) || 0;
+}
+
+function collectSignersForTx(tx, signers = []) {
+  const collected = [];
+  for (const s of signers) {
+    try {
+      if (verifyTxSignedBy(tx, s.publicKey)) {
+        collected.push({ publicKey: s.publicKey, weight: Number(s.weight || 0) });
+      }
+    } catch {}
+  }
+  return collected;
+}
+
+async function submitTx(tx, network) {
+  const horizon = network === 'public'
+    ? new StellarSdk.Horizon.Server('https://horizon.stellar.org')
+    : new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
+  const res = await horizon.submitTransaction(tx);
+  return res;
+}
+
 app.post('/api/multisig/jobs', async (req, res) => {
   try {
     const { network, accountId, txXdr, createdBy } = req.body || {};
@@ -374,6 +430,25 @@ app.post('/api/multisig/jobs', async (req, res) => {
     } catch (e) {
       return res.status(400).json({ error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' });
     }
+    let account = null;
+    let signerMeta = { signers: [], thresholds: { low: 0, med: 0, high: 0 } };
+    try {
+      const serverForNet = net === 'public'
+        ? new StellarSdk.Horizon.Server('https://horizon.stellar.org')
+        : new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
+      account = await loadAccount(serverForNet, accountId.trim());
+      signerMeta = extractSignerMeta(account);
+    } catch (e) {
+      // Best-effort fallback: allow job creation even if account lookup fails (no blocking)
+      console.warn('multisig.jobs.account_load_failed', e?.message || e);
+    }
+    const requiredWeight = requiredWeightForPayment(signerMeta.thresholds);
+    const signers = signerMeta.signers || [];
+    const collectedSigners = signers.length ? collectSignersForTx(parsed.tx, signers) : [];
+    const collectedWeight = collectedSigners.reduce((acc, s) => acc + Number(s.weight || 0), 0);
+    const nowIso = new Date().toISOString();
+    const shouldSubmit = collectedWeight >= requiredWeight && requiredWeight > 0;
+
     const nowIso = new Date().toISOString();
     const job = {
       id: newJobId(),
@@ -382,12 +457,34 @@ app.post('/api/multisig/jobs', async (req, res) => {
       txHash: parsed.hashHex,
       txXdrOriginal: txXdr,
       txXdrCurrent: txXdr,
-      status: 'pending_signatures',
+      status: shouldSubmit ? 'ready_to_submit' : 'pending_signatures',
       createdAt: nowIso,
       createdBy: typeof createdBy === 'string' && createdBy.trim() ? createdBy.trim() : 'local',
+      signers,
+      requiredWeight,
+      collectedSigners,
+      collectedWeight,
     };
+    // Auto submit if threshold already met (e.g., single-sig)
+    if (shouldSubmit) {
+      try {
+        const result = await submitTx(parsed.tx, net);
+        job.status = 'submitted_success';
+        job.submittedAt = new Date().toISOString();
+        job.submittedResult = { hash: result?.hash || result?.id || null };
+      } catch (submitErr) {
+        job.status = 'submitted_failed';
+        job.submittedAt = new Date().toISOString();
+        job.submittedResult = { error: submitErr?.response?.data || submitErr?.message || 'submit_failed' };
+      }
+    }
     multisigDb.items.unshift(job);
-    await saveMultisigDb();
+    try {
+      await saveMultisigDb();
+    } catch (saveErr) {
+      console.warn('multisig.jobs.save_failed', saveErr?.message || saveErr);
+      // continue; even if persistence fails, return job to caller
+    }
     res.json(job);
   } catch (e) {
     console.error('multisig.jobs.post.failed', e);
@@ -397,7 +494,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
 
 app.get('/api/multisig/jobs', async (req, res) => {
   try {
-    const { network, accountId, status } = req.query;
+    const { network, accountId, status, signer } = req.query;
     let items = multisigDb.items.slice();
     if (network) {
       const net = normalizeNetwork(network);
@@ -406,6 +503,12 @@ app.get('/api/multisig/jobs', async (req, res) => {
     if (accountId) {
       const acc = String(accountId).trim();
       items = items.filter((j) => j.accountId === acc);
+    }
+    if (signer) {
+      const s = String(signer).trim();
+      if (s) {
+        items = items.filter((j) => Array.isArray(j.signers) && j.signers.some((si) => si.publicKey === s));
+      }
     }
     if (status && multisigStatus.has(String(status))) {
       items = items.filter((j) => j.status === status);
@@ -463,12 +566,38 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
       }
     });
 
-    if (added === 0) {
-      return res.json({ ...job, txXdrCurrent: current.tx.toXDR(), txHash: job.txHash });
+    const newXdr = current.tx.toXDR();
+    const signers = Array.isArray(job.signers) ? job.signers : [];
+    const collected = collectSignersForTx(current.tx, signers);
+    const collectedWeight = collected.reduce((acc, s) => acc + Number(s.weight || 0), 0);
+    const requiredWeight = Number(job.requiredWeight || 0);
+
+    const updated = {
+      ...job,
+      txXdrCurrent: newXdr,
+      collectedSigners: collected,
+      collectedWeight,
+    };
+
+    // Auto-submit when threshold reached and not already submitted
+    if (requiredWeight > 0 && collectedWeight >= requiredWeight && job.status !== 'submitted_success') {
+      try {
+        const result = await submitTx(current.tx, net);
+        updated.status = 'submitted_success';
+        updated.submittedAt = new Date().toISOString();
+        updated.submittedResult = { hash: result?.hash || result?.id || null };
+      } catch (submitErr) {
+        updated.status = 'submitted_failed';
+        updated.submittedAt = new Date().toISOString();
+        updated.submittedResult = { error: submitErr?.response?.data || submitErr?.message || 'submit_failed' };
+      }
+    } else if (added === 0) {
+      // No new signature added, keep status
+      updated.status = job.status;
+    } else {
+      updated.status = 'pending_signatures';
     }
 
-    const newXdr = current.tx.toXDR();
-    const updated = { ...job, txXdrCurrent: newXdr };
     multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? updated : j));
     await saveMultisigDb();
     res.json(updated);
