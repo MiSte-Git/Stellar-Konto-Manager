@@ -560,35 +560,6 @@ function Main() {
             <div className="flex flex-wrap items-center justify-center gap-2">
               <button
                 type="button"
-                onClick={() => {
-                  try {
-                    const url = quizLandingPath(1);
-                    if (typeof window !== 'undefined') {
-                      if (window.sessionStorage) {
-                        window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname);
-                      }
-                      window.history.pushState({}, '', url);
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }
-                  } catch { /* noop */ }
-                }}
-                title={t('learn:menu', 'Stellar-Quiz für Anfänger')}
-                className="inline-flex items-center gap-1 sm:gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-0.5 md:px-3 md:py-1 text-[11px] sm:text-xs md:text-sm rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              >
-                <span aria-hidden>★</span>
-                <span>{t('learn:menu', 'Stellar-Quiz für Anfänger')}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => navigateTo('learn')}
-                title={t('learn:menuHint', 'Lernübersicht')}
-                className="inline-flex items-center gap-1 sm:gap-1.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 px-2.5 py-0.5 md:px-3 md:py-1 text-[11px] sm:text-xs md:text-sm rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              >
-                <span aria-hidden>↗</span>
-                <span>{t('learn:menuHint', 'Lernübersicht')}</span>
-              </button>
-              <button
-                type="button"
                 onClick={() => navigateTo('glossar')}
                 title={t('glossary:pageTitle', 'Glossar')}
                 className="inline-flex items-center gap-1 sm:gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-0.5 md:px-3 md:py-1 text-[11px] sm:text-xs md:text-sm rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
