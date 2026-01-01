@@ -23,7 +23,7 @@ import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import AddTrustlineModal from './AddTrustlineModal.jsx';
 import { Networks, TransactionBuilder, Operation, Asset } from '@stellar/stellar-sdk';
 import MultisigPrepareDialog from './MultisigPrepareDialog.jsx';
-import { BACKEND_URL } from '../config.js';
+import { apiUrl } from '../utils/apiBase.js';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
@@ -251,7 +251,7 @@ function ListTrustlines({
       const xdr = tx.toXDR();
       let job = null;
       try {
-        const r = await fetch(`${BACKEND_URL}/api/multisig/jobs`, {
+        const r = await fetch(apiUrl('multisig/jobs'), {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({
@@ -268,11 +268,18 @@ function ListTrustlines({
         setErrorMessage(formatErrorForUi(t, e));
         return;
       }
+      const jobId = job?.id || job?.jobId || '';
+      const jobHash = job?.txHash || job?.tx_hash || hashHex;
+      const jobXdr = job?.txXdrCurrent || job?.tx_xdr_current || xdr;
+      if (!jobId) {
+        setErrorMessage(formatErrorForUi(t, new Error('multisig.jobs.create_failed')));
+        return;
+      }
 
       setPreparedTx({
-        id: job?.id,
-        hash: job?.txHash || hashHex,
-        xdr: job?.txXdrCurrent || xdr,
+        id: jobId,
+        hash: jobHash,
+        xdr: jobXdr,
         summary: {
           title: t('multisig:prepare.title'),
           subtitle: t('multisig:prepare.subtitle'),
@@ -280,7 +287,7 @@ function ListTrustlines({
             { label: t('common:account.source', 'Quelle'), value: publicKey },
             { label: t('trustline:delete'), value: `${deletableOverview.length}` },
             { label: t('common:network', 'Netzwerk'), value: net },
-            job?.id ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: job.id } : null,
+            jobId ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: jobId } : null,
           ].filter(Boolean),
         },
       });

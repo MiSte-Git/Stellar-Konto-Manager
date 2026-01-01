@@ -7,7 +7,7 @@ import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { validateMultisigConfig } from '../utils/validateMultisigConfig.js';
 import { Keypair, Networks, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
-import { BACKEND_URL } from '../config.js';
+import { apiUrl } from '../utils/apiBase.js';
 import { createPendingMultisigJob } from '../utils/multisigApi.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
@@ -279,9 +279,25 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     setError('');
     setInfo('');
     try {
+      const planned = buildPlannedChanges();
       const { tx } = await buildSetOptionsTx(collectedSigners, { signTx: true, requireSigners: true });
       const res = await server.submitTransaction(tx);
       setInfo(t('common:multisigEdit.saved', { hash: res?.hash || res?.id || '' }));
+      // Update local snapshot so new signers/weights are recognized for further actions
+      const pk = (defaultPublicKey || '').trim();
+      const updatedSigners = [
+        { key: pk, weight: clampByte(masterWeight) },
+        ...signers.map((s) => ({ key: (s.key || '').trim(), weight: clampByte(s.weight) })).filter((s) => s.key),
+      ];
+      setCurrentAccount({
+        account_id: pk,
+        signers: updatedSigners,
+        thresholds: {
+          low_threshold: clampByte(planned.thresholds.low),
+          med_threshold: clampByte(planned.thresholds.med),
+          high_threshold: clampByte(planned.thresholds.high),
+        },
+      });
     } catch (e) {
       const msg = String(e?.message || e);
       if (msg.includes('tx_bad_auth')) {
@@ -324,7 +340,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       const xdr = tx.toXDR();
       let job = null;
       try {
-        const r = await fetch(`${BACKEND_URL}/api/multisig/jobs`, {
+        const r = await fetch(apiUrl('multisig/jobs'), {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({
@@ -341,11 +357,18 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         setError(String(err?.message || err));
         return;
       }
+      const jobId = job?.id || job?.jobId || '';
+      const jobHash = job?.txHash || job?.tx_hash || hashHex;
+      const jobXdr = job?.txXdrCurrent || job?.tx_xdr_current || xdr;
+      if (!jobId) {
+        setError(String('multisig.jobs.create_failed'));
+        return;
+      }
 
       setPreparedTx({
-        id: job?.id,
-        hash: job?.txHash || hashHex,
-        xdr: job?.txXdrCurrent || xdr,
+        id: jobId,
+        hash: jobHash,
+        xdr: jobXdr,
         summary: {
           title: t('multisig:prepare.title'),
           subtitle: t('multisig:prepare.subtitle'),
@@ -357,7 +380,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
             { label: t('createAccount:thresholdHigh'), value: String(plannedThresholds.high) },
             { label: t('common:signers', 'Signer'), value: String(plannedSigners.length) },
             { label: t('common:network', 'Netzwerk'), value: network },
-            job?.id ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: job.id } : null,
+            jobId ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: jobId } : null,
           ].filter(Boolean),
         },
       });
@@ -366,7 +389,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     } finally {
       setShowConfirmModal(false);
     }
-  }, [BACKEND_URL, buildSetOptionsTx, defaultPublicKey, network, t]);
+  }, [buildSetOptionsTx, defaultPublicKey, network, t]);
 
   const buildPlannedChanges = useCallback(() => {
     const pk = (defaultPublicKey || '').trim();

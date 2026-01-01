@@ -8,6 +8,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const base = (env.VITE_BASE || '/').replace(/\/+$/, '/') // sichert endenden Slash
+  const devProxyTargetRaw = (env.VITE_DEV_PROXY_TARGET || '').trim()
+  const devProxyTarget = devProxyTargetRaw || `http://localhost:${env.BACKEND_PORT || env.PORT || 3000}`
+  const devProxyIsHttps = /^https:/i.test(devProxyTarget)
   return {
     base,
     plugins: [react()],
@@ -27,9 +30,9 @@ export default defineConfig(({ mode }) => {
         },
         // Proxy backend API during development so /api/* works from Vite dev server
         '/api': {
-          target: 'http://localhost:3000',
+          target: devProxyTarget,
           changeOrigin: true,
-          secure: false,
+          secure: !devProxyIsHttps ? false : true,
         },
       },
     },

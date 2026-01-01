@@ -35,7 +35,7 @@
   },
   "loadTrustlines": "Les lignes de confiance n'ont pas pu être chargées. Veuillez réessayer.",
   "loadTrustlinesFailed": "Échec du chargement des lignes de confiance",
-  "loadTrustlinesNotFound": "Compte introuvable dans le réseau sélectionné.",
+  "loadTrustlinesNotFound": "Compte introuvable sur le réseau '{{network}}'.",
   "accountNotFoundInNetwork": "Non trouvé dans '{{net}}' !",
   "op_invalid_limit": "La ligne de confiance ne peut pas être supprimée. Elle peut encore avoir un solde ou des obligations non réglées.",
   "query": {

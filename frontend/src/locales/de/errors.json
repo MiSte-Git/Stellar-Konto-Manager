@@ -35,7 +35,7 @@
   },
   "loadTrustlines": "Trustlines konnten nicht geladen werden. Bitte erneut versuchen.",
   "loadTrustlinesFailed": "Laden der Trustlines fehlgeschlagen",
-  "loadTrustlinesNotFound": "Konto im ausgewählten Netzwerk nicht gefunden.",
+  "loadTrustlinesNotFound": "Konto im Netzwerk '{{network}}' nicht gefunden.",
   "accountNotFoundInNetwork": "Im '{{net}}' nicht gefunden!",
   "op_invalid_limit": "Trustline kann nicht gelöscht werden. Sie hat möglicherweise noch Guthaben oder offene Verpflichtungen.",
   "query": {

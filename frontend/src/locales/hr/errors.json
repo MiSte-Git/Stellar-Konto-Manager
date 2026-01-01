@@ -35,7 +35,7 @@
   },
   "loadTrustlines": "Povjereničke linije nije bilo moguće učitati. Molimo pokušajte ponovo.",
   "loadTrustlinesFailed": "Učitavanje Trustlines nije uspjelo.",
-  "loadTrustlinesNotFound": "Račun nije pronađen u odabranoj mreži.",
+  "loadTrustlinesNotFound": "Račun nije pronađen u mreži '{{network}}'.",
   "accountNotFoundInNetwork": "Nije pronađeno u '{{net}}'!",
   "op_invalid_limit": "Povjerenje se ne može izbrisati. Može još uvijek imati stanje ili nepodmirene obveze.",
   "query": {

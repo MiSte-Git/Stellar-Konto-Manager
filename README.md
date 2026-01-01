@@ -62,6 +62,20 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Multisig-XDR-Signaturen können vollständig lokal gehandhabt werden.
 - Empfehlung: echte Wallet-Keys nur auf vertrauenswürdigen Geräten, Backups offline halten.
 
+## PHP-Multisig-Backend (wenn Node nicht erlaubt ist)
+- Ordner: `api/` enthält `multisig.php`, `.htaccess`, `composer.json`. Speicherung in `api/data/multisig_jobs.json` (schreibbar machen).
+- Abhängigkeiten: Composer + PHP (empfohlen PHP 8.1+ mit `gmp`). Auf Debian z. B.:
+  ```bash
+  sudo apt update
+  sudo apt install php-cli php-curl php-gmp composer
+  cd /path/to/project/api
+  composer install
+  ```
+- Upload/Deploy: `api/multisig.php`, `api/.htaccess`, `api/composer.json`, `api/composer.lock`, kompletter `api/vendor/` und sicherstellen, dass `api/data/` beschreibbar ist.
+- Falls lokal kein PHP/Composer verfügbar (z. B. Windows ohne Extensions): Composer-Installer per `php composer-setup.php`, danach `php composer.phar install --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-gmp` ausführen, anschließend den erzeugten `vendor/` hochladen.
+- Routing: Apache muss `/api/multisig/...` auf `api/multisig.php` leiten (per `.htaccess` im `api/`-Ordner).
+- Frontend-Builds: `start-build.sh` setzt `VITE_BACKEND_URL` automatisch auf `PROD_API_URL`, wenn nicht explizit gesetzt. Alternativ `VITE_BACKEND_URL=https://www.skm.steei.de` in `.env` definieren, um jeden Build auf die produktive API zu pinnen.
+
 ## Rechtliches
 - Öffentliche Nutzung erfordert Impressum/Datenschutz: Seite `/legal` verlinkt im Footer und Menü.
 - Open-Source-Lizenz: siehe Lizenzdatei im Repo.
