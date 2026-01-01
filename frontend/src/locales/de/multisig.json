@@ -144,6 +144,7 @@
     "idLabel": "Job-ID",
     "accountLabel": "Quellkonto",
     "statusLabel": "Status",
+    "network": "Netzwerk",
     "txHashLabel": "Transaktions-Hash",
     "xdrLabel": "Transaktions-XDR",
     "copyXdrButton": "XDR kopieren",
@@ -155,6 +156,12 @@
     "signers": {
       "required": "Benötigte Signaturen",
       "collected": "Bereits gesammelte Signaturen"
+    },
+    "signatures": {
+      "title": "Signer & Status",
+      "progress": "Signaturgewicht: {{collected}} / {{required}}",
+      "signed": "unterzeichnet",
+      "missing": "fehlt"
     },
     "changes": {
       "title": "Geplante Änderungen",
@@ -206,9 +213,21 @@
     "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion."
   },
   "list": {
-    "title": "Multisig-Jobs",
-    "empty": "Keine Multisig-Jobs gefunden.",
+    "title": "Multisig-Aufträge",
+    "noAccount": "Bitte lade zuerst ein Konto, um Multisig-Aufträge zu sehen.",
+    "empty": "Keine Multisig-Aufträge gefunden.",
     "details": "Details anzeigen",
+    "signatures": "Signaturen",
+    "signaturesProgress": "{{collected}} / {{required}} Signaturgewicht",
+    "filter": {
+      "mine": "Nur Aufträge, die ich noch signieren muss",
+      "assigned": "Auch Aufträge, bei denen ich Signer bin"
+    },
+    "signer": {
+      "signed": "✓",
+      "missing": "fehlt",
+      "unknown": "Signer"
+    },
     "status": {
       "pending_signatures": "Wartet auf Signaturen",
       "ready_to_submit": "Bereit zum Senden",
@@ -219,13 +238,13 @@
     }
   },
   "actions": {
-    "createMultisigJob": "Multisig-Job erstellen"
+    "createMultisigJob": "Multisig-AuftragJob erstellen"
   },
   "job": {
     "create": {
       "success": {
-        "title": "Multisig-Job erstellt",
-        "body": "Der Multisig-Job mit der ID {{id}} wurde erstellt. Weitere Unterzeichner können die XDR-Datei signieren, sobald sie exportiert wurde."
+        "title": "Multisig-Auftrag erstellt",
+        "body": "Der Multisig-Auftrag mit der ID {{id}} wurde erstellt. Weitere Unterzeichner können die XDR-Datei signieren, sobald sie exportiert wurde."
       }
     },
     "status": {
@@ -237,11 +256,17 @@
       "unknown": "Unbekannt"
     },
     "statusHelp": {
-      "pending": "Der Multisig-Job wurde erstellt, aber es sind noch keine Signaturen vorhanden.",
+      "pending": "Der Multisig-Auftrag wurde erstellt, aber es sind noch keine Signaturen vorhanden.",
       "partiallySigned": "Einige Unterzeichner haben bereits signiert. Es fehlen noch weitere Signaturen.",
       "readyToSubmit": "Es liegen genügend Signaturen vor. Die Transaktion kann an Horizon gesendet werden.",
       "submitted": "Die Transaktion wurde an das Netzwerk gesendet. Prüfen Sie bei Bedarf den endgültigen Kontostand.",
       "failed": "Beim Senden der Transaktion ist ein Fehler aufgetreten. Details finden Sie im Fehlerprotokoll.",
+      "pending_signatures": "Der Multisig-Auftrag wartet noch auf Signaturen.",
+      "ready_to_submit": "Es liegen genug Signaturen vor. Der Auftrag kann gesendet werden.",
+      "submitted_success": "Der Auftrag wurde gesendet.",
+      "submitted_failed": "Beim Senden ist ein Fehler aufgetreten.",
+      "expired": "Der Auftrag ist abgelaufen.",
+      "obsolete_seq": "Die Sequence ist veraltet.",
       "unknown": "Status unbekannt."
     }
   }

@@ -137,6 +137,7 @@
     "idLabel": "Job ID",
     "accountLabel": "Source account",
     "statusLabel": "Status",
+    "network": "Network",
     "txHashLabel": "Transaction hash",
     "xdrLabel": "Transaction XDR",
     "copyXdrButton": "Copy XDR",
@@ -148,6 +149,12 @@
     "signers": {
       "required": "Required Signatures",
       "collected": "Already collected signatures"
+    },
+    "signatures": {
+      "title": "Signers & status",
+      "progress": "Signature weight: {{collected}} / {{required}}",
+      "signed": "signed",
+      "missing": "missing"
     },
     "changes": {
       "title": "Planned changes",
@@ -195,8 +202,20 @@
   },
   "list": {
     "title": "Multisig Jobs",
+    "noAccount": "Please load an account first to see multisig jobs.",
     "empty": "No multisig jobs found.",
     "details": "Show details",
+    "signatures": "Signatures",
+    "signaturesProgress": "{{collected}} / {{required}} signature weight",
+    "filter": {
+      "mine": "Only jobs I still need to sign",
+      "assigned": "Also jobs where I am a signer"
+    },
+    "signer": {
+      "signed": "✓",
+      "missing": "missing",
+      "unknown": "Signer"
+    },
     "status": {
       "pending_signatures": "Waiting for signatures",
       "ready_to_submit": "Ready to send",
@@ -230,6 +249,12 @@
       "readyToSubmit": "There are enough signatures present. The transaction can be sent to Horizon.",
       "submitted": "The transaction has been sent to the network. Check the final account balance if necessary.",
       "failed": "An error occurred while sending the transaction. Please refer to the error log for details.",
+      "pending_signatures": "This multisig job is still waiting for signatures.",
+      "ready_to_submit": "Enough signatures are present. The job can be submitted.",
+      "submitted_success": "The job was submitted.",
+      "submitted_failed": "An error occurred while submitting.",
+      "expired": "The job has expired.",
+      "obsolete_seq": "Sequence number is outdated.",
       "unknown": "Status unknown."
     }
   },

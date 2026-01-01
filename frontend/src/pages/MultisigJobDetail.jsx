@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getPendingMultisigJob, mergeSignedXdr } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
+import { Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 
-function MultisigJobDetail({ jobId }) {
+function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
   const { t } = useTranslation(['multisig', 'common']);
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -52,6 +53,61 @@ function MultisigJobDetail({ jobId }) {
     }
   }, [importXdr, jobId, t]);
 
+  const collectedSet = useMemo(() => new Set((job?.collectedSigners || []).map((s) => s.publicKey)), [job]);
+  const shortPk = useCallback((pk) => {
+    const val = pk || '';
+    if (val.length <= 16) return val || t('multisig:list.signer.unknown', 'Signer');
+    return `${val.slice(0, 8)}…${val.slice(-8)}`;
+  }, [t]);
+
+  const canCurrentSign = useMemo(() => {
+    if (!currentPublicKey) return false;
+    return !!(job?.signers || []).find((s) => (s.publicKey || '') === currentPublicKey && Number(s.weight || 0) > 0);
+  }, [job, currentPublicKey]);
+
+  const handleSignWithSession = useCallback(async () => {
+    if (!job) return;
+    if (!canCurrentSign) {
+      setError(t('multisig:detail.signatures.missing', 'fehlt'));
+      return;
+    }
+    const secret = (() => {
+      try { return sessionStorage.getItem(`stm.session.secret.${currentPublicKey}`) || ''; } catch { return ''; }
+    })();
+    if (!secret) {
+      setError(t('multisig:detail.noSessionSecret', 'Kein Secret Key im Speicher dieses Browsers. Bitte signiertes XDR importieren.'));
+      return;
+    }
+    try {
+      setLoading(true);
+      const netPass = (job.network === 'testnet' || job.network === 'TESTNET') ? Networks.TESTNET : Networks.PUBLIC;
+      const tx = TransactionBuilder.fromXDR(job.txXdrCurrent || job.txXdrOriginal || job.txXdr || '', netPass);
+      const kp = Keypair.fromSecret(secret);
+      tx.sign(kp);
+      const signerMeta = (job.signers || []).map((s) => ({
+        publicKey: s.publicKey,
+        weight: Number(s.weight || 0),
+      })).filter((s) => s.publicKey && s.weight > 0);
+      const clientCollected = [{
+        publicKey: kp.publicKey(),
+        weight: signerMeta.find((s) => s.publicKey === kp.publicKey())?.weight ?? 0,
+      }];
+      const merged = await mergeSignedXdr({
+        jobId,
+        signedXdr: tx.toXDR(),
+        clientCollected,
+        signers: signerMeta,
+      });
+      setJob(merged);
+      setInfo(t('multisig:detail.signatures.signedLocal', 'Signatur gespeichert.'));
+      setError('');
+    } catch (e) {
+      setError(String(e?.message || 'multisig.jobs.merge_failed'));
+    } finally {
+      setLoading(false);
+    }
+  }, [job, jobId, canCurrentSign, currentPublicKey, t]);
+
   if (!jobId) return null;
 
   return (
@@ -62,6 +118,17 @@ function MultisigJobDetail({ jobId }) {
           {job?.status && <MultisigJobStatusBadge status={job.status} />}
         </div>
         <div className="flex items-center gap-2">
+          {onBack && (
+            <button
+              type="button"
+              className="text-sm px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+              onClick={() => {
+                try { onBack(); } catch { /* noop */ }
+              }}
+            >
+              {t('common:option.back', 'Zurück')}
+            </button>
+          )}
           <button
             type="button"
             className="text-sm px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -82,22 +149,40 @@ function MultisigJobDetail({ jobId }) {
           <div className="border rounded p-3 text-sm">
             <div className="font-mono break-all text-xs text-gray-600 dark:text-gray-300">ID: {job.id}</div>
             <div className="flex flex-wrap gap-3 mt-2">
-              <span className="text-gray-700 dark:text-gray-200">{t('common:network', 'Netzwerk')}: {job.network}</span>
+              <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.network', 'Netzwerk')}: {job.network}</span>
               <span className="text-gray-700 dark:text-gray-200">{t('common:account.source', 'Quelle')}: <span className="font-mono break-all">{job.accountId}</span></span>
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:prepare.hashLabel')}: <span className="font-mono break-all">{job.txHash}</span></span>
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.statusLabel', 'Status')}: {job.status}</span>
               <span className="text-gray-700 dark:text-gray-200">{t('common:createdAt', 'Angelegt')}: {job.createdAt}</span>
-              <span className="text-gray-700 dark:text-gray-200">{t('common:createdBy', 'Erstellt von')}: {job.createdBy}</span>
+              <span className="text-gray-700 dark:text-gray-200">{t('common:createdBy', 'Erstellt von')}: {job.createdBy || '-'}</span>
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.updatedAt', 'Aktualisiert am')}: {job.updatedAt || '-'}</span>
             </div>
             <div className="mt-2 text-sm text-gray-700 dark:text-gray-200 space-y-1">
-              <div>{t('multisig:detail.signers.required')}: {job.requiredSigners ?? '-'}</div>
-              <div>{t('multisig:detail.signers.collected')}: {job.collectedSigners ?? '-'}</div>
-              {job.requiredSigners && job.collectedSigners != null && (
-                <div className="text-xs text-gray-600 dark:text-gray-300">
-                  {t('multisig:detail.signatures.progress.count', { collected: job.collectedSigners, required: job.requiredSigners })}
-                </div>
-              )}
+              <div className="font-semibold">{t('multisig:detail.signatures.title', 'Signaturen')}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-300">
+                {t('multisig:detail.signatures.progress', {
+                  collected: job.collectedWeight ?? 0,
+                  required: job.requiredWeight ?? 0,
+                })}
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {(job?.signers || []).map((s) => {
+                  const pk = s.publicKey || '';
+                  const signed = collectedSet.has(pk);
+                  const short = pk ? `${pk.slice(0, 4)}…${pk.slice(-4)}` : '';
+                  return (
+                    <span
+                      key={pk || Math.random()}
+                      className={`px-2 py-0.5 rounded text-xs ${signed ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-100'}`}
+                      title={pk}
+                    >
+                      {shortPk(pk)}
+                      {' '}
+                      {signed ? t('multisig:detail.signatures.signed', 'unterzeichnet') : t('multisig:detail.signatures.missing', 'fehlt')}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
             {job.status && (
               <div className="mt-2 text-xs text-gray-600 dark:text-gray-300">
@@ -123,6 +208,16 @@ function MultisigJobDetail({ jobId }) {
           <div className="border rounded p-3">
             <div className="flex items-center justify-between mb-1">
               <h2 className="font-semibold text-sm">{t('multisig:detail.xdr.title')}</h2>
+              {canCurrentSign && (
+                <button
+                  type="button"
+                  className="text-xs px-2 py-1 rounded border border-green-200 text-green-700 dark:text-green-200 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900"
+                  onClick={handleSignWithSession}
+                  disabled={loading}
+                >
+                  {t('multisig:detail.signers.signWithSession', 'Mit gespeichertem Key signieren')}
+                </button>
+              )}
               <button
                 type="button"
                 className="text-xs px-2 py-1 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"

@@ -1,7 +1,7 @@
 // import trustlineLogo from './assets/Trustline-Logo.jpg';
 import './i18n'; // Initialisiert die Sprachunterstützung
 import { useTranslation } from 'react-i18next';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Link } from 'react-router-dom';
 import { BACKEND_URL } from './config';
@@ -96,6 +96,7 @@ import SendPaymentPage from './pages/SendPaymentPage.jsx';
 import FeedbackPage from './pages/FeedbackPage.jsx';
 import MuxedAccountsPage from './pages/MuxedAccountsPage.jsx';
 import MultisigJobList from './pages/MultisigJobList.jsx';
+import MultisigJobDetail from './pages/MultisigJobDetail.jsx';
 import TradingAssetsPage from './pages/TradingAssetsPage.jsx';
 
 
@@ -142,6 +143,7 @@ function Main() {
   const [sortDirection, setSortDirection] = useState('asc');
   const [currentPage, setCurrentPage] = useState(0);
   const ITEMS_PER_PAGE = 333;const [menuSelection, setMenuSelection] = useState(null);
+  const autoRestoredRef = useRef(false);
 
   const [sourcePublicKey, setSourcePublicKey] = useState('');
   const [sourceSecret, setSourceSecret] = useState('');
@@ -162,6 +164,7 @@ function Main() {
   const [confirmAction, setConfirmAction] = useState(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [showSecretInfo, setShowSecretInfo] = useState(false);
+  const [activeJobId, setActiveJobId] = useState(null);
   // Dev/Testnet toggle state synced with localStorage
   const [devTestnet, setDevTestnet] = useState(false);
    // Send Payment initial values (e.g., for donation)
@@ -332,6 +335,8 @@ function Main() {
       // Phase 1: nur leichte Konto-Zusammenfassung (verhindert Burst beim bloßen Laden)
       const { publicKey, summary } = await submitSourceInput(input, t, devTestnet ? 'TESTNET' : 'PUBLIC', { includeTrustlines: false });
       setSourcePublicKey(publicKey);
+      setWalletHeaderInput(publicKey);
+      try { window.localStorage?.setItem('SKM_LAST_ACCOUNT', publicKey); } catch { /* noop */ }
       // XLM direkt aus summary
       setXlmBalance(summary?.xlmBalance ?? null);
       addRecent(publicKey);
@@ -404,6 +409,8 @@ function Main() {
       const target = typeof e?.detail === 'string' ? e.detail : '';
       if (target === 'feedback') {
         setMenuSelection('feedback');
+      } else if (target === 'multisigJobs') {
+        setMenuSelection('multisigJobs');
       } else if (target === 'donate') {
         setSendInit({
           recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M',
@@ -445,6 +452,7 @@ function Main() {
 
   function unloadActiveWallet() {
     setSourcePublicKey('');
+    try { window.localStorage?.removeItem('SKM_LAST_ACCOUNT'); } catch { /* noop */ }
     setTrustlines([]);
     setTrustlinesOwner('');
     setSelectedTrustlines([]);
@@ -498,6 +506,33 @@ function Main() {
     console.log('[menuSelection]', JSON.stringify(menuSelection));
     console.debug('[DEBUG] useEffect check: menuSelection is', menuSelection);
   }, [menuSelection]);
+
+  // Auto-restore zuletzt geladenes Konto
+  useEffect(() => {
+    if (sourcePublicKey || autoRestoredRef.current) return;
+    let stored = '';
+    try { stored = window.localStorage?.getItem('SKM_LAST_ACCOUNT') || ''; } catch { stored = ''; }
+    const trimmed = stored.trim();
+    if (!trimmed) return;
+    autoRestoredRef.current = true;
+    (async () => {
+      setIsLoading(true);
+      setError('');
+      try {
+        const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
+        const { publicKey, summary } = await submitSourceInput(trimmed, t, net, { includeTrustlines: false });
+        setSourcePublicKey(publicKey);
+        setWalletHeaderInput(publicKey);
+        setXlmBalance(summary?.xlmBalance ?? null);
+        setNotFound(false);
+        setRefreshToken(prev => prev + 1);
+      } catch (err) {
+        setError(String(err?.message || ''));
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [sourcePublicKey, t]);
 
   const errorDisplay = React.useMemo(() => {
     const raw = String(error || '');
@@ -910,7 +945,11 @@ function Main() {
       )}
       {menuSelection === 'multisigJobs' && (
         <div className="max-w-5xl mx-auto px-3">
-          <MultisigJobList onBack={() => setMenuSelection(null)} />
+          <MultisigJobList
+            publicKey={sourcePublicKey}
+            onBack={() => setMenuSelection(null)}
+            onOpenDetail={(id) => setActiveJobId(id)}
+          />
         </div>
       )}
        
@@ -969,6 +1008,25 @@ function Main() {
             <p className="text-sm whitespace-pre-line text-gray-700 dark:text-gray-300">{t('createAccount:info.keysOnPage.text')}</p>
             <div className="text-right mt-6">
               <button onClick={()=>setShowSecretInfo(false)} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">{t('common:close')}</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {activeJobId && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40 p-4">
+          <div className="bg-white dark:bg-gray-900 rounded shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b px-4 py-3">
+              <div className="text-sm font-semibold">{t('multisig:detail.title')}</div>
+              <button
+                type="button"
+                className="text-sm px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => setActiveJobId(null)}
+              >
+                {t('common:option.back', 'Zurück')}
+              </button>
+            </div>
+            <div className="p-4">
+              <MultisigJobDetail jobId={activeJobId} currentPublicKey={sourcePublicKey} />
             </div>
           </div>
         </div>

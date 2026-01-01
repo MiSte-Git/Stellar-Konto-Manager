@@ -79,6 +79,15 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     })).filter((s) => !!s.public_key);
     return [...master, ...others];
   }, [defaultPublicKey, masterWeight, signers]);
+
+  const getSessionSecret = useCallback((pk) => {
+    if (!pk) return '';
+    try {
+      return window.sessionStorage?.getItem(`stm.session.secret.${pk}`) || '';
+    } catch {
+      return '';
+    }
+  }, []);
   const requiredThreshold = useMemo(
     () => getRequiredThreshold('setOptions', currentAccount?.thresholds || thresholdsForModal),
     [currentAccount, thresholdsForModal]
@@ -337,7 +346,20 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     try {
       const { tx, plannedThresholds, plannedMaster, plannedSigners } = await buildSetOptionsTx(null, { signTx: false, requireSigners: false });
       const hashHex = tx.hash().toString('hex');
-      const xdr = tx.toXDR();
+      let preparedTx = tx;
+      const pk = (defaultPublicKey || '').trim();
+      const initialCollected = [];
+      const sessionSecret = getSessionSecret(pk);
+      if (sessionSecret) {
+        try {
+          const kp = Keypair.fromSecret(sessionSecret);
+          preparedTx.sign(kp);
+          initialCollected.push({ publicKey: kp.publicKey(), weight: plannedMaster });
+        } catch (e) {
+          console.warn('Session secret sign failed', e);
+        }
+      }
+      const xdr = preparedTx.toXDR();
       let job = null;
       try {
         const r = await fetch(apiUrl('multisig/jobs'), {
@@ -347,6 +369,9 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
             network: network === 'TESTNET' ? 'testnet' : 'public',
             accountId: (defaultPublicKey || '').trim(),
             txXdr: xdr,
+            signers: plannedSigners.map((s) => ({ publicKey: s.key, weight: s.weight })),
+            requiredWeight: plannedThresholds?.med ?? null,
+            clientCollected: initialCollected,
             createdBy: 'local',
           }),
         });
