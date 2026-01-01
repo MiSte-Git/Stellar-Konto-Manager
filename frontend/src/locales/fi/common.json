@@ -622,7 +622,7 @@
     },
     "loadTrustlines": "Trustlineja ei voitu ladata. Yritä uudelleen, kiitos.",
     "loadTrustlinesFailed": "Trustlines-lataus epäonnistui.",
-    "loadTrustlinesNotFound": "Tiliä ei löydy valitusta verkosta.",
+    "loadTrustlinesNotFound": "Tiliä ei löydy verkosta '{{network}}'.",
     "accountNotFoundInNetwork": "Ei löydy '{{net}}':stä!",
     "op_invalid_limit": "Luottolinjaa ei voi poistaa. Sillä saattaa vielä olla saldo tai täyttämättömiä velvoitteita.",
     "query": {

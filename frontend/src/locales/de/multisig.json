@@ -120,7 +120,8 @@
     "xdrLabel": "Transaktions-XDR",
     "copyXdrButton": "XDR kopieren",
     "copied": "Kopiert",
-    "notSentHint": "Diese Transaktion wurde noch nicht an das Netzwerk gesendet."
+    "notSentHint": "Diese Transaktion wurde noch nicht an das Netzwerk gesendet.",
+    "closeHint": "Du kannst diesen Dialog schließen; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
   },
   "testMode": {
     "modalTitle": "Single-User-Signatur",

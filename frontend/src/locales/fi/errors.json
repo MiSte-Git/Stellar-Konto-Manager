@@ -35,7 +35,7 @@
   },
   "loadTrustlines": "Luottorajojen lataaminen ei onnistunut. Yritä uudelleen.",
   "loadTrustlinesFailed": "Trustlinesin lataaminen epäonnistui.",
-  "loadTrustlinesNotFound": "Tiliä ei löydy valitusta verkosta.",
+  "loadTrustlinesNotFound": "Tiliä ei löydy verkosta '{{network}}'.",
   "accountNotFoundInNetwork": "Ei löydy '{{net}}'!",
   "op_invalid_limit": "Trustlinea ei voi poistaa. Sillä saattaa edelleen olla saldo tai avoimia velvoitteita.",
   "query": {

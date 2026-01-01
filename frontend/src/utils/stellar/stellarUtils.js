@@ -466,6 +466,21 @@ export async function getAccountSummary(publicKey, serverOverride) {
 export async function handleSourceSubmit(sourceInput, t, networkOverride /* 'PUBLIC' | 'TESTNET' */, options = {}) {
   const { includeTrustlines = true } = options;
   let publicKey = sourceInput;
+  const resolveNetworkLabel = () => {
+    const toLabel = (netCode) => (netCode === 'TESTNET'
+      ? t('settings:explorer.testnetLabel', 'Testnet')
+      : t('settings:explorer.mainnetLabel', 'Mainnet'));
+    if (networkOverride === 'TESTNET' || networkOverride === 'PUBLIC') {
+      return toLabel(networkOverride);
+    }
+    try {
+      const stored = window?.localStorage?.getItem('SKM_NETWORK');
+      if (stored === 'TESTNET' || stored === 'PUBLIC') {
+        return toLabel(stored);
+      }
+    } catch { /* noop */ }
+    return toLabel('PUBLIC');
+  };
 
   try {
     // Auflösung oder Validierung der Adresse (z.B. Federation → G...)
@@ -497,7 +512,11 @@ export async function handleSourceSubmit(sourceInput, t, networkOverride /* 'PUB
       throw new Error(t('common:error.rateLimited', 'Horizon rate limit exceeded. Please wait a few seconds and try again.'));
     }
     if (code === 'error.loadTrustlinesNotFound') {
-      throw new Error(t('common:error.loadTrustlinesNotFound', 'Account not found on this network.'));
+      const networkName = resolveNetworkLabel();
+      throw new Error(t('common:error.loadTrustlinesNotFound', {
+        network: networkName,
+        defaultValue: 'Account not found on network "{{network}}".',
+      }));
     }
     throw new Error(t('common:error.loadTrustlines', 'Failed to load trustlines. Please try again.'));
   }

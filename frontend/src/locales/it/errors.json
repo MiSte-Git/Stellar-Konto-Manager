@@ -35,7 +35,7 @@
   },
   "loadTrustlines": "Le linee di fiducia non possono essere caricate. Si prega di riprovare.",
   "loadTrustlinesFailed": "Caricamento delle Trustline fallito",
-  "loadTrustlinesNotFound": "Account non trovato nella rete selezionata.",
+  "loadTrustlinesNotFound": "Account non trovato nella rete '{{network}}'.",
   "accountNotFoundInNetwork": "Non trovato in '{{net}}'!",
   "op_invalid_limit": "La linea di fiducia non può essere eliminata. Potrebbe avere ancora un saldo o obbligazioni in sospeso.",
   "query": {

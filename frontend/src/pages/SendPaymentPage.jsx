@@ -5,7 +5,8 @@ import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo, StrKey }
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
 import { isMultisigAccount } from '../utils/stellar/isMultisigAccount.js';
-import { BACKEND_URL } from '../config.js';
+import { apiUrl } from '../utils/apiBase.js';
+import { mergeSignedXdr } from '../utils/multisigApi.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { useSettings } from '../utils/useSettings';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
@@ -40,9 +41,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   }, []);
   const [secretError, setSecretError] = useState('');
   const [forceLocalFlow, setForceLocalFlow] = useState(false);
+  const [forceSignerCount, setForceSignerCount] = useState(null);
+  const [secretContext, setSecretContext] = useState(''); // 'job' | 'local' | 'send' | ''
 
-  const openSecretModal = useCallback((forceLocal = false) => {
+  const openSecretModal = useCallback((forceLocal = false, context = 'local', forceCount = null) => {
     setForceLocalFlow(!!forceLocal);
+    setForceSignerCount(forceCount);
+    setSecretContext(context || '');
     setSecretError('');
     setShowSecretModal(true);
   }, []);
@@ -50,7 +55,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const closeSecretModal = useCallback(() => {
     setShowSecretModal(false);
     setSecretError('');
+    setSecretContext('');
     setForceLocalFlow(false);
+    setForceSignerCount(null);
   }, []);
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
@@ -318,6 +325,15 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
   }, []);
 
+  const showErrorMessage = useCallback((msg) => {
+    setError(msg || '');
+    try {
+      if (msg && typeof window !== 'undefined') {
+        window.alert(msg);
+      }
+    } catch { /* ignore alert errors */ }
+  }, []);
+
   const closeResultDialog = useCallback(() => {
     setResultDialog(null);
     setCopiedXdr(false);
@@ -438,60 +454,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     };
   }, [buildPaymentTx, netLabel, server]);
 
-  const handlePrepareMultisig = useCallback(async (initialSigners = []) => {
-    try {
-      if (preflight.loading || preflight.err) {
-        setError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
-        return;
-      }
-      const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
-      const storedSigner = saved ? Keypair.fromSecret(saved) : null;
-      const providedSigners = Array.isArray(initialSigners) ? initialSigners.filter(Boolean) : [];
-      const signers = providedSigners.length ? providedSigners : (storedSigner ? [storedSigner] : []);
-      const { tx, meta } = await buildPaymentTx({ signers, signTx: signers.length > 0, requireSigners: false });
-      const hashHex = tx.hash().toString('hex');
-      const xdr = tx.toXDR();
-      const payload = {
-        network: netLabel === 'TESTNET' ? 'testnet' : 'public',
-        accountId: publicKey,
-        txXdr: xdr,
-        createdBy: 'local',
-      };
-      let job = null;
-      try {
-        const r = await fetch(`${BACKEND_URL}/api/multisig/jobs`, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        const data = await r.json().catch(() => ({}));
-        if (!r.ok) {
-          throw new Error(data?.error || 'multisig.jobs.create_failed');
-        }
-        job = data;
-      } catch (e) {
-        handlePaymentError(e);
-        return;
-      }
-      setResultDialog({
-        type: 'job',
-        summary: {
-          source: publicKey,
-          recipient: meta.recipient,
-          amount: `${meta.amountDisplay} ${meta.asset}`,
-          memo: meta.memo || '-',
-          network: netLabel,
-        },
-        jobId: job?.id,
-        hash: job?.txHash || hashHex,
-        xdr: job?.txXdrCurrent || xdr,
-      });
-      closeConfirmDialogs();
-    } catch (err) {
-      handlePaymentError(err);
-    }
-  }, [buildPaymentTx, closeConfirmDialogs, handlePaymentError, netLabel, preflight, publicKey, t]);
-
   const handleExportXdr = useCallback(async () => {
     try {
       if (preflight.loading || preflight.err) {
@@ -518,21 +480,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       handlePaymentError(err);
     }
   }, [buildPaymentTx, closeConfirmDialogs, handlePaymentError, netLabel, preflight, publicKey, t]);
-
-  const handleConfirmProceed = useCallback(async () => {
-    if (confirmChoice === 'local') {
-      closeConfirmDialogs();
-      openSecretModal(true);
-      return;
-    }
-    if (confirmChoice === 'xdr') {
-      await handleExportXdr();
-      return;
-    }
-    await handlePrepareMultisig();
-  }, [closeConfirmDialogs, confirmChoice, handleExportXdr, handlePrepareMultisig, openSecretModal]);
-
-  const isMultisig = useMemo(() => isMultisigAccount(accountInfo), [accountInfo]);
 
   useEffect(() => {
     clearSuccess();
@@ -619,6 +566,118 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     () => getRequiredThreshold('payment', thresholdsForModal),
     [thresholdsForModal]
   );
+
+  const masterWeight = useMemo(() => {
+    const master = signersForModal.find((s) => s.public_key === publicKey);
+    return Number(master?.weight || 0);
+  }, [signersForModal, publicKey]);
+
+  const handlePrepareMultisig = useCallback(async (initialSigners = [], opts = {}) => {
+    try {
+      if (preflight.loading || preflight.err) {
+        setError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
+        return;
+      }
+      const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
+      let storedSigner = null;
+      try {
+        storedSigner = saved ? Keypair.fromSecret(saved) : null;
+        if (storedSigner && storedSigner.publicKey() !== publicKey) {
+          storedSigner = null; // Nur Secret des geladenen Kontos zulassen
+        }
+      } catch {
+        storedSigner = null;
+      }
+
+      const providedSigners = Array.isArray(initialSigners) ? initialSigners.filter(Boolean) : [];
+      const signers = providedSigners.length ? providedSigners : (storedSigner ? [storedSigner] : []);
+
+      const allowUnsigned = opts.allowUnsigned === true;
+      const promptAfter = opts.promptAfter === true;
+
+      if (!signers.length && masterWeight > 0 && !allowUnsigned) {
+        // Kein Secret im SessionStorage: Secret-Modal öffnen, nur Master-Key erlauben
+        closeConfirmDialogs();
+        openSecretModal(false, 'job');
+        return;
+      }
+
+      if (!signers.length && masterWeight <= 0) {
+        // master=0 -> Job ohne lokale Signatur erstellen
+      }
+      const { tx, meta } = await buildPaymentTx({ signers, signTx: signers.length > 0, requireSigners: false });
+      const hashHex = tx.hash().toString('hex');
+      const xdr = tx.toXDR();
+      const payload = {
+        network: netLabel === 'TESTNET' ? 'testnet' : 'public',
+        accountId: publicKey,
+        txXdr: xdr,
+        createdBy: 'local',
+      };
+      let job = null;
+      try {
+        const r = await fetch(apiUrl('multisig/jobs'), {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          const detail = data?.detail ? `: ${data.detail}` : '';
+          throw new Error((data?.error || 'multisig.jobs.create_failed') + detail);
+        }
+        job = data;
+      } catch (e) {
+        const detail = e?.message || 'multisig.jobs.create_failed';
+        showErrorMessage(detail);
+        closeConfirmDialogs();
+        return;
+      }
+      const jobId = job?.id || job?.jobId || '';
+      const jobHash = job?.txHash || job?.tx_hash || hashHex;
+      const jobXdr = job?.txXdrCurrent || job?.tx_xdr_current || xdr;
+      if (!jobId) {
+        handlePaymentError(new Error('multisig.jobs.create_failed'));
+        return;
+      }
+      setResultDialog({
+        type: 'job',
+        summary: {
+          source: publicKey,
+          recipient: meta.recipient,
+          amount: `${meta.amountDisplay} ${meta.asset}`,
+          memo: meta.memo || '-',
+          network: netLabel,
+        },
+        jobId,
+        hash: jobHash,
+        xdr: jobXdr,
+      });
+      if (promptAfter && masterWeight > 0 && signers.length === 0) {
+        setTimeout(() => openSecretModal(false, 'job', 1), 150);
+      }
+      closeConfirmDialogs();
+    } catch (err) {
+      const detail = err?.message || handlePaymentError(err);
+      showErrorMessage(detail || '');
+      closeConfirmDialogs();
+    }
+  }, [buildPaymentTx, closeConfirmDialogs, handlePaymentError, masterWeight, netLabel, openSecretModal, preflight, publicKey, showErrorMessage, t]);
+
+  const handleConfirmProceed = useCallback(async () => {
+    if (confirmChoice === 'local') {
+      closeConfirmDialogs();
+      openSecretModal(true, 'local');
+      return;
+    }
+    if (confirmChoice === 'xdr') {
+      await handleExportXdr();
+      return;
+    }
+    await handlePrepareMultisig([], { allowUnsigned: true, promptAfter: true });
+  }, [closeConfirmDialogs, confirmChoice, handleExportXdr, handlePrepareMultisig, openSecretModal]);
+
+  const isMultisig = useMemo(() => isMultisigAccount(accountInfo), [accountInfo]);
 
   // Resolve recipient helpers
   const [resolvedAccount, setResolvedAccount] = useState('');
@@ -849,7 +908,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         return;
       }
     }
-    openSecretModal(false);
+    openSecretModal(false, 'send');
   }, [buildMemoObject, clearSuccess, isMultisig, openReviewDialog, openSecretModal, publicKey, runPreflight, setError, setShowConfirmModal, t]);
 
   const trustCount = trustlines.length;
@@ -1462,7 +1521,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               </div>
             )}
 
-            {(resultDialog.type === 'job' || resultDialog.type === 'xdr') && resultDialog.xdr && (
+            {resultDialog.type === 'job' && (
+              <div className="flex flex-wrap gap-2 mb-3">
+                <button
+                  type="button"
+                  className="px-3 py-1 rounded border border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                  onClick={() => { closeResultDialog(); openSecretModal(false, 'job', 1); }}
+                >
+                  {t('multisig:confirm.result.job.signNow', 'Jetzt signieren')}
+                </button>
+              </div>
+            )}
+
+            {resultDialog.type === 'xdr' && resultDialog.xdr && (
               <div className="border rounded p-3">
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <div className="text-sm text-gray-700 dark:text-gray-300">{t('multisig:prepare.xdrLabel')}</div>
@@ -1483,7 +1554,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             )}
 
             {resultDialog.type === 'job' && (
-              <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{t('multisig:prepare.notSentHint')}</p>
+              <div className="mt-3 text-sm space-y-1 text-amber-700 dark:text-amber-400">
+                <p>{t('multisig:prepare.notSentHint')}</p>
+                <p className="text-gray-700 dark:text-gray-300">{t('multisig:prepare.closeHint', 'Du kannst diesen Dialog jetzt schließen; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“.')}</p>
+              </div>
             )}
 
 	            <div className="mt-4 flex justify-end gap-2">
@@ -1590,6 +1664,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           signers={signersForModal}
           operationType="payment"
           requiredThreshold={requiredThreshold}
+          forceSignerCount={forceSignerCount}
+          allowedSigners={signersForModal}
           isProcessing={isProcessing}
           account={accountInfo}
           initialCollectAllSignaturesLocally={forceLocalFlow}
@@ -1612,11 +1688,47 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               const current = Array.isArray(collected)
                 ? collected.reduce((acc, s) => acc + Number(s?.weight || 0), 0)
                 : 0;
-              if (current < required) {
-                throw new Error('submitTransaction.failed:' + 'multisig.insufficientWeight');
+              const allFromSource = Array.isArray(collected)
+                ? collected.every((s) => {
+                    try { return s?.keypair?.publicKey() === publicKey; } catch { return false; }
+                  })
+                : false;
+              if (secretContext === 'job') {
+                if (!allFromSource) {
+                  throw new Error('submitTransaction.failed:' + 'multisig.notASigner');
+                }
+                if (current <= 0) {
+                  throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
+                }
+              } else {
+                if (current < required) {
+                  throw new Error('submitTransaction.failed:' + 'multisig.insufficientWeight');
+                }
+                if (current <= 0) {
+                  throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
+                }
               }
-              if (current <= 0) {
-                throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
+
+              // If we are signing an existing job from the result dialog, sign and merge, then exit.
+              if (secretContext === 'job' && resultDialog?.jobId && resultDialog?.xdr) {
+                try {
+                  const netPass = netLabel === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
+                  const tx = TransactionBuilder.fromXDR(resultDialog.xdr, netPass);
+                  collected.forEach((s) => {
+                    try { tx.sign(s.keypair); } catch { /* noop */ }
+                  });
+                  await mergeSignedXdr({ jobId: resultDialog.jobId, signedXdr: tx.toXDR() });
+                  showErrorMessage(t('multisig:confirm.result.job.signed', 'Signatur gespeichert'));
+                  setSecretError('');
+                  closeSecretModal();
+                  setResultDialog(null);
+                } catch (mergeErr) {
+                  const detail = mergeErr?.message || 'multisig.jobs.merge_failed';
+                  showErrorMessage(detail);
+                } finally {
+                  setIsProcessing(false);
+                }
+                return;
               }
 
               if (remember) {
@@ -1652,6 +1764,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             } catch (e) {
               const detail = handlePaymentError(e);
               setSecretError(detail);
+              if (detail) showErrorMessage(detail);
             } finally {
               setIsProcessing(false);
             }

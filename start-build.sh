@@ -15,6 +15,8 @@ if [[ -f "$ROOT_DIR/.env" ]]; then
   export $(grep -v '^#' "$ROOT_DIR/.env" | xargs)
   set +a
 fi
+# Fallback: wenn PROD_API_URL gesetzt ist, VITE_BACKEND_URL automatisch daraus setzen
+: "${VITE_BACKEND_URL:=$PROD_API_URL}"
 
 : "${I18N_AUTO_SYNC:=1}"
 : "${I18N_ENFORCE:=1}"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BACKEND_URL } from '../config.js';
+import { apiUrl } from '../utils/apiBase.js';
 import { buildPath } from '../utils/basePath.js';
 
 function MultisigJobList({ onBack }) {
@@ -17,7 +17,7 @@ function MultisigJobList({ onBack }) {
     setLoading(true);
     setError('');
     try {
-      const r = await fetch(`${BACKEND_URL}/api/multisig/jobs?network=${encodeURIComponent(netLabel)}`);
+      const r = await fetch(apiUrl(`multisig/jobs?network=${encodeURIComponent(netLabel)}`));
       const data = await r.json().catch(() => ([]));
       if (!r.ok) throw new Error(data?.error || 'multisig.jobs.list_failed');
       setJobs(Array.isArray(data) ? data : []);
