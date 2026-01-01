@@ -42,13 +42,16 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [secretError, setSecretError] = useState('');
   const [forceLocalFlow, setForceLocalFlow] = useState(false);
   const [forceSignerCount, setForceSignerCount] = useState(null);
+  const [secretReturnTo, setSecretReturnTo] = useState(''); // where to go back after secret modal
   const [secretContext, setSecretContext] = useState(''); // 'job' | 'local' | 'send' | ''
+  const [lastResultDialog, setLastResultDialog] = useState(null);
 
-  const openSecretModal = useCallback((forceLocal = false, context = 'local', forceCount = null) => {
+  const openSecretModal = useCallback((forceLocal = false, context = 'local', forceCount = null, returnTo = '') => {
     setForceLocalFlow(!!forceLocal);
     setForceSignerCount(forceCount);
     setSecretContext(context || '');
     setSecretError('');
+    setSecretReturnTo(returnTo || '');
     setShowSecretModal(true);
   }, []);
 
@@ -58,6 +61,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setSecretContext('');
     setForceLocalFlow(false);
     setForceSignerCount(null);
+    setSecretReturnTo('');
   }, []);
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
@@ -339,6 +343,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setCopiedXdr(false);
     setCopiedJobId(false);
     setShowJobInfo(false);
+    setLastResultDialog(null);
+    setSecretReturnTo('');
   }, []);
 
   const closeReviewDialog = useCallback(() => {
@@ -593,7 +599,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const signers = providedSigners.length ? providedSigners : (storedSigner ? [storedSigner] : []);
 
       const allowUnsigned = opts.allowUnsigned === true;
-      const promptAfter = opts.promptAfter === true;
 
       if (!signers.length && masterWeight > 0 && !allowUnsigned) {
         // Kein Secret im SessionStorage: Secret-Modal öffnen, nur Master-Key erlauben
@@ -653,9 +658,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         hash: jobHash,
         xdr: jobXdr,
       });
-      if (promptAfter && masterWeight > 0 && signers.length === 0) {
-        setTimeout(() => openSecretModal(false, 'job', 1), 150);
-      }
       closeConfirmDialogs();
     } catch (err) {
       const detail = err?.message || handlePaymentError(err);
@@ -674,7 +676,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       await handleExportXdr();
       return;
     }
-    await handlePrepareMultisig([], { allowUnsigned: true, promptAfter: true });
+    await handlePrepareMultisig([], { allowUnsigned: true });
   }, [closeConfirmDialogs, confirmChoice, handleExportXdr, handlePrepareMultisig, openSecretModal]);
 
   const isMultisig = useMemo(() => isMultisigAccount(accountInfo), [accountInfo]);
@@ -1465,10 +1467,16 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             {resultDialog.type === 'job' && showJobInfo && (
               <div className="border rounded p-3 mb-3 bg-blue-50 dark:bg-blue-900/30 text-sm text-gray-800 dark:text-gray-100">
                 <div className="font-semibold mb-1">{t('multisig:confirm.result.job.infoTitle')}</div>
+                <p className="mb-2 text-gray-700 dark:text-gray-200">{t('multisig:confirm.options.job.desc')}</p>
                 <ul className="list-disc ml-5 space-y-1">
-                  <li>{t('multisig:confirm.result.job.info.share')}</li>
-                  <li>{t('multisig:confirm.result.job.info.sign')}</li>
-                  <li>{t('multisig:confirm.result.job.info.submit')}</li>
+                  {[
+                    t('multisig:confirm.options.job.infoBody.one'),
+                    t('multisig:confirm.options.job.infoBody.two'),
+                    t('multisig:confirm.options.job.infoBody.three'),
+                    t('multisig:confirm.options.job.infoBody.four'),
+                  ].map((line, idx) => (
+                    <li key={idx}>{line}</li>
+                  ))}
                 </ul>
               </div>
             )}
@@ -1526,7 +1534,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 <button
                   type="button"
                   className="px-3 py-1 rounded border border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
-                  onClick={() => { closeResultDialog(); openSecretModal(false, 'job', 1); }}
+                  onClick={() => {
+                    setLastResultDialog(resultDialog);
+                    setResultDialog(null);
+                    setCopiedXdr(false);
+                    setCopiedJobId(false);
+                    setShowJobInfo(false);
+                    openSecretModal(false, 'job', 1, 'result');
+                  }}
                 >
                   {t('multisig:confirm.result.job.signNow', 'Jetzt signieren')}
                 </button>
@@ -1556,7 +1571,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             {resultDialog.type === 'job' && (
               <div className="mt-3 text-sm space-y-1 text-amber-700 dark:text-amber-400">
                 <p>{t('multisig:prepare.notSentHint')}</p>
-                <p className="text-gray-700 dark:text-gray-300">{t('multisig:prepare.closeHint', 'Du kannst diesen Dialog jetzt schließen; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“.')}</p>
+                <p className="text-gray-700 dark:text-gray-300">{t('multisig:prepare.closeHint', 'Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“.')}</p>
               </div>
             )}
 
@@ -1669,8 +1684,15 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           isProcessing={isProcessing}
           account={accountInfo}
           initialCollectAllSignaturesLocally={forceLocalFlow}
+          secretContext={secretContext}
           onBackToSelection={isMultisig ? (() => {
             closeSecretModal();
+            if (secretReturnTo === 'result' && lastResultDialog) {
+              setResultDialog(lastResultDialog);
+              setLastResultDialog(null);
+              setSecretReturnTo('');
+              return;
+            }
             setShowOptionInfo(false);
             setShowConfirmModal(true);
           }) : null}
@@ -1694,8 +1716,24 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                   })
                 : false;
               if (secretContext === 'job') {
-                if (!allFromSource) {
-                  throw new Error('submitTransaction.failed:' + 'multisig.notASigner');
+                if (masterWeight > 0) {
+                  if (!allFromSource) {
+                    throw new Error('submitTransaction.failed:' + 'multisig.notASigner');
+                  }
+                } else {
+                  const activeKeys = new Set(
+                    Array.isArray(signersForModal)
+                      ? signersForModal
+                          .filter((s) => (Number(s.weight || 0) > 0) && (s.public_key || s.publicKey || s.key))
+                          .map((s) => s.public_key || s.publicKey || s.key)
+                      : []
+                  );
+                  const allActive = Array.isArray(collected)
+                    ? collected.every((s) => activeKeys.has(s?.keypair?.publicKey?.()))
+                    : false;
+                  if (!allActive || activeKeys.size === 0) {
+                    throw new Error('submitTransaction.failed:' + 'multisig.notASigner');
+                  }
                 }
                 if (current <= 0) {
                   throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');

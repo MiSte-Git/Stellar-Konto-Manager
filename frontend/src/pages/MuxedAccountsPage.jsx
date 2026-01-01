@@ -331,7 +331,11 @@ export default function MuxedAccountsPage({ publicKey }) {
         document.body.appendChild(ta);
         ta.select();
         document.execCommand('copy');
-        document.body.removeChild(ta);
+        try {
+          if (ta.parentNode) ta.parentNode.removeChild(ta);
+        } catch {
+          /* ignore */
+        }
       }
       setSuccess(t('common:muxed.copied', 'Copied to clipboard.'));
       setError('');

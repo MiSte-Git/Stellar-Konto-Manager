@@ -51,7 +51,7 @@ export async function openMailto({
       document.body.appendChild(iframe);
       setTimeout(() => {
         try {
-          document.body.removeChild(iframe);
+          if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
         } catch { /* noop */ }
       }, 3000);
     },
@@ -69,7 +69,9 @@ export async function openMailto({
       document.body.appendChild(anchor);
       const event = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
       anchor.dispatchEvent(event);
-      document.body.removeChild(anchor);
+      try {
+        if (anchor.parentNode) anchor.parentNode.removeChild(anchor);
+      } catch { /* noop */ }
     },
     () => {
       if (typeof window === 'undefined') throw new Error('bugReport.mailto.failed:window.unavailable');
