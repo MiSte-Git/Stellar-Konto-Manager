@@ -35,7 +35,7 @@
   },
   "loadTrustlines": "Не удалось загрузить доверительные линии. Пожалуйста, попробуйте еще раз.",
   "loadTrustlinesFailed": "Не удалось загрузить Trustlines",
-  "loadTrustlinesNotFound": "Аккаунт не найден в выбранной сети.",
+  "loadTrustlinesNotFound": "Аккаунт не найден в сети «{{network}}».",
   "accountNotFoundInNetwork": "Не найдено в '{{net}}'!",
   "op_invalid_limit": "Трастовая линия не может быть удалена. Возможно, на ней все еще есть баланс или невыполненные обязательства.",
   "query": {

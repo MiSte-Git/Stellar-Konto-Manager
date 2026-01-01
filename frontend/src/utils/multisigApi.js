@@ -1,4 +1,4 @@
-import { BACKEND_URL } from '../config.js';
+import { apiUrl } from './apiBase.js';
 
 function ensureOk(res) {
   if (res.ok) return;
@@ -9,7 +9,7 @@ function ensureOk(res) {
 
 export async function createPendingMultisigJob(payload) {
   try {
-    const r = await fetch(`${BACKEND_URL}/api/multisig/jobs`, {
+    const r = await fetch(apiUrl('multisig/jobs'), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(payload),
@@ -26,7 +26,7 @@ export async function createPendingMultisigJob(payload) {
 // Load a pending multisig job by id
 export async function getPendingMultisigJob(id) {
   try {
-    const r = await fetch(`${BACKEND_URL}/api/multisig/jobs/${encodeURIComponent(id)}`);
+    const r = await fetch(apiUrl(`multisig/jobs/${encodeURIComponent(id)}`));
     const data = await r.json().catch(() => ({}));
     ensureOk(r);
     return data;
@@ -39,7 +39,7 @@ export async function getPendingMultisigJob(id) {
 // Merge a signed XDR into an existing job
 export async function mergeSignedXdr(payload) {
   try {
-    const r = await fetch(`${BACKEND_URL}/api/multisig/jobs/${encodeURIComponent(payload.jobId)}/merge-signed-xdr`, {
+    const r = await fetch(apiUrl(`multisig/jobs/${encodeURIComponent(payload.jobId)}/merge-signed-xdr`), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ signedXdr: payload.signedXdr }),

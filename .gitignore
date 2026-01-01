@@ -38,3 +38,6 @@ __pycache__/
 
 data/multisig_jobs.json
 api/_config.php
+api/vendor/
+api/composer.phar
+api/composer-setup.php

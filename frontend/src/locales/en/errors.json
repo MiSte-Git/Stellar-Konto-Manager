@@ -35,7 +35,7 @@
   },
   "loadTrustlines": "Trustlines could not be loaded. Please try again.",
   "loadTrustlinesFailed": "Failed to load Trustlines",
-  "loadTrustlinesNotFound": "Account not found in the selected network.",
+  "loadTrustlinesNotFound": "Account not found in network '{{network}}'.",
   "accountNotFoundInNetwork": "Not found in '{{net}}'!",
   "op_invalid_limit": "Trustline cannot be deleted. It may still have a balance or outstanding obligations.",
   "query": {

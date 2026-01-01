@@ -5,8 +5,14 @@ export function getApiBase() {
   try {
     const raw = import.meta.env?.VITE_BACKEND_URL || '';
     const base = String(raw).trim().replace(/\/+$/, '');
-    if (!base) return '/api';
-    return base.endsWith('/api') ? base : `${base}/api`;
+    if (base) {
+      return base.endsWith('/api') ? base : `${base}/api`;
+    }
+    // Fallback: Vite-Proxy in Dev
+    if (import.meta.env?.DEV && import.meta.env?.VITE_DEV_PROXY_TARGET) {
+      return '/api';
+    }
+    return '/api';
   } catch {
     return '/api';
   }
