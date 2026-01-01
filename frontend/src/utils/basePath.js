@@ -173,6 +173,19 @@ export function getMultisigJobId(pathname) {
 }
 
 /**
+ * Checks whether the current path points to the multisig job list (/multisig/jobs)
+ */
+export function isMultisigJobsListPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const target = buildPath('multisig/jobs');
+  const normCurrent = normalizePath(current);
+  const normTarget = normalizePath(target);
+  return normCurrent === normTarget || normCurrent.endsWith('/multisig/jobs');
+}
+
+/**
  * isLessonPracticePath: Pfad zur Praxis einer Lektion (/learn/lesson/:id/practice)
  */
 export function isLessonPracticePath(pathname) {

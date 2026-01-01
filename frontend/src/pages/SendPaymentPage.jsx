@@ -613,11 +613,30 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const { tx, meta } = await buildPaymentTx({ signers, signTx: signers.length > 0, requireSigners: false });
       const hashHex = tx.hash().toString('hex');
       const xdr = tx.toXDR();
+      const signerMeta = (accountInfo?.signers || []).map((s) => ({
+        publicKey: s.key || s.publicKey || s.public_key || '',
+        weight: Number(s.weight || 0),
+      })).filter((s) => s.publicKey && s.weight > 0);
+      const requiredWeight = (() => {
+        if (requiredThreshold) return requiredThreshold;
+        const thr = accountInfo?.thresholds || {};
+        return Number(thr.med_threshold ?? thr.med ?? 0) || 0;
+      })();
+      const collectedForJob = Array.isArray(signers)
+        ? signers.map((kp) => {
+            const pk = kp?.publicKey?.() || '';
+            const w = signerMeta.find((s) => s.publicKey === pk)?.weight ?? 0;
+            return pk ? { publicKey: pk, weight: w } : null;
+          }).filter(Boolean)
+        : [];
       const payload = {
         network: netLabel === 'TESTNET' ? 'testnet' : 'public',
         accountId: publicKey,
         txXdr: xdr,
         createdBy: 'local',
+        signers: signerMeta,
+        requiredWeight: requiredWeight || null,
+        clientCollected: collectedForJob,
       };
       let job = null;
       try {
@@ -1747,18 +1766,38 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 }
               }
 
+              const jobToSign = secretContext === 'job'
+                ? (resultDialog?.jobId && resultDialog?.xdr ? resultDialog : lastResultDialog)
+                : null;
               // If we are signing an existing job from the result dialog, sign and merge, then exit.
-              if (secretContext === 'job' && resultDialog?.jobId && resultDialog?.xdr) {
+              if (jobToSign?.jobId && jobToSign?.xdr) {
                 try {
                   const netPass = netLabel === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
-                  const tx = TransactionBuilder.fromXDR(resultDialog.xdr, netPass);
+                  const tx = TransactionBuilder.fromXDR(jobToSign.xdr, netPass);
                   collected.forEach((s) => {
                     try { tx.sign(s.keypair); } catch { /* noop */ }
                   });
-                  await mergeSignedXdr({ jobId: resultDialog.jobId, signedXdr: tx.toXDR() });
-                  showErrorMessage(t('multisig:confirm.result.job.signed', 'Signatur gespeichert'));
+                  const clientCollected = collected.map((s) => {
+                    const pk = s?.keypair?.publicKey?.() || '';
+                    if (!pk) return null;
+                    const meta = (signersForModal || []).find((x) => (x.public_key || x.publicKey || x.key) === pk);
+                    const weight = Number(meta?.weight || 0);
+                    return { publicKey: pk, weight };
+                  }).filter(Boolean);
+                  const signerMeta = (signersForModal || []).map((s) => ({
+                    publicKey: s.public_key || s.publicKey || s.key || '',
+                    weight: Number(s.weight || 0),
+                  })).filter((s) => s.publicKey && s.weight > 0);
+                  await mergeSignedXdr({
+                    jobId: jobToSign.jobId,
+                    signedXdr: tx.toXDR(),
+                    clientCollected,
+                    signers: signerMeta,
+                  });
+                  // Erfolgreiches Mergen: keine zusätzliche Toast-Meldung nötig
                   setSecretError('');
                   closeSecretModal();
+                  setLastResultDialog(null);
                   setResultDialog(null);
                 } catch (mergeErr) {
                   const detail = mergeErr?.message || 'multisig.jobs.merge_failed';

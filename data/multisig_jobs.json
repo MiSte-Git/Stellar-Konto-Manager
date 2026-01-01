@@ -1,59 +1,1512 @@
 {
-  "items": [
-    {
-      "id": "bb4606f7-cb59-414f-8f10-985831b1bcc8",
-      "network": "testnet",
-      "accountId": "GBZYYCFAH3B44LMXQSXANFM2X7P2SUNFDOBPGVVF6JJCLYO2XRM7K5CK",
-      "txHash": "fd67d4e26aae16335abe32ff62ede8e3d6f5069f4581477c067169fa7eb837e6",
-      "txXdrOriginal": "AAAAAgAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC/8/AAAAJQAAAAEAAAAAAAAAAAAAAABpNzoeAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
-      "txXdrCurrent": "AAAAAgAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC/8/AAAAJQAAAAEAAAAAAAAAAAAAAABpNzoeAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
-      "status": "pending_signatures",
-      "createdAt": "2025-12-08T20:49:39.023Z",
-      "createdBy": "local"
-    },
-    {
-      "id": "3463fb8f-2c1b-4d70-b42b-f0274ffe0a61",
-      "network": "testnet",
-      "accountId": "GBZYYCFAH3B44LMXQSXANFM2X7P2SUNFDOBPGVVF6JJCLYO2XRM7K5CK",
-      "txHash": "b14f937869bf47fa127df979a33bd6d962a2400945d5c9f667e335184c9770a7",
-      "txXdrOriginal": "AAAAAgAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC/8/AAAAJQAAAAEAAAAAAAAAAAAAAABpNzZtAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
-      "txXdrCurrent": "AAAAAgAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC/8/AAAAJQAAAAEAAAAAAAAAAAAAAABpNzZtAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
-      "status": "pending_signatures",
-      "createdAt": "2025-12-08T20:33:53.421Z",
-      "createdBy": "local"
-    },
-    {
-      "id": "03ac222c-046b-455e-bfc0-49a07d3622a8",
-      "network": "testnet",
-      "accountId": "GBZYYCFAH3B44LMXQSXANFM2X7P2SUNFDOBPGVVF6JJCLYO2XRM7K5CK",
-      "txHash": "4439f1e211514047cf810da1f87287f647b58e9111f867090ae93bb0293c2cb7",
-      "txXdrOriginal": "AAAAAgAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC/8/AAAAJQAAAAEAAAAAAAAAAAAAAABpNxtqAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
-      "txXdrCurrent": "AAAAAgAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC/8/AAAAJQAAAAEAAAAAAAAAAAAAAABpNxtqAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
-      "status": "pending_signatures",
-      "createdAt": "2025-12-08T18:38:38.532Z",
-      "createdBy": "local"
-    },
-    {
-      "id": "0b87eeb5-fab9-4ba6-b052-b7ada71eae85",
-      "network": "testnet",
-      "accountId": "GBZYYCFAH3B44LMXQSXANFM2X7P2SUNFDOBPGVVF6JJCLYO2XRM7K5CK",
-      "txHash": "26115cb9f807627aba2e498ef2437ba690ea4b7b31c7e55880f6f4b8c3f94b74",
-      "txXdrOriginal": "AAAAAgAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC/8/AAAAJQAAAAEAAAAAAAAAAAAAAABpNxDqAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
-      "txXdrCurrent": "AAAAAgAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC/8/AAAAJQAAAAEAAAAAAAAAAAAAAABpNxDqAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
-      "status": "pending_signatures",
-      "createdAt": "2025-12-08T17:53:50.679Z",
-      "createdBy": "local"
-    },
-    {
-      "id": "a496b270-c8fd-40b7-babd-a29c26b392a0",
-      "network": "testnet",
-      "accountId": "GBZYYCFAH3B44LMXQSXANFM2X7P2SUNFDOBPGVVF6JJCLYO2XRM7K5CK",
-      "txHash": "99a525439191aa4c9a6856466bb80ccf78a6ef8748efd9d5becb5416fe2bb5f1",
-      "txXdrOriginal": "AAAAAgAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC/8/AAAAJQAAAAEAAAAAAAAAAAAAAABpNw5/AAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAhFKDAAAAAAAAAAAA",
-      "txXdrCurrent": "AAAAAgAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC/8/AAAAJQAAAAEAAAAAAAAAAAAAAABpNw5/AAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAhFKDAAAAAAAAAAAA",
-      "status": "pending_signatures",
-      "createdAt": "2025-12-08T17:43:31.448Z",
-      "createdBy": "local"
-    }
-  ]
+    "items": [
+        {
+            "id": "d1e45697ef358dd583612f12",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "bcfeba73c42475f3932da2fdb6a243b12b4ff411afc98dae5c7c49e9742b5058",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVtotAAAAAQAAAA5NdWx0aVNpZyBKb2IgOQAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQMiGy0r1a1jex1tLCXEm8htrEkxbqYXmGpH7Rejb4nkDUQlKrFCVG0ZHsr2xJAQ\/jeppl5uh9jcerMQgP1bYpg8=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVtotAAAAAQAAAA5NdWx0aVNpZyBKb2IgOQAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQMiGy0r1a1jex1tLCXEm8htrEkxbqYXmGpH7Rejb4nkDUQlKrFCVG0ZHsr2xJAQ\/jeppl5uh9jcerMQgP1bYpg8=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T20:32:50+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "72eee564844b8c5e46ffb0bb",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "03d218a1b1d0533b662caf3e8081b34c0dd2ba8712c07b5d1a88ce41ba41acc9",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVso9AAAAAQAAAA5NdWx0aVNpZyBKb2IgOQAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQEI5fvVZ3TqwvJ2f7Gmdo0SsKX93OKL2BwYdiC7qCJiRs0kcrD6i\/IKO2s9ttepKGLIcHw4GpZ0F7ZX5z0BjuAc=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVso9AAAAAQAAAA5NdWx0aVNpZyBKb2IgOQAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQEI5fvVZ3TqwvJ2f7Gmdo0SsKX93OKL2BwYdiC7qCJiRs0kcrD6i\/IKO2s9ttepKGLIcHw4GpZ0F7ZX5z0BjuAc=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T19:24:50+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "b9ca515e12522f6dccb0a7ad",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "b50bae25a0d243fa123b4abe3d1f2836993f66df3ead6437bce0f7ad52cad2e0",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVshkAAAAAQAAAA5NdWx0aVNpZyBKb2IgOAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQClFIZeOHRxo3AfFKqmHVlxg\/+k3r0+9xq7Xt\/WNUnyto67wfUWSOCWx3xCyGX6Szer8YyaALbfQoIvkq7k0MwA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVshkAAAAAQAAAA5NdWx0aVNpZyBKb2IgOAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQClFIZeOHRxo3AfFKqmHVlxg\/+k3r0+9xq7Xt\/WNUnyto67wfUWSOCWx3xCyGX6Szer8YyaALbfQoIvkq7k0MwA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T19:16:57+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "1be56d922e8dc864f364e444",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "f10671d2f2e7b76f10c9545676a42e6aa3bd61969e27ce7514e238b52476fba7",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVseoAAAAAQAAAA5NdWx0aVNpZyBKb2IgOAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQL\/GR8ta5y+1u7RBHa8kbEBk3SKby10QjJ5eRmJedseNEGsUHUF7cZlVfwal5EFE+B7HV91fGgPS9SXX5dwxJQ8=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVseoAAAAAQAAAA5NdWx0aVNpZyBKb2IgOAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQL\/GR8ta5y+1u7RBHa8kbEBk3SKby10QjJ5eRmJedseNEGsUHUF7cZlVfwal5EFE+B7HV91fGgPS9SXX5dwxJQ8=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T19:13:49+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "6d06de7c5a1337fca9946063",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "6cea3a03f3ca7f20579620842e84c7212cf288fa5e2fa6061899c4438efe2cc5",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVscOAAAAAQAAAA5NdWx0aVNpZyBKb2IgOAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQMi\/8x89Ea6Re+Q8KLUwG0UleId7Yclbon4dEPKRbnijvCVufyxMk8Ok3bedly4MaxE2XCpCiWY42ofasp6yYwQ=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVscOAAAAAQAAAA5NdWx0aVNpZyBKb2IgOAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQMi\/8x89Ea6Re+Q8KLUwG0UleId7Yclbon4dEPKRbnijvCVufyxMk8Ok3bedly4MaxE2XCpCiWY42ofasp6yYwQ=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T19:11:15+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "e6716e3b95a67aeadc301115",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "614598c75bf67195b1cd8dd406baed9675f5358692c0a2237d7027721a58c3ed",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsbeAAAAAQAAAA5NdWx0aVNpZyBKb2IgOAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQIEhn5npFK0u4vtu6tlBHANoTt2PHOvYPNXT1fVDMxS2XxhAfbj\/WcSkSfgq393WwE+B+\/mU19sK55ODfBxC0Qg=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsbeAAAAAQAAAA5NdWx0aVNpZyBKb2IgOAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQIEhn5npFK0u4vtu6tlBHANoTt2PHOvYPNXT1fVDMxS2XxhAfbj\/WcSkSfgq393WwE+B+\/mU19sK55ODfBxC0Qg=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T19:10:27+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "94fd2c0197e0298355d21e0a",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "c49737c314f67f45b86f7dc11a7c2e2a1c6733f949d39f4eb9ac5979d1570a8f",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsalAAAAAQAAAA5NdWx0aVNpZyBKb2IgOAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQEVN\/ZL8w1RC9OxNDa9TCdGCjxilbbOTUCaZY4JTjzUHJdmSqNwgFEpsndY3kGa\/iW3Wp03AqnpoHrTGeVYQngY=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsalAAAAAQAAAA5NdWx0aVNpZyBKb2IgOAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQEVN\/ZL8w1RC9OxNDa9TCdGCjxilbbOTUCaZY4JTjzUHJdmSqNwgFEpsndY3kGa\/iW3Wp03AqnpoHrTGeVYQngY=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T19:09:30+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "c82ef8d1decf813477fed21e",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "fe82236059020eaa89dff953dd0418c27a7dae592732d66269afe52d3f5be432",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsZ2AAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQFDDQVs9OuSFHxHi3V14D+MvtOfVcebulhsKpAr\/T5vofkKoD69QxZvrn0at4p9hdwrUlMHg8m05dof3myz4bgo=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsZ2AAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQFDDQVs9OuSFHxHi3V14D+MvtOfVcebulhsKpAr\/T5vofkKoD69QxZvrn0at4p9hdwrUlMHg8m05dof3myz4bgo=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T19:08:43+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "b18c4b3131b4ff9d90a2e32e",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "409cb8bc3c19bd0a576ab64c3e2d9bbda51d361248a624fca84e8f0c8956d84c",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsZPAAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQBnQijVRvKPMcm211iuIIKAIV+BpVlHIX3\/TIpmSG+2boxzEvJWNEJQMaXYb2jClBvv\/aKbTpORC7YtWT9WDEQM=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsZPAAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQBnQijVRvKPMcm211iuIIKAIV+BpVlHIX3\/TIpmSG+2boxzEvJWNEJQMaXYb2jClBvv\/aKbTpORC7YtWT9WDEQM=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T19:08:05+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "42c33c3d1f64b61aaed31703",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "77c0ffb480b81a17200effbaf472cb29577eef4dc73dcb2e6427652933b613eb",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsPXAAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQHdwkETGii6WhgzkQ0zYr0n8BdTBcb9f5PWEu7FH4C4TNrDpNEMtgC6+ZNZ4zb\/KnMlRJaOsEQz4vomXHHHcEAQ=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsPXAAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQHdwkETGii6WhgzkQ0zYr0n8BdTBcb9f5PWEu7FH4C4TNrDpNEMtgC6+ZNZ4zb\/KnMlRJaOsEQz4vomXHHHcEAQ=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T18:57:32+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "9b3f6cc8d05a5212404e20a6",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "0773454be697d422faeb27715837fa1cac6c25b8e8be7a3769f464e8f7248777",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsPDAAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQJLn7hTVWSeiCV4XnGiOHHZ80zNRksTvaSlpO3b7ziaEsBx3Q9qJOyx37Jxqf3xq0Jljdt8McJtHZgitw46smgI=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVsPDAAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQJLn7hTVWSeiCV4XnGiOHHZ80zNRksTvaSlpO3b7ziaEsBx3Q9qJOyx37Jxqf3xq0Jljdt8McJtHZgitw46smgI=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T18:57:12+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "46097fa5eb4634db46c64d87",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "1d7e94ac2f77792efb4029b3994392a511b4162756c56c11ab206a420dbf0f09",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVrtXAAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQJ7+5m4wItsKJ2QWHxZaAv+uh5ruo9r0DeRY121E4blH+Xi0n63UskWNsYK4NXgJ3ardzVqcHXQkfQpRDwE26wg=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVrtXAAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQJ7+5m4wItsKJ2QWHxZaAv+uh5ruo9r0DeRY121E4blH+Xi0n63UskWNsYK4NXgJ3ardzVqcHXQkfQpRDwE26wg=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T18:21:16+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "53a31bf7228eed97a8213cfe",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "38589fe5e937b47fa0d24ca6d7985145a6559b77606c4c79faa8ba9e575ed034",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVrtBAAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQEHoHtjU7XHVcIC39ewB6IkTwRM5ZOXagGpW7iBti98VFPclXZMmiXSUE8j0l3zL3AHrQmjdTJ1dpCZyjR5XrwI=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVrtBAAAAAQAAAA5NdWx0aVNpZyBKb2IgNwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQEHoHtjU7XHVcIC39ewB6IkTwRM5ZOXagGpW7iBti98VFPclXZMmiXSUE8j0l3zL3AHrQmjdTJ1dpCZyjR5XrwI=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T18:20:54+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "af73d034ae0afdb7d297264b",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "9c14bbf0073767009283efb92f75492f0e9e69e5b61d6c042fff2f507570af48",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVp3ZAAAAAQAAAA5NdWx0aVNpZyBKb2IgNgAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQLXObVNIstncG8cSL9Ji5kkg48fZUVSlGb5CDmbo0x3eAO1\/AfG2Epcv\/eysXedIBE0XfrUyzumWi8svSwQkkgY=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVp3ZAAAAAQAAAA5NdWx0aVNpZyBKb2IgNgAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQLXObVNIstncG8cSL9Ji5kkg48fZUVSlGb5CDmbo0x3eAO1\/AfG2Epcv\/eysXedIBE0XfrUyzumWi8svSwQkkgY=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T16:15:26+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "901908b5b95bbaefe494dfff",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "5a3730704071c720a18744f02273c94d82e9585a259e0df955a549bfc3247a9b",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVp26AAAAAQAAAA5NdWx0aVNpZyBKb2IgNgAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQGOmLxpX+P2gA7dIjYQlahXz4emQPBevW5vxQbV6xF0v0rYdpoizuk5P4y1iCA89xWdMgaU4NJE5FZh904gjigA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVp26AAAAAQAAAA5NdWx0aVNpZyBKb2IgNgAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQGOmLxpX+P2gA7dIjYQlahXz4emQPBevW5vxQbV6xF0v0rYdpoizuk5P4y1iCA89xWdMgaU4NJE5FZh904gjigA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T16:14:55+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null,
+            "missingSigners": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "missingWeight": 2
+        },
+        {
+            "id": "0d8e2cd1316ae707d587cc82",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "e74e80c80653c878d57628cb5ebadc2c951d07844ad51f24eee0c6bae53a3e14",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVo\/zAAAAAQAAAA5NdWx0aVNpZyBKb2IgNQAAAAAAAQAAAAAAAAAAAAAAAOYaW7y\/uCHvisNjXjxjtvUOpCpuNNc7OcukUT7hnPofAAAAAA0c7wAAAAAAAAAAAZJBTTYAAABAEpfnSWWs8Hy0tgDB3ousoIK3EgSKjQntSypeNQ4h4obJSQzIhR7+BGcUhs1bINSMiKi47Oy12NRwzb5rxZ2MAw==",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVo\/zAAAAAQAAAA5NdWx0aVNpZyBKb2IgNQAAAAAAAQAAAAAAAAAAAAAAAOYaW7y\/uCHvisNjXjxjtvUOpCpuNNc7OcukUT7hnPofAAAAAA0c7wAAAAAAAAAAAZJBTTYAAABAEpfnSWWs8Hy0tgDB3ousoIK3EgSKjQntSypeNQ4h4obJSQzIhR7+BGcUhs1bINSMiKi47Oy12NRwzb5rxZ2MAw==",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T15:16:07+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "ef50027099dcbe422c95593b",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "cef5a54460bdae608f8887348e0e8d8402f3d75570faac28a775bd99da1be090",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVo\/UAAAAAQAAAA5NdWx0aVNpZyBKb2IgNQAAAAAAAQAAAAAAAAAAAAAAAOYaW7y\/uCHvisNjXjxjtvUOpCpuNNc7OcukUT7hnPofAAAAAA0c7wAAAAAAAAAAAA==",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVo\/UAAAAAQAAAA5NdWx0aVNpZyBKb2IgNQAAAAAAAQAAAAAAAAAAAAAAAOYaW7y\/uCHvisNjXjxjtvUOpCpuNNc7OcukUT7hnPofAAAAAA0c7wAAAAAAAAAAAA==",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T15:15:38+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "7ab1ce78aed5b3a2733a02f2",
+            "network": "public",
+            "accountId": "GBZVTOYWIBRVYWREZLTMT5RH2U25AW2Y2AJ3CLDMNRFEQU6LTOBCIYJA",
+            "txHash": "4f17f1ca2f9a352aadb43824b55158157c79291f36dc3a411ad919a584ae00a2",
+            "txXdrOriginal": "AAAAAgAAAABzWbsWQGNcWiTK5sn2J9U10FtY0BOxLGxsSkhTy5uCJAAAAGQDLpYJAAAC9AAAAAEAAAAAAAAAAAAAAABpVmDHAAAAAQAAAA5NdWx0aVNpZyBKb2IgNQAAAAAAAQAAAAAAAAABAAAAAOYaW7y\/uCHvisNjXjxjtvUOpCpuNNc7OcukUT7hnPofAAAAAAAAAAAC+vCAAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAABzWbsWQGNcWiTK5sn2J9U10FtY0BOxLGxsSkhTy5uCJAAAAGQDLpYJAAAC9AAAAAEAAAAAAAAAAAAAAABpVmDHAAAAAQAAAA5NdWx0aVNpZyBKb2IgNQAAAAAAAQAAAAAAAAABAAAAAOYaW7y\/uCHvisNjXjxjtvUOpCpuNNc7OcukUT7hnPofAAAAAAAAAAAC+vCAAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:54:52+00:00",
+            "signers": [
+                {
+                    "publicKey": "GAVR5KAOFB5TKMOW6AASD6DISDLZJ3BS76OFNYUPTIWCRSOGOSR7ODVP",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GBZVTOYWIBRVYWREZLTMT5RH2U25AW2Y2AJ3CLDMNRFEQU6LTOBCIYJA",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "8d639bdb85ce5e6d1d1c3669",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "93ca2ab62dbdb8611741e38d21ee87de182c0262c2211dcfa79f3383e07235b1",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVmB3AAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVmB3AAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:53:31+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "eb15ed13277831a7cec65a8b",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "b62301daf4330b9d910982264e3ee5ba87147cb61b4e3b0894bcaaf6c18eb4a8",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVl2yAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVl2yAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:41:42+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "4ebd33a0efb12c2450a1d264",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "8dbe9a8592bd24981bef8ace7c3bcc1370aa37e1fe340153c9ad549660f54987",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlxoAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlxoAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:36:13+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "739f7c25e7d39e5c4ca5898c",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "98ad582dcd642ed921688735e6e28013f022cde78d55e15857be944d4e7d8cb1",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVluUAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVluUAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:32:40+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "0c790b8b18a359bd760fdcf3",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "24a664d5916f3b633b8d05188b53b741dbf30167f6ed9c699ba392f43330fb75",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlqhAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlqhAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:28:37+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "ebac10424d0f9c2428e37fa2",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "866847f1076800237ac0b66b9fb00e4364f92676b4cc634b5a4c5246e1e4f076",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlqBAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlqBAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:28:05+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "c255c884e12a933e91c7d98d",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "8fce81ee5de21bbec7cd82e92db26b0c67c73d94c0000eb612a19c0cc85bff48",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlp2AAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlp2AAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:27:54+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "46e98fa634a337ded9766183",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "3fddd6eeb45eac2ad6a17dc5f99342dc51daba5b3094ab61382ab039c0e42a64",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVloeAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVloeAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:26:26+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "34904e15b809791b361dd21d",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "ed7d25b28178eee60da81e112a76f7f573376afc36c61434f6cfd5483ee694fe",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlZoAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlZoAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:10:36+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "6a1482cdd7891c8909408625",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "5b1cd5fe1071c1f743607964baaaf86e9da0e95b92bcf946befe06136fa5803a",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlZgAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlZgAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:10:28+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "e9a00a41fd06c735f5d2cea1",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "002ed495bc5cb4972277a8c584be6756f3630514f16455fc7a10c83f9a3a316c",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlWVAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlWVAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:07:06+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "fca21e85fdadb2902690290d",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "d75f70a23a987fd9c440c8bc960e360977478cd4ad8b3b47ae3c3acd9ab2fdd4",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlWOAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlWOAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:06:58+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "5862b1664ca0548310407265",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "2a203db775b7a109613e0c7757dee8645ad7f000aeea5dfdf5cc273204d39c9a",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlVUAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlVUAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:06:00+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "3ebedf68ffe48da57ea4fcc1",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "0f1bff7375d2949dc777363866570b75e4c005be2824ced1f7e08cfcfc0362f2",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlSyAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAAAmJaAAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlSyAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAAAmJaAAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T11:03:19+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "517ee94e6cd7a6678840accc",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "d6ab4efadf23205c27227e032c28ad15e068d5a16672512cc307ee18b9c82b1e",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlPFAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAAAmJaAAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlPFAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAAAmJaAAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T10:59:21+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "c44b4204a03394815619705c",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "10335508458f667c618db847fe6654e53de928096af4073a8ac15a3321fb5261",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlJQAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAAAmJaAAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACgAAAAEAAAAAAAAAAAAAAABpVlJQAAAAAQAAAA5NdWx0aVNpZyBKb2IgNAAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAAAmJaAAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2026-01-01T10:53:09+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBKZSKY7RPRISFHWXUFQ4UN2DXB4NOSKF5A5KGCOK4KEFQY32O7CDV6P",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "13b39154ccaeb78aac5cd78f",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "4419934d09903bba1f712d0ac0b2c4d0a854699d1307aff2574106bd1704ba6a",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVZfvAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQGmpDzUr9\/4CTCpRxpFJUOluNXj6tod8PpF5OFij8szNVxZjiDsLByl\/LGJU1CwfQU8k7kIuyi1N11190z8CHwg=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVZfvAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAGSQU02AAAAQGmpDzUr9\/4CTCpRxpFJUOluNXj6tod8PpF5OFij8szNVxZjiDsLByl\/LGJU1CwfQU8k7kIuyi1N11190z8CHwg=",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-31T21:37:56+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBS3PSPX6ALZLV6RCVT7RV5QGVOQXGLAS5YQZWSZOETD5C2R52APOJNE",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "3380e78225812870a0d595af",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "56fc560b6a3c34fb7da919a792826c9f6a00888f357ca12ca2d6db1e651fad53",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVZfKAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVZfKAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-31T21:37:20+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBS3PSPX6ALZLV6RCVT7RV5QGVOQXGLAS5YQZWSZOETD5C2R52APOJNE",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "1102e885c2316eeac9c26ff5",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "529bb7b770f81d8330e95883b556f365f8181fb18f8cca59f0265b491ea12d32",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVZMYAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVZMYAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-31T21:17:17+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBS3PSPX6ALZLV6RCVT7RV5QGVOQXGLAS5YQZWSZOETD5C2R52APOJNE",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "45340cd88e7de5f574ecc583",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "50dd4f0b78e45ce9c4350765ce3257f9721e992a3f8583fef6de0140db7c8a2f",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVYc4AAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVYc4AAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-31T20:26:37+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBS3PSPX6ALZLV6RCVT7RV5QGVOQXGLAS5YQZWSZOETD5C2R52APOJNE",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "b95ca8cd391df48cc924352b",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "b5569b4380d7b5afbe9a313bd265f9c7e12d01cc9e8796341c35085dcc90be41",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVYGsAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVYGsAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-31T20:02:57+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBS3PSPX6ALZLV6RCVT7RV5QGVOQXGLAS5YQZWSZOETD5C2R52APOJNE",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "fb85dd5d58553df078824180",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "e838523b66aacd30b1c7987aa8f555eb38e4a0d532ca622a0e3d9d1f32b7d640",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVYEWAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVYEWAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-31T20:00:27+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBS3PSPX6ALZLV6RCVT7RV5QGVOQXGLAS5YQZWSZOETD5C2R52APOJNE",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "94300ecd1f3e9c768a9457b0",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "c634b78a8b6f75c14c7212bc5a809cf94522f333fe3cf4dbddd6e65618333149",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVYDmAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVYDmAAAAAQAAAA5NdWx0aVNpZyBKb2IgMwAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-31T19:59:39+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBS3PSPX6ALZLV6RCVT7RV5QGVOQXGLAS5YQZWSZOETD5C2R52APOJNE",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "234c5425a84c6f93fe4ceeed",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "084b04770792ecac46c084865cdb885185532f412d38ecabac5d669735343ecf",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVXyiAAAAAQAAAA5NdWx0aVNpZyBKb2IgMgAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVXyiAAAAAQAAAA5NdWx0aVNpZyBKb2IgMgAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-31T19:41:27+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBS3PSPX6ALZLV6RCVT7RV5QGVOQXGLAS5YQZWSZOETD5C2R52APOJNE",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0,
+            "submittedResult": null,
+            "submittedAt": null
+        },
+        {
+            "id": "a6988ae9e0f2bc43f4ea2c90",
+            "network": "testnet",
+            "accountId": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+            "txHash": "65f0ff2d7a6e165cd3e0ad3f94744e76767e1050fba60d61d9a57db4051e4a75",
+            "txXdrOriginal": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVXQ+AAAAAQAAAA5NdWx0aVNpZyBKb2IgMQAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "txXdrCurrent": "AAAAAgAAAACqqDiPXurN5qN3ceB4w5FIqDEjh2iPhSO0M3vukkFNNgAAAGQAAuPQAAAACAAAAAEAAAAAAAAAAAAAAABpVXQ+AAAAAQAAAA5NdWx0aVNpZyBKb2IgMQAAAAAAAQAAAAAAAAABAAAAAGmk9RDJk2OZBHBjqj30sUjo2LFt6gzZJHHm5HSaOhRCAAAAAAAAAAANHO8AAAAAAAAAAAA=",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-31T19:05:39+00:00",
+            "signers": [
+                {
+                    "publicKey": "GBS3PSPX6ALZLV6RCVT7RV5QGVOQXGLAS5YQZWSZOETD5C2R52APOJNE",
+                    "weight": 1
+                },
+                {
+                    "publicKey": "GCVKQOEPL3VM3ZVDO5Y6A6GDSFEKQMJDQ5UI7BJDWQZXX3USIFGTMRGV",
+                    "weight": 1
+                }
+            ],
+            "thresholds": {
+                "low": 1,
+                "med": 2,
+                "high": 2
+            },
+            "requiredWeight": 2,
+            "collectedSigners": [],
+            "collectedWeight": 0
+        },
+        {
+            "id": "bb4606f7-cb59-414f-8f10-985831b1bcc8",
+            "network": "testnet",
+            "accountId": "GBZYYCFAH3B44LMXQSXANFM2X7P2SUNFDOBPGVVF6JJCLYO2XRM7K5CK",
+            "txHash": "fd67d4e26aae16335abe32ff62ede8e3d6f5069f4581477c067169fa7eb837e6",
+            "txXdrOriginal": "AAAAAgAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC\/8\/AAAAJQAAAAEAAAAAAAAAAAAAAABpNzoeAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
+            "txXdrCurrent": "AAAAAgAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC\/8\/AAAAJQAAAAEAAAAAAAAAAAAAAABpNzoeAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-08T20:49:39.023Z",
+            "createdBy": "local"
+        },
+        {
+            "id": "3463fb8f-2c1b-4d70-b42b-f0274ffe0a61",
+            "network": "testnet",
+            "accountId": "GBZYYCFAH3B44LMXQSXANFM2X7P2SUNFDOBPGVVF6JJCLYO2XRM7K5CK",
+            "txHash": "b14f937869bf47fa127df979a33bd6d962a2400945d5c9f667e335184c9770a7",
+            "txXdrOriginal": "AAAAAgAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC\/8\/AAAAJQAAAAEAAAAAAAAAAAAAAABpNzZtAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
+            "txXdrCurrent": "AAAAAgAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC\/8\/AAAAJQAAAAEAAAAAAAAAAAAAAABpNzZtAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-08T20:33:53.421Z",
+            "createdBy": "local"
+        },
+        {
+            "id": "03ac222c-046b-455e-bfc0-49a07d3622a8",
+            "network": "testnet",
+            "accountId": "GBZYYCFAH3B44LMXQSXANFM2X7P2SUNFDOBPGVVF6JJCLYO2XRM7K5CK",
+            "txHash": "4439f1e211514047cf810da1f87287f647b58e9111f867090ae93bb0293c2cb7",
+            "txXdrOriginal": "AAAAAgAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC\/8\/AAAAJQAAAAEAAAAAAAAAAAAAAABpNxtqAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
+            "txXdrCurrent": "AAAAAgAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC\/8\/AAAAJQAAAAEAAAAAAAAAAAAAAABpNxtqAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-08T18:38:38.532Z",
+            "createdBy": "local"
+        },
+        {
+            "id": "0b87eeb5-fab9-4ba6-b052-b7ada71eae85",
+            "network": "testnet",
+            "accountId": "GBZYYCFAH3B44LMXQSXANFM2X7P2SUNFDOBPGVVF6JJCLYO2XRM7K5CK",
+            "txHash": "26115cb9f807627aba2e498ef2437ba690ea4b7b31c7e55880f6f4b8c3f94b74",
+            "txXdrOriginal": "AAAAAgAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC\/8\/AAAAJQAAAAEAAAAAAAAAAAAAAABpNxDqAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
+            "txXdrCurrent": "AAAAAgAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC\/8\/AAAAJQAAAAEAAAAAAAAAAAAAAABpNxDqAAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAQilBgAAAAAAAAAAA",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-08T17:53:50.679Z",
+            "createdBy": "local"
+        },
+        {
+            "id": "a496b270-c8fd-40b7-babd-a29c26b392a0",
+            "network": "testnet",
+            "accountId": "GBZYYCFAH3B44LMXQSXANFM2X7P2SUNFDOBPGVVF6JJCLYO2XRM7K5CK",
+            "txHash": "99a525439191aa4c9a6856466bb80ccf78a6ef8748efd9d5becb5416fe2bb5f1",
+            "txXdrOriginal": "AAAAAgAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC\/8\/AAAAJQAAAAEAAAAAAAAAAAAAAABpNw5\/AAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAhFKDAAAAAAAAAAAA",
+            "txXdrCurrent": "AAAAAgAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAGQAC\/8\/AAAAJQAAAAEAAAAAAAAAAAAAAABpNw5\/AAAAAQAAABFNdWx0aVNpZyAtIFRlc3QgMQAAAAAAAAEAAAAAAAAAAQAAAABzjAigPsPOLZeErgaVmr\/fqVGlG4LzVqXyUiXh2rxZ9QAAAAAAAAAAhFKDAAAAAAAAAAAA",
+            "status": "pending_signatures",
+            "createdAt": "2025-12-08T17:43:31.448Z",
+            "createdBy": "local"
+        }
+    ]
 }

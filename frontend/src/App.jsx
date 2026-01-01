@@ -7,12 +7,13 @@ import Main from './main.jsx';
 import LanguageSelector from './components/LanguageSelector';
 import BugTrackerAdmin from './routes/BugTrackerAdmin.tsx';
 import SmallAdminLink from './components/SmallAdminLink.jsx';
-import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizLandingPath, getMultisigJobId, isSettingsPath, isTradingAssetsPath } from './utils/basePath.js';
+import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizLandingPath, getMultisigJobId, isSettingsPath, isTradingAssetsPath, isMultisigJobsListPath } from './utils/basePath.js';
 import GlossaryPage from './pages/GlossaryPage.tsx';
 import LearnPage from './pages/LearnPage.jsx';
 import QuizPage from './pages/QuizPage.jsx';
 import BackupSettings from './pages/BackupSettings.jsx';
 import MultisigJobDetail from './pages/MultisigJobDetail.jsx';
+import MultisigJobList from './pages/MultisigJobList.jsx';
 import Legal from './pages/Legal.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import TradingAssetsPage from './pages/TradingAssetsPage.jsx';
@@ -156,6 +157,14 @@ function AppShell() {
     }
   }, [pathname]);
 
+  const isMultisigJobListRoute = React.useMemo(() => {
+    try {
+      return isMultisigJobsListPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
   const isQuizRoute = React.useMemo(
     () =>
       isQuizLandingRoute ||
@@ -220,6 +229,7 @@ function AppShell() {
       isSettingsRoute,
       isTradingAssetsRoute,
       multisigJobId,
+      isMultisigJobListRoute,
     });
   }
 
@@ -230,6 +240,10 @@ function AppShell() {
       ) : multisigJobId ? (
         <div className="max-w-4xl mx-auto p-4">
           <MultisigJobDetail jobId={multisigJobId} />
+        </div>
+      ) : isMultisigJobListRoute ? (
+        <div className="max-w-5xl mx-auto p-4">
+          <MultisigJobList />
         </div>
       ) : isQuizRoute ? (
         <div className="max-w-4xl mx-auto p-4">
