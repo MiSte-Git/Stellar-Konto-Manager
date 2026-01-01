@@ -206,6 +206,67 @@ function mergeSignatures(AbstractTransaction $target, AbstractTransaction $incom
     return $target;
 }
 
+/**
+ * Enriches a job array with collected/missing signer info and recalculates status if not final.
+ */
+function summarizeJob(array $job): array {
+    $net = $job['network'] ?? 'public';
+    $accountId = $job['accountId'] ?? '';
+    $txXdr = $job['txXdrCurrent'] ?? ($job['txXdrOriginal'] ?? ($job['txXdr'] ?? ''));
+
+    $signers = $job['signers'] ?? [];
+    if (!$signers || count($signers) === 0) {
+        $meta = fetchAccountSigners($accountId, $net);
+        $signers = $meta['signers'];
+        $job['thresholds'] = $job['thresholds'] ?? $meta['thresholds'];
+    }
+
+    $requiredWeight = (int)($job['requiredWeight'] ?? ($job['thresholds']['med'] ?? 0));
+    $job['signers'] = $signers;
+    $job['requiredWeight'] = $requiredWeight;
+
+    $collected = [];
+    $collectedWeight = 0;
+    $parseErr = null;
+    if ($txXdr) {
+        $tx = parseTx($txXdr, $net, $parseErr);
+        if ($tx) {
+            $collected = verifyCollected($tx, $net, $signers);
+            $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
+        }
+    }
+    // Fallback to existing collected info if parsing failed
+    if (!$collected && isset($job['collectedSigners']) && is_array($job['collectedSigners'])) {
+        $collected = array_values($job['collectedSigners']);
+        $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
+    }
+    $collectedMap = [];
+    foreach ($collected as $c) {
+        $pk = $c['publicKey'] ?? null;
+        if ($pk) $collectedMap[$pk] = true;
+    }
+    $missing = array_values(array_filter($signers, function ($s) use ($collectedMap) {
+        $pk = $s['publicKey'] ?? '';
+        $weight = (int)($s['weight'] ?? 0);
+        return $pk && $weight > 0 && !isset($collectedMap[$pk]);
+    }));
+    $missingWeight = array_reduce($missing, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
+
+    $job['collectedSigners'] = $collected;
+    $job['collectedWeight'] = $collectedWeight;
+    $job['missingSigners'] = $missing;
+    $job['missingWeight'] = $missingWeight;
+
+    $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'];
+    if (!in_array($job['status'] ?? '', $finalStates, true)) {
+        $job['status'] = ($requiredWeight > 0 && $collectedWeight >= $requiredWeight)
+            ? 'ready_to_submit'
+            : 'pending_signatures';
+    }
+
+    return $job;
+}
+
 // Routing
 $path = parse_url($uri, PHP_URL_PATH) ?? '/';
 
@@ -216,6 +277,23 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         $net = normalizeNetwork($body['network'] ?? null);
         $accountId = $body['accountId'] ?? '';
         $txXdr = $body['txXdr'] ?? '';
+        $clientCollected = [];
+        if (isset($body['clientCollected']) && is_array($body['clientCollected'])) {
+            foreach ($body['clientCollected'] as $s) {
+                $pk = $s['publicKey'] ?? '';
+                $w = (int)($s['weight'] ?? 0);
+                if ($pk && $w > 0) $clientCollected[] = ['publicKey' => $pk, 'weight' => $w];
+            }
+        }
+        $providedSigners = [];
+        if (isset($body['signers']) && is_array($body['signers'])) {
+            foreach ($body['signers'] as $s) {
+                $pk = $s['publicKey'] ?? '';
+                $w = (int)($s['weight'] ?? 0);
+                if ($pk && $w > 0) $providedSigners[] = ['publicKey' => $pk, 'weight' => $w];
+            }
+        }
+        $providedRequired = isset($body['requiredWeight']) ? (int)$body['requiredWeight'] : null;
         if (!$net) return sendJson(['error' => 'invalid_network'], 400);
         if (!$accountId) return sendJson(['error' => 'invalid_account'], 400);
         if (!$txXdr) return sendJson(['error' => 'invalid_xdr'], 400);
@@ -226,7 +304,12 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         $hash = txHash($tx, $net);
         $meta = fetchAccountSigners($accountId, $net);
         $requiredWeight = (int)($meta['thresholds']['med'] ?? 0);
-        $collected = verifyCollected($tx, $net, $meta['signers']);
+        $signerMeta = $providedSigners && count($providedSigners) > 0 ? $providedSigners : $meta['signers'];
+        $requiredWeight = $providedRequired ?? (int)($meta['thresholds']['med'] ?? 0);
+        $collected = verifyCollected($tx, $net, $signerMeta);
+        if (!$collected && $clientCollected) {
+            $collected = $clientCollected;
+        }
         $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
         $status = ($requiredWeight > 0 && $collectedWeight >= $requiredWeight) ? 'ready_to_submit' : 'pending_signatures';
         $submittedResult = null;
@@ -249,7 +332,7 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
             'txXdrCurrent' => $txXdr,
             'status' => $status,
             'createdAt' => gmdate('c'),
-            'signers' => $meta['signers'],
+            'signers' => $signerMeta,
             'thresholds' => $meta['thresholds'],
             'requiredWeight' => $requiredWeight,
             'collectedSigners' => $collected,
@@ -257,6 +340,7 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
             'submittedResult' => $submittedResult,
             'submittedAt' => $submittedResult ? gmdate('c') : null,
         ];
+        $job = summarizeJob($job);
         $items = loadJobs($jobFile);
         array_unshift($items, $job);
         saveJobs($jobFile, $items);
@@ -284,6 +368,7 @@ if ($method === 'GET' && $path === '/api/multisig/jobs') {
         if ($status && ($j['status'] ?? '') !== $status) return false;
         return true;
     });
+    $items = array_map('summarizeJob', array_values($items));
     // hide raw XDR in list
     $out = array_map(function ($j) {
         $c = $j;
@@ -299,7 +384,7 @@ if ($method === 'GET' && ($m = matchRoute($path, '/api/multisig/jobs/:id'))) {
     $items = loadJobs($jobFile);
     foreach ($items as $j) {
         if (($j['id'] ?? '') === $id) {
-            return sendJson($j);
+            return sendJson(summarizeJob($j));
         }
     }
     return sendJson(['error' => 'not_found'], 404);
@@ -311,6 +396,22 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         $id = $m['id'] ?? '';
         $body = jsonBody();
         $signedXdr = $body['signedXdr'] ?? '';
+        $clientCollected = [];
+        if (isset($body['clientCollected']) && is_array($body['clientCollected'])) {
+            foreach ($body['clientCollected'] as $s) {
+                $pk = $s['publicKey'] ?? '';
+                $w = (int)($s['weight'] ?? 0);
+                if ($pk && $w > 0) $clientCollected[] = ['publicKey' => $pk, 'weight' => $w];
+            }
+        }
+        $providedSigners = [];
+        if (isset($body['signers']) && is_array($body['signers'])) {
+            foreach ($body['signers'] as $s) {
+                $pk = $s['publicKey'] ?? '';
+                $w = (int)($s['weight'] ?? 0);
+                if ($pk && $w > 0) $providedSigners[] = ['publicKey' => $pk, 'weight' => $w];
+            }
+        }
         if (!$signedXdr) return sendJson(['error' => 'invalid_xdr'], 400);
 
         $items = loadJobs($jobFile);
@@ -329,7 +430,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
             $current = parseTx($j['txXdrCurrent'] ?? $j['txXdrOriginal'] ?? '', $net, $currentErr);
             if (!$current) $current = $incoming;
             $merged = mergeSignatures($current, $incoming);
-            $signerMeta = $j['signers'] ?? [];
+            $signerMeta = $providedSigners && count($providedSigners) > 0 ? $providedSigners : ($j['signers'] ?? []);
             if (!$signerMeta || count($signerMeta) === 0) {
                 $meta = fetchAccountSigners($j['accountId'] ?? '', $net);
                 $signerMeta = $meta['signers'];
@@ -338,6 +439,9 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 $j['signers'] = $signerMeta;
             }
             $collected = verifyCollected($merged, $net, $signerMeta);
+            if (!$collected && $clientCollected) {
+                $collected = $clientCollected;
+            }
             $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
             $required = (int)($j['requiredWeight'] ?? 0);
             $status = ($required > 0 && $collectedWeight >= $required) ? 'ready_to_submit' : 'pending_signatures';
@@ -358,6 +462,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
             $j['status'] = $status;
             $j['submittedResult'] = $submittedResult;
             $j['submittedAt'] = $submittedResult ? gmdate('c') : null;
+            $j = summarizeJob($j);
             break;
         }
         unset($j);

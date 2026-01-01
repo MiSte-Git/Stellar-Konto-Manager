@@ -42,7 +42,11 @@ export async function mergeSignedXdr(payload) {
     const r = await fetch(apiUrl(`multisig/jobs/${encodeURIComponent(payload.jobId)}/merge-signed-xdr`), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ signedXdr: payload.signedXdr }),
+      body: JSON.stringify({
+        signedXdr: payload.signedXdr,
+        clientCollected: payload.clientCollected,
+        signers: payload.signers,
+      }),
     });
     const data = await r.json().catch(() => ({}));
     ensureOk(r);
