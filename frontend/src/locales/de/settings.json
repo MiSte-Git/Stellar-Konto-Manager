@@ -85,6 +85,11 @@
     "quiz": "Quiz-Einstellungen",
     "explorer": "Stellar Explorer"
   },
+  "multisig": {
+    "timeoutTitle": "Multisig-Timeout",
+    "timeoutHint": "Gültigkeitsdauer für Multisig-Zahlungen in Sekunden (z. B. 86400 = 24 Stunden).",
+    "seconds": "Sekunden"
+  },
   "explorer": {
     "sectionTitle": "Stellar Explorer",
     "description": "Wähle den Standard-Explorer für Kontolinks und verwalte die Explorer-Liste.",

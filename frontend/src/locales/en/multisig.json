@@ -186,7 +186,8 @@
       "hint": "Enter the secret key for account {{account}}.",
       "signNow": "Sign now"
     },
-    "submitFailed": "Submitting failed: {{reason}}"
+    "submitFailed": "Submitting failed: {{reason}}",
+    "submitNoExtras": "No additional error details available."
   },
   "secretModal": {
     "options": {
