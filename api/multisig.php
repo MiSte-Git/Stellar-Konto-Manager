@@ -27,7 +27,7 @@ use Soneso\StellarSDK\Xdr\XdrDecoratedSignature;
 
 // CORS headers
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET,POST,OPTIONS');
+header('Access-Control-Allow-Methods: GET,POST,DELETE,OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -117,6 +117,17 @@ function submitToNetwork(AbstractTransaction $tx, string $net): array {
         'envelopeXdr' => $response->getEnvelopeXdr(),
         'resultXdr' => $response->getResultXdr(),
     ];
+}
+
+function getSubmitErrorDetail(\Throwable $e): array {
+    $detail = ['message' => $e->getMessage()];
+    // Try to extract stellar-specific error info if available
+    if (method_exists($e, 'getExtras')) {
+        $detail['extras'] = $e->getExtras();
+    } elseif (property_exists($e, 'extras')) {
+        $detail['extras'] = $e->extras;
+    }
+    return $detail;
 }
 
 function fetchAccountSigners(string $accountId, string $net): array {
@@ -318,7 +329,7 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
                 $submittedResult = submitToNetwork($tx, $net);
                 $status = 'submitted_success';
             } catch (\Throwable $submitErr) {
-                $submittedResult = ['error' => $submitErr->getMessage()];
+                $submittedResult = ['error' => $submitErr->getMessage(), 'detail' => getSubmitErrorDetail($submitErr)];
                 $status = 'submitted_failed';
             }
         }
@@ -439,9 +450,23 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 $j['signers'] = $signerMeta;
             }
             $collected = verifyCollected($merged, $net, $signerMeta);
-            if (!$collected && $clientCollected) {
-                $collected = $clientCollected;
+            // Merge in client-provided collected and previously stored collected to avoid losing signatures
+            $collectedAll = array_merge(
+                is_array($collected) ? $collected : [],
+                is_array($clientCollected) ? $clientCollected : [],
+                is_array($j['collectedSigners'] ?? null) ? $j['collectedSigners'] : []
+            );
+            // Deduplicate by publicKey, prefer highest weight
+            $byPk = [];
+            foreach ($collectedAll as $c) {
+                $pk = $c['publicKey'] ?? '';
+                $w = (int)($c['weight'] ?? 0);
+                if (!$pk) continue;
+                if (!isset($byPk[$pk]) || $w > (int)($byPk[$pk]['weight'] ?? 0)) {
+                    $byPk[$pk] = ['publicKey' => $pk, 'weight' => $w];
+                }
             }
+            $collected = array_values($byPk);
             $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
             $required = (int)($j['requiredWeight'] ?? 0);
             $status = ($required > 0 && $collectedWeight >= $required) ? 'ready_to_submit' : 'pending_signatures';
@@ -451,7 +476,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                     $submittedResult = submitToNetwork($merged, $net);
                     $status = 'submitted_success';
                 } catch (\Throwable $submitErr) {
-                    $submittedResult = ['error' => $submitErr->getMessage()];
+                    $submittedResult = ['error' => $submitErr->getMessage(), 'detail' => getSubmitErrorDetail($submitErr)];
                     $status = 'submitted_failed';
                 }
             }
@@ -477,6 +502,32 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
     } catch (\Throwable $e) {
         return sendError('server_error', $e->getMessage(), 500);
     }
+}
+
+// DELETE /api/multisig/jobs?network=testnet&confirm=DELETE TESTNET JOBS
+if ($method === 'DELETE' && $path === '/api/multisig/jobs') {
+    $net = normalizeNetwork($_GET['network'] ?? null);
+    $confirm = $_GET['confirm'] ?? '';
+    $adminToken = $_SERVER['HTTP_X_ADMIN_TOKEN'] ?? '';
+    $requiredToken = getenv('MULTISIG_ADMIN_TOKEN') ?: '';
+
+    if (!$net) return sendJson(['error' => 'invalid_network'], 400);
+    if ($net === 'testnet') {
+        if ($confirm !== 'DELETE TESTNET JOBS') return sendJson(['error' => 'confirm_required'], 400);
+    } else {
+        if (!$requiredToken || !$adminToken || $adminToken !== $requiredToken) {
+            return sendJson(['error' => 'unauthorized'], 401);
+        }
+        if ($confirm !== 'DELETE ALL JOBS') return sendJson(['error' => 'confirm_required'], 400);
+    }
+
+    $items = loadJobs($jobFile);
+    $before = count($items);
+    $items = array_values(array_filter($items, function ($j) use ($net) {
+        return ($j['network'] ?? '') !== $net;
+    }));
+    saveJobs($jobFile, $items);
+    return sendJson(['deleted' => $before - count($items)]);
 }
 
 // Fallback
