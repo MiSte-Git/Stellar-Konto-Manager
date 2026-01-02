@@ -16,6 +16,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const { t, i18n } = useTranslation(['common', 'errors', 'publicKey', 'secretKey', 'investedTokens', 'wallet', 'multisig', 'network']);
   void _onBack;
   const { wallets } = useTrustedWallets();
+  const { decimalsMode, multisigTimeoutSeconds } = useSettings();
 
   const [dest, setDest] = useState(initial?.recipient || '');
   const [amount, setAmount] = useState('');
@@ -392,6 +393,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
 
     let tx;
+    const txTimeout = Math.max(60, Number(multisigTimeoutSeconds || 0) || 86400);
     let activated = false;
     if (!destExists) {
       if (assetKey !== 'XLM') {
@@ -402,14 +404,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const startingBalance = (Math.round(minStart * 1e7) / 1e7).toFixed(7).replace(/\.0+$/, '');
       tx = new TransactionBuilder(account, { fee, networkPassphrase: net, memo })
         .addOperation(Operation.createAccount({ destination: resolvedDest, startingBalance }))
-        .setTimeout(60)
+        .setTimeout(txTimeout)
         .build();
       activated = true;
       assetLabel = 'XLM';
     } else {
       tx = new TransactionBuilder(account, { fee, networkPassphrase: net, memo })
         .addOperation(Operation.payment({ destination: resolvedDest, amount: paymentAmount, asset }))
-        .setTimeout(60)
+        .setTimeout(txTimeout)
         .build();
     }
 
@@ -805,7 +807,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const recipientFederationDisplay = resolvedFederation || savedRecipientFederation || (trimmedRecipient && trimmedRecipient.includes('*') ? trimmedRecipient : '');
 
   // Zahlformat gemäß Settings
-  const { decimalsMode } = useSettings();
   const amountFmt = useMemo(() => {
     const isAuto = decimalsMode === 'auto';
     const n = isAuto ? undefined : Math.max(0, Math.min(7, Number(decimalsMode)));
@@ -1590,7 +1591,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             {resultDialog.type === 'job' && (
               <div className="mt-3 text-sm space-y-1 text-amber-700 dark:text-amber-400">
                 <p>{t('multisig:prepare.notSentHint')}</p>
-                <p className="text-gray-700 dark:text-gray-300">{t('multisig:prepare.closeHint', 'Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“.')}</p>
+                <p className="text-gray-700 dark:text-gray-300">{t('multisig:prepare.closeHint', 'Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast und der Multisig-Auftrag erstellt wurde; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“.')}</p>
               </div>
             )}
 
@@ -1788,17 +1789,26 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     publicKey: s.public_key || s.publicKey || s.key || '',
                     weight: Number(s.weight || 0),
                   })).filter((s) => s.publicKey && s.weight > 0);
-                  await mergeSignedXdr({
+                  const merged = await mergeSignedXdr({
                     jobId: jobToSign.jobId,
                     signedXdr: tx.toXDR(),
                     clientCollected,
                     signers: signerMeta,
                   });
-                  // Erfolgreiches Mergen: keine zusätzliche Toast-Meldung nötig
+                  const status = merged?.status || 'pending_signatures';
+                  const hash = merged?.txHash || jobToSign.hash || '';
+                  const summary = merged?.summary || jobToSign.summary || null;
+                  setResultDialog({
+                    type: 'job',
+                    jobId: jobToSign.jobId,
+                    hash,
+                    xdr: merged?.txXdrCurrent || merged?.txXdr || jobToSign.xdr,
+                    summary,
+                    status,
+                  });
                   setSecretError('');
                   closeSecretModal();
                   setLastResultDialog(null);
-                  setResultDialog(null);
                 } catch (mergeErr) {
                   const detail = mergeErr?.message || 'multisig.jobs.merge_failed';
                   showErrorMessage(detail);

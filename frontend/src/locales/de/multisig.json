@@ -119,7 +119,7 @@
     "copyXdrButton": "XDR kopieren",
     "copied": "Kopiert",
     "notSentHint": "Diese Transaktion wurde noch nicht an das Netzwerk gesendet.",
-    "closeHint": "Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
+    "closeHint": "Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast und der Multisig-Auftrag erstellt wurde; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
   },
   "testMode": {
     "modalTitle": "Single-User-Signatur",
@@ -191,7 +191,8 @@
       "hint": "Bitte Secret Key für Konto {{account}} eingeben.",
       "signNow": "Jetzt signieren"
     },
-    "submitFailed": "Beim Senden ist ein Fehler aufgetreten: {{reason}}"
+    "submitFailed": "Beim Senden ist ein Fehler aufgetreten: {{reason}}",
+    "submitNoExtras": "Keine weiteren Fehlerdetails verfügbar."
   },
   "secretModal": {
     "options": {

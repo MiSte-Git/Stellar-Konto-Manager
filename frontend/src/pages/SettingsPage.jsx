@@ -22,6 +22,8 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
     setDefaultExplorer,
     getSettingsSnapshot,
     applySettingsSnapshot,
+    multisigTimeoutSeconds,
+    setMultisigTimeoutSeconds,
   } = useSettings();
   const [activeTab, setActiveTab] = useState('general');
   const [newExplorerName, setNewExplorerName] = useState('');
@@ -190,6 +192,26 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">{t('settings:sections.general', t('settings:tabs.general'))}</h2>
           <SettingsPanel publicKey={publicKey} showDisplay={false} showTrustedWallets={false} showNetwork={false} />
+          <div className="border rounded p-3 space-y-2">
+            <h3 className="font-semibold">{t('settings:multisig.timeoutTitle', 'Multisig Timeout')}</h3>
+            <div className="text-sm text-gray-700 dark:text-gray-300">
+              {t('settings:multisig.timeoutHint', 'Gültigkeitsdauer (Sekunden) für Multisig-Zahlungen, z. B. 86400 = 24h.')}
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min="60"
+                value={multisigTimeoutSeconds}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  if (!Number.isFinite(v) || v <= 0) return;
+                  setMultisigTimeoutSeconds(v);
+                }}
+                className="w-32 border rounded px-2 py-1 text-sm"
+              />
+              <span className="text-sm text-gray-600 dark:text-gray-300">{t('settings:multisig.seconds', 'Sekunden')}</span>
+            </div>
+          </div>
           <section className="mt-6 space-y-2">
             <h3 className="font-semibold">{t('settings:export.title')}</h3>
             <button

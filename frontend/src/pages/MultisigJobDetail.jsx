@@ -295,6 +295,11 @@ function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
                   {JSON.stringify(submitExtras.result_codes)}
                 </div>
               )}
+              {!submitExtras && (
+                <div className="text-gray-700 dark:text-gray-300">
+                  {t('multisig:detail.submitNoExtras', 'Keine weiteren Fehlerdetails verfügbar.')}
+                </div>
+              )}
             </div>
           )}
 
