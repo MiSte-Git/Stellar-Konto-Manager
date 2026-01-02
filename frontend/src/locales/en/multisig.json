@@ -154,7 +154,9 @@
       "title": "Signers & status",
       "progress": "Signature weight: {{collected}} / {{required}}",
       "signed": "signed",
-      "missing": "missing"
+      "missing": "missing",
+      "noSessionSecret": "No secret key stored in this browser. Please enter the secret or import a signed XDR.",
+      "signedLocalStatus": "Signature saved. Current status: {{status}}"
     },
     "changes": {
       "title": "Planned changes",
@@ -178,7 +180,13 @@
         "title": "Signatures updated",
         "body": "The signatures were successfully merged with this multisig job. Current status: {{status}}."
       }
-    }
+    },
+    "secretPrompt": {
+      "title": "Enter secret to sign",
+      "hint": "Enter the secret key for account {{account}}.",
+      "signNow": "Sign now"
+    },
+    "submitFailed": "Submitting failed: {{reason}}"
   },
   "secretModal": {
     "options": {
@@ -204,7 +212,8 @@
     "title": "Multisig Jobs",
     "noAccount": "Please load an account first to see multisig jobs.",
     "empty": "No multisig jobs found.",
-    "details": "Show details",
+    "details": "Details & sign",
+    "export": "Export",
     "signatures": "Signatures",
     "signaturesProgress": "{{collected}} / {{required}} signature weight",
     "filter": {
@@ -223,7 +232,11 @@
       "submitted_failed": "Sending failed",
       "expired": "Expired",
       "obsolete_seq": "Outdated Sequence"
-    }
+    },
+    "deleteTestnet": "Delete testnet jobs",
+    "deleteTestnetTitle": "Delete all testnet jobs",
+    "deleteTestnetHint": "This removes all multisig jobs in testnet. To confirm, type \"DELETE TESTNET JOBS\".",
+    "deleteTestnetConfirm": "Delete testnet jobs"
   },
   "actions": {
     "createMultisigJob": "Create Multisig Job"

@@ -99,8 +99,7 @@
         "hashLabel": "Transaktions-Hash",
         "hint": "Gib die XDR an andere Unterzeichner oder Tools weiter (z. B. Hardware-Wallet, Offline-Rechner). Zum Senden importierst du die (ggf. signierte) XDR später im SKM erneut (z. B. Option 3) und sendest sie an das Netzwerk."
       }
-    }
-    ,
+    },
     "testModeTitle": "Alle Signaturen lokal",
     "testModeDescription": "Bestehender Flow: Geheimschlüssel eingeben, alle benötigten Signaturen sammeln und direkt an Horizon senden.",
     "testModeButton": "Direkt signieren & senden",
@@ -110,8 +109,7 @@
   },
   "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
   "errors": {
-    "network": "Backend nicht erreichbar (Netzwerkfehler).",
-    "createFailed": "Multisig-Job konnte nicht erstellt werden."
+    "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion."
   },
   "prepare": {
     "title": "Transaktion für Multisig vorbereitet",
@@ -161,7 +159,9 @@
       "title": "Signer & Status",
       "progress": "Signaturgewicht: {{collected}} / {{required}}",
       "signed": "unterzeichnet",
-      "missing": "fehlt"
+      "missing": "fehlt",
+      "noSessionSecret": "Kein Secret Key im Browser gespeichert. Bitte Secret eingeben oder signiertes XDR importieren.",
+      "signedLocalStatus": "Signatur gespeichert. Aktueller Status: {{status}}"
     },
     "changes": {
       "title": "Geplante Änderungen",
@@ -173,20 +173,25 @@
       "title": "Transaktion (XDR)",
       "hint": "Dieses XDR können andere Unterzeichner in kompatiblen Wallets laden und signieren.",
       "copy": "XDR kopieren",
-      "copy": "XDR kopieren",
       "copy.success": "XDR in die Zwischenablage kopiert.",
       "copy.error": "XDR konnte nicht in die Zwischenablage kopiert werden."
     },
     "signedXdr": {
       "title": "Signiertes XDR importieren",
       "hint": "Fügen Sie hier ein von einem anderen Unterzeichner signiertes XDR ein, um die Signaturen mit diesem Multisig-Job zu mergen.",
-    "label": "Signiertes XDR",
-    "submit": "Signiertes XDR mergen",
-    "success": {
+      "label": "Signiertes XDR",
+      "submit": "Signiertes XDR mergen",
+      "success": {
         "title": "Signaturen aktualisiert",
         "body": "Die Signaturen wurden erfolgreich mit diesem Multisig-Job gemergt. Aktueller Status: {{status}}."
       }
-    }
+    },
+    "secretPrompt": {
+      "title": "Secret eingeben, um zu signieren",
+      "hint": "Bitte Secret Key für Konto {{account}} eingeben.",
+      "signNow": "Jetzt signieren"
+    },
+    "submitFailed": "Beim Senden ist ein Fehler aufgetreten: {{reason}}"
   },
   "secretModal": {
     "options": {
@@ -209,14 +214,12 @@
     "master": "Master-Key",
     "signerDisabled": "Signer deaktiviert (weight = 0)"
   },
-  "errors": {
-    "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion."
-  },
   "list": {
     "title": "Multisig-Aufträge",
     "noAccount": "Bitte lade zuerst ein Konto, um Multisig-Aufträge zu sehen.",
     "empty": "Keine Multisig-Aufträge gefunden.",
-    "details": "Details anzeigen",
+    "details": "Details & Signieren",
+    "export": "Exportieren",
     "signatures": "Signaturen",
     "signaturesProgress": "{{collected}} / {{required}} Signaturgewicht",
     "filter": {
@@ -235,7 +238,11 @@
       "submitted_failed": "Senden fehlgeschlagen",
       "expired": "Abgelaufen",
       "obsolete_seq": "Veraltete Sequence"
-    }
+    },
+    "deleteTestnet": "Testnet-Jobs löschen",
+    "deleteTestnetTitle": "Alle Testnet-Jobs löschen",
+    "deleteTestnetHint": "Dies entfernt alle Multisig-Jobs im Testnet. Zum Bestätigen bitte \"DELETE TESTNET JOBS\" eintippen.",
+    "deleteTestnetConfirm": "Testnet-Jobs löschen"
   },
   "actions": {
     "createMultisigJob": "Multisig-AuftragJob erstellen"

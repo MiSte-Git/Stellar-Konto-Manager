@@ -12,6 +12,8 @@ function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
   const [info, setInfo] = useState('');
   const [importXdr, setImportXdr] = useState('');
   const [importing, setImporting] = useState(false);
+  const [showSecretPrompt, setShowSecretPrompt] = useState(false);
+  const [secretInput, setSecretInput] = useState('');
 
   const fetchJob = useCallback(async () => {
     if (!jobId) return;
@@ -64,18 +66,22 @@ function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
     if (!currentPublicKey) return false;
     return !!(job?.signers || []).find((s) => (s.publicKey || '') === currentPublicKey && Number(s.weight || 0) > 0);
   }, [job, currentPublicKey]);
+  const signingComplete = useMemo(() => {
+    const req = Number(job?.requiredWeight || 0);
+    const have = Number(job?.collectedWeight || 0);
+    return req > 0 && have >= req;
+  }, [job]);
+  const submitError = job?.submittedResult?.error;
+  const submitExtras = job?.submittedResult?.detail?.extras;
+  const isFinalState = useMemo(() => {
+    const s = String(job?.status || '').toLowerCase();
+    return ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'].includes(s);
+  }, [job]);
 
-  const handleSignWithSession = useCallback(async () => {
+  const signWithSecret = useCallback(async (secret) => {
     if (!job) return;
     if (!canCurrentSign) {
       setError(t('multisig:detail.signatures.missing', 'fehlt'));
-      return;
-    }
-    const secret = (() => {
-      try { return sessionStorage.getItem(`stm.session.secret.${currentPublicKey}`) || ''; } catch { return ''; }
-    })();
-    if (!secret) {
-      setError(t('multisig:detail.noSessionSecret', 'Kein Secret Key im Speicher dieses Browsers. Bitte signiertes XDR importieren.'));
       return;
     }
     try {
@@ -99,14 +105,39 @@ function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
         signers: signerMeta,
       });
       setJob(merged);
-      setInfo(t('multisig:detail.signatures.signedLocal', 'Signatur gespeichert.'));
-      setError('');
+      const st = merged?.status || 'pending_signatures';
+      setInfo(t('multisig:detail.signatures.signedLocalStatus', { status: st }));
+      const submitErr = merged?.submittedResult?.error;
+      if (submitErr) {
+        setError(t('multisig:detail.submitFailed', { reason: submitErr }));
+      } else {
+        setError('');
+      }
+      setShowSecretPrompt(false);
+      setSecretInput('');
     } catch (e) {
       setError(String(e?.message || 'multisig.jobs.merge_failed'));
     } finally {
       setLoading(false);
     }
-  }, [job, jobId, canCurrentSign, currentPublicKey, t]);
+  }, [job, jobId, canCurrentSign, t]);
+
+  const handleSignWithSession = useCallback(async () => {
+    if (!job) return;
+    if (!canCurrentSign) {
+      setError(t('multisig:detail.signatures.missing', 'fehlt'));
+      return;
+    }
+    const secret = (() => {
+      try { return sessionStorage.getItem(`stm.session.secret.${currentPublicKey}`) || ''; } catch { return ''; }
+    })();
+    if (!secret) {
+      setError(t('multisig:detail.noSessionSecret', 'Kein Secret Key im Browser gespeichert. Bitte Secret eingeben oder signiertes XDR importieren.'));
+      setShowSecretPrompt(true);
+      return;
+    }
+    await signWithSecret(secret);
+  }, [job, canCurrentSign, currentPublicKey, t, signWithSecret]);
 
   if (!jobId) return null;
 
@@ -205,19 +236,71 @@ function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
             </div>
           )}
 
+          {canCurrentSign && !isFinalState && (
+            <div className="flex items-center justify-between gap-3 border rounded p-3">
+              <div className="text-sm font-semibold">{t('multisig:detail.signers.signWithSession', 'Jetzt signieren')}</div>
+              <button
+                type="button"
+                className="text-xs px-3 py-1 rounded border border-green-200 text-green-700 dark:text-green-200 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900"
+                onClick={handleSignWithSession}
+                disabled={loading || signingComplete}
+              >
+                {t('multisig:detail.signers.signWithSession', 'Jetzt signieren')}
+              </button>
+            </div>
+          )}
+
+          {showSecretPrompt && canCurrentSign && !isFinalState && (
+            <div className="border border-amber-500 rounded p-3 space-y-3 bg-amber-50 dark:bg-amber-900/40 shadow-sm">
+              <div className="text-sm font-semibold text-amber-900 dark:text-amber-100">
+                {t('multisig:detail.secretPrompt.title', 'Secret eingeben, um zu signieren')}
+              </div>
+              <div className="text-xs text-gray-700 dark:text-gray-300">
+                {t('multisig:detail.secretPrompt.hint', { account: currentPublicKey })}
+              </div>
+              <input
+                type="password"
+                value={secretInput}
+                onChange={(e) => setSecretInput(e.target.value)}
+                className="w-full border-2 border-amber-500 rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                placeholder={t('secretKey:placeholder', 'Secret Key eingeben')}
+                autoComplete="off"
+                spellCheck="false"
+              />
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
+                  onClick={() => { setShowSecretPrompt(false); setSecretInput(''); }}
+                  disabled={loading}
+                >
+                  {t('common:cancel', 'Abbrechen')}
+                </button>
+                <button
+                  type="button"
+                  className="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 text-sm disabled:opacity-50"
+                  onClick={() => signWithSecret(secretInput.trim())}
+                  disabled={loading || !secretInput.trim()}
+                >
+                  {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
+                </button>
+              </div>
+            </div>
+          )}
+          {submitError && (
+            <div className="border border-red-400 bg-red-50 dark:bg-red-900/30 text-xs text-red-800 dark:text-red-200 rounded p-2 space-y-1">
+              <div>{t('multisig:detail.submitFailed', { reason: submitError })}</div>
+              {submitExtras && submitExtras.result_codes && (
+                <div className="font-mono break-all">
+                  {JSON.stringify(submitExtras.result_codes)}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="border rounded p-3">
             <div className="flex items-center justify-between mb-1">
               <h2 className="font-semibold text-sm">{t('multisig:detail.xdr.title')}</h2>
-              {canCurrentSign && (
-                <button
-                  type="button"
-                  className="text-xs px-2 py-1 rounded border border-green-200 text-green-700 dark:text-green-200 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900"
-                  onClick={handleSignWithSession}
-                  disabled={loading}
-                >
-                  {t('multisig:detail.signers.signWithSession', 'Mit gespeichertem Key signieren')}
-                </button>
-              )}
               <button
                 type="button"
                 className="text-xs px-2 py-1 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
