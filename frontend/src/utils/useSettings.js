@@ -98,6 +98,10 @@ export function useSettings() {
   const [decimalsMode, setDecimalsMode] = useState(() => localStorage.getItem('stm.decimalsMode') || 'auto'); // 'auto' | '0'..'7'
   const [fullHorizonUrl, setFullHorizonUrl] = useState(() => localStorage.getItem('stm.horizonFullUrl') || '');
   const [autoUseFullHorizon, setAutoUseFullHorizon] = useState(() => localStorage.getItem('stm.autoFullHorizon') === '1');
+   const [multisigTimeoutSeconds, setMultisigTimeoutSeconds] = useState(() => {
+    const raw = Number(localStorage.getItem('stm.multisigTimeoutSeconds') || 86400);
+    return Number.isFinite(raw) && raw > 0 ? raw : 86400;
+  });
   const [explorers, setExplorersState] = useState(() => loadExplorers());
   const [defaultExplorerKey, setDefaultExplorerKey] = useState(() => {
     try {
@@ -111,6 +115,7 @@ export function useSettings() {
   useEffect(() => localStorage.setItem('stm.decimalsMode', String(decimalsMode)), [decimalsMode]);
   useEffect(() => localStorage.setItem('stm.horizonFullUrl', String(fullHorizonUrl || '')), [fullHorizonUrl]);
   useEffect(() => localStorage.setItem('stm.autoFullHorizon', autoUseFullHorizon ? '1' : '0'), [autoUseFullHorizon]);
+  useEffect(() => localStorage.setItem('stm.multisigTimeoutSeconds', String(multisigTimeoutSeconds)), [multisigTimeoutSeconds]);
 
   useEffect(() => {
     try {
@@ -147,6 +152,7 @@ export function useSettings() {
     decimalsMode,
     fullHorizonUrl,
     autoUseFullHorizon,
+    multisigTimeoutSeconds,
     explorers,
     defaultExplorer: defaultExplorerKey,
   });
@@ -162,6 +168,9 @@ export function useSettings() {
     }
     if (typeof snapshot.fullHorizonUrl === 'string') setFullHorizonUrl(snapshot.fullHorizonUrl);
     if (typeof snapshot.autoUseFullHorizon === 'boolean') setAutoUseFullHorizon(snapshot.autoUseFullHorizon);
+    if (typeof snapshot.multisigTimeoutSeconds === 'number' && Number.isFinite(snapshot.multisigTimeoutSeconds) && snapshot.multisigTimeoutSeconds > 0) {
+      setMultisigTimeoutSeconds(snapshot.multisigTimeoutSeconds);
+    }
     if (Array.isArray(snapshot.explorers)) setExplorers(snapshot.explorers);
     if (typeof snapshot.defaultExplorer === 'string') setDefaultExplorer(snapshot.defaultExplorer);
   };
@@ -171,6 +180,7 @@ export function useSettings() {
     decimalsMode, setDecimalsMode,
     fullHorizonUrl, setFullHorizonUrl,
     autoUseFullHorizon, setAutoUseFullHorizon,
+    multisigTimeoutSeconds, setMultisigTimeoutSeconds,
     explorers,
     setExplorers,
     defaultExplorer: defaultExplorerKey,

@@ -158,5 +158,10 @@
       "invalid": "Import failed: File is invalid or could not be read.",
       "invalidType": "Import failed: Unexpected format in the file."
     }
+  },
+  "multisig": {
+    "timeoutTitle": "Multisig timeout",
+    "timeoutHint": "Validity period for multisig payments in seconds (e.g., 86400 = 24 hours).",
+    "seconds": "seconds"
   }
 }
