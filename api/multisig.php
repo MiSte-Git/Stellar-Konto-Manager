@@ -25,6 +25,17 @@ use Soneso\StellarSDK\Network;
 use Soneso\StellarSDK\Crypto\KeyPair;
 use Soneso\StellarSDK\Xdr\XdrDecoratedSignature;
 
+class SubmitFailedException extends \Exception {
+    private array $extras;
+    public function __construct(string $message, array $extras = []) {
+        parent::__construct($message);
+        $this->extras = $extras;
+    }
+    public function getExtras(): array {
+        return $this->extras;
+    }
+}
+
 // CORS headers
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET,POST,DELETE,OPTIONS');
@@ -109,14 +120,28 @@ function txHash(AbstractTransaction $tx, string $net): string {
 }
 
 function submitToNetwork(AbstractTransaction $tx, string $net): array {
-    $sdk = horizonClient($net);
-    $response = $sdk->submitTransaction($tx);
-    return [
-        'hash' => $response->getHash(),
-        'ledger' => $response->getLedger(),
-        'envelopeXdr' => $response->getEnvelopeXdr(),
-        'resultXdr' => $response->getResultXdr(),
-    ];
+    $horizon = $net === 'public' ? 'https://horizon.stellar.org' : 'https://horizon-testnet.stellar.org';
+    $xdr = $tx->toEnvelopeXdrBase64();
+    $ch = curl_init($horizon . '/transactions');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['tx' => $xdr]));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    $respBody = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    $data = json_decode($respBody, true);
+    if ($httpCode >= 200 && $httpCode < 300 && isset($data['hash'])) {
+        return [
+          'hash' => $data['hash'],
+          'ledger' => $data['ledger'] ?? null,
+          'envelopeXdr' => $data['envelope_xdr'] ?? null,
+          'resultXdr' => $data['result_xdr'] ?? null,
+        ];
+    }
+    $extras = [];
+    if (is_array($data) && isset($data['extras'])) $extras = $data['extras'];
+    throw new SubmitFailedException($data['detail'] ?? $data['title'] ?? 'submit_failed', $extras);
 }
 
 function getSubmitErrorDetail(\Throwable $e): array {
@@ -126,6 +151,23 @@ function getSubmitErrorDetail(\Throwable $e): array {
         $detail['extras'] = $e->getExtras();
     } elseif (property_exists($e, 'extras')) {
         $detail['extras'] = $e->extras;
+    }
+    if (!isset($detail['extras']) || empty($detail['extras'])) {
+        if (method_exists($e, 'getResultCodes')) {
+            $rc = $e->getResultCodes();
+            if ($rc) {
+                $detail['extras'] = ['result_codes' => $rc];
+            }
+        } elseif (property_exists($e, 'result_codes')) {
+            $detail['extras'] = ['result_codes' => $e->result_codes];
+        }
+    }
+    if ($e instanceof SubmitFailedException) {
+        $ex = $e->getExtras();
+        if ($ex) $detail['extras'] = $ex;
+    }
+    if (!isset($detail['extras'])) {
+        $detail['extras'] = ['result_codes' => 'unknown'];
     }
     return $detail;
 }
