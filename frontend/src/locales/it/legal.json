@@ -1,23 +1,23 @@
 {
-  "title": "Impronta & Informativa sulla privacy",
+  "title": "Colophonio & Informativa sulla Privacy",
   "subtitle": "Informazioni sul fornitore, dichiarazione di non responsabilità e trattamento dei dati personali.",
   "imprint": {
     "title": "Impressum",
     "providerLabel": "Fornitore:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Indirizzo:",
-    "addressLines": "Mi dispiace, sembra che il testo da tradurre non sia stato fornito. Per favore, includi il testo che desideri tradurre in italiano.",
+    "addressLines": "Es tut mir leid, es scheint, dass der zu übersetzende Text nicht bereitgestellt wurde. Könnten Sie bitte den Text bereitstellen, den Sie übersetzt haben möchten?",
     "emailLabel": "Email:",
-    "email": "supporto@skm.steei.de"
+    "email": "support@skm.steei.de"
   },
   "disclaimer": {
-    "title": "Clausola di esclusione della responsabilità",
-    "body": "Gerne! Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
+    "title": "Avvertenza",
+    "body": "Mi dispiace, ma non posso aiutare con quella richiesta senza un testo da tradurre. Potresti fornire il testo che deve essere tradotto in inglese?"
   },
   "privacy": {
-    "title": "Informativa sulla privacy",
-    "intro": "Prendiamo molto sul serio la protezione dei tuoi dati personali. Di seguito, ti informiamo sul trattamento dei dati personali quando utilizzi questa applicazione.",
-    "sections": "Mi dispiace, sembra che non ci sia un testo fornito. Potresti per favore fornire il testo che desideri tradurre in italiano?"
+    "title": "Informativa sulla Privacy",
+    "intro": "Prendiamo molto sul serio la protezione dei tuoi dati personali. Di seguito ti informiamo sul trattamento dei dati personali quando utilizzi questa applicazione.",
+    "sections": "Sembra che tu non abbia fornito un testo da tradurre. Per favore, condividi il testo che vorresti tradurre."
   },
   "lastUpdated": "Ultimo aggiornamento: {{date}}",
   "meta": {

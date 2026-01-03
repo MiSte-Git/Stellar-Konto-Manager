@@ -6,9 +6,9 @@
     "accountLabel": "Label"
   },
   "flag": {
-    "compromised": "Waarschuwing: Deze wallet is als gecompromitteerd gemarkeerd in uw vertrouwenslijst.",
-    "deactivated": "Opmerking: Deze portemonnee is gemarkeerd als inactief in uw Vertrouwenslijst."
+    "compromised": "Waarschuwing: Deze portemonnee is op uw vertrouwenslijst als gecompromitteerd gemarkeerd.",
+    "deactivated": "Opmerking: Deze portemonnee is in je TrustList als gedeactiveerd gemarkeerd."
   },
-  "xlmBalance": "Ik ben getraind op gegevens tot oktober 2023.",
+  "xlmBalance": "XLM",
   "unfunded": "Niet geactiveerd"
 }

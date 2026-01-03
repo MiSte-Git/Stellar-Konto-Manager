@@ -1,12 +1,12 @@
 {
   "backup": {
     "title": "Backup & Recovery",
-    "desc": "Export or import your quiz data (settings, progress, badges).",
+    "desc": "Export or import your quiz data (Einstellungen, Fortschritt, Abzeichen).",
     "export": {
       "button": "Start export",
       "success": "Export created",
       "error": "Export failed",
-      "fileName": "quiz-backup.json"
+      "fileName": "The text \"quiz-backup.json\" is a filename and does not require translation into English as it is already in English."
     },
     "import": {
       "title": "Import",
@@ -20,9 +20,9 @@
       "preview": {
         "title": "Preview",
         "stats": {
-          "settings": "Settings: {{count}} quiz(zes)",
-          "progress": "Progress: {{count}} quiz(zes)",
-          "achievements": "Badge: {{count}} quiz(zes)"
+          "settings": "Settings: {{count}} Quiz(e)",
+          "progress": "Progress: {{count}} Quiz(e)",
+          "achievements": "Badges: {{count}} Quiz(e)"
         }
       },
       "perform": "Perform import",
@@ -33,25 +33,25 @@
     },
     "toast": {
       "exported": "Backup exported",
-      "backupBeforeImport": "A backup was saved before the import."
+      "backupBeforeImport": "A backup was saved before import."
     },
     "nav": {
       "back": "Back"
     }
   },
   "cache": {
-    "help": "Speeds up queries through local payment cache, but may extend the initial loading time.",
+    "help": "Speeds up queries through local payment cache, but may extend initial loading time.",
     "label": "Use cache (Beta)",
-    "prefetchHelp": "Lead time for loading entries/transactions in days (once during the initial activation)"
+    "prefetchHelp": "Lead time for loading entries/transactions in days (einmalig beim ersten Aktivieren)"
   },
   "network": {
     "title": "Network",
     "desc": "Optional: Full-History Horizon for Deep History",
     "fullUrl": "Full-History Horizon URL",
-    "autoUseFull": "Automatically use if the from-date is older than the server history.",
-    "historyInfo": "The free Horizon servers operated by the Stellar Development Foundation provide only about one year of history. For older data, you will need to either operate your own Horizon node or rely on third-party/paid services."
+    "autoUseFull": "Automatically use if the \"From Date\" is older than the server history.",
+    "historyInfo": "The free Horizon servers operated by the Stellar Development Foundation provide only about one year of history. For older data, you must either operate your own Horizon node or rely on third-party or paid services."
   },
-  "description": "Currently, there are no settings yet.",
+  "description": "Currently, there are no settings available.",
   "display": {
     "decimals": {
       "auto": "Automatically",
@@ -64,63 +64,31 @@
     "fetchFailed": "Failed to load settings: {{detail}}"
   },
   "label": "Settings",
-  "prefetchDays": "Lead time (days)",
-  "trustedWallets": {
-    "buttons": {
-      "export": "Export",
-      "import": "Import",
-      "reset": "Reset to default"
-    },
-    "desc": "This list is stored locally in the browser. Default file: QSI_TrustedWallets.json",
-    "editor": {
-      "invalidFormat": "Invalid format. An object with a \"wallets\" field (array) is expected.",
-      "parseError": "JSON could not be parsed."
-    },
-    "file": {
-      "hint": "Import a JSON file in the format { \"wallets\": [...] }",
-      "label": "File"
-    },
-    "info": {
-      "count": "Entries: {{n}}",
-      "updatedAt": "As of {{date}}"
-    },
-    "table": {
-      "addRow": "Add line",
-      "columns": {
-        "actions": "Actions",
-        "address": "Address",
-        "compromised": "Compromised",
-        "deactivated": "Deactivated",
-        "label": "Label"
-      },
-      "deleteRow": "Delete",
-      "discard": "Discard",
-      "save": "Save"
-    },
-    "title": "My Trusted Wallets",
-    "validation": {
-      "hint": "At least one line is invalid (missing/duplicated address)."
-    }
-  },
+  "prefetchDays": "Lead time",
   "back": "Back",
   "aria": {
-    "back": "Return to the previous page."
+    "back": "Return to the previous page"
   },
   "tabs": {
     "general": "General",
     "app": "App/interface",
-    "accounts": "Account list",
+    "accounts": "Accounts list",
     "network": "Network",
     "quiz": "Quiz",
     "explorer": "Explorer"
   },
   "sections": {
     "general": "General Settings",
-    "app": "App Settings",
-    "accounts": "Accounts list",
+    "app": "App settings",
+    "accounts": "Account list",
     "network": "Network",
-    "quiz": "Quiz settings",
+    "quiz": "Quiz Settings",
     "explorer": "Stellar Explorer"
+  },
+  "multisig": {
+    "timeoutTitle": "Multisig timeout",
+    "timeoutHint": "Validity period for multisig payments in seconds (e.g., 86400 = 24 hours).",
+    "seconds": "Seconds"
   },
   "explorer": {
     "sectionTitle": "Stellar Explorer",
@@ -130,7 +98,7 @@
     "urlLabel": "URL",
     "testnetUrlLabel": "Testnet URL (optional)",
     "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
-    "addButton": "Add explorer",
+    "addButton": "Add Explorer",
     "removeButton": "Remove",
     "setDefault": "Set as default",
     "noEntries": "No explorers configured.",
@@ -138,7 +106,7 @@
       "nameRequired": "Please enter a name.",
       "urlRequired": "Please enter a URL.",
       "urlInvalid": "Please enter a valid URL.",
-      "testnetUrlInvalid": "Please enter a valid testnet URL."
+      "testnetUrlInvalid": "Please enter a valid Testnet URL."
     },
     "mainnetLabel": "Mainnet",
     "testnetLabel": "Testnet",
@@ -159,9 +127,41 @@
       "invalidType": "Import failed: Unexpected format in the file."
     }
   },
-  "multisig": {
-    "timeoutTitle": "Multisig timeout",
-    "timeoutHint": "Validity period for multisig payments in seconds (e.g., 86400 = 24 hours).",
-    "seconds": "seconds"
+  "trustedWallets": {
+    "buttons": {
+      "export": "Export",
+      "import": "Import",
+      "reset": "Reset to default"
+    },
+    "desc": "This list is stored locally in the browser. Default file: QSI_TrustedWallets.json",
+    "editor": {
+      "invalidFormat": "Invalid format. An object with the field \"wallets\" (Array) is expected.",
+      "parseError": "JSON could not be parsed."
+    },
+    "file": {
+      "hint": "Import a JSON file in the format { wallets: [...] }",
+      "label": "File"
+    },
+    "info": {
+      "count": "Entries: {{n}}",
+      "updatedAt": "Status: {{date}}"
+    },
+    "table": {
+      "addRow": "Add line",
+      "columns": {
+        "actions": "Actions",
+        "address": "Address",
+        "compromised": "Compromised",
+        "deactivated": "Deactivated",
+        "label": "Label"
+      },
+      "deleteRow": "Delete",
+      "discard": "Discard",
+      "save": "Save"
+    },
+    "title": "My Trusted Wallets",
+    "validation": {
+      "hint": "At least one line is invalid (fehlende/duplizierte Adresse)."
+    }
   }
 }

@@ -56,6 +56,8 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Namespaced JSON unter `frontend/src/locales/<lang>/*.json`, DE als Referenzsprache.
 - Autoload aller Namespaces, keine Hardcoded-Texte.
 - Automatisches Übersetzungsskript: `UpdateSprachdateienBasierendAufDE.py` (bzw. Sync-Skripte im Repo).
+  - Provider: `--provider openai` (erfordert `pip install openai` + `OPENAI_API_KEY`) oder `--provider deepl` (`DEEPL_API_KEY`/`DEEPL_AUTH_KEY`).
+  - Optional Voll-Lauf: `--full`; gezielte Keys: `--force-key foo.bar`.
 
 ## Sicherheitshinweise
 - Geheimnisse bleiben lokal; keine Secret-Übertragung an Server.

@@ -8,54 +8,54 @@
     "balance": "Kredietsaldo",
     "code": "Activacode",
     "creationDate": "Gemaakt op",
-    "issuer": "Emittent"
+    "issuer": "Uitgever"
   },
   "balance": {
     "buttons": {
-      "details": "Je bent getraind op data tot oktober 2023.",
+      "details": "Je bent getraind op gegevens tot oktober 2023.",
       "explorer": "Verkenner",
-      "payments": "Recente gebeurtenissen"
+      "payments": "Recente operaties"
     },
-    "current": "Huidig ​​saldo",
-    "details": "Details in Block Explorers",
-    "empty": "Geen tegoeden gevonden.",
+    "current": "Huidig saldo",
+    "details": "Details in blockverkenners",
+    "empty": "Geen saldo gevonden.",
     "explorer": {
       "expert": "stellar.expert",
       "stellarchain": "Stellarchain.io",
-      "label": "Verkenner",
-      "open": "Open in Verkenner",
-      "noneConfigured": "Geen verkenners geconfigureerd.",
-      "settingsHint": "U kunt de Verkenner in de instellingen bewerken."
+      "label": "Ontdekker",
+      "open": "Openen in Verkenner",
+      "noneConfigured": "Geen verkenner geconfigureerd.",
+      "settingsHint": "Je kunt Explorer in de instellingen bewerken."
     },
     "noPublicKey": "Voer eerst een openbare sleutel in.",
     "payments": {
-      "all": "Alles",
+      "all": "Allemaal",
       "columns": {
-        "amount": "Bedrag",
+        "amount": "Hoeveelheid",
         "asset": "Activa",
         "counterparty": "Tegenrekening",
         "date": "Datum",
         "direction": "Richting",
-        "memo": "Notitie",
-        "tx": "U bent getraind op gegevens tot oktober 2023.",
-        "txLabel": "U bent getraind op gegevens tot oktober 2023.",
+        "memo": "Memo",
+        "tx": "Het spijt me, maar ik heb meer context nodig om \"Tx\" nauwkeurig te vertalen. Het kan verschillende dingen betekenen, afhankelijk van de context, zoals \"bedankt\" of \"transactie.\" Kunt u alstublieft meer details geven?",
+        "txLabel": "Het spijt me, het lijkt erop dat er niet genoeg context is in uw bericht \"Tx.\" Kunt u alstublieft meer details geven of verduidelijken wat u zou willen vertalen of waarover u informatie wilt?",
         "type": "Typ"
       },
       "empty": "Geen bewerkingen gevonden.",
       "filter": {
         "memo": "Memo filter",
-        "memoPlaceholder": "Zoek naar memo...",
-        "counterparty": "Tegenpartij filter",
-        "counterpartyPlaceholder": "Filteren op ontvanger/verzender adres…"
+        "memoPlaceholder": "Zoeken naar memo...",
+        "counterparty": "Tegenpartijfilter",
+        "counterpartyPlaceholder": "Nach Empfänger/Absender-Adresse filtern…"
       },
       "from": "Vanaf",
       "incoming": "Ingang",
       "limit": "Nummer",
       "outgoing": "Uitvoer",
-      "title": "Laatste operaties",
-      "to": "Tot en met"
+      "title": "Recente operaties",
+      "to": "Tot"
     },
-    "paymentsHint": "Je kunt invoer/uitvoer filteren in de Verkenner.",
+    "paymentsHint": "Je kunt invoer/uitvoer filteren in de Explorer.",
     "title": "Accountinformatie weergeven"
   },
   "buildInfo": {
@@ -63,20 +63,20 @@
     "commit": "Toewijding",
     "env": "Milieu",
     "error": "Bouwinformatie kon niet worden geladen.",
-    "loading": "Laden van bouwinformatie..."
+    "loading": "Build-Informationen werden geladen …"
   },
   "bugReport": {
-    "button": "Fout rapporteren",
-    "title": "Fout rapporteren",
-    "descLabel": "Korte beschrijving (optioneel)",
-    "descPlaceholder": "Wat is er gebeurd? Stappen, verwacht gedrag...",
+    "button": "Fout melden",
+    "title": "Rapporteer fout",
+    "descLabel": "Korte beschrijving (optional)",
+    "descPlaceholder": "Wat is er gebeurd? Stappen, verwacht gedrag …",
     "send": "Feedback verzenden",
     "cancel": "Annuleren",
     "toast": {
       "sent": "Feedback opgeslagen.",
       "logOk": "Bug is geregistreerd.",
-      "logFallback": "Lokaal loggen mislukt.",
-      "validation": "Voer een korte beschrijving in of verzend zonder tekst."
+      "logFallback": "Lokaal loggen is mislukt.",
+      "validation": "Voer een korte beschrijving in of verstuur zonder tekst."
     },
     "mail": {
       "url": "URL",
@@ -87,15 +87,18 @@
       "descriptionHeading": "Beschrijving"
     },
     "admin": {
-      "title": "Bugtracker",
-      "locked": "Toegang geweigerd. Stel het beheerdersgeheim in de lokale opslag en laad de pagina opnieuw.",
-      "placeholderTitle": "Bugtracker",
-      "placeholderBody": "Beheerders-UI actief. In de komende updates volgen lijsten, filters, prioriteiten en statuswijzigingen.",
-      "link": "Open bugtracker",
+      "rejected": "Afgewezen",
+      "rejectedReasonTitle": "Reden voor afwijzing",
+      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "title": "Foutvolgsysteem",
+      "locked": "Toegang geweigerd. Stel het admin-geheim in de lokale opslag en vernieuw de pagina.",
+      "placeholderTitle": "Foutentracker",
+      "placeholderBody": "Beheerdersinterface actief. De aankomende patches zullen lijsten, filters, prioriteiten en statuswijzigingen bevatten.",
+      "link": "Open bug tracker",
       "secretSaved": "Geheim bewaard.",
-      "enterSecret": "Voer beheerdersgeheim in",
-      "secretPlaceholder": "Sorry, ik kan deze tekst niet vertalen, omdat hij ausschließlich uit nicht-textuellen Zeichen besteht. Laat me weten of ik je ergens anders mee kan helpen!",
-      "confirm": "Openen",
+      "enterSecret": "Voer Admin-Geheim in",
+      "secretPlaceholder": "••••••••",
+      "confirm": "Open",
       "cancel": "Annuleren",
       "filter": "Filter",
       "status": "Status",
@@ -107,30 +110,31 @@
       "normal": "normaal",
       "high": "hoog",
       "urgent": "dringend",
-      "id": "ID",
+      "id": "Ik ben getraind op data tot oktober 2023.",
       "created": "Gemaakt",
-      "url": "URL",
+      "url": "Je bent getraind op data tot oktober 2023.",
       "language": "Taal",
       "email": "E-mail",
       "userAgent": "Browser",
       "description": "Beschrijving",
       "category": "Categorie",
+      "bugTitle": "Titel",
       "save": "Opslaan",
       "saved": "Wijziging opgeslagen",
-      "loadError": "Fout bij het laden van bugs",
+      "loadError": "Fout bij het laden van de bugs",
       "saveError": "Fout bij opslaan",
-      "empty": "Geen vermeldingen gevonden.",
-      "loading": "Bezig met laden...",
-      "resize": "Sleep om aan te passen",
-      "exportAll": "CSV (Alles)",
+      "empty": "Geen resultaten gevonden.",
+      "loading": "Laden…",
+      "resize": "Slepen om aan te passen",
+      "exportAll": "CSV (Comma-separated values)",
       "exportError": "Export mislukt",
-      "exportPage": "CSV (Pagina)",
-      "exporting": "Exporteren…",
+      "exportPage": "CSV (Seite)",
+      "exporting": "Exportiere…",
       "columns": {
         "title": "Kolommen",
         "manage": "Kolommen aanpassen",
-        "hint": "Zichtbaarheid met een vinkje, volgorde met ↑/↓, en formaten door te slepen in de tabelkop.",
-        "reset": "Opnieuw instellen",
+        "hint": "Zichtbaarheid via selectievakje, volgorde met ↑/↓, grootte door te slepen in de tabelkop.",
+        "reset": "Je bent getraind op gegevens tot oktober 2023.",
         "up": "Naar de top",
         "down": "Omlaag"
       },
@@ -142,84 +146,81 @@
       },
       "search": "Zoeken",
       "col": {
-        "id": "Je bent getraind op gegevens tot oktober 2023.",
+        "id": "ID",
         "status": "Status",
         "priority": "Prioriteit",
         "url": "URL",
         "desc": "Beschrijving",
         "ts": "Tijd"
       },
-      "rejected": "Afgewezen",
-      "rejectedReasonTitle": "Reden voor afwijzing",
-      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
-      "bugTitle": "Titel",
       "rejectionReason": {
         "label": "Reden",
         "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
       },
-      "secretVisibilityToggle": "Admin-geheim laten zien/verbergen"
+      "secretVisibilityToggle": "Toon/Verberg Admin Geheimen Code"
     }
   },
   "cache": {
     "clear": "Cache wissen",
-    "consent": "Lokale Zwischenspeicherung aktivieren, um Abfragen zu beschleunigen?",
+    "consent": "Lokale Cache aktivieren, um Abfragen zu beschleunigen?",
     "lastPaymentAt": "Laatste betaling: {{val}}",
     "lastRefresh": "Laatst bijgewerkt: {{ts}}"
   },
-  "clear": "U bent getraind op gegevens tot oktober 2023.",
-  "close": "Sluit aan",
-  "loading": "Laden...",
+  "clear": "Het spijt me, maar ik weet niet zeker wat je bedoelt met \"Delete input\". Zou je dat nader kunnen toelichten?",
+  "close": "Sluiten",
+  "networkLabel": "Netwerk",
+  "loading": "Laden…",
   "refresh": "Herladen",
   "exportCsv": {
     "failed": "CSV-export mislukt"
   },
   "feedback": {
-    "title": "Feedback versturen",
+    "title": "Feedback verzenden",
     "category": "Categorie",
+    "categoryPlaceholder": "Selecteer categorie",
+    "area": "Gebied",
+    "areaPlaceholder": "Gebied selecteren",
+    "noCategoriesConfigured": "Nog geen categorieën geconfigureerd. Stel ze a.u.b. in bij de instellingen.",
+    "noAreasConfigured": "Nog geen gebieden geconfigureerd. Maak ze aan in de instellingen.",
+    "categoryUnknown": "Onbekende categorie",
+    "areaUnknown": "Onbekend gebied",
     "categories": {
       "bug": "Fout",
       "idea": "Idee",
       "improve": "Verbetering",
-      "other": "Anders"
+      "other": "Diversen"
     },
     "page": "Gebied",
     "pages": {
       "start": "Hoofdpagina",
-      "trustlines": "Toon vertrouwen(s)",
-      "trustlineCompare": "Vergelijk vertrouwen(s)",
+      "trustlines": "Toon Trustline(s)",
+      "trustlineCompare": "Vergelijk Trustline",
       "balance": "Accountinformatie weergeven",
       "xlmByMemo": "Filter op memo",
       "sendPayment": "Stuur betaling",
-      "investedTokens": "Filter tokens/activa",
+      "investedTokens": "Tokens/assets filteren",
       "createAccount": "Account aanmaken",
-      "multisigEdit": "Bewerk multisig-account",
+      "multisigEdit": "Wijzig multisig-account",
       "settings": "Instellingen",
       "feedback": "Terugkoppeling",
       "other": "Diversen",
-      "bugtracker": "Bugtracker",
+      "bugtracker": "Bug tracker",
       "global": "Hoofdpagina"
     },
     "subject": "Onderwerp",
     "message": "Bericht",
-    "contactEmailOptional": "Contact e-mail (optioneel)",
+    "contactEmailOptional": "Contact e-mailadres",
     "emailPlaceholder": "bijv. naam@voorbeeld.com",
-    "emailHint": "Als feedback gewenst is, gelieve uw e-mailadres in te vullen.",
-    "privacyHint": "Je bericht wordt direct opgeslagen in de bugtracker.",
+    "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
+    "form": {
+      "clearButton": "Velden wissen",
+      "multiEntryHint": "Maak alstublieft slechts één bericht per fout, suggestie of idee om het bewerkingsproces overzichtelijk te houden."
+    },
+    "privacyHint": "Uw bericht wordt rechtstreeks in de bugtracker opgeslagen.",
     "sendButton": "Feedback verzenden",
     "openedMailClient": "Feedback opgeslagen.",
     "error": "Fout",
-    "sentTo": "Opgeslagen in de bugtracker.",
-    "categoryPlaceholder": "Categorie selecteren",
-    "area": "Gebied",
-    "areaPlaceholder": "Selecteer gebied",
-    "noCategoriesConfigured": "Nog geen categorieën geconfigureerd. Maak deze aan in de instellingen.",
-    "noAreasConfigured": "Er zijn nog geen gebieden geconfigureerd. Maak ze aan in de instellingen.",
-    "categoryUnknown": "Onbekende categorie",
-    "areaUnknown": "Onbekend gebied",
-    "form": {
-      "clearButton": "Velden wissen",
-      "multiEntryHint": "Maak alstublieft slechts één bericht per fout, suggestie of idee om het bewerkingsproces duidelijk te houden."
-    }
+    "sentTo": "Invoer opgeslagen in de bugtracker."
   },
   "account": {
     "createdAt": "Account aangemaakt op",
@@ -228,16 +229,16 @@
   },
   "fetch": {
     "groupfund": {
-      "aborted": "Operatie geannuleerd door gebruiker"
+      "aborted": "Bewerking geannuleerd door de gebruiker"
     }
   },
   "issuer": {
     "enter": "Voer het adres van de uitgever in:",
-    "invalid": "Ongeldig uitgeversadres."
+    "invalid": "Ongeldig uitgevende adres."
   },
   "main": {
-    "processing": "Proces wordt uitgevoerd, even geduld alstublieft …",
-    "title": "Uitstekende accountmanager"
+    "processing": "Bezig met verwerken, even geduld alstublieft …",
+    "title": "Stellar Account Manager"
   },
   "badges": {
     "testnet": "TESTNET"
@@ -247,99 +248,103 @@
     "add": "Toevoegen",
     "cancel": "Annuleren",
     "close": "Dichtbij",
+    "back": "Terug",
+    "backToSelection": "Terug naar selectie",
     "confirm": {
       "action": {
-        "text": "Ben je zeker?",
+        "text": "Weet je het zeker?",
         "title": "Actie bevestigen"
       }
     },
-    "copy": "Kopiëren",
+    "copy": "Kopieer",
     "delete": "Verwijderen",
     "export": {
       "csv": "Opslaan als CSV",
       "pdf": "Opslaan als PDF"
     },
-    "loading": "Bezig met laden...",
+    "loading": "Laden...",
     "no": "Nee",
     "results": "Resultaten:",
-    "yes": "Ja",
-    "back": "Terug",
-    "backToSelection": "Terug naar selectie"
+    "yes": "Ja"
   },
   "progress": {
     "cancel": "Annuleren",
     "canceled": "Geannuleerd",
-    "counts": "Beoordeeld: {{ops}} • Hits: {{matches}}",
-    "done": "Je bent getraind op gegevens tot en met oktober 2023.",
+    "counts": "Gecontroleerd: {{ops}} • Treffers: {{matches}}",
+    "done": "Je bent getraind op gegevens tot oktober 2023.",
     "duration": "Duur: {{val}}",
     "elapsed": "Duur: {{time}}",
     "eta": "ETA: {{minuten}} min.",
-    "firstMatchAt": "Laatste storting: {{date}}",
+    "firstMatchAt": "Laatste storting: {{datum}}",
     "mode": {
-      "cache": "Modus: Cache",
+      "cache": "Je bent getraind op gegevens tot oktober 2023.",
       "live": "Modus: Live (Horizon)"
     },
-    "oldest": "oudste datum op deze pagina: {{date}}",
-    "oldestMatchInRangeAt": "Eerste storting tijdens de periode: {{date}}",
+    "oldest": "oudste datum op deze pagina: {{datum}}",
+    "oldestMatchInRangeAt": "Eerste storting in de periode: {{datum}}",
     "phase": {
-      "backfill": "Ontbrekende betalingen worden geladen…",
-      "cacheQuery": "Resultaat berekenen uit lokale cache…",
-      "chunkDone": "Brokgedeelte verwerkt.",
-      "chunkSkip": "Deel overgeslagen.",
-      "cover": "Zorg voor cachedekking...",
+      "backfill": "Ontbrekende betalingen laden…",
+      "cacheQuery": "Resultaat uit lokale cache berekenen…",
+      "chunkDone": "Chunk verwerkt.",
+      "chunkSkip": "Chunk overgeslagen.",
+      "cover": "Cache-dekking waarborgen…",
       "export": "Exporteer resultaat…",
       "finalize": "Voltooid",
       "finalizeDiag": "Diagnose voltooid",
-      "idle": "Klaar...",
+      "idle": "Klaar…",
       "pageDone": "Pagina {{page}} voltooid.",
-      "rehydrate": "Cache wordt opnieuw opgebouwd...",
-      "scan": "Betalingen scannen (pagina {{page}})…",
-      "scan_ops": "Scanoperaties worden uitgevoerd...",
-      "scan_payments": "Betalingen scannen (pagina {{page}})…",
-      "scan_payments_fast": "Scan betalingen (snel) – Pagina {{page}}…",
+      "rehydrate": "Rekonstruire Cache…",
+      "scan": "Betalingen scannen (pagina {{pagina}})…",
+      "scan_ops": "Scanbewerkingen…",
+      "scan_payments": "Betalingen worden gescand (pagina {{page}})…",
+      "scan_payments_fast": "Scannen van betalingen (schnell) – Pagina {{page}}…",
       "scan_tx": "Transacties scannen",
-      "sync": "Synchroniseer betalingen…",
-      "txFetch": "Transactiegegevens laden..."
+      "sync": "Synchronisiere Zahlungen…",
+      "txFetch": "Transactiedetails worden geladen…"
     },
     "wrongMemos": {
-      "failed": "Fout bij het laden van betalingen met onjuiste/leeg memo."
+      "failed": "Fout bij het laden van betalingen met onjuiste/lege memo."
     }
   },
   "settings": {
     "cache": {
-      "help": "Versnelt queries via lokale betalingscache, maar kan de initiële laadtijd verlengen.",
-      "label": "Cache gebruiken (Bèta)",
-      "prefetchHelp": "Levertijd voor het laden van entries/transacties in dagen (eenmalig bij eerste activering)"
+      "help": "Versnelt zoekopdrachten via lokale betalingscache, maar kan de initiële laadtijd verlengen.",
+      "label": "Gebruik cache (Beta)",
+      "prefetchHelp": "Doorlooptijd voor het laden van items/transacties in dagen (einmalig beim ersten Aktivieren)"
     },
     "network": {
       "title": "Netwerk",
-      "desc": "Optioneel: Volledige-geschiedenis-horizon voor diepe geschiedenis",
-      "fullUrl": "Volledige Geschiedenis Horizon URL",
-      "autoUseFull": "Automatisch gebruiken indien nodig (wanneer de Van-Datum ouder is dan de servergeschiedenis)"
+      "desc": "Optioneel: Volledig-geschiedenis-horizon voor diepe geschiedenis",
+      "fullUrl": "URL van het volledige geschiedenis-horizon",
+      "autoUseFull": "Automatisch gebruiken indien nodig (when From-Date is older than server history)"
     },
-    "description": "Momenteel zijn er geen instellingen beschikbaar.",
+    "description": "Momenteel zijn er nog geen instellingen.",
     "display": {
       "decimals": {
-        "auto": "Automatisch",
-        "label": "Decimale plaatsen"
+        "auto": "Je bent getraind op gegevens tot oktober 2023.",
+        "label": "Decimalen"
       },
-      "desc": "Globale weergave-instellingen.",
+      "desc": "Globale advertentie-instellingen.",
       "title": "Advertentie"
+    },
+    "explorer": {
+      "edit": "Bewerk",
+      "editTitle": "Explorer-item bewerken"
     },
     "error": {
       "fetchFailed": "Laden van instellingen mislukt: {{detail}}"
     },
     "label": "Instellingen",
-    "prefetchDays": "Levertijd (dagen)",
+    "prefetchDays": "Levertijd (Tage)",
     "trustedWallets": {
       "buttons": {
-        "export": "Exporteren",
+        "export": "Export",
         "import": "Importeren",
-        "reset": "Herstellen naar standaardinstellingen"
+        "reset": "Herstel naar standaardinstellingen"
       },
       "desc": "Deze lijst wordt lokaal in de browser opgeslagen. Standaardbestand: QSI_TrustedWallets.json",
       "editor": {
-        "invalidFormat": "Ongeldig formaat. Er wordt een object met het veld \"wallets\" (array) verwacht.",
+        "invalidFormat": "Ongeldig formaat. Een object met het veld \"wallets\" (Array) wordt verwacht.",
         "parseError": "JSON kon niet worden geparsed."
       },
       "file": {
@@ -348,233 +353,229 @@
       },
       "info": {
         "count": "Inzendingen: {{n}}",
-        "updatedAt": "Status: {{datum}}"
+        "updatedAt": "Status: {{date}}"
       },
       "table": {
-        "addRow": "Voeg regel toe",
+        "addRow": "Regel toevoegen",
         "columns": {
-          "actions": "Acties",
+          "actions": "Handelingen",
           "address": "Adres",
-          "compromised": "Kompromitteerd",
+          "compromised": "Gecompromitteerd",
           "deactivated": "Gedeactiveerd",
-          "label": "Etiket"
+          "label": "Label"
         },
-        "deleteRow": "Verwijder.",
-        "discard": "Verwerpen",
+        "deleteRow": "Verwijderen",
+        "discard": "Weggooien",
         "save": "Opslaan"
       },
       "title": "Mijn Vertrouwde Portemonnees",
       "validation": {
-        "hint": "Ten minste één regel is ongeldig (ontbrekend/gedupliceerd adres)."
+        "hint": "Ten minste één regel is ongeldig (fehlende/duplizierte Adresse)."
       }
-    },
-    "explorer": {
-      "edit": "U bent getraind op gegevens tot oktober 2023.",
-      "editTitle": "Explorer-vermelding bewerken"
     }
   },
   "trustlines": {
     "deleted": {
-      "deletingProgress": "Bezig met verwijderen: {{current}} / {{total}}",
-      "success": "Succes: {{count}} trustline(s) verwijderd."
+      "deletingProgress": "Verwijderen bezig: {{current}} / {{total}}",
+      "success": "Succes: {{count}} Trustline(s) verwijderd."
     },
-    "skippedDueToBalance": "{{count}} trustline(s) overgeslagen (saldo nog beschikbaar)."
+    "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (noch Guthaben vorhanden)."
   },
   "payment": {
     "send": {
-      "title": "Stuur betaling",
+      "title": "Betaling versturen",
       "recipient": "Ontvanger",
       "amount": "Bedrag",
-      "asset": "Activa",
-      "memo": "Memo",
-      "memoType": "Memo type",
+      "asset": "Vermoegensteil",
+      "memo": "Notitie",
+      "memoType": "Memotype",
       "memoTypes": {
-        "none": "Memo (geen memo)",
-        "text": "Memo tekst",
+        "none": "Memo (KEEP_EN_TERM_1)",
+        "text": "Memo-tekst",
         "id": "Memo-ID",
         "hash": "Memo Hash",
-        "return": "Memo Retour",
+        "return": "Memorandum Terugkeer",
         "info": {
           "none": "Geen memo. Gebruik dit als de ontvanger geen memo verwacht.",
-          "text": "Gratis tekst tot 28 bytes. Vaak gebruikt voor toewijzing in eenvoudige betalingen.",
-          "id": "Numerieke ID (uint64). Veel beurzen gebruiken een Memo ID voor de toewijzing van stortingen.",
-          "hash": "32-byte SHA-256 hash (als een 64-cijferige hexadecimale string). Wordt gebruikt door diensten voor referenties.",
-          "return": "32-byte hash voor retouren. Gebruikt voor retouren (MEMO_RETURN)."
+          "text": "Vrije tekst tot 28 bytes. Vaak gebruikt voor allocatie met eenvoudige betalingen.",
+          "id": "Numeriek ID (uint64). Veel beurzen gebruiken Memo ID voor de toewijzing van stortingen.",
+          "hash": "32-byte SHA-256 hash (als 64-stellige Hex-Zeichenfolge). Gebruikt door diensten voor referenties.",
+          "return": "32-byte hash voor retours. Gebruikt voor retours (MEMO_RETURN)."
         }
       },
       "available": "Beschikbaar",
       "reserved": "Gereserveerd",
-      "reservedInline": "{{amount}} XLM zijn gereserveerd door het Stellar-netwerk.",
+      "reservedInline": "{{amount}} XLM zijn gereserveerd op het Stellar-netwerk.",
       "baseReserve": "Basisreserve",
       "extra": "Bovendien",
-      "xlmInOffers": "Gebonden aan aanbiedingen",
+      "xlmInOffers": "Gebonden door aanbiedingen",
       "trustlines": "Vertrouwenslijnen ({{n}})",
-      "lpTrustlines": "LP-Trustlines",
+      "lpTrustlines": "LP‑Trustlines",
       "offers": "Open aanbiedingen",
       "signers": "Aanvullende ondertekenaars",
-      "accountData": "Accountgegevens",
-      "sponsoring": "Sponsorschap",
+      "accountData": "Account‑Daten",
+      "sponsoring": "Sponsoring",
       "sponsored": "Gesponsord",
-      "sendButton": "Verzenden",
+      "sendButton": "Verstuur",
       "success": "Succes: Betaling verzonden. TX: {{hash}}",
       "successShort": "Succesvol verzonden",
       "error": "Fout bij verzenden: {{detail}}",
-      "amountMissing": "Voer alstublieft een bedrag in.",
-      "amountInvalid": "Ongeldig bedrag (maximaal 7 decimalen).",
+      "amountMissing": "Vul alstublieft een bedrag in.",
+      "amountInvalid": "Ongeldig bedrag (max. 7 Nachkommastellen).",
       "amountPositive": "Het bedrag moet groter zijn dan 0.",
-      "timeout": "Horizon time-out (504). Probeer het binnenkort opnieuw.",
-      "httpError": "Horizon fout (status {{status}}).",
-      "horizonError": "Stellar heeft de transactie afgewezen.",
-      "destUnfundedNonNative": "De bestemmingsaccount is niet actief. Stuur eerst XLM om het te activeren of wijzig het activa naar XLM.",
+      "timeout": "Horizon Timeout (504). Probeer het over een korte tijd opnieuw.",
+      "httpError": "Horizontfout (status {{status}}).",
+      "horizonError": "Stellar heeft de transactie geweigerd.",
+      "destUnfundedNonNative": "De bestemmingsaccount is niet actief. Stuur alsjeblieft eerst XLM om deze te activeren of wijzig het activum naar XLM.",
       "activateConfirm": {
-        "title": "Accountactivatie vereist",
-        "info": "De doelrekening is nog niet actief. Er is een minimumbedrag vereist voor activering.",
-        "minReserve": "Minimum bedrag (2 × basisreserve)",
+        "title": "Accountactivering vereist",
+        "info": "De doelaccount is nog niet actief. Een minimumbedrag is vereist voor activering.",
+        "minReserve": "Minimumbedrag (2 × basisreserve)",
         "yourAmount": "Het bedrag dat u heeft ingevoerd",
-        "adjustedAmount": "Voorgesteld Bedrag (te Activeren)",
-        "noteAdjust": "Uw saldo is onvoldoende voor activatie. Als u doorgaat, wordt het minimumbedrag automatisch verzonden."
+        "adjustedAmount": "Voorgesteld Bedrag (zum Aktivieren)",
+        "noteAdjust": "Uw saldo is onvoldoende voor activatie. Als u doorgaat, wordt automatisch het minimumbedrag verzonden."
       },
-      "activated": "Het doelaccount is geactiveerd."
+      "activated": "De doelaccount is geactiveerd."
     }
   },
   "activation": {
     "notFound": {
       "title": "Doelaccount niet actief",
-      "message": "De bestemmingsaccount bestaat nog niet ({address}). Het moet worden geactiveerd met ten minste 1 XLM. Wilt u de account nu activeren?"
+      "message": "Het bestemmingsaccount bestaat nog niet ({address}). Het moet geactiveerd worden met minstens 1 XLM. Wil je het account nu activeren?"
     },
     "actions": {
       "yes": "Ja – Account activeren",
-      "no": "Nee - Annuleren",
-      "processing": "Activeren..."
+      "no": "Nein – Abbrechen",
+      "processing": "Activate…"
     }
   },
   "createAccount": {
-    "muxedId": "Gegemux-ID",
-    "muxedInfo": "De Muxed-ID creëert een M-adres (M...). Het verwijst naar dezelfde account als het reguliere adres (G...).",
+    "muxedId": "Muxed-ID",
+    "muxedInfo": "Een Muxed ID wordt gebruikt om een M-Address (M...) te creëren. Het verwijst naar hetzelfde account als het reguliere adres (G...).",
     "muxedIdInvalid": "De Muxed-ID moet een geheel getal zijn tussen 0 en 18.446.744.073.709.551.615.",
     "muxedAddress": "Gemuxed adres",
-    "muxedActivationInfo": "Muxed-adressen zijn aliasadressen. Ze hoeven niet apart geactiveerd te worden."
+    "muxedActivationInfo": "Muxed-adressen zijn aliassen. Ze hoeven niet apart geactiveerd te worden."
   },
   "muxed": {
     "seo": {
-      "title": "Creëer/beheer een Muxed-account",
-      "description": "Maak en beheer Muxed Address Aliases (M...) voor een Stellar-account. Genereer ID's, voeg labels/notities toe, exporteer/importeer als CSV."
+      "title": "Muxed account aanmaken/beheren",
+      "description": "Maak en beheer gemultiplexeerde adresaliassen (M...) voor een Stellar-account. Genereer ID's, voeg labels/notities toe, exporteer/importeer CSV."
     },
-    "title": "Muxed Account aanmaken/beheren",
-    "explainer": "Genereer aliasadressen (M...) met een unieke muxed-ID voor een bestaand account. Het aliasadres verwijst altijd naar hetzelfde account.",
-    "infoButtonLabel": "Informatie",
+    "title": "Een multiplex-account aanmaken/beheren",
+    "explainer": "Genereer aliasadressen (M...) met een unieke Muxed ID voor een bestaand account. Het aliasadres wijst altijd naar hetzelfde account.",
+    "infoButtonLabel": "Ik ben getraind op data tot oktober 2023.",
     "info": {
-      "title": "Wat is een gemuxte account?",
-      "intro1": "Een gemuxed account combineert een regulier accountadres (G-adres) met een extra 64-bit gemuxed ID.",
-      "intro2": "Technisch gezien is het een alias die altijd naar dezelfde basisaccount verwijst, maar die duidelijk identificeerbaar is aan de hand van het ID.",
+      "title": "Wat is een Muxed-account?",
+      "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
+      "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
       "purposeTitle": "Doel en voordelen",
-      "purposeText": "Gemengde rekeningen worden gebruikt om veel subrekeningen te beheren onder één enkel Stellar-adres - ideaal wanneer veel stortingen/opnames worden verwerkt via een gedeelde hoofdrekening, maar elke transactie moet worden toegewezen aan een persoon, afdeling of project.",
-      "examplesTitle": "Voorbeelden – waar zijn gemuxte accounts nuttig voor?",
+      "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
+      "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
       "examples": {
-        "ex1": "Bedrijfsbetalingen: Elke werknemer krijgt een unieke Muxed ID toegewezen om ervoor te zorgen dat salarisbetalingen nauwkeurig kunnen worden toegeschreven.",
-        "ex2": "Beurzen of platforms: Elke gebruiker ontvangt zijn eigen Muxed ID, zodat stortingen in een gedeelde wallet automatisch correct worden geregistreerd.",
-        "ex3": "Projecten of subrekeningen: Een organisatie kan budgetten of inkomsten toewijzen aan individuele projecten.",
-        "ex4": "Klanttoewijzing: Eén M-adres per klant; de ID komt overeen met de klant-ID – betalingen kunnen duidelijk worden toegewezen, zelfs zonder een memo.",
-        "ex5": "Diensten zonder een memo: Onderscheid stortingen wanneer de dienst geen memo's ondersteunt.",
-        "ex6": "Uitbetalingen/Loonlijsten: Eén M-adres per werknemer/partner voor interne boekhouding en rapportages.",
-        "ex7": "Winkel/Bestellingen: Eén M-adres per bestelling; restituties kunnen aan de bestelling worden toegewezen.",
-        "ex8": "Afdelingen/Kostenplaatsen: ID's als kostenplaatsen; betalings automatisch per gebied groeperen.",
-        "ex9": "Multi-tenant diensten: Elke huurder ontvangt zijn eigen M-adres onder hetzelfde basisaccount."
+        "ex1": "Firmenzahlungen: Jede Mitarbeiterin/jeder Mitarbeiter erhält eine eigene Muxed‑ID, damit Lohnzahlungen eindeutig zugeordnet werden können.",
+        "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
+        "ex3": "Projecten of subaccounts: Een organisatie kan budgetten of inkomsten toewijzen aan individuele projecten.",
+        "ex4": "Kundenzuordnung: Eine M‑Adresse pro Kunde; die ID entspricht der Kunden‑ID – Zahlungen sind eindeutig zuordenbar, auch ohne Memo.",
+        "ex5": "Diensten zonder memo: Onderscheid stortingen wanneer de dienst geen memo's ondersteunt.",
+        "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
+        "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
+        "ex8": "Afdelingen/Kostenplaatsen: ID's als kostenplaatsen; betalingen automatisch per gebied groeperen.",
+        "ex9": "Multi‑tenant-diensten: Elke huurder ontvangt een eigen M‑adres onder dezelfde hoofdrekening."
       },
-      "pageTitle": "Wat deze pagina doet op de SKM",
-      "pageDesc": "Deze pagina wordt gebruikt om de gemultiplexte accounts van uw momenteel geselecteerde Stellar-account te beheren:",
-      "createTitle": "Nieuwe gemultiplexte accounts aanmaken",
+      "pageTitle": "Wat deze pagina doet in SKM",
+      "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
+      "createTitle": "Neue Muxed‑Konten erstellen",
       "createItems": {
-        "i1": "Genereert nieuwe gemultiplexte adressen (M...) van uw basisadres (G...).",
-        "i2": "Optioneel met label (naam) en notitie (bijv. project of doel)."
+        "i1": "Genereer nieuwe Muxed‑adressen (M...) vanuit je basisadres (G...).",
+        "i2": "Optioneel met label (Name) en notitie (z. B. Projekt oder Zweck)."
       },
-      "importTitle": "Importeren uit CSV-bestanden",
+      "importTitle": "Import aus CSV‑Dateien",
       "importItems": {
-        "i1": "Massa-aanmaak van Muxed accounts, bijvoorbeeld van een medewerkerslijst.",
-        "i2": "Kolommen lezen: muxedId, label, notitie."
+        "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
+        "i2": "Leest kolommen muxedId, label, nota."
       },
-      "exportTitle": "Export van bestaande gemuxte accounts",
+      "exportTitle": "Export vorhandener Muxed‑Konten",
       "exportItems": {
-        "i1": "Exporteer alle opgeslagen items als een CSV.",
-        "i2": "Velden: basePublicKey, muxedId, muxedAddress, label, notitie, gemaaktOp."
+        "i1": "Exporteer alle opgeslagen gegevens als CSV.",
+        "i2": "Velden: basePublicKey, muxedId, muxedAddress, label, notitie, aangemaaktOp."
       },
-      "templateTitle": "Sjabloon exporteren",
+      "templateTitle": "Template‑Export",
       "templateItems": {
-        "i1": "Maak een lege CSV-bestand met kolomkoppen: muxedId, label, note.",
-        "i2": "Handig voor HR- of boekhoudafdelingen bij het voorbereiden van nieuwe inschrijvingen."
+        "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
+        "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
       },
-      "manageTitle": "Beheer en Overzicht",
+      "manageTitle": "Administratie & Overzicht",
       "manageItems": {
-        "i1": "Alle opgeslagen gemultiplexte adressen worden in een tabel weergegeven.",
-        "i2": "Selectie, verwijdering en beheer van labels/notities direct mogelijk."
+        "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
+        "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
       },
-      "shortTitle": "In het kort",
-      "shortText": "Gedeelde accounts maken je Stellar-account gedetailleerd en traceerbaar—ideaal voor organisaties die veel betalingen via een centrale account verwerken, maar toch elke transactie uniek willen toewijzen."
+      "shortTitle": "Kortom",
+      "shortText": "Muxed‑Konten machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
     },
-    "selectBaseAccount": "Basisaccount (G-adres)",
+    "selectBaseAccount": "Basisaccount (G-Adresse)",
     "selectPlaceholder": "Selecteer account alstublieft",
-    "baseAccountInfo": "Deze rekening blijft technisch gezien de eigenaar. Het Muxed-adres (M...) wijst slechts naar deze rekening.",
-    "generateButton": "Gegeneraliseerd account maken",
+    "baseAccountInfo": "Deze rekening blijft technisch gezien de eigenaar. Het Muxed-adres (M...) wijst alleen naar deze rekening.",
+    "generateButton": "Gemaakt gekoppeld account",
     "exportButton": "Exporteren",
-    "importButton": "Import",
+    "importButton": "Importeren",
     "listTitle": "Bestaande Muxed Accounts",
-    "none": "Geen gemultiplexte accounts opgeslagen.",
+    "none": "Geen gemuxte accounts opgeslagen.",
     "columns": {
       "id": "Muxed-ID",
       "address": "Gemuxed adres",
       "label": "Aanwijzing",
-      "note": "Opmerking",
-      "createdAt": "Gemaakt op",
+      "note": "Let op",
+      "createdAt": "Aangemaakt op",
       "actions": "Aandelen"
     },
     "selectAll": "Alles selecteren",
     "deleteSelected": "Selectie verwijderen",
     "deleteSuccess": "Selectie verwijderd.",
     "countLabel": "Nummer",
-    "countInfo": "Aantal nieuwe Muxed-adressen, opeenvolgende ID's.",
-    "invalidCount": "Voer alstublieft een geldig nummer in (>= 1).",
-    "tooMany": "Maak alsjeblieft niet meer dan 100 tegelijk.",
-    "rangeOverflow": "Het ID-bereik overschrijdt de maximaal toegestane gemultiplexte ID.",
+    "countInfo": "Aantal nieuwe gemuxte adressen, opeenvolgende ID's.",
+    "invalidCount": "Voer alstublieft een geldig getal in (>= 1).",
+    "tooMany": "Maak maximaal 100 tegelijk aan.",
+    "rangeOverflow": "Het ID-bereik overschrijdt de maximaal toegestane Muxed ID.",
     "label": "Aanwijzing",
-    "labelInfo": "bijv. werknemersnaam of doel",
-    "note": "Opmerking (optioneel)",
+    "labelInfo": "bijv. de naam van de werknemer of het doel",
+    "note": "Opmerking (optional)",
     "noteInfo": "bijv. Afdeling / Project",
-    "generateSuccess": "Gemuxte adres(sen) aangemaakt.",
+    "generateSuccess": "Gemuxed adres (n) aangemaakt.",
     "editSaved": "Wijzigingen opgeslagen.",
     "save": "Opslaan",
-    "edit": "Je bent getraind op data tot oktober 2023.",
+    "edit": "Bewerken",
     "copied": "Gekopieerd naar klembord.",
     "createDialog": {
-      "confirm": "Creëer",
+      "confirm": "Maken",
       "cancel": "Annuleren"
     },
     "export": {
       "filename": "muxed_accounts.csv",
-      "success": "Muxed accounts zijn succesvol geëxporteerd.",
+      "success": "Gemuxte accounts zijn succesvol geëxporteerd.",
       "failed": "Fout bij het exporteren van de gemuxte accounts."
     },
     "import": {
       "success": "Geïmporteerd: {{imported}} • Overgeslagen: {{skipped}} • Fouten: {{errors}}.",
-      "failed": "Fout tijdens het importeren.",
-      "hint": "Import ondersteunt CSV met headers. Scheidingstekens zoals komma's, puntkomma's en tabs worden automatisch gedetecteerd. Onbekende kolommen worden genegeerd. Beschikbare formaten zijn: uitgebreid (netwerk, basePublicKey, muxedId, label, notitie, createdAt) of template (muxedId, label, notitie)."
+      "failed": "Fout bij importeren.",
+      "hint": "Import ondersteunt CSV met een header. Scheidingstekens zoals komma's, puntkomma's en tabs worden automatisch gedetecteerd. Onbekende kolommen worden genegeerd. Formaten: uitgebreid (network,basePublicKey,muxedId,label,note,createdAt) of sjabloon (muxedId,label,note)."
     },
-    "exportTemplateButton": "Exporteersjabloon",
+    "exportTemplateButton": "Exporttemplate",
     "exportTemplateSuccess": "Sjabloon succesvol geëxporteerd.",
-    "exportTemplateFailed": "Fout bij het exporteren van de template.",
+    "exportTemplateFailed": "Fout bij het exporteren van de sjabloon.",
     "csv": {
-      "delimiterLabel": "CSV-scheidingsteken",
+      "delimiterLabel": "CSV scheidingsteken",
       "delimiter": {
         "comma": "Komma ,",
         "semicolon": "Puntkomma ;",
         "tab": "Tabblad"
       }
     },
-    "nav": "Gemuxte accounts",
+    "nav": "Gemultiplexeerde accounts",
     "error": {
-      "noBaseAccount": "Selecteer alstublieft een bestaand account.",
-      "noId": "Geef alstublieft een Muxed ID.",
+      "noBaseAccount": "Selecteer een bestaand account, alstublieft.",
+      "noId": "Geef alstublieft een Muxed-ID.",
       "invalidBaseAccount": "Het geselecteerde basisadres is ongeldig.",
-      "unknown": "Onbekende fout bij het genereren van het samengevoegde adres."
+      "unknown": "Onbekende fout bij het genereren van een gemultiplexeerd adres."
     }
   },
   "terms": {
@@ -584,49 +585,49 @@
   },
   "i18n": {
     "translate": {
-      "skipOriginal": "Je bent getraind op gegevens tot oktober 2023."
+      "skipOriginal": "Je bent getraind op data tot en met oktober 2023."
     }
   },
   "common": {
-    "clear": "Verwijder invoer",
-    "close": "Dichtbij",
-    "loading": "Bezig met laden...",
-    "refresh": "Opnieuw laden"
+    "clear": "Uw gegevens zijn getraind tot oktober 2023.",
+    "close": "Sluiten",
+    "loading": "Laden…",
+    "refresh": "Herladen"
   },
   "error": {
     "asset": {
       "creationDateUnknown": "Onbekende aanmaakdatum"
     },
     "cache": {
-      "backfillAborted": "Initiële verwerking van betalingen afgebroken.",
+      "backfillAborted": "Initiële laadproces van betalingen afgebroken.",
       "coverage": {
-        "newestFailed": "Kon niet de laatste betaling ophalen.",
-        "oldestFailed": "Kon niet de vroegste datum bepalen"
+        "newestFailed": "Kan de nieuwste betaling niet ophalen.",
+        "oldestFailed": "Kon niet de oudste datum bepalen"
       },
-      "indexIterFailed": "Indexiteratie in de cache is mislukt",
-      "memoNormBackfillFailed": "Initiële lading van betalingen voor genormaliseerde memo's is mislukt.",
+      "indexIterFailed": "Indexering van iteraties in de cache is mislukt.",
+      "memoNormBackfillFailed": "Eerste laden van betalingen voor genormaliseerde memo's is mislukt.",
       "openFailed": "Lokale cache kon niet worden geopend.",
-      "readFailed": "Kon lezen uit de cache gefaald",
-      "rehydrateFailed": "Mislukt om missende memo's te laden",
-      "rehydrateWriteFailed": "Kon niet schrijven naar de cache-memo's",
+      "readFailed": "Kon lezen uit cache niet ophalen.",
+      "rehydrateFailed": "Het laden van ontbrekende memo's is mislukt.",
+      "rehydrateWriteFailed": "Kan de memo's niet naar de cache schrijven.",
       "writeFailed": "Kan niet naar cache schrijven"
     },
     "connection": {
-      "backend": "Geen verbinding met de backend mogelijk. Zorg ervoor dat"
+      "backend": "Kan geen verbinding maken met de backend. Zorg ervoor dat"
     },
     "fetchInvestedTokens": {
-      "failed": "Kon het beleggingsbestand niet laden: {{detail}}"
+      "failed": "Laden van investeringsgegevens mislukt: {{detail}}"
     },
     "horizon": {
       "paymentsFetch": "Fout bij het laden van betalingen van Horizon"
     },
     "loadTrustlines": "Trustlines konden niet worden geladen. Probeer het alstublieft opnieuw.",
-    "loadTrustlinesFailed": "Laden van trustlines mislukt.",
-    "loadTrustlinesNotFound": "Account niet gevonden op netwerk '{{network}}'.",
+    "loadTrustlinesFailed": "Kan trustlines niet laden.",
+    "loadTrustlinesNotFound": "Account in het netwerk '{{network}}' niet gevonden.",
     "accountNotFoundInNetwork": "Niet gevonden in '{{net}}'!",
-    "op_invalid_limit": "Trustline kan niet worden verwijderd. Er kan nog een saldo of uitstaande verplichtingen zijn.",
+    "op_invalid_limit": "Trustline kan niet worden verwijderd. Het kan nog steeds een saldo of openstaande verplichtingen hebben.",
     "query": {
-      "invalidMemo": "Ongeldig memo",
+      "invalidMemo": "Ongeldige memo",
       "invalidRange": "Tijdvenster is ongeldig (Van > Tot)",
       "invalidTime": "Ongeldige tijdspecificatie"
     },
@@ -638,8 +639,8 @@
       }
     },
     "sync": {
-      "backfillFailed": "Eerste laden van betalingen mislukt.",
-      "incrementalFailed": "Bijwerking van betalingen mislukt"
+      "backfillFailed": "Initiële laadtijd van betalingen is mislukt.",
+      "incrementalFailed": "Bijwerken van betalingen mislukt"
     },
     "transaction": {
       "failed": "Transactie mislukt",
@@ -650,7 +651,7 @@
       "unknown": "Onbekende fout bij het verwijderen van de trustline."
     },
     "xlmByMemo": {
-      "aborted": "Bewerking geannuleerd door de gebruiker",
+      "aborted": "Operatie geannuleerd door gebruiker.",
       "accountInvalid": "Ongeldig account",
       "dateInvalid": "Ongeldige datum",
       "dateRange": "Ongeldige datumbereik",
@@ -659,16 +660,16 @@
       "paymentsFetch": "Fout bij het laden van betalingen",
       "serverInvalid": "Ongeldige server"
     },
-    "rateLimited": "Horizon limiet overschreden. Wacht alstublieft een paar seconden en probeer het opnieuw."
+    "rateLimited": "Horizon limiet overschreden. Wacht een paar seconden en probeer het opnieuw."
   },
   "investedTokens": {
     "columns": {
       "amount": "Bedrag",
-      "compromised": "Gecompromitteerd",
+      "compromised": "In gevaar gebracht",
       "deactivated": "Gedeactiveerd",
       "destination": "Doelportemonnee",
       "issuer": "Uitgever",
-      "label": "Etiket",
+      "label": "Label",
       "memo": "Memo",
       "payments": "Betalingen",
       "date": "Datum",
@@ -676,51 +677,51 @@
     },
     "decimals": {
       "auto": "Automatisch",
-      "label": "Decimale plaatsen:"
+      "label": "Decimalen:"
     },
     "filter": {
       "memoPlaceholder": "Filter op memo, walletadres of label",
-      "tokenPlaceholder": "Filter op token (CODE:UITGEVER)"
+      "tokenPlaceholder": "Filteren op Token (CODE:ISSUER)"
     },
-    "hintEnterPublicKey": "Voer eerst een openbare sleutel in.",
+    "hintEnterPublicKey": "Voer eerst een publieke sleutel in.",
     "item": {
-      "memo": "Memo: \"{{memo}}\" (Betalingen: {{occurrences}})",
+      "memo": "Notitie: \"{{memo}}\" (Betalingen: {{occurrences}})",
       "token": "Token: {{token}} (Betalingen: {{occurrences}})",
       "tokenShort": "Token: {{token}}"
     },
     "missingPublicKey": "Openbare sleutel ontbreekt.",
-    "moreTruncated": "... en {{extra}} extra groepen",
-    "toWallet": "naar portemonnee: {{address}}",
-    "total": "Aantal gekochte tokens: {{count}}",
-    "totalTokens": "Aantal geïnvesteerde tokens (activa): {{count}}",
+    "moreTruncated": "… en {{extra}} andere groepen",
+    "toWallet": "naar Wallet: {{address}}",
+    "total": "Aantal aangekochte tokens: {{count}}",
+    "totalTokens": "Aantal geïnvesteerde tokens (Assets): {{count}}",
     "value": {
       "units": "{{amount}} stuks",
       "xlm": "{{amount}} XLM"
     },
     "view": {
       "label": "Filteren op:",
-      "memo": "Notities (Groepsfonds)",
-      "token": "Token (aangekocht aantal)"
+      "memo": "Memo's",
+      "token": "Token"
     },
     "toggles": {
-      "showTotals": "Totaalbedrag",
-      "qsiOnly": "Som QSI GF"
+      "showTotals": "Totale som",
+      "qsiOnly": "Totaal QSI GF"
     },
     "hints": {
-      "qsiListSet": "Opmerking: Je kunt de GF-lijst vinden onder Instellingen → Vertrouwde Portemonnees (QSI).",
+      "qsiListSet": "Opmerking: Je kunt de GF-lijst vinden onder Instellingen → Trusted Wallets (QSI).",
       "pageTime": "Het laden van een pagina duurt ongeveer 0,2 seconden → 100 pagina's ≈ 20 seconden → 1000 pagina's ≈ 200 seconden (≈ 3:20 minuten)."
     },
     "walletCapInfo": "Opmerking: Een wallet kan maximaal 1000 trustlines bevatten.",
     "action": {
-      "load": "Laden"
+      "load": "Opslaan"
     },
     "history": {
-      "availableFrom": "Server (Horizon) – Geschiedenis vanaf",
-      "hintFullHistory": "Opmerking: De grootboekgeschiedenis van de Horizon-server gaat alleen terug tot {{available}}. Alleen gegevens tot dat punt worden weergegeven. Daarom is de geselecteerde begindatum beperkt. Voor oudere gegevens is een full-history provider (meestal betaald) vereist (Dit kan in de toekomst beschikbaar komen!)."
+      "availableFrom": "Server (Horizon) – Geschiedenis van",
+      "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
     }
   },
   "network": {
-    "mainnet": "Mainnet",
+    "mainnet": "Hoofdnet",
     "testnet": "Testnet"
   },
   "multisigEdit": {
@@ -731,11 +732,11 @@
     "error": {
       "thresholdTooHigh": "Drempels mogen de som van de gewichten niet overschrijden."
     },
-    "hint": "Laad een bestaand account, pas ondertekenaars, gewichten, hoofdgewicht en drempels aan, en sla de wijzigingen op.",
+    "hint": "Laad een bestaand account, pas ondertekenaars, gewichten, hoofdgewicht en drempelwaarden aan, en sla de wijzigingen op.",
     "load": "Winkel",
     "loaded": "Geladen. Extra ondertekenaars: {{count}}",
-    "menu": "Multi-handtekeningenaccount bewerken",
-    "menuHint": "Aanpassen van ondertekenaars/drempels van een bestaand account",
+    "menu": "Bewerk multisig-account",
+    "menuHint": "Aanpassen van Ondertekenaars/Drempels van een Bestaande Rekening",
     "noteMaxSigners": "Opmerking: Stellar staat maximaal 20 extra ondertekenaars per account toe.",
     "reload": "Herladen",
     "save": "Wijzigingen opslaan",
@@ -745,312 +746,312 @@
     "masterWeight": "Meestergewicht",
     "title": "Multisig-account bewerken",
     "validation": {
-      "signerKeyHint": "Opmerking: Ondertekenaars moeten beginnen met \"G\" (ed25519 openbare sleutel).",
+      "signerKeyHint": "Let op: Ondertekenaars moeten beginnen met \"G\" (ed25519 public key).",
       "signerKeyInvalid": "Ongeldig ondertekenaaradres. Een G… adres (ed25519) wordt verwacht."
     }
   },
   "navigation": {
     "back": "Terug",
-    "backToMainMenu": "Terug naar het menu",
-    "backToPublicKey": "Terug naar de invoer van de publieke sleutel",
+    "backToMainMenu": "Terug naar menu",
+    "backToPublicKey": "Terug naar invoer van openbare sleutel",
     "backToTop": "Terug naar boven"
   },
   "publicKey": {
-    "deleteFromList": "Verwijderen uit de lijst",
+    "deleteFromList": "Van de lijst verwijderen",
     "destination": {
       "error": "Ongeldige doelsleutel.",
-      "input": "Voer het bestemmingsportemonnee-adres in."
+      "input": "Voer het bestemmingsportemonnee-adres in"
     },
-    "label": "Voer het bronfederatieadres of de openbare sleutel in:",
-    "load": "Laden...",
+    "label": "Voer het adres van de bronfederatie of de openbare sleutel in:",
+    "load": "Bezig met laden…",
     "placeholder": "bijv.",
-    "source": "Bronportemonnee-adres",
+    "source": "Bronportefeuilleadres",
     "invalid": "Ongeldige openbare sleutel.",
     "submit": {
       "button": "Verzenden"
     },
     "test": "Test",
     "historyLabel": "Geschiedenis",
-    "historyPlaceholder": "Selecteer de laatst gebruikte portemonnee."
+    "historyPlaceholder": "Selecteer de meest recent gebruikte portemonnee."
   },
   "secretKey": {
     "cleared": "Geheime sleutel is verwijderd.",
-    "empty": "Geheimveld is leeg.",
-    "info": "⚠️ BELANGRIJK: Deze website slaat jouw geheime sleutel NOOIT op!\n\nDe hier getoonde geheime sleutel bestaat alleen in jouw browser (lokal im Arbeitsspeicher). Zodra je de pagina herlaadt of verlaat, is deze onherroepelijk verloren.\n\nKopieer of noteer de geheime sleutel onmiddellijk nadat deze is gegenereerd, voordat je de pagina sluit.\n\nVerificatie: Je kunt de ontwikkelaarstools van de browser gebruiken (F12 → Netwerk) om te verifiëren dat er geen geheime sleutel extern wordt verzonden. Alleen ondertekende transacties worden verzonden, nooit jouw geheime sleutel.",
+    "empty": "Het veld voor de geheime sleutel is leeg.",
+    "info": "⚠️ BELANGRIJK: Deze website slaat je geheime sleutel NOOIT op!\n\nDe hier weergegeven geheime sleutel bestaat alleen in je browser (lokal im Arbeitsspeicher). Zodra je de pagina herlaadt of verlaat, is deze onherroepelijk verloren.\n\nKopieer of noteer de geheime sleutel onmiddellijk na het genereren, voordat je de pagina sluit.\n\nVerificatie: Je kunt met de ontwikkelaarstools van de browser (F12 → Netwerk) controleren dat er geen geheime sleutel extern wordt verzonden. Alleen ondertekende transacties worden verzonden, nooit je geheime sleutel.",
     "invalid": "Ongeldige geheime sleutel.",
-    "label": "Voer de bron geheime sleutel in (S-Key)",
+    "label": "Voer de brongeheime sleutel in (S-Key)",
     "mismatch": "Geheime sleutel komt niet overeen met het openbare adres.",
     "placeholder": "bijv.",
     "valid": "✅ Geheime sleutel is geldig.",
     "remember": {
       "label": "Onthoud de geheime sleutel voor deze sessie.",
-      "hint": "Wanneer ingeschakeld, wordt de sleutel opgeslagen totdat de tabblad is gesloten en opnieuw gebruikt voor verdere betalingen."
+      "hint": "Wanneer ingeschakeld, wordt de sleutel opgeslagen totdat het tabblad wordt gesloten en opnieuw gebruikt voor verdere betalingen."
     },
-    "clearSession": "Sessiesleutel verwijderen",
-    "clearSessionHint": "Verwijdert de geheime sleutel die in deze sessie is opgeslagen (hij wordt toch verwijderd wanneer het tabblad wordt gesloten)."
+    "clearSession": "Verwijder sessiesleutel",
+    "clearSessionHint": "Verwijdert de geheime sleutel die in deze sessie is opgeslagen (it will be deleted when the tab is closed anyway)."
   },
   "token": {
-    "purchases": "Filter tokens/activa"
+    "purchases": "Tokens/activa filteren"
   },
   "glossary": {
-    "pageTitle": "Verklarende woordenlijst",
-    "pageIntro": "Hier vind je belangrijke woorden uit de blockchainwereld en het Stellar-netwerk. Alles wordt in eenvoudige termen uitgelegd.",
+    "pageTitle": "Woordenlijst",
+    "pageIntro": "Hier vind je belangrijke woorden uit de blockchainwereld en het Stellar-netwerk. Alles wordt in eenvoudige bewoordingen uitgelegd.",
     "searchLabel": "Zoekterm",
-    "searchPlaceholder": "Zoekterm (bijv. account, Muxed)",
-    "searchHint": "De zoekfunctie vindt woorden en verklaringen.",
+    "searchPlaceholder": "Zoekterm (z. B. Konto, Account, Muxed)",
+    "searchHint": "De zoekopdracht vindt woorden en verklaringen.",
     "noResults": "Geen overeenkomst.",
     "blockchain": {
       "title": "Blockchain",
       "original": "Blockchain",
-      "short": "Gedeeld digitaal grootboek - veel computers slaan dezelfde gegevens op.",
-      "desc": "Een blockchain is als een digitaal grootboek. Veel computers slaan dezelfde gegevens op, zodat niemand stiekem iets kan wijzigen."
+      "short": "Shared digital ledger – many computers store the same entries.",
+      "desc": "Een blockchain is als een digitaal grootboek. Veel computers slaan dezelfde invoeringen op, waardoor wordt voorkomen dat iemand stiekem veranderingen aanbrengt."
     },
     "wallet": {
       "title": "Portemonnee",
       "original": "Wallet",
-      "short": "Digitale portemonnee die uw sleutels beheert.",
-      "desc": "Een wallet is je digitale portemonnee. Het beheert de sleutels die je nodig hebt om toegang te krijgen tot je account en transacties te versturen. Een wallet kan een programma zijn, een app, of zelfs gewoon een stuk papier met je privésleutel."
+      "short": "Digitale portemonnee die je sleutels beheert.",
+      "desc": "Een wallet is je digitale portemonnee. Het beheert de sleutels die je nodig hebt om toegang te krijgen tot je account en transacties te versturen. Een wallet kan een programma zijn, een app of zelfs gewoon een stuk papier met je privésleutel."
     },
     "account": {
       "title": "Account",
       "original": "Account",
-      "short": "Een blockchain-account kan activa bewaren en transacties verzenden.",
-      "desc": "Een account is de plaats op de blockchain waar je activa worden bewaard. Een account heeft een openbaar adres dat begint met een G. Meerdere wallets kunnen toegang krijgen tot hetzelfde account als ze de juiste sleutel hebben."
+      "short": "Een blockchain-account kan activa bevatten en transacties verzenden.",
+      "desc": "Een account is de plaats op de blockchain waar je activa worden opgeslagen. Een account heeft een openbaar adres dat begint met een G. Meerdere wallets kunnen toegang krijgen tot hetzelfde account als ze de juiste sleutel hebben."
     },
     "addressG": {
-      "title": "Geadresseerde",
+      "title": "G-adres",
       "original": "G Address",
-      "short": "Het openbare hoofdadres van een Stellar-account (begint met een G).",
-      "desc": "Het G-adres is het hoofdadres van een Stellar-account. Het begint met de letter G. Je geeft het aan anderen zodat ze iets naar je kunnen sturen."
+      "short": "Het openbare hoofdadres van een Stellar-account (beginnt mit G).",
+      "desc": "Het G-adres is het hoofdadres van een Stellar-account. Het begint met de letter G. Je geeft het aan anderen zodat zij je iets kunnen sturen."
     },
     "publicKey": {
       "title": "Openbare sleutel",
       "original": "Public Key",
-      "short": "Adres dat je mag delen; meestal het G-adres met Stellar.",
-      "desc": "De publieke sleutel is het adres dat je mag tonen. In Stellar is dit het G-adres. Anderen gebruiken het om je geld te sturen."
+      "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+      "desc": "De publieke sleutel is het adres dat je mag laten zien. In Stellar is dit het G-adres. Anderen gebruiken het om je geld te sturen."
     },
     "privateKey": {
       "title": "Geheime sleutel",
       "original": "Secret Key",
-      "short": "Wachtwoord van het account – nooit delen.",
+      "short": "Wachtwoord voor het account – deel het nooit.",
       "desc": "De geheime sleutel is je wachtwoord voor de account. Iedereen die deze sleutel heeft, kan je geld verplaatsen. Deel het nooit."
     },
     "addressFederation": {
       "title": "Federatieadres",
       "original": "Federation Address",
-      "short": "Kort adres zoals e-mail verwijst naar een G-adres.",
-      "desc": "Een federatieadres lijkt op een e-mailadres. Voorbeeld: naam*domein.com. Dit korte adres wijst naar een regulier G-adres. Het is gemakkelijker te onthouden."
+      "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+      "desc": "Een federatieadres lijkt op een e-mail. Voorbeeld: naam*domein.com. Dit korte adres wijst naar een regulier G-adres. Het is makkelijker te onthouden."
     },
     "addressMuxed": {
-      "title": "Gemengd account",
+      "title": "Geglaceerd account",
       "original": "Muxed Account",
-      "short": "M-adres met extra ID – deelt een basisaccount.",
-      "desc": "Een M-adres wijst naar een bestaande Stellar-account, maar heeft ook een eigen nummer (ID). Dit maakt het bijvoorbeeld mogelijk om verschillende personen of afdelingen onder hetzelfde G-adres te onderscheiden. Technisch gezien behoren de fondsen nog steeds tot de hoofdaccount."
+      "short": "M‑address with additional ID – shares a basic account.",
+      "desc": "Een M-adres wijst naar een bestaande Stellar-account, maar heeft ook zijn eigen identificator (ID). Hierdoor kun je onderscheid maken tussen meerdere personen of afdelingen onder hetzelfde G-adres. Technisch gezien behoort het geld nog steeds tot de hoofdaccount."
     },
     "multisig": {
-      "title": "Multisignature",
+      "title": "Multisignatuur",
       "original": "Multi‑Sig",
-      "short": "Belangrijke handelingen vereisen meer dan alleen een handtekening.",
-      "desc": "Multi-sig staat voor meerdere handtekeningen. Een belangrijke actie vereist meer dan één sleutel. Bijvoorbeeld, jij en een tweede sleutel moeten beide instemmen voordat iets verzonden kan worden. Dit maakt diefstal moeilijker."
+      "short": "Belangrijke acties vereisen meer dan alleen een handtekening.",
+      "desc": "Multi-Sig staat voor meerdere handtekeningen. Een belangrijke actie vereist meer dan één sleutel. Bijvoorbeeld, jij en een tweede sleutel moeten beiden akkoord gaan voordat er iets kan worden verzonden. Dit maakt diefstal moeilijker."
     },
     "trustline": {
       "title": "Vertrouwenslijn",
       "original": "Trustline",
-      "short": "Overeenkomst om een token van een specifieke uitgever aan te houden.",
-      "desc": "Een trustline is als een \"ja, ik accepteer deze token.\" Hiermee geef je aan dat jouw account klaar is om een specifieke token van een specifieke uitgever te ontvangen. Zonder een trustline kun je deze token niet ontvangen.\n\nVoorbeeld: Een trustline wordt gespecificeerd als CODE:UITGEVER. Voor EURT van de uitgever GDUKMGUGDZQK6Y… is het EURT:GDUKMGUGDZQK6Y…."
+      "short": "Overeenkomst om een token van een specifieke uitgever te houden.",
+      "desc": "Een trustline is als een \"ja, ik accepteer deze token.\" Hiermee geef je aan dat je account klaar is om een bepaalde token van een specifieke uitgever te houden. Zonder een trustline kun je deze token niet ontvangen.\n\nVoorbeeld: Een trustline wordt gespecificeerd als CODE:UITGEVER. Voor EURT van de uitgever GDUKMGUGDZQK6Y… is het EURT:GDUKMGUGDZQK6Y…."
     },
     "token": {
       "title": "Token",
       "original": "Token",
-      "short": "Digitale eenheid – bijvoorbeeld geld, punten of krediet.",
-      "desc": "Een token is een digitale eenheid op de blockchain. Een token kan geld, punten of credits voor een dienst vertegenwoordigen."
+      "short": "Digitale eenheid – bijv. geld, punten of krediet.",
+      "desc": "Een token is een digitale eenheid op de blockchain. Een token kan geld, punten of tegoeden voor een dienst vertegenwoordigen."
     },
     "asset": {
-      "title": "Activa",
+      "title": "Activum",
       "original": "Asset",
       "short": "Tokens op Stellar zijn altijd gekoppeld aan een uitgever.",
-      "desc": "Op Stellar wordt een token een asset genoemd. Een asset is altijd gekoppeld aan een uitgeveraccount. Een account kan bijvoorbeeld een Euro-token uitgeven. Dit Euro-token is dan een asset."
+      "desc": "Op Stellar wordt een token een activum genoemd. Een activum is altijd verbonden met een uitgevende account. Bijvoorbeeld, een account kan een Euro-token uitgeven. Deze Euro-token is dan een activum."
     },
     "xlm": {
-      "title": "Je bent getraind op gegevens tot oktober 2023.",
+      "title": "XLM",
       "original": "XLM",
-      "short": "Inheemse valuta van Stellar voor kosten en activatie.",
-      "desc": "XLM is de basismunt van Stellar. Je hebt XLM nodig om vergoedingen te betalen en een nieuwe account te starten."
+      "short": "De native valuta van Stellar voor kosten en activatie.",
+      "desc": "XLM is de basismunt van Stellar. Je hebt XLM nodig om vergoedingen te betalen en om een nieuw account te starten."
     },
     "mainnet": {
       "title": "Mainnet",
       "original": "Mainnet",
-      "short": "Echt Stellar-netwerk met echte waarde.",
-      "desc": "Het echte Stellar-netwerk met werkelijke waarde. Transacties zijn definitief en kosten worden betaald in echte XLM."
+      "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+      "desc": "Het echte Stellar-netwerk met werkelijke waarde. Transacties zijn definitief en de kosten worden betaald in echte XLM."
     },
     "testnet": {
       "title": "Testnet",
       "original": "Testnet",
       "short": "Publiek praktijknetwerk zonder echte waarde.",
-      "desc": "Een openbaar praktijknetwerk. Tokens hebben geen echte waarde. Ideaal om te leren en te experimenteren zonder risico."
+      "desc": "Een openbaar testnetwerk. Tokens hebben geen echte waarde. Ideaal om te leren en experimenteren zonder risico."
     },
     "memo": {
-      "title": "Notitie",
+      "title": "Memorandum",
       "original": "Memo",
-      "short": "Korte notitie bij een transactie.",
-      "desc": "Een memo is een kleine notitie die je kunt meesturen met een transactie. Vaak vereist een beurs een specifieke memo zodat het weet aan wie het geld toebehoort."
+      "short": "Korte notitie in een transactie.",
+      "desc": "Een memo is een klein bericht dat je samen met een transactie kunt versturen. Vaak vereist een beurs een specifieke memo om te weten aan wie het geld toebehoort."
     },
     "transaction": {
       "title": "Transactie",
       "original": "Transaction",
-      "short": "Actie op de blockchain, zoals betaling of trustlijn.",
-      "desc": "Een transactie is een actie op de blockchain. Bijvoorbeeld, geld overmaken of een trustlijn aanmaken. Een transactie wordt permanent opgeslagen zodra deze is bevestigd."
+      "short": "Actie op de blockchain, bijvoorbeeld betaling of trustlijn.",
+      "desc": "Een transactie is een actie op de blockchain, zoals het verzenden van geld of het aangaan van een trustline. Een transactie wordt permanent vastgelegd zodra deze is bevestigd."
     },
     "fee": {
-      "title": "Vergoeding",
+      "title": "Kosten",
       "original": "Fee",
       "short": "Zeer klein bedrag per transactie.",
-      "desc": "De vergoeding is een zeer klein bedrag dat je bij elke transactie betaalt. De vergoeding gaat naar het netwerk. Bij Stellar zijn de kosten zeer laag."
+      "desc": "De vergoeding is een zeer klein bedrag dat je bij elke transactie betaalt. De vergoeding gaat naar het netwerk. Op Stellar zijn de vergoedingen erg laag."
     },
     "ledger": {
       "title": "Grootboek",
       "original": "Ledger",
-      "short": "Keten van bevestigde gegevens en saldi.",
-      "desc": "Het grootboek is de keten van alle bevestigde gegevens. Het toont welke rekeningen hoeveel bezitten en welke transacties hebben plaatsgevonden. Iedereen kan het grootboek controleren."
+      "short": "Reeks van bevestigde gegevens en saldi.",
+      "desc": "Het grootboek is de keten van alle bevestigde gegevens. Het bevat informatie over welke accounts welk bedrag bezitten en welke transacties hebben plaatsgevonden. Iedereen kan het grootboek verifiëren."
     },
     "horizon": {
       "title": "Horizon",
       "original": "Horizon",
-      "short": "API-service waarmee apps met Stellar communiceren.",
-      "desc": "Horizon is de service waarmee programma's communiceren met de Stellar-blockchain. Onze tool ondervraagt Horizon om accountbalansen en transacties te laden."
+      "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+      "desc": "Horizon is de dienst waarmee programma's communiceren met de Stellar Blockchain. Onze tool bevraagt Horizon om rekeningbalansen en transacties te laden."
     },
     "anchor": {
       "title": "Anker",
       "original": "Anchor",
-      "short": "Bedrijf dat fiatgeld met Stellar verbindt.",
-      "desc": "Een Anchor is een bedrijf dat echt geld zoals Euro of Dollar verbindt met Stellar. Bijvoorbeeld, je geeft de Anchor Euro's en in ruil daarvoor ontvang je een Euro-token op Stellar."
+      "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+      "desc": "Een anchor is een bedrijf dat echt geld, zoals euro's of dollars, met Stellar verbindt. Bijvoorbeeld, je geeft de anchor euro's, en in ruil daarvoor ontvang je een euro-token op Stellar."
     },
     "exchange": {
-      "title": "Beurs",
+      "title": "Effectenbeurs",
       "original": "Exchange",
-      "short": "Plaats om tokens te kopen en verkopen.",
-      "desc": "Een beurs is een plek waar je tokens kunt kopen of verkopen. Veel beurzen vereisen een KYC-proces, wat een identiteitsverificatie is, voordat je geld in euro's of franken kunt opnemen."
+      "short": "Plek om tokens te kopen en verkopen.",
+      "desc": "Een beurs is een plaats waar je tokens kunt kopen of verkopen. Veel beurzen vereisen een KYC-proces, wat betekent dat je je identiteit moet verifiëren, voordat je geld in euro's of franken kunt opnemen."
     },
     "dex": {
-      "title": "DEX",
+      "title": "DEX (Decentralized Exchange).",
       "original": "Decentralized Exchange",
       "short": "Gedecentraliseerde uitwisseling direct op de blockchain.",
-      "desc": "DEX staat voor Decentralized Exchange. Hier handelen mensen direct met elkaar op de blockchain. Er is geen enkele operator. Stellar heeft een DEX die direct is ingebouwd."
+      "desc": "DEX staat voor Decentralized Exchange. Hier handelen mensen rechtstreeks met elkaar op de blockchain. Er is geen enkele operator. Stellar heeft een DEX die direct erin is ingebouwd."
     },
     "liquidityPool": {
       "title": "Liquiditeitspool",
       "original": "Liquidity Pool",
-      "short": "Gemeenschappelijk pool met twee tokens voor directe uitwisseling.",
-      "desc": "Een liquiditeitspool is een gedeelde pool bestaande uit twee tokens. Mensen storten beide tokens erin. Anderen mogen vervolgens deze tokens direct uitwisselen. In ruil daarvoor verdienen de storters kleine vergoedingen."
+      "short": "Gemeenschappelijke pool met twee tokens voor directe uitwisseling.",
+      "desc": "Een liquiditeitspool is een gemeenschappelijk fonds dat twee tokens bevat. Mensen storten beide tokens erin. Anderen mogen deze tokens vervolgens direct ruilen. De storters verdienen hier kleine vergoedingen mee."
     },
     "balanceClaimable": {
-      "title": "Opvorderbaar Saldo",
+      "title": "Opvraagbaar Saldo",
       "original": "Claimable Balance",
-      "short": "Gereserveerde fondsen die je nog moet accepteren.",
-      "desc": "Een claimbaar saldo is geld dat al voor jou gereserveerd is, maar dat je nog moet claimen. Het komt pas op je rekening zodra je het accepteert."
+      "short": "Gereserveerd geld dat je nog moet accepteren.",
+      "desc": "Een opeisbaar saldo is geld dat al voor jou gereserveerd is, maar dat je nog moet opeisen. Het wordt pas op je rekening bijgeschreven zodra je het accepteert."
     },
     "protocolUpdate": {
-      "title": "Protocol Update",
+      "title": "Protocolupdate",
       "original": "Protocol Update",
-      "short": "Netwerkregels bijwerken.",
-      "desc": "Een protocolupdate is een verbetering van de regels in het Stellar-netwerk, zoals nieuwe functies of beveiligingswijzigingen. Alle knooppunten in het netwerk moeten dezelfde regels gebruiken."
+      "short": "Aktualisierung der Netzwerk‑Regeln.",
+      "desc": "Een protocolupdate is een upgrade van de regels in het Stellar-netwerk, zoals nieuwe functies of beveiligingswijzigingen. Alle knooppunten in het netwerk moeten dezelfde regels gebruiken."
     },
     "soroban": {
       "title": "Soroban",
       "original": "Soroban",
-      "short": "Stellar's slimme contract systeem.",
-      "desc": "Soroban is het smart contract-systeem van Stellar. Een smart contract is programmacode op de blockchain. De code kan onafhankelijk regels verifiëren en acties uitvoeren zonder tussenkomst van een bank."
+      "short": "Stellars Smart‑Contract‑System.",
+      "desc": "Soroban is het smart contract systeem van Stellar. Een smart contract is programmatuur op de blockchain. De code kan zelfstandig regels verifiëren en acties activeren zonder een tussenkomst van een bank."
     },
     "missingKey": "Ontbrekende woordenlijst sleutel: {{detail}}"
   },
   "trustline": {
-    "all": "Toon vertrouwdelen(s)",
-    "compare": "Vergelijk trustline(s)",
-    "delete": "Trustline(s) verwijderen",
+    "all": "Vertrouwenslijn weergeven(s)",
+    "compare": "Trustline vergelijken",
+    "delete": "Verwijder Trustline(s)",
     "deleted": {
       "mode": {
         "real": "Reële modus",
-        "realWarning": "Opmerking: De daadwerkelijke trustline(s) zullen worden verwijderd.",
+        "realWarning": "Waarschuwing: Echte Trustlines(s) zullen worden verwijderd",
         "simulation": "Simulatiemodus"
       },
-      "notFound": "Geen uitwisbare vertrouwenslijnen gevonden – ze bevatten allemaal nog saldi.",
+      "notFound": "Geen verwijderbare trustlijnen gevonden – alle bevatten nog steeds saldi.",
       "resultText": "Aantal: {{count}} • Modus: {{mode}}",
-      "resultTitle": "Verwijderde trustlijn(en)",
-      "simulated": "Simulatie: {{count}} trustline(s) zouden worden verwijderd.",
-      "success": "Succes: {{count}} trustline(s) verwijderd."
+      "resultTitle": "Verwijderde Trustline(s)",
+      "simulated": "Simulatie: er zouden {{count}} trustlines worden verwijderd.",
+      "success": "Succes: {{count}} Trustline(s) verwijderd."
     },
     "destination": {
-      "label": "Voer de doelsleutel in:",
+      "label": "Voer de doelpublieke sleutel in:",
       "placeholder": "bijv."
     },
-    "noDuplicates": "Geen dubbele vertrouwenslijn(en) gevonden.",
-    "nonZeroBalance": "Deze trustlijn kan niet worden verwijderd omdat er nog een saldo op staat.",
-    "notFound": "Geen trustline(s) gevonden.",
-    "onlyZeroBalanceInfo": "Alleen vertrouwenslijnen met een saldo van 0 kunnen worden verwijderd.",
-    "showSecret": "Geheime sleutel weergeven"
+    "noDuplicates": "Geen dubbele trustlijnen gevonden.",
+    "nonZeroBalance": "Deze trustline kan niet worden verwijderd omdat er nog een saldo op staat.",
+    "notFound": "Geen Trustline(s) gevonden.",
+    "onlyZeroBalanceInfo": "Alleen trustlijnen met een saldo van 0 kunnen worden verwijderd.",
+    "showSecret": "Toon geheime sleutel"
   },
   "deleted": {
-    "deletingProgress": "Verwijderen bezig: {{current}} / {{total}}",
-    "success": "Succes: {{count}} trustline(s) verwijderd."
+    "deletingProgress": "Bezig met verwijderen: {{current}} / {{total}}",
+    "success": "Succes: {{count}} Trustline(s) verwijderd."
   },
-  "skippedDueToBalance": "{{count}} trustline(s) overgeslagen (saldo nog beschikbaar).",
+  "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (noch Guthaben vorhanden).",
   "xlmByMemo": {
     "action": {
       "calculate": "Berekenen",
-      "loading": "Het spijt me, ik kan geen berekeningen uitvoeren. Kunt u meer context of details voor uw verzoek geven?"
+      "loading": "Bereken…"
     },
     "date": {
-      "from": "Vanaf (optioneel)",
-      "to": "Tot (optioneel)"
+      "from": "Van (optional)",
+      "to": "Tot (optional)"
     },
     "debug": {
-      "incoming": "Binnenkomend – naar: {{toMe}}, maak→mij: {{createToMe}}, origineel→mij: {{nativeInToMe}}",
-      "incomingOverview": "Invoer: {{total}} • Betrokken Portemonnees: {{unique}}",
+      "incoming": "Binnenkomend – naar: {{toMe}}, creëren→mij: {{createToMe}}, native→mij: {{nativeInToMe}}",
+      "incomingOverview": "Inzendingen: {{total}} • Betrokken wallets: {{unique}}",
       "memo": "Memo's in venster: {{any}} • exacte memo's: {{exact}}",
-      "types": "Typen – betaling: {{pay}}, pad: {{path}}, maken: {{create}}, ander: {{other}}"
+      "types": "Types – betaling: {{pay}}, pad: {{path}}, maken: {{create}}, andere: {{other}}"
     },
     "export": {
-      "csv": "Controleer CSV (Hits)",
-      "csvAll": "Exporteer alle operaties",
+      "csv": "Controleer CSV (Treffer)",
+      "csvAll": "Exporteer alle bewerkingen",
       "csvBoth": "Sla beide CSV-bestanden op.",
-      "csvMatches": "Controleren CSV (Wedstrijden)"
+      "csvMatches": "Controleer CSV (Treffer)"
     },
     "exportCsv": {
-      "failed": "CSV-export mislukt: {{detail}}"
+      "failed": "CSV-export is mislukt: {{detail}}"
     },
     "memo": {
-      "label": "Memo zoektekst (subtekst, hoofdlettergevoelig)",
-      "placeholder": "Memo (substring, hoofdlettergevoelig)"
+      "label": "Memo zoektekst (substring, case sensitive)",
+      "placeholder": "Memo (substring, case-sensitive)"
     },
     "overviewLine": "Binnenkomende betalingen: {{total}} • betrokken wallets: {{unique}}",
     "page": {
-      "noPublicKey": "Voer eerst een openbare sleutel in, of herlaad de account.",
-      "title": "XLM-saldo na memo"
+      "noPublicKey": "Voer eerst een openbare sleutel in of herlaad de account.",
+      "title": "XLM-saldo per memo"
     },
     "result": {
       "label": "Totale som:",
       "value": "{{amount}} XLM"
     },
     "summary": {
-      "amount": "Totaal: {{amount}} XLM",
-      "correctCount": "Invoeringen met correct memo: {{n}}",
-      "count": "Hoeveelheid: {{n}}",
-      "label": "Vergelijking (alle invoer)",
-      "otherCount": "Invoeren met onjuiste/ontbrekende memo: {{n}}",
-      "unique": "Unieke portemonnees (alles): {{n}}",
+      "amount": "Bedrag: {{amount}} XLM",
+      "correctCount": "Invoeren met correcte memo: {{n}}",
+      "count": "Aantal: {{n}}",
+      "label": "Vergelijking (all inputs)",
+      "otherCount": "Invoeren met een onjuist/ontbrekend memo: {{n}}",
+      "unique": "Unieke Portemonnees (alle): {{n}}",
       "uniqueWallets": "Unieke wallets: {{n}}"
     },
     "time": {
-      "setToNow": "Stel de huidige tijd in.",
+      "setToNow": "Stel de huidige tijd in",
       "setToNowHint": "Stel het tijdveld in op de huidige tijd."
     },
-    "title": "XLM-bedrag volgens memo",
+    "title": "XLM-saldo per memo",
     "topLargest": {
-      "button": "Top 20 Inzendingen (Memo)",
+      "button": "Top 20 Entrées (Memo)",
       "clipboard": "Kopiëren naar klembord",
       "csv": "CSV downloaden",
-      "scanning": "... scant topinzendingen",
-      "title": "Top 20 inzendingen voor memo tijdens de periode"
+      "scanning": "… scant topinzendingen",
+      "title": "Top 20 inzendingen voor memo in de periode"
     },
     "tz": {
       "cdt": "CDT (UTC−5)",
@@ -1058,125 +1059,124 @@
       "europe_zurich": "Europa/Zurich (CET/CEST)",
       "label": "Tijdzone voor datum/tijd",
       "local": "Lokale tijdzone",
-      "note": "Datum/tijdwaarden worden geïnterpreteerd in de gekozen tijdzone en worden automatisch omgezet naar UTC voordat de zoekopdracht wordt uitgevoerd.",
+      "note": "Datum en tijd worden in de geselecteerde tijdzone geïnterpreteerd en automatisch omgezet naar UTC vóór de zoektocht.",
       "utc": "UTC",
-      "window": "Gebruikte UTC-tijdvenster: {{from}} → {{to}} (exclusief einde)"
+      "window": "Gebruikte UTC-tijdvenster: {{from}} → {{to}} (Bis exklusiv)"
     },
     "wrongMemos": {
-      "button": "Toon portemonnees met onjuiste/lege memo",
+      "button": "Portefeuilles met onjuiste/lege memo weergeven",
       "clipboard": "Kopiëren naar klembord",
       "columns": {
         "amount": "Bedrag",
         "created_at": "Gemaakt op",
-        "from": "Van",
-        "memo": "Memorandum",
-        "tx_hash": "Transactiehash"
+        "from": "Vanaf",
+        "memo": "Memo",
+        "tx_hash": "Transactie-hash"
       },
       "csv": "CSV downloaden",
-      "failed": "Fout bij het laden van betalingen met onjuiste/lege memo.",
-      "hint": "Filtert inkomende betalingen binnen de periode en toont afzenders met onjuiste/lege memo.",
-      "scanning": "... scant valse/lege memo's",
-      "summary": "Hoeveelheid: {{count}} • Totaal: {{sum}} XLM • Unieke portemonnees: {{unique}}",
-      "title": "Valse/Lege Memo's in de periode"
+      "failed": "Fout bij het laden van betalingen met onjuiste/leeg memo.",
+      "hint": "Filtert inkomende betalingen binnen de periode en toont afzenders met onjuiste/lege memo's.",
+      "scanning": "… scannt falsche/leere Memos",
+      "summary": "Hoeveelheid: {{count}} • Totaal: {{sum}} XLM • Unieke Wallets: {{unique}}",
+      "title": "Valse/Lege memo's tijdens de periode"
     }
   },
   "wallet": {
     "federationDisplay": {
-      "label": "Federatieadres",
+      "label": "Federatie adres",
       "none": "Geen federatieadres gedefinieerd",
       "account": "Account",
-      "accountLabel": "Label"
+      "accountLabel": "Etiket"
     },
     "flag": {
-      "compromised": "Waarschuwing: Deze ontvanger is als gecompromitteerd gemarkeerd in uw vertrouwenslijst.",
-      "deactivated": "Opmerking: Deze ontvanger is als uitgeschakeld gemarkeerd in uw vertrouwenslijst."
+      "compromised": "Waarschuwing: Deze ontvanger is gemarkeerd als gecompromitteerd in uw vertrouwenslijst.",
+      "deactivated": "Opmerking: Deze ontvanger is gemarkeerd als uitgeschakeld in uw vertrouwde lijst."
     }
   },
   "learn": {
     "lesson1": {
       "title": "Wat is een blockchain?",
-      "goal": "Begrijpen van het principe van blockchain",
-      "task": "Blokken (transacties) aan een keten assembleren.",
-      "learningOutcome": "Een blockchain is een onveranderbaar digitaal grootboek dat collectief wordt geverifieerd door iedereen.",
-      "reward": "⭐ 1 – Blokkenbouwer"
+      "goal": "Het begrijpen van het principe van blockchain",
+      "task": "Stel bouwstenen (Transaktionen) samen tot een ketting",
+      "learningOutcome": "Een blockchain is een onveranderlijk digitaal grootboek dat door iedereen gezamenlijk wordt geverifieerd.",
+      "reward": "⭐ 1 – Blokbouwer"
     },
     "lesson2": {
       "title": "Begrijp Stellar",
       "goal": "Ken het verschil met andere blockchains.",
-      "task": "Token naar vriend sturen (simulatie) en snelheid bekijken",
+      "task": "Stuur token naar vriend (Simulation) en zie snelheid",
       "learningOutcome": "Stellar is snel, goedkoop en zonder mining.",
-      "reward": "⭐ 1 - Bijna verzonden"
+      "reward": "⭐ 1 – Snelle Verzendservice"
     },
     "lesson3": {
-      "title": "Openbaar en privacy",
-      "goal": "Begrip van pseudonimiteit",
-      "task": "Bekijk openbare transacties en probeer te raden of iemand weet wie de afzender is.",
+      "title": "Public & Privacy",
+      "goal": "Het begrijpen van pseudonimiteit",
+      "task": "Bekijk de openbare transactie en probeer te raden of de afzender bekend is.",
       "learningOutcome": "Alles is zichtbaar, maar niemand kent de echte naam.",
-      "reward": "⭐ 1 – Privacy Detective"
+      "reward": "⭐ 1 – Gegevensbeschermingsdetective"
     },
     "lesson4": {
       "title": "Je account",
-      "goal": "Inzicht in de structuur en betekenis van publieke/geheime sleutels",
-      "task": "Matchspel: Wat is openbaar, wat is geheim?",
-      "learningOutcome": "Alleen de geheime sleutel verleent toegang; de publieke sleutel kan worden gedeeld.",
-      "reward": "⭐ 1 – Sleutelbewaarder"
+      "goal": "Begrijp de structuur en betekenis van publieke/private sleutelparen.",
+      "task": "Matchspel: Wat is Openbaar, Wat is Geheim",
+      "learningOutcome": "Alleen de geheime sleutel verleent toegang, de openbare sleutel kan worden gedeeld.",
+      "reward": "⭐ 1 – Sleutelbewaker"
     },
     "lesson5": {
       "title": "Verzenden & Ontvangen",
-      "goal": "Begrijpen hoe transacties en vertrouwenslijnen werken",
-      "task": "Voer een testsending uit en bekijk de kosten.",
+      "goal": "Inzicht in de functionaliteit van transacties en trustlijnen",
+      "task": "Voer een testverzending uit en bekijk de kosten.",
       "learningOutcome": "Elke transactie brengt een kleine vergoeding met zich mee; Trustline = toestemming om te ontvangen.",
       "reward": "⭐ 2 – Trustline Starter"
     },
     "lesson6": {
       "title": "Token & Handel",
-      "goal": "Marktmechanismen leren kennen",
-      "task": "Plaats een token op een virtuele marktplaats en houd de prijsverandering in de gaten.",
+      "goal": "Leer over marktmechanismen",
+      "task": "Plaats tokens op een virtuele marktplaats en volg de prijsveranderingen.",
       "learningOutcome": "De prijs wordt bepaald door vraag en aanbod.",
       "reward": "⭐ 2 – Marketplace-expert"
     },
     "lesson7": {
-      "title": "Beveiliging",
+      "title": "Veiligheid",
       "goal": "Veilige gedragingen leren",
-      "task": "Het sorteren van correcte/onjuiste acties; het detecteren van valse tokens.",
-      "learningOutcome": "Vertrouwelijkheid van de sleutel, veilige opslag en gebruik van het testnet.",
+      "task": "Acties correct/fout sorteren; nep-tokens identificeren",
+      "learningOutcome": "Vertrouwelijkheid van de sleutel, veilige opslag en het gebruik van een testnet.",
       "reward": "⭐ 2 – Beveiligingsbeambte"
     },
     "lesson8": {
       "title": "Verificatie & Identiteit",
-      "goal": "Vertrouwen en regels begrijpen",
-      "task": "Vergelijk echte versus neppe tokens",
-      "learningOutcome": "KYC = Identiteitsverificatie, verificatie toont betrouwbare tokens.",
-      "reward": "⭐ 2 – Inspectie-expert"
+      "goal": "Begrijpen van vertrouwen en regels",
+      "task": "Vergelijk echte tokens met neppe tokens.",
+      "learningOutcome": "KYC = Identiteitsverificatie, verificatie toont vertrouwde tokens.",
+      "reward": "⭐ 2 – Beoordeling door expert"
     },
     "lesson9": {
-      "title": "Nul kennis",
-      "goal": "Inzicht in privacyconcepten",
-      "task": "Voorbeeldscenario 'Ik ben ouder dan 18' zonder geboortedatum te tonen",
-      "learningOutcome": "Men kan iets bewijzen zonder geheimen te onthullen.",
-      "reward": "⭐ 2 – ZK-Tolk"
+      "title": "Nulkennis",
+      "goal": "Begrip van concepten voor gegevensprivacy",
+      "task": "Voorbeeldscenario 'Ik ben ouder dan 18' zonder de geboortedatum te tonen",
+      "learningOutcome": "Je kunt iets bewijzen zonder geheimen te onthullen.",
+      "reward": "⭐ 2 – ZK Expert"
     },
     "lesson10": {
-      "title": "Oefenen met SKM",
-      "goal": "Toepassen van geleerde kennis in de praktijk",
-      "task": "Maak een account aan in het testnet, activeer het, stel een trustlijn in, en stuur tokens.",
-      "learningOutcome": "Begrijp de technische processen van een transactie.",
-      "reward": "⭐ 3 – Blockchain Piloot"
+      "title": "Oefen met SKM",
+      "goal": "Pas geleerde kennis in de praktijk toe.",
+      "task": "Maak een account aan op het testnet, activeer het, stel een trustlijn in, stuur tokens.",
+      "learningOutcome": "Volg de technische processen van een transactie.",
+      "reward": "⭐ 3 – Blockchain-pilot"
     },
     "lesson11": {
       "title": "Verantwoordelijkheid",
-      "goal": "Begrijpen van de gevolgen van fouten",
-      "task": "Besluitvormingsspel: juist handelen of niet",
-      "learningOutcome": "Blockchain is definitief; naleving is een must.",
-      "reward": "⭐ 1 – Verantwoordelijkheidsheld"
+      "goal": "De gevolgen van fouten begrijpen",
+      "task": "Besluitenspel: Juist Handelen of Niet",
+      "learningOutcome": "Blockchain is definitief; zorgvuldigheid is een vereiste.",
+      "reward": "⭐ 1 – Verantwoordelijkheid Held"
     },
     "lesson12": {
       "title": "Conclusie / Speels Leren",
       "goal": "Herhaling en motivatie",
       "task": "Mini-quiz + badgeweergave",
-      "learningOutcome": "Evalueer wat je hebt geleerd, erken je eigen vooruitgang.",
-      "reward": "🎖 Uitstekende Professional"
+      "learningOutcome": "Bekijk wat je hebt geleerd en erken je eigen vooruitgang.",
+      "reward": "🎖 Stellar Pro"
     }
-  },
-  "networkLabel": "Netwerk"
+  }
 }

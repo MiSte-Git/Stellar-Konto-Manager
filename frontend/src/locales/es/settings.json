@@ -1,12 +1,12 @@
 {
   "backup": {
     "title": "Backup & Recovery",
-    "desc": "Exporta o importa tus datos de cuestionarios (configuraciones, progreso, insignias).",
+    "desc": "Exportar o importar tus datos del cuestionario (Einstellungen, Fortschritt, Abzeichen).",
     "export": {
       "button": "Iniciar exportación",
       "success": "Exportación creada",
       "error": "La exportación falló",
-      "fileName": "quiz-backup.json"
+      "fileName": "El texto \"quiz-backup.json\" es un nombre de archivo y no requiere traducción al español ya que ya está en inglés."
     },
     "import": {
       "title": "Importación",
@@ -20,16 +20,16 @@
       "preview": {
         "title": "Vista previa",
         "stats": {
-          "settings": "Configuraciones: {{count}} cuestionario(s)",
-          "progress": "Progreso: {{count}} cuestionario(s)",
-          "achievements": "Insignia: {{count}} cuestionario(s)"
+          "settings": "Einstellungen: {{count}} Quiz(e)",
+          "progress": "Progreso: {{count}} Quiz(e)",
+          "achievements": "Insignias: {{count}} Quiz(e)"
         }
       },
       "perform": "Realizar importación",
       "done": "Importación completada",
       "backupCreated": "Copia de seguridad automática guardada",
       "invalid": "Archivo de importación no válido",
-      "error": "Importación fallida"
+      "error": "Importación fallida."
     },
     "toast": {
       "exported": "Copia de seguridad exportada",
@@ -40,18 +40,18 @@
     }
   },
   "cache": {
-    "help": "Acelera las consultas a través de la caché de pagos local, pero puede aumentar el tiempo de carga inicial.",
-    "label": "Usar caché (Beta)",
-    "prefetchHelp": "Tiempo de procesamiento para cargar entradas/transacciones en días (una vez durante la activación inicial)"
+    "help": "Acelera las consultas a través de la caché de pagos local, pero puede extender el tiempo de carga inicial.",
+    "label": "Usar la caché (Beta)",
+    "prefetchHelp": "Tiempo de espera para cargar entradas/transacciones en días (einmalig beim ersten Aktivieren)"
   },
   "network": {
-    "title": "Red de comunicaciones",
-    "desc": "Opcional: Horizonte de Historial Completo para Historia Profunda",
-    "fullUrl": "URL del horizonte de historia completa",
-    "autoUseFull": "Utilizar automáticamente si la fecha de inicio es anterior al historial del servidor.",
-    "historyInfo": "Los servidores Horizon gratuitos operados por la Stellar Development Foundation proporcionan solo alrededor de un año de historial. Para obtener datos más antiguos, deberás operar tu propio nodo Horizon o depender de servicios de terceros/pagos."
+    "title": "Red neuronal",
+    "desc": "Opcional: Horizonte de Historia Completa para Historia Profunda",
+    "fullUrl": "URL del horizonte de historial completo",
+    "autoUseFull": "Usar automáticamente si la \"Fecha de inicio\" es anterior al historial del servidor.",
+    "historyInfo": "Los servidores Horizon gratuitos operados por la Stellar Development Foundation proporcionan solo alrededor de un año de historial. Para obtener datos más antiguos, debes operar tu propio nodo Horizon o depender de servicios de terceros o de pago."
   },
-  "description": "Actualmente, no hay configuraciones aún.",
+  "description": "Actualmente, no hay configuraciones disponibles.",
   "display": {
     "decimals": {
       "auto": "Automáticamente",
@@ -64,28 +64,90 @@
     "fetchFailed": "Error al cargar la configuración: {{detail}}"
   },
   "label": "Configuraciones",
-  "prefetchDays": "Plazo de entrega (días)",
+  "prefetchDays": "Tiempo de entrega",
+  "back": "Atrás",
+  "aria": {
+    "back": "Volver a la página anterior"
+  },
+  "tabs": {
+    "general": "General",
+    "app": "Aplicación/interfaz",
+    "accounts": "Lista de cuentas",
+    "network": "Red Netzwerk wurde festgestellt, dass dies nicht direkt ins Spanische übersetzt wurde und bleibt als „network“.",
+    "quiz": "Concurso",
+    "explorer": "Explorador"
+  },
+  "sections": {
+    "general": "Configuración general",
+    "app": "Configuración de la aplicación",
+    "accounts": "Lista de cuentas",
+    "network": "Red neuronal",
+    "quiz": "Configuración del cuestionario",
+    "explorer": "Explorador Estelar"
+  },
+  "multisig": {
+    "timeoutTitle": "Tiempo de espera de multisig",
+    "timeoutHint": "Período de validez para pagos multifirma en segundos (por ejemplo, 86400 = 24 horas).",
+    "seconds": "Segundos"
+  },
+  "explorer": {
+    "sectionTitle": "Stellar Explorer",
+    "description": "Selecciona el explorador predeterminado para los enlaces de cuenta y gestiona la lista de exploradores.",
+    "defaultLabel": "Explorador estándar",
+    "nameLabel": "Nombre",
+    "urlLabel": "URL",
+    "testnetUrlLabel": "URL de Testnet (optional)",
+    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
+    "addButton": "Agregar Explorador",
+    "removeButton": "Eliminar",
+    "setDefault": "Establecer como predeterminado",
+    "noEntries": "No se han configurado exploradores.",
+    "validation": {
+      "nameRequired": "Por favor, introduzca un nombre.",
+      "urlRequired": "Por favor, ingresa una URL.",
+      "urlInvalid": "Por favor, introduce una URL válida.",
+      "testnetUrlInvalid": "Por favor, introduce una URL válida de Testnet."
+    },
+    "mainnetLabel": "Red principal",
+    "testnetLabel": "Red de prueba",
+    "edit": "Editado."
+  },
+  "export": {
+    "title": "Configuración de exportación",
+    "button": "Guardar la configuración como un archivo"
+  },
+  "import": {
+    "title": "Importar configuraciones",
+    "button": "Cargar la configuración desde el archivo",
+    "ariaLabel": "Importar configuraciones",
+    "hint": "Seleccione un archivo de configuración previamente exportado (.json).",
+    "success": "Ajustes importados.",
+    "error": {
+      "invalid": "Error de importación: El archivo no es válido o no se pudo leer.",
+      "invalidType": "Error de importación: Formato inesperado en el archivo."
+    }
+  },
   "trustedWallets": {
     "buttons": {
       "export": "Exportación",
       "import": "Importar",
       "reset": "Restablecer a los valores predeterminados"
     },
-    "desc": "Esta lista se almacena localmente en el navegador. Archivo predeterminado: QSI_TrustedWallets.json.",
+    "desc": "Esta lista se almacena localmente en el navegador. Archivo predeterminado: QSI_TrustedWallets.json",
     "editor": {
-      "invalidFormat": "Formato no válido. Se espera un objeto con un campo \"wallets\" (arreglo).",
+      "invalidFormat": "Formato no válido. Se espera un objeto con el campo \"wallets\" (Array).",
       "parseError": "No se pudo analizar el JSON."
     },
     "file": {
-      "hint": "Importar un archivo JSON en el formato { \"wallets\": [...] }",
+      "hint": "Importa un archivo JSON en el formato { wallets: [...] }",
       "label": "Archivo"
     },
     "info": {
       "count": "Entradas: {{n}}",
-      "updatedAt": "A partir de {{date}}"
+      "updatedAt": "Estado: {{fecha}}"
     },
     "table": {
-      "addRow": "Añadir línea",
+      "addRow": "Agregar línea",
       "columns": {
         "actions": "Acciones",
         "address": "Dirección",
@@ -97,66 +159,9 @@
       "discard": "Descartar",
       "save": "Guardar"
     },
-    "title": "Mis billeteras confiables",
+    "title": "Mis carteras de confianza",
     "validation": {
-      "hint": "Al menos una línea es inválida (dirección faltante/duplicada)."
-    }
-  },
-  "back": "Atrás",
-  "aria": {
-    "back": "Volver a la página anterior."
-  },
-  "tabs": {
-    "general": "General",
-    "app": "Aplicación/interfaz",
-    "accounts": "Lista de cuentas",
-    "network": "Red",
-    "quiz": "Cuestionario",
-    "explorer": "Explorador"
-  },
-  "sections": {
-    "general": "Configuración general",
-    "app": "Configuración de la aplicación",
-    "accounts": "Lista de cuentas",
-    "network": "Red neuronal",
-    "quiz": "Configuraciones del cuestionario",
-    "explorer": "Explorador Estelar"
-  },
-  "explorer": {
-    "sectionTitle": "Explorador Estelar",
-    "description": "Seleccione el explorador predeterminado para los enlaces de cuenta y gestione la lista de exploradores.",
-    "defaultLabel": "Explorador Estándar",
-    "nameLabel": "Nombre",
-    "urlLabel": "URL",
-    "testnetUrlLabel": "URL de Testnet (optional)",
-    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
-    "addButton": "Agregar explorador",
-    "removeButton": "Eliminar",
-    "setDefault": "Establecer como predeterminado",
-    "noEntries": "No se han configurado exploradores.",
-    "validation": {
-      "nameRequired": "Por favor, introduzca un nombre.",
-      "urlRequired": "Por favor, introduce una URL.",
-      "urlInvalid": "Por favor, ingrese una URL válida.",
-      "testnetUrlInvalid": "Por favor, introduce una URL válida de testnet."
-    },
-    "mainnetLabel": "Red principal",
-    "testnetLabel": "Red de prueba",
-    "edit": "Editar"
-  },
-  "export": {
-    "title": "Configuración de exportación",
-    "button": "Guardar configuraciones como un archivo"
-  },
-  "import": {
-    "title": "Configuración de importación",
-    "button": "Cargar configuraciones desde archivo",
-    "ariaLabel": "Configuración de importación",
-    "hint": "Seleccione un archivo de configuración exportado previamente (.json).",
-    "success": "Configuraciones importadas.",
-    "error": {
-      "invalid": "Error de importación: El archivo es inválido o no se pudo leer.",
-      "invalidType": "Error de importación: Formato inesperado en el archivo."
+      "hint": "Al menos una línea no es válida (fehlende/duplizierte Adresse)."
     }
   }
 }

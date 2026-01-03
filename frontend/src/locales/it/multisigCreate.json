@@ -1,98 +1,98 @@
 {
-  "title": "Crea Account + Multisig",
-  "menu": "Crea account + multisig",
-  "menuHint": "Crea un nuovo account e, facoltativamente, configura la firma multipla.",
+  "title": "Crea account + multisig",
+  "menu": "Crea Account + Multisig",
+  "menuHint": "Crea un nuovo account e opzionalmente configura la firma multipla.",
   "hint": "Crea un nuovo account, attivalo e, facoltativamente, configura la firma multipla.",
   "generateKeys": "Genera chiave",
-  "enableMultisig": "Abilita multisig",
-  "signersTitle": "Firmare",
-  "signersInfo": "Aggiungi firmatari aggiuntivi e imposta soglie appropriate.",
+  "enableMultisig": "Abilita la firma multipla",
+  "signersTitle": "Firmatario",
+  "signersInfo": "Aggiungi firmatari aggiuntivi e imposta le soglie appropriate.",
   "signersCount": "Numero di firmatari",
   "bestPractices": {
-    "title": "Migliori Pratiche",
-    "text": "Proteggi adeguatamente le chiavi segrete e non distribuirle inutilmente."
+    "title": "Migliori pratiche",
+    "text": "Mantieni le chiavi segrete al sicuro e non distribuirle inutilmente."
   },
   "instructions": {
     "public": "Condividi questa chiave pubblica con altri per i pagamenti.",
-    "secret": "Tieni questa chiave segreta al sicuro; non condividerla mai."
+    "secret": "Tieni questa Chiave Segreta al sicuro; non condividerla mai."
   },
   "generateFirst": "Per favore, genera prima una coppia di chiavi.",
-  "confirmLowBalance": "Il saldo iniziale {bal} XLM è al di sotto della riserva raccomandata {req} XLM (Firmatario: {count}). Continuare?",
+  "confirmLowBalance": "Il saldo iniziale di {bal} XLM è inferiore alla riserva raccomandata di {req} XLM (Firmatari: {count}). Procedere?",
   "activated": "L'account è stato attivato. Hash: {hash}",
   "activatedTestnet": "L'account è stato attivato nel testnet tramite Friendbot.",
   "alreadyActive": "L'account è già attivato.",
   "createdNoSigners": "Account creato, multisig non configurato.",
   "createdAndConfigured": "Account creato e multisig configurato. Hash: {hash}",
   "info": {
-    "more": "Maggiori informazioni",
+    "more": "Più informazioni",
     "keysOnPage": {
       "title": "Chiave su questa pagina",
-      "text": "Questa pagina genera chiavi. Mantienile al sicuro e non condividerle."
+      "text": "Su questa pagina vengono generate le chiavi. Mantienile al sicuro e non condividerle."
     },
     "title": "Informazioni importanti",
     "secureKeys": {
-      "title": "Chiave segreta sicura",
-      "text": "La chiave pubblica può essere condivisa in sicurezza – è come un numero di conto.\n\nLa chiave segreta è l'accesso al tuo conto. Trattala come una password:\n• NON conservarla mai in servizi cloud, email o note non sicure\n• Scrivila su carta o usa un hardware wallet\n• Crea più copie di backup e conservale in luoghi separati e sicuri\n• Se la chiave segreta viene persa, l'accesso al conto è perso irrimediabilmente"
+      "title": "Chiave privata sicura",
+      "text": "La chiave pubblica può essere condivisa in modo sicuro – è come un numero di conto.\\n\\nLa chiave segreta è l'accesso al tuo conto. Trattala come una password:\\n• NON memorizzarla MAI in servizi cloud, e-mail o appunti non sicuri\\n• Annota la chiave su carta o utilizza un portafoglio hardware\\n• Crea più copie di backup e conservale in luoghi sicuri e separati\\n• Se perdi la chiave segreta, l'accesso al conto è irrevocabilmente perduto"
     },
     "multisigSection": {
       "title": "Multisig (Mehrfachsignatur)",
-      "text": "Con il multisig, puoi definire più firmatari per il tuo account. Le transazioni richiedono quindi firme da più chiavi (z. B. 2 von 3).\n\nVantaggi:\n• Maggiore Sicurezza (ein kompromittierter Key reicht nicht)\n• Conti Condivisi (z. B. Firmen, Partnerschaften)\n• Recupero di Emergenza (mehrere Backups bei verschiedenen Personen)\n\nATTENZIONE: Testa il multisig prima sulla testnet prima di implementarlo sulla mainnet! Una configurazione errata potrebbe comportare la perdita dell'accesso all'account."
+      "text": "Con Multisig, puoi definire più firmatari per il tuo account. Le transazioni richiedono poi firme da più, ad es. 2 su 3.\n\nVantaggi:\n• Aumento della sicurezza (ein kompromittierter Key reicht nicht)\n• Conti congiunti (z. B. Firmen, Partnerschaften)\n• Recupero d'emergenza (mehrere Backups bei verschiedenen Personen)\n\nATTENZIONE: Prova Multisig prima sulla testnet prima di implementarlo sulla mainnet! Una configurazione errata può comportare la perdita di accesso all'account."
     },
     "diagram": {
       "title": "Scadenza della firma"
     }
   },
-  "activateHint": "L'attivazione è necessaria affinché l'account esista. Nel testnet, questo avviene tramite Friendbot, e nel mainnet attraverso \"Crea Account\" da un portafoglio esistente.",
-  "activateNow": "Attiva subito l'account.",
+  "activateHint": "L'attivazione è necessaria affinché l'account esista. Nel testnet, può essere effettuata tramite Friendbot e nel mainnet attraverso \"Crea account\" da un portafoglio esistente.",
+  "activateNow": "Attiva immediatamente l'account.",
   "activateOnly": "Basta attivare",
-  "balanceWarning": "Il saldo iniziale è probabilmente troppo basso per aggiungere i {{count}} firmatari aggiuntivi (Riserva minima: {{req}} XLM)",
-  "createButton": "Crea / Imposta Multisig",
+  "balanceWarning": "Il saldo iniziale è probabilmente troppo basso per aggiungere i {{count}} firmatari aggiuntivi (riserva minima: {{req}} XLM).",
+  "createButton": "Crea / Imposta multisig",
   "hints": {
     "byteRange": "(0–255)"
   },
-  "mainnetActivateNote": "Nota: Sono necessarie riserve aggiuntive per multisig. 1 XLM spesso non è sufficiente.",
+  "mainnetActivateNote": "Nota: Sono riserve aggiuntive necessarie per multisig. 1 XLM spesso non è sufficiente.",
   "reserve": {
-    "base": "Riserva base per ingresso: {{val}} XLM",
+    "base": "Riserva di base per voce: {{val}} XLM",
     "recommended": "Saldo iniziale consigliato: {{val}} XLM (inkl. Puffer)",
-    "required": "Riserva Minima Richiesta (neu): {{val}} XLM"
+    "required": "Riserva Minima Obbligatoria (neu): {{val}} XLM"
   },
-  "signersCountHint": "Imposti il numero minimo di firme qui sotto alla voce \"Erforderliche Signaturen\" (niedrig/mittel/hoch).",
-  "signersCountLimit": "Nota: Confine della rete (Stellar): massimo 20 firmatari aggiuntivi.",
-  "startingBalance": "Saldo iniziale (XLM)",
+  "signersCountHint": "Imposti il numero minimo di firme qui sotto alla voce \"Required Signatures\" (niedrig/mittel/hoch).",
+  "signersCountLimit": "Nota: Limite di Rete (Stellar): max. 20 firmatari aggiuntivi.",
+  "startingBalance": "Credito iniziale (XLM)",
   "threshold": "Firme richieste (niedrig/mittel/hoch)",
   "thresholdLow": "basso",
   "thresholdMed": "medio",
   "thresholdHigh": "alto",
-  "thresholdCurrent": "Attualmente selezionati: basso={{low}}, medio={{med}}, alto={{high}} su un totale di {{total}} firme.",
-  "thresholdHelp": "Soglia: Il numero di firme richiesto (master + firmatari) affinché una transazione sia valida.",
+  "thresholdCurrent": "Attualmente selezionato: basso={{low}}, medio={{med}}, alto={{high}} su {{total}} firme",
+  "thresholdHelp": "Soglia: Numero di firme richieste (master + firmatari) affinché una transazione sia valida.",
   "thresholdInfo": "Raccomandazione: {{req}} su {{total}} firme (inkl. Master)",
-  "thresholdLevelsHint": "In genere: basso = cambiamenti semplici (e.g., memo, price), medio = pagamenti/commercio, alto = cambiamenti critici per la sicurezza (e.g., signer/thresholds).",
-  "thresholdStatic": "Richiesto: {{val}} su {{total}} firme (niedrig/mittel/hoch)",
-  "thresholdSum": "Somma dei pesi: {{sum}}",
+  "thresholdLevelsHint": "In genere vale quanto segue: basso = semplici modifiche (e.g., memo, price), medio = pagamenti/commercio, alto = modifiche critiche per la sicurezza (e.g., signer/thresholds).",
+  "thresholdStatic": "Richiesto: {{val}} di {{total}} firme (niedrig/mittel/hoch)",
+  "thresholdSum": "Peso totale: {{sum}}",
   "thresholdTooHigh": "Nota: Una soglia non deve superare la somma dei pesi. Si prega di regolare i valori di conseguenza.",
   "keyWarning": {
     "title": "⚠️ Proteggi la tua chiave ora!",
     "text1": "Hai generato una nuova coppia di chiavi.",
-    "text2": "Proteggi ENTRAMBE le chiavi IMMEDIATAMENTE prima di procedere:",
-    "list1": "Chiave pubblica: indirizzo del tuo account, può essere condiviso",
-    "list2": "Secret Key (Geheimschlüssel): Ihr Passwort – NIEMALS teilen oder online speichern!",
-    "list3": "Se la chiave segreta viene persa, l'accesso è irrimediabilmente perduto.",
+    "text2": "Assicurate immediatamente ENTRAMBE le chiavi prima di procedere:",
+    "list1": "Chiave pubblica: Il tuo indirizzo di conto, che può essere condiviso.",
+    "list2": "Chiave segreta: La tua password – NON condividerla o conservarla mai online!",
+    "list3": "Se la chiave segreta viene persa, l'accesso è perso irrimediabilmente.",
     "confirm": "Ho ottenuto entrambe le chiavi."
   },
   "tooltips": {
-    "high": "Alto: modifiche critiche per la sicurezza (e.g., signatories/thresholds).",
-    "low": "Low: semplici cambiamenti (e.g., memo, price).",
-    "masterWeight": "Peso del titolare del conto (Master) (0-255): La chiave primaria del conto detiene diritti di voto. Maggiore è il suo peso, più voti conta la sua firma. Questi voti vengono sommati ai voti degli altri firmatari per verificare se è stata raggiunta la maggioranza richiesta.",
-    "med": "Significa: Pagamenti e azioni commerciali.",
-    "signerWeight": "Peso dei firmatari (0–255): I firmatari aggiuntivi hanno anche diritti di voto. Il peso determina quanti voti contribuisce la loro firma. Quando viene inviata una transazione, tutti i voti espressi vengono sommati. Se viene raggiunto il numero minimo di voti (Threshold), la transazione è considerata autorizzata.",
-    "signerWeightHint": "Nota: I pesi del master e dei firmatari si sommano al totale; le soglie (niedrig/mittel/hoch) non devono superare questo totale."
+    "high": "Hoch: sicherheitskritische Änderungen (e.g., signers/thresholds).",
+    "low": "Niedrig: einfache Änderungen (e.g., memo, price).",
+    "masterWeight": "Peso del titolare del conto (Master) (0-255): La chiave principale del conto ha diritti di voto. Maggiore è il suo peso, più voti conta la sua firma. Questi voti vengono contati insieme ai voti di altri firmatari per verificare se è stata raggiunta la maggioranza richiesta.",
+    "med": "Mezzi: Pagamenti e azioni commerciali.",
+    "signerWeight": "Peso dei firmatari (0–255): Anche i firmatari aggiuntivi hanno il diritto di voto. Il peso determina quanti voti contribuisce la loro firma. Quando una transazione viene presentata, tutti i voti espressi vengono sommati. Se viene raggiunto il numero minimo di voti specificato (Threshold), la transazione è considerata autorizzata.",
+    "signerWeightHint": "Nota: i pesi del master e del firmatario si sommano al totale; le soglie (niedrig/mittel/hoch) non devono superare questo totale."
   },
   "units": {
     "signatures": "Firma(en)"
   },
-  "muxedId": "ID-Muxed",
-  "muxedInfo": "Il Muxed-ID crea un M-Address (M...). Questo punta allo stesso conto dell'indirizzo regolare (G...).",
-  "muxedIdInvalid": "L'ID Muxed deve essere un numero intero compreso tra 0 e 18.446.744.073.709.551.615.",
-  "muxedAddress": "Indirizzo muxed",
-  "muxedActivationInfo": "Gli indirizzi muxed sono indirizzi alias. Non è necessario attivarli separatamente."
+  "muxedId": "Muxed-ID",
+  "muxedInfo": "Con l'ID multiplexato, viene creato un M-address (M...). Questo punta allo stesso conto dell'indirizzo normale (G...).",
+  "muxedIdInvalid": "L'ID muxed deve essere un numero intero compreso tra 0 e 18.446.744.073.709.551.615.",
+  "muxedAddress": "Indirizzo multiplexato",
+  "muxedActivationInfo": "Gli indirizzi muxed sono indirizzi alias. Non necessitano di essere attivati separatamente."
 }

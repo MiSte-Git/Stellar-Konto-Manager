@@ -1,9 +1,9 @@
 {
-  "desc": "Esporta o importa i dati del tuo quiz (impostazioni, progressi, badge).",
+  "desc": "Esporta o importa i dati del tuo quiz (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Avvia esportazione",
     "fileName": "quiz-backup.json",
-    "success": "Esporta creata"
+    "success": "Esportazione creata"
   },
   "import": {
     "backupCreated": "Backup automatico salvato",
@@ -12,16 +12,16 @@
     "noFile": "Nessun file selezionato",
     "preview": {
       "stats": {
-        "achievements": "Badge: {{count}} quiz",
-        "progress": "Progresso: {{count}} quiz",
-        "settings": "Impostazioni: {{count}} quiz"
+        "achievements": "Distintivo: {{count}} Quiz(e)",
+        "progress": "Progresso: {{count}} Quiz(e)",
+        "settings": "Impostazioni: {{count}} Quiz(e)"
       },
       "title": "Anteprima"
     },
     "selectFile": "Seleziona file",
     "strategy": {
       "label": "Strategia",
-      "merge": "Unisci",
+      "merge": "Fusione",
       "replace": "Sostituire"
     },
     "title": "Importazione"
@@ -29,7 +29,7 @@
   "nav": {
     "back": "Indietro"
   },
-  "title": "Backup & Restore",
+  "title": "Backup & Recovery",
   "toast": {
     "backupBeforeImport": "È stato salvato un backup prima dell'importazione.",
     "exported": "Backup esportato",

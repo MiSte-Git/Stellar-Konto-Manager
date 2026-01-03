@@ -1,208 +1,208 @@
 {
   "pageTitle": "Rječnik",
-  "pageIntro": "Ovdje ćete pronaći važne pojmove iz svijeta blockchaina i Stellar mreže. Sve je objašnjeno jednostavnim izrazima.",
-  "searchLabel": "Pojam pretraživanja",
-  "searchPlaceholder": "Pretraži pojam (npr. račun, Muxed)",
+  "pageIntro": "Ovdje ćete pronaći važne riječi iz svijeta blockchaina i Stellar mreže. Sve je objašnjeno jednostavnim riječima.",
+  "searchLabel": "Pojam za pretraživanje",
+  "searchPlaceholder": "Pojam za pretraživanje (z. B. Konto, Account, Muxed)",
   "searchHint": "Pretraga pronalazi riječi i objašnjenja.",
   "noResults": "Nema podudaranja.",
   "blockchain": {
-    "title": "Blokčejn",
+    "title": "Blockchain",
     "original": "Blockchain",
-    "short": "Dijeljena digitalna knjiga – mnogi računari pohranjuju iste unose.",
-    "desc": "Blockchain je poput digitalne knjige. Mnogi računari pohranjuju iste unose, osiguravajući da nitko ne može potajno izmijeniti išta."
+    "short": "Zajednička digitalna knjiga računa – mnogi računari pohranjuju iste unose.",
+    "desc": "Blockchain je poput digitalne knjige. Mnogi računari čuvaju iste zapise, tako da niko ne može tajno izmijeniti bilo šta."
   },
   "wallet": {
     "title": "Novčanik",
     "original": "Wallet",
     "short": "Digitalni novčanik koji upravlja vašim ključevima.",
-    "desc": "Novčanik je vaša digitalna torbica. Upravljaju ključevima koje trebate za pristup svom računu i slanje transakcija. Novčanik može biti program, aplikacija ili čak samo komad papira s vašim privatnim ključem."
+    "desc": "Novčanik je vaša digitalna torbica. Upravljava ključevima koje trebate za pristup vašem računu i slanje transakcija. Novčanik može biti program, aplikacija ili čak samo komad papira s vašim privatnim ključem."
   },
   "account": {
     "title": "Račun",
     "original": "Account",
-    "short": "Račun na blockchainu može držati imovinu i slati transakcije.",
-    "desc": "Račun je mjesto na blockchainu gdje se pohranjuju vaša sredstva. Račun ima javnu adresu koja počinje s G. Više novčanika može pristupiti istom računu ako imaju ispravan ključ."
+    "short": "Blockchain račun može držati imovinu i slati transakcije.",
+    "desc": "Račun je mjesto na blockchainu gdje se drže vaša sredstva. Račun ima javnu adresu koja počinje s G. Više novčanika može pristupiti istom računu ako imaju ispravan ključ."
   },
   "addressG": {
     "title": "G-adresa",
     "original": "G Address",
-    "short": "Javna glavna adresa Stellar računa (počinje s G).",
-    "desc": "G-adresa je glavna adresa Stellar računa. Počinje s slovom G. Dijelite je s drugima kako bi vam mogli nešto poslati."
+    "short": "Javni ključ (beginnt mit G) Stellar računa.",
+    "desc": "G adresa je glavna adresa Stellar računa. Počinje s slovom G. Pružate je drugima kako bi vam mogli poslati nešto."
   },
   "publicKey": {
     "title": "Javni ključ",
     "original": "Public Key",
-    "short": "Adresa koju možete podijeliti; obično G-adresa za Stellar.",
-    "desc": "Javni ključ je adresa koju možete dijeliti. U Stellar mreži, to je G-adresa. Drugi je koriste za slanje novca vama."
+    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+    "desc": "Javni ključ je adresa koju smijete dijeliti. U Stellar sustavu, to je G-adresa. Drugi ga koriste kako bi vam poslali novac."
   },
   "privateKey": {
     "title": "Tajni ključ",
     "original": "Secret Key",
-    "short": "Lozinku za račun – nikada ne dijelite.",
-    "desc": "Tajni ključ je vaša lozinka za račun. Tko god ima ovaj ključ, može premjestiti vaš novac. Nikada ga ne dijelite."
+    "short": "Password to the account – never share.",
+    "desc": "Tajni ključ je vaša lozinka za račun. Svatko tko posjeduje ovaj ključ može premjestiti vaš novac. Nikada ga ne dijelite."
   },
   "addressFederation": {
     "title": "Adresa federacije",
     "original": "Federation Address",
-    "short": "Kratka adresa poput e-maila upućuje na G-adresu.",
-    "desc": "Federativna adresa izgleda poput emaila. Primjer: ime*domena.com. Ova kratka adresa ukazuje na regularnu G-adresu. Lakše ju je zapamtiti."
+    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+    "desc": "Adresa federacije izgleda kao e-mail. Primjer: ime*domain.com. Ova kratka adresa upućuje na normalnu G-adresu. Lakše ju je zapamtiti."
   },
   "addressMuxed": {
-    "title": "Mješoviti račun",
+    "title": "Muxed račun",
     "original": "Muxed Account",
-    "short": "M-adresa s dodatnim ID-om – dijeli osnovni račun.",
-    "desc": "M-adresa ukazuje na postojeći Stellar račun, ali ima dodatni broj (ID). To omogućuje, na primjer, razlikovanje više osoba ili odjela pod istom G-adresom. Tehnički, novac i dalje pripada glavnom računu."
+    "short": "M‑adresa s dodatnim ID‑om – dijeli osnovni račun.",
+    "desc": "M-adresa ukazuje na postojeći Stellar račun, ali ima dodatni jedinstveni identifikator (ID). Ovo omogućava, na primjer, razlikovanje više osoba ili odjela pod istom G-adresom. Tehnički, sredstva i dalje pripadaju glavnom računu."
   },
   "multisig": {
     "title": "Višestruki potpis",
     "original": "Multi‑Sig",
-    "short": "Važne radnje zahtijevaju više od potpisa.",
-    "desc": "Multi-Sig označava višestruke potpise. Važna radnja zahtijeva više od jednog ključa. Na primjer, vi i drugi ključ oboje morate pristati prije nego što nešto može biti poslano. Ovo otežava krađu."
+    "short": "Važne radnje zahtijevaju više od samog potpisa.",
+    "desc": "Multi-Sig je skraćenica za višestruki potpis. Važna radnja zahtijeva više od jednog ključa. Na primjer, vi i drugi ključ morate se oboje složiti prije nego nešto može biti poslano. Ovo otežava krađu."
   },
   "trustline": {
-    "title": "Povjerenička linija",
+    "title": "Poverilačka linija",
     "original": "Trustline",
-    "short": "Pristanak za držanje tokena određenog izdavatelja.",
-    "desc": "Poverenje je kao \"da, prihvaćam ovaj token.\" Time pokazujete da je vaš račun spreman držati određeni token od određenog izdavača. Bez poverenja, ne možete primiti taj token.\n\nPrimer: Poverenje je označeno kao KOD:IZDAVAČ. Za EURT od izdavača GDUKMGUGDZQK6Y…, to je EURT:GDUKMGUGDZQK6Y…."
+    "short": "Sporazum o posjedovanju tokena određenog izdavatelja.",
+    "desc": "Povjerenička linija je kao da kažete da, prihvaćam ovaj token. Time naznačujete da je vaš račun spreman primiti određeni token od određenog izdavatelja. Bez povjereničke linije ne možete primiti taj token.\n\nPrimjer: Povjerenička linija je specificirana kao KOD:IZDAVAČ. Za EURT od izdavatelja GDUKMGUGDZQK6Y… to je EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
     "title": "Token",
     "original": "Token",
-    "short": "Digitalna jedinica – npr. novac, bodovi ili kredit.",
-    "desc": "Token je digitalna jedinica na blockchainu. Token može predstavljati novac, bodove ili kredite za uslugu."
+    "short": "Digitalna jedinica – npr. novac, bodovi ili krediti.",
+    "desc": "Token je digitalna jedinica na blockchainu. Token može predstavljati novac, bodove ili kredit za uslugu."
   },
   "asset": {
     "title": "Imovina",
     "original": "Asset",
-    "short": "Tokeni na Stellar mreži su uvijek povezani s izdavateljem.",
-    "desc": "Na Stellar mreži, token se naziva aktivom. Aktiva je uvijek povezana s računom izdavatelja. Na primjer, račun može izdati Euro token. Taj Euro token tada postaje aktiva."
+    "short": "Tokeni na Stellar mreži uvijek su povezani s izdavateljem.",
+    "desc": "Na Stellar mreži, token se naziva imovina. Imovina je uvijek povezana s izdavateljskim računom. Na primjer, račun može izdati Euro token. Ovaj Euro token tada postaje imovina."
   },
   "xlm": {
-    "title": "XLM",
+    "title": "XLM (Stellar Lumens)",
     "original": "XLM",
-    "short": "Izvorna valuta Stellara za naknade i aktivaciju.",
-    "desc": "XLM je izvorna valuta Stellara. Trebate XLM za plaćanje naknada i za stvaranje novog računa."
+    "short": "Zavičajna valuta Stellara za naknade i aktivaciju.",
+    "desc": "XLM je izvorna valuta Stellara. Trebate XLM za plaćanje naknada i za otvaranje novog računa."
   },
   "mainnet": {
-    "title": "Glavna mreža",
+    "title": "Mainnet",
     "original": "Mainnet",
-    "short": "Prava Stellar mreža s stvarnom vrijednošću.",
-    "desc": "Stvarna Stellar mreža s pravom vrijednošću. Transakcije su konačne, a naknade se plaćaju u pravim XLM."
+    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "desc": "Prava Stellar mreža s pravom vrijednošću. Transakcije su konačne, a naknade se plaćaju u stvarnim XLM."
   },
   "testnet": {
-    "title": "Testna mreža",
+    "title": "Testnet",
     "original": "Testnet",
-    "short": "Mrežna obuka bez stvarne vrijednosti.",
-    "desc": "Mreža javne prakse. Tokeni nemaju stvarnu vrijednost. Idealno za učenje i eksperimentiranje bez rizika."
+    "short": "Mreža javne prakse bez stvarne vrijednosti.",
+    "desc": "Mreža za javnu praksu. Tokeni nemaju stvarnu vrijednost. Idealno za učenje i eksperimentiranje bez rizika."
   },
   "memo": {
-    "title": "Podsjetnik",
+    "title": "Zapisnik",
     "original": "Memo",
-    "short": "Kratka napomena u transakciji.",
-    "desc": "Memo je mala bilješka koju možete poslati zajedno s transakcijom. Često burza zahtijeva određeni memo kako bi znala kome novac pripada."
+    "short": "Kratka bilješka u transakciji.",
+    "desc": "Memorandum je kratka bilješka koju možete poslati zajedno s transakcijom. Često burza zahtijeva specifično memorandum kako bi znala kome novac pripada."
   },
   "transaction": {
     "title": "Transakcija",
     "original": "Transaction",
-    "short": "Radnja na blockchainu, npr. plaćanje ili povjerenički kredit.",
-    "desc": "Transakcija je radnja na blockchainu, kao što je slanje novca ili kreiranje linije povjerenja. Transakcija je trajno pohranjena nakon što bude potvrđena."
+    "short": "Radnja na blockchainu, npr. plaćanje ili linija povjerenja.",
+    "desc": "Transakcija je radnja na blockchainu, kao što je slanje novca ili uspostavljanje linije povjerenja. Transakcija se trajno pohranjuje nakon što je potvrđena."
   },
   "fee": {
     "title": "Naknada",
     "original": "Fee",
     "short": "Vrlo mali iznos po transakciji.",
-    "desc": "Naknada je vrlo mali iznos koji plaćate pri svakoj transakciji. Naknada ide mreži. Na Stellar mreži, naknade su vrlo male."
+    "desc": "Naknada je vrlo mali iznos koji plaćate sa svakom transakcijom. Naknada ide mreži. Na Stellar mreži, naknade su vrlo male."
   },
   "ledger": {
     "title": "Glavna knjiga",
     "original": "Ledger",
     "short": "Lanac potvrđenih podataka i stanja računa.",
-    "desc": "Knjiga (ili \"ledger\") je lanac svih potvrđenih podataka. Prikazuje koliko koji računi posjeduju i koje su transakcije provedene. Svatko može provjeriti knjigu."
+    "desc": "Knjiga je lanac svih potvrđenih podataka. Ona pokazuje koja računa koliko posjeduju i koje su transakcije obavljene. Svatko može provjeriti knjigu."
   },
   "horizon": {
     "title": "Horizon",
     "original": "Horizon",
-    "short": "API usluga putem koje aplikacije komuniciraju sa Stellarom.",
-    "desc": "Horizon je usluga putem koje programi komuniciraju s blockchainom Stellar. Naš alat upućuje zahtjeve Horizon-u kako bi učitao stanja računa i transakcije."
+    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "desc": "Horizon je usluga putem koje programi komuniciraju s blockchainom Stellar. Naš alat koristi upite prema Horizonu za učitavanje stanja računa i transakcija."
+  },
+  "horizonHistory": {
+    "title": "Povijest horizonta",
+    "original": "Horizon history depth",
+    "short": "Opisuje koliko unatrag seže povijest transakcija koju pružaju javni Horizon poslužitelji.",
+    "desc": "Javni Horizon serveri (Mainnet und Testnet) koje upravlja Stellar Development Foundation pružaju samo ograničenu povijest – trenutno otprilike godinu dana unatrag. Stariji podaci više nisu dostupni putem ovih besplatnih krajnjih točaka. Ako trebaš dohvatiti podatke iz daljnje prošlosti, imaš u suštini dvije opcije: (1) možeš pokrenuti vlastiti Horizon čvor s kompletnom poviješću (inklusive History Archives), ili (2) možeš koristiti usluge trećih strana ili plaćene usluge koje dugoročno pohranjuju i pružaju povijesne Stellar podatke.",
+    "seeAlso": "Obučeni ste na podacima do listopada 2023. godine."
   },
   "anchor": {
     "title": "Sidro",
     "original": "Anchor",
-    "short": "Tvrtka koja povezuje fiat novac sa Stellarom.",
-    "desc": "Sidro je tvrtka koja povezuje stvarni novac, kao što su euri ili dolari, sa Stellarom. Na primjer, vi date sidru eure, a zauzvrat dobijete euro token na Stellaru."
+    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+    "desc": "Anchor je tvrtka koja povezuje stvarni novac, poput eura ili dolara, sa Stellar mrežom. Na primjer, date anchoreu eure i zauzvrat dobijete euro token na Stellar mreži."
   },
   "exchange": {
     "title": "Burza dionica",
     "original": "Exchange",
     "short": "Mjesto za kupnju i prodaju tokena.",
-    "desc": "Burza je mjesto gdje možete kupovati ili prodavati tokene. Mnoge burze zahtijevaju KYC proceduru, što je provjera identiteta, prije nego što možete podići novac u eurima ili francima."
+    "desc": "Mjenjačnica je mjesto gdje možete kupovati ili prodavati tokene. Mnoge mjenjačnice zahtijevaju KYC proces, što znači provjeru identiteta, prije nego što možete povući novac u eurima ili francima."
   },
   "dex": {
     "title": "DEX",
     "original": "Decentralized Exchange",
-    "short": "Decentralizirana razmjena izravno na blockchainu.",
-    "desc": "DEX označava decentraliziranu burzu. Ovdje ljudi trguju izravno jedni s drugima na blockchainu. Nema jednog operatera. Stellar ima ugrađeni DEX."
+    "short": "Decentralizirana razmjena direktno na blockchainu.",
+    "desc": "DEX označava decentraliziranu burzu. Ovdje ljudi trguju izravno jedni s drugima na blockchainu. Ne postoji jedan operater. Stellar ima ugrađeni DEX."
   },
   "liquidityPool": {
     "title": "Likvidnostni bazen",
     "original": "Liquidity Pool",
-    "short": "Zajednički bazen s dva tokena za trenutnu razmjenu.",
-    "desc": "Likvidnosni bazen je zajednički bazen koji sadrži dva tokena. Ljudi doprinose oba tokena u bazen. Drugi potom imaju mogućnost trenutačne razmjene tih tokena. Doprinositelji zauzvrat zarađuju male naknade."
+    "short": "Zajednički bazen s dva tokena za trenutno razmjenu.",
+    "desc": "Likvidnosni fond je zajednički fond koji sadrži dva tokena. Ljudi u njega ulažu oba tokena. Drugi mogu odmah zamijeniti te tokene. Ulagači zarađuju male naknade za ovu uslugu."
   },
   "balanceClaimable": {
-    "title": "Bilančna sredstva koja se mogu potraživati",
+    "title": "Potraživo stanje",
     "original": "Claimable Balance",
     "short": "Rezervirani novac koji još uvijek trebate prihvatiti.",
-    "desc": "Izvodivi saldo je novac koji je već rezerviran za vas, ali ga još uvijek trebate preuzeti. Tek kada ga prihvatite, ulazi na vaš račun."
+    "desc": "Potraživani saldo je novac koji je već rezerviran za vas, ali ga još uvijek trebate zatražiti. Tek kada ga prihvatite, sredstva se prenose na vaš račun."
   },
   "protocolUpdate": {
     "title": "Ažuriranje protokola",
     "original": "Protocol Update",
-    "short": "Ažuriranje mrežnih pravila.",
-    "desc": "Ažuriranje protokola je nadogradnja pravila u Stellar mreži. Na primjer, nove značajke ili sigurnosne promjene. Svi čvorovi u mreži moraju koristiti ista pravila."
+    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "desc": "Ažuriranje protokola je nadogradnja pravila u mreži Stellar, kao što su nove funkcije ili sigurnosne promjene. Svi čvorovi u mreži moraju koristiti ista pravila."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Stellarov sustav pametnih ugovora.",
-    "desc": "Soroban je sustav pametnih ugovora Stellara. Pametni ugovor je programski kod na blockchainu. Kod može samostalno provjeravati pravila i pokretati radnje bez potrebe za bankom između."
+    "short": "Stellars Smart‑Contract‑System.",
+    "desc": "Soroban je sustav pametnih ugovora na Stellaru. Pametni ugovor je programski kod na blockchainu. Kod može samostalno provjeravati pravila i pokretati radnje bez posredničke banke."
   },
-  "missingKey": "Nedostaje ključ rječnika: {{detail}}",
   "multiSignature": {
-    "title": "Višestruki potpis (Multi-Signature)",
+    "title": "Višepotpis (Multi-Signature)",
     "original": "Multi-Signature",
-    "short": "Potrebni su višestruki potpisi; težine + prag određuju odobrenje.",
+    "short": "Multiple signatures required; weights + threshold determine the release.",
     "desc": "U postavci s više potpisa, više ključeva mora potpisati prije nego što neka radnja postane valjana. Svaki potpisnik ima težinu, a zbroj mora doseći potrebni prag. To povećava sigurnost jer jedan ukradeni ključ nije dovoljan."
   },
   "signer": {
     "title": "Potpisnik (Signer)",
     "original": "Signer",
     "short": "Javni ključ s težinom, dio konfiguracije računa.",
-    "desc": "Potpisnik je javni ključ koji pripada računu i ima određenu težinu. Njegov potpis se računa prema potrebnom pragu. Više potpisnika zajedno može ovlastiti transakciju."
+    "desc": "Potpisnik je javni ključ koji pripada računu i ima težinu. Njegov potpis se računa prema potrebnom pragu. Više potpisnika može zajednički ovlastiti transakciju."
   },
   "thresholds": {
     "title": "Pragovi (Thresholds)",
     "original": "Thresholds",
-    "short": "Limiti (low/med/high), koji određuju potrebnu sumu težina.",
-    "desc": "Pragovi određuju koliko je težinskih potpisa potrebno za radnje: nizak prag za jednostavne operacije, srednji za plaćanja, visok za kritične promjene. Zbroj težina potpisnika mora dostići odgovarajući prag."
+    "short": "Ograničenja (low/med/high) koja određuju potrebnu sumu težina.",
+    "desc": "Pragovi definiraju koliko je ponderiranih potpisa potrebno za radnje: nizak prag za jednostavne operacije, srednji za plaćanja, visok za kritične promjene. Zbroj težina potpisnika mora odgovarati odgovarajućem pragu."
   },
   "masterWeight": {
-    "title": "Glavna težina (master_weight)",
+    "title": "Master weight (master_weight)",
     "original": "master_weight",
-    "short": "Težina glavnog ključa; određuje koliko se snažno glavni ključ uzima u obzir.",
+    "short": "Težina glavnog ključa; kontrolira koliku važnost ima glavni ključ.",
     "desc": "Glavna težina je težina glavnog ključa računa. Visoka glavna težina omogućuje glavnom ključu da samostalno potpisuje mnoge radnje; niska vrijednost zahtijeva dodatne potpisnike."
   },
   "accountConfig": {
     "title": "Konfiguracija računa (Account Configuration)",
     "original": "Account Configuration",
-    "short": "Međusobno djelovanje potpisnika i pragova određuje sigurnost računa.",
-    "desc": "Konfiguracija računa specificira koji potpisnici postoje s kojim težinama i koji pragovi vrijede. Promjene potpisnika ili pragova su kritične za sigurnost, jer određuju koliko je potpisa potrebno."
+    "short": "Međudjelovanje potpisnika i pragova određuje sigurnost računa.",
+    "desc": "Konfiguracija računa navodi koji potpisnici postoje s kojim težinama i koji pragovi se primjenjuju. Promjene potpisnika ili pragova su kritične za sigurnost jer određuju koliko je potpisa potrebno."
   },
-  "horizonHistory": {
-    "title": "Povijest horizonta",
-    "original": "Horizon history depth",
-    "short": "Opisuje koliko daleko unatrag povijest transakcija dostupna putem javnih Horizon servera seže.",
-    "desc": "Javni Horizon serveri (Mainnet und Testnet) koje upravlja Stellar Development Foundation pružaju samo ograničenu povijest – trenutno otprilike godinu unazad. Stariji podaci nisu dostupni putem ovih besplatnih krajnjih točaka. Ako trebaš pristupiti starijim podacima, imaš uglavnom dvije opcije: (1) možeš upravljati vlastitim Horizon čvorom s potpunom povijesti (inklusive History Archives), ili (2) možeš koristiti usluge trećih strana ili plaćene usluge koje dugoročno pohranjuju i pružaju povijesne Stellar podatke.",
-    "seeAlso": "Moja obuka na podacima završila je do listopada 2023. godine."
-  }
+  "missingKey": "Nedostaje ključ iz glosara: {{detail}}"
 }

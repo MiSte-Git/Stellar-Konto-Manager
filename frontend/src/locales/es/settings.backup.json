@@ -1,8 +1,8 @@
 {
-  "desc": "Exportar o importar los datos de tu cuestionario (configuración, progreso, insignias).",
+  "desc": "Exportar o importar tus datos de cuestionarios (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Iniciar exportación",
-    "fileName": "copia de seguridad del cuestionario.json",
+    "fileName": "quiz-backup.json",
     "success": "Exportación creada"
   },
   "import": {
@@ -12,9 +12,9 @@
     "noFile": "Ningún archivo seleccionado",
     "preview": {
       "stats": {
-        "achievements": "Insignia: {{count}} cuestionario(s)",
-        "progress": "Progreso: {{count}} cuestionario(s)",
-        "settings": "Configuraciones: {{count}} cuestionario(s)"
+        "achievements": "Insignia: {{count}} Quiz(e)",
+        "progress": "Progreso: {{count}} Quiz(e)",
+        "settings": "Configuraciones: {{count}} Cuestionario(e)"
       },
       "title": "Vista previa"
     },
@@ -27,13 +27,13 @@
     "title": "Importar"
   },
   "nav": {
-    "back": "Regreso"
+    "back": "Atrás"
   },
-  "title": "Backup & Restore",
+  "title": "Backup & Recovery",
   "toast": {
     "backupBeforeImport": "Se guardó una copia de seguridad antes de la importación.",
     "exported": "Copia de seguridad exportada",
-    "exportFailed": "Exportación fallida",
-    "importFailed": "La importación falló."
+    "exportFailed": "Error de exportación",
+    "importFailed": "Importación fallida"
   }
 }

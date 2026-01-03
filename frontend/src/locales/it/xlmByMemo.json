@@ -1,73 +1,73 @@
 {
   "page": {
-    "title": "Filtra XLM per Memo",
+    "title": "Filtra XLM per memo",
     "noPublicKey": "Nessuna chiave pubblica caricata. Si prega di inserire prima una chiave pubblica."
   },
   "action": {
     "calculate": "Calcolare",
-    "loading": "Posso aiutare con richieste generali e spiegazioni, ma per calcoli specifici o analisi di dati attuali ho bisogno di un compito o un argomento concreto. Potrebbe fornire più informazioni o dettagli, per favore?"
+    "loading": "Berechne…"
   },
   "date": {
-    "from": "Da (facoltativo)",
-    "to": "Fino a (facoltativo)"
+    "from": "Da (optional)",
+    "to": "Fino al (optional)"
   },
   "debug": {
     "incoming": "In arrivo – a: {{toMe}}, crea→me: {{createToMe}}, nativo→me: {{nativeInToMe}}",
-    "incomingOverview": "Ingressi: {{total}} • Wallets coinvolti: {{unique}}",
-    "memo": "Promemoria nella finestra: {{any}} • promemoria esatti: {{exact}}",
-    "types": "Tipi – pagamento: {{pay}}, percorso: {{path}}, creazione: {{create}}, altro: {{other}}"
+    "incomingOverview": "Input: {{total}} • Wallet partecipanti: {{unique}}",
+    "memo": "Memo in finestra: {{any}} • Memo esatti: {{exact}}",
+    "types": "Tipi – pagamento: {{pay}}, percorso: {{path}}, crea: {{create}}, altro: {{other}}"
   },
   "export": {
-    "csv": "Controlla CSV (Partite)",
+    "csv": "Verifica CSV (Treffer)",
     "csvAll": "Esporta tutte le operazioni",
     "csvBoth": "Salva entrambi i file CSV.",
-    "csvMatches": "Controlla CSV (Partite)"
+    "csvMatches": "Controlla il CSV (Treffer)"
   },
   "exportCsv": {
-    "failed": "Esportazione CSV fallita: {{detail}}"
+    "failed": "Esportazione CSV fallita: {{dettaglio}}"
   },
   "memo": {
-    "label": "Testo di ricerca memo (sottostringa, case sensitive)",
-    "placeholder": "Memo (sottostringa, sensibile al maiuscolo/minuscolo)"
+    "label": "Testo di ricerca memo (substring, case-sensitive)",
+    "placeholder": "Memo (substring, case sensitive)"
   },
-  "overviewLine": "Pagamenti ricevuti: {{total}} • portafogli coinvolti: {{unique}}",
+  "overviewLine": "Ricevute di pagamento: {{total}} • portafogli partecipanti: {{unique}}",
   "result": {
     "label": "Importo totale:",
     "value": "{{amount}} XLM"
   },
   "summary": {
-    "amount": "Somma: {{amount}} XLM",
-    "correctCount": "Voci con promemoria corretto: {{n}}",
+    "amount": "Importo: {{amount}} XLM",
+    "correctCount": "Voci con memo corretto: {{n}}",
     "count": "Quantità: {{n}}",
-    "label": "Confronto (tutti gli input)",
-    "otherCount": "Voci con memo errato/mancante: {{n}}",
-    "unique": "Portafogli unici (totali): {{n}}",
+    "label": "Confronto (all inputs)",
+    "otherCount": "Voci con nota mancante/errata: {{n}}",
+    "unique": "Wallet unici (alle): {{n}}",
     "uniqueWallets": "Portafogli unici: {{n}}"
   },
   "time": {
-    "setToNow": "Impostare l'ora corrente",
+    "setToNow": "Imposta l'ora corrente.",
     "setToNowHint": "Imposta il campo dell'ora all'ora attuale."
   },
-  "title": "Totale XLM dopo il memo",
+  "title": "Saldo XLM dopo il memo",
   "topLargest": {
-    "button": "I 20 Migliori Ingressi (Promemoria)",
+    "button": "Prime 20 voci (Memo)",
     "clipboard": "Copia negli appunti",
     "csv": "Scarica CSV",
-    "scanning": "... scansiona le voci principali",
-    "title": "I 20 migliori inserimenti per Memo nel periodo"
+    "scanning": "… scannt Top-Eingänge",
+    "title": "Le prime 20 voci per il promemoria nel periodo"
   },
   "tz": {
     "cdt": "CDT (UTC−5)",
-    "cst": "CST (UTC−6)",
+    "cst": "Ora standard centrale (UTC−6)",
     "europe_zurich": "Europa/Zurigo (CET/CEST)",
     "label": "Fuso orario per data/ora",
     "local": "Fuso orario locale",
-    "note": "La data/ora verrà interpretata nel fuso orario selezionato e automaticamente convertita in UTC prima della ricerca.",
+    "note": "Data e ora vengono interpretate nel fuso orario selezionato e convertite automaticamente in UTC prima della ricerca.",
     "utc": "UTC",
-    "window": "Finestra temporale UTC utilizzata: {{from}} → {{to}} (Esclusiva)"
+    "window": "Finestra temporale UTC utilizzata: {{from}} → {{to}} (Bis exklusiv)"
   },
   "wrongMemos": {
-    "button": "Mostra i portafogli con memo errati o vuoti.",
+    "button": "Visualizza i portafogli con memo errato/vuoto.",
     "clipboard": "Copia negli appunti",
     "columns": {
       "amount": "Quantità",
@@ -77,10 +77,10 @@
       "tx_hash": "Hash della transazione"
     },
     "csv": "Scarica CSV",
-    "failed": "Errore durante il caricamento dei pagamenti con memo errato/vuoto.",
+    "failed": "Errore nel caricamento dei pagamenti con memo errato/vuoto.",
     "hint": "Filtra i pagamenti in entrata nel periodo e visualizza i mittenti con memo errati/vuoti.",
-    "scanning": "... scansiona promemoria falsi/vuoti",
-    "summary": "Conteggio: {{count}} • Totale: {{sum}} XLM • Portafogli unici: {{unique}}",
+    "scanning": "… scansiona promemoria falsi/vuoti",
+    "summary": "Quantità: {{count}} • Totale: {{sum}} XLM • Portafogli unici: {{unique}}",
     "title": "Promemoria falsi/vuoti durante il periodo"
   }
 }

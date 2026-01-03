@@ -3,7 +3,7 @@
     "single": "This account uses a single signature.",
     "multi": "This account uses multiple signatures (Multisig)."
   },
-  "requiredThreshold": "Required threshold ({{level}}): {{value}}",
+  "requiredThreshold": "Required Threshold ({{level}}): {{value}}",
   "operationLabel": {
     "payment": "Payment",
     "setOptions": "Configuration (Signers & Thresholds)",
@@ -14,20 +14,20 @@
   "confirm": {
     "options": {
       "recommended": "Recommended",
-      "infoButton": "I'm trained on data up to October 2021. How can I assist you?",
-      "selectTitle": "Choose option",
+      "infoButton": "Information",
+      "selectTitle": "Select option",
       "infoDialog": {
         "title": "Options explained"
       },
       "proceed": "Continue",
       "job": {
-        "title": "Create a multisig job (Standard)",
-        "desc": "Standard workflow for productive multisig. Creates a job ID and collects signatures distributed.",
-        "short": "Create a Multisig job (Job-ID) and collect distributed signatures.",
+        "title": "Create Multisig Job (Standard)",
+        "desc": "Standard workflow for productive multisig. Creates a job ID and collects distributed signatures.",
+        "short": "Create a multisig job (Job-ID) and collect distributed signatures.",
         "moreInfo": "More info",
         "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
         "infoBody": {
-          "one": "The transaction is stored as a multisig job in the backend and receives a job ID. Nothing is sent directly.",
+          "one": "The transaction is stored as a multisig job in the backend and is assigned a job ID. Nothing is sent directly.",
           "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
           "three": "Once there are enough signatures (Threshold erreicht), the transaction is sent or can be sent.",
           "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
@@ -36,57 +36,51 @@
           "one": "Step 1: A multisig job is created and receives a job ID.",
           "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
           "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
-          "four": "Step 4: Once enough signatures have been collected, the transaction is sent or can be sent."
+          "four": "Step 4: Once enough signatures have been gathered, the transaction is sent or can be sent."
         }
       },
       "local": {
-        "title": "Enter all signatures locally & send directly",
+        "title": "Enter all signatures locally & send directly.",
         "desc": "Only use if all secret keys can be securely entered on this device (Tests/Recovery/Admin).",
-        "warning": "Warning: All secret keys are being collected in this session. Use only on trusted devices.",
-        "moreInfo": "More info",
+        "warning": "Warning: All secret keys will be collected during this session. Use only on trusted devices.",
+        "moreInfo": "More information",
         "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
         "infoBody": {
-          "one": "You enter all required secret keys sequentially on this device until the threshold is reached.",
+          "one": "You enter all the required secret keys on this device one after another until the threshold is reached.",
           "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
-          "three": "Once enough signatures are collected, the transaction will be sent directly to Horizon (ohne Multisig-Job)."
+          "three": "Once enough signatures are collected, the transaction is sent directly to Horizon (ohne Multisig-Job)."
         }
       },
       "xdr": {
         "title": "Export XDR (nicht senden)",
         "desc": "Generate a raw XDR transaction for offline tools or hardware wallets.",
-        "short": "Export the transaction as XDR without sending it directly.",
-        "moreInfo": "More information",
-        "infoTitle": "How does the XDR export work?",
+        "short": "Export transaction as XDR without sending it directly.",
+        "moreInfo": "More info",
+        "infoTitle": "How does XDR export work?",
         "infoBody": {
           "one": "XDR is the raw transaction format of Stellar. Nothing is sent automatically.",
           "two": "Use XDR for hardware wallets, offline computers, or other wallets/tools that can import XDR.",
-          "three": "You are responsible for signing and/or sending the XDR later (e.g., via multisig jobs or an external tool)."
+          "three": "You are responsible for signing and/or sending the XDR later yourself (e.g., through multisig jobs or an external tool)."
         },
         "steps": {
           "one": "An XDR is generated, but nothing is sent.",
           "two": "You can externally sign the XDR (Offline-Rechner, Hardware-Wallet, anderes Tool).",
-          "three": "To send, you need to re-import the XDR (for example, via multisig jobs or another tool) and then sign/send it there."
+          "three": "To send, you need to re-import the XDR (e.g., via Multisig jobs or another tool) and then sign/send it there."
         }
       }
     },
-    "testModeTitle": "Test mode (alle Signaturen lokal)",
-    "testModeDescription": "Existing flow: Enter secret key, gather all required signatures, and send directly to Horizon.",
-    "testModeButton": "Directly sign & send",
-    "prepareTitle": "Prepare transaction for multisig",
-    "prepareDescription": "Only prepare XDR for production multisig. Nothing will be sent immediately.",
-    "prepareButton": "Prepare XDR (nicht senden)",
     "result": {
       "backToSelection": "Back",
-      "copyXdr": "Copy XDR",
+      "copyXdr": "Copy XDR (eXtended Detection and Response)",
       "job": {
         "title": "Transaction prepared for multisig",
-        "status": "Multisig job created. The transaction has not been sent yet.",
+        "status": "Multisig job has been created. The transaction has not yet been sent.",
         "jobIdLabel": "Job ID",
         "hashLabel": "Transaction hash",
         "infoButton": "Next steps",
-        "infoTitle": "What to do now",
+        "infoTitle": "What needs to be done now",
         "info": {
-          "share": "Forward the job ID or XDR to the next signatories (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "share": "Pass the job ID or XDR to the next signatories (E-Mail, Messenger wie Telegram/WhatsApp).",
           "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
           "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
         },
@@ -103,32 +97,43 @@
         "status": "Only one XDR was generated. Nothing was sent to the network.",
         "noJob": "No multisig job was created.",
         "hashLabel": "Transaction hash",
-        "hint": "Pass the XDR to other signers or tools (z. B. Hardware-Wallet, Offline-Rechner). To send, import the (ggf. signierte) XDR into SKM again (z. B. Option 3) and send it to the network."
+        "hint": "Pass the XDR to other signers or tools (z. B. Hardware-Wallet, Offline-Rechner). To send, you will later import the (ggf. signierte) XDR again in the SKM (z. B. Option 3) and send them to the network."
       }
-    }
+    },
+    "testModeTitle": "All signatures local",
+    "testModeDescription": "Existing flow: Enter secret key, gather all required signatures, and send directly to Horizon.",
+    "testModeButton": "Sign directly & send",
+    "prepareTitle": "Prepare transaction for multisig",
+    "prepareDescription": "Only prepare XDR for production multisig. Nothing will be sent immediately.",
+    "prepareButton": "Preparing XDR (nicht senden)"
+  },
+  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "errors": {
+    "mismatchedHash": "The signed XDR does not belong to this transaction."
   },
   "prepare": {
     "title": "Transaction prepared for multisig",
-    "subtitle": "The transaction is built and can be externally signed.",
+    "subtitle": "The transaction is constructed and can be signed externally.",
     "hashLabel": "Transaction hash",
     "xdrLabel": "Transaction XDR",
     "copyXdrButton": "Copy XDR",
     "copied": "Copied",
-    "notSentHint": "This transaction has not yet been sent to the network."
+    "notSentHint": "This transaction has not yet been sent to the network.",
+    "closeHint": "Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast und der Multisig-Auftrag erstellt wurde; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
   },
   "testMode": {
-    "modalTitle": "Test mode / Single-user signature",
-    "modalDescription": "Here you can enter all the necessary secret keys on a single device and send the transaction directly. In real multi-party setups, the keys should remain on separate devices."
+    "modalTitle": "Single-user signature",
+    "modalDescription": "Here, you can enter all the necessary secret keys on one device and send the transaction directly. In real multi-party setups, the keys should remain on separate devices."
   },
   "mode": {
     "test": {
-      "label": "Test mode (use all S-keys locally)"
+      "label": "Use all S keys locally."
     },
     "prod": {
-      "label": "Productivity mode",
+      "label": "Productive mode (echtes Multisig mit XDR)",
       "banner": {
-        "title": "Productive mode for multi-signature",
-        "body": "In this mode, the Stellar Account Manager only uses your own secret key. Additional signatures are collected through exported XDR files. Secure your XDR files and only share them with trusted signers."
+        "title": "Productive Mode for Multi-Signature",
+        "body": "In this mode, the Stellar Account Manager only uses your own secret key. Additional signatures are collected via exported XDR files. Secure your XDR files and share them only with trusted signers."
       }
     }
   },
@@ -143,7 +148,7 @@
     "copyXdrButton": "Copy XDR",
     "importSignedXdrTitle": "Import signed XDR",
     "importSignedXdrDescription": "Insert a signed XDR. New signatures will be incorporated into the current transaction.",
-    "importSignedXdrPlaceholder": "Base64-encoded signed XDR",
+    "importSignedXdrPlaceholder": "Base64 encoded signed XDR",
     "importSignedXdrButton": "Signed XDR adoption",
     "updatedAt": "Updated on",
     "signers": {
@@ -151,11 +156,11 @@
       "collected": "Already collected signatures"
     },
     "signatures": {
-      "title": "Signers & status",
+      "title": "Signer & Status",
       "progress": "Signature weight: {{collected}} / {{required}}",
       "signed": "signed",
       "missing": "missing",
-      "noSessionSecret": "No secret key stored in this browser. Please enter the secret or import a signed XDR.",
+      "noSessionSecret": "No secret key stored in the browser. Please enter the secret or import a signed XDR.",
       "signedLocalStatus": "Signature saved. Current status: {{status}}"
     },
     "changes": {
@@ -165,7 +170,7 @@
       "setThresholds": "Set thresholds: low={{low}}, med={{med}}, high={{high}}"
     },
     "xdr": {
-      "title": "Transaction",
+      "title": "Transaction (XDR)",
       "hint": "This XDR can be loaded and signed by other signers in compatible wallets.",
       "copy": "Copy XDR",
       "copy.success": "XDR copied to clipboard.",
@@ -178,16 +183,16 @@
       "submit": "Merge signed XDR",
       "success": {
         "title": "Signatures updated",
-        "body": "The signatures were successfully merged with this multisig job. Current status: {{status}}."
+        "body": "The signatures have been successfully merged with this multisig job. Current status: {{status}}."
       }
     },
     "secretPrompt": {
       "title": "Enter secret to sign",
-      "hint": "Enter the secret key for account {{account}}.",
+      "hint": "Please enter the secret key for account {{account}}.",
       "signNow": "Sign now"
     },
-    "submitFailed": "Submitting failed: {{reason}}",
-    "submitNoExtras": "No additional error details available."
+    "submitFailed": "An error occurred while sending: {{reason}}",
+    "submitNoExtras": "No further error details available."
   },
   "secretModal": {
     "options": {
@@ -196,30 +201,31 @@
     "option": {
       "distributed": {
         "title": "Standard: Distributed Multisig Flow",
-        "body": "By default, this session only signs with your own private key. Additional signatures are added via exported XDR files or a job ID from other signers."
+        "body": "By default, this session only signs with your own secret key. Additional signatures are supplemented via exported XDR files or a job ID from other signers."
       },
       "localAll": {
-        "title": "Enter all signatures locally.",
-        "body": "Choose this option only if you control all secret keys associated with this account (z. B. nach einer Kontorettung mit mehreren Signern). The Stellar Account Manager will then collect all signatures locally and send the transaction directly to Horizon.",
+        "title": "Enter all signatures locally",
+        "body": "Select this option only if you control all the secret keys associated with this account (z. B. nach einer Kontorettung mit mehreren Unterzeichnern). The Stellar Account Manager will then collect all signatures locally and send the transaction directly to Horizon.",
         "checkboxLabel": "Enter all signatures locally in this dialog and send them directly.",
-        "warning": "Note: If you enter all signatures locally, all secret keys will be present in this session. Use this option only on trusted devices."
+        "warning": "Note: When you enter all signatures locally, all secret keys are present in this session. Use this option only on trusted devices."
       }
     }
   },
-  "errors": {
-    "mismatchedHash": "The signed XDR does not belong to this transaction."
+  "multisigInfo": {
+    "master": "Master key",
+    "signerDisabled": "Signer disabled (weight = 0)"
   },
   "list": {
-    "title": "Multisig Jobs",
-    "noAccount": "Please load an account first to see multisig jobs.",
-    "empty": "No multisig jobs found.",
-    "details": "Details & sign",
+    "title": "Multisig orders",
+    "noAccount": "Please load an account first to view multisig orders.",
+    "empty": "No multisig orders found.",
+    "details": "Details & Signatures",
     "export": "Export",
     "signatures": "Signatures",
     "signaturesProgress": "{{collected}} / {{required}} signature weight",
     "filter": {
-      "mine": "Only jobs I still need to sign",
-      "assigned": "Also jobs where I am a signer"
+      "mine": "Only orders that I still need to sign",
+      "assigned": "Also contracts where I am a signer"
     },
     "signer": {
       "signed": "✓",
@@ -227,26 +233,26 @@
       "unknown": "Signer"
     },
     "status": {
-      "pending_signatures": "Waiting for signatures",
+      "pending_signatures": "Pending signatures",
       "ready_to_submit": "Ready to send",
       "submitted_success": "Sent",
-      "submitted_failed": "Sending failed",
+      "submitted_failed": "Send failed",
       "expired": "Expired",
       "obsolete_seq": "Outdated Sequence"
     },
     "deleteTestnet": "Delete testnet jobs",
-    "deleteTestnetTitle": "Delete all testnet jobs",
-    "deleteTestnetHint": "This removes all multisig jobs in testnet. To confirm, type \"DELETE TESTNET JOBS\".",
-    "deleteTestnetConfirm": "Delete testnet jobs"
+    "deleteTestnetTitle": "Delete all Testnet jobs.",
+    "deleteTestnetHint": "This removes all multisig jobs on the testnet. To confirm, please type \"DELETE TESTNET JOBS\".",
+    "deleteTestnetConfirm": "Delete Testnet jobs"
   },
   "actions": {
-    "createMultisigJob": "Create Multisig Job"
+    "createMultisigJob": "Create Multisig Transaction Job"
   },
   "job": {
     "create": {
       "success": {
-        "title": "Multisig job created",
-        "body": "The multisig job with the ID {{id}} has been created. Additional signers can sign the XDR file once it has been exported."
+        "title": "Multisig order created",
+        "body": "The multisig transaction with the ID {{id}} has been created. Additional signers can sign the XDR file once it has been exported."
       }
     },
     "status": {
@@ -258,23 +264,18 @@
       "unknown": "Unknown"
     },
     "statusHelp": {
-      "pending": "The multisig job has been created, but there are no signatures yet.",
+      "pending": "The multisig transaction has been created, but no signatures are present yet.",
       "partiallySigned": "Some signatories have already signed. More signatures are still needed.",
-      "readyToSubmit": "There are enough signatures present. The transaction can be sent to Horizon.",
-      "submitted": "The transaction has been sent to the network. Check the final account balance if necessary.",
-      "failed": "An error occurred while sending the transaction. Please refer to the error log for details.",
-      "pending_signatures": "This multisig job is still waiting for signatures.",
-      "ready_to_submit": "Enough signatures are present. The job can be submitted.",
-      "submitted_success": "The job was submitted.",
-      "submitted_failed": "An error occurred while submitting.",
-      "expired": "The job has expired.",
-      "obsolete_seq": "Sequence number is outdated.",
+      "readyToSubmit": "There are enough signatures. The transaction can be sent to Horizon.",
+      "submitted": "The transaction has been sent to the network. Check the final balance if necessary.",
+      "failed": "An error occurred while sending the transaction. Please see the error log for details.",
+      "pending_signatures": "The multisig transaction is still pending signatures.",
+      "ready_to_submit": "There are enough signatures. The order can be sent.",
+      "submitted_success": "The order has been sent.",
+      "submitted_failed": "An error occurred while sending.",
+      "expired": "The order has expired.",
+      "obsolete_seq": "The sequence is outdated.",
       "unknown": "Status unknown."
     }
-  },
-  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
-  "multisigInfo": {
-    "master": "Master key",
-    "signerDisabled": "Signer deactivated (weight = 0)"
   }
 }

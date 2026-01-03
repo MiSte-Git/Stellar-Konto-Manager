@@ -1,43 +1,43 @@
 {
-  "all": "Popis svih trustlines.",
+  "all": "Popis svih trustlinija",
   "compare": "Usporedba Trustlines",
-  "delete": "Izbriši povjereničke linije",
-  "onlyZeroBalanceInfo": "Samo trustline s saldom 0 mogu biti izbrisane.",
-  "nonZeroBalance": "Ova linija povjerenja ima nenulti saldo i ne može se obrisati.",
+  "delete": "Izbriši trustlinije",
+  "onlyZeroBalanceInfo": "Samo linije povjerenja s bilancom od 0 mogu biti izbrisane.",
+  "nonZeroBalance": "Ova linija povjerenja ima nenulti saldo i ne može biti izbrisana.",
   "destination": {
     "label": "Ciljana adresa",
-    "placeholder": "Ključ javnog odredišta ili adresa federacije",
-    "error": "Nevažeća odredišna adresa"
+    "placeholder": "Javni ključ odredišta ili adresa federacije",
+    "error": "Neispravna odredišna adresa"
   },
   "deleted": {
     "resultTitle": "Rezultat brisanja",
-    "resultText": "{count} povjereničkih linija obrađeno je u načinu rada {mode}.",
+    "resultText": "{count} trustlinea obrađeno je u načinu rada {mode}.",
     "mode": {
       "simulation": "Simulacija",
-      "real": "Živa operacija",
-      "realWarning": "Upozorenje! Ovo će trajno izbrisati trustline na blockchainu."
+      "real": "Uživo operacija",
+      "realWarning": "Upozorenje! Ovo će trajno izbrisati Trustlines na blockchainu."
     },
-    "notFound": "Nisu pronađene odgovarajuće linije povjerenja za brisanje.",
-    "simulated": "Simulacija: {count} linija povjerenja bi bilo izbrisano.",
-    "success": "Uspješno: {count} povjereničkih linija obrisano."
+    "notFound": "Nema pronađenih odgovarajućih trust linija za brisanje.",
+    "simulated": "Simulacija: {count} trustlinija bi bila izbrisana.",
+    "success": "Uspješno izbrisano {count} linija povjerenja."
   },
-  "noDuplicates": "Nema dupliciranih linija povjerenja pronađenih.",
+  "noDuplicates": "Nisu pronađene duplicirane linije povjerenja.",
   "showSecret": "Prikaži tajni ključ",
-  "notFound": "Nema pronađenih linija povjerenja.",
+  "notFound": "Nema pronađene Trustline(s).",
   "add": {
     "button": "Dodaj povjereničku liniju",
-    "title": "Stvorite novu liniju povjerenja",
+    "title": "Kreiraj novu povjerljivu liniju",
     "assetCodeLabel": "Šifra imovine",
     "assetCodePlaceholder": "z.B. USDC",
     "assetCodeHelp": "Kratki naziv imovine (1–12 znakova, npr. TESTUSD).",
-    "issuerLabel": "Izdavatelj",
-    "issuerPlaceholder": "z. B. Izdavatelj G...",
-    "issuerHelp": "Javni ključ (G-Adresse) računa izdavatelja koji izdaje sredstvo.",
+    "issuerLabel": "Izdavatelj (Public Key)",
+    "issuerPlaceholder": "z.B. G...Izdavatelj",
+    "issuerHelp": "Javni ključ (G-Adresse) izdanog računa koji izdaje sredstvo.",
     "limitLabel": "Ograničenje",
-    "limitPlaceholder": "z.B., 1,000,000 (eine Million)",
-    "limitHelp": "Limit je maksimalni iznos ove imovine kojem ovaj račun vjeruje. U praksi, trebao bi biti postavljen tako visoko kao što je vaš očekivani maksimalni saldo u ovoj imovini.",
-    "submit": "Kreiraj povjereničku liniju.",
-    "cancel": "Otkazati",
-    "success": "Povjerenička linija za {{code}} uspješno je uspostavljena."
+    "limitPlaceholder": "z.B. 1.000.000 (eine Million)",
+    "limitHelp": "Limit je najveći iznos ove imovine kojem ovaj račun može biti povjeren. U praksi bi trebao biti postavljen na razinu koja odgovara vašem očekivanom najvećem stanju u toj imovini.",
+    "submit": "Izradite povjereničku liniju",
+    "cancel": "Poništi",
+    "success": "Povjerenička linija za {{code}} je uspješno uspostavljena."
   }
 }

@@ -9,7 +9,7 @@
       },
       "issuer": {
         "label": "Issuer (optional)",
-        "placeholder": "G… (optional)"
+        "placeholder": "G… (G…)"
       },
       "submit": "Search"
     },
@@ -26,7 +26,7 @@
       "codeMissing": "Please enter an asset code."
     },
     "failed": {
-      "generic": "The asset search has failed. Please try again later."
+      "generic": "The asset search failed. Please try again later."
     }
   }
 }

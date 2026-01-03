@@ -1,43 +1,43 @@
 {
-  "all": "Listaa kaikki luottolinjat.",
-  "compare": "Luottolinjojen vertailu",
+  "all": "Luettele kaikki luottolinjat.",
+  "compare": "Luottolinjojen vertaaminen",
   "delete": "Poista luottolinjat",
-  "onlyZeroBalanceInfo": "Vain sellaiset luottolinjat, joiden saldo on 0, voidaan poistaa.",
-  "nonZeroBalance": "Tätä luottolinjaa ei voida poistaa, sillä siinä on ei-nolla saldo.",
+  "onlyZeroBalanceInfo": "Vain linjat, joiden saldo on 0, voidaan poistaa.",
+  "nonZeroBalance": "Tällä luottolinjalla on ei-nolla saldo eikä sitä voida poistaa.",
   "destination": {
     "label": "Kohdeosoite",
-    "placeholder": "Kohde-julkinen avain tai federointiosoite",
+    "placeholder": "Julkisen avaimen tai federointi-osoitteen määränpää",
     "error": "Virheellinen kohdeosoite"
   },
   "deleted": {
-    "resultTitle": "Poiston tulos",
-    "resultText": "{count} luottolinjaa käsiteltiin {mode}-tilassa.",
+    "resultTitle": "Poistotulos",
+    "resultText": "{count} luottolinjaa käsiteltiin {mode} tilassa.",
     "mode": {
       "simulation": "Simulointi",
-      "real": "Käyttöönotto livenä",
-      "realWarning": "Varoitus! Tämä poistaa pysyvästi trustlines-lohkoketjusta."
+      "real": "Live-operaatio",
+      "realWarning": "Varoitus! Tämä poistaa pysyvästi Trustlinesit lohkoketjusta."
     },
-    "notFound": "Ei löytynyt poistettavia luottamuslinjoja.",
-    "simulated": "Simulaatio: {count} trustline-yhteyttä poistettaisiin.",
-    "success": "Onnistuneesti: {count} trustlineä poistettu."
+    "notFound": "Ei poistettavia luottolinjoja löytynyt.",
+    "simulated": "Simulaatio: {count} luottolinjaa poistettaisiin.",
+    "success": "Poistettiin onnistuneesti {count} luottolinjaa."
   },
-  "noDuplicates": "Ei päällekkäisiä luottolinjoja löytynyt.",
+  "noDuplicates": "Ei kaksoiskatsojalinjoja löytynyt.",
   "showSecret": "Näytä salainen avain",
-  "notFound": "Luottolinja(a) ei löytynyt.",
+  "notFound": "Trustline(s) ei löytynyt.",
   "add": {
     "button": "Lisää luottolimiitti",
-    "title": "Luo uusi luottolinja",
+    "title": "Luo uusi luottolimiitti",
     "assetCodeLabel": "Omaisuuskoodi",
-    "assetCodePlaceholder": "esim. USDC",
-    "assetCodeHelp": "Varallisuuden lyhyt nimi (1–12 merkkiä, esim. TESTUSD).",
-    "issuerLabel": "Liikkeeseenlaskija",
-    "issuerPlaceholder": "esim. G...Liikkeeseenlaskija",
-    "issuerHelp": "Liikkeellelaskijan tilin julkinen avain (G-Adresse), joka laskee liikkeelle omaisuuden.",
-    "limitLabel": "Rajoitus",
+    "assetCodePlaceholder": "z.B. USDC",
+    "assetCodeHelp": "Omaisuuden lyhyt nimi (1–12 merkkiä, esim. TESTUSD).",
+    "issuerLabel": "Liikkeeseenlaskija (Public Key)",
+    "issuerPlaceholder": "esim., G...Liikkeeseenlaskija",
+    "issuerHelp": "Osoitetilin julkinen avain (G-Adresse), joka laskee liikkeeseen omaisuuserän.",
+    "limitLabel": "Raja",
     "limitPlaceholder": "z. B. 1 000 000 (eine Million)",
-    "limitHelp": "Raja on tämän omaisuuden enimmäismäärä, johon tämä tili luottaa. Käytännössä sen tulisi olla asetettu niin korkealle kuin odotettu enimmäissaldosi tässä omaisuudessa.",
+    "limitHelp": "Raja on tämän tilin luottama suurin määrä tätä varallisuutta. Käytännössä sen tulisi olla asetettu niin korkeaksi kuin odotettu enimmäissaldosi tässä varallisuudessa.",
     "submit": "Luo luottolimiitti",
-    "cancel": "Peruuta",
-    "success": "Trustline valuutalle {{code}} on onnistuneesti perustettu."
+    "cancel": "Peruuttaa",
+    "success": "Trustline {{code}}:lle on onnistuneesti perustettu."
   }
 }

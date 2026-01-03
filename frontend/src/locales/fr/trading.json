@@ -9,9 +9,9 @@
       },
       "issuer": {
         "label": "Émetteur (optional)",
-        "placeholder": "G… (optional)"
+        "placeholder": "G… (G…)"
       },
-      "submit": "Recherche"
+      "submit": "Rechercher"
     },
     "result": {
       "empty": "Aucun actif trouvé.",
@@ -23,7 +23,7 @@
       }
     },
     "invalidInput": {
-      "codeMissing": "Veuillez saisir un code d'actif."
+      "codeMissing": "Veuillez entrer un code d'actif."
     },
     "failed": {
       "generic": "La recherche d'actifs a échoué. Veuillez réessayer plus tard."

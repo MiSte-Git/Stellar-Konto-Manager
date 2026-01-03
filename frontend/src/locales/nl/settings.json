@@ -1,15 +1,15 @@
 {
   "backup": {
-    "title": "Backup & Recovery",
-    "desc": "Exporteer of importeer je quizgegevens (instellingen, voortgang, badges).",
+    "title": "Back-up & Herstel",
+    "desc": "Exporteer of importeer je quizgegevens (Einstellungen, Fortschritt, Abzeichen).",
     "export": {
-      "button": "Begin met exporteren",
-      "success": "Export aangemaakt",
+      "button": "Start exporteren",
+      "success": "Export gemaakt",
       "error": "Export mislukt",
-      "fileName": "quiz-backup.json"
+      "fileName": "De tekst \"quiz-backup.json\" is een bestandsnaam en hoeft niet in het Nederlands te worden vertaald, aangezien het al in het Engels is."
     },
     "import": {
-      "title": "Import",
+      "title": "Importeer",
       "selectFile": "Bestand selecteren",
       "noFile": "Geen bestand geselecteerd",
       "strategy": {
@@ -20,91 +20,54 @@
       "preview": {
         "title": "Voorbeschouwing",
         "stats": {
-          "settings": "Instellingen: {{count}} quiz(zen)",
-          "progress": "Voortgang: {{count}} quiz(zen)",
-          "achievements": "Badge: {{count}} quiz(zen)"
+          "settings": "Instellingen: {{count}} Quiz(e)",
+          "progress": "Voortgang: {{count}} Quiz(e)",
+          "achievements": "Badges: {{count}} Quiz(e)"
         }
       },
-      "perform": "Import uitvoeren",
+      "perform": "Uitvoeren importeren",
       "done": "Import voltooid",
       "backupCreated": "Automatische back-up opgeslagen",
       "invalid": "Ongeldig importbestand",
-      "error": "Import mislukt"
+      "error": "Importeren mislukt"
     },
     "toast": {
       "exported": "Back-up geëxporteerd",
-      "backupBeforeImport": "Er werd een back-up opgeslagen voordat de import werd uitgevoerd."
+      "backupBeforeImport": "Er is een back-up opgeslagen voor de import."
     },
     "nav": {
       "back": "Terug"
     }
   },
   "cache": {
-    "help": "Versnelt queries door middel van een lokale betalingscache, maar kan de initiële laadtijd verlengen.",
-    "label": "Cache gebruiken (Bèta)",
-    "prefetchHelp": "Levertijd voor het laden van invoeren/transacties in dagen (eenmalig tijdens de eerste activatie)"
+    "help": "Versnelt queries door gebruik van een lokale betalingscache, maar kan de initiële laadtijd verlengen.",
+    "label": "Gebruik cache (Beta)",
+    "prefetchHelp": "Doorlooptijd voor het laden van vermeldingen/transacties in dagen (einmalig beim ersten Aktivieren)"
   },
   "network": {
     "title": "Netwerk",
     "desc": "Optioneel: Volledige-geschiedenis Horizon voor Diepe Geschiedenis",
     "fullUrl": "Volledige Geschiedenis Horizon URL",
-    "autoUseFull": "Automatisch gebruiken als de vanaf-datum ouder is dan de servergeschiedenis.",
-    "historyInfo": "De gratis Horizon-servers beheerd door de Stellar Development Foundation bieden slechts ongeveer één jaar aan geschiedenis. Voor oudere gegevens moet je ofwel je eigen Horizon-node beheren of gebruikmaken van externe/betaalde diensten."
+    "autoUseFull": "Automatisch gebruiken als de \"Vanaf datum\" ouder is dan de servergeschiedenis.",
+    "historyInfo": "De gratis Horizon-servers die worden beheerd door de Stellar Development Foundation bieden slechts ongeveer één jaar aan geschiedenis. Voor oudere gegevens moet je ofwel je eigen Horizon-node beheren of vertrouwen op externe of betaalde diensten."
   },
-  "description": "Momenteel zijn er nog geen instellingen.",
+  "description": "Er zijn momenteel geen instellingen beschikbaar.",
   "display": {
     "decimals": {
       "auto": "Automatisch",
       "label": "Decimale plaatsen"
     },
-    "desc": "Globale beeldscherminstellingen.",
+    "desc": "Globale weergave-instellingen.",
     "title": "Advertentie"
   },
   "error": {
-    "fetchFailed": "Het is niet gelukt om de instellingen te laden: {{detail}}"
+    "fetchFailed": "Het laden van de instellingen is mislukt: {{detail}}"
   },
   "label": "Instellingen",
-  "prefetchDays": "Levertijd (dagen)",
-  "trustedWallets": {
-    "buttons": {
-      "export": "Exporteren",
-      "import": "Importeren",
-      "reset": "Reset naar standaardinstellingen"
-    },
-    "desc": "Deze lijst wordt lokaal in de browser opgeslagen. Standaardbestand: QSI_TrustedWallets.json",
-    "editor": {
-      "invalidFormat": "Ongeldig formaat. Er wordt een object met een veld \"wallets\" (reeks) verwacht.",
-      "parseError": "JSON kon niet worden geparsed."
-    },
-    "file": {
-      "hint": "Importeer een JSON-bestand in het formaat { \"wallets\": [...] }",
-      "label": "Bestand"
-    },
-    "info": {
-      "count": "Invoeringen: {{n}}",
-      "updatedAt": "Vanaf {{date}}"
-    },
-    "table": {
-      "addRow": "Voeg regel toe",
-      "columns": {
-        "actions": "Acties",
-        "address": "Adres",
-        "compromised": "Gecompromitteerd",
-        "deactivated": "Gedeactiveerd",
-        "label": "Etiket"
-      },
-      "deleteRow": "Verwijderen",
-      "discard": "Weggooien",
-      "save": "Opslaan"
-    },
-    "title": "Mijn Vertrouwde Portemonnees",
-    "validation": {
-      "hint": "Minstens één regel is ongeldig (ontbrekend/gedupliceerd adres)."
-    }
-  },
+  "prefetchDays": "Doorlooptijd",
   "back": "Terug",
   "aria": {
-    "back": "Keer terug naar de vorige pagina."
+    "back": "Ga terug naar de vorige pagina."
   },
   "tabs": {
     "general": "Algemeen",
@@ -117,46 +80,88 @@
   "sections": {
     "general": "Algemene instellingen",
     "app": "App-instellingen",
-    "accounts": "Rekeningenlijst",
+    "accounts": "Accountlijst",
     "network": "Netwerk",
     "quiz": "Quizinstellingen",
-    "explorer": "Stellar Verkenner"
+    "explorer": "Sterrenverkenner"
+  },
+  "multisig": {
+    "timeoutTitle": "Multisig-time-out",
+    "timeoutHint": "Geldigheidsperiode voor multisig-betalingen in seconden (bijv. 86400 = 24 uur).",
+    "seconds": "Seconden"
   },
   "explorer": {
-    "sectionTitle": "Stellar Verkenner",
-    "description": "Selecteer de standaard verkenner voor accountlinks en beheer de verkennerlijst.",
-    "defaultLabel": "Standaard Verkenner",
+    "sectionTitle": "Stellar Explorer",
+    "description": "Selecteer de standaard verkenner voor accountlinks en beheer de lijst met verkenners.",
+    "defaultLabel": "Standaard Explorer",
     "nameLabel": "Naam",
     "urlLabel": "URL",
     "testnetUrlLabel": "Testnet-URL (optional)",
-    "testnetUrlPlaceholder": "https://…{adres} (leave blank to use the Mainnet URL for Testnet as well)",
-    "addButton": "Voeg verkenner toe",
+    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
+    "addButton": "Explorer toevoegen",
     "removeButton": "Verwijderen",
-    "setDefault": "Als standaard instellen",
+    "setDefault": "Instellen als standaard",
     "noEntries": "Geen verkenners geconfigureerd.",
     "validation": {
       "nameRequired": "Voer alstublieft een naam in.",
       "urlRequired": "Voer alstublieft een URL in.",
       "urlInvalid": "Voer alstublieft een geldige URL in.",
-      "testnetUrlInvalid": "Voer een geldige testnet-URL in."
+      "testnetUrlInvalid": "Voer een geldige Testnet-URL in."
     },
     "mainnetLabel": "Mainnet",
     "testnetLabel": "Testnet",
-    "edit": "U bent getraind op gegevens tot oktober 2023."
+    "edit": "Bewerken"
   },
   "export": {
     "title": "Exporteerinstellingen",
     "button": "Instellingen opslaan als een bestand"
   },
   "import": {
-    "title": "Instellingen importeren",
-    "button": "Instellingen laden vanuit bestand",
-    "ariaLabel": "Importinstellingen",
+    "title": "Importinstellingen",
+    "button": "Instellingen uit bestand laden",
+    "ariaLabel": "Instellingen importeren",
     "hint": "Selecteer een eerder geëxporteerd instellingenbestand (.json).",
     "success": "Instellingen geïmporteerd.",
     "error": {
       "invalid": "Import mislukt: Bestand is ongeldig of kon niet worden gelezen.",
       "invalidType": "Import mislukt: Onverwacht formaat in het bestand."
+    }
+  },
+  "trustedWallets": {
+    "buttons": {
+      "export": "Exporteren",
+      "import": "Importeer",
+      "reset": "Terug naar standaardinstellingen"
+    },
+    "desc": "Deze lijst wordt lokaal in de browser opgeslagen. Standaardbestand: QSI_TrustedWallets.json",
+    "editor": {
+      "invalidFormat": "Ongeldig formaat. Een object met het veld \"wallets\" (Array) wordt verwacht.",
+      "parseError": "JSON kon niet worden geparsed."
+    },
+    "file": {
+      "hint": "Importeer een JSON-bestand in het formaat { wallets: [...] }",
+      "label": "Bestand"
+    },
+    "info": {
+      "count": "Invoeren: {{n}}",
+      "updatedAt": "Status: {{datum}}"
+    },
+    "table": {
+      "addRow": "Regel toevoegen",
+      "columns": {
+        "actions": "Acties",
+        "address": "Adres",
+        "compromised": "Gekompromitteerd",
+        "deactivated": "U bent getraind op gegevens tot oktober 2023.",
+        "label": "Label"
+      },
+      "deleteRow": "Verwijderen",
+      "discard": "Weggooien",
+      "save": "Opslaan"
+    },
+    "title": "Mijn Vertrouwde Portemonnees",
+    "validation": {
+      "hint": "Minstens één regel is ongeldig (fehlende/duplizierte Adresse)."
     }
   }
 }

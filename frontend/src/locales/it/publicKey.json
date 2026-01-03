@@ -1,7 +1,7 @@
 {
   "label": "Chiave pubblica o indirizzo di federazione",
-  "placeholder": "Inserisci la tua chiave pubblica o un indirizzo di federazione.",
-  "load": "Caricamento",
+  "placeholder": "Inserisci la tua chiave pubblica o un indirizzo di federazione",
+  "load": "Negozio",
   "deleteFromList": "Rimuovi dalla lista",
   "source": "Fonte",
   "destination": {
@@ -14,7 +14,7 @@
   "submit": {
     "button": "Invia"
   },
-  "test": "Test",
+  "test": "Prova",
   "historyLabel": "Storia",
-  "historyPlaceholder": "Seleziona l'ultimo portafoglio utilizzato."
+  "historyPlaceholder": "Seleziona l'ultimo portafoglio utilizzato"
 }

@@ -1,32 +1,32 @@
 {
-  "title": "Monisig aloittelijoille",
-  "menuTitle": "Ymmärrys moniallekirjoituksesta",
-  "teaser": "Miksi useita allekirjoituksia, miten kynnykset toimivat ja kuinka SKM auttaa.",
+  "title": "Multisig aloittelijoille",
+  "menuTitle": "Ymmärtäminen Multisigistä",
+  "teaser": "Miksi useita allekirjoituksia, miten kynnykset toimivat ja miten SKM auttaa.",
   "why": {
-    "title": "Miksi Multisig?",
-    "text": "Useamman allekirjoituksen käyttö vähentää yksittäisten virheiden tai varkauden riskiä."
+    "title": "Miksi multisig?",
+    "text": "Useita allekirjoituksia vähentävät yksittäisten virheiden tai varkauden riskiä."
   },
   "singleVsMulti": {
-    "title": "Yksittäinen allekirjoitus vs. moniallekirjoitus",
-    "text": "Single-Sig = 1 avain riittää. Multisig = useita allekirjoituksia vaaditaan (z. B. 2 von 3)."
+    "title": "Single-sig vs Multisig - yksi allekirjoitus vs. monta allekirjoitusta",
+    "text": "Single-Sig = yksi avain riittää. Multisig = useita allekirjoituksia tarvitaan (z. B. 2 von 3)."
   },
   "stellarHow": {
-    "title": "Kuinka Stellar toteuttaa multisig-toiminnon",
-    "text": "Stellar käyttää allekirjoittajia painoilla ja kynnysarvoilla. Jokainen operaatio vaatii kynnysarvopainon."
+    "title": "Kuinka Stellar toteuttaa moniallekirjoituksen",
+    "text": "Stellar käyttää allekirjoittajia, joilla on painoja ja kynnyksiä. Jokainen toimenpide vaatii kynnyspainon."
   },
   "examples": {
     "title": "Käytännön esimerkkejä",
-    "item1": "Yrityksen tili: Kaksi tiimin jäsentä täytyy allekirjoittaa jokainen maksu.",
+    "item1": "Yritystili: Kaksi tiimin jäsentä on allekirjoitettava jokainen maksu.",
     "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
-    "item3": "Turvaholvi: Vaatii laitteistoavaimen sekä varmuusavaimen."
+    "item3": "Turvavaltu: Laitteiston avain sekä varmuusavain vaaditaan."
   },
   "skmSupport": {
-    "title": "Miten SKM tukee multisig-salausta",
-    "text": "SKM rakentaa multisig-transaktioita, kerää allekirjoituksia ja tallentaa valmiit tehtävät."
+    "title": "Miten SKM tukee multiallekirjoitusta",
+    "text": "SKM rakentaa multisig-transaktioita, kerää allekirjoituksia ja tallentaa valmistellut tehtävät."
   },
   "diagram": {
-    "singleVsMulti": "Kaavio: Yksittäinen allekirjoitus vs. Moniallekirjoitus",
+    "singleVsMulti": "Kaavio: Yhden allekirjoituksen järjestelmä vs. moniallekirjoitusjärjestelmä",
     "stellarHow": "Kaavio: Allekirjoittaja, Paino, Kynnysarvo",
-    "skmFlow": "Kaavio: SKM-virtaus Valmistelu → Allekirjoitus → Lähettäminen"
+    "skmFlow": "Kaavio: SKM-virran valmistelu → Allekirjoitus → Lähetys"
   }
 }

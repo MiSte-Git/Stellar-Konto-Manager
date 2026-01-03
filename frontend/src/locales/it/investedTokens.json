@@ -1,10 +1,10 @@
 {
-  "hintEnterPublicKey": "Per favore, inserisci prima una chiave pubblica.",
+  "hintEnterPublicKey": "Si prega di inserire prima una chiave pubblica.",
   "columns": {
     "amount": "Quantità",
     "compromised": "Compromesso",
-    "deactivated": "Disabilitato",
-    "destination": "Portafoglio di destinazione",
+    "deactivated": "Disattivato",
+    "destination": "Portafoglio target",
     "issuer": "Emittente",
     "label": "Etichetta",
     "memo": "Promemoria",
@@ -18,41 +18,41 @@
   },
   "filter": {
     "memoPlaceholder": "Filtra per memo, indirizzo del portafoglio o etichetta.",
-    "tokenPlaceholder": "Filtra per Token (CODICE:EMITTENTE)"
+    "tokenPlaceholder": "Filtrare per token (CODE:ISSUER)"
   },
   "item": {
-    "memo": "Memo: \"{{memo}}\" (Pagamenti: {{occurrences}})",
+    "memo": "Promemoria: \"{{memo}}\" (Pagamenti: {{occurrences}})",
     "token": "Token: {{token}} (Pagamenti: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
   "missingPublicKey": "Chiave pubblica mancante.",
-  "moreTruncated": "... e {{extra}} gruppi aggiuntivi",
-  "toWallet": "Al portafoglio: {{address}}",
+  "moreTruncated": "… e {{extra}} altri gruppi",
+  "toWallet": "a Portafoglio: {{address}}",
   "total": "Numero di token acquistati: {{count}}",
-  "totalTokens": "Numero di token (beni) investiti: {{count}}",
+  "totalTokens": "Numero di token investiti (Assets): {{count}}",
   "value": {
     "units": "{{amount}} pezzi",
     "xlm": "{{amount}} XLM"
   },
   "view": {
     "label": "Filtra per:",
-    "memo": "Memos (Groupfund)",
-    "token": "Token (quantità acquistata)"
+    "memo": "Promemoria",
+    "token": "Token (gekaufte Menge)"
   },
   "toggles": {
-    "showTotals": "Somma totale",
+    "showTotals": "Importo totale",
     "qsiOnly": "Somma QSI GF"
   },
   "hints": {
-    "qsiListSet": "Nota: Puoi trovare la whitelist sotto Impostazioni → Portafogli Fidati (QSI).",
+    "qsiListSet": "Nota: Puoi trovare l'elenco GF sotto Impostazioni → Portafogli Fidati (QSI).",
     "pageTime": "Il caricamento di una pagina richiede circa 0,2 secondi → 100 pagine ≈ 20 secondi → 1000 pagine ≈ 200 secondi (≈ 3:20 minuti)."
   },
-  "walletCapInfo": "Nota: Un portafoglio può contenere un massimo di 1000 linee di fiducia.",
+  "walletCapInfo": "Nota: Un portafoglio può contenere un massimo di 1000 trustlines.",
   "action": {
-    "load": "Caricamento"
+    "load": "Negozio"
   },
   "history": {
     "availableFrom": "Server (Horizon) – Storia da",
-    "hintFullHistory": "Nota: La cronologia del libro mastro dal server Horizon risale solo a {{available}}. Verranno quindi visualizzati solo i dati fino a quel momento. Pertanto, la data di inizio scelta è limitata. Per i dati più vecchi, è necessario un fornitore di cronologia completa (solitamente a pagamento) (possibilmente in arrivo in futuro!)."
+    "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
   }
 }

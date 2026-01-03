@@ -1,4 +1,4 @@
 {
-  "warnOnActiveQuiz": "Prikaži upozorenje tijekom tekućeg kviza",
-  "warnOnActiveQuiz.desc": "Upozorite kada napuštate stranicu s već odgovorjenim pitanjima."
+  "warnOnActiveQuiz": "Prikaži upozorenje tijekom trajanja kviza",
+  "warnOnActiveQuiz.desc": "Upozorite na već odgovorena pitanja prije nego što napustite stranicu."
 }

@@ -1,13 +1,13 @@
 {
   "label": "Public key or federation address",
-  "placeholder": "Enter your public key or a federation address.",
-  "load": "Loading",
+  "placeholder": "Enter your public key or a federation address",
+  "load": "Shop",
   "deleteFromList": "Remove from list",
   "source": "Source",
   "destination": {
-    "input": "Objective",
+    "input": "Goal",
     "error": "Invalid public key entered.",
-    "label": "Target public key",
+    "label": "Target Public Key",
     "placeholder": "Enter the target public key"
   },
   "invalid": "Invalid public key.",

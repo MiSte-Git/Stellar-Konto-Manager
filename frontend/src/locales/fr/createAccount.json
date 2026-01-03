@@ -1,98 +1,98 @@
 {
   "title": "Créer un compte + multisig",
   "menu": "Créer un compte + Multisig",
-  "menuHint": "Créez un nouveau compte et éventuellement configurez la signature multiple (multisig).",
-  "hint": "Créez un nouveau compte, activez-le et configurez éventuellement le multisignature.",
-  "generateKeys": "Générer une clé",
+  "menuHint": "Créer un nouveau compte et configurer éventuellement la signature multiple.",
+  "hint": "Créez un nouveau compte, activez-le et configurez éventuellement la signature multiparte.",
+  "generateKeys": "Générer la clé",
   "enableMultisig": "Activer la multisignature",
   "signersTitle": "Signer",
-  "signersInfo": "Ajoutez des signataires supplémentaires et définissez les seuils appropriés.",
+  "signersInfo": "Ajoutez des signataires supplémentaires et définissez des seuils appropriés.",
   "signersCount": "Nombre de signataires",
   "bestPractices": {
     "title": "Meilleures pratiques",
-    "text": "Gardez les clés secrètes en sécurité et ne les distribuez pas inutilement."
+    "text": "Stockez les clés secrètes de manière sécurisée et ne les distribuez pas inutilement."
   },
   "instructions": {
     "public": "Partagez cette clé publique avec d'autres pour les paiements.",
     "secret": "Gardez cette clé secrète en sécurité ; ne la partagez jamais."
   },
   "generateFirst": "Veuillez d'abord générer une paire de clés.",
-  "confirmLowBalance": "Le solde initial de {bal} XLM est inférieur à la réserve recommandée de {req} XLM (Signataire : {count}). Continuer ?",
+  "confirmLowBalance": "Le solde de départ de {bal} XLM est inférieur à la réserve recommandée de {req} XLM (Signataires : {count}). Procéder ?",
   "activated": "Le compte a été activé. Hachage : {hash}",
-  "activatedTestnet": "Le compte a été activé sur le réseau de test via Friendbot.",
+  "activatedTestnet": "Le compte a été activé sur le testnet via Friendbot.",
   "alreadyActive": "Le compte est déjà activé.",
-  "createdNoSigners": "Compte créé, multisignature non configurée.",
-  "createdAndConfigured": "Compte créé et multisignature configurée. Hash : {hash}",
+  "createdNoSigners": "Compte créé, multisiignature non configurée.",
+  "createdAndConfigured": "Compte créé et multisig configuré. Hash : {hash}",
   "info": {
     "more": "Plus d'informations",
     "keysOnPage": {
-      "title": "Clé sur cette page",
-      "text": "⚠️ IMPORTANT : Ce site web ne stocke JAMAIS votre clé secrète !\n\nLa clé secrète affichée ici existe uniquement dans votre navigateur. Une fois que vous rechargez ou quittez la page, elle est irrémédiablement perdue.\n\nCopiez ou notez la clé secrète immédiatement après sa génération, avant de fermer la page.\n\nVérification : Vous pouvez utiliser les outils de développement du navigateur (F12 → Réseau) pour vérifier qu'aucune clé secrète n'est transmise à l'extérieur. Seules les transactions signées sont envoyées, jamais votre clé secrète."
+      "title": "Clés sur cette page",
+      "text": "⚠️ IMPORTANT : Ce site web ne stocke JAMAIS votre clé secrète !\n\nLa clé secrète affichée ici n'existe que dans votre navigateur (lokal im Arbeitsspeicher). Dès que vous rechargez ou quittez la page, elle est perdue définitivement.\n\nCopiez ou notez la clé secrète immédiatement après sa génération, avant de fermer la page.\n\nVérification : Vous pouvez vérifier à l'aide des outils de développement du navigateur (F12 → Réseau) qu'aucune clé secrète n'est transmise à l'extérieur. Seules les transactions signées sont envoyées, jamais votre clé secrète."
     },
     "title": "Informations importantes",
     "secureKeys": {
       "title": "Clé secrète sécurisée",
-      "text": "La clé publique peut être partagée en toute sécurité – elle est comme un numéro de compte.\n\nLa clé secrète est l'accès à votre compte. Traitez-la comme un mot de passe :\n• NE LA STOCKEZ JAMAIS dans des services cloud, des emails, ou des notes non sécurisées\n• Écrivez-la sur papier ou utilisez un portefeuille matériel\n• Créez plusieurs copies de sauvegarde et stockez-les dans des endroits sécurisés et séparés\n• Si la clé secrète est perdue, l'accès au compte est irrévocablement perdu"
+      "text": "La clé publique peut être partagée en toute sécurité – elle est comme un numéro de compte.\n\nLa clé secrète est l'accès à votre compte. Traitez-la comme un mot de passe :\n• NE la stockez JAMAIS dans des services cloud, des e-mails ou des notes non sécurisées\n• Notez-la sur du papier ou utilisez un portefeuille matériel\n• Créez plusieurs sauvegardes et stockez-les dans des endroits sécurisés et séparés\n• Si la clé secrète est perdue, l'accès au compte est irrémédiablement perdu"
     },
     "multisigSection": {
-      "title": "Multisig (multisignature)",
-      "text": "Avec multisig, vous pouvez définir plusieurs signataires pour votre compte. Les transactions nécessitent alors des signatures de plusieurs clés (par exemple, 2 sur 3).\n\nAvantages :\n• Sécurité accrue (une clé compromise n'est pas suffisante)\n• Comptes partagés (par exemple, entreprises, partenariats)\n• Récupération d'urgence (plusieurs sauvegardes avec différentes personnes)\n\nATTENTION : Testez multisig d'abord sur le testnet avant de le déployer sur le mainnet ! Une configuration incorrecte peut entraîner une perte d'accès au compte."
+      "title": "Multisig (Multisig)",
+      "text": "Avec le multisig, vous pouvez définir plusieurs signataires pour votre compte. Les transactions nécessitent alors des signatures provenant de plusieurs clés (z. B. 2 von 3).\n\nAvantages :\n• Sécurité renforcée (ein kompromittierter Key reicht nicht)\n• Comptes partagés (z. B. Firmen, Partnerschaften)\n• Récupération en cas d'urgence (mehrere Backups bei verschiedenen Personen)\n\nATTENTION : Testez le multisig d'abord sur le testnet avant de le déployer sur le mainnet ! Une mauvaise configuration peut entraîner une perte d'accès au compte."
     },
     "diagram": {
       "title": "Expiration de la signature"
     }
   },
-  "activateHint": "L'activation est nécessaire pour que le compte existe. Dans le testnet, cela se fait via Friendbot, tandis que dans le mainnet, cela se fait par \"Créer un compte\" à partir d'un portefeuille existant.",
+  "activateHint": "L'activation est nécessaire pour que le compte existe. Dans le testnet, cela se fait via Friendbot, et dans le mainnet, cela se fait via \"Créer un compte\" à partir d'un portefeuille existant.",
   "activateNow": "Activez le compte immédiatement.",
-  "activateOnly": "Activer seulement",
-  "balanceWarning": "Le solde de départ est probablement trop bas pour ajouter les {{count}} signataires supplémentaires (réserve minimum : {{req}} XLM).",
-  "createButton": "Créer / Configurer Multisig",
+  "activateOnly": "Activez simplement",
+  "balanceWarning": "Il est probable que le solde initial soit trop bas pour ajouter les {{count}} signataires supplémentaires (réserve minimale : {{req}} XLM).",
+  "createButton": "Créer / Configurer un multisig",
   "hints": {
     "byteRange": "(0–255)"
   },
-  "mainnetActivateNote": "Remarque : Des réserves supplémentaires sont nécessaires pour le Multisig. 1 XLM ne suffit souvent pas.",
+  "mainnetActivateNote": "Remarque : Des réserves supplémentaires sont nécessaires pour le multisig. 1 XLM ne suffit souvent pas.",
   "reserve": {
     "base": "Réserve de base par entrée : {{val}} XLM",
-    "recommended": "Solde de départ recommandé : {{val}} XLM (y compris la marge de sécurité)",
-    "required": "Réserve minimale requise (nouveau) : {{val}} XLM"
+    "recommended": "Solde de départ recommandé : {{val}} XLM (inkl. Puffer)",
+    "required": "Réserve minimum requise (neu) : {{val}} XLM"
   },
-  "signersCountHint": "Vous définissez le nombre minimum de signatures ci-dessous sous \"Signatures requises\" (faible/moyen/élevé).",
-  "signersCountLimit": "Remarque : Limite du réseau (Stellar) : maximum de 20 signataires supplémentaires.",
+  "signersCountHint": "Vous définissez le nombre minimum de signatures ci-dessous sous \"Signatures requises\" (niedrig/mittel/hoch).",
+  "signersCountLimit": "Remarque : Limite du réseau (Stellar) : max. 20 signataires supplémentaires.",
   "startingBalance": "Solde de départ (XLM)",
-  "threshold": "Signatures requises (faible/moyenne/élevée)",
+  "threshold": "Signatures requises (niedrig/mittel/hoch)",
   "thresholdLow": "faible",
   "thresholdMed": "moyen",
   "thresholdHigh": "élevé",
-  "thresholdCurrent": "Actuellement sélectionné : faible={{low}}, moyen={{med}}, élevé={{high}} sur un total de {{total}} signatures",
-  "thresholdHelp": "Seuil : Nombre de signatures requises (maître + signataires) pour qu'une transaction soit valide.",
-  "thresholdInfo": "Recommandation : {{req}} sur {{total}} signatures (y compris Maître)",
-  "thresholdLevelsHint": "Typiquement, les règles suivantes s'appliquent : faible = modifications simples (par exemple, mémo, prix), moyen = paiements/échanges, élevé = modifications critiques pour la sécurité (par exemple, signataire/seuils).",
-  "thresholdStatic": "Requis : {{val}} sur {{total}} signatures (faible/moyen/élevé)",
+  "thresholdCurrent": "Actuellement sélectionné : faible={{low}}, moyen={{med}}, élevé={{high}} sur un total de {{total}} signatures.",
+  "thresholdHelp": "Seuil : Le nombre de signatures requises (maître + signataires) pour qu'une transaction soit valide.",
+  "thresholdInfo": "Recommandation : {{req}} sur {{total}} signatures (inkl. Master)",
+  "thresholdLevelsHint": "Typiquement, les règles suivantes s'appliquent : faible = changements simples (e.g., memo, price), moyen = paiements/commerce, élevé = changements critiques pour la sécurité (e.g., signer/thresholds).",
+  "thresholdStatic": "Requis : {{val}} sur {{total}} signatures (niedrig/mittel/hoch)",
   "thresholdSum": "Somme des poids : {{sum}}",
-  "thresholdTooHigh": "Remarque : Un seuil ne doit pas dépasser la somme des poids. Veuillez ajuster les valeurs.",
+  "thresholdTooHigh": "Remarque : Un seuil ne doit pas dépasser la somme des poids. Veuillez ajuster les valeurs en conséquence.",
   "keyWarning": {
     "title": "⚠️ Sécurisez votre clé dès maintenant !",
     "text1": "Vous avez généré une nouvelle paire de clés.",
-    "text2": "Sécurisez IMMÉDIATEMENT les DEUX clés avant de continuer :",
-    "list1": "Clé publique : L'adresse de votre compte, peut être partagée",
-    "list2": "Clé secrète : Votre mot de passe – ne le partagez JAMAIS et ne le stockez pas en ligne !",
+    "text2": "Sécurisez les DEUX clés IMMÉDIATEMENT avant de continuer :",
+    "list1": "Clé publique : L'adresse de votre compte, peut être partagée.",
+    "list2": "Clé secrète : Votre mot de passe – NE le partagez JAMAIS et ne le stockez pas en ligne !",
     "list3": "Si la clé secrète est perdue, l'accès est irrémédiablement perdu.",
     "confirm": "J'ai sécurisé les deux clés."
   },
   "tooltips": {
-    "high": "Élevé : changements critiques pour la sécurité (par exemple, signataires/seuils).",
-    "low": "Faible : changements simples (par exemple, note, prix).",
-    "masterWeight": "Poids du titulaire du compte (Maître) (0-255) : La clé principale du compte dispose de droits de vote. Plus son poids est élevé, plus sa signature compte pour un nombre important de votes. Ces votes sont additionnés à ceux des autres signataires pour vérifier si la majorité requise a été atteinte.",
-    "med": "Moyens : Paiements et actions de négociation.",
-    "signerWeight": "Poids des signataires (0-255) : Les signataires supplémentaires disposent également de droits de vote. Le poids détermine combien de votes leur signature apporte. Lorsqu'une transaction est envoyée, tous les votes exprimés sont additionnés. Si le nombre minimum de votes spécifié (seuil) est atteint, la transaction est considérée comme autorisée.",
-    "signerWeightHint": "Remarque : Les poids du maître et des signataires forment la somme ; les seuils (bas/moyen/élevé) ne doivent pas dépasser cette somme."
+    "high": "Haut: changements critiques pour la sécurité (e.g., signers/thresholds).",
+    "low": "Faible : changements simples (e.g., memo, price).",
+    "masterWeight": "Poids du titulaire du compte (Master) (0-255) : La clé principale du compte possède un droit de vote. Plus son poids est élevé, plus sa signature compte de voix. Ces votes sont comptabilisés avec ceux d'autres signataires pour vérifier si la majorité requise est atteinte.",
+    "med": "Moyens : Paiements et actions commerciales.",
+    "signerWeight": "Poids des signataires (0–255) : Les signataires supplémentaires disposent également de droits de vote. Le poids détermine combien de voix leur signature apporte. Lorsqu'une transaction est envoyée, tous les votes soumis sont additionnés. Si le nombre minimum de voix spécifié (Threshold) est atteint, la transaction est considérée comme autorisée.",
+    "signerWeightHint": "Remarque : Les poids des maîtres et des signataires s'additionnent pour atteindre la somme totale ; les seuils (niedrig/mittel/hoch) ne doivent pas dépasser cette somme."
   },
   "units": {
-    "signatures": "Signature(s)"
+    "signatures": "Signature (en)"
   },
-  "muxedId": "Identifiant muxé",
-  "muxedInfo": "L'ID muxé crée une adresse M (M...). Elle pointe vers le même compte que l'adresse régulière (G...).",
-  "muxedIdInvalid": "Le Muxed-ID doit être un entier compris entre 0 et 18 446 744 073 709 551 615.",
+  "muxedId": "ID multiplexé",
+  "muxedInfo": "L'identifiant Muxed est utilisé pour créer une M-Address (M...). Il pointe vers le même compte que l'adresse régulière (G...).",
+  "muxedIdInvalid": "L'ID multiplexé doit être un entier compris entre 0 et 18 446 744 073 709 551 615.",
   "muxedAddress": "Adresse multiplexée",
   "muxedActivationInfo": "Les adresses muxed sont des adresses alias. Elles n'ont pas besoin d'être activées séparément."
 }

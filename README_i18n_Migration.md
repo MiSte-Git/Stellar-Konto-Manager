@@ -18,15 +18,21 @@ Die bestehende flache Struktur der Übersetzungs-Keys wurde vollständig überar
 
 ### 🛠 Neue Struktur
 - Aus der bereinigten CSV wurde eine neue, verschachtelte `de.json` generiert.
-- Beispiel:
-  ```json
-  {
-    "menu": {
-      "listAll": "Alle Trustlines auflisten"
-    },
-    "secret": {
-      "key": {
-        "invalid": "Ungültiger Geheimschlüssel"
+  - Beispiel:
+    ```json
+    {
+      "menu": {
+        "listAll": "Alle Trustlines auflisten"
+      },
+      "secret": {
+        "key": {
+          "invalid": "Ungültiger Geheimschlüssel"
+        }
       }
     }
-  }
+    ```
+
+## ⚙️ Anforderungen für das Übersetzungs-Skript
+- Python 3 mit `pip` sowie das Paket `openai` installiert (z. B. `pip install openai` oder unter Windows `python -m pip install openai`).
+- Umgebungvariable `OPENAI_API_KEY` muss gesetzt sein, damit Übersetzungen online erzeugt werden können.
+- Aufrufbeispiel: `python3 frontend/src/locales/UpdateSprachdateienBasierendAufDE.py --provider openai --full`
