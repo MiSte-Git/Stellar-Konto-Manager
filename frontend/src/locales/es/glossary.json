@@ -1,102 +1,102 @@
 {
   "pageTitle": "Glosario",
-  "pageIntro": "Aquí encontrarás palabras importantes del mundo de la blockchain y de la red Stellar. Todo está explicado en términos sencillos.",
+  "pageIntro": "Aquí encontrarás palabras importantes del mundo blockchain y de la red Stellar. Todo está explicado en términos sencillos.",
   "searchLabel": "Término de búsqueda",
-  "searchPlaceholder": "Buscar término (por ejemplo, cuenta, Muxed)",
+  "searchPlaceholder": "Término de búsqueda (z. B. Konto, Account, Muxed)",
   "searchHint": "La búsqueda encuentra palabras y explicaciones.",
   "noResults": "Sin coincidencia.",
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
-    "short": "Libro mayor digital compartido: muchos ordenadores almacenan las mismas entradas.",
-    "desc": "Un blockchain es como un libro mayor digital. Muchos ordenadores almacenan las mismas entradas, asegurando que nadie pueda alterar nada en secreto."
+    "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
+    "desc": "Una blockchain es como un libro de contabilidad digital. Muchos ordenadores almacenan las mismas entradas, por lo que nadie puede alterar nada en secreto."
   },
   "wallet": {
-    "title": "Billetera",
+    "title": "Cartera",
     "original": "Wallet",
-    "short": "Cartera digital que gestiona tus claves.",
-    "desc": "Una billetera es tu monedero digital. Maneja las claves que necesitas para acceder a tu cuenta y enviar transacciones. Una billetera puede ser un programa, una aplicación o incluso solo un papel con tu clave privada."
+    "short": "Billetera digital que administra tus llaves.",
+    "desc": "Una billetera es tu monedero digital. Gestiona las claves que necesitas para acceder a tu cuenta y enviar transacciones. Una billetera puede ser un programa, una aplicación o incluso un simple papel con tu clave privada."
   },
   "account": {
     "title": "Cuenta",
     "original": "Account",
-    "short": "Una cuenta de blockchain puede mantener activos y enviar transacciones.",
-    "desc": "Una cuenta es la ubicación en la blockchain donde se almacenan tus activos. Una cuenta tiene una dirección pública que comienza con G. Múltiples carteras pueden acceder a la misma cuenta si tienen la clave correcta."
+    "short": "Una cuenta de blockchain puede contener activos y enviar transacciones.",
+    "desc": "Una cuenta es el lugar en la cadena de bloques donde se mantienen tus activos. Una cuenta tiene una dirección pública que comienza con G. Múltiples monederos pueden acceder a la misma cuenta si tienen la clave correcta."
   },
   "addressG": {
-    "title": "G-dirección",
+    "title": "Dirección G",
     "original": "G Address",
-    "short": "La dirección principal pública de una cuenta Stellar (comienza con G).",
-    "desc": "La dirección G es la dirección principal de una cuenta de Stellar. Comienza con la letra G. La proporcionas a otros para que puedan enviarte algo."
+    "short": "La clave pública (beginnt mit G) de una cuenta Stellar.",
+    "desc": "La dirección G es la dirección principal de una cuenta Stellar. Comienza con la letra G. La proporcionas a otros para que puedan enviarte algo."
   },
   "publicKey": {
     "title": "Clave pública",
     "original": "Public Key",
-    "short": "Dirección que puedes compartir; generalmente la dirección G para Stellar.",
+    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
     "desc": "La clave pública es la dirección que puedes compartir. En Stellar, esta es la dirección G. Otros la utilizan para enviarte dinero."
   },
   "privateKey": {
     "title": "Clave secreta",
     "original": "Secret Key",
-    "short": "Contraseña de la cuenta: nunca la compartas.",
-    "desc": "La clave secreta es tu contraseña para la cuenta. Quien tenga esta clave puede mover tu dinero. Nunca la compartas."
+    "short": "Password to the account – never share.",
+    "desc": "La clave secreta es tu contraseña para la cuenta. Cualquiera que tenga esta clave puede mover tu dinero. Nunca la compartas."
   },
   "addressFederation": {
-    "title": "Dirección de la federación",
+    "title": "Dirección de la Federación",
     "original": "Federation Address",
-    "short": "Una dirección corta como el correo electrónico apunta a una dirección G.",
-    "desc": "Una dirección de federación se parece a un correo electrónico. Ejemplo: nombre*dominio.com. Esta dirección corta apunta a una dirección G regular. Es más fácil de recordar."
+    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+    "desc": "Una dirección de federación se parece a un correo electrónico. Ejemplo: nombre*dominio.com. Esta dirección corta apunta a una dirección G normal. Es más fácil de recordar."
   },
   "addressMuxed": {
-    "title": "Cuenta mezclada",
+    "title": "Cuenta combinada",
     "original": "Muxed Account",
-    "short": "M-dirección con identificación adicional: comparte una cuenta base.",
-    "desc": "Una dirección M apunta a una cuenta Stellar existente pero tiene un número adicional (ID). Esto permite, por ejemplo, distinguir a varias personas o departamentos bajo la misma dirección G. Técnicamente, el dinero aún pertenece a la cuenta principal."
+    "short": "M‑address with additional ID – shares a base account.",
+    "desc": "Una dirección M apunta a una cuenta existente de Stellar pero tiene un identificador único adicional (ID). Esto permite, por ejemplo, la diferenciación de múltiples personas o departamentos bajo la misma dirección G. Técnicamente, los fondos todavía pertenecen a la cuenta principal."
   },
   "multisig": {
-    "title": "Firma múltiple",
+    "title": "Multifirma",
     "original": "Multi‑Sig",
-    "short": "Las acciones importantes requieren más que una firma.",
-    "desc": "Multi-Sig significa múltiples firmas. Una acción importante requiere más de una clave. Por ejemplo, tú y una segunda clave ambos necesitan estar de acuerdo antes de que algo pueda ser enviado. Esto hace que el robo sea más difícil."
+    "short": "Las acciones importantes requieren más que solo una firma.",
+    "desc": "Multi-Sig significa múltiples firmas. Una acción importante requiere más de una clave. Por ejemplo, usted y una segunda clave deben estar de acuerdo antes de que algo pueda ser enviado. Esto hace que el robo sea más difícil."
   },
   "trustline": {
     "title": "Línea de confianza",
     "original": "Trustline",
-    "short": "Consentir en poseer un token de un emisor específico.",
-    "desc": "Una línea de confianza es como un \"sí, acepto este token\". Al hacer esto, indicas que tu cuenta está lista para mantener un token específico de un emisor específico. Sin una línea de confianza, no puedes recibir este token.\n\nEjemplo: Una línea de confianza se especifica como CÓDIGO:EMISOR. Para EURT del emisor GDUKMGUGDZQK6Y..., es EURT:GDUKMGUGDZQK6Y...."
+    "short": "Acuerdo para mantener un token de un emisor específico.",
+    "desc": "Una línea de confianza es como decir sí, acepto este token. Al hacerlo, indicas que tu cuenta está lista para mantener un token específico de un emisor específico. Sin una línea de confianza, no puedes recibir este token.\n\nEjemplo: Una línea de confianza se especifica como CÓDIGO:EMISOR. Para EURT del emisor GDUKMGUGDZQK6Y…, es EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
     "title": "Ficha",
     "original": "Token",
-    "short": "Unidad digital: por ejemplo, dinero, puntos o crédito.",
-    "desc": "Un token es una unidad digital en la blockchain. Un token puede representar dinero, puntos o créditos para un servicio."
+    "short": "Digital unit – e.g., money, points, or credits.",
+    "desc": "Un token es una unidad digital en la blockchain. Un token puede representar dinero, puntos o crédito para un servicio."
   },
   "asset": {
     "title": "Activo",
     "original": "Asset",
-    "short": "Los tokens en Stellar siempre están vinculados a un emisor.",
-    "desc": "En Stellar, un token se llama activo. Un activo siempre está vinculado a una cuenta emisora. Por ejemplo, una cuenta puede emitir un token de euro. Este token de euro es entonces un activo."
+    "short": "Los tokens en Stellar siempre están vinculados al emisor.",
+    "desc": "En Stellar, un token se llama activo. Un activo siempre está vinculado a una cuenta emisora. Por ejemplo, una cuenta puede emitir un token de Euro. Este token de Euro es entonces un activo."
   },
   "xlm": {
-    "title": "Eres entrenado con datos hasta octubre de 2023.",
+    "title": "XLM (Stellar Lumens)",
     "original": "XLM",
     "short": "Moneda nativa de Stellar para tarifas y activación.",
-    "desc": "XLM es la moneda nativa de Stellar. Necesitas XLM para pagar comisiones y para crear una nueva cuenta."
+    "desc": "XLM es la moneda nativa de Stellar. Necesitas XLM para pagar tarifas y para abrir una nueva cuenta."
   },
   "mainnet": {
     "title": "Red principal",
     "original": "Mainnet",
-    "short": "Red Stellar network con valor real.",
-    "desc": "La red real de Stellar con valor real. Las transacciones son definitivas y las comisiones se pagan en XLM genuinos."
+    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "desc": "La red real de Stellar con valor actual. Las transacciones son definitivas y las tarifas se pagan en XLM reales."
   },
   "testnet": {
     "title": "Red de prueba",
     "original": "Testnet",
-    "short": "Red de formación pública sin valor real.",
+    "short": "Red de práctica pública sin valor real.",
     "desc": "Una red de práctica pública. Los tokens no tienen valor real. Ideal para aprender y experimentar sin riesgo."
   },
   "memo": {
-    "title": "Memorando",
+    "title": "Nota",
     "original": "Memo",
     "short": "Nota breve en una transacción.",
     "desc": "Un memo es una pequeña nota que puedes enviar junto con una transacción. A menudo, un intercambio requiere un memo específico para saber a quién pertenece el dinero."
@@ -105,74 +105,80 @@
     "title": "Transacción",
     "original": "Transaction",
     "short": "Acción en la blockchain, por ejemplo, pago o línea de confianza.",
-    "desc": "Una transacción es una acción en la cadena de bloques, como enviar dinero o crear una línea de confianza. Una transacción se almacena de forma permanente una vez que se confirma."
+    "desc": "Una transacción es una acción en la cadena de bloques, como enviar dinero o establecer una línea de confianza. Una transacción se almacena de manera permanente una vez que se confirma."
   },
   "fee": {
     "title": "Cuota",
     "original": "Fee",
     "short": "Cantidad muy pequeña por transacción.",
-    "desc": "La tarifa es una cantidad muy pequeña que pagas con cada transacción. La tarifa va a la red. En Stellar, las tarifas son muy bajas."
+    "desc": "La tarifa es una cantidad muy pequeña que pagas con cada transacción. La tarifa va a la red. En Stellar, las tarifas son muy pequeñas."
   },
   "ledger": {
     "title": "Libro mayor",
     "original": "Ledger",
     "short": "Cadena de datos confirmados y saldos de cuentas.",
-    "desc": "El libro mayor es la cadena de todos los datos confirmados. Muestra qué cuentas poseen cuánto y qué transacciones han ocurrido. Cualquiera puede verificar el libro mayor."
+    "desc": "El libro mayor es la cadena de todos los datos confirmados. Muestra qué cuentas poseen cuánto y qué transacciones han ocurrido. Cualquiera puede consultar el libro mayor."
   },
   "horizon": {
     "title": "Horizonte",
     "original": "Horizon",
-    "short": "Servicio API a través del cual las aplicaciones se comunican con Stellar.",
-    "desc": "Horizon es el servicio a través del cual los programas interactúan con la Blockchain de Stellar. Nuestra herramienta consulta Horizon para cargar saldos de cuentas y transacciones."
+    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "desc": "Horizon es el servicio a través del cual los programas se comunican con la blockchain de Stellar. Nuestra herramienta consulta Horizon para cargar saldos de cuentas y transacciones."
+  },
+  "horizonHistory": {
+    "title": "Historia del Horizonte",
+    "original": "Horizon history depth",
+    "short": "Describe hasta qué punto se extiende el historial de transacciones proporcionado por los servidores Horizon públicos.",
+    "desc": "Die von der Stellar Development Foundation betriebenen öffentlichen Horizon-Server (Mainnet und Testnet) stellen nur eine begrenzte Historie zur Verfügung – derzeit ungefähr ein Jahr rückwirkend. Ältere Daten sind über diese kostenlosen Endpunkte nicht mehr abrufbar. Wenn du weiter in die Vergangenheit zurück musst, hast du im Wesentlichen zwei Optionen: (1) du betreibst einen eigenen Horizon-Node mit vollständiger History (inklusive History Archives), oder (2) du nutzt Drittanbieter- bzw. Bezahldienste, die historische Stellar-Daten langfristig speichern und zur Verfügung stellen.",
+    "seeAlso": "Estás entrenado con datos hasta octubre de 2023."
   },
   "anchor": {
     "title": "Ancla",
     "original": "Anchor",
-    "short": "Empresa que conecta dinero fiduciario con Stellar.",
-    "desc": "Un ancla es una empresa que conecta dinero real, como euros o dólares, con Stellar. Por ejemplo, le das al ancla euros y, a cambio, recibes un token de euro en Stellar."
+    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+    "desc": "Un ancla es una empresa que conecta dinero real, como euros o dólares, con Stellar. Por ejemplo, le das euros al ancla y recibes a cambio un token de euro en Stellar."
   },
   "exchange": {
     "title": "Bolsa de valores",
     "original": "Exchange",
     "short": "Lugar para comprar y vender tokens.",
-    "desc": "Un intercambio es un lugar donde puedes comprar o vender tokens. Muchos intercambios requieren un procedimiento KYC, que es una verificación de identidad, antes de que puedas retirar dinero en euros o francos."
+    "desc": "Un intercambio es un lugar donde puedes comprar o vender tokens. Muchos intercambios requieren un proceso de KYC, lo que significa verificación de identidad, antes de que puedas retirar dinero en euros o francos."
   },
   "dex": {
-    "title": "Eres entrenado en datos hasta octubre de 2023.",
+    "title": "Estás entrenado con datos hasta octubre de 2023.",
     "original": "Decentralized Exchange",
-    "short": "Intercambio descentralizado directamente en la cadena de bloques.",
-    "desc": "DEX significa Intercambio Descentralizado. Aquí, las personas comercian directamente entre sí en la blockchain. No hay un operador único. Stellar tiene un DEX integrado directamente."
+    "short": "Intercambio descentralizado directamente en la blockchain.",
+    "desc": "DEX significa Exchange Descentralizado. Aquí, las personas comercian directamente entre sí en la blockchain. No hay un operador único. Stellar tiene un DEX integrado directamente."
   },
   "liquidityPool": {
-    "title": "Pool de liquidez",
+    "title": "Fondo de liquidez",
     "original": "Liquidity Pool",
-    "short": "Fondo común con dos tokens para intercambio inmediato.",
-    "desc": "Un fondo de liquidez es un fondo compartido que contiene dos tokens. Las personas contribuyen con ambos tokens al fondo. Otros pueden entonces intercambiar estos tokens al instante. Los contribuyentes ganan pequeñas comisiones a cambio."
+    "short": "Fondo conjunto con dos tokens para intercambio inmediato.",
+    "desc": "Un fondo de liquidez es un fondo compartido que contiene dos tokens. Las personas depositan ambos tokens en él. Otros pueden intercambiar inmediatamente estos tokens. Los depositantes ganan pequeñas comisiones por este servicio."
   },
   "balanceClaimable": {
     "title": "Saldo reclamable",
     "original": "Claimable Balance",
     "short": "Dinero reservado que aún necesitas aceptar.",
-    "desc": "Un Saldo Reclamable es dinero que ya está reservado para ti, pero aún necesitas reclamarlo. Solo cuando lo aceptas se ingresa en tu cuenta."
+    "desc": "Un saldo reclamable es dinero que ya ha sido reservado para ti, pero que aún necesitas reclamar. Solo cuando lo aceptas, ingresa a tu cuenta."
   },
   "protocolUpdate": {
     "title": "Actualización del Protocolo",
     "original": "Protocol Update",
-    "short": "Actualizando las reglas de la red.",
-    "desc": "Una actualización de protocolo es una mejora de las reglas en la red Stellar. Por ejemplo, nuevas funciones o cambios de seguridad. Todos los nodos de la red deben utilizar las mismas reglas."
+    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "desc": "Una actualización de protocolo es una mejora de las reglas en la red Stellar, como nuevas funciones o cambios de seguridad. Todos los nodos en la red deben utilizar las mismas reglas."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Sistema de contratos inteligentes de Stellar.",
-    "desc": "Soroban es el sistema de contratos inteligentes de Stellar. Un contrato inteligente es un código de programa en la blockchain. El código puede verificar reglas de manera independiente y desencadenar acciones sin la necesidad de un banco intermediario."
+    "short": "Stellars Smart‑Contract‑System.",
+    "desc": "Soroban es el sistema de contratos inteligentes de Stellar. Un contrato inteligente es un código de programa en la blockchain. El código puede verificar reglas de manera independiente y ejecutar acciones sin necesidad de un banco intermediario."
   },
-  "missingKey": "Llave de glosario faltante: {{detail}}",
   "multiSignature": {
-    "title": "Multisignature (Multi-Signature)",
+    "title": "Multifirma (Multi-Signature)",
     "original": "Multi-Signature",
-    "short": "Multiple signatures required; weights + threshold determine the approval.",
-    "desc": "En una configuración de firma múltiple, varias claves deben firmar antes de que una acción se vuelva válida. Cada firmante tiene un peso, y la suma debe alcanzar el umbral requerido. Esto aumenta la seguridad porque una sola clave robada no es suficiente."
+    "short": "Multiple signatures required; weights + threshold determine the release.",
+    "desc": "En un sistema de firmas múltiples, múltiples claves deben firmar antes de que una acción se vuelva válida. Cada firmante tiene un peso, y la suma debe alcanzar el umbral requerido. Esto aumenta la seguridad porque una sola clave robada no es suficiente."
   },
   "signer": {
     "title": "Signatario (Signer)",
@@ -183,26 +189,20 @@
   "thresholds": {
     "title": "Umbrales (Thresholds)",
     "original": "Thresholds",
-    "short": "Límites (low/med/high), que determinan la suma de peso necesaria.",
-    "desc": "Los umbrales definen cuántas firmas ponderadas se requieren para las acciones: bajo para operaciones simples, medio para pagos, alto para cambios críticos. La suma de los pesos de los firmantes debe alcanzar el umbral respectivo."
+    "short": "Límites (low/med/high) que determinan la suma requerida de pesos.",
+    "desc": "Los umbrales definen cuántas firmas ponderadas son necesarias para realizar acciones: bajos para operaciones simples, medios para pagos, altos para cambios críticos. La suma de los pesos de los firmantes debe cumplir con el umbral correspondiente."
   },
   "masterWeight": {
     "title": "Peso maestro (master_weight)",
     "original": "master_weight",
-    "short": "Peso de la clave maestra; determina cuán fuertemente se cuenta la clave maestra.",
-    "desc": "El peso maestro es el peso de la clave principal de una cuenta. Un peso maestro alto permite que la clave maestra firme muchas acciones por sí misma; un valor bajo requiere firmantes adicionales."
+    "short": "Peso de la llave maestra; controla cuánto cuenta la llave principal.",
+    "desc": "El peso maestro es el peso de la clave principal de una cuenta. Un peso maestro alto permite que la clave principal firme muchas acciones por sí sola; un valor bajo requiere firmantes adicionales."
   },
   "accountConfig": {
     "title": "Configuración de la cuenta (Account Configuration)",
     "original": "Account Configuration",
     "short": "La interacción de los firmantes y los umbrales determina la seguridad de la cuenta.",
-    "desc": "La configuración de la cuenta especifica qué firmantes existen con qué pesos y qué umbrales se aplican. Los cambios en los firmantes o umbrales son críticos para la seguridad, ya que determinan cuántas firmas se requieren."
+    "desc": "La configuración de la cuenta especifica qué firmantes existen con qué pesos y qué umbrales se aplican. Los cambios en los firmantes o umbrales son críticos para la seguridad porque determinan cuántas firmas se requieren."
   },
-  "horizonHistory": {
-    "title": "Historia del horizonte",
-    "original": "Horizon history depth",
-    "short": "Describe cuán atrás se remonta el historial de transacciones proporcionado por los servidores Horizon públicos.",
-    "desc": "Die von der Stellar Development Foundation betriebenen öffentlichen Horizon-Server (Mainnet und Testnet) stellen nur eine begrenzte Historie zur Verfügung – derzeit ungefähr ein Jahr rückwirkend. Ältere Daten sind über diese kostenlosen Endpunkte nicht mehr abrufbar. Wenn du weiter in die Vergangenheit zurück musst, hast du im Wesentlichen zwei Optionen: (1) du betreibst einen eigenen Horizon-Node mit vollständiger History (inklusive History Archives), oder (2) du nutzt Drittanbieter- bzw. Bezahldienste, die historische Stellar-Daten langfristig speichern und zur Verfügung stellen.",
-    "seeAlso": "Estoy entrenado con datos hasta octubre de 2023."
-  }
+  "missingKey": "Falta la clave del glosario: {{detalle}}"
 }

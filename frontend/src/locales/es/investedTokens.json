@@ -1,58 +1,58 @@
 {
-  "hintEnterPublicKey": "Primero, ingrese una clave pública.",
+  "hintEnterPublicKey": "Por favor, introduce primero una clave pública.",
   "columns": {
     "amount": "Cantidad",
     "compromised": "Comprometido",
     "deactivated": "Desactivado",
-    "destination": "Cartera objetivo",
+    "destination": "Cartera de destino",
     "issuer": "Emisor",
-    "label": "Etiqueta.",
-    "memo": "Memorándum",
+    "label": "Etiqueta",
+    "memo": "Nota",
     "payments": "Pagos",
     "date": "Fecha",
     "token": "Ficha"
   },
   "decimals": {
     "auto": "Automáticamente",
-    "label": "Lugares decimales:"
+    "label": "Decimales:"
   },
   "filter": {
-    "memoPlaceholder": "Filtrar por nota, dirección de billetera o etiqueta.",
-    "tokenPlaceholder": "Filtrar por Token (CÓDIGO:EMISOR)"
+    "memoPlaceholder": "Filtrar por memo, dirección de billetera o etiqueta.",
+    "tokenPlaceholder": "Filtrar por token (CODE:ISSUER)"
   },
   "item": {
-    "memo": "Memo: \"{{memo}}\" (Pagos: {{occurrences}})",
+    "memo": "Memorándum: \"{{memo}}\" (Pagos: {{occurrences}})",
     "token": "Token: {{token}} (Pagos: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
-  "missingPublicKey": "Clave pública ausente.",
-  "moreTruncated": "... y {{extra}} grupos adicionales",
-  "toWallet": "A Monedero: {{address}}",
-  "total": "Número de tokens comprados: {{count}}",
-  "totalTokens": "Número de tokens (activos) invertidos: {{count}}",
+  "missingPublicKey": "Clave pública faltante.",
+  "moreTruncated": "… y {{extra}} otros grupos adicionales.",
+  "toWallet": "a Billetera: {{address}}",
+  "total": "Número de fichas compradas: {{count}}",
+  "totalTokens": "Número de tokens invertidos (Assets): {{count}}",
   "value": {
-    "units": "{{amount}} piezas",
+    "units": "{{cantidad}} piezas",
     "xlm": "{{amount}} XLM"
   },
   "view": {
     "label": "Filtrar por:",
-    "memo": "Memos (Groupfund)",
-    "token": "Token (cantidad comprada)"
+    "memo": "Memos",
+    "token": "Token (gekaufte Menge)"
   },
   "toggles": {
-    "showTotals": "Suma total",
-    "qsiOnly": "Lo siento, no estoy seguro de qué se refiere \"Sum QSI GF\". ¿Podrías proporcionar más contexto o detalles? Así podré ayudarte mejor."
+    "showTotals": "Cantidad total",
+    "qsiOnly": "El término \"Sum QSI GF\" no proporciona suficiente contexto para determinar su significado o proporcionar una traducción precisa al español. Podría ser un acrónimo o una abreviatura específica de algún contexto técnico, empresarial o deportivo. Si puedes proporcionar más información o contexto, estaré encantado de ayudarte mejor."
   },
   "hints": {
-    "qsiListSet": "Nota: Puedes encontrar la lista blanca en Configuración → Carteras de confianza (QSI).",
-    "pageTime": "Cargar una página tarda aproximadamente 0.2 segundos → 100 páginas ≈ 20 segundos → 1000 páginas ≈ 200 segundos (≈ 3:20 minutos)."
+    "qsiListSet": "Nota: Puedes encontrar la lista GF en Configuración → Carteras de confianza (QSI).",
+    "pageTime": "Cargar una página lleva aproximadamente 0,2 segundos → 100 páginas ≈ 20 segundos → 1000 páginas ≈ 200 segundos (≈ 3:20 minutos)."
   },
   "walletCapInfo": "Nota: Una billetera puede contener un máximo de 1000 líneas de confianza.",
   "action": {
-    "load": "Cargando"
+    "load": "Tienda"
   },
   "history": {
     "availableFrom": "Servidor (Horizon) – Historia desde",
-    "hintFullHistory": "Nota: El historial del libro mayor del servidor Horizon solo se remonta hasta {{available}}. Solo se mostrarán los datos hasta ese punto. Por lo tanto, la fecha de inicio elegida está limitada. Para obtener datos más antiguos, se requiere un proveedor de historial completo (generalmente de pago), que podría estar disponible en el futuro."
+    "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
   }
 }

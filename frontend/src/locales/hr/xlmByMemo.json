@@ -1,76 +1,76 @@
 {
   "page": {
-    "title": "Filtriraj XLM po Memorandumu",
-    "noPublicKey": "Nije učitan javni ključ. Molimo prvo unesite javni ključ."
+    "title": "Filtriraj XLM prema dopisu",
+    "noPublicKey": "Javni ključ nije učitan. Molimo unesite javni ključ prvo."
   },
   "action": {
     "calculate": "Izračunaj",
-    "loading": "Mogu pomoći s općim upitima i objašnjenjima, ali za specifične izračune ili analize aktualnih podataka trebam konkretnu zadaću ili temu. Možete li, molim vas, pružiti više informacija ili detalja?"
+    "loading": "Izračunaj…"
   },
   "date": {
-    "from": "Od (nije obavezno)",
-    "to": "Do listopada 2023. (nije obavezno)"
+    "from": "Iz (optional)",
+    "to": "Do (optional)"
   },
   "debug": {
-    "incoming": "Dolazno – do: {{toMe}}, stvoriti→me: {{createToMe}}, izvorno→me: {{nativeInToMe}}",
-    "incomingOverview": "Unosi: {{total}} • Uključeni novčanici: {{unique}}",
-    "memo": "Memorije u prozoru: {{any}} • točne memorije: {{exact}}",
-    "types": "Vrste – plaćanje: {{pay}}, putanja: {{path}}, kreiraj: {{create}}, ostalo: {{other}}"
+    "incoming": "Dolazno – do: {{toMe}}, kreiraj→mene: {{createToMe}}, izvorno→meni: {{nativeInToMe}}",
+    "incomingOverview": "Unosi: {{total}} • Sudjelujući novčanici: {{unique}}",
+    "memo": "Memorije u Prozoru: {{any}} • Točne Memorije: {{exact}}",
+    "types": "Vrste – plaćanje: {{pay}}, putanja: {{path}}, kreiranje: {{create}}, ostalo: {{other}}"
   },
   "export": {
-    "csv": "Provjeri CSV (utakmice)",
-    "csvAll": "Izvozi sve operacije",
-    "csvBoth": "Spremi oba CSV-a.",
-    "csvMatches": "Provjeri CSV (Podudaranja)"
+    "csv": "Provjerite CSV (Treffer)",
+    "csvAll": "Izvezi sve operacije",
+    "csvBoth": "Spremite oba CSV-a.",
+    "csvMatches": "Provjeri CSV (Treffer)"
   },
   "exportCsv": {
-    "failed": "Izvoz CSV-a nije uspio: {{detail}}"
+    "failed": "Neuspjeh izvoza CSV-a: {{detail}}"
   },
   "memo": {
-    "label": "Pretraživanje teksta putem memoranduma (podstring, osjetljivo na velika i mala slova)",
-    "placeholder": "Memo (podniz, osjetljivost na velika i mala slova)"
+    "label": "Tekst pretrage memoranduma (substring, case-sensitive)",
+    "placeholder": "Memorandum (zadrži engleski izraz 1)"
   },
-  "overviewLine": "Primljena plaćanja: {{total}} • uključeni novčanici: {{unique}}",
+  "overviewLine": "Potvrde o plaćanju: {{total}} • sudjelujući novčanici: {{unique}}",
   "result": {
-    "label": "Ukupni iznos:",
+    "label": "Ukupan iznos:",
     "value": "{{amount}} XLM"
   },
   "summary": {
-    "amount": "Zbroj: {{amount}} XLM",
-    "correctCount": "Unosi s ispravnom zabilješkom: {{n}}",
+    "amount": "Iznos: {{amount}} XLM",
+    "correctCount": "Unosi s ispravnom bilješkom: {{n}}",
     "count": "Količina: {{n}}",
-    "label": "Usporedba (svi unosi)",
-    "otherCount": "Unosi s netočnom/izostavljenom napomenom: {{n}}",
-    "unique": "Jedinstveni novčanici (svi): {{n}}",
+    "label": "Comparison (all inputs)",
+    "otherCount": "Unosi s netočnom/nedostajućom bilješkom: {{n}}",
+    "unique": "Jedinstveni novčanici (alle): {{n}}",
     "uniqueWallets": "Jedinstveni novčanici: {{n}}"
   },
   "time": {
-    "setToNow": "Postavi trenutno vrijeme",
+    "setToNow": "Postavi trenutno vrijeme.",
     "setToNowHint": "Postavite polje za vrijeme na trenutno vrijeme."
   },
-  "title": "Ukupni XLM nakon memoranduma",
+  "title": "XLM stanje nakon dopisa",
   "topLargest": {
-    "button": "Top 20 unosa (zapis)",
+    "button": "Top 20 unosa (Memo)",
     "clipboard": "Kopiraj u međuspremnik",
     "csv": "Preuzmi CSV",
-    "scanning": "... pregledava najbolje unose",
-    "title": "20 najboljih unosa za bilješke u razdoblju"
+    "scanning": "… scannt Top-Eingänge",
+    "title": "Prvih 20 unosa za dopis u tom razdoblju"
   },
   "tz": {
     "cdt": "CDT (UTC−5)",
-    "cst": "CST (UTC−6)",
-    "europe_zurich": "Europa/Zurich (CET/CEST)",
+    "cst": "Središnje standardno vrijeme (UTC−6)",
+    "europe_zurich": "Europe/Zurich (CET/CEST)",
     "label": "Vremenska zona za datum/vrijeme",
     "local": "Lokalna vremenska zona",
-    "note": "Datum/Uvrijeme će biti interpretirano u odabranoj vremenskoj zoni i automatski pretvoreno u UTC prije pretraživanja.",
-    "utc": "UTC",
-    "window": "Korišteni UTC vremenski okvir: {{from}} → {{to}} (isključivo)"
+    "note": "Datum i vrijeme se tumače u odabranoj vremenskoj zoni i automatski se pretvaraju u UTC prije pretraživanja.",
+    "utc": "Koordinirano univerzalno vrijeme (UTC)",
+    "window": "Korišteno UTC vremensko razdoblje: {{from}} → {{to}} (Bis exklusiv)"
   },
   "wrongMemos": {
-    "button": "Prikaži novčanike s netočnim/praznim porukama.",
+    "button": "Prikaži novčanike s pogrešnom/praznom napomenom",
     "clipboard": "Kopiraj u međuspremnik",
     "columns": {
-      "amount": "Iznos",
+      "amount": "Količina",
       "created_at": "Kreirano dana",
       "from": "Od",
       "memo": "Zapisnik",
@@ -78,9 +78,9 @@
     },
     "csv": "Preuzmi CSV",
     "failed": "Pogreška pri učitavanju uplata s netočnom/praznom napomenom.",
-    "hint": "Filtrira dolazna plaćanja unutar tog razdoblja i prikazuje pošiljatelje s netočnim/praznim bilješkama.",
-    "scanning": "... skenira lažne/prazne memorandume",
-    "summary": "Broj: {{count}} • Ukupno: {{sum}} XLM • Jedinstveni novčanici: {{unique}}",
+    "hint": "Filtrira dolazne uplate unutar razdoblja i prikazuje pošiljatelje s netočnim/praznim bilješkama.",
+    "scanning": "… skenira lažne/prazne bilješke",
+    "summary": "Količina: {{count}} • Ukupno: {{sum}} XLM • Jedinstveni novčanici: {{unique}}",
     "title": "Lažne/prazne bilješke tijekom razdoblja"
   }
 }

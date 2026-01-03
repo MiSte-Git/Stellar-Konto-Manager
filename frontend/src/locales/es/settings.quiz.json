@@ -1,4 +1,4 @@
 {
-  "warnOnActiveQuiz": "Mostrar advertencia durante el cuestionario en curso.",
-  "warnOnActiveQuiz.desc": "Advertir al salir de la página con preguntas ya respondidas."
+  "warnOnActiveQuiz": "Mostrar advertencia durante el cuestionario en curso",
+  "warnOnActiveQuiz.desc": "Advertir sobre las preguntas ya respondidas antes de salir de la página."
 }

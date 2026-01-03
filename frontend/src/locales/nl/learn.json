@@ -1,36 +1,39 @@
 {
-  "menu": "Stellar Quiz voor Beginners",
-  "menuHint": "Leeropzet",
+  "menu": "Sterrenquiz voor Beginners",
+  "menuHint": "Overzicht van het leren",
   "pageTitle": "Leerpagina",
-  "pageIntro": "Korte, gebruiksvriendelijke lessen over blockchain en het Stellar-netwerk. Geen voorkennis vereist.",
+  "pageIntro": "Korte, beginnersvriendelijke lessen over blockchain en het Stellar-netwerk. Geen eerdere kennis vereist.",
   "labels": {
     "goal": "Doelstelling",
-    "task": "Taak",
+    "task": "Opdracht",
     "outcome": "Resultaat",
     "reward": "Beloning"
   },
+  "actions": {
+    "startQuiz": "Quiz starten"
+  },
   "glossary": {
-    "link": "Open woordenlijst",
+    "link": "Glossarium openen",
     "pageTitle": "Woordenlijst"
   },
   "progress": {
+    "title": "Leerproces",
     "saved": "Voortgang opgeslagen",
     "starsLabel": "{count} ★",
-    "error": "Vooruitgang kon niet worden opgeslagen.",
+    "error": "Voortgang kon niet worden opgeslagen.",
     "clearAll": "Voortgang verwijderen",
     "cleared": "Voortgang verwijderd",
     "setStarsGroup": "Sterren toekennen",
     "setStars": "Stel {count} sterren in",
-    "completed": "Je bent getraind op gegevens tot oktober 2023.",
-    "markComplete": "Als voltooid markeren",
+    "completed": "Voltooid",
+    "markComplete": "Markeren als voltooid",
     "export": "Exporteren",
-    "exported": "Vooruitgang geëxporteerd",
+    "exported": "Voortgang geëxporteerd",
     "import": "Importeren",
-    "imported": "Voortgang geïmporteerd",
-    "title": "Leerproces"
+    "imported": "Vooruitgang geïmporteerd"
   },
   "back": "Terug",
-  "backToTop": "Opwaarts",
+  "backToTop": "Omhoog",
   "badges": {
     "title": "Badge",
     "chapters": {
@@ -44,117 +47,114 @@
     "success": "Succes",
     "validation": "Validatie",
     "pending": "Wachten op validatie",
-    "retry": "Probeer het alstublieft opnieuw.",
-    "noData": "Geen quiz beschikbaar.",
-    "comingSoon": "Oefeningen voor deze les volgen binnenkort.",
-    "testnetOnly": "Gebruik alleen TESTNET. Voer nooit echte geheime sleutels in. Wij bewaren geen geheimen."
+    "retry": "Probeer het opnieuw, alstublieft.",
+    "noData": "Geen quiz beschikbaar",
+    "comingSoon": "De oefening voor deze les volgt binnenkort.",
+    "testnetOnly": "Gebruik alleen TESTNET. Voer nooit echte geheime sleutels in. We slaan geen geheimen op."
   },
   "import": {
-    "title": "Importvoortgang",
-    "summary": "Samenvatting: {lessons} lessen, {stars} sterren in totaal. Oefenmetadata: {meta}",
+    "title": "Voortgang van importeren",
+    "summary": "Samenvatting: {lessons} lessen, {stars} totale sterren. Praktijkmetadata: {meta}",
     "metaYes": "ja",
     "metaNo": "nee",
-    "createdAt": "Bestand gemaakt",
-    "strategy": "Hoe importeer je?",
-    "merge": "Samenvoegen (Bestaande behouden, aanvullen vanuit bestand)",
-    "replace": "Overschrijven (bestaande voortgang vervangen)",
-    "includePracticeMeta": "Adopteer praktijkmetadata",
+    "createdAt": "Bestand aangemaakt",
+    "strategy": "Hoe te importeren?",
+    "merge": "Samenvoegen (Keep existing, supplement from file)",
+    "replace": "Overschrijven (replace existing progress)",
+    "includePracticeMeta": "Praktijkmetadata opnemen",
     "cancel": "Annuleren",
     "confirm": "Importeren",
     "invalid": "Ongeldig of incompatibel bestand"
   },
   "lesson1": {
-    "title": "Een blockchain is een gedecentraliseerd digitaal grootboek dat transacties registreert over veel computers, op een manier dat de geregistreerde transacties niet met terugwerkende kracht kunnen worden gewijzigd. Elk blok in de keten bevat meerdere transacties, en elke keer als er een nieuwe transactie op de blockchain plaatsvindt, wordt een record van die transactie toegevoegd aan het grootboek van elke deelnemer. Dit zorgt voor transparantie en veiligheid, aangezien de gegevens verspreid en geverifieerd worden over meerdere nodes, waardoor het moeilijk is voor een enkele entiteit om de informatie te manipuleren.",
-    "goal": "Het principe van blockchain begrijpen",
-    "task": "Stel bouwstenen (transacties) samen tot een keten",
-    "learningOutcome": "Een blockchain is een onveranderlijk digitaal grootboek dat collectief wordt geverifieerd door alle deelnemers.",
+    "title": "Wat is een blockchain?",
+    "goal": "Begrijpen van het principe van blockchain",
+    "task": "Monteer bouwstenen (Transaktionen) tot een ketting",
+    "learningOutcome": "Een blockchain is een onveranderlijk digitaal grootboek dat iedereen gezamenlijk kan verifiëren.",
     "reward": "⭐ 1 – Blokkenbouwer"
   },
   "lesson2": {
-    "title": "Begrijpen van Sterrenkunde",
-    "goal": "Ken het verschil met andere blockchains.",
-    "task": "Stuur token naar een vriend (simulatie) en bekijk de snelheid.",
-    "learningOutcome": "Stellar is snel, goedkoop en zonder mining.",
-    "reward": "⭐ 1 – Snelle Zender"
+    "title": "Begrijp Stellar",
+    "goal": "Ken de verschillen met andere blockchains.",
+    "task": "Stuur token naar vriend (Simulation) en bekijk snelheid",
+    "learningOutcome": "Stellar is snel, goedkoop en omvat geen mining.",
+    "reward": "⭐ 1 – Snelle Verzender"
   },
   "lesson3": {
-    "title": "Openbaar & Privacy",
-    "goal": "Begrip van pseudonimiteit",
-    "task": "Bekijk openbare transacties en raad of de verzender bekend is.",
+    "title": "Publiek & Privacy",
+    "goal": "Inzicht in pseudonimiteit",
+    "task": "Bekijk openbare transactie en raad of de afzender bekend is.",
     "learningOutcome": "Alles is zichtbaar, maar niemand kent de echte naam.",
-    "reward": "⭐ 1 – Gegevensprivacy-detective"
+    "reward": "⭐ 1 – Gegevensbeschermingsdetective"
   },
   "lesson4": {
-    "title": "Je account",
-    "goal": "Begrijp de structuur en betekenis van publieke/prive sleutels.",
-    "task": "Overeenkomstspel: Wat is Openbaar, Wat is Geheim",
-    "learningOutcome": "Alleen de geheime sleutel biedt toegang; de openbare sleutel mag gedeeld worden.",
-    "reward": "⭐ 1 – Sleutelbewaarder"
+    "title": "Uw account",
+    "goal": "Begrip van de structuur en betekenis van Public/Secret Key",
+    "task": "Matchspel: Wat is Openbaar, Wat is Geheim",
+    "learningOutcome": "Alleen de geheime sleutel verleent toegang; de openbare sleutel kan worden gedeeld.",
+    "reward": "⭐ 1 – Belangrijke Bewaker"
   },
   "lesson5": {
-    "title": "Versturen & Ontvangen",
-    "goal": "Het begrijpen van de functionaliteit van transacties en trustlijnen",
-    "task": "Uitvoeren testzending en kosten bekijken",
+    "title": "Verzenden & Ontvangen",
+    "goal": "De functionaliteit van transacties en kredietlijnen begrijpen",
+    "task": "Voer een testzending uit en bekijk de kosten.",
     "learningOutcome": "Elke transactie brengt een kleine vergoeding met zich mee; Trustline = toestemming om te ontvangen.",
     "reward": "⭐ 2 – Trustline Starter"
   },
   "lesson6": {
-    "title": "Token & Trading",
-    "goal": "Kennismaken met marktmechanismen",
-    "task": "Plaats een token op een virtuele marktplaats en houd de prijsverandering in de gaten.",
+    "title": "Token & Handel",
+    "goal": "Leren over marktmechanismen",
+    "task": "Plaats tokens op de virtuele marktplaats en houd prijsveranderingen in de gaten.",
     "learningOutcome": "De prijs wordt bepaald door vraag en aanbod.",
     "reward": "⭐ 2 – Marketplace-expert"
   },
   "lesson7": {
     "title": "Beveiliging",
-    "goal": "Veilige gedragingen leren",
-    "task": "Het sorteren van correcte/onjuiste acties; het detecteren van nep-tokens",
-    "learningOutcome": "Vertrouwelijkheid van de sleutel, veilige opslag en gebruik van het testnet.",
+    "goal": "Veilig gedrag leren",
+    "task": "Sorteer waar/niet-waar acties; detecteer nep-tokens.",
+    "learningOutcome": "De sleutel vertrouwelijk houden, veilig opslaan en het testnet gebruiken.",
     "reward": "⭐ 2 – Beveiligingsbeambte"
   },
   "lesson8": {
     "title": "Verificatie & Identiteit",
     "goal": "Vertrouwen en regels begrijpen",
-    "task": "Vergelijk echte versus neppe tokens.",
-    "learningOutcome": "KYC = Identiteitsverificatie, verificatie laat betrouwbare tokens zien.",
+    "task": "Vergelijk echte versus vervalste tokens.",
+    "learningOutcome": "KYC = Identiteitsverificatie, validatie toont vertrouwde tokens.",
     "reward": "⭐ 2 – Examenexpert"
   },
   "lesson9": {
-    "title": "Nul kennis",
-    "goal": "Begrip van concepten voor gegevensprivacy",
-    "task": "Voorbeeldscenario 'Ik ben ouder dan 18' zonder een geboortedatum te tonen.",
-    "learningOutcome": "Het is mogelijk om iets te bewijzen zonder geheimen te onthullen.",
-    "reward": "⭐ 2 – ZK-Begrip"
+    "title": "Nulkennis",
+    "goal": "Inzicht in concepten van gegevensprivacy",
+    "task": "Voorbeeldscenario 'Ik ben ouder dan 18' zonder geboortedatum te tonen.",
+    "learningOutcome": "Men kan iets bewijzen zonder geheimen te onthullen.",
+    "reward": "⭐ 2 – ZK-expert"
   },
   "lesson10": {
     "title": "Oefenen met SKM",
-    "goal": "Toepassen van geleerde kennis in de praktijk",
-    "task": "Maak een account aan in het testnet, activeer het, stel een trustline in, stuur tokens.",
+    "goal": "Het praktisch toepassen van geleerde concepten",
+    "task": "Maak een account aan in het testnet, activeer het, stel een trustlijn in, verstuur tokens.",
     "learningOutcome": "Begrijp de technische processen van een transactie.",
     "reward": "⭐ 3 – Blockchain-pilot"
   },
   "lesson11": {
     "title": "Verantwoordelijkheid",
-    "goal": "Begrijpen van de gevolgen van fouten",
-    "task": "Beslisspel: Correct of Niet Handelen",
-    "learningOutcome": "Blockchain is definitief; zorgvuldigheid is verplicht.",
-    "reward": "⭐ 1 – Verantwoordelijkheid Held"
+    "goal": "De gevolgen van fouten begrijpen",
+    "task": "Beslissingsspel: Correct Handelen of Niet",
+    "learningOutcome": "Blockchain is definitief; zorgvuldigheid is een must.",
+    "reward": "⭐ 1 – Verantwoordelijkheidsheld"
   },
   "lesson12": {
-    "title": "Voltooiing / Speels Leren",
-    "goal": "Herhaling en motivatie",
-    "task": "Mini-quiz + Badge Weergave",
-    "learningOutcome": "Herzie het geleerde materiaal, erken je eigen vooruitgang.",
-    "reward": "🎖 Uitmuntende Professional"
-  },
-  "actions": {
-    "startQuiz": "Quiz starten"
+    "title": "Conclusie / Speels Leren",
+    "goal": "Herhaling en Motivatie",
+    "task": "Mini-quiz + badgeweergave",
+    "learningOutcome": "Herzie wat je hebt geleerd, erken je eigen vooruitgang.",
+    "reward": "🎖 Sterke Professional"
   },
   "lesson13": {
-    "title": "Multisig voor beginners",
-    "goal": "Begrijpen van de Basisprincipes van Multisig",
-    "task": "Vergelijking van Single-Sig vs. Multisig met voorbeeldstroom.",
-    "learningOutcome": "Meerdere handtekeningen verhogen de veiligheid; drempelwaarden bepalen hoeveel handtekeningen nodig zijn.",
+    "title": "Multisig voor Beginners",
+    "goal": "De basisprincipes van Multisig begrijpen",
+    "task": "Vergelijk single-signature (Single-Sig) met multi-signature (Multisig) en bekijk een voorbeeldproces.",
+    "learningOutcome": "Meerdere handtekeningen verhogen de veiligheid; drempels bepalen hoeveel handtekeningen vereist zijn.",
     "reward": "⭐ 2 – Multisig Starter"
   }
 }

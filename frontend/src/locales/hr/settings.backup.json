@@ -1,20 +1,20 @@
 {
-  "desc": "Izvezite ili uvezite podatke o kvizu (postavke, napredak, značke).",
+  "desc": "Izvezite ili uvezite podatke iz vašeg kviza (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
-    "button": "Počni izvoz",
-    "fileName": "kviz-sigurnosna-kopija.json",
-    "success": "Izvoz je stvoren"
+    "button": "Pokreni izvoz",
+    "fileName": "kviz-backup.json",
+    "success": "Izvoz kreiran"
   },
   "import": {
-    "backupCreated": "Automatska sigurnosna kopija spremljena",
-    "done": "Uvoz dovršen",
-    "invalid": "Nevažeća datoteka za uvoz",
-    "noFile": "Datoteka nije odabrana",
+    "backupCreated": "Automatska sigurnosna kopija sačuvana",
+    "done": "Uvoz završen",
+    "invalid": "Neispravna datoteka za uvoz",
+    "noFile": "Nijedna datoteka nije odabrana",
     "preview": {
       "stats": {
-        "achievements": "Značka: {{count}} kviz(ova)",
-        "progress": "Napredak: {{count}} kviz(a)",
-        "settings": "Postavke: {{count}} kviz(a)"
+        "achievements": "Značka: {{count}} kviz(e)",
+        "progress": "Napredak: {{count}} Kviz(e)",
+        "settings": "Postavke: {{count}} Kviz(e)"
       },
       "title": "Pregled"
     },
@@ -27,12 +27,12 @@
     "title": "Uvoz"
   },
   "nav": {
-    "back": "Nazad"
+    "back": "Natrag"
   },
-  "title": "Backup & Restore",
+  "title": "Backup & Recovery",
   "toast": {
     "backupBeforeImport": "Sigurnosna kopija je spremljena prije uvoza.",
-    "exported": "Izvoz sigurnosne kopije izvršen",
+    "exported": "Izvoz sigurnosne kopije",
     "exportFailed": "Izvoz nije uspio",
     "importFailed": "Uvoz nije uspio"
   }

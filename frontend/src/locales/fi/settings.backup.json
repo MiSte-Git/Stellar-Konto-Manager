@@ -1,5 +1,5 @@
 {
-  "desc": "Vie tai tuo tietokilpailudatasi (asetukset, edistyminen, merkit).",
+  "desc": "Vie tai tuo tietokilpailusi tiedot (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Aloita vienti",
     "fileName": "quiz-backup.json",
@@ -7,14 +7,14 @@
   },
   "import": {
     "backupCreated": "Automaattinen varmuuskopio tallennettu",
-    "done": "Tuonti suoritettu",
+    "done": "Tuonti valmis",
     "invalid": "Virheellinen tuontitiedosto",
-    "noFile": "Ei tiedostoa valittuna",
+    "noFile": "Ei tiedostoa valittu",
     "preview": {
       "stats": {
-        "achievements": "Merkki: {{count}} visa(a)",
-        "progress": "Eteneminen: {{count}} visailu(a)",
-        "settings": "Asetukset: {{count}} visailu(a)"
+        "achievements": "Merkki: {{count}} Quiz (e)",
+        "progress": "Edistyminen: {{count}} Kysely(e)",
+        "settings": "Asetukset: {{count}} Visa(e)"
       },
       "title": "Esikatselu"
     },
@@ -22,14 +22,14 @@
     "strategy": {
       "label": "Strategia",
       "merge": "Yhdistä",
-      "replace": "Korvata"
+      "replace": "Korvaa"
     },
     "title": "Tuonti"
   },
   "nav": {
     "back": "Takaisin"
   },
-  "title": "Backup & Restore",
+  "title": "Backup & Recovery",
   "toast": {
     "backupBeforeImport": "Varmuuskopio tallennettiin ennen tuontia.",
     "exported": "Varmuuskopio viety",

@@ -1,5 +1,5 @@
 {
-  "desc": "Export or import your quiz data (settings, progress, badges).",
+  "desc": "Export or import your quiz data (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Start export",
     "fileName": "quiz-backup.json",
@@ -12,9 +12,9 @@
     "noFile": "No file selected",
     "preview": {
       "stats": {
-        "achievements": "Badge: {{count}} quiz(zes)",
-        "progress": "Progress: {{count}} quiz(zes)",
-        "settings": "Settings: {{count}} quiz(zes)"
+        "achievements": "Badge: {{count}} Quiz(e)",
+        "progress": "Progress: {{count}} Quiz(e)",
+        "settings": "Settings: {{count}} Quiz(e)"
       },
       "title": "Preview"
     },
@@ -29,7 +29,7 @@
   "nav": {
     "back": "Back"
   },
-  "title": "Backup & Restore",
+  "title": "Backup & Recovery",
   "toast": {
     "backupBeforeImport": "A backup was saved before import.",
     "exported": "Backup exported",

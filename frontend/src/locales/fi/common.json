@@ -1,51 +1,51 @@
 {
   "app": {
     "errorBoundary": {
-      "title": "Jokin meni pieleen."
+      "title": "Jotain meni pieleen."
     }
   },
   "asset": {
     "balance": "Luottosaldo",
-    "code": "Varainnon koodi",
+    "code": "Omaisuuskoodi",
     "creationDate": "Luotu",
     "issuer": "Liikkeeseenlaskija"
   },
   "balance": {
     "buttons": {
-      "details": "Sinua on koulutettu tietoihin lokakuuhun 2023 asti.",
-      "explorer": "Tutkija",
-      "payments": "Viimeaikaiset tapahtumat"
+      "details": "Sinut on koulutettu tietoihin lokakuuhun 2023 asti.",
+      "explorer": "Tutkimusmatkailija",
+      "payments": "Viimeisimmät toimet"
     },
     "current": "Nykyinen saldo",
-    "details": "Yksityiskohdat lohkoketjuselaimissa",
-    "empty": "Ei löytynyt hyvityksiä.",
+    "details": "Yksityiskohdat lohkoketjuselainissa",
+    "empty": "Ei saldoa löytynyt.",
     "explorer": {
       "expert": "stellar.expert",
       "stellarchain": "Stellarchain.io",
       "label": "Tutkimusmatkailija",
       "open": "Avaa Resurssienhallinnassa",
-      "noneConfigured": "Ei tutkijoita määritetty.",
+      "noneConfigured": "Ei tutkimusmatkailijaa määritetty.",
       "settingsHint": "Voit muokata Exploreria asetuksissa."
     },
-    "noPublicKey": "Syötä ensin julkinen avain.",
+    "noPublicKey": "Anna ensin julkinen avain.",
     "payments": {
       "all": "Kaikki",
       "columns": {
         "amount": "Määrä",
-        "asset": "Varallisuus",
+        "asset": "Omaisuus",
         "counterparty": "Vastatili",
         "date": "Päivämäärä",
         "direction": "Suunta",
         "memo": "Muistio",
-        "tx": "Olen pahoillani, antamasi teksti on liian lyhyt eikä sisällä tarpeeksi kontekstia käännöstä varten. Voisitko antaa lisää tietoa tai kontekstia?",
-        "txLabel": "Olen pahoillani, mutta tarvitsen lisää kontekstia tai sisältöä käännettäväksi. Voisitko antaa tekstin, jonka haluat käännettävän suomeksi?",
-        "type": "Tyyppi"
+        "tx": "Anteeksi, mutta tarvitsen lisää kontekstia kääntääkseni \"Tx\" tarkasti. Se voi tarkoittaa eri asioita riippuen kontekstista, kuten \"kiitos\" tai \"transaktio\". Voisitko antaa lisätietoja?",
+        "txLabel": "Anteeksi, näyttää siltä, että viestissäsi \"Tx\" ei ole tarpeeksi kontekstia. Voisitko antaa lisätietoja tai selventää, mitä haluaisit kääntää tai tiedustella?",
+        "type": "Kirjoita"
       },
-      "empty": "Toimintoja ei löytynyt.",
+      "empty": "Ei toimintoja löytynyt.",
       "filter": {
-        "memo": "Muistisuodatin",
-        "memoPlaceholder": "Etsi muistio...",
-        "counterparty": "Vastapuolen suodatin",
+        "memo": "Muistiosuodatin",
+        "memoPlaceholder": "Etsitään muistikirjaa...",
+        "counterparty": "Vastapuolisuodatin",
         "counterpartyPlaceholder": "Suodata vastaanottajan/lähettäjän osoitteen mukaan…"
       },
       "from": "Alkaen",
@@ -53,30 +53,30 @@
       "limit": "Numero",
       "outgoing": "Tuloste",
       "title": "Viimeisimmät toimet",
-      "to": "Kunnes"
+      "to": "Asti"
     },
-    "paymentsHint": "Voit suodattaa syötteitä/lähtöjä Explorerissa.",
+    "paymentsHint": "Voit suodattaa syötteitä/tulosteita Explorerissa.",
     "title": "Näytä tilin tiedot"
   },
   "buildInfo": {
-    "branch": "Haaranosa",
-    "commit": "Sitoumus",
+    "branch": "Haara",
+    "commit": "Sitoutuminen",
     "env": "Ympäristö",
-    "error": "Rakennustietoja ei voitu ladata.",
-    "loading": "Ladataan rakennustietoja..."
+    "error": "Rakennustiedot eivät voineet latautua.",
+    "loading": "Ladataan rakennustietoja …"
   },
   "bugReport": {
     "button": "Ilmoita virheestä",
     "title": "Ilmoita virheestä",
-    "descLabel": "Lyhyt kuvaus (valinnainen)",
-    "descPlaceholder": "Mitä tapahtui? Vaiheet, odotettu käyttäytyminen...",
-    "send": "Lähetä palaute",
+    "descLabel": "Lyhyt kuvaus (optional)",
+    "descPlaceholder": "Mitä tapahtui? Vaiheet, odotettu käyttäytyminen …",
+    "send": "Lähetä palautetta",
     "cancel": "Peruuta",
     "toast": {
       "sent": "Palaute tallennettu.",
       "logOk": "Virhe on kirjattu.",
-      "logFallback": "Paikallinen kirjaaminen epäonnistui.",
-      "validation": "Ole hyvä ja anna lyhyt kuvaus tai lähetä ilman tekstiä."
+      "logFallback": "Paikallinen lokitus epäonnistui.",
+      "validation": "Anna lyhyt kuvaus tai lähetä ilman tekstiä."
     },
     "mail": {
       "url": "URL",
@@ -87,13 +87,16 @@
       "descriptionHeading": "Kuvaus"
     },
     "admin": {
-      "title": "Virheenjäljitystyökalu",
-      "locked": "Pääsy estetty. Aseta järjestelmänvalvojan salasana paikalliseen tallennustilaan ja lataa sivu uudelleen.",
-      "placeholderTitle": "Vikailmoitustyökalu",
-      "placeholderBody": "Ylläpitäjän käyttöliittymä aktiivinen. Tulevissa päivityksissä seuraavat listat, suodattimet, prioriteetit ja tilamuutokset.",
+      "rejected": "Hylätty",
+      "rejectedReasonTitle": "Hylkäyksen syy",
+      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "title": "Virheenseuranta",
+      "locked": "Pääsy evätty. Aseta ylläpitäjän salasana paikalliseen tallennustilaan ja päivitä sivu.",
+      "placeholderTitle": "Virheenjäljitysjärjestelmä",
+      "placeholderBody": "Ylläpitäjän käyttöliittymä aktiivinen. Tulevat päivitykset sisältävät luetteloita, suodattimia, prioriteetteja ja tilan muutoksia.",
       "link": "Avaa vikaseuranta",
       "secretSaved": "Salaisuus tallennettu.",
-      "enterSecret": "Syötä ylläpitäjän salasana",
+      "enterSecret": "Syötä admin-salasana",
       "secretPlaceholder": "••••••••",
       "confirm": "Avaa",
       "cancel": "Peruuttaa",
@@ -107,7 +110,7 @@
       "normal": "normaali",
       "high": "korkea",
       "urgent": "kiireellinen",
-      "id": "Tunniste",
+      "id": "Minut on koulutettu aineistolla lokakuuhun 2023 asti.",
       "created": "Luotu",
       "url": "URL",
       "language": "Kieli",
@@ -115,21 +118,22 @@
       "userAgent": "Selain",
       "description": "Kuvaus",
       "category": "Kategoria",
+      "bugTitle": "Otsikko",
       "save": "Tallenna",
-      "saved": "Muutokset tallennettu.",
-      "loadError": "Virhe ladattaessa virheitä",
-      "saveError": "Virhe tallennettaessa",
+      "saved": "Muutokset tallennettu",
+      "loadError": "Virhe virheiden latauksessa",
+      "saveError": "Tallennusvirhe",
       "empty": "Ei merkintöjä löytynyt.",
-      "loading": "Ladataan...",
+      "loading": "Ladataan…",
       "resize": "Vedä säätääksesi",
-      "exportAll": "CSV (Kaikki)",
+      "exportAll": "CSV (comma-separated values)",
       "exportError": "Vienti epäonnistui",
-      "exportPage": "CSV (Sivu)",
-      "exporting": "Vienti…",
+      "exportPage": "CSV (comma-separated values)",
+      "exporting": "Vie ulos…",
       "columns": {
-        "title": "Kolumnit",
+        "title": "Sarakkeet",
         "manage": "Säädä sarakkeita",
-        "hint": "Näkyvyys valintamerkillä, järjestäminen ↑/↓ avulla ja kokoa muuttamalla vetämällä taulukon otsikossa.",
+        "hint": "Näkyvyys valintaruudun kautta, järjestys ↑/↓, koot vetämällä taulukon otsikossa.",
         "reset": "Nollaa",
         "up": "Huipulle",
         "down": "Alaspäin"
@@ -138,21 +142,17 @@
         "comma": "Pilkku (,)",
         "delimiter": "Erotin",
         "semicolon": "Puolipiste (;)",
-        "tab": "Sarkain (Tab)"
+        "tab": "Tabulator (Tab)"
       },
       "search": "Haku",
       "col": {
-        "id": "Sinut on koulutettu tietoihin lokakuuhun 2023 asti.",
+        "id": "Henkilötunnus",
         "status": "Tila",
         "priority": "Prioriteetti",
         "url": "URL",
         "desc": "Kuvaus",
         "ts": "Aika"
       },
-      "rejected": "Hylätty",
-      "rejectedReasonTitle": "Hylkäämisen syy",
-      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
-      "bugTitle": "Otsikko",
       "rejectionReason": {
         "label": "Syy",
         "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
@@ -162,13 +162,14 @@
   },
   "cache": {
     "clear": "Tyhjennä välimuisti",
-    "consent": "Ota paikallinen välimuisti käyttöön kyselyiden nopeuttamiseksi?",
+    "consent": "Ota paikallinen välimuisti käyttöön kyselyjen nopeuttamiseksi?",
     "lastPaymentAt": "Viimeinen maksu: {{val}}",
-    "lastRefresh": "Päivitetty viimeksi: {{ts}}"
+    "lastRefresh": "Viimeksi päivitetty: {{ts}}"
   },
-  "clear": "Poista syöte",
+  "clear": "Poista syöte.",
   "close": "Sulje",
-  "loading": "Ladataan...",
+  "networkLabel": "Verkko",
+  "loading": "Ladataan…",
   "refresh": "Lataa uudelleen",
   "exportCsv": {
     "failed": "CSV-vienti epäonnistui"
@@ -176,77 +177,79 @@
   "feedback": {
     "title": "Lähetä palautetta",
     "category": "Kategoria",
+    "categoryPlaceholder": "Valitse luokka",
+    "area": "Alue",
+    "areaPlaceholder": "Valitse alue",
+    "noCategoriesConfigured": "Kategorioita ei ole vielä määritetty. Määritä ne asetuksissa.",
+    "noAreasConfigured": "Alueita ei ole vielä määritetty. Luo ne asetuksissa.",
+    "categoryUnknown": "Tuntematon kategoria",
+    "areaUnknown": "Tuntematon alue",
     "categories": {
       "bug": "Virhe",
-      "idea": "Idea",
-      "improve": "Parantaminen",
-      "other": "Muu"
+      "idea": "Ajatus",
+      "improve": "Parannus",
+      "other": "Sekalainen"
     },
     "page": "Alue",
     "pages": {
       "start": "Etusivu",
-      "trustlines": "Näytä luottoraja(t)",
-      "trustlineCompare": "Vertaa luottolimiittilinjoja.",
+      "trustlines": "Näytä Trustline(s)",
+      "trustlineCompare": "Vertaa Trustlinea",
       "balance": "Näytä tilitiedot",
-      "xlmByMemo": "Suodata muistiolla",
+      "xlmByMemo": "Suodata muistion mukaan",
       "sendPayment": "Lähetä maksu",
-      "investedTokens": "Suodata tokeneita/varoja",
+      "investedTokens": "Suodata tunnuksia/varoja",
       "createAccount": "Luo tili",
       "multisigEdit": "Muokkaa multisig-tiliä",
       "settings": "Asetukset",
       "feedback": "Palaute",
-      "other": "Sekalaiset",
-      "bugtracker": "Virheenseurantajärjestelmä",
+      "other": "Sekalainen",
+      "bugtracker": "Vikojen seurantajärjestelmä",
       "global": "Etusivu"
     },
     "subject": "Aihe",
     "message": "Viesti",
-    "contactEmailOptional": "Sähköpostiosoite (vapaaehtoinen)",
+    "contactEmailOptional": "Yhteyssähköposti",
     "emailPlaceholder": "z.B. nimi@esimerkki.com",
-    "emailHint": "Jos haluat palautetta, anna sähköpostiosoitteesi.",
-    "privacyHint": "Viestisi tallennetaan suoraan vikaseurantaan.",
-    "sendButton": "Lähetä palaute",
-    "openedMailClient": "Palaute tallennettu.",
-    "error": "Virhe",
-    "sentTo": "Tallennettu vikaseurantaan.",
-    "categoryPlaceholder": "Valitse luokka",
-    "area": "Alue",
-    "areaPlaceholder": "Valitse alue",
-    "noCategoriesConfigured": "Kategorioita ei ole vielä määritetty. Ole hyvä ja luo ne asetuksissa.",
-    "noAreasConfigured": "Alueita ei ole vielä määritetty. Luo ne asetuksissa.",
-    "categoryUnknown": "Tuntematon kategoria",
-    "areaUnknown": "Tuntematon alue",
+    "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
     "form": {
       "clearButton": "Tyhjennä kentät",
       "multiEntryHint": "Luo vain yksi viesti virhettä, ehdotusta tai ideaa kohden, jotta muokkausprosessi pysyy selkeänä."
-    }
+    },
+    "privacyHint": "Viestisi tallennetaan suoraan bugiseurantaan.",
+    "sendButton": "Lähetä palautetta",
+    "openedMailClient": "Palaute tallennettu.",
+    "error": "Virhe",
+    "sentTo": "Merkintä tallennettu bugiseurantaan."
   },
   "account": {
-    "createdAt": "Tili luotu päälle",
+    "createdAt": "Tili luotu päivämäärällä",
     "createdAtUnknown": "Ei voida määrittää.",
-    "testnetLabel": "(Testiverkko)"
+    "testnetLabel": "(Testnet)"
   },
   "fetch": {
     "groupfund": {
-      "aborted": "Toiminto peruttu käyttäjän toimesta"
+      "aborted": "Toiminto peruutettu käyttäjän toimesta."
     }
   },
   "issuer": {
-    "enter": "Anna liikkeeseenlaskijan osoite:",
+    "enter": "Syötä liikkeeseenlaskijan osoite:",
     "invalid": "Virheellinen liikkeeseenlaskijan osoite."
   },
   "main": {
-    "processing": "Käsittely käynnissä, odota hetki…",
-    "title": "Stellar-tilinjohtaja"
+    "processing": "Toiminto käynnissä, ole hyvä ja odota…",
+    "title": "Stellar-tilin hallintaohjelma"
   },
   "badges": {
     "testnet": "TESTIVERKKO"
   },
-  "noIssuerTrustlinesFound": "Käyttäjälle {{issuer}} ei löytynyt luottolinjoja.",
+  "noIssuerTrustlinesFound": "Ei luottolinjoja löydetty liikkeeseenlaskijalle {{issuer}}.",
   "option": {
     "add": "Lisää",
-    "cancel": "Peruuttaa.",
+    "cancel": "Peruuttaa",
     "close": "Sulje",
+    "back": "Takaisin",
+    "backToSelection": "Palaa valintaan",
     "confirm": {
       "action": {
         "text": "Oletko varma?",
@@ -260,87 +263,89 @@
       "pdf": "Tallenna PDF-muodossa"
     },
     "loading": "Ladataan...",
-    "no": "Ei",
+    "no": "Ei.",
     "results": "Tulokset:",
-    "yes": "Kyllä",
-    "back": "Takaisin",
-    "backToSelection": "Takaisin valintaan"
+    "yes": "Kyllä"
   },
   "progress": {
-    "cancel": "Peruuttaa",
-    "canceled": "Keskeytetty",
-    "counts": "Arvosteltu: {{ops}} • Osumat: {{matches}}",
-    "done": "Valmis",
+    "cancel": "Peruuta",
+    "canceled": "Peruutettu",
+    "counts": "Tarkistettu: {{ops}} • Osumia: {{matches}}",
+    "done": "Valmistunut",
     "duration": "Kesto: {{val}}",
     "elapsed": "Kesto: {{time}}",
-    "eta": "Saapumisaika: {{minutes}} min.",
+    "eta": "Arvioitu saapumisaika: {{minutes}} min.",
     "firstMatchAt": "Viimeisin talletus: {{date}}",
     "mode": {
       "cache": "Tila: Välimuisti",
-      "live": "Tila: Live (Horisontti)"
+      "live": "Tila: Live (Horizon)"
     },
-    "oldest": "tämän sivun vanhin päiväys: {{date}}",
-    "oldestMatchInRangeAt": "Ensimmäinen talletus ajanjakson aikana: {{date}}",
+    "oldest": "sivun vanhin päivämäärä: {{date}}",
+    "oldestMatchInRangeAt": "Ensimmäinen talletus ajanjaksolla: {{date}}",
     "phase": {
       "backfill": "Ladataan puuttuvia maksuja…",
-      "cacheQuery": "Lasketaan tulosta paikallisesta välimuistista…",
-      "chunkDone": "Palokäsitelty.",
-      "chunkSkip": "Hyppää osio yli.",
-      "cover": "Varmista välimuistin kattavuus...",
+      "cacheQuery": "Lasketaan tulos paikallisesta välimuistista…",
+      "chunkDone": "Pala käsitelty.",
+      "chunkSkip": "Lohko ohitettu.",
+      "cover": "Varmista välimuistin kattavuus…",
       "export": "Vie tulos…",
-      "finalize": "Suoritettu",
-      "finalizeDiag": "Diagnosointi valmis",
-      "idle": "Valmis...",
+      "finalize": "Valmistunut",
+      "finalizeDiag": "Diagnoosi valmis",
+      "idle": "Valmis…",
       "pageDone": "Sivu {{page}} valmis.",
-      "rehydrate": "Rakennetaan välimuistia uudelleen...",
+      "rehydrate": "Rekonstruktoida välimuisti…",
       "scan": "Maksujen skannaus (sivu {{page}})…",
-      "scan_ops": "Skannaus käynnissä...",
-      "scan_payments": "Maksujen skannaus (sivu {{page}})…",
-      "scan_payments_fast": "Skannaa maksut (nopeasti) – Sivu {{page}}…",
+      "scan_ops": "Skannaa toimenpiteitä…",
+      "scan_payments": "Maksujen tarkistus (sivu {{page}})…",
+      "scan_payments_fast": "Maksujen skannaaminen (schnell) – Sivu {{page}}…",
       "scan_tx": "Skannaa tapahtumat",
       "sync": "Synkronoi maksut…",
-      "txFetch": "Ladataan tapahtumatietoja..."
+      "txFetch": "Ladataan tapahtumatietoja…"
     },
     "wrongMemos": {
-      "failed": "Virhe maksujen lataamisessa väärän/tyhjän muistion kanssa."
+      "failed": "Virhe maksuja ladattaessa: virheellinen tai tyhjä muistio."
     }
   },
   "settings": {
     "cache": {
-      "help": "Nopeuttaa kyselyitä paikallisen maksuvälimuistin avulla, mutta voi pidentää alkuperäistä latausaikaa.",
+      "help": "Nopeuttaa kyselyitä paikallisen maksuvälimuistin avulla, mutta saattaa pidentää ensimmäistä latausta.",
       "label": "Käytä välimuistia (Beta)",
-      "prefetchHelp": "Aika syöttöjen/tapahtumien lataamiseen päivissä (kerran ensimmäisessä aktivoinnissa)"
+      "prefetchHelp": "Lead time for loading entries/transactions in days (einmalig beim ersten Aktivieren)"
     },
     "network": {
       "title": "Verkko",
-      "desc": "Valinnainen: Koko historian horisontti syvälle historialle",
-      "fullUrl": "Täysi historian horisontti URL",
-      "autoUseFull": "Käytä automaattisesti tarvittaessa (kun aloituspäivämäärä on vanhempi kuin palvelimen historia)"
+      "desc": "Valinnainen: Koko historian ulottuvuus syvälle historialle",
+      "fullUrl": "Täysi historiahorisontin URL",
+      "autoUseFull": "Käytä automaattisesti tarvittaessa (when From-Date is older than server history)"
     },
-    "description": "Tällä hetkellä asetuksia ei ole saatavilla.",
+    "description": "Tällä hetkellä asetuksia ei ole vielä.",
     "display": {
       "decimals": {
-        "auto": "Automatisoitu",
+        "auto": "Automaattisesti",
         "label": "Desimaalitarkkuus"
       },
-      "desc": "Globaali näyttöasetukset.",
-      "title": "Mainos"
+      "desc": "Mainonnan maailmanlaajuiset asetukset.",
+      "title": "Mainonta"
+    },
+    "explorer": {
+      "edit": "Muokkaus",
+      "editTitle": "Muokkaa Explorer-merkintää"
     },
     "error": {
       "fetchFailed": "Asetusten lataaminen epäonnistui: {{detail}}"
     },
     "label": "Asetukset",
-    "prefetchDays": "Toimitusaika (päivinä)",
+    "prefetchDays": "Toimitusaika (Tage)",
     "trustedWallets": {
       "buttons": {
         "export": "Vienti",
         "import": "Tuoja",
         "reset": "Palauta oletusasetukset"
       },
-      "desc": "Tämä lista tallennetaan paikallisesti selaimeen. Oletustiedosto: QSI_TrustedWallets.json",
+      "desc": "Tämä lista on tallennettu paikallisesti selaimeen. Oletustiedosto: QSI_TrustedWallets.json",
       "editor": {
-        "invalidFormat": "Virheellinen muoto. Odotetaan kohdetta, jossa on kenttä \"wallets\" (taulukko).",
-        "parseError": "JSON ei voitu jäsentää."
+        "invalidFormat": "Virheellinen muoto. Objektilta odotetaan kenttää \"wallets\" (Array).",
+        "parseError": "JSON-tietoja ei voitu jäsentää."
       },
       "file": {
         "hint": "Tuo JSON-tiedosto muodossa { wallets: [...] }",
@@ -348,180 +353,176 @@
       },
       "info": {
         "count": "Merkinnät: {{n}}",
-        "updatedAt": "Tila: {{päivämäärä}}"
+        "updatedAt": "Tila: {{date}}"
       },
       "table": {
-        "addRow": "Lisää viiva",
+        "addRow": "Lisää rivi",
         "columns": {
           "actions": "Toiminnot",
           "address": "Osoite",
-          "compromised": "Kompromississa",
-          "deactivated": "Ei käytettävissä",
-          "label": "Etiketti"
+          "compromised": "Kompromettoitu",
+          "deactivated": "Deaktivoitu",
+          "label": "Tarra"
         },
         "deleteRow": "Poista",
-        "discard": "Hylkää",
+        "discard": "Hylätä",
         "save": "Tallenna"
       },
       "title": "Luotetut lompakkoni",
       "validation": {
-        "hint": "Ainakin yksi rivi on virheellinen (puuttuva/duplicoitu osoite)."
+        "hint": "Ainakin yksi rivi on virheellinen (fehlende/duplizierte Adresse)."
       }
-    },
-    "explorer": {
-      "edit": "Muokkaa",
-      "editTitle": "Muokkaa Explorer-merkintää"
     }
   },
   "trustlines": {
     "deleted": {
-      "deletingProgress": "Poistetaan: {{current}} / {{total}}",
-      "success": "Onnistuminen: {{count}} luottolinja(a) poistettu."
+      "deletingProgress": "Poisto käynnissä: {{current}} / {{total}}",
+      "success": "Erfolas: {{count}} Trustline(s) poistettu."
     },
-    "skippedDueToBalance": "{{count}} trustilinja(a) ohitettiin (saldo on edelleen käytettävissä)."
+    "skippedDueToBalance": "{{count}} Trustline-ohjelmaa ohitettu (noch Guthaben vorhanden)."
   },
   "payment": {
     "send": {
       "title": "Lähetä maksu",
       "recipient": "Vastaanottaja",
       "amount": "Määrä",
-      "asset": "Omaisuus",
+      "asset": "Varallisuus",
       "memo": "Muistio",
-      "memoType": "Muistio tyyppi",
+      "memoType": "Muistion tyyppi",
       "memoTypes": {
-        "none": "Muistio (ei muistio)",
-        "text": "Muistio Teksti",
+        "none": "Muistio (KEEP_EN_TERM_1)",
+        "text": "Muistion teksti",
         "id": "Muistio ID",
         "hash": "Muistio Hash",
         "return": "Muistion palautus",
         "info": {
-          "none": "Ei muistioa. Käytä tätä, jos vastaanottaja ei odota muistioa.",
-          "text": "Vapaa teksti enintään 28 tavua. Käytetään usein yksinkertaisissa maksutapahtumissa kohdistamiseen.",
-          "id": "Numeerinen tunniste (uint64). Monet pörssit käyttävät Memo-tunnusta talletusten osoittamiseen.",
-          "hash": "32-tavun SHA-256-hajautusarvo (64-merkkinen heksadesimaaliluku). Käytetään palveluissa viitteinä.",
-          "return": "32-tavuninen tiiviste palautuksia varten. Käytetään palautuksissa (MEMO_RETURN)."
+          "none": "Ei muistio. Käytä tätä, jos vastaanottaja ei odota muistioa.",
+          "text": "Vapaata tekstiä enintään 28 tavua. Yleisesti käytetty allokointiin yksinkertaisten maksujen yhteydessä.",
+          "id": "Numeerinen tunnus (uint64). Monet pörssit käyttävät muistiosoitetta talletusten kohdentamiseen.",
+          "hash": "32-tavun SHA-256-hajautus (als 64-stellige Hex-Zeichenfolge). Käytetään palveluissa viitteenä.",
+          "return": "32-tavun hash palautuksille. Käytetään palautuksille (MEMO_RETURN)."
         }
       },
       "available": "Saatavilla",
       "reserved": "Varattu",
-      "reservedInline": "{{amount}} XLM on varattu Stellarin verkostossa.",
+      "reservedInline": "{{amount}} XLM on varattu Stellarin verkossa.",
       "baseReserve": "Perusvaranto",
       "extra": "Lisäksi",
       "xlmInOffers": "Sidottu tarjouksiin",
       "trustlines": "Luottolinjat ({{n}})",
-      "lpTrustlines": "LP-Luottoverkot",
+      "lpTrustlines": "LP‑Trustlines",
       "offers": "Avoimet tarjoukset",
       "signers": "Lisäallekirjoittajat",
-      "accountData": "Tilin tiedot",
-      "sponsoring": "Sponsoriapu",
+      "accountData": "Account‑Daten",
+      "sponsoring": "Sponsoriointi",
       "sponsored": "Sponsoroitu",
       "sendButton": "Lähetä",
       "success": "Onnistui: Maksu lähetetty. TX: {{hash}}",
       "successShort": "Lähetetty onnistuneesti",
-      "error": "Virhe lähetettäessä: {{detail}}",
+      "error": "Virhe lähettäessä: {{detail}}",
       "amountMissing": "Anna summa.",
-      "amountInvalid": "Virheellinen määrä (enintään 7 desimaalin tarkkuudella).",
-      "amountPositive": "Määrän on oltava suurempi kuin 0.",
-      "timeout": "Horizon-aikakatkaisu (504). Yritä uudelleen hetken kuluttua.",
+      "amountInvalid": "Virheellinen summa (max. 7 Nachkommastellen).",
+      "amountPositive": "Summa on oltava suurempi kuin 0.",
+      "timeout": "Horizon Timeout (504). Yritä uudelleen pian.",
       "httpError": "Horisontin virhe (tila {{status}}).",
       "horizonError": "Stellar on hylännyt tapahtuman.",
-      "destUnfundedNonNative": "Määränpäätili ei ole aktiivinen. Aktivoi se lähettämällä ensin XLM tai vaihda varat XLM:ksi.",
+      "destUnfundedNonNative": "Vastaanottotili ei ole aktiivinen. Lähetä ensin XLM sen aktivoimiseksi tai vaihda varat XLM:ksi.",
       "activateConfirm": {
         "title": "Tilin aktivointi vaaditaan",
-        "info": "Tili ei ole vielä aktiivinen. Aktivointia varten vaaditaan vähimmäismäärä.",
-        "minReserve": "Vähimmäismäärä (2 × perusvaraus)",
-        "yourAmount": "Syöttämäsi määrä",
-        "adjustedAmount": "Ehdotettu summa (aktivoitavaksi)",
-        "noteAdjust": "Tilisi saldo ei riitä aktivointiin. Jos jatkat toimenpidettä, vähimmäismäärä lähetetään automaattisesti."
+        "info": "Kohdetili ei ole vielä aktiivinen. Aktivointiin vaaditaan vähimmäissumma.",
+        "minReserve": "Vähimmäismäärä (2 × perusvara)",
+        "yourAmount": "Antamasi määrä",
+        "adjustedAmount": "Ehdotettu summa (zum Aktivieren)",
+        "noteAdjust": "Tilisi saldo ei riitä aktivointiin. Jos jatkat, vähimmäismäärä lähetetään automaattisesti."
       },
       "activated": "Kohdetili on aktivoitu."
     }
   },
   "activation": {
     "notFound": {
-      "title": "Tilikohde ei ole aktiivinen",
+      "title": "Kohdetili ei ole aktiivinen",
       "message": "Kohdetiliä ei ole vielä olemassa ({address}). Se on aktivoitava vähintään 1 XLM:llä. Haluatko aktivoida tilin nyt?"
     },
     "actions": {
       "yes": "Kyllä – Aktivoi tili",
-      "no": "Ei - Peruuta",
-      "processing": "Aktivoi..."
+      "no": "Ei – Peruuta",
+      "processing": "Aktivoi…"
     }
   },
   "createAccount": {
-    "muxedId": "Muxed ID",
-    "muxedInfo": "Muxed-ID luo M-osoitteen (M...). Se osoittaa samaan tilille kuin normaali osoite (G...).",
-    "muxedIdInvalid": "Muxed-ID:n on oltava kokonaisluku välillä 0 ja 18 446 744 073 709 551 615.",
-    "muxedAddress": "Sekoitettu osoite",
-    "muxedActivationInfo": "Muxed-osoitteet ovat aliasosoitteita. Niitä ei tarvitse aktivoida erikseen."
+    "muxedId": "Muxed-ID",
+    "muxedInfo": "Muxed ID:tä käytetään M-Osoitteen (M...) luomiseen. Se osoittaa samaan tiliin kuin tavallinen osoite (G...).",
+    "muxedIdInvalid": "Muxed-ID:n on oltava kokonaisluku, joka on välillä 0 ja 18 446 744 073 709 551 615.",
+    "muxedAddress": "Muxattu osoite",
+    "muxedActivationInfo": "Muxed-osoitteet ovat aliaksia. Niitä ei tarvitse aktivoida erikseen."
   },
   "muxed": {
     "seo": {
-      "title": "Luo/hallitse yhdistettyä tiliä",
-      "description": "Luo ja hallinnoi Muxed-osoitealiaksia (M...) Stellarin tilille. Luo tunnuksia, lisää merkintöjä/muistiinpanoja, vie/tuo CSV-muodossa."
+      "title": "Luo/Hallitse Muxed-tili",
+      "description": "Luo ja hallitse Stellar-tilin multipleksoituja osoitealiasia (M...). Generoi tunnuksia, lisää tunnisteita/huomautuksia, vie/tuo CSV."
     },
-    "title": "Luo/Hallitse Muxed-tili",
-    "explainer": "Luo alias-osoitteita (M...) olemassa olevalle tilille käyttäen ainutlaatuista muxed-ID:tä. Alias-osoite viittaa aina samaan tiliin.",
-    "infoButtonLabel": "Tiedot",
+    "title": "Luo/hallitse multipleksattua tiliä",
+    "explainer": "Luo alias-osoitteita (M...), joissa on yksilöllinen Muxed ID olemassa olevalle tilille. Alias-osoite osoittaa aina samaan tiliin.",
+    "infoButtonLabel": "Minut on koulutettu lokakuuhun 2023 asti.",
     "info": {
-      "title": "Mikä on \"muxed account\"?",
-      "intro1": "Muxed-tili yhdistää tavallisen tiliosoitteen (G-osoite) ylimääräisen 64-bittisen Muxed-tunnuksen kanssa.",
-      "intro2": "Teknisesti se on aliaks, joka viittaa aina samaan perustiliin, mutta on erottuvasti tunnistettavissa ID:n avulla.",
+      "title": "Mikä on Muxed-tili?",
+      "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
+      "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
       "purposeTitle": "Tarkoitus ja hyödyt",
-      "purposeText": "Muksatut tilit ovat käytössä monien alatilien hallintaan yhden Stellar-osoitteen alla - ihanteellinen silloin, kun monet talletukset/nostot käsitellään yhteisen päätilin kautta, mutta jokainen tapahtuma on liitettävä tiettyyn henkilöön, osastoon tai projektiin.",
-      "examplesTitle": "Esimerkkejä – mihin mulkeroitettuja tilejä käytetään?",
+      "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
+      "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
       "examples": {
-        "ex1": "Yrityksen maksut: Jokaiselle työntekijälle annetaan yksilöllinen Muxed ID, jotta palkat voidaan kohdentaa tarkasti.",
-        "ex2": "Pörssit tai alustat: Jokainen käyttäjä saa oman Muxed ID:nsä, jotta jaettuun lompakkoon tehdyt talletukset kirjataan automaattisesti oikein.",
-        "ex3": "Projektit tai alatilit: Organisaatio voi kohdentaa budjetit tai tulot yksittäisille projekteille.",
-        "ex4": "Asiakasmääritys: Yksi M-osoite per asiakas; ID vastaa asiakasnumeroa – maksut voidaan selvästi kohdistaa, jopa ilman viestiä.",
-        "ex5": "Palvelut ilman muistioita: Erota talletukset, kun palvelu ei tue muistioita.",
-        "ex6": "Palkkiot/Palkkarajat: Yksi M-osoite työntekijää/kumppania kohden sisäistä kirjanpitoa ja raportteja varten.",
-        "ex7": "Kauppa/Tilaukset: Yksi M-osoite per tilaus; hyvitykset voidaan liittää tilaukseen.",
-        "ex8": "Yksiköt/Kustannuspaikat: Tunnukset kustannuspaikkoina; ryhmittele maksut automaattisesti alueittain.",
-        "ex9": "Monikäyttäjäpalvelut: Jokainen käyttäjä saa oman M-osoitteensa saman perustilin alla."
+        "ex1": "Firmenzahlungen: Jede Mitarbeiterin/jeder Mitarbeiter erhält eine eigene Muxed‑ID, damit Lohnzahlungen eindeutig zugeordnet werden können.",
+        "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
+        "ex3": "Projektit tai alatilit: Organisaatio voi jakaa budjetit tai tulot yksittäisille projekteille.",
+        "ex4": "Asiakkaan määritys: Yksi M‑osoite asiakasta kohti; tunnus vastaa asiakas‑tunnusta – maksut voidaan osoittaa yksiselitteisesti, myös ilman muistilappua.",
+        "ex5": "Palvelut ilman muistioita: Tunnista talletukset, kun palvelu ei tue muistiinpanoja.",
+        "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
+        "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
+        "ex8": "Osastot/Kustannuspaikat: Tunnukset kustannuspaikkoina; ryhmittele maksut automaattisesti alueittain.",
+        "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
       },
-      "pageTitle": "Mitä tämä sivu tekee SKM:ssä",
-      "pageDesc": "Tätä sivua käytetään hallitsemaan valitun Stellar-tilisi multipleksu-tilejä:",
-      "createTitle": "Luo uusia multipleksattuja tilejä",
+      "pageTitle": "Mitä tämä sivu tekee SKM:ssä?",
+      "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
+      "createTitle": "Neue Muxed‑Konten erstellen",
       "createItems": {
-        "i1": "Luo uusia yhdistelmäosoitteita (M...) perustunnuksestasi (G...).",
-        "i2": "Valinnainen, jossa on nimi (etiketti) ja merkintä (esim. projekti tai tarkoitus)."
+        "i1": "Erzeugt neue Muxed‑Adressen (M...) aus deiner Basisadresse (G...).",
+        "i2": "Valinnainen, jossa on merkintä (Name) ja huomautus (z. B. Projekt oder Zweck)."
       },
-      "importTitle": "Tuo CSV-tiedostoista",
+      "importTitle": "Import aus CSV‑Dateien",
       "importItems": {
-        "i1": "Massaluonteinen Muxed-tilien luominen, esim. työntekijäluettelosta.",
-        "i2": "Luetaan sarakkeita muxedId, label, note."
+        "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
+        "i2": "Lukee sarakkeet muxedId, label, note."
       },
-      "exportTitle": "Olemassa olevien monikanavalevytilien vienti",
+      "exportTitle": "Export vorhandener Muxed‑Konten",
       "exportItems": {
         "i1": "Vie kaikki tallennetut merkinnät CSV-muodossa.",
         "i2": "Kentät: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
       },
-      "templateTitle": "Mallin vienti",
+      "templateTitle": "Template‑Export",
       "templateItems": {
-        "i1": "Luo tyhjä CSV-tiedosto, jossa on sarakeotsikot: muxedId,label,note.",
-        "i2": "Hyödyllinen henkilöstö- tai kirjanpito-osastoille uusien merkintöjen valmistelussa."
+        "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
+        "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
       },
-      "manageTitle": "Johto ja yleiskatsaus",
+      "manageTitle": "Administration & Overview",
       "manageItems": {
-        "i1": "Kaikki tallennetut yhdistetyt osoitteet näytetään taulukossa.",
-        "i2": "Valinta, poisto ja etiketin/merkinnän hallinta suoraan mahdollista."
+        "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
+        "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
       },
       "shortTitle": "Lyhyesti sanottuna",
-      "shortText": "Yhdistetyt tilit tekevät Stellar-tilistäsi yksityiskohtaisen ja seurattavan—ihanteellinen järjestöille, jotka käsittelevät useita maksuja keskitetyn tilin kautta mutta haluavat silti yksilöidä jokaisen tapahtuman."
+      "shortText": "Muxed‑Konten machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
     },
-    "selectBaseAccount": "Perustili (G-osoite)",
+    "selectBaseAccount": "Perustili (G-Adresse)",
     "selectPlaceholder": "Valitse tili",
-    "baseAccountInfo": "Tämä tili pysyy teknisesti omistajana. Muxed-osoite (M...) osoittaa vain tähän tiliin.",
-    "generateButton": "Luo multipleksitili",
+    "baseAccountInfo": "Tämä tili pysyy teknisesti omistajana. Muxed-osoite (M...) viittaa vain tähän tiliin.",
+    "generateButton": "Luo yhdistetty tili",
     "exportButton": "Vienti",
-    "importButton": "Tuonti",
+    "importButton": "Tuoja",
     "listTitle": "Olemassa olevat yhdistetyt tilit",
-    "none": "Ei yhtään yhdistettyä tiliä tallennettuna.",
+    "none": "Ei tallennettuja yhdistettyjä tilejä.",
     "columns": {
       "id": "Muxed-ID",
-      "address": "Yhdistetty osoite",
+      "address": "Muxed-osoite",
       "label": "Nimitys",
       "note": "Huomautus",
       "createdAt": "Luotu",
@@ -531,48 +532,48 @@
     "deleteSelected": "Poista valinta",
     "deleteSuccess": "Valinta poistettu.",
     "countLabel": "Numero",
-    "countInfo": "Uusien Muxed-osoitteiden määrä, peräkkäiset ID:t.",
-    "invalidCount": "Anna kelvollinen luku (>= 1).",
+    "countInfo": "Uusien mulitettujen osoitteiden määrä, peräkkäiset tunnukset.",
+    "invalidCount": "Anna kelvollinen numero (>= 1).",
     "tooMany": "Luo enintään 100 kerrallaan.",
-    "rangeOverflow": "ID-alue ylittää sallitun enimmäismukautetun ID:n.",
+    "rangeOverflow": "ID-alue ylittää sallitun Muxed ID:n enimmäismäärän.",
     "label": "Nimitys",
-    "labelInfo": "z.B. työntekijän nimi tai tarkoitus",
-    "note": "Huomautus (valinnainen)",
-    "noteInfo": "z.B. Osasto / Projekti",
-    "generateSuccess": "Hajautetut osoitteet luotu.",
+    "labelInfo": "esimerkiksi työntekijän nimi tai tarkoitus",
+    "note": "Huomautus (optional)",
+    "noteInfo": "esim. Osasto / Projekti",
+    "generateSuccess": "Muxed-osoite (n) luotu.",
     "editSaved": "Muutokset tallennettu.",
     "save": "Tallenna",
-    "edit": "Muokkaus",
+    "edit": "Muokkaa.",
     "copied": "Kopioitu leikepöydälle.",
     "createDialog": {
       "confirm": "Luo",
-      "cancel": "Peruuttaa"
+      "cancel": "Peruuttaa."
     },
     "export": {
       "filename": "muxed_accounts.csv",
-      "success": "Sekoitellut tilit on viety onnistuneesti.",
-      "failed": "Virhe yhdistettyjen tilien viemisessä."
+      "success": "Yhdistetyt tilit viety onnistuneesti.",
+      "failed": "Virhe tilien yhdistämisessä vientiin."
     },
     "import": {
       "success": "Tuotu: {{imported}} • Ohitettu: {{skipped}} • Virheet: {{errors}}.",
       "failed": "Virhe tuonnin aikana.",
-      "hint": "Tuonti tukee otsikoilla varustettuja CSV-tiedostoja. Erotinmerkit kuten pilkut, puolipisteet ja tabulaattorit tunnistetaan automaattisesti. Tuntemattomat sarakkeet ohitetaan. Formaatit sisältävät: laajennettu (verkko, basePublicKey, muxedId, label, note, createdAt) tai malli (muxedId, label, note)."
+      "hint": "Tuonti tukee otsikollisia CSV-tiedostoja. Erotinmerkit, kuten pilkut, puolipisteet ja sarkaimet tunnistetaan automaattisesti. Tuntemattomia sarakkeita ei huomioida. Muodot: laajennettu (network,basePublicKey,muxedId,label,note,createdAt) tai malli (muxedId,label,note)."
     },
     "exportTemplateButton": "Vientimalli",
-    "exportTemplateSuccess": "Malli on viety onnistuneesti.",
-    "exportTemplateFailed": "Virhe mallin viemisessä.",
+    "exportTemplateSuccess": "Malli viety onnistuneesti.",
+    "exportTemplateFailed": "Virhe mallin vientiä.",
     "csv": {
-      "delimiterLabel": "CSV-erotinmerkki",
+      "delimiterLabel": "CSV-erotin",
       "delimiter": {
         "comma": "Pilkku ,",
         "semicolon": "Puolipiste ;",
         "tab": "Välilehti"
       }
     },
-    "nav": "Sekatilit",
+    "nav": "Muxed-tilit",
     "error": {
-      "noBaseAccount": "Valitse jokin olemassa oleva tili.",
-      "noId": "Ole hyvä ja anna Muxed ID.",
+      "noBaseAccount": "Valitse olemassa oleva tili.",
+      "noId": "Ole hyvä ja anna Muxed-ID.",
       "invalidBaseAccount": "Valittu perusosoite on virheellinen.",
       "unknown": "Tuntematon virhe muxed-osoitteen luomisessa."
     }
@@ -590,45 +591,45 @@
   "common": {
     "clear": "Poista syöte",
     "close": "Sulje",
-    "loading": "Ladataan...",
+    "loading": "Ladataan…",
     "refresh": "Lataa uudelleen"
   },
   "error": {
     "asset": {
-      "creationDateUnknown": "Tuntematon luomispäivämäärä"
+      "creationDateUnknown": "Luomispäivämäärä tuntematon"
     },
     "cache": {
-      "backfillAborted": "Maksujen alkuperäinen lataus keskeytetty.",
+      "backfillAborted": "Maksujen alkuperäinen lataus peruutettu.",
       "coverage": {
-        "newestFailed": "Viimeisimmän maksun hakeminen epäonnistui.",
-        "oldestFailed": "Ei onnistuttu määrittämään varhaisinta päivämäärää."
+        "newestFailed": "Ei onnistuttu hakemaan viimeisintä maksua.",
+        "oldestFailed": "Vanhemmasta päivämäärästä ei voitu määrittää."
       },
-      "indexIterFailed": "Välimuistin indeksi-iterointi epäonnistui",
-      "memoNormBackfillFailed": "Alkuperäinen maksujen lataus normalisoitujen muistiinpanojen osalta epäonnistui.",
-      "openFailed": "Paikallista välimuistia ei voitu avata.",
-      "readFailed": "Välimuistin lukeminen epäonnistui",
-      "rehydrateFailed": "Ei onnistunut ladata puuttuvia muistioita.",
-      "rehydrateWriteFailed": "Epäonnistuttiin kirjoittamaan muistiinpanoja välimuistiin.",
+      "indexIterFailed": "Välimuistin indeksin iteraatio epäonnistui.",
+      "memoNormBackfillFailed": "Alkuperäinen maksujen lataus normalisoiduille muistioille epäonnistui.",
+      "openFailed": "Paikallista välimuistia ei voitu avata",
+      "readFailed": "Välimuistin lukeminen epäonnistui.",
+      "rehydrateFailed": "Muistioiden lataaminen epäonnistui",
+      "rehydrateWriteFailed": "Muisteja ei voitu kirjoittaa välimuistiin.",
       "writeFailed": "Välimuistiin kirjoittaminen epäonnistui"
     },
     "connection": {
-      "backend": "Yhteyttä taustajärjestelmään ei voida muodostaa. Varmista, että"
+      "backend": "Ei voi muodostaa yhteyttä taustajärjestelmään. Varmista, että"
     },
     "fetchInvestedTokens": {
-      "failed": "Sijoitustietojen lataaminen epäonnistui: {{detail}}"
+      "failed": "Sijoitustietojen lataus epäonnistui: {{detail}}"
     },
     "horizon": {
       "paymentsFetch": "Virhe maksujen lataamisessa Horizonista"
     },
-    "loadTrustlines": "Trustlineja ei voitu ladata. Yritä uudelleen, kiitos.",
-    "loadTrustlinesFailed": "Trustlines-lataus epäonnistui.",
-    "loadTrustlinesNotFound": "Tiliä ei löydy verkosta '{{network}}'.",
-    "accountNotFoundInNetwork": "Ei löydy '{{net}}':stä!",
-    "op_invalid_limit": "Luottolinjaa ei voi poistaa. Sillä saattaa vielä olla saldo tai täyttämättömiä velvoitteita.",
+    "loadTrustlines": "Luottolinjoja ei voitu ladata. Yritä uudestaan.",
+    "loadTrustlinesFailed": "Luottolinjojen lataaminen epäonnistui",
+    "loadTrustlinesNotFound": "Tilin tiliä verkossa '{{network}}' ei löytynyt.",
+    "accountNotFoundInNetwork": "Ei löydy '{{net}}'!",
+    "op_invalid_limit": "Trustlinea ei voi poistaa. Sillä saattaa olla vielä saldoa tai avoimia velvoitteita.",
     "query": {
-      "invalidMemo": "Virheellinen muistio",
-      "invalidRange": "Aikaväli on virheellinen (Alku > Loppu)",
-      "invalidTime": "Virheellinen aikanmääritys"
+      "invalidMemo": "Virheellinen muistiinpano",
+      "invalidRange": "Aikajakso on virheellinen (Alku > Loppu)",
+      "invalidTime": "Virheellinen aikaspeksifikaatio"
     },
     "submitTransaction": {
       "failed": {
@@ -646,77 +647,77 @@
       "title": "Virhe tapahtumassa"
     },
     "trustline": {
-      "submitFailed": "Virhe luottolinjan poistamisessa.",
-      "unknown": "Tuntematon virhe luottolinjan poistamisen yhteydessä."
+      "submitFailed": "Virhe luottorajan poistamisessa.",
+      "unknown": "Tuntematon virhe luottolinjan poistamisessa."
     },
     "xlmByMemo": {
-      "aborted": "Toiminto peruttu käyttäjän toimesta",
+      "aborted": "Toiminto peruutettu käyttäjän toimesta.",
       "accountInvalid": "Virheellinen tili",
       "dateInvalid": "Virheellinen päivämäärä",
-      "dateRange": "Epäkelpo päivämääräväli",
+      "dateRange": "Virheellinen päivämääräväli",
       "failedUnknown": "Tuntematon virhe",
-      "memoInvalid": "Virheellinen muistio",
+      "memoInvalid": "Kelpaamaton muistiinpano",
       "paymentsFetch": "Virhe maksujen lataamisessa",
       "serverInvalid": "Virheellinen palvelin"
     },
-    "rateLimited": "Horizon-rajoitus ylitetty. Odota muutama sekunti ja yritä uudelleen."
+    "rateLimited": "Horizon-rajaraja ylitetty. Odota muutama sekunti ja yritä uudelleen."
   },
   "investedTokens": {
     "columns": {
       "amount": "Määrä",
-      "compromised": "Kompromitoitu",
+      "compromised": "Kompromittoitunut",
       "deactivated": "Deaktivoitu",
       "destination": "Kohdelompakko",
-      "issuer": "Liikkeellelaskija",
+      "issuer": "Liikkeeseenlaskija",
       "label": "Tarra",
       "memo": "Muistio",
       "payments": "Maksut",
       "date": "Päivämäärä",
-      "token": "Poletus"
+      "token": "Pelimerkki"
     },
     "decimals": {
-      "auto": "Automattisesti",
+      "auto": "Automaattisesti",
       "label": "Desimaalit:"
     },
     "filter": {
-      "memoPlaceholder": "Suodata muistiinpanojen, lompakko-osoitteen tai tunnisteen perusteella",
-      "tokenPlaceholder": "Suodata tunnuksen mukaan (KOODI: LIIKKEESEENLASKIJA)"
+      "memoPlaceholder": "Suodata muistiolla, lompakon osoitteella tai etiketillä",
+      "tokenPlaceholder": "Suodata tunnuksen mukaan (CODE:ISSUER)"
     },
-    "hintEnterPublicKey": "Anna ensin julkinen avain.",
+    "hintEnterPublicKey": "Syötä ensin julkinen avain.",
     "item": {
       "memo": "Muistio: \"{{memo}}\" (Maksut: {{occurrences}})",
-      "token": "Token: {{token}} (Maksut: {{occurrences}})",
-      "tokenShort": "Tokeni: {{token}}"
+      "token": "Merkki: {{token}} (Maksut: {{occurrences}})",
+      "tokenShort": "Token: {{token}}"
     },
     "missingPublicKey": "Julkinen avain puuttuu.",
-    "moreTruncated": "... ja {{extra}} lisäryhmää",
-    "toWallet": "osoitteeseen Lompakko: {{address}}",
+    "moreTruncated": "… ja {{extra}} muita ryhmiä",
+    "toWallet": "lompakkoon: {{address}}",
     "total": "Ostettujen tokenien määrä: {{count}}",
-    "totalTokens": "Sijoitettujen tokenien (varojen) määrä: {{count}}",
+    "totalTokens": "Sijoitettujen tokenien määrä (Assets): {{count}}",
     "value": {
       "units": "{{amount}} kappaletta",
       "xlm": "{{amount}} XLM"
     },
     "view": {
-      "label": "Suodata seuraavasti:",
-      "memo": "Muistiot (Groupfund)",
-      "token": "Tokeni (ostettu määrä)"
+      "label": "Suodata:",
+      "memo": "Muistioita",
+      "token": "Poletti"
     },
     "toggles": {
       "showTotals": "Kokonaissumma",
-      "qsiOnly": "Summa QSI GF"
+      "qsiOnly": "Kokonais-QSI GF"
     },
     "hints": {
-      "qsiListSet": "Huom: GF-luettelon löydät kohdasta Asetukset → Luotetut lompakot (QSI).",
+      "qsiListSet": "Huom: Löydät GF-listan kohdasta Asetukset → Luotetut lompakot (QSI).",
       "pageTime": "Sivun lataaminen kestää noin 0,2 sekuntia → 100 sivua ≈ 20 sekuntia → 1000 sivua ≈ 200 sekuntia (≈ 3:20 minuuttia)."
     },
-    "walletCapInfo": "Huom: Lompakko voi sisältää enintään 1000 luottolinjaa.",
+    "walletCapInfo": "Huomaa: Lompakko voi sisältää enintään 1000 luottolinjaa.",
     "action": {
-      "load": "Ladataan"
+      "load": "Kauppa"
     },
     "history": {
-      "availableFrom": "Serveri (Horizon) – Historia alkaen",
-      "hintFullHistory": "Huomautus: Horizon-palvelimen pääkirjahistoria ulottuu vain takaisin {{available}} asti. Vain siihen asti olevat tiedot näytetään. Siksi valittu aloituspäivämäärä on rajoitettu. Vanhempia tietoja varten tarvitaan koko historian tarjoaja (yleensä maksullinen) (Tämä voi olla saatavilla tulevaisuudessa!)."
+      "availableFrom": "Serveri (Horizon) – Historia vuodesta",
+      "hintFullHistory": "Huomautus: Horizon-palvelimen pääkirjahistoria ulottuu vain {{available}} saakka. Vain siihen asti olevat tiedot näytetään. Valittu Alkaen-päivämäärä on siksi rajoitettu. Vanhempien tietojen saamiseksi tarvitaan (meist kostenpflichtiger) Full‑History‑Provider (ehkä tulevaisuudessa!)."
     }
   },
   "network": {
@@ -725,28 +726,28 @@
   },
   "multisigEdit": {
     "confirm": {
-      "removeSigner": "Poistetaanko allekirjoittaja todella?"
+      "removeSigner": "Haluatko varmasti poistaa allekirjoittajan?"
     },
     "currentConfig": "Nykyinen / Suunniteltu kokoonpano",
     "error": {
-      "thresholdTooHigh": "Kynnysten ei saa ylittää painojen summaa."
+      "thresholdTooHigh": "Kynnysarvot eivät saa ylittää painojen summaa."
     },
     "hint": "Lataa olemassa oleva tili, säädä allekirjoittajia, painoja, pääpainoa ja kynnysarvoja ja tallenna muutokset.",
     "load": "Kauppa",
     "loaded": "Ladattu. Lisäallekirjoittajia: {{count}}",
-    "menu": "Muokkaa Multisig-tiliä",
-    "menuHint": "Muutetaan olemassa olevan tilin allekirjoittajia/kynnyksiä",
+    "menu": "Muokkaa moniallekirjoitustiliä.",
+    "menuHint": "Säätäminen allekirjoittajien/kynnyksien olemassa olevalle tilille",
     "noteMaxSigners": "Huomautus: Stellar sallii enintään 20 lisäallekirjoittajaa tiliä kohden.",
     "reload": "Lataa uudelleen",
     "save": "Tallenna muutokset",
     "saved": "Muutokset tallennettu. TX: {{hash}}",
     "signers": "Allekirjoittaja",
     "weight": "Painotus",
-    "masterWeight": "Pääpaino",
+    "masterWeight": "Mestari paino",
     "title": "Muokkaa multisig-tiliä",
     "validation": {
-      "signerKeyHint": "Huom: Allekirjoittajien on aloitettava \"G\":llä (ed25519-julkinen avain).",
-      "signerKeyInvalid": "Virheellinen allekirjoittajan osoite. Odotetaan G… osoitetta (ed25519)."
+      "signerKeyHint": "Huom: Allekirjoittajien tulee aloittaa kirjaimella \"G\" (ed25519 public key).",
+      "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
     }
   },
   "navigation": {
@@ -761,296 +762,296 @@
       "error": "Virheellinen kohdeavain.",
       "input": "Syötä kohdelompakon osoite"
     },
-    "label": "Anna lähdefederaation osoite tai julkinen avain:",
-    "load": "Ladataan...",
-    "placeholder": "esim.",
-    "source": "Lähteen lompakon osoite",
+    "label": "Ole hyvä ja syötä lähdefederaation osoite tai julkinen avain:",
+    "load": "Ladataan…",
+    "placeholder": "esimerkiksi",
+    "source": "Lähdelompakon osoite",
     "invalid": "Virheellinen julkinen avain.",
     "submit": {
       "button": "Lähetä"
     },
     "test": "Testi",
     "historyLabel": "Historia",
-    "historyPlaceholder": "Valitse viimeksi käytetty lompakko"
+    "historyPlaceholder": "Valitse viimeksi käytetty lompakko."
   },
   "secretKey": {
     "cleared": "Salainen avain on poistettu.",
     "empty": "Salaisen avaimen kenttä on tyhjä.",
-    "info": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto EI KOSKAAN tallenna salaisuutta avaintasi!\n\nTässä näytetty salainen avain on olemassa vain selaimessasi (lokal im Arbeitsspeicher). Kun lataat sivun uudelleen tai poistut sivulta, se häviää peruuttamattomasti.\n\nKopioi tai kirjaa muistiin salainen avain heti sen luomisen jälkeen ennen sivun sulkemista.\n\nVarmistus: Voit käyttää selaimen kehittäjätyökaluja (F12 → Verkko) varmistaaksesi, että mitään salaista avainta ei lähetetä ulkoisesti. Vain allekirjoitetut tapahtumat lähetetään, ei koskaan salaista avaintasi.",
+    "info": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto EI KOSKAAN tallenna salaisuusavaintasi!\n\nTässä näkyvä salaisuusavain on olemassa vain selaimessasi (lokal im Arbeitsspeicher). Kun päivität tai poistut sivulta, se menetetään lopullisesti.\n\nKopioi tai kirjoita ylös salaisuusavain heti sen luomisen jälkeen ennen kuin suljet sivun.\n\nVarmistus: Voit tarkistaa selaimen kehittäjätyökaluilla (F12 → Verkko), että salaisuusavainta ei lähetetä ulkopuolelle. Vain allekirjoitetut transaktiot lähetetään, ei koskaan salaisuusavaintasi.",
     "invalid": "Virheellinen salainen avain.",
-    "label": "Syötä lähdeturva-avain (S-Key)",
+    "label": "Syötä lähteen salainen avain (S-Key)",
     "mismatch": "Salainen avain ei vastaa julkista osoitetta.",
-    "placeholder": "esim.",
-    "valid": "✅ Salainen avain on kelvollinen.",
+    "placeholder": "esimerkiksi (esim.)",
+    "valid": "✅ Salainen avain on voimassa.",
     "remember": {
       "label": "Muista tämän istunnon salainen avain.",
-      "hint": "Kun toiminto on käytössä, avain tallennetaan, kunnes välilehti suljetaan, ja sitä käytetään uudelleen myöhempiä maksuja varten."
+      "hint": "Kun se on käytössä, avain tallennetaan, kunnes välilehti suljetaan, ja sitä käytetään uudelleen tulevia maksuja varten."
     },
     "clearSession": "Poista istuntoavain",
-    "clearSessionHint": "Poistaa tässä istunnossa tallennetun salaisen avaimen (se poistetaan joka tapauksessa, kun välilehti suljetaan)."
+    "clearSessionHint": "Poistaa tässä istunnossa tallennetun salaisen avaimen (it will be deleted when the tab is closed anyway)."
   },
   "token": {
     "purchases": "Suodata tokeneita/varoja"
   },
   "glossary": {
     "pageTitle": "Sanasto",
-    "pageIntro": "Täältä löydät tärkeitä sanoja lohkoketjumaailmasta ja Stellarin verkosta. Kaikki on selitetty yksinkertaisin termein.",
+    "pageIntro": "Täältä löydät tärkeitä sanoja lohkoketjun maailmasta ja Stellar-verkostosta. Kaikki on selitetty yksinkertaisin termein.",
     "searchLabel": "Hakusana",
-    "searchPlaceholder": "Hakutermi (esim. tili, Muxed)",
+    "searchPlaceholder": "Hakutermi (z. B. Konto, Account, Muxed)",
     "searchHint": "Haku löytää sanoja ja selityksiä.",
-    "noResults": "Ei osumaa.",
+    "noResults": "Ei vastaavuutta.",
     "blockchain": {
       "title": "Lohkoketju",
       "original": "Blockchain",
-      "short": "Jaettu digitaalinen pääkirja - monet tietokoneet tallentavat samat merkinnät.",
-      "desc": "Lohkoketju on kuin digitaalinen pääkirja. Monet tietokoneet tallentavat samat merkinnät, joten kukaan ei voi salaa muuttaa mitään."
+      "short": "Jaettu digitaalinen pääkirja – monet tietokoneet tallentavat samat merkinnät.",
+      "desc": "Lohkoketju on kuin digitaalinen pääkirja. Monet tietokoneet tallentavat samat kirjaukset, mikä estää ketään tekemästä muutoksia salaa."
     },
     "wallet": {
       "title": "Lompakko",
       "original": "Wallet",
       "short": "Digitaalinen lompakko, joka hallitsee avaimiasi.",
-      "desc": "Lompakko on digitaalinen kukkarosi. Se hallinnoi avaimia, joita tarvitset tilillesi pääsemiseen ja tapahtumien lähettämiseen. Lompakko voi olla ohjelma, sovellus tai jopa pelkkä paperi, jossa on yksityinen avaimesi."
+      "desc": "Lompakko on digitaalinen kukkarosi. Se hallinnoi avaimia, joita tarvitset tilisi käyttämiseen ja tapahtumien lähettämiseen. Lompakko voi olla ohjelma, sovellus tai jopa vain paperilappu, jossa on yksityinen avaimesi."
     },
     "account": {
       "title": "Tili",
       "original": "Account",
-      "short": "Blockchain-tili voi pitää hallussaan varoja ja lähettää transaktioita.",
-      "desc": "Tili on paikka lohkoketjussa, jossa omaisuutesi säilytetään. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat lompakot voivat käyttää samaa tiliä, jos niillä on oikea avain."
+      "short": "Lohkoketjutili voi pitää omaisuutta ja lähettää tapahtumia.",
+      "desc": "Tili on paikka lohkoketjussa, jossa varasi säilytetään. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat lompakot voivat käyttää samaa tiliä, jos niillä on oikea avain."
     },
     "addressG": {
       "title": "G-osoite",
       "original": "G Address",
-      "short": "Stellar-tilin julkinen pääosoite (alkaa kirjaimella G).",
+      "short": "Stellar-tilin julkinen pääosoite (beginnt mit G).",
       "desc": "G-osoite on Stellar-tilin pääosoite. Se alkaa kirjaimella G. Annat sen muille, jotta he voivat lähettää sinulle jotain."
     },
     "publicKey": {
       "title": "Julkinen avain",
       "original": "Public Key",
-      "short": "Osoite, jonka saa jakaa; yleensä Stellarissa käytetty G-osoite.",
-      "desc": "Julkinen avain on osoite, jonka saat näyttää. Stellarissa tämä on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
+      "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+      "desc": "Julkinen avain on osoite, jota saat näyttää. Stellarissa tämä on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
     },
     "privateKey": {
       "title": "Salainen avain",
       "original": "Secret Key",
-      "short": "Tilin salasana – älä koskaan jaa.",
+      "short": "Tilin salasana – älä koskaan jaa sitä.",
       "desc": "Salainen avain on tilisi salasana. Kuka tahansa, jolla on tämä avain, voi siirtää rahasi. Älä koskaan jaa sitä."
     },
     "addressFederation": {
-      "title": "Federationin osoite",
+      "title": "Federation-osoite",
       "original": "Federation Address",
-      "short": "Lyhyt osoite, kuten sähköposti, viittaa G-osoitteeseen.",
-      "desc": "Federaatio-osoite näyttää sähköpostilta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa tavalliseen G-osoitteeseen. Se on helpompi muistaa."
+      "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+      "desc": "Federation-osoite näyttää sähköpostilta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa tavalliseen G-osoitteeseen. Se on helpompi muistaa."
     },
     "addressMuxed": {
-      "title": "Sekatile tili",
+      "title": "Monitili",
       "original": "Muxed Account",
-      "short": "M-osoite lisätunnuksella – jakaa perus tilin.",
-      "desc": "M-osoite viittaa olemassa olevaan Stellar-tiliin, mutta sillä on myös oma numero (ID). Tämä mahdollistaa esimerkiksi sen, että saman G-osoitteen alla voidaan erottaa useita henkilöitä tai osastoja. Tekninen omistusoikeus varoihin säilyy kuitenkin päätilillä."
+      "short": "M‑osoite lisä-ID:llä – jakaa perustilin.",
+      "desc": "M-osoite viittaa olemassa olevaan Stellar-tiliin, mutta sillä on myös oma tunniste (ID). Tämä mahdollistaa erottelun useiden henkilöiden tai osastojen välillä saman G-osoitteen alla. Tekninen rahojen omistus säilyy kuitenkin päätilillä."
     },
     "multisig": {
       "title": "Moniallekirjoitus",
       "original": "Multi‑Sig",
-      "short": "Tärkeät toimet vaativat enemmän kuin vain allekirjoituksen.",
-      "desc": "Multi-sig tarkoittaa useita allekirjoituksia. Merkittävä toimenpide vaatii enemmän kuin yhden avaimen. Esimerkiksi sinun ja toisen avaimen täytyy molempien hyväksyä, ennen kuin jotain voidaan lähettää. Tämä tekee varkaudesta vaikeampaa."
+      "short": "Tärkeät toimet vaativat enemmän kuin allekirjoituksen.",
+      "desc": "Multi-Sig tarkoittaa useita allekirjoituksia. Tärkeä toimenpide vaatii useamman kuin yhden avaimen. Esimerkiksi sinun ja toisen avaimen molempien on hyväksyttävä ennen kuin jotain voidaan lähettää. Tämä tekee varkaudesta vaikeampaa."
     },
     "trustline": {
       "title": "Luottolimiitti",
       "original": "Trustline",
-      "short": "Sopimus tietyn liikkeeseenlaskijan rahakkeiden hallussapidosta.",
-      "desc": "Trustline on kuin \"kyllä, hyväksyn tämän tokenin.\" Tällä osoitat, että tilisi on valmis vastaanottamaan tietyn tokenin tietyltä liikkeellelaskijalta. Ilman trustlinea et voi vastaanottaa tätä tokenia.\n\nEsimerkki: Trustline määritellään muodossa KOODI:LIKKEELLELASKIJA. Esimerkiksi EURT tokenille liikkeellelaskijalta GDUKMGUGDZQK6Y…, se on EURT:GDUKMGUGDZQK6Y…."
+      "short": "Sopimus tietyn liikkeeseenlaskijan tokenin hallussapidosta.",
+      "desc": "Luottolimiitti on kuin \"kyllä, hyväksyn tämän tokenin.\" Tekemällä niin ilmoitat, että tilisi on valmis pitämään tiettyä tokenia tietyltä liikkeeseenlaskijalta. Ilman luottolimiittiä et voi vastaanottaa tätä tokenia.\n\nEsimerkki: Luottolimiitti määritellään muodossa KOODI:LIKKEESEENLASKIJA. EURT-tokeneille, jonka liikkeeseenlaskija on GDUKMGUGDZQK6Y…, se on EURT:GDUKMGUGDZQK6Y…."
     },
     "token": {
-      "title": "Token",
+      "title": "Merkki",
       "original": "Token",
       "short": "Digitaalinen yksikkö – esim. raha, pisteet tai luotto.",
-      "desc": "Token on lohkoketjussa oleva digitaalinen yksikkö. Token voi edustaa rahaa, pisteitä tai palveluun liittyviä krediittejä."
+      "desc": "Token on digitaalinen yksikkö lohkoketjussa. Token voi edustaa rahaa, pisteitä tai palvelun krediittejä."
     },
     "asset": {
-      "title": "Varat",
+      "title": "Omaisuus",
       "original": "Asset",
-      "short": "Stellarissa olevat tokenit ovat aina liitettynä liikkeeseenlaskijaan.",
-      "desc": "Stellarissa tokenia kutsutaan varaksi. Varaan liittyy aina liikkeeseenlaskijan tili. Esimerkiksi tili voi laskea liikkeelle eurotokenin. Tämä eurotoken on sitten vara."
+      "short": "Stellar-verkoston tokenit ovat aina liitettynä liikkeeseenlaskijaan.",
+      "desc": "Stellar-alustalla tokenia kutsutaan varaksi. Varaan liittyy aina liikkeeseenlaskutili. Esimerkiksi tili voi laskea liikkeelle eurotokenin. Tämä eurotoken on sitten vara."
     },
     "xlm": {
       "title": "XLM",
       "original": "XLM",
       "short": "Stellarin oma valuutta maksuihin ja aktivointiin.",
-      "desc": "XLM on Stellarin perusvaluutta. Tarvitset XLM:ää maksujen maksamiseen ja uuden tilin avaamiseen."
+      "desc": "XLM on Stellarin perusvaluutta. Tarvitset XLM:ää maksujen suorittamiseen ja uuden tilin avaamiseen."
     },
     "mainnet": {
       "title": "Mainnet",
       "original": "Mainnet",
-      "short": "Todellinen Stellar-verkosto, jolla on todellista arvoa.",
-      "desc": "Todellinen Stellar-verkko todellisella arvolla. Tapahtumat ovat lopullisia, ja maksut suoritetaan oikeassa XLM:ssä."
+      "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+      "desc": "Todellinen Stellar-verkosto, jolla on todellinen arvo. Tapahtumat ovat lopullisia, ja maksut maksetaan oikeassa XLM:ssä."
     },
     "testnet": {
       "title": "Testiverkko",
       "original": "Testnet",
-      "short": "Julkinen harjoitusverkosto ilman todellista arvoa.",
-      "desc": "Julkinen harjoitusverkko. Tokeneilla ei ole todellista arvoa. Ihanteellinen oppimiseen ja kokeilemiseen ilman riskiä."
+      "short": "Julkinen harjoittelun verkosto ilman todellista arvoa.",
+      "desc": "Julkinen testiverkko. Tokenit eivät ole oikeasti arvokkaita. Ihanteellinen oppimiseen ja kokeiluun ilman riskiä."
     },
     "memo": {
       "title": "Muistio",
       "original": "Memo",
-      "short": "Lyhyt huomautus tapahtumasta.",
-      "desc": "Muistio on pieni viesti, jonka voit lähettää transaktion mukana. Usein pörssi vaatii tietyn muistion, jotta se tietää, kenelle rahat kuuluvat."
+      "short": "Lyhyt viesti maksutapahtumassa.",
+      "desc": "Muistio on pieni viesti, jonka voit lähettää yhdessä tapahtuman kanssa. Usein vaihto vaatii tietyn muistion tietääkseen, kenelle rahat kuuluvat."
     },
     "transaction": {
       "title": "Tapahtuma",
       "original": "Transaction",
-      "short": "Toiminto lohkoketjussa, kuten maksu tai luottolinja.",
-      "desc": "Tapahtuma on toimenpide lohkoketjussa. Esimerkiksi rahan lähettäminen tai luottolinjan luominen. Tapahtuma tallennetaan pysyvästi, kun se on vahvistettu."
+      "short": "Toiminta lohkoketjussa, esimerkiksi maksu tai luottolimiitti.",
+      "desc": "Tapahtuma on toimenpide lohkoketjussa, kuten rahan lähettäminen tai luottolinjan luominen. Tapahtuma tallennetaan pysyvästi, kun se on vahvistettu."
     },
     "fee": {
       "title": "Maksu",
       "original": "Fee",
-      "short": "Erittäin pieni summa per tapahtuma.",
-      "desc": "Maksu on hyvin pieni summa, jonka maksat jokaisen tapahtuman yhteydessä. Maksu menee verkolle. Stellarin kanssa maksut ovat erittäin alhaiset."
+      "short": "Erittäin pieni määrä per tapahtuma.",
+      "desc": "Maksu on hyvin pieni summa, jonka maksat jokaisen tapahtuman yhteydessä. Maksu menee verkostolle. Stellarissa maksut ovat hyvin alhaiset."
     },
     "ledger": {
-      "title": "Tilikirja",
+      "title": "Pääkirja",
       "original": "Ledger",
-      "short": "Vahvistettujen tietojen ja saldotiedon ketju.",
-      "desc": "Pääkirja on kaikkien vahvistettujen tietojen ketju. Se näyttää, kuinka paljon kutakin tiliä on ja mitkä tapahtumat ovat tapahtuneet. Kuka tahansa voi tarkistaa pääkirjan."
+      "short": "Vahvistettujen tietojen ja tilien saldojen ketju.",
+      "desc": "Tilikirja on kaikkien vahvistettujen tietojen ketju. Se sisältää tiedot siitä, millä tileillä on mikä määrä ja mitkä tapahtumat ovat tapahtuneet. Kuka tahansa voi tarkistaa tilikirjan."
     },
     "horizon": {
       "title": "Horisontti",
       "original": "Horizon",
-      "short": "API-palvelu, jonka kautta sovellukset kommunikoivat Stellar-järjestelmän kanssa.",
-      "desc": "Horizon on palvelu, jonka kautta ohjelmat ovat vuorovaikutuksessa Stellarin lohkoketjun kanssa. Työkalumme kysyy Horizonilta tilin saldot ja tapahtumat."
+      "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+      "desc": "Horizon on palvelu, jonka kautta ohjelmat kommunikoivat Stellar-lohkoketjun kanssa. Työkalumme kysyy Horizonilta tilin saldot ja tapahtumat."
     },
     "anchor": {
       "title": "Ankkuri",
       "original": "Anchor",
-      "short": "Yritys yhdistää fiat-rahaa Stellariin.",
-      "desc": "Ankkuri on yritys, joka yhdistää oikean rahan, kuten euron tai dollarin, Stellariin. Esimerkiksi annat ankkurille euroja ja saat vastineeksi eurotokeneita Stellar-verkossa."
+      "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+      "desc": "Ankkuri on yritys, joka yhdistää oikean rahan, kuten eurot tai dollarit, Stellariin. Esimerkiksi, annat ankkurille euroja ja vastineeksi saat Stellarissa olevan eurotokenin."
     },
     "exchange": {
       "title": "Pörssi",
       "original": "Exchange",
-      "short": "Paikka ostaa ja myydä tokeneita.",
-      "desc": "Pörssi on paikka, jossa voit ostaa tai myydä tokeneita. Monet pörssit vaativat KYC-prosessin, joka on henkilöllisyyden varmistus, ennen kuin voit nostaa rahaa euroina tai frangeina."
+      "short": "Paikka, jossa voi ostaa ja myydä tokeneita.",
+      "desc": "Pörssi on paikka, jossa voit ostaa tai myydä tokeneita. Monet pörssit vaativat KYC-prosessin, mikä tarkoittaa henkilöllisyytesi todentamista, ennen kuin voit nostaa rahaa euroina tai frangeina."
     },
     "dex": {
-      "title": "DEX",
+      "title": "DEX (Decentralized Exchange)",
       "original": "Decentralized Exchange",
       "short": "Hajautettu pörssi suoraan lohkoketjussa.",
-      "desc": "DEX tarkoittaa hajautettua pörssiä. Tässä ihmiset käyvät kauppaa suoraan keskenään lohkoketjussa. Ei ole yhtä ainoaa operaattoria. Stellarilla on suoraan sisäänrakennettu DEX."
+      "desc": "DEX tarkoittaa hajautettua pörssiä. Täällä ihmiset käyvät kauppaa suoraan toistensa kanssa lohkoketjussa. Ei ole yhtä ainoaa toimijaa. Stellarilla on DEX suoraan siihen sisäänrakennettuna."
     },
     "liquidityPool": {
       "title": "Likviditeettipooli",
       "original": "Liquidity Pool",
-      "short": "Yhteinen rahasto, jossa on kaksi tokenia välitöntä vaihtoa varten.",
-      "desc": "Likviditeettipooli on jaettu allas, joka koostuu kahdesta tokenista. Ihmiset tallettavat molemmat tokenit siihen. Tämän jälkeen muut voivat välittömästi vaihtaa näitä tokeneita. Vastineeksi tallettajat ansaitsevat pieniä maksuja."
+      "short": "Yhteinen allas, jossa on kaksi tokenia välitöntä vaihtoa varten.",
+      "desc": "Likviditeettiallas on yhteisöllinen rahasto, joka sisältää kaksi tokenia. Ihmiset tallettavat siihen molempia tokeneita. Muut voivat sitten vaihtaa näitä tokeneita välittömästi. Tallettajat ansaitsevat tästä pieniä palkkioita."
     },
     "balanceClaimable": {
-      "title": "Vaatimuksenalainen saldo",
+      "title": "Vaatimuskelpoinen saldo",
       "original": "Claimable Balance",
-      "short": "Varatut varat, jotka sinun on vielä hyväksyttävä.",
-      "desc": "Vaadittava saldo on rahaa, joka on jo varattu sinulle, mutta sinun on vielä vaadittava se. Se siirretään tilillesi vasta, kun hyväksyt sen."
+      "short": "Varatut rahat, jotka sinun on vielä hyväksyttävä.",
+      "desc": "Vaatimiskelpoinen saldo on rahaa, joka on jo varattu sinulle, mutta sinun täytyy vielä vaatia se. Se menee tilillesi vasta, kun olet hyväksynyt sen."
     },
     "protocolUpdate": {
       "title": "Protokollipäivitys",
       "original": "Protocol Update",
-      "short": "Verkkosääntöjen päivittäminen.",
-      "desc": "Protokollipäivitys on Stellar-verkon sääntöjen päivitys, kuten uudet ominaisuudet tai tietoturvamuutokset. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
+      "short": "Aktualisierung der Netzwerk‑Regeln.",
+      "desc": "Protokollipäivitys on päivitys Stellar-verkon sääntöihin, kuten uudet ominaisuudet tai tietoturvamuutokset. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
     },
     "soroban": {
       "title": "Soroban",
       "original": "Soroban",
-      "short": "Stellarin älysopimusjärjestelmä.",
-      "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on lohkoketjussa oleva ohjelmakoodi. Koodi voi itsenäisesti tarkistaa sääntöjä ja käynnistää toimia ilman pankin välikättä."
+      "short": "Stellars Smart‑Contract‑System.",
+      "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on ohjelmakoodi lohkoketjussa. Koodi voi itsenäisesti tarkistaa sääntöjä ja laukaista toimintoja ilman pankkivälittäjää."
     },
     "missingKey": "Puuttuva sanaston avain: {{detail}}"
   },
   "trustline": {
-    "all": "Näytä Trustline(s)",
-    "compare": "Vertaa luottolimiittiä(-limiittejä)",
-    "delete": "Poista luottolinja(t)",
+    "all": "Näytä luottolinja(s)",
+    "compare": "Vertaa Trustline(s)",
+    "delete": "Poista Trustline(s)",
     "deleted": {
       "mode": {
-        "real": "Reaalitila",
-        "realWarning": "Huomio: Varsinainen luottolinja(t) poistetaan.",
+        "real": "Reaaliaikatila",
+        "realWarning": "Varoitus: Todelliset Trustlines(s) poistetaan",
         "simulation": "Simulaatiotila"
       },
-      "notFound": "Poistettavia luottolinjoja ei löytynyt – kaikissa on vielä saldoja.",
+      "notFound": "Ei poistettavia luottolinjoja löytynyt – kaikissa on vielä saldoa.",
       "resultText": "Lukumäärä: {{count}} • Tila: {{mode}}",
-      "resultTitle": "Poistetut luottorajat",
-      "simulated": "Simulointi: {{count}} luottolinja(a) poistetaan.",
-      "success": "Onnistui: {{count}} trustlinea poistettu."
+      "resultTitle": "Poistettu Trustline(s)",
+      "simulated": "Simulointi: {{count}} Trustlines-poistettaisiin.",
+      "success": "Onnistuminen: {{count}} Trustline(s) poistettu."
     },
     "destination": {
-      "label": "Syötä kohdejulkinen avain:",
-      "placeholder": "esim."
+      "label": "Anna kohdeyleisön julkinen avain:",
+      "placeholder": "esimerkiksi (esim.)"
     },
-    "noDuplicates": "Ei löydetty päällekkäisiä luottorajaviivoja.",
-    "nonZeroBalance": "Tätä luottorajaa ei voi poistaa, koska sillä on edelleen saldoa.",
-    "notFound": "Luottolinja(ja) ei löydy.",
-    "onlyZeroBalanceInfo": "Vain luottolinjat, joiden saldo on 0, voidaan poistaa.",
+    "noDuplicates": "Ei päällekkäisiä luottolinjoja löytynyt.",
+    "nonZeroBalance": "Tätä luottolinjaa ei voida poistaa, koska sillä on vielä saldo.",
+    "notFound": "No Trustline(s) löytyi.",
+    "onlyZeroBalanceInfo": "Vain trustlines, joiden saldo on 0, voidaan poistaa.",
     "showSecret": "Näytä salainen avain"
   },
   "deleted": {
-    "deletingProgress": "Poistetaan: {{current}} / {{total}}",
-    "success": "Menestys: {{count}} luottolinja(a) poistettu."
+    "deletingProgress": "Poisto käynnissä: {{current}} / {{total}}",
+    "success": "Erfolg: {{count}} Trustline(s) poistettu."
   },
-  "skippedDueToBalance": "{{count}} trustilinja(a) ohitettu (saldo on edelleen käytettävissä).",
+  "skippedDueToBalance": "{{count}} Trustline(a) ohitettiin (noch Guthaben vorhanden).",
   "xlmByMemo": {
     "action": {
       "calculate": "Laskea",
-      "loading": "Olen pahoillani, en voi suorittaa laskelmia. Voisitko antaa lisätietoja tai kontekstia pyyntöösi liittyen?"
+      "loading": "Berechne…"
     },
     "date": {
-      "from": "Alkaen (valinnainen)",
-      "to": "Asti (valinnainen)"
+      "from": "Alkaen (optional)",
+      "to": "(\"(optional) asti\")"
     },
     "debug": {
-      "incoming": "Tuleva – vastaanottaja: {{toMe}}, luominen→minulle: {{createToMe}}, alkuperäinen→minulle: {{nativeInToMe}}",
+      "incoming": "Saapuva – vastaanottaja: {{toMe}}, luo→minulle: {{createToMe}}, alkuperäinen→minulle: {{nativeInToMe}}",
       "incomingOverview": "Merkinnät: {{total}} • Osallistuvat lompakot: {{unique}}",
-      "memo": "Muistiot ikkunassa: {{any}} • tarkat muistiot: {{exact}}",
-      "types": "Tyypit – maksu: {{pay}}, polku: {{path}}, luominen: {{create}}, muu: {{other}}"
+      "memo": "Muistioita ikkunassa: {{any}} • täsmälliset muistiot: {{exact}}",
+      "types": "Tyypit – maksu: {{pay}}, polku: {{path}}, luo: {{create}}, muu: {{other}}"
     },
     "export": {
-      "csv": "Tarkista CSV (Osumat)",
+      "csv": "Tarkista CSV (Treffer)",
       "csvAll": "Vie kaikki toiminnot",
       "csvBoth": "Tallenna molemmat CSV-tiedostot.",
-      "csvMatches": "Tarkista CSV (Ottelut)"
+      "csvMatches": "Tarkista CSV (Treffer)"
     },
     "exportCsv": {
       "failed": "CSV-vienti epäonnistui: {{detail}}"
     },
     "memo": {
-      "label": "Muistiinpanon etsintäteksti (merkkijono, kirjainkoolla on merkitystä)",
-      "placeholder": "Muistio (merkkijono, kirjainkoon huomioiva)"
+      "label": "Muistion hakuteksti (substring, case sensitive)",
+      "placeholder": "Muistio (substring, case-sensitive)"
     },
     "overviewLine": "Saapuvat maksut: {{total}} • osalliset lompakot: {{unique}}",
     "page": {
-      "noPublicKey": "Syötä ensin julkinen avain tai lataa tili uudelleen.",
-      "title": "XLM-summa memon jälkeen"
+      "noPublicKey": "Anna ensin julkinen avain tai lataa tili uudelleen.",
+      "title": "XLM-saldo per muistio"
     },
     "result": {
       "label": "Kokonaissumma:",
       "value": "{{amount}} XLM"
     },
     "summary": {
-      "amount": "Yhteensä: {{amount}} XLM",
-      "correctCount": "Merkinnät oikealla muistiolla: {{n}}",
+      "amount": "Määrä: {{amount}} XLM",
+      "correctCount": "Merkintöjä oikealla muistilapulla: {{n}}",
       "count": "Määrä: {{n}}",
-      "label": "Vertailu (kaikki syötteet)",
-      "otherCount": "Merkinnät, joissa on virheellinen/puuttuva muistio: {{n}}",
-      "unique": "Uniikit lompakot (kaikki): {{n}}",
-      "uniqueWallets": "Yksilölliset lompakot: {{n}}"
+      "label": "Vertailu (all inputs)",
+      "otherCount": "Merkinnät, joissa on virheellisiä/puuttuvia muistiinpanoja: {{n}}",
+      "unique": "Uniikit lompakot (alle): {{n}}",
+      "uniqueWallets": "Ainutlaatuiset lompakot: {{n}}"
     },
     "time": {
       "setToNow": "Aseta nykyinen aika.",
-      "setToNowHint": "Aseta aikakenttä nykyiseen aikaan."
+      "setToNowHint": "Aseta aika-kenttä nykyiseen aikaan."
     },
-    "title": "XLM-määrä muistiinpanon mukaan",
+    "title": "XLM-saldo muistiinpanon mukaan",
     "topLargest": {
-      "button": "20 Parasta Merkintää (Muistio)",
+      "button": "Top 20 Entrances (Memo)",
       "clipboard": "Kopioi leikepöydälle",
       "csv": "Lataa CSV",
-      "scanning": "... skannaa parhaat merkinnät",
-      "title": "Muistion 20 parasta merkintää ajanjakson aikana"
+      "scanning": "… scannt Top-Eingänge",
+      "title": "Kauden 20 parasta merkintää memoihin"
     },
     "tz": {
       "cdt": "CDT (UTC−5)",
@@ -1058,125 +1059,124 @@
       "europe_zurich": "Eurooppa/Zurich (CET/CEST)",
       "label": "Aikavyöhyke päivämäärälle/ajalle",
       "local": "Paikallinen aikavyöhyke",
-      "note": "Päivämäärä- ja aikaarvot tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC-aikaan ennen haun suorittamista.",
+      "note": "Päivämäärä ja aika tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC:ksi ennen hakua.",
       "utc": "UTC",
-      "window": "Käytetty UTC-aikaikkuna: {{from}} → {{to}} (lopetuspois)"
+      "window": "Käytetty UTC-aikaikkuna: {{from}} → {{to}} (Bis exklusiv)"
     },
     "wrongMemos": {
-      "button": "Näytä lompakot, joissa on virheellinen/tyhjä muistiinpano",
+      "button": "Näytä lompakot, joiden muistiinpano on virheellinen/tyhjä.",
       "clipboard": "Kopioi leikepöydälle",
       "columns": {
         "amount": "Määrä",
-        "created_at": "Luotu",
-        "from": "Alkaen",
+        "created_at": "Luotu fi",
+        "from": "Lokakuuhun 2023 saakka koulutettu.",
         "memo": "Muistio",
-        "tx_hash": "Tapahtuman hajautusarvo"
+        "tx_hash": "Tapahtuman tiiviste"
       },
       "csv": "Lataa CSV",
-      "failed": "Virhe maksujen lataamisessa, joissa on virheellinen/tyhjä muistiinpano.",
-      "hint": "Suodattaa saapuvat maksut ajanjakson sisällä ja näyttää lähettäjät, joilla on virheellinen/tyhjä viesti.",
-      "scanning": "... skannaa vääriä/tyhjiä muistiinpanoja",
-      "summary": "Määrä: {{count}} • Yhteensä: {{sum}} XLM • Uniikit lompakot: {{unique}}",
-      "title": "Virheelliset/tyhjät muistiot kaudella"
+      "failed": "Virhe maksujen lataamisessa virheellisellä/tyhjällä muistilapulla.",
+      "hint": "Suodattaa saapuvat maksut ajanjaksolta ja näyttää lähettäjät, joilla on virheellisiä/tyhjiä viestejä.",
+      "scanning": "… skannaa vääriä/tyhjiä muistioita",
+      "summary": "Määrä: {{count}} • Yhteensä: {{sum}} XLM • Yksilölliset lompakot: {{unique}}",
+      "title": "Virheelliset/tyhjät muistiot kauden aikana"
     }
   },
   "wallet": {
     "federationDisplay": {
-      "label": "Federaation osoite",
-      "none": "Liittovaltion osoitetta ei määritelty",
+      "label": "Federationin osoite",
+      "none": "Federointiosoitetta ei ole määritetty.",
       "account": "Tili",
-      "accountLabel": "Etiketti"
+      "accountLabel": "Merkintä"
     },
     "flag": {
-      "compromised": "Varoitus: Tämä vastaanottaja on merkitty vaarantuneeksi luottamuslistallasi.",
-      "deactivated": "Huom: Tämä vastaanottaja on merkitty estetyksi luottamusluettelossasi."
+      "compromised": "Varoitus: Tämä vastaanottaja on merkitty luettelossasi vaarantuneeksi.",
+      "deactivated": "Huom: Tämä vastaanottaja on merkitty luotetussa luettelossasi poistetuksi käytöstä."
     }
   },
   "learn": {
     "lesson1": {
-      "title": "Mikä on lohkoketju?",
+      "title": "Mikä on lohkoketju",
       "goal": "Blockchainin periaatteen ymmärtäminen",
-      "task": "Kokoa lohkot (transaktiot) ketjuksi.",
+      "task": "Kokoa rakennuspalikoista (Transaktionen) ketju",
       "learningOutcome": "Lohkoketju on muuttumaton digitaalinen pääkirja, jonka kaikki yhdessä vahvistavat.",
       "reward": "⭐ 1 – Lohkokehittäjä"
     },
     "lesson2": {
       "title": "Ymmärrä Stellar",
-      "goal": "Tunne erot muista lohkoketjuista.",
-      "task": "Lähetä token ystävälle (simulaatio) ja näytä nopeus",
+      "goal": "Tunne ero muihin lohkoketjuihin.",
+      "task": "Lähetä token (Simulation) ystävälle ja katso nopeus.",
       "learningOutcome": "Stellar on nopea, edullinen ja ilman louhintaa.",
       "reward": "⭐ 1 – Nopea Lähettäjä"
     },
     "lesson3": {
       "title": "Julkinen & Yksityisyys",
-      "goal": "Ymmärtäminen pseudonyymisyydestä",
-      "task": "Tarkastele julkista tapahtumaa ja arvaa, tietääkö joku, kuka lähettäjä on.",
-      "learningOutcome": "Kaikki on näkyvillä, mutta kukaan ei tiedä oikeaa nimeä.",
-      "reward": "⭐ 1 – Yksityisyysetsivä"
+      "goal": "Ymmärtäminen pseudonymiteettia",
+      "task": "Tarkastele julkista tapahtumaa ja arvaa, onko lähettäjä tiedossa.",
+      "learningOutcome": "Kaikki on näkyvissä, mutta kukaan ei tiedä oikeaa nimeä.",
+      "reward": "⭐ 1 – Tietosuojasalapoliisi"
     },
     "lesson4": {
       "title": "Tilisi",
-      "goal": "Julkisen/salaisen avaimen rakenteen ja merkityksen ymmärtäminen",
+      "goal": "Ymmärrä julkisten/yksityisten avainparien rakenne ja merkitys.",
       "task": "Yhteensopivuuspeli: Mikä on julkista, mikä on salaisuus",
-      "learningOutcome": "Vain salainen avain antaa pääsyn; julkinen avain voidaan jakaa.",
-      "reward": "⭐ 1 – Avainvartija"
+      "learningOutcome": "Vain salainen avain antaa pääsyn, julkinen avain voidaan jakaa.",
+      "reward": "⭐ 1 – Avainsuojelija"
     },
     "lesson5": {
-      "title": "Lähetä ja vastaanota",
-      "goal": "Ymmärtäminen, miten tapahtumat ja luottolinjat toimivat",
-      "task": "Suorita testitoimitus ja tarkastele maksua.",
-      "learningOutcome": "Jokainen tapahtuma aiheuttaa pienen maksun; Luottolimiitti = lupa vastaanottaa.",
-      "reward": "⭐ 2 – Trustline-aloittelija"
+      "title": "Lähetä & Vastaanota",
+      "goal": "Ymmärtäminen tapahtumien ja luottolinjojen toiminnallisuudesta",
+      "task": "Suorita testilähetys ja tarkastele maksua.",
+      "learningOutcome": "Jokaisesta tapahtumasta peritään pieni maksu; Trustline = lupa vastaanottaa.",
+      "reward": "⭐ 2 – Trustline Aloittelija"
     },
     "lesson6": {
-      "title": "Tokenit ja kaupankäynti",
-      "goal": "Markkinamekanismien tunteminen",
-      "task": "Aseta token virtuaaliselle markkinapaikalle ja seuraa hinnan muutoksia.",
-      "learningOutcome": "Hinta määräytyy tarjonnan ja kysynnän mukaan.",
-      "reward": "⭐ 2 – Markkinapaikka-asiantuntija"
+      "title": "Token & Trading",
+      "goal": "Opi markkinamekanismeista",
+      "task": "Aseta tokeneita virtuaaliseen markkinapaikkaan ja seuraa hinnanmuutoksia.",
+      "learningOutcome": "Hinta määräytyy kysynnän ja tarjonnan mukaan.",
+      "reward": "⭐ 2 – Marketplace-asiantuntija"
     },
     "lesson7": {
       "title": "Turvallisuus",
-      "goal": "Turvallisten käyttäytymistapojen oppiminen",
-      "task": "Toimintojen lajittelu oikeisiin/vääriin; väärennettyjen tunnusten tunnistaminen",
+      "goal": "Turvallisten käyttäytymismallien oppiminen",
+      "task": "Lajittele oikeat/väärät toimet; tunnista väärennetyt tokenit",
       "learningOutcome": "Avaimen luottamuksellisuus, turvallinen säilytys ja testiverkon käyttö.",
       "reward": "⭐ 2 – Vartija"
     },
     "lesson8": {
-      "title": "Varmennus ja henkilöllisyys",
-      "goal": "Luottamuksen ja sääntöjen ymmärtäminen",
-      "task": "Vertaa oikeita ja väärennettyjä tokeneita.",
-      "learningOutcome": "KYC = Henkilöllisyyden todentaminen, todentaminen osoittaa luotettavat tunnukset.",
-      "reward": "⭐ 2 – Tarkastuksen asiantuntija"
+      "title": "Verification & Identity",
+      "goal": "Ymmärrys luottamuksesta ja säännöistä",
+      "task": "Vertaa aitoja ja väärennettyjä rahakkeita.",
+      "learningOutcome": "KYC = Henkilöllisyyden varmentaminen, varmennus näyttää luotetut tunnukset.",
+      "reward": "⭐ 2 – Arvosteluasiantuntija"
     },
     "lesson9": {
       "title": "Nollatieto",
-      "goal": "Ymmärtäminen yksityisyyden käsitteitä",
+      "goal": "Tietosuojakäsitteiden ymmärtäminen",
       "task": "Esimerkki tilanteesta 'Olen yli 18-vuotias' ilman syntymäajan näyttämistä",
-      "learningOutcome": "Voidaan todistaa jotain paljastamatta salaisuuksia.",
-      "reward": "⭐ 2 – ZK-tulkki"
+      "learningOutcome": "Voit todistaa jotain paljastamatta salaisuuksia.",
+      "reward": "⭐ 2 – ZK-asiantuntija"
     },
     "lesson10": {
       "title": "Harjoittele SKM:n kanssa",
-      "goal": "Soveltaminen opittua tietoa käytännössä",
-      "task": "Luo tili testnettiin, aktivoi se, aseta trustline ja lähetä tokeneita.",
-      "learningOutcome": "Ymmärrä tapahtuman tekniset prosessit.",
+      "goal": "Sovella opittua tietoa käytäntöön.",
+      "task": "Luo tili testnetissä, aktivoi se, aseta luottolinja, lähetä tokeneita.",
+      "learningOutcome": "Jäljitä tapahtuman tekniset vaiheet.",
       "reward": "⭐ 3 – Blockchain-pilotti"
     },
     "lesson11": {
       "title": "Vastuu",
       "goal": "Virheiden seurausten ymmärtäminen",
-      "task": "Päätöspeli: toimi oikein tai älä",
+      "task": "Päätöspeli: Toimia oikein vai ei?",
       "learningOutcome": "Blockchain on lopullinen; huolellinen tarkastelu on välttämätöntä.",
-      "reward": "⭐ 1 – Vastuullisuuden sankari"
+      "reward": "⭐ 1 – Vastuullisuussankari"
     },
     "lesson12": {
       "title": "Johtopäätös / Leikkisä oppiminen",
       "goal": "Toisto ja motivaatio",
-      "task": "Mini-visailu + merkkinäyttö",
-      "learningOutcome": "Tarkastele oppimaasi, tunnista oma edistyksesi.",
-      "reward": "🎖 Tähtiluokan ammattilainen"
+      "task": "Minivisa + merkkien näyttö",
+      "learningOutcome": "Tarkista, mitä olet oppinut, ja tunnista oma edistymisesi.",
+      "reward": "🎖 Stellar Pro"
     }
-  },
-  "networkLabel": "Verkko"
+  }
 }

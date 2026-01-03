@@ -1,31 +1,31 @@
 {
-  "title": "Multifirma para principiantes",
-  "menuTitle": "Comprender Multisig",
+  "title": "Multifirma para principiantes.",
+  "menuTitle": "Comprendiendo Multisig",
   "teaser": "Por qué múltiples firmas, cómo funcionan los umbrales y cómo ayuda SKM.",
   "why": {
-    "title": "¿Por qué Multisig?",
-    "text": "Múltiples firmas reducen el riesgo de errores individuales o de robo."
+    "title": "¿Por qué multisig?",
+    "text": "Varias firmas reducen el riesgo de errores individuales o robo."
   },
   "singleVsMulti": {
-    "title": "Single-sig vs multisig",
-    "text": "Single-Sig = 1 clave es suficiente. Multisig = se requieren múltiples firmas (z. B. 2 von 3)."
+    "title": "Firmado único vs Multisig",
+    "text": "Firma única = 1 clave es suficiente. Multisig = se requieren múltiples firmas (z. B. 2 von 3)."
   },
   "stellarHow": {
-    "title": "Cómo Stellar implementa Multisig",
-    "text": "Stellar utiliza firmantes con pesos y umbrales. Cada operación requiere un peso de umbral."
+    "title": "Cómo Stellar implementa el multisig",
+    "text": "Stellar utiliza firmantes con pesos y umbrales. Cada operación requiere un peso umbral."
   },
   "examples": {
     "title": "Ejemplos prácticos",
     "item1": "Cuenta de la empresa: Dos miembros del equipo deben firmar cada pago.",
     "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
-    "item3": "Bóveda segura: Requiere una llave de hardware más una llave de respaldo."
+    "item3": "Caja fuerte: Se requiere una llave hardware más una llave de respaldo."
   },
   "skmSupport": {
-    "title": "Cómo SKM Apoya Multisig",
-    "text": "SKM construye transacciones multisig, recopila firmas y almacena trabajos preparados."
+    "title": "Cómo SKM apoya el sistema multisig.",
+    "text": "SKM construye transacciones multigrado, recopila firmas y almacena trabajos preparados."
   },
   "diagram": {
-    "singleVsMulti": "Diagrama: Firma única vs. Multisig",
+    "singleVsMulti": "Diagrama: Firma Única vs. Multisig",
     "stellarHow": "Diagrama: Firmante, Peso, Umbral",
     "skmFlow": "Diagrama: Preparación del flujo SKM → Firma → Envío"
   }

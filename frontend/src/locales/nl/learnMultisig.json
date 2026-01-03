@@ -1,13 +1,13 @@
 {
   "title": "Multisig voor Beginners",
-  "menuTitle": "Inzicht in Multisig",
+  "menuTitle": "Multisig begrijpen",
   "teaser": "Waarom meerdere handtekeningen, hoe drempels werken en hoe SKM helpt.",
   "why": {
-    "title": "Waarom Multisig?",
-    "text": "Meerdere handtekeningen verminderen het risico op individuele fouten of diefstal."
+    "title": "Waarom multisig?",
+    "text": "Meerdere handtekeningen verkleinen het risico op individuele fouten of diefstal."
   },
   "singleVsMulti": {
-    "title": "Single-sig vs multisig",
+    "title": "Single-sig versus Multisig",
     "text": "Single-Sig = 1 sleutel is voldoende. Multisig = meerdere handtekeningen vereist (z. B. 2 von 3)."
   },
   "stellarHow": {
@@ -17,16 +17,16 @@
   "examples": {
     "title": "Praktische voorbeelden",
     "item1": "Bedrijfsrekening: Twee teamleden moeten elke betaling ondertekenen.",
-    "item2": "Verenigingsrekening: penningmeester + voorzitter ondertekenen gezamenlijk.",
-    "item3": "Beveiligde kluis: Vereist hardware sleutel plus back-up sleutel."
+    "item2": "Verenigingsrekening: penningmeester + voorzitter ondertekenen samen.",
+    "item3": "Veilig kluis: Hardware sleutel plus reservesleutel vereist."
   },
   "skmSupport": {
     "title": "Hoe SKM Multisig Ondersteunt",
-    "text": "SKM construeert multisig-transacties, verzamelt handtekeningen en slaat voorbereide taken op."
+    "text": "SKM maakt multisig-transacties, verzamelt handtekeningen en slaat voorbereide taken op."
   },
   "diagram": {
     "singleVsMulti": "Diagram: Single-Sig vs. Multisig",
-    "stellarHow": "Diagram: Ondertekenaar, Gewicht, Drempel",
-    "skmFlow": "Diagram: SKM-stroom Voorbereiding → Ondertekening → Verzending"
+    "stellarHow": "Diagram: Ondertekenaar, Gewicht, Drempelwaarde",
+    "skmFlow": "Diagram: SKM Stroom Voorbereiding → Ondertekening → Verzending"
   }
 }

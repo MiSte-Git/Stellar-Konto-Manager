@@ -1,8 +1,8 @@
 {
-  "all": "List all trustlines.",
+  "all": "List all trustlines",
   "compare": "Comparing Trustlines",
   "delete": "Delete trustlines",
-  "onlyZeroBalanceInfo": "Only trustlines with a balance of 0 can be deleted.",
+  "onlyZeroBalanceInfo": "Only trust lines with a balance of 0 can be deleted.",
   "nonZeroBalance": "This trust line has a non-zero balance and cannot be deleted.",
   "destination": {
     "label": "Target address",
@@ -15,29 +15,29 @@
     "mode": {
       "simulation": "Simulation",
       "real": "Live operation",
-      "realWarning": "Warning! This will permanently delete trustlines on the blockchain."
+      "realWarning": "Warning! This will permanently delete Trustlines on the blockchain."
     },
     "notFound": "No matching trustlines found to delete.",
     "simulated": "Simulation: {count} trustlines would be deleted.",
-    "success": "Successfully: {count} trustlines deleted."
+    "success": "Successfully deleted {count} trustlines."
   },
   "noDuplicates": "No duplicate trustlines found.",
   "showSecret": "Display Secret Key",
-  "notFound": "No trustline(s) found.",
+  "notFound": "No Trustline(s) found.",
   "add": {
     "button": "Add trustline",
     "title": "Create new trustline",
     "assetCodeLabel": "Asset code",
     "assetCodePlaceholder": "e.g., USDC",
-    "assetCodeHelp": "Asset short name (1–12 characters, e.g., TESTUSD).",
-    "issuerLabel": "Issuer",
-    "issuerPlaceholder": "e.g. G...Issuer",
+    "assetCodeHelp": "Asset's short name (1–12 characters, e.g. TESTUSD).",
+    "issuerLabel": "Issuer (Public Key)",
+    "issuerPlaceholder": "e.g., G...Issuer",
     "issuerHelp": "Public key (G-Adresse) of the issuer account that issues the asset.",
     "limitLabel": "Limit",
-    "limitPlaceholder": "e.g., 1,000,000 (eine Million)",
-    "limitHelp": "The limit is the maximum amount of this asset that this account trusts. In practice, it should be set as high as your anticipated maximum balance in this asset.",
+    "limitPlaceholder": "e.g. 1,000,000 (eine Million)",
+    "limitHelp": "The limit is the maximum amount of this asset that this account is trusted with. In practice, it should be set as high as your anticipated maximum balance in this asset.",
     "submit": "Create a trustline",
     "cancel": "Cancel",
-    "success": "Trustline for {{code}} has been successfully established."
+    "success": "Trustline for {{code}} was successfully established."
   }
 }

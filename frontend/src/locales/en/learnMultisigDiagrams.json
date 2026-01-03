@@ -1,26 +1,26 @@
 {
   "singleVsMulti": {
-    "ariaLabel": "Diagram Single-Sig vs. Multisig",
-    "singleTitle": "Single-sig",
+    "ariaLabel": "Diagram Single-Sig vs Multisig",
+    "singleTitle": "Single-Sig",
     "multiTitle": "Multisig",
     "account": "Account",
     "singleKey": "1 key",
-    "keyA": "Signer A",
+    "keyA": "Signatory A",
     "keyB": "Signer B",
     "keyC": "Signer C",
-    "singleNote": "A signature is enough.",
+    "singleNote": "A signature is sufficient.",
     "multiNote": "At least 2 out of 3 signatures"
   },
   "weights": {
     "ariaLabel": "Diagram weights and thresholds",
     "title": "Weights & Thresholds",
-    "sA": "Signer A",
+    "sA": "Signee A",
     "sB": "Signer B",
     "sC": "Signer C",
     "weight": "Weight:",
     "low": "niedrig",
-    "med": "Unfortunately, I am unable to fulfill the request as it does not provide enough context or information to translate effectively. Please provide more context or additional information for accurate translation.",
-    "high": "High",
+    "med": "With",
+    "high": "high",
     "lowNote": "Simple actions",
     "medNote": "Payments",
     "highNote": "Critical changes"
@@ -29,8 +29,8 @@
     "ariaLabel": "Multisig Flow Diagram",
     "title": "Multisig process",
     "step1": "Coordinator creates transaction",
-    "step2": "SKM saves pending job.",
-    "step3": "Signer B/C to sign",
+    "step2": "SKM stores Pending Job",
+    "step3": "Signer B/C signing",
     "step4": "SKM sends completed transaction"
   }
 }

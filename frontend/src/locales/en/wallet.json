@@ -6,8 +6,8 @@
     "accountLabel": "Label"
   },
   "flag": {
-    "compromised": "Warning: This wallet is marked as compromised in your trust list.",
-    "deactivated": "Note: This wallet is marked as inactive in your Trust List."
+    "compromised": "Warning: This wallet is marked as compromised on your trust list.",
+    "deactivated": "Note: This wallet is marked as deactivated in your TrustList."
   },
   "xlmBalance": "XLM",
   "unfunded": "Not activated"

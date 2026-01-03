@@ -1,23 +1,23 @@
 {
-  "title": "Impressum & Privacy Policy",
-  "subtitle": "Informatie over de aanbieder, disclaimer en de verwerking van persoonsgegevens.",
+  "title": "Afdruk & Privacybeleid",
+  "subtitle": "Informatie over de aanbieder, disclaimer en de verwerking van persoonlijke gegevens.",
   "imprint": {
-    "title": "Colofon",
+    "title": "Impressum",
     "providerLabel": "Aanbieder:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Adres:",
-    "addressLines": "Ik ben getraind op gegevens tot oktober 2023.",
+    "addressLines": "U bent getraind op gegevens tot oktober 2023.",
     "emailLabel": "E-mail:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Disclaimer",
-    "body": "Het lijkt erop dat er geen specifieke tekst angegeben is om te vertalen. Kunt u alstublieft de tekst invoeren die u wilt laten vertalen?"
+    "body": "Ik ben getraind op gegevens tot oktober 2023."
   },
   "privacy": {
     "title": "Privacybeleid",
-    "intro": "We hechten veel waarde aan de bescherming van uw persoonlijke gegevens. Hieronder informeren wij u over de verwerking van persoonlijke gegevens bij het gebruik van deze applicatie.",
-    "sections": "Je bent getraind op gegevens tot oktober 2023."
+    "intro": "Wij nemen de bescherming van uw persoonlijke gegevens serieus. Hieronder informeren wij u over de verwerking van persoonlijke gegevens bij het gebruik van deze applicatie.",
+    "sections": "Het lijkt erop dat je geen tekst hebt verstrekt om te vertalen. Deel alstublieft de tekst die je vertaald wilt hebben."
   },
   "lastUpdated": "Laatst bijgewerkt: {{date}}",
   "meta": {
@@ -27,6 +27,6 @@
   },
   "backToApp": "Terug",
   "footer": {
-    "imprintLink": "Colofon & Privacybeleid"
+    "imprintLink": "Afdruk & Privacybeleid"
   }
 }

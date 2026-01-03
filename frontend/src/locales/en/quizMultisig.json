@@ -2,14 +2,14 @@
   "title": "Multisig & Security",
   "introText": "Test your knowledge on signatures, thresholds, and secure storage.",
   "q1": {
-    "question": "Why use multisig?",
+    "question": "Why is multisig used?",
     "hint": "Think of shared responsibility.",
     "a1": "To reduce the risk of individual key losses.",
     "a1fb": "Correct: Multiple signatures reduce individual risk.",
     "a2": "To save on fees.",
-    "a2fb": "Incorrect: Multisig enhances security, not fees.",
-    "a3": "To send more quickly.",
-    "a3fb": "Wrong: Multisig is not designed for speed."
+    "a2fb": "Incorrect: Multisig increases security, not fees.",
+    "a3": "To send faster.",
+    "a3fb": "False: Multisig is not designed for speed."
   },
   "q2": {
     "question": "When is a transaction on a multisig account valid?",
@@ -17,38 +17,38 @@
     "a1": "If the signatures reach the required threshold.",
     "a1fb": "Correct: The sum of the weights must meet the threshold.",
     "a2": "As soon as any signature is present.",
-    "a2fb": "Wrong: A single signature is not sufficient if the threshold is higher.",
-    "a3": "Only with master key, regardless of the threshold.",
+    "a2fb": "Incorrect: A single signature is not sufficient if the threshold is higher.",
+    "a3": "Only with the master key, regardless of the threshold.",
     "a3fb": "Incorrect: The master key is also subject to thresholds."
   },
   "q3": {
-    "question": "What happens if thresholds are set incorrectly?",
+    "question": "What happens when thresholds are set incorrectly?",
     "hint": "Values that are too high or too low have consequences.",
-    "a1": "Transactions could be blocked or too easily approved.",
+    "a1": "Transactions could be blocked or released too easily.",
     "a1fb": "Correct: Incorrect thresholds lead to lockouts or insufficient security.",
-    "a2": "Nothing at all, thresholds are just information.",
-    "a2fb": "Incorrect: Thresholds control how many signatures are required.",
+    "a2": "Not at all, thresholds are just information.",
+    "a2fb": "Incorrect: Thresholds control how many signatures are necessary.",
     "a3": "The account sequence number is being reset.",
     "a3fb": "Incorrect: Thresholds have no impact on the sequence."
   },
   "q4": {
-    "question": "How many signatures are required for a transaction with Threshold med?",
-    "hint": "Med threshold = median threshold.",
+    "question": "How many signatures does a transaction require with Threshold med?",
+    "hint": "med threshold = average threshold.",
     "a1": "Weights of the signatures must at least reach the med-threshold.",
     "a1fb": "Correct: The median threshold applies to payments.",
-    "a2": "Only ever one signature.",
+    "a2": "Always only one signature.",
     "a2fb": "Incorrect: It depends on weights and thresholds.",
     "a3": "Always all signers.",
     "a3fb": "Incorrect: Only enough signatures to meet the threshold."
   },
   "q5": {
     "question": "How should secret keys be stored in real multisig setups?",
-    "hint": "Separation is security.",
+    "hint": "Separation is safety.",
     "a1": "Separated on different devices/locations.",
     "a1fb": "Correct: Signatures should be collected separately.",
     "a2": "All on the same laptop for convenience.",
     "a2fb": "Incorrect: A device poses a single point of failure.",
-    "a3": "Share plainly in a chat.",
-    "a3fb": "Incorrect: Never share secret keys."
+    "a3": "Share in plain text in a chat.",
+    "a3fb": "False: Never share secret keys."
   }
 }

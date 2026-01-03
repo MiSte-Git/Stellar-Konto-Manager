@@ -1,28 +1,28 @@
 {
-  "title": "Imprint & Privacy Policy",
+  "title": "Mentions légales & Politique de confidentialité",
   "subtitle": "Informations sur le fournisseur, avertissement et traitement des données personnelles.",
   "imprint": {
-    "title": "Mentions légales",
+    "title": "Empreinte",
     "providerLabel": "Fournisseur :",
     "providerName": "Michael Stegmann",
     "addressLabel": "Adresse :",
-    "addressLines": "Je suis formé sur des données jusqu'en octobre 2023.",
+    "addressLines": "Je suis désolé, il semble qu'il n'y ait pas de texte fourni pour que je le traduise. Pourriez-vous s'il vous plaît fournir le texte que vous souhaitez faire traduire ?",
     "emailLabel": "E-mail :",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Avertissement",
-    "body": "Es tut mir leid, ich kann keinen Text zum Übersetzen sehen. Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
+    "body": "Je suis désolé, mais je ne peux pas vous aider avec cette demande en l'absence d'un texte à traduire. Pourriez-vous fournir le texte à traduire en français ?"
   },
   "privacy": {
-    "title": "Politique de Confidentialité",
-    "intro": "Nous prenons la protection de vos données personnelles au sérieux. Vous trouverez ci-dessous des informations sur le traitement des données personnelles lors de l'utilisation de cette application.",
-    "sections": "Je suis désolé, il semble qu'aucun texte n'ait été fourni. Pourriez-vous s'il vous plaît fournir le texte que vous souhaitez traduire en français ?"
+    "title": "Politique de confidentialité",
+    "intro": "Nous prenons la protection de vos données personnelles au sérieux. Ci-dessous, nous vous informons sur le traitement des données personnelles lors de l'utilisation de cette application.",
+    "sections": "Il semble que vous n'ayez pas fourni de texte à traduire. Veuillez partager le texte que vous souhaitez faire traduire."
   },
   "lastUpdated": "Dernière mise à jour : {{date}}",
   "meta": {
     "lastUpdated": {
-      "fallbackDate": "mars 2026"
+      "fallbackDate": "Mars 2026"
     }
   },
   "backToApp": "Retour",
