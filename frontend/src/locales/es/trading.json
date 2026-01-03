@@ -1,15 +1,15 @@
 {
   "assetSearch": {
     "title": "Búsqueda de activos",
-    "description": "Buscar activos a través del punto de acceso de operaciones (Horizon).",
+    "description": "Buscar activos a través del punto final de trading (Horizon).",
     "form": {
       "code": {
         "label": "Código de activo",
-        "placeholder": "p. ej., USDC"
+        "placeholder": "por ejemplo, USDC"
       },
       "issuer": {
         "label": "Emisor (optional)",
-        "placeholder": "G… (optional)"
+        "placeholder": "G… (G…)"
       },
       "submit": "Buscar"
     },
@@ -19,14 +19,14 @@
         "code": "Código",
         "issuer": "Emisor",
         "numAccounts": "Cuentas",
-        "amount": "Monto total"
+        "amount": "Importe total"
       }
     },
     "invalidInput": {
-      "codeMissing": "Por favor, introduce un código de activo."
+      "codeMissing": "Por favor, ingrese un código de activo."
     },
     "failed": {
-      "generic": "La búsqueda de activos ha fallado. Por favor, inténtalo de nuevo más tarde."
+      "generic": "La búsqueda de activos falló. Por favor, inténtelo de nuevo más tarde."
     }
   }
 }

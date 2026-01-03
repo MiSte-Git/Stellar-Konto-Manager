@@ -1,32 +1,32 @@
 {
   "assetSearch": {
-    "title": "Omaisuushaku",
-    "description": "Etsi varoja Trading Endpointin (Horizon) kautta.",
+    "title": "Varallisuuksien etsintä",
+    "description": "Etsi varoja kaupankäynnin päätepisteen (Horizon) kautta.",
     "form": {
       "code": {
-        "label": "Omaisuuskoodi",
+        "label": "Varallisuuskoodi",
         "placeholder": "z. B. USDC"
       },
       "issuer": {
-        "label": "Liikkeeseenlaskija (KEEP_EN_TERM_1)",
-        "placeholder": "G…"
+        "label": "Emitteri (optional)",
+        "placeholder": "Anteeksi, en ymmärrä, mitä tarkoitat \"G… (optional)\". Voisitko antaa enemmän kontekstiä tai lisätietoja?"
       },
       "submit": "Haku"
     },
     "result": {
-      "empty": "Varoja ei löytynyt.",
+      "empty": "Ei varoja löytynyt.",
       "columns": {
         "code": "Koodi",
-        "issuer": "Laskija",
-        "numAccounts": "Tilit",
+        "issuer": "Liikkeeseenlaskija",
+        "numAccounts": "Tilinpäätökset",
         "amount": "Kokonaismäärä"
       }
     },
     "invalidInput": {
-      "codeMissing": "Anna oma varallisuustunnus."
+      "codeMissing": "Anna varallisuuskoodi."
     },
     "failed": {
-      "generic": "Omaisuuden haku epäonnistui. Yritä uudelleen myöhemmin."
+      "generic": "Varojen haku epäonnistui. Yritä myöhemmin uudelleen."
     }
   }
 }

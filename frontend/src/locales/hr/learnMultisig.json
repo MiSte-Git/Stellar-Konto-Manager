@@ -1,14 +1,14 @@
 {
   "title": "Multisig za početnike",
-  "menuTitle": "Razumijevanje Multisig",
+  "menuTitle": "Razumijevanje Multisig-a",
   "teaser": "Zašto više potpisa, kako pragovi funkcioniraju i kako SKM pomaže.",
   "why": {
-    "title": "Zašto Multisig?",
-    "text": "Višestruki potpisi smanjuju rizik od pojedinačnih pogrešaka ili krađe."
+    "title": "Zašto multisig?",
+    "text": "Višestruki potpisi smanjuju rizik od pojedinačnih grešaka ili krađe."
   },
   "singleVsMulti": {
-    "title": "Jednostruki potpis (single-sig) naspram višestrukog potpisa (multisig)",
-    "text": "Single-Sig = dovoljan je jedan ključ. Multisig = potrebni su višestruki potpisi (z. B. 2 von 3)."
+    "title": "Single-sig naspram Multisig",
+    "text": "Single-Sig = 1 ključ je dovoljan. Multisig = potrebni su višestruki potpisi (z. B. 2 von 3)."
   },
   "stellarHow": {
     "title": "Kako Stellar implementira multisig",
@@ -18,15 +18,15 @@
     "title": "Praktični primjeri",
     "item1": "Račun tvrtke: Dva člana tima moraju potpisati svaku uplatu.",
     "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
-    "item3": "Siguran sef: Zahtijeva hardverski ključ plus rezervni ključ."
+    "item3": "Sigurni trezor: Potreban je hardverski ključ plus rezervni ključ."
   },
   "skmSupport": {
     "title": "Kako SKM podržava multisig",
-    "text": "SKM konstruira transakcije s više potpisa, prikuplja potpise i pohranjuje pripremljene zadatke."
+    "text": "SKM izrađuje multisig transakcije, prikuplja potpise i pohranjuje pripremljene zadatke."
   },
   "diagram": {
-    "singleVsMulti": "Dijagram: Single-Sig vs. Multisig",
+    "singleVsMulti": "Dijagram: Jedan potpis (Single-Sig) naspram Višestruki potpis (Multisig)",
     "stellarHow": "Dijagram: Potpisnik, Težina, Prag",
-    "skmFlow": "Dijagram: SKM Priprema tijeka → Potpisivanje → Slanje"
+    "skmFlow": "Dijagram: Priprema SKM toka → Potpisivanje → Slanje"
   }
 }

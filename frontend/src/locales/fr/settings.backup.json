@@ -1,39 +1,39 @@
 {
-  "desc": "Exporter ou importer vos données de quiz (paramètres, progression, badges).",
+  "desc": "Exporter ou importer vos données de quiz (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Commencer l'exportation",
-    "fileName": "quiz-backup.json",
+    "fileName": "quiz-sauvegarde.json",
     "success": "Exportation créée"
   },
   "import": {
     "backupCreated": "Sauvegarde automatique enregistrée",
     "done": "Importation terminée",
-    "invalid": "Fichier d'importation invalide",
+    "invalid": "Fichier d'importation non valide",
     "noFile": "Aucun fichier sélectionné",
     "preview": {
       "stats": {
-        "achievements": "Badge : {{count}} quiz(zez)",
-        "progress": "Progrès : {{count}} quiz(s)",
-        "settings": "Paramètres : {{count}} questionnaire(s)"
+        "achievements": "Badge : {{count}} Quiz(e)",
+        "progress": "Progrès : {{count}} Quiz(e)",
+        "settings": "Paramètres : {{count}} Quiz(e)"
       },
       "title": "Aperçu"
     },
-    "selectFile": "Sélectionner un fichier",
+    "selectFile": "Sélectionner le fichier",
     "strategy": {
       "label": "Stratégie",
       "merge": "Fusionner",
       "replace": "Remplacer"
     },
-    "title": "Importation"
+    "title": "Importer"
   },
   "nav": {
     "back": "Retour"
   },
-  "title": "Backup & Restore",
+  "title": "Sauvegarde & Récupération",
   "toast": {
-    "backupBeforeImport": "Une sauvegarde a été effectuée avant l'importation.",
+    "backupBeforeImport": "Une sauvegarde a été enregistrée avant l'importation.",
     "exported": "Sauvegarde exportée",
     "exportFailed": "Échec de l'exportation",
-    "importFailed": "Échec de l'importation"
+    "importFailed": "Importation échouée"
   }
 }

@@ -3,7 +3,7 @@
   "columns": {
     "amount": "Amount",
     "compromised": "Compromised",
-    "deactivated": "Disabled",
+    "deactivated": "Deactivated",
     "destination": "Target wallet",
     "issuer": "Issuer",
     "label": "Label",
@@ -18,7 +18,7 @@
   },
   "filter": {
     "memoPlaceholder": "Filter by memo, wallet address, or label.",
-    "tokenPlaceholder": "Filter by Token (CODE:ISSUER)"
+    "tokenPlaceholder": "Filter by token (CODE:ISSUER)"
   },
   "item": {
     "memo": "Memo: \"{{memo}}\" (Payments: {{occurrences}})",
@@ -26,33 +26,33 @@
     "tokenShort": "Token: {{token}}"
   },
   "missingPublicKey": "Public key missing.",
-  "moreTruncated": "... and {{extra}} additional groups",
-  "toWallet": "To Wallet: {{address}}",
+  "moreTruncated": "… und {{extra}} weitere Gruppen",
+  "toWallet": "to Wallet: {{address}}",
   "total": "Number of tokens purchased: {{count}}",
-  "totalTokens": "Number of tokens (assets) invested: {{count}}",
+  "totalTokens": "Number of invested tokens (Assets): {{count}}",
   "value": {
     "units": "{{amount}} pieces",
     "xlm": "{{amount}} XLM"
   },
   "view": {
     "label": "Filter by:",
-    "memo": "Memos (Groupfund)",
-    "token": "Token (purchased quantity)"
+    "memo": "Memos",
+    "token": "Token (gekaufte Menge)"
   },
   "toggles": {
-    "showTotals": "Total sum",
+    "showTotals": "Total amount",
     "qsiOnly": "Sum QSI GF"
   },
   "hints": {
-    "qsiListSet": "Note: You can find the whitelist under Settings → Trusted Wallets (QSI).",
+    "qsiListSet": "Note: You can find the GF list under Settings → Trusted Wallets (QSI).",
     "pageTime": "Loading a page takes about 0.2 seconds → 100 pages ≈ 20 seconds → 1000 pages ≈ 200 seconds (≈ 3:20 minutes)."
   },
   "walletCapInfo": "Note: A wallet can hold a maximum of 1000 trustlines.",
   "action": {
-    "load": "Loading"
+    "load": "Shop"
   },
   "history": {
     "availableFrom": "Server (Horizon) – History from",
-    "hintFullHistory": "Note: The ledger history from the Horizon server only goes back to {{available}}. Only data up to that point will be displayed. Therefore, the chosen From date is limited. For older data, a (usually paid) full-history provider is required (possibly coming in the future!)."
+    "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
   }
 }

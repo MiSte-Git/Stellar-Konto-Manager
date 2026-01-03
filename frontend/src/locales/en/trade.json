@@ -1,15 +1,15 @@
 {
   "assetSearch": {
     "title": "Asset search",
-    "description": "Search for assets via the Trading Endpoint (Horizon).",
+    "description": "Search for assets through the trading endpoint (Horizon).",
     "form": {
       "code": {
         "label": "Asset code",
         "placeholder": "e.g., USDC"
       },
       "issuer": {
-        "label": "Issuer (KEEP_EN_TERM_1)",
-        "placeholder": "G…"
+        "label": "Issuer (optional)",
+        "placeholder": "Entschuldigung, ich verstehe nicht, was du mit \"G… (optional)\" meinst. Könntest du bitte mehr Kontext oder Informationen zur Verfügung stellen?"
       },
       "submit": "Search"
     },
@@ -19,7 +19,7 @@
         "code": "Code",
         "issuer": "Issuer",
         "numAccounts": "Accounts",
-        "amount": "Total amount"
+        "amount": "Total quantity"
       }
     },
     "invalidInput": {

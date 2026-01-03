@@ -1,98 +1,98 @@
 {
-  "title": "Crea un account + multisig",
-  "menu": "Crea account + Multisig",
-  "menuHint": "Crea un nuovo account e imposta facoltativamente la firma multipla.",
-  "hint": "Crea un nuovo account, attivalo e, facoltativamente, configura multisig.",
+  "title": "Crea account + multisig",
+  "menu": "Crea un account + Multisig",
+  "menuHint": "Crea un nuovo account e opzionalmente configura la multisignature.",
+  "hint": "Crea un nuovo account, attivalo e, facoltativamente, configura la firma multipla.",
   "generateKeys": "Genera chiave",
-  "enableMultisig": "Abilita la firma multipla.",
+  "enableMultisig": "Abilita multisig",
   "signersTitle": "Firmatario",
   "signersInfo": "Aggiungi firmatari aggiuntivi e imposta soglie appropriate.",
   "signersCount": "Numero di firmatari",
   "bestPractices": {
-    "title": "Migliori Pratiche",
-    "text": "Mantieni le chiavi segrete al sicuro e non distribuirle inutilmente."
+    "title": "Migliori pratiche",
+    "text": "Conserva le chiavi segrete in modo sicuro e non distribuirle inutilmente."
   },
   "instructions": {
-    "public": "Condividi questa chiave pubblica con altri per i pagamenti.",
+    "public": "Condividi questa chiave pubblica con gli altri per i pagamenti.",
     "secret": "Mantieni questa chiave segreta al sicuro; non condividerla mai."
   },
-  "generateFirst": "Si prega di generare prima una coppia di chiavi.",
-  "confirmLowBalance": "Il saldo iniziale {bal} XLM è inferiore alla riserva raccomandata {req} XLM (Firmatario: {count}). Continuare?",
+  "generateFirst": "Per favore, genera prima una coppia di chiavi.",
+  "confirmLowBalance": "Il saldo iniziale di {bal} XLM è inferiore alla riserva consigliata di {req} XLM (Firmatari: {count}). Procedere?",
   "activated": "L'account è stato attivato. Hash: {hash}",
-  "activatedTestnet": "L'account è stato attivato sulla testnet tramite Friendbot.",
+  "activatedTestnet": "L'account è stato attivato nel testnet tramite Friendbot.",
   "alreadyActive": "L'account è già attivato.",
   "createdNoSigners": "Account creato, multisig non configurato.",
   "createdAndConfigured": "Account creato e multisig configurato. Hash: {hash}",
   "info": {
     "more": "Maggiori informazioni",
     "keysOnPage": {
-      "title": "Chiave su questa pagina",
-      "text": "⚠️ IMPORTANTE: Questo sito web NON memorizza mai la tua chiave segreta!\n\nLa chiave segreta visualizzata qui esiste solo nel tuo browser. Una volta che ricarichi o esci dalla pagina, essa viene persa irrimediabilmente.\n\nCopia o annota la chiave segreta immediatamente dopo la generazione, prima di chiudere la pagina.\n\nVerifica: Puoi utilizzare gli strumenti per sviluppatori del browser (F12 → Rete) per verificare che nessuna chiave segreta venga trasmessa esternamente. Vengono inviate solo transazioni firmate, mai la tua chiave segreta."
+      "title": "Chiavi su questa pagina",
+      "text": "⚠️ IMPORTANTE: Questo sito web NON memorizza mai la tua chiave segreta!\n\nLa chiave segreta visualizzata qui esiste solo nel tuo browser (lokal im Arbeitsspeicher). Non appena ricarichi o lasci la pagina, viene persa definitivamente.\n\nCopia o annota subito la chiave segreta dopo la sua generazione, prima di chiudere la pagina.\n\nVerifica: Puoi verificare utilizzando gli strumenti per sviluppatori del browser (F12 → Rete) che nessuna chiave segreta venga trasmessa esternamente. Vengono inviate solo transazioni firmate, mai la tua chiave segreta."
     },
     "title": "Informazioni importanti",
     "secureKeys": {
       "title": "Chiave segreta sicura",
-      "text": "La chiave pubblica può essere condivisa in sicurezza – è come un numero di conto.\n\nLa chiave segreta è l'accesso al tuo conto. Trattala come una password:\n• NON conservarla mai su servizi cloud, email o note insicure\n• Scrivila su carta o usa un portafoglio hardware\n• Crea più copie di backup e conservale in luoghi sicuri e separati\n• Se si perde la chiave segreta, l'accesso all'account è perso irrimediabilmente"
+      "text": "La chiave pubblica può essere condivisa in sicurezza – è come un numero di conto.\n\nLa chiave segreta è l'accesso al tuo conto. Trattala come una password:\n• NON conservarla mai in servizi cloud, email o note non sicure\n• Scrivila su carta o usa un portafoglio hardware\n• Crea più copie di backup e conservale in luoghi sicuri e separati\n• Se la chiave segreta viene persa, l'accesso al conto è irrimediabilmente perso"
     },
     "multisigSection": {
-      "title": "Multisig (firma multipla)",
-      "text": "Con multisig, puoi definire più firmatari per il tuo account. Le transazioni richiedono quindi firme da più chiavi (ad esempio, 2 su 3).\n\nVantaggi:\n• Maggiore sicurezza (una chiave compromessa non è sufficiente)\n• Conti condivisi (ad esempio, aziende, partenariati)\n• Recupero d'emergenza (più backup con persone diverse)\n\nATTENZIONE: Testa multisig sulla testnet prima di implementarlo sulla mainnet! Una configurazione errata può comportare la perdita di accesso all'account."
+      "title": "Multisig (Multisig)",
+      "text": "Con multisig, puoi definire più firmatari per il tuo account. Le transazioni richiedono quindi le firme da più chiavi (z. B. 2 von 3).\n\nVantaggi:\n• Sicurezza migliorata (ein kompromittierter Key reicht nicht)\n• Account condivisi (z. B. Firmen, Partnerschaften)\n• Recupero di emergenza (mehrere Backups bei verschiedenen Personen)\n\nATTENZIONE: Testa il multisig prima sul testnet prima di implementarlo sul mainnet! Una configurazione errata può portare alla perdita di accesso all'account."
     },
     "diagram": {
       "title": "Scadenza della firma"
     }
   },
-  "activateHint": "L'attivazione è necessaria affinché l'account esista. Nel testnet tramite Friendbot, nel mainnet tramite \"Crea Account\" da un portafoglio esistente.",
+  "activateHint": "L'attivazione è necessaria affinché l'account esista. Nel testnet, viene effettuata tramite Friendbot, mentre nel mainnet, avviene tramite \"Crea Account\" da un portafoglio esistente.",
   "activateNow": "Attiva immediatamente l'account.",
-  "activateOnly": "Attivare solo",
+  "activateOnly": "Basta attivare",
   "balanceWarning": "Il saldo iniziale è probabilmente troppo basso per aggiungere i {{count}} firmatari aggiuntivi (riserva minima: {{req}} XLM).",
   "createButton": "Crea / Imposta Multisig",
   "hints": {
-    "byteRange": "(0-255)"
+    "byteRange": "(0–255)"
   },
-  "mainnetActivateNote": "Nota: Riserve aggiuntive sono necessarie per Multisig. 1 XLM spesso non è sufficiente.",
+  "mainnetActivateNote": "Nota: Sono necessarie riserve aggiuntive per multisig. 1 XLM spesso non è sufficiente.",
   "reserve": {
-    "base": "Riserva base per voce: {{val}} XLM",
-    "recommended": "Saldo iniziale consigliato: {{val}} XLM (incluso margine di sicurezza)",
-    "required": "Riserva minima richiesta (nuova): {{val}} XLM"
+    "base": "Riserva di base per voce: {{val}} XLM",
+    "recommended": "Saldo iniziale consigliato: {{val}} XLM (inkl. Puffer)",
+    "required": "Riserva Minima Obbligatoria (neu): {{val}} XLM"
   },
-  "signersCountHint": "È possibile impostare il numero minimo di firme qui sotto, alla voce \"Firme Richieste\" (basso/medio/alto).",
-  "signersCountLimit": "Nota: Limite di rete (Stellar): massimo 20 firmatari aggiuntivi.",
+  "signersCountHint": "Imposti il numero minimo di firme qui sotto sotto \"Required Signatures\" (niedrig/mittel/hoch).",
+  "signersCountLimit": "Nota: Confine della rete (Stellar): max. 20 firmatari aggiuntivi.",
   "startingBalance": "Saldo iniziale (XLM)",
-  "threshold": "Firme richieste (basso/medio/alto)",
+  "threshold": "Firme richieste (niedrig/mittel/hoch)",
   "thresholdLow": "basso",
   "thresholdMed": "medio",
   "thresholdHigh": "alto",
-  "thresholdCurrent": "Attualmente selezionato: basso={{low}}, medio={{med}}, alto={{high}} su un totale di {{total}} firme.",
-  "thresholdHelp": "Soglia: Numero di firme richieste (principale + firmatari) affinché una transazione sia valida.",
-  "thresholdInfo": "Raccomandazione: {{req}} di {{total}} firme (incluso il Master)",
-  "thresholdLevelsHint": "In genere, si applica quanto segue: basso = cambiamenti semplici (ad es. promemoria, prezzo), medio = pagamenti/commercio, alto = cambiamenti critici per la sicurezza (ad es. firmatario/soglie).",
-  "thresholdStatic": "Richiesto: {{val}} su {{total}} firme (basso/medio/alto)",
-  "thresholdSum": "Somma pesi: {{sum}}",
-  "thresholdTooHigh": "Nota: Una soglia non deve superare la somma dei pesi. Si prega di regolare i valori.",
+  "thresholdCurrent": "Attualmente selezionato: basso={{low}}, medio={{med}}, alto={{high}} su un totale di {{total}} firme",
+  "thresholdHelp": "Soglia: Il numero di firme richieste (master + firmatari) affinché una transazione sia valida.",
+  "thresholdInfo": "Raccomandazione: {{req}} su {{total}} firme (inkl. Master)",
+  "thresholdLevelsHint": "In genere, si applica quanto segue: basso = modifiche semplici (e.g., memo, price), medio = pagamenti/commerci, alto = modifiche critiche per la sicurezza (e.g., signer/thresholds).",
+  "thresholdStatic": "Richiesto: {{val}} su {{total}} firme (niedrig/mittel/hoch)",
+  "thresholdSum": "Somma dei pesi: {{sum}}",
+  "thresholdTooHigh": "Nota: Una soglia non deve superare la somma dei pesi. Si prega di regolare i valori di conseguenza.",
   "keyWarning": {
-    "title": "⚠️ Proteggi subito la tua chiave!",
+    "title": "⚠️ Proteggi la tua chiave adesso!",
     "text1": "Hai generato una nuova coppia di chiavi.",
     "text2": "Assicurati SUBITO di entrambe le chiavi prima di procedere:",
-    "list1": "Chiave pubblica: Il tuo indirizzo dell'account, può essere condiviso",
-    "list2": "Chiave segreta: La tua password – NON condividerla mai né memorizzarla online!",
-    "list3": "Se la chiave segreta viene smarrita, l'accesso è irrevocabilmente perso.",
+    "list1": "Chiave Pubblica: L'indirizzo del tuo account, può essere condiviso.",
+    "list2": "Chiave segreta: La tua password – NON condividerla né memorizzarla online!",
+    "list3": "Se la chiave segreta viene persa, l'accesso è irrevocabilmente perso.",
     "confirm": "Ho ottenuto entrambe le chiavi."
   },
   "tooltips": {
-    "high": "Elevato: modifiche critiche per la sicurezza (ad es., firmatari/soglie).",
-    "low": "Basso: cambiamenti semplici (ad esempio, promemoria, prezzo).",
-    "masterWeight": "Peso del detentore del conto (Master) (0-255): La chiave master del conto ha diritti di voto. Maggiore è il suo peso, più voti conta la sua firma. Questi voti vengono calcolati insieme ai voti di altri firmatari per verificare se è stata raggiunta la maggioranza richiesta.",
-    "med": "Mezzi: Pagamenti e azioni di trading.",
-    "signerWeight": "Peso dei firmatari (0-255): I firmatari aggiuntivi hanno anche diritti di voto. Il peso determina quanti voti contribuisce la loro firma. Quando viene inviata una transazione, tutti i voti espressi vengono sommati. Se viene raggiunto il numero minimo specificato di voti (soglia), la transazione è considerata autorizzata.",
-    "signerWeightHint": "Nota: I pesi del master e del firmatario formano la somma; le soglie (bassa/media/alta) non devono superare questa somma."
+    "high": "Hoch: sicherheitskritische Änderungen (e.g., signers/thresholds).",
+    "low": "Niedrig: semplice modifiche (e.g., memo, price).",
+    "masterWeight": "Peso del titolare del conto (Master) (0-255): La chiave principale del conto ha un diritto di voto. Maggiore è il suo peso, più voti la sua firma conta. Questi voti sono conteggiati insieme ai voti di altri firmatari per verificare se è stata raggiunta la maggioranza richiesta.",
+    "med": "Significa: Pagamenti e azioni commerciali.",
+    "signerWeight": "Peso dei firmatari (0–255): I firmatari aggiuntivi hanno anche diritti di voto. Il peso determina quanti voti contribuisce la loro firma. Quando una transazione viene inviata, tutti i voti inviati vengono sommati. Se si raggiunge il numero minimo specificato di voti (Threshold), la transazione è considerata autorizzata.",
+    "signerWeightHint": "Nota: I pesi del master e del firmatario si sommano al totale; le soglie (niedrig/mittel/hoch) non devono superare questa somma."
   },
   "units": {
-    "signatures": "Firma/e"
+    "signatures": "Firma (en)"
   },
-  "muxedId": "ID muxato",
-  "muxedInfo": "L'ID Muxed crea un indirizzo M (M...). Punta allo stesso account dell'indirizzo normale (G...).",
-  "muxedIdInvalid": "L'ID Muxed deve essere un numero intero compreso tra 0 e 18.446.744.073.709.551.615.",
+  "muxedId": "Muxed-ID",
+  "muxedInfo": "Il Muxed-ID viene utilizzato per creare un M-Address (M...). Indica lo stesso account dell'indirizzo normale (G...).",
+  "muxedIdInvalid": "L'ID messo in rete deve essere un numero intero compreso tra 0 e 18.446.744.073.709.551.615.",
   "muxedAddress": "Indirizzo multiplexato",
-  "muxedActivationInfo": "Gli indirizzi muxed sono indirizzi alias. Non necessitano di essere abilitati separatamente."
+  "muxedActivationInfo": "Gli indirizzi muxed sono indirizzi alias. Non necessitano di essere attivati separatamente."
 }

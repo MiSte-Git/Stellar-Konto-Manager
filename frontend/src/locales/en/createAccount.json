@@ -1,7 +1,7 @@
 {
   "title": "Create account + multisig",
   "menu": "Create account + Multisig",
-  "menuHint": "Create a new account and optionally set multisig.",
+  "menuHint": "Create a new account and optionally set up multisig.",
   "hint": "Create a new account, activate it, and optionally configure multisig.",
   "generateKeys": "Generate key",
   "enableMultisig": "Enable multisig",
@@ -9,90 +9,90 @@
   "signersInfo": "Add additional signers and set appropriate thresholds.",
   "signersCount": "Number of signatories",
   "bestPractices": {
-    "title": "Best Practices",
-    "text": "Keep secret keys secure and do not distribute them unnecessarily."
+    "title": "Best practices",
+    "text": "Store secret keys securely and do not distribute them unnecessarily."
   },
   "instructions": {
     "public": "Share this public key with others for payments.",
     "secret": "Keep this secret key secure; never share it."
   },
   "generateFirst": "Please generate a key pair first.",
-  "confirmLowBalance": "Initial balance {bal} XLM is below the recommended reserve {req} XLM (Signer: {count}). Continue?",
+  "confirmLowBalance": "Starting balance of {bal} XLM is below the recommended reserve of {req} XLM (Signers: {count}). Proceed?",
   "activated": "Account has been activated. Hash: {hash}",
-  "activatedTestnet": "Account was activated on the testnet via Friendbot.",
+  "activatedTestnet": "Account was activated in the testnet via Friendbot.",
   "alreadyActive": "Account is already activated.",
   "createdNoSigners": "Account created, multisig not configured.",
   "createdAndConfigured": "Account created and multisig configured. Hash: {hash}",
   "info": {
     "more": "More information",
     "keysOnPage": {
-      "title": "Key on this page",
-      "text": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe secret key displayed here exists only in your browser. Once you reload or leave the page, it is irretrievably lost.\n\nCopy or write down the secret key immediately after generation, before closing the page.\n\nVerification: You can use the browser developer tools (F12 → Network) to verify that no secret key is transmitted externally. Only signed transactions are sent, never your secret key."
+      "title": "Keys on this page",
+      "text": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe Secret Key displayed here only exists in your browser (lokal im Arbeitsspeicher). As soon as you reload or leave the page, it is permanently lost.\n\nCopy or note down the Secret Key immediately after generation, before closing the page.\n\nVerification: You can verify using the browser developer tools (F12 → Network) that no secret key is transmitted externally. Only signed transactions are sent, never your Secret Key."
     },
     "title": "Important information",
     "secureKeys": {
       "title": "Secure secret key",
-      "text": "The public key can be shared safely – it is like an account number.\n\nThe secret key is access to your account. Treat it like a password:\n• NEVER store it in cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the secret key is lost, access to the account is irrevocably lost"
+      "text": "The public key can be safely shared – it is like an account number.\n\nThe secret key is the access to your account. Treat it like a password:\n• NEVER store it in cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the secret key is lost, access to the account is irrevocably lost"
     },
     "multisigSection": {
-      "title": "Multisig (multisignature)",
-      "text": "With multisig, you can define multiple signers for your account. Transactions then require signatures from multiple keys (e.g., 2 out of 3).\n\nAdvantages:\n• Increased security (a compromised key is not sufficient)\n• Shared accounts (e.g., companies, partnerships)\n• Emergency recovery (multiple backups with different people)\n\nCAUTION: Test multisig on the testnet first before deploying it on the mainnet! Incorrect configuration can result in loss of access to the account."
+      "title": "Multisig (Multisig)",
+      "text": "With multisig, you can define multiple signers for your account. Transactions then require signatures from multiple keys (z. B. 2 von 3).\n\nAdvantages:\n• Enhanced security (ein kompromittierter Key reicht nicht)\n• Shared accounts (z. B. Firmen, Partnerschaften)\n• Emergency recovery (mehrere Backups bei verschiedenen Personen)\n\nCAUTION: Test multisig on the testnet first before deploying it on the mainnet! Incorrect configuration can lead to losing access to the account."
     },
     "diagram": {
       "title": "Signature expiration"
     }
   },
-  "activateHint": "Activation is necessary for the account to exist. In the testnet through Friendbot, in the mainnet via \"Create Account\" from an existing wallet.",
+  "activateHint": "Activation is necessary for the account to exist. In the testnet, it's done via Friendbot, and in the mainnet, it's done via \"Create Account\" from an existing wallet.",
   "activateNow": "Activate account immediately",
-  "activateOnly": "Only activate",
-  "balanceWarning": "The starting balance is probably too low to add the {{count}} additional signers (minimum reserve: {{req}} XLM).",
+  "activateOnly": "Just activate",
+  "balanceWarning": "The starting balance is likely too low to add the {{count}} additional signers (minimum reserve: {{req}} XLM).",
   "createButton": "Create / Set Multisig",
   "hints": {
     "byteRange": "(0–255)"
   },
-  "mainnetActivateNote": "Note: Additional reserves are necessary for Multisig. 1 XLM is often not enough.",
+  "mainnetActivateNote": "Note: Additional reserves are needed for multisig. 1 XLM is often not enough.",
   "reserve": {
     "base": "Base reserve per entry: {{val}} XLM",
-    "recommended": "Recommended starting balance: {{val}} XLM (including buffer)",
-    "required": "Required minimum reserve (new): {{val}} XLM"
+    "recommended": "Recommended Starting Balance: {{val}} XLM (inkl. Puffer)",
+    "required": "Required Minimum Reserve (neu): {{val}} XLM"
   },
-  "signersCountHint": "You set the minimum number of signatures below under \"Required Signatures\" (low/medium/high).",
-  "signersCountLimit": "Note: Network limit (Stellar): max. 20 additional signers.",
+  "signersCountHint": "You set the minimum number of signatures below under \"Required Signatures\" (niedrig/mittel/hoch).",
+  "signersCountLimit": "Note: Network boundary (Stellar): max. 20 additional signatories.",
   "startingBalance": "Starting balance (XLM)",
-  "threshold": "Required Signatures (low/medium/high)",
+  "threshold": "Required Signatures (niedrig/mittel/hoch)",
   "thresholdLow": "low",
   "thresholdMed": "medium",
   "thresholdHigh": "high",
   "thresholdCurrent": "Currently selected: low={{low}}, medium={{med}}, high={{high}} out of {{total}} signatures",
-  "thresholdHelp": "Threshold: Number of required signatures (master + signers) for a transaction to be valid.",
-  "thresholdInfo": "Recommendation: {{req}} of {{total}} signatures (including Master)",
+  "thresholdHelp": "Threshold: The number of required signatures (master + signers) for a transaction to be valid.",
+  "thresholdInfo": "Recommendation: {{req}} out of {{total}} signatures (inkl. Master)",
   "thresholdLevelsHint": "Typically, the following applies: low = simple changes (e.g., memo, price), medium = payments/trade, high = security-critical changes (e.g., signer/thresholds).",
-  "thresholdStatic": "Required: {{val}} out of {{total}} signatures (low/medium/high)",
+  "thresholdStatic": "Required: {{val}} out of {{total}} signatures (niedrig/mittel/hoch)",
   "thresholdSum": "Sum weights: {{sum}}",
-  "thresholdTooHigh": "Note: A threshold must not exceed the sum of the weights. Please adjust the values.",
+  "thresholdTooHigh": "Note: A threshold must not exceed the sum of the weights. Please adjust the values accordingly.",
   "keyWarning": {
     "title": "⚠️ Secure your key now!",
     "text1": "You have generated a new key pair.",
     "text2": "Secure BOTH keys IMMEDIATELY before proceeding:",
-    "list1": "Public Key: Your account address, can be shared",
+    "list1": "Public Key: Your account address, can be shared.",
     "list2": "Secret Key: Your password – NEVER share or store it online!",
     "list3": "If the secret key is lost, access is irrevocably lost.",
     "confirm": "I have secured both keys."
   },
   "tooltips": {
-    "high": "High: security-critical changes (e.g., signatories/thresholds).",
+    "high": "High: security-critical changes (e.g., signers/thresholds).",
     "low": "Low: simple changes (e.g., memo, price).",
-    "masterWeight": "Weight of the account holder (Master) (0-255): The master key of the account has voting rights. The higher its weight, the more votes its signature counts for. These votes are tallied alongside the votes of other signers to verify if the required majority has been reached.",
-    "med": "Means: Payments and trading actions.",
-    "signerWeight": "Weight of the signers (0-255): Additional signers also have voting rights. The weight determines how many votes their signature contributes. When a transaction is sent, all cast votes are added together. If the specified minimum number of votes (threshold) is reached, the transaction is considered authorized.",
-    "signerWeightHint": "Note: Master and signer weights form the sum; thresholds (low/medium/high) must not exceed this sum."
+    "masterWeight": "Weight of the account holder (Master) (0-255): The master key of the account has a voting right. The higher its weight, the more votes its signature counts. These votes are tallied along with the votes of other signatories to check if the required majority is reached.",
+    "med": "Means: Payments and trade actions.",
+    "signerWeight": "Weight of the signers (0–255): Additional signers also have voting rights. The weight determines how many votes their signature contributes. When a transaction is sent, all submitted votes are added together. If the specified minimum number of votes (Threshold) is reached, the transaction is considered authorized.",
+    "signerWeightHint": "Note: Master and signer weights add up to the sum; thresholds (niedrig/mittel/hoch) must not exceed this sum."
   },
   "units": {
-    "signatures": "Signature(s)"
+    "signatures": "Signature (en)"
   },
-  "muxedId": "Muxed ID",
-  "muxedInfo": "The Muxed-ID creates an M-address (M...). It points to the same account as the regular address (G...).",
+  "muxedId": "Muxed-ID",
+  "muxedInfo": "The Muxed-ID is used to create an M-Address (M...). It points to the same account as the regular address (G...).",
   "muxedIdInvalid": "The Muxed-ID must be an integer between 0 and 18,446,744,073,709,551,615.",
   "muxedAddress": "Muxed address",
-  "muxedActivationInfo": "Muxed addresses are alias addresses. They do not need to be enabled separately."
+  "muxedActivationInfo": "Muxed addresses are alias addresses. They do not need to be activated separately."
 }

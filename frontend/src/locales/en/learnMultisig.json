@@ -3,11 +3,11 @@
   "menuTitle": "Understanding Multisig",
   "teaser": "Why multiple signatures, how thresholds work, and how SKM helps.",
   "why": {
-    "title": "Why Multisig?",
+    "title": "Why multisig?",
     "text": "Multiple signatures reduce the risk of individual errors or theft."
   },
   "singleVsMulti": {
-    "title": "Single-sig vs multisig",
+    "title": "Single-sig vs Multisig",
     "text": "Single-Sig = 1 key is sufficient. Multisig = multiple signatures required (z. B. 2 von 3)."
   },
   "stellarHow": {
@@ -18,11 +18,11 @@
     "title": "Practical examples",
     "item1": "Company account: Two team members must sign each payment.",
     "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
-    "item3": "Secure vault: Requires hardware key plus backup key."
+    "item3": "Secure vault: Hardware key plus backup key required."
   },
   "skmSupport": {
     "title": "How SKM Supports Multisig",
-    "text": "SKM constructs multisig transactions, collects signatures, and stores prepared jobs."
+    "text": "SKM builds multisig transactions, collects signatures, and stores prepared jobs."
   },
   "diagram": {
     "singleVsMulti": "Diagram: Single-Sig vs. Multisig",

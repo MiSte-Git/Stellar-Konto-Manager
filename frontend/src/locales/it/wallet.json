@@ -1,13 +1,13 @@
 {
   "federationDisplay": {
-    "label": "Indirizzo della federazione",
+    "label": "Indirizzo della Federazione",
     "none": "Nessun indirizzo di federazione definito",
     "account": "Account",
     "accountLabel": "Etichetta"
   },
   "flag": {
     "compromised": "Avviso: Questo portafoglio è contrassegnato come compromesso nella tua lista di fiducia.",
-    "deactivated": "Nota: Questo portafoglio è contrassegnato come inattivo nella tua lista di fiducia."
+    "deactivated": "Nota: Questo portafoglio è contrassegnato come disattivato nella tua TrustList."
   },
   "xlmBalance": "XLM",
   "unfunded": "Non attivato"

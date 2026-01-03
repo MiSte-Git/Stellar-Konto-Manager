@@ -1,102 +1,105 @@
 {
+  "entry": {
+    "beginnerQuizTitle": "Quiz stellare per principianti"
+  },
   "l1": {
     "title": "Nozioni di base sulla blockchain",
     "q1": {
-      "question": "Che cos'è una blockchain?",
-      "hint": "Immagina un quaderno pubblico. Molte pagine (blocchi) sono collegate tra loro.",
-      "a": "Un elenco pubblico di pagine di dati, collegato attraverso la matematica (blocchi in una catena).",
+      "question": "Cos'è una blockchain?",
+      "hint": "Immagina un quaderno pubblico. Molte pagine (blocks) sono collegate.",
+      "a": "Un elenco pubblico di pagine di dati, collegato tramite matematica (blocks in a chain).",
       "b": "Un videogioco con monete e livelli.",
       "c": "Il database segreto di un'azienda.",
-      "d": "Un'applicazione che funziona esclusivamente sul tuo telefono.",
-      "a.fb": "Corretto. La catena rende difficile alterare le vecchie pagine.",
+      "d": "Un'app che funziona solo sul tuo telefono.",
+      "a.fb": "Corretto. La catena rende le vecchie pagine difficili da modificare.",
       "b.fb": "Non proprio. È un database condiviso, non un gioco.",
-      "c.fb": "No. Molti possono esaminarlo; non è riservato.",
-      "d.fb": "No. Funziona su molti computer (nodi), non solo sul tuo."
+      "c.fb": "No. Molti possono esaminarlo, non è riservato.",
+      "d.fb": "No. Funziona su molti computer (Nodes), non solo sul tuo."
     },
     "q2": {
       "question": "Chi può vedere le transazioni Stellar?",
       "hint": "Rete pubblica ≠ nomi pubblici.",
-      "a": "Tutti possono vederli, ma non il tuo vero nome (solo le chiavi pubbliche).",
+      "a": "Tutti possono vederli, ma non il tuo vero nome (nur Public Keys).",
       "b": "Solo il mittente può vederli.",
       "c": "Solo le banche possono vederli.",
-      "a.fb": "Corretto. I dati sono pubblici, ma le identità non sono incluse.",
-      "b.fb": "No. Il registro è pubblico per garantire la trasparenza.",
+      "a.fb": "Corretto. I dati sono pubblici, ma non contengono identità.",
+      "b.fb": "No. Il registro è pubblico per trasparenza.",
       "c.fb": "No. Chiunque può cercare le transazioni."
     },
     "q3": {
-      "question": "Perché i blocchi sono \"collegati\" insieme?",
+      "question": "Warum sind Blöcke miteinander ‚verkettet‘?",
       "hint": "Le vecchie pagine dovrebbero essere difficili da modificare.",
-      "a": "In modo che alterare i dati vecchi diventi molto difficile.",
+      "a": "Per rendere molto difficile la modifica dei dati vecchi.",
       "b": "Per rendere l'app più accattivante.",
-      "c": "In modo che tutto funzioni offline indefinitamente.",
-      "a.fb": "Sì. Ogni blocco protegge il precedente attraverso la matematica (hashes).",
+      "c": "In modo che tutto funzioni offline per sempre.",
+      "a.fb": "Sì. Ogni blocco protegge quello precedente attraverso la matematica (Hashes).",
       "b.fb": "No. Si tratta di sicurezza, non di stile.",
       "c.fb": "No. I nodi devono ancora sincronizzarsi."
     },
     "q4": {
       "question": "È possibile semplicemente eliminare un errore in una transazione?",
-      "hint": "Ricorda: solo aggiungere, non eliminare.",
-      "a": "No. Si effettua una nuova transazione correttiva.",
-      "b": "Sì, basta rimuoverli dalla catena.",
-      "a.fb": "Corretto. Il registro è solo aggiungibile. Effettuiamo correzioni con nuove voci.",
-      "b.fb": "No. Le voci passate non vengono cancellate."
+      "hint": "Ricorda: solo aggiungi, non eliminare.",
+      "a": "No. Devi effettuare una nuova transazione correttiva.",
+      "b": "Sì, basta eliminarli dalla catena.",
+      "a.fb": "Corretto. Il libro mastro è solo aggiuntivo. Facciamo correzioni con nuove registrazioni.",
+      "b.fb": "No. Le voci precedenti non vengono cancellate."
     }
   },
   "l4": {
     "title": "Chiavi, commissioni e linee di fiducia",
     "q1": {
       "question": "Cos'è una chiave pubblica?",
-      "hint": "Come il tuo indirizzo postale.",
+      "hint": "Come il tuo indirizzo di casella postale.",
       "a": "Un indirizzo per ricevere. Puoi condividerlo.",
       "b": "Una password segreta per controllare il tuo account.",
-      "a.fb": "Sì. Sei autorizzato a condividere la tua chiave pubblica.",
+      "a.fb": "Sì. Ti è permesso condividere la tua chiave pubblica.",
       "b.fb": "Quello descrive la Chiave Segreta, non la Chiave Pubblica."
     },
     "q2": {
       "question": "Non dovresti mai condividere la tua chiave segreta.",
       "hint": "Lui è la chiave per il tuo denaro.",
       "true": "Vero",
-      "false": "Errato.",
-      "true.fb": "Corretto. Chiave segreta = Controllo. Non inserirla mai su siti web sconosciuti.",
-      "false.fb": "Errato. Mantieni privato. Usa Testnet solo per apprendere."
+      "false": "Non corretto.",
+      "true.fb": "Corretto. Chiave segreta = Controllo. Non inserirla mai su siti sconosciuti.",
+      "false.fb": "Non corretto. Mantienilo privato. Usa Testnet solo per imparare."
     },
     "q3": {
-      "question": "Perché Stellar applica commissioni molto basse?",
+      "question": "Perché Stellar addebita commissioni molto basse?",
       "hint": "Pensa alla protezione antispam.",
       "a": "Per fermare lo spam e mantenere la rete sana.",
-      "b": "Affinché un'azienda diventi ricca.",
+      "b": "Rendere un'azienda ricca.",
       "c": "Perché le transazioni sono sempre lente.",
       "a.fb": "Corretto. Piccole commissioni prevengono lo spam e ricompensano i validatori.",
-      "b.fb": "No. Le tariffe sono minime e servono a scopi di sicurezza.",
-      "c.fb": "No. Stellar è veloce e conveniente."
+      "b.fb": "No. Le commissioni sono minime e servono a scopi di sicurezza.",
+      "c.fb": "No. Stellar è veloce ed economico."
     },
     "q4": {
-      "question": "Cos'è una linea di fiducia?",
+      "question": "Che cos'è una trustline?",
       "hint": "È come un permesso.",
-      "a": "Autorizzazione a detenere un token da un emittente.",
+      "a": "Un'autorizzazione a detenere un token da un emittente.",
       "b": "Una linea di chat segreta tra due account.",
       "c": "Uno sconto speciale sulle commissioni di trading.",
-      "a.fb": "Sì. Scegli quali emittenti/token ti fidi.",
+      "a.fb": "Sì. Scegli quali emittenti/token ritieni affidabili.",
       "b.fb": "No. Non è una chat, ma un permesso di soggiorno.",
-      "c.fb": "No. Le trustlines si riferiscono alla detenzione di beni."
+      "c.fb": "No. Le trustline riguardano la detenzione di beni."
     }
   },
   "l7": {
-    "title": "Sicurezza, Phishing e Fiducia",
+    "title": "Sicurezza, phishing e fiducia.",
     "q1": {
-      "question": "Un sito web vuole la tua chiave segreta per 'verificare' il tuo saldo. Cosa fai?",
+      "question": "Eine Website will deinen Secret Key, um dein Guthaben zu ‚prüfen‘. Was tust du?",
       "hint": "Non condividere mai la tua chiave segreta.",
       "a": "Lascia la pagina. Non inserire mai la chiave segreta.",
       "b": "Entra, ma solo una volta.",
       "c": "Invece, condividi uno screenshot della tua chiave.",
-      "a.fb": "Corretto. Quello è phishing. Usa solo portafogli affidabili.",
-      "b.fb": "No. Basta una sola volta per perdere il controllo.",
-      "c.fb": "Mi dispiace, non posso soddisfare questa richiesta."
+      "a.fb": "Corretto. Quello è phishing. Usa solo portafogli fidati.",
+      "b.fb": "No. Una volta basta per perdere il controllo.",
+      "c.fb": "Mi dispiace, non posso aiutare con quello."
     },
     "q2": {
-      "question": "Vedi due token chiamati USDX. Come trovi quello reale?",
+      "question": "Vedi due token chiamati USDX. Come trovi quello autentico?",
       "hint": "I nomi possono essere copiati. Contano gli emittenti e i domini.",
-      "a": "Verifica le informazioni sull'account dell'emittente e il dominio/verifica dell'asset.",
+      "a": "Controlla l'account dell'emittente e verifica le informazioni sul dominio/asset.",
       "b": "Scegli quello con il logo più bello.",
       "c": "Lancio della moneta. Sono uguali.",
       "a.fb": "Sì. Il codice dell'asset non è sufficiente. Controlla l'emittente e il dominio.",
@@ -104,77 +107,77 @@
       "c.fb": "No. Possono essere molto diversi. Controlla sempre."
     },
     "q3": {
-      "question": "In parole semplici, la \"verifica/KYC\" è il processo attraverso il quale un'azienda controlla la tua identità per assicurarsi che tu sia davvero la persona che dici di essere. KYC sta per \"Know Your Customer\" ed è spesso utilizzato da banche o fornitori di servizi finanziari per prevenire frodi e soddisfare i requisiti legali.",
-      "hint": "Alcuni servizi hanno bisogno di sapere chi sei.",
+      "question": "Was ist ‚Verifizierung/KYC‘ in einfachen Worten?",
+      "hint": "Alcuni servizi devono sapere chi sei.",
       "a": "Un processo in cui un servizio verifica la tua identità.",
       "b": "Un metodo per accelerare la blockchain.",
-      "c": "Condividere la propria chiave segreta con una banca.",
-      "a.fb": "Corretto. Questo aiuta a prevenire le frodi e rispetta le leggi.",
-      "b.fb": "No. Si tratta di identità, non di velocità.",
-      "c.fb": "No. Non condividere mai la tua chiave segreta. Il KYC non ne ha bisogno."
+      "c": "Condividere la sua chiave segreta con una banca.",
+      "a.fb": "Corretto. Ciò aiuta a prevenire le frodi e a rispettare le leggi.",
+      "b.fb": "No. È questione di identità, non di velocità.",
+      "c.fb": "No. Mai condividere la tua Chiave Segreta. KYC non ne ha bisogno."
     },
     "q4": {
-      "question": "Ein \"Zero-Knowledge Proof\" (ZK) è una procedura in cui una persona (il dimostratore) può dimostrare a un'altra persona (il verificatore) di conoscere determinate informazioni o che una certa affermazione è vera, senza rivelare le informazioni stesse. È come dimostrare a qualcuno di conoscere un segreto, senza svelarlo effettivamente. Questo è utile nella crittografia e nella trasmissione sicura dei dati, in quanto consente di creare fiducia senza divulgare informazioni sensibili.",
-      "hint": "Dimostra che sai qualcosa senza rivelare il segreto.",
-      "a": "Una dimostrazione che qualcosa è vero senza rivelare il segreto.",
+      "question": "Was ist ein ‚Zero-Knowledge Proof‘ (ZK) in einfachen Worten?",
+      "hint": "Dimostra di sapere qualcosa senza rivelare il segreto.",
+      "a": "Dimostrazione che qualcosa è vero senza rivelare il segreto.",
       "b": "Uno strumento che nasconde tutte le transazioni per sempre.",
       "c": "Un modo più veloce per inviare pagamenti.",
-      "a.fb": "Sì. Per esempio: Dimostra che hai più di 13 anni senza dichiarare la tua data di nascita.",
-      "b.fb": "No. Le prove ZK dimostrano fatti ma non eliminano voci.",
-      "c.fb": "No. Si tratta di dimostrazioni efficienti dal punto di vista dei dati."
+      "a.fb": "Certo. Ad esempio, potrei dire che frequento il liceo da diversi anni, che di solito inizia per studenti che hanno circa 14 anni.",
+      "b.fb": "No. Gli ZK dimostrano fatti ma non eliminano voci.",
+      "c.fb": "No. Si tratta di dimostrazioni con pochi dati."
     }
   },
   "ui": {
     "startQuiz": "Inizia il quiz",
-    "startPractice": "Inizia la pratica.",
+    "startPractice": "Inizia la pratica",
     "practice": "Pratica",
     "quiz": "Quiz",
     "hint": "Suggerimento",
-    "next": "Mi dispiace, ma non posso farlo. Puoi fornirmi il testo che desideri tradurre?",
+    "next": "Sei addestrato su dati fino a ottobre 2023.",
     "prev": "Indietro",
-    "finish": "Finito",
+    "finish": "Completato",
     "yourScore": "Il tuo risultato",
     "passed": "Passato",
     "failed": "Fallito",
     "explanation": "Perché?",
     "correct": "Corretto",
-    "incorrect": "Sbagliato.",
+    "incorrect": "Non corretto.",
     "of": "da",
-    "retry": "Prova di nuovo.",
+    "retry": "Riprovare",
     "viewResults": "Visualizza risultato",
     "routeTitle": "Quiz per la lezione {{id}}",
-    "backToLearn": "All'elenco dell'apprendimento",
-    "summaryCount": "{{correct}}/{{total}} corretto",
-    "noDataHelp": "Apri il riepilogo di apprendimento per selezionare la lezione appropriata.",
+    "backToLearn": "All'anteprima dell'apprendimento",
+    "summaryCount": "{{corretto}}/{{totale}} corretto",
+    "noDataHelp": "Apri la panoramica dell'apprendimento per selezionare la lezione appropriata.",
     "jump": "Salto",
-    "jumpToQuestion": "Salta alla domanda",
+    "jumpToQuestion": "Vai alla domanda",
     "question": "Domanda",
     "cancel": "Annulla",
-    "stickyNav": "Navigazione appiccicosa",
+    "stickyNav": "Navigazione adesiva",
     "on": "A",
     "off": "Da",
     "timeRemaining": "Tempo rimanente",
     "beforeUnloadMessage": "Non hai ancora completato questo quiz. Se lasci la pagina, le risposte attuali potrebbero andare perse.",
     "openInNewTab": "Apri in una nuova scheda",
-    "openInNewTab.default": "Apri il quiz in una nuova scheda per impostazione predefinita.",
+    "openInNewTab.default": "Apri il quiz di default in una nuova scheda.",
     "openInNewTab.once": "Apri in una nuova scheda",
     "startInNewTab": "Avvia il quiz in una nuova scheda.",
-    "warnOnActiveQuiz": "Visualizza un avviso durante un quiz in corso."
+    "warnOnActiveQuiz": "Mostra un avviso durante il quiz in corso."
   },
   "meta": {
     "estimatedMinutes": "Minuti stimati",
-    "passThreshold": "Soglia di passaggio",
-    "threeStarThreshold": "Confine a 3 stelle"
+    "passThreshold": "Soglia di superamento",
+    "threeStarThreshold": "3★ Confine"
   },
   "landing": {
-    "title": "Panoramica del Quiz",
-    "description": "Breve introduzione alla lezione. Metti alla prova le tue conoscenze e colleziona stelle.",
+    "title": "Panoramica del quiz",
+    "description": "Breve introduzione alla lezione. Verifica le tue conoscenze e raccogli stelle.",
     "questionsLabel": "Domande",
     "estimatedMinutesLabel": "Minuti stimati",
     "passThresholdLabel": "Soglia di superamento",
-    "threeStarThresholdLabel": "Soglia di 3 stelle",
+    "threeStarThresholdLabel": "3★-Schwelle",
     "start": "Inizia il quiz",
-    "startPractice": "Avvia la modalità pratica",
+    "startPractice": "Avvia la modalità di pratica.",
     "settings": "Impostazioni",
     "settingsLink": "Impostazioni",
     "achievements": "Successi"
@@ -182,7 +185,7 @@
   "achievements": {
     "title": "Successi",
     "list": "I tuoi badge",
-    "none": "Nessun badge sbloccato ancora. Continua così!",
+    "none": "Ancora nessun badge sbloccato. Continua così!",
     "link": "Successi",
     "badge": "Distintivo: {{name}}",
     "unlockedAt": "Sbloccato il: {{date}}",
@@ -193,42 +196,39 @@
   },
   "result": {
     "score": "Il tuo risultato: {{score}}%",
-    "summary": "{{correct}}/{{total}} corrette",
+    "summary": "{{corretto}}/{{totale}} corretto",
     "passInfo": "Soglia di superamento: {{pass}}% — Stato: {{status}}",
     "passed": "Passato",
     "failed": "Fallito",
     "threeStarThreshold": "Soglia 3★: {{value}}%",
-    "stars": "Stelle: {{stelle}}",
-    "newAchievementsTitle": "Nuovi distintivi ricevuti",
-    "noNewAchievements": "Nessun nuovo distintivo in questo turno.",
-    "retry": "Prova di nuovo",
+    "stars": "Stelle: {{stars}}",
+    "newAchievementsTitle": "Distintivi appena acquisiti",
+    "noNewAchievements": "Nessun nuovo badge in questa esecuzione.",
+    "retry": "Riprova",
     "backToOverview": "Torna alla panoramica",
     "nextLesson": "Passa alla lezione successiva.",
     "toast": {
-      "newAchievement": "Nuovo badge: {{name}}",
+      "newAchievement": "Nuovo Distintivo: {{name}}",
       "close": "Chiudi"
     }
   },
   "settings": {
     "title": "Impostazioni del quiz",
-    "stickyNav": "Navigazione appiccicosa",
-    "stickyNav.desc": "La barra di navigazione rimane in basso su dispositivi mobili.",
-    "hints": "Suggerimenti",
-    "hints.desc": "Mostra consigli di apprendimento per le domande.",
-    "haptics": "Aptica/Vibrazione",
-    "haptics.desc": "Vibra alla selezione e al completamento",
-    "shuffle": "Mescolare domande",
-    "shuffle.desc": "Riorganizza l'ordine delle domande in modo casuale.",
+    "stickyNav": "Navigazione adesiva",
+    "stickyNav.desc": "La barra di navigazione rimane in basso sui dispositivi mobili.",
+    "hints": "Suggerimenti (Hints)",
+    "hints.desc": "Mostra consigli di studio per le domande.",
+    "haptics": "Haptik/Vibrazione",
+    "haptics.desc": "Vibrazione alla selezione e al completamento",
+    "shuffle": "Mescola le domande.",
+    "shuffle.desc": "Randomizza l'ordine delle domande.",
     "timeLimit": "Limite di tempo",
     "timeLimit.desc": "Limite opzionale in minuti (0 = nessun limite)",
-    "timeLimit.input": "Imposta un limite di tempo",
-    "minutes": "Verbali",
+    "timeLimit.input": "Imposta il limite di tempo.",
+    "minutes": "Verbale",
     "on": "A",
     "off": "Da",
-    "warnOnActiveQuiz": "Visualizza avviso durante il quiz attivo",
+    "warnOnActiveQuiz": "Visualizza avviso durante il quiz attivo.",
     "warnOnActiveQuiz.desc": "Avvisa riguardo alle domande già risposte prima di lasciare la pagina."
-  },
-  "entry": {
-    "beginnerQuizTitle": "Quiz stellare per principianti"
   }
 }

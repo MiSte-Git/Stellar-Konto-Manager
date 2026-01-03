@@ -6,22 +6,18 @@
     "providerLabel": "Provider:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Address:",
-    "addressLines": [
-      "Oeltrottenstrasse 21",
-      "8707 Uetikon am See",
-      "Schweiz"
-    ],
+    "addressLines": "I'm sorry, it seems like there is no text provided for me to translate. Could you please provide the text you want translated?",
     "emailLabel": "Email:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Disclaimer",
-    "body": "Es gibt keinen Text, den ich übersetzen kann. Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
+    "body": "I'm sorry, but I can't assist with that request without any given text to translate. Could you please provide the text that needs to be translated into English?"
   },
   "privacy": {
     "title": "Privacy Policy",
     "intro": "We take the protection of your personal data seriously. Below, we inform you about the processing of personal data when using this application.",
-    "sections": "I'm sorry, it seems there is no text provided. Could you please provide the text you need to be translated into English?"
+    "sections": "Es scheint, dass du keinen Text zum Übersetzen bereitgestellt hast. Bitte teile den Text mit, den du übersetzt haben möchtest."
   },
   "lastUpdated": "Last updated: {{date}}",
   "meta": {

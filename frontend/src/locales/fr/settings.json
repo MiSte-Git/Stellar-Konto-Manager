@@ -1,16 +1,16 @@
 {
   "backup": {
     "title": "Backup & Recovery",
-    "desc": "Exporter ou importer vos données de quiz (paramètres, progression, badges).",
+    "desc": "Exporter ou importer vos données de quiz (Einstellungen, Fortschritt, Abzeichen).",
     "export": {
       "button": "Commencer l'exportation",
       "success": "Exportation créée",
       "error": "Échec de l'exportation",
-      "fileName": "quiz-backup.json"
+      "fileName": "Le texte \"quiz-backup.json\" est un nom de fichier et ne nécessite pas de traduction en français puisqu'il est déjà en anglais."
     },
     "import": {
       "title": "Importer",
-      "selectFile": "Sélectionner le fichier",
+      "selectFile": "Sélectionner un fichier",
       "noFile": "Aucun fichier sélectionné",
       "strategy": {
         "label": "Stratégie",
@@ -20,20 +20,20 @@
       "preview": {
         "title": "Aperçu",
         "stats": {
-          "settings": "Paramètres : {{count}} quiz(zes)",
-          "progress": "Progrès : {{count}} quizzez",
-          "achievements": "Badge : {{count}} quiz(quiz)"
+          "settings": "Paramètres : {{count}} Quiz(e)",
+          "progress": "Progrès : {{count}} Quiz(e)",
+          "achievements": "Badges : {{count}} Quiz(e)"
         }
       },
-      "perform": "Effectuer l'importation",
+      "perform": "Effectuer l'importation.",
       "done": "Importation terminée",
       "backupCreated": "Sauvegarde automatique enregistrée",
       "invalid": "Fichier d'importation invalide",
-      "error": "Importation échouée"
+      "error": "Échec de l'importation"
     },
     "toast": {
       "exported": "Sauvegarde exportée",
-      "backupBeforeImport": "Une sauvegarde a été effectuée avant l'importation."
+      "backupBeforeImport": "Une sauvegarde a été enregistrée avant l'importation."
     },
     "nav": {
       "back": "Retour"
@@ -41,70 +41,33 @@
   },
   "cache": {
     "help": "Accélère les requêtes grâce à un cache de paiement local, mais peut prolonger le temps de chargement initial.",
-    "label": "Utiliser le cache (Bêta)",
-    "prefetchHelp": "Délai de chargement des entrées/transactions en jours (une fois lors de l'activation initiale)"
+    "label": "Utiliser le cache (Beta)",
+    "prefetchHelp": "Délai de chargement des entrées/transactions en jours (einmalig beim ersten Aktivieren)"
   },
   "network": {
     "title": "Réseau",
-    "desc": "Facultatif : Horizon de l'historique complet pour l'historique approfondi",
+    "desc": "Facultatif : Horizon de Pleine- Histoire pour Histoire Profonde",
     "fullUrl": "URL de l'horizon de l'historique complet",
-    "autoUseFull": "Utiliser automatiquement si la date de début est antérieure à l'historique du serveur.",
-    "historyInfo": "Les serveurs Horizon gratuits exploités par la Stellar Development Foundation fournissent seulement environ un an d'historique. Pour des données plus anciennes, vous devrez soit exploiter votre propre nœud Horizon, soit vous fier à des services tiers/payants."
+    "autoUseFull": "Utiliser automatiquement si la \"Date de début\" est antérieure à l'historique du serveur.",
+    "historyInfo": "Les serveurs Horizon gratuits opérés par la Stellar Development Foundation ne fournissent qu'environ un an d'historique. Pour des données plus anciennes, vous devez soit exploiter votre propre nœud Horizon, soit vous fier à des services tiers ou payants."
   },
-  "description": "Actuellement, il n'y a pas encore de paramètres.",
+  "description": "Actuellement, il n'y a pas de paramètres disponibles.",
   "display": {
     "decimals": {
       "auto": "Automatiquement",
-      "label": "Chiffres décimaux"
+      "label": "Décimales"
     },
-    "desc": "Paramètres d'affichage globaux.",
+    "desc": "Paramètres globaux d'affichage.",
     "title": "Publicité"
   },
   "error": {
     "fetchFailed": "Échec du chargement des paramètres : {{detail}}"
   },
   "label": "Paramètres",
-  "prefetchDays": "Délai de livraison (jours)",
-  "trustedWallets": {
-    "buttons": {
-      "export": "Exportation",
-      "import": "Importer",
-      "reset": "Réinitialiser aux paramètres par défaut"
-    },
-    "desc": "Cette liste est stockée localement dans le navigateur. Fichier par défaut : QSI_TrustedWallets.json",
-    "editor": {
-      "invalidFormat": "Format non valide. Un objet avec un champ \"wallets\" (tableau) est attendu.",
-      "parseError": "Le JSON n'a pas pu être analysé."
-    },
-    "file": {
-      "hint": "Importer un fichier JSON au format { \"wallets\": [...] }",
-      "label": "Fichier"
-    },
-    "info": {
-      "count": "Entrées : {{n}}",
-      "updatedAt": "À partir du {{date}}"
-    },
-    "table": {
-      "addRow": "Ajoutez une ligne.",
-      "columns": {
-        "actions": "Actions",
-        "address": "Adresse",
-        "compromised": "Compromis",
-        "deactivated": "Désactivé",
-        "label": "Étiquette"
-      },
-      "deleteRow": "Supprimer",
-      "discard": "Jeter",
-      "save": "Enregistrer"
-    },
-    "title": "Mes portefeuilles de confiance",
-    "validation": {
-      "hint": "Au moins une ligne est invalide (adresse manquante/dupliquée)."
-    }
-  },
+  "prefetchDays": "Délai de livraison",
   "back": "Retour",
   "aria": {
-    "back": "Retourner à la page précédente."
+    "back": "Retourner à la page précédente"
   },
   "tabs": {
     "general": "Général",
@@ -120,25 +83,30 @@
     "accounts": "Liste des comptes",
     "network": "Réseau",
     "quiz": "Paramètres du quiz",
-    "explorer": "Stellar Explorer"
+    "explorer": "Explorateur Stellaire"
+  },
+  "multisig": {
+    "timeoutTitle": "Délai d'expiration de la signature multiple",
+    "timeoutHint": "Période de validité pour les paiements multisignatures en secondes (par exemple, 86400 = 24 heures).",
+    "seconds": "Secondes"
   },
   "explorer": {
-    "sectionTitle": "Stellar Explorer",
+    "sectionTitle": "Explorateur Stellaire",
     "description": "Sélectionnez l'explorateur par défaut pour les liens de compte et gérez la liste des explorateurs.",
     "defaultLabel": "Explorateur Standard",
     "nameLabel": "Nom",
     "urlLabel": "URL",
     "testnetUrlLabel": "URL du réseau de test (optional)",
     "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
-    "addButton": "Ajouter un explorateur",
-    "removeButton": "Retirer",
+    "addButton": "Ajouter Explorateur",
+    "removeButton": "Enlever",
     "setDefault": "Définir par défaut",
     "noEntries": "Aucun explorateur configuré.",
     "validation": {
       "nameRequired": "Veuillez entrer un nom.",
       "urlRequired": "Veuillez entrer une URL.",
       "urlInvalid": "Veuillez entrer une URL valide.",
-      "testnetUrlInvalid": "Veuillez entrer une URL valide de testnet."
+      "testnetUrlInvalid": "Veuillez entrer une URL Testnet valide."
     },
     "mainnetLabel": "Mainnet",
     "testnetLabel": "Réseau de test",
@@ -146,17 +114,54 @@
   },
   "export": {
     "title": "Paramètres d'exportation",
-    "button": "Enregistrer les paramètres dans un fichier"
+    "button": "Enregarder les paramètres sous forme de fichier"
   },
   "import": {
     "title": "Paramètres d'importation",
-    "button": "Charger les paramètres depuis le fichier",
+    "button": "Charger les paramètres à partir du fichier",
     "ariaLabel": "Paramètres d'importation",
     "hint": "Sélectionnez un fichier de paramètres précédemment exporté (.json).",
     "success": "Paramètres importés.",
     "error": {
-      "invalid": "L'importation a échoué : Le fichier est invalide ou n'a pas pu être lu.",
+      "invalid": "Importation échouée : le fichier est invalide ou n'a pas pu être lu.",
       "invalidType": "L'importation a échoué : Format inattendu dans le fichier."
+    }
+  },
+  "trustedWallets": {
+    "buttons": {
+      "export": "Exportation",
+      "import": "Importation",
+      "reset": "Réinitialiser aux paramètres par défaut"
+    },
+    "desc": "Cette liste est stockée localement dans le navigateur. Fichier par défaut : QSI_TrustedWallets.json",
+    "editor": {
+      "invalidFormat": "Format invalide. Un objet avec le champ \"wallets\" (Array) est attendu.",
+      "parseError": "JSON n'a pas pu être analysé."
+    },
+    "file": {
+      "hint": "Importer un fichier JSON au format { wallets: [...] }",
+      "label": "Fichier"
+    },
+    "info": {
+      "count": "Entrées : {{n}}",
+      "updatedAt": "Statut : {{date}}"
+    },
+    "table": {
+      "addRow": "Ajouter une ligne",
+      "columns": {
+        "actions": "Actions",
+        "address": "Adresse",
+        "compromised": "Compromis",
+        "deactivated": "Désactivé",
+        "label": "Étiquette"
+      },
+      "deleteRow": "Supprimer",
+      "discard": "Jeter",
+      "save": "Sauvegarder"
+    },
+    "title": "Mes portefeuilles de confiance",
+    "validation": {
+      "hint": "Au moins une ligne est invalide (fehlende/duplizierte Adresse)."
     }
   }
 }

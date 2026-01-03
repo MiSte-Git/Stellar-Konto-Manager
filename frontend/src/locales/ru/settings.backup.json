@@ -1,5 +1,5 @@
 {
-  "desc": "Экспортируйте или импортируйте данные вашей викторины (настройки, прогресс, значки).",
+  "desc": "Экспортируйте или импортируйте ваши данные викторины (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Начать экспорт",
     "fileName": "quiz-backup.json",
@@ -7,33 +7,33 @@
   },
   "import": {
     "backupCreated": "Автоматическое резервное копирование сохранено.",
-    "done": "Импорт завершён",
+    "done": "Импорт завершен",
     "invalid": "Недопустимый файл импорта",
     "noFile": "Файл не выбран",
     "preview": {
       "stats": {
-        "achievements": "Значок: {{count}} викторина(ы)",
-        "progress": "Прогресс: {{count}} викторина(ы)",
-        "settings": "Настройки: {{count}} викторина(ы)"
+        "achievements": "Значок: {{count}} викторина(e)",
+        "progress": "Прогресс: {{count}} Quiz(e)",
+        "settings": "Настройки: {{count}} Викторина(e)"
       },
       "title": "Предварительный просмотр"
     },
-    "selectFile": "Выбрать файл",
+    "selectFile": "Выберите файл",
     "strategy": {
       "label": "Стратегия",
       "merge": "Объединить",
       "replace": "Заменить"
     },
-    "title": "Импорт"
+    "title": "Импортировать"
   },
   "nav": {
     "back": "Назад"
   },
-  "title": "Backup & Restore",
+  "title": "Backup & Recovery",
   "toast": {
     "backupBeforeImport": "Резервная копия была сохранена перед импортом.",
-    "exported": "Резервная копия экспортирована",
-    "exportFailed": "Экспорт не выполнен.",
-    "importFailed": "Импорт не удался."
+    "exported": "Резервная копия экспортирована.",
+    "exportFailed": "Экспорт не выполнен",
+    "importFailed": "Импорт не удался"
   }
 }

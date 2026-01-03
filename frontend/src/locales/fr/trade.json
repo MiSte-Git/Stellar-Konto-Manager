@@ -1,15 +1,15 @@
 {
   "assetSearch": {
     "title": "Recherche d'actifs",
-    "description": "Recherchez des actifs via le Trading Endpoint (Horizon).",
+    "description": "Recherchez des actifs via le point de terminaison de trading (Horizon).",
     "form": {
       "code": {
         "label": "Code d'actif",
         "placeholder": "par exemple, USDC"
       },
       "issuer": {
-        "label": "Émetteur (KEEP_EN_TERM_1)",
-        "placeholder": "G…"
+        "label": "Émetteur (optional)",
+        "placeholder": "Je suis désolé, je ne comprends pas ce que tu veux dire par \"G… (optional)\". Pourrais-tu fournir plus de contexte ou d'informations, s'il te plaît ?"
       },
       "submit": "Recherche"
     },
@@ -19,7 +19,7 @@
         "code": "Code",
         "issuer": "Émetteur",
         "numAccounts": "Comptes",
-        "amount": "Montant total"
+        "amount": "Quantité totale"
       }
     },
     "invalidInput": {

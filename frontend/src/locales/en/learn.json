@@ -9,11 +9,15 @@
     "outcome": "Result",
     "reward": "Reward"
   },
+  "actions": {
+    "startQuiz": "Start quiz"
+  },
   "glossary": {
     "link": "Open glossary",
     "pageTitle": "Glossary"
   },
   "progress": {
+    "title": "Learning progress",
     "saved": "Progress saved",
     "starsLabel": "{count} ★",
     "error": "Progress could not be saved.",
@@ -26,8 +30,7 @@
     "export": "Export",
     "exported": "Progress exported",
     "import": "Import",
-    "imported": "Progress imported",
-    "title": "Learning progress"
+    "imported": "Progress imported"
   },
   "back": "Back",
   "backToTop": "Upwards",
@@ -43,92 +46,92 @@
   "status": {
     "success": "Success",
     "validation": "Validation",
-    "pending": "Awaiting validation",
+    "pending": "Waiting for validation",
     "retry": "Please try again.",
-    "noData": "No quiz available.",
+    "noData": "No quiz available",
     "comingSoon": "Practice for this lesson will follow shortly.",
     "testnetOnly": "Use TESTNET only. Never enter real secret keys. We do not store secrets."
   },
   "import": {
     "title": "Import progress",
-    "summary": "Summary: {lessons} lessons, {stars} stars in total. Practice metadata: {meta}",
+    "summary": "Summary: {lessons} lessons, {stars} total stars. Practice metadata: {meta}",
     "metaYes": "yes",
     "metaNo": "no",
     "createdAt": "File created",
     "strategy": "How to import?",
     "merge": "Merge (Keep existing, supplement from file)",
     "replace": "Overwrite (replace existing progress)",
-    "includePracticeMeta": "Adopt practice metadata",
+    "includePracticeMeta": "Incorporate practice metadata",
     "cancel": "Cancel",
     "confirm": "Import",
     "invalid": "Invalid or incompatible file"
   },
   "lesson1": {
-    "title": "A blockchain is a decentralized digital ledger that records transactions across many computers in such a way that the registered transactions cannot be altered retroactively. Each block in the chain contains multiple transactions, and every time a new transaction occurs on the blockchain, a record of that transaction is added to every participant's ledger. This ensures transparency and security, as the data is distributed and verified across multiple nodes, making it difficult for any single entity to manipulate the information.",
-    "goal": "Understanding the Principle of Blockchain",
-    "task": "Assemble building blocks (transactions) into a chain",
-    "learningOutcome": "A blockchain is an immutable digital ledger that is collectively verified by all participants.",
+    "title": "What is a blockchain?",
+    "goal": "Understanding the principle of blockchain",
+    "task": "Assemble building blocks (Transaktionen) into a chain",
+    "learningOutcome": "A blockchain is an immutable digital ledger that everyone can collectively verify.",
     "reward": "⭐ 1 – Block Builder"
   },
   "lesson2": {
-    "title": "Understanding Stellar",
-    "goal": "Know the difference from other blockchains.",
-    "task": "Send token to friend (simulation) and view speed.",
-    "learningOutcome": "Stellar is fast, cheap, and without mining.",
-    "reward": "⭐ 1 – Quick-Sender"
+    "title": "Understand Stellar",
+    "goal": "Know the differences from other blockchains.",
+    "task": "Send token to friend (Simulation) and view speed",
+    "learningOutcome": "Stellar is fast, inexpensive, and does not involve mining.",
+    "reward": "⭐ 1 – Quick Sender"
   },
   "lesson3": {
     "title": "Public & Privacy",
-    "goal": "Understanding Pseudonymity",
-    "task": "View public transaction and guess if the sender is known",
+    "goal": "Understanding pseudonymity",
+    "task": "View public transaction and guess whether the sender is known.",
     "learningOutcome": "Everything is visible, but no one knows the real name.",
     "reward": "⭐ 1 – Data Privacy Detective"
   },
   "lesson4": {
     "title": "Your account",
-    "goal": "Understand the structure and significance of public/private keys.",
+    "goal": "Understanding the structure and significance of Public/Secret Key",
     "task": "Matching Game: What is Public, What is Secret",
-    "learningOutcome": "Only the secret key provides access; the public key may be shared.",
+    "learningOutcome": "Only the secret key grants access; the public key can be shared.",
     "reward": "⭐ 1 – Key Guardian"
   },
   "lesson5": {
     "title": "Send & Receive",
-    "goal": "Understanding the functionality of transactions and trustlines",
+    "goal": "Understanding the Functionality of Transactions and Trustlines",
     "task": "Execute test shipment and view fee",
     "learningOutcome": "Each transaction incurs a small fee; Trustline = permission to receive.",
     "reward": "⭐ 2 – Trustline Starter"
   },
   "lesson6": {
     "title": "Token & Trading",
-    "goal": "Getting to Know Market Mechanisms",
-    "task": "Place a token on a virtual marketplace and monitor the price change.",
+    "goal": "Learning about market mechanisms",
+    "task": "Place tokens on the virtual marketplace and monitor price changes.",
     "learningOutcome": "Price is determined by supply and demand.",
     "reward": "⭐ 2 – Marketplace Expert"
   },
   "lesson7": {
     "title": "Security",
     "goal": "Learning safe behaviors",
-    "task": "Sorting correct/incorrect actions; detecting fake tokens",
-    "learningOutcome": "Confidentiality of the key, secure storage, and use of the testnet.",
+    "task": "Sort true/false actions; detect fake tokens.",
+    "learningOutcome": "Keeping the key confidential, storing it securely, and using the testnet.",
     "reward": "⭐ 2 – Security Guard"
   },
   "lesson8": {
     "title": "Verification & Identity",
-    "goal": "Understanding Trust and Rules",
-    "task": "Compare real versus fake tokens",
-    "learningOutcome": "KYC = Identity verification, verification shows trustworthy tokens.",
+    "goal": "Understanding trust and rules",
+    "task": "Compare genuine vs. counterfeit tokens",
+    "learningOutcome": "KYC = Identity verification, validation shows trusted tokens.",
     "reward": "⭐ 2 – Exam Expert"
   },
   "lesson9": {
     "title": "Zero Knowledge",
-    "goal": "Understanding Data Privacy Concepts",
-    "task": "Example scenario 'I am over 18' without displaying a birth date.",
-    "learningOutcome": "It is possible to prove something without revealing secrets.",
-    "reward": "⭐ 2 – ZK-Understanding"
+    "goal": "Understanding data privacy concepts",
+    "task": "Example scenario 'I am over 18' without showing birthdate",
+    "learningOutcome": "One can prove something without revealing secrets.",
+    "reward": "⭐ 2 – ZK-Expert"
   },
   "lesson10": {
     "title": "Practice with SKM",
-    "goal": "Applying learned knowledge in practice",
+    "goal": "Applying learned concepts practically",
     "task": "Create an account in the testnet, activate it, set a trustline, send tokens.",
     "learningOutcome": "Understand the technical processes of a transaction.",
     "reward": "⭐ 3 – Blockchain Pilot"
@@ -137,23 +140,20 @@
     "title": "Responsibility",
     "goal": "Understanding the consequences of mistakes",
     "task": "Decision Game: Act Correctly or Not",
-    "learningOutcome": "Blockchain is final; due diligence is mandatory.",
+    "learningOutcome": "Blockchain is final; due diligence is a must.",
     "reward": "⭐ 1 – Responsibility Hero"
   },
   "lesson12": {
-    "title": "Completion / Playful Learning",
-    "goal": "Repetition and motivation",
-    "task": "Mini-Quiz + Badge Display",
-    "learningOutcome": "Review learned material, recognize your own progress.",
+    "title": "Conclusion / Playful Learning",
+    "goal": "Repetition and Motivation",
+    "task": "Mini-quiz + badge display",
+    "learningOutcome": "Review what you've learned, recognize your own progress.",
     "reward": "🎖 Stellar Professional"
-  },
-  "actions": {
-    "startQuiz": "Start quiz"
   },
   "lesson13": {
     "title": "Multisig for Beginners",
     "goal": "Understanding the Basic Principles of Multisig",
-    "task": "Comparison of Single-Sig vs. Multisig with example flow",
+    "task": "Compare single-signature (Single-Sig) to multi-signature (Multisig), and look at an example process.",
     "learningOutcome": "Multiple signatures increase security; thresholds determine how many signatures are required.",
     "reward": "⭐ 2 – Multisig Starter"
   }

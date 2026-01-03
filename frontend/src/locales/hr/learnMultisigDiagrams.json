@@ -1,8 +1,8 @@
 {
   "singleVsMulti": {
-    "ariaLabel": "Dijagram jedinstvenog potpisa (Single-Sig) naspram višestrukog potpisa (Multisig).",
-    "singleTitle": "Jedan potpis",
-    "multiTitle": "Multisig",
+    "ariaLabel": "Dijagram za pojedinačni potpis (Single-Sig) vs. višestruki potpis (Multisig)",
+    "singleTitle": "Jedan potpis (Single-Sig)",
+    "multiTitle": "Višestruki potpis (eng. multisig)",
     "account": "Račun",
     "singleKey": "1 ključ",
     "keyA": "Potpisnik A",
@@ -19,18 +19,18 @@
     "sC": "Potpisnik C",
     "weight": "Težina:",
     "low": "nisko",
-    "med": "Nažalost, nisam u mogućnosti ispuniti zahtjev jer ne pruža dovoljno konteksta ili informacija za učinkovito prevođenje. Molim vas, pružite više konteksta ili dodatne informacije za točan prijevod.",
-    "high": "Visok",
+    "med": "s",
+    "high": "visok",
     "lowNote": "Jednostavne radnje",
     "medNote": "Plaćanja",
     "highNote": "Kritične promjene"
   },
   "flow": {
-    "ariaLabel": "Dijagram toka s više potpisa",
-    "title": "Multisig proces",
+    "ariaLabel": "Dijagram toka za multisig",
+    "title": "Višepotpisni postupak",
     "step1": "Koordinator stvara transakciju",
-    "step2": "SKM sprema zadržani posao.",
-    "step3": "Potpisnik B/C za potpisivanje",
-    "step4": "SKM šalje dovršenu transakciju"
+    "step2": "SKM pohranjuje čekajući posao",
+    "step3": "Potpisivanje B/C potpisnika",
+    "step4": "SKM šalje završenu transakciju"
   }
 }
