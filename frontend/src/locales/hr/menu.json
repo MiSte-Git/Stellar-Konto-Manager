@@ -1,18 +1,19 @@
 {
-  "balance": "Prikaži podatke o računu",
-  "devTestnet": "Testnet (za razvojne programere)",
+  "balance": "Prikaži informacije o računu",
+  "devTestnet": "Testnet (for developers)",
   "sendPayment": "Pošalji uplatu",
   "donate": "Donacije",
   "feedback": "Povratne informacije",
-  "xlmByMemo": "Filtriraj iznos XLM prema memo/token.",
-  "muxed": "Upravljanje multipleksiranim adresama",
+  "xlmByMemo": "Filtriraj XLM iznos prema memo/token",
+  "muxed": "Upravljanje muxovanim adresama",
   "glossary": "Rječnik",
   "createAccount": "Kreiraj račun + Multisig",
   "multisigEdit": "Uredi multisig",
-  "listAll": "Navedi sve povjereničke linije",
-  "compareTrustlines": "Usporedite povjereničke linije između računa",
+  "multisigJobs": "Višepotpisni nalozi",
+  "listAll": "Popiši sve linije povjerenja.",
+  "compareTrustlines": "Usporedi trustlineove između računa.",
   "settings": "Postavke",
-  "tokenPurchases": "Kupnja tokena",
-  "learn": "Zvjezdani kviz za početnike",
-  "unknown": "Nepoznat odabir izbornika"
+  "tokenPurchases": "Kupovina tokena",
+  "learn": "Stellar kviz za početnike",
+  "unknown": "Nepoznat odabir jelovnika"
 }

@@ -1,86 +1,86 @@
 {
   "page": {
-    "title": "Suodata XLM muistion perusteella",
-    "noPublicKey": "Avoin avain ei ole ladattu. Syötä ensin avoin avain."
+    "title": "Suodata XLM muistiolla",
+    "noPublicKey": "Julkista avainta ei ole ladattu. Ole hyvä ja syötä julkinen avain ensin."
   },
   "action": {
-    "calculate": "Laske",
-    "loading": "Voin auttaa yleisissä tiedusteluissa ja selityksissä, mutta erityisiä laskelmia tai ajantasaisia data-analyysejä varten tarvitsen konkreettisen tehtävän tai aiheen. Voisitko ystävällisesti antaa lisää tietoa tai yksityiskohtia?"
+    "calculate": "Laskea",
+    "loading": "Laske…"
   },
   "date": {
-    "from": "Alkaen (vapaaehtoinen)",
-    "to": "Saakka (valinnainen)"
+    "from": "Alkaen (optional)",
+    "to": "Saakka (optional)"
   },
   "debug": {
-    "incoming": "Saapuva – vastaanottaja: {{toMe}}, luotu→minä: {{createToMe}}, alkuperäinen→minä: {{nativeInToMe}}",
-    "incomingOverview": "Syötteet: {{total}} • Osalliset lompakot: {{unique}}",
-    "memo": "Muistioita ikkunassa: {{any}} • täsmälliset muistiot: {{exact}}",
+    "incoming": "Saapuvat – kenelle: {{toMe}}, luotu→minulle: {{createToMe}}, alunperin→minulle: {{nativeInToMe}}",
+    "incomingOverview": "Syötteet: {{total}} • Osallistuvat lompakot: {{unique}}",
+    "memo": "Muistiot Windowsissa: {{any}} • Tarkat muistiot: {{exact}}",
     "types": "Tyypit – maksu: {{pay}}, polku: {{path}}, luo: {{create}}, muu: {{other}}"
   },
   "export": {
-    "csv": "Tarkista CSV (Ottelut)",
+    "csv": "Tarkista CSV (Treffer)",
     "csvAll": "Vie kaikki toiminnot",
     "csvBoth": "Tallenna molemmat CSV-tiedostot.",
-    "csvMatches": "Tarkista CSV (Ottelut)"
+    "csvMatches": "Tarkista CSV (Treffer)"
   },
   "exportCsv": {
     "failed": "CSV-vienti epäonnistui: {{detail}}"
   },
   "memo": {
-    "label": "Memon hakuteksti (osajono, kirjainkoko huomioiden)",
-    "placeholder": "Muistio (osajono, kirjaimen koolla on merkitystä)"
+    "label": "Muistion hakuteksti (substring, case-sensitive)",
+    "placeholder": "Muistio (substring, case sensitive)"
   },
-  "overviewLine": "Vastaanotetut maksut: {{total}} • mukana olevat lompakot: {{unique}}",
+  "overviewLine": "Maksukuittaukset: {{total}} • osallistuvat lompakot: {{unique}}",
   "result": {
     "label": "Kokonaissumma:",
     "value": "{{amount}} XLM"
   },
   "summary": {
-    "amount": "Summa: {{amount}} XLM",
-    "correctCount": "Merkinnät, joiden muistio on oikea: {{n}}",
+    "amount": "Määrä: {{amount}} XLM",
+    "correctCount": "Merkintöjä oikealla muistilapulla: {{n}}",
     "count": "Määrä: {{n}}",
-    "label": "Vertailu (kaikki syötteet)",
-    "otherCount": "Merkinnät, joissa on virheellinen/puuttuva muistio: {{n}}",
-    "unique": "Uniikit lompakot (kaikki): {{n}}",
+    "label": "Vertailu (all inputs)",
+    "otherCount": "Merkinnät väärällä/puuttuvalla muistutuksella: {{n}}",
+    "unique": "Yksilölliset lompakot (alle): {{n}}",
     "uniqueWallets": "Uniikit lompakot: {{n}}"
   },
   "time": {
-    "setToNow": "Aseta nykyinen aika",
-    "setToNowHint": "Aseta aika-kenttä nykyiseen aikaan."
+    "setToNow": "Aseta nykyinen aika.",
+    "setToNowHint": "Aseta aikakenttä nykyiseen aikaan."
   },
-  "title": "XLM yhteensä muistiinpanon jälkeen",
+  "title": "XLM-saldo memon jälkeen",
   "topLargest": {
-    "button": "20 parasta merkintää (muistio)",
+    "button": "20 parasta merkintää (Memo)",
     "clipboard": "Kopioi leikepöydälle",
     "csv": "Lataa CSV",
-    "scanning": "... skannaa parhaat merkinnät",
-    "title": "Muistion 20 parasta merkintää ajanjaksolta"
+    "scanning": "… scannt Top-Eingänge",
+    "title": "Muistion 20 parasta merkintää ajanjaksolla"
   },
   "tz": {
     "cdt": "CDT (UTC−5)",
-    "cst": "CST (UTC−6)",
-    "europe_zurich": "Eurooppa/Zurich (CET/CEST)",
+    "cst": "Keskiajan normaaliaika (UTC−6)",
+    "europe_zurich": "Eurooppa/Zurich (Europe/Zurich)",
     "label": "Aikavyöhyke päivämäärälle/ajalle",
     "local": "Paikallinen aikavyöhyke",
-    "note": "Päivämäärä/aika tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC-aikaan ennen hakua.",
+    "note": "Päivämäärä ja aika tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC-aikaan ennen hakua.",
     "utc": "UTC",
-    "window": "Käytetty UTC-aikaväli: {{from}} → {{to}} (Pois lukien)"
+    "window": "Käytetty UTC-aikaväli: {{from}} → {{to}} (Bis exklusiv)"
   },
   "wrongMemos": {
-    "button": "Näytä lompakot, joilla on virheelliset tai tyhjät muistutukset.",
+    "button": "Näytä lompakot, joilla on virheellinen/tyhjä viesti",
     "clipboard": "Kopioi leikepöydälle",
     "columns": {
       "amount": "Määrä",
-      "created_at": "Luotu päivämäärällä",
+      "created_at": "Luotu",
       "from": "Alkaen",
       "memo": "Muistio",
       "tx_hash": "Tapahtuman tiiviste"
     },
-    "csv": "Lataa CSV-tiedosto",
-    "failed": "Virhe maksujen lataamisessa virheellisen/tyhjän muistion kanssa.",
-    "hint": "Suodattaa saapuvat maksut ajanjakson aikana ja näyttää lähettäjät, joilla on virheellisiä/tyhjiä viestejä.",
-    "scanning": "... skannaa vääriä/tyhjiä muistioita",
+    "csv": "Lataa CSV",
+    "failed": "Virhe maksujen lataamisessa väärällä/tyhjällä viestillä.",
+    "hint": "Suodattaa saapuvat maksut ajanjakson aikana ja näyttää lähettäjät, joilla on virheellisiä/tyhjiä muistioita.",
+    "scanning": "… skannaa vääriä/tyhjiä muistioita",
     "summary": "Määrä: {{count}} • Yhteensä: {{sum}} XLM • Uniikit lompakot: {{unique}}",
-    "title": "Vääriä/tyhjiä muistioita ajanjakson aikana"
+    "title": "Vääriä/tyhjiä muistioita kauden aikana"
   }
 }

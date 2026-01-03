@@ -1,12 +1,12 @@
 {
   "label": "Clé publique ou adresse de fédération",
-  "placeholder": "Saisissez votre clé publique ou une adresse de fédération.",
-  "load": "Chargement",
-  "deleteFromList": "Supprimer de la liste",
+  "placeholder": "Entrez votre clé publique ou une adresse de fédération.",
+  "load": "Boutique",
+  "deleteFromList": "Retirer de la liste",
   "source": "Source",
   "destination": {
     "input": "Objectif",
-    "error": "Clé publique invalide saisie.",
+    "error": "Clé publique invalide entrée.",
     "label": "Clé publique cible",
     "placeholder": "Entrez la clé publique cible"
   },

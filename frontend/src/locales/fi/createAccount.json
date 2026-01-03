@@ -1,98 +1,98 @@
 {
-  "title": "Luo tili + multiallekirjoitus",
-  "menu": "Luo tili + Monen allekirjoituksen avulla",
-  "menuHint": "Luo uusi tili ja määritä tarvittaessa multisig.",
-  "hint": "Luo uusi tili, aktivoi se ja määritä tarvittaessa multisig.",
+  "title": "Luo tili + moniallekirjoitus",
+  "menu": "Luo tili + Multisig",
+  "menuHint": "Luo uusi tili ja aseta halutessasi multisig.",
+  "hint": "Luo uusi tili, aktivoi se ja määritä halutessasi moniallekirjoitus.",
   "generateKeys": "Luo avain",
-  "enableMultisig": "Ota moniallekirjoitus käyttöön",
+  "enableMultisig": "Ota multisig käyttöön",
   "signersTitle": "Allekirjoittaja",
-  "signersInfo": "Lisää lisäallekirjoittajia ja aseta sopivat kynnysarvot.",
+  "signersInfo": "Lisää uusia allekirjoittajia ja aseta sopivat kynnykset.",
   "signersCount": "Allekirjoittajien määrä",
   "bestPractices": {
     "title": "Parhaat käytännöt",
-    "text": "Pidä salaiset avaimet turvassa äläkä jaa niitä tarpeettomasti."
+    "text": "Säilytä salaiset avaimet turvallisesti äläkä jaa niitä tarpeettomasti."
   },
   "instructions": {
-    "public": "Jaa tämä julkinen avain muiden kanssa maksuja varten.",
+    "public": "Jaa tämä julkinen avain muiden kanssa maksamista varten.",
     "secret": "Pidä tämä salainen avain turvassa; älä koskaan jaa sitä."
   },
   "generateFirst": "Luo ensin avainpari.",
-  "confirmLowBalance": "Alkusaldo {bal} XLM on alle suositellun varannon {req} XLM (Allekirjoittaja: {count}). Jatketaanko?",
+  "confirmLowBalance": "Aloitussaldo {bal} XLM on alle suositellun varannon {req} XLM (allekirjoittajat: {count}). Jatketaanko?",
   "activated": "Tili on aktivoitu. Tiiviste: {hash}",
-  "activatedTestnet": "Tili aktivoitiin testiverkossa Friendbotin kautta.",
+  "activatedTestnet": "Tili aktivoitiin testiverkossa Friendbotin avulla.",
   "alreadyActive": "Tili on jo aktivoitu.",
-  "createdNoSigners": "Tili luotu, multisig ei ole konfiguroitu.",
-  "createdAndConfigured": "Tili luotu ja multisig määritetty. Tiiviste: {hash}",
+  "createdNoSigners": "Tili luotu, multisig ei ole määritetty.",
+  "createdAndConfigured": "Tili luotu ja multisig konfiguroitu. Hash: {hash}",
   "info": {
     "more": "Lisätietoja",
     "keysOnPage": {
-      "title": "Avain tällä sivulla",
-      "text": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto EI KOSKAAN tallenna salausavaintasi!\n\nTäällä näkyvä salausavain on olemassa vain selaimessasi. Kun päivität tai poistut sivulta, se häviää peruuttamattomasti.\n\nKopioi tai kirjoita muistiin salausavain välittömästi luomisen jälkeen, ennen sivun sulkemista.\n\nVarmistus: Voit käyttää selaimen kehittäjätyökaluja (F12 → Verkko) varmistaaksesi, ettei salausavainta siirretä ulkopuolelle. Vain allekirjoitetut tapahtumat lähetetään, ei koskaan salausavaintasi."
+      "title": "Avaimet tällä sivulla",
+      "text": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto EI KOSKAAN tallenna salausavaintasi!\n\nTässä näkyvä Salaisuusavain on olemassa vain selaimessasi. Heti, kun lataat sivun uudelleen tai poistut sivulta, se häviää pysyvästi.\n\nKopioi tai merkitse ylös Salaisuusavain heti sen luomisen jälkeen, ennen kuin suljet sivun.\n\nVarmistus: Voit varmistaa selaimen kehittäjätyökaluilla (F12 → Network), ettei salaisuusavainta lähetetä ulkopuolelle. Vain allekirjoitetut tapahtumat lähetetään, ei koskaan sinun Salaisuusavaintasi."
     },
     "title": "Tärkeä tieto",
     "secureKeys": {
-      "title": "Turvaa salainen avain.",
-      "text": "Julkinen avain voidaan jakaa turvallisesti – se on kuin tilinumero.\n\nSalainen avain on pääsy tiliisi. Kohtele sitä kuin salasanaa:\n• ÄLÄ koskaan säilytä sitä pilvipalveluissa, sähköposteissa tai epävarmoissa muistiinpanoissa\n• Kirjoita se paperille tai käytä laitekertakäyttövälinettä\n• Luo useita varmuuskopioita ja säilytä ne turvallisissa, erillisissä paikoissa\n• Jos salainen avain katoaa, pääsy tilille menetetään peruuttamattomasti"
+      "title": "Turvaa salainen avain",
+      "text": "Julkinen avain voidaan turvallisesti jakaa – se on kuin tilinumero.\n\nSalainen avain on pääsy tilillesi. Käsittele sitä kuin salasanaa:\n• ÄLÄ KOSKAAN tallenna sitä pilvipalveluihin, sähköposteihin tai epävarmoihin muistiinpanoihin\n• Kirjoita se paperille tai käytä laitteistolompakkoa\n• Luo useita varmuuskopioita ja säilytä niitä turvassa, erillisissä paikoissa\n• Jos salainen avain katoaa, pääsy tilille menetetään peruuttamattomasti"
     },
     "multisigSection": {
-      "title": "Moniallekirjoitus (multisignature)",
-      "text": "Monisignaturen avulla voit määritellä useita allekirjoittajia tilillesi. Tapahtumat vaativat silloin useiden avainten allekirjoitukset (esim. 2 kolmesta).\n\nEdut:\n• Lisääntynyt turvallisuus (yksi vaarantunut avain ei riitä)\n• Jaetut tilit (esim. yritykset, kumppanuudet)\n• Hätäpalautus (useita varmuuskopioita eri henkilöillä)\n\nVAROITUS: Testaa monisigna kuitu ensin testiverkossa ennen sen käyttöönottoa pääverkossa! Virheellinen konfigurointi voi johtaa tilin käyttöoikeuksien menettämiseen."
+      "title": "Moniallekirjoitus (Multisig)",
+      "text": "Multisigissä voit määrittää tilillesi useita allekirjoittajia. Tapahtumat vaativat sitten useiden avainten allekirjoituksia (z. B. 2 von 3).\n\nEdut:\n• Parannettu turvallisuus (ein kompromittierter Key reicht nicht)\n• Jaetut tilit (z. B. Firmen, Partnerschaften)\n• Hätäpalautus (mehrere Backups bei verschiedenen Personen)\n\nVAROITUS: Testaa multisigiä ensin testiverkossa, ennen kuin otat sen käyttöön pääverkossa! Väärä konfiguraatio voi johtaa tilin käyttöoikeuden menettämiseen."
     },
     "diagram": {
       "title": "Allekirjoituksen vanhentuminen"
     }
   },
-  "activateHint": "Aktivointi on tarpeen tilin olemassaololle. Testiverkossa Friendbotin kautta, pääverkossa \"Luo tili\" olemassa olevasta lompakosta.",
-  "activateNow": "Aktivoi tili välittömästi",
+  "activateHint": "Aktivointi on tarpeen, jotta tili voi olla olemassa. Testnetissä se tehdään Friendbotin avulla, ja pääverkossa se tehdään \"Luo tili\" -toiminnolla olemassa olevasta lompakosta.",
+  "activateNow": "Aktivoi tili välittömästi.",
   "activateOnly": "Aktivoi vain",
-  "balanceWarning": "Aloitussaldo on luultavasti liian alhainen, jotta voidaan lisätä {{count}} lisäallekirjoittajaa (vähimmäisvaraus: {{req}} XLM).",
-  "createButton": "Luo / Aseta moniallekirjoitus",
+  "balanceWarning": "Aloitussaldo on todennäköisesti liian alhainen, jotta voidaan lisätä {{count}} lisäallekirjoittajaa (vähimmäisvaraus: {{req}} XLM).",
+  "createButton": "Luo / Aseta Multisig",
   "hints": {
     "byteRange": "(0–255)"
   },
-  "mainnetActivateNote": "Huomautus: Multisig vaatii lisää varantoja. 1 XLM ei usein riitä.",
+  "mainnetActivateNote": "Huom: Moniallekirjoituksille tarvitaan lisävarauksia. 1 XLM ei usein riitä.",
   "reserve": {
-    "base": "Perusreservi merkintää kohden: {{val}} XLM",
-    "recommended": "Suositeltu aloitussaldo: {{val}} XLM (sisältäen puskurin)",
-    "required": "Vaadittu vähimmäisvaranto (uusi): {{val}} XLM"
+    "base": "Perusvaraus per merkintä: {{val}} XLM",
+    "recommended": "Suositeltu aloitussaldo: {{val}} XLM (inkl. Puffer)",
+    "required": "Vaadittu vähimmäisvaranto (neu): {{val}} XLM"
   },
-  "signersCountHint": "Asetat vähimmäismäärän allekirjoituksia alle kohtaan \"Vaaditut allekirjoitukset\" (matala/keskiarvo/korkea).",
-  "signersCountLimit": "Huomaa: Verkoston rajoitus (Stellar): enintään 20 lisäallekirjoittajaa.",
+  "signersCountHint": "Asetat alla olevan vähimmäismäärän allekirjoituksia kohdassa \"Vaaditut allekirjoitukset\" (niedrig/mittel/hoch).",
+  "signersCountLimit": "Huomautus: Verkon rajapinta (Stellar): enintään 20 lisäallekirjoittajaa.",
   "startingBalance": "Aloitussaldo (XLM)",
-  "threshold": "Vaadittavat allekirjoitukset (matala/keskitaso/korkea)",
+  "threshold": "Vaaditut allekirjoitukset (niedrig/mittel/hoch)",
   "thresholdLow": "matala",
-  "thresholdMed": "keskitasoinen",
+  "thresholdMed": "keskitaso",
   "thresholdHigh": "korkea",
-  "thresholdCurrent": "Tällä hetkellä valittu: matala={{low}}, keskitaso={{med}}, korkea={{high}} yhteensä {{total}} allekirjoituksesta",
-  "thresholdHelp": "Kynnysarvo: Vaadittujen allekirjoitusten määrä (pääallekirjoittaja + allekirjoittajat), jotta tapahtuma on pätevä.",
-  "thresholdInfo": "Suositus: {{req}} allekirjoitusta {{total}}:sta (mukaan lukien Master)",
-  "thresholdLevelsHint": "Tyypillisesti seuraava pätee: matala = yksinkertaiset muutokset (esim. muistiinpano, hinta), keskitaso = maksut/kauppa, korkea = turvallisuuskriittiset muutokset (esim. allekirjoittaja/kynnykset).",
-  "thresholdStatic": "Vaaditaan: {{val}} {{total}}:sta allekirjoitusta (matala/keskitaso/korkea)",
-  "thresholdSum": "Painojen summa: {{sum}}",
-  "thresholdTooHigh": "Huomautus: Kynnysarvo ei saa ylittää painojen summaa. Säädä arvot.",
+  "thresholdCurrent": "Tällä hetkellä valittuna: matala={{low}}, keskitaso={{med}}, korkea={{high}} yhteensä {{total}} allekirjoituksesta",
+  "thresholdHelp": "Kynnysarvo: Vaadittujen allekirjoitusten määrä (pää + allekirjoittajat), jotta tapahtuma olisi pätevä.",
+  "thresholdInfo": "Suositus: {{req}}/{{total}} allekirjoitusta (inkl. Master)",
+  "thresholdLevelsHint": "Tyypillisesti pätee seuraava: matala = yksinkertaiset muutokset (e.g., memo, price), keskitaso = maksut/kauppa, korkea = turvallisuuskriittiset muutokset (e.g., signer/thresholds).",
+  "thresholdStatic": "Vaaditaan: {{val}} {{total}}:sta allekirjoituksesta (niedrig/mittel/hoch)",
+  "thresholdSum": "Summa painot: {{sum}}",
+  "thresholdTooHigh": "Huomaa: Kynnysarvo ei saa ylittää painojen summaa. Säädä arvot vastaavasti.",
   "keyWarning": {
-    "title": "⚠️ Varmista avaimesti nyt!",
+    "title": "⚠️ Varmista avaimen turvallisuus nyt!",
     "text1": "Olet luonut uuden avainparin.",
     "text2": "Varmista MOLEMMAT avaimet VÄLITTÖMÄSTI ennen jatkamista:",
-    "list1": "Julkinen avain: Tilisi osoite, jota voidaan jakaa",
-    "list2": "Salainen avain: Salasanasi – älä koskaan jaa tai tallenna sitä verkkoon!",
+    "list1": "Julkinen avain: Tilisi osoite, jonka voi jakaa.",
+    "list2": "Salainen avain: Salasanasi – ÄLÄ koskaan jaa tai tallenna sitä verkossa!",
     "list3": "Jos salainen avain katoaa, pääsy menetetään peruuttamattomasti.",
-    "confirm": "Olen saanut molemmat avaimet turvaan."
+    "confirm": "Olen turvannut molemmat avaimet."
   },
   "tooltips": {
-    "high": "Korkea: turvallisuuskriittiset muutokset (esim. allekirjoittajat/kynnysarvot).",
-    "low": "Alhainen: yksinkertaiset muutokset (esim. muistio, hinta).",
-    "masterWeight": "Tilinhaltijan paino (Mestari) (0-255): Tilin pääavain omaa äänioikeuden. Mitä suurempi sen paino on, sitä enemmän sen allekirjoitus vastaa ääniä. Nämä äänet lasketaan yhdessä muiden allekirjoittajien äänten kanssa sen tarkistamiseksi, onko tarvittava enemmistö saavutettu.",
-    "med": "Merkitsee: Maksut ja kaupankäyntitoimet.",
-    "signerWeight": "Allekirjoittajien painoarvo (0-255): Lisäallekirjoittajilla on myös äänioikeus. Painoarvo määrittää, kuinka monta ääntä heidän allekirjoituksensa tuovat. Kun transaktio lähetetään, kaikki annetut äänet lasketaan yhteen. Jos määritelty vähimmäisäänimäärä (kynnysarvo) saavutetaan, transaktio katsotaan valtuutetuksi.",
-    "signerWeightHint": "Huom: Mestarin ja allekirjoittajan painot muodostavat summan; kynnysarvot (matala/keskitaso/korkea) eivät saa ylittää tätä summaa."
+    "high": "Korkea: turvallisuuskriittiset muutokset (e.g., signers/thresholds).",
+    "low": "Low: yksinkertaiset muutokset (e.g., memo, price).",
+    "masterWeight": "Tilinhaltijan paino (Master) (0-255): Tilin pääavaimella on äänioikeus. Mitä suurempi sen paino on, sitä enemmän sen allekirjoitus lasketaan ääniksi. Nämä äänet lasketaan yhdessä muiden allekirjoittajien äänien kanssa, jotta voidaan tarkistaa, onko vaadittu enemmistö saavutettu.",
+    "med": "Tarkoittaa: Maksut ja kauppatoimet.",
+    "signerWeight": "Allekirjoittajien painoarvo (0–255): Lisäallekirjoittajilla on myös äänioikeus. Painoarvo määrittää, kuinka monta ääntä heidän allekirjoituksensa tuo mukanaan. Kun tapahtuma lähetetään, kaikki annetut äänet lasketaan yhteen. Jos määritelty vähimmäisäänimäärä (Threshold) saavutetaan, tapahtuma katsotaan hyväksytyksi.",
+    "signerWeightHint": "Huomaa: Master- ja allekirjoittajapainot yhteenlaskettuina muodostavat summan; kynnysarvot (niedrig/mittel/hoch) eivät saa ylittää tätä summaa."
   },
   "units": {
-    "signatures": "Allekirjoitus/-allekirjoitukset"
+    "signatures": "Allekirjoitus (en)"
   },
-  "muxedId": "Muxed ID",
-  "muxedInfo": "Muxed-ID luo M-osoitteen (M...). Se osoittaa samaan tiliin kuin tavallinen osoite (G...).",
-  "muxedIdInvalid": "Muxed-ID:n on oltava kokonaisluku väliltä 0 ja 18 446 744 073 709 551 615.",
-  "muxedAddress": "Multipleksoitu osoite",
-  "muxedActivationInfo": "Muxed-osoitteet ovat aliaksia. Niitä ei tarvitse ottaa erikseen käyttöön."
+  "muxedId": "Muxed-ID",
+  "muxedInfo": "Muxed-ID: tä käytetään M-osoitteen (M...) luomiseen. Se osoittaa samaan tiliin kuin tavallinen osoite (G...).",
+  "muxedIdInvalid": "Muxed-ID:n tulee olla kokonaisluku välillä 0 ja 18 446 744 073 709 551 615.",
+  "muxedAddress": "Miksoitu osoite",
+  "muxedActivationInfo": "Yhdistetyt osoitteet ovat aliaksia. Niitä ei tarvitse aktivoida erikseen."
 }

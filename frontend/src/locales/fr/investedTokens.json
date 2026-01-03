@@ -1,5 +1,5 @@
 {
-  "hintEnterPublicKey": "Veuillez d'abord entrer une clé publique.",
+  "hintEnterPublicKey": "Veuillez d'abord saisir une clé publique.",
   "columns": {
     "amount": "Montant",
     "compromised": "Compromis",
@@ -7,18 +7,18 @@
     "destination": "Portefeuille cible",
     "issuer": "Émetteur",
     "label": "Étiquette",
-    "memo": "Mémo",
+    "memo": "Note de service",
     "payments": "Paiements",
     "date": "Date",
     "token": "Jeton"
   },
   "decimals": {
     "auto": "Automatiquement",
-    "label": "Décimales :"
+    "label": "Chiffres décimaux :"
   },
   "filter": {
     "memoPlaceholder": "Filtrer par mémo, adresse de portefeuille ou étiquette.",
-    "tokenPlaceholder": "Filtrer par jeton (CODE:ÉMETTEUR)"
+    "tokenPlaceholder": "Filtrer par jeton (CODE:ISSUER)"
   },
   "item": {
     "memo": "Mémo : « {{memo}} » (Paiements : {{occurrences}})",
@@ -26,33 +26,33 @@
     "tokenShort": "Jeton : {{token}}"
   },
   "missingPublicKey": "Clé publique manquante.",
-  "moreTruncated": "... et {{extra}} groupes supplémentaires",
-  "toWallet": "Vers le portefeuille : {{adresse}}",
+  "moreTruncated": "… et {{extra}} autres groupes",
+  "toWallet": "à Portefeuille : {{address}}",
   "total": "Nombre de jetons achetés : {{count}}",
-  "totalTokens": "Nombre de jetons (actifs) investis : {{count}}",
+  "totalTokens": "Nombre de jetons investis (Assets) : {{count}}",
   "value": {
     "units": "{{amount}} pièces",
     "xlm": "{{amount}} XLM"
   },
   "view": {
     "label": "Filtrer par :",
-    "memo": "Mémos (Groupfund)",
-    "token": "Jeton (quantité achetée)"
+    "memo": "Mémos",
+    "token": "Jeton (gekaufte Menge)"
   },
   "toggles": {
-    "showTotals": "Somme totale",
+    "showTotals": "Montant total",
     "qsiOnly": "Somme QSI GF"
   },
   "hints": {
-    "qsiListSet": "Remarque : Vous pouvez trouver la liste blanche sous Paramètres → Portefeuilles de confiance (QSI).",
-    "pageTime": "Le chargement d'une page prend environ 0,2 seconde → 100 pages ≈ 20 secondes → 1000 pages ≈ 200 secondes (≈ 3:20 minutes)."
+    "qsiListSet": "Remarque : Vous pouvez trouver la liste GF sous Paramètres → Trusted Wallets (QSI).",
+    "pageTime": "Le chargement d'une page prend environ 0,2 seconde → 100 pages ≈ 20 secondes → 1000 pages ≈ 200 secondes (≈ 3 minutes 20 secondes)."
   },
   "walletCapInfo": "Remarque : Un portefeuille peut contenir un maximum de 1000 lignes de confiance.",
   "action": {
-    "load": "Chargement"
+    "load": "Boutique"
   },
   "history": {
-    "availableFrom": "Serveur (Horizon) – Histoire depuis",
-    "hintFullHistory": "Remarque : L'historique du grand livre du serveur Horizon ne remonte qu'à {{available}}. Seules les données jusqu'à ce point seront affichées. Par conséquent, la date de départ choisie est limitée. Pour des données plus anciennes, un fournisseur d'historique complet (généralement payant) est nécessaire (cela pourrait être disponible à l'avenir !)."
+    "availableFrom": "Serveur (Horizon) – Historique de",
+    "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
   }
 }

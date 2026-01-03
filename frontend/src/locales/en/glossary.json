@@ -2,14 +2,14 @@
   "pageTitle": "Glossary",
   "pageIntro": "Here you will find important words from the blockchain world and the Stellar network. Everything is explained in simple terms.",
   "searchLabel": "Search term",
-  "searchPlaceholder": "Search for term (e.g., account, Muxed)",
+  "searchPlaceholder": "Search term (z. B. Konto, Account, Muxed)",
   "searchHint": "The search finds words and explanations.",
   "noResults": "No match.",
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
-    "short": "Shared digital ledger – many computers store the same entries.",
-    "desc": "A blockchain is like a digital ledger. Many computers store the same entries, ensuring that no one can secretly alter anything."
+    "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
+    "desc": "A blockchain is like a digital ledger. Many computers store the same entries, so no one can secretly alter anything."
   },
   "wallet": {
     "title": "Wallet",
@@ -21,121 +21,128 @@
     "title": "Account",
     "original": "Account",
     "short": "A blockchain account can hold assets and send transactions.",
-    "desc": "An account is the location on the blockchain where your assets are stored. An account has a public address that begins with G. Multiple wallets can access the same account if they have the correct key."
+    "desc": "An account is the place on the blockchain where your assets are held. An account has a public address that begins with G. Multiple wallets can access the same account if they have the correct key."
   },
   "addressG": {
     "title": "G-address",
     "original": "G Address",
-    "short": "The public main address of a Stellar account (begins with G).",
-    "desc": "The G-address is the main address of a Stellar account. It starts with the letter G. You provide it to others so they can send something to you."
+    "short": "The public key (beginnt mit G) of a Stellar account.",
+    "desc": "The G address is the main address of a Stellar account. It begins with the letter G. You provide it to others so they can send you something."
   },
   "publicKey": {
     "title": "Public key",
     "original": "Public Key",
-    "short": "Address that you can share; usually the G-address for Stellar.",
-    "desc": "The public key is the address you can share. In Stellar, this is the G-address. Others use it to send you money."
+    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+    "desc": "The public key is the address that you are allowed to share. In Stellar, this is the G-address. Others use it to send you money."
   },
   "privateKey": {
     "title": "Secret key",
     "original": "Secret Key",
     "short": "Password to the account – never share.",
-    "desc": "The secret key is your password for the account. Whoever has this key can move your money. Never share it."
+    "desc": "The secret key is your password for the account. Anyone who has this key can move your money. Never share it."
   },
   "addressFederation": {
     "title": "Federation address",
     "original": "Federation Address",
-    "short": "Short address like email points to a G-address.",
-    "desc": "A federation address looks like an email. Example: name*domain.com. This short address points to a regular G-address. It is easier to remember."
+    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+    "desc": "A federation address looks like an email. Example: name*domain.com. This short address points to a normal G-address. It is easier to remember."
   },
   "addressMuxed": {
     "title": "Muxed account",
     "original": "Muxed Account",
-    "short": "M-address with additional ID – shares a base account.",
-    "desc": "An M-address points to an existing Stellar account but has an additional number (ID). This allows, for example, distinguishing several people or departments under the same G-address. Technically, the money still belongs to the main account."
+    "short": "M‑address with additional ID – shares a base account.",
+    "desc": "An M-address points to an existing Stellar account but has an additional unique identifier (ID). This allows, for example, the differentiation of multiple people or departments under the same G-address. Technically, the funds still belong to the main account."
   },
   "multisig": {
-    "title": "Multi-signature",
+    "title": "Multisignature",
     "original": "Multi‑Sig",
-    "short": "Important actions require more than a signature.",
-    "desc": "Multi-Sig stands for multiple signatures. An important action requires more than one key. For example, you and a second key both need to agree before something can be sent. This makes theft more difficult."
+    "short": "Important actions require more than just a signature.",
+    "desc": "Multi-Sig stands for multiple signatures. An important action requires more than one key. For example, you and a second key must both agree before something can be sent. This makes theft more difficult."
   },
   "trustline": {
     "title": "Trustline",
     "original": "Trustline",
-    "short": "Consent to hold a token of a specific issuer.",
-    "desc": "A trustline is like a \"yes, I accept this token.\" By doing so, you indicate that your account is ready to hold a specific token from a specific issuer. Without a trustline, you cannot receive this token.\n\nExample: A trustline is specified as CODE:ISSUER. For EURT from the issuer GDUKMGUGDZQK6Y…, it is EURT:GDUKMGUGDZQK6Y…."
+    "short": "Agreement to hold a token from a specific issuer.",
+    "desc": "A trustline is like saying yes, I accept this token. By doing so, you indicate that your account is ready to hold a specific token from a specific issuer. Without a trustline, you cannot receive this token.\n\nExample: A trustline is specified as CODE:ISSUER. For EURT from the issuer GDUKMGUGDZQK6Y…, it is EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
     "title": "Token",
     "original": "Token",
-    "short": "Digital unit – e.g., money, points, or credit.",
-    "desc": "A token is a digital unit on the blockchain. A token can represent money, points, or credits for a service."
+    "short": "Digital unit – e.g., money, points, or credits.",
+    "desc": "A token is a digital unit on the blockchain. A token can represent money, points, or credit for a service."
   },
   "asset": {
     "title": "Asset",
     "original": "Asset",
-    "short": "Tokens on Stellar are always linked to an issuer.",
-    "desc": "On Stellar, a token is called an asset. An asset is always linked to an issuer account. For example, an account can issue a Euro token. This Euro token is then an asset."
+    "short": "Tokens on Stellar are always linked to the issuer.",
+    "desc": "On Stellar, a token is called an asset. An asset is always linked to an issuing account. For example, an account can issue a Euro token. This Euro token is then an asset."
   },
   "xlm": {
-    "title": "XLM",
+    "title": "XLM (Stellar Lumens)",
     "original": "XLM",
     "short": "Native currency of Stellar for fees and activation.",
-    "desc": "XLM is the native currency of Stellar. You need XLM to pay fees and to create a new account."
+    "desc": "XLM is the native currency of Stellar. You need XLM to pay fees and to start a new account."
   },
   "mainnet": {
     "title": "Mainnet",
     "original": "Mainnet",
-    "short": "Real Stellar network with actual value.",
-    "desc": "The real Stellar network with actual value. Transactions are final, and fees are paid in genuine XLM."
+    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "desc": "The real Stellar network with actual value. Transactions are final, and fees are paid in real XLM."
   },
   "testnet": {
     "title": "Testnet",
     "original": "Testnet",
-    "short": "Public training network without real value.",
+    "short": "Public practice network with no real value.",
     "desc": "A public practice network. Tokens have no real value. Ideal for learning and experimenting without risk."
   },
   "memo": {
     "title": "Memo",
     "original": "Memo",
     "short": "Short note in a transaction.",
-    "desc": "A memo is a small note that you can send along with a transaction. Often, an exchange requires a specific memo so that it knows to whom the money belongs."
+    "desc": "A memo is a small note that you can send along with a transaction. Often, an exchange requires a specific memo to know to whom the money belongs."
   },
   "transaction": {
     "title": "Transaction",
     "original": "Transaction",
     "short": "Action on the blockchain, e.g., payment or trustline.",
-    "desc": "A transaction is an action on the blockchain, such as sending money or creating a trustline. A transaction is permanently stored once it is confirmed."
+    "desc": "A transaction is an action on the blockchain, such as sending money or establishing a trustline. A transaction is stored permanently once it is confirmed."
   },
   "fee": {
     "title": "Fee",
     "original": "Fee",
     "short": "Very small amount per transaction.",
-    "desc": "The fee is a very small amount that you pay with each transaction. The fee goes to the network. On Stellar, the fees are very small."
+    "desc": "The fee is a very small amount that you pay with every transaction. The fee goes to the network. On Stellar, the fees are very small."
   },
   "ledger": {
     "title": "Ledger",
     "original": "Ledger",
     "short": "Chain of confirmed data and account balances.",
-    "desc": "The ledger is the chain of all confirmed data. It shows which accounts own how much and what transactions have occurred. Anyone can check the ledger."
+    "desc": "The ledger is the chain of all confirmed data. It shows which accounts own how much and which transactions have occurred. Anyone can check the ledger."
   },
   "horizon": {
     "title": "Horizon",
     "original": "Horizon",
-    "short": "API service through which apps communicate with Stellar.",
-    "desc": "Horizon is the service through which programs interact with the Stellar Blockchain. Our tool queries Horizon to load account balances and transactions."
+    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "desc": "Horizon is the service through which programs communicate with the Stellar blockchain. Our tool queries Horizon to load account balances and transactions."
+  },
+  "horizonHistory": {
+    "title": "Horizon History",
+    "original": "Horizon history depth",
+    "short": "Describes how far back the transaction history provided by public Horizon servers extends.",
+    "desc": "Die von der Stellar Development Foundation betriebenen öffentlichen Horizon-Server (Mainnet und Testnet) stellen nur eine begrenzte Historie zur Verfügung – derzeit ungefähr ein Jahr rückwirkend. Ältere Daten sind über diese kostenlosen Endpunkte nicht mehr abrufbar. Wenn du weiter in die Vergangenheit zurück musst, hast du im Wesentlichen zwei Optionen: (1) du betreibst einen eigenen Horizon-Node mit vollständiger History (inklusive History Archives), oder (2) du nutzt Drittanbieter- bzw. Bezahldienste, die historische Stellar-Daten langfristig speichern und zur Verfügung stellen.",
+    "seeAlso": "I'm sorry, there is no text provided for translation. Could you please provide the text you would like me to translate?"
   },
   "anchor": {
     "title": "Anchor",
     "original": "Anchor",
-    "short": "Company that connects fiat money with Stellar.",
-    "desc": "An anchor is a company that connects real money, such as euros or dollars, with Stellar. For example, you give the anchor euros, and in return, you receive a euro token on Stellar."
+    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+    "desc": "An anchor is a company that connects real money, such as euros or dollars, with Stellar. For example, you give the anchor euros and receive a euro token on Stellar in return."
   },
   "exchange": {
     "title": "Stock exchange",
     "original": "Exchange",
     "short": "Place to buy and sell tokens.",
-    "desc": "An exchange is a place where you can buy or sell tokens. Many exchanges require a KYC procedure, which is an identity verification, before you can withdraw money in euros or francs."
+    "desc": "An exchange is a place where you can buy or sell tokens. Many exchanges require a KYC process, meaning identity verification, before you can withdraw money in euros or francs."
   },
   "dex": {
     "title": "DEX",
@@ -146,32 +153,31 @@
   "liquidityPool": {
     "title": "Liquidity pool",
     "original": "Liquidity Pool",
-    "short": "Common pool with two tokens for immediate exchange.",
-    "desc": "A liquidity pool is a shared pool containing two tokens. People contribute both tokens into the pool. Others are then allowed to exchange these tokens instantly. The contributors earn small fees in return."
+    "short": "Joint pool with two tokens for immediate exchange.",
+    "desc": "A liquidity pool is a shared pool containing two tokens. People deposit both tokens into it. Others can then immediately exchange these tokens. The depositors earn small fees for this service."
   },
   "balanceClaimable": {
-    "title": "Claimable balance",
+    "title": "Claimable Balance",
     "original": "Claimable Balance",
     "short": "Reserved money that you still need to accept.",
-    "desc": "A Claimable Balance is money that is already reserved for you, but you still need to claim it. Only when you accept it does it go into your account."
+    "desc": "A claimable balance is money that has already been reserved for you, but you still need to claim it. Only when you accept it does it go into your account."
   },
   "protocolUpdate": {
     "title": "Protocol Update",
     "original": "Protocol Update",
-    "short": "Updating the network rules.",
-    "desc": "A Protocol Update is an upgrade of the rules in the Stellar network. For example, new features or security changes. All nodes in the network must use the same rules."
+    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "desc": "A protocol update is an upgrade of the rules in the Stellar network, such as new features or security changes. All nodes in the network must use the same rules."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Stellar's smart contract system.",
-    "desc": "Soroban is the smart contract system of Stellar. A smart contract is program code on the blockchain. The code can independently verify rules and trigger actions without the need for a bank in between."
+    "short": "Stellars Smart‑Contract‑System.",
+    "desc": "Soroban is the smart contract system of Stellar. A smart contract is program code on the blockchain. The code can independently verify rules and trigger actions without an intermediary bank."
   },
-  "missingKey": "Missing glossary key: {{detail}}",
   "multiSignature": {
     "title": "Multisignature (Multi-Signature)",
     "original": "Multi-Signature",
-    "short": "Multiple signatures required; weights + threshold determine the approval.",
+    "short": "Multiple signatures required; weights + threshold determine the release.",
     "desc": "In a multi-signature setup, multiple keys must sign before an action becomes valid. Each signer has a weight, and the sum must reach the required threshold. This increases security because a single stolen key is not sufficient."
   },
   "signer": {
@@ -183,30 +189,20 @@
   "thresholds": {
     "title": "Thresholds (Thresholds)",
     "original": "Thresholds",
-    "short": "Limits (low/med/high), which determine the necessary weight sum.",
-    "desc": "Thresholds define how many weighted signatures are required for actions: low for simple operations, med for payments, high for critical changes. The sum of the signer weights must reach the respective threshold."
+    "short": "Limits (low/med/high) that determine the required sum of weights.",
+    "desc": "Thresholds define how many weighted signatures are necessary for actions: low for simple operations, med for payments, high for critical changes. The sum of the signers' weights must meet the respective threshold."
   },
   "masterWeight": {
     "title": "Master weight (master_weight)",
     "original": "master_weight",
-    "short": "Weight of the master key; determines how strongly the master key is counted.",
-    "desc": "The master weight is the weight of the main key of an account. A high master weight allows the master key to sign many actions on its own; a low value requires additional signers."
+    "short": "Weight of the master key; controls how much the main key counts.",
+    "desc": "The master weight is the weight of the main key of an account. A high master weight allows the master key to sign many actions alone; a low value requires additional signers."
   },
   "accountConfig": {
     "title": "Account configuration (Account Configuration)",
     "original": "Account Configuration",
     "short": "The interplay of signers and thresholds determines the security of the account.",
-    "desc": "The account configuration specifies which signers exist with what weights and what thresholds apply. Changes to signers or thresholds are critical for security, as they determine how many signatures are required."
+    "desc": "The account configuration specifies which signers exist with which weights and what thresholds apply. Changes to signers or thresholds are security-critical because they determine how many signatures are required."
   },
-  "horizonHistory": {
-    "title": "Horizon history",
-    "original": "Horizon history depth",
-    "short": "Describes how far back the transaction history provided by public Horizon servers goes.",
-    "desc": "Public Horizon servers run by the Stellar Development Foundation (mainnet and testnet) expose only a limited transaction history — currently roughly one year. Older data is no longer available from these free endpoints. If you need to go further back, you basically have two options: (1) run your own Horizon node with full history (including History Archives), or (2) use third‑party/paid services that store and serve historical Stellar data long term.",
-    "seeAlso": [
-      "horizon",
-      "serverHorizon",
-      "historyArchive"
-    ]
-  }
+  "missingKey": "Missing glossary key: {{detail}}"
 }

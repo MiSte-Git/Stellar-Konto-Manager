@@ -1,32 +1,32 @@
 {
   "assetSearch": {
     "title": "Activazoektocht",
-    "description": "Zoek naar activa via het Trading Endpoint (Horizon).",
+    "description": "Zoek naar activa via het handelsendpoint (Horizon).",
     "form": {
       "code": {
-        "label": "Activacode",
+        "label": "Assetcode",
         "placeholder": "bijv. USDC"
       },
       "issuer": {
-        "label": "Uitgevende instelling (KEEP_EN_TERM_1)",
-        "placeholder": "G…"
+        "label": "Uitgever (Issuer)",
+        "placeholder": "Entschuldigung, ich verstehe nicht, was du mit \"G… (optional)\" meinst. Könntest du bitte mehr Kontext oder Informationen zur Verfügung stellen?"
       },
       "submit": "Zoeken"
     },
     "result": {
       "empty": "Geen activa gevonden.",
       "columns": {
-        "code": "U bent getraind op gegevens tot oktober 2023.",
+        "code": "Code",
         "issuer": "Uitgever",
         "numAccounts": "Rekeningen",
-        "amount": "Totaalbedrag"
+        "amount": "Totale hoeveelheid"
       }
     },
     "invalidInput": {
-      "codeMissing": "Voer alstublieft een activacode in."
+      "codeMissing": "Voer een activacode in."
     },
     "failed": {
-      "generic": "De activazoekopdracht is mislukt. Probeer het later opnieuw."
+      "generic": "Het zoeken naar activa is mislukt. Probeer het later opnieuw."
     }
   }
 }

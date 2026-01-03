@@ -1,12 +1,12 @@
 {
   "backup": {
     "title": "Backup & Recovery",
-    "desc": "Esporta o importa i dati del tuo quiz (impostazioni, progressi, badge).",
+    "desc": "Esporta o importa i tuoi dati del quiz (Einstellungen, Fortschritt, Abzeichen).",
     "export": {
       "button": "Avvia esportazione",
-      "success": "Esportazione creata.",
+      "success": "Esportazione creata",
       "error": "Esportazione fallita",
-      "fileName": "quiz-backup.json"
+      "fileName": "Il testo \"quiz-backup.json\" è un nome di file e non necessita di traduzione in italiano poiché è già in inglese."
     },
     "import": {
       "title": "Importazione",
@@ -14,44 +14,44 @@
       "noFile": "Nessun file selezionato",
       "strategy": {
         "label": "Strategia",
-        "merge": "Unisci",
+        "merge": "Fusione",
         "replace": "Sostituire"
       },
       "preview": {
-        "title": "Anteprima",
+        "title": "Anteprima.",
         "stats": {
-          "settings": "Impostazioni: {{count}} quiz",
-          "progress": "Progresso: {{count}} quiz/quizzi",
-          "achievements": "Badge: {{count}} quiz"
+          "settings": "Impostazioni: {{count}} Quiz(e)",
+          "progress": "Progresso: {{count}} Quiz(e)",
+          "achievements": "Distintivi: {{count}} Quiz(e)"
         }
       },
       "perform": "Esegui l'importazione",
       "done": "Importazione completata",
       "backupCreated": "Backup automatico salvato",
       "invalid": "File di importazione non valido",
-      "error": "Importazione non riuscita"
+      "error": "Importazione fallita"
     },
     "toast": {
       "exported": "Backup esportato",
-      "backupBeforeImport": "Un backup è stato salvato prima dell'importazione."
+      "backupBeforeImport": "È stato salvato un backup prima dell'importazione."
     },
     "nav": {
       "back": "Indietro"
     }
   },
   "cache": {
-    "help": "Accelera le interrogazioni tramite una cache dei pagamenti locale, ma potrebbe estendere il tempo di caricamento iniziale.",
-    "label": "Usa cache (Beta)",
-    "prefetchHelp": "Tempo di attesa per il caricamento delle voci/transazioni in giorni (una volta durante l'attivazione iniziale)"
+    "help": "Accelera le query tramite la cache dei pagamenti locale, ma potrebbe aumentare il tempo di caricamento iniziale.",
+    "label": "Usa la cache (Beta)",
+    "prefetchHelp": "Tempo di attesa per il caricamento delle voci/transazioni in giorni (einmalig beim ersten Aktivieren)"
   },
   "network": {
     "title": "Rete",
-    "desc": "Opzionale: Orizzonte a Storia Completa per la Storia Profonda",
-    "fullUrl": "URL dell'orizzonte a storia completa",
-    "autoUseFull": "Utilizzare automaticamente se la data di inizio è anteriore alla cronologia del server.",
-    "historyInfo": "I server Horizon gratuiti gestiti dalla Stellar Development Foundation forniscono solo circa un anno di cronologia. Per dati più vecchi, sarà necessario gestire il proprio nodo Horizon o affidarsi a servizi di terze parti/a pagamento."
+    "desc": "Facoltativo: Orizzonte a Storia Completa per la Storia Profonda",
+    "fullUrl": "URL dell'orizzonte della cronologia completa",
+    "autoUseFull": "Usa automaticamente se la \"Data di inizio\" è antecedente alla cronologia del server.",
+    "historyInfo": "I server Horizon gratuiti gestiti dalla Stellar Development Foundation forniscono solo circa un anno di cronologia. Per i dati più vecchi, è necessario gestire il proprio nodo Horizon o affidarsi a servizi di terze parti o a pagamento."
   },
-  "description": "Attualmente, non ci sono ancora impostazioni.",
+  "description": "Attualmente, non ci sono impostazioni disponibili.",
   "display": {
     "decimals": {
       "auto": "Automaticamente",
@@ -64,47 +64,10 @@
     "fetchFailed": "Caricamento delle impostazioni non riuscito: {{detail}}"
   },
   "label": "Impostazioni",
-  "prefetchDays": "Tempo di consegna (giorni)",
-  "trustedWallets": {
-    "buttons": {
-      "export": "Esportazione",
-      "import": "Importazione",
-      "reset": "Reimposta ai valori predefiniti"
-    },
-    "desc": "Questo elenco è memorizzato localmente nel browser. File predefinito: QSI_TrustedWallets.json",
-    "editor": {
-      "invalidFormat": "Formato non valido. È previsto un oggetto con un campo \"portafogli\" (array).",
-      "parseError": "JSON non può essere analizzato."
-    },
-    "file": {
-      "hint": "Importa un file JSON nel formato { \"wallets\": [...] }",
-      "label": "Archivio"
-    },
-    "info": {
-      "count": "Voci: {{n}}",
-      "updatedAt": "A partire da {{date}}"
-    },
-    "table": {
-      "addRow": "Aggiungi linea",
-      "columns": {
-        "actions": "Azioni",
-        "address": "Indirizzo",
-        "compromised": "Compromesso",
-        "deactivated": "Disattivato",
-        "label": "Etichetta"
-      },
-      "deleteRow": "Elimina",
-      "discard": "Scartare",
-      "save": "Salva"
-    },
-    "title": "I miei portafogli affidabili",
-    "validation": {
-      "hint": "Almeno una riga è non valida (indirizzo mancante/duplicato)."
-    }
-  },
+  "prefetchDays": "Tempo di consegna",
   "back": "Indietro",
   "aria": {
-    "back": "Torna alla pagina precedente."
+    "back": "Torna alla pagina precedente"
   },
   "tabs": {
     "general": "Generale",
@@ -117,31 +80,36 @@
   "sections": {
     "general": "Impostazioni generali",
     "app": "Impostazioni dell'app",
-    "accounts": "Lista dei conti",
+    "accounts": "Elenco dei conti",
     "network": "Rete",
     "quiz": "Impostazioni del quiz",
-    "explorer": "Esploratore Stellare"
+    "explorer": "Stellar Explorer"
+  },
+  "multisig": {
+    "timeoutTitle": "Timeout Multisig",
+    "timeoutHint": "Periodo di validità per i pagamenti multisig in secondi (ad es., 86400 = 24 ore).",
+    "seconds": "Secondi"
   },
   "explorer": {
-    "sectionTitle": "Stellar Explorer",
-    "description": "Seleziona l'esploratore predefinito per i collegamenti dell'account e gestisci l'elenco degli esploratori.",
-    "defaultLabel": "Esploratore standard",
+    "sectionTitle": "Esploratore Stellare",
+    "description": "Seleziona l'esploratore predefinito per i link dell'account e gestisci l'elenco degli esploratori.",
+    "defaultLabel": "Esploratore Standard",
     "nameLabel": "Nome",
     "urlLabel": "URL",
-    "testnetUrlLabel": "URL Testnet (optional)",
+    "testnetUrlLabel": "URL del Testnet (optional)",
     "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
-    "addButton": "Aggiungi esploratore",
-    "removeButton": "Rimuovi",
+    "addButton": "Aggiungi Esploratore",
+    "removeButton": "Rimuovere",
     "setDefault": "Imposta come predefinito",
-    "noEntries": "Esploratori non configurati.",
+    "noEntries": "Nessun esploratore configurato.",
     "validation": {
-      "nameRequired": "Per favore inserisci un nome.",
-      "urlRequired": "Per favore inserisci un URL.",
-      "urlInvalid": "Per favore inserisci un URL valido.",
-      "testnetUrlInvalid": "Per favore, inserisci un URL testnet valido."
+      "nameRequired": "Inserisci un nome, per favore.",
+      "urlRequired": "Per favore, inserisci un URL.",
+      "urlInvalid": "Per favore, inserisci un URL valido.",
+      "testnetUrlInvalid": "Per favore inserisci un URL valido per il Testnet."
     },
     "mainnetLabel": "Mainnet",
-    "testnetLabel": "Rete di test",
+    "testnetLabel": "Rete di prova",
     "edit": "Modifica"
   },
   "export": {
@@ -155,8 +123,45 @@
     "hint": "Seleziona un file di impostazioni precedentemente esportato (.json).",
     "success": "Impostazioni importate.",
     "error": {
-      "invalid": "Importazione fallita: il file non è valido o non può essere letto.",
-      "invalidType": "Importazione non riuscita: Formato del file inatteso."
+      "invalid": "Importazione fallita: Il file non è valido o non può essere letto.",
+      "invalidType": "Importazione fallita: Formato inaspettato nel file."
+    }
+  },
+  "trustedWallets": {
+    "buttons": {
+      "export": "Esportazione",
+      "import": "Importa",
+      "reset": "Ripristina le impostazioni predefinite."
+    },
+    "desc": "Questo elenco è memorizzato localmente nel browser. File predefinito: QSI_TrustedWallets.json",
+    "editor": {
+      "invalidFormat": "Formato non valido. È previsto un oggetto con il campo \"wallets\" (Array).",
+      "parseError": "Impossibile analizzare il JSON."
+    },
+    "file": {
+      "hint": "Importa un file JSON nel formato { wallets: [...] }",
+      "label": "File"
+    },
+    "info": {
+      "count": "Voci: {{n}}",
+      "updatedAt": "Stato: {{date}}"
+    },
+    "table": {
+      "addRow": "Aggiungete la linea",
+      "columns": {
+        "actions": "Azioni",
+        "address": "Indirizzo",
+        "compromised": "Compromesso",
+        "deactivated": "Disattivato",
+        "label": "Etichetta"
+      },
+      "deleteRow": "Elimina",
+      "discard": "Scartare",
+      "save": "Salva"
+    },
+    "title": "I miei portafogli fidati",
+    "validation": {
+      "hint": "Almeno una riga non è valida (fehlende/duplizierte Adresse)."
     }
   }
 }

@@ -1,58 +1,58 @@
 {
-  "hintEnterPublicKey": "Syötä ensin julkinen avain.",
+  "hintEnterPublicKey": "Ole hyvä ja syötä avain ensin.",
   "columns": {
     "amount": "Määrä",
-    "compromised": "Kompromissi",
-    "deactivated": "Pois käytöstä",
-    "destination": "Kohdelompakko",
-    "issuer": "Liikkeellelaskija",
-    "label": "Merkintä",
+    "compromised": "Kompromittunut",
+    "deactivated": "Deaktivoitu",
+    "destination": "Tavoitelompakko",
+    "issuer": "Liikkeeseenlaskija",
+    "label": "Etiketti",
     "memo": "Muistio",
     "payments": "Maksut",
     "date": "Päivämäärä",
-    "token": "Poletin"
+    "token": "Poletti"
   },
   "decimals": {
-    "auto": "Automattisesti",
+    "auto": "Automaattisesti",
     "label": "Desimaalit:"
   },
   "filter": {
-    "memoPlaceholder": "Suodata muistiolla, lompakko-osoitteella tai nimikkeellä.",
-    "tokenPlaceholder": "Suodata tunnuksen mukaan (KOODI: LIIKKEELLELASKIJA)"
+    "memoPlaceholder": "Suodata muistiinpanon, lompakon osoitteen tai tunnisteen mukaan.",
+    "tokenPlaceholder": "Suodata tunnuksen mukaan (CODE:ISSUER)"
   },
   "item": {
     "memo": "Muistio: \"{{memo}}\" (Maksut: {{occurrences}})",
-    "token": "Token: {{token}} (Maksut: {{occurrences}})",
-    "tokenShort": "Tokeni: {{token}}"
+    "token": "Merkki: {{token}} (Maksut: {{occurrences}})",
+    "tokenShort": "Avain: {{token}}"
   },
   "missingPublicKey": "Julkinen avain puuttuu.",
-  "moreTruncated": "... ja {{extra}} lisäryhmää",
-  "toWallet": "Lompakkoon: {{address}}",
+  "moreTruncated": "… ja {{extra}} muuta ryhmää",
+  "toWallet": "lompakkoon: {{osoite}}",
   "total": "Ostettujen tokenien määrä: {{count}}",
-  "totalTokens": "Tokenien (varojen) määrä, joka on sijoitettu: {{count}}",
+  "totalTokens": "Sijoitettujen tokenien määrä (Assets): {{count}}",
   "value": {
     "units": "{{amount}} kappaletta",
     "xlm": "{{amount}} XLM"
   },
   "view": {
     "label": "Suodata:",
-    "memo": "Muistiot (Groupfund)",
-    "token": "Polette (ostettu määrä)"
+    "memo": "Muistiot",
+    "token": "Token (gekaufte Menge)"
   },
   "toggles": {
     "showTotals": "Kokonaissumma",
-    "qsiOnly": "Sum QSI GF"
+    "qsiOnly": "Summa QSI GF"
   },
   "hints": {
-    "qsiListSet": "Huom: Löydät sallittujen listan siirtymällä kohtaan Asetukset → Luotetut lompakot (QSI).",
+    "qsiListSet": "Huom: Voit löytää GF-listan kohdasta Asetukset → Luotetut lompakot (QSI).",
     "pageTime": "Sivun lataaminen kestää noin 0,2 sekuntia → 100 sivua ≈ 20 sekuntia → 1000 sivua ≈ 200 sekuntia (≈ 3:20 minuuttia)."
   },
-  "walletCapInfo": "Huom: Lompakko voi sisältää enintään 1000 trustlinea.",
+  "walletCapInfo": "Huom: Lompakko voi sisältää enintään 1000 luottolinjaa.",
   "action": {
-    "load": "Ladataan"
+    "load": "Kauppa"
   },
   "history": {
-    "availableFrom": "Serveri (Horizon) – Historia vuodesta",
-    "hintFullHistory": "Huom: Horizon-palvelimen pääkirjahistoria ulottuu vain {{saatavilla}} asti. Vain siihen asti ulottuvat tiedot näytetään. Tästä syystä valittu Alku-päivämäärä on rajoitettu. Vanhempien tietojen saamiseksi tarvitaan (yleensä maksullinen) täydellisen historian tarjoaja (mahdollisesti tulossa tulevaisuudessa!)."
+    "availableFrom": "Palvelin (Horizon) – Historia vuodesta",
+    "hintFullHistory": "Huomautus: Horizon-palvelimen Ledger-historia ulottuu vain {{available}} asti. Tiedot näytetään vain siihen asti. Valittua Alkaen-päivämäärää on siksi rajoitettu. Vanhempien tietojen saamiseksi tarvitaan (meist kostenpflichtiger) Full‑History‑Provider (Saattaa tulla tulevaisuudessa!)."
   }
 }

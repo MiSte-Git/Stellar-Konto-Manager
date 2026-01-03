@@ -5,82 +5,82 @@
   },
   "action": {
     "calculate": "Calculer",
-    "loading": "Je peux aider avec des demandes générales et des explications, mais pour des calculs spécifiques ou des analyses de données actuelles, j'ai besoin d'une tâche concrète ou d'un sujet. Pourriez-vous fournir plus d'informations ou de détails, s'il vous plaît ?"
+    "loading": "Calcule…"
   },
   "date": {
-    "from": "De (facultatif)",
-    "to": "Jusqu'à (facultatif)"
+    "from": "De (optional)",
+    "to": "Jusqu'à (optional)"
   },
   "debug": {
     "incoming": "Entrant – à : {{toMe}}, créer→moi : {{createToMe}}, natif→moi : {{nativeInToMe}}",
-    "incomingOverview": "Entrées : {{total}} • Portefeuilles impliqués : {{unique}}",
-    "memo": "Mémos dans la fenêtre : {{any}} • mémos exacts : {{exact}}",
-    "types": "Types – paiement : {{pay}}, chemin : {{path}}, création : {{create}}, autre : {{other}}"
+    "incomingOverview": "Entrées : {{total}} • Portefeuilles participants : {{unique}}",
+    "memo": "Mémos dans la fenêtre : {{any}} • Mémos exacts : {{exact}}",
+    "types": "Types – paiement : {{pay}}, chemin : {{path}}, créer : {{create}}, autre : {{other}}"
   },
   "export": {
-    "csv": "Vérifier CSV (Correspondances)",
+    "csv": "Vérifiez le CSV (Treffer)",
     "csvAll": "Exporter toutes les opérations",
     "csvBoth": "Enregistrez les deux fichiers CSV.",
-    "csvMatches": "Vérifier le CSV (Correspondances)"
+    "csvMatches": "Vérifier le CSV (Treffer)"
   },
   "exportCsv": {
-    "failed": "L'exportation CSV a échoué : {{detail}}"
+    "failed": "Échec de l'exportation CSV : {{detail}}"
   },
   "memo": {
-    "label": "Mémo de recherche de texte (sous-chaîne, sensible à la casse)",
-    "placeholder": "Mémo (sous-chaîne, sensible à la casse)"
+    "label": "Recherche de mémo (substring, case-sensitive)",
+    "placeholder": "Note (substring, case sensitive)"
   },
-  "overviewLine": "Paiements reçus : {{total}} • portefeuilles impliqués : {{unique}}",
+  "overviewLine": "Reçus de paiement : {{total}} • portefeuilles participants : {{unique}}",
   "result": {
     "label": "Montant total :",
     "value": "{{amount}} XLM"
   },
   "summary": {
-    "amount": "Somme : {{amount}} XLM",
+    "amount": "Montant : {{amount}} XLM",
     "correctCount": "Entrées avec mémo correct : {{n}}",
     "count": "Quantité : {{n}}",
-    "label": "Comparaison (toutes les entrées)",
+    "label": "Comparaison (all inputs)",
     "otherCount": "Entrées avec mémo incorrect/manquant : {{n}}",
-    "unique": "Portefeuilles uniques (tous) : {{n}}",
+    "unique": "Portefeuilles uniques (alle): {{n}}",
     "uniqueWallets": "Portefeuilles uniques : {{n}}"
   },
   "time": {
-    "setToNow": "Définir l'heure actuelle",
-    "setToNowHint": "Réglez le champ de l'heure sur l'heure actuelle."
+    "setToNow": "Définir l'heure actuelle.",
+    "setToNowHint": "Réglez le champ de temps à l'heure actuelle."
   },
-  "title": "Montant total XLM après mémo",
+  "title": "Solde XLM après mémo",
   "topLargest": {
-    "button": "Top 20 Entrées (Note)",
+    "button": "Top 20 Entrées (Memo)",
     "clipboard": "Copier dans le presse-papiers",
-    "csv": "Télécharger CSV",
-    "scanning": "... analyse les meilleures contributions",
-    "title": "Top 20 entrées pour mémo pendant la période"
+    "csv": "Télécharger le CSV",
+    "scanning": "… scannt Top-Eingänge",
+    "title": "Les 20 meilleures entrées pour le mémo de la période"
   },
   "tz": {
-    "cdt": "Heure d'été du Centre (UTC−5)",
-    "cst": "CST (UTC−6)",
+    "cdt": "CDT (UTC−5)",
+    "cst": "Heure centrale standard (UTC−6)",
     "europe_zurich": "Europe/Zurich (CET/CEST)",
     "label": "Fuseau horaire pour la date/heure",
     "local": "Fuseau horaire local",
-    "note": "La date/heure sera interprétée dans le fuseau horaire sélectionné et automatiquement convertie en UTC avant la recherche.",
+    "note": "La date et l'heure sont interprétées dans le fuseau horaire sélectionné et automatiquement converties en UTC avant la recherche.",
     "utc": "UTC",
-    "window": "Fenêtre temporelle UTC utilisée : {{from}} → {{to}} (Exclusif)"
+    "window": "Fenster der verwendeten UTC-Zeit: {{from}} → {{to}} (Bis exklusiv)"
   },
   "wrongMemos": {
-    "button": "Afficher les portefeuilles avec des mémos incorrects ou vides.",
+    "button": "Afficher les portefeuilles avec un mémo incorrect/vide.",
     "clipboard": "Copier dans le presse-papiers",
     "columns": {
       "amount": "Montant",
       "created_at": "Créé le",
       "from": "De",
       "memo": "Note de service",
-      "tx_hash": "Hachage de transaction"
+      "tx_hash": "Hash de transaction"
     },
     "csv": "Télécharger CSV",
     "failed": "Erreur lors du chargement des paiements avec mémo incorrect ou vide.",
     "hint": "Filtre les paiements entrants pendant la période et affiche les expéditeurs avec des mémos incorrects ou vides.",
-    "scanning": "... scanne des mémos faux/vides",
-    "summary": "Nombre : {{count}} • Total : {{sum}} XLM • Porte-monnaies uniques : {{unique}}",
-    "title": "Mémos faux/vides pendant la période"
+    "scanning": "… scanne des mémos faux/vides",
+    "summary": "Quantité : {{count}} • Total : {{sum}} XLM • Portefeuilles uniques : {{unique}}",
+    "title": "Faux/mémos vides pendant la période"
   }
 }

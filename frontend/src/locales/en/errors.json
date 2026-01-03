@@ -1,6 +1,6 @@
 {
-  "learn.offline": "Offline: Practical exams will be reviewed after reconnection.",
-  "learn.validationFailed": "Validation failed.",
+  "learn.offline": "Offline: Practical examinations will be reviewed upon reconnection.",
+  "learn.validationFailed": "Validation failed",
   "learn.missingParams": "Required parameters are missing",
   "submitTransaction.failed": "Transaction failed",
   "learn.error.unknown_action": "Unknown practice action",
@@ -13,19 +13,19 @@
   "cache": {
     "backfillAborted": "Initial loading of payments aborted",
     "coverage": {
-      "newestFailed": "Failed to retrieve the latest payment",
+      "newestFailed": "Failed to retrieve the latest payment.",
       "oldestFailed": "Failed to determine the earliest date"
     },
     "indexIterFailed": "Index iteration in the cache failed.",
     "memoNormBackfillFailed": "Initial loading of payments for normalized memos failed.",
     "openFailed": "Local cache could not be opened",
-    "readFailed": "Reading from the cache failed",
-    "rehydrateFailed": "Failed to reload missing memos",
-    "rehydrateWriteFailed": "Failed to write memos to the cache",
+    "readFailed": "Failed to read from cache",
+    "rehydrateFailed": "Failed to load missing memos",
+    "rehydrateWriteFailed": "Failed to write memos to the cache.",
     "writeFailed": "Failed to write to cache"
   },
   "connection": {
-    "backend": "Unable to connect to the backend. Please ensure"
+    "backend": "No connection to the backend possible. Please ensure"
   },
   "fetchInvestedTokens": {
     "failed": "Failed to load investment data: {{detail}}"
@@ -34,27 +34,27 @@
     "paymentsFetch": "Error loading payments from Horizon"
   },
   "loadTrustlines": "Trustlines could not be loaded. Please try again.",
-  "loadTrustlinesFailed": "Failed to load Trustlines",
-  "loadTrustlinesNotFound": "Account not found in network '{{network}}'.",
+  "loadTrustlinesFailed": "Failed to load trustlines",
+  "loadTrustlinesNotFound": "Account in the network '{{network}}' not found.",
   "accountNotFoundInNetwork": "Not found in '{{net}}'!",
   "op_invalid_limit": "Trustline cannot be deleted. It may still have a balance or outstanding obligations.",
   "query": {
     "invalidMemo": "Invalid memo",
     "invalidRange": "Time window is invalid (From > To)",
-    "invalidTime": "Invalid time specification."
+    "invalidTime": "Invalid time specification"
   },
   "submitTransaction": {
     "failed": {
       "tx_bad_auth": "Transaction declined: Invalid signature",
       "tx_failed": "Transaction failed",
-      "unknown": "Unknown error during the transaction",
+      "unknown": "Unknown error in the transaction",
       "multisig": {
         "invalidSecret": "One of the entered secret keys is invalid.",
         "notASigner": "One of the entered secret keys does not belong to the registered signers.",
         "noKeysProvided": "No valid secret keys were entered.",
-        "insufficientWeight": "The collected signatures are not sufficient to authorize this change. Required: {{required}}, present: {{current}}.",
-        "txBadAuth": "Transaction declined: Signatures are insufficient (tx_bad_auth).",
-        "zeroWeightSigner": "The entered secret key belongs to a signer with a weight of 0 and cannot authorize any transaction.",
+        "insufficientWeight": "The collected signatures are not sufficient to authorize this change. Required: {{required}}, available: {{current}}.",
+        "txBadAuth": "Transaction declined: Insufficient signatures (tx_bad_auth).",
+        "zeroWeightSigner": "The entered secret key belongs to a signer with weight 0 and cannot authorize a transaction.",
         "invalidConfig": "The planned configuration of signers and thresholds is not signable. Please check weights and thresholds.",
         "trustlines": {
           "invalidInput": "Please check the asset code, issuer, and limit. At least one of the fields is invalid."
@@ -67,15 +67,15 @@
     "incrementalFailed": "Update of payments failed"
   },
   "transaction": {
-    "failed": "Transaction failed",
+    "failed": "Transaction failed.",
     "title": "Transaction error"
   },
   "trustline": {
     "submitFailed": "Error deleting the trustline.",
-    "unknown": "Unknown error when deleting the trustline."
+    "unknown": "Unknown error while deleting the trustline."
   },
   "xlmByMemo": {
-    "aborted": "Operation canceled by user",
+    "aborted": "Operation cancelled by the user.",
     "accountInvalid": "Invalid account",
     "dateInvalid": "Invalid date",
     "dateRange": "Invalid date range",
@@ -84,6 +84,6 @@
     "paymentsFetch": "Error loading payments",
     "serverInvalid": "Invalid server"
   },
-  "rateLimited": "Horizon rate limit exceeded. Please wait a few seconds and try again.",
-  "backendConnectError": "Connection to the backend failed: {{url}}"
+  "backendConnectError": "Failed to connect to the backend: {{url}}",
+  "rateLimited": "Horizon rate limit exceeded. Please wait a few seconds and try again."
 }

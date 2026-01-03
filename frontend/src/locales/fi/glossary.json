@@ -1,208 +1,208 @@
 {
   "pageTitle": "Sanasto",
-  "pageIntro": "Täältä löydät tärkeitä sanoja lohkoketjun maailmasta ja Stellar-verkosta. Kaikki on selitetty yksinkertaisilla termeillä.",
+  "pageIntro": "Täältä löydät tärkeitä sanoja lohkoketjumaailmasta ja Stellar-verkostosta. Kaikki on selitetty yksinkertaisin termein.",
   "searchLabel": "Hakusana",
-  "searchPlaceholder": "Hae termillä (esim. tili, Muxed)",
-  "searchHint": "Haku löytää sanat ja selitykset.",
+  "searchPlaceholder": "Hakuehto (z. B. Konto, Account, Muxed)",
+  "searchHint": "Haku löytää sanoja ja selityksiä.",
   "noResults": "Ei vastinetta.",
   "blockchain": {
     "title": "Lohkoketju",
     "original": "Blockchain",
-    "short": "Jaettu digitaalinen pääkirja – monet tietokoneet tallentavat samat merkinnät.",
-    "desc": "Lohkoketju on kuin digitaalinen kirjanpito. Monet tietokoneet tallentavat samat merkinnät, mikä varmistaa, ettei kukaan voi salaa muuttaa mitään."
+    "short": "Yhteinen digitaalinen kirjanpito – monet tietokoneet tallentavat samat merkinnät.",
+    "desc": "Lohkoketju on kuin digitaalinen kirjanpito. Monet tietokoneet tallentavat samat merkinnät, joten kukaan ei voi salaa muuttaa mitään."
   },
   "wallet": {
     "title": "Lompakko",
     "original": "Wallet",
-    "short": "Digitaalinen lompakko, joka hallinnoi avaimiasi.",
-    "desc": "Lompakko on digitaalinen kukkarosi. Se hallinnoi avaimia, joita tarvitset kirjautuaksesi tilillesi ja lähettääksesi transaktioita. Lompakko voi olla ohjelma, sovellus tai jopa pelkkä paperi, jossa on yksityinen avaimesi."
+    "short": "Digitaalinen lompakko, joka hallitsee avaimiasi.",
+    "desc": "Lompakko on digitaalinen kukkarosi. Se hallinnoi avaimia, joita tarvitset käyttääksesi tiliäsi ja lähettääksesi tapahtumia. Lompakko voi olla ohjelma, sovellus tai jopa pelkkä paperi, jossa on yksityinen avaimesi."
   },
   "account": {
     "title": "Tili",
     "original": "Account",
-    "short": "Lohkoketjutili voi pitää hallussaan varoja ja lähettää tapahtumia.",
-    "desc": "Tili on paikka lohkoketjussa, jossa omaisuutesi on tallennettu. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat lompakot voivat päästä samaan tiliin, jos niillä on oikea avain."
+    "short": "Lohkoketjutili voi pitää hallussaan varoja ja lähettää siirtoja.",
+    "desc": "Tili on paikka lohkoketjussa, jossa varasi säilytetään. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat lompakot voivat käyttää samaa tiliä, jos niillä on oikea avain."
   },
   "addressG": {
     "title": "G-osoite",
     "original": "G Address",
-    "short": "Stellar-tilin julkinen pääosoite (alkaa kirjaimella G).",
+    "short": "Stellar-tilin julkinen avain (beginnt mit G).",
     "desc": "G-osoite on Stellar-tilin pääosoite. Se alkaa kirjaimella G. Annat sen muille, jotta he voivat lähettää sinulle jotain."
   },
   "publicKey": {
     "title": "Julkinen avain",
     "original": "Public Key",
-    "short": "Osoite, jota voit jakaa; yleensä G-osoite Stellarille.",
-    "desc": "Julkinen avain on osoite, jonka voit jakaa. Stellarissa tämä on G-osoite. Toiset käyttävät sitä lähettääkseen sinulle rahaa."
+    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+    "desc": "Julkinen avain on osoite, jonka voit jakaa. Stellarissa tämä on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
   },
   "privateKey": {
     "title": "Salainen avain",
     "original": "Secret Key",
-    "short": "Älä koskaan jaa tilin salasanaa.",
-    "desc": "Salainen avain on salasanasi tilille. Kenellä tahansa, jolla on tämä avain, voi siirtää rahojasi. Älä koskaan jaa sitä."
+    "short": "Tilin salasanaa – älä koskaan jaa.",
+    "desc": "Salainen avain on tilisi salasana. Jokainen, jolla on tämä avain, voi siirtää rahasi. Älä jaa sitä koskaan."
   },
   "addressFederation": {
     "title": "Federationin osoite",
     "original": "Federation Address",
-    "short": "Lyhyt osoite, kuten sähköposti, viittaa G-osoitteeseen.",
-    "desc": "Federation-osoite näyttää sähköpostilta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa tavalliseen G-osoitteeseen. Se on helpompi muistaa."
+    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+    "desc": "Federation-osoite näyttää sähköpostilta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa normaaliin G-osoitteeseen. Se on helpompi muistaa."
   },
   "addressMuxed": {
-    "title": "Muxattu tili",
+    "title": "Yhdistetty tili",
     "original": "Muxed Account",
-    "short": "M-osoite lisätunnuksella – jakaa perustilin.",
-    "desc": "M-osoite viittaa olemassa olevaan Stellar-tiliin, mutta sillä on lisänumero (ID). Tämä mahdollistaa esimerkiksi useiden henkilöiden tai osastojen erottamisen saman G-osoitteen alla. Teknisten yksityiskohtien osalta rahat kuuluvat yhä päätilille."
+    "short": "M‑osoite lisä-ID:llä – jakaa perustilin.",
+    "desc": "M-osoite viittaa olemassa olevaan Stellar-tiliin, mutta siinä on lisänä yksilöllinen tunniste (ID). Tämä mahdollistaa esimerkiksi useiden henkilöiden tai osastojen erottamisen saman G-osoitteen alla. Teknisesti varat kuuluvat silti päätilille."
   },
   "multisig": {
     "title": "Moniallekirjoitus",
     "original": "Multi‑Sig",
-    "short": "Tärkeät toimet vaativat enemmän kuin allekirjoituksen.",
-    "desc": "Multi-Sig tarkoittaa useampia allekirjoituksia. Tärkeä toimenpide vaatii useamman kuin yhden avaimen. Esimerkiksi sinun ja toisen avaimen täytyy molempien hyväksyä ennen kuin jotain voidaan lähettää. Tämä tekee varkaudesta vaikeampaa."
+    "short": "Tärkeät toimet vaativat enemmän kuin pelkän allekirjoituksen.",
+    "desc": "Multi-Sig tarkoittaa useita allekirjoituksia. Tärkeä toimenpide vaatii useampaa kuin yhtä avainta. Esimerkiksi sinun ja toisen avaimen täytyy molempien hyväksyä, ennen kuin jotain voidaan lähettää. Tämä tekee varkaudesta vaikeampaa."
   },
   "trustline": {
-    "title": "Luottolimiitti",
+    "title": "Trustline",
     "original": "Trustline",
-    "short": "Suostumus tietyn liikkeeseenlaskijan tokenin hallussapitoon.",
-    "desc": "Luottolimiitti on kuin \"kyllä, hyväksyn tämän tokenin.\" Tällä tavoin osoitat, että tilisi on valmis pitämään tietyn tokenin tietyltä liikkeeseenlaskijalta. Ilman luottolimiittiä et voi vastaanottaa tätä tokenia.\n\nEsimerkki: Luottolimiitti on määritelty muodossa KOODI:LIIKKEESEENLASKIJA. EURT-tokenille liikkeeseenlaskijalta GDUKMGUGDZQK6Y… se on EURT:GDUKMGUGDZQK6Y…."
+    "short": "Sopimus tietyn liikkeeseenlaskijan tokenin hallussapidosta.",
+    "desc": "Luottolinja on kuin sanomalla kyllä, hyväksyn tämän tokenin. Näin tehdessäsi osoitat, että tilisi on valmis pitämään tietyn tokenin tietystä liikkeellelaskijasta. Ilman luottolinjaa et voi vastaanottaa tätä tokenia.\n\nEsimerkki: Luottolinja ilmoitetaan muodossa KOODI:LIIKKEELLELASKIJA. EURT:n tapauksessa liikkeellelaskijalta GDUKMGUGDZQK6Y…, se on EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
-    "title": "Poletti",
+    "title": "Poletto",
     "original": "Token",
-    "short": "Digitaalinen yksikkö – esimerkiksi raha, pisteet tai luotto.",
-    "desc": "Tokeni on lohkoketjussa oleva digitaalinen yksikkö. Tokeni voi edustaa rahaa, pisteitä tai palvelun käyttöoikeuksia."
+    "short": "Digitaalinen yksikkö – esim. rahaa, pisteitä tai hyvityksiä.",
+    "desc": "Token on lohkoketjussa oleva digitaalinen yksikkö. Token voi edustaa rahaa, pisteitä tai palvelun hyvitystä."
   },
   "asset": {
     "title": "Varallisuus",
     "original": "Asset",
-    "short": "Stellarissa olevat tokenit ovat aina liitetty liikkeeseenlaskijaan.",
-    "desc": "Stellar-järjestelmässä tokenia kutsutaan omaisuuseräksi. Omaisuuserä on aina yhdistetty liikkeeseenlaskijatilin kanssa. Esimerkiksi tili voi laskea liikkeeseen eurotokenin. Tämä eurotoken on sitten omaisuuserä."
+    "short": "Stellar-verkossa olevat tokenit ovat aina yhteydessä liikkeeseenlaskijaan.",
+    "desc": "Stellarissa tokeneita kutsutaan varoiksi. Omaisuus on aina liitetty liikkeeseenlaskevaan tiliin. Esimerkiksi tili voi laskea liikkeelle euro-tokeneita. Tämä euro-token on sitten omaisuus."
   },
   "xlm": {
-    "title": "XLM",
+    "title": "XLM (Stellar Lumens)",
     "original": "XLM",
-    "short": "Stellarin alkuperäinen valuutta maksujen ja aktivoinnin suorittamiseksi.",
-    "desc": "XLM on Stellarin oma valuutta. Tarvitset XLM:ää maksujen suorittamiseen ja uuden tilin luomiseen."
+    "short": "Stellarin alkuperäisvaluutta maksuille ja aktivoinnille.",
+    "desc": "XLM on Stellarin oma valuutta. Tarvitset XLM:ää maksujen suorittamiseen ja uuden tilin avaamiseen."
   },
   "mainnet": {
     "title": "Pääverkko",
     "original": "Mainnet",
-    "short": "Todellinen Stellar-verkosto, jolla on todellista arvoa.",
-    "desc": "Todellinen Stellar-verkko, jossa on todellista arvoa. Tapahtumat ovat lopullisia, ja maksut suoritetaan aidolla XLM:llä."
+    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "desc": "Todellinen Stellarin verkko, jolla on todellista arvoa. Tapahtumat ovat lopullisia, ja maksut suoritetaan todellisella XLM:llä."
   },
   "testnet": {
     "title": "Testiverkko",
     "original": "Testnet",
-    "short": "Julkinen koulutusverkosto ilman todellista arvoa.",
+    "short": "Julkinen käytäntöverkosto ilman todellista arvoa.",
     "desc": "Julkinen harjoitusverkosto. Tokeneilla ei ole todellista arvoa. Ihanteellinen oppimiseen ja kokeiluun ilman riskiä."
   },
   "memo": {
     "title": "Muistio",
     "original": "Memo",
-    "short": "Lyhyt merkintä tapahtumassa.",
-    "desc": "Muistio on pieni huomautus, jonka voit lähettää tapahtuman mukana. Usein vaihto vaatii tietyn muistion, jotta tiedetään, kenelle rahat kuuluvat."
+    "short": "Lyhyt huomautus tapahtumassa.",
+    "desc": "Muistio on pieni viesti, jonka voi lähettää tapahtuman mukana. Usein vaihtopalvelu vaatii tietyn muistion tietääkseen, kenelle rahat kuuluvat."
   },
   "transaction": {
     "title": "Tapahtuma",
     "original": "Transaction",
-    "short": "Toiminto lohkoketjussa, esim. maksu tai luottolimiitti.",
-    "desc": "Tapahtuma on toiminto lohkoketjussa, kuten rahan lähettäminen tai luottolinjan luominen. Tapahtuma tallennetaan pysyvästi, kun se on vahvistettu."
+    "short": "Toiminta lohkoketjussa, esim. maksu tai luottoraja.",
+    "desc": "Tapahtuma on toimenpide lohkoketjussa, kuten rahan lähettäminen tai luottolinjan perustaminen. Tapahtuma tallennetaan pysyvästi, kun se on vahvistettu."
   },
   "fee": {
-    "title": "Palkkio",
+    "title": "Maksu",
     "original": "Fee",
     "short": "Erittäin pieni summa per tapahtuma.",
-    "desc": "Maksu on hyvin pieni summa, jonka maksat jokaisen tapahtuman yhteydessä. Maksu menee verkolle. Stellarissa maksut ovat erittäin pieniä."
+    "desc": "Palkkio on hyvin pieni summa, jonka maksat jokaisen tapahtuman yhteydessä. Palkkio menee verkostolle. Stellarilla palkkiot ovat hyvin pieniä."
   },
   "ledger": {
     "title": "Tilikirja",
     "original": "Ledger",
-    "short": "Vahvistettujen tietojen ja tilisaldojen ketju.",
-    "desc": "Kirjanpito on kaikkien vahvistettujen tietojen ketju. Se näyttää, kuinka paljon varoja kukin tili omistaa ja mitkä tapahtumat ovat tapahtuneet. Kuka tahansa voi tarkistaa kirjanpidon."
+    "short": "Vahvistettujen tietojen ja tilien saldot.",
+    "desc": "Pääkirja on ketju kaikista vahvistetuista tiedoista. Se näyttää, kuinka paljon kussakin tilissä on ja mitkä tapahtumat ovat tapahtuneet. Kuka tahansa voi tarkistaa pääkirjan."
   },
   "horizon": {
     "title": "Horisontti",
     "original": "Horizon",
-    "short": "API-palvelu, jonka avulla sovellukset kommunikoivat Stellar-järjestelmän kanssa.",
-    "desc": "Horizon on palvelu, jonka kautta ohjelmat ovat vuorovaikutuksessa Stellar-lohkoketjun kanssa. Työkalumme kysyy Horizonilta tilien saldot ja tapahtumat."
+    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "desc": "Horizon on palvelu, jonka kautta ohjelmat kommunikoivat Stellar-lohkoketjun kanssa. Työkalumme kysyy Horizonilta ladatakseen tilin saldot ja tapahtumat."
+  },
+  "horizonHistory": {
+    "title": "Horisontin historia",
+    "original": "Horizon history depth",
+    "short": "Kuvaa, kuinka pitkälle julkisten Horizon-palvelimien tarjoama tapahtumahistoria ulottuu.",
+    "desc": "Stellar-kehityssäätiön ylläpitämät julkiset Horizon-palvelimet (Mainnet und Testnet) tarjoavat vain rajoitetun historian – tällä hetkellä noin vuoden taaksepäin. Vanhempia tietoja ei voi enää hakea näiden ilmaisten päätepisteiden kautta. Jos sinun täytyy palata kauemmas menneisyyteen, sinulla on periaatteessa kaksi vaihtoehtoa: (1) voit ylläpitää omaa Horizon-solmua täydellisellä historialla (inklusive History Archives), tai (2) voit käyttää kolmannen osapuolen tai maksullisia palveluita, jotka tallentavat ja tarjoavat pitkäaikaisesti Stellar-historiatietoja.",
+    "seeAlso": "Sinut on koulutettu käyttämällä tietoja lokakuuhun 2023 asti."
   },
   "anchor": {
     "title": "Ankkuri",
     "original": "Anchor",
-    "short": "Yritys, joka yhdistää fiat-rahan Stellariin.",
-    "desc": "Anchor on yritys, joka yhdistää oikean rahan, kuten eurot tai dollarit, Stellariin. Esimerkiksi annat ankkurille euroja, ja vastineeksi saat eurotokenin Stellarilla."
+    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+    "desc": "Anchor on yritys, joka yhdistää oikean rahan, kuten eurot tai dollarit, Stellariin. Esimerkiksi annat anchorelle euroja ja saat vastineeksi eurotokeneita Stellarilla."
   },
   "exchange": {
     "title": "Pörssi",
     "original": "Exchange",
     "short": "Paikka ostaa ja myydä tokeneita.",
-    "desc": "Pörssi on paikka, jossa voit ostaa tai myydä tokeneita. Monet pörssit vaativat KYC-menettelyn, joka on henkilöllisyyden varmistus, ennen kuin voit nostaa rahaa euroissa tai frangeissa."
+    "desc": "Vaihto on paikka, jossa voit ostaa tai myydä tokeneita. Monet vaihdot vaativat KYC-prosessin, eli henkilöllisyyden todentamisen, ennen kuin voit nostaa rahaa euroina tai frangeina."
   },
   "dex": {
     "title": "DEX",
     "original": "Decentralized Exchange",
-    "short": "Hajautettu vaihto suoraan lohkoketjussa.",
-    "desc": "DEX tarkoittaa hajautettua pörssiä. Täällä ihmiset käyvät kauppaa suoraan keskenään lohkoketjussa. Ei ole yhtä yksittäistä operaattoria. Stellarilla on sisäänrakennettu DEX."
+    "short": "Hajautettu pörssi suoraan lohkoketjussa.",
+    "desc": "DEX tarkoittaa hajautettua pörssiä. Tässä ihmiset käyvät kauppaa suoraan toistensa kanssa lohkoketjussa. Ei ole yhtä ainoaa operaattoria. Stellarilla on sisäänrakennettu DEX."
   },
   "liquidityPool": {
-    "title": "Likviditeettiallas",
+    "title": "Likviditeettipooli",
     "original": "Liquidity Pool",
-    "short": "Yhteinen pooli kahdella tokenilla välitöntä vaihtoa varten.",
-    "desc": "Likviditeettipooli on yhteinen pooli, joka sisältää kaksi tokenia. Ihmiset lisäävät molemmat tokenit pooliin. Muut voivat sitten vaihtaa näitä tokeneita välittömästi. Osallistujat ansaitsevat pieniä palkkioita vastineeksi."
+    "short": "Yhteinen allas kahdella tokenilla välitöntä vaihtoa varten.",
+    "desc": "Likviditeettipooli on jaettu pooli, joka sisältää kaksi tokenia. Ihmiset tallettavat siihen molempia tokeneita. Toiset voivat sitten välittömästi vaihtaa näitä tokeneita. Tallettajat ansaitsevat pieniä maksuja tästä palvelusta."
   },
   "balanceClaimable": {
-    "title": "Vaatimiskelpoiset saldot",
+    "title": "Vaadittavissa oleva saldo",
     "original": "Claimable Balance",
-    "short": "Varatut rahat, jotka sinun on vielä hyväksyttävä.",
-    "desc": "Vaatimuksenalainen saldo on raha, joka on jo varattu sinulle, mutta sinun on vielä vaadittava se. Vasta kun hyväksyt sen, se siirtyy tilillesi."
+    "short": "Varattu raha, joka sinun täytyy vielä hyväksyä.",
+    "desc": "Vaadittava saldo on rahaa, joka on jo varattu sinulle, mutta sinun on vielä vaadittava se. Vasta kun hyväksyt sen, se siirtyy tilillesi."
   },
   "protocolUpdate": {
     "title": "Protokollipäivitys",
     "original": "Protocol Update",
-    "short": "Päivitetään verkon sääntöjä.",
-    "desc": "Protokollipäivitys on Stellar-verkon sääntöjen päivitys. Esimerkiksi uusia ominaisuuksia tai tietoturvamuutoksia. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
+    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "desc": "Protokollipäivitys on Stellarin verkon sääntöjen päivitys, kuten uusia ominaisuuksia tai turvallisuusmuutoksia. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Stellarin älysopimusjärjestelmä.",
-    "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on ohjelmakoodi lohkoketjussa. Koodi voi itsenäisesti varmistaa sääntöjä ja laukaista toimia ilman tarvetta pankille välissä."
+    "short": "Stellars Smart‑Contract‑System.",
+    "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on ohjelmakoodi lohkoketjussa. Koodi voi itsenäisesti varmistaa sääntöjen noudattamisen ja laukaista toimia ilman välikätenä toimivaa pankkia."
   },
-  "missingKey": "Puuttuva sanaston avain: {{detail}}",
   "multiSignature": {
     "title": "Multisignature (Multi-Signature)",
     "original": "Multi-Signature",
-    "short": "Useita allekirjoituksia vaaditaan; painot + kynnysarvo määrittävät hyväksynnän.",
-    "desc": "Moniallekirjoitusjärjestelyssä useiden avainten on allekirjoitettava ennen kuin toimenpide hyväksytään. Jokaisella allekirjoittajalla on painoarvo, ja summan on yllettävä vaadittuun kynnysarvoon. Tämä lisää turvallisuutta, koska yksi varastettu avain ei riitä."
+    "short": "Useita allekirjoituksia vaaditaan; painoarvot + kynnysarvo määrittävät vapautuksen.",
+    "desc": "Multisignature-järjestelyssä useiden avainten on allekirjoitettava ennen kuin toiminto on voimassa. Jokaisella allekirjoittajalla on painoarvo, ja summan on saavutettava vaadittu kynnysarvo. Tämä lisää turvallisuutta, koska yksi varastettu avain ei riitä."
   },
   "signer": {
-    "title": "Allekirjoittaja (Signer)",
+    "title": "Allekirjoittaja (Signatory)",
     "original": "Signer",
-    "short": "Julkinen avain painotuksella, osa tilin määrityksiä.",
-    "desc": "Allekirjoittaja on tiliin kuuluva julkinen avain, jolla on painoarvo. Sen allekirjoitus lasketaan osaksi vaadittavaa kynnysarvoa. Useat allekirjoittajat voivat yhdessä valtuuttaa tapahtuman."
+    "short": "Yleinen avain painotuksella, osa tilin asetuksia.",
+    "desc": "Allekirjoittaja on tiliin kuuluva julkinen avain, jolla on painoarvo. Sen allekirjoitus lasketaan kohti vaadittua kynnystä. Useat allekirjoittajat voivat yhdessä hyväksyä tapahtuman."
   },
   "thresholds": {
-    "title": "Kynnysarvot (Thresholds)",
+    "title": "Kynnykset (Thresholds)",
     "original": "Thresholds",
-    "short": "Rajat (low/med/high), jotka määrittävät tarvittavan painon summan.",
-    "desc": "Kynnykset määrittelevät, kuinka monta painotettua allekirjoitusta vaaditaan toimille: matala yksinkertaisille toiminnoille, keskitason maksuille, korkea kriittisille muutoksille. Allekirjoittajien painojen summan on ylitettävä vastaava kynnysarvo."
+    "short": "Rajoitukset (low/med/high), jotka määrittävät vaaditun painojen summan.",
+    "desc": "Kynnysarvot määrittelevät, kuinka monta painotettua allekirjoitusta tarvitaan toimenpiteisiin: matala yksinkertaisille toiminnoille, keskikorkea maksuille ja korkea kriittisille muutoksille. Allekirjoittajien painojen summan on vastattava kyseistä kynnysarvoa."
   },
   "masterWeight": {
-    "title": "Pääpaino (master_weight)",
+    "title": "Master-paino (master_weight)",
     "original": "master_weight",
-    "short": "Pääavaimen paino; määrittää, kuinka vahvasti pääavain otetaan huomioon.",
-    "desc": "Pääpaino on tilin pääavaimen paino. Korkea pääpaino mahdollistaa pääavaimen allekirjoittavan monia toimintoja itsenäisesti; matala arvo vaatii lisäallekirjoittajia."
+    "short": "Pääavaimen paino; säätelee, kuinka paljon pääavain vaikuttaa.",
+    "desc": "Pääpaino on tilin pääavaimen painoarvo. Korkea pääpaino mahdollistaa pääavaimen allekirjoittaa monia toimia yksin; matala arvo vaatii lisäallekirjoittajia."
   },
   "accountConfig": {
-    "title": "Tilin määritys (Account Configuration)",
+    "title": "Tilin asetusten määrittely (Account Configuration)",
     "original": "Account Configuration",
     "short": "Allekirjoittajien ja kynnysarvojen vuorovaikutus määrittää tilin turvallisuuden.",
-    "desc": "Tilin kokoonpano määrittää, mitkä allekirjoittajat ovat olemassa millä painotuksilla ja mitkä kynnykset soveltuvat. Allekirjoittajien tai kynnysten muutokset ovat kriittisiä turvallisuuden kannalta, sillä ne määrittävät, kuinka monta allekirjoitusta tarvitaan."
+    "desc": "Tilin kokoonpano määrittää, mitkä allekirjoittajat ovat olemassa ja millä painoarvoilla ne toimivat, sekä mitkä kynnykset ovat voimassa. Allekirjoittajien tai kynnyksien muutokset ovat turvallisuuskriittisiä, koska ne määrittävät, kuinka monta allekirjoitusta vaaditaan."
   },
-  "horizonHistory": {
-    "title": "Horisontin historia",
-    "original": "Horizon history depth",
-    "short": "Kuvaa, kuinka kauas taaksepäin julkisten Horizon-palvelimien tarjoama tapahtumahistoria ulottuu.",
-    "desc": "Die von der Stellar Development Foundation betriebenen öffentlichen Horizon-Server (Mainnet und Testnet) stellen nur eine begrenzte Historie zur Verfügung – derzeit ungefähr ein Jahr rückwirkend. Ältere Daten sind über diese kostenlosen Endpunkte nicht mehr abrufbar. Wenn du weiter in die Vergangenheit zurück musst, hast du im Wesentlichen zwei Optionen: (1) du betreibst einen eigenen Horizon-Node mit vollständiger History (inklusive History Archives), oder (2) du nutzt Drittanbieter- bzw. Bezahldienste, die historische Stellar-Daten langfristig speichern und zur Verfügung stellen.",
-    "seeAlso": "Olen koulutettu tietoihin lokakuuhun 2023 asti."
-  }
+  "missingKey": "Sanaston avainsana puuttuu: {{detail}}"
 }
