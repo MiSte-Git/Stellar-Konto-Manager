@@ -1342,7 +1342,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
       {reviewDialog.open && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[54] overflow-y-auto p-4">
-          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-lg my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-3">
               <h3 className="text-lg font-semibold">{t('common:payment.send.reviewTitle', 'Transaktion bestätigen')}</h3>
               <button
