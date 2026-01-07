@@ -1,103 +1,226 @@
 #!/usr/bin/env node
-/*
-  Cross-platform build launcher
-  - loads .env (root and backend/.env)
-  - sets VITE_BUILD_DATE
-  - runs frontend i18n ack and frontend build using npm
-  - uses Node APIs instead of shell-only tools
-*/
-const { spawn, spawnSync } = require('child_process');
-const path = require('path');
-const fs = require('fs');
-const dotenv = require('dotenv');
+const { spawn, spawnSync } = require("child_process");
+const fs = require("fs");
+const path = require("path");
+const dotenv = require("dotenv");
 
-const IS_WIN = process.platform === 'win32';
-const CMD_EXE = process.env.comspec || 'cmd.exe';
-
-function loadEnvFile(p) {
-  try {
-    if (fs.existsSync(p)) dotenv.config({ path: p });
-  } catch (e) {}
-}
-
-loadEnvFile(path.resolve(process.cwd(), '.env'));
-loadEnvFile(path.resolve(process.cwd(), 'backend', '.env'));
-
-const VITE_BUILD_DATE = new Date().toISOString();
-const env = Object.assign({}, process.env, { VITE_BUILD_DATE });
+const root = path.resolve(process.cwd());
+const isWindows = process.platform === "win32";
+const cmdExe = process.env.ComSpec || process.env.comspec || "cmd.exe";
 
 function npmCmd() {
-  return IS_WIN ? 'npm.cmd' : 'npm';
+  return isWindows ? "npm.cmd" : "npm";
 }
 
-function quoteForCmd(arg = '') {
-  if (!arg) return '""';
-  if (!/[ \t"]/u.test(arg)) return arg;
-  return `"${arg.replace(/(["\\])/g, '\\$1')}"`;
-}
-
-function spawnPortable(command, args = [], opts = {}) {
-  if (!IS_WIN) return spawn(command, args, opts);
-  const line = [command, ...args].map(quoteForCmd).join(' ');
-  return spawn(CMD_EXE, ['/d', '/s', '/c', line], opts);
-}
-
-function spawnPortableSync(command, args = [], opts = {}) {
-  if (!IS_WIN) return spawnSync(command, args, opts);
-  const line = [command, ...args].map(quoteForCmd).join(' ');
-  return spawnSync(CMD_EXE, ['/d', '/s', '/c', line], opts);
-}
-
-function checkNodeAndNpm() {
-  const min = [20, 0, 0];
-  const ver = (process.version || 'v0.0.0').replace(/^v/, '').split('.').map((n) => parseInt(n, 10) || 0);
-  for (let i = 0; i < min.length; i++) {
-    if ((ver[i] || 0) > min[i]) break;
-    if ((ver[i] || 0) < min[i]) {
-      console.error(`Node.js ${min.join('.')}+ is required. Current: ${process.version}`);
-      process.exit(1);
-    }
+function quoteForCmd(value) {
+  if (value === "") {
+    return '""';
   }
-  try {
-    const res = spawnPortableSync(npmCmd(), ['--version'], { stdio: 'ignore' });
-    let ok = !res.error && res.status === 0;
 
-    if (!ok) {
-      if (process.env.npm_execpath || process.env.npm_config_user_agent) {
+  if (!/[ \t"&^|<>]/.test(value)) {
+    return value;
+  }
+
+  return `"${value.replace(/"/g, '\\"')}"`;
+}
+
+function spawnPortable(command, args, options = {}) {
+  if (isWindows && options.shell === true) {
+    const joined = [command, ...args].map(quoteForCmd).join(" ");
+    return spawn(cmdExe, ["/d", "/s", "/c", joined], {
+      ...options,
+      windowsVerbatimArguments: true,
+      shell: false,
+    });
+  }
+
+  return spawn(command, args, options);
+}
+
+function spawnPortableSync(command, args, options = {}) {
+  if (isWindows && options.shell === true) {
+    const joined = [command, ...args].map(quoteForCmd).join(" ");
+    return spawnSync(cmdExe, ["/d", "/s", "/c", joined], {
+      ...options,
+      windowsVerbatimArguments: true,
+      shell: false,
+    });
+  }
+
+  return spawnSync(command, args, options);
+}
+
+function run(command, args, options = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawnPortable(command, args, {
+      stdio: "inherit",
+      ...options,
+    });
+    child.on("error", reject);
+    child.on("close", (code) => {
+      if (code === 0) {
+        resolve();
         return;
       }
-      console.error('`npm` not found or not working. Please install Node.js (includes npm) and ensure it is in your PATH.');
-      process.exit(1);
-    }
-  } catch (e) {
-    console.error('`npm` check failed:', e && e.message ? e.message : e);
-    process.exit(1);
-  }
-}
-
-checkNodeAndNpm();
-
-function run(cmd, args, opts = {}) {
-  return new Promise((resolve, reject) => {
-    const p = spawnPortable(cmd, args, Object.assign({ stdio: 'inherit' }, opts));
-    p.on('close', (code) => {
-      if (code === 0) resolve();
-      else reject(new Error('exit ' + code));
+      reject(new Error(`${command} exited with code ${code}`));
     });
-    p.on('error', reject);
   });
 }
 
-(async () => {
-  try {
-    const frontendDir = path.join(process.cwd(), 'frontend');
-    console.log('Running i18n ack (frontend)');
-    await run(npmCmd(), ['run', 'i18n:ack'], { cwd: frontendDir, env });
-    console.log('Building frontend');
-    await run(npmCmd(), ['run', 'build'], { cwd: frontendDir, env });
-    console.log('Build finished');
-  } catch (e) {
-    console.error('start-build failed:', e && e.message ? e.message : e);
+function runCapture(command, args, options = {}) {
+  return spawnPortableSync(command, args, {
+    encoding: "utf8",
+    ...options,
+  });
+}
+
+function loadEnvFile(filePath) {
+  if (!fs.existsSync(filePath)) {
+    return;
+  }
+
+  dotenv.config({ path: filePath });
+}
+
+function checkNodeAndNpm() {
+  const expected = parseInt(process.env.NODE_VERSION, 10);
+  const actual = parseInt(process.versions.node.split(".")[0], 10);
+
+  if (!Number.isNaN(expected) && expected !== actual) {
+    console.error(`Expected Node.js version ${expected}, but found ${actual}.`);
     process.exit(1);
   }
-})();
+
+  const npmVersion = runCapture(npmCmd(), ["--version"], {
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (npmVersion.status !== 0) {
+    console.error("npm is required but was not found.");
+    process.exit(1);
+  }
+}
+
+function resolveEnv(value, fallback) {
+  if (value === undefined || value === "") {
+    return fallback;
+  }
+  return value;
+}
+
+function cleanDist(distPath) {
+  if (!fs.existsSync(distPath)) {
+    return;
+  }
+
+  for (const entry of fs.readdirSync(distPath)) {
+    const entryPath = path.join(distPath, entry);
+    fs.rmSync(entryPath, { recursive: true, force: true });
+  }
+}
+
+function isGitRepo(cwd) {
+  const result = runCapture("git", ["rev-parse", "--is-inside-work-tree"], {
+    cwd,
+    stdio: ["ignore", "pipe", "ignore"],
+  });
+  return result.status === 0 && String(result.stdout).trim() === "true";
+}
+
+function countGermanLocaleChanges(cwd) {
+  if (!isGitRepo(cwd)) {
+    return 0;
+  }
+
+  const result = runCapture(
+    "git",
+    ["status", "--porcelain", "--", "frontend/src/locales/de"],
+    { cwd, stdio: ["ignore", "pipe", "ignore"] }
+  );
+  if (result.status !== 0) {
+    return 0;
+  }
+
+  return String(result.stdout)
+    .split("\n")
+    .filter((line) => line.trim() !== "").length;
+}
+
+async function main() {
+  loadEnvFile(path.join(root, ".env"));
+  loadEnvFile(path.join(root, "backend", ".env"));
+
+  checkNodeAndNpm();
+
+  if (process.env.PROD_API_URL && !process.env.VITE_BACKEND_URL) {
+    process.env.VITE_BACKEND_URL = process.env.PROD_API_URL;
+  }
+
+  process.env.I18N_AUTO_SYNC = resolveEnv(process.env.I18N_AUTO_SYNC, "1");
+  process.env.I18N_ENFORCE = resolveEnv(process.env.I18N_ENFORCE, "1");
+  process.env.I18N_PY_SYNC = resolveEnv(process.env.I18N_PY_SYNC, "");
+  process.env.BASE_REF = resolveEnv(process.env.BASE_REF, "origin/main");
+  process.env.I18N_ENFORCE_FORCE = resolveEnv(
+    process.env.I18N_ENFORCE_FORCE,
+    "0"
+  );
+
+  const frontendDir = path.join(root, "frontend");
+  if (!fs.existsSync(frontendDir)) {
+    console.error(`Frontend directory not found at: ${frontendDir}`);
+    process.exit(1);
+  }
+
+  const baseRef = process.env.BASE_REF;
+  const deChanges = countGermanLocaleChanges(root);
+  const deChangesFound = deChanges !== 0;
+
+  if (process.env.I18N_AUTO_SYNC === "1") {
+    const pySync = process.env.I18N_PY_SYNC;
+    if (pySync && fs.existsSync(pySync) && deChangesFound) {
+      const pyExec = spawnPortableSync("python3", ["--version"], {
+        stdio: "ignore",
+      }).status === 0
+        ? "python3"
+        : "python";
+      await run(pyExec, [pySync], { cwd: root });
+    }
+
+    await run(
+      npmCmd(),
+      ["run", "i18n:ack"],
+      {
+        cwd: frontendDir,
+        env: { ...process.env, BASE_REF: baseRef },
+        shell: false,
+      }
+    );
+  }
+
+  if (
+    process.env.I18N_ENFORCE === "1" &&
+    (deChangesFound || process.env.I18N_ENFORCE_FORCE === "1")
+  ) {
+    const nodeExec = process.execPath;
+    await run(nodeExec, ["scripts/i18n_stale_check.mjs"], {
+      cwd: root,
+      env: { ...process.env, BASE_REF: baseRef },
+    });
+    await run(nodeExec, ["scripts/i18n_phase2_ack.mjs"], {
+      cwd: root,
+      env: { ...process.env, BASE_REF: baseRef },
+    });
+  }
+
+  cleanDist(path.join(frontendDir, "dist"));
+
+  await run(npmCmd(), ["run", "build"], {
+    cwd: frontendDir,
+    env: process.env,
+    shell: false,
+  });
+}
+
+main().catch((error) => {
+  console.error(error.message || error);
+  process.exit(1);
+});
