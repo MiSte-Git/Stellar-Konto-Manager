@@ -20,7 +20,7 @@
     "express-rate-limit": "^6.7.0",
     "file-saver": "^2.0.5",
     "flag-icons": "^7.5.0",
-    "jspdf": "^3.0.1"
+    "jspdf": "^4.0.0"
   },
   "devDependencies": {
     "concurrently": "^9.2.0",
