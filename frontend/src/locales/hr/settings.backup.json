@@ -2,7 +2,7 @@
   "desc": "Izvezite ili uvezite podatke iz vašeg kviza (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Pokreni izvoz",
-    "fileName": "kviz-backup.json",
+    "fileName": "Kviz-sigurnosna-kopija.json",
     "success": "Izvoz kreiran"
   },
   "import": {
@@ -12,7 +12,7 @@
     "noFile": "Nijedna datoteka nije odabrana",
     "preview": {
       "stats": {
-        "achievements": "Značka: {{count}} kviz(e)",
+        "achievements": "Značka: {{count}} Kviz(e)",
         "progress": "Napredak: {{count}} Kviz(e)",
         "settings": "Postavke: {{count}} Kviz(e)"
       },

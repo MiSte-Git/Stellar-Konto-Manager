@@ -2,7 +2,7 @@
   "desc": "Exporter ou importer vos données de quiz (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Commencer l'exportation",
-    "fileName": "quiz-sauvegarde.json",
+    "fileName": "quiz-backup.json",
     "success": "Exportation créée"
   },
   "import": {

@@ -204,5 +204,275 @@
     "short": "De wisselwerking tussen ondertekenaars en drempels bepaalt de beveiliging van de account.",
     "desc": "De accountconfiguratie specificeert welke ondertekenaars bestaan met welke gewichten en welke drempels van toepassing zijn. Wijzigingen in ondertekenaars of drempels zijn van cruciaal belang voor de beveiliging, omdat zij bepalen hoeveel handtekeningen vereist zijn."
   },
-  "missingKey": "Ontbrekend woordenlijst item: {{detail}}"
+  "missingKey": "Ontbrekend woordenlijst item: {{detail}}",
+  "distributedNetwork": {
+    "title": "Gedistribueerd netwerk",
+    "original": "Distributed Network",
+    "short": "Veel computers werken samen in plaats van dat één alles bepaalt.",
+    "desc": "Stel je een markt voor waar veel handelaren dezelfde regels kennen. Als één deelnemer wegvalt, blijft het functioneren omdat anderen het kunnen overnemen. Dit houdt het systeem stabiel en moeilijker te manipuleren."
+  },
+  "node": {
+    "title": "Knooppunt",
+    "original": "Node",
+    "short": "Een enkele deelnemer in het netwerk.",
+    "desc": "Een node is als een boekhouder die een kopie van de gegevens bijhoudt. Het controleert nieuwe invoer en stuurt deze door. Veel nodes samen maken het netwerk betrouwbaar."
+  },
+  "block": {
+    "title": "Blok",
+    "original": "Block",
+    "short": "Een blok is een pakket van items.",
+    "desc": "Als een pagina in een grootboek verzamelt een blok meerdere transacties. Zodra het vol is, wordt het afgerond en aan de keten toegevoegd. Zo wordt de geschiedenis stap voor stap gecreëerd."
+  },
+  "consensusMechanism": {
+    "title": "Consensusmechanisme",
+    "original": "Consensus Mechanism",
+    "short": "Regels waarmee iedereen instemt over geldige inzendingen.",
+    "desc": "Het is alsof een groep beslist welke bon geldig is. Dit voorkomt dat iemand stiekem wijzigingen aanbrengt. Verschillende blockchains gebruiken verschillende methoden, maar het doel is altijd consensus."
+  },
+  "finality": {
+    "title": "Finaliteit / Definitiviteit",
+    "original": "Finality",
+    "short": "De garantie dat een transactie definitief is.",
+    "desc": "Wanneer iets definitief is, voelt het als een vastgelegde bankafschrift. Je hoeft niet langer te verwachten dat het wordt teruggedraaid. Dit wekt vertrouwen."
+  },
+  "immutability": {
+    "title": "Onveranderlijkheid",
+    "original": "Immutability",
+    "short": "Invoer mag niet met terugwerkende kracht worden gewijzigd.",
+    "desc": "Net als bij een kasboek: Achteraf wissen valt op. Wijzigingen worden als een nieuwe invoer toegevoegd, niet overschreven. Hierdoor wordt de geschiedenis traceerbaar."
+  },
+  "decentralization": {
+    "title": "Decentralisatie",
+    "original": "Decentralization",
+    "short": "Geen centrale autoriteit controleert alles.",
+    "desc": "In plaats van een enkele kluis zijn er veel kluizen met dezelfde informatie. Beslissingen ontstaan uit de interactie van veel deelnemers. Dit maakt het systeem robuuster."
+  },
+  "publicBlockchain": {
+    "title": "Openbare blockchain",
+    "original": "Public Blockchain",
+    "short": "Open voor iedereen die wil deelnemen.",
+    "desc": "Iedereen kan deelnemen en de gegevens bekijken, vergelijkbaar met een openbaar mededelingenbord. Dit verhoogt de transparantie, maar elke actie is voor iedereen zichtbaar. Regels zorgen ervoor dat niemand kan valsspelen."
+  },
+  "privateBlockchain": {
+    "title": "Private blockchain",
+    "original": "Private Blockchain",
+    "short": "Toegang alleen voor geselecteerde deelnemers.",
+    "desc": "Zoals een bedrijfsboekhouding die alleen door werknemers mag worden bekeken. Dit kan sneller en gecontroleerder zijn, maar het is minder open. Vertrouwen wordt hier opgebouwd door de organisatie."
+  },
+  "permissionlessBlockchain": {
+    "title": "Toestemmingsloze blockchain",
+    "original": "Permissionless Blockchain",
+    "short": "Iedereen mag deelnemen zonder toestemming.",
+    "desc": "Zoals een markt waar iedereen aan kan deelnemen. Dit verlaagt de drempels, maar er kunnen meer regels nodig zijn om eerlijk te blijven. Voorbeelden hiervan zijn veel openbare blockchains."
+  },
+  "permissionedBlockchain": {
+    "title": "Toegestane Blockchain",
+    "original": "Permissioned Blockchain",
+    "short": "Deelname alleen met toestemming.",
+    "desc": "Zoals een club met een ledenlijst. Dit kan duidelijke verantwoordelijkheden creëren. Het is echter minder open."
+  },
+  "seedPhrase": {
+    "title": "Herstellingstheorema",
+    "original": "Seed Phrase / Recovery Phrase",
+    "short": "Een woordenlijst die je kunt gebruiken om je portemonnee te herstellen.",
+    "desc": "Zij is als de reservessleutel voor je kluis. Degene die hem heeft, kan je portemonnee herstellen. Daarom moet het nooit online worden opgeslagen."
+  },
+  "selfCustody": {
+    "title": "Zelfbeheer",
+    "original": "Self-Custody",
+    "short": "Je houdt je sleutels zelf.",
+    "desc": "Net zoals contant geld in je eigen kluis hebben: je hebt controle, maar ook de verantwoordelijkheid. Als je de toegang verliest, kan niemand je helpen. Voor beginners is voorzichtigheid bijzonder belangrijk."
+  },
+  "custodian": {
+    "title": "Bewaarplaatsbeheerder",
+    "original": "Custodian",
+    "short": "Een dienstverlener bewaart uw sleutels voor u.",
+    "desc": "Zoals een bank die uw rekening beheert. Het kan handig zijn, maar het neemt uw volledige controle weg. U moet erop vertrouwen."
+  },
+  "hardwareWallet": {
+    "title": "Hardware wallet",
+    "original": "Hardware Wallet",
+    "short": "Een fysiek apparaat voor je sleutels.",
+    "desc": "Als een kleine kluis in je zak. De sleutels blijven op het apparaat en gaan niet het internet op. Dit beschermt tegen veel online aanvallen."
+  },
+  "hotWallet": {
+    "title": "Hot wallet",
+    "original": "Hot Wallet",
+    "short": "Een portemonnee met internettoegang.",
+    "desc": "Als een portemonnee in de jas: handig maar kwetsbaarder. Geschikt voor kleine bedragen en dagelijks gebruik. Niet ideaal voor grote bedragen."
+  },
+  "coldWallet": {
+    "title": "Koude portemonnee",
+    "original": "Cold Wallet",
+    "short": "Een portemonnee zonder internetverbinding.",
+    "desc": "Als een kluis in de kelder. Zeer veilig, maar onpraktisch voor dagelijks gebruik. Geschikt voor langdurige opslag."
+  },
+  "cryptocurrency": {
+    "title": "Cryptocurrency",
+    "original": "Cryptocurrency",
+    "short": "Digitale valuta die rechtstreeks tussen mensen wordt verzonden.",
+    "desc": "Zoals digitaal contant geld, maar zonder een bank. Je kunt het rechtstreeks naar anderen sturen. De waarde kan fluctueren."
+  },
+  "altcoin": {
+    "title": "Altcoin",
+    "original": "Altcoin",
+    "short": "Alle cryptovaluta's behalve Bitcoin.",
+    "desc": "Net als andere merken op de markt naast de marktleider. Sommige zijn bekend, veel zijn klein. De kwaliteit en het risico variëren sterk."
+  },
+  "stablecoin": {
+    "title": "Stablecoin",
+    "original": "Stablecoin",
+    "short": "Cryptocurrency met de meest stabiele waarde.",
+    "desc": "Als digitaal geld dat is gekoppeld aan een conventionele valuta. Dit maakt de prijs stabieler. Toch is vertrouwen in de aanbieder belangrijk."
+  },
+  "utilityToken": {
+    "title": "Gebruikstoken",
+    "original": "Utility Token",
+    "short": "Een token waarmee men een dienst kan gebruiken.",
+    "desc": "Zoals een waardebon op een marktstalletje. Het biedt toegang of een korting. De waarde hangt af van het nut van de dienst."
+  },
+  "securityToken": {
+    "title": "Beveiligingstokens",
+    "original": "Security Token",
+    "short": "Een token met beveiligingskenmerken.",
+    "desc": "Net als een aandelenbewijs. Het kan rechten of winsten beloven. Vaak zijn er strengere regels van toepassing."
+  },
+  "governanceToken": {
+    "title": "Governance-token",
+    "original": "Governance Token",
+    "short": "Een token voor deelname aan het besluitvormingsproces over regels.",
+    "desc": "Zoals een stemkaart in een club. Degenen die tokens hebben, kunnen stemmen over de regels. Dat betekent verantwoordelijkheid."
+  },
+  "liquidityToken": {
+    "title": "Liquiditeitstokens / LP-tokens",
+    "original": "Liquidity Token",
+    "short": "Een token voor geleverde liquiditeit.",
+    "desc": "Het is als een bewijs dat je geld hebt bijgedragen aan een gezamenlijk fonds. Je ontvangt naar verhouding vergoedingen. De waarde kan fluctueren."
+  },
+  "nft": {
+    "title": "Niet-fungibele token / NFT",
+    "original": "Non-Fungible Token",
+    "short": "Een uniek digitaal token.",
+    "desc": "Net als een gesigneerd verzamelobject. Het vertegenwoordigt iets unieks, geen uitwisselbare munt. De waarde hangt af van de vraag."
+  },
+  "cbdc": {
+    "title": "Digitale valuta van de centrale bank / CBDC",
+    "original": "Central Bank Digital Currency",
+    "short": "Digitale valuta uitgegeven door een centrale bank.",
+    "desc": "Als digitale staatliche Währung. Het zou officieel geld zijn, maar dan in digitale vorm. Details zijn afhankelijk van het specifieke land."
+  },
+  "transactionStatus": {
+    "title": "Transactiestatus",
+    "original": "Transaction Status",
+    "short": "Geeft aan of een transactie nog openstaat of al is voltooid.",
+    "desc": "Net zoals het volgen van pakketten: in behandeling, bevestigd of mislukt. Hiermee kun je zien of alles soepel is verlopen. Soms duurt het even."
+  },
+  "gasFee": {
+    "title": "Gaskosten",
+    "original": "Gas Fee",
+    "short": "Een vergoeding voor rekenwerk in het netwerk.",
+    "desc": "Zoals een verwerkingsvergoeding bij een marktkraam. Hoe drukker het is, hoe duurder het kan worden. Niet elke blockchain noemt het gas."
+  },
+  "onChain": {
+    "title": "On-Chain",
+    "original": "On-Chain",
+    "short": "Komt direct op de blockchain voor.",
+    "desc": "Zoals een directe boeking in het kasboek. Iedereen kan het zien. Het is transparant, maar vaak langzamer of duurder."
+  },
+  "offChain": {
+    "title": "Off-chain",
+    "original": "Off-Chain",
+    "short": "Vindt off-chain plaats.",
+    "desc": "Zoals een mondelinge overeenkomst die later in het grootboek wordt vastgelegd. Dit kan sneller en kosteneffectiever zijn. Vertrouwen speelt hier een grotere rol."
+  },
+  "liquidity": {
+    "title": "Liquiditeit",
+    "original": "Liquidity",
+    "short": "Toont hoe gemakkelijk iets kan worden afgehandeld.",
+    "desc": "Het aantal kopers en verkopers. Hoge liquiditeit betekent dat je snel kunt handelen zonder de prijs aanzienlijk te beïnvloeden. Lage liquiditeit voelt traag aan."
+  },
+  "volatility": {
+    "title": "Volatiliteit",
+    "original": "Volatility",
+    "short": "Hoeveel de prijzen fluctueren.",
+    "desc": "Net als een markt met wilde prijsbewegingen. Hoge volatiliteit betekent kansen, maar ook risico. Voor beginners kan dit stressvol zijn."
+  },
+  "marketCap": {
+    "title": "Marktkapitalisatie",
+    "original": "Market Capitalization",
+    "short": "De totale waarde van een munt of project.",
+    "desc": "Zoals de totale waarde van alle goederen in een markt. Deze wordt ruwweg berekend door de prijs te vermenigvuldigen met de circulerende hoeveelheid. Grote waarden lijken misschien stabieler, maar dat zijn ze niet automatisch."
+  },
+  "circulatingSupply": {
+    "title": "Circulatiehoeveelheid",
+    "original": "Circulating Supply",
+    "short": "Het aantal munten dat daadwerkelijk in omloop is.",
+    "desc": "Zoals het aantal munten dat daadwerkelijk op de markt is. Niet alles wat bestaat is al in omloop. Dit beïnvloedt de prijs."
+  },
+  "priceDiscovery": {
+    "title": "Prijzen",
+    "original": "Price Discovery",
+    "short": "De prijs wordt bepaald door vraag en aanbod.",
+    "desc": "Net als op de markt: vraag en aanbod ontmoeten elkaar. Veel kleine beslissingen bepalen de prijs. Er is geen vaste schakelaar."
+  },
+  "spread": {
+    "title": "Handelsbereik",
+    "original": "Spread",
+    "short": "Het verschil tussen de aanschafprijs en de verkoopprijs.",
+    "desc": "Zoals de handelsmarge in een winkel. Hoe kleiner het verschil, des te eerlijker voelt het aan. Grote marges maken handel duurder."
+  },
+  "phishing": {
+    "title": "Phishing",
+    "original": "Phishing",
+    "short": "Fraude via nepnieuws of websites.",
+    "desc": "Zoals een nep-bank-e-mail die je in een val lokt. Het doel is dat je je inloggegevens prijsgeeft. Klik nooit blindelings op links."
+  },
+  "smartContract": {
+    "title": "Slim contract",
+    "original": "Smart Contract",
+    "short": "Een programma dat automatisch vaste regels uitvoert.",
+    "desc": "Als een automaat die reageert volgens vaste regels. Het voert overeenkomsten automatisch uit. Dit bespaart vertrouwen, maar vereist duidelijke regels."
+  },
+  "programmableLogic": {
+    "title": "Geautomatiseerde regels",
+    "original": "Programmable Logic",
+    "short": "Regels die automatisch worden uitgevoerd wanneer er iets gebeurt.",
+    "desc": "Zoals een if-then-regel in een automaat. Dit maakt het mogelijk om processen te beheersen zonder elke keer handmatige tussenkomst. Op deze manier worden eenvoudige digitale contracten opgesteld."
+  },
+  "networkCongestion": {
+    "title": "Netwerkgebruik",
+    "original": "Network Congestion",
+    "short": "Wanneer een groot aantal transacties tegelijkertijd in behandeling is.",
+    "desc": "Net als verkeersopstoppingen op de snelweg. Transacties duren langer en de kosten kunnen stijgen. Bij minder verkeer versnelt het weer."
+  },
+  "blockchainTypes": {
+    "title": "Soorten Blockchain",
+    "original": "Blockchain Types",
+    "short": "Er zijn verschillende soorten blockchains met uiteenlopende doelstellingen.",
+    "desc": "Zoals verschillende voertuigtypen voor verschillende routes. Sommige zijn gebouwd voor betalingen, andere voor programma's. Het is de moeite waard om het doel te kennen."
+  },
+  "paymentBlockchain": {
+    "title": "Betalingsblockchain",
+    "original": "Payment Blockchain",
+    "short": "Een blockchain ontworpen voor snelle betalingen.",
+    "desc": "Als een snelle kasboek. De focus ligt op goedkope en snelle overboekingen. Eigenschappen worden vaak opzettelijk eenvoudig gehouden."
+  },
+  "smartContractBlockchain": {
+    "title": "Slim contract blockchain",
+    "original": "Smart Contract Blockchain",
+    "short": "Een blockchain die programma's en apps kan uitvoeren.",
+    "desc": "Zoals een markt met veel machines. Naast betalingen kunnen daar ook regels en apps draaien. Dit maakt ze veelzijdig, maar vaak ook complexer."
+  },
+  "blockchainComparison": {
+    "title": "Blockchain-vergelijking",
+    "original": "Blockchain Comparison",
+    "short": "Een vergelijking onthult de sterke en zwakke punten van verschillende blockchains.",
+    "desc": "Zoals het vergelijken van banken of markten: Elk heeft zijn sterke en zwakke punten. Belangrijke aspecten zijn kosten, snelheid en veiligheid. Er is geen perfect systeem voor alles."
+  },
+  "stellarVsBitcoinVsEthereum": {
+    "title": "Stellar vs. Bitcoin vs. Ethereum",
+    "original": "Stellar vs. Bitcoin vs. Ethereum",
+    "short": "Drie bekende blockchains met verschillende focusgebieden.",
+    "desc": "Bitcoin is als digitaal goud en wordt vaak gezien als een waardereserve. Ethereum is als een platform voor programma's en apps. Stellar richt zich sterk op betaalbare betalingen."
+  }
 }

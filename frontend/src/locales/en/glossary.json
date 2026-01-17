@@ -204,5 +204,275 @@
     "short": "The interplay of signers and thresholds determines the security of the account.",
     "desc": "The account configuration specifies which signers exist with which weights and what thresholds apply. Changes to signers or thresholds are security-critical because they determine how many signatures are required."
   },
-  "missingKey": "Missing glossary key: {{detail}}"
+  "missingKey": "Missing glossary key: {{detail}}",
+  "distributedNetwork": {
+    "title": "Distributed network",
+    "original": "Distributed Network",
+    "short": "Many computers work together instead of one deciding everything.",
+    "desc": "Imagine a market where many traders know the same rules. If one participant drops out, it continues to function because others can take over. This keeps the system stable and harder to manipulate."
+  },
+  "node": {
+    "title": "Node",
+    "original": "Node",
+    "short": "A single participant in the network.",
+    "desc": "A node is like a ledger keeper that holds a copy of the data. It verifies new entries and forwards them. Many nodes together make the network reliable."
+  },
+  "block": {
+    "title": "Block",
+    "original": "Block",
+    "short": "A block is a package of entries.",
+    "desc": "Like a page in a ledger, a block collects multiple transactions. Once it is full, it is finalized and added to the chain. This is how the history is created step by step."
+  },
+  "consensusMechanism": {
+    "title": "Consensus mechanism",
+    "original": "Consensus Mechanism",
+    "short": "Rules by which everyone agrees on valid entries.",
+    "desc": "It's like when a group decides which receipt is valid. This prevents anyone from secretly making changes. Different blockchains use different methods, but the goal is always consensus."
+  },
+  "finality": {
+    "title": "Finality / Definitiveness",
+    "original": "Finality",
+    "short": "The assurance that a transaction is final.",
+    "desc": "When something is final, it feels like a firmly booked bank statement. You no longer have to expect it to be reversed. This creates trust."
+  },
+  "immutability": {
+    "title": "Immutability",
+    "original": "Immutability",
+    "short": "Entries should not be altered retroactively.",
+    "desc": "Just like with a cash book: Erasing afterward is noticeable. Changes are added as a new entry, not overwritten. This makes the history traceable."
+  },
+  "decentralization": {
+    "title": "Decentralization",
+    "original": "Decentralization",
+    "short": "No central authority controls everything.",
+    "desc": "Instead of a single safe, there are many safes with the same information. Decisions arise from the interaction of many participants. This makes the system more robust."
+  },
+  "publicBlockchain": {
+    "title": "Public blockchain",
+    "original": "Public Blockchain",
+    "short": "Open to anyone who wishes to participate.",
+    "desc": "Anyone can participate and view the data, similar to a public notice board. This increases transparency, but every action is visible to everyone. Rules ensure that no one can cheat."
+  },
+  "privateBlockchain": {
+    "title": "Private blockchain",
+    "original": "Private Blockchain",
+    "short": "Access for selected participants only.",
+    "desc": "Like a company ledger that only employees are allowed to see. This can be quicker and more controlled, but it is less open. Trust is built here through the organization."
+  },
+  "permissionlessBlockchain": {
+    "title": "Permissionless blockchain",
+    "original": "Permissionless Blockchain",
+    "short": "Everyone is allowed to participate without permission.",
+    "desc": "Like a market that anyone can join. This lowers barriers but might require more rules to remain fair. Examples include many public blockchains."
+  },
+  "permissionedBlockchain": {
+    "title": "Permissioned Blockchain",
+    "original": "Permissioned Blockchain",
+    "short": "Participation by permission only.",
+    "desc": "Like a club with a membership list. This can create clear responsibilities. However, it is less open."
+  },
+  "seedPhrase": {
+    "title": "Restoration theorem",
+    "original": "Seed Phrase / Recovery Phrase",
+    "short": "A word list you can use to restore your wallet.",
+    "desc": "She is like the backup key to your safe. Whoever has it can restore your wallet. That's why it should never be stored online."
+  },
+  "selfCustody": {
+    "title": "Self-custody",
+    "original": "Self-Custody",
+    "short": "You keep your keys yourself.",
+    "desc": "Like having cash in your own safe: you have control, but also the responsibility. If you lose access, no one can help you. For beginners, caution is especially important."
+  },
+  "custodian": {
+    "title": "Custodian",
+    "original": "Custodian",
+    "short": "A service provider holds your keys for you.",
+    "desc": "Like a bank that manages your account. It can be convenient, but it takes away your full control. You have to trust it."
+  },
+  "hardwareWallet": {
+    "title": "Hardware wallet",
+    "original": "Hardware Wallet",
+    "short": "A physical device for your keys.",
+    "desc": "Like a small safe in your pocket. The keys remain on the device and do not go onto the internet. This protects against many online attacks."
+  },
+  "hotWallet": {
+    "title": "Hot wallet",
+    "original": "Hot Wallet",
+    "short": "A wallet with internet access.",
+    "desc": "Like a wallet in the jacket: convenient but more vulnerable. Suitable for small amounts and everyday use. Not ideal for large sums."
+  },
+  "coldWallet": {
+    "title": "Cold wallet",
+    "original": "Cold Wallet",
+    "short": "A wallet without an internet connection.",
+    "desc": "Like a safe in the basement. Very secure but impractical for everyday use. Suitable for long-term storage."
+  },
+  "cryptocurrency": {
+    "title": "Cryptocurrency",
+    "original": "Cryptocurrency",
+    "short": "Digital currency that is sent directly between people.",
+    "desc": "Like digital cash, but without a bank. You can send it directly to others. The value can fluctuate."
+  },
+  "altcoin": {
+    "title": "Altcoin",
+    "original": "Altcoin",
+    "short": "All cryptocurrencies except Bitcoin.",
+    "desc": "Like other brands in the market besides the industry leader. Some are well-known, many are small. Quality and risk vary greatly."
+  },
+  "stablecoin": {
+    "title": "Stablecoin",
+    "original": "Stablecoin",
+    "short": "Cryptocurrency with the most stable value.",
+    "desc": "Like digital money that is pegged to a conventional currency. This makes its price more stable. Nevertheless, trust in the provider is important."
+  },
+  "utilityToken": {
+    "title": "Usage token",
+    "original": "Utility Token",
+    "short": "A token with which one can use a service.",
+    "desc": "Like a voucher at a market stall. It provides access or a discount. Its value depends on the usefulness of the service."
+  },
+  "securityToken": {
+    "title": "Security tokens",
+    "original": "Security Token",
+    "short": "A token with security characteristics.",
+    "desc": "Like a share certificate. It can promise rights or profits. Stricter rules often apply to it."
+  },
+  "governanceToken": {
+    "title": "Governance token",
+    "original": "Governance Token",
+    "short": "A token for participating in decision-making about rules.",
+    "desc": "Like a voting card in a club. Those who have tokens can vote on rules. That means responsibility."
+  },
+  "liquidityToken": {
+    "title": "Liquidity tokens / LP tokens",
+    "original": "Liquidity Token",
+    "short": "A token for provided liquidity.",
+    "desc": "It's like a receipt that you've contributed money to a joint fund. You receive proportional fees. The value can fluctuate."
+  },
+  "nft": {
+    "title": "Non-fungible token / NFT",
+    "original": "Non-Fungible Token",
+    "short": "A unique digital token.",
+    "desc": "Like a signed collectible. It represents something unique, not an interchangeable coin. The value depends on demand."
+  },
+  "cbdc": {
+    "title": "Central Bank Digital Currency / CBDC",
+    "original": "Central Bank Digital Currency",
+    "short": "Digital currency issued by a central bank.",
+    "desc": "Like digital cash from the state. It would be official money, just in digital form. Details depend on the specific country."
+  },
+  "transactionStatus": {
+    "title": "Transaction status",
+    "original": "Transaction Status",
+    "short": "Indicates whether a transaction is still open or already completed.",
+    "desc": "Like package tracking: pending, confirmed, or failed. This allows you to see if everything went smoothly. Sometimes it takes a little time."
+  },
+  "gasFee": {
+    "title": "Gas fee",
+    "original": "Gas Fee",
+    "short": "A fee for computational work in the network.",
+    "desc": "Like a processing fee at the market stall. The busier it is, the more expensive it can become. Not every blockchain calls it gas."
+  },
+  "onChain": {
+    "title": "On-Chain",
+    "original": "On-Chain",
+    "short": "Occurs directly on the blockchain.",
+    "desc": "Like an entry directly into the cash book. Everyone can see it. It's transparent, but often slower or more expensive."
+  },
+  "offChain": {
+    "title": "Off-chain",
+    "original": "Off-Chain",
+    "short": "Occurs off-chain.",
+    "desc": "Like an oral agreement that later gets recorded in the ledger. This can be faster and more cost-effective. Trust plays a bigger role here."
+  },
+  "liquidity": {
+    "title": "Liquidity",
+    "original": "Liquidity",
+    "short": "Shows how easily something can be handled.",
+    "desc": "The number of buyers and sellers. High liquidity means you can trade quickly without significantly affecting the price. Low liquidity feels sluggish."
+  },
+  "volatility": {
+    "title": "Volatility",
+    "original": "Volatility",
+    "short": "How much prices fluctuate.",
+    "desc": "Like a market with wild price swings. High volatility means opportunities, but also risk. For beginners, this can be stressful."
+  },
+  "marketCap": {
+    "title": "Market capitalization",
+    "original": "Market Capitalization",
+    "short": "The total value of a coin or project.",
+    "desc": "Like the total value of all goods in a market. It is roughly calculated by multiplying price by circulating quantity. Large values may seem more stable, but they are not automatically so."
+  },
+  "circulatingSupply": {
+    "title": "Circulation quantity",
+    "original": "Circulating Supply",
+    "short": "The amount of coins that are actually in circulation.",
+    "desc": "Like the number of coins that are actually on the market. Not everything that exists is already in circulation. This influences the price."
+  },
+  "priceDiscovery": {
+    "title": "Pricing",
+    "original": "Price Discovery",
+    "short": "The price is determined by supply and demand.",
+    "desc": "Just like in the market: supply and demand meet. Many small decisions determine the price. There is no fixed switch."
+  },
+  "spread": {
+    "title": "Trading range",
+    "original": "Spread",
+    "short": "The difference between the purchase price and the selling price.",
+    "desc": "Like the trading range in a store. The smaller the difference, the fairer it feels. Large spreads make trades more expensive."
+  },
+  "phishing": {
+    "title": "Phishing",
+    "original": "Phishing",
+    "short": "Fraud through fake news or websites.",
+    "desc": "Like a fake bank email that lures you into a trap. The goal is for you to give up your login credentials. Never click on links blindly."
+  },
+  "smartContract": {
+    "title": "Smart contract",
+    "original": "Smart Contract",
+    "short": "A program that automatically executes fixed rules.",
+    "desc": "Like an automaton that reacts according to fixed rules. It executes agreements automatically. This saves trust but requires clear rules."
+  },
+  "programmableLogic": {
+    "title": "Automated rules",
+    "original": "Programmable Logic",
+    "short": "Rules that automatically execute when something happens.",
+    "desc": "Like an if-then rule in an automaton. This allows processes to be controlled without manual intervention each time. This is how simple digital contracts are created."
+  },
+  "networkCongestion": {
+    "title": "Network utilization",
+    "original": "Network Congestion",
+    "short": "When a large number of transactions are pending simultaneously.",
+    "desc": "Like traffic jams on the highway. Transactions take longer, and fees may increase. With less traffic, it speeds up again."
+  },
+  "blockchainTypes": {
+    "title": "Types of Blockchain",
+    "original": "Blockchain Types",
+    "short": "There are different types of blockchains with various objectives.",
+    "desc": "Like different vehicle types for different routes. Some are built for payments, others for programs. It's worth knowing the purpose."
+  },
+  "paymentBlockchain": {
+    "title": "Payment blockchain",
+    "original": "Payment Blockchain",
+    "short": "A blockchain designed for fast payments.",
+    "desc": "Like a quick cash ledger. The focus is on cheap and fast transfers. Features are often intentionally kept simple."
+  },
+  "smartContractBlockchain": {
+    "title": "Smart contract blockchain",
+    "original": "Smart Contract Blockchain",
+    "short": "A blockchain that can run programs and apps.",
+    "desc": "Like a market with many machines. In addition to payments, rules and apps can run there. This makes them versatile, but often more complex."
+  },
+  "blockchainComparison": {
+    "title": "Blockchain comparison",
+    "original": "Blockchain Comparison",
+    "short": "A comparison reveals the strengths and weaknesses of different blockchains.",
+    "desc": "Like comparing banks or markets: Each has strengths and weaknesses. Important aspects are cost, speed, and security. There is no perfect system for everything."
+  },
+  "stellarVsBitcoinVsEthereum": {
+    "title": "Stellar vs. Bitcoin vs. Ethereum",
+    "original": "Stellar vs. Bitcoin vs. Ethereum",
+    "short": "Three well-known blockchains with different focuses.",
+    "desc": "Bitcoin is like digital gold and is often viewed as a store of value. Ethereum is like a platform for programs and apps. Stellar is strongly focused on affordable payments."
+  }
 }

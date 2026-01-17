@@ -204,5 +204,275 @@
     "short": "Međudjelovanje potpisnika i pragova određuje sigurnost računa.",
     "desc": "Konfiguracija računa navodi koji potpisnici postoje s kojim težinama i koji pragovi se primjenjuju. Promjene potpisnika ili pragova su kritične za sigurnost jer određuju koliko je potpisa potrebno."
   },
-  "missingKey": "Nedostaje ključ iz glosara: {{detail}}"
+  "missingKey": "Nedostaje ključ iz glosara: {{detail}}",
+  "distributedNetwork": {
+    "title": "Distribuirana mreža",
+    "original": "Distributed Network",
+    "short": "Mnoga računala rade zajedno umjesto da jedno odlučuje o svemu.",
+    "desc": "Zamislite tržište na kojem mnogi trgovci poznaju ista pravila. Ako jedan sudionik odustane, tržište i dalje funkcionira jer drugi mogu preuzeti njegovo mjesto. To održava sustav stabilnim i teže ga je manipulirati."
+  },
+  "node": {
+    "title": "Čvor",
+    "original": "Node",
+    "short": "Jedan sudionik u mreži.",
+    "desc": "Čvor je poput knjigovođe koji drži kopiju podataka. Provjerava nove unose i prosljeđuje ih dalje. Mnogi čvorovi zajedno čine mrežu pouzdanom."
+  },
+  "block": {
+    "title": "Blok",
+    "original": "Block",
+    "short": "Blok je paket unosa.",
+    "desc": "Kao stranica u knjizi računa, blok prikuplja više transakcija. Kada se ispuni, finalizira se i dodaje lancu. Ovako se povijest stvara korak po korak."
+  },
+  "consensusMechanism": {
+    "title": "Konsenzusni mehanizam",
+    "original": "Consensus Mechanism",
+    "short": "Pravila s kojima se svi slažu oko valjanih unosa.",
+    "desc": "To je kao kada skupina odlučuje koji je račun valjan. Ovo sprječava bilo koga da tajno izvrši promjene. Različiti blockchaini koriste različite metode, ali cilj je uvijek konsenzus."
+  },
+  "finality": {
+    "title": "Finalnost / Definitivnost",
+    "original": "Finality",
+    "short": "Jamstvo da je transakcija konačna.",
+    "desc": "Kad je nešto konačno, to djeluje kao čvrsta potvrda bankovnog stanja. Više ne morate očekivati da će biti obrnuto. To stvara povjerenje."
+  },
+  "immutability": {
+    "title": "Neprenosivost",
+    "original": "Immutability",
+    "short": "Unosi se ne smiju retroaktivno mijenjati.",
+    "desc": "Baš kao kod blagajničke knjige: Brisanje naknadno je primjetno. Promjene se dodaju kao novi unos, a ne prepisuju. To čini povijest pratljivom."
+  },
+  "decentralization": {
+    "title": "Decentralizacija",
+    "original": "Decentralization",
+    "short": "Nema središnje vlasti koja kontrolira sve.",
+    "desc": "Umjesto jednog sefa, postoji mnogo sefova s istim informacijama. Odluke proizlaze iz interakcije mnogih sudionika. To čini sustav robusnijim."
+  },
+  "publicBlockchain": {
+    "title": "Javna blockchain",
+    "original": "Public Blockchain",
+    "short": "Otvoreno za sve koji žele sudjelovati.",
+    "desc": "Svatko može sudjelovati i pregledavati podatke, slično kao na javnoj oglasnoj ploči. To povećava transparentnost, ali svaka radnja je vidljiva svima. Pravila osiguravaju da nitko ne može varati."
+  },
+  "privateBlockchain": {
+    "title": "Privatni blockchain",
+    "original": "Private Blockchain",
+    "short": "Pristup samo za odabrane sudionike.",
+    "desc": "Kao knjiga poslovanja koju smiju vidjeti samo zaposlenici. Ovo može biti brže i kontroliranije, ali je manje otvoreno. Povjerenje se ovdje gradi kroz organizaciju."
+  },
+  "permissionlessBlockchain": {
+    "title": "Blockchain bez dozvole",
+    "original": "Permissionless Blockchain",
+    "short": "Svi smiju sudjelovati bez dozvole.",
+    "desc": "Poput tržišta kojem se svatko može pridružiti. Ovo snižava prepreke, ali može zahtijevati više pravila kako bi ostalo pošteno. Primjeri uključuju mnoge javne blockchainove."
+  },
+  "permissionedBlockchain": {
+    "title": "Dozvoljena blockchain (blockchain s pristupom ograničenim dozvolama)",
+    "original": "Permissioned Blockchain",
+    "short": "Sudjelovanje samo uz dopuštenje.",
+    "desc": "Kao klub s popisom članova. Ovo može stvoriti jasne odgovornosti. Međutim, manje je otvoreno."
+  },
+  "seedPhrase": {
+    "title": "Teorem o restauraciji",
+    "original": "Seed Phrase / Recovery Phrase",
+    "short": "Popis riječi koje možete koristiti za vraćanje novčanika.",
+    "desc": "Ona je poput rezervnog ključa za vaš sef. Tko god ga ima, može vratiti vaš novčanik. Zato ga nikada ne biste smjeli pohraniti online."
+  },
+  "selfCustody": {
+    "title": "Samostalno čuvanje",
+    "original": "Self-Custody",
+    "short": "Svoje ključeve čuvaš kod sebe.",
+    "desc": "Kao da imate gotovinu u vlastitom sefu: imate kontrolu, ali i odgovornost. Ako izgubite pristup, nitko vam ne može pomoći. Za početnike je oprez posebno važan."
+  },
+  "custodian": {
+    "title": "Skrbnik",
+    "original": "Custodian",
+    "short": "Davatelj usluga drži vaše ključeve za vas.",
+    "desc": "Kao banka koja upravlja vašim računom. Može biti praktično, ali vam oduzima potpunu kontrolu. Morate joj vjerovati."
+  },
+  "hardwareWallet": {
+    "title": "Hardverski novčanik",
+    "original": "Hardware Wallet",
+    "short": "Fizički uređaj za vaše ključeve.",
+    "desc": "Kao mali sef u vašem džepu. Ključevi ostaju na uređaju i ne idu na internet. To štiti od mnogih online napada."
+  },
+  "hotWallet": {
+    "title": "Vrući novčanik",
+    "original": "Hot Wallet",
+    "short": "Novčanik s pristupom internetu.",
+    "desc": "Kao novčanik u jakni: praktičan, ali ranjiviji. Pogodan za male iznose i svakodnevnu upotrebu. Nije idealan za velike svote."
+  },
+  "coldWallet": {
+    "title": "Hladni novčanik",
+    "original": "Cold Wallet",
+    "short": "Novčanik bez internetske veze.",
+    "desc": "Kao sef u podrumu. Vrlo siguran, ali nepraktičan za svakodnevnu upotrebu. Pogodan za dugotrajno čuvanje."
+  },
+  "cryptocurrency": {
+    "title": "Kriptovaluta",
+    "original": "Cryptocurrency",
+    "short": "Digitalna valuta koja se izravno šalje između ljudi.",
+    "desc": "Kao digitalni novac, ali bez banke. Možete ga slati direktno drugima. Vrijednost može varirati."
+  },
+  "altcoin": {
+    "title": "Altcoin",
+    "original": "Altcoin",
+    "short": "Sve kriptovalute osim Bitcoina.",
+    "desc": "Poput drugih marki na tržištu pored vodećeg u industriji. Neki su dobro poznati, mnogi su mali. Kvaliteta i rizik uvelike variraju."
+  },
+  "stablecoin": {
+    "title": "Stablecoin",
+    "original": "Stablecoin",
+    "short": "Kryptovaluta s najstabilnijom vrijednošću.",
+    "desc": "Kao digitalni novac koji je vezan za konvencionalnu valutu. To čini njegovu cijenu stabilnijom. Ipak, povjerenje u pružatelja je važno."
+  },
+  "utilityToken": {
+    "title": "Token za korištenje",
+    "original": "Utility Token",
+    "short": "Token s kojim se može koristiti usluga.",
+    "desc": "Kao bon na tržnici. Omogućuje pristup ili popust. Njegova vrijednost ovisi o korisnosti usluge."
+  },
+  "securityToken": {
+    "title": "Sigurnosni tokeni",
+    "original": "Security Token",
+    "short": "Token s obilježjima sigurnosti.",
+    "desc": "Kao dionica. Može obećati prava ili dobitke. Često se primjenjuju stroža pravila na to."
+  },
+  "governanceToken": {
+    "title": "Token upravljanja",
+    "original": "Governance Token",
+    "short": "Token za sudjelovanje u donošenju odluka o pravilima.",
+    "desc": "Kao glasačka kartica u klubu. Oni koji imaju žetone mogu glasati o pravilima. To znači odgovornost."
+  },
+  "liquidityToken": {
+    "title": "Tokeni likvidnosti / LP tokeni",
+    "original": "Liquidity Token",
+    "short": "Žeton za pruženu likvidnost.",
+    "desc": "To je kao potvrda da ste uplatili novac u zajednički fond. Dobijate proporcionalne naknade. Vrijednost može varirati."
+  },
+  "nft": {
+    "title": "Nezamjenjivi token / NFT",
+    "original": "Non-Fungible Token",
+    "short": "Jedinstveni digitalni token.",
+    "desc": "Kao potpisani kolekcionarski predmet. Predstavlja nešto jedinstveno, a ne zamjenjivi coin. Vrijednost ovisi o potražnji."
+  },
+  "cbdc": {
+    "title": "Digitalna valuta središnje banke / CBDC",
+    "original": "Central Bank Digital Currency",
+    "short": "Digitalna valuta koju izdaje središnja banka.",
+    "desc": "Kao digitalni novac od strane države. Bio bi to službeni novac, samo u digitalnom obliku. Detalji ovise o specifičnoj zemlji."
+  },
+  "transactionStatus": {
+    "title": "Status transakcije",
+    "original": "Transaction Status",
+    "short": "Označava je li transakcija još uvijek otvorena ili je već dovršena.",
+    "desc": "Kao praćenje paketa: na čekanju, potvrđeno ili neuspješno. Ovo vam omogućuje da vidite je li sve prošlo glatko. Ponekad je potrebno malo vremena."
+  },
+  "gasFee": {
+    "title": "Naknada za plin",
+    "original": "Gas Fee",
+    "short": "Naknada za računalni rad u mreži.",
+    "desc": "Poput naknade za obradu na tržnici. Što je gužva veća, to može postati skuplje. Ne naziva svaka blockchain tehnologija tu naknadu \"gas\"."
+  },
+  "onChain": {
+    "title": "Na lancu",
+    "original": "On-Chain",
+    "short": "Događa se direktno na blockchainu.",
+    "desc": "Kao unos izravno u blagajničku knjigu. Svi to mogu vidjeti. Transparentno je, ali često sporije ili skuplje."
+  },
+  "offChain": {
+    "title": "Izvan lanca",
+    "original": "Off-Chain",
+    "short": "Događa se izvan lanca.",
+    "desc": "Poput usmenog sporazuma koji se kasnije upisuje u knjigu. To može biti brže i isplativije. Povjerenje ovdje igra veću ulogu."
+  },
+  "liquidity": {
+    "title": "Likvidnost",
+    "original": "Liquidity",
+    "short": "Pokazuje koliko se lako nešto može obraditi.",
+    "desc": "Broj kupaca i prodavača. Visoka likvidnost znači da možete trgovati brzo bez značajnog utjecaja na cijenu. Niska likvidnost čini da se proces odvija sporije."
+  },
+  "volatility": {
+    "title": "Volatilnost",
+    "original": "Volatility",
+    "short": "Koliko cijene variraju.",
+    "desc": "Kao tržište s divljim promjenama cijena. Visoka volatilnost znači prilike, ali i rizik. Za početnike to može biti stresno."
+  },
+  "marketCap": {
+    "title": "Tržišna kapitalizacija",
+    "original": "Market Capitalization",
+    "short": "Ukupna vrijednost kovanice ili projekta.",
+    "desc": "Kao ukupna vrijednost svih dobara na tržištu. Približno se izračunava množenjem cijene s količinom u opticaju. Velike vrijednosti mogu izgledati stabilnije, ali to nije automatski slučaj."
+  },
+  "circulatingSupply": {
+    "title": "Količina cirkulacije",
+    "original": "Circulating Supply",
+    "short": "Količina kovanica koje su stvarno u opticaju.",
+    "desc": "Poput broja kovanica koje su zapravo na tržištu. Nije sve što postoji već u opticaju. To utječe na cijenu."
+  },
+  "priceDiscovery": {
+    "title": "Cijene",
+    "original": "Price Discovery",
+    "short": "Cijena se određuje prema ponudi i potražnji.",
+    "desc": "Baš kao na tržištu: ponuda i potražnja se susreću. Mnoge male odluke određuju cijenu. Ne postoji fiksni prekidač."
+  },
+  "spread": {
+    "title": "Trgovački raspon",
+    "original": "Spread",
+    "short": "Razlika između nabavne cijene i prodajne cijene.",
+    "desc": "Kao raspon trgovanja u trgovini. Što je manja razlika, to se poštenijim čini. Veliki rasponi čine trgovanje skupljim."
+  },
+  "phishing": {
+    "title": "Phishing",
+    "original": "Phishing",
+    "short": "Prevara putem lažnih vijesti ili web stranica.",
+    "desc": "Kao lažni email banke koji vas mami u zamku. Cilj je da date svoje podatke za prijavu. Nikada ne klikajte na linkove naslijepo."
+  },
+  "smartContract": {
+    "title": "Pametni ugovor",
+    "original": "Smart Contract",
+    "short": "Program koji automatski izvršava fiksna pravila.",
+    "desc": "Poput automata koji reagira prema fiksnim pravilima. Automatski izvršava dogovore. Ovo štedi povjerenje, ali zahtijeva jasna pravila."
+  },
+  "programmableLogic": {
+    "title": "Automatizirana pravila",
+    "original": "Programmable Logic",
+    "short": "Pravila koja se automatski izvršavaju kada se nešto dogodi.",
+    "desc": "Kao pravilo if-then u automatu. To omogućuje kontrolu procesa bez ručne intervencije svaki put. Ovako se stvaraju jednostavni digitalni ugovori."
+  },
+  "networkCongestion": {
+    "title": "Iskorištenost mreže",
+    "original": "Network Congestion",
+    "short": "Kada veliki broj transakcija istovremeno čeka na obradu.",
+    "desc": "Kao prometne gužve na autocesti. Transakcije traju duže, a naknade se mogu povećati. S manje prometa, opet se ubrzava."
+  },
+  "blockchainTypes": {
+    "title": "Vrste blockchaina",
+    "original": "Blockchain Types",
+    "short": "Postoje različite vrste blockchainova s različitim ciljevima.",
+    "desc": "Kao različite vrste vozila za različite rute. Neka su napravljena za plaćanja, druga za programe. Vrijedi znati svrhu."
+  },
+  "paymentBlockchain": {
+    "title": "Platni blockchain",
+    "original": "Payment Blockchain",
+    "short": "Blockchain dizajniran za brza plaćanja.",
+    "desc": "Kao brza knjiga gotovinskih transakcija. Fokus je na jeftinim i brzim prijenosima. Značajke su često namjerno održavane jednostavnim."
+  },
+  "smartContractBlockchain": {
+    "title": "Blockchain pametan ugovor",
+    "original": "Smart Contract Blockchain",
+    "short": "Blockchain koja može pokretati programe i aplikacije.",
+    "desc": "Kao tržnica s mnogo strojeva. Osim plaćanja, tamo mogu funkcionirati pravila i aplikacije. To ih čini svestranim, ali često složenijim."
+  },
+  "blockchainComparison": {
+    "title": "Usporedba blockchaina",
+    "original": "Blockchain Comparison",
+    "short": "Usporedba otkriva snage i slabosti različitih blockchainova.",
+    "desc": "Kao usporedba banaka ili tržišta: Svaka ima svoje prednosti i nedostatke. Važni aspekti su trošak, brzina i sigurnost. Ne postoji savršen sustav za sve."
+  },
+  "stellarVsBitcoinVsEthereum": {
+    "title": "Stellar vs. Bitcoin vs. Ethereum",
+    "original": "Stellar vs. Bitcoin vs. Ethereum",
+    "short": "Tri dobro poznate blockchain platforme s različitim fokusima.",
+    "desc": "Bitcoin je poput digitalnog zlata i često se smatra vrijednošću za pohranu. Ethereum je poput platforme za programe i aplikacije. Stellar je snažno usmjeren na pristupačna plaćanja."
+  }
 }
