@@ -6,7 +6,7 @@
       "button": "Pokreni izvoz",
       "success": "Izvoz kreiran",
       "error": "Izvoz nije uspio",
-      "fileName": "Tekst \"quiz-backup.json\" je naziv datoteke i ne zahtijeva prijevod na hrvatski jezik jer je već na engleskom jeziku."
+      "fileName": "Tekst \"quiz-backup.json\" je naziv datoteke i ne zahtijeva prijevod na hrvatski jer je već na engleskom jeziku."
     },
     "import": {
       "title": "Uvoz",

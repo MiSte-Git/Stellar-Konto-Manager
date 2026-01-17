@@ -204,5 +204,275 @@
     "short": "Allekirjoittajien ja kynnysarvojen vuorovaikutus määrittää tilin turvallisuuden.",
     "desc": "Tilin kokoonpano määrittää, mitkä allekirjoittajat ovat olemassa ja millä painoarvoilla ne toimivat, sekä mitkä kynnykset ovat voimassa. Allekirjoittajien tai kynnyksien muutokset ovat turvallisuuskriittisiä, koska ne määrittävät, kuinka monta allekirjoitusta vaaditaan."
   },
-  "missingKey": "Sanaston avainsana puuttuu: {{detail}}"
+  "missingKey": "Sanaston avainsana puuttuu: {{detail}}",
+  "distributedNetwork": {
+    "title": "Hajautettu verkko",
+    "original": "Distributed Network",
+    "short": "Monet tietokoneet työskentelevät yhdessä sen sijaan, että vain yksi päättäisi kaikesta.",
+    "desc": "Kuvittele markkinat, joilla monet kaupankävijät tuntevat samat säännöt. Jos yksi osallistuja jää pois, markkinat jatkavat toimintaansa, koska muut voivat astua tilalle. Tämä pitää järjestelmän vakaana ja vaikeammin manipuloitavana."
+  },
+  "node": {
+    "title": "Solmu",
+    "original": "Node",
+    "short": "Yksittäinen verkon osallistuja.",
+    "desc": "Solmu on kuin tilinpitäjä, joka säilyttää kopion tiedoista. Se tarkistaa uudet merkinnät ja välittää niitä eteenpäin. Monet solmut yhdessä tekevät verkosta luotettavan."
+  },
+  "block": {
+    "title": "Lohko",
+    "original": "Block",
+    "short": "Lohko on merkintöjen paketti.",
+    "desc": "Kuten sivu kirjanpidossa, lohko kerää useita tapahtumia. Kun se on täynnä, se vahvistetaan ja lisätään ketjuun. Näin historia luodaan askel askeleelta."
+  },
+  "consensusMechanism": {
+    "title": "Konsensusmekanismi",
+    "original": "Consensus Mechanism",
+    "short": "Säännöt, joista kaikki ovat yhtä mieltä hyväksyttävien merkintöjen osalta.",
+    "desc": "Se on kuin ryhmä päättäisi, mikä kuitti on pätevä. Tämä estää ketään tekemästä salaa muutoksia. Eri lohkoketjut käyttävät erilaisia menetelmiä, mutta tavoite on aina konsensus."
+  },
+  "finality": {
+    "title": "Lopullisuus / Päättäväisyys",
+    "original": "Finality",
+    "short": "Vakuutus siitä, että tapahtuma on lopullinen.",
+    "desc": "Kun jokin on lopullista, se tuntuu kuin vankasti varmistettu tiliote. Sinun ei tarvitse enää odottaa sen peruuntumista. Tämä luo luottamusta."
+  },
+  "immutability": {
+    "title": "Muuttumattomuus",
+    "original": "Immutability",
+    "short": "Merkintöjä ei pitäisi muuttaa jälkikäteen.",
+    "desc": "Aivan kuten kassakirjassa: Jälkikäteen poistaminen on havaittavissa. Muutokset lisätään uutena merkintänä, eivätkä ne korvaa aiempaa. Tämä tekee historian jäljitettäväksi."
+  },
+  "decentralization": {
+    "title": "Hajauttaminen",
+    "original": "Decentralization",
+    "short": "Keskusauktoriteetti ei hallitse kaikkea.",
+    "desc": "Sen sijaan, että olisi yksi kassakaappi, on useita kassakaappeja, joissa on sama tieto. Päätökset syntyvät monien osallistujien vuorovaikutuksesta. Tämä tekee järjestelmästä vankemman."
+  },
+  "publicBlockchain": {
+    "title": "Julkinen lohkoketju",
+    "original": "Public Blockchain",
+    "short": "Avoin kaikille, jotka haluavat osallistua.",
+    "desc": "Kuka tahansa voi osallistua ja tarkastella tietoja, kuten julkisella ilmoitustaululla. Tämä lisää avoimuutta, mutta jokainen toimenpide on kaikkien nähtävissä. Säännöt varmistavat, että kukaan ei voi huijata."
+  },
+  "privateBlockchain": {
+    "title": "Yksityinen lohkoketju",
+    "original": "Private Blockchain",
+    "short": "Pääsy vain valituille osallistujille.",
+    "desc": "Kuin yrityksen kirjanpito, jota vain työntekijät saavat nähdä. Tämä voi olla nopeampi ja hallitumpi, mutta se on vähemmän avoin. Luottamus rakentuu tässä järjestön kautta."
+  },
+  "permissionlessBlockchain": {
+    "title": "Lupaa ei vaativa lohkoketju",
+    "original": "Permissionless Blockchain",
+    "short": "Kaikilla on lupa osallistua ilman erillistä lupaa.",
+    "desc": "Kuin markkinat, joihin kuka tahansa voi liittyä. Tämä madaltaa kynnystä, mutta saattaa vaatia enemmän sääntöjä pysyäkseen reiluina. Esimerkkejä ovat monet julkiset lohkoketjut."
+  },
+  "permissionedBlockchain": {
+    "title": "Luvatun blockchainin järjestelmä",
+    "original": "Permissioned Blockchain",
+    "short": "Osallistuminen vain luvan kanssa.",
+    "desc": "Kuin kerho, jolla on jäsenluettelo. Tämä voi luoda selkeitä vastuualueita. Se on kuitenkin vähemmän avoin."
+  },
+  "seedPhrase": {
+    "title": "Palautusteoreema",
+    "original": "Seed Phrase / Recovery Phrase",
+    "short": "Sanaluettelo, jota voit käyttää lompakkosi palauttamiseen.",
+    "desc": "Hän on kuin varmuusavain kassakaappiisi. Kenellä tahansa, joka sen omistaa, voi palauttaa lompakkosi. Siksi sitä ei tulisi koskaan säilyttää verkossa."
+  },
+  "selfCustody": {
+    "title": "Itsehallinta",
+    "original": "Self-Custody",
+    "short": "Pidät avaimet itse.",
+    "desc": "Kuin käteisen pitäminen omassa kassakaapissa: sinulla on hallinta, mutta myös vastuu. Jos kadotat pääsyn, kukaan ei voi auttaa sinua. Aloittelijoille varovaisuus on erityisen tärkeää."
+  },
+  "custodian": {
+    "title": "Hoitaja",
+    "original": "Custodian",
+    "short": "Palveluntarjoaja säilyttää avaimiasi puolestasi.",
+    "desc": "Kuin pankki, joka hallinnoi tiliäsi. Se voi olla kätevää, mutta vie sinulta täyden hallinnan. Sinun täytyy luottaa siihen."
+  },
+  "hardwareWallet": {
+    "title": "Laitteistolompakko",
+    "original": "Hardware Wallet",
+    "short": "Fyysinen laite avaimillesi.",
+    "desc": "Kuin pieni kassakaappi taskussasi. Avaimet pysyvät laitteella eivätkä mene Internetiin. Tämä suojaa monilta verkkohyökkäyksiltä."
+  },
+  "hotWallet": {
+    "title": "Kuumalompakko",
+    "original": "Hot Wallet",
+    "short": "Internet-yhteydellä varustettu lompakko.",
+    "desc": "Kuin lompakko takin taskussa: kätevä, mutta alttiimpi. Sopii pienille summille ja jokapäiväiseen käyttöön. Ei ihanteellinen suurille summille."
+  },
+  "coldWallet": {
+    "title": "Kylmä lompakko",
+    "original": "Cold Wallet",
+    "short": "Lompakko ilman internet-yhteyttä.",
+    "desc": "Kuin kassakaappi kellarissa. Erittäin turvallinen, mutta epäkäytännöllinen päivittäiseen käyttöön. Sopii pitkäaikaiseen säilytykseen."
+  },
+  "cryptocurrency": {
+    "title": "Kryptovaluutta",
+    "original": "Cryptocurrency",
+    "short": "Digitaalinen valuutta, joka lähetetään suoraan ihmisten välillä.",
+    "desc": "Kuin digitaalinen käteinen, mutta ilman pankkia. Voit lähettää sen suoraan muille. Arvo voi vaihdella."
+  },
+  "altcoin": {
+    "title": "Altcoin",
+    "original": "Altcoin",
+    "short": "Kaikki kryptovaluutat paitsi Bitcoin.",
+    "desc": "Kuten muut markkinoilla olevat merkit alan johtajan lisäksi. Jotkut ovat tunnettuja, monet ovat pieniä. Laatu ja riski vaihtelevat suuresti."
+  },
+  "stablecoin": {
+    "title": "Stablecoin",
+    "original": "Stablecoin",
+    "short": "Kryptovaluutta, jolla on vakain arvo.",
+    "desc": "Kuten digitaalinen raha, joka on sidottu perinteiseen valuuttaan. Tämä tekee sen hinnasta vakaamman. Luottamus palveluntarjoajaan on kuitenkin tärkeää."
+  },
+  "utilityToken": {
+    "title": "Käyttötunnus",
+    "original": "Utility Token",
+    "short": "Token, jolla voi käyttää palvelua.",
+    "desc": "Kuin kuponki markkinakioskilla. Se tarjoaa pääsyn tai alennuksen. Sen arvo riippuu palvelun hyödyllisyydestä."
+  },
+  "securityToken": {
+    "title": "Turvatunnisteet",
+    "original": "Security Token",
+    "short": "Merkki, jolla on turvallisuusominaisuuksia.",
+    "desc": "Aivan kuten osakekirja. Se voi luvata oikeuksia tai voittoja. Siihen sovelletaan usein tiukempia sääntöjä."
+  },
+  "governanceToken": {
+    "title": "Hallintotoken",
+    "original": "Governance Token",
+    "short": "Merkki osallistumiseen sääntöjen päätöksentekoon.",
+    "desc": "Kuin äänestyskortti klubissa. Ne, joilla on merkkejä, voivat äänestää säännöistä. Se tarkoittaa vastuuta."
+  },
+  "liquidityToken": {
+    "title": "Likviditeettipoletit / LP-poletit",
+    "original": "Liquidity Token",
+    "short": "Likviditeetin tarjontaa varten annettu token.",
+    "desc": "Se on kuin kuitti siitä, että olet antanut rahaa yhteissäästöön. Saat osuutesi mukaiset maksut. Arvo voi vaihdella."
+  },
+  "nft": {
+    "title": "Ei-vaihtokelpoinen token / NFT",
+    "original": "Non-Fungible Token",
+    "short": "Ainutlaatuinen digitaalinen rahake.",
+    "desc": "Kuin allekirjoitettu keräilyesine. Se edustaa jotain ainutlaatuista, ei vaihdettavissa olevaa kolikkoa. Arvo riippuu kysynnästä."
+  },
+  "cbdc": {
+    "title": "Keskuspankin digitaalinen valuutta / CBDC",
+    "original": "Central Bank Digital Currency",
+    "short": "Digitaalinen valuutta, jonka keskuspankki on liikkeelle laskenut.",
+    "desc": "Kuin digitaalinen käteinen valtiolta. Se olisi virallista rahaa, vain digitaalisessa muodossa. Yksityiskohdat riippuvat tietystä maasta."
+  },
+  "transactionStatus": {
+    "title": "Tapahtuman tila",
+    "original": "Transaction Status",
+    "short": "Ilmaisee, onko tapahtuma vielä avoin vai jo suoritettu.",
+    "desc": "Kuten pakettiseuranta: odottaa, vahvistettu tai epäonnistunut. Tämä antaa sinun nähdä, menikö kaikki sujuvasti. Joskus se vie vähän aikaa."
+  },
+  "gasFee": {
+    "title": "Gas-maksu",
+    "original": "Gas Fee",
+    "short": "Verkko- tai tietokoneympäristön laskentatyöstä perittävä maksu.",
+    "desc": "Kuten käsittelymaksu markkinakojulla. Mitä vilkkaampaa on, sitä kalliimmaksi se voi tulla. Kaikki lohkoketjut eivät kutsu sitä kaasuksi."
+  },
+  "onChain": {
+    "title": "Ketjussa",
+    "original": "On-Chain",
+    "short": "Tapahtuu suoraan lohkoketjussa.",
+    "desc": "Kuin merkintä suoraan kassakirjaan. Kaikki voivat nähdä sen. Se on läpinäkyvä, mutta usein hitaampi tai kalliimpi."
+  },
+  "offChain": {
+    "title": "Off-chain",
+    "original": "Off-Chain",
+    "short": "Tapahtuu lohkoketjun ulkopuolella.",
+    "desc": "Kuten suullinen sopimus, joka myöhemmin kirjataan kirjanpitoon. Tämä voi olla nopeampaa ja kustannustehokkaampaa. Luottamus on tässä suuremmassa roolissa."
+  },
+  "liquidity": {
+    "title": "Likviditeetti",
+    "original": "Liquidity",
+    "short": "Näyttää, kuinka helposti jokin voidaan käsitellä.",
+    "desc": "Ostajien ja myyjien määrä. Korkea likviditeetti tarkoittaa, että voit käydä kauppaa nopeasti vaikuttamatta merkittävästi hintaan. Matala likviditeetti tuntuu hitaalta."
+  },
+  "volatility": {
+    "title": "Volatiliteetti",
+    "original": "Volatility",
+    "short": "Kuinka paljon hinnat vaihtelevat.",
+    "desc": "Kuten markkinat, joilla hinnat vaihtelevat villisti. Korkea volatiliteetti tarkoittaa mahdollisuuksia, mutta myös riskiä. Aloittelijoille tämä voi olla stressaavaa."
+  },
+  "marketCap": {
+    "title": "Markkina-arvo",
+    "original": "Market Capitalization",
+    "short": "Kolikon tai projektin kokonaisarvo.",
+    "desc": "Kuten kaikkien markkinoilla olevien tavaroiden kokonaisarvo. Se lasketaan karkeasti kertomalla hinta kiertävällä määrällä. Suuret arvot voivat vaikuttaa vakaammilta, mutta ne eivät automaattisesti ole sitä."
+  },
+  "circulatingSupply": {
+    "title": "Kiertomäärä",
+    "original": "Circulating Supply",
+    "short": "Käytännössä liikkeellä olevien kolikoiden määrä.",
+    "desc": "Kuten markkinoilla olevien kolikoiden määrä. Kaikki olemassa oleva ei ole vielä liikkeellä. Tämä vaikuttaa hintaan."
+  },
+  "priceDiscovery": {
+    "title": "Hinnoittelu",
+    "original": "Price Discovery",
+    "short": "Hinta määräytyy tarjonnan ja kysynnän mukaan.",
+    "desc": "Aivan kuten markkinoilla: tarjonta ja kysyntä kohtaavat. Monet pienet päätökset määräävät hinnan. Ei ole mitään kiinteää kytkintä."
+  },
+  "spread": {
+    "title": "Kaupankäyntialue",
+    "original": "Spread",
+    "short": "Erotus osto- ja myyntihinnan välillä.",
+    "desc": "Kuten kaupankäyntiväli kaupassa. Mitä pienempi ero, sitä oikeudenmukaisemmalta se tuntuu. Suuret erot tekevät kaupankäynnistä kalliimpaa."
+  },
+  "phishing": {
+    "title": "Huijausviestit",
+    "original": "Phishing",
+    "short": "Huijaus väärien uutisten tai verkkosivustojen kautta.",
+    "desc": "Kuin väärennetty pankkisähköposti, joka houkuttelee sinut ansaan. Tavoitteena on saada sinulta kirjautumistietosi. Älä koskaan klikkaa linkkejä sokkona."
+  },
+  "smartContract": {
+    "title": "Älysopimus",
+    "original": "Smart Contract",
+    "short": "Ohjelma, joka suorittaa automaattisesti ennalta määrättyjä sääntöjä.",
+    "desc": "Kuin automaatti, joka reagoi ennalta määrättyjen sääntöjen mukaisesti. Se toteuttaa sopimukset automaattisesti. Tämä säästää luottamusta, mutta vaatii selkeät säännöt."
+  },
+  "programmableLogic": {
+    "title": "Automatisoidut säännöt",
+    "original": "Programmable Logic",
+    "short": "Säännöt, jotka suoritetaan automaattisesti, kun jotain tapahtuu.",
+    "desc": "Kuin jos-niin-sääntö automaatissa. Tämä mahdollistaa prosessien hallinnan ilman manuaalista puuttumista joka kerta. Näin luodaan yksinkertaisia digitaalisia sopimuksia."
+  },
+  "networkCongestion": {
+    "title": "Verkon käyttöaste",
+    "original": "Network Congestion",
+    "short": "Kun suuri määrä tapahtumia on samanaikaisesti vireillä.",
+    "desc": "Kuin liikenne ruuhkat tiellä. Tapahtumat kestävät kauemmin ja maksut voivat nousta. Vähemmällä liikenteellä se nopeutuu jälleen."
+  },
+  "blockchainTypes": {
+    "title": "Lohkoketjun tyypit",
+    "original": "Blockchain Types",
+    "short": "On olemassa erilaisia lohkoketjuja, joilla on erilaisia tavoitteita.",
+    "desc": "Kuin eri ajoneuvotyypit eri reiteille. Jotkut on tarkoitettu maksuille, toiset ohjelmille. On hyödyllistä tietää tarkoitus."
+  },
+  "paymentBlockchain": {
+    "title": "Maksublokketju",
+    "original": "Payment Blockchain",
+    "short": "Lohkoketju, joka on suunniteltu nopeisiin maksuihin.",
+    "desc": "Kuin nopea käteiskirjanpito. Keskitytään halpoihin ja nopeisiin siirtoihin. Ominaisuudet pidetään usein tarkoituksella yksinkertaisina."
+  },
+  "smartContractBlockchain": {
+    "title": "Älysopimuslohkoketju",
+    "original": "Smart Contract Blockchain",
+    "short": "Lohkoketju, joka voi suorittaa ohjelmia ja sovelluksia.",
+    "desc": "Kuin markkinat, joissa on monia koneita. Maksujen lisäksi siellä voi pyörittää sääntöjä ja sovelluksia. Tämä tekee niistä monipuolisia, mutta usein myös monimutkaisempia."
+  },
+  "blockchainComparison": {
+    "title": "Lohkoketjuvertailu",
+    "original": "Blockchain Comparison",
+    "short": "Vertailu paljastaa eri lohkoketjujen vahvuudet ja heikkoudet.",
+    "desc": "Kuten pankkien tai markkinoiden vertailu: jokaisella on omat vahvuutensa ja heikkoutensa. Tärkeitä näkökohtia ovat kustannukset, nopeus ja turvallisuus. Ei ole olemassa täydellistä järjestelmää kaikkeen."
+  },
+  "stellarVsBitcoinVsEthereum": {
+    "title": "Stellar vs. Bitcoin vs. Ethereum",
+    "original": "Stellar vs. Bitcoin vs. Ethereum",
+    "short": "Kolme tunnettua lohkoketjua, joilla on erilaiset painopisteet.",
+    "desc": "Bitcoin on kuin digitaalinen kulta ja sitä pidetään usein arvon säilyttäjänä. Ethereum on kuin alusta ohjelmille ja sovelluksille. Stellar keskittyy voimakkaasti edullisiin maksuihin."
+  }
 }

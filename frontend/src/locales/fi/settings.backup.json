@@ -12,7 +12,7 @@
     "noFile": "Ei tiedostoa valittu",
     "preview": {
       "stats": {
-        "achievements": "Merkki: {{count}} Quiz (e)",
+        "achievements": "Merkki: {{count}} Quiz(e)",
         "progress": "Edistyminen: {{count}} Kysely(e)",
         "settings": "Asetukset: {{count}} Visa(e)"
       },
