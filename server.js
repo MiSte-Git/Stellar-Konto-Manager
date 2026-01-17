@@ -3,7 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const StellarSdk = require('@stellar/stellar-sdk');
-const { verifyTxSignedBy } = require('@stellar/stellar-sdk/lib/webauth/utils');
+const { WebAuth } = require('@stellar/stellar-sdk');
 const { spawn } = require('child_process');
 const os = require('os');
 const path = require('path');
@@ -401,7 +401,7 @@ function collectSignersForTx(tx, signers = []) {
   const collected = [];
   for (const s of signers) {
     try {
-      if (verifyTxSignedBy(tx, s.publicKey)) {
+      if (WebAuth.verifyTxSignedBy(tx, s.publicKey)) {
         collected.push({ publicKey: s.publicKey, weight: Number(s.weight || 0) });
       }
     } catch {}
@@ -448,8 +448,6 @@ app.post('/api/multisig/jobs', async (req, res) => {
     const collectedWeight = collectedSigners.reduce((acc, s) => acc + Number(s.weight || 0), 0);
     const nowIso = new Date().toISOString();
     const shouldSubmit = collectedWeight >= requiredWeight && requiredWeight > 0;
-
-    const nowIso = new Date().toISOString();
     const job = {
       id: newJobId(),
       network: net,
