@@ -6,7 +6,7 @@
       "button": "Start exporteren",
       "success": "Export gemaakt",
       "error": "Export mislukt",
-      "fileName": "De tekst \"quiz-backup.json\" is een bestandsnaam en hoeft niet in het Nederlands te worden vertaald, aangezien het al in het Engels is."
+      "fileName": "De tekst \"quiz-backup.json\" is een bestandsnaam en hoeft niet vertaald te worden naar het Nederlands, aangezien het al in het Engels is."
     },
     "import": {
       "title": "Importeer",

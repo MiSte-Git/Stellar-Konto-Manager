@@ -204,5 +204,275 @@
     "short": "L'interazione tra i firmatari e le soglie determina la sicurezza dell'account.",
     "desc": "La configurazione del conto specifica quali firmatari esistono con quali pesi e quali soglie si applicano. Modifiche ai firmatari o alle soglie sono critiche per la sicurezza perché determinano quante firme sono necessarie."
   },
-  "missingKey": "Chiave del glossario mancante: {{detail}}"
+  "missingKey": "Chiave del glossario mancante: {{detail}}",
+  "distributedNetwork": {
+    "title": "Rete distribuita",
+    "original": "Distributed Network",
+    "short": "Molti computer lavorano insieme invece di uno solo che decide tutto.",
+    "desc": "Immagina un mercato in cui molti trader conoscono le stesse regole. Se un partecipante si ritira, il mercato continua a funzionare perché altri possono subentrare. Questo mantiene il sistema stabile e più difficile da manipolare."
+  },
+  "node": {
+    "title": "Nodo",
+    "original": "Node",
+    "short": "Un singolo partecipante nella rete.",
+    "desc": "Un nodo è come un contabile che detiene una copia dei dati. Verifica le nuove voci e le inoltra. Molti nodi insieme rendono la rete affidabile."
+  },
+  "block": {
+    "title": "Blocco",
+    "original": "Block",
+    "short": "Un blocco è un pacchetto di voci.",
+    "desc": "Come una pagina in un registro contabile, un blocco raccoglie più transazioni. Una volta pieno, viene finalizzato e aggiunto alla catena. Questo è il modo in cui la storia viene creata passo dopo passo."
+  },
+  "consensusMechanism": {
+    "title": "Meccanismo di consenso",
+    "original": "Consensus Mechanism",
+    "short": "Regole con cui tutti concordano sulle voci valide.",
+    "desc": "È come quando un gruppo decide quale scontrino è valido. Questo impedisce a chiunque di apportare modifiche segrete. Diverse blockchain utilizzano metodi diversi, ma l'obiettivo è sempre il consenso."
+  },
+  "finality": {
+    "title": "Finalità / Definitività",
+    "original": "Finality",
+    "short": "La garanzia che una transazione sia definitiva.",
+    "desc": "Quando qualcosa è definitivo, sembra come un estratto conto bancario confermato. Non ci si deve più aspettare che venga annullato. Questo crea fiducia."
+  },
+  "immutability": {
+    "title": "Immutabilità",
+    "original": "Immutability",
+    "short": "Le voci non dovrebbero essere modificate retroattivamente.",
+    "desc": "Proprio come con un libro cassa: Cancellare successivamente è evidente. Le modifiche vengono aggiunte come una nuova registrazione, non sovrascritte. Questo rende la storia tracciabile."
+  },
+  "decentralization": {
+    "title": "Decentralizzazione",
+    "original": "Decentralization",
+    "short": "Nessuna autorità centrale controlla tutto.",
+    "desc": "Invece di una singola cassaforte, ci sono molte casseforti con le stesse informazioni. Le decisioni sorgono dall'interazione di molti partecipanti. Questo rende il sistema più robusto."
+  },
+  "publicBlockchain": {
+    "title": "Blockchain pubblica",
+    "original": "Public Blockchain",
+    "short": "Aperto a chiunque desideri partecipare.",
+    "desc": "Chiunque può partecipare e visualizzare i dati, simile a una bacheca pubblica. Questo aumenta la trasparenza, ma ogni azione è visibile a tutti. Le regole garantiscono che nessuno possa imbrogliare."
+  },
+  "privateBlockchain": {
+    "title": "Blockchain privata",
+    "original": "Private Blockchain",
+    "short": "Accesso riservato solo ai partecipanti selezionati.",
+    "desc": "Come un registro aziendale che solo i dipendenti possono vedere. Questo può essere più rapido e controllato, ma è meno aperto. La fiducia viene costruita qui attraverso l'organizzazione."
+  },
+  "permissionlessBlockchain": {
+    "title": "Blockchain senza permesso",
+    "original": "Permissionless Blockchain",
+    "short": "Tutti possono partecipare senza permesso.",
+    "desc": "Come un mercato a cui chiunque può partecipare. Questo abbassa le barriere, ma potrebbe richiedere più regole per rimanere equo. Esempi includono molte blockchain pubbliche."
+  },
+  "permissionedBlockchain": {
+    "title": "Blockchain con permessi",
+    "original": "Permissioned Blockchain",
+    "short": "Partecipazione solo su autorizzazione.",
+    "desc": "Come un club con una lista di membri. Questo può creare responsabilità chiare. Tuttavia, è meno aperto."
+  },
+  "seedPhrase": {
+    "title": "Teorema di restaurazione",
+    "original": "Seed Phrase / Recovery Phrase",
+    "short": "Un elenco di parole che puoi utilizzare per ripristinare il tuo portafoglio.",
+    "desc": "È come la chiave di riserva della tua cassaforte. Chiunque la possieda può ripristinare il tuo portafoglio. Ecco perché non dovrebbe mai essere memorizzata online."
+  },
+  "selfCustody": {
+    "title": "Autocustodia",
+    "original": "Self-Custody",
+    "short": "Tieni le tue chiavi tu stesso.",
+    "desc": "Come avere contanti nella propria cassaforte: hai il controllo, ma anche la responsabilità. Se perdi l'accesso, nessuno può aiutarti. Per i principianti, la prudenza è particolarmente importante."
+  },
+  "custodian": {
+    "title": "Custode",
+    "original": "Custodian",
+    "short": "Un fornitore di servizi conserva le tue chiavi per te.",
+    "desc": "Come una banca che gestisce il tuo conto. Può essere conveniente, ma ti toglie il pieno controllo. Devi fidarti."
+  },
+  "hardwareWallet": {
+    "title": "Portafoglio hardware",
+    "original": "Hardware Wallet",
+    "short": "Un dispositivo fisico per le tue chiavi.",
+    "desc": "Come una piccola cassaforte in tasca. Le chiavi rimangono sul dispositivo e non vanno su Internet. Questo protegge da molti attacchi online."
+  },
+  "hotWallet": {
+    "title": "Portafoglio caldo",
+    "original": "Hot Wallet",
+    "short": "Un portafoglio con accesso a internet.",
+    "desc": "Come un portafoglio nella giacca: comodo ma più vulnerabile. Adatto per piccole somme e uso quotidiano. Non ideale per grandi somme."
+  },
+  "coldWallet": {
+    "title": "Portafoglio freddo",
+    "original": "Cold Wallet",
+    "short": "Un portafoglio senza connessione a Internet.",
+    "desc": "Come una cassaforte nel seminterrato. Molto sicura, ma poco pratica per l'uso quotidiano. Adatta per la conservazione a lungo termine."
+  },
+  "cryptocurrency": {
+    "title": "Criptovaluta",
+    "original": "Cryptocurrency",
+    "short": "Valuta digitale che viene inviata direttamente tra le persone.",
+    "desc": "Come il contante digitale, ma senza una banca. Puoi inviarlo direttamente agli altri. Il valore può variare."
+  },
+  "altcoin": {
+    "title": "Altcoin",
+    "original": "Altcoin",
+    "short": "Tutte le criptovalute tranne Bitcoin.",
+    "desc": "Come altri marchi sul mercato oltre al leader del settore. Alcuni sono ben noti, molti sono piccoli. La qualità e il rischio variano notevolmente."
+  },
+  "stablecoin": {
+    "title": "Stablecoin",
+    "original": "Stablecoin",
+    "short": "Criptovaluta con il valore più stabile.",
+    "desc": "Come il denaro digitale ancorato a una valuta convenzionale. Questo rende il suo prezzo più stabile. Tuttavia, la fiducia nel fornitore è importante."
+  },
+  "utilityToken": {
+    "title": "Gettone di utilizzo",
+    "original": "Utility Token",
+    "short": "Un token con cui si può utilizzare un servizio.",
+    "desc": "Come un buono in una bancarella del mercato. Offre accesso o uno sconto. Il suo valore dipende dall'utilità del servizio."
+  },
+  "securityToken": {
+    "title": "Token di sicurezza",
+    "original": "Security Token",
+    "short": "Un token con caratteristiche di sicurezza.",
+    "desc": "Come un certificato azionario. Può promettere diritti o profitti. Spesso si applicano regole più severe."
+  },
+  "governanceToken": {
+    "title": "Token di governance",
+    "original": "Governance Token",
+    "short": "Un token per partecipare al processo decisionale riguardante le regole.",
+    "desc": "Come una scheda elettorale in un club. Chi ha gettoni può votare sulle regole. Ciò significa responsabilità."
+  },
+  "liquidityToken": {
+    "title": "Token di liquidità / token LP",
+    "original": "Liquidity Token",
+    "short": "Un token per la liquidità fornita.",
+    "desc": "È come una ricevuta che attesta che hai contribuito a un fondo comune. Ricevi commissioni proporzionali. Il valore può variare."
+  },
+  "nft": {
+    "title": "Token non fungibile / NFT",
+    "original": "Non-Fungible Token",
+    "short": "Un token digitale unico.",
+    "desc": "Come un oggetto da collezione firmato. Rappresenta qualcosa di unico, non una moneta intercambiabile. Il valore dipende dalla domanda."
+  },
+  "cbdc": {
+    "title": "Valuta digitale della banca centrale / CBDC",
+    "original": "Central Bank Digital Currency",
+    "short": "Valuta digitale emessa da una banca centrale.",
+    "desc": "Come denaro digitale dallo stato. Sarebbe denaro ufficiale, solo in forma digitale. I dettagli dipendono dal paese specifico."
+  },
+  "transactionStatus": {
+    "title": "Stato della transazione",
+    "original": "Transaction Status",
+    "short": "Indica se una transazione è ancora aperta o già completata.",
+    "desc": "Come il tracciamento dei pacchi: in sospeso, confermato o fallito. Questo ti consente di vedere se tutto è andato liscio. A volte ci vuole un po' di tempo."
+  },
+  "gasFee": {
+    "title": "Commissione del gas",
+    "original": "Gas Fee",
+    "short": "Una commissione per il lavoro computazionale nella rete.",
+    "desc": "Come una commissione di elaborazione al banco del mercato. Più è affollato, più può diventare costoso. Non tutte le blockchain la chiamano gas."
+  },
+  "onChain": {
+    "title": "On-Chain",
+    "original": "On-Chain",
+    "short": "Avviene direttamente sulla blockchain.",
+    "desc": "Come un'entrata direttamente nel libro cassa. Tutti possono vederla. È trasparente, ma spesso più lenta o più costosa."
+  },
+  "offChain": {
+    "title": "Off-chain",
+    "original": "Off-Chain",
+    "short": "Si verifica off-chain.",
+    "desc": "Come un accordo orale che successivamente viene registrato nel libro contabile. Questo può essere più veloce e più conveniente. La fiducia gioca un ruolo maggiore qui."
+  },
+  "liquidity": {
+    "title": "Liquidità",
+    "original": "Liquidity",
+    "short": "Mostra quanto facilmente si può gestire qualcosa.",
+    "desc": "Il numero di acquirenti e venditori. Un'alta liquidità significa che puoi fare trading rapidamente senza influenzare significativamente il prezzo. Una bassa liquidità sembra lenta."
+  },
+  "volatility": {
+    "title": "Volatilità",
+    "original": "Volatility",
+    "short": "Quanto fluttuano i prezzi.",
+    "desc": "Come un mercato con oscillazioni selvagge dei prezzi. L'alta volatilità significa opportunità, ma anche rischio. Per i principianti, questo può essere stressante."
+  },
+  "marketCap": {
+    "title": "Capitalizzazione di mercato",
+    "original": "Market Capitalization",
+    "short": "Il valore totale di una moneta o di un progetto.",
+    "desc": "Come il valore totale di tutti i beni in un mercato. Si calcola approssimativamente moltiplicando il prezzo per la quantità in circolazione. Valori elevati possono sembrare più stabili, ma non lo sono automaticamente."
+  },
+  "circulatingSupply": {
+    "title": "Quantità di circolazione",
+    "original": "Circulating Supply",
+    "short": "La quantità di monete che sono effettivamente in circolazione.",
+    "desc": "Come il numero di monete che sono effettivamente sul mercato. Non tutto ciò che esiste è già in circolazione. Questo influenza il prezzo."
+  },
+  "priceDiscovery": {
+    "title": "Prezzi",
+    "original": "Price Discovery",
+    "short": "Il prezzo è determinato dall'offerta e dalla domanda.",
+    "desc": "Proprio come nel mercato: domanda e offerta si incontrano. Molte piccole decisioni determinano il prezzo. Non c'è un interruttore fisso."
+  },
+  "spread": {
+    "title": "Intervallo di trading",
+    "original": "Spread",
+    "short": "La differenza tra il prezzo di acquisto e il prezzo di vendita.",
+    "desc": "Come la gamma di negoziazione in un negozio. Più piccola è la differenza, più sembra equa. Diffusi ampi rendono gli scambi più costosi."
+  },
+  "phishing": {
+    "title": "Phishing",
+    "original": "Phishing",
+    "short": "Frode attraverso notizie false o siti web.",
+    "desc": "Come un'email falsa della banca che ti attira in una trappola. L'obiettivo è farti cedere le tue credenziali di accesso. Non cliccare mai sui link alla cieca."
+  },
+  "smartContract": {
+    "title": "Smart contract",
+    "original": "Smart Contract",
+    "short": "Un programma che esegue automaticamente regole fisse.",
+    "desc": "Come un automa che reagisce secondo regole fisse. Esegue gli accordi automaticamente. Ciò risparmia fiducia ma richiede regole chiare."
+  },
+  "programmableLogic": {
+    "title": "Regole automatizzate",
+    "original": "Programmable Logic",
+    "short": "Regole che si eseguono automaticamente quando si verifica qualcosa.",
+    "desc": "Come una regola if-then in un automa. Questo consente di controllare i processi senza intervento manuale ogni volta. In questo modo vengono creati semplici contratti digitali."
+  },
+  "networkCongestion": {
+    "title": "Utilizzo della rete",
+    "original": "Network Congestion",
+    "short": "Quando un gran numero di transazioni sono in attesa contemporaneamente.",
+    "desc": "Come gli ingorghi in autostrada. Le transazioni richiedono più tempo e le commissioni possono aumentare. Con meno traffico, torna a velocizzarsi."
+  },
+  "blockchainTypes": {
+    "title": "Tipi di Blockchain",
+    "original": "Blockchain Types",
+    "short": "Esistono diversi tipi di blockchain con vari obiettivi.",
+    "desc": "Come diversi tipi di veicoli per differenti percorsi. Alcuni sono progettati per i pagamenti, altri per i programmi. Vale la pena conoscere lo scopo."
+  },
+  "paymentBlockchain": {
+    "title": "Blockchain di pagamento",
+    "original": "Payment Blockchain",
+    "short": "Una blockchain progettata per pagamenti rapidi.",
+    "desc": "Come un registro di cassa veloce. L'attenzione è rivolta a trasferimenti economici e rapidi. Le caratteristiche sono spesso mantenute volutamente semplici."
+  },
+  "smartContractBlockchain": {
+    "title": "Blockchain di contratti intelligenti",
+    "original": "Smart Contract Blockchain",
+    "short": "Una blockchain in grado di eseguire programmi e applicazioni.",
+    "desc": "Come un mercato con molte macchine. Oltre ai pagamenti, lì possono funzionare regole e applicazioni. Questo li rende versatili, ma spesso più complessi."
+  },
+  "blockchainComparison": {
+    "title": "Confronto delle blockchain",
+    "original": "Blockchain Comparison",
+    "short": "Un confronto rivela i punti di forza e di debolezza di diverse blockchain.",
+    "desc": "Come confrontare banche o mercati: ognuno ha punti di forza e di debolezza. Aspetti importanti sono costo, velocità e sicurezza. Non esiste un sistema perfetto per tutto."
+  },
+  "stellarVsBitcoinVsEthereum": {
+    "title": "Stellar vs. Bitcoin vs. Ethereum",
+    "original": "Stellar vs. Bitcoin vs. Ethereum",
+    "short": "Tre blockchain ben note con diversi focalizzazioni.",
+    "desc": "Bitcoin è come l'oro digitale ed è spesso considerato un bene rifugio. Ethereum è come una piattaforma per programmi e applicazioni. Stellar è fortemente focalizzato sui pagamenti accessibili."
+  }
 }

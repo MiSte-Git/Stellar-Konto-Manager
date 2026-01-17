@@ -6,7 +6,7 @@
       "button": "Commencer l'exportation",
       "success": "Exportation créée",
       "error": "Échec de l'exportation",
-      "fileName": "Le texte \"quiz-backup.json\" est un nom de fichier et ne nécessite pas de traduction en français puisqu'il est déjà en anglais."
+      "fileName": "Le texte \"quiz-backup.json\" est un nom de fichier et ne nécessite pas de traduction en français car il est déjà en anglais."
     },
     "import": {
       "title": "Importer",

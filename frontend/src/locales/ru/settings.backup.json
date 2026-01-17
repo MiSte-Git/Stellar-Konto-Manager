@@ -12,7 +12,7 @@
     "noFile": "Файл не выбран",
     "preview": {
       "stats": {
-        "achievements": "Значок: {{count}} викторина(e)",
+        "achievements": "Значок: {{count}} Викторина(e)",
         "progress": "Прогресс: {{count}} Quiz(e)",
         "settings": "Настройки: {{count}} Викторина(e)"
       },

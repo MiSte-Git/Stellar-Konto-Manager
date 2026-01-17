@@ -6,7 +6,7 @@
       "button": "Käynnistä vienti",
       "success": "Vienti luotu",
       "error": "Vienti epäonnistui",
-      "fileName": "Tiedoston nimi \"quiz-backup.json\" ei vaadi käännöstä suomeksi, sillä se on jo englanniksi."
+      "fileName": "Teksti \"quiz-backup.json\" on tiedostonimi, eikä sitä tarvitse kääntää, koska se on jo englanniksi."
     },
     "import": {
       "title": "Tuonti",
