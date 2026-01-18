@@ -41,3 +41,9 @@ api/_config.php
 api/vendor/
 api/composer.phar
 api/composer-setup.php
+
+frontend/SSH_Cyon
+frontend/SSH_Cyon.pub
+*.pem
+*.key
+*.ppk
