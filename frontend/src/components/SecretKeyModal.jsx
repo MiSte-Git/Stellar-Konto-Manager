@@ -12,11 +12,9 @@ function SecretKeyModal({
   thresholds = null,
   signers = [],
   forceSignerCount = null,
-  allowedSigners = null,
   operationType = '',
   requiredThreshold = 0,
   isProcessing = false,
-  deleteProgress = null,
   account = null,
   initialCollectAllSignaturesLocally = false,
   onBackToSelection = null,
@@ -53,7 +51,7 @@ function SecretKeyModal({
     const active = normalized.filter((s) => !s.isMaster && (s.weight || 0) > 0).sort((a, b) => (b.weight || 0) - (a.weight || 0));
     const disabled = normalized.filter((s) => (s.weight || 0) <= 0 && !s.isMaster);
     return [...masterList, ...active, ...disabled];
-  }, [accountData, allSigners, masterPublicKey]);
+  }, [allSigners, masterPublicKey]);
   const masterWeight = useMemo(() => {
     const master = sortedSigners.find((s) => s.isMaster);
     return Number(master?.weight || 0);
@@ -135,7 +133,7 @@ function SecretKeyModal({
         if (!sec) continue;
         try {
           validateSecretKey(sec);
-        } catch (err) {
+        } catch {
           throw new Error('submitTransaction.failed:' + 'multisig.invalidSecret');
         }
         let kp;

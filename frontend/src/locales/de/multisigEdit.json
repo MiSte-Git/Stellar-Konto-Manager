@@ -1,6 +1,6 @@
 {
   "menu": "Multisig bearbeiten",
-  "menuHint": "Signierer und Schwellenwerte eines bestehenden Kontos anpassen",
+  "menuHint": "Unterzeichner und Schwellenwerte eines bestehenden Kontos anpassen",
   "confirm": {
     "removeSigner": "Unterzeichner wirklich entfernen?"
   },

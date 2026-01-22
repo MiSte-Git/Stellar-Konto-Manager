@@ -1,7 +1,7 @@
 {
   "label": "Javni ključ ili federativna adresa",
   "placeholder": "Unesite svoj javni ključ ili adresu federacije",
-  "load": "Trgovina",
+  "load": "Predučitaj račun",
   "deleteFromList": "Ukloni s popisa",
   "source": "Izvor",
   "destination": {

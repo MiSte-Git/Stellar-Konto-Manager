@@ -1,0 +1,37 @@
+{
+  "signersTitle": "Firmatario",
+  "signersInfo": "Aggiungi firmatari aggiuntivi e imposta le soglie appropriate.",
+  "signersCount": "Numero di firmatari",
+  "signersCountLimit": "Nota: Limite di Rete (Stellar): max. 20 firmatari aggiuntivi.",
+  "bestPractices": {
+    "title": "Migliori pratiche",
+    "text": "Mantieni le chiavi segrete al sicuro e non distribuirle inutilmente."
+  },
+  "signerTypeNote": "Note: SKM only sets ed25519 signers. For hashX/preAuthTx use",
+  "signerTypeLink": "lab.stellar.org",
+  "masterWeight": "Peso principale",
+  "threshold": "Soglia (basso/medio/alto)",
+  "thresholdLow": "basso",
+  "thresholdMed": "medio",
+  "thresholdHigh": "alto",
+  "thresholdLevelsHint": "In genere vale quanto segue: basso = semplici modifiche (e.g., memo, price), medio = pagamenti/commercio, alto = modifiche critiche per la sicurezza (e.g., signer/thresholds). Low / Med / High definiscono il peso minimo richiesto dei firmatari per un'operazione.",
+  "thresholdSum": "Peso totale: {{sum}}",
+  "thresholdTooHigh": "Nota: Una soglia non deve superare la somma dei pesi. Si prega di regolare i valori di conseguenza.",
+  "hints": {
+    "byteRange": "(0–255)"
+  },
+  "tooltips": {
+    "low": "Basso: modifiche semplici (e.g., memo, price).",
+    "med": "Mezzi: Pagamenti e azioni commerciali.",
+    "high": "Alto: modifiche critiche per la sicurezza (e.g., signers/thresholds).",
+    "signerWeight": "Peso dei firmatari (0–255): Anche i firmatari aggiuntivi hanno il diritto di voto. Il peso determina quanti voti contribuisce la loro firma. Quando una transazione viene presentata, tutti i voti espressi vengono sommati. Se viene raggiunto il numero minimo di voti specificato (Threshold), la transazione è considerata autorizzata.",
+    "masterWeight": "Peso del titolare del conto (Master) (0-255): La chiave principale del conto ha diritti di voto. Maggiore è il suo peso, più voti conta la sua firma. Questi voti vengono contati insieme ai voti di altri firmatari per verificare se è stata raggiunta la maggioranza richiesta."
+  },
+  "units": {
+    "signatures": "peso minimo"
+  },
+  "safety": {
+    "errorTitle": "Safety check blocked",
+    "warningTitle": "Safety warnings"
+  }
+}

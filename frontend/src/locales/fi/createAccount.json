@@ -47,29 +47,14 @@
   "activateOnly": "Aktivoi vain",
   "balanceWarning": "Aloitussaldo on todennäköisesti liian alhainen, jotta voidaan lisätä {{count}} lisäallekirjoittajaa (vähimmäisvaraus: {{req}} XLM).",
   "createButton": "Luo / Aseta Multisig",
-  "hints": {
-    "byteRange": "(0–255)"
-  },
   "mainnetActivateNote": "Huom: Moniallekirjoituksille tarvitaan lisävarauksia. 1 XLM ei usein riitä.",
   "reserve": {
     "base": "Perusvaraus per merkintä: {{val}} XLM",
     "recommended": "Suositeltu aloitussaldo: {{val}} XLM (inkl. Puffer)",
     "required": "Vaadittu vähimmäisvaranto (neu): {{val}} XLM"
   },
-  "signersCountHint": "Asetat alla olevan vähimmäismäärän allekirjoituksia kohdassa \"Vaaditut allekirjoitukset\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Huomautus: Verkon rajapinta (Stellar): enintään 20 lisäallekirjoittajaa.",
   "startingBalance": "Aloitussaldo (XLM)",
-  "threshold": "Vaaditut allekirjoitukset (niedrig/mittel/hoch)",
-  "thresholdLow": "matala",
-  "thresholdMed": "keskitaso",
-  "thresholdHigh": "korkea",
-  "thresholdCurrent": "Tällä hetkellä valittuna: matala={{low}}, keskitaso={{med}}, korkea={{high}} yhteensä {{total}} allekirjoituksesta",
-  "thresholdHelp": "Kynnysarvo: Vaadittujen allekirjoitusten määrä (pää + allekirjoittajat), jotta tapahtuma olisi pätevä.",
-  "thresholdInfo": "Suositus: {{req}}/{{total}} allekirjoitusta (inkl. Master)",
-  "thresholdLevelsHint": "Tyypillisesti pätee seuraava: matala = yksinkertaiset muutokset (e.g., memo, price), keskitaso = maksut/kauppa, korkea = turvallisuuskriittiset muutokset (e.g., signer/thresholds).",
-  "thresholdStatic": "Vaaditaan: {{val}} {{total}}:sta allekirjoituksesta (niedrig/mittel/hoch)",
-  "thresholdSum": "Summa painot: {{sum}}",
-  "thresholdTooHigh": "Huomaa: Kynnysarvo ei saa ylittää painojen summaa. Säädä arvot vastaavasti.",
   "keyWarning": {
     "title": "⚠️ Varmista avaimen turvallisuus nyt!",
     "text1": "Olet luonut uuden avainparin.",
@@ -78,17 +63,6 @@
     "list2": "Salainen avain: Salasanasi – ÄLÄ koskaan jaa tai tallenna sitä verkossa!",
     "list3": "Jos salainen avain katoaa, pääsy menetetään peruuttamattomasti.",
     "confirm": "Olen turvannut molemmat avaimet."
-  },
-  "tooltips": {
-    "high": "Korkea: turvallisuuskriittiset muutokset (e.g., signers/thresholds).",
-    "low": "Low: yksinkertaiset muutokset (e.g., memo, price).",
-    "masterWeight": "Tilinhaltijan paino (Master) (0-255): Tilin pääavaimella on äänioikeus. Mitä suurempi sen paino on, sitä enemmän sen allekirjoitus lasketaan ääniksi. Nämä äänet lasketaan yhdessä muiden allekirjoittajien äänien kanssa, jotta voidaan tarkistaa, onko vaadittu enemmistö saavutettu.",
-    "med": "Tarkoittaa: Maksut ja kauppatoimet.",
-    "signerWeight": "Allekirjoittajien painoarvo (0–255): Lisäallekirjoittajilla on myös äänioikeus. Painoarvo määrittää, kuinka monta ääntä heidän allekirjoituksensa tuo mukanaan. Kun tapahtuma lähetetään, kaikki annetut äänet lasketaan yhteen. Jos määritelty vähimmäisäänimäärä (Threshold) saavutetaan, tapahtuma katsotaan hyväksytyksi.",
-    "signerWeightHint": "Huomaa: Master- ja allekirjoittajapainot yhteenlaskettuina muodostavat summan; kynnysarvot (niedrig/mittel/hoch) eivät saa ylittää tätä summaa."
-  },
-  "units": {
-    "signatures": "Allekirjoitus (en)"
   },
   "muxedId": "Muxed-ID",
   "muxedInfo": "Muxed-ID: tä käytetään M-osoitteen (M...) luomiseen. Se osoittaa samaan tiliin kuin tavallinen osoite (G...).",

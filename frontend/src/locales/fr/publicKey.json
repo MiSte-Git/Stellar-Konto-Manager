@@ -1,7 +1,7 @@
 {
   "label": "Clé publique ou adresse de fédération",
   "placeholder": "Entrez votre clé publique ou une adresse de fédération.",
-  "load": "Boutique",
+  "load": "Précharger le compte",
   "deleteFromList": "Retirer de la liste",
   "source": "Source",
   "destination": {

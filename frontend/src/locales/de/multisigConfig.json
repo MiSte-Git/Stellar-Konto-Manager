@@ -1,0 +1,37 @@
+{
+  "signersTitle": "Unterzeichner (ed25519)",
+  "signersInfo": "Füge weitere Unterzeichner hinzu und setze geeignete Schwellenwerte.",
+  "signersCount": "Anzahl Unterzeichner",
+  "signersCountLimit": "Hinweis: Netzwerkgrenze (Stellar): max. 20 zusätzliche Unterzeichner.",
+  "bestPractices": {
+    "title": "Best Practices",
+    "text": "Bewahre Secret Keys sicher auf und verteile sie nicht unnötig."
+  },
+  "signerTypeNote": "Hinweis: SKM setzt nur ed25519-Unterzeichner. Für hashX/preAuthTx nutze",
+  "signerTypeLink": "lab.stellar.org",
+  "masterWeight": "Master-Gewicht",
+  "threshold": "Schwellenwert (niedrig/mittel/hoch)",
+  "thresholdLow": "niedrig",
+  "thresholdMed": "mittel",
+  "thresholdHigh": "hoch",
+  "thresholdLevelsHint": "Typischerweise gilt: niedrig = einfache Änderungen (z. B. Memo, Preis), mittel = Zahlungen/Handel, hoch = sicherheitskritische Änderungen (z. B. Signer/Schwellen). Low / Med / High definieren das erforderliche Mindest-Unterzeichner-Gewicht für eine Operation.",
+  "thresholdSum": "Summe Gewichte: {{sum}}",
+  "thresholdTooHigh": "Hinweis: Eine Schwelle darf die Summe der Gewichte nicht überschreiten. Bitte Werte anpassen.",
+  "hints": {
+    "byteRange": "(0–255)"
+  },
+  "tooltips": {
+    "low": "Niedrig: einfache Änderungen (z. B. Memo, Preis).",
+    "med": "Mittel: Zahlungen und Handelsaktionen.",
+    "high": "Hoch: sicherheitskritische Änderungen (z. B. Unterzeichner/Schwellen).",
+    "signerWeight": "Gewicht der Unterzeichner (0–255): Auch zusätzliche Unterzeichner haben Stimmrechte. Das Gewicht legt fest, wie viele Stimmen ihre Unterschrift beiträgt. Wenn eine Transaktion gesendet wird, werden alle abgegebenen Stimmen addiert. Ist die festgelegte Mindestanzahl an Stimmen (Threshold) erreicht, gilt die Transaktion als autorisiert.",
+    "masterWeight": "Gewicht des Kontoinhabers (Master) (0-255): Der Hauptschlüssel des Kontos hat ein Stimmrecht. Je höher sein Gewicht, desto mehr Stimmen zählt seine Unterschrift. Diese Stimmen werden zusammen mit den Stimmen anderer Unterzeichner gezählt, um zu prüfen, ob die erforderliche Mehrheit erreicht ist."
+  },
+  "units": {
+    "signatures": "Mindestgewicht"
+  },
+  "safety": {
+    "errorTitle": "Sicherheitscheck blockiert",
+    "warningTitle": "Sicherheitswarnungen"
+  }
+}

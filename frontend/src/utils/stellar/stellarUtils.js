@@ -632,7 +632,7 @@ export async function deleteTrustlinesInChunks({
   }
 
   if (allDeleted.length === 0) {
-    if (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production') {
+    if (import.meta.env.MODE !== 'production') {
       try { console.error('[Trustline delete] no matching balance on account', targetAccount, { trustlines }); } catch { /* noop */ }
     }
     throw new Error('error.trustline.notFound');

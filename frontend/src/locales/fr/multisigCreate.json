@@ -5,13 +5,6 @@
   "hint": "Créez un nouveau compte, activez-le et configurez éventuellement la signature multiple.",
   "generateKeys": "Générer une clé",
   "enableMultisig": "Activer la multisignature.",
-  "signersTitle": "Signer",
-  "signersInfo": "Ajoutez des signataires supplémentaires et définissez des seuils appropriés.",
-  "signersCount": "Nombre de signataires",
-  "bestPractices": {
-    "title": "Meilleures pratiques",
-    "text": "Gardez les clés secrètes sécurisées et ne les distribuez pas inutilement."
-  },
   "instructions": {
     "public": "Partagez cette clé publique avec d'autres pour les paiements.",
     "secret": "Gardez cette clé secrète en sécurité ; ne la partagez jamais."
@@ -47,29 +40,14 @@
   "activateOnly": "Activez simplement",
   "balanceWarning": "Le solde initial est probablement trop bas pour ajouter les {{count}} signataires supplémentaires (réserve minimale : {{req}} XLM).",
   "createButton": "Créer / Configurer une signature multiple",
-  "hints": {
-    "byteRange": "(0–255)"
-  },
   "mainnetActivateNote": "Remarque : Des réserves supplémentaires sont nécessaires pour le multisig. 1 XLM n'est souvent pas suffisant.",
   "reserve": {
     "base": "Réserve de base par entrée : {{val}} XLM",
     "recommended": "Solde de départ recommandé : {{val}} XLM (inkl. Puffer)",
     "required": "Réserve Minimum Obligatoire (neu): {{val}} XLM"
   },
-  "signersCountHint": "Vous définissez le nombre minimum de signatures ci-dessous sous \"Signatures requises\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Remarque : Limite du réseau (Stellar) : max. 20 signataires supplémentaires.",
   "startingBalance": "Crédit initial (XLM)",
-  "threshold": "Signatures requises (niedrig/mittel/hoch)",
-  "thresholdLow": "faible",
-  "thresholdMed": "moyen",
-  "thresholdHigh": "élevé",
-  "thresholdCurrent": "Actuellement sélectionné : bas={{low}}, moyen={{med}}, élevé={{high}} sur {{total}} signatures",
-  "thresholdHelp": "Seuil : Nombre de signatures requises (maître + signataires) pour qu'une transaction soit valide.",
-  "thresholdInfo": "Recommandation : {{req}} sur {{total}} signatures (inkl. Master)",
-  "thresholdLevelsHint": "Typiquement, le suivant s'applique : faible = modifications simples (e.g., memo, price), moyen = paiements/commerce, élevé = modifications critiques pour la sécurité (e.g., signer/thresholds).",
-  "thresholdStatic": "Requis : {{val}} de {{total}} signatures (niedrig/mittel/hoch)",
-  "thresholdSum": "Poids total : {{sum}}",
-  "thresholdTooHigh": "Remarque : Un seuil ne doit pas dépasser la somme des poids. Veuillez ajuster les valeurs en conséquence.",
   "keyWarning": {
     "title": "⚠️ Sécurisez votre clé maintenant !",
     "text1": "Vous avez généré une nouvelle paire de clés.",
@@ -78,17 +56,6 @@
     "list2": "Clé secrète : Votre mot de passe – NE le partagez JAMAIS et ne le stockez pas en ligne !",
     "list3": "Si la clé secrète est perdue, l'accès est irrémédiablement perdu.",
     "confirm": "J'ai sécurisé les deux clés."
-  },
-  "tooltips": {
-    "high": "Hoch: sicherheitskritische Änderungen (e.g., signers/thresholds).",
-    "low": "Faible : changements simples (e.g., memo, price).",
-    "masterWeight": "Poids du titulaire du compte (Master) (0-255) : La clé principale du compte possède des droits de vote. Plus son poids est élevé, plus sa signature compte de votes. Ces votes sont comptabilisés avec ceux des autres signataires pour vérifier si la majorité requise a été atteinte.",
-    "med": "Moyens : paiements et actions commerciales.",
-    "signerWeight": "Poids des signataires (0–255) : Les signataires supplémentaires ont également des droits de vote. Le poids détermine le nombre de voix que leur signature apporte. Lorsqu'une transaction est soumise, toutes les voix exprimées sont additionnées. Si le nombre minimum de voix spécifié (Threshold) est atteint, la transaction est considérée comme autorisée.",
-    "signerWeightHint": "Remarque : Les poids de maître et de signataire s'additionnent pour former le total ; les seuils (niedrig/mittel/hoch) ne doivent pas dépasser ce total."
-  },
-  "units": {
-    "signatures": "Signature(en)"
   },
   "muxedId": "ID multiplexées",
   "muxedInfo": "Avec le Muxed-ID, une M-address (M...) est créée. Elle pointe vers le même compte que l'adresse régulière (G...).",

@@ -5,13 +5,6 @@
   "hint": "Kreirajte novi račun, aktivirajte ga i opcionalno podesite multisig.",
   "generateKeys": "Generiraj ključ",
   "enableMultisig": "Omogući multisig",
-  "signersTitle": "Potpisnik",
-  "signersInfo": "Dodajte dodatne potpisnike i postavite odgovarajuće pragove.",
-  "signersCount": "Broj potpisnika",
-  "bestPractices": {
-    "title": "Najbolje prakse",
-    "text": "Čuvajte tajne ključeve sigurnima i nemojte ih nepotrebno dijeliti."
-  },
   "instructions": {
     "public": "Podijelite ovaj javni ključ s drugima za plaćanja.",
     "secret": "Održavajte ovaj tajni ključ sigurnim; nikada ga ne dijelite."
@@ -47,29 +40,14 @@
   "activateOnly": "Samo aktivirajte",
   "balanceWarning": "Početno stanje je vjerojatno prenisko da bi se dodalo {{count}} dodatnih potpisnika (minimalna rezerva: {{req}} XLM).",
   "createButton": "Kreiraj / Postavi multisig",
-  "hints": {
-    "byteRange": "(0–255)"
-  },
   "mainnetActivateNote": "Napomena: Dodatne rezerve su potrebne za multisig. 1 XLM često nije dovoljan.",
   "reserve": {
     "base": "Osnovna rezerva po unosu: {{val}} XLM",
     "recommended": "Preporučeni početni saldo: {{val}} XLM (inkl. Puffer)",
     "required": "Obavezna Minimalna Rezerva (neu): {{val}} XLM"
   },
-  "signersCountHint": "Postavite minimalni broj potpisa u nastavku pod \"Required Signatures\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Napomena: Granica Mreže (Stellar): maks. 20 dodatnih potpisnika.",
   "startingBalance": "Početni kredit (Initial credit)",
-  "threshold": "Potrebni potpisi (niedrig/mittel/hoch)",
-  "thresholdLow": "nizak",
-  "thresholdMed": "srednji",
-  "thresholdHigh": "visoko",
-  "thresholdCurrent": "Trenutno odabrano: nisko={{low}}, srednje={{med}}, visoko={{high}} od ukupno {{total}} potpisa.",
-  "thresholdHelp": "Prag: Broj potrebnih potpisa (master + potpisnici) da transakcija bude važeća.",
-  "thresholdInfo": "Preporuka: {{req}} od {{total}} potpisa (inkl. Master)",
-  "thresholdLevelsHint": "Tipično vrijedi sljedeće: low = jednostavne promjene (e.g., memo, price), medium = plaćanja/trgovina, high = sigurnosno kritične promjene (e.g., signer/thresholds).",
-  "thresholdStatic": "Erforderlich: {{val}} von {{total}} Unterschriften (niedrig/mittel/hoch)",
-  "thresholdSum": "Ukupna težina: {{sum}}",
-  "thresholdTooHigh": "Napomena: Prag ne smije prelaziti zbroj težina. Molimo da u skladu s tim prilagodite vrijednosti.",
   "keyWarning": {
     "title": "⚠️ Osigurajte svoj ključ sada!",
     "text1": "Generirali ste novi par ključeva.",
@@ -78,17 +56,6 @@
     "list2": "Tajni ključ: Vaša lozinka – NIKADA je ne dijelite niti pohranjujte online!",
     "list3": "Ako se tajni ključ izgubi, pristup je nepovratno izgubljen.",
     "confirm": "Osigurao sam oba ključa."
-  },
-  "tooltips": {
-    "high": "Visoka: promjene od kritične važnosti za sigurnost (e.g., signers/thresholds).",
-    "low": "Niska: jednostavne promjene (e.g., memo, price).",
-    "masterWeight": "Težina nositelja računa (Master) (0-255): Glavni ključ računa ima pravo glasa. Što je njegova težina veća, to više glasova njegovi potpisi vrijede. Ovi glasovi se zbrajaju s glasovima drugih potpisnika kako bi se provjerilo je li postignuta potrebna većina.",
-    "med": "Sredstva: Plaćanja i trgovinske radnje.",
-    "signerWeight": "Težina potpisnika (0–255): Dodatni potpisnici također imaju pravo glasa. Težina određuje koliko glasova njihov potpis pridonosi. Kada se transakcija podnese, svi dani glasovi se zbrajaju. Ako se postigne određeni minimalni broj glasova (Threshold), transakcija se smatra autoriziranom.",
-    "signerWeightHint": "Napomena: Težine glavnog i potpisnika zbroje se do ukupnog; pragovi (niedrig/mittel/hoch) ne smiju prelaziti ovaj ukupni iznos."
-  },
-  "units": {
-    "signatures": "Potpis(en)"
   },
   "muxedId": "Muxed-ID",
   "muxedInfo": "S Muxed-ID-em se stvara M-adresa (M...). Ona upućuje na isti račun kao i redovna adresa (G...).",

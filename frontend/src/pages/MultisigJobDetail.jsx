@@ -200,7 +200,6 @@ function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
                 {(job?.signers || []).map((s) => {
                   const pk = s.publicKey || '';
                   const signed = collectedSet.has(pk);
-                  const short = pk ? `${pk.slice(0, 4)}…${pk.slice(-4)}` : '';
                   return (
                     <span
                       key={pk || Math.random()}

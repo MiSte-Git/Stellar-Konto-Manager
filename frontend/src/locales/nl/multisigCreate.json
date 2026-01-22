@@ -5,13 +5,6 @@
   "hint": "Maak een nieuw account aan, activeer het en configureer indien gewenst multisig.",
   "generateKeys": "Sleutel genereren",
   "enableMultisig": "Multisig inschakelen",
-  "signersTitle": "Ondertekenaar",
-  "signersInfo": "Voeg extra ondertekenaars toe en stel passende drempels in.",
-  "signersCount": "Aantal ondertekenaars",
-  "bestPractices": {
-    "title": "Best practices",
-    "text": "Houd geheime sleutels veilig en verspreid ze niet onnodig."
-  },
   "instructions": {
     "public": "Deel deze publieke sleutel met anderen voor betalingen.",
     "secret": "Houd deze geheime sleutel veilig; deel deze nooit."
@@ -47,29 +40,14 @@
   "activateOnly": "Gewoon activeren",
   "balanceWarning": "Het beginsaldo is waarschijnlijk te laag om de {{count}} extra ondertekenaars toe te voegen (minimale reserve: {{req}} XLM).",
   "createButton": "Maak / Stel multisig in",
-  "hints": {
-    "byteRange": "(0–255)"
-  },
   "mainnetActivateNote": "Opmerking: Extra reserves zijn noodzakelijk voor multisig. 1 XLM is vaak niet voldoende.",
   "reserve": {
     "base": "Basisreserve per invoer: {{val}} XLM",
     "recommended": "Aanbevolen beginsaldo: {{val}} XLM (inkl. Puffer)",
     "required": "Vereiste Minimumreserve (neu): {{val}} XLM"
   },
-  "signersCountHint": "U stelt het minimumaantal handtekeningen hieronder in onder \"Vereiste Handtekeningen\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Opmerking: Netwerkgrens (Stellar): max. 20 extra ondertekenaars.",
   "startingBalance": "Initiële krediet (XLM)",
-  "threshold": "Vereiste handtekeningen (niedrig/mittel/hoch)",
-  "thresholdLow": "laag",
-  "thresholdMed": "medium",
-  "thresholdHigh": "hoog",
-  "thresholdCurrent": "Momenteel geselecteerd: laag={{low}}, medium={{med}}, hoog={{high}} van in totaal {{total}} handtekeningen",
-  "thresholdHelp": "Drempel: Aantal vereiste handtekeningen (meester + ondertekenaars) zodat een transactie geldig is.",
-  "thresholdInfo": "Aanbeveling: {{req}} van de {{total}} handtekeningen (inkl. Master)",
-  "thresholdLevelsHint": "Typisch geldt het volgende: laag = eenvoudige veranderingen (e.g., memo, price), medium = betalingen/handel, hoog = beveiligingskritische veranderingen (e.g., signer/thresholds)",
-  "thresholdStatic": "Vereist: {{val}} van {{total}} handtekeningen (niedrig/mittel/hoch)",
-  "thresholdSum": "Totaal gewicht: {{sum}}",
-  "thresholdTooHigh": "Opmerking: Een drempel mag de som van de gewichten niet overschrijden. Pas de waarden dienovereenkomstig aan.",
   "keyWarning": {
     "title": "⚠️ Beveilig nu je sleutel!",
     "text1": "U hebt een nieuw sleutelpaar gegenereerd.",
@@ -78,17 +56,6 @@
     "list2": "Geheime sleutel: Uw wachtwoord – NOOIT online delen of opslaan!",
     "list3": "Als de geheime sleutel verloren gaat, is de toegang onherroepelijk verloren.",
     "confirm": "Ik heb beide sleutels veiliggesteld."
-  },
-  "tooltips": {
-    "high": "Hoog: veiligheid kritische wijzigingen (e.g., signers/thresholds).",
-    "low": "Laag: eenvoudige wijzigingen (e.g., memo, price).",
-    "masterWeight": "Gewicht van de rekeninghouder (Master) (0-255): De hoofdsleutel van de rekening heeft stemrecht. Hoe hoger het gewicht, hoe meer stemmen de handtekening telt. Deze stemmen worden samen met de stemmen van andere ondertekenaars geteld om te controleren of de vereiste meerderheid is behaald.",
-    "med": "Betalingen en handelshandelingen.",
-    "signerWeight": "Gewicht van de ondertekenaars (0–255): Extra ondertekenaars hebben ook stemrechten. Het gewicht bepaalt hoeveel stemmen hun handtekening bijdraagt. Wanneer een transactie wordt ingediend, worden alle uitgebrachte stemmen bij elkaar opgeteld. Als het gespecificeerde minimum aantal stemmen (Threshold) wordt bereikt, wordt de transactie als geautoriseerd beschouwd.",
-    "signerWeightHint": "Let op: De gewichten van de master en de ondertekenaars tellen op tot het totaal; drempelwaarden (niedrig/mittel/hoch) mogen dit totaal niet overschrijden."
-  },
-  "units": {
-    "signatures": "Handtekening(en)"
   },
   "muxedId": "Gemuxte-ID",
   "muxedInfo": "Met de Muxed-ID wordt een M-adres (M...) aangemaakt. Het wijst naar dezelfde rekening als het reguliere adres (G...).",

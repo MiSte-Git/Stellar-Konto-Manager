@@ -3,15 +3,23 @@ import { useTranslation } from 'react-i18next';
 import SecretKeyModal from '../components/SecretKeyModal.jsx';
 import MultiSigHelpDialog from '../components/multisig/MultiSigHelpDialog.jsx';
 import MultisigPrepareDialog from '../components/MultisigPrepareDialog.jsx';
+import MultisigConfigForm from '../components/multisig/MultisigConfigForm.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { validateMultisigConfig } from '../utils/validateMultisigConfig.js';
+import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
 import { Keypair, Networks, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
 import { apiUrl } from '../utils/apiBase.js';
 import { createPendingMultisigJob } from '../utils/multisigApi.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
+
+function clampByte(n) {
+  const v = Number(n);
+  if (!Number.isFinite(v)) return 0;
+  return Math.max(0, Math.min(255, Math.trunc(v)));
+}
 
 function NetworkSelector({ value, onChange }) {
   const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount']);
@@ -38,7 +46,7 @@ function NetworkSelector({ value, onChange }) {
 }
 
 export default function MultisigEditPage({ defaultPublicKey = '' }) {
-  const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount', 'multisig', 'glossary']);
+  const { t } = useTranslation(['network', 'common', 'multisigConfig', 'publicKey', 'multisig', 'glossary']);
 
   const [network, setNetwork] = useState(() => {
   try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
@@ -93,13 +101,6 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     [currentAccount, thresholdsForModal]
   );
 
-  // Helper: clamp to 0..255 integer
-  function clampByte(n) {
-    const v = Number(n);
-    if (!Number.isFinite(v)) return 0;
-    return Math.max(0, Math.min(255, Math.trunc(v)));
-  }
-
   const sumWeights = useMemo(() => {
     const sw = signers.reduce((acc, s) => acc + clampByte(s.weight || 0), 0) + clampByte(masterWeight);
     return sw;
@@ -109,56 +110,18 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const thMedErr = medT > sumWeights;
   const thHighErr = highT > sumWeights;
   const safetyCheck = useMemo(() => {
-    const plannedMaster = clampByte(masterWeight);
-    const plannedThresholds = {
-      low: clampByte(lowT),
-      med: clampByte(medT),
-      high: clampByte(highT),
-    };
-    const plannedEd25519 = [
-      ...(defaultPublicKey ? [{ key: (defaultPublicKey || '').trim(), weight: plannedMaster }] : []),
-      ...(signers || []).map((s) => ({
-        key: (s.key || '').trim(),
-        weight: clampByte(s.weight || 0),
-      })),
-    ].filter((s) => s.key && StrKey.isValidEd25519PublicKey(s.key) && s.weight > 0);
-    const plannedEd25519Weight = plannedEd25519.reduce((acc, s) => acc + s.weight, 0);
-    const plannedEd25519Count = plannedEd25519.length;
-    const specialSigners = (currentAccount?.signers || [])
-      .filter((s) => s?.type && String(s.type) !== 'ed25519_public_key' && Number(s.weight || 0) > 0)
-      .map((s) => ({ type: s.type, weight: clampByte(s.weight || 0) }));
-    const specialWeight = specialSigners.reduce((acc, s) => acc + s.weight, 0);
-    const totalWeightAll = plannedEd25519Weight + specialWeight;
-    const errors = [];
-    if (totalWeightAll < 1) {
-      errors.push(t('common:multisigEdit.error.noActiveSigners'));
-    }
-    if (plannedEd25519Count < 1) {
-      errors.push(t('common:multisigEdit.error.noEd25519Signers'));
-    }
-    if (plannedMaster === 0 && totalWeightAll < plannedThresholds.high) {
-      errors.push(t('common:multisigEdit.error.masterZeroInsufficientHigh', { sum: totalWeightAll, high: plannedThresholds.high }));
-    }
-    if (totalWeightAll < plannedThresholds.high) {
-      errors.push(t('common:multisigEdit.error.thresholdHighUnreachable', { sum: totalWeightAll, high: plannedThresholds.high }));
-    }
-    if (totalWeightAll < plannedThresholds.med) {
-      errors.push(t('common:multisigEdit.error.thresholdMedUnreachable', { sum: totalWeightAll, med: plannedThresholds.med }));
-    }
-    if (specialSigners.length > 0 && plannedEd25519Weight < plannedThresholds.high) {
-      errors.push(t('common:multisigEdit.error.specialSignerLastHigh', { sum: plannedEd25519Weight, high: plannedThresholds.high }));
-    }
-    if (plannedEd25519Weight < plannedThresholds.high) {
-      errors.push(t('common:multisigEdit.error.setOptionsNotSignable', { sum: plannedEd25519Weight, high: plannedThresholds.high }));
-    }
-    const warnings = [];
-    if (plannedThresholds.high > 0 && plannedEd25519Count === 1) {
-      warnings.push(t('common:multisigEdit.warning.highSingleSigner'));
-    }
-    if (plannedThresholds.med > 0 && plannedEd25519Count === 1) {
-      warnings.push(t('common:multisigEdit.warning.medSingleSigner'));
-    }
-    return { errors, warnings };
+    return getMultisigSafetyCheck({
+      t,
+      currentAccount,
+      defaultPublicKey,
+      masterWeight,
+      signers,
+      thresholds: {
+        low: lowT,
+        med: medT,
+        high: highT,
+      },
+    });
   }, [currentAccount, defaultPublicKey, highT, lowT, masterWeight, medT, signers, t]);
   const hasSafetyErrors = safetyCheck.errors.length > 0;
 
@@ -229,9 +192,19 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   function removeSignerRow(i) {
     setSigners(prev => prev.filter((_, idx) => idx !== i));
   }
+  function handleSignerCountChange(val) {
+    const next = Math.max(0, Math.min(20, Number(val) || 0));
+    setSigners((prev) => {
+      if (prev.length === next) return prev;
+      if (prev.length < next) {
+        return [...prev, ...Array.from({ length: next - prev.length }, () => ({ key: '', weight: 1 }))];
+      }
+      return prev.slice(0, next);
+    });
+  }
 
   // Build and submit transaction
-  async function buildSetOptionsTx(collectedSigners, { signTx = false, requireSigners = false } = {}) {
+  const buildSetOptionsTx = useCallback(async (collectedSigners, { signTx = false, requireSigners = false } = {}) => {
     const pk = (defaultPublicKey || '').trim();
     if (!pk) { throw new Error(t('publicKey:invalid')); }
     if (hasSafetyErrors) {
@@ -266,7 +239,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     ];
     const sanity = validateMultisigConfig(plannedSigners, plannedThresholds);
     if (!sanity.valid) {
-      if (process.env.NODE_ENV !== 'production') {
+      if (import.meta.env.MODE !== 'production') {
         console.warn('multisig invalid config', { reason: sanity.reason, thresholds: plannedThresholds, signers: plannedSigners });
       }
       throw new Error('submitTransaction.failed:' + 'multisig.invalidConfig');
@@ -321,7 +294,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       collectedSigners.forEach((s) => {
         try { tx.sign(s.keypair); } catch (e) { console.debug?.('sign failed', e); }
       });
-      if (process.env.NODE_ENV !== 'production') {
+      if (import.meta.env.MODE !== 'production') {
         console.debug('multisig setOptions signing', {
           required,
           current,
@@ -330,7 +303,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       }
     }
     return { tx, plannedThresholds, plannedMaster, plannedSigners };
-  }
+  }, [defaultPublicKey, hasSafetyErrors, highT, lowT, masterWeight, medT, passphrase, server, signers, t]);
 
   async function submitChanges(collectedSigners) {
     setShowSecretModal(false);
@@ -464,10 +437,10 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           subtitle: t('multisig:prepare.subtitle'),
           items: [
             { label: t('common:account.source', 'Quelle'), value: (defaultPublicKey || '').trim() },
-            { label: t('common:multisigEdit.masterWeight'), value: String(plannedMaster) },
-            { label: t('createAccount:thresholdLow'), value: String(plannedThresholds.low) },
-            { label: t('createAccount:thresholdMed'), value: String(plannedThresholds.med) },
-            { label: t('createAccount:thresholdHigh'), value: String(plannedThresholds.high) },
+            { label: t('multisigConfig:masterWeight'), value: String(plannedMaster) },
+            { label: t('multisigConfig:thresholdLow'), value: String(plannedThresholds.low) },
+            { label: t('multisigConfig:thresholdMed'), value: String(plannedThresholds.med) },
+            { label: t('multisigConfig:thresholdHigh'), value: String(plannedThresholds.high) },
             { label: t('common:signers', 'Signer'), value: String(plannedSigners.length) },
             { label: t('common:network', 'Netzwerk'), value: network },
             jobId ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: jobId } : null,
@@ -479,7 +452,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     } finally {
       setShowConfirmModal(false);
     }
-  }, [buildSetOptionsTx, defaultPublicKey, hasSafetyErrors, network, t]);
+  }, [buildSetOptionsTx, defaultPublicKey, getSessionSecret, hasSafetyErrors, network, t]);
 
   const buildPlannedChanges = useCallback(() => {
     const pk = (defaultPublicKey || '').trim();
@@ -520,7 +493,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const securityGuaranteeAfter = securityGuaranteeParts[1] || '';
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto p-4">
       <div className="mb-4 flex flex-wrap items-center justify-center gap-3 text-center">
         <h2 className="text-xl font-semibold">{t('common:multisigEdit.title')}</h2>
         <button
@@ -577,104 +550,64 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           </div>
         )}
 
-        {/* Signers first */}
-        <div className="mt-2">
-          <h4 className="font-semibold mb-1">{t('common:multisigEdit.signers')}</h4>
-          <div className="space-y-2">
-            {signers.map((s, i) => (
-              <div key={i} className="grid gap-2 sm:grid-cols-5 items-center">
-                <input
-                  type="text"
-                  value={s.key}
-                  onChange={(e)=>updateSignerKey(i, e.target.value)}
-                  placeholder="G..."
-                  className="sm:col-span-4 border rounded px-2 py-1 font-mono text-sm"
-                />
-                <div className="flex items-center gap-1 flex-wrap max-w-full">
-                  <input
-                    type="number"
-                    min={0}
-                    max={255}
-                    value={s.weight}
-                    onChange={(e)=>updateSignerWeight(i, e.target.value)}
-                    className="border rounded px-2 py-1 text-sm w-16"
-                    title={t('createAccount:tooltips.signerWeight')}
-                  />
-                  <button type="button" onClick={()=>removeSignerRow(i)} className="px-1.5 py-1 border rounded text-xs whitespace-nowrap hover:bg-gray-100 dark:hover:bg-gray-800">{t('common:option.delete')}</button>
-                </div>
-              </div>
-            ))}
-          </div>
-          <button type="button" onClick={addSignerRow} className="mt-2 px-2 py-1 border rounded text-sm hover:bg-gray-100 dark:hover:bg-gray-800">{t('common:option.add')}</button>
-          <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-            {t('common:multisigEdit.signerTypeNote')}{' '}
-            <a
-              href="https://lab.stellar.org"
-              target="_blank"
-              rel="noreferrer"
-              className="font-semibold underline underline-offset-2 text-blue-900 dark:text-blue-100"
-            >
-              {t('common:multisigEdit.signerTypeLink')}
-            </a>
-          </p>
-        </div>
-
-        {/* Master weight below signers */}
-        <div className="mt-4 flex items-center gap-3">
-          <label className="text-sm font-semibold inline-flex items-center gap-1">
-            {t('common:multisigEdit.masterWeight')}
-          </label>
-          <input type="number" min={0} max={255} value={masterWeight} onChange={(e)=>setMasterWeight(clampByte(e.target.value))} className="border rounded px-2 py-1 text-sm w-20" />
-        </div>
-
-        <div className="mt-4">
-          <label className="block text-sm font-semibold mb-1">{t('createAccount:threshold')}</label>
-          <div className="flex flex-wrap items-center gap-3 mt-2">
-            <label className="inline-flex items-center gap-2 text-sm">
-              <span>{t('createAccount:thresholdLow')} <span className="text-xs cursor-help" title={t('createAccount:tooltips.low')}>ⓘ</span></span>
-              <input type="number" min={0} max={255} value={lowT} onChange={(e)=>setLowT(clampByte(e.target.value))} className={`border rounded px-2 py-1 w-16 ${thLowErr ? 'border-red-500' : ''}`} />
-              <span className="text-xs text-gray-700 dark:text-gray-300">{t('createAccount:units.signatures')}</span>
-            </label>
-            <label className="inline-flex items-center gap-2 text-sm">
-              <span>{t('createAccount:thresholdMed')} <span className="text-xs cursor-help" title={t('createAccount:tooltips.med')}>ⓘ</span></span>
-              <input type="number" min={0} max={255} value={medT} onChange={(e)=>setMedT(clampByte(e.target.value))} className={`border rounded px-2 py-1 w-16 ${thMedErr ? 'border-red-500' : ''}`} />
-              <span className="text-xs text-gray-700 dark:text-gray-300">{t('createAccount:units.signatures')}</span>
-            </label>
-            <label className="inline-flex items-center gap-2 text-sm">
-              <span>{t('createAccount:thresholdHigh')} <span className="text-xs cursor-help" title={t('createAccount:tooltips.high')}>ⓘ</span></span>
-              <input type="number" min={0} max={255} value={highT} onChange={(e)=>setHighT(clampByte(e.target.value))} className={`border rounded px-2 py-1 w-16 ${thHighErr ? 'border-red-500' : ''}`} />
-              <span className="text-xs text-gray-700 dark:text-gray-300">{t('createAccount:units.signatures')}</span>
-            </label>
-          </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('createAccount:thresholdLevelsHint')} • {t('createAccount:thresholdSum', { sum: sumWeights })}</p>
-          {(thLowErr || thMedErr || thHighErr) && (
-            <p className="text-xs text-red-600 mt-1">{t('createAccount:thresholdTooHigh')}</p>
-          )}
-          {safetyCheck.errors.length > 0 && (
-            <div className="mt-2 border border-red-400 bg-red-50 dark:border-red-700 dark:bg-red-900/30 rounded p-2">
-              <div className="text-xs font-semibold text-red-900 dark:text-red-100">
-                {t('common:multisigEdit.error.safetyTitle')}
-              </div>
-              <ul className="list-disc ml-4 text-xs text-red-800 dark:text-red-200 mt-1 space-y-1">
-                {safetyCheck.errors.map((msg, idx) => (
-                  <li key={idx}>{msg}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {safetyCheck.warnings.length > 0 && (
-            <div className="mt-2 border border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded p-2">
-              <div className="text-xs font-semibold text-amber-900 dark:text-amber-100">
-                {t('common:multisigEdit.warning.safetyTitle')}
-              </div>
-              <ul className="list-disc ml-4 text-xs text-amber-800 dark:text-amber-200 mt-1 space-y-1">
-                {safetyCheck.warnings.map((msg, idx) => (
-                  <li key={idx}>{msg}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+        <MultisigConfigForm
+          signersTitle={t('multisigConfig:signersTitle')}
+          titleAs="h4"
+          titleClassName="font-semibold mb-1"
+          signersInfo={t('multisigConfig:signersInfo')}
+          showSignerCount
+          signerCount={signers.length}
+          signerCountMin={0}
+          signerCountMax={20}
+          onSignerCountChange={handleSignerCountChange}
+          signerCountLabel={t('multisigConfig:signersCount')}
+          signerCountLimitLabel={t('multisigConfig:signersCountLimit')}
+          signerCountLimitTitle={t('multisigConfig:signersCountLimit')}
+          signers={signers}
+          signerWeightHeaderLabel={t('common:multisigEdit.weight', 'Gewicht')}
+          signerPlaceholder="G..."
+          onSignerKeyChange={updateSignerKey}
+          onSignerWeightChange={updateSignerWeight}
+          signerWeightTooltip={t('multisigConfig:tooltips.signerWeight')}
+          signerWeightInputClassName="border rounded px-2 py-1 text-sm w-20"
+          onRemoveSigner={removeSignerRow}
+          removeSignerLabel={t('common:option.delete')}
+          showSignerTypeNote
+          signerTypeNote={t('multisigConfig:signerTypeNote')}
+          signerTypeLinkLabel={t('multisigConfig:signerTypeLink')}
+          signerTypeLinkUrl="https://lab.stellar.org"
+          masterWeight={masterWeight}
+          onMasterWeightChange={(value) => setMasterWeight(clampByte(value))}
+          masterWeightLabel={t('multisigConfig:masterWeight')}
+          masterWeightInputClassName="border rounded px-2 py-1 text-sm w-24"
+          thresholdsLabel={t('multisigConfig:threshold')}
+          thresholdLabels={{
+            low: t('multisigConfig:thresholdLow'),
+            med: t('multisigConfig:thresholdMed'),
+            high: t('multisigConfig:thresholdHigh'),
+          }}
+          thresholdTooltips={{
+            low: t('multisigConfig:tooltips.low'),
+            med: t('multisigConfig:tooltips.med'),
+            high: t('multisigConfig:tooltips.high'),
+          }}
+          thresholdValues={{ low: lowT, med: medT, high: highT }}
+          thresholdErrors={{ low: thLowErr, med: thMedErr, high: thHighErr }}
+          onThresholdChange={(kind, value) => {
+            if (kind === 'low') setLowT(clampByte(value));
+            if (kind === 'med') setMedT(clampByte(value));
+            if (kind === 'high') setHighT(clampByte(value));
+          }}
+          thresholdInputClassName="border rounded px-2 py-1 w-16"
+          thresholdUnitsLabel={t('multisigConfig:units.signatures')}
+          thresholdLevelsHint={t('multisigConfig:thresholdLevelsHint')}
+          thresholdSumText={t('multisigConfig:thresholdSum', { sum: sumWeights })}
+          thresholdTooHighText={t('multisigConfig:thresholdTooHigh')}
+          safetyErrors={safetyCheck.errors}
+          safetyWarnings={safetyCheck.warnings}
+          safetyErrorTitle={t('multisigConfig:safety.errorTitle')}
+          safetyWarningTitle={t('multisigConfig:safety.warningTitle')}
+        />
       </div>
 
       <div className="flex gap-2">
@@ -700,22 +633,22 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
             </div>
             <div className="text-sm space-y-1 mb-4">
               <div className="flex items-center gap-2">
-                <span className="text-gray-700 dark:text-gray-300">{t('common:multisigEdit.masterWeight')}</span>
+                <span className="text-gray-700 dark:text-gray-300">{t('multisigConfig:masterWeight')}</span>
                 <span className="font-mono">{masterWeight}</span>
               </div>
               <div className="flex flex-wrap gap-3">
-                <span className="text-gray-700 dark:text-gray-300">{t('createAccount:thresholdLow')}:</span>
+                <span className="text-gray-700 dark:text-gray-300">{t('multisigConfig:thresholdLow')}:</span>
                 <span className="font-mono">{lowT}</span>
-                <span className="text-gray-700 dark:text-gray-300">{t('createAccount:thresholdMed')}:</span>
+                <span className="text-gray-700 dark:text-gray-300">{t('multisigConfig:thresholdMed')}:</span>
                 <span className="font-mono">{medT}</span>
-                <span className="text-gray-700 dark:text-gray-300">{t('createAccount:thresholdHigh')}:</span>
+                <span className="text-gray-700 dark:text-gray-300">{t('multisigConfig:thresholdHigh')}:</span>
                 <span className="font-mono">{highT}</span>
               </div>
             </div>
             {safetyCheck.errors.length > 0 && (
               <div className="mb-4 border border-red-400 bg-red-50 dark:border-red-700 dark:bg-red-900/30 rounded p-2">
                 <div className="text-xs font-semibold text-red-900 dark:text-red-100">
-                  {t('common:multisigEdit.error.safetyTitle')}
+                  {t('multisigConfig:safety.errorTitle')}
                 </div>
                 <ul className="list-disc ml-4 text-xs text-red-800 dark:text-red-200 mt-1 space-y-1">
                   {safetyCheck.errors.map((msg, idx) => (
@@ -727,7 +660,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
             {safetyCheck.warnings.length > 0 && (
               <div className="mb-4 border border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded p-2">
                 <div className="text-xs font-semibold text-amber-900 dark:text-amber-100">
-                  {t('common:multisigEdit.warning.safetyTitle')}
+                  {t('multisigConfig:safety.warningTitle')}
                 </div>
                 <ul className="list-disc ml-4 text-xs text-amber-800 dark:text-amber-200 mt-1 space-y-1">
                   {safetyCheck.warnings.map((msg, idx) => (

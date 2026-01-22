@@ -439,7 +439,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       signerList.forEach((kpItem) => {
         try { tx.sign(kpItem); } catch (err) { console.debug?.('sign failed', err); }
       });
-      if (process.env.NODE_ENV !== 'production') {
+      if (import.meta.env.MODE !== 'production') {
         const required = requiredThreshold || 0;
         const signerMeta = signerList.map((s) => ({ publicKey: s.publicKey(), weight: (signersForModal.find((si)=>si.public_key===s.publicKey())?.weight)||0 }));
         const current = signerMeta.reduce((acc, s) => acc + Number(s.weight || 0), 0);
@@ -465,7 +465,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         activated,
       },
     };
-  }, [assetKey, baseReserve, buildMemoObject, dest, normalizeAmountValue, publicKey, server, t]);
+  }, [assetKey, baseReserve, buildMemoObject, dest, multisigTimeoutSeconds, normalizeAmountValue, publicKey, requiredThreshold, server, signersForModal, t]);
 
   const submitPayment = useCallback(async (signerKeypairs) => {
     const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
@@ -705,7 +705,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       showErrorMessage(detail || '');
       closeConfirmDialogs();
     }
-  }, [buildPaymentTx, closeConfirmDialogs, handlePaymentError, masterWeight, netLabel, openSecretModal, preflight, publicKey, showErrorMessage, t]);
+  }, [accountInfo, buildPaymentTx, closeConfirmDialogs, handlePaymentError, masterWeight, netLabel, openSecretModal, preflight, publicKey, requiredThreshold, showErrorMessage, t]);
 
   const handleConfirmProceed = useCallback(async () => {
     if (confirmChoice === 'local') {
@@ -1754,7 +1754,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               if (!primarySecret) {
                 throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
               }
-              const kp = Keypair.fromSecret(primarySecret);
               const required = requiredThreshold || 0;
               const current = Array.isArray(collected)
                 ? collected.reduce((acc, s) => acc + Number(s?.weight || 0), 0)

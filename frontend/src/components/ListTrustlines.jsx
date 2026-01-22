@@ -145,7 +145,7 @@ function ListTrustlines({
     (Array.isArray(collectedSigners) ? collectedSigners : []).forEach((s) => {
       try { tx.sign(s.keypair); } catch (e) { console.debug?.('sign failed', e); }
     });
-    if (process.env.NODE_ENV !== 'production') {
+    if (import.meta.env.MODE !== 'production') {
       try {
         console.debug('multisig changeTrust signing', {
           required,
@@ -440,7 +440,7 @@ function ListTrustlines({
       setIsProcessing(true);
       setModalError('');
       if (!pendingAdd) {
-        if (process.env.NODE_ENV !== 'production') {
+        if (import.meta.env.MODE !== 'production') {
           console.error('[Trustline create] missing pendingAdd', { pendingAdd });
         }
         return;
@@ -448,11 +448,11 @@ function ListTrustlines({
       const codeStr = String(pendingAdd.code ?? '').trim();
       const issuerStr = String(pendingAdd.issuer ?? '').trim();
       const limitStr = String(pendingAdd.limit ?? '').trim();
-      if (process.env.NODE_ENV !== 'production') {
+      if (import.meta.env.MODE !== 'production') {
         console.debug('[AddTrustline create payload]', { code: codeStr, issuer: issuerStr, limit: limitStr });
       }
       const asset = new Asset(codeStr, issuerStr);
-      const res = await submitChangeTrustTx({ asset, limit: String(limitStr), collectedSigners });
+      await submitChangeTrustTx({ asset, limit: String(limitStr), collectedSigners });
 
       setStatusMessages([t('trustline:add.success', { code: codeStr, issuer: issuerStr, count: 1 })]);
       setResults([]);
@@ -466,7 +466,7 @@ function ListTrustlines({
       setModalError(formatted);
       setStatusMessages([formatted]);
       setResults([]);
-      if (process.env.NODE_ENV !== 'production') {
+      if (import.meta.env.MODE !== 'production') {
         console.error('[AddTrustline exception]', err);
       }
     } finally {
