@@ -16,7 +16,7 @@ export default function GlossaryTermCard({
   return (
     <article className="rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm">
       <h2
-        className="text-lg font-semibold text-gray-900 dark:text-gray-100"
+        className="text-lg font-semibold text-gray-900 dark:text-gray-100 break-words"
         title={titleAttr}
         aria-label={titleAttr}
       >

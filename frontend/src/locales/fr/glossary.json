@@ -5,6 +5,18 @@
   "searchPlaceholder": "Terme de recherche (z. B. Konto, Account, Muxed)",
   "searchHint": "La recherche trouve des mots et des explications.",
   "noResults": "Pas de correspondance.",
+  "groups": {
+    "accountsKeys": "Comptes et clés",
+    "multisigSecurity": "Multisig et sécurité du compte",
+    "walletsCustody": "Portefeuilles et garde",
+    "tokensAssets": "Tokens et actifs",
+    "transactionsFees": "Transactions et frais",
+    "marketsTrading": "Marchés et trading",
+    "networkProtocol": "Réseau et protocole",
+    "smartContracts": "Contrats intelligents",
+    "blockchainBasics": "Bases de la blockchain",
+    "security": "Sécurité et fraude"
+  },
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
@@ -57,7 +69,26 @@
     "title": "Multisignature",
     "original": "Multi‑Sig",
     "short": "Les actions importantes nécessitent plus qu'une simple signature.",
-    "desc": "Multi-Sig signifie signatures multiples. Une action importante nécessite plus d'une clé. Par exemple, vous et une deuxième clé devez tous deux être d'accord avant que quelque chose puisse être envoyé. Cela rend le vol plus difficile."
+    "desc": "Multi-Sig signifie signatures multiples. Une action importante nécessite plus d'une clé. Par exemple, vous et une deuxième clé devez tous deux être d'accord avant que quelque chose puisse être envoyé. Cela rend le vol plus difficile.",
+    "help": {
+      "title": "Explication générale d'un compte d'entreprise à signatures multiples (Multi-Signature)",
+      "intro": "Une entreprise peut utiliser un compte blockchain commun impliquant plusieurs personnes autorisées. En général, au moins trois signataires (Signer) sont impliqués, tels que la direction, le responsable financier et la conformité/backup. L'objectif est que des personnes individuelles puissent exécuter des paiements de manière indépendante, sans qu'une seule personne ait le contrôle exclusif ou ne prenne le contrôle du compte.",
+      "problem": "Si un signataire (Signer) dispose de suffisamment de poids pour exécuter des paiements et simultanément suffisamment de poids pour effectuer des changements de compte, cette personne pourrait supprimer d'autres signataires (Signer) ou ajuster le seuil/pondération (Thresholds) et ainsi prendre le contrôle du compte. Inversement, le propriétaire original ne devrait pas non plus pouvoir exclure d'autres signataires (Signer) sans freins et contrepoids. Une structure multi-signatures garantit que les décisions importantes sont toujours soutenues collectivement par plusieurs personnes.",
+      "setupTitle": "Exemple d'une structure multi-signature sécurisée avec trois signataires",
+      "setupWeights": "Dans un exemple avec trois rôles équivalents, tous reçoivent la même force de signature :\n- Signataire (Signer) A (management) : poids 2\n- Signataire (Signer) B (Finanzen) : poids 2\n- Signataire (Signer) C (Compliance/Backup) : poids 2",
+      "setupThresholds": "Des seuils/pondérations appropriés sont définis :\n- Faible (low_threshold) : 1\n- Moyen (med_threshold) : 2 (for payments and other medium actions)\n- Élevé (high_threshold) : 4 (pour des changements structurels comme l'ajout/la suppression de signataires (Signer) ou la modification du seuil/pondération (Thresholds))\nCette configuration permet à chaque personne autorisée d'effectuer des paiements, mais aucune personne seule ne peut modifier la structure du compte.",
+      "behavior": "Avec cette configuration, les paiements peuvent être effectués individuellement par l'une des trois personnes autorisées, car le poids de chaque individu atteint le seuil moyen/Threshold. Cependant, pour les changements structurels tels que la suppression d'un signataire (Signers), l'ajustement des seuils/pondérations ou la fusion ou la clôture du compte, le seuil/pondération élevé(e) (high_threshold) est requis(e). Cette valeur ne peut être atteinte que si au moins deux des trois signataires (Signer) signent ensemble. De cette manière, le compte reste flexible pour un usage quotidien tout en étant bien protégé contre une utilisation abusive.",
+      "removal": "Si une personne quitte l'entreprise ou n'est plus digne de confiance, deux des signataires restants (Signer) peuvent ensemble révoquer les droits de signature de cette personne. Aucun signataire seul (Signer) – qu'il s'agisse d'un employé ou de la direction – ne peut exclure quelqu'un du compte de manière autonome. La révocation des autorisations se fait donc toujours de manière contrôlée et traçable, avec l'accord d'au moins deux responsables.",
+      "summary": "Ce type de structure à signatures multiples permet à des personnes individuelles de traiter les paiements efficacement tout en gardant le contrôle du compte entre les mains de plusieurs parties. Il réduit le risque de prise de contrôle du compte, protège contre les décisions unilatérales, et est particulièrement adapté aux comptes d'entreprise où la sécurité et la flexibilité opérationnelle sont importantes.",
+      "closeLabel": "Fermer",
+      "linkLabel": "Que signifie Multi-Signature ?",
+      "glossaryLinkLabel": "Voir dans le glossaire"
+    }
+  },
+  "multisigCorporate": {
+    "title": "Multisig en entreprise",
+    "original": "Multi-Signature (corporate example)",
+    "short": "Exemple de structure multisig pour comptes d'entreprise avec roles, poids et seuils."
   },
   "trustline": {
     "title": "Ligne de confiance",
@@ -78,7 +109,7 @@
     "desc": "Sur Stellar, un jeton est appelé un actif. Un actif est toujours lié à un compte émetteur. Par exemple, un compte peut émettre un jeton Euro. Ce jeton Euro est alors un actif."
   },
   "xlm": {
-    "title": "XLM (Stellar Lumens)",
+    "title": "XLM",
     "original": "XLM",
     "short": "La monnaie native de Stellar pour les frais et l'activation.",
     "desc": "XLM est la monnaie native de Stellar. Vous avez besoin de XLM pour payer des frais et pour ouvrir un nouveau compte."
@@ -175,31 +206,31 @@
     "desc": "Soroban est le système de contrats intelligents de Stellar. Un contrat intelligent est un code de programme sur la blockchain. Ce code peut vérifier de manière indépendante des règles et déclencher des actions sans l'intervention d'une banque intermédiaire."
   },
   "multiSignature": {
-    "title": "Multisignature (Multi-Signature)",
+    "title": "Multisignature",
     "original": "Multi-Signature",
     "short": "Multiple signatures required; weights + threshold determine the release.",
     "desc": "Dans une configuration multi-signature, plusieurs clés doivent signer avant qu'une action ne soit validée. Chaque signataire a un poids, et la somme doit atteindre le seuil requis. Cela augmente la sécurité car une seule clé volée n'est pas suffisante."
   },
   "signer": {
-    "title": "Signataire (Signer)",
+    "title": "Signataire",
     "original": "Signer",
     "short": "Clé publique avec poids, partie de la configuration du compte.",
     "desc": "Un signataire est une clé publique qui appartient à un compte et a un poids. Sa signature compte pour atteindre le seuil requis. Plusieurs signataires peuvent collectivement autoriser une transaction."
   },
   "thresholds": {
-    "title": "Seuils (Thresholds)",
+    "title": "Seuils",
     "original": "Thresholds",
     "short": "Limites (low/med/high) qui déterminent la somme requise des poids.",
     "desc": "Les seuils définissent combien de signatures pondérées sont nécessaires pour les actions : bas pour les opérations simples, moyen pour les paiements, élevé pour les changements critiques. La somme des poids des signataires doit atteindre le seuil respectif."
   },
   "masterWeight": {
-    "title": "Poids maître (master_weight)",
+    "title": "Poids maître",
     "original": "master_weight",
     "short": "Poids de la clé principale ; détermine l'importance de la clé principale.",
     "desc": "Le poids maître est le poids de la clé principale d'un compte. Un poids maître élevé permet à la clé principale de signer de nombreuses actions seule ; une valeur faible nécessite des signataires supplémentaires."
   },
   "accountConfig": {
-    "title": "Configuration du compte (Account Configuration)",
+    "title": "Configuration du compte",
     "original": "Account Configuration",
     "short": "L'interaction entre les signataires et les seuils détermine la sécurité du compte.",
     "desc": "La configuration du compte précise quels signataires existent avec quels poids et quels seuils s'appliquent. Les modifications des signataires ou des seuils sont cruciales pour la sécurité car elles déterminent combien de signatures sont requises."
