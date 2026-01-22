@@ -5,13 +5,6 @@
   "hint": "Crea una nueva cuenta, actívala y, opcionalmente, configura la firma múltiple.",
   "generateKeys": "Generar clave",
   "enableMultisig": "Habilitar multisig",
-  "signersTitle": "Firmar",
-  "signersInfo": "Agrega firmantes adicionales y establece umbrales apropiados.",
-  "signersCount": "Número de signatarios",
-  "bestPractices": {
-    "title": "Mejores Prácticas",
-    "text": "Mantén las claves secretas seguras y no las distribuyas innecesariamente."
-  },
   "instructions": {
     "public": "Comparte esta clave pública con otros para pagos.",
     "secret": "Mantén esta Clave Secreta segura; nunca la compartas."
@@ -47,29 +40,14 @@
   "activateOnly": "Solo activa",
   "balanceWarning": "Es probable que el saldo inicial sea demasiado bajo para agregar a los {{count}} firmantes adicionales (reserva mínima: {{req}} XLM).",
   "createButton": "Crear / Configurar multifirma",
-  "hints": {
-    "byteRange": "(0–255)"
-  },
   "mainnetActivateNote": "Nota: Se requieren reservas adicionales para multisig. 1 XLM a menudo no es suficiente.",
   "reserve": {
     "base": "Reserva base por entrada: {{val}} XLM",
     "recommended": "Saldo inicial recomendado: {{val}} XLM (inkl. Puffer)",
     "required": "Reserva mínima requerida (neu): {{val}} XLM"
   },
-  "signersCountHint": "Establece el número mínimo de firmas a continuación en \"Firmas requeridas\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Nota: Límite de Red (Stellar): máximo 20 firmantes adicionales.",
   "startingBalance": "Crédito inicial (XLM)",
-  "threshold": "Firmas requeridas (niedrig/mittel/hoch)",
-  "thresholdLow": "bajo",
-  "thresholdMed": "medio",
-  "thresholdHigh": "alto",
-  "thresholdCurrent": "Actualmente seleccionado: bajo={{low}}, medio={{med}}, alto={{high}} de un total de {{total}} firmas",
-  "thresholdHelp": "Umbral: Número de firmas requeridas (principal + firmantes) para que una transacción sea válida.",
-  "thresholdInfo": "Recomendación: {{req}} de {{total}} firmas (inkl. Master)",
-  "thresholdLevelsHint": "Normalmente, se aplica lo siguiente: bajo = cambios simples (e.g., memo, price), medio = pagos/comercio, alto = cambios críticos de seguridad (e.g., signer/thresholds).",
-  "thresholdStatic": "Requerido: {{val}} de {{total}} firmas (niedrig/mittel/hoch)",
-  "thresholdSum": "Peso total: {{sum}}",
-  "thresholdTooHigh": "Nota: Un umbral no debe exceder la suma de los pesos. Por favor, ajuste los valores en consecuencia.",
   "keyWarning": {
     "title": "⚠️ ¡Asegura tu clave ahora!",
     "text1": "Has generado un nuevo par de claves.",
@@ -78,17 +56,6 @@
     "list2": "Clave secreta: Tu contraseña – ¡NUNCA la compartas ni la guardes en línea!",
     "list3": "Si se pierde la clave secreta, el acceso se pierde irremediablemente.",
     "confirm": "He asegurado ambas llaves."
-  },
-  "tooltips": {
-    "high": "Alto: cambios críticos para la seguridad (e.g., signers/thresholds).",
-    "low": "Bajo: cambios simples (e.g., memo, price).",
-    "masterWeight": "Peso del titular de la cuenta (Master) (0-255): La clave principal de la cuenta tiene derechos de voto. Cuanto mayor sea su peso, más votos cuenta su firma. Estos votos se cuentan junto con los votos de otros signatarios para verificar si se ha alcanzado la mayoría requerida.",
-    "med": "Medios: Pagos y acciones comerciales.",
-    "signerWeight": "Weight of the signers (0–255): Additional signers also have voting rights. The weight determines how many votes their signature contributes. When a transaction is submitted, all cast votes are added together. If the specified minimum number of votes (Threshold) is reached, the transaction is considered authorized.",
-    "signerWeightHint": "Nota: Los pesos del maestro y del firmante suman el total; los umbrales (niedrig/mittel/hoch) no deben exceder este total."
-  },
-  "units": {
-    "signatures": "Firma (en)"
   },
   "muxedId": "Muxed-ID",
   "muxedInfo": "Con la identificación Muxed, se crea una M-address (M...). Esta apunta a la misma cuenta que la dirección regular (G...).",

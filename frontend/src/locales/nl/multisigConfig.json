@@ -1,0 +1,37 @@
+{
+  "signersTitle": "Ondertekenaar",
+  "signersInfo": "Voeg extra ondertekenaars toe en stel passende drempels in.",
+  "signersCount": "Aantal ondertekenaars",
+  "signersCountLimit": "Opmerking: Netwerkgrens (Stellar): max. 20 extra ondertekenaars.",
+  "bestPractices": {
+    "title": "Best practices",
+    "text": "Houd geheime sleutels veilig en verspreid ze niet onnodig."
+  },
+  "signerTypeNote": "Note: SKM only sets ed25519 signers. For hashX/preAuthTx use",
+  "signerTypeLink": "lab.stellar.org",
+  "masterWeight": "Meestergewicht",
+  "threshold": "Drempelwaarde (laag/midden/hoog)",
+  "thresholdLow": "laag",
+  "thresholdMed": "medium",
+  "thresholdHigh": "hoog",
+  "thresholdLevelsHint": "Typisch geldt het volgende: laag = eenvoudige veranderingen (e.g., memo, price), medium = betalingen/handel, hoog = beveiligingskritische veranderingen (e.g., signer/thresholds). Low / Med / High bepalen het vereiste minimumgewicht van ondertekenaars voor een handeling.",
+  "thresholdSum": "Totaal gewicht: {{sum}}",
+  "thresholdTooHigh": "Opmerking: Een drempel mag de som van de gewichten niet overschrijden. Pas de waarden dienovereenkomstig aan.",
+  "hints": {
+    "byteRange": "(0–255)"
+  },
+  "tooltips": {
+    "low": "Laag: eenvoudige wijzigingen (e.g., memo, price).",
+    "med": "Betalingen en handelshandelingen.",
+    "high": "Hoog: veiligheid kritische wijzigingen (e.g., signers/thresholds).",
+    "signerWeight": "Gewicht van de ondertekenaars (0–255): Extra ondertekenaars hebben ook stemrechten. Het gewicht bepaalt hoeveel stemmen hun handtekening bijdraagt. Wanneer een transactie wordt ingediend, worden alle uitgebrachte stemmen bij elkaar opgeteld. Als het gespecificeerde minimum aantal stemmen (Threshold) wordt bereikt, wordt de transactie als geautoriseerd beschouwd.",
+    "masterWeight": "Gewicht van de rekeninghouder (Master) (0-255): De hoofdsleutel van de rekening heeft stemrecht. Hoe hoger het gewicht, hoe meer stemmen de handtekening telt. Deze stemmen worden samen met de stemmen van andere ondertekenaars geteld om te controleren of de vereiste meerderheid is behaald."
+  },
+  "units": {
+    "signatures": "minimumgewicht"
+  },
+  "safety": {
+    "errorTitle": "Safety check blocked",
+    "warningTitle": "Safety warnings"
+  }
+}

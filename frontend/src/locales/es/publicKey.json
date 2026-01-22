@@ -1,7 +1,7 @@
 {
   "label": "Clave pública o dirección de federación",
   "placeholder": "Introduce tu clave pública o una dirección de federación",
-  "load": "Tienda",
+  "load": "Precargar cuenta",
   "deleteFromList": "Eliminar de la lista",
   "source": "Fuente",
   "destination": {

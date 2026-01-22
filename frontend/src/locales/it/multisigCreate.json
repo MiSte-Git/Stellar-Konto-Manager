@@ -5,13 +5,6 @@
   "hint": "Crea un nuovo account, attivalo e, facoltativamente, configura la firma multipla.",
   "generateKeys": "Genera chiave",
   "enableMultisig": "Abilita la firma multipla",
-  "signersTitle": "Firmatario",
-  "signersInfo": "Aggiungi firmatari aggiuntivi e imposta le soglie appropriate.",
-  "signersCount": "Numero di firmatari",
-  "bestPractices": {
-    "title": "Migliori pratiche",
-    "text": "Mantieni le chiavi segrete al sicuro e non distribuirle inutilmente."
-  },
   "instructions": {
     "public": "Condividi questa chiave pubblica con altri per i pagamenti.",
     "secret": "Tieni questa Chiave Segreta al sicuro; non condividerla mai."
@@ -47,29 +40,14 @@
   "activateOnly": "Basta attivare",
   "balanceWarning": "Il saldo iniziale è probabilmente troppo basso per aggiungere i {{count}} firmatari aggiuntivi (riserva minima: {{req}} XLM).",
   "createButton": "Crea / Imposta multisig",
-  "hints": {
-    "byteRange": "(0–255)"
-  },
   "mainnetActivateNote": "Nota: Sono riserve aggiuntive necessarie per multisig. 1 XLM spesso non è sufficiente.",
   "reserve": {
     "base": "Riserva di base per voce: {{val}} XLM",
     "recommended": "Saldo iniziale consigliato: {{val}} XLM (inkl. Puffer)",
     "required": "Riserva Minima Obbligatoria (neu): {{val}} XLM"
   },
-  "signersCountHint": "Imposti il numero minimo di firme qui sotto alla voce \"Required Signatures\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Nota: Limite di Rete (Stellar): max. 20 firmatari aggiuntivi.",
   "startingBalance": "Credito iniziale (XLM)",
-  "threshold": "Firme richieste (niedrig/mittel/hoch)",
-  "thresholdLow": "basso",
-  "thresholdMed": "medio",
-  "thresholdHigh": "alto",
-  "thresholdCurrent": "Attualmente selezionato: basso={{low}}, medio={{med}}, alto={{high}} su {{total}} firme",
-  "thresholdHelp": "Soglia: Numero di firme richieste (master + firmatari) affinché una transazione sia valida.",
-  "thresholdInfo": "Raccomandazione: {{req}} su {{total}} firme (inkl. Master)",
-  "thresholdLevelsHint": "In genere vale quanto segue: basso = semplici modifiche (e.g., memo, price), medio = pagamenti/commercio, alto = modifiche critiche per la sicurezza (e.g., signer/thresholds).",
-  "thresholdStatic": "Richiesto: {{val}} di {{total}} firme (niedrig/mittel/hoch)",
-  "thresholdSum": "Peso totale: {{sum}}",
-  "thresholdTooHigh": "Nota: Una soglia non deve superare la somma dei pesi. Si prega di regolare i valori di conseguenza.",
   "keyWarning": {
     "title": "⚠️ Proteggi la tua chiave ora!",
     "text1": "Hai generato una nuova coppia di chiavi.",
@@ -78,17 +56,6 @@
     "list2": "Chiave segreta: La tua password – NON condividerla o conservarla mai online!",
     "list3": "Se la chiave segreta viene persa, l'accesso è perso irrimediabilmente.",
     "confirm": "Ho ottenuto entrambe le chiavi."
-  },
-  "tooltips": {
-    "high": "Hoch: sicherheitskritische Änderungen (e.g., signers/thresholds).",
-    "low": "Niedrig: einfache Änderungen (e.g., memo, price).",
-    "masterWeight": "Peso del titolare del conto (Master) (0-255): La chiave principale del conto ha diritti di voto. Maggiore è il suo peso, più voti conta la sua firma. Questi voti vengono contati insieme ai voti di altri firmatari per verificare se è stata raggiunta la maggioranza richiesta.",
-    "med": "Mezzi: Pagamenti e azioni commerciali.",
-    "signerWeight": "Peso dei firmatari (0–255): Anche i firmatari aggiuntivi hanno il diritto di voto. Il peso determina quanti voti contribuisce la loro firma. Quando una transazione viene presentata, tutti i voti espressi vengono sommati. Se viene raggiunto il numero minimo di voti specificato (Threshold), la transazione è considerata autorizzata.",
-    "signerWeightHint": "Nota: i pesi del master e del firmatario si sommano al totale; le soglie (niedrig/mittel/hoch) non devono superare questo totale."
-  },
-  "units": {
-    "signatures": "Firma(en)"
   },
   "muxedId": "Muxed-ID",
   "muxedInfo": "Con l'ID multiplexato, viene creato un M-address (M...). Questo punta allo stesso conto dell'indirizzo normale (G...).",

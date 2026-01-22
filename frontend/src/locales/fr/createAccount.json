@@ -47,29 +47,14 @@
   "activateOnly": "Activez simplement",
   "balanceWarning": "Il est probable que le solde initial soit trop bas pour ajouter les {{count}} signataires supplémentaires (réserve minimale : {{req}} XLM).",
   "createButton": "Créer / Configurer un multisig",
-  "hints": {
-    "byteRange": "(0–255)"
-  },
   "mainnetActivateNote": "Remarque : Des réserves supplémentaires sont nécessaires pour le multisig. 1 XLM ne suffit souvent pas.",
   "reserve": {
     "base": "Réserve de base par entrée : {{val}} XLM",
     "recommended": "Solde de départ recommandé : {{val}} XLM (inkl. Puffer)",
     "required": "Réserve minimum requise (neu) : {{val}} XLM"
   },
-  "signersCountHint": "Vous définissez le nombre minimum de signatures ci-dessous sous \"Signatures requises\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Remarque : Limite du réseau (Stellar) : max. 20 signataires supplémentaires.",
   "startingBalance": "Solde de départ (XLM)",
-  "threshold": "Signatures requises (niedrig/mittel/hoch)",
-  "thresholdLow": "faible",
-  "thresholdMed": "moyen",
-  "thresholdHigh": "élevé",
-  "thresholdCurrent": "Actuellement sélectionné : faible={{low}}, moyen={{med}}, élevé={{high}} sur un total de {{total}} signatures.",
-  "thresholdHelp": "Seuil : Le nombre de signatures requises (maître + signataires) pour qu'une transaction soit valide.",
-  "thresholdInfo": "Recommandation : {{req}} sur {{total}} signatures (inkl. Master)",
-  "thresholdLevelsHint": "Typiquement, les règles suivantes s'appliquent : faible = changements simples (e.g., memo, price), moyen = paiements/commerce, élevé = changements critiques pour la sécurité (e.g., signer/thresholds).",
-  "thresholdStatic": "Requis : {{val}} sur {{total}} signatures (niedrig/mittel/hoch)",
-  "thresholdSum": "Somme des poids : {{sum}}",
-  "thresholdTooHigh": "Remarque : Un seuil ne doit pas dépasser la somme des poids. Veuillez ajuster les valeurs en conséquence.",
   "keyWarning": {
     "title": "⚠️ Sécurisez votre clé dès maintenant !",
     "text1": "Vous avez généré une nouvelle paire de clés.",
@@ -78,17 +63,6 @@
     "list2": "Clé secrète : Votre mot de passe – NE le partagez JAMAIS et ne le stockez pas en ligne !",
     "list3": "Si la clé secrète est perdue, l'accès est irrémédiablement perdu.",
     "confirm": "J'ai sécurisé les deux clés."
-  },
-  "tooltips": {
-    "high": "Haut: changements critiques pour la sécurité (e.g., signers/thresholds).",
-    "low": "Faible : changements simples (e.g., memo, price).",
-    "masterWeight": "Poids du titulaire du compte (Master) (0-255) : La clé principale du compte possède un droit de vote. Plus son poids est élevé, plus sa signature compte de voix. Ces votes sont comptabilisés avec ceux d'autres signataires pour vérifier si la majorité requise est atteinte.",
-    "med": "Moyens : Paiements et actions commerciales.",
-    "signerWeight": "Poids des signataires (0–255) : Les signataires supplémentaires disposent également de droits de vote. Le poids détermine combien de voix leur signature apporte. Lorsqu'une transaction est envoyée, tous les votes soumis sont additionnés. Si le nombre minimum de voix spécifié (Threshold) est atteint, la transaction est considérée comme autorisée.",
-    "signerWeightHint": "Remarque : Les poids des maîtres et des signataires s'additionnent pour atteindre la somme totale ; les seuils (niedrig/mittel/hoch) ne doivent pas dépasser cette somme."
-  },
-  "units": {
-    "signatures": "Signature (en)"
   },
   "muxedId": "ID multiplexé",
   "muxedInfo": "L'identifiant Muxed est utilisé pour créer une M-Address (M...). Il pointe vers le même compte que l'adresse régulière (G...).",

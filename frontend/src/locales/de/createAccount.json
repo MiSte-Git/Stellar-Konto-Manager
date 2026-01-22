@@ -5,9 +5,9 @@
   "hint": "Erzeuge ein neues Konto, aktiviere es und konfiguriere optional Multisig.",
   "generateKeys": "Schlüssel generieren",
   "enableMultisig": "Multisig aktivieren",
-  "signersTitle": "Signierer",
-  "signersInfo": "Füge weitere Signierer hinzu und setze geeignete Schwellenwerte.",
-  "signersCount": "Anzahl Signierer",
+  "signersTitle": "Unterzeichner",
+  "signersInfo": "Füge weitere Unterzeichner hinzu und setze geeignete Schwellenwerte.",
+  "signersCount": "Anzahl Unterzeichner",
   "bestPractices": {
     "title": "Best Practices",
     "text": "Bewahre Secret Keys sicher auf und verteile sie nicht unnötig."
@@ -17,7 +17,7 @@
     "secret": "Bewahre diesen Secret Key sicher auf; niemals weitergeben."
   },
   "generateFirst": "Bitte generiere zuerst ein Schlüsselpaar.",
-  "confirmLowBalance": "Startguthaben {bal} XLM ist unterhalb der empfohlenen Reserve {req} XLM (Signierer: {count}). Fortfahren?",
+  "confirmLowBalance": "Startguthaben {bal} XLM ist unterhalb der empfohlenen Reserve {req} XLM (Unterzeichner: {count}). Fortfahren?",
   "activated": "Konto wurde aktiviert. Hash: {hash}",
   "activatedTestnet": "Konto wurde im Testnet über Friendbot aktiviert.",
   "alreadyActive": "Konto ist bereits aktiviert.",
@@ -47,9 +47,6 @@
   "activateOnly": "Nur aktivieren",
   "balanceWarning": "Startguthaben ist wahrscheinlich zu niedrig, um die {{count}} zusätzlichen Signer hinzuzufügen (Mindestreserve: {{req}} XLM)",
   "createButton": "Erstellen / Multisig setzen",
-  "hints": {
-    "byteRange": "(0–255)"
-  },
   "mainnetActivateNote": "Hinweis: Für Multisig sind zusätzliche Reserven nötig. 1 XLM reicht oft nicht.",
   "reserve": {
     "base": "Basisreserve pro Eintrag: {{val}} XLM",
@@ -59,17 +56,6 @@
   "signersCountHint": "Die Mindestanzahl an Signaturen stellst du unten bei \"Erforderliche Signaturen\" (niedrig/mittel/hoch) ein.",
   "signersCountLimit": "Hinweis: Netzwerkgrenze (Stellar): max. 20 zusätzliche Unterzeichner.",
   "startingBalance": "Startguthaben (XLM)",
-  "threshold": "Erforderliche Signaturen (niedrig/mittel/hoch)",
-  "thresholdLow": "niedrig",
-  "thresholdMed": "mittel",
-  "thresholdHigh": "hoch",
-  "thresholdCurrent": "Aktuell gewählt: niedrig={{low}}, mittel={{med}}, hoch={{high}} von {{total}} Signaturen",
-  "thresholdHelp": "Schwelle: Anzahl der benötigten Unterschriften (Master + Unterzeichner), damit eine Transaktion gültig ist.",
-  "thresholdInfo": "Empfehlung: {{req}} von {{total}} Signaturen (inkl. Master)",
-  "thresholdLevelsHint": "Typischerweise gilt: niedrig = einfache Änderungen (z. B. Memo, Preis), mittel = Zahlungen/Handel, hoch = sicherheitskritische Änderungen (z. B. Signer/Schwellen)",
-  "thresholdStatic": "Erforderlich: {{val}} von {{total}} Unterschriften (niedrig/mittel/hoch)",
-  "thresholdSum": "Summe Gewichte: {{sum}}",
-  "thresholdTooHigh": "Hinweis: Eine Schwelle darf die Summe der Gewichte nicht überschreiten. Bitte Werte anpassen.",
   "keyWarning": {
     "title": "⚠️ Schlüssel jetzt sichern!",
     "text1": "Sie haben ein neues Schlüsselpaar erzeugt.",
@@ -78,17 +64,6 @@
     "list2": "Secret Key (Geheimschlüssel): Ihr Passwort – NIEMALS teilen oder online speichern!",
     "list3": "Bei Verlust des Secret Keys ist der Zugang unwiderruflich verloren",
     "confirm": "Ich habe beide Schlüssel gesichert"
-  },
-  "tooltips": {
-    "high": "Hoch: sicherheitskritische Änderungen (z. B. Unterzeichner/Schwellen).",
-    "low": "Niedrig: einfache Änderungen (z. B. Memo, Preis).",
-    "masterWeight": "Gewicht des Kontoinhabers (Master) (0-255): Der Hauptschlüssel des Kontos hat ein Stimmrecht. Je höher sein Gewicht, desto mehr Stimmen zählt seine Unterschrift. Diese Stimmen werden zusammen mit den Stimmen anderer Unterzeichner gezählt, um zu prüfen, ob die erforderliche Mehrheit erreicht ist.",
-    "med": "Mittel: Zahlungen und Handelsaktionen.",
-    "signerWeight": "Gewicht der Unterzeichner (0–255): Auch zusätzliche Unterzeichner haben Stimmrechte. Das Gewicht legt fest, wie viele Stimmen ihre Unterschrift beiträgt. Wenn eine Transaktion gesendet wird, werden alle abgegebenen Stimmen addiert. Ist die festgelegte Mindestanzahl an Stimmen (Threshold) erreicht, gilt die Transaktion als autorisiert.",
-    "signerWeightHint": "Hinweis: Master- und Unterzeichner-Gewichte bilden die Summe; Schwellen (niedrig/mittel/hoch) dürfen diese Summe nicht überschreiten."
-  },
-  "units": {
-    "signatures": "Unterschrift(en)"
   },
   "muxedId": "Muxed-ID",
   "muxedInfo": "Mit der Muxed-ID wird eine M-Adresse (M...) erstellt. Sie zeigt auf dasselbe Konto wie die reguläre Adresse (G...).",

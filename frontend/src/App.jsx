@@ -58,19 +58,6 @@ function AppShell() {
   const { t } = useTranslation(['common', 'glossary', 'learn', 'menu', 'settings']);
   const location = useLocation();
 
-  // Always register hooks in the same order
-  const [devTestnet, setDevTestnet] = React.useState(false);
-  React.useEffect(() => {
-    // Only listen for changes; default is set before mount in main.jsx
-    const handler = (e) => {
-      try { const v = (typeof e?.detail === 'string') ? e.detail : (window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC'); setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
-    };
-    window.addEventListener('stm-network-changed', handler);
-    // Initialize state based on current storage without emitting a new event
-    try { const v = window.localStorage?.getItem('SKM_NETWORK') || 'PUBLIC'; setDevTestnet(v === 'TESTNET'); } catch { /* noop */ }
-    return () => window.removeEventListener('stm-network-changed', handler);
-  }, []);
-
   const isBugTrackerRoute = React.useMemo(() => {
     try {
       return isBugtrackerPath(typeof window !== 'undefined' ? window.location.pathname : '');
