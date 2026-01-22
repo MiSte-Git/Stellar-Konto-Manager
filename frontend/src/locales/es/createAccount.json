@@ -47,29 +47,14 @@
   "activateOnly": "Solo activar",
   "balanceWarning": "Es probable que el saldo inicial sea demasiado bajo para añadir a los {{count}} firmantes adicionales (reserva mínima: {{req}} XLM).",
   "createButton": "Crear / Configurar Multisig",
-  "hints": {
-    "byteRange": "(0–255)"
-  },
   "mainnetActivateNote": "Nota: Se necesitan reservas adicionales para multisig. 1 XLM a menudo no es suficiente.",
   "reserve": {
     "base": "Reserva base por entrada: {{val}} XLM",
     "recommended": "Saldo inicial recomendado: {{val}} XLM (inkl. Puffer)",
     "required": "Reserva mínima requerida (neu): {{val}} XLM"
   },
-  "signersCountHint": "Establece el número mínimo de firmas a continuación en \"Firmas requeridas\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Nota: Límite de red (Stellar): máx. 20 signatarios adicionales.",
   "startingBalance": "Saldo inicial (XLM)",
-  "threshold": "Firmas requeridas (niedrig/mittel/hoch)",
-  "thresholdLow": "bajo",
-  "thresholdMed": "medio",
-  "thresholdHigh": "alto",
-  "thresholdCurrent": "Actualmente seleccionados: bajo={{low}}, medio={{med}}, alto={{high}} de {{total}} firmas",
-  "thresholdHelp": "Umbral: El número de firmas requeridas (maestro + firmantes) para que una transacción sea válida.",
-  "thresholdInfo": "Recomendación: {{req}} de {{total}} firmas (inkl. Master)",
-  "thresholdLevelsHint": "Por lo general, se aplica lo siguiente: bajo = cambios simples (e.g., memo, price), medio = pagos/comercio, alto = cambios críticos de seguridad (e.g., signer/thresholds).",
-  "thresholdStatic": "Requerido: {{val}} de {{total}} firmas (niedrig/mittel/hoch)",
-  "thresholdSum": "Suma de pesos: {{sum}}",
-  "thresholdTooHigh": "Nota: Un umbral no debe exceder la suma de los pesos. Por favor, ajusta los valores en consecuencia.",
   "keyWarning": {
     "title": "¡⚠️ Asegura tu clave ahora!",
     "text1": "Has generado un nuevo par de claves.",
@@ -78,17 +63,6 @@
     "list2": "Clave secreta: Tu contraseña – ¡NUNCA la compartas ni la almacenes en línea!",
     "list3": "Si se pierde la clave secreta, el acceso se pierde irrevocablemente.",
     "confirm": "He asegurado ambas llaves."
-  },
-  "tooltips": {
-    "high": "High: cambios críticos de seguridad (e.g., signers/thresholds).",
-    "low": "Bajo: cambios simples (e.g., memo, price).",
-    "masterWeight": "Peso del titular de la cuenta (Master) (0-255): La clave maestra de la cuenta tiene derecho a voto. Cuanto mayor sea su peso, más votos cuenta su firma. Estos votos se suman junto con los votos de otros firmantes para verificar si se alcanza la mayoría requerida.",
-    "med": "Medios: Pagos y acciones comerciales.",
-    "signerWeight": "Peso de los firmantes (0–255): Los firmantes adicionales también tienen derechos de voto. El peso determina cuántos votos contribuye su firma. Cuando se envía una transacción, todos los votos presentados se suman. Si se alcanza el número mínimo de votos especificado (Threshold), la transacción se considera autorizada.",
-    "signerWeightHint": "Nota: Los pesos del maestro y del firmante suman el total; los umbrales (niedrig/mittel/hoch) no deben exceder esta suma."
-  },
-  "units": {
-    "signatures": "Firma (en)"
   },
   "muxedId": "ID-muxed",
   "muxedInfo": "El Muxed-ID se utiliza para crear una M-Address (M...). Apunta a la misma cuenta que la dirección regular (G...).",

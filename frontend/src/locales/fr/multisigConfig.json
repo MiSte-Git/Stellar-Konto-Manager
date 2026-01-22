@@ -1,0 +1,37 @@
+{
+  "signersTitle": "Signataire",
+  "signersInfo": "Ajoutez des signataires supplémentaires et définissez des seuils appropriés.",
+  "signersCount": "Nombre de signataires",
+  "signersCountLimit": "Remarque : Limite du réseau (Stellar) : max. 20 signataires supplémentaires.",
+  "bestPractices": {
+    "title": "Meilleures pratiques",
+    "text": "Gardez les clés secrètes sécurisées et ne les distribuez pas inutilement."
+  },
+  "signerTypeNote": "Note: SKM only sets ed25519 signers. For hashX/preAuthTx use",
+  "signerTypeLink": "lab.stellar.org",
+  "masterWeight": "Poids maître",
+  "threshold": "Seuil (faible/moyen/élevé)",
+  "thresholdLow": "faible",
+  "thresholdMed": "moyen",
+  "thresholdHigh": "élevé",
+  "thresholdLevelsHint": "Typiquement, le suivant s'applique : faible = modifications simples (e.g., memo, price), moyen = paiements/commerce, élevé = modifications critiques pour la sécurité (e.g., signer/thresholds). Low / Med / High définissent le poids minimum requis des signataires pour une opération.",
+  "thresholdSum": "Poids total : {{sum}}",
+  "thresholdTooHigh": "Remarque : Un seuil ne doit pas dépasser la somme des poids. Veuillez ajuster les valeurs en conséquence.",
+  "hints": {
+    "byteRange": "(0–255)"
+  },
+  "tooltips": {
+    "low": "Faible : changements simples (e.g., memo, price).",
+    "med": "Moyens : paiements et actions commerciales.",
+    "high": "Haut : changements critiques pour la sécurité (e.g., signers/thresholds).",
+    "signerWeight": "Poids des signataires (0–255) : Les signataires supplémentaires ont également des droits de vote. Le poids détermine le nombre de voix que leur signature apporte. Lorsqu'une transaction est soumise, toutes les voix exprimées sont additionnées. Si le nombre minimum de voix spécifié (Threshold) est atteint, la transaction est considérée comme autorisée.",
+    "masterWeight": "Poids du titulaire du compte (Master) (0-255) : La clé principale du compte possède des droits de vote. Plus son poids est élevé, plus sa signature compte de votes. Ces votes sont comptabilisés avec ceux des autres signataires pour vérifier si la majorité requise a été atteinte."
+  },
+  "units": {
+    "signatures": "poids minimum"
+  },
+  "safety": {
+    "errorTitle": "Safety check blocked",
+    "warningTitle": "Safety warnings"
+  }
+}

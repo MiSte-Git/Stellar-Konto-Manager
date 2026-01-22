@@ -47,29 +47,14 @@
   "activateOnly": "Gewoon activeren",
   "balanceWarning": "Het beginsaldo is waarschijnlijk te laag om de {{count}} extra ondertekenaars toe te voegen (minimale reserve: {{req}} XLM).",
   "createButton": "Creëer / Stel Multisig in",
-  "hints": {
-    "byteRange": "(0–255)"
-  },
   "mainnetActivateNote": "Opmerking: Er zijn extra reserves nodig voor multisig. 1 XLM is vaak niet voldoende.",
   "reserve": {
     "base": "Basisreserve per invoer: {{val}} XLM",
     "recommended": "Aanbevolen beginsaldo: {{val}} XLM (inkl. Puffer)",
     "required": "Vereiste Minimumreserve (neu): {{val}} XLM"
   },
-  "signersCountHint": "U stelt het minimum aantal handtekeningen hieronder in onder \"Vereiste Handtekeningen\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Opmerking: Netwerkgrens (Stellar): max. 20 extra ondertekenaars.",
   "startingBalance": "Beginsaldo (XLM)",
-  "threshold": "Vereiste handtekeningen (niedrig/mittel/hoch)",
-  "thresholdLow": "laag",
-  "thresholdMed": "medium",
-  "thresholdHigh": "hoog",
-  "thresholdCurrent": "Momenteel geselecteerd: laag={{low}}, gemiddeld={{med}}, hoog={{high}} van {{total}} handtekeningen",
-  "thresholdHelp": "Drempel: Het aantal vereiste handtekeningen (meester + ondertekenaars) voor een transactie om geldig te zijn.",
-  "thresholdInfo": "Aanbeveling: {{req}} van de {{total}} handtekeningen (inkl. Master)",
-  "thresholdLevelsHint": "Typisch geldt het volgende: laag = eenvoudige aanpassingen (e.g., memo, price), midden = betalingen/handel, hoog = beveiligingskritieke veranderingen (e.g., signer/thresholds).",
-  "thresholdStatic": "Vereist: {{val}} van de {{total}} handtekeningen (niedrig/mittel/hoch)",
-  "thresholdSum": "Som gewichten: {{sum}}",
-  "thresholdTooHigh": "Let op: Een drempel moet niet boven de som van de gewichten uitkomen. Pas de waarden dienovereenkomstig aan.",
   "keyWarning": {
     "title": "⚠️ Beveilig je sleutel nu!",
     "text1": "Je hebt een nieuw sleutelpaar gegenereerd.",
@@ -78,17 +63,6 @@
     "list2": "Geheime sleutel: Je wachtwoord – DEEL of bewaar het NOOIT online!",
     "list3": "Als de geheime sleutel verloren gaat, is de toegang onherroepelijk verloren.",
     "confirm": "Ik heb beide sleutels veiliggesteld."
-  },
-  "tooltips": {
-    "high": "Hoog: beveiligingskritische wijzigingen (e.g., signers/thresholds).",
-    "low": "Laag: eenvoudige wijzigingen (e.g., memo, price).",
-    "masterWeight": "Gewicht van de rekeninghouder (Master) (0-255): De hoofdsleutel van de rekening heeft een stemrecht. Hoe hoger het gewicht, hoe meer stemmen zijn handtekening telt. Deze stemmen worden samengeteld met de stemmen van andere ondertekenaars om te controleren of de vereiste meerderheid is bereikt.",
-    "med": "Betalingen en handelsacties.",
-    "signerWeight": "Weight of the signers (0–255): Additional signers also have voting rights. The weight determines how many votes their signature contributes. When a transaction is sent, all submitted votes are added together. If the specified minimum number of votes (Threshold) is reached, the transaction is considered authorized.",
-    "signerWeightHint": "Let op: Master- en ondertekenaarsgewichten worden opgeteld tot de som; drempels (niedrig/mittel/hoch) mogen deze som niet overschrijden."
-  },
-  "units": {
-    "signatures": "Handtekening (en)"
   },
   "muxedId": "Muxed-ID",
   "muxedInfo": "De Muxed-ID wordt gebruikt om een M-Address (M...) te creëren. Het wijst naar dezelfde account als het reguliere adres (G...).",

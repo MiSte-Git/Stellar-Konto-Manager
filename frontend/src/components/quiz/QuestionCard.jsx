@@ -42,7 +42,7 @@ export default function QuestionCard({
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
-  }, [questionKey, options]);
+  }, [options]);
 
   const renderFeedback = () => {
     if (!showFeedback || !selectedOptionId) return null;

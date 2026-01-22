@@ -1,0 +1,37 @@
+{
+  "signersTitle": "Firmante",
+  "signersInfo": "Agrega firmantes adicionales y establece umbrales apropiados.",
+  "signersCount": "Número de signatarios",
+  "signersCountLimit": "Nota: Límite de Red (Stellar): máximo 20 firmantes adicionales.",
+  "bestPractices": {
+    "title": "Mejores Prácticas",
+    "text": "Mantén las claves secretas seguras y no las distribuyas innecesariamente."
+  },
+  "signerTypeNote": "Note: SKM only sets ed25519 signers. For hashX/preAuthTx use",
+  "signerTypeLink": "lab.stellar.org",
+  "masterWeight": "Peso maestro",
+  "threshold": "Umbral (bajo/medio/alto)",
+  "thresholdLow": "bajo",
+  "thresholdMed": "medio",
+  "thresholdHigh": "alto",
+  "thresholdLevelsHint": "Normalmente, se aplica lo siguiente: bajo = cambios simples (e.g., memo, price), medio = pagos/comercio, alto = cambios críticos de seguridad (e.g., signer/thresholds). Low / Med / High definen el peso mínimo requerido de los firmantes para una operación.",
+  "thresholdSum": "Peso total: {{sum}}",
+  "thresholdTooHigh": "Nota: Un umbral no debe exceder la suma de los pesos. Por favor, ajuste los valores en consecuencia.",
+  "hints": {
+    "byteRange": "(0–255)"
+  },
+  "tooltips": {
+    "low": "Bajo: cambios simples (e.g., memo, price).",
+    "med": "Medios: Pagos y acciones comerciales.",
+    "high": "Alto: cambios críticos para la seguridad (e.g., signers/thresholds).",
+    "signerWeight": "Weight of the signers (0–255): Additional signers also have voting rights. The weight determines how many votes their signature contributes. When a transaction is submitted, all cast votes are added together. If the specified minimum number of votes (Threshold) is reached, the transaction is considered authorized.",
+    "masterWeight": "Peso del titular de la cuenta (Master) (0-255): La clave principal de la cuenta tiene derechos de voto. Cuanto mayor sea su peso, más votos cuenta su firma. Estos votos se cuentan junto con los votos de otros signatarios para verificar si se ha alcanzado la mayoría requerida."
+  },
+  "units": {
+    "signatures": "peso mínimo"
+  },
+  "safety": {
+    "errorTitle": "Safety check blocked",
+    "warningTitle": "Safety warnings"
+  }
+}

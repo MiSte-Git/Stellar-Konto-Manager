@@ -14,7 +14,6 @@ import {
 import { useTrustedWallets } from './utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
 import { isTestnetAccount } from './utils/stellar/accountUtils.js';
-import { buildPath, quizLandingPath } from './utils/basePath.js';
 
 function migrateLegacyStorageKeys() {
   if (typeof window === 'undefined') return;
@@ -40,7 +39,7 @@ function migrateLegacyStorageKeys() {
     ls.removeItem('STM_HORIZON_URL');
     ls.removeItem('STM_NET_INIT');
     ss.removeItem('STM_PREV_PATH');
-  } catch (e) {
+  } catch {
     /* noop */
   }
 }
@@ -560,22 +559,6 @@ function Main() {
       console.debug('[Toggle All] pageItems', paginatedList.length, 'deletable', deletable, 'before', selectedTrustlines.length, 'after', next.length);
     } catch { /* noop */ }
     setSelectedTrustlines(next);
-  };
-
-  const navigateTo = (subpath) => {
-    try {
-      const cleanSubpath = String(subpath).trim().replace(/^\/+/, '');
-      const url = buildPath(cleanSubpath);
-      if (typeof window !== 'undefined') {
-        if (window.sessionStorage) {
-          window.sessionStorage.setItem('SKM_PREV_PATH', window.location.pathname);
-        }
-        window.history.pushState({}, '', url);
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      }
-    } catch (err) {
-        console.error('navigateTo failed', err);
-    }
   };
 
   return (

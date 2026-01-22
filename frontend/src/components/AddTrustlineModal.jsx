@@ -18,7 +18,7 @@ function AddTrustlineModal({ onSubmit, onCancel }) {
     const issuerOk = !!trimmedIssuer;
     const limitOk = Number.isFinite(limitNum) && limitNum > 0;
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (import.meta.env.MODE !== 'production') {
       console.debug('[AddTrustline validate:minimal]', {
         code: trimmedCode,
         issuer: trimmedIssuer,

@@ -1,7 +1,7 @@
 {
   "label": "Chiave pubblica o indirizzo di federazione",
   "placeholder": "Inserisci la tua chiave pubblica o un indirizzo di federazione",
-  "load": "Negozio",
+  "load": "Precarica conto",
   "deleteFromList": "Rimuovi dalla lista",
   "source": "Fonte",
   "destination": {
