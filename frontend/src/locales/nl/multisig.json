@@ -90,7 +90,9 @@
       "sent": {
         "title": "Transactie verzonden",
         "status": "Transactie succesvol naar het netwerk verzonden.",
-        "hashLabel": "Transactiehash"
+        "hashLabel": "Transactiehash",
+        "copyDetails": "Details kopieren",
+        "copiedDetails": "Gekopieerd"
       },
       "xdr": {
         "title": "XDR klaar (nicht gesendet)",

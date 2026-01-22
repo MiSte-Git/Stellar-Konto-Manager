@@ -90,7 +90,9 @@
       "sent": {
         "title": "Transaction sent",
         "status": "Transaction successfully sent to the network.",
-        "hashLabel": "Transaction hash"
+        "hashLabel": "Transaction hash",
+        "copyDetails": "Copy details",
+        "copiedDetails": "Copied"
       },
       "xdr": {
         "title": "XDR ready (nicht gesendet)",

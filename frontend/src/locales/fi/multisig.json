@@ -90,7 +90,9 @@
       "sent": {
         "title": "Tapahtuma lähetetty",
         "status": "Tapahtuma lähetettiin onnistuneesti verkkoon.",
-        "hashLabel": "Tapahtuman tiiviste"
+        "hashLabel": "Tapahtuman tiiviste",
+        "copyDetails": "Kopioi tiedot",
+        "copiedDetails": "Kopioitu"
       },
       "xdr": {
         "title": "XDR valmis (nicht gesendet)",
