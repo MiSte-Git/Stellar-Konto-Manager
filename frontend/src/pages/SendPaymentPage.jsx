@@ -31,6 +31,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [resultDialog, setResultDialog] = useState(null);
   const [copiedXdr, setCopiedXdr] = useState(false);
   const [copiedJobId, setCopiedJobId] = useState(false);
+  const [copiedDetails, setCopiedDetails] = useState(false);
   const [showJobInfo, setShowJobInfo] = useState(false);
   const [pendingLocalPreflight, setPendingLocalPreflight] = useState(null);
   const [reviewDialog, setReviewDialog] = useState({ open: false, signers: [], preflight: null, snapshot: null });
@@ -330,6 +331,24 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
   }, []);
 
+  const handleCopySentDetails = useCallback(async (dialog) => {
+    if (!dialog) return;
+    const lines = buildSummaryItems(dialog.summary).map((item) => `${item.label}: ${item.value}`);
+    if (dialog.hash) {
+      const hashLabel = dialog.type === 'sent'
+        ? t('multisig:confirm.result.sent.hashLabel', 'Transaktions-Hash')
+        : t('multisig:confirm.result.job.hashLabel', 'Transaktions-Hash');
+      lines.push(`${hashLabel}: ${dialog.hash}`);
+    }
+    try {
+      await navigator.clipboard.writeText(lines.filter(Boolean).join('\n'));
+      setCopiedDetails(true);
+      setTimeout(() => setCopiedDetails(false), 1500);
+    } catch (e) {
+      console.error('copy details failed', e);
+    }
+  }, [buildSummaryItems, t]);
+
   const showErrorMessage = useCallback((msg) => {
     setError(msg || '');
     try {
@@ -343,6 +362,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setResultDialog(null);
     setCopiedXdr(false);
     setCopiedJobId(false);
+    setCopiedDetails(false);
     setShowJobInfo(false);
     setLastResultDialog(null);
     setSecretReturnTo('');
@@ -1463,8 +1483,17 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             </div>
 
             {resultDialog.type === 'sent' && (
-              <div className="text-sm text-green-700 dark:text-green-300 mb-3">
-                {t('multisig:confirm.result.sent.status')}
+              <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-green-700 dark:text-green-300 mb-3">
+                <span>{t('multisig:confirm.result.sent.status')}</span>
+                <button
+                  type="button"
+                  className="px-2 py-1 rounded border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                  onClick={() => handleCopySentDetails(resultDialog)}
+                >
+                  {copiedDetails
+                    ? t('multisig:confirm.result.sent.copiedDetails', 'Kopiert')
+                    : t('multisig:confirm.result.sent.copyDetails', 'Details kopieren')}
+                </button>
               </div>
             )}
             {resultDialog.type === 'job' && (

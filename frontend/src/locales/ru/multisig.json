@@ -90,7 +90,9 @@
       "sent": {
         "title": "Транзакция отправлена",
         "status": "Транзакция успешно отправлена в сеть.",
-        "hashLabel": "Хэш транзакции"
+        "hashLabel": "Хэш транзакции",
+        "copyDetails": "Копировать детали",
+        "copiedDetails": "Скопировано"
       },
       "xdr": {
         "title": "XDR готов (nicht gesendet)",

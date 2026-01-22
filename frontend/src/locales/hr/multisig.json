@@ -90,7 +90,9 @@
       "sent": {
         "title": "Transakcija poslana",
         "status": "Transakcija je uspješno poslana na mrežu.",
-        "hashLabel": "Hash transakcije"
+        "hashLabel": "Hash transakcije",
+        "copyDetails": "Kopiraj detalje",
+        "copiedDetails": "Kopirano"
       },
       "xdr": {
         "title": "XDR spreman (nicht gesendet)",
