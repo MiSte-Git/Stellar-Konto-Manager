@@ -5,6 +5,18 @@
   "searchPlaceholder": "Begriff suchen (z. B. Konto, Account, Muxed)",
   "searchHint": "Die Suche findet Wörter und Erklärungen.",
   "noResults": "Kein Treffer.",
+  "groups": {
+    "accountsKeys": "Konten & Schlüssel",
+    "multisigSecurity": "Multisig & Kontosicherheit",
+    "walletsCustody": "Wallets & Verwahrung",
+    "tokensAssets": "Token & Assets",
+    "transactionsFees": "Transaktionen & Gebühren",
+    "marketsTrading": "Märkte & Handel",
+    "networkProtocol": "Netzwerk & Protokoll",
+    "smartContracts": "Smart Contracts",
+    "blockchainBasics": "Blockchain-Grundlagen",
+    "security": "Sicherheit & Betrug"
+  },
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
@@ -57,7 +69,26 @@
     "title": "Mehrfachsignatur",
     "original": "Multi‑Sig",
     "short": "Wichtige Aktionen brauchen mehr als eine Unterschrift.",
-    "desc": "Multi-Sig steht für mehrere Unterschriften. Eine wichtige Aktion braucht mehr als einen Schlüssel. Beispiel: Du und ein zweiter Schlüssel müssen beide zustimmen bevor etwas gesendet wird. Das macht Diebstahl schwerer."
+    "desc": "Multi-Sig steht für mehrere Unterschriften. Eine wichtige Aktion braucht mehr als einen Schlüssel. Beispiel: Du und ein zweiter Schlüssel müssen beide zustimmen bevor etwas gesendet wird. Das macht Diebstahl schwerer.",
+    "help": {
+      "title": "Allgemeine Erklärung eines Mehrfachsignatur (Multi-Signature) Firmenkontos",
+      "intro": "Ein Unternehmen kann ein gemeinsames Blockchain-Konto verwenden, an dem mehrere berechtigte Personen beteiligt sind. Typischerweise sind mindestens drei Unterzeichner (Signer) eingebunden, zum Beispiel Geschäftsführung, Finanzverantwortlicher und Compliance/Backup. Ziel ist, dass einzelne Personen Zahlungen eigenständig ausführen können, ohne dass eine einzelne Person das Konto allein kontrollieren oder übernehmen kann.",
+      "problem": "Wenn ein Unterzeichner (Signer) genug Gewicht hat, um Zahlungen auszuführen, und zugleich genug Gewicht für Kontoänderungen besitzt, könnte diese Person andere Unterzeichner (Signer) entfernen oder den Schwellenwert/Gewichtung (Thresholds) anpassen und damit das Konto übernehmen. Umgekehrt soll auch der ursprüngliche Owner nicht in der Lage sein, andere Unterzeichner (Signer) ohne Gegenkontrolle einfach auszuschließen. Eine Multi-Sig-Struktur sorgt dafür, dass wichtige Entscheidungen immer von mehreren Personen gemeinsam getragen werden.",
+      "setupTitle": "Beispiel einer sicheren Multi-Sig-Struktur mit drei Signern",
+      "setupWeights": "In einem Beispiel mit drei gleichberechtigten Rollen erhalten alle dieselbe Signaturstärke:\n- Unterzeichner (Signer) A (Geschäftsführung): Gewicht 2\n- Unterzeichner (Signer) B (Finanzen): Gewicht 2\n- Unterzeichner (Signer) C (Compliance/Backup): Gewicht 2",
+      "setupThresholds": "Dazu werden geeignete Schwellenwerte/Gewichtungen gesetzt:\n- Niedrig (low_threshold): 1\n- Mittel (med_threshold): 2 (für Zahlungen und andere mittlere Aktionen)\n- Hoch (high_threshold): 4 (für Strukturänderungen wie Unterzeichner (Signer) hinzufügen/entfernen oder den Schwellenwert/Gewichtung (Thresholds) ändern)\nDamit kann jede einzelne berechtigte Person Zahlungen ausführen, aber keine Person allein die Konto-Struktur verändern.",
+      "behavior": "Mit dieser Konfiguration können Zahlungen von jeder der drei berechtigten Personen alleine durchgeführt werden, weil das individuelle Gewicht jeweils den mittleren Schwellenwert/Gewichtung (Threshold) erfüllt. Für Strukturänderungen wie das Entfernen eines Unterzeichners (Signers), das Anpassen der Schwellenwerte/Gewichtungen oder das Zusammenlegen bzw. Schließen des Kontos wird hingegen der hohe Schwellenwert/Gewichtung (high_threshold) benötigt. Dieser Wert kann nur erreicht werden, wenn mindestens zwei der drei Unterzeichner (Signer) gemeinsam unterschreiben. Das Konto bleibt so gleichzeitig flexibel im Alltag und gut gegen Missbrauch geschützt.",
+      "removal": "Wenn eine Person das Unternehmen verlässt oder nicht mehr vertrauenswürdig ist, können zwei der verbleibenden Unterzeichner (Signer) gemeinsam die Signaturrechte dieser Person entfernen. Kein einzelner Unterzeichner (Signer) – weder ein Mitarbeiter noch die Geschäftsführung – kann andere eigenständig aus dem Konto ausschließen. Der Entzug von Berechtigungen erfolgt also immer kontrolliert und nachvollziehbar durch mindestens zwei Verantwortliche.",
+      "summary": "Diese Art von Multi-Sig-Struktur ermöglicht es, dass einzelne Personen Zahlungen effizient abwickeln können, während die Kontrolle über das Konto immer bei mehreren Beteiligten bleibt. Sie reduziert das Risiko von Kontoübernahmen, schützt vor einseitigen Entscheidungen und eignet sich besonders für Firmenkonten, bei denen sowohl Sicherheit als auch operative Flexibilität wichtig sind.",
+      "closeLabel": "Schließen",
+      "linkLabel": "Was bedeutet Multi-Signature?",
+      "glossaryLinkLabel": "Im Glossar ansehen"
+    }
+  },
+  "multisigCorporate": {
+    "title": "Multisig erklärt am Firmenbeispiel",
+    "original": "Multi-Signature (corporate example)",
+    "short": "Beispielhafte Multi-Sig-Struktur für Firmenkonten mit Rollen, Gewichten und Thresholds."
   },
   "trustline": {
     "title": "Trustline",
@@ -179,31 +210,31 @@
     "desc": "Soroban ist das Smart Contract System von Stellar. Ein Smart Contract ist Programmcode auf der Blockchain. Der Code kann selbst Regeln prüfen und Aktionen auslösen ohne eine Bank dazwischen."
   },
   "multiSignature": {
-    "title": "Mehrfachsignatur (Multi-Signature)",
+    "title": "Mehrfachsignatur",
     "original": "Multi-Signature",
     "short": "Mehrere Unterschriften nötig; Gewichte + Threshold bestimmen die Freigabe.",
     "desc": "Bei einer Mehrfachsignatur müssen mehrere Schlüssel unterschreiben, bevor eine Aktion gültig wird. Jeder Signer hat ein Gewicht, und die Summe muss das erforderliche Threshold erreichen. Das erhöht die Sicherheit, weil ein einzelner gestohlener Schlüssel nicht reicht."
   },
   "signer": {
-    "title": "Unterzeichner (Signer)",
+    "title": "Unterzeichner",
     "original": "Signer",
     "short": "Öffentlicher Schlüssel mit Gewicht, Teil der Kontokonfiguration.",
     "desc": "Ein Signer ist ein öffentlicher Schlüssel, der zu einem Konto gehört und ein Gewicht hat. Seine Signatur zählt zum benötigten Threshold. Mehrere Signer können gemeinsam eine Transaktion freigeben.\n\nSigner-Typen:\n- ed25519 (normaler Schlüssel)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM unterstützt nur ed25519. Weitere Optionen findest du unter https://lab.stellar.org."
   },
   "thresholds": {
-    "title": "Schwellenwerte (Thresholds)",
+    "title": "Schwellenwerte",
     "original": "Thresholds",
     "short": "Grenzwerte (low/med/high), die die nötige Gewichtssumme festlegen.",
     "desc": "Thresholds definieren, wie viele gewichtete Signaturen für Aktionen nötig sind: low für einfache Operationen, med für Zahlungen, high für kritische Änderungen. Die Summe der Signer-Gewichte muss den jeweiligen Schwellenwert erreichen."
   },
   "masterWeight": {
-    "title": "Mastergewicht (master_weight)",
+    "title": "Mastergewicht",
     "original": "master_weight",
     "short": "Gewicht des Master-Schlüssels; steuert, wie stark der Hauptschlüssel zählt.",
     "desc": "Das Mastergewicht ist das Gewicht des Hauptschlüssels eines Kontos. Ein hohes master_weight erlaubt dem Master-Key, viele Aktionen allein zu signieren; ein niedriger Wert zwingt zu zusätzlichen Signern."
   },
   "accountConfig": {
-    "title": "Kontokonfiguration (Account Configuration)",
+    "title": "Kontokonfiguration",
     "original": "Account Configuration",
     "short": "Zusammenspiel von Signern und Thresholds, bestimmt die Sicherheit des Kontos.",
     "desc": "Die Kontokonfiguration legt fest, welche Signer mit welchen Gewichten existieren und welche Thresholds gelten. Änderungen an Signern oder Thresholds sind sicherheitskritisch, weil sie bestimmen, wie viele Unterschriften nötig sind."

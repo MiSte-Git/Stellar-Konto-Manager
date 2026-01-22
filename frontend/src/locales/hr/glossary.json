@@ -5,6 +5,18 @@
   "searchPlaceholder": "Pojam za pretraživanje (z. B. Konto, Account, Muxed)",
   "searchHint": "Pretraga pronalazi riječi i objašnjenja.",
   "noResults": "Nema podudaranja.",
+  "groups": {
+    "accountsKeys": "Računi i ključevi",
+    "multisigSecurity": "Multisig i sigurnost računa",
+    "walletsCustody": "Novčanici i skrbništvo",
+    "tokensAssets": "Tokeni i imovina",
+    "transactionsFees": "Transakcije i naknade",
+    "marketsTrading": "Tržišta i trgovanje",
+    "networkProtocol": "Mreža i protokol",
+    "smartContracts": "Pametni ugovori",
+    "blockchainBasics": "Osnove blockchaina",
+    "security": "Sigurnost i prijevare"
+  },
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
@@ -57,7 +69,26 @@
     "title": "Višestruki potpis",
     "original": "Multi‑Sig",
     "short": "Važne radnje zahtijevaju više od samog potpisa.",
-    "desc": "Multi-Sig je skraćenica za višestruki potpis. Važna radnja zahtijeva više od jednog ključa. Na primjer, vi i drugi ključ morate se oboje složiti prije nego nešto može biti poslano. Ovo otežava krađu."
+    "desc": "Multi-Sig je skraćenica za višestruki potpis. Važna radnja zahtijeva više od jednog ključa. Na primjer, vi i drugi ključ morate se oboje složiti prije nego nešto može biti poslano. Ovo otežava krađu.",
+    "help": {
+      "title": "Opće objašnjenje korporativnog računa s višestrukim potpisom (Multi-Signature)",
+      "intro": "Tvrtka može koristiti zajednički blockchain račun koji uključuje nekoliko ovlaštenih osoba. Obično su uključena najmanje tri potpisnika (Signer), kao što su uprava, financijski službenik i osoba zadužena za usklađenost/sigurnosna pohrana. Cilj je da pojedinci mogu samostalno izvršavati uplate bez da ijedna osoba ima jedinu kontrolu nad računom ili ga preuzme.",
+      "problem": "Ako potpisnik (Signer) ima dovoljno težine za izvršavanje uplata i istovremeno dovoljno težine za promjene na računu, ta osoba bi mogla ukloniti druge potpisnike (Signer) ili prilagoditi prag/ponderiranje (Thresholds) te na taj način preuzeti račun. Nasuprot tome, originalni vlasnik također ne bi trebao biti u mogućnosti isključiti druge potpisnike (Signer) bez odgovarajućih provjera i ravnoteža. Struktura s više potpisa osigurava da važne odluke uvijek budu podržane kolektivno od strane više osoba.",
+      "setupTitle": "Primjer sigurne multi-sig strukture s tri potpisnika",
+      "setupWeights": "U primjeru s trima ekvivalentnim ulogama, svi dobivaju istu jačinu potpisa:\n- Potpisnik (Signer) A (management): težina 2\n- Potpisnik (Signer) B (Finanzen): težina 2\n- Potpisnik (Signer) C (Compliance/Backup): težina 2",
+      "setupThresholds": "Odgovarajući pragovi/vage su postavljeni:\n- Nizak (low_threshold): 1\n- Srednji (med_threshold): 2 (for payments and other medium actions)\n- Visok (high_threshold): 4 (za strukturne promjene kao što su dodavanje/uklanjanje potpisnika (Signer) ili promjena praga/vaganja (Thresholds))\nOva postavka omogućava svakom ovlaštenom osobi izvršavanje plaćanja, ali niti jedna osoba ne može sama promijeniti strukturu računa.",
+      "behavior": "S ovom konfiguracijom, plaćanja može provoditi bilo koja od tri ovlaštene osobe pojedinačno, jer težina svakog pojedinca zadovoljava srednji prag/ponder (Threshold). Međutim, za strukturne promjene poput uklanjanja potpisnika (Signers), prilagodbe pragova/pondera ili spajanja ili zatvaranja računa, potreban je visoki prag/ponder (high_threshold). Ova vrijednost može biti postignuta samo ako najmanje dva od tri potpisnika (Signer) potpišu zajedno. Na ovaj način, račun ostaje fleksibilan za svakodnevnu upotrebu, a istovremeno dobro zaštićen od zloupotrebe.",
+      "removal": "Ako osoba napusti tvrtku ili više nije pouzdana, dvojica preostalih potpisnika (Signer) mogu zajednički ukloniti prava potpisa te osobe. Nijedan pojedinačni potpisnik (Signer) – ni zaposlenik ni uprava – ne može samostalno isključiti druge s računa. Oduzimanje ovlasti uvijek se odvija kontrolirano i transparentno od strane najmanje dvije odgovorne osobe.",
+      "summary": "Ova vrsta multi-potpisne strukture omogućava pojedincima da učinkovito obrađuju plaćanja, dok kontrolu nad računom zadržavaju u rukama više strana. Smanjuje rizik od preuzimanja računa, štiti od jednostranih odluka i posebno je prikladna za korporativne račune gdje su sigurnost i operativna fleksibilnost važni.",
+      "closeLabel": "Zatvoren",
+      "linkLabel": "Što znači Multi-Signature?",
+      "glossaryLinkLabel": "Pogledaj u rječniku"
+    }
+  },
+  "multisigCorporate": {
+    "title": "Multisig u tvrtkama",
+    "original": "Multi-Signature (corporate example)",
+    "short": "Primjer multisig strukture za poslovne račune s ulogama, težinama i pragovima."
   },
   "trustline": {
     "title": "Poverilačka linija",
@@ -78,7 +109,7 @@
     "desc": "Na Stellar mreži, token se naziva imovina. Imovina je uvijek povezana s izdavateljskim računom. Na primjer, račun može izdati Euro token. Ovaj Euro token tada postaje imovina."
   },
   "xlm": {
-    "title": "XLM (Stellar Lumens)",
+    "title": "XLM",
     "original": "XLM",
     "short": "Zavičajna valuta Stellara za naknade i aktivaciju.",
     "desc": "XLM je izvorna valuta Stellara. Trebate XLM za plaćanje naknada i za otvaranje novog računa."
@@ -175,31 +206,31 @@
     "desc": "Soroban je sustav pametnih ugovora na Stellaru. Pametni ugovor je programski kod na blockchainu. Kod može samostalno provjeravati pravila i pokretati radnje bez posredničke banke."
   },
   "multiSignature": {
-    "title": "Višepotpis (Multi-Signature)",
+    "title": "Višepotpis",
     "original": "Multi-Signature",
     "short": "Multiple signatures required; weights + threshold determine the release.",
     "desc": "U postavci s više potpisa, više ključeva mora potpisati prije nego što neka radnja postane valjana. Svaki potpisnik ima težinu, a zbroj mora doseći potrebni prag. To povećava sigurnost jer jedan ukradeni ključ nije dovoljan."
   },
   "signer": {
-    "title": "Potpisnik (Signer)",
+    "title": "Potpisnik",
     "original": "Signer",
     "short": "Javni ključ s težinom, dio konfiguracije računa.",
     "desc": "Potpisnik je javni ključ koji pripada računu i ima težinu. Njegov potpis se računa prema potrebnom pragu. Više potpisnika može zajednički ovlastiti transakciju."
   },
   "thresholds": {
-    "title": "Pragovi (Thresholds)",
+    "title": "Pragovi",
     "original": "Thresholds",
     "short": "Ograničenja (low/med/high) koja određuju potrebnu sumu težina.",
     "desc": "Pragovi definiraju koliko je ponderiranih potpisa potrebno za radnje: nizak prag za jednostavne operacije, srednji za plaćanja, visok za kritične promjene. Zbroj težina potpisnika mora odgovarati odgovarajućem pragu."
   },
   "masterWeight": {
-    "title": "Master weight (master_weight)",
+    "title": "Master weight",
     "original": "master_weight",
     "short": "Težina glavnog ključa; kontrolira koliku važnost ima glavni ključ.",
     "desc": "Glavna težina je težina glavnog ključa računa. Visoka glavna težina omogućuje glavnom ključu da samostalno potpisuje mnoge radnje; niska vrijednost zahtijeva dodatne potpisnike."
   },
   "accountConfig": {
-    "title": "Konfiguracija računa (Account Configuration)",
+    "title": "Konfiguracija računa",
     "original": "Account Configuration",
     "short": "Međudjelovanje potpisnika i pragova određuje sigurnost računa.",
     "desc": "Konfiguracija računa navodi koji potpisnici postoje s kojim težinama i koji pragovi se primjenjuju. Promjene potpisnika ili pragova su kritične za sigurnost jer određuju koliko je potpisa potrebno."
@@ -266,7 +297,7 @@
     "desc": "Poput tržišta kojem se svatko može pridružiti. Ovo snižava prepreke, ali može zahtijevati više pravila kako bi ostalo pošteno. Primjeri uključuju mnoge javne blockchainove."
   },
   "permissionedBlockchain": {
-    "title": "Dozvoljena blockchain (blockchain s pristupom ograničenim dozvolama)",
+    "title": "Dozvoljena blockchain",
     "original": "Permissioned Blockchain",
     "short": "Sudjelovanje samo uz dopuštenje.",
     "desc": "Kao klub s popisom članova. Ovo može stvoriti jasne odgovornosti. Međutim, manje je otvoreno."
