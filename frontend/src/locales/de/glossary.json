@@ -188,7 +188,7 @@
     "title": "Unterzeichner (Signer)",
     "original": "Signer",
     "short": "Öffentlicher Schlüssel mit Gewicht, Teil der Kontokonfiguration.",
-    "desc": "Ein Signer ist ein öffentlicher Schlüssel, der zu einem Konto gehört und ein Gewicht hat. Seine Signatur zählt zum benötigten Threshold. Mehrere Signer können gemeinsam eine Transaktion freigeben."
+    "desc": "Ein Signer ist ein öffentlicher Schlüssel, der zu einem Konto gehört und ein Gewicht hat. Seine Signatur zählt zum benötigten Threshold. Mehrere Signer können gemeinsam eine Transaktion freigeben.\n\nSigner-Typen:\n- ed25519 (normaler Schlüssel)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM unterstützt nur ed25519. Weitere Optionen findest du unter https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Schwellenwerte (Thresholds)",

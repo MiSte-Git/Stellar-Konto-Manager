@@ -184,7 +184,7 @@
     "title": "Signatory (Signer)",
     "original": "Signer",
     "short": "Public key with weight, part of the account configuration.",
-    "desc": "A signer is a public key that belongs to an account and has a weight. Its signature counts towards the required threshold. Multiple signers can collectively authorize a transaction."
+    "desc": "A signer is a public key that belongs to an account and has a weight. Its signature counts towards the required threshold. Multiple signers can collectively authorize a transaction.\n\nSigner types:\n- ed25519 (regular key)\n- hashX (hash preimage)\n- preAuthTx (pre-authorized transaction)\n\nSKM supports only ed25519. For other options, see https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Thresholds (Thresholds)",

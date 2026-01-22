@@ -730,7 +730,26 @@
     },
     "currentConfig": "Aktuelle / geplante Konfiguration",
     "error": {
-      "thresholdTooHigh": "Schwellen dürfen die Summe der Gewichte nicht überschreiten."
+      "thresholdTooHigh": "Schwellen dürfen die Summe der Gewichte nicht überschreiten.",
+      "safetyTitle": "Sicherheitscheck blockiert",
+      "safetyBlocked": "Sicherheitscheck blockiert: Bitte die Warnungen oben beheben.",
+      "noActiveSigners": "Mindestens ein aktiver Signer ist erforderlich. Vorschlag: Master-Gewicht > 0 setzen oder einen Unterzeichner mit Gewicht > 0 hinzufügen.",
+      "noEd25519Signers": "Mindestens ein Unterzeichner mit Gewicht > 0 ist erforderlich. Vorschlag: Master-Gewicht erhöhen oder Unterzeichner hinzufügen.",
+      "masterZeroInsufficientHigh": "Master-Gewicht ist 0 und die Summe der Signer-Gewichte reicht nicht für die High-Schwelle (Summe: {{sum}}, High: {{high}}). Vorschlag: Schwellen senken oder Gewichte/Signer erhöhen.",
+      "thresholdHighUnreachable": "High-Schwelle nicht erreichbar (Summe: {{sum}}, High: {{high}}). Vorschlag: Schwelle senken oder Gewichte/Signer erhöhen.",
+      "thresholdMedUnreachable": "Med-Schwelle nicht erreichbar (Summe: {{sum}}, Med: {{med}}). Vorschlag: Schwelle senken oder Gewichte/Signer erhöhen.",
+      "specialSignerLastHigh": "Spezial-Signer (hashX/preAuthTx) dürfen nicht die einzige High-Autorität sein. Vorschlag: Unterzeichner mit Gewicht >= High hinzufügen.",
+      "setOptionsNotSignable": "SetOptions wäre nach der Änderung nicht signierbar (Unterzeichner-Summe: {{sum}}, High: {{high}}). Vorschlag: Unterzeichner-Gewichtung erhöhen oder High senken."
+    },
+    "warning": {
+      "safetyTitle": "Sicherheitswarnungen",
+      "highSingleSigner": "Nur ein Unterzeichner erreicht die High-Schwelle. Empfehlung: mindestens zwei unabhängige Unterzeichner.",
+      "medSingleSigner": "Med-Schwelle > 0, aber nur ein Unterzeichner vorhanden. Empfehlung: zweiten Unterzeichner hinzufügen."
+    },
+    "securityGuarantee": {
+      "title": "🔒 SKM Sicherheitsgarantie (Multisig)",
+      "text": "Der Stellar Konto Manager verhindert alle technisch verursachten Konto-Sperren, die durch falsche Multisig-Konfiguration entstehen können.\n\nSKM blockiert insbesondere:\n- Deaktivieren des Master-Keys ohne erreichbare Signer\n- Unerreichbare Schwellen (low / med / high)\n- Reihenfolgefehler bei Signer- und Threshold-Änderungen\n- Entfernen des letzten gültigen High-Signers\n- Multisig-Setups, bei denen SetOptions nicht mehr signierbar ist\n- Sackgassen durch hashX oder preAuthTx als letzten Signer\n\nSKM setzt nur ed25519-Unterzeichner. Für andere Signer-Typen nutze {link}.\n\nSKM garantiert:\n- Jede bestätigte Änderung lässt mindestens einen gültigen Weg zur weiteren Kontoverwaltung offen\n- SetOptions bleibt nach der Änderung erreichbar\n\nNicht garantierbar (systembedingt):\n- Verlust von Secret Keys oder Hardware-Wallets\n- Nichterreichbarkeit oder Ausfall externer Signer\n\nFazit:\nSKM schützt zuverlässig vor Konfigurations-Lockouts.\nOrganisatorische Risiken werden transparent angezeigt, können aber nicht technisch verhindert werden.",
+      "linkLabel": "lab.stellar.org"
     },
     "hint": "Lade ein bestehendes Konto, passe Signer, Gewichte, Master-Gewicht und Schwellen an und speichere die Änderungen.",
     "load": "Laden",
@@ -738,10 +757,12 @@
     "menu": "Multisig Konto bearbeiten",
     "menuHint": "Signer/Schwellen eines bestehenden Kontos anpassen",
     "noteMaxSigners": "Hinweis: Stellar erlaubt max. 20 zusätzliche Unterzeichner pro Konto.",
+    "signerTypeNote": "Hinweis: SKM setzt nur ed25519-Unterzeichner. Für hashX/preAuthTx nutze",
+    "signerTypeLink": "lab.stellar.org",
     "reload": "Neu laden",
     "save": "Änderungen speichern",
     "saved": "Änderungen gespeichert. TX: {{hash}}",
-    "signers": "Unterzeichner",
+    "signers": "Unterzeichner (ed25519)",
     "weight": "Gewichtung",
     "masterWeight": "Master-Gewicht",
     "title": "Multisig Konto bearbeiten",

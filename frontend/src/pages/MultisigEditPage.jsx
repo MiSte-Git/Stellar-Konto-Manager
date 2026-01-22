@@ -108,6 +108,59 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const thLowErr = lowT > sumWeights;
   const thMedErr = medT > sumWeights;
   const thHighErr = highT > sumWeights;
+  const safetyCheck = useMemo(() => {
+    const plannedMaster = clampByte(masterWeight);
+    const plannedThresholds = {
+      low: clampByte(lowT),
+      med: clampByte(medT),
+      high: clampByte(highT),
+    };
+    const plannedEd25519 = [
+      ...(defaultPublicKey ? [{ key: (defaultPublicKey || '').trim(), weight: plannedMaster }] : []),
+      ...(signers || []).map((s) => ({
+        key: (s.key || '').trim(),
+        weight: clampByte(s.weight || 0),
+      })),
+    ].filter((s) => s.key && StrKey.isValidEd25519PublicKey(s.key) && s.weight > 0);
+    const plannedEd25519Weight = plannedEd25519.reduce((acc, s) => acc + s.weight, 0);
+    const plannedEd25519Count = plannedEd25519.length;
+    const specialSigners = (currentAccount?.signers || [])
+      .filter((s) => s?.type && String(s.type) !== 'ed25519_public_key' && Number(s.weight || 0) > 0)
+      .map((s) => ({ type: s.type, weight: clampByte(s.weight || 0) }));
+    const specialWeight = specialSigners.reduce((acc, s) => acc + s.weight, 0);
+    const totalWeightAll = plannedEd25519Weight + specialWeight;
+    const errors = [];
+    if (totalWeightAll < 1) {
+      errors.push(t('common:multisigEdit.error.noActiveSigners'));
+    }
+    if (plannedEd25519Count < 1) {
+      errors.push(t('common:multisigEdit.error.noEd25519Signers'));
+    }
+    if (plannedMaster === 0 && totalWeightAll < plannedThresholds.high) {
+      errors.push(t('common:multisigEdit.error.masterZeroInsufficientHigh', { sum: totalWeightAll, high: plannedThresholds.high }));
+    }
+    if (totalWeightAll < plannedThresholds.high) {
+      errors.push(t('common:multisigEdit.error.thresholdHighUnreachable', { sum: totalWeightAll, high: plannedThresholds.high }));
+    }
+    if (totalWeightAll < plannedThresholds.med) {
+      errors.push(t('common:multisigEdit.error.thresholdMedUnreachable', { sum: totalWeightAll, med: plannedThresholds.med }));
+    }
+    if (specialSigners.length > 0 && plannedEd25519Weight < plannedThresholds.high) {
+      errors.push(t('common:multisigEdit.error.specialSignerLastHigh', { sum: plannedEd25519Weight, high: plannedThresholds.high }));
+    }
+    if (plannedEd25519Weight < plannedThresholds.high) {
+      errors.push(t('common:multisigEdit.error.setOptionsNotSignable', { sum: plannedEd25519Weight, high: plannedThresholds.high }));
+    }
+    const warnings = [];
+    if (plannedThresholds.high > 0 && plannedEd25519Count === 1) {
+      warnings.push(t('common:multisigEdit.warning.highSingleSigner'));
+    }
+    if (plannedThresholds.med > 0 && plannedEd25519Count === 1) {
+      warnings.push(t('common:multisigEdit.warning.medSingleSigner'));
+    }
+    return { errors, warnings };
+  }, [currentAccount, defaultPublicKey, highT, lowT, masterWeight, medT, signers, t]);
+  const hasSafetyErrors = safetyCheck.errors.length > 0;
 
   // Load account
   const loadAccount = useCallback(async () => {
@@ -181,6 +234,9 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   async function buildSetOptionsTx(collectedSigners, { signTx = false, requireSigners = false } = {}) {
     const pk = (defaultPublicKey || '').trim();
     if (!pk) { throw new Error(t('publicKey:invalid')); }
+    if (hasSafetyErrors) {
+      throw new Error('submitTransaction.failed:' + 'multisig.invalidConfig');
+    }
 
     const acct = await server.loadAccount(pk);
     const required = getRequiredThreshold('setOptions', acct.thresholds) || clampByte(acct.thresholds?.high_threshold ?? highT);
@@ -224,16 +280,6 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     const txb = new TransactionBuilder(acct, { fee, networkPassphrase: passphrase });
 
     const curTh = acct.thresholds || { low_threshold: 1, med_threshold: 2, high_threshold: 2 };
-    const relaxedLow = Math.min(curTh.low_threshold ?? 1, plannedThresholds.low);
-    const relaxedMed = Math.min(curTh.med_threshold ?? 2, plannedThresholds.med);
-    const relaxedHigh = Math.min(curTh.high_threshold ?? 2, plannedThresholds.high);
-    if (relaxedLow < (curTh.low_threshold ?? 1) || relaxedMed < (curTh.med_threshold ?? 2) || relaxedHigh < (curTh.high_threshold ?? 2)) {
-      txb.addOperation(Operation.setOptions({
-        lowThreshold: relaxedLow,
-        medThreshold: relaxedMed,
-        highThreshold: relaxedHigh,
-      }));
-    }
 
     if (plannedMaster > currentMaster) {
       txb.addOperation(Operation.setOptions({ masterWeight: plannedMaster }));
@@ -254,16 +300,20 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       }
     }
 
-    if (plannedMaster < currentMaster) {
-      txb.addOperation(Operation.setOptions({ masterWeight: plannedMaster }));
-    }
-
-    if (plannedThresholds.low > relaxedLow || plannedThresholds.med > relaxedMed || plannedThresholds.high > relaxedHigh) {
+    if (
+      plannedThresholds.low !== clampByte(curTh.low_threshold ?? 1)
+      || plannedThresholds.med !== clampByte(curTh.med_threshold ?? 2)
+      || plannedThresholds.high !== clampByte(curTh.high_threshold ?? 2)
+    ) {
       txb.addOperation(Operation.setOptions({
         lowThreshold: plannedThresholds.low,
         medThreshold: plannedThresholds.med,
         highThreshold: plannedThresholds.high,
       }));
+    }
+
+    if (plannedMaster < currentMaster) {
+      txb.addOperation(Operation.setOptions({ masterWeight: plannedMaster }));
     }
 
     const tx = txb.setTimeout(60).build();
@@ -298,9 +348,12 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         { key: pk, weight: clampByte(masterWeight) },
         ...signers.map((s) => ({ key: (s.key || '').trim(), weight: clampByte(s.weight) })).filter((s) => s.key),
       ];
+      const specialSigners = (currentAccount?.signers || [])
+        .filter((s) => s?.type && String(s.type) !== 'ed25519_public_key')
+        .map((s) => ({ key: s.key, weight: clampByte(s.weight || 0), type: s.type }));
       setCurrentAccount({
         account_id: pk,
-        signers: updatedSigners,
+        signers: [...updatedSigners, ...specialSigners],
         thresholds: {
           low_threshold: clampByte(planned.thresholds.low),
           med_threshold: clampByte(planned.thresholds.med),
@@ -325,6 +378,10 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       setError(t('publicKey:invalid'));
       return;
     }
+    if (hasSafetyErrors) {
+      setError(t('common:multisigEdit.error.safetyBlocked'));
+      return;
+    }
     // validate signer keys (optional: allow empty rows)
     for (const s of signers) {
       const k = (s.key || '').trim();
@@ -338,11 +395,19 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   }
 
   const handleConfirmTestMode = useCallback(() => {
+    if (hasSafetyErrors) {
+      setError(t('common:multisigEdit.error.safetyBlocked'));
+      return;
+    }
     setShowConfirmModal(false);
     setShowSecretModal(true);
-  }, []);
+  }, [hasSafetyErrors, t]);
 
   const handlePrepareMultisig = useCallback(async () => {
+    if (hasSafetyErrors) {
+      setError(t('common:multisigEdit.error.safetyBlocked'));
+      return;
+    }
     try {
       const { tx, plannedThresholds, plannedMaster, plannedSigners } = await buildSetOptionsTx(null, { signTx: false, requireSigners: false });
       const hashHex = tx.hash().toString('hex');
@@ -414,7 +479,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     } finally {
       setShowConfirmModal(false);
     }
-  }, [buildSetOptionsTx, defaultPublicKey, network, t]);
+  }, [buildSetOptionsTx, defaultPublicKey, hasSafetyErrors, network, t]);
 
   const buildPlannedChanges = useCallback(() => {
     const pk = (defaultPublicKey || '').trim();
@@ -432,6 +497,10 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   }, [defaultPublicKey, lowT, medT, highT, masterWeight, signers]);
 
   const handleCreateMultisigJob = useCallback(async () => {
+    if (hasSafetyErrors) {
+      setError(t('common:multisigEdit.error.safetyBlocked'));
+      return;
+    }
     try {
       const planned = buildPlannedChanges();
       const payload = {
@@ -444,7 +513,11 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     } catch (err) {
       setError(String(err?.message || err));
     }
-  }, [buildPlannedChanges, network, t]);
+  }, [buildPlannedChanges, hasSafetyErrors, network, t]);
+  const securityGuaranteeText = t('common:multisigEdit.securityGuarantee.text');
+  const securityGuaranteeParts = securityGuaranteeText.split('{link}');
+  const securityGuaranteeBefore = securityGuaranteeParts[0] || '';
+  const securityGuaranteeAfter = securityGuaranteeParts[1] || '';
 
   return (
     <div className="max-w-3xl mx-auto p-4">
@@ -461,6 +534,25 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       </div>
 
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{t('common:multisigEdit.hint')}</p>
+      <details className="mb-4 border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950 rounded p-3">
+        <summary className="text-sm font-semibold text-blue-900 dark:text-blue-100 cursor-pointer">
+          {t('common:multisigEdit.securityGuarantee.title')}
+        </summary>
+        <p className="text-xs text-blue-900/80 dark:text-blue-100/80 mt-2 whitespace-pre-line">
+          {securityGuaranteeBefore}
+          {securityGuaranteeText.includes('{link}') && (
+            <a
+              href="https://lab.stellar.org"
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold underline underline-offset-2 text-blue-900 dark:text-blue-100"
+            >
+              {t('common:multisigEdit.securityGuarantee.linkLabel')}
+            </a>
+          )}
+          {securityGuaranteeAfter}
+        </p>
+      </details>
 
       <NetworkSelector value={network} onChange={setNetwork} />
 
@@ -489,10 +581,6 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
         <div className="mt-2">
           <h4 className="font-semibold mb-1">{t('common:multisigEdit.signers')}</h4>
           <div className="space-y-2">
-            <div className="hidden sm:grid sm:grid-cols-5 text-xs text-gray-500 px-1">
-              <div className="sm:col-span-4">{t('common:multisigEdit.signers')}</div>
-              <div className="text-right pr-2">{t('common:multisigEdit.weight')}</div>
-            </div>
             {signers.map((s, i) => (
               <div key={i} className="grid gap-2 sm:grid-cols-5 items-center">
                 <input
@@ -518,6 +606,17 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
             ))}
           </div>
           <button type="button" onClick={addSignerRow} className="mt-2 px-2 py-1 border rounded text-sm hover:bg-gray-100 dark:hover:bg-gray-800">{t('common:option.add')}</button>
+          <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+            {t('common:multisigEdit.signerTypeNote')}{' '}
+            <a
+              href="https://lab.stellar.org"
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold underline underline-offset-2 text-blue-900 dark:text-blue-100"
+            >
+              {t('common:multisigEdit.signerTypeLink')}
+            </a>
+          </p>
         </div>
 
         {/* Master weight below signers */}
@@ -551,11 +650,35 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           {(thLowErr || thMedErr || thHighErr) && (
             <p className="text-xs text-red-600 mt-1">{t('createAccount:thresholdTooHigh')}</p>
           )}
+          {safetyCheck.errors.length > 0 && (
+            <div className="mt-2 border border-red-400 bg-red-50 dark:border-red-700 dark:bg-red-900/30 rounded p-2">
+              <div className="text-xs font-semibold text-red-900 dark:text-red-100">
+                {t('common:multisigEdit.error.safetyTitle')}
+              </div>
+              <ul className="list-disc ml-4 text-xs text-red-800 dark:text-red-200 mt-1 space-y-1">
+                {safetyCheck.errors.map((msg, idx) => (
+                  <li key={idx}>{msg}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {safetyCheck.warnings.length > 0 && (
+            <div className="mt-2 border border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded p-2">
+              <div className="text-xs font-semibold text-amber-900 dark:text-amber-100">
+                {t('common:multisigEdit.warning.safetyTitle')}
+              </div>
+              <ul className="list-disc ml-4 text-xs text-amber-800 dark:text-amber-200 mt-1 space-y-1">
+                {safetyCheck.warnings.map((msg, idx) => (
+                  <li key={idx}>{msg}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 
       <div className="flex gap-2">
-        <button onClick={handleSave} disabled={loading || thLowErr || thMedErr || thHighErr} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50">{t('common:multisigEdit.save')}</button>
+        <button onClick={handleSave} disabled={loading || thLowErr || thMedErr || thHighErr || hasSafetyErrors} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50">{t('common:multisigEdit.save')}</button>
         <button onClick={loadAccount} disabled={loading || !(defaultPublicKey||'').trim()} className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50">{t('common:multisigEdit.reload')}</button>
       </div>
 
@@ -589,6 +712,30 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
                 <span className="font-mono">{highT}</span>
               </div>
             </div>
+            {safetyCheck.errors.length > 0 && (
+              <div className="mb-4 border border-red-400 bg-red-50 dark:border-red-700 dark:bg-red-900/30 rounded p-2">
+                <div className="text-xs font-semibold text-red-900 dark:text-red-100">
+                  {t('common:multisigEdit.error.safetyTitle')}
+                </div>
+                <ul className="list-disc ml-4 text-xs text-red-800 dark:text-red-200 mt-1 space-y-1">
+                  {safetyCheck.errors.map((msg, idx) => (
+                    <li key={idx}>{msg}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {safetyCheck.warnings.length > 0 && (
+              <div className="mb-4 border border-amber-400 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/30 rounded p-2">
+                <div className="text-xs font-semibold text-amber-900 dark:text-amber-100">
+                  {t('common:multisigEdit.warning.safetyTitle')}
+                </div>
+                <ul className="list-disc ml-4 text-xs text-amber-800 dark:text-amber-200 mt-1 space-y-1">
+                  {safetyCheck.warnings.map((msg, idx) => (
+                    <li key={idx}>{msg}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
               <div className="grid gap-3">
               <div className="border rounded p-3">
                 <div className="font-semibold mb-1">{t('multisig:confirm.testModeTitle')}</div>
@@ -597,7 +744,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
                   type="button"
                   onClick={handleConfirmTestMode}
                   className="w-full px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
-                  disabled={mode === 'prod'}
+                  disabled={mode === 'prod' || hasSafetyErrors}
                 >
                   {t('multisig:confirm.testModeButton')}
                 </button>
@@ -616,6 +763,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
                   type="button"
                   onClick={mode === 'prod' ? handleCreateMultisigJob : handlePrepareMultisig}
                   className="w-full px-3 py-2 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
+                  disabled={hasSafetyErrors}
                 >
                   {mode === 'prod' ? t('multisig:actions.createMultisigJob') : t('multisig:confirm.prepareButton')}
                 </button>
