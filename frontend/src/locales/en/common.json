@@ -730,7 +730,26 @@
     },
     "currentConfig": "Current / Planned Configuration",
     "error": {
-      "thresholdTooHigh": "Thresholds must not exceed the sum of the weights."
+      "thresholdTooHigh": "Thresholds must not exceed the sum of the weights.",
+      "safetyTitle": "Safety check blocked",
+      "safetyBlocked": "Safety check blocked: please fix the warnings above.",
+      "noActiveSigners": "At least one active signer is required. Suggestion: set master weight > 0 or add a signer with weight > 0.",
+      "noEd25519Signers": "At least one signer with weight > 0 is required. Suggestion: increase master weight or add a signer.",
+      "masterZeroInsufficientHigh": "Master weight is 0 and the total signer weight is below the high threshold (sum: {{sum}}, high: {{high}}). Suggestion: lower thresholds or increase signer weights/add signers.",
+      "thresholdHighUnreachable": "High threshold is not reachable (sum: {{sum}}, high: {{high}}). Suggestion: lower threshold or increase signer weights/add signers.",
+      "thresholdMedUnreachable": "Medium threshold is not reachable (sum: {{sum}}, med: {{med}}). Suggestion: lower threshold or increase signer weights/add signers.",
+      "specialSignerLastHigh": "Special signers (hashX/preAuthTx) must not be the only high authority. Suggestion: add a signer with weight >= high.",
+      "setOptionsNotSignable": "SetOptions would not be signable after the change (signer sum: {{sum}}, high: {{high}}). Suggestion: increase signer weight or lower high."
+    },
+    "warning": {
+      "safetyTitle": "Safety warnings",
+      "highSingleSigner": "Only one signer reaches the high threshold. Recommendation: at least two independent signers.",
+      "medSingleSigner": "Medium threshold > 0, but only one signer present. Recommendation: add a second signer."
+    },
+    "securityGuarantee": {
+      "title": "🔒 SKM Safety Guarantee (Multisig)",
+      "text": "Stellar Account Manager prevents all technically caused account lockouts that can result from incorrect multisig configurations.\n\nSKM blocks in particular:\n- Disabling the master key without reachable signers\n- Unreachable thresholds (low / med / high)\n- Ordering errors in signer and threshold changes\n- Removing the last valid high signer\n- Multisig setups where SetOptions is no longer signable\n- Dead ends caused by hashX or preAuthTx as the last signer\n\nSKM only sets ed25519 signers. For other signer types, use {link}.\n\nSKM guarantees:\n- Every confirmed change leaves at least one valid path to further account management\n- SetOptions remains reachable after the change\n\nNot guaranteed (system-related):\n- Loss of secret keys or hardware wallets\n- Unavailability or failure of external signers\n\nConclusion:\nSKM reliably protects against configuration lockouts.\nOrganizational risks are shown transparently but cannot be technically prevented.",
+      "linkLabel": "lab.stellar.org"
     },
     "hint": "Load an existing account, adjust signers, weights, master weight, and thresholds, and save the changes.",
     "load": "Store",
@@ -738,10 +757,12 @@
     "menu": "Edit multisig account",
     "menuHint": "Adjusting Signers/Thresholds of an Existing Account",
     "noteMaxSigners": "Note: Stellar allows a maximum of 20 additional signers per account.",
+    "signerTypeNote": "Note: SKM only sets ed25519 signers. For hashX/preAuthTx use",
+    "signerTypeLink": "lab.stellar.org",
     "reload": "Reload",
     "save": "Save changes",
     "saved": "Changes saved. TX: {{hash}}",
-    "signers": "Signatory",
+    "signers": "Signers (ed25519)",
     "weight": "Weighting",
     "masterWeight": "Master weight",
     "title": "Edit multisig account",
