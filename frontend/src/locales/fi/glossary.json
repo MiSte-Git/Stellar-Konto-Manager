@@ -5,6 +5,18 @@
   "searchPlaceholder": "Hakuehto (z. B. Konto, Account, Muxed)",
   "searchHint": "Haku löytää sanoja ja selityksiä.",
   "noResults": "Ei vastinetta.",
+  "groups": {
+    "accountsKeys": "Tilit ja avaimet",
+    "multisigSecurity": "Multisig ja tilin turvallisuus",
+    "walletsCustody": "Lompakot ja säilytys",
+    "tokensAssets": "Tokenit ja assetit",
+    "transactionsFees": "Transaktiot ja maksut",
+    "marketsTrading": "Markkinat ja treidaus",
+    "networkProtocol": "Verkko ja protokolla",
+    "smartContracts": "Älysopimukset",
+    "blockchainBasics": "Lohkoketjun perusteet",
+    "security": "Turvallisuus ja huijaukset"
+  },
   "blockchain": {
     "title": "Lohkoketju",
     "original": "Blockchain",
@@ -57,7 +69,26 @@
     "title": "Moniallekirjoitus",
     "original": "Multi‑Sig",
     "short": "Tärkeät toimet vaativat enemmän kuin pelkän allekirjoituksen.",
-    "desc": "Multi-Sig tarkoittaa useita allekirjoituksia. Tärkeä toimenpide vaatii useampaa kuin yhtä avainta. Esimerkiksi sinun ja toisen avaimen täytyy molempien hyväksyä, ennen kuin jotain voidaan lähettää. Tämä tekee varkaudesta vaikeampaa."
+    "desc": "Multi-Sig tarkoittaa useita allekirjoituksia. Tärkeä toimenpide vaatii useampaa kuin yhtä avainta. Esimerkiksi sinun ja toisen avaimen täytyy molempien hyväksyä, ennen kuin jotain voidaan lähettää. Tämä tekee varkaudesta vaikeampaa.",
+    "help": {
+      "title": "Yleinen selitys moniallekirjoitustilistä (Multi-Signature) yritystiliin liittyen.",
+      "intro": "Yritys voi käyttää yhteistä lohkoketjutiliä, johon kuuluu useita valtuutettuja henkilöitä. Tyypillisesti mukana on vähintään kolme allekirjoittajaa (Signer), kuten johto, talousjohtaja ja compliance-/varahenkilö. Tavoitteena on, että yksittäiset henkilöt voivat itsenäisesti suorittaa maksuja ilman, että yhdelläkään henkilöllä on yksinään tilin hallintaa tai haltuunottoa.",
+      "problem": "Jos allekirjoittajalla (Signer) on riittävästi painoarvoa maksujen suorittamiseen ja samanaikaisesti riittävästi painoarvoa tilin muutosten tekemiseen, voi kyseinen henkilö poistaa muita allekirjoittajia (Signer) tai säätää kynnysarvoa/painotusta (Thresholds) ja siten ottaa tilin hallintaansa. Toisaalta alkuperäisen omistajan ei myöskään pitäisi voida sulkea muita allekirjoittajia (Signer) pois ilman tarkastuksia ja tasapainotuksia. Multi-sig-rakenne varmistaa, että tärkeät päätökset saavat aina useiden henkilöiden yhteisen tuen.",
+      "setupTitle": "Esimerkki turvallisesta multi-sig-rakenteesta, jossa on kolme allekirjoittajaa.",
+      "setupWeights": "Esimerkissä, jossa on kolme vastaavaa roolia, kaikki saavat saman allekirjoitusvoimakkuuden:\n- Allekirjoittaja (Signer) A (management): paino 2\n- Allekirjoittaja (Signer) B (Finanzen): paino 2\n- Allekirjoittaja (Signer) C (Compliance/Backup): paino 2",
+      "setupThresholds": "Sopivat kynnysarvot/painotukset on asetettu:\n- Low (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- High (high_threshold): 4 (rakenteellisten muutosten, kuten allekirjoittajien lisääminen/poistaminen (Signer) tai kynnysarvon/painotuksen muuttaminen (Thresholds))\nTämä asetus mahdollistaa jokaiselle valtuutetulle henkilölle maksujen suorittamisen, mutta yksikään henkilö ei voi yksin muuttaa tilin rakennetta.",
+      "behavior": "Tämän konfiguraation avulla maksut voidaan suorittaa minkä tahansa kolmen valtuutetun henkilön toimesta yksin, koska kunkin henkilön painoarvo täyttää keskitason kynnyksen/painoarvon (Threshold). Kuitenkin rakenteellisiin muutoksiin, kuten allekirjoittajan poistamiseen (Signers), kynnysten/painoarvojen säätämiseen tai tilin yhdistämiseen tai sulkemiseen, vaaditaan korkea kynnys/painoarvo (high_threshold). Tämä arvo voidaan saavuttaa vain, jos vähintään kaksi kolmesta allekirjoittajasta (Signer) allekirjoittaa yhdessä. Tällä tavalla tili pysyy joustavana päivittäisessä käytössä ja on hyvin suojattu väärinkäytöksiä vastaan.",
+      "removal": "Jos henkilö poistuu yrityksestä tai ei ole enää luotettava, kaksi jäljellä olevaa allekirjoittajaa (Signer) voivat yhdessä poistaa tämän henkilön allekirjoitusoikeudet. Yksittäinen allekirjoittaja (Signer) – ei työntekijä eikä johto – voi itsenäisesti sulkea muita pois tililtä. Oikeuksien poistaminen tapahtuu siis aina hallitusti ja jäljitettävästi vähintään kahden vastuuhenkilön toimesta.",
+      "summary": "Tällainen multisignatuuri-rakenne mahdollistaa yksittäisten henkilöiden suorittaa maksuja tehokkaasti samalla kun tilin hallinta säilyy useiden osapuolten käsissä. Se vähentää tilin kaappausten riskiä, suojaa yksipuolisilta päätöksiltä ja on erityisen sopiva yritystileille, joissa sekä turvallisuus että operatiivinen joustavuus ovat tärkeitä.",
+      "closeLabel": "Sulje",
+      "linkLabel": "Mitä tarkoittaa Multi-Signature?",
+      "glossaryLinkLabel": "Katso sanastosta"
+    }
+  },
+  "multisigCorporate": {
+    "title": "Multisig yrityksissä",
+    "original": "Multi-Signature (corporate example)",
+    "short": "Esimerkki multisig-rakenteesta yritystileille rooleineen, painoineen ja kynnyksineen."
   },
   "trustline": {
     "title": "Trustline",
@@ -78,7 +109,7 @@
     "desc": "Stellarissa tokeneita kutsutaan varoiksi. Omaisuus on aina liitetty liikkeeseenlaskevaan tiliin. Esimerkiksi tili voi laskea liikkeelle euro-tokeneita. Tämä euro-token on sitten omaisuus."
   },
   "xlm": {
-    "title": "XLM (Stellar Lumens)",
+    "title": "XLM",
     "original": "XLM",
     "short": "Stellarin alkuperäisvaluutta maksuille ja aktivoinnille.",
     "desc": "XLM on Stellarin oma valuutta. Tarvitset XLM:ää maksujen suorittamiseen ja uuden tilin avaamiseen."
@@ -175,31 +206,31 @@
     "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on ohjelmakoodi lohkoketjussa. Koodi voi itsenäisesti varmistaa sääntöjen noudattamisen ja laukaista toimia ilman välikätenä toimivaa pankkia."
   },
   "multiSignature": {
-    "title": "Multisignature (Multi-Signature)",
+    "title": "Multisignature",
     "original": "Multi-Signature",
     "short": "Useita allekirjoituksia vaaditaan; painoarvot + kynnysarvo määrittävät vapautuksen.",
     "desc": "Multisignature-järjestelyssä useiden avainten on allekirjoitettava ennen kuin toiminto on voimassa. Jokaisella allekirjoittajalla on painoarvo, ja summan on saavutettava vaadittu kynnysarvo. Tämä lisää turvallisuutta, koska yksi varastettu avain ei riitä."
   },
   "signer": {
-    "title": "Allekirjoittaja (Signatory)",
+    "title": "Allekirjoittaja",
     "original": "Signer",
     "short": "Yleinen avain painotuksella, osa tilin asetuksia.",
     "desc": "Allekirjoittaja on tiliin kuuluva julkinen avain, jolla on painoarvo. Sen allekirjoitus lasketaan kohti vaadittua kynnystä. Useat allekirjoittajat voivat yhdessä hyväksyä tapahtuman."
   },
   "thresholds": {
-    "title": "Kynnykset (Thresholds)",
+    "title": "Kynnykset",
     "original": "Thresholds",
     "short": "Rajoitukset (low/med/high), jotka määrittävät vaaditun painojen summan.",
     "desc": "Kynnysarvot määrittelevät, kuinka monta painotettua allekirjoitusta tarvitaan toimenpiteisiin: matala yksinkertaisille toiminnoille, keskikorkea maksuille ja korkea kriittisille muutoksille. Allekirjoittajien painojen summan on vastattava kyseistä kynnysarvoa."
   },
   "masterWeight": {
-    "title": "Master-paino (master_weight)",
+    "title": "Master-paino",
     "original": "master_weight",
     "short": "Pääavaimen paino; säätelee, kuinka paljon pääavain vaikuttaa.",
     "desc": "Pääpaino on tilin pääavaimen painoarvo. Korkea pääpaino mahdollistaa pääavaimen allekirjoittaa monia toimia yksin; matala arvo vaatii lisäallekirjoittajia."
   },
   "accountConfig": {
-    "title": "Tilin asetusten määrittely (Account Configuration)",
+    "title": "Tilin asetusten määrittely",
     "original": "Account Configuration",
     "short": "Allekirjoittajien ja kynnysarvojen vuorovaikutus määrittää tilin turvallisuuden.",
     "desc": "Tilin kokoonpano määrittää, mitkä allekirjoittajat ovat olemassa ja millä painoarvoilla ne toimivat, sekä mitkä kynnykset ovat voimassa. Allekirjoittajien tai kynnyksien muutokset ovat turvallisuuskriittisiä, koska ne määrittävät, kuinka monta allekirjoitusta vaaditaan."

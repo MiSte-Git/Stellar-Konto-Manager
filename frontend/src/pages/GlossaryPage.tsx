@@ -1,7 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import GlossaryTermCard from '../components/GlossaryTermCard.tsx';
-import { getGlossaryDisplayTitle } from '../utils/glossary.ts';
+import {
+  getGlossaryDisplayTitle,
+  getGroupedGlossarySlugs,
+  glossaryAliasIndex,
+} from '../utils/glossary.ts';
 import GlossaryToc from '../components/glossary/GlossaryToc.tsx';
 
 // GlossaryPage: Einsteiger-Glossar mit Suche und Grid-Ansicht.
@@ -75,87 +79,26 @@ function GlossaryPage() {
     }
   }, [backHref]);
 
-  // Liste der Begriffe. Jeder hat .title und .desc in i18n
-  const termKeys = [
-    'blockchain',
-    'wallet',
-    'account',
-    'addressG',
-    'publicKey',
-    'privateKey',
-    'addressFederation',
-    'addressMuxed',
-    'multisig',
-    'trustline',
-    'token',
-    'asset',
-    'xlm',
-    'mainnet',
-    'testnet',
-    'memo',
-    'transaction',
-    'fee',
-    'ledger',
-    'horizon',
-    'horizonHistory',
-    'anchor',
-    'exchange',
-    'dex',
-    'liquidityPool',
-    'balanceClaimable',
-  'protocolUpdate',
-  'soroban',
-  'multiSignature',
-  'signer',
-  'thresholds',
-  'masterWeight',
-  'accountConfig',
-  'distributedNetwork',
-  'node',
-  'block',
-  'consensusMechanism',
-  'finality',
-  'immutability',
-  'decentralization',
-  'publicBlockchain',
-  'privateBlockchain',
-  'permissionlessBlockchain',
-  'permissionedBlockchain',
-  'seedPhrase',
-  'selfCustody',
-  'custodian',
-  'hardwareWallet',
-  'hotWallet',
-  'coldWallet',
-  'cryptocurrency',
-  'altcoin',
-  'stablecoin',
-  'utilityToken',
-  'securityToken',
-  'governanceToken',
-  'liquidityToken',
-  'nft',
-  'cbdc',
-  'transactionStatus',
-  'gasFee',
-  'onChain',
-  'offChain',
-  'liquidity',
-  'volatility',
-  'marketCap',
-  'circulatingSupply',
-  'priceDiscovery',
-  'spread',
-  'phishing',
-  'smartContract',
-  'programmableLogic',
-  'networkCongestion',
-  'blockchainTypes',
-  'paymentBlockchain',
-  'smartContractBlockchain',
-  'blockchainComparison',
-  'stellarVsBitcoinVsEthereum',
-] as const;
+  const groupedSlugs = useMemo(() => getGroupedGlossarySlugs(), []);
+  const canonicalSlugs = useMemo(
+    () => groupedSlugs.flatMap((group) => group.slugs),
+    [groupedSlugs],
+  );
+  const multisigHelpDesc = useMemo(() => {
+    const parts = [
+      tGlossary('multisig.help.intro', ''),
+      tGlossary('multisig.help.problem', ''),
+      [
+        tGlossary('multisig.help.setupTitle', ''),
+        tGlossary('multisig.help.setupWeights', ''),
+        tGlossary('multisig.help.setupThresholds', ''),
+      ].filter(Boolean).join('\n'),
+      tGlossary('multisig.help.behavior', ''),
+      tGlossary('multisig.help.removal', ''),
+      tGlossary('multisig.help.summary', ''),
+    ].filter(Boolean);
+    return parts.join('\n\n');
+  }, [tGlossary]);
 
   // Fallback englische Texte (kurz, kein Marketing)
   const fallback: Record<string, { title: string; desc: string }> = {
@@ -271,23 +214,41 @@ function GlossaryPage() {
       title: 'Soroban',
       desc: 'Stellar’s smart contract system. Code runs on-chain and can enforce rules automatically.'
     },
+    multisigCorporate: {
+      title: 'Multisig in companies',
+      desc: 'A practical explanation of multi-signature setups for corporate accounts, including roles, weights, and thresholds.'
+    },
   };
 
   const items = useMemo(() => {
-    return termKeys.map((key) => {
+    return canonicalSlugs.map((key) => {
       const def = fallback[key];
       // visible display title (with original in parens if present)
       const display = getGlossaryDisplayTitle(key, tGlossary);
-      const desc = tGlossary(`${key}.desc`, def?.desc || '');
+      const desc = key === 'multisigCorporate'
+        ? multisigHelpDesc
+        : tGlossary(`${key}.desc`, def?.desc || '');
       const short = tGlossary(`${key}.short`, '');
-      return { key, display, desc, short };
+      const aliases = glossaryAliasIndex[key] || [];
+      const aliasSearchText = aliases
+        .flatMap((alias) => {
+          const aliasDisplay = getGlossaryDisplayTitle(alias, tGlossary);
+          const aliasTitle = tGlossary(`${alias}.title`, '');
+          const aliasOriginal = tGlossary(`${alias}.original`, '');
+          const aliasDesc = tGlossary(`${alias}.desc`, '');
+          const aliasShort = tGlossary(`${alias}.short`, '');
+          return [aliasDisplay, aliasTitle, aliasOriginal, aliasShort, aliasDesc];
+        })
+        .join(' ')
+        .toLowerCase();
+      return { key, display, desc, short, aliasSearchText };
     });
-  }, [tGlossary]);
+  }, [canonicalSlugs, multisigHelpDesc, tGlossary]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return items;
-    return items.filter(({ key, display, desc, short }) => {
+    return items.filter(({ key, display, desc, short, aliasSearchText }) => {
       const title = tGlossary(`${key}.title`, '');
       const original = tGlossary(`${key}.original`, '');
       return (
@@ -295,10 +256,25 @@ function GlossaryPage() {
         title.toLowerCase().includes(q) ||
         original.toLowerCase().includes(q) ||
         short.toLowerCase().includes(q) ||
-        desc.toLowerCase().includes(q)
+        desc.toLowerCase().includes(q) ||
+        aliasSearchText.includes(q)
       );
     });
   }, [items, query, tGlossary]);
+
+  const itemMap = useMemo(() => {
+    return new Map(items.map((item) => [item.key, item]));
+  }, [items]);
+
+  const filteredGroups = useMemo(() => {
+    const allowed = new Set(filtered.map((item) => item.key));
+    return groupedSlugs
+      .map((group) => ({
+        ...group,
+        slugs: group.slugs.filter((slug) => allowed.has(slug)),
+      }))
+      .filter((group) => group.slugs.length > 0);
+  }, [filtered, groupedSlugs]);
 
   return (
     <div className="max-w-5xl mx-auto p-4">
@@ -343,17 +319,34 @@ function GlossaryPage() {
       </section>
 
       {/* Inhaltsverzeichnis */}
-      <GlossaryToc className="mb-6" slugs={items.map((it) => it.key)} idPrefix="g-" />
+      <GlossaryToc className="mb-6" groups={filteredGroups} idPrefix="g-" />
 
       {filtered.length === 0 ? (
         <p className="text-sm text-gray-700 dark:text-gray-300">
           {tGlossary('noResults', 'No results.')}
         </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {filtered.map((it) => (
-            <section key={it.key} id={`g-${it.key}`}>
-              <GlossaryTermCard titleNode={<span className="whitespace-nowrap">{it.display}</span>} titleAttr={it.display} desc={it.desc} />
+        <div className="space-y-8">
+          {filteredGroups.map((group) => (
+            <section key={`group-${group.id}`}>
+              <h2 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">
+                {tGlossary(`groups.${group.id}`, group.id)}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {group.slugs.map((slug) => {
+                  const it = itemMap.get(slug);
+                  if (!it) return null;
+                  return (
+                    <section key={it.key} id={`g-${it.key}`}>
+                      <GlossaryTermCard
+                        titleNode={<span className="break-words">{it.display}</span>}
+                        titleAttr={it.display}
+                        desc={it.desc}
+                      />
+                    </section>
+                  );
+                })}
+              </div>
             </section>
           ))}
         </div>

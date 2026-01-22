@@ -5,6 +5,18 @@
   "searchPlaceholder": "Search term (z. B. Konto, Account, Muxed)",
   "searchHint": "The search finds words and explanations.",
   "noResults": "No match.",
+  "groups": {
+    "accountsKeys": "Accounts & Keys",
+    "multisigSecurity": "Multisig & Account Security",
+    "walletsCustody": "Wallets & Custody",
+    "tokensAssets": "Tokens & Assets",
+    "transactionsFees": "Transactions & Fees",
+    "marketsTrading": "Markets & Trading",
+    "networkProtocol": "Network & Protocol",
+    "smartContracts": "Smart Contracts",
+    "blockchainBasics": "Blockchain Basics",
+    "security": "Security & Scams"
+  },
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
@@ -57,7 +69,26 @@
     "title": "Multisignature",
     "original": "Multi‑Sig",
     "short": "Important actions require more than just a signature.",
-    "desc": "Multi-Sig stands for multiple signatures. An important action requires more than one key. For example, you and a second key must both agree before something can be sent. This makes theft more difficult."
+    "desc": "Multi-Sig stands for multiple signatures. An important action requires more than one key. For example, you and a second key must both agree before something can be sent. This makes theft more difficult.",
+    "help": {
+      "title": "General explanation of a multi-signature (Multi-Signature) corporate account",
+      "intro": "A company can use a joint blockchain account involving several authorized individuals. Typically, at least three signatories (Signer) are involved, such as management, financial officer, and compliance/backup. The goal is for individual persons to independently execute payments without any single person having sole control over or taking over the account.",
+      "problem": "If a signer (Signer) has enough weight to execute payments and simultaneously enough weight for account changes, that person could remove other signers (Signer) or adjust the threshold/weighting (Thresholds) and thereby take over the account. Conversely, the original owner should also not be able to exclude other signers (Signer) without checks and balances. A multi-sig structure ensures that important decisions are always supported by multiple people collectively.",
+      "setupTitle": "Example of a secure multi-sig structure with three signers",
+      "setupWeights": "In an example with three equivalent roles, all receive the same signature strength:\n- Signer (Signer) A (management): weight 2\n- Signer (Signer) B (Finanzen): weight 2\n- Signer (Signer) C (Compliance/Backup): weight 2",
+      "setupThresholds": "Appropriate thresholds/weightings are set:\n- Low (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- High (high_threshold): 4 (for structural changes like adding/removing signers (Signer) or changing the threshold/weighting (Thresholds))\nThis setup allows each authorized person to execute payments, but no single person can change the account structure alone.",
+      "behavior": "With this configuration, payments can be carried out by any of the three authorized persons individually, because each individual's weight meets the medium threshold/weighting (Threshold). However, for structural changes such as removing a signatory (Signers), adjusting the thresholds/weightings, or merging or closing the account, the high threshold/weighting (high_threshold) is required. This value can only be reached if at least two of the three signatories (Signer) sign together. This way, the account remains flexible for everyday use while being well-protected against misuse.",
+      "removal": "Wenn eine Person das Unternehmen verlässt oder nicht mehr vertrauenswürdig ist, können zwei der verbleibenden Unterzeichner (Signer) gemeinsam die Signaturrechte dieser Person entfernen. Kein einzelner Unterzeichner (Signer) – weder ein Mitarbeiter noch die Geschäftsführung – kann andere eigenständig aus dem Konto ausschließen. Der Entzug von Berechtigungen erfolgt also immer kontrolliert und nachvollziehbar durch mindestens zwei Verantwortliche.",
+      "summary": "This type of multi-signature structure allows individual persons to process payments efficiently while keeping control of the account in the hands of multiple parties. It reduces the risk of account takeovers, protects against unilateral decisions, and is particularly suitable for corporate accounts where both security and operational flexibility are important.",
+      "closeLabel": "Close",
+      "linkLabel": "What does Multi-Signature mean?",
+      "glossaryLinkLabel": "View in glossary"
+    }
+  },
+  "multisigCorporate": {
+    "title": "Multisig in companies",
+    "original": "Multi-Signature (corporate example)",
+    "short": "Example multi-sig structure for company accounts with roles, weights, and thresholds."
   },
   "trustline": {
     "title": "Trustline",
@@ -78,7 +109,7 @@
     "desc": "On Stellar, a token is called an asset. An asset is always linked to an issuing account. For example, an account can issue a Euro token. This Euro token is then an asset."
   },
   "xlm": {
-    "title": "XLM (Stellar Lumens)",
+    "title": "XLM",
     "original": "XLM",
     "short": "Native currency of Stellar for fees and activation.",
     "desc": "XLM is the native currency of Stellar. You need XLM to pay fees and to start a new account."
@@ -175,31 +206,31 @@
     "desc": "Soroban is the smart contract system of Stellar. A smart contract is program code on the blockchain. The code can independently verify rules and trigger actions without an intermediary bank."
   },
   "multiSignature": {
-    "title": "Multisignature (Multi-Signature)",
+    "title": "Multisignature",
     "original": "Multi-Signature",
     "short": "Multiple signatures required; weights + threshold determine the release.",
     "desc": "In a multi-signature setup, multiple keys must sign before an action becomes valid. Each signer has a weight, and the sum must reach the required threshold. This increases security because a single stolen key is not sufficient."
   },
   "signer": {
-    "title": "Signatory (Signer)",
+    "title": "Signatory",
     "original": "Signer",
     "short": "Public key with weight, part of the account configuration.",
     "desc": "A signer is a public key that belongs to an account and has a weight. Its signature counts towards the required threshold. Multiple signers can collectively authorize a transaction.\n\nSigner types:\n- ed25519 (regular key)\n- hashX (hash preimage)\n- preAuthTx (pre-authorized transaction)\n\nSKM supports only ed25519. For other options, see https://lab.stellar.org."
   },
   "thresholds": {
-    "title": "Thresholds (Thresholds)",
+    "title": "Thresholds",
     "original": "Thresholds",
     "short": "Limits (low/med/high) that determine the required sum of weights.",
     "desc": "Thresholds define how many weighted signatures are necessary for actions: low for simple operations, med for payments, high for critical changes. The sum of the signers' weights must meet the respective threshold."
   },
   "masterWeight": {
-    "title": "Master weight (master_weight)",
+    "title": "Master weight",
     "original": "master_weight",
     "short": "Weight of the master key; controls how much the main key counts.",
     "desc": "The master weight is the weight of the main key of an account. A high master weight allows the master key to sign many actions alone; a low value requires additional signers."
   },
   "accountConfig": {
-    "title": "Account configuration (Account Configuration)",
+    "title": "Account configuration",
     "original": "Account Configuration",
     "short": "The interplay of signers and thresholds determines the security of the account.",
     "desc": "The account configuration specifies which signers exist with which weights and what thresholds apply. Changes to signers or thresholds are security-critical because they determine how many signatures are required."

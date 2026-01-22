@@ -38,7 +38,7 @@ function NetworkSelector({ value, onChange }) {
 }
 
 export default function MultisigEditPage({ defaultPublicKey = '' }) {
-  const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount', 'multisigHelp', 'multisig']);
+  const { t } = useTranslation(['network', 'common', 'publicKey', 'createAccount', 'multisig', 'glossary']);
 
   const [network, setNetwork] = useState(() => {
   try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
@@ -529,7 +529,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           className="inline-flex items-center gap-2 rounded border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm text-blue-800 transition hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100"
         >
           <span aria-hidden="true">ℹ️</span>
-          <span>{t('multisigHelp:linkLabel')}</span>
+          <span>{t('glossary:multisig.help.linkLabel')}</span>
         </button>
       </div>
 
