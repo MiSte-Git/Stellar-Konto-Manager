@@ -5,6 +5,18 @@
   "searchPlaceholder": "termine di ricerca (z. B. Konto, Account, Muxed)",
   "searchHint": "La ricerca trova parole e spiegazioni.",
   "noResults": "Nessuna corrispondenza.",
+  "groups": {
+    "accountsKeys": "Conti e chiavi",
+    "multisigSecurity": "Multisig e sicurezza dell'account",
+    "walletsCustody": "Wallet e custodia",
+    "tokensAssets": "Token e asset",
+    "transactionsFees": "Transazioni e commissioni",
+    "marketsTrading": "Mercati e trading",
+    "networkProtocol": "Rete e protocollo",
+    "smartContracts": "Smart contract",
+    "blockchainBasics": "Fondamenti della blockchain",
+    "security": "Sicurezza e truffe"
+  },
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
@@ -57,7 +69,26 @@
     "title": "Multifirma",
     "original": "Multi‑Sig",
     "short": "Le azioni importanti richiedono più di una semplice firma.",
-    "desc": "Multi-Sig sta per firme multiple. Un'azione importante richiede più di una chiave. Ad esempio, tu e una seconda chiave dovete entrambi concordare prima che qualcosa possa essere inviato. Questo rende il furto più difficile."
+    "desc": "Multi-Sig sta per firme multiple. Un'azione importante richiede più di una chiave. Ad esempio, tu e una seconda chiave dovete entrambi concordare prima che qualcosa possa essere inviato. Questo rende il furto più difficile.",
+    "help": {
+      "title": "Spiegazione generale di un conto aziendale multi-signature (Multi-Signature)",
+      "intro": "Una azienda può utilizzare un conto blockchain congiunto che coinvolge diverse persone autorizzate. Tipicamente, sono coinvolti almeno tre firmatari (Signer), come la direzione, il responsabile finanziario e la conformità/riserve. L'obiettivo è che le singole persone possano eseguire pagamenti indipendentemente senza che una sola persona abbia il controllo esclusivo o prenda il controllo del conto.",
+      "problem": "Se un firmatario (Signer) ha peso sufficiente per eseguire pagamenti e contemporaneamente peso sufficiente per modifiche dell'account, quella persona potrebbe rimuovere altri firmatari (Signer) o regolare la soglia/peso (Thresholds) e quindi prendere il controllo dell'account. Al contrario, anche il proprietario originale non dovrebbe essere in grado di escludere altri firmatari (Signer) senza verifiche ed equilibri. Una struttura multi-sig assicura che decisioni importanti siano sempre supportate collettivamente da più persone.",
+      "setupTitle": "Esempio di una struttura multi-firma sicura con tre firmatari",
+      "setupWeights": "In un esempio con tre ruoli equivalenti, tutti ricevono la stessa forza di firma:\n- Firmatario (Signer) A (management): peso 2\n- Firmatario (Signer) B (Finanzen): peso 2\n- Firmatario (Signer) C (Compliance/Backup): peso 2",
+      "setupThresholds": "Soglie/pesi appropriati sono impostati:\n- Basso (low_threshold): 1\n- Medio (med_threshold): 2 (for payments and other medium actions)\n- Alto (high_threshold): 4 (per modifiche strutturali come aggiungere/rimuovere firmatari (Signer) o cambiare la soglia/peso (Thresholds))\nQuesta configurazione permette a ciascuna persona autorizzata di eseguire pagamenti, ma nessuna persona singolarmente può modificare la struttura dell'account.",
+      "behavior": "Con questa configurazione, i pagamenti possono essere effettuati individualmente da una qualsiasi delle tre persone autorizzate, poiché il peso di ciascuna soddisfa la soglia media/Threshold. Tuttavia, per i cambiamenti strutturali, come la rimozione di un firmatario (Signers), la regolazione delle soglie/pesi o la fusione o chiusura del conto, è richiesta la soglia alta/high_threshold. Questo valore può essere raggiunto solo se almeno due dei tre firmatari (Signer) firmano insieme. In questo modo, il conto rimane flessibile per l'uso quotidiano, pur essendo ben protetto contro l'uso improprio.",
+      "removal": "Wenn eine Person das Unternehmen verlässt oder nicht mehr vertrauenswürdig ist, können zwei der verbleibenden Unterzeichner (Signer) gemeinsam die Signaturrechte dieser Person entfernen. Kein einzelner Unterzeichner (Signer) – weder ein Mitarbeiter noch die Geschäftsführung – kann andere eigenständig aus dem Konto ausschließen. Der Entzug von Berechtigungen erfolgt also immer kontrolliert und nachvollziehbar durch mindestens zwei Verantwortliche.",
+      "summary": "Questo tipo di struttura multi-firma consente a singole persone di elaborare pagamenti in modo efficiente, mantenendo il controllo del conto nelle mani di più parti. Riduce il rischio di appropriazioni indebite del conto, protegge da decisioni unilaterali ed è particolarmente adatta per conti aziendali dove sia la sicurezza che la flessibilità operativa sono importanti.",
+      "closeLabel": "Chiudi",
+      "linkLabel": "Cosa significa Multi-Signature?",
+      "glossaryLinkLabel": "Vedi nel glossario"
+    }
+  },
+  "multisigCorporate": {
+    "title": "Multisig nelle aziende",
+    "original": "Multi-Signature (corporate example)",
+    "short": "Esempio di struttura multisig per conti aziendali con ruoli, pesi e soglie."
   },
   "trustline": {
     "title": "Trustline",
@@ -78,7 +109,7 @@
     "desc": "Su Stellar, un token viene chiamato risorsa. Una risorsa è sempre collegata a un conto emittente. Ad esempio, un conto può emettere un token Euro. Questo token Euro è quindi una risorsa."
   },
   "xlm": {
-    "title": "XLM (Stellar Lumens)",
+    "title": "XLM",
     "original": "XLM",
     "short": "Valuta nativa di Stellar per commissioni e attivazione.",
     "desc": "XLM è la valuta nativa di Stellar. Hai bisogno di XLM per pagare le commissioni e per aprire un nuovo conto."
@@ -175,31 +206,31 @@
     "desc": "Soroban è il sistema di contratti smart di Stellar. Un contratto intelligente è un codice di programma sulla blockchain. Il codice può verificare autonomamente le regole e innescare azioni senza una banca intermediaria."
   },
   "multiSignature": {
-    "title": "Multisignature (Multi-Signature)",
+    "title": "Multisignature",
     "original": "Multi-Signature",
     "short": "Multiple signatures required; weights + threshold determine the release.",
     "desc": "In una configurazione multi-firma, devono firmare più chiavi prima che un'azione diventi valida. Ogni firmatario ha un peso, e la somma deve raggiungere la soglia richiesta. Questo aumenta la sicurezza perché una singola chiave rubata non è sufficiente."
   },
   "signer": {
-    "title": "Firmatario (Signer)",
+    "title": "Firmatario",
     "original": "Signer",
     "short": "Chiave pubblica con peso, parte della configurazione dell'account.",
     "desc": "Un firmatario è una chiave pubblica che appartiene a un conto e ha un peso. La sua firma contribuisce al raggiungimento della soglia richiesta. Più firmatari possono autorizzare collettivamente una transazione."
   },
   "thresholds": {
-    "title": "Soglie (Thresholds)",
+    "title": "Soglie",
     "original": "Thresholds",
     "short": "Limiti (low/med/high) che determinano la somma richiesta dei pesi.",
     "desc": "Le soglie definiscono quante firme ponderate sono necessarie per le azioni: basse per operazioni semplici, medie per i pagamenti, alte per cambiamenti critici. La somma dei pesi dei firmatari deve soddisfare la soglia rispettiva."
   },
   "masterWeight": {
-    "title": "Peso master (master_weight)",
+    "title": "Peso master",
     "original": "master_weight",
     "short": "Peso della chiave principale; controlla quanto conta la chiave principale.",
     "desc": "Il peso principale è il peso della chiave maestra di un account. Un alto peso principale permette alla chiave maestra di firmare molte azioni da sola; un valore basso necessita di firmatari aggiuntivi."
   },
   "accountConfig": {
-    "title": "Configurazione dell'account (Account Configuration)",
+    "title": "Configurazione dell'account",
     "original": "Account Configuration",
     "short": "L'interazione tra i firmatari e le soglie determina la sicurezza dell'account.",
     "desc": "La configurazione del conto specifica quali firmatari esistono con quali pesi e quali soglie si applicano. Modifiche ai firmatari o alle soglie sono critiche per la sicurezza perché determinano quante firme sono necessarie."

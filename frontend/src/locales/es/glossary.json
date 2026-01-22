@@ -5,6 +5,18 @@
   "searchPlaceholder": "Término de búsqueda (z. B. Konto, Account, Muxed)",
   "searchHint": "La búsqueda encuentra palabras y explicaciones.",
   "noResults": "Sin coincidencia.",
+  "groups": {
+    "accountsKeys": "Cuentas y claves",
+    "multisigSecurity": "Multisig y seguridad de cuenta",
+    "walletsCustody": "Wallets y custodia",
+    "tokensAssets": "Tokens y activos",
+    "transactionsFees": "Transacciones y comisiones",
+    "marketsTrading": "Mercados y trading",
+    "networkProtocol": "Red y protocolo",
+    "smartContracts": "Contratos inteligentes",
+    "blockchainBasics": "Fundamentos de blockchain",
+    "security": "Seguridad y fraudes"
+  },
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
@@ -57,7 +69,26 @@
     "title": "Multifirma",
     "original": "Multi‑Sig",
     "short": "Las acciones importantes requieren más que solo una firma.",
-    "desc": "Multi-Sig significa múltiples firmas. Una acción importante requiere más de una clave. Por ejemplo, usted y una segunda clave deben estar de acuerdo antes de que algo pueda ser enviado. Esto hace que el robo sea más difícil."
+    "desc": "Multi-Sig significa múltiples firmas. Una acción importante requiere más de una clave. Por ejemplo, usted y una segunda clave deben estar de acuerdo antes de que algo pueda ser enviado. Esto hace que el robo sea más difícil.",
+    "help": {
+      "title": "Explicación general de una cuenta corporativa de firma múltiple (Multi-Signature)",
+      "intro": "Una empresa puede usar una cuenta conjunta de blockchain que involucra a varias personas autorizadas. Normalmente, participan al menos tres signatarios (Signer), como la gerencia, el oficial financiero y el oficial de cumplimiento/respaldo. El objetivo es que las personas individuales puedan ejecutar pagos de manera independiente sin que ninguna persona tenga control exclusivo o tome el control de la cuenta.",
+      "problem": "Si un firmante (Signer) tiene suficiente peso para ejecutar pagos y al mismo tiempo suficiente peso para realizar cambios en la cuenta, esa persona podría eliminar a otros firmantes (Signer) o ajustar el umbral/ponderación (Thresholds) y, por lo tanto, tomar el control de la cuenta. Por el contrario, el propietario original tampoco debería poder excluir a otros firmantes (Signer) sin controles y equilibrios. Una estructura de firma múltiple asegura que las decisiones importantes siempre sean respaldadas colectivamente por varias personas.",
+      "setupTitle": "Ejemplo de una estructura multi-firma segura con tres firmantes",
+      "setupWeights": "En un ejemplo con tres roles equivalentes, todos reciben la misma fuerza de firma:\n- Signer (Signer) A (management): peso 2\n- Signer (Signer) B (Finanzen): peso 2\n- Signer (Signer) C (Compliance/Backup): peso 2",
+      "setupThresholds": "Se establecen umbrales/pesajes apropiados:\n- Bajo (low_threshold): 1\n- Medio (med_threshold): 2 (for payments and other medium actions)\n- Alto (high_threshold): 4 (para cambios estructurales como agregar/eliminar firmantes (Signer) o cambiar el umbral/pesaje (Thresholds))\nEsta configuración permite que cada persona autorizada ejecute pagos, pero ninguna persona sola puede cambiar la estructura de la cuenta.",
+      "behavior": "Con esta configuración, los pagos pueden ser realizados individualmente por cualquiera de las tres personas autorizadas, ya que el peso de cada individuo cumple con el umbral/peso medio (Threshold). Sin embargo, para cambios estructurales como eliminar un firmante (Signers), ajustar los umbrales/pesos, o fusionar o cerrar la cuenta, se requiere el umbral/peso alto (high_threshold). Este valor solo puede alcanzarse si al menos dos de los tres firmantes (Signer) firman juntos. De esta manera, la cuenta se mantiene flexible para el uso diario mientras está bien protegida contra el uso indebido.",
+      "removal": "Wenn eine Person das Unternehmen verlässt oder nicht mehr vertrauenswürdig ist, können zwei der verbleibenden Unterzeichner (Signer) gemeinsam die Signaturrechte dieser Person entfernen. Kein einzelner Unterzeichner (Signer) – weder ein Mitarbeiter noch die Geschäftsführung – kann andere eigenständig aus dem Konto ausschließen. Der Entzug von Berechtigungen erfolgt also immer kontrolliert und nachvollziehbar durch mindestens zwei Verantwortliche.",
+      "summary": "Este tipo de estructura de firma múltiple permite a personas individuales procesar pagos de manera eficiente, mientras se mantiene el control de la cuenta en manos de múltiples partes. Reduce el riesgo de apropiaciones de cuentas, protege contra decisiones unilaterales y es particularmente adecuado para cuentas corporativas donde tanto la seguridad como la flexibilidad operativa son importantes.",
+      "closeLabel": "Cerrar",
+      "linkLabel": "¿Qué significa Multi-Signature?",
+      "glossaryLinkLabel": "Ver en el glosario"
+    }
+  },
+  "multisigCorporate": {
+    "title": "Multisig en empresas",
+    "original": "Multi-Signature (corporate example)",
+    "short": "Ejemplo de estructura multisig para cuentas empresariales con roles, pesos y umbrales."
   },
   "trustline": {
     "title": "Línea de confianza",
@@ -78,7 +109,7 @@
     "desc": "En Stellar, un token se llama activo. Un activo siempre está vinculado a una cuenta emisora. Por ejemplo, una cuenta puede emitir un token de Euro. Este token de Euro es entonces un activo."
   },
   "xlm": {
-    "title": "XLM (Stellar Lumens)",
+    "title": "XLM",
     "original": "XLM",
     "short": "Moneda nativa de Stellar para tarifas y activación.",
     "desc": "XLM es la moneda nativa de Stellar. Necesitas XLM para pagar tarifas y para abrir una nueva cuenta."
@@ -175,31 +206,31 @@
     "desc": "Soroban es el sistema de contratos inteligentes de Stellar. Un contrato inteligente es un código de programa en la blockchain. El código puede verificar reglas de manera independiente y ejecutar acciones sin necesidad de un banco intermediario."
   },
   "multiSignature": {
-    "title": "Multifirma (Multi-Signature)",
+    "title": "Multifirma",
     "original": "Multi-Signature",
     "short": "Multiple signatures required; weights + threshold determine the release.",
     "desc": "En un sistema de firmas múltiples, múltiples claves deben firmar antes de que una acción se vuelva válida. Cada firmante tiene un peso, y la suma debe alcanzar el umbral requerido. Esto aumenta la seguridad porque una sola clave robada no es suficiente."
   },
   "signer": {
-    "title": "Signatario (Signer)",
+    "title": "Signatario",
     "original": "Signer",
     "short": "Clave pública con peso, parte de la configuración de la cuenta.",
     "desc": "Un firmante es una clave pública que pertenece a una cuenta y tiene un peso. Su firma cuenta para alcanzar el umbral requerido. Varios firmantes pueden autorizar colectivamente una transacción."
   },
   "thresholds": {
-    "title": "Umbrales (Thresholds)",
+    "title": "Umbrales",
     "original": "Thresholds",
     "short": "Límites (low/med/high) que determinan la suma requerida de pesos.",
     "desc": "Los umbrales definen cuántas firmas ponderadas son necesarias para realizar acciones: bajos para operaciones simples, medios para pagos, altos para cambios críticos. La suma de los pesos de los firmantes debe cumplir con el umbral correspondiente."
   },
   "masterWeight": {
-    "title": "Peso maestro (master_weight)",
+    "title": "Peso maestro",
     "original": "master_weight",
     "short": "Peso de la llave maestra; controla cuánto cuenta la llave principal.",
     "desc": "El peso maestro es el peso de la clave principal de una cuenta. Un peso maestro alto permite que la clave principal firme muchas acciones por sí sola; un valor bajo requiere firmantes adicionales."
   },
   "accountConfig": {
-    "title": "Configuración de la cuenta (Account Configuration)",
+    "title": "Configuración de la cuenta",
     "original": "Account Configuration",
     "short": "La interacción de los firmantes y los umbrales determina la seguridad de la cuenta.",
     "desc": "La configuración de la cuenta especifica qué firmantes existen con qué pesos y qué umbrales se aplican. Los cambios en los firmantes o umbrales son críticos para la seguridad porque determinan cuántas firmas se requieren."

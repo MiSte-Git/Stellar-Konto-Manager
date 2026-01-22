@@ -5,6 +5,18 @@
   "searchPlaceholder": "Zoekterm (z. B. Konto, Account, Muxed)",
   "searchHint": "De zoekopdracht vindt woorden en verklaringen.",
   "noResults": "Geen overeenkomst.",
+  "groups": {
+    "accountsKeys": "Accounts en sleutels",
+    "multisigSecurity": "Multisig en accountbeveiliging",
+    "walletsCustody": "Wallets en bewaring",
+    "tokensAssets": "Tokens en assets",
+    "transactionsFees": "Transacties en kosten",
+    "marketsTrading": "Markten en trading",
+    "networkProtocol": "Netwerk en protocol",
+    "smartContracts": "Smart contracts",
+    "blockchainBasics": "Blockchain-basis",
+    "security": "Veiligheid en fraude"
+  },
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
@@ -57,7 +69,26 @@
     "title": "Multisignatuur",
     "original": "Multi‑Sig",
     "short": "Belangrijke acties vereisen meer dan alleen een handtekening.",
-    "desc": "Multi-Sig staat voor meerdere handtekeningen. Een belangrijke actie vereist meer dan één sleutel. Bijvoorbeeld, jij en een tweede sleutel moeten allebei akkoord gaan voordat er iets verzonden kan worden. Dit maakt diefstal moeilijker."
+    "desc": "Multi-Sig staat voor meerdere handtekeningen. Een belangrijke actie vereist meer dan één sleutel. Bijvoorbeeld, jij en een tweede sleutel moeten allebei akkoord gaan voordat er iets verzonden kan worden. Dit maakt diefstal moeilijker.",
+    "help": {
+      "title": "Algemene uitleg van een multi-handtekening (Multi-Signature) zakelijke rekening",
+      "intro": "Een bedrijf kan een gezamenlijke blockchain-rekening gebruiken waarbij meerdere bevoegde personen betrokken zijn. Meestal zijn minstens drie ondertekenaars (Signer) betrokken, zoals het management, de financieel verantwoordelijk persoon, en de naleving/reserve. Het doel is dat de afzonderlijke personen onafhankelijk betalingen kunnen uitvoeren zonder dat één persoon de enige controle over of het beheer van de rekening heeft.",
+      "problem": "Als een ondertekenaar (Signer) genoeg gewicht heeft om betalingen uit te voeren en tegelijkertijd genoeg gewicht voor accountwijzigingen, zou die persoon andere ondertekenaars (Signer) kunnen verwijderen of de drempel/weging (Thresholds) kunnen aanpassen en zo de rekening overnemen. Omgekeerd mag de oorspronkelijke eigenaar ook niet in staat zijn om andere ondertekenaars (Signer) uit te sluiten zonder checks and balances. Een multi-sig structuur zorgt ervoor dat belangrijke beslissingen altijd gezamenlijk door meerdere mensen worden ondersteund.",
+      "setupTitle": "Voorbeeld van een veilige multi-sig structuur met drie ondertekenaars.",
+      "setupWeights": "In een voorbeeld met drie equivalente rollen, ontvangen allen dezelfde handtekeningsterkte:\n- Ondertekenaar (Signer) A (management): gewicht 2\n- Ondertekenaar (Signer) B (Finanzen): gewicht 2\n- Ondertekenaar (Signer) C (Compliance/Backup): gewicht 2",
+      "setupThresholds": "Geschikte drempels/wegingen zijn ingesteld:\n- Laag (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- Hoog (high_threshold): 4 (voor structurele wijzigingen zoals het toevoegen/verwijderen van ondertekenaars (Signer) of het wijzigen van de drempel/weging (Thresholds))\nDeze opstelling stelt elke gemachtigde persoon in staat betalingen uit te voeren, maar geen enkele persoon kan alleen de accountstructuur wijzigen.",
+      "behavior": "Met deze configuratie kunnen betalingen individueel worden uitgevoerd door elk van de drie geautoriseerde personen, omdat het gewicht van elk individu aan de gemiddelde drempel/weging (Threshold) voldoet. Voor structurele wijzigingen, zoals het verwijderen van een ondertekenaar (Signers), het aanpassen van de drempels/wegingen, of het samenvoegen of sluiten van de rekening, is de hoge drempel/weging (high_threshold) vereist. Deze waarde kan alleen worden bereikt als ten minste twee van de drie ondertekenaars (Signer) samen tekenen. Op deze manier blijft de rekening flexibel voor dagelijks gebruik en is hij goed beschermd tegen misbruik.",
+      "removal": "Als een persoon het bedrijf verlaat of niet meer betrouwbaar is, kunnen twee van de overgebleven ondertekenaars (Signer) samen de handtekeningrechten van deze persoon verwijderen. Geen enkele individuele ondertekenaar (Signer) – noch een medewerker, noch het management – kan anderen zelfstandig van de rekening uitsluiten. Het intrekken van bevoegdheden gebeurt dus altijd gecontroleerd en traceerbaar door minstens twee verantwoordelijken.",
+      "summary": "Dit soort multi-handtekeningenstructuur stelt individuele personen in staat om betalingen efficiënt te verwerken, terwijl de controle over de rekening in handen van meerdere partijen blijft. Het vermindert het risico op overnames van rekeningen, beschermt tegen unilaterale beslissingen en is bijzonder geschikt voor bedrijfsrekeningen waar zowel beveiliging als operationele flexibiliteit belangrijk zijn.",
+      "closeLabel": "Sluiten",
+      "linkLabel": "Wat betekent Multi-Signature?",
+      "glossaryLinkLabel": "Bekijk in de woordenlijst"
+    }
+  },
+  "multisigCorporate": {
+    "title": "Multisig bij bedrijven",
+    "original": "Multi-Signature (corporate example)",
+    "short": "Voorbeeldstructuur voor multisig bij bedrijfsrekeningen met rollen, gewichten en drempels."
   },
   "trustline": {
     "title": "Vertrouwenslijn",
@@ -78,7 +109,7 @@
     "desc": "Op Stellar wordt een token een activa genoemd. Een activa is altijd gekoppeld aan een uitgevende rekening. Bijvoorbeeld, een rekening kan een euro-token uitgeven. Dit euro-token is dan een activa."
   },
   "xlm": {
-    "title": "XLM (Stellar Lumens)",
+    "title": "XLM",
     "original": "XLM",
     "short": "De oorspronkelijke valuta van Stellar voor kosten en activatie.",
     "desc": "XLM is de native valuta van Stellar. Je hebt XLM nodig om vergoedingen te betalen en om een nieuw account te openen."
@@ -175,31 +206,31 @@
     "desc": "Soroban is het smart contract systeem van Stellar. Een smart contract is programmacode op de blockchain. De code kan zelfstandig regels verifiëren en acties starten zonder tussenkomst van een bank."
   },
   "multiSignature": {
-    "title": "Multisignature (Multi-Signature)",
+    "title": "Multisignature",
     "original": "Multi-Signature",
     "short": "Meerdere handtekeningen vereist; gewichten + drempel bepalen de vrijgave.",
     "desc": "In een multi-signature opstelling moeten meerdere sleutels ondertekenen voordat een actie geldig wordt. Elke ondertekenaar heeft een gewicht, en de som moet de vereiste drempel bereiken. Dit verhoogt de veiligheid, omdat een enkele gestolen sleutel niet voldoende is."
   },
   "signer": {
-    "title": "Ondertekenaar (Signer)",
+    "title": "Ondertekenaar",
     "original": "Signer",
     "short": "Openbare sleutel met gewicht, onderdeel van de accountconfiguratie.",
     "desc": "Een ondertekenaar is een openbare sleutel die bij een account hoort en een gewicht heeft. De handtekening telt mee voor het vereiste drempelwaarde. Meerdere ondertekenaars kunnen gezamenlijk een transactie autoriseren."
   },
   "thresholds": {
-    "title": "Drempels (Thresholds)",
+    "title": "Drempels",
     "original": "Thresholds",
     "short": "Limieten (low/med/high) die de vereiste som van gewichten bepalen.",
     "desc": "Drempelwaarden bepalen hoeveel gewogen handtekeningen nodig zijn voor acties: laag voor eenvoudige operaties, gemiddeld voor betalingen, hoog voor kritieke wijzigingen. De som van de gewichten van de ondertekenaars moet voldoen aan de betreffende drempelwaarde."
   },
   "masterWeight": {
-    "title": "Mastergewicht (master_weight)",
+    "title": "Mastergewicht",
     "original": "master_weight",
     "short": "Gewicht van de hoofdsleutel; bepaalt hoeveel de hoofdsleutel meetelt.",
     "desc": "Het hoofdsleutelgewicht is het gewicht van de hoofdsleutel van een account. Een hoog hoofdsleutelgewicht stelt de hoofdsleutel in staat om veel acties zelfstandig te ondertekenen; een lage waarde vereist aanvullende ondertekenaars."
   },
   "accountConfig": {
-    "title": "Accountconfiguratie (Account Configuration)",
+    "title": "Accountconfiguratie",
     "original": "Account Configuration",
     "short": "De wisselwerking tussen ondertekenaars en drempels bepaalt de beveiliging van de account.",
     "desc": "De accountconfiguratie specificeert welke ondertekenaars bestaan met welke gewichten en welke drempels van toepassing zijn. Wijzigingen in ondertekenaars of drempels zijn van cruciaal belang voor de beveiliging, omdat zij bepalen hoeveel handtekeningen vereist zijn."

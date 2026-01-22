@@ -1,5 +1,129 @@
 import type { TFunction } from 'i18next';
 
+export const glossaryAliases: Record<string, string> = {
+  multiSignature: 'multisig',
+};
+
+export const glossaryAliasIndex = Object.entries(glossaryAliases).reduce<Record<string, string[]>>(
+  (acc, [alias, canonical]) => {
+    if (!acc[canonical]) acc[canonical] = [];
+    acc[canonical].push(alias);
+    return acc;
+  },
+  {},
+);
+
+export const glossaryGroups = [
+  {
+    id: 'accountsKeys',
+    slugs: ['account', 'addressG', 'publicKey', 'privateKey', 'addressFederation', 'addressMuxed'],
+  },
+  {
+    id: 'multisigSecurity',
+    slugs: ['multisig', 'multisigCorporate', 'signer', 'thresholds', 'masterWeight', 'accountConfig'],
+  },
+  {
+    id: 'walletsCustody',
+    slugs: ['wallet', 'seedPhrase', 'selfCustody', 'custodian', 'hardwareWallet', 'hotWallet', 'coldWallet'],
+  },
+  {
+    id: 'tokensAssets',
+    slugs: [
+      'token',
+      'asset',
+      'trustline',
+      'xlm',
+      'stablecoin',
+      'utilityToken',
+      'securityToken',
+      'governanceToken',
+      'liquidityToken',
+      'nft',
+      'cbdc',
+      'cryptocurrency',
+      'altcoin',
+    ],
+  },
+  {
+    id: 'transactionsFees',
+    slugs: [
+      'transaction',
+      'transactionStatus',
+      'memo',
+      'fee',
+      'gasFee',
+      'onChain',
+      'offChain',
+      'balanceClaimable',
+    ],
+  },
+  {
+    id: 'marketsTrading',
+    slugs: [
+      'exchange',
+      'dex',
+      'liquidityPool',
+      'liquidity',
+      'spread',
+      'priceDiscovery',
+      'marketCap',
+      'circulatingSupply',
+      'volatility',
+      'anchor',
+    ],
+  },
+  {
+    id: 'networkProtocol',
+    slugs: ['ledger', 'horizon', 'horizonHistory', 'protocolUpdate', 'networkCongestion', 'mainnet', 'testnet'],
+  },
+  {
+    id: 'smartContracts',
+    slugs: ['soroban', 'smartContract', 'programmableLogic'],
+  },
+  {
+    id: 'blockchainBasics',
+    slugs: [
+      'blockchain',
+      'distributedNetwork',
+      'node',
+      'block',
+      'consensusMechanism',
+      'finality',
+      'immutability',
+      'decentralization',
+      'publicBlockchain',
+      'privateBlockchain',
+      'permissionlessBlockchain',
+      'permissionedBlockchain',
+      'blockchainTypes',
+      'paymentBlockchain',
+      'smartContractBlockchain',
+      'blockchainComparison',
+      'stellarVsBitcoinVsEthereum',
+    ],
+  },
+  {
+    id: 'security',
+    slugs: ['phishing'],
+  },
+] as const;
+
+export function resolveGlossarySlug(slug: string) {
+  return glossaryAliases[slug] || slug;
+}
+
+export function getGroupedGlossarySlugs() {
+  return glossaryGroups.map((group) => {
+    const seen = new Set<string>();
+    const slugs = group.slugs.map(resolveGlossarySlug).filter((slug) => {
+      if (seen.has(slug)) return false;
+      seen.add(slug);
+      return true;
+    });
+    return { ...group, slugs };
+  });
+}
+
 /**
  * getGlossaryParts: returns the translated title and the English original for a given glossary slug.
  * Throws if the required title key is missing, so the UI can translate the error.
