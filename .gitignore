@@ -47,3 +47,5 @@ frontend/SSH_Cyon.pub
 *.pem
 *.key
 *.ppk
+# Local process output
+nohup.out
