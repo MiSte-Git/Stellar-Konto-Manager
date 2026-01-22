@@ -1,0 +1,37 @@
+{
+  "signersTitle": "Signers (ed25519)",
+  "signersInfo": "Add additional signers and set appropriate thresholds.",
+  "signersCount": "Number of signatories",
+  "signersCountLimit": "Note: Network Boundary (Stellar): max. 20 additional signatories.",
+  "bestPractices": {
+    "title": "Best Practices",
+    "text": "Keep secret keys secure and do not distribute them unnecessarily."
+  },
+  "signerTypeNote": "Note: SKM only sets ed25519 signers. For hashX/preAuthTx use",
+  "signerTypeLink": "lab.stellar.org",
+  "masterWeight": "Master weight",
+  "threshold": "Threshold (low/medium/high)",
+  "thresholdLow": "low",
+  "thresholdMed": "medium",
+  "thresholdHigh": "high",
+  "thresholdLevelsHint": "Typically, the following applies: low = simple changes (e.g., memo, price), medium = payments/trade, high = security-critical changes (e.g., signer/thresholds). Low / Med / High define the required minimum signer weight for an operation.",
+  "thresholdSum": "Total weight: {{sum}}",
+  "thresholdTooHigh": "Note: A threshold must not exceed the sum of the weights. Please adjust the values accordingly.",
+  "hints": {
+    "byteRange": "(0–255)"
+  },
+  "tooltips": {
+    "low": "Low: simple changes (e.g., memo, price).",
+    "med": "Means: Payments and trade actions.",
+    "high": "High: safety-critical changes (e.g., signers/thresholds).",
+    "signerWeight": "Weight of the signers (0–255): Additional signers also have voting rights. The weight determines how many votes their signature contributes. When a transaction is submitted, all cast votes are added together. If the specified minimum number of votes (Threshold) is reached, the transaction is considered authorized.",
+    "masterWeight": "Weight of the account holder (Master) (0-255): The main key of the account has voting rights. The higher its weight, the more votes its signature counts. These votes are counted together with the votes of other signatories to check if the required majority has been reached."
+  },
+  "units": {
+    "signatures": "minimum weight"
+  },
+  "safety": {
+    "errorTitle": "Safety check blocked",
+    "warningTitle": "Safety warnings"
+  }
+}

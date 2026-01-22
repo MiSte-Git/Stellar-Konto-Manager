@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { buildPath } from '../utils/basePath.js';
 
-export const ADMIN_NAV = [
+const ADMIN_NAV = [
   {
     id: 'bugtracker',
     to: 'bugtracker',

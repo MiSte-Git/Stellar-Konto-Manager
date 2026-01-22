@@ -1,7 +1,7 @@
 {
   "label": "Public key or federation address",
   "placeholder": "Enter your public key or a federation address",
-  "load": "Shop",
+  "load": "Preload account",
   "deleteFromList": "Remove from list",
   "source": "Source",
   "destination": {

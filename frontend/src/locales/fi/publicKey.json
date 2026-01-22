@@ -1,7 +1,7 @@
 {
   "label": "Julkinen avain tai federaatio-osoite",
   "placeholder": "Syötä julkinen avain tai federaatio-osoite",
-  "load": "Kauppa",
+  "load": "Esilataa tili",
   "deleteFromList": "Poista listalta",
   "source": "Lähde",
   "destination": {

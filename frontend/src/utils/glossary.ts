@@ -151,5 +151,14 @@ export function getGlossaryParts(slug: string, t: TFunction) {
  */
 export function getGlossaryDisplayTitle(slug: string, t: TFunction) {
   const { title, original } = getGlossaryParts(slug, t);
-  return original ? `${title} (${original})` : title;
+  const normalize = (value: string) =>
+    value
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
+  const lang = (t as any)?.i18n?.language || '';
+  const sameValue = original && normalize(original) === normalize(title);
+  const showOriginal = !!(original && !sameValue && !String(lang).startsWith('en'));
+  return showOriginal ? `${title} (${original})` : title;
 }

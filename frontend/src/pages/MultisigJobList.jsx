@@ -198,7 +198,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
             {t('multisig:list.deleteTestnetTitle', 'Alle Testnet-Jobs löschen')}
           </div>
           <div className="text-xs text-red-700 dark:text-red-300">
-            {t('multisig:list.deleteTestnetHint', 'Dies entfernt alle Multisig-Jobs im Testnet. Zum Bestätigen bitte \"DELETE TESTNET JOBS\" eintippen.')}
+            {t('multisig:list.deleteTestnetHint', 'Dies entfernt alle Multisig-Jobs im Testnet. Zum Bestätigen bitte "DELETE TESTNET JOBS" eintippen.')}
           </div>
           <input
             type="text"

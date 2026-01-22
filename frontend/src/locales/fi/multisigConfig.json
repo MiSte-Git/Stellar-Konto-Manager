@@ -1,0 +1,37 @@
+{
+  "signersTitle": "Allekirjoittaja",
+  "signersInfo": "Lisää lisäallekirjoittajia ja aseta sopivat kynnykset.",
+  "signersCount": "Allekirjoittajien määrä",
+  "signersCountLimit": "Huomautus: Verkon rajapinta (Stellar): enintään 20 lisäallekirjoittajaa.",
+  "bestPractices": {
+    "title": "Parhaat käytännöt",
+    "text": "Pidä salaiset avaimet turvassa äläkä jaa niitä tarpeettomasti."
+  },
+  "signerTypeNote": "Note: SKM only sets ed25519 signers. For hashX/preAuthTx use",
+  "signerTypeLink": "lab.stellar.org",
+  "masterWeight": "Mestari paino",
+  "threshold": "Kynnysarvo (matala/keskitaso/korkea)",
+  "thresholdLow": "matala",
+  "thresholdMed": "keskitaso",
+  "thresholdHigh": "korkea",
+  "thresholdLevelsHint": "Tyypillisesti seuraava pätee: matala = yksinkertaiset muutokset (e.g., memo, price), keskimääräinen = maksut/kauppa, korkea = turvallisuuskriittiset muutokset (e.g., signer/thresholds). Low / Med / High määrittävät operaation vaaditun allekirjoittajien vähimmäispainon.",
+  "thresholdSum": "Kokonaispaino: {{sum}}",
+  "thresholdTooHigh": "Huom: Kynnysarvon ei saa ylittää painojen summaa. Säädä arvot vastaavasti.",
+  "hints": {
+    "byteRange": "(0–255)"
+  },
+  "tooltips": {
+    "low": "Matala: yksinkertaiset muutokset (e.g., memo, price).",
+    "med": "Tarkoittaa: Maksuja ja kauppatoimia.",
+    "high": "Korkea: turvallisuuden kannalta kriittiset muutokset (e.g., signers/thresholds).",
+    "signerWeight": "Allekirjoittajien paino (0–255): Lisäallekirjoittajilla on myös äänioikeus. Paino määrittää, kuinka monta ääntä heidän allekirjoituksensa tuo mukanaan. Kun tapahtuma lähetetään, kaikki annetut äänet lasketaan yhteen. Jos määritelty vähimmäisäänimäärä (Threshold) saavutetaan, tapahtumaa pidetään hyväksyttynä.",
+    "masterWeight": "Tilinhaltijan paino (Master) (0-255): Tilin pääavaimella on äänioikeus. Mitä suurempi sen paino on, sitä enemmän ääniä sen allekirjoitus antaa. Nämä äänet lasketaan yhteen muiden allekirjoittajien äänien kanssa tarkistaakseen, onko vaadittu enemmistö saavutettu."
+  },
+  "units": {
+    "signatures": "vähimmäispaino"
+  },
+  "safety": {
+    "errorTitle": "Safety check blocked",
+    "warningTitle": "Safety warnings"
+  }
+}
