@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTrustedWallets } from './useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './walletInfo.js';
 import { isTestnetAccount } from './stellar/accountUtils.js';
+import { extractBasePublicKeyFromMuxed } from './stellar/stellarUtils.js';
 
 function normalizeStoredWallet(entry) {
   if (typeof entry === 'string') {
@@ -39,8 +40,16 @@ export function useRecentWalletOptions() {
         const annotated = await Promise.all(recentWallets.map(async (entry) => {
           if (!entry || typeof entry.isTestnet !== 'undefined') return entry;
           let isTestnet = false;
+          let baseKey = entry.publicKey;
+          if (baseKey && baseKey.startsWith('M')) {
+            try {
+              baseKey = extractBasePublicKeyFromMuxed(baseKey);
+            } catch {
+              baseKey = entry.publicKey;
+            }
+          }
           try {
-            isTestnet = await isTestnetAccount(entry.publicKey);
+            isTestnet = await isTestnetAccount(baseKey);
           } catch {
             isTestnet = false;
           }
