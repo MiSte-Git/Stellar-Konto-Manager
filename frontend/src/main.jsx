@@ -13,6 +13,7 @@ import {
  } from './utils/stellar/stellarUtils.js';
 import { useTrustedWallets } from './utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
+import AddressDropdown from './components/AddressDropdown.jsx';
 import { isTestnetAccount } from './utils/stellar/accountUtils.js';
 
 function migrateLegacyStorageKeys() {
@@ -177,6 +178,20 @@ function Main() {
   const walletInfoMap = useMemo(() => createWalletInfoMap(wallets), [wallets]);
   const trimmedHeaderInput = (walletHeaderInput || '').trim();
   const headerWalletInfo = findWalletInfo(walletInfoMap, trimmedHeaderInput) || findWalletInfo(walletInfoMap, sourcePublicKey);
+  const recentWalletOptions = useMemo(() => {
+    return recentWallets
+      .map((entry) => {
+        const publicKey = entry?.publicKey || '';
+        if (!publicKey) return null;
+        const info = findWalletInfo(walletInfoMap, publicKey) || {};
+        return {
+          value: publicKey,
+          label: info.label || '',
+          isTestnet: !!entry?.isTestnet,
+        };
+      })
+      .filter(Boolean);
+  }, [recentWallets, walletInfoMap]);
   const headerFederationDisplay = trimmedHeaderInput && trimmedHeaderInput.includes('*')
     ? trimmedHeaderInput
     : (headerWalletInfo?.federation || '');
@@ -599,21 +614,21 @@ function Main() {
                 {t('menu:devTestnet', 'Testnet (für Entwickler)')}
               </label>
             </div>
-            <div className="relative">
-              <input
-                type="text"
-                list="recent-wallets"
-                value={walletHeaderInput}
-                onChange={(e) => setWalletHeaderInput(e.target.value)}
-                placeholder={t('publicKey:placeholder')}
-                className={`wallet-input w-full border ${notFound ? 'border-red-500 ring-1 ring-red-400' : (devTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : 'border-gray-300')} rounded p-2 pr-8 font-mono text-base md:text-sm`}
-                spellCheck={false}
-                autoCorrect="off"
-                autoCapitalize="off"
-                autoComplete="off"
-                inputMode="text"
-              />
-              {walletHeaderInput && (
+            <AddressDropdown
+              value={walletHeaderInput}
+              onChange={(next) => setWalletHeaderInput(next)}
+              onSelect={(next) => setWalletHeaderInput(next)}
+              placeholder={t('publicKey:placeholder')}
+              options={recentWalletOptions}
+              inputClassName={`wallet-input w-full border ${notFound ? 'border-red-500 ring-1 ring-red-400' : (devTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : 'border-gray-300')} rounded p-2 pr-8 font-mono text-base md:text-sm`}
+              inputProps={{
+                spellCheck: false,
+                autoCorrect: 'off',
+                autoCapitalize: 'off',
+                autoComplete: 'off',
+                inputMode: 'text',
+              }}
+              rightAdornment={walletHeaderInput ? (
                 <button
                   type="button"
                   onClick={() => { setWalletHeaderInput(''); unloadActiveWallet(); setDevTestnet(false); if (typeof window !== 'undefined' && window.localStorage) { window.localStorage.setItem('SKM_NETWORK', 'PUBLIC'); window.localStorage.removeItem('SKM_HORIZON_URL'); window.dispatchEvent(new CustomEvent('stm-network-changed', { detail: 'PUBLIC' })); } }}
@@ -623,18 +638,8 @@ function Main() {
                 >
                   ×
                 </button>
-              )}
-              <datalist id="recent-wallets">
-                {recentWallets.map((entry, i) => (
-                  <option
-                    key={`${entry.publicKey}-${i}`}
-                    value={entry.publicKey}
-                    label={entry.isTestnet ? t('common:account.testnetLabel', 'Testnet') : undefined}
-                  />
-                ))}
-              </datalist>
-
-            </div>
+              ) : null}
+            />
             <div className="mt-2 text-xs text-gray-700 dark:text-gray-300">
               <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1">
                 {/* Links: Föderationsadresse & Label linksbündig */}
