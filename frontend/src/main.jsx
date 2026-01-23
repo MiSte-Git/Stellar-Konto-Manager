@@ -132,9 +132,32 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 
+const XLM_PRICE_PAIRS = [
+  { key: 'EUR', label: '€/XLM', currency: 'eur', symbol: '€' },
+  { key: 'USD', label: '$/XLM', currency: 'usd', symbol: '$' },
+  { key: 'CHF', label: 'CHF/XLM', currency: 'chf', symbol: 'CHF ' },
+  { key: 'GBP', label: '£/XLM', currency: 'gbp', symbol: '£' },
+  { key: 'RUB', label: '₽/XLM', currency: 'rub', symbol: '₽' },
+];
+
+const PricePairSelector = React.memo(function PricePairSelector({ value, onChange }) {
+  return (
+    <select
+      value={value}
+      onChange={onChange}
+      className="border border-gray-300 dark:border-gray-600 rounded px-2 py-1 bg-white dark:bg-gray-800 text-xs"
+      aria-label="XLM price pair"
+    >
+      {XLM_PRICE_PAIRS.map((pair) => (
+        <option key={pair.key} value={pair.key}>{pair.label}</option>
+      ))}
+    </select>
+  );
+});
+
 function Main() {
 	//console.log('main.jsx In function Main');
-  const { t } = useTranslation(['common', 'quiz', 'learn', 'glossary', 'legal']);
+  const { t, i18n } = useTranslation(['common', 'quiz', 'learn', 'glossary', 'legal']);
   const HORIZON_URL = import.meta.env.VITE_HORIZON_URL;
   const { wallets } = useTrustedWallets();
   //console.log('[DEBUG] Aktive Horizon URL:', HORIZON_URL);
@@ -180,8 +203,61 @@ function Main() {
    const [hasSessionKey, setHasSessionKey] = useState(false);
    const [xlmBalance, setXlmBalance] = useState(null);
    const [xlmBalanceLoading, setXlmBalanceLoading] = useState(false);
+   const [selectedPricePair, setSelectedPricePair] = useState(XLM_PRICE_PAIRS[0]?.key || 'EUR');
+   const [xlmPriceMap, setXlmPriceMap] = useState({});
+   const [xlmPriceChangeMap, setXlmPriceChangeMap] = useState({});
+   const [xlmPriceLoading, setXlmPriceLoading] = useState(false);
+   const [xlmPriceError, setXlmPriceError] = useState('');
+   const [xlmPriceLoaded, setXlmPriceLoaded] = useState(false);
+   const [xlmPriceUpdatedAt, setXlmPriceUpdatedAt] = useState(null);
 
   const walletInfoMap = useMemo(() => createWalletInfoMap(wallets), [wallets]);
+  const handlePricePairChange = useCallback((e) => {
+    setSelectedPricePair(e.target.value);
+  }, []);
+  const activePricePair = useMemo(
+    () => XLM_PRICE_PAIRS.find((pair) => pair.key === selectedPricePair) || XLM_PRICE_PAIRS[0],
+    [selectedPricePair]
+  );
+  const xlmPriceValue = activePricePair ? xlmPriceMap?.[activePricePair.currency] : null;
+  const xlmPriceChangeValue = activePricePair ? xlmPriceChangeMap?.[activePricePair.currency] : null;
+  const priceLocale = useMemo(() => {
+    if (typeof navigator !== 'undefined') {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      const navLang = navigator.language || '';
+      if (tz === 'Europe/Zurich') {
+        if (navLang.includes('-')) {
+          const langBase = navLang.split('-')[0];
+          return `${langBase}-CH`;
+        }
+        return navLang ? `${navLang}-CH` : 'de-CH';
+      }
+      if (navLang) return navLang;
+    }
+    return i18n?.language || 'de-DE';
+  }, [i18n?.language]);
+  const xlmPriceDisplay = useMemo(() => {
+    if (xlmPriceValue == null || Number.isNaN(Number(xlmPriceValue))) return 'n/a';
+    const formatter = new Intl.NumberFormat(priceLocale, { minimumFractionDigits: 4, maximumFractionDigits: 6 });
+    return `${activePricePair?.symbol || ''}${formatter.format(Number(xlmPriceValue))}`;
+  }, [activePricePair, priceLocale, xlmPriceValue]);
+  const xlmPriceChangeDisplay = useMemo(() => {
+    if (xlmPriceChangeValue == null || Number.isNaN(Number(xlmPriceChangeValue))) return null;
+    const formatter = new Intl.NumberFormat(priceLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const sign = Number(xlmPriceChangeValue) > 0 ? '+' : '';
+    return `${sign}${formatter.format(Number(xlmPriceChangeValue))}%`;
+  }, [priceLocale, xlmPriceChangeValue]);
+  const xlmPriceTrend = useMemo(() => {
+    if (xlmPriceChangeValue == null || Number.isNaN(Number(xlmPriceChangeValue))) return null;
+    if (Number(xlmPriceChangeValue) > 0.05) return 'up';
+    if (Number(xlmPriceChangeValue) < -0.05) return 'down';
+    return 'flat';
+  }, [xlmPriceChangeValue]);
+  const xlmPriceUpdatedLabel = useMemo(() => {
+    if (!xlmPriceUpdatedAt) return '';
+    const formatter = new Intl.DateTimeFormat(priceLocale, { hour: '2-digit', minute: '2-digit' });
+    return formatter.format(xlmPriceUpdatedAt);
+  }, [priceLocale, xlmPriceUpdatedAt]);
   const trimmedHeaderInput = (walletHeaderInput || '').trim();
   const headerLookupKey = useMemo(() => {
     if (trimmedHeaderInput && trimmedHeaderInput.startsWith('M')) {
@@ -637,6 +713,46 @@ function Main() {
     return t(raw, raw);
   }, [error, t]);
 
+  useEffect(() => {
+    let isActive = true;
+    const controller = new AbortController();
+    const fetchPrices = async () => {
+      if (!xlmPriceLoaded) setXlmPriceLoading(true);
+      if (!xlmPriceLoaded) setXlmPriceError('');
+      try {
+        const currencies = XLM_PRICE_PAIRS.map((pair) => pair.currency).join(',');
+        const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=stellar&vs_currencies=${currencies}&include_24hr_change=true`, { signal: controller.signal });
+        if (!res.ok) throw new Error('price.fetchFailed');
+        const data = await res.json();
+        if (!isActive) return;
+        const raw = data?.stellar || {};
+        const nextPriceMap = {};
+        const nextChangeMap = {};
+        XLM_PRICE_PAIRS.forEach((pair) => {
+          nextPriceMap[pair.currency] = raw?.[pair.currency];
+          nextChangeMap[pair.currency] = raw?.[`${pair.currency}_24h_change`];
+        });
+        setXlmPriceMap(nextPriceMap);
+        setXlmPriceChangeMap(nextChangeMap);
+        setXlmPriceLoaded(true);
+        setXlmPriceUpdatedAt(new Date());
+      } catch (err) {
+        if (err?.name === 'AbortError') return;
+        if (!isActive) return;
+        if (!xlmPriceLoaded) setXlmPriceError(String(err?.message || 'price.fetchFailed'));
+      } finally {
+        if (isActive && !xlmPriceLoaded) setXlmPriceLoading(false);
+      }
+    };
+    fetchPrices();
+    const id = setInterval(fetchPrices, 60000);
+    return () => {
+      isActive = false;
+      controller.abort();
+      clearInterval(id);
+    };
+  }, []);
+
   // Filter-Update
   function handleFilterChange(key, value) {
     setFilters({ ...filters, [key]: value });
@@ -659,7 +775,27 @@ function Main() {
       <div className="max-w-4xl mx-auto px-4 pt-4 text-center mt-4-500" style={{ paddingBottom: 'max(1rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
         {/* 🌍 Global: Titel & Info */}
         <div className="relative mb-2">
-          <h1 className="text-2xl font-bold text-center">{t('common:main.title')}</h1>
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center gap-2">
+            <div className="hidden sm:block" />
+            <h1 className="text-2xl font-bold text-center">{t('common:main.title')}</h1>
+            <div className="flex flex-col items-center sm:items-end text-sm text-gray-800 dark:text-gray-200">
+              <div className="flex items-center justify-center sm:justify-end gap-2">
+                <PricePairSelector value={selectedPricePair} onChange={handlePricePairChange} />
+                <span className="font-semibold tabular-nums min-w-[5.5rem] text-right" title={xlmPriceError ? String(xlmPriceError) : ''}>
+                  {xlmPriceLoading ? '...' : xlmPriceDisplay}
+                </span>
+                <span
+                  className={`text-xs tabular-nums ${xlmPriceTrend === 'up' ? 'text-green-600 dark:text-green-400' : xlmPriceTrend === 'down' ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'}`}
+                  title="24h"
+                >
+                  {xlmPriceChangeDisplay ? `${xlmPriceTrend === 'up' ? '▲' : xlmPriceTrend === 'down' ? '▼' : '•'} ${xlmPriceChangeDisplay}` : '—'}
+                </span>
+              </div>
+              <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                Quelle: CoinGecko{xlmPriceUpdatedLabel ? ` · aktualisiert ${xlmPriceUpdatedLabel}` : ''}
+              </span>
+            </div>
+          </div>
           {/* Active network banner */}
           <div className="mt-2 text-xs text-center">
             <span className={`inline-block px-2 py-0.5 rounded font-semibold ${devTestnet ? 'bg-yellow-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100'}`}>
