@@ -1,9 +1,9 @@
 import React from 'react';
-import { StrKey } from '@stellar/stellar-sdk';
 import { useTranslation } from 'react-i18next';
 import MenuHeader from './MenuHeader';
 import AddressDropdown from './AddressDropdown.jsx';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
+import { resolveOrValidatePublicKey } from '../utils/stellar/stellarUtils.js';
 
 function CompareTrustlines({
   sourcePublicKey,
@@ -29,7 +29,10 @@ function CompareTrustlines({
   const { recentWalletOptions } = useRecentWalletOptions();
 
   const handleCompare = async () => {
-    if (!destinationPublicKey || !StrKey.isValidEd25519PublicKey(destinationPublicKey)) {
+    let destinationKey;
+    try {
+      destinationKey = await resolveOrValidatePublicKey(destinationPublicKey);
+    } catch {
       setError(t('publicKey:destination.error'));
       setDestNotFound(false);
       return;
@@ -42,7 +45,7 @@ function CompareTrustlines({
       const sourceTrustlines = await loadTrustlines(sourcePublicKey);
       let destTrustlines;
       try {
-        destTrustlines = await loadTrustlines(destinationPublicKey);
+        destTrustlines = await loadTrustlines(destinationKey);
       } catch (e) {
         const msg = String(e?.message || '');
         if (/nicht gefunden|not found/i.test(msg)) {

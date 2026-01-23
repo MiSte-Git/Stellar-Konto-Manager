@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getHorizonServer, resolveOrValidatePublicKey } from '../utils/stellar/stellarUtils';
+import { getHorizonServer, resolveOrValidateAccount, isValidAccountId, extractBasePublicKeyFromMuxed } from '../utils/stellar/stellarUtils';
 import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
@@ -212,8 +212,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         return nextState;
       }
       let resolvedDest;
+      let resolvedAccountId;
       try {
-        resolvedDest = await resolveOrValidatePublicKey(v);
+        const resolved = await resolveOrValidateAccount(v);
+        resolvedAccountId = resolved.accountId;
+        resolvedDest = resolved.muxedAddress || resolved.accountId;
       } catch {
         nextState = { ...nextState, loading: false, err: t('publicKey:destination.error') };
         setPreflight(nextState);
@@ -230,7 +233,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const minReserve = (baseReserve || 0.5) * 2;
       let destExists = true;
       try {
-        await server.loadAccount(resolvedDest);
+        await server.loadAccount(resolvedAccountId);
       } catch {
         destExists = false;
       }
@@ -424,8 +427,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     const fee = Number(feeStats?.fee_charged?.mode || 100);
     const { memo, display: memoDisplay } = buildMemoObject();
     let resolvedDest;
+    let resolvedAccountId;
     try {
-      resolvedDest = await resolveOrValidatePublicKey(dest);
+      const resolved = await resolveOrValidateAccount(dest);
+      resolvedAccountId = resolved.accountId;
+      resolvedDest = resolved.muxedAddress || resolved.accountId;
     } catch (resolveError) {
       throw new Error(t(resolveError?.message || 'resolveOrValidatePublicKey.invalid'));
     }
@@ -442,7 +448,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
     let destExists = true;
     try {
-      await server.loadAccount(resolvedDest);
+      await server.loadAccount(resolvedAccountId);
     } catch {
       destExists = false;
     }
@@ -458,7 +464,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const minStart = Math.max(desired, (baseReserve || 0.5) * 2);
       const startingBalance = (Math.round(minStart * 1e7) / 1e7).toFixed(7).replace(/\.0+$/, '');
       tx = new TransactionBuilder(account, { fee, networkPassphrase: net, memo })
-        .addOperation(Operation.createAccount({ destination: resolvedDest, startingBalance }))
+        .addOperation(Operation.createAccount({ destination: resolvedAccountId, startingBalance }))
         .setTimeout(txTimeout)
         .build();
       activated = true;
@@ -748,17 +754,20 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         const v = (dest || '').trim();
         if (!v) { setResolvedAccount(''); setResolvedFederation(''); setInputWasFederation(false); return; }
         if (v.includes('*')) {
-          const acc = await resolveOrValidatePublicKey(v);
+          const acc = await resolveOrValidateAccount(v);
           if (!active) return;
-          setResolvedAccount(acc);
+          setResolvedAccount(acc.accountId);
           setResolvedFederation(v);
           setInputWasFederation(true);
-        } else if (StrKey.isValidEd25519PublicKey(v)) {
-          setResolvedAccount(v);
+        } else if (isValidAccountId(v)) {
+          const resolved = StrKey.isValidMed25519PublicKey(v)
+            ? extractBasePublicKeyFromMuxed(v)
+            : v;
+          setResolvedAccount(resolved);
           setInputWasFederation(false);
           // Try reverse federation lookup via home_domain → stellar.toml → FEDERATION_SERVER
           try {
-            const acct = await server.loadAccount(v);
+            const acct = await server.loadAccount(resolved);
             const domain = acct?.home_domain || acct?.homeDomain || '';
             if (domain) {
               try {
