@@ -374,6 +374,30 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setReviewProcessing(false);
   }, []);
 
+  const thresholdsForModal = useMemo(() => {
+    if (!accountInfo?.thresholds) return null;
+    return {
+      low_threshold: Number(accountInfo.thresholds.low_threshold ?? 0),
+      med_threshold: Number(accountInfo.thresholds.med_threshold ?? 0),
+      high_threshold: Number(accountInfo.thresholds.high_threshold ?? 0),
+    };
+  }, [accountInfo]);
+  const signersForModal = useMemo(
+    () => (accountInfo?.signers || []).map((s) => ({
+      public_key: s.key || s.public_key || s.ed25519PublicKey || '',
+      weight: Number(s.weight || 0),
+    })).filter((s) => !!s.public_key),
+    [accountInfo]
+  );
+  const requiredThreshold = useMemo(
+    () => getRequiredThreshold('payment', thresholdsForModal),
+    [thresholdsForModal]
+  );
+  const masterWeight = useMemo(() => {
+    const master = signersForModal.find((s) => s.public_key === publicKey);
+    return Number(master?.weight || 0);
+  }, [signersForModal, publicKey]);
+
   const buildPaymentTx = useCallback(async ({ signers, signTx = false, requireSigners = false } = {}) => {
     const signerList = Array.isArray(signers) ? signers.filter(Boolean) : [];
     const primary = signerList[0];
@@ -575,30 +599,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const native = useMemo(() => (balances || []).find(b => b.asset_type === 'native') || { balance: '0', selling_liabilities: '0' }, [balances]);
   const trustlines = useMemo(() => (balances || []).filter(b => b.asset_type !== 'native' && b.asset_type !== 'liquidity_pool_shares'), [balances]);
   const lpTrusts = useMemo(() => (balances || []).filter(b => b.asset_type === 'liquidity_pool_shares'), [balances]);
-  const thresholdsForModal = useMemo(() => {
-    if (!accountInfo?.thresholds) return null;
-    return {
-      low_threshold: Number(accountInfo.thresholds.low_threshold ?? 0),
-      med_threshold: Number(accountInfo.thresholds.med_threshold ?? 0),
-      high_threshold: Number(accountInfo.thresholds.high_threshold ?? 0),
-    };
-  }, [accountInfo]);
-  const signersForModal = useMemo(
-    () => (accountInfo?.signers || []).map((s) => ({
-      public_key: s.key || s.public_key || s.ed25519PublicKey || '',
-      weight: Number(s.weight || 0),
-    })).filter((s) => !!s.public_key),
-    [accountInfo]
-  );
-  const requiredThreshold = useMemo(
-    () => getRequiredThreshold('payment', thresholdsForModal),
-    [thresholdsForModal]
-  );
-
-  const masterWeight = useMemo(() => {
-    const master = signersForModal.find((s) => s.public_key === publicKey);
-    return Number(master?.weight || 0);
-  }, [signersForModal, publicKey]);
 
   const handlePrepareMultisig = useCallback(async (initialSigners = [], opts = {}) => {
     try {
