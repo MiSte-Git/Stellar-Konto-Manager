@@ -6,6 +6,7 @@ import MultisigConfigForm from '../components/multisig/MultisigConfigForm.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
+import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 import {
   Keypair,
   Networks,
@@ -71,6 +72,7 @@ export default function MultisigCreatePage() {
   const [showInfo2, setShowInfo2] = useState(false);
   const [showKeyWarning, setShowKeyWarning] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const { recentWalletOptions } = useRecentWalletOptions();
 
   const server = useMemo(() => getHorizonServer(network === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN), [network]);
   const passphrase = network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
@@ -520,6 +522,7 @@ export default function MultisigCreatePage() {
             signerCountLimitLabel={t('multisigConfig:signersCountLimit')}
             signerCountLimitTitle={t('multisigConfig:signersCountLimit')}
             signers={plannedSigners}
+            signerOptions={recentWalletOptions}
             signerPlaceholder="G..."
             onSignerKeyChange={handleSignerChange}
             onSignerWeightChange={handleSignerWeightChange}

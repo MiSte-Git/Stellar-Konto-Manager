@@ -2,6 +2,8 @@ import React from 'react';
 import { StrKey } from '@stellar/stellar-sdk';
 import { useTranslation } from 'react-i18next';
 import MenuHeader from './MenuHeader';
+import AddressDropdown from './AddressDropdown.jsx';
+import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 
 function CompareTrustlines({
   sourcePublicKey,
@@ -24,6 +26,7 @@ function CompareTrustlines({
 }) {
   const { t } = useTranslation(['publicKey', 'secretKey', 'common', 'trustline']);
   const [destNotFound, setDestNotFound] = React.useState(false);
+  const { recentWalletOptions } = useRecentWalletOptions();
 
   const handleCompare = async () => {
     if (!destinationPublicKey || !StrKey.isValidEd25519PublicKey(destinationPublicKey)) {
@@ -97,21 +100,21 @@ function CompareTrustlines({
       <MenuHeader setMenuSelection={setMenuSelection} menuSelection={menuSelection} />
       <h2 className="text-center text-xl font-semibold">{t('trustline:compare')}</h2>
       <label className="block mb-2">{t('publicKey:destination.input')}:</label>
-      <div className="relative">
-        <input
-          type="text"
-          value={destinationPublicKey}
-          onChange={(e) => { setDestinationPublicKey(e.target.value); if (destNotFound) setDestNotFound(false); }}
-          className={`wallet-input w-full p-2 border rounded pr-8 font-mono text-sm ${destNotFound ? 'border-red-500 ring-1 ring-red-400' : 'border-gray-300'}`}
-          placeholder="e.g., GBZVTOY..."
-          list="recent-wallets"
-          spellCheck={false}
-          autoCorrect="off"
-          autoCapitalize="off"
-          autoComplete="off"
-          inputMode="text"
-        />
-        {destinationPublicKey && (
+      <AddressDropdown
+        value={destinationPublicKey}
+        onChange={(next) => { setDestinationPublicKey(next); if (destNotFound) setDestNotFound(false); }}
+        onSelect={(next) => { setDestinationPublicKey(next); if (destNotFound) setDestNotFound(false); }}
+        placeholder="e.g., GBZVTOY..."
+        options={recentWalletOptions}
+        inputClassName={`wallet-input w-full p-2 border rounded pr-8 font-mono text-sm ${destNotFound ? 'border-red-500 ring-1 ring-red-400' : 'border-gray-300'}`}
+        inputProps={{
+          spellCheck: false,
+          autoCorrect: 'off',
+          autoCapitalize: 'off',
+          autoComplete: 'off',
+          inputMode: 'text',
+        }}
+        rightAdornment={destinationPublicKey ? (
           <button
             type="button"
             onClick={() => setDestinationPublicKey('')}
@@ -121,8 +124,8 @@ function CompareTrustlines({
           >
             ×
           </button>
-        )}
-      </div>
+        ) : null}
+      />
       <button
         onClick={handleCompare}
         className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"

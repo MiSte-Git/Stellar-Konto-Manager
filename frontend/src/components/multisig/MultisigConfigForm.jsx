@@ -1,4 +1,5 @@
 import React from 'react';
+import AddressDropdown from '../AddressDropdown.jsx';
 
 export default function MultisigConfigForm({
   signersTitle = '',
@@ -18,6 +19,7 @@ export default function MultisigConfigForm({
   signerCountLimitLabel = '',
   signerCountLimitTitle = '',
   signers = [],
+  signerOptions = [],
   signerPlaceholder = '',
   onSignerKeyChange = null,
   onSignerWeightChange = null,
@@ -111,12 +113,21 @@ export default function MultisigConfigForm({
         )}
         {signerList.map((s, i) => (
           <div key={i} className="grid gap-2 sm:grid-cols-6 items-center">
-            <input
-              type="text"
+            <AddressDropdown
+              className="sm:col-span-4"
               value={s?.key ?? ''}
-              onChange={(e) => onSignerKeyChange && onSignerKeyChange(i, e.target.value)}
+              onChange={(next) => onSignerKeyChange && onSignerKeyChange(i, next)}
+              onSelect={(next) => onSignerKeyChange && onSignerKeyChange(i, next)}
               placeholder={signerPlaceholder}
-              className="sm:col-span-4 border rounded px-2 py-1 font-mono text-sm"
+              options={signerOptions}
+              inputClassName="w-full border rounded px-2 py-1 font-mono text-sm"
+              inputProps={{
+                spellCheck: false,
+                autoCorrect: 'off',
+                autoCapitalize: 'off',
+                autoComplete: 'off',
+                inputMode: 'text',
+              }}
             />
             <div className={`sm:col-span-2 flex items-center gap-2 ${hasRemove ? 'flex-nowrap' : ''}`}>
               <input
