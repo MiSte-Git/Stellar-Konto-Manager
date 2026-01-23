@@ -63,7 +63,13 @@
     "title": "Muxed-Konto",
     "original": "Muxed Account",
     "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
-    "desc": "Eine M-Adresse zeigt auf ein bestehendes Stellar Konto hat aber zusätzlich eine eigene Nummer (ID). So kann man z. B. mehrere Personen oder Abteilungen unter derselben G-Adresse unterscheiden. Technisch gehört das Geld weiter dem Hauptkonto."
+    "desc": "Eine M-Adresse zeigt auf ein bestehendes Stellar Konto hat aber zusätzlich eine eigene Nummer (ID).\n\nMuxed Accounts = G-Konto + ID (M-Adresse)\nSie liefern Zuordnung, aber keine Kontotrennung.\nSaldo, Trustlines, Signer, Flags liegen immer auf dem G-Konto.\n\nStellar Development Foundation\n\nSo kann man z. B. mehrere Personen oder Abteilungen unter derselben G-Adresse unterscheiden. Technisch gehört das Geld weiter dem Hauptkonto."
+  },
+  "muxedAccountsUseCases": {
+    "title": "Muxed-Konto Anwendungsbeispiele",
+    "original": "Muxed accounts use cases",
+    "short": "Beispiele, Nutzen und Grenzen von M-Adressen als Zuordnungshilfe.",
+    "desc": "Firma - Beispiel\n\nSetup:\n- Ein Firmen-G-Konto\n- Pro Kunde/Use-Case eine M-Adresse (ID)\n\nAblauf:\n- Kunde zahlt an seine M-Adresse\n- Alles landet auf dem Firmen-G-Konto\n- Buchhaltung liest die ID -> eindeutige Zuordnung\n\nGeeignet fuer:\n- Shops, Zahlungsanbieter, Boersen\n- Interne Referenzen ohne Memo-Risiken\n\nVerein - Beispiel\n\nSetup:\n- Ein Vereins-G-Konto\n- M-Adressen fuer Mitglieder, Sparten, Zwecke\n\nAblauf:\n- Beitrag/Spende an passende M-Adresse\n- Zuordnung ueber ID, keine Memo-Fehler\n\nGeeignet fuer:\n- Mitgliedsbeitraege\n- Zweckgebundene Einnahmen\n- Einfache Revision\n\nWas Muxed Accounts gut koennen:\n- Robuste Eingangs-Zuordnung\n- Ein Konto, viele Identitaeten\n- Keine Memo-Pflicht\n- Weniger Bedienfehler\n\nWas Muxed Accounts nicht sind:\n- Keine Unterkonten\n- Kein eigenes Guthaben\n- Keine eigenen Trustlines\n- Keine eigenen Signer/Rechte\n\nTypisch ungeeignete Anwendungsfaelle:\n- Lohnzahlungen/Gehaltskonten (benoetigen eigenes G-Konto)\n- Treuhand/Verwahrung fuer Dritte (kein rechtlicher Vermoegenstrenner)\n- Rollenbasierte Sicherheit (keine getrennten Signer/Thresholds)\n- Budget- oder Limit-Trennung (keine separaten Salden/Asset-Limits)\n- Compliance-getrennte Konten (KYC/Reporting nicht sauber trennbar)\n\nVergleich (Kurz):\nZahlung zuordnen: Ja\nVermoegen trennen: Nein\nZugriff delegieren: Nein\nRechtlich eigenes Konto: Nein\nInterne Buchhaltung: Ja\n\nMerksatz:\nMuxed Accounts adressieren Zahlungen - sie ersetzen keine Konten.\nWenn Kontrolle, Eigentum oder Trennung noetig ist -> eigenes G-Konto."
   },
   "multisig": {
     "title": "Mehrfachsignatur",
@@ -86,9 +92,9 @@
     }
   },
   "multisigCorporate": {
-    "title": "Multisig erklärt am Firmenbeispiel",
-    "original": "Multi-Signature (corporate example)",
-    "short": "Beispielhafte Multi-Sig-Struktur für Firmenkonten mit Rollen, Gewichten und Thresholds."
+    "title": "Mehrfachsignatur - Beispiel",
+    "original": "Multi-Signature - Example",
+    "short": "Beispielhafte Mehrfach-Sig-Struktur für Firmenkonten mit Rollen, Gewichten und Thresholds."
   },
   "trustline": {
     "title": "Trustline",

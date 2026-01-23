@@ -16,7 +16,7 @@ export const glossaryAliasIndex = Object.entries(glossaryAliases).reduce<Record<
 export const glossaryGroups = [
   {
     id: 'accountsKeys',
-    slugs: ['account', 'addressG', 'publicKey', 'privateKey', 'addressFederation', 'addressMuxed'],
+    slugs: ['account', 'addressG', 'publicKey', 'privateKey', 'addressFederation', 'addressMuxed', 'muxedAccountsUseCases'],
   },
   {
     id: 'multisigSecurity',

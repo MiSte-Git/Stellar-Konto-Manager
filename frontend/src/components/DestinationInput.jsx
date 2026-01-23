@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StrKey } from '@stellar/stellar-sdk';
+import { isValidAccountId } from '../utils/stellar/stellarUtils.js';
 
 function DestinationInput({ destination, setDestination, onSubmit }) {
   const { t } = useTranslation(['trustline', 'publicKey']);
@@ -9,7 +9,7 @@ function DestinationInput({ destination, setDestination, onSubmit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const val = (destination || '').trim();
-    if (!StrKey.isValidEd25519PublicKey(val)) {
+    if (!isValidAccountId(val)) {
       setError(t('trustline:destination.error'));
       return;
     }
