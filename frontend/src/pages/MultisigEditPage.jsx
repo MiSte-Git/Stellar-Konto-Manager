@@ -11,6 +11,7 @@ import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
 import { Keypair, Networks, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
 import { apiUrl } from '../utils/apiBase.js';
 import { createPendingMultisigJob } from '../utils/multisigApi.js';
+import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
@@ -47,6 +48,7 @@ function NetworkSelector({ value, onChange }) {
 
 export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const { t } = useTranslation(['network', 'common', 'multisigConfig', 'publicKey', 'multisig', 'glossary']);
+  const { recentWalletOptions } = useRecentWalletOptions();
 
   const [network, setNetwork] = useState(() => {
   try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
@@ -564,6 +566,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           signerCountLimitLabel={t('multisigConfig:signersCountLimit')}
           signerCountLimitTitle={t('multisigConfig:signersCountLimit')}
           signers={signers}
+          signerOptions={recentWalletOptions}
           signerWeightHeaderLabel={t('common:multisigEdit.weight', 'Gewicht')}
           signerPlaceholder="G..."
           onSignerKeyChange={updateSignerKey}
