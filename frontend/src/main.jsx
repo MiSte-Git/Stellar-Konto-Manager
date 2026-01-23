@@ -9,12 +9,16 @@ import {
   loadTrustlines, 
   handleSourceSubmit as submitSourceInput,
   getHorizonServer,
-  getAccountSummary
+  getAccountSummary,
+  resolveOrValidateAccount,
+  extractBasePublicKeyFromMuxed,
+  extractMuxedIdFromAddress
  } from './utils/stellar/stellarUtils.js';
 import { useTrustedWallets } from './utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
 import AddressDropdown from './components/AddressDropdown.jsx';
 import { isTestnetAccount } from './utils/stellar/accountUtils.js';
+import { requiresGAccount, isIdentityMode } from './utils/accountMode.js';
 
 function migrateLegacyStorageKeys() {
   if (typeof window === 'undefined') return;
@@ -146,6 +150,7 @@ function Main() {
   const autoRestoredRef = useRef(false);
 
   const [sourcePublicKey, setSourcePublicKey] = useState('');
+  const [sourceMuxedAddress, setSourceMuxedAddress] = useState('');
   const [sourceSecret, setSourceSecret] = useState('');
   const [destinationPublicKey, setDestinationPublicKey] = useState('');
   const [issuerAddress, setIssuerAddress] = useState('');
@@ -162,6 +167,7 @@ function Main() {
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
+  const [identityGuard, setIdentityGuard] = useState({ open: false, nextAction: '' });
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [showSecretInfo, setShowSecretInfo] = useState(false);
   const [activeJobId, setActiveJobId] = useState(null);
@@ -177,13 +183,43 @@ function Main() {
 
   const walletInfoMap = useMemo(() => createWalletInfoMap(wallets), [wallets]);
   const trimmedHeaderInput = (walletHeaderInput || '').trim();
-  const headerWalletInfo = findWalletInfo(walletInfoMap, trimmedHeaderInput) || findWalletInfo(walletInfoMap, sourcePublicKey);
+  const headerLookupKey = useMemo(() => {
+    if (trimmedHeaderInput && trimmedHeaderInput.startsWith('M')) {
+      try {
+        return extractBasePublicKeyFromMuxed(trimmedHeaderInput);
+      } catch {
+        return trimmedHeaderInput;
+      }
+    }
+    return trimmedHeaderInput || sourcePublicKey;
+  }, [trimmedHeaderInput, sourcePublicKey]);
+  const headerWalletInfo = findWalletInfo(walletInfoMap, headerLookupKey) || findWalletInfo(walletInfoMap, sourcePublicKey);
+  const accountMode = useMemo(
+    () => (isIdentityMode(sourceMuxedAddress) ? 'identity' : 'account'),
+    [sourceMuxedAddress]
+  );
+  const sourceMuxedId = useMemo(() => {
+    if (!sourceMuxedAddress) return '';
+    try {
+      return extractMuxedIdFromAddress(sourceMuxedAddress);
+    } catch {
+      return '';
+    }
+  }, [sourceMuxedAddress]);
   const recentWalletOptions = useMemo(() => {
     return recentWallets
       .map((entry) => {
         const publicKey = entry?.publicKey || '';
         if (!publicKey) return null;
-        const info = findWalletInfo(walletInfoMap, publicKey) || {};
+        let lookupKey = publicKey;
+        if (lookupKey.startsWith('M')) {
+          try {
+            lookupKey = extractBasePublicKeyFromMuxed(lookupKey);
+          } catch {
+            lookupKey = publicKey;
+          }
+        }
+        const info = findWalletInfo(walletInfoMap, lookupKey) || {};
         return {
           value: publicKey,
           label: info.label || '',
@@ -294,8 +330,16 @@ function Main() {
         const annotated = await Promise.all(recentWallets.map(async (entry) => {
           if (!entry || typeof entry.isTestnet !== 'undefined') return entry;
           let isTestnet = false;
+          let baseKey = entry.publicKey;
+          if (baseKey && baseKey.startsWith('M')) {
+            try {
+              baseKey = extractBasePublicKeyFromMuxed(baseKey);
+            } catch {
+              baseKey = entry.publicKey;
+            }
+          }
           try {
-            isTestnet = await isTestnetAccount(entry.publicKey);
+            isTestnet = await isTestnetAccount(baseKey);
           } catch {
             isTestnet = false;
           }
@@ -346,14 +390,17 @@ function Main() {
     setIsLoading(true);
     setError('');
     try {
+      const resolved = await resolveOrValidateAccount(input);
+      const displayInput = resolved.muxedAddress || resolved.accountId;
       // Phase 1: nur leichte Konto-Zusammenfassung (verhindert Burst beim bloßen Laden)
-      const { publicKey, summary } = await submitSourceInput(input, t, devTestnet ? 'TESTNET' : 'PUBLIC', { includeTrustlines: false });
+      const { publicKey, summary } = await submitSourceInput(resolved.accountId, t, devTestnet ? 'TESTNET' : 'PUBLIC', { includeTrustlines: false });
       setSourcePublicKey(publicKey);
-      setWalletHeaderInput(publicKey);
-      try { window.localStorage?.setItem('SKM_LAST_ACCOUNT', publicKey); } catch { /* noop */ }
+      setSourceMuxedAddress(resolved.muxedAddress || '');
+      setWalletHeaderInput(displayInput);
+      try { window.localStorage?.setItem('SKM_LAST_ACCOUNT', displayInput); } catch { /* noop */ }
       // XLM direkt aus summary
       setXlmBalance(summary?.xlmBalance ?? null);
-      addRecent(publicKey);
+      addRecent(displayInput);
       setNotFound(false);
       setRefreshToken(prev => prev + 1);
       // Trustlines werden erst geladen, wenn der Nutzer „Alle anzeigen“ oder andere Funktionen öffnet
@@ -365,6 +412,42 @@ function Main() {
       setIsLoading(false);
     }
   }
+
+  const switchToBaseAccount = useCallback(() => {
+    if (!sourcePublicKey) return;
+    setSourceMuxedAddress('');
+    setWalletHeaderInput(sourcePublicKey);
+    try { window.localStorage?.setItem('SKM_LAST_ACCOUNT', sourcePublicKey); } catch { /* noop */ }
+    addRecent(sourcePublicKey);
+  }, [sourcePublicKey, addRecent]);
+
+  const handleMenuSelect = useCallback((value) => {
+    const next = (value ?? '').trim();
+    if (!next) return;
+    const actionTarget = next === 'donate' ? 'sendPayment' : next;
+    if (isIdentityMode(sourceMuxedAddress) && requiresGAccount(actionTarget)) {
+      setIdentityGuard({ open: true, nextAction: actionTarget });
+      return;
+    }
+    if (next === 'donate') {
+      setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('common:main.title')}` });
+      setMenuSelection('sendPayment');
+      return;
+    }
+    setSendInit(null);
+    setMenuSelection(next);
+  }, [sourceMuxedAddress, t, setSendInit, setMenuSelection]);
+
+  const closeIdentityGuard = useCallback(() => {
+    setIdentityGuard({ open: false, nextAction: '' });
+  }, []);
+
+  const confirmIdentityGuard = useCallback(() => {
+    const next = identityGuard.nextAction;
+    setIdentityGuard({ open: false, nextAction: '' });
+    switchToBaseAccount();
+    if (next) setMenuSelection(next);
+  }, [identityGuard.nextAction, switchToBaseAccount, setMenuSelection]);
 
   // Revalidate active wallet when other parts toggle network
   const revalidateActiveWallet = useCallback(async () => {
@@ -421,22 +504,11 @@ function Main() {
   useEffect(() => {
     const openMenu = (e) => {
       const target = typeof e?.detail === 'string' ? e.detail : '';
-      if (target === 'feedback') {
-        setMenuSelection('feedback');
-      } else if (target === 'multisigJobs') {
-        setMenuSelection('multisigJobs');
-      } else if (target === 'donate') {
-        setSendInit({
-          recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M',
-          amount: 5,
-          memoText: `Spende ${t('common:main.title')}`,
-        });
-        setMenuSelection('sendPayment');
-      }
+      if (target) handleMenuSelect(target);
     };
     window.addEventListener('stm:openMenu', openMenu);
     return () => window.removeEventListener('stm:openMenu', openMenu);
-  }, [t, setMenuSelection, setSendInit]);
+  }, [handleMenuSelect]);
 
   // Lazy-load trustlines when needed by specific views
   useEffect(() => {
@@ -466,6 +538,7 @@ function Main() {
 
   function unloadActiveWallet() {
     setSourcePublicKey('');
+    setSourceMuxedAddress('');
     try { window.localStorage?.removeItem('SKM_LAST_ACCOUNT'); } catch { /* noop */ }
     setTrustlines([]);
     setTrustlinesOwner('');
@@ -486,15 +559,17 @@ function Main() {
       return next;
     });
     // Falls der geladene Key dem gelöschten entspricht: entladen
-    if (sourcePublicKey && sourcePublicKey === key) {
+    if ((sourceMuxedAddress && sourceMuxedAddress === key) || (sourcePublicKey && sourcePublicKey === key)) {
       unloadActiveWallet();
     }
   }
 
   // Aktuelle Wallet automatisch in "Zuletzt verwendet" aufnehmen
   useEffect(() => {
-    if (sourcePublicKey) addRecent(sourcePublicKey);
-  }, [sourcePublicKey, addRecent]);
+    if (sourcePublicKey || sourceMuxedAddress) {
+      addRecent(sourceMuxedAddress || sourcePublicKey);
+    }
+  }, [sourcePublicKey, sourceMuxedAddress, addRecent]);
 
   // Global error handler
   useEffect(() => {
@@ -534,9 +609,12 @@ function Main() {
       setError('');
       try {
         const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
-        const { publicKey, summary } = await submitSourceInput(trimmed, t, net, { includeTrustlines: false });
+        const resolved = await resolveOrValidateAccount(trimmed);
+        const displayInput = resolved.muxedAddress || resolved.accountId;
+        const { publicKey, summary } = await submitSourceInput(resolved.accountId, t, net, { includeTrustlines: false });
         setSourcePublicKey(publicKey);
-        setWalletHeaderInput(publicKey);
+        setSourceMuxedAddress(resolved.muxedAddress || '');
+        setWalletHeaderInput(displayInput);
         setXlmBalance(summary?.xlmBalance ?? null);
         setNotFound(false);
         setRefreshToken(prev => prev + 1);
@@ -588,6 +666,15 @@ function Main() {
               {devTestnet ? t('network:testnet') : t('network:mainnet')}
             </span>
           </div>
+          {sourcePublicKey && (
+            <div className="mt-1 text-xs text-center">
+              <span className={`inline-block px-2 py-0.5 rounded font-semibold ${accountMode === 'identity' ? 'bg-amber-200 text-amber-900' : 'bg-blue-100 text-blue-800'}`}>
+                {accountMode === 'identity'
+                  ? t('common:accountMode.identity', 'Muxed Identity')
+                  : t('common:accountMode.account', 'G account')}
+              </span>
+            </div>
+          )}
           {infoMessage && (
             <div className="mt-2 text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-2 inline-block">
               {infoMessage}
@@ -666,6 +753,24 @@ function Main() {
                       {t('wallet:flag.deactivated', 'Note: This wallet is marked as deactivated in your trusted list.')}
                     </div>
                   )}
+                  {sourceMuxedAddress && (
+                    <div className="mt-1 space-y-0.5">
+                      <div>
+                        <span className="font-semibold">{t('common:accountMode.muxedAddress', 'Muxed address')}:</span>{' '}
+                        <span className="font-mono break-all">{sourceMuxedAddress}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold">{t('common:accountMode.baseAccount', 'Base G account')}:</span>{' '}
+                        <span className="font-mono break-all">{sourcePublicKey}</span>
+                      </div>
+                      {sourceMuxedId && (
+                        <div>
+                          <span className="font-semibold">{t('common:accountMode.muxedId', 'Muxed ID')}:</span>{' '}
+                          <span className="font-mono break-all">{sourceMuxedId}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Rechts: XLM-Kontostand als Label (rechtsbündig), ohne Überlagerung auf Mobil */}
@@ -700,6 +805,15 @@ function Main() {
                 >
                   {t('publicKey:deleteFromList')}
                 </button>
+                {sourceMuxedAddress && (
+                  <button
+                    type="button"
+                    onClick={switchToBaseAccount}
+                    className="px-3 py-2 rounded border border-amber-300 text-amber-900 hover:bg-amber-50 dark:hover:bg-gray-800"
+                  >
+                    {t('common:accountMode.switchToBase', 'Switch to base account')}
+                  </button>
+                )}
               </div>
               {/* Rechte Buttons */}
               <div className="flex items-center gap-2 ml-auto">
@@ -746,13 +860,7 @@ function Main() {
             onSelect={(value) => {
               const next = (value ?? '').trim();
               console.log('[MainMenu onSelect]', JSON.stringify(next));
-              if (next === 'donate') {
-                setSendInit({ recipient: 'GBXKZ5LITZS5COXM5275MQCTRKEK5M2UVR3GARY35OKH32WUMVL67X7M', amount: 5, memoText: `Spende ${t('common:main.title')}` });
-                setMenuSelection('sendPayment');
-              } else {
-                setSendInit(null);
-                setMenuSelection(next);
-              }
+              handleMenuSelect(next);
             }}
           />
         )}
@@ -900,6 +1008,7 @@ function Main() {
         <BalancePage
           key={refreshToken}
           publicKey={sourcePublicKey}
+          muxedAddress={sourceMuxedAddress}
           onBack={() => setMenuSelection(null)}
         />
       )}
@@ -942,7 +1051,7 @@ function Main() {
       )}
        
        {menuSelection &&
-       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','settings','createAccount','multisigEdit','multisigJobs','balance','sendPayment','feedback','muxed'].includes(menuSelection) && (
+       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','tradingAssets','settings','createAccount','multisigEdit','multisigJobs','balance','sendPayment','feedback','muxed'].includes(menuSelection) && (
          <div className="p-3 text-sm text-red-600">
            {t('menu:unknown', { value: String(menuSelection) }, 'Unbekannte Menüauswahl')}
          </div>
@@ -986,6 +1095,35 @@ function Main() {
           setResults={setResults}
           isLoading={isLoading}
         />
+      )}
+
+      {identityGuard.open && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded p-6 max-w-md w-full mx-auto">
+            <h4 className="text-lg font-bold mb-3">
+              {t('common:accountMode.guardTitle', 'Muxed identity is read-only')}
+            </h4>
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+              {t('common:accountMode.guardText', 'This action needs the base G account. Switch to the base account to continue.')}
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={closeIdentityGuard}
+                className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                {t('common:option.cancel', 'Cancel')}
+              </button>
+              <button
+                type="button"
+                onClick={confirmIdentityGuard}
+                className="px-4 py-2 rounded bg-amber-500 text-white hover:bg-amber-600"
+              >
+                {t('common:accountMode.switchToBase', 'Switch to base account')}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
       
 
