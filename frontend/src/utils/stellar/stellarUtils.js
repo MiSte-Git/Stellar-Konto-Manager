@@ -342,6 +342,19 @@ export function extractBasePublicKeyFromMuxed(muxedAddress) {
   return StrKey.encodeEd25519PublicKey(ed25519);
 }
 
+export function extractMuxedIdFromAddress(muxedAddress) {
+  if (!StrKey.isValidMed25519PublicKey(muxedAddress)) {
+    throw new Error('resolveOrValidatePublicKey.invalid');
+  }
+  const raw = StrKey.decodeMed25519PublicKey(muxedAddress);
+  const idBytes = raw.subarray(-8);
+  let id = 0n;
+  for (const b of idBytes) {
+    id = (id << 8n) + BigInt(b);
+  }
+  return id.toString(10);
+}
+
 export async function resolveOrValidateAccount(input) {
   if (!input) throw new Error('resolveOrValidatePublicKey.empty');
   let value = input;

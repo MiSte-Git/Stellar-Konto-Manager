@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
+import { getHorizonServer, extractMuxedIdFromAddress } from '../utils/stellar/stellarUtils.js';
 import { useSettings } from '../utils/useSettings.js';
 import { buildExplorerUrl } from '../utils/stellar/accountUtils.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 
-export default function BalancePage({ publicKey }) {
+export default function BalancePage({ publicKey, muxedAddress }) {
 const { t, i18n } = useTranslation(['common']);
 const { decimalsMode, explorers: explorerList, defaultExplorerKey } = useSettings();
 const [netLabel, setNetLabel] = useState(() => {
@@ -29,6 +29,14 @@ const [selectedExplorerKey, setSelectedExplorerKey] = useState(() => {
   if (explorerList && explorerList.length > 0) return explorerList[0].key;
   return '';
 });
+const muxedId = useMemo(() => {
+  if (!muxedAddress) return '';
+  try {
+    return extractMuxedIdFromAddress(muxedAddress);
+  } catch {
+    return '';
+  }
+}, [muxedAddress]);
  
   const server = useMemo(
     () => getHorizonServer(netLabel === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN),
@@ -167,8 +175,30 @@ const [selectedExplorerKey, setSelectedExplorerKey] = useState(() => {
     if (!hash || !selectedExplorer) return '';
     return buildExplorerUrl(selectedExplorer, hash, netLabel, { type: 'tx' });
   };
+  const matchesMuxedIdentity = useCallback((op) => {
+    if (!muxedAddress) return true;
+    if (!op) return false;
+    const addressFields = [
+      op.to_muxed,
+      op.from_muxed,
+      op.account_muxed,
+      op.source_account_muxed,
+      op.destination_muxed,
+    ];
+    if (addressFields.some((v) => v && String(v) === String(muxedAddress))) return true;
+    if (!muxedId) return false;
+    const idFields = [
+      op.to_muxed_id,
+      op.from_muxed_id,
+      op.account_muxed_id,
+      op.source_account_muxed_id,
+      op.destination_muxed_id,
+    ];
+    return idFields.some((v) => v != null && String(v) === String(muxedId));
+  }, [muxedAddress, muxedId]);
   const passesPaymentFilters = useCallback((op) => {
     if (!op) return false;
+    if (!matchesMuxedIdentity(op)) return false;
     const ts = Date.parse(op.created_at || '');
     if (fromTs) {
       const f = Date.parse(fromTs);
@@ -206,7 +236,7 @@ const [selectedExplorerKey, setSelectedExplorerKey] = useState(() => {
       if (!partyMatch) return false;
     }
     return true;
-  }, [fromTs, toTs, paymentsMemoQuery, paymentsCounterpartyQuery, memoMap]);
+  }, [fromTs, toTs, paymentsMemoQuery, paymentsCounterpartyQuery, memoMap, matchesMuxedIdentity]);
   const filteredPayments = useMemo(() => (payments || []).filter(passesPaymentFilters), [payments, passesPaymentFilters]);
 
   return (
