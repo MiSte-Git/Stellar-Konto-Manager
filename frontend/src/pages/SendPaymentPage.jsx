@@ -9,6 +9,9 @@ import { apiUrl } from '../utils/apiBase.js';
 import { mergeSignedXdr } from '../utils/multisigApi.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { useSettings } from '../utils/useSettings';
+import { buildExplorerUrl } from '../utils/stellar/accountUtils.js';
+import { isTestnetAccount } from '../utils/stellar/accountUtils.js';
+import AddressDropdown from '../components/AddressDropdown.jsx';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from '../utils/walletInfo.js';
 
@@ -16,7 +19,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const { t, i18n } = useTranslation(['common', 'errors', 'publicKey', 'secretKey', 'investedTokens', 'wallet', 'multisig', 'network']);
   void _onBack;
   const { wallets } = useTrustedWallets();
-  const { decimalsMode, multisigTimeoutSeconds } = useSettings();
+  const { decimalsMode, multisigTimeoutSeconds, explorers } = useSettings();
 
   const [dest, setDest] = useState(initial?.recipient || '');
   const [amount, setAmount] = useState('');
@@ -373,6 +376,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setReviewError('');
     setReviewProcessing(false);
   }, []);
+
+  const txExplorers = useMemo(() => {
+    const list = explorers || [];
+    return {
+      stellarchain: list.find((exp) => (exp.key || exp.id) === 'stellarchain') || null,
+      stellarExpert: list.find((exp) => (exp.key || exp.id) === 'stellar_expert') || null,
+    };
+  }, [explorers]);
 
   const thresholdsForModal = useMemo(() => {
     if (!accountInfo?.thresholds) return null;
@@ -977,6 +988,81 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [historyRecipients, setHistoryRecipients] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.recipients')||'[]'); } catch { return []; } });
   const [historyAmounts, setHistoryAmounts] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.amounts')||'[]'); } catch { return []; } });
   const [historyMemos, setHistoryMemos] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.memos')||'[]'); } catch { return []; } });
+  const [recipientTestnetMap, setRecipientTestnetMap] = useState({});
+  useEffect(() => {
+    let cancelled = false;
+    async function annotateHistoryTestnet() {
+      const normalized = historyRecipients.map((entry) => {
+        const trimmed = String(entry || '').trim();
+        const pkMatch = trimmed.match(/G[A-Z0-9]{55}/);
+        return pkMatch ? pkMatch[0] : '';
+      }).filter((pk) => pk && StrKey.isValidEd25519PublicKey(pk));
+      const unique = Array.from(new Set(normalized));
+      if (unique.length === 0) return;
+      const updates = {};
+      await Promise.all(unique.map(async (pk) => {
+        if (recipientTestnetMap[pk] !== undefined) return;
+        try {
+          const isTestnet = await isTestnetAccount(pk);
+          updates[pk] = isTestnet;
+        } catch {
+          updates[pk] = false;
+        }
+      }));
+      if (!cancelled && Object.keys(updates).length > 0) {
+        setRecipientTestnetMap((prev) => ({ ...prev, ...updates }));
+      }
+    }
+    annotateHistoryTestnet();
+    return () => { cancelled = true; };
+  }, [historyRecipients, recipientTestnetMap]);
+  const recipientSuggestions = useMemo(() => {
+    const options = [];
+    const seen = new Set();
+    const testnetSuffix = t('common:account.testnetLabel', '(Testnet)');
+    const normalizeRecipient = (raw) => {
+      const trimmed = String(raw || '').trim();
+      if (!trimmed) return '';
+      const pkMatch = trimmed.match(/G[A-Z0-9]{55}/);
+      if (pkMatch) return pkMatch[0];
+      const withoutTestnet = trimmed.replace(/\s*\(Testnet\)\s*/i, '').trim();
+      const base = withoutTestnet.split(' - ')[0].trim();
+      return base;
+    };
+    const add = (value, info = {}) => {
+      const trimmed = normalizeRecipient(value);
+      if (!trimmed || seen.has(trimmed)) return;
+      seen.add(trimmed);
+      const isTestnet = typeof info.isTestnet === 'boolean'
+        ? info.isTestnet
+        : !!recipientTestnetMap[trimmed];
+      const displayValue = `${trimmed}${isTestnet ? ` ${testnetSuffix}` : ''}`;
+      options.push({
+        value: trimmed,
+        displayValue,
+        label: info.label || '',
+        isTestnet,
+      });
+    };
+    historyRecipients.forEach((entry) => {
+      const normalized = normalizeRecipient(entry);
+      const info = findWalletInfo(walletInfoMap, normalized) || {};
+      add(normalized, info);
+    });
+    wallets.forEach((wallet) => {
+      if (!wallet || typeof wallet !== 'object') return;
+      const info = { label: String(wallet.label || '').trim(), isTestnet: !!wallet.isTestnet };
+      const address = String(wallet.address || wallet.publicKey || '').trim();
+      if (address) {
+        add(address, info);
+      }
+      const federation = String(wallet.federation || wallet.federationAddress || '').trim();
+      if (federation) {
+        add(federation, info);
+      }
+    });
+    return options;
+  }, [historyRecipients, wallets, walletInfoMap, t, recipientTestnetMap]);
   const pushHistory = (key, val, setter, limit=15) => {
     try {
       const v = String(val||'').trim(); if (!v) return;
@@ -1047,15 +1133,30 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         <div className="grid grid-cols-1 gap-4">
         <div className="space-y-2">
           <label className="block text-sm">{t('common:payment.send.recipient')}</label>
-          <div className="relative">
-            <input className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm font-mono" list="hist-recipients" value={dest} onChange={(e)=>{ clearSuccess(); setDest(e.target.value); }} onBlur={()=>pushHistory('stm.hist.recipients', dest, setHistoryRecipients)} placeholder="G... oder user*domain" />
-            {dest && (
-              <button type="button" onClick={()=>{ clearSuccess(); setDest(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
-            )}
-            <datalist id="hist-recipients">
-              {historyRecipients.map((v,i)=>(<option key={v+i} value={v} />))}
-            </datalist>
-          </div>
+          <AddressDropdown
+            value={dest}
+            onChange={(next) => { clearSuccess(); setDest(next); }}
+            onSelect={(next) => {
+              clearSuccess();
+              setDest(next);
+              pushHistory('stm.hist.recipients', next, setHistoryRecipients);
+            }}
+            onBlur={() => pushHistory('stm.hist.recipients', dest, setHistoryRecipients)}
+            placeholder="G... oder user*domain"
+            options={recipientSuggestions}
+            inputClassName="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm font-mono"
+            rightAdornment={dest ? (
+              <button
+                type="button"
+                onClick={()=>{ clearSuccess(); setDest(''); }}
+                title={t('common:clear', 'Clear')}
+                aria-label={t('common:clear', 'Clear')}
+                className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center"
+              >
+                ×
+              </button>
+            ) : null}
+          />
           <div className="mt-1 text-xs text-gray-700 dark:text-gray-300">
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1">
               {/* Links: Empfänger-Infos linksbündig */}
@@ -1573,6 +1674,30 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                           : t('multisig:confirm.result.job.hashLabel')}
                     </span>
                     <span className="font-mono break-all">{resultDialog.hash}</span>
+                    {resultDialog.type === 'sent' && (
+                      <div className="flex flex-wrap gap-2">
+                        {buildExplorerUrl(txExplorers.stellarchain, resultDialog.hash, netLabel, { type: 'tx' }) && (
+                          <a
+                            className="px-2 py-1 rounded border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                            href={buildExplorerUrl(txExplorers.stellarchain, resultDialog.hash, netLabel, { type: 'tx' })}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {t('common:balance.explorer.stellarchain', 'Stellarchain.io')}
+                          </a>
+                        )}
+                        {buildExplorerUrl(txExplorers.stellarExpert, resultDialog.hash, netLabel, { type: 'tx' }) && (
+                          <a
+                            className="px-2 py-1 rounded border border-blue-200 text-blue-700 dark:border-blue-800 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900"
+                            href={buildExplorerUrl(txExplorers.stellarExpert, resultDialog.hash, netLabel, { type: 'tx' })}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {t('common:balance.explorer.expert', 'stellar.expert')}
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
