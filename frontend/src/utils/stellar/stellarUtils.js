@@ -324,17 +324,38 @@ export async function deleteTrustlines({ secretKey, trustlines }) {
  * @throws {Error} - Bei leerer oder ungültiger Eingabe
  */
 export async function resolveOrValidatePublicKey(input) {
-  if (!input) throw new Error('resolveOrValidatePublicKey.empty');
+  const resolved = await resolveOrValidateAccount(input);
+  return resolved.accountId;
+}
 
-  if (input.includes('*')) {
-    return await resolveFederationAddress(input);
-  }
+export function isValidAccountId(input) {
+  if (!input) return false;
+  return StrKey.isValidEd25519PublicKey(input) || StrKey.isValidMed25519PublicKey(input);
+}
 
-  if (!StrKey.isValidEd25519PublicKey(input)) {
+export function extractBasePublicKeyFromMuxed(muxedAddress) {
+  if (!StrKey.isValidMed25519PublicKey(muxedAddress)) {
     throw new Error('resolveOrValidatePublicKey.invalid');
   }
+  const raw = StrKey.decodeMed25519PublicKey(muxedAddress);
+  const ed25519 = raw.subarray(0, -8);
+  return StrKey.encodeEd25519PublicKey(ed25519);
+}
 
-  return input;
+export async function resolveOrValidateAccount(input) {
+  if (!input) throw new Error('resolveOrValidatePublicKey.empty');
+  let value = input;
+  if (value.includes('*')) {
+    value = await resolveFederationAddress(value);
+  }
+  if (StrKey.isValidEd25519PublicKey(value)) {
+    return { accountId: value, muxedAddress: null, address: value };
+  }
+  if (StrKey.isValidMed25519PublicKey(value)) {
+    const base = extractBasePublicKeyFromMuxed(value);
+    return { accountId: base, muxedAddress: value, address: value };
+  }
+  throw new Error('resolveOrValidatePublicKey.invalid');
 }
 
 /**
@@ -346,13 +367,15 @@ export async function resolveOrValidatePublicKey(input) {
  * @throws {Error} - Bei ungültigem Key
  */
 export async function findDuplicateTrustlines(sourceKey, destinationKey) {
-  if (!StrKey.isValidEd25519PublicKey(sourceKey) || !StrKey.isValidEd25519PublicKey(destinationKey)) {
+  const sourceResolved = await resolveOrValidateAccount(sourceKey);
+  const destResolved = await resolveOrValidateAccount(destinationKey);
+  if (!sourceResolved?.accountId || !destResolved?.accountId) {
     throw new Error('findDuplicateTrustlines.invalidKey');
   }
 
   const [sourceTrustlines, destTrustlines] = await Promise.all([
-    loadTrustlines(sourceKey),
-    loadTrustlines(destinationKey)
+    loadTrustlines(sourceResolved.accountId),
+    loadTrustlines(destResolved.accountId)
   ]);
 
   return sourceTrustlines.filter(source =>
