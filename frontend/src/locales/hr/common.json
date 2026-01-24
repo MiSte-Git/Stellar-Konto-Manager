@@ -33,7 +33,7 @@
       "columns": {
         "amount": "Iznos",
         "asset": "Imovina",
-        "counterparty": "Kontro račun",
+        "counterparty": "Račun primatelja",
         "date": "Datum",
         "direction": "Upute",
         "memo": "Podsjetnik",
@@ -45,7 +45,7 @@
       "filter": {
         "memo": "Memorijski filter",
         "memoPlaceholder": "Pretraživanje bilješke...",
-        "counterparty": "Filter suprotne strane",
+        "counterparty": "Račun primatelja",
         "counterpartyPlaceholder": "Filtriranje prema adresi primatelja/pošiljatelja…"
       },
       "from": "Od",
