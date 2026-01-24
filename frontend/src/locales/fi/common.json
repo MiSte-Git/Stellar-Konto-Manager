@@ -33,7 +33,7 @@
       "columns": {
         "amount": "Määrä",
         "asset": "Omaisuus",
-        "counterparty": "Vastatili",
+        "counterparty": "Vastaanottajan tili",
         "date": "Päivämäärä",
         "direction": "Suunta",
         "memo": "Muistio",
@@ -45,7 +45,7 @@
       "filter": {
         "memo": "Muistiosuodatin",
         "memoPlaceholder": "Etsitään muistikirjaa...",
-        "counterparty": "Vastapuolisuodatin",
+        "counterparty": "Vastaanottajan tili",
         "counterpartyPlaceholder": "Suodata vastaanottajan/lähettäjän osoitteen mukaan…"
       },
       "from": "Alkaen",
