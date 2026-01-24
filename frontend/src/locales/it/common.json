@@ -33,7 +33,7 @@
       "columns": {
         "amount": "Quantità",
         "asset": "Bene patrimoniale",
-        "counterparty": "Conto di compensazione",
+        "counterparty": "Conto destinatario",
         "date": "Data",
         "direction": "Direzione",
         "memo": "Promemoria",
@@ -45,7 +45,7 @@
       "filter": {
         "memo": "Filtro memo",
         "memoPlaceholder": "Ricerca del promemoria...",
-        "counterparty": "Filtro controparte",
+        "counterparty": "Conto destinatario",
         "counterpartyPlaceholder": "Filtrare per indirizzo destinatario/mittente…"
       },
       "from": "Da",

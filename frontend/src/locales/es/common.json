@@ -33,7 +33,7 @@
       "columns": {
         "amount": "Monto",
         "asset": "Activo",
-        "counterparty": "Cuenta contraria",
+        "counterparty": "Cuenta destinataria",
         "date": "Fecha",
         "direction": "Dirección",
         "memo": "Memorando",
@@ -45,7 +45,7 @@
       "filter": {
         "memo": "Filtro de memorandos",
         "memoPlaceholder": "Buscando el memorando...",
-        "counterparty": "Filtro de contraparte",
+        "counterparty": "Cuenta destinataria",
         "counterpartyPlaceholder": "Filtrar por dirección del receptor/remitente…"
       },
       "from": "De",
