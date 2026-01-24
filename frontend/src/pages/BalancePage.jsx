@@ -82,8 +82,11 @@ const muxedId = useMemo(() => {
   const nf = useMemo(() => {
     const digits = decimalsMode === 'auto' ? undefined : Number(decimalsMode);
     const opts = digits === undefined ? {} : { minimumFractionDigits: digits, maximumFractionDigits: digits };
+    const browserLocale = typeof navigator !== 'undefined'
+      ? (navigator.languages?.[0] || navigator.language)
+      : undefined;
     try {
-      return new Intl.NumberFormat(i18n.language || undefined, opts);
+      return new Intl.NumberFormat(browserLocale || i18n.language || undefined, opts);
     } catch {
       return new Intl.NumberFormat(undefined, opts);
     }
@@ -266,11 +269,12 @@ const muxedId = useMemo(() => {
       {publicKey && (
         <>
           <div className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
-            <div className="flex items-center justify-between mb-2">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center mb-2">
               <h3 className="font-semibold">{t('common:balance.current')}</h3>
-              <div className="text-sm text-gray-700 dark:text-gray-300">
+              <div className="text-sm text-gray-700 dark:text-gray-300 text-center">
                 XLM: {fmt((balances.find(b=>b.asset_type==='native')||{}).balance || '0')}
               </div>
+              <div aria-hidden="true" />
             </div>
             {/* Desktop: Tabelle mit horizontal scroll */}
             <div className="hidden sm:block overflow-x-auto">
@@ -353,73 +357,87 @@ const muxedId = useMemo(() => {
           </div>
 
           <div id="payments" className="bg-white dark:bg-gray-800 rounded border p-4 mb-4">
-            <h3 className="font-semibold mb-2">{t('common:balance.payments.title')}</h3>
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <label className="text-sm">{t('common:balance.payments.limit')}</label>
-                  <select className="border rounded px-2 py-1" value={paymentsLimit} onChange={(e) => setPaymentsLimit(e.target.value)}>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="200">200</option>
-                    <option value="all">{t('common:balance.payments.all')}</option>
-                  </select>
-                </div>
-                <div className="flex items-center gap-2">
-                  <label className="text-sm">{t('common:balance.payments.from')}</label>
-                  <input type="datetime-local" className="border rounded px-2 py-1" value={fromTs} onChange={(e)=>setFromTs(e.target.value)} />
-                </div>
-                <div className="flex items-center gap-2">
-                  <label className="text-sm">{t('common:balance.payments.to')}</label>
-                  <input type="datetime-local" className="border rounded px-2 py-1" value={toTs} onChange={(e)=>setToTs(e.target.value)} />
-                </div>
-              </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <label className="text-sm">{t('common:balance.payments.filter.memo')}</label>
-                  <div className="flex items-center gap-1">
-                    <input type="text" className="border rounded px-2 py-1" value={paymentsMemoQuery} placeholder={t('common:balance.payments.filter.memoPlaceholder')} onChange={(e)=>setPaymentsMemoQuery(e.target.value)} />
-                    {paymentsMemoQuery ? (
-                      <button
-                        type="button"
-                        className="px-2 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-                        onClick={clearMemoFilter}
-                      >
-                        {t('common:balance.payments.filter.clear', 'Löschen')}
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <label className="text-sm">{t('common:balance.payments.filter.counterparty')}</label>
-                  <div className="flex items-center gap-1 flex-1">
-                    <input
-                      type="text"
-                      className="border rounded px-2 py-1 w-full"
-                      value={paymentsCounterpartyQuery}
-                      placeholder={t('common:balance.payments.filter.counterpartyPlaceholder')}
-                      onChange={(e) => setPaymentsCounterpartyQuery(e.target.value)}
-                    />
-                    {paymentsCounterpartyQuery ? (
-                      <button
-                        type="button"
-                        className="px-2 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-                        onClick={clearCounterpartyFilter}
-                      >
-                        {t('common:balance.payments.filter.clear', 'Löschen')}
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
+              <h3 className="font-semibold">{t('common:balance.payments.title')}</h3>
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  className="ml-auto px-3 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="px-3 py-1 text-xs border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
                   onClick={clearAllPaymentFilters}
                 >
                   {t('common:balance.payments.filter.resetAll', 'Alle Filter löschen')}
                 </button>
+                <label className="text-sm">{t('common:balance.payments.limit')}</label>
+                <select className="border rounded px-2 py-1" value={paymentsLimit} onChange={(e) => setPaymentsLimit(e.target.value)}>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="200">200</option>
+                  <option value="all">{t('common:balance.payments.all')}</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="border rounded p-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm w-12 text-right">{t('common:balance.payments.from')}</label>
+                      <input type="datetime-local" className="border rounded px-2 py-1 w-44" value={fromTs} onChange={(e)=>setFromTs(e.target.value)} />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm w-12 text-right">{t('common:balance.payments.to')}</label>
+                      <input type="datetime-local" className="border rounded px-2 py-1 w-44" value={toTs} onChange={(e)=>setToTs(e.target.value)} />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-3 sm:flex-1">
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm w-24 text-right">{t('common:balance.payments.filter.memo')}</label>
+                      <div className="relative flex-1">
+                        <input
+                          type="text"
+                          className="border rounded px-2 py-1 pr-7 w-full"
+                          value={paymentsMemoQuery}
+                          placeholder={t('common:balance.payments.filter.memoPlaceholder')}
+                          onChange={(e)=>setPaymentsMemoQuery(e.target.value)}
+                        />
+                        {paymentsMemoQuery ? (
+                          <button
+                            type="button"
+                            className="absolute right-1 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full text-sm border bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 flex items-center justify-center leading-none"
+                            onClick={clearMemoFilter}
+                            aria-label={t('common:balance.payments.filter.clear', 'Löschen')}
+                          >
+                            ×
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm w-24 text-right">{t('common:balance.payments.filter.counterparty')}</label>
+                      <div className="relative flex-1">
+                        <input
+                          type="text"
+                          className="border rounded px-2 py-1 pr-7 w-full"
+                          value={paymentsCounterpartyQuery}
+                          placeholder={t('common:balance.payments.filter.counterpartyPlaceholder')}
+                          onChange={(e) => setPaymentsCounterpartyQuery(e.target.value)}
+                        />
+                        {paymentsCounterpartyQuery ? (
+                          <button
+                            type="button"
+                            className="absolute right-1 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full text-sm border bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 flex items-center justify-center leading-none"
+                            onClick={clearCounterpartyFilter}
+                            aria-label={t('common:balance.payments.filter.clear', 'Löschen')}
+                          >
+                            ×
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="overflow-x-auto"><table className="min-w-full text-sm">

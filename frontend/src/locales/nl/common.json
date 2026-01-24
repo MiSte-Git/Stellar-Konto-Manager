@@ -33,7 +33,7 @@
       "columns": {
         "amount": "Hoeveelheid",
         "asset": "Activa",
-        "counterparty": "Tegenrekening",
+        "counterparty": "Ontvangersrekening",
         "date": "Datum",
         "direction": "Richting",
         "memo": "Memo",
@@ -45,7 +45,7 @@
       "filter": {
         "memo": "Memo filter",
         "memoPlaceholder": "Zoeken naar memo...",
-        "counterparty": "Tegenpartijfilter",
+        "counterparty": "Ontvangersrekening",
         "counterpartyPlaceholder": "Nach Empfänger/Absender-Adresse filtern…"
       },
       "from": "Vanaf",

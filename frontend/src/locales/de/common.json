@@ -33,7 +33,7 @@
       "columns": {
         "amount": "Betrag",
         "asset": "Asset",
-        "counterparty": "Gegenkonto",
+        "counterparty": "Empfängerkonto",
         "date": "Datum",
         "direction": "Richtung",
         "memo": "Memo",
@@ -45,7 +45,7 @@
       "filter": {
         "memo": "Memo-Filter",
         "memoPlaceholder": "Memo suchen...",
-        "counterparty": "Gegenpartei-Filter",
+        "counterparty": "Empfängerkonto",
         "counterpartyPlaceholder": "Nach Empfänger/Absender-Adresse filtern…"
       },
       "from": "Von",
