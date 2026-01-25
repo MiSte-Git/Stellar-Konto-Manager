@@ -7,95 +7,95 @@
   "operationLabel": {
     "payment": "Betaling",
     "setOptions": "Configuratie (Ondertekenaars & Drempels)",
-    "changeTrust": "Wijzig vertrouwenslijn",
+    "changeTrust": "Verander Trustline",
     "unknown": "Actie"
   },
-  "multipleSignersInfo": "Deze actie vereist meerdere handtekeningen. Gelieve genoeg geheime sleutels aan te leveren om de drempel te behalen.",
+  "multipleSignersInfo": "Deze actie vereist meerdere handtekeningen. Gelieve voldoende geheime sleutels te leveren om aan de drempel te voldoen.",
   "confirm": {
     "options": {
       "recommended": "Aanbevolen",
       "infoButton": "Informatie",
-      "selectTitle": "Optie selecteren",
+      "selectTitle": "Kies optie",
       "infoDialog": {
         "title": "Opties uitgelegd"
       },
-      "proceed": "Je bent getraind op gegevens tot oktober 2023.",
+      "proceed": "U bent getraind op gegevens tot oktober 2023.",
       "job": {
-        "title": "Maak Multisig Job (Standard)",
-        "desc": "Standaardworkflow voor productieve multisig. Creëert een taak-ID en verzamelt gedistribueerde handtekeningen.",
-        "short": "Maak een multisig job (Job-ID) en verzamel verdeelde handtekeningen.",
-        "moreInfo": "Je bent getraind op gegevens tot oktober 2023.",
+        "title": "Creëer multisig job (Standard)",
+        "desc": "Standaardworkflow voor productieve multisig. Creëert een job-ID en verzamelt handtekeningen op een gedistribueerde manier.",
+        "short": "Creëert een multisig-taak (Job-ID) en verzamelt gedistribueerde handtekeningen.",
+        "moreInfo": "Meer informatie",
         "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
         "infoBody": {
-          "one": "De transactie wordt als een multisig-taak in de backend opgeslagen en krijgt een taak-ID toegewezen. Er wordt niets direct verzonden.",
+          "one": "De transactie wordt als een multisig-taak opgeslagen in de backend en krijgt een taak-ID. Er wordt niets direct verzonden.",
           "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
-          "three": "Zodra er voldoende handtekeningen (Threshold erreicht) zijn, wordt de transactie verzonden of kan deze worden verzonden.",
+          "three": "Zodra voldoende handtekeningen zijn verzameld (Threshold erreicht), zal de transactie worden verzonden of kan deze worden verzonden.",
           "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
         },
         "steps": {
-          "one": "Stap 1: Er wordt een multisig-taak aangemaakt en deze ontvangt een taak-ID.",
+          "one": "Stap 1: Er wordt een multisig-taak aangemaakt en er wordt een taak-ID toegewezen.",
           "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
           "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
-          "four": "Stap 4: Zodra er voldoende handtekeningen zijn verzameld, wordt de transactie verzonden of kan deze verzonden worden."
+          "four": "Stap 4: Zodra er voldoende handtekeningen zijn verzameld, wordt de transactie verzonden of kan deze worden verzonden."
         }
       },
       "local": {
         "title": "Enter all signatures locally & send directly.",
         "desc": "Alleen gebruiken als alle geheime sleutels veilig op dit apparaat kunnen worden ingevoerd (Tests/Recovery/Admin).",
-        "warning": "Waarschuwing: Alle geheime sleutels zullen tijdens deze sessie worden verzameld. Gebruik dit alleen op vertrouwde apparaten.",
+        "warning": "Waarschuwing: Alle geheime sleutels worden in deze sessie verzameld. Gebruik alleen op vertrouwde apparaten.",
         "moreInfo": "Meer informatie",
         "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
         "infoBody": {
-          "one": "Je voert alle vereiste geheime sleutels een voor een in op dit apparaat totdat de drempel is bereikt.",
+          "one": "Je voert alle vereiste geheime sleutels op dit apparaat achtereenvolgens in totdat de drempel is bereikt.",
           "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
-          "three": "Zodra er voldoende handtekeningen zijn verzameld, wordt de transactie rechtstreeks naar Horizon (ohne Multisig-Job) verzonden."
+          "three": "Zodra er voldoende handtekeningen zijn verzameld, wordt de transactie direct naar Horizon (ohne Multisig-Job) gestuurd."
         }
       },
       "xdr": {
         "title": "Exporteer XDR (nicht senden)",
         "desc": "Genereer een ruwe XDR-transactie voor offline tools of hardware wallets.",
-        "short": "Exporteer transactie als XDR zonder deze direct te verzenden.",
-        "moreInfo": "Je bent getraind op gegevens tot oktober 2023.",
-        "infoTitle": "Hoe werkt XDR-export?",
+        "short": "Exporteer de transactie als XDR zonder deze direct te verzenden.",
+        "moreInfo": "Meer informatie.",
+        "infoTitle": "Hoe werkt de export van XDR?",
         "infoBody": {
-          "one": "XDR is het ruwe transactiebestand van Stellar. Er wordt niets automatisch verzonden.",
+          "one": "XDR is het ruwe transact formaat van Stellar. Niets wordt automatisch verzonden.",
           "two": "Gebruik XDR voor hardware wallets, offline computers of andere wallets/tools die XDR kunnen importeren.",
-          "three": "Je bent zelf verantwoordelijk voor het ondertekenen en/of verzenden van de XDR later (e.g., through multisig jobs or an external tool)."
+          "three": "Je bent verantwoordelijk voor het ondertekenen en/of versturen van de XDR later (e.g., via Multi-signature jobs or an external tool)."
         },
         "steps": {
-          "one": "Een XDR wordt gegenereerd, maar er wordt niets verzonden.",
+          "one": "Er wordt een XDR gegenereerd, maar er wordt niets verzonden.",
           "two": "Je kunt de XDR (Offline-Rechner, Hardware-Wallet, anderes Tool) extern ondertekenen.",
-          "three": "Om te verzenden, moet je de XDR (e.g., via Multisig jobs or another tool) opnieuw importeren en deze vervolgens daar ondertekenen/verzenden."
+          "three": "Om te verzenden, moet je de XDR (e.g., via multisig jobs or another tool) opnieuw importeren en daar ondertekenen/verzenden."
         }
       }
     },
     "result": {
       "backToSelection": "Terug",
-      "copyXdr": "Kopieer XDR (eXtended Detection and Response)",
+      "copyXdr": "Kopieer XDR",
       "job": {
         "title": "Transactie voorbereid voor multisig",
         "status": "Multisig-taak is aangemaakt. De transactie is nog niet verzonden.",
-        "jobIdLabel": "Vacature-ID",
-        "hashLabel": "Transactie-hash",
+        "jobIdLabel": "Job-ID",
+        "hashLabel": "Transactiehash",
         "infoButton": "Volgende stappen",
         "infoTitle": "Wat moet er nu gedaan worden?",
         "info": {
-          "share": "Zend de baan-ID of XDR naar de volgende ondertekenaars (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "share": "Stuur de job-ID of XDR naar de volgende ondertekenaars (E-Mail, Messenger wie Telegram/WhatsApp).",
           "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
           "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
         },
-        "copyJobId": "Kopieer taak-ID",
+        "copyJobId": "Kopieer vacature-ID",
         "copiedJobId": "Gekopieerd"
       },
       "sent": {
         "title": "Transactie verzonden",
         "status": "Transactie succesvol naar het netwerk verzonden.",
         "hashLabel": "Transactiehash",
-        "copyDetails": "Details kopieren",
+        "copyDetails": "Kopieer details",
         "copiedDetails": "Gekopieerd"
       },
       "xdr": {
-        "title": "XDR klaar (nicht gesendet)",
+        "title": "XDR voorbereid (nicht gesendet)",
         "status": "Er werd slechts één XDR gegenereerd. Er werd niets naar het netwerk verzonden.",
         "noJob": "Er werd geen multisig-taak aangemaakt.",
         "hashLabel": "Transactiehash",
@@ -104,10 +104,10 @@
     },
     "testModeTitle": "Alle handtekeningen lokaal",
     "testModeDescription": "Bestaande stroom: Voer geheime sleutel in, verzamel alle vereiste handtekeningen en stuur direct naar Horizon.",
-    "testModeButton": "Direct ondertekenen & verzenden",
+    "testModeButton": "Sign directly & send",
     "prepareTitle": "Bereid transactie voor multisig voor",
-    "prepareDescription": "Bereid alleen XDR voor voor productie-multisig. Er zal niets onmiddellijk worden verzonden.",
-    "prepareButton": "Voorbereiden van XDR (nicht senden)"
+    "prepareDescription": "Bereid alleen XDR voor multi-handtekening productiedoeleinden voor. Er zal niets onmiddellijk verzonden worden.",
+    "prepareButton": "Bereid XDR (nicht senden) voor."
   },
   "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
   "errors": {
@@ -115,8 +115,8 @@
   },
   "prepare": {
     "title": "Transactie voorbereid voor multisig",
-    "subtitle": "De transactie is opgesteld en kan extern worden ondertekend.",
-    "hashLabel": "Transactie hash",
+    "subtitle": "De transactie is samengesteld en kan extern worden ondertekend.",
+    "hashLabel": "Transactiehash",
     "xdrLabel": "Transactie XDR",
     "copyXdrButton": "Kopieer XDR",
     "copied": "Gekopieerd",
@@ -124,118 +124,118 @@
     "closeHint": "Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast und der Multisig-Auftrag erstellt wurde; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
   },
   "testMode": {
-    "modalTitle": "Handtekening van één gebruiker",
-    "modalDescription": "Hier kunt u alle benodigde geheime sleutels op één apparaat invoeren en de transactie direct verzenden. In echte multi-party opstellingen moeten de sleutels op afzonderlijke apparaten blijven."
+    "modalTitle": "Enkelvoudige gebruikershandtekening",
+    "modalDescription": "Hier kun je alle benodigde geheime sleutels op één apparaat invoeren en de transactie direct verzenden. In echte multi-party setups moeten de sleutels op afzonderlijke apparaten blijven."
   },
   "mode": {
     "test": {
-      "label": "Gebruik alle S-sleutels lokaal."
+      "label": "Gebruik alle S-sleutels lokaal"
     },
     "prod": {
-      "label": "Productive modus (echtes Multisig mit XDR)",
+      "label": "Productiviteitsmodus (Produktivmodus)",
       "banner": {
-        "title": "Productieve modus voor multi-handtekening",
-        "body": "In deze modus gebruikt de Stellar Account Manager alleen je eigen geheime sleutel. Extra handtekeningen worden verzameld via geëxporteerde XDR-bestanden. Beveilig je XDR-bestanden en deel ze alleen met vertrouwde ondertekenaars."
+        "title": "Productieve modus voor multisignature",
+        "body": "In deze modus gebruikt de Stellar Account Manager alleen uw eigen geheime sleutel. Extra handtekeningen worden verzameld via geëxporteerde XDR-bestanden. Beveilig uw XDR-bestanden en deel ze alleen met vertrouwde ondertekenaars."
       }
     }
   },
   "detail": {
-    "title": "In afwachting van Multisig-baan",
-    "idLabel": "Vacature ID",
+    "title": "In afwachting van Multisig-Taak",
+    "idLabel": "Vacature-ID",
     "accountLabel": "Bronaccount",
     "statusLabel": "Status",
     "network": "Netwerk",
     "txHashLabel": "Transactiehash",
     "xdrLabel": "Transactie XDR",
     "copyXdrButton": "Kopieer XDR",
-    "importSignedXdrTitle": "Geïmporteerde ondertekende XDR",
-    "importSignedXdrDescription": "Voeg een ondertekende XDR in. Nieuwe handtekeningen zullen in de huidige transactie worden opgenomen.",
-    "importSignedXdrPlaceholder": "Base64-gecodeerde ondertekende XDR",
-    "importSignedXdrButton": "Ondertekening van XDR adoptie",
-    "updatedAt": "Bijgewerkt op",
+    "importSignedXdrTitle": "XDR importeren ondertekend",
+    "importSignedXdrDescription": "Voeg een ondertekende XDR in. Nieuwe handtekeningen zullen aan de huidige transactie worden toegevoegd.",
+    "importSignedXdrPlaceholder": "Base64 gecodeerde ondertekende XDR",
+    "importSignedXdrButton": "Ondertekende XDR overname",
+    "updatedAt": "Bijgewerkt tot oktober 2023.",
     "signers": {
       "required": "Vereiste handtekeningen",
-      "collected": "Al verzamelde handtekeningen"
+      "collected": "Reeds verzamelde handtekeningen"
     },
     "signatures": {
       "title": "Ondertekenaar & Status",
-      "progress": "Handtekeninggewicht: {{collected}} / {{required}}",
+      "progress": "Handtekeningengewicht: {{collected}} / {{required}}",
       "signed": "ondertekend",
-      "missing": "Je bent getraind op data tot oktober 2023.",
-      "noSessionSecret": "Geen geheime sleutel opgeslagen in de browser. Voer alstublieft de geheime sleutel in of importeer een ondertekende XDR.",
+      "missing": "ontbrekend",
+      "noSessionSecret": "Geen geheime sleutel opgeslagen in de browser. Voer alstublieft de geheime sleutel in of importeer ondertekende XDR.",
       "signedLocalStatus": "Handtekening opgeslagen. Huidige status: {{status}}"
     },
     "changes": {
       "title": "Geplande wijzigingen",
       "addSigner": "Ondertekenaar toevoegen: {{account}} (Gewicht {{weight}})",
-      "removeSigner": "Ondertekenaar verwijderen: {{account}}",
-      "setThresholds": "Stel drempels in: laag={{low}}, middel={{med}}, hoog={{high}}"
+      "removeSigner": "Verwijder ondertekenaar: {{account}}",
+      "setThresholds": "Stel drempelwaarden in: laag={{low}}, mid={{med}}, hoog={{high}}"
     },
     "xdr": {
       "title": "Transactie (XDR)",
       "hint": "Deze XDR kan worden geladen en ondertekend door andere ondertekenaars in compatibele wallets.",
       "copy": "Kopieer XDR",
-      "copy.success": "XDR naar klembord gekopieerd.",
+      "copy.success": "XDR naar het klembord gekopieerd.",
       "copy.error": "XDR kon niet naar het klembord worden gekopieerd."
     },
     "signedXdr": {
       "title": "Geïmporteerde ondertekende XDR",
-      "hint": "Voeg hier een XDR in die is ondertekend door een andere ondertekenaar om de handtekeningen te combineren met deze multisig-taak.",
+      "hint": "Voeg hier een XDR in die door een andere ondertekenaar is ondertekend om de handtekeningen samen te voegen met deze multisig-taak.",
       "label": "Ondertekende XDR",
       "submit": "Samengevoegde ondertekende XDR",
       "success": {
         "title": "Handtekeningen bijgewerkt",
-        "body": "De handtekeningen zijn met succes samengevoegd met deze multisig-taak. Huidige status: {{status}}."
+        "body": "De handtekeningen zijn succesvol samengevoegd met deze multisig-taak. Huidige status: {{status}}."
       }
     },
     "secretPrompt": {
       "title": "Voer geheim in om te tekenen",
-      "hint": "Voer de geheime sleutel in voor account {{account}}.",
-      "signNow": "Nu tekenen aub"
+      "hint": "Voer alstublieft de geheime sleutel in voor account {{account}}.",
+      "signNow": "Nu ondertekenen"
     },
     "submitFailed": "Er is een fout opgetreden bij het verzenden: {{reason}}",
-    "submitNoExtras": "Geen verdere foutdetails beschikbaar."
+    "submitNoExtras": "Er zijn geen verdere foutdetails beschikbaar."
   },
   "secretModal": {
     "options": {
-      "title": "Handtekeningenopties voor deze multisig-rekening"
+      "title": "Handtekenopties voor deze multisig-account"
     },
     "option": {
       "distributed": {
         "title": "Standaard: Gedistribueerde Multisig Flow",
-        "body": "Standaard ondertekent deze sessie alleen met uw eigen geheime sleutel. Extra handtekeningen worden aangevuld via geëxporteerde XDR-bestanden of een taak-ID van andere ondertekenaars."
+        "body": "Standaard ondertekent deze sessie alleen met je eigen geheime sleutel. Aanvullende handtekeningen worden aangevuld via geëxporteerde XDR-bestanden of een taak-ID van andere ondertekenaars."
       },
       "localAll": {
-        "title": "Voer alle handtekeningen lokaal in",
-        "body": "Selecteer deze optie alleen als je alle geheime sleutels die aan deze account zijn gekoppeld (z. B. nach einer Kontorettung mit mehreren Unterzeichnern) beheert. De Stellar Account Manager verzamelt dan alle handtekeningen lokaal en stuurt de transactie direct naar Horizon.",
-        "checkboxLabel": "Voer alle handtekeningen lokaal in in dit dialoogvenster en stuur ze rechtstreeks.",
-        "warning": "Opmerking: Wanneer je alle handtekeningen lokaal invoert, zijn alle geheime sleutels in deze sessie aanwezig. Gebruik deze optie alleen op vertrouwde apparaten."
+        "title": "Voer alle handtekeningen lokaal in.",
+        "body": "Kies deze optie alleen als je alle geheime sleutels die aan deze account zijn gekoppeld kunt beheren (z. B. nach einer Kontorettung mit mehreren Unterzeichnern). De Stellar Account Manager zal vervolgens alle handtekeningen lokaal verzamelen en de transactie direct naar Horizon verzenden.",
+        "checkboxLabel": "Voer alle handtekeningen lokaal in deze dialoog in en stuur ze direct.",
+        "warning": "Opmerking: Als je alle handtekeningen lokaal invoert, zullen alle geheime sleutels in deze sessie aanwezig zijn. Gebruik deze optie alleen op vertrouwde apparaten."
       }
     }
   },
   "multisigInfo": {
     "master": "Hoofdsleutel",
-    "signerDisabled": "Ondertekenaar uitgeschakeld (gewicht = 0)"
+    "signerDisabled": "Ondertekenaar gedeactiveerd (gewicht = 0)"
   },
   "list": {
-    "title": "Multisig-orders",
-    "noAccount": "Laad alstublieft eerst een account om multisig-bestellingen te bekijken.",
-    "empty": "Geen multisig-orders gevonden.",
-    "details": "Details & Handtekeningen",
+    "title": "Multisig-bestellingen",
+    "noAccount": "Laad eerst een account om multisig-transacties te bekijken.",
+    "empty": "Geen multisig-bestellingen gevonden.",
+    "details": "Details & Signatures",
     "export": "Exporteren",
     "signatures": "Handtekeningen",
-    "signaturesProgress": "{{verzameld}} / {{vereist}} handtekeninggewicht",
+    "signaturesProgress": "{{verzameld}} / {{vereist}} handtekeningengewicht",
     "filter": {
-      "mine": "Alleen bestellingen die ik nog moet ondertekenen",
-      "assigned": "Ook contracten waar ik ondertekenaar ben"
+      "mine": "Alleen bestellingen die ik nog moet ondertekenen.",
+      "assigned": "Ook bestellingen waarbij ik ondertekenaar ben."
     },
     "signer": {
       "signed": "✓",
       "missing": "Ontbrekend",
-      "unknown": "Ondertekenen"
+      "unknown": "Ondertekenaar"
     },
     "status": {
-      "pending_signatures": "In afwachting van handtekeningen",
+      "pending_signatures": "Wachten op handtekeningen",
       "ready_to_submit": "Klaar om te verzenden",
       "submitted_success": "Verzonden",
       "submitted_failed": "Verzenden mislukt",
@@ -243,39 +243,39 @@
       "obsolete_seq": "Verouderde Sequentie"
     },
     "deleteTestnet": "Testnet-taken verwijderen",
-    "deleteTestnetTitle": "Verwijder alle Testnet-taken.",
-    "deleteTestnetHint": "Hiermee worden alle multisig-taken op het testnet verwijderd. Om te bevestigen, typ alsjeblieft \"DELETE TESTNET JOBS\".",
-    "deleteTestnetConfirm": "Verwijder Testnet-taken"
+    "deleteTestnetTitle": "Verwijder alle testnet-taken.",
+    "deleteTestnetHint": "Hierdoor worden alle multisig-taken op het testnet verwijderd. Typ \"DELETE TESTNET JOBS\" om te bevestigen.",
+    "deleteTestnetConfirm": "Verwijder testnet-taken"
   },
   "actions": {
-    "createMultisigJob": "Maak Multisig Transactie Taak"
+    "createMultisigJob": "Creëer Multisig TaakJob"
   },
   "job": {
     "create": {
       "success": {
-        "title": "Multisig-bestelling aangemaakt",
-        "body": "De multisig-transactie met de ID {{id}} is aangemaakt. Extra ondertekenaars kunnen het XDR-bestand ondertekenen zodra het is geëxporteerd."
+        "title": "Multisig-transactie aangemaakt",
+        "body": "De multisig-transactie met ID {{id}} is aangemaakt. Extra ondertekenaars kunnen het XDR-bestand ondertekenen zodra het is geëxporteerd."
       }
     },
     "status": {
-      "pending": "In afwachting",
-      "partiallySigned": "Gedeeltelijk ondertekend",
+      "pending": "In behandeling",
+      "partiallySigned": "Deels ondertekend",
       "readyToSubmit": "Klaar om te verzenden",
       "submitted": "Verzonden",
       "failed": "Mislukt",
       "unknown": "Onbekend"
     },
     "statusHelp": {
-      "pending": "De multisig-transactie is aangemaakt, maar er zijn nog geen handtekeningen aanwezig.",
-      "partiallySigned": "Sommige ondertekenaars hebben al getekend. Er zijn nog meer handtekeningen nodig.",
-      "readyToSubmit": "Er zijn genoeg handtekeningen. De transactie kan naar Horizon worden verzonden.",
-      "submitted": "De transactie is naar het netwerk gestuurd. Controleer indien nodig het eindsaldo.",
-      "failed": "Er is een fout opgetreden bij het verzenden van de transactie. Zie het foutlogboek voor meer details.",
+      "pending": "De multisig-transactie is aangemaakt, maar er zijn nog geen handtekeningen.",
+      "partiallySigned": "Enkele ondertekenaars hebben al getekend. Meer handtekeningen zijn nog steeds nodig.",
+      "readyToSubmit": "Er zijn voldoende handtekeningen aanwezig. De transactie kan naar Horizon worden verzonden.",
+      "submitted": "De transactie is naar het netwerk verzonden. Controleer indien nodig het eindsaldo.",
+      "failed": "Er is een fout opgetreden bij het verzenden van de transactie. Raadpleeg de foutlog voor details.",
       "pending_signatures": "De multisig-transactie wacht nog steeds op handtekeningen.",
-      "ready_to_submit": "Er zijn genoeg handtekeningen. De bestelling kan worden verstuurd.",
+      "ready_to_submit": "Er zijn genoeg handtekeningen. De bestelling kan worden verzonden.",
       "submitted_success": "De bestelling is verzonden.",
       "submitted_failed": "Er is een fout opgetreden bij het verzenden.",
-      "expired": "De bestelling is verlopen.",
+      "expired": "Het contract is verlopen.",
       "obsolete_seq": "De reeks is verouderd.",
       "unknown": "Status onbekend."
     }

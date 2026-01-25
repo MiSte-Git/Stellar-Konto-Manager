@@ -1,12 +1,12 @@
 {
   "label": "Clé publique ou adresse de fédération",
   "placeholder": "Entrez votre clé publique ou une adresse de fédération.",
-  "load": "Précharger le compte",
-  "deleteFromList": "Retirer de la liste",
+  "load": "Magasin",
+  "deleteFromList": "Supprimer de la liste",
   "source": "Source",
   "destination": {
     "input": "Objectif",
-    "error": "Clé publique invalide entrée.",
+    "error": "Clé publique invalidée entrée.",
     "label": "Clé publique cible",
     "placeholder": "Entrez la clé publique cible"
   },
@@ -16,5 +16,5 @@
   },
   "test": "Test",
   "historyLabel": "Histoire",
-  "historyPlaceholder": "Sélectionnez le dernier portefeuille utilisé."
+  "historyPlaceholder": "Sélectionner le dernier portefeuille utilisé"
 }

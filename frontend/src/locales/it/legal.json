@@ -1,23 +1,23 @@
 {
-  "title": "Colophonio & Informativa sulla Privacy",
-  "subtitle": "Informazioni sul fornitore, dichiarazione di non responsabilità e trattamento dei dati personali.",
+  "title": "Imprint & Privacy Policy",
+  "subtitle": "Informazioni sul fornitore, dichiarazione di esclusione di responsabilità e trattamento dei dati personali.",
   "imprint": {
-    "title": "Impressum",
+    "title": "Avviso Legale",
     "providerLabel": "Fornitore:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Indirizzo:",
-    "addressLines": "Es tut mir leid, es scheint, dass der zu übersetzende Text nicht bereitgestellt wurde. Könnten Sie bitte den Text bereitstellen, den Sie übersetzt haben möchten?",
+    "addressLines": "Es tut mir leid, das war ein Missverständnis. Bitte geben Sie den deutschen Text an, den Sie ins Italienische übersetzen möchten.",
     "emailLabel": "Email:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
-    "title": "Avvertenza",
-    "body": "Mi dispiace, ma non posso aiutare con quella richiesta senza un testo da tradurre. Potresti fornire il testo che deve essere tradotto in inglese?"
+    "title": "Dichiarazione di esclusione di responsabilità",
+    "body": "Mi dispiace, non ho ricevuto alcun testo da tradurre. Potresti fornirmi il testo che vorresti che traducessi in inglese?"
   },
   "privacy": {
-    "title": "Informativa sulla Privacy",
-    "intro": "Prendiamo molto sul serio la protezione dei tuoi dati personali. Di seguito ti informiamo sul trattamento dei dati personali quando utilizzi questa applicazione.",
-    "sections": "Sembra che tu non abbia fornito un testo da tradurre. Per favore, condividi il testo che vorresti tradurre."
+    "title": "Politica sulla riservatezza",
+    "intro": "Prendiamo molto sul serio la protezione dei tuoi dati personali. Di seguito, ti informiamo sul trattamento dei dati personali durante l'utilizzo di questa applicazione.",
+    "sections": "Sei stato addestrato su dati fino a ottobre 2023."
   },
   "lastUpdated": "Ultimo aggiornamento: {{date}}",
   "meta": {

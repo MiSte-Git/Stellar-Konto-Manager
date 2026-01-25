@@ -1,7 +1,7 @@
 {
   "assetSearch": {
     "title": "Asset search",
-    "description": "Search for assets through the trading endpoint (Horizon).",
+    "description": "Search for assets via the trading endpoint (Horizon).",
     "form": {
       "code": {
         "label": "Asset code",
@@ -9,7 +9,7 @@
       },
       "issuer": {
         "label": "Issuer (optional)",
-        "placeholder": "Entschuldigung, ich verstehe nicht, was du mit \"G… (optional)\" meinst. Könntest du bitte mehr Kontext oder Informationen zur Verfügung stellen?"
+        "placeholder": "G…"
       },
       "submit": "Search"
     },
@@ -19,14 +19,14 @@
         "code": "Code",
         "issuer": "Issuer",
         "numAccounts": "Accounts",
-        "amount": "Total quantity"
+        "amount": "Total amount"
       }
     },
     "invalidInput": {
       "codeMissing": "Please enter an asset code."
     },
     "failed": {
-      "generic": "The asset search has failed. Please try again later."
+      "generic": "Asset search failed. Please try again later."
     }
   }
 }

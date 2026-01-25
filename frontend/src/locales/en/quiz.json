@@ -9,11 +9,11 @@
       "hint": "Imagine a public notebook. Many pages (blocks) are linked.",
       "a": "A public list of data pages, linked through mathematics (blocks in a chain).",
       "b": "A video game with coins and levels.",
-      "c": "The secret database of a company.",
-      "d": "An app that only runs on your phone.",
-      "a.fb": "Correct. The chain makes old pages difficult to modify.",
-      "b.fb": "Not quite. It's a shared database, not a game.",
-      "c.fb": "No. Many can review it, it is not confidential.",
+      "c": "The company's secret database.",
+      "d": "An app that runs only on your phone.",
+      "a.fb": "Correct. The chain makes old pages difficult to alter.",
+      "b.fb": "Not quite. It is a shared database, not a game.",
+      "c.fb": "No. Many can examine it; it is not secret.",
       "d.fb": "No. It runs on many computers (Nodes), not just yours."
     },
     "q2": {
@@ -22,14 +22,14 @@
       "a": "Everyone can see them, but not your real name (nur Public Keys).",
       "b": "Only the sender can see them.",
       "c": "Only banks can see them.",
-      "a.fb": "Correct. The data is public, but it does not contain identities.",
+      "a.fb": "Correct. The data is public, but identities are not included.",
       "b.fb": "No. The ledger is public for transparency.",
       "c.fb": "No. Anyone can look up transactions."
     },
     "q3": {
       "question": "Warum sind Blöcke miteinander ‚verkettet‘?",
       "hint": "Old pages should be difficult to change.",
-      "a": "To make altering old data very difficult.",
+      "a": "So that changing old data becomes very difficult.",
       "b": "To make the app look cooler.",
       "c": "So that everything works offline forever.",
       "a.fb": "Yes. Each block secures the previous one through mathematics (Hashes).",
@@ -37,10 +37,10 @@
       "c.fb": "No. Nodes still need to synchronize."
     },
     "q4": {
-      "question": "Can you simply delete a mistake in a transaction?",
-      "hint": "Remember: only append, don't delete.",
-      "a": "No. You make a new, corrective transaction.",
-      "b": "Yes, you simply delete them from the chain.",
+      "question": "Is it possible to simply delete an error in a transaction?",
+      "hint": "Remember: append only, do not delete.",
+      "a": "No. One makes a new, correcting transaction.",
+      "b": "Yes, you just remove them from the chain.",
       "a.fb": "Correct. The ledger is append-only. We make corrections with new entries.",
       "b.fb": "No. Past entries are not deleted."
     }
@@ -49,10 +49,10 @@
     "title": "Keys, fees, and trustlines",
     "q1": {
       "question": "What is a public key?",
-      "hint": "Like your mailbox address.",
-      "a": "An address to receive. You may share it.",
+      "hint": "Like your mailing address.",
+      "a": "An address for receiving. You may share it.",
       "b": "A secret password to control your account.",
-      "a.fb": "Yes. You are allowed to share your public key.",
+      "a.fb": "Yes. You may share your public key.",
       "b.fb": "That describes the Secret Key, not the Public Key."
     },
     "q2": {
@@ -60,14 +60,14 @@
       "hint": "He is the key to your money.",
       "true": "True",
       "false": "Incorrect",
-      "true.fb": "Correct. Secret Key = Control. Never enter it on unfamiliar sites.",
-      "false.fb": "Incorrect. Keep it private. Use Testnet for learning only."
+      "true.fb": "Correct. Secret Key = Control. Never enter it on unknown sites.",
+      "false.fb": "Incorrect. Keep it private. Use the testnet only for learning."
     },
     "q3": {
       "question": "Why does Stellar charge tiny fees?",
       "hint": "Think about spam protection.",
       "a": "To stop spam and keep the network healthy.",
-      "b": "To make a company wealthy.",
+      "b": "So that a company becomes wealthy.",
       "c": "Because transactions are always slow.",
       "a.fb": "Correct. Small fees prevent spam and reward validators.",
       "b.fb": "No. The fees are minimal and serve security purposes.",
@@ -78,53 +78,53 @@
       "hint": "It's like a permission.",
       "a": "A permission to hold a token from an issuer.",
       "b": "A secret chat line between two accounts.",
-      "c": "A special fee discount for trading.",
+      "c": "A special fee discount on trading.",
       "a.fb": "Yes. You choose which issuers/tokens you trust.",
       "b.fb": "No. It is not a chat, but a holding permit.",
-      "c.fb": "No. Trustlines pertain to the holding of assets."
+      "c.fb": "No. Trustlines involve the holding of assets."
     }
   },
   "l7": {
-    "title": "Security, phishing, and trust.",
+    "title": "Security, Phishing, and Trust",
     "q1": {
       "question": "Eine Website will deinen Secret Key, um dein Guthaben zu ‚prüfen‘. Was tust du?",
       "hint": "Never share your secret key.",
-      "a": "Leave the page. Never enter the secret key.",
+      "a": "Leave the page. Never enter the Secret Key.",
       "b": "Enter, but only once.",
       "c": "Instead, share a screenshot of your key.",
-      "a.fb": "Correct. That is phishing. Only use trusted wallets.",
-      "b.fb": "No. Once is enough to lose control.",
-      "c.fb": "I'm sorry, I can't assist with that."
+      "a.fb": "Correct. This is phishing. Only use trusted wallets.",
+      "b.fb": "No. Just once is enough to lose control.",
+      "c.fb": "I'm sorry, I can't assist with that request."
     },
     "q2": {
       "question": "You see two tokens named USDX. How do you find the real one?",
-      "hint": "Names can be copied. Issuers and domains count.",
-      "a": "Check issuer account and verified domain/asset information.",
+      "hint": "Names can be copied. Issuers and domains matter.",
+      "a": "Check issuer account and verify domain/asset information.",
       "b": "Go with the one with the nicer logo.",
-      "c": "Coin toss. They are the same.",
-      "a.fb": "Yes. Asset code is not enough. Check issuer and domain.",
+      "c": "Coin toss. They are equal.",
+      "a.fb": "Yes. Asset code is not enough. Verify the issuer and domain.",
       "b.fb": "Logos can be forged. Verify the issuer/domain.",
       "c.fb": "No. They can be very different. Always check."
     },
     "q3": {
-      "question": "Was ist ‚Verifizierung/KYC‘ in einfachen Worten?",
+      "question": "In einfachen Worten ist ‚Verifizierung/KYC‘ (Know Your Customer) ein Prozess, bei dem Unternehmen bestätigen, wer ihre Kunden sind. Dies geschieht oft durch das Überprüfen von Ausweisdokumenten und anderen Informationen, um sicherzustellen, dass die Kunden wirklich die sind, die sie vorgeben zu sein.",
       "hint": "Some services need to know who you are.",
       "a": "A process in which a service verifies your identity.",
       "b": "A method to accelerate blockchain.",
-      "c": "Sharing his secret key with a bank.",
-      "a.fb": "Correct. That helps prevent fraud and complies with laws.",
+      "c": "Share his secret key with a bank.",
+      "a.fb": "Correct. This helps prevent fraud and complies with laws.",
       "b.fb": "No. It's about identity, not speed.",
-      "c.fb": "No. Never share your Secret Key. KYC doesn't need it."
+      "c.fb": "No. Never share your secret key. KYC does not need it."
     },
     "q4": {
       "question": "Was ist ein ‚Zero-Knowledge Proof‘ (ZK) in einfachen Worten?",
       "hint": "Prove that you know something without revealing the secret.",
-      "a": "Proof that something is true without revealing the secret.",
+      "a": "A proof that something is true without revealing the secret.",
       "b": "A tool that hides all transactions forever.",
       "c": "A faster way to send payments.",
-      "a.fb": "Sure. For example, I could mention that I have been attending high school for several years, which typically starts for students who are around 14 years old.",
+      "a.fb": "Yes. Example: Prove that you are over 13 without stating your birthdate.",
       "b.fb": "No. ZK proves facts but does not delete entries.",
-      "c.fb": "No. It's about data-sparse proofs."
+      "c.fb": "No, it's about data-efficient proofs."
     }
   },
   "ui": {
@@ -141,9 +141,9 @@
     "failed": "Failed",
     "explanation": "Why?",
     "correct": "Correct",
-    "incorrect": "Incorrect.",
+    "incorrect": "False",
     "of": "from",
-    "retry": "Try again",
+    "retry": "Try again.",
     "viewResults": "View result",
     "routeTitle": "Quiz for Lesson {{id}}",
     "backToLearn": "To the learning overview",
@@ -154,28 +154,28 @@
     "question": "Question",
     "cancel": "Cancel",
     "stickyNav": "Sticky navigation",
-    "on": "At",
+    "on": "If you provide the text you would like me to translate, I'd be happy to assist!",
     "off": "From",
     "timeRemaining": "Time remaining",
-    "beforeUnloadMessage": "You have not yet completed this quiz. If you leave the page, current answers may be lost.",
-    "openInNewTab": "Open in new tab",
-    "openInNewTab.default": "Open quiz by default in a new tab.",
+    "beforeUnloadMessage": "You have not completed this quiz yet. If you leave the page, current answers may be lost.",
+    "openInNewTab": "Open in a new tab",
+    "openInNewTab.default": "Open quiz by default in a new tab",
     "openInNewTab.once": "Open in new tab",
-    "startInNewTab": "Start quiz in a new tab.",
-    "warnOnActiveQuiz": "Display a warning during the ongoing quiz."
+    "startInNewTab": "Start quiz in a new tab",
+    "warnOnActiveQuiz": "Display warning during ongoing quiz"
   },
   "meta": {
     "estimatedMinutes": "Estimated minutes",
     "passThreshold": "Passing threshold",
-    "threeStarThreshold": "3★ Grenze"
+    "threeStarThreshold": "3★ Border"
   },
   "landing": {
     "title": "Quiz Overview",
-    "description": "Brief introduction to the lesson. Check your knowledge and collect stars.",
+    "description": "Brief introduction to the lesson. Test your knowledge and collect stars.",
     "questionsLabel": "Questions",
     "estimatedMinutesLabel": "Estimated minutes",
     "passThresholdLabel": "Passing threshold",
-    "threeStarThresholdLabel": "3★-Schwelle",
+    "threeStarThresholdLabel": "3★ threshold",
     "start": "Start quiz",
     "startPractice": "Start practice mode.",
     "settings": "Settings",
@@ -200,7 +200,7 @@
     "passInfo": "Passing threshold: {{pass}}% — Status: {{status}}",
     "passed": "Passed",
     "failed": "Failed",
-    "threeStarThreshold": "3★ Threshold: {{value}}%",
+    "threeStarThreshold": "3★ threshold: {{value}}%",
     "stars": "Stars: {{stars}}",
     "newAchievementsTitle": "Newly acquired badges",
     "noNewAchievements": "No new badges in this run.",
@@ -213,22 +213,22 @@
     }
   },
   "settings": {
-    "title": "Quiz settings",
+    "title": "Quiz Settings",
     "stickyNav": "Sticky navigation",
-    "stickyNav.desc": "Navigation bar remains at the bottom on mobile devices",
-    "hints": "Hints (Hints)",
-    "hints.desc": "Show study tips for the questions",
+    "stickyNav.desc": "Navigation bar remains at the bottom on mobile",
+    "hints": "Notes (Hints)",
+    "hints.desc": "Show learning hints for the questions.",
     "haptics": "Haptics/Vibration",
-    "haptics.desc": "Vibrate on selection and completion",
-    "shuffle": "Mix questions",
-    "shuffle.desc": "Randomize the order of the questions.",
+    "haptics.desc": "Vibrate on select and finish",
+    "shuffle": "Shuffle questions",
+    "shuffle.desc": "Randomly arrange the order of the questions.",
     "timeLimit": "Time limit",
     "timeLimit.desc": "Optional limit in minutes (0 = no limit)",
-    "timeLimit.input": "Set time limit",
+    "timeLimit.input": "Set a time limit",
     "minutes": "Minutes",
     "on": "At",
     "off": "From",
-    "warnOnActiveQuiz": "Display warning during active quiz",
+    "warnOnActiveQuiz": "Display a warning during an ongoing quiz.",
     "warnOnActiveQuiz.desc": "Warn about already answered questions before leaving the page."
   }
 }

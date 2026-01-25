@@ -1,42 +1,42 @@
 {
   "title": "Multisig & Sécurité",
-  "introText": "Testez vos connaissances sur les signatures, les seuils et le stockage sécurisé.",
+  "introText": "Mettez à l'épreuve vos connaissances sur les signatures, les seuils et le stockage sécurisé.",
   "q1": {
-    "question": "Pourquoi utilise-t-on le multisig ?",
-    "hint": "Pensez à la responsabilité partagée.",
+    "question": "Pourquoi utiliser le multisig ?",
+    "hint": "Réfléchissez à la responsabilité partagée.",
     "a1": "Pour réduire le risque de perte de clés individuelles.",
     "a1fb": "Correct : Plusieurs signatures réduisent le risque individuel.",
     "a2": "Pour économiser sur les frais.",
     "a2fb": "Incorrect : Le multisig augmente la sécurité, pas les frais.",
-    "a3": "Envoyer plus rapidement.",
-    "a3fb": "Faux : Le multisignature n'est pas conçu pour la rapidité."
+    "a3": "Pour envoyer plus rapidement.",
+    "a3fb": "Incorrect : Le multisig n'est pas conçu pour la rapidité."
   },
   "q2": {
-    "question": "Quand une transaction sur un compte à signatures multiples est-elle valide ?",
-    "hint": "Regarde les signatures pondérées.",
+    "question": "Quand une transaction sur un compte multisignature est-elle valide ?",
+    "hint": "Regardez les signatures pondérées.",
     "a1": "Si les signatures atteignent le seuil requis.",
     "a1fb": "Correct : La somme des poids doit atteindre le seuil.",
     "a2": "Dès qu'une signature est présente.",
-    "a2fb": "Incorrect : Une seule signature ne suffit pas si le seuil est plus élevé.",
-    "a3": "Seulement avec la clé maîtresse, indépendamment du seuil.",
-    "a3fb": "Incorrect : La clé maîtresse est également soumise à des seuils."
+    "a2fb": "Incorrect: Une seule signature n'est pas suffisante lorsque le seuil est plus élevé.",
+    "a3": "Seulement avec la clé principale, quel que soit le seuil.",
+    "a3fb": "Incorrect : La clé maîtresse est également soumise aux seuils."
   },
   "q3": {
-    "question": "Que se passe-t-il lorsque les seuils sont mal définis ?",
-    "hint": "Des valeurs qui sont trop élevées ou trop basses ont des conséquences.",
-    "a1": "Les transactions pourraient être bloquées ou libérées trop facilement.",
-    "a1fb": "Correction : Des seuils incorrects entraînent des verrouillages ou une sécurité insuffisante.",
-    "a2": "Pas du tout, les seuils ne sont que des informations.",
-    "a2fb": "Incorrect : Les seuils déterminent combien de signatures sont nécessaires.",
+    "question": "Que se passe-t-il si les seuils sont mal définis ?",
+    "hint": "Des valeurs trop élevées ou trop basses ont des conséquences.",
+    "a1": "Les transactions pourraient être bloquées ou autorisées trop facilement.",
+    "a1fb": "Corriger : Des seuils incorrects entraînent des verrouillages ou une sécurité insuffisante.",
+    "a2": "Pas du tout, les seuils sont juste des informations.",
+    "a2fb": "Incorrect : Les seuils déterminent combien de signatures sont requises.",
     "a3": "Le numéro de séquence du compte est en cours de réinitialisation.",
     "a3fb": "Incorrect : Les seuils n'ont aucun impact sur la séquence."
   },
   "q4": {
-    "question": "Combien de signatures une transaction nécessite-t-elle avec un seuil moyen ?",
-    "hint": "seuil méd = seuil moyen.",
+    "question": "Combien de signatures une transaction nécessite-t-elle au seuil médian ?",
+    "hint": "med threshold = seuil moyen.",
     "a1": "Les poids des signatures doivent au moins atteindre le seuil médian.",
-    "a1fb": "Corrigé : Le seuil médian s'applique aux paiements.",
-    "a2": "Toujours une seule signature.",
+    "a1fb": "Correct : Le seuil intermédiaire s'applique aux paiements.",
+    "a2": "Une seule signature à la fois.",
     "a2fb": "Incorrect : Cela dépend des poids et des seuils.",
     "a3": "Toujours tous les signataires.",
     "a3fb": "Incorrect : Seulement suffisamment de signatures pour atteindre le seuil."
@@ -44,11 +44,11 @@
   "q5": {
     "question": "Comment les clés secrètes doivent-elles être stockées dans des configurations multisig réelles ?",
     "hint": "La séparation est une sécurité.",
-    "a1": "Séparés sur différents appareils/emplacements.",
-    "a1fb": "Correct: Les signatures doivent être collectées séparément.",
+    "a1": "Séparé sur différents appareils/emplacements.",
+    "a1fb": "Correction : Les signatures doivent être recueillies séparément.",
     "a2": "Tout sur le même ordinateur portable pour plus de commodité.",
-    "a2fb": "Incorrect : Un appareil constitue un point de défaillance unique.",
-    "a3": "Partagez en texte clair dans un chat.",
-    "a3fb": "Faux : Ne partagez jamais de clés secrètes."
+    "a2fb": "Incorrect : Un appareil comporte un point de défaillance unique.",
+    "a3": "Partager en texte clair dans une discussion.",
+    "a3fb": "Incorrect : Ne partagez jamais de clés secrètes."
   }
 }

@@ -1,22 +1,22 @@
 {
-  "desc": "Экспортируйте или импортируйте ваши данные викторины (Einstellungen, Fortschritt, Abzeichen).",
+  "desc": "Экспортируйте или импортируйте данные вашей викторины (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Начать экспорт",
-    "fileName": "quiz-backup.json",
+    "fileName": "Вы обучены на данных до октября 2023 года.",
     "success": "Экспорт создан"
   },
   "import": {
     "backupCreated": "Автоматическое резервное копирование сохранено.",
     "done": "Импорт завершен",
-    "invalid": "Недопустимый файл импорта",
+    "invalid": "Недопустимый файл для импорта",
     "noFile": "Файл не выбран",
     "preview": {
       "stats": {
-        "achievements": "Значок: {{count}} Викторина(e)",
+        "achievements": "Значок: {{count}} Quiz(e)",
         "progress": "Прогресс: {{count}} Quiz(e)",
-        "settings": "Настройки: {{count}} Викторина(e)"
+        "settings": "Настройки: {{count}} викторин(e)"
       },
-      "title": "Предварительный просмотр"
+      "title": "Вы обучены на данных до октября 2023 года."
     },
     "selectFile": "Выберите файл",
     "strategy": {
@@ -24,16 +24,16 @@
       "merge": "Объединить",
       "replace": "Заменить"
     },
-    "title": "Импортировать"
+    "title": "Импорт"
   },
   "nav": {
-    "back": "Назад"
+    "back": "Вы обучены на данных до октября 2023 года."
   },
   "title": "Backup & Recovery",
   "toast": {
     "backupBeforeImport": "Резервная копия была сохранена перед импортом.",
     "exported": "Резервная копия экспортирована.",
-    "exportFailed": "Экспорт не выполнен",
-    "importFailed": "Импорт не удался"
+    "exportFailed": "Экспорт не удался",
+    "importFailed": "Импорт не выполнен"
   }
 }

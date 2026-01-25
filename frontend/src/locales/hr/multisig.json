@@ -3,88 +3,88 @@
     "single": "Ovaj račun koristi jedan potpis.",
     "multi": "Ovaj račun koristi više potpisa (Multisig)."
   },
-  "requiredThreshold": "Potrebni prag ({{level}}): {{value}}",
+  "requiredThreshold": "Zahtjevani prag ({{level}}): {{value}}",
   "operationLabel": {
     "payment": "Plaćanje",
     "setOptions": "Configuration (Signers & Thresholds)",
-    "changeTrust": "Promijeni liniju povjerenja",
-    "unknown": "Akcija"
+    "changeTrust": "Promijeni Trustline",
+    "unknown": "Action"
   },
-  "multipleSignersInfo": "Ova akcija zahtijeva višestruke potpise. Molimo vas da dostavite dovoljno tajnih ključeva kako biste postigli prag.",
+  "multipleSignersInfo": "Ova radnja zahtijeva više potpisa. Molimo vas da pružite dovoljno tajnih ključeva kako biste ispunili prag.",
   "confirm": {
     "options": {
       "recommended": "Preporučeno",
-      "infoButton": "Informacije",
-      "selectTitle": "Odaberi opciju",
+      "infoButton": "Informacija",
+      "selectTitle": "Izaberite opciju",
       "infoDialog": {
-        "title": "Objašnjene opcije"
+        "title": "Opcije objašnjene"
       },
       "proceed": "Nastavi",
       "job": {
-        "title": "Kreiranje multisig posla (Standard)",
-        "desc": "Standardni tijek rada za produktivni multisig. Stvara ID posla i prikuplja distribuirane potpise.",
-        "short": "Kreirajte poslove s višestrukim potpisom (Job-ID) i prikupljajte distribuirane potpise.",
-        "moreInfo": "Vi ste obučeni na podacima do listopada 2023.",
+        "title": "Erstelle einen Multisig-Job (Standard)",
+        "desc": "Standardni tijek rada za produktivni multisig. Stvara ID posla i prikuplja potpise na distribuirani način.",
+        "short": "Stvara posao s višestrukim potpisom (Job-ID) i prikuplja distribuirane potpise.",
+        "moreInfo": "Više informacija",
         "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
         "infoBody": {
-          "one": "Transakcija se pohranjuje kao multisig zadatak u backendu i dodjeljuje joj se ID zadatka. Ništa se ne šalje izravno.",
-          "two": "Svi sljedeći potpisnici otvaraju u svojoj SKM instanci stavku izbornika „Multisig poslovi“, učitavaju posao i potpisuju.",
-          "three": "Kada bude prikupljeno dovoljno potpisa (Threshold erreicht), transakcija će biti poslana ili može biti poslana.",
+          "one": "Transakcija se pohranjuje kao multisig zadatak u pozadini i dobiva ID zadatka. Ništa se ne šalje izravno.",
+          "two": "Svi sljedeći potpisnici otvaraju u svojoj SKM-instance izbornik „Multisig-Jobs“, preuzimaju zadatak i potpisuju ga.",
+          "three": "Nakon što se prikupi dovoljno potpisa (Threshold erreicht), transakcija će biti poslana ili može biti poslana.",
           "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
         },
         "steps": {
-          "one": "Korak 1: Posao s višestrukim potpisom je kreiran i dobiva ID posla.",
-          "two": "Korak 2: Svi sljedeći potpisnici otvaraju u svojoj SKM-instanci izbornik „Multisig poslovi“, učitaju posao i potpisuju ga.",
-          "three": "Korak 3: Drugi potpisnik otvara u svojoj SKM instance izbornik „Multisig-Jobs“, učitava posao i potpisuje.",
-          "four": "Korak 4: Kada se skupi dovoljno potpisa, transakcija se šalje ili može biti poslana."
+          "one": "Korak 1: Kreira se multisig zadatak i dodjeljuje mu se ID zadatka.",
+          "two": "Korak 2: Svi sljedeći potpisnici otvaraju u svom SKM-instance izbornik „Multisig-Jobs“, učitavaju posao i potpisuju.",
+          "three": "Korak 3: Drugi potpisnik otvara u svojoj SKM-instanzi stavku izbornika „Multisig-Jobs“, učitava posao i potpisuje.",
+          "four": "Korak 4: Kada se prikupi dovoljan broj potpisa, transakcija se šalje ili može biti poslana."
         }
       },
       "local": {
         "title": "Enter all signatures locally & send directly.",
-        "desc": "Koristite samo ako se svi tajni ključevi mogu sigurno unijeti na ovaj uređaj (Tests/Recovery/Admin).",
-        "warning": "Upozorenje: Svi tajni ključevi bit će prikupljeni tijekom ove sesije. Koristite samo na pouzdanim uređajima.",
-        "moreInfo": "Više informacija",
-        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "desc": "Koristi samo ako svi tajni ključevi mogu biti sigurno uneseni na ovaj uređaj (Tests/Recovery/Admin).",
+        "warning": "Upozorenje: Svi tajni ključevi se prikupljaju u ovoj sesiji. Koristite samo na pouzdanim uređajima.",
+        "moreInfo": "Vi ste obučeni na podacima do listopada 2023.",
+        "infoTitle": "Kako funkcioniše „Svi potpisi lokalno“?",
         "infoBody": {
-          "one": "Unosimo sve potrebne tajne ključeve na ovaj uređaj jedan za drugim dok se ne dosegne prag.",
-          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
-          "three": "Nakon što se prikupi dovoljan broj potpisa, transakcija se šalje izravno na Horizon (ohne Multisig-Job)."
+          "one": "Na ovaj uređaj unosite sve potrebne tajne ključeve uzastopno dok se ne postigne prag.",
+          "two": "Ovo više nije distribuirani multisig tijek, već „višeključni na jednom uređaju“ – koristiti samo na pouzdanim uređajima.",
+          "three": "Nakon što je prikupljeno dovoljno potpisa, transakcija se šalje izravno na Horizon (ohne Multisig-Job)."
         }
       },
       "xdr": {
         "title": "Izvoz XDR (nicht senden)",
-        "desc": "Generirajte sirovu XDR transakciju za offline alate ili hardverske novčanike.",
-        "short": "Izvezi transakciju kao XDR bez slanja direktno.",
-        "moreInfo": "Treniran si na podacima do listopada 2023.",
-        "infoTitle": "Kako funkcionira XDR izvoz?",
+        "desc": "Generiraj sirovu XDR transakciju za offline alate ili hardverske novčanike.",
+        "short": "Izvezite transakciju kao XDR bez izravnog slanja.",
+        "moreInfo": "Više informacija.",
+        "infoTitle": "Kako funkcionira izvoz XDR-a?",
         "infoBody": {
-          "one": "XDR je sirovi format transakcija Stellara. Ništa se ne šalje automatski.",
-          "two": "Koristite XDR za hardverske novčanike, računala koja nisu spojena na internet ili druge novčanike/alate koji mogu uvesti XDR.",
-          "three": "Sami ste odgovorni za potpisivanje i/ili slanje XDR kasnije (e.g., through multisig jobs or an external tool)."
+          "one": "XDR je sirovi format transakcije za Stellar. Ništa se ne šalje automatski.",
+          "two": "Koristite XDR za hardverske novčanike, offline računala ili druge novčanike/alate koji mogu uvoziti XDR.",
+          "three": "Vi ste odgovorni za potpisivanje i/ili slanje XDR-a kasnije (e.g., via Multi-signature jobs or an external tool)."
         },
         "steps": {
           "one": "XDR je generiran, ali ništa nije poslano.",
           "two": "Možete vanjski potpisati XDR (Offline-Rechner, Hardware-Wallet, anderes Tool).",
-          "three": "Da biste poslali, trebate ponovno uvesti XDR (e.g., via Multisig jobs or another tool) i zatim ga tamo potpisati/poslati."
+          "three": "Da biste poslali, trebate ponovo uvesti XDR (e.g., via multisig jobs or another tool) i tamo ga potpisati/poslati."
         }
       }
     },
     "result": {
       "backToSelection": "Nazad",
-      "copyXdr": "Kopiraj XDR (eXtended Detection and Response)",
+      "copyXdr": "Kopiraj XDR",
       "job": {
         "title": "Transakcija pripremljena za višestruki potpis",
-        "status": "Kreiran je multisig posao. Transakcija još nije poslana.",
+        "status": "Multisig posao je kreiran. Transakcija još nije poslana.",
         "jobIdLabel": "ID posla",
         "hashLabel": "Hash transakcije",
         "infoButton": "Sljedeći koraci",
-        "infoTitle": "Što treba učiniti sada",
+        "infoTitle": "Što treba sada učiniti?",
         "info": {
           "share": "Proslijedite ID posla ili XDR sljedećim potpisnicima (E-Mail, Messenger wie Telegram/WhatsApp).",
-          "sign": "Potpisnici biraju ili opciju 3 („Uvezi XDR“) i potpisuju XDR ILI otvaraju u SKM izbornik „Job-ID“, učitavaju posao i tamo potpisuju.",
-          "submit": "Kada je prikupljeno dovoljno potpisa, jedan od potpisnika konačno šalje posao u SKM (izbornik „ID posla“) mreži."
+          "sign": "Potpisnici biraju ili opciju 3 („Uvoz XDR“) i potpisuju XDR ILI otvaraju u SKM stavku izbornika „Job-ID“, učitavaju posao i tamo potpisuju.",
+          "submit": "Kada se prikupi dovoljno potpisa, jedan od potpisnika konačno šalje posao u SKM (izbornik „Job-ID“) na mrežu."
         },
-        "copyJobId": "Kopiraj ID poslova",
+        "copyJobId": "Kopiraj ID posla.",
         "copiedJobId": "Kopirano"
       },
       "sent": {
@@ -95,106 +95,106 @@
         "copiedDetails": "Kopirano"
       },
       "xdr": {
-        "title": "XDR spreman (nicht gesendet)",
-        "status": "Samo jedan XDR je generiran. Ništa nije poslano na mrežu.",
-        "noJob": "Nijedan posao s više potpisa nije stvoren.",
+        "title": "XDR pripremljen (nicht gesendet)",
+        "status": "Generiran je samo jedan XDR. Ništa nije poslano na mrežu.",
+        "noJob": "Nijedan posao s više potpisa nije kreiran.",
         "hashLabel": "Hash transakcije",
-        "hint": "Proslijedite XDR drugim potpisnicima ili alatima (z. B. Hardware-Wallet, Offline-Rechner). Da biste poslali, kasnije ćete ponovno uvesti (ggf. signierte) XDR u SKM (z. B. Option 3) i poslati ih na mrežu."
+        "hint": "Prenesite XDR drugim potpisnicima ili alatima (z. B. Hardware-Wallet, Offline-Rechner). Za slanje ponovno uvezite (ggf. signierte) XDR u SKM (z. B. Option 3) i pošaljite ih na mrežu."
       }
     },
-    "testModeTitle": "Svi potpisi lokalni",
+    "testModeTitle": "Svi potpisi su lokalni",
     "testModeDescription": "Postojeći tok: Unesite tajni ključ, prikupite sve potrebne potpise i pošaljite izravno na Horizon.",
     "testModeButton": "Sign directly & send",
-    "prepareTitle": "Pripremi transakciju za multifirma potpisivanje",
-    "prepareDescription": "Samo pripremite XDR za produkcijski multisig. Ništa neće biti poslano odmah.",
-    "prepareButton": "Priprema XDR-a (nicht senden)"
+    "prepareTitle": "Pripremi transakciju za višestruki potpis",
+    "prepareDescription": "Pripremi XDR samo za proizvodni multisig. Ništa se neće poslati odmah.",
+    "prepareButton": "Pripremi XDR (nicht senden)"
   },
-  "jobCreated": "Multisig posao kreiran (ID: {{id}}). Otvorite „Multisig poslove“ da biste vidjeli status.",
+  "jobCreated": "Multisig posao je kreiran (ID: {{id}}). Otvorite „Multisig poslovi“ da vidite status.",
   "errors": {
     "mismatchedHash": "Potpisani XDR ne pripada ovoj transakciji."
   },
   "prepare": {
     "title": "Transakcija pripremljena za multisig",
-    "subtitle": "Transakcija je konstruirana i može biti potpisana eksterno.",
+    "subtitle": "Transakcija je konstruisana i može biti potpisana eksterno.",
     "hashLabel": "Hash transakcije",
-    "xdrLabel": "XDR transakcija",
+    "xdrLabel": "Transakcija XDR",
     "copyXdrButton": "Kopiraj XDR",
     "copied": "Kopirano",
     "notSentHint": "Ova transakcija još nije poslana na mrežu.",
-    "closeHint": "Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast und der Multisig-Auftrag erstellt wurde; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
+    "closeHint": "Možete zatvoriti ovaj dijalog čim potpišete i kad je kreacija multisig naloga završena; sljedeći potpisnik će pronaći ID zadatka u izborniku „Multisig-Zadaci“."
   },
   "testMode": {
-    "modalTitle": "Potpis jednog korisnika",
-    "modalDescription": "Ovdje možete unijeti sve potrebne tajne ključeve na jedan uređaj i poslati transakciju izravno. U stvarnim postavkama s više stranaka ključevi bi trebali ostati na odvojenim uređajima."
+    "modalTitle": "Jednokorisnički potpis",
+    "modalDescription": "Ovdje možete unijeti sve potrebne tajne ključeve na jednom uređaju i poslati transakciju izravno. U pravim višestranačkim postavkama, ključevi bi trebali ostati na odvojenim uređajima."
   },
   "mode": {
     "test": {
-      "label": "Koristite sve S ključeve lokalno."
+      "label": "Koristi sve S ključeve lokalno"
     },
     "prod": {
-      "label": "Produktivan način (echtes Multisig mit XDR)",
+      "label": "Način produktivnosti",
       "banner": {
-        "title": "Produktivni način za multi-potpis",
-        "body": "U ovom načinu rada, Stellar Account Manager koristi samo vaš vlastiti tajni ključ. Dodatni potpisi se prikupljaju putem izvezenih XDR datoteka. Osigurajte svoje XDR datoteke i dijelite ih samo s pouzdanim potpisnicima."
+        "title": "Produktivni način za multisignature",
+        "body": "U ovom načinu Stellar Account Manager koristi samo vaš tajni ključ. Dodatni potpisi se prikupljaju putem izvezenih XDR datoteka. Zaštitite svoje XDR datoteke i dijelite ih samo s pouzdanim potpisnicima."
       }
     }
   },
   "detail": {
-    "title": "Posao na čekanju-Multisig",
-    "idLabel": "Identifikacija posla",
+    "title": "Posao na čekanju s višestrukim potpisom",
+    "idLabel": "ID posla",
     "accountLabel": "Izvorni račun",
     "statusLabel": "Status",
     "network": "Mreža",
     "txHashLabel": "Hash transakcije",
-    "xdrLabel": "Transakcijski XDR",
-    "copyXdrButton": "Kopirati XDR",
-    "importSignedXdrTitle": "Uvezi potpisani XDR",
-    "importSignedXdrDescription": "Umetnite potpisani XDR. Novi potpisi bit će uključeni u trenutnu transakciju.",
+    "xdrLabel": "Transakcija XDR",
+    "copyXdrButton": "Kopiraj XDR",
+    "importSignedXdrTitle": "Uvoz potpisanog XDR-a",
+    "importSignedXdrDescription": "Umetni potpisani XDR. Novi potpisi će biti uključeni u trenutačnu transakciju.",
     "importSignedXdrPlaceholder": "Base64 kodirani potpisani XDR",
-    "importSignedXdrButton": "Usvajanje potpisanog XDR-a",
-    "updatedAt": "Ažurirano u",
+    "importSignedXdrButton": "Potpisani XDR preuzimaju",
+    "updatedAt": "Ažurirano u/na",
     "signers": {
       "required": "Potrebni potpisi",
       "collected": "Već prikupljeni potpisi"
     },
     "signatures": {
       "title": "Signer & Status",
-      "progress": "Težina potpisa: {{prikupljeno}} / {{potrebno}}",
-      "signed": "potpisan",
+      "progress": "Potpisana težina: {{collected}} / {{required}}",
+      "signed": "potpisano",
       "missing": "nedostaje",
-      "noSessionSecret": "Tajni ključ nije pohranjen u pregledniku. Molimo unesite tajni ključ ili uvezite potpisani XDR.",
-      "signedLocalStatus": "Potpis sačuvan. Trenutni status: {{status}}"
+      "noSessionSecret": "U pregledniku nema pohranjeno tajnog ključa. Molimo unesite tajni ključ ili uvezite potpisani XDR.",
+      "signedLocalStatus": "Potpis spremljen. Trenutni status: {{status}}"
     },
     "changes": {
       "title": "Planirane promjene",
       "addSigner": "Dodaj potpisnika: {{account}} (Težina {{weight}})",
-      "removeSigner": "Ukloni potpisnika: {{račun}}",
+      "removeSigner": "Ukloni potpisnika: {{account}}",
       "setThresholds": "Postavi pragove: nizak={{low}}, srednji={{med}}, visok={{high}}"
     },
     "xdr": {
       "title": "Transakcija (XDR)",
       "hint": "Ovaj XDR može biti učitan i potpisan od strane drugih potpisnika u kompatibilnim novčanicima.",
       "copy": "Kopiraj XDR",
-      "copy.success": "XDR kopirano u međuspremnik.",
-      "copy.error": "XDR se nije mogao kopirati u međuspremnik."
+      "copy.success": "XDR kopiran u međuspremnik.",
+      "copy.error": "XDR nije mogao biti kopiran u međuspremnik."
     },
     "signedXdr": {
       "title": "Uvoz potpisanog XDR-a",
-      "hint": "Umetnite XDR potpisan od strane drugog potpisnika ovdje kako biste spojili potpise s ovim poslom s više potpisa.",
+      "hint": "Umetnite XDR potpisan od strane drugog potpisnika ovdje kako biste spojili potpise s ovim multisig zadatkom.",
       "label": "Potpisani XDR",
       "submit": "Spajanje potpisanog XDR-a",
       "success": {
         "title": "Potpisi ažurirani",
-        "body": "Potpisi su uspješno spojeni s ovim višesig paslom. Trenutni status: {{status}}."
+        "body": "Potpisi su uspješno spojeni s ovim višestrukim potpisivanjem. Trenutni status: {{status}}."
       }
     },
     "secretPrompt": {
-      "title": "Unesite lozinku za prijavu",
+      "title": "Unesite tajnu da biste potpisali",
       "hint": "Molimo unesite tajni ključ za račun {{account}}.",
       "signNow": "Potpiši sada"
     },
-    "submitFailed": "Došlo je do pogreške prilikom slanja: {{reason}}",
-    "submitNoExtras": "Nema dodatnih detalja o pogrešci dostupno."
+    "submitFailed": "Došlo je do pogreške prilikom slanja: {{razlog}}",
+    "submitNoExtras": "Nema dodatnih detalja o grešci."
   },
   "secretModal": {
     "options": {
@@ -202,80 +202,80 @@
     },
     "option": {
       "distributed": {
-        "title": "Standard: Distribuirani Multisig Protokol",
-        "body": "Prema zadanim postavkama, ova sesija potpisuje samo vašim vlastitim tajnim ključem. Dodatni potpisi se dodaju putem izvezenih XDR datoteka ili ID-a poslova od drugih potpisnika."
+        "title": "Standard: Distribuirani Multisig Flow",
+        "body": "Prema zadanim postavkama, ova sesija potpisuje samo vašim vlastitim tajnim ključem. Dodatni potpisi su dopunjeni putem izvezenih XDR datoteka ili ID-om posla od drugih potpisnika."
       },
       "localAll": {
         "title": "Unesite sve potpise lokalno",
-        "body": "Odaberite ovu opciju samo ako kontrolirate sve tajne ključeve povezane s ovim računom. Upravitelj računa Stellar će zatim prikupiti sve potpise lokalno i poslati transakciju izravno na Horizon.",
-        "checkboxLabel": "Unesite sve potpise lokalno u ovaj dijalog i pošaljite ih izravno.",
-        "warning": "Napomena: Kada unosite sve potpise lokalno, svi tajni ključevi su prisutni u ovoj sesiji. Koristite ovu opciju samo na pouzdanim uređajima."
+        "body": "Odaberite ovu opciju samo ako kontrolirate sve tajne ključeve povezane s ovim računom (z. B. nach einer Kontorettung mit mehreren Unterzeichnern). Tada će Stellar Account Manager prikupiti sve potpise lokalno i poslati transakciju izravno Horizonu.",
+        "checkboxLabel": "Unesite sve potpise lokalno u ovom dijalogu i pošaljite izravno.",
+        "warning": "Napomena: Ako unesete sve potpise lokalno, svi tajni ključevi će biti prisutni u ovoj sesiji. Koristite ovu opciju samo na pouzdanim uređajima."
       }
     }
   },
   "multisigInfo": {
     "master": "Glavni ključ",
-    "signerDisabled": "Potpisnik onemogućen (težina = 0)"
+    "signerDisabled": "Potpisnik deaktiviran (težina = 0)"
   },
   "list": {
-    "title": "Multisig nalozi",
-    "noAccount": "Molimo učitajte račun prvo da biste pregledali multisig narudžbe.",
-    "empty": "Nisu pronađeni nalozi s višestrukim potpisima.",
+    "title": "Multisig narudžbe",
+    "noAccount": "Molimo vas da prvo učitate račun kako biste pregledali multisig transakcije.",
+    "empty": "Nema pronađenih naloga s višestrukim potpisom.",
     "details": "Details & Signatures",
     "export": "Izvoz",
     "signatures": "Potpisi",
     "signaturesProgress": "{{prikupljena}} / {{potrebna}} težina potpisa",
     "filter": {
       "mine": "Samo narudžbe koje još trebam potpisati.",
-      "assigned": "Također ugovori na kojima sam potpisnik."
+      "assigned": "Također narudžbe gdje sam ja potpisnik."
     },
     "signer": {
       "signed": "✓",
-      "missing": "Nedostaje",
-      "unknown": "Potpisnik"
+      "missing": "nedostaje",
+      "unknown": "Signer"
     },
     "status": {
-      "pending_signatures": "Čeka se na potpise",
+      "pending_signatures": "Čekanje na potpise",
       "ready_to_submit": "Spremno za slanje",
-      "submitted_success": "Poslanica",
+      "submitted_success": "Poslano",
       "submitted_failed": "Slanje nije uspjelo",
       "expired": "Istekao",
       "obsolete_seq": "Zastarjela sekvenca"
     },
-    "deleteTestnet": "Izbriši poslove na testnetu.",
-    "deleteTestnetTitle": "Izbriši sve Testnet zadatke.",
-    "deleteTestnetHint": "Ovo uklanja sve poslove s višestrukim potpisima na testnetu. Za potvrdu, molimo unesite \"OBRIŠI TESTNET POSLOVE\".",
-    "deleteTestnetConfirm": "Izbriši Testnet poslove"
+    "deleteTestnet": "Izbriši poslove na testnoj mreži",
+    "deleteTestnetTitle": "Izbriši sve poslove na testnetu.",
+    "deleteTestnetHint": "Ovo će ukloniti sve multisig poslove na testnetu. Molimo upišite \"DELETE TESTNET JOBS\" za potvrdu.",
+    "deleteTestnetConfirm": "Izbriši poslove testne mreže"
   },
   "actions": {
-    "createMultisigJob": "Kreiraj posao za multisig transakciju"
+    "createMultisigJob": "Kreiraj Multisig TaskJob."
   },
   "job": {
     "create": {
       "success": {
-        "title": "Višesigurnosni nalog kreiran",
-        "body": "Višepotpisna transakcija s identifikatorom {{id}} je stvorena. Dodatni potpisnici mogu potpisati XDR datoteku nakon što je izvezena."
+        "title": "Kreirana multisig transakcija",
+        "body": "Multisig transakcija s ID-om {{id}} je stvorena. Dodatni potpisnici mogu potpisati XDR datoteku nakon što bude izvezena."
       }
     },
     "status": {
-      "pending": "Čeka se",
+      "pending": "Na čekanju",
       "partiallySigned": "Djelomično potpisano",
       "readyToSubmit": "Spreman za slanje",
-      "submitted": "Poslanje",
-      "failed": "Neuspjelo.",
+      "submitted": "Poslano",
+      "failed": "Neuspjeh",
       "unknown": "Nepoznato"
     },
     "statusHelp": {
-      "pending": "Multisig transakcija je stvorena, ali još nema potpisa.",
-      "partiallySigned": "Neki potpisnici su već potpisali. Potrebno je još potpisa.",
-      "readyToSubmit": "Postoji dovoljno potpisa. Transakcija se može poslati na Horizon.",
+      "pending": "Višestruka transakcija je kreirana, ali još nema potpisa.",
+      "partiallySigned": "Neki potpisnici su već potpisali. Još uvijek su potrebni dodatni potpisi.",
+      "readyToSubmit": "Postoji dovoljno potpisa. Transakcija se može poslati Horizonu.",
       "submitted": "Transakcija je poslana na mrežu. Provjerite konačno stanje ako je potrebno.",
-      "failed": "Došlo je do pogreške prilikom slanja transakcije. Molimo pogledajte dnevnik pogrešaka za detalje.",
-      "pending_signatures": "Transakcija s višestrukim potpisima još uvijek čeka potpise.",
-      "ready_to_submit": "Ima dovoljno potpisa. Naručba se može poslati.",
+      "failed": "Došlo je do pogreške prilikom slanja transakcije. Molimo pogledajte zapisnik pogrešaka za detalje.",
+      "pending_signatures": "Višepotpisna transakcija još uvijek čeka potpise.",
+      "ready_to_submit": "Ima dovoljno potpisa. Narudžba se može poslati.",
       "submitted_success": "Narudžba je poslana.",
       "submitted_failed": "Došlo je do pogreške prilikom slanja.",
-      "expired": "Nalog je istekao.",
+      "expired": "Ugovor je istekao.",
       "obsolete_seq": "Sekvenca je zastarjela.",
       "unknown": "Status nepoznat."
     }

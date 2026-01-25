@@ -1,65 +1,65 @@
 {
-  "title": "Crea account + multisig",
-  "menu": "Crea Account + Multisig",
-  "menuHint": "Crea un nuovo account e opzionalmente configura la firma multipla.",
-  "hint": "Crea un nuovo account, attivalo e, facoltativamente, configura la firma multipla.",
+  "title": "Crea account + multfirma",
+  "menu": "Crea un account + Multisig",
+  "menuHint": "Crea un nuovo account e, facoltativamente, configura la firma multipla.",
+  "hint": "Crea un nuovo account, attivalo e configura facoltativamente la firma multipla.",
   "generateKeys": "Genera chiave",
-  "enableMultisig": "Abilita la firma multipla",
+  "enableMultisig": "Abilita multisig",
   "instructions": {
     "public": "Condividi questa chiave pubblica con altri per i pagamenti.",
-    "secret": "Tieni questa Chiave Segreta al sicuro; non condividerla mai."
+    "secret": "Tieni questa chiave segreta al sicuro; non condividerla mai."
   },
-  "generateFirst": "Per favore, genera prima una coppia di chiavi.",
-  "confirmLowBalance": "Il saldo iniziale di {bal} XLM è inferiore alla riserva raccomandata di {req} XLM (Firmatari: {count}). Procedere?",
+  "generateFirst": "Si prega di generare prima una coppia di chiavi.",
+  "confirmLowBalance": "Il saldo iniziale di {bal} XLM è inferiore alla riserva raccomandata di {req} XLM (Firmatari: {count}). Continuare?",
   "activated": "L'account è stato attivato. Hash: {hash}",
-  "activatedTestnet": "L'account è stato attivato nel testnet tramite Friendbot.",
+  "activatedTestnet": "L'account è stato attivato sulla testnet tramite Friendbot.",
   "alreadyActive": "L'account è già attivato.",
   "createdNoSigners": "Account creato, multisig non configurato.",
   "createdAndConfigured": "Account creato e multisig configurato. Hash: {hash}",
   "info": {
-    "more": "Più informazioni",
+    "more": "Ulteriori informazioni",
     "keysOnPage": {
       "title": "Chiave su questa pagina",
-      "text": "Su questa pagina vengono generate le chiavi. Mantienile al sicuro e non condividerle."
+      "text": "Questa pagina genera chiavi. Mantienile al sicuro e non condividerle."
     },
     "title": "Informazioni importanti",
     "secureKeys": {
-      "title": "Chiave privata sicura",
-      "text": "La chiave pubblica può essere condivisa in modo sicuro – è come un numero di conto.\\n\\nLa chiave segreta è l'accesso al tuo conto. Trattala come una password:\\n• NON memorizzarla MAI in servizi cloud, e-mail o appunti non sicuri\\n• Annota la chiave su carta o utilizza un portafoglio hardware\\n• Crea più copie di backup e conservale in luoghi sicuri e separati\\n• Se perdi la chiave segreta, l'accesso al conto è irrevocabilmente perduto"
+      "title": "Chiave segreta sicura",
+      "text": "The Public Key can be safely shared – it's like an account number.\n\nThe Secret Key is the access to your account. Treat it like a password:\n• NEVER store it on cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the Secret Key is lost, access to the account is irrevocably lost"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
-      "text": "Con Multisig, puoi definire più firmatari per il tuo account. Le transazioni richiedono poi firme da più, ad es. 2 su 3.\n\nVantaggi:\n• Aumento della sicurezza (ein kompromittierter Key reicht nicht)\n• Conti congiunti (z. B. Firmen, Partnerschaften)\n• Recupero d'emergenza (mehrere Backups bei verschiedenen Personen)\n\nATTENZIONE: Prova Multisig prima sulla testnet prima di implementarlo sulla mainnet! Una configurazione errata può comportare la perdita di accesso all'account."
+      "title": "Multifirma",
+      "text": "Con multisig, puoi definire più firmatari per il tuo account. Le transazioni richiederanno quindi firme multiple, ad esempio 2 su 3.\n\nVantaggi:\n• Maggiore sicurezza, una chiave compromessa non è sufficiente\n• Condivisione per esempio in aziende, partnership\n• più backup tra persone diverse per il recupero\n\nATTENZIONE: Testa il multisig prima sul testnet prima di utilizzarlo sul mainnet! Una configurazione errata può portare alla perdita di accesso all'account."
     },
     "diagram": {
       "title": "Scadenza della firma"
     }
   },
-  "activateHint": "L'attivazione è necessaria affinché l'account esista. Nel testnet, può essere effettuata tramite Friendbot e nel mainnet attraverso \"Crea account\" da un portafoglio esistente.",
-  "activateNow": "Attiva immediatamente l'account.",
-  "activateOnly": "Basta attivare",
-  "balanceWarning": "Il saldo iniziale è probabilmente troppo basso per aggiungere i {{count}} firmatari aggiuntivi (riserva minima: {{req}} XLM).",
-  "createButton": "Crea / Imposta multisig",
-  "mainnetActivateNote": "Nota: Sono riserve aggiuntive necessarie per multisig. 1 XLM spesso non è sufficiente.",
+  "activateHint": "L'attivazione è necessaria affinché l'account esista. Nel Testnet, questo può essere fatto tramite Friendbot, mentre nel Mainnet, attraverso \"Crea Account\" da un portafoglio esistente.",
+  "activateNow": "Attiva l'account immediatamente.",
+  "activateOnly": "Attiva solo",
+  "balanceWarning": "Il saldo iniziale è probabilmente troppo basso per aggiungere i {{count}} firmatari aggiuntivi (Riserva minima: {{req}} XLM)",
+  "createButton": "Creare / Impostare Multisig",
+  "mainnetActivateNote": "Nota: Sono necessarie riserve aggiuntive per il multisig. 1 XLM spesso non è sufficiente.",
   "reserve": {
-    "base": "Riserva di base per voce: {{val}} XLM",
-    "recommended": "Saldo iniziale consigliato: {{val}} XLM (inkl. Puffer)",
+    "base": "Riserve di base per voce: {{val}} XLM",
+    "recommended": "Saldo iniziale raccomandato: {{val}} XLM (inkl. Puffer)",
     "required": "Riserva Minima Obbligatoria (neu): {{val}} XLM"
   },
-  "signersCountLimit": "Nota: Limite di Rete (Stellar): max. 20 firmatari aggiuntivi.",
+  "signersCountLimit": "Nota: Limite della rete (Stellar): massimo 20 firmatari aggiuntivi.",
   "startingBalance": "Credito iniziale (XLM)",
   "keyWarning": {
-    "title": "⚠️ Proteggi la tua chiave ora!",
+    "title": "⚠️ Proteggi subito la tua chiave!",
     "text1": "Hai generato una nuova coppia di chiavi.",
-    "text2": "Assicurate immediatamente ENTRAMBE le chiavi prima di procedere:",
-    "list1": "Chiave pubblica: Il tuo indirizzo di conto, che può essere condiviso.",
-    "list2": "Chiave segreta: La tua password – NON condividerla o conservarla mai online!",
-    "list3": "Se la chiave segreta viene persa, l'accesso è perso irrimediabilmente.",
+    "text2": "Assicurati SUBITO entrambe le chiavi prima di procedere:",
+    "list1": "Chiave pubblica: l'indirizzo del tuo account, può essere condiviso",
+    "list2": "Chiave segreta: La tua password – NON condividerla o memorizzarla mai online!",
+    "list3": "Se la chiave segreta viene persa, l'accesso è perso irrevocabilmente.",
     "confirm": "Ho ottenuto entrambe le chiavi."
   },
-  "muxedId": "Muxed-ID",
-  "muxedInfo": "Con l'ID multiplexato, viene creato un M-address (M...). Questo punta allo stesso conto dell'indirizzo normale (G...).",
-  "muxedIdInvalid": "L'ID muxed deve essere un numero intero compreso tra 0 e 18.446.744.073.709.551.615.",
-  "muxedAddress": "Indirizzo multiplexato",
-  "muxedActivationInfo": "Gli indirizzi muxed sono indirizzi alias. Non necessitano di essere attivati separatamente."
+  "muxedId": "ID Muxed",
+  "muxedInfo": "Con l'ID multiplexato, viene creata un M-Address (M...). Esso punta allo stesso account dell'indirizzo regolare (G...).",
+  "muxedIdInvalid": "L'ID Muxed deve essere un numero intero compreso tra 0 e 18.446.744.073.709.551.615.",
+  "muxedAddress": "Indirizzo muxed",
+  "muxedActivationInfo": "Gli indirizzi muxed sono indirizzi alias. Non hanno bisogno di essere attivati separatamente."
 }

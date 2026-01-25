@@ -1,13 +1,13 @@
 {
-  "hintEnterPublicKey": "Molimo unesite javni ključ prvo.",
+  "hintEnterPublicKey": "Molimo vas da prvo unesete javni ključ.",
   "columns": {
-    "amount": "Količina",
+    "amount": "Iznos",
     "compromised": "Kompromitiran",
     "deactivated": "Deaktivirano",
     "destination": "Ciljani novčanik",
     "issuer": "Izdavatelj",
     "label": "Oznaka",
-    "memo": "Podsjetnik",
+    "memo": "Memorandum",
     "payments": "Plaćanja",
     "date": "Datum",
     "token": "Token"
@@ -17,16 +17,16 @@
     "label": "Decimalna mjesta:"
   },
   "filter": {
-    "memoPlaceholder": "Filtriraj prema memu, adresi novčanika ili oznaci.",
-    "tokenPlaceholder": "Filtriraj po tokenu (CODE:ISSUER)"
+    "memoPlaceholder": "Filtriraj po bilješci, adresi novčanika ili oznaci.",
+    "tokenPlaceholder": "Filtriraj prema tokenu (CODE:ISSUER)"
   },
   "item": {
-    "memo": "Memorandum: \"{{memo}}\" (Plaćanja: {{occurrences}})",
+    "memo": "Memo: \"{{memo}}\" (Plaćanja: {{occurrences}})",
     "token": "Token: {{token}} (Plaćanja: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
-  "missingPublicKey": "Nedostaje javni ključ.",
-  "moreTruncated": "… i {{extra}} druge grupe",
+  "missingPublicKey": "Javni ključ nedostaje.",
+  "moreTruncated": "… and {{extra}} additional groups",
   "toWallet": "na novčanik: {{address}}",
   "total": "Broj kupljenih tokena: {{count}}",
   "totalTokens": "Broj uloženih tokena (Assets): {{count}}",
@@ -36,8 +36,8 @@
   },
   "view": {
     "label": "Filtriraj po:",
-    "memo": "Memorandumi",
-    "token": "Token (žeton)"
+    "memo": "Memos (Memos)",
+    "token": "Token"
   },
   "toggles": {
     "showTotals": "Ukupan iznos",
@@ -47,12 +47,12 @@
     "qsiListSet": "Napomena: Popis GF možete pronaći pod Postavke → Pouzdani novčanici (QSI).",
     "pageTime": "Učitavanje jedne stranice traje oko 0,2 sekunde → 100 stranica ≈ 20 sekundi → 1000 stranica ≈ 200 sekundi (≈ 3:20 minuta)."
   },
-  "walletCapInfo": "Napomena: Novčanik može imati najviše 1000 povjereničkih linija.",
+  "walletCapInfo": "Napomena: Novčanik može držati maksimalno 1000 trustlines.",
   "action": {
     "load": "Trgovina"
   },
   "history": {
     "availableFrom": "Server (Horizon) – Povijest od",
-    "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+    "hintFullHistory": "Note: The Ledger history from the Horizon server only goes back to {{available}}. Only data up to that date is displayed. Therefore, the selected \"From\" date is limited. For older data, a (meist kostenpflichtiger) Full‑History‑Provider is required (possibly coming in the future!)."
   }
 }

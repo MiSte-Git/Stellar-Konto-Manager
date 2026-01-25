@@ -1,13 +1,13 @@
 {
   "label": "Public key or federation address",
-  "placeholder": "Enter your public key or a federation address",
-  "load": "Preload account",
+  "placeholder": "Enter your public key or a federation address.",
+  "load": "Shop",
   "deleteFromList": "Remove from list",
   "source": "Source",
   "destination": {
-    "input": "Goal",
+    "input": "Objective",
     "error": "Invalid public key entered.",
-    "label": "Target Public Key",
+    "label": "Target public key",
     "placeholder": "Enter the target public key"
   },
   "invalid": "Invalid public key.",
@@ -16,5 +16,5 @@
   },
   "test": "Test",
   "historyLabel": "History",
-  "historyPlaceholder": "Select the last used wallet"
+  "historyPlaceholder": "Select last used wallet"
 }

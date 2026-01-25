@@ -1,43 +1,43 @@
 {
-  "all": "Lijst alle trustlines op",
-  "compare": "Trustlijnen vergelijken",
-  "delete": "Verwijder vertrouwenslijnen",
-  "onlyZeroBalanceInfo": "Alleen kredietlijnen met een saldo van 0 kunnen worden verwijderd.",
-  "nonZeroBalance": "Deze trustlijn heeft een saldo dat niet nul is en kan niet worden verwijderd.",
+  "all": "Lijst alle trustlines op.",
+  "compare": "Vertrouwenslijnen vergelijken",
+  "delete": "Verwijder trustlines",
+  "onlyZeroBalanceInfo": "Alleen trustlines met een saldo van 0 kunnen worden verwijderd.",
+  "nonZeroBalance": "Deze trustline heeft een saldo dat niet nul is en kan niet worden verwijderd.",
   "destination": {
     "label": "Doeladres",
-    "placeholder": "Bestemmingspublieke sleutel of federatieadres",
+    "placeholder": "Bestemmings openbare sleutel of federatieadres",
     "error": "Ongeldig bestemmingsadres"
   },
   "deleted": {
-    "resultTitle": "Verwijderingsresultaat",
-    "resultText": "{count} trustlines werden in de {mode} modus verwerkt.",
+    "resultTitle": "Resultaat verwijderen",
+    "resultText": "{count} trustlines werden verwerkt in {mode} modus.",
     "mode": {
       "simulation": "Simulatie",
-      "real": "Live-operatie",
-      "realWarning": "Waarschuwing! Dit zal Trustlines permanent verwijderen van de blockchain."
+      "real": "Live operatie",
+      "realWarning": "Let op! Dit verwijdert permanent trustlines op de blockchain."
     },
     "notFound": "Geen overeenkomende trustlines gevonden om te verwijderen.",
-    "simulated": "Simulatie: {count} trustlijnen zouden worden verwijderd.",
-    "success": "Succesvol {count} trustlines verwijderd."
+    "simulated": "Simulatie: {count} trustlines zouden worden verwijderd.",
+    "success": "Succesvol {count} trustlijnen verwijderd."
   },
-  "noDuplicates": "Geen dubbele trustlines gevonden.",
+  "noDuplicates": "Geen dubbele vertrouwenslijnen gevonden.",
   "showSecret": "Geheime sleutel weergeven",
   "notFound": "Geen Trustline(s) gevonden.",
   "add": {
     "button": "Vertrouwenslijn toevoegen",
-    "title": "Nieuwe trustline aanmaken",
+    "title": "Stel een nieuwe trustlijn in",
     "assetCodeLabel": "Activacode",
     "assetCodePlaceholder": "bijv. USDC",
-    "assetCodeHelp": "Korte naam van het activum (1–12 tekens, bijv. TESTUSD).",
-    "issuerLabel": "Uitgevende instelling (Public Key)",
+    "assetCodeHelp": "Effectactivanaam (1–12 tekens, bijv. TESTUSD).",
+    "issuerLabel": "Emittent (Public Key)",
     "issuerPlaceholder": "bijv. G...Uitgever",
-    "issuerHelp": "Openbare sleutel (G-Adresse) van de uitgeversrekening die het activum uitgeeft.",
-    "limitLabel": "Limiet",
+    "issuerHelp": "Openbare sleutel (G-Adresse) van de uitgeversaccount die het activum uitgeeft.",
+    "limitLabel": "Begrenzing",
     "limitPlaceholder": "bijv. 1.000.000 (eine Million)",
-    "limitHelp": "De limiet is het maximale bedrag van dit activum dat aan deze rekening wordt toevertrouwd. In de praktijk moet deze zo hoog worden ingesteld als u verwacht dat uw maximale saldo in dit activum zal zijn.",
-    "submit": "Een trustline aanmaken",
+    "limitHelp": "De limiet is het maximale bedrag van dit activa dat deze rekening kan vertrouwen. In de praktijk moet het worden ingesteld zo hoog als je verwachte maximale saldo in dit activa.",
+    "submit": "Maak een trustlijn aan.",
     "cancel": "Annuleren",
-    "success": "Vertrouwenslijn voor {{code}} is succesvol ingesteld."
+    "success": "Trustline voor {{code}} is succesvol opgezet."
   }
 }

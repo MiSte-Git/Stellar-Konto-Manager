@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchGroupfundByMemo, fetchInvestedPerToken } from '../utils/stellar/investmentUtils';
-import trustedWallets from '../../settings/QSI_TrustedWallets.json';
 import ProgressBar from './ProgressBar';
 import { useSettings } from '../utils/useSettings';
 import { buildDefaultFilename } from '../utils/filename';
 import { getHorizonServer } from '../utils/stellar/stellarUtils';
+import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 
 /**
  * Zeigt zwei Sichten:
@@ -26,6 +26,7 @@ export default function InvestedTokensPanel({ publicKey }) {
   const showTotals = scopeMode === 'totals';
   const qsiOnly = scopeMode === 'qsi';
   const { decimalsMode, fullHorizonUrl, autoUseFullHorizon } = useSettings();
+  const { wallets } = useTrustedWallets();
   // Optionaler Zeitraumfilter (lokales Datum)
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
@@ -62,14 +63,14 @@ export default function InvestedTokensPanel({ publicKey }) {
   // Map Zieladresse -> Info aus Settings-Datei (Label, compromised, deactivated)
   const walletInfoMap = useMemo(() => {
     try {
-      if (!trustedWallets?.wallets) return new Map();
+      if (!wallets?.length) return new Map();
       return new Map(
-        trustedWallets.wallets.map(w => [w.address, { label: w.label, compromised: !!w.compromised, deactivated: !!w.deactivated }])
+        wallets.map(w => [w.address, { label: w.label, compromised: !!w.compromised, deactivated: !!w.deactivated }])
       );
     } catch {
       return new Map();
     }
-  }, []);
+  }, [wallets]);
 
   useEffect(() => {
     // Reset Sortierung beim Wechsel der Ansicht und vorherige Daten leeren,

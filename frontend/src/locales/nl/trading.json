@@ -1,15 +1,15 @@
 {
   "assetSearch": {
-    "title": "Vermogensonderzoek",
-    "description": "Zoek naar activa via het handelsendpunt (Horizon).",
+    "title": "Vermogenszoektocht",
+    "description": "Zoek naar activa via het handelsendpoint (Horizon).",
     "form": {
       "code": {
-        "label": "Activa code",
+        "label": "Activacode",
         "placeholder": "bijv. USDC"
       },
       "issuer": {
-        "label": "Uitgever (optional)",
-        "placeholder": "G… (G…)"
+        "label": "Uitgevende instelling (optional)",
+        "placeholder": "G… (G…=optional)"
       },
       "submit": "Zoeken"
     },
@@ -17,16 +17,16 @@
       "empty": "Geen activa gevonden.",
       "columns": {
         "code": "Code",
-        "issuer": "Uitgevende instelling",
+        "issuer": "Uitgever",
         "numAccounts": "Accounts",
         "amount": "Totaalbedrag"
       }
     },
     "invalidInput": {
-      "codeMissing": "Voer alstublieft een activacode in."
+      "codeMissing": "Voer a.u.b. een activacode in."
     },
     "failed": {
-      "generic": "De activazoekopdracht is mislukt. Probeer het later opnieuw."
+      "generic": "Het zoeken naar activa is mislukt. Probeer het later opnieuw."
     }
   }
 }

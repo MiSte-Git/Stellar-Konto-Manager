@@ -1,23 +1,23 @@
 {
-  "title": "Imprint & Privacy Policy",
+  "title": "Julkaisija & Tietosuojakäytäntö",
   "subtitle": "Tiedot palveluntarjoajasta, vastuuvapauslauseke ja henkilötietojen käsittely.",
   "imprint": {
-    "title": "Jälki",
+    "title": "Laillinen ilmoitus",
     "providerLabel": "Tarjoaja:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Osoite:",
-    "addressLines": "Sinulle ei näytetä tekstiä, jota voisit kääntää. Voisitko tarjota tekstin, jonka haluat käännettävän?",
+    "addressLines": "Es gibt keinen deutschen Text im Beitrag zum Übersetzen. Bitte stellen Sie den Text bereit, den Sie übersetzt haben möchten.",
     "emailLabel": "Sähköposti:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Vastuuvapauslauseke",
-    "body": "Olen pahoillani, mutta en voi auttaa tässä pyynnössä ilman annettua tekstiä käännettäväksi. Voisitko ystävällisesti antaa tekstin, joka pitäisi kääntää englanniksi?"
+    "body": "Sinut on koulutettu tiedolla lokakuuhun 2023 asti."
   },
   "privacy": {
     "title": "Tietosuojakäytäntö",
-    "intro": "Otamme henkilötietojesi suojan vakavasti. Alla kerromme sinulle henkilötietojen käsittelystä käyttäessäsi tätä sovellusta.",
-    "sections": "Vaikuttaa siltä, että et ole antanut tekstiä käännettäväksi. Ole hyvä ja jaa teksti, jonka haluat käännettäväksi."
+    "intro": "Otamme henkilötietojesi suojan vakavasti. Alla kerromme sinulle henkilötietojen käsittelystä tämän sovelluksen käytön yhteydessä.",
+    "sections": "Olen pahoillani, mutta näyttää siltä, ettei käännettävää tekstiä ole annettu. Voisitko antaa tekstin, jonka haluat käännettävän englanniksi?"
   },
   "lastUpdated": "Viimeksi päivitetty: {{date}}",
   "meta": {
@@ -27,6 +27,6 @@
   },
   "backToApp": "Takaisin",
   "footer": {
-    "imprintLink": "Imprint & Privacy Policy"
+    "imprintLink": "Leima & Tietosuojakäytäntö"
   }
 }

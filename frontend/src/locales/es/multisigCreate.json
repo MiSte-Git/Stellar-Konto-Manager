@@ -1,65 +1,65 @@
 {
   "title": "Crear cuenta + multifirma",
-  "menu": "Crear cuenta + Multisig",
+  "menu": "Crear cuenta + Multifirma",
   "menuHint": "Crea una nueva cuenta y, opcionalmente, configura la firma múltiple.",
-  "hint": "Crea una nueva cuenta, actívala y, opcionalmente, configura la firma múltiple.",
+  "hint": "Crea una nueva cuenta, actívala y, opcionalmente, configura multisig.",
   "generateKeys": "Generar clave",
   "enableMultisig": "Habilitar multisig",
   "instructions": {
     "public": "Comparte esta clave pública con otros para pagos.",
-    "secret": "Mantén esta Clave Secreta segura; nunca la compartas."
+    "secret": "Mantén esta clave secreta segura; nunca la compartas."
   },
-  "generateFirst": "Primero, genera un par de claves.",
-  "confirmLowBalance": "El saldo inicial de {bal} XLM está por debajo de la reserva recomendada de {req} XLM (Firmantes: {count}). ¿Proceder?",
+  "generateFirst": "Por favor, genera un par de claves primero.",
+  "confirmLowBalance": "El saldo inicial de {bal} XLM está por debajo de la reserva recomendada de {req} XLM (Firmantes: {count}). ¿Continuar?",
   "activated": "La cuenta ha sido activada. Hash: {hash}",
   "activatedTestnet": "La cuenta fue activada en la testnet a través de Friendbot.",
   "alreadyActive": "La cuenta ya está activada.",
   "createdNoSigners": "Cuenta creada, multisig no configurado.",
-  "createdAndConfigured": "Cuenta creada y firma múltiple configurada. Hash: {hash}",
+  "createdAndConfigured": "Cuenta creada y multisig configurado. Hash: {hash}",
   "info": {
-    "more": "Más información",
+    "more": "Mi entrenamiento se basa en datos hasta octubre de 2023.",
     "keysOnPage": {
       "title": "Clave en esta página",
-      "text": "En esta página se generan claves. Manténgalas seguras y no las comparta."
+      "text": "Esta página genera claves. Mántenlas seguras y no las compartas."
     },
     "title": "Información importante",
     "secureKeys": {
-      "title": "Clave privada segura",
-      "text": "Der Public Key (öffentlicher Schlüssel) kann sicher geteilt werden – er ist wie eine Kontonummer.\\n\\nDer Secret Key (Geheimschlüssel) ist der Zugang zu Ihrem Konto. Behandeln Sie ihn wie ein Passwort:\\n• Speichern Sie ihn NIEMALS in Cloud-Diensten, E-Mails oder unsicheren Notizen\\n• Notieren Sie ihn auf Papier oder verwenden Sie einen Hardware-Wallet\\n• Erstellen Sie mehrere Backups und lagern Sie diese an sicheren, getrennten Orten\\n• Bei Verlust des Secret Keys ist der Zugang zum Konto unwiderruflich verloren"
+      "title": "Clave secreta segura",
+      "text": "The Public Key can be safely shared – it's like an account number.\n\nThe Secret Key is the access to your account. Treat it like a password:\n• NEVER store it on cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the Secret Key is lost, access to the account is irrevocably lost"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
-      "text": "Con Multisig, puedes definir múltiples firmantes para tu cuenta. Las transacciones luego requieren firmas de múltiples, por ejemplo, 2 de 3.\n\nVentajas:\n• Mayor seguridad (ein kompromittierter Key reicht nicht)\n• Cuentas conjuntas (z. B. Firmen, Partnerschaften)\n• Recuperación de emergencia (mehrere Backups bei verschiedenen Personen)\n\nADVERTENCIA: ¡Prueba Multisig primero en la testnet antes de implementarlo en la mainnet! Una configuración incorrecta puede resultar en la pérdida de acceso a la cuenta."
+      "title": "Multifirma",
+      "text": "Con multisig, puedes definir múltiples firmantes para tu cuenta. Las transacciones requerirán firmas de varios, por ejemplo, 2 de 3.\n\nVentajas:\n• Aumenta la seguridad: una clave comprometida no es suficiente\n• Compartida: por ejemplo, empresas, asociaciones\n• Recuperación mediante múltiples copias de seguridad en diferentes personas\n\nADVERTENCIA: ¡Prueba multisig primero en la red de prueba antes de usarlo en la red principal! Una configuración incorrecta puede llevar a perder el acceso a la cuenta."
     },
     "diagram": {
       "title": "Expiración de la firma"
     }
   },
-  "activateHint": "La activación es necesaria para que la cuenta exista. En la testnet, se puede hacer a través de Friendbot, y en la mainnet mediante \"Crear Cuenta\" desde una billetera existente.",
-  "activateNow": "Activar la cuenta inmediatamente.",
-  "activateOnly": "Solo activa",
-  "balanceWarning": "Es probable que el saldo inicial sea demasiado bajo para agregar a los {{count}} firmantes adicionales (reserva mínima: {{req}} XLM).",
-  "createButton": "Crear / Configurar multifirma",
+  "activateHint": "La activación es necesaria para que la cuenta exista. En la Testnet, esto se puede hacer a través de Friendbot, y en la Mainnet, a través de \"Crear cuenta\" desde una billetera existente.",
+  "activateNow": "Activar cuenta inmediatamente",
+  "activateOnly": "Activar solo",
+  "balanceWarning": "Es probable que el saldo inicial sea demasiado bajo para agregar a los {{count}} firmantes adicionales (Reserva mínima: {{req}} XLM)",
+  "createButton": "Crear / Configurar Multisig",
   "mainnetActivateNote": "Nota: Se requieren reservas adicionales para multisig. 1 XLM a menudo no es suficiente.",
   "reserve": {
     "base": "Reserva base por entrada: {{val}} XLM",
     "recommended": "Saldo inicial recomendado: {{val}} XLM (inkl. Puffer)",
-    "required": "Reserva mínima requerida (neu): {{val}} XLM"
+    "required": "Reserva Mínima Requerida (neu): {{val}} XLM"
   },
-  "signersCountLimit": "Nota: Límite de Red (Stellar): máximo 20 firmantes adicionales.",
+  "signersCountLimit": "Nota: Límite de la red (Stellar): máximo 20 signatarios adicionales.",
   "startingBalance": "Crédito inicial (XLM)",
   "keyWarning": {
     "title": "⚠️ ¡Asegura tu clave ahora!",
     "text1": "Has generado un nuevo par de claves.",
-    "text2": "Asegura AMBAS llaves INMEDIATAMENTE antes de continuar:",
-    "list1": "Clave pública: La dirección de tu cuenta, que se puede compartir.",
+    "text2": "Asegure AMBAS llaves INMEDIATAMENTE antes de continuar:",
+    "list1": "Clave pública: La dirección de tu cuenta, se puede compartir.",
     "list2": "Clave secreta: Tu contraseña – ¡NUNCA la compartas ni la guardes en línea!",
-    "list3": "Si se pierde la clave secreta, el acceso se pierde irremediablemente.",
+    "list3": "Si se pierde la clave secreta, el acceso se pierde irrevocablemente.",
     "confirm": "He asegurado ambas llaves."
   },
-  "muxedId": "Muxed-ID",
-  "muxedInfo": "Con la identificación Muxed, se crea una M-address (M...). Esta apunta a la misma cuenta que la dirección regular (G...).",
-  "muxedIdInvalid": "El ID combinado debe ser un número entero entre 0 y 18,446,744,073,709,551,615.",
+  "muxedId": "Muxed ID",
+  "muxedInfo": "Con el Muxed-ID, se crea una M-Address (M...). Apunta a la misma cuenta que la dirección regular (G...).",
+  "muxedIdInvalid": "El ID multiplexado debe ser un número entero entre 0 y 18,446,744,073,709,551,615.",
   "muxedAddress": "Dirección multiplexada",
   "muxedActivationInfo": "Las direcciones muxed son direcciones alias. No necesitan ser activadas por separado."
 }

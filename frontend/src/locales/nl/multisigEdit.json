@@ -1,15 +1,15 @@
 {
   "menu": "Multisig bewerken",
-  "menuHint": "Pas de beheerders en drempels van een bestaand account aan.",
+  "menuHint": "Pas de ondertekenaars en drempels van een bestaand account aan.",
   "confirm": {
-    "removeSigner": "Echt de ondertekenaar verwijderen?"
+    "removeSigner": "Echt ondertekenaar verwijderen?"
   },
-  "currentConfig": "Huidige / Geplande Configuratie",
+  "currentConfig": "Huidige/geplande configuratie",
   "error": {
     "thresholdTooHigh": "Drempels mogen de som van de gewichten niet overschrijden."
   },
-  "hint": "Laad een bestaand account, pas ondertekenaars, gewichten, hoofdsleutelgewicht en drempels aan, en sla de wijzigingen op.",
-  "load": "Laden",
+  "hint": "Laad een bestaand account, pas ondertekenaars, gewichten, hoofdgewicht en drempels aan, en sla de wijzigingen op.",
+  "load": "Winkel",
   "loaded": "Geladen. Extra ondertekenaars: {{count}}",
   "noteMaxSigners": "Opmerking: Stellar staat maximaal 20 extra ondertekenaars per account toe.",
   "reload": "Herladen",
@@ -17,10 +17,10 @@
   "saved": "Wijzigingen opgeslagen. TX: {{hash}}",
   "signers": "Ondertekenaar",
   "weight": "Weging",
-  "masterWeight": "Mastergewicht",
-  "title": "Bewerk multisig-account",
+  "masterWeight": "Meestergewicht",
+  "title": "Multisig-account bewerken",
   "validation": {
-    "signerKeyHint": "Opmerking: Ondertekenaars moeten beginnen met een \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Ongeldig ondertekenaaradres. Een G… adres wordt verwacht (ed25519)."
+    "signerKeyHint": "Opmerking: Ondertekenaars moeten beginnen met \"G\" (ed25519 public key).",
+    "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
   }
 }

@@ -1,4 +1,4 @@
 {
   "warnOnActiveQuiz": "Näytä varoitus meneillään olevan visan aikana.",
-  "warnOnActiveQuiz.desc": "Varoita jo vastatuista kysymyksistä ennen sivulta poistumista."
+  "warnOnActiveQuiz.desc": "Varoita jo vastatuista kysymyksistä ennen sivun jättämistä."
 }

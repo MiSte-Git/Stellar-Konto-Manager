@@ -1,11 +1,11 @@
 {
   "singleVsMulti": {
-    "ariaLabel": "Diagram Single-Sig vs Multisig",
-    "singleTitle": "Single-Sig",
+    "ariaLabel": "Diagram Single-Sig vs. Multisig",
+    "singleTitle": "Single-signature (Single-Sig)",
     "multiTitle": "Multisig",
     "account": "Account",
     "singleKey": "1 key",
-    "keyA": "Signatory A",
+    "keyA": "Signer A",
     "keyB": "Signer B",
     "keyC": "Signer C",
     "singleNote": "A signature is sufficient.",
@@ -14,13 +14,13 @@
   "weights": {
     "ariaLabel": "Diagram weights and thresholds",
     "title": "Weights & Thresholds",
-    "sA": "Signee A",
+    "sA": "Signer A",
     "sB": "Signer B",
     "sC": "Signer C",
     "weight": "Weight:",
     "low": "niedrig",
-    "med": "With",
-    "high": "high",
+    "med": "med",
+    "high": "hoch",
     "lowNote": "Simple actions",
     "medNote": "Payments",
     "highNote": "Critical changes"
@@ -30,7 +30,7 @@
     "title": "Multisig process",
     "step1": "Coordinator creates transaction",
     "step2": "SKM stores Pending Job",
-    "step3": "Signer B/C signing",
+    "step3": "Sign B/C signing",
     "step4": "SKM sends completed transaction"
   }
 }

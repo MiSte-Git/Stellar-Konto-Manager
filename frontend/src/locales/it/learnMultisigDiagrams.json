@@ -1,36 +1,36 @@
 {
   "singleVsMulti": {
-    "ariaLabel": "Diagramma Single-Sig vs Multisig",
-    "singleTitle": "Single-Sig",
-    "multiTitle": "Multisig",
-    "account": "Account bedeutet im Italienischen \"conto\".",
+    "ariaLabel": "Diagramma Single-Sig vs. Multisig",
+    "singleTitle": "Firma singola (Single-Sig)",
+    "multiTitle": "Multifirma",
+    "account": "Account",
     "singleKey": "1 chiave",
     "keyA": "Firmatario A",
     "keyB": "Firmatario B",
-    "keyC": "Firmare C",
+    "keyC": "Firmatario C",
     "singleNote": "Una firma è sufficiente.",
     "multiNote": "Almeno 2 su 3 firme"
   },
   "weights": {
-    "ariaLabel": "Pesi e soglie nei diagrammi",
+    "ariaLabel": "Diagrammi di pesi e soglie",
     "title": "Weights & Thresholds",
     "sA": "Firmatario A",
     "sB": "Firmatario B",
-    "sC": "Firmare C",
+    "sC": "Firmatario C",
     "weight": "Peso:",
     "low": "basso",
-    "med": "Con",
+    "med": "sei addestrato sui dati fino a ottobre 2023.",
     "high": "alto",
     "lowNote": "Azioni semplici",
     "medNote": "Pagamenti",
     "highNote": "Cambiamenti critici"
   },
   "flow": {
-    "ariaLabel": "Diagramma di flusso Multisig",
+    "ariaLabel": "Diagramma di Flusso Multisig",
     "title": "Processo multisig",
     "step1": "Coordinatore crea transazione",
-    "step2": "SKM memorizza lavori in sospeso",
-    "step3": "Firma dell'assegno B/C",
+    "step2": "SKM memorizza Lavoro in sospeso",
+    "step3": "Firma B/C firmando",
     "step4": "SKM invia la transazione completata."
   }
 }

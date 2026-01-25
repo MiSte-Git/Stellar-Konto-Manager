@@ -1,8 +1,8 @@
 {
-  "menu": "Quiz Étoilé pour Débutants",
+  "menu": "Quiz stellaire pour débutants",
   "menuHint": "Aperçu de l'apprentissage",
   "pageTitle": "Page d'apprentissage",
-  "pageIntro": "Cours courts et adaptés aux débutants sur la blockchain et le réseau Stellar. Aucune connaissance préalable requise.",
+  "pageIntro": "Des leçons courtes et adaptées aux débutants sur la blockchain et le réseau Stellar. Aucune connaissance préalable requise.",
   "labels": {
     "goal": "Objectif",
     "task": "Tâche",
@@ -13,16 +13,16 @@
     "startQuiz": "Commencer le quiz"
   },
   "glossary": {
-    "link": "Ouvrir le glossaire",
+    "link": "Ouvrir le glossaire.",
     "pageTitle": "Glossaire"
   },
   "progress": {
     "title": "Progrès d'apprentissage",
-    "saved": "Progression sauvegardée",
+    "saved": "Progrès enregistré.",
     "starsLabel": "{count} ★",
-    "error": "Les progrès n'ont pas pu être sauvegardés.",
-    "clearAll": "Supprimer le progrès",
-    "cleared": "Progression supprimée",
+    "error": "Les progrès n'ont pas pu être enregistrés.",
+    "clearAll": "Supprimer les progrès",
+    "cleared": "Progrès supprimé.",
     "setStarsGroup": "Attribuer des étoiles",
     "setStars": "Définir {count} étoiles",
     "completed": "Terminé",
@@ -35,9 +35,9 @@
   "back": "Retour",
   "backToTop": "Vers le haut",
   "badges": {
-    "title": "Insigne",
+    "title": "Badge",
     "chapters": {
-      "grundlagen": "Notions de base",
+      "grundlagen": "Les bases",
       "sicherheit": "Sécurité",
       "praxis": "Pratique"
     },
@@ -50,7 +50,7 @@
     "retry": "Veuillez réessayer.",
     "noData": "Aucun quiz disponible",
     "comingSoon": "La pratique pour cette leçon suivra sous peu.",
-    "testnetOnly": "Utilisez uniquement le TESTNET. Ne saisissez jamais de clés secrètes réelles. Nous ne conservons pas les secrets."
+    "testnetOnly": "Utilisez uniquement TESTNET. N'entrez jamais de véritables clés secrètes. Nous ne stockons pas les secrets."
   },
   "import": {
     "title": "Progrès d'importation",
@@ -59,102 +59,102 @@
     "metaNo": "non",
     "createdAt": "Fichier créé",
     "strategy": "Comment importer ?",
-    "merge": "Fusionner (Keep existing, supplement from file)",
-    "replace": "Écraser (replace existing progress)",
-    "includePracticeMeta": "Incorporer les métadonnées de pratique",
+    "merge": "Fusion (Keep existing, supplement from file)",
+    "replace": "Remplacer (overwrite existing progress)",
+    "includePracticeMeta": "Adopter les métadonnées de pratique",
     "cancel": "Annuler",
-    "confirm": "Importer",
+    "confirm": "Importation",
     "invalid": "Fichier invalide ou incompatible"
   },
   "lesson1": {
-    "title": "Qu'est-ce qu'une blockchain ?",
+    "title": "Une blockchain est un registre numérique décentralisé qui enregistre des transactions sur plusieurs ordinateurs de manière à ce que les transactions enregistrées ne puissent pas être modifiées rétroactivement. Elle est généralement utilisée pour garantir la sécurité et la transparence des données, souvent associée aux cryptomonnaies mais applicable à divers autres secteurs.",
     "goal": "Comprendre le principe de la blockchain",
-    "task": "Assembler des blocs de construction (Transaktionen) pour former une chaîne.",
-    "learningOutcome": "Une blockchain est un registre numérique immuable que tout le monde peut vérifier collectivement.",
+    "task": "Assembler les blocs de construction (Transaktionen) en une chaîne",
+    "learningOutcome": "Une blockchain est un registre numérique immuable que tout le monde vérifie collectivement.",
     "reward": "⭐ 1 – Constructeur de Blocs"
   },
   "lesson2": {
     "title": "Comprendre Stellar",
-    "goal": "Connaître les différences par rapport aux autres blockchains.",
-    "task": "Envoyez un jeton à un ami (Simulation) et visualisez la vitesse",
-    "learningOutcome": "Stellar est rapide, peu coûteux et ne nécessite pas de minage.",
-    "reward": "⭐ 1 – Expéditeur Rapide"
+    "goal": "Connaître la différence par rapport aux autres blockchains.",
+    "task": "Envoyez un Simulation à un ami et observez la vitesse",
+    "learningOutcome": "Stellar est rapide, abordable et ne nécessite pas de minage.",
+    "reward": "⭐ 1 – Envoi rapide"
   },
   "lesson3": {
-    "title": "Public & Privacy",
+    "title": "Public & Confidentialité",
     "goal": "Comprendre la pseudonymie",
-    "task": "Consulter la transaction publique et deviner si l'expéditeur est connu.",
-    "learningOutcome": "Tout est visible, mais personne ne connaît le véritable nom.",
-    "reward": "⭐ 1 – Détective de la confidentialité des données"
+    "task": "Voir les transactions publiques et deviner si l'on sait qui envoie.",
+    "learningOutcome": "Tout est visible, mais personne ne connaît le vrai nom.",
+    "reward": "⭐ 1 – Détective de la vie privée"
   },
   "lesson4": {
     "title": "Votre compte",
-    "goal": "Comprendre la structure et l'importance de la clé publique/privée",
+    "goal": "Comprendre la structure et l'importance des clés publiques/privées.",
     "task": "Jeu d'association : Qu'est-ce qui est public, qu'est-ce qui est secret ?",
-    "learningOutcome": "Seule la clé secrète donne accès ; la clé publique peut être partagée.",
+    "learningOutcome": "Seule la clé secrète permet l'accès ; la clé publique peut être partagée.",
     "reward": "⭐ 1 – Gardien Clé"
   },
   "lesson5": {
     "title": "Envoyer & Recevoir",
     "goal": "Comprendre le fonctionnement des transactions et des lignes de confiance",
-    "task": "Exécuter l'expédition test et consulter les frais",
-    "learningOutcome": "Chaque transaction entraîne des frais minimes; Trustline = autorisation de recevoir.",
+    "task": "Exécutez la transmission de test et visualisez les frais.",
+    "learningOutcome": "Chaque transaction entraîne un petit frais ; Trustline = permission de recevoir.",
     "reward": "⭐ 2 – Débutant Trustline"
   },
   "lesson6": {
-    "title": "Token & Trading",
+    "title": "Jeton & Commerce",
     "goal": "Apprendre les mécanismes du marché",
-    "task": "Placez des jetons sur le marché virtuel et surveillez les variations de prix.",
+    "task": "Placez un jeton sur une place de marché virtuelle et observez les variations de prix.",
     "learningOutcome": "Le prix est déterminé par l'offre et la demande.",
-    "reward": "⭐ 2 – Expert du Marketplace"
+    "reward": "⭐ 2 – Expert Marketplace"
   },
   "lesson7": {
     "title": "Sécurité",
     "goal": "Apprendre des comportements sûrs",
-    "task": "Trier les actions vraies/fausses; détecter les faux jetons.",
+    "task": "Trier les actions correctes/incorrectes; détecter les faux jetons",
     "learningOutcome": "Garder la clé confidentielle, la stocker en toute sécurité et utiliser le testnet.",
     "reward": "⭐ 2 – Agent de sécurité"
   },
   "lesson8": {
     "title": "Verification & Identity",
-    "goal": "Comprendre la confiance et les règles",
-    "task": "Comparer les jetons authentiques aux jetons contrefaits",
-    "learningOutcome": "KYC = Vérification d'identité, la validation montre des jetons de confiance.",
+    "goal": "Comprendre la Confiance et les Règles",
+    "task": "Comparer les jetons réels aux jetons faux.",
+    "learningOutcome": "KYC = Vérification d'identité, la vérification montre des jetons de confiance.",
     "reward": "⭐ 2 – Expert en examens"
   },
   "lesson9": {
     "title": "Connaissance Zéro",
     "goal": "Comprendre les concepts de confidentialité des données",
-    "task": "Exemple de scénario 'J'ai plus de 18 ans' sans montrer la date de naissance.",
+    "task": "Exemple de scénario 'J'ai plus de 18 ans' sans montrer la date de naissance",
     "learningOutcome": "On peut prouver quelque chose sans révéler de secrets.",
-    "reward": "⭐ 2 – Expert ZK"
+    "reward": "⭐ 2 – Interpréteur ZK"
   },
   "lesson10": {
     "title": "Pratique avec SKM",
-    "goal": "Appliquer les concepts appris de manière pratique.",
-    "task": "Créez un compte sur le testnet, activez-le, établissez une ligne de confiance, envoyez des jetons.",
-    "learningOutcome": "Comprendre les processus techniques d'une transaction.",
-    "reward": "⭐ 3 – Projet pilote de blockchain"
+    "goal": "Appliquer les connaissances acquises dans la pratique.",
+    "task": "Créer un compte sur le testnet, l'activer, établir une ligne de confiance, envoyer des jetons.",
+    "learningOutcome": "Retracez les processus techniques d'une transaction.",
+    "reward": "⭐ 3 – Projet pilote Blockchain"
   },
   "lesson11": {
     "title": "Responsabilité",
     "goal": "Comprendre les conséquences des erreurs",
-    "task": "Jeu de Décision : Agir Correctement ou Non",
-    "learningOutcome": "La blockchain est définitive ; une vérification préalable est indispensable.",
+    "task": "Jeu de prise de décision : agir correctement ou non",
+    "learningOutcome": "La blockchain est définitive ; une diligence raisonnable est indispensable.",
     "reward": "⭐ 1 – Héros de la responsabilité"
   },
   "lesson12": {
     "title": "Conclusion / Apprentissage ludique",
-    "goal": "Répétition et Motivation",
+    "goal": "Revue et Motivation",
     "task": "Mini-quiz + affichage de badge",
-    "learningOutcome": "Passe en revue ce que tu as appris, reconnais tes propres progrès.",
-    "reward": "🎖 Professionnel Étoile"
+    "learningOutcome": "Révise le matériel appris, reconnais les progrès personnels.",
+    "reward": "🎖 Stellar Pro"
   },
   "lesson13": {
-    "title": "Le multisig pour les débutants",
-    "goal": "Comprendre les principes de base du Multisig",
-    "task": "Comparez la signature unique (Single-Sig) avec la multi-signature (Multisig), et examinez un processus d'exemple.",
-    "learningOutcome": "Les signatures multiples augmentent la sécurité; les seuils déterminent combien de signatures sont nécessaires.",
-    "reward": "⭐ 2 – Initiation au Multisig"
+    "title": "Multisig pour les débutants",
+    "goal": "Comprendre les principes fondamentaux du multisig",
+    "task": "Comparez Single-Sig et Multisig et examinez un processus d'exemple.",
+    "learningOutcome": "Des signatures multiples augmentent la sécurité ; les seuils déterminent combien de signatures sont nécessaires.",
+    "reward": "⭐ 2 – Démarrage Multisig"
   }
 }

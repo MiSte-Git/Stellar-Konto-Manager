@@ -6,75 +6,75 @@
   },
   "asset": {
     "balance": "Stanje kredita",
-    "code": "Kod imovine",
-    "creationDate": "Kreirano dana",
-    "issuer": "Izdavač"
+    "code": "Šifra imovine",
+    "creationDate": "Izrađeno dana",
+    "issuer": "Izdavatelj"
   },
   "balance": {
     "buttons": {
-      "details": "Obučen si na podacima do listopada 2023. godine.",
+      "details": "Podaci su do listopada 2023.",
       "explorer": "Istraživač",
       "payments": "Nedavne operacije"
     },
     "current": "Trenutno stanje",
-    "details": "Pojedinosti u blok explorerima",
-    "empty": "Saldo nije pronađen.",
+    "details": "Detalji u Block Explorerima",
+    "empty": "Nisu pronađeni krediti.",
     "explorer": {
       "expert": "stellar.expert",
       "stellarchain": "Stellarchain.io",
       "label": "Istraživač",
       "open": "Otvori u Exploreru",
-      "noneConfigured": "Nijedan istraživač nije konfiguriran.",
-      "settingsHint": "Postavke Explorera možete urediti u postavkama."
+      "noneConfigured": "Nema konfiguriranih istraživača.",
+      "settingsHint": "Možete urediti Explorer u postavkama."
     },
     "noPublicKey": "Molimo unesite javni ključ prvo.",
     "payments": {
-      "all": "Svi",
+      "all": "Sve",
       "columns": {
         "amount": "Iznos",
         "asset": "Imovina",
         "counterparty": "Račun primatelja",
         "date": "Datum",
-        "direction": "Upute",
-        "memo": "Podsjetnik",
-        "tx": "Žao mi je, ali trebam više konteksta kako bih precizno preveo \"Tx\". To može značiti različite stvari ovisno o kontekstu, kao što su \"hvala\" ili \"transakcija\". Možete li, molim vas, pružiti više detalja?",
-        "txLabel": "Žao mi je, čini se da \"Tx\" nije dovoljno jasan. Možete li, molim vas, pružiti više detalja ili pojasniti što biste željeli prevesti ili o čemu se raspitujete?",
+        "direction": "Smjer",
+        "memo": "Memorandum",
+        "tx": "Na vašem raspolaganju su podaci do listopada 2023. godine.",
+        "txLabel": "Vaši poruka izgleda da je nepotpuna. Možete li, molim vas, pružiti više konteksta ili detalja?",
         "type": "Vrsta"
       },
-      "empty": "Nema pronađenih operacija.",
+      "empty": "Nisu pronađene operacije.",
       "filter": {
-        "memo": "Memorijski filter",
-        "memoPlaceholder": "Pretraživanje bilješke...",
+        "memo": "Memo filter",
+        "memoPlaceholder": "Tražim bilješku...",
         "counterparty": "Račun primatelja",
-        "counterpartyPlaceholder": "Filtriranje prema adresi primatelja/pošiljatelja…"
+        "counterpartyPlaceholder": "Filtriraj prema adresi primatelja/pošiljatelja…"
       },
       "from": "Od",
       "incoming": "Ulaz",
       "limit": "Broj",
       "outgoing": "Izlaz",
       "title": "Nedavne operacije",
-      "to": "Do octubre 2023."
+      "to": "Do Октобра 2023."
     },
-    "paymentsHint": "U Exploreru možete filtrirati ulaze/izlaze.",
-    "title": "Prikaži informacije o računu"
+    "paymentsHint": "Možete filtrirati ulaze/izlaze u Exploreru.",
+    "title": "Prikaži podatke o računu"
   },
   "buildInfo": {
     "branch": "Grana",
-    "commit": "Predanost",
+    "commit": "Obaveza",
     "env": "Okoliš",
-    "error": "Informacije o izradi nisu se mogle učitati.",
-    "loading": "Učitavanje informacija o gradnji …"
+    "error": "Podaci o izgradnji nisu mogli biti učitani.",
+    "loading": "Učitavam informacije o izradi …"
   },
   "bugReport": {
     "button": "Prijavi grešku",
-    "title": "Prijavi pogrešku",
-    "descLabel": "Kratki opis (optional)",
+    "title": "Prijavi grešku",
+    "descLabel": "Kratak opis (optional)",
     "descPlaceholder": "Was ist passiert? Schritte, erwartetes Verhalten …",
     "send": "Pošalji povratne informacije",
     "cancel": "Otkazati",
     "toast": {
-      "sent": "Povratne informacije spremljene.",
-      "logOk": "Greška je evidentirana.",
+      "sent": "Povratne informacije su spremljene.",
+      "logOk": "Bug je zabilježen.",
       "logFallback": "Lokalno bilježenje nije uspjelo.",
       "validation": "Unesite kratak opis ili pošaljite bez teksta."
     },
@@ -89,62 +89,62 @@
     "admin": {
       "rejected": "Odbijeno",
       "rejectedReasonTitle": "Razlog odbijanja",
-      "rejectedReasonRequired": "Molimo navedite razlog odbijanja ako je status „Odbijeno“.",
-      "title": "Praćenje grešaka",
-      "locked": "Pristup odbijen. Postavite administratorsku šifru u lokalnu pohranu i osvježite stranicu.",
-      "placeholderTitle": "Sustav za praćenje grešaka",
-      "placeholderBody": "Administratorsko sučelje je aktivno. Nadolazeće zakrpe će uključivati liste, filtere, prioritete i promjene statusa.",
-      "link": "Otvori praćenje grešaka",
+      "rejectedReasonRequired": "Molim navedite razlog odbijanja ako je status „Odbijeno“.",
+      "title": "Sustav za praćenje grešaka",
+      "locked": "Pristup odbijen. Postavite administratorsku tajnu u lokalnu pohranu i ponovno učitajte stranicu.",
+      "placeholderTitle": "Praćenje grešaka",
+      "placeholderBody": "Administracijsko sučelje je aktivno. Nadolazeće zakrpe će uključivati popise, filtre, prioritete i promjene statusa.",
+      "link": "Otvorite praćenje grešaka",
       "secretSaved": "Tajna sačuvana.",
-      "enterSecret": "Unesite administratorsku lozinku",
+      "enterSecret": "Unesite administratorsku tajnu",
       "secretPlaceholder": "••••••••",
-      "confirm": "Otvoreno",
+      "confirm": "Otvori",
       "cancel": "Otkazati",
       "filter": "Filter",
       "status": "Status",
       "priority": "Prioritet",
-      "open": "otvoriti",
+      "open": "otvoreno",
       "in_progress": "u tijeku",
       "closed": "zatvoreno",
       "low": "nizak",
-      "normal": "normalno",
+      "normal": "normalan",
       "high": "visok",
       "urgent": "hitno",
-      "id": "Obučeni ste na podacima zaključno s listopadom 2023.",
-      "created": "Kreirano",
+      "id": "ID",
+      "created": "Stvoreno",
       "url": "URL",
       "language": "Jezik",
-      "email": "E-pošta",
+      "email": "E-Mail",
       "userAgent": "Preglednik",
       "description": "Opis",
       "category": "Kategorija",
       "bugTitle": "Naslov",
       "save": "Sačuvaj",
-      "saved": "Promjena je spremljena",
-      "loadError": "Pogreška pri učitavanju grešaka",
+      "saved": "Promjena spremljena",
+      "loadError": "Greška pri učitavanju grešaka",
       "saveError": "Greška pri spremanju",
       "empty": "Nema pronađenih unosa.",
       "loading": "Učitavanje…",
-      "resize": "Povucite za podešavanje",
-      "exportAll": "CSV (Alle)",
-      "exportError": "Izvoz nije uspio.",
-      "exportPage": "CSV (Comma-Separated Values)",
-      "exporting": "Izvoziti…",
+      "resize": "Povuci za podešavanje",
+      "exportAll": "CSV (Comma-Separated Values)",
+      "exportError": "Izvoz nije uspio",
+      "exportPage": "CSV (Comma Separated Values)",
+      "exporting": "Izvozite…",
       "columns": {
         "title": "Stupci",
-        "manage": "Prilagodi stupce",
-        "hint": "Vidljivost putem potvrdnog okvira, redoslijed s ↑/↓, veličine povlačenjem u zaglavlju tablice.",
-        "reset": "Poništi",
-        "up": "Na vrh",
-        "down": "Naniže"
+        "manage": "Prilagodite stupce",
+        "hint": "Vidljivost pomoću kvačice, redoslijed s ↑/↓, veličine povlačenjem u zaglavlju tablice.",
+        "reset": "Resetovati",
+        "up": "Idi gore.",
+        "down": "Prema dolje"
       },
       "csv": {
         "comma": "Zarez (,)",
-        "delimiter": "Graničnik",
+        "delimiter": "Razgraničivač",
         "semicolon": "Točka sa zarezom (;)",
-        "tab": "Tabulator (Tabulator)"
+        "tab": "Tabulator (Tab)"
       },
-      "search": "Pretraži",
+      "search": "Pretraživanje",
       "col": {
         "id": "ID",
         "status": "Status",
@@ -154,7 +154,7 @@
         "ts": "Vrijeme"
       },
       "rejectionReason": {
-        "label": "Razlog",
+        "label": "Razum",
         "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
       },
       "secretVisibilityToggle": "Prikaži/Sakrij administratorsku tajnu"
@@ -162,30 +162,30 @@
   },
   "cache": {
     "clear": "Očisti predmemoriju",
-    "consent": "Omogući lokalnu predmemoriju za ubrzanje upita?",
+    "consent": "Omogući lokalni keš da ubrzaš upite?",
     "lastPaymentAt": "Posljednja uplata: {{val}}",
     "lastRefresh": "Zadnje ažuriranje: {{ts}}"
   },
-  "clear": "Izbriši unos",
-  "close": "Zatvoren",
+  "clear": "Brisanje unosa",
+  "close": "Obučen si na podacima do listopada 2023.",
   "networkLabel": "Mreža",
-  "loading": "Loading…",
-  "refresh": "Ponovno učitaj",
+  "loading": "Učitavanje…",
+  "refresh": "Učitaj ponovno",
   "exportCsv": {
     "failed": "Izvoz CSV-a nije uspio."
   },
   "feedback": {
-    "title": "Pošaljite povratne informacije",
+    "title": "Pošalji povratne informacije",
     "category": "Kategorija",
-    "categoryPlaceholder": "Odaberi kategoriju",
+    "categoryPlaceholder": "Odaberite kategoriju",
     "area": "Područje",
-    "areaPlaceholder": "Odaberi područje",
+    "areaPlaceholder": "Odaberite područje",
     "noCategoriesConfigured": "Kategorije još nisu konfigurirane. Molimo postavite ih u postavkama.",
-    "noAreasConfigured": "Područja još nisu konfigurirana. Molimo stvorite ih u postavkama.",
+    "noAreasConfigured": "Još uvijek nema konfiguriranih područja. Molimo postavite ih u postavkama.",
     "categoryUnknown": "Nepoznata kategorija",
-    "areaUnknown": "Nepoznato područje",
+    "areaUnknown": "Nepoznata oblast",
     "categories": {
-      "bug": "Greška",
+      "bug": "Pogreška",
       "idea": "Ideja",
       "improve": "Poboljšanje",
       "other": "Razno"
@@ -193,73 +193,73 @@
     "page": "Područje",
     "pages": {
       "start": "Glavna stranica",
-      "trustlines": "Prikazati Trustline(s)",
-      "trustlineCompare": "Usporedi Trustline",
+      "trustlines": "Prikaži Trustline(s)",
+      "trustlineCompare": "Usporedba Trustline(s)",
       "balance": "Prikaži informacije o računu",
-      "xlmByMemo": "Filtriraj po memorandumu",
+      "xlmByMemo": "Filtriraj prema bilješci",
       "sendPayment": "Pošalji uplatu",
-      "investedTokens": "Filtriraj tokene/imovinu",
+      "investedTokens": "Filtriraj tokene/imovinu.",
       "createAccount": "Kreiraj račun",
       "multisigEdit": "Uredi multisig račun",
       "settings": "Postavke",
       "feedback": "Povratne informacije",
-      "other": "Razno",
+      "other": "Drugi",
       "bugtracker": "Sustav za praćenje grešaka",
       "global": "Glavna stranica"
     },
     "subject": "Predmet",
     "message": "Poruka",
-    "contactEmailOptional": "Kontakt email",
+    "contactEmailOptional": "Kontaktna e-pošta (optional)",
     "emailPlaceholder": "z.B., ime@primjer.com",
-    "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
+    "emailHint": "Ako želite povratne informacije, molimo unesite svoju e‑mail adresu.",
     "form": {
-      "clearButton": "Obriši polja",
-      "multiEntryHint": "Kako bi proces uređivanja bio jasan, molimo kreirajte samo jednu poruku po grešci, prijedlogu ili ideji."
+      "clearButton": "Očisti polja",
+      "multiEntryHint": "Molim te, stvori samo jednu poruku po grešci, prijedlogu ili ideji kako bi proces uređivanja bio jasan i organiziran."
     },
-    "privacyHint": "Vaša poruka će biti direktno sačuvana u bug trackeru.",
+    "privacyHint": "Vaša poruka će biti direktno pohranjena u alat za praćenje grešaka.",
     "sendButton": "Pošalji povratne informacije",
     "openedMailClient": "Povratne informacije spremljene.",
-    "error": "Pogreška",
-    "sentTo": "Unos je sačuvan u sustavu za praćenje grešaka."
+    "error": "Greška",
+    "sentTo": "Unos spremljen u sustav za praćenje grešaka."
   },
   "account": {
-    "createdAt": "Račun kreiran dana",
-    "createdAtUnknown": "Ne može se odrediti.",
-    "testnetLabel": "(Testnet)"
+    "createdAt": "Račun kreiran na",
+    "createdAtUnknown": "Ne može se utvrditi.",
+    "testnetLabel": "(__BEHALTEN_EN_TERM_1__)"
   },
   "fetch": {
     "groupfund": {
-      "aborted": "Operacija otkazana od strane korisnika"
+      "aborted": "Operacija otkazana od strane korisnika."
     }
   },
   "issuer": {
     "enter": "Unesite adresu izdavatelja:",
-    "invalid": "Nevažeća adresa izdavatelja."
+    "invalid": "Nevažeća adresa pošiljatelja."
   },
   "main": {
-    "processing": "Postupak je u tijeku, molimo pričekajte…",
-    "title": "Stellar Account Manager"
+    "processing": "Proces u tijeku, molimo pričekajte …",
+    "title": "Izvanredan voditelj računa"
   },
   "badges": {
-    "testnet": "TESTNET"
+    "testnet": "Testna mreža"
   },
-  "noIssuerTrustlinesFound": "Nema pronađenih povjerenja za izdavatelja {{issuer}}.",
+  "noIssuerTrustlinesFound": "Nema pronađenih povjereničkih linija za izdavatelja {{issuer}}.",
   "option": {
-    "add": "Dodaj",
-    "cancel": "Otkaži",
+    "add": "Dodati",
+    "cancel": "Odustani",
     "close": "Zatvoreno",
     "back": "Nazad",
-    "backToSelection": "Povratak na odabir",
+    "backToSelection": "Natrag na odabir",
     "confirm": {
       "action": {
         "text": "Jesi li siguran?",
-        "title": "Potvrdi radnju"
+        "title": "Potvrdite radnju"
       }
     },
     "copy": "Kopiraj",
-    "delete": "Obriši",
+    "delete": "Izbrisati",
     "export": {
-      "csv": "Sačuvaj kao CSV",
+      "csv": "Spremi kao CSV",
       "pdf": "Spremi kao PDF"
     },
     "loading": "Učitavanje...",
@@ -269,115 +269,115 @@
   },
   "progress": {
     "cancel": "Otkazati",
-    "canceled": "Otkazano",
-    "counts": "Provjereno: {{ops}} • Pogoci: {{matches}}",
-    "done": "Završeno",
+    "canceled": "Prekinuto",
+    "counts": "Provjereno: {{ops}} • Podudaranja: {{matches}}",
+    "done": "Dovršeno",
     "duration": "Trajanje: {{val}}",
     "elapsed": "Trajanje: {{time}}",
-    "eta": "Procijenjeno vrijeme dolaska: {{minutes}} min.",
-    "firstMatchAt": "Zadnji polog: {{date}}",
+    "eta": "ETA: {{minutes}} min.",
+    "firstMatchAt": "Posljednji depozit: {{datum}}",
     "mode": {
-      "cache": "Način: Predmemorija",
-      "live": "Način: Uživo (Horizon)"
+      "cache": "Način: Keširanje",
+      "live": "Način rada: Uživo (Horizon)"
     },
     "oldest": "najstariji datum na ovoj stranici: {{date}}",
     "oldestMatchInRangeAt": "Prva uplata u razdoblju: {{date}}",
     "phase": {
       "backfill": "Učitavanje nedostajućih uplata…",
       "cacheQuery": "Izračunavanje rezultata iz lokalne predmemorije…",
-      "chunkDone": "Dio obrađeno.",
-      "chunkSkip": "Dio sadržaja preskočen.",
+      "chunkDone": "Obrađeni dio.",
+      "chunkSkip": "Preskočen dio.",
       "cover": "Osiguravanje pokrivenosti predmemorije…",
       "export": "Rezultat izvoza…",
       "finalize": "Dovršeno",
       "finalizeDiag": "Dijagnoza završena",
       "idle": "Bereit…",
-      "pageDone": "Stranica {{page}} dovršena.",
-      "rehydrate": "Obnavljanje predmemorije…",
+      "pageDone": "Stranica {{page}} završena.",
+      "rehydrate": "Obnavljanje cachea…",
       "scan": "Skeniranje uplata (stranica {{page}})…",
-      "scan_ops": "Operacije skeniranja…",
+      "scan_ops": "Skeneri operacija…",
       "scan_payments": "Skeniranje plaćanja (stranica {{page}})…",
-      "scan_payments_fast": "Skeniranje plaćanja (schnell) – Stranica {{page}}…",
+      "scan_payments_fast": "Skeniraj plaćanja (schnell) – stranica {{page}}…",
       "scan_tx": "Skeniraj transakcije",
       "sync": "Sinkroniziraj plaćanja…",
-      "txFetch": "Učitavanje pojedinosti o transakciji…"
+      "txFetch": "Učitavam podatke o transakcijama…"
     },
     "wrongMemos": {
-      "failed": "Pogreška pri učitavanju uplata s netočnom/praznom napomenom."
+      "failed": "Pogreška pri učitavanju uplata s netočnom ili praznom napomenom."
     }
   },
   "settings": {
     "cache": {
-      "help": "Ubrzava upite kroz lokalnu predmemoriju plaćanja, ali može produžiti početno učitavanje.",
-      "label": "Koristi predmemoriju (Beta)",
-      "prefetchHelp": "Vrijeme potrebno za učitavanje unosa/transakcija u danima (einmalig beim ersten Aktivieren)"
+      "help": "Ubrzava upite putem lokalne predmemorije plaćanja, ali može produžiti početno učitavanje.",
+      "label": "Koristi cache (Beta)",
+      "prefetchHelp": "Vrijeme čekanja za učitavanje unosa/transakcija u danima (einmalig beim ersten Aktivieren)"
     },
     "network": {
       "title": "Mreža",
-      "desc": "Neobavezno: Full-History-Horizon za duboku povijest",
-      "fullUrl": "URL punog povijesnog horizonta",
-      "autoUseFull": "Automatski koristiti ako je potrebno (when From-Date is older than server history)"
+      "desc": "Neobavezno: Horizont pune povijesti za duboku povijest",
+      "fullUrl": "URL s potpunom povijesti horizonta",
+      "autoUseFull": "Automatski upotrijebi ako je potrebno (when the From-Date is older than the server history)"
     },
-    "description": "Trenutačno nema postavki.",
+    "description": "Trenutno nema postavki.",
     "display": {
       "decimals": {
         "auto": "Automatski",
-        "label": "Decimalna mjesta"
+        "label": "Decimale znamenke"
       },
-      "desc": "Postavke globalnih oglasa.",
-      "title": "Oglas"
+      "desc": "Globalne postavke prikaza.",
+      "title": "Reklama"
     },
     "explorer": {
       "edit": "Uređivanje",
-      "editTitle": "Uredi unos istraživača"
+      "editTitle": "Uredi unos u Exploreru"
     },
     "error": {
       "fetchFailed": "Učitavanje postavki nije uspjelo: {{detail}}"
     },
     "label": "Postavke",
-    "prefetchDays": "Vrijeme isporuke (Lead time)",
+    "prefetchDays": "Vrijeme isporuke",
     "trustedWallets": {
       "buttons": {
         "export": "Izvoz",
         "import": "Uvoz",
-        "reset": "Vrati na zadane postavke."
+        "reset": "Vratiti na zadane postavke"
       },
-      "desc": "Ova lista je pohranjena lokalno u pregledniku. Zadana datoteka: QSI_TrustedWallets.json",
+      "desc": "Ovaj popis je pohranjen lokalno u pregledniku. Zadana datoteka: QSI_TrustedWallets.json",
       "editor": {
         "invalidFormat": "Neispravan format. Očekuje se objekt s poljem \"wallets\" (Array).",
-        "parseError": "JSON nije moguće parsirati."
+        "parseError": "JSON se nije mogao raščlaniti."
       },
       "file": {
-        "hint": "Uvezite JSON datoteku u formatu { wallets: [...] }",
+        "hint": "Uvezite JSON datoteku u formatu { \"wallets\": [...] }",
         "label": "Datoteka"
       },
       "info": {
         "count": "Unosi: {{n}}",
-        "updatedAt": "Status: {{datum}}"
+        "updatedAt": "Do {{date}}"
       },
       "table": {
-        "addRow": "Dodaj redak",
+        "addRow": "Dodaj liniju",
         "columns": {
           "actions": "Radnje",
           "address": "Adresa",
           "compromised": "Kompromitiran",
-          "deactivated": "Deaktiviran",
+          "deactivated": "Deaktivirano",
           "label": "Oznaka"
         },
-        "deleteRow": "Izbrisati",
+        "deleteRow": "Izbriši",
         "discard": "Odbaci",
-        "save": "Sačuvaj"
+        "save": "Spremi"
       },
-      "title": "Moji pouzdani novčanici",
+      "title": "Moji Pouzdani Novčanici",
       "validation": {
-        "hint": "Najmanje jedan redak je nevažeći (fehlende/duplizierte Adresse)."
+        "hint": "Barem jedan redak je nevažeći (fehlende/duplizierte Adresse)."
       }
     }
   },
   "trustlines": {
     "deleted": {
       "deletingProgress": "Brisanje u tijeku: {{current}} / {{total}}",
-      "success": "Uspjeh: {{count}} Trustline(s) izbrisana."
+      "success": "Uspješno: {{count}} Trustline(s) izbrisano."
     },
     "skippedDueToBalance": "{{count}} Trustline(s) preskočeno (noch Guthaben vorhanden)."
   },
@@ -386,32 +386,32 @@
       "title": "Pošalji uplatu",
       "recipient": "Primatelj",
       "amount": "Količina",
-      "asset": "Imovina",
+      "asset": "Aktiva",
       "memo": "Zapisnik",
-      "memoType": "Vrsta memoranduma",
+      "memoType": "Vrsta dopisa",
       "memoTypes": {
-        "none": "Memo (KEEP_EN_TERM_1)",
-        "text": "Tekst dopisa",
-        "id": "ID bilješke",
+        "none": "Memorandum (kein Memo)",
+        "text": "Memorandum",
+        "id": "ID memoranduma",
         "hash": "Memo Hash",
         "return": "Povratak memoranduma",
         "info": {
-          "none": "Bez memoranduma. Koristite ovo ako primatelj ne očekuje memorandum.",
-          "text": "Besplatan tekst do 28 bajtova. Obično se koristi za alokaciju s jednostavnim plaćanjima.",
-          "id": "Numerički ID (uint64). Mnoge berze koriste Memo ID za raspodelu depozita.",
-          "hash": "32-bajtni SHA-256 sažetak (als 64-stellige Hex-Zeichenfolge). Koristi se od strane usluga za reference.",
+          "none": "Nema zabilješke. Koristite ovo ako primatelj ne očekuje zabilješku.",
+          "text": "Slobodan tekst do 28 bajtova. Često se koristi za alokaciju u jednostavnim plaćanjima.",
+          "id": "Numerički ID (uint64). Mnoge burze koriste ID memoranduma za dodjelu depozita.",
+          "hash": "32-bajtni SHA-256 hash (als 64-stellige Hex-Zeichenfolge). Koristi se od strane usluga za reference.",
           "return": "32-bajtni hash za povrate. Koristi se za povrate (MEMO_RETURN)."
         }
       },
-      "available": "Dostupno",
+      "available": "Dostupan",
       "reserved": "Rezervirano",
-      "reservedInline": "{{amount}} XLM su rezervirani na mreži Stellar.",
-      "baseReserve": "Osnovne rezerve",
+      "reservedInline": "{{amount}} XLM su rezervirane od strane Stellar mreže.",
+      "baseReserve": "Osnovna rezerva",
       "extra": "Dodatno",
-      "xlmInOffers": "Veže ih ponude.",
+      "xlmInOffers": "Povezani ponudama",
       "trustlines": "Povjereničke linije ({{n}})",
       "lpTrustlines": "LP‑Trustlines",
-      "offers": "Otvoreni natječaji",
+      "offers": "Otvorene ponude",
       "signers": "Dodatni potpisnici",
       "accountData": "Account‑Daten",
       "sponsoring": "Sponzorstvo",
@@ -419,92 +419,93 @@
       "sendButton": "Pošalji",
       "success": "Uspjeh: Plaćanje poslano. TX: {{hash}}",
       "successShort": "Uspješno poslano",
-      "error": "Greška prilikom slanja: {{detail}}",
+      "error": "Pogreška prilikom slanja: {{detail}}",
       "amountMissing": "Molimo unesite iznos.",
       "amountInvalid": "Nevažeći iznos (max. 7 Nachkommastellen).",
       "amountPositive": "Iznos mora biti veći od 0.",
       "timeout": "Horizon Timeout (504). Molimo pokušajte ponovno uskoro.",
-      "httpError": "Pogreška horizonta (status {{status}}).",
+      "httpError": "Greška horizonta (status {{status}}).",
       "horizonError": "Stellar je odbio transakciju.",
-      "destUnfundedNonNative": "Odredišni račun nije aktivan. Molimo pošaljite prvo XLM kako biste ga aktivirali ili zamijenite imovinu u XLM.",
+      "destUnfundedNonNative": "Odlazni račun nije aktivan. Molimo vas da prvo pošaljete XLM za aktivaciju ili promijenite sredstvo u XLM.",
       "activateConfirm": {
         "title": "Potrebna je aktivacija računa.",
         "info": "Ciljani račun još nije aktivan. Za aktivaciju je potreban minimalni iznos.",
         "minReserve": "Minimalni iznos (2 × osnovna rezerva)",
-        "yourAmount": "Količina koju ste unijeli",
+        "yourAmount": "Uneseni iznos",
         "adjustedAmount": "Predloženi iznos (zum Aktivieren)",
-        "noteAdjust": "Vaš saldo nije dovoljan za aktivaciju. Ako nastavite, minimalni iznos će biti automatski poslan."
+        "noteAdjust": "Vaš saldo nije dovoljan za aktivaciju. Ako nastavite, minimalni iznos će biti poslan automatski."
       },
-      "activated": "Ciljani račun je aktiviran."
+      "activated": "Ciljani račun je aktiviran.",
+      "recipientRefresh": "Osvježi primatelja"
     }
   },
   "activation": {
     "notFound": {
       "title": "Ciljani račun nije aktivan.",
-      "message": "Odredišni račun još ne postoji ({address}). Mora biti aktiviran s najmanje 1 XLM. Želite li aktivirati račun sada?"
+      "message": "Odredišni račun još ne postoji ({address}). Treba ga aktivirati s najmanje 1 XLM. Želite li sada aktivirati račun?"
     },
     "actions": {
       "yes": "Da – Aktiviraj račun",
-      "no": "Ne – Odustani",
-      "processing": "Aktiviraj…"
+      "no": "Ne – Otkazano",
+      "processing": "Aktiviere…"
     }
   },
   "createAccount": {
     "muxedId": "Muxed-ID",
-    "muxedInfo": "Muxed ID se koristi za stvaranje M-Address (M...). Ukazuje na isti račun kao i obična adresa (G...).",
+    "muxedInfo": "Muxed-ID se koristi za stvaranje M-adrese (M...). Ona upućuje na isti račun kao i regularna adresa (G...).",
     "muxedIdInvalid": "Muxed-ID mora biti cijeli broj između 0 i 18.446.744.073.709.551.615.",
-    "muxedAddress": "Muxed adresa",
-    "muxedActivationInfo": "Muxed adrese su alias adrese. Njih nije potrebno zasebno aktivirati."
+    "muxedAddress": "Multiplicirana adresa",
+    "muxedActivationInfo": "Muxed adrese su alias adrese. Ne trebaju biti posebno aktivirane."
   },
   "muxed": {
     "seo": {
-      "title": "Kreiraj/Upravljaj Muxed računom",
-      "description": "Kreirajte i upravljajte muxed adresnim aliasima (M...) za Stellar račun. Generirajte ID-ove, dodajte oznake/bilješke, izvezite/uvezite CSV."
+      "title": "Kreiraj/upravljaj multipleksiranim računom",
+      "description": "Kreirajte i upravljajte aliasima multipleksiranih računa (M...) za Stellar račun. Generirajte ID-ove, dodajte oznake/bilješke, izvoz/uvoz CSV-a."
     },
-    "title": "Kreiraj/upravljaj višeslojni račun",
-    "explainer": "Generirajte alias adrese (M...) s jedinstvenim Muxed ID-om za postojeći račun. Alias adresa uvijek upućuje na isti račun.",
-    "infoButtonLabel": "Obučen sam na podacima zaključno s listopadom 2023.",
+    "title": "Kreiraj/Upravljaj Muxed računom",
+    "explainer": "Izradite alias adrese (M...) s jedinstvenim muxed ID-om za postojeći račun. Alias adresa će uvijek pokazivati na isti račun.",
+    "infoButtonLabel": "Informacija",
     "info": {
-      "title": "Što je Muxed račun?",
+      "title": "Što je muxed račun?",
       "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
       "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
-      "purposeTitle": "Svrha i pogodnosti",
+      "purposeTitle": "Svrha i koristi",
       "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
       "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
       "examples": {
-        "ex1": "Firmenzahlungen: Jede Mitarbeiterin/jeder Mitarbeiter erhält eine eigene Muxed‑ID, damit Lohnzahlungen eindeutig zugeordnet werden können.",
+        "ex1": "Isplate firmi: Svaka zaposlenica/svaki zaposlenik dobiva vlastiti Muxed‑ID kako bi se plaće mogle jednoznačno dodijeliti.",
         "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
-        "ex3": "Projekti ili pod-računi: Organizacija može dodijeliti proračune ili prihode pojedinačnim projektima.",
+        "ex3": "Projekti ili podračuni: Organizacija može raspodijeliti proračune ili prihode na pojedinačne projekte.",
         "ex4": "Kundenzuordnung: Eine M‑Adresse pro Kunde; die ID entspricht der Kunden‑ID – Zahlungen sind eindeutig zuordenbar, auch ohne Memo.",
         "ex5": "Usluge bez memoranduma: Razlikujte depozite kada usluga ne podržava memorandume.",
         "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
         "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
-        "ex8": "Odjeli/Troškovi centri: ID-ovi kao centri troškova; automatsko grupiranje uplata po područjima.",
+        "ex8": "Odjeli/Troškovni centri: Identifikacijski brojevi kao troškovni centri; automatski grupirati uplate po području.",
         "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
       },
-      "pageTitle": "Što ova stranica radi u SKM-u",
+      "pageTitle": "Što ova stranica radi u SKM-u?",
       "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
       "createTitle": "Neue Muxed‑Konten erstellen",
       "createItems": {
         "i1": "Erzeugt neue Muxed‑Adressen (M...) aus deiner Basisadresse (G...).",
-        "i2": "Opcionalno s oznakom (Name) i bilješkom (z. B. Projekt oder Zweck)."
+        "i2": "Opcionalno s oznakom (Name) i napomenom (z. B. Projekt oder Zweck)."
       },
       "importTitle": "Import aus CSV‑Dateien",
       "importItems": {
         "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
-        "i2": "Čita stupce muxedId, label, note."
+        "i2": "Pročitaj stupce muxedId, label, note."
       },
       "exportTitle": "Export vorhandener Muxed‑Konten",
       "exportItems": {
-        "i1": "Izvezi sve pohranjene zapise kao CSV.",
-        "i2": "Polja: basePublicKey, muxedId, muxedAddress, oznaka, bilješka, createdAt."
+        "i1": "Izvezi sve spremljene unose kao CSV.",
+        "i2": "Polja: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
       },
       "templateTitle": "Template‑Export",
       "templateItems": {
         "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
         "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
       },
-      "manageTitle": "Administration & Overview",
+      "manageTitle": "Management & Overview",
       "manageItems": {
         "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
         "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
@@ -514,52 +515,52 @@
     },
     "selectBaseAccount": "Osnovni račun (G-Adresse)",
     "selectPlaceholder": "Molimo odaberite račun",
-    "baseAccountInfo": "Ovaj račun tehnički ostaje vlasnik. Muxed adresa (M...) samo upućuje na ovaj račun.",
-    "generateButton": "Kreiraj muxed račun",
+    "baseAccountInfo": "Ovaj račun tehnički ostaje vlasnik. Multipleksirana adresa (M...) samo ukazuje na ovaj račun.",
+    "generateButton": "Kreirajte muxed račun",
     "exportButton": "Izvoz",
     "importButton": "Uvoz",
-    "listTitle": "Postojeći umućeni računi",
-    "none": "Nema pohranjenih multipleksiranih računa.",
+    "listTitle": "Postojeći miješani računi",
+    "none": "Nema spremljenih multipleksiranih računa.",
     "columns": {
-      "id": "Muxed-ID",
-      "address": "Muxed adresa",
-      "label": "Naziv",
+      "id": "Muxed ID",
+      "address": "Muxirana adresa",
+      "label": "Oznaka",
       "note": "Napomena",
       "createdAt": "Kreirano dana",
-      "actions": "Dionice"
+      "actions": "Radnje"
     },
     "selectAll": "Odaberi sve",
     "deleteSelected": "Izbriši odabir",
-    "deleteSuccess": "Odabir je obrisan.",
+    "deleteSuccess": "Izbor izbrisan.",
     "countLabel": "Broj",
-    "countInfo": "Broj novih muxiranih adresa, uzastopni identifikatori.",
-    "invalidCount": "Unesite važeći broj (>= 1).",
-    "tooMany": "Molimo kreirajte najviše 100 odjednom.",
-    "rangeOverflow": "Raspon ID prekoračuje maksimalno dopušteni Muxed ID.",
+    "countInfo": "Broj novih multipleksiranih adresa, sekvencijalni ID-ovi.",
+    "invalidCount": "Molimo unesite važeći broj (>= 1).",
+    "tooMany": "Molim vas da ne kreirate više od 100 odjednom.",
+    "rangeOverflow": "Raspon ID-a prelazi maksimalni dozvoljeni muxed ID.",
     "label": "Oznaka",
-    "labelInfo": "z.B. ime zaposlenika ili svrha",
+    "labelInfo": "z. B. ime zaposlenika ili svrha",
     "note": "Napomena (optional)",
-    "noteInfo": "z.B. Odjel / Projekt",
-    "generateSuccess": "Muxed adresa (n) stvorena.",
-    "editSaved": "Promjene sačuvane.",
-    "save": "Spremište",
-    "edit": "Izrađen si na podacima do listopada 2023.",
+    "noteInfo": "z.B. odjel/projekt",
+    "generateSuccess": "Stvorena je multipleksirana adresa.",
+    "editSaved": "Promjene spremljene.",
+    "save": "Sačuvaj",
+    "edit": "Uređivanje",
     "copied": "Kopirano u međuspremnik.",
     "createDialog": {
-      "confirm": "Napravi",
+      "confirm": "Kreiraj",
       "cancel": "Otkaži"
     },
     "export": {
       "filename": "muxed_accounts.csv",
-      "success": "Muxed nalozi uspješno izvezeni.",
-      "failed": "Greška pri izvozu multipleksiranih računa."
+      "success": "Uspješno izvezeni muxed računi.",
+      "failed": "Pogreška tijekom izvoza multipleksiranih računa."
     },
     "import": {
       "success": "Uvezeno: {{imported}} • Preskočeno: {{skipped}} • Pogreške: {{errors}}.",
-      "failed": "Pogreška prilikom uvoza.",
-      "hint": "Uvoz podržava CSV s zaglavljem. Razdjelnici kao što su zarezi, točke sa zarezima i tabulatori automatski se otkrivaju. Nepoznati stupci se zanemaruju. Formati: prošireni (network,basePublicKey,muxedId,label,note,createdAt) ili predložak (muxedId,label,note)."
+      "failed": "Pogreška pri uvozu.",
+      "hint": "Uvoz podržava CSV s redom zaglavlja. Razdjelnike kao što su zarez, točka sa zarezom i tabulator automatski otkriva. Nepoznati stupci se ignoriraju. Formati: prošireni (network,basePublicKey,muxedId,label,note,createdAt) ili predložak (muxedId,label,note)."
     },
-    "exportTemplateButton": "Izvozna šablona",
+    "exportTemplateButton": "Predložak za izvoz",
     "exportTemplateSuccess": "Predložak je uspješno izvezen.",
     "exportTemplateFailed": "Pogreška pri izvozu predloška.",
     "csv": {
@@ -573,14 +574,14 @@
     "nav": "Muxed računi",
     "error": {
       "noBaseAccount": "Molimo odaberite postojeći račun.",
-      "noId": "Molim vas da dostavite Muxed-ID.",
+      "noId": "Molimo navedite Muxed-ID.",
       "invalidBaseAccount": "Odabrana osnovna adresa je nevažeća.",
-      "unknown": "Nepoznata greška pri generisanju multipleksovane adrese."
+      "unknown": "Nepoznata greška tijekom generiranja multipleksirane adrese."
     }
   },
   "terms": {
     "masterContract": "Okvirni sporazum",
-    "masterDownPayment": "Predujam",
+    "masterDownPayment": "Kapara",
     "masterPayment": "Plaćanje"
   },
   "i18n": {
@@ -589,88 +590,88 @@
     }
   },
   "common": {
-    "clear": "Izbriši unos.",
-    "close": "Zatvoreno",
+    "clear": "Izbriši unos",
+    "close": "Zatvoriti",
     "loading": "Učitavanje…",
-    "refresh": "Učitaj ponovno"
+    "refresh": "Učitati ponovo"
   },
   "error": {
     "asset": {
-      "creationDateUnknown": "Nepoznat datum kreiranja"
+      "creationDateUnknown": "Nepoznati datum stvaranja"
     },
     "cache": {
       "backfillAborted": "Početno učitavanje uplata je prekinuto.",
       "coverage": {
-        "newestFailed": "Nije uspjelo dohvaćanje posljednje uplate.",
-        "oldestFailed": "Nije uspjelo odrediti najstariji datum"
+        "newestFailed": "Odredite najnovije neuspjelo plaćanje.",
+        "oldestFailed": "Nije uspjelo utvrditi najstariji datum."
       },
       "indexIterFailed": "Iteracija indeksa u predmemoriji nije uspjela.",
-      "memoNormBackfillFailed": "Početno učitavanje uplata za normalizirane bilješke nije uspjelo.",
-      "openFailed": "Lokalna predmemorija se nije mogla otvoriti",
+      "memoNormBackfillFailed": "Početno učitavanje plaćanja za normalizirane napomene nije uspjelo.",
+      "openFailed": "Lokalna predmemorija se nije mogla otvoriti.",
       "readFailed": "Neuspješno čitanje iz predmemorije",
-      "rehydrateFailed": "Učitavanje propuštenih dopisa nije uspjelo.",
-      "rehydrateWriteFailed": "Nije uspjelo zapisivanje memoranduma u predmemoriju.",
-      "writeFailed": "Neuspješno pisanje u predmemoriju"
+      "rehydrateFailed": "Učitavanje nedostajućih dopisa nije uspjelo.",
+      "rehydrateWriteFailed": "Neuspjelo spremanje bilješki u predmemoriju.",
+      "writeFailed": "Neuspješno zapisivanje u predmemoriju"
     },
     "connection": {
-      "backend": "Nije moguće povezati se s backendom. Molimo osigurajte"
+      "backend": "Nije moguće uspostaviti vezu s backendom. Molimo osigurajte"
     },
     "fetchInvestedTokens": {
-      "failed": "Učitavanje podataka o investicijama nije uspjelo: {{detail}}"
+      "failed": "Učitavanje podataka o investicijama nije uspjelo: {{detalji}}"
     },
     "horizon": {
-      "paymentsFetch": "Pogreška pri učitavanju uplata iz Horizona"
+      "paymentsFetch": "Pogreška pri učitavanju uplata s Horizona"
     },
-    "loadTrustlines": "Nije moguće učitati povjereničke linije. Molimo pokušajte ponovno.",
-    "loadTrustlinesFailed": "Učitavanje trust lines nije uspjelo",
+    "loadTrustlines": "Trustlines se nisu mogli učitati. Pokušajte ponovno.",
+    "loadTrustlinesFailed": "Učitavanje linija povjerenja nije uspjelo.",
     "loadTrustlinesNotFound": "Račun u mreži '{{network}}' nije pronađen.",
     "accountNotFoundInNetwork": "Nije pronađeno u '{{net}}'!",
     "op_invalid_limit": "Trustline se ne može izbrisati. Možda još uvijek ima saldo ili nepodmirene obveze.",
     "query": {
       "invalidMemo": "Nevažeća bilješka",
-      "invalidRange": "Vremenski okvir je nevažeći (Od > Do)",
+      "invalidRange": "Vremenski interval je nevažeći (Početno vrijeme > Završno vrijeme)",
       "invalidTime": "Nevažeća specifikacija vremena"
     },
     "submitTransaction": {
       "failed": {
         "tx_bad_auth": "Transakcija odbijena: Nevažeći potpis",
-        "tx_failed": "Transakcija nije uspjela",
+        "tx_failed": "Transakcija nije uspjela.",
         "unknown": "Nepoznata greška tijekom transakcije"
       }
     },
     "sync": {
       "backfillFailed": "Početno učitavanje uplata nije uspjelo.",
-      "incrementalFailed": "Ažuriranje uplata nije uspjelo"
+      "incrementalFailed": "Ažuriranje plaćanja nije uspjelo."
     },
     "transaction": {
       "failed": "Transakcija nije uspjela",
-      "title": "Greška u transakciji"
+      "title": "Pogreška transakcije"
     },
     "trustline": {
-      "submitFailed": "Pogreška pri brisanju povjerenja.",
+      "submitFailed": "Pogreška pri brisanju povjereničke linije.",
       "unknown": "Nepoznata greška prilikom brisanja linije povjerenja."
     },
     "xlmByMemo": {
       "aborted": "Operacija otkazana od strane korisnika.",
       "accountInvalid": "Nevažeći račun",
-      "dateInvalid": "Nevažeći datum",
+      "dateInvalid": "Pogrešan datum",
       "dateRange": "Nevažeći raspon datuma",
       "failedUnknown": "Nepoznata greška",
       "memoInvalid": "Nevažeća zabilješka",
-      "paymentsFetch": "Pogreška pri učitavanju plaćanja",
-      "serverInvalid": "Nevažeći server"
+      "paymentsFetch": "Pogreška pri učitavanju uplata",
+      "serverInvalid": "Nevažeći poslužitelj"
     },
-    "rateLimited": "Prekoračena je granica brzine korištenja Horizona. Molimo pričekajte nekoliko sekundi i pokušajte ponovo."
+    "rateLimited": "Prekoračili ste ograničenje brzine usluge Horizon. Pričekajte nekoliko sekundi i pokušajte ponovo."
   },
   "investedTokens": {
     "columns": {
       "amount": "Iznos",
-      "compromised": "Kompromitovan",
+      "compromised": "Kompromitiran",
       "deactivated": "Deaktivirano",
       "destination": "Ciljani novčanik",
-      "issuer": "Izdavatelj",
+      "issuer": "Ispušni uređaj",
       "label": "Oznaka",
-      "memo": "Memorandum",
+      "memo": "Zapisnik",
       "payments": "Plaćanja",
       "date": "Datum",
       "token": "Token"
@@ -680,18 +681,18 @@
       "label": "Decimalna mjesta:"
     },
     "filter": {
-      "memoPlaceholder": "Filtriraj po memorandumu, adresi novčanika ili oznaci.",
+      "memoPlaceholder": "Filtriraj prema bilješci, adresi novčanika ili oznaci.",
       "tokenPlaceholder": "Filtriraj po tokenu (CODE:ISSUER)"
     },
-    "hintEnterPublicKey": "Molimo unesite javni ključ prvo.",
+    "hintEnterPublicKey": "Unesite prvo javni ključ.",
     "item": {
       "memo": "Zapisnik: \"{{memo}}\" (Plaćanja: {{occurrences}})",
       "token": "Token: {{token}} (Plaćanja: {{occurrences}})",
       "tokenShort": "Token: {{token}}"
     },
-    "missingPublicKey": "Javni ključ nedostaje.",
-    "moreTruncated": "… und {{extra}} weitere Gruppen",
-    "toWallet": "na novčanik: {{address}}",
+    "missingPublicKey": "Nedostaje javni ključ.",
+    "moreTruncated": "… i {{extra}} druge grupe",
+    "toWallet": "za Novčanik: {{address}}",
     "total": "Broj kupljenih tokena: {{count}}",
     "totalTokens": "Broj uloženih tokena (Assets): {{count}}",
     "value": {
@@ -701,122 +702,143 @@
     "view": {
       "label": "Filtriraj po:",
       "memo": "Memos",
-      "token": "Token"
+      "token": "Token (token)"
     },
     "toggles": {
-      "showTotals": "Ukupna suma",
-      "qsiOnly": "Ukupni QSI GF"
+      "showTotals": "Ukupni zbroj",
+      "qsiOnly": "Zbroj QSI GF"
     },
     "hints": {
       "qsiListSet": "Napomena: Popis GF možete pronaći pod Postavke → Pouzdani novčanici (QSI).",
       "pageTime": "Učitavanje jedne stranice traje oko 0,2 sekunde → 100 stranica ≈ 20 sekundi → 1000 stranica ≈ 200 sekundi (≈ 3:20 minuta)."
     },
-    "walletCapInfo": "Napomena: Novčanik može držati maksimalno 1000 trust linija.",
+    "walletCapInfo": "Napomena: Jedan novčanik može držati maksimalno 1000 povjereničkih linija.",
     "action": {
-      "load": "Trgovina"
+      "load": "Učitavanje"
     },
     "history": {
       "availableFrom": "Server (Horizon) – Povijest od",
-      "hintFullHistory": "Napomena: Povijest glavne knjige sa Horizon servera dostupna je samo od {{available}}. Prikazani su samo podaci od tog datuma. Stoga je odabrani početni datum ograničen. Za starije podatke potreban je (meist kostenpflichtiger) Full‑History‑Provider (možda dolazi u budućnosti!)."
+      "hintFullHistory": "Napomena: Povijest knjige iz Horizon servera dostupna je samo od {{available}}. Samo podaci do tog datuma će biti prikazani. Odabrani datum od je stoga ograničen. Za starije podatke potreban je (meist kostenpflichtiger) Full‑History‑Provider (Možda će biti dostupan u budućnosti!)."
     }
   },
   "network": {
     "mainnet": "Mainnet",
-    "testnet": "Testna mreža"
+    "testnet": "Testnet"
   },
   "multisigEdit": {
     "confirm": {
       "removeSigner": "Zaista ukloniti potpisnika?"
     },
-    "currentConfig": "Trenutna / Planirana Konfiguracija",
+    "currentConfig": "Trenutna / Planirana konfiguracija",
     "error": {
-      "thresholdTooHigh": "Pragovi ne smiju prelaziti zbroj težina."
+      "thresholdTooHigh": "Pragovi ne smiju premašiti zbroj težina.",
+      "safetyTitle": "Sigurnosna provjera blokirana",
+      "safetyBlocked": "Provjera sigurnosti blokirana: Molimo riješite gore navedena upozorenja.",
+      "noActiveSigners": "Potrebno je barem jedan aktivni potpisnik. Prijedlog: Postavite master težinu > 0 ili dodajte potpisnika s težinom > 0.",
+      "noEd25519Signers": "Potrebno je najmanje jedan potpisnik s težinom > 0. Prijedlog: Povećajte težinu glavnog potpisnika ili dodajte potpisnika.",
+      "masterZeroInsufficientHigh": "Glavna težina je 0 i zbroj težina potpisnika ne doseže visoki prag (Zbroj: {{sum}}, Visoki prag: {{high}}). Prijedlog: Smanjite pragove ili povećajte težine/potpisnike.",
+      "thresholdHighUnreachable": "Visoki prag nije dostižan (Zbroj: {{sum}}, Visoko: {{high}}). Prijedlog: smanjite prag ili povećajte težine/potpisnike.",
+      "thresholdMedUnreachable": "Prag ne može biti dostignut (Suma: {{sum}}, Prag: {{med}}). Prijedlog: Spustite prag ili povećajte težine/potpisnike.",
+      "specialSignerLastHigh": "Posebni potpisnik (hashX/preAuthTx) ne bi trebao biti jedini vrhovni autoritet. Prijedlog: dodajte potpisnike s težinom >= visokoj.",
+      "setOptionsNotSignable": "SetOptions ne bi bio potpisiv nakon promjene (Zbroj potpisnika: {{sum}}, Maksimalni iznos: {{high}}). Prijedlog: povećajte težinu potpisnika ili smanjite maksimalni iznos."
     },
-    "hint": "Učitaj postojeći račun, prilagodi potpisnike, težine, glavnu težinu i pragove, i sačuvaj promjene.",
-    "load": "Trgovina",
+    "warning": {
+      "safetyTitle": "Sigurnosna upozorenja",
+      "highSingleSigner": "Samo jedan potpisnik doseže visoki prag. Preporuka: najmanje dva neovisna potpisnika.",
+      "medSingleSigner": "Srednji prag > 0, ali je prisutan samo jedan potpisnik. Preporuka: dodajte drugog potpisnika."
+    },
+    "securityGuarantee": {
+      "title": "🔒 SKM Sigurnosno jamstvo (Multisig)",
+      "text": "Stellar Account Manager sprječava sve tehnički izazvane blokade računa koje mogu nastati zbog netočne multisig konfiguracije.\n\nKonkretno, SKM blokira:\n- Onesposobljavanje glavnog ključa bez dostupnih potpisnika\n- Nedostupne pragove (low / med / high)\n- Sekvencijske greške u promjenama potpisnika i pragova\n- Uklanjanje zadnjeg valjanog visokog potpisnika\n- Multisig postavke gdje se više ne može potpisati SetOptions\n- Slijepe ulice zbog hashX ili preAuthTx kao konačnog potpisnika\n\nSKM postavlja samo ed25519 potpisnike. Za druge vrste potpisnika, koristite {link}.\n\nSKM jamči:\n- Svaka potvrđena promjena ostavlja barem jedan valjani put otvoren za daljnje upravljanje računom\n- SetOptions ostaje dostupan nakon promjene\n\nNije zajamčeno (systembedingt):\n- Gubitak tajnih ključeva ili hardverskih novčanika\n- Nedostupnost ili neuspjeh vanjskih potpisnika\n\nZaključak:\nSKM pouzdano štiti od blokada konfiguracija.\nOrganizacijski rizici su transparentno prikazani, ali se tehnički ne mogu spriječiti.",
+      "linkLabel": "lab.stellar.org"
+    },
+    "hint": "Učitaj postojeći račun, prilagodi potpisnike, težine, glavnu težinu i pragove, te sačuvaj promjene.",
+    "load": "Učitavanje",
     "loaded": "Učitano. Dodatni potpisnici: {{count}}",
     "menu": "Uredi multisig račun",
-    "menuHint": "Prilagođavanje potpisnika/pragova postojećeg računa",
+    "menuHint": "Podešavanje potpisnika/pragova postojećeg računa",
     "noteMaxSigners": "Napomena: Stellar dopušta maksimalno 20 dodatnih potpisnika po računu.",
-    "reload": "Učitaj ponovo",
+    "signerTypeNote": "Napomena: SKM koristi samo ed25519 potpisnike. Za hashX/preAuthTx, koristi",
+    "signerTypeLink": "lab.stellar.org",
+    "reload": "Učitati ponovno",
     "save": "Spremi promjene",
     "saved": "Promjene spremljene. TX: {{hash}}",
-    "signers": "Potpisnik",
-    "weight": "Težinsko ponderiranje",
-    "masterWeight": "Master masa",
+    "signers": "Potpisnik (ed25519)",
+    "weight": "Vaganje",
+    "masterWeight": "Majstorska težina",
     "title": "Uredi multisig račun",
     "validation": {
-      "signerKeyHint": "Napomena: Potpisnici moraju početi s \"G\" (ed25519 public key).",
-      "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
+      "signerKeyHint": "Napomena: Potpisnici moraju početi sa slovom \"G\" (ed25519 public key).",
+      "signerKeyInvalid": "Nevažeća adresa potpisnika. Očekuje se G… adresa (ed25519)."
     }
   },
   "navigation": {
     "back": "Nazad",
-    "backToMainMenu": "Povratak na izbornik",
+    "backToMainMenu": "Natrag na izbornik",
     "backToPublicKey": "Povratak na unos javnog ključa",
     "backToTop": "Povratak na vrh"
   },
   "publicKey": {
     "deleteFromList": "Ukloni s popisa",
     "destination": {
-      "error": "Nevažeći ciljni ključ.",
-      "input": "Unesite adresu odredišnog novčanika"
+      "error": "Nevažeći ključ cilja.",
+      "input": "Unesite ciljanu adresu novčanika"
     },
-    "label": "Unesite adresu izvora federacije ili javni ključ:",
+    "label": "Unesite adresu izvorne federacije ili javni ključ:",
     "load": "Učitavanje…",
-    "placeholder": "z.B.",
-    "source": "Adresa izvorišnog novčanika",
-    "invalid": "Nevažeći javni ključ.",
+    "placeholder": "z. B.",
+    "source": "Izvorna adresa novčanika",
+    "invalid": "Neispravan javni ključ.",
     "submit": {
       "button": "Pošalji"
     },
     "test": "Test",
     "historyLabel": "Povijest",
-    "historyPlaceholder": "Odaberite najčešće korišteni novčanik."
+    "historyPlaceholder": "Odaberite posljednji korišteni novčanik"
   },
   "secretKey": {
     "cleared": "Tajni ključ je izbrisan.",
-    "empty": "Polje za tajni ključ je prazno.",
-    "info": "⚠️ VAŽNO: Ova web stranica NIKADA ne pohranjuje vaš tajni ključ!\n\nTajni ključ prikazan ovdje postoji samo u vašem pregledniku (lokal im Arbeitsspeicher). Nakon što ponovno učitate ili napustite stranicu, on je nepovratno izgubljen.\n\nOdmah nakon generiranja kopirajte ili zapišite tajni ključ prije zatvaranja stranice.\n\nProvjera: Možete provjeriti alatima za razvojne programere preglednika (F12 → Mreža) da se nijedan tajni ključ ne prenosi izvan stranice. Prenose se samo potpisane transakcije, nikada vaš tajni ključ.",
-    "invalid": "Nevažeći tajni ključ.",
-    "label": "Unesite izvorni tajni ključ (S-Key)",
+    "empty": "Polje tajnog ključa je prazno.",
+    "info": "⚠️ VAŽNO: Ova web stranica NIKADA ne pohranjuje vaš Tajni Ključ!\n\nTajni Ključ koji je ovdje prikazan postoji samo u vašem pregledniku (lokal im Arbeitsspeicher). Čim osvježite ili napustite stranicu, nepovratno ga gubite.\n\nKopirajte ili zabilježite Tajni Ključ odmah nakon generiranja, prije nego zatvorite stranicu.\n\nProvjera: Možete provjeriti pomoću alata za razvojne programere u pregledniku (F12 → Mreža) da se nijedan Tajni Ključ ne prenosi vanjski. Samo potpisane transakcije se šalju, nikada vaš Tajni Ključ.",
+    "invalid": "Pogrešan tajni ključ.",
+    "label": "Unesite tajni izvorni ključ (S-Key)",
     "mismatch": "Tajni ključ ne odgovara javnoj adresi.",
-    "placeholder": "z.b.",
-    "valid": "✅ Tajni ključ je važeći.",
+    "placeholder": "z. B.",
+    "valid": "✅ Tajni ključ je valjan.",
     "remember": {
       "label": "Zapamti tajni ključ za ovu sesiju.",
-      "hint": "Ako je omogućeno, ključ će biti spremljen dok se kartica ne zatvori i ponovo korišten za daljnja plaćanja."
+      "hint": "Kada je omogućeno, ključ će se spremiti dok se kartica ne zatvori i ponovno koristiti za daljnja plaćanja."
     },
     "clearSession": "Izbriši ključ sesije",
-    "clearSessionHint": "Uklanja tajni ključ pohranjen u ovoj sesiji (it will be deleted when the tab is closed anyway)."
+    "clearSessionHint": "Uklanja tajni ključ pohranjen u ovoj sesiji (will be deleted anyway when the tab is closed)."
   },
   "token": {
-    "purchases": "Filtriraj tokene/imovinu"
+    "purchases": "Filtiraj tokene/imovinu"
   },
   "glossary": {
     "pageTitle": "Rječnik",
-    "pageIntro": "Ovdje ćete pronaći važne riječi iz svijeta blockchaina i Stellar mreže. Sve je objašnjeno jednostavnim izrazima.",
-    "searchLabel": "Pojam pretraživanja",
-    "searchPlaceholder": "Pojam pretrage (z. B. Konto, Account, Muxed)",
+    "pageIntro": "Ovdje ćete pronaći važne riječi iz svijeta blockchaina i Stellar mreže. Sve je objašnjeno jednostavnim riječima.",
+    "searchLabel": "Pojam za pretragu",
+    "searchPlaceholder": "Pojam za pretraživanje (z. B. Konto, Account, Muxed)",
     "searchHint": "Pretraga pronalazi riječi i objašnjenja.",
     "noResults": "Nema podudaranja.",
     "blockchain": {
       "title": "Blockchain",
       "original": "Blockchain",
-      "short": "Zajednički digitalni registar – mnoga računala pohranjuju iste zapise.",
-      "desc": "Blockchain je poput digitalne knjige računa. Mnogi računari pohranjuju iste unose, čime se sprječava da bilo ko tajno izvrši promjene."
+      "short": "Zajednička digitalna blagajnička knjiga – mnoga računala pohranjuju iste unose.",
+      "desc": "Blockchain je poput digitalne knjige poslovanja. Mnogi računari pohranjuju iste unose, tako da niko ne može tajno promijeniti bilo šta."
     },
     "wallet": {
       "title": "Novčanik",
       "original": "Wallet",
       "short": "Digitalni novčanik koji upravlja vašim ključevima.",
-      "desc": "Novčanik je vaš digitalni novčanik. Upravljajući ključevima koje trebate za pristup vašem računu i slanje transakcija. Novčanik može biti program, aplikacija ili čak samo komad papira s vašim privatnim ključem."
+      "desc": "Novčanik je vaša digitalna torbica. Upravljaju ključevima koje trebate za pristup svom računu i slanje transakcija. Novčanik može biti program ili aplikacija, ili čak samo komad papira s vašim privatnim ključem."
     },
     "account": {
       "title": "Račun",
       "original": "Account",
-      "short": "Račun na blockchainu može držati imovinu i slati transakcije.",
-      "desc": "Račun je mjesto na blockchainu gdje se pohranjuju vaša sredstva. Račun ima javnu adresu koja počinje s G. Više novčanika može pristupiti istom računu ako imaju ispravan ključ."
+      "short": "Blockchain račun može držati imovinu i slati transakcije.",
+      "desc": "Račun je mjesto na blockchainu gdje se vaša imovina pohranjuje. Račun ima javnu adresu koja počinje sa slovom G. Više novčanika može pristupiti istom računu ako imaju ispravan ključ."
     },
     "addressG": {
       "title": "G-adresa",
@@ -828,40 +850,40 @@
       "title": "Javni ključ",
       "original": "Public Key",
       "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
-      "desc": "Javni ključ je adresa koju smijete pokazati. U Stellaru, to je G-adresa. Drugi je koriste kako bi vam poslali novac."
+      "desc": "Javni ključ je adresa koju smijete pokazati. U Stellar sustavu, to je G-adresa. Drugi je koriste kako bi vam poslali novac."
     },
     "privateKey": {
       "title": "Tajni ključ",
       "original": "Secret Key",
-      "short": "Lozinka za račun – nikada je nemojte dijeliti.",
-      "desc": "Tajni ključ je vaša lozinka za račun. Svatko tko ima ovaj ključ može upravljati vašim novcem. Nikada ga ne dijelite."
+      "short": "Lozinka za račun – nikada ne dijeli.",
+      "desc": "Tajni ključ je vaša lozinka za račun. Tko god posjeduje ovaj ključ, može upravljati vašim novcem. Nikada ga ne dijelite."
     },
     "addressFederation": {
       "title": "Adresa federacije",
       "original": "Federation Address",
       "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
-      "desc": "Federacijska adresa izgleda kao e-mail. Primjer: ime*domena.com. Ova kratka adresa upućuje na regularnu G-adresu. Lakše ju je zapamtiti."
+      "desc": "Federativna adresa izgleda kao email. Primjer: ime*domena.com. Ova kratka adresa upućuje na običnu G adresu. Lakše je zapamtiti."
     },
     "addressMuxed": {
-      "title": "Zamiješani račun",
+      "title": "Promiješani račun",
       "original": "Muxed Account",
-      "short": "M‑address with additional ID – shares a basic account.",
-      "desc": "M-adresa ukazuje na postojeći Stellar račun, ali ima i vlastiti identifikator (ID). To vam omogućuje razlikovanje više osoba ili odjela pod istom G-adresom. Tehnički, novac i dalje pripada glavnom računu."
+      "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
+      "desc": "M-adresa pokazuje na postojeći Stellar račun, ali dodatno ima svoj vlastiti broj (ID). Ovo omogućava, na primjer, razlikovanje između više osoba ili odjela pod istom G-adresom. Tehnički, novac i dalje pripada glavnom računu."
     },
     "multisig": {
-      "title": "Multisignatura",
+      "title": "Višestruki potpis",
       "original": "Multi‑Sig",
       "short": "Važne radnje zahtijevaju više od potpisa.",
-      "desc": "Multi-Sig označava više potpisa. Važna radnja zahtijeva više od jednog ključa. Na primjer, vi i drugi ključ oboje morate se složiti prije nego što se nešto može poslati. Ovo otežava krađu."
+      "desc": "Multi-Sig označava višestruki potpisi. Važna radnja zahtijeva više od jednog ključa. Na primjer, vi i drugi ključ morate se oboje složiti prije nego što se nešto pošalje. To čini krađu težom."
     },
     "trustline": {
-      "title": "Povjerenička linija",
+      "title": "Linija povjerenja",
       "original": "Trustline",
-      "short": "Ugovor o držanju tokena od određenog izdavatelja.",
-      "desc": "Kreditna linija je poput \"da, prihvaćam ovaj token.\" Time pokazujete da je vaš račun spreman držati određeni token od određenog izdavatelja. Bez kreditne linije ne možete primiti taj token.\n\nPrimjer: Kreditna linija je specificirana kao KOD:IZDAVAČ. Za EURT od izdavatelja GDUKMGUGDZQK6Y… to je EURT:GDUKMGUGDZQK6Y…."
+      "short": "Suglasnost za posjedovanje tokena od specifičnog izdavatelja.",
+      "desc": "Trustline je poput \"Da, prihvaćam ovaj token.\" Postavljanjem trustline-a, naznačujete da je vaš račun spreman držati određeni token od određenog izdavatelja. Bez trustline-a ne možete primiti taj token.\n\nPrimjer: Trustline se specificira kao CODE:ISSUER. Za EURT od izdavatelja GDUKMGUGDZQK6Y…, to je EURT:GDUKMGUGDZQK6Y…."
     },
     "token": {
-      "title": "Žeton",
+      "title": "Token",
       "original": "Token",
       "short": "Digitalna jedinica – npr. novac, bodovi ili kredit.",
       "desc": "Token je digitalna jedinica na blockchainu. Token može predstavljati novac, bodove ili kredite za neku uslugu."
@@ -869,132 +891,132 @@
     "asset": {
       "title": "Imovina",
       "original": "Asset",
-      "short": "Tokeni na Stelar mreži su uvijek povezani s izdavateljem.",
-      "desc": "Na platformi Stellar, token se naziva imovinom. Imovina je uvijek povezana s izdavačkim računom. Na primjer, račun može izdati euro token. Taj euro token tada je imovina."
+      "short": "Tokeni na Stellar mreži uvijek su povezani s izdavateljem.",
+      "desc": "Na Stellar mreži, token se naziva imovina (asset). Imovina je uvijek povezana s računom koji je izdaje. Na primjer, račun može izdati token u eurima. Taj euro token bi tada bio imovina."
     },
     "xlm": {
       "title": "XLM",
       "original": "XLM",
       "short": "Izvorna valuta Stellara za naknade i aktivaciju.",
-      "desc": "XLM je osnovna valuta Stellar-a. Potrebni su vam XLM za plaćanje naknada i za otvaranje novog računa."
+      "desc": "XLM je osnovna valuta Stellara. Potrebni su vam XLM za plaćanje naknada i za otvaranje novog računa."
     },
     "mainnet": {
       "title": "Glavna mreža",
       "original": "Mainnet",
       "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
-      "desc": "Stvarna Stellar mreža s pravom vrijednošću. Transakcije su konačne i naknade se plaćaju u stvarnim XLM."
+      "desc": "Prava Stellar mreža s stvarnom vrijednošću. Transakcije su konačne, a naknade se plaćaju u pravom XLM-u."
     },
     "testnet": {
       "title": "Testna mreža",
       "original": "Testnet",
-      "short": "Mreža javne prakse bez stvarne vrijednosti.",
-      "desc": "Javna testna mreža. Tokeni nemaju stvarnu vrijednost. Idealno za učenje i eksperimentiranje bez rizika."
+      "short": "Javna praksa mreža bez stvarne vrijednosti.",
+      "desc": "Mreža javne prakse. Tokeni nemaju stvarnu vrijednost. Idealno za učenje i eksperimentiranje bez rizika."
     },
     "memo": {
-      "title": "Memo",
+      "title": "Zapisnik",
       "original": "Memo",
       "short": "Kratka napomena u transakciji.",
-      "desc": "Memo je mala bilješka koju možete poslati zajedno s transakcijom. Često mjenjačnica zahtijeva specifičan memo kako bi znala kome novac pripada."
+      "desc": "Memo je mala bilješka koju možete poslati zajedno s transakcijom. Često burze zahtijevaju određenu memo da bi znale kome pripada novac."
     },
     "transaction": {
       "title": "Transakcija",
       "original": "Transaction",
-      "short": "Radnja na blockchainu, npr., plaćanje ili povjerenička linija.",
-      "desc": "Transakcija je radnja na blockchainu, kao što je slanje novca ili uspostavljanje trustlinea. Transakcija je trajno zabilježena nakon što bude potvrđena."
+      "short": "Radnja na blockchainu, npr. plaćanje ili linija povjerenja.",
+      "desc": "Transakcija je radnja na blockchainu, kao što je slanje novca ili uspostavljanje trust linije. Transakcija se trajno pohranjuje nakon što je potvrđena."
     },
     "fee": {
       "title": "Naknada",
       "original": "Fee",
       "short": "Vrlo mali iznos po transakciji.",
-      "desc": "Naknada je vrlo mali iznos koji plaćate uz svaku transakciju. Naknada ide mreži. Na Stellaru, naknade su vrlo niske."
+      "desc": "Naknada je vrlo mali iznos koji plaćate uz svaku transakciju. Naknada ide mreži. Kod Stellara, naknade su vrlo male."
     },
     "ledger": {
       "title": "Glavna knjiga",
       "original": "Ledger",
       "short": "Lanac potvrđenih podataka i stanja računa.",
-      "desc": "Glavna knjiga je lanac svih potvrđenih podataka. Sadrži informacije o tome koji računi posjeduju koji iznos i koje su transakcije izvedene. Svako može verificirati glavnu knjigu."
+      "desc": "Knjiga je lanac svih potvrđenih podataka. Ona pokazuje koji računi imaju koliko i koje transakcije su se dogodile. Svatko može provjeriti knjigu."
     },
     "horizon": {
       "title": "Horizon",
       "original": "Horizon",
       "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
-      "desc": "Horizon je usluga putem koje programi komuniciraju sa Stellar Blockchainom. Naš alat isporučuje upite Horizon-u za učitavanje stanja računa i transakcija."
+      "desc": "Horizon je usluga koja omogućava programima da komuniciraju sa Stellar Blockchainom. Naš alat ispituje Horizon kako bi učitao stanja na računima i transakcije."
     },
     "anchor": {
       "title": "Sidro",
       "original": "Anchor",
       "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-      "desc": "Sidro je tvrtka koja povezuje pravi novac, kao što su euri ili dolari, sa Stellarom. Na primjer, vi date sidru eure, a zauzvrat dobijete euro token na Stellaru."
+      "desc": "Anchor je tvrtka koja povezuje stvarni novac, poput eura ili dolara, sa Stellarom. Na primjer, dajete anchoru eure i zauzvrat dobivate euro token na Stellar mreži."
     },
     "exchange": {
       "title": "Burza vrijednosnih papira",
       "original": "Exchange",
       "short": "Mjesto za kupnju i prodaju tokena.",
-      "desc": "Mjenjačnica je mjesto gdje možete kupiti ili prodati tokene. Mnoge mjenjačnice zahtijevaju KYC postupak, što znači provjeru vašeg identiteta, prije nego što možete podići novac u eurima ili francima."
+      "desc": "Mjenjačnica je mjesto gdje možete kupovati ili prodavati tokene. Mnoge mjenjačnice zahtijevaju KYC proces, što znači provjeru identiteta, prije nego što možete podići novac u eurima ili francima."
     },
     "dex": {
-      "title": "DEX (__ZADRŽI_EN_TERM_1__)",
+      "title": "DEX",
       "original": "Decentralized Exchange",
       "short": "Decentralizirana razmjena direktno na blockchainu.",
-      "desc": "DEX znači Decentralizirana mjenjačnica. Ovdje ljudi trguju direktno jedni s drugima na blockchainu. Nema niti jednog operatera. Stellar ima DEX ugrađen izravno u sebe."
+      "desc": "DEX znači decentralizirana burza. Ovdje ljudi trguju izravno jedni s drugima na blockchainu. Ne postoji jedan operater. Stellar ima DEX ugrađen izravno u njega."
     },
     "liquidityPool": {
-      "title": "Likvidnostni bazen",
+      "title": "Likvidnosni fond",
       "original": "Liquidity Pool",
-      "short": "Zajednički fond s dva tokena za trenutnu razmjenu.",
-      "desc": "Likvidnostni fond je zajednički fond koji sadrži dva tokena. Ljudi u njega deponiraju oba tokena. Drugi zatim mogu odmah mijenjati te tokene. Depozitori za to zarađuju male naknade."
+      "short": "Zajednički bazen s dva tokena za trenutnu razmjenu.",
+      "desc": "Likvidnostni fond je zajednički fond koji sadrži dva tokena. Ljudi u njega polažu oba tokena. Drugi ih potom mogu odmah razmijeniti. Deponenti zarađuju male naknade za ovu uslugu."
     },
     "balanceClaimable": {
-      "title": "Potraživa bilanca",
+      "title": "Potraživi saldo",
       "original": "Claimable Balance",
-      "short": "Rezervirani novac koji još trebate prihvatiti.",
-      "desc": "Potraživa stanje je novac koji je već rezerviran za vas, ali ga još uvijek trebate preuzeti. Novac ide na vaš račun tek kada ga prihvatite."
+      "short": "Rezervirani novac koji još uvijek trebate prihvatiti.",
+      "desc": "Potraživanje bilance je novac koji je već rezerviran za vas, ali ga još uvijek trebate preuzeti. Tek kada ga prihvatite, ući će u vaš račun."
     },
     "protocolUpdate": {
       "title": "Ažuriranje protokola",
       "original": "Protocol Update",
       "short": "Aktualisierung der Netzwerk‑Regeln.",
-      "desc": "Ažuriranje protokola je nadogradnja pravila u Stellar mreži, kao što su nove značajke ili sigurnosne promjene. Svi čvorovi u mreži moraju koristiti ista pravila."
+      "desc": "Ažuriranje protokola je nadogradnja pravila u mreži Stellar, kao što su nove značajke ili sigurnosne promjene. Svi čvorovi u mreži moraju koristiti ista pravila."
     },
     "soroban": {
       "title": "Soroban",
       "original": "Soroban",
       "short": "Stellars Smart‑Contract‑System.",
-      "desc": "Soroban je sustav pametnih ugovora Stellara. Pametni ugovor je programski kod na blockchainu. Kod može samostalno provjeravati pravila i pokretati radnje bez posrednika banke."
+      "desc": "Soroban je sustav pametnih ugovora Stellara. Pametni ugovor je programski kod na blockchainu. Kod može neovisno provjeravati pravila i pokrenuti radnje bez posredovanja banke."
     },
-    "missingKey": "Nedostaje ključ pojmovnika: {{detail}}"
+    "missingKey": "Nedostaje ključ glosara: {{detail}}"
   },
   "trustline": {
     "all": "Prikaži Trustline(s)",
     "compare": "Usporedite Trustline(s)",
-    "delete": "Obriši Trustline(s)",
+    "delete": "Brisanje Trustline(s)",
     "deleted": {
       "mode": {
-        "real": "Stvarni način",
-        "realWarning": "Upozorenje: Stvarne Trustlines(s) bit će izbrisane.",
-        "simulation": "način simulacije"
+        "real": "Realni način",
+        "realWarning": "Pažnja: Prava Trustline(s) bit će obrisana",
+        "simulation": "Način simulacije"
       },
-      "notFound": "Nema linija povjerenja koje se mogu ukloniti – sve još uvijek sadrže salda.",
-      "resultText": "Broj: {{count}} • Način: {{mode}}",
-      "resultTitle": "Izbrisana linija povjerenja (Deleted Trustline)",
-      "simulated": "Simulacija: {{count}} trustline(s) bi bilo obrisano.",
-      "success": "Uspjeh: {{count}} Trustline(s) izbrisano."
+      "notFound": "Nema izbrisivih linija povjerenja – sve još uvijek sadrže salda.",
+      "resultText": "Brojanje: {{count}} • Način: {{mode}}",
+      "resultTitle": "Izbrisana povjerenička linija (s)",
+      "simulated": "Simulacija: {{count}} trustlinija bi bilo obrisano.",
+      "success": "Uspjeh: {{count}} Trustline(s) je izbrisano."
     },
     "destination": {
-      "label": "Unesite javni ključ cilja:",
-      "placeholder": "z.b. (zum Beispiel)"
+      "label": "Unesite ciljani javni ključ:",
+      "placeholder": "z. B."
     },
-    "noDuplicates": "Nisu pronađene duplicirane linije povjerenja.",
-    "nonZeroBalance": "Ova kreditna linija se ne može izbrisati jer još uvijek ima stanje.",
-    "notFound": "Nema pronađene Trustline(s).",
-    "onlyZeroBalanceInfo": "Samo povjereničke linije s saldom od 0 mogu biti izbrisane.",
-    "showSecret": "Prikaži tajni ključ"
+    "noDuplicates": "Nema pronađenih duplikata Trustlines(s).",
+    "nonZeroBalance": "Ova linija povjerenja ne može se izbrisati jer još uvijek ima saldo.",
+    "notFound": "Nije pronađena Trustline(s).",
+    "onlyZeroBalanceInfo": "Samo povjereničke linije s saldom od 0 mogu biti obrisane.",
+    "showSecret": "Prikaz tajnog ključa"
   },
   "deleted": {
     "deletingProgress": "Brisanje u tijeku: {{current}} / {{total}}",
-    "success": "Uspjeh: {{count}} Trustline(s) je obrisana."
+    "success": "Uspjeh: {{count}} Trustline(s) obrisano."
   },
-  "skippedDueToBalance": "{{count}} Trustline(s) preskočeno (noch Guthaben vorhanden).",
+  "skippedDueToBalance": "{{count}} Trustlines (s) preskočeno (noch Guthaben vorhanden).",
   "xlmByMemo": {
     "action": {
       "calculate": "Izračunaj",
@@ -1002,83 +1024,83 @@
     },
     "date": {
       "from": "Od (optional)",
-      "to": "Do listopada 2023."
+      "to": "Do (optional)"
     },
     "debug": {
-      "incoming": "Dolazne – za: {{toMe}}, stvoreno→me: {{createToMe}}, izvorno→me: {{nativeInToMe}}",
-      "incomingOverview": "Unosi: {{total}} • Uključeni novčanici: {{unique}}",
+      "incoming": "Dolazni – za: {{toMe}}, stvoreno→za mene: {{createToMe}}, izvorno→za mene: {{nativeInToMe}}",
+      "incomingOverview": "Unosi: {{total}} • Sudjelujući novčanici: {{unique}}",
       "memo": "Memorije u prozoru: {{any}} • točne memorije: {{exact}}",
-      "types": "Vrste – plaćanje: {{pay}}, putanja: {{path}}, stvaranje: {{create}}, ostalo: {{other}}"
+      "types": "Vrste – plaćanje: {{pay}}, putanja: {{path}}, kreirati: {{create}}, ostalo: {{other}}"
     },
     "export": {
-      "csv": "Provjerite CSV (Treffer)",
+      "csv": "Provjeri CSV (Treffer)",
       "csvAll": "Izvezi sve operacije",
-      "csvBoth": "Spremi obje CSV datoteke.",
-      "csvMatches": "Provjeri CSV (Treffer)"
+      "csvBoth": "Spremite obje CSV datoteke.",
+      "csvMatches": "Provjera CSV-a (Treffer)"
     },
     "exportCsv": {
-      "failed": "Izvoz CSV-a nije uspio: {{detail}}"
+      "failed": "CSV izvoz nije uspio: {{detail}}"
     },
     "memo": {
-      "label": "Pretraživanje memoranduma (substring, case sensitive)",
-      "placeholder": "Memorandum (substring, case-sensitive)"
+      "label": "Pretraživanje memo teksta (substring, case sensitive)",
+      "placeholder": "Zapisnik (Memo)"
     },
-    "overviewLine": "Dolazne uplate: {{total}} • uključeni novčanici: {{unique}}",
+    "overviewLine": "Potvrde o plaćanju: {{total}} • uključeni novčanici: {{unique}}",
     "page": {
-      "noPublicKey": "Unesite prvo javni ključ ili ponovno učitajte račun.",
-      "title": "XLM saldo po memo"
+      "noPublicKey": "Molimo prvo unesite javni ključ ili ponovno učitajte račun.",
+      "title": "Stanje XLM prema dopisu"
     },
     "result": {
-      "label": "Ukupna suma:",
+      "label": "Ukupni iznos:",
       "value": "{{amount}} XLM"
     },
     "summary": {
-      "amount": "Iznos: {{amount}} XLM",
-      "correctCount": "Unosi s točnom bilješkom: {{n}}",
+      "amount": "Ukupno: {{amount}} XLM",
+      "correctCount": "Unosi s ispravnom zabilješkom: {{n}}",
       "count": "Količina: {{n}}",
-      "label": "Comparison (all inputs)",
-      "otherCount": "Unosi s netočnom/nedostajućom bilješkom: {{n}}",
+      "label": "Usporedba (all inputs)",
+      "otherCount": "Unosi s netočnim/nedostajućim memo: {{n}}",
       "unique": "Jedinstveni novčanici (alle): {{n}}",
       "uniqueWallets": "Jedinstveni novčanici: {{n}}"
     },
     "time": {
-      "setToNow": "Postavite trenutno vrijeme.",
+      "setToNow": "Postavi trenutno vrijeme.",
       "setToNowHint": "Postavite polje za vrijeme na trenutno vrijeme."
     },
-    "title": "Stanje XLM prema memorandumu",
+    "title": "XLM ukupno prema bilješci",
     "topLargest": {
-      "button": "Top 20 Entrances (Memo)",
+      "button": "Top 20 prijava (Memo)",
       "clipboard": "Kopiraj u međuspremnik",
       "csv": "Preuzmi CSV",
       "scanning": "… scannt Top-Eingänge",
-      "title": "Top 20 unosa za bilješku u razdoblju"
+      "title": "20 najvažnijih unosa za memorandum tijekom tog razdoblja"
     },
     "tz": {
       "cdt": "CDT (UTC−5)",
       "cst": "CST (UTC−6)",
-      "europe_zurich": "Europa/Zurich (CET/CEST)",
+      "europe_zurich": "Europe/Zurich (Europe/Zurich)",
       "label": "Vremenska zona za datum/vrijeme",
       "local": "Lokalna vremenska zona",
-      "note": "Datum i vrijeme se tumače u odabranoj vremenskoj zoni i automatski se pretvaraju u UTC prije pretrage.",
+      "note": "Datum i vrijeme tumače se u odabranoj vremenskoj zoni i automatski se pretvaraju u UTC prije pretraživanja.",
       "utc": "UTC",
       "window": "Korišten vremenski okvir po UTC-u: {{from}} → {{to}} (Bis exklusiv)"
     },
     "wrongMemos": {
-      "button": "Prikaži novčanike s netočnom/praznom bilješkom",
-      "clipboard": "Kopiraj u clipboard",
+      "button": "Prikaži novčanike s netočnom/praznom napomenom.",
+      "clipboard": "Kopiraj u međuspremnik",
       "columns": {
         "amount": "Iznos",
-        "created_at": "Kreirano dana",
+        "created_at": "Stvoreno dana",
         "from": "Od",
-        "memo": "Zapisnik",
-        "tx_hash": "Heš transakcije"
+        "memo": "Memorandum",
+        "tx_hash": "Hash transakcije"
       },
       "csv": "Preuzmi CSV",
       "failed": "Pogreška pri učitavanju uplata s netočnom/praznom napomenom.",
-      "hint": "Filtrira dolazne uplate unutar razdoblja i prikazuje pošiljatelje s netočnim/praznim memoima.",
+      "hint": "Filtrira dolazne uplate unutar razdoblja i prikazuje pošiljatelje s pogrešnim/praznim memo bilješkama.",
       "scanning": "… scannt falsche/leere Memos",
-      "summary": "Količina: {{count}} • Ukupno: {{sum}} XLM • Jedinstveni novčanici: {{unique}}",
-      "title": "Lažne/prazne zabilješke tijekom razdoblja"
+      "summary": "Brojanje: {{count}} • Ukupno: {{sum}} XLM • Jedinstveni novčanici: {{unique}}",
+      "title": "Lažne/prazne bilješke u razdoblju vremena"
     }
   },
   "wallet": {
@@ -1089,58 +1111,58 @@
       "accountLabel": "Oznaka"
     },
     "flag": {
-      "compromised": "Upozorenje: Ovaj primatelj je označen kao kompromitiran na vašem popisu povjerenja.",
-      "deactivated": "Napomena: Ovaj primatelj je označen kao onemogućen na vašem popisu pouzdanih."
+      "compromised": "Upozorenje: Ovaj primatelj je označen kao ugrožen na vašem popisu pouzdanih kontakata.",
+      "deactivated": "Napomena: Ovaj primatelj je označen kao onemogućen na vašem popisu pouzdanih kontakata."
     }
   },
   "learn": {
     "lesson1": {
-      "title": "Što je blokčejn?",
-      "goal": "Razumijevanje principa blockchaina",
-      "task": "Sastavite građevne blokove (Transaktionen) u lanac",
-      "learningOutcome": "Blockchain je nepromjenjiva digitalna knjiga koju svi zajednički verificiraju.",
-      "reward": "⭐ 1 – Graditelj blokova"
+      "title": "Blockchain je distribuirana digitalna knjiga koja bilježi transakcije na više računala na način da se registrirane transakcije ne mogu retroaktivno mijenjati. Ova tehnologija je decentralizirana i najčešće se povezuje s kriptovalutama poput Bitcoina. Svaki blok u lancu sadrži nekoliko transakcija, i svaki put kada se na blockchainu dogodi nova transakcija, zapis te transakcije dodaje se u knjigu svakog sudionika. Decentralizirana priroda blockchaina osigurava nepromjenjivost i sigurnost podataka.",
+      "goal": "Razumijevanje principa blockchain tehnologije",
+      "task": "Sastavite module (Transaktionen) u lanac",
+      "learningOutcome": "Blockchain je nepromjenjiva digitalna knjiga koju svi mogu zajednički provjeriti.",
+      "reward": "⭐ 1 – Tvorac blokova"
     },
     "lesson2": {
-      "title": "Razumijevanje Stellara",
-      "goal": "Znajte razliku od drugih blockchaina.",
-      "task": "Pošalji token prijatelju (Simulation) i provjeri brzinu",
-      "learningOutcome": "Stellar je brz, jeftin i bez rudarenja.",
-      "reward": "⭐ 1 – Brzi pošiljatelj"
+      "title": "Razumjeti Stellar",
+      "goal": "Znajte razliku od ostalih blockchainova",
+      "task": "Pošalji token prijatelju (Simulation) i vidi brzinu",
+      "learningOutcome": "Stellar je brz, jeftin i nema rudarenja.",
+      "reward": "⭐ 1 – Brzi Pošiljatelj"
     },
     "lesson3": {
-      "title": "Javno & Privatnost",
+      "title": "Public & Privacy",
       "goal": "Razumijevanje pseudonimnosti",
-      "task": "Pregledaj javnu transakciju i pokušaj pogoditi je li pošiljatelj poznat.",
+      "task": "Pogledajte javnu transakciju i pokušajte pogoditi može li se identificirati pošiljatelj.",
       "learningOutcome": "Sve je vidljivo, ali nitko ne zna pravo ime.",
-      "reward": "⭐ 1 – Detektiv za zaštitu podataka"
+      "reward": "⭐ 1 – Detektiv za privatnost"
     },
     "lesson4": {
       "title": "Vaš račun",
-      "goal": "Razumjeti strukturu i značaj javnih/privatnih parova ključeva.",
-      "task": "Igra podudaranja: Što je javno, što je tajna",
-      "learningOutcome": "Samo tajni ključ omogućuje pristup, javni ključ se može dijeliti.",
-      "reward": "⭐ 1 – Glavni Čuvar"
+      "goal": "Razumijevanje strukture i značaja javnog/tajnog ključa",
+      "task": "Igra podudaranja: Što je javno, što je tajno",
+      "learningOutcome": "Samo tajni ključ omogućava pristup; javni ključ može se dijeliti.",
+      "reward": "⭐ 1 – Čuvar ključeva"
     },
     "lesson5": {
       "title": "Send & Receive",
-      "goal": "Razumijevanje funkcionalnosti transakcija i povjereničkih linija",
-      "task": "Izvrši probnu pošiljku i pregledaj naknadu.",
-      "learningOutcome": "Svaka transakcija uključuje malu naknadu; Trustline = dopuštenje za primanje.",
-      "reward": "⭐ 2 – Starter povjerenja"
+      "goal": "Razumijevanje funkcioniranja transakcija i povjereničkih linija",
+      "task": "Izvrši probnu pošiljku i pregledaj naknadu",
+      "learningOutcome": "Svaka transakcija uključuje malu naknadu; trustline = dopuštenje za primanje.",
+      "reward": "⭐ 2 – Trustline Početnik"
     },
     "lesson6": {
       "title": "Token & Trading",
-      "goal": "Naučite o tržišnim mehanizmima",
-      "task": "Postavite tokene na virtualno tržište i pratite promjene cijena.",
-      "learningOutcome": "Cijena se određuje ponudom i potražnjom.",
+      "goal": "Upoznavanje s tržišnim mehanizmima",
+      "task": "Stavite token na virtualno tržište i pratite promjene cijena.",
+      "learningOutcome": "Cijena je određena ponudom i potražnjom.",
       "reward": "⭐ 2 – Stručnjak za tržište"
     },
     "lesson7": {
       "title": "Sigurnost",
       "goal": "Učenje sigurnog ponašanja",
-      "task": "Razvrstavanje ispravnih/pogrešnih radnji; prepoznavanje lažnih tokena",
-      "learningOutcome": "Povjerljivost ključa, sigurno pohranjivanje i korištenje testne mreže.",
+      "task": "Razvrstavanje ispravnih/neispravnih radnji; otkrivanje lažnih tokena",
+      "learningOutcome": "Držite ključ povjerljivo, pohranite ga sigurno i koristite testnet.",
       "reward": "⭐ 2 – Zaštitar"
     },
     "lesson8": {
@@ -1148,35 +1170,35 @@
       "goal": "Razumijevanje povjerenja i pravila",
       "task": "Usporedba stvarnih i lažnih tokena",
       "learningOutcome": "KYC = Provjera identiteta, provjera pokazuje pouzdane tokene.",
-      "reward": "⭐ 2 – Stručnjak za recenzije"
+      "reward": "⭐ 2 – Stručnjak za ispite"
     },
     "lesson9": {
-      "title": "Nulta znanja",
-      "goal": "Razumijevanje koncepata privatnosti podataka",
-      "task": "Primjer scenarija \"Imam više od 18 godina\" bez prikazivanja datuma rođenja.",
-      "learningOutcome": "Možete dokazati nešto bez otkrivanja tajni.",
-      "reward": "⭐ 2 – ZK stručnjak"
+      "title": "Nula znanja",
+      "goal": "Razumijevanje koncepta privatnosti podataka",
+      "task": "Primjer scenarija 'Imam više od 18 godina' bez pokazivanja datuma rođenja.",
+      "learningOutcome": "Može se nešto dokazati bez otkrivanja tajni.",
+      "reward": "⭐ 2 – ZK-ekspert"
     },
     "lesson10": {
-      "title": "Vježbanje sa SKM-om",
-      "goal": "Primijenite stečeno znanje u praksi.",
-      "task": "Kreiraj račun na testnetu, aktiviraj ga, postavi trustline, pošalji tokene.",
+      "title": "Praksa sa SKM",
+      "goal": "Primjena naučenih vještina u praksi",
+      "task": "Kreirajte račun na testnetu, aktivirajte ga, postavite trustline, pošaljite tokene.",
       "learningOutcome": "Pratite tehničke procese transakcije.",
-      "reward": "⭐ 3 – Blockchain pilot-program"
+      "reward": "⭐ 3 – Blockchain pilot-projekt"
     },
     "lesson11": {
       "title": "Odgovornost",
       "goal": "Razumijevanje posljedica pogrešaka",
-      "task": "Igra odluke: Postupati ispravno ili ne",
+      "task": "Igra odluke: postupiti ispravno ili ne",
       "learningOutcome": "Blockchain je konačan; dužna pažnja je obavezna.",
-      "reward": "⭐ 1 – Junak odgovornosti"
+      "reward": "⭐ 1 – Heroj odgovornosti"
     },
     "lesson12": {
-      "title": "Zaključak / Igrivo učenje",
+      "title": "Dovršetak / Igrivo učenje",
       "goal": "Ponavljanje i motivacija",
-      "task": "Mini-quiz + prikaz bedževa",
-      "learningOutcome": "Pregledaj što si naučio, prepoznaj vlastiti napredak.",
-      "reward": "🎖 Stellar Pro"
+      "task": "Mini-kviz + prikaz bedža",
+      "learningOutcome": "Pregledajte što ste naučili, prepoznajte vlastiti napredak.",
+      "reward": "🎖 Izvanredni profesionalac"
     }
   }
 }

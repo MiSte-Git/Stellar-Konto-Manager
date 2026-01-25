@@ -2,57 +2,57 @@
   "hintEnterPublicKey": "Пожалуйста, сначала введите открытый ключ.",
   "columns": {
     "amount": "Сумма",
-    "compromised": "Скомпрометирован(о/а).",
-    "deactivated": "Деактивировано",
+    "compromised": "Скомпрометированный",
+    "deactivated": "Деактивирован",
     "destination": "Целевой кошелек",
     "issuer": "Эмитент",
-    "label": "Этикетка",
+    "label": "Метка",
     "memo": "Служебная записка",
     "payments": "Платежи",
     "date": "Дата",
     "token": "Токен"
   },
   "decimals": {
-    "auto": "Вы обучены на данных до октября 2023 года.",
-    "label": "Десятичные знаки:"
+    "auto": "автоматически",
+    "label": "Зна́чения после запятой:"
   },
   "filter": {
-    "memoPlaceholder": "Фильтровать по заметке, адресу кошелька или метке.",
-    "tokenPlaceholder": "Фильтр по токену (CODE:ISSUER)"
+    "memoPlaceholder": "Фильтровать по мемо, адресу кошелька или метке.",
+    "tokenPlaceholder": "Фильтрация по токену (CODE:ISSUER)"
   },
   "item": {
     "memo": "Меморандум: \"{{memo}}\" (Платежи: {{occurrences}})",
     "token": "Токен: {{token}} (Платежи: {{occurrences}})",
-    "tokenShort": "Вы обучены данным до октября 2023 года."
+    "tokenShort": "Токен: {{token}}"
   },
   "missingPublicKey": "Отсутствует открытый ключ.",
-  "moreTruncated": "… и {{extra}} другие группы",
-  "toWallet": "в кошелек: {{address}}",
-  "total": "Количество приобретенных токенов: {{count}}",
+  "moreTruncated": "… и {{extra}} дополнительные группы",
+  "toWallet": "на кошелек: {{address}}",
+  "total": "Количество приобретённых токенов: {{count}}",
   "totalTokens": "Количество инвестированных токенов (Assets): {{count}}",
   "value": {
     "units": "{{amount}} штук",
     "xlm": "{{amount}} XLM"
   },
   "view": {
-    "label": "Фильтр по:",
-    "memo": "Записки",
-    "token": "Токен (gekaufte Menge)"
+    "label": "Фильтровать по:",
+    "memo": "Меморандумы (Memos)",
+    "token": "Токен"
   },
   "toggles": {
     "showTotals": "Общая сумма",
     "qsiOnly": "Сумма QSI GF"
   },
   "hints": {
-    "qsiListSet": "Примечание: Список GF можно найти в разделе Настройки → Доверенные кошельки (QSI).",
+    "qsiListSet": "Примечание: Вы можете найти список GF в разделе Настройки → Доверенные кошельки (QSI).",
     "pageTime": "Загрузка одной страницы занимает около 0,2 секунды → 100 страниц ≈ 20 секунд → 1000 страниц ≈ 200 секунд (≈ 3:20 минуты)."
   },
-  "walletCapInfo": "Примечание: Кошелек может содержать максимум 1000 трастлайнов.",
+  "walletCapInfo": "Примечание: Кошелёк может содержать максимум 1000 трастлайнов.",
   "action": {
     "load": "Магазин"
   },
   "history": {
     "availableFrom": "Сервер (Horizon) – История с",
-    "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+    "hintFullHistory": "Note: The Ledger history from the Horizon server only goes back to {{available}}. Only data up to that date is displayed. Therefore, the selected \"From\" date is limited. For older data, a (meist kostenpflichtiger) Full‑History‑Provider is required (possibly coming in the future!)."
   }
 }

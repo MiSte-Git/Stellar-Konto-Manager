@@ -1,13 +1,13 @@
 {
   "federationDisplay": {
-    "label": "Federaation osoite",
-    "none": "Liiton osoitetta ei ole määritelty",
+    "label": "Liiton osoite",
+    "none": "Liittouman osoitetta ei ole määritelty",
     "account": "Tili",
-    "accountLabel": "Labeli"
+    "accountLabel": "Merkintä"
   },
   "flag": {
-    "compromised": "Varoitus: Tämä lompakko on merkitty vaarantuneeksi luottamuslistallasi.",
-    "deactivated": "Huom: Tämä lompakko on merkitty deaktivoiduksi TrustListissäsi."
+    "compromised": "Varoitus: Tämä lompakko on merkitty vaarantuneeksi TrustListissasi.",
+    "deactivated": "Huom: Tämä lompakko on merkitty poistetuksi käytöstä luottamuslistassasi."
   },
   "xlmBalance": "XLM",
   "unfunded": "Ei aktivoitu"

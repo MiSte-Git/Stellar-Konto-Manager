@@ -1,7 +1,7 @@
 {
   "page": {
     "title": "Suodata XLM muistiolla",
-    "noPublicKey": "Julkista avainta ei ole ladattu. Ole hyvä ja syötä julkinen avain ensin."
+    "noPublicKey": "Ei julkista avainta ladattu. Syötä ensin julkinen avain."
   },
   "action": {
     "calculate": "Laskea",
@@ -9,12 +9,12 @@
   },
   "date": {
     "from": "Alkaen (optional)",
-    "to": "Saakka (optional)"
+    "to": "Kunnes (optional)"
   },
   "debug": {
-    "incoming": "Saapuvat – kenelle: {{toMe}}, luotu→minulle: {{createToMe}}, alunperin→minulle: {{nativeInToMe}}",
-    "incomingOverview": "Syötteet: {{total}} • Osallistuvat lompakot: {{unique}}",
-    "memo": "Muistiot Windowsissa: {{any}} • Tarkat muistiot: {{exact}}",
+    "incoming": "Saapuva – vastaanottaja: {{toMe}}, luo→minulle: {{createToMe}}, alkuperäinen→minulle: {{nativeInToMe}}",
+    "incomingOverview": "Merkinnät: {{total}} • Mukana olevat lompakot: {{unique}}",
+    "memo": "Muistiinpanoja ikkunassa: {{any}} • tarkkoja muistiinpanoja: {{exact}}",
     "types": "Tyypit – maksu: {{pay}}, polku: {{path}}, luo: {{create}}, muu: {{other}}"
   },
   "export": {
@@ -28,46 +28,46 @@
   },
   "memo": {
     "label": "Muistion hakuteksti (substring, case-sensitive)",
-    "placeholder": "Muistio (substring, case sensitive)"
+    "placeholder": "Muistio (substring, case-sensitive)"
   },
-  "overviewLine": "Maksukuittaukset: {{total}} • osallistuvat lompakot: {{unique}}",
+  "overviewLine": "Maksukuittaukset: {{total}} • mukana olevat lompakot: {{unique}}",
   "result": {
     "label": "Kokonaissumma:",
     "value": "{{amount}} XLM"
   },
   "summary": {
-    "amount": "Määrä: {{amount}} XLM",
-    "correctCount": "Merkintöjä oikealla muistilapulla: {{n}}",
+    "amount": "Yhteensä: {{amount}} XLM",
+    "correctCount": "Merkinnät oikealla muistiolla: {{n}}",
     "count": "Määrä: {{n}}",
     "label": "Vertailu (all inputs)",
-    "otherCount": "Merkinnät väärällä/puuttuvalla muistutuksella: {{n}}",
-    "unique": "Yksilölliset lompakot (alle): {{n}}",
+    "otherCount": "Merkintöjä, joissa on virheellinen/puuttuva muistiinpano: {{n}}",
+    "unique": "Ainutlaatuiset lompakot (alle): {{n}}",
     "uniqueWallets": "Uniikit lompakot: {{n}}"
   },
   "time": {
-    "setToNow": "Aseta nykyinen aika.",
-    "setToNowHint": "Aseta aikakenttä nykyiseen aikaan."
+    "setToNow": "Aseta nykyinen aika",
+    "setToNowHint": "Aseta aika-kenttä nykyiseen aikaan."
   },
-  "title": "XLM-saldo memon jälkeen",
+  "title": "XLM-saldo muistion mukaan",
   "topLargest": {
-    "button": "20 parasta merkintää (Memo)",
+    "button": "Top 20 Entrances (Memo)",
     "clipboard": "Kopioi leikepöydälle",
     "csv": "Lataa CSV",
     "scanning": "… scannt Top-Eingänge",
-    "title": "Muistion 20 parasta merkintää ajanjaksolla"
+    "title": "Muistion aikajakson 20 parasta merkintää"
   },
   "tz": {
-    "cdt": "CDT (UTC−5)",
-    "cst": "Keskiajan normaaliaika (UTC−6)",
-    "europe_zurich": "Eurooppa/Zurich (Europe/Zurich)",
+    "cdt": "CDT (UTC−5) auf Finnisch wird geschrieben als CDT (UTC−5).",
+    "cst": "CST (UTC−6)",
+    "europe_zurich": "Europe/Zurich (CET/CEST)",
     "label": "Aikavyöhyke päivämäärälle/ajalle",
     "local": "Paikallinen aikavyöhyke",
-    "note": "Päivämäärä ja aika tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC-aikaan ennen hakua.",
+    "note": "Päivämäärät ja ajat tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC-ajaksi ennen hakemista.",
     "utc": "UTC",
-    "window": "Käytetty UTC-aikaväli: {{from}} → {{to}} (Bis exklusiv)"
+    "window": "Käytetty UTC-aikaikkuna: {{from}} → {{to}} (Bis exklusiv)"
   },
   "wrongMemos": {
-    "button": "Näytä lompakot, joilla on virheellinen/tyhjä viesti",
+    "button": "Näytä lompakot, joissa on virheellinen/tyhjä muistio.",
     "clipboard": "Kopioi leikepöydälle",
     "columns": {
       "amount": "Määrä",
@@ -77,10 +77,10 @@
       "tx_hash": "Tapahtuman tiiviste"
     },
     "csv": "Lataa CSV",
-    "failed": "Virhe maksujen lataamisessa väärällä/tyhjällä viestillä.",
-    "hint": "Suodattaa saapuvat maksut ajanjakson aikana ja näyttää lähettäjät, joilla on virheellisiä/tyhjiä muistioita.",
-    "scanning": "… skannaa vääriä/tyhjiä muistioita",
-    "summary": "Määrä: {{count}} • Yhteensä: {{sum}} XLM • Uniikit lompakot: {{unique}}",
-    "title": "Vääriä/tyhjiä muistioita kauden aikana"
+    "failed": "Virhe maksujen lataamisessa, kun muistio on virheellinen tai tyhjä.",
+    "hint": "Suodattaa saapuvat maksut ajanjaksolla ja näyttää lähettäjät, joiden muistiinpano on virheellinen/tyhjä.",
+    "scanning": "… scannt falsche/leere Memos",
+    "summary": "Lukumäärä: {{count}} • Yhteensä: {{sum}} XLM • Uniikit lompakot: {{unique}}",
+    "title": "Väärät/tyhjät muistiot ajanjakson aikana"
   }
 }

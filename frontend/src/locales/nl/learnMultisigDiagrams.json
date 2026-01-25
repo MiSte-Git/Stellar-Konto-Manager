@@ -1,27 +1,27 @@
 {
   "singleVsMulti": {
-    "ariaLabel": "Diagram Eenmalige handtekening vs Multisignature",
-    "singleTitle": "Single-Sig",
+    "ariaLabel": "Diagram Single-Sig vs. Multisig",
+    "singleTitle": "Single-signature (Single-Sig)",
     "multiTitle": "Multisig",
     "account": "Account",
     "singleKey": "1 sleutel",
-    "keyA": "Ondertekenaar A",
-    "keyB": "Ondertekenaar B",
-    "keyC": "Tekenen als C",
+    "keyA": "Ondertekener A",
+    "keyB": "Signer B",
+    "keyC": "Signer C",
     "singleNote": "Een handtekening is voldoende.",
     "multiNote": "Minstens 2 van de 3 handtekeningen"
   },
   "weights": {
-    "ariaLabel": "Diagram gewichten en drempels",
-    "title": "Weights & Thresholds",
-    "sA": "Onderschrijver A",
-    "sB": "Ondertekener B",
-    "sC": "Je bent getraind op gegevens tot oktober 2023.",
+    "ariaLabel": "Diagrammen van gewichten en drempelwaarden",
+    "title": "Gewichten & Drempels",
+    "sA": "Ondertekener A",
+    "sB": "Ondertekenaar B",
+    "sC": "Ondertekenaar C",
     "weight": "Gewicht:",
     "low": "laag",
-    "med": "Met",
+    "med": "U bent getraind op gegevens tot oktober 2023.",
     "high": "hoog",
-    "lowNote": "Eenvoudige handelingen",
+    "lowNote": "Eenvoudige acties",
     "medNote": "Betalingen",
     "highNote": "Kritieke veranderingen"
   },
@@ -29,8 +29,8 @@
     "ariaLabel": "Multisig-stroomdiagram",
     "title": "Multisig-proces",
     "step1": "Coördinator maakt transactie",
-    "step2": "SKM slaat wachtende taak op",
-    "step3": "Ondertekenaar B/C tekent",
+    "step2": "SKM slaat in behandeling zijnde banen op",
+    "step3": "Onderteken B/C ondertekening",
     "step4": "SKM stuurt voltooide transactie"
   }
 }

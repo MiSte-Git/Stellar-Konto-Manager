@@ -1,54 +1,54 @@
 {
   "title": "Multisig & Security",
-  "introText": "Provjerite svoje znanje o potpisima, pragovima i sigurnom pohranjivanju.",
+  "introText": "Provjeri svoje znanje o potpisima, pragovima i sigurnom pohranjivanju.",
   "q1": {
-    "question": "Zašto se koristi multisig?",
+    "question": "Zašto koristiti multisig?",
     "hint": "Razmislite o podijeljenoj odgovornosti.",
-    "a1": "Smanjiti rizik od gubitka pojedinačnih ključeva.",
-    "a1fb": "Ispravno: Višestruki potpisi smanjuju individualni rizik.",
+    "a1": "Kako biste smanjili rizik od gubitka pojedinačnih ključeva.",
+    "a1fb": "Točno: Višestruki potpisi smanjuju pojedinačni rizik.",
     "a2": "Kako biste uštedjeli na naknadama.",
-    "a2fb": "Netočno: Multisig povećava sigurnost, a ne naknade.",
-    "a3": "Za brže slanje.",
+    "a2fb": "Netočno: Multisig povećava sigurnost, ne naknade.",
+    "a3": "Slati brže.",
     "a3fb": "Netočno: Multisig nije dizajniran za brzinu."
   },
   "q2": {
-    "question": "Kada je transakcija na multisig računu važeća?",
-    "hint": "Pogledaj ponderisane potpise.",
+    "question": "Kada je transakcija na multisig računu valjana?",
+    "hint": "Pogledajte ponderisane potpise.",
     "a1": "Ako potpisi dosegnu potrebni prag.",
-    "a1fb": "Ispravno: Zbroj težina mora ispunjavati prag.",
-    "a2": "Čim je prisutan bilo kakav potpis.",
-    "a2fb": "Netačno: Jedan potpis nije dovoljan ako je prag viši.",
+    "a1fb": "Točno: Zbroj težina mora zadovoljiti prag.",
+    "a2": "Čim je prisutan bilo koji potpis.",
+    "a2fb": "Netačno: Jedan potpis nije dovoljan kada je prag viši.",
     "a3": "Samo s glavnim ključem, bez obzira na prag.",
     "a3fb": "Netočno: Glavni ključ također podliježe pragovima."
   },
   "q3": {
-    "question": "Što se događa kada su pragovi pogrešno postavljeni?",
+    "question": "Što se događa ako pragovi nisu pravilno postavljeni?",
     "hint": "Vrijednosti koje su previsoke ili preniske imaju posljedice.",
-    "a1": "Transakcije bi mogle biti blokirane ili oslobođene previše lako.",
-    "a1fb": "Točno: Neispravni pragovi dovode do zaključavanja ili nedovoljne sigurnosti.",
-    "a2": "Uopće ne, pragovi su samo informacija.",
-    "a2fb": "Netočno: Pragovi određuju koliko je potpisa potrebno.",
-    "a3": "Broj sekvencije računa se resetuje.",
-    "a3fb": "Netočno: Pragovi nemaju utjecaja na slijed."
+    "a1": "Transakcije bi mogle biti blokirane ili prelakše odobrene.",
+    "a1fb": "Ispravka: Neispravni pragovi dovode do zaključavanja ili nedovoljne sigurnosti.",
+    "a2": "Nipošto, pragovi su samo informacije.",
+    "a2fb": "Pogrešno: Pragovi kontroliraju koliko je potpisa potrebno.",
+    "a3": "Broj računa se ponovno postavlja.",
+    "a3fb": "Netočno: Pragovi nemaju utjecaj na slijed."
   },
   "q4": {
-    "question": "Koliko potpisa transakcija zahtijeva s Threshold med?",
-    "hint": "med prag = prosječni prag.",
-    "a1": "Težine potpisa moraju barem doseći srednji prag.",
-    "a1fb": "Točno: Prag medijana primjenjuje se na uplate.",
-    "a2": "Uvijek samo jedan potpis.",
-    "a2fb": "Netočno: To ovisi o težinama i pragovima.",
+    "question": "Koliko potpisa zahtijeva transakcija na Threshold med?",
+    "hint": "med threshold = mean threshold.",
+    "a1": "Težine potpisa moraju najmanje doseći srednji prag.",
+    "a1fb": "Ispravno: Srednji prag se primjenjuje na plaćanja.",
+    "a2": "Samo jedan potpis u isto vrijeme.",
+    "a2fb": "Netačno: To zavisi od težina i pragova.",
     "a3": "Uvijek svi potpisnici.",
-    "a3fb": "Pogrešno: Dovoljan broj potpisa samo za ispunjavanje praga."
+    "a3fb": "Nedovoljno: Samo dovoljno potpisa da se zadovolji prag."
   },
   "q5": {
     "question": "Kako bi tajni ključevi trebali biti pohranjeni u stvarnim multisig postavkama?",
-    "hint": "Odvajanje je sigurnost.",
-    "a1": "Odvojeni na različitim uređajima/lokacijama.",
-    "a1fb": "Ispravno: Potpisi bi trebali biti prikupljeni odvojeno.",
+    "hint": "Razdvajanje je sigurnost.",
+    "a1": "Razdvojeni na različitim uređajima/lokacijama.",
+    "a1fb": "Ispravno: Potpisi bi se trebali prikupljati odvojeno.",
     "a2": "Sve na istom laptopu radi praktičnosti.",
-    "a2fb": "Netočno: Uređaj predstavlja jedinstvenu točku kvara.",
-    "a3": "Podijeli u običnom tekstu u chatu.",
-    "a3fb": "Lažno: Nikada ne dijelite tajne ključeve."
+    "a2fb": "Netačno: Uređaj uključuje jednu tačku kvara.",
+    "a3": "Dijeli u običnom tekstu u chatu.",
+    "a3fb": "Pogrešno: Nikad ne dijelite tajne ključeve."
   }
 }
