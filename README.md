@@ -30,16 +30,16 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Quiz mit zufälliger Antwortreihenfolge und Fortschrittsspeicherung.
 
 ### F. Bugtracker
-- Fehler melden über UI; Speicherung in `data/bugreports.json`.
+- Fehler melden über UI; Speicherung in `data/bugtracker.sqlite`.
 - Admin-Modus zum Anzeigen/Löschen (S-Key-geschützt).
 
 ### G. Spenden
-- Menüpunkt „Spenden“ öffnet den regulären Zahlungsdialog (freiwillig).
+- Menüpunkt „Spenden“ (optional, Feature-Flag) öffnet den regulären Zahlungsdialog (freiwillig).
 
 ## Architekturüberblick
 - Frontend: React + Vite.
 - Backend: Node.js/Express, lokale Dateiablage.
-- Daten: `data/multisig_jobs.json`, `data/bugreports.json`.
+- Daten: `data/multisig_jobs.json`, `data/bugtracker.sqlite`.
 - Keine externen Server, keine zentrale Datenspeicherung.
 
 ## Installation & Start (lokal)
@@ -80,7 +80,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 
 ## Rechtliches
 - Öffentliche Nutzung erfordert Impressum/Datenschutz: Seite `/legal` verlinkt im Footer und Menü.
-- Open-Source-Lizenz: siehe Lizenzdatei im Repo.
+- Open-Source-Lizenz: GNU GPL v3.0, siehe `LICENSE.md`.
 
 ## Roadmap (Ausblick)
 - Soroban-Smart-Contract-Unterstützung.

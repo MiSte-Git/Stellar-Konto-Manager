@@ -1,41 +1,41 @@
 {
-  "all": "Elenca tutte le linee di credito",
-  "compare": "Confronto delle linee di fiducia",
+  "all": "Elenca tutte le linee di fiducia.",
+  "compare": "Confronta Trustlines",
   "delete": "Elimina le linee di fiducia",
-  "onlyZeroBalanceInfo": "Solo le linee fiduciarie con un saldo di 0 possono essere eliminate.",
-  "nonZeroBalance": "Questa linea di credito ha un saldo non zero e non può essere eliminata.",
+  "onlyZeroBalanceInfo": "Solo le linee di fiducia con un saldo di 0 possono essere eliminate.",
+  "nonZeroBalance": "Questa linea di fiducia ha un saldo diverso da zero e non può essere eliminata.",
   "destination": {
     "label": "Indirizzo di destinazione",
     "placeholder": "Chiave pubblica di destinazione o indirizzo di federazione",
     "error": "Indirizzo di destinazione non valido"
   },
   "deleted": {
-    "resultTitle": "Risultato dell'eliminazione",
-    "resultText": "{count} linee di fiducia sono state elaborate in modalità {mode}.",
+    "resultTitle": "Elimina risultato",
+    "resultText": "{count} trustline sono stati elaborati in modalità {mode}.",
     "mode": {
       "simulation": "Simulazione",
       "real": "Operazione dal vivo",
-      "realWarning": "Attenzione! Questo eliminerà permanentemente le Trustlines sulla blockchain."
+      "realWarning": "Attenzione! Questo eliminerà definitivamente le linee di credito sulla blockchain."
     },
     "notFound": "Nessuna linea di fiducia corrispondente trovata da eliminare.",
     "simulated": "Simulazione: verrebbero eliminate {count} linee di fiducia.",
-    "success": "Sono state eliminate con successo {count} linee di credito."
+    "success": "Rimosse con successo {count} linee di fiducia."
   },
   "noDuplicates": "Nessuna linea di fiducia duplicata trovata.",
   "showSecret": "Visualizza Chiave Segreta",
   "notFound": "Nessuna Trustline(s) trovata.",
   "add": {
     "button": "Aggiungi trustline",
-    "title": "Crea una nuova linea di fiducia",
-    "assetCodeLabel": "Codice di assetto",
+    "title": "Stabilire una nuova trustline",
+    "assetCodeLabel": "Codice Assetto",
     "assetCodePlaceholder": "ad es., USDC",
-    "assetCodeHelp": "Nome breve dell'asset (1–12 caratteri, ad es. TESTUSD).",
+    "assetCodeHelp": "Nome breve dell'asset (1–12 caratteri, ad esempio, TESTUSD).",
     "issuerLabel": "Emittente (Public Key)",
-    "issuerPlaceholder": "ad es., Emittente G...",
-    "issuerHelp": "Chiave pubblica (G-Adresse) del conto dell'emittente che emette l'asset.",
+    "issuerPlaceholder": "ad esempio, Emittente",
+    "issuerHelp": "Chiave pubblica (G-Adresse) dell'account emittente che emette l'asset.",
     "limitLabel": "Limite",
     "limitPlaceholder": "ad esempio, 1.000.000 (eine Million)",
-    "limitHelp": "Il limite è l'importo massimo di questo bene di cui questo conto è considerato affidabile. In pratica, dovrebbe essere impostato tanto alto quanto il tuo saldo massimo previsto in questo bene.",
+    "limitHelp": "Il limite è la quantità massima di questo bene che questo conto può accettare. In pratica, dovrebbe essere impostato tanto quanto il saldo massimo previsto in questo bene.",
     "submit": "Crea una linea di fiducia",
     "cancel": "Annulla",
     "success": "La linea di fiducia per {{code}} è stata stabilita con successo."

@@ -1,18 +1,18 @@
 {
   "label": "Openbare sleutel of federatieadres",
-  "placeholder": "Voer uw openbare sleutel of een federatie-adres in.",
-  "load": "Account vooraf laden",
+  "placeholder": "Voer uw openbare sleutel of een federatieadres in.",
+  "load": "Winkel",
   "deleteFromList": "Verwijderen uit lijst",
   "source": "Bron",
   "destination": {
-    "input": "Doel",
-    "error": "Ongeldige openbare sleutel ingevoerd.",
-    "label": "Doel Openbare Sleutel",
-    "placeholder": "Voer de doelsleutel voor het publieke sleutel in"
+    "input": "Doelstelling",
+    "error": "Ongeldige publieke sleutel ingevoerd.",
+    "label": "Doel openbaar sleutel",
+    "placeholder": "Voer de doel publieke sleutel in."
   },
-  "invalid": "Ongeldige openbare sleutel.",
+  "invalid": "Ongeldige publieke sleutel.",
   "submit": {
-    "button": "Verzenden"
+    "button": "Verstuur"
   },
   "test": "Test",
   "historyLabel": "Geschiedenis",

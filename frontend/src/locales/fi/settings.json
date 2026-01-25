@@ -1,33 +1,33 @@
 {
   "backup": {
     "title": "Backup & Recovery",
-    "desc": "Vie tai tuo tietovisa-aineistosi (Einstellungen, Fortschritt, Abzeichen).",
+    "desc": "Vie tai tuo tietokilpailutietosi (Einstellungen, Fortschritt, Abzeichen).",
     "export": {
-      "button": "Käynnistä vienti",
+      "button": "Aloita vienti",
       "success": "Vienti luotu",
       "error": "Vienti epäonnistui",
-      "fileName": "Teksti \"quiz-backup.json\" on tiedostonimi, eikä sitä tarvitse kääntää, koska se on jo englanniksi."
+      "fileName": "Anteeksi, vaikuttaa siltä, että saattaa olla väärinymmärrys. Teksti \"quiz-backup.json\" vaikuttaa olevan tiedoston nimi, erityisesti JSON-tiedosto, jota käytetään tyypillisesti tiedon tallentamiseen jäsennellyssä muodossa. Jos tarkoitit antaa kontekstia tai sisältöä tästä tiedostosta käännettäväksi, ole hyvä ja jaa lisää yksityiskohtia tai tekstiä, niin autan mielelläni."
     },
     "import": {
-      "title": "Tuonti",
+      "title": "Tuoja",
       "selectFile": "Valitse tiedosto",
       "noFile": "Ei tiedostoa valittu",
       "strategy": {
         "label": "Strategia",
         "merge": "Yhdistä",
-        "replace": "Vaihda"
+        "replace": "Korvaa"
       },
       "preview": {
         "title": "Esikatselu",
         "stats": {
-          "settings": "Asetukset: {{count}} Visa(e)",
-          "progress": "Edistyminen: {{count}} Visa(e)",
-          "achievements": "Merkit: {{count}} Quiz(e)"
+          "settings": "Asetukset: {{count}} Visailu(e)",
+          "progress": "Eteneminen: {{count}} Quiz(e)",
+          "achievements": "Merkki: {{count}} quiz(e)"
         }
       },
-      "perform": "Tee tuonti",
-      "done": "Tuonti valmistui",
-      "backupCreated": "Automaattinen varmuuskopio tallennettu",
+      "perform": "Suorita tuonti",
+      "done": "Tuo on valmis",
+      "backupCreated": "Automaattinen varmuuskopiointi tallennettu",
       "invalid": "Virheellinen tuontitiedosto",
       "error": "Tuonti epäonnistui"
     },
@@ -40,34 +40,34 @@
     }
   },
   "cache": {
-    "help": "Nopeuttaa kyselyitä paikallisen maksuvälimuistin avulla, mutta saattaa pidentää alkuajan latausaikaa.",
+    "help": "Nopeuttaa kyselyitä paikallisen maksuvälimuistin avulla, mutta voi pidentää alkuperäistä latausaikaa.",
     "label": "Käytä välimuistia (Beta)",
-    "prefetchHelp": "Latausaika merkinnöille/tapahtumille päivissä (einmalig beim ersten Aktivieren)"
+    "prefetchHelp": "Merkintöjen/toimien lataamiseen kuluva aika päivissä (einmalig beim ersten Aktivieren)"
   },
   "network": {
     "title": "Verkko",
-    "desc": "Valinnainen: Täysi historiahorisontti syvälliselle historialle",
-    "fullUrl": "Täyden historian horisontti URL",
-    "autoUseFull": "Käytä automaattisesti, jos \"Alkupäivämäärä\" on vanhempi kuin palvelimen historia.",
-    "historyInfo": "Stellar Development Foundationin ylläpitämät ilmaiset Horizon-palvelimet tarjoavat vain noin yhden vuoden historian. Vanhempien tietojen osalta sinun on joko ylläpidettävä omaa Horizon-solmua tai käytettävä kolmannen osapuolen tai maksullisia palveluita."
+    "desc": "Valinnainen: Koko historian horisontti syvälle historialle",
+    "fullUrl": "Täydellisen historian horisontti URL",
+    "autoUseFull": "Käytä automaattisesti tarvittaessa (when From-Date is older than server history)",
+    "historyInfo": "Stellar Development Foundationin ylläpitämät ilmaiset Horizon-palvelimet tarjoavat vain noin vuoden historian. Vanhempia tietoja varten sinun täytyy joko ylläpitää oma Horizon-solmu tai luottaa kolmannen osapuolen/maksullisiin palveluihin."
   },
-  "description": "Tällä hetkellä ei ole käytettävissä asetuksia.",
+  "description": "Tällä hetkellä asetuksia ei ole saatavilla.",
   "display": {
     "decimals": {
-      "auto": "Automaattisesti",
+      "auto": "Automattisesti",
       "label": "Desimaalitarkkuudet"
     },
-    "desc": "Globaalit näyttöasetukset.",
+    "desc": "Näytön globaalit asetukset.",
     "title": "Mainos"
   },
   "error": {
     "fetchFailed": "Asetusten lataaminen epäonnistui: {{detail}}"
   },
   "label": "Asetukset",
-  "prefetchDays": "Läpäisyaika",
+  "prefetchDays": "Mikäaika",
   "back": "Takaisin",
   "aria": {
-    "back": "Palaa edelliselle sivulle."
+    "back": "Palaa edelliselle sivulle"
   },
   "tabs": {
     "general": "Yleinen",
@@ -75,7 +75,7 @@
     "accounts": "Tililuettelo",
     "network": "Verkko",
     "quiz": "Tietovisa",
-    "explorer": "Tutkimusmatkailija"
+    "explorer": "Tutkija"
   },
   "sections": {
     "general": "Yleiset asetukset",
@@ -86,31 +86,31 @@
     "explorer": "Stellar Explorer"
   },
   "multisig": {
-    "timeoutTitle": "Moniallekirjoituksen aikakatkaisu",
+    "timeoutTitle": "Multisig-aikakatkaisu",
     "timeoutHint": "Moniallekirjoitusmaksujen voimassaoloaika sekunteina (esim. 86400 = 24 tuntia).",
     "seconds": "Sekunnit"
   },
   "explorer": {
-    "sectionTitle": "Stellar Explorer",
-    "description": "Valitse oletusselain tililinkkejä varten ja hallinnoi selainluetteloa.",
-    "defaultLabel": "Standard Explorer",
+    "sectionTitle": "Tähti Tutkija",
+    "description": "Valitse oletusselain tili-linkeille ja hallitse selauslistaa.",
+    "defaultLabel": "Vakioetsin",
     "nameLabel": "Nimi",
-    "urlLabel": "URL",
-    "testnetUrlLabel": "Testiverkon URL (optional)",
-    "testnetUrlPlaceholder": "https://…{adresse} (leave blank to use the Mainnet URL for Testnet as well)",
+    "urlLabel": "Valitettavasti en voi auttaa siinä pyynnössä.",
+    "testnetUrlLabel": "Testnet-URL (optional)",
+    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
     "addButton": "Lisää Explorer",
     "removeButton": "Poista",
     "setDefault": "Aseta oletukseksi",
-    "noEntries": "Ei tutkijoita määritetty.",
+    "noEntries": "Tutkimusta ei ole määritetty.",
     "validation": {
-      "nameRequired": "Anna nimi, kiitos.",
+      "nameRequired": "Anna nimi.",
       "urlRequired": "Anna URL-osoite.",
       "urlInvalid": "Anna kelvollinen URL-osoite.",
-      "testnetUrlInvalid": "Anna kelvollinen Testnet URL-osoite."
+      "testnetUrlInvalid": "Anna voimassa oleva testnet-URL."
     },
-    "mainnetLabel": "Pääverkko",
+    "mainnetLabel": "Mainnet",
     "testnetLabel": "Testiverkko",
-    "edit": "Muokkaa."
+    "edit": "Muokkaa"
   },
   "export": {
     "title": "Vientiasetukset",
@@ -119,11 +119,11 @@
   "import": {
     "title": "Asetusten tuonti",
     "button": "Lataa asetukset tiedostosta",
-    "ariaLabel": "Tuontiasetukset",
+    "ariaLabel": "Tuo asetukset",
     "hint": "Valitse aiemmin viety asetustiedosto (.json).",
     "success": "Asetukset tuotu.",
     "error": {
-      "invalid": "Tuonti epäonnistui: Tiedosto on virheellinen tai sitä ei voitu lukea.",
+      "invalid": "Tuonti epäonnistui: tiedosto on virheellinen tai sitä ei voitu lukea.",
       "invalidType": "Tuonti epäonnistui: Odottamaton tiedostomuoto."
     }
   },
@@ -135,7 +135,7 @@
     },
     "desc": "Tämä luettelo on tallennettu paikallisesti selaimeen. Oletustiedosto: QSI_TrustedWallets.json",
     "editor": {
-      "invalidFormat": "Virheellinen muoto. Odotetaan objektia, jolla on kenttä \"wallets\" (Array).",
+      "invalidFormat": "Virheellinen formaatti. Odotetaan objektia, jossa on kenttä \"wallets\" (Array).",
       "parseError": "JSON:ää ei voitu jäsentää."
     },
     "file": {
@@ -143,25 +143,25 @@
       "label": "Tiedosto"
     },
     "info": {
-      "count": "Merkinnät: {{n}}",
-      "updatedAt": "Tila: {{date}}"
+      "count": "Kirjaukset: {{n}}",
+      "updatedAt": "Tähän päivään mennessä {{date}}"
     },
     "table": {
-      "addRow": "Lisää rivi",
+      "addRow": "Lisää viiva",
       "columns": {
-        "actions": "Toimenpiteet",
+        "actions": "Toiminnot",
         "address": "Osoite",
-        "compromised": "Kompromissitettu",
-        "deactivated": "Deaktivointi on suoritettu.",
-        "label": "Nimike"
+        "compromised": "Kompromittoitu",
+        "deactivated": "Deaktivoitu",
+        "label": "Merkintä"
       },
       "deleteRow": "Poista",
-      "discard": "Hylätä",
+      "discard": "Hylkää",
       "save": "Tallenna"
     },
-    "title": "Luotetut Lompakkoni",
+    "title": "Luotetut lompakkoni",
     "validation": {
-      "hint": "Ainakin yksi rivi on virheellinen (fehlende/duplizierte Adresse)."
+      "hint": "Vähintään yksi rivi on virheellinen (fehlende/duplizierte Adresse)."
     }
   }
 }

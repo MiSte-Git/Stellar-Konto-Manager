@@ -45,7 +45,7 @@ def save_json(file: str, data: Dict[str, Any]) -> None:
         print(f"❌ Fehler beim Speichern von {file}: {e}")
 
 
-def translate_text_openai(text: str, target_lang: str, api_key: str) -> str:
+def translate_text_openai(text: str, target_lang: str, api_key: str) -> str | None:
     """Übersetze via OpenAI Chat Completions."""
     if not OpenAI:
         raise RuntimeError(
@@ -69,7 +69,7 @@ def translate_text_openai(text: str, target_lang: str, api_key: str) -> str:
         return translated if translated else text
     except Exception as e:
         print(f"❌ Fehler bei OpenAI-Übersetzung nach {target_lang}: {e}")
-        return text
+        return None
 
 
 def translate_text_deepl(text: str, target_lang: str, api_key: str, api_url: str | None = None) -> str:
@@ -118,7 +118,7 @@ def translate_text(
     provider: str,
     openai_key: str | None,
     deepl_key: str | None,
-) -> str:
+) -> str | None:
     if provider == "openai":
         if not openai_key:
             raise RuntimeError("OPENAI_API_KEY fehlt in der Umgebung.")
@@ -300,6 +300,7 @@ def merge_keys_missing_or_changed(
     changed_paths: Set[str],
     forced_paths: Set[str],
     counters: Dict[str, int],
+    failed_paths: Set[str],
     prefix: str = "",
 ) -> Dict[str, Any]:
     """Füge fehlende Schlüssel hinzu ODER aktualisiere gezielt geänderte Leaf-Pfade aus de.json.
@@ -340,9 +341,13 @@ def merge_keys_missing_or_changed(
             if needs_update:
                 protected, placeholders = protect_parenthesized_english(value if isinstance(value, str) else "")
                 translated_raw = translate_text(protected, lang, provider, openai_key, deepl_key)
-                translated = restore_parenthesized_english(translated_raw, placeholders)
-                translated = _preserve_special_chars(value, translated, cur_path, counters)
-                out[key] = translated
+                if translated_raw is None:
+                    failed_paths.add(cur_path)
+                    out[key] = out.get(key, value)
+                else:
+                    translated = restore_parenthesized_english(translated_raw, placeholders)
+                    translated = _preserve_special_chars(value, translated, cur_path, counters)
+                    out[key] = translated
     return out
 
 
@@ -355,6 +360,7 @@ def translate_full(
     target_existing: Dict[str, Any] | None = None,
     forced_paths: Set[str] | None = None,
     counters: Dict[str, int] | None = None,
+    failed_paths: Set[str] | None = None,
     prefix: str = "",
 ) -> Dict[str, Any]:
     """Übersetze alle Schlüssel aus base_dict neu in die Zielsprache.
@@ -377,6 +383,7 @@ def translate_full(
                 (existing_val if isinstance(existing_val, dict) else {}),
                 forced_paths,
                 counters,
+                failed_paths,
                 cur_path,
             )
         else:
@@ -394,12 +401,31 @@ def translate_full(
                 if existing_val is None or cur_path in forced_paths:
                     protected, placeholders = protect_parenthesized_english(value if isinstance(value, str) else "")
                     translated_raw = translate_text(protected, lang, provider, openai_key, deepl_key)
-                    translated = restore_parenthesized_english(translated_raw, placeholders)
-                    translated = _preserve_special_chars(value, translated, cur_path, counters)
-                    target_dict[key] = translated
+                    if translated_raw is None:
+                        if failed_paths is not None:
+                            failed_paths.add(cur_path)
+                        target_dict[key] = existing_val if existing_val is not None else value
+                    else:
+                        translated = restore_parenthesized_english(translated_raw, placeholders)
+                        translated = _preserve_special_chars(value, translated, cur_path, counters)
+                        target_dict[key] = translated
                 else:
                     target_dict[key] = existing_val
     return target_dict
+
+
+def prune_extra_keys(base_dict: Dict[str, Any], target_dict: Dict[str, Any]) -> Dict[str, Any]:
+    """Entfernt Keys aus target_dict, die in base_dict nicht existieren (rekursiv)."""
+    pruned: Dict[str, Any] = {}
+    for key, base_val in base_dict.items():
+        if key not in target_dict:
+            continue
+        tgt_val = target_dict[key]
+        if isinstance(base_val, dict) and isinstance(tgt_val, dict):
+            pruned[key] = prune_extra_keys(base_val, tgt_val)
+        else:
+            pruned[key] = tgt_val
+    return pruned
 
 
 # -------- Learn-Namespace: fehlende Keys aus lessons.json ergänzen + Spiegel erzeugen --------
@@ -468,6 +494,11 @@ def main():
         help="Erzwingt Neuübersetzung für bestimmte Schlüssel (dot-Pfade, mehrfach nutzbar oder komma-separiert)",
     )
     parser.add_argument(
+        "--prune-extra",
+        action="store_true",
+        help="Entfernt Keys in Zielsprachen, die in der Basis nicht mehr existieren (rekursiv).",
+    )
+    parser.add_argument(
         "--namespaced-only",
         action="store_true",
         help="[veraltet] Namespaces verarbeiten. Standard ist bereits Namespaces; für Legacy de.json siehe --legacy-root.",
@@ -490,6 +521,7 @@ def main():
     # --full schaltet bewusst in den Voll-Lauf; ohne Flag wird inkrementell (nur neue/geänderte Keys laut Hash) gearbeitet.
     do_full = bool(args.full)
     force_keys_raw = args.force_keys or []
+    do_prune = bool(args.prune_extra)
 
     # API-Keys aus Umgebungsvariablen lesen
     openai_key = os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_KEY")
@@ -581,6 +613,7 @@ def main():
                 os.makedirs(en_dir, exist_ok=True)
                 en_out = os.path.join(en_dir, f"{ns_name}.json")
                 en_existing = load_json(en_out)
+                failed_paths_en: Set[str] = set()
 
                 # Flatten DE-NS (relativ) und bilde Präfix für Manifest
                 de_flat_rel = _flatten_dict(ns_base, prefix="")
@@ -607,6 +640,7 @@ def main():
                         target_existing={},
                         forced_paths=forced_paths,
                         counters=counters,
+                        failed_paths=failed_paths_en,
                     )
                 else:
                     en_translated = merge_keys_missing_or_changed(
@@ -619,12 +653,18 @@ def main():
                         changed_paths=changed_rel,
                         forced_paths=forced_paths,
                         counters=counters,
+                        failed_paths=failed_paths_en,
                     )
+                if do_prune:
+                    en_translated = prune_extra_keys(ns_base, en_translated)
                 save_json(en_out, en_translated)
                 print(f"   → en/{ns_name}.json aktualisiert")
 
                 # Manifest aktualisieren (EN from DE)
                 for k, v in de_flat_pref.items():
+                    rel = k.split(f"{ns_name}.", 1)[-1]
+                    if rel in failed_paths_en:
+                        continue
                     man_en[k] = _sha256(str(v))
                 _save_manifest("en", "de", man_en)
             except Exception as e:
@@ -644,6 +684,7 @@ def main():
                     os.makedirs(out_dir, exist_ok=True)
                     out_file = os.path.join(out_dir, f"{ns_name}.json")
                     existing = load_json(out_file)
+                    failed_paths_lang: Set[str] = set()
 
                     man_lang = _load_manifest(lang, "en")
 
@@ -654,6 +695,7 @@ def main():
                             k for k, v in en_flat_rel.items()
                             if man_lang.get(f"{ns_name}.{k}") != _sha256(str(v))
                         )
+                        changed_rel_lang |= forced_paths
 
                     if do_full:
                         translated = translate_full(
@@ -665,6 +707,7 @@ def main():
                             target_existing={},
                             forced_paths=set(),
                             counters=counters,
+                            failed_paths=failed_paths_lang,
                         )
                     else:
                         translated = merge_keys_missing_or_changed(
@@ -675,14 +718,20 @@ def main():
                             openai_key,
                             deepl_key,
                             changed_paths=changed_rel_lang,
-                            forced_paths=set(),
+                            forced_paths=forced_paths,
                             counters=counters,
+                            failed_paths=failed_paths_lang,
                         )
+                    if do_prune:
+                        translated = prune_extra_keys(en_ns, translated)
                     save_json(out_file, translated)
                     print(f"   → {lang}/{ns_name}.json aktualisiert")
 
                     # Manifest aktualisieren (lang from EN)
                     for k, v in en_flat_pref.items():
+                        rel = k.split(f"{ns_name}.", 1)[-1]
+                        if rel in failed_paths_lang:
+                            continue
                         man_lang[k] = _sha256(str(v))
                     _save_manifest(lang, "en", man_lang)
                 except Exception as e:
@@ -768,6 +817,7 @@ def main():
     en_existing = load_json(en_path) if os.path.exists(en_path) else {}
     de_flat = _flatten_dict(base_dict)
     man_en = _load_manifest("en", "de")
+    failed_paths_en: Set[str] = set()
 
     if do_full:
         changed_paths_en = set(de_flat.keys())
@@ -786,6 +836,7 @@ def main():
                 target_existing={},
                 forced_paths=forced_paths,
                 counters=counters,
+                failed_paths=failed_paths_en,
             )
         else:
             if do_full:
@@ -798,6 +849,7 @@ def main():
                     target_existing={},
                     forced_paths=forced_paths,
                     counters=counters,
+                    failed_paths=failed_paths_en,
                 )
             else:
                 en_translated = merge_keys_missing_or_changed(
@@ -810,10 +862,15 @@ def main():
                     changed_paths=changed_paths_en,
                     forced_paths=forced_paths,
                     counters=counters,
+                    failed_paths=failed_paths_en,
                 )
+        if do_prune:
+            en_translated = prune_extra_keys(base_dict, en_translated)
         save_json(en_path, en_translated)
         # Manifest aktualisieren (EN from DE)
         for k, v in de_flat.items():
+            if k in failed_paths_en:
+                continue
             man_en[k] = _sha256(str(v))
         _save_manifest("en", "de", man_en)
     except Exception as e:
@@ -828,11 +885,13 @@ def main():
         out_path = f"{base_path}/{lang}.json"
         existing = load_json(out_path) if os.path.exists(out_path) else {}
         man_lang = _load_manifest(lang, "en")
+        failed_paths_lang: Set[str] = set()
 
-        if do_full:
-            changed_paths_lang = set(en_flat_after.keys())
-        else:
-            changed_paths_lang = set(k for k, v in en_flat_after.items() if man_lang.get(k) != _sha256(str(v)))
+    if do_full:
+        changed_paths_lang = set(en_flat_after.keys())
+    else:
+        changed_paths_lang = set(k for k, v in en_flat_after.items() if man_lang.get(k) != _sha256(str(v)))
+        changed_paths_lang |= forced_paths
 
         try:
             if not do_full and not os.path.exists(out_path):
@@ -846,6 +905,7 @@ def main():
                     target_existing={},
                     forced_paths=set(),
                     counters=counters,
+                    failed_paths=failed_paths_lang,
                 )
             else:
                 if do_full:
@@ -858,6 +918,7 @@ def main():
                         target_existing={},
                         forced_paths=set(),
                         counters=counters,
+                        failed_paths=failed_paths_lang,
                     )
                 else:
                     translated = merge_keys_missing_or_changed(
@@ -870,10 +931,15 @@ def main():
                         changed_paths=changed_paths_lang,
                         forced_paths=set(),
                         counters=counters,
+                        failed_paths=failed_paths_lang,
                     )
+            if do_prune:
+                translated = prune_extra_keys(load_json(en_path) or {}, translated)
             save_json(out_path, translated)
             # Manifest aktualisieren (lang from EN)
             for k, v in en_flat_after.items():
+                if k in failed_paths_lang:
+                    continue
                 man_lang[k] = _sha256(str(v))
             _save_manifest(lang, "en", man_lang)
         except Exception as e:

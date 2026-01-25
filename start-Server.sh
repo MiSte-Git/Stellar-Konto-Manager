@@ -10,13 +10,6 @@ if [ ! -f "$PROJECT_DIR/index.html" ]; then
     exit 1
 fi
 
-# Stelle sicher, dass config/wallets.json existiert
-if [ ! -f "$PROJECT_DIR/config/wallets.json" ]; then
-    mkdir -p "$PROJECT_DIR/config"
-    echo '[]' > "$PROJECT_DIR/config/wallets.json"
-    echo "Erstellt config/wallets.json."
-fi
-
 # Ignoriere unnötige Ordner (bereinige sie nicht, aber starte nicht darauf)
 echo "Ignoriere unnötige Ordner: frontend/, history/, locales/, node_modules/."
 

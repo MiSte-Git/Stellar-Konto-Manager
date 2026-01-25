@@ -1,4 +1,4 @@
 {
-  "warnOnActiveQuiz": "Visualizza avviso durante il quiz in corso.",
-  "warnOnActiveQuiz.desc": "Avvisa riguardo a domande già risposte prima di lasciare la pagina."
+  "warnOnActiveQuiz": "Mostra un avviso durante il quiz in corso.",
+  "warnOnActiveQuiz.desc": "Avvisa riguardo alle domande già risposte prima di lasciare la pagina."
 }

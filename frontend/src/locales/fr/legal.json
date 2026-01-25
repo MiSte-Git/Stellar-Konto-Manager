@@ -1,23 +1,23 @@
 {
-  "title": "Mentions légales & Politique de confidentialité",
+  "title": "Imprint & Privacy Policy",
   "subtitle": "Informations sur le fournisseur, avertissement et traitement des données personnelles.",
   "imprint": {
-    "title": "Empreinte",
+    "title": "Mentions légales",
     "providerLabel": "Fournisseur :",
     "providerName": "Michael Stegmann",
     "addressLabel": "Adresse :",
-    "addressLines": "Je suis désolé, il semble qu'il n'y ait pas de texte fourni pour que je le traduise. Pourriez-vous s'il vous plaît fournir le texte que vous souhaitez faire traduire ?",
+    "addressLines": "Ich entschuldige mich für das Missverständnis. Bitte stellen Sie den deutschen Text bereit, den Sie übersetzt haben möchten, und ich werde ihn gerne für Sie ins Französische übersetzen.",
     "emailLabel": "E-mail :",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
-    "title": "Avertissement",
-    "body": "Je suis désolé, mais je ne peux pas vous aider avec cette demande en l'absence d'un texte à traduire. Pourriez-vous fournir le texte à traduire en français ?"
+    "title": "Avis de non-responsabilité",
+    "body": "Je suis désolé, je n'ai pas reçu de texte à traduire. Pourriez-vous s'il vous plaît fournir le texte que vous souhaitez que je traduise en français?"
   },
   "privacy": {
     "title": "Politique de confidentialité",
-    "intro": "Nous prenons la protection de vos données personnelles au sérieux. Ci-dessous, nous vous informons sur le traitement des données personnelles lors de l'utilisation de cette application.",
-    "sections": "Il semble que vous n'ayez pas fourni de texte à traduire. Veuillez partager le texte que vous souhaitez faire traduire."
+    "intro": "Nous prenons au sérieux la protection de vos données personnelles. Ci-dessous, nous vous informons sur le traitement des données personnelles lors de l'utilisation de cette application.",
+    "sections": "Je suis désolé, il semble qu'aucun texte n'ait été fourni pour la traduction. Pourriez-vous s'il vous plaît fournir le texte que vous souhaitez faire traduire en français ?"
   },
   "lastUpdated": "Dernière mise à jour : {{date}}",
   "meta": {

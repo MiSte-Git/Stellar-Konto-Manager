@@ -13,20 +13,20 @@
     "startQuiz": "Start quiz"
   },
   "glossary": {
-    "link": "Open glossary",
+    "link": "Open glossary.",
     "pageTitle": "Glossary"
   },
   "progress": {
     "title": "Learning progress",
-    "saved": "Progress saved",
+    "saved": "Progress saved.",
     "starsLabel": "{count} ★",
     "error": "Progress could not be saved.",
     "clearAll": "Delete progress",
     "cleared": "Progress deleted",
-    "setStarsGroup": "Assign stars",
+    "setStarsGroup": "Award stars",
     "setStars": "Set {count} stars",
     "completed": "Completed",
-    "markComplete": "Mark as completed",
+    "markComplete": "Mark as complete",
     "export": "Export",
     "exported": "Progress exported",
     "import": "Import",
@@ -47,114 +47,114 @@
     "success": "Success",
     "validation": "Validation",
     "pending": "Waiting for validation",
-    "retry": "Please try again.",
+    "retry": "Please try again",
     "noData": "No quiz available",
     "comingSoon": "Practice for this lesson will follow shortly.",
     "testnetOnly": "Use TESTNET only. Never enter real secret keys. We do not store secrets."
   },
   "import": {
     "title": "Import progress",
-    "summary": "Summary: {lessons} lessons, {stars} total stars. Practice metadata: {meta}",
+    "summary": "Summary: {lessons} lessons, {stars} stars total. Practice metadata: {meta}",
     "metaYes": "yes",
     "metaNo": "no",
     "createdAt": "File created",
     "strategy": "How to import?",
     "merge": "Merge (Keep existing, supplement from file)",
-    "replace": "Overwrite (replace existing progress)",
-    "includePracticeMeta": "Incorporate practice metadata",
+    "replace": "Replace (overwrite existing progress)",
+    "includePracticeMeta": "Adopt practice metadata",
     "cancel": "Cancel",
     "confirm": "Import",
     "invalid": "Invalid or incompatible file"
   },
   "lesson1": {
-    "title": "What is a blockchain?",
+    "title": "A blockchain is a decentralized digital ledger that records transactions across multiple computers in such a way that the registered transactions cannot be altered retroactively. It is typically used to ensure the security and transparency of data, often associated with cryptocurrencies but applicable to various other sectors.",
     "goal": "Understanding the principle of blockchain",
     "task": "Assemble building blocks (Transaktionen) into a chain",
-    "learningOutcome": "A blockchain is an immutable digital ledger that everyone can collectively verify.",
+    "learningOutcome": "A blockchain is an immutable digital ledger that everyone collectively verifies.",
     "reward": "⭐ 1 – Block Builder"
   },
   "lesson2": {
     "title": "Understand Stellar",
-    "goal": "Know the differences from other blockchains.",
-    "task": "Send token to friend (Simulation) and view speed",
-    "learningOutcome": "Stellar is fast, inexpensive, and does not involve mining.",
+    "goal": "Know the difference compared to other blockchains.",
+    "task": "Send token to friend (Simulation) and see speed",
+    "learningOutcome": "Stellar is fast, affordable, and doesn't involve mining.",
     "reward": "⭐ 1 – Quick Sender"
   },
   "lesson3": {
     "title": "Public & Privacy",
     "goal": "Understanding pseudonymity",
-    "task": "View public transaction and guess whether the sender is known.",
+    "task": "View public transaction and guess if one knows who is sending.",
     "learningOutcome": "Everything is visible, but no one knows the real name.",
-    "reward": "⭐ 1 – Data Privacy Detective"
+    "reward": "⭐ 1 – Privacy Detective"
   },
   "lesson4": {
     "title": "Your account",
-    "goal": "Understanding the structure and significance of Public/Secret Key",
-    "task": "Matching Game: What is Public, What is Secret",
-    "learningOutcome": "Only the secret key grants access; the public key can be shared.",
+    "goal": "Understanding the structure and significance of public/private keys.",
+    "task": "Matching Game: What is public, what is secret",
+    "learningOutcome": "Only the Secret Key provides access; the Public Key may be shared.",
     "reward": "⭐ 1 – Key Guardian"
   },
   "lesson5": {
     "title": "Send & Receive",
-    "goal": "Understanding the Functionality of Transactions and Trustlines",
-    "task": "Execute test shipment and view fee",
+    "goal": "Understanding How Transactions and Trustlines Work",
+    "task": "Execute test transmission and view fee",
     "learningOutcome": "Each transaction incurs a small fee; Trustline = permission to receive.",
     "reward": "⭐ 2 – Trustline Starter"
   },
   "lesson6": {
     "title": "Token & Trading",
     "goal": "Learning about market mechanisms",
-    "task": "Place tokens on the virtual marketplace and monitor price changes.",
+    "task": "Place a token on a virtual marketplace and observe price changes.",
     "learningOutcome": "Price is determined by supply and demand.",
     "reward": "⭐ 2 – Marketplace Expert"
   },
   "lesson7": {
     "title": "Security",
     "goal": "Learning safe behaviors",
-    "task": "Sort true/false actions; detect fake tokens.",
+    "task": "Sorting correct/incorrect actions; detecting fake tokens",
     "learningOutcome": "Keeping the key confidential, storing it securely, and using the testnet.",
     "reward": "⭐ 2 – Security Guard"
   },
   "lesson8": {
     "title": "Verification & Identity",
-    "goal": "Understanding trust and rules",
-    "task": "Compare genuine vs. counterfeit tokens",
-    "learningOutcome": "KYC = Identity verification, validation shows trusted tokens.",
+    "goal": "Understanding Trust and Rules",
+    "task": "Compare real vs. fake tokens.",
+    "learningOutcome": "KYC = Identity verification, verification shows trustworthy tokens.",
     "reward": "⭐ 2 – Exam Expert"
   },
   "lesson9": {
     "title": "Zero Knowledge",
     "goal": "Understanding data privacy concepts",
-    "task": "Example scenario 'I am over 18' without showing birthdate",
+    "task": "Example scenario 'I am over 18' without showing date of birth",
     "learningOutcome": "One can prove something without revealing secrets.",
-    "reward": "⭐ 2 – ZK-Expert"
+    "reward": "⭐ 2 – ZK-Interpreter"
   },
   "lesson10": {
     "title": "Practice with SKM",
-    "goal": "Applying learned concepts practically",
+    "goal": "Apply learned knowledge in practice.",
     "task": "Create an account in the testnet, activate it, set a trustline, send tokens.",
-    "learningOutcome": "Understand the technical processes of a transaction.",
+    "learningOutcome": "Trace the technical processes of a transaction.",
     "reward": "⭐ 3 – Blockchain Pilot"
   },
   "lesson11": {
     "title": "Responsibility",
     "goal": "Understanding the consequences of mistakes",
-    "task": "Decision Game: Act Correctly or Not",
+    "task": "Decision-making game: act correctly or not",
     "learningOutcome": "Blockchain is final; due diligence is a must.",
     "reward": "⭐ 1 – Responsibility Hero"
   },
   "lesson12": {
     "title": "Conclusion / Playful Learning",
-    "goal": "Repetition and Motivation",
-    "task": "Mini-quiz + badge display",
-    "learningOutcome": "Review what you've learned, recognize your own progress.",
-    "reward": "🎖 Stellar Professional"
+    "goal": "Review and Motivation",
+    "task": "Mini-Quiz + Badge Display",
+    "learningOutcome": "Review learned material, recognize personal progress.",
+    "reward": "🎖 Stellar Pro"
   },
   "lesson13": {
     "title": "Multisig for Beginners",
-    "goal": "Understanding the Basic Principles of Multisig",
-    "task": "Compare single-signature (Single-Sig) to multi-signature (Multisig), and look at an example process.",
-    "learningOutcome": "Multiple signatures increase security; thresholds determine how many signatures are required.",
+    "goal": "Understanding the Fundamental Principles of Multisig",
+    "task": "Compare Single-Sig vs. Multisig and examine an example process.",
+    "learningOutcome": "Multiple signatures increase security; thresholds determine how many signatures are needed.",
     "reward": "⭐ 2 – Multisig Starter"
   }
 }

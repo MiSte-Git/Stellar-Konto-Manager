@@ -1,21 +1,21 @@
 {
-  "all": "Liste todas las líneas de confianza.",
-  "compare": "Comparando Trustlines",
+  "all": "Enumera todas las líneas de confianza.",
+  "compare": "Comparar Trustlines",
   "delete": "Eliminar líneas de confianza",
-  "onlyZeroBalanceInfo": "Solo se pueden eliminar las líneas de crédito con un saldo de 0.",
-  "nonZeroBalance": "Esta línea de crédito tiene un saldo distinto de cero y no se puede eliminar.",
+  "onlyZeroBalanceInfo": "Solo se pueden eliminar las líneas de confianza con un saldo de 0.",
+  "nonZeroBalance": "Esta línea de crédito tiene un saldo diferente de cero y no se puede eliminar.",
   "destination": {
     "label": "Dirección objetivo",
-    "placeholder": "Clave pública de destino o dirección federada",
+    "placeholder": "Clave pública de destino o dirección de federación.",
     "error": "Dirección de destino no válida"
   },
   "deleted": {
-    "resultTitle": "Resultado de la eliminación",
-    "resultText": "{count} líneas de confianza fueron procesadas en modo {mode}.",
+    "resultTitle": "Eliminar resultado",
+    "resultText": "Se procesaron {count} líneas de confianza en modo {mode}.",
     "mode": {
       "simulation": "Simulación",
       "real": "Operación en vivo",
-      "realWarning": "¡Advertencia! Esto eliminará permanentemente las Trustlines en la blockchain."
+      "realWarning": "¡Atención! Esto eliminará permanentemente las líneas de confianza en la blockchain."
     },
     "notFound": "No se encontraron líneas de confianza coincidentes para eliminar.",
     "simulated": "Simulación: se eliminarían {count} líneas de confianza.",
@@ -23,21 +23,21 @@
   },
   "noDuplicates": "No se encontraron líneas de confianza duplicadas.",
   "showSecret": "Mostrar clave secreta",
-  "notFound": "No se encontró una Trustline(s).",
+  "notFound": "No se encontró Trustline(s).",
   "add": {
-    "button": "Añadir línea de confianza",
-    "title": "Crear nueva línea de confianza",
+    "button": "Agregar línea de confianza.",
+    "title": "Establecer una nueva línea de confianza",
     "assetCodeLabel": "Código de activo",
     "assetCodePlaceholder": "por ejemplo, USDC",
-    "assetCodeHelp": "Asset's short name (1–12 characters, e.g. TESTUSD).",
+    "assetCodeHelp": "Nombre corto del activo (1–12 caracteres, p. ej., TESTUSD).",
     "issuerLabel": "Emisor (Public Key)",
     "issuerPlaceholder": "por ejemplo, G...Emisor",
     "issuerHelp": "Clave pública (G-Adresse) de la cuenta emisora que emite el activo.",
     "limitLabel": "Límite",
-    "limitPlaceholder": "por ejemplo, 1.000.000 (eine Million)",
-    "limitHelp": "El límite es la cantidad máxima de este activo que se confía a esta cuenta. En la práctica, debe establecerse tan alto como tu saldo máximo anticipado en este activo.",
+    "limitPlaceholder": "por ejemplo, 1,000,000 (eine Million)",
+    "limitHelp": "El límite es la cantidad máxima de este activo que esta cuenta puede confiar. En la práctica, debe fijarse tan alto como su saldo máximo anticipado en este activo.",
     "submit": "Crear una línea de confianza",
     "cancel": "Cancelar",
-    "success": "La línea de confianza para {{code}} se estableció con éxito."
+    "success": "La línea de confianza para {{code}} se ha establecido con éxito."
   }
 }

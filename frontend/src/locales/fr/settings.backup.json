@@ -7,8 +7,8 @@
   },
   "import": {
     "backupCreated": "Sauvegarde automatique enregistrée",
-    "done": "Importation terminée",
-    "invalid": "Fichier d'importation non valide",
+    "done": "Importation terminée.",
+    "invalid": "Fichier d'importation invalide",
     "noFile": "Aucun fichier sélectionné",
     "preview": {
       "stats": {
@@ -18,7 +18,7 @@
       },
       "title": "Aperçu"
     },
-    "selectFile": "Sélectionner le fichier",
+    "selectFile": "Sélectionner un fichier",
     "strategy": {
       "label": "Stratégie",
       "merge": "Fusionner",
@@ -29,11 +29,11 @@
   "nav": {
     "back": "Retour"
   },
-  "title": "Sauvegarde & Récupération",
+  "title": "Backup & Recovery",
   "toast": {
-    "backupBeforeImport": "Une sauvegarde a été enregistrée avant l'importation.",
+    "backupBeforeImport": "Une sauvegarde a été effectuée avant l'importation.",
     "exported": "Sauvegarde exportée",
     "exportFailed": "Échec de l'exportation",
-    "importFailed": "Importation échouée"
+    "importFailed": "Échec de l'importation"
   }
 }

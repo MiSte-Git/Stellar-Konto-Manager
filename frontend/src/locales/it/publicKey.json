@@ -1,8 +1,8 @@
 {
   "label": "Chiave pubblica o indirizzo di federazione",
-  "placeholder": "Inserisci la tua chiave pubblica o un indirizzo di federazione",
-  "load": "Precarica conto",
-  "deleteFromList": "Rimuovi dalla lista",
+  "placeholder": "Inserisci la tua chiave pubblica o un indirizzo di federazione.",
+  "load": "Negozio",
+  "deleteFromList": "Rimuovi dall'elenco",
   "source": "Fonte",
   "destination": {
     "input": "Obiettivo",
@@ -16,5 +16,5 @@
   },
   "test": "Prova",
   "historyLabel": "Storia",
-  "historyPlaceholder": "Seleziona l'ultimo portafoglio utilizzato"
+  "historyPlaceholder": "Seleziona l'ultimo portafoglio usato"
 }

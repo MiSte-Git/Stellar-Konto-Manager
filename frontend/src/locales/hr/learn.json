@@ -2,7 +2,7 @@
   "menu": "Zvjezdani kviz za početnike",
   "menuHint": "Pregled učenja",
   "pageTitle": "Stranica za učenje",
-  "pageIntro": "Kratke, početnički prilagođene lekcije o blockchainu i Stellar mreži. Nije potrebno prethodno znanje.",
+  "pageIntro": "Kratke, početničke lekcije o blockchainu i mreži Stellar. Nije potrebno prethodno znanje.",
   "labels": {
     "goal": "Cilj",
     "task": "Zadatak",
@@ -13,24 +13,24 @@
     "startQuiz": "Započni kviz"
   },
   "glossary": {
-    "link": "Otvori pojmovnik",
+    "link": "Otvori pojmovnik.",
     "pageTitle": "Rječnik"
   },
   "progress": {
-    "title": "Naučni napredak",
-    "saved": "Napredak spremljen",
+    "title": "Napredak u učenju",
+    "saved": "Napredak spremljen.",
     "starsLabel": "{count} ★",
     "error": "Napredak nije mogao biti sačuvan.",
     "clearAll": "Izbriši napredak",
-    "cleared": "Napredak izbrisan.",
+    "cleared": "Napredak izbrisan",
     "setStarsGroup": "Dodijeli zvjezdice",
-    "setStars": "Postavi {count} zvjezdica",
+    "setStars": "Postavite {count} zvjezdica",
     "completed": "Dovršeno",
-    "markComplete": "Označi kao dovršeno.",
+    "markComplete": "Označi kao dovršeno",
     "export": "Izvoz",
-    "exported": "Napredak je izvezen.",
+    "exported": "Napredak izvezen",
     "import": "Uvoz",
-    "imported": "Uvezeni napredak"
+    "imported": "Napredak uvezen"
   },
   "back": "Nazad",
   "backToTop": "Naviše",
@@ -45,116 +45,116 @@
   },
   "status": {
     "success": "Uspjeh",
-    "validation": "Provjera",
-    "pending": "Čekanje na provjeru",
-    "retry": "Molim te, pokušaj ponovo.",
+    "validation": "Validacija",
+    "pending": "Čekanje na potvrdu",
+    "retry": "Obučeni ste na podacima do listopada 2023. godine.",
     "noData": "Nema dostupnog kviza",
-    "comingSoon": "Praksa za ovu lekciju uskoro slijedi.",
-    "testnetOnly": "Koristite samo TESTNET. Nikada ne unosite stvarne tajne ključeve. Ne pohranjujemo tajne."
+    "comingSoon": "Vježba za ovu lekciju uslijedit će uskoro.",
+    "testnetOnly": "Koristite samo TESTNET. Nikada nemojte unositi prave tajne ključeve. Ne pohranjujemo tajne."
   },
   "import": {
-    "title": "Uvoz napreduje",
-    "summary": "Sažetak: {lessons} lekcija, {stars} ukupno zvjezdica. Metapodaci vježbi: {meta}",
+    "title": "Uvoz napredak",
+    "summary": "Sažetak: {lessons} lekcija, ukupno {stars} zvjezdica. Metapodaci vježbe: {meta}",
     "metaYes": "da",
     "metaNo": "ne",
     "createdAt": "Datoteka je stvorena",
     "strategy": "Kako uvesti?",
     "merge": "Spajanje (Keep existing, supplement from file)",
-    "replace": "Prepisati (replace existing progress)",
-    "includePracticeMeta": "Uključi metapodatke prakse",
+    "replace": "Zamijeniti (overwrite existing progress)",
+    "includePracticeMeta": "Usvojite praksu metapodataka",
     "cancel": "Otkaži",
     "confirm": "Uvoz",
-    "invalid": "Neispravna ili nekompatibilna datoteka"
+    "invalid": "Nevažeća ili nekompatibilna datoteka"
   },
   "lesson1": {
-    "title": "Što je blockchain?",
+    "title": "Blockchain je decentralizirana digitalna knjiga koja bilježi transakcije na više računala na način da se registrirane transakcije ne mogu naknadno mijenjati. Obično se koristi za osiguranje sigurnosti i transparentnosti podataka, često povezivan s kriptovalutama, ali primjenjiv u raznim drugim sektorima.",
     "goal": "Razumijevanje principa blockchaina",
-    "task": "Započnite s povezivanjem građevnih blokova (Transaktionen) u lanac.",
-    "learningOutcome": "Blockchain je nepromjenjiva digitalna knjiga koju svi mogu zajednički verificirati.",
+    "task": "Sastavite blokove (Transaktionen) u lanac.",
+    "learningOutcome": "Blockchain je nepromjenjiva digitalna knjiga koju svi kolektivno verificiraju.",
     "reward": "⭐ 1 – Graditelj blokova"
   },
   "lesson2": {
-    "title": "Razumjeti Stellar",
-    "goal": "Prepoznaj razlike u odnosu na druge blockchaine.",
+    "title": "Razumijevanje Stellara",
+    "goal": "Upoznajte razliku u usporedbi s drugim blockchainovima.",
     "task": "Pošalji token prijatelju (Simulation) i pogledaj brzinu.",
-    "learningOutcome": "Stellar je brz, jeftin i ne uključuje rudarenje.",
-    "reward": "⭐ 1 – Brzi Pošiljatelj"
+    "learningOutcome": "Stellar je brz, povoljan i ne uključuje rudarenje.",
+    "reward": "⭐ 1 – Brzi pošiljatelj"
   },
   "lesson3": {
-    "title": "Javno & Privatno",
-    "goal": "Razumijevanje pseudonimnosti",
-    "task": "Prikaži javnu transakciju i pokušaj pogoditi je li pošiljatelj poznat.",
+    "title": "Public & Privacy",
+    "goal": "Razumijevanje pseudonimizacije",
+    "task": "Pregledajte javnu transakciju i pokušajte pogoditi zna li se tko šalje.",
     "learningOutcome": "Sve je vidljivo, ali nitko ne zna pravo ime.",
-    "reward": "⭐ 1 – Detektiv za zaštitu privatnosti podataka"
+    "reward": "⭐ 1 – Detektiv Privatnosti"
   },
   "lesson4": {
     "title": "Vaš račun",
-    "goal": "Razumijevanje strukture i značaja javnog/tajnog ključa",
-    "task": "Igra uparivanja: Što je javno, što je tajno",
-    "learningOutcome": "Samo tajni ključ omogućuje pristup; javni ključ može biti podijeljen.",
-    "reward": "⭐ 1 – Ključni Čuvar"
+    "goal": "Razumijevanje strukture i značaja javnih/privatnih ključeva.",
+    "task": "Igra spajanja: Što je javno, što je tajno",
+    "learningOutcome": "Samo tajni ključ omogućuje pristup; javni ključ može se dijeliti.",
+    "reward": "⭐ 1 – Čuvar ključa"
   },
   "lesson5": {
     "title": "Send & Receive",
-    "goal": "Razumijevanje Funkcionalnosti Transakcija i Trustlinea",
-    "task": "Izvrši testnu pošiljku i pogledaj naknadu",
-    "learningOutcome": "Svaka transakcija podliježe maloj naknadi; Trustline = dozvola za primanje.",
-    "reward": "⭐ 2 – Trustline početnik"
+    "goal": "Razumijevanje kako transakcije i povjereničke linije funkcioniraju",
+    "task": "Izvrši testni prijenos i pregledaj naknadu.",
+    "learningOutcome": "Svaka transakcija podliježe maloj naknadi; Povjerenička linija = dopuštenje za primanje.",
+    "reward": "⭐ 2 – Trustline početni nivo"
   },
   "lesson6": {
     "title": "Token & Trading",
     "goal": "Učenje o tržišnim mehanizmima",
-    "task": "Postavite tokene na virtualno tržište i pratite promjene cijena.",
-    "learningOutcome": "Cijena se određuje ponudom i potražnjom.",
-    "reward": "⭐ 2 – Stručnjak za Tržnice"
+    "task": "Postavite token na virtualno tržište i pratite promjene cijena.",
+    "learningOutcome": "Cijena se određuje prema ponudi i potražnji.",
+    "reward": "⭐ 2 – Stručnjak za Tržnicu"
   },
   "lesson7": {
     "title": "Sigurnost",
-    "goal": "Učenje sigurnih ponašanja",
-    "task": "Sortiranje radnji na tačno/lažno; otkrivanje lažnih tokena.",
-    "learningOutcome": "Čuvanje ključa povjerljivim, sigurno pohranjivanje i korištenje testne mreže.",
+    "goal": "Učenje sigurnog ponašanja",
+    "task": "Sortiranje ispravnih/neispravnih radnji; detekcija lažnih tokena",
+    "learningOutcome": "Čuvanje ključa povjerljivo, sigurno ga pohranjivanje i korištenje testne mreže.",
     "reward": "⭐ 2 – Zaštitar"
   },
   "lesson8": {
     "title": "Verification & Identity",
     "goal": "Razumijevanje povjerenja i pravila",
-    "task": "Usporedite autentične i krivotvorene tokene",
-    "learningOutcome": "KYC = Verifikacija identiteta, validacija pokazuje pouzdane tokene.",
+    "task": "Usporedite stvarne i lažne tokene.",
+    "learningOutcome": "KYC = Provjera identiteta, provjera pokazuje pouzdane tokene.",
     "reward": "⭐ 2 – Stručnjak za ispite"
   },
   "lesson9": {
     "title": "Nula znanja",
     "goal": "Razumijevanje koncepata privatnosti podataka",
-    "task": "Primjer scenarija: 'Imam više od 18 godina' bez prikazivanja datuma rođenja.",
-    "learningOutcome": "Netko može dokazati nešto bez otkrivanja tajni.",
-    "reward": "⭐ 2 – Stručnjak za ZK"
+    "task": "Primjer scenarija 'Imam više od 18 godina' bez prikazivanja datuma rođenja",
+    "learningOutcome": "Može se nešto dokazati bez otkrivanja tajni.",
+    "reward": "⭐ 2 – ZK-Tumač"
   },
   "lesson10": {
-    "title": "Vježbajte s SKM-om",
-    "goal": "Primjena naučenih koncepata u praksi",
-    "task": "Kreiraj račun na testnetu, aktiviraj ga, postavi trustline i pošalji tokene.",
-    "learningOutcome": "Razumijevanje tehničkih procesa transakcije.",
-    "reward": "⭐ 3 – Blockchain Pilot"
+    "title": "Vježbajte s SKM",
+    "goal": "Primijeni stečeno znanje u praksi.",
+    "task": "Kreirajte račun na testnetu, aktivirajte ga, postavite trustline, pošaljite tokene.",
+    "learningOutcome": "Prati proces tehničke obrade transakcije.",
+    "reward": "⭐ 3 – Pilot projekt blockchaina"
   },
   "lesson11": {
     "title": "Odgovornost",
     "goal": "Razumijevanje posljedica pogrešaka",
-    "task": "Igra odlučivanja: Postupiti ispravno ili ne",
-    "learningOutcome": "Blockchain je konačan; dubinska analiza je nužna.",
+    "task": "Igra donošenja odluka: postupi ispravno ili ne",
+    "learningOutcome": "Blockchain je konačan; dubinska analiza je obavezna.",
     "reward": "⭐ 1 – Junak odgovornosti"
   },
   "lesson12": {
-    "title": "Zaključak / Igrivo učenje",
-    "goal": "Ponavljanje i motivacija",
-    "task": "Mini-kviz + prikaz značke",
-    "learningOutcome": "Pregledaj što si naučio, prepoznaj vlastiti napredak.",
-    "reward": "🎖 Izvanredan Profesionalac"
+    "title": "Zaključak / Razigrano učenje",
+    "goal": "Pregled i motivacija",
+    "task": "Mini-kviz + Prikaz značke",
+    "learningOutcome": "Pregledajte naučeni materijal, prepoznajte osobni napredak.",
+    "reward": "🎖 Stellar Pro"
   },
   "lesson13": {
     "title": "Multisig za početnike",
-    "goal": "Razumijevanje osnovnih principa multisig-a",
-    "task": "Usporedite single-signature (Single-Sig) s multi-signature (Multisig) i pogledajte primjer postupka.",
-    "learningOutcome": "Višestruki potpisi povećavaju sigurnost; pragovi određuju koliko je potpisa potrebno.",
-    "reward": "⭐ 2 – Multisig Početak"
+    "goal": "Razumijevanje temeljnih principa multisiga",
+    "task": "Usporedite Single-Sig i Multisig te ispitajte primjer procesa.",
+    "learningOutcome": "Višestruki potpisi povećavaju sigurnost; pragovi određuju koliko potpisa je potrebno.",
+    "reward": "⭐ 2 – Početnik za multisig"
   }
 }

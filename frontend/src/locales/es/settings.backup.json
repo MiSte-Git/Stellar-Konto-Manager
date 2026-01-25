@@ -1,20 +1,20 @@
 {
-  "desc": "Exportar o importar tus datos de cuestionarios (Einstellungen, Fortschritt, Abzeichen).",
+  "desc": "Exporta o importa tus datos del cuestionario (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Iniciar exportación",
-    "fileName": "Lo siento, necesito más contexto para proporcionar una traducción precisa. ¿Podrías darme más información sobre el contenido o el significado de \"quiz-backup.json\"?",
+    "fileName": "copia de seguridad del cuestionario.json",
     "success": "Exportación creada"
   },
   "import": {
     "backupCreated": "Copia de seguridad automática guardada",
-    "done": "Importación completada",
+    "done": "Importación completada.",
     "invalid": "Archivo de importación no válido",
     "noFile": "Ningún archivo seleccionado",
     "preview": {
       "stats": {
         "achievements": "Insignia: {{count}} Quiz(e)",
-        "progress": "Progreso: {{count}} Quiz(e)",
-        "settings": "Configuraciones: {{count}} Cuestionario(e)"
+        "progress": "Progreso: {{count}} Cuestionarios(e)",
+        "settings": "Einstellungen: {{count}} Quiz(e)"
       },
       "title": "Vista previa"
     },
@@ -24,7 +24,7 @@
       "merge": "Fusionar",
       "replace": "Reemplazar"
     },
-    "title": "Importar"
+    "title": "Importación"
   },
   "nav": {
     "back": "Atrás"
@@ -34,6 +34,6 @@
     "backupBeforeImport": "Se guardó una copia de seguridad antes de la importación.",
     "exported": "Copia de seguridad exportada",
     "exportFailed": "Error de exportación",
-    "importFailed": "Importación fallida"
+    "importFailed": "La importación falló."
   }
 }

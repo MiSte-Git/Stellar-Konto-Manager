@@ -1,42 +1,42 @@
 {
-  "all": "Lister toutes les lignes de crédit",
-  "compare": "Comparaison des lignes de confiance",
+  "all": "Répertoriez toutes les lignes de confiance.",
+  "compare": "Comparer les Trustlines",
   "delete": "Supprimer les lignes de confiance",
   "onlyZeroBalanceInfo": "Seules les lignes de crédit avec un solde de 0 peuvent être supprimées.",
-  "nonZeroBalance": "Cette ligne de crédit présente un solde non nul et ne peut pas être supprimée.",
+  "nonZeroBalance": "Cette ligne de confiance a un solde non nul et ne peut pas être supprimée.",
   "destination": {
     "label": "Adresse cible",
-    "placeholder": "Clé publique de destination ou adresse fédérée",
+    "placeholder": "Clé publique de destination ou adresse de fédération",
     "error": "Adresse de destination invalide"
   },
   "deleted": {
-    "resultTitle": "Résultat de suppression",
+    "resultTitle": "Supprimer le résultat",
     "resultText": "{count} lignes de confiance ont été traitées en mode {mode}.",
     "mode": {
       "simulation": "Simulation",
-      "real": "Opération en direct",
-      "realWarning": "Attention ! Cela supprimera définitivement les Trustlines sur la blockchain."
+      "real": "Operation en direct",
+      "realWarning": "Attention ! Cela supprimera définitivement les lignes de confiance sur la blockchain."
     },
     "notFound": "Aucune ligne de confiance correspondante trouvée à supprimer.",
     "simulated": "Simulation : {count} lignes de confiance seraient supprimées.",
-    "success": "Suppression réussie de {count} lignes de confiance."
+    "success": "{count} lignes de confiance supprimées avec succès."
   },
   "noDuplicates": "Aucune ligne de confiance en double trouvée.",
   "showSecret": "Afficher la clé secrète",
   "notFound": "Aucune Trustline(s) trouvée.",
   "add": {
     "button": "Ajouter une ligne de confiance",
-    "title": "Créer une nouvelle ligne de confiance",
+    "title": "Établir une nouvelle ligne de crédit",
     "assetCodeLabel": "Code d'actif",
-    "assetCodePlaceholder": "p. ex., USDC",
-    "assetCodeHelp": "Asset's short name (1–12 characters, e.g. TESTUSD).",
+    "assetCodePlaceholder": "par exemple, USDC",
+    "assetCodeHelp": "Asset short name (1–12 characters, e.g., TESTUSD).",
     "issuerLabel": "Émetteur (Public Key)",
-    "issuerPlaceholder": "par exemple, G...Émetteur",
-    "issuerHelp": "Clé publique (G-Adresse) du compte émetteur qui émet l'actif.",
+    "issuerPlaceholder": "par exemple, Émetteur G...",
+    "issuerHelp": "Clé publique (G-Adresse) du compte émetteur qui émet l’actif.",
     "limitLabel": "Limite",
-    "limitPlaceholder": "par exemple 1 000 000 (eine Million)",
-    "limitHelp": "La limite est le montant maximum de cet actif que ce compte est autorisé à gérer. En pratique, elle doit être fixée aussi haut que le solde maximum prévu pour cet actif.",
-    "submit": "Créer une ligne de confiance",
+    "limitPlaceholder": "par exemple, 1,000,000 (eine Million)",
+    "limitHelp": "La limite est le montant maximal de cet actif que ce compte peut faire confiance. En pratique, elle devrait être fixée aussi haut que votre solde maximum anticipé dans cet actif.",
+    "submit": "Créer une ligne de crédit.",
     "cancel": "Annuler",
     "success": "La ligne de confiance pour {{code}} a été établie avec succès."
   }

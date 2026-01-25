@@ -1,54 +1,54 @@
 {
   "title": "Multisig & Beveiliging",
-  "introText": "Test je kennis over handtekeningen, drempels en veilige opslag.",
+  "introText": "Test je kennis over handtekeningen, drempelwaarden en beveiligde opslag.",
   "q1": {
-    "question": "Waarom wordt multisig gebruikt?",
-    "hint": "Denk aan gedeelde verantwoordelijkheid.",
-    "a1": "Om het risico van verlies van individuele sleutels te verminderen.",
-    "a1fb": "Correct: Meerdere handtekeningen verminderen het individuele risico.",
+    "question": "Waarom multisig gebruiken?",
+    "hint": "Denk na over gedeelde verantwoordelijkheid.",
+    "a1": "Om het risico van het verliezen van individuele sleutels te verminderen.",
+    "a1fb": "Correct: Meerdere handtekeningen verkleinen het individuele risico.",
     "a2": "Om op kosten te besparen.",
-    "a2fb": "Onjuist: Multisig verhoogt de veiligheid, niet de kosten.",
-    "a3": "Sneller verzenden.",
-    "a3fb": "Onwaar: Multisig is niet ontworpen voor snelheid."
+    "a2fb": "Onjuist: Multisig verhoogt de beveiliging, niet de kosten.",
+    "a3": "Om sneller te verzenden.",
+    "a3fb": "Onjuist: Multisig is niet ontworpen voor snelheid."
   },
   "q2": {
     "question": "Wanneer is een transactie op een multisig-account geldig?",
-    "hint": "Kijk naar de gewogen handtekeningen.",
+    "hint": "Bekijk de gewogen handtekeningen.",
     "a1": "Als de handtekeningen de vereiste drempel bereiken.",
     "a1fb": "Correct: De som van de gewichten moet aan de drempel voldoen.",
     "a2": "Zodra er een handtekening aanwezig is.",
-    "a2fb": "Onjuist: Een enkele handtekening is niet voldoende als de drempel hoger is.",
-    "a3": "Alleen met de hoofdsleutel, ongeacht de drempel.",
-    "a3fb": "Onjuist: De hoofdsleutel is ook onderworpen aan drempels."
+    "a2fb": "Onjuist: Een enkele handtekening is niet voldoende wanneer de drempel hoger is.",
+    "a3": "Alleen met hoofdsleutel, ongeacht de drempel.",
+    "a3fb": "Onjuist: De hoofdsleutel is ook onderworpen aan de drempels."
   },
   "q3": {
-    "question": "Wat gebeurt er als drempelwaarden incorrect worden ingesteld?",
+    "question": "Wat gebeurt er als de drempelwaarden verkeerd zijn ingesteld?",
     "hint": "Waarden die te hoog of te laag zijn, hebben gevolgen.",
-    "a1": "Transacties kunnen te gemakkelijk worden geblokkeerd of vrijgegeven.",
-    "a1fb": "Correct: Onjuiste drempelwaarden leiden tot uitsluitingen of onvoldoende beveiliging.",
-    "a2": "Helemaal niet, drempels zijn alleen maar informatie.",
-    "a2fb": "Onjuist: Drempels bepalen hoeveel handtekeningen nodig zijn.",
-    "a3": "Het volgnummer van de account wordt gereset.",
-    "a3fb": "Onjuist: Drempelwaarden hebben geen invloed op de volgorde."
+    "a1": "Transacties kunnen worden geblokkeerd of te gemakkelijk worden geautoriseerd.",
+    "a1fb": "Correct: Onjuiste drempelwaarden leiden tot vergrendelingen of onvoldoende beveiliging.",
+    "a2": "Helemaal niet, drempels zijn gewoon informatie.",
+    "a2fb": "Onjuist: Drempels bepalen hoeveel handtekeningen er nodig zijn.",
+    "a3": "Het volgnummer van de rekening wordt gereset.",
+    "a3fb": "Onjuist: Drempels hebben geen invloed op de volgorde."
   },
   "q4": {
-    "question": "Hoeveel handtekeningen vereist een transactie met Threshold med?",
-    "hint": "gemiddelde drempel = gemiddelde drempelwaarde.",
-    "a1": "De gewichten van de handtekeningen moeten ten minste de middel-drempel bereiken.",
-    "a1fb": "Correct: De mediane drempel is van toepassing op betalingen.",
-    "a2": "Altijd maar één handtekening.",
-    "a2fb": "Onjuist: Het hangt af van gewichten en drempelwaarden.",
+    "question": "Hoeveel handtekeningen vereist een transactie bij federale med?",
+    "hint": "gemiddelde drempelwaarde = gemiddelde drempelwaarde.",
+    "a1": "Gewichten van de handtekeningen moeten ten minste voldoen aan de med-drempel.",
+    "a1fb": "Correctie: De middelste drempel is van toepassing op betalingen.",
+    "a2": "Slechts één handtekening tegelijk.",
+    "a2fb": "Onjuist: Het hangt af van gewichten en drempels.",
     "a3": "Altijd alle ondertekenaars.",
-    "a3fb": "Onjuist: Alleen voldoende handtekeningen om de drempel te halen."
+    "a3fb": "Onjuist: Alleen genoeg handtekeningen om de drempel te halen."
   },
   "q5": {
     "question": "Hoe moeten geheime sleutels worden opgeslagen in echte multisig-opstellingen?",
-    "hint": "Scheiden is veiligheid.",
+    "hint": "Scheiding is veiligheid.",
     "a1": "Gescheiden op verschillende apparaten/locaties.",
-    "a1fb": "Correctie: Handtekeningen moeten afzonderlijk worden verzameld.",
-    "a2": "Allemaal op dezelfde laptop voor het gemak.",
-    "a2fb": "Onjuist: Een apparaat vormt een enkelvoudig storingspunt.",
+    "a1fb": "Correct: Handtekeningen moeten apart worden verzameld.",
+    "a2": "Alles op dezelfde laptop voor gemak.",
+    "a2fb": "Incorrect: Een apparaat omvat een enkel storingspunt.",
     "a3": "Deel in platte tekst in een chat.",
-    "a3fb": "Onwaar: Deel nooit geheime sleutels."
+    "a3fb": "Onjuist: Deel nooit geheime sleutels."
   }
 }

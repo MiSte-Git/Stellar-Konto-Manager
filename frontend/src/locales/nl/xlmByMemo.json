@@ -1,6 +1,6 @@
 {
   "page": {
-    "title": "Filter XLM op basis van memo",
+    "title": "Filter XLM op Memo",
     "noPublicKey": "Geen openbare sleutel geladen. Voer eerst een openbare sleutel in."
   },
   "action": {
@@ -8,14 +8,14 @@
     "loading": "Bereken…"
   },
   "date": {
-    "from": "Vanaf (optional)",
+    "from": "Van (optional)",
     "to": "Tot (optional)"
   },
   "debug": {
-    "incoming": "Inkomend – naar: {{toMe}}, aanmaken→mij: {{createToMe}}, native→mij: {{nativeInToMe}}",
-    "incomingOverview": "Invoer: {{total}} • Deelnemende wallets: {{unique}}",
-    "memo": "Memo's in Venster: {{any}} • Exacte Memo's: {{exact}}",
-    "types": "Typen – betaling: {{pay}}, pad: {{path}}, maken: {{create}}, anders: {{other}}"
+    "incoming": "Inkomend – naar: {{toMe}}, aanmaken→mij: {{createToMe}}, origineel→mij: {{nativeInToMe}}",
+    "incomingOverview": "Inzendingen: {{total}} • Betrokken portemonnees: {{unique}}",
+    "memo": "Memo's in venster: {{any}} • exacte memo's: {{exact}}",
+    "types": "Typen – betaling: {{pay}}, pad: {{path}}, maken: {{create}}, andere: {{other}}"
   },
   "export": {
     "csv": "Controleer CSV (Treffer)",
@@ -28,29 +28,29 @@
   },
   "memo": {
     "label": "Memo zoektekst (substring, case-sensitive)",
-    "placeholder": "Memo (substring, case sensitive)"
+    "placeholder": "Memo (substring, case-sensitive)"
   },
-  "overviewLine": "Betalingsbewijzen: {{total}} • deelnemende portemonnees: {{unique}}",
+  "overviewLine": "Betalingsbewijzen: {{total}} • betrokken portemonnees: {{unique}}",
   "result": {
     "label": "Totaalbedrag:",
     "value": "{{amount}} XLM"
   },
   "summary": {
-    "amount": "Bedrag: {{amount}} XLM",
-    "correctCount": "Invoeren met correct memo: {{n}}",
+    "amount": "Totaal: {{amount}} XLM",
+    "correctCount": "Invoeringen met correcte notitie: {{n}}",
     "count": "Hoeveelheid: {{n}}",
     "label": "Vergelijking (all inputs)",
-    "otherCount": "Invoer met onjuiste/ontbrekende memo: {{n}}",
+    "otherCount": "Inzendingen met onjuiste/ontbrekende notitie: {{n}}",
     "unique": "Unieke wallets (alle): {{n}}",
-    "uniqueWallets": "Unieke portemonnees: {{n}}"
+    "uniqueWallets": "Unieke wallets: {{n}}"
   },
   "time": {
-    "setToNow": "Stel de huidige tijd in.",
+    "setToNow": "Stel de huidige tijd in",
     "setToNowHint": "Stel het tijdveld in op de huidige tijd."
   },
-  "title": "XLM-saldo na memo",
+  "title": "XLM-saldo volgens memo",
   "topLargest": {
-    "button": "Top 20 inzendingen (Memo)",
+    "button": "Top 20 Entrances (Memo)",
     "clipboard": "Kopiëren naar klembord",
     "csv": "CSV downloaden",
     "scanning": "… scannt Top-Eingänge",
@@ -58,29 +58,29 @@
   },
   "tz": {
     "cdt": "CDT (UTC−5)",
-    "cst": "Centrale standaardtijd (UTC−6)",
+    "cst": "CST (UTC−6)",
     "europe_zurich": "Europa/Zurich (CET/CEST)",
     "label": "Tijdzone voor datum/tijd",
     "local": "Lokale tijdzone",
-    "note": "Datum en tijd worden geïnterpreteerd in de geselecteerde tijdzone en automatisch omgezet naar UTC voordat de zoekopdracht wordt uitgevoerd.",
+    "note": "Datum en tijd worden geïnterpreteerd in de geselecteerde tijdzone en automatisch omgezet naar UTC voordat er gezocht wordt.",
     "utc": "UTC",
     "window": "Gebruikte UTC-tijdvenster: {{from}} → {{to}} (Bis exklusiv)"
   },
   "wrongMemos": {
-    "button": "Portemonnees weergeven met onjuiste/leeg memorandum",
+    "button": "Portemonnees weergeven met onjuiste/lege memo",
     "clipboard": "Kopiëren naar klembord",
     "columns": {
       "amount": "Bedrag",
       "created_at": "Gemaakt op",
       "from": "Vanaf",
-      "memo": "Notitie",
-      "tx_hash": "Transactiehash"
+      "memo": "Memo",
+      "tx_hash": "Transactie-hash"
     },
     "csv": "CSV downloaden",
-    "failed": "Fout bij het laden van betalingen met onjuist/lege memo.",
-    "hint": "Filtert inkomende betalingen binnen de periode en toont afzenders met onjuiste/leeggelaten memo's.",
-    "scanning": "… scannt falsche/leere Memos",
+    "failed": "Fout bij het laden van betalingen met onjuist/leeg memo.",
+    "hint": "Filtert inkomende betalingen binnen de periode en toont afzenders met onjuiste/lege notities.",
+    "scanning": "… scant valse/lege memo's",
     "summary": "Aantal: {{count}} • Totaal: {{sum}} XLM • Unieke Wallets: {{unique}}",
-    "title": "Valse/leegse memos tijdens de periode"
+    "title": "Valse/Lege memo's gedurende de periode"
   }
 }

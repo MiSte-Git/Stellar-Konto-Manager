@@ -5,11 +5,11 @@
     "form": {
       "code": {
         "label": "Code d'actif",
-        "placeholder": "par exemple, USDC"
+        "placeholder": "p. ex., USDC"
       },
       "issuer": {
         "label": "Émetteur (optional)",
-        "placeholder": "Je suis désolé, je ne comprends pas ce que tu veux dire par \"G… (optional)\". Pourrais-tu fournir plus de contexte ou d'informations, s'il te plaît ?"
+        "placeholder": "G…"
       },
       "submit": "Recherche"
     },
@@ -19,7 +19,7 @@
         "code": "Code",
         "issuer": "Émetteur",
         "numAccounts": "Comptes",
-        "amount": "Quantité totale"
+        "amount": "Montant total"
       }
     },
     "invalidInput": {

@@ -1,32 +1,32 @@
 {
   "title": "Multisig per principianti",
-  "menuTitle": "Comprendere Multisig",
-  "teaser": "Perché firme multiple, come funzionano le soglie e come aiuta SKM.",
+  "menuTitle": "Comprendere il Multisig",
+  "teaser": "Perché le firme multiple, come funzionano le soglie e come SKM aiuta.",
   "why": {
-    "title": "Perché multisig?",
-    "text": "Le firme multiple riducono il rischio di errori individuali o furti."
+    "title": "Perché Multisig?",
+    "text": "Le firme multiple riducono il rischio di errori individuali o furto."
   },
   "singleVsMulti": {
-    "title": "Single-sig vs Multisig",
-    "text": "Single-Sig = 1 chiave è sufficiente. Multisig = sono necessarie più firme (z. B. 2 von 3)."
+    "title": "Single-sig vs. Multisig",
+    "text": "Single-Sig = 1 chiave è sufficiente. Multisig = sono richieste firme multiple (z. B. 2 von 3)."
   },
   "stellarHow": {
     "title": "Come Stellar Implementa Multisig",
-    "text": "Stellar utilizza firmatari con pesi e soglie. Ogni operazione richiede un peso soglia."
+    "text": "Stellar utilizza i firmatari con pesi e soglie. Ogni operazione richiede un peso soglia."
   },
   "examples": {
     "title": "Esempi pratici",
-    "item1": "Conto aziendale: Due membri del team devono firmare ogni pagamento.",
+    "item1": "Conto aziendale: Due membri del team devono firmare ciascun pagamento.",
     "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
-    "item3": "Caveau sicuro: è necessaria una chiave hardware più una chiave di backup."
+    "item3": "Cassaforte Sicura: Chiave hardware più chiave di backup necessarie."
   },
   "skmSupport": {
-    "title": "Come SKM Supporta Multisig",
+    "title": "Come SKM supporta Multisig",
     "text": "SKM costruisce transazioni multisig, raccoglie firme e memorizza lavori preparati."
   },
   "diagram": {
-    "singleVsMulti": "Diagramma: Single-Sig vs. Multisig",
+    "singleVsMulti": "Diagramma: Firma singola vs. Multisig",
     "stellarHow": "Diagramma: Firmatario, Peso, Soglia",
-    "skmFlow": "Diagramma: Preparazione del flusso SKM → Firma → Invio"
+    "skmFlow": "Diagramma: Preparazione del Flusso SKM → Firma → Invio"
   }
 }

@@ -1,4 +1,4 @@
 {
-  "warnOnActiveQuiz": "Display warning during ongoing quiz",
+  "warnOnActiveQuiz": "Display a warning during the ongoing quiz.",
   "warnOnActiveQuiz.desc": "Warn about already answered questions before leaving the page."
 }

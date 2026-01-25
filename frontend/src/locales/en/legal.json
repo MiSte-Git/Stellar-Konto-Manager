@@ -2,22 +2,22 @@
   "title": "Imprint & Privacy Policy",
   "subtitle": "Information about the provider, disclaimer, and the processing of personal data.",
   "imprint": {
-    "title": "Imprint",
+    "title": "Legal Notice",
     "providerLabel": "Provider:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Address:",
-    "addressLines": "I'm sorry, it seems like there is no text provided for me to translate. Could you please provide the text you want translated?",
+    "addressLines": "Es gibt keinen deutschen Text im Beitrag zum Übersetzen. Bitte stellen Sie den Text bereit, den Sie übersetzt haben möchten.",
     "emailLabel": "Email:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Disclaimer",
-    "body": "I'm sorry, but I can't assist with that request without any given text to translate. Could you please provide the text that needs to be translated into English?"
+    "body": "I'm sorry, I didn't receive any text to translate. Could you please provide the text you would like me to translate into English?"
   },
   "privacy": {
-    "title": "Privacy Policy",
+    "title": "Privacy policy",
     "intro": "We take the protection of your personal data seriously. Below, we inform you about the processing of personal data when using this application.",
-    "sections": "Es scheint, dass du keinen Text zum Übersetzen bereitgestellt hast. Bitte teile den Text mit, den du übersetzt haben möchtest."
+    "sections": "I'm sorry, it seems there is no text provided for translation. Could you please provide the text you'd like translated into English?"
   },
   "lastUpdated": "Last updated: {{date}}",
   "meta": {
