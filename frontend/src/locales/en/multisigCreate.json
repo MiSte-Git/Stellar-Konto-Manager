@@ -1,64 +1,64 @@
 {
   "title": "Create account + multisig",
-  "menu": "Create Account + Multisig",
-  "menuHint": "Create a new account and optionally set up multisig.",
+  "menu": "Create account + Multisig",
+  "menuHint": "Create a new account and optionally set up multisig",
   "hint": "Create a new account, activate it, and optionally configure multisig.",
   "generateKeys": "Generate key",
   "enableMultisig": "Enable multisig",
   "instructions": {
     "public": "Share this public key with others for payments.",
-    "secret": "Keep this Secret Key secure; never share it."
+    "secret": "Keep this secret key safe; never share it."
   },
   "generateFirst": "Please generate a key pair first.",
-  "confirmLowBalance": "Starting balance {bal} XLM is below the recommended reserve {req} XLM (Signers: {count}). Proceed?",
+  "confirmLowBalance": "Starting balance of {bal} XLM is below the recommended reserve of {req} XLM (Signers: {count}). Continue?",
   "activated": "Account has been activated. Hash: {hash}",
-  "activatedTestnet": "Account was activated in the testnet via Friendbot.",
+  "activatedTestnet": "Account was activated on the testnet via Friendbot.",
   "alreadyActive": "Account is already activated.",
   "createdNoSigners": "Account created, multisig not configured.",
   "createdAndConfigured": "Account created and multisig configured. Hash: {hash}",
   "info": {
-    "more": "More information",
+    "more": "More info",
     "keysOnPage": {
       "title": "Key on this page",
-      "text": "On this page, keys are generated. Keep them secure and do not share them."
+      "text": "This page generates keys. Keep them secure and do not share them."
     },
-    "title": "Important Information",
+    "title": "Important information",
     "secureKeys": {
-      "title": "Secure private key",
-      "text": "Der Public Key (öffentlicher Schlüssel) kann sicher geteilt werden – er ist wie eine Kontonummer.\\n\\nDer Secret Key (Geheimschlüssel) ist der Zugang zu Ihrem Konto. Behandeln Sie ihn wie ein Passwort:\\n• Speichern Sie ihn NIEMALS in Cloud-Diensten, E-Mails oder unsicheren Notizen\\n• Notieren Sie ihn auf Papier oder verwenden Sie einen Hardware-Wallet\\n• Erstellen Sie mehrere Backups und lagern Sie diese an sicheren, getrennten Orten\\n• Bei Verlust des Secret Keys ist der Zugang zum Konto unwiderruflich verloren"
+      "title": "Secure secret key",
+      "text": "The Public Key can be safely shared – it's like an account number.\n\nThe Secret Key is the access to your account. Treat it like a password:\n• NEVER store it on cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the Secret Key is lost, access to the account is irrevocably lost"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
-      "text": "With Multisig, you can define multiple signers for your account. Transactions then require signatures from multiple z. B. 2 von 3.\n\nAdvantages:\n• Increased security (ein kompromittierter Key reicht nicht)\n• Joint accounts (z. B. Firmen, Partnerschaften)\n• Emergency recovery (mehrere Backups bei verschiedenen Personen)\n\nWARNING: Test Multisig on the testnet first before deploying it on the mainnet! Misconfiguration can result in loss of access to the account."
+      "title": "Multisig",
+      "text": "With multisig, you can define multiple signers for your account. Transactions will then require signatures from multiple z. B. 2 von 3.\n\nAdvantages:\n• Increased ein kompromittierter Key reicht nicht\n• Shared z. B. Firmen, Partnerschaften\n• mehrere Backups bei verschiedenen Personen recovery\n\nWARNING: Test multisig on the testnet first before using it on the mainnet! Incorrect configuration can lead to losing access to the account."
     },
     "diagram": {
       "title": "Signature expiration"
     }
   },
-  "activateHint": "Activation is necessary for the account to exist. In the testnet, it can be done via Friendbot, and in the mainnet through \"Create Account\" from an existing wallet.",
+  "activateHint": "Activation is necessary for the account to exist. In the Testnet, this can be done via Friendbot, and in the Mainnet, through \"Create Account\" from an existing wallet.",
   "activateNow": "Activate account immediately",
-  "activateOnly": "Just activate",
-  "balanceWarning": "The starting balance is likely too low to add the {{count}} additional signers (minimum reserve: {{req}} XLM).",
-  "createButton": "Create / Set multisig",
-  "mainnetActivateNote": "Note: Additional reserves are necessary for multisig. 1 XLM is often not enough.",
+  "activateOnly": "Activate only",
+  "balanceWarning": "Starting balance is likely too low to add the {{count}} additional signers (Minimum reserve: {{req}} XLM)",
+  "createButton": "Create / Set Multisig",
+  "mainnetActivateNote": "Note: Additional reserves are required for multisig. 1 XLM is often not enough.",
   "reserve": {
     "base": "Base reserve per entry: {{val}} XLM",
     "recommended": "Recommended starting balance: {{val}} XLM (inkl. Puffer)",
     "required": "Required Minimum Reserve (neu): {{val}} XLM"
   },
-  "signersCountLimit": "Note: Network Boundary (Stellar): max. 20 additional signatories.",
-  "startingBalance": "Initial credit (XLM)",
+  "signersCountLimit": "Note: Network boundary (Stellar): max. 20 additional signatories.",
+  "startingBalance": "Starting credit (XLM)",
   "keyWarning": {
     "title": "⚠️ Secure your key now!",
     "text1": "You have generated a new key pair.",
     "text2": "Secure BOTH keys IMMEDIATELY before proceeding:",
-    "list1": "Public Key: Your account address, which can be shared",
+    "list1": "Public Key: Your account address, can be shared",
     "list2": "Secret Key: Your password – NEVER share or store it online!",
-    "list3": "If the secret key is lost, access is irretrievably lost.",
+    "list3": "If the secret key is lost, access is irrevocably lost.",
     "confirm": "I have secured both keys."
   },
-  "muxedId": "Muxed-ID",
-  "muxedInfo": "With the Muxed-ID, an M-address (M...) is created. It points to the same account as the regular address (G...).",
+  "muxedId": "Muxed ID",
+  "muxedInfo": "With the Muxed-ID, an M-Address (M...) is created. It points to the same account as the regular address (G...).",
   "muxedIdInvalid": "The Muxed ID must be an integer between 0 and 18,446,744,073,709,551,615.",
   "muxedAddress": "Muxed address",
   "muxedActivationInfo": "Muxed addresses are alias addresses. They do not need to be activated separately."

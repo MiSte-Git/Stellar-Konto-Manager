@@ -1,37 +1,37 @@
 {
-  "signersTitle": "Signataire",
+  "signersTitle": "Signataire (ed25519)",
   "signersInfo": "Ajoutez des signataires supplémentaires et définissez des seuils appropriés.",
   "signersCount": "Nombre de signataires",
   "signersCountLimit": "Remarque : Limite du réseau (Stellar) : max. 20 signataires supplémentaires.",
   "bestPractices": {
     "title": "Meilleures pratiques",
-    "text": "Gardez les clés secrètes sécurisées et ne les distribuez pas inutilement."
+    "text": "Gardez les clés secrètes en sécurité et ne les distribuez pas inutilement."
   },
-  "signerTypeNote": "Note: SKM only sets ed25519 signers. For hashX/preAuthTx use",
+  "signerTypeNote": "Remarque : SKM utilise uniquement des signataires ed25519. Pour hashX/preAuthTx, utilisez",
   "signerTypeLink": "lab.stellar.org",
-  "masterWeight": "Poids maître",
-  "threshold": "Seuil (faible/moyen/élevé)",
+  "masterWeight": "Maîtriser le poids",
+  "threshold": "Threshold (niedrig/mittel/hoch)",
   "thresholdLow": "faible",
   "thresholdMed": "moyen",
   "thresholdHigh": "élevé",
-  "thresholdLevelsHint": "Typiquement, le suivant s'applique : faible = modifications simples (e.g., memo, price), moyen = paiements/commerce, élevé = modifications critiques pour la sécurité (e.g., signer/thresholds). Low / Med / High définissent le poids minimum requis des signataires pour une opération.",
-  "thresholdSum": "Poids total : {{sum}}",
+  "thresholdLevelsHint": "Typiquement, faible = changements simples (e.g., memo, price), moyen = paiements/commerce, élevé = changements critiques en matière de sécurité (e.g., signer/threshholds). Faible / Moyen / Élevé définissent le poids minimum requis de signataire pour une opération.",
+  "thresholdSum": "Poids totaux : {{sum}}",
   "thresholdTooHigh": "Remarque : Un seuil ne doit pas dépasser la somme des poids. Veuillez ajuster les valeurs en conséquence.",
   "hints": {
     "byteRange": "(0–255)"
   },
   "tooltips": {
-    "low": "Faible : changements simples (e.g., memo, price).",
-    "med": "Moyens : paiements et actions commerciales.",
-    "high": "Haut : changements critiques pour la sécurité (e.g., signers/thresholds).",
-    "signerWeight": "Poids des signataires (0–255) : Les signataires supplémentaires ont également des droits de vote. Le poids détermine le nombre de voix que leur signature apporte. Lorsqu'une transaction est soumise, toutes les voix exprimées sont additionnées. Si le nombre minimum de voix spécifié (Threshold) est atteint, la transaction est considérée comme autorisée.",
-    "masterWeight": "Poids du titulaire du compte (Master) (0-255) : La clé principale du compte possède des droits de vote. Plus son poids est élevé, plus sa signature compte de votes. Ces votes sont comptabilisés avec ceux des autres signataires pour vérifier si la majorité requise a été atteinte."
+    "low": "Bas: changements simples (e.g., memo, price).",
+    "med": "Moyens : Paiements et actions commerciales.",
+    "high": "Haut : modifications critiques pour la sécurité (e.g., signatories/thresholds).",
+    "signerWeight": "Poids des signataires (0–255) : De plus, les signataires disposent également de droits de vote. Le poids détermine combien de votes leur signature contribue. Lorsqu'une transaction est envoyée, tous les votes exprimés sont additionnés. Si le nombre minimum de votes prédéterminé (Threshold) est atteint, la transaction est considérée comme autorisée.",
+    "masterWeight": "Weight of the account holder (Master) (0-255): La clé principale du compte dispose d'un droit de vote. Plus son poids est élevé, plus le nombre de votes que représente sa signature est important. Ces votes sont additionnés avec ceux des autres signataires pour déterminer si la majorité requise est atteinte."
   },
   "units": {
-    "signatures": "poids minimum"
+    "signatures": "Poids minimum"
   },
   "safety": {
-    "errorTitle": "Safety check blocked",
-    "warningTitle": "Safety warnings"
+    "errorTitle": "Vérification de sécurité bloquée",
+    "warningTitle": "Avertissements de sécurité"
   }
 }

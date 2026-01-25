@@ -12,9 +12,9 @@
     "noFile": "Nessun file selezionato",
     "preview": {
       "stats": {
-        "achievements": "Distintivo: {{count}} Quiz(e)",
+        "achievements": "Badge: {{count}} Quiz(e)",
         "progress": "Progresso: {{count}} Quiz(e)",
-        "settings": "Impostazioni: {{count}} Quiz(e)"
+        "settings": "Einstellungen: {{count}} Quiz(e)"
       },
       "title": "Anteprima"
     },

@@ -1,7 +1,7 @@
 {
   "assetSearch": {
     "title": "Omaisuuden etsintä",
-    "description": "Etsi varoja kaupankäyntipäätepisteen (Horizon) kautta.",
+    "description": "Hae omaisuuksia kauppa-endpointin (Horizon) kautta.",
     "form": {
       "code": {
         "label": "Omaisuuskoodi",
@@ -9,7 +9,7 @@
       },
       "issuer": {
         "label": "Liikkeeseenlaskija (optional)",
-        "placeholder": "G… (G…)"
+        "placeholder": "O… (O…=valinnainen)"
       },
       "submit": "Haku"
     },
@@ -26,7 +26,7 @@
       "codeMissing": "Anna oma varallisuuskoodi."
     },
     "failed": {
-      "generic": "Omaisuushaku epäonnistui. Yritä myöhemmin uudelleen."
+      "generic": "Varojen haku epäonnistui. Yritä myöhemmin uudelleen."
     }
   }
 }

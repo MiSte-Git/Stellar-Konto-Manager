@@ -1,200 +1,206 @@
 {
   "pageTitle": "Woordenlijst",
-  "pageIntro": "Hier vind je belangrijke woorden uit de blockchainwereld en het Stellar-netwerk. Alles wordt in eenvoudige termen uitgelegd.",
+  "pageIntro": "Hier vind je belangrijke termen uit de blockchainwereld en het Stellar-netwerk. Alles wordt in eenvoudige woorden uitgelegd.",
   "searchLabel": "Zoekterm",
   "searchPlaceholder": "Zoekterm (z. B. Konto, Account, Muxed)",
   "searchHint": "De zoekopdracht vindt woorden en verklaringen.",
   "noResults": "Geen overeenkomst.",
   "groups": {
-    "accountsKeys": "Accounts en sleutels",
-    "multisigSecurity": "Multisig en accountbeveiliging",
-    "walletsCustody": "Wallets en bewaring",
-    "tokensAssets": "Tokens en assets",
-    "transactionsFees": "Transacties en kosten",
-    "marketsTrading": "Markten en trading",
-    "networkProtocol": "Netwerk en protocol",
-    "smartContracts": "Smart contracts",
-    "blockchainBasics": "Blockchain-basis",
-    "security": "Veiligheid en fraude"
+    "accountsKeys": "Accounts & Sleutels",
+    "multisigSecurity": "Multisig & Accountbeveiliging",
+    "walletsCustody": "Wallets & Bewaring",
+    "tokensAssets": "Token & Activa",
+    "transactionsFees": "Transacties & Kosten",
+    "marketsTrading": "Markten & Handel",
+    "networkProtocol": "Netwerk & Protocol",
+    "smartContracts": "Slimme contracten",
+    "blockchainBasics": "Basisprincipes van blockchain",
+    "security": "Beveiliging & Fraude"
   },
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
-    "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
-    "desc": "Een blockchain is als een digitaal grootboek. Veel computers slaan dezelfde gegevens op, zodat niemand stiekem iets kan veranderen."
+    "short": "Gedeeld digitaal grootboek – veel computers slaan dezelfde invoeringen op.",
+    "desc": "Een blockchain is als een digitaal grootboek. Veel computers slaan dezelfde gegevens op, waardoor niemand stiekem wijzigingen kan aanbrengen."
   },
   "wallet": {
     "title": "Portemonnee",
     "original": "Wallet",
     "short": "Digitale portemonnee die je sleutels beheert.",
-    "desc": "Een wallet is je digitale portemonnee. Het beheert de sleutels die je nodig hebt om toegang te krijgen tot je account en transacties te verzenden. Een wallet kan een programma, een app of zelfs gewoon een stuk papier met je privésleutel zijn."
+    "desc": "Een portemonnee is je digitale beurs. Het beheert de sleutels die je nodig hebt om toegang te krijgen tot je account en transacties te verzenden. Een portemonnee kan een programma zijn, een app, of zelfs gewoon een stuk papier met je privésleutel."
   },
   "account": {
     "title": "Account",
     "original": "Account",
-    "short": "Een blockchain-account kan activa bevatten en transacties verzenden.",
-    "desc": "Een account is de plek op de blockchain waar je activa worden bewaard. Een account heeft een openbaar adres dat begint met een G. Meerdere wallets kunnen toegang krijgen tot hetzelfde account als ze de juiste sleutel hebben."
+    "short": "Een blockchain-account kan activa vasthouden en transacties verzenden.",
+    "desc": "Een account is de locatie op de blockchain waar je activa worden bewaard. Een account heeft een openbaar adres dat begint met een G. Meerdere wallets kunnen toegang krijgen tot hetzelfde account als ze de juiste sleutel hebben."
   },
   "addressG": {
     "title": "G-adres",
     "original": "G Address",
-    "short": "De publieke sleutel (beginnt mit G) van een Stellar-account.",
-    "desc": "Het G-adres is het hoofdadres van een Stellar-account. Het begint met de letter G. Je geeft het aan anderen zodat zij je iets kunnen sturen."
+    "short": "Het publieke primaire adres van een Stellar-account (beginnt mit G).",
+    "desc": "Het G-adres is het hoofdadres van een Stellar-account. Het begint met de letter G. Je geeft het aan anderen zodat ze je iets kunnen sturen."
   },
   "publicKey": {
-    "title": "Publieke sleutel",
+    "title": "Openbare sleutel",
     "original": "Public Key",
     "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
-    "desc": "De publieke sleutel is het adres dat je mag delen. In Stellar is dit het G-adres. Anderen gebruiken het om je geld te sturen."
+    "desc": "De openbare sleutel is het adres dat je mag delen. In Stellar is dit het G-adres. Anderen gebruiken het om je geld te sturen."
   },
   "privateKey": {
     "title": "Geheime sleutel",
     "original": "Secret Key",
-    "short": "Wachtwoord van de account – nooit delen.",
-    "desc": "De geheime sleutel is je wachtwoord voor de account. Iedereen die deze sleutel heeft, kan je geld verplaatsen. Deel het nooit."
+    "short": "Wachtwoord voor het account – deel het nooit.",
+    "desc": "De geheime sleutel is je wachtwoord voor de account. Wie deze sleutel heeft, kan je geld verplaatsen. Deel het nooit."
   },
   "addressFederation": {
     "title": "Federatieadres",
     "original": "Federation Address",
     "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
-    "desc": "Een federatieadres lijkt op een e-mail. Bijvoorbeeld: naam*domein.com. Dit korte adres verwijst naar een normaal G-adres. Het is gemakkelijker te onthouden."
+    "desc": "Een federatieadres ziet eruit als een e-mailadres. Voorbeeld: naam*domein.com. Dit korte adres verwijst naar een regulier G-adres. Het is gemakkelijker te onthouden."
   },
   "addressMuxed": {
     "title": "Gemengd account",
     "original": "Muxed Account",
     "short": "M‑address with additional ID – shares a base account.",
-    "desc": "Een M-adres verwijst naar een bestaand Stellar-account, maar heeft een aanvullende unieke identificatie (ID). Dit maakt bijvoorbeeld de differentiatie mogelijk van meerdere personen of afdelingen onder hetzelfde G-adres. Technisch gezien behoren de fondsen nog steeds tot het hoofdaccount."
+    "desc": "Een M-adres wijst naar een bestaande Stellar-rekening maar heeft een extra nummer (ID).\n\nMuxed Accounts = G-account + ID (M-Adresse)\nZe bieden associatie, maar geen scheiding van accounts.\nSaldo, kredietlijnen, ondertekenaars en vlaggen zijn altijd op het G-account.\n\nStellar Development Foundation\n\nBijvoorbeeld, meerdere individuen of afdelingen kunnen onder hetzelfde G-adres worden onderscheiden. Technisch gezien behoort het geld nog steeds tot de hoofdaccount."
+  },
+  "muxedAccountsUseCases": {
+    "title": "Toepassingsgevallen voor gemengde accounts",
+    "original": "Muxed accounts use cases",
+    "short": "Voorbeelden, voordelen en beperkingen van M-adressen als hulpmiddel bij het in kaart brengen.",
+    "desc": "Bedrijf - Voorbeeld\n\nInstallatie:\n- Een bedrijfs-G-account\n- Eén M-adres per klant/gebruiksdoel (ID)\n\nProces:\n- Klant betaalt naar hun M-adres\n- Alles gaat naar het bedrijfs-G-account\n- Boekhouding leest de ID -> unieke toewijzing\n\nGeschikt voor:\n- Winkels, betalingsproviders, beurzen\n- Interne referenties zonder memo-risico's\n\nVereniging - Voorbeeld\n\nInstallatie:\n- Een verenigings-G-account\n- M-adressen voor leden, afdelingen, doeleinden\n\nProces:\n- Bijdrage/donatie naar het juiste M-adres\n- Toewijzing via ID, geen memo-fouten\n\nGeschikt voor:\n- Lidmaatschapsgelden\n- Gelabelde inkomsten\n- Eenvoudige controle\n\nWaarin Muxed Accounts uitblinken:\n- Robuuste invoertoewijzing\n- Eén account, vele identiteiten\n- Geen memo-vereiste\n- Minder operationele fouten\n\nWat Muxed Accounts niet zijn:\n- Geen subaccounts\n- Geen individuele balans\n- Geen individuele trustlijnen\n- Geen individuele ondertekenaars/rechten\n\nMeestal ongeschikte gebruiksscenario's:\n- Salarisbetalingen/loonadministratie-accounts (benoetigen eigenes G-Konto)\n- Trust/Escrow voor derden (kein rechtlicher Vermoegenstrenner)\n- Op rollen gebaseerde beveiliging (keine getrennten Signer/Thresholds)\n- Begrotings- of limietscheiding (keine separaten Salden/Asset-Limits)\n- Naleving-gescheiden accounts (KYC/Reporting nicht sauber trennbar)\n\nVergelijking (Kurz):\nToewijzing van betalingen: Ja\nScheiding van activa: Nee\nToegang delegeren: Nee\nJuridisch gescheiden account: Nee\nInterne boekhouding: Ja\n\nBelangrijk om te onthouden:\nMuxed Accounts richten zich op betalingen - ze vervangen geen accounts.\nAls controle, eigendom of scheiding nodig is -> eigen G-account."
   },
   "multisig": {
-    "title": "Multisignatuur",
+    "title": "Multihandtekening",
     "original": "Multi‑Sig",
     "short": "Belangrijke acties vereisen meer dan alleen een handtekening.",
-    "desc": "Multi-Sig staat voor meerdere handtekeningen. Een belangrijke actie vereist meer dan één sleutel. Bijvoorbeeld, jij en een tweede sleutel moeten allebei akkoord gaan voordat er iets verzonden kan worden. Dit maakt diefstal moeilijker.",
+    "desc": "Multi-Sig staat voor meerdere handtekeningen. Een belangrijke actie vereist meer dan één sleutel. Voorbeeld: Jij en een tweede sleutel moeten beide instemmen voordat iets wordt verzonden. Dit maakt diefstal moeilijker.",
     "help": {
-      "title": "Algemene uitleg van een multi-handtekening (Multi-Signature) zakelijke rekening",
-      "intro": "Een bedrijf kan een gezamenlijke blockchain-rekening gebruiken waarbij meerdere bevoegde personen betrokken zijn. Meestal zijn minstens drie ondertekenaars (Signer) betrokken, zoals het management, de financieel verantwoordelijk persoon, en de naleving/reserve. Het doel is dat de afzonderlijke personen onafhankelijk betalingen kunnen uitvoeren zonder dat één persoon de enige controle over of het beheer van de rekening heeft.",
-      "problem": "Als een ondertekenaar (Signer) genoeg gewicht heeft om betalingen uit te voeren en tegelijkertijd genoeg gewicht voor accountwijzigingen, zou die persoon andere ondertekenaars (Signer) kunnen verwijderen of de drempel/weging (Thresholds) kunnen aanpassen en zo de rekening overnemen. Omgekeerd mag de oorspronkelijke eigenaar ook niet in staat zijn om andere ondertekenaars (Signer) uit te sluiten zonder checks and balances. Een multi-sig structuur zorgt ervoor dat belangrijke beslissingen altijd gezamenlijk door meerdere mensen worden ondersteund.",
-      "setupTitle": "Voorbeeld van een veilige multi-sig structuur met drie ondertekenaars.",
-      "setupWeights": "In een voorbeeld met drie equivalente rollen, ontvangen allen dezelfde handtekeningsterkte:\n- Ondertekenaar (Signer) A (management): gewicht 2\n- Ondertekenaar (Signer) B (Finanzen): gewicht 2\n- Ondertekenaar (Signer) C (Compliance/Backup): gewicht 2",
-      "setupThresholds": "Geschikte drempels/wegingen zijn ingesteld:\n- Laag (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- Hoog (high_threshold): 4 (voor structurele wijzigingen zoals het toevoegen/verwijderen van ondertekenaars (Signer) of het wijzigen van de drempel/weging (Thresholds))\nDeze opstelling stelt elke gemachtigde persoon in staat betalingen uit te voeren, maar geen enkele persoon kan alleen de accountstructuur wijzigen.",
-      "behavior": "Met deze configuratie kunnen betalingen individueel worden uitgevoerd door elk van de drie geautoriseerde personen, omdat het gewicht van elk individu aan de gemiddelde drempel/weging (Threshold) voldoet. Voor structurele wijzigingen, zoals het verwijderen van een ondertekenaar (Signers), het aanpassen van de drempels/wegingen, of het samenvoegen of sluiten van de rekening, is de hoge drempel/weging (high_threshold) vereist. Deze waarde kan alleen worden bereikt als ten minste twee van de drie ondertekenaars (Signer) samen tekenen. Op deze manier blijft de rekening flexibel voor dagelijks gebruik en is hij goed beschermd tegen misbruik.",
-      "removal": "Als een persoon het bedrijf verlaat of niet meer betrouwbaar is, kunnen twee van de overgebleven ondertekenaars (Signer) samen de handtekeningrechten van deze persoon verwijderen. Geen enkele individuele ondertekenaar (Signer) – noch een medewerker, noch het management – kan anderen zelfstandig van de rekening uitsluiten. Het intrekken van bevoegdheden gebeurt dus altijd gecontroleerd en traceerbaar door minstens twee verantwoordelijken.",
-      "summary": "Dit soort multi-handtekeningenstructuur stelt individuele personen in staat om betalingen efficiënt te verwerken, terwijl de controle over de rekening in handen van meerdere partijen blijft. Het vermindert het risico op overnames van rekeningen, beschermt tegen unilaterale beslissingen en is bijzonder geschikt voor bedrijfsrekeningen waar zowel beveiliging als operationele flexibiliteit belangrijk zijn.",
-      "closeLabel": "Sluiten",
+      "title": "Algemene uitleg van een multisignature (Multi-Signature) bedrijfsrekening",
+      "intro": "Een bedrijf kan gebruikmaken van een gedeelde blockchain-account waarin meerdere bevoegde personen betrokken zijn. Typisch zijn er ten minste drie ondertekenaars (Signer) opgenomen, bijvoorbeeld het management, de financieel directeur en compliance/backup. Het doel is dat individuele personen zelfstandig betalingen kunnen uitvoeren zonder dat één persoon alleen de account kan controleren of overnemen.",
+      "problem": "Als een ondertekenaar (Signer) voldoende gewicht heeft om betalingen uit te voeren en tegelijkertijd voldoende gewicht heeft voor wijzigingen in het account, kan die persoon andere ondertekenaars (Signer) verwijderen of de drempel/weging aanpassen (Thresholds) en zo de controle over het account overnemen. Omgekeerd zou de oorspronkelijke eigenaar ook niet gemakkelijk andere ondertekenaars (Signer) moeten kunnen uitsluiten zonder controles en balansen. Een multi-handtekeningstructuur zorgt ervoor dat belangrijke beslissingen altijd collectief door meerdere mensen worden genomen.",
+      "setupTitle": "Voorbeeld van een veilige multi-handtekeningstructuur met drie ondertekenaars.",
+      "setupWeights": "In een voorbeeld met drie gelijke rollen, ontvangen allen dezelfde ondertekeningssterkte:\n- Ondertekenaar (Signer) A (Management): Gewicht 2\n- Ondertekenaar (Signer) B (Finanzen): Gewicht 2\n- Ondertekenaar (Signer) C (Compliance/Backup): Gewicht 2",
+      "setupThresholds": "Geschikte drempels/gewichten zijn als volgt ingesteld:\n- Laag (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- Hoog (high_threshold): 4 (voor structurele wijzigingen zoals het toevoegen/verwijderen van ondertekenaars (Signer) of het wijzigen van de drempel/gewicht (Thresholds))\n\nDit zorgt ervoor dat elke bevoegde persoon betalingen kan uitvoeren, maar dat geen enkele persoon alleen de accountstructuur kan wijzigen.",
+      "behavior": "Met deze configuratie kunnen betalingen door elk van de drie bevoegde personen alleen worden uitgevoerd, omdat het gewicht van elk individu aan de middelhoge drempel voldoet. Voor structurele wijzigingen, zoals het verwijderen van een ondertekenaar, het aanpassen van de drempels/gewichten of het samenvoegen of sluiten van de rekening, is de hoge drempel vereist. Deze waarde kan alleen worden bereikt wanneer ten minste twee van de drie ondertekenaars samen ondertekenen. Deze opstelling houdt de rekening flexibel voor dagelijks gebruik en biedt tegelijkertijd sterke bescherming tegen misbruik.",
+      "removal": "Wenn eine Person das Unternehmen verlässt oder nicht mehr vertrauenswürdig ist, können zwei der verbleibenden Unterzeichner (Signer) gemeinsam die Signaturrechte dieser Person entfernen. Kein einzelner Unterzeichner (Signer) – weder ein Mitarbeiter noch die Geschäftsführung – kann andere eigenständig aus dem Konto ausschließen. Der Entzug von Berechtigungen erfolgt also immer kontrolliert und nachvollziehbar durch mindestens zwei Verantwortliche.",
+      "summary": "Dit type multisig-structuur stelt individuele partijen in staat om efficiënt betalingen te verwerken terwijl de controle over de rekening behouden blijft onder meerdere deelnemers. Het vermindert het risico op accountovernames, beschermt tegen unilaterale beslissingen, en is bijzonder geschikt voor zakelijke rekeningen waar zowel veiligheid als operationele flexibiliteit belangrijk zijn.",
+      "closeLabel": "Dichtbij",
       "linkLabel": "Wat betekent Multi-Signature?",
-      "glossaryLinkLabel": "Bekijk in de woordenlijst"
+      "glossaryLinkLabel": "Bekijk in woordenlijst"
     }
   },
   "multisigCorporate": {
-    "title": "Multisig bij bedrijven",
-    "original": "Multi-Signature (corporate example)",
-    "short": "Voorbeeldstructuur voor multisig bij bedrijfsrekeningen met rollen, gewichten en drempels."
+    "title": "Multisignatuur - Voorbeeld",
+    "original": "Multi-Signature - Example",
+    "short": "Voorbeeld van een multi-handtekeningstructuur voor bedrijfsrekeningen met rollen, gewichten en drempels."
   },
   "trustline": {
-    "title": "Vertrouwenslijn",
+    "title": "Trustline",
     "original": "Trustline",
-    "short": "Overeenkomst om een token van een specifieke uitgever aan te houden.",
-    "desc": "Een trustline is als het zeggen van ja, ik accepteer deze token. Door dit te doen geef je aan dat je account klaar is om een specifieke token van een specifieke uitgever te houden. Zonder een trustline kun je deze token niet ontvangen.\n\nVoorbeeld: Een trustline wordt gespecificeerd als CODE:ISSUER. Voor EURT van de uitgever GDUKMGUGDZQK6Y… is het EURT:GDUKMGUGDZQK6Y…"
+    "short": "Overeenkomst om een token van een specifieke uitgever te houden.",
+    "desc": "Een trustline is als een \"Ja, ik accepteer deze token.\" Door deze in te stellen, geef je aan dat je account klaar is om een specifieke token van een specifieke uitgever te ontvangen. Zonder een trustline kun je deze token niet ontvangen.\n\nVoorbeeld: Een trustline wordt gespecificeerd als CODE:ISSUER. Voor EURT van de uitgever GDUKMGUGDZQK6Y… zou het zijn EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
     "title": "Token",
     "original": "Token",
-    "short": "Digitale eenheid – bijvoorbeeld geld, punten of credits.",
-    "desc": "Een token is een digitale eenheid op de blockchain. Een token kan geld, punten of krediet voor een dienst vertegenwoordigen."
+    "short": "Digitale eenheid – bijvoorbeeld geld, punten of tegoeden.",
+    "desc": "Een token is een digitale eenheid op de blockchain. Een token kan geld, punten of kredieten voor een dienst vertegenwoordigen."
   },
   "asset": {
-    "title": "Activa",
+    "title": "Activum",
     "original": "Asset",
-    "short": "Tokens op Stellar zijn altijd gekoppeld aan de uitgever.",
-    "desc": "Op Stellar wordt een token een activa genoemd. Een activa is altijd gekoppeld aan een uitgevende rekening. Bijvoorbeeld, een rekening kan een euro-token uitgeven. Dit euro-token is dan een activa."
+    "short": "Tokens op Stellar zijn altijd gekoppeld aan een uitgever.",
+    "desc": "Op Stellar wordt een token een activum genoemd. Een activum is altijd gekoppeld aan een uitgeversaccount. Een account kan bijvoorbeeld een Euro-token uitgeven, en deze Euro-token wordt dan beschouwd als een activum."
   },
   "xlm": {
-    "title": "XLM",
+    "title": "Je suis een taalmodel getraind op gegevens tot en met oktober 2023.",
     "original": "XLM",
-    "short": "De oorspronkelijke valuta van Stellar voor kosten en activatie.",
-    "desc": "XLM is de native valuta van Stellar. Je hebt XLM nodig om vergoedingen te betalen en om een nieuw account te openen."
+    "short": "Inheemse valuta van Stellar voor kosten en activatie.",
+    "desc": "XLM is de native valuta van Stellar. Je hebt XLM nodig om kosten te betalen en om een nieuw account te starten."
   },
   "mainnet": {
     "title": "Mainnet",
     "original": "Mainnet",
-    "short": "Echt Stellar‑netwerk met echte waarde.",
+    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
     "desc": "Het echte Stellar-netwerk met daadwerkelijke waarde. Transacties zijn definitief en kosten worden betaald in echte XLM."
   },
   "testnet": {
     "title": "Testnet",
     "original": "Testnet",
-    "short": "Openbaar praktijknetwerk zonder echte waarde.",
-    "desc": "Een openbaar praktijknetwerk. Tokens hebben geen echte waarde. Ideaal om te leren en te experimenteren zonder risico."
+    "short": "Openbaar trainingsnetwerk zonder echte waarde.",
+    "desc": "Een openbaar praktijknetwerk. Tokens hebben geen werkelijke waarde. Ideaal om te leren en experimenteren zonder risico."
   },
   "memo": {
     "title": "Memo",
     "original": "Memo",
-    "short": "Korte notitie bij een transactie.",
+    "short": "Korte notitie in een transactie.",
     "desc": "Een memo is een kleine notitie die je kunt meesturen met een transactie. Vaak vereist een beurs een specifiek memo om te weten aan wie het geld toebehoort."
   },
   "transaction": {
     "title": "Transactie",
     "original": "Transaction",
-    "short": "Actie op de blockchain, bijvoorbeeld betaling of vertrouwenslijn.",
-    "desc": "Een transactie is een actie op de blockchain, zoals geld verzenden of een trustline opzetten. Een transactie wordt permanent opgeslagen zodra deze is bevestigd."
+    "short": "Actie op de blockchain, bijvoorbeeld betaling of vertrouwenlijn.",
+    "desc": "Een transactie is een actie op de blockchain, zoals het verzenden van geld of het opzetten van een vertrouwenslijn. Zodra deze is bevestigd, wordt een transactie permanent vastgelegd."
   },
   "fee": {
     "title": "Kosten",
     "original": "Fee",
     "short": "Zeer klein bedrag per transactie.",
-    "desc": "De vergoeding is een zeer klein bedrag dat je bij elke transactie betaalt. De vergoeding gaat naar het netwerk. Op Stellar zijn de vergoedingen zeer klein."
+    "desc": "De vergoeding is een zeer klein bedrag dat je bij elke transactie betaalt. De vergoeding gaat naar het netwerk. Op Stellar zijn de vergoedingen erg laag."
   },
   "ledger": {
     "title": "Grootboek",
     "original": "Ledger",
-    "short": "Keten van bevestigde gegevens en rekeningsaldi.",
-    "desc": "De grootboek is de keten van alle bevestigde gegevens. Het toont welke rekeningen hoeveel bezitten en welke transacties hebben plaatsgevonden. Iedereen kan het grootboek controleren."
+    "short": "Keten van bevestigde gegevens en saldi.",
+    "desc": "Het grootboek is de keten van alle bevestigde gegevens. Het toont welke accounts hoeveel bevatten en welke transacties hebben plaatsgevonden. Iedereen kan het grootboek controleren."
   },
   "horizon": {
     "title": "Horizon",
     "original": "Horizon",
-    "short": "API‑dienst waarmee apps met Stellar communiceren.",
-    "desc": "Horizon is de dienst waarmee programma's communiceren met de Stellar-blockchain. Onze tool bevraagt Horizon om rekeningbalansen en transacties op te halen."
+    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "desc": "Horizon is de dienst waarmee programma's communiceren met de Stellar-blockchain. Onze tool raadpleegt Horizon om rekeningoverzichten en transacties te laden."
   },
   "horizonHistory": {
     "title": "Horizon Geschiedenis",
     "original": "Horizon history depth",
-    "short": "Beschrijft hoe ver de transactiegeschiedenis die door openbare Horizon-servers wordt verstrekt, teruggaat.",
-    "desc": "Die von der Stellar Development Foundation betriebenen öffentlichen Horizon-Server (Mainnet und Testnet) stellen nur eine begrenzte Historie zur Verfügung – derzeit ungefähr ein Jahr rückwirkend. Ältere Daten sind über diese kostenlosen Endpunkte nicht mehr abrufbar. Wenn du weiter in die Vergangenheit zurück musst, hast du im Wesentlichen zwei Optionen: (1) du betreibst einen eigenen Horizon-Node mit vollständiger History (inklusive History Archives), oder (2) du nutzt Drittanbieter- bzw. Bezahldienste, die historische Stellar-Daten langfristig speichern und zur Verfügung stellen.",
-    "seeAlso": "Je bent getraind op gegevens tot oktober 2023."
+    "short": "Beschrijft hoever terug de transactiegeschiedenis van openbare Horizon-servers reikt.",
+    "desc": "De publieke Horizon-servers (Mainnet und Testnet) die worden beheerd door de Stellar Development Foundation bieden slechts een beperkte geschiedenis – momenteel ongeveer één jaar terugwerkend. Oudere gegevens kunnen niet meer worden opgevraagd via deze gratis eindpunten. Als je verder terug in de tijd moet gaan, heb je eigenlijk twee opties: (1) je kunt je eigen Horizon-node met volledige geschiedenis (inklusive History Archives) draaien, of (2) je kunt gebruikmaken van externe of betaalde diensten die langetermijngeschiedenis van Stellar-gegevens opslaan en verschaffen.",
+    "seeAlso": "U hebt geen specifieke tekst om te vertalen verstrekt. Voer alstublieft de tekst in die u vertaald wilt hebben."
   },
   "anchor": {
     "title": "Anker",
     "original": "Anchor",
     "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Een anchor is een bedrijf dat echt geld, zoals euro's of dollars, verbindt met Stellar. Bijvoorbeeld, je geeft de anchor euro's en ontvangt in ruil daarvoor een eurotoken op Stellar."
+    "desc": "Een anchor is een bedrijf dat echt geld, zoals euro's of dollars, met Stellar verbindt. Bijvoorbeeld, je geeft de anchor euro's en ontvangt daarvoor een euro-token op Stellar."
   },
   "exchange": {
-    "title": "Effectenbeurs",
+    "title": "Aandelenbeurs",
     "original": "Exchange",
     "short": "Plaats om tokens te kopen en verkopen.",
-    "desc": "Een beurs is een plaats waar je tokens kunt kopen of verkopen. Veel beurzen vereisen een KYC-proces, wat betekent identiteitsverificatie, voordat je geld in euro's of franken kunt opnemen."
+    "desc": "Een beurs is een plek waar je tokens kunt kopen of verkopen. Veel beurzen vereisen een KYC-proces, wat identiteitsverificatie betekent, voordat je geld in euro's of franken kunt opnemen."
   },
   "dex": {
-    "title": "DEX",
+    "title": "DEX (Decentralized Exchange)",
     "original": "Decentralized Exchange",
-    "short": "Gedecentraliseerde uitwisseling rechtstreeks op de blockchain.",
-    "desc": "DEX staat voor Decentralized Exchange. Hier handelen mensen rechtstreeks met elkaar op de blockchain. Er is geen enkele operator betrokken. Stellar heeft een DEX direct ingebouwd."
+    "short": "Gedecentraliseerde uitwisseling direct op de blockchain.",
+    "desc": "DEX staat voor Gedecentraliseerde Beurs. Hier handelen mensen direct met elkaar op de blockchain. Er is geen enkele operator. Stellar heeft een DEX die direct erin is ingebouwd."
   },
   "liquidityPool": {
     "title": "Liquiditeitspool",
     "original": "Liquidity Pool",
-    "short": "Gezamenlijk zwembad met twee tokens voor onmiddellijke uitwisseling.",
-    "desc": "Een liquiditeitspool is een gedeelde pool die twee tokens bevat. Mensen storten beide tokens hierin. Anderen kunnen vervolgens deze tokens onmiddellijk uitwisselen. De storters verdienen kleine vergoedingen voor deze service."
+    "short": "Gemeenschappelijk pool met twee tokens voor directe uitwisseling.",
+    "desc": "Een liquiditeitspool is een gedeelde pot met twee tokens. Mensen storten beide tokens erin. Anderen mogen deze tokens vervolgens direct ruilen. De storters verdienen in ruil daarvoor kleine vergoedingen."
   },
   "balanceClaimable": {
-    "title": "Vorderbare Saldo",
+    "title": "Opvorderbaar saldo",
     "original": "Claimable Balance",
-    "short": "Gereserveerd geld dat je nog moet accepteren.",
-    "desc": "Een opeisbaar saldo is geld dat al voor jou is gereserveerd, maar dat je nog moet opeisen. Pas wanneer je het accepteert, wordt het aan je account toegevoegd."
+    "short": "Gereserveerd geld dat je nog moet ontvangen.",
+    "desc": "Een opeisbaar saldo is geld dat al voor jou gereserveerd is, maar dat je nog moet opeisen. Het wordt pas aan je rekening bijgeschreven nadat je het accepteert."
   },
   "protocolUpdate": {
-    "title": "Protocolupdate",
+    "title": "Protocolbijwerking",
     "original": "Protocol Update",
     "short": "Aktualisierung der Netzwerk‑Regeln.",
     "desc": "Een protocolupdate is een upgrade van de regels in het Stellar-netwerk, zoals nieuwe functies of beveiligingswijzigingen. Alle knooppunten in het netwerk moeten dezelfde regels gebruiken."
@@ -202,84 +208,83 @@
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Het Smart‑Contract‑Systeem van Stellar.",
-    "desc": "Soroban is het smart contract systeem van Stellar. Een smart contract is programmacode op de blockchain. De code kan zelfstandig regels verifiëren en acties starten zonder tussenkomst van een bank."
+    "short": "Stellars Smart‑Contract‑System.",
+    "desc": "Soroban is het smart contract systeem van Stellar. Een smart contract is programmacode op de blockchain. De code kan onafhankelijk regels verifiëren en acties activeren zonder de noodzaak van een tussenkomst van een bank."
   },
   "multiSignature": {
-    "title": "Multisignature",
+    "title": "Multisignatuur",
     "original": "Multi-Signature",
     "short": "Meerdere handtekeningen vereist; gewichten + drempel bepalen de vrijgave.",
-    "desc": "In een multi-signature opstelling moeten meerdere sleutels ondertekenen voordat een actie geldig wordt. Elke ondertekenaar heeft een gewicht, en de som moet de vereiste drempel bereiken. Dit verhoogt de veiligheid, omdat een enkele gestolen sleutel niet voldoende is."
+    "desc": "In een multi-handtekening setup moeten meerdere sleutels tekenen voordat een actie geldig wordt. Elke ondertekenaar heeft een gewicht, en de som moet aan de vereiste drempelwaarde voldoen. Dit verhoogt de beveiliging omdat één gestolen sleutel niet voldoende is."
   },
   "signer": {
     "title": "Ondertekenaar",
     "original": "Signer",
     "short": "Openbare sleutel met gewicht, onderdeel van de accountconfiguratie.",
-    "desc": "Een ondertekenaar is een openbare sleutel die bij een account hoort en een gewicht heeft. De handtekening telt mee voor het vereiste drempelwaarde. Meerdere ondertekenaars kunnen gezamenlijk een transactie autoriseren."
+    "desc": "Een ondertekenaar is een publieke sleutel die bij een account hoort en een gewicht heeft. De handtekening telt mee voor de vereiste drempel. Meerdere ondertekenaars kunnen gezamenlijk een transactie autoriseren.\n\nOndertekenaars types:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM ondersteunt alleen ed25519. Voor aanvullende opties, bezoek https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Drempels",
     "original": "Thresholds",
-    "short": "Limieten (low/med/high) die de vereiste som van gewichten bepalen.",
-    "desc": "Drempelwaarden bepalen hoeveel gewogen handtekeningen nodig zijn voor acties: laag voor eenvoudige operaties, gemiddeld voor betalingen, hoog voor kritieke wijzigingen. De som van de gewichten van de ondertekenaars moet voldoen aan de betreffende drempelwaarde."
+    "short": "Limieten (low/med/high) die het vereiste totale gewicht bepalen.",
+    "desc": "Drempels bepalen hoeveel gewogen handtekeningen nodig zijn voor acties: laag voor eenvoudige handelingen, middel voor betalingen en hoog voor kritische veranderingen. De som van de ondertekenaarsgewichten moet voldoen aan de respectieve drempelwaarde."
   },
   "masterWeight": {
-    "title": "Mastergewicht",
+    "title": "Meestergewicht",
     "original": "master_weight",
-    "short": "Gewicht van de hoofdsleutel; bepaalt hoeveel de hoofdsleutel meetelt.",
-    "desc": "Het hoofdsleutelgewicht is het gewicht van de hoofdsleutel van een account. Een hoog hoofdsleutelgewicht stelt de hoofdsleutel in staat om veel acties zelfstandig te ondertekenen; een lage waarde vereist aanvullende ondertekenaars."
+    "short": "Gewicht van de hoofdsleutel; bepaalt hoeveel belang de hoofdsleutel heeft.",
+    "desc": "Het meestergewicht is het gewicht van de hoofdssleutel van een account. Een hoog meestergewicht stelt de hoofdssleutel in staat om veel acties zelfstandig te ondertekenen; een lage waarde vereist aanvullende ondertekenaars."
   },
   "accountConfig": {
     "title": "Accountconfiguratie",
     "original": "Account Configuration",
-    "short": "De wisselwerking tussen ondertekenaars en drempels bepaalt de beveiliging van de account.",
-    "desc": "De accountconfiguratie specificeert welke ondertekenaars bestaan met welke gewichten en welke drempels van toepassing zijn. Wijzigingen in ondertekenaars of drempels zijn van cruciaal belang voor de beveiliging, omdat zij bepalen hoeveel handtekeningen vereist zijn."
+    "short": "De interactie tussen ondertekenaars en drempels bepaalt de veiligheid van de rekening.",
+    "desc": "De accountconfiguratie bepaalt welke ondertekenaars bestaan met welke gewichten en welke drempels van toepassing zijn. Wijzigingen aan ondertekenaars of drempels zijn van cruciaal belang voor de beveiliging, omdat zij bepalen hoeveel handtekeningen vereist zijn."
   },
-  "missingKey": "Ontbrekend woordenlijst item: {{detail}}",
   "distributedNetwork": {
     "title": "Gedistribueerd netwerk",
     "original": "Distributed Network",
-    "short": "Veel computers werken samen in plaats van dat één alles bepaalt.",
-    "desc": "Stel je een markt voor waar veel handelaren dezelfde regels kennen. Als één deelnemer wegvalt, blijft het functioneren omdat anderen het kunnen overnemen. Dit houdt het systeem stabiel en moeilijker te manipuleren."
+    "short": "Veel computers werken samen in plaats von één die alle beslissingen neemt.",
+    "desc": "Stel je een markt voor waar veel handelaren dezelfde regels kennen. Als één deelnemer wegvalt, blijft het systeem draaien omdat anderen het kunnen overnemen. Dit houdt het systeem stabiel en moeilijker te manipuleren."
   },
   "node": {
     "title": "Knooppunt",
     "original": "Node",
     "short": "Een enkele deelnemer in het netwerk.",
-    "desc": "Een node is als een boekhouder die een kopie van de gegevens bijhoudt. Het controleert nieuwe invoer en stuurt deze door. Veel nodes samen maken het netwerk betrouwbaar."
+    "desc": "Een knooppunt is als een boekhouder die een kopie van de gegevens bijhoudt. Het verifieert nieuwe invoer en geeft deze door. Veel knooppunten samen maken het netwerk betrouwbaar."
   },
   "block": {
     "title": "Blok",
     "original": "Block",
-    "short": "Een blok is een pakket van items.",
-    "desc": "Als een pagina in een grootboek verzamelt een blok meerdere transacties. Zodra het vol is, wordt het afgerond en aan de keten toegevoegd. Zo wordt de geschiedenis stap voor stap gecreëerd."
+    "short": "Een blok is een bundel van invoeringen.",
+    "desc": "Net als een pagina in een kasboek verzamelt een blok meerdere transacties. Zodra het vol is, wordt het afgesloten en aan de ketting toegevoegd. Dit creëert stap voor stap de geschiedenis."
   },
   "consensusMechanism": {
     "title": "Consensusmechanisme",
     "original": "Consensus Mechanism",
-    "short": "Regels waarmee iedereen instemt over geldige inzendingen.",
-    "desc": "Het is alsof een groep beslist welke bon geldig is. Dit voorkomt dat iemand stiekem wijzigingen aanbrengt. Verschillende blockchains gebruiken verschillende methoden, maar het doel is altijd consensus."
+    "short": "Regels waarmee iedereen akkoord gaat over geldige invoer.",
+    "desc": "Het is vergelijkbaar met wanneer een groep beslist welke bon geldig is. Dit voorkomt dat iemand in het geheim wijzigingen aanbrengt. Verschillende blockchains gebruiken verschillende werkwijzen, maar het doel is altijd consensus."
   },
   "finality": {
     "title": "Finaliteit / Definitiviteit",
     "original": "Finality",
-    "short": "De garantie dat een transactie definitief is.",
-    "desc": "Wanneer iets definitief is, voelt het als een vastgelegde bankafschrift. Je hoeft niet langer te verwachten dat het wordt teruggedraaid. Dit wekt vertrouwen."
+    "short": "De zekerheid dat een transactie definitief is.",
+    "desc": "Wanneer iets definitief is, voelt het als een bevestigde bankafschrift. Je hoeft niet langer te verwachten dat het wordt teruggedraaid. Dit creëert vertrouwen."
   },
   "immutability": {
     "title": "Onveranderlijkheid",
     "original": "Immutability",
     "short": "Invoer mag niet met terugwerkende kracht worden gewijzigd.",
-    "desc": "Net als bij een kasboek: Achteraf wissen valt op. Wijzigingen worden als een nieuwe invoer toegevoegd, niet overschreven. Hierdoor wordt de geschiedenis traceerbaar."
+    "desc": "Vergelijkbaar met een grootboek: Eventuele verwijderingen achteraf zijn merkbaar. Wijzigingen worden als een nieuwe invoer toegevoegd en niet overschreven. Dit maakt de geschiedenis traceerbaar."
   },
   "decentralization": {
     "title": "Decentralisatie",
     "original": "Decentralization",
-    "short": "Geen centrale autoriteit controleert alles.",
-    "desc": "In plaats van een enkele kluis zijn er veel kluizen met dezelfde informatie. Beslissingen ontstaan uit de interactie van veel deelnemers. Dit maakt het systeem robuuster."
+    "short": "Geen centrale autoriteit beheerst alles.",
+    "desc": "In plaats van een enkele kluis, zijn er veel kluizen met dezelfde informatie. Beslissingen ontstaan uit de interactie van veel deelnemers. Dit maakt het systeem robuuster."
   },
   "publicBlockchain": {
-    "title": "Openbare blockchain",
+    "title": "Publieke blockchain",
     "original": "Public Blockchain",
     "short": "Open voor iedereen die wil deelnemen.",
     "desc": "Iedereen kan deelnemen en de gegevens bekijken, vergelijkbaar met een openbaar mededelingenbord. Dit verhoogt de transparantie, maar elke actie is voor iedereen zichtbaar. Regels zorgen ervoor dat niemand kan valsspelen."
@@ -288,222 +293,223 @@
     "title": "Private blockchain",
     "original": "Private Blockchain",
     "short": "Toegang alleen voor geselecteerde deelnemers.",
-    "desc": "Zoals een bedrijfsboekhouding die alleen door werknemers mag worden bekeken. Dit kan sneller en gecontroleerder zijn, maar het is minder open. Vertrouwen wordt hier opgebouwd door de organisatie."
+    "desc": "Net als een kasboek van een bedrijf dat alleen door werknemers mag worden ingezien. Het kan sneller en meer gecontroleerd zijn, maar het is minder transparant. Vertrouwen wordt hier opgebouwd door de organisatie."
   },
   "permissionlessBlockchain": {
     "title": "Toestemmingsloze blockchain",
     "original": "Permissionless Blockchain",
-    "short": "Iedereen mag deelnemen zonder toestemming.",
-    "desc": "Zoals een markt waar iedereen aan kan deelnemen. Dit verlaagt de drempels, maar er kunnen meer regels nodig zijn om eerlijk te blijven. Voorbeelden hiervan zijn veel openbare blockchains."
+    "short": "Iedereen mag zonder toestemming deelnemen.",
+    "desc": "Zoals een markt waar iedereen aan kan deelnemen. Dit verlaagt de drempels, maar kan meer regels vereisen om eerlijk te blijven. Voorbeelden hiervan zijn veel openbare blockchains."
   },
   "permissionedBlockchain": {
-    "title": "Toegestane Blockchain",
+    "title": "Permissioned blockchain",
     "original": "Permissioned Blockchain",
     "short": "Deelname alleen met toestemming.",
-    "desc": "Zoals een club met een ledenlijst. Dit kan duidelijke verantwoordelijkheden creëren. Het is echter minder open."
+    "desc": "Zoals een club met een ledenlijst. Dit kan duidelijk verantwoordelijkheden creëren. Het is echter minder open."
   },
   "seedPhrase": {
-    "title": "Herstellingstheorema",
+    "title": "Restoratiestelling",
     "original": "Seed Phrase / Recovery Phrase",
-    "short": "Een woordenlijst die je kunt gebruiken om je portemonnee te herstellen.",
-    "desc": "Zij is als de reservessleutel voor je kluis. Degene die hem heeft, kan je portemonnee herstellen. Daarom moet het nooit online worden opgeslagen."
+    "short": "Een woordenlijst waarmee je je portemonnee kunt herstellen.",
+    "desc": "Zij is als de reserve sleutel van je kluis. Degene die het heeft, kan je portemonnee herstellen. Het moet daarom nooit online worden opgeslagen."
   },
   "selfCustody": {
     "title": "Zelfbeheer",
     "original": "Self-Custody",
-    "short": "Je houdt je sleutels zelf.",
-    "desc": "Net zoals contant geld in je eigen kluis hebben: je hebt controle, maar ook de verantwoordelijkheid. Als je de toegang verliest, kan niemand je helpen. Voor beginners is voorzichtigheid bijzonder belangrijk."
+    "short": "Je bewaart je sleutels zelf.",
+    "desc": "Zoals contant geld in je eigen kluis: je hebt de controle, maar ook de verantwoordelijkheid. Als je de toegang verliest, kan niemand helpen. Voor beginners is voorzichtigheid bijzonder belangrijk."
   },
   "custodian": {
-    "title": "Bewaarplaatsbeheerder",
+    "title": "Bewaker",
     "original": "Custodian",
-    "short": "Een dienstverlener bewaart uw sleutels voor u.",
-    "desc": "Zoals een bank die uw rekening beheert. Het kan handig zijn, maar het neemt uw volledige controle weg. U moet erop vertrouwen."
+    "short": "Een dienstverlener bewaart je sleutels voor je.",
+    "desc": "Zoals een bank die uw rekening beheert. Het kan handig zijn, maar het neemt de volledige controle van u weg. U moet erop vertrouwen."
   },
   "hardwareWallet": {
     "title": "Hardware wallet",
     "original": "Hardware Wallet",
     "short": "Een fysiek apparaat voor je sleutels.",
-    "desc": "Als een kleine kluis in je zak. De sleutels blijven op het apparaat en gaan niet het internet op. Dit beschermt tegen veel online aanvallen."
+    "desc": "Als een kleine kluis in je zak. De sleutels blijven op het apparaat en gaan niet online. Dit beschermt tegen veel online aanvallen."
   },
   "hotWallet": {
     "title": "Hot wallet",
     "original": "Hot Wallet",
     "short": "Een portemonnee met internettoegang.",
-    "desc": "Als een portemonnee in de jas: handig maar kwetsbaarder. Geschikt voor kleine bedragen en dagelijks gebruik. Niet ideaal voor grote bedragen."
+    "desc": "Als een portemonnee in een jas: handig maar kwetsbaarder. Geschikt voor kleine bedragen en dagelijks gebruik. Niet ideaal voor grote sommen."
   },
   "coldWallet": {
-    "title": "Koude portemonnee",
+    "title": "Cold wallet",
     "original": "Cold Wallet",
     "short": "Een portemonnee zonder internetverbinding.",
     "desc": "Als een kluis in de kelder. Zeer veilig, maar onpraktisch voor dagelijks gebruik. Geschikt voor langdurige opslag."
   },
   "cryptocurrency": {
-    "title": "Cryptocurrency",
+    "title": "Cryptovaluta",
     "original": "Cryptocurrency",
-    "short": "Digitale valuta die rechtstreeks tussen mensen wordt verzonden.",
-    "desc": "Zoals digitaal contant geld, maar zonder een bank. Je kunt het rechtstreeks naar anderen sturen. De waarde kan fluctueren."
+    "short": "Digitale valuta die rechtstreeks tussen mensen wordt verstuurd.",
+    "desc": "Als digitaal geld, maar zonder een bank. Je kunt het rechtstreeks naar anderen sturen. De waarde kan fluctueren."
   },
   "altcoin": {
     "title": "Altcoin",
     "original": "Altcoin",
-    "short": "Alle cryptovaluta's behalve Bitcoin.",
-    "desc": "Net als andere merken op de markt naast de marktleider. Sommige zijn bekend, veel zijn klein. De kwaliteit en het risico variëren sterk."
+    "short": "Alle cryptocurrencies behalve Bitcoin.",
+    "desc": "Net als andere merken op de markt naast de dominante speler. Sommige zijn bekend, veel zijn klein. Kwaliteit en risico variëren sterk."
   },
   "stablecoin": {
     "title": "Stablecoin",
     "original": "Stablecoin",
-    "short": "Cryptocurrency met de meest stabiele waarde.",
-    "desc": "Als digitaal geld dat is gekoppeld aan een conventionele valuta. Dit maakt de prijs stabieler. Toch is vertrouwen in de aanbieder belangrijk."
+    "short": "Cryptovaluta met een mogelijk stabiele waarde.",
+    "desc": "Zoals digitaal geld dat gekoppeld is aan een standaardvaluta. Dit maakt de prijs stabieler. Echter, vertrouwen in de aanbieder blijft belangrijk."
   },
   "utilityToken": {
     "title": "Gebruikstoken",
     "original": "Utility Token",
-    "short": "Een token waarmee men een dienst kan gebruiken.",
-    "desc": "Zoals een waardebon op een marktstalletje. Het biedt toegang of een korting. De waarde hangt af van het nut van de dienst."
+    "short": "Een token dat kan worden gebruikt om toegang te krijgen tot een dienst.",
+    "desc": "Zoals een tegoedbon op een marktkraam. Het biedt toegang of een korting. De waarde ervan hangt af van het nut van de dienst."
   },
   "securityToken": {
     "title": "Beveiligingstokens",
     "original": "Security Token",
-    "short": "Een token met beveiligingskenmerken.",
-    "desc": "Net als een aandelenbewijs. Het kan rechten of winsten beloven. Vaak zijn er strengere regels van toepassing."
+    "short": "Een token met beveiligingseigenschappen.",
+    "desc": "Net als een aandeelcertificaat. Het kan rechten of winsten beloven. Strengere regels zijn hier vaak van toepassing."
   },
   "governanceToken": {
     "title": "Governance-token",
     "original": "Governance Token",
-    "short": "Een token voor deelname aan het besluitvormingsproces over regels.",
-    "desc": "Zoals een stemkaart in een club. Degenen die tokens hebben, kunnen stemmen over de regels. Dat betekent verantwoordelijkheid."
+    "short": "Een token om inspraak te hebben in regels.",
+    "desc": "Zoals een stemkaart in een club. Degenen die tokens hebben, kunnen stemmen over regels. Dat betekent verantwoordelijkheid."
   },
   "liquidityToken": {
     "title": "Liquiditeitstokens / LP-tokens",
     "original": "Liquidity Token",
     "short": "Een token voor geleverde liquiditeit.",
-    "desc": "Het is als een bewijs dat je geld hebt bijgedragen aan een gezamenlijk fonds. Je ontvangt naar verhouding vergoedingen. De waarde kan fluctueren."
+    "desc": "Zoals een bonnetje dat laat zien dat je geld hebt bijgedragen aan een gezamenlijke pool. Je ontvangt proportionele vergoedingen. De waarde kan fluctueren."
   },
   "nft": {
     "title": "Niet-fungibele token / NFT",
     "original": "Non-Fungible Token",
     "short": "Een uniek digitaal token.",
-    "desc": "Net als een gesigneerd verzamelobject. Het vertegenwoordigt iets unieks, geen uitwisselbare munt. De waarde hangt af van de vraag."
+    "desc": "Net als een ondertekend verzamelobject. Het vertegenwoordigt iets unieks, geen inwisselbare munt. De waarde hangt af van de vraag."
   },
   "cbdc": {
     "title": "Digitale valuta van de centrale bank / CBDC",
     "original": "Central Bank Digital Currency",
-    "short": "Digitale valuta uitgegeven door een centrale bank.",
-    "desc": "Als digitale staatliche Währung. Het zou officieel geld zijn, maar dan in digitale vorm. Details zijn afhankelijk van het specifieke land."
+    "short": "Digitaal geld uitgegeven door een centrale bank.",
+    "desc": "Als digitale staatliche Währung. Es wäre offizielles Geld, nur in digitaler Form. Die Einzelheiten hängen vom jeweiligen Land ab."
   },
   "transactionStatus": {
     "title": "Transactiestatus",
     "original": "Transaction Status",
-    "short": "Geeft aan of een transactie nog openstaat of al is voltooid.",
-    "desc": "Net zoals het volgen van pakketten: in behandeling, bevestigd of mislukt. Hiermee kun je zien of alles soepel is verlopen. Soms duurt het even."
+    "short": "Geeft aan of een transactie nog open is of al is voltooid.",
+    "desc": "Zoals pakkettracking: in behandeling, bevestigd of mislukt. Op deze manier kun je zien of alles gelukt is. Soms duurt het even."
   },
   "gasFee": {
-    "title": "Gaskosten",
+    "title": "Gasprijs",
     "original": "Gas Fee",
-    "short": "Een vergoeding voor rekenwerk in het netwerk.",
-    "desc": "Zoals een verwerkingsvergoeding bij een marktkraam. Hoe drukker het is, hoe duurder het kan worden. Niet elke blockchain noemt het gas."
+    "short": "Een vergoeding voor rekentaken in het netwerk.",
+    "desc": "Zoals een verwerkingskosten bij een marktkraam. Hoe drukker het is, hoe duurder het kan worden. Niet elke blockchain noemt het gas."
   },
   "onChain": {
-    "title": "On-Chain",
+    "title": "On-chain",
     "original": "On-Chain",
-    "short": "Komt direct op de blockchain voor.",
-    "desc": "Zoals een directe boeking in het kasboek. Iedereen kan het zien. Het is transparant, maar vaak langzamer of duurder."
+    "short": "Vindt rechtstreeks op de blockchain plaats.",
+    "desc": "Net als een directe invoer in het grootboek. Iedereen kan het zien. Het is transparant, maar vaak langzamer of duurder."
   },
   "offChain": {
     "title": "Off-chain",
     "original": "Off-Chain",
-    "short": "Vindt off-chain plaats.",
-    "desc": "Zoals een mondelinge overeenkomst die later in het grootboek wordt vastgelegd. Dit kan sneller en kosteneffectiever zijn. Vertrouwen speelt hier een grotere rol."
+    "short": "Vindt plaats buiten de blockchain.",
+    "desc": "Zoals een mondelinge overeenkomst die later in het grootboek wordt vastgelegd. Dit kan sneller en kostenefficiënter zijn. Vertrouwen speelt hier een grotere rol."
   },
   "liquidity": {
     "title": "Liquiditeit",
     "original": "Liquidity",
     "short": "Toont hoe gemakkelijk iets kan worden afgehandeld.",
-    "desc": "Het aantal kopers en verkopers. Hoge liquiditeit betekent dat je snel kunt handelen zonder de prijs aanzienlijk te beïnvloeden. Lage liquiditeit voelt traag aan."
+    "desc": "Het aantal kopers en verkopers dat er is. Hoge liquiditeit betekent dat je snel kunt handelen zonder de prijs significant te beïnvloeden. Lage liquiditeit voelt traag aan."
   },
   "volatility": {
     "title": "Volatiliteit",
     "original": "Volatility",
-    "short": "Hoeveel de prijzen fluctueren.",
-    "desc": "Net als een markt met wilde prijsbewegingen. Hoge volatiliteit betekent kansen, maar ook risico. Voor beginners kan dit stressvol zijn."
+    "short": "Hoeveel prijzen schommelen.",
+    "desc": "Net als een markt met wilde prijsschommelingen. Hoge volatiliteit betekent kansen, maar ook risico. Voor beginners kan dit stressvol zijn."
   },
   "marketCap": {
     "title": "Marktkapitalisatie",
     "original": "Market Capitalization",
     "short": "De totale waarde van een munt of project.",
-    "desc": "Zoals de totale waarde van alle goederen in een markt. Deze wordt ruwweg berekend door de prijs te vermenigvuldigen met de circulerende hoeveelheid. Grote waarden lijken misschien stabieler, maar dat zijn ze niet automatisch."
+    "desc": "Zoals de totale waarde van alle goederen in een markt. Het is ruwweg afgeleid van de prijs vermenigvuldigd met de circulerende hoeveelheid. Grote waarden lijken stabieler, maar dat zijn ze niet automatisch."
   },
   "circulatingSupply": {
     "title": "Circulatiehoeveelheid",
     "original": "Circulating Supply",
-    "short": "Het aantal munten dat daadwerkelijk in omloop is.",
-    "desc": "Zoals het aantal munten dat daadwerkelijk op de markt is. Niet alles wat bestaat is al in omloop. Dit beïnvloedt de prijs."
+    "short": "De hoeveelheid munten die daadwerkelijk in omloop is.",
+    "desc": "Zoals het aantal munten dat daadwerkelijk op de markt is. Niet alles wat bestaat is al in omloop. Dat beïnvloedt de prijs."
   },
   "priceDiscovery": {
-    "title": "Prijzen",
+    "title": "Prijsvorming",
     "original": "Price Discovery",
-    "short": "De prijs wordt bepaald door vraag en aanbod.",
-    "desc": "Net als op de markt: vraag en aanbod ontmoeten elkaar. Veel kleine beslissingen bepalen de prijs. Er is geen vaste schakelaar."
+    "short": "Dit is hoe de prijs wordt bepaald door vraag en aanbod.",
+    "desc": "Het is als een markt: vraag en aanbod komen samen. Veel kleine beslissingen bepalen de prijs. Er is geen vaste schakelaar."
   },
   "spread": {
     "title": "Handelsbereik",
     "original": "Spread",
-    "short": "Het verschil tussen de aanschafprijs en de verkoopprijs.",
-    "desc": "Zoals de handelsmarge in een winkel. Hoe kleiner het verschil, des te eerlijker voelt het aan. Grote marges maken handel duurder."
+    "short": "Het verschil tussen de aankoopprijs en de verkoopprijs.",
+    "desc": "Zoals de bied-laatspread in een winkel. Hoe kleiner de kloof, hoe eerlijker het voelt. Grote spreads maken transacties duurder."
   },
   "phishing": {
     "title": "Phishing",
     "original": "Phishing",
     "short": "Fraude via nepnieuws of websites.",
-    "desc": "Zoals een nep-bank-e-mail die je in een val lokt. Het doel is dat je je inloggegevens prijsgeeft. Klik nooit blindelings op links."
+    "desc": "Net als een nep bank-e-mail die je in een val lokt. Het doel is dat je je inloggegevens weggeeft. Klik nooit blindelings op links."
   },
   "smartContract": {
     "title": "Slim contract",
     "original": "Smart Contract",
     "short": "Een programma dat automatisch vaste regels uitvoert.",
-    "desc": "Als een automaat die reageert volgens vaste regels. Het voert overeenkomsten automatisch uit. Dit bespaart vertrouwen, maar vereist duidelijke regels."
+    "desc": "Als een machine die volgens vaste regels reageert. Hij voert overeenkomsten automatisch uit. Dit bespaart vertrouwen maar vereist duidelijke regels."
   },
   "programmableLogic": {
     "title": "Geautomatiseerde regels",
     "original": "Programmable Logic",
     "short": "Regels die automatisch worden uitgevoerd wanneer er iets gebeurt.",
-    "desc": "Zoals een if-then-regel in een automaat. Dit maakt het mogelijk om processen te beheersen zonder elke keer handmatige tussenkomst. Op deze manier worden eenvoudige digitale contracten opgesteld."
+    "desc": "Net zoals een als-dan-regel in een automaat. Dit maakt het mogelijk om processen te beheersen zonder dat er elke keer handmatige tussenkomst nodig is. Zo worden eenvoudige digitale contracten gecreëerd."
   },
   "networkCongestion": {
     "title": "Netwerkgebruik",
     "original": "Network Congestion",
-    "short": "Wanneer een groot aantal transacties tegelijkertijd in behandeling is.",
-    "desc": "Net als verkeersopstoppingen op de snelweg. Transacties duren langer en de kosten kunnen stijgen. Bij minder verkeer versnelt het weer."
+    "short": "Als er een groot aantal transacties tegelijkertijd in behandeling zijn.",
+    "desc": "Net als een verkeersopstopping op de snelweg. Transacties duren langer en de kosten kunnen toenemen. Met minder verkeer gaat het weer sneller."
   },
   "blockchainTypes": {
-    "title": "Soorten Blockchain",
+    "title": "Typen van Blockchain",
     "original": "Blockchain Types",
-    "short": "Er zijn verschillende soorten blockchains met uiteenlopende doelstellingen.",
+    "short": "Er zijn verschillende soorten blockchains met verschillende doelen.",
     "desc": "Zoals verschillende voertuigtypen voor verschillende routes. Sommige zijn gebouwd voor betalingen, andere voor programma's. Het is de moeite waard om het doel te kennen."
   },
   "paymentBlockchain": {
     "title": "Betalingsblockchain",
     "original": "Payment Blockchain",
     "short": "Een blockchain ontworpen voor snelle betalingen.",
-    "desc": "Als een snelle kasboek. De focus ligt op goedkope en snelle overboekingen. Eigenschappen worden vaak opzettelijk eenvoudig gehouden."
+    "desc": "Als een snel kasboek voor geld. De focus ligt op goedkope en snelle overboekingen. Functies worden vaak opzettelijk eenvoudig gehouden."
   },
   "smartContractBlockchain": {
     "title": "Slim contract blockchain",
     "original": "Smart Contract Blockchain",
     "short": "Een blockchain die programma's en apps kan uitvoeren.",
-    "desc": "Zoals een markt met veel machines. Naast betalingen kunnen daar ook regels en apps draaien. Dit maakt ze veelzijdig, maar vaak ook complexer."
+    "desc": "Als een markt met veel verkoopautomaten. Naast betalingen kunnen daar regels en apps worden uitgevoerd. Dit maakt ze veelzijdig, maar vaak ook complexer."
   },
   "blockchainComparison": {
-    "title": "Blockchain-vergelijking",
+    "title": "Vergelijking van blockchains",
     "original": "Blockchain Comparison",
     "short": "Een vergelijking onthult de sterke en zwakke punten van verschillende blockchains.",
-    "desc": "Zoals het vergelijken van banken of markten: Elk heeft zijn sterke en zwakke punten. Belangrijke aspecten zijn kosten, snelheid en veiligheid. Er is geen perfect systeem voor alles."
+    "desc": "Net als de vergelijking van banken of markten: Elk heeft zijn sterke en zwakke punten. Belangrijke factoren zijn kosten, snelheid en veiligheid. Er is geen perfect systeem voor alles."
   },
   "stellarVsBitcoinVsEthereum": {
-    "title": "Stellar vs. Bitcoin vs. Ethereum",
+    "title": "Stellar versus Bitcoin versus Ethereum",
     "original": "Stellar vs. Bitcoin vs. Ethereum",
-    "short": "Drie bekende blockchains met verschillende focusgebieden.",
-    "desc": "Bitcoin is als digitaal goud en wordt vaak gezien als een waardereserve. Ethereum is als een platform voor programma's en apps. Stellar richt zich sterk op betaalbare betalingen."
-  }
+    "short": "Drie bekende blockchains met verschillende aandachtsgebieden.",
+    "desc": "Bitcoin is als digitaal goud en wordt vaak gezien als een waardeopslag. Ethereum is als een platform voor programma's en apps. Stellar richt zich op betaalbare betalingen."
+  },
+  "missingKey": "Ontbrekend woordenlijst sleutel: {{detail}}"
 }

@@ -1,4 +1,4 @@
 {
-  "warnOnActiveQuiz": "Toon waarschuwing tijdens lopende quiz",
+  "warnOnActiveQuiz": "Geef tijdens de lopende quiz een waarschuwing weer.",
   "warnOnActiveQuiz.desc": "Waarschuw voor al beantwoorde vragen voordat u de pagina verlaat."
 }

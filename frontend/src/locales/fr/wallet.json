@@ -6,8 +6,8 @@
     "accountLabel": "Étiquette"
   },
   "flag": {
-    "compromised": "Avertissement : Ce portefeuille est marqué comme compromis sur votre liste de confiance.",
-    "deactivated": "Remarque : Ce portefeuille est marqué comme désactivé dans votre TrustList."
+    "compromised": "Avertissement : Ce portefeuille est marqué comme compromis dans votre TrustList.",
+    "deactivated": "Remarque : Ce portefeuille est marqué comme désactivé dans votre liste de confiance."
   },
   "xlmBalance": "XLM",
   "unfunded": "Non activé"

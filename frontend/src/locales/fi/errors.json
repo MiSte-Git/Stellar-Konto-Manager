@@ -1,89 +1,89 @@
 {
-  "learn.offline": "Offline-tilassa: Käytännön kokeet tarkistetaan, kun yhteys on palautettu.",
-  "learn.validationFailed": "Vahvistus epäonnistui",
+  "learn.offline": "Offline-tilassa: Käytännön kokeet tarkistetaan uudelleen, kun yhteys palautuu.",
+  "learn.validationFailed": "Validointi epäonnistui",
   "learn.missingParams": "Vaadittavat parametrit puuttuvat.",
   "submitTransaction.failed": "Tapahtuma epäonnistui",
-  "learn.error.unknown_action": "Tuntematon käytäntötoiminta",
+  "learn.error.unknown_action": "Tuntematon harjoitustoiminta",
   "learn.error.rate_limited": "Odota hetki ja yritä uudelleen.",
   "learn.error.horizon_timeout": "Horisontin aikakatkaisu. Yritä uudelleen.",
   "learn.error.network": "Verkkovirhe. Yritä uudelleen.",
   "asset": {
-    "creationDateUnknown": "Tuntematon luomispäivä"
+    "creationDateUnknown": "Luomispäivämäärä tuntematon"
   },
   "cache": {
-    "backfillAborted": "Maksujen alkuperäinen lataus keskeytettiin",
+    "backfillAborted": "Maksujen alkuperäinen lataus keskeytetty.",
     "coverage": {
       "newestFailed": "Viimeisimmän maksun hakeminen epäonnistui.",
-      "oldestFailed": "Epäonnistuttiin määrittämään varhaisin päivämäärä"
+      "oldestFailed": "Ei onnistunut määrittämään vanhinta päivämäärää."
     },
     "indexIterFailed": "Välimuistin indeksin iteraatio epäonnistui.",
-    "memoNormBackfillFailed": "Normaloitujen muistioiden maksujen alkuperäinen lataus epäonnistui.",
-    "openFailed": "Paikallista välimuistia ei voitu avata",
-    "readFailed": "Välimuistista lukeminen epäonnistui",
-    "rehydrateFailed": "Epäonnistuttiin puuttuvien muistioiden lataamisessa.",
-    "rehydrateWriteFailed": "Tietojen tallentaminen välimuistiin epäonnistui.",
+    "memoNormBackfillFailed": "Alkuperäinen maksujen lataus normalisoitujen muistiinpanojen osalta epäonnistui.",
+    "openFailed": "Paikallista välimuistia ei voitu avata.",
+    "readFailed": "Välimuistin lukeminen epäonnistui",
+    "rehydrateFailed": "Muistioiden lataaminen epäonnistui.",
+    "rehydrateWriteFailed": "Muistion kirjoittaminen välimuistiin epäonnistui.",
     "writeFailed": "Välimuistiin kirjoittaminen epäonnistui"
   },
   "connection": {
-    "backend": "Yhteyttä taustajärjestelmään ei voida muodostaa. Varmista"
+    "backend": "Ei voi muodostaa yhteyttä taustajärjestelmään. Varmista, että"
   },
   "fetchInvestedTokens": {
-    "failed": "Sijoitustietojen lataaminen epäonnistui: {{detail}}"
+    "failed": "Sijoitustietoja ei voitu ladata: {{detail}}"
   },
   "horizon": {
-    "paymentsFetch": "Virhe maksujen lataamisessa Horizonista"
+    "paymentsFetch": "Virhe maksuja ladattaessa Horizonista"
   },
-  "loadTrustlines": "Luottolinjoja ei voitu ladata. Yritä uudelleen.",
-  "loadTrustlinesFailed": "Luottolinjojen lataaminen epäonnistui.",
-  "loadTrustlinesNotFound": "Tili verkostossa '{{network}}' ei löydy.",
-  "accountNotFoundInNetwork": "Ei löytynyt '{{net}}'!",
-  "op_invalid_limit": "Trustlinea ei voida poistaa. Sillä saattaa edelleen olla saldo tai avoimia velvoitteita.",
+  "loadTrustlines": "Trustlineja ei voitu ladata. Yritä uudelleen.",
+  "loadTrustlinesFailed": "Luottolinjojen lataaminen epäonnistui",
+  "loadTrustlinesNotFound": "Tiliä ei löydy '{{network}}' -verkosta.",
+  "accountNotFoundInNetwork": "Ei löydy '{{net}}'istä!",
+  "op_invalid_limit": "Trustlinea ei voi poistaa. Se saattaa vielä sisältää saldoa tai avoimia velvoitteita.",
   "query": {
     "invalidMemo": "Virheellinen muistio",
-    "invalidRange": "Aikaväli on virheellinen (Alku > Loppu)",
+    "invalidRange": "Aikaväli on virheellinen (alkaa > loppuu)",
     "invalidTime": "Virheellinen ajanmääritys"
   },
   "submitTransaction": {
     "failed": {
-      "tx_bad_auth": "Tapahtuma hylätty: Virheellinen allekirjoitus",
+      "tx_bad_auth": "Maksutapahtuma hylätty: Virheellinen allekirjoitus",
       "tx_failed": "Tapahtuma epäonnistui",
       "unknown": "Tuntematon virhe tapahtumassa",
       "multisig": {
         "invalidSecret": "Yksi syötetyistä salausavaimista on virheellinen.",
-        "notASigner": "Yksi syötetyistä salaisista avaimista ei kuulu rekisteröidyille allekirjoittajille.",
-        "noKeysProvided": "Mitään kelvollisia salaisia avaimia ei syötetty.",
-        "insufficientWeight": "Kerätyt allekirjoitukset eivät riitä tämän muutoksen hyväksymiseen. Vaadittu: {{required}}, saatavilla: {{current}}.",
-        "txBadAuth": "Tapahtuma hylätty: Riittämättömät allekirjoitukset (tx_bad_auth).",
-        "zeroWeightSigner": "Syötetty salainen avain kuuluu allekirjoittajalle, jonka paino on 0, eikä se voi valtuuttaa tapahtumaa.",
-        "invalidConfig": "Suunniteltu allekirjoittajien ja kynnysarvojen kokoonpano ei ole allekirjoitettavissa. Tarkista painot ja kynnysarvot.",
+        "notASigner": "Yksi syötetyistä salaisista avaimista ei kuulu rekisteröityneille allekirjoittajille.",
+        "noKeysProvided": "Yhtään kelvollista salaista avainta ei syötetty.",
+        "insufficientWeight": "Kerätyt allekirjoitukset eivät riitä tämän muutoksen hyväksymiseen. Vaaditaan: {{required}}, saatavilla: {{current}}.",
+        "txBadAuth": "Tapahtuma hylätty: Allekirjoitukset eivät riitä (tx_bad_auth).",
+        "zeroWeightSigner": "Syötetty salausavain kuuluu allekirjoittajalle, jonka painoarvo on 0, eikä se voi valtuuttaa tapahtumaa.",
+        "invalidConfig": "Suunniteltua allekirjoittajien ja kynnysten kokoonpanoa ei voida allekirjoittaa. Tarkista painot ja kynnykset.",
         "trustlines": {
-          "invalidInput": "Tarkista omaisuuskoodi, liikkeeseenlaskija ja raja. Vähintään yksi kentistä on virheellinen."
+          "invalidInput": "Tarkista varainimike, liikkeeseenlaskija ja raja. Ainakin yksi kentistä on virheellinen."
         }
       }
     }
   },
   "sync": {
-    "backfillFailed": "Maksujen alustava lataus epäonnistui.",
-    "incrementalFailed": "Maksupäivitys epäonnistui"
+    "backfillFailed": "Maksujen alkuperäinen lataus epäonnistui.",
+    "incrementalFailed": "Maksujen päivitys epäonnistui"
   },
   "transaction": {
-    "failed": "Tapahtuma epäonnistui.",
+    "failed": "Tapahtuma epäonnistui",
     "title": "Tapahtumavirhe"
   },
   "trustline": {
     "submitFailed": "Virhe luottolinjan poistamisessa.",
-    "unknown": "Tuntematon virhe luottorivin poistamisen aikana."
+    "unknown": "Tuntematon virhe poistettaessa luottolinjaa."
   },
   "xlmByMemo": {
-    "aborted": "Toiminta keskeytetty käyttäjän toimesta.",
+    "aborted": "Toiminto peruutettu käyttäjän toimesta.",
     "accountInvalid": "Virheellinen tili",
-    "dateInvalid": "Virheellinen päivämäärä",
+    "dateInvalid": "Virheellinen päiväys",
     "dateRange": "Virheellinen päivämääräväli",
     "failedUnknown": "Tuntematon virhe",
-    "memoInvalid": "Virheellinen muistiinpano",
-    "paymentsFetch": "Virhe maksujen lataamisessa.",
+    "memoInvalid": "Virheellinen muistio",
+    "paymentsFetch": "Virhe maksujen latauksessa",
     "serverInvalid": "Virheellinen palvelin"
   },
-  "backendConnectError": "Yhteyden muodostaminen backend-palvelimeen epäonnistui: {{url}}",
-  "rateLimited": "Horizon-nopeusraja ylitetty. Odota muutama sekunti ja yritä uudelleen."
+  "backendConnectError": "Yhteys taustapalvelimeen epäonnistui: {{url}}",
+  "rateLimited": "Horizon-rajoitus on ylitetty. Odota muutama sekunti ja yritä uudelleen."
 }

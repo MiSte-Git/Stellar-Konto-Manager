@@ -17,7 +17,7 @@
     "label": "Decimal places:"
   },
   "filter": {
-    "memoPlaceholder": "Filter by memo, wallet address, or label.",
+    "memoPlaceholder": "Filter by memo, wallet address, or label",
     "tokenPlaceholder": "Filter by token (CODE:ISSUER)"
   },
   "item": {
@@ -26,7 +26,7 @@
     "tokenShort": "Token: {{token}}"
   },
   "missingPublicKey": "Public key missing.",
-  "moreTruncated": "… und {{extra}} weitere Gruppen",
+  "moreTruncated": "… and {{extra}} additional groups",
   "toWallet": "to Wallet: {{address}}",
   "total": "Number of tokens purchased: {{count}}",
   "totalTokens": "Number of invested tokens (Assets): {{count}}",
@@ -36,8 +36,8 @@
   },
   "view": {
     "label": "Filter by:",
-    "memo": "Memos",
-    "token": "Token (gekaufte Menge)"
+    "memo": "Memos (Memos)",
+    "token": "Token"
   },
   "toggles": {
     "showTotals": "Total amount",
@@ -53,6 +53,6 @@
   },
   "history": {
     "availableFrom": "Server (Horizon) – History from",
-    "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+    "hintFullHistory": "Note: The Ledger history from the Horizon server only goes back to {{available}}. Only data up to that date is displayed. Therefore, the selected \"From\" date is limited. For older data, a (meist kostenpflichtiger) Full‑History‑Provider is required (possibly coming in the future!)."
   }
 }

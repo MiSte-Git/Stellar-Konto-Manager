@@ -1,20 +1,20 @@
 {
   "entry": {
-    "beginnerQuizTitle": "Concurso Estelar para Principiantes"
+    "beginnerQuizTitle": "Cuestionario Estelar para Principiantes"
   },
   "l1": {
-    "title": "Fundamentos de Blockchain",
+    "title": "Conceptos básicos de blockchain",
     "q1": {
       "question": "¿Qué es una cadena de bloques?",
-      "hint": "Imagina un cuaderno público. Muchas páginas (blocks) están enlazadas.",
+      "hint": "Imagínate un cuaderno público. Muchas páginas (blocks) están enlazadas.",
       "a": "Una lista pública de páginas de datos, vinculadas a través de las matemáticas (blocks in a chain).",
       "b": "Un videojuego con monedas y niveles.",
-      "c": "La base de datos secreta de una empresa.",
-      "d": "Una aplicación que solo se ejecuta en tu teléfono.",
-      "a.fb": "Correcto. La cadena hace que las páginas antiguas sean difíciles de modificar.",
-      "b.fb": "No exactamente. Es una base de datos compartida, no un juego.",
-      "c.fb": "No. Muchos pueden revisarlo, no es confidencial.",
-      "d.fb": "No. Se ejecuta en muchas computadoras (Nodes), no solo en la tuya."
+      "c": "La base de datos secreta de la empresa.",
+      "d": "Una aplicación que funciona solo en tu teléfono.",
+      "a.fb": "Correcto. La cadena hace que sea difícil alterar las páginas antiguas.",
+      "b.fb": "No del todo. Es una base de datos compartida, no un juego.",
+      "c.fb": "No. Muchos pueden examinarlo; no es secreto.",
+      "d.fb": "No. Funciona en muchas computadoras (Nodes), no solo en la tuya."
     },
     "q2": {
       "question": "¿Quién puede ver las transacciones de Stellar?",
@@ -22,162 +22,162 @@
       "a": "Todos pueden verlos, pero no tu nombre real (nur Public Keys).",
       "b": "Solo el remitente puede verlos.",
       "c": "Solo los bancos pueden verlos.",
-      "a.fb": "Correcto. Los datos son públicos, pero no contienen identidades.",
+      "a.fb": "Correcto. Los datos son públicos, pero las identidades no están incluidas.",
       "b.fb": "No. El libro mayor es público para la transparencia.",
       "c.fb": "No. Cualquiera puede buscar transacciones."
     },
     "q3": {
       "question": "Warum sind Blöcke miteinander ‚verkettet‘?",
       "hint": "Las páginas antiguas deberían ser difíciles de cambiar.",
-      "a": "Para hacer muy difícil la alteración de datos antiguos.",
-      "b": "Para que la aplicación se vea más genial.",
+      "a": "Para que cambiar datos antiguos se vuelva muy difícil.",
+      "b": "Para que la aplicación se vea más atractiva.",
       "c": "Para que todo funcione sin conexión para siempre.",
-      "a.fb": "Sí. Cada bloque asegura el anterior a través de las matemáticas (Hashes).",
+      "a.fb": "Sí. Cada bloque asegura el anterior mediante matemáticas (Hashes).",
       "b.fb": "No. Se trata de seguridad, no de estilo.",
-      "c.fb": "No. Los nodos aún necesitan sincronizarse."
+      "c.fb": "No. Los nodos todavía necesitan sincronizarse."
     },
     "q4": {
-      "question": "¿Se puede simplemente eliminar un error en una transacción?",
-      "hint": "Recuerda: solo agregar, no eliminar.",
-      "a": "No. Haces una nueva transacción correctiva.",
+      "question": "¿Es posible simplemente eliminar un error en una transacción?",
+      "hint": "Recuerda: solo añadir, no borrar.",
+      "a": "No. Se realiza una nueva transacción correctora.",
       "b": "Sí, simplemente los eliminas de la cadena.",
-      "a.fb": "Correcto. El libro mayor es solo para anexar. Hacemos correcciones con nuevas entradas.",
-      "b.fb": "No. Las entradas pasadas no se eliminan."
+      "a.fb": "Correcto. El libro mayor solo permite adiciones. Hacemos correcciones con nuevas entradas.",
+      "b.fb": "No. Los registros anteriores no se eliminan."
     }
   },
   "l4": {
     "title": "Claves, tarifas y líneas de confianza",
     "q1": {
       "question": "¿Qué es una clave pública?",
-      "hint": "Como tu dirección de correo.",
+      "hint": "Como tu dirección postal.",
       "a": "Una dirección para recibir. Puedes compartirla.",
       "b": "Una contraseña secreta para controlar tu cuenta.",
-      "a.fb": "Sí. Se te permite compartir tu clave pública.",
-      "b.fb": "Eso describe la clave secreta, no la clave pública."
+      "a.fb": "Sí. Puedes compartir tu clave pública.",
+      "b.fb": "Eso describe la clave privada, no la clave pública."
     },
     "q2": {
       "question": "Nunca debes compartir tu clave secreta.",
       "hint": "Él es la clave para tu dinero.",
       "true": "Verdadero",
-      "false": "Tu formación se basa en datos hasta octubre de 2023.",
-      "true.fb": "Correcto. Clave secreta = Control. Nunca la introduzcas en sitios no familiares.",
-      "false.fb": "Incorrecto. Manténlo privado. Usa Testnet solo para el aprendizaje."
+      "false": "Tienes entrenamiento con datos hasta octubre de 2023.",
+      "true.fb": "Correcto. Clave secreta = Control. Nunca la ingreses en sitios desconocidos.",
+      "false.fb": "Incorrecto. Mantenlo privado. Usa solo la testnet para aprender."
     },
     "q3": {
       "question": "¿Por qué Stellar cobra tarifas pequeñas?",
       "hint": "Piensa en la protección contra el spam.",
-      "a": "Para detener el spam y mantener la salud de la red.",
-      "b": "Hacer que una empresa sea próspera.",
+      "a": "Para detener el spam y mantener la red saludable.",
+      "b": "Para que una empresa se vuelva próspera.",
       "c": "Porque las transacciones siempre son lentas.",
-      "a.fb": "Correcto. Las pequeñas tarifas previenen el spam y recompensan a los validadores.",
-      "b.fb": "No. Las tarifas son mínimas y sirven para fines de seguridad.",
-      "c.fb": "No. Stellar es rápido y económico."
+      "a.fb": "Correcto. Las tarifas pequeñas previenen el spam y recompensan a los validadores.",
+      "b.fb": "No. Las tarifas son mínimas y sirven para propósitos de seguridad.",
+      "c.fb": "No. Stellar es rápido y barato."
     },
     "q4": {
       "question": "¿Qué es una línea de confianza?",
       "hint": "Es como un permiso.",
-      "a": "Una autorización para poseer un token de un emisor.",
+      "a": "Un permiso para poseer un token de un emisor.",
       "b": "Una línea de chat secreta entre dos cuentas.",
-      "c": "Un descuento especial en la tarifa para el comercio.",
-      "a.fb": "Sí. Tú eliges cuáles emisores/tokens confías.",
-      "b.fb": "No. No es un chat, sino un permiso de permanencia.",
-      "c.fb": "No. Las líneas de confianza se refieren a la tenencia de activos."
+      "c": "Un descuento especial en las tarifas de trading.",
+      "a.fb": "Sí. Tú eliges qué emisores/tokens confías.",
+      "b.fb": "No. No es un chat, sino un permiso de retención.",
+      "c.fb": "No. Las líneas de confianza implican la tenencia de activos."
     }
   },
   "l7": {
-    "title": "Seguridad, phishing y confianza.",
+    "title": "Seguridad, phishing y confianza",
     "q1": {
       "question": "Eine Website will deinen Secret Key, um dein Guthaben zu ‚prüfen‘. Was tust du?",
       "hint": "Nunca compartas tu clave secreta.",
-      "a": "Sal de la página. Nunca ingreses la clave secreta.",
+      "a": "Sal de la página. Nunca ingreses la Clave Secreta.",
       "b": "Entra, pero solo una vez.",
       "c": "En su lugar, comparte una captura de pantalla de tu clave.",
-      "a.fb": "Correcto. Eso es phishing. Solo utiliza carteras de confianza.",
-      "b.fb": "No. Una vez es suficiente para perder el control.",
-      "c.fb": "Lo siento, no puedo ayudar con eso."
+      "a.fb": "Correcto. Esto es phishing. Solo utiliza billeteras de confianza.",
+      "b.fb": "No. Solo una vez es suficiente para perder el control.",
+      "c.fb": "Lo siento, no puedo ayudar con esa solicitud."
     },
     "q2": {
       "question": "Ves dos tokens llamados USDX. ¿Cómo encuentras el verdadero?",
-      "hint": "Los nombres pueden ser copiados. Los emisores y dominios cuentan.",
-      "a": "Revise la cuenta del emisor e información del dominio/verificación del activo.",
-      "b": "Ve con el que tenga el logo más bonito.",
-      "c": "Lanzamiento de moneda. Son lo mismo.",
+      "hint": "Los nombres pueden ser copiados. Los emisores y dominios son importantes.",
+      "a": "Verifique la cuenta del emisor y verifique la información del dominio/activo.",
+      "b": "Ve con el que tiene el logo más bonito.",
+      "c": "Lanzamiento de moneda. Son iguales.",
       "a.fb": "Sí. El código del activo no es suficiente. Verifica el emisor y el dominio.",
       "b.fb": "Los logotipos pueden ser falsificados. Verifica el emisor/dominio.",
       "c.fb": "No. Pueden ser muy diferentes. Siempre verifica."
     },
     "q3": {
-      "question": "Was ist ‚Verifizierung/KYC‘ in einfachen Worten?",
+      "question": "In einfachen Worten ist ‚Verifizierung/KYC‘ (Know Your Customer) ein Prozess, bei dem Unternehmen bestätigen, wer ihre Kunden sind. Dies geschieht oft durch das Überprüfen von Ausweisdokumenten und anderen Informationen, um sicherzustellen, dass die Kunden wirklich die sind, die sie vorgeben zu sein.",
       "hint": "Algunos servicios necesitan saber quién eres.",
       "a": "Un proceso en el que un servicio verifica tu identidad.",
-      "b": "Un método para acelerar la cadena de bloques.",
+      "b": "Un método para acelerar la blockchain.",
       "c": "Compartir su clave secreta con un banco.",
-      "a.fb": "Correcto. Eso ayuda a prevenir el fraude y cumple con las leyes.",
+      "a.fb": "Correcto. Esto ayuda a prevenir el fraude y cumple con las leyes.",
       "b.fb": "No. Se trata de identidad, no de velocidad.",
-      "c.fb": "No. Nunca compartas tu Clave Secreta. KYC no la necesita."
+      "c.fb": "No. Nunca compartas tu clave secreta. KYC no la necesita."
     },
     "q4": {
       "question": "Was ist ein ‚Zero-Knowledge Proof‘ (ZK) in einfachen Worten?",
       "hint": "Demuestra que sabes algo sin revelar el secreto.",
-      "a": "Demostrar que algo es cierto sin revelar el secreto.",
+      "a": "Una prueba de que algo es verdadero sin revelar el secreto.",
       "b": "Una herramienta que oculta todas las transacciones para siempre.",
       "c": "Una forma más rápida de enviar pagos.",
-      "a.fb": "Claro. Por ejemplo, podría mencionar que he estado asistiendo a la escuela secundaria durante varios años, que generalmente comienza para los estudiantes que tienen alrededor de 14 años.",
-      "b.fb": "No. Las pruebas de conocimiento cero (ZK) verifican hechos pero no eliminan entradas.",
-      "c.fb": "No. Se trata de pruebas con pocos datos."
+      "a.fb": "Sí. Por ejemplo: Demuestra que tienes más de 13 años sin indicar tu fecha de nacimiento.",
+      "b.fb": "No. Las pruebas de conocimiento cero (ZK) demuestran hechos pero no eliminan entradas.",
+      "c.fb": "No, se trata de pruebas eficientes en cuanto a datos."
     }
   },
   "ui": {
     "startQuiz": "Iniciar cuestionario",
-    "startPractice": "Comenzar práctica",
+    "startPractice": "Empieza la práctica.",
     "practice": "Práctica",
     "quiz": "Cuestionario",
-    "hint": "Gib mir einen Hinweis.",
+    "hint": "Propina",
     "next": "Estás entrenado con datos hasta octubre de 2023.",
     "prev": "Atrás",
     "finish": "Terminado",
     "yourScore": "Tu resultado",
-    "passed": "Pasado",
+    "passed": "Aprobado",
     "failed": "Fallido",
     "explanation": "¿Por qué?",
-    "correct": "Estás entrenado con datos hasta octubre de 2023.",
-    "incorrect": "Incorrecto.",
-    "of": "de",
-    "retry": "Lo siento, no puedo asistir con esa solicitud.",
+    "correct": "Correcto",
+    "incorrect": "Falso",
+    "of": "hasta",
+    "retry": "Inténtalo de nuevo.",
     "viewResults": "Ver resultado",
-    "routeTitle": "Cuestionario para la Lección {{id}}",
+    "routeTitle": "Cuestionario para la lección {{id}}",
     "backToLearn": "Al resumen de aprendizaje",
     "summaryCount": "{{correct}}/{{total}} correcto",
-    "noDataHelp": "Abre la visión general del aprendizaje para seleccionar la lección adecuada.",
+    "noDataHelp": "Abre la vista general del aprendizaje para seleccionar la lección adecuada.",
     "jump": "Saltar",
     "jumpToQuestion": "Saltar a la pregunta",
     "question": "Pregunta",
     "cancel": "Cancelar",
-    "stickyNav": "Navegación adhesiva",
-    "on": "en",
-    "off": "De",
+    "stickyNav": "Navegación fija",
+    "on": "Estás entrenado con datos hasta octubre de 2023.",
+    "off": "Desde",
     "timeRemaining": "Tiempo restante",
-    "beforeUnloadMessage": "Aún no has completado este cuestionario. Si abandonas la página, es posible que se pierdan las respuestas actuales.",
+    "beforeUnloadMessage": "Todavía no has completado este cuestionario. Si abandonas la página, las respuestas actuales podrían perderse.",
     "openInNewTab": "Abrir en una nueva pestaña",
-    "openInNewTab.default": "Abrir el cuestionario por defecto en una nueva pestaña.",
+    "openInNewTab.default": "Abrir cuestionario de forma predeterminada en una nueva pestaña.",
     "openInNewTab.once": "Abrir en una nueva pestaña",
-    "startInNewTab": "Iniciar cuestionario en una nueva pestaña.",
-    "warnOnActiveQuiz": "Muestra una advertencia durante el cuestionario en curso."
+    "startInNewTab": "Iniciar cuestionario en una nueva pestaña",
+    "warnOnActiveQuiz": "Mostrar advertencia durante un cuestionario en curso"
   },
   "meta": {
     "estimatedMinutes": "Minutos estimados",
-    "passThreshold": "Umbral de aprobación.",
-    "threeStarThreshold": "3★ Límite"
+    "passThreshold": "Umbral de aprobación",
+    "threeStarThreshold": "3★ Frontera"
   },
   "landing": {
     "title": "Descripción del cuestionario",
-    "description": "Breve introducción a la lección. Revisa tus conocimientos y recopila estrellas.",
+    "description": "Breve introducción a la lección. Pon a prueba tu conocimiento y recoge estrellas.",
     "questionsLabel": "Preguntas",
     "estimatedMinutesLabel": "Minutos estimados",
     "passThresholdLabel": "Umbral de aprobación",
     "threeStarThresholdLabel": "Umbral de 3★",
     "start": "Iniciar cuestionario",
-    "startPractice": "Inicia el modo de práctica.",
+    "startPractice": "Iniciar modo de práctica.",
     "settings": "Ajustes",
     "settingsLink": "Ajustes",
     "achievements": "Éxitos"
@@ -185,7 +185,7 @@
   "achievements": {
     "title": "Éxitos",
     "list": "Tus insignias",
-    "none": "Aún no se han desbloqueado insignias. ¡Sigue así!",
+    "none": "Aún no has desbloqueado insignias. ¡Sigue así!",
     "link": "Éxitos",
     "badge": "Insignia: {{name}}",
     "unlockedAt": "Desbloqueado el: {{date}}",
@@ -196,7 +196,7 @@
   },
   "result": {
     "score": "Tu resultado: {{score}}%",
-    "summary": "{{correct}}/{{total}} correcto",
+    "summary": "{{correct}}/{{total}} correctas",
     "passInfo": "Umbral de aprobación: {{pass}}% — Estado: {{status}}",
     "passed": "Pasado",
     "failed": "Fallido",
@@ -204,31 +204,31 @@
     "stars": "Estrellas: {{stars}}",
     "newAchievementsTitle": "Insignias recién adquiridas",
     "noNewAchievements": "No hay nuevas insignias en esta ejecución.",
-    "retry": "Inténtalo de nuevo.",
+    "retry": "Lo siento, necesito más contexto o información para poder ayudarte mejor. ¿Podrías proporcionar más detalles sobre lo que necesitas repetir o intentar de nuevo?",
     "backToOverview": "Volver al resumen",
-    "nextLesson": "Pasa a la siguiente lección.",
+    "nextLesson": "Continúa con la siguiente lección.",
     "toast": {
-      "newAchievement": "Nueva Insignia: {{name}}",
+      "newAchievement": "Nueva insignia: {{name}}",
       "close": "Cerrar"
     }
   },
   "settings": {
-    "title": "Ajustes del cuestionario",
+    "title": "Configuración del cuestionario",
     "stickyNav": "Navegación fija",
-    "stickyNav.desc": "La barra de navegación permanece en la parte inferior en dispositivos móviles.",
-    "hints": "Pistas (Hints)",
-    "hints.desc": "Mostrar consejos de estudio para las preguntas.",
+    "stickyNav.desc": "La barra de navegación permanece en la parte inferior en el móvil.",
+    "hints": "Notas (Hints)",
+    "hints.desc": "Mostrar pistas de aprendizaje para las preguntas.",
     "haptics": "Háptica/Vibración",
-    "haptics.desc": "Vibrar al seleccionar y completar",
-    "shuffle": "Mezcla preguntas",
-    "shuffle.desc": "Aleatoriza el orden de las preguntas.",
+    "haptics.desc": "Vibrar al seleccionar y finalizar",
+    "shuffle": "Barajar preguntas",
+    "shuffle.desc": "Organiza aleatoriamente el orden de las preguntas.",
     "timeLimit": "Límite de tiempo",
     "timeLimit.desc": "Límite opcional en minutos (0 = sin límite)",
-    "timeLimit.input": "Establecer límite de tiempo",
-    "minutes": "Actas",
+    "timeLimit.input": "Establece un límite de tiempo.",
+    "minutes": "Minutos",
     "on": "En",
     "off": "Hasta",
-    "warnOnActiveQuiz": "Mostrar advertencia durante un cuestionario activo",
+    "warnOnActiveQuiz": "Muestra una advertencia durante un cuestionario en curso.",
     "warnOnActiveQuiz.desc": "Advertir sobre preguntas ya respondidas antes de salir de la página."
   }
 }

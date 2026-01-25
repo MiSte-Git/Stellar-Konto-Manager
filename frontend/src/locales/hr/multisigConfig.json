@@ -1,37 +1,37 @@
 {
-  "signersTitle": "Potpisnik",
+  "signersTitle": "Potpisnik (ed25519)",
   "signersInfo": "Dodajte dodatne potpisnike i postavite odgovarajuće pragove.",
   "signersCount": "Broj potpisnika",
-  "signersCountLimit": "Napomena: Granica Mreže (Stellar): maks. 20 dodatnih potpisnika.",
+  "signersCountLimit": "Napomena: Granica mreže (Stellar): maks. 20 dodatnih potpisnika.",
   "bestPractices": {
     "title": "Najbolje prakse",
-    "text": "Čuvajte tajne ključeve sigurnima i nemojte ih nepotrebno dijeliti."
+    "text": "Držite tajne ključeve sigurnima i nemojte ih nepotrebno dijeliti."
   },
-  "signerTypeNote": "Note: SKM only sets ed25519 signers. For hashX/preAuthTx use",
+  "signerTypeNote": "Napomena: SKM koristi samo ed25519 potpisnike. Za hashX/preAuthTx, koristite",
   "signerTypeLink": "lab.stellar.org",
-  "masterWeight": "Master masa",
-  "threshold": "Prag (nizak/srednji/visok)",
+  "masterWeight": "Glavna težina",
+  "threshold": "Prag",
   "thresholdLow": "nizak",
   "thresholdMed": "srednji",
-  "thresholdHigh": "visoko",
-  "thresholdLevelsHint": "Tipično vrijedi sljedeće: low = jednostavne promjene (e.g., memo, price), medium = plaćanja/trgovina, high = sigurnosno kritične promjene (e.g., signer/thresholds). Low / Med / High definiraju potrebnu minimalnu težinu potpisnika za operaciju.",
+  "thresholdHigh": "visok",
+  "thresholdLevelsHint": "Obično, low = jednostavne promjene (e.g., memo, price), medium = plaćanja/trgovina, high = sigurnosno kritične promjene (e.g., signer/threshholds). Low / Medium / High definiraju potrebnu minimalnu težinu potpisnika za neku operaciju.",
   "thresholdSum": "Ukupna težina: {{sum}}",
-  "thresholdTooHigh": "Napomena: Prag ne smije prelaziti zbroj težina. Molimo da u skladu s tim prilagodite vrijednosti.",
+  "thresholdTooHigh": "Napomena: Prag ne smije prelaziti zbroj težina. Molimo prilagodite vrijednosti u skladu s tim.",
   "hints": {
     "byteRange": "(0–255)"
   },
   "tooltips": {
-    "low": "Niska: jednostavne promjene (e.g., memo, price).",
+    "low": "Nisko: jednostavne promjene (e.g., memo, price).",
     "med": "Sredstva: Plaćanja i trgovinske radnje.",
-    "high": "Visoka: promjene od kritične važnosti za sigurnost (e.g., signers/thresholds).",
-    "signerWeight": "Težina potpisnika (0–255): Dodatni potpisnici također imaju pravo glasa. Težina određuje koliko glasova njihov potpis pridonosi. Kada se transakcija podnese, svi dani glasovi se zbrajaju. Ako se postigne određeni minimalni broj glasova (Threshold), transakcija se smatra autoriziranom.",
-    "masterWeight": "Težina nositelja računa (Master) (0-255): Glavni ključ računa ima pravo glasa. Što je njegova težina veća, to više glasova njegovi potpisi vrijede. Ovi glasovi se zbrajaju s glasovima drugih potpisnika kako bi se provjerilo je li postignuta potrebna većina."
+    "high": "Visoko: promjene kritične za sigurnost (e.g., signatories/thresholds).",
+    "signerWeight": "Težina potpisnika (0–255): Osim toga, potpisnici imaju pravo glasa. Težina određuje koliko glasova njihov potpis doprinosi. Kada se transakcija pošalje, svi dani glasovi se zbrajaju. Ako se postigne unaprijed određeni minimalni broj glasova (Threshold), transakcija se smatra odobrenom.",
+    "masterWeight": "Težina vlasnika računa (Master) (0-255): Glavni ključ računa ima pravo glasa. Što je veća njegova težina, to se više glasova broji za njegov potpis. Ovi se glasovi zbrajaju sa glasovima drugih potpisnika kako bi se utvrdilo je li postignuta potrebna većina."
   },
   "units": {
-    "signatures": "minimalna težina"
+    "signatures": "Minimalna težina"
   },
   "safety": {
-    "errorTitle": "Safety check blocked",
-    "warningTitle": "Safety warnings"
+    "errorTitle": "Sigurnosna provjera blokirana",
+    "warningTitle": "Sigurnosna upozorenja"
   }
 }

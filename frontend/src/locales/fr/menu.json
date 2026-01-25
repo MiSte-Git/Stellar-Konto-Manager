@@ -9,11 +9,11 @@
   "glossary": "Glossaire",
   "createAccount": "Créer un compte + Multisig",
   "multisigEdit": "Modifier multisig",
-  "multisigJobs": "Commandes multisignatures",
+  "multisigJobs": "Ordres multisignatures",
   "listAll": "Lister toutes les lignes de confiance",
   "compareTrustlines": "Comparer les lignes de confiance entre les comptes.",
   "settings": "Paramètres",
-  "tokenPurchases": "Achat de tokens",
-  "learn": "Quiz Étoilé pour Débutants",
+  "tokenPurchases": "Achats de jetons",
+  "learn": "Quiz éblouissant pour débutants",
   "unknown": "Sélection de menu inconnue"
 }

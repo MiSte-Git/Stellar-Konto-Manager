@@ -1,17 +1,17 @@
 {
-  "title": "Créer un compte + multisignature",
+  "title": "Créer un compte + multisig",
   "menu": "Créer un compte + Multisig",
   "menuHint": "Créez un nouveau compte et configurez éventuellement la signature multiple.",
-  "hint": "Créez un nouveau compte, activez-le et configurez éventuellement la signature multiple.",
+  "hint": "Créez un nouveau compte, activez-le et configurez éventuellement la multisignature.",
   "generateKeys": "Générer une clé",
-  "enableMultisig": "Activer la multisignature.",
+  "enableMultisig": "Activer la signature multiple",
   "instructions": {
     "public": "Partagez cette clé publique avec d'autres pour les paiements.",
     "secret": "Gardez cette clé secrète en sécurité ; ne la partagez jamais."
   },
   "generateFirst": "Veuillez d'abord générer une paire de clés.",
-  "confirmLowBalance": "Le solde de départ {bal} XLM est inférieur à la réserve recommandée de {req} XLM (Signataires : {count}). Voulez-vous continuer ?",
-  "activated": "Le compte a été activé. Hachage : {hash}",
+  "confirmLowBalance": "Le solde de départ de {bal} XLM est inférieur à la réserve recommandée de {req} XLM (Signataires : {count}). Continuer ?",
+  "activated": "Le compte a été activé. Hash : {hash}",
   "activatedTestnet": "Le compte a été activé sur le réseau de test via Friendbot.",
   "alreadyActive": "Le compte est déjà activé.",
   "createdNoSigners": "Compte créé, multisig non configuré.",
@@ -20,46 +20,46 @@
     "more": "Plus d'informations",
     "keysOnPage": {
       "title": "Clé sur cette page",
-      "text": "Sur cette page, des clés sont générées. Gardez-les en sécurité et ne les partagez pas."
+      "text": "Cette page génère des clés. Gardez-les en sécurité et ne les partagez pas."
     },
     "title": "Informations importantes",
     "secureKeys": {
-      "title": "Clé privée sécurisée",
-      "text": "Der Public Key (öffentlicher Schlüssel) kann sicher geteilt werden – er ist wie eine Kontonummer.\\n\\nDer Secret Key (Geheimschlüssel) ist der Zugang zu Ihrem Konto. Behandeln Sie ihn wie ein Passwort:\\n• Speichern Sie ihn NIEMALS in Cloud-Diensten, E-Mails oder unsicheren Notizen\\n• Notieren Sie ihn auf Papier oder verwenden Sie einen Hardware-Wallet\\n• Erstellen Sie mehrere Backups und lagern Sie diese an sicheren, getrennten Orten\\n• Bei Verlust des Secret Keys ist der Zugang zum Konto unwiderruflich verloren"
+      "title": "Clé secrète sécurisée",
+      "text": "The Public Key can be safely shared – it's like an account number.\n\nThe Secret Key is the access to your account. Treat it like a password:\n• NEVER store it on cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the Secret Key is lost, access to the account is irrevocably lost"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
-      "text": "Avec Multisig, vous pouvez définir plusieurs signataires pour votre compte. Les transactions nécessitent ensuite des signatures de plusieurs personnes, par exemple 2 sur 3.\n\nAvantages :\n• Sécurité accrue (ein kompromittierter Key reicht nicht)\n• Comptes communs (z. B. Firmen, Partnerschaften)\n• Récupération d'urgence (mehrere Backups bei verschiedenen Personen)\n\nATTENTION : Testez d'abord Multisig sur le testnet avant de le déployer sur le mainnet ! Une mauvaise configuration peut entraîner une perte d'accès au compte."
+      "title": "Multisig",
+      "text": "Avec le multisig, vous pouvez définir plusieurs signataires pour votre compte. Les transactions nécessiteront alors des signatures de plusieurs signataires, par exemple 2 sur 3.\n\nAvantages :\n• Sécurité accrue : une clé compromise ne suffit pas\n• Partage, par exemple pour les entreprises, les partenariats\n• Plusieurs sauvegardes chez différentes personnes pour la récupération\n\nATTENTION : Testez le multisig d'abord sur le réseau de test avant de l'utiliser sur le réseau principal ! Une configuration incorrecte peut entraîner la perte d'accès au compte."
     },
     "diagram": {
       "title": "Expiration de la signature"
     }
   },
-  "activateHint": "L'activation est nécessaire pour que le compte existe. Sur le réseau de test, cela peut être fait via Friendbot, et sur le réseau principal via \"Créer un compte\" à partir d'un portefeuille existant.",
+  "activateHint": "L'activation est nécessaire pour que le compte existe. Dans le Testnet, cela peut être fait via Friendbot, et dans le Mainnet, par \"Créer un compte\" à partir d'un portefeuille existant.",
   "activateNow": "Activez le compte immédiatement.",
-  "activateOnly": "Activez simplement",
-  "balanceWarning": "Le solde initial est probablement trop bas pour ajouter les {{count}} signataires supplémentaires (réserve minimale : {{req}} XLM).",
-  "createButton": "Créer / Configurer une signature multiple",
-  "mainnetActivateNote": "Remarque : Des réserves supplémentaires sont nécessaires pour le multisig. 1 XLM n'est souvent pas suffisant.",
+  "activateOnly": "Activer seulement",
+  "balanceWarning": "Le solde initial est probablement trop bas pour ajouter les {{count}} signataires supplémentaires (Réserve minimale : {{req}} XLM)",
+  "createButton": "Créer / Configurer un Multisig",
+  "mainnetActivateNote": "Remarque : Des réserves supplémentaires sont nécessaires pour les multisig. 1 XLM n'est souvent pas suffisant.",
   "reserve": {
     "base": "Réserve de base par entrée : {{val}} XLM",
     "recommended": "Solde de départ recommandé : {{val}} XLM (inkl. Puffer)",
-    "required": "Réserve Minimum Obligatoire (neu): {{val}} XLM"
+    "required": "Reserve minimum requis (neu) : {{val}} XLM"
   },
   "signersCountLimit": "Remarque : Limite du réseau (Stellar) : max. 20 signataires supplémentaires.",
-  "startingBalance": "Crédit initial (XLM)",
+  "startingBalance": "Crédit de départ (XLM)",
   "keyWarning": {
-    "title": "⚠️ Sécurisez votre clé maintenant !",
+    "title": "⚠️ Sécurisez votre clé dès maintenant !",
     "text1": "Vous avez généré une nouvelle paire de clés.",
-    "text2": "Assurez-vous d'avoir sécurisé LES DEUX clés IMMÉDIATEMENT avant de continuer.",
-    "list1": "Clé publique : votre adresse de compte, qui peut être partagée",
+    "text2": "Sécurisez IMMÉDIATEMENT les DEUX clés avant de continuer :",
+    "list1": "Clé publique : L'adresse de votre compte, peut être partagée.",
     "list2": "Clé secrète : Votre mot de passe – NE le partagez JAMAIS et ne le stockez pas en ligne !",
     "list3": "Si la clé secrète est perdue, l'accès est irrémédiablement perdu.",
     "confirm": "J'ai sécurisé les deux clés."
   },
-  "muxedId": "ID multiplexées",
-  "muxedInfo": "Avec le Muxed-ID, une M-address (M...) est créée. Elle pointe vers le même compte que l'adresse régulière (G...).",
-  "muxedIdInvalid": "L'ID multiplexé doit être un entier compris entre 0 et 18 446 744 073 709 551 615.",
+  "muxedId": "ID muxé",
+  "muxedInfo": "Avec le Muxed-ID, une M-Address (M...) est créée. Elle pointe vers le même compte que l'adresse régulière (G...).",
+  "muxedIdInvalid": "L'identifiant multiplexé doit être un entier compris entre 0 et 18 446 744 073 709 551 615.",
   "muxedAddress": "Adresse multiplexée",
-  "muxedActivationInfo": "Les adresses muxed sont des adresses alias. Elles n'ont pas besoin d'être activées séparément."
+  "muxedActivationInfo": "Les adresses muxées sont des adresses alias. Elles n'ont pas besoin d'être activées séparément."
 }

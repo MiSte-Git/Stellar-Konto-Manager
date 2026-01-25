@@ -1,15 +1,15 @@
 {
   "menu": "Modifica multisig",
-  "menuHint": "Regola i firmatari e le soglie di un account esistente",
+  "menuHint": "Regola i firmatari e le soglie di un account esistente.",
   "confirm": {
-    "removeSigner": "Rimuovere davvero il firmatario?"
+    "removeSigner": "Davvero rimuovere il firmatario?"
   },
-  "currentConfig": "Configurazione Attuale / Pianificata",
+  "currentConfig": "Configurazione attuale/pianificata",
   "error": {
     "thresholdTooHigh": "Le soglie non devono superare la somma dei pesi."
   },
   "hint": "Carica un account esistente, regola i firmatari, i pesi, il peso principale e le soglie, e salva le modifiche.",
-  "load": "Caricamento",
+  "load": "Negozio",
   "loaded": "Caricato. Firmatari aggiuntivi: {{count}}",
   "noteMaxSigners": "Nota: Stellar consente un massimo di 20 firmatari aggiuntivi per account.",
   "reload": "Ricarica",

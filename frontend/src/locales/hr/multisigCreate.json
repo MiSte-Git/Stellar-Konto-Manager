@@ -1,65 +1,65 @@
 {
   "title": "Kreiraj račun + multisig",
   "menu": "Kreiraj račun + Multisig",
-  "menuHint": "Kreirajte novi račun i po želji postavite multisig.",
-  "hint": "Kreirajte novi račun, aktivirajte ga i opcionalno podesite multisig.",
+  "menuHint": "Kreirajte novi račun i opcionalno postavite multisig.",
+  "hint": "Izradite novi račun, aktivirajte ga i opcionalno konfigurirajte multisig.",
   "generateKeys": "Generiraj ključ",
   "enableMultisig": "Omogući multisig",
   "instructions": {
     "public": "Podijelite ovaj javni ključ s drugima za plaćanja.",
-    "secret": "Održavajte ovaj tajni ključ sigurnim; nikada ga ne dijelite."
+    "secret": "Čuvaj ovaj tajni ključ na sigurnom; nikad ga ne dijeli."
   },
-  "generateFirst": "Molimo najprije generirajte par ključeva.",
-  "confirmLowBalance": "Početno stanje {bal} XLM je ispod preporučene rezerve {req} XLM (Potpisnici: {count}). Nastaviti?",
+  "generateFirst": "Molimo vas da prvo generirate par ključeva.",
+  "confirmLowBalance": "Početno stanje od {bal} XLM je ispod preporučene rezerve od {req} XLM (Potpisnici: {count}). Nastaviti?",
   "activated": "Račun je aktiviran. Hash: {hash}",
   "activatedTestnet": "Račun je aktiviran na testnetu putem Friendbota.",
-  "alreadyActive": "Račun je već aktiviran.",
-  "createdNoSigners": "Račun je kreiran, multisignatura nije konfigurirana.",
-  "createdAndConfigured": "Račun je kreiran i multisig je konfiguriran. Hash: {hash}",
+  "alreadyActive": "Korisnički račun je već aktiviran.",
+  "createdNoSigners": "Korisnički račun kreiran, multisignatura nije konfigurirana.",
+  "createdAndConfigured": "Račun kreiran i multisig konfiguriran. Hash: {hash}",
   "info": {
     "more": "Više informacija",
     "keysOnPage": {
       "title": "Ključ na ovoj stranici",
-      "text": "Na ovoj stranici se generiraju ključevi. Držite ih sigurnima i ne dijelite ih."
+      "text": "Ova stranica generira ključeve. Čuvajte ih na sigurnom i nemojte ih dijeliti."
     },
-    "title": "Važna informacija",
+    "title": "Važne informacije",
     "secureKeys": {
-      "title": "Osigurajte privatni ključ",
-      "text": "Der Public Key (öffentlicher Schlüssel) kann sicher geteilt werden – er ist wie eine Kontonummer.\\n\\nDer Secret Key (Geheimschlüssel) ist der Zugang zu Ihrem Konto. Behandeln Sie ihn wie ein Passwort:\\n• Speichern Sie ihn NIEMALS in Cloud-Diensten, E-Mails oder unsicheren Notizen\\n• Notieren Sie ihn auf Papier oder verwenden Sie einen Hardware-Wallet\\n• Erstellen Sie mehrere Backups und lagern Sie diese an sicheren, getrennten Orten\\n• Bei Verlust des Secret Keys ist der Zugang zum Konto unwiderruflich verloren"
+      "title": "Siguran tajni ključ",
+      "text": "Javni ključ se može sigurno dijeliti – poput broja računa.\n\nTajni ključ je pristup vašem računu. Ponašajte se prema njemu kao prema lozinki:\n• NIKADA ga nemojte pohranjivati na uslugama u oblaku, e-mailovima ili nesigurnim bilješkama\n• Zapišite ga na papir ili koristite hardverski novčanik\n• Napravite više sigurnosnih kopija i pohranite ih na sigurna, odvojena mjesta\n• Ako se Tajni ključ izgubi, pristup računu je nepovratno izgubljen"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
-      "text": "Uz Multisig, možete definirati više potpisnika za svoj račun. Transakcije tada zahtijevaju potpise od više osoba, npr. 2 od 3.\n\nPrednosti:\n• Povećana sigurnost (ein kompromittierter Key reicht nicht)\n• Zajednički računi (z. B. Firmen, Partnerschaften)\n• Hitni oporavak (mehrere Backups bei verschiedenen Personen)\n\nUPOZORENJE: Prvo testirajte Multisig na testnetu prije nego ga implementirate na mainnet! Pogrešna konfiguracija može dovesti do gubitka pristupa računu."
+      "title": "Višepotpis (Multisig)",
+      "text": "Kod multisiga možete definirati više potpisnika za vaš račun. Transakcije će zatim zahtijevati potpise od više osoba, npr. 2 od 3.\n\nPrednosti:\n• Povećana sigurnost, kompromitiran ključ nije dovoljan\n• Zajedničko korištenje, npr. u tvrtkama, partnerstvima\n• Više sigurnosnih kopija kod različitih osoba za oporavak\n\nUPOZORENJE: Prvo testirajte multisig na testnetu prije nego što ga upotrijebite na mainnetu! Pogrešna konfiguracija može dovesti do gubitka pristupa računu."
     },
     "diagram": {
       "title": "Istek potpisa"
     }
   },
-  "activateHint": "Aktivacija je neophodna da bi račun postojao. Na testnetu, to se može obaviti putem Friendbota, a na mainnetu kroz opciju \"Create Account\" iz postojećeg novčanika.",
+  "activateHint": "Aktivacija je neophodna da bi račun postojao. Na Testnetu se to može obaviti putem Friendbota, a na Mainnetu preko opcije \"Create Account\" iz postojećeg novčanika.",
   "activateNow": "Odmah aktivirajte račun.",
-  "activateOnly": "Samo aktivirajte",
-  "balanceWarning": "Početno stanje je vjerojatno prenisko da bi se dodalo {{count}} dodatnih potpisnika (minimalna rezerva: {{req}} XLM).",
-  "createButton": "Kreiraj / Postavi multisig",
-  "mainnetActivateNote": "Napomena: Dodatne rezerve su potrebne za multisig. 1 XLM često nije dovoljan.",
+  "activateOnly": "Aktiviraj samo",
+  "balanceWarning": "Početno stanje je vjerojatno prenisko za dodavanje dodatnih {{count}} potpisnika (Minimalna rezerva: {{req}} XLM).",
+  "createButton": "Kreiraj / Postavi Multisig",
+  "mainnetActivateNote": "Napomena: Za multisig su potrebne dodatne rezerve. 1 XLM često nije dovoljan.",
   "reserve": {
     "base": "Osnovna rezerva po unosu: {{val}} XLM",
     "recommended": "Preporučeni početni saldo: {{val}} XLM (inkl. Puffer)",
-    "required": "Obavezna Minimalna Rezerva (neu): {{val}} XLM"
+    "required": "Obvezna minimalna rezerva (neu): {{val}} XLM"
   },
-  "signersCountLimit": "Napomena: Granica Mreže (Stellar): maks. 20 dodatnih potpisnika.",
-  "startingBalance": "Početni kredit (Initial credit)",
+  "signersCountLimit": "Hinweis: Netzwerkgrenze (Stellar): maximal 20 zusätzliche Unterzeichner.",
+  "startingBalance": "Početni kredit (XLM)",
   "keyWarning": {
     "title": "⚠️ Osigurajte svoj ključ sada!",
     "text1": "Generirali ste novi par ključeva.",
-    "text2": "Osigurajte OBA ključa ODMAH prije nastavka:",
-    "list1": "Javni ključ: Adresa vašeg računa, koju možete dijeliti",
-    "list2": "Tajni ključ: Vaša lozinka – NIKADA je ne dijelite niti pohranjujte online!",
-    "list3": "Ako se tajni ključ izgubi, pristup je nepovratno izgubljen.",
+    "text2": "Odmah osigurajte OBA ključa prije nego što nastavite:",
+    "list1": "Javni ključ: Vaša adresa računa, može se dijeliti",
+    "list2": "Tajni ključ: Vaša lozinka – NIKADA je nemojte dijeliti ili čuvati online!",
+    "list3": "Ako je tajni ključ izgubljen, pristup je nepovratno izgubljen.",
     "confirm": "Osigurao sam oba ključa."
   },
-  "muxedId": "Muxed-ID",
-  "muxedInfo": "S Muxed-ID-em se stvara M-adresa (M...). Ona upućuje na isti račun kao i redovna adresa (G...).",
-  "muxedIdInvalid": "Muxed ID mora biti cijeli broj između 0 i 18,446,744,073,709,551,615.",
-  "muxedAddress": "Multipleksirana adresa",
-  "muxedActivationInfo": "Muxirane adrese su alias adrese. Nije ih potrebno posebno aktivirati."
+  "muxedId": "Muxed ID",
+  "muxedInfo": "S Muxed-ID kreira se M-adresa (M...). Ona pokazuje na isti račun kao i regularna adresa (G...).",
+  "muxedIdInvalid": "Muxed ID mora biti cijeli broj između 0 i 18.446.744.073.709.551.615.",
+  "muxedAddress": "Muxirana adresa",
+  "muxedActivationInfo": "Mukirane adrese su alias adrese. Ne trebaju biti aktivirane zasebno."
 }

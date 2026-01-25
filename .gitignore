@@ -49,3 +49,7 @@ frontend/SSH_Cyon.pub
 *.ppk
 # Local process output
 nohup.out
+
+# Config: keep folder, ignore contents
+config/*
+!config/.gitkeep

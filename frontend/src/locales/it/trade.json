@@ -1,32 +1,32 @@
 {
   "assetSearch": {
     "title": "Ricerca di beni",
-    "description": "Cerca gli asset attraverso il trading endpoint (Horizon).",
+    "description": "Cerca asset tramite l'endpoint di trading (Horizon).",
     "form": {
       "code": {
-        "label": "Codice dell'assetto",
+        "label": "Codice dell'asset",
         "placeholder": "ad esempio, USDC"
       },
       "issuer": {
         "label": "Emittente (optional)",
-        "placeholder": "Mi dispiace, non capisco cosa intendi con \"G… (optional)\". Potresti fornire più contesto o informazioni?"
+        "placeholder": "G…"
       },
-      "submit": "Ricerca"
+      "submit": "Cerca"
     },
     "result": {
-      "empty": "Nessun bene trovato.",
+      "empty": "Nessuna risorsa trovata.",
       "columns": {
         "code": "Codice",
         "issuer": "Emittente",
         "numAccounts": "Conti",
-        "amount": "Quantità totale"
+        "amount": "Importo totale"
       }
     },
     "invalidInput": {
-      "codeMissing": "Inserisci un codice asset."
+      "codeMissing": "Per favore inserisci un codice di asset."
     },
     "failed": {
-      "generic": "La ricerca dell'asset non è riuscita. Per favore, riprova più tardi."
+      "generic": "Ricerca delle risorse fallita. Si prega di riprovare più tardi."
     }
   }
 }

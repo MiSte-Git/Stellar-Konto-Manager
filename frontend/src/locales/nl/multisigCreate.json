@@ -2,64 +2,64 @@
   "title": "Account aanmaken + multisig",
   "menu": "Account aanmaken + Multisig",
   "menuHint": "Maak een nieuw account aan en stel optioneel multisig in.",
-  "hint": "Maak een nieuw account aan, activeer het en configureer indien gewenst multisig.",
+  "hint": "Maak een nieuw account aan, activeer het en configureer eventueel multisig.",
   "generateKeys": "Sleutel genereren",
-  "enableMultisig": "Multisig inschakelen",
+  "enableMultisig": "Schakel multisig in",
   "instructions": {
     "public": "Deel deze publieke sleutel met anderen voor betalingen.",
-    "secret": "Houd deze geheime sleutel veilig; deel deze nooit."
+    "secret": "Bewaar deze geheime sleutel veilig; deel hem nooit."
   },
-  "generateFirst": "Maak eerst een sleutelpaar aan, alstublieft.",
-  "confirmLowBalance": "Beginsaldo {bal} XLM is onder de aanbevolen reserve {req} XLM (Ondertekenaars: {count}). Verdergaan?",
+  "generateFirst": "Genereer alstublieft eerst een sleutelpaar.",
+  "confirmLowBalance": "Beginsaldo van {bal} XLM ligt onder de aanbevolen reserve van {req} XLM (Ondertekenaars: {count}). Doorgaan?",
   "activated": "Account is geactiveerd. Hash: {hash}",
-  "activatedTestnet": "Account werd geactiveerd in het testnet via Friendbot.",
+  "activatedTestnet": "Account werd geactiveerd op het testnet via Friendbot.",
   "alreadyActive": "Account is al geactiveerd.",
   "createdNoSigners": "Account aangemaakt, multisig niet geconfigureerd.",
   "createdAndConfigured": "Account aangemaakt en multisig geconfigureerd. Hash: {hash}",
   "info": {
-    "more": "Meer informatie",
+    "more": "Je bent getraind op gegevens tot oktober 2023.",
     "keysOnPage": {
       "title": "Sleutel op deze pagina",
-      "text": "Op deze pagina worden sleutels gegenereerd. Houd ze veilig en deel ze niet."
+      "text": "Deze pagina genereert sleutels. Houd ze veilig en deel ze niet."
     },
     "title": "Belangrijke informatie",
     "secureKeys": {
-      "title": "Beveilig privé sleutel",
-      "text": "De public key (openbare sleutel) kan veilig worden gedeeld – het is als een rekeningnummer.\\n\\nDe secret key (geheime sleutel) biedt toegang tot uw account. Behandel het als een wachtwoord:\\n• Sla het NOOIT op in clouddiensten, e-mails of onveilige notities\\n• Noteer het op papier of gebruik een hardware wallet\\n• Maak meerdere back-ups en bewaar deze op veilige, gescheiden locaties\\n• Bij verlies van de secret key is de toegang tot het account onherroepelijk verloren"
+      "title": "Beveilig geheime sleutel",
+      "text": "De publieke sleutel kan veilig gedeeld worden – het is als een rekeningnummer.\n\nDe geheime sleutel is de toegang tot je account. Behandel het als een wachtwoord:\n• Bewaar het NOOIT op clouddiensten, e-mails of onveilige notities\n• Schrijf het op papier of gebruik een hardware wallet\n• Maak meerdere back-ups en bewaar ze op veilige, afzonderlijke locaties\n• Als de geheime sleutel verloren gaat, is de toegang tot de account onherroepelijk verloren"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
-      "text": "Met Multisig kun je meerdere ondertekenaars voor je account instellen. Transacties vereisen dan handtekeningen van meerdere, bijvoorbeeld 2 van de 3.\n\nVoordelen:\n• Verhoogde beveiliging (ein kompromittierter Key reicht nicht)\n• Gezamenlijke rekeningen (z. B. Firmen, Partnerschaften)\n• Noodherstel (mehrere Backups bei verschiedenen Personen)\n\nWAARSCHUWING: Test Multisig eerst op het testnet voordat je het op het mainnet implementeert! Een verkeerde configuratie kan leiden tot verlies van toegang tot het account."
+      "title": "Multisig",
+      "text": "Met multisig kun je meerdere ondertekenaars voor je account definiëren. Transacties vereisen dan handtekeningen van meerdere, bijvoorbeeld 2 van de 3.\n\nVoordelen:\n• Verhoogde veiligheid, een gecompromitteerde sleutel is niet voldoende\n• Gedeelde toegang, bijvoorbeeld voor bedrijven, samenwerkingsverbanden\n• Meerdere back-ups bij verschillende personen voor herstel\n\nWAARSCHUWING: Test multisig eerst op het testnet voordat je het op het mainnet gebruikt! Onjuiste configuratie kan ertoe leiden dat je de toegang tot het account verliest."
     },
     "diagram": {
       "title": "Handtekening vervaldatum"
     }
   },
-  "activateHint": "Activatie is noodzakelijk voor het bestaan van de account. In het testnet kan dit worden gedaan via Friendbot en in het mainnet via \"Account aanmaken\" vanuit een bestaande wallet.",
+  "activateHint": "Activering is noodzakelijk zodat het account kan bestaan. In de Testnet kan dit worden gedaan via Friendbot, en in de Mainnet via \"Account Aanmaken\" vanuit een bestaande wallet.",
   "activateNow": "Activeer account onmiddellijk",
-  "activateOnly": "Gewoon activeren",
-  "balanceWarning": "Het beginsaldo is waarschijnlijk te laag om de {{count}} extra ondertekenaars toe te voegen (minimale reserve: {{req}} XLM).",
-  "createButton": "Maak / Stel multisig in",
-  "mainnetActivateNote": "Opmerking: Extra reserves zijn noodzakelijk voor multisig. 1 XLM is vaak niet voldoende.",
+  "activateOnly": "Alleen activeren",
+  "balanceWarning": "Het beginsaldo is waarschijnlijk te laag om de {{count}} extra ondertekenaars toe te voegen (Minimale reserve: {{req}} XLM)",
+  "createButton": "Maak / Stel Multisig in",
+  "mainnetActivateNote": "Opmerking: Voor multisig zijn aanvullende reserves vereist. 1 XLM is vaak niet genoeg.",
   "reserve": {
     "base": "Basisreserve per invoer: {{val}} XLM",
-    "recommended": "Aanbevolen beginsaldo: {{val}} XLM (inkl. Puffer)",
+    "recommended": "Aanbevolen startbalans: {{val}} XLM (inkl. Puffer)",
     "required": "Vereiste Minimumreserve (neu): {{val}} XLM"
   },
   "signersCountLimit": "Opmerking: Netwerkgrens (Stellar): max. 20 extra ondertekenaars.",
-  "startingBalance": "Initiële krediet (XLM)",
+  "startingBalance": "Startkrediet (XLM)",
   "keyWarning": {
-    "title": "⚠️ Beveilig nu je sleutel!",
-    "text1": "U hebt een nieuw sleutelpaar gegenereerd.",
-    "text2": "Beveilig BEIDE sleutels ONMIDDELLIJK voordat u doorgaat:",
-    "list1": "Publieke sleutel: Je accountadres, dat gedeeld kan worden",
-    "list2": "Geheime sleutel: Uw wachtwoord – NOOIT online delen of opslaan!",
+    "title": "⚠️ Beveilig uw sleutel nu!",
+    "text1": "U heeft een nieuw sleutelpaar gegenereerd.",
+    "text2": "Beveilig BEIDE sleutels ONMIDDELLIJK voordat u verder gaat:",
+    "list1": "Openbare sleutel: Uw accountadres, kan worden gedeeld",
+    "list2": "Geheime sleutel: Je wachtwoord – DEEL of bewaar het NOOIT online!",
     "list3": "Als de geheime sleutel verloren gaat, is de toegang onherroepelijk verloren.",
     "confirm": "Ik heb beide sleutels veiliggesteld."
   },
-  "muxedId": "Gemuxte-ID",
-  "muxedInfo": "Met de Muxed-ID wordt een M-adres (M...) aangemaakt. Het wijst naar dezelfde rekening als het reguliere adres (G...).",
-  "muxedIdInvalid": "De Muxed-ID moet een geheel getal zijn tussen 0 en 18.446.744.073.709.551.615.",
+  "muxedId": "Muxed ID",
+  "muxedInfo": "Met de Muxed-ID wordt een M-Address (M...) gecreëerd. Dit wijst naar hetzelfde account als het reguliere adres (G...).",
+  "muxedIdInvalid": "De Muxed ID moet een geheel getal zijn tussen 0 en 18.446.744.073.709.551.615.",
   "muxedAddress": "Gemuxeerd adres",
-  "muxedActivationInfo": "Gemuxt adressen zijn aliasadressen. Ze hoeven niet apart geactiveerd te worden."
+  "muxedActivationInfo": "Muxed-adressen zijn alias-adressen. Ze hoeven niet afzonderlijk te worden geactiveerd."
 }

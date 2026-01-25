@@ -1,68 +1,68 @@
 {
   "page": {
-    "title": "Filtrar XLM por memo",
-    "noPublicKey": "No se ha cargado ninguna clave pública. Por favor, ingresa una clave pública primero."
+    "title": "Filtrar XLM por Memo",
+    "noPublicKey": "Keine clave pública cargada. Por favor, ingrese una clave pública primero."
   },
   "action": {
     "calculate": "Calcular",
-    "loading": "Berechne…"
+    "loading": "Calcular…"
   },
   "date": {
-    "from": "A partir de (optional)",
+    "from": "Traducción no válida debido a restricciones de contenido.",
     "to": "Hasta (optional)"
   },
   "debug": {
-    "incoming": "Entrante – a: {{toMe}}, crear→me: {{createToMe}}, nativo→me: {{nativeInToMe}}",
-    "incomingOverview": "Entradas: {{total}} • Carteras participantes: {{unique}}",
-    "memo": "Memorandos en Ventana: {{any}} • Memorandos Exactos: {{exact}}",
+    "incoming": "Entrante – para: {{toMe}}, crear→me: {{createToMe}}, nativo→me: {{nativeInToMe}}",
+    "incomingOverview": "Entradas: {{total}} • Carteras involucradas: {{unique}}",
+    "memo": "Memorandos en ventana: {{any}} • memorandos exactos: {{exact}}",
     "types": "Tipos – pago: {{pay}}, ruta: {{path}}, crear: {{create}}, otro: {{other}}"
   },
   "export": {
-    "csv": "Verifica el CSV (Treffer)",
-    "csvAll": "Exportar todas las operaciones",
-    "csvBoth": "Guarda ambos CSV.",
-    "csvMatches": "Verificar CSV (Treffer)"
+    "csv": "Revisar CSV (Treffer)",
+    "csvAll": "Exportar todas las operaciones.",
+    "csvBoth": "Guarda ambos archivos CSV.",
+    "csvMatches": "Verifica el CSV (Treffer)"
   },
   "exportCsv": {
-    "failed": "La exportación CSV falló: {{detalle}}"
+    "failed": "Error de exportación CSV: {{detail}}"
   },
   "memo": {
-    "label": "Texto de búsqueda de memorando (substring, case-sensitive)",
-    "placeholder": "Memo (substring, case sensitive)"
+    "label": "Memo de búsqueda de texto (substring, case-sensitive)",
+    "placeholder": "Memo (substring, case-sensitive)"
   },
-  "overviewLine": "Recibos de pago: {{total}} • monederos participantes: {{unique}}",
+  "overviewLine": "Recibos de pago: {{total}} • monederos involucrados: {{unique}}",
   "result": {
-    "label": "Cantidad total:",
+    "label": "Monto total:",
     "value": "{{amount}} XLM"
   },
   "summary": {
-    "amount": "Cantidad: {{amount}} XLM",
+    "amount": "Total: {{amount}} XLM",
     "correctCount": "Entradas con memorando correcto: {{n}}",
     "count": "Cantidad: {{n}}",
     "label": "Comparación (all inputs)",
-    "otherCount": "Entradas con nota incorrecta/faltante: {{n}}",
+    "otherCount": "Entradas con memorando incorrecto/faltante: {{n}}",
     "unique": "Carteras únicas (alle): {{n}}",
     "uniqueWallets": "Monederos únicos: {{n}}"
   },
   "time": {
-    "setToNow": "Establecer hora actual.",
+    "setToNow": "Fijar la hora actual",
     "setToNowHint": "Establece el campo de tiempo a la hora actual."
   },
-  "title": "Saldo de XLM después del memo",
+  "title": "Saldo de XLM según el memo",
   "topLargest": {
-    "button": "Las 20 mejores entradas (Memo)",
+    "button": "Las 20 mejores Entradas (Memo)",
     "clipboard": "Copiar al portapapeles",
     "csv": "Descargar CSV",
     "scanning": "… scannt Top-Eingänge",
-    "title": "Las 20 principales entradas para Memo en el período"
+    "title": "Las 20 principales entradas para el memo en el período."
   },
   "tz": {
     "cdt": "CDT (UTC−5)",
-    "cst": "Hora Central Estándar (UTC−6)",
-    "europe_zurich": "Europa/Zurich (Europe/Zurich)",
+    "cst": "CST (UTC−6)",
+    "europe_zurich": "Europa/Zurich (CET/CEST)",
     "label": "Zona horaria para fecha/hora",
     "local": "Zona horaria local",
-    "note": "La fecha y la hora se interpretan en la zona horaria seleccionada y se convierten automáticamente a UTC antes de la búsqueda.",
+    "note": "La fecha y la hora se interpretan en la zona horaria seleccionada y se convierten automáticamente a UTC antes de buscar.",
     "utc": "UTC",
     "window": "Ventana de tiempo UTC utilizada: {{from}} → {{to}} (Bis exklusiv)"
   },
@@ -70,17 +70,17 @@
     "button": "Mostrar monederos con memo incorrecto/vacío.",
     "clipboard": "Copiar al portapapeles",
     "columns": {
-      "amount": "Monto",
+      "amount": "Cantidad",
       "created_at": "Creado el",
-      "from": "De",
-      "memo": "Memorándum",
+      "from": "Desde",
+      "memo": "Memo",
       "tx_hash": "Hash de transacción"
     },
     "csv": "Descargar CSV",
-    "failed": "Error al cargar pagos con nota/observación incorrecta o vacía.",
-    "hint": "Filtra los pagos entrantes dentro del período y muestra a los remitentes con memorandos incorrectos o vacíos.",
+    "failed": "Error al cargar pagos con un memo incorrecto/vacío.",
+    "hint": "Filtra los pagos entrantes dentro del período y muestra los remitentes con memorandos incorrectos o vacíos.",
     "scanning": "… scannt falsche/leere Memos",
-    "summary": "Cantidad: {{count}} • Total: {{sum}} XLM • Carteras Únicas: {{unique}}",
+    "summary": "Cuenta: {{count}} • Total: {{sum}} XLM • Carteras Únicas: {{unique}}",
     "title": "Memorandos falsos/vacíos durante el período"
   }
 }

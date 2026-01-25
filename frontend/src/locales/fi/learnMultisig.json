@@ -1,32 +1,32 @@
 {
-  "title": "Multisig aloittelijoille",
-  "menuTitle": "Ymmärtäminen Multisigistä",
-  "teaser": "Miksi useita allekirjoituksia, miten kynnykset toimivat ja miten SKM auttaa.",
+  "title": "Multisig Aloittelijoille",
+  "menuTitle": "Monisignatuurin ymmärtäminen",
+  "teaser": "Miksi useita allekirjoituksia, miten kynnysarvot toimivat ja miten SKM auttaa.",
   "why": {
     "title": "Miksi multisig?",
-    "text": "Useita allekirjoituksia vähentävät yksittäisten virheiden tai varkauden riskiä."
+    "text": "Usean allekirjoituksen käyttö vähentää yksittäisten virheiden tai varkauksien riskiä."
   },
   "singleVsMulti": {
-    "title": "Single-sig vs Multisig - yksi allekirjoitus vs. monta allekirjoitusta",
-    "text": "Single-Sig = yksi avain riittää. Multisig = useita allekirjoituksia tarvitaan (z. B. 2 von 3)."
+    "title": "Single-sig vs. Multisig",
+    "text": "Single-Sig = 1 avain riittää. Multisig = tarvitaan useita allekirjoituksia (z. B. 2 von 3)."
   },
   "stellarHow": {
     "title": "Kuinka Stellar toteuttaa moniallekirjoituksen",
-    "text": "Stellar käyttää allekirjoittajia, joilla on painoja ja kynnyksiä. Jokainen toimenpide vaatii kynnyspainon."
+    "text": "Stellar käyttää allekirjoittajia, joilla on painot ja kynnykset. Jokainen toiminto vaatii kynnysarvon mukaisen painon."
   },
   "examples": {
     "title": "Käytännön esimerkkejä",
-    "item1": "Yritystili: Kaksi tiimin jäsentä on allekirjoitettava jokainen maksu.",
+    "item1": "Yritystili: Kahden tiimin jäsenen on allekirjoitettava jokainen maksu.",
     "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
-    "item3": "Turvavaltu: Laitteiston avain sekä varmuusavain vaaditaan."
+    "item3": "Turvattu holvi: Laitteistollinen avain plus varmuusavain vaaditaan."
   },
   "skmSupport": {
-    "title": "Miten SKM tukee multiallekirjoitusta",
+    "title": "Kuinka SKM tukee Multisig-järjestelmää",
     "text": "SKM rakentaa multisig-transaktioita, kerää allekirjoituksia ja tallentaa valmistellut tehtävät."
   },
   "diagram": {
-    "singleVsMulti": "Kaavio: Yhden allekirjoituksen järjestelmä vs. moniallekirjoitusjärjestelmä",
+    "singleVsMulti": "Kaavio: Yksi-allekirjoitus vs. Moniallekirjoitus",
     "stellarHow": "Kaavio: Allekirjoittaja, Paino, Kynnysarvo",
-    "skmFlow": "Kaavio: SKM-virran valmistelu → Allekirjoitus → Lähetys"
+    "skmFlow": "Kaavio: SKM Flow Valmistelu → Allekirjoittaminen → Lähettäminen"
   }
 }

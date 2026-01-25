@@ -383,9 +383,10 @@
   },
   "payment": {
     "send": {
-      "title": "Zahlung senden",
-      "recipient": "Empfänger",
-      "amount": "Betrag",
+    "title": "Zahlung senden",
+    "recipient": "Empfänger",
+    "recipientRefresh": "Empfänger aktualisieren",
+    "amount": "Betrag",
       "asset": "Asset",
       "memo": "Memo",
       "memoType": "Memo Typ",

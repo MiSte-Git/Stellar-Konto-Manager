@@ -1,5 +1,5 @@
 {
-  "hintEnterPublicKey": "Si prega di inserire prima una chiave pubblica.",
+  "hintEnterPublicKey": "Per favore, inserisci prima una chiave pubblica.",
   "columns": {
     "amount": "Quantità",
     "compromised": "Compromesso",
@@ -14,19 +14,19 @@
   },
   "decimals": {
     "auto": "Automaticamente",
-    "label": "Cifre decimali:"
+    "label": "Posizioni decimali:"
   },
   "filter": {
-    "memoPlaceholder": "Filtra per memo, indirizzo del portafoglio o etichetta.",
-    "tokenPlaceholder": "Filtrare per token (CODE:ISSUER)"
+    "memoPlaceholder": "Filtra per memo, indirizzo del portafoglio o etichetta",
+    "tokenPlaceholder": "Filtra per token (CODE:ISSUER)"
   },
   "item": {
-    "memo": "Promemoria: \"{{memo}}\" (Pagamenti: {{occurrences}})",
+    "memo": "Memo: \"{{memo}}\" (Pagamenti: {{occurrences}})",
     "token": "Token: {{token}} (Pagamenti: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
   "missingPublicKey": "Chiave pubblica mancante.",
-  "moreTruncated": "… e {{extra}} altri gruppi",
+  "moreTruncated": "… e {{extra}} gruppi aggiuntivi",
   "toWallet": "a Portafoglio: {{address}}",
   "total": "Numero di token acquistati: {{count}}",
   "totalTokens": "Numero di token investiti (Assets): {{count}}",
@@ -36,23 +36,23 @@
   },
   "view": {
     "label": "Filtra per:",
-    "memo": "Promemoria",
-    "token": "Token (gekaufte Menge)"
+    "memo": "Memos (Memos)",
+    "token": "Gettone"
   },
   "toggles": {
     "showTotals": "Importo totale",
-    "qsiOnly": "Somma QSI GF"
+    "qsiOnly": "Somma GF QSI"
   },
   "hints": {
-    "qsiListSet": "Nota: Puoi trovare l'elenco GF sotto Impostazioni → Portafogli Fidati (QSI).",
-    "pageTime": "Il caricamento di una pagina richiede circa 0,2 secondi → 100 pagine ≈ 20 secondi → 1000 pagine ≈ 200 secondi (≈ 3:20 minuti)."
+    "qsiListSet": "Nota: Puoi trovare l'elenco GF sotto Impostazioni → Trusted Wallets (QSI).",
+    "pageTime": "Il caricamento di una pagina impiega circa 0,2 secondi → 100 pagine ≈ 20 secondi → 1000 pagine ≈ 200 secondi (≈ 3 minuti e 20 secondi)."
   },
-  "walletCapInfo": "Nota: Un portafoglio può contenere un massimo di 1000 trustlines.",
+  "walletCapInfo": "Nota: Un portafoglio può contenere un massimo di 1000 trustline.",
   "action": {
     "load": "Negozio"
   },
   "history": {
     "availableFrom": "Server (Horizon) – Storia da",
-    "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+    "hintFullHistory": "Note: The Ledger history from the Horizon server only goes back to {{available}}. Only data up to that date is displayed. Therefore, the selected \"From\" date is limited. For older data, a (meist kostenpflichtiger) Full‑History‑Provider is required (possibly coming in the future!)."
   }
 }

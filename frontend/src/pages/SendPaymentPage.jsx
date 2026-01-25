@@ -743,6 +743,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [resolvedAccount, setResolvedAccount] = useState('');
   const [resolvedFederation, setResolvedFederation] = useState('');
   const [inputWasFederation, setInputWasFederation] = useState(false);
+  const [recipientRefreshKey, setRecipientRefreshKey] = useState(0);
   
   // Destination XLM balance state (resolved recipient account)
   const [destXlmBalance, setDestXlmBalance] = useState(undefined); // undefined = not resolved yet; null = unfunded/error; string = balance
@@ -802,7 +803,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
     resolve();
     return () => { active = false; };
-  }, [dest, server]);
+  }, [dest, server, recipientRefreshKey]);
 
   // Load destination account XLM balance for the resolved recipient
   useEffect(() => {
@@ -834,7 +835,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
     loadDestBalance();
     return () => { cancelled = true; };
-  }, [resolvedAccount, server]);
+  }, [resolvedAccount, server, recipientRefreshKey]);
 
   const trimmedRecipient = (dest || '').trim();
   const walletInfoFromInput = useMemo(() => findWalletInfo(walletInfoMap, trimmedRecipient), [walletInfoMap, trimmedRecipient]);
@@ -845,6 +846,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const recipientCompromised = !!effectiveRecipientInfo?.compromised;
   const recipientDeactivated = !!effectiveRecipientInfo?.deactivated;
   const recipientFederationDisplay = resolvedFederation || savedRecipientFederation || (trimmedRecipient && trimmedRecipient.includes('*') ? trimmedRecipient : '');
+  const handleRecipientRefresh = useCallback(() => {
+    setRecipientRefreshKey((prev) => prev + 1);
+  }, []);
 
   // Zahlformat gemäß Settings
   const amountFmt = useMemo(() => {
@@ -1141,7 +1145,25 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       <div className="bg-white dark:bg-gray-800 rounded border p-4 max-w-4xl mx-auto">
         <div className="grid grid-cols-1 gap-4">
         <div className="space-y-2">
-          <label className="block text-sm">{t('common:payment.send.recipient')}</label>
+          <div className="flex items-center justify-between">
+            <label className="block text-sm">{t('common:payment.send.recipient')}</label>
+            <button
+              type="button"
+              onClick={handleRecipientRefresh}
+              disabled={!trimmedRecipient}
+              title={t('common:payment.send.recipientRefresh', 'Empfänger aktualisieren')}
+              aria-label={t('common:payment.send.recipientRefresh', 'Empfänger aktualisieren')}
+              className="ml-2 w-7 h-7 rounded-full border border-white/80 bg-green-600 hover:bg-green-700 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            >
+              <span
+                className="text-white text-base leading-none"
+                style={{ transform: 'rotate(120deg)', display: 'inline-block' }}
+                aria-hidden="true"
+              >
+                ↻
+              </span>
+            </button>
+          </div>
           <AddressDropdown
             value={dest}
             onChange={(next) => { clearSuccess(); setDest(next); }}

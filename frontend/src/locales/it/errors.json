@@ -1,61 +1,61 @@
 {
-  "learn.offline": "Offline: Gli esami pratici saranno esaminati al momento della riconnessione.",
+  "learn.offline": "Offline: Gli esami pratici saranno esaminati una volta riconnessi.",
   "learn.validationFailed": "Convalida fallita",
   "learn.missingParams": "Parametri richiesti mancanti.",
   "submitTransaction.failed": "Transazione fallita",
-  "learn.error.unknown_action": "Azione pratica sconosciuta",
-  "learn.error.rate_limited": "Per favore, attendi e riprova.",
-  "learn.error.horizon_timeout": "Timeout Horizon. Riprova.",
-  "learn.error.network": "Errore di rete. Riprova.",
+  "learn.error.unknown_action": "Azione di pratica sconosciuta",
+  "learn.error.rate_limited": "Attendere e riprovare.",
+  "learn.error.horizon_timeout": "Timeout dell'orizzonte. Si prega di riprovare.",
+  "learn.error.network": "Errore di rete. Per favore riprova.",
   "asset": {
     "creationDateUnknown": "Data di creazione sconosciuta"
   },
   "cache": {
-    "backfillAborted": "Caricamento iniziale dei pagamenti annullato.",
+    "backfillAborted": "Caricamento iniziale dei pagamenti interrotto.",
     "coverage": {
-      "newestFailed": "Impossibile recuperare l'ultimo pagamento.",
-      "oldestFailed": "Impossibile determinare la data più antica."
+      "newestFailed": "Recupero ultimo pagamento fallito",
+      "oldestFailed": "Impossibile determinare la data più antica"
     },
-    "indexIterFailed": "L'iterazione dell'indice nella cache non è riuscita.",
-    "memoNormBackfillFailed": "Il caricamento iniziale dei pagamenti per i promemoria normalizzati è fallito.",
+    "indexIterFailed": "Iterazione dell'indice nella cache fallita.",
+    "memoNormBackfillFailed": "Il caricamento iniziale dei pagamenti per le note normalizzate non è riuscito.",
     "openFailed": "La cache locale non può essere aperta.",
     "readFailed": "Impossibile leggere dalla cache",
-    "rehydrateFailed": "Impossibile caricare i promemoria mancanti",
-    "rehydrateWriteFailed": "Impossibile scrivere i promemoria nella cache.",
-    "writeFailed": "Impossibile scrivere nella cache"
+    "rehydrateFailed": "Impossibile caricare i promemoria mancanti.",
+    "rehydrateWriteFailed": "Impossibile scrivere le memorie nella cache",
+    "writeFailed": "Errore durante la scrittura nella cache"
   },
   "connection": {
-    "backend": "Nessuna connessione al backend possibile. Si prega di assicurarsi"
+    "backend": "Impossibile connettersi al backend. Assicurati di"
   },
   "fetchInvestedTokens": {
-    "failed": "Errore nel caricamento dei dati di investimento: {{detail}}"
+    "failed": "Impossibile caricare i dati d'investimento: {{dettaglio}}"
   },
   "horizon": {
     "paymentsFetch": "Errore nel caricamento dei pagamenti da Horizon"
   },
-  "loadTrustlines": "Le linee di fiducia non possono essere caricate. Si prega di riprovare.",
-  "loadTrustlinesFailed": "Caricamento delle linee di fiducia non riuscito.",
-  "loadTrustlinesNotFound": "Account nella rete '{{network}}' non trovato.",
+  "loadTrustlines": "Le linee di fiducia non possono essere caricate. Riprova.",
+  "loadTrustlinesFailed": "Caricamento delle linee di fiducia fallito",
+  "loadTrustlinesNotFound": "Account non trovato sulla rete '{{network}}'.",
   "accountNotFoundInNetwork": "Non trovato in '{{net}}'!",
-  "op_invalid_limit": "La linea di fiducia non può essere eliminata. Potrebbe avere ancora un saldo o obbligazioni in sospeso.",
+  "op_invalid_limit": "Il conto di fiducia non può essere eliminato. Potrebbe avere ancora un saldo o obblighi in sospeso.",
   "query": {
     "invalidMemo": "Memo non valido",
-    "invalidRange": "La finestra temporale non è valida (Da > A)",
-    "invalidTime": "Specifica temporale non valida"
+    "invalidRange": "L'intervallo di tempo non è valido (Da > A)",
+    "invalidTime": "Specifica oraria non valida"
   },
   "submitTransaction": {
     "failed": {
       "tx_bad_auth": "Transazione rifiutata: Firma non valida",
       "tx_failed": "Transazione fallita",
-      "unknown": "Errore sconosciuto nella transazione.",
+      "unknown": "Errore sconosciuto nella transazione",
       "multisig": {
         "invalidSecret": "Una delle chiavi segrete inserite non è valida.",
         "notASigner": "Una delle chiavi segrete inserite non appartiene ai firmatari registrati.",
         "noKeysProvided": "Non sono state inserite chiavi segrete valide.",
-        "insufficientWeight": "Le firme raccolte non sono sufficienti per autorizzare questo cambiamento. Necessario: {{required}}, disponibili: {{current}}.",
-        "txBadAuth": "Transazione rifiutata: Firme insufficienti (tx_bad_auth).",
+        "insufficientWeight": "Le firme raccolte sono insufficienti per autorizzare questo cambiamento. Necessarie: {{required}}, disponibili: {{current}}.",
+        "txBadAuth": "Transazione rifiutata: Le firme non sono sufficienti (tx_bad_auth).",
         "zeroWeightSigner": "La chiave segreta inserita appartiene a un firmatario con peso 0 e non può autorizzare una transazione.",
-        "invalidConfig": "La configurazione pianificata dei firmatari e delle soglie non è firmabile. Si prega di controllare i pesi e le soglie.",
+        "invalidConfig": "La configurazione pianificata di firmatari e soglie non può essere firmata. Si prega di controllare i pesi e le soglie.",
         "trustlines": {
           "invalidInput": "Si prega di controllare il codice dell'asset, l'emittente e il limite. Almeno uno dei campi non è valido."
         }
@@ -64,26 +64,26 @@
   },
   "sync": {
     "backfillFailed": "Il caricamento iniziale dei pagamenti non è riuscito.",
-    "incrementalFailed": "Aggiornamento dei pagamenti non riuscito"
+    "incrementalFailed": "Aggiornamento dei pagamenti non riuscito."
   },
   "transaction": {
-    "failed": "Transazione fallita.",
+    "failed": "Transazione fallita",
     "title": "Errore di transazione"
   },
   "trustline": {
-    "submitFailed": "Errore durante l'eliminazione della linea di fiducia.",
-    "unknown": "Errore sconosciuto durante l'eliminazione della trustline."
+    "submitFailed": "Errore nell'eliminazione della trustline.",
+    "unknown": "Errore sconosciuto durante l'eliminazione della linea di fiducia."
   },
   "xlmByMemo": {
-    "aborted": "Operazione annullata dall'utente.",
+    "aborted": "Operazione annullata dall'utente",
     "accountInvalid": "Account non valido",
     "dateInvalid": "Data non valida",
     "dateRange": "Intervallo di date non valido",
     "failedUnknown": "Errore sconosciuto",
-    "memoInvalid": "Promemoria non valido",
-    "paymentsFetch": "Errore durante il caricamento dei pagamenti",
+    "memoInvalid": "Memo non valido",
+    "paymentsFetch": "Errore nel caricamento dei pagamenti",
     "serverInvalid": "Server non valido"
   },
-  "backendConnectError": "Impossibile connettersi al backend: {{url}}",
+  "backendConnectError": "Connessione al backend fallita: {{url}}",
   "rateLimited": "Limite di velocità di Horizon superato. Attendere alcuni secondi e riprovare."
 }

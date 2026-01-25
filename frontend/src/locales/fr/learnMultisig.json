@@ -1,32 +1,32 @@
 {
-  "title": "Multisig pour les débutants",
-  "menuTitle": "Comprendre Multisig",
-  "teaser": "Pourquoi plusieurs signatures, comment fonctionnent les seuils, et comment SKM aide-t-il.",
+  "title": "Multisig pour les débutants.",
+  "menuTitle": "Comprendre le multisignature",
+  "teaser": "Pourquoi plusieurs signatures, comment fonctionnent les seuils, et comment SKM aide.",
   "why": {
     "title": "Pourquoi le multisig ?",
-    "text": "Plusieurs signatures réduisent le risque d'erreurs individuelles ou de vol."
+    "text": "Les signatures multiples réduisent le risque d'erreurs individuelles ou de vol."
   },
   "singleVsMulti": {
-    "title": "Single-sig vs Multisig",
-    "text": "Single-Sig = 1 clé suffit. Multisig = plusieurs signatures requises (z. B. 2 von 3)."
+    "title": "Single-sig vs. Multisig",
+    "text": "Single-Sig = 1 clé est suffisante. Multisig = multiples signatures requises (z. B. 2 von 3)."
   },
   "stellarHow": {
-    "title": "Comment Stellar met en œuvre la multisignature",
-    "text": "Stellar utilise des signataires avec des poids et des seuils. Chaque opération nécessite un poids de seuil."
+    "title": "Comment Stellar met en œuvre le multi-signature",
+    "text": "Stellar utilise des signataires avec des poids et des seuils. Chaque opération nécessite un poids seuil."
   },
   "examples": {
     "title": "Exemples pratiques",
     "item1": "Compte de l'entreprise : Deux membres de l'équipe doivent signer chaque paiement.",
     "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
-    "item3": "Coffre-fort sécurisé : clé matérielle plus clé de sauvegarde requises."
+    "item3": "Coffre-fort sécurisé : clé matérielle plus clé de sauvegarde requises."
   },
   "skmSupport": {
-    "title": "Comment SKM soutient le multisig",
-    "text": "SKM construit des transactions multisig, collecte des signatures et stocke les tâches préparées."
+    "title": "Comment SKM soutient Multisig",
+    "text": "SKM construit des transactions multisignatures, collecte des signatures et stocke les tâches préparées."
   },
   "diagram": {
     "singleVsMulti": "Diagramme : Single-Sig vs. Multisig",
     "stellarHow": "Diagramme : Signataire, Poids, Seuil",
-    "skmFlow": "Diagramme : Préparation du flux SKM → Signature → Envoi"
+    "skmFlow": "Schéma : Préparation du flux SKM → Signature → Envoi"
   }
 }

@@ -1,18 +1,18 @@
 {
-  "desc": "Izvezite ili uvezite podatke iz vašeg kviza (Einstellungen, Fortschritt, Abzeichen).",
+  "desc": "Izvezite ili uvezite podatke svog kviza (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Pokreni izvoz",
-    "fileName": "Kviz-sigurnosna-kopija.json",
-    "success": "Izvoz kreiran"
+    "fileName": "kviz-sigurnosna-kopija.json",
+    "success": "Izvoz stvoren"
   },
   "import": {
-    "backupCreated": "Automatska sigurnosna kopija sačuvana",
+    "backupCreated": "Automatska sigurnosna kopija spremljena",
     "done": "Uvoz završen",
-    "invalid": "Neispravna datoteka za uvoz",
-    "noFile": "Nijedna datoteka nije odabrana",
+    "invalid": "Nevažeća uvozna datoteka",
+    "noFile": "Datoteka nije odabrana",
     "preview": {
       "stats": {
-        "achievements": "Značka: {{count}} Kviz(e)",
+        "achievements": "Oznaka: {{count}} Kviz(e)",
         "progress": "Napredak: {{count}} Kviz(e)",
         "settings": "Postavke: {{count}} Kviz(e)"
       },
@@ -22,7 +22,7 @@
     "strategy": {
       "label": "Strategija",
       "merge": "Spoji",
-      "replace": "Zamijeniti"
+      "replace": "Zamijeni"
     },
     "title": "Uvoz"
   },
@@ -34,6 +34,6 @@
     "backupBeforeImport": "Sigurnosna kopija je spremljena prije uvoza.",
     "exported": "Izvoz sigurnosne kopije",
     "exportFailed": "Izvoz nije uspio",
-    "importFailed": "Uvoz nije uspio"
+    "importFailed": "Uvoz nije uspio."
   }
 }
