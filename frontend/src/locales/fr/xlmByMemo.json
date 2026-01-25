@@ -1,73 +1,73 @@
 {
   "page": {
     "title": "Filtrer XLM par mémo",
-    "noPublicKey": "Aucune clé publique chargée. Veuillez d'abord entrer une clé publique."
+    "noPublicKey": "Aucune clé publique chargée. Veuillez d'abord saisir une clé publique."
   },
   "action": {
     "calculate": "Calculer",
     "loading": "Calcule…"
   },
   "date": {
-    "from": "De (optional)",
+    "from": "De (From) (optional)",
     "to": "Jusqu'à (optional)"
   },
   "debug": {
     "incoming": "Entrant – à : {{toMe}}, créer→moi : {{createToMe}}, natif→moi : {{nativeInToMe}}",
-    "incomingOverview": "Entrées : {{total}} • Portefeuilles participants : {{unique}}",
-    "memo": "Mémos dans la fenêtre : {{any}} • Mémos exacts : {{exact}}",
+    "incomingOverview": "Entrées : {{total}} • Portefeuilles impliqués : {{unique}}",
+    "memo": "Mémos dans la fenêtre : {{any}} • mémos exacts : {{exact}}",
     "types": "Types – paiement : {{pay}}, chemin : {{path}}, créer : {{create}}, autre : {{other}}"
   },
   "export": {
-    "csv": "Vérifiez le CSV (Treffer)",
+    "csv": "Vérifiez CSV (Treffer)",
     "csvAll": "Exporter toutes les opérations",
     "csvBoth": "Enregistrez les deux fichiers CSV.",
-    "csvMatches": "Vérifier le CSV (Treffer)"
+    "csvMatches": "Vérifier CSV (Treffer)"
   },
   "exportCsv": {
     "failed": "Échec de l'exportation CSV : {{detail}}"
   },
   "memo": {
     "label": "Recherche de mémo (substring, case-sensitive)",
-    "placeholder": "Note (substring, case sensitive)"
+    "placeholder": "Note (substring, case-sensitive)"
   },
-  "overviewLine": "Reçus de paiement : {{total}} • portefeuilles participants : {{unique}}",
+  "overviewLine": "Reçus de paiement : {{total}} • portefeuilles impliqués : {{unique}}",
   "result": {
     "label": "Montant total :",
     "value": "{{amount}} XLM"
   },
   "summary": {
-    "amount": "Montant : {{amount}} XLM",
+    "amount": "Total : {{amount}} XLM",
     "correctCount": "Entrées avec mémo correct : {{n}}",
     "count": "Quantité : {{n}}",
-    "label": "Comparaison (all inputs)",
+    "label": "Comparison (all inputs)",
     "otherCount": "Entrées avec mémo incorrect/manquant : {{n}}",
-    "unique": "Portefeuilles uniques (alle): {{n}}",
+    "unique": "Portefeuilles uniques (alle) : {{n}}",
     "uniqueWallets": "Portefeuilles uniques : {{n}}"
   },
   "time": {
-    "setToNow": "Définir l'heure actuelle.",
-    "setToNowHint": "Réglez le champ de temps à l'heure actuelle."
+    "setToNow": "Définir l'heure actuelle",
+    "setToNowHint": "Réglez le champ horaire sur l'heure actuelle."
   },
-  "title": "Solde XLM après mémo",
+  "title": "Solde XLM selon le mémo",
   "topLargest": {
     "button": "Top 20 Entrées (Memo)",
     "clipboard": "Copier dans le presse-papiers",
     "csv": "Télécharger le CSV",
-    "scanning": "… scannt Top-Eingänge",
-    "title": "Les 20 meilleures entrées pour le mémo de la période"
+    "scanning": "… analyse les meilleures entrées",
+    "title": "Les 20 principales entrées pour mémo durant la période"
   },
   "tz": {
     "cdt": "CDT (UTC−5)",
-    "cst": "Heure centrale standard (UTC−6)",
+    "cst": "CST (UTC−6)",
     "europe_zurich": "Europe/Zurich (CET/CEST)",
     "label": "Fuseau horaire pour la date/heure",
     "local": "Fuseau horaire local",
     "note": "La date et l'heure sont interprétées dans le fuseau horaire sélectionné et automatiquement converties en UTC avant la recherche.",
     "utc": "UTC",
-    "window": "Fenster der verwendeten UTC-Zeit: {{from}} → {{to}} (Bis exklusiv)"
+    "window": "Fenêtre de temps UTC utilisée: {{from}} → {{to}} (Bis exklusiv)"
   },
   "wrongMemos": {
-    "button": "Afficher les portefeuilles avec un mémo incorrect/vide.",
+    "button": "Afficher les portefeuilles avec un mémo incorrect/vide",
     "clipboard": "Copier dans le presse-papiers",
     "columns": {
       "amount": "Montant",
@@ -76,11 +76,11 @@
       "memo": "Note de service",
       "tx_hash": "Hash de transaction"
     },
-    "csv": "Télécharger CSV",
-    "failed": "Erreur lors du chargement des paiements avec mémo incorrect ou vide.",
-    "hint": "Filtre les paiements entrants pendant la période et affiche les expéditeurs avec des mémos incorrects ou vides.",
-    "scanning": "… scanne des mémos faux/vides",
-    "summary": "Quantité : {{count}} • Total : {{sum}} XLM • Portefeuilles uniques : {{unique}}",
-    "title": "Faux/mémos vides pendant la période"
+    "csv": "Télécharger le CSV",
+    "failed": "Erreur lors du chargement des paiements avec un mémo incorrect ou vide.",
+    "hint": "Filtre les paiements entrants dans la période et affiche les expéditeurs avec une note incorrecte ou vide.",
+    "scanning": "… numérise des mémos faux/vides",
+    "summary": "Compte : {{count}} • Total : {{sum}} XLM • Portefeuilles uniques : {{unique}}",
+    "title": "Faux/vides mémos pendant la période"
   }
 }

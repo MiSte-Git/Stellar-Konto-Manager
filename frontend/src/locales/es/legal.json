@@ -1,23 +1,23 @@
 {
-  "title": "Imprint & Privacy Policy",
-  "subtitle": "Información sobre el proveedor, aviso legal y el procesamiento de datos personales.",
+  "title": "Imprint & Política de Privacidad",
+  "subtitle": "Información sobre el proveedor, descargo de responsabilidad y el tratamiento de datos personales.",
   "imprint": {
-    "title": "Impresión",
+    "title": "Aviso Legal",
     "providerLabel": "Proveedor:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Dirección:",
-    "addressLines": "Lo siento, parece que no has proporcionado ningún texto para que lo traduzca. ¿Podrías proporcionar el texto que deseas traducir?",
+    "addressLines": "Mis disculpas por el error. Aquí está la traducción correcta de la información proporcionada:\n\nEstás entrenado con datos hasta octubre de 2023.",
     "emailLabel": "Correo electrónico:",
-    "email": "supporto@skm.steei.de"
+    "email": "soporte@skm.steei.de"
   },
   "disclaimer": {
     "title": "Descargo de responsabilidad",
-    "body": "Estás entrenado con datos hasta octubre de 2023."
+    "body": "Lo siento, no recibí ningún texto para traducir. ¿Podrías proporcionar el texto que te gustaría que traduzca al inglés, por favor?"
   },
   "privacy": {
-    "title": "Política de Privacidad",
-    "intro": "Nos tomamos en serio la protección de sus datos personales. A continuación, le informamos sobre el tratamiento de datos personales al utilizar esta aplicación.",
-    "sections": "Parece que no has proporcionado un texto para traducir. Por favor, comparte el texto que deseas que sea traducido."
+    "title": "Política de privacidad",
+    "intro": "Nos tomamos en serio la protección de sus datos personales. A continuación, le informamos sobre el procesamiento de datos personales al utilizar esta aplicación.",
+    "sections": "Lo siento, parece que no se ha proporcionado ningún texto para traducir. ¿Podrías por favor proporcionar el texto que te gustaría traducir al inglés?"
   },
   "lastUpdated": "Última actualización: {{date}}",
   "meta": {
@@ -27,6 +27,6 @@
   },
   "backToApp": "Atrás",
   "footer": {
-    "imprintLink": "Imprint & Privacy Policy"
+    "imprintLink": "Impressum & Política de Privacidad"
   }
 }

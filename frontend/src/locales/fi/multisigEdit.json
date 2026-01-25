@@ -1,26 +1,26 @@
 {
-  "menu": "Muokkaa multisigitä",
-  "menuHint": "Muokkaa olemassa olevan tilin allekirjoittajia ja kynnystä",
+  "menu": "Muokkaa multisig",
+  "menuHint": "Säädä olemassa olevan tilin allekirjoittajia ja kynnysarvoja.",
   "confirm": {
     "removeSigner": "Poistetaanko allekirjoittaja todella?"
   },
-  "currentConfig": "Nykyinen / Suunniteltu kokoonpano",
+  "currentConfig": "Nykyinen/suunniteltu kokoonpano",
   "error": {
-    "thresholdTooHigh": "Kynnysarvot eivät saa ylittää painojen summaa."
+    "thresholdTooHigh": "Kynnysten ei saa ylittää painojen summaa."
   },
-  "hint": "Lataa olemassa oleva tili, säädä allekirjoittajia, painoja, pääpainoa ja kynnysarvoja ja tallenna muutokset.",
-  "load": "Ladataan",
-  "loaded": "Ladattu. Lisäallekirjoittajia: {{count}}",
-  "noteMaxSigners": "Huom: Stellar sallii enintään 20 lisäallekirjoittajaa tiliä kohden.",
+  "hint": "Lataa olemassa oleva tili, säädä allekirjoittajia, painoja, pääpainoa ja kynnysarvoja, ja tallenna muutokset.",
+  "load": "Kauppa",
+  "loaded": "Ladattu. Lisäallekirjoittajat: {{count}}",
+  "noteMaxSigners": "Huomaa: Stellar sallii enintään 20 lisäallekirjoittajaa per tili.",
   "reload": "Lataa uudelleen",
   "save": "Tallenna muutokset",
   "saved": "Muutokset tallennettu. TX: {{hash}}",
   "signers": "Allekirjoittaja",
   "weight": "Painotus",
-  "masterWeight": "Painonhallinta",
+  "masterWeight": "Mestari paino",
   "title": "Muokkaa multisig-tiliä",
   "validation": {
-    "signerKeyHint": "Huom: Allekirjoittajien on alettava kirjaimella \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Virheellinen allekirjoittajan osoite. Odotetaan G… -osoitetta (ed25519)."
+    "signerKeyHint": "Huomautus: Allekirjoittajien on aloitettava kirjaimella \"G\" (ed25519 public key).",
+    "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
   }
 }

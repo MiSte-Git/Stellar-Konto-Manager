@@ -1,100 +1,106 @@
 {
   "pageTitle": "Glossario",
-  "pageIntro": "Qui troverai parole importanti del mondo della blockchain e del network Stellar. Tutto è spiegato in termini semplici.",
+  "pageIntro": "Qui troverai termini importanti del mondo blockchain e della rete Stellar. Tutto è spiegato con parole semplici.",
   "searchLabel": "Termine di ricerca",
-  "searchPlaceholder": "termine di ricerca (z. B. Konto, Account, Muxed)",
+  "searchPlaceholder": "Termine di ricerca (z. B. Konto, Account, Muxed)",
   "searchHint": "La ricerca trova parole e spiegazioni.",
   "noResults": "Nessuna corrispondenza.",
   "groups": {
-    "accountsKeys": "Conti e chiavi",
-    "multisigSecurity": "Multisig e sicurezza dell'account",
-    "walletsCustody": "Wallet e custodia",
-    "tokensAssets": "Token e asset",
-    "transactionsFees": "Transazioni e commissioni",
-    "marketsTrading": "Mercati e trading",
-    "networkProtocol": "Rete e protocollo",
-    "smartContracts": "Smart contract",
-    "blockchainBasics": "Fondamenti della blockchain",
-    "security": "Sicurezza e truffe"
+    "accountsKeys": "Accounts & Keys",
+    "multisigSecurity": "Multisig & Account Security",
+    "walletsCustody": "Wallets & Custody",
+    "tokensAssets": "Token & Assets",
+    "transactionsFees": "Transactions & Fees",
+    "marketsTrading": "Markets & Trading",
+    "networkProtocol": "Network & Protocol",
+    "smartContracts": "Contratti intelligenti",
+    "blockchainBasics": "Nozioni di Base sulla Blockchain",
+    "security": "Security & Fraud"
   },
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
-    "short": "Libro cassa digitale condiviso – molti computer memorizzano gli stessi registri.",
-    "desc": "Una blockchain è come un registro digitale. Molti computer memorizzano le stesse voci, quindi nessuno può modificarle segretamente."
+    "short": "Shared digital ledger – many computers store the same entries.",
+    "desc": "Una blockchain è come un registro digitale. Molti computer memorizzano le stesse voci, garantendo che nessuno possa apportare modifiche segrete."
   },
   "wallet": {
     "title": "Portafoglio",
     "original": "Wallet",
     "short": "Portafoglio digitale che gestisce le tue chiavi.",
-    "desc": "Un portafoglio è la tua borsa digitale. Gestisce le chiavi di cui hai bisogno per accedere al tuo account e inviare transazioni. Un portafoglio può essere un programma, un'app o persino solo un pezzo di carta con la tua chiave privata."
+    "desc": "Un portafoglio è la tua borsa digitale. Gestisce le chiavi di cui hai bisogno per accedere al tuo account e inviare transazioni. Un portafoglio può essere un programma, un'app o anche solo un pezzo di carta con la tua chiave privata."
   },
   "account": {
     "title": "Account",
     "original": "Account",
     "short": "Un account blockchain può detenere asset e inviare transazioni.",
-    "desc": "Un account è il luogo sulla blockchain in cui sono detenuti i tuoi beni. Un account ha un indirizzo pubblico che inizia con G. Più portafogli possono accedere allo stesso account se dispongono della chiave corretta."
+    "desc": "Un account è la posizione sulla blockchain in cui sono detenuti i tuoi beni. Un account ha un indirizzo pubblico che inizia con G. Più wallet possono accedere allo stesso account se dispongono della chiave corretta."
   },
   "addressG": {
-    "title": "G-indirizzo",
+    "title": "G indirizzo",
     "original": "G Address",
-    "short": "La chiave pubblica (beginnt mit G) di un conto Stellar.",
-    "desc": "L'indirizzo G è l'indirizzo principale di un account Stellar. Inizia con la lettera G. Lo fornisci ad altri affinché possano inviarti qualcosa."
+    "short": "L'indirizzo primario pubblico di un conto Stellar (beginnt mit G).",
+    "desc": "L'indirizzo G è l'indirizzo principale di un conto Stellar. Inizia con la lettera G. Lo fornisci agli altri affinché possano inviarti qualcosa."
   },
   "publicKey": {
     "title": "Chiave pubblica",
     "original": "Public Key",
     "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
-    "desc": "La chiave pubblica è l'indirizzo che sei autorizzato a condividere. In Stellar, questo è l'indirizzo G. Altri lo usano per inviarti denaro."
+    "desc": "La chiave pubblica è l'indirizzo che puoi condividere. In Stellar, questo è l'indirizzo G. Gli altri lo usano per inviarti denaro."
   },
   "privateKey": {
     "title": "Chiave segreta",
     "original": "Secret Key",
-    "short": "Password to the account – never share.",
-    "desc": "La chiave segreta è la tua password per l'account. Chiunque possieda questa chiave può spostare i tuoi soldi. Non condividerla mai."
+    "short": "Password dell'account – non condividerlo mai.",
+    "desc": "La chiave segreta è la tua password per l'account. Chiunque abbia questa chiave può spostare il tuo denaro. Non condividerla mai."
   },
   "addressFederation": {
     "title": "Indirizzo della federazione",
     "original": "Federation Address",
     "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
-    "desc": "Un indirizzo di federazione assomiglia a un'email. Esempio: nome*dominio.com. Questo indirizzo breve punta a un indirizzo G normale. È più facile da ricordare."
+    "desc": "Un indirizzo federato assomiglia a un'email. Esempio: nome*dominio.com. Questo indirizzo breve punta a un indirizzo G regolare. È più facile da ricordare."
   },
   "addressMuxed": {
     "title": "Account multiplexato",
     "original": "Muxed Account",
-    "short": "M‑indirizzo con ID aggiuntivo – condivide un account base.",
-    "desc": "Un M-address punta a un account Stellar esistente ma ha un identificatore unico aggiuntivo (ID). Questo permette, ad esempio, la differenziazione di più persone o dipartimenti sotto lo stesso G-address. Tecnicamente, i fondi appartengono ancora all'account principale."
+    "short": "M‑adress mit zusätzlicher ID – teilt ein Basis-Konto.",
+    "desc": "Un M-address punta a un account Stellar esistente ma ha un numero aggiuntivo (ID).\n\nAccount Muxed = G-account + ID (M-Adresse)\nForniscono associazione, ma non separazione dell'account.\nSaldo, linee di fiducia, firmatari, bandiere sono sempre sul G-account.\n\nStellar Development Foundation\n\nAd esempio, più individui o dipartimenti possono essere distinti sotto lo stesso G-address. Tecnicamente, il denaro appartiene ancora all'account principale."
+  },
+  "muxedAccountsUseCases": {
+    "title": "Casi d'uso per gli account multipli",
+    "original": "Muxed accounts use cases",
+    "short": "Esempi, vantaggi e limiti degli indirizzi M come strumento di mappatura.",
+    "desc": "Azienda - Example\n\nConfigurazione:\n- Un conto G dell'azienda\n- Un M-address per cliente/caso d'uso (ID)\n\nProcesso:\n- Il cliente paga al proprio M-address\n- Tutto va al conto G dell'azienda\n- La contabilità legge l'ID -> allocazione unica\n\nAdatto per:\n- Negozi, fornitori di pagamento, scambi\n- Riferimenti interni senza rischi di memo\n\nAssociazione - Example\n\nConfigurazione:\n- Un conto G dell'associazione\n- M-addresses per membri, dipartimenti, scopi\n\nProcesso:\n- Contributo/donazione al M-address appropriato\n- Allocazione tramite ID, nessun errore di memo\n\nAdatto per:\n- Quote associative\n- Ricavi vincolati\n- Audit facile\n\nIn cosa eccellono i conti muxed:\n- Robusta allocazione degli input\n- Un conto, molte identità\n- Nessun requisito di memo\n- Meno errori operativi\n\nCosa non sono i conti muxed:\n- Non sono sotto-conti\n- Nessun saldo individuale\n- Nessuna linea di fiducia individuale\n- Nessun firmatario/diritti individuali\n\nCasi d'uso tipicamente non adatti:\n- Pagamenti salariali/conti stipendi (benoetigen eigenes G-Konto)\n- Fiducia/Deposito per terzi (kein rechtlicher Vermoegenstrenner)\n- Sicurezza basata sui ruoli (keine getrennten Signer/Thresholds)\n- Separazione di budget o limiti (keine separaten Salden/Asset-Limits)\n- Conti separati per conformità (KYC/Reporting nicht sauber trennbar)\n\nConfronto (Kurz):\nAssegnazione dei pagamenti: Sì\nSeparazione degli asset: No\nDelega dell'accesso: No\nConto legalmente separato: No\nContabilità interna: Sì\n\nPunto chiave:\nI conti muxed affrontano i pagamenti - non sostituiscono i conti.\nSe è necessario controllo, proprietà o separazione -> proprio conto G."
   },
   "multisig": {
     "title": "Multifirma",
     "original": "Multi‑Sig",
-    "short": "Le azioni importanti richiedono più di una semplice firma.",
-    "desc": "Multi-Sig sta per firme multiple. Un'azione importante richiede più di una chiave. Ad esempio, tu e una seconda chiave dovete entrambi concordare prima che qualcosa possa essere inviato. Questo rende il furto più difficile.",
+    "short": "Azioni importanti richiedono più di una firma.",
+    "desc": "Multi-Sig sta per firme multiple. Un'azione importante richiede più di una chiave. Esempio: Tu e una seconda chiave dovete entrambi concordare prima che qualcosa venga inviato. Questo rende il furto più difficile.",
     "help": {
-      "title": "Spiegazione generale di un conto aziendale multi-signature (Multi-Signature)",
-      "intro": "Una azienda può utilizzare un conto blockchain congiunto che coinvolge diverse persone autorizzate. Tipicamente, sono coinvolti almeno tre firmatari (Signer), come la direzione, il responsabile finanziario e la conformità/riserve. L'obiettivo è che le singole persone possano eseguire pagamenti indipendentemente senza che una sola persona abbia il controllo esclusivo o prenda il controllo del conto.",
-      "problem": "Se un firmatario (Signer) ha peso sufficiente per eseguire pagamenti e contemporaneamente peso sufficiente per modifiche dell'account, quella persona potrebbe rimuovere altri firmatari (Signer) o regolare la soglia/peso (Thresholds) e quindi prendere il controllo dell'account. Al contrario, anche il proprietario originale non dovrebbe essere in grado di escludere altri firmatari (Signer) senza verifiche ed equilibri. Una struttura multi-sig assicura che decisioni importanti siano sempre supportate collettivamente da più persone.",
+      "title": "Spiegazione generale di un conto aziendale multisignature (Multi-Signature)",
+      "intro": "Una società può utilizzare un account blockchain condiviso in cui sono coinvolte diverse persone autorizzate. Tipicamente, sono inclusi almeno tre firmatari (Signer), ad esempio, la direzione, il responsabile finanziario e il responsabile della conformità o di backup. L'obiettivo è che le singole persone possano eseguire pagamenti in modo indipendente senza permettere che una sola persona controlli o prenda il controllo dell'account da sola.",
+      "problem": "Se un firmatario (Signer) ha un peso sufficiente per eseguire pagamenti e allo stesso tempo ha abbastanza peso per apportare modifiche all'account, quella persona potrebbe rimuovere altri firmatari (Signer) o modificare soglie/pesi (Thresholds) e quindi prendere il controllo dell'account. Al contrario, il proprietario originale non dovrebbe nemmeno poter escludere facilmente altri firmatari (Signer) senza controlli ed equilibri. Una struttura multi-firma garantisce che decisioni importanti siano sempre prese collettivamente da più persone.",
       "setupTitle": "Esempio di una struttura multi-firma sicura con tre firmatari",
-      "setupWeights": "In un esempio con tre ruoli equivalenti, tutti ricevono la stessa forza di firma:\n- Firmatario (Signer) A (management): peso 2\n- Firmatario (Signer) B (Finanzen): peso 2\n- Firmatario (Signer) C (Compliance/Backup): peso 2",
-      "setupThresholds": "Soglie/pesi appropriati sono impostati:\n- Basso (low_threshold): 1\n- Medio (med_threshold): 2 (for payments and other medium actions)\n- Alto (high_threshold): 4 (per modifiche strutturali come aggiungere/rimuovere firmatari (Signer) o cambiare la soglia/peso (Thresholds))\nQuesta configurazione permette a ciascuna persona autorizzata di eseguire pagamenti, ma nessuna persona singolarmente può modificare la struttura dell'account.",
-      "behavior": "Con questa configurazione, i pagamenti possono essere effettuati individualmente da una qualsiasi delle tre persone autorizzate, poiché il peso di ciascuna soddisfa la soglia media/Threshold. Tuttavia, per i cambiamenti strutturali, come la rimozione di un firmatario (Signers), la regolazione delle soglie/pesi o la fusione o chiusura del conto, è richiesta la soglia alta/high_threshold. Questo valore può essere raggiunto solo se almeno due dei tre firmatari (Signer) firmano insieme. In questo modo, il conto rimane flessibile per l'uso quotidiano, pur essendo ben protetto contro l'uso improprio.",
-      "removal": "Wenn eine Person das Unternehmen verlässt oder nicht mehr vertrauenswürdig ist, können zwei der verbleibenden Unterzeichner (Signer) gemeinsam die Signaturrechte dieser Person entfernen. Kein einzelner Unterzeichner (Signer) – weder ein Mitarbeiter noch die Geschäftsführung – kann andere eigenständig aus dem Konto ausschließen. Der Entzug von Berechtigungen erfolgt also immer kontrolliert und nachvollziehbar durch mindestens zwei Verantwortliche.",
-      "summary": "Questo tipo di struttura multi-firma consente a singole persone di elaborare pagamenti in modo efficiente, mantenendo il controllo del conto nelle mani di più parti. Riduce il rischio di appropriazioni indebite del conto, protegge da decisioni unilaterali ed è particolarmente adatta per conti aziendali dove sia la sicurezza che la flessibilità operativa sono importanti.",
+      "setupWeights": "In un esempio con tre ruoli uguali, tutti ricevono la stessa forza di firma:\n- Firmatario (Signer) A (Management): Peso 2\n- Firmatario (Signer) B (Finanzen): Peso 2\n- Firmatario (Signer) C (Compliance/Backup): Peso 2",
+      "setupThresholds": "Le soglie/pesi appropriati sono impostati come segue:\n- Basso (low_threshold): 1\n- Medio (med_threshold): 2 (for payments and other medium actions)\n- Alto (high_threshold): 4 (per modifiche strutturali come l'aggiunta/rimozione di firmatari (Signer) o la modifica della soglia/peso (Thresholds))\nCiò garantisce che ogni persona autorizzata possa eseguire pagamenti, ma nessun individuo possa modificare la struttura dell'account da solo.",
+      "behavior": "Con questa configurazione, i pagamenti possono essere effettuati da ciascuno dei tre individui idonei da solo, poiché il peso di ciascun individuo soddisfa la soglia media. Per cambiamenti strutturali come la rimozione di un firmatario, la regolazione delle soglie/pesi, o la fusione o chiusura del conto, è richiesta la soglia alta. Questo valore può essere raggiunto solo quando almeno due dei tre firmatari firmano insieme. Questa configurazione mantiene il conto flessibile per l'uso quotidiano, fornendo al contempo una forte protezione contro gli abusi.",
+      "removal": "Se una persona lascia l'azienda o non è più affidabile, due dei firmatari rimanenti (Signer) possono congiuntamente rimuovere i diritti di firma di questa persona. Nessun singolo firmatario (Signer) – né un dipendente né la direzione – può escludere altri dall'account autonomamente. La revoca delle autorizzazioni avviene quindi sempre in modo controllato e tracciabile da almeno due persone responsabili.",
+      "summary": "Questo tipo di struttura multi-sig permette alle singole parti di elaborare pagamenti in modo efficiente mantenendo il controllo dell'account tra più partecipanti. Riduce il rischio di appropriazione indebita dell'account, protegge dalle decisioni unilaterali ed è particolarmente adatto per conti aziendali in cui sia la sicurezza sia la flessibilità operativa sono importanti.",
       "closeLabel": "Chiudi",
-      "linkLabel": "Cosa significa Multi-Signature?",
-      "glossaryLinkLabel": "Vedi nel glossario"
+      "linkLabel": "Che cosa significa Multi-Signature?",
+      "glossaryLinkLabel": "Visualizza nel glossario"
     }
   },
   "multisigCorporate": {
-    "title": "Multisig nelle aziende",
-    "original": "Multi-Signature (corporate example)",
-    "short": "Esempio di struttura multisig per conti aziendali con ruoli, pesi e soglie."
+    "title": "Firma multipla - Esempio",
+    "original": "Multi-Signature - Example",
+    "short": "Esempio di una struttura multi-firma per conti aziendali con ruoli, pesi e soglie."
   },
   "trustline": {
     "title": "Trustline",
     "original": "Trustline",
     "short": "Accordo per detenere un token da un emittente specifico.",
-    "desc": "Una trustline è come dire sì, accetto questo token. Facendo così, indichi che il tuo account è pronto a detenere un token specifico da un emittente specifico. Senza una trustline, non puoi ricevere questo token.\n\nEsempio: Una trustline è specificata come CODICE:EMITTENTE. Per EURT dall'emittente GDUKMGUGDZQK6Y…, è EURT:GDUKMGUGDZQK6Y…"
+    "desc": "Una \"trustline\" è come dire: \"Sì, accetto questo token\". Impostandola, stai indicando che il tuo account è pronto a detenere un token specifico da un emittente specifico. Senza una trustline, non puoi ricevere questo token.\n\nEsempio: una trustline è specificata come CODICE:EMITTENTE. Per EURT dall'emittente GDUKMGUGDZQK6Y…, sarebbe EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
     "title": "Gettone",
@@ -105,280 +111,279 @@
   "asset": {
     "title": "Bene patrimoniale",
     "original": "Asset",
-    "short": "I token su Stellar sono sempre collegati all'emittente.",
-    "desc": "Su Stellar, un token viene chiamato risorsa. Una risorsa è sempre collegata a un conto emittente. Ad esempio, un conto può emettere un token Euro. Questo token Euro è quindi una risorsa."
+    "short": "I token su Stellar sono sempre collegati a un emittente.",
+    "desc": "Su Stellar, un token è chiamato asset. Un asset è sempre collegato a un conto emittente. Ad esempio, un conto può emettere un token Euro, e questo token Euro è poi considerato un asset."
   },
   "xlm": {
     "title": "XLM",
     "original": "XLM",
-    "short": "Valuta nativa di Stellar per commissioni e attivazione.",
-    "desc": "XLM è la valuta nativa di Stellar. Hai bisogno di XLM per pagare le commissioni e per aprire un nuovo conto."
+    "short": "Valuta nativa di Stellar per le commissioni e l'attivazione.",
+    "desc": "XLM è la valuta nativa di Stellar. Hai bisogno di XLM per pagare le commissioni e aprire un nuovo conto."
   },
   "mainnet": {
-    "title": "Rete principale",
+    "title": "Mainnet",
     "original": "Mainnet",
     "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
-    "desc": "La rete Stellar reale con valore effettivo. Le transazioni sono definitive e le commissioni vengono pagate in XLM reali."
+    "desc": "La vera rete Stellar con valore effettivo. Le transazioni sono definitive e le commissioni sono pagate in XLM reale."
   },
   "testnet": {
-    "title": "Rete di test",
+    "title": "Rete di prova",
     "original": "Testnet",
-    "short": "Rete di pratica pubblica senza valore reale.",
-    "desc": "Una rete di pratica pubblica. I token non hanno un valore reale. Ideale per apprendere e sperimentare senza rischi."
+    "short": "Rete di formazione pubblica senza un reale valore.",
+    "desc": "Una rete di pratica pubblica. I token non hanno valore reale. Ideale per apprendere e sperimentare senza rischi."
   },
   "memo": {
     "title": "Promemoria",
     "original": "Memo",
     "short": "Breve nota in una transazione.",
-    "desc": "Un promemoria è una piccola nota che puoi inviare insieme a una transazione. Spesso, una piattaforma di scambio richiede un promemoria specifico per sapere a chi appartiene il denaro."
+    "desc": "Un memo è una piccola nota che puoi inviare insieme a una transazione. Spesso, un exchange richiede un memo specifico per sapere a chi appartiene il denaro."
   },
   "transaction": {
     "title": "Transazione",
     "original": "Transaction",
     "short": "Azione sulla blockchain, ad esempio, pagamento o linea di fiducia.",
-    "desc": "Una transazione è un'azione sulla blockchain, come inviare denaro o stabilire una linea di fiducia. Una transazione viene memorizzata in modo permanente una volta confermata."
+    "desc": "Una transazione è un'azione sulla blockchain, come inviare denaro o stabilire una linea di fiducia. Una volta confermata, una transazione viene registrata in modo permanente."
   },
   "fee": {
-    "title": "Commissione",
+    "title": "Tariffa",
     "original": "Fee",
-    "short": "Quantità molto piccola per transazione.",
-    "desc": "La commissione è un importo molto piccolo che paghi ad ogni transazione. La commissione va alla rete. Su Stellar, le commissioni sono molto basse."
+    "short": "Importo molto piccolo per transazione.",
+    "desc": "La commissione è un importo molto piccolo che paghi con ogni transazione. La commissione va alla rete. Su Stellar, le commissioni sono molto basse."
   },
   "ledger": {
-    "title": "Registro",
+    "title": "Libro mastro",
     "original": "Ledger",
-    "short": "Catena di dati confermati e saldi dei conti.",
+    "short": "Catena di dati confermati e saldi.",
     "desc": "Il registro è la catena di tutti i dati confermati. Mostra quali conti possiedono quanto e quali transazioni sono avvenute. Chiunque può controllare il registro."
   },
   "horizon": {
     "title": "Orizzonte",
     "original": "Horizon",
     "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
-    "desc": "Horizon è il servizio attraverso il quale i programmi comunicano con la blockchain Stellar. Il nostro strumento interroga Horizon per caricare i saldi degli account e le transazioni."
+    "desc": "Horizon è il servizio attraverso il quale i programmi comunicano con la blockchain di Stellar. Il nostro strumento interroga Horizon per caricare i saldi dei conti e le transazioni."
   },
   "horizonHistory": {
     "title": "Storia dell'Orizzonte",
     "original": "Horizon history depth",
     "short": "Descrive fino a che punto si estende la cronologia delle transazioni fornita dai server pubblici Horizon.",
-    "desc": "I server pubblici Horizon gestiti dalla Stellar Development Foundation (Mainnet und Testnet) forniscono solo una cronologia limitata – attualmente circa un anno a ritroso. I dati più vecchi non sono più accessibili attraverso questi endpoint gratuiti. Se hai bisogno di andare più indietro nel tempo, hai fondamentalmente due opzioni: (1) gestire un nodo Horizon autonomo con la cronologia completa (inklusive History Archives), oppure (2) utilizzare servizi di terzi o a pagamento che archiviano e forniscono dati storici di Stellar a lungo termine.",
-    "seeAlso": "Entschuldigung, es wurde kein Text zum Übersetzen bereitgestellt. Könnten Sie bitte den Text angeben, den Sie übersetzen lassen möchten?"
+    "desc": "I server pubblici Horizon (Mainnet und Testnet) gestiti dalla Stellar Development Foundation forniscono solo una cronologia limitata – attualmente retroattiva di circa un anno. I dati più vecchi non possono più essere recuperati tramite questi endpoint gratuiti. Se hai bisogno di tornare più indietro nel tempo, essenzialmente hai due opzioni: (1) puoi eseguire il tuo nodo Horizon con cronologia completa (inklusive History Archives), oppure (2) puoi utilizzare servizi di terze parti o a pagamento che memorizzano e forniscono dati storici a lungo termine di Stellar.",
+    "seeAlso": "Es wurde kein spezifischer Text zur Übersetzung bereitgestellt. Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
   },
   "anchor": {
     "title": "Ancora",
     "original": "Anchor",
     "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Un'ancora è un'azienda che collega denaro reale, come euro o dollari, con Stellar. Ad esempio, dai all'ancora degli euro e ricevi in cambio un euro token su Stellar."
+    "desc": "Un'ancora è un'azienda che connette denaro reale, come euro o dollari, con Stellar. Ad esempio, tu dai all'ancora euro e ricevi in cambio un token in euro su Stellar."
   },
   "exchange": {
     "title": "Borsa valori",
     "original": "Exchange",
-    "short": "Luogo per acquistare e vendere token.",
-    "desc": "Un exchange è un luogo dove puoi acquistare o vendere token. Molti exchange richiedono un processo KYC, ovvero la verifica dell'identità, prima di poter prelevare denaro in euro o franchi."
+    "short": "Luogo per comprare e vendere token.",
+    "desc": "Un exchange è un luogo dove puoi comprare o vendere token. Molti exchange richiedono un processo di KYC, ovvero la verifica dell'identità, prima di poter prelevare denaro in euro o franchi."
   },
   "dex": {
-    "title": "DEX",
+    "title": "DEX (Decentralized Exchange)",
     "original": "Decentralized Exchange",
     "short": "Scambio decentralizzato direttamente sulla blockchain.",
-    "desc": "DEX sta per Exchange Decentralizzato. Qui, le persone scambiano direttamente tra loro sulla blockchain. Non c'è un operatore unico. Stellar ha un DEX integrato direttamente."
+    "desc": "DEX steht für \"Decentralized Exchange\" (Dezentralisierte Börse). Hier handeln Menschen direkt miteinander auf der Blockchain. Es gibt keinen einzelnen Betreiber. Stellar hat eine DEX direkt in seine Plattform integriert."
   },
   "liquidityPool": {
     "title": "Pool di liquidità",
     "original": "Liquidity Pool",
-    "short": "Pool congiunto con due token per scambio immediato.",
-    "desc": "Una pool di liquidità è una riserva condivisa contenente due token. Le persone depositano entrambi i token al suo interno. Altri possono quindi scambiare immediatamente questi token. I depositanti guadagnano piccole commissioni per questo servizio."
+    "short": "Pool comune con due token per scambio immediato.",
+    "desc": "Un pool di liquidità è un fondo condiviso contenente due token. Le persone depositano entrambi i token al suo interno. Altri sono quindi autorizzati a scambiare immediatamente questi token. I depositanti guadagnano piccole commissioni in cambio."
   },
   "balanceClaimable": {
-    "title": "Saldo Reclamabile",
+    "title": "Saldo richiedibile",
     "original": "Claimable Balance",
-    "short": "Denaro riservato che devi ancora accettare.",
-    "desc": "Un saldo reclamabile è denaro che è già stato riservato per te, ma devi ancora reclamarlo. Solo quando lo accetti, entra nel tuo conto."
+    "short": "Denaro riservato che devi ancora ricevere.",
+    "desc": "Un saldo reclamabile è denaro che è già riservato per te, ma che devi ancora reclamare. Viene accreditato sul tuo conto solo dopo che lo accetti."
   },
   "protocolUpdate": {
     "title": "Aggiornamento del Protocollo",
     "original": "Protocol Update",
     "short": "Aktualisierung der Netzwerk‑Regeln.",
-    "desc": "Un aggiornamento del protocollo è un miglioramento delle regole nella rete Stellar, come nuove funzionalità o modifiche di sicurezza. Tutti i nodi nella rete devono utilizzare le stesse regole."
+    "desc": "Un aggiornamento del protocollo è un miglioramento delle regole nella rete Stellar, come l'introduzione di nuove funzionalità o modifiche relative alla sicurezza. Tutti i nodi nella rete devono utilizzare le stesse regole."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
     "short": "Stellars Smart‑Contract‑System.",
-    "desc": "Soroban è il sistema di contratti smart di Stellar. Un contratto intelligente è un codice di programma sulla blockchain. Il codice può verificare autonomamente le regole e innescare azioni senza una banca intermediaria."
+    "desc": "Soroban è il sistema di contratti intelligenti di Stellar. Un contratto intelligente è un codice di programma sulla blockchain. Il codice può verificare autonomamente le regole e attivare azioni senza la necessità di un intermediario bancario."
   },
   "multiSignature": {
-    "title": "Multisignature",
+    "title": "Multifirma",
     "original": "Multi-Signature",
     "short": "Multiple signatures required; weights + threshold determine the release.",
-    "desc": "In una configurazione multi-firma, devono firmare più chiavi prima che un'azione diventi valida. Ogni firmatario ha un peso, e la somma deve raggiungere la soglia richiesta. Questo aumenta la sicurezza perché una singola chiave rubata non è sufficiente."
+    "desc": "In una configurazione multi-firma, più chiavi devono firmare prima che un'azione diventi valida. Ogni firmatario ha un peso, e la somma deve raggiungere la soglia richiesta. Questo aumenta la sicurezza perché una singola chiave rubata non è sufficiente."
   },
   "signer": {
     "title": "Firmatario",
     "original": "Signer",
     "short": "Chiave pubblica con peso, parte della configurazione dell'account.",
-    "desc": "Un firmatario è una chiave pubblica che appartiene a un conto e ha un peso. La sua firma contribuisce al raggiungimento della soglia richiesta. Più firmatari possono autorizzare collettivamente una transazione."
+    "desc": "Un firmatario è una chiave pubblica che appartiene a un account e ha un peso. La sua firma contribuisce al raggiungimento della soglia richiesta. Più firmatari possono autorizzare collettivamente una transazione.\n\nTipi di firmatari:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM supporta solo ed25519. Per opzioni aggiuntive, visita https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Soglie",
     "original": "Thresholds",
-    "short": "Limiti (low/med/high) che determinano la somma richiesta dei pesi.",
-    "desc": "Le soglie definiscono quante firme ponderate sono necessarie per le azioni: basse per operazioni semplici, medie per i pagamenti, alte per cambiamenti critici. La somma dei pesi dei firmatari deve soddisfare la soglia rispettiva."
+    "short": "Limiti (low/med/high) che stabiliscono il peso totale richiesto.",
+    "desc": "Le soglie definiscono quante firme ponderate sono necessarie per le azioni: bassa per operazioni semplici, media per i pagamenti e alta per cambiamenti critici. La somma dei pesi dei firmatari deve soddisfare la soglia rispettiva."
   },
   "masterWeight": {
-    "title": "Peso master",
+    "title": "Peso principale",
     "original": "master_weight",
-    "short": "Peso della chiave principale; controlla quanto conta la chiave principale.",
-    "desc": "Il peso principale è il peso della chiave maestra di un account. Un alto peso principale permette alla chiave maestra di firmare molte azioni da sola; un valore basso necessita di firmatari aggiuntivi."
+    "short": "Peso della chiave principale; controlla quanto è importante la chiave principale.",
+    "desc": "Il peso master è il peso della chiave principale di un account. Un alto peso master consente alla chiave master di firmare molte azioni da sola; un valore basso richiede firmatari aggiuntivi."
   },
   "accountConfig": {
     "title": "Configurazione dell'account",
     "original": "Account Configuration",
     "short": "L'interazione tra i firmatari e le soglie determina la sicurezza dell'account.",
-    "desc": "La configurazione del conto specifica quali firmatari esistono con quali pesi e quali soglie si applicano. Modifiche ai firmatari o alle soglie sono critiche per la sicurezza perché determinano quante firme sono necessarie."
+    "desc": "La configurazione dell'account definisce quali firmatari esistono con quali pesi e quali soglie si applicano. Le modifiche ai firmatari o alle soglie sono critiche per la sicurezza, poiché determinano quanti firme sono necessarie."
   },
-  "missingKey": "Chiave del glossario mancante: {{detail}}",
   "distributedNetwork": {
     "title": "Rete distribuita",
     "original": "Distributed Network",
-    "short": "Molti computer lavorano insieme invece di uno solo che decide tutto.",
+    "short": "Molti computer lavorano insieme invece che uno solo prenda tutte le decisioni.",
     "desc": "Immagina un mercato in cui molti trader conoscono le stesse regole. Se un partecipante si ritira, il mercato continua a funzionare perché altri possono subentrare. Questo mantiene il sistema stabile e più difficile da manipolare."
   },
   "node": {
     "title": "Nodo",
     "original": "Node",
     "short": "Un singolo partecipante nella rete.",
-    "desc": "Un nodo è come un contabile che detiene una copia dei dati. Verifica le nuove voci e le inoltra. Molti nodi insieme rendono la rete affidabile."
+    "desc": "Un nodo è come un tenutario di registri che conserva una copia dei dati. Verifica le nuove voci e le trasmette. Molti nodi insieme rendono la rete affidabile."
   },
   "block": {
     "title": "Blocco",
     "original": "Block",
-    "short": "Un blocco è un pacchetto di voci.",
-    "desc": "Come una pagina in un registro contabile, un blocco raccoglie più transazioni. Una volta pieno, viene finalizzato e aggiunto alla catena. Questo è il modo in cui la storia viene creata passo dopo passo."
+    "short": "Un blocco è un insieme di voci.",
+    "desc": "Come una pagina in un libro cassa, un blocco raccoglie diverse transazioni. Una volta pieno, viene completato e aggiunto alla catena. Questo crea la storia passo dopo passo."
   },
   "consensusMechanism": {
     "title": "Meccanismo di consenso",
     "original": "Consensus Mechanism",
-    "short": "Regole con cui tutti concordano sulle voci valide.",
-    "desc": "È come quando un gruppo decide quale scontrino è valido. Questo impedisce a chiunque di apportare modifiche segrete. Diverse blockchain utilizzano metodi diversi, ma l'obiettivo è sempre il consenso."
+    "short": "Regole secondo cui tutti concordano sulle voci valide.",
+    "desc": "È come quando un gruppo decide quale ricevuta è valida. Questo impedisce a chiunque di apportare modifiche segrete. Diverse blockchain utilizzano metodi diversi, ma l'obiettivo è sempre il consenso."
   },
   "finality": {
     "title": "Finalità / Definitività",
     "original": "Finality",
-    "short": "La garanzia che una transazione sia definitiva.",
-    "desc": "Quando qualcosa è definitivo, sembra come un estratto conto bancario confermato. Non ci si deve più aspettare che venga annullato. Questo crea fiducia."
+    "short": "La certezza che una transazione sia definitiva.",
+    "desc": "Quando qualcosa è definitivo, sembra come un estratto conto bancario confermato. Non devi più aspettarti che venga annullato. Questo crea fiducia."
   },
   "immutability": {
     "title": "Immutabilità",
     "original": "Immutability",
-    "short": "Le voci non dovrebbero essere modificate retroattivamente.",
-    "desc": "Proprio come con un libro cassa: Cancellare successivamente è evidente. Le modifiche vengono aggiunte come una nuova registrazione, non sovrascritte. Questo rende la storia tracciabile."
+    "short": "Le voci non dovrebbero essere modificate retrospettivamente.",
+    "desc": "Simile a un registro: Qualsiasi cancellazione successiva è evidente. Le modifiche vengono aggiunte come una nuova voce, non sovrascritte. Questo rende la storia tracciabile."
   },
   "decentralization": {
     "title": "Decentralizzazione",
     "original": "Decentralization",
     "short": "Nessuna autorità centrale controlla tutto.",
-    "desc": "Invece di una singola cassaforte, ci sono molte casseforti con le stesse informazioni. Le decisioni sorgono dall'interazione di molti partecipanti. Questo rende il sistema più robusto."
+    "desc": "Invece di un singolo caveau, ci sono molti caveau con le stesse informazioni. Le decisioni emergono dall'interazione di molti partecipanti. Questo rende il sistema più robusto."
   },
   "publicBlockchain": {
     "title": "Blockchain pubblica",
     "original": "Public Blockchain",
     "short": "Aperto a chiunque desideri partecipare.",
-    "desc": "Chiunque può partecipare e visualizzare i dati, simile a una bacheca pubblica. Questo aumenta la trasparenza, ma ogni azione è visibile a tutti. Le regole garantiscono che nessuno possa imbrogliare."
+    "desc": "Tutti possono partecipare e visualizzare i dati, similmente a una bacheca pubblica. Questo aumenta la trasparenza, ma ogni azione è visibile a tutti. Le regole garantiscono che nessuno possa barare."
   },
   "privateBlockchain": {
     "title": "Blockchain privata",
     "original": "Private Blockchain",
-    "short": "Accesso riservato solo ai partecipanti selezionati.",
-    "desc": "Come un registro aziendale che solo i dipendenti possono vedere. Questo può essere più rapido e controllato, ma è meno aperto. La fiducia viene costruita qui attraverso l'organizzazione."
+    "short": "Accesso solo per partecipanti selezionati.",
+    "desc": "Come un registro di cassa aziendale che solo i dipendenti possono vedere. Può essere più veloce e più controllato, ma è meno aperto. La fiducia qui è stabilita attraverso l'organizzazione."
   },
   "permissionlessBlockchain": {
-    "title": "Blockchain senza permesso",
+    "title": "Blockchain senza permessi",
     "original": "Permissionless Blockchain",
-    "short": "Tutti possono partecipare senza permesso.",
-    "desc": "Come un mercato a cui chiunque può partecipare. Questo abbassa le barriere, ma potrebbe richiedere più regole per rimanere equo. Esempi includono molte blockchain pubbliche."
+    "short": "Chiunque può partecipare senza permesso.",
+    "desc": "Come un mercato a cui chiunque può partecipare. Questo riduce le barriere ma potrebbe richiedere più regole per rimanere equo. Esempi includono molte blockchain pubbliche."
   },
   "permissionedBlockchain": {
-    "title": "Blockchain con permessi",
+    "title": "Blockchain autorizzato",
     "original": "Permissioned Blockchain",
     "short": "Partecipazione solo su autorizzazione.",
     "desc": "Come un club con una lista di membri. Questo può creare responsabilità chiare. Tuttavia, è meno aperto."
   },
   "seedPhrase": {
-    "title": "Teorema di restaurazione",
+    "title": "Teorema di restauro",
     "original": "Seed Phrase / Recovery Phrase",
-    "short": "Un elenco di parole che puoi utilizzare per ripristinare il tuo portafoglio.",
-    "desc": "È come la chiave di riserva della tua cassaforte. Chiunque la possieda può ripristinare il tuo portafoglio. Ecco perché non dovrebbe mai essere memorizzata online."
+    "short": "Un elenco di parole con cui puoi ripristinare il tuo portafoglio.",
+    "desc": "È come la chiave di riserva della tua cassaforte. Chiunque la possieda può ripristinare il tuo portafoglio. Pertanto, non dovrebbe mai essere conservata online."
   },
   "selfCustody": {
-    "title": "Autocustodia",
+    "title": "Auto-custodia",
     "original": "Self-Custody",
-    "short": "Tieni le tue chiavi tu stesso.",
-    "desc": "Come avere contanti nella propria cassaforte: hai il controllo, ma anche la responsabilità. Se perdi l'accesso, nessuno può aiutarti. Per i principianti, la prudenza è particolarmente importante."
+    "short": "Stai tenendo le tue chiavi da solo.",
+    "desc": "Come contanti nel tuo cassaforte: hai il controllo, ma anche la responsabilità. Se perdi l'accesso, nessuno può aiutarti. Per i principianti, la prudenza è particolarmente importante."
   },
   "custodian": {
     "title": "Custode",
     "original": "Custodian",
     "short": "Un fornitore di servizi conserva le tue chiavi per te.",
-    "desc": "Come una banca che gestisce il tuo conto. Può essere conveniente, ma ti toglie il pieno controllo. Devi fidarti."
+    "desc": "Come una banca che gestisce il tuo conto. Può essere conveniente ma ti toglie il pieno controllo. Devi fidarti di essa."
   },
   "hardwareWallet": {
     "title": "Portafoglio hardware",
     "original": "Hardware Wallet",
     "short": "Un dispositivo fisico per le tue chiavi.",
-    "desc": "Come una piccola cassaforte in tasca. Le chiavi rimangono sul dispositivo e non vanno su Internet. Questo protegge da molti attacchi online."
+    "desc": "Come una piccola cassaforte in tasca. Le chiavi rimangono sul dispositivo e non vanno online. Questo protegge da molti attacchi online."
   },
   "hotWallet": {
     "title": "Portafoglio caldo",
     "original": "Hot Wallet",
-    "short": "Un portafoglio con accesso a internet.",
-    "desc": "Come un portafoglio nella giacca: comodo ma più vulnerabile. Adatto per piccole somme e uso quotidiano. Non ideale per grandi somme."
+    "short": "Un portafoglio con accesso a Internet.",
+    "desc": "Come un portafoglio in una giacca: comodo ma più vulnerabile. Adatto per piccole somme e per l'uso quotidiano. Non ideale per grandi somme."
   },
   "coldWallet": {
     "title": "Portafoglio freddo",
     "original": "Cold Wallet",
-    "short": "Un portafoglio senza connessione a Internet.",
+    "short": "Un portafoglio senza connessione internet.",
     "desc": "Come una cassaforte nel seminterrato. Molto sicura, ma poco pratica per l'uso quotidiano. Adatta per la conservazione a lungo termine."
   },
   "cryptocurrency": {
     "title": "Criptovaluta",
     "original": "Cryptocurrency",
     "short": "Valuta digitale che viene inviata direttamente tra le persone.",
-    "desc": "Come il contante digitale, ma senza una banca. Puoi inviarlo direttamente agli altri. Il valore può variare."
+    "desc": "Come il contante digitale, ma senza una banca. Puoi inviarlo direttamente ad altre persone. Il valore può fluttuare."
   },
   "altcoin": {
     "title": "Altcoin",
     "original": "Altcoin",
     "short": "Tutte le criptovalute tranne Bitcoin.",
-    "desc": "Come altri marchi sul mercato oltre al leader del settore. Alcuni sono ben noti, molti sono piccoli. La qualità e il rischio variano notevolmente."
+    "desc": "Come altri marchi sul mercato oltre al protagonista dominante. Alcuni sono ben noti, molti sono piccoli. La qualità e il rischio variano notevolmente."
   },
   "stablecoin": {
     "title": "Stablecoin",
     "original": "Stablecoin",
-    "short": "Criptovaluta con il valore più stabile.",
-    "desc": "Come il denaro digitale ancorato a una valuta convenzionale. Questo rende il suo prezzo più stabile. Tuttavia, la fiducia nel fornitore è importante."
+    "short": "Criptovaluta con un valore potenzialmente stabile.",
+    "desc": "Come il denaro digitale ancorato a una valuta standard. Questo rende il suo prezzo più stabile. Tuttavia, la fiducia nel fornitore è ancora importante."
   },
   "utilityToken": {
-    "title": "Gettone di utilizzo",
+    "title": "Token di utilizzo",
     "original": "Utility Token",
-    "short": "Un token con cui si può utilizzare un servizio.",
-    "desc": "Come un buono in una bancarella del mercato. Offre accesso o uno sconto. Il suo valore dipende dall'utilità del servizio."
+    "short": "Un token che può essere utilizzato per accedere a un servizio.",
+    "desc": "Come un buono presso una bancarella del mercato. Fornisce accesso o uno sconto. Il suo valore dipende dall'utilità del servizio."
   },
   "securityToken": {
     "title": "Token di sicurezza",
     "original": "Security Token",
     "short": "Un token con caratteristiche di sicurezza.",
-    "desc": "Come un certificato azionario. Può promettere diritti o profitti. Spesso si applicano regole più severe."
+    "desc": "Come un certificato azionario. Può promettere diritti o profitti. Spesso si applicano regole più severe a riguardo."
   },
   "governanceToken": {
     "title": "Token di governance",
     "original": "Governance Token",
-    "short": "Un token per partecipare al processo decisionale riguardante le regole.",
-    "desc": "Come una scheda elettorale in un club. Chi ha gettoni può votare sulle regole. Ciò significa responsabilità."
+    "short": "Un gettone per avere voce in capitolo nelle regole.",
+    "desc": "Come una scheda di voto in un club. Coloro che hanno gettoni possono votare sulle regole. Ciò significa responsabilità."
   },
   "liquidityToken": {
-    "title": "Token di liquidità / token LP",
+    "title": "Token di liquidità / Token LP",
     "original": "Liquidity Token",
     "short": "Un token per la liquidità fornita.",
-    "desc": "È come una ricevuta che attesta che hai contribuito a un fondo comune. Ricevi commissioni proporzionali. Il valore può variare."
+    "desc": "Come una ricevuta che dimostra che hai contribuito con denaro a un fondo comune. Ricevi commissioni proporzionali. Il valore può oscillare."
   },
   "nft": {
     "title": "Token non fungibile / NFT",
@@ -387,123 +392,124 @@
     "desc": "Come un oggetto da collezione firmato. Rappresenta qualcosa di unico, non una moneta intercambiabile. Il valore dipende dalla domanda."
   },
   "cbdc": {
-    "title": "Valuta digitale della banca centrale / CBDC",
+    "title": "Valuta Digitale della Banca Centrale / CBDC",
     "original": "Central Bank Digital Currency",
-    "short": "Valuta digitale emessa da una banca centrale.",
-    "desc": "Come denaro digitale dallo stato. Sarebbe denaro ufficiale, solo in forma digitale. I dettagli dipendono dal paese specifico."
+    "short": "Denaro digitale emesso da una banca centrale.",
+    "desc": "Come denaro contante digitale dello stato. Sarebbe denaro ufficiale, solo in forma digitale. I dettagli dipendono dal paese specifico."
   },
   "transactionStatus": {
     "title": "Stato della transazione",
     "original": "Transaction Status",
     "short": "Indica se una transazione è ancora aperta o già completata.",
-    "desc": "Come il tracciamento dei pacchi: in sospeso, confermato o fallito. Questo ti consente di vedere se tutto è andato liscio. A volte ci vuole un po' di tempo."
+    "desc": "Come il tracciamento dei pacchi: in attesa, confermato o fallito. In questo modo, puoi verificare se tutto è andato a buon fine. A volte ci vuole un po' di tempo."
   },
   "gasFee": {
-    "title": "Commissione del gas",
+    "title": "Tassa del gas",
     "original": "Gas Fee",
-    "short": "Una commissione per il lavoro computazionale nella rete.",
-    "desc": "Come una commissione di elaborazione al banco del mercato. Più è affollato, più può diventare costoso. Non tutte le blockchain la chiamano gas."
+    "short": "Una tariffa per il lavoro computazionale nella rete.",
+    "desc": "Come una commissione di elaborazione in una bancarella del mercato. Più è affollato, più costoso può diventare. Non tutte le blockchain la chiamano gas."
   },
   "onChain": {
-    "title": "On-Chain",
+    "title": "On-chain",
     "original": "On-Chain",
-    "short": "Avviene direttamente sulla blockchain.",
-    "desc": "Come un'entrata direttamente nel libro cassa. Tutti possono vederla. È trasparente, ma spesso più lenta o più costosa."
+    "short": "Si verifica direttamente sulla blockchain.",
+    "desc": "Come un'entrata diretta nel registro. Chiunque può vederla. È trasparente, ma spesso più lenta o costosa."
   },
   "offChain": {
     "title": "Off-chain",
     "original": "Off-Chain",
-    "short": "Si verifica off-chain.",
-    "desc": "Come un accordo orale che successivamente viene registrato nel libro contabile. Questo può essere più veloce e più conveniente. La fiducia gioca un ruolo maggiore qui."
+    "short": "Si verifica al di fuori della blockchain.",
+    "desc": "Come un accordo verbale che viene successivamente registrato nel libro mastro. Questo può essere più veloce e meno costoso. La fiducia gioca un ruolo maggiore qui."
   },
   "liquidity": {
     "title": "Liquidità",
     "original": "Liquidity",
-    "short": "Mostra quanto facilmente si può gestire qualcosa.",
-    "desc": "Il numero di acquirenti e venditori. Un'alta liquidità significa che puoi fare trading rapidamente senza influenzare significativamente il prezzo. Una bassa liquidità sembra lenta."
+    "short": "Mostra quanto facilmente qualcosa può essere gestito.",
+    "desc": "Il numero di acquirenti e venditori che ci sono. Un'alta liquidità significa che puoi negoziare rapidamente senza influenzare significativamente il prezzo. Una bassa liquidità sembra lenta."
   },
   "volatility": {
     "title": "Volatilità",
     "original": "Volatility",
-    "short": "Quanto fluttuano i prezzi.",
-    "desc": "Come un mercato con oscillazioni selvagge dei prezzi. L'alta volatilità significa opportunità, ma anche rischio. Per i principianti, questo può essere stressante."
+    "short": "Quanto oscillano i prezzi.",
+    "desc": "Come un mercato con forti oscillazioni di prezzo. L'elevata volatilità significa opportunità, ma anche rischio. Per i principianti, questo può essere stressante."
   },
   "marketCap": {
     "title": "Capitalizzazione di mercato",
     "original": "Market Capitalization",
     "short": "Il valore totale di una moneta o di un progetto.",
-    "desc": "Come il valore totale di tutti i beni in un mercato. Si calcola approssimativamente moltiplicando il prezzo per la quantità in circolazione. Valori elevati possono sembrare più stabili, ma non lo sono automaticamente."
+    "desc": "Come il valore totale di tutti i beni in un mercato. È approssimativamente derivato dal prezzo moltiplicato per la quantità circolante. Valori elevati sembrano più stabili, ma non lo sono automaticamente."
   },
   "circulatingSupply": {
     "title": "Quantità di circolazione",
     "original": "Circulating Supply",
-    "short": "La quantità di monete che sono effettivamente in circolazione.",
-    "desc": "Come il numero di monete che sono effettivamente sul mercato. Non tutto ciò che esiste è già in circolazione. Questo influenza il prezzo."
+    "short": "La quantità di monete effettivamente in circolazione.",
+    "desc": "Come il numero di monete che sono effettivamente sul mercato. Non tutto ciò che esiste è già in circolazione. Questo influisce sul prezzo."
   },
   "priceDiscovery": {
     "title": "Prezzi",
     "original": "Price Discovery",
-    "short": "Il prezzo è determinato dall'offerta e dalla domanda.",
-    "desc": "Proprio come nel mercato: domanda e offerta si incontrano. Molte piccole decisioni determinano il prezzo. Non c'è un interruttore fisso."
+    "short": "Questo è il modo in cui il prezzo è determinato dall'offerta e dalla domanda.",
+    "desc": "È come un mercato: l'offerta e la domanda si incontrano. Molte piccole decisioni determinano il prezzo. Non esiste un interruttore fisso."
   },
   "spread": {
     "title": "Intervallo di trading",
     "original": "Spread",
     "short": "La differenza tra il prezzo di acquisto e il prezzo di vendita.",
-    "desc": "Come la gamma di negoziazione in un negozio. Più piccola è la differenza, più sembra equa. Diffusi ampi rendono gli scambi più costosi."
+    "desc": "Come lo spread denaro-lettera in un negozio. Quanto più piccolo è il divario, tanto più sembra equo. Grandi spread rendono le transazioni più costose."
   },
   "phishing": {
     "title": "Phishing",
     "original": "Phishing",
     "short": "Frode attraverso notizie false o siti web.",
-    "desc": "Come un'email falsa della banca che ti attira in una trappola. L'obiettivo è farti cedere le tue credenziali di accesso. Non cliccare mai sui link alla cieca."
+    "desc": "Come un'email di una banca falsa che ti attira in una trappola. L'obiettivo è farti fornire le tue credenziali di accesso. Non cliccare mai sui link alla cieca."
   },
   "smartContract": {
-    "title": "Smart contract",
+    "title": "Contratto intelligente",
     "original": "Smart Contract",
     "short": "Un programma che esegue automaticamente regole fisse.",
-    "desc": "Come un automa che reagisce secondo regole fisse. Esegue gli accordi automaticamente. Ciò risparmia fiducia ma richiede regole chiare."
+    "desc": "Come una macchina che risponde in base a regole prestabilite. Esegue accordi automaticamente. Questo risparmia fiducia ma richiede regole chiare."
   },
   "programmableLogic": {
-    "title": "Regole automatizzate",
+    "title": "Regole automatiche",
     "original": "Programmable Logic",
-    "short": "Regole che si eseguono automaticamente quando si verifica qualcosa.",
-    "desc": "Come una regola if-then in un automa. Questo consente di controllare i processi senza intervento manuale ogni volta. In questo modo vengono creati semplici contratti digitali."
+    "short": "Regole che si eseguono automaticamente quando accade qualcosa.",
+    "desc": "Come una regola if-then in un automa. Questo permette di controllare i processi senza intervento manuale ogni volta. È così che vengono creati semplici contratti digitali."
   },
   "networkCongestion": {
     "title": "Utilizzo della rete",
     "original": "Network Congestion",
-    "short": "Quando un gran numero di transazioni sono in attesa contemporaneamente.",
-    "desc": "Come gli ingorghi in autostrada. Le transazioni richiedono più tempo e le commissioni possono aumentare. Con meno traffico, torna a velocizzarsi."
+    "short": "Se ci sono un gran numero di transazioni in sospeso simultaneamente.",
+    "desc": "Come un ingorgo in autostrada. Le transazioni richiedono più tempo e le commissioni possono aumentare. Con meno traffico, diventa di nuovo più veloce."
   },
   "blockchainTypes": {
     "title": "Tipi di Blockchain",
     "original": "Blockchain Types",
-    "short": "Esistono diversi tipi di blockchain con vari obiettivi.",
+    "short": "Esistono vari tipi di blockchain con obiettivi diversi.",
     "desc": "Come diversi tipi di veicoli per differenti percorsi. Alcuni sono progettati per i pagamenti, altri per i programmi. Vale la pena conoscere lo scopo."
   },
   "paymentBlockchain": {
     "title": "Blockchain di pagamento",
     "original": "Payment Blockchain",
-    "short": "Una blockchain progettata per pagamenti rapidi.",
-    "desc": "Come un registro di cassa veloce. L'attenzione è rivolta a trasferimenti economici e rapidi. Le caratteristiche sono spesso mantenute volutamente semplici."
+    "short": "Una blockchain progettata per pagamenti veloci.",
+    "desc": "Come un registro rapido per il denaro. L'attenzione è sulle trasferimenti economici e veloci. Le funzionalità vengono spesso mantenute intenzionalmente semplici."
   },
   "smartContractBlockchain": {
     "title": "Blockchain di contratti intelligenti",
     "original": "Smart Contract Blockchain",
-    "short": "Una blockchain in grado di eseguire programmi e applicazioni.",
-    "desc": "Come un mercato con molte macchine. Oltre ai pagamenti, lì possono funzionare regole e applicazioni. Questo li rende versatili, ma spesso più complessi."
+    "short": "Una blockchain in grado di eseguire programmi e app.",
+    "desc": "Come un mercato con molti distributori automatici. Oltre ai pagamenti, possono eseguire regole e applicazioni. Questo li rende versatili, ma spesso più complessi."
   },
   "blockchainComparison": {
-    "title": "Confronto delle blockchain",
+    "title": "Confronto tra blockchain",
     "original": "Blockchain Comparison",
     "short": "Un confronto rivela i punti di forza e di debolezza di diverse blockchain.",
-    "desc": "Come confrontare banche o mercati: ognuno ha punti di forza e di debolezza. Aspetti importanti sono costo, velocità e sicurezza. Non esiste un sistema perfetto per tutto."
+    "desc": "Come il confronto tra banche o mercati: ciascuno ha punti di forza e debolezze. Fattori importanti sono costo, velocità e sicurezza. Non esiste un sistema perfetto per tutto."
   },
   "stellarVsBitcoinVsEthereum": {
-    "title": "Stellar vs. Bitcoin vs. Ethereum",
+    "title": "Stellar contro Bitcoin contro Ethereum",
     "original": "Stellar vs. Bitcoin vs. Ethereum",
-    "short": "Tre blockchain ben note con diversi focalizzazioni.",
-    "desc": "Bitcoin è come l'oro digitale ed è spesso considerato un bene rifugio. Ethereum è come una piattaforma per programmi e applicazioni. Stellar è fortemente focalizzato sui pagamenti accessibili."
-  }
+    "short": "Tre blockchain ben note con diversi obiettivi.",
+    "desc": "Bitcoin è come l'oro digitale ed è spesso considerato una riserva di valore. Ethereum è come una piattaforma per programmi e applicazioni. Stellar è incentrato sui pagamenti accessibili."
+  },
+  "missingKey": "Chiave del glossario mancante: {{detail}}"
 }

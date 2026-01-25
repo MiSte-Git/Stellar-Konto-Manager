@@ -1,5 +1,5 @@
 {
-  "desc": "Exporteer of importeer je quizgegevens (Einstellungen, Fortschritt, Abzeichen).",
+  "desc": "Exporteer of importeer uw quizgegevens (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Export starten",
     "fileName": "quiz-backup.json",
@@ -13,7 +13,7 @@
     "preview": {
       "stats": {
         "achievements": "Badge: {{count}} Quiz(e)",
-        "progress": "Vooruitgang: {{count}} Quiz(e)",
+        "progress": "Voortgang: {{count}} Quiz(e)",
         "settings": "Instellingen: {{count}} Quiz(e)"
       },
       "title": "Voorbeschouwing"
@@ -24,14 +24,14 @@
       "merge": "Samenvoegen",
       "replace": "Vervangen"
     },
-    "title": "Importeren"
+    "title": "Importeer"
   },
   "nav": {
     "back": "Terug"
   },
-  "title": "Back-up & Herstel",
+  "title": "Backup & Recovery",
   "toast": {
-    "backupBeforeImport": "Er werd een back-up opgeslagen vóór de import.",
+    "backupBeforeImport": "Er werd een back-up gemaakt voordat er werd geïmporteerd.",
     "exported": "Back-up geëxporteerd",
     "exportFailed": "Export mislukt",
     "importFailed": "Importeren mislukt"

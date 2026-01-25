@@ -1,7 +1,7 @@
 {
   "assetSearch": {
     "title": "Recherche d'actifs",
-    "description": "Recherchez des actifs via le point de terminaison de trading (Horizon).",
+    "description": "Recherche d'actifs via le point de terminaison de trading (Horizon).",
     "form": {
       "code": {
         "label": "Code d'actif",
@@ -9,7 +9,7 @@
       },
       "issuer": {
         "label": "Émetteur (optional)",
-        "placeholder": "G… (G…)"
+        "placeholder": "G… (G…=facultatif)"
       },
       "submit": "Rechercher"
     },

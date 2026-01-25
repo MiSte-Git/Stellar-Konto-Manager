@@ -1,5 +1,5 @@
 {
-  "hintEnterPublicKey": "Veuillez d'abord saisir une clé publique.",
+  "hintEnterPublicKey": "Veuillez d'abord entrer une clé publique.",
   "columns": {
     "amount": "Montant",
     "compromised": "Compromis",
@@ -14,20 +14,20 @@
   },
   "decimals": {
     "auto": "Automatiquement",
-    "label": "Chiffres décimaux :"
+    "label": "Décimales :"
   },
   "filter": {
-    "memoPlaceholder": "Filtrer par mémo, adresse de portefeuille ou étiquette.",
+    "memoPlaceholder": "Filtrer par mémo, adresse de portefeuille ou étiquette",
     "tokenPlaceholder": "Filtrer par jeton (CODE:ISSUER)"
   },
   "item": {
-    "memo": "Mémo : « {{memo}} » (Paiements : {{occurrences}})",
+    "memo": "Mémo : « {{memo}} » (Paiements : {{occurrences}})",
     "token": "Jeton : {{token}} (Paiements : {{occurrences}})",
     "tokenShort": "Jeton : {{token}}"
   },
   "missingPublicKey": "Clé publique manquante.",
-  "moreTruncated": "… et {{extra}} autres groupes",
-  "toWallet": "à Portefeuille : {{address}}",
+  "moreTruncated": "… et {{extra}} groupes supplémentaires",
+  "toWallet": "vers le portefeuille : {{adresse}}",
   "total": "Nombre de jetons achetés : {{count}}",
   "totalTokens": "Nombre de jetons investis (Assets) : {{count}}",
   "value": {
@@ -36,23 +36,23 @@
   },
   "view": {
     "label": "Filtrer par :",
-    "memo": "Mémos",
-    "token": "Jeton (gekaufte Menge)"
+    "memo": "Mémos (Memos)",
+    "token": "Jeton"
   },
   "toggles": {
     "showTotals": "Montant total",
     "qsiOnly": "Somme QSI GF"
   },
   "hints": {
-    "qsiListSet": "Remarque : Vous pouvez trouver la liste GF sous Paramètres → Trusted Wallets (QSI).",
-    "pageTime": "Le chargement d'une page prend environ 0,2 seconde → 100 pages ≈ 20 secondes → 1000 pages ≈ 200 secondes (≈ 3 minutes 20 secondes)."
+    "qsiListSet": "Remarque : Vous pouvez trouver la liste GF sous Paramètres → Portefeuilles de confiance (QSI).",
+    "pageTime": "Le chargement d'une page prend environ 0,2 seconde → 100 pages ≈ 20 secondes → 1000 pages ≈ 200 secondes (≈ 3:20 minutes)."
   },
-  "walletCapInfo": "Remarque : Un portefeuille peut contenir un maximum de 1000 lignes de confiance.",
+  "walletCapInfo": "Remarque : Un portefeuille peut contenir un maximum de 1000 lignes de crédit.",
   "action": {
     "load": "Boutique"
   },
   "history": {
-    "availableFrom": "Serveur (Horizon) – Historique de",
-    "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+    "availableFrom": "Serveur (Horizon) – Historique à partir de",
+    "hintFullHistory": "Note: The Ledger history from the Horizon server only goes back to {{available}}. Only data up to that date is displayed. Therefore, the selected \"From\" date is limited. For older data, a (meist kostenpflichtiger) Full‑History‑Provider is required (possibly coming in the future!)."
   }
 }

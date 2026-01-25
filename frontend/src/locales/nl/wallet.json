@@ -6,8 +6,8 @@
     "accountLabel": "Label"
   },
   "flag": {
-    "compromised": "Waarschuwing: Deze portemonnee is op uw vertrouwenslijst als gecompromitteerd gemarkeerd.",
-    "deactivated": "Opmerking: Deze portemonnee is in je TrustList als gedeactiveerd gemarkeerd."
+    "compromised": "Waarschuwing: Deze portemonnee is gemarkeerd als gecompromitteerd in uw TrustList.",
+    "deactivated": "Opmerking: Deze portemonnee is als uitgeschakeld gemarkeerd in uw Vertrouwenslijst."
   },
   "xlmBalance": "XLM",
   "unfunded": "Niet geactiveerd"

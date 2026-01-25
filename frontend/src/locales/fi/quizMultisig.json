@@ -1,54 +1,54 @@
 {
   "title": "Multisig & Security",
-  "introText": "Testaa tietosi allekirjoituksista, kynnysarvoista ja turvallisesta säilytyksestä.",
+  "introText": "Testaa tietämyksesi allekirjoituksista, kynnysarvoista ja turvallisesta tallennuksesta.",
   "q1": {
-    "question": "Miksi multisigia käytetään?",
+    "question": "Miksi käyttää multisig-tekniikkaa?",
     "hint": "Ajattele jaettua vastuuta.",
-    "a1": "Vähentääksesi yksittäisten avainten katoamisen riskiä.",
-    "a1fb": "Useat allekirjoitukset vähentävät yksilöllistä riskiä.",
+    "a1": "Vähentääksesi yksittäisten avainten katoamisriskiä.",
+    "a1fb": "Oikein: Useat allekirjoitukset vähentävät yksittäistä riskiä.",
     "a2": "Säästääksesi maksuissa.",
-    "a2fb": "Väärin: Multisig lisää turvallisuutta, ei maksuja.",
+    "a2fb": "Virheellisesti: Multisig lisää turvallisuutta, ei maksuja.",
     "a3": "Lähettää nopeammin.",
     "a3fb": "Väärin: Multisig ei ole suunniteltu nopeutta varten."
   },
   "q2": {
-    "question": "Milloin transaktio moniallekirjoitustililtä on pätevä?",
+    "question": "Milloin multisig-tilin tapahtuma on pätevä?",
     "hint": "Katso painotettuja allekirjoituksia.",
     "a1": "Jos allekirjoitukset saavuttavat vaaditun kynnyksen.",
-    "a1fb": "Korjaa: Painojen summan on täytettävä kynnysarvo.",
-    "a2": "Heti, kun jokin allekirjoitus on läsnä.",
-    "a2fb": "Virheellinen: Yksi allekirjoitus ei riitä, jos kynnysarvo on korkeampi.",
+    "a1fb": "Korjaus: Painojen summan on täytettävä kynnysarvo.",
+    "a2": "Heti kun jokin allekirjoitus on läsnä.",
+    "a2fb": "Väärin: Yksi allekirjoitus ei riitä, kun kynnysarvo on korkeampi.",
     "a3": "Vain pääavaimella, kynnyksestä riippumatta.",
     "a3fb": "Virheellinen: Pääavain on myös kynnysarvojen alainen."
   },
   "q3": {
-    "question": "Mitä tapahtuu, kun kynnysarvot asetetaan väärin?",
-    "hint": "Arvot, jotka ovat liian korkeita tai liian matalia, voivat johtaa seurauksiin.",
-    "a1": "Tapahtumat voidaan estää tai vapauttaa liian helposti.",
-    "a1fb": "Oikein: Väärät kynnysarvot johtavat lukituksiin tai riittämättömään turvallisuuteen.",
-    "a2": "Ei lainkaan, kynnykset ovat vain tietoa.",
-    "a2fb": "Virheellinen: Kynnysarvot säätelevät, kuinka monta allekirjoitusta tarvitaan.",
-    "a3": "Tilin järjestysnumero nollataan.",
-    "a3fb": "Virheellinen: Kynnykset eivät vaikuta järjestykseen."
+    "question": "Mitä tapahtuu, jos kynnysarvot asetetaan väärin?",
+    "hint": "Arvot, jotka ovat liian korkeita tai liian matalia, voivat aiheuttaa seurauksia.",
+    "a1": "Tapahtumat saattavat olla estettyjä tai liian helposti hyväksyttyjä.",
+    "a1fb": "Virheellinen: Väärät kynnysarvot johtavat lukituksiin tai riittämättömään turvallisuuteen.",
+    "a2": "Ei lainkaan, kynnykset ovat vain informaatiota.",
+    "a2fb": "Virheellinen: Kynnykset säätelevät, kuinka monta allekirjoitusta vaaditaan.",
+    "a3": "Tilin järjestysnumero palautetaan.",
+    "a3fb": "Virheellinen: Kynnyksillä ei ole vaikutusta sekvenssiin."
   },
   "q4": {
-    "question": "Kuinka monta allekirjoitusta transaktio vaatii, jos käytetään Threshold med?",
-    "hint": "med-kynnys = keskimääräinen kynnys.",
-    "a1": "Allekirjoitusten painojen on vähintään saavutettava keskitason kynnys.",
-    "a1fb": "Korjaus: Mediaanikynnys koskee maksuja.",
-    "a2": "Aina vain yksi allekirjoitus.",
-    "a2fb": "Väärin: Se riippuu painoista ja kynnysarvoista.",
+    "question": "Kuinka monta allekirjoitusta liiketoimi vaatii kynnyksellä med?",
+    "hint": "keskimääräinen kynnysarvo = keskimääräinen kynnysarvo.",
+    "a1": "Allekirjoitusten painojen on täytettävä vähintään keskitason kynnysarvo.",
+    "a1fb": "Oikein: Keskimmäinen kynnysarvo koskee maksuja.",
+    "a2": "Vain yksi allekirjoitus kerrallaan.",
+    "a2fb": "Väärin: Se riippuu painotuksista ja kynnysarvoista.",
     "a3": "Aina kaikki allekirjoittajat.",
-    "a3fb": "Virheellinen: Vain riittävästi allekirjoituksia kynnyksen saavuttamiseksi."
+    "a3fb": "Virheellinen: Vain tarpeeksi allekirjoituksia kynnysarvon saavuttamiseksi."
   },
   "q5": {
-    "question": "Miten salaiset avaimet tulisi säilyttää todellisissa multisig-järjestelmissä?",
+    "question": "Miten salaiset avaimet tulisi säilyttää todellisissa multisig-kokoonpanoissa?",
     "hint": "Erottaminen on turvallisuutta.",
     "a1": "Erotettu eri laitteille/sijainneille.",
-    "a1fb": "Korjaus: Allekirjoitukset tulee kerätä erikseen.",
+    "a1fb": "Korjaus: Allekirjoitukset tulisi kerätä erikseen.",
     "a2": "Kaikki samalla kannettavalla tietokoneella mukavuuden vuoksi.",
-    "a2fb": "Väärä: Laite muodostaa yhden vikaantumispisteen.",
-    "a3": "Jaa tekstinä keskustelussa.",
-    "a3fb": "Väärin: Älä koskaan jaa salaisia avaimia."
+    "a2fb": "Virheellinen: Laite sisältää yhden vikapisteen.",
+    "a3": "Jaa pelkkänä tekstinä chatissa.",
+    "a3fb": "Virheellinen: Älä koskaan jaa salaisia avaimia."
   }
 }

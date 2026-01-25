@@ -1,6 +1,6 @@
 {
   "pageTitle": "Glossary",
-  "pageIntro": "Here you will find important words from the blockchain world and the Stellar network. Everything is explained in simple terms.",
+  "pageIntro": "Here you will find important terms from the blockchain world and the Stellar network. Everything is explained in simple words.",
   "searchLabel": "Search term",
   "searchPlaceholder": "Search term (z. B. Konto, Account, Muxed)",
   "searchHint": "The search finds words and explanations.",
@@ -9,19 +9,19 @@
     "accountsKeys": "Accounts & Keys",
     "multisigSecurity": "Multisig & Account Security",
     "walletsCustody": "Wallets & Custody",
-    "tokensAssets": "Tokens & Assets",
+    "tokensAssets": "Token & Assets",
     "transactionsFees": "Transactions & Fees",
     "marketsTrading": "Markets & Trading",
     "networkProtocol": "Network & Protocol",
     "smartContracts": "Smart Contracts",
     "blockchainBasics": "Blockchain Basics",
-    "security": "Security & Scams"
+    "security": "Security & Fraud"
   },
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
-    "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
-    "desc": "A blockchain is like a digital ledger. Many computers store the same entries, so no one can secretly alter anything."
+    "short": "Shared digital ledger – many computers store the same entries.",
+    "desc": "A blockchain is like a digital ledger. Many computers store the same entries, ensuring that no one can secretly make changes."
   },
   "wallet": {
     "title": "Wallet",
@@ -33,80 +33,86 @@
     "title": "Account",
     "original": "Account",
     "short": "A blockchain account can hold assets and send transactions.",
-    "desc": "An account is the place on the blockchain where your assets are held. An account has a public address that begins with G. Multiple wallets can access the same account if they have the correct key."
+    "desc": "An account is the location on the blockchain where your assets are held. An account has a public address that begins with G. Multiple wallets can access the same account if they have the correct key."
   },
   "addressG": {
-    "title": "G-address",
+    "title": "G address",
     "original": "G Address",
-    "short": "The public key (beginnt mit G) of a Stellar account.",
-    "desc": "The G address is the main address of a Stellar account. It begins with the letter G. You provide it to others so they can send you something."
+    "short": "The public primary address of a Stellar account (beginnt mit G).",
+    "desc": "The G-address is the main address of a Stellar account. It starts with the letter G. You provide it to others so they can send you something."
   },
   "publicKey": {
     "title": "Public key",
     "original": "Public Key",
     "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
-    "desc": "The public key is the address that you are allowed to share. In Stellar, this is the G-address. Others use it to send you money."
+    "desc": "The public key is the address you are allowed to share. In Stellar, this is the G-address. Others use it to send you money."
   },
   "privateKey": {
     "title": "Secret key",
     "original": "Secret Key",
-    "short": "Password to the account – never share.",
-    "desc": "The secret key is your password for the account. Anyone who has this key can move your money. Never share it."
+    "short": "Password for the account – never share it.",
+    "desc": "The secret key is your password for the account. Whoever has this key can move your money. Never share it."
   },
   "addressFederation": {
     "title": "Federation address",
     "original": "Federation Address",
     "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
-    "desc": "A federation address looks like an email. Example: name*domain.com. This short address points to a normal G-address. It is easier to remember."
+    "desc": "A federation address looks like an email. Example: name*domain.com. This short address points to a regular G-address. It's easier to remember."
   },
   "addressMuxed": {
     "title": "Muxed account",
     "original": "Muxed Account",
     "short": "M‑address with additional ID – shares a base account.",
-    "desc": "An M-address points to an existing Stellar account but has an additional unique identifier (ID). This allows, for example, the differentiation of multiple people or departments under the same G-address. Technically, the funds still belong to the main account."
+    "desc": "An M-address points to an existing Stellar account but has an additional number (ID).\n\nMuxed Accounts = G-account + ID (M-Adresse)\nThey provide association, but no account separation.\nBalance, trustlines, signers, flags are always on the G-account.\n\nStellar Development Foundation\n\nFor example, multiple individuals or departments can be distinguished under the same G-address. Technically, the money still belongs to the main account."
+  },
+  "muxedAccountsUseCases": {
+    "title": "Use cases for Muxed Accounts",
+    "original": "Muxed accounts use cases",
+    "short": "Examples, benefits, and limitations of M-addresses as a mapping aid.",
+    "desc": "Company - Example\n\nSetup:\n- A company G-account\n- One M-address per customer/use-case (ID)\n\nProcess:\n- Customer pays to their M-address\n- Everything goes to the company G-account\n- Accounting reads the ID -> unique allocation\n\nSuitable for:\n- Shops, payment providers, exchanges\n- Internal references without memo risks\n\nAssociation - Example\n\nSetup:\n- An association G-account\n- M-addresses for members, departments, purposes\n\nProcess:\n- Contribution/donation to the appropriate M-address\n- Allocation via ID, no memo errors\n\nSuitable for:\n- Membership fees\n- Earmarked revenues\n- Easy auditing\n\nWhat Muxed Accounts excel at:\n- Robust input allocation\n- One account, many identities\n- No memo requirement\n- Fewer operational errors\n\nWhat Muxed Accounts are not:\n- Not sub-accounts\n- No individual balance\n- No individual trustlines\n- No individual signers/rights\n\nTypically unsuitable use cases:\n- Salary payments/payroll accounts (benoetigen eigenes G-Konto)\n- Trust/Escrow for third parties (kein rechtlicher Vermoegenstrenner)\n- Role-based security (keine getrennten Signer/Thresholds)\n- Budget or limit separation (keine separaten Salden/Asset-Limits)\n- Compliance-separated accounts (KYC/Reporting nicht sauber trennbar)\n\nComparison (Kurz):\nAssigning payments: Yes\nSeparating assets: No\nDelegating access: No\nLegally separate account: No\nInternal accounting: Yes\n\nKey takeaway:\nMuxed Accounts address payments - they do not replace accounts.\nIf control, ownership, or separation is needed -> own G-account."
   },
   "multisig": {
     "title": "Multisignature",
     "original": "Multi‑Sig",
-    "short": "Important actions require more than just a signature.",
-    "desc": "Multi-Sig stands for multiple signatures. An important action requires more than one key. For example, you and a second key must both agree before something can be sent. This makes theft more difficult.",
+    "short": "Important actions require more than a signature.",
+    "desc": "Multi-Sig stands for multiple signatures. An important action requires more than one key. Example: You and a second key must both agree before something is sent. This makes theft more difficult.",
     "help": {
-      "title": "General explanation of a multi-signature (Multi-Signature) corporate account",
-      "intro": "A company can use a joint blockchain account involving several authorized individuals. Typically, at least three signatories (Signer) are involved, such as management, financial officer, and compliance/backup. The goal is for individual persons to independently execute payments without any single person having sole control over or taking over the account.",
-      "problem": "If a signer (Signer) has enough weight to execute payments and simultaneously enough weight for account changes, that person could remove other signers (Signer) or adjust the threshold/weighting (Thresholds) and thereby take over the account. Conversely, the original owner should also not be able to exclude other signers (Signer) without checks and balances. A multi-sig structure ensures that important decisions are always supported by multiple people collectively.",
-      "setupTitle": "Example of a secure multi-sig structure with three signers",
-      "setupWeights": "In an example with three equivalent roles, all receive the same signature strength:\n- Signer (Signer) A (management): weight 2\n- Signer (Signer) B (Finanzen): weight 2\n- Signer (Signer) C (Compliance/Backup): weight 2",
-      "setupThresholds": "Appropriate thresholds/weightings are set:\n- Low (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- High (high_threshold): 4 (for structural changes like adding/removing signers (Signer) or changing the threshold/weighting (Thresholds))\nThis setup allows each authorized person to execute payments, but no single person can change the account structure alone.",
-      "behavior": "With this configuration, payments can be carried out by any of the three authorized persons individually, because each individual's weight meets the medium threshold/weighting (Threshold). However, for structural changes such as removing a signatory (Signers), adjusting the thresholds/weightings, or merging or closing the account, the high threshold/weighting (high_threshold) is required. This value can only be reached if at least two of the three signatories (Signer) sign together. This way, the account remains flexible for everyday use while being well-protected against misuse.",
+      "title": "General Explanation of a Multisignature (Multi-Signature) Company Account",
+      "intro": "A company can use a shared blockchain account in which several authorized individuals are involved. Typically, at least three signatories (Signer) are included, for example, the management, the financial officer, and compliance/backup. The objective is for individual persons to be able to execute payments independently without allowing a single person to control or take over the account alone.",
+      "problem": "If a signer (Signer) has enough weight to execute payments and simultaneously has enough weight for account changes, that person could remove other signers (Signer) or adjust the threshold/weighting (Thresholds) and thus take over the account. Conversely, the original owner should also not be able to easily exclude other signers (Signer) without checks and balances. A multi-signature structure ensures that important decisions are always collectively made by multiple people.",
+      "setupTitle": "Example of a secure multi-signature structure with three signers",
+      "setupWeights": "In an example with three equal roles, all receive the same signature strength:\n- Signer (Signer) A (Management): Weight 2\n- Signer (Signer) B (Finanzen): Weight 2\n- Signer (Signer) C (Compliance/Backup): Weight 2",
+      "setupThresholds": "Appropriate thresholds/weights are set as follows:\n- Low (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- High (high_threshold): 4 (for structural changes such as adding/removing signers (Signer) or changing the threshold/weight (Thresholds))\nThis ensures that each authorized person can execute payments, but no individual person can alter the account structure alone.",
+      "behavior": "With this configuration, payments can be made by any of the three eligible individuals alone because each individual's weight meets the medium threshold/Threshold. For structural changes such as removing a signer/Signers, adjusting the thresholds/weights, or merging or closing the account, the high threshold/high_threshold is required. This value can only be achieved when at least two of the three signers/Signer sign together. This setup keeps the account flexible for daily use while providing strong protection against misuse.",
       "removal": "Wenn eine Person das Unternehmen verlässt oder nicht mehr vertrauenswürdig ist, können zwei der verbleibenden Unterzeichner (Signer) gemeinsam die Signaturrechte dieser Person entfernen. Kein einzelner Unterzeichner (Signer) – weder ein Mitarbeiter noch die Geschäftsführung – kann andere eigenständig aus dem Konto ausschließen. Der Entzug von Berechtigungen erfolgt also immer kontrolliert und nachvollziehbar durch mindestens zwei Verantwortliche.",
-      "summary": "This type of multi-signature structure allows individual persons to process payments efficiently while keeping control of the account in the hands of multiple parties. It reduces the risk of account takeovers, protects against unilateral decisions, and is particularly suitable for corporate accounts where both security and operational flexibility are important.",
+      "summary": "This type of multi-sig structure allows individual parties to efficiently process payments while maintaining control of the account among multiple participants. It reduces the risk of account takeovers, protects against unilateral decisions, and is particularly suitable for corporate accounts where both security and operational flexibility are important.",
       "closeLabel": "Close",
       "linkLabel": "What does Multi-Signature mean?",
       "glossaryLinkLabel": "View in glossary"
     }
   },
   "multisigCorporate": {
-    "title": "Multisig in companies",
-    "original": "Multi-Signature (corporate example)",
-    "short": "Example multi-sig structure for company accounts with roles, weights, and thresholds."
+    "title": "Multisignature - Example",
+    "original": "Multi-Signature - Example",
+    "short": "Example of a multi-signature structure for corporate accounts with roles, weights, and thresholds."
   },
   "trustline": {
     "title": "Trustline",
     "original": "Trustline",
     "short": "Agreement to hold a token from a specific issuer.",
-    "desc": "A trustline is like saying yes, I accept this token. By doing so, you indicate that your account is ready to hold a specific token from a specific issuer. Without a trustline, you cannot receive this token.\n\nExample: A trustline is specified as CODE:ISSUER. For EURT from the issuer GDUKMGUGDZQK6Y…, it is EURT:GDUKMGUGDZQK6Y…"
+    "desc": "A trustline is like a \"Yes, I accept this token.\" By setting it up, you're indicating that your account is ready to hold a specific token from a specific issuer. Without a trustline, you cannot receive this token.\n\nExample: A trustline is specified as CODE:ISSUER. For EURT from the issuer GDUKMGUGDZQK6Y…, it would be EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
     "title": "Token",
     "original": "Token",
-    "short": "Digital unit – e.g., money, points, or credits.",
-    "desc": "A token is a digital unit on the blockchain. A token can represent money, points, or credit for a service."
+    "short": "Digital unit – for example, money, points, or credits.",
+    "desc": "A token is a digital unit on the blockchain. A token can represent money, points, or credits for a service."
   },
   "asset": {
     "title": "Asset",
     "original": "Asset",
-    "short": "Tokens on Stellar are always linked to the issuer.",
-    "desc": "On Stellar, a token is called an asset. An asset is always linked to an issuing account. For example, an account can issue a Euro token. This Euro token is then an asset."
+    "short": "Tokens on Stellar are always linked to an issuer.",
+    "desc": "On Stellar, a token is called an asset. An asset is always linked to an issuer account. For example, an account can issue a Euro token, and this Euro token is then considered an asset."
   },
   "xlm": {
     "title": "XLM",
@@ -118,12 +124,12 @@
     "title": "Mainnet",
     "original": "Mainnet",
     "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
-    "desc": "The real Stellar network with actual value. Transactions are final, and fees are paid in real XLM."
+    "desc": "The real Stellar network with actual value. Transactions are final and fees are paid in real XLM."
   },
   "testnet": {
     "title": "Testnet",
     "original": "Testnet",
-    "short": "Public practice network with no real value.",
+    "short": "Public training network without real value.",
     "desc": "A public practice network. Tokens have no real value. Ideal for learning and experimenting without risk."
   },
   "memo": {
@@ -136,19 +142,19 @@
     "title": "Transaction",
     "original": "Transaction",
     "short": "Action on the blockchain, e.g., payment or trustline.",
-    "desc": "A transaction is an action on the blockchain, such as sending money or establishing a trustline. A transaction is stored permanently once it is confirmed."
+    "desc": "A transaction is an action on the blockchain, such as sending money or establishing a trust line. Once confirmed, a transaction is permanently recorded."
   },
   "fee": {
     "title": "Fee",
     "original": "Fee",
     "short": "Very small amount per transaction.",
-    "desc": "The fee is a very small amount that you pay with every transaction. The fee goes to the network. On Stellar, the fees are very small."
+    "desc": "The fee is a very small amount that you pay with each transaction. The fee goes to the network. On Stellar, the fees are very low."
   },
   "ledger": {
     "title": "Ledger",
     "original": "Ledger",
-    "short": "Chain of confirmed data and account balances.",
-    "desc": "The ledger is the chain of all confirmed data. It shows which accounts own how much and which transactions have occurred. Anyone can check the ledger."
+    "short": "Chain of confirmed data and balances.",
+    "desc": "The ledger is the chain of all confirmed data. It shows which accounts hold how much and what transactions have occurred. Anyone can check the ledger."
   },
   "horizon": {
     "title": "Horizon",
@@ -160,8 +166,8 @@
     "title": "Horizon History",
     "original": "Horizon history depth",
     "short": "Describes how far back the transaction history provided by public Horizon servers extends.",
-    "desc": "Die von der Stellar Development Foundation betriebenen öffentlichen Horizon-Server (Mainnet und Testnet) stellen nur eine begrenzte Historie zur Verfügung – derzeit ungefähr ein Jahr rückwirkend. Ältere Daten sind über diese kostenlosen Endpunkte nicht mehr abrufbar. Wenn du weiter in die Vergangenheit zurück musst, hast du im Wesentlichen zwei Optionen: (1) du betreibst einen eigenen Horizon-Node mit vollständiger History (inklusive History Archives), oder (2) du nutzt Drittanbieter- bzw. Bezahldienste, die historische Stellar-Daten langfristig speichern und zur Verfügung stellen.",
-    "seeAlso": "I'm sorry, there is no text provided for translation. Could you please provide the text you would like me to translate?"
+    "desc": "The public Horizon servers (Mainnet und Testnet) operated by the Stellar Development Foundation only provide a limited history – currently approximately one year retroactively. Older data can no longer be retrieved through these free endpoints. If you need to go further back in time, you essentially have two options: (1) you can run your own Horizon node with full history (inklusive History Archives), or (2) you can use third-party or paid services that store and provide long-term historical Stellar data.",
+    "seeAlso": "Es wurde kein spezifischer Text zur Übersetzung bereitgestellt. Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
   },
   "anchor": {
     "title": "Anchor",
@@ -176,83 +182,82 @@
     "desc": "An exchange is a place where you can buy or sell tokens. Many exchanges require a KYC process, meaning identity verification, before you can withdraw money in euros or francs."
   },
   "dex": {
-    "title": "DEX",
+    "title": "DEX (Decentralized Exchange)",
     "original": "Decentralized Exchange",
     "short": "Decentralized exchange directly on the blockchain.",
-    "desc": "DEX stands for Decentralized Exchange. Here, people trade directly with each other on the blockchain. There is no single operator. Stellar has a DEX built-in directly."
+    "desc": "DEX stands for Decentralized Exchange. Here, people trade directly with each other on the blockchain. There is no single operator. Stellar has a DEX built directly into it."
   },
   "liquidityPool": {
     "title": "Liquidity pool",
     "original": "Liquidity Pool",
-    "short": "Joint pool with two tokens for immediate exchange.",
-    "desc": "A liquidity pool is a shared pool containing two tokens. People deposit both tokens into it. Others can then immediately exchange these tokens. The depositors earn small fees for this service."
+    "short": "Common pool with two tokens for immediate exchange.",
+    "desc": "A liquidity pool is a shared pot containing two tokens. People deposit both tokens into it. Others are then allowed to instantly exchange these tokens. The depositors earn small fees in return."
   },
   "balanceClaimable": {
     "title": "Claimable Balance",
     "original": "Claimable Balance",
-    "short": "Reserved money that you still need to accept.",
-    "desc": "A claimable balance is money that has already been reserved for you, but you still need to claim it. Only when you accept it does it go into your account."
+    "short": "Reserved money that you still need to receive.",
+    "desc": "A claimable balance is money that is already reserved for you, but you still need to claim it. It only gets credited to your account once you accept it."
   },
   "protocolUpdate": {
     "title": "Protocol Update",
     "original": "Protocol Update",
     "short": "Aktualisierung der Netzwerk‑Regeln.",
-    "desc": "A protocol update is an upgrade of the rules in the Stellar network, such as new features or security changes. All nodes in the network must use the same rules."
+    "desc": "A Protocol Update is an upgrade of the rules in the Stellar network, such as new features or security changes. All nodes in the network must use the same rules."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
     "short": "Stellars Smart‑Contract‑System.",
-    "desc": "Soroban is the smart contract system of Stellar. A smart contract is program code on the blockchain. The code can independently verify rules and trigger actions without an intermediary bank."
+    "desc": "Soroban is the smart contract system of Stellar. A smart contract is program code on the blockchain. The code can independently verify rules and trigger actions without the need for a bank intermediary."
   },
   "multiSignature": {
     "title": "Multisignature",
     "original": "Multi-Signature",
     "short": "Multiple signatures required; weights + threshold determine the release.",
-    "desc": "In a multi-signature setup, multiple keys must sign before an action becomes valid. Each signer has a weight, and the sum must reach the required threshold. This increases security because a single stolen key is not sufficient."
+    "desc": "In a multi-signature setup, multiple keys must sign before an action becomes valid. Each signer has a weight, and the sum must meet the required threshold. This increases security because a single stolen key is not sufficient."
   },
   "signer": {
     "title": "Signatory",
     "original": "Signer",
     "short": "Public key with weight, part of the account configuration.",
-    "desc": "A signer is a public key that belongs to an account and has a weight. Its signature counts towards the required threshold. Multiple signers can collectively authorize a transaction.\n\nSigner types:\n- ed25519 (regular key)\n- hashX (hash preimage)\n- preAuthTx (pre-authorized transaction)\n\nSKM supports only ed25519. For other options, see https://lab.stellar.org."
+    "desc": "A signer is a public key that belongs to an account and has a weight. Its signature counts towards the required threshold. Multiple signers can collectively authorize a transaction.\n\nSigner types:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM supports only ed25519. For additional options, visit https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Thresholds",
     "original": "Thresholds",
-    "short": "Limits (low/med/high) that determine the required sum of weights.",
-    "desc": "Thresholds define how many weighted signatures are necessary for actions: low for simple operations, med for payments, high for critical changes. The sum of the signers' weights must meet the respective threshold."
+    "short": "Limits (low/med/high) that set the required total weight.",
+    "desc": "Thresholds define how many weighted signatures are required for actions: low for simple operations, med for payments, and high for critical changes. The sum of the signer weights must meet the respective threshold."
   },
   "masterWeight": {
     "title": "Master weight",
     "original": "master_weight",
-    "short": "Weight of the master key; controls how much the main key counts.",
-    "desc": "The master weight is the weight of the main key of an account. A high master weight allows the master key to sign many actions alone; a low value requires additional signers."
+    "short": "Weight of the master key; controls how much importance the master key holds.",
+    "desc": "The master weight is the weight of the main key of an account. A high master weight allows the master key to sign many actions on its own; a low value requires additional signers."
   },
   "accountConfig": {
     "title": "Account configuration",
     "original": "Account Configuration",
-    "short": "The interplay of signers and thresholds determines the security of the account.",
-    "desc": "The account configuration specifies which signers exist with which weights and what thresholds apply. Changes to signers or thresholds are security-critical because they determine how many signatures are required."
+    "short": "The interplay between signers and thresholds determines the security of the account.",
+    "desc": "The account configuration defines which signers exist with which weights and what thresholds apply. Changes to signers or thresholds are security-critical because they determine how many signatures are required."
   },
-  "missingKey": "Missing glossary key: {{detail}}",
   "distributedNetwork": {
     "title": "Distributed network",
     "original": "Distributed Network",
-    "short": "Many computers work together instead of one deciding everything.",
-    "desc": "Imagine a market where many traders know the same rules. If one participant drops out, it continues to function because others can take over. This keeps the system stable and harder to manipulate."
+    "short": "Many computers work together instead of one making all the decisions.",
+    "desc": "Imagine a market where many traders know the same rules. If one participant drops out, it continues to run because others can take over. This keeps the system stable and more difficult to manipulate."
   },
   "node": {
     "title": "Node",
     "original": "Node",
     "short": "A single participant in the network.",
-    "desc": "A node is like a ledger keeper that holds a copy of the data. It verifies new entries and forwards them. Many nodes together make the network reliable."
+    "desc": "A node is like a ledger-keeper that holds a copy of the data. It verifies new entries and passes them on. Many nodes together make the network reliable."
   },
   "block": {
     "title": "Block",
     "original": "Block",
-    "short": "A block is a package of entries.",
-    "desc": "Like a page in a ledger, a block collects multiple transactions. Once it is full, it is finalized and added to the chain. This is how the history is created step by step."
+    "short": "A block is a bundle of entries.",
+    "desc": "Like a page in a cash book, a block collects several transactions. Once it is full, it is completed and added to the chain. This creates the history step by step."
   },
   "consensusMechanism": {
     "title": "Consensus mechanism",
@@ -263,41 +268,41 @@
   "finality": {
     "title": "Finality / Definitiveness",
     "original": "Finality",
-    "short": "The assurance that a transaction is final.",
-    "desc": "When something is final, it feels like a firmly booked bank statement. You no longer have to expect it to be reversed. This creates trust."
+    "short": "The certainty that a transaction is final.",
+    "desc": "When something is final, it feels like a confirmed bank statement. You no longer have to expect it to be reversed. This creates trust."
   },
   "immutability": {
     "title": "Immutability",
     "original": "Immutability",
-    "short": "Entries should not be altered retroactively.",
-    "desc": "Just like with a cash book: Erasing afterward is noticeable. Changes are added as a new entry, not overwritten. This makes the history traceable."
+    "short": "Entries should not be altered retrospectively.",
+    "desc": "Similar to a ledger: Any after-the-fact erasures are noticeable. Changes are added as a new entry, not overwritten. This makes the history traceable."
   },
   "decentralization": {
     "title": "Decentralization",
     "original": "Decentralization",
     "short": "No central authority controls everything.",
-    "desc": "Instead of a single safe, there are many safes with the same information. Decisions arise from the interaction of many participants. This makes the system more robust."
+    "desc": "Instead of a single vault, there are many vaults with the same information. Decisions emerge from the interaction of many participants. This makes the system more robust."
   },
   "publicBlockchain": {
     "title": "Public blockchain",
     "original": "Public Blockchain",
     "short": "Open to anyone who wishes to participate.",
-    "desc": "Anyone can participate and view the data, similar to a public notice board. This increases transparency, but every action is visible to everyone. Rules ensure that no one can cheat."
+    "desc": "Everyone can participate and view the data, similar to a public notice board. This increases transparency, but every action is visible to everyone. Rules ensure that nobody can cheat."
   },
   "privateBlockchain": {
     "title": "Private blockchain",
     "original": "Private Blockchain",
     "short": "Access for selected participants only.",
-    "desc": "Like a company ledger that only employees are allowed to see. This can be quicker and more controlled, but it is less open. Trust is built here through the organization."
+    "desc": "Like a company cash book that only employees are allowed to see. It can be faster and more controlled, but it is less open. Trust is established here through the organization."
   },
   "permissionlessBlockchain": {
     "title": "Permissionless blockchain",
     "original": "Permissionless Blockchain",
     "short": "Everyone is allowed to participate without permission.",
-    "desc": "Like a market that anyone can join. This lowers barriers but might require more rules to remain fair. Examples include many public blockchains."
+    "desc": "Like a market that anyone can join. This lowers barriers but may require more rules to stay fair. Examples include many public blockchains."
   },
   "permissionedBlockchain": {
-    "title": "Permissioned Blockchain",
+    "title": "Permissioned blockchain",
     "original": "Permissioned Blockchain",
     "short": "Participation by permission only.",
     "desc": "Like a club with a membership list. This can create clear responsibilities. However, it is less open."
@@ -305,38 +310,38 @@
   "seedPhrase": {
     "title": "Restoration theorem",
     "original": "Seed Phrase / Recovery Phrase",
-    "short": "A word list you can use to restore your wallet.",
-    "desc": "She is like the backup key to your safe. Whoever has it can restore your wallet. That's why it should never be stored online."
+    "short": "A word list with which you can restore your wallet.",
+    "desc": "She is like the backup key to your safe. Whoever has it can restore your wallet. Therefore, it should never be stored online."
   },
   "selfCustody": {
     "title": "Self-custody",
     "original": "Self-Custody",
-    "short": "You keep your keys yourself.",
-    "desc": "Like having cash in your own safe: you have control, but also the responsibility. If you lose access, no one can help you. For beginners, caution is especially important."
+    "short": "You are keeping your keys yourself.",
+    "desc": "Like cash in your own safe: you have control, but also the responsibility. If you lose access, no one can help. For beginners, caution is especially important."
   },
   "custodian": {
     "title": "Custodian",
     "original": "Custodian",
-    "short": "A service provider holds your keys for you.",
-    "desc": "Like a bank that manages your account. It can be convenient, but it takes away your full control. You have to trust it."
+    "short": "A service provider keeps your keys for you.",
+    "desc": "Like a bank that manages your account. It can be convenient but takes away full control from you. You have to trust it."
   },
   "hardwareWallet": {
     "title": "Hardware wallet",
     "original": "Hardware Wallet",
     "short": "A physical device for your keys.",
-    "desc": "Like a small safe in your pocket. The keys remain on the device and do not go onto the internet. This protects against many online attacks."
+    "desc": "Like a small safe in your pocket. The keys remain on the device and do not go online. This protects against many online attacks."
   },
   "hotWallet": {
     "title": "Hot wallet",
     "original": "Hot Wallet",
     "short": "A wallet with internet access.",
-    "desc": "Like a wallet in the jacket: convenient but more vulnerable. Suitable for small amounts and everyday use. Not ideal for large sums."
+    "desc": "Like a wallet in a jacket: convenient but more vulnerable. Good for small amounts and everyday use. Not ideal for large sums."
   },
   "coldWallet": {
     "title": "Cold wallet",
     "original": "Cold Wallet",
     "short": "A wallet without an internet connection.",
-    "desc": "Like a safe in the basement. Very secure but impractical for everyday use. Suitable for long-term storage."
+    "desc": "Like a safe in the basement. Very secure, but impractical for everyday use. Suitable for long-term storage."
   },
   "cryptocurrency": {
     "title": "Cryptocurrency",
@@ -348,79 +353,79 @@
     "title": "Altcoin",
     "original": "Altcoin",
     "short": "All cryptocurrencies except Bitcoin.",
-    "desc": "Like other brands in the market besides the industry leader. Some are well-known, many are small. Quality and risk vary greatly."
+    "desc": "Like other brands on the market besides the dominant player. Some are well-known, many are small. Quality and risk vary greatly."
   },
   "stablecoin": {
     "title": "Stablecoin",
     "original": "Stablecoin",
-    "short": "Cryptocurrency with the most stable value.",
-    "desc": "Like digital money that is pegged to a conventional currency. This makes its price more stable. Nevertheless, trust in the provider is important."
+    "short": "Cryptocurrency with a potentially stable value.",
+    "desc": "Like digital money that is pegged to a standard currency. This makes its price more stable. However, trust in the provider is still important."
   },
   "utilityToken": {
     "title": "Usage token",
     "original": "Utility Token",
-    "short": "A token with which one can use a service.",
+    "short": "A token that can be used to access a service.",
     "desc": "Like a voucher at a market stall. It provides access or a discount. Its value depends on the usefulness of the service."
   },
   "securityToken": {
     "title": "Security tokens",
     "original": "Security Token",
     "short": "A token with security characteristics.",
-    "desc": "Like a share certificate. It can promise rights or profits. Stricter rules often apply to it."
+    "desc": "Like a stock certificate. It can promise rights or profits. Stricter rules often apply for this."
   },
   "governanceToken": {
     "title": "Governance token",
     "original": "Governance Token",
-    "short": "A token for participating in decision-making about rules.",
+    "short": "A token to have a say in rules.",
     "desc": "Like a voting card in a club. Those who have tokens can vote on rules. That means responsibility."
   },
   "liquidityToken": {
     "title": "Liquidity tokens / LP tokens",
     "original": "Liquidity Token",
     "short": "A token for provided liquidity.",
-    "desc": "It's like a receipt that you've contributed money to a joint fund. You receive proportional fees. The value can fluctuate."
+    "desc": "Like a receipt showing that you have contributed money to a shared pool. You receive proportional fees. The value can fluctuate."
   },
   "nft": {
     "title": "Non-fungible token / NFT",
     "original": "Non-Fungible Token",
     "short": "A unique digital token.",
-    "desc": "Like a signed collectible. It represents something unique, not an interchangeable coin. The value depends on demand."
+    "desc": "Like a signed collectible item. It represents something unique, not an interchangeable coin. The value depends on demand."
   },
   "cbdc": {
     "title": "Central Bank Digital Currency / CBDC",
     "original": "Central Bank Digital Currency",
-    "short": "Digital currency issued by a central bank.",
+    "short": "Digital money issued by a central bank.",
     "desc": "Like digital cash from the state. It would be official money, just in digital form. Details depend on the specific country."
   },
   "transactionStatus": {
     "title": "Transaction status",
     "original": "Transaction Status",
     "short": "Indicates whether a transaction is still open or already completed.",
-    "desc": "Like package tracking: pending, confirmed, or failed. This allows you to see if everything went smoothly. Sometimes it takes a little time."
+    "desc": "Like package tracking: pending, confirmed, or failed. This way, you can see if everything worked out. Sometimes it takes a little while."
   },
   "gasFee": {
     "title": "Gas fee",
     "original": "Gas Fee",
     "short": "A fee for computational work in the network.",
-    "desc": "Like a processing fee at the market stall. The busier it is, the more expensive it can become. Not every blockchain calls it gas."
+    "desc": "Like a processing fee at a market stall. The busier it is, the more expensive it can become. Not every blockchain calls it gas."
   },
   "onChain": {
-    "title": "On-Chain",
+    "title": "On-chain",
     "original": "On-Chain",
     "short": "Occurs directly on the blockchain.",
-    "desc": "Like an entry directly into the cash book. Everyone can see it. It's transparent, but often slower or more expensive."
+    "desc": "Like an entry directly into the ledger. Anyone can see it. It's transparent, but often slower or more expensive."
   },
   "offChain": {
     "title": "Off-chain",
     "original": "Off-Chain",
-    "short": "Occurs off-chain.",
-    "desc": "Like an oral agreement that later gets recorded in the ledger. This can be faster and more cost-effective. Trust plays a bigger role here."
+    "short": "Occurs outside the blockchain.",
+    "desc": "Like a verbal agreement that is later recorded in the ledger. This can be faster and more cost-effective. Trust plays a larger role here."
   },
   "liquidity": {
     "title": "Liquidity",
     "original": "Liquidity",
     "short": "Shows how easily something can be handled.",
-    "desc": "The number of buyers and sellers. High liquidity means you can trade quickly without significantly affecting the price. Low liquidity feels sluggish."
+    "desc": "The number of buyers and sellers there are. High liquidity means you can trade quickly without significantly affecting the price. Low liquidity feels sluggish."
   },
   "volatility": {
     "title": "Volatility",
@@ -432,78 +437,79 @@
     "title": "Market capitalization",
     "original": "Market Capitalization",
     "short": "The total value of a coin or project.",
-    "desc": "Like the total value of all goods in a market. It is roughly calculated by multiplying price by circulating quantity. Large values may seem more stable, but they are not automatically so."
+    "desc": "Like the total value of all goods in a market. It is roughly derived from price multiplied by circulating quantity. Large values appear more stable, but they are not automatically so."
   },
   "circulatingSupply": {
     "title": "Circulation quantity",
     "original": "Circulating Supply",
-    "short": "The amount of coins that are actually in circulation.",
-    "desc": "Like the number of coins that are actually on the market. Not everything that exists is already in circulation. This influences the price."
+    "short": "The amount of coins that is actually in circulation.",
+    "desc": "Like the number of coins that are actually on the market. Not everything that exists is already in circulation. That influences the price."
   },
   "priceDiscovery": {
     "title": "Pricing",
     "original": "Price Discovery",
-    "short": "The price is determined by supply and demand.",
-    "desc": "Just like in the market: supply and demand meet. Many small decisions determine the price. There is no fixed switch."
+    "short": "This is how the price is determined by supply and demand.",
+    "desc": "It's like a market: supply and demand meet. Many small decisions determine the price. There is no fixed switch."
   },
   "spread": {
     "title": "Trading range",
     "original": "Spread",
     "short": "The difference between the purchase price and the selling price.",
-    "desc": "Like the trading range in a store. The smaller the difference, the fairer it feels. Large spreads make trades more expensive."
+    "desc": "Like the bid-ask spread in a store. The smaller the gap, the fairer it feels. Large spreads make trades more expensive."
   },
   "phishing": {
     "title": "Phishing",
     "original": "Phishing",
     "short": "Fraud through fake news or websites.",
-    "desc": "Like a fake bank email that lures you into a trap. The goal is for you to give up your login credentials. Never click on links blindly."
+    "desc": "Like a fake bank email that lures you into a trap. The goal is for you to give away your login credentials. Never click on links blindly."
   },
   "smartContract": {
     "title": "Smart contract",
     "original": "Smart Contract",
     "short": "A program that automatically executes fixed rules.",
-    "desc": "Like an automaton that reacts according to fixed rules. It executes agreements automatically. This saves trust but requires clear rules."
+    "desc": "Like a machine that responds according to fixed rules. It executes agreements automatically. This saves trust but requires clear rules."
   },
   "programmableLogic": {
     "title": "Automated rules",
     "original": "Programmable Logic",
     "short": "Rules that automatically execute when something happens.",
-    "desc": "Like an if-then rule in an automaton. This allows processes to be controlled without manual intervention each time. This is how simple digital contracts are created."
+    "desc": "Like an if-then rule in an automaton. This allows processes to be controlled without manual intervention every time. This is how simple digital contracts are created."
   },
   "networkCongestion": {
     "title": "Network utilization",
     "original": "Network Congestion",
-    "short": "When a large number of transactions are pending simultaneously.",
-    "desc": "Like traffic jams on the highway. Transactions take longer, and fees may increase. With less traffic, it speeds up again."
+    "short": "If there are a large number of transactions pending simultaneously.",
+    "desc": "Like a traffic jam on the highway. Transactions take longer and fees can increase. With less traffic, it becomes faster again."
   },
   "blockchainTypes": {
     "title": "Types of Blockchain",
     "original": "Blockchain Types",
-    "short": "There are different types of blockchains with various objectives.",
+    "short": "There are various types of blockchains with different goals.",
     "desc": "Like different vehicle types for different routes. Some are built for payments, others for programs. It's worth knowing the purpose."
   },
   "paymentBlockchain": {
     "title": "Payment blockchain",
     "original": "Payment Blockchain",
     "short": "A blockchain designed for fast payments.",
-    "desc": "Like a quick cash ledger. The focus is on cheap and fast transfers. Features are often intentionally kept simple."
+    "desc": "Like a quick ledger for money. The focus is on inexpensive and fast transfers. Features are often intentionally kept simple."
   },
   "smartContractBlockchain": {
     "title": "Smart contract blockchain",
     "original": "Smart Contract Blockchain",
-    "short": "A blockchain that can run programs and apps.",
-    "desc": "Like a market with many machines. In addition to payments, rules and apps can run there. This makes them versatile, but often more complex."
+    "short": "A blockchain capable of running programs and apps.",
+    "desc": "Like a market with many vending machines. In addition to payments, rules and apps can run there. This makes them versatile, but often more complex."
   },
   "blockchainComparison": {
     "title": "Blockchain comparison",
     "original": "Blockchain Comparison",
     "short": "A comparison reveals the strengths and weaknesses of different blockchains.",
-    "desc": "Like comparing banks or markets: Each has strengths and weaknesses. Important aspects are cost, speed, and security. There is no perfect system for everything."
+    "desc": "Like the comparison of banks or markets: Each has strengths and weaknesses. Important factors are cost, speed, and security. There is no perfect system for everything."
   },
   "stellarVsBitcoinVsEthereum": {
     "title": "Stellar vs. Bitcoin vs. Ethereum",
     "original": "Stellar vs. Bitcoin vs. Ethereum",
     "short": "Three well-known blockchains with different focuses.",
-    "desc": "Bitcoin is like digital gold and is often viewed as a store of value. Ethereum is like a platform for programs and apps. Stellar is strongly focused on affordable payments."
-  }
+    "desc": "Bitcoin is like digital gold and is often seen as a store of value. Ethereum is like a platform for programs and apps. Stellar is focused on affordable payments."
+  },
+  "missingKey": "Missing glossary key: {{detail}}"
 }

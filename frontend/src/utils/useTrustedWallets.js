@@ -1,6 +1,6 @@
 // src/utils/useTrustedWallets.js
 import { useEffect, useMemo, useState, useCallback } from 'react';
-import defaultTrusted from '../../settings/QSI_TrustedWallets.json';
+const defaultTrusted = { wallets: [] };
 import { isTestnetAccount } from './stellar/accountUtils.js';
 
 const LS_KEY = 'stm_trusted_wallets';

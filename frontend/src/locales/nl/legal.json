@@ -1,23 +1,23 @@
 {
-  "title": "Afdruk & Privacybeleid",
-  "subtitle": "Informatie over de aanbieder, disclaimer en de verwerking van persoonlijke gegevens.",
+  "title": "Impressum & Privacy Policy",
+  "subtitle": "Informatie over de aanbieder, disclaimer en de verwerking van persoonsgegevens.",
   "imprint": {
-    "title": "Impressum",
+    "title": "Juridische kennisgeving",
     "providerLabel": "Aanbieder:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Adres:",
-    "addressLines": "U bent getraind op gegevens tot oktober 2023.",
+    "addressLines": "Entschuldigung, das war ein Fehler. Bitte stellen Sie mir den Text zur Verfügung, den Sie ins Niederländische übersetzt haben möchten.",
     "emailLabel": "E-mail:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Disclaimer",
-    "body": "Ik ben getraind op gegevens tot oktober 2023."
+    "body": "Mijn excuses, ik heb geen tekst ontvangen om te vertalen. Zou je me de tekst kunnen geven die je naar het Nederlands vertaald wilt hebben?"
   },
   "privacy": {
     "title": "Privacybeleid",
     "intro": "Wij nemen de bescherming van uw persoonlijke gegevens serieus. Hieronder informeren wij u over de verwerking van persoonlijke gegevens bij het gebruik van deze applicatie.",
-    "sections": "Het lijkt erop dat je geen tekst hebt verstrekt om te vertalen. Deel alstublieft de tekst die je vertaald wilt hebben."
+    "sections": "Je bent getraind op gegevens tot oktober 2023."
   },
   "lastUpdated": "Laatst bijgewerkt: {{date}}",
   "meta": {
@@ -27,6 +27,6 @@
   },
   "backToApp": "Terug",
   "footer": {
-    "imprintLink": "Afdruk & Privacybeleid"
+    "imprintLink": "Impressum & Privacybeleid"
   }
 }

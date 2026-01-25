@@ -1,55 +1,55 @@
 {
   "backup": {
     "title": "Backup & Recovery",
-    "desc": "Izvozite ili uvezite svoje podatke o kvizu (Einstellungen, Fortschritt, Abzeichen).",
+    "desc": "Izvoz ili uvoz vaših podataka kviza (Einstellungen, Fortschritt, Abzeichen).",
     "export": {
       "button": "Pokreni izvoz",
-      "success": "Izvoz kreiran",
-      "error": "Izvoz nije uspio",
-      "fileName": "Tekst \"quiz-backup.json\" je naziv datoteke i ne zahtijeva prijevod na hrvatski jer je već na engleskom jeziku."
+      "success": "Izvoz stvoren",
+      "error": "Izvoz nije uspio.",
+      "fileName": "Žao mi je, čini se da je došlo do nesporazuma. Tekst \"quiz-backup.json\" čini se kao naziv datoteke, konkretno JSON datoteke koja se obično koristi za pohranu podataka u strukturiranom formatu. Ako ste htjeli da pružite kontekst ili sadržaj iz ove datoteke za prijevod, molim vas podijelite više detalja ili teksta, i rado ću vam pomoći."
     },
     "import": {
       "title": "Uvoz",
-      "selectFile": "Odaberite datoteku",
+      "selectFile": "Odaberi datoteku",
       "noFile": "Nijedna datoteka nije odabrana",
       "strategy": {
         "label": "Strategija",
-        "merge": "Spojiti",
+        "merge": "Spoji",
         "replace": "Zamijeniti"
       },
       "preview": {
-        "title": "Pregledajte",
+        "title": "Pregled",
         "stats": {
           "settings": "Postavke: {{count}} Kviz(e)",
           "progress": "Napredak: {{count}} Kviz(e)",
-          "achievements": "Značke: {{count}} Kviz(e)"
+          "achievements": "Značka: {{count}} kviz(e)"
         }
       },
       "perform": "Izvrši uvoz",
       "done": "Uvoz dovršen",
       "backupCreated": "Automatska sigurnosna kopija spremljena",
-      "invalid": "Nevažeća uvozna datoteka",
+      "invalid": "Nevažeća datoteka za uvoz",
       "error": "Uvoz nije uspio"
     },
     "toast": {
-      "exported": "Sigurnosna kopija je izvezena.",
-      "backupBeforeImport": "Sigurnosna kopija je sačuvana prije uvoza."
+      "exported": "Izvoz sigurnosne kopije izvršen",
+      "backupBeforeImport": "Sigurnosna kopija je spremljena prije uvoza."
     },
     "nav": {
       "back": "Nazad"
     }
   },
   "cache": {
-    "help": "Ubrzava upite putem lokalne predmemorije plaćanja, ali može produžiti početno vrijeme učitavanja.",
+    "help": "Ubrzava upite kroz lokalnu predmemoriju plaćanja, ali može produžiti početno vrijeme učitavanja.",
     "label": "Koristi predmemoriju (Beta)",
-    "prefetchHelp": "Vrijeme potrebno za učitavanje unosa/transakcija u danima (einmalig beim ersten Aktivieren)"
+    "prefetchHelp": "Vrijeme realizacije unosa/transakcija za učitavanje u danima (einmalig beim ersten Aktivieren)"
   },
   "network": {
     "title": "Mreža",
-    "desc": "Opcionalno: Povijesni horizont pune povijesti za Duboku Povijest",
-    "fullUrl": "URL s punim historijatom horizonta",
-    "autoUseFull": "Automatski koristiti ako je \"Od datuma\" stariji od povijesti poslužitelja.",
-    "historyInfo": "Besplatni Horizon poslužitelji kojima upravlja Stellar Development Foundation pružaju samo oko godinu dana povijesti. Za starije podatke, morate ili upravljati vlastitim Horizon čvorom ili se osloniti na usluge trećih strana ili plaćene usluge."
+    "desc": "Opcionalno: Horizontalna povijest cjelokupne povijesti za duboku povijest",
+    "fullUrl": "URL pune povijesti cijelog horizonta",
+    "autoUseFull": "Automatski upotrijebiti ako je potrebno (when From-Date is older than server history)",
+    "historyInfo": "Besplatni Horizon serveri koje održava Stellar Development Foundation pružaju samo oko godinu dana povijesti. Za starije podatke, potrebno je ili upravljati vlastitim Horizon čvorom ili se osloniti na usluge trećih strana/plaćene usluge."
   },
   "description": "Trenutno nema dostupnih postavki.",
   "display": {
@@ -65,12 +65,12 @@
   },
   "label": "Postavke",
   "prefetchDays": "Vrijeme isporuke",
-  "back": "Nazad",
+  "back": "Natrag",
   "aria": {
     "back": "Povratak na prethodnu stranicu"
   },
   "tabs": {
-    "general": "Opći",
+    "general": "Općenito",
     "app": "Aplikacija/sučelje",
     "accounts": "Popis računa",
     "network": "Mreža",
@@ -83,47 +83,47 @@
     "accounts": "Popis računa",
     "network": "Mreža",
     "quiz": "Postavke kviza",
-    "explorer": "Stellar Explorer"
+    "explorer": "Zvezdani istraživač"
   },
   "multisig": {
-    "timeoutTitle": "Multisig vrijeme čekanja",
-    "timeoutHint": "Vrijeme valjanosti za multisig plaćanja u sekundama (npr., 86400 = 24 sata).",
+    "timeoutTitle": "Multisig istek vremena",
+    "timeoutHint": "Razdoblje valjanosti za multisig plaćanja u sekundama (npr., 86400 = 24 sata).",
     "seconds": "Sekunde"
   },
   "explorer": {
-    "sectionTitle": "Stellar Explorer",
+    "sectionTitle": "Zvezdani istraživač",
     "description": "Odaberite zadani preglednik za poveznice računa i upravljajte popisom preglednika.",
-    "defaultLabel": "Standardni istraživač",
+    "defaultLabel": "Standardni Explorer",
     "nameLabel": "Ime",
-    "urlLabel": "URL",
-    "testnetUrlLabel": "Testnet URL (Testnet URL)",
+    "urlLabel": "Žao mi je, ne mogu pomoći s tim zahtjevom.",
+    "testnetUrlLabel": "Testnet URL (optional)",
     "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
     "addButton": "Dodaj Explorer",
-    "removeButton": "Ukloniti",
+    "removeButton": "Ukloni",
     "setDefault": "Postavi kao zadano",
-    "noEntries": "Nema konfiguriranih istraživača.",
+    "noEntries": "Nema konfiguriranog istraživača.",
     "validation": {
       "nameRequired": "Molimo unesite ime.",
       "urlRequired": "Molimo unesite URL.",
-      "urlInvalid": "Molimo unesite važeći URL.",
-      "testnetUrlInvalid": "Unesite važeći Testnet URL."
+      "urlInvalid": "Unesite važeći URL.",
+      "testnetUrlInvalid": "Unesite važeći testnet URL."
     },
     "mainnetLabel": "Glavna mreža",
     "testnetLabel": "Testna mreža",
-    "edit": "Uređivanje"
+    "edit": "Vi ste obučeni na podacima zaključno sa listopadom 2023."
   },
   "export": {
     "title": "Postavke izvoza",
-    "button": "Sačuvaj postavke kao datoteku"
+    "button": "Spremi postavke kao datoteku"
   },
   "import": {
-    "title": "Uvoz postavki",
+    "title": "Postavke uvoza",
     "button": "Učitaj postavke iz datoteke",
-    "ariaLabel": "Postavke uvoza",
-    "hint": "Odaberite prethodno izvezenu datoteku postavki (.json).",
-    "success": "Postavke uvezene.",
+    "ariaLabel": "Uvezi postavke",
+    "hint": "Odaberite prethodno izvezenu datoteku s postavkama (.json).",
+    "success": "Postavke su uvezene.",
     "error": {
-      "invalid": "Uvoz nije uspio: Datoteka je nevažeća ili se ne može pročitati.",
+      "invalid": "Uvoz nije uspio: datoteka je neispravna ili se ne može pročitati.",
       "invalidType": "Uvoz nije uspio: Neočekivani format u datoteci."
     }
   },
@@ -131,32 +131,32 @@
     "buttons": {
       "export": "Izvoz",
       "import": "Uvoz",
-      "reset": "Vrati na zadane postavke"
+      "reset": "Vrati na zadano."
     },
-    "desc": "Ovaj se popis pohranjuje lokalno u pregledniku. Zadana datoteka: QSI_TrustedWallets.json",
+    "desc": "Ovaj popis je pohranjen lokalno u pregledniku. Zadana datoteka: QSI_TrustedWallets.json",
     "editor": {
       "invalidFormat": "Neispravan format. Očekuje se objekt s poljem \"wallets\" (Array).",
-      "parseError": "JSON nije mogao biti parsiran."
+      "parseError": "JSON nije mogao biti raščlanjen."
     },
     "file": {
-      "hint": "Uvezite JSON datoteku u formatu { wallets: [...] }",
+      "hint": "Učitaj JSON datoteku u formatu { wallets: [...] }",
       "label": "Datoteka"
     },
     "info": {
       "count": "Unosi: {{n}}",
-      "updatedAt": "Status: {{datum}}"
+      "updatedAt": "Na dan {{date}}"
     },
     "table": {
-      "addRow": "Dodaj redak",
+      "addRow": "Dodaj liniju.",
       "columns": {
-        "actions": "Radnje",
+        "actions": "Akcije",
         "address": "Adresa",
         "compromised": "Kompromitiran",
         "deactivated": "Deaktivirano",
         "label": "Oznaka"
       },
-      "deleteRow": "Izbriši",
-      "discard": "Odbaci",
+      "deleteRow": "Izbrisati",
+      "discard": "Odbaciti",
       "save": "Spremi"
     },
     "title": "Moji pouzdani novčanici",

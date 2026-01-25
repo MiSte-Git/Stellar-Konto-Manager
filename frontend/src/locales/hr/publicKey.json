@@ -1,14 +1,14 @@
 {
-  "label": "Javni ključ ili federativna adresa",
-  "placeholder": "Unesite svoj javni ključ ili adresu federacije",
-  "load": "Predučitaj račun",
+  "label": "Javni ključ ili adresa federacije",
+  "placeholder": "Unesite svoj javni ključ ili adresu federacije.",
+  "load": "Trgovina",
   "deleteFromList": "Ukloni s popisa",
   "source": "Izvor",
   "destination": {
     "input": "Cilj",
-    "error": "Unesen je neispravan javni ključ.",
-    "label": "Javni ključ cilja",
-    "placeholder": "Unesite ciljni javni ključ"
+    "error": "Unesen je nevažeći javni ključ.",
+    "label": "Ciljani javni ključ",
+    "placeholder": "Unesite ciljani javni ključ"
   },
   "invalid": "Nevažeći javni ključ.",
   "submit": {
@@ -16,5 +16,5 @@
   },
   "test": "Test",
   "historyLabel": "Povijest",
-  "historyPlaceholder": "Odaberite posljednji korišteni novčanik"
+  "historyPlaceholder": "Odaberite zadnji korišteni novčanik"
 }

@@ -1,31 +1,31 @@
 {
   "title": "Multisig za početnike",
-  "menuTitle": "Razumijevanje Multisig-a",
+  "menuTitle": "Razumijevanje multisignature (multisig) sistema",
   "teaser": "Zašto više potpisa, kako pragovi funkcioniraju i kako SKM pomaže.",
   "why": {
     "title": "Zašto multisig?",
     "text": "Višestruki potpisi smanjuju rizik od pojedinačnih grešaka ili krađe."
   },
   "singleVsMulti": {
-    "title": "Single-sig naspram Multisig",
+    "title": "Jedan potpis (Single-sig) vs. višestruki potpisi (Multisig)",
     "text": "Single-Sig = 1 ključ je dovoljan. Multisig = potrebni su višestruki potpisi (z. B. 2 von 3)."
   },
   "stellarHow": {
-    "title": "Kako Stellar implementira multisig",
-    "text": "Stellar koristi potpisnike s težinama i pragovima. Svaka operacija zahtijeva prag težine."
+    "title": "Kako Stellar implementira višestruki potpis",
+    "text": "Stellar koristi potpisnike s težinama i pragovima. Svaka operacija zahtijeva težinsku vrijednost praga."
   },
   "examples": {
     "title": "Praktični primjeri",
     "item1": "Račun tvrtke: Dva člana tima moraju potpisati svaku uplatu.",
     "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
-    "item3": "Sigurni trezor: Potreban je hardverski ključ plus rezervni ključ."
+    "item3": "Sigurna sefa: Potreban hardverski ključ plus sigurnosni ključ."
   },
   "skmSupport": {
-    "title": "Kako SKM podržava multisig",
-    "text": "SKM izrađuje multisig transakcije, prikuplja potpise i pohranjuje pripremljene zadatke."
+    "title": "Kako SKM podržava Multisig",
+    "text": "SKM konstruira multisig transakcije, prikuplja potpise i pohranjuje pripremljene zadatke."
   },
   "diagram": {
-    "singleVsMulti": "Dijagram: Jedan potpis (Single-Sig) naspram Višestruki potpis (Multisig)",
+    "singleVsMulti": "Dijagram: Jednostruki potpis (Single-Sig) naspram višestrukog potpisa (Multisig)",
     "stellarHow": "Dijagram: Potpisnik, Težina, Prag",
     "skmFlow": "Dijagram: Priprema SKM toka → Potpisivanje → Slanje"
   }

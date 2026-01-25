@@ -1,6 +1,6 @@
 {
   "page": {
-    "title": "Filter XLM by memo",
+    "title": "Filter XLM by Memo",
     "noPublicKey": "No public key loaded. Please enter a public key first."
   },
   "action": {
@@ -13,8 +13,8 @@
   },
   "debug": {
     "incoming": "Incoming – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
-    "incomingOverview": "Inputs: {{total}} • Participating wallets: {{unique}}",
-    "memo": "Memos in Window: {{any}} • Exact Memos: {{exact}}",
+    "incomingOverview": "Entries: {{total}} • Involved wallets: {{unique}}",
+    "memo": "Memos in window: {{any}} • exact memos: {{exact}}",
     "types": "Types – payment: {{pay}}, path: {{path}}, create: {{create}}, other: {{other}}"
   },
   "export": {
@@ -28,15 +28,15 @@
   },
   "memo": {
     "label": "Memo search text (substring, case-sensitive)",
-    "placeholder": "Memo (substring, case sensitive)"
+    "placeholder": "Memo (substring, case-sensitive)"
   },
-  "overviewLine": "Payment receipts: {{total}} • participating wallets: {{unique}}",
+  "overviewLine": "Payment receipts: {{total}} • wallets involved: {{unique}}",
   "result": {
     "label": "Total amount:",
     "value": "{{amount}} XLM"
   },
   "summary": {
-    "amount": "Amount: {{amount}} XLM",
+    "amount": "Total: {{amount}} XLM",
     "correctCount": "Entries with correct memo: {{n}}",
     "count": "Quantity: {{n}}",
     "label": "Comparison (all inputs)",
@@ -45,12 +45,12 @@
     "uniqueWallets": "Unique wallets: {{n}}"
   },
   "time": {
-    "setToNow": "Set current time.",
+    "setToNow": "Set current time",
     "setToNowHint": "Set the time field to the current time."
   },
-  "title": "XLM balance after memo",
+  "title": "XLM balance according to memo",
   "topLargest": {
-    "button": "Top 20 Entries (Memo)",
+    "button": "Top 20 Entrances (Memo)",
     "clipboard": "Copy to clipboard",
     "csv": "Download CSV",
     "scanning": "… scannt Top-Eingänge",
@@ -58,11 +58,11 @@
   },
   "tz": {
     "cdt": "CDT (UTC−5)",
-    "cst": "Central Standard Time (UTC−6)",
+    "cst": "CST (UTC−6)",
     "europe_zurich": "Europe/Zurich (CET/CEST)",
-    "label": "Timezone for date/time",
+    "label": "Time zone for date/time",
     "local": "Local time zone",
-    "note": "Date and time are interpreted in the selected time zone and automatically converted to UTC before the search.",
+    "note": "Date and time are interpreted in the selected time zone and automatically converted to UTC before searching.",
     "utc": "UTC",
     "window": "Used UTC time window: {{from}} → {{to}} (Bis exklusiv)"
   },
@@ -78,9 +78,9 @@
     },
     "csv": "Download CSV",
     "failed": "Error loading payments with incorrect/empty memo.",
-    "hint": "Filters incoming payments within the period and displays senders with incorrect/empty memos.",
+    "hint": "Filters incoming payments within the period and displays senders with incorrect/empty memo.",
     "scanning": "… scannt falsche/leere Memos",
-    "summary": "Quantity: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
-    "title": "False/empty memos during the period"
+    "summary": "Count: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
+    "title": "False/Empty memos during the period"
   }
 }

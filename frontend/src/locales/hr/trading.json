@@ -1,7 +1,7 @@
 {
   "assetSearch": {
     "title": "Pretraga imovine",
-    "description": "Pretraži imovinu putem trgovačkog krajnjeg odredišta (Horizon).",
+    "description": "Pretraži imovinu putem krajnje točke za trgovanje (Horizon).",
     "form": {
       "code": {
         "label": "Šifra imovine",
@@ -9,24 +9,24 @@
       },
       "issuer": {
         "label": "Izdavatelj (optional)",
-        "placeholder": "Žao mi je, ali vaš zahtjev „G… (G…)“ ne sadrži dovoljno informacija za prevođenje. Možete li, molim vas, pružiti više konteksta ili dodatni tekst za prevođenje?"
+        "placeholder": "G… (G…=neobavezno)"
       },
-      "submit": "Pretraži"
+      "submit": "Pretraživanje"
     },
     "result": {
-      "empty": "Nema pronađenih imovina.",
+      "empty": "Nisu pronađena sredstva.",
       "columns": {
-        "code": "Kod",
+        "code": "Kôd",
         "issuer": "Izdavatelj",
-        "numAccounts": "Konta",
-        "amount": "Ukupan iznos"
+        "numAccounts": "Računi",
+        "amount": "Ukupni iznos"
       }
     },
     "invalidInput": {
-      "codeMissing": "Molimo unesite kod imovine."
+      "codeMissing": "Molimo unesite šifru imovine."
     },
     "failed": {
-      "generic": "Pretraga sredstava nije uspjela. Molimo pokušajte ponovno kasnije."
+      "generic": "Pretraga imovine nije uspjela. Molimo pokušajte ponovno kasnije."
     }
   }
 }

@@ -1,12 +1,12 @@
 {
-  "hintEnterPublicKey": "Voer eerst een publieke sleutel in.",
+  "hintEnterPublicKey": "Voer alstublieft eerst een openbare sleutel in.",
   "columns": {
     "amount": "Bedrag",
     "compromised": "Gecompromitteerd",
-    "deactivated": "Uitgeschakeld",
+    "deactivated": "Gedeactiveerd",
     "destination": "Doelportemonnee",
-    "issuer": "Uitgevende instantie",
-    "label": "Etiket",
+    "issuer": "Uitgever",
+    "label": "Label",
     "memo": "Memo",
     "payments": "Betalingen",
     "date": "Datum",
@@ -14,21 +14,21 @@
   },
   "decimals": {
     "auto": "Automatisch",
-    "label": "Decimalen:"
+    "label": "Decimale plaatsen:"
   },
   "filter": {
-    "memoPlaceholder": "Filter op memo, walletadres of label.",
-    "tokenPlaceholder": "Filteren op token (CODE:ISSUER)"
+    "memoPlaceholder": "Filter op memo, walletadres of label",
+    "tokenPlaceholder": "Filter op token (CODE:ISSUER)"
   },
   "item": {
-    "memo": "Notitie: \"{{memo}}\" (Betalingen: {{occurrences}})",
+    "memo": "Memo: \"{{memo}}\" (Betalingen: {{occurrences}})",
     "token": "Token: {{token}} (Betalingen: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
   "missingPublicKey": "Openbare sleutel ontbreekt.",
-  "moreTruncated": "… en {{extra}} andere groepen",
-  "toWallet": "naar Portemonnee: {{address}}",
-  "total": "Aantal aangeschafte tokens: {{count}}",
+  "moreTruncated": "… and {{extra}} additional groups",
+  "toWallet": "naar portemonnee: {{address}}",
+  "total": "Aantal gekochte tokens: {{count}}",
   "totalTokens": "Aantal geïnvesteerde tokens (Assets): {{count}}",
   "value": {
     "units": "{{amount}} stuks",
@@ -36,16 +36,16 @@
   },
   "view": {
     "label": "Filteren op:",
-    "memo": "Memo's",
-    "token": "Token (gekaufte Menge)"
+    "memo": "Memo's (Memos)",
+    "token": "Token"
   },
   "toggles": {
     "showTotals": "Totaalbedrag",
     "qsiOnly": "Som QSI GF"
   },
   "hints": {
-    "qsiListSet": "Opmerking: Je kunt de GF-lijst vinden onder Instellingen → Vertrouwde Portemonnees (QSI).",
-    "pageTime": "Een pagina laden duurt ongeveer 0,2 seconden → 100 pagina's ≈ 20 seconden → 1000 pagina's ≈ 200 seconden (≈ 3:20 minuten)."
+    "qsiListSet": "Opmerking: Je kunt de GF-lijst vinden onder Instellingen → Trusted Wallets (QSI).",
+    "pageTime": "Het laden van een pagina duurt ongeveer 0,2 seconden → 100 pagina's ≈ 20 seconden → 1000 pagina's ≈ 200 seconden (≈ 3:20 minuten)."
   },
   "walletCapInfo": "Opmerking: Een wallet kan maximaal 1000 trustlijnen bevatten.",
   "action": {
@@ -53,6 +53,6 @@
   },
   "history": {
     "availableFrom": "Server (Horizon) – Geschiedenis vanaf",
-    "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+    "hintFullHistory": "Let op: De grootboekgeschiedenis van de Horizon-server gaat slechts terug tot {{available}}. Alleen gegevens tot die datum worden weergegeven. Daarom is de geselecteerde \"Van\" datum beperkt. Voor oudere gegevens is een (meist kostenpflichtiger) Full‑History‑Provider vereist (mogelijk in de toekomst beschikbaar!)."
   }
 }

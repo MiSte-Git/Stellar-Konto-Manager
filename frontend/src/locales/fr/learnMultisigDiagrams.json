@@ -1,26 +1,26 @@
 {
   "singleVsMulti": {
-    "ariaLabel": "Diagramme Single-Sig vs Multisig",
-    "singleTitle": "Single-Sig",
+    "ariaLabel": "Diagramme : Signature unique vs. Multisignature",
+    "singleTitle": "Signature unique (Single-Sig)",
     "multiTitle": "Multisig",
     "account": "Compte",
     "singleKey": "1 clé",
-    "keyA": "Signataire A",
+    "keyA": "Signer A",
     "keyB": "Signer B",
     "keyC": "Signer C",
     "singleNote": "Une signature suffit.",
-    "multiNote": "Au moins 2 sur 3 signatures"
+    "multiNote": "Au moins 2 signatures sur 3"
   },
   "weights": {
-    "ariaLabel": "Diagramme des poids et des seuils",
+    "ariaLabel": "Poids et seuils du diagramme",
     "title": "Weights & Thresholds",
-    "sA": "Signé A",
+    "sA": "Signer A",
     "sB": "Signer B",
     "sC": "Signer C",
     "weight": "Poids :",
     "low": "bas",
-    "med": "Avec",
-    "high": "élevé",
+    "med": "Jusqu'à octobre 2023, vous êtes formé sur des données.",
+    "high": "haut",
     "lowNote": "Actions simples",
     "medNote": "Paiements",
     "highNote": "Changements critiques"
@@ -28,9 +28,9 @@
   "flow": {
     "ariaLabel": "Diagramme de flux Multisig",
     "title": "Processus multisignature",
-    "step1": "Coordinateur crée une transaction",
-    "step2": "SKM stocke les travaux en attente.",
-    "step3": "Signature B/C en cours de signature",
-    "step4": "SKM envoie la transaction effectuée."
+    "step1": "Le coordinateur crée une transaction.",
+    "step2": "SKM stocke un travail en attente.",
+    "step3": "Signature B/C",
+    "step4": "SKM envoie la transaction complétée."
   }
 }

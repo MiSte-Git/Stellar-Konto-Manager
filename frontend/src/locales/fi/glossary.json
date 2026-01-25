@@ -1,318 +1,323 @@
 {
   "pageTitle": "Sanasto",
-  "pageIntro": "Täältä löydät tärkeitä sanoja lohkoketjumaailmasta ja Stellar-verkostosta. Kaikki on selitetty yksinkertaisin termein.",
+  "pageIntro": "Täältä löydät tärkeitä termejä lohkoketjumaailmasta ja Stellar-verkosta. Kaikki on selitetty yksinkertaisin sanoin.",
   "searchLabel": "Hakusana",
-  "searchPlaceholder": "Hakuehto (z. B. Konto, Account, Muxed)",
+  "searchPlaceholder": "Hakutermi (z. B. Konto, Account, Muxed)",
   "searchHint": "Haku löytää sanoja ja selityksiä.",
-  "noResults": "Ei vastinetta.",
+  "noResults": "Ei osumaa.",
   "groups": {
-    "accountsKeys": "Tilit ja avaimet",
-    "multisigSecurity": "Multisig ja tilin turvallisuus",
-    "walletsCustody": "Lompakot ja säilytys",
-    "tokensAssets": "Tokenit ja assetit",
-    "transactionsFees": "Transaktiot ja maksut",
-    "marketsTrading": "Markkinat ja treidaus",
-    "networkProtocol": "Verkko ja protokolla",
+    "accountsKeys": "Accounts & Keys",
+    "multisigSecurity": "Multisig & tilin turvallisuus",
+    "walletsCustody": "Wallets & Custody",
+    "tokensAssets": "Token & Assets",
+    "transactionsFees": "Transactions & Fees",
+    "marketsTrading": "Markets & Trading",
+    "networkProtocol": "Verkko & Protokolla",
     "smartContracts": "Älysopimukset",
     "blockchainBasics": "Lohkoketjun perusteet",
-    "security": "Turvallisuus ja huijaukset"
+    "security": "Security & Fraud"
   },
   "blockchain": {
     "title": "Lohkoketju",
     "original": "Blockchain",
-    "short": "Yhteinen digitaalinen kirjanpito – monet tietokoneet tallentavat samat merkinnät.",
-    "desc": "Lohkoketju on kuin digitaalinen kirjanpito. Monet tietokoneet tallentavat samat merkinnät, joten kukaan ei voi salaa muuttaa mitään."
+    "short": "Jaettu digitaalinen pääkirja – monet tietokoneet tallentavat samat merkinnät.",
+    "desc": "Lohkoketju on kuin digitaalinen pääkirja. Monet tietokoneet tallentavat samat merkinnät, varmistaen, ettei kukaan voi salaa tehdä muutoksia."
   },
   "wallet": {
     "title": "Lompakko",
     "original": "Wallet",
-    "short": "Digitaalinen lompakko, joka hallitsee avaimiasi.",
-    "desc": "Lompakko on digitaalinen kukkarosi. Se hallinnoi avaimia, joita tarvitset käyttääksesi tiliäsi ja lähettääksesi tapahtumia. Lompakko voi olla ohjelma, sovellus tai jopa pelkkä paperi, jossa on yksityinen avaimesi."
+    "short": "Digitaalinen lompakko, joka hallitsee avaimesi.",
+    "desc": "Lompakko on digitaalinen kukkarosi. Se hallitsee avaimia, joita tarvitset tilisi käyttämiseen ja tapahtumien lähettämiseen. Lompakko voi olla ohjelma, sovellus tai jopa vain paperi, jossa on yksityinen avaimesi."
   },
   "account": {
     "title": "Tili",
     "original": "Account",
-    "short": "Lohkoketjutili voi pitää hallussaan varoja ja lähettää siirtoja.",
-    "desc": "Tili on paikka lohkoketjussa, jossa varasi säilytetään. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat lompakot voivat käyttää samaa tiliä, jos niillä on oikea avain."
+    "short": "Lohkoketjutili voi pitää hallussaan varoja ja lähettää transaktioita.",
+    "desc": "Tili on paikka lohkoketjussa, jossa omaisuutesi säilytetään. Tilillä on julkinen osoite, joka alkaa kirjaimella G. Useat lompakot voivat käyttää samaa tiliä, jos niillä on oikea avain."
   },
   "addressG": {
-    "title": "G-osoite",
+    "title": "G osoite",
     "original": "G Address",
-    "short": "Stellar-tilin julkinen avain (beginnt mit G).",
-    "desc": "G-osoite on Stellar-tilin pääosoite. Se alkaa kirjaimella G. Annat sen muille, jotta he voivat lähettää sinulle jotain."
+    "short": "Stellarin tilin julkinen ensisijainen osoite (beginnt mit G).",
+    "desc": "G-osoite on Stellarin tilin pääosoite. Se alkaa kirjaimella G. Annat sen toisille, jotta he voivat lähettää sinulle jotain."
   },
   "publicKey": {
     "title": "Julkinen avain",
     "original": "Public Key",
     "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
-    "desc": "Julkinen avain on osoite, jonka voit jakaa. Stellarissa tämä on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
+    "desc": "Julkinen avain on osoite, jonka saat jakaa. Stellarissa tämä on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
   },
   "privateKey": {
     "title": "Salainen avain",
     "original": "Secret Key",
-    "short": "Tilin salasanaa – älä koskaan jaa.",
-    "desc": "Salainen avain on tilisi salasana. Jokainen, jolla on tämä avain, voi siirtää rahasi. Älä jaa sitä koskaan."
+    "short": "Tilin salasana – älä koskaan jaa sitä.",
+    "desc": "Salainen avain on tilisi salasana. Kenellä tahansa on tämä avain, voi siirtää rahasi. Älä koskaan jaa sitä."
   },
   "addressFederation": {
-    "title": "Federationin osoite",
+    "title": "Liiton osoite",
     "original": "Federation Address",
     "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
-    "desc": "Federation-osoite näyttää sähköpostilta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa normaaliin G-osoitteeseen. Se on helpompi muistaa."
+    "desc": "Liittouman osoite näyttää sähköpostiosoitteelta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa normaaliin G-osoitteeseen. Se on helpompi muistaa."
   },
   "addressMuxed": {
-    "title": "Yhdistetty tili",
+    "title": "Muxed-tili",
     "original": "Muxed Account",
-    "short": "M‑osoite lisä-ID:llä – jakaa perustilin.",
-    "desc": "M-osoite viittaa olemassa olevaan Stellar-tiliin, mutta siinä on lisänä yksilöllinen tunniste (ID). Tämä mahdollistaa esimerkiksi useiden henkilöiden tai osastojen erottamisen saman G-osoitteen alla. Teknisesti varat kuuluvat silti päätilille."
+    "short": "M‑address with additional ID – shares a base account.",
+    "desc": "M-osoite viittaa olemassa olevaan Stellar-tiliin, mutta siinä on lisänumero (ID).\n\nYhdistetyt tilit = G-tili + ID (M-Adresse)\nNe tarjoavat yhdistämisen, mutta eivät tilien erottelua.\nSaldo, luottorajalinjat, allekirjoittajat ja liput ovat aina G-tilillä.\n\nStellar Development Foundation\n\nEsimerkiksi useat henkilöt tai osastot voidaan erottaa saman G-osoitteen alla. Teknisenä asiana rahat kuuluvat edelleen päätilille."
+  },
+  "muxedAccountsUseCases": {
+    "title": "Sekoitustilien käyttötapaukset",
+    "original": "Muxed accounts use cases",
+    "short": "Esimerkit, edut ja rajoitukset M-osoitteista kartoitusapuna.",
+    "desc": "Yritys - Esimerkki\n\nAsennus:\n- Yrityksen G-tili\n- Yksi M-osoite per asiakas/käyttötapaus (ID)\n\nProsessi:\n- Asiakas maksaa M-osoitteeseensa\n- Kaikki menee yrityksen G-tilille\n- Kirjanpito lukee tunnisteen -> yksilöllinen kohdistus\n\nSoveltuu:\n- Kaupoille, maksupalveluntarjoajille, pörsseille\n- Sisäiset viitteet ilman muistioiden riskejä\n\nYhdistys - Esimerkki\n\nAsennus:\n- Yhdistyksen G-tili\n- Jäsenten, osastojen, tarkoitusten M-osoitteet\n\nProsessi:\n- Jäsenmaksu/lahjoitus asianmukaiseen M-osoitteeseen\n- Kohdistus tunnisteen avulla, ei muistiovirheitä\n\nSoveltuu:\n- Jäsenmaksuihin\n- Korvamerkittyihin tuloihin\n- Helppoon tarkastukseen\n\nMissä Muxed Accounts loistavat:\n- Vahva syötteen kohdistus\n- Yksi tili, useita identiteettejä\n- Ei muistiovaatimusta\n- Vähemmän toimintavirheitä\n\nMissä Muxed Accounts eivät ole:\n- Eivät ole alipäällisiä\n- Ei erillistä saldoa\n- Ei yksittäisiä luottorajoja\n- Ei yksittäisiä allekirjoittajia/oikeuksia\n\nTyypillisesti soveltumattomat käyttötapaukset:\n- Palkkamaksut/palkkatilit (benoetigen eigenes G-Konto)\n- Luottamus/escrow kolmansille osapuolille (kein rechtlicher Vermoegenstrenner)\n- Roolipohjainen turvallisuus (keine getrennten Signer/Thresholds)\n- Budjetin tai rajan erottelu (keine separaten Salden/Asset-Limits)\n- Vaadittujen sääntöjen erottamat tilit (KYC/Reporting nicht sauber trennbar)\n\nVertailu (Kurz):\nMaksujen allokointi: Kyllä\nOmaisuuden erottelu: Ei\nPääsyn delegointi: Ei\nOikeudellisesti erillinen tili: Ei\nSisäinen kirjanpito: Kyllä\n\nTärkein huomio:\nMuxed Accounts koskevat maksuja - ne eivät korvaa tilejä.\nJos tarvitaan hallintaa, omistusta tai erottamista -> oma G-tili."
   },
   "multisig": {
     "title": "Moniallekirjoitus",
     "original": "Multi‑Sig",
-    "short": "Tärkeät toimet vaativat enemmän kuin pelkän allekirjoituksen.",
-    "desc": "Multi-Sig tarkoittaa useita allekirjoituksia. Tärkeä toimenpide vaatii useampaa kuin yhtä avainta. Esimerkiksi sinun ja toisen avaimen täytyy molempien hyväksyä, ennen kuin jotain voidaan lähettää. Tämä tekee varkaudesta vaikeampaa.",
+    "short": "Tärkeät toimenpiteet vaativat enemmän kuin pelkän allekirjoituksen.",
+    "desc": "Multi-Sig tarkoittaa useita allekirjoituksia. Tärkeä toimenpide vaatii useamman kuin yhden avaimen. Esimerkki: Sinun ja toisen avaimen on molempien suostuttava ennen kuin jotain lähetetään. Tämä tekee varkaudesta vaikeampaa.",
     "help": {
-      "title": "Yleinen selitys moniallekirjoitustilistä (Multi-Signature) yritystiliin liittyen.",
-      "intro": "Yritys voi käyttää yhteistä lohkoketjutiliä, johon kuuluu useita valtuutettuja henkilöitä. Tyypillisesti mukana on vähintään kolme allekirjoittajaa (Signer), kuten johto, talousjohtaja ja compliance-/varahenkilö. Tavoitteena on, että yksittäiset henkilöt voivat itsenäisesti suorittaa maksuja ilman, että yhdelläkään henkilöllä on yksinään tilin hallintaa tai haltuunottoa.",
-      "problem": "Jos allekirjoittajalla (Signer) on riittävästi painoarvoa maksujen suorittamiseen ja samanaikaisesti riittävästi painoarvoa tilin muutosten tekemiseen, voi kyseinen henkilö poistaa muita allekirjoittajia (Signer) tai säätää kynnysarvoa/painotusta (Thresholds) ja siten ottaa tilin hallintaansa. Toisaalta alkuperäisen omistajan ei myöskään pitäisi voida sulkea muita allekirjoittajia (Signer) pois ilman tarkastuksia ja tasapainotuksia. Multi-sig-rakenne varmistaa, että tärkeät päätökset saavat aina useiden henkilöiden yhteisen tuen.",
-      "setupTitle": "Esimerkki turvallisesta multi-sig-rakenteesta, jossa on kolme allekirjoittajaa.",
-      "setupWeights": "Esimerkissä, jossa on kolme vastaavaa roolia, kaikki saavat saman allekirjoitusvoimakkuuden:\n- Allekirjoittaja (Signer) A (management): paino 2\n- Allekirjoittaja (Signer) B (Finanzen): paino 2\n- Allekirjoittaja (Signer) C (Compliance/Backup): paino 2",
-      "setupThresholds": "Sopivat kynnysarvot/painotukset on asetettu:\n- Low (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- High (high_threshold): 4 (rakenteellisten muutosten, kuten allekirjoittajien lisääminen/poistaminen (Signer) tai kynnysarvon/painotuksen muuttaminen (Thresholds))\nTämä asetus mahdollistaa jokaiselle valtuutetulle henkilölle maksujen suorittamisen, mutta yksikään henkilö ei voi yksin muuttaa tilin rakennetta.",
-      "behavior": "Tämän konfiguraation avulla maksut voidaan suorittaa minkä tahansa kolmen valtuutetun henkilön toimesta yksin, koska kunkin henkilön painoarvo täyttää keskitason kynnyksen/painoarvon (Threshold). Kuitenkin rakenteellisiin muutoksiin, kuten allekirjoittajan poistamiseen (Signers), kynnysten/painoarvojen säätämiseen tai tilin yhdistämiseen tai sulkemiseen, vaaditaan korkea kynnys/painoarvo (high_threshold). Tämä arvo voidaan saavuttaa vain, jos vähintään kaksi kolmesta allekirjoittajasta (Signer) allekirjoittaa yhdessä. Tällä tavalla tili pysyy joustavana päivittäisessä käytössä ja on hyvin suojattu väärinkäytöksiä vastaan.",
-      "removal": "Jos henkilö poistuu yrityksestä tai ei ole enää luotettava, kaksi jäljellä olevaa allekirjoittajaa (Signer) voivat yhdessä poistaa tämän henkilön allekirjoitusoikeudet. Yksittäinen allekirjoittaja (Signer) – ei työntekijä eikä johto – voi itsenäisesti sulkea muita pois tililtä. Oikeuksien poistaminen tapahtuu siis aina hallitusti ja jäljitettävästi vähintään kahden vastuuhenkilön toimesta.",
-      "summary": "Tällainen multisignatuuri-rakenne mahdollistaa yksittäisten henkilöiden suorittaa maksuja tehokkaasti samalla kun tilin hallinta säilyy useiden osapuolten käsissä. Se vähentää tilin kaappausten riskiä, suojaa yksipuolisilta päätöksiltä ja on erityisen sopiva yritystileille, joissa sekä turvallisuus että operatiivinen joustavuus ovat tärkeitä.",
+      "title": "Moniallekirjoitus (Multi-Signature) yritystilin yleinen selitys",
+      "intro": "Yritys voi käyttää jaettua blockchain-tiliä, johon osallistuu useita valtuutettuja henkilöitä. Tyypillisesti tilillä on vähintään kolme allekirjoittajaa (Signer), esimerkiksi johto, talousjohtaja ja säännösten noudattamisesta/varajärjestelmästä vastaava henkilö. Tavoitteena on, että yksittäiset henkilöt voivat suorittaa maksuja itsenäisesti ilman että yksittäinen henkilö voi hallita tai ottaa tiliä haltuunsa yksin.",
+      "problem": "Jos allekirjoittajalla (Signer) on riittävästi painoarvoa maksujen suorittamiseen ja samalla riittävästi painoarvoa tilin muutoksiin, hän voi poistaa muita allekirjoittajia (Signer) tai säätää kynnystä/painotusta (Thresholds) ja siten ottaa tilin haltuunsa. Vastaavasti alkuperäisen omistajan ei tulisi myöskään pystyä helposti sulkemaan muita allekirjoittajia (Signer) pois ilman tarkastuksia ja tasapainotuksia. Moniallekirjoitusrakenne varmistaa, että tärkeät päätökset tehdään aina kollektiivisesti useiden ihmisten toimesta.",
+      "setupTitle": "Esimerkki turvallisesta moni-allekirjoitusrakenteesta, jossa on kolme allekirjoittajaa",
+      "setupWeights": "Esimerkissä, jossa on kolme samanarvoista roolia, kaikki saavat saman allekirjoitusvoimakkuuden:\n- Allekirjoittaja (Signer) A (Management): Paino 2\n- Allekirjoittaja (Signer) B (Finanzen): Paino 2\n- Allekirjoittaja (Signer) C (Compliance/Backup): Paino 2",
+      "setupThresholds": "Sopivat kynnykset/painot asetetaan seuraavasti:\n- Matalat (low_threshold): 1\n- Keskitaso (med_threshold): 2 (for payments and other medium actions)\n- Korkea (high_threshold): 4 (rakenneuudistuksille, kuten allekirjoittajien lisääminen/poistaminen (Signer) tai kynnyksen/painon muuttaminen (Thresholds))\nTämä varmistaa, että jokainen valtuutettu henkilö voi suorittaa maksuja, mutta yksittäinen henkilö ei voi muuttaa tilin rakennetta yksin.",
+      "behavior": "Tässä kokoonpanossa maksut voivat tehdä kuka tahansa kolmesta oikeutetusta henkilöstä yksin, koska kunkin henkilön painoarvo täyttää keskitason kynnyksen/kynnysarvon. Rakenneuudistuksia varten, kuten allekirjoittajan poistaminen, kynnysten/painoarvojen säätäminen tai tilin yhdistäminen tai sulkeminen, vaaditaan korkea kynnys/korkea_kynnysarvo. Tämä arvo voidaan saavuttaa vain, kun vähintään kaksi kolmesta allekirjoittajasta allekirjoittaa yhdessä. Tämä järjestely pitää tilin joustavana päivittäiseen käyttöön, tarjoten samalla vahvan suojan väärinkäytöksiä vastaan.",
+      "removal": "Jos henkilö lähtee yrityksestä tai ei ole enää luotettava, kaksi jäljelle jäävää allekirjoittajaa (Signer) voivat yhdessä poistaa kyseisen henkilön allekirjoitusoikeudet. Kukaan yksittäinen allekirjoittaja (Signer) – ei työntekijä eikä johto – voi itsenäisesti estää muita tilin käytöstä. Oikeuksien poisto tapahtuu siis aina valvotusti ja läpinäkyvästi vähintään kahden vastuuhenkilön toimesta.",
+      "summary": "Tällainen monisignatuurirakenne mahdollistaa yksittäisten osapuolten tehokkaan maksujen käsittelyn samalla, kun tilin hallinta säilyy useilla osallistujilla. Se vähentää tilikaappausten riskiä, suojaa yksipuolisilta päätöksiltä ja on erityisen sopiva yritystileille, joissa sekä turvallisuus että operatiivinen joustavuus ovat tärkeitä.",
       "closeLabel": "Sulje",
       "linkLabel": "Mitä tarkoittaa Multi-Signature?",
-      "glossaryLinkLabel": "Katso sanastosta"
+      "glossaryLinkLabel": "Näytä sanastossa"
     }
   },
   "multisigCorporate": {
-    "title": "Multisig yrityksissä",
-    "original": "Multi-Signature (corporate example)",
-    "short": "Esimerkki multisig-rakenteesta yritystileille rooleineen, painoineen ja kynnyksineen."
+    "title": "Moniallekirjoitus - Esimerkki",
+    "original": "Multi-Signature - Example",
+    "short": "Esimerkki yritystilien moniallekirjoitusrakenteesta, jossa on rooleja, painotuksia ja kynnysarvoja."
   },
   "trustline": {
-    "title": "Trustline",
+    "title": "Luottolimiitti",
     "original": "Trustline",
-    "short": "Sopimus tietyn liikkeeseenlaskijan tokenin hallussapidosta.",
-    "desc": "Luottolinja on kuin sanomalla kyllä, hyväksyn tämän tokenin. Näin tehdessäsi osoitat, että tilisi on valmis pitämään tietyn tokenin tietystä liikkeellelaskijasta. Ilman luottolinjaa et voi vastaanottaa tätä tokenia.\n\nEsimerkki: Luottolinja ilmoitetaan muodossa KOODI:LIIKKEELLELASKIJA. EURT:n tapauksessa liikkeellelaskijalta GDUKMGUGDZQK6Y…, se on EURT:GDUKMGUGDZQK6Y…"
+    "short": "Sopimus tokenin hallussapidosta tietyn liikkeeseenlaskijan kanssa.",
+    "desc": "Luottolimiitti on kuin \"Kyllä, hyväksyn tämän tokenin.\" Kun asetat sen, ilmoitat, että tilisi on valmis vastaanottamaan tietyn tokenin tietystä liikkeellelaskijasta. Ilman luottolimiittiä et voi vastaanottaa tätä tokenia.\n\nEsimerkki: Luottolimiitti määritellään muodossa KOODI:LIIKKEEELLELASKEJA. EURT, jolla on liikkeellelaskija GDUKMGUGDZQK6Y…, olisi EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
-    "title": "Poletto",
+    "title": "Merkki",
     "original": "Token",
-    "short": "Digitaalinen yksikkö – esim. rahaa, pisteitä tai hyvityksiä.",
-    "desc": "Token on lohkoketjussa oleva digitaalinen yksikkö. Token voi edustaa rahaa, pisteitä tai palvelun hyvitystä."
+    "short": "Digitaalinen yksikkö – esimerkiksi raha, pisteet tai hyvitykset.",
+    "desc": "Tokeni on digitaalinen yksikkö lohkoketjussa. Tokeni voi edustaa rahaa, pisteitä tai palvelun hyvityksiä."
   },
   "asset": {
-    "title": "Varallisuus",
+    "title": "Omaisuus",
     "original": "Asset",
-    "short": "Stellar-verkossa olevat tokenit ovat aina yhteydessä liikkeeseenlaskijaan.",
-    "desc": "Stellarissa tokeneita kutsutaan varoiksi. Omaisuus on aina liitetty liikkeeseenlaskevaan tiliin. Esimerkiksi tili voi laskea liikkeelle euro-tokeneita. Tämä euro-token on sitten omaisuus."
+    "short": "Stellarissa olevat tokenit ovat aina liitettynä liikkeellelaskijaan.",
+    "desc": "Stellar-järjestelmässä tokenia kutsutaan omaisuudeksi. Omaisuus on aina liitetty liikkeeseenlaskijan tiliin. Esimerkiksi tili voi laskea liikkeeseen Euro-tokenin, ja tätä Euro-tokenia pidetään silloin omaisuutena."
   },
   "xlm": {
     "title": "XLM",
     "original": "XLM",
-    "short": "Stellarin alkuperäisvaluutta maksuille ja aktivoinnille.",
-    "desc": "XLM on Stellarin oma valuutta. Tarvitset XLM:ää maksujen suorittamiseen ja uuden tilin avaamiseen."
+    "short": "Stellarin alkuperäisvaluutta maksuihin ja aktivointiin.",
+    "desc": "XLM on Stellarin alkuperäinen valuutta. Tarvitset XLM:ää maksujen suorittamiseen ja uuden tilin avaamiseen."
   },
   "mainnet": {
-    "title": "Pääverkko",
+    "title": "Mainnet",
     "original": "Mainnet",
     "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
-    "desc": "Todellinen Stellarin verkko, jolla on todellista arvoa. Tapahtumat ovat lopullisia, ja maksut suoritetaan todellisella XLM:llä."
+    "desc": "Todellinen Stellar-verkko todellisella arvolla. Tapahtumat ovat lopullisia ja maksut suoritetaan oikealla XLM:llä."
   },
   "testnet": {
     "title": "Testiverkko",
     "original": "Testnet",
-    "short": "Julkinen käytäntöverkosto ilman todellista arvoa.",
-    "desc": "Julkinen harjoitusverkosto. Tokeneilla ei ole todellista arvoa. Ihanteellinen oppimiseen ja kokeiluun ilman riskiä."
+    "short": "Julkinen koulutusverkosto ilman todellista arvoa.",
+    "desc": "Julkinen käytäntöverkosto. Tokeneilla ei ole todellista arvoa. Ihanteellinen oppimiseen ja kokeilemiseen ilman riskiä."
   },
   "memo": {
     "title": "Muistio",
     "original": "Memo",
     "short": "Lyhyt huomautus tapahtumassa.",
-    "desc": "Muistio on pieni viesti, jonka voi lähettää tapahtuman mukana. Usein vaihtopalvelu vaatii tietyn muistion tietääkseen, kenelle rahat kuuluvat."
+    "desc": "Muistio on pieni huomautus, jonka voi lähettää tapahtuman mukana. Usein pörssi vaatii tietyn muistion tietääkseen, kenelle rahat kuuluvat."
   },
   "transaction": {
     "title": "Tapahtuma",
     "original": "Transaction",
-    "short": "Toiminta lohkoketjussa, esim. maksu tai luottoraja.",
-    "desc": "Tapahtuma on toimenpide lohkoketjussa, kuten rahan lähettäminen tai luottolinjan perustaminen. Tapahtuma tallennetaan pysyvästi, kun se on vahvistettu."
+    "short": "Toiminto lohkoketjussa, esim. maksu tai luottolimiitti.",
+    "desc": "Tapahtuma on toimenpide lohkoketjussa, kuten rahan lähettäminen tai luottorajan perustaminen. Kun se on vahvistettu, tapahtuma tallennetaan pysyvästi."
   },
   "fee": {
     "title": "Maksu",
     "original": "Fee",
-    "short": "Erittäin pieni summa per tapahtuma.",
-    "desc": "Palkkio on hyvin pieni summa, jonka maksat jokaisen tapahtuman yhteydessä. Palkkio menee verkostolle. Stellarilla palkkiot ovat hyvin pieniä."
+    "short": "Hyvin pieni summa per tapahtuma.",
+    "desc": "Maksu on erittäin pieni summa, jonka maksat jokaisen tapahtuman yhteydessä. Maksu menee verkolle. Stellarissa maksut ovat erittäin alhaiset."
   },
   "ledger": {
     "title": "Tilikirja",
     "original": "Ledger",
-    "short": "Vahvistettujen tietojen ja tilien saldot.",
-    "desc": "Pääkirja on ketju kaikista vahvistetuista tiedoista. Se näyttää, kuinka paljon kussakin tilissä on ja mitkä tapahtumat ovat tapahtuneet. Kuka tahansa voi tarkistaa pääkirjan."
+    "short": "Vahvistettujen tietojen ja saldovien ketju.",
+    "desc": "Pääkirja on kaikkien vahvistettujen tietojen ketju. Se näyttää, kuinka paljon tileillä on ja mitä tapahtumia on tapahtunut. Kuka tahansa voi tarkistaa pääkirjan."
   },
   "horizon": {
     "title": "Horisontti",
     "original": "Horizon",
     "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
-    "desc": "Horizon on palvelu, jonka kautta ohjelmat kommunikoivat Stellar-lohkoketjun kanssa. Työkalumme kysyy Horizonilta ladatakseen tilin saldot ja tapahtumat."
+    "desc": "Horizon on palvelu, jonka kautta ohjelmat kommunikoivat Stellar-lohkoketjun kanssa. Työkalumme kysyy Horizonilta tilien saldot ja tapahtumat."
   },
   "horizonHistory": {
-    "title": "Horisontin historia",
+    "title": "Horisontti Historia",
     "original": "Horizon history depth",
-    "short": "Kuvaa, kuinka pitkälle julkisten Horizon-palvelimien tarjoama tapahtumahistoria ulottuu.",
-    "desc": "Stellar-kehityssäätiön ylläpitämät julkiset Horizon-palvelimet (Mainnet und Testnet) tarjoavat vain rajoitetun historian – tällä hetkellä noin vuoden taaksepäin. Vanhempia tietoja ei voi enää hakea näiden ilmaisten päätepisteiden kautta. Jos sinun täytyy palata kauemmas menneisyyteen, sinulla on periaatteessa kaksi vaihtoehtoa: (1) voit ylläpitää omaa Horizon-solmua täydellisellä historialla (inklusive History Archives), tai (2) voit käyttää kolmannen osapuolen tai maksullisia palveluita, jotka tallentavat ja tarjoavat pitkäaikaisesti Stellar-historiatietoja.",
-    "seeAlso": "Sinut on koulutettu käyttämällä tietoja lokakuuhun 2023 asti."
+    "short": "Kuvataan, kuinka pitkälle julkisten Horizon-palvelinten tarjoama tapahtumahistoria ulottuu.",
+    "desc": "Julkiset Horizon-palvelimet (Mainnet und Testnet), joita Stellar Development Foundation ylläpitää, tarjoavat vain rajoitetun historian – tällä hetkellä noin yksi vuosi taaksepäin. Vanhempia tietoja ei voi enää hakea näiden ilmaisten päätepisteiden kautta. Jos tarvitset tietoja pidemmältä ajalta, sinulla on käytännössä kaksi vaihtoehtoa: (1) voit käyttää omaa Horizon-solmua koko historiallaan (inklusive History Archives), tai (2) voit käyttää kolmannen osapuolen tai maksullisia palveluja, jotka tallentavat ja tarjoavat pitkäaikaisia Stellarin historiallisia tietoja.",
+    "seeAlso": "Sinulle ei annettu erityistä käännettävää tekstiä. Ole hyvä ja anna teksti, jonka haluat kääntää."
   },
   "anchor": {
     "title": "Ankkuri",
     "original": "Anchor",
     "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Anchor on yritys, joka yhdistää oikean rahan, kuten eurot tai dollarit, Stellariin. Esimerkiksi annat anchorelle euroja ja saat vastineeksi eurotokeneita Stellarilla."
+    "desc": "Ankkuri on yritys, joka yhdistää oikean rahan, kuten eurot tai dollarit, Stellariin. Esimerkiksi, annat ankkurille euroja ja saat vastineeksi eurotokenin Stellarissa."
   },
   "exchange": {
     "title": "Pörssi",
     "original": "Exchange",
-    "short": "Paikka ostaa ja myydä tokeneita.",
-    "desc": "Vaihto on paikka, jossa voit ostaa tai myydä tokeneita. Monet vaihdot vaativat KYC-prosessin, eli henkilöllisyyden todentamisen, ennen kuin voit nostaa rahaa euroina tai frangeina."
+    "short": "Paikka tokenien ostamiseen ja myymiseen.",
+    "desc": "Pörssi on paikka, jossa voit ostaa tai myydä tokeneita. Monet pörssit vaativat KYC-prosessin, mikä tarkoittaa henkilöllisyyden vahvistamista, ennen kuin voit nostaa rahaa euroina tai frangeina."
   },
   "dex": {
-    "title": "DEX",
+    "title": "DEX (Decentralized Exchange)",
     "original": "Decentralized Exchange",
     "short": "Hajautettu pörssi suoraan lohkoketjussa.",
-    "desc": "DEX tarkoittaa hajautettua pörssiä. Tässä ihmiset käyvät kauppaa suoraan toistensa kanssa lohkoketjussa. Ei ole yhtä ainoaa operaattoria. Stellarilla on sisäänrakennettu DEX."
+    "desc": "DEX tarkoittaa hajautettua pörssiä. Tässä ihmiset käyvät kauppaa suoraan toistensa kanssa lohkoketjussa. Ei ole yhtä keskitettyä toimijaa. Stellarilla on suoraan siihen sisäänrakennettu DEX."
   },
   "liquidityPool": {
     "title": "Likviditeettipooli",
     "original": "Liquidity Pool",
-    "short": "Yhteinen allas kahdella tokenilla välitöntä vaihtoa varten.",
-    "desc": "Likviditeettipooli on jaettu pooli, joka sisältää kaksi tokenia. Ihmiset tallettavat siihen molempia tokeneita. Toiset voivat sitten välittömästi vaihtaa näitä tokeneita. Tallettajat ansaitsevat pieniä maksuja tästä palvelusta."
+    "short": "Yhteinen rahasto, jossa on kaksi merkkiä välitöntä vaihtoa varten.",
+    "desc": "Likviditeettipooli on yhteinen rahasto, joka sisältää kaksi tokenia. Ihmiset tallettavat siihen molempia tokeneita. Muut saavat sitten vaihdettua näitä tokeneita välittömästi. Tallettajat ansaitsevat vastineeksi pieniä palkkioita."
   },
   "balanceClaimable": {
     "title": "Vaadittavissa oleva saldo",
     "original": "Claimable Balance",
-    "short": "Varattu raha, joka sinun täytyy vielä hyväksyä.",
-    "desc": "Vaadittava saldo on rahaa, joka on jo varattu sinulle, mutta sinun on vielä vaadittava se. Vasta kun hyväksyt sen, se siirtyy tilillesi."
+    "short": "Varatut rahat, jotka sinun on vielä saatava.",
+    "desc": "Vaatimukseen oikeuttava saldo on rahaa, joka on jo varattu sinulle, mutta sinun täytyy vielä vaatia se. Se hyvitetään tilillesi vasta, kun hyväksyt sen."
   },
   "protocolUpdate": {
     "title": "Protokollipäivitys",
     "original": "Protocol Update",
     "short": "Aktualisierung der Netzwerk‑Regeln.",
-    "desc": "Protokollipäivitys on Stellarin verkon sääntöjen päivitys, kuten uusia ominaisuuksia tai turvallisuusmuutoksia. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
+    "desc": "Protokollipäivitys on sääntöjen päivitys Stellar-verkossa, kuten uusia ominaisuuksia tai tietoturvamuutoksia. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
     "short": "Stellars Smart‑Contract‑System.",
-    "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on ohjelmakoodi lohkoketjussa. Koodi voi itsenäisesti varmistaa sääntöjen noudattamisen ja laukaista toimia ilman välikätenä toimivaa pankkia."
+    "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on lohkoketjussa olevaa ohjelmakoodia. Koodi voi itsenäisesti varmistaa sääntöjen noudattamisen ja käynnistää toimia ilman pankin välittäjää."
   },
   "multiSignature": {
-    "title": "Multisignature",
+    "title": "Moniallekirjoitus",
     "original": "Multi-Signature",
-    "short": "Useita allekirjoituksia vaaditaan; painoarvot + kynnysarvo määrittävät vapautuksen.",
-    "desc": "Multisignature-järjestelyssä useiden avainten on allekirjoitettava ennen kuin toiminto on voimassa. Jokaisella allekirjoittajalla on painoarvo, ja summan on saavutettava vaadittu kynnysarvo. Tämä lisää turvallisuutta, koska yksi varastettu avain ei riitä."
+    "short": "Multiple signatures required; weights + threshold determine the release.",
+    "desc": "Moniallekirjoitusjärjestelyssä useiden avainten on allekirjoitettava ennen kuin toiminto tulee päteväksi. Jokaisella allekirjoittajalla on painoarvo, ja summan on täytettävä vaadittu kynnysarvo. Tämä lisää turvallisuutta, koska yksi varastettu avain ei riitä."
   },
   "signer": {
     "title": "Allekirjoittaja",
     "original": "Signer",
-    "short": "Yleinen avain painotuksella, osa tilin asetuksia.",
-    "desc": "Allekirjoittaja on tiliin kuuluva julkinen avain, jolla on painoarvo. Sen allekirjoitus lasketaan kohti vaadittua kynnystä. Useat allekirjoittajat voivat yhdessä hyväksyä tapahtuman."
+    "short": "Julkinen avain painotuksella, osa tilin kokoonpanoa.",
+    "desc": "Allekirjoittaja on tilille kuuluva julkinen avain ja sillä on painoarvo. Sen allekirjoitus lasketaan vaadittuun kynnysarvoon. Useat allekirjoittajat voivat yhdessä valtuuttaa tapahtuman.\n\nAllekirjoittajatyypit:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM tukee ainoastaan ed25519. Lisävaihtoehtoja varten käy osoitteessa https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Kynnykset",
     "original": "Thresholds",
-    "short": "Rajoitukset (low/med/high), jotka määrittävät vaaditun painojen summan.",
-    "desc": "Kynnysarvot määrittelevät, kuinka monta painotettua allekirjoitusta tarvitaan toimenpiteisiin: matala yksinkertaisille toiminnoille, keskikorkea maksuille ja korkea kriittisille muutoksille. Allekirjoittajien painojen summan on vastattava kyseistä kynnysarvoa."
+    "short": "Rajat (low/med/high), jotka asettavat vaaditun kokonaispainon.",
+    "desc": "Kynnysarvot määrittävät, kuinka monta painotettua allekirjoitusta tarvitaan toimenpiteisiin: matala yksinkertaisille toiminnoille, keskitaso maksuille ja korkea kriittisille muutoksille. Allekirjoittajien painojen summan on täytettävä kyseinen kynnysarvo."
   },
   "masterWeight": {
-    "title": "Master-paino",
+    "title": "Mestari paino",
     "original": "master_weight",
-    "short": "Pääavaimen paino; säätelee, kuinka paljon pääavain vaikuttaa.",
-    "desc": "Pääpaino on tilin pääavaimen painoarvo. Korkea pääpaino mahdollistaa pääavaimen allekirjoittaa monia toimia yksin; matala arvo vaatii lisäallekirjoittajia."
+    "short": "Pääavaimen paino; määrittää, kuinka paljon merkitystä pääavaimella on.",
+    "desc": "Pääpaino on tilin pääavaimen paino. Korkea pääpaino mahdollistaa pääavaimen allekirjoittaa monia toimia itsenäisesti; matala arvo vaatii lisäallekirjoittajia."
   },
   "accountConfig": {
-    "title": "Tilin asetusten määrittely",
+    "title": "Tilin määritykset",
     "original": "Account Configuration",
-    "short": "Allekirjoittajien ja kynnysarvojen vuorovaikutus määrittää tilin turvallisuuden.",
-    "desc": "Tilin kokoonpano määrittää, mitkä allekirjoittajat ovat olemassa ja millä painoarvoilla ne toimivat, sekä mitkä kynnykset ovat voimassa. Allekirjoittajien tai kynnyksien muutokset ovat turvallisuuskriittisiä, koska ne määrittävät, kuinka monta allekirjoitusta vaaditaan."
+    "short": "Allekirjoittajien ja kynnysten välinen vuorovaikutus määrittää tilin turvallisuuden.",
+    "desc": "Tilin kokoonpano määrittelee, mitkä allekirjoittajat ovat olemassa millä painoarvoilla ja mitkä kynnykset ovat voimassa. Muutokset allekirjoittajiin tai kynnysarvoihin ovat turvallisuuskriittisiä, koska ne määrittävät, kuinka monta allekirjoitusta vaaditaan."
   },
-  "missingKey": "Sanaston avainsana puuttuu: {{detail}}",
   "distributedNetwork": {
     "title": "Hajautettu verkko",
     "original": "Distributed Network",
-    "short": "Monet tietokoneet työskentelevät yhdessä sen sijaan, että vain yksi päättäisi kaikesta.",
-    "desc": "Kuvittele markkinat, joilla monet kaupankävijät tuntevat samat säännöt. Jos yksi osallistuja jää pois, markkinat jatkavat toimintaansa, koska muut voivat astua tilalle. Tämä pitää järjestelmän vakaana ja vaikeammin manipuloitavana."
+    "short": "Monet tietokoneet työskentelevät yhdessä sen sijaan, että yksi tekisi kaikki päätökset.",
+    "desc": "Kuvittele markkinat, joissa monet kauppiaat tuntevat samat säännöt. Jos yksi osallistuja vetäytyy, se jatkaa toimintaansa, koska muut voivat ottaa sen paikan. Tämä pitää järjestelmän vakaana ja vaikeammin manipuloitavana."
   },
   "node": {
     "title": "Solmu",
     "original": "Node",
-    "short": "Yksittäinen verkon osallistuja.",
-    "desc": "Solmu on kuin tilinpitäjä, joka säilyttää kopion tiedoista. Se tarkistaa uudet merkinnät ja välittää niitä eteenpäin. Monet solmut yhdessä tekevät verkosta luotettavan."
+    "short": "Yksittäinen osallistuja verkostossa.",
+    "desc": "Solmu on kuin kirjanpitäjä, joka pitää hallussaan kopiota tiedoista. Se vahvistaa uudet merkinnät ja välittää ne eteenpäin. Monet solmut yhdessä tekevät verkosta luotettavan."
   },
   "block": {
     "title": "Lohko",
     "original": "Block",
-    "short": "Lohko on merkintöjen paketti.",
-    "desc": "Kuten sivu kirjanpidossa, lohko kerää useita tapahtumia. Kun se on täynnä, se vahvistetaan ja lisätään ketjuun. Näin historia luodaan askel askeleelta."
+    "short": "Lohko on merkintöjen nippu.",
+    "desc": "Kuin sivu kassakirjassa, lohko kerää useita tapahtumia. Kun se on täynnä, se viimeistellään ja lisätään ketjuun. Tämä luo historian askel askeleelta."
   },
   "consensusMechanism": {
     "title": "Konsensusmekanismi",
     "original": "Consensus Mechanism",
-    "short": "Säännöt, joista kaikki ovat yhtä mieltä hyväksyttävien merkintöjen osalta.",
-    "desc": "Se on kuin ryhmä päättäisi, mikä kuitti on pätevä. Tämä estää ketään tekemästä salaa muutoksia. Eri lohkoketjut käyttävät erilaisia menetelmiä, mutta tavoite on aina konsensus."
+    "short": "Säännöt, joista kaikki sopivat koskien hyväksyttyjä merkintöjä.",
+    "desc": "Se on kuin ryhmä päättää, mikä kuitti on voimassa. Tämä estää ketään tekemästä salaa muutoksia. Eri lohkoketjut käyttävät erilaisia menetelmiä, mutta tavoite on aina konsensus."
   },
   "finality": {
     "title": "Lopullisuus / Päättäväisyys",
     "original": "Finality",
-    "short": "Vakuutus siitä, että tapahtuma on lopullinen.",
-    "desc": "Kun jokin on lopullista, se tuntuu kuin vankasti varmistettu tiliote. Sinun ei tarvitse enää odottaa sen peruuntumista. Tämä luo luottamusta."
+    "short": "Varmuus siitä, että tapahtuma on lopullinen.",
+    "desc": "Kun jokin on lopullista, se tuntuu vahvistetulta pankkitililtä. Et enää odota sen peruuttamista. Tämä luo luottamusta."
   },
   "immutability": {
     "title": "Muuttumattomuus",
     "original": "Immutability",
-    "short": "Merkintöjä ei pitäisi muuttaa jälkikäteen.",
-    "desc": "Aivan kuten kassakirjassa: Jälkikäteen poistaminen on havaittavissa. Muutokset lisätään uutena merkintänä, eivätkä ne korvaa aiempaa. Tämä tekee historian jäljitettäväksi."
+    "short": "Merkintöjä ei pidä muuttaa jälkikäteen.",
+    "desc": "Samalla tavalla kuin kirjanpito: Kaikki jälkikäteen tehdyt poistot ovat huomattavissa. Muutokset lisätään uutena merkintänä, ei kirjoiteta päälle. Tämä tekee historiasta jäljitettävän."
   },
   "decentralization": {
     "title": "Hajauttaminen",
     "original": "Decentralization",
-    "short": "Keskusauktoriteetti ei hallitse kaikkea.",
-    "desc": "Sen sijaan, että olisi yksi kassakaappi, on useita kassakaappeja, joissa on sama tieto. Päätökset syntyvät monien osallistujien vuorovaikutuksesta. Tämä tekee järjestelmästä vankemman."
+    "short": "Mikään keskusviranomainen ei hallitse kaikkea.",
+    "desc": "Sen sijaan, että olisi yksi holvi, on useita holveja, joissa on sama tieto. Päätökset syntyvät monien osallistujien vuorovaikutuksesta. Tämä tekee järjestelmästä vankemman."
   },
   "publicBlockchain": {
     "title": "Julkinen lohkoketju",
     "original": "Public Blockchain",
     "short": "Avoin kaikille, jotka haluavat osallistua.",
-    "desc": "Kuka tahansa voi osallistua ja tarkastella tietoja, kuten julkisella ilmoitustaululla. Tämä lisää avoimuutta, mutta jokainen toimenpide on kaikkien nähtävissä. Säännöt varmistavat, että kukaan ei voi huijata."
+    "desc": "Kaikki voivat osallistua ja tarkastella tietoja, samoin kuin julkinen ilmoitustaulu. Tämä lisää avoimuutta, mutta jokainen toiminta on kaikkien nähtävillä. Säännöt varmistavat, ettei kukaan voi huijata."
   },
   "privateBlockchain": {
     "title": "Yksityinen lohkoketju",
     "original": "Private Blockchain",
     "short": "Pääsy vain valituille osallistujille.",
-    "desc": "Kuin yrityksen kirjanpito, jota vain työntekijät saavat nähdä. Tämä voi olla nopeampi ja hallitumpi, mutta se on vähemmän avoin. Luottamus rakentuu tässä järjestön kautta."
+    "desc": "Kuin yrityksen kassakirja, jota vain työntekijät saavat nähdä. Se voi olla nopeampi ja hallitumpi, mutta se on vähemmän avoin. Luottamus rakentuu täällä organisaation kautta."
   },
   "permissionlessBlockchain": {
     "title": "Lupaa ei vaativa lohkoketju",
     "original": "Permissionless Blockchain",
     "short": "Kaikilla on lupa osallistua ilman erillistä lupaa.",
-    "desc": "Kuin markkinat, joihin kuka tahansa voi liittyä. Tämä madaltaa kynnystä, mutta saattaa vaatia enemmän sääntöjä pysyäkseen reiluina. Esimerkkejä ovat monet julkiset lohkoketjut."
+    "desc": "Kuin markkinat, joihin kuka tahansa voi liittyä. Tämä alentaa esteitä, mutta saattaa vaatia enemmän sääntöjä oikeudenmukaisuuden säilyttämiseksi. Esimerkkejä ovat monet julkiset lohkoketjut."
   },
   "permissionedBlockchain": {
-    "title": "Luvatun blockchainin järjestelmä",
+    "title": "Luvanvarainen lohkoketju",
     "original": "Permissioned Blockchain",
     "short": "Osallistuminen vain luvan kanssa.",
-    "desc": "Kuin kerho, jolla on jäsenluettelo. Tämä voi luoda selkeitä vastuualueita. Se on kuitenkin vähemmän avoin."
+    "desc": "Kuin klubi, jolla on jäsenluettelo. Tämä voi luoda selkeitä vastuita. Se on kuitenkin vähemmän avoin."
   },
   "seedPhrase": {
-    "title": "Palautusteoreema",
+    "title": "Palauttamisteoreema",
     "original": "Seed Phrase / Recovery Phrase",
-    "short": "Sanaluettelo, jota voit käyttää lompakkosi palauttamiseen.",
-    "desc": "Hän on kuin varmuusavain kassakaappiisi. Kenellä tahansa, joka sen omistaa, voi palauttaa lompakkosi. Siksi sitä ei tulisi koskaan säilyttää verkossa."
+    "short": "Sanaluettelo, jonka avulla voit palauttaa lompakkosi.",
+    "desc": "Hän on kuin turvasi varavain avain. Kuka tahansa, jolla se on, voi palauttaa lompakkosi. Siksi sitä ei koskaan pitäisi säilyttää verkossa."
   },
   "selfCustody": {
-    "title": "Itsehallinta",
+    "title": "Oma säilytys",
     "original": "Self-Custody",
     "short": "Pidät avaimet itse.",
-    "desc": "Kuin käteisen pitäminen omassa kassakaapissa: sinulla on hallinta, mutta myös vastuu. Jos kadotat pääsyn, kukaan ei voi auttaa sinua. Aloittelijoille varovaisuus on erityisen tärkeää."
+    "desc": "Kuin käteinen omassa kassakaapissasi: sinulla on hallinta, mutta myös vastuu. Jos menetät pääsyn, kukaan ei voi auttaa. Aloittelijoille varovaisuus on erityisen tärkeää."
   },
   "custodian": {
     "title": "Hoitaja",
@@ -324,13 +329,13 @@
     "title": "Laitteistolompakko",
     "original": "Hardware Wallet",
     "short": "Fyysinen laite avaimillesi.",
-    "desc": "Kuin pieni kassakaappi taskussasi. Avaimet pysyvät laitteella eivätkä mene Internetiin. Tämä suojaa monilta verkkohyökkäyksiltä."
+    "desc": "Kuin pieni kassakaappi taskussasi. Avaimet pysyvät laitteessa eivätkä mene verkkoon. Tämä suojaa monilta verkkohyökkäyksiltä."
   },
   "hotWallet": {
-    "title": "Kuumalompakko",
+    "title": "Kuuma lompakko",
     "original": "Hot Wallet",
-    "short": "Internet-yhteydellä varustettu lompakko.",
-    "desc": "Kuin lompakko takin taskussa: kätevä, mutta alttiimpi. Sopii pienille summille ja jokapäiväiseen käyttöön. Ei ihanteellinen suurille summille."
+    "short": "Lompakko, jossa on internetyhteys.",
+    "desc": "Kuin lompakko takissa: kätevä mutta alttiimpi vaaralle. Hyvä pienille summille ja päivittäiseen käyttöön. Ei ihanteellinen suurille summille."
   },
   "coldWallet": {
     "title": "Kylmä lompakko",
@@ -348,73 +353,73 @@
     "title": "Altcoin",
     "original": "Altcoin",
     "short": "Kaikki kryptovaluutat paitsi Bitcoin.",
-    "desc": "Kuten muut markkinoilla olevat merkit alan johtajan lisäksi. Jotkut ovat tunnettuja, monet ovat pieniä. Laatu ja riski vaihtelevat suuresti."
+    "desc": "Kuten muut markkinoilla olevat merkit hallitsevan toimijan lisäksi. Jotkut ovat tunnettuja, monet ovat pieniä. Laatu ja riski vaihtelevat suuresti."
   },
   "stablecoin": {
-    "title": "Stablecoin",
+    "title": "Vakaa kolikko",
     "original": "Stablecoin",
-    "short": "Kryptovaluutta, jolla on vakain arvo.",
-    "desc": "Kuten digitaalinen raha, joka on sidottu perinteiseen valuuttaan. Tämä tekee sen hinnasta vakaamman. Luottamus palveluntarjoajaan on kuitenkin tärkeää."
+    "short": "Kryptovaluutta, jolla on mahdollisesti vakaa arvo.",
+    "desc": "Kuten digitaalinen raha, joka on sidottu standardivaluuttaan. Tämä tekee sen hinnasta vakaamman. Luottamus palveluntarjoajaan on kuitenkin edelleen tärkeää."
   },
   "utilityToken": {
     "title": "Käyttötunnus",
     "original": "Utility Token",
-    "short": "Token, jolla voi käyttää palvelua.",
-    "desc": "Kuin kuponki markkinakioskilla. Se tarjoaa pääsyn tai alennuksen. Sen arvo riippuu palvelun hyödyllisyydestä."
+    "short": "Tunnus, jota voidaan käyttää palvelun käyttöön.",
+    "desc": "Kuin kuponki markkinakojulla. Se tarjoaa pääsyn tai alennuksen. Sen arvo riippuu palvelun hyödyllisyydestä."
   },
   "securityToken": {
-    "title": "Turvatunnisteet",
+    "title": "Turvallisuustunnisteet",
     "original": "Security Token",
-    "short": "Merkki, jolla on turvallisuusominaisuuksia.",
-    "desc": "Aivan kuten osakekirja. Se voi luvata oikeuksia tai voittoja. Siihen sovelletaan usein tiukempia sääntöjä."
+    "short": "Varmuusominaisuuksia sisältävä tunnus.",
+    "desc": "Kuten osakekirja. Se voi luvata oikeuksia tai voittoja. Tiukemmat säännöt koskevat usein tätä."
   },
   "governanceToken": {
     "title": "Hallintotoken",
     "original": "Governance Token",
-    "short": "Merkki osallistumiseen sääntöjen päätöksentekoon.",
-    "desc": "Kuin äänestyskortti klubissa. Ne, joilla on merkkejä, voivat äänestää säännöistä. Se tarkoittaa vastuuta."
+    "short": "Poletin antaa sananvaltaa säännöissä.",
+    "desc": "Kuten äänestyskortti klubissa. Ne, joilla on tokeneita, voivat äänestää säännöistä. Se tarkoittaa vastuuta."
   },
   "liquidityToken": {
-    "title": "Likviditeettipoletit / LP-poletit",
+    "title": "Likviditeettitunnukset / LP-tunnukset",
     "original": "Liquidity Token",
-    "short": "Likviditeetin tarjontaa varten annettu token.",
-    "desc": "Se on kuin kuitti siitä, että olet antanut rahaa yhteissäästöön. Saat osuutesi mukaiset maksut. Arvo voi vaihdella."
+    "short": "Rahake tokeni annetusta likviditeetistä.",
+    "desc": "Kuin kuitti, joka osoittaa, että olet osallistunut rahan antamiseen yhteiseen rahastoon. Saat suhteellisia maksuja. Arvo voi vaihdella."
   },
   "nft": {
-    "title": "Ei-vaihtokelpoinen token / NFT",
+    "title": "Ei-vaihtokelpoinen rahake / NFT",
     "original": "Non-Fungible Token",
-    "short": "Ainutlaatuinen digitaalinen rahake.",
-    "desc": "Kuin allekirjoitettu keräilyesine. Se edustaa jotain ainutlaatuista, ei vaihdettavissa olevaa kolikkoa. Arvo riippuu kysynnästä."
+    "short": "Ainutlaatuinen digitaalinen token.",
+    "desc": "Kuin signeerattu keräilyesine. Se edustaa jotain ainutlaatuista, ei vaihdettavaa kolikkoa. Arvo riippuu kysynnästä."
   },
   "cbdc": {
     "title": "Keskuspankin digitaalinen valuutta / CBDC",
     "original": "Central Bank Digital Currency",
-    "short": "Digitaalinen valuutta, jonka keskuspankki on liikkeelle laskenut.",
-    "desc": "Kuin digitaalinen käteinen valtiolta. Se olisi virallista rahaa, vain digitaalisessa muodossa. Yksityiskohdat riippuvat tietystä maasta."
+    "short": "Keskuspankin liikkeeseen laskema digitaalinen raha.",
+    "desc": "Kuin digitaalinen käteinen valtiolta. Se olisi virallista rahaa, vain digitaalisessa muodossa. Yksityiskohdat riippuvat kyseisestä maasta."
   },
   "transactionStatus": {
     "title": "Tapahtuman tila",
     "original": "Transaction Status",
-    "short": "Ilmaisee, onko tapahtuma vielä avoin vai jo suoritettu.",
-    "desc": "Kuten pakettiseuranta: odottaa, vahvistettu tai epäonnistunut. Tämä antaa sinun nähdä, menikö kaikki sujuvasti. Joskus se vie vähän aikaa."
+    "short": "Ilmaisee, onko tapahtuma vielä avoinna vai jo suoritettu.",
+    "desc": "Kuten paketin seurannassa: odottava, vahvistettu tai epäonnistunut. Näin voit nähdä, sujuiko kaikki. Joskus se kestää hetken."
   },
   "gasFee": {
-    "title": "Gas-maksu",
+    "title": "Gasmaksu",
     "original": "Gas Fee",
-    "short": "Verkko- tai tietokoneympäristön laskentatyöstä perittävä maksu.",
+    "short": "Maksu laskentatyöstä verkossa.",
     "desc": "Kuten käsittelymaksu markkinakojulla. Mitä vilkkaampaa on, sitä kalliimmaksi se voi tulla. Kaikki lohkoketjut eivät kutsu sitä kaasuksi."
   },
   "onChain": {
-    "title": "Ketjussa",
+    "title": "On-chain",
     "original": "On-Chain",
     "short": "Tapahtuu suoraan lohkoketjussa.",
-    "desc": "Kuin merkintä suoraan kassakirjaan. Kaikki voivat nähdä sen. Se on läpinäkyvä, mutta usein hitaampi tai kalliimpi."
+    "desc": "Kuin merkintä suoraan kirjanpitoon. Kuka tahansa voi nähdä sen. Se on läpinäkyvä, mutta usein hitaampi tai kalliimpi."
   },
   "offChain": {
     "title": "Off-chain",
     "original": "Off-Chain",
     "short": "Tapahtuu lohkoketjun ulkopuolella.",
-    "desc": "Kuten suullinen sopimus, joka myöhemmin kirjataan kirjanpitoon. Tämä voi olla nopeampaa ja kustannustehokkaampaa. Luottamus on tässä suuremmassa roolissa."
+    "desc": "Kuin suullinen sopimus, joka myöhemmin kirjataan päiväkirjaan. Tämä voi olla nopeampi ja kustannustehokkaampi. Luottamus on tässä suuremmassa roolissa."
   },
   "liquidity": {
     "title": "Likviditeetti",
@@ -426,84 +431,85 @@
     "title": "Volatiliteetti",
     "original": "Volatility",
     "short": "Kuinka paljon hinnat vaihtelevat.",
-    "desc": "Kuten markkinat, joilla hinnat vaihtelevat villisti. Korkea volatiliteetti tarkoittaa mahdollisuuksia, mutta myös riskiä. Aloittelijoille tämä voi olla stressaavaa."
+    "desc": "Kuin markkina, jolla on villejä hintavaihteluita. Korkea volatiliteetti tarkoittaa mahdollisuuksia, mutta myös riskiä. Aloittelijoille tämä voi olla stressaavaa."
   },
   "marketCap": {
     "title": "Markkina-arvo",
     "original": "Market Capitalization",
     "short": "Kolikon tai projektin kokonaisarvo.",
-    "desc": "Kuten kaikkien markkinoilla olevien tavaroiden kokonaisarvo. Se lasketaan karkeasti kertomalla hinta kiertävällä määrällä. Suuret arvot voivat vaikuttaa vakaammilta, mutta ne eivät automaattisesti ole sitä."
+    "desc": "Kuten kaikkien markkinoilla olevien hyödykkeiden kokonaisarvo. Se johdetaan karkeasti hinnan ja kierrossa olevan määrän tulona. Suuret arvot vaikuttavat vakaammilta, mutta ne eivät ole automaattisesti sitä."
   },
   "circulatingSupply": {
     "title": "Kiertomäärä",
     "original": "Circulating Supply",
-    "short": "Käytännössä liikkeellä olevien kolikoiden määrä.",
-    "desc": "Kuten markkinoilla olevien kolikoiden määrä. Kaikki olemassa oleva ei ole vielä liikkeellä. Tämä vaikuttaa hintaan."
+    "short": "Rahojen määrä, joka on tosiasiallisesti liikkeessä.",
+    "desc": "Kuten markkinoilla olevien kolikoiden määrä. Kaikki, mikä on olemassa, ei ole vielä kiertoon laskettu. Tämä vaikuttaa hintaan."
   },
   "priceDiscovery": {
     "title": "Hinnoittelu",
     "original": "Price Discovery",
-    "short": "Hinta määräytyy tarjonnan ja kysynnän mukaan.",
-    "desc": "Aivan kuten markkinoilla: tarjonta ja kysyntä kohtaavat. Monet pienet päätökset määräävät hinnan. Ei ole mitään kiinteää kytkintä."
+    "short": "Näin hinta määräytyy kysynnän ja tarjonnan mukaan.",
+    "desc": "Se on kuin markkinat: tarjonta ja kysyntä kohtaavat. Monet pienet päätökset määrittävät hinnan. Ei ole kiinteää kytkintä."
   },
   "spread": {
     "title": "Kaupankäyntialue",
     "original": "Spread",
-    "short": "Erotus osto- ja myyntihinnan välillä.",
-    "desc": "Kuten kaupankäyntiväli kaupassa. Mitä pienempi ero, sitä oikeudenmukaisemmalta se tuntuu. Suuret erot tekevät kaupankäynnistä kalliimpaa."
+    "short": "Ostohinnan ja myyntihinnan välinen ero.",
+    "desc": "Kuten tarjouksen ja kysynnän välinen ero kaupassa. Mitä pienempi ero, sitä oikeudenmukaisemmalta se tuntuu. Suuret erot tekevät kaupankäynnistä kalliimpaa."
   },
   "phishing": {
-    "title": "Huijausviestit",
+    "title": "Tietojenkalastelu",
     "original": "Phishing",
-    "short": "Huijaus väärien uutisten tai verkkosivustojen kautta.",
-    "desc": "Kuin väärennetty pankkisähköposti, joka houkuttelee sinut ansaan. Tavoitteena on saada sinulta kirjautumistietosi. Älä koskaan klikkaa linkkejä sokkona."
+    "short": "Huijaus valetiedon tai väärennettyjen verkkosivustojen kautta.",
+    "desc": "Kuin väärennetty pankkisähköposti, joka houkuttelee sinut ansaan. Tavoitteena on saada sinut luovuttamaan kirjautumistietosi. Älä koskaan klikkaa linkkejä sokkona."
   },
   "smartContract": {
     "title": "Älysopimus",
     "original": "Smart Contract",
-    "short": "Ohjelma, joka suorittaa automaattisesti ennalta määrättyjä sääntöjä.",
-    "desc": "Kuin automaatti, joka reagoi ennalta määrättyjen sääntöjen mukaisesti. Se toteuttaa sopimukset automaattisesti. Tämä säästää luottamusta, mutta vaatii selkeät säännöt."
+    "short": "Ohjelma, joka suorittaa kiinteitä sääntöjä automaattisesti.",
+    "desc": "Kuin kone, joka toimii kiinteiden sääntöjen mukaisesti. Se toteuttaa sopimukset automaattisesti. Tämä säästää luottamusta, mutta vaatii selkeitä sääntöjä."
   },
   "programmableLogic": {
     "title": "Automatisoidut säännöt",
     "original": "Programmable Logic",
-    "short": "Säännöt, jotka suoritetaan automaattisesti, kun jotain tapahtuu.",
-    "desc": "Kuin jos-niin-sääntö automaatissa. Tämä mahdollistaa prosessien hallinnan ilman manuaalista puuttumista joka kerta. Näin luodaan yksinkertaisia digitaalisia sopimuksia."
+    "short": "Säännöt, jotka toteutuvat automaattisesti, kun jotain tapahtuu.",
+    "desc": "Kuin jos-niin-sääntö automaatissa. Tämä mahdollistaa prosessien hallinnan ilman manuaalista väliintuloa joka kerta. Näin luodaan yksinkertaisia digitaalisia sopimuksia."
   },
   "networkCongestion": {
     "title": "Verkon käyttöaste",
     "original": "Network Congestion",
-    "short": "Kun suuri määrä tapahtumia on samanaikaisesti vireillä.",
-    "desc": "Kuin liikenne ruuhkat tiellä. Tapahtumat kestävät kauemmin ja maksut voivat nousta. Vähemmällä liikenteellä se nopeutuu jälleen."
+    "short": "Jos samanaikaisesti on suuri määrä vireillä olevia tapahtumia.",
+    "desc": "Kuten liikenneruuhka moottoritiellä. Tapahtumat kestävät kauemmin ja maksut voivat nousta. Vähemmän liikennettä, se nopeutuu jälleen."
   },
   "blockchainTypes": {
-    "title": "Lohkoketjun tyypit",
+    "title": "Lohkoketjutyyppit",
     "original": "Blockchain Types",
     "short": "On olemassa erilaisia lohkoketjuja, joilla on erilaisia tavoitteita.",
-    "desc": "Kuin eri ajoneuvotyypit eri reiteille. Jotkut on tarkoitettu maksuille, toiset ohjelmille. On hyödyllistä tietää tarkoitus."
+    "desc": "Kuten eri ajoneuvotyypit eri reiteille. Jotkut on rakennettu maksuille, toiset ohjelmille. On hyvä tietää tarkoitus."
   },
   "paymentBlockchain": {
-    "title": "Maksublokketju",
+    "title": "Maksulohkoketju",
     "original": "Payment Blockchain",
     "short": "Lohkoketju, joka on suunniteltu nopeisiin maksuihin.",
-    "desc": "Kuin nopea käteiskirjanpito. Keskitytään halpoihin ja nopeisiin siirtoihin. Ominaisuudet pidetään usein tarkoituksella yksinkertaisina."
+    "desc": "Kuin nopea rahakirjanpito. Keskitytään edullisiin ja nopeisiin siirtoihin. Ominaisuudet pidetään usein tarkoituksella yksinkertaisina."
   },
   "smartContractBlockchain": {
-    "title": "Älysopimuslohkoketju",
+    "title": "Älykkäiden sopimusten lohkoketju",
     "original": "Smart Contract Blockchain",
-    "short": "Lohkoketju, joka voi suorittaa ohjelmia ja sovelluksia.",
-    "desc": "Kuin markkinat, joissa on monia koneita. Maksujen lisäksi siellä voi pyörittää sääntöjä ja sovelluksia. Tämä tekee niistä monipuolisia, mutta usein myös monimutkaisempia."
+    "short": "Lohkoketju, joka pystyy suorittamaan ohjelmia ja sovelluksia.",
+    "desc": "Kuin markkinat, joissa on paljon myyntiautomaatteja. Maksujen lisäksi siellä voi toimia sääntöjä ja sovelluksia. Tämä tekee niistä monipuolisia, mutta usein monimutkaisempia."
   },
   "blockchainComparison": {
-    "title": "Lohkoketjuvertailu",
+    "title": "Lohkoketjujen vertailu",
     "original": "Blockchain Comparison",
-    "short": "Vertailu paljastaa eri lohkoketjujen vahvuudet ja heikkoudet.",
-    "desc": "Kuten pankkien tai markkinoiden vertailu: jokaisella on omat vahvuutensa ja heikkoutensa. Tärkeitä näkökohtia ovat kustannukset, nopeus ja turvallisuus. Ei ole olemassa täydellistä järjestelmää kaikkeen."
+    "short": "Vertailu paljastaa erilaisten lohkoketjujen vahvuudet ja heikkoudet.",
+    "desc": "Kuten pankkien tai markkinoiden vertailu: Jokaisella on omat vahvuutensa ja heikkoutensa. Tärkeitä tekijöitä ovat kustannukset, nopeus ja turvallisuus. Täydellistä järjestelmää kaikelle ei ole olemassa."
   },
   "stellarVsBitcoinVsEthereum": {
     "title": "Stellar vs. Bitcoin vs. Ethereum",
     "original": "Stellar vs. Bitcoin vs. Ethereum",
     "short": "Kolme tunnettua lohkoketjua, joilla on erilaiset painopisteet.",
-    "desc": "Bitcoin on kuin digitaalinen kulta ja sitä pidetään usein arvon säilyttäjänä. Ethereum on kuin alusta ohjelmille ja sovelluksille. Stellar keskittyy voimakkaasti edullisiin maksuihin."
-  }
+    "desc": "Bitcoin on kuin digitaalinen kulta ja sitä pidetään usein arvon säilyttäjänä. Ethereum on kuin alusta ohjelmille ja sovelluksille. Stellar keskittyy edullisiin maksuihin."
+  },
+  "missingKey": "Sanastosta puuttuu avain: {{detail}}"
 }

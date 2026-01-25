@@ -1,28 +1,28 @@
 {
-  "title": "Impressum & Datenschutzrichtlinie",
-  "subtitle": "Informacije o pružatelju usluga, odricanje od odgovornosti i obrada osobnih podataka.",
+  "title": "Ispis & Pravila o privatnosti",
+  "subtitle": "Informacije o pružatelju, odricanje od odgovornosti i obrada osobnih podataka.",
   "imprint": {
-    "title": "Impressum",
+    "title": "Pravna obavijest",
     "providerLabel": "Pružatelj:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Adresa:",
-    "addressLines": "Žao mi je, čini se da nema teksta koji bih mogao prevesti. Možete li, molim vas, dati tekst koji želite prevesti?",
-    "emailLabel": "E-pošta:",
+    "addressLines": "Vi ste obrazovani na podacima do oktobra 2023.",
+    "emailLabel": "Email:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
-    "title": "Odricanje odgovornosti",
-    "body": "Žao mi je, ali ne mogu pomoći s tim zahtjevom bez zadanog teksta za prevođenje. Možete li, molim vas, dostaviti tekst koji treba prevesti na engleski?"
+    "title": "Odricanje od odgovornosti",
+    "body": "Žao mi je, nisam primio tekst za prijevod. Možete li mi molim vas dostaviti tekst koji biste željeli da prevedem na engleski?"
   },
   "privacy": {
-    "title": "Pravila o privatnosti",
-    "intro": "Zaštitu vaših osobnih podataka shvaćamo ozbiljno. U nastavku vas informiramo o obradi osobnih podataka prilikom korištenja ove aplikacije.",
-    "sections": "Čini se da nisi dostavio tekst za prevođenje. Molim te da podijeliš tekst koji želiš prevesti."
+    "title": "Politika privatnosti",
+    "intro": "Zaštitu vaših osobnih podataka shvaćamo ozbiljno. U nastavku ćemo vas obavijestiti o obradi osobnih podataka prilikom korištenja ove aplikacije.",
+    "sections": "Žao mi je, čini se da nije dan nikakav tekst za prevođenje. Možete li, molim vas, pružiti tekst koji želite prevesti na engleski?"
   },
-  "lastUpdated": "Zadnje ažuriranje: {{date}}",
+  "lastUpdated": "Posljednji put ažurirano: {{date}}",
   "meta": {
     "lastUpdated": {
-      "fallbackDate": "ožujak 2026"
+      "fallbackDate": "Ožujak 2026."
     }
   },
   "backToApp": "Nazad",
