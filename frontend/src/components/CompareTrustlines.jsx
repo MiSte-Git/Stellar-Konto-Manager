@@ -4,6 +4,7 @@ import MenuHeader from './MenuHeader';
 import AddressDropdown from './AddressDropdown.jsx';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 import { resolveOrValidatePublicKey } from '../utils/stellar/stellarUtils.js';
+import { StrKey } from '@stellar/stellar-sdk';
 
 function CompareTrustlines({
   sourcePublicKey,
