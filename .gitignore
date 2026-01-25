@@ -16,6 +16,7 @@ dist/
 # Ignoriere sensible Umgebungsdateien
 .env
 backend/.env
+frontend/.env*
 
 # Node.js Abhängigkeiten
 node_modules/
