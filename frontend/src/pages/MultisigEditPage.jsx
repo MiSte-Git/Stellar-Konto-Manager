@@ -188,9 +188,6 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     arr[i] = { ...arr[i], weight: clampByte(val) };
     setSigners(arr);
   }
-  function addSignerRow() {
-    setSigners(prev => [...prev, { key: '', weight: 1 }]);
-  }
   function removeSignerRow(i) {
     setSigners(prev => prev.filter((_, idx) => idx !== i));
   }
