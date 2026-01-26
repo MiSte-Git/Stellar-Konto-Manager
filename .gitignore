@@ -55,3 +55,6 @@ nohup.out
 # Config: keep folder, ignore contents
 config/*
 !config/.gitkeep
+
+# Ignore .continue folder
+.continue
