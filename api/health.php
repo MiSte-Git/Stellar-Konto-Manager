@@ -1,6 +1,6 @@
 <?php
 // api/health.php
-// Simple health endpoint used by start-dev.sh (prod backend reachability check).
+// Simple health endpoint used by start-dev.js (prod backend reachability check).
 // Returns 200 if the script can load config and connect to the database.
 
 declare(strict_types=1);
