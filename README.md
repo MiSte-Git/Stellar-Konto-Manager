@@ -48,7 +48,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   ```bash
   git clone https://github.com/MiSte-Git/Stellar-Trustline-Manager.git
   cd Stellar-Trustline-Manager
-  ./start-dev.sh   # startet Backend (Port 3000) und Frontend (Port 5173)
+  npm run dev      # startet Backend (Port 3000) und Frontend (Port 5173)
   ```
   Alternativ: `npm install && npm start` (Backend), `cd frontend && npm install && npm run dev` (Frontend).
 
@@ -76,7 +76,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Upload/Deploy: `api/multisig.php`, `api/.htaccess`, `api/composer.json`, `api/composer.lock`, kompletter `api/vendor/` und sicherstellen, dass `api/data/` beschreibbar ist.
 - Falls lokal kein PHP/Composer verfügbar (z. B. Windows ohne Extensions): Composer-Installer per `php composer-setup.php`, danach `php composer.phar install --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-gmp` ausführen, anschließend den erzeugten `vendor/` hochladen.
 - Routing: Apache muss `/api/multisig/...` auf `api/multisig.php` leiten (per `.htaccess` im `api/`-Ordner).
-- Frontend-Builds: `start-build.sh` setzt `VITE_BACKEND_URL` automatisch auf `PROD_API_URL`, wenn nicht explizit gesetzt. Alternativ `VITE_BACKEND_URL=https://www.skm.steei.de` in `.env` definieren, um jeden Build auf die produktive API zu pinnen.
+- Frontend-Builds: `npm run start-build` setzt `VITE_BACKEND_URL` automatisch auf `PROD_API_URL`, wenn nicht explizit gesetzt. Alternativ `VITE_BACKEND_URL=https://www.skm.steei.de` in `.env` definieren, um jeden Build auf die produktive API zu pinnen.
 
 ## Rechtliches
 - Öffentliche Nutzung erfordert Impressum/Datenschutz: Seite `/legal` verlinkt im Footer und Menü.

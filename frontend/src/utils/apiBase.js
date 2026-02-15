@@ -6,6 +6,16 @@ export function getApiBase() {
     const raw = import.meta.env?.VITE_BACKEND_URL || '';
     const base = String(raw).trim().replace(/\/+$/, '');
     if (base) {
+      try {
+        const currentHost = window?.location?.hostname || '';
+        const url = new URL(base, window.location.origin);
+        const isLocalhost = (host) => host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]';
+        if (isLocalhost(url.hostname) && !isLocalhost(currentHost)) {
+          return '/api';
+        }
+      } catch {
+        // If URL parsing fails, fall through to the original base handling.
+      }
       return base.endsWith('/api') ? base : `${base}/api`;
     }
     // Fallback: Vite-Proxy in Dev
