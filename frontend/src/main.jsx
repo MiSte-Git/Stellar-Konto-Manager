@@ -751,7 +751,7 @@ function Main() {
       controller.abort();
       clearInterval(id);
     };
-  }, [xlmPriceLoaded]);
+  }, []);
 
   // Filter-Update
   function handleFilterChange(key, value) {
