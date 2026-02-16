@@ -14,6 +14,7 @@ import { isTestnetAccount } from '../utils/stellar/accountUtils.js';
 import AddressDropdown from '../components/AddressDropdown.jsx';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from '../utils/walletInfo.js';
+import { getSessionSecret, rememberSessionSecrets } from '../utils/sessionSecrets.js';
 
 export default function SendPaymentPage({ publicKey, onBack: _onBack, initial }) {
   const { t, i18n } = useTranslation(['common', 'errors', 'publicKey', 'secretKey', 'investedTokens', 'wallet', 'multisig', 'network']);
@@ -623,7 +624,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         setError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
         return;
       }
-      const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
+      const saved = getSessionSecret(publicKey, publicKey);
       let storedSigner = null;
       try {
         storedSigner = saved ? Keypair.fromSecret(saved) : null;
@@ -964,7 +965,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       setError(memoErr?.message || t('errors:unknown', 'Unbekannter Fehler'));
       return;
     }
-    const saved = sessionStorage.getItem(`stm.session.secret.${publicKey}`);
+    const saved = getSessionSecret(publicKey, publicKey);
     if (saved) {
       try {
         openReviewDialog([Keypair.fromSecret(saved)], preflightResult);
@@ -2004,7 +2005,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
               if (remember) {
                 try {
-                  sessionStorage.setItem(`stm.session.secret.${publicKey}`, primarySecret);
+                  rememberSessionSecrets(publicKey, collected);
                   try { window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: { publicKey } })); } catch { /* noop */ }
                 } catch { /* noop */ }
               }

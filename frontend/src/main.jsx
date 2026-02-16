@@ -19,6 +19,7 @@ import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
 import AddressDropdown from './components/AddressDropdown.jsx';
 import { isTestnetAccount } from './utils/stellar/accountUtils.js';
 import { requiresGAccount, isIdentityMode } from './utils/accountMode.js';
+import { clearSessionSecrets, getSessionSecretCount, hasSessionSecrets } from './utils/sessionSecrets.js';
 
 function migrateLegacyStorageKeys() {
   if (typeof window === 'undefined') return;
@@ -321,10 +322,10 @@ function Main() {
    // Track if a session secret exists for current source key
    useEffect(() => {
    try {
-   if (!sourcePublicKey) { setHasSessionKey(false); return; }
-   const v = sessionStorage.getItem(`stm.session.secret.${sourcePublicKey}`);
-   setHasSessionKey(!!v);
-   } catch { setHasSessionKey(false); }
+   if (!sourcePublicKey) { setHasSessionKey(false); setSessionSecretCount(0); return; }
+   setHasSessionKey(hasSessionSecrets(sourcePublicKey));
+   setSessionSecretCount(getSessionSecretCount(sourcePublicKey));
+   } catch { setHasSessionKey(false); setSessionSecretCount(0); }
    }, [sourcePublicKey]);
 
    // React to session secret changes (e.g., after entering secret in modal)
@@ -332,9 +333,9 @@ function Main() {
    const handler = (e) => {
    try {
      const pk = (e && e.detail && e.detail.publicKey) ? e.detail.publicKey : sourcePublicKey;
-       if (!pk) { setHasSessionKey(false); return; }
-         const v = sessionStorage.getItem(`stm.session.secret.${pk}`);
-         setHasSessionKey(!!v);
+       if (!pk) { setHasSessionKey(false); setSessionSecretCount(0); return; }
+         setHasSessionKey(hasSessionSecrets(pk));
+         setSessionSecretCount(getSessionSecretCount(pk));
        } catch { /* noop */ }
      };
      window.addEventListener('stm-session-secret-changed', handler);
@@ -343,8 +344,9 @@ function Main() {
  
    const clearSessionSecret = () => {
      try {
-       if (sourcePublicKey) sessionStorage.removeItem(`stm.session.secret.${sourcePublicKey}`);
+       if (sourcePublicKey) clearSessionSecrets(sourcePublicKey);
        setHasSessionKey(false);
+       setSessionSecretCount(0);
        setInfoMessage(t('secretKey:cleared'));
      } catch { /* noop */ }
    };
@@ -374,6 +376,7 @@ function Main() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [deleteProgress, setDeleteProgress] = useState(null);
   const [infoMessage, setInfoMessage] = useState('');
+  const [sessionSecretCount, setSessionSecretCount] = useState(0);
 
   // Auto-hide info messages
   useEffect(() => {
@@ -954,14 +957,21 @@ function Main() {
               {/* Rechte Buttons */}
               <div className="flex items-center gap-2 ml-auto">
                 {hasSessionKey && (
-                  <button
-                    type="button"
-                    onClick={clearSessionSecret}
-                    className="px-3 py-2 rounded bg-green-600 text-white border border-red-600 hover:bg-green-700"
-                    title={t('secretKey:clearSessionHint')}
-                  >
-                    {t('secretKey:clearSession')}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={clearSessionSecret}
+                      className="px-3 py-2 rounded bg-green-600 text-white border border-red-600 hover:bg-green-700"
+                      title={t('secretKey:clearSessionHint')}
+                    >
+                      {t('secretKey:clearSession')}
+                    </button>
+                    {sessionSecretCount > 1 && (
+                      <span className="text-xs text-gray-600 dark:text-gray-300">
+                        {t('secretKey:sessionCount', { count: sessionSecretCount, defaultValue: '{{count}} S-Keys gespeichert' })}
+                      </span>
+                    )}
+                  </div>
                 )}
                 {menuSelection && (
                   <button

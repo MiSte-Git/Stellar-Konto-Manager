@@ -12,6 +12,7 @@ import { Keypair, Networks, Operation, TransactionBuilder, StrKey } from '@stell
 import { apiUrl } from '../utils/apiBase.js';
 import { createPendingMultisigJob } from '../utils/multisigApi.js';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
+import { getSessionSecret } from '../utils/sessionSecrets.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
@@ -90,13 +91,9 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     return [...master, ...others];
   }, [defaultPublicKey, masterWeight, signers]);
 
-  const getSessionSecret = useCallback((pk) => {
+  const getSessionSecretForAccount = useCallback((pk) => {
     if (!pk) return '';
-    try {
-      return window.sessionStorage?.getItem(`stm.session.secret.${pk}`) || '';
-    } catch {
-      return '';
-    }
+    return getSessionSecret(pk, pk);
   }, []);
   const requiredThreshold = useMemo(
     () => getRequiredThreshold('setOptions', currentAccount?.thresholds || thresholdsForModal),
@@ -386,7 +383,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       let preparedTx = tx;
       const pk = (defaultPublicKey || '').trim();
       const initialCollected = [];
-      const sessionSecret = getSessionSecret(pk);
+      const sessionSecret = getSessionSecretForAccount(pk);
       if (sessionSecret) {
         try {
           const kp = Keypair.fromSecret(sessionSecret);
@@ -451,7 +448,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     } finally {
       setShowConfirmModal(false);
     }
-  }, [buildSetOptionsTx, defaultPublicKey, getSessionSecret, hasSafetyErrors, network, t]);
+  }, [buildSetOptionsTx, defaultPublicKey, getSessionSecretForAccount, hasSafetyErrors, network, t]);
 
   const buildPlannedChanges = useCallback(() => {
     const pk = (defaultPublicKey || '').trim();

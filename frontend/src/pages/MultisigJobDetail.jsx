@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { getPendingMultisigJob, mergeSignedXdr } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
 import { Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
+import { getSessionSecret } from '../utils/sessionSecrets.js';
 
 function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
   const { t } = useTranslation(['multisig', 'common']);
@@ -128,9 +129,7 @@ function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
       setError(t('multisig:detail.signatures.missing', 'fehlt'));
       return;
     }
-    const secret = (() => {
-      try { return sessionStorage.getItem(`stm.session.secret.${currentPublicKey}`) || ''; } catch { return ''; }
-    })();
+    const secret = getSessionSecret(job?.accountId || '', currentPublicKey);
     if (!secret) {
       setError(t('multisig:detail.noSessionSecret', 'Kein Secret Key im Browser gespeichert. Bitte Secret eingeben oder signiertes XDR importieren.'));
       setShowSecretPrompt(true);
