@@ -15,7 +15,11 @@
     "networkProtocol": "Netwerk & Protocol",
     "smartContracts": "Slimme contracten",
     "blockchainBasics": "Basisprincipes van blockchain",
-    "security": "Beveiliging & Fraude"
+    "security": "Beveiliging & Fraude",
+    "moneyFinance": "Geld & Financiën",
+    "cryptography": "Cryptografie",
+    "defi": "DeFi",
+    "onrampOfframp": "Onramp / Offramp"
   },
   "blockchain": {
     "title": "Blockchain",
@@ -94,7 +98,8 @@
   "multisigCorporate": {
     "title": "Multisignatuur - Voorbeeld",
     "original": "Multi-Signature - Example",
-    "short": "Voorbeeld van een multi-handtekeningstructuur voor bedrijfsrekeningen met rollen, gewichten en drempels."
+    "short": "Voorbeeld van een multi-handtekeningstructuur voor bedrijfsrekeningen met rollen, gewichten en drempels.",
+    "desc": "Voorbeeld: Een bedrijf stelt een Stellar-account in met drie ondertekenaars: CEO (gewicht 2), CFO (gewicht 2) en een bestuurslid (gewicht 1). De drempels worden zo geconfigureerd dat bewerkingen met lage beveiliging gewicht 1 vereisen, gemiddelde bewerkingen (bijv. betalingen) gewicht 3 en hoge bewerkingen (bijv. wijzigen van ondertekenaars) gewicht 4. Dit betekent dat de CEO het account alleen kan bekijken, maar moet samenwerken met de CFO of beide andere ondertekenaars voor betalingen en configuratiewijzigingen."
   },
   "trustline": {
     "title": "Trustline",
@@ -109,10 +114,10 @@
     "desc": "Een token is een digitale eenheid op de blockchain. Een token kan geld, punten of kredieten voor een dienst vertegenwoordigen."
   },
   "asset": {
-    "title": "Activum",
+    "title": "Asset",
     "original": "Asset",
-    "short": "Tokens op Stellar zijn altijd gekoppeld aan een uitgever.",
-    "desc": "Op Stellar wordt een token een activum genoemd. Een activum is altijd gekoppeld aan een uitgeversaccount. Een account kan bijvoorbeeld een Euro-token uitgeven, en deze Euro-token wordt dan beschouwd als een activum."
+    "short": "Elk digitaal activum op een blockchain – van cryptovaluta's tot tokens en stablecoins.",
+    "desc": "Een asset is in de breedste zin alles wat waarde vertegenwoordigt en overdraagbaar is. Op Stellar kan iedereen een asset uitgeven – bijv. een luchtvaartmaatschappij haar miles als token, een bank haar dollar als stablecoin. Elk Stellar-asset wordt gedefinieerd door twee dingen: de assetcode (bijv. 'USDC') en de uitgever (het G-adres van de maker). XLM is het enige asset zonder uitgever, omdat het het native asset van het netwerk is."
   },
   "xlm": {
     "title": "Je suis een taalmodel getraind op gegevens tot en met oktober 2023.",
@@ -150,6 +155,30 @@
     "short": "Zeer klein bedrag per transactie.",
     "desc": "De vergoeding is een zeer klein bedrag dat je bij elke transactie betaalt. De vergoeding gaat naar het netwerk. Op Stellar zijn de vergoedingen erg laag."
   },
+  "operations": {
+    "title": "Operatie",
+    "original": "Operation",
+    "short": "De kleinste eenheid van een Stellar-transactie – een transactie kan tot 100 operaties bevatten.",
+    "desc": "Op Stellar is een transactie een container met één of meer operaties. Een operatie is één actie – bijvoorbeeld een betaling versturen, een trustline maken of een aanbod plaatsen. Tot 100 operaties kunnen in één transactie worden gebundeld, wat heel efficiënt is. De transactiekosten worden berekend op basis van het aantal operaties (standaard: 100 stroops per operatie)."
+  },
+  "pathPayment": {
+    "title": "Padbetaling",
+    "original": "Path Payment",
+    "short": "Een betaling waarbij Stellar automatisch één of meerdere valutaconversies uitvoert om het doel-asset te leveren.",
+    "desc": "Met padbetalingen kun je bijvoorbeeld XLM sturen en ontvangt de ontvanger automatisch USDC – Stellar vindt het beste omwisselpad via de gedecentraliseerde markt. Het netwerk zoekt beschikbare handelsparen en liquiditeitspools om het goedkoopste pad te vinden. Dit is vooral handig voor grensoverschrijdende betalingen: de zender betaalt in zijn valuta, de ontvanger krijgt de zijne. Alles in één transactie."
+  },
+  "clawback": {
+    "title": "Terugvordering",
+    "original": "Clawback",
+    "short": "Optionele Stellar-functie waarmee een asset-uitgever uitgegeven tokens kan terughalen van een account.",
+    "desc": "Clawback is een speciale functie op Stellar die aan regelgeving kan voldoen. Als een uitgever clawback activeert bij het aanmaken van een asset, kan hij tokens van elk account terughalen – bijvoorbeeld bij fraude, witwassen of wettelijke eisen. Voor gereguleerde financiële producten zoals security tokens is dit vaak wettelijk verplicht. Gewone gebruikers hoeven zich geen zorgen te maken zolang ze met betrouwbare uitgevers werken."
+  },
+  "sponsor": {
+    "title": "Sponsoring",
+    "original": "Sponsoring",
+    "short": "Stellar-functie waarbij één account de basisreserve voor een ander account betaalt.",
+    "desc": "Op Stellar heeft elk account en elke entry (trustline, data-entry, enz.) een minimumsaldo in XLM nodig (base reserve). Met sponsoring kan één account die reserve voor een ander betalen. Handig voor apps die nieuwe gebruikers willen onboarden zonder dat ze eerst XLM hoeven te kopen. Voorbeeld: een app sponsort accountcreatie en trustlines voor nieuwe gebruikers – zo kunnen ze direct starten zonder XLM."
+  },
   "ledger": {
     "title": "Grootboek",
     "original": "Ledger",
@@ -168,6 +197,30 @@
     "short": "Beschrijft hoever terug de transactiegeschiedenis van openbare Horizon-servers reikt.",
     "desc": "De publieke Horizon-servers (Mainnet und Testnet) die worden beheerd door de Stellar Development Foundation bieden slechts een beperkte geschiedenis – momenteel ongeveer één jaar terugwerkend. Oudere gegevens kunnen niet meer worden opgevraagd via deze gratis eindpunten. Als je verder terug in de tijd moet gaan, heb je eigenlijk twee opties: (1) je kunt je eigen Horizon-node met volledige geschiedenis (inklusive History Archives) draaien, of (2) je kunt gebruikmaken van externe of betaalde diensten die langetermijngeschiedenis van Stellar-gegevens opslaan en verschaffen.",
     "seeAlso": "U hebt geen specifieke tekst om te vertalen verstrekt. Voer alstublieft de tekst in die u vertaald wilt hebben."
+  },
+  "scp": {
+    "title": "Stellar Consensus Protocol",
+    "original": "SCP – Stellar Consensus Protocol",
+    "short": "Het unieke consensusmechanisme van Stellar dat transacties snel bevestigt zonder mining.",
+    "desc": "SCP is het hart van Stellar: het algoritme dat bepaalt hoe deelnemers het eens worden over de ledger‑status. Anders dan Bitcoin (Proof of Work) of Ethereum (Proof of Stake) gebruikt Stellar een federatieve stemming: elke validator vertrouwt een zelfgekozen set validators (quorum set). Daardoor bereikt Stellar consensus in 3–5 seconden zonder energieverspilling door mining. SCP is ontworpen door David Mazières (Stanford) en is bewezen veilig."
+  },
+  "validator": {
+    "title": "Validator",
+    "original": "Validator",
+    "short": "Een netwerkknooppunt dat transacties controleert en meedoet aan consensus.",
+    "desc": "Validators zijn betrouwbare deelnemers die het Stellar‑netwerk draaiende houden. Ze ontvangen transacties, controleren ze en stemmen met andere validators over wat in het volgende ledger komt. Iedereen kan een Stellar‑validator draaien: bedrijven, universiteiten of personen. De Stellar Development Foundation beheert enkele validators, maar is niet de enige autoriteit. Een gedecentraliseerd netwerk van validators maakt Stellar weerbaar tegen storingen en censuur."
+  },
+  "quorumSet": {
+    "title": "Quorum Set",
+    "original": "Quorum Set",
+    "short": "De set van validators die een node vertrouwt voor consensus.",
+    "desc": "In SCP kiest elke validator zelf welke validators hij vertrouwt: dat is zijn quorum set. Consensus ontstaat wanneer quorum sets elkaar overlappen en overeenstemming bereiken. Dit model heet Federated Byzantine Agreement (FBA). Het is flexibeler dan klassieke consensus: er is geen vaste lijst van vertrouwde nodes, maar een organisch groeiend vertrouwensnetwerk. De kwaliteit en decentralisatie van een quorum set beïnvloeden direct de veiligheid van het netwerk."
+  },
+  "sac": {
+    "title": "Stellar Asset Contract",
+    "original": "SAC – Stellar Asset Contract",
+    "short": "Een Soroban smart contract dat een klassiek Stellar‑asset bruikbaar maakt in smart contracts.",
+    "desc": "Met Soroban ontstond een probleem: bestaande Stellar‑assets (zoals USDC of XLM) moesten ook bruikbaar zijn in smart contracts. De Stellar Asset Contract lost dit op: het is een gestandaardiseerde smart‑contract interface voor elk Stellar‑asset. Daardoor kunnen Soroban‑dApps direct native Stellar‑assets gebruiken zonder ze om te zetten naar nieuwe tokens. SAC’s bestaan automatisch voor alle Stellar‑assets en hoeven niet handmatig te worden gemaakt."
   },
   "anchor": {
     "title": "Anker",
@@ -192,6 +245,144 @@
     "original": "Liquidity Pool",
     "short": "Gemeenschappelijk pool met twee tokens voor directe uitwisseling.",
     "desc": "Een liquiditeitspool is een gedeelde pot met twee tokens. Mensen storten beide tokens erin. Anderen mogen deze tokens vervolgens direct ruilen. De storters verdienen in ruil daarvoor kleine vergoedingen."
+  },
+  "onramp": {
+    "title": "Onramp",
+    "original": "Onramp",
+    "short": "Een dienst waarmee je crypto kunt kopen met fiatgeld (bijv. euro of Zwitserse frank).",
+    "desc": "Een onramp is het instappunt in crypto—de weg van traditioneel geld naar crypto. Veelgebruikte methoden zijn creditcard of bankoverschrijving. Aanbieders zoals Kado of Onramper laten je direct in een app kopen zonder een aparte beurs. Stellar Account Manager integreert onramps zodat je XLM en andere assets met fiat kunt kopen. Onramps vereisen meestal KYC."
+  },
+  "offramp": {
+    "title": "Offramp",
+    "original": "Offramp",
+    "short": "Een dienst waarmee je crypto terug naar fiat kunt verkopen.",
+    "desc": "De offramp is het tegenovergestelde van de onramp—de weg terug naar traditioneel geld. Je verkoopt je crypto‑assets en krijgt euro’s, francs of een andere fiatvaluta op je bankrekening. Op Stellar verzorgen anchors vaak de offramp: zij nemen bijvoorbeeld USDC‑tokens aan en sturen het overeenkomstige fiatbedrag. Offramps vereisen meestal KYC."
+  },
+  "kyc": {
+    "title": "Know Your Customer",
+    "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
+    "short": "Wettelijk verplichte identiteitscontrole die financiële diensten vragen voordat je ze gebruikt.",
+    "desc": "KYC (Know Your Customer) is een regelgevingsproces waarbij gebruikers hun identiteit bewijzen met documenten en soms een selfie. Het doel is het voorkomen van witwassen (AML), terrorismefinanciering en fraude. Decentrale protocollen zoals de Stellar DEX vereisen geen KYC—je handelt direct vanuit je wallet. Onramp- en offrampdiensten moeten wél KYC uitvoeren omdat ze fiat en crypto verbinden."
+  },
+  "defi": {
+    "title": "Gedecentraliseerde financiën",
+    "original": "DeFi – Decentralized Finance",
+    "short": "Financiële diensten zoals lenen, handelen en sparen—zonder banken, direct via blockchain‑protocollen.",
+    "desc": "DeFi is een verzamelterm voor financiële toepassingen die zonder centrale instellingen zoals banken of beurzen werken. Alles draait automatisch via smart contracts. Gebruikers houden controle over hun eigen geld. Typische DeFi‑toepassingen zijn gedecentraliseerde beurzen (DEX), leenprotocollen en liquiditeitspools. Stellar biedt basis‑DeFi via zijn ingebouwde DEX en AMM‑pools, uitgebreid met Soroban‑smart contracts."
+  },
+  "yield": {
+    "title": "Rendement / Yield",
+    "original": "Yield",
+    "short": "De opbrengst die je krijgt door kapitaal in DeFi‑protocollen te plaatsen.",
+    "desc": "In DeFi betekent yield de opbrengst uit activiteiten zoals liquiditeit leveren, staken of uitlenen. Het rendement wordt vaak als APY (Annual Percentage Yield) getoond. Hoge yields betekenen meestal hogere risico’s. Let op: extreem hoge yields (bijv. 1000% APY) zijn vaak een waarschuwingssignaal."
+  },
+  "staking": {
+    "title": "Staking",
+    "original": "Staking",
+    "short": "Het vastzetten van crypto in een netwerk om beloningen te krijgen en het netwerk te ondersteunen.",
+    "desc": "Bij staking worden coins vastgezet in een proof‑of‑stake netwerk om transacties te valideren en het netwerk te beveiligen. Stakers krijgen nieuwe coins als beloning. Stellar gebruikt geen klassiek staking‑model—XLM‑houders kunnen wel liquiditeit leveren en handelskosten verdienen. Belangrijk: onderscheid echt netwerk‑staking van “staking” bij centrale beurzen, wat vaak spaarproducten zijn."
+  },
+  "yieldFarming": {
+    "title": "Yield Farming",
+    "original": "Yield Farming",
+    "short": "Actief kapitaal verplaatsen tussen DeFi‑protocollen om maximale opbrengst te halen.",
+    "desc": "Yield farmers verplaatsen assets tussen pools en protocollen om de beste opbrengst te oogsten. Het kan aantrekkelijk zijn, maar is complex en riskant: impermanent loss, smart‑contract bugs en plotselinge dalingen in rendement kunnen winst wegvagen. Yield farming is geavanceerd en niet aangeraden voor beginners."
+  },
+  "dao": {
+    "title": "Gedecentraliseerde autonome organisatie",
+    "original": "DAO – Decentralized Autonomous Organization",
+    "short": "Een organisatie die via smart contracts en token‑stemmen wordt bestuurd zonder centrale leiding.",
+    "desc": "Een DAO is een digitale organisatie die wordt bestuurd door code en stemmen van token‑houders. Er is geen CEO of bestuur—besluiten worden genomen via governance‑stemmen. Elke token‑houder kan voorstellen indienen en stemmen. DAOs worden gebruikt voor protocolontwikkeling, treasury‑beheer en regelwijzigingen. Het concept is innovatief, maar kent risico’s zoals lage opkomst of gecoördineerde aanvallen."
+  },
+  "dapp": {
+    "title": "Gedecentraliseerde applicatie",
+    "original": "dApp – Decentralized Application",
+    "short": "Een app die op een blockchain draait en geen centrale controle heeft.",
+    "desc": "Een dApp ziet eruit als een normale app, maar draait op een blockchain in plaats van centrale servers. De code staat in smart contracts—openbaar en niet door één partij te controleren. Voorbeelden: gedecentraliseerde beurzen, lending‑protocollen of NFT‑marktplaatsen. Met Soroban ondersteunt Stellar dApps op zijn netwerk. dApps vereisen meestal een wallet‑koppeling in plaats van een klassiek login."
+  },
+  "oracle": {
+    "title": "Oracle",
+    "original": "Oracle",
+    "short": "Een dienst die real‑world data (bijv. prijzen, weer) beschikbaar maakt voor smart contracts.",
+    "desc": "Blockchains zijn standaard afgesneden van de buitenwereld—een smart contract kan niet zelf de Bitcoin‑prijs of de EUR/USD‑koers ophalen. Oracles lossen dit op door betrouwbare externe data naar de blockchain te brengen. Bekende oracle‑diensten zijn Chainlink en Pyth Network. Zonder oracles zouden veel DeFi‑toepassingen zoals lending‑protocollen of synthetische assets niet mogelijk zijn."
+  },
+  "cex": {
+    "title": "Gecentraliseerde beurs",
+    "original": "CEX – Centralized Exchange",
+    "short": "Een crypto-beurs die door een bedrijf wordt beheerd en als tussenpersoon tussen kopers en verkopers fungeert.",
+    "desc": "Bij een CEX zoals Coinbase, Binance of Kraken heb je geen directe controle over je coins – de beurs bewaart ze voor je. Dat is handig, maar brengt risico’s mee: wordt de beurs gehackt of gaat ze failliet, dan kunnen fondsen verloren gaan (voorbeeld: de FTX-crash in 2022). CEX’en vereisen meestal identiteitsverificatie (KYC). Een DEX laat je daarentegen direct vanuit je eigen wallet handelen zonder tussenpersoon."
+  },
+  "orderBook": {
+    "title": "Orderboek",
+    "original": "Order Book",
+    "short": "Een lijst met alle open koop- en verkooporders voor een handelspaar op een beurs.",
+    "desc": "Het orderboek toont in real time welke prijzen kopers willen betalen (bids) en verkopers willen ontvangen (asks). Het verschil tussen het hoogste bod en de laagste laatprijs heet de spread. Stellar heeft een ingebouwd gedecentraliseerd orderboek (SDEX – Stellar Decentralized Exchange) waarop iedereen assets kan verhandelen. Daarnaast bestaan er liquiditeitspools als alternatief voor het klassieke orderboekmodel."
+  },
+  "limitOrder": {
+    "title": "Limietorder",
+    "original": "Limit Order",
+    "short": "Een order die alleen wordt uitgevoerd tegen een bepaalde prijs of beter.",
+    "desc": "Met een limietorder bepaal je de maximale prijs die je wilt betalen of de minimale prijs waarvoor je wilt verkopen. De order komt in het orderboek en wacht tot iemand tegen die prijs wil handelen. Voordeel: je bepaalt de prijs. Nadeel: de order kan niet meteen of helemaal niet worden uitgevoerd. Op Stellar komt dit overeen met een “offer” in het gedecentraliseerde orderboek."
+  },
+  "marketOrder": {
+    "title": "Market order",
+    "original": "Market Order",
+    "short": "Een order die direct wordt uitgevoerd tegen de beste beschikbare marktprijs.",
+    "desc": "Een market order wordt meteen uitgevoerd tegen de beste beschikbare prijs in het orderboek. Dit garandeert uitvoering maar niet de prijs. Bij lage liquiditeit kan de uiteindelijke prijs flink afwijken van wat je verwacht (slippage). Market orders zijn goed voor snelheid; limietorders zijn beter als de prijs belangrijk is."
+  },
+  "offer": {
+    "title": "Aanbod",
+    "original": "Offer",
+    "short": "Een open koop- of verkoopaanbod in het gedecentraliseerde Stellar-orderboek.",
+    "desc": "Op Stellar kan iedereen een aanbod in het gedecentraliseerde orderboek plaatsen: bijvoorbeeld “Ik verkoop 100 XLM voor 0,10 USDC per stuk”. Het aanbod blijft open totdat het volledig is gevuld, handmatig verwijderd of vervangen door een nieuwe versie. Offers vormen de basis van de SDEX (Stellar Decentralized Exchange) en worden ook gebruikt voor path payments. Elk open aanbod verhoogt het minimumsaldo van het account met een base reserve."
+  },
+  "slippage": {
+    "title": "Slippage",
+    "original": "Slippage",
+    "short": "Het verschil tussen de verwachte prijs en de daadwerkelijke uitvoeringsprijs van een trade.",
+    "desc": "Slippage ontstaat wanneer de marktprijs beweegt tussen het plaatsen en uitvoeren van een order, of wanneer een trade zo groot is dat hij het orderboek “opvreet”. Voorbeeld: je wilt kopen op 1,00 USDC maar door lage liquiditeit wordt de trade uitgevoerd op 1,05 USDC – dat is 5% slippage. Bij liquiditeitspools is slippage vooral belangrijk bij grote trades. Veel DEX’en laten je een maximale slippage-tolerantie instellen."
+  },
+  "impermanentLoss": {
+    "title": "Tijdelijk verlies",
+    "original": "Impermanent Loss",
+    "short": "Een tijdelijk waardeverlies voor liquiditeitsaanbieders als de prijzen van de assets in de pool uit elkaar lopen.",
+    "desc": "Wie liquiditeit in een pool stopt, kan tijdelijk verlies lijden: als de prijsverhouding van de twee assets verandert, is de waarde bij opname lager dan wanneer je de assets gewoon had gehouden. Het heet “impermanent” omdat het verlies verdwijnt als de prijzen terugkeren naar de oorspronkelijke verhouding. Handelskosten kunnen dit verlies compenseren. Dit is belangrijk voor iedereen die liquiditeit levert op de Stellar DEX."
+  },
+  "amm": {
+    "title": "Geautomatiseerde market maker",
+    "original": "AMM – Automated Market Maker",
+    "short": "Een systeem op basis van smart contracts dat handelen zonder orderboek mogelijk maakt via prijsformules.",
+    "desc": "Een AMM vervangt het klassieke orderboek door een algoritme. In plaats van te wachten op een koper of verkoper, handel je direct met een liquiditeitspool. De prijs wordt automatisch berekend via een formule (meestal x × y = k). Hoe meer van een asset wordt gekocht, hoe duurder het wordt. Stellar heeft AMM-gebaseerde liquiditeitspools geïntroduceerd die naast het klassieke SDEX-orderboek bestaan."
+  },
+  "bullBearMarket": {
+    "title": "Bull- & bear market",
+    "original": "Bull & Bear Market",
+    "short": "Bull market = stijgende prijzen en optimisme. Bear market = dalende prijzen en pessimisme.",
+    "desc": "In een bull market stijgen de prijzen langdurig en zijn beleggers optimistisch. In een bear market dalen de prijzen (vaak meer dan 20% vanaf de top) en is het sentiment negatief. De symbolen: de stier duwt met de hoorns omhoog (stijging), de beer slaat met de poot naar beneden (daling). Cryptomarkten wisselen regelmatig tussen deze fases—vaak sterker en sneller dan traditionele markten."
+  },
+  "hodl": {
+    "title": "HODL",
+    "original": "HODL",
+    "short": "Crypto-slang voor het lang aanhouden van crypto, ongeacht prijsschommelingen.",
+    "desc": "HODL ontstond in 2013 door een typefout van “hold” op een Bitcoin-forum en werd een crypto-mantra. De strategie: kopen en lang vasthouden in plaats van kortetermijnhandel. Veel langetermijnbeleggers zweren erbij, omdat kortetermijnhandel vaak slechter presteert dan simpel vasthouden. Soms wordt HODL grappig uitgelegd als “Hold On for Dear Life”—vooral in volatiele markten."
+  },
+  "dca": {
+    "title": "Gemiddelde kostprijs",
+    "original": "DCA – Dollar Cost Averaging",
+    "short": "Een strategie waarbij je regelmatig een vast bedrag investeert, ongeacht de prijs.",
+    "desc": "In plaats van één keer een groot bedrag te investeren, investeer je regelmatig een vast bedrag (bijv. 50 € per maand) in XLM of Bitcoin. Bij lage prijzen koop je meer, bij hoge minder—zo wordt de gemiddelde prijs afgevlakt. DCA verkleint het risico om op het verkeerde moment in te stappen en is ideaal voor beginners en volatiele markten zoals crypto."
+  },
+  "portfolio": {
+    "title": "Portfolio",
+    "original": "Portfolio",
+    "short": "Het totale overzicht van iemands crypto-assets en investeringen.",
+    "desc": "Een portfolio is het overzicht van alles wat je bezit: welke coins en tokens je hebt, in welke hoeveelheid en wat ze nu waard zijn. Een goede portfolio-strategie bevat diversificatie: zet niet alles in één asset. In Stellar Account Manager kun je je portfolio direct bekijken—alle assets op je Stellar-accounts in één oogopslag."
+  },
+  "tvl": {
+    "title": "Total Value Locked",
+    "original": "TVL – Total Value Locked",
+    "short": "De totale waarde van alle assets die vastzitten in een DeFi-protocol of liquiditeitspool.",
+    "desc": "TVL is een belangrijke maatstaf in DeFi. Het toont hoeveel kapitaal is vastgezet in een protocol, een dApp of een liquiditeitspool. Een hoge TVL wijst op vertrouwen en actief gebruik. Op Stellar meet TVL de waarde van alle assets in liquiditeitspools. Platforms zoals DeFiLlama volgen TVL voor veel blockchains en protocollen."
   },
   "balanceClaimable": {
     "title": "Opvorderbaar saldo",
@@ -463,6 +654,36 @@
     "short": "Fraude via nepnieuws of websites.",
     "desc": "Net als een nep bank-e-mail die je in een val lokt. Het doel is dat je je inloggegevens weggeeft. Klik nooit blindelings op links."
   },
+  "scam": {
+    "title": "Scam",
+    "original": "Scam",
+    "short": "Een fraude in crypto die erop gericht is gebruikers hun assets af te nemen.",
+    "desc": "Scams komen helaas vaak voor in crypto, omdat transacties onomkeerbaar zijn en er geen centrale autoriteit is. Voorbeelden: nep‑giveaways (“Stuur 1 XLM, krijg 2 terug”), nep‑wallets, frauduleuze investeringsplatformen of nep‑support. Vuistregel: niemand geeft gratis crypto weg. Als het te mooi klinkt om waar te zijn, is het dat meestal niet. Deel nooit private keys of seed phrases—met niemand, nooit."
+  },
+  "rugPull": {
+    "title": "Rug Pull",
+    "original": "Rug Pull",
+    "short": "Een fraude waarbij ontwikkelaars plots alle liquiditeit weghalen en verdwijnen met het geld.",
+    "desc": "Een rug pull is een van de meest voorkomende DeFi‑scams. Patroon: een project maakt een token, bouwt hype op, trekt investeerders aan en haalt dan alle liquiditeit uit de pool. De prijs zakt naar nul en de ontwikkelaars verdwijnen. Waarschuwingssignalen: anoniem team, geen smart‑contract audit, onrealistisch hoge rendementen, zeer korte projectgeschiedenis. Investeer alleen in projecten met een transparant team en geaudite code."
+  },
+  "ponzi": {
+    "title": "Ponzi Scheme",
+    "original": "Ponzi Scheme",
+    "short": "Een frauduleus systeem waarbij opbrengsten van oude investeerders worden betaald met geld van nieuwe.",
+    "desc": "Een Ponzi‑schema belooft hoge rendementen maar betaalt die niet uit echte winst, maar uit geld van nieuwe investeerders. Het werkt zolang er nieuw geld binnenkomt en stort daarna in. In crypto zijn er veel Ponzi’s geweest, soms van miljarden. Waarschuwingssignalen: gegarandeerde hoge rendementen, druk om snel in te stappen, ondoorzichtige businessmodellen, focus op het werven van nieuwe leden."
+  },
+  "twoFactorAuth": {
+    "title": "Two-Factor Authentication",
+    "original": "2FA – Two-Factor Authentication",
+    "short": "Een extra beveiligingslaag die naast je wachtwoord een tweede stap vereist.",
+    "desc": "2FA beschermt accounts veel beter dan alleen een wachtwoord. Na het wachtwoord is een tweede factor nodig—bijvoorbeeld een code uit een authenticator‑app (Google Authenticator, Authy) of een SMS. Belangrijk: SMS‑2FA is minder veilig door SIM‑swapping. Zet 2FA aan op alle crypto‑exchange‑accounts. Let op: self‑custody wallets hebben geen 2FA—je private key is de enige bescherming."
+  },
+  "socialEngineering": {
+    "title": "Social Engineering",
+    "original": "Social Engineering",
+    "short": "Mensen manipuleren met psychologische trucs om informatie of toegang te krijgen.",
+    "desc": "Social engineering is vaak gevaarlijker dan technische aanvallen omdat het mensen uitbuit. Methoden: doen alsof je support bent en om de private key vragen; nep‑urgentie creëren (“Je account wordt geblokkeerd!”); vertrouwen winnen met valse identiteiten. In crypto geldt: geen legitieme support, geen Stellar‑medewerker en geen wallet‑app vraagt ooit om je private key of seed phrase. Nooit."
+  },
   "smartContract": {
     "title": "Slim contract",
     "original": "Smart Contract",
@@ -510,6 +731,204 @@
     "original": "Stellar vs. Bitcoin vs. Ethereum",
     "short": "Drie bekende blockchains met verschillende aandachtsgebieden.",
     "desc": "Bitcoin is als digitaal goud en wordt vaak gezien als een waardeopslag. Ethereum is als een platform voor programma's en apps. Stellar richt zich op betaalbare betalingen."
+  },
+  "mining": {
+    "title": "Mining",
+    "original": "Mining",
+    "short": "Het proces waarbij computers zware rekentaken oplossen om nieuwe blokken te maken en transacties te bevestigen.",
+    "desc": "Mining is de kern van Proof‑of‑Work blockchains zoals Bitcoin. Miners concurreren om als eerste een moeilijk rekenprobleem op te lossen. De winnaar voegt het volgende blok toe en krijgt nieuwe coins als beloning. Mining gebruikt enorme hoeveelheden stroom en gespecialiseerde hardware. Stellar heeft geen mining nodig—SCP is energiezuinig en bevestigt transacties in seconden."
+  },
+  "proofOfWork": {
+    "title": "Proof of Work",
+    "original": "Proof of Work",
+    "short": "Een consensusmechanisme dat rekenkracht gebruikt om transacties te valideren en nieuwe blokken te maken.",
+    "desc": "Proof of Work (PoW) is het oorspronkelijke consensusmechanisme van Bitcoin. Miners moeten veel rekenkracht inzetten om een geldig blok te maken—daardoor is aanvallen extreem duur. Nadeel: PoW verbruikt veel energie en is traag (Bitcoin ~7 transacties per seconde). Stellar en veel nieuwe blockchains kozen voor efficiëntere alternatieven."
+  },
+  "proofOfStake": {
+    "title": "Proof of Stake",
+    "original": "Proof of Stake",
+    "short": "Een consensusmechanisme waarbij validators coins vastzetten als zekerheid in plaats van rekenkracht.",
+    "desc": "Bij Proof of Stake (PoS) worden validators gekozen op basis van hun gestakete coins. Ethereum schakelde in 2022 over op PoS en verminderde het energieverbruik met meer dan 99%. PoS is efficiënter dan PoW, maar kent andere risico’s zoals machtsconcentratie bij grote holders. Stellar gebruikt geen PoW of PoS, maar zijn eigen Stellar Consensus Protocol (SCP)."
+  },
+  "fork": {
+    "title": "Fork",
+    "original": "Fork",
+    "short": "Een protocolwijziging die compatibel (soft fork) of incompatibel (hard fork) kan zijn.",
+    "desc": "Een soft fork is backward‑compatible—oude nodes kunnen blijven meedoen. Een hard fork is een grote wijziging die het netwerk kan splitsen: nodes die niet upgraden volgen de oude keten. Bekende hard forks: Bitcoin Cash (afgesplitst van Bitcoin in 2017) en Ethereum Classic (afgesplitst van Ethereum in 2016). Stellar voert protocolupdates uit via stemmen van validators—een ordelijk proces zonder ongecontroleerde splitsingen."
+  },
+  "layer1Layer2": {
+    "title": "Layer 1 / Layer 2",
+    "original": "Layer 1 / Layer 2",
+    "short": "Layer 1 is de basis‑blockchain; Layer 2 zijn oplossingen erbovenop voor schaal en uitbreiding.",
+    "desc": "Layer 1 (L1) is de hoofd‑blockchain zelf—bijv. Bitcoin, Ethereum of Stellar. Layer 2 (L2) zijn protocollen bovenop L1 om snelheid en kosten te verbeteren. Voorbeelden: Lightning Network (op Bitcoin) of Polygon (op Ethereum). Stellar is zelf een snelle en goedkope L1 dankzij SCP en heeft daarom minder L2‑oplossingen nodig dan Ethereum."
+  },
+  "bridge": {
+    "title": "Bridge",
+    "original": "Bridge",
+    "short": "Een protocol dat assets tussen twee verschillende blockchains verplaatst.",
+    "desc": "Omdat blockchains normaal geïsoleerd zijn, maken bridges het uitwisselen van assets tussen ketens mogelijk. Voorbeeld: een bridge tussen Ethereum en Stellar laat je USDC van Ethereum naar Stellar verplaatsen. Meestal worden assets op de bronketen vergrendeld en als wrapped tokens op de doelketen uitgegeven. Bridges zijn nuttig maar vaak doelwit van aanvallen. Op Stellar vervullen anchors vaak een vergelijkbare brugfunctie."
+  },
+  "interoperability": {
+    "title": "Interoperabiliteit",
+    "original": "Interoperability",
+    "short": "De mogelijkheid van verschillende blockchains om te communiceren en assets uit te wisselen.",
+    "desc": "Interoperabiliteit is een grote uitdaging in crypto. Vandaag bestaan er honderden blockchains die vaak niet met elkaar praten—als eilanden zonder bruggen. Oplossingen zijn bridges, cross‑chain‑protocollen of standaarden zoals IBC (Inter‑Blockchain Communication). Stellar heeft interoperabiliteit als kern­doel: het anchor‑systeem koppelt aan traditionele financiën en bridges verbinden Stellar met andere blockchains."
+  },
+  "whitepaper": {
+    "title": "Whitepaper",
+    "original": "Whitepaper",
+    "short": "Een technisch document dat het concept, de technologie en doelen van een crypto‑project beschrijft.",
+    "desc": "Het whitepaper is het oprichtingsdocument van een crypto‑project. Bitcoin werd gelanceerd via het whitepaper van Satoshi Nakamoto uit 2008. Een goed whitepaper legt het probleem, de oplossing, de technologie en de tokenomics uit. Voor je investeert, moet je het whitepaper lezen. Ontbreekt het of is het vaag, dan is dat vaak een waarschuwing. Het Stellar‑whitepaper beschrijft SCP en is openbaar."
+  },
+  "ico": {
+    "title": "ICO / Token Sale",
+    "original": "ICO – Initial Coin Offering",
+    "short": "Een financieringsmethode waarbij nieuwe tokens openbaar worden verkocht—vergelijkbaar met een IPO.",
+    "desc": "Een ICO is als een IPO voor crypto‑projecten. Het project verkoopt nieuwe tokens om kapitaal op te halen. ICO’s waren populair in 2017–2018, maar vaak ongereguleerd of frauduleus. Veel projecten leverden nooit een werkend product. Tegenwoordig is regelgeving strenger. Alternatieven zijn IEO (Initial Exchange Offering) of IDO (Initial DEX Offering). Beginners moeten zeer voorzichtig zijn met ICO‑investeringen."
+  },
+  "airdrop": {
+    "title": "Airdrop",
+    "original": "Airdrop",
+    "short": "Gratis distributie van tokens naar wallet‑adressen, meestal voor marketing of community.",
+    "desc": "Bij een airdrop ontvangen gebruikers gratis tokens—vaak als beloning voor vroege steun, community‑activiteit of simpelweg het bezitten van een bepaalde wallet. Airdrops zijn een populair marketingmiddel. Belangrijk: legitieme airdrops vragen nooit om private keys of voorafbetalingen. Veel airdrops zijn scams—geef nooit je private key om er één te claimen. Op Stellar kunnen airdrops netjes worden uitgevoerd via claimable balances."
+  },
+  "money": {
+    "title": "Geld",
+    "original": "Money",
+    "short": "Geld is een algemeen geaccepteerd ruilmiddel voor goederen en diensten.",
+    "desc": "Geld vervult drie functies: het is een ruilmiddel, een oppotmiddel en een rekeneenheid. Historisch gezien heeft geld vele vormen aangenomen – van schelpen tot goud tot de huidige bankbiljetten en digitaal geld. Modern geld wordt vooral gedekt door vertrouwen in de uitgevende overheid, niet door fysieke waarden."
+  },
+  "fiatCurrency": {
+    "title": "Fiatvaluta",
+    "original": "Fiat Currency",
+    "short": "Door de overheid uitgegeven valuta zonder dekking door een fysieke grondstof zoals goud.",
+    "desc": "Fiatvaluta's zoals de euro, dollar of frank hebben geen intrinsieke waarde – hun waarde is gebaseerd op vertrouwen in de uitgevende staat en zijn economie. Centrale banken kunnen fiatvaluta's in onbeperkte hoeveelheden drukken, wat tot inflatie kan leiden. Daarentegen is het aanbod van veel cryptovaluta's strikt beperkt."
+  },
+  "centralBank": {
+    "title": "Centrale bank",
+    "original": "Central Bank",
+    "short": "Overheidsinstelling die het monetaire beleid van een land of valutazone controleert.",
+    "desc": "Centrale banken zoals de Europese Centrale Bank (ECB) of de Amerikaanse Federal Reserve (Fed) controleren de geldhoeveelheid, stellen rentetarieven vast en waarborgen de stabiliteit van het financiële systeem. Ze kunnen geld drukken en hebben een monopolie op de uitgifte van contant geld. Cryptovaluta's zijn ontwikkeld als alternatief voor gecentraliseerde monetaire systemen – zonder centrale bank, zonder enkele controlerende autoriteit."
+  },
+  "inflation": {
+    "title": "Inflatie",
+    "original": "Inflation",
+    "short": "Algemene stijging van het prijsniveau die de koopkracht van geld vermindert.",
+    "desc": "Bij inflatie verliest geld na verloop van tijd aan waarde – je krijgt minder voor hetzelfde bedrag. Oorzaken zijn onder meer te veel geld in omloop, stijgende vraag of leveringsproblemen. Veel mensen zien Bitcoin en andere cryptovaluta's met beperkt aanbod als bescherming tegen inflatie, vergelijkbaar met goud. XLM daarentegen heeft een gematigd jaarlijks inflatiepercentage dat door het netwerk is vastgesteld."
+  },
+  "currency": {
+    "title": "Valuta",
+    "original": "Currency",
+    "short": "Een erkend waarde-uitwisselingssysteem binnen een bepaald economisch gebied.",
+    "desc": "Een valuta is het officiële betaalmiddel van een land of regio (bijv. EUR, USD, CHF). In de cryptowereld wordt de term vaak als synoniem gebruikt voor 'coin' of 'cryptovaluta'. Het verschil met een 'asset': een valuta dient primair als ruilmiddel, terwijl een asset een bredere term is voor elke waardeopslag – inclusief aandelen, vastgoed of tokens."
+  },
+  "cryptography": {
+    "title": "Cryptografie",
+    "original": "Cryptography",
+    "short": "Wetenschap van veilige communicatie door wiskundige versleutelingsmethoden.",
+    "desc": "Cryptografie is de basis van alle blockchaintechnologieën. Het zorgt ervoor dat gegevens alleen door bevoegde personen gelezen kunnen worden en dat transacties niet vervalst kunnen worden. Zonder cryptografie zouden Bitcoin, Stellar of welke andere cryptovaluta dan ook niet mogelijk zijn. De term komt van het Griekse 'kryptos' (verborgen) en 'graphein' (schrijven)."
+  },
+  "hash": {
+    "title": "Hash",
+    "original": "Hash",
+    "short": "Een unieke digitale vingerafdruk die berekend wordt uit willekeurige gegevens.",
+    "desc": "Een hashfunctie zet willekeurige gegevens (tekst, bestanden, transacties) om in een vaste tekenreeks – bijv. 'a3f8c2...'. Dezelfde invoergegevens produceren altijd dezelfde hash. Als ook maar één teken wordt gewijzigd, verandert de hash volledig. Dat maakt hashes ideaal voor het detecteren van manipulatie. In blockchains wordt elk blok uniek geïdentificeerd door zijn hash."
+  },
+  "encryption": {
+    "title": "Versleuteling",
+    "original": "Encryption",
+    "short": "Het omzetten van leesbare gegevens naar een onleesbaar formaat dat alleen met de juiste sleutel ontsleuteld kan worden.",
+    "desc": "Versleuteling beschermt gegevens tegen ongeautoriseerde toegang. Er zijn twee hoofdtypen: symmetrische versleuteling (één sleutel voor versleutelen en ontsleutelen) en asymmetrische versleuteling (publieke sleutel om te versleutelen, privésleutel om te ontsleutelen). Wallets en blockchaintransacties gebruiken asymmetrische versleuteling."
+  },
+  "digitalSignature": {
+    "title": "Digitale handtekening",
+    "original": "Digital Signature",
+    "short": "Cryptografisch bewijs dat een bericht of transactie door de rechtmatige eigenaar is geautoriseerd.",
+    "desc": "Een digitale handtekening werkt vergelijkbaar met een geschreven handtekening – alleen is hij onvervalsbaar. Op Stellar onderteken je elke transactie met je privésleutel. Het netwerk kan met je publieke sleutel controleren of de handtekening geldig is – zonder ooit je privésleutel te zien. Zonder geldige handtekening wordt een transactie door het netwerk afgewezen."
+  },
+  "publicKeyCryptography": {
+    "title": "Publieke-sleutelcryptografie",
+    "original": "Public-Key Cryptography",
+    "short": "Versleutelingsmethode met twee gekoppelde sleutels: een publieke en een privé.",
+    "desc": "Het principe: wat met de publieke sleutel versleuteld wordt, kan alleen met de privésleutel ontsleuteld worden – en omgekeerd. Je kunt je publieke sleutel (= je walletadres) vrij delen. Je privésleutel houd je geheim. Wie je privésleutel kent, heeft volledige toegang tot je account. Daarom geldt: deel nooit je privésleutel!"
+  },
+  "keyPair": {
+    "title": "Sleutelpaar",
+    "original": "Key Pair",
+    "short": "De combinatie van publieke en privésleutel die samen een crypto-account vormen.",
+    "desc": "Een sleutelpaar bestaat uit de publieke sleutel (je adres dat anderen mogen zien) en de privésleutel (je wachtwoord dat geheim blijft). Op Stellar wordt de publieke sleutel weergegeven als een G-adres, de privésleutel begint met S. Het sleutelpaar wordt wiskundig gegenereerd en is praktisch onmogelijk te vervalsen of te raden."
+  },
+  "signing": {
+    "title": "Ondertekenen",
+    "original": "Signing",
+    "short": "Het autoriseren van een transactie met de privésleutel van de rekeninghouder.",
+    "desc": "Voordat een transactie op het Stellar-netwerk wordt uitgevoerd, moet deze worden ondertekend. Met de privésleutel wordt een digitale handtekening aangemaakt die bewijst dat de rechtmatige rekeninghouder de transactie heeft goedgekeurd. Zonder geldige handtekening wordt de transactie door het netwerk afgewezen. Bij multisig-accounts zijn meerdere handtekeningen vereist."
+  },
+  "sequenceNumber": {
+    "title": "Volgnummer",
+    "original": "Sequence Number",
+    "short": "Een oplopend nummer dat elke transactie van een account uniek identificeert en dubbele uitgaven voorkomt.",
+    "desc": "Elk Stellar-account heeft een volgnummer dat bij elke transactie met 1 wordt verhoogd. Een transactie wordt alleen geaccepteerd als het volgnummer exact overeenkomt met de huidige accountsequentie +1. Dit voorkomt dat dezelfde transactie twee keer wordt uitgevoerd. Als je meerdere transacties tegelijk verstuurt, moeten ze in de juiste volgorde worden verwerkt."
+  },
+  "baseReserve": {
+    "title": "Basisreserve",
+    "original": "Base Reserve",
+    "short": "Het minimumbedrag aan XLM dat op een Stellar-account moet blijven en niet kan worden uitgegeven.",
+    "desc": "Op Stellar moet elk account een minimumsaldo in XLM aanhouden. Dit wordt berekend uit de basisreserve (momenteel 0,5 XLM) vermenigvuldigd met het aantal 'vermeldingen' op het account (bijv. trustlines, ondertekenaars, data-aanbiedingen). Een leeg account vereist minimaal 1 XLM (2 × 0,5 XLM). Elke trustline verhoogt het minimumsaldo met nog eens 0,5 XLM. Dit saldo is vergrendeld zolang de vermeldingen actief zijn."
+  },
+  "coin": {
+    "title": "Coin",
+    "original": "Coin",
+    "short": "De native cryptovaluta van een blockchain, die direct op die blockchain bestaat.",
+    "desc": "Een coin is de 'eigen' valuta van een blockchain. Bitcoin (BTC) is de coin van de Bitcoin-blockchain, Ether (ETH) de coin van Ethereum, XLM de coin van Stellar. Coins worden direct door het netwerkprotocol aangemaakt en dienen vooral om transactiekosten te betalen. In tegenstelling daarmee worden tokens door derden uitgegeven op een bestaande blockchain."
+  },
+  "coinVsToken": {
+    "title": "Coin vs. Token",
+    "original": "Coin vs. Token",
+    "short": "Coins zijn native valuta's van een blockchain, tokens worden door derden uitgegeven op een bestaande blockchain.",
+    "desc": "Het belangrijkste verschil: een coin bestaat op zijn eigen blockchain (BTC op Bitcoin, XLM op Stellar). Een token wordt door iemand aangemaakt op een al bestaande blockchain – bijv. een bedrijf dat op Stellar een eigen stablecoin uitgeeft. Tokens hebben geen eigen blockchain nodig. Op Stellar heten zelf aangemaakte tokens 'assets'. In het dagelijks gebruik worden de termen vaak door elkaar gehaald, wat tot verwarring leidt."
+  },
+  "nativeCoin": {
+    "title": "Native coin",
+    "original": "Native Coin",
+    "short": "Het oorspronkelijke betaalmiddel van een blockchain, beheerd door het netwerk zelf.",
+    "desc": "Elke blockchain heeft een native coin die wordt gebruikt voor transactiekosten en basale netwerkfuncties. Bij Stellar is XLM de native coin. Hij bestaat niet als token van een derde partij, maar is rechtstreeks in het protocol ingebouwd. De native coin dient vaak ook als middel tegen spam – op Stellar moet elke transactie een kleine XLM-vergoeding betalen."
+  },
+  "fungibility": {
+    "title": "Fungibiliteit",
+    "original": "Fungibility",
+    "short": "De eigenschap van een activum waarbij elke eenheid identiek en uitwisselbaar is met elke andere.",
+    "desc": "Een fungibel asset is als een bankbiljet: elk biljet van 10 euro is evenveel waard als elk ander. Bij cryptovaluta's zoals XLM, BTC of USDC is elke eenheid identiek – één XLM is altijd gelijk aan een andere XLM. Het tegenovergestelde zijn NFT's (Non-Fungible Tokens): elke NFT is uniek en niet uitwisselbaar. Fungibiliteit is een belangrijke eigenschap voor gebruik als valuta."
+  },
+  "wrappedToken": {
+    "title": "Wrapped Token",
+    "original": "Wrapped Token",
+    "short": "Een token die de waarde van een ander asset op een andere blockchain vertegenwoordigt.",
+    "desc": "Een wrapped token maakt het mogelijk om assets van de ene blockchain op een andere te gebruiken. Voorbeeld: Wrapped Bitcoin (WBTC) is een token op Ethereum die 1:1 gedekt is door echte Bitcoin. Het origineel wordt vastgezet in een smart contract en in ruil daarvoor wordt de wrapped token uitgegeven. Op Stellar kunnen bijv. Bitcoin of Ether als wrapped tokens worden uitgegeven door anchors, zodat ze op het Stellar-netwerk verhandeld kunnen worden."
+  },
+  "syntheticAsset": {
+    "title": "Synthetisch asset",
+    "original": "Synthetic Asset",
+    "short": "Een token die de prijs van een echt activum nabootst zonder het direct te bezitten.",
+    "desc": "Synthetische assets bootsen de waarde van andere activa na – bijv. aandelen, goud of valuta – zonder het origineel te bezitten. Ze worden beveiligd door smart contracts en onderpand. Een voorbeeld: een synthetisch Apple-aandelentoken volgt de koers van het echte aandeel, maar is een cryptotoken. Synthetische assets zijn een geavanceerd DeFi-concept."
+  },
+  "memeCoin": {
+    "title": "Meme Coin",
+    "original": "Meme Coin",
+    "short": "Een cryptovaluta gebaseerd op een internetmeme of grap, meestal zonder technisch nut.",
+    "desc": "Meme coins zoals Dogecoin (DOGE) of Shiba Inu (SHIB) ontstonden oorspronkelijk als grap, maar bereikten soms enorme marktwaarden door community-hype en aandacht op sociale media. Ze hebben doorgaans geen technische meerwaarde en zijn extreem speculatief. Hun waarde is bijna uitsluitend gebaseerd op sentiment en trends. Voor beginners zijn meme coins bijzonder risicovol."
+  },
+  "stellarAsset": {
+    "title": "Stellar Asset",
+    "original": "Stellar Asset",
+    "short": "Elk op het Stellar-netwerk uitgegeven activum, gedefinieerd door assetcode en uitgeveradres.",
+    "desc": "Op Stellar kan iedereen een eigen asset aanmaken – een bedrijf zijn loyaliteitstoken, een bank zijn stablecoin. Elk Stellar-asset wordt uniek geïdentificeerd door twee componenten: de assetcode (bijv. 'USD', 'MOBI', 'USDC') en het G-adres van de uitgever (issuer). Twee assets met dezelfde code maar verschillende uitgevers zijn verschillende assets. Om een Stellar-asset te ontvangen, moet je eerst een trustline naar de uitgever instellen."
+  },
+  "issuedAsset": {
+    "title": "Uitgegeven asset",
+    "original": "Issued Asset",
+    "short": "Een asset uitgegeven door een anchor of bedrijf op Stellar dat een reële tegenwaarde vertegenwoordigt.",
+    "desc": "Een uitgegeven asset is een Stellar-asset uitgegeven door een anchor dat een reële waarde vertegenwoordigt – bijv. Amerikaanse dollars, euro's of goud. De anchor bewaart de reële tegenwaarde en geeft overeenkomstige tokens uit op Stellar. Gebruikers kunnen deze tokens houden en verhandelen. Om het reële asset terug te krijgen, wissel je de tokens in bij de anchor (offramp). Bekende voorbeelden zijn USDC (Circle) of EURC."
   },
   "missingKey": "Ontbrekend woordenlijst sleutel: {{detail}}"
 }
