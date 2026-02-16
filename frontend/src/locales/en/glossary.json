@@ -15,7 +15,11 @@
     "networkProtocol": "Network & Protocol",
     "smartContracts": "Smart Contracts",
     "blockchainBasics": "Blockchain Basics",
-    "security": "Security & Fraud"
+    "security": "Security & Fraud",
+    "moneyFinance": "Money & Finance",
+    "cryptography": "Cryptography",
+    "defi": "DeFi",
+    "onrampOfframp": "Onramp / Offramp"
   },
   "blockchain": {
     "title": "Blockchain",
@@ -94,7 +98,8 @@
   "multisigCorporate": {
     "title": "Multisignature - Example",
     "original": "Multi-Signature - Example",
-    "short": "Example of a multi-signature structure for corporate accounts with roles, weights, and thresholds."
+    "short": "Example of a multi-signature structure for corporate accounts with roles, weights, and thresholds.",
+    "desc": "Example: A company sets up a Stellar account with three signers: CEO (weight 2), CFO (weight 2), and a board member (weight 1). The thresholds are configured so that low-security operations require weight 1, medium operations (e.g. payments) require weight 3, and high operations (e.g. changing signers) require weight 4. This means the CEO alone can view the account, but must cooperate with the CFO or both other signers for payments and configuration changes."
   },
   "trustline": {
     "title": "Trustline",
@@ -111,8 +116,8 @@
   "asset": {
     "title": "Asset",
     "original": "Asset",
-    "short": "Tokens on Stellar are always linked to an issuer.",
-    "desc": "On Stellar, a token is called an asset. An asset is always linked to an issuer account. For example, an account can issue a Euro token, and this Euro token is then considered an asset."
+    "short": "Any digital store of value on a blockchain – from cryptocurrencies to tokens to stablecoins.",
+    "desc": "An asset is, in the broadest sense, anything that represents value and can be transferred. On Stellar, anyone can issue an asset – e.g. an airline its miles as a token, a bank its dollar as a stablecoin. Every Stellar asset is defined by two things: the asset code (e.g. 'USDC') and the issuer (the G-address of the entity that created it). XLM is the only asset without an issuer, as it is the native asset of the network."
   },
   "xlm": {
     "title": "XLM",
@@ -150,6 +155,30 @@
     "short": "Very small amount per transaction.",
     "desc": "The fee is a very small amount that you pay with each transaction. The fee goes to the network. On Stellar, the fees are very low."
   },
+  "operations": {
+    "title": "Operation",
+    "original": "Operation",
+    "short": "The smallest unit of a Stellar transaction – a transaction can contain up to 100 operations.",
+    "desc": "On Stellar, a transaction is a container that holds one or more operations. An operation is a single action, for example sending a payment, creating a trustline, or placing an offer. Up to 100 operations can be bundled into a single transaction, which is very efficient. The transaction fee is calculated based on the number of operations included (default: 100 stroops per operation)."
+  },
+  "pathPayment": {
+    "title": "Path Payment",
+    "original": "Path Payment",
+    "short": "A payment where Stellar automatically performs one or more currency conversions to deliver the target asset.",
+    "desc": "With path payments you can, for example, send XLM and the recipient automatically receives USDC – Stellar finds the best exchange route through the decentralized market. The network searches available trading pairs and liquidity pools to find the cheapest path. This is especially useful for cross-border payments: the sender pays in their local currency and the recipient receives theirs. All in a single transaction."
+  },
+  "clawback": {
+    "title": "Clawback",
+    "original": "Clawback",
+    "short": "An optional Stellar feature that lets an asset issuer take back issued tokens from an account.",
+    "desc": "Clawback is a special feature on Stellar that supports regulatory requirements. If an issuer enables clawback when creating an asset, they can reclaim tokens from any account – for example in cases of fraud, money laundering, or legal requirements. For regulated financial products like security tokens, this feature is often legally required. Regular users do not need to worry as long as they use trustworthy issuers."
+  },
+  "sponsor": {
+    "title": "Sponsoring",
+    "original": "Sponsoring",
+    "short": "A Stellar feature where one account covers the base reserve for another account.",
+    "desc": "On Stellar, every account and entry (trustline, data entry, etc.) requires a minimum XLM balance (base reserve). Sponsoring lets one account cover this reserve for another. This is especially useful for apps that want to onboard new users without forcing them to buy XLM first. Example: an app sponsors account creation and trustlines for new users so they can start immediately without owning XLM."
+  },
   "ledger": {
     "title": "Ledger",
     "original": "Ledger",
@@ -168,6 +197,30 @@
     "short": "Describes how far back the transaction history provided by public Horizon servers extends.",
     "desc": "The public Horizon servers (Mainnet und Testnet) operated by the Stellar Development Foundation only provide a limited history – currently approximately one year retroactively. Older data can no longer be retrieved through these free endpoints. If you need to go further back in time, you essentially have two options: (1) you can run your own Horizon node with full history (inklusive History Archives), or (2) you can use third-party or paid services that store and provide long-term historical Stellar data.",
     "seeAlso": "Es wurde kein spezifischer Text zur Übersetzung bereitgestellt. Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
+  },
+  "scp": {
+    "title": "Stellar Consensus Protocol",
+    "original": "SCP – Stellar Consensus Protocol",
+    "short": "Stellar’s unique consensus mechanism that confirms transactions quickly without mining.",
+    "desc": "SCP is the heart of Stellar—the algorithm that decides how all network participants agree on the ledger state. Unlike Bitcoin (Proof of Work) or Ethereum (Proof of Stake), Stellar uses a federated voting method: each validator trusts a self‑chosen set of other validators (quorum set). This structure lets Stellar reach consensus in about 3–5 seconds without wasting energy on mining. SCP was designed by David Mazières (Stanford) and is formally proven secure."
+  },
+  "validator": {
+    "title": "Validator",
+    "original": "Validator",
+    "short": "A network node that checks transactions and takes part in consensus.",
+    "desc": "Validators are trusted participants that keep the Stellar network running. They receive transactions, verify them, and vote with other validators on which transactions go into the next ledger. Anyone can run a Stellar validator—companies, universities, or individuals. The Stellar Development Foundation runs some validators, but it is not the only authority. A decentralized set of validators makes Stellar resilient to outages and censorship."
+  },
+  "quorumSet": {
+    "title": "Quorum Set",
+    "original": "Quorum Set",
+    "short": "The set of validators a node trusts and needs for consensus.",
+    "desc": "In SCP, each validator chooses which other validators it trusts—this is its quorum set. Consensus happens when these quorum sets overlap and agree. This model is called Federated Byzantine Agreement (FBA). It is more flexible than classic consensus systems: there is no fixed list of trusted nodes, but an organically grown trust network. The quality and decentralization of a quorum set directly affect network security."
+  },
+  "sac": {
+    "title": "Stellar Asset Contract",
+    "original": "SAC – Stellar Asset Contract",
+    "short": "A Soroban smart contract that makes a classic Stellar asset usable in smart contracts.",
+    "desc": "With Soroban (Stellar smart contracts), a problem appeared: existing Stellar assets (like USDC or XLM) also needed to work inside smart contracts. The Stellar Asset Contract solves this—it is a standardized smart‑contract interface for every Stellar asset. This lets Soroban dApps use native Stellar assets directly without converting them into new tokens. SACs exist automatically for all Stellar assets and do not need to be created manually."
   },
   "anchor": {
     "title": "Anchor",
@@ -192,6 +245,144 @@
     "original": "Liquidity Pool",
     "short": "Common pool with two tokens for immediate exchange.",
     "desc": "A liquidity pool is a shared pot containing two tokens. People deposit both tokens into it. Others are then allowed to instantly exchange these tokens. The depositors earn small fees in return."
+  },
+  "onramp": {
+    "title": "Onramp",
+    "original": "Onramp",
+    "short": "A service that lets you buy cryptocurrencies with fiat money (e.g., euros or Swiss francs).",
+    "desc": "An onramp is the entry point into crypto—the path from traditional money to crypto. Common methods include credit card or bank transfer. Providers like Kado or Onramper let you buy directly in an app without visiting a separate exchange. The Stellar Account Manager integrates onramp services so you can buy XLM and other assets with fiat money. Onramps usually require KYC."
+  },
+  "offramp": {
+    "title": "Offramp",
+    "original": "Offramp",
+    "short": "A service that lets you sell cryptocurrencies back into fiat money.",
+    "desc": "The offramp is the opposite of the onramp—the path back to traditional money. You sell your crypto assets and receive euros, francs, or another fiat currency in your bank account. On Stellar, anchors often handle the offramp: they receive tokens like USDC and send the corresponding fiat amount. Offramps usually require KYC."
+  },
+  "kyc": {
+    "title": "Know Your Customer",
+    "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
+    "short": "A legally required identity check that financial services demand before you can use them.",
+    "desc": "KYC (Know Your Customer) is a regulatory process where users prove their identity with documents and sometimes a selfie. The goal is to prevent money laundering (AML), terrorist financing, and fraud. Decentralized protocols like the Stellar DEX do not require KYC—you trade directly from your wallet. Onramp and offramp services must perform KYC because they bridge fiat and crypto."
+  },
+  "defi": {
+    "title": "Decentralized Finance",
+    "original": "DeFi – Decentralized Finance",
+    "short": "Financial services like lending, trading, and saving—without banks, directly through blockchain protocols.",
+    "desc": "DeFi is an umbrella term for financial applications that work without central institutions like banks or exchanges. Everything runs automatically through smart contracts. Users keep control of their own funds. Typical DeFi applications include decentralized exchanges (DEX), lending protocols, and liquidity pools. Stellar offers basic DeFi functions with its built-in DEX and AMM liquidity pools, expanded by Soroban smart contracts."
+  },
+  "yield": {
+    "title": "Yield",
+    "original": "Yield",
+    "short": "The return or profit you earn by providing capital in DeFi protocols.",
+    "desc": "In DeFi, yield refers to earnings from activities like providing liquidity, staking, or lending. Returns are usually shown as APY (Annual Percentage Yield). High yields often come with high risk. Important: Very high promised yields (e.g., 1000% APY) are often a warning sign of unreliable projects."
+  },
+  "staking": {
+    "title": "Staking",
+    "original": "Staking",
+    "short": "Locking cryptocurrencies in a network to earn rewards and support the network.",
+    "desc": "In staking, coins are locked in a proof-of-stake network to validate transactions and secure the network. Stakers receive new coins as rewards. Stellar does not use classic staking—XLM holders can provide capital to liquidity pools and earn trading fees instead. Important: distinguish real network staking from “staking” offers on centralized exchanges, which are often just savings products."
+  },
+  "yieldFarming": {
+    "title": "Yield Farming",
+    "original": "Yield Farming",
+    "short": "Actively moving capital between DeFi protocols to get the highest yields.",
+    "desc": "Yield farmers move assets between different liquidity pools and protocols to harvest the best returns. It can be attractive, but it is complex and risky: impermanent loss, smart contract bugs, and sudden yield drops can erase gains. Yield farming is an advanced DeFi concept and not recommended for beginners."
+  },
+  "dao": {
+    "title": "Decentralized Autonomous Organization",
+    "original": "DAO – Decentralized Autonomous Organization",
+    "short": "An organization run by smart contracts and token votes without central leadership.",
+    "desc": "A DAO is like a digital organization governed by code and votes of token holders. There is no CEO or board—decisions are made through governance token voting. Any token holder can submit proposals and vote. DAOs are used for protocol development, treasury management, and rule changes. The concept is innovative but also carries risks like low voter participation or coordinated attacks."
+  },
+  "dapp": {
+    "title": "Decentralized Application",
+    "original": "dApp – Decentralized Application",
+    "short": "An application that runs on a blockchain and has no central control authority.",
+    "desc": "A dApp looks like a normal app to users but runs on a blockchain instead of central servers. Its code lives in smart contracts—publicly visible and not controlled by a single party. Examples include decentralized exchanges, lending protocols, or NFT marketplaces. With Soroban, Stellar enables dApps on its network. dApps usually require a wallet connection instead of a classic login."
+  },
+  "oracle": {
+    "title": "Oracle",
+    "original": "Oracle",
+    "short": "A service that brings real‑world data (e.g., prices or weather) to smart contracts on a blockchain.",
+    "desc": "Blockchains are cut off from the outside world by default—a smart contract cannot fetch the current Bitcoin price or the EUR/USD rate on its own. Oracles solve this by providing trusted external data to the blockchain. Well-known oracle services include Chainlink and Pyth Network. Without oracles, many DeFi applications like lending protocols or synthetic assets would not be possible."
+  },
+  "cex": {
+    "title": "Centralized Exchange",
+    "original": "CEX – Centralized Exchange",
+    "short": "A crypto exchange run by a company that acts as a middleman between buyers and sellers.",
+    "desc": "With a CEX like Coinbase, Binance, or Kraken, you do not directly own your coins – the exchange holds them for you. This is convenient but comes with risks: if the exchange is hacked or becomes insolvent, funds can be lost (example: the FTX collapse in 2022). CEXs usually require identity checks (KYC). In contrast, a DEX lets you trade directly from your own wallet without a middleman."
+  },
+  "orderBook": {
+    "title": "Order Book",
+    "original": "Order Book",
+    "short": "A list of all open buy and sell offers for a trading pair on an exchange.",
+    "desc": "The order book shows in real time the prices buyers are willing to pay (bids) and sellers are willing to accept (asks). The difference between the highest bid and the lowest ask is called the spread. Stellar has a built-in decentralized order book (SDEX – Stellar Decentralized Exchange) where anyone can trade assets. There are also liquidity pools as an alternative to the classic order-book model."
+  },
+  "limitOrder": {
+    "title": "Limit Order",
+    "original": "Limit Order",
+    "short": "A trade order that is executed only at a specific price or better.",
+    "desc": "With a limit order you set the maximum price you want to pay or the minimum price you want to sell for. The order is placed into the order book and waits until someone wants to trade at that price. Advantage: you control the price. Disadvantage: it may not execute immediately, or at all. On Stellar this corresponds to an \"offer\" in the decentralized order book."
+  },
+  "marketOrder": {
+    "title": "Market Order",
+    "original": "Market Order",
+    "short": "A trade order that executes immediately at the best available market price.",
+    "desc": "A market order executes immediately at the best available price in the order book. This guarantees execution but not price. With low liquidity, the actual fill price can differ noticeably from what you expected (slippage). Market orders are good for speed; limit orders are better when price matters."
+  },
+  "offer": {
+    "title": "Offer",
+    "original": "Offer",
+    "short": "An open buy or sell offer in the decentralized Stellar order book.",
+    "desc": "On Stellar anyone can place an offer in the decentralized order book: for example, \"I sell 100 XLM for 0.10 USDC each.\" The offer stays open until it is fully filled, manually removed, or replaced by a new version. Offers are the foundation of the SDEX (Stellar Decentralized Exchange) and are also used for path payments. Each open offer increases the account’s minimum balance by one base reserve."
+  },
+  "slippage": {
+    "title": "Slippage",
+    "original": "Slippage",
+    "short": "The difference between the expected price and the actual execution price of a trade.",
+    "desc": "Slippage happens when the market price moves between sending and executing an order, or when a trade is so large that it “eats through” the order book. Example: you want to buy at 1.00 USDC but due to low liquidity the trade executes at 1.05 USDC – that is 5% slippage. With liquidity pools, slippage is especially relevant for large trades. Many DEXs let you set a maximum slippage tolerance."
+  },
+  "impermanentLoss": {
+    "title": "Impermanent Loss",
+    "original": "Impermanent Loss",
+    "short": "A temporary loss for liquidity providers that happens when the prices of the pooled assets move apart.",
+    "desc": "When you provide liquidity to a pool, you can suffer impermanent loss: if the price ratio of the two assets changes, the value when you withdraw is worse than simply holding the assets. The loss is called “impermanent” because it disappears if prices return to the original ratio. Trading fees can offset this loss. This is an important concept for anyone providing liquidity on the Stellar DEX."
+  },
+  "amm": {
+    "title": "Automated Market Maker",
+    "original": "AMM – Automated Market Maker",
+    "short": "A smart-contract-based system that enables trading without a classic order book using mathematical pricing formulas.",
+    "desc": "An AMM replaces the classic order book with an algorithm. Instead of waiting for a buyer or seller, you trade directly with a liquidity pool. The price is calculated automatically by a formula (usually x × y = k). The more of one asset is bought, the more expensive it becomes. Stellar introduced AMM-based liquidity pools that exist alongside the classic SDEX order book."
+  },
+  "bullBearMarket": {
+    "title": "Bull & Bear Market",
+    "original": "Bull & Bear Market",
+    "short": "Bull market = rising prices and optimism. Bear market = falling prices and pessimism.",
+    "desc": "In a bull market prices rise for a longer time, investors are optimistic and buy. In a bear market prices fall (often more than 20% from the peak) and sentiment is negative. The symbols: the bull pushes upward with its horns (rising prices), the bear strikes downward with its paw (falling prices). Crypto markets regularly switch between these phases—often stronger and faster than traditional markets."
+  },
+  "hodl": {
+    "title": "HODL",
+    "original": "HODL",
+    "short": "Crypto slang for holding cryptocurrencies long-term regardless of price swings.",
+    "desc": "HODL began in 2013 from a typo of “hold” on a Bitcoin forum and became a crypto mantra. The strategy: buy and hold long-term instead of short-term trading. Many long-term investors swear by it because short-term trading often performs worse than simple holding. Sometimes HODL is jokingly interpreted as “Hold On for Dear Life”—especially in volatile markets."
+  },
+  "dca": {
+    "title": "Dollar Cost Averaging",
+    "original": "DCA – Dollar Cost Averaging",
+    "short": "An investment strategy where a fixed amount is invested regularly, no matter the current price.",
+    "desc": "Instead of investing one large amount, you invest a fixed amount regularly (e.g., $50 each month) into XLM or Bitcoin. When prices are low you buy more; when prices are high you buy less—this smooths the average price over time. DCA reduces the risk of entering at the wrong time and is especially suitable for beginners and volatile markets like crypto."
+  },
+  "portfolio": {
+    "title": "Portfolio",
+    "original": "Portfolio",
+    "short": "The total collection of a user’s held crypto assets and investments.",
+    "desc": "A portfolio is an overview of all assets you hold—what coins and tokens you own, in what amounts, and their current value. A good portfolio strategy includes diversification: don’t put everything into one asset. In the Stellar Account Manager you can view your portfolio directly—all assets across your Stellar accounts at a glance."
+  },
+  "tvl": {
+    "title": "Total Value Locked",
+    "original": "TVL – Total Value Locked",
+    "short": "The total value of all assets locked in a DeFi protocol or liquidity pool.",
+    "desc": "TVL is an important metric in DeFi. It shows how much capital is locked in a protocol, a dApp, or a liquidity pool. A high TVL suggests strong trust and active usage. On Stellar, TVL measures the value of all assets in liquidity pools. Platforms like DeFiLlama track TVL across many blockchains and protocols."
   },
   "balanceClaimable": {
     "title": "Claimable Balance",
@@ -463,6 +654,36 @@
     "short": "Fraud through fake news or websites.",
     "desc": "Like a fake bank email that lures you into a trap. The goal is for you to give away your login credentials. Never click on links blindly."
   },
+  "scam": {
+    "title": "Scam",
+    "original": "Scam",
+    "short": "A fraudulent scheme in crypto that aims to steal users’ assets.",
+    "desc": "Scams are sadly common in crypto because transactions are irreversible and there is no central authority to help. Typical scams: fake giveaways (\"Send 1 XLM, get 2 back\"), fake wallet apps, fraudulent investment platforms, or fake support staff. Rule of thumb: nobody gives away crypto. If it sounds too good to be true, it usually is. Never share private keys or seed phrases—with anyone, ever."
+  },
+  "rugPull": {
+    "title": "Rug Pull",
+    "original": "Rug Pull",
+    "short": "A scam where developers suddenly remove all liquidity and disappear with investors’ money.",
+    "desc": "A rug pull is one of the most common scams in DeFi and token projects. Pattern: a project launches a new token, builds hype, attracts investors—and then suddenly pulls all liquidity from the pool. The token price collapses to zero and the developers vanish. Red flags: anonymous team, no smart‑contract audit, unrealistically high return promises, very short project history. Only invest in projects with transparent teams and audited code."
+  },
+  "ponzi": {
+    "title": "Ponzi Scheme",
+    "original": "Ponzi Scheme",
+    "short": "A fraudulent scheme where returns to old investors are paid from new investors’ money.",
+    "desc": "A Ponzi scheme promises high returns but doesn’t pay them from real profits—it pays them from new investors’ capital. It appears to work as long as new money keeps coming, then collapses when it doesn’t. Crypto has seen many Ponzis, some worth billions. Red flags: guaranteed high returns, pressure to join quickly, opaque business models, and a focus on recruiting new members."
+  },
+  "twoFactorAuth": {
+    "title": "Two-Factor Authentication",
+    "original": "2FA – Two-Factor Authentication",
+    "short": "An extra security layer that requires a second step besides your password.",
+    "desc": "2FA protects accounts much better than a password alone. After entering your password, a second factor is required—e.g., a time‑based code from an authenticator app (Google Authenticator, Authy) or an SMS. Important: SMS‑based 2FA is less secure than app‑based due to SIM‑swapping attacks. Enable 2FA for all crypto exchange accounts. Note: self‑custody wallets have no 2FA—the private key is the only protection."
+  },
+  "socialEngineering": {
+    "title": "Social Engineering",
+    "original": "Social Engineering",
+    "short": "Manipulating people with psychological tricks to get confidential info or account access.",
+    "desc": "Social engineering is often more dangerous than technical attacks because it exploits people. Common tactics: pretending to be support and asking for a private key; creating fake urgency (\"Your account will be locked!\"); building trust with fake identities. In crypto, no legitimate support and no Stellar or wallet staff will ever ask for your private key or seed phrase. Never."
+  },
   "smartContract": {
     "title": "Smart contract",
     "original": "Smart Contract",
@@ -510,6 +731,204 @@
     "original": "Stellar vs. Bitcoin vs. Ethereum",
     "short": "Three well-known blockchains with different focuses.",
     "desc": "Bitcoin is like digital gold and is often seen as a store of value. Ethereum is like a platform for programs and apps. Stellar is focused on affordable payments."
+  },
+  "mining": {
+    "title": "Mining",
+    "original": "Mining",
+    "short": "The process where computers solve hard math to create new blocks and confirm transactions.",
+    "desc": "Mining is the core of Proof‑of‑Work blockchains like Bitcoin. Miners compete to solve a complex math puzzle first. The winner adds the next block and earns new coins as a reward. Mining uses huge amounts of electricity and specialized hardware. Stellar does not need mining—the SCP consensus is energy‑efficient and confirms transactions in seconds."
+  },
+  "proofOfWork": {
+    "title": "Proof of Work",
+    "original": "Proof of Work",
+    "short": "A consensus method that uses computing power to validate transactions and create new blocks.",
+    "desc": "Proof of Work (PoW) is the original blockchain consensus used by Bitcoin. Miners must spend massive computing power to create a valid block, making attacks extremely expensive. The downside: PoW uses a lot of energy and is slow (Bitcoin about 7 transactions per second). Stellar and many newer blockchains chose more efficient alternatives."
+  },
+  "proofOfStake": {
+    "title": "Proof of Stake",
+    "original": "Proof of Stake",
+    "short": "A consensus method where validators lock coins as security instead of using computing power.",
+    "desc": "In Proof of Stake (PoS), validators are chosen to create blocks based on the amount they stake. Ethereum switched from PoW to PoS in 2022 and reduced energy use by over 99%. PoS is more efficient than PoW, but has other risks like power concentration among large holders. Stellar uses neither PoW nor PoS, but its own Stellar Consensus Protocol (SCP)."
+  },
+  "fork": {
+    "title": "Fork",
+    "original": "Fork",
+    "short": "A change to the blockchain protocol that is either backward‑compatible (soft fork) or incompatible (hard fork).",
+    "desc": "A soft fork is backward‑compatible—old nodes can still participate. A hard fork is a major change that can split the network: nodes that don’t upgrade follow the old chain. Famous hard forks include Bitcoin Cash (split from Bitcoin in 2017) and Ethereum Classic (split from Ethereum in 2016). Stellar uses validator voting for protocol upgrades—an orderly process without uncontrolled splits."
+  },
+  "layer1Layer2": {
+    "title": "Layer 1 / Layer 2",
+    "original": "Layer 1 / Layer 2",
+    "short": "Layer 1 is the base blockchain; Layer 2 are add‑on solutions for scaling and extensions.",
+    "desc": "Layer 1 (L1) is the main blockchain itself—e.g., Bitcoin, Ethereum, or Stellar. Layer 2 (L2) are protocols built on top of L1 to improve speed and costs. Famous L2s include the Lightning Network (on Bitcoin) or Polygon (on Ethereum). Stellar is itself an L1 and is already fast and cheap thanks to SCP, so it needs fewer L2 solutions than Ethereum."
+  },
+  "bridge": {
+    "title": "Bridge",
+    "original": "Bridge",
+    "short": "A protocol that moves assets between two different blockchains.",
+    "desc": "Because blockchains are normally isolated, bridges enable transferring assets between them. Example: a bridge between Ethereum and Stellar lets you move USDC from Ethereum to Stellar. Technically, assets are usually locked on the source chain and issued as wrapped tokens on the target chain. Bridges are useful but often attacked—some of the largest crypto hacks were bridge exploits. On Stellar, anchors often provide a similar bridging role."
+  },
+  "interoperability": {
+    "title": "Interoperability",
+    "original": "Interoperability",
+    "short": "The ability of different blockchains to communicate and exchange assets.",
+    "desc": "Interoperability is a major challenge in crypto. Today there are hundreds of blockchains that often cannot talk to each other—like islands with no bridges. Solutions include bridges, cross‑chain protocols, or standards like IBC (Inter‑Blockchain Communication). Stellar has interoperability as a core goal: its anchor system connects to traditional finance, and bridges connect Stellar to other blockchains."
+  },
+  "whitepaper": {
+    "title": "Whitepaper",
+    "original": "Whitepaper",
+    "short": "A technical document that explains a crypto project’s concept, technology, and goals.",
+    "desc": "A whitepaper is the founding document of a crypto project. Bitcoin was introduced by Satoshi Nakamoto’s 2008 whitepaper. A good whitepaper explains the problem, the solution, the technology, and the tokenomics. Before investing, you should read a project’s whitepaper. If it’s missing or vague, that’s often a warning sign. The Stellar whitepaper describes SCP and is publicly available."
+  },
+  "ico": {
+    "title": "ICO / Token Sale",
+    "original": "ICO – Initial Coin Offering",
+    "short": "A funding method where new tokens are sold publicly—similar to an IPO.",
+    "desc": "An ICO (Initial Coin Offering) is like an IPO for crypto projects. The project sells new tokens to early investors to raise capital. ICOs were very popular in 2017–2018, but often unregulated or fraudulent. Many ICO projects never shipped a working product. Regulations are stricter today. Alternatives include IEOs (Initial Exchange Offerings) or IDOs (Initial DEX Offerings). Beginners should be very cautious with ICOs."
+  },
+  "airdrop": {
+    "title": "Airdrop",
+    "original": "Airdrop",
+    "short": "The free distribution of tokens to wallet addresses, usually for marketing or community reasons.",
+    "desc": "In an airdrop, users receive free tokens—often as a reward for early support, community activity, or just holding a specific wallet. Airdrops are a popular way to promote new projects. Important: legitimate airdrops never ask for private keys or upfront payments. Many airdrops are scams—never enter your private key to claim one. On Stellar, airdrops can be implemented cleanly via claimable balances."
+  },
+  "money": {
+    "title": "Money",
+    "original": "Money",
+    "short": "Money is a universally accepted medium of exchange for goods and services.",
+    "desc": "Money serves three functions: it is a medium of exchange, a store of value, and a unit of account. Historically, money has taken many forms – from shells to gold to today's banknotes and digital money. Modern money is mostly backed by trust in the issuing government, not by physical assets."
+  },
+  "fiatCurrency": {
+    "title": "Fiat Currency",
+    "original": "Fiat Currency",
+    "short": "Government-issued currency not backed by a physical commodity like gold.",
+    "desc": "Fiat currencies like the euro, dollar, or franc have no intrinsic value – their worth is based on trust in the issuing government and its economy. Central banks can print fiat currencies in unlimited quantities, which can lead to inflation. In contrast, the supply of many cryptocurrencies is strictly limited."
+  },
+  "centralBank": {
+    "title": "Central Bank",
+    "original": "Central Bank",
+    "short": "A government institution that controls the monetary policy of a country or currency zone.",
+    "desc": "Central banks like the European Central Bank (ECB) or the US Federal Reserve (Fed) control the money supply, set interest rates, and ensure the stability of the financial system. They can print money and hold a monopoly on issuing cash. Cryptocurrencies were developed as an alternative to centralized monetary systems – without a central bank, without a single controlling authority."
+  },
+  "inflation": {
+    "title": "Inflation",
+    "original": "Inflation",
+    "short": "A general rise in price levels that reduces the purchasing power of money.",
+    "desc": "With inflation, money loses value over time – you get less for the same amount. Causes include too much money in circulation, rising demand, or supply shortages. Many people see Bitcoin and other cryptocurrencies with limited supply as a hedge against inflation, similar to gold. XLM, on the other hand, has a moderate annual inflation rate set by the network."
+  },
+  "currency": {
+    "title": "Currency",
+    "original": "Currency",
+    "short": "A recognized value exchange system within a specific economic area.",
+    "desc": "A currency is the official means of payment in a country or region (e.g. EUR, USD, CHF). In the crypto space, the term is often used interchangeably with 'coin' or 'cryptocurrency'. The difference from an 'asset': a currency primarily serves as a medium of exchange, while an asset is a broader term for any store of value – including stocks, real estate, or tokens."
+  },
+  "cryptography": {
+    "title": "Cryptography",
+    "original": "Cryptography",
+    "short": "The science of secure communication through mathematical encryption methods.",
+    "desc": "Cryptography is the foundation of all blockchain technologies. It ensures that data can only be read by authorized persons and that transactions cannot be forged. Without cryptography, Bitcoin, Stellar, or any other cryptocurrency would not be possible. The term comes from the Greek 'kryptos' (hidden) and 'graphein' (to write)."
+  },
+  "hash": {
+    "title": "Hash",
+    "original": "Hash",
+    "short": "A unique digital fingerprint computed from any data.",
+    "desc": "A hash function converts any data (text, files, transactions) into a fixed string of characters – e.g. 'a3f8c2...'. The same input data always produces the same hash. If even a single character is changed, the hash changes completely. This makes hashes ideal for detecting tampering. In blockchains, each block is uniquely identified by its hash."
+  },
+  "encryption": {
+    "title": "Encryption",
+    "original": "Encryption",
+    "short": "Converting readable data into an unreadable format that can only be decrypted with the correct key.",
+    "desc": "Encryption protects data from unauthorized access. There are two main types: symmetric encryption (one key for both encrypting and decrypting) and asymmetric encryption (public key to encrypt, private key to decrypt). Wallets and blockchain transactions use asymmetric encryption."
+  },
+  "digitalSignature": {
+    "title": "Digital Signature",
+    "original": "Digital Signature",
+    "short": "Cryptographic proof that a message or transaction was authorized by its rightful owner.",
+    "desc": "A digital signature works similarly to a handwritten signature – only it is forgery-proof. On Stellar, you sign every transaction with your private key. The network can verify with your public key whether the signature is valid – without ever seeing your private key. Without a valid signature, a transaction is rejected by the network."
+  },
+  "publicKeyCryptography": {
+    "title": "Public-Key Cryptography",
+    "original": "Public-Key Cryptography",
+    "short": "An encryption method using two linked keys: one public and one private.",
+    "desc": "The principle: what is encrypted with the public key can only be decrypted with the private key – and vice versa. You can freely share your public key (= your wallet address). Your private key stays secret. Anyone who knows your private key has full access to your account. Therefore: never share your private key!"
+  },
+  "keyPair": {
+    "title": "Key Pair",
+    "original": "Key Pair",
+    "short": "The combination of a public and private key that together form a crypto account.",
+    "desc": "A key pair consists of the public key (your address that others may see) and the private key (your password that stays secret). On Stellar, the public key is represented as a G-address, while the private key starts with S. The key pair is generated mathematically and is practically impossible to forge or guess."
+  },
+  "signing": {
+    "title": "Signing",
+    "original": "Signing",
+    "short": "Authorizing a transaction with the account holder's private key.",
+    "desc": "Before a transaction is executed on the Stellar network, it must be signed. The private key is used to create a digital signature that proves the rightful account holder has approved the transaction. Without a valid signature, the transaction is rejected by the network. For multisig accounts, multiple signatures are required."
+  },
+  "sequenceNumber": {
+    "title": "Sequence Number",
+    "original": "Sequence Number",
+    "short": "A sequential number that uniquely identifies each transaction of an account and prevents double spending.",
+    "desc": "Every Stellar account has a sequence number that increases by 1 with each transaction. A transaction is only accepted if its sequence number matches exactly the current account sequence +1. This prevents the same transaction from being executed twice. If you send multiple transactions at the same time, they must be processed in the correct order."
+  },
+  "baseReserve": {
+    "title": "Base Reserve",
+    "original": "Base Reserve",
+    "short": "The minimum amount of XLM that must remain in a Stellar account and cannot be spent.",
+    "desc": "On Stellar, every account must hold a minimum balance in XLM. This is calculated from the base reserve (currently 0.5 XLM) multiplied by the number of 'entries' on the account (e.g. trustlines, signers, data offers). An empty account requires at least 1 XLM (2 × 0.5 XLM). Each trustline increases the minimum balance by an additional 0.5 XLM. This balance is locked as long as the entries are active."
+  },
+  "coin": {
+    "title": "Coin",
+    "original": "Coin",
+    "short": "The native cryptocurrency of a blockchain that exists directly on that blockchain.",
+    "desc": "A coin is the 'own' currency of a blockchain. Bitcoin (BTC) is the coin of the Bitcoin blockchain, Ether (ETH) the coin of Ethereum, XLM the coin of Stellar. Coins are created directly by the network protocol and are mostly used to pay transaction fees. In contrast, tokens are issued by third parties on an existing blockchain."
+  },
+  "coinVsToken": {
+    "title": "Coin vs. Token",
+    "original": "Coin vs. Token",
+    "short": "Coins are native currencies of a blockchain, tokens are issued by third parties on an existing blockchain.",
+    "desc": "The main difference: a coin exists on its own blockchain (BTC on Bitcoin, XLM on Stellar). A token is created by someone on an already existing blockchain – e.g. a company issuing its own stablecoin on Stellar. Tokens do not need their own blockchain. On Stellar, self-created tokens are called 'assets'. In everyday language, the terms are often mixed up, which leads to confusion."
+  },
+  "nativeCoin": {
+    "title": "Native Coin",
+    "original": "Native Coin",
+    "short": "The original means of payment of a blockchain, managed by the network itself.",
+    "desc": "Every blockchain has a native coin used for transaction fees and basic network functions. On Stellar, XLM is the native coin. It does not exist as a third-party token but is built directly into the protocol. The native coin is also often a means of spam prevention – on Stellar, every transaction must pay a small XLM fee."
+  },
+  "fungibility": {
+    "title": "Fungibility",
+    "original": "Fungibility",
+    "short": "The property of an asset where every unit is identical and interchangeable with any other.",
+    "desc": "A fungible asset is like a banknote: every 10-dollar bill is worth just as much as any other. With cryptocurrencies like XLM, BTC, or USDC, every unit is identical – one XLM is always equal to another XLM. The opposite are NFTs (Non-Fungible Tokens): each NFT is unique and not interchangeable. Fungibility is an important property for use as a currency."
+  },
+  "wrappedToken": {
+    "title": "Wrapped Token",
+    "original": "Wrapped Token",
+    "short": "A token that represents the value of another asset on a different blockchain.",
+    "desc": "A wrapped token makes it possible to use assets from one blockchain on another. Example: Wrapped Bitcoin (WBTC) is a token on Ethereum that is backed 1:1 by real Bitcoin. The original is locked in a smart contract, and in return the wrapped token is issued. On Stellar, Bitcoin or Ether can be issued as wrapped tokens by anchors, allowing them to be traded on the Stellar network."
+  },
+  "syntheticAsset": {
+    "title": "Synthetic Asset",
+    "original": "Synthetic Asset",
+    "short": "A token that replicates the price of a real-world asset without directly owning it.",
+    "desc": "Synthetic assets replicate the value of other assets – e.g. stocks, gold, or currencies – without owning the original. They are secured through smart contracts and collateral. An example: a synthetic Apple stock token follows the price of the real stock but is a crypto token. Synthetic assets are an advanced DeFi concept."
+  },
+  "memeCoin": {
+    "title": "Meme Coin",
+    "original": "Meme Coin",
+    "short": "A cryptocurrency based on an internet meme or joke that usually has no technical utility.",
+    "desc": "Meme coins like Dogecoin (DOGE) or Shiba Inu (SHIB) originally started as a joke but sometimes reached enormous market values through community hype and social media attention. They generally have no technical added value and are extremely speculative. Their value is based almost entirely on sentiment and trends. For beginners, meme coins are particularly risky."
+  },
+  "stellarAsset": {
+    "title": "Stellar Asset",
+    "original": "Stellar Asset",
+    "short": "Any asset issued on the Stellar network, defined by its asset code and issuer address.",
+    "desc": "On Stellar, anyone can create their own asset – a company its loyalty token, a bank its stablecoin. Every Stellar asset is uniquely identified by two components: the asset code (e.g. 'USD', 'MOBI', 'USDC') and the G-address of the issuer. Two assets with the same code but different issuers are different assets. To receive a Stellar asset, you must first set up a trustline to the issuer."
+  },
+  "issuedAsset": {
+    "title": "Issued Asset",
+    "original": "Issued Asset",
+    "short": "An asset issued by an anchor or company on Stellar that represents a real-world counterpart.",
+    "desc": "An issued asset is a Stellar asset issued by an anchor that represents a real-world value – e.g. US dollars, euros, or gold. The anchor holds the real counterpart and issues corresponding tokens on Stellar. Users can hold and trade these tokens. To get back the real asset, you redeem the tokens with the anchor (offramp). Well-known examples are USDC (Circle) or EURC."
   },
   "missingKey": "Missing glossary key: {{detail}}"
 }

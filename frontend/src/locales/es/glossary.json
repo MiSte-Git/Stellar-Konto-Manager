@@ -1,515 +1,934 @@
 {
-  "pageTitle": "Glosario",
-  "pageIntro": "Aquí encontrarás términos importantes del mundo de blockchain y de la red Stellar. Todo está explicado en palabras sencillas.",
-  "searchLabel": "Término de búsqueda",
-  "searchPlaceholder": "Término de búsqueda (z. B. Konto, Account, Muxed)",
-  "searchHint": "La búsqueda encuentra palabras y explicaciones.",
-  "noResults": "Sin coincidencia.",
-  "groups": {
-    "accountsKeys": "Accounts & Keys",
-    "multisigSecurity": "Multisig & Account Security",
-    "walletsCustody": "Wallets & Custody",
-    "tokensAssets": "Token & Assets",
-    "transactionsFees": "Transactions & Fees",
-    "marketsTrading": "Markets & Trading",
-    "networkProtocol": "Network & Protocol",
-    "smartContracts": "Contratos inteligentes",
-    "blockchainBasics": "Fundamentos de Blockchain",
-    "security": "Security & Fraud"
-  },
-  "blockchain": {
-    "title": "Blockchain",
-    "original": "Blockchain",
-    "short": "Shared digital ledger – many computers store the same entries.",
-    "desc": "Una blockchain es como un libro mayor digital. Muchos ordenadores almacenan las mismas entradas, asegurando que nadie pueda hacer cambios en secreto."
-  },
-  "wallet": {
-    "title": "Cartera",
-    "original": "Wallet",
-    "short": "Monedero digital que gestiona tus llaves.",
-    "desc": "Un monedero es tu cartera digital. Gestiona las claves que necesitas para acceder a tu cuenta y enviar transacciones. Un monedero puede ser un programa, una aplicación o incluso un simple trozo de papel con tu clave privada."
-  },
   "account": {
-    "title": "Cuenta",
+    "desc": "Una cuenta es la ubicación en la blockchain donde se mantienen tus activos. Una cuenta tiene una dirección pública que comienza con G. Múltiples monederos pueden acceder a la misma cuenta si tienen la clave correcta.",
     "original": "Account",
     "short": "Una cuenta de blockchain puede mantener activos y enviar transacciones.",
-    "desc": "Una cuenta es la ubicación en la blockchain donde se mantienen tus activos. Una cuenta tiene una dirección pública que comienza con G. Múltiples monederos pueden acceder a la misma cuenta si tienen la clave correcta."
-  },
-  "addressG": {
-    "title": "Lo siento, no puedo ayudar con esa solicitud.",
-    "original": "G Address",
-    "short": "La dirección principal pública de una cuenta de Stellar (beginnt mit G).",
-    "desc": "La dirección G es la dirección principal de una cuenta Stellar. Comienza con la letra G. La proporcionas a otros para que puedan enviarte algo."
-  },
-  "publicKey": {
-    "title": "Clave pública",
-    "original": "Public Key",
-    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
-    "desc": "La clave pública es la dirección que puedes compartir. En Stellar, esta es la dirección G. Otros la usan para enviarte dinero."
-  },
-  "privateKey": {
-    "title": "Clave secreta",
-    "original": "Secret Key",
-    "short": "Password for the account – never share it.",
-    "desc": "La clave secreta es tu contraseña para la cuenta. Quien tenga esta clave puede mover tu dinero. Nunca la compartas."
-  },
-  "addressFederation": {
-    "title": "Dirección de la federación",
-    "original": "Federation Address",
-    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
-    "desc": "Una dirección de federación se parece a un correo electrónico. Ejemplo: nombre*dominio.com. Esta dirección corta apunta a una dirección G regular. Es más fácil de recordar."
-  },
-  "addressMuxed": {
-    "title": "Cuenta mezclada",
-    "original": "Muxed Account",
-    "short": "M‑address with additional ID – shares a base account.",
-    "desc": "Una dirección M apunta a una cuenta existente de Stellar pero tiene un número adicional (ID).\n\nCuentas multiplexadas = Cuenta G + ID (M-Adresse)\nProporcionan asociación, pero no separación de cuentas.\nEl saldo, las líneas de confianza, los firmantes y las banderas siempre están en la cuenta G.\n\nFundación para el Desarrollo de Stellar\n\nPor ejemplo, se puede distinguir a múltiples individuos o departamentos bajo la misma dirección G. Técnicamente, el dinero sigue perteneciendo a la cuenta principal."
-  },
-  "muxedAccountsUseCases": {
-    "title": "Casos de uso para cuentas multiplexadas",
-    "original": "Muxed accounts use cases",
-    "short": "Ejemplos, beneficios y limitaciones de las direcciones M como una ayuda para mapeo.",
-    "desc": "Compañía - Ejemplo\n\nConfiguración:\n- Una cuenta G de la compañía\n- Una dirección M por cliente/caso de uso (ID)\n\nProceso:\n- El cliente paga a su dirección M\n- Todo va a la cuenta G de la compañía\n- Contabilidad lee el ID -> asignación única\n\nAdecuado para:\n- Tiendas, proveedores de pago, intercambios\n- Referencias internas sin riesgos de memo\n\nAsociación - Ejemplo\n\nConfiguración:\n- Una cuenta G de la asociación\n- Direcciones M para miembros, departamentos, propósitos\n\nProceso:\n- Contribución/donación a la dirección M adecuada\n- Asignación vía ID, sin errores de memo\n\nAdecuado para:\n- Cuotas de membresía\n- Ingresos asignados\n- Auditorías sencillas\n\nEn qué sobresalen las Cuentas Multiplicadas:\n- Asignación robusta de entradas\n- Una cuenta, muchas identidades\n- Sin requisito de memo\n- Menos errores operacionales\n\nLo que no son las Cuentas Multiplicadas:\n- No son subcuentas\n- Sin saldo individual\n- Sin líneas de confianza individuales\n- Sin firmantes/derechos individuales\n\nCasos de uso típicamente inadecuados:\n- Pagos de salario/cuentas de nómina (benoetigen eigenes G-Konto)\n- Confianza/Escrow para terceros (kein rechtlicher Vermoegenstrenner)\n- Seguridad basada en roles (keine getrennten Signer/Thresholds)\n- Separación de presupuesto o límite (keine separaten Salden/Asset-Limits)\n- Cuentas separadas por cumplimiento (KYC/Reporting nicht sauber trennbar)\n\nComparación (Kurz):\nAsignar pagos: Sí\nSeparar activos: No\nDelegar acceso: No\nLegalmente cuenta separada: No\nContabilidad interna: Sí\n\nConclusión clave:\nLas Cuentas Multiplicadas abordan los pagos - no reemplazan las cuentas.\nSi se necesita control, propiedad o separación -> cuenta G propia."
-  },
-  "multisig": {
-    "title": "Multifirma",
-    "original": "Multi‑Sig",
-    "short": "Las acciones importantes requieren más que una firma.",
-    "desc": "Multi-Sig significa múltiples firmas. Una acción importante requiere más de una clave. Ejemplo: Tú y una segunda clave deben estar de acuerdo antes de que se envíe algo. Esto hace que el robo sea más difícil.",
-    "help": {
-      "title": "Explicación general de una cuenta de empresa multisignature (Multi-Signature)",
-      "intro": "Una empresa puede usar una cuenta de blockchain compartida en la que participan varias personas autorizadas. Normalmente, se incluyen al menos tres signatarios (Signer), por ejemplo, la gerencia, el responsable financiero y cumplimiento/copias de seguridad. El objetivo es que las personas individuales puedan ejecutar pagos de manera independiente, sin permitir que una sola persona controle o se apropie de la cuenta por sí sola.",
-      "problem": "Si un firmante (Signer) tiene suficiente peso para ejecutar pagos y simultáneamente tiene suficiente peso para realizar cambios en la cuenta, esa persona podría eliminar a otros firmantes (Signer) o ajustar el umbral/peso (Thresholds) y así tomar el control de la cuenta. Por el contrario, el propietario original tampoco debería poder excluir fácilmente a otros firmantes (Signer) sin controles y equilibrios. Una estructura de firmas múltiples asegura que las decisiones importantes siempre sean tomadas colectivamente por varias personas.",
-      "setupTitle": "Ejemplo de una estructura de firma múltiple segura con tres firmantes",
-      "setupWeights": "En un ejemplo con tres roles iguales, todos reciben la misma fuerza de firma:\n- Firmante (Signer) A (Management): Peso 2\n- Firmante (Signer) B (Finanzen): Peso 2\n- Firmante (Signer) C (Compliance/Backup): Peso 2",
-      "setupThresholds": "Los umbrales/pesos apropiados se establecen de la siguiente manera:\n- Bajo (low_threshold): 1\n- Medio (med_threshold): 2 (for payments and other medium actions)\n- Alto (high_threshold): 4 (para cambios estructurales como agregar/eliminar firmantes (Signer) o cambiar el umbral/peso (Thresholds))\nEsto asegura que cada persona autorizada pueda ejecutar pagos, pero ninguna persona individual pueda alterar la estructura de la cuenta por sí sola.",
-      "behavior": "Con esta configuración, los pagos pueden ser realizados por cualquiera de las tres personas elegibles por sí sola, ya que el peso de cada individuo cumple con el umbral medio. Para cambios estructurales como eliminar un firmante, ajustar los umbrales/pesos, o fusionar o cerrar la cuenta, se requiere el umbral alto. Este valor solo se puede alcanzar cuando al menos dos de los tres firmantes firman juntos. Este arreglo mantiene la cuenta flexible para el uso diario mientras proporciona una fuerte protección contra el mal uso.",
-      "removal": "Si una persona deja la empresa o ya no es confiable, dos de los firmantes restantes (Signer) pueden conjuntamente eliminar los derechos de firma de esa persona. Ningún firmante individual (Signer) –ni un empleado ni la dirección– puede excluir a otros de la cuenta de manera independiente. La revocación de permisos se realiza siempre de manera controlada y comprensible por al menos dos responsables.",
-      "summary": "Este tipo de estructura multi-firma permite a las partes individuales procesar pagos de manera eficiente mientras mantienen el control de la cuenta entre múltiples participantes. Reduce el riesgo de apropiaciones de cuentas, protege contra decisiones unilaterales y es particularmente adecuada para cuentas corporativas donde tanto la seguridad como la flexibilidad operativa son importantes.",
-      "closeLabel": "Cerrar",
-      "linkLabel": "¿Qué significa Multi-Signature?",
-      "glossaryLinkLabel": "Ver en el glosario"
-    }
-  },
-  "multisigCorporate": {
-    "title": "Multifirma - Ejemplo",
-    "original": "Multi-Signature - Example",
-    "short": "Ejemplo de una estructura de firmas múltiples para cuentas corporativas con roles, pesos y umbrales."
-  },
-  "trustline": {
-    "title": "Línea de confianza",
-    "original": "Trustline",
-    "short": "Acuerdo para mantener un token de un emisor específico.",
-    "desc": "Una línea de confianza es como un \"Sí, acepto este token\". Al configurarla, estás indicando que tu cuenta está lista para recibir un token específico de un emisor específico. Sin una línea de confianza, no puedes recibir este token.\n\nEjemplo: Una línea de confianza se especifica como CÓDIGO:EMISOR. Para EURT del emisor GDUKMGUGDZQK6Y…, sería EURT:GDUKMGUGDZQK6Y…"
-  },
-  "token": {
-    "title": "Ficha",
-    "original": "Token",
-    "short": "Digital unit – for example, money, points, or credits.",
-    "desc": "Un token es una unidad digital en la cadena de bloques. Un token puede representar dinero, puntos o créditos para un servicio."
-  },
-  "asset": {
-    "title": "Activo",
-    "original": "Asset",
-    "short": "Los tokens en Stellar siempre están vinculados a un emisor.",
-    "desc": "En Stellar, un token se llama activo. Un activo siempre está vinculado a una cuenta emisora. Por ejemplo, una cuenta puede emitir un token en euros, y este token en euros se considera un activo."
-  },
-  "xlm": {
-    "title": "XLM",
-    "original": "XLM",
-    "short": "Moneda nativa de Stellar para tarifas y activación.",
-    "desc": "XLM es la moneda nativa de Stellar. Necesitas XLM para pagar tarifas y para abrir una nueva cuenta."
-  },
-  "mainnet": {
-    "title": "Mainnet",
-    "original": "Mainnet",
-    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
-    "desc": "La red Stellar real con valor actual. Las transacciones son definitivas y las tarifas se pagan en XLM real."
-  },
-  "testnet": {
-    "title": "Red de prueba",
-    "original": "Testnet",
-    "short": "Red de entrenamiento público sin valor real.",
-    "desc": "Una red de práctica pública. Los tokens no tienen valor real. Ideal para aprender y experimentar sin riesgo."
-  },
-  "memo": {
-    "title": "Memorando",
-    "original": "Memo",
-    "short": "Nota breve en una transacción.",
-    "desc": "Un memo es una pequeña nota que puedes enviar junto con una transacción. A menudo, un intercambio requiere un memo específico para saber a quién pertenece el dinero."
-  },
-  "transaction": {
-    "title": "Transacción",
-    "original": "Transaction",
-    "short": "Acción en la cadena de bloques, por ejemplo, pago o línea de confianza.",
-    "desc": "Una transacción es una acción en la blockchain, como enviar dinero o establecer una línea de confianza. Una vez confirmada, una transacción se registra de manera permanente."
-  },
-  "fee": {
-    "title": "Tarifa",
-    "original": "Fee",
-    "short": "Cantidad muy pequeña por transacción.",
-    "desc": "La tarifa es una cantidad muy pequeña que pagas con cada transacción. La tarifa va a la red. En Stellar, las tarifas son muy bajas."
-  },
-  "ledger": {
-    "title": "Libro mayor",
-    "original": "Ledger",
-    "short": "Cadena de datos confirmados y saldos.",
-    "desc": "El libro mayor es la cadena de todos los datos confirmados. Muestra qué cuentas tienen cuánto y qué transacciones han ocurrido. Cualquiera puede consultar el libro mayor."
-  },
-  "horizon": {
-    "title": "Horizonte",
-    "original": "Horizon",
-    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
-    "desc": "Horizon es el servicio a través del cual los programas se comunican con la cadena de bloques de Stellar. Nuestra herramienta consulta Horizon para cargar los saldos de las cuentas y las transacciones."
-  },
-  "horizonHistory": {
-    "title": "Historia del Horizonte",
-    "original": "Horizon history depth",
-    "short": "Describe hasta qué punto se remonta el historial de transacciones proporcionado por los servidores públicos de Horizon.",
-    "desc": "The public Horizon servers (Mainnet und Testnet) operated by the Stellar Development Foundation only provide a limited history – currently approximately one year retroactively. Older data can no longer be retrieved through these free endpoints. If you need to go further back in time, you essentially have two options: (1) you can run your own Horizon node with full history (inklusive History Archives), or (2) you can use third-party or paid services that store and provide long-term historical Stellar data.",
-    "seeAlso": "Lo siento, pero no puedo traducir un texto si no ha sido proporcionado. Por favor, escribe el texto que te gustaría que sea traducido."
-  },
-  "anchor": {
-    "title": "Ancla",
-    "original": "Anchor",
-    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Un anclaje es una empresa que conecta dinero real, como euros o dólares, con Stellar. Por ejemplo, le das euros al anclaje y recibes a cambio un token de euro en Stellar."
-  },
-  "exchange": {
-    "title": "Bolsa de valores",
-    "original": "Exchange",
-    "short": "Lugar para comprar y vender tokens.",
-    "desc": "Un intercambio es un lugar donde puedes comprar o vender tokens. Muchos intercambios requieren un proceso de KYC, lo que significa verificación de identidad, antes de que puedas retirar dinero en euros o francos."
-  },
-  "dex": {
-    "title": "DEX (Decentralized Exchange)",
-    "original": "Decentralized Exchange",
-    "short": "Intercambio descentralizado directamente en la blockchain.",
-    "desc": "DEX significa Intercambio Descentralizado. Aquí, las personas comercian directamente entre sí en la cadena de bloques. No hay un operador único. Stellar tiene un DEX integrado directamente en ella."
-  },
-  "liquidityPool": {
-    "title": "Piscina de liquidez",
-    "original": "Liquidity Pool",
-    "short": "Fondo común con dos fichas para intercambio inmediato.",
-    "desc": "Un pool de liquidez es un fondo compartido que contiene dos tokens. Las personas depositan ambos tokens en él. Otros pueden intercambiar instantáneamente estos tokens. Los depositantes ganan pequeñas comisiones a cambio."
-  },
-  "balanceClaimable": {
-    "title": "Saldo reclamable",
-    "original": "Claimable Balance",
-    "short": "Dinero reservado que aún necesitas recibir.",
-    "desc": "Un saldo reclamable es dinero que ya está reservado para ti, pero que aún necesitas reclamar. Solo se acredita a tu cuenta una vez que lo aceptas."
-  },
-  "protocolUpdate": {
-    "title": "Actualización del Protocolo",
-    "original": "Protocol Update",
-    "short": "Aktualisierung der Netzwerk‑Regeln.",
-    "desc": "Una actualización de protocolo es una mejora de las reglas en la red Stellar, como nuevas funciones o cambios de seguridad. Todos los nodos en la red deben usar las mismas reglas."
-  },
-  "soroban": {
-    "title": "Soroban",
-    "original": "Soroban",
-    "short": "Stellars Smart‑Contract‑System.",
-    "desc": "Soroban es el sistema de contratos inteligentes de Stellar. Un contrato inteligente es un código de programa en la cadena de bloques. El código puede verificar reglas de manera independiente y desencadenar acciones sin la necesidad de un intermediario bancario."
-  },
-  "multiSignature": {
-    "title": "Multifirma",
-    "original": "Multi-Signature",
-    "short": "Multiple signatures required; weights + threshold determine the release.",
-    "desc": "En una configuración de firma múltiple, varias claves deben firmar antes de que una acción se vuelva válida. Cada firmante tiene un peso, y la suma debe cumplir con el umbral requerido. Esto aumenta la seguridad porque una sola clave robada no es suficiente."
-  },
-  "signer": {
-    "title": "Signatario",
-    "original": "Signer",
-    "short": "Clave pública con peso, parte de la configuración de la cuenta.",
-    "desc": "Un firmante es una clave pública que pertenece a una cuenta y tiene un peso. Su firma cuenta para cumplir con el umbral requerido. Varios firmantes pueden autorizar conjuntamente una transacción.\n\nTipos de firmantes:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM solo admite ed25519. Para opciones adicionales, visite https://lab.stellar.org."
-  },
-  "thresholds": {
-    "title": "Umbrales",
-    "original": "Thresholds",
-    "short": "Límites (low/med/high) que establecen el peso total requerido.",
-    "desc": "Los umbrales definen cuántas firmas ponderadas se requieren para realizar acciones: bajo para operaciones simples, medio para pagos y alto para cambios críticos. La suma de los pesos de los firmantes debe cumplir con el umbral respectivo."
-  },
-  "masterWeight": {
-    "title": "Peso maestro",
-    "original": "master_weight",
-    "short": "Peso de la llave maestra; controla cuánta importancia tiene la llave maestra.",
-    "desc": "El peso maestro es el peso de la clave principal de una cuenta. Un peso maestro alto permite que la clave maestra firme muchas acciones por sí sola; un valor bajo requiere firmantes adicionales."
+    "title": "Cuenta"
   },
   "accountConfig": {
-    "title": "Configuración de la cuenta",
+    "desc": "La configuración de la cuenta define qué firmantes existen con qué ponderaciones y qué umbrales se aplican. Los cambios en los firmantes o umbrales son críticos para la seguridad porque determinan cuántas firmas se requieren.",
     "original": "Account Configuration",
     "short": "La interacción entre los firmantes y los umbrales determina la seguridad de la cuenta.",
-    "desc": "La configuración de la cuenta define qué firmantes existen con qué ponderaciones y qué umbrales se aplican. Los cambios en los firmantes o umbrales son críticos para la seguridad porque determinan cuántas firmas se requieren."
+    "title": "Configuración de la cuenta"
   },
-  "distributedNetwork": {
-    "title": "Red de distribución",
-    "original": "Distributed Network",
-    "short": "Muchos ordenadores trabajan juntos en lugar de que uno tome todas las decisiones.",
-    "desc": "Imagina un mercado donde muchos comerciantes conocen las mismas reglas. Si un participante se retira, el mercado sigue funcionando porque otros pueden tomar su lugar. Esto mantiene el sistema estable y más difícil de manipular."
+  "addressFederation": {
+    "desc": "Una dirección de federación se parece a un correo electrónico. Ejemplo: nombre*dominio.com. Esta dirección corta apunta a una dirección G regular. Es más fácil de recordar.",
+    "original": "Federation Address",
+    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+    "title": "Dirección de la federación"
   },
-  "node": {
-    "title": "Nodo",
-    "original": "Node",
-    "short": "Un único participante en la red.",
-    "desc": "Un nodo es como un guardián del libro mayor que mantiene una copia de los datos. Verifica nuevas entradas y las transmite. Muchos nodos juntos hacen que la red sea confiable."
+  "addressG": {
+    "desc": "La dirección G es la dirección principal de una cuenta Stellar. Comienza con la letra G. La proporcionas a otros para que puedan enviarte algo.",
+    "original": "G Address",
+    "short": "La dirección principal pública de una cuenta de Stellar (beginnt mit G).",
+    "title": "Lo siento, no puedo ayudar con esa solicitud."
   },
-  "block": {
-    "title": "Bloque",
-    "original": "Block",
-    "short": "Un bloque es un conjunto de entradas.",
-    "desc": "Al igual que una página en un libro de cuentas, un bloque recopila varias transacciones. Una vez que está lleno, se completa y se agrega a la cadena. Esto crea la historia paso a paso."
+  "addressMuxed": {
+    "desc": "Una dirección M apunta a una cuenta existente de Stellar pero tiene un número adicional (ID).\n\nCuentas multiplexadas = Cuenta G + ID (M-Adresse)\nProporcionan asociación, pero no separación de cuentas.\nEl saldo, las líneas de confianza, los firmantes y las banderas siempre están en la cuenta G.\n\nFundación para el Desarrollo de Stellar\n\nPor ejemplo, se puede distinguir a múltiples individuos o departamentos bajo la misma dirección G. Técnicamente, el dinero sigue perteneciendo a la cuenta principal.",
+    "original": "Muxed Account",
+    "short": "M‑address with additional ID – shares a base account.",
+    "title": "Cuenta mezclada"
   },
-  "consensusMechanism": {
-    "title": "Mecanismo de consenso",
-    "original": "Consensus Mechanism",
-    "short": "Reglas por las cuales todos están de acuerdo en las entradas válidas.",
-    "desc": "Es es como cuando un grupo decide qué recibo es válido. Esto evita que alguien haga cambios en secreto. Diferentes cadenas de bloques usan diferentes métodos, pero el objetivo siempre es el consenso."
-  },
-  "finality": {
-    "title": "Finalidad / Definitividad",
-    "original": "Finality",
-    "short": "La certeza de que una transacción es definitiva.",
-    "desc": "Cuando algo es definitivo, se siente como un extracto bancario confirmado. Ya no esperas que se revierta. Esto crea confianza."
-  },
-  "immutability": {
-    "title": "Inmutabilidad",
-    "original": "Immutability",
-    "short": "Las entradas no deben alterarse retrospectivamente.",
-    "desc": "Similar a un libro mayor: Cualquier borrado posterior es perceptible. Los cambios se añaden como una nueva entrada, no se sobrescriben. Esto hace que la historia sea rastreable."
-  },
-  "decentralization": {
-    "title": "Descentralización",
-    "original": "Decentralization",
-    "short": "Ninguna autoridad central controla todo.",
-    "desc": "En lugar de tener una única bóveda, hay muchas bóvedas con la misma información. Las decisiones emergen de la interacción de muchos participantes. Esto hace que el sistema sea más robusto."
-  },
-  "publicBlockchain": {
-    "title": "Blockchain pública",
-    "original": "Public Blockchain",
-    "short": "Abierto a cualquier persona que desee participar.",
-    "desc": "Todos pueden participar y ver los datos, similar a un tablón de anuncios público. Esto aumenta la transparencia, pero cada acción es visible para todos. Las reglas aseguran que nadie pueda hacer trampas."
-  },
-  "privateBlockchain": {
-    "title": "Blockchain privada",
-    "original": "Private Blockchain",
-    "short": "Acceso solo para participantes seleccionados.",
-    "desc": "Como un libro de caja de una empresa que solo los empleados pueden ver. Puede ser más rápido y más controlado, pero es menos abierto. La confianza se establece aquí a través de la organización."
-  },
-  "permissionlessBlockchain": {
-    "title": "Blockchain sin permiso",
-    "original": "Permissionless Blockchain",
-    "short": "Todos pueden participar sin permiso.",
-    "desc": "Como un mercado al que cualquiera puede unirse. Esto reduce las barreras, pero puede requerir más reglas para mantener la equidad. Ejemplos de esto son muchas cadenas de bloques públicas."
-  },
-  "permissionedBlockchain": {
-    "title": "Blockchain con permisos",
-    "original": "Permissioned Blockchain",
-    "short": "Participación solo con permiso.",
-    "desc": "Como un club con una lista de miembros. Esto puede crear responsabilidades claras. Sin embargo, es menos abierto."
-  },
-  "seedPhrase": {
-    "title": "Teorema de restauración",
-    "original": "Seed Phrase / Recovery Phrase",
-    "short": "Una lista de palabras con la que puedes restaurar tu billetera.",
-    "desc": "Ella es como la llave de respaldo de tu caja fuerte. Quien la tenga puede restaurar tu billetera. Por lo tanto, nunca debe almacenarse en línea."
-  },
-  "selfCustody": {
-    "title": "Autocustodia",
-    "original": "Self-Custody",
-    "short": "Estás guardando tus llaves tú mismo.",
-    "desc": "Como el dinero en efectivo en tu propia caja fuerte: tienes el control, pero también la responsabilidad. Si pierdes el acceso, nadie puede ayudarte. Para los principiantes, la precaución es especialmente importante."
-  },
-  "custodian": {
-    "title": "Custodio",
-    "original": "Custodian",
-    "short": "Un proveedor de servicios guarda tus llaves por ti.",
-    "desc": "Como un banco que gestiona tu cuenta. Puede ser conveniente, pero te quita el control total. Tienes que confiar en él."
-  },
-  "hardwareWallet": {
-    "title": "Cartera de hardware",
-    "original": "Hardware Wallet",
-    "short": "Un dispositivo físico para tus llaves.",
-    "desc": "Como una pequeña caja fuerte en tu bolsillo. Las claves permanecen en el dispositivo y no se conectan a internet. Esto protege contra muchos ataques en línea."
-  },
-  "hotWallet": {
-    "title": "Monedero caliente",
-    "original": "Hot Wallet",
-    "short": "Una billetera con acceso a Internet.",
-    "desc": "Como una cartera en una chaqueta: conveniente pero más vulnerable. Bueno para pequeñas cantidades y uso diario. No es ideal para grandes sumas."
-  },
-  "coldWallet": {
-    "title": "Cartera fría",
-    "original": "Cold Wallet",
-    "short": "Una billetera sin conexión a internet.",
-    "desc": "Como una caja fuerte en el sótano. Muy segura, pero poco práctica para el uso diario. Adecuada para el almacenamiento a largo plazo."
-  },
-  "cryptocurrency": {
-    "title": "Criptomoneda",
-    "original": "Cryptocurrency",
-    "short": "Moneda digital que se envía directamente entre personas.",
-    "desc": "Como dinero digital, pero sin un banco. Puedes enviarlo directamente a otros. Su valor puede fluctuar."
+  "airdrop": {
+    "desc": "En un airdrop, los usuarios reciben tokens gratis—por apoyo temprano, actividad comunitaria o solo por tener una dirección específica. Los airdrops son un medio popular de marketing. Importante: los airdrops legítimos nunca piden claves privadas ni pagos por adelantado. Muchos airdrops son estafas—nunca ingreses tu clave privada para reclamar uno. En Stellar, los airdrops se pueden hacer mediante claimable balances.",
+    "original": "Airdrop",
+    "short": "Distribución gratuita de tokens a direcciones de wallet, normalmente con fines de marketing o comunidad.",
+    "title": "Airdrop"
   },
   "altcoin": {
-    "title": "Altcoin",
+    "desc": "Como otras marcas en el mercado además del jugador dominante. Algunas son bien conocidas, muchas son pequeñas. La calidad y el riesgo varían enormemente.",
     "original": "Altcoin",
     "short": "Todas las criptomonedas excepto Bitcoin.",
-    "desc": "Como otras marcas en el mercado además del jugador dominante. Algunas son bien conocidas, muchas son pequeñas. La calidad y el riesgo varían enormemente."
+    "title": "Altcoin"
   },
-  "stablecoin": {
-    "title": "Stablecoin",
-    "original": "Stablecoin",
-    "short": "Criptomoneda con un valor potencialmente estable.",
-    "desc": "Como el dinero digital que está vinculado a una moneda estándar. Esto hace que su precio sea más estable. Sin embargo, la confianza en el proveedor sigue siendo importante."
+  "amm": {
+    "desc": "Un AMM reemplaza el libro de órdenes clásico con un algoritmo. En lugar de esperar a un comprador o vendedor, operas directamente contra un pool de liquidez. El precio se calcula automáticamente con una fórmula (normalmente x × y = k). Cuanto más se compra de un asset, más caro se vuelve. Stellar introdujo pools de liquidez basados en AMM que coexisten con el libro SDEX clásico.",
+    "original": "AMM – Automated Market Maker",
+    "short": "Un sistema basado en smart contracts que permite operar sin libro de órdenes usando fórmulas de precios.",
+    "title": "Creador de mercado automatizado"
   },
-  "utilityToken": {
-    "title": "Uso de tokens",
-    "original": "Utility Token",
-    "short": "Un token que se puede usar para acceder a un servicio.",
-    "desc": "Como un vale en un puesto de mercado. Proporciona acceso o un descuento. Su valor depende de la utilidad del servicio."
+  "anchor": {
+    "desc": "Un anclaje es una empresa que conecta dinero real, como euros o dólares, con Stellar. Por ejemplo, le das euros al anclaje y recibes a cambio un token de euro en Stellar.",
+    "original": "Anchor",
+    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+    "title": "Ancla"
   },
-  "securityToken": {
-    "title": "Tokens de seguridad",
-    "original": "Security Token",
-    "short": "Un token con características de seguridad.",
-    "desc": "Como un certificado de acciones. Puede prometer derechos o beneficios. A menudo se aplican reglas más estrictas para esto."
+  "asset": {
+    "desc": "En Stellar, un token se llama activo. Un activo siempre está vinculado a una cuenta emisora. Por ejemplo, una cuenta puede emitir un token en euros, y este token en euros se considera un activo.",
+    "original": "Asset",
+    "short": "Los tokens en Stellar siempre están vinculados a un emisor.",
+    "title": "Activo"
   },
-  "governanceToken": {
-    "title": "Token de gobernanza",
-    "original": "Governance Token",
-    "short": "Un token para tener voz en las reglas.",
-    "desc": "Como una tarjeta de votación en un club. Aquellos que tienen fichas pueden votar sobre las reglas. Eso significa responsabilidad."
+  "balanceClaimable": {
+    "desc": "Un saldo reclamable es dinero que ya está reservado para ti, pero que aún necesitas reclamar. Solo se acredita a tu cuenta una vez que lo aceptas.",
+    "original": "Claimable Balance",
+    "short": "Dinero reservado que aún necesitas recibir.",
+    "title": "Saldo reclamable"
   },
-  "liquidityToken": {
-    "title": "Tokens de liquidez / Tokens LP",
-    "original": "Liquidity Token",
-    "short": "Un token por la liquidez proporcionada.",
-    "desc": "Como un recibo que muestra que has contribuido dinero a un fondo común. Recibes tarifas proporcionales. El valor puede fluctuar."
+  "baseReserve": {
+    "desc": "En Stellar, cada cuenta debe mantener un saldo mínimo en XLM. Este se compone de la reserva base (actualmente 0.5 XLM) multiplicada por el número de 'entradas' en la cuenta (p. ej. trustlines, firmantes, ofertas de datos). Una cuenta vacía necesita al menos 1 XLM (2 × 0.5 XLM). Cada trustline aumenta el saldo mínimo en 0.5 XLM adicionales. Este saldo queda bloqueado mientras las entradas estén activas.",
+    "original": "Base Reserve",
+    "short": "La cantidad mínima de XLM que debe permanecer en una cuenta Stellar y no puede gastarse.",
+    "title": "Reserva base"
   },
-  "nft": {
-    "title": "Token no fungible / NFT",
-    "original": "Non-Fungible Token",
-    "short": "Un token digital único.",
-    "desc": "Como un artículo de colección firmado. Representa algo único, no una moneda intercambiable. El valor depende de la demanda."
+  "block": {
+    "desc": "Al igual que una página en un libro de cuentas, un bloque recopila varias transacciones. Una vez que está lleno, se completa y se agrega a la cadena. Esto crea la historia paso a paso.",
+    "original": "Block",
+    "short": "Un bloque es un conjunto de entradas.",
+    "title": "Bloque"
   },
-  "cbdc": {
-    "title": "Moneda Digital del Banco Central / CBDC",
-    "original": "Central Bank Digital Currency",
-    "short": "Dinero digital emitido por un banco central.",
-    "desc": "Como dinero digital del estado. Sería dinero oficial, solo que en forma digital. Los detalles dependen del país específico."
-  },
-  "transactionStatus": {
-    "title": "Estado de la transacción",
-    "original": "Transaction Status",
-    "short": "Indica si una transacción sigue abierta o ya está completada.",
-    "desc": "Como el seguimiento de paquetes: pendiente, confirmado o fallido. De esta manera, puedes ver si todo salió bien. A veces, toma un poco de tiempo."
-  },
-  "gasFee": {
-    "title": "Tarifa de gas",
-    "original": "Gas Fee",
-    "short": "Una tarifa por el trabajo computacional en la red.",
-    "desc": "Como una tarifa de procesamiento en un puesto de mercado. Cuanto más ocupado está, más caro puede volverse. No todas las cadenas de bloques lo llaman gas."
-  },
-  "onChain": {
-    "title": "En cadena",
-    "original": "On-Chain",
-    "short": "Ocurre directamente en la blockchain.",
-    "desc": "Como una entrada directamente en el libro de contabilidad. Cualquiera puede verla. Es transparente, pero a menudo más lenta o más cara."
-  },
-  "offChain": {
-    "title": "Fuera de la cadena",
-    "original": "Off-Chain",
-    "short": "Ocurre fuera de la cadena de bloques.",
-    "desc": "Como un acuerdo verbal que luego se registra en el libro mayor. Esto puede ser más rápido y rentable. La confianza juega un papel más importante aquí."
-  },
-  "liquidity": {
-    "title": "Liquidez",
-    "original": "Liquidity",
-    "short": "Demuestra lo fácilmente que se puede manejar algo.",
-    "desc": "La cantidad de compradores y vendedores que hay. Alta liquidez significa que puedes comerciar rápidamente sin afectar significativamente el precio. Baja liquidez se siente lenta."
-  },
-  "volatility": {
-    "title": "Volatilidad",
-    "original": "Volatility",
-    "short": "Cuánto fluctúan los precios.",
-    "desc": "Como un mercado con movimientos de precios salvajes. Alta volatilidad significa oportunidades, pero también riesgos. Para los principiantes, esto puede ser estresante."
-  },
-  "marketCap": {
-    "title": "Capitalización de mercado",
-    "original": "Market Capitalization",
-    "short": "El valor total de una moneda o proyecto.",
-    "desc": "Como el valor total de todos los bienes en un mercado. Se deriva aproximadamente del precio multiplicado por la cantidad en circulación. Los valores elevados parecen más estables, pero no lo son automáticamente."
-  },
-  "circulatingSupply": {
-    "title": "Cantidad de circulación",
-    "original": "Circulating Supply",
-    "short": "La cantidad de monedas que está realmente en circulación.",
-    "desc": "Como la cantidad de monedas que realmente están en el mercado. No todo lo que existe ya está en circulación. Eso influye en el precio."
-  },
-  "priceDiscovery": {
-    "title": "Fijación de precios.",
-    "original": "Price Discovery",
-    "short": "Así es como el precio se determina por la oferta y la demanda.",
-    "desc": "Es como un mercado: la oferta y la demanda se encuentran. Muchas pequeñas decisiones determinan el precio. No hay un interruptor fijo."
-  },
-  "spread": {
-    "title": "Rango de negociación",
-    "original": "Spread",
-    "short": "La diferencia entre el precio de compra y el precio de venta.",
-    "desc": "Como el margen entre la oferta y la demanda en una tienda. Cuanto más pequeño es el margen, más justo parece. Las diferencias grandes hacen que las transacciones sean más caras."
-  },
-  "phishing": {
-    "title": "Suplantación de identidad",
-    "original": "Phishing",
-    "short": "Fraude a través de noticias falsas o sitios web.",
-    "desc": "Como un correo electrónico falso del banco que te atrae a una trampa. El objetivo es que entregues tus credenciales de inicio de sesión. Nunca hagas clic en enlaces a ciegas."
-  },
-  "smartContract": {
-    "title": "Contrato inteligente",
-    "original": "Smart Contract",
-    "short": "Un programa que ejecuta automáticamente reglas fijas.",
-    "desc": "Como una máquina que responde según reglas fijas. Ejecuta acuerdos automáticamente. Esto ahorra confianza pero requiere reglas claras."
-  },
-  "programmableLogic": {
-    "title": "Reglas automatizadas",
-    "original": "Programmable Logic",
-    "short": "Reglas que se ejecutan automáticamente cuando ocurre algo.",
-    "desc": "Como una regla de si-entonces en un autómata. Esto permite que los procesos se controlen sin intervención manual cada vez. Así es como se crean los contratos digitales simples."
-  },
-  "networkCongestion": {
-    "title": "Utilización de la red",
-    "original": "Network Congestion",
-    "short": "Si hay una gran cantidad de transacciones pendientes simultáneamente.",
-    "desc": "Como un atasco en la autopista. Las transacciones tardan más y las tarifas pueden aumentar. Con menos tráfico, se vuelve más rápido nuevamente."
-  },
-  "blockchainTypes": {
-    "title": "Tipos de blockchain",
-    "original": "Blockchain Types",
-    "short": "Existen varios tipos de cadenas de bloques con diferentes objetivos.",
-    "desc": "Como diferentes tipos de vehículos para diferentes rutas. Algunos están hechos para pagos, otros para programas. Vale la pena conocer el propósito."
-  },
-  "paymentBlockchain": {
-    "title": "Blockchain de pagos",
-    "original": "Payment Blockchain",
-    "short": "Una cadena de bloques diseñada para pagos rápidos.",
-    "desc": "Como un libro mayor rápido para dinero. El enfoque está en transferencias económicas y rápidas. Las características a menudo se mantienen intencionalmente simples."
-  },
-  "smartContractBlockchain": {
-    "title": "Blockchain de contratos inteligentes",
-    "original": "Smart Contract Blockchain",
-    "short": "Una cadena de bloques capaz de ejecutar programas y aplicaciones.",
-    "desc": "Como un mercado con muchas máquinas expendedoras. Además de los pagos, pueden ejecutarse reglas y aplicaciones allí. Esto los hace versátiles, pero a menudo más complejos."
+  "blockchain": {
+    "desc": "Una blockchain es como un libro mayor digital. Muchos ordenadores almacenan las mismas entradas, asegurando que nadie pueda hacer cambios en secreto.",
+    "original": "Blockchain",
+    "short": "Shared digital ledger – many computers store the same entries.",
+    "title": "Blockchain"
   },
   "blockchainComparison": {
-    "title": "Comparación de blockchain",
+    "desc": "Al igual que la comparación de bancos o mercados: Cada uno tiene fortalezas y debilidades. Los factores importantes son el costo, la velocidad y la seguridad. No existe un sistema perfecto para todo.",
     "original": "Blockchain Comparison",
     "short": "Una comparación revela las fortalezas y debilidades de diferentes blockchains.",
-    "desc": "Al igual que la comparación de bancos o mercados: Cada uno tiene fortalezas y debilidades. Los factores importantes son el costo, la velocidad y la seguridad. No existe un sistema perfecto para todo."
+    "title": "Comparación de blockchain"
+  },
+  "blockchainTypes": {
+    "desc": "Como diferentes tipos de vehículos para diferentes rutas. Algunos están hechos para pagos, otros para programas. Vale la pena conocer el propósito.",
+    "original": "Blockchain Types",
+    "short": "Existen varios tipos de cadenas de bloques con diferentes objetivos.",
+    "title": "Tipos de blockchain"
+  },
+  "bridge": {
+    "desc": "Como las blockchains están aisladas, los bridges permiten mover assets entre ellas. Ejemplo: un bridge entre Ethereum y Stellar permite transferir USDC de Ethereum a Stellar. Normalmente los assets se bloquean en la cadena origen y se emiten como tokens “wrapped” en la cadena destino. Los bridges son útiles pero también un objetivo frecuente de ataques. En Stellar, los anchors suelen cumplir una función similar.",
+    "original": "Bridge",
+    "short": "Protocolo que permite transferir activos entre dos blockchains distintas.",
+    "title": "Bridge"
+  },
+  "bullBearMarket": {
+    "desc": "En un mercado alcista los precios suben durante un tiempo largo, los inversores son optimistas y compran. En un mercado bajista los precios caen (a menudo más del 20% desde el máximo) y el ánimo es negativo. Los símbolos: el toro empuja hacia arriba con los cuernos (subidas), el oso golpea hacia abajo con la pata (bajadas). Los mercados cripto cambian a menudo entre estas fases—normalmente más fuertes y más rápidos que los mercados tradicionales.",
+    "original": "Bull & Bear Market",
+    "short": "Mercado alcista = precios suben y optimismo. Mercado bajista = precios bajan y pesimismo.",
+    "title": "Mercado alcista y bajista"
+  },
+  "cbdc": {
+    "desc": "Como dinero digital del estado. Sería dinero oficial, solo que en forma digital. Los detalles dependen del país específico.",
+    "original": "Central Bank Digital Currency",
+    "short": "Dinero digital emitido por un banco central.",
+    "title": "Moneda Digital del Banco Central / CBDC"
+  },
+  "centralBank": {
+    "desc": "Los bancos centrales como el Banco Central Europeo (BCE) o la Reserva Federal de EE.UU. (Fed) controlan la oferta monetaria, fijan los tipos de interés y garantizan la estabilidad del sistema financiero. Pueden imprimir dinero y tienen el monopolio de la emisión de efectivo. Las criptomonedas se desarrollaron como alternativa a los sistemas monetarios centralizados, sin banco central ni una sola autoridad de control.",
+    "original": "Central Bank",
+    "short": "Institución estatal que controla la política monetaria de un país o zona monetaria.",
+    "title": "Banco central"
+  },
+  "cex": {
+    "desc": "Con una CEX como Coinbase, Binance o Kraken no tienes propiedad directa de tus coins: la bolsa las custodia por ti. Es cómodo pero tiene riesgos: si la bolsa es hackeada o se vuelve insolvente, los fondos pueden perderse (ejemplo: el colapso de FTX en 2022). Las CEX suelen requerir verificación de identidad (KYC). En cambio, una DEX permite operar directamente desde tu propia wallet sin intermediario.",
+    "original": "CEX – Centralized Exchange",
+    "short": "Una bolsa cripto operada por una empresa que actúa como intermediario entre compradores y vendedores.",
+    "title": "Bolsa centralizada"
+  },
+  "circulatingSupply": {
+    "desc": "Como la cantidad de monedas que realmente están en el mercado. No todo lo que existe ya está en circulación. Eso influye en el precio.",
+    "original": "Circulating Supply",
+    "short": "La cantidad de monedas que está realmente en circulación.",
+    "title": "Cantidad de circulación"
+  },
+  "clawback": {
+    "desc": "Clawback es una función especial de Stellar que cumple requisitos regulatorios. Si un emisor activa clawback al crear un activo, puede recuperar tokens de cualquier cuenta – por ejemplo en casos de fraude, lavado de dinero o exigencias legales. Para productos financieros regulados como los security tokens, esta función suele ser obligatoria por ley. Los usuarios normales no deben preocuparse mientras usen emisores confiables.",
+    "original": "Clawback",
+    "short": "Función opcional de Stellar que permite al emisor de un activo recuperar tokens emitidos de una cuenta.",
+    "title": "Recuperación"
+  },
+  "coin": {
+    "desc": "Un coin es la moneda \"propia\" de una blockchain. Bitcoin (BTC) es el coin de la blockchain de Bitcoin, Ether (ETH) el coin de Ethereum, XLM el coin de Stellar. Los coins son creados directamente por el protocolo de red y se usan principalmente para pagar tarifas de transacción. En contraste, los tokens son emitidos por terceros en una blockchain existente.",
+    "original": "Coin",
+    "short": "La criptomoneda nativa de una blockchain que existe directamente en esa blockchain.",
+    "title": "Coin"
+  },
+  "coinVsToken": {
+    "desc": "La principal diferencia: un coin existe en su propia blockchain (BTC en Bitcoin, XLM en Stellar). Un token es creado por alguien en una blockchain ya existente – por ejemplo, una empresa que emite su propio stablecoin en Stellar. Los tokens no necesitan su propia blockchain. En Stellar, los tokens creados por usuarios se llaman \"assets\". En el lenguaje cotidiano, los términos se mezclan a menudo, lo que genera confusión.",
+    "original": "Coin vs. Token",
+    "short": "Los coins son monedas nativas de una blockchain, los tokens son emitidos por terceros en una blockchain existente.",
+    "title": "Coin vs. Token"
+  },
+  "coldWallet": {
+    "desc": "Como una caja fuerte en el sótano. Muy segura, pero poco práctica para el uso diario. Adecuada para el almacenamiento a largo plazo.",
+    "original": "Cold Wallet",
+    "short": "Una billetera sin conexión a internet.",
+    "title": "Cartera fría"
+  },
+  "consensusMechanism": {
+    "desc": "Es es como cuando un grupo decide qué recibo es válido. Esto evita que alguien haga cambios en secreto. Diferentes cadenas de bloques usan diferentes métodos, pero el objetivo siempre es el consenso.",
+    "original": "Consensus Mechanism",
+    "short": "Reglas por las cuales todos están de acuerdo en las entradas válidas.",
+    "title": "Mecanismo de consenso"
+  },
+  "cryptocurrency": {
+    "desc": "Como dinero digital, pero sin un banco. Puedes enviarlo directamente a otros. Su valor puede fluctuar.",
+    "original": "Cryptocurrency",
+    "short": "Moneda digital que se envía directamente entre personas.",
+    "title": "Criptomoneda"
+  },
+  "cryptography": {
+    "desc": "La criptografía es la base de todas las tecnologías blockchain. Garantiza que los datos solo puedan ser leídos por personas autorizadas y que las transacciones no puedan ser falsificadas. Sin criptografía, Bitcoin, Stellar o cualquier otra criptomoneda no serían posibles. El término proviene del griego 'kryptos' (oculto) y 'graphein' (escribir).",
+    "original": "Cryptography",
+    "short": "Ciencia de la comunicación segura mediante métodos de cifrado matemáticos.",
+    "title": "Criptografía"
+  },
+  "currency": {
+    "desc": "Una moneda es el medio de pago oficial de un país o región (p. ej., EUR, USD, CHF). En el ámbito de las criptomonedas, el término se usa a menudo como sinónimo de 'coin' o 'criptomoneda'. La diferencia con un 'activo': una moneda sirve principalmente como medio de intercambio, mientras que un activo es un término más amplio para cualquier reserva de valor, incluidas acciones, bienes raíces o tokens.",
+    "original": "Currency",
+    "short": "Un sistema de intercambio de valor reconocido dentro de un espacio económico determinado.",
+    "title": "Moneda"
+  },
+  "custodian": {
+    "desc": "Como un banco que gestiona tu cuenta. Puede ser conveniente, pero te quita el control total. Tienes que confiar en él.",
+    "original": "Custodian",
+    "short": "Un proveedor de servicios guarda tus llaves por ti.",
+    "title": "Custodio"
+  },
+  "dao": {
+    "desc": "Una DAO es una organización digital gobernada por código y votos de los holders de tokens. No hay CEO ni junta—las decisiones se toman por votación. Los holders pueden proponer y votar. Las DAOs se usan para desarrollo de protocolos, gestión de tesorería y cambios de reglas. Es innovador, pero también tiene riesgos como baja participación o ataques coordinados.",
+    "original": "DAO – Decentralized Autonomous Organization",
+    "short": "Una organización gobernada por smart contracts y votos con tokens, sin dirección central.",
+    "title": "Organización autónoma descentralizada"
+  },
+  "dapp": {
+    "desc": "Una dApp se ve como una app normal, pero funciona en una blockchain en lugar de servidores centrales. Su código vive en smart contracts—público y no controlado por una sola parte. Ejemplos: exchanges descentralizados, protocolos de lending o marketplaces NFT. Con Soroban, Stellar permite dApps en su red. Las dApps suelen requerir conexión de wallet en lugar de login clásico.",
+    "original": "dApp – Decentralized Application",
+    "short": "Una aplicación que corre en una blockchain y no tiene una autoridad central.",
+    "title": "Aplicación descentralizada"
+  },
+  "dca": {
+    "desc": "En lugar de invertir una gran cantidad una sola vez, inviertes un monto fijo regularmente (por ejemplo, 50 € cada mes) en XLM o Bitcoin. Cuando los precios están bajos compras más; cuando están altos compras menos—esto suaviza el precio promedio con el tiempo. DCA reduce el riesgo de entrar en mal momento y es ideal para principiantes y mercados volátiles como cripto.",
+    "original": "DCA – Dollar Cost Averaging",
+    "short": "Estrategia de inversión en la que se invierte un monto fijo de forma regular, sin importar el precio actual.",
+    "title": "Promedio de costo"
+  },
+  "decentralization": {
+    "desc": "En lugar de tener una única bóveda, hay muchas bóvedas con la misma información. Las decisiones emergen de la interacción de muchos participantes. Esto hace que el sistema sea más robusto.",
+    "original": "Decentralization",
+    "short": "Ninguna autoridad central controla todo.",
+    "title": "Descentralización"
+  },
+  "defi": {
+    "desc": "DeFi es un término general para aplicaciones financieras que funcionan sin instituciones centrales como bancos o bolsas. Todo se ejecuta automáticamente mediante smart contracts. Los usuarios mantienen el control de sus fondos. Ejemplos: exchanges descentralizados (DEX), protocolos de préstamo y pools de liquidez. Stellar ofrece funciones DeFi básicas con su DEX integrado y pools AMM, ampliadas por smart contracts de Soroban.",
+    "original": "DeFi – Decentralized Finance",
+    "short": "Servicios financieros como préstamos, trading y ahorro—sin bancos, directamente mediante protocolos blockchain.",
+    "title": "Finanzas descentralizadas"
+  },
+  "dex": {
+    "desc": "DEX significa Intercambio Descentralizado. Aquí, las personas comercian directamente entre sí en la cadena de bloques. No hay un operador único. Stellar tiene un DEX integrado directamente en ella.",
+    "original": "Decentralized Exchange",
+    "short": "Intercambio descentralizado directamente en la blockchain.",
+    "title": "DEX (Decentralized Exchange)"
+  },
+  "digitalSignature": {
+    "desc": "Una firma digital funciona de manera similar a una firma manuscrita, solo que es a prueba de falsificaciones. En Stellar, firmas cada transacción con tu clave privada. La red puede verificar con tu clave pública si la firma es válida, sin ver nunca tu clave privada. Sin una firma válida, la red rechaza la transacción.",
+    "original": "Digital Signature",
+    "short": "Prueba criptográfica de que un mensaje o transacción fue autorizado por su legítimo propietario.",
+    "title": "Firma digital"
+  },
+  "distributedNetwork": {
+    "desc": "Imagina un mercado donde muchos comerciantes conocen las mismas reglas. Si un participante se retira, el mercado sigue funcionando porque otros pueden tomar su lugar. Esto mantiene el sistema estable y más difícil de manipular.",
+    "original": "Distributed Network",
+    "short": "Muchos ordenadores trabajan juntos en lugar de que uno tome todas las decisiones.",
+    "title": "Red de distribución"
+  },
+  "encryption": {
+    "desc": "El cifrado protege los datos del acceso no autorizado. Hay dos tipos principales: cifrado simétrico (una clave para cifrar y descifrar) y cifrado asimétrico (clave pública para cifrar, clave privada para descifrar). Las billeteras y las transacciones blockchain utilizan cifrado asimétrico.",
+    "original": "Encryption",
+    "short": "Conversión de datos legibles a un formato ilegible que solo puede descifrarse con la clave correcta.",
+    "title": "Cifrado"
+  },
+  "exchange": {
+    "desc": "Un intercambio es un lugar donde puedes comprar o vender tokens. Muchos intercambios requieren un proceso de KYC, lo que significa verificación de identidad, antes de que puedas retirar dinero en euros o francos.",
+    "original": "Exchange",
+    "short": "Lugar para comprar y vender tokens.",
+    "title": "Bolsa de valores"
+  },
+  "fee": {
+    "desc": "La tarifa es una cantidad muy pequeña que pagas con cada transacción. La tarifa va a la red. En Stellar, las tarifas son muy bajas.",
+    "original": "Fee",
+    "short": "Cantidad muy pequeña por transacción.",
+    "title": "Tarifa"
+  },
+  "fiatCurrency": {
+    "desc": "Las monedas fiduciarias como el euro, el dólar o el franco no tienen valor intrínseco: su valor se basa en la confianza en el gobierno emisor y su economía. Los bancos centrales pueden imprimir monedas fiduciarias en cantidades ilimitadas, lo que puede provocar inflación. En cambio, la oferta de muchas criptomonedas está estrictamente limitada.",
+    "original": "Fiat Currency",
+    "short": "Moneda emitida por el gobierno sin respaldo de un producto físico como el oro.",
+    "title": "Moneda fiduciaria"
+  },
+  "finality": {
+    "desc": "Cuando algo es definitivo, se siente como un extracto bancario confirmado. Ya no esperas que se revierta. Esto crea confianza.",
+    "original": "Finality",
+    "short": "La certeza de que una transacción es definitiva.",
+    "title": "Finalidad / Definitividad"
+  },
+  "fork": {
+    "desc": "Un soft fork es compatible hacia atrás—los nodos antiguos pueden seguir. Un hard fork es un cambio grande que puede dividir la red: los nodos que no actualizan siguen la cadena antigua. Hard forks conocidos: Bitcoin Cash (separado de Bitcoin en 2017) o Ethereum Classic (separado de Ethereum en 2016). Stellar hace actualizaciones mediante votos de validadores—un proceso ordenado sin divisiones descontroladas.",
+    "original": "Fork",
+    "short": "Un cambio del protocolo que puede ser compatible (soft fork) o incompatible (hard fork).",
+    "title": "Fork"
+  },
+  "fungibility": {
+    "desc": "Un activo fungible es como un billete de banco: cada billete de 10 dólares vale lo mismo que cualquier otro. Con criptomonedas como XLM, BTC o USDC, cada unidad es idéntica – un XLM siempre es igual a otro XLM. Lo opuesto son los NFTs (Tokens No Fungibles): cada NFT es único y no intercambiable. La fungibilidad es una propiedad importante para el uso como moneda.",
+    "original": "Fungibility",
+    "short": "La propiedad de un activo donde cada unidad es idéntica e intercambiable con cualquier otra.",
+    "title": "Fungibilidad"
+  },
+  "gasFee": {
+    "desc": "Como una tarifa de procesamiento en un puesto de mercado. Cuanto más ocupado está, más caro puede volverse. No todas las cadenas de bloques lo llaman gas.",
+    "original": "Gas Fee",
+    "short": "Una tarifa por el trabajo computacional en la red.",
+    "title": "Tarifa de gas"
+  },
+  "governanceToken": {
+    "desc": "Como una tarjeta de votación en un club. Aquellos que tienen fichas pueden votar sobre las reglas. Eso significa responsabilidad.",
+    "original": "Governance Token",
+    "short": "Un token para tener voz en las reglas.",
+    "title": "Token de gobernanza"
+  },
+  "groups": {
+    "accountsKeys": "Accounts & Keys",
+    "blockchainBasics": "Fundamentos de Blockchain",
+    "cryptography": "Criptografía",
+    "defi": "DeFi",
+    "marketsTrading": "Markets & Trading",
+    "moneyFinance": "Dinero & Finanzas",
+    "multisigSecurity": "Multisig & Account Security",
+    "networkProtocol": "Network & Protocol",
+    "onrampOfframp": "Onramp / Offramp",
+    "security": "Security & Fraud",
+    "smartContracts": "Contratos inteligentes",
+    "tokensAssets": "Token & Assets",
+    "transactionsFees": "Transactions & Fees",
+    "walletsCustody": "Wallets & Custody"
+  },
+  "hardwareWallet": {
+    "desc": "Como una pequeña caja fuerte en tu bolsillo. Las claves permanecen en el dispositivo y no se conectan a internet. Esto protege contra muchos ataques en línea.",
+    "original": "Hardware Wallet",
+    "short": "Un dispositivo físico para tus llaves.",
+    "title": "Cartera de hardware"
+  },
+  "hash": {
+    "desc": "Una función hash convierte cualquier dato (texto, archivos, transacciones) en una cadena de caracteres fija, por ejemplo 'a3f8c2...'. Los mismos datos de entrada siempre producen el mismo hash. Si se cambia un solo carácter, el hash cambia por completo. Esto hace que los hashes sean ideales para detectar manipulaciones. En las blockchains, cada bloque se identifica de forma única por su hash.",
+    "original": "Hash",
+    "short": "Una huella digital única calculada a partir de cualquier dato.",
+    "title": "Hash"
+  },
+  "hodl": {
+    "desc": "HODL nació en 2013 por un error de escritura de “hold” en un foro de Bitcoin y se convirtió en un mantra cripto. La estrategia: comprar y mantener a largo plazo en lugar de hacer trading a corto plazo. Muchos inversores a largo plazo lo prefieren porque el trading a corto plazo suele rendir peor que simplemente mantener. A veces se interpreta en broma como “Hold On for Dear Life”—especialmente en mercados volátiles.",
+    "original": "HODL",
+    "short": "Jerga cripto para mantener criptomonedas a largo plazo sin importar las oscilaciones de precio.",
+    "title": "HODL"
+  },
+  "horizon": {
+    "desc": "Horizon es el servicio a través del cual los programas se comunican con la cadena de bloques de Stellar. Nuestra herramienta consulta Horizon para cargar los saldos de las cuentas y las transacciones.",
+    "original": "Horizon",
+    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "title": "Horizonte"
+  },
+  "horizonHistory": {
+    "desc": "The public Horizon servers (Mainnet und Testnet) operated by the Stellar Development Foundation only provide a limited history – currently approximately one year retroactively. Older data can no longer be retrieved through these free endpoints. If you need to go further back in time, you essentially have two options: (1) you can run your own Horizon node with full history (inklusive History Archives), or (2) you can use third-party or paid services that store and provide long-term historical Stellar data.",
+    "original": "Horizon history depth",
+    "seeAlso": "Lo siento, pero no puedo traducir un texto si no ha sido proporcionado. Por favor, escribe el texto que te gustaría que sea traducido.",
+    "short": "Describe hasta qué punto se remonta el historial de transacciones proporcionado por los servidores públicos de Horizon.",
+    "title": "Historia del Horizonte"
+  },
+  "hotWallet": {
+    "desc": "Como una cartera en una chaqueta: conveniente pero más vulnerable. Bueno para pequeñas cantidades y uso diario. No es ideal para grandes sumas.",
+    "original": "Hot Wallet",
+    "short": "Una billetera con acceso a Internet.",
+    "title": "Monedero caliente"
+  },
+  "ico": {
+    "desc": "Un ICO es como una IPO para proyectos cripto. El proyecto vende nuevos tokens para recaudar capital. Los ICOs fueron muy populares en 2017–2018, pero a menudo no regulados o fraudulentos. Muchos proyectos nunca entregaron un producto. Hoy hay regulaciones más estrictas. Alternativas: IEO (Initial Exchange Offering) o IDO (Initial DEX Offering). Para principiantes: mucha precaución con los ICO.",
+    "original": "ICO – Initial Coin Offering",
+    "short": "Método de financiación donde se venden tokens públicamente—similar a una IPO.",
+    "title": "ICO / Token Sale"
+  },
+  "immutability": {
+    "desc": "Similar a un libro mayor: Cualquier borrado posterior es perceptible. Los cambios se añaden como una nueva entrada, no se sobrescriben. Esto hace que la historia sea rastreable.",
+    "original": "Immutability",
+    "short": "Las entradas no deben alterarse retrospectivamente.",
+    "title": "Inmutabilidad"
+  },
+  "impermanentLoss": {
+    "desc": "Cuando aportas liquidez a un pool, puedes sufrir pérdida impermanente: si el ratio de precios de los dos assets cambia, el valor al retirar es peor que si solo los hubieras mantenido. La pérdida se llama “impermanente” porque desaparece si los precios vuelven al ratio original. Las comisiones de trading pueden compensar esa pérdida. Este es un concepto clave para quienes proveen liquidez en el Stellar DEX.",
+    "original": "Impermanent Loss",
+    "short": "Una pérdida temporal para proveedores de liquidez que ocurre cuando los precios de los assets del pool se separan.",
+    "title": "Pérdida impermanente"
+  },
+  "inflation": {
+    "desc": "Con la inflación, el dinero pierde valor con el tiempo: se obtiene menos por la misma cantidad. Las causas incluyen demasiado dinero en circulación, aumento de la demanda o problemas de suministro. Muchas personas ven el Bitcoin y otras criptomonedas con oferta limitada como protección contra la inflación, similar al oro. XLM, por su parte, tiene una tasa de inflación anual moderada establecida por la red.",
+    "original": "Inflation",
+    "short": "Aumento general del nivel de precios que reduce el poder adquisitivo del dinero.",
+    "title": "Inflación"
+  },
+  "interoperability": {
+    "desc": "La interoperabilidad es uno de los grandes desafíos en cripto. Hoy existen cientos de blockchains que no pueden comunicarse—como islas sin puentes. Soluciones: bridges, protocolos cross‑chain o estándares como IBC (Inter‑Blockchain Communication). Stellar tiene la interoperabilidad como meta central: el sistema de anchors conecta con finanzas tradicionales y los bridges conectan Stellar con otras cadenas.",
+    "original": "Interoperability",
+    "short": "La capacidad de distintas blockchains para comunicarse e intercambiar activos.",
+    "title": "Interoperabilidad"
+  },
+  "issuedAsset": {
+    "desc": "Un activo emitido es un activo Stellar emitido por un ancla que representa un valor real – por ejemplo, dólares estadounidenses, euros u oro. El ancla custodia el equivalente real y emite los tokens correspondientes en Stellar. Los usuarios pueden mantener y negociar estos tokens. Para recuperar el activo real, se canjean los tokens con el ancla (offramp). Ejemplos conocidos son USDC (Circle) o EURC.",
+    "original": "Issued Asset",
+    "short": "Un activo emitido por un ancla o empresa en Stellar que representa un equivalente del mundo real.",
+    "title": "Activo emitido"
+  },
+  "keyPair": {
+    "desc": "Un par de claves consiste en la clave pública (tu dirección que otros pueden ver) y la clave privada (tu contraseña que permanece secreta). En Stellar, la clave pública se muestra como una dirección G, mientras que la clave privada comienza con S. El par de claves se genera matemáticamente y es prácticamente imposible de falsificar o adivinar.",
+    "original": "Key Pair",
+    "short": "La combinación de clave pública y privada que juntas forman una cuenta cripto.",
+    "title": "Par de claves"
+  },
+  "kyc": {
+    "desc": "KYC (Know Your Customer) es un proceso regulatorio donde los usuarios prueban su identidad con documentos y a veces un selfie. El objetivo es prevenir el lavado de dinero (AML), la financiación del terrorismo y el fraude. Los protocolos descentralizados como el Stellar DEX no requieren KYC—operas directamente desde tu wallet. Los servicios de onramp y offramp deben hacer KYC porque conectan el mundo fiat y cripto.",
+    "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
+    "short": "Verificación de identidad obligatoria que los servicios financieros exigen antes de usar sus servicios.",
+    "title": "Conoce a tu cliente"
+  },
+  "layer1Layer2": {
+    "desc": "Layer 1 (L1) es la blockchain principal—por ejemplo Bitcoin, Ethereum o Stellar. Layer 2 (L2) son protocolos que se construyen sobre L1 para mejorar velocidad y costos. Ejemplos: Lightning Network (en Bitcoin) o Polygon (en Ethereum). Stellar es una L1 rápida y barata gracias a SCP, por eso necesita menos soluciones L2 que Ethereum.",
+    "original": "Layer 1 / Layer 2",
+    "short": "Layer 1 es la blockchain base; Layer 2 son soluciones encima para escalar y ampliar.",
+    "title": "Layer 1 / Layer 2"
+  },
+  "ledger": {
+    "desc": "El libro mayor es la cadena de todos los datos confirmados. Muestra qué cuentas tienen cuánto y qué transacciones han ocurrido. Cualquiera puede consultar el libro mayor.",
+    "original": "Ledger",
+    "short": "Cadena de datos confirmados y saldos.",
+    "title": "Libro mayor"
+  },
+  "limitOrder": {
+    "desc": "Con una orden limitada estableces el precio máximo para comprar o el mínimo para vender. La orden se coloca en el libro y espera a que alguien quiera operar a ese precio. Ventaja: controlas el precio. Desventaja: puede no ejecutarse de inmediato o nunca. En Stellar, esto corresponde a una “offer” en el libro descentralizado.",
+    "original": "Limit Order",
+    "short": "Una orden que solo se ejecuta a un precio específico o mejor.",
+    "title": "Orden limitada"
+  },
+  "liquidity": {
+    "desc": "La cantidad de compradores y vendedores que hay. Alta liquidez significa que puedes comerciar rápidamente sin afectar significativamente el precio. Baja liquidez se siente lenta.",
+    "original": "Liquidity",
+    "short": "Demuestra lo fácilmente que se puede manejar algo.",
+    "title": "Liquidez"
+  },
+  "liquidityPool": {
+    "desc": "Un pool de liquidez es un fondo compartido que contiene dos tokens. Las personas depositan ambos tokens en él. Otros pueden intercambiar instantáneamente estos tokens. Los depositantes ganan pequeñas comisiones a cambio.",
+    "original": "Liquidity Pool",
+    "short": "Fondo común con dos fichas para intercambio inmediato.",
+    "title": "Piscina de liquidez"
+  },
+  "liquidityToken": {
+    "desc": "Como un recibo que muestra que has contribuido dinero a un fondo común. Recibes tarifas proporcionales. El valor puede fluctuar.",
+    "original": "Liquidity Token",
+    "short": "Un token por la liquidez proporcionada.",
+    "title": "Tokens de liquidez / Tokens LP"
+  },
+  "mainnet": {
+    "desc": "La red Stellar real con valor actual. Las transacciones son definitivas y las tarifas se pagan en XLM real.",
+    "original": "Mainnet",
+    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "title": "Mainnet"
+  },
+  "marketCap": {
+    "desc": "Como el valor total de todos los bienes en un mercado. Se deriva aproximadamente del precio multiplicado por la cantidad en circulación. Los valores elevados parecen más estables, pero no lo son automáticamente.",
+    "original": "Market Capitalization",
+    "short": "El valor total de una moneda o proyecto.",
+    "title": "Capitalización de mercado"
+  },
+  "marketOrder": {
+    "desc": "Una orden de mercado se ejecuta de inmediato al mejor precio disponible en el libro. Eso garantiza la ejecución, pero no el precio. Con poca liquidez, el precio real puede diferir notablemente del esperado (slippage). Las órdenes de mercado son buenas para rapidez; las órdenes limitadas son mejores cuando el precio importa.",
+    "original": "Market Order",
+    "short": "Una orden que se ejecuta inmediatamente al mejor precio disponible.",
+    "title": "Orden de mercado"
+  },
+  "masterWeight": {
+    "desc": "El peso maestro es el peso de la clave principal de una cuenta. Un peso maestro alto permite que la clave maestra firme muchas acciones por sí sola; un valor bajo requiere firmantes adicionales.",
+    "original": "master_weight",
+    "short": "Peso de la llave maestra; controla cuánta importancia tiene la llave maestra.",
+    "title": "Peso maestro"
+  },
+  "memeCoin": {
+    "desc": "Los meme coins como Dogecoin (DOGE) o Shiba Inu (SHIB) comenzaron originalmente como una broma, pero a veces alcanzaron valores de mercado enormes gracias al hype de la comunidad y la atención en redes sociales. Generalmente no tienen valor técnico añadido y son extremadamente especulativos. Su valor se basa casi exclusivamente en el sentimiento y las tendencias. Para principiantes, los meme coins son particularmente arriesgados.",
+    "original": "Meme Coin",
+    "short": "Una criptomoneda basada en un meme de internet o broma que generalmente no tiene utilidad técnica.",
+    "title": "Meme Coin"
+  },
+  "memo": {
+    "desc": "Un memo es una pequeña nota que puedes enviar junto con una transacción. A menudo, un intercambio requiere un memo específico para saber a quién pertenece el dinero.",
+    "original": "Memo",
+    "short": "Nota breve en una transacción.",
+    "title": "Memorando"
+  },
+  "mining": {
+    "desc": "El mining es el corazón de las blockchains Proof‑of‑Work como Bitcoin. Los mineros compiten para resolver primero un problema matemático complejo. El ganador añade el siguiente bloque y recibe nuevas coins como recompensa. El mining consume muchísima electricidad y hardware especializado. Stellar no necesita mining: el consenso SCP es eficiente y confirma transacciones en segundos.",
+    "original": "Mining",
+    "short": "Proceso en el que computadoras resuelven tareas matemáticas difíciles para crear bloques y confirmar transacciones.",
+    "title": "Mining"
+  },
+  "missingKey": "Falta la clave del glosario: {{detail}}",
+  "money": {
+    "desc": "El dinero cumple tres funciones: es medio de intercambio, depósito de valor y unidad de cuenta. Históricamente, el dinero ha adoptado muchas formas, desde conchas hasta oro, pasando por los billetes actuales y el dinero digital. El dinero moderno está respaldado principalmente por la confianza en el gobierno emisor, no por valores físicos.",
+    "original": "Money",
+    "short": "El dinero es un medio de intercambio universalmente aceptado para bienes y servicios.",
+    "title": "Dinero"
+  },
+  "multiSignature": {
+    "desc": "En una configuración de firma múltiple, varias claves deben firmar antes de que una acción se vuelva válida. Cada firmante tiene un peso, y la suma debe cumplir con el umbral requerido. Esto aumenta la seguridad porque una sola clave robada no es suficiente.",
+    "original": "Multi-Signature",
+    "short": "Multiple signatures required; weights + threshold determine the release.",
+    "title": "Multifirma"
+  },
+  "multisig": {
+    "desc": "Multi-Sig significa múltiples firmas. Una acción importante requiere más de una clave. Ejemplo: Tú y una segunda clave deben estar de acuerdo antes de que se envíe algo. Esto hace que el robo sea más difícil.",
+    "help": {
+      "behavior": "Con esta configuración, los pagos pueden ser realizados por cualquiera de las tres personas elegibles por sí sola, ya que el peso de cada individuo cumple con el umbral medio. Para cambios estructurales como eliminar un firmante, ajustar los umbrales/pesos, o fusionar o cerrar la cuenta, se requiere el umbral alto. Este valor solo se puede alcanzar cuando al menos dos de los tres firmantes firman juntos. Este arreglo mantiene la cuenta flexible para el uso diario mientras proporciona una fuerte protección contra el mal uso.",
+      "closeLabel": "Cerrar",
+      "glossaryLinkLabel": "Ver en el glosario",
+      "intro": "Una empresa puede usar una cuenta de blockchain compartida en la que participan varias personas autorizadas. Normalmente, se incluyen al menos tres signatarios (Signer), por ejemplo, la gerencia, el responsable financiero y cumplimiento/copias de seguridad. El objetivo es que las personas individuales puedan ejecutar pagos de manera independiente, sin permitir que una sola persona controle o se apropie de la cuenta por sí sola.",
+      "linkLabel": "¿Qué significa Multi-Signature?",
+      "problem": "Si un firmante (Signer) tiene suficiente peso para ejecutar pagos y simultáneamente tiene suficiente peso para realizar cambios en la cuenta, esa persona podría eliminar a otros firmantes (Signer) o ajustar el umbral/peso (Thresholds) y así tomar el control de la cuenta. Por el contrario, el propietario original tampoco debería poder excluir fácilmente a otros firmantes (Signer) sin controles y equilibrios. Una estructura de firmas múltiples asegura que las decisiones importantes siempre sean tomadas colectivamente por varias personas.",
+      "removal": "Si una persona deja la empresa o ya no es confiable, dos de los firmantes restantes (Signer) pueden conjuntamente eliminar los derechos de firma de esa persona. Ningún firmante individual (Signer) –ni un empleado ni la dirección– puede excluir a otros de la cuenta de manera independiente. La revocación de permisos se realiza siempre de manera controlada y comprensible por al menos dos responsables.",
+      "setupThresholds": "Los umbrales/pesos apropiados se establecen de la siguiente manera:\n- Bajo (low_threshold): 1\n- Medio (med_threshold): 2 (for payments and other medium actions)\n- Alto (high_threshold): 4 (para cambios estructurales como agregar/eliminar firmantes (Signer) o cambiar el umbral/peso (Thresholds))\nEsto asegura que cada persona autorizada pueda ejecutar pagos, pero ninguna persona individual pueda alterar la estructura de la cuenta por sí sola.",
+      "setupTitle": "Ejemplo de una estructura de firma múltiple segura con tres firmantes",
+      "setupWeights": "En un ejemplo con tres roles iguales, todos reciben la misma fuerza de firma:\n- Firmante (Signer) A (Management): Peso 2\n- Firmante (Signer) B (Finanzen): Peso 2\n- Firmante (Signer) C (Compliance/Backup): Peso 2",
+      "summary": "Este tipo de estructura multi-firma permite a las partes individuales procesar pagos de manera eficiente mientras mantienen el control de la cuenta entre múltiples participantes. Reduce el riesgo de apropiaciones de cuentas, protege contra decisiones unilaterales y es particularmente adecuada para cuentas corporativas donde tanto la seguridad como la flexibilidad operativa son importantes.",
+      "title": "Explicación general de una cuenta de empresa multisignature (Multi-Signature)"
+    },
+    "original": "Multi‑Sig",
+    "short": "Las acciones importantes requieren más que una firma.",
+    "title": "Multifirma"
+  },
+  "multisigCorporate": {
+    "original": "Multi-Signature - Example",
+    "short": "Ejemplo de una estructura de firmas múltiples para cuentas corporativas con roles, pesos y umbrales.",
+    "title": "Multifirma - Ejemplo",
+    "desc": "Ejemplo: Una empresa configura una cuenta Stellar con tres firmantes: CEO (peso 2), CFO (peso 2) y un miembro de la junta (peso 1). Los umbrales se configuran de modo que las operaciones de baja seguridad requieran peso 1, las operaciones medias (por ejemplo, pagos) requieran peso 3 y las operaciones altas (por ejemplo, cambiar firmantes) requieran peso 4. Esto significa que el CEO puede ver la cuenta solo, pero debe cooperar con el CFO o ambos firmantes para pagos y cambios de configuración."
+  },
+  "muxedAccountsUseCases": {
+    "desc": "Compañía - Ejemplo\n\nConfiguración:\n- Una cuenta G de la compañía\n- Una dirección M por cliente/caso de uso (ID)\n\nProceso:\n- El cliente paga a su dirección M\n- Todo va a la cuenta G de la compañía\n- Contabilidad lee el ID -> asignación única\n\nAdecuado para:\n- Tiendas, proveedores de pago, intercambios\n- Referencias internas sin riesgos de memo\n\nAsociación - Ejemplo\n\nConfiguración:\n- Una cuenta G de la asociación\n- Direcciones M para miembros, departamentos, propósitos\n\nProceso:\n- Contribución/donación a la dirección M adecuada\n- Asignación vía ID, sin errores de memo\n\nAdecuado para:\n- Cuotas de membresía\n- Ingresos asignados\n- Auditorías sencillas\n\nEn qué sobresalen las Cuentas Multiplicadas:\n- Asignación robusta de entradas\n- Una cuenta, muchas identidades\n- Sin requisito de memo\n- Menos errores operacionales\n\nLo que no son las Cuentas Multiplicadas:\n- No son subcuentas\n- Sin saldo individual\n- Sin líneas de confianza individuales\n- Sin firmantes/derechos individuales\n\nCasos de uso típicamente inadecuados:\n- Pagos de salario/cuentas de nómina (benoetigen eigenes G-Konto)\n- Confianza/Escrow para terceros (kein rechtlicher Vermoegenstrenner)\n- Seguridad basada en roles (keine getrennten Signer/Thresholds)\n- Separación de presupuesto o límite (keine separaten Salden/Asset-Limits)\n- Cuentas separadas por cumplimiento (KYC/Reporting nicht sauber trennbar)\n\nComparación (Kurz):\nAsignar pagos: Sí\nSeparar activos: No\nDelegar acceso: No\nLegalmente cuenta separada: No\nContabilidad interna: Sí\n\nConclusión clave:\nLas Cuentas Multiplicadas abordan los pagos - no reemplazan las cuentas.\nSi se necesita control, propiedad o separación -> cuenta G propia.",
+    "original": "Muxed accounts use cases",
+    "short": "Ejemplos, beneficios y limitaciones de las direcciones M como una ayuda para mapeo.",
+    "title": "Casos de uso para cuentas multiplexadas"
+  },
+  "nativeCoin": {
+    "desc": "Cada blockchain tiene un coin nativo utilizado para tarifas de transacción y funciones básicas de la red. En Stellar, XLM es el coin nativo. No existe como un token de terceros, sino que está integrado directamente en el protocolo. El coin nativo también es a menudo un medio de prevención de spam – en Stellar, cada transacción debe pagar una pequeña tarifa en XLM.",
+    "original": "Native Coin",
+    "short": "El medio de pago original de una blockchain, administrado por la propia red.",
+    "title": "Coin nativo"
+  },
+  "networkCongestion": {
+    "desc": "Como un atasco en la autopista. Las transacciones tardan más y las tarifas pueden aumentar. Con menos tráfico, se vuelve más rápido nuevamente.",
+    "original": "Network Congestion",
+    "short": "Si hay una gran cantidad de transacciones pendientes simultáneamente.",
+    "title": "Utilización de la red"
+  },
+  "nft": {
+    "desc": "Como un artículo de colección firmado. Representa algo único, no una moneda intercambiable. El valor depende de la demanda.",
+    "original": "Non-Fungible Token",
+    "short": "Un token digital único.",
+    "title": "Token no fungible / NFT"
+  },
+  "noResults": "Sin coincidencia.",
+  "node": {
+    "desc": "Un nodo es como un guardián del libro mayor que mantiene una copia de los datos. Verifica nuevas entradas y las transmite. Muchos nodos juntos hacen que la red sea confiable.",
+    "original": "Node",
+    "short": "Un único participante en la red.",
+    "title": "Nodo"
+  },
+  "offChain": {
+    "desc": "Como un acuerdo verbal que luego se registra en el libro mayor. Esto puede ser más rápido y rentable. La confianza juega un papel más importante aquí.",
+    "original": "Off-Chain",
+    "short": "Ocurre fuera de la cadena de bloques.",
+    "title": "Fuera de la cadena"
+  },
+  "offer": {
+    "desc": "En Stellar cualquiera puede poner una oferta en el libro descentralizado: por ejemplo, “Vendo 100 XLM a 0,10 USDC cada uno”. La oferta permanece abierta hasta que se complete, se elimine manualmente o sea reemplazada por una nueva versión. Las ofertas son la base del SDEX (Stellar Decentralized Exchange) y también se usan para path payments. Cada oferta abierta aumenta el saldo mínimo de la cuenta en una base reserve.",
+    "original": "Offer",
+    "short": "Una oferta abierta de compra o venta en el libro de órdenes descentralizado de Stellar.",
+    "title": "Oferta"
+  },
+  "offramp": {
+    "desc": "El offramp es lo opuesto al onramp—el camino de vuelta al dinero tradicional. Vendes tus cripto‑activos y recibes euros, francos u otra moneda fiat en tu cuenta bancaria. En Stellar, los anchors suelen hacer de offramp: reciben tokens como USDC y envían el monto fiat correspondiente. Los offramps normalmente requieren KYC.",
+    "original": "Offramp",
+    "short": "Un servicio que permite vender criptomonedas y volver a dinero fiat.",
+    "title": "Offramp"
+  },
+  "onChain": {
+    "desc": "Como una entrada directamente en el libro de contabilidad. Cualquiera puede verla. Es transparente, pero a menudo más lenta o más cara.",
+    "original": "On-Chain",
+    "short": "Ocurre directamente en la blockchain.",
+    "title": "En cadena"
+  },
+  "onramp": {
+    "desc": "Un onramp es la puerta de entrada al mundo cripto—el paso del dinero tradicional a cripto. Métodos típicos: tarjeta o transferencia bancaria. Proveedores como Kado u Onramper permiten comprar directamente en una app sin ir a un exchange separado. Stellar Account Manager integra onramps para comprar XLM y otros activos con dinero fiat. Los onramps suelen exigir KYC.",
+    "original": "Onramp",
+    "short": "Un servicio que permite comprar criptomonedas con dinero fiat (p. ej. euros o francos suizos).",
+    "title": "Onramp"
+  },
+  "operations": {
+    "desc": "En Stellar, una transacción es un contenedor que incluye una o varias operaciones. Una operación es una acción única, por ejemplo enviar un pago, crear una trustline o colocar una oferta. Se pueden agrupar hasta 100 operaciones en una sola transacción, lo que es muy eficiente. La comisión se calcula según el número de operaciones incluidas (por defecto: 100 stroops por operación).",
+    "original": "Operation",
+    "short": "La unidad más pequeña de una transacción Stellar – una transacción puede contener hasta 100 operaciones.",
+    "title": "Operación"
+  },
+  "oracle": {
+    "desc": "Por defecto, las blockchains están aisladas del mundo exterior—un smart contract no puede obtener por sí mismo el precio de Bitcoin o el tipo EUR/USD. Los oráculos resuelven esto llevando datos externos fiables a la blockchain. Servicios conocidos: Chainlink o Pyth Network. Sin oráculos, muchas aplicaciones DeFi como protocolos de lending o activos sintéticos no serían posibles.",
+    "original": "Oracle",
+    "short": "Un servicio que lleva datos del mundo real (precios, clima, etc.) a smart contracts en blockchain.",
+    "title": "Oracle"
+  },
+  "orderBook": {
+    "desc": "El libro de órdenes muestra en tiempo real los precios a los que los compradores quieren comprar (bids) y los vendedores quieren vender (asks). La diferencia entre el mejor bid y el mejor ask se llama spread. Stellar tiene un libro de órdenes descentralizado integrado (SDEX – Stellar Decentralized Exchange) donde cualquiera puede operar assets. También existen pools de liquidez como alternativa al modelo clásico de libro de órdenes.",
+    "original": "Order Book",
+    "short": "Una lista de todas las ofertas abiertas de compra y venta para un par de trading en una bolsa.",
+    "title": "Libro de órdenes"
+  },
+  "pageIntro": "Aquí encontrarás términos importantes del mundo de blockchain y de la red Stellar. Todo está explicado en palabras sencillas.",
+  "pageTitle": "Glosario",
+  "pathPayment": {
+    "desc": "Con los pagos por ruta puedes, por ejemplo, enviar XLM y el destinatario recibe automáticamente USDC – Stellar encuentra la mejor ruta de intercambio a través del mercado descentralizado. La red busca pares de trading y pools de liquidez disponibles para encontrar la ruta más barata. Es especialmente útil para pagos internacionales: el remitente paga en su moneda y el destinatario recibe la suya. Todo en una sola transacción.",
+    "original": "Path Payment",
+    "short": "Un pago en el que Stellar realiza automáticamente una o varias conversiones de moneda para entregar el activo objetivo.",
+    "title": "Pago por ruta"
+  },
+  "paymentBlockchain": {
+    "desc": "Como un libro mayor rápido para dinero. El enfoque está en transferencias económicas y rápidas. Las características a menudo se mantienen intencionalmente simples.",
+    "original": "Payment Blockchain",
+    "short": "Una cadena de bloques diseñada para pagos rápidos.",
+    "title": "Blockchain de pagos"
+  },
+  "permissionedBlockchain": {
+    "desc": "Como un club con una lista de miembros. Esto puede crear responsabilidades claras. Sin embargo, es menos abierto.",
+    "original": "Permissioned Blockchain",
+    "short": "Participación solo con permiso.",
+    "title": "Blockchain con permisos"
+  },
+  "permissionlessBlockchain": {
+    "desc": "Como un mercado al que cualquiera puede unirse. Esto reduce las barreras, pero puede requerir más reglas para mantener la equidad. Ejemplos de esto son muchas cadenas de bloques públicas.",
+    "original": "Permissionless Blockchain",
+    "short": "Todos pueden participar sin permiso.",
+    "title": "Blockchain sin permiso"
+  },
+  "phishing": {
+    "desc": "Como un correo electrónico falso del banco que te atrae a una trampa. El objetivo es que entregues tus credenciales de inicio de sesión. Nunca hagas clic en enlaces a ciegas.",
+    "original": "Phishing",
+    "short": "Fraude a través de noticias falsas o sitios web.",
+    "title": "Suplantación de identidad"
+  },
+  "ponzi": {
+    "desc": "Un esquema Ponzi promete altas ganancias pero no las paga con beneficios reales, sino con el capital de nuevos inversores. Funciona mientras entra dinero nuevo y colapsa cuando no. En cripto ha habido muchos Ponzis, algunos de miles de millones. Alertas: rendimientos garantizados, presión por entrar rápido, modelo opaco y enfoque en reclutar nuevos miembros.",
+    "original": "Ponzi Scheme",
+    "short": "Un esquema fraudulento donde los rendimientos de los antiguos se pagan con dinero nuevo.",
+    "title": "Ponzi Scheme"
+  },
+  "portfolio": {
+    "desc": "Un portafolio es la vista de todos los activos que tienes: qué coins y tokens posees, en qué cantidades y con qué valor actual. Una buena estrategia de portafolio incluye diversificación: no poner todo en un solo asset. En Stellar Account Manager puedes ver tu portafolio directamente—todos los assets de tus cuentas Stellar de un vistazo.",
+    "original": "Portfolio",
+    "short": "El conjunto total de activos cripto e inversiones de un usuario.",
+    "title": "Portafolio"
+  },
+  "priceDiscovery": {
+    "desc": "Es como un mercado: la oferta y la demanda se encuentran. Muchas pequeñas decisiones determinan el precio. No hay un interruptor fijo.",
+    "original": "Price Discovery",
+    "short": "Así es como el precio se determina por la oferta y la demanda.",
+    "title": "Fijación de precios."
+  },
+  "privateBlockchain": {
+    "desc": "Como un libro de caja de una empresa que solo los empleados pueden ver. Puede ser más rápido y más controlado, pero es menos abierto. La confianza se establece aquí a través de la organización.",
+    "original": "Private Blockchain",
+    "short": "Acceso solo para participantes seleccionados.",
+    "title": "Blockchain privada"
+  },
+  "privateKey": {
+    "desc": "La clave secreta es tu contraseña para la cuenta. Quien tenga esta clave puede mover tu dinero. Nunca la compartas.",
+    "original": "Secret Key",
+    "short": "Password for the account – never share it.",
+    "title": "Clave secreta"
+  },
+  "programmableLogic": {
+    "desc": "Como una regla de si-entonces en un autómata. Esto permite que los procesos se controlen sin intervención manual cada vez. Así es como se crean los contratos digitales simples.",
+    "original": "Programmable Logic",
+    "short": "Reglas que se ejecutan automáticamente cuando ocurre algo.",
+    "title": "Reglas automatizadas"
+  },
+  "proofOfStake": {
+    "desc": "En Proof of Stake (PoS), los validadores se eligen según las coins que han “stakeado”. Ethereum cambió a PoS en 2022 y redujo el consumo energético en más del 99%. PoS es más eficiente que PoW, pero tiene otros riesgos como la concentración de poder en grandes holders. Stellar no usa PoW ni PoS, sino su propio Stellar Consensus Protocol (SCP).",
+    "original": "Proof of Stake",
+    "short": "Mecanismo de consenso donde los validadores bloquean coins como garantía en lugar de usar cálculo.",
+    "title": "Proof of Stake"
+  },
+  "proofOfWork": {
+    "desc": "Proof of Work (PoW) es el mecanismo original usado por Bitcoin. Los mineros deben gastar mucha potencia de cálculo para crear un bloque válido—eso hace que atacar sea muy caro. Desventaja: PoW consume mucha energía y es lento (Bitcoin ~7 transacciones por segundo). Stellar y muchas blockchains nuevas eligieron alternativas más eficientes.",
+    "original": "Proof of Work",
+    "short": "Mecanismo de consenso que usa potencia de cálculo para validar transacciones y crear bloques.",
+    "title": "Proof of Work"
+  },
+  "protocolUpdate": {
+    "desc": "Una actualización de protocolo es una mejora de las reglas en la red Stellar, como nuevas funciones o cambios de seguridad. Todos los nodos en la red deben usar las mismas reglas.",
+    "original": "Protocol Update",
+    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "title": "Actualización del Protocolo"
+  },
+  "publicBlockchain": {
+    "desc": "Todos pueden participar y ver los datos, similar a un tablón de anuncios público. Esto aumenta la transparencia, pero cada acción es visible para todos. Las reglas aseguran que nadie pueda hacer trampas.",
+    "original": "Public Blockchain",
+    "short": "Abierto a cualquier persona que desee participar.",
+    "title": "Blockchain pública"
+  },
+  "publicKey": {
+    "desc": "La clave pública es la dirección que puedes compartir. En Stellar, esta es la dirección G. Otros la usan para enviarte dinero.",
+    "original": "Public Key",
+    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+    "title": "Clave pública"
+  },
+  "publicKeyCryptography": {
+    "desc": "El principio: lo que se cifra con la clave pública solo puede descifrarse con la clave privada, y viceversa. Puedes compartir libremente tu clave pública (= la dirección de tu billetera). Tu clave privada la mantienes en secreto. Quien conozca tu clave privada tiene acceso total a tu cuenta. Por eso: ¡nunca compartas tu clave privada!",
+    "original": "Public-Key Cryptography",
+    "short": "Método de cifrado con dos claves vinculadas: una pública y una privada.",
+    "title": "Criptografía de clave pública"
+  },
+  "quorumSet": {
+    "desc": "En SCP, cada validador elige en qué otros validadores confía: ese es su quorum set. El consenso ocurre cuando estos quorum sets se solapan y se ponen de acuerdo. Este modelo se llama Federated Byzantine Agreement (FBA). Es más flexible que los consensos clásicos: no hay una lista fija de nodos confiables, sino una red de confianza que crece de forma orgánica. La calidad y descentralización del quorum set afectan directamente la seguridad de la red.",
+    "original": "Quorum Set",
+    "short": "El conjunto de validadores en los que un nodo confía para el consenso.",
+    "title": "Quorum Set"
+  },
+  "rugPull": {
+    "desc": "El rug pull es de las estafas más comunes en DeFi y tokens. Patrón: un proyecto crea un token, genera hype, atrae inversores y luego retira toda la liquidez del pool. El precio cae a cero y los desarrolladores desaparecen. Alertas: equipo anónimo, sin auditoría de smart contract, promesas de rendimientos irreales, historia muy corta. Invierte solo en proyectos con equipo transparente y código auditado.",
+    "original": "Rug Pull",
+    "short": "Una estafa donde los desarrolladores retiran toda la liquidez y desaparecen con el dinero.",
+    "title": "Rug Pull"
+  },
+  "sac": {
+    "desc": "Con Soroban, surgió un problema: los assets Stellar existentes (como USDC o XLM) también debían usarse en smart contracts. El Stellar Asset Contract lo resuelve: es una interfaz estándar de smart contract para cada asset Stellar. Así, las dApps de Soroban pueden usar assets nativos sin convertirlos en nuevos tokens. Los SAC existen automáticamente para todos los assets Stellar y no necesitan crearse manualmente.",
+    "original": "SAC – Stellar Asset Contract",
+    "short": "Un smart contract de Soroban que hace usable un asset Stellar en smart contracts.",
+    "title": "Stellar Asset Contract"
+  },
+  "scam": {
+    "desc": "Las estafas son comunes en cripto porque las transacciones son irreversibles y no hay una autoridad central. Ejemplos: giveaways falsos (“Envía 1 XLM y recibe 2”), apps de wallet falsas, plataformas de inversión fraudulentas o soporte falso. Regla básica: nadie regala cripto. Si suena demasiado bueno, probablemente es falso. Nunca compartas claves privadas ni seed phrases con nadie, jamás.",
+    "original": "Scam",
+    "short": "Una estafa en cripto que busca robar los assets de los usuarios.",
+    "title": "Scam"
+  },
+  "scp": {
+    "desc": "SCP es el corazón de Stellar: el algoritmo que decide cómo los participantes acuerdan el estado del ledger. A diferencia de Bitcoin (Proof of Work) o Ethereum (Proof of Stake), Stellar usa un método de votación federada: cada validador confía en un conjunto elegido de validadores (quorum set). Esta estructura permite consenso en 3 a 5 segundos sin gastar energía en minería. SCP fue diseñado por David Mazières (Stanford) y está demostrado como seguro.",
+    "original": "SCP – Stellar Consensus Protocol",
+    "short": "El mecanismo de consenso único de Stellar que confirma transacciones rápido y sin minería.",
+    "title": "Stellar Consensus Protocol"
+  },
+  "searchHint": "La búsqueda encuentra palabras y explicaciones.",
+  "searchLabel": "Término de búsqueda",
+  "searchPlaceholder": "Término de búsqueda (z. B. Konto, Account, Muxed)",
+  "securityToken": {
+    "desc": "Como un certificado de acciones. Puede prometer derechos o beneficios. A menudo se aplican reglas más estrictas para esto.",
+    "original": "Security Token",
+    "short": "Un token con características de seguridad.",
+    "title": "Tokens de seguridad"
+  },
+  "seedPhrase": {
+    "desc": "Ella es como la llave de respaldo de tu caja fuerte. Quien la tenga puede restaurar tu billetera. Por lo tanto, nunca debe almacenarse en línea.",
+    "original": "Seed Phrase / Recovery Phrase",
+    "short": "Una lista de palabras con la que puedes restaurar tu billetera.",
+    "title": "Teorema de restauración"
+  },
+  "selfCustody": {
+    "desc": "Como el dinero en efectivo en tu propia caja fuerte: tienes el control, pero también la responsabilidad. Si pierdes el acceso, nadie puede ayudarte. Para los principiantes, la precaución es especialmente importante.",
+    "original": "Self-Custody",
+    "short": "Estás guardando tus llaves tú mismo.",
+    "title": "Autocustodia"
+  },
+  "sequenceNumber": {
+    "desc": "Cada cuenta de Stellar tiene un número de secuencia que aumenta en 1 con cada transacción. Una transacción solo se acepta si su número de secuencia corresponde exactamente a la secuencia actual de la cuenta +1. Esto evita que la misma transacción se ejecute dos veces. Si envías varias transacciones a la vez, deben procesarse en el orden correcto.",
+    "original": "Sequence Number",
+    "short": "Un número consecutivo que identifica de forma única cada transacción de una cuenta y previene el doble gasto.",
+    "title": "Número de secuencia"
+  },
+  "signer": {
+    "desc": "Un firmante es una clave pública que pertenece a una cuenta y tiene un peso. Su firma cuenta para cumplir con el umbral requerido. Varios firmantes pueden autorizar conjuntamente una transacción.\n\nTipos de firmantes:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM solo admite ed25519. Para opciones adicionales, visite https://lab.stellar.org.",
+    "original": "Signer",
+    "short": "Clave pública con peso, parte de la configuración de la cuenta.",
+    "title": "Signatario"
+  },
+  "signing": {
+    "desc": "Antes de que una transacción se ejecute en la red Stellar, debe ser firmada. Con la clave privada se genera una firma digital que demuestra que el titular legítimo de la cuenta ha aprobado la transacción. Sin una firma válida, la red rechaza la transacción. En cuentas multisig se requieren varias firmas.",
+    "original": "Signing",
+    "short": "Autorizar una transacción con la clave privada del titular de la cuenta.",
+    "title": "Firma"
+  },
+  "slippage": {
+    "desc": "El slippage ocurre cuando el precio del mercado cambia entre el envío y la ejecución de una orden, o cuando una operación es tan grande que “se come” el libro de órdenes. Ejemplo: quieres comprar a 1,00 USDC pero por poca liquidez se ejecuta a 1,05 USDC – eso es un 5% de slippage. En los pools de liquidez, el slippage es especialmente relevante para operaciones grandes. Muchas DEX permiten fijar una tolerancia máxima de slippage.",
+    "original": "Slippage",
+    "short": "La diferencia entre el precio esperado y el precio real de ejecución de una operación.",
+    "title": "Slippage"
+  },
+  "smartContract": {
+    "desc": "Como una máquina que responde según reglas fijas. Ejecuta acuerdos automáticamente. Esto ahorra confianza pero requiere reglas claras.",
+    "original": "Smart Contract",
+    "short": "Un programa que ejecuta automáticamente reglas fijas.",
+    "title": "Contrato inteligente"
+  },
+  "smartContractBlockchain": {
+    "desc": "Como un mercado con muchas máquinas expendedoras. Además de los pagos, pueden ejecutarse reglas y aplicaciones allí. Esto los hace versátiles, pero a menudo más complejos.",
+    "original": "Smart Contract Blockchain",
+    "short": "Una cadena de bloques capaz de ejecutar programas y aplicaciones.",
+    "title": "Blockchain de contratos inteligentes"
+  },
+  "socialEngineering": {
+    "desc": "El social engineering suele ser más peligroso que los ataques técnicos porque explota a las personas. Métodos: hacerse pasar por soporte y pedir la clave privada; crear urgencia falsa (“¡Tu cuenta será bloqueada!”); generar confianza con identidades falsas. En cripto, ningún soporte legítimo ni personal de Stellar o de una wallet pedirá tu clave privada o seed phrase. Nunca.",
+    "original": "Social Engineering",
+    "short": "Manipular a las personas con trucos psicológicos para obtener información o acceso.",
+    "title": "Social Engineering"
+  },
+  "soroban": {
+    "desc": "Soroban es el sistema de contratos inteligentes de Stellar. Un contrato inteligente es un código de programa en la cadena de bloques. El código puede verificar reglas de manera independiente y desencadenar acciones sin la necesidad de un intermediario bancario.",
+    "original": "Soroban",
+    "short": "Stellars Smart‑Contract‑System.",
+    "title": "Soroban"
+  },
+  "sponsor": {
+    "desc": "En Stellar, cada cuenta y cada entrada (trustline, entrada de datos, etc.) requiere un saldo mínimo en XLM (reserva base). El patrocinio permite que una cuenta cubra esa reserva para otra. Es útil para aplicaciones que quieren incorporar nuevos usuarios sin que tengan que comprar XLM primero. Ejemplo: una app patrocina la creación de cuentas y trustlines para nuevos usuarios – así pueden empezar de inmediato sin tener XLM.",
+    "original": "Sponsoring",
+    "short": "Función de Stellar en la que una cuenta cubre la reserva base de otra cuenta.",
+    "title": "Patrocinio"
+  },
+  "spread": {
+    "desc": "Como el margen entre la oferta y la demanda en una tienda. Cuanto más pequeño es el margen, más justo parece. Las diferencias grandes hacen que las transacciones sean más caras.",
+    "original": "Spread",
+    "short": "La diferencia entre el precio de compra y el precio de venta.",
+    "title": "Rango de negociación"
+  },
+  "stablecoin": {
+    "desc": "Como el dinero digital que está vinculado a una moneda estándar. Esto hace que su precio sea más estable. Sin embargo, la confianza en el proveedor sigue siendo importante.",
+    "original": "Stablecoin",
+    "short": "Criptomoneda con un valor potencialmente estable.",
+    "title": "Stablecoin"
+  },
+  "staking": {
+    "desc": "En el staking se bloquean coins en una red proof‑of‑stake para validar transacciones y asegurar la red. Los stakers reciben nuevas coins como recompensa. Stellar no usa staking clásico—los holders de XLM pueden aportar capital a pools de liquidez y ganar comisiones de trading. Importante: distingue el staking real de red de los “staking” en exchanges centralizados, que a menudo son productos de ahorro.",
+    "original": "Staking",
+    "short": "Bloquear criptomonedas en una red para recibir recompensas y apoyar la red.",
+    "title": "Staking"
+  },
+  "stellarAsset": {
+    "desc": "En Stellar, cualquiera puede crear su propio activo – una empresa su token de fidelidad, un banco su stablecoin. Cada activo Stellar se identifica de forma única por dos componentes: el código del activo (por ejemplo, \"USD\", \"MOBI\", \"USDC\") y la dirección G del emisor. Dos activos con el mismo código pero diferentes emisores son activos distintos. Para recibir un activo Stellar, primero hay que establecer una trustline al emisor.",
+    "original": "Stellar Asset",
+    "short": "Cualquier activo emitido en la red Stellar, definido por su código de activo y la dirección del emisor.",
+    "title": "Activo Stellar"
   },
   "stellarVsBitcoinVsEthereum": {
-    "title": "Stellar vs. Bitcoin vs. Ethereum",
+    "desc": "Bitcoin es como el oro digital y a menudo se considera una reserva de valor. Ethereum es como una plataforma para programas y aplicaciones. Stellar se centra en pagos asequibles.",
     "original": "Stellar vs. Bitcoin vs. Ethereum",
     "short": "Tres blockchains bien conocidas con diferentes enfoques.",
-    "desc": "Bitcoin es como el oro digital y a menudo se considera una reserva de valor. Ethereum es como una plataforma para programas y aplicaciones. Stellar se centra en pagos asequibles."
+    "title": "Stellar vs. Bitcoin vs. Ethereum"
   },
-  "missingKey": "Falta la clave del glosario: {{detail}}"
+  "syntheticAsset": {
+    "desc": "Los activos sintéticos replican el valor de otros activos – por ejemplo, acciones, oro o divisas – sin poseer el original. Se aseguran mediante contratos inteligentes y colateral. Un ejemplo: un token sintético de acciones de Apple sigue el precio de la acción real, pero es un token cripto. Los activos sintéticos son un concepto avanzado de DeFi.",
+    "original": "Synthetic Asset",
+    "short": "Un token que replica el precio de un activo del mundo real sin poseerlo directamente.",
+    "title": "Activo sintético"
+  },
+  "testnet": {
+    "desc": "Una red de práctica pública. Los tokens no tienen valor real. Ideal para aprender y experimentar sin riesgo.",
+    "original": "Testnet",
+    "short": "Red de entrenamiento público sin valor real.",
+    "title": "Red de prueba"
+  },
+  "thresholds": {
+    "desc": "Los umbrales definen cuántas firmas ponderadas se requieren para realizar acciones: bajo para operaciones simples, medio para pagos y alto para cambios críticos. La suma de los pesos de los firmantes debe cumplir con el umbral respectivo.",
+    "original": "Thresholds",
+    "short": "Límites (low/med/high) que establecen el peso total requerido.",
+    "title": "Umbrales"
+  },
+  "token": {
+    "desc": "Un token es una unidad digital en la cadena de bloques. Un token puede representar dinero, puntos o créditos para un servicio.",
+    "original": "Token",
+    "short": "Digital unit – for example, money, points, or credits.",
+    "title": "Ficha"
+  },
+  "transaction": {
+    "desc": "Una transacción es una acción en la blockchain, como enviar dinero o establecer una línea de confianza. Una vez confirmada, una transacción se registra de manera permanente.",
+    "original": "Transaction",
+    "short": "Acción en la cadena de bloques, por ejemplo, pago o línea de confianza.",
+    "title": "Transacción"
+  },
+  "transactionStatus": {
+    "desc": "Como el seguimiento de paquetes: pendiente, confirmado o fallido. De esta manera, puedes ver si todo salió bien. A veces, toma un poco de tiempo.",
+    "original": "Transaction Status",
+    "short": "Indica si una transacción sigue abierta o ya está completada.",
+    "title": "Estado de la transacción"
+  },
+  "trustline": {
+    "desc": "Una línea de confianza es como un \"Sí, acepto este token\". Al configurarla, estás indicando que tu cuenta está lista para recibir un token específico de un emisor específico. Sin una línea de confianza, no puedes recibir este token.\n\nEjemplo: Una línea de confianza se especifica como CÓDIGO:EMISOR. Para EURT del emisor GDUKMGUGDZQK6Y…, sería EURT:GDUKMGUGDZQK6Y…",
+    "original": "Trustline",
+    "short": "Acuerdo para mantener un token de un emisor específico.",
+    "title": "Línea de confianza"
+  },
+  "tvl": {
+    "desc": "TVL es una métrica importante en DeFi. Muestra cuánto capital está bloqueado en un protocolo, una dApp o un pool de liquidez. Un TVL alto sugiere confianza y uso activo. En Stellar, TVL mide el valor de todos los assets en pools de liquidez. Plataformas como DeFiLlama rastrean TVL en muchas blockchains y protocolos.",
+    "original": "TVL – Total Value Locked",
+    "short": "El valor total de los assets bloqueados en un protocolo DeFi o un pool de liquidez.",
+    "title": "Total Value Locked"
+  },
+  "twoFactorAuth": {
+    "desc": "La 2FA protege mucho mejor que una sola contraseña. Tras la contraseña, se pide un segundo factor—por ejemplo un código de una app (Google Authenticator, Authy) o un SMS. Importante: la 2FA por SMS es menos segura por ataques de SIM‑swapping. Activa 2FA en todas tus cuentas de exchange. Nota: en wallets de autocustodia no hay 2FA—la clave privada es la única protección.",
+    "original": "2FA – Two-Factor Authentication",
+    "short": "Una capa extra de seguridad que requiere un segundo paso además de la contraseña.",
+    "title": "Two-Factor Authentication"
+  },
+  "utilityToken": {
+    "desc": "Como un vale en un puesto de mercado. Proporciona acceso o un descuento. Su valor depende de la utilidad del servicio.",
+    "original": "Utility Token",
+    "short": "Un token que se puede usar para acceder a un servicio.",
+    "title": "Uso de tokens"
+  },
+  "validator": {
+    "desc": "Los validadores son participantes de confianza que mantienen la red Stellar. Reciben transacciones, verifican su validez y votan con otros validadores qué entra en el siguiente ledger. Cualquiera puede operar un validador Stellar: empresas, universidades o individuos. La Stellar Development Foundation opera algunos, pero no es la única autoridad. Un conjunto descentralizado de validadores hace que Stellar sea resistente a fallos y censura.",
+    "original": "Validator",
+    "short": "Un nodo que verifica transacciones y participa en el consenso.",
+    "title": "Validador"
+  },
+  "volatility": {
+    "desc": "Como un mercado con movimientos de precios salvajes. Alta volatilidad significa oportunidades, pero también riesgos. Para los principiantes, esto puede ser estresante.",
+    "original": "Volatility",
+    "short": "Cuánto fluctúan los precios.",
+    "title": "Volatilidad"
+  },
+  "wallet": {
+    "desc": "Un monedero es tu cartera digital. Gestiona las claves que necesitas para acceder a tu cuenta y enviar transacciones. Un monedero puede ser un programa, una aplicación o incluso un simple trozo de papel con tu clave privada.",
+    "original": "Wallet",
+    "short": "Monedero digital que gestiona tus llaves.",
+    "title": "Cartera"
+  },
+  "whitepaper": {
+    "desc": "El whitepaper es el documento fundacional de un proyecto cripto. Bitcoin nació con el whitepaper de Satoshi Nakamoto en 2008. Un buen whitepaper explica el problema, la solución, la tecnología y la tokenomics. Antes de invertir, conviene leerlo. Si falta o es vago, suele ser una señal de alerta. El whitepaper de Stellar describe SCP y es público.",
+    "original": "Whitepaper",
+    "short": "Documento técnico que describe el concepto, la tecnología y los objetivos de un proyecto cripto.",
+    "title": "Whitepaper"
+  },
+  "wrappedToken": {
+    "desc": "Un wrapped token permite utilizar activos de una blockchain en otra. Ejemplo: Wrapped Bitcoin (WBTC) es un token en Ethereum respaldado 1:1 por Bitcoin real. El original se bloquea en un contrato inteligente y a cambio se emite el wrapped token. En Stellar, Bitcoin o Ether pueden ser emitidos como wrapped tokens por anclas, permitiendo negociarlos en la red Stellar.",
+    "original": "Wrapped Token",
+    "short": "Un token que representa el valor de otro activo en una blockchain diferente.",
+    "title": "Token envuelto"
+  },
+  "xlm": {
+    "desc": "XLM es la moneda nativa de Stellar. Necesitas XLM para pagar tarifas y para abrir una nueva cuenta.",
+    "original": "XLM",
+    "short": "Moneda nativa de Stellar para tarifas y activación.",
+    "title": "XLM"
+  },
+  "yield": {
+    "desc": "En DeFi, el yield son los ingresos de actividades como aportar liquidez, hacer staking o prestar. El rendimiento suele mostrarse como APY (Annual Percentage Yield). Rendimientos altos suelen implicar riesgos altos. Importante: rendimientos extremadamente altos (p. ej. 1000% APY) suelen ser una señal de alerta.",
+    "original": "Yield",
+    "short": "La ganancia que obtienes al aportar capital en protocolos DeFi.",
+    "title": "Rendimiento / Yield"
+  },
+  "yieldFarming": {
+    "desc": "Los yield farmers mueven sus activos entre diferentes pools y protocolos para capturar los mejores rendimientos. Suena bien, pero es complejo y riesgoso: pérdida impermanente, fallos de smart contracts y caídas repentinas de rendimiento pueden borrar las ganancias. El yield farming es avanzado y no se recomienda para principiantes.",
+    "original": "Yield Farming",
+    "short": "Mover activamente capital entre protocolos DeFi para obtener la mayor rentabilidad.",
+    "title": "Yield Farming"
+  }
 }

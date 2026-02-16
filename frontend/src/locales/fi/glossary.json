@@ -15,7 +15,11 @@
     "networkProtocol": "Verkko & Protokolla",
     "smartContracts": "Älysopimukset",
     "blockchainBasics": "Lohkoketjun perusteet",
-    "security": "Security & Fraud"
+    "security": "Security & Fraud",
+    "moneyFinance": "Raha & Rahoitus",
+    "cryptography": "Kryptografia",
+    "defi": "DeFi",
+    "onrampOfframp": "Onramp / Offramp"
   },
   "blockchain": {
     "title": "Lohkoketju",
@@ -94,7 +98,8 @@
   "multisigCorporate": {
     "title": "Moniallekirjoitus - Esimerkki",
     "original": "Multi-Signature - Example",
-    "short": "Esimerkki yritystilien moniallekirjoitusrakenteesta, jossa on rooleja, painotuksia ja kynnysarvoja."
+    "short": "Esimerkki yritystilien moniallekirjoitusrakenteesta, jossa on rooleja, painotuksia ja kynnysarvoja.",
+    "desc": "Esimerkki: Yritys perustaa Stellar-tilin kolmella allekirjoittajalla: toimitusjohtaja (paino 2), talousjohtaja (paino 2) ja hallituksen jäsen (paino 1). Kynnysarvot on määritetty niin, että matalan turvallisuuden toiminnot vaativat painon 1, keskitason toiminnot (esim. maksut) painon 3 ja korkean tason toiminnot (esim. allekirjoittajien muuttaminen) painon 4. Tämä tarkoittaa, että toimitusjohtaja voi yksin tarkastella tiliä, mutta hänen on tehtävä yhteistyötä talousjohtajan tai molempien muiden allekirjoittajien kanssa maksujen ja kokoonpanomuutosten osalta."
   },
   "trustline": {
     "title": "Luottolimiitti",
@@ -109,10 +114,10 @@
     "desc": "Tokeni on digitaalinen yksikkö lohkoketjussa. Tokeni voi edustaa rahaa, pisteitä tai palvelun hyvityksiä."
   },
   "asset": {
-    "title": "Omaisuus",
+    "title": "Omaisuuserä",
     "original": "Asset",
-    "short": "Stellarissa olevat tokenit ovat aina liitettynä liikkeellelaskijaan.",
-    "desc": "Stellar-järjestelmässä tokenia kutsutaan omaisuudeksi. Omaisuus on aina liitetty liikkeeseenlaskijan tiliin. Esimerkiksi tili voi laskea liikkeeseen Euro-tokenin, ja tätä Euro-tokenia pidetään silloin omaisuutena."
+    "short": "Mikä tahansa digitaalinen arvonkantaja lohkoketjussa – kryptovaluutoista tokeneihin ja stablecoineihin.",
+    "desc": "Omaisuuserä on laajimmassa merkityksessä kaikki, mikä edustaa arvoa ja on siirrettävissä. Stellarissa kuka tahansa voi laskea liikkeeseen omaisuuserän – esim. lentoyhtiö mailiensa tokeneina, pankki dollarinsa stablecoinina. Jokainen Stellar-omaisuuserä määritellään kahdella asialla: omaisuuskoodilla (esim. 'USDC') ja liikkeeseenlaskijalla (luojan G-osoite). XLM on ainoa omaisuuserä ilman liikkeeseenlaskijaa, koska se on verkon natiivi omaisuuserä."
   },
   "xlm": {
     "title": "XLM",
@@ -150,6 +155,30 @@
     "short": "Hyvin pieni summa per tapahtuma.",
     "desc": "Maksu on erittäin pieni summa, jonka maksat jokaisen tapahtuman yhteydessä. Maksu menee verkolle. Stellarissa maksut ovat erittäin alhaiset."
   },
+  "operations": {
+    "title": "Operaatio",
+    "original": "Operation",
+    "short": "Stellar-transaktion pienin yksikkö – transaktio voi sisältää enintään 100 operaatiota.",
+    "desc": "Stellarissa transaktio on kontti, jossa on yksi tai useampi operaatio. Operaatio on yksi toiminto, kuten maksun lähetys, trustlinen luominen tai tarjouksen asettaminen. Enintään 100 operaatiota voidaan yhdistää yhteen transaktioon, mikä on erittäin tehokasta. Transaktiomaksu lasketaan operaatioiden määrän mukaan (oletus: 100 stroops per operaatio)."
+  },
+  "pathPayment": {
+    "title": "Polkumaksu",
+    "original": "Path Payment",
+    "short": "Maksu, jossa Stellar tekee automaattisesti yhden tai useamman valuuttamuunnoksen, jotta vastaanottaja saa halutun assetin.",
+    "desc": "Polkumaksuilla voit esimerkiksi lähettää XLM:ää ja vastaanottaja saa automaattisesti USDC:tä – Stellar löytää parhaan vaihtopolun hajautetun markkinan kautta. Verkko etsii saatavilla olevia kaupankäyntipareja ja likviditeettipooleja edullisimman polun löytämiseksi. Tämä on erityisen hyödyllistä rajat ylittävissä maksuissa: lähettäjä maksaa omassa valuutassaan ja vastaanottaja saa omansa. Kaikki yhdessä transaktiossa."
+  },
+  "clawback": {
+    "title": "Takaisinotto",
+    "original": "Clawback",
+    "short": "Valinnainen Stellar-toiminto, jonka avulla assetin liikkeeseenlaskija voi ottaa liikkeessä olevia tokeneita takaisin tililtä.",
+    "desc": "Clawback on Stellarissa erityinen ominaisuus, joka täyttää sääntelyvaatimuksia. Jos liikkeeseenlaskija aktivoi clawbackin assetia luodessaan, hän voi ottaa tokeneita takaisin miltä tahansa tililtä – esimerkiksi petoksen, rahanpesun tai lakisääteisten vaatimusten vuoksi. Säännellyille rahoitustuotteille, kuten security tokeneille, tämä on usein lain edellyttämä. Tavallisten käyttäjien ei tarvitse huolehtia, kunhan he käyttävät luotettavia liikkeeseenlaskijoita."
+  },
+  "sponsor": {
+    "title": "Sponsorointi",
+    "original": "Sponsoring",
+    "short": "Stellar-toiminto, jossa yksi tili kattaa toisen tilin perusreservin.",
+    "desc": "Stellarissa jokainen tili ja jokainen merkintä (trustline, data-merkintä jne.) vaatii vähimmäissaldon XLM:ää (perusreservi). Sponsorointi antaa yhden tilin kattaa tämän reservin toisen puolesta. Tämä on hyödyllistä sovelluksille, jotka haluavat ottaa uusia käyttäjiä mukaan ilman, että heidän pitää ensin ostaa XLM:ää. Esimerkki: sovellus sponsoroi tilin luomisen ja trustlinet uusille käyttäjille – he voivat aloittaa heti ilman omaa XLM:ää."
+  },
   "ledger": {
     "title": "Tilikirja",
     "original": "Ledger",
@@ -168,6 +197,30 @@
     "short": "Kuvataan, kuinka pitkälle julkisten Horizon-palvelinten tarjoama tapahtumahistoria ulottuu.",
     "desc": "Julkiset Horizon-palvelimet (Mainnet und Testnet), joita Stellar Development Foundation ylläpitää, tarjoavat vain rajoitetun historian – tällä hetkellä noin yksi vuosi taaksepäin. Vanhempia tietoja ei voi enää hakea näiden ilmaisten päätepisteiden kautta. Jos tarvitset tietoja pidemmältä ajalta, sinulla on käytännössä kaksi vaihtoehtoa: (1) voit käyttää omaa Horizon-solmua koko historiallaan (inklusive History Archives), tai (2) voit käyttää kolmannen osapuolen tai maksullisia palveluja, jotka tallentavat ja tarjoavat pitkäaikaisia Stellarin historiallisia tietoja.",
     "seeAlso": "Sinulle ei annettu erityistä käännettävää tekstiä. Ole hyvä ja anna teksti, jonka haluat kääntää."
+  },
+  "scp": {
+    "title": "Stellar Consensus Protocol",
+    "original": "SCP – Stellar Consensus Protocol",
+    "short": "Stellarin ainutlaatuinen konsensus, joka vahvistaa siirrot nopeasti ilman miningia.",
+    "desc": "SCP on Stellarin ydin: algoritmi, joka määrittää miten osallistujat sopivat ledgerin tilasta. Toisin kuin Bitcoin (Proof of Work) tai Ethereum (Proof of Stake), Stellar käyttää federatiivista äänestystä: jokainen validaattori luottaa itse valitsemaansa validaattorijoukkoon (quorum set). Tämä rakenne mahdollistaa konsensuksen 3–5 sekunnissa ilman energiahukkaa miningista. SCP:n suunnitteli David Mazières (Stanford) ja se on todistetusti turvallinen."
+  },
+  "validator": {
+    "title": "Validaattori",
+    "original": "Validator",
+    "short": "Verkkosolmu, joka tarkistaa siirrot ja osallistuu konsensukseen.",
+    "desc": "Validaattorit ovat luotettavia osallistujia, jotka pitävät Stellar‑verkon toiminnassa. Ne vastaanottavat siirrot, tarkistavat ne ja äänestävät muiden validaattorien kanssa siitä, mitä kirjataan seuraavaan ledgeriin. Kuka tahansa voi ylläpitää Stellar‑validaattoria: yritykset, yliopistot tai yksityishenkilöt. Stellar Development Foundation ylläpitää joitakin validaattoreita, mutta ei ole ainoa auktoriteetti. Hajautettu validaattoriverkko tekee Stellarista kestävän häiriöitä ja sensuuria vastaan."
+  },
+  "quorumSet": {
+    "title": "Quorum Set",
+    "original": "Quorum Set",
+    "short": "Validaattorijoukko, johon solmu luottaa konsensuksessa.",
+    "desc": "SCP:ssä jokainen validaattori valitsee itse, keihin validaattoreihin se luottaa—tämä on sen quorum set. Konsensus syntyy, kun quorum setit menevät päällekkäin ja sopivat. Mallin nimi on Federated Byzantine Agreement (FBA). Se on joustavampi kuin perinteiset konsensusmallit: ei ole kiinteää luotettujen solmujen listaa, vaan orgaanisesti kasvava luottamusverkko. Quorum setin laatu ja hajautus vaikuttavat suoraan verkon turvallisuuteen."
+  },
+  "sac": {
+    "title": "Stellar Asset Contract",
+    "original": "SAC – Stellar Asset Contract",
+    "short": "Soroban‑smart contract, joka tekee Stellar‑assetin käytettäväksi smart contracteissa.",
+    "desc": "Sorobanin myötä syntyi ongelma: olemassa olevien Stellar‑assetien (kuten USDC tai XLM) piti toimia myös smart contracteissa. Stellar Asset Contract ratkaisee tämän: se on standardoitu smart‑contract‑rajapinta jokaiselle Stellar‑assetille. Näin Soroban‑dAppit voivat käyttää natiiveja Stellar‑asseteja suoraan ilman uuteen tokeniin vaihtamista. SACit ovat automaattisesti olemassa kaikille Stellar‑asseteille eikä niitä tarvitse luoda käsin."
   },
   "anchor": {
     "title": "Ankkuri",
@@ -192,6 +245,144 @@
     "original": "Liquidity Pool",
     "short": "Yhteinen rahasto, jossa on kaksi merkkiä välitöntä vaihtoa varten.",
     "desc": "Likviditeettipooli on yhteinen rahasto, joka sisältää kaksi tokenia. Ihmiset tallettavat siihen molempia tokeneita. Muut saavat sitten vaihdettua näitä tokeneita välittömästi. Tallettajat ansaitsevat vastineeksi pieniä palkkioita."
+  },
+  "onramp": {
+    "title": "Onramp",
+    "original": "Onramp",
+    "short": "Palvelu, jonka avulla voi ostaa kryptoa fiat‑rahalla (esim. euro tai Sveitsin frangi).",
+    "desc": "Onramp on sisäänkäynti kryptoon—reitti perinteisestä rahasta kryptoon. Tyypilliset tavat ovat kortti tai pankkisiirto. Palvelut kuten Kado tai Onramper mahdollistavat ostamisen suoraan sovelluksessa ilman erillistä pörssiä. Stellar Account Manager integroi onramp‑palvelut, jotta voit ostaa XLM:ää ja muita asseteja fiat‑rahalla. Onrampit vaativat yleensä KYC:n."
+  },
+  "offramp": {
+    "title": "Offramp",
+    "original": "Offramp",
+    "short": "Palvelu, jonka avulla voi myydä kryptoa takaisin fiat‑rahaan.",
+    "desc": "Offramp on onrampin vastakohta—reitti takaisin perinteiseen rahaan. Myyt krypto‑assetit ja saat eurot, frangit tai muun fiat‑valuutan pankkitilille. Stellarissa anchorit hoitavat usein offrampeja: he vastaanottavat esimerkiksi USDC‑tokeneita ja maksavat vastaavan fiat‑summan. Offrampeissa vaaditaan yleensä KYC."
+  },
+  "kyc": {
+    "title": "Know Your Customer",
+    "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
+    "short": "Lakisääteinen henkilöllisyyden tarkistus, jota finanssipalvelut vaativat ennen käyttöä.",
+    "desc": "KYC (Know Your Customer) on sääntelyprosessi, jossa käyttäjä todistaa henkilöllisyytensä asiakirjoilla ja joskus selfiellä. Tavoite on estää rahanpesu (AML), terrorismin rahoitus ja petokset. Hajautetut protokollat kuten Stellar DEX eivät vaadi KYC:tä—käyt kauppaa suoraan walletista. Onramp- ja offramp‑palvelut ovat velvoitettuja tekemään KYC:n, koska ne yhdistävät fiat- ja kryptomaailman."
+  },
+  "defi": {
+    "title": "Hajautettu rahoitus",
+    "original": "DeFi – Decentralized Finance",
+    "short": "Rahoituspalvelut kuten lainat, kaupankäynti ja säästäminen—ilman pankkeja, suoraan lohkoketjuprotokollien kautta.",
+    "desc": "DeFi on yleistermi rahoitussovelluksille, jotka toimivat ilman keskitettyjä instituutioita kuten pankkeja tai pörssejä. Kaikki tapahtuu automaattisesti smart contractien avulla. Käyttäjät hallitsevat itse varojaan. Tyypillisiä DeFi‑sovelluksia ovat hajautetut pörssit (DEX), lainaprotokollat ja likviditeettipoolit. Stellar tarjoaa perus‑DeFi‑toiminnot sisäänrakennetulla DEX:llä ja AMM‑pooleilla, ja Soroban‑smart contractit laajentavat niitä."
+  },
+  "yield": {
+    "title": "Tuotto / Yield",
+    "original": "Yield",
+    "short": "Tuotto, jonka saat tarjoamalla pääomaa DeFi‑protokollissa.",
+    "desc": "DeFi‑maailmassa yield tarkoittaa tuottoa esimerkiksi likviditeetin tarjoamisesta, stakingista tai lainaamisesta. Tuotto esitetään usein APY‑lukuna (Annual Percentage Yield). Korkeat tuotot merkitsevät usein korkeaa riskiä. Tärkeää: erittäin korkeat tuotot (esim. 1000% APY) ovat usein varoitusmerkki."
+  },
+  "staking": {
+    "title": "Staking",
+    "original": "Staking",
+    "short": "Kryptojen lukitseminen verkkoon palkkioiden saamiseksi ja verkon tukemiseksi.",
+    "desc": "Stakingissa coinit lukitaan proof‑of‑stake‑verkkoon tapahtumien vahvistamiseksi ja verkon suojaamiseksi. Stakerit saavat uusia coineja palkkiona. Stellar ei käytä klassista staking‑mallia—XLM‑omistajat voivat sen sijaan tarjota likviditeettiä pooliin ja ansaita kaupankäyntikuluja. Tärkeää: erottele oikea verkko‑staking keskitettyjen pörssien “staking”‑tuotteista, jotka ovat usein vain säästötilejä."
+  },
+  "yieldFarming": {
+    "title": "Yield Farming",
+    "original": "Yield Farming",
+    "short": "Pääoman aktiivinen siirtäminen DeFi‑protokollien välillä parhaan tuoton saamiseksi.",
+    "desc": "Yield farmerit siirtävät varojaan eri poolien ja protokollien välillä saadakseen parhaan tuoton. Se voi olla houkuttelevaa, mutta on monimutkaista ja riskialtista: impermanent loss, smart contract ‑virheet ja äkilliset tuoton laskut voivat syödä voitot. Yield farming on edistyneille eikä suositella aloittelijoille."
+  },
+  "dao": {
+    "title": "Hajautettu autonominen organisaatio",
+    "original": "DAO – Decentralized Autonomous Organization",
+    "short": "Organisaatio, jota ohjataan smart contracteilla ja token‑äänestyksillä ilman keskitettyä johtoa.",
+    "desc": "DAO on digitaalinen organisaatio, jota hallitaan koodilla ja token‑haltijoiden äänestyksillä. Ei ole CEO:ta tai hallitusta—päätökset tehdään hallintatoken‑äänestyksillä. Token‑haltijat voivat tehdä ehdotuksia ja äänestää. DAO:ita käytetään protokollakehitykseen, treasury‑hallintaan ja sääntömuutoksiin. Konsepti on innovatiivinen, mutta riskejä ovat matala osallistuminen tai koordinoidut hyökkäykset."
+  },
+  "dapp": {
+    "title": "Hajautettu sovellus",
+    "original": "dApp – Decentralized Application",
+    "short": "Sovellus, joka toimii lohkoketjussa ilman keskitettyä hallintaa.",
+    "desc": "dApp näyttää käyttäjälle normaalilta sovellukselta, mutta toimii lohkoketjussa eikä keskitettyillä palvelimilla. Koodi on smart contracteissa—julkinen eikä yhden osapuolen hallinnassa. Esimerkkejä: hajautetut pörssit, lainaprotokollat tai NFT‑markkinapaikat. Sorobanin avulla Stellar tukee dApp‑kehitystä verkossaan. dAppit vaativat yleensä wallet‑yhteyden perinteisen loginin sijaan."
+  },
+  "oracle": {
+    "title": "Oracle",
+    "original": "Oracle",
+    "short": "Palvelu, joka tuo ulkomaailman dataa (esim. hinnat, sää) smart contracteille.",
+    "desc": "Lohkoketjut ovat oletuksena eristettyjä—smart contract ei voi itse hakea Bitcoin‑hintaa tai EUR/USD‑kurssia. Oraclet ratkaisevat tämän tuomalla luotettavaa ulkoista dataa lohkoketjuun. Tunnettuja oraclet‑palveluita ovat Chainlink ja Pyth Network. Ilman oracleta monet DeFi‑sovellukset kuten lainaprotokollat tai synteettiset varat eivät olisi mahdollisia."
+  },
+  "cex": {
+    "title": "Keskitetty pörssi",
+    "original": "CEX – Centralized Exchange",
+    "short": "Kryptopörssi, jota ylläpitää yritys ja joka toimii välittäjänä ostajien ja myyjien välillä.",
+    "desc": "CEX:ssä, kuten Coinbasessa, Binancessa tai Krakenissa, et omista kolikoitasi suoraan – pörssi säilyttää ne puolestasi. Se on kätevää, mutta sisältää riskejä: jos pörssi hakeroidaan tai menee konkurssiin, varoja voi kadota (esim. FTX:n romahdus 2022). CEX:t vaativat yleensä henkilöllisyyden varmistuksen (KYC). DEX:ssä voit vaihtaa suoraan omasta lompakostasi ilman välikäsiä."
+  },
+  "orderBook": {
+    "title": "Tilauskirja",
+    "original": "Order Book",
+    "short": "Lista kaikista avoimista osto- ja myyntitarjouksista tietylle kaupankäyntiparille.",
+    "desc": "Tilauskirja näyttää reaaliajassa hinnat, joilla ostajat haluavat ostaa (bids) ja myyjät haluavat myydä (asks). Korkeimman ostotarjouksen ja matalimman myyntitarjouksen erotusta kutsutaan spreadiksi. Stellarissa on sisäänrakennettu hajautettu tilauskirja (SDEX – Stellar Decentralized Exchange), jossa kuka tahansa voi käydä kauppaa asseteilla. Likviditeettipoolit ovat vaihtoehto perinteiselle tilauskirjamallille."
+  },
+  "limitOrder": {
+    "title": "Limit order",
+    "original": "Limit Order",
+    "short": "Toimeksianto, joka toteutuu vain tietyllä hinnalla tai sitä paremmalla.",
+    "desc": "Limit orderissa määrität hinnan, jolla olet valmis ostamaan tai myymään. Orderi menee tilauskirjaan ja odottaa, että joku haluaa käydä kauppaa sillä hinnalla. Etu: hallitset hintaa. Haitta: orderi ei ehkä toteudu heti tai lainkaan. Stellarissa tämä vastaa \"offeria\" hajautetussa tilauskirjassa."
+  },
+  "marketOrder": {
+    "title": "Market order",
+    "original": "Market Order",
+    "short": "Toimeksianto, joka toteutuu heti parhaaseen saatavilla olevaan markkinahintaan.",
+    "desc": "Market order toteutuu heti parhaaseen hintaan tilauskirjassa. Se takaa toteutumisen, mutta ei hintaa. Matala likviditeetti voi johtaa siihen, että toteutushinta poikkeaa selvästi odotetusta (slippage). Market order on hyvä nopeuteen; limit order on parempi kun hinta on tärkeä."
+  },
+  "offer": {
+    "title": "Tarjous",
+    "original": "Offer",
+    "short": "Avoin osto- tai myyntitarjous Stellar-verkon hajautetussa tilauskirjassa.",
+    "desc": "Stellarissa kuka tahansa voi asettaa tarjouksen hajautettuun tilauskirjaan: esimerkiksi “Myyn 100 XLM:ää hintaan 0,10 USDC kappale”. Tarjous pysyy avoinna, kunnes se täyttyy, poistetaan käsin tai korvataan uudella versiolla. Tarjoukset ovat SDEX:n (Stellar Decentralized Exchange) perusta ja niitä käytetään myös path payments -maksuissa. Jokainen avoin tarjous kasvattaa tilin minimisummaa yhdellä base reservellä."
+  },
+  "slippage": {
+    "title": "Slippage",
+    "original": "Slippage",
+    "short": "Ero odotetun hinnan ja toteutuneen hinnan välillä.",
+    "desc": "Slippage syntyy, kun markkinahinta muuttuu orderin lähettämisen ja toteutuksen välillä, tai kun kauppa on niin suuri, että se “syö” tilauskirjan. Esimerkki: haluat ostaa hintaan 1,00 USDC, mutta vähäisen likviditeetin vuoksi kauppa toteutuu hintaan 1,05 USDC – se on 5% slippage. Likviditeettipoolien kanssa slippage on erityisen tärkeä suurissa kaupoissa. Monet DEX:t antavat asettaa maksimisallitun slippage-toleranssin."
+  },
+  "impermanentLoss": {
+    "title": "Väliaikainen tappio",
+    "original": "Impermanent Loss",
+    "short": "Väliaikainen arvon menetys likviditeetin tarjoajille, kun poolin assettien hinnat erkanevat.",
+    "desc": "Kun tarjoat likviditeettiä pooliin, voit kärsiä väliaikaisesta tappiosta: jos kahden assetin hintasuhde muuttuu, nostohetken arvo on huonompi kuin jos olisit vain pitänyt assetit. Tappio on “väliaikainen”, koska se katoaa, jos hinnat palaavat alkuperäiseen suhteeseen. Kaupankäyntipalkkiot voivat kompensoida tappion. Tämä on tärkeä käsite kaikille, jotka tarjoavat likviditeettiä Stellar DEXissä."
+  },
+  "amm": {
+    "title": "Automaattinen markkinatakaaja",
+    "original": "AMM – Automated Market Maker",
+    "short": "Smart contract -pohjainen järjestelmä, joka mahdollistaa kaupankäynnin ilman tilauskirjaa hintakaavoilla.",
+    "desc": "AMM korvaa perinteisen tilauskirjan algoritmilla. Sen sijaan, että odottaisit ostajaa tai myyjää, käyt kauppaa suoraan likviditeettipoolin kanssa. Hinta lasketaan automaattisesti kaavalla (yleensä x × y = k). Mitä enemmän yhtä assettia ostetaan, sitä kalliimmaksi se tulee. Stellar on tuonut AMM-pohjaiset likviditeettipoolit klassisen SDEX-tilauskirjan rinnalle."
+  },
+  "bullBearMarket": {
+    "title": "Härkä- ja karhumarkkina",
+    "original": "Bull & Bear Market",
+    "short": "Härkämarkkina = nousevat hinnat ja optimismi. Karhumarkkina = laskevat hinnat ja pessimismi.",
+    "desc": "Härkämarkkinassa hinnat nousevat pidempään, sijoittajat ovat optimistisia ja ostavat. Karhumarkkinassa hinnat laskevat (usein yli 20 % huipusta) ja tunnelma on negatiivinen. Symbolit: härkä puskee ylös sarvillaan (nousevat hinnat), karhu lyö alas tassullaan (laskevat hinnat). Kryptomarkkinat vaihtuvat usein näiden vaiheiden välillä—usein voimakkaammin ja nopeammin kuin perinteiset markkinat."
+  },
+  "hodl": {
+    "title": "HODL",
+    "original": "HODL",
+    "short": "Krypto-slangia pitkäaikaiselle holdaamiselle, riippumatta hinnanvaihteluista.",
+    "desc": "HODL syntyi vuonna 2013 kirjoitusvirheestä (“hold”) Bitcoin-foorumilla ja siitä tuli krypto-mantra. Strategia: ostaa ja pitää pitkään sen sijaan, että treidaisi lyhyellä aikavälillä. Monet pitkäaikaiset sijoittajat uskovat tähän, koska lyhyen aikavälin treidaus tuottaa usein huonommin kuin pelkkä pitäminen. HODL:ia tulkitaan joskus leikillisesti “Hold On for Dear Life”—erityisesti volatiileissa markkinoissa."
+  },
+  "dca": {
+    "title": "Säännöllinen keskihankinta",
+    "original": "DCA – Dollar Cost Averaging",
+    "short": "Sijoitusstrategia, jossa sijoitetaan säännöllisesti kiinteä summa hinnasta riippumatta.",
+    "desc": "Sen sijaan, että sijoittaisit suuren summan kerralla, sijoitat kiinteän summan säännöllisesti (esim. 50 € kuukaudessa) XLM:ään tai Bitcoiniin. Kun hinnat ovat alhaalla, ostat enemmän; kun hinnat ovat ylhäällä, ostat vähemmän—tämä tasaa keskihintaa ajan myötä. DCA vähentää riskiä sijoittaa väärään aikaan ja sopii erityisesti aloittelijoille ja volatileille markkinoille kuten kryptoon."
+  },
+  "portfolio": {
+    "title": "Portfolio",
+    "original": "Portfolio",
+    "short": "Kaikkien käyttäjän hallussa olevien krypto-assetien ja sijoitusten kokonaisuus.",
+    "desc": "Portfolio on yhteenveto kaikista omistuksistasi: mitä coin- ja token-assetia sinulla on, missä määrin ja millä arvolla. Hyvään portfolio-strategiaan kuuluu hajautus: älä laita kaikkea yhteen assetiin. Stellar Account Managerissa näet portfoliosi suoraan—kaikki Stellar-tiliesi assetit yhdellä silmäyksellä."
+  },
+  "tvl": {
+    "title": "Total Value Locked",
+    "original": "TVL – Total Value Locked",
+    "short": "Kaikkien DeFi-protokollaan tai likviditeettipooliin lukittujen assetien kokonaisarvo.",
+    "desc": "TVL on tärkeä mittari DeFi:ssä. Se kertoo, kuinka paljon pääomaa on lukittuna protokollaan, dAppiin tai likviditeettipooliin. Korkea TVL viittaa luottamukseen ja aktiiviseen käyttöön. Stellarissa TVL mittaa kaikkien assetien arvoa likviditeettipoolissa. Palvelut kuten DeFiLlama seuraavat TVL:ää monilla lohkoketjuilla ja protokollissa."
   },
   "balanceClaimable": {
     "title": "Vaadittavissa oleva saldo",
@@ -463,6 +654,36 @@
     "short": "Huijaus valetiedon tai väärennettyjen verkkosivustojen kautta.",
     "desc": "Kuin väärennetty pankkisähköposti, joka houkuttelee sinut ansaan. Tavoitteena on saada sinut luovuttamaan kirjautumistietosi. Älä koskaan klikkaa linkkejä sokkona."
   },
+  "scam": {
+    "title": "Scam",
+    "original": "Scam",
+    "short": "Huijaus, jonka tarkoitus on varastaa käyttäjien krypto‑assetit.",
+    "desc": "Huijauksia on kryptossa valitettavan paljon, koska siirrot ovat peruuttamattomia eikä ole keskitettyä viranomaista. Tyypillisiä huijauksia: feikki‑giveawayt (”Lähetä 1 XLM, saat 2 takaisin”), feikki‑wallet‑sovellukset, huijaussijoitusalustat tai feikki‑tuki. Nyrkkisääntö: kukaan ei jaa kryptoja ilmaiseksi. Jos se kuulostaa liian hyvältä, se ei todennäköisesti ole totta. Älä koskaan jaa private keytä tai seed phrasea kenellekään—ei koskaan."
+  },
+  "rugPull": {
+    "title": "Rug Pull",
+    "original": "Rug Pull",
+    "short": "Huijaus, jossa kehittäjät vetävät likviditeetin pois ja katoavat rahoineen.",
+    "desc": "Rug pull on yksi yleisimmistä DeFi‑huijauksista. Kaava: projekti julkaisee tokenin, luo hypeä, houkuttelee sijoittajia ja vetää sitten kaiken likviditeetin poolista. Hinta romahtaa nollaan ja tekijät katoavat. Varoitusmerkit: anonyymi tiimi, ei smart‑contract‑auditia, epärealistiset tuottolupaukset, hyvin lyhyt historia. Sijoita vain projekteihin, joilla on läpinäkyvä tiimi ja auditoitu koodi."
+  },
+  "ponzi": {
+    "title": "Ponzi Scheme",
+    "original": "Ponzi Scheme",
+    "short": "Huijausjärjestelmä, jossa vanhojen sijoittajien tuotot maksetaan uusien rahoilla.",
+    "desc": "Ponzi‑järjestelmä lupaa korkeita tuottoja mutta maksaa ne uusien sijoittajien rahasta, ei oikeista voitoista. Se toimii niin kauan kuin uutta rahaa tulee ja romahtaa sitten. Kryptossa on ollut monia Ponzi‑huijauksia, jopa miljardiluokassa. Varoitusmerkit: taatut korkeat tuotot, kiirehtiminen mukaan, hämärä liiketoimintamalli, fokus uusien jäsenten houkutteluun."
+  },
+  "twoFactorAuth": {
+    "title": "Two-Factor Authentication",
+    "original": "2FA – Two-Factor Authentication",
+    "short": "Lisäturva, joka vaatii toisen vahvistuksen salasanan lisäksi.",
+    "desc": "2FA suojaa tilin paljon paremmin kuin pelkkä salasana. Salasanan jälkeen vaaditaan toinen tekijä—esim. koodi authenticator‑sovelluksesta (Google Authenticator, Authy) tai SMS. Tärkeää: SMS‑2FA on heikompi SIM‑swapping‑hyökkäysten vuoksi. Ota 2FA käyttöön kaikissa pörssitileissä. Huom: self‑custody‑lompakoissa ei ole 2FA:ta—private key on ainoa suoja."
+  },
+  "socialEngineering": {
+    "title": "Social Engineering",
+    "original": "Social Engineering",
+    "short": "Ihmisten manipulointi psykologisilla keinoilla tiedon tai pääsyn saamiseksi.",
+    "desc": "Social engineering on usein vaarallisempaa kuin tekniset hyökkäykset, koska se hyödyntää ihmisiä. Keinot: esittäytyä tukena ja pyytää private key; luoda tekaistu kiire (\"Tilisi lukitaan!\"); rakentaa luottamus valeidentiteeteillä. Kryptossa mikään oikea tuki, Stellar‑henkilö tai wallet‑sovellus ei koskaan pyydä private keytä tai seed phrasea. Ei koskaan."
+  },
   "smartContract": {
     "title": "Älysopimus",
     "original": "Smart Contract",
@@ -510,6 +731,204 @@
     "original": "Stellar vs. Bitcoin vs. Ethereum",
     "short": "Kolme tunnettua lohkoketjua, joilla on erilaiset painopisteet.",
     "desc": "Bitcoin on kuin digitaalinen kulta ja sitä pidetään usein arvon säilyttäjänä. Ethereum on kuin alusta ohjelmille ja sovelluksille. Stellar keskittyy edullisiin maksuihin."
+  },
+  "mining": {
+    "title": "Mining",
+    "original": "Mining",
+    "short": "Prosessi, jossa tietokoneet ratkaisevat vaikeita laskuja luodakseen uusia lohkoja ja vahvistaakseen siirtoja.",
+    "desc": "Mining on Proof‑of‑Work‑lohkoketjujen kuten Bitcoinin ydin. Minerit kilpailevat ratkaistakseen vaikean matemaattisen ongelman. Voittaja lisää seuraavan lohkon ja saa palkkion uusina coineina. Mining kuluttaa valtavasti sähköä ja erikoislaitteita. Stellar ei tarvitse miningia—SCP on energiatehokas ja vahvistaa siirrot sekunneissa."
+  },
+  "proofOfWork": {
+    "title": "Proof of Work",
+    "original": "Proof of Work",
+    "short": "Konsensusmekanismi, jossa laskentatehoa käytetään siirtojen validointiin ja lohkojen luontiin.",
+    "desc": "Proof of Work (PoW) on alkuperäinen mekanismi, jota Bitcoin käyttää. Minereiden pitää käyttää valtavasti laskentatehoa validin lohkon luomiseen—se tekee hyökkäyksistä erittäin kalliita. Haitta: PoW kuluttaa paljon energiaa ja on hidas (Bitcoin ~7 siirtoa sekunnissa). Stellar ja monet uudemmat lohkoketjut valitsivat tehokkaampia vaihtoehtoja."
+  },
+  "proofOfStake": {
+    "title": "Proof of Stake",
+    "original": "Proof of Stake",
+    "short": "Konsensus, jossa validaattorit lukitsevat coineja vakuudeksi laskentatehon sijaan.",
+    "desc": "Proof of Stake (PoS) -mallissa validaattorit valitaan luomaan lohkoja heidän stakaamiensa coinien perusteella. Ethereum siirtyi PoS:ään vuonna 2022 ja vähensi energiankulutusta yli 99 %. PoS on tehokkaampi kuin PoW, mutta siihen liittyy riskejä kuten vallan keskittyminen suurille omistajille. Stellar käyttää ei PoW:ta eikä PoS:ää, vaan omaa SCP‑konsensustaan."
+  },
+  "fork": {
+    "title": "Fork",
+    "original": "Fork",
+    "short": "Protokollamuutos, joka voi olla taaksepäin yhteensopiva (soft fork) tai yhteensopimaton (hard fork).",
+    "desc": "Soft fork on taaksepäin yhteensopiva—vanhat nodet voivat jatkaa. Hard fork on suuri muutos, joka voi jakaa verkon: päivittämättömät nodet seuraavat vanhaa ketjua. Tunnettuja hard forkkeja: Bitcoin Cash (2017) ja Ethereum Classic (2016). Stellar tekee päivitykset validaattoriäänestyksillä—hallittu prosessi ilman hallitsemattomia jakautumisia."
+  },
+  "layer1Layer2": {
+    "title": "Layer 1 / Layer 2",
+    "original": "Layer 1 / Layer 2",
+    "short": "Layer 1 on peruslohkoketju; Layer 2 on sen päälle rakennettu skaalausratkaisu.",
+    "desc": "Layer 1 (L1) on päälohkoketju—esim. Bitcoin, Ethereum tai Stellar. Layer 2 (L2) on L1:n päälle rakennettu protokolla, joka parantaa nopeutta ja kustannuksia. Esimerkkejä: Lightning Network (Bitcoin) tai Polygon (Ethereum). Stellar on L1‑ketju, joka on SCP:n ansiosta jo nopea ja edullinen, joten se tarvitsee vähemmän L2‑ratkaisuja."
+  },
+  "bridge": {
+    "title": "Bridge",
+    "original": "Bridge",
+    "short": "Protokolla, joka siirtää assetteja kahden eri lohkoketjun välillä.",
+    "desc": "Koska lohkoketjut ovat yleensä erillisiä, bridget mahdollistavat assettien siirron ketjujen välillä. Esimerkki: Ethereum–Stellar‑bridge voi siirtää USDC:tä Ethereumista Stellariin. Teknisesti assetit lukitaan lähdeketjussa ja luodaan wrapped‑tokeneina kohdeketjussa. Bridget ovat hyödyllisiä mutta myös usein hyökkäysten kohteena. Stellarissa anchorit hoitavat usein vastaavaa roolia."
+  },
+  "interoperability": {
+    "title": "Interoperabiliteetti",
+    "original": "Interoperability",
+    "short": "Eri lohkoketjujen kyky kommunikoida ja vaihtaa assetteja.",
+    "desc": "Interoperabiliteetti on yksi kryptomaailman suurista haasteista. Tänään on satoja lohkoketjuja, jotka eivät keskustele keskenään—kuin saaria ilman siltoja. Ratkaisuja ovat bridget, cross‑chain‑protokollat tai standardit kuten IBC. Stellarilla interoperabiliteetti on ydintavoite: anchor‑järjestelmä yhdistää perinteiseen finanssiin ja bridgit yhdistävät Stellar‑verkon muihin ketjuihin."
+  },
+  "whitepaper": {
+    "title": "Whitepaper",
+    "original": "Whitepaper",
+    "short": "Tekninen dokumentti, joka kuvaa projektin idean, teknologian ja tavoitteet.",
+    "desc": "Whitepaper on kryptoprojektin perustamisdokumentti. Bitcoin syntyi Satoshi Nakamoton vuonna 2008 julkaistusta whitepaperista. Hyvä whitepaper selittää ongelman, ratkaisun, teknologian ja tokenomicsin. Ennen sijoittamista whitepaper kannattaa lukea. Jos se puuttuu tai on epämääräinen, se on usein varoitusmerkki. Stellar‑whitepaper kuvaa SCP:tä ja on julkinen."
+  },
+  "ico": {
+    "title": "ICO / Token Sale",
+    "original": "ICO – Initial Coin Offering",
+    "short": "Rahoitusmenetelmä, jossa uusia tokeneita myydään julkisesti—kuten IPO.",
+    "desc": "ICO on kuin IPO kryptoprojekteille. Projekti myy uusia tokeneita kerätäkseen pääomaa. ICO:t olivat suosittuja 2017–2018, mutta usein sääntelemättömiä tai huijauksia. Monet projektit eivät koskaan toimittaneet tuotetta. Nykyään sääntely on tiukempaa. Vaihtoehtoja: IEO (Initial Exchange Offering) tai IDO (Initial DEX Offering). Aloittelijoiden kannattaa olla erittäin varovaisia ICO‑sijoitusten kanssa."
+  },
+  "airdrop": {
+    "title": "Airdrop",
+    "original": "Airdrop",
+    "short": "Ilmainen tokeneiden jakelu lompakko‑osoitteille, yleensä markkinointia varten.",
+    "desc": "Airdropissa käyttäjät saavat tokeneita ilmaiseksi—palkintona varhaisesta tuesta, yhteisöaktiviteetista tai pelkästään tietyn lompakon omistamisesta. Airdropit ovat suosittu markkinointikeino. Tärkeää: aidot airdropit eivät koskaan pyydä yksityisiä avaimia tai etumaksuja. Monet airdropit ovat huijauksia—älä koskaan syötä yksityistä avainta airdropin saamiseksi. Stellarissa airdropit voidaan toteuttaa siististi claimable balances -toiminnolla."
+  },
+  "money": {
+    "title": "Raha",
+    "original": "Money",
+    "short": "Raha on yleisesti hyväksytty vaihtoväline tavaroille ja palveluille.",
+    "desc": "Rahalla on kolme tehtävää: se on vaihtoväline, arvon säilyttäjä ja laskentayksikkö. Historiallisesti raha on esiintynyt monissa muodoissa – simpukoista kultaan ja nykyisiin seteleihin sekä digitaaliseen rahaan. Nykyaikainen raha perustuu pääasiassa luottamukseen liikkeeseenlaskevaan valtioon, ei fyysisiin arvoihin."
+  },
+  "fiatCurrency": {
+    "title": "Fiat-valuutta",
+    "original": "Fiat Currency",
+    "short": "Valtion liikkeeseen laskema valuutta ilman fyysisen raaka-aineen, kuten kullan, katetta.",
+    "desc": "Fiat-valuutoilla kuten eurolla, dollarilla tai frangilla ei ole sisäistä arvoa – niiden arvo perustuu luottamukseen liikkeeseenlaskevaan valtioon ja sen talouteen. Keskuspankit voivat painaa fiat-valuuttoja rajattomasti, mikä voi johtaa inflaatioon. Sen sijaan monien kryptovaluuttojen tarjonta on tiukasti rajattu."
+  },
+  "centralBank": {
+    "title": "Keskuspankki",
+    "original": "Central Bank",
+    "short": "Valtion instituutio, joka hallitsee maan tai valuutta-alueen rahapolitiikkaa.",
+    "desc": "Keskuspankit kuten Euroopan keskuspankki (EKP) tai Yhdysvaltain keskuspankki (Fed) hallitsevat rahan tarjontaa, asettavat korkotasoja ja varmistavat rahoitusjärjestelmän vakauden. Ne voivat painaa rahaa, ja niillä on monopoli käteisen liikkeeseenlaskuun. Kryptovaluutat kehitettiin vaihtoehdoksi keskitetyille rahajärjestelmille – ilman keskuspankkia, ilman yhtä hallitsevaa tahoa."
+  },
+  "inflation": {
+    "title": "Inflaatio",
+    "original": "Inflation",
+    "short": "Yleinen hintatason nousu, joka vähentää rahan ostovoimaa.",
+    "desc": "Inflaatiossa raha menettää arvoaan ajan myötä – samalla summalla saa vähemmän. Syitä ovat mm. liikaa rahaa kierrossa, kasvava kysyntä tai toimitushäiriöt. Monet näkevät Bitcoinin ja muut rajatun tarjonnan kryptovaluutat suojana inflaatiota vastaan, samaan tapaan kuin kulta. XLM:llä puolestaan on maltillinen vuotuinen inflaatioaste, jonka verkko määrittää."
+  },
+  "currency": {
+    "title": "Valuutta",
+    "original": "Currency",
+    "short": "Tunnustettu arvonvaihtojärjestelmä tietyn talousalueen sisällä.",
+    "desc": "Valuutta on maan tai alueen virallinen maksuväline (esim. EUR, USD, CHF). Kryptovaluuttojen maailmassa termiä käytetään usein synonyyminä sanalle 'kolikko' tai 'kryptovaluutta'. Ero 'omaisuuserään': valuutta toimii ensisijaisesti vaihtovälineenä, kun taas omaisuuserä on laajempi käsite kaikille arvon säilyttäjille – mukaan lukien osakkeet, kiinteistöt tai tokenit."
+  },
+  "cryptography": {
+    "title": "Kryptografia",
+    "original": "Cryptography",
+    "short": "Turvallisen viestinnän tiede matemaattisten salausmenetelmien avulla.",
+    "desc": "Kryptografia on kaikkien lohkoketjuteknologioiden perusta. Se varmistaa, että tietoja voivat lukea vain valtuutetut henkilöt ja että tapahtumia ei voida väärentää. Ilman kryptografiaa Bitcoin, Stellar tai mikään muu kryptovaluutta ei olisi mahdollinen. Termi tulee kreikan sanoista 'kryptos' (kätketty) ja 'graphein' (kirjoittaa)."
+  },
+  "hash": {
+    "title": "Tiiviste",
+    "original": "Hash",
+    "short": "Ainutlaatuinen digitaalinen sormenjälki, joka lasketaan mistä tahansa datasta.",
+    "desc": "Tiivistefunktio muuntaa minkä tahansa datan (tekstin, tiedostot, tapahtumat) kiinteäksi merkkijonoksi – esim. 'a3f8c2...'. Samat syötetiedot tuottavat aina saman tiivisteen. Jos edes yksi merkki muuttuu, tiiviste muuttuu kokonaan. Tämä tekee tiivisteistä ihanteellisia manipuloinnin havaitsemiseen. Lohkoketjuissa jokainen lohko tunnistetaan yksilöllisesti tiivisteensä perusteella."
+  },
+  "encryption": {
+    "title": "Salaus",
+    "original": "Encryption",
+    "short": "Luettavan datan muuntaminen lukukelvottomaan muotoon, joka voidaan purkaa vain oikealla avaimella.",
+    "desc": "Salaus suojaa dataa luvattomalta pääsyltä. Päätyyppejä on kaksi: symmetrinen salaus (yksi avain salaukseen ja purkamiseen) ja epäsymmetrinen salaus (julkinen avain salaamiseen, yksityinen avain purkamiseen). Lompakot ja lohkoketjutapahtumat käyttävät epäsymmetristä salausta."
+  },
+  "digitalSignature": {
+    "title": "Digitaalinen allekirjoitus",
+    "original": "Digital Signature",
+    "short": "Kryptografinen todiste siitä, että viestin tai tapahtuman on valtuuttanut sen oikea omistaja.",
+    "desc": "Digitaalinen allekirjoitus toimii samaan tapaan kuin käsin kirjoitettu allekirjoitus – mutta se on väärentämisen kestävä. Stellarissa allekirjoitat jokaisen tapahtuman yksityisellä avaimellasi. Verkko voi julkisella avaimellasi tarkistaa, onko allekirjoitus kelvollinen – näkemättä koskaan yksityistä avaintasi. Ilman kelvollista allekirjoitusta verkko hylkää tapahtuman."
+  },
+  "publicKeyCryptography": {
+    "title": "Julkisen avaimen kryptografia",
+    "original": "Public-Key Cryptography",
+    "short": "Salausmenetelmä kahdella toisiinsa liitetyllä avaimella: julkisella ja yksityisellä.",
+    "desc": "Periaate: julkisella avaimella salattu voidaan purkaa vain yksityisellä avaimella – ja päinvastoin. Voit jakaa julkisen avaimesi (= lompakko-osoitteesi) vapaasti. Yksityinen avaimesi pysyy salassa. Kuka tahansa, joka tuntee yksityisen avaimesi, saa täyden pääsyn tiliisi. Siksi: älä koskaan jaa yksityistä avaintasi!"
+  },
+  "keyPair": {
+    "title": "Avainpari",
+    "original": "Key Pair",
+    "short": "Julkisen ja yksityisen avaimen yhdistelmä, jotka yhdessä muodostavat kryptotilin.",
+    "desc": "Avainpari koostuu julkisesta avaimesta (osoitteesi, jonka muut saavat nähdä) ja yksityisestä avaimesta (salasanasi, joka pysyy salassa). Stellarissa julkinen avain esitetään G-osoitteena, yksityinen avain alkaa S-kirjaimella. Avainpari luodaan matemaattisesti, ja sitä on käytännössä mahdotonta väärentää tai arvata."
+  },
+  "signing": {
+    "title": "Allekirjoittaminen",
+    "original": "Signing",
+    "short": "Tapahtuman valtuuttaminen tilinomistajan yksityisellä avaimella.",
+    "desc": "Ennen kuin tapahtuma suoritetaan Stellar-verkossa, se on allekirjoitettava. Yksityisellä avaimella luodaan digitaalinen allekirjoitus, joka todistaa, että tilin oikea omistaja on hyväksynyt tapahtuman. Ilman kelvollista allekirjoitusta verkko hylkää tapahtuman. Multisig-tileillä tarvitaan useita allekirjoituksia."
+  },
+  "sequenceNumber": {
+    "title": "Järjestysnumero",
+    "original": "Sequence Number",
+    "short": "Juokseva numero, joka yksilöi tilin jokaisen tapahtuman ja estää kaksinkertaisen kulutuksen.",
+    "desc": "Jokaisella Stellar-tilillä on järjestysnumero, joka kasvaa yhdellä jokaisen tapahtuman myötä. Tapahtuma hyväksytään vain, jos sen järjestysnumero vastaa tarkasti tilin nykyistä sekvenssiä +1. Tämä estää saman tapahtuman suorittamisen kahdesti. Jos lähetät useita tapahtumia samanaikaisesti, ne on käsiteltävä oikeassa järjestyksessä."
+  },
+  "baseReserve": {
+    "title": "Perusvaranto",
+    "original": "Base Reserve",
+    "short": "XLM:n vähimmäismäärä, joka Stellar-tilillä on säilytettävä eikä sitä voi käyttää.",
+    "desc": "Stellarissa jokaisen tilin on pidettävä vähimmäissaldo XLM:ssä. Tämä lasketaan perusvarannosta (tällä hetkellä 0,5 XLM) kerrottuna tilin 'merkintöjen' lukumäärällä (esim. trustlinet, allekirjoittajat, datatarjoukset). Tyhjä tili tarvitsee vähintään 1 XLM (2 × 0,5 XLM). Jokainen trustline nostaa vähimmäissaldoa 0,5 XLM:llä. Tämä saldo on lukittu niin kauan kuin merkinnät ovat aktiivisia."
+  },
+  "coin": {
+    "title": "Kolikko",
+    "original": "Coin",
+    "short": "Lohkoketjun natiivi kryptovaluutta, joka on olemassa suoraan kyseisessä lohkoketjussa.",
+    "desc": "Kolikko on lohkoketjun 'oma' valuutta. Bitcoin (BTC) on Bitcoin-lohkoketjun kolikko, Ether (ETH) Ethereumin kolikko, XLM Stellarin kolikko. Kolikot luodaan suoraan verkkoprotokollan kautta, ja niitä käytetään pääasiassa tapahtumamaksujen maksamiseen. Sen sijaan tokenit lasketaan liikkeeseen kolmansien osapuolten toimesta olemassa olevalla lohkoketjulla."
+  },
+  "coinVsToken": {
+    "title": "Coin vs. Token",
+    "original": "Coin vs. Token",
+    "short": "Kolikot ovat lohkoketjun natiiveja valuuttoja, tokenit lasketaan liikkeeseen kolmansien osapuolten toimesta olemassa olevalla lohkoketjulla.",
+    "desc": "Pääero: kolikko on olemassa omalla lohkoketjullaan (BTC Bitcoinissa, XLM Stellarissa). Token luodaan jonkun toimesta jo olemassa olevalle lohkoketjulle – esim. yritys, joka laskee liikkeeseen oman stablecoininsa Stellarissa. Tokenit eivät tarvitse omaa lohkoketjua. Stellarissa itse luodut tokenit kutsutaan 'asseteiksi'. Arkikielessä termit sekoitetaan usein, mikä aiheuttaa hämmennystä."
+  },
+  "nativeCoin": {
+    "title": "Natiivi kolikko",
+    "original": "Native Coin",
+    "short": "Lohkoketjun alkuperäinen maksuväline, jota verkko itse hallinnoi.",
+    "desc": "Jokaisella lohkoketjulla on natiivi kolikko, jota käytetään tapahtumamaksuihin ja verkon perustoimintoihin. Stellarissa XLM on natiivi kolikko. Se ei ole kolmannen osapuolen token, vaan se on rakennettu suoraan protokollaan. Natiivi kolikko on usein myös roskapostin estämisen keino – Stellarissa jokaisen tapahtuman on maksettava pieni XLM-maksu."
+  },
+  "fungibility": {
+    "title": "Vaihdettavuus",
+    "original": "Fungibility",
+    "short": "Omaisuuserän ominaisuus, jossa jokainen yksikkö on identtinen ja vaihdettavissa mihin tahansa toiseen.",
+    "desc": "Vaihdettava omaisuuserä on kuin seteli: jokainen 10 euron seteli on yhtä arvokas kuin mikä tahansa muu. Kryptovaluutoissa kuten XLM, BTC tai USDC jokainen yksikkö on identtinen – yksi XLM on aina yhtä kuin toinen XLM. Vastakohta ovat NFT:t (ei-vaihdettavat tokenit): jokainen NFT on ainutlaatuinen eikä vaihdettavissa. Vaihdettavuus on tärkeä ominaisuus valuuttakäytössä."
+  },
+  "wrappedToken": {
+    "title": "Wrapped Token",
+    "original": "Wrapped Token",
+    "short": "Token, joka edustaa toisen omaisuuserän arvoa eri lohkoketjussa.",
+    "desc": "Wrapped token mahdollistaa yhden lohkoketjun omaisuuserien käytön toisella. Esimerkki: Wrapped Bitcoin (WBTC) on token Ethereumissa, joka on 1:1 katettu oikealla Bitcoinilla. Alkuperäinen lukitaan älysopimukseen ja vastineeksi lasketaan liikkeeseen wrapped token. Stellarissa Bitcoin tai Ether voidaan laskea liikkeeseen wrapped tokeneina ankkurien kautta, jolloin niillä voi käydä kauppaa Stellar-verkossa."
+  },
+  "syntheticAsset": {
+    "title": "Synteettinen omaisuuserä",
+    "original": "Synthetic Asset",
+    "short": "Token, joka jäljittelee todellisen omaisuuserän hintaa ilman, että sitä suoraan omistetaan.",
+    "desc": "Synteettiset omaisuuserät jäljittelevät muiden omaisuuserien arvoa – esim. osakkeita, kultaa tai valuuttoja – omistamatta alkuperäistä. Ne turvataan älysopimusten ja vakuuksien avulla. Esimerkki: synteettinen Apple-osaketoken seuraa oikean osakkeen kurssia, mutta on kryptotoken. Synteettiset omaisuuserät ovat edistynyt DeFi-konsepti."
+  },
+  "memeCoin": {
+    "title": "Meemikolikko",
+    "original": "Meme Coin",
+    "short": "Kryptovaluutta, joka perustuu internet-meemiin tai vitsiin eikä yleensä ole teknisesti hyödyllinen.",
+    "desc": "Meemikolikot kuten Dogecoin (DOGE) tai Shiba Inu (SHIB) syntyivät alun perin vitsinä, mutta saavuttivat toisinaan valtavia markkina-arvoja yhteisön innostuksen ja sosiaalisen median huomion ansiosta. Niillä ei yleensä ole teknistä lisäarvoa ja ne ovat erittäin spekulatiivisia. Niiden arvo perustuu lähes yksinomaan tunnelmaan ja trendeihin. Aloittelijoille meemikolikot ovat erityisen riskialttiita."
+  },
+  "stellarAsset": {
+    "title": "Stellar-omaisuuserä",
+    "original": "Stellar Asset",
+    "short": "Mikä tahansa Stellar-verkossa liikkeeseen laskettu omaisuuserä, joka määritellään omaisuuskoodilla ja liikkeeseenlaskijan osoitteella.",
+    "desc": "Stellarissa kuka tahansa voi luoda oman omaisuuserän – yritys oman kanta-asiakastokeninsa, pankki oman stablecoininsa. Jokainen Stellar-omaisuuserä tunnistetaan yksilöllisesti kahdella komponentilla: omaisuuskoodilla (esim. 'USD', 'MOBI', 'USDC') ja liikkeeseenlaskijan G-osoitteella (issuer). Kaksi omaisuuserää samalla koodilla mutta eri liikkeeseenlaskijalla ovat eri omaisuuseriä. Stellar-omaisuuserän vastaanottamiseksi on ensin luotava trustline liikkeeseenlaskijalle."
+  },
+  "issuedAsset": {
+    "title": "Liikkeeseen laskettu omaisuuserä",
+    "original": "Issued Asset",
+    "short": "Ankkurin tai yrityksen Stellarissa liikkeeseen laskema omaisuuserä, joka edustaa todellista vastinetta.",
+    "desc": "Liikkeeseen laskettu omaisuuserä on ankkurin liikkeeseen laskema Stellar-omaisuuserä, joka edustaa todellista arvoa – esim. Yhdysvaltain dollareita, euroja tai kultaa. Ankkuri säilyttää todellisen vastineen ja laskee liikkeeseen vastaavat tokenit Stellarissa. Käyttäjät voivat pitää hallussaan ja käydä kauppaa näillä tokeneilla. Saadakseen todellisen omaisuuserän takaisin, tokenit lunastetaan ankkurilta (offramp). Tunnettuja esimerkkejä ovat USDC (Circle) tai EURC."
   },
   "missingKey": "Sanastosta puuttuu avain: {{detail}}"
 }

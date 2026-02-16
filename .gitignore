@@ -31,6 +31,7 @@ frontend/dist/
 *.log
 .DS_Store
 .continue/
+.claude/
 
 history
 ChatGPT*
