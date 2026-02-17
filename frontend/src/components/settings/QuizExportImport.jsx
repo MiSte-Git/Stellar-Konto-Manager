@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 const LANGS = ['de', 'en', 'es', 'fi', 'fr', 'hr', 'it', 'nl', 'ru'];
 const LESSON_IDS = ['l1','l2','l3','l4','l5','l6','l7','l8','l9','l10','l11','l12'];
@@ -14,11 +14,51 @@ function detectQuestionType(qData) {
   return 'multiple';
 }
 
-function getCorrectAnswer(qData, type) {
-  // For the data files we need the lesson json structure to know which option is correct.
-  // But for export from locale, we only have text. We cannot determine correctness from locale alone.
-  // We'll mark correct answer based on data file info passed in.
-  return type === 'true-false' ? 'true' : 'a';
+/** Check if a row object has all values empty or whitespace-only. */
+function isEmptyRow(row) {
+  return Object.values(row).every(v => !String(v ?? '').trim());
+}
+
+/** Convert an ExcelJS worksheet to an array of objects (like XLSX.utils.sheet_to_json). */
+function sheetToObjects(ws) {
+  const rows = [];
+  const headers = [];
+  ws.eachRow((row, rowNumber) => {
+    const values = row.values; // 1-indexed, values[0] is undefined
+    if (rowNumber === 1) {
+      for (let i = 1; i < values.length; i++) {
+        headers.push(String(values[i] ?? ''));
+      }
+      return;
+    }
+    const obj = {};
+    for (let i = 0; i < headers.length; i++) {
+      obj[headers[i]] = values[i + 1] != null ? String(values[i + 1]) : '';
+    }
+    rows.push(obj);
+  });
+  return rows;
+}
+
+/**
+ * Compare imported rows against the existing i18n bundle.
+ * Returns { updated, added } counts.
+ */
+function classifyImportedRows(rows, bundle) {
+  let updated = 0;
+  let added = 0;
+
+  for (const row of rows) {
+    const lid = String(row.LektionID || '').toLowerCase();
+    const qk = String(row.FrageID || '').toLowerCase();
+    const existingLesson = bundle?.[lid];
+    if (existingLesson && existingLesson[qk]) {
+      updated++;
+    } else {
+      added++;
+    }
+  }
+  return { updated, added };
 }
 
 export default function QuizExportImport() {
@@ -30,7 +70,7 @@ export default function QuizExportImport() {
   const fileRef = React.useRef(null);
 
   // ── EXPORT ──────────────────────────────────────────────────────────
-  const handleExport = React.useCallback(() => {
+  const handleExport = React.useCallback(async () => {
     try {
       const bundle = i18n.getResourceBundle(lang, 'quiz');
       if (!bundle) { setImportError(t('settings:maintenance.noData')); return; }
@@ -71,8 +111,6 @@ export default function QuizExportImport() {
           if (type === 'true-false') {
             row.Antwort_A = qData['true'] || '';
             row.Antwort_B = qData['false'] || '';
-            // Determine correct: if true.fb starts with "Richtig"/"Correct"/"Right" etc → correct is true
-            // Simpler: check if true.fb contains positive indicators
             const trueFb = (qData['true.fb'] || '').toLowerCase();
             row.Korrekte_Antwort = trueFb.startsWith('richtig') || trueFb.startsWith('correct') || trueFb.startsWith('right') || trueFb.startsWith('oikein') || trueFb.startsWith('exact') || trueFb.startsWith('točno') || trueFb.startsWith('corretto') || trueFb.startsWith('juist') || trueFb.startsWith('правильно') ? 'true' : 'false';
             row.Feedback_A = qData['true.fb'] || '';
@@ -85,7 +123,6 @@ export default function QuizExportImport() {
               row[colIdx] = qData[letter] || '';
               row[fbIdx] = qData[`${letter}.fb`] || '';
             }
-            // Determine correct answer from feedback (first answer with positive feedback)
             const fbA = (qData['a.fb'] || '').toLowerCase();
             const fbB = (qData['b.fb'] || '').toLowerCase();
             const fbC = (qData['c.fb'] || '').toLowerCase();
@@ -105,19 +142,36 @@ export default function QuizExportImport() {
 
       if (rows.length === 0) { setImportError(t('settings:maintenance.noData')); return; }
 
-      const ws = XLSX.utils.json_to_sheet(rows);
-      // Set column widths
-      ws['!cols'] = [
-        { wch: 10 }, { wch: 30 }, { wch: 8 }, { wch: 50 }, { wch: 12 },
-        { wch: 40 }, { wch: 40 }, { wch: 40 }, { wch: 40 },
-        { wch: 16 },
-        { wch: 40 }, { wch: 40 }, { wch: 40 }, { wch: 40 },
-        { wch: 40 },
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('Quiz');
+      ws.columns = [
+        { header: 'LektionID', key: 'LektionID', width: 10 },
+        { header: 'LektionTitel', key: 'LektionTitel', width: 30 },
+        { header: 'FrageID', key: 'FrageID', width: 8 },
+        { header: 'Frage', key: 'Frage', width: 50 },
+        { header: 'Typ', key: 'Typ', width: 12 },
+        { header: 'Antwort_A', key: 'Antwort_A', width: 40 },
+        { header: 'Antwort_B', key: 'Antwort_B', width: 40 },
+        { header: 'Antwort_C', key: 'Antwort_C', width: 40 },
+        { header: 'Antwort_D', key: 'Antwort_D', width: 40 },
+        { header: 'Korrekte_Antwort', key: 'Korrekte_Antwort', width: 16 },
+        { header: 'Feedback_A', key: 'Feedback_A', width: 40 },
+        { header: 'Feedback_B', key: 'Feedback_B', width: 40 },
+        { header: 'Feedback_C', key: 'Feedback_C', width: 40 },
+        { header: 'Feedback_D', key: 'Feedback_D', width: 40 },
+        { header: 'Hinweis', key: 'Hinweis', width: 40 },
       ];
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Quiz');
+      ws.addRows(rows);
+
+      const buffer = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
       const today = new Date().toISOString().split('T')[0];
-      XLSX.writeFile(wb, `quiz_${lang}_${today}.xlsx`);
+      a.download = `quiz_${lang}_${today}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
       setImportError('');
     } catch (err) {
       setImportError(String(err?.message || err));
@@ -138,37 +192,64 @@ export default function QuizExportImport() {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const data = new Uint8Array(ev.target.result);
-        const wb = XLSX.read(data, { type: 'array' });
-        const ws = wb.Sheets[wb.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+    // Reset so the same file can be re-selected
+    e.target.value = '';
 
-        if (!rows || rows.length === 0) {
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      try {
+        const wb = new ExcelJS.Workbook();
+        await wb.xlsx.load(ev.target.result);
+        const ws = wb.worksheets[0];
+        if (!ws) { setImportError(t('settings:maintenance.noData')); return; }
+
+        const allRows = sheetToObjects(ws);
+
+        // Separate empty rows from data rows
+        let skippedEmpty = 0;
+        const dataRows = [];
+        for (const row of allRows) {
+          if (isEmptyRow(row)) {
+            skippedEmpty++;
+          } else {
+            dataRows.push(row);
+          }
+        }
+
+        if (dataRows.length === 0) {
           setImportError(t('settings:maintenance.noData'));
           return;
         }
 
-        // Validate required fields
+        // Validate required fields on non-empty rows
         const errors = [];
         const lessonSet = new Set();
-        let qCount = 0;
 
-        for (let i = 0; i < rows.length; i++) {
-          const row = rows[i];
+        for (let i = 0; i < dataRows.length; i++) {
+          const row = dataRows[i];
           const missing = [];
-          if (!row.LektionID) missing.push('LektionID');
-          if (!row.FrageID) missing.push('FrageID');
-          if (!row.Frage) missing.push('Frage');
-          if (!row.Antwort_A && !row.Antwort_B) missing.push('Antwort_A/B');
-          if (!row.Korrekte_Antwort) missing.push('Korrekte_Antwort');
+          if (!String(row.LektionID || '').trim()) missing.push('LektionID');
+          if (!String(row.FrageID || '').trim()) missing.push('FrageID');
+          if (!String(row.Frage || '').trim()) missing.push('Frage');
+          if (!String(row.Antwort_A || '').trim() && !String(row.Antwort_B || '').trim()) missing.push('Antwort_A/B');
+          if (!String(row.Korrekte_Antwort || '').trim()) missing.push('Korrekte_Antwort');
+
+          // Validate type change: multiple needs at least A+B
+          const typ = String(row.Typ || '').toLowerCase();
+          if (typ === 'multiple' && !String(row.Antwort_A || '').trim()) {
+            missing.push('Antwort_A');
+          }
+          if (typ === 'multiple' && !String(row.Antwort_B || '').trim()) {
+            missing.push('Antwort_B');
+          }
+
           if (missing.length > 0) {
-            errors.push(`${t('settings:maintenance.row', { row: i + 2 })}: ${t('settings:maintenance.requiredFields', { fields: missing.join(', ') })}`);
+            // Find original row number (account for header + skipped empties before this row)
+            const originalIdx = allRows.indexOf(row);
+            const excelRow = originalIdx + 2; // +1 header, +1 for 1-based
+            errors.push(`${t('settings:maintenance.row', { row: excelRow })}: ${t('settings:maintenance.requiredFields', { fields: [...new Set(missing)].join(', ') })}`);
           }
           lessonSet.add(String(row.LektionID || '').toUpperCase());
-          qCount++;
         }
 
         if (errors.length > 0) {
@@ -176,17 +257,24 @@ export default function QuizExportImport() {
           return;
         }
 
-        setImportData(rows);
+        // Classify: new vs updated questions
+        const bundle = i18n.getResourceBundle(lang, 'quiz') || {};
+        const { updated, added } = classifyImportedRows(dataRows, bundle);
+
+        setImportData(dataRows);
         setImportPreview({
           lessons: lessonSet.size,
-          questions: qCount,
+          questions: dataRows.length,
+          updated,
+          added,
+          skippedEmpty,
         });
       } catch (err) {
         setImportError(String(err?.message || err));
       }
     };
     reader.readAsArrayBuffer(file);
-  }, [t]);
+  }, [t, lang, i18n]);
 
   // ── BUILD JSON & DOWNLOAD ──────────────────────────────────────────
   const handleDownloadJson = React.useCallback(() => {
@@ -203,7 +291,7 @@ export default function QuizExportImport() {
       // Copy entry if exists
       if (bundle.entry) result.entry = JSON.parse(JSON.stringify(bundle.entry));
 
-      // Build lesson sections from imported data
+      // Group imported rows by lesson
       const byLesson = {};
       for (const row of importData) {
         const lid = String(row.LektionID || '').toLowerCase();
@@ -212,45 +300,64 @@ export default function QuizExportImport() {
         byLesson[lid]._questions.push(row);
       }
 
-      // Reconstruct in correct order – build ordered output
+      // Reconstruct in correct order – merge with existing
       const ordered = {};
       // entry first
       if (result.entry) { ordered.entry = result.entry; delete result.entry; }
 
       // lessons in order
       for (const lid of LESSON_IDS) {
-        const lessonData = byLesson[lid];
-        if (!lessonData) {
-          // Keep existing lesson data if not in import
-          if (bundle[lid]) ordered[lid] = JSON.parse(JSON.stringify(bundle[lid]));
-          continue;
-        }
-        const section = { title: lessonData._title };
-        for (const row of lessonData._questions) {
-          const qk = String(row.FrageID || '').toLowerCase();
-          const type = String(row.Typ || '').toLowerCase();
-          const q = { question: row.Frage || '', hint: row.Hinweis || '' };
+        const importedLesson = byLesson[lid];
+        const existingLesson = bundle[lid] ? JSON.parse(JSON.stringify(bundle[lid])) : null;
 
-          if (type === 'true-false') {
-            q['true'] = row.Antwort_A || '';
-            q['false'] = row.Antwort_B || '';
-            q['true.fb'] = row.Feedback_A || '';
-            q['false.fb'] = row.Feedback_B || '';
-          } else {
-            for (let i = 0; i < OPTION_LETTERS.length; i++) {
-              const letter = OPTION_LETTERS[i];
-              const colIdx = ['Antwort_A','Antwort_B','Antwort_C','Antwort_D'][i];
-              const fbIdx = ['Feedback_A','Feedback_B','Feedback_C','Feedback_D'][i];
-              const val = row[colIdx] || '';
-              if (val) {
-                q[letter] = val;
-                q[`${letter}.fb`] = row[fbIdx] || '';
+        if (!importedLesson && !existingLesson) continue;
+
+        // Start from existing lesson data (preserves questions not in import)
+        const section = existingLesson ? { ...existingLesson } : {};
+
+        if (importedLesson) {
+          // Update title if provided
+          if (importedLesson._title) section.title = importedLesson._title;
+
+          // Merge each imported question (add or update)
+          for (const row of importedLesson._questions) {
+            const qk = String(row.FrageID || '').toLowerCase();
+            const type = String(row.Typ || '').toLowerCase();
+            const q = { question: row.Frage || '', hint: row.Hinweis || '' };
+
+            if (type === 'true-false') {
+              q['true'] = row.Antwort_A || '';
+              q['false'] = row.Antwort_B || '';
+              q['true.fb'] = row.Feedback_A || '';
+              q['false.fb'] = row.Feedback_B || '';
+            } else {
+              for (let i = 0; i < OPTION_LETTERS.length; i++) {
+                const letter = OPTION_LETTERS[i];
+                const colIdx = ['Antwort_A','Antwort_B','Antwort_C','Antwort_D'][i];
+                const fbIdx = ['Feedback_A','Feedback_B','Feedback_C','Feedback_D'][i];
+                const val = row[colIdx] || '';
+                if (val) {
+                  q[letter] = val;
+                  q[`${letter}.fb`] = row[fbIdx] || '';
+                }
               }
             }
+            // Replace (or add) this question — full replacement of the question object
+            // so old keys from a different type are removed
+            section[qk] = q;
           }
-          section[qk] = q;
         }
-        ordered[lid] = section;
+
+        // Sort question keys so they appear in order (q1, q2, q3, ...)
+        const sortedSection = {};
+        if (section.title !== undefined) sortedSection.title = section.title;
+        const qKeys = Object.keys(section).filter(k => /^q\d+$/.test(k)).sort((a, b) =>
+          parseInt(a.slice(1)) - parseInt(b.slice(1))
+        );
+        for (const qk of qKeys) {
+          sortedSection[qk] = section[qk];
+        }
+        ordered[lid] = sortedSection;
       }
 
       // Append preserved sections
@@ -327,6 +434,17 @@ export default function QuizExportImport() {
         <div className="p-3 rounded bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-300">
           <div className="font-semibold">{t('settings:maintenance.preview')}</div>
           <div>{t('settings:maintenance.lessonsFound', { count: importPreview.lessons, questions: importPreview.questions })}</div>
+          <ul className="mt-1 text-xs list-disc list-inside space-y-0.5">
+            {importPreview.updated > 0 && (
+              <li>{t('settings:maintenance.questionsUpdated', { count: importPreview.updated })}</li>
+            )}
+            {importPreview.added > 0 && (
+              <li>{t('settings:maintenance.questionsAdded', { count: importPreview.added })}</li>
+            )}
+            {importPreview.skippedEmpty > 0 && (
+              <li>{t('settings:maintenance.rowsSkipped', { count: importPreview.skippedEmpty })}</li>
+            )}
+          </ul>
           <button
             type="button"
             onClick={handleDownloadJson}

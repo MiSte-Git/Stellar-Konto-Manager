@@ -183,6 +183,9 @@
     "noData": "No data found.",
     "row": "Row {{row}}",
     "lessonOverview": "Lesson Overview (Maintenance)",
-    "selectLesson": "Lesson"
+    "selectLesson": "Lesson",
+    "questionsUpdated": "{{count}} questions updated",
+    "questionsAdded": "{{count}} new questions added",
+    "rowsSkipped": "{{count}} empty rows skipped"
   }
 }
