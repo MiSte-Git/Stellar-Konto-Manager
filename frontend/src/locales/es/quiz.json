@@ -45,6 +45,88 @@
       "b.fb": "No. Los registros anteriores no se eliminan."
     }
   },
+  "l2": {
+    "title": "Entender Stellar",
+    "q1": {
+      "question": "¿Qué diferencia a Stellar de Bitcoin?",
+      "hint": "Piensa en velocidad y propósito.",
+      "a": "Stellar está optimizado para pagos rápidos y baratos, sin minería.",
+      "b": "Stellar es una moneda de juego sin valor real.",
+      "c": "Stellar necesita más energía que Bitcoin.",
+      "a.fb": "Correcto. Stellar confirma en 3-5 segundos, Bitcoin a menudo tarda minutos u horas.",
+      "b.fb": "Incorrecto. Stellar es una red de pagos seria.",
+      "c.fb": "Incorrecto. Stellar no necesita minería y es muy eficiente energéticamente."
+    },
+    "q2": {
+      "question": "Las transacciones de Stellar generalmente se completan en menos de 10 segundos.",
+      "hint": "El algoritmo SCP es muy rápido.",
+      "true": "Verdadero",
+      "false": "Falso",
+      "true.fb": "Correcto. Stellar confirma transacciones en 3-5 segundos.",
+      "false.fb": "Incorrecto. Stellar es en realidad extremadamente rápido."
+    },
+    "q3": {
+      "question": "¿Qué es XLM?",
+      "hint": "XLM es el activo nativo de Stellar.",
+      "a": "La moneda nativa de la red Stellar, utilizada para comisiones.",
+      "b": "Una stablecoin que siempre vale 1 dólar.",
+      "c": "Un token emitido por un banco.",
+      "a.fb": "Correcto. XLM es la moneda nativa de Stellar.",
+      "b.fb": "Incorrecto. XLM fluctúa en valor como otras criptomonedas.",
+      "c.fb": "Incorrecto. XLM está integrado directamente en el protocolo de Stellar."
+    },
+    "q4": {
+      "question": "¿Para qué está diseñado principalmente Stellar?",
+      "hint": "Piensa en pagos transfronterizos.",
+      "a": "Pagos internacionales rápidos y baratos y transferencias de dinero.",
+      "b": "Comercio de NFT y juegos de blockchain.",
+      "c": "Almacenamiento de datos descentralizado.",
+      "a.fb": "Correcto. Stellar fue creado para pagos y transferencias entre países.",
+      "b.fb": "Incorrecto. Esos son más bien casos de uso de Ethereum.",
+      "c.fb": "Incorrecto. El almacenamiento de datos no es el propósito principal de Stellar."
+    }
+  },
+  "l3": {
+    "title": "Transparencia y privacidad",
+    "q1": {
+      "question": "¿Qué significa la pseudonimidad en Stellar?",
+      "hint": "Se ven direcciones, pero no nombres.",
+      "a": "Las transacciones son públicas, pero las direcciones no son nombres reales.",
+      "b": "Todas las transacciones son completamente secretas.",
+      "c": "Solo el remitente conoce la transacción.",
+      "a.fb": "Correcto. Las claves públicas son visibles pero no están vinculadas directamente a identidades.",
+      "b.fb": "Incorrecto. Todas las transacciones son públicas en el libro mayor.",
+      "c.fb": "Incorrecto. El libro mayor es público para todos."
+    },
+    "q2": {
+      "question": "¿Se pueden buscar transacciones de Stellar en un explorador?",
+      "hint": "El libro mayor es público.",
+      "true": "Verdadero",
+      "false": "Falso",
+      "true.fb": "Correcto. Cualquiera puede ver transacciones en stellar.expert, por ejemplo.",
+      "false.fb": "Incorrecto. El libro mayor es completamente público."
+    },
+    "q3": {
+      "question": "¿Qué se ve al buscar una transacción de Stellar?",
+      "hint": "Datos públicos, pero sin información personal.",
+      "a": "Claves públicas, monto, marca de tiempo, pero ningún nombre real.",
+      "b": "El nombre completo y la dirección del remitente.",
+      "c": "Nada, todo está cifrado.",
+      "a.fb": "Correcto. La blockchain muestra datos técnicos, no identidades.",
+      "b.fb": "Incorrecto. Los nombres reales no se almacenan en la blockchain.",
+      "c.fb": "Incorrecto. Los datos de transacciones son legibles públicamente."
+    },
+    "q4": {
+      "question": "¿Por qué la pseudonimidad no es privacidad completa?",
+      "hint": "Las direcciones a veces pueden ser vinculadas a personas.",
+      "a": "Porque las direcciones pueden vincularse a nombres reales a través de datos externos (p.ej. exchanges).",
+      "b": "Porque Stellar almacena todos los nombres.",
+      "c": "Porque siempre se necesita un documento de identidad.",
+      "a.fb": "Correcto. Con datos adicionales, las direcciones a veces pueden ser rastreadas.",
+      "b.fb": "Incorrecto. Stellar no almacena nombres.",
+      "c.fb": "Incorrecto. Stellar en sí no requiere identificación."
+    }
+  },
   "l4": {
     "title": "Claves, tarifas y líneas de confianza",
     "q1": {
@@ -82,6 +164,90 @@
       "a.fb": "Sí. Tú eliges qué emisores/tokens confías.",
       "b.fb": "No. No es un chat, sino un permiso de retención.",
       "c.fb": "No. Las líneas de confianza implican la tenencia de activos."
+    }
+  },
+  "l5": {
+    "title": "Enviar y recibir",
+    "q1": {
+      "question": "¿Qué es una trustline en Stellar?",
+      "hint": "Estás otorgando un permiso.",
+      "a": "Un permiso para recibir un token específico de un emisor.",
+      "b": "Una contraseña para transacciones más rápidas.",
+      "c": "Una tarifa para pagos internacionales.",
+      "a.fb": "Correcto. Sin trustline no puedes recibir un token.",
+      "b.fb": "Incorrecto. Las trustlines no tienen nada que ver con contraseñas.",
+      "c.fb": "Incorrecto. Una trustline es un permiso, no un costo."
+    },
+    "q2": {
+      "question": "Cada transacción de Stellar requiere una pequeña tarifa en XLM.",
+      "hint": "Esta tarifa protege la red.",
+      "true": "Verdadero",
+      "false": "Falso",
+      "true.fb": "Correcto. La tarifa mínima (100 stroops) previene el spam.",
+      "false.fb": "Incorrecto. Cada transacción tiene un pequeño costo."
+    },
+    "q3": {
+      "question": "¿Qué pasa si envías XLM a alguien sin una cuenta activa?",
+      "hint": "Una cuenta Stellar necesita un saldo mínimo.",
+      "a": "La cuenta se activa automáticamente con el saldo mínimo.",
+      "b": "La transacción falla y los XLM se pierden.",
+      "c": "Stellar no crea cuentas nuevas automáticamente.",
+      "a.fb": "Correcto. Si envías suficiente XLM, la cuenta se activa.",
+      "b.fb": "Incorrecto. Stellar puede activar cuentas nuevas mediante pagos entrantes.",
+      "c.fb": "Incorrecto. Con suficiente XLM, la cuenta se crea automáticamente."
+    },
+    "q4": {
+      "question": "¿Para qué se usa un memo en una transacción?",
+      "hint": "Piensa en transferencias bancarias con referencia.",
+      "a": "Para enviar información adicional como un número de referencia.",
+      "b": "Para reducir la tarifa.",
+      "c": "Para cifrar la transacción.",
+      "a.fb": "Correcto. Los memos son usados por exchanges para identificar depósitos.",
+      "b.fb": "Incorrecto. Los memos no afectan la tarifa.",
+      "c.fb": "Incorrecto. Los memos son legibles públicamente."
+    }
+  },
+  "l6": {
+    "title": "Tokens y comercio",
+    "q1": {
+      "question": "¿Cómo se determina el precio de un token en el DEX de Stellar?",
+      "hint": "Oferta y demanda.",
+      "a": "Por oferta y demanda – compradores y vendedores acuerdan precios.",
+      "b": "Stellar fija el precio.",
+      "c": "El emisor siempre determina el precio.",
+      "a.fb": "Correcto. El DEX es un mercado libre sin fijación centralizada de precios.",
+      "b.fb": "Incorrecto. Stellar no interviene en la formación de precios.",
+      "c.fb": "Incorrecto. Después de la emisión, el mercado determina el precio."
+    },
+    "q2": {
+      "question": "¿Cuál es la diferencia entre un DEX y un CEX?",
+      "hint": "Piensa en control y custodia.",
+      "a": "DEX: operas directamente desde tu wallet. CEX: la bolsa custodia tus monedas.",
+      "b": "El DEX es más caro, el CEX es más barato.",
+      "c": "No hay diferencia, ambos son lo mismo.",
+      "a.fb": "Correcto. Con un DEX mantienes el control, con un CEX no.",
+      "b.fb": "Incorrecto. El DEX suele ser más barato ya que no hay intermediario.",
+      "c.fb": "Incorrecto. La diferencia es fundamental."
+    },
+    "q3": {
+      "question": "¿Qué es un pool de liquidez?",
+      "hint": "Muchos aportan capital juntos.",
+      "a": "Un fondo compartido de activos desde el cual se ejecutan operaciones en el DEX.",
+      "b": "Una cuenta bancaria para proyectos cripto.",
+      "c": "Un método para ganar XLM sin operar.",
+      "a.fb": "Correcto. Los pools de liquidez permiten el comercio automatizado (AMM).",
+      "b.fb": "Incorrecto. No es una cuenta bancaria sino un pool basado en contratos inteligentes.",
+      "c.fb": "Incorrecto. Los pools de liquidez son para operar, no solo para ganar pasivamente."
+    },
+    "q4": {
+      "question": "¿Qué significa volatilidad en criptomonedas?",
+      "hint": "Los precios pueden fluctuar mucho.",
+      "a": "Fluctuaciones de precio fuertes y rápidas hacia arriba y abajo.",
+      "b": "Un precio estable e invariable.",
+      "c": "La tarifa diaria de comercio de un token.",
+      "a.fb": "Correcto. Los mercados cripto son conocidos por su alta volatilidad.",
+      "b.fb": "Incorrecto. Eso sería lo contrario: estabilidad.",
+      "c.fb": "Incorrecto. La volatilidad describe fluctuaciones de precio, no tarifas."
     }
   },
   "l7": {
@@ -127,8 +293,216 @@
       "c.fb": "No, se trata de pruebas eficientes en cuanto a datos."
     }
   },
+  "l8": {
+    "title": "Verificación e identidad",
+    "q1": {
+      "question": "¿Qué significa KYC?",
+      "hint": "En inglés: 'Know Your Customer' (Conoce a tu cliente).",
+      "a": "Know Your Customer – verificación de identidad por proveedores de servicios financieros.",
+      "b": "Keep Your Coins – una estrategia de seguridad.",
+      "c": "Key Your Cryptography – un método de cifrado.",
+      "a.fb": "Correcto. KYC es legalmente obligatorio para servicios onramp/offramp.",
+      "b.fb": "Incorrecto. KYC significa Know Your Customer.",
+      "c.fb": "Incorrecto. Ese es un significado inventado."
+    },
+    "q2": {
+      "question": "El DEX de Stellar requiere verificación KYC.",
+      "hint": "Descentralizado significa sin intermediario.",
+      "true": "Verdadero",
+      "false": "Falso",
+      "true.fb": "Incorrecto. El DEX de Stellar es descentralizado – no necesita KYC.",
+      "false.fb": "Correcto. Los protocolos descentralizados no requieren KYC."
+    },
+    "q3": {
+      "question": "¿Cómo identificas un token confiable en Stellar?",
+      "hint": "El nombre solo no es suficiente.",
+      "a": "A través del emisor verificado y el dominio registrado (stellar.toml).",
+      "b": "A través del número de transacciones.",
+      "c": "A través del nombre del token solamente.",
+      "a.fb": "Correcto. stellar.toml contiene información verificada sobre el emisor.",
+      "b.fb": "Incorrecto. Muchas transacciones también pueden provenir de estafas.",
+      "c.fb": "Incorrecto. Los nombres se pueden copiar fácilmente."
+    },
+    "q4": {
+      "question": "¿Por qué los servicios onramp exigen KYC?",
+      "hint": "Se trata de leyes y seguridad.",
+      "a": "Porque están legalmente obligados a prevenir el lavado de dinero (AML).",
+      "b": "Para vender tus datos con fines publicitarios.",
+      "c": "Para aumentar las tarifas.",
+      "a.fb": "Correcto. Las leyes KYC/AML se aplican a todas las transiciones fiat-cripto.",
+      "b.fb": "Incorrecto. KYC es una obligación regulatoria, no un modelo de negocio.",
+      "c.fb": "Incorrecto. KYC no tiene nada que ver con las tarifas."
+    }
+  },
+  "l9": {
+    "title": "Zero Knowledge",
+    "q1": {
+      "question": "¿Qué es una prueba de conocimiento cero?",
+      "hint": "Demostrar sin revelar secretos.",
+      "a": "Una prueba de que algo es verdad sin revelar la información subyacente.",
+      "b": "Un método para ocultar todas las transacciones.",
+      "c": "Una cuenta vacía sin saldo.",
+      "a.fb": "Correcto. Las pruebas ZK permiten privacidad y verificabilidad al mismo tiempo.",
+      "b.fb": "Incorrecto. Las pruebas ZK son demostraciones, no ocultación.",
+      "c.fb": "Incorrecto. Zero Knowledge se refiere a criptografía, no a saldos."
+    },
+    "q2": {
+      "question": "Con una prueba ZK puedes demostrar que tienes más de 18 años sin mostrar tu fecha de nacimiento.",
+      "hint": "Ese es exactamente el punto de ZK.",
+      "true": "Verdadero",
+      "false": "Falso",
+      "true.fb": "Correcto. Ese es un ejemplo clásico de prueba ZK.",
+      "false.fb": "Incorrecto. Las pruebas ZK hacen exactamente eso posible."
+    },
+    "q3": {
+      "question": "¿Para qué podrían ser útiles las pruebas ZK en Stellar?",
+      "hint": "Privacidad en transacciones financieras.",
+      "a": "Para transacciones con privacidad sin revelar todos los detalles.",
+      "b": "Para hacer las transacciones más rápidas.",
+      "c": "Para eliminar las tarifas.",
+      "a.fb": "Correcto. Las pruebas ZK pueden habilitar privacidad en transacciones blockchain.",
+      "b.fb": "Incorrecto. La velocidad no es el propósito principal de ZK.",
+      "c.fb": "Incorrecto. ZK no influye en las tarifas."
+    },
+    "q4": {
+      "question": "¿Qué significa 'Zero' en Zero-Knowledge?",
+      "hint": "¿Qué no se comparte?",
+      "a": "Cero conocimiento sobre el secreto se transmite al verificador.",
+      "b": "La transacción tiene cero tarifas.",
+      "c": "La cuenta tiene cero saldo.",
+      "a.fb": "Correcto. El verificador no aprende nada sobre el secreto real.",
+      "b.fb": "Incorrecto. Zero Knowledge no tiene nada que ver con tarifas.",
+      "c.fb": "Incorrecto. Se trata de criptografía, no de saldos."
+    }
+  },
+  "l10": {
+    "title": "Práctica con el Stellar Account Manager",
+    "q1": {
+      "question": "¿Por qué deberías usar primero el testnet?",
+      "hint": "Los errores en el testnet no tienen consecuencias reales.",
+      "a": "Porque puedes practicar con XLM de prueba sin arriesgar dinero real.",
+      "b": "Porque el testnet es más rápido que el mainnet.",
+      "c": "Porque el testnet es más gratuito.",
+      "a.fb": "Correcto. El testnet es un entorno de práctica seguro con XLM de prueba.",
+      "b.fb": "Incorrecto. La velocidad no es la razón – la seguridad sí.",
+      "c.fb": "Incorrecto. El testnet no tiene costos reales, pero la razón principal es la seguridad."
+    },
+    "q2": {
+      "question": "Los XLM de prueba en el testnet tienen valor monetario real.",
+      "hint": "El testnet es una sandbox.",
+      "true": "Verdadero",
+      "false": "Falso",
+      "true.fb": "Incorrecto. Los XLM de prueba no tienen valor real – es dinero de juego.",
+      "false.fb": "Correcto. Los XLM de prueba no valen nada – por eso es seguro practicar."
+    },
+    "q3": {
+      "question": "¿Cuál es el primer paso para activar una cuenta Stellar?",
+      "hint": "Una cuenta necesita un saldo mínimo.",
+      "a": "Enviar al menos 1 XLM a la nueva cuenta.",
+      "b": "Enviar una solicitud a Stellar.",
+      "c": "Enviar un correo al soporte.",
+      "a.fb": "Correcto. El saldo mínimo (base reserve) activa la cuenta.",
+      "b.fb": "Incorrecto. Stellar es descentralizado – no se necesita solicitud.",
+      "c.fb": "Incorrecto. Las cuentas se activan con transacciones, no con soporte."
+    },
+    "q4": {
+      "question": "¿Qué necesitas hacer antes de recibir USDC en Stellar?",
+      "hint": "Se necesita permiso.",
+      "a": "Configurar una trustline hacia USDC.",
+      "b": "Descargar una wallet especial para USDC.",
+      "c": "Completar KYC con Stellar.",
+      "a.fb": "Correcto. Sin trustline no puedes recibir activos externos.",
+      "b.fb": "Incorrecto. El Stellar Account Manager soporta todos los activos con trustline.",
+      "c.fb": "Incorrecto. Stellar en sí no requiere KYC."
+    }
+  },
+  "l11": {
+    "title": "Responsabilidad en el mundo cripto",
+    "q1": {
+      "question": "¿Qué pasa si envías XLM a una dirección incorrecta?",
+      "hint": "Las transacciones blockchain son definitivas.",
+      "a": "La transacción es irreversible – los XLM se pierden.",
+      "b": "Puedes revertir la transacción dentro de 24 horas.",
+      "c": "Stellar reembolsa el monto automáticamente.",
+      "a.fb": "Correcto. Las transacciones blockchain son definitivas. ¡Siempre verifica la dirección!",
+      "b.fb": "Incorrecto. No hay devoluciones en la blockchain.",
+      "c.fb": "Incorrecto. Stellar no puede revertir transacciones."
+    },
+    "q2": {
+      "question": "Stellar puede revertir transacciones erróneas.",
+      "hint": "Inmutabilidad – no se puede cambiar.",
+      "true": "Verdadero",
+      "false": "Falso",
+      "true.fb": "Incorrecto. La blockchain es inmutable – no hay reversiones posibles.",
+      "false.fb": "Correcto. Las transacciones son definitivas y no se pueden revertir."
+    },
+    "q3": {
+      "question": "¿Qué deberías hacer antes de enviar una transacción grande?",
+      "hint": "Primero prueba con poco.",
+      "a": "Enviar primero un monto de prueba pequeño y verificar la dirección dos veces.",
+      "b": "Enviar inmediatamente el monto completo para ahorrar en tarifas.",
+      "c": "Llamar al soporte para confirmación.",
+      "a.fb": "Correcto. Una prueba pequeña protege contra errores costosos.",
+      "b.fb": "Incorrecto. La velocidad es menos importante que el cuidado.",
+      "c.fb": "Incorrecto. Las redes descentralizadas no tienen soporte central."
+    },
+    "q4": {
+      "question": "¿Cuál es la regla más importante para tu clave secreta?",
+      "hint": "Es como la llave de tu caja fuerte.",
+      "a": "Nunca compartirla, guardarla de forma segura sin conexión.",
+      "b": "Guardarla en la nube para fácil acceso.",
+      "c": "Compartirla con amigos como respaldo.",
+      "a.fb": "Correcto. Quien tiene la clave secreta controla la cuenta completamente.",
+      "b.fb": "Incorrecto. El almacenamiento en la nube es inseguro para claves secretas.",
+      "c.fb": "Incorrecto. Nunca compartas tu clave secreta con otros."
+    }
+  },
+  "l12": {
+    "title": "Conclusión y repaso",
+    "q1": {
+      "question": "¿Cuál es la característica principal de una blockchain?",
+      "hint": "Piensa en el panorama general.",
+      "a": "Una base de datos inmutable y descentralizada mantenida colectivamente por muchos.",
+      "b": "Una base de datos rápida de una sola empresa.",
+      "c": "Un servicio de chat cifrado.",
+      "a.fb": "Correcto. Descentralizada, inmutable, transparente – esas son las características principales.",
+      "b.fb": "Incorrecto. Las blockchains son descentralizadas, no centralizadas.",
+      "c.fb": "Incorrecto. Las blockchains son bases de datos, no herramientas de comunicación."
+    },
+    "q2": {
+      "question": "¿Qué tres cosas hacen especial a Stellar?",
+      "hint": "Velocidad, costo, propósito.",
+      "a": "Rápido (3-5 seg), barato (fracciones de centavo), optimizado para pagos.",
+      "b": "Lento, caro, optimizado para NFTs.",
+      "c": "Basado en minería, descentralizado, anónimo.",
+      "a.fb": "Correcto. Esas son las tres ventajas principales de Stellar.",
+      "b.fb": "Incorrecto. Stellar es conocido por su velocidad y bajos costos.",
+      "c.fb": "Incorrecto. Stellar no usa minería y es seudónimo, no anónimo."
+    },
+    "q3": {
+      "question": "¿Qué NUNCA deberías hacer?",
+      "hint": "La regla de oro de la seguridad cripto.",
+      "a": "Compartir tu clave secreta o ingresarla en sitios desconocidos.",
+      "b": "Usar el testnet.",
+      "c": "Configurar trustlines.",
+      "a.fb": "Correcto. ¡La clave secreta es sagrada – nunca la compartas!",
+      "b.fb": "Incorrecto. Usar el testnet es recomendado para practicar.",
+      "c.fb": "Incorrecto. Las trustlines son acciones normales y necesarias."
+    },
+    "q4": {
+      "question": "Has completado todas las lecciones. ¿Qué eres ahora?",
+      "hint": "¡Celebra tu logro!",
+      "a": "¡Un principiante de Stellar con conocimientos sólidos!",
+      "b": "Un ingeniero blockchain certificado.",
+      "c": "Listo para jubilarte.",
+      "a.fb": "¡Exacto! Has dominado los fundamentos. ¡Sigue adelante!",
+      "b.fb": "Todavía no – ¡pero has construido una base sólida!",
+      "c.fb": "Todavía no – ¡pero has dado un gran paso adelante!"
+    }
+  },
   "ui": {
     "startQuiz": "Iniciar cuestionario",
+    "indexSubtitle": "Elige una lección",
     "startPractice": "Empieza la práctica.",
     "practice": "Práctica",
     "quiz": "Cuestionario",
@@ -162,7 +536,11 @@
     "openInNewTab.default": "Abrir cuestionario de forma predeterminada en una nueva pestaña.",
     "openInNewTab.once": "Abrir en una nueva pestaña",
     "startInNewTab": "Iniciar cuestionario en una nueva pestaña",
-    "warnOnActiveQuiz": "Mostrar advertencia durante un cuestionario en curso"
+    "warnOnActiveQuiz": "Mostrar advertencia durante un cuestionario en curso",
+    "nextQuiz": "Siguiente quiz",
+    "prevQuiz": "Quiz anterior",
+    "allDone": "¡Todos los quizzes completados! ¡Felicidades!",
+    "lessonProgress": "Lección {{current}} de {{total}}"
   },
   "meta": {
     "estimatedMinutes": "Minutos estimados",

@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import QuizRunner from '../components/quiz/QuizRunner.jsx';
 import QuizSettings from '../components/quiz/QuizSettings.jsx';
 import QuizAchievements from '../components/quiz/QuizAchievements.jsx';
-import QuizLanding from '../components/quiz/QuizLanding.jsx';
-import { buildPath, quizRunPath, quizSettingsPath, quizAchievementsPath } from '../utils/basePath.js';
+import { buildPath } from '../utils/basePath.js';
 
 function useLessonIdFromPath() {
   const parseId = (p) => {
@@ -52,13 +51,6 @@ function isAchievementsRoute() {
   } catch { return false; }
 }
 
-function isRunRoute() {
-  try {
-    const p = typeof window !== 'undefined' ? window.location.pathname : '';
-    // support new /quiz/:id/run and legacy /learn/lesson/:id/quiz
-    return (/\/quiz\/[A-Za-z0-9_-]+\/run$/.test(p) || /\/learn\/lesson\/\d+\/quiz$/.test(p));
-  } catch { return false; }
-}
 
 export default function QuizPage() {
   const { t } = useTranslation(['learn', 'quiz', 'quiz.ui', 'quizMultisig', 'common', 'navigation']);
@@ -73,7 +65,6 @@ export default function QuizPage() {
       lessonNum,
       isSettings: isSettingsRoute(),
       isAchievements: isAchievementsRoute(),
-      isRun: isRunRoute(),
     });
   }
 
@@ -100,11 +91,8 @@ export default function QuizPage() {
 
   const goBack = React.useCallback(() => {
     try {
-      if (typeof window !== 'undefined' && window.history.length > 1) {
-        window.history.back();
-        return;
-      }
-      const url = buildPath('learn');
+      // From any sub-route (/run, /settings, /achievements) or bare /quiz/:id → go to quiz index
+      const url = buildPath('quiz');
       window.history.pushState({}, '', url);
       window.dispatchEvent(new PopStateEvent('popstate'));
     } catch { /* noop */ }
@@ -143,7 +131,7 @@ export default function QuizPage() {
         <QuizSettings />
       ) : isAchievementsRoute() ? (
         <QuizAchievements />
-      ) : isRunRoute() ? (
+      ) : (
         <>
           {loading && (
             <div className="text-sm text-gray-600 dark:text-gray-300">{t('common:common.loading', 'Loading…')}</div>
@@ -167,53 +155,6 @@ export default function QuizPage() {
               data={data}
               onComplete={() => {}}
               onExit={goBack}
-            />
-          )}
-        </>
-      ) : (
-        <>
-          {loading && (
-            <div className="text-sm text-gray-600 dark:text-gray-300">{t('common:common.loading', 'Loading…')}</div>
-          )}
-          {error && !loading && (
-            <div className="text-sm text-gray-600 dark:text-gray-300">
-              <div>{error}</div>
-              <div className="mt-1">{t('quiz.ui:noDataHelp')}</div>
-              <button
-                type="button"
-                onClick={goBack}
-                className="mt-3 inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 text-xs font-medium px-3 py-1.5 rounded"
-              >
-                ← {t('quiz.ui:backToLearn')}
-              </button>
-            </div>
-          )}
-          {!loading && !error && data && (
-            <QuizLanding
-              data={data}
-              lessonId={lessonNum}
-              onStartQuiz={() => {
-                try {
-                  const url = quizRunPath(lessonNum);
-                  window.history.pushState({}, '', url);
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                } catch { /* noop */ }
-              }}
-              onOpenSettings={() => {
-                try {
-                  const url = quizSettingsPath(lessonNum);
-                  window.history.pushState({}, '', url);
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                } catch { /* noop */ }
-              }}
-              onOpenAchievements={() => {
-                try {
-                  const url = quizAchievementsPath(lessonNum);
-                  window.history.pushState({}, '', url);
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                } catch { /* noop */ }
-              }}
-              showPractice={false}
             />
           )}
         </>

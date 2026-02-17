@@ -45,6 +45,88 @@
       "b.fb": "Nee, eerdere invoer wordt niet verwijderd."
     }
   },
+  "l2": {
+    "title": "Stellar begrijpen",
+    "q1": {
+      "question": "Wat onderscheidt Stellar van Bitcoin?",
+      "hint": "Denk aan snelheid en doel.",
+      "a": "Stellar is geoptimaliseerd voor snelle, goedkope betalingen – zonder mining.",
+      "b": "Stellar is een spelvaluta zonder echte waarde.",
+      "c": "Stellar verbruikt meer energie dan Bitcoin.",
+      "a.fb": "Correct. Stellar bevestigt in 3-5 seconden, Bitcoin duurt vaak minuten tot uren.",
+      "b.fb": "Onjuist. Stellar is een serieus betalingsnetwerk.",
+      "c.fb": "Onjuist. Stellar heeft geen mining nodig en is zeer energie-efficiënt."
+    },
+    "q2": {
+      "question": "Stellar-transacties zijn meestal binnen 10 seconden afgerond.",
+      "hint": "Het SCP-algoritme is zeer snel.",
+      "true": "Waar",
+      "false": "Onwaar",
+      "true.fb": "Correct. Stellar bevestigt transacties in 3-5 seconden.",
+      "false.fb": "Onjuist. Stellar is eigenlijk extreem snel."
+    },
+    "q3": {
+      "question": "Wat is XLM?",
+      "hint": "XLM is het native asset van Stellar.",
+      "a": "De native valuta van het Stellar-netwerk, gebruikt voor kosten.",
+      "b": "Een stablecoin die altijd 1 dollar waard is.",
+      "c": "Een token uitgegeven door een bank.",
+      "a.fb": "Correct. XLM is de native munt van Stellar.",
+      "b.fb": "Onjuist. De waarde van XLM schommelt zoals andere cryptovaluta's.",
+      "c.fb": "Onjuist. XLM is direct ingebouwd in het Stellar-protocol."
+    },
+    "q4": {
+      "question": "Waarvoor is Stellar voornamelijk bedoeld?",
+      "hint": "Denk aan grensoverschrijdende betalingen.",
+      "a": "Snelle, goedkope internationale betalingen en geldtransfers.",
+      "b": "NFT-handel en blockchain-spellen.",
+      "c": "Gedecentraliseerde gegevensopslag.",
+      "a.fb": "Correct. Stellar is gebouwd voor betalingen en geldtransfers tussen landen.",
+      "b.fb": "Onjuist. Dat zijn meer typische Ethereum-toepassingen.",
+      "c.fb": "Onjuist. Gegevensopslag is niet het kerndoel van Stellar."
+    }
+  },
+  "l3": {
+    "title": "Openbaarheid en privacy",
+    "q1": {
+      "question": "Wat betekent pseudonimiteit op Stellar?",
+      "hint": "Je ziet adressen, maar geen namen.",
+      "a": "Transacties zijn openbaar, maar adressen zijn geen echte namen.",
+      "b": "Alle transacties zijn volledig geheim.",
+      "c": "Alleen de afzender kent de transactie.",
+      "a.fb": "Correct. Publieke sleutels zijn zichtbaar maar niet direct gekoppeld aan identiteiten.",
+      "b.fb": "Onjuist. Alle transacties zijn openbaar zichtbaar in het grootboek.",
+      "c.fb": "Onjuist. Het grootboek is openbaar voor iedereen."
+    },
+    "q2": {
+      "question": "Kun je Stellar-transacties opzoeken in een explorer?",
+      "hint": "Het grootboek is openbaar.",
+      "true": "Waar",
+      "false": "Onwaar",
+      "true.fb": "Correct. Iedereen kan transacties bekijken op bijv. stellar.expert.",
+      "false.fb": "Onjuist. Het grootboek is volledig openbaar."
+    },
+    "q3": {
+      "question": "Wat zie je als je een Stellar-transactie opzoekt?",
+      "hint": "Openbare gegevens, maar geen persoonlijke informatie.",
+      "a": "Publieke sleutels, bedrag, tijdstempel – maar geen echte naam.",
+      "b": "De volledige naam en het adres van de afzender.",
+      "c": "Helemaal niets, alles is versleuteld.",
+      "a.fb": "Correct. De blockchain toont technische gegevens, geen identiteiten.",
+      "b.fb": "Onjuist. Echte namen worden niet opgeslagen op de blockchain.",
+      "c.fb": "Onjuist. Transactiegegevens zijn openbaar leesbaar."
+    },
+    "q4": {
+      "question": "Waarom is pseudonimiteit geen volledige privacy?",
+      "hint": "Adressen kunnen soms aan personen worden gekoppeld.",
+      "a": "Omdat adressen via externe gegevens (bijv. beurzen) aan echte namen kunnen worden gekoppeld.",
+      "b": "Omdat Stellar alle namen opslaat.",
+      "c": "Omdat je altijd een identiteitsbewijs nodig hebt.",
+      "a.fb": "Correct. Met aanvullende gegevens kunnen adressen soms worden getraceerd.",
+      "b.fb": "Onjuist. Stellar slaat geen namen op.",
+      "c.fb": "Onjuist. Stellar zelf vereist geen identiteitsbewijs."
+    }
+  },
   "l4": {
     "title": "Sleutels, kosten en vertrouwenslijnen",
     "q1": {
@@ -82,6 +164,90 @@
       "a.fb": "Ja. U kiest welke uitgevers/tokens u vertrouwt.",
       "b.fb": "Nee. Het is geen chat, maar een verblijfsvergunning.",
       "c.fb": "Nee. Vertrouwenslijnen houden in dat er activa worden aangehouden."
+    }
+  },
+  "l5": {
+    "title": "Verzenden en ontvangen",
+    "q1": {
+      "question": "Wat is een trustline op Stellar?",
+      "hint": "Je geeft hiermee een toestemming.",
+      "a": "Een toestemming om een specifiek token van een uitgever te ontvangen.",
+      "b": "Een wachtwoord voor snellere transacties.",
+      "c": "Een vergoeding voor internationale betalingen.",
+      "a.fb": "Correct. Zonder trustline kun je een token niet ontvangen.",
+      "b.fb": "Onjuist. Trustlines hebben niets met wachtwoorden te maken.",
+      "c.fb": "Onjuist. Een trustline is een toestemming, geen kostenpost."
+    },
+    "q2": {
+      "question": "Elke Stellar-transactie vereist een kleine XLM-vergoeding.",
+      "hint": "Deze vergoeding beschermt het netwerk.",
+      "true": "Waar",
+      "false": "Onwaar",
+      "true.fb": "Correct. De minimale vergoeding (100 stroops) voorkomt spam.",
+      "false.fb": "Onjuist. Elke transactie kost een kleine vergoeding."
+    },
+    "q3": {
+      "question": "Wat gebeurt er als je XLM stuurt naar iemand zonder actief account?",
+      "hint": "Een Stellar-account heeft een minimumsaldo nodig.",
+      "a": "Het account wordt automatisch geactiveerd met het minimumsaldo.",
+      "b": "De transactie mislukt en de XLM is verloren.",
+      "c": "Stellar maakt niet automatisch nieuwe accounts aan.",
+      "a.fb": "Correct. Als je genoeg XLM stuurt, wordt het account geactiveerd.",
+      "b.fb": "Onjuist. Stellar kan nieuwe accounts activeren via inkomende betalingen.",
+      "c.fb": "Onjuist. Met voldoende XLM wordt het account automatisch aangemaakt."
+    },
+    "q4": {
+      "question": "Waarvoor wordt een memo gebruikt in een transactie?",
+      "hint": "Denk aan bankoverschrijvingen met een referentie.",
+      "a": "Om extra informatie zoals een referentienummer mee te sturen.",
+      "b": "Om de vergoeding te verlagen.",
+      "c": "Om de transactie te versleutelen.",
+      "a.fb": "Correct. Memo's worden door beurzen gebruikt om stortingen te identificeren.",
+      "b.fb": "Onjuist. Memo's beïnvloeden de vergoeding niet.",
+      "c.fb": "Onjuist. Memo's zijn openbaar leesbaar."
+    }
+  },
+  "l6": {
+    "title": "Tokens en handel",
+    "q1": {
+      "question": "Hoe wordt de prijs van een token bepaald op de Stellar DEX?",
+      "hint": "Vraag en aanbod.",
+      "a": "Door vraag en aanbod – kopers en verkopers komen prijzen overeen.",
+      "b": "Stellar stelt de prijs vast.",
+      "c": "De uitgever bepaalt altijd de prijs.",
+      "a.fb": "Correct. De DEX is een vrije markt zonder gecentraliseerde prijsbepaling.",
+      "b.fb": "Onjuist. Stellar grijpt niet in bij de prijsvorming.",
+      "c.fb": "Onjuist. Na uitgifte bepaalt de markt de prijs."
+    },
+    "q2": {
+      "question": "Wat is het verschil tussen een DEX en een CEX?",
+      "hint": "Denk aan controle en bewaring.",
+      "a": "DEX: handel rechtstreeks vanuit je wallet. CEX: de beurs bewaart je munten.",
+      "b": "DEX is duurder, CEX is goedkoper.",
+      "c": "Geen verschil, beide zijn hetzelfde.",
+      "a.fb": "Correct. Bij een DEX behoud je de controle, bij een CEX niet.",
+      "b.fb": "Onjuist. DEX is vaak goedkoper omdat er geen tussenpersoon is.",
+      "c.fb": "Onjuist. Het verschil is fundamenteel."
+    },
+    "q3": {
+      "question": "Wat is een liquiditeitspool?",
+      "hint": "Velen stellen samen kapitaal beschikbaar.",
+      "a": "Een gedeelde pot met activa waaruit DEX-trades worden uitgevoerd.",
+      "b": "Een bankrekening voor cryptoprojecten.",
+      "c": "Een methode om XLM te verdienen zonder te handelen.",
+      "a.fb": "Correct. Liquiditeitspools maken geautomatiseerde handel (AMM) mogelijk.",
+      "b.fb": "Onjuist. Het is geen bankrekening maar een op smart contracts gebaseerde pool.",
+      "c.fb": "Onjuist. Liquiditeitspools zijn voor handel, niet alleen voor passief verdienen."
+    },
+    "q4": {
+      "question": "Wat betekent volatiliteit bij cryptovaluta's?",
+      "hint": "Prijzen kunnen sterk schommelen.",
+      "a": "Sterke en snelle prijsschommelingen omhoog en omlaag.",
+      "b": "Een stabiele, onveranderlijke prijs.",
+      "c": "De dagelijkse handelsvergoeding van een token.",
+      "a.fb": "Correct. Cryptomarkten staan bekend om hun hoge volatiliteit.",
+      "b.fb": "Onjuist. Dat zou het tegenovergestelde zijn – stabiliteit.",
+      "c.fb": "Onjuist. Volatiliteit beschrijft prijsschommelingen, geen vergoedingen."
     }
   },
   "l7": {
@@ -127,8 +293,216 @@
       "c.fb": "Nee, het gaat om data-efficiënte bewijzen."
     }
   },
+  "l8": {
+    "title": "Verificatie en identiteit",
+    "q1": {
+      "question": "Wat betekent KYC?",
+      "hint": "Engels voor 'Know Your Customer' (Ken uw klant).",
+      "a": "Know Your Customer – identiteitsverificatie door financiële dienstverleners.",
+      "b": "Keep Your Coins – een beveiligingsstrategie.",
+      "c": "Key Your Cryptography – een versleutelingsmethode.",
+      "a.fb": "Correct. KYC is wettelijk verplicht voor onramp/offramp-diensten.",
+      "b.fb": "Onjuist. KYC staat voor Know Your Customer.",
+      "c.fb": "Onjuist. Dat is een verzonnen betekenis."
+    },
+    "q2": {
+      "question": "De Stellar DEX vereist KYC-verificatie.",
+      "hint": "Gedecentraliseerd betekent geen tussenpersoon.",
+      "true": "Waar",
+      "false": "Onwaar",
+      "true.fb": "Onjuist. De Stellar DEX is gedecentraliseerd – geen KYC nodig.",
+      "false.fb": "Correct. Gedecentraliseerde protocollen vereisen geen KYC."
+    },
+    "q3": {
+      "question": "Hoe herken je een betrouwbaar token op Stellar?",
+      "hint": "De naam alleen is niet genoeg.",
+      "a": "Via de geverifieerde uitgever en het geregistreerde domein (stellar.toml).",
+      "b": "Via het aantal transacties.",
+      "c": "Alleen via de tokennaam.",
+      "a.fb": "Correct. stellar.toml bevat geverifieerde informatie over de uitgever.",
+      "b.fb": "Onjuist. Veel transacties kunnen ook van oplichting komen.",
+      "c.fb": "Onjuist. Namen kunnen gemakkelijk worden gekopieerd."
+    },
+    "q4": {
+      "question": "Waarom vereisen onramp-diensten KYC?",
+      "hint": "Het gaat om wetten en veiligheid.",
+      "a": "Omdat ze wettelijk verplicht zijn witwassen te voorkomen (AML).",
+      "b": "Om je gegevens te verkopen voor reclame.",
+      "c": "Om de kosten te verhogen.",
+      "a.fb": "Correct. KYC/AML-wetten gelden voor alle fiat-naar-crypto-overgangen.",
+      "b.fb": "Onjuist. KYC is een wettelijke verplichting, geen verdienmodel.",
+      "c.fb": "Onjuist. KYC heeft niets met kosten te maken."
+    }
+  },
+  "l9": {
+    "title": "Zero Knowledge",
+    "q1": {
+      "question": "Wat is een zero-knowledge bewijs?",
+      "hint": "Bewijzen zonder geheimen te onthullen.",
+      "a": "Een bewijs dat iets waar is zonder de onderliggende informatie te onthullen.",
+      "b": "Een methode om alle transacties te verbergen.",
+      "c": "Een leeg account zonder saldo.",
+      "a.fb": "Correct. ZK-bewijzen maken privacy mogelijk met behoud van verifieerbaarheid.",
+      "b.fb": "Onjuist. ZK-bewijzen zijn bewijzen, geen verhulling.",
+      "c.fb": "Onjuist. Zero Knowledge verwijst naar cryptografie, niet naar saldi."
+    },
+    "q2": {
+      "question": "Met een ZK-bewijs kun je bewijzen dat je ouder bent dan 18 zonder je geboortedatum te tonen.",
+      "hint": "Dat is precies het punt van ZK.",
+      "true": "Waar",
+      "false": "Onwaar",
+      "true.fb": "Correct. Dat is een klassiek ZK-bewijsvoorbeeld.",
+      "false.fb": "Onjuist. ZK-bewijzen maken precies dit mogelijk."
+    },
+    "q3": {
+      "question": "Waarvoor kunnen ZK-bewijzen nuttig zijn op Stellar?",
+      "hint": "Privacy bij financiële transacties.",
+      "a": "Voor privacyvriendelijke transacties zonder alle details prijs te geven.",
+      "b": "Om transacties sneller te maken.",
+      "c": "Om kosten te elimineren.",
+      "a.fb": "Correct. ZK-bewijzen kunnen privacy in blockchain-transacties mogelijk maken.",
+      "b.fb": "Onjuist. Snelheid is niet het hoofddoel van ZK.",
+      "c.fb": "Onjuist. ZK heeft geen invloed op kosten."
+    },
+    "q4": {
+      "question": "Wat betekent 'Zero' in Zero-Knowledge?",
+      "hint": "Wat wordt er niet gedeeld?",
+      "a": "Nul kennis over het geheim wordt doorgegeven aan de verificateur.",
+      "b": "De transactie heeft nul kosten.",
+      "c": "Het account heeft nul saldo.",
+      "a.fb": "Correct. De verificateur leert niets over het eigenlijke geheim.",
+      "b.fb": "Onjuist. Zero Knowledge heeft niets met kosten te maken.",
+      "c.fb": "Onjuist. Het gaat om cryptografie, niet om saldi."
+    }
+  },
+  "l10": {
+    "title": "Oefenen met de Stellar Account Manager",
+    "q1": {
+      "question": "Waarom zou je eerst het testnet gebruiken?",
+      "hint": "Fouten op het testnet hebben geen echte gevolgen.",
+      "a": "Omdat je kunt oefenen met test-XLM zonder echt geld te riskeren.",
+      "b": "Omdat het testnet sneller is dan het mainnet.",
+      "c": "Omdat het testnet gratis is.",
+      "a.fb": "Correct. Het testnet is een veilige oefenomgeving met test-XLM.",
+      "b.fb": "Onjuist. Snelheid is niet de reden – veiligheid wel.",
+      "c.fb": "Onjuist. Het testnet heeft geen echte kosten, maar de hoofdreden is veiligheid."
+    },
+    "q2": {
+      "question": "Test-XLM op het testnet heeft echte geldwaarde.",
+      "hint": "Het testnet is een sandbox.",
+      "true": "Waar",
+      "false": "Onwaar",
+      "true.fb": "Onjuist. Test-XLM heeft geen echte waarde – het is speelgeld om te oefenen.",
+      "false.fb": "Correct. Test-XLM is waardeloos – daarom is het veilig om te oefenen."
+    },
+    "q3": {
+      "question": "Wat is de eerste stap om een Stellar-account te activeren?",
+      "hint": "Een account heeft een minimumsaldo nodig.",
+      "a": "Minimaal 1 XLM naar het nieuwe account sturen.",
+      "b": "Een aanvraag indienen bij Stellar.",
+      "c": "Een e-mail sturen naar de support.",
+      "a.fb": "Correct. Het minimumsaldo (base reserve) activeert het account.",
+      "b.fb": "Onjuist. Stellar is gedecentraliseerd – geen aanvraag nodig.",
+      "c.fb": "Onjuist. Accounts worden geactiveerd door transacties, niet door support."
+    },
+    "q4": {
+      "question": "Wat moet je doen voordat je USDC kunt ontvangen op Stellar?",
+      "hint": "Toestemming is nodig.",
+      "a": "Een trustline naar USDC instellen.",
+      "b": "Een speciale USDC-wallet downloaden.",
+      "c": "KYC voltooien bij Stellar.",
+      "a.fb": "Correct. Zonder trustline kun je geen externe assets ontvangen.",
+      "b.fb": "Onjuist. De Stellar Account Manager ondersteunt alle assets met trustline.",
+      "c.fb": "Onjuist. Stellar zelf vereist geen KYC."
+    }
+  },
+  "l11": {
+    "title": "Verantwoordelijkheid in de cryptowereld",
+    "q1": {
+      "question": "Wat gebeurt er als je XLM naar een verkeerd adres stuurt?",
+      "hint": "Blockchain-transacties zijn definitief.",
+      "a": "De transactie is onomkeerbaar – de XLM is verloren.",
+      "b": "Je kunt de transactie binnen 24 uur ongedaan maken.",
+      "c": "Stellar betaalt het bedrag automatisch terug.",
+      "a.fb": "Correct. Blockchain-transacties zijn definitief. Controleer altijd het adres!",
+      "b.fb": "Onjuist. Er zijn geen terugboekingen op de blockchain.",
+      "c.fb": "Onjuist. Stellar kan geen transacties ongedaan maken."
+    },
+    "q2": {
+      "question": "Stellar kan foutieve transacties ongedaan maken.",
+      "hint": "Onveranderlijkheid – immutability.",
+      "true": "Waar",
+      "false": "Onwaar",
+      "true.fb": "Onjuist. De blockchain is onveranderlijk – geen terugdraaien mogelijk.",
+      "false.fb": "Correct. Transacties zijn definitief en kunnen niet ongedaan worden gemaakt."
+    },
+    "q3": {
+      "question": "Wat moet je doen voordat je een grote transactie verstuurt?",
+      "hint": "Test eerst met een klein bedrag.",
+      "a": "Eerst een klein testbedrag sturen en het adres dubbel controleren.",
+      "b": "Direct het volledige bedrag sturen om kosten te besparen.",
+      "c": "De support bellen voor bevestiging.",
+      "a.fb": "Correct. Een kleine test beschermt tegen dure fouten.",
+      "b.fb": "Onjuist. Snelheid is minder belangrijk dan zorgvuldigheid.",
+      "c.fb": "Onjuist. Gedecentraliseerde netwerken hebben geen centrale support."
+    },
+    "q4": {
+      "question": "Wat is de belangrijkste regel voor je geheime sleutel?",
+      "hint": "Het is als de sleutel van je kluis.",
+      "a": "Nooit delen, veilig offline bewaren.",
+      "b": "In de cloud opslaan voor makkelijke toegang.",
+      "c": "Met vrienden delen als backup.",
+      "a.fb": "Correct. Wie de geheime sleutel heeft, controleert het account volledig.",
+      "b.fb": "Onjuist. Cloudopslag is onveilig voor geheime sleutels.",
+      "c.fb": "Onjuist. Deel je geheime sleutel nooit met anderen."
+    }
+  },
+  "l12": {
+    "title": "Afsluiting en herhaling",
+    "q1": {
+      "question": "Wat is het belangrijkste kenmerk van een blockchain?",
+      "hint": "Denk aan het grote geheel.",
+      "a": "Een onveranderlijke, gedecentraliseerde database die collectief wordt onderhouden.",
+      "b": "Een snelle database van een enkel bedrijf.",
+      "c": "Een versleutelde chatdienst.",
+      "a.fb": "Correct. Gedecentraliseerd, onveranderlijk, transparant – dat zijn de kernkenmerken.",
+      "b.fb": "Onjuist. Blockchains zijn gedecentraliseerd, niet gecentraliseerd.",
+      "c.fb": "Onjuist. Blockchains zijn databases, geen communicatietools."
+    },
+    "q2": {
+      "question": "Welke drie dingen maken Stellar bijzonder?",
+      "hint": "Snelheid, kosten, doel.",
+      "a": "Snel (3-5 sec), goedkoop (fracties van een cent), geoptimaliseerd voor betalingen.",
+      "b": "Langzaam, duur, geoptimaliseerd voor NFT's.",
+      "c": "Op mining gebaseerd, gedecentraliseerd, anoniem.",
+      "a.fb": "Correct. Dat zijn de drie kernvoordelen van Stellar.",
+      "b.fb": "Onjuist. Stellar staat bekend om snelheid en lage kosten.",
+      "c.fb": "Onjuist. Stellar gebruikt geen mining en is pseudoniem, niet anoniem."
+    },
+    "q3": {
+      "question": "Wat mag je NOOIT doen?",
+      "hint": "De gouden regel van cryptobeveiliging.",
+      "a": "Je geheime sleutel delen of invoeren op onbekende websites.",
+      "b": "Het testnet gebruiken.",
+      "c": "Trustlines instellen.",
+      "a.fb": "Correct. De geheime sleutel is heilig – deel hem nooit!",
+      "b.fb": "Onjuist. Het testnet gebruiken wordt zelfs aanbevolen om te oefenen.",
+      "c.fb": "Onjuist. Trustlines zijn normale en noodzakelijke acties."
+    },
+    "q4": {
+      "question": "Je hebt alle lessen voltooid. Wat ben je nu?",
+      "hint": "Vier je prestatie!",
+      "a": "Een Stellar-beginner met solide basiskennis!",
+      "b": "Een gecertificeerd blockchain-ingenieur.",
+      "c": "Klaar voor pensioen.",
+      "a.fb": "Precies goed! Je beheerst de basis. Ga zo door!",
+      "b.fb": "Nog niet – maar je hebt een stevig fundament gelegd!",
+      "c.fb": "Nog niet – maar je hebt een grote stap vooruit gezet!"
+    }
+  },
   "ui": {
     "startQuiz": "Quiz starten",
+    "indexSubtitle": "Kies een les",
     "startPractice": "Begin met oefenen.",
     "practice": "Oefenen",
     "quiz": "Quiz",
@@ -162,7 +536,11 @@
     "openInNewTab.default": "Open quiz standaard in een nieuw tabblad",
     "openInNewTab.once": "Open in een nieuw tabblad",
     "startInNewTab": "Quiz starten in een nieuw tabblad",
-    "warnOnActiveQuiz": "Waarschuwing weergeven tijdens lopende quiz"
+    "warnOnActiveQuiz": "Waarschuwing weergeven tijdens lopende quiz",
+    "nextQuiz": "Volgende quiz",
+    "prevQuiz": "Vorige quiz",
+    "allDone": "Alle quizzen voltooid! Gefeliciteerd!",
+    "lessonProgress": "Les {{current}} van {{total}}"
   },
   "meta": {
     "estimatedMinutes": "Geschatte minuten",

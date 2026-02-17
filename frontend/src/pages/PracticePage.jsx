@@ -44,7 +44,7 @@ export default function PracticePage() {
         window.dispatchEvent(new PopStateEvent('popstate'));
         return;
       }
-      const url = buildPath('learn');
+      const url = buildPath('quiz');
       window.history.pushState({}, '', url);
       window.dispatchEvent(new PopStateEvent('popstate'));
     } catch { /* noop */ }

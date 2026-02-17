@@ -75,7 +75,8 @@
     "accounts": "Tililuettelo",
     "network": "Verkko",
     "quiz": "Tietovisa",
-    "explorer": "Tutkija"
+    "explorer": "Tutkija",
+    "glossary": "Sanasto"
   },
   "sections": {
     "general": "Yleiset asetukset",
@@ -83,7 +84,8 @@
     "accounts": "Tililuettelo",
     "network": "Verkko",
     "quiz": "Tietovisan asetukset",
-    "explorer": "Stellar Explorer"
+    "explorer": "Stellar Explorer",
+    "glossary": "Sanaston ylläpito"
   },
   "multisig": {
     "timeoutTitle": "Multisig-aikakatkaisu",
@@ -163,5 +165,24 @@
     "validation": {
       "hint": "Vähintään yksi rivi on virheellinen (fehlende/duplizierte Adresse)."
     }
+  },
+  "maintenance": {
+    "title": "Ylläpito",
+    "exportExcel": "Vie Excelinä",
+    "importFile": "Tuo tiedosto",
+    "selectLanguage": "Valitse kieli",
+    "downloadJson": "Lataa JSON-muodossa",
+    "preview": "Esikatselu",
+    "lessonsFound": "{{count}} oppituntia, {{questions}} kysymystä löydetty",
+    "termsFound": "{{count}} termiä löydetty",
+    "validationError": "Validointivirhe",
+    "importSuccess": "Tuonti onnistui",
+    "replaceHint": "Korvaa tiedosto src/locales/{{lang}}/{{file}} ja ota sovellus uudelleen käyttöön.",
+    "requiredFields": "Pakolliset kentät puuttuvat: {{fields}}",
+    "invalidFile": "Virheellinen tiedostomuoto. Käytä .xlsx tai .csv.",
+    "noData": "Tietoja ei löytynyt.",
+    "row": "Rivi {{row}}",
+    "lessonOverview": "Oppituntien yleiskatsaus (Ylläpito)",
+    "selectLesson": "Oppitunti"
   }
 }

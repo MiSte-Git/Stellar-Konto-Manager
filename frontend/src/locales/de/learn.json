@@ -67,94 +67,94 @@
     "invalid": "Ungültige oder inkompatible Datei"
   },
   "lesson1": {
-    "title": "Was ist eine Blockchain",
-    "goal": "Prinzip der Blockchain begreifen",
-    "task": "Bausteine (Transaktionen) zu einer Kette zusammensetzen",
-    "learningOutcome": "Eine Blockchain ist ein unveränderbares digitales Heft, in dem alle gemeinsam prüfen.",
+    "title": "Blockchain Grundlagen",
+    "goal": "Verstehen, was eine Blockchain ist und wie sie funktioniert.",
+    "task": "Beantworte Fragen zu Blöcken, Ketten und warum man nichts löschen kann.",
+    "learningOutcome": "Eine Blockchain ist wie ein öffentliches Notizbuch: Alle können lesen, niemand kann Seiten herausreißen.",
     "reward": "⭐ 1 – Block-Bauer"
   },
   "lesson2": {
     "title": "Stellar verstehen",
-    "goal": "Unterschied zu anderen Blockchains kennen",
-    "task": "Token an Freund schicken (Simulation) und Geschwindigkeit sehen",
-    "learningOutcome": "Stellar ist schnell, günstig und ohne Mining.",
+    "goal": "Wissen, was Stellar besonders macht und worin es sich von Bitcoin unterscheidet.",
+    "task": "Beantworte Fragen zu Geschwindigkeit, XLM und dem Zweck von Stellar.",
+    "learningOutcome": "Stellar ist schnell (3–5 Sekunden), günstig und braucht kein Mining.",
     "reward": "⭐ 1 – Schnell-Sender"
   },
   "lesson3": {
     "title": "Öffentlichkeit & Privatsphäre",
-    "goal": "Pseudonymität begreifen",
-    "task": "Öffentliche Transaktion ansehen und raten, ob man weiß, wer sendet",
-    "learningOutcome": "Alles ist sichtbar, aber niemand kennt den echten Namen.",
+    "goal": "Verstehen, was man auf der Blockchain sehen kann — und was nicht.",
+    "task": "Beantworte Fragen zu öffentlichen Daten, Adressen und echten Namen.",
+    "learningOutcome": "Transaktionen sind öffentlich, aber dein echter Name steht nicht drin.",
     "reward": "⭐ 1 – Datenschutz-Detektiv"
   },
   "lesson4": {
-    "title": "Dein Konto",
-    "goal": "Aufbau und Bedeutung von Public/Secret Key verstehen",
-    "task": "Zuordnungs-Spiel: Was ist öffentlich, was geheim",
-    "learningOutcome": "Nur der Secret Key gibt Zugriff, Public Key darf geteilt werden.",
+    "title": "Keys, Gebühren und Trustlines",
+    "goal": "Den Unterschied zwischen Public Key und Secret Key kennen, plus Gebühren und Trustlines.",
+    "task": "Beantworte Fragen zu Schlüsseln, Transaktionsgebühren und Halte-Erlaubnissen.",
+    "learningOutcome": "Public Key = Adresse zum Empfangen. Secret Key = geheim halten! Trustline = Erlaubnis, einen Token zu halten.",
     "reward": "⭐ 1 – Schlüssel-Wächter"
   },
   "lesson5": {
     "title": "Senden & Empfangen",
-    "goal": "Funktionsweise von Transaktionen und Trustlines verstehen",
-    "task": "Test-Sendung ausführen und Gebühr sehen",
-    "learningOutcome": "Jede Transaktion kostet eine kleine Gebühr; Trustline = Erlaubnis zum Empfangen.",
+    "goal": "Wissen, wie Überweisungen auf Stellar funktionieren.",
+    "task": "Beantworte Fragen zu Trustlines, Gebühren, Kontoaktivierung und Memos.",
+    "learningOutcome": "Jede Transaktion kostet eine winzige Gebühr. Ein Memo ist wie ein Verwendungszweck.",
     "reward": "⭐ 2 – Trustline-Starter"
   },
   "lesson6": {
     "title": "Token & Handel",
-    "goal": "Marktmechanismen kennenlernen",
-    "task": "Token auf virtuellen Marktplatz legen und Preisänderung beobachten",
-    "learningOutcome": "Preis entsteht durch Angebot und Nachfrage.",
+    "goal": "Verstehen, wie Preise auf dem Stellar-Marktplatz entstehen.",
+    "task": "Beantworte Fragen zu DEX, CEX, Liquiditätspools und Preisschwankungen.",
+    "learningOutcome": "Auf dem DEX handelt man direkt aus der Wallet. Preise entstehen durch Angebot und Nachfrage.",
     "reward": "⭐ 2 – Marktplatz-Kenner"
   },
   "lesson7": {
-    "title": "Sicherheit",
-    "goal": "Sichere Verhaltensweisen lernen",
-    "task": "Richtige/falsche Handlungen sortieren; Fake-Token erkennen",
-    "learningOutcome": "Geheimhaltung des Keys, sichere Aufbewahrung und Testnet nutzen.",
+    "title": "Sicherheit, Phishing und Vertrauen",
+    "goal": "Lernen, wie man sich vor Betrug schützt und echte von falschen Token unterscheidet.",
+    "task": "Beantworte Fragen zu Phishing, Fake-Tokens, KYC und Zero-Knowledge-Beweisen.",
+    "learningOutcome": "Secret Key nie teilen! Echte Token erkennst du am verifizierten Issuer, nicht am Namen.",
     "reward": "⭐ 2 – Sicherheits-Wächter"
   },
   "lesson8": {
     "title": "Verifizierung & Identität",
-    "goal": "Vertrauen und Regeln verstehen",
-    "task": "Echten vs. gefälschten Token vergleichen",
-    "learningOutcome": "KYC = Ausweisprüfung, Verifizierung zeigt vertrauenswürdige Token.",
+    "goal": "Verstehen, was KYC bedeutet und wann es nötig ist.",
+    "task": "Beantworte Fragen zu KYC, vertrauenswürdigen Token und Onramp-Diensten.",
+    "learningOutcome": "KYC heißt 'Kenne deinen Kunden' — Börsen prüfen damit deine Identität. Der DEX braucht kein KYC.",
     "reward": "⭐ 2 – Prüf-Profi"
   },
   "lesson9": {
     "title": "Zero Knowledge",
-    "goal": "Datenschutz-Konzepte verstehen",
-    "task": "Beispiel-Szenario 'Ich bin über 18' ohne Geburtsdatum zeigen",
-    "learningOutcome": "Man kann etwas beweisen, ohne Geheimnisse zu verraten.",
+    "goal": "Verstehen, wie man etwas beweisen kann, ohne Geheimnisse zu verraten.",
+    "task": "Beantworte Fragen zu ZK-Beweisen — z. B. 'Ich bin über 18' ohne Geburtsdatum.",
+    "learningOutcome": "Mit einem Zero-Knowledge-Beweis zeigst du, dass etwas stimmt, ohne Details zu verraten.",
     "reward": "⭐ 2 – ZK-Versteher"
   },
   "lesson10": {
-    "title": "Praxis mit SKM",
-    "goal": "Erlerntes praktisch anwenden",
-    "task": "Konto im Testnet erstellen, aktivieren, Trustline setzen, Token senden",
-    "learningOutcome": "Technische Abläufe einer Transaktion nachvollziehen.",
+    "title": "Praxis mit dem Stellar Konto Manager",
+    "goal": "Wissen, wie man den Stellar Konto Manager sicher im Testnet benutzt.",
+    "task": "Beantworte Fragen zu Testnet, Kontoaktivierung und Trustlines in der Praxis.",
+    "learningOutcome": "Im Testnet kannst du alles ausprobieren, ohne echtes Geld zu riskieren.",
     "reward": "⭐ 3 – Blockchain-Pilot"
   },
   "lesson11": {
-    "title": "Verantwortung",
-    "goal": "Konsequenzen von Fehlern verstehen",
-    "task": "Entscheidungsspiel: richtig handeln oder nicht",
-    "learningOutcome": "Blockchain ist endgültig; Sorgfalt ist Pflicht.",
+    "title": "Verantwortung in der Kryptowelt",
+    "goal": "Verstehen, warum Sorgfalt auf der Blockchain so wichtig ist.",
+    "task": "Beantworte Fragen zu Fehlern, Rückbuchungen und dem Umgang mit dem Secret Key.",
+    "learningOutcome": "Blockchain-Transaktionen sind endgültig. Immer erst die Adresse prüfen, dann senden!",
     "reward": "⭐ 1 – Verantwortungs-Held"
   },
   "lesson12": {
-    "title": "Abschluss / Spielerisches Lernen",
-    "goal": "Wiederholung und Motivation",
-    "task": "Mini-Quiz + Abzeichenanzeige",
-    "learningOutcome": "Gelerntes wiederholen, eigene Fortschritte erkennen.",
+    "title": "Abschluss & Wiederholung",
+    "goal": "Alles Gelernte wiederholen und festigen.",
+    "task": "Beantworte Fragen quer durch alle Themen — von Blockchain bis Sicherheit.",
+    "learningOutcome": "Du kennst jetzt die Grundlagen von Blockchain, Stellar und sicherem Umgang mit Krypto.",
     "reward": "🎖 Stellar-Profi"
   },
   "lesson13": {
     "title": "Multisig für Anfänger",
-    "goal": "Grundprinzipien von Multisig verstehen",
-    "task": "Single-Sig vs. Multisig vergleichen, Beispielablauf anschauen",
-    "learningOutcome": "Mehrere Signaturen erhöhen Sicherheit; Schwellen steuern, wie viele Signaturen nötig sind.",
+    "goal": "Verstehen, warum mehrere Unterschriften ein Konto sicherer machen.",
+    "task": "Beantworte Fragen zu Single-Sig vs. Multisig, Schwellen und Signierern.",
+    "learningOutcome": "Bei Multisig braucht man mehrere Unterschriften. Das schützt vor Alleingängen.",
     "reward": "⭐ 2 – Multisig-Starter"
   }
 }

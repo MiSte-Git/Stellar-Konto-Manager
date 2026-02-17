@@ -75,7 +75,8 @@
     "accounts": "Accounts list",
     "network": "Network",
     "quiz": "Quiz",
-    "explorer": "Explorer"
+    "explorer": "Explorer",
+    "glossary": "Glossary"
   },
   "sections": {
     "general": "General Settings",
@@ -83,7 +84,8 @@
     "accounts": "Account list",
     "network": "Network",
     "quiz": "Quiz settings",
-    "explorer": "Stellar Explorer"
+    "explorer": "Stellar Explorer",
+    "glossary": "Glossary Maintenance"
   },
   "multisig": {
     "timeoutTitle": "Multisig timeout",
@@ -163,5 +165,24 @@
     "validation": {
       "hint": "At least one line is invalid (fehlende/duplizierte Adresse)."
     }
+  },
+  "maintenance": {
+    "title": "Maintenance",
+    "exportExcel": "Export as Excel",
+    "importFile": "Import file",
+    "selectLanguage": "Select language",
+    "downloadJson": "Download as JSON",
+    "preview": "Preview",
+    "lessonsFound": "{{count}} lessons, {{questions}} questions found",
+    "termsFound": "{{count}} terms found",
+    "validationError": "Validation error",
+    "importSuccess": "Import successful",
+    "replaceHint": "Replace the file at src/locales/{{lang}}/{{file}} and redeploy the app.",
+    "requiredFields": "Required fields missing: {{fields}}",
+    "invalidFile": "Invalid file format. Please use .xlsx or .csv.",
+    "noData": "No data found.",
+    "row": "Row {{row}}",
+    "lessonOverview": "Lesson Overview (Maintenance)",
+    "selectLesson": "Lesson"
   }
 }

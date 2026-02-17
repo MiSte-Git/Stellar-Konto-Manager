@@ -75,7 +75,8 @@
     "accounts": "Accountslijst",
     "network": "Netwerk",
     "quiz": "Quiz",
-    "explorer": "Ontdekkingsreiziger"
+    "explorer": "Ontdekkingsreiziger",
+    "glossary": "Woordenlijst"
   },
   "sections": {
     "general": "Algemene instellingen",
@@ -83,7 +84,8 @@
     "accounts": "Rekeningenlijst",
     "network": "Netwerk",
     "quiz": "Quizinstellingen",
-    "explorer": "Stellaire Verkenner"
+    "explorer": "Stellaire Verkenner",
+    "glossary": "Woordenlijst onderhoud"
   },
   "multisig": {
     "timeoutTitle": "Multisig timeout",
@@ -163,5 +165,24 @@
     "validation": {
       "hint": "Minstens één regel is ongeldig (fehlende/duplizierte Adresse)."
     }
+  },
+  "maintenance": {
+    "title": "Onderhoud",
+    "exportExcel": "Exporteren als Excel",
+    "importFile": "Bestand importeren",
+    "selectLanguage": "Taal selecteren",
+    "downloadJson": "Downloaden als JSON",
+    "preview": "Voorbeeld",
+    "lessonsFound": "{{count}} lessen, {{questions}} vragen gevonden",
+    "termsFound": "{{count}} termen gevonden",
+    "validationError": "Validatiefout",
+    "importSuccess": "Import succesvol",
+    "replaceHint": "Vervang het bestand op src/locales/{{lang}}/{{file}} en deploy de app opnieuw.",
+    "requiredFields": "Verplichte velden ontbreken: {{fields}}",
+    "invalidFile": "Ongeldig bestandsformaat. Gebruik .xlsx of .csv.",
+    "noData": "Geen gegevens gevonden.",
+    "row": "Rij {{row}}",
+    "lessonOverview": "Lessenoverzicht (Onderhoud)",
+    "selectLesson": "Les"
   }
 }
