@@ -25,7 +25,7 @@ describe('QuestionCard a11y and interactions', () => {
 
   it('renders question and options', () => {
     renderWithI18n(<QuestionCard {...baseProps} />)
-    expect(screen.getByRole('heading', { level: 0, name: /./i })).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 3 })).toBeTruthy()
     expect(screen.getByRole('radiogroup')).toBeInTheDocument()
   })
 

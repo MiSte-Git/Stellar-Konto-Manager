@@ -75,7 +75,8 @@
     "accounts": "Список учетных записей",
     "network": "Сеть",
     "quiz": "Викторина",
-    "explorer": "Исследователь"
+    "explorer": "Исследователь",
+    "glossary": "Глоссарий"
   },
   "sections": {
     "general": "Общие настройки",
@@ -83,7 +84,8 @@
     "accounts": "Список счетов",
     "network": "Сеть",
     "quiz": "Настройки викторины",
-    "explorer": "Звездный Исследователь"
+    "explorer": "Звездный Исследователь",
+    "glossary": "Обслуживание глоссария"
   },
   "multisig": {
     "timeoutTitle": "Мультиподпись: время ожидания",
@@ -163,5 +165,24 @@
     "validation": {
       "hint": "По крайней мере одна строка недействительна (fehlende/duplizierte Adresse)."
     }
+  },
+  "maintenance": {
+    "title": "Обслуживание",
+    "exportExcel": "Экспорт в Excel",
+    "importFile": "Импорт файла",
+    "selectLanguage": "Выбрать язык",
+    "downloadJson": "Скачать как JSON",
+    "preview": "Предпросмотр",
+    "lessonsFound": "{{count}} уроков, {{questions}} вопросов найдено",
+    "termsFound": "{{count}} терминов найдено",
+    "validationError": "Ошибка валидации",
+    "importSuccess": "Импорт успешен",
+    "replaceHint": "Замените файл src/locales/{{lang}}/{{file}} и переразверните приложение.",
+    "requiredFields": "Отсутствуют обязательные поля: {{fields}}",
+    "invalidFile": "Неверный формат файла. Используйте .xlsx или .csv.",
+    "noData": "Данные не найдены.",
+    "row": "Строка {{row}}",
+    "lessonOverview": "Обзор уроков (Обслуживание)",
+    "selectLesson": "Урок"
   }
 }

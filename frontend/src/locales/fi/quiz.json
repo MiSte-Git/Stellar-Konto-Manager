@@ -45,6 +45,88 @@
       "b.fb": "Ei. Aikaisempia merkintöjä ei poisteta."
     }
   },
+  "l2": {
+    "title": "Stellarin ymmärtäminen",
+    "q1": {
+      "question": "Mikä erottaa Stellarin Bitcoinista?",
+      "hint": "Ajattele nopeutta ja käyttötarkoitusta.",
+      "a": "Stellar on optimoitu nopeille, edullisille maksuille – ilman louhintaa.",
+      "b": "Stellar on pelivaluutta ilman todellista arvoa.",
+      "c": "Stellar tarvitsee enemmän energiaa kuin Bitcoin.",
+      "a.fb": "Oikein. Stellar vahvistaa 3-5 sekunnissa, Bitcoin usein minuuteissa tai tunneissa.",
+      "b.fb": "Väärin. Stellar on vakavasti otettava maksuverkko.",
+      "c.fb": "Väärin. Stellar ei tarvitse louhintaa ja on erittäin energiatehokas."
+    },
+    "q2": {
+      "question": "Stellar-siirrot valmistuvat yleensä alle 10 sekunnissa.",
+      "hint": "SCP-algoritmi on hyvin nopea.",
+      "true": "Totta",
+      "false": "Väärin",
+      "true.fb": "Oikein. Stellar vahvistaa siirrot 3-5 sekunnissa.",
+      "false.fb": "Väärin. Stellar on itse asiassa erittäin nopea."
+    },
+    "q3": {
+      "question": "Mikä on XLM?",
+      "hint": "XLM on Stellarin natiivi varat.",
+      "a": "Stellar-verkon natiivivaluutta, jota käytetään maksuihin.",
+      "b": "Stablecoin, jonka arvo on aina 1 dollari.",
+      "c": "Pankin liikkeeseen laskema token.",
+      "a.fb": "Oikein. XLM on Stellarin natiivi kolikko.",
+      "b.fb": "Väärin. XLM:n arvo vaihtelee kuten muidenkin kryptovaluuttojen.",
+      "c.fb": "Väärin. XLM on rakennettu suoraan Stellar-protokollaan."
+    },
+    "q4": {
+      "question": "Mihin Stellar on ensisijaisesti suunniteltu?",
+      "hint": "Ajattele rajat ylittäviä maksuja.",
+      "a": "Nopeat, edulliset kansainväliset maksut ja rahansiirrot.",
+      "b": "NFT-kauppa ja lohkoketjupelit.",
+      "c": "Hajautettu tietojen tallennus.",
+      "a.fb": "Oikein. Stellar luotiin maiden välisiin maksuihin ja rahansiirtoihin.",
+      "b.fb": "Väärin. Ne ovat enemmän Ethereumin käyttötapauksia.",
+      "c.fb": "Väärin. Tietojen tallennus ei ole Stellarin ydintarkoitus."
+    }
+  },
+  "l3": {
+    "title": "Julkisuus ja yksityisyys",
+    "q1": {
+      "question": "Mitä pseudonyymiys tarkoittaa Stellarissa?",
+      "hint": "Osoitteet näkyvät, mutta nimet eivät.",
+      "a": "Siirrot ovat julkisia, mutta osoitteet eivät ole oikeita nimiä.",
+      "b": "Kaikki siirrot ovat täysin salaisia.",
+      "c": "Vain lähettäjä tietää siirrosta.",
+      "a.fb": "Oikein. Julkiset avaimet ovat näkyvissä, mutta niitä ei ole suoraan linkitetty henkilöllisyyksiin.",
+      "b.fb": "Väärin. Kaikki siirrot ovat julkisesti nähtävissä pääkirjassa.",
+      "c.fb": "Väärin. Pääkirja on julkinen kaikille."
+    },
+    "q2": {
+      "question": "Voiko Stellar-siirtoja etsiä selaimella?",
+      "hint": "Pääkirja on julkinen.",
+      "true": "Totta",
+      "false": "Väärin",
+      "true.fb": "Oikein. Kuka tahansa voi tarkastella siirtoja esimerkiksi stellar.expertissä.",
+      "false.fb": "Väärin. Pääkirja on täysin julkinen."
+    },
+    "q3": {
+      "question": "Mitä näet, kun etsit Stellar-siirron?",
+      "hint": "Julkista tietoa, mutta ei henkilökohtaisia tietoja.",
+      "a": "Julkiset avaimet, summa, aikaleima – mutta ei oikeaa nimeä.",
+      "b": "Lähettäjän koko nimi ja osoite.",
+      "c": "Ei mitään, kaikki on salattua.",
+      "a.fb": "Oikein. Lohkoketju näyttää teknistä tietoa, ei henkilöllisyyksiä.",
+      "b.fb": "Väärin. Oikeita nimiä ei tallenneta lohkoketjuun.",
+      "c.fb": "Väärin. Siirtotiedot ovat julkisesti luettavissa."
+    },
+    "q4": {
+      "question": "Miksi pseudonyymiys ei ole täydellinen yksityisyydensuoja?",
+      "hint": "Osoitteet voidaan joskus yhdistää henkilöihin.",
+      "a": "Koska osoitteet voidaan yhdistää oikeisiin nimiin ulkoisten tietojen (esim. pörssien) kautta.",
+      "b": "Koska Stellar tallentaa kaikki nimet.",
+      "c": "Koska tarvitset aina henkilöllisyystodistuksen.",
+      "a.fb": "Oikein. Lisätietojen avulla osoitteet voidaan joskus jäljittää.",
+      "b.fb": "Väärin. Stellar ei tallenna nimiä.",
+      "c.fb": "Väärin. Stellar itsessään ei vaadi henkilöllisyystodistusta."
+    }
+  },
   "l4": {
     "title": "Avaimet, maksut ja luottolinjat",
     "q1": {
@@ -82,6 +164,90 @@
       "a.fb": "Kyllä. Valitset, mitkä liikkeeseenlaskijat/tokenit luotat.",
       "b.fb": "Ei. Se ei ole chat, vaan oleskelulupa.",
       "c.fb": "Ei. Trustline-suhteet sisältävät omaisuuserien hallussapidon."
+    }
+  },
+  "l5": {
+    "title": "Lähettäminen ja vastaanottaminen",
+    "q1": {
+      "question": "Mikä on trustline Stellarissa?",
+      "hint": "Myönnät sillä luvan.",
+      "a": "Lupa vastaanottaa tietty token liikkeeseenlaskijalta.",
+      "b": "Salasana nopeampia siirtoja varten.",
+      "c": "Maksu kansainvälisistä maksuista.",
+      "a.fb": "Oikein. Ilman trustlinea et voi vastaanottaa tokenia.",
+      "b.fb": "Väärin. Trustlineilla ei ole mitään tekemistä salasanojen kanssa.",
+      "c.fb": "Väärin. Trustline on lupa, ei kustannus."
+    },
+    "q2": {
+      "question": "Jokainen Stellar-siirto vaatii pienen XLM-maksun.",
+      "hint": "Tämä maksu suojaa verkkoa.",
+      "true": "Totta",
+      "false": "Väärin",
+      "true.fb": "Oikein. Minimaalinen maksu (100 strooppia) estää roskapostia.",
+      "false.fb": "Väärin. Jokaisella siirrolla on pieni maksu."
+    },
+    "q3": {
+      "question": "Mitä tapahtuu, kun lähetät XLM:ää jollekulle ilman aktiivista tiliä?",
+      "hint": "Stellar-tili tarvitsee vähimmäissaldon.",
+      "a": "Tili aktivoidaan automaattisesti vähimmäissaldolla.",
+      "b": "Siirto epäonnistuu ja XLM menetetään.",
+      "c": "Stellar ei luo uusia tilejä automaattisesti.",
+      "a.fb": "Oikein. Jos lähetät tarpeeksi XLM:ää, tili aktivoituu.",
+      "b.fb": "Väärin. Stellar voi aktivoida uusia tilejä saapuvien maksujen kautta.",
+      "c.fb": "Väärin. Riittävällä XLM-määrällä tili luodaan automaattisesti."
+    },
+    "q4": {
+      "question": "Mihin memoa käytetään siirrossa?",
+      "hint": "Ajattele pankkisiirtoa viitteellä.",
+      "a": "Lisätietojen, kuten viitenumeron, lähettämiseen.",
+      "b": "Maksun pienentämiseen.",
+      "c": "Siirron salaamiseen.",
+      "a.fb": "Oikein. Pörssit käyttävät memoja esimerkiksi talletusten tunnistamiseen.",
+      "b.fb": "Väärin. Memot eivät vaikuta maksuun.",
+      "c.fb": "Väärin. Memot ovat julkisesti luettavissa."
+    }
+  },
+  "l6": {
+    "title": "Tokenit ja kaupankäynti",
+    "q1": {
+      "question": "Miten tokenin hinta muodostuu Stellar DEX:ssä?",
+      "hint": "Kysyntä ja tarjonta.",
+      "a": "Kysynnän ja tarjonnan kautta – ostajat ja myyjät sopivat hinnoista.",
+      "b": "Stellar asettaa hinnan.",
+      "c": "Liikkeeseenlaskija päättää aina hinnan.",
+      "a.fb": "Oikein. DEX on vapaa markkina ilman keskitettyä hinnoittelua.",
+      "b.fb": "Väärin. Stellar ei puutu hinnaselvitykseen.",
+      "c.fb": "Väärin. Liikkeeseenlaskun jälkeen markkina määrää hinnan."
+    },
+    "q2": {
+      "question": "Mikä on ero DEX:n ja CEX:n välillä?",
+      "hint": "Ajattele hallintaa ja säilytystä.",
+      "a": "DEX: käy kauppaa suoraan lompakostasi. CEX: pörssi säilyttää kolikosi.",
+      "b": "DEX on kalliimpi, CEX on halvempi.",
+      "c": "Ei eroa, molemmat ovat sama asia.",
+      "a.fb": "Oikein. DEX:ssä pidät hallinnan, CEX:ssä et.",
+      "b.fb": "Väärin. DEX on usein halvempi, koska välikättä ei ole.",
+      "c.fb": "Väärin. Ero on perustavanlaatuinen."
+    },
+    "q3": {
+      "question": "Mikä on likviditeettipooli?",
+      "hint": "Monet tarjoavat pääomaa yhdessä.",
+      "a": "Yhteinen varojen pooli, josta DEX-kaupat toteutetaan.",
+      "b": "Pankkitili kryptoprojekteille.",
+      "c": "Tapa ansaita XLM:ää ilman kaupankäyntiä.",
+      "a.fb": "Oikein. Likviditeettipoolit mahdollistavat automatisoidun kaupankäynnin (AMM).",
+      "b.fb": "Väärin. Se ei ole pankkitili vaan älysopimuspohjainen pooli.",
+      "c.fb": "Väärin. Likviditeettipoolit ovat kaupankäyntiä varten, eivät vain passiivista ansaintaa."
+    },
+    "q4": {
+      "question": "Mitä volatiliteetti tarkoittaa kryptovaluutoissa?",
+      "hint": "Hinnat voivat vaihdella voimakkaasti.",
+      "a": "Voimakkaita ja nopeita hintavaihteluja ylös ja alas.",
+      "b": "Vakaa, muuttumaton hinta.",
+      "c": "Tokenin päivittäinen kaupankäyntimaksu.",
+      "a.fb": "Oikein. Kryptomarkkinat tunnetaan korkeasta volatiliteetistaan.",
+      "b.fb": "Väärin. Se olisi päinvastoin – vakaus.",
+      "c.fb": "Väärin. Volatiliteetti kuvaa hintavaihteluja, ei maksuja."
     }
   },
   "l7": {
@@ -127,8 +293,216 @@
       "c.fb": "Ei, kyse on tietotehokkaista todistuksista."
     }
   },
+  "l8": {
+    "title": "Varmennus ja identiteetti",
+    "q1": {
+      "question": "Mitä KYC tarkoittaa?",
+      "hint": "Englanniksi 'Know Your Customer' (Tunne asiakkaasi).",
+      "a": "Know Your Customer – henkilöllisyyden varmentaminen rahoituspalveluntarjoajien toimesta.",
+      "b": "Keep Your Coins – turvallisuusstrategia.",
+      "c": "Key Your Cryptography – salausmenetelmä.",
+      "a.fb": "Oikein. KYC on lain vaatima onramp/offramp-palveluille.",
+      "b.fb": "Väärin. KYC tarkoittaa Know Your Customer.",
+      "c.fb": "Väärin. Se on keksitty merkitys."
+    },
+    "q2": {
+      "question": "Stellar DEX vaatii KYC-varmennuksen.",
+      "hint": "Hajautettu tarkoittaa ei välikättä.",
+      "true": "Totta",
+      "false": "Väärin",
+      "true.fb": "Väärin. Stellar DEX on hajautettu – KYC:tä ei tarvita.",
+      "false.fb": "Oikein. Hajautetut protokollat eivät vaadi KYC:tä."
+    },
+    "q3": {
+      "question": "Miten tunnistat luotettavan tokenin Stellarissa?",
+      "hint": "Nimi yksin ei riitä.",
+      "a": "Varmennetun liikkeeseenlaskijan ja rekisteröidyn domainin (stellar.toml) kautta.",
+      "b": "Transaktioiden määrän perusteella.",
+      "c": "Pelkästään tokenin nimen perusteella.",
+      "a.fb": "Oikein. stellar.toml sisältää varmennettuja tietoja liikkeeseenlaskijasta.",
+      "b.fb": "Väärin. Monet transaktiot voivat myös johtua huijauksista.",
+      "c.fb": "Väärin. Nimet voidaan helposti kopioida."
+    },
+    "q4": {
+      "question": "Miksi onramp-palvelut vaativat KYC:n?",
+      "hint": "Kyse on laeista ja turvallisuudesta.",
+      "a": "Koska ne ovat lain mukaan velvollisia estämään rahanpesua (AML).",
+      "b": "Myydäkseen tietosi mainontaan.",
+      "c": "Korottaakseen maksuja.",
+      "a.fb": "Oikein. KYC/AML-lait koskevat kaikkia fiat-krypto-siirtymiä.",
+      "b.fb": "Väärin. KYC on sääntelyn velvoite, ei liiketoimintamalli.",
+      "c.fb": "Väärin. KYC:llä ei ole mitään tekemistä maksujen kanssa."
+    }
+  },
+  "l9": {
+    "title": "Zero Knowledge",
+    "q1": {
+      "question": "Mikä on nollatietotodistus?",
+      "hint": "Todistaminen paljastamatta salaisuuksia.",
+      "a": "Todistus siitä, että jokin on totta paljastamatta taustalla olevia tietoja.",
+      "b": "Menetelmä kaikkien siirtojen piilottamiseen.",
+      "c": "Tyhjä tili ilman saldoa.",
+      "a.fb": "Oikein. ZK-todistukset mahdollistavat yksityisyyden ja todennettavuuden.",
+      "b.fb": "Väärin. ZK-todistukset ovat todistuksia, eivät piilottelua.",
+      "c.fb": "Väärin. Zero Knowledge viittaa kryptografiaan, ei saldoihin."
+    },
+    "q2": {
+      "question": "ZK-todistuksella voit todistaa olevasi yli 18-vuotias näyttämättä syntymäpäivääsi.",
+      "hint": "Juuri se on ZK:n ydin.",
+      "true": "Totta",
+      "false": "Väärin",
+      "true.fb": "Oikein. Se on klassinen ZK-todistusesimerkki.",
+      "false.fb": "Väärin. ZK-todistukset mahdollistavat juuri tämän."
+    },
+    "q3": {
+      "question": "Mihin ZK-todistukset voisivat olla hyödyllisiä Stellarissa?",
+      "hint": "Yksityisyys rahoitussiirroissa.",
+      "a": "Yksityisyysystävällisiin siirtoihin ilman kaikkien tietojen paljastamista.",
+      "b": "Siirtojen nopeuttamiseen.",
+      "c": "Maksujen poistamiseen.",
+      "a.fb": "Oikein. ZK-todistukset voivat mahdollistaa yksityisyyden lohkoketjusiirroissa.",
+      "b.fb": "Väärin. Nopeus ei ole ZK:n päätarkoitus.",
+      "c.fb": "Väärin. ZK ei vaikuta maksuihin."
+    },
+    "q4": {
+      "question": "Mitä 'Zero' tarkoittaa Zero-Knowledgessa?",
+      "hint": "Mitä ei jaeta?",
+      "a": "Nolla tietoa salaisuudesta välitetään todentajalle.",
+      "b": "Siirrolla on nolla maksuja.",
+      "c": "Tilillä on nolla saldoa.",
+      "a.fb": "Oikein. Todentaja ei opi mitään varsinaisesta salaisuudesta.",
+      "b.fb": "Väärin. Zero Knowledge ei liity maksuihin.",
+      "c.fb": "Väärin. Kyse on kryptografiasta, ei saldoista."
+    }
+  },
+  "l10": {
+    "title": "Käytäntö Stellar Account Managerin kanssa",
+    "q1": {
+      "question": "Miksi sinun pitäisi käyttää ensin testnettiä?",
+      "hint": "Virheet testnetissä eivät aiheuta todellisia seurauksia.",
+      "a": "Koska voit harjoitella testi-XLM:llä riskeeraamatta oikeaa rahaa.",
+      "b": "Koska testnet on nopeampi kuin mainnet.",
+      "c": "Koska testnet on ilmaisempi.",
+      "a.fb": "Oikein. Testnet on turvallinen harjoitteluympäristö testi-XLM:llä.",
+      "b.fb": "Väärin. Nopeus ei ole syy – turvallisuus on.",
+      "c.fb": "Väärin. Testnetillä ei ole todellisia kustannuksia, mutta pääsyy on turvallisuus."
+    },
+    "q2": {
+      "question": "Testnetin testi-XLM:llä on todellista rahallista arvoa.",
+      "hint": "Testnet on hiekkalaatikko.",
+      "true": "Totta",
+      "false": "Väärin",
+      "true.fb": "Väärin. Testi-XLM:llä ei ole todellista arvoa – se on leikkirahaa harjoitteluun.",
+      "false.fb": "Oikein. Testi-XLM on arvoton – juuri siksi se on turvallista harjoitteluun."
+    },
+    "q3": {
+      "question": "Mikä on ensimmäinen askel Stellar-tilin aktivoimiseksi?",
+      "hint": "Tili tarvitsee vähimmäissaldon.",
+      "a": "Lähettää vähintään 1 XLM uudelle tilille.",
+      "b": "Lähettää hakemus Stellarille.",
+      "c": "Lähettää sähköposti tukeen.",
+      "a.fb": "Oikein. Vähimmäissaldo (base reserve) aktivoi tilin.",
+      "b.fb": "Väärin. Stellar on hajautettu – hakemusta ei tarvita.",
+      "c.fb": "Väärin. Tilit aktivoidaan siirroilla, ei tuella."
+    },
+    "q4": {
+      "question": "Mitä sinun pitää tehdä ennen kuin voit vastaanottaa USDC:tä Stellarissa?",
+      "hint": "Lupa tarvitaan.",
+      "a": "Perustaa trustline USDC:lle.",
+      "b": "Ladata erityinen USDC-lompakko.",
+      "c": "Suorittaa KYC Stellarissa.",
+      "a.fb": "Oikein. Ilman trustlinea et voi vastaanottaa ulkoisia varoja.",
+      "b.fb": "Väärin. Stellar Account Manager tukee kaikkia varoja trustlinella.",
+      "c.fb": "Väärin. Stellar itsessään ei vaadi KYC:tä."
+    }
+  },
+  "l11": {
+    "title": "Vastuu kryptomaailmassa",
+    "q1": {
+      "question": "Mitä tapahtuu, jos lähetät XLM:ää väärään osoitteeseen?",
+      "hint": "Lohkoketjusiirrot ovat lopullisia.",
+      "a": "Siirto on peruuttamaton – XLM on menetetty.",
+      "b": "Voit peruuttaa siirron 24 tunnin sisällä.",
+      "c": "Stellar palauttaa summan automaattisesti.",
+      "a.fb": "Oikein. Lohkoketjusiirrot ovat lopullisia. Tarkista aina osoite!",
+      "b.fb": "Väärin. Lohkoketjussa ei ole palautuksia.",
+      "c.fb": "Väärin. Stellar ei voi peruuttaa siirtoja."
+    },
+    "q2": {
+      "question": "Stellar voi peruuttaa virheelliset siirrot.",
+      "hint": "Muuttumattomuus – immutability.",
+      "true": "Totta",
+      "false": "Väärin",
+      "true.fb": "Väärin. Lohkoketju on muuttumaton – peruutuksia ei ole mahdollista.",
+      "false.fb": "Oikein. Siirrot ovat lopullisia eikä niitä voi peruuttaa."
+    },
+    "q3": {
+      "question": "Mitä sinun pitäisi tehdä ennen suuren siirron lähettämistä?",
+      "hint": "Testaa ensin pienellä.",
+      "a": "Lähetä ensin pieni testisumma ja tarkista osoite kahdesti.",
+      "b": "Lähetä koko summa heti säästääksesi maksuissa.",
+      "c": "Soita tukeen vahvistusta varten.",
+      "a.fb": "Oikein. Pieni testi suojaa kalliilta virheiltä.",
+      "b.fb": "Väärin. Nopeus on vähemmän tärkeää kuin huolellisuus.",
+      "c.fb": "Väärin. Hajautetuilla verkoilla ei ole keskitettyä tukea."
+    },
+    "q4": {
+      "question": "Mikä on tärkein sääntö salaiselle avaimellesi?",
+      "hint": "Se on kuin avain kassakaappiisi.",
+      "a": "Älä koskaan jaa, säilytä turvallisesti offline.",
+      "b": "Tallenna pilveen helppoa pääsyä varten.",
+      "c": "Jaa ystävien kanssa varmuuskopiona.",
+      "a.fb": "Oikein. Kenellä on salainen avain, hallitsee tiliä kokonaan.",
+      "b.fb": "Väärin. Pilvipalvelu on turvaton salaisille avaimille.",
+      "c.fb": "Väärin. Älä koskaan jaa salaista avaintasi muille."
+    }
+  },
+  "l12": {
+    "title": "Lopetus ja kertaus",
+    "q1": {
+      "question": "Mikä on lohkoketjun pääpiirre?",
+      "hint": "Ajattele kokonaiskuvaa.",
+      "a": "Muuttumaton, hajautettu tietokanta jota monet ylläpitävät yhdessä.",
+      "b": "Yksittäisen yrityksen nopea tietokanta.",
+      "c": "Salattu chat-palvelu.",
+      "a.fb": "Oikein. Hajautettu, muuttumaton, läpinäkyvä – nämä ovat ydinominaisuudet.",
+      "b.fb": "Väärin. Lohkoketjut ovat hajautettuja, eivät keskitettyjä.",
+      "c.fb": "Väärin. Lohkoketjut ovat tietokantoja, eivät viestintätyökaluja."
+    },
+    "q2": {
+      "question": "Mitkä kolme asiaa tekevät Stellarista erityisen?",
+      "hint": "Nopeus, kustannus, tarkoitus.",
+      "a": "Nopea (3-5 sek), edullinen (senttien murto-osia), maksuihin optimoitu.",
+      "b": "Hidas, kallis, NFT:ille optimoitu.",
+      "c": "Louhintapohjainen, hajautettu, anonyymi.",
+      "a.fb": "Oikein. Nämä ovat Stellarin kolme ydinetua.",
+      "b.fb": "Väärin. Stellar tunnetaan nopeudesta ja alhaisista kustannuksista.",
+      "c.fb": "Väärin. Stellar ei käytä louhintaa ja on pseudonyymi, ei anonyymi."
+    },
+    "q3": {
+      "question": "Mitä sinun EI KOSKAAN pitäisi tehdä?",
+      "hint": "Kryptoturvallisuuden kultainen sääntö.",
+      "a": "Jakaa salainen avain tai syöttää se tuntemattomille sivustoille.",
+      "b": "Käyttää testnettiä.",
+      "c": "Perustaa trustlineja.",
+      "a.fb": "Oikein. Salainen avain on pyhin – älä koskaan jaa sitä!",
+      "b.fb": "Väärin. Testnetin käyttö on jopa suositeltua harjoitteluun.",
+      "c.fb": "Väärin. Trustlinet ovat normaaleja ja tarpeellisia toimia."
+    },
+    "q4": {
+      "question": "Olet suorittanut kaikki oppitunnit. Mikä olet nyt?",
+      "hint": "Juhli saavutustasi!",
+      "a": "Stellar-aloittelija, jolla on vankka perustietämys!",
+      "b": "Sertifioitu lohkoketjuinsinööri.",
+      "c": "Valmis eläkkeelle.",
+      "a.fb": "Juuri oikein! Olet hallinnut perusteet. Jatka samaan malliin!",
+      "b.fb": "Ei vielä – mutta olet rakentanut vahvan perustan!",
+      "c.fb": "Ei vielä – mutta olet ottanut suuren askeleen eteenpäin!"
+    }
+  },
   "ui": {
     "startQuiz": "Aloita tietovisa",
+    "indexSubtitle": "Valitse oppitunti",
     "startPractice": "Aloita harjoittelu",
     "practice": "Harjoitus",
     "quiz": "Tietovisa",
@@ -162,7 +536,11 @@
     "openInNewTab.default": "Avaa tietovisa oletuksena uuteen välilehteen",
     "openInNewTab.once": "Avaa uudessa välilehdessä",
     "startInNewTab": "Aloita tietovisa uudessa välilehdessä",
-    "warnOnActiveQuiz": "Näytä varoitus käynnissä olevan visan aikana."
+    "warnOnActiveQuiz": "Näytä varoitus käynnissä olevan visan aikana.",
+    "nextQuiz": "Seuraava tietovisa",
+    "prevQuiz": "Edellinen tietovisa",
+    "allDone": "Kaikki tietovisat suoritettu! Onnittelut!",
+    "lessonProgress": "Oppitunti {{current}} / {{total}}"
   },
   "meta": {
     "estimatedMinutes": "Arvioidut minuutit",

@@ -75,7 +75,8 @@
     "accounts": "Popis računa",
     "network": "Mreža",
     "quiz": "Kviz",
-    "explorer": "Istraživač"
+    "explorer": "Istraživač",
+    "glossary": "Pojmovnik"
   },
   "sections": {
     "general": "Opće postavke",
@@ -83,7 +84,8 @@
     "accounts": "Popis računa",
     "network": "Mreža",
     "quiz": "Postavke kviza",
-    "explorer": "Zvezdani istraživač"
+    "explorer": "Zvezdani istraživač",
+    "glossary": "Održavanje pojmovnika"
   },
   "multisig": {
     "timeoutTitle": "Multisig istek vremena",
@@ -163,5 +165,24 @@
     "validation": {
       "hint": "Najmanje jedan redak je nevažeći (fehlende/duplizierte Adresse)."
     }
+  },
+  "maintenance": {
+    "title": "Održavanje",
+    "exportExcel": "Izvezi kao Excel",
+    "importFile": "Uvezi datoteku",
+    "selectLanguage": "Odaberi jezik",
+    "downloadJson": "Preuzmi kao JSON",
+    "preview": "Pregled",
+    "lessonsFound": "{{count}} lekcija, {{questions}} pitanja pronađeno",
+    "termsFound": "{{count}} pojmova pronađeno",
+    "validationError": "Pogreška pri provjeri",
+    "importSuccess": "Uvoz uspješan",
+    "replaceHint": "Zamijeni datoteku na src/locales/{{lang}}/{{file}} i ponovo pokreni aplikaciju.",
+    "requiredFields": "Nedostaju obavezna polja: {{fields}}",
+    "invalidFile": "Nevažeći format datoteke. Koristite .xlsx ili .csv.",
+    "noData": "Podaci nisu pronađeni.",
+    "row": "Redak {{row}}",
+    "lessonOverview": "Pregled lekcija (Održavanje)",
+    "selectLesson": "Lekcija"
   }
 }

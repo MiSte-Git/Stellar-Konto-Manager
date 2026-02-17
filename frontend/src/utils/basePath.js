@@ -81,7 +81,20 @@ export function isLessonQuizPath(pathname) {
 }
 
 /**
- * isQuizRunPath: Pfad zur neuen Runner-Route (/quiz/:id/run)
+ * isQuizIndexPath: Pfad zum Quiz-Inhaltsverzeichnis (/quiz, ohne ID)
+ */
+export function isQuizIndexPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const p = normalizePath(stripBase(current));
+  return p === '/quiz' || p === 'quiz';
+}
+
+/**
+ * isQuizRunPath: Pfad zur Runner-Route (/quiz/:id/run)
+ * Hinweis: /quiz/:id rendert ebenfalls QuizRunner – diese Route ist aktuell redundant,
+ * wird aber für externe Links und "In neuem Tab öffnen" weiterhin verwendet.
  */
 export function isQuizRunPath(pathname) {
   const current = typeof pathname === 'string'
@@ -93,10 +106,10 @@ export function isQuizRunPath(pathname) {
 }
 
 /**
- * isQuizLandingPath: Pfad zur Quiz-Landing-Route (/quiz/:id)
+ * isQuizDetailPath: Pfad zur Quiz-Detail-Route (/quiz/:id)
  * (ohne /run, /settings oder /achievements)
  */
-export function isQuizLandingPath(pathname) {
+export function isQuizDetailPath(pathname) {
   const current = typeof pathname === 'string'
     ? pathname
     : (typeof window !== 'undefined' ? window.location.pathname : '');

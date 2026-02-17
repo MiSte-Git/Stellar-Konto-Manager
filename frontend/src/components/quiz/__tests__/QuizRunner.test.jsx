@@ -4,6 +4,9 @@ import { I18nextProvider } from 'react-i18next'
 import i18n from '../../../i18n.js'
 import QuizRunner from '../QuizRunner.jsx'
 
+// Mock canvas-confetti (no canvas in JSDOM)
+vi.mock('canvas-confetti', () => ({ default: vi.fn() }))
+
 const sampleQuiz = {
   meta: { estimatedMinutes: 1, passPercent: 0.8, threeStarPercent: 0.9 },
   questions: [
@@ -37,11 +40,14 @@ describe('QuizRunner basic flow', () => {
         <QuizRunner lessonId={1} data={sampleQuiz} />
       </I18nextProvider>
     )
-    const option = screen.getByRole('radio', { name: /./i })
-    fireEvent.click(option)
-    const next = screen.getByRole('button', { name: /weiter|next|finish/i })
+    const options = screen.getAllByRole('radio')
+    fireEvent.click(options[0])
+    // "Weiter/Finish" button now appears inside feedback banner
+    const next = screen.getByRole('button', { name: /weiter|next|finish|beenden/i })
     fireEvent.click(next)
-    expect(screen.getByText(/Dein Ergebnis|your/i)).toBeInTheDocument()
-    expect(screen.getByText(/%/)).toBeInTheDocument()
+    // Result screen shows summary text and retry button
+    expect(screen.getByText(/richtig|correct/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /nochmal|retry/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /übersicht|overview/i })).toBeInTheDocument()
   })
 })

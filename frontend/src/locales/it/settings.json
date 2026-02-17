@@ -75,7 +75,8 @@
     "accounts": "Elenco dei conti",
     "network": "Rete",
     "quiz": "Quiz",
-    "explorer": "Esploratore"
+    "explorer": "Esploratore",
+    "glossary": "Glossario"
   },
   "sections": {
     "general": "Impostazioni generali",
@@ -83,7 +84,8 @@
     "accounts": "Elenco degli account",
     "network": "Rete",
     "quiz": "Impostazioni del quiz",
-    "explorer": "Esploratore Stellare"
+    "explorer": "Esploratore Stellare",
+    "glossary": "Manutenzione del glossario"
   },
   "multisig": {
     "timeoutTitle": "Timeout multisig",
@@ -163,5 +165,24 @@
     "validation": {
       "hint": "Almeno una riga non è valida (fehlende/duplizierte Adresse)."
     }
+  },
+  "maintenance": {
+    "title": "Manutenzione",
+    "exportExcel": "Esporta come Excel",
+    "importFile": "Importa file",
+    "selectLanguage": "Seleziona lingua",
+    "downloadJson": "Scarica come JSON",
+    "preview": "Anteprima",
+    "lessonsFound": "{{count}} lezioni, {{questions}} domande trovate",
+    "termsFound": "{{count}} termini trovati",
+    "validationError": "Errore di validazione",
+    "importSuccess": "Importazione riuscita",
+    "replaceHint": "Sostituisci il file in src/locales/{{lang}}/{{file}} e ridistribuisci l'app.",
+    "requiredFields": "Campi obbligatori mancanti: {{fields}}",
+    "invalidFile": "Formato file non valido. Usa .xlsx o .csv.",
+    "noData": "Nessun dato trovato.",
+    "row": "Riga {{row}}",
+    "lessonOverview": "Panoramica lezioni (Manutenzione)",
+    "selectLesson": "Lezione"
   }
 }

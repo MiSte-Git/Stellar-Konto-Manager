@@ -45,6 +45,88 @@
       "b.fb": "Ne. Prošli unosi nisu izbrisani."
     }
   },
+  "l2": {
+    "title": "Razumijevanje Stellara",
+    "q1": {
+      "question": "Što razlikuje Stellar od Bitcoina?",
+      "hint": "Razmisli o brzini i svrsi.",
+      "a": "Stellar je optimiziran za brza, jeftina plaćanja – bez rudarenja.",
+      "b": "Stellar je valuta za igre bez prave vrijednosti.",
+      "c": "Stellar treba više energije od Bitcoina.",
+      "a.fb": "Točno. Stellar potvrđuje u 3-5 sekundi, Bitcoin često treba minute do sati.",
+      "b.fb": "Netočno. Stellar je ozbiljna platežna mreža.",
+      "c.fb": "Netočno. Stellar ne treba rudarenje i vrlo je energetski učinkovit."
+    },
+    "q2": {
+      "question": "Stellar transakcije obično se završe za manje od 10 sekundi.",
+      "hint": "SCP algoritam je vrlo brz.",
+      "true": "Istina",
+      "false": "Laž",
+      "true.fb": "Točno. Stellar potvrđuje transakcije u 3-5 sekundi.",
+      "false.fb": "Netočno. Stellar je zapravo iznimno brz."
+    },
+    "q3": {
+      "question": "Što je XLM?",
+      "hint": "XLM je nativna imovina Stellara.",
+      "a": "Nativna valuta Stellar mreže koja se koristi za naknade.",
+      "b": "Stablecoin koji uvijek vrijedi 1 dolar.",
+      "c": "Token koji izdaje banka.",
+      "a.fb": "Točno. XLM je nativni novčić Stellara.",
+      "b.fb": "Netočno. Vrijednost XLM-a varira kao i kod drugih kriptovaluta.",
+      "c.fb": "Netočno. XLM je ugrađen izravno u Stellar protokol."
+    },
+    "q4": {
+      "question": "Za što je Stellar prvenstveno namijenjen?",
+      "hint": "Razmisli o prekograničnim plaćanjima.",
+      "a": "Brza, jeftina međunarodna plaćanja i prijenosi novca.",
+      "b": "Trgovina NFT-ovima i blockchain igre.",
+      "c": "Decentralizirana pohrana podataka.",
+      "a.fb": "Točno. Stellar je stvoren za plaćanja i prijenose novca između zemalja.",
+      "b.fb": "Netočno. To su više tipični Ethereum slučajevi korištenja.",
+      "c.fb": "Netočno. Pohrana podataka nije osnovna svrha Stellara."
+    }
+  },
+  "l3": {
+    "title": "Javnost i privatnost",
+    "q1": {
+      "question": "Što znači pseudonimnost na Stellaru?",
+      "hint": "Vide se adrese, ali ne i imena.",
+      "a": "Transakcije su javne, ali adrese nisu pravi imena.",
+      "b": "Sve transakcije su potpuno tajne.",
+      "c": "Samo pošiljatelj zna za transakciju.",
+      "a.fb": "Točno. Javni ključevi su vidljivi, ali nisu izravno povezani s identitetima.",
+      "b.fb": "Netočno. Sve transakcije su javno vidljive u knjizi.",
+      "c.fb": "Netočno. Knjiga je javna za sve."
+    },
+    "q2": {
+      "question": "Mogu li se Stellar transakcije pretražiti u pregledniku?",
+      "hint": "Knjiga je javna.",
+      "true": "Istina",
+      "false": "Laž",
+      "true.fb": "Točno. Svatko može pregledati transakcije na stellar.expert, primjerice.",
+      "false.fb": "Netočno. Knjiga je potpuno javna."
+    },
+    "q3": {
+      "question": "Što se vidi kad se pretražuje Stellar transakcija?",
+      "hint": "Javni podaci, ali bez osobnih informacija.",
+      "a": "Javni ključevi, iznos, vremenska oznaka – ali bez pravog imena.",
+      "b": "Puno ime i adresa pošiljatelja.",
+      "c": "Ništa, sve je šifrirano.",
+      "a.fb": "Točno. Blockchain prikazuje tehničke podatke, ne identitete.",
+      "b.fb": "Netočno. Pravi imena nisu pohranjeni na blockchainu.",
+      "c.fb": "Netočno. Podaci o transakcijama su javno čitljivi."
+    },
+    "q4": {
+      "question": "Zašto pseudonimnost nije potpuna privatnost?",
+      "hint": "Adrese se ponekad mogu povezati s osobama.",
+      "a": "Jer se adrese mogu povezati s pravim imenima putem vanjskih podataka (npr. mjenjačnica).",
+      "b": "Jer Stellar pohranjuje sva imena.",
+      "c": "Jer uvijek trebate osobnu iskaznicu.",
+      "a.fb": "Točno. S dodatnim podacima, adrese se ponekad mogu pratiti.",
+      "b.fb": "Netočno. Stellar ne pohranjuje imena.",
+      "c.fb": "Netočno. Sam Stellar ne zahtijeva osobnu iskaznicu."
+    }
+  },
   "l4": {
     "title": "Ključevi, naknade i linije povjerenja",
     "q1": {
@@ -82,6 +164,90 @@
       "a.fb": "Da. Vi birate izdavatelje/tokene kojima vjerujete.",
       "b.fb": "Ne. To nije chat, već dozvola za boravak.",
       "c.fb": "Ne. Trustlines uključuju držanje imovine."
+    }
+  },
+  "l5": {
+    "title": "Slanje i primanje",
+    "q1": {
+      "question": "Što je trustline na Stellaru?",
+      "hint": "Dajete dozvolu.",
+      "a": "Dozvola za primanje određenog tokena od izdavatelja.",
+      "b": "Lozinka za brže transakcije.",
+      "c": "Naknada za međunarodna plaćanja.",
+      "a.fb": "Točno. Bez trustlinea ne možete primiti token.",
+      "b.fb": "Netočno. Trustlineovi nemaju veze s lozinkama.",
+      "c.fb": "Netočno. Trustline je dozvola, ne trošak."
+    },
+    "q2": {
+      "question": "Svaka Stellar transakcija zahtijeva malu XLM naknadu.",
+      "hint": "Ova naknada štiti mrežu.",
+      "true": "Istina",
+      "false": "Laž",
+      "true.fb": "Točno. Minimalna naknada (100 stroops) sprječava spam.",
+      "false.fb": "Netočno. Svaka transakcija košta malu naknadu."
+    },
+    "q3": {
+      "question": "Što se događa kad pošaljete XLM nekome bez aktivnog računa?",
+      "hint": "Stellar račun treba minimalno stanje.",
+      "a": "Račun se automatski aktivira s minimalnim stanjem.",
+      "b": "Transakcija ne uspijeva i XLM je izgubljen.",
+      "c": "Stellar ne stvara nove račune automatski.",
+      "a.fb": "Točno. Ako pošaljete dovoljno XLM-a, račun se aktivira.",
+      "b.fb": "Netočno. Stellar može aktivirati nove račune putem dolaznih uplata.",
+      "c.fb": "Netočno. S dovoljno XLM-a račun se automatski stvara."
+    },
+    "q4": {
+      "question": "Za što se koristi memo u transakciji?",
+      "hint": "Pomislite na bankovni prijenos s referencom.",
+      "a": "Za slanje dodatnih informacija poput referentnog broja.",
+      "b": "Za smanjenje naknade.",
+      "c": "Za šifriranje transakcije.",
+      "a.fb": "Točno. Memoe koriste npr. mjenjačnice za identifikaciju uplata.",
+      "b.fb": "Netočno. Memoi ne utječu na naknadu.",
+      "c.fb": "Netočno. Memoi su javno čitljivi."
+    }
+  },
+  "l6": {
+    "title": "Tokeni i trgovanje",
+    "q1": {
+      "question": "Kako se određuje cijena tokena na Stellar DEX-u?",
+      "hint": "Ponuda i potražnja.",
+      "a": "Ponudom i potražnjom – kupci i prodavači se dogovaraju o cijenama.",
+      "b": "Stellar određuje cijenu.",
+      "c": "Izdavatelj uvijek određuje cijenu.",
+      "a.fb": "Točno. DEX je slobodno tržište bez centraliziranog određivanja cijena.",
+      "b.fb": "Netočno. Stellar ne intervenira u formiranje cijena.",
+      "c.fb": "Netočno. Nakon izdavanja, tržište određuje cijenu."
+    },
+    "q2": {
+      "question": "Koja je razlika između DEX-a i CEX-a?",
+      "hint": "Pomislite na kontrolu i skrbništvo.",
+      "a": "DEX: trgujete izravno iz novčanika. CEX: burza čuva vaše kovanice.",
+      "b": "DEX je skuplji, CEX je jeftiniji.",
+      "c": "Nema razlike, oboje je isto.",
+      "a.fb": "Točno. S DEX-om zadržavate kontrolu, s CEX-om ne.",
+      "b.fb": "Netočno. DEX je često jeftiniji jer nema posrednika.",
+      "c.fb": "Netočno. Razlika je temeljna."
+    },
+    "q3": {
+      "question": "Što je bazen likvidnosti?",
+      "hint": "Mnogi zajedno pružaju kapital.",
+      "a": "Zajednički fond imovine iz kojeg se izvršavaju DEX trgovine.",
+      "b": "Bankovni račun za kripto projekte.",
+      "c": "Metoda za zaradu XLM-a bez trgovanja.",
+      "a.fb": "Točno. Bazeni likvidnosti omogućuju automatizirano trgovanje (AMM).",
+      "b.fb": "Netočno. To nije bankovni račun nego bazen temeljen na pametnim ugovorima.",
+      "c.fb": "Netočno. Bazeni likvidnosti su za trgovanje, ne samo za pasivnu zaradu."
+    },
+    "q4": {
+      "question": "Što znači volatilnost kod kriptovaluta?",
+      "hint": "Cijene mogu snažno varirati.",
+      "a": "Snažne i brze promjene cijena prema gore i dolje.",
+      "b": "Stabilna, nepromjenjiva cijena.",
+      "c": "Dnevna naknada za trgovanje tokenom.",
+      "a.fb": "Točno. Kripto tržišta su poznata po visokoj volatilnosti.",
+      "b.fb": "Netočno. To bi bilo suprotno – stabilnost.",
+      "c.fb": "Netočno. Volatilnost opisuje promjene cijena, ne naknade."
     }
   },
   "l7": {
@@ -127,8 +293,216 @@
       "c.fb": "Ne, radi se o dokazima koji efikasno koriste podatke."
     }
   },
+  "l8": {
+    "title": "Verifikacija i identitet",
+    "q1": {
+      "question": "Što znači KYC?",
+      "hint": "Na engleskom: 'Know Your Customer' (Upoznaj svog klijenta).",
+      "a": "Know Your Customer – provjera identiteta od strane financijskih pružatelja usluga.",
+      "b": "Keep Your Coins – sigurnosna strategija.",
+      "c": "Key Your Cryptography – metoda šifriranja.",
+      "a.fb": "Točno. KYC je zakonski obvezan za onramp/offramp usluge.",
+      "b.fb": "Netočno. KYC znači Know Your Customer.",
+      "c.fb": "Netočno. To je izmišljeno značenje."
+    },
+    "q2": {
+      "question": "Stellar DEX zahtijeva KYC provjeru.",
+      "hint": "Decentralizirano znači bez posrednika.",
+      "true": "Istina",
+      "false": "Laž",
+      "true.fb": "Netočno. Stellar DEX je decentraliziran – KYC nije potreban.",
+      "false.fb": "Točno. Decentralizirani protokoli ne zahtijevaju KYC."
+    },
+    "q3": {
+      "question": "Kako prepoznajete pouzdan token na Stellaru?",
+      "hint": "Sam naziv nije dovoljan.",
+      "a": "Putem verificiranog izdavatelja i registrirane domene (stellar.toml).",
+      "b": "Putem broja transakcija.",
+      "c": "Samo putem naziva tokena.",
+      "a.fb": "Točno. stellar.toml sadrži verificirane informacije o izdavatelju.",
+      "b.fb": "Netočno. Mnoge transakcije mogu potjecati i od prijevara.",
+      "c.fb": "Netočno. Nazivi se lako mogu kopirati."
+    },
+    "q4": {
+      "question": "Zašto onramp usluge zahtijevaju KYC?",
+      "hint": "Radi se o zakonima i sigurnosti.",
+      "a": "Jer su zakonski obvezni spriječiti pranje novca (AML).",
+      "b": "Kako bi prodali vaše podatke za oglašavanje.",
+      "c": "Kako bi povećali naknade.",
+      "a.fb": "Točno. KYC/AML zakoni vrijede za sve fiat-kripto prijelaze.",
+      "b.fb": "Netočno. KYC je regulatorna obveza, a ne poslovni model.",
+      "c.fb": "Netočno. KYC nema veze s naknadama."
+    }
+  },
+  "l9": {
+    "title": "Zero Knowledge",
+    "q1": {
+      "question": "Što je dokaz nultog znanja?",
+      "hint": "Dokazivanje bez otkrivanja tajni.",
+      "a": "Dokaz da je nešto istinito bez otkrivanja temeljnih informacija.",
+      "b": "Metoda za skrivanje svih transakcija.",
+      "c": "Prazan račun bez salda.",
+      "a.fb": "Točno. ZK dokazi omogućuju privatnost uz provjerljivost.",
+      "b.fb": "Netočno. ZK dokazi su dokazi, ne skrivanje.",
+      "c.fb": "Netočno. Zero Knowledge se odnosi na kriptografiju, ne na saldo."
+    },
+    "q2": {
+      "question": "Sa ZK dokazom možete dokazati da imate više od 18 godina bez pokazivanja datuma rođenja.",
+      "hint": "Upravo to je srž ZK-a.",
+      "true": "Istina",
+      "false": "Laž",
+      "true.fb": "Točno. To je klasičan primjer ZK dokaza.",
+      "false.fb": "Netočno. ZK dokazi omogućuju upravo to."
+    },
+    "q3": {
+      "question": "Za što bi ZK dokazi mogli biti korisni na Stellaru?",
+      "hint": "Privatnost u financijskim transakcijama.",
+      "a": "Za transakcije koje štite privatnost bez otkrivanja svih detalja.",
+      "b": "Za ubrzavanje transakcija.",
+      "c": "Za eliminaciju naknada.",
+      "a.fb": "Točno. ZK dokazi mogu omogućiti privatnost u blockchain transakcijama.",
+      "b.fb": "Netočno. Brzina nije glavna svrha ZK-a.",
+      "c.fb": "Netočno. ZK nema utjecaja na naknade."
+    },
+    "q4": {
+      "question": "Što znači 'Zero' u Zero-Knowledge?",
+      "hint": "Što se ne dijeli?",
+      "a": "Nula znanja o tajni prenosi se provjeritelju.",
+      "b": "Transakcija ima nula naknada.",
+      "c": "Račun ima nula salda.",
+      "a.fb": "Točno. Provjeritelj ne saznaje ništa o stvarnoj tajni.",
+      "b.fb": "Netočno. Zero Knowledge nema veze s naknadama.",
+      "c.fb": "Netočno. Radi se o kriptografiji, ne o saldima."
+    }
+  },
+  "l10": {
+    "title": "Praksa sa Stellar Account Managerom",
+    "q1": {
+      "question": "Zašto biste prvo trebali koristiti testnet?",
+      "hint": "Greške na testnetu nemaju stvarne posljedice.",
+      "a": "Jer možete vježbati s testnim XLM-om bez rizika za pravi novac.",
+      "b": "Jer je testnet brži od mainneta.",
+      "c": "Jer je testnet besplatniji.",
+      "a.fb": "Točno. Testnet je sigurno okruženje za vježbanje s testnim XLM-om.",
+      "b.fb": "Netočno. Brzina nije razlog – sigurnost jest.",
+      "c.fb": "Netočno. Testnet nema stvarne troškove, ali glavni razlog je sigurnost."
+    },
+    "q2": {
+      "question": "Testni XLM na testnetu ima stvarnu novčanu vrijednost.",
+      "hint": "Testnet je sandbox.",
+      "true": "Istina",
+      "false": "Laž",
+      "true.fb": "Netočno. Testni XLM nema stvarnu vrijednost – to je igrački novac za vježbu.",
+      "false.fb": "Točno. Testni XLM je bezvrijedan – upravo zato je siguran za vježbu."
+    },
+    "q3": {
+      "question": "Koji je prvi korak za aktivaciju Stellar računa?",
+      "hint": "Račun treba minimalni saldo.",
+      "a": "Poslati najmanje 1 XLM na novi račun.",
+      "b": "Podnijeti zahtjev Stellaru.",
+      "c": "Poslati e-mail podršci.",
+      "a.fb": "Točno. Minimalni saldo (base reserve) aktivira račun.",
+      "b.fb": "Netočno. Stellar je decentraliziran – zahtjev nije potreban.",
+      "c.fb": "Netočno. Računi se aktiviraju transakcijama, ne podrškom."
+    },
+    "q4": {
+      "question": "Što trebate učiniti prije nego možete primiti USDC na Stellaru?",
+      "hint": "Potrebna je dozvola.",
+      "a": "Postaviti trustline za USDC.",
+      "b": "Preuzeti poseban USDC novčanik.",
+      "c": "Provesti KYC kod Stellara.",
+      "a.fb": "Točno. Bez trustlinea ne možete primiti vanjske tokene.",
+      "b.fb": "Netočno. Stellar Account Manager podržava sve tokene s trustlineom.",
+      "c.fb": "Netočno. Sam Stellar ne zahtijeva KYC."
+    }
+  },
+  "l11": {
+    "title": "Odgovornost u kripto svijetu",
+    "q1": {
+      "question": "Što se događa ako pošaljete XLM na pogrešnu adresu?",
+      "hint": "Blockchain transakcije su konačne.",
+      "a": "Transakcija je nepovratna – XLM je izgubljen.",
+      "b": "Možete poništiti transakciju unutar 24 sata.",
+      "c": "Stellar automatski vraća iznos.",
+      "a.fb": "Točno. Blockchain transakcije su konačne. Uvijek provjerite adresu!",
+      "b.fb": "Netočno. Na blockchainu nema povrata.",
+      "c.fb": "Netočno. Stellar ne može poništiti transakcije."
+    },
+    "q2": {
+      "question": "Stellar može poništiti pogrešne transakcije.",
+      "hint": "Nepromjenjivost – immutability.",
+      "true": "Istina",
+      "false": "Laž",
+      "true.fb": "Netočno. Blockchain je nepromjenjiv – poništenja nisu moguća.",
+      "false.fb": "Točno. Transakcije su konačne i ne mogu se poništiti."
+    },
+    "q3": {
+      "question": "Što biste trebali učiniti prije slanja velike transakcije?",
+      "hint": "Prvo testirajte s malim iznosom.",
+      "a": "Najprije poslati mali testni iznos i dvaput provjeriti adresu.",
+      "b": "Odmah poslati puni iznos da se uštede naknade.",
+      "c": "Nazvati podršku za potvrdu.",
+      "a.fb": "Točno. Mali test štiti od skupih grešaka.",
+      "b.fb": "Netočno. Brzina je manje važna od pažljivosti.",
+      "c.fb": "Netočno. Decentralizirane mreže nemaju centralnu podršku."
+    },
+    "q4": {
+      "question": "Koje je najvažnije pravilo za vaš tajni ključ?",
+      "hint": "To je poput ključa vašeg sefa.",
+      "a": "Nikada ga ne dijelite, čuvajte ga sigurno offline.",
+      "b": "Pohranite ga u oblak za lak pristup.",
+      "c": "Podijelite ga s prijateljima kao sigurnosnu kopiju.",
+      "a.fb": "Točno. Tko ima tajni ključ, potpuno kontrolira račun.",
+      "b.fb": "Netočno. Oblak nije siguran za tajne ključeve.",
+      "c.fb": "Netočno. Nikada ne dijelite tajni ključ s drugima."
+    }
+  },
+  "l12": {
+    "title": "Završetak i ponavljanje",
+    "q1": {
+      "question": "Koja je glavna značajka blockchaina?",
+      "hint": "Razmislite o cjelokupnoj slici.",
+      "a": "Nepromjenjiva, decentralizirana baza podataka koju zajednički održavaju mnogi.",
+      "b": "Brza baza podataka jedne tvrtke.",
+      "c": "Šifrirani chat servis.",
+      "a.fb": "Točno. Decentraliziran, nepromjenjiv, transparentan – to su ključne značajke.",
+      "b.fb": "Netočno. Blockchaini su decentralizirani, ne centralizirani.",
+      "c.fb": "Netočno. Blockchaini su baze podataka, ne komunikacijski alati."
+    },
+    "q2": {
+      "question": "Koje tri stvari čine Stellar posebnim?",
+      "hint": "Brzina, cijena, svrha.",
+      "a": "Brz (3-5 sek), jeftin (djelići centa), optimiziran za plaćanja.",
+      "b": "Spor, skup, optimiziran za NFT-ove.",
+      "c": "Temeljen na rudarenju, decentraliziran, anoniman.",
+      "a.fb": "Točno. To su tri glavne prednosti Stellara.",
+      "b.fb": "Netočno. Stellar je poznat po brzini i niskim troškovima.",
+      "c.fb": "Netočno. Stellar ne koristi rudarenje i pseudoniman je, ne anoniman."
+    },
+    "q3": {
+      "question": "Što NIKADA ne biste trebali činiti?",
+      "hint": "Zlatno pravilo kripto sigurnosti.",
+      "a": "Dijeliti tajni ključ ili ga unositi na nepoznate stranice.",
+      "b": "Koristiti testnet.",
+      "c": "Postavljati trustlineove.",
+      "a.fb": "Točno. Tajni ključ je svet – nikada ga ne dijelite!",
+      "b.fb": "Netočno. Korištenje testneta je čak preporučeno za vježbu.",
+      "c.fb": "Netočno. Trustlineovi su normalne i potrebne radnje."
+    },
+    "q4": {
+      "question": "Završili ste sve lekcije. Što ste sada?",
+      "hint": "Proslavite svoj uspjeh!",
+      "a": "Stellar početnik s čvrstim temeljnim znanjem!",
+      "b": "Certificirani blockchain inženjer.",
+      "c": "Spremni za mirovinu.",
+      "a.fb": "Upravo tako! Savladali ste osnove. Nastavite dalje!",
+      "b.fb": "Još ne – ali postavili ste čvrste temelje!",
+      "c.fb": "Još ne – ali napravili ste veliki korak naprijed!"
+    }
+  },
   "ui": {
     "startQuiz": "Pokreni kviz",
+    "indexSubtitle": "Odaberi lekciju",
     "startPractice": "Počni praksu",
     "practice": "Praksa",
     "quiz": "Kviz",
@@ -162,7 +536,11 @@
     "openInNewTab.default": "Otvorite kviz po zadanom u novoj kartici",
     "openInNewTab.once": "Otvori u novom kartici",
     "startInNewTab": "Pokreni kviz u novoj kartici.",
-    "warnOnActiveQuiz": "Prikaži upozorenje tijekom kviza koji je u tijeku"
+    "warnOnActiveQuiz": "Prikaži upozorenje tijekom kviza koji je u tijeku",
+    "nextQuiz": "Sljedeći kviz",
+    "prevQuiz": "Prethodni kviz",
+    "allDone": "Svi kvizovi završeni! Čestitamo!",
+    "lessonProgress": "Lekcija {{current}} od {{total}}"
   },
   "meta": {
     "estimatedMinutes": "Procijenjene minute",

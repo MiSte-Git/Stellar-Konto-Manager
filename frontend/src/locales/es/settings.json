@@ -75,7 +75,8 @@
     "accounts": "Lista de cuentas",
     "network": "Red neuronal",
     "quiz": "Cuestionario",
-    "explorer": "Explorador"
+    "explorer": "Explorador",
+    "glossary": "Glosario"
   },
   "sections": {
     "general": "Configuración general",
@@ -83,7 +84,8 @@
     "accounts": "Lista de cuentas",
     "network": "Red de computadoras",
     "quiz": "Configuraciones del cuestionario",
-    "explorer": "Explorador Estelar"
+    "explorer": "Explorador Estelar",
+    "glossary": "Mantenimiento del glosario"
   },
   "multisig": {
     "timeoutTitle": "Tiempo de espera de firma múltiple",
@@ -163,5 +165,24 @@
     "validation": {
       "hint": "Al menos una línea es inválida (fehlende/duplizierte Adresse)."
     }
+  },
+  "maintenance": {
+    "title": "Mantenimiento",
+    "exportExcel": "Exportar como Excel",
+    "importFile": "Importar archivo",
+    "selectLanguage": "Seleccionar idioma",
+    "downloadJson": "Descargar como JSON",
+    "preview": "Vista previa",
+    "lessonsFound": "{{count}} lecciones, {{questions}} preguntas encontradas",
+    "termsFound": "{{count}} términos encontrados",
+    "validationError": "Error de validación",
+    "importSuccess": "Importación exitosa",
+    "replaceHint": "Reemplaza el archivo en src/locales/{{lang}}/{{file}} y vuelve a desplegar la app.",
+    "requiredFields": "Faltan campos obligatorios: {{fields}}",
+    "invalidFile": "Formato de archivo inválido. Usa .xlsx o .csv.",
+    "noData": "No se encontraron datos.",
+    "row": "Fila {{row}}",
+    "lessonOverview": "Vista de lecciones (Mantenimiento)",
+    "selectLesson": "Lección"
   }
 }

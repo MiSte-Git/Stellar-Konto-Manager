@@ -75,7 +75,8 @@
     "accounts": "Liste des comptes",
     "network": "Réseau",
     "quiz": "Quiz",
-    "explorer": "Explorateur"
+    "explorer": "Explorateur",
+    "glossary": "Glossaire"
   },
   "sections": {
     "general": "Paramètres généraux",
@@ -83,7 +84,8 @@
     "accounts": "Liste des comptes",
     "network": "Réseau",
     "quiz": "Paramètres du quiz",
-    "explorer": "Stellar Explorer"
+    "explorer": "Stellar Explorer",
+    "glossary": "Maintenance du glossaire"
   },
   "multisig": {
     "timeoutTitle": "Délai d'expiration Multisig",
@@ -163,5 +165,24 @@
     "validation": {
       "hint": "Au moins une ligne est invalide (fehlende/duplizierte Adresse)."
     }
+  },
+  "maintenance": {
+    "title": "Maintenance",
+    "exportExcel": "Exporter en Excel",
+    "importFile": "Importer un fichier",
+    "selectLanguage": "Choisir la langue",
+    "downloadJson": "Télécharger en JSON",
+    "preview": "Aperçu",
+    "lessonsFound": "{{count}} leçons, {{questions}} questions trouvées",
+    "termsFound": "{{count}} termes trouvés",
+    "validationError": "Erreur de validation",
+    "importSuccess": "Importation réussie",
+    "replaceHint": "Remplacez le fichier src/locales/{{lang}}/{{file}} et redéployez l'application.",
+    "requiredFields": "Champs obligatoires manquants : {{fields}}",
+    "invalidFile": "Format de fichier invalide. Utilisez .xlsx ou .csv.",
+    "noData": "Aucune donnée trouvée.",
+    "row": "Ligne {{row}}",
+    "lessonOverview": "Aperçu des leçons (Maintenance)",
+    "selectLesson": "Leçon"
   }
 }

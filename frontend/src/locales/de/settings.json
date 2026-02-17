@@ -75,7 +75,8 @@
     "accounts": "Konten-Liste",
     "network": "Netzwerk",
     "quiz": "Quiz",
-    "explorer": "Explorer"
+    "explorer": "Explorer",
+    "glossary": "Glossar"
   },
   "sections": {
     "general": "Allgemeine Einstellungen",
@@ -83,7 +84,8 @@
     "accounts": "Konten-Liste",
     "network": "Netzwerk",
     "quiz": "Quiz-Einstellungen",
-    "explorer": "Stellar Explorer"
+    "explorer": "Stellar Explorer",
+    "glossary": "Glossar-Pflege"
   },
   "multisig": {
     "timeoutTitle": "Multisig-Timeout",
@@ -163,5 +165,24 @@
     "validation": {
       "hint": "Mindestens eine Zeile ist ungültig (fehlende/duplizierte Adresse)."
     }
+  },
+  "maintenance": {
+    "title": "Wartung / Pflege",
+    "exportExcel": "Als Excel exportieren",
+    "importFile": "Datei importieren",
+    "selectLanguage": "Sprache wählen",
+    "downloadJson": "Als JSON herunterladen",
+    "preview": "Vorschau",
+    "lessonsFound": "{{count}} Lektionen, {{questions}} Fragen gefunden",
+    "termsFound": "{{count}} Begriffe gefunden",
+    "validationError": "Validierungsfehler",
+    "importSuccess": "Import erfolgreich",
+    "replaceHint": "Ersetze die Datei unter src/locales/{{lang}}/{{file}} und deploye die App neu.",
+    "requiredFields": "Pflichtfelder fehlen: {{fields}}",
+    "invalidFile": "Ungültiges Dateiformat. Bitte .xlsx oder .csv verwenden.",
+    "noData": "Keine Daten gefunden.",
+    "row": "Zeile {{row}}",
+    "lessonOverview": "Lektionsübersicht (Wartung)",
+    "selectLesson": "Lektion"
   }
 }
