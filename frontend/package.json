@@ -17,6 +17,7 @@
     "baseline-browser-mapping": "^2.9.15",
     "caniuse-lite": "^1.0.30001764",
     "canvas-confetti": "^1.9.4",
+    "exceljs": "^4.4.0",
     "flag-icons": "^7.2.3",
     "framer-motion": "^12.34.0",
     "i18next": "^25.3.1",
@@ -24,8 +25,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-i18next": "^15.6.0",
-    "react-router-dom": "^7.10.1",
-    "xlsx": "^0.18.5"
+    "react-router-dom": "^7.10.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

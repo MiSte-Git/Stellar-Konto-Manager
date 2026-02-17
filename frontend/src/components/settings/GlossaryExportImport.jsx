@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { glossaryGroups } from '../../utils/glossary.ts';
 
 const LANGS = ['de', 'en', 'es', 'fi', 'fr', 'hr', 'it', 'nl', 'ru'];
@@ -16,6 +16,27 @@ for (const group of glossaryGroups) {
   }
 }
 
+/** Convert an ExcelJS worksheet to an array of objects (like XLSX.utils.sheet_to_json). */
+function sheetToObjects(ws) {
+  const rows = [];
+  const headers = [];
+  ws.eachRow((row, rowNumber) => {
+    const values = row.values; // 1-indexed, values[0] is undefined
+    if (rowNumber === 1) {
+      for (let i = 1; i < values.length; i++) {
+        headers.push(String(values[i] ?? ''));
+      }
+      return;
+    }
+    const obj = {};
+    for (let i = 0; i < headers.length; i++) {
+      obj[headers[i]] = values[i + 1] != null ? String(values[i + 1]) : '';
+    }
+    rows.push(obj);
+  });
+  return rows;
+}
+
 export default function GlossaryExportImport() {
   const { t, i18n } = useTranslation(['settings', 'glossary']);
   const [lang, setLang] = React.useState(i18n.language?.split('-')[0] || 'de');
@@ -25,7 +46,7 @@ export default function GlossaryExportImport() {
   const fileRef = React.useRef(null);
 
   // ── EXPORT ──────────────────────────────────────────────────────────
-  const handleExport = React.useCallback(() => {
+  const handleExport = React.useCallback(async () => {
     try {
       const bundle = i18n.getResourceBundle(lang, 'glossary');
       if (!bundle) { setImportError(t('settings:maintenance.noData')); return; }
@@ -51,14 +72,28 @@ export default function GlossaryExportImport() {
       // Sort by category then slug
       rows.sort((a, b) => (a.Kategorie || '').localeCompare(b.Kategorie || '') || a.Slug.localeCompare(b.Slug));
 
-      const ws = XLSX.utils.json_to_sheet(rows);
-      ws['!cols'] = [
-        { wch: 25 }, { wch: 25 }, { wch: 25 }, { wch: 50 }, { wch: 60 }, { wch: 20 }, { wch: 30 },
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('Glossary');
+      ws.columns = [
+        { header: 'Slug', key: 'Slug', width: 25 },
+        { header: 'Titel', key: 'Titel', width: 25 },
+        { header: 'Original', key: 'Original', width: 25 },
+        { header: 'Kurz', key: 'Kurz', width: 50 },
+        { header: 'Beschreibung', key: 'Beschreibung', width: 60 },
+        { header: 'Kategorie', key: 'Kategorie', width: 20 },
+        { header: 'Verwandte_Begriffe', key: 'Verwandte_Begriffe', width: 30 },
       ];
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Glossary');
+      ws.addRows(rows);
+
+      const buffer = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
       const today = new Date().toISOString().split('T')[0];
-      XLSX.writeFile(wb, `glossary_${lang}_${today}.xlsx`);
+      a.download = `glossary_${lang}_${today}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
       setImportError('');
     } catch (err) {
       setImportError(String(err?.message || err));
@@ -79,13 +114,18 @@ export default function GlossaryExportImport() {
       return;
     }
 
+    // Reset so the same file can be re-selected
+    e.target.value = '';
+
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = async (ev) => {
       try {
-        const data = new Uint8Array(ev.target.result);
-        const wb = XLSX.read(data, { type: 'array' });
-        const ws = wb.Sheets[wb.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+        const wb = new ExcelJS.Workbook();
+        await wb.xlsx.load(ev.target.result);
+        const ws = wb.worksheets[0];
+        if (!ws) { setImportError(t('settings:maintenance.noData')); return; }
+
+        const rows = sheetToObjects(ws);
 
         if (!rows || rows.length === 0) {
           setImportError(t('settings:maintenance.noData'));

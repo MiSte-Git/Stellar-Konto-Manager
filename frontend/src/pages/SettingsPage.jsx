@@ -4,105 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import SettingsPanel from '../components/SettingsPanel';
 import QuizSettings from '../components/quiz/QuizSettings.jsx';
-import QuizLanding from '../components/quiz/QuizLanding.jsx';
 import QuizExportImport from '../components/settings/QuizExportImport.jsx';
 import GlossaryExportImport from '../components/settings/GlossaryExportImport.jsx';
 import { useSettings } from '../utils/useSettings.js';
-import { buildPath, quizRunPath, quizSettingsPath, quizAchievementsPath } from '../utils/basePath.js';
-import { QUIZ_ORDER } from '../utils/quiz/quizNavigation.js';
-
-/**
- * Zeigt die Einstellungsseite mit Überschrift und einem "Zurück zum Menü"-Button.
- * @param {string} publicKey - Der aktuell geladene Public Key
- * @param {function} onBack - Callback zum Zurückkehren ins Hauptmenü
- */
-function QuizLandingMaintenance({ t }) {
-  const [open, setOpen] = React.useState(false);
-  const [selectedLesson, setSelectedLesson] = React.useState(QUIZ_ORDER[0]);
-  const [data, setData] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
-
-  React.useEffect(() => {
-    if (!open) return;
-    let alive = true;
-    setLoading(true);
-    const id = String(selectedLesson);
-    const loader = id === 'multisig'
-      ? () => import('../data/quiz/quizMultisig.json')
-      : () => import(`../data/learn/quiz/lesson${id}.json`);
-    loader().then((mod) => {
-      if (!alive) return;
-      setData(mod.default || mod);
-      setLoading(false);
-    }).catch(() => {
-      if (!alive) return;
-      setData(null);
-      setLoading(false);
-    });
-    return () => { alive = false; };
-  }, [selectedLesson, open]);
-
-  return (
-    <div className="border rounded-lg">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left font-semibold text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
-      >
-        <span>{t('settings:maintenance.lessonOverview', 'Lektionsübersicht (Wartung)')}</span>
-        <span className={`transition-transform ${open ? 'rotate-180' : ''}`}>&#9660;</span>
-      </button>
-      {open && (
-        <div className="px-4 pb-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <label htmlFor="lesson-select" className="text-sm font-medium">{t('settings:maintenance.selectLesson', 'Lektion')}</label>
-            <select
-              id="lesson-select"
-              value={selectedLesson}
-              onChange={(e) => setSelectedLesson(e.target.value)}
-              className="border rounded px-2 py-1 text-sm"
-            >
-              {QUIZ_ORDER.map((id) => (
-                <option key={id} value={id}>
-                  {id === 'multisig' ? 'Multisig' : `Lektion ${id}`}
-                </option>
-              ))}
-            </select>
-          </div>
-          {loading && <div className="text-sm text-gray-500">{t('common:common.loading', 'Loading…')}</div>}
-          {!loading && data && (
-            <QuizLanding
-              data={data}
-              lessonId={selectedLesson}
-              embedded
-              onStartQuiz={() => {
-                try {
-                  const url = quizRunPath(selectedLesson);
-                  window.open(url, '_blank', 'noopener');
-                } catch { /* noop */ }
-              }}
-              onOpenSettings={() => {
-                try {
-                  const url = quizSettingsPath(selectedLesson);
-                  window.history.pushState({}, '', url);
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                } catch { /* noop */ }
-              }}
-              onOpenAchievements={() => {
-                try {
-                  const url = quizAchievementsPath(selectedLesson);
-                  window.history.pushState({}, '', url);
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                } catch { /* noop */ }
-              }}
-              showPractice={false}
-            />
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
+import { buildPath } from '../utils/basePath.js';
 
 export default function SettingsPage({ publicKey, onBack: _onBack }) {
   const { t } = useTranslation(['settings', 'quiz']);
@@ -469,7 +374,6 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">{t('settings:sections.quiz', t('settings:tabs.quiz'))}</h2>
           <QuizSettings showTitle={false} />
-          <QuizLandingMaintenance t={t} />
           <QuizExportImport />
         </section>
       )}

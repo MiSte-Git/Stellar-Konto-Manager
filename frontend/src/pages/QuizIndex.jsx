@@ -13,13 +13,54 @@ function getLessonForQuizId(quizId) {
   return lessons.find(l => l.id === `lesson${quizId}`) || null;
 }
 
+// Chapter → lesson IDs (must mirror CHAPTERS in learnProgress.js)
+const BADGE_CHAPTERS = {
+  grundlagen: ['lesson1', 'lesson2', 'lesson3'],
+  sicherheit: ['lesson7', 'lesson8', 'lesson9'],
+  praxis: ['lesson10'],
+};
+const ALL_LESSON_IDS = Array.from({ length: 13 }, (_, i) => `lesson${i + 1}`);
+
+/** Count how many lessons in a list have ≥ 2 stars. */
+function countQualified(lessonIds, progress) {
+  return lessonIds.filter(id => {
+    const p = progress[id];
+    return p && Number(p.stars || 0) >= 2;
+  }).length;
+}
+
 export default function QuizIndex() {
-  const { t } = useTranslation(['quiz', 'quiz.ui', 'navigation', 'learn', 'learnMultisig']);
+  const { t } = useTranslation(['quiz', 'quiz.ui', 'navigation', 'learn', 'learnMultisig', 'quizMultisig']);
 
   const [progress, setProgress] = React.useState(() => getFlattenedProgress());
   const [badges, setBadges] = React.useState(() => computeBadges());
   const [expandedLesson, setExpandedLesson] = React.useState(null);
+  const [quizMeta, setQuizMeta] = React.useState({});
   const [infoMsg, setInfoMsg] = React.useState('');
+
+  // Lazy-load quiz data (question count + meta) when a lesson is expanded
+  React.useEffect(() => {
+    if (!expandedLesson || quizMeta[expandedLesson]) return;
+    let alive = true;
+    const id = String(expandedLesson);
+    const loader = id === 'multisig'
+      ? () => import('../data/quiz/quizMultisig.json')
+      : () => import(`../data/learn/quiz/lesson${id}.json`);
+    loader().then((mod) => {
+      if (!alive) return;
+      const data = mod.default || mod;
+      setQuizMeta((prev) => ({
+        ...prev,
+        [id]: {
+          questions: Array.isArray(data.questions) ? data.questions.length : 0,
+          estimatedMinutes: data.meta?.estimatedMinutes || 0,
+          passPercent: data.meta?.passPercent || 0,
+          threeStarPercent: data.meta?.threeStarPercent || 0,
+        },
+      }));
+    }).catch(() => { /* noop */ });
+    return () => { alive = false; };
+  }, [expandedLesson, quizMeta]);
 
   React.useEffect(() => {
     if (!infoMsg) return;
@@ -72,20 +113,51 @@ export default function QuizIndex() {
         {t('quiz.ui:indexSubtitle', 'Wähle eine Lektion')}
       </p>
 
-      {/* Badges */}
-      <div className="flex flex-wrap gap-2 mb-4 text-sm">
-        <span className={`px-2 py-1 rounded ${badges.chapters?.grundlagen ? 'bg-emerald-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100'}`}>
-          {t('learn:badges.chapters.grundlagen', 'Grundlagen')}
-        </span>
-        <span className={`px-2 py-1 rounded ${badges.chapters?.sicherheit ? 'bg-emerald-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100'}`}>
-          {t('learn:badges.chapters.sicherheit', 'Sicherheit')}
-        </span>
-        <span className={`px-2 py-1 rounded ${badges.chapters?.praxis ? 'bg-emerald-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100'}`}>
-          {t('learn:badges.chapters.praxis', 'Praxis')}
-        </span>
-        <span className={`ml-1 px-2 py-1 rounded ${badges.pro ? 'bg-indigo-700 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100'}`}>
-          {t('learn:badges.pro', 'Stellar-Profi')}
-        </span>
+      {/* Badges with progress */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4 text-xs">
+        {[
+          { key: 'grundlagen', label: t('learn:badges.chapters.grundlagen', 'Grundlagen'), done: badges.chapters?.grundlagen },
+          { key: 'sicherheit', label: t('learn:badges.chapters.sicherheit', 'Sicherheit'), done: badges.chapters?.sicherheit },
+          { key: 'praxis', label: t('learn:badges.chapters.praxis', 'Praxis'), done: badges.chapters?.praxis },
+        ].map(({ key, label, done }) => {
+          const ids = BADGE_CHAPTERS[key];
+          const count = countQualified(ids, progress);
+          const total = ids.length;
+          const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+          return (
+            <div key={key} className={`rounded-lg px-2.5 py-2 ${done ? 'bg-emerald-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100'}`}>
+              <div className="font-semibold truncate">{label}</div>
+              <div className="mt-1 flex items-center gap-1.5">
+                <div className={`flex-1 h-1.5 rounded-full overflow-hidden ${done ? 'bg-emerald-400/40' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                  <div
+                    className={`h-full rounded-full transition-all ${done ? 'bg-white' : 'bg-emerald-500'}`}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                <span className="tabular-nums">{count}/{total}</span>
+              </div>
+            </div>
+          );
+        })}
+        {(() => {
+          const proCount = countQualified(ALL_LESSON_IDS, progress);
+          const proTotal = ALL_LESSON_IDS.length;
+          const proPct = proTotal > 0 ? Math.round((proCount / proTotal) * 100) : 0;
+          return (
+            <div className={`rounded-lg px-2.5 py-2 ${badges.pro ? 'bg-indigo-700 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100'}`}>
+              <div className="font-semibold truncate">{t('learn:badges.pro', 'Stellar-Profi')}</div>
+              <div className="mt-1 flex items-center gap-1.5">
+                <div className={`flex-1 h-1.5 rounded-full overflow-hidden ${badges.pro ? 'bg-indigo-400/40' : 'bg-gray-300 dark:bg-gray-600'}`}>
+                  <div
+                    className={`h-full rounded-full transition-all ${badges.pro ? 'bg-white' : 'bg-indigo-500'}`}
+                    style={{ width: `${proPct}%` }}
+                  />
+                </div>
+                <span className="tabular-nums">{proCount}/{proTotal}</span>
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Status message */}
@@ -108,7 +180,7 @@ export default function QuizIndex() {
           const isExpanded = expandedLesson === quizId;
 
           // Try i18n title first, fall back to lessons.json
-          const titleKey = quizId === 'multisig' ? 'quiz:multisig.title' : `quiz:l${quizId}.title`;
+          const titleKey = quizId === 'multisig' ? 'quizMultisig:title' : `quiz:l${quizId}.title`;
           const i18nTitle = t(titleKey);
           const title = (i18nTitle && i18nTitle !== titleKey) ? i18nTitle : (lesson?.title || `Lektion ${quizId}`);
 
@@ -154,24 +226,23 @@ export default function QuizIndex() {
                 <button
                   type="button"
                   onClick={() => setExpandedLesson(isExpanded ? null : quizId)}
-                  className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                  aria-label={isExpanded ? 'Details schließen' : 'Details anzeigen'}
+                  className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-lg leading-none bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-800 dark:hover:text-blue-200 transition-colors"
+                  title={isExpanded ? t('quiz.ui:hideDetails', 'Details ausblenden') : t('quiz.ui:showDetails', 'Details anzeigen')}
+                  aria-label={isExpanded ? t('quiz.ui:hideDetails', 'Details ausblenden') : t('quiz.ui:showDetails', 'Details anzeigen')}
+                  aria-expanded={isExpanded}
                 >
-                  <svg viewBox="0 0 20 20" className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
+                  <span aria-hidden>ℹ</span>
                 </button>
 
-                {/* Start quiz arrow */}
+                {/* Start quiz */}
                 <button
                   type="button"
                   onClick={() => navigate(buildPath(`quiz/${quizId}`))}
-                  className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-lg leading-none bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 hover:text-green-800 dark:hover:text-green-200 transition-colors"
+                  title={t('learn:actions.startQuiz', 'Quiz starten')}
                   aria-label={t('learn:actions.startQuiz', 'Quiz starten')}
                 >
-                  <svg viewBox="0 0 20 20" className="w-4 h-4" fill="currentColor">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
+                  <span aria-hidden>▶</span>
                 </button>
               </div>
 
@@ -197,6 +268,26 @@ export default function QuizIndex() {
                       {t(`learn:${lessonKey}.reward`, lesson?.reward || '')}
                     </p>
                   </div>
+
+                  {/* Quiz stats */}
+                  {quizMeta[quizId] && (
+                    <div className="flex flex-wrap gap-2">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-300">
+                        <span aria-hidden>📝</span> {t('quiz:landing.questionsLabel', 'Fragen')}: {quizMeta[quizId].questions}
+                      </span>
+                      {quizMeta[quizId].estimatedMinutes > 0 && (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-300">
+                          <span aria-hidden>⏱</span> ~{quizMeta[quizId].estimatedMinutes} Min
+                        </span>
+                      )}
+                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-300">
+                        <span aria-hidden>🎯</span> {t('quiz:landing.passThresholdLabel', 'Bestehensgrenze')}: {Math.round(quizMeta[quizId].passPercent * 100)}%
+                      </span>
+                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-300">
+                        <span aria-hidden>⭐</span> 3★: {Math.round(quizMeta[quizId].threeStarPercent * 100)}%
+                      </span>
+                    </div>
+                  )}
 
                   {/* MultisigIntro for lesson13 */}
                   {quizId === 'multisig' && <MultisigIntro />}
