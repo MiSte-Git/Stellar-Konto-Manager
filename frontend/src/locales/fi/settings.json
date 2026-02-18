@@ -183,6 +183,11 @@
     "noData": "Tietoja ei löytynyt.",
     "row": "Rivi {{row}}",
     "lessonOverview": "Oppituntien yleiskatsaus (Ylläpito)",
-    "selectLesson": "Oppitunti"
+    "selectLesson": "Oppitunti",
+    "questionsUpdated": "{{count}} kysymystä päivitetty",
+    "questionsAdded": "{{count}} uutta kysymystä lisätty",
+    "rowsSkipped": "{{count}} tyhjää riviä ohitettu",
+    "termsUpdated": "{{count}} termiä päivitetty",
+    "termsAdded": "{{count}} uutta termiä lisätty"
   }
 }

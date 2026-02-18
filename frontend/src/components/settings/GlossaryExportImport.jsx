@@ -16,6 +16,29 @@ for (const group of glossaryGroups) {
   }
 }
 
+/** Check if a row object has all values empty or whitespace-only. */
+function isEmptyRow(row) {
+  return Object.values(row).every(v => !String(v ?? '').trim());
+}
+
+/**
+ * Compare imported rows against the existing i18n bundle.
+ * Returns { updated, added } counts.
+ */
+function classifyImportedRows(rows, bundle) {
+  let updated = 0;
+  let added = 0;
+  for (const row of rows) {
+    const slug = String(row.Slug || '').trim();
+    if (bundle?.[slug]) {
+      updated++;
+    } else {
+      added++;
+    }
+  }
+  return { updated, added };
+}
+
 /** Convert an ExcelJS worksheet to an array of objects (like XLSX.utils.sheet_to_json). */
 function sheetToObjects(ws) {
   const rows = [];
@@ -111,10 +134,11 @@ export default function GlossaryExportImport() {
     const ext = file.name.split('.').pop()?.toLowerCase();
     if (ext !== 'xlsx' && ext !== 'csv') {
       setImportError(t('settings:maintenance.invalidFile'));
+      e.target.value = '';
       return;
     }
 
-    // Reset so the same file can be re-selected
+    // Reset so the same file can be re-selected (also works on error paths below)
     e.target.value = '';
 
     const reader = new FileReader();
@@ -125,24 +149,37 @@ export default function GlossaryExportImport() {
         const ws = wb.worksheets[0];
         if (!ws) { setImportError(t('settings:maintenance.noData')); return; }
 
-        const rows = sheetToObjects(ws);
+        const allRows = sheetToObjects(ws);
 
-        if (!rows || rows.length === 0) {
+        // Separate empty rows from data rows
+        let skippedEmpty = 0;
+        const dataRows = [];
+        for (const row of allRows) {
+          if (isEmptyRow(row)) {
+            skippedEmpty++;
+          } else {
+            dataRows.push(row);
+          }
+        }
+
+        if (dataRows.length === 0) {
           setImportError(t('settings:maintenance.noData'));
           return;
         }
 
-        // Validate
+        // Validate required fields on non-empty rows
         const errors = [];
-        for (let i = 0; i < rows.length; i++) {
-          const row = rows[i];
+        for (let i = 0; i < dataRows.length; i++) {
+          const row = dataRows[i];
           const missing = [];
-          if (!row.Slug) missing.push('Slug');
-          if (!row.Titel) missing.push('Titel');
-          if (!row.Kurz) missing.push('Kurz');
-          if (!row.Beschreibung) missing.push('Beschreibung');
+          if (!String(row.Slug || '').trim()) missing.push('Slug');
+          if (!String(row.Titel || '').trim()) missing.push('Titel');
+          if (!String(row.Kurz || '').trim()) missing.push('Kurz');
+          if (!String(row.Beschreibung || '').trim()) missing.push('Beschreibung');
           if (missing.length > 0) {
-            errors.push(`${t('settings:maintenance.row', { row: i + 2 })}: ${t('settings:maintenance.requiredFields', { fields: missing.join(', ') })}`);
+            const originalIdx = allRows.indexOf(row);
+            const excelRow = originalIdx + 2; // +1 header, +1 for 1-based
+            errors.push(`${t('settings:maintenance.row', { row: excelRow })}: ${t('settings:maintenance.requiredFields', { fields: missing.join(', ') })}`);
           }
         }
 
@@ -151,14 +188,23 @@ export default function GlossaryExportImport() {
           return;
         }
 
-        setImportData(rows);
-        setImportPreview({ terms: rows.length });
+        // Classify: updated vs new terms
+        const bundle = i18n.getResourceBundle(lang, 'glossary') || {};
+        const { updated, added } = classifyImportedRows(dataRows, bundle);
+
+        setImportData(dataRows);
+        setImportPreview({
+          terms: dataRows.length,
+          updated,
+          added,
+          skippedEmpty,
+        });
       } catch (err) {
         setImportError(String(err?.message || err));
       }
     };
     reader.readAsArrayBuffer(file);
-  }, [t]);
+  }, [t, lang, i18n]);
 
   // ── BUILD JSON & DOWNLOAD ──────────────────────────────────────────
   const handleDownloadJson = React.useCallback(() => {
@@ -172,7 +218,14 @@ export default function GlossaryExportImport() {
         if (bundle[key] !== undefined) result[key] = JSON.parse(JSON.stringify(bundle[key]));
       }
 
-      // Build entries from imported data
+      // Preserve existing terms not in the import (only update/add, never delete)
+      for (const [slug, entry] of Object.entries(bundle)) {
+        if (META_KEYS.includes(slug)) continue;
+        if (typeof entry !== 'object' || entry === null) continue;
+        result[slug] = JSON.parse(JSON.stringify(entry));
+      }
+
+      // Apply imported rows (update existing or add new)
       for (const row of importData) {
         const slug = String(row.Slug || '').trim();
         if (!slug) continue;
@@ -262,6 +315,17 @@ export default function GlossaryExportImport() {
         <div className="p-3 rounded bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-300">
           <div className="font-semibold">{t('settings:maintenance.preview')}</div>
           <div>{t('settings:maintenance.termsFound', { count: importPreview.terms })}</div>
+          <ul className="mt-1 text-xs list-disc list-inside space-y-0.5">
+            {importPreview.updated > 0 && (
+              <li>{t('settings:maintenance.termsUpdated', { count: importPreview.updated })}</li>
+            )}
+            {importPreview.added > 0 && (
+              <li>{t('settings:maintenance.termsAdded', { count: importPreview.added })}</li>
+            )}
+            {importPreview.skippedEmpty > 0 && (
+              <li>{t('settings:maintenance.rowsSkipped', { count: importPreview.skippedEmpty })}</li>
+            )}
+          </ul>
           <button
             type="button"
             onClick={handleDownloadJson}

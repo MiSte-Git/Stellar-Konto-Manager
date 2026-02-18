@@ -186,6 +186,8 @@
     "selectLesson": "Lesson",
     "questionsUpdated": "{{count}} questions updated",
     "questionsAdded": "{{count}} new questions added",
-    "rowsSkipped": "{{count}} empty rows skipped"
+    "rowsSkipped": "{{count}} empty rows skipped",
+    "termsUpdated": "{{count}} terms updated",
+    "termsAdded": "{{count}} new terms added"
   }
 }

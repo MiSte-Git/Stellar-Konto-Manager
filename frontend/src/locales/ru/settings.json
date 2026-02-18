@@ -183,6 +183,11 @@
     "noData": "Данные не найдены.",
     "row": "Строка {{row}}",
     "lessonOverview": "Обзор уроков (Обслуживание)",
-    "selectLesson": "Урок"
+    "selectLesson": "Урок",
+    "questionsUpdated": "{{count}} вопросов обновлено",
+    "questionsAdded": "{{count}} новых вопросов добавлено",
+    "rowsSkipped": "{{count}} пустых строк пропущено",
+    "termsUpdated": "{{count}} терминов обновлено",
+    "termsAdded": "{{count}} новых терминов добавлено"
   }
 }

@@ -183,6 +183,11 @@
     "noData": "Nessun dato trovato.",
     "row": "Riga {{row}}",
     "lessonOverview": "Panoramica lezioni (Manutenzione)",
-    "selectLesson": "Lezione"
+    "selectLesson": "Lezione",
+    "questionsUpdated": "{{count}} domande aggiornate",
+    "questionsAdded": "{{count}} nuove domande aggiunte",
+    "rowsSkipped": "{{count}} righe vuote saltate",
+    "termsUpdated": "{{count}} termini aggiornati",
+    "termsAdded": "{{count}} nuovi termini aggiunti"
   }
 }

@@ -96,6 +96,7 @@ export default function QuizExportImport() {
             FrageID: qk,
             Frage: qData.question || '',
             Typ: type,
+            Hinweis: qData.hint || '',
             Antwort_A: '',
             Antwort_B: '',
             Antwort_C: '',
@@ -105,7 +106,6 @@ export default function QuizExportImport() {
             Feedback_B: '',
             Feedback_C: '',
             Feedback_D: '',
-            Hinweis: qData.hint || '',
           };
 
           if (type === 'true-false') {
@@ -150,6 +150,7 @@ export default function QuizExportImport() {
         { header: 'FrageID', key: 'FrageID', width: 8 },
         { header: 'Frage', key: 'Frage', width: 50 },
         { header: 'Typ', key: 'Typ', width: 12 },
+        { header: 'Hinweis', key: 'Hinweis', width: 40 },
         { header: 'Antwort_A', key: 'Antwort_A', width: 40 },
         { header: 'Antwort_B', key: 'Antwort_B', width: 40 },
         { header: 'Antwort_C', key: 'Antwort_C', width: 40 },
@@ -159,7 +160,6 @@ export default function QuizExportImport() {
         { header: 'Feedback_B', key: 'Feedback_B', width: 40 },
         { header: 'Feedback_C', key: 'Feedback_C', width: 40 },
         { header: 'Feedback_D', key: 'Feedback_D', width: 40 },
-        { header: 'Hinweis', key: 'Hinweis', width: 40 },
       ];
       ws.addRows(rows);
 
@@ -227,29 +227,67 @@ export default function QuizExportImport() {
 
         for (let i = 0; i < dataRows.length; i++) {
           const row = dataRows[i];
-          const missing = [];
-          if (!String(row.LektionID || '').trim()) missing.push('LektionID');
-          if (!String(row.FrageID || '').trim()) missing.push('FrageID');
-          if (!String(row.Frage || '').trim()) missing.push('Frage');
-          if (!String(row.Antwort_A || '').trim() && !String(row.Antwort_B || '').trim()) missing.push('Antwort_A/B');
-          if (!String(row.Korrekte_Antwort || '').trim()) missing.push('Korrekte_Antwort');
+          const rowErrors = [];
 
-          // Validate type change: multiple needs at least A+B
-          const typ = String(row.Typ || '').toLowerCase();
-          if (typ === 'multiple' && !String(row.Antwort_A || '').trim()) {
-            missing.push('Antwort_A');
-          }
-          if (typ === 'multiple' && !String(row.Antwort_B || '').trim()) {
-            missing.push('Antwort_B');
+          const lid = String(row.LektionID || '').toUpperCase().trim();
+          const qid = String(row.FrageID || '').toLowerCase().trim();
+          const typ = String(row.Typ || '').toLowerCase().trim();
+          const korr = String(row.Korrekte_Antwort || '').toLowerCase().trim();
+          const context = lid && qid ? ` (Lektion ${lid}, Frage ${qid})` : '';
+
+          if (!lid) rowErrors.push('LektionID fehlt');
+          if (!qid) rowErrors.push('FrageID fehlt');
+          if (!String(row.Frage || '').trim()) rowErrors.push('Frage fehlt');
+
+          if (typ === 'multiple') {
+            // At least 2 answers required
+            const filledAns = ['Antwort_A','Antwort_B','Antwort_C','Antwort_D'].filter(c => String(row[c] || '').trim());
+            if (filledAns.length < 2) {
+              rowErrors.push(`Multiple-Choice benötigt mindestens 2 Antworten, nur ${filledAns.length} gefunden`);
+            }
+            // Each filled answer must have feedback
+            for (const [ansCol, fbCol] of [['Antwort_A','Feedback_A'],['Antwort_B','Feedback_B'],['Antwort_C','Feedback_C'],['Antwort_D','Feedback_D']]) {
+              if (String(row[ansCol] || '').trim() && !String(row[fbCol] || '').trim()) {
+                rowErrors.push(`${fbCol} fehlt (${ansCol} ist ausgefüllt)`);
+              }
+            }
+            // Korrekte_Antwort must be a/b/c/d
+            if (!['a','b','c','d'].includes(korr)) {
+              rowErrors.push(`Korrekte_Antwort muss a, b, c oder d sein (gefunden: "${korr || '—'}")`);
+            }
+          } else if (typ === 'true-false') {
+            // A and B required
+            for (const c of ['Antwort_A','Antwort_B']) {
+              if (!String(row[c] || '').trim()) rowErrors.push(`${c} fehlt bei True-False Frage`);
+            }
+            // C and D must be empty
+            const extraAns = ['Antwort_C','Antwort_D'].filter(c => String(row[c] || '').trim());
+            if (extraAns.length > 0) {
+              rowErrors.push(`True-False darf nur 2 Antworten haben, ${2 + extraAns.length} gefunden`);
+            }
+            // Feedback A and B required
+            for (const fb of ['Feedback_A','Feedback_B']) {
+              if (!String(row[fb] || '').trim()) rowErrors.push(`${fb} fehlt bei True-False Frage`);
+            }
+            // Feedback C and D must be empty
+            const extraFbs = ['Feedback_C','Feedback_D'].filter(c => String(row[c] || '').trim());
+            if (extraFbs.length > 0) {
+              rowErrors.push(`True-False darf nur 2 Feedbacks haben (${extraFbs.join(', ')} ist ausgefüllt)`);
+            }
+            // Korrekte_Antwort must be true/false
+            if (!['true','false'].includes(korr)) {
+              rowErrors.push(`Korrekte_Antwort muss "true" oder "false" sein (gefunden: "${korr || '—'}")`);
+            }
+          } else {
+            rowErrors.push(`Unbekannter Typ "${typ || '—'}" (erwartet: multiple oder true-false)`);
           }
 
-          if (missing.length > 0) {
-            // Find original row number (account for header + skipped empties before this row)
+          if (rowErrors.length > 0) {
             const originalIdx = allRows.indexOf(row);
-            const excelRow = originalIdx + 2; // +1 header, +1 for 1-based
-            errors.push(`${t('settings:maintenance.row', { row: excelRow })}: ${t('settings:maintenance.requiredFields', { fields: [...new Set(missing)].join(', ') })}`);
+            const excelRow = originalIdx + 2;
+            errors.push(`${t('settings:maintenance.row', { row: excelRow })}${context}: ${rowErrors.join('; ')}`);
           }
-          lessonSet.add(String(row.LektionID || '').toUpperCase());
+          lessonSet.add(lid || '?');
         }
 
         if (errors.length > 0) {
@@ -261,10 +299,23 @@ export default function QuizExportImport() {
         const bundle = i18n.getResourceBundle(lang, 'quiz') || {};
         const { updated, added } = classifyImportedRows(dataRows, bundle);
 
+        const multipleCount = dataRows.filter(r => String(r.Typ || '').toLowerCase() === 'multiple').length;
+        const tfCount = dataRows.filter(r => String(r.Typ || '').toLowerCase() === 'true-false').length;
+
+        // Sort lesson IDs by numeric part (l1, l2, ... l12)
+        const lessonIds = [...lessonSet].filter(l => l !== '?').sort((a, b) => {
+          const na = parseInt(a.replace(/[^0-9]/g, '')) || 0;
+          const nb = parseInt(b.replace(/[^0-9]/g, '')) || 0;
+          return na - nb;
+        });
+
         setImportData(dataRows);
         setImportPreview({
           lessons: lessonSet.size,
+          lessonIds,
           questions: dataRows.length,
+          multipleCount,
+          tfCount,
           updated,
           added,
           skippedEmpty,
@@ -377,6 +428,86 @@ export default function QuizExportImport() {
     }
   }, [importData, lang, i18n]);
 
+  // ── BUILD LESSON JSONs & DOWNLOAD ────────────────────────────────────
+  // Generates the structural lesson*.json files (options array, correct flags)
+  // that the quiz renderer uses. Must be placed in frontend/src/data/learn/quiz/.
+  const handleDownloadLessonJsons = React.useCallback(() => {
+    if (!importData) return;
+    try {
+      // Group by lesson
+      const byLesson = {};
+      for (const row of importData) {
+        const lid = String(row.LektionID || '').toLowerCase();
+        if (!byLesson[lid]) byLesson[lid] = { lid, questions: [] };
+        byLesson[lid].questions.push(row);
+      }
+
+      for (const [lid, lesson] of Object.entries(byLesson)) {
+        const lessonNum = lid.replace(/[^0-9]/g, '') || '1';
+        const questions = [];
+
+        for (const row of lesson.questions) {
+          const qk = String(row.FrageID || '').toLowerCase();
+          const typ = String(row.Typ || '').toLowerCase();
+          const korr = String(row.Korrekte_Antwort || '').toLowerCase();
+
+          let options;
+          let qType;
+
+          if (typ === 'true-false') {
+            qType = 'true_false';
+            options = [
+              { id: 'true', textKey: `quiz:${lid}.${qk}.true`, correct: korr === 'true', feedbackKey: `quiz:${lid}.${qk}.true.fb` },
+              { id: 'false', textKey: `quiz:${lid}.${qk}.false`, correct: korr === 'false', feedbackKey: `quiz:${lid}.${qk}.false.fb` },
+            ];
+          } else {
+            qType = 'single';
+            options = [];
+            for (const letter of OPTION_LETTERS) {
+              const colIdx = ['Antwort_A','Antwort_B','Antwort_C','Antwort_D'][OPTION_LETTERS.indexOf(letter)];
+              if (String(row[colIdx] || '').trim()) {
+                options.push({
+                  id: letter,
+                  textKey: `quiz:${lid}.${qk}.${letter}`,
+                  correct: korr === letter,
+                  feedbackKey: `quiz:${lid}.${qk}.${letter}.fb`,
+                });
+              }
+            }
+          }
+
+          questions.push({
+            id: qk,
+            type: qType,
+            questionKey: `quiz:${lid}.${qk}.question`,
+            hintKey: `quiz:${lid}.${qk}.hint`,
+            options,
+          });
+        }
+
+        // Sort questions by id (q1, q2, ...)
+        questions.sort((a, b) => parseInt(a.id.slice(1)) - parseInt(b.id.slice(1)));
+
+        const lessonJson = {
+          lessonId: lid.toUpperCase(),
+          titleKey: `quiz:${lid}.title`,
+          meta: { estimatedMinutes: 3, passPercent: 0.8, threeStarPercent: 0.9 },
+          questions,
+        };
+
+        const blob = new Blob([JSON.stringify(lessonJson, null, 2) + '\n'], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `lesson${lessonNum}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (err) {
+      setImportError(String(err?.message || err));
+    }
+  }, [importData]);
+
   return (
     <div className="space-y-4">
       <hr className="border-gray-300 dark:border-gray-600" />
@@ -434,26 +565,49 @@ export default function QuizExportImport() {
         <div className="p-3 rounded bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-300">
           <div className="font-semibold">{t('settings:maintenance.preview')}</div>
           <div>{t('settings:maintenance.lessonsFound', { count: importPreview.lessons, questions: importPreview.questions })}</div>
-          <ul className="mt-1 text-xs list-disc list-inside space-y-0.5">
+          <ul className="mt-1 text-xs list-none space-y-0.5">
+            {importPreview.multipleCount > 0 && (
+              <li>✅ {importPreview.multipleCount} Multiple-Choice-Fragen – Antworten & Feedbacks vollständig</li>
+            )}
+            {importPreview.tfCount > 0 && (
+              <li>✅ {importPreview.tfCount} True-False-Fragen – Antworten & Feedbacks vollständig</li>
+            )}
             {importPreview.updated > 0 && (
-              <li>{t('settings:maintenance.questionsUpdated', { count: importPreview.updated })}</li>
+              <li>↻ {t('settings:maintenance.questionsUpdated', { count: importPreview.updated })}</li>
             )}
             {importPreview.added > 0 && (
-              <li>{t('settings:maintenance.questionsAdded', { count: importPreview.added })}</li>
+              <li>+ {t('settings:maintenance.questionsAdded', { count: importPreview.added })}</li>
             )}
             {importPreview.skippedEmpty > 0 && (
-              <li>{t('settings:maintenance.rowsSkipped', { count: importPreview.skippedEmpty })}</li>
+              <li>– {t('settings:maintenance.rowsSkipped', { count: importPreview.skippedEmpty })}</li>
             )}
           </ul>
-          <button
-            type="button"
-            onClick={handleDownloadJson}
-            className="mt-2 px-4 py-2 rounded text-sm font-medium bg-green-600 hover:bg-green-700 text-white transition-colors"
-          >
-            {t('settings:maintenance.downloadJson')}
-          </button>
-          <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-            {t('settings:maintenance.replaceHint', { lang, file: 'quiz.json' })}
+          <div className="mt-2 flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={handleDownloadJson}
+              className="px-4 py-2 rounded text-sm font-medium bg-green-600 hover:bg-green-700 text-white transition-colors self-start"
+            >
+              {t('settings:maintenance.downloadJson')} (quiz_{lang}.json)
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadLessonJsons}
+              className="px-4 py-2 rounded text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white transition-colors self-start"
+            >
+              Lesson-Struktur herunterladen ({importPreview.lessons} {importPreview.lessons === 1 ? 'Datei' : 'Dateien'})
+            </button>
+          </div>
+          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 space-y-1">
+            <div>{t('settings:maintenance.replaceHint', { lang, file: 'quiz.json' })}</div>
+            <div>
+              Lesson-JSONs → <code>frontend/src/data/learn/quiz/</code>
+              {importPreview.lessonIds?.length > 0 && (
+                <span className="ml-1">
+                  ({importPreview.lessonIds.map(id => `lesson${id.replace(/[^0-9]/g,'')}.json`).join(', ')})
+                </span>
+              )}
+            </div>
           </div>
         </div>
       )}
