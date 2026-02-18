@@ -1,45 +1,126 @@
 {
   "lessonId": "L11",
   "titleKey": "quiz:l11.title",
-  "meta": { "estimatedMinutes": 3, "passPercent": 0.8, "threeStarPercent": 0.9 },
+  "meta": {
+    "estimatedMinutes": 3,
+    "passPercent": 0.8,
+    "threeStarPercent": 0.9
+  },
   "questions": [
     {
-      "id": "q1", "type": "single",
+      "id": "q1",
+      "type": "single",
       "questionKey": "quiz:l11.q1.question",
       "hintKey": "quiz:l11.q1.hint",
       "options": [
-        { "id": "a", "textKey": "quiz:l11.q1.a", "correct": true, "feedbackKey": "quiz:l11.q1.a.fb" },
-        { "id": "b", "textKey": "quiz:l11.q1.b", "correct": false, "feedbackKey": "quiz:l11.q1.b.fb" },
-        { "id": "c", "textKey": "quiz:l11.q1.c", "correct": false, "feedbackKey": "quiz:l11.q1.c.fb" }
+        {
+          "id": "a",
+          "textKey": "quiz:l11.q1.a",
+          "correct": true,
+          "feedbackKey": "quiz:l11.q1.a.fb"
+        },
+        {
+          "id": "b",
+          "textKey": "quiz:l11.q1.b",
+          "correct": false,
+          "feedbackKey": "quiz:l11.q1.b.fb"
+        },
+        {
+          "id": "c",
+          "textKey": "quiz:l11.q1.c",
+          "correct": false,
+          "feedbackKey": "quiz:l11.q1.c.fb"
+        },
+        {
+          "id": "d",
+          "textKey": "quiz:l11.q1.d",
+          "correct": false,
+          "feedbackKey": "quiz:l11.q1.d.fb"
+        }
       ]
     },
     {
-      "id": "q2", "type": "true_false",
+      "id": "q2",
+      "type": "true_false",
       "questionKey": "quiz:l11.q2.question",
       "hintKey": "quiz:l11.q2.hint",
       "options": [
-        { "id": "true", "textKey": "quiz:l11.q2.true", "correct": false, "feedbackKey": "quiz:l11.q2.true.fb" },
-        { "id": "false", "textKey": "quiz:l11.q2.false", "correct": true, "feedbackKey": "quiz:l11.q2.false.fb" }
+        {
+          "id": "true",
+          "textKey": "quiz:l11.q2.true",
+          "correct": false,
+          "feedbackKey": "quiz:l11.q2.true.fb"
+        },
+        {
+          "id": "false",
+          "textKey": "quiz:l11.q2.false",
+          "correct": true,
+          "feedbackKey": "quiz:l11.q2.false.fb"
+        }
       ]
     },
     {
-      "id": "q3", "type": "single",
+      "id": "q3",
+      "type": "single",
       "questionKey": "quiz:l11.q3.question",
       "hintKey": "quiz:l11.q3.hint",
       "options": [
-        { "id": "a", "textKey": "quiz:l11.q3.a", "correct": true, "feedbackKey": "quiz:l11.q3.a.fb" },
-        { "id": "b", "textKey": "quiz:l11.q3.b", "correct": false, "feedbackKey": "quiz:l11.q3.b.fb" },
-        { "id": "c", "textKey": "quiz:l11.q3.c", "correct": false, "feedbackKey": "quiz:l11.q3.c.fb" }
+        {
+          "id": "a",
+          "textKey": "quiz:l11.q3.a",
+          "correct": true,
+          "feedbackKey": "quiz:l11.q3.a.fb"
+        },
+        {
+          "id": "b",
+          "textKey": "quiz:l11.q3.b",
+          "correct": false,
+          "feedbackKey": "quiz:l11.q3.b.fb"
+        },
+        {
+          "id": "c",
+          "textKey": "quiz:l11.q3.c",
+          "correct": false,
+          "feedbackKey": "quiz:l11.q3.c.fb"
+        },
+        {
+          "id": "d",
+          "textKey": "quiz:l11.q3.d",
+          "correct": false,
+          "feedbackKey": "quiz:l11.q3.d.fb"
+        }
       ]
     },
     {
-      "id": "q4", "type": "single",
+      "id": "q4",
+      "type": "single",
       "questionKey": "quiz:l11.q4.question",
       "hintKey": "quiz:l11.q4.hint",
       "options": [
-        { "id": "a", "textKey": "quiz:l11.q4.a", "correct": true, "feedbackKey": "quiz:l11.q4.a.fb" },
-        { "id": "b", "textKey": "quiz:l11.q4.b", "correct": false, "feedbackKey": "quiz:l11.q4.b.fb" },
-        { "id": "c", "textKey": "quiz:l11.q4.c", "correct": false, "feedbackKey": "quiz:l11.q4.c.fb" }
+        {
+          "id": "a",
+          "textKey": "quiz:l11.q4.a",
+          "correct": true,
+          "feedbackKey": "quiz:l11.q4.a.fb"
+        },
+        {
+          "id": "b",
+          "textKey": "quiz:l11.q4.b",
+          "correct": false,
+          "feedbackKey": "quiz:l11.q4.b.fb"
+        },
+        {
+          "id": "c",
+          "textKey": "quiz:l11.q4.c",
+          "correct": false,
+          "feedbackKey": "quiz:l11.q4.c.fb"
+        },
+        {
+          "id": "d",
+          "textKey": "quiz:l11.q4.d",
+          "correct": false,
+          "feedbackKey": "quiz:l11.q4.d.fb"
+        }
       ]
     }
   ]

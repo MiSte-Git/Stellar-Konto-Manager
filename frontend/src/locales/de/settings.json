@@ -186,6 +186,8 @@
     "selectLesson": "Lektion",
     "questionsUpdated": "{{count}} Fragen aktualisiert",
     "questionsAdded": "{{count}} neue Fragen hinzugefügt",
-    "rowsSkipped": "{{count}} leere Zeilen übersprungen"
+    "rowsSkipped": "{{count}} leere Zeilen übersprungen",
+    "termsUpdated": "{{count}} Begriffe aktualisiert",
+    "termsAdded": "{{count}} neue Begriffe hinzugefügt"
   }
 }

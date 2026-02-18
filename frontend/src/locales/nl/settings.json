@@ -183,6 +183,11 @@
     "noData": "Geen gegevens gevonden.",
     "row": "Rij {{row}}",
     "lessonOverview": "Lessenoverzicht (Onderhoud)",
-    "selectLesson": "Les"
+    "selectLesson": "Les",
+    "questionsUpdated": "{{count}} vragen bijgewerkt",
+    "questionsAdded": "{{count}} nieuwe vragen toegevoegd",
+    "rowsSkipped": "{{count}} lege rijen overgeslagen",
+    "termsUpdated": "{{count}} termen bijgewerkt",
+    "termsAdded": "{{count}} nieuwe termen toegevoegd"
   }
 }

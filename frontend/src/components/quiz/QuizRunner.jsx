@@ -473,7 +473,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
     const passed = score >= passPct;
     const goBackToOverview = () => {
       try {
-        const url = buildPath('');
+        const url = buildPath('quiz');
         window.history.pushState({}, '', url);
         window.dispatchEvent(new PopStateEvent('popstate'));
       } catch { /* noop */ }

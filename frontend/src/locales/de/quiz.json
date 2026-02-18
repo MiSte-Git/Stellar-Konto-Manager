@@ -9,40 +9,48 @@
       "hint": "Stell dir ein öffentliches Notizbuch vor. Viele Seiten (Blöcke) sind verknüpft.",
       "a": "Ein digitales Kassenbuch im Internet. Jeder kann hineinschauen, aber niemand kann heimlich etwas ändern.",
       "a.fb": "Richtig. Die Kette macht alte Seiten schwer änderbar.",
-      "b": "Ein Videospiel mit Münzen und Levels.",
-      "b.fb": "Nicht ganz. Es ist eine geteilte Datenbank, kein Spiel.",
-      "c": "Die geheime Datenbank einer Firma.",
-      "c.fb": "Nein. Viele können sie prüfen, sie ist nicht geheim.",
-      "d": "Eine App, die nur auf deinem Handy läuft.",
-      "d.fb": "Nein. Sie läuft auf vielen Computern (Nodes), nicht nur deinem."
+      "b": "Eine echte Kette aus Metall, die Computer verbindet.",
+      "b.fb": "Nette Idee! 😄 Aber eine Blockchain ist keine Metallkette, sondern ein digitales, unveränderbares Kassenbuch.",
+      "c": "Ein besonders stabiles Fahrradschloss für Banken.",
+      "c.fb": "Klingt sicher 🔒 – aber eine Blockchain ist kein Schloss, sondern eine Datenstruktur für Transaktionen.",
+      "d": "Ein streng geheimer Club von Programmierern.",
+      "d.fb": "Spannend! 😄 Doch eine Blockchain ist kein Geheimbund, sondern ein öffentlich einsehbares Netzwerk."
     },
     "q2": {
       "question": "Wer kann auf Stellar Transaktionen sehen?",
       "hint": "Öffentliches Netzwerk ≠ öffentliche Namen.",
       "a": "Alle. Die Blockchain ist öffentlich einsehbar.",
       "a.fb": "Richtig. Die Daten sind öffentlich, aber Identitäten stehen nicht drin.",
-      "b": "Nur der Sender kann sie sehen.",
-      "b.fb": "Nein. Das Ledger ist öffentlich für Transparenz.",
-      "c": "Nur Banken können sie sehen.",
-      "c.fb": "Nein. Jeder kann Transaktionen nachschlagen."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q3": {
       "question": "Warum sind Blöcke miteinander ‚verkettet‘?",
       "hint": "Alte Seiten sollten schwer zu ändern sein.",
       "a": "Damit man nichts heimlich austauschen kann. Jeder neue Block hängt am vorherigen.",
       "a.fb": "Ja. Jeder Block sichert den vorherigen durch Mathematik (Hashes).",
-      "b": "Damit die App cooler aussieht.",
-      "b.fb": "Nein. Es geht um Sicherheit, nicht um Style.",
-      "c": "Damit alles ewig offline funktioniert.",
-      "c.fb": "Nein. Nodes müssen sich trotzdem synchronisieren."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q4": {
       "question": "Kann man einen Fehler in einer Transaktion einfach löschen?",
       "hint": "Denk an: nur anhängen, nicht löschen.",
       "a": "Nein. Was gesendet wurde, bleibt gespeichert.",
       "a.fb": "Richtig. Das Ledger ist anhänge-only. Wir korrigieren mit neuen Einträgen.",
-      "b": "Ja, man löscht sie einfach aus der Kette.",
-      "b.fb": "Nein. Vergangene Einträge werden nicht gelöscht."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     }
   },
   "l2": {
@@ -52,10 +60,12 @@
       "hint": "Denke an Geschwindigkeit und Zweck.",
       "a": "Stellar ist schneller und günstiger und vor allem für Zahlungen zwischen verschiedenen Währungen gedacht.",
       "a.fb": "Richtig. Stellar bestätigt in 3-5 Sekunden, Bitcoin oft Minuten bis Stunden.",
-      "b": "Stellar ist eine Spielwährung ohne echten Wert.",
-      "b.fb": "Falsch. Stellar ist ein ernsthaftes Zahlungsnetzwerk.",
-      "c": "Stellar braucht mehr Energie als Bitcoin.",
-      "c.fb": "Falsch. Stellar braucht kein Mining und ist sehr energieeffizient."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q2": {
       "question": "Stellar-Transaktionen sind in der Regel in unter 10 Sekunden abgeschlossen.",
@@ -70,20 +80,36 @@
       "hint": "XLM ist das native Asset von Stellar.",
       "a": "Die eigene „Währung“ von Stellar. Man braucht sie für Gebühren.",
       "a.fb": "Richtig. XLM ist der native Coin von Stellar.",
-      "b": "Eine Stablecoin, die immer 1 Dollar wert ist.",
-      "b.fb": "Falsch. XLM schwankt im Wert wie andere Kryptowährungen.",
-      "c": "Ein Token, der von einer Bank ausgegeben wird.",
-      "c.fb": "Falsch. XLM ist direkt ins Stellar-Protokoll eingebaut."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q4": {
       "question": "Wofür ist Stellar hauptsächlich gedacht?",
       "hint": "Denke an grenzüberschreitende Zahlungen.",
       "a": "Für schnelle und günstige Geldüberweisungen weltweit.",
       "a.fb": "Richtig. Stellar wurde für Zahlungen und Geldtransfers zwischen Ländern entwickelt.",
-      "b": "NFT-Handel und Blockchain-Spiele.",
-      "b.fb": "Falsch. Das sind eher Ethereum-Anwendungsfälle.",
-      "c": "Dezentrale Datenspeicherung.",
-      "c.fb": "Falsch. Datenspeicherung ist nicht Stellars Kernzweck."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+    },
+    "q5": {
+      "question": "Was ist die Stellar DEX?",
+      "hint": "Überlege dir: Ist es eine Firma – oder eine Funktion direkt in der Blockchain? Die DEX gehört nicht einer einzelnen Person oder Firma.",
+      "a": "Eine dezentrale Börse direkt auf der Stellar-Blockchain, auf der man Token tauschen kann.",
+      "a.fb": "Richtig. Die Stellar DEX ist direkt in die Blockchain eingebaut. Du kannst dort Token tauschen, ohne dass eine zentrale Firma dein Geld verwaltet. Der Handel läuft automatisch über das Netzwerk.",
+      "b": "Eine Super-App, die automatisch Gewinne verteilt.",
+      "b.fb": "Das wäre schön 😄 – aber eine DEX verteilt keine Gewinne. Sie ist eine Handelsplattform auf der Blockchain.",
+      "c": "Ein digitales Lagerhaus, in dem alle Token gesammelt werden.",
+      "c.fb": "Gute Vorstellung 🏦, aber falsch. Eine DEX sammelt nichts – sie ermöglicht nur den Tausch zwischen Nutzern.",
+      "d": "Ein Wettspiel, bei dem man XLM-Punkte gewinnt.",
+      "d.fb": "Klingt nach Spaß 🎮 – aber eine DEX ist kein Spiel, sondern ein echter Marktplatz für Token."
     }
   },
   "l3": {
@@ -93,10 +119,12 @@
       "hint": "Man sieht Adressen, aber keine Namen.",
       "a": "Man sieht nur Adressen (Buchstaben/Zahlen), nicht direkt Namen.",
       "a.fb": "Richtig. Public Keys sind sichtbar, aber nicht direkt mit Identitäten verknüpft.",
-      "b": "Alle Transaktionen sind vollständig geheim.",
-      "b.fb": "Falsch. Alle Transaktionen sind im Ledger öffentlich einsehbar.",
-      "c": "Nur der Sender kennt die Transaktion.",
-      "c.fb": "Falsch. Das Ledger ist öffentlich für jeden."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q2": {
       "question": "Kann man Stellar-Transaktionen im Explorer nachschlagen?",
@@ -111,20 +139,24 @@
       "hint": "Öffentliche Daten, aber keine persönlichen Infos.",
       "a": "Absender, Empfänger, Betrag, Zeit und Gebühr.",
       "a.fb": "Richtig. Die Blockchain zeigt technische Daten, keine Identitäten.",
-      "b": "Den vollen Namen und die Adresse des Senders.",
-      "b.fb": "Falsch. Echte Namen sind nicht auf der Blockchain gespeichert.",
-      "c": "Gar nichts, alles ist verschlüsselt.",
-      "c.fb": "Falsch. Transaktionsdaten sind öffentlich lesbar."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q4": {
       "question": "Warum ist Pseudonymität kein vollständiger Datenschutz?",
       "hint": "Adressen können manchmal zugeordnet werden.",
       "a": "Weil man Adressen manchmal Personen zuordnen kann.",
       "a.fb": "Richtig. Mit Zusatzdaten können Adressen manchmal zurückverfolgt werden.",
-      "b": "Weil Stellar alle Namen speichert.",
-      "b.fb": "Falsch. Stellar speichert keine Namen.",
-      "c": "Weil man immer einen Ausweis braucht.",
-      "c.fb": "Falsch. Stellar selbst braucht keinen Ausweis."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     }
   },
   "l4": {
@@ -134,8 +166,12 @@
       "hint": "Wie deine Briefkasten-Adresse.",
       "a": "Deine öffentliche Adresse. So wie deine Kontonummer.",
       "a.fb": "Ja. Deinen Public Key darfst du teilen.",
-      "b": "Ein geheimes Passwort, um dein Konto zu steuern.",
-      "b.fb": "Das beschreibt den Secret Key, nicht den Public Key."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q2": {
       "question": "Du solltest deinen Secret Key niemals teilen.",
@@ -149,33 +185,37 @@
       "question": "Warum solltest Du Deinen Secret Key niemals teilen?",
       "hint": "",
       "a": "Er ist wie dein Passwort. Wer ihn hat, kann dein Geld stehlen.",
-      "a.fb": "",
-      "b": "Weil dein Computer sonst anfängt, heimlich Bitcoin zu minen.",
-      "b.fb": "",
-      "c": "Weil sich dein Secret Key bei Vollmond selbstständig macht.",
-      "c.fb": "",
-      "d": "Weil Stellar dir sonst automatisch 1 Million XLM schenkt – aber nur kurz.",
-      "d.fb": ""
+      "a.fb": "Genau richtig. Dein Secret Key ist der vollständige Zugriff auf dein Konto – wie ein Haustürschlüssel und PIN-Code in einem. Wer ihn kennt, kann Transaktionen unterschreiben und dein gesamtes Guthaben versenden. Deshalb niemals teilen und sicher offline aufbewahren.",
+      "b": "Damit dein Wallet schneller lädt.",
+      "b.fb": "Praktisch wäre das 😄 – aber der Secret Key hat nichts mit Geschwindigkeit zu tun. Er gibt vollen Zugriff auf dein Konto.",
+      "c": "Weil er sich sonst automatisch in Public Key verwandelt.",
+      "c.fb": "Klingt magisch ✨ – passiert aber nicht. Der Secret Key bleibt geheim und darf nie geteilt werden.",
+      "d": "Damit du extra Bonus-XLM bekommst.",
+      "d.fb": "Schön wär's 😄 – aber wer deinen Secret Key kennt, kann dein Guthaben stehlen."
     },
     "q4": {
       "question": "Warum verlangt Stellar winzige Gebühren?",
       "hint": "Denk an Spam-Schutz.",
       "a": "Damit niemand das Netzwerk mit Spam überflutet.",
       "a.fb": "Richtig. Kleine Gebühren verhindern Spam und belohnen Validierer.",
-      "b": "Damit eine Firma reich wird.",
-      "b.fb": "Nein. Die Gebühren sind minimal und dienen der Sicherheit.",
-      "c": "Weil Transaktionen immer langsam sind.",
-      "c.fb": "Nein. Stellar ist schnell und günstig."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q5": {
       "question": "Was ist eine Trustline?",
       "hint": "Es ist wie eine Erlaubnis.",
       "a": "Eine Erlaubnis, einen bestimmten Token zu halten.",
       "a.fb": "Ja. Du wählst, welchen Issuern/Tokens du vertraust.",
-      "b": "Eine geheime Chat-Leitung zwischen zwei Konten.",
-      "b.fb": "Nein. Es ist kein Chat, sondern eine Halte-Erlaubnis.",
-      "c": "Ein besonderer Gebührenrabatt beim Handeln.",
-      "c.fb": "Nein. Trustlines betreffen das Halten von Assets."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     }
   },
   "l5": {
@@ -185,10 +225,12 @@
       "hint": "Du erlaubst damit etwas.",
       "a": "Du sagst dem Netzwerk: „Ich vertraue diesem Token und will ihn empfangen.“",
       "a.fb": "Richtig. Ohne Trustline kann man einen Token nicht empfangen.",
-      "b": "Ein Passwort für schnellere Transaktionen.",
-      "b.fb": "Falsch. Trustlines haben nichts mit Passwörtern zu tun.",
-      "c": "Eine Gebühr für internationale Zahlungen.",
-      "c.fb": "Falsch. Eine Trustline ist eine Erlaubnis, kein Kostenfaktor."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q2": {
       "question": "Jede Stellar-Transaktion benötigt eine kleine XLM-Gebühr.",
@@ -203,20 +245,24 @@
       "hint": "Ein Stellar-Konto braucht ein Mindestguthaben.",
       "a": "Das Konto wird automatisch mit dem Mindestguthaben aktiviert.",
       "a.fb": "Richtig. Wenn man genug XLM sendet, wird das Konto aktiviert.",
-      "b": "Die Transaktion schlägt fehl und XLM ist verloren.",
-      "b.fb": "Falsch. Stellar kann neue Konten durch eingehende Zahlungen aktivieren.",
-      "c": "Stellar erstellt kein neues Konto automatisch.",
-      "c.fb": "Falsch. Mit genug XLM wird das Konto automatisch erstellt."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q4": {
       "question": "Wofür wird ein Memo in einer Transaktion verwendet?",
       "hint": "Denke an Überweisungen mit Verwendungszweck.",
       "a": "Für eine Zusatzinfo, z. B. Kundennummer, Rechnungsnummer usw.",
       "a.fb": "Richtig. Memos werden z.B. von Börsen genutzt, um Einzahlungen zuzuordnen.",
-      "b": "Um die Gebühr zu reduzieren.",
-      "b.fb": "Falsch. Memos beeinflussen die Gebühr nicht.",
-      "c": "Um die Transaktion zu verschlüsseln.",
-      "c.fb": "Falsch. Memos sind öffentlich lesbar."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     }
   },
   "l6": {
@@ -226,40 +272,48 @@
       "hint": "Angebot und Nachfrage.",
       "a": "Durch Angebot und Nachfrage – Käufer und Verkäufer einigen sich auf Preise.",
       "a.fb": "Richtig. Der DEX ist ein freier Markt ohne zentrale Preisfestlegung.",
-      "b": "Stellar legt den Preis fest.",
-      "b.fb": "Falsch. Stellar greift nicht in die Preisfindung ein.",
-      "c": "Der Issuer bestimmt immer den Preis.",
-      "c.fb": "Falsch. Nach der Ausgabe bestimmt der Markt den Preis."
+      "b": "Eine Super-App, die automatisch Gewinne verteilt.",
+      "b.fb": "Das wäre schön 😄 – aber eine DEX verteilt keine Gewinne. Sie ist eine Handelsplattform auf der Blockchain.",
+      "c": "Ein digitales Lagerhaus, in dem alle Token gesammelt werden.",
+      "c.fb": "Gute Vorstellung 🏦, aber falsch. Eine DEX sammelt nichts – sie ermöglicht nur den Tausch zwischen Nutzern.",
+      "d": "Ein Wettspiel, bei dem man XLM-Punkte gewinnt.",
+      "d.fb": "Klingt nach Spaß 🎮 – aber eine DEX ist kein Spiel, sondern ein echter Marktplatz für Token."
     },
     "q2": {
       "question": "Was ist der Unterschied zwischen einem DEX und einer CEX?",
       "hint": "Denke an Kontrolle und Verwahrung.",
       "a": "DEX: Handel direkt über die Blockchain. CEX: Eine Firma verwaltet den Handel.",
       "a.fb": "Richtig. Beim DEX behältst du die Kontrolle, bei der CEX nicht.",
-      "b": "DEX ist teurer, CEX ist günstiger.",
-      "b.fb": "Falsch. DEX ist oft günstiger, da kein Mittelsmann.",
-      "c": "Kein Unterschied, beides ist dasselbe.",
-      "c.fb": "Falsch. Der Unterschied ist fundamental."
+      "b": "Eine Super-App, die automatisch Gewinne verteilt.",
+      "b.fb": "Das wäre schön 😄 – aber eine DEX verteilt keine Gewinne. Sie ist eine Handelsplattform auf der Blockchain.",
+      "c": "Ein digitales Lagerhaus, in dem alle Token gesammelt werden.",
+      "c.fb": "Gute Vorstellung 🏦, aber falsch. Eine DEX sammelt nichts – sie ermöglicht nur den Tausch zwischen Nutzern.",
+      "d": "Ein Wettspiel, bei dem man XLM-Punkte gewinnt.",
+      "d.fb": "Klingt nach Spaß 🎮 – aber eine DEX ist kein Spiel, sondern ein echter Marktplatz für Token."
     },
     "q3": {
       "question": "Was ist ein Liquiditätspool?",
       "hint": "Viele stellen gemeinsam Kapital bereit.",
       "a": "Ein gemeinsamer Geldtopf, aus dem automatisch getauscht wird.",
       "a.fb": "Richtig. Liquiditätspools ermöglichen automatisierten Handel (AMM).",
-      "b": "Ein Bankkonto für Krypto-Projekte.",
-      "b.fb": "Falsch. Es ist kein Bankkonto, sondern ein Smart-Contract-basierter Pool.",
-      "c": "Eine Methode, XLM zu verdienen ohne zu handeln.",
-      "c.fb": "Falsch. Liquiditätspools sind zum Handeln, nicht zum passiven Verdienen allein."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q4": {
       "question": "Was bedeutet Volatilität bei Kryptowährungen?",
       "hint": "Preise können stark schwanken.",
       "a": "Starke und schnelle Preisschwankungen nach oben und unten.",
       "a.fb": "Richtig. Krypto-Märkte sind bekannt für ihre hohe Volatilität.",
-      "b": "Ein stabiler, unveränderlicher Preis.",
-      "b.fb": "Falsch. Das wäre das Gegenteil – Stabilität.",
-      "c": "Die tägliche Handelsgebühr eines Tokens.",
-      "c.fb": "Falsch. Volatilität beschreibt Preisschwankungen, nicht Gebühren."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     }
   },
   "l7": {
@@ -269,40 +323,48 @@
       "hint": "Teile deinen Secret Key niemals.",
       "a": "Secret Key nicht eingeben. Seite sofort verlassen. ",
       "a.fb": "Richtig. Das ist Phishing. Nutze nur vertrauenswürdige Wallets.",
-      "b": "Eingeben, aber nur einmal.",
-      "b.fb": "Nein. Einmal reicht, um die Kontrolle zu verlieren.",
-      "c": "Stattdessen einen Screenshot deines Keys teilen.",
-      "c.fb": "Nein. Teile ihn in keiner Form."
+      "b": "Damit dein Wallet schneller lädt.",
+      "b.fb": "Praktisch wäre das 😄 – aber der Secret Key hat nichts mit Geschwindigkeit zu tun. Er gibt vollen Zugriff auf dein Konto.",
+      "c": "Weil er sich sonst automatisch in Public Key verwandelt.",
+      "c.fb": "Klingt magisch ✨ – passiert aber nicht. Der Secret Key bleibt geheim und darf nie geteilt werden.",
+      "d": "Damit du extra Bonus-XLM bekommst.",
+      "d.fb": "Schön wär's 😄 – aber wer deinen Secret Key kennt, kann dein Guthaben stehlen."
     },
     "q2": {
       "question": "Du siehst zwei Tokens namens USDX. Wie findest du den echten?",
       "hint": "Namen kann man kopieren. Issuer und Domains zählen.",
       "a": "Issuer-Adresse prüfen und offizielle Infos vergleichen.",
       "a.fb": "Ja. Asset-Code reicht nicht. Issuer und Domain prüfen.",
-      "b": "Das mit dem hübscheren Logo nehmen.",
-      "b.fb": "Logos kann man fälschen. Issuer/Domain prüfen.",
-      "c": "Münze werfen. Sie sind gleich.",
-      "c.fb": "Nein. Sie können sehr verschieden sein. Immer prüfen."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q3": {
       "question": "Was ist ‚Verifizierung/KYC‘ in einfachen Worten?",
       "hint": "Manche Dienste müssen wissen, wer du bist.",
       "a": "Ein Prozess, bei dem ein Dienst deine Identität prüft.",
       "a.fb": "Richtig. Das hilft gegen Betrug und erfüllt Gesetze.",
-      "b": "Eine Methode, die Blockchain zu beschleunigen.",
-      "b.fb": "Nein. Es geht um Identität, nicht um Geschwindigkeit.",
-      "c": "Seinen Secret Key mit einer Bank teilen.",
-      "c.fb": "Nein. Teile niemals deinen Secret Key. KYC braucht ihn nicht."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q4": {
       "question": "Was ist ein ‚Zero-Knowledge Proof‘ (ZK) in einfachen Worten?",
       "hint": "Beweise, dass du etwas weißt, ohne das Geheimnis zu verraten.",
       "a": "Du beweist etwas, ohne alle Details zu verraten.",
       "a.fb": "Ja. Beispiel: Beweise, dass du über 13 bist, ohne dein Geburtsdatum zu sagen.",
-      "b": "Ein Werkzeug, das alle Transaktionen für immer versteckt.",
-      "b.fb": "Nein. ZK beweist Fakten, löscht aber keine Einträge.",
-      "c": "Eine schnellere Art, Zahlungen zu senden.",
-      "c.fb": "Nein. Es geht um datensparsame Beweise."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     }
   },
   "l8": {
@@ -312,10 +374,12 @@
       "hint": "Englisch für 'Kenne deinen Kunden'.",
       "a": "„Know Your Customer“ – „Kenne deinen Kunden“ – Identitätsprüfung durch Finanzdienstleister.",
       "a.fb": "Richtig. KYC ist gesetzlich vorgeschrieben für Onramp/Offramp-Dienste.",
-      "b": "Keep Your Coins – eine Sicherheitsstrategie.",
-      "b.fb": "Falsch. KYC steht für Know Your Customer.",
-      "c": "Key Your Cryptography – eine Verschlüsselungsmethode.",
-      "c.fb": "Falsch. Das ist eine erfundene Bedeutung."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q2": {
       "question": "Der Stellar DEX benötigt eine KYC-Prüfung.",
@@ -326,36 +390,40 @@
       "false.fb": "Richtig. Dezentrale Protokolle brauchen kein KYC."
     },
     "q3": {
-      "question": "[object Object]",
+      "question": "Warum benötigt der Stellar DEX keine KYC-Prüfung?",
       "hint": "",
-      "a": "Nein. Der DEX selbst nicht. Aber manche Anbieter drumherum schon.",
-      "a.fb": "",
-      "b": "Weil der Stellar DEX alle Nutzer persönlich kennt.",
-      "b.fb": "",
-      "c": "Weil Roboter keine Ausweise besitzen dürfen.",
-      "c.fb": "",
-      "d": "Weil die Blockchain jeden automatisch am Gesicht erkennt.",
-      "d.fb": ""
+      "a": "Weil der Stellar DEX direkt über die Blockchain funktioniert und keine zentrale Firma die Nutzer verwaltet.",
+      "a.fb": "Richtig. Der Stellar DEX ist dezentral. Es gibt keine zentrale Firma, die Konten erstellt oder Identitäten prüft. Du handelst direkt über dein eigenes Wallet auf der Blockchain. KYC wird nur bei bestimmten Diensten verlangt, zum Beispiel bei Fiat-Onramps oder regulierten Anbietern – nicht vom DEX selbst.",
+      "b": "Eine Super-App, die automatisch Gewinne verteilt.",
+      "b.fb": "Das wäre schön 😄 – aber eine DEX verteilt keine Gewinne. Sie ist eine Handelsplattform auf der Blockchain.",
+      "c": "Ein digitales Lagerhaus, in dem alle Token gesammelt werden.",
+      "c.fb": "Gute Vorstellung 🏦, aber falsch. Eine DEX sammelt nichts – sie ermöglicht nur den Tausch zwischen Nutzern.",
+      "d": "Ein Wettspiel, bei dem man XLM-Punkte gewinnt.",
+      "d.fb": "Klingt nach Spaß 🎮 – aber eine DEX ist kein Spiel, sondern ein echter Marktplatz für Token."
     },
     "q4": {
       "question": "Wie erkennst du einen vertrauenswürdigen Token auf Stellar?",
       "hint": "Name allein reicht nicht.",
       "a": "Issuer prüfen, Website prüfen, Bewertungen prüfen. Über die hinterlegte Domain (stellar.toml).",
       "a.fb": "Richtig. stellar.toml enthält verifizierte Informationen über den Issuer.",
-      "b": "Über die Anzahl der Transaktionen.",
-      "b.fb": "Falsch. Viele Transaktionen können auch durch Scams entstehen.",
-      "c": "Über den Token-Namen allein.",
-      "c.fb": "Falsch. Namen können leicht kopiert werden."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q5": {
       "question": "Warum verlangen Onramp-Dienste KYC?",
       "hint": "Es geht um Gesetze und Sicherheit.",
       "a": "Weil sie gesetzlich verpflichtet sind, Geldwäsche zu verhindern (AML).",
       "a.fb": "Richtig. KYC/AML-Gesetze gelten für alle Fiat-Krypto-Übergänge.",
-      "b": "Um deine Daten für Werbung zu verkaufen.",
-      "b.fb": "Falsch. KYC ist eine regulatorische Pflicht, kein Geschäftsmodell.",
-      "c": "Um Gebühren zu erhöhen.",
-      "c.fb": "Falsch. KYC hat nichts mit Gebühren zu tun."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     }
   },
   "l9": {
@@ -365,10 +433,12 @@
       "hint": "Beweise ohne Geheimnisse zu zeigen.",
       "a": "Ein Beweis, dass etwas wahr ist, ohne die zugrundeliegenden Informationen zu verraten.",
       "a.fb": "Richtig. ZK-Proofs ermöglichen Datenschutz bei gleichzeitiger Verifizierbarkeit.",
-      "b": "Eine Methode, alle Transaktionen zu verstecken.",
-      "b.fb": "Falsch. ZK-Proofs sind Beweise, keine Verschleierung.",
-      "c": "Ein leeres Konto ohne Guthaben.",
-      "c.fb": "Falsch. Zero Knowledge bezieht sich auf Kryptographie, nicht auf Guthaben."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q2": {
       "question": "Mit einem ZK-Proof kann man beweisen, über 18 zu sein, ohne das Geburtsdatum zu zeigen.",
@@ -383,20 +453,24 @@
       "hint": "Datenschutz bei Finanztransaktionen.",
       "a": "Für Altersnachweis oder KYC, ohne private Daten preiszugeben.",
       "a.fb": "Richtig. ZK-Proofs können Privatsphäre in Blockchain-Transaktionen ermöglichen.",
-      "b": "Um Transaktionen schneller zu machen.",
-      "b.fb": "Falsch. Geschwindigkeit ist nicht der Hauptzweck von ZK.",
-      "c": "Um Gebühren zu eliminieren.",
-      "c.fb": "Falsch. ZK hat keinen Einfluss auf Gebühren."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q4": {
       "question": "Was bedeutet 'Zero' in Zero-Knowledge?",
       "hint": "Was wird nicht geteilt?",
       "a": "Man gibt „null“ zusätzliches Wissen preis.",
       "a.fb": "Richtig. Der Prüfer erfährt nichts über das eigentliche Geheimnis.",
-      "b": "Die Transaktion hat null Gebühren.",
-      "b.fb": "Falsch. Zero Knowledge hat nichts mit Gebühren zu tun.",
-      "c": "Das Konto hat null Guthaben.",
-      "c.fb": "Falsch. Es geht um Kryptographie, nicht um Guthaben."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     }
   },
   "l10": {
@@ -406,10 +480,12 @@
       "hint": "Fehler im Testnet haben keine echten Folgen.",
       "a": "Zum Üben ohne echtes Geld zu riskieren.",
       "a.fb": "Richtig. Das Testnet ist eine sichere Übungsumgebung mit Test-XLM.",
-      "b": "Weil das Testnet schneller ist als das Mainnet.",
-      "b.fb": "Falsch. Geschwindigkeit ist nicht der Grund – Sicherheit ist es.",
-      "c": "Weil das Testnet kostenloser ist.",
-      "c.fb": "Falsch. Das Testnet hat keine echten Kosten, aber der Hauptgrund ist Sicherheit."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q2": {
       "question": "Test-XLM im Testnet hat echten Geldwert.",
@@ -424,20 +500,24 @@
       "hint": "Ein Konto braucht ein Mindestguthaben.",
       "a": "Mindestens die Mindestmenge XLM einzahlen.",
       "a.fb": "Richtig. Das Mindestguthaben (Base Reserve) aktiviert das Konto.",
-      "b": "Einen Antrag bei Stellar einreichen.",
-      "b.fb": "Falsch. Stellar ist dezentral – kein Antrag nötig.",
-      "c": "Eine E-Mail an den Support schicken.",
-      "c.fb": "Falsch. Konten werden durch Transaktionen aktiviert, nicht durch Support."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q4": {
       "question": "Was muss man tun, bevor man USDC auf Stellar empfangen kann?",
       "hint": "Erlaubnis ist nötig.",
       "a": "Eine Trustline zu USDC einrichten.",
       "a.fb": "Richtig. Ohne Trustline kann man keine Fremd-Assets empfangen.",
-      "b": "Einen speziellen USDC-Wallet herunterladen.",
-      "b.fb": "Falsch. Der Stellar Konto Manager unterstützt alle Assets mit Trustline.",
-      "c": "KYC bei Stellar durchführen.",
-      "c.fb": "Falsch. Stellar selbst benötigt kein KYC."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     }
   },
   "l11": {
@@ -447,10 +527,12 @@
       "hint": "Blockchain-Transaktionen sind endgültig.",
       "a": "Es ist weg. Man kann es nicht zurückholen.",
       "a.fb": "Richtig. Blockchain-Transaktionen sind endgültig. Immer die Adresse prüfen!",
-      "b": "Man kann die Transaktion innerhalb von 24 Stunden rückgängig machen.",
-      "b.fb": "Falsch. Es gibt keine Rückbuchung auf der Blockchain.",
-      "c": "Stellar erstattet den Betrag automatisch.",
-      "c.fb": "Falsch. Stellar kann keine Transaktionen rückgängig machen."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q2": {
       "question": "Stellar kann fehlerhafte Transaktionen rückgängig machen.",
@@ -465,20 +547,24 @@
       "hint": "Erst klein testen.",
       "a": "Adresse prüfen und zuerst einen kleinen Testbetrag senden.",
       "a.fb": "Richtig. Ein kleiner Test schützt vor teuren Fehlern.",
-      "b": "Sofort die volle Summe senden um Gebühren zu sparen.",
-      "b.fb": "Falsch. Geschwindigkeit ist weniger wichtig als Sorgfalt.",
-      "c": "Den Support anrufen zur Bestätigung.",
-      "c.fb": "Falsch. Dezentrale Netzwerke haben keinen zentralen Support."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q4": {
       "question": "Was ist die wichtigste Regel für deinen Secret Key?",
       "hint": "Er ist wie der Schlüssel zu deinem Tresor.",
       "a": "Niemals teilen, sicher offline aufbewahren.",
       "a.fb": "Richtig. Wer den Secret Key hat, kontrolliert das Konto vollständig.",
-      "b": "In der Cloud speichern für einfachen Zugriff.",
-      "b.fb": "Falsch. Cloud-Speicher ist unsicher für Secret Keys.",
-      "c": "Mit Freunden teilen als Backup.",
-      "c.fb": "Falsch. Niemals den Secret Key mit anderen teilen."
+      "b": "Damit dein Wallet schneller lädt.",
+      "b.fb": "Praktisch wäre das 😄 – aber der Secret Key hat nichts mit Geschwindigkeit zu tun. Er gibt vollen Zugriff auf dein Konto.",
+      "c": "Weil er sich sonst automatisch in Public Key verwandelt.",
+      "c.fb": "Klingt magisch ✨ – passiert aber nicht. Der Secret Key bleibt geheim und darf nie geteilt werden.",
+      "d": "Damit du extra Bonus-XLM bekommst.",
+      "d.fb": "Schön wär's 😄 – aber wer deinen Secret Key kennt, kann dein Guthaben stehlen."
     }
   },
   "l12": {
@@ -488,41 +574,93 @@
       "hint": "Denke an das große Ganze.",
       "a": "Unveränderbarkeit und öffentliche Nachprüfbarkeit.",
       "a.fb": "Richtig. Dezentral, unveränderlich, transparent – das sind die Kernmerkmale.",
-      "b": "Eine schnelle Datenbank einer einzelnen Firma.",
-      "b.fb": "Falsch. Blockchains sind dezentral, nicht zentralisiert.",
-      "c": "Ein verschlüsselter Chat-Dienst.",
-      "c.fb": "Falsch. Blockchains sind Datenbanken, keine Kommunikationstools."
+      "b": "Eine echte Kette aus Metall, die Computer verbindet.",
+      "b.fb": "Nette Idee! 😄 Aber eine Blockchain ist keine Metallkette, sondern ein digitales, unveränderbares Kassenbuch.",
+      "c": "Ein besonders stabiles Fahrradschloss für Banken.",
+      "c.fb": "Klingt sicher 🔒 – aber eine Blockchain ist kein Schloss, sondern eine Datenstruktur für Transaktionen.",
+      "d": "Ein streng geheimer Club von Programmierern.",
+      "d.fb": "Spannend! 😄 Doch eine Blockchain ist kein Geheimbund, sondern ein öffentlich einsehbares Netzwerk."
     },
     "q2": {
       "question": "Welche drei Dinge machen Stellar besonders?",
       "hint": "Geschwindigkeit, Kosten, Zweck.",
       "a": "Schnell (3-5 Sek.), sehr günstige Gebühren (Bruchteile eines Cents), für Zahlungen optimiert.",
       "a.fb": "Richtig. Das sind Stellars drei Kernvorteile.",
-      "b": "Langsam, teuer, für NFTs optimiert.",
-      "b.fb": "Falsch. Stellar ist bekannt für Schnelligkeit und niedrige Kosten.",
-      "c": "Mining-basiert, dezentral, anonym.",
-      "c.fb": "Falsch. Stellar nutzt kein Mining und ist pseudonym, nicht anonym."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q3": {
       "question": "Was solltest du NIEMALS tun?",
       "hint": "Die goldene Regel der Kryptosicherheit.",
       "a": "Den Secret Key teilen oder auf unbekannten Websites eingeben.",
       "a.fb": "Richtig. Der Secret Key ist das Heiligste – niemals teilen!",
-      "b": "Das Testnet verwenden.",
-      "b.fb": "Falsch. Das Testnet zu nutzen ist sogar empfohlen zum Üben.",
-      "c": "Trustlines einrichten.",
-      "c.fb": "Falsch. Trustlines sind normale und nötige Aktionen."
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     },
     "q4": {
       "question": "Du hast alle Lektionen abgeschlossen. Was bist du jetzt?",
       "hint": "Feiere deinen Erfolg!",
       "a": "Ein Stellar-Einsteiger mit solidem Grundwissen!",
       "a.fb": "Genau richtig! Du hast die Grundlagen gemeistert. Weiter so!",
-      "b": "Ein zertifizierter Blockchain-Ingenieur.",
-      "b.fb": "Noch nicht – aber ein starkes Fundament hast du gelegt!",
-      "c": "Bereit für den Ruhestand.",
-      "c.fb": "Noch nicht – aber du hast einen großen Schritt gemacht!"
+      "b": "Eine spezielle Premium-Funktion nur für Milliardäre.",
+      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "c": "Ein versteckter Spielmodus im Wallet.",
+      "c.fb": "Nette Idee 🎮, aber das ist kein Spiel. Es geht um echte Technik im Netzwerk.",
+      "d": "Ein Trick, um schneller reich zu werden.",
+      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
     }
+  },
+  "ui": {
+    "allDone": "Alle Quizze abgeschlossen! Herzlichen Glückwunsch!",
+    "backToLearn": "Zurück zu Learn",
+    "beforeUnloadMessage": "Willst du das Quiz wirklich verlassen? Ungespeicherte Antworten gehen verloren.",
+    "cancel": "Abbrechen",
+    "correct": "Richtig",
+    "explanation": "Warum?",
+    "failed": "Nicht bestanden",
+    "finish": "Beenden",
+    "hideDetails": "Details ausblenden",
+    "hint": "Hinweis",
+    "incorrect": "Falsch",
+    "indexSubtitle": "Wähle eine Lektion",
+    "jump": "Springen",
+    "jumpToQuestion": "Zur Frage springen",
+    "lessonProgress": "Lektion {{current}} von {{total}}",
+    "next": "Weiter",
+    "nextQuiz": "Nächstes Quiz",
+    "noDataHelp": "Keine Quiz-Daten gefunden.",
+    "of": "von",
+    "off": "Aus",
+    "on": "An",
+    "openInNewTab": "In neuem Tab öffnen",
+    "openInNewTab.default": "Quiz standardmäßig in neuem Tab öffnen",
+    "openInNewTab.once": "In neuem Tab öffnen",
+    "passed": "Bestanden",
+    "practice": "Üben",
+    "prev": "Zurück",
+    "prevQuiz": "Vorheriges Quiz",
+    "question": "Frage",
+    "quiz": "Quiz",
+    "retry": "Nochmal versuchen",
+    "routeTitle": "Quiz L{{id}}",
+    "showDetails": "Details anzeigen",
+    "startInNewTab": "Quiz in neuem Tab starten",
+    "startPractice": "Praxis starten",
+    "startQuiz": "Quiz starten",
+    "stickyNav": "Sticky-Navigation",
+    "summaryCount": "{{correct}}/{{total}} richtig",
+    "timeRemaining": "Verbleibende Zeit",
+    "viewResults": "Ergebnis ansehen",
+    "warnOnActiveQuiz": "Warnung bei laufendem Quiz anzeigen",
+    "yourScore": "Dein Ergebnis"
   },
   "meta": {
     "estimatedMinutes": "Geschätzte Minuten",

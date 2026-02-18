@@ -183,6 +183,11 @@
     "noData": "Podaci nisu pronađeni.",
     "row": "Redak {{row}}",
     "lessonOverview": "Pregled lekcija (Održavanje)",
-    "selectLesson": "Lekcija"
+    "selectLesson": "Lekcija",
+    "questionsUpdated": "{{count}} pitanja ažurirano",
+    "questionsAdded": "{{count}} novih pitanja dodano",
+    "rowsSkipped": "{{count}} praznih redaka preskočeno",
+    "termsUpdated": "{{count}} pojmova ažurirano",
+    "termsAdded": "{{count}} novih pojmova dodano"
   }
 }

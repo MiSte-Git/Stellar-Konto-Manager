@@ -31,11 +31,9 @@ export default function QuestionCard({
   const uid = React.useId();
   const headingId = `stm-q-heading-${uid}`;
   const hintId = `stm-q-hint-${uid}`;
-  const feedbackId = `stm-q-fb-${uid}`;
 
   const describedBy = [];
   if (hintsEnabled && showHint) describedBy.push(hintId);
-  if (showFeedback && selectedOptionId) describedBy.push(feedbackId);
 
   const handleSelect = (id) => {
     if (disabled) return;
@@ -98,27 +96,9 @@ export default function QuestionCard({
     return null;
   };
 
-  const renderFeedback = () => {
-    if (!showFeedback || !selectedOptionId) return null;
-    const sel = options.find((o) => o.id === selectedOptionId);
-    if (!sel) return null;
-    const ok = !!sel.correct;
-    return (
-      <div
-        id={feedbackId}
-        className={`mt-3 text-sm rounded-xl p-3 ${ok ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'}`}
-        role="status"
-        aria-live="polite"
-      >
-        <div className="font-semibold">{ok ? t('quiz.ui:correct') : t('quiz.ui:incorrect')}</div>
-        <div className="mt-1">{t(sel.feedbackKey)}</div>
-      </div>
-    );
-  };
-
   return (
     <div>
-      <h3 id={headingId} className="text-lg font-semibold">{t(questionKey)}</h3>
+      <h3 id={headingId} className="sr-only">{t(questionKey)}</h3>
       {hintsEnabled && (
         <div className="mt-2">
           <button
@@ -211,7 +191,6 @@ export default function QuestionCard({
         )}
       </div>
 
-      {renderFeedback()}
     </div>
   );
 }
