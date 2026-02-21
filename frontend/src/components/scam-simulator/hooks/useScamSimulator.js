@@ -1,5 +1,5 @@
 import React from 'react';
-import { initDemoAccount, drainDemoAccount } from '../utils/testnetDemo.js';
+import { setupDemoAccounts, drainAccount, getFullBalance } from '../utils/testnetDemo.js';
 
 // Typing speed multipliers (applied to all message delays)
 const SPEED_MULTIPLIERS = { slow: 1.8, normal: 1.0, fast: 0.4 };
@@ -55,13 +55,13 @@ export default function useScamSimulator(scenario) {
   // ── Testnet demo state ──────────────────────────────────────────────────────
   // XLM balance of the demo account (null = not yet loaded)
   const [demoBalance, setDemoBalance] = React.useState(null);
-  // Hash + URL of the drain transaction (set after drainDemoAccount succeeds)
+  // Hash + URL of the drain transaction (set after drainAccount succeeds)
   const [txHash, setTxHash] = React.useState(null);
   const [explorerUrl, setExplorerUrl] = React.useState(null);
   /**
    * demoPhase tracks the lifecycle of the ephemeral Testnet account:
    *   null       – not started (intro screen)
-   *   'init'     – initDemoAccount() is running (Friendbot + polling)
+   *   'init'     – setupDemoAccounts() is running (Friendbot + polling)
    *   'ready'    – account funded, ready to drain
    *   'draining' – drain sequence in progress
    */
@@ -154,8 +154,12 @@ export default function useScamSimulator(scenario) {
 
     // Initialize ephemeral Testnet demo account in the background.
     // Chat messages start immediately; account card appears in chat once Friendbot confirms.
-    initDemoAccount()
-      .then(({ keypair, scammerPublicKey, balance }) => {
+    setupDemoAccounts()
+      .then(async ({ demoKeypair, issuerKeypair, scammerKeypair }) => {
+        const keypair = demoKeypair;
+        const scammerPublicKey = scammerKeypair.publicKey();
+        const balances = await getFullBalance(demoKeypair.publicKey());
+        const balance = balances.xlm;
         demoDataRef.current = { keypair, scammerPublicKey };
         setDemoBalance(balance);
         setDemoPhase('ready');
@@ -239,7 +243,7 @@ export default function useScamSimulator(scenario) {
       // ── Step 4: Execute the real Testnet drain ─────────────────────────────
       const drainAt = Math.round(3200 * mult);
       const drainTid = setTimeout(() => {
-        drainDemoAccount(keypair, scammerPublicKey)
+        drainAccount(keypair, scammerPublicKey)
           .then(({ txHash: hash, explorerUrl: url }) => {
             setDemoBalance('0.00');
             setTxHash(hash);
