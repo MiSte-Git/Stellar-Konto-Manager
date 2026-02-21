@@ -59,9 +59,9 @@ const bodyVariants = {
 };
 
 const glowVariants = {
-  idle: { opacity: 0, scale: 1 },
-  happy: { opacity: 0.3, scale: 1.1, transition: { duration: 0.4 } },
-  sad: { opacity: 0, scale: 1 },
+  idle:      { opacity: 0, scale: 1 },
+  happy:     { opacity: 0.3, scale: 1.1, transition: { duration: 0.4 } },
+  sad:       { opacity: 0, scale: 1 },
   celebrate: {
     opacity: [0, 0.6, 0],
     scale: [1, 1.4, 1],
@@ -79,14 +79,15 @@ export default function Lumio({ state = 'idle', size = 100 }) {
       animate={state}
       style={{ originX: '50%', originY: '50%' }}
     >
-      {/* Glow layer */}
-      <motion.path
-        d={starPath}
-        fill="#FACC15"
-        filter="url(#glow)"
+      {/* Glow layer – motion.g animates opacity/scale; plain path holds d so Framer
+          Motion never treats d as an animated value and never sets it to undefined. */}
+      <motion.g
         variants={glowVariants}
         animate={state}
-      />
+        style={{ originX: '50%', originY: '50%' }}
+      >
+        <path d={starPath} fill="#FACC15" filter="url(#glow)" />
+      </motion.g>
 
       {/* Star body */}
       <path
@@ -120,13 +121,14 @@ export default function Lumio({ state = 'idle', size = 100 }) {
         transition={{ duration: 0.3 }}
       />
 
-      {/* Mouth */}
+      {/* Mouth – initial="idle" ensures d is always defined before the first animation frame */}
       <motion.path
         fill="none"
         stroke="#1E293B"
         strokeWidth="2"
         strokeLinecap="round"
         variants={mouthVariants}
+        initial="idle"
         animate={state}
         transition={{ duration: 0.3 }}
       />
