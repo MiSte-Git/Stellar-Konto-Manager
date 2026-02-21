@@ -1,0 +1,20 @@
+{
+  "title": "Scam Simulator",
+  "typingSpeed": {
+    "label": "Typing Speed",
+    "description": "How fast messages appear in the chat",
+    "slow": "Slow",
+    "normal": "Normal",
+    "fast": "Fast"
+  },
+  "hints": {
+    "label": "Show hints",
+    "description": "Displays subtle hints during gameplay"
+  },
+  "resetStats": {
+    "label": "Reset statistics",
+    "button": "Reset",
+    "confirm": "Really delete all Scam Simulator statistics?",
+    "done": "Statistics have been reset."
+  }
+}

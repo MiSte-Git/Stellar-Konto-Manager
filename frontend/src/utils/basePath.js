@@ -211,6 +211,18 @@ export function isLessonPracticePath(pathname) {
 }
 
 /**
+ * isScamSimulatorPath: Pfad zum Scam-Simulator (/learn/scam-simulator)
+ */
+export function isScamSimulatorPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const target = buildPath('learn/scam-simulator');
+  return normalizePath(current) === normalizePath(target)
+    || normalizePath(current).endsWith('/learn/scam-simulator');
+}
+
+/**
  * isSettingsPath: Pfad zur gemeinsamen Einstellungsseite (/settings)
  */
 export function isSettingsPath(pathname) {

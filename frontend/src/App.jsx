@@ -7,7 +7,7 @@ import Main from './main.jsx';
 import LanguageSelector from './components/LanguageSelector';
 import BugTrackerAdmin from './routes/BugTrackerAdmin.tsx';
 import SmallAdminLink from './components/SmallAdminLink.jsx';
-import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizDetailPath, isQuizIndexPath, getMultisigJobId, isSettingsPath, isTradingAssetsPath, isMultisigJobsListPath } from './utils/basePath.js';
+import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizDetailPath, isQuizIndexPath, getMultisigJobId, isSettingsPath, isTradingAssetsPath, isMultisigJobsListPath, isScamSimulatorPath } from './utils/basePath.js';
 import GlossaryPage from './pages/GlossaryPage.tsx';
 
 import QuizPage from './pages/QuizPage.jsx';
@@ -18,6 +18,8 @@ import MultisigJobList from './pages/MultisigJobList.jsx';
 import Legal from './pages/Legal.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import TradingAssetsPage from './pages/TradingAssetsPage.jsx';
+import ScamSimulatorPage from './components/scam-simulator/ScamSimulatorPage.jsx';
+import scenarios from './data/learn/scam-scenarios/scenarios.js';
 
 import { formatErrorForUi } from './utils/formatErrorForUi.js';
 import { SHOW_DONATE_BUTTON } from './config.js';
@@ -67,7 +69,7 @@ function LearnRedirect() {
 }
 
 function AppShell() {
-  const { t } = useTranslation(['common', 'glossary', 'learn', 'menu', 'navigation', 'settings']);
+  const { t } = useTranslation(['common', 'glossary', 'learn', 'menu', 'navigation', 'settings', 'scamSimulator']);
   const location = useLocation();
 
   const isBugTrackerRoute = React.useMemo(() => {
@@ -164,6 +166,14 @@ function AppShell() {
     }
   }, [pathname]);
 
+  const isScamSimulatorRoute = React.useMemo(() => {
+    try {
+      return isScamSimulatorPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
   const isQuizIndexRoute = React.useMemo(() => {
     try {
       return isQuizIndexPath(pathname);
@@ -254,6 +264,19 @@ function AppShell() {
         <div className="max-w-5xl mx-auto p-4">
           <MultisigJobList />
         </div>
+      ) : isScamSimulatorRoute ? (
+        <div className="max-w-lg mx-auto p-4">
+          <ScamSimulatorPage
+            scenarios={scenarios}
+            onBack={() => {
+              try {
+                const url = buildPath('');
+                window.history.pushState({}, '', url);
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              } catch { /* noop */ }
+            }}
+          />
+        </div>
       ) : isQuizIndexRoute ? (
         <div className="max-w-4xl mx-auto p-4">
           <QuizIndex />
@@ -312,6 +335,21 @@ function AppShell() {
                 >
                   <span aria-hidden>&#x1F3AF;</span>
                   <span>{t('navigation:quiz', 'Quiz')}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    try {
+                      const url = buildPath('learn/scam-simulator');
+                      window.history.pushState({}, '', url);
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    } catch { /* noop */ }
+                  }}
+                  className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-red-400"
+                  title={t('scamSimulator:ui.title')}
+                >
+                  <span aria-hidden>🛡️</span>
+                  <span>{t('scamSimulator:ui.title')}</span>
                 </button>
               </div>
 

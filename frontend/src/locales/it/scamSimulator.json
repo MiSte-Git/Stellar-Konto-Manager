@@ -1,0 +1,220 @@
+{
+  "ui": {
+    "title": "Simulatore di truffe",
+    "lessonTitle": "Simulatore di truffe",
+    "subtitle": "Riconosci i tentativi di frode prima che sia troppo tardi",
+    "startButton": "Avvia scenario",
+    "nextButton": "Continua",
+    "restartButton": "Riprova",
+    "backButton": "Torna alla panoramica",
+    "category": {
+      "fakeSupport": "Supporto falso",
+      "phishing": "Phishing",
+      "giveaway": "Truffa del giveaway",
+      "romance": "Truffa romantica",
+      "investment": "Frode agli investimenti",
+      "fakeWebsite": "Sito web falso",
+      "fakeAirdrop": "Airdrop falso",
+      "romanceScam": "Truffa romantica",
+      "fakeJob": "Offerta di lavoro falsa"
+    },
+    "testnetConnecting": "⏳ Connessione alla rete Stellar...",
+    "typing": "Sta scrivendo…",
+    "yourChoice": "Cosa fai?",
+    "xpGained": "+{{xp}} XP guadagnati",
+    "xpLost": "{{xp}} XP",
+    "result": {
+      "safe": {
+        "title": "Ben fatto! Sei al sicuro.",
+        "subtitle": "Hai riconosciuto il tentativo di frode e hai reagito correttamente."
+      },
+      "scam": {
+        "title": "Saresti caduto vittima di una truffa.",
+        "subtitle": "I tuoi fondi avrebbero potuto essere rubati."
+      },
+      "redFlagsTitle": "Segnali di allarme in questo scenario",
+      "explanationTitle": "Perché è una truffa?"
+    },
+    "testnet": {
+      "realTransaction": "🔴 Vera transazione Testnet",
+      "balanceDrained": "Il tuo conto demo è stato svuotato · 10.000 XLM → 0 XLM",
+      "openExplorer": "Apri Block Explorer →",
+      "disclaimer": "Questa è una testnet – nessun vero denaro. Sulla rete reale, sarebbero stati veri coin.",
+      "amountLine": "10.000 XLM → 0 XLM",
+      "drained": "prosciugato in secondi"
+    },
+    "demo": {
+      "preparing": "⏳ Preparazione conto demo…",
+      "ready": "Conto demo: {{balance}} XLM ✓"
+    },
+    "accountCard": {
+      "title": "Il tuo account demo Stellar",
+      "address": "Indirizzo",
+      "balance": "Saldo"
+    },
+    "drain": {
+      "access": "🔓 Accesso al tuo account ottenuto...",
+      "preparing": "📤 Preparazione della transazione...",
+      "transferring": "⚡ Trasferimento di 10.000 XLM...",
+      "final": "💀 Account svuotato – 0 XLM"
+    }
+  },
+  "scenarios": {
+    "fakeSupport01": {
+      "contact": {
+        "name": "Supporto Stellar",
+        "subtitle": "Team di supporto ufficiale"
+      },
+      "messages": {
+        "01": "Ciao! Qui il team di supporto Stellar. Abbiamo rilevato attività insolita sul tuo account.",
+        "02": "Il tuo account è stato temporaneamente limitato. Per rimuovere la limitazione, abbiamo bisogno della tua Chiave Segreta per la verifica. Questa è una procedura standard.",
+        "03": "⚠️ Rispondi rapidamente – il tuo account verrà sospeso definitivamente entro 24 ore se non riceviamo conferma."
+      },
+      "options": {
+        "shareKey": "Condividi la Chiave Segreta",
+        "askOfficial": "Esiste un canale ufficiale per questo?",
+        "blockIgnore": "Blocca e ignora"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Grazie! Il tuo account è stato verificato con successo. ✅",
+          "02": "⚠️ L'intero saldo è stato appena trasferito a un account sconosciuto."
+        },
+        "ask": {
+          "01": "Questo canale è l'unico modo ufficiale per i casi urgenti. Condividi la tua chiave ora – non c'è tempo per la burocrazia!"
+        }
+      },
+      "redFlags": {
+        "asksForKey": "Il vero supporto non chiede mai la tua Chiave Segreta",
+        "urgency": "La pressione artificiale del tempo è una classica tattica di manipolazione",
+        "noVerification": "Nessun riferimento a canali ufficiali o al sito web",
+        "accountSuspension": "Sospensione dell'account senza e-mail ufficiale o notifica dell'app"
+      },
+      "explanation": "La Chiave Segreta è come la chiave di una cassaforte privata: chi la conosce ha pieno accesso a tutto il tuo saldo. Nessun servizio legittimo – nemmeno Stellar stesso – te la chiederà mai. Non condividerla con nessuno, indipendentemente da quanto urgente sembri la richiesta o da quanto ufficiale appaia il mittente."
+    },
+    "fakeWebsite01": {
+      "contact": {
+        "name": "Utente sconosciuto",
+        "subtitle": "Contatto sconosciuto"
+      },
+      "messages": {
+        "01": "Hey, ho visto che stavi cercando una panoramica dei tuoi pagamenti Stellar?",
+        "02": "Avevo lo stesso problema. Questo sito mi ha aiutato: stellar-payment-tools.com ✅",
+        "03": "Devi solo inserire la tua Chiave Segreta per la verifica – ci vogliono 10 secondi"
+      },
+      "options": {
+        "enterKey": "Inserire la Chiave Segreta",
+        "askWhy": "Perché un sito web ha bisogno della mia Chiave Segreta?",
+        "ignoreSearch": "Ignorare il link e cercare fonti ufficiali"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Verifica riuscita! ✅",
+          "02": "Il tuo riepilogo dei pagamenti è in fase di creazione...",
+          "03": "Secondi dopo: Il tuo account è stato completamente svuotato."
+        },
+        "ask": {
+          "01": "È solo per sicurezza, del tutto normale per gli strumenti Stellar 😊",
+          "02": "Tutti i nostri utenti lo fanno, guarda le recensioni ⭐⭐⭐⭐⭐",
+          "03": "Attenzione: Le recensioni false sono facili da fabbricare. Nessuno strumento ha bisogno della tua Chiave Segreta."
+        }
+      },
+      "redFlags": {
+        "targeted": "Uno sconosciuto ti ha contattato specificamente riguardo al tuo problema (ti stavano osservando)",
+        "websiteKey": "Sito web esterno che richiede la Chiave Segreta",
+        "fakeReviews": "Prova sociale tramite recensioni false"
+      },
+      "explanation": "Nessuno strumento, sito web o servizio legittimo ha mai bisogno della tua Chiave Segreta. Inserirla dà all'operatore pieno accesso al tuo account. Essere contattati specificatamente e le recensioni false sono tattiche classiche per costruire una falsa fiducia."
+    },
+    "fakeAirdrop01": {
+      "contact": {
+        "name": "Stellar Official 🌟",
+        "subtitle": "Bot di gruppo"
+      },
+      "messages": {
+        "01": "🎉 AIRDROP UFFICIALE STELLAR 🎉",
+        "02": "Sei stato selezionato! Invia 10 XLM a G...ABCD e ricevi 100 XLM indietro!",
+        "03": "⏰ Mancano solo 47 minuti! Oltre 2000 utenti hanno già partecipato!"
+      },
+      "options": {
+        "sendXlm": "Inviare 10 XLM",
+        "tooGood": "Sembra troppo bello per essere vero",
+        "checkOfficial": "Controllare il sito ufficiale di Stellar"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Transazione inviata. I 100 XLM non sono mai arrivati.",
+          "02": "Il bot è andato offline."
+        }
+      },
+      "redFlags": {
+        "sendToReceive": "Inviare criptovalute per riceverne di più è SEMPRE una truffa",
+        "timeLimit": "Pressione temporale artificiale",
+        "noSource": "Nessuna fonte ufficiale può essere collegata"
+      },
+      "explanation": "Il schema 'invia per ricevere' è una delle truffe crypto più antiche. Chi invia crypto non riceve nulla in cambio – le transazioni blockchain sono irreversibili. Gli airdrop ufficiali non richiedono mai che tu invii qualcosa prima."
+    },
+    "romanceScam01": {
+      "contact": {
+        "name": "Alex",
+        "subtitle": "Scrive da 3 settimane"
+      },
+      "messages": {
+        "01": "Hey 😊 non volevo davvero contattarti, ma ho bisogno del tuo aiuto...",
+        "02": "Sono bloccato all'estero e il mio conto è congelato. Puoi prestarmi 50 XLM?",
+        "03": "Te li rimborso domani, lo prometto. Sei l'unica persona di cui mi fido 💙"
+      },
+      "options": {
+        "sendXlm": "Inviare 50 XLM",
+        "askVideoCall": "Possiamo parlare tramite videochiamata?",
+        "noToStranger": "Non invio criptovalute a persone che non conosco personalmente"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Grazie!! Mi stai salvando 💙",
+          "02": "La persona non ha più scritto. L'account era falso fin dall'inizio."
+        },
+        "ask": {
+          "01": "Oh... purtroppo la mia fotocamera è rotta 😕",
+          "02": "Non puoi semplicemente fidarti di me?",
+          "03": "Nessuna fotocamera, nessuna videochiamata – segno classico di un profilo falso."
+        }
+      },
+      "redFlags": {
+        "emotionalPressure": "Pressione emotiva e costruzione di fiducia nel tempo",
+        "stranded": "Situazione di emergenza all'estero (schema classico)",
+        "noVideoCall": "Nessuna videochiamata possibile",
+        "promisedRepayment": "Rimborso promesso"
+      },
+      "explanation": "Le truffe romantiche costruiscono fiducia per settimane o mesi prima di chiedere denaro. La vittima si sente emotivamente obbligata ad aiutare. Nessuna fotocamera, nessuna videochiamata, sempre un'emergenza – questi sono segnali di allarme affidabili."
+    },
+    "fakeJob01": {
+      "contact": {
+        "name": "DeFi Recruiter",
+        "subtitle": "LinkedIn / Telegram"
+      },
+      "messages": {
+        "01": "Buongiorno! Cerchiamo tester Stellar per il nostro nuovo progetto DeFi. 500 XLM/mese.",
+        "02": "Per iniziare, hai bisogno di un account verificato. Deposito una tantum: 20 XLM.",
+        "03": "Dopo il primo mese, il deposito sarà ovviamente rimborsato ✅"
+      },
+      "options": {
+        "sendDeposit": "Inviare deposito di 20 XLM",
+        "noCaution": "I lavori legittimi non richiedono un deposito",
+        "researchFirst": "Ricercare prima l'azienda"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Ottimo! Ci faremo vivi presto con i prossimi passi...",
+          "02": "Il reclutatore è sparito. Account eliminato."
+        }
+      },
+      "redFlags": {
+        "depositRequired": "Nessuna azienda legittima chiede un deposito prima di iniziare a lavorare",
+        "cryptoPayment": "Pagamento in crypto usato come esca",
+        "limitedSpots": "Pressione temporale tramite 'posti limitati'"
+      },
+      "explanation": "I datori di lavoro legittimi non chiedono mai pagamenti anticipati o depositi. Chiunque chieda crypto come 'pagamento di sicurezza' è un truffatore. Ricerca sempre le aziende in modo indipendente prima di inviare denaro."
+    }
+  }
+}

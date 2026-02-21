@@ -31,6 +31,7 @@ export const MAIN_MENU_NAV = [
 export const MAINPAGE_EXTRA_NAV = [
   { id: 'beginnerQuiz', labelKey: 'quiz:entry.beginnerQuizTitle' },
   { id: 'learnOverview', labelKey: 'learn:menuHint' },
+  { id: 'scamSimulator', labelKey: 'scamSimulator:ui.title', to: 'learn/scam-simulator' },
   { id: 'glossary', labelKey: 'glossary:pageTitle' },
   { id: 'feedback', labelKey: 'common:feedback.pages.feedback' },
   { id: 'settings', labelKey: 'common:feedback.pages.settings' },

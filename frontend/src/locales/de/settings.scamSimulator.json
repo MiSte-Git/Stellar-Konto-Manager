@@ -1,0 +1,20 @@
+{
+  "title": "Scam-Simulator",
+  "typingSpeed": {
+    "label": "Tipp-Geschwindigkeit",
+    "description": "Wie schnell die Nachrichten im Chat erscheinen",
+    "slow": "Langsam",
+    "normal": "Normal",
+    "fast": "Schnell"
+  },
+  "hints": {
+    "label": "Hinweise anzeigen",
+    "description": "Zeigt während des Spiels subtile Hilfestellungen an"
+  },
+  "resetStats": {
+    "label": "Statistiken zurücksetzen",
+    "button": "Zurücksetzen",
+    "confirm": "Wirklich alle Scam-Simulator Statistiken löschen?",
+    "done": "Statistiken wurden zurückgesetzt."
+  }
+}

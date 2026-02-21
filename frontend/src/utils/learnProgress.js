@@ -23,6 +23,7 @@ const LESSON_TYPE = {
   lesson10: 'practice',
   lesson11: 'theory',
   lesson12: 'theory',
+  'scam-simulator': 'theory', // Interaktiv, aber kein on-chain Check erforderlich
 };
 
 // Praxis-Prüfungen je Lektion (Mindest-Checks)
@@ -475,4 +476,35 @@ export function getBadges() {
     writeRaw({ ...v1, badges: res.ids });
   }
   return res;
+}
+
+/**
+ * recordScamSimulatorResult – speichert das Ergebnis eines Scam-Simulator-Durchlaufs.
+ *
+ * @param {string} id          Lektion-ID ('scam-simulator')
+ * @param {object} params
+ * @param {boolean} params.correct     true = Scam erkannt (richtige Wahl), false = hereingefall
+ * @param {string}  params.scenarioId  ID des gespielten Szenarios (z. B. 'fake-support-01')
+ * @param {number}  params.xp          Verdiente XP (0 wenn falsche Wahl)
+ *
+ * Score-Logik:
+ *   correct=true  → score 100 → 3 Sterne (perfektes Ergebnis)
+ *   correct=false → score 60  → 1 Stern  (bestanden, aber Lernbedarf)
+ * passPercent = 60, sodass beide Pfade als "abgeschlossen" gelten.
+ */
+export function recordScamSimulatorResult(id = 'scam-simulator', { correct = false, scenarioId = '', xp = 0 } = {}) {
+  const prev = readProgressV1().lessons[id] || {};
+  const score = correct ? 100 : 60;
+
+  const patch = {
+    attempts: Math.max(0, Number(prev.attempts || 0)) + 1,
+    errors: Math.max(0, Number(prev.errors || 0)) + (correct ? 0 : 1),
+    score,
+    // Schwellwerte: pass=60 (beide Pfade zählen), 3★=100 (nur korrekte Wahl)
+    thresholds: { passPercent: 60, threeStarPercent: 100 },
+    checks: { [`scenario_${scenarioId}`]: correct },
+  };
+
+  const next = writeLesson(id, patch);
+  return { v1: next, flat: getFlattenedProgress(), correct, xp };
 }

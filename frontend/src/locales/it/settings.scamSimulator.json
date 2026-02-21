@@ -1,0 +1,20 @@
+{
+  "title": "Simulatore di truffe",
+  "typingSpeed": {
+    "label": "Velocità di digitazione",
+    "description": "Quanto velocemente i messaggi appaiono nella chat",
+    "slow": "Lento",
+    "normal": "Normale",
+    "fast": "Veloce"
+  },
+  "hints": {
+    "label": "Mostra suggerimenti",
+    "description": "Mostra suggerimenti sottili durante il gioco"
+  },
+  "resetStats": {
+    "label": "Reimposta statistiche",
+    "button": "Reimposta",
+    "confirm": "Vuoi davvero eliminare tutte le statistiche del simulatore di truffe?",
+    "done": "Le statistiche sono state reimpostate."
+  }
+}

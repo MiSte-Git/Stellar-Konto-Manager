@@ -23,6 +23,13 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
     setMultisigTimeoutSeconds,
   } = useSettings();
   const [activeTab, setActiveTab] = useState('general');
+  const [typingSpeed, setTypingSpeed] = useState(() => {
+    try { return localStorage.getItem('skm.scamSimulator.typingSpeed') || 'normal'; } catch { return 'normal'; }
+  });
+  const [hints, setHints] = useState(() => {
+    try { return localStorage.getItem('skm.scamSimulator.hints') !== 'false'; } catch { return true; }
+  });
+  const [resetScamDone, setResetScamDone] = useState(false);
   const [newExplorerName, setNewExplorerName] = useState('');
   const [newExplorerUrl, setNewExplorerUrl] = useState('');
   const [newExplorerTestnetUrl, setNewExplorerTestnetUrl] = useState('');
@@ -172,7 +179,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
           <h1 className="text-2xl font-bold flex-1 text-center">{t('settings:label', 'Settings')}</h1>
         </div>
         <div className="flex flex-wrap gap-2">
-          {['general', 'app', 'accounts', 'network', 'explorer', 'quiz', 'glossary'].map((tab) => (
+          {['general', 'app', 'accounts', 'network', 'explorer', 'quiz', 'glossary', 'scamSimulator'].map((tab) => (
             <button
               key={tab}
               type="button"
@@ -382,6 +389,74 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">{t('settings:sections.glossary', t('settings:tabs.glossary'))}</h2>
           <GlossaryExportImport />
+        </section>
+      )}
+
+      {activeTab === 'scamSimulator' && (
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold">{t('settings:scamSimulator.title')}</h2>
+
+          <div className="border rounded p-4 space-y-3">
+            <h3 className="font-semibold">{t('settings:scamSimulator.typingSpeed.label')}</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings:scamSimulator.typingSpeed.description')}</p>
+            <div className="flex gap-3 flex-wrap">
+              {['slow', 'normal', 'fast'].map((speed) => (
+                <button
+                  key={speed}
+                  type="button"
+                  onClick={() => {
+                    setTypingSpeed(speed);
+                    try { localStorage.setItem('skm.scamSimulator.typingSpeed', speed); } catch { /* noop */ }
+                  }}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold border ${typingSpeed === speed ? 'bg-red-600 text-white border-red-600' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-700'}`}
+                >
+                  {t(`settings:scamSimulator.typingSpeed.${speed}`)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="border rounded p-4 space-y-2">
+            <h3 className="font-semibold">{t('settings:scamSimulator.hints.label')}</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings:scamSimulator.hints.description')}</p>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={hints}
+                onChange={(e) => {
+                  const v = e.target.checked;
+                  setHints(v);
+                  try { localStorage.setItem('skm.scamSimulator.hints', String(v)); } catch { /* noop */ }
+                }}
+                className="w-4 h-4"
+              />
+              <span className="text-sm">{t('settings:scamSimulator.hints.label')}</span>
+            </label>
+          </div>
+
+          <div className="border rounded p-4 space-y-2">
+            <h3 className="font-semibold">{t('settings:scamSimulator.resetStats.label')}</h3>
+            {resetScamDone && <p className="text-sm text-green-600 dark:text-green-400">{t('settings:scamSimulator.resetStats.done')}</p>}
+            <button
+              type="button"
+              onClick={() => {
+                if (!window.confirm(t('settings:scamSimulator.resetStats.confirm'))) return;
+                try {
+                  const raw = localStorage.getItem('skm.learn.progress.v1');
+                  if (raw) {
+                    const data = JSON.parse(raw);
+                    delete data['scam-simulator'];
+                    localStorage.setItem('skm.learn.progress.v1', JSON.stringify(data));
+                  }
+                } catch { /* noop */ }
+                setResetScamDone(true);
+                setTimeout(() => setResetScamDone(false), 3000);
+              }}
+              className="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 text-sm"
+            >
+              {t('settings:scamSimulator.resetStats.button')}
+            </button>
+          </div>
         </section>
       )}
 

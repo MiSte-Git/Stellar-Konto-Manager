@@ -1,0 +1,20 @@
+{
+  "title": "Simulador de estafas",
+  "typingSpeed": {
+    "label": "Velocidad de escritura",
+    "description": "Qué tan rápido aparecen los mensajes en el chat",
+    "slow": "Lento",
+    "normal": "Normal",
+    "fast": "Rápido"
+  },
+  "hints": {
+    "label": "Mostrar pistas",
+    "description": "Muestra pistas sutiles durante el juego"
+  },
+  "resetStats": {
+    "label": "Restablecer estadísticas",
+    "button": "Restablecer",
+    "confirm": "¿Realmente quieres eliminar todas las estadísticas del simulador de estafas?",
+    "done": "Las estadísticas han sido restablecidas."
+  }
+}

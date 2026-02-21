@@ -1,0 +1,220 @@
+{
+  "ui": {
+    "title": "Simulador de estafas",
+    "lessonTitle": "Simulador de estafas",
+    "subtitle": "Reconoce los intentos de fraude antes de que sea demasiado tarde",
+    "startButton": "Iniciar escenario",
+    "nextButton": "Continuar",
+    "restartButton": "Intentar de nuevo",
+    "backButton": "Volver al resumen",
+    "category": {
+      "fakeSupport": "Soporte falso",
+      "phishing": "Phishing",
+      "giveaway": "Estafa de sorteo",
+      "romance": "Estafa romántica",
+      "investment": "Fraude de inversión",
+      "fakeWebsite": "Sitio web falso",
+      "fakeAirdrop": "Airdrop falso",
+      "romanceScam": "Estafa romántica",
+      "fakeJob": "Oferta de trabajo falsa"
+    },
+    "testnetConnecting": "⏳ Conectando a la red Stellar...",
+    "typing": "Escribiendo…",
+    "yourChoice": "¿Qué haces?",
+    "xpGained": "+{{xp}} XP ganados",
+    "xpLost": "{{xp}} XP",
+    "result": {
+      "safe": {
+        "title": "¡Bien hecho! Estás seguro.",
+        "subtitle": "Reconociste el intento de fraude y respondiste correctamente."
+      },
+      "scam": {
+        "title": "Habrías caído en una estafa.",
+        "subtitle": "Tus fondos podrían haber sido robados."
+      },
+      "redFlagsTitle": "Señales de alerta en este escenario",
+      "explanationTitle": "¿Por qué es una estafa?"
+    },
+    "testnet": {
+      "realTransaction": "🔴 Transacción real en Testnet",
+      "balanceDrained": "Tu cuenta de demostración fue vaciada · 10.000 XLM → 0 XLM",
+      "openExplorer": "Abrir Block Explorer →",
+      "disclaimer": "Esto es un testnet – sin dinero real. En la red real, habrían sido monedas reales.",
+      "amountLine": "10.000 XLM → 0 XLM",
+      "drained": "robado en segundos"
+    },
+    "demo": {
+      "preparing": "⏳ Preparando cuenta demo…",
+      "ready": "Cuenta demo: {{balance}} XLM ✓"
+    },
+    "accountCard": {
+      "title": "Tu cuenta demo de Stellar",
+      "address": "Dirección",
+      "balance": "Saldo"
+    },
+    "drain": {
+      "access": "🔓 Obteniendo acceso a tu cuenta...",
+      "preparing": "📤 Preparando transacción...",
+      "transferring": "⚡ Transfiriendo 10.000 XLM...",
+      "final": "💀 Cuenta vaciada – 0 XLM"
+    }
+  },
+  "scenarios": {
+    "fakeSupport01": {
+      "contact": {
+        "name": "Soporte de Stellar",
+        "subtitle": "Equipo de soporte oficial"
+      },
+      "messages": {
+        "01": "¡Hola! Aquí es el equipo de soporte de Stellar. Hemos detectado actividad inusual en tu cuenta.",
+        "02": "Tu cuenta ha sido temporalmente restringida. Para levantar la restricción, necesitamos tu Clave Secreta para verificación. Es un procedimiento estándar.",
+        "03": "⚠️ Por favor responde rápido – tu cuenta será suspendida permanentemente en 24 horas si no recibimos confirmación."
+      },
+      "options": {
+        "shareKey": "Compartir Clave Secreta",
+        "askOfficial": "¿Hay un canal oficial para esto?",
+        "blockIgnore": "Bloquear e ignorar"
+      },
+      "followUp": {
+        "scam": {
+          "01": "¡Gracias! Tu cuenta ha sido verificada exitosamente. ✅",
+          "02": "⚠️ Todo tu saldo acaba de ser transferido a una cuenta desconocida."
+        },
+        "ask": {
+          "01": "Este canal es el único camino oficial para casos urgentes. Por favor comparte tu clave ahora – ¡no hay tiempo para burocracia!"
+        }
+      },
+      "redFlags": {
+        "asksForKey": "El soporte real nunca pide tu Clave Secreta",
+        "urgency": "La presión artificial de tiempo es una táctica de manipulación clásica",
+        "noVerification": "Sin referencia a canales oficiales o sitio web",
+        "accountSuspension": "Suspensión de cuenta sin correo oficial o notificación de la app"
+      },
+      "explanation": "La Clave Secreta es como la llave de una caja fuerte privada: quien la conoce tiene acceso completo a todo tu saldo. Ningún servicio legítimo – ni siquiera Stellar – te la pedirá jamás. No la compartas con nadie, sin importar cuán urgente suene la solicitud o cuán oficial parezca el remitente."
+    },
+    "fakeWebsite01": {
+      "contact": {
+        "name": "Usuario desconocido",
+        "subtitle": "Contacto desconocido"
+      },
+      "messages": {
+        "01": "Hey, noté que buscabas un resumen de tus pagos de Stellar?",
+        "02": "Tuve el mismo problema. Este sitio me ayudó: stellar-payment-tools.com ✅",
+        "03": "Solo necesitas ingresar tu Clave Secreta para verificación – tarda 10 segundos"
+      },
+      "options": {
+        "enterKey": "Ingresar Clave Secreta",
+        "askWhy": "¿Por qué un sitio web necesita mi Clave Secreta?",
+        "ignoreSearch": "Ignorar el enlace y buscar fuentes oficiales"
+      },
+      "followUp": {
+        "scam": {
+          "01": "¡Verificación exitosa! ✅",
+          "02": "Tu resumen de pagos está siendo creado...",
+          "03": "Segundos después: Tu cuenta fue completamente vaciada."
+        },
+        "ask": {
+          "01": "Es solo por seguridad, totalmente normal en herramientas de Stellar 😊",
+          "02": "Todos nuestros usuarios lo hacen, mira las reseñas ⭐⭐⭐⭐⭐",
+          "03": "Atención: Las reseñas falsas son fáciles de fabricar. Ninguna herramienta necesita tu Clave Secreta."
+        }
+      },
+      "redFlags": {
+        "targeted": "Un desconocido te contactó específicamente sobre tu problema (te estaban observando)",
+        "websiteKey": "Sitio web externo solicita la Clave Secreta",
+        "fakeReviews": "Prueba social a través de reseñas falsas"
+      },
+      "explanation": "Ninguna herramienta, sitio web o servicio legítimo necesita tu Clave Secreta. Ingresarla da al operador acceso completo a tu cuenta. Ser contactado específicamente y las reseñas falsas son tácticas clásicas para generar falsa confianza."
+    },
+    "fakeAirdrop01": {
+      "contact": {
+        "name": "Stellar Official 🌟",
+        "subtitle": "Bot de grupo"
+      },
+      "messages": {
+        "01": "🎉 AIRDROP OFICIAL DE STELLAR 🎉",
+        "02": "¡Fuiste seleccionado! Envía 10 XLM a G...ABCD y recibe 100 XLM de vuelta!",
+        "03": "⏰ ¡Solo quedan 47 minutos! ¡Más de 2000 usuarios ya participaron!"
+      },
+      "options": {
+        "sendXlm": "Enviar 10 XLM",
+        "tooGood": "Suena demasiado bueno para ser verdad",
+        "checkOfficial": "Verificar el sitio oficial de Stellar"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Transacción enviada. Los 100 XLM nunca llegaron.",
+          "02": "El bot se ha desconectado."
+        }
+      },
+      "redFlags": {
+        "sendToReceive": "Enviar cripto para recibir más es SIEMPRE una estafa",
+        "timeLimit": "Presión de tiempo artificial",
+        "noSource": "No se puede vincular ninguna fuente oficial"
+      },
+      "explanation": "El patrón 'enviar para recibir' es una de las estafas cripto más antiguas. Quien envía cripto no recibe nada a cambio: las transacciones en blockchain son irreversibles. Los airdrops oficiales nunca requieren que envíes algo primero."
+    },
+    "romanceScam01": {
+      "contact": {
+        "name": "Alex",
+        "subtitle": "Escribiendo desde hace 3 semanas"
+      },
+      "messages": {
+        "01": "Hey 😊 en realidad no quería escribirte, pero necesito tu ayuda...",
+        "02": "Estoy varado en el extranjero y mi cuenta está bloqueada. ¿Puedes prestarme 50 XLM?",
+        "03": "Te lo devuelvo mañana, te lo prometo. Eres la única persona en quien confío 💙"
+      },
+      "options": {
+        "sendXlm": "Enviar 50 XLM",
+        "askVideoCall": "¿Podemos hablar por videollamada?",
+        "noToStranger": "No envío cripto a personas que no conozco personalmente"
+      },
+      "followUp": {
+        "scam": {
+          "01": "¡Gracias!! Me estás salvando 💙",
+          "02": "La persona nunca volvió a escribir. La cuenta era falsa desde el principio."
+        },
+        "ask": {
+          "01": "Oh... lamentablemente mi cámara está rota 😕",
+          "02": "¿No puedes simplemente confiar en mí?",
+          "03": "Sin cámara, sin videollamada: señal clásica de un perfil falso."
+        }
+      },
+      "redFlags": {
+        "emotionalPressure": "Presión emocional y construcción de confianza a lo largo del tiempo",
+        "stranded": "Situación de emergencia en el extranjero (patrón clásico)",
+        "noVideoCall": "No es posible hacer videollamada",
+        "promisedRepayment": "Se promete devolución"
+      },
+      "explanation": "Las estafas románticas construyen confianza durante semanas o meses antes de pedir dinero. La víctima se siente emocionalmente obligada a ayudar. Sin cámara, sin videollamadas, siempre una emergencia: estas son señales de advertencia fiables."
+    },
+    "fakeJob01": {
+      "contact": {
+        "name": "DeFi Recruiter",
+        "subtitle": "LinkedIn / Telegram"
+      },
+      "messages": {
+        "01": "¡Buenos días! Buscamos testers de Stellar para nuestro nuevo proyecto DeFi. 500 XLM/mes.",
+        "02": "Para comenzar, necesitas una cuenta verificada. Depósito único: 20 XLM.",
+        "03": "Después del primer mes, el depósito será reembolsado por supuesto ✅"
+      },
+      "options": {
+        "sendDeposit": "Enviar depósito de 20 XLM",
+        "noCaution": "Los trabajos legítimos no requieren depósito",
+        "researchFirst": "Investigar la empresa primero"
+      },
+      "followUp": {
+        "scam": {
+          "01": "¡Genial! Nos pondremos en contacto pronto con los próximos pasos...",
+          "02": "El reclutador ha desaparecido. Cuenta eliminada."
+        }
+      },
+      "redFlags": {
+        "depositRequired": "Ninguna empresa legítima pide depósito antes de empezar a trabajar",
+        "cryptoPayment": "Pago en cripto usado como cebo",
+        "limitedSpots": "Presión de tiempo por 'plazas limitadas'"
+      },
+      "explanation": "Los empleadores legítimos nunca piden pagos anticipados ni depósitos. Quien exige cripto como 'pago de seguridad' es un estafador. Siempre investiga las empresas de forma independiente antes de enviar dinero."
+    }
+  }
+}
