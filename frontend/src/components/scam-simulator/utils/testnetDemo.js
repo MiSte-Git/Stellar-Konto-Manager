@@ -11,8 +11,8 @@
  *   – Keys leben nur im RAM dieser Browser-Session.
  *
  * Token-Setup:
- *   Ein Issuer-Konto emittiert drei Custom-Tokens (USDC, yXLM, BTC) und
- *   überweist sie ans Demo-Konto. Die Drain-Sequenz leert Token für Token,
+ *   Ein Issuer-Konto emittiert fünf Custom-Tokens (USDC, yXLM, BTC, EURC, AQUA)
+ *   und überweist sie ans Demo-Konto. Die Drain-Sequenz leert Token für Token,
  *   dann die XLM – für maximalen dramatischen Effekt.
  *
  * Öffentliche API:
@@ -20,9 +20,10 @@
  *   createTrustlines(demoKeypair, issuerPublicKey)           → txHash
  *   createScammerTrustlines(scammerKeypair, issuerPublicKey) → txHash
  *   fundDemoWithTokens(issuerKeypair, demoPublicKey)         → txHash
- *   getFullBalance(publicKey)                                → { xlm, usdc, yxlm, btc }
+ *   getFullBalance(publicKey)                                → { xlm, usdc, yxlm, btc, eurc, aqua }
  *   drainAccount(demoKeypair, scammerPublicKey,
  *                issuerPublicKey, onProgress?)               → { hashes, explorerUrls }
+ *   getFakeTokens()                                          → Array<{ code, balance, valueInXLM }>
  */
 
 import {
@@ -47,6 +48,8 @@ const POLL_TIMEOUT_MS  = 20_000;
 const USDC_AMOUNT = '250';
 const YXLM_AMOUNT = '500';
 const BTC_AMOUNT  = '0.05';
+const EURC_AMOUNT = '100';
+const AQUA_AMOUNT = '5000';
 
 // ── Interne Hilfsfunktionen ───────────────────────────────────────────────────
 
@@ -57,15 +60,17 @@ function getServer() {
 }
 
 /**
- * Erstellt die drei Custom-Token-Assets für einen Issuer.
+ * Erstellt die fünf Custom-Token-Assets für einen Issuer.
  * @param {string} issuerPublicKey
- * @returns {{ usdc: Asset, yxlm: Asset, btc: Asset }}
+ * @returns {{ usdc: Asset, yxlm: Asset, btc: Asset, eurc: Asset, aqua: Asset }}
  */
 function makeAssets(issuerPublicKey) {
   return {
     usdc: new Asset('USDC', issuerPublicKey),
     yxlm: new Asset('yXLM', issuerPublicKey),
     btc:  new Asset('BTC',  issuerPublicKey),
+    eurc: new Asset('EURC', issuerPublicKey),
+    aqua: new Asset('AQUA', issuerPublicKey),
   };
 }
 
@@ -151,10 +156,12 @@ export async function setupDemoAccounts() {
 /**
  * Schritt 2 – Trustlines auf dem Demo-Konto anlegen.
  *
- * Eine Transaktion mit drei ChangeTrust-Operationen:
+ * Eine Transaktion mit fünf ChangeTrust-Operationen:
  *   USDC:issuer  (limit 10.000)
  *   yXLM:issuer  (limit 10.000)
  *   BTC:issuer   (limit 1)
+ *   EURC:issuer  (limit 10.000)
+ *   AQUA:issuer  (limit 100.000)
  *
  * Muss vor fundDemoWithTokens() aufgerufen werden.
  *
@@ -165,7 +172,7 @@ export async function setupDemoAccounts() {
 export async function createTrustlines(demoKeypair, issuerPublicKey) {
   const server = getServer();
   const account = await server.loadAccount(demoKeypair.publicKey());
-  const { usdc, yxlm, btc } = makeAssets(issuerPublicKey);
+  const { usdc, yxlm, btc, eurc, aqua } = makeAssets(issuerPublicKey);
 
   const tx = new TransactionBuilder(account, {
     fee: BASE_FEE,
@@ -174,6 +181,8 @@ export async function createTrustlines(demoKeypair, issuerPublicKey) {
     .addOperation(Operation.changeTrust({ asset: usdc, limit: '10000' }))
     .addOperation(Operation.changeTrust({ asset: yxlm, limit: '10000' }))
     .addOperation(Operation.changeTrust({ asset: btc,  limit: '1' }))
+    .addOperation(Operation.changeTrust({ asset: eurc, limit: '10000' }))
+    .addOperation(Operation.changeTrust({ asset: aqua, limit: '100000' }))
     .setTimeout(30)
     .build();
 
@@ -195,7 +204,7 @@ export async function createTrustlines(demoKeypair, issuerPublicKey) {
 export async function createScammerTrustlines(scammerKeypair, issuerPublicKey) {
   const server = getServer();
   const account = await server.loadAccount(scammerKeypair.publicKey());
-  const { usdc, yxlm, btc } = makeAssets(issuerPublicKey);
+  const { usdc, yxlm, btc, eurc, aqua } = makeAssets(issuerPublicKey);
 
   const tx = new TransactionBuilder(account, {
     fee: BASE_FEE,
@@ -204,6 +213,8 @@ export async function createScammerTrustlines(scammerKeypair, issuerPublicKey) {
     .addOperation(Operation.changeTrust({ asset: usdc, limit: '10000' }))
     .addOperation(Operation.changeTrust({ asset: yxlm, limit: '10000' }))
     .addOperation(Operation.changeTrust({ asset: btc,  limit: '1' }))
+    .addOperation(Operation.changeTrust({ asset: eurc, limit: '10000' }))
+    .addOperation(Operation.changeTrust({ asset: aqua, limit: '100000' }))
     .setTimeout(30)
     .build();
 
@@ -216,7 +227,7 @@ export async function createScammerTrustlines(scammerKeypair, issuerPublicKey) {
  * Schritt 3 – Demo-Konto mit Token befüllen.
  *
  * Überweist in einer Transaktion vom Issuer ans Demo-Konto:
- *   250 USDC · 500 yXLM · 0.05 BTC
+ *   250 USDC · 500 yXLM · 0.05 BTC · 100 EURC · 5000 AQUA
  *
  * Setzt voraus, dass createTrustlines() bereits ausgeführt wurde.
  *
@@ -227,7 +238,7 @@ export async function createScammerTrustlines(scammerKeypair, issuerPublicKey) {
 export async function fundDemoWithTokens(issuerKeypair, demoPublicKey) {
   const server = getServer();
   const account = await server.loadAccount(issuerKeypair.publicKey());
-  const { usdc, yxlm, btc } = makeAssets(issuerKeypair.publicKey());
+  const { usdc, yxlm, btc, eurc, aqua } = makeAssets(issuerKeypair.publicKey());
 
   const tx = new TransactionBuilder(account, {
     fee: BASE_FEE,
@@ -236,6 +247,8 @@ export async function fundDemoWithTokens(issuerKeypair, demoPublicKey) {
     .addOperation(Operation.payment({ destination: demoPublicKey, asset: usdc, amount: USDC_AMOUNT }))
     .addOperation(Operation.payment({ destination: demoPublicKey, asset: yxlm, amount: YXLM_AMOUNT }))
     .addOperation(Operation.payment({ destination: demoPublicKey, asset: btc,  amount: BTC_AMOUNT }))
+    .addOperation(Operation.payment({ destination: demoPublicKey, asset: eurc, amount: EURC_AMOUNT }))
+    .addOperation(Operation.payment({ destination: demoPublicKey, asset: aqua, amount: AQUA_AMOUNT }))
     .setTimeout(30)
     .build();
 
@@ -248,7 +261,7 @@ export async function fundDemoWithTokens(issuerKeypair, demoPublicKey) {
  * Schritt 4 – Alle Guthaben eines Kontos abfragen.
  *
  * @param {string} publicKey
- * @returns {Promise<{ xlm: string, usdc: string, yxlm: string, btc: string }>}
+ * @returns {Promise<{ xlm: string, usdc: string, yxlm: string, btc: string, eurc: string, aqua: string }>}
  */
 export async function getFullBalance(publicKey) {
   const account = await getServer().loadAccount(publicKey);
@@ -260,19 +273,23 @@ export async function getFullBalance(publicKey) {
     usdc: findToken('USDC'),
     yxlm: findToken('yXLM'),
     btc:  findToken('BTC'),
+    eurc: findToken('EURC'),
+    aqua: findToken('AQUA'),
   };
 }
 
 /**
  * Schritt 5 – Demo-Konto vollständig leeren.
  *
- * Führt fünf Transaktionen sequenziell aus (1s Pause dazwischen):
+ * Führt sieben Transaktionen sequenziell aus (1s Pause dazwischen):
  *
  *   TX 1 – alle USDC → Scammer
  *   TX 2 – alle yXLM → Scammer
  *   TX 3 – alle BTC  → Scammer
- *   TX 4 – Trustlines entfernen (ChangeTrust limit 0)
- *   TX 5 – AccountMerge → Scammer   (alle XLM, Konto wird gelöscht)
+ *   TX 4 – alle EURC → Scammer
+ *   TX 5 – alle AQUA → Scammer
+ *   TX 6 – Trustlines entfernen (ChangeTrust limit 0)
+ *   TX 7 – AccountMerge → Scammer   (alle XLM, Konto wird gelöscht)
  *
  * Setzt voraus, dass createScammerTrustlines() bereits aufgerufen wurde.
  *
@@ -288,10 +305,10 @@ export async function getFullBalance(publicKey) {
 export async function drainAccount(demoKeypair, scammerPublicKey, issuerPublicKey, onProgress) {
   const server = getServer();
   const hashes = [];
-  const TOTAL  = 5;
+  const TOTAL  = 7;
   const report = (step) => onProgress?.(step, TOTAL);
 
-  const { usdc, yxlm, btc } = makeAssets(issuerPublicKey);
+  const { usdc, yxlm, btc, eurc, aqua } = makeAssets(issuerPublicKey);
   const demoPublicKey = demoKeypair.publicKey();
 
   // Aktuelle Token-Bestände abrufen (einmalig am Anfang)
@@ -351,9 +368,35 @@ export async function drainAccount(demoKeypair, scammerPublicKey, issuerPublicKe
   }
   await sleep(1000);
 
-  // ── TX 4: Trustlines entfernen ─────────────────────────────────────────────
-  // ChangeTrust mit limit '0' entfernt die Trustline (nur möglich wenn Saldo = 0)
+  // ── TX 4: EURC ─────────────────────────────────────────────────────────────
   report(4);
+  if (parseFloat(balances.eurc) > 0) {
+    await submitOp((tx) =>
+      tx.addOperation(Operation.payment({
+        destination: scammerPublicKey,
+        asset: eurc,
+        amount: balances.eurc,
+      }))
+    );
+  }
+  await sleep(1000);
+
+  // ── TX 5: AQUA ─────────────────────────────────────────────────────────────
+  report(5);
+  if (parseFloat(balances.aqua) > 0) {
+    await submitOp((tx) =>
+      tx.addOperation(Operation.payment({
+        destination: scammerPublicKey,
+        asset: aqua,
+        amount: balances.aqua,
+      }))
+    );
+  }
+  await sleep(1000);
+
+  // ── TX 6: Trustlines entfernen ─────────────────────────────────────────────
+  // ChangeTrust mit limit '0' entfernt die Trustline (nur möglich wenn Saldo = 0)
+  report(6);
   {
     const account = await server.loadAccount(demoPublicKey);
     const tx = new TransactionBuilder(account, {
@@ -363,6 +406,8 @@ export async function drainAccount(demoKeypair, scammerPublicKey, issuerPublicKe
       .addOperation(Operation.changeTrust({ asset: usdc, limit: '0' }))
       .addOperation(Operation.changeTrust({ asset: yxlm, limit: '0' }))
       .addOperation(Operation.changeTrust({ asset: btc,  limit: '0' }))
+      .addOperation(Operation.changeTrust({ asset: eurc, limit: '0' }))
+      .addOperation(Operation.changeTrust({ asset: aqua, limit: '0' }))
       .setTimeout(30)
       .build();
     tx.sign(demoKeypair);
@@ -371,8 +416,8 @@ export async function drainAccount(demoKeypair, scammerPublicKey, issuerPublicKe
   }
   await sleep(1000);
 
-  // ── TX 5: AccountMerge → Scammer (alle XLM, Konto wird gelöscht) ───────────
-  report(5);
+  // ── TX 7: AccountMerge → Scammer (alle XLM, Konto wird gelöscht) ───────────
+  report(7);
   {
     const account = await server.loadAccount(demoPublicKey);
     const tx = new TransactionBuilder(account, {
@@ -392,4 +437,57 @@ export async function drainAccount(demoKeypair, scammerPublicKey, issuerPublicKe
     hashes,
     explorerUrls: hashes.map((h) => `${explorerBase}${h}`),
   };
+}
+
+/**
+ * Gibt 20 simulierte Token mit zufälligen Balances zurück.
+ *
+ * Diese Token existieren nicht auf dem Testnet – sie dienen nur der
+ * dramatischen Darstellung im Account-Card. Die `valueInXLM`-Werte
+ * basieren auf ungefähren Marktpreisen (Stand: 2025, XLM ≈ $0.12).
+ *
+ * @returns {Array<{ code: string, balance: string, valueInXLM: string }>}
+ */
+export function getFakeTokens() {
+  // [code, minBalance, maxBalance, usdPerUnit]
+  // XLM-Wert = balance * usdPerUnit / 0.12 (ungefährer XLM-Preis)
+  const specs = [
+    ['ETH',   0.05,      3,         3000 ],
+    ['ADA',   100,       2000,      0.50 ],
+    ['DOT',   10,        300,       9    ],
+    ['MATIC', 200,       5000,      0.90 ],
+    ['SOL',   0.3,       15,        175  ],
+    ['LINK',  5,         200,       14   ],
+    ['UNI',   3,         100,       7    ],
+    ['DOGE',  500,       15000,     0.18 ],
+    ['SHIB',  500000,    20000000,  0.000025],
+    ['XRP',   50,        3000,      0.60 ],
+    ['ALGO',  100,       4000,      0.20 ],
+    ['ATOM',  5,         200,       9    ],
+    ['FIL',   2,         80,        5    ],
+    ['SAND',  50,        2000,      0.60 ],
+    ['MANA',  50,        2000,      0.55 ],
+    ['LTC',   0.2,       8,         85   ],
+    ['BCH',   0.1,       4,         350  ],
+    ['XMR',   0.2,       5,         165  ],
+    ['DASH',  1,         40,        30   ],
+    ['ZEC',   1,         30,        28   ],
+  ];
+
+  return specs.map(([code, min, max, usdPerUnit]) => {
+    const raw = min + Math.random() * (max - min);
+    // Format: large values as integers, small as decimals
+    let balance;
+    if (raw >= 10000) {
+      balance = Math.round(raw).toLocaleString('en-US', { useGrouping: false });
+    } else if (raw >= 100) {
+      balance = Math.round(raw).toString();
+    } else if (raw >= 1) {
+      balance = raw.toFixed(2);
+    } else {
+      balance = raw.toFixed(4);
+    }
+    const valueInXLM = Math.round((raw * usdPerUnit) / 0.12).toString();
+    return { code, balance, valueInXLM };
+  });
 }

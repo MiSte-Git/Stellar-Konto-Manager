@@ -930,5 +930,23 @@
     "original": "Yield Farming",
     "short": "Mover activamente capital entre protocolos DeFi para obtener la mayor rentabilidad.",
     "title": "Yield Farming"
+  },
+  "zkp": {
+    "title": "Prueba de Conocimiento Cero",
+    "original": "Zero-Knowledge Proof (ZKP)",
+    "short": "Demuestra que algo es verdad sin revelar los datos subyacentes.",
+    "desc": "Imagina que quieres demostrar que eres mayor de edad sin mostrar tu DNI. Una prueba de conocimiento cero (ZKP) hace exactamente eso: demuestra que una afirmacion es verdadera sin revelar la informacion subyacente.\n\nEjemplo cotidiano:\nDemuestras a un sitio web que tienes mas de 18 anos sin compartir tu nombre, fecha de nacimiento ni foto. El sitio solo sabe: Si, edad suficiente.\n\nRelevancia para Stellar y blockchain:\n- Pagos con privacidad\n- KYC sin compartir datos de identidad\n- Escalado con pruebas comprimidas (zk-SNARKs, zk-STARKs)\n\nComo reconocer fuentes ZKP fiables:\n- Preferir dominios .org o .edu\n- Verificar presencia en GitHub\n- Buscar citas academicas o whitepapers",
+    "externalDomains": [
+      "ethereum.org/en/zero-knowledge-proofs",
+      "zkhack.dev",
+      "zkproof.org"
+    ],
+    "domainsHeading": "Para leer mas (escribe el dominio tu mismo):"
+  },
+  "walletWatcher": {
+    "title": "Wallet Watcher / Drainer",
+    "original": "Wallet Watcher / Drainer",
+    "short": "Un script automático que monitorea una cuenta comprometida y retira al instante cada nuevo depósito.",
+    "desc": "Una vez que los estafadores obtienen acceso a una clave secreta, suelen configurar un observador automático. Este vigila la cuenta las 24 horas y transfiere cada nuevo depósito a la cuenta del estafador al instante, a menudo en cuestión de segundos. La cuenta está comprometida de forma permanente. La única solución: crear inmediatamente una nueva billetera con claves completamente nuevas y no volver a usar la cuenta antigua."
   }
 }

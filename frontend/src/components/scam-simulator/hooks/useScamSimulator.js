@@ -1,5 +1,13 @@
 import React from 'react';
-import { setupDemoAccounts, drainAccount, getFullBalance } from '../utils/testnetDemo.js';
+import {
+  setupDemoAccounts,
+  createTrustlines,
+  createScammerTrustlines,
+  fundDemoWithTokens,
+  drainAccount,
+  getFullBalance,
+  getFakeTokens,
+} from '../utils/testnetDemo.js';
 
 // Typing speed multipliers (applied to all message delays)
 const SPEED_MULTIPLIERS = { slow: 1.8, normal: 1.0, fast: 0.4 };
@@ -53,21 +61,27 @@ export default function useScamSimulator(scenario) {
   const [sessionXP, setSessionXP] = React.useState(0);
 
   // ── Testnet demo state ──────────────────────────────────────────────────────
-  // XLM balance of the demo account (null = not yet loaded)
-  const [demoBalance, setDemoBalance] = React.useState(null);
+  /**
+   * demoTokens holds live balances for all tokens (real + fake).
+   * null = not yet initialized.
+   * Structure: { xlm, usdc, yxlm, btc, eurc, aqua, fakeTokens: [{ code, balance, valueInXLM }] }
+   */
+  const [demoTokens, setDemoTokens] = React.useState(null);
+
   // Hash + URL of the drain transaction (set after drainAccount succeeds)
   const [txHash, setTxHash] = React.useState(null);
   const [explorerUrl, setExplorerUrl] = React.useState(null);
+
   /**
    * demoPhase tracks the lifecycle of the ephemeral Testnet account:
    *   null       – not started (intro screen)
-   *   'init'     – setupDemoAccounts() is running (Friendbot + polling)
+   *   'init'     – setupDemoAccounts() + trustlines + funding is running
    *   'ready'    – account funded, ready to drain
    *   'draining' – drain sequence in progress
    */
   const [demoPhase, setDemoPhase] = React.useState(null);
 
-  // Ephemeral demo data – keypair + scammer address, RAM only, never persisted
+  // Ephemeral demo data – keypair + scammer + issuer address + fake tokens, RAM only, never persisted
   const demoDataRef = React.useRef(null);
   // ───────────────────────────────────────────────────────────────────────────
 
@@ -147,30 +161,51 @@ export default function useScamSimulator(scenario) {
     setFollowUpDone(false);
     setIsTyping(false);
     setSessionXP(0);
-    setDemoBalance(null);
+    setDemoTokens(null);
     setTxHash(null);
     setExplorerUrl(null);
     setDemoPhase('init');
 
-    // Initialize ephemeral Testnet demo account in the background.
-    // Chat messages start immediately; account card appears in chat once Friendbot confirms.
+    // Full Testnet demo setup in the background:
+    //   1. Friendbot all 3 accounts + poll until visible
+    //   2. Create trustlines on demo + scammer (parallel)
+    //   3. Fund demo with tokens
+    //   4. Read balances + generate fake tokens
+    //   5. Inject account card into chat
     setupDemoAccounts()
-      .then(async ({ demoKeypair, issuerKeypair, scammerKeypair }) => {
-        const keypair = demoKeypair;
+      .then(async ({ issuerKeypair, demoKeypair, scammerKeypair }) => {
+        const issuerPublicKey  = issuerKeypair.publicKey();
+        const demoPublicKey    = demoKeypair.publicKey();
         const scammerPublicKey = scammerKeypair.publicKey();
-        const balances = await getFullBalance(demoKeypair.publicKey());
-        const balance = balances.xlm;
-        demoDataRef.current = { keypair, scammerPublicKey };
-        setDemoBalance(balance);
+
+        // Trustlines on both accounts can run in parallel
+        await Promise.all([
+          createTrustlines(demoKeypair, issuerPublicKey),
+          createScammerTrustlines(scammerKeypair, issuerPublicKey),
+        ]);
+
+        await fundDemoWithTokens(issuerKeypair, demoPublicKey);
+
+        const balances   = await getFullBalance(demoPublicKey);
+        const fakeTokens = getFakeTokens();
+
+        demoDataRef.current = {
+          keypair: demoKeypair,
+          scammerPublicKey,
+          issuerPublicKey,
+          fakeTokens,
+        };
+
+        setDemoTokens({ ...balances, fakeTokens });
         setDemoPhase('ready');
-        // Inject the account card directly into the chat as a prominent message
+
+        // Inject account card into chat (no balance data – ChatWindow reads from demoTokens state)
         setVisibleMessages((prev) => [
           ...prev,
           {
             id: 'demo-account-card',
             from: 'account-card',
-            publicKey: keypair.publicKey(),
-            balance,
+            publicKey: demoPublicKey,
           },
         ]);
       })
@@ -219,54 +254,95 @@ export default function useScamSimulator(scenario) {
 
     // For scam options with a ready demo account: run the dramatic drain sequence
     if (option.isScam && demoDataRef.current) {
-      const { keypair, scammerPublicKey } = demoDataRef.current;
+      const { keypair, scammerPublicKey, issuerPublicKey, fakeTokens } = demoDataRef.current;
       demoDataRef.current = null; // Prevent double-drain
 
       setDemoPhase('draining');
 
       const mult = readSpeedMultiplier();
 
-      // ── Step 1-3: Drama messages leading up to the drain ──────────────────
-      const dramaSteps = [
-        { delay: Math.round(600  * mult), id: 'drain-step-1', i18nKey: 'ui.drain.access' },
-        { delay: Math.round(1500 * mult), id: 'drain-step-2', i18nKey: 'ui.drain.preparing' },
-        { delay: Math.round(2400 * mult), id: 'drain-step-3', i18nKey: 'ui.drain.transferring' },
-      ];
+      /**
+       * onProgress(step, total) – called by drainAccount BEFORE each TX.
+       *
+       * Step mapping:
+       *   1 → about to drain USDC
+       *   2 → USDC done, about to drain yXLM   → set usdc='0'
+       *   3 → yXLM done, about to drain BTC    → set yxlm='0'
+       *   4 → BTC done,  about to drain EURC   → set btc='0'
+       *   5 → EURC done, about to drain AQUA   → set eurc='0'
+       *   6 → AQUA done, about to remove TLs   → set aqua='0', start fake token drama
+       *   7 → TLs removed, about to merge      → show "transferring" message
+       */
+      const TOKEN_DRAIN_MAP = { 2: 'usdc', 3: 'yxlm', 4: 'btc', 5: 'eurc', 6: 'aqua' };
 
-      for (const { delay, id, i18nKey } of dramaSteps) {
-        const tid = setTimeout(() => {
-          setVisibleMessages((prev) => [...prev, { id, from: 'system', i18nKey }]);
-        }, delay);
-        timeoutsRef.current.push(tid);
-      }
+      const onProgress = (step) => {
+        if (step === 1) {
+          setVisibleMessages((prev) => [
+            ...prev,
+            { id: 'drain-access', from: 'system', i18nKey: 'ui.drain.access' },
+          ]);
+          return;
+        }
 
-      // ── Step 4: Execute the real Testnet drain ─────────────────────────────
-      const drainAt = Math.round(3200 * mult);
-      const drainTid = setTimeout(() => {
-        drainAccount(keypair, scammerPublicKey)
-          .then(({ txHash: hash, explorerUrl: url }) => {
-            setDemoBalance('0.00');
-            setTxHash(hash);
-            setExplorerUrl(url);
-          })
-          .catch(() => { /* Testnet optional – silent fail */ })
-          .finally(() => {
-            // ── Step 5: Final dramatic "account drained" message ─────────────
-            setVisibleMessages((prev) => [
-              ...prev,
-              { id: 'drain-final', from: 'drain-fatal', i18nKey: 'ui.drain.final' },
-            ]);
-            setDemoPhase(null);
+        // Mark the just-completed real token as drained
+        const drainedKey = TOKEN_DRAIN_MAP[step];
+        if (drainedKey) {
+          setDemoTokens((prev) => prev ? { ...prev, [drainedKey]: '0' } : prev);
+        }
 
-            // Brief pause so the user can read the final message before follow-ups start
-            const afterTid = setTimeout(
-              () => startFollowUp(),
-              Math.round(900 * mult)
-            );
-            timeoutsRef.current.push(afterTid);
+        if (step === 6) {
+          // AQUA just drained → schedule 20 fake token drain animations (0.3s each)
+          fakeTokens.forEach((ft, i) => {
+            const tid = setTimeout(() => {
+              setDemoTokens((prev) => {
+                if (!prev?.fakeTokens) return prev;
+                return {
+                  ...prev,
+                  fakeTokens: prev.fakeTokens.map((t) =>
+                    t.code === ft.code ? { ...t, balance: '0' } : t
+                  ),
+                };
+              });
+            }, i * 300);
+            timeoutsRef.current.push(tid);
           });
-      }, drainAt);
-      timeoutsRef.current.push(drainTid);
+
+          setVisibleMessages((prev) => [
+            ...prev,
+            { id: 'drain-preparing', from: 'system', i18nKey: 'ui.drain.preparing' },
+          ]);
+        }
+
+        if (step === 7) {
+          setVisibleMessages((prev) => [
+            ...prev,
+            { id: 'drain-transferring', from: 'system', i18nKey: 'ui.drain.transferring' },
+          ]);
+        }
+      };
+
+      // Execute the real Testnet drain
+      drainAccount(keypair, scammerPublicKey, issuerPublicKey, onProgress)
+        .then(({ hashes, explorerUrls }) => {
+          // All XLM transferred via AccountMerge
+          setDemoTokens((prev) => prev ? { ...prev, xlm: '0' } : prev);
+          setTxHash(hashes[hashes.length - 1] ?? null);
+          setExplorerUrl(explorerUrls[explorerUrls.length - 1] ?? null);
+
+          setVisibleMessages((prev) => [
+            ...prev,
+            { id: 'drain-final', from: 'drain-fatal', i18nKey: 'ui.drain.final' },
+          ]);
+          setDemoPhase(null);
+
+          // Brief pause so the user can read the final message before follow-ups start
+          const afterTid = setTimeout(() => startFollowUp(), Math.round(900 * mult));
+          timeoutsRef.current.push(afterTid);
+        })
+        .catch(() => {
+          setDemoPhase(null);
+          startFollowUp();
+        });
     } else {
       startFollowUp();
     }
@@ -289,7 +365,7 @@ export default function useScamSimulator(scenario) {
     setFollowUpDone(false);
     setIsTyping(false);
     setSessionXP(0);
-    setDemoBalance(null);
+    setDemoTokens(null);
     setTxHash(null);
     setExplorerUrl(null);
     setDemoPhase(null);
@@ -306,7 +382,7 @@ export default function useScamSimulator(scenario) {
     followUpDone,
     isTyping,
     sessionXP,
-    demoBalance,
+    demoTokens,
     demoPhase,
     txHash,
     explorerUrl,

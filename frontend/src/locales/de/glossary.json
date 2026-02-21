@@ -266,7 +266,14 @@
     "title": "Kundenidentifikation",
     "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
     "short": "Gesetzlich vorgeschriebene Identitätsprüfung, die Finanzdienstleister vor der Nutzung ihrer Dienste verlangen.",
-    "desc": "KYC (Kenne deinen Kunden) ist ein regulatorisches Verfahren, bei dem Nutzer ihre Identität durch Ausweisdokumente und manchmal ein Selfie nachweisen müssen. Ziel ist die Verhinderung von Geldwäsche (AML – Anti-Money Laundering), Terrorismusfinanzierung und Betrug. Dezentrale Protokolle wie der Stellar DEX benötigen kein KYC – du handelst direkt aus deiner Wallet. Onramp- und Offramp-Dienste hingegen sind gesetzlich zur KYC-Prüfung verpflichtet, da sie den Übergang zwischen Fiat- und Kryptowelt ermöglichen."
+    "desc": "KYC (Kenne deinen Kunden) ist ein regulatorisches Verfahren, bei dem Nutzer ihre Identitaet durch Ausweisdokumente und manchmal ein Selfie nachweisen muessen. Ziel ist die Verhinderung von Geldwaesche (AML - Anti-Money Laundering), Terrorismusfinanzierung und Betrug. Dezentrale Protokolle wie der Stellar DEX benoetigen kein KYC. Onramp- und Offramp-Dienste hingegen sind gesetzlich zur KYC-Pruefung verpflichtet.\n\nWie erkenne ich einen serioesen KYC-Anbieter?\n- Regulierungen pruefen: Wird FCA, BaFin oder FinCEN auf der Website erwaehnt?\n- Zertifizierungen suchen: SOC 2 oder ISO 27001 sind gute Zeichen.\n- Domain selbst eintippen - nie aus einem Chat oder einer App anklicken.\n- Unternehmensinfos auf Crunchbase oder LinkedIn gegenprueefen.\n\nLinks in Apps koennen veraltet oder manipuliert sein - tippe die Domain immer selbst in deinen Browser ein.",
+    "externalDomains": [
+      "jumio.com",
+      "onfido.com",
+      "sumsub.com",
+      "veriff.com"
+    ],
+    "domainsHeading": "Bekannte KYC-Anbieter (Domains zum selbst Eintippen):"
   },
   "defi": {
     "title": "Dezentralisiertes Finanzwesen",
@@ -934,5 +941,23 @@
     "short": "Ein Asset, das von einem Anchor oder Unternehmen auf Stellar ausgegeben wird und einen realen Gegenwert repräsentiert.",
     "desc": "Ein Issued Asset ist ein von einem Anchor ausgegebenes Stellar-Asset, das einen realen Wert repräsentiert – z.B. US-Dollar, Euro oder Gold. Der Anchor verwahrt den realen Gegenwert und gibt entsprechende Token auf Stellar aus. Nutzer können diese Token halten und handeln. Um das reale Asset zurückzuerhalten, löst man die Token beim Anchor ein (Offramp). Bekannte Beispiele sind USDC (Circle) oder EURC."
   },
-  "missingKey": "Fehlender Glossar-Schlüssel: {{detail}}"
+  "missingKey": "Fehlender Glossar-Schlüssel: {{detail}}",
+  "zkp": {
+    "title": "Zero-Knowledge-Beweis",
+    "original": "Zero-Knowledge Proof (ZKP)",
+    "short": "Beweist, dass etwas wahr ist, ohne die zugrundeliegenden Informationen preiszugeben.",
+    "desc": "Stell dir vor, du moechtest beweisen, dass du alt genug bist - ohne deinen Ausweis zu zeigen. Ein Zero-Knowledge-Beweis (ZKP) macht genau das: Er beweist, dass eine Aussage wahr ist, ohne die zugrundeliegenden Informationen preiszugeben.\n\nAlltagsbeispiel:\nDu beweist einer Website, dass du ueber 18 bist - ohne Name, Geburtsdatum oder Foto preiszugeben. Die Seite erfaehrt nur: Ja, alt genug.\n\nWie funktioniert das?\n1. Prover: Erstellt einen mathematischen Beweis fuer eine Behauptung.\n2. Verifier: Prueft den Beweis, ohne den Originalwert zu sehen.\n3. Ergebnis: Wahr oder Falsch - mehr nicht.\n\nRelevanz fuer Stellar und Blockchain:\nBlockchain-Transaktionen sind normalerweise oeffentlich. ZKP-Technologie erlaubt es, Transaktionen zu verifizieren, ohne sensible Daten offenzulegen:\n- Datenschutzfreundliche Zahlungen\n- KYC-Nachweis ohne Identitaetsdaten weiterzugeben\n- Skalierung durch komprimierte Beweise (zk-SNARKs, zk-STARKs)\n\nAktuelle Situation bei Stellar:\nDas Kernprotokoll verwendet noch kein ZKP, aber Soroban-Smart-Contracts koennen ZKP-Bibliotheken integrieren.\n\nWie erkenne ich serioese ZKP-Quellen?\n- .org- oder .edu-Domains bevorzugen\n- GitHub-Praesenz des Projekts pruefen\n- Akademische Zitierungen oder Whitepaper suchen",
+    "externalDomains": [
+      "ethereum.org/en/zero-knowledge-proofs",
+      "zkhack.dev",
+      "zkproof.org"
+    ],
+    "domainsHeading": "Zum Weiterlesen (Domains zum selbst Eintippen):"
+  },
+  "walletWatcher": {
+    "title": "Wallet Watcher / Drainer",
+    "original": "Wallet Watcher / Drainer",
+    "short": "Ein automatisches Script, das ein kompromittiertes Konto überwacht und jede neue Einzahlung sofort abzieht.",
+    "desc": "Sobald Scammer Zugriff auf einen Secret Key erhalten, richten sie oft einen automatischen Watcher ein. Dieser überwacht das Konto rund um die Uhr und transferiert jede neue Einzahlung sofort auf das Scammer-Konto – oft innerhalb von Sekunden. Das Konto ist dauerhaft kompromittiert. Die einzige Lösung: sofort ein neues Wallet mit komplett neuen Keys erstellen und das alte Konto nie wieder verwenden."
+  }
 }

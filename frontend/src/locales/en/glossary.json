@@ -930,5 +930,23 @@
     "short": "An asset issued by an anchor or company on Stellar that represents a real-world counterpart.",
     "desc": "An issued asset is a Stellar asset issued by an anchor that represents a real-world value – e.g. US dollars, euros, or gold. The anchor holds the real counterpart and issues corresponding tokens on Stellar. Users can hold and trade these tokens. To get back the real asset, you redeem the tokens with the anchor (offramp). Well-known examples are USDC (Circle) or EURC."
   },
-  "missingKey": "Missing glossary key: {{detail}}"
+  "missingKey": "Missing glossary key: {{detail}}",
+  "zkp": {
+    "title": "Zero-Knowledge Proof",
+    "original": "Zero-Knowledge Proof (ZKP)",
+    "short": "Proves a statement is true without revealing the underlying data.",
+    "desc": "Imagine proving you are old enough to enter a website without showing your ID. A Zero-Knowledge Proof (ZKP) does exactly that: it proves a claim is true without revealing the underlying information.\n\nEveryday analogy:\nYou prove to a website that you are over 18 without sharing your name, date of birth, or photo. The site only learns: Yes, old enough.\n\nHow it works:\n1. Prover: Creates a mathematical proof for a claim.\n2. Verifier: Checks the proof without seeing the original value.\n3. Result: True or False - nothing more.\n\nRelevance for Stellar and blockchain:\nBlockchain transactions are normally public. ZKP technology allows transactions to be verified without exposing sensitive data (amount, recipient):\n- Privacy-preserving payments\n- KYC verification without sharing identity data\n- Scaling via compressed proofs (zk-SNARKs, zk-STARKs)\n\nCurrent situation on Stellar:\nThe core protocol does not yet use ZKP, but Soroban smart contracts can integrate ZKP libraries.\n\nHow to recognise reliable ZKP sources:\n- Prefer .org or .edu domains\n- Check the project's GitHub presence\n- Look for academic citations or whitepapers",
+    "externalDomains": [
+      "ethereum.org/en/zero-knowledge-proofs",
+      "zkhack.dev",
+      "zkproof.org"
+    ],
+    "domainsHeading": "Further reading (type the domain yourself):"
+  },
+  "walletWatcher": {
+    "title": "Wallet Watcher / Drainer",
+    "original": "Wallet Watcher / Drainer",
+    "short": "An automated script that monitors a compromised account and instantly withdraws every new deposit.",
+    "desc": "Once scammers gain access to a secret key, they often set up an automatic watcher. It monitors the account around the clock and transfers every new deposit to the scammer's account instantly – often within seconds. The account is permanently compromised. The only solution: immediately create a new wallet with completely new keys and never use the old account again."
+  }
 }

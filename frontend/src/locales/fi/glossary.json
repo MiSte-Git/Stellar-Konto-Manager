@@ -930,5 +930,23 @@
     "short": "Ankkurin tai yrityksen Stellarissa liikkeeseen laskema omaisuuserä, joka edustaa todellista vastinetta.",
     "desc": "Liikkeeseen laskettu omaisuuserä on ankkurin liikkeeseen laskema Stellar-omaisuuserä, joka edustaa todellista arvoa – esim. Yhdysvaltain dollareita, euroja tai kultaa. Ankkuri säilyttää todellisen vastineen ja laskee liikkeeseen vastaavat tokenit Stellarissa. Käyttäjät voivat pitää hallussaan ja käydä kauppaa näillä tokeneilla. Saadakseen todellisen omaisuuserän takaisin, tokenit lunastetaan ankkurilta (offramp). Tunnettuja esimerkkejä ovat USDC (Circle) tai EURC."
   },
-  "missingKey": "Sanastosta puuttuu avain: {{detail}}"
+  "missingKey": "Sanastosta puuttuu avain: {{detail}}",
+  "zkp": {
+    "title": "Nollatietotodistus",
+    "original": "Zero-Knowledge Proof (ZKP)",
+    "short": "Todistaa vaittaman oikeaksi paljastamatta taustalla olevia tietoja.",
+    "desc": "Kuvittele, etta haluat todistaa olevasi tarpeeksi vanha ilman henkilokorttisi nayttamista. Nollatietotodistus (ZKP) tekee juuri sen: todistaa vaitteen oikeaksi paljastamatta taustalla olevia tietoja.\n\nArkiesimerkki:\nTodistan verkkosivustolle olevani yli 18 ilman nimea, syntymaikaa tai kuvaa. Sivusto saa tietaa vain: Kylla, tarpeeksi vanha.\n\nMerkitys Stellarille ja lohkoketjulle:\n- Yksityisyyden suojaavat maksut\n- KYC-todistus ilman henkilotietojen jakamista\n- Skaalaus pakatuilla todistuksilla (zk-SNARKs, zk-STARKs)\n\nLuotettavien ZKP-lahteiden tunnistaminen:\n- Suosi .org- tai .edu-verkkotunnuksia\n- Tarkista projektin GitHub-aktiivisuus\n- Etsi akateemisia viittauksia tai whitepapereia",
+    "externalDomains": [
+      "ethereum.org/en/zero-knowledge-proofs",
+      "zkhack.dev",
+      "zkproof.org"
+    ],
+    "domainsHeading": "Lisalukemista (kirjoita osoite itse):"
+  },
+  "walletWatcher": {
+    "title": "Wallet Watcher / Drainer",
+    "original": "Wallet Watcher / Drainer",
+    "short": "Automaattinen skripti, joka valvoo vaarantunutta tiliä ja nostaa välittömästi jokaisen uuden talletuksen.",
+    "desc": "Kun huijarit saavat pääsyn salaavaimeen, he asentavat usein automaattisen tarkkailijan. Se valvoo tiliä ympäri vuorokauden ja siirtää jokaisen uuden talletuksen välittömästi huijarin tilille – usein muutamassa sekunnissa. Tili on pysyvästi vaarantunut. Ainoa ratkaisu: luo välittömästi uusi lompakko täysin uusilla avaimilla äläkä käytä vanhaa tiliä enää koskaan."
+  }
 }

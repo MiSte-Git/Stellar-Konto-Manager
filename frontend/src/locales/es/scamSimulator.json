@@ -57,6 +57,11 @@
       "preparing": "📤 Preparando transacción...",
       "transferring": "⚡ Transfiriendo 10.000 XLM...",
       "final": "💀 Cuenta vaciada – 0 XLM"
+    },
+    "watcher": {
+      "title": "⚠️ Importante: La pesadilla no termina",
+      "body": "Los estafadores suelen configurar un vigilante automático. Cada nuevo depósito en la cuenta comprometida se drena de forma instantánea y automática.",
+      "solution": "LA ÚNICA SOLUCIÓN: Crea inmediatamente una billetera completamente nueva con nuevas claves. La cuenta antigua está perdida para siempre."
     }
   },
   "scenarios": {
