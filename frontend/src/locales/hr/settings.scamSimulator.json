@@ -1,0 +1,20 @@
+{
+  "title": "Simulator prijevara",
+  "typingSpeed": {
+    "label": "Brzina tipkanja",
+    "description": "Koliko brzo se poruke pojavljuju u chatu",
+    "slow": "Sporo",
+    "normal": "Normalno",
+    "fast": "Brzo"
+  },
+  "hints": {
+    "label": "Prikaži savjete",
+    "description": "Prikazuje suptilne savjete tijekom igranja"
+  },
+  "resetStats": {
+    "label": "Resetiraj statistiku",
+    "button": "Resetiraj",
+    "confirm": "Zaista želite izbrisati sve statistike simulatora prijevara?",
+    "done": "Statistika je resetirana."
+  }
+}

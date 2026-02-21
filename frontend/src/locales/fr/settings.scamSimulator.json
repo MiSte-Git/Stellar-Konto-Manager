@@ -1,0 +1,20 @@
+{
+  "title": "Simulateur d'arnaques",
+  "typingSpeed": {
+    "label": "Vitesse de frappe",
+    "description": "La vitesse à laquelle les messages apparaissent dans le chat",
+    "slow": "Lent",
+    "normal": "Normal",
+    "fast": "Rapide"
+  },
+  "hints": {
+    "label": "Afficher les indices",
+    "description": "Affiche des indices subtils pendant le jeu"
+  },
+  "resetStats": {
+    "label": "Réinitialiser les statistiques",
+    "button": "Réinitialiser",
+    "confirm": "Voulez-vous vraiment supprimer toutes les statistiques du simulateur d'arnaques ?",
+    "done": "Les statistiques ont été réinitialisées."
+  }
+}

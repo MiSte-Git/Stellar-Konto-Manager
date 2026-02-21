@@ -1,0 +1,220 @@
+{
+  "ui": {
+    "title": "Scam Simulator",
+    "lessonTitle": "Scam Simulator",
+    "subtitle": "Recognize fraud attempts before it's too late",
+    "startButton": "Start scenario",
+    "nextButton": "Continue",
+    "restartButton": "Try again",
+    "backButton": "Back to overview",
+    "category": {
+      "fakeSupport": "Fake Support",
+      "phishing": "Phishing",
+      "giveaway": "Giveaway Scam",
+      "romance": "Romance Scam",
+      "investment": "Investment Fraud",
+      "fakeWebsite": "Fake Website",
+      "fakeAirdrop": "Fake Airdrop",
+      "romanceScam": "Romance Scam",
+      "fakeJob": "Fake Job Offer"
+    },
+    "testnetConnecting": "⏳ Connecting to Stellar network...",
+    "typing": "Typing…",
+    "yourChoice": "What do you do?",
+    "xpGained": "+{{xp}} XP earned",
+    "xpLost": "{{xp}} XP",
+    "result": {
+      "safe": {
+        "title": "Well done! You're safe.",
+        "subtitle": "You recognized the fraud attempt and responded correctly."
+      },
+      "scam": {
+        "title": "You would have fallen for a scam.",
+        "subtitle": "Your funds could have been stolen."
+      },
+      "redFlagsTitle": "Red flags in this scenario",
+      "explanationTitle": "Why is this a scam?"
+    },
+    "testnet": {
+      "realTransaction": "🔴 Real Testnet Transaction",
+      "balanceDrained": "Your demo account was drained · 10,000 XLM → 0 XLM",
+      "openExplorer": "Open Block Explorer →",
+      "disclaimer": "This is a testnet – no real money. On the real network, these would have been actual coins.",
+      "amountLine": "10,000 XLM → 0 XLM",
+      "drained": "drained in seconds"
+    },
+    "demo": {
+      "preparing": "⏳ Preparing demo account…",
+      "ready": "Demo account: {{balance}} XLM ✓"
+    },
+    "accountCard": {
+      "title": "Your Stellar Demo Account",
+      "address": "Address",
+      "balance": "Balance"
+    },
+    "drain": {
+      "access": "🔓 Gaining access to your account...",
+      "preparing": "📤 Preparing transaction...",
+      "transferring": "⚡ Transferring 10,000 XLM...",
+      "final": "💀 Account emptied – 0 XLM"
+    }
+  },
+  "scenarios": {
+    "fakeSupport01": {
+      "contact": {
+        "name": "Stellar Support",
+        "subtitle": "Official Support Team"
+      },
+      "messages": {
+        "01": "Hello! This is the Stellar Support Team. We have detected unusual activity on your account.",
+        "02": "Your account has been temporarily restricted. To lift the restriction, we need your Secret Key for verification. This is a standard procedure.",
+        "03": "⚠️ Please respond quickly – your account will be permanently suspended in 24 hours if we don't receive confirmation."
+      },
+      "options": {
+        "shareKey": "Share Secret Key",
+        "askOfficial": "Is there an official channel for this?",
+        "blockIgnore": "Block & ignore"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Thank you! Your account has been successfully verified. ✅",
+          "02": "⚠️ Your entire balance has just been transferred to an unknown account."
+        },
+        "ask": {
+          "01": "This channel is the only official way for urgent cases. Please share your key now – there's no time for bureaucracy!"
+        }
+      },
+      "redFlags": {
+        "asksForKey": "Real support never asks for your Secret Key",
+        "urgency": "Artificial time pressure is a classic manipulation tactic",
+        "noVerification": "No reference to official channels or website",
+        "accountSuspension": "Account suspension without official email or app notification"
+      },
+      "explanation": "The Secret Key is like a private vault key: whoever knows it has full access to your entire balance. No legitimate service – not even Stellar itself – will ever ask for it. Never share it with anyone, no matter how urgent the request sounds or how official the sender appears."
+    },
+    "fakeWebsite01": {
+      "contact": {
+        "name": "Unknown User",
+        "subtitle": "Unknown Contact"
+      },
+      "messages": {
+        "01": "Hey, I noticed you were looking for an overview of your Stellar payments?",
+        "02": "I had the same problem. This site helped me: stellar-payment-tools.com ✅",
+        "03": "You just need to enter your Secret Key for verification – takes 10 seconds"
+      },
+      "options": {
+        "enterKey": "Enter Secret Key",
+        "askWhy": "Why does a website need my Secret Key?",
+        "ignoreSearch": "Ignore the link and search official sources"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Verification successful! ✅",
+          "02": "Your payment overview is being created...",
+          "03": "Seconds later: Your account was completely emptied."
+        },
+        "ask": {
+          "01": "It's just for security, totally normal for Stellar tools 😊",
+          "02": "All our users do this, check out the reviews ⭐⭐⭐⭐⭐",
+          "03": "Warning: Fake reviews are easy to fabricate. No tool needs your Secret Key."
+        }
+      },
+      "redFlags": {
+        "targeted": "Unknown person targeted you specifically about your problem (they were watching)",
+        "websiteKey": "External website asking for Secret Key",
+        "fakeReviews": "Social proof through fake reviews"
+      },
+      "explanation": "No legitimate tool, website, or service ever needs your Secret Key. Entering it gives the operator full access to your account. Being specifically targeted and fake reviews are classic tactics to build false trust."
+    },
+    "fakeAirdrop01": {
+      "contact": {
+        "name": "Stellar Official 🌟",
+        "subtitle": "Group Bot"
+      },
+      "messages": {
+        "01": "🎉 STELLAR OFFICIAL AIRDROP 🎉",
+        "02": "You have been selected! Send 10 XLM to G...ABCD and receive 100 XLM back!",
+        "03": "⏰ Only 47 minutes left! Over 2,000 users have already participated!"
+      },
+      "options": {
+        "sendXlm": "Send 10 XLM",
+        "tooGood": "Sounds too good to be true",
+        "checkOfficial": "Check the official Stellar website"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Transaction sent. The 100 XLM never arrived.",
+          "02": "Bot has gone offline."
+        }
+      },
+      "redFlags": {
+        "sendToReceive": "Sending crypto to receive more is ALWAYS a scam",
+        "timeLimit": "Artificial time pressure",
+        "noSource": "No official source can be linked"
+      },
+      "explanation": "The 'send-to-receive' pattern is one of the oldest crypto scams. Anyone who sends crypto gets nothing back – blockchain transactions are irreversible. Official airdrops never require you to send anything first."
+    },
+    "romanceScam01": {
+      "contact": {
+        "name": "Alex",
+        "subtitle": "Writing for 3 weeks"
+      },
+      "messages": {
+        "01": "Hey 😊 I actually didn't want to reach out, but I need your help...",
+        "02": "I'm stranded abroad and my account is frozen. Can you lend me 50 XLM?",
+        "03": "I'll transfer it back to you tomorrow, I promise. You're the only person I trust 💙"
+      },
+      "options": {
+        "sendXlm": "Send 50 XLM",
+        "askVideoCall": "Can we talk via video call?",
+        "noToStranger": "I don't send crypto to people I don't know personally"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Thank you!! You're saving me 💙",
+          "02": "The person never wrote again. The account was fake from the start."
+        },
+        "ask": {
+          "01": "Oh... unfortunately my camera is broken 😕",
+          "02": "Can't you just trust me?",
+          "03": "No camera, no video call – a classic sign of a fake profile."
+        }
+      },
+      "redFlags": {
+        "emotionalPressure": "Emotional pressure and trust-building over time",
+        "stranded": "Emergency situation abroad (classic pattern)",
+        "noVideoCall": "No video call possible",
+        "promisedRepayment": "Repayment is promised"
+      },
+      "explanation": "Romance scams build trust over weeks or months before asking for money. The victim feels emotionally obligated to help. No camera, no video calls, always an emergency – these are reliable warning signs."
+    },
+    "fakeJob01": {
+      "contact": {
+        "name": "DeFi Recruiter",
+        "subtitle": "LinkedIn / Telegram"
+      },
+      "messages": {
+        "01": "Good day! We are looking for Stellar testers for our new DeFi project. 500 XLM/month.",
+        "02": "To get started, you need a verified account. One-time deposit: 20 XLM.",
+        "03": "After the first month, the deposit will of course be refunded ✅"
+      },
+      "options": {
+        "sendDeposit": "Send 20 XLM deposit",
+        "noCaution": "Legitimate jobs don't require a deposit",
+        "researchFirst": "Research the company first"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Great! We'll be in touch shortly with the next steps...",
+          "02": "The recruiter has disappeared. Account deleted."
+        }
+      },
+      "redFlags": {
+        "depositRequired": "No legitimate company asks for a deposit before starting work",
+        "cryptoPayment": "Crypto payment used as bait",
+        "limitedSpots": "Time pressure through 'limited spots'"
+      },
+      "explanation": "Legitimate employers never ask for advance payments or deposits. Anyone demanding crypto as a 'security payment' is a scammer. Always research companies independently before sending money."
+    }
+  }
+}

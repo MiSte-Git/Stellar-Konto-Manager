@@ -1,0 +1,220 @@
+{
+  "ui": {
+    "title": "Simulator prijevara",
+    "lessonTitle": "Simulator prijevara",
+    "subtitle": "Prepoznajte pokušaje prijevare prije nego što bude prekasno",
+    "startButton": "Pokreni scenarij",
+    "nextButton": "Nastavi",
+    "restartButton": "Pokušaj ponovo",
+    "backButton": "Povratak na pregled",
+    "category": {
+      "fakeSupport": "Lažna podrška",
+      "phishing": "Krađa identiteta",
+      "giveaway": "Prijevara nagradnom igrom",
+      "romance": "Romantična prijevara",
+      "investment": "Investicijska prijevara",
+      "fakeWebsite": "Lažna web stranica",
+      "fakeAirdrop": "Lažni airdrop",
+      "romanceScam": "Romantična prijevara",
+      "fakeJob": "Lažna ponuda posla"
+    },
+    "testnetConnecting": "⏳ Spajanje na Stellar mrežu...",
+    "typing": "Tipka…",
+    "yourChoice": "Što radiš?",
+    "xpGained": "+{{xp}} XP zarađeno",
+    "xpLost": "{{xp}} XP",
+    "result": {
+      "safe": {
+        "title": "Bravo! Na sigurnoj si strani.",
+        "subtitle": "Prepoznao si pokušaj prijevare i pravilno reagirao."
+      },
+      "scam": {
+        "title": "Bio bi žrtva prijevare.",
+        "subtitle": "Tvoja sredstva mogla su biti ukradena."
+      },
+      "redFlagsTitle": "Znakovi upozorenja u ovom scenariju",
+      "explanationTitle": "Zašto je ovo prijevara?"
+    },
+    "testnet": {
+      "realTransaction": "🔴 Prava Testnet transakcija",
+      "balanceDrained": "Tvoj demo račun je ispražnjen · 10.000 XLM → 0 XLM",
+      "openExplorer": "Otvori Block Explorer →",
+      "disclaimer": "Ovo je testnet – nema pravog novca. Na pravoj mreži, ovo bi bili pravi novčići.",
+      "amountLine": "10.000 XLM → 0 XLM",
+      "drained": "opljačkano za sekunde"
+    },
+    "demo": {
+      "preparing": "⏳ Priprema demo računa…",
+      "ready": "Demo račun: {{balance}} XLM ✓"
+    },
+    "accountCard": {
+      "title": "Vaš demo Stellar račun",
+      "address": "Adresa",
+      "balance": "Stanje"
+    },
+    "drain": {
+      "access": "🔓 Dobivanje pristupa vašem računu...",
+      "preparing": "📤 Priprema transakcije...",
+      "transferring": "⚡ Prijenos 10.000 XLM...",
+      "final": "💀 Račun ispražnjen – 0 XLM"
+    }
+  },
+  "scenarios": {
+    "fakeSupport01": {
+      "contact": {
+        "name": "Stellar podrška",
+        "subtitle": "Službeni tim za podršku"
+      },
+      "messages": {
+        "01": "Zdravo! Ovdje je tim Stellar podrške. Otkrili smo neobičnu aktivnost na vašem računu.",
+        "02": "Vaš račun je privremeno ograničen. Da bismo uklonili ograničenje, trebamo vaš Tajni Ključ za provjeru. Ovo je standardni postupak.",
+        "03": "⚠️ Odgovorite brzo – vaš račun će biti trajno suspendiran za 24 sata ako ne primimo potvrdu."
+      },
+      "options": {
+        "shareKey": "Podijeliti Tajni Ključ",
+        "askOfficial": "Postoji li službeni kanal za to?",
+        "blockIgnore": "Blokiraj i ignoriraj"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Hvala! Vaš račun je uspješno verificiran. ✅",
+          "02": "⚠️ Cijeli vaš saldo upravo je prebačen na nepoznati račun."
+        },
+        "ask": {
+          "01": "Ovaj kanal je jedini službeni put za hitne slučajeve. Molimo podijelite ključ sada – nema vremena za birokraciju!"
+        }
+      },
+      "redFlags": {
+        "asksForKey": "Prava podrška nikada ne traži vaš Tajni Ključ",
+        "urgency": "Umjetni vremenski pritisak klasična je manipulativna taktika",
+        "noVerification": "Nema reference na službene kanale ili web stranicu",
+        "accountSuspension": "Suspenzija računa bez službene e-pošte ili obavijesti aplikacije"
+      },
+      "explanation": "Tajni Ključ je poput ključa privatnog trezora: tko ga zna, ima pun pristup cijelom vašem saldu. Nijedna legitimna usluga – pa čak ni Stellar sam – nikada vas neće pitati za njega. Nikome ga ne dijelite, bez obzira koliko hitno zahtjev zvuči ili koliko službeno pošiljatelj izgleda."
+    },
+    "fakeWebsite01": {
+      "contact": {
+        "name": "Nepoznati korisnik",
+        "subtitle": "Nepoznati kontakt"
+      },
+      "messages": {
+        "01": "Hej, vidio sam da tražiš pregled svojih Stellar plaćanja?",
+        "02": "Imao sam isti problem. Ova stranica mi je pomogla: stellar-payment-tools.com ✅",
+        "03": "Samo trebate unijeti Tajni Ključ za provjeru – traje 10 sekundi"
+      },
+      "options": {
+        "enterKey": "Unijeti Tajni Ključ",
+        "askWhy": "Zašto web stranica treba moj Tajni Ključ?",
+        "ignoreSearch": "Ignorirati link i tražiti službene izvore"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Provjera uspješna! ✅",
+          "02": "Vaš pregled plaćanja se izrađuje...",
+          "03": "Sekunde kasnije: Vaš račun je potpuno ispražnjen."
+        },
+        "ask": {
+          "01": "To je samo radi sigurnosti, potpuno normalno za Stellar alate 😊",
+          "02": "Svi naši korisnici to rade, pogledajte recenzije ⭐⭐⭐⭐⭐",
+          "03": "Upozorenje: Lažne recenzije lako je krivotvoriti. Nijedan alat ne treba Tajni Ključ."
+        }
+      },
+      "redFlags": {
+        "targeted": "Nepoznata osoba kontaktirala vas je specifično o vašem problemu (pratili su vas)",
+        "websiteKey": "Vanjska web stranica traži Tajni Ključ",
+        "fakeReviews": "Socijalni dokaz putem lažnih recenzija"
+      },
+      "explanation": "Nijedan legitimni alat, web stranica ili usluga nikada ne treba Tajni Ključ. Unosom se operateru daje pun pristup računu. Ciljano obraćanje i lažne recenzije klasične su taktike za izgradnju lažnog povjerenja."
+    },
+    "fakeAirdrop01": {
+      "contact": {
+        "name": "Stellar Official 🌟",
+        "subtitle": "Grupni bot"
+      },
+      "messages": {
+        "01": "🎉 STELLAR SLUŽBENI AIRDROP 🎉",
+        "02": "Odabrani ste! Pošaljite 10 XLM na G...ABCD i primite 100 XLM natrag!",
+        "03": "⏰ Samo još 47 minuta! Više od 2000 korisnika već je sudjelovalo!"
+      },
+      "options": {
+        "sendXlm": "Poslati 10 XLM",
+        "tooGood": "Zvuči predobro da bi bilo istinito",
+        "checkOfficial": "Provjeriti službenu Stellar stranicu"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Transakcija poslana. 100 XLM nikad nije stiglo.",
+          "02": "Bot je otišao offline."
+        }
+      },
+      "redFlags": {
+        "sendToReceive": "Slanje kriptovaluta za primanje više UVIJEK je prijevara",
+        "timeLimit": "Umjetni vremenski pritisak",
+        "noSource": "Ne može se povezati nijedan službeni izvor"
+      },
+      "explanation": "Obrazac 'pošalji da primiš' jedan je od najstarijih kripto prijevara. Tko pošalje kriptovalute, ne prima ništa natrag – blockchain transakcije su nepovratne. Službeni airdropi nikada ne zahtijevaju da vi prvo nešto pošaljete."
+    },
+    "romanceScam01": {
+      "contact": {
+        "name": "Alex",
+        "subtitle": "Piše 3 tjedna"
+      },
+      "messages": {
+        "01": "Hej 😊 zapravo se nisam htio javljati, ali trebam tvoju pomoć...",
+        "02": "Zapeo sam u inozemstvu i moj račun je blokiran. Možeš li mi posuditi 50 XLM?",
+        "03": "Vraćam ti sutra, obećavam. Ti si jedina osoba kojoj vjerujem 💙"
+      },
+      "options": {
+        "sendXlm": "Poslati 50 XLM",
+        "askVideoCall": "Možemo li razgovarati videopozivom?",
+        "noToStranger": "Ne šaljem kriptovalute osobama koje ne poznajem osobno"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Hvala!! Spasiš me 💙",
+          "02": "Osoba se više nije javljala. Račun je bio lažan od početka."
+        },
+        "ask": {
+          "01": "Oh... moja kamera je nažalost pokvarena 😕",
+          "02": "Zar mi ne možeš jednostavno vjerovati?",
+          "03": "Nema kamere, nema videopoziva – klasičan znak lažnog profila."
+        }
+      },
+      "redFlags": {
+        "emotionalPressure": "Emocionalni pritisak i izgradnja povjerenja kroz vrijeme",
+        "stranded": "Hitna situacija u inozemstvu (klasičan obrazac)",
+        "noVideoCall": "Videopoziv nije moguć",
+        "promisedRepayment": "Obećana je povrat novca"
+      },
+      "explanation": "Romantičke prijevare grade povjerenje tjednima ili mjesecima prije traženja novca. Žrtva se osjeća emocionalno obvezanom pomoći. Nema kamere, nema videopoziva, uvijek hitna situacija – to su pouzdani znakovi upozorenja."
+    },
+    "fakeJob01": {
+      "contact": {
+        "name": "DeFi Recruiter",
+        "subtitle": "LinkedIn / Telegram"
+      },
+      "messages": {
+        "01": "Dobar dan! Tražimo Stellar testere za naš novi DeFi projekt. 500 XLM/mjesec.",
+        "02": "Za početak trebate verificirani račun. Jednokratni polog: 20 XLM.",
+        "03": "Nakon prvog mjeseca polog će naravno biti vraćen ✅"
+      },
+      "options": {
+        "sendDeposit": "Poslati polog od 20 XLM",
+        "noCaution": "Legitimni poslovi ne zahtijevaju polog",
+        "researchFirst": "Prvo istražiti tvrtku"
+      },
+      "followUp": {
+        "scam": {
+          "01": "Super! Javit ćemo se uskoro sa sljedećim koracima...",
+          "02": "Regrut je nestao. Račun izbrisan."
+        }
+      },
+      "redFlags": {
+        "depositRequired": "Nijedna legitimna tvrtka ne traži polog prije početka rada",
+        "cryptoPayment": "Isplata u kriptovalutama korištena kao mamac",
+        "limitedSpots": "Vremenski pritisak kroz 'ograničena mjesta'"
+      },
+      "explanation": "Legitimni poslodavci nikada ne traže predujmove ni pologe. Tko traži kriptovalute kao 'sigurnosnu uplatu', prevarant je. Uvijek istraži tvrtke neovisno prije slanja novca."
+    }
+  }
+}

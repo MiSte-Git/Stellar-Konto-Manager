@@ -106,5 +106,15 @@
     "task": "Beantworte Fragen zu Single-Sig vs. Multisig, Schwellen und Signierern.",
     "learningOutcome": "Bei Multisig braucht man mehrere Unterschriften. Das schützt vor Alleingängen.",
     "reward": "⭐ 2 – Multisig-Starter"
+  },
+  {
+    "id": "scam-simulator",
+    "type": "scam-simulator",
+    "route": "/learn/scam-simulator",
+    "i18nKey": "scamSimulator:ui.lessonTitle",
+    "prerequisites": ["lesson7"],
+    "goal": "Betrugsversuche im echten Chat-Kontext erkennen und richtig reagieren.",
+    "learningOutcome": "Du erkennst typische Scam-Muster wie Fake Support, Zeitdruck und Key-Abfragen.",
+    "reward": "🛡️ Scam-Detektor"
   }
 ]

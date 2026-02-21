@@ -1,0 +1,20 @@
+{
+  "title": "Scam-simulator",
+  "typingSpeed": {
+    "label": "Typsnelheid",
+    "description": "Hoe snel berichten in de chat verschijnen",
+    "slow": "Langzaam",
+    "normal": "Normaal",
+    "fast": "Snel"
+  },
+  "hints": {
+    "label": "Hints weergeven",
+    "description": "Toont subtiele hints tijdens het spelen"
+  },
+  "resetStats": {
+    "label": "Statistieken resetten",
+    "button": "Resetten",
+    "confirm": "Weet u zeker dat u alle statistieken van de scam-simulator wilt verwijderen?",
+    "done": "Statistieken zijn gereset."
+  }
+}

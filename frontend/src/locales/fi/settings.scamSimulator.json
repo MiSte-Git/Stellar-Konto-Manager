@@ -1,0 +1,20 @@
+{
+  "title": "Huijaussimulaattori",
+  "typingSpeed": {
+    "label": "Kirjoitusnopeus",
+    "description": "Kuinka nopeasti viestit ilmestyvät chattiin",
+    "slow": "Hidas",
+    "normal": "Normaali",
+    "fast": "Nopea"
+  },
+  "hints": {
+    "label": "Näytä vihjeet",
+    "description": "Näyttää hienovaraisia vihjeitä pelaamisen aikana"
+  },
+  "resetStats": {
+    "label": "Nollaa tilastot",
+    "button": "Nollaa",
+    "confirm": "Haluatko todella poistaa kaikki huijaussimulaattorin tilastot?",
+    "done": "Tilastot on nollattu."
+  }
+}
