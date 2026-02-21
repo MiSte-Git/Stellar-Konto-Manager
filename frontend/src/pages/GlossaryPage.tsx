@@ -241,7 +241,13 @@ function GlossaryPage() {
         })
         .join(' ')
         .toLowerCase();
-      return { key, display, desc, short, aliasSearchText };
+      // externalDomains: optional array of plain-text domain strings stored in the JSON
+      // i18next returns the raw array when returnObjects:true; fall back to [] if absent.
+      const externalDomainsRaw = tGlossary(`${key}.externalDomains`, { returnObjects: true, defaultValue: [] as string[] });
+      const externalDomains: string[] = Array.isArray(externalDomainsRaw) ? externalDomainsRaw as string[] : [];
+      const domainsHeading: string = tGlossary(`${key}.domainsHeading`, '') as string;
+
+      return { key, display, desc, short, aliasSearchText, externalDomains, domainsHeading };
     });
   }, [canonicalSlugs, multisigHelpDesc, tGlossary]);
 
@@ -342,6 +348,8 @@ function GlossaryPage() {
                         titleNode={<span className="break-words">{it.display}</span>}
                         titleAttr={it.display}
                         desc={it.desc}
+                        externalDomains={it.externalDomains}
+                        domainsHeading={it.domainsHeading || undefined}
                       />
                     </section>
                   );

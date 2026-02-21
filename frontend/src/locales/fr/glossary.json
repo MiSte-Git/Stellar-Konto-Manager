@@ -930,5 +930,23 @@
     "short": "Un actif émis par une ancre ou une entreprise sur Stellar représentant une contrepartie réelle.",
     "desc": "Un actif émis est un actif Stellar émis par une ancre qui représente une valeur réelle – par ex. des dollars, des euros ou de l'or. L'ancre détient la contrepartie réelle et émet les tokens correspondants sur Stellar. Les utilisateurs peuvent détenir et échanger ces tokens. Pour récupérer l'actif réel, on échange les tokens auprès de l'ancre (offramp). Des exemples connus sont l'USDC (Circle) ou l'EURC."
   },
-  "missingKey": "Clé de glossaire manquante : {{detail}}"
+  "missingKey": "Clé de glossaire manquante : {{detail}}",
+  "zkp": {
+    "title": "Preuve a Divulgation Nulle",
+    "original": "Zero-Knowledge Proof (ZKP)",
+    "short": "Prouve qu'une affirmation est vraie sans reveler les donnees sous-jacentes.",
+    "desc": "Imaginez prouver que vous etes majeur sans montrer votre piece d'identite. Une preuve a divulgation nulle (ZKP) fait exactement cela: elle prouve qu'une affirmation est vraie sans reveler les informations sous-jacentes.\n\nExemple du quotidien:\nVous prouvez a un site web que vous avez plus de 18 ans sans partager votre nom, date de naissance ni photo. Le site apprend seulement: Oui, assez age.\n\nPertinence pour Stellar et la blockchain:\n- Paiements respectueux de la vie privee\n- Verification KYC sans partage de donnees d'identite\n- Mise a l'echelle via des preuves compressees (zk-SNARKs, zk-STARKs)\n\nComment reconnaitre des sources ZKP fiables:\n- Preferer les domaines .org ou .edu\n- Verifier la presence du projet sur GitHub\n- Chercher des citations academiques ou des whitepapers",
+    "externalDomains": [
+      "ethereum.org/en/zero-knowledge-proofs",
+      "zkhack.dev",
+      "zkproof.org"
+    ],
+    "domainsHeading": "Pour aller plus loin (tapez l'adresse vous-meme):"
+  },
+  "walletWatcher": {
+    "title": "Wallet Watcher / Drainer",
+    "original": "Wallet Watcher / Drainer",
+    "short": "Un script automatique qui surveille un compte compromis et retire instantanément chaque nouveau dépôt.",
+    "desc": "Dès que les arnaqueurs obtiennent accès à une clé secrète, ils mettent souvent en place un surveillant automatique. Celui-ci surveille le compte en permanence et transfère chaque nouveau dépôt vers le compte de l'arnaqueur instantanément – souvent en quelques secondes. Le compte est définitivement compromis. La seule solution : créer immédiatement un nouveau portefeuille avec de nouvelles clés et ne plus jamais utiliser l'ancien compte."
+  }
 }

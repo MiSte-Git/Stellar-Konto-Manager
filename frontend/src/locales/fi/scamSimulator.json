@@ -57,6 +57,11 @@
       "preparing": "📤 Valmistellaan tapahtumaa...",
       "transferring": "⚡ Siirretään 10 000 XLM...",
       "final": "💀 Tili tyhjennetty – 0 XLM"
+    },
+    "watcher": {
+      "title": "⚠️ Tärkeää: Painajainen ei lopu",
+      "body": "Huijarit asettavat usein automaattisen tarkkailijan. Jokainen uusi talletus vaarantuneelle tilille nostetaan välittömästi ja automaattisesti.",
+      "solution": "AINOA RATKAISU: Luo heti täysin uusi lompakko uusilla avaimilla. Vanha tili on menetetty ikuisesti."
     }
   },
   "scenarios": {

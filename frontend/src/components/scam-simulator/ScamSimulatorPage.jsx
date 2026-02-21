@@ -63,6 +63,7 @@ export default function ScamSimulatorPage({ scenarios = [], onBack }) {
     followUpDone,
     isTyping,
     sessionXP,
+    demoTokens,
     txHash,
     explorerUrl,
     start,
@@ -311,6 +312,7 @@ export default function ScamSimulatorPage({ scenarios = [], onBack }) {
               isTyping={isTyping}
               scrollRef={scrollRef}
               disableAutoScroll={phase === 'decision' || (phase === 'followup' && followUpDone)}
+              demoTokens={demoTokens}
             />
           </div>
 

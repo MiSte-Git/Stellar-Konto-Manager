@@ -930,5 +930,23 @@
     "short": "Een asset uitgegeven door een anchor of bedrijf op Stellar dat een reële tegenwaarde vertegenwoordigt.",
     "desc": "Een uitgegeven asset is een Stellar-asset uitgegeven door een anchor dat een reële waarde vertegenwoordigt – bijv. Amerikaanse dollars, euro's of goud. De anchor bewaart de reële tegenwaarde en geeft overeenkomstige tokens uit op Stellar. Gebruikers kunnen deze tokens houden en verhandelen. Om het reële asset terug te krijgen, wissel je de tokens in bij de anchor (offramp). Bekende voorbeelden zijn USDC (Circle) of EURC."
   },
-  "missingKey": "Ontbrekend woordenlijst sleutel: {{detail}}"
+  "missingKey": "Ontbrekend woordenlijst sleutel: {{detail}}",
+  "zkp": {
+    "title": "Zero-Knowledge Bewijs",
+    "original": "Zero-Knowledge Proof (ZKP)",
+    "short": "Bewijst dat iets waar is zonder de onderliggende gegevens te onthullen.",
+    "desc": "Stel je voor dat je wilt bewijzen dat je oud genoeg bent zonder je identiteitsbewijs te tonen. Een zero-knowledge bewijs (ZKP) doet precies dat: het bewijst dat een bewering waar is zonder de onderliggende informatie te onthullen.\n\nAlledaags voorbeeld:\nJe bewijst aan een website dat je ouder dan 18 bent zonder naam, geboortedatum of foto te delen. De site leert alleen: Ja, oud genoeg.\n\nRelevantie voor Stellar en blockchain:\n- Privacyvriendelijke betalingen\n- KYC-verificatie zonder identiteitsgegevens te delen\n- Schaalbaarheid via gecomprimeerde bewijzen (zk-SNARKs, zk-STARKs)\n\nHoe betrouwbare ZKP-bronnen herkennen:\n- .org- of .edu-domeinen verkiezen\n- GitHub-aanwezigheid van het project controleren\n- Academische citaten of whitepapers zoeken",
+    "externalDomains": [
+      "ethereum.org/en/zero-knowledge-proofs",
+      "zkhack.dev",
+      "zkproof.org"
+    ],
+    "domainsHeading": "Verder lezen (typ het adres zelf in):"
+  },
+  "walletWatcher": {
+    "title": "Wallet Watcher / Drainer",
+    "original": "Wallet Watcher / Drainer",
+    "short": "Een automatisch script dat een gecompromitteerd account bewaakt en elke nieuwe storting onmiddellijk opneemt.",
+    "desc": "Zodra oplichters toegang krijgen tot een geheime sleutel, installeren ze vaak een automatische watcher. Die bewaakt het account dag en nacht en verplaatst elke nieuwe storting onmiddellijk naar het account van de oplichter – vaak binnen enkele seconden. Het account is blijvend gecompromitteerd. De enige oplossing: maak onmiddellijk een nieuw wallet met volledig nieuwe sleutels en gebruik het oude account nooit meer."
+  }
 }

@@ -930,5 +930,23 @@
     "short": "Asset koji izdaje anchor ili tvrtka na Stellaru i koji predstavlja stvarnu protuvrijednost.",
     "desc": "Izdani asset je Stellar asset koji izdaje anchor i koji predstavlja stvarnu vrijednost – npr. američke dolare, eure ili zlato. Anchor čuva stvarnu protuvrijednost i izdaje odgovarajuće tokene na Stellaru. Korisnici mogu držati i trgovati tim tokenima. Da biste dobili natrag stvarni asset, zamijenite tokene kod anchora (offramp). Poznati primjeri su USDC (Circle) ili EURC."
   },
-  "missingKey": "Nedostaje ključ pojmovnika: {{detail}}"
+  "missingKey": "Nedostaje ključ pojmovnika: {{detail}}",
+  "zkp": {
+    "title": "Dokaz s Nultim Znanjem",
+    "original": "Zero-Knowledge Proof (ZKP)",
+    "short": "Dokazuje da je nesto istinito bez otkrivanja temeljnih podataka.",
+    "desc": "Zamislite da dokazujete da ste dovoljno stari bez pokazivanja osobne iskaznice. Dokaz s nultim znanjem (ZKP) radi upravo to: dokazuje da je tvrdnja istinita bez otkrivanja temeljnih informacija.\n\nSvakodnevni primjer:\nDokazujete web stranici da imate vise od 18 godina bez dijeljenja imena, datuma rodenja ili fotografije. Stranica saznaje samo: Da, dovoljno star.\n\nRelevantnost za Stellar i blockchain:\n- Privatnosni placanja\n- KYC verifikacija bez dijeljenja podataka o identitetu\n- Skalabilnost komprimiranim dokazima (zk-SNARKs, zk-STARKs)\n\nKako prepoznati pouzdane ZKP izvore:\n- Preferirati .org ili .edu domene\n- Provjeriti prisutnost projekta na GitHubu\n- Traziti akademske citate ili whitepapers",
+    "externalDomains": [
+      "ethereum.org/en/zero-knowledge-proofs",
+      "zkhack.dev",
+      "zkproof.org"
+    ],
+    "domainsHeading": "Za daljnje citanje (upisite adresu sami):"
+  },
+  "walletWatcher": {
+    "title": "Wallet Watcher / Drainer",
+    "original": "Wallet Watcher / Drainer",
+    "short": "Automatski skript koji nadzire kompromitiran račun i odmah povlači svaki novi depozit.",
+    "desc": "Kad prevaranti dobiju pristup tajnom ključu, često postavljaju automatski nadzornik. On nadzire račun 24 sata na dan i odmah prenosi svaki novi depozit na račun prevaranta – često u roku nekoliko sekundi. Račun je trajno kompromitiran. Jedino rješenje: odmah stvoriti novi novčanik s potpuno novim ključevima i nikad više ne koristiti stari račun."
+  }
 }

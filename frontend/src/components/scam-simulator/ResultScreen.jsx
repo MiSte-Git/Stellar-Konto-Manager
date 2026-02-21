@@ -99,6 +99,32 @@ export default function ResultScreen({ scenario, chosen, sessionXP, txHash, expl
         </motion.div>
       )}
 
+      {/* Watcher warning – always visible on scam outcomes */}
+      {!isSafe && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: txHash ? 0.55 : 0.4, duration: 0.4 }}
+          className="mt-4 text-left rounded-2xl border-2 border-red-600 dark:border-red-700 bg-gray-900 overflow-hidden shadow-lg"
+        >
+          <div className="px-4 py-3 border-b border-red-800 dark:border-red-900">
+            <p className="font-bold text-base text-red-400">
+              {t('ui.watcher.title')}
+            </p>
+          </div>
+          <div className="px-4 py-4 space-y-3">
+            <p className="text-sm text-gray-300 leading-relaxed">
+              {t('ui.watcher.body')}
+            </p>
+            <div className="rounded-lg bg-amber-950/60 border border-amber-700/50 px-3 py-2.5">
+              <p className="text-sm font-bold text-amber-400 leading-relaxed">
+                {t('ui.watcher.solution')}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {/* XP badge – only on safe outcomes */}
       {isSafe && sessionXP > 0 && (
         <motion.div

@@ -57,6 +57,11 @@
       "preparing": "📤 Preparazione della transazione...",
       "transferring": "⚡ Trasferimento di 10.000 XLM...",
       "final": "💀 Account svuotato – 0 XLM"
+    },
+    "watcher": {
+      "title": "⚠️ Importante: L'incubo non finisce",
+      "body": "I truffatori spesso impostano un osservatore automatico. Ogni nuovo deposito sul conto compromesso viene prelevato immediatamente e automaticamente.",
+      "solution": "L'UNICA SOLUZIONE: Crea immediatamente un nuovo portafoglio con nuove chiavi. Il vecchio conto è perduto per sempre."
     }
   },
   "scenarios": {

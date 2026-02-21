@@ -164,11 +164,11 @@ export const glossaryGroups = [
   },
   {
     id: 'cryptography',
-    slugs: ['cryptography', 'hash', 'encryption', 'digitalSignature', 'publicKeyCryptography', 'keyPair'],
+    slugs: ['cryptography', 'hash', 'encryption', 'digitalSignature', 'publicKeyCryptography', 'keyPair', 'zkp'],
   },
   {
     id: 'security',
-    slugs: ['phishing', 'scam', 'rugPull', 'ponzi', 'twoFactorAuth', 'socialEngineering'],
+    slugs: ['phishing', 'scam', 'walletWatcher', 'rugPull', 'ponzi', 'twoFactorAuth', 'socialEngineering'],
   },
 ] as const;
 

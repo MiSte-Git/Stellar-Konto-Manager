@@ -57,6 +57,11 @@
       "preparing": "📤 Transaktion wird vorbereitet...",
       "transferring": "⚡ 10.000 XLM werden transferiert...",
       "final": "💀 Konto geleert – 0 XLM"
+    },
+    "watcher": {
+      "title": "⚠️ Wichtig: Der Alptraum hört nicht auf",
+      "body": "Scammer richten oft einen automatischen Watcher ein. Jede neue Einzahlung auf das kompromittierte Konto wird sofort und automatisch abgezogen.",
+      "solution": "EINZIGE LÖSUNG: Sofort ein komplett neues Wallet mit neuen Keys erstellen. Das alte Konto ist für immer verloren."
     }
   },
   "scenarios": {

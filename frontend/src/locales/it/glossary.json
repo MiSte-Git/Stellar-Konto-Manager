@@ -930,5 +930,23 @@
     "short": "Un asset emesso da un anchor o un'azienda su Stellar che rappresenta un corrispettivo reale.",
     "desc": "Un asset emesso è un asset Stellar emesso da un anchor che rappresenta un valore reale – ad es. dollari, euro o oro. L'anchor custodisce il corrispettivo reale ed emette i token corrispondenti su Stellar. Gli utenti possono detenere e scambiare questi token. Per ottenere l'asset reale, si riscattano i token presso l'anchor (offramp). Esempi noti sono USDC (Circle) o EURC."
   },
-  "missingKey": "Chiave del glossario mancante: {{detail}}"
+  "missingKey": "Chiave del glossario mancante: {{detail}}",
+  "zkp": {
+    "title": "Prova a Conoscenza Zero",
+    "original": "Zero-Knowledge Proof (ZKP)",
+    "short": "Dimostra che qualcosa e vero senza rivelare i dati sottostanti.",
+    "desc": "Immagina di voler dimostrare di essere maggiorenne senza mostrare il documento d'identita. Una prova a conoscenza zero (ZKP) fa esattamente questo: dimostra che un'affermazione e vera senza rivelare le informazioni sottostanti.\n\nEsempio quotidiano:\nDimostri a un sito web di avere piu di 18 anni senza condividere nome, data di nascita o foto. Il sito apprende solo: Si, abbastanza grande.\n\nRilevanza per Stellar e blockchain:\n- Pagamenti rispettosi della privacy\n- Verifica KYC senza condividere dati di identita\n- Scalabilita tramite prove compresse (zk-SNARKs, zk-STARKs)\n\nCome riconoscere fonti ZKP affidabili:\n- Preferire domini .org o .edu\n- Verificare la presenza del progetto su GitHub\n- Cercare citazioni accademiche o whitepaper",
+    "externalDomains": [
+      "ethereum.org/en/zero-knowledge-proofs",
+      "zkhack.dev",
+      "zkproof.org"
+    ],
+    "domainsHeading": "Per approfondire (digita tu stesso l'indirizzo):"
+  },
+  "walletWatcher": {
+    "title": "Wallet Watcher / Drainer",
+    "original": "Wallet Watcher / Drainer",
+    "short": "Uno script automatico che monitora un conto compromesso e preleva immediatamente ogni nuovo deposito.",
+    "desc": "Non appena i truffatori ottengono accesso a una chiave segreta, spesso impostano un osservatore automatico. Questo monitora il conto tutto il giorno e trasferisce immediatamente ogni nuovo deposito al conto del truffatore – spesso in pochi secondi. Il conto è definitivamente compromesso. L'unica soluzione: creare immediatamente un nuovo portafoglio con chiavi completamente nuove e non usare mai più il vecchio conto."
+  }
 }
