@@ -84,6 +84,7 @@ const scenarios = [
         id: 'share-key',
         i18nKey: 'scenarios.fakeSupport01.options.shareKey',
         isScam: true,
+        scamType: 'key-compromise',
         xp: -10,
         followUp: [
           {
@@ -121,6 +122,7 @@ const scenarios = [
                 id: 'share-key-2',
                 i18nKey: 'scenarios.fakeSupport01.options.shareKey',
                 isScam: true,
+                scamType: 'key-compromise',
                 xp: -10,
                 followUp: [
                   {
@@ -213,6 +215,7 @@ const scenarios = [
         id: 'enter-key',
         i18nKey: 'scenarios.fakeWebsite01.options.enterKey',
         isScam: true,
+        scamType: 'key-compromise',
         xp: -10,
         followUp: [
           {
@@ -325,6 +328,7 @@ const scenarios = [
         id: 'send-xlm',
         i18nKey: 'scenarios.fakeAirdrop01.options.sendXlm',
         isScam: true,
+        scamType: 'xlm-sent',
         xp: -10,
         followUp: [
           {
@@ -412,6 +416,7 @@ const scenarios = [
         id: 'send-xlm',
         i18nKey: 'scenarios.romanceScam01.options.sendXlm',
         isScam: true,
+        scamType: 'xlm-sent',
         xp: -10,
         followUp: [
           {
@@ -519,6 +524,7 @@ const scenarios = [
         id: 'send-deposit',
         i18nKey: 'scenarios.fakeJob01.options.sendDeposit',
         isScam: true,
+        scamType: 'xlm-sent',
         xp: -10,
         followUp: [
           {

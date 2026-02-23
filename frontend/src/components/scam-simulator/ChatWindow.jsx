@@ -19,63 +19,28 @@ function TypingIndicator() {
   );
 }
 
-/** Returns true if a balance string represents zero */
-function isZero(value) {
-  if (!value) return false;
-  return parseFloat(value) === 0;
-}
-
 /**
- * One token row inside the account card.
- * Animates to red + strikethrough when balance becomes 0.
+ * Approximate XLM rates for each token – used to compute a total for the
+ * account card. Values are intentionally rough; they just need to look plausible.
  */
-function TokenRow({ code, value, bold }) {
-  const drained = isZero(value);
-  return (
-    <motion.div
-      className="flex items-center justify-between gap-3 min-w-0"
-      animate={drained ? { opacity: 0.55 } : { opacity: 1 }}
-      transition={{ duration: 0.4 }}
-    >
-      <span className="text-green-700 dark:text-green-400 shrink-0 text-xs">{code}</span>
-      <motion.span
-        className={[
-          'font-mono text-xs truncate',
-          drained
-            ? 'line-through text-red-500 dark:text-red-400'
-            : bold
-              ? 'font-bold text-green-800 dark:text-green-200'
-              : 'text-green-800 dark:text-green-300',
-        ].join(' ')}
-        animate={drained ? { scale: [1, 1.1, 1] } : { scale: 1 }}
-        transition={{ duration: 0.35 }}
-      >
-        {drained ? '0' : (value ?? '—')}
-      </motion.span>
-    </motion.div>
-  );
-}
+const REAL_TOKEN_RATES = [
+  { key: 'usdc', xlmRate: 8.33    },
+  { key: 'yxlm', xlmRate: 1       },
+  { key: 'btc',  xlmRate: 700_000 },
+  { key: 'eurc', xlmRate: 9       },
+  { key: 'aqua', xlmRate: 0.02    },
+];
 
-/**
- * Small pill for a fake token. Flashes red then greys out when drained.
- */
-function FakeTokenPill({ code, balance }) {
-  const drained = isZero(balance);
-  return (
-    <motion.span
-      className={[
-        'inline-flex items-center gap-1 text-[0.68rem] px-1.5 py-0.5 rounded font-mono border',
-        drained
-          ? 'line-through text-red-400 dark:text-red-500 bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800 opacity-50'
-          : 'text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800',
-      ].join(' ')}
-      animate={drained ? { scale: [1, 1.15, 1], opacity: [1, 0.4, 0.5] } : {}}
-      transition={{ duration: 0.4 }}
-    >
-      <span className="font-semibold">{code}</span>
-      <span className="opacity-70">{drained ? '0' : balance}</span>
-    </motion.span>
+function computeTotalXLM(tokens) {
+  if (!tokens) return null;
+  let total = parseFloat(tokens.xlm ?? '0');
+  for (const { key, xlmRate } of REAL_TOKEN_RATES) {
+    total += parseFloat(tokens[key] ?? '0') * xlmRate;
+  }
+  total += (tokens.fakeTokens ?? []).reduce(
+    (s, ft) => s + parseFloat(ft.valueInXLM ?? '0'), 0
   );
+  return total;
 }
 
 /**
@@ -133,29 +98,15 @@ export default function ChatWindow({ contact, messages, isTyping, scrollRef, dis
       >
         <AnimatePresence initial={false}>
           {messages.map((msg) => {
-            // ── Account card (green) – shown when demo account is funded ──
+
+            // ── Account card – compact wallet notification ──────────────────
             if (msg.from === 'account-card') {
-              const shortKey = msg.publicKey
-                ? `${msg.publicKey.slice(0, 4)}…${msg.publicKey.slice(-6)}`
-                : '';
-
-              const tokens = demoTokens ?? {};
-              const fakeTokens = tokens.fakeTokens ?? [];
-
-              // XLM formatted with locale separators
-              const xlmDisplay = tokens.xlm
+              const total = computeTotalXLM(demoTokens);
+              const formatted = total != null
                 ? new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 0 }).format(
-                    parseFloat(tokens.xlm)
+                    Math.round(total)
                   )
                 : '—';
-
-              const realTokens = [
-                { code: 'USDC', value: tokens.usdc },
-                { code: 'yXLM', value: tokens.yxlm },
-                { code: 'BTC',  value: tokens.btc },
-                { code: 'EURC', value: tokens.eurc },
-                { code: 'AQUA', value: tokens.aqua },
-              ];
 
               return (
                 <motion.div
@@ -165,55 +116,14 @@ export default function ChatWindow({ contact, messages, isTyping, scrollRef, dis
                   transition={{ duration: 0.35, ease: 'easeOut' }}
                   className="flex justify-center"
                 >
-                  <div className="w-full max-w-[92%] rounded-2xl border-2 border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-950/30 overflow-hidden shadow-sm">
-                    {/* Card header */}
-                    <div className="px-4 py-2.5 bg-green-100 dark:bg-green-900/30 border-b border-green-200 dark:border-green-800 flex items-center justify-between gap-2">
-                      <p className="font-bold text-sm text-green-800 dark:text-green-300">
+                  <div className="w-full max-w-[82%] rounded-xl border border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-950/30 shadow-sm overflow-hidden">
+                    <div className="flex items-center justify-between gap-3 px-4 py-3">
+                      <p className="font-semibold text-sm text-green-800 dark:text-green-300">
                         💳 {t('ui.accountCard.title')}
                       </p>
-                      <span className="font-mono text-[0.68rem] text-green-600 dark:text-green-500 shrink-0">
-                        {shortKey}
-                      </span>
-                    </div>
-
-                    <div className="px-4 py-3 space-y-1">
-                      {/* XLM – main balance, larger */}
-                      <div className="flex items-center justify-between gap-3 pb-1.5 border-b border-green-200 dark:border-green-800/50">
-                        <span className="text-green-700 dark:text-green-400 text-sm font-semibold shrink-0">XLM</span>
-                        <motion.span
-                          className={[
-                            'font-bold text-base',
-                            isZero(tokens.xlm)
-                              ? 'line-through text-red-500 dark:text-red-400'
-                              : 'text-green-800 dark:text-green-200',
-                          ].join(' ')}
-                          animate={isZero(tokens.xlm) ? { scale: [1, 1.08, 1] } : { scale: 1 }}
-                          transition={{ duration: 0.35 }}
-                        >
-                          {isZero(tokens.xlm) ? '0' : xlmDisplay}
-                        </motion.span>
-                      </div>
-
-                      {/* Real tokens */}
-                      <div className="space-y-1 pt-0.5">
-                        {realTokens.map(({ code, value }) => (
-                          <TokenRow key={code} code={code} value={value} />
-                        ))}
-                      </div>
-
-                      {/* Fake token pills */}
-                      {fakeTokens.length > 0 && (
-                        <div className="pt-2 mt-1 border-t border-green-200 dark:border-green-800/50">
-                          <p className="text-[0.68rem] text-green-600 dark:text-green-500 mb-1.5">
-                            + {fakeTokens.length} {t('ui.accountCard.moreTokens', 'weitere Token')}
-                          </p>
-                          <div className="flex flex-wrap gap-1">
-                            {fakeTokens.map((ft) => (
-                              <FakeTokenPill key={ft.code} code={ft.code} balance={ft.balance} />
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      <p className="font-mono text-sm font-bold text-green-700 dark:text-green-400 shrink-0 tabular-nums">
+                        ~{formatted} XLM
+                      </p>
                     </div>
                   </div>
                 </motion.div>

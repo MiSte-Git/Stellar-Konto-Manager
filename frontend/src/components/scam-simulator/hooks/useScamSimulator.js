@@ -224,7 +224,6 @@ export default function useScamSimulator(scenario) {
     isProcessingRef.current = true;
 
     setChosen(option);
-    setPhase('followup');
 
     // Add the user's choice as a "me" bubble
     setVisibleMessages((prev) => [
@@ -252,101 +251,63 @@ export default function useScamSimulator(scenario) {
       });
     };
 
-    // For scam options with a ready demo account: run the dramatic drain sequence
-    if (option.isScam && demoDataRef.current) {
-      const { keypair, scammerPublicKey, issuerPublicKey, fakeTokens } = demoDataRef.current;
-      demoDataRef.current = null; // Prevent double-drain
+    // key-compromise scams → timeskip interstitial → DrainScreen
+    if (option.isScam && option.scamType === 'key-compromise') {
+      setPhase('timeskip');
 
-      setDemoPhase('draining');
-
-      const mult = readSpeedMultiplier();
-
-      /**
-       * onProgress(step, total) – called by drainAccount BEFORE each TX.
-       *
-       * Step mapping:
-       *   1 → about to drain USDC
-       *   2 → USDC done, about to drain yXLM   → set usdc='0'
-       *   3 → yXLM done, about to drain BTC    → set yxlm='0'
-       *   4 → BTC done,  about to drain EURC   → set btc='0'
-       *   5 → EURC done, about to drain AQUA   → set eurc='0'
-       *   6 → AQUA done, about to remove TLs   → set aqua='0', start fake token drama
-       *   7 → TLs removed, about to merge      → show "transferring" message
-       */
-      const TOKEN_DRAIN_MAP = { 2: 'usdc', 3: 'yxlm', 4: 'btc', 5: 'eurc', 6: 'aqua' };
-
-      const onProgress = (step) => {
-        if (step === 1) {
-          setVisibleMessages((prev) => [
-            ...prev,
-            { id: 'drain-access', from: 'system', i18nKey: 'ui.drain.access' },
-          ]);
-          return;
-        }
-
-        // Mark the just-completed real token as drained
-        const drainedKey = TOKEN_DRAIN_MAP[step];
-        if (drainedKey) {
-          setDemoTokens((prev) => prev ? { ...prev, [drainedKey]: '0' } : prev);
-        }
-
-        if (step === 6) {
-          // AQUA just drained → schedule 20 fake token drain animations (0.3s each)
-          fakeTokens.forEach((ft, i) => {
-            const tid = setTimeout(() => {
-              setDemoTokens((prev) => {
-                if (!prev?.fakeTokens) return prev;
-                return {
-                  ...prev,
-                  fakeTokens: prev.fakeTokens.map((t) =>
-                    t.code === ft.code ? { ...t, balance: '0' } : t
-                  ),
-                };
-              });
-            }, i * 300);
-            timeoutsRef.current.push(tid);
-          });
-
-          setVisibleMessages((prev) => [
-            ...prev,
-            { id: 'drain-preparing', from: 'system', i18nKey: 'ui.drain.preparing' },
-          ]);
-        }
-
-        if (step === 7) {
-          setVisibleMessages((prev) => [
-            ...prev,
-            { id: 'drain-transferring', from: 'system', i18nKey: 'ui.drain.transferring' },
-          ]);
-        }
-      };
-
-      // Execute the real Testnet drain
-      drainAccount(keypair, scammerPublicKey, issuerPublicKey, onProgress)
-        .then(({ hashes, explorerUrls }) => {
-          // All XLM transferred via AccountMerge
-          setDemoTokens((prev) => prev ? { ...prev, xlm: '0' } : prev);
-          setTxHash(hashes[hashes.length - 1] ?? null);
-          setExplorerUrl(explorerUrls[explorerUrls.length - 1] ?? null);
-
-          setVisibleMessages((prev) => [
-            ...prev,
-            { id: 'drain-final', from: 'drain-fatal', i18nKey: 'ui.drain.final' },
-          ]);
-          setDemoPhase(null);
-
-          // Brief pause so the user can read the final message before follow-ups start
-          const afterTid = setTimeout(() => startFollowUp(), Math.round(900 * mult));
-          timeoutsRef.current.push(afterTid);
-        })
-        .catch(() => {
-          setDemoPhase(null);
-          startFollowUp();
-        });
+      // If testnet is already ready, start the real drain immediately in the background
+      // so it runs in parallel while the timeskip animation plays.
+      if (demoDataRef.current) {
+        const { keypair, scammerPublicKey, issuerPublicKey } = demoDataRef.current;
+        demoDataRef.current = null; // prevent double-drain
+        setDemoPhase('draining');
+        drainAccount(keypair, scammerPublicKey, issuerPublicKey)
+          .then(({ hashes, explorerUrls }) => {
+            setTxHash(hashes[hashes.length - 1] ?? null);
+            setExplorerUrl(explorerUrls[explorerUrls.length - 1] ?? null);
+            setDemoPhase(null);
+          })
+          .catch(() => { setDemoPhase(null); });
+      }
+      // else: completeTimeskip() will start the drain once testnet is ready
     } else {
+      setPhase('followup');
       startFollowUp();
     }
   }, [playMessages]);
+
+  /**
+   * Called by TimeSkipScreen when its animation ends (and demoPhase !== 'init').
+   * If the testnet account became ready during the timeskip, starts drain now;
+   * otherwise drain is already running in the background.
+   */
+  const completeTimeskip = React.useCallback(() => {
+    if (demoDataRef.current) {
+      // Testnet finished during timeskip – start drain now
+      const { keypair, scammerPublicKey, issuerPublicKey } = demoDataRef.current;
+      demoDataRef.current = null;
+      setDemoPhase('draining');
+      drainAccount(keypair, scammerPublicKey, issuerPublicKey)
+        .then(({ hashes, explorerUrls }) => {
+          setTxHash(hashes[hashes.length - 1] ?? null);
+          setExplorerUrl(explorerUrls[explorerUrls.length - 1] ?? null);
+          setDemoPhase(null);
+        })
+        .catch(() => { setDemoPhase(null); });
+    }
+    setPhase('drain');
+  }, []);
+
+  /**
+   * Called by DrainScreen when its animation sequence ends and the user
+   * clicks "Weiter". Skips follow-up messages and goes directly to result.
+   */
+  const completeDrain = React.useCallback(() => {
+    setDemoTokens((prev) => prev ? { ...prev, xlm: '0' } : prev);
+    isProcessingRef.current = false;
+    setFollowUpDone(true);
+    setPhase('result');
+  }, []);
 
   // Advance from followup → result after user clicks "Weiter"
   const continueToResult = React.useCallback(() => {
@@ -388,6 +349,8 @@ export default function useScamSimulator(scenario) {
     explorerUrl,
     start,
     choose,
+    completeTimeskip,
+    completeDrain,
     continueToResult,
     reset,
   };

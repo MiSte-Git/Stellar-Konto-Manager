@@ -56,12 +56,18 @@
       "access": "🔓 Dobivanje pristupa vašem računu...",
       "preparing": "📤 Priprema transakcije...",
       "transferring": "⚡ Prijenos 10.000 XLM...",
-      "final": "💀 Račun ispražnjen – 0 XLM"
+      "final": "💀 Račun ispražnjen – 0 XLM",
+      "converting": "⚡ {{token}} se prenosi..."
     },
     "watcher": {
       "title": "⚠️ Važno: Noćna mora ne prestaje",
       "body": "Prevaranti često postavljaju automatski nadzornik. Svaki novi depozit na kompromitiranom računu automatski se odmah povlači.",
       "solution": "JEDINO RJEŠENJE: Odmah stvorite potpuno novi novčanik s novim ključevima. Stari račun je zauvijek izgubljen."
+    },
+    "timeskip": {
+      "laterText": "Sati, dani prolaze...",
+      "checkText": "Provjeriš mobitel...",
+      "wrongText": "Nešto nije u redu."
     }
   },
   "scenarios": {

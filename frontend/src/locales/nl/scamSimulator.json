@@ -56,12 +56,18 @@
       "access": "🔓 Toegang tot jouw account verkregen...",
       "preparing": "📤 Transactie wordt voorbereid...",
       "transferring": "⚡ 10.000 XLM worden overgemaakt...",
-      "final": "💀 Account leeggehaald – 0 XLM"
+      "final": "💀 Account leeggehaald – 0 XLM",
+      "converting": "⚡ {{token}} wordt overgemaakt..."
     },
     "watcher": {
       "title": "⚠️ Belangrijk: De nachtmerrie stopt niet",
       "body": "Oplichters installeren vaak een automatische watcher. Elke nieuwe storting op het gecompromitteerde account wordt direct en automatisch weggehaald.",
       "solution": "DE ENIGE OPLOSSING: Maak onmiddellijk een volledig nieuw wallet met nieuwe sleutels. Het oude account is voor altijd verloren."
+    },
+    "timeskip": {
+      "laterText": "Uren, dagen later...",
+      "checkText": "Je checkt je telefoon...",
+      "wrongText": "Er klopt iets niet."
     }
   },
   "scenarios": {

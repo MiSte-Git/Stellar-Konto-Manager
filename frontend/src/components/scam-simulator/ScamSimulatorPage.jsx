@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import Lumio from '../quiz/Lumio.jsx';
 import ChatWindow from './ChatWindow.jsx';
+import DrainScreen from './DrainScreen.jsx';
+import TimeSkipScreen from './TimeSkipScreen.jsx';
 import DecisionButtons from './DecisionButtons.jsx';
 import ResultScreen from './ResultScreen.jsx';
 import useScamSimulator from './hooks/useScamSimulator.js';
@@ -64,10 +66,13 @@ export default function ScamSimulatorPage({ scenarios = [], onBack }) {
     isTyping,
     sessionXP,
     demoTokens,
+    demoPhase,
     txHash,
     explorerUrl,
     start,
     choose,
+    completeTimeskip,
+    completeDrain,
     continueToResult,
     reset,
   } = useScamSimulator(selectedScenario);
@@ -280,6 +285,40 @@ export default function ScamSimulatorPage({ scenarios = [], onBack }) {
     );
   }
 
+  // ── Timeskip screen (shown after clicking a key-compromise option) ────────────
+  if (phase === 'timeskip') {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="rounded-2xl shadow-xl border border-gray-800 overflow-hidden"
+          style={{ minHeight: '520px', maxHeight: '72vh' }}
+        >
+          <TimeSkipScreen demoPhase={demoPhase} onComplete={completeTimeskip} />
+        </motion.div>
+      </div>
+    );
+  }
+
+  // ── Drain screen (replaces chat during account drain animation) ─────────────
+  if (phase === 'drain') {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.25 }}
+          className="rounded-2xl shadow-xl border border-gray-800 overflow-hidden"
+          style={{ minHeight: '520px', maxHeight: '72vh' }}
+        >
+          <DrainScreen demoTokens={demoTokens} onComplete={completeDrain} />
+        </motion.div>
+      </div>
+    );
+  }
+
   // ── Chat screen (chat | decision | followup phases) ─────────────────────────
   return (
     <div className="max-w-lg mx-auto px-4 py-4 flex flex-col gap-3">
@@ -316,7 +355,7 @@ export default function ScamSimulatorPage({ scenarios = [], onBack }) {
             />
           </div>
 
-          {/* Decision buttons – only shown during 'decision' phase */}
+          {/* Decision buttons – shown during 'decision' phase */}
           {phase === 'decision' && (
             <DecisionButtons
               options={currentOptions}

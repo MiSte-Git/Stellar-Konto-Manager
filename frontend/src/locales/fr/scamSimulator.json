@@ -56,12 +56,18 @@
       "access": "🔓 Accès à votre compte obtenu...",
       "preparing": "📤 Préparation de la transaction...",
       "transferring": "⚡ Transfert de 10 000 XLM...",
-      "final": "💀 Compte vidé – 0 XLM"
+      "final": "💀 Compte vidé – 0 XLM",
+      "converting": "⚡ Transfert de {{token}} en cours..."
     },
     "watcher": {
       "title": "⚠️ Important : Le cauchemar ne s'arrête pas",
       "body": "Les arnaqueurs mettent souvent en place un surveillant automatique. Chaque nouveau dépôt sur le compte compromis est drainé instantanément et automatiquement.",
       "solution": "LA SEULE SOLUTION : Créer immédiatement un nouveau portefeuille avec de nouvelles clés. L'ancien compte est perdu pour toujours."
+    },
+    "timeskip": {
+      "laterText": "Des heures, des jours plus tard...",
+      "checkText": "Tu vérifies ton téléphone...",
+      "wrongText": "Quelque chose ne va pas."
     }
   },
   "scenarios": {
