@@ -27,6 +27,7 @@ export default function ResultScreen({ scenario, chosen, sessionXP, txHash, expl
   if (!chosen) return null;
 
   const isSafe = !chosen.isScam;
+  const isKeyCompromise = chosen.scamType === 'key-compromise';
   const emoji = isSafe ? '🛡️' : '😱';
 
   return (
@@ -53,8 +54,8 @@ export default function ResultScreen({ scenario, chosen, sessionXP, txHash, expl
         {t(isSafe ? 'ui.result.safe.subtitle' : 'ui.result.scam.subtitle')}
       </p>
 
-      {/* Testnet transaction block – only on scam outcomes with a confirmed tx */}
-      {!isSafe && txHash && (
+      {/* Testnet transaction block – only on key-compromise scams with a confirmed tx */}
+      {!isSafe && isKeyCompromise && txHash && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -99,8 +100,8 @@ export default function ResultScreen({ scenario, chosen, sessionXP, txHash, expl
         </motion.div>
       )}
 
-      {/* Watcher warning – always visible on scam outcomes */}
-      {!isSafe && (
+      {/* Watcher warning – only on key-compromise scam outcomes */}
+      {!isSafe && isKeyCompromise && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}

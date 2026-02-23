@@ -56,12 +56,18 @@
       "access": "🔓 Gaining access to your account...",
       "preparing": "📤 Preparing transaction...",
       "transferring": "⚡ Transferring 10,000 XLM...",
-      "final": "💀 Account emptied – 0 XLM"
+      "final": "💀 Account emptied – 0 XLM",
+      "converting": "⚡ Transferring {{token}}..."
     },
     "watcher": {
       "title": "⚠️ Important: The nightmare doesn't stop",
       "body": "Scammers often set up an automatic watcher. Every new deposit to the compromised account is drained instantly and automatically.",
       "solution": "THE ONLY SOLUTION: Create a brand new wallet with new keys immediately. The old account is lost forever."
+    },
+    "timeskip": {
+      "laterText": "Hours, days later...",
+      "checkText": "You check your phone...",
+      "wrongText": "Something is wrong."
     }
   },
   "scenarios": {
