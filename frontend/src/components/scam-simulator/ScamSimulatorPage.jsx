@@ -47,7 +47,7 @@ function getCompletedScenarios() {
  *   scenarios – array of scenario objects from scenarios.js
  *   onBack    – optional callback; if omitted, navigates to the main page
  */
-export default function ScamSimulatorPage({ scenarios = [], onBack }) {
+export default function ScamSimulatorPage({ scenarios = [], onBack, onGoHome }) {
   const { t } = useTranslation('scamSimulator');
   const scrollRef = React.useRef(null);
 
@@ -108,11 +108,18 @@ export default function ScamSimulatorPage({ scenarios = [], onBack }) {
   const goToMain = React.useCallback(() => {
     if (onBack) { onBack(); return; }
     try {
-      const url = buildPath('');
-      window.history.pushState({}, '', url);
+      window.history.pushState({}, '', buildPath('discover'));
       window.dispatchEvent(new PopStateEvent('popstate'));
     } catch { /* noop */ }
   }, [onBack]);
+
+  const goToHome = React.useCallback(() => {
+    if (onGoHome) { onGoHome(); return; }
+    try {
+      window.history.pushState({}, '', buildPath(''));
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    } catch { /* noop */ }
+  }, [onGoHome]);
 
   const goToSelection = React.useCallback(() => {
     resultRecorded.current = false;
@@ -130,14 +137,23 @@ export default function ScamSimulatorPage({ scenarios = [], onBack }) {
   if (!selectedScenario) {
     return (
       <div className="max-w-lg mx-auto px-4 py-8">
-        {/* Back to main */}
-        <button
-          type="button"
-          onClick={goToMain}
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-        >
-          ← {t('ui.backButton')}
-        </button>
+        {/* Nav row: HOME → / | BACK → /discover */}
+        <div className="mb-6 flex gap-2">
+          <button
+            type="button"
+            onClick={goToHome}
+            className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+          >
+            🏠
+          </button>
+          <button
+            type="button"
+            onClick={goToMain}
+            className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+          >
+            ←
+          </button>
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -204,7 +220,7 @@ export default function ScamSimulatorPage({ scenarios = [], onBack }) {
           onClick={goToSelection}
           className="mb-6 inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
         >
-          ← {t('ui.backButton')}
+          ←
         </button>
 
         <motion.div
@@ -329,7 +345,7 @@ export default function ScamSimulatorPage({ scenarios = [], onBack }) {
           onClick={goToSelection}
           className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
         >
-          ← {t('ui.backButton')}
+          ←
         </button>
         <Lumio state={lumioState} size={48} />
       </div>

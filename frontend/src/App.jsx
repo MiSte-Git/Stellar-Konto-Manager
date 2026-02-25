@@ -299,8 +299,13 @@ function AppShell() {
             scenarios={scenarios}
             onBack={() => {
               try {
-                const url = buildPath('');
-                window.history.pushState({}, '', url);
+                window.history.pushState({}, '', buildPath('discover'));
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              } catch { /* noop */ }
+            }}
+            onGoHome={() => {
+              try {
+                window.history.pushState({}, '', buildPath(''));
                 window.dispatchEvent(new PopStateEvent('popstate'));
               } catch { /* noop */ }
             }}

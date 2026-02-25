@@ -2,6 +2,14 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useStory } from "./StoryContext";
+import { buildPath } from "../../utils/basePath.js";
+
+function navTo(subpath) {
+  try {
+    window.history.pushState({}, '', buildPath(subpath));
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  } catch { /* noop */ }
+}
 
 const TOTAL_CHAPTERS = 5;
 
@@ -30,29 +38,52 @@ export default function ChapterSelect() {
         padding: "40px 20px",
       }}
     >
-      {/* Back to home */}
-      <motion.button
-        whileHover={{ borderColor: "rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.8)" }}
-        whileTap={{ scale: 0.96 }}
-        onClick={onExit}
-        style={{
-          alignSelf: "flex-start",
-          background: "rgba(255,255,255,0.06)",
-          border: "1px solid rgba(255,255,255,0.12)",
-          borderRadius: "8px",
-          padding: "6px 14px",
-          fontSize: "12px",
-          color: "rgba(255,255,255,0.55)",
-          fontFamily: "inherit",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          gap: "5px",
-          transition: "border-color 0.15s, color 0.15s",
-        }}
-      >
-        ← {t("nav.back_to_home", "Zur Hauptseite")}
-      </motion.button>
+      {/* Nav row: HOME → / | BACK → /discover */}
+      <div style={{ display: "flex", gap: "8px", alignSelf: "flex-start" }}>
+        <motion.button
+          whileHover={{ borderColor: "rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.8)" }}
+          whileTap={{ scale: 0.96 }}
+          onClick={onExit}
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: "8px",
+            padding: "6px 14px",
+            fontSize: "12px",
+            color: "rgba(255,255,255,0.55)",
+            fontFamily: "inherit",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            transition: "border-color 0.15s, color 0.15s",
+          }}
+        >
+          🏠
+        </motion.button>
+
+        <motion.button
+          whileHover={{ borderColor: "rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.8)" }}
+          whileTap={{ scale: 0.96 }}
+          onClick={() => navTo("discover")}
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: "8px",
+            padding: "6px 14px",
+            fontSize: "12px",
+            color: "rgba(255,255,255,0.55)",
+            fontFamily: "inherit",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            transition: "border-color 0.15s, color 0.15s",
+          }}
+        >
+          ←
+        </motion.button>
+      </div>
 
       {/* Header */}
       <div style={{ textAlign: "center" }}>

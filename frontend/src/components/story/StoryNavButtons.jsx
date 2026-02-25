@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useStory } from "./StoryContext";
+import { buildPath } from "../../utils/basePath.js";
+
+function navTo(subpath) {
+  try {
+    window.history.pushState({}, '', buildPath(subpath));
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  } catch { /* noop */ }
+}
 
 // ─── Confirm Dialog ───────────────────────────────────────────────────────────
 
@@ -93,17 +101,16 @@ function ConfirmDialog({ text, cancelLabel, confirmLabel, onCancel, onConfirm })
  * Reads onExit, sceneIndex, setSceneIndex, setShowChapterSelect from StoryContext.
  */
 export default function StoryNavButtons() {
-  const { onExit, sceneIndex, setSceneIndex, setShowChapterSelect } = useStory();
+  const { onExit, setShowChapterSelect } = useStory();
   const { t } = useTranslation("story");
-  const [confirm, setConfirm] = useState(null); // null | "home" | "chapters"
-
-  const canGoBack = sceneIndex > 0;
+  const [confirm, setConfirm] = useState(null); // null | "home" | "chapters" | "back"
 
   const handleConfirm = () => {
     const action = confirm;
     setConfirm(null);
     if (action === "home") onExit();
     else if (action === "chapters") setShowChapterSelect(true);
+    else if (action === "back") navTo("discover");
   };
 
   const btnBase = {
@@ -137,7 +144,7 @@ export default function StoryNavButtons() {
           onClick={() => setConfirm("home")}
           style={btnBase}
         >
-          🏠 {t("nav.to_home", "Hauptseite")}
+          🏠
         </motion.button>
 
         {/* 📖 Kapitel */}
@@ -150,17 +157,14 @@ export default function StoryNavButtons() {
           📖 {t("nav.to_chapters", "Kapitel")}
         </motion.button>
 
-        {/* ← Zurück */}
+        {/* ← Zurück → /discover */}
         <motion.button
-          onClick={() => canGoBack && setSceneIndex(sceneIndex - 1)}
-          style={{
-            ...btnBase,
-            opacity: canGoBack ? 1 : 0.25,
-            cursor: canGoBack ? "pointer" : "default",
-            pointerEvents: canGoBack ? "auto" : "none",
-          }}
+          whileHover={{ borderColor: "rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.8)" }}
+          whileTap={{ scale: 0.96 }}
+          onClick={() => setConfirm("back")}
+          style={btnBase}
         >
-          ← {t("nav.step_back", "Zurück")}
+          ←
         </motion.button>
       </div>
 
