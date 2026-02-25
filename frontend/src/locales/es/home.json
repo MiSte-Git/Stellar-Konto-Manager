@@ -1,1 +1,19 @@
-{}
+{
+  "learn": {
+    "button": "Descubrir Stellar",
+    "button_sub": "Quiz · Protección Scam · Historia",
+    "page_title": "Descubrir Stellar",
+    "page_sub": "Elige tu punto de partida",
+    "back": "Volver",
+    "title": "Descubrir Stellar",
+    "quiz_title": "Pon a prueba tus conocimientos",
+    "quiz_sub": "13 lecciones sobre Stellar",
+    "quiz_tooltip": "13 lecciones, opción múltiple y verdadero/falso – comprueba cuánto sabes",
+    "scam_title": "Detectar los peligros",
+    "scam_sub": "Aprende a reconocer estafas reales",
+    "scam_tooltip": "Escenarios de estafa reales para practicar – reconoce el fraude antes de que te atrape",
+    "story_title": "La aventura de Lumio",
+    "story_sub": "Experimenta la blockchain con Lumio",
+    "story_tooltip": "Acompaña a Lumio en la blockchain de Stellar – con Testnet real para explorar"
+  }
+}

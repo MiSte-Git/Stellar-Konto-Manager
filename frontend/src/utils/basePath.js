@@ -223,6 +223,18 @@ export function isScamSimulatorPath(pathname) {
 }
 
 /**
+ * isStoryPath: Pfad zum Story-Modus (/story)
+ */
+export function isStoryPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const target = buildPath('story');
+  return normalizePath(current) === normalizePath(target)
+    || normalizePath(current).endsWith('/story');
+}
+
+/**
  * isSettingsPath: Pfad zur gemeinsamen Einstellungsseite (/settings)
  */
 export function isSettingsPath(pathname) {
@@ -233,6 +245,18 @@ export function isSettingsPath(pathname) {
   const normCurrent = normalizePath(current);
   const normTarget = normalizePath(target);
   return normCurrent === normTarget || normCurrent.endsWith('/settings');
+}
+
+/**
+ * isDiscoverPath: Pfad zur Lern-Übersicht (/discover)
+ */
+export function isDiscoverPath(pathname) {
+  const current = typeof pathname === 'string'
+    ? pathname
+    : (typeof window !== 'undefined' ? window.location.pathname : '');
+  const target = buildPath('discover');
+  return normalizePath(current) === normalizePath(target)
+    || normalizePath(current).endsWith('/discover');
 }
 
 /**

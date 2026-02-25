@@ -1,1 +1,19 @@
-{}
+{
+  "learn": {
+    "button": "Tutustu Stellariin",
+    "button_sub": "Tietokilpailu · Huijaussuoja · Tarina",
+    "page_title": "Tutustu Stellariin",
+    "page_sub": "Valitse aloituspisteesi",
+    "back": "Takaisin",
+    "title": "Tutustu Stellariin",
+    "quiz_title": "Testaa tietosi",
+    "quiz_sub": "13 oppituntia Stellarista",
+    "quiz_tooltip": "13 oppituntia, monivalinta ja tosi/epätosi – testaa kuinka paljon tiedät",
+    "scam_title": "Tunnista vaarat",
+    "scam_sub": "Opi tunnistamaan oikeat huijaukset",
+    "scam_tooltip": "Todellisia huijausskenaarioita harjoitteluun – tunnista petos ennen kuin se osuu sinuun",
+    "story_title": "Lumion seikkailu",
+    "story_sub": "Koe lohkoketju Lumion kanssa",
+    "story_tooltip": "Liity Lumion matkaan Stellar-lohkoketjussa – oikealla Testnetillä kokeilemaan"
+  }
+}

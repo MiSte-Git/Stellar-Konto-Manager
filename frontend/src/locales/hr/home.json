@@ -1,1 +1,19 @@
-{}
+{
+  "learn": {
+    "button": "Otkrij Stellar",
+    "button_sub": "Kviz · Zaštita od Prijevara · Priča",
+    "page_title": "Otkrij Stellar",
+    "page_sub": "Odaberi svoju polaznu točku",
+    "back": "Natrag",
+    "title": "Otkrij Stellar",
+    "quiz_title": "Testiraj znanje",
+    "quiz_sub": "13 lekcija o Stellaru",
+    "quiz_tooltip": "13 lekcija, višestruki izbor i točno/netočno – testiraj koliko znaš",
+    "scam_title": "Prepoznaj opasnosti",
+    "scam_sub": "Nauči prepoznati prave prijevare",
+    "scam_tooltip": "Pravi scenariji prijevare za vježbanje – prepoznaj prijevaru prije nego te uhvati",
+    "story_title": "Lumiova avantura",
+    "story_sub": "Doživite blockchain s Lumiom",
+    "story_tooltip": "Pridruži se Lumiu na Stellar blockchainu – s pravim Testnetom za istraživanje"
+  }
+}
