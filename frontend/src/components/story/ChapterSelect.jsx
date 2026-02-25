@@ -11,7 +11,7 @@ function navTo(subpath) {
   } catch { /* noop */ }
 }
 
-const TOTAL_CHAPTERS = 5;
+const TOTAL_CHAPTERS = 7;
 
 export default function ChapterSelect() {
   const { t } = useTranslation("story");
