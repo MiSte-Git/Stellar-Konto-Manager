@@ -948,5 +948,35 @@
     "original": "Wallet Watcher / Drainer",
     "short": "An automated script that monitors a compromised account and instantly withdraws every new deposit.",
     "desc": "Once scammers gain access to a secret key, they often set up an automatic watcher. It monitors the account around the clock and transfers every new deposit to the scammer's account instantly – often within seconds. The account is permanently compromised. The only solution: immediately create a new wallet with completely new keys and never use the old account again."
+  },
+  "lumio": {
+    "title": "Lumio",
+    "original": "Lumio",
+    "short": "Mascot of the Stellar Konto Manager – a living Lumen.",
+    "desc": "Lumio is the mascot of the Stellar Konto Manager and your companion in Story Mode. His name comes from 'Lumen' – the official name for the base unit of Stellar's currency XLM. You could say: Lumio is a Lumen that came to life to teach others how the Stellar blockchain works. The name has a second meaning too: 'lumen' is Latin for 'light' – fitting for a glowing star that spreads knowledge."
+  },
+  "base_fee": {
+    "title": "Base Fee",
+    "original": "Base Fee",
+    "short": "Small network fee (0.00001 XLM) per transaction – prevents spam.",
+    "desc": "The base fee is a very small fee for every transaction on Stellar. It amounts to 0.00001 XLM. The fee is burned and thus prevents spam transactions. Without a fee, a transaction will be rejected."
+  },
+  "transaction_hash": {
+    "title": "Transaction Hash",
+    "original": "Transaction Hash",
+    "short": "Unique ID for every transaction – serves as proof.",
+    "desc": "Every transaction on Stellar receives a unique ID, the transaction hash. Anyone can look up the transaction in the Explorer using this hash. It serves as a receipt and proof that the transaction took place."
+  },
+  "friendbot": {
+    "title": "Friendbot",
+    "original": "Friendbot",
+    "short": "Testnet service that activates new accounts for free with test XLM.",
+    "desc": "Friendbot is a service provided by the Stellar Development Foundation. It activates new Testnet accounts for free with 10,000 test XLM. On the real Mainnet there is no Friendbot – another account must send at least 1 XLM to activate a new account."
+  },
+  "keypair": {
+    "title": "Keypair",
+    "original": "Keypair",
+    "short": "Matching combination of Public Key and Secret Key.",
+    "desc": "A keypair consists of two matching keys: the Public Key (your address) and the Secret Key (your password). Both keys belong together and form a unit. You share the Public Key publicly – the Secret Key you always keep to yourself."
   }
 }

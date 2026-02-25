@@ -948,5 +948,35 @@
     "original": "Wallet Watcher / Drainer",
     "short": "Automaattinen skripti, joka valvoo vaarantunutta tiliä ja nostaa välittömästi jokaisen uuden talletuksen.",
     "desc": "Kun huijarit saavat pääsyn salaavaimeen, he asentavat usein automaattisen tarkkailijan. Se valvoo tiliä ympäri vuorokauden ja siirtää jokaisen uuden talletuksen välittömästi huijarin tilille – usein muutamassa sekunnissa. Tili on pysyvästi vaarantunut. Ainoa ratkaisu: luo välittömästi uusi lompakko täysin uusilla avaimilla äläkä käytä vanhaa tiliä enää koskaan."
+  },
+  "lumio": {
+    "title": "Lumio",
+    "original": "Lumio",
+    "short": "Stellar Konto Managerin maskotti – elävä Lumen.",
+    "desc": "Lumio on Stellar Konto Managerin maskotti ja kumppanisi Tarinatilassa. Hänen nimensä tulee sanasta 'Lumen' – Stellarin valuutan XLM:n perusyksikön virallinen nimi. Voisi sanoa: Lumio on Lumen joka heräsi henkiin opettamaan muille kuinka Stellar-lohkoketju toimii. Nimellä on myös toinen merkitys: 'lumen' on latinaa ja tarkoittaa 'valoa' – sopivaa hehkuvalle tähdelle joka levittää tietoa."
+  },
+  "base_fee": {
+    "title": "Perusmaksu",
+    "original": "Base Fee",
+    "short": "Pieni verkkomaksu (0,00001 XLM) per siirto – estää roskapostisiirrot.",
+    "desc": "Perusmaksu on hyvin pieni maksu jokaisesta Stellar-siirrosta. Se on 0,00001 XLM. Maksu poltetaan, mikä estää roskapostisiirrot. Ilman maksua siirto hylätään."
+  },
+  "transaction_hash": {
+    "title": "Siirtohash",
+    "original": "Transaction Hash",
+    "short": "Jokaisen siirron yksilöllinen tunnus – toimii todisteena.",
+    "desc": "Jokainen Stellar-siirto saa yksilöllisen tunnuksen, siirtohash. Tällä hashilla kuka tahansa voi hakea siirron Explorerista. Se toimii kuittina ja todisteena siirron tapahtumisesta."
+  },
+  "friendbot": {
+    "title": "Friendbot",
+    "original": "Friendbot",
+    "short": "Testnet-palvelu, joka aktivoi uudet tilit maksutta testi-XLM:llä.",
+    "desc": "Friendbot on Stellar Development Foundationin palvelu. Se aktivoi uudet Testnet-tilit maksutta 10 000 testi-XLM:llä. Todellisessa Mainnetissä ei ole Friendbotia – toisen tilin on lähetettävä vähintään 1 XLM aktivoinnin sijaan."
+  },
+  "keypair": {
+    "title": "Avainpari",
+    "original": "Keypair",
+    "short": "Yhteenkuuluva Public Key ja Secret Key -yhdistelmä.",
+    "desc": "Avainpari koostuu kahdesta yhteenkuuluvasta avaimesta: Public Key (osoitteesi) ja Secret Key (salasanasi). Molemmat avaimet kuuluvat yhteen ja muodostavat kokonaisuuden. Public Key jaetaan julkisesti – Secret Key pidetään aina itsellä."
   }
 }

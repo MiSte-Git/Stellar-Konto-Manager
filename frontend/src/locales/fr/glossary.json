@@ -948,5 +948,35 @@
     "original": "Wallet Watcher / Drainer",
     "short": "Un script automatique qui surveille un compte compromis et retire instantanément chaque nouveau dépôt.",
     "desc": "Dès que les arnaqueurs obtiennent accès à une clé secrète, ils mettent souvent en place un surveillant automatique. Celui-ci surveille le compte en permanence et transfère chaque nouveau dépôt vers le compte de l'arnaqueur instantanément – souvent en quelques secondes. Le compte est définitivement compromis. La seule solution : créer immédiatement un nouveau portefeuille avec de nouvelles clés et ne plus jamais utiliser l'ancien compte."
+  },
+  "lumio": {
+    "title": "Lumio",
+    "original": "Lumio",
+    "short": "Mascotte du Stellar Konto Manager – un Lumen vivant.",
+    "desc": "Lumio est la mascotte du Stellar Konto Manager et ton compagnon dans le Mode Histoire. Son nom vient de 'Lumen' – le nom officiel de l'unité de base de la monnaie XLM de Stellar. On pourrait dire : Lumio est un Lumen qui a pris vie pour enseigner aux autres comment fonctionne la blockchain Stellar. Le nom a aussi une deuxième signification : 'lumen' est latin pour 'lumière' – approprié pour une étoile brillante qui répand le savoir."
+  },
+  "base_fee": {
+    "title": "Frais de base",
+    "original": "Base Fee",
+    "short": "Petits frais réseau (0,00001 XLM) par transaction – prévient le spam.",
+    "desc": "Les frais de base sont des frais très faibles pour chaque transaction sur Stellar. Ils s'élèvent à 0,00001 XLM. Les frais sont brûlés, ce qui prévient les transactions spam. Sans frais, une transaction sera rejetée."
+  },
+  "transaction_hash": {
+    "title": "Hash de transaction",
+    "original": "Transaction Hash",
+    "short": "Identifiant unique de chaque transaction – sert de preuve.",
+    "desc": "Chaque transaction sur Stellar reçoit un identifiant unique, le hash de transaction. Avec ce hash, n'importe qui peut retrouver la transaction dans l'Explorer. Il sert de reçu et de preuve que la transaction a eu lieu."
+  },
+  "friendbot": {
+    "title": "Friendbot",
+    "original": "Friendbot",
+    "short": "Service Testnet qui active gratuitement les nouveaux comptes avec des XLM de test.",
+    "desc": "Friendbot est un service de la Stellar Development Foundation. Il active gratuitement les nouveaux comptes Testnet avec 10 000 XLM de test. Sur le Mainnet réel, il n'y a pas de Friendbot – un autre compte doit envoyer au moins 1 XLM."
+  },
+  "keypair": {
+    "title": "Paire de clés",
+    "original": "Keypair",
+    "short": "Combinaison associée de Clé Publique et de Clé Secrète.",
+    "desc": "Un keypair se compose de deux clés associées : la Clé Publique (ton adresse) et la Clé Secrète (ton mot de passe). Les deux clés vont ensemble et forment une unité. Tu partages la Clé Publique publiquement – la Clé Secrète, tu la gardes toujours pour toi."
   }
 }

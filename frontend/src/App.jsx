@@ -7,8 +7,9 @@ import Main from './main.jsx';
 import LanguageSelector from './components/LanguageSelector';
 import BugTrackerAdmin from './routes/BugTrackerAdmin.tsx';
 import SmallAdminLink from './components/SmallAdminLink.jsx';
-import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizDetailPath, isQuizIndexPath, getMultisigJobId, isSettingsPath, isTradingAssetsPath, isMultisigJobsListPath, isScamSimulatorPath } from './utils/basePath.js';
+import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizDetailPath, isQuizIndexPath, getMultisigJobId, isSettingsPath, isTradingAssetsPath, isMultisigJobsListPath, isScamSimulatorPath, isStoryPath, isDiscoverPath } from './utils/basePath.js';
 import GlossaryPage from './pages/GlossaryPage.tsx';
+import LearnHub from './components/learn/LearnHub.jsx';
 
 import QuizPage from './pages/QuizPage.jsx';
 import QuizIndex from './pages/QuizIndex.jsx';
@@ -20,6 +21,8 @@ import SettingsPage from './pages/SettingsPage.jsx';
 import TradingAssetsPage from './pages/TradingAssetsPage.jsx';
 import ScamSimulatorPage from './components/scam-simulator/ScamSimulatorPage.jsx';
 import scenarios from './data/learn/scam-scenarios/scenarios.js';
+import StoryMode from './components/story/StoryMode.jsx';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import { formatErrorForUi } from './utils/formatErrorForUi.js';
 import { SHOW_DONATE_BUTTON } from './config.js';
@@ -69,8 +72,18 @@ function LearnRedirect() {
 }
 
 function AppShell() {
-  const { t } = useTranslation(['common', 'glossary', 'learn', 'menu', 'navigation', 'settings', 'scamSimulator']);
+  const { t } = useTranslation(['common', 'glossary', 'home', 'learn', 'menu', 'navigation', 'settings', 'scamSimulator', 'story']);
   const location = useLocation();
+  const [discoverHovered, setDiscoverHovered] = React.useState(false);
+  const isPointerFine = typeof window !== 'undefined' && window.matchMedia?.('(pointer: fine)').matches;
+  const [isMobile, setIsMobile] = React.useState(
+    typeof window !== 'undefined' && window.innerWidth <= 480
+  );
+  React.useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 480);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
 
   const isBugTrackerRoute = React.useMemo(() => {
     try {
@@ -174,6 +187,14 @@ function AppShell() {
     }
   }, [pathname]);
 
+  const isStoryRoute = React.useMemo(() => {
+    try {
+      return isStoryPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
   const isQuizIndexRoute = React.useMemo(() => {
     try {
       return isQuizIndexPath(pathname);
@@ -235,6 +256,14 @@ function AppShell() {
     }
   }, [pathname]);
 
+  const isDiscoverRoute = React.useMemo(() => {
+    try {
+      return isDiscoverPath(pathname);
+    } catch {
+      return false;
+    }
+  }, [pathname]);
+
   if (import.meta.env?.DEV) {
     console.log('DEBUG SKM Router', {
       pathname,
@@ -277,6 +306,16 @@ function AppShell() {
             }}
           />
         </div>
+      ) : isStoryRoute ? (
+        <StoryMode
+          onExit={() => {
+            try {
+              const url = buildPath('');
+              window.history.pushState({}, '', url);
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            } catch { /* noop */ }
+          }}
+        />
       ) : isQuizIndexRoute ? (
         <div className="max-w-4xl mx-auto p-4">
           <QuizIndex />
@@ -295,6 +334,16 @@ function AppShell() {
         <div className="max-w-4xl mx-auto p-4">
           <Legal />
         </div>
+      ) : isDiscoverRoute ? (
+        <LearnHub
+          onBack={() => {
+            try {
+              const url = buildPath('');
+              window.history.pushState({}, '', url);
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            } catch { /* noop */ }
+          }}
+        />
       ) : (
         <>
           {/* Sprachleiste */}
@@ -302,7 +351,7 @@ function AppShell() {
             <div className="flex justify-center">
               <LanguageSelector />
             </div>
-            <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
+            <div className="mt-3 flex items-center justify-between gap-3 flex-wrap" style={{ position: "relative" }}>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -319,37 +368,6 @@ function AppShell() {
                 >
                   <span aria-hidden>i</span>
                   <span>{t('menu:glossary', 'Glossar')}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    try {
-                      const url = buildPath('quiz');
-                      window.history.pushState({}, '', url);
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    } catch { /* noop */ }
-                  }}
-                  className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  title={t('menu:learn', 'Stellar Quiz für Anfänger')}
-                  aria-label={t('menu:learn', 'Stellar Quiz für Anfänger')}
-                >
-                  <span aria-hidden>&#x1F3AF;</span>
-                  <span>{t('navigation:quiz', 'Quiz')}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    try {
-                      const url = buildPath('learn/scam-simulator');
-                      window.history.pushState({}, '', url);
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    } catch { /* noop */ }
-                  }}
-                  className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-red-400"
-                  title={t('scamSimulator:ui.title')}
-                >
-                  <span aria-hidden>🛡️</span>
-                  <span>{t('scamSimulator:ui.title')}</span>
                 </button>
               </div>
 
@@ -393,7 +411,75 @@ function AppShell() {
                   </button>
                 )}
               </div>
+
+              {/* Stellar entdecken – out of flex flow on desktop, second row on mobile */}
+              <div style={isMobile
+                ? { width: "100%", display: "flex", justifyContent: "center", marginTop: "10px" }
+                : { position: "absolute", top: "50%", transform: "translateY(-50%)", right: "calc(25% - 50px)" }
+              }>
+                <div style={{ position: "relative" }}>
+                  <motion.button
+                    type="button"
+                    onMouseEnter={() => setDiscoverHovered(true)}
+                    onMouseLeave={() => setDiscoverHovered(false)}
+                    whileHover={{ borderColor: "rgba(255,217,61,0.7)" }}
+                    onClick={() => {
+                      try {
+                        const url = buildPath('discover');
+                        window.history.pushState({}, '', url);
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      } catch { /* noop */ }
+                    }}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      background: "linear-gradient(135deg, rgba(255,217,61,0.15), rgba(61,214,255,0.15))",
+                      border: "1.5px solid rgba(255,217,61,0.4)",
+                      borderRadius: "9999px",
+                      padding: "5px 12px",
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      color: "#FFD93D",
+                      cursor: "pointer",
+                      fontFamily: "inherit",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                    }}
+                  >
+                    <span>⭐</span>
+                    <span>{t('home:learn.button', 'Stellar entdecken')}</span>
+                  </motion.button>
+                  <AnimatePresence>
+                    {discoverHovered && isPointerFine && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 4 }}
+                        transition={{ duration: 0.15 }}
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: "rgba(0,0,0,0.85)",
+                          border: "1px solid rgba(255,217,61,0.3)",
+                          borderRadius: "8px",
+                          padding: "6px 12px",
+                          fontSize: "12px",
+                          color: "rgba(255,255,255,0.85)",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 100,
+                        }}
+                      >
+                        {t('home:learn.button_sub', 'Quiz · Scam-Schutz · Story')}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
             </div>
+
           </div>
 
           {/* Haupt-App bleibt gemountet, damit Eingaben erhalten bleiben */}

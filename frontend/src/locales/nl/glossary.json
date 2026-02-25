@@ -948,5 +948,35 @@
     "original": "Wallet Watcher / Drainer",
     "short": "Een automatisch script dat een gecompromitteerd account bewaakt en elke nieuwe storting onmiddellijk opneemt.",
     "desc": "Zodra oplichters toegang krijgen tot een geheime sleutel, installeren ze vaak een automatische watcher. Die bewaakt het account dag en nacht en verplaatst elke nieuwe storting onmiddellijk naar het account van de oplichter – vaak binnen enkele seconden. Het account is blijvend gecompromitteerd. De enige oplossing: maak onmiddellijk een nieuw wallet met volledig nieuwe sleutels en gebruik het oude account nooit meer."
+  },
+  "lumio": {
+    "title": "Lumio",
+    "original": "Lumio",
+    "short": "Mascotte van de Stellar Konto Manager – een levende Lumen.",
+    "desc": "Lumio is de mascotte van de Stellar Konto Manager en jouw metgezel in de Verhaalmodus. Zijn naam komt van 'Lumen' – de officiële naam voor de basiseenheid van Stellars valuta XLM. Je zou kunnen zeggen: Lumio is een Lumen die tot leven is gekomen om anderen te leren hoe de Stellar blockchain werkt. De naam heeft ook een tweede betekenis: 'lumen' is Latijn voor 'licht' – passend voor een stralende ster die kennis verspreidt."
+  },
+  "base_fee": {
+    "title": "Basisvergoeding",
+    "original": "Base Fee",
+    "short": "Kleine netwerkvergoeding (0,00001 XLM) per transactie – voorkomt spam.",
+    "desc": "De basisvergoeding is een zeer kleine vergoeding voor elke transactie op Stellar. Het bedraagt 0,00001 XLM. De vergoeding wordt verbrand en voorkomt zo spam-transacties. Zonder vergoeding wordt een transactie geweigerd."
+  },
+  "transaction_hash": {
+    "title": "Transactiehash",
+    "original": "Transaction Hash",
+    "short": "Uniek ID van elke transactie – dient als bewijs.",
+    "desc": "Elke transactie op Stellar krijgt een uniek ID, de transactiehash. Met deze hash kan iedereen de transactie opzoeken in de Explorer. Het dient als bewijs dat de transactie heeft plaatsgevonden."
+  },
+  "friendbot": {
+    "title": "Friendbot",
+    "original": "Friendbot",
+    "short": "Testnet-dienst die nieuwe accounts gratis activeert met test-XLM.",
+    "desc": "Friendbot is een dienst van de Stellar Development Foundation. Het activeert nieuwe Testnet-accounts gratis met 10.000 test-XLM. Op het echte Mainnet bestaat geen Friendbot – een ander account moet minstens 1 XLM sturen om een nieuw account te activeren."
+  },
+  "keypair": {
+    "title": "Sleutelpaar",
+    "original": "Keypair",
+    "short": "Bijpassende combinatie van Public Key en Secret Key.",
+    "desc": "Een keypair bestaat uit twee bijpassende sleutels: de Public Key (jouw adres) en de Secret Key (jouw wachtwoord). Beide sleutels horen bij elkaar en vormen een eenheid. De Public Key deel je openbaar – de Secret Key hou je altijd voor jezelf."
   }
 }

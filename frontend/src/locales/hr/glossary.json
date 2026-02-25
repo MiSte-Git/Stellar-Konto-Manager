@@ -948,5 +948,35 @@
     "original": "Wallet Watcher / Drainer",
     "short": "Automatski skript koji nadzire kompromitiran račun i odmah povlači svaki novi depozit.",
     "desc": "Kad prevaranti dobiju pristup tajnom ključu, često postavljaju automatski nadzornik. On nadzire račun 24 sata na dan i odmah prenosi svaki novi depozit na račun prevaranta – često u roku nekoliko sekundi. Račun je trajno kompromitiran. Jedino rješenje: odmah stvoriti novi novčanik s potpuno novim ključevima i nikad više ne koristiti stari račun."
+  },
+  "lumio": {
+    "title": "Lumio",
+    "original": "Lumio",
+    "short": "Maskota Stellar Konto Managera – živući Lumen.",
+    "desc": "Lumio je maskota Stellar Konto Managera i tvoj pratilac u Priča-modu. Njegovo ime dolazi od 'Lumen' – službenog naziva za osnovnu jedinicu Stellarove valute XLM. Moglo bi se reći: Lumio je Lumen koji je oživio da bi drugima objasnio kako funkcionira Stellar blockchain. Ime ima i drugo značenje: 'lumen' je latinica za 'svjetlost' – prikladno za sjajnu zvijezdu koja širi znanje."
+  },
+  "base_fee": {
+    "title": "Osnovna naknada",
+    "original": "Base Fee",
+    "short": "Mala mrežna naknada (0,00001 XLM) po transakciji – sprječava spam.",
+    "desc": "Osnovna naknada je vrlo mala naknada za svaku transakciju na Stellar mreži. Iznosi 0,00001 XLM. Naknada se spaljuje i time sprječava spam transakcije. Bez naknade transakcija će biti odbijena."
+  },
+  "transaction_hash": {
+    "title": "Hash transakcije",
+    "original": "Transaction Hash",
+    "short": "Jedinstveni ID svake transakcije – služi kao dokaz.",
+    "desc": "Svaka transakcija na Stellar mreži dobiva jedinstveni ID, hash transakcije. S ovim hashom svatko može pronaći transakciju u Exploreru. Služi kao potvrda i dokaz da je transakcija bila izvršena."
+  },
+  "friendbot": {
+    "title": "Friendbot",
+    "original": "Friendbot",
+    "short": "Testnet usluga koja aktivira nove račune besplatno s test-XLM-om.",
+    "desc": "Friendbot je usluga Stellar Development Foundationa. Aktivira nove Testnet račune besplatno s 10.000 test-XLM-a. Na pravoj Mainnet mreži nema Friendbota – drugi račun mora poslati najmanje 1 XLM za aktivaciju."
+  },
+  "keypair": {
+    "title": "Par ključeva",
+    "original": "Keypair",
+    "short": "Odgovarajuća kombinacija javnog i tajnog ključa.",
+    "desc": "Keypair se sastoji od dva odgovarajuća ključa: javnog ključa (Public Key – tvoja adresa) i tajnog ključa (Secret Key – tvoja lozinka). Oba ključa idu zajedno i čine jednu cjelinu. Javni ključ dijeliš javno – tajni ključ uvijek čuvaš za sebe."
   }
 }
