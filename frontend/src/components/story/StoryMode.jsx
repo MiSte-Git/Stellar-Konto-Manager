@@ -13,6 +13,8 @@ const chapters = {
   3: lazy(() => import("./chapters/Chapter3")),
   4: lazy(() => import("./chapters/Chapter4")),
   5: lazy(() => import("./chapters/Chapter5")),
+  6: lazy(() => import("./chapters/Chapter6")),
+  7: lazy(() => import("./chapters/Chapter7")),
 };
 
 // ─── HUD – Hearts, XP, Chapter indicator ─────────────────────────────────────
@@ -23,7 +25,7 @@ function StoryHUD() {
     openGlossary, showChapterSelect, setShowChapterSelect,
   } = useStory();
   const { t } = useTranslation("story");
-  const TOTAL_CHAPTERS = 5;
+  const TOTAL_CHAPTERS = 7;
 
   const moodEmoji = {
     happy:   "⭐",
