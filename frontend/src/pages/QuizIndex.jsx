@@ -102,7 +102,14 @@ export default function QuizIndex() {
           onClick={() => navigate(buildPath(''))}
           className="inline-flex items-center gap-1 px-3 py-1.5 rounded text-sm font-medium bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 transition-colors"
         >
-          ← {t('learn:back', 'Zurück')}
+          🏠
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate(buildPath('discover'))}
+          className="inline-flex items-center gap-1 px-3 py-1.5 rounded text-sm font-medium bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 transition-colors"
+        >
+          ←
         </button>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex-1">
           {t('quiz.ui:quiz', 'Quiz')}
