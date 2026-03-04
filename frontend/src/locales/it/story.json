@@ -127,7 +127,10 @@
     "explorer_confirm_title": "Link esterno",
     "explorer_confirm_text": "Si aprirà una nuova scheda.",
     "explorer_confirm_cancel": "Annulla",
-    "explorer_confirm_ok": "Apri"
+    "explorer_confirm_ok": "Apri",
+    "difficulty": {
+      "advanced": "Avanzato"
+    }
   },
   "placeholder": {
     "chapter_label": "Capitolo",
@@ -675,5 +678,286 @@
     "learning2": "2-su-3 offre tolleranza agli errori: una chiave persa non blocca il portafoglio",
     "learning3": "Il Multisig è adatto ad aziende, famiglie, DAO e portafogli ad alta sicurezza",
     "learning4": "2-su-2 ha tolleranza zero agli errori – se una chiave viene persa, i fondi sono irraggiungibili per sempre"
+  },
+  "chapter8": {
+    "title": "Il Contratto Automatico",
+    "description": "Lumio incontra Marco, che non vuole più essere truffato. Insieme scoprono Soroban – la piattaforma di smart contract di Stellar.",
+    "cta_continue": "Continua",
+    "scene1": {
+      "section": "Scena 1 – Il problema",
+      "dialog1": "Lumio, sono stanco. La settimana scorsa un acquirente non mi ha pagato – è sparito dopo la consegna.",
+      "dialog2": "Lo capisco. E se chiedi il pagamento anticipato, l'acquirente non si fida di te.",
+      "dialog3": "Esattamente quel dilemma! L'acquirente non si fida del venditore. Il venditore non si fida dell'acquirente.",
+      "dialog4": "E se nessuno dei due dovesse fidarsi dell'altro?",
+      "dialog5": "Come è possibile?",
+      "dialog6": "Con un contratto che si esegue da solo."
+    },
+    "scene2": {
+      "section": "Scena 2 – Cos'è uno Smart Contract?",
+      "dialog1": "Immagina un distributore automatico. Metti una moneta – ti dà una bibita. Nessun venditore, nessuna trattativa, nessuna eccezione.",
+      "dialog2": "Certo, ma è solo una macchina.",
+      "dialog3": "Uno smart contract è lo stesso – ma per soldi e condizioni. 'Se Marco consegna E l'acquirente conferma → allora paga automaticamente.' Decide il codice, non una persona.",
+      "dialog4": "E chi controlla il codice?",
+      "dialog5": "Nessuno – gira sulla blockchain. Immutabile, visibile a tutti.",
+      "glossary_btn": "Cos'è uno Smart Contract?"
+    },
+    "scene3": {
+      "section": "Scena 3 – Soroban su Stellar",
+      "dialog1": "Stellar ha la propria piattaforma di smart contract – si chiama Soroban.",
+      "dialog2": "Ho sentito qualcosa del genere da Ethereum. È la stessa cosa?",
+      "dialog3": "Concetto simile, ma Stellar è più veloce, meno costoso e pronto per le attività semplici.",
+      "dialog4": "Sembra meglio.",
+      "dialog5": "Per il tuo caso d'uso? Assolutamente. Soroban è tecnicamente maturo per esattamente questi scenari.",
+      "card": {
+        "label": "Confronto",
+        "title": "Ethereum vs. Stellar / Soroban",
+        "eth_speed": "Più lento (12–15 sec.)",
+        "eth_fees": "Commissioni alte (Gas)",
+        "eth_complexity": "Molto complesso",
+        "sol_speed": "Veloce (3–5 sec.)",
+        "sol_fees": "Commissioni basse",
+        "sol_complexity": "Semplice per casi d'uso chiari",
+        "cta": "Capito! Continua →"
+      }
+    },
+    "scene4": {
+      "section": "Scena 4 – Testnet Escrow",
+      "pre": {
+        "dialog1": "Proviamolo subito! Creerò un escrow reale sulla testnet.",
+        "dialog2": "Uno vero? Come?",
+        "dialog3": "Stellar ha una funzione integrata per questo: i Claimable Balances. Blocchi fondi sotto condizioni – il compratore può reclamarli solo quando entrambe le parti hanno soddisfatto la propria condizione.",
+        "dialog4": "Quindi stiamo bloccando vero denaro testnet adesso?"
+      },
+      "action": {
+        "label": "Crea Escrow",
+        "description": "Blocca 1 XLM sulla testnet per un acquirente demo. Il compratore può reclamarlo immediatamente; puoi richiedere il rimborso dopo 1 ora.",
+        "success": "Escrow creato con successo!",
+        "escrow_id_label": "ID Claimable Balance",
+        "testnet_note": "Solo testnet – nessun denaro reale."
+      },
+      "post": {
+        "dialog1": "È stato più semplice di quanto pensassi!",
+        "dialog2": "Così funziona la fiducia decentralizzata. Il contratto ora gira sulla blockchain – senza intermediari, senza eccezioni."
+      }
+    },
+    "scene5": {
+      "section": "Scena 5 – Il futuro dei contratti",
+      "intro": {
+        "dialog1": "Marco, quello che hai appena fatto – è solo l'inizio.",
+        "dialog2": "Cosa intendi?",
+        "dialog3": "Ovunque oggi c'è un intermediario, un notaio o una banca tra due persone – domani potrebbe esserci uno smart contract."
+      },
+      "list": {
+        "item1": "Acquisto immobiliare – Il prezzo viene rilasciato automaticamente non appena la registrazione catastale è confermata. Nessun notaio necessario.",
+        "item2": "Atti notarili – Contratti memorizzati on-chain, immutabili e dimostrabili per sempre. Nessuna burocrazia.",
+        "item3": "Licenze musicali – Le royalty scorrono automaticamente all'artista ad ogni acquisto o streaming.",
+        "item4": "Assicurazioni – Il pagamento del sinistro viene attivato automaticamente non appena si verifica una condizione (es. ritardo del volo superiore a 3 ore).",
+        "item5": "Votazioni – Votazioni a prova di manomissione per aziende, associazioni o comuni.",
+        "item6": "Certificati – Diplomi e qualifiche memorizzati on-chain. Mai persi, mai falsificati."
+      },
+      "outro": {
+        "dialog1": "Sembra fantascienza.",
+        "dialog2": "Tra cinque anni sarà la quotidianità.",
+        "dialog3": "E tutto senza una banca?",
+        "dialog4": "Senza una banca. Senza attese. Senza commissioni per l'intermediario."
+      }
+    },
+    "scene6": {
+      "section": "Scena 6 – Capire correttamente Soroban",
+      "dialog1": "Sembra perfetto. Non ci sono debolezze?",
+      "dialog2": "Ci sono – ma non sono in Soroban stesso.",
+      "dialog3": "Soroban fa esattamente quello che lo sviluppatore scrive. Niente di più, niente di meno.",
+      "dialog4": "Il vero rischio: un contratto scritto male ha lacune – e sulla blockchain non c'è annulla.",
+      "dialog5": "Quindi dipende dall'artigiano, non dall'attrezzo?",
+      "dialog6": "Esatto. Soroban è lo strumento. Se funziona bene dipende dall'artigiano.",
+      "choice": {
+        "question": "Qual è il rischio maggiore con uno smart contract?",
+        "a1": "Soroban non è tecnicamente maturo",
+        "a2": "Lo sviluppatore non conosce Soroban abbastanza bene",
+        "a3": "Gli smart contract sono troppo lenti per Stellar",
+        "a4": "Nessuno può leggere il contratto",
+        "correct": "Corretto! Soroban è lo strumento – lo sviluppatore determina la qualità.",
+        "wrong": "Non proprio. Soroban è tecnicamente maturo per applicazioni semplici. Il vero rischio sta nello sviluppatore – deve conoscere bene Soroban per scrivere contratti sicuri.",
+        "retry_btn": "Riprova",
+        "hint2": "Suggerimento: Lumio ha detto 'Soroban è lo strumento. Se funziona bene dipende dall'...'"
+      }
+    },
+    "quiz": {
+      "section": "Scena 7 – Mini-Quiz",
+      "wrong_msg": "Non proprio. Riprova!",
+      "retry_btn": "Riprova",
+      "correct_cta": "Continua",
+      "q1": "Cosa fa automaticamente uno smart contract?",
+      "q1_a1": "Esegue un'azione non appena si verifica una condizione.",
+      "q1_a2": "Scambia criptovalute in valuta fiat.",
+      "q1_a3": "Protegge il tuo wallet dagli hacker.",
+      "q1_a4": "Invia sempre XLM a Lumio.",
+      "q1_explanation": "Uno smart contract esegue automaticamente un'azione quando si verifica una condizione predefinita – senza persone nel mezzo.",
+      "q1_hint2": "Pensa al distributore automatico: metti una moneta e ti dà...",
+      "q2": "Cosa distingue principalmente Soroban dagli smart contract di Ethereum?",
+      "q2_a1": "Stellar/Soroban è più veloce e più economico per casi d'uso semplici.",
+      "q2_a2": "Soroban gira sulla blockchain Bitcoin.",
+      "q2_a3": "Ethereum non ha smart contract.",
+      "q2_a4": "Soroban non ha bisogno di internet.",
+      "q2_explanation": "Soroban è la piattaforma di smart contract di Stellar ed è più veloce e più economica rispetto a Ethereum – specialmente per casi d'uso semplici.",
+      "q2_hint2": "Guarda di nuovo la scheda di confronto: Ethereum vs. Stellar/Soroban.",
+      "q3": "Quando vengono rilasciati i token nell'escrow di Marco?",
+      "q3_a1": "Non appena il compratore conferma la ricezione.",
+      "q3_a2": "Automaticamente dopo 24 ore.",
+      "q3_a3": "Quando Marco fa clic manualmente su 'Paga'.",
+      "q3_a4": "Non appena Marco accede.",
+      "q3_explanation": "Nel vero scenario escrow: il compratore conferma la ricezione della merce – solo allora lo smart contract libera il denaro.",
+      "q3_hint2": "Pensa al problema di Marco: voleva essere sicuro di pagare quando arrivasse la merce."
+    },
+    "summary": {
+      "learning1": "Cos'è uno smart contract e come viene eseguito automaticamente",
+      "learning2": "Cos'è Soroban – la piattaforma di smart contract propria di Stellar",
+      "learning3": "Come un contratto escrow protegge acquirenti e venditori",
+      "learning4": "Quali casi d'uso futuri gli smart contract rendono possibili (immobiliare, notaio, musica, assicurazione, voto, certificati)",
+      "learning5": "Che il rischio sta nello sviluppatore, non in Soroban stesso"
+    }
+  },
+  "chapter9": {
+    "title": "Il Potere di Revoca",
+    "description": "Lumio incontra Sofia, che ha perso i suoi token a causa di una truffa – ed Erik, che mette in guardia da troppo controllo. Cos'è davvero il clawback: protezione o potere?",
+    "cta_continue": "Continua",
+    "scene1": {
+      "section": "Scena 1 – Sofia incontra Lumio",
+      "dialog1": "Lumio – ho bisogno del tuo aiuto. Sono stata derubata.",
+      "dialog2": "Cosa è successo?",
+      "dialog3": "Qualcuno si è spacciato per il supporto. Ha detto che il mio account aveva un problema. Ho inviato i miei token al suo indirizzo – ed è sparito.",
+      "dialog4": "Lo conosco. Un classico attacco di ingegneria sociale.",
+      "dialog5": "Ho sentito che esiste qualcosa come un richiamo. Posso riavere i miei token?",
+      "dialog6": "Dipende. Siediti – dobbiamo spiegarlo con attenzione."
+    },
+    "scene2": {
+      "section": "Scena 2 – Cos'è il Clawback?",
+      "dialog1": "Il clawback è una funzione che un emittente – colui che crea un token – può attivare al momento della creazione.",
+      "dialog2": "E poi può richiamare i token?",
+      "dialog3": "Esattamente. Se il clawback è attivato, l'emittente può reclamare token da qualsiasi indirizzo – anche quello del truffatore.",
+      "dialog4": "È perfetto! Quindi posso riavere i miei token?",
+      "dialog5": "Solo se l'emittente del tuo asset ha attivato il clawback – e se è disposto a usarlo per te.",
+      "dialog6": "E se no?",
+      "dialog7": "Allora non c'è ritorno. Sulla blockchain non esiste l'annullamento.",
+      "glossary_btn": "Cos'è il Clawback?"
+    },
+    "scene3": {
+      "section": "Scena 3 – Erik appare",
+      "dialog1": "Scusa – non ho potuto fare a meno di sentire. Il clawback non è una soluzione. È un cavallo di Troia.",
+      "dialog2": "Cosa? Potrebbe riportarmi i miei token!",
+      "dialog3": "E domani lo stesso emittente può portarti via token – solo perché vuole.",
+      "dialog4": "Erik ha ragione, Sofia. Il clawback è un'arma a doppio taglio.",
+      "dialog5": "Ma senza clawback, le vittime di frode sono completamente indifese!",
+      "dialog6": "Ecco perché controllo sempre: questo asset ha il clawback attivato? Se sì, mi fido dell'emittente – o non lo compro.",
+      "dialog7": "È esattamente la domanda chiave: ti fidi dell'emittente?"
+    },
+    "cta_retry": "Riprova",
+    "scene4": {
+      "section": "Scena 4 – Attivare il Clawback",
+      "pre": {
+        "dialog1": "Vi mostro adesso come funziona davvero il clawback – in diretta sulla testnet. Creeremo il nostro token come emittente.",
+        "dialog2": "Davvero in diretta? Sulla blockchain vera?",
+        "dialog3": "Sì – sulla testnet. Attiviamo il clawback durante la creazione e inviamo 100 TRUST a un indirizzo di dimostrazione.",
+        "dialog4": "Interessante. Si vede così quanto è facile per un emittente ottenere questo potere."
+      },
+      "action1": {
+        "header": "Passo 1 di 2 – Crea ed emetti il token",
+        "label": "Crea e invia il token TRUST",
+        "description": "Attiva il clawback sul tuo conto, crea un token TRUST e invia 100 TRUST a un indirizzo di dimostrazione.",
+        "step_friendbot": "Preparazione account di dimostrazione...",
+        "step_setflags": "Attivazione permesso clawback...",
+        "step_trustline": "Configurazione trustline...",
+        "step_payment": "Invio di 100 TRUST...",
+        "success": "100 TRUST emessi con successo – clawback attivo.",
+        "testnet_note": "Solo testnet. Nessun denaro reale.",
+        "error": "Errore durante la creazione. Riprova."
+      },
+      "bridge": {
+        "dialog1": "Il token esiste. 100 TRUST sono all'indirizzo di dimostrazione – con permesso di clawback.",
+        "dialog2": "E ora puoi semplicemente riprenderteli?",
+        "dialog3": "Esattamente quello che facciamo adesso."
+      }
+    },
+    "scene5": {
+      "section": "Scena 5 – Eseguire il Clawback",
+      "pre": {
+        "dialog1": "Lo fate davvero? Il richiamo – in diretta?",
+        "dialog2": "Sì. Come emittente abbiamo il potere – e ora lo usiamo.",
+        "dialog3": "Se il truffatore che mi ha ingannata avesse avuto un emittente così..."
+      },
+      "action2": {
+        "header": "Passo 2 di 2 – Esegui il clawback",
+        "label": "Esegui il clawback",
+        "description": "Richiama 100 token TRUST dall'indirizzo di dimostrazione. Possibile solo come emittente con permesso di clawback.",
+        "locked": "Completa prima il Passo 1.",
+        "success": "100 TRUST richiamati con successo.",
+        "error": "Il clawback è fallito. Riprova."
+      },
+      "post": {
+        "dialog1": "Fatto. I 100 TRUST sono tornati – il richiamo è riuscito.",
+        "dialog2": "Incredibile. Così in fretta?",
+        "dialog3": "Questo è il clawback. Totale, immediato, irrevocabile – per il destinatario.",
+        "dialog4": "Ecco perché: fidarsi dell'emittente non è un'opzione – è obbligatorio.",
+        "dialog5": "Capisco ora perché hai avvertito, Erik. Il clawback può proteggere – o controllare."
+      }
+    },
+    "summary": {
+      "section": "Riepilogo",
+      "learning1": "Cos'è il clawback – una funzione dell'emittente per richiamare i token",
+      "learning2": "Che solo l'emittente può attivare ed eseguire il clawback – non l'utente",
+      "learning3": "Come il clawback può aiutare le vittime di frode – ma solo se l'emittente lo usa",
+      "learning4": "Che lo stesso potere può essere abusato per il controllo",
+      "learning5": "Perché dovresti sempre verificare: Questo asset ha il clawback? Mi fido dell'emittente?"
+    },
+    "scene6": {
+      "section": "Scena 6 – Ti fidi dell'emittente?",
+      "dialog1": "Ora che entrambi avete vissuto questo – lasciatemi fare una domanda a entrambi.",
+      "dialog2": "Sofia: Hai visto come il clawback può aiutare. Erik: Hai visto come il clawback dà potere.",
+      "dialog3": "E tu – cosa ti porti via da tutto questo?",
+      "choice": {
+        "question": "Qual è la condizione più importante affinché il clawback funzioni come protezione?",
+        "a": "L'utente deve poter attivare il clawback da solo",
+        "b": "L'asset deve essere basato su Stellar",
+        "c": "L'emittente deve aver attivato il clawback E essere disposto a usarlo",
+        "d": "La transazione deve avere meno di 1 ora",
+        "wrong": "Non del tutto. Il clawback è interamente nelle mani dell'emittente. Solo lui può attivarlo ed eseguirlo – l'utente non ha alcun controllo diretto.",
+        "hint2": "Suggerimento: Lumio ha spiegato – solo chi emette il token detiene il potere del clawback.",
+        "correct": "Esatto! Il clawback è potere dell'emittente – se viene usato per protezione o controllo dipende dalla fiducia.",
+        "retry_btn": "Riprova"
+      }
+    },
+    "quiz": {
+      "section": "Scena 7 – Mini-Quiz",
+      "wrong_msg": "Non del tutto corretto. Riprova!",
+      "retry_btn": "Riprova",
+      "correct_cta": "Continua",
+      "q1": "Chi può eseguire il clawback su un asset Stellar?",
+      "q1_a1": "Solo l'emittente – colui che ha emesso il token.",
+      "q1_a2": "Qualsiasi utente che possiede il token.",
+      "q1_a3": "La Stellar Development Foundation.",
+      "q1_a4": "L'utente i cui token sono stati rubati.",
+      "q1_explanation": "Il clawback è una funzione esclusiva dell'emittente. Solo il titolare del conto che ha originariamente emesso il token può richiamarlo.",
+      "q1_hint2": "Suggerimento: Chi emette il token? Quella stessa persona detiene il potere del clawback.",
+      "q2": "Quando è il clawback un rischio per te come utente?",
+      "q2_a1": "Quando non ti fidi dell'emittente – potrebbe richiamare i tuoi token in qualsiasi momento.",
+      "q2_a2": "Quando hai troppi token.",
+      "q2_a3": "Quando il clawback non è attivato.",
+      "q2_a4": "Quando la transazione è stata troppo veloce.",
+      "q2_explanation": "Il clawback dà all'emittente il potere di richiamare token da qualsiasi indirizzo – incluso il tuo. È un rischio se non ti fidi dell'emittente.",
+      "q2_hint2": "Suggerimento: Cosa succede quando qualcuno ha potere – e non lo usa bene?",
+      "q3": "Cosa dovresti sempre verificare prima di acquistare un asset?",
+      "q3_a1": "Se il clawback è attivato – e se ti fidi abbastanza dell'emittente.",
+      "q3_a2": "Se il nome del token contiene solo lettere maiuscole.",
+      "q3_a3": "Se l'emittente ha una verifica blu.",
+      "q3_a4": "Se il token ha almeno 1 anno.",
+      "q3_explanation": "Prima di acquistare o fidarsi di un asset Stellar: verifica se il clawback è attivato. Se sì – fidati solo di asset da emittenti di cui ti fidi davvero.",
+      "q3_hint2": "Suggerimento: Il messaggio chiave di Erik in questo capitolo era: verifica sempre se il clawback è attivo – e se ti fidi."
+    },
+    "scene8": {
+      "section": "Scena 8 – La lezione",
+      "dialog1": "Avrei voluto che l'emittente dei miei token avesse attivato il clawback.",
+      "dialog2": "E avrei voluto che più persone verificassero di chi si fidano – prima di acquistare.",
+      "dialog3": "Entrambi hanno ragione. Questa è la lezione."
+    }
   }
 }
