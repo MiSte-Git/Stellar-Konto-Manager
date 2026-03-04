@@ -127,7 +127,10 @@
     "explorer_confirm_title": "Externe link",
     "explorer_confirm_text": "Er wordt een nieuw tabblad geopend.",
     "explorer_confirm_cancel": "Annuleren",
-    "explorer_confirm_ok": "Openen"
+    "explorer_confirm_ok": "Openen",
+    "difficulty": {
+      "advanced": "Gevorderd"
+    }
   },
   "placeholder": {
     "chapter_label": "Hoofdstuk",
@@ -675,5 +678,286 @@
     "learning2": "2-van-3 biedt foutentolerantie: één verloren sleutel vergrendelt de portemonnee niet",
     "learning3": "Multisig is geschikt voor bedrijven, families, DAO's en portemonnees met hoge beveiliging",
     "learning4": "2-van-2 heeft nul foutentolerantie – als een sleutel verloren gaat, zijn de fondsen voor altijd onbereikbaar"
+  },
+  "chapter8": {
+    "title": "Het Automatische Contract",
+    "description": "Lumio ontmoet Marco, die nooit meer wil worden opgelicht. Samen ontdekken ze Soroban – Stellars smart contract platform.",
+    "cta_continue": "Verder",
+    "scene1": {
+      "section": "Scène 1 – Het probleem",
+      "dialog1": "Lumio, ik ben het zat. Vorige week betaalde een koper me niet – gewoon verdwenen na levering.",
+      "dialog2": "Ik begrijp het. En als je vooruitbetaling vraagt, vertrouwt de koper je niet.",
+      "dialog3": "Precies dat dilemma! Koper vertrouwt verkoper niet. Verkoper vertrouwt koper niet.",
+      "dialog4": "Wat als geen van beiden de ander hoefde te vertrouwen?",
+      "dialog5": "Hoe is dat mogelijk?",
+      "dialog6": "Met een contract dat zichzelf uitvoert."
+    },
+    "scene2": {
+      "section": "Scène 2 – Wat is een Smart Contract?",
+      "dialog1": "Stel je een automaat voor. Je gooit een munt in – hij geeft je een frisdrank. Geen verkoper, geen onderhandeling, geen uitzonderingen.",
+      "dialog2": "Natuurlijk, maar dat is gewoon een machine.",
+      "dialog3": "Een smart contract is hetzelfde – maar voor geld en voorwaarden. 'Als Marco levert EN koper bevestigt → dan automatisch betalen.' De code beslist, niet een mens.",
+      "dialog4": "En wie controleert de code?",
+      "dialog5": "Niemand – het draait op de blockchain. Onveranderlijk, voor iedereen zichtbaar.",
+      "glossary_btn": "Wat is een Smart Contract?"
+    },
+    "scene3": {
+      "section": "Scène 3 – Soroban op Stellar",
+      "dialog1": "Stellar heeft zijn eigen smart contract platform – het heet Soroban.",
+      "dialog2": "Ik heb zoiets gehoord van Ethereum. Is het hetzelfde?",
+      "dialog3": "Vergelijkbaar concept, maar Stellar is sneller, goedkoper en klaar voor eenvoudige taken.",
+      "dialog4": "Klinkt beter.",
+      "dialog5": "Voor jouw gebruik? Absoluut. Soroban is technisch volwassen voor precies dit soort scenario's.",
+      "card": {
+        "label": "Vergelijking",
+        "title": "Ethereum vs. Stellar / Soroban",
+        "eth_speed": "Langzamer (12–15 sec.)",
+        "eth_fees": "Hoge kosten (Gas)",
+        "eth_complexity": "Zeer complex",
+        "sol_speed": "Snel (3–5 sec.)",
+        "sol_fees": "Lage kosten",
+        "sol_complexity": "Eenvoudig voor duidelijke toepassingen",
+        "cta": "Begrepen! Verder →"
+      }
+    },
+    "scene4": {
+      "section": "Scène 4 – Testnet Escrow",
+      "pre": {
+        "dialog1": "Laten we dit meteen uitproberen! Ik maak een echte escrow op het testnet.",
+        "dialog2": "Een echte? Hoe?",
+        "dialog3": "Stellar heeft een ingebouwde functie hiervoor: Claimable Balances. Je vergrendelt geld onder voorwaarden – de koper kan het alleen claimen als beide partijen hun voorwaarde hebben vervuld.",
+        "dialog4": "Dus we vergrendelen nu echt testnet-geld?"
+      },
+      "action": {
+        "label": "Escrow Aanmaken",
+        "description": "Vergrendelt 1 XLM op het testnet voor een demokoper. De koper kan het meteen claimen; jij kunt het na 1 uur terugvorderen.",
+        "success": "Escrow succesvol aangemaakt!",
+        "escrow_id_label": "Claimable Balance ID",
+        "testnet_note": "Alleen testnet – geen echt geld."
+      },
+      "post": {
+        "dialog1": "Dat was eenvoudiger dan ik dacht!",
+        "dialog2": "Zo werkt gedecentraliseerd vertrouwen. Het contract draait nu op de blockchain – zonder tussenpersoon, zonder uitzonderingen."
+      }
+    },
+    "scene5": {
+      "section": "Scène 5 – De toekomst van contracten",
+      "intro": {
+        "dialog1": "Marco, wat je zojuist deed – dat is nog maar het begin.",
+        "dialog2": "Wat bedoel je?",
+        "dialog3": "Overal waar vandaag een tussenpersoon, een notaris of een bank staat tussen twee mensen – zou morgen een smart contract kunnen staan."
+      },
+      "list": {
+        "item1": "Huisaankoop – De koopprijs wordt automatisch vrijgegeven zodra de kadasterinschrijving is bevestigd. Geen notaris nodig.",
+        "item2": "Notarishandelingen – Contracten on-chain opgeslagen, onveranderlijk en voor altijd aantoonbaar. Geen papierwerk.",
+        "item3": "Muzieklicenties – Royalty's vloeien automatisch naar de artiest bij elke aankoop of stream.",
+        "item4": "Verzekeringen – Schadebetaling wordt automatisch getriggerd zodra een voorwaarde is vervuld (bijv. vluchtvertraging van meer dan 3 uur).",
+        "item5": "Stemmen – Manipulatiebestendige stemmingen voor bedrijven, verenigingen of gemeenten.",
+        "item6": "Certificaten – Diploma's en kwalificaties on-chain opgeslagen. Nooit verloren, nooit vervalst."
+      },
+      "outro": {
+        "dialog1": "Dat klinkt als sciencefiction.",
+        "dialog2": "Over vijf jaar is het dagelijkse kost.",
+        "dialog3": "En dat alles zonder een bank?",
+        "dialog4": "Zonder een bank. Zonder wachten. Zonder kosten voor de tussenpersoon."
+      }
+    },
+    "scene6": {
+      "section": "Scène 6 – Soroban goed begrijpen",
+      "dialog1": "Klinkt perfect. Zijn er dan helemaal geen zwaktes?",
+      "dialog2": "Jawel – maar die liggen niet bij Soroban zelf.",
+      "dialog3": "Soroban doet precies wat de ontwikkelaar erin schrijft. Niet meer, niet minder.",
+      "dialog4": "Het echte risico: een slecht geschreven contract heeft gaten – en op de blockchain is er geen ongedaan maken.",
+      "dialog5": "Dus het gaat om de vakman, niet het gereedschap?",
+      "dialog6": "Precies. Soroban is het gereedschap. Of het goed werkt, ligt aan de vakman.",
+      "choice": {
+        "question": "Wat is het grootste risico van een smart contract?",
+        "a1": "Soroban is niet technisch volwassen",
+        "a2": "De ontwikkelaar kent Soroban niet goed genoeg",
+        "a3": "Smart contracts zijn te traag voor Stellar",
+        "a4": "Niemand kan het contract lezen",
+        "correct": "Correct! Soroban is het gereedschap – de ontwikkelaar bepaalt de kwaliteit.",
+        "wrong": "Niet helemaal. Soroban is technisch volwassen voor eenvoudige toepassingen. Het echte risico ligt bij de ontwikkelaar – hij moet Soroban goed kennen om veilige contracten te schrijven.",
+        "retry_btn": "Opnieuw proberen",
+        "hint2": "Hint: Lumio zei 'Soroban is het gereedschap. Of het goed werkt, ligt aan de...'"
+      }
+    },
+    "quiz": {
+      "section": "Scène 7 – Mini-Quiz",
+      "wrong_msg": "Niet helemaal. Probeer het opnieuw!",
+      "retry_btn": "Opnieuw proberen",
+      "correct_cta": "Doorgaan",
+      "q1": "Wat doet een smart contract automatisch?",
+      "q1_a1": "Het voert een actie uit zodra een voorwaarde is vervuld.",
+      "q1_a2": "Het wisselt cryptocurrency in fiat-geld.",
+      "q1_a3": "Het beschermt je wallet tegen hackers.",
+      "q1_a4": "Het stuurt altijd XLM naar Lumio.",
+      "q1_explanation": "Een smart contract voert automatisch een actie uit wanneer een vooraf bepaalde voorwaarde is vervuld – zonder mensen ertussen.",
+      "q1_hint2": "Denk aan de automaat: je gooit er een munt in en hij geeft je...",
+      "q2": "Wat onderscheidt Soroban voornamelijk van Ethereum smart contracts?",
+      "q2_a1": "Stellar/Soroban is sneller en goedkoper voor eenvoudige gebruikssituaties.",
+      "q2_a2": "Soroban draait op de Bitcoin-blockchain.",
+      "q2_a3": "Ethereum heeft geen smart contracts.",
+      "q2_a4": "Soroban heeft geen internet nodig.",
+      "q2_explanation": "Soroban is Stellar's smart contract-platform en is sneller en goedkoper vergeleken met Ethereum – vooral voor eenvoudige gebruikssituaties.",
+      "q2_hint2": "Kijk nog eens naar de vergelijkingskaart: Ethereum vs. Stellar/Soroban.",
+      "q3": "Wanneer worden de tokens in Marco's escrow vrijgegeven?",
+      "q3_a1": "Zodra de koper de ontvangst bevestigt.",
+      "q3_a2": "Automatisch na 24 uur.",
+      "q3_a3": "Als Marco handmatig op 'Betalen' klikt.",
+      "q3_a4": "Zodra Marco inlogt.",
+      "q3_explanation": "In het echte escrow-scenario: de koper bevestigt ontvangst van de goederen – pas dan geeft het smart contract het geld vrij.",
+      "q3_hint2": "Denk aan Marco's probleem: hij wilde zeker weten dat hij betaalt als de goederen aankomen."
+    },
+    "summary": {
+      "learning1": "Wat een smart contract is en hoe het automatisch wordt uitgevoerd",
+      "learning2": "Wat Soroban is – Stellar's eigen smart contract-platform",
+      "learning3": "Hoe een escrow-contract kopers en verkopers beschermt",
+      "learning4": "Welke toekomstige gebruikssituaties smart contracts mogelijk maken (vastgoed, notaris, muziek, verzekering, stemmen, certificaten)",
+      "learning5": "Dat het risico bij de ontwikkelaar ligt, niet bij Soroban zelf"
+    }
+  },
+  "chapter9": {
+    "title": "De Terugroepkracht",
+    "description": "Lumio ontmoet Sofia, die haar tokens verloor door fraude – en Erik, die waarschuwt voor te veel controle. Wat is clawback echt: bescherming of macht?",
+    "cta_continue": "Doorgaan",
+    "scene1": {
+      "section": "Scène 1 – Sofia ontmoet Lumio",
+      "dialog1": "Lumio – ik heb je hulp nodig. Ik ben bestolen.",
+      "dialog2": "Wat is er gebeurd?",
+      "dialog3": "Iemand deed zich voor als support. Ze zeiden dat mijn account een probleem had. Ik stuurde mijn tokens naar hun adres – en ze verdwenen.",
+      "dialog4": "Dat ken ik. Een klassieke social engineering aanval.",
+      "dialog5": "Ik hoorde dat er zoiets bestaat als een terugroeping. Kan ik mijn tokens terugkrijgen?",
+      "dialog6": "Dat hangt ervan af. Ga zitten – dit moeten we zorgvuldig uitleggen."
+    },
+    "scene2": {
+      "section": "Scène 2 – Wat is Clawback?",
+      "dialog1": "Clawback is een functie die een uitgever – degene die een token maakt – kan activeren bij het aanmaken.",
+      "dialog2": "En dan kan hij tokens terugroepen?",
+      "dialog3": "Precies. Als clawback is geactiveerd, kan de uitgever tokens van elk adres terugvorderen – ook van de oplichter.",
+      "dialog4": "Dat is perfect! Dus ik kan mijn tokens terugkrijgen?",
+      "dialog5": "Alleen als de uitgever van jouw asset clawback heeft geactiveerd – en als hij bereid is het voor jou te gebruiken.",
+      "dialog6": "En als niet?",
+      "dialog7": "Dan is er geen weg terug. Op de blockchain bestaat geen 'ongedaan maken'.",
+      "glossary_btn": "Wat is Clawback?"
+    },
+    "scene3": {
+      "section": "Scène 3 – Erik verschijnt",
+      "dialog1": "Neem me niet kwalijk – ik kon het niet helpen maar meeluisteren. Clawback is geen oplossing. Het is een Trojaans paard.",
+      "dialog2": "Wat? Het kan mijn tokens terugbrengen!",
+      "dialog3": "En morgen kan dezelfde uitgever tokens van jou afnemen – gewoon omdat hij dat wil.",
+      "dialog4": "Erik heeft een punt, Sofia. Clawback is een tweesnijdend zwaard.",
+      "dialog5": "Maar zonder clawback staan slachtoffers van fraude volledig weerloos!",
+      "dialog6": "Daarom check ik altijd: heeft dit asset clawback ingeschakeld? Zo ja, vertrouw ik de uitgever – of koop ik het niet.",
+      "dialog7": "Dat is precies de cruciale vraag: vertrouw je de uitgever?"
+    },
+    "cta_retry": "Opnieuw proberen",
+    "scene4": {
+      "section": "Scène 4 – Clawback activeren",
+      "pre": {
+        "dialog1": "Ik laat jullie nu zien hoe clawback echt werkt – live op het testnet. We maken onze eigen token aan als uitgevende partij.",
+        "dialog2": "Echt live? Op de echte blockchain?",
+        "dialog3": "Ja – op het testnet. We activeren clawback bij het aanmaken en sturen 100 TRUST naar een demo-adres.",
+        "dialog4": "Interessant. Zo zie je hoe gemakkelijk een uitgevende partij deze macht krijgt."
+      },
+      "action1": {
+        "header": "Stap 1 van 2 – Token aanmaken en uitgeven",
+        "label": "TRUST token aanmaken en sturen",
+        "description": "Activeert clawback op je account, maakt een TRUST token aan en stuurt 100 TRUST naar een demo-adres.",
+        "step_friendbot": "Demo-account voorbereiden...",
+        "step_setflags": "Clawback-toestemming activeren...",
+        "step_trustline": "Trustline instellen...",
+        "step_payment": "100 TRUST versturen...",
+        "success": "100 TRUST succesvol uitgegeven – clawback is actief.",
+        "testnet_note": "Alleen testnet. Geen echt geld.",
+        "error": "Aanmaken mislukt. Probeer het opnieuw."
+      },
+      "bridge": {
+        "dialog1": "De token bestaat. 100 TRUST staan op het demo-adres – met clawback-toestemming.",
+        "dialog2": "En nu kun je ze gewoon terugpakken?",
+        "dialog3": "Precies dat doen we nu."
+      }
+    },
+    "scene5": {
+      "section": "Scène 5 – Clawback uitvoeren",
+      "pre": {
+        "dialog1": "Doen jullie het echt? De terugvordering – live?",
+        "dialog2": "Ja. Als uitgevende partij hebben we de macht – en nu gebruiken we die.",
+        "dialog3": "Als de oplichter die mij bedroog zo'n uitgevende partij had gehad..."
+      },
+      "action2": {
+        "header": "Stap 2 van 2 – Clawback uitvoeren",
+        "label": "Clawback uitvoeren",
+        "description": "Vordert 100 TRUST tokens terug van het demo-adres. Alleen mogelijk als uitgevende partij met clawback-toestemming.",
+        "locked": "Voltooi eerst stap 1.",
+        "success": "100 TRUST succesvol teruggevorderd.",
+        "error": "Clawback mislukt. Probeer het opnieuw."
+      },
+      "post": {
+        "dialog1": "Klaar. De 100 TRUST zijn terug – de terugvordering is geslaagd.",
+        "dialog2": "Ongelooflijk. Zo snel?",
+        "dialog3": "Dat is clawback. Totaal, onmiddellijk, onherroepelijk – voor de ontvanger.",
+        "dialog4": "Daarom geldt: vertrouwen in de uitgevende partij is geen keuze – het is verplicht.",
+        "dialog5": "Ik begrijp nu waarom je gewaarschuwd had, Erik. Clawback kan beschermen – of controleren."
+      }
+    },
+    "summary": {
+      "section": "Samenvatting",
+      "learning1": "Wat clawback is – een functie van de uitgevende partij om tokens terug te vorderen",
+      "learning2": "Dat alleen de uitgevende partij clawback kan activeren en uitvoeren – niet de gebruiker",
+      "learning3": "Hoe clawback fraudeslachtoffers kan helpen – maar alleen als de uitgevende partij het inzet",
+      "learning4": "Dat dezelfde macht gebruikt kan worden voor controle",
+      "learning5": "Waarom je altijd moet controleren: Heeft dit actief clawback? Vertrouw ik de uitgevende partij?"
+    },
+    "scene6": {
+      "section": "Scène 6 – Vertrouw je de uitgevende partij?",
+      "dialog1": "Nu jullie beide dit hebben meegemaakt – laat me jullie allebei iets vragen.",
+      "dialog2": "Sofia: Je hebt gezien hoe clawback kan helpen. Erik: Je hebt gezien hoe clawback macht geeft.",
+      "dialog3": "En jij – wat neem je mee?",
+      "choice": {
+        "question": "Wat is de belangrijkste voorwaarde voor clawback om als bescherming te werken?",
+        "a": "De gebruiker moet clawback zelf kunnen activeren",
+        "b": "Het actief moet gebaseerd zijn op Stellar",
+        "c": "De uitgevende partij moet clawback geactiveerd hebben EN bereid zijn het te gebruiken",
+        "d": "De transactie moet minder dan 1 uur oud zijn",
+        "wrong": "Niet helemaal. Clawback ligt volledig in handen van de uitgevende partij. Alleen zij kunnen het activeren en uitvoeren – de gebruiker heeft er geen directe controle over.",
+        "hint2": "Tip: Lumio legde uit – alleen wie de token uitgeeft, heeft de clawback-macht.",
+        "correct": "Precies! Clawback is macht van de uitgevende partij – of het voor bescherming of controle wordt gebruikt, hangt af van vertrouwen.",
+        "retry_btn": "Opnieuw proberen"
+      }
+    },
+    "quiz": {
+      "section": "Scène 7 – Mini-Quiz",
+      "wrong_msg": "Niet helemaal correct. Probeer het opnieuw!",
+      "retry_btn": "Opnieuw proberen",
+      "correct_cta": "Doorgaan",
+      "q1": "Wie kan clawback uitvoeren op een Stellar-actief?",
+      "q1_a1": "Alleen de uitgevende partij – degene die de token heeft uitgegeven.",
+      "q1_a2": "Elke gebruiker die de token bezit.",
+      "q1_a3": "De Stellar Development Foundation.",
+      "q1_a4": "De gebruiker wiens tokens zijn gestolen.",
+      "q1_explanation": "Clawback is een exclusieve functie van de uitgevende partij. Alleen de rekeninghouder die de token oorspronkelijk heeft uitgegeven, kan deze terugvorderen.",
+      "q1_hint2": "Tip: Wie geeft de token uit? Diezelfde persoon heeft de clawback-macht.",
+      "q2": "Wanneer is clawback een risico voor jou als gebruiker?",
+      "q2_a1": "Wanneer je de uitgevende partij niet vertrouwt – zij zouden je tokens op elk moment kunnen terugvorderen.",
+      "q2_a2": "Wanneer je te veel tokens hebt.",
+      "q2_a3": "Wanneer clawback niet geactiveerd is.",
+      "q2_a4": "Wanneer de transactie te snel was.",
+      "q2_explanation": "Clawback geeft de uitgevende partij de macht om tokens van elk adres terug te vorderen – ook van jou. Dat is een risico als je de uitgevende partij niet vertrouwt.",
+      "q2_hint2": "Tip: Wat gebeurt er als iemand macht heeft – en die niet goed gebruikt?",
+      "q3": "Wat zou je altijd moeten controleren voordat je een actief koopt?",
+      "q3_a1": "Of clawback geactiveerd is – en of je de uitgevende partij genoeg vertrouwt.",
+      "q3_a2": "Of de naam van de token alleen hoofdletters bevat.",
+      "q3_a3": "Of de uitgevende partij een blauwe verificatie heeft.",
+      "q3_a4": "Of de token minstens 1 jaar oud is.",
+      "q3_explanation": "Voordat je een Stellar-actief koopt of vertrouwt: controleer of clawback geactiveerd is. Zo ja – vertrouw alleen activa van uitgevende partijen die je echt vertrouwt.",
+      "q3_hint2": "Tip: Erik's belangrijkste boodschap in dit hoofdstuk was: controleer altijd of clawback actief is – en of je vertrouwt."
+    },
+    "scene8": {
+      "section": "Scène 8 – De les",
+      "dialog1": "Ik had gewild dat de uitgevende partij van mijn tokens clawback had geactiveerd.",
+      "dialog2": "En ik had gewild dat meer mensen controleren wie ze vertrouwen – voordat ze kopen.",
+      "dialog3": "Beiden hebben gelijk. Dat is de les."
+    }
   }
 }

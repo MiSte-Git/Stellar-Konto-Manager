@@ -127,7 +127,10 @@
     "explorer_confirm_title": "Ulkoinen linkki",
     "explorer_confirm_text": "Uusi välilehti avautuu.",
     "explorer_confirm_cancel": "Peruuta",
-    "explorer_confirm_ok": "Avaa"
+    "explorer_confirm_ok": "Avaa",
+    "difficulty": {
+      "advanced": "Edistynyt"
+    }
   },
   "placeholder": {
     "chapter_label": "Luku",
@@ -675,5 +678,286 @@
     "learning2": "2-of-3 tarjoaa virhetoleranssia: yksi kadonnut avain ei lukitse lompakkoa",
     "learning3": "Multisig sopii yrityksille, perheille, DAOille ja korkean turvallisuuden lompakoille",
     "learning4": "2-of-2:lla on nollavirhesietoisuus – jos yksi avain katoaa, varat ovat ikuisesti saavuttamattomissa"
+  },
+  "chapter8": {
+    "title": "Automaattinen Sopimus",
+    "description": "Lumio tapaa Marcon, joka ei halua enää tulla huijatuksi maksussaan. Yhdessä he löytävät Sorobanin – Stellarin älysopimusympäristön.",
+    "cta_continue": "Jatka",
+    "scene1": {
+      "section": "Kohtaus 1 – Ongelma",
+      "dialog1": "Lumio, olen kyllästynyt. Viime viikolla ostaja ei maksanut – katosi vain toimituksen jälkeen.",
+      "dialog2": "Tiedän tunteen. Ja jos pyydät ennakkomaksua, ostaja ei luota sinuun.",
+      "dialog3": "Juuri tuo dilemma! Ostaja ei luota myyjään. Myyjä ei luota ostajaan.",
+      "dialog4": "Entä jos kummankaan ei tarvitsisi luottaa toiseen?",
+      "dialog5": "Miten se on mahdollista?",
+      "dialog6": "Sopimuksella, joka suorittaa itsensä."
+    },
+    "scene2": {
+      "section": "Kohtaus 2 – Mikä on älysopimus?",
+      "dialog1": "Kuvittele automaatti. Laitat kolikon sisään – se antaa sinulle limonadin. Ei myyjää, ei neuvottelua, ei poikkeuksia.",
+      "dialog2": "Totta, mutta se on vain kone.",
+      "dialog3": "Älysopimus on sama – mutta rahalle ja ehdoille. 'Jos Marco toimittaa JA ostaja vahvistaa → maksa automaattisesti.' Koodi päättää, ei ihminen.",
+      "dialog4": "Ja kuka hallitsee koodia?",
+      "dialog5": "Ei kukaan – se toimii lohkoketjussa. Muuttumaton, kaikkien nähtävissä.",
+      "glossary_btn": "Mikä on älysopimus?"
+    },
+    "scene3": {
+      "section": "Kohtaus 3 – Soroban Stellarissa",
+      "dialog1": "Stellarilla on oma älysopimusalusta – se on nimeltään Soroban.",
+      "dialog2": "Olen kuullut jotain vastaavaa Ethereumista. Onko se sama?",
+      "dialog3": "Samanlainen konsepti, mutta Stellar on nopeampi, halvempi ja valmis yksinkertaisiin tehtäviin.",
+      "dialog4": "Kuulostaa paremmalta.",
+      "dialog5": "Käyttötapauksellesi? Ehdottomasti. Soroban on teknisesti kypsä juuri tällaisiin skenaarioihin.",
+      "card": {
+        "label": "Vertailu",
+        "title": "Ethereum vs. Stellar / Soroban",
+        "eth_speed": "Hitaampi (12–15 sek.)",
+        "eth_fees": "Korkeat maksut (Gas)",
+        "eth_complexity": "Erittäin monimutkainen",
+        "sol_speed": "Nopea (3–5 sek.)",
+        "sol_fees": "Edulliset maksut",
+        "sol_complexity": "Yksinkertainen selkeille käyttötapauksille",
+        "cta": "Ymmärretty! Jatka →"
+      }
+    },
+    "scene4": {
+      "section": "Kohtaus 4 – Testnet-escrow",
+      "pre": {
+        "dialog1": "Kokeillaan heti! Luon oikean escrow-sopimuksen testnetissä.",
+        "dialog2": "Oikean? Miten?",
+        "dialog3": "Stellarissa on tähän sisäänrakennettu toiminto: Claimable Balances. Lukitset varat ehtojen alle – ostaja voi vaatia ne vain kun molemmat osapuolet ovat täyttäneet ehtonsa.",
+        "dialog4": "Eli lukitsemme nyt oikeaa testnet-rahaa?"
+      },
+      "action": {
+        "label": "Luo Escrow",
+        "description": "Lukitsee 1 XLM testnetissä demo-ostajalle. Ostaja voi vaatia sen välittömästi; voit vaatia sen takaisin tunnin kuluttua.",
+        "success": "Escrow luotu onnistuneesti!",
+        "escrow_id_label": "Claimable Balance -tunnus",
+        "testnet_note": "Vain testnet – ei oikeaa rahaa."
+      },
+      "post": {
+        "dialog1": "Se oli yksinkertaisempaa kuin luulin!",
+        "dialog2": "Näin hajautettu luottamus toimii. Sopimus toimii nyt lohkoketjussa – ilman välittäjää, ilman poikkeuksia."
+      }
+    },
+    "scene5": {
+      "section": "Kohtaus 5 – Sopimusten tulevaisuus",
+      "intro": {
+        "dialog1": "Marco, mitä juuri teit – se on vasta alkua.",
+        "dialog2": "Mitä tarkoitat?",
+        "dialog3": "Kaikkialla, missä tänään on välittäjä, notaari tai pankki kahden ihmisen välillä – huomenna voisi olla älysopimus."
+      },
+      "list": {
+        "item1": "Kiinteistökauppa – Kauppahinta vapautetaan automaattisesti, kun kiinteistörekisterin merkintä on vahvistettu. Ei notaaria tarvita.",
+        "item2": "Notaroinnit – Sopimukset tallennettu lohkoketjuun, muuttumattomia ja todistettavissa ikuisesti. Ei paperitöitä.",
+        "item3": "Musiikkilisensiointi – Rojaltit virtaavat automaattisesti artistille jokaisen oston tai striimaauksen yhteydessä.",
+        "item4": "Vakuutukset – Korvausmaksu käynnistyy automaattisesti, kun ehto täyttyy (esim. lentoviive yli 3 tuntia).",
+        "item5": "Äänestykset – Manipulointisuojatut äänestykset yrityksille, yhdistyksille tai kunnille.",
+        "item6": "Sertifikaatit – Tutkinnot ja pätevyydet tallennettu lohkoketjuun. Ei koskaan häviä, ei koskaan väärennetä."
+      },
+      "outro": {
+        "dialog1": "Se kuulostaa tieteisfiktiolta.",
+        "dialog2": "Viiden vuoden kuluttua se on arkipäivää.",
+        "dialog3": "Ja kaikki toimii ilman pankkia?",
+        "dialog4": "Ilman pankkia. Ilman odottamista. Ilman välityspalkkioita."
+      }
+    },
+    "scene6": {
+      "section": "Kohtaus 6 – Sorobanin oikea ymmärtäminen",
+      "dialog1": "Kuulostaa täydelliseltä. Eikö ole yhtään heikkouksia?",
+      "dialog2": "On – mutta ne eivät ole Sorobanissa itsessään.",
+      "dialog3": "Soroban tekee täsmälleen sen, mitä kehittäjä kirjoittaa siihen. Ei enempää, ei vähempää.",
+      "dialog4": "Todellinen riski: huonosti kirjoitetulla sopimuksella on aukkoja – eikä lohkoketjussa ole 'kumoa'-toimintoa.",
+      "dialog5": "Joten kyse on ammattilaisesta, ei työkalusta?",
+      "dialog6": "Juuri niin. Soroban on työkalu. Se, toimiiko se hyvin, riippuu ammattilaisesta.",
+      "choice": {
+        "question": "Mikä on suurin riski älysopimuksessa?",
+        "a1": "Soroban ei ole teknisesti kypsä",
+        "a2": "Kehittäjä ei tunne Sorobania tarpeeksi hyvin",
+        "a3": "Älysopimukset ovat liian hitaita Stellarille",
+        "a4": "Kukaan ei voi lukea sopimusta",
+        "correct": "Oikein! Soroban on työkalu – kehittäjä määrittää laadun.",
+        "wrong": "Ei aivan. Soroban on teknisesti kypsä yksinkertaisille sovelluksille. Todellinen riski on kehittäjällä – hänen täytyy tuntea Soroban hyvin kirjoittaakseen turvallisia sopimuksia.",
+        "retry_btn": "Yritä uudelleen",
+        "hint2": "Vinkki: Lumio sanoi 'Soroban on työkalu. Se, toimiiko se hyvin, riippuu...'"
+      }
+    },
+    "quiz": {
+      "section": "Kohtaus 7 – Mini-tietovisa",
+      "wrong_msg": "Ei aivan oikein. Yritä uudelleen!",
+      "retry_btn": "Yritä uudelleen",
+      "correct_cta": "Jatka",
+      "q1": "Mitä älysopimus tekee automaattisesti?",
+      "q1_a1": "Se suorittaa toiminnon heti, kun ehto täyttyy.",
+      "q1_a2": "Se vaihtaa kryptovaluuttoja fiat-rahaksi.",
+      "q1_a3": "Se suojaa lompakkosi hakkereilta.",
+      "q1_a4": "Se lähettää aina XLM:ää Lumiolle.",
+      "q1_explanation": "Älysopimus suorittaa automaattisesti toiminnon, kun ennalta määritelty ehto täyttyy – ilman ihmisiä välissä.",
+      "q1_hint2": "Ajattele automaattia: laitat kolikon ja se antaa sinulle...",
+      "q2": "Mikä erottaa pääasiassa Sorobanin Ethereumin älysopimuksista?",
+      "q2_a1": "Stellar/Soroban on nopeampi ja halvempi yksinkertaisiin käyttötapauksiin.",
+      "q2_a2": "Soroban toimii Bitcoin-lohkoketjussa.",
+      "q2_a3": "Ethereumissa ei ole älysopimuksia.",
+      "q2_a4": "Soroban ei tarvitse internetiä.",
+      "q2_explanation": "Soroban on Stellarin älysopimusalusta ja on nopeampi ja halvempi verrattuna Ethereumiin – erityisesti yksinkertaisissa käyttötapauksissa.",
+      "q2_hint2": "Katso uudelleen vertailukorttia: Ethereum vs. Stellar/Soroban.",
+      "q3": "Milloin Marcon escrow'n tokenit vapautetaan?",
+      "q3_a1": "Heti kun ostaja vahvistaa vastaanottamisen.",
+      "q3_a2": "Automaattisesti 24 tunnin kuluttua.",
+      "q3_a3": "Kun Marco manuaalisesti klikkaa 'Maksa'.",
+      "q3_a4": "Heti kun Marco kirjautuu sisään.",
+      "q3_explanation": "Oikeassa escrow-skenaariossa: ostaja vahvistaa tavaran vastaanottamisen – vasta sitten älysopimus vapauttaa rahan.",
+      "q3_hint2": "Ajattele Marcon ongelmaa: hän halusi olla varma, että maksaa kun tavara saapuu."
+    },
+    "summary": {
+      "learning1": "Mitä älysopimus on ja miten se suoritetaan automaattisesti",
+      "learning2": "Mitä Soroban on – Stellarin oma älysopimusalusta",
+      "learning3": "Miten escrow-sopimus suojelee ostajia ja myyjiä",
+      "learning4": "Mitä tulevia käyttötapauksia älysopimukset mahdollistavat (kiinteistö, notaari, musiikki, vakuutus, äänestys, sertifikaatit)",
+      "learning5": "Että riski on kehittäjällä, ei Sorobanissa itsessään"
+    }
+  },
+  "chapter9": {
+    "title": "Takaisinkutsun Voima",
+    "description": "Lumio tapaa Sofian, joka menetti tokeninsa petoksessa – ja Erikin, joka varoittaa liiallisesta kontrollista. Mitä clawback todella on: suoja vai valta?",
+    "cta_continue": "Jatka",
+    "scene1": {
+      "section": "Kohtaus 1 – Sofia tapaa Lumion",
+      "dialog1": "Lumio – tarvitsen apuasi. Minut ryöstettiin.",
+      "dialog2": "Mitä tapahtui?",
+      "dialog3": "Joku esiintyi tukena. He sanoivat, että tililläni on ongelma. Lähetin tokenini heidän osoitteeseensa – ja he katosivat.",
+      "dialog4": "Tunnen tämän. Klassinen manipulointihyökkäys.",
+      "dialog5": "Kuulin, että on olemassa jotain kuin takaisinkutsu. Voinko saada tokenini takaisin?",
+      "dialog6": "Se riippuu. Istu alas – tämä täytyy selittää huolellisesti."
+    },
+    "scene2": {
+      "section": "Kohtaus 2 – Mitä on Clawback?",
+      "dialog1": "Clawback on ominaisuus, jonka liikkeeseenlaskija – tokenin luoja – voi aktivoida luomisen yhteydessä.",
+      "dialog2": "Ja sitten he voivat kutsua tokeneita takaisin?",
+      "dialog3": "Juuri niin. Jos clawback on aktivoitu, liikkeeseenlaskija voi vaatia tokeneita takaisin mistä tahansa osoitteesta – myös huijarilta.",
+      "dialog4": "Se on täydellistä! Joten voin saada tokenini takaisin?",
+      "dialog5": "Vain jos omaisuutesi liikkeeseenlaskija aktivoi clawbackin – ja jos he ovat valmiita käyttämään sitä puolestasi.",
+      "dialog6": "Entä jos ei?",
+      "dialog7": "Silloin ei ole paluuta. Lohkoketjussa ei ole 'kumoa'-toimintoa.",
+      "glossary_btn": "Mitä on Clawback?"
+    },
+    "scene3": {
+      "section": "Kohtaus 3 – Erik ilmestyy",
+      "dialog1": "Anteeksi – en voinut olla kuulematta. Clawback ei ole ratkaisu. Se on troijalainen hevonen.",
+      "dialog2": "Mitä? Se voisi tuoda tokenini takaisin!",
+      "dialog3": "Ja huomenna sama liikkeeseenlaskija voi ottaa sinulta tokeneita – vain koska haluaa.",
+      "dialog4": "Erikillä on pointti, Sofia. Clawback on kaksiteräinen miekka.",
+      "dialog5": "Mutta ilman clawbackia petoksen uhrit ovat täysin puolustuskyvyttömiä!",
+      "dialog6": "Siksi tarkistan aina: onko tällä omaisuudella clawback käytössä? Jos on, luotan liikkeeseenlaskijaan – tai en osta sitä.",
+      "dialog7": "Se on juuri se ratkaiseva kysymys: luotatko liikkeeseenlaskijaan?"
+    },
+    "cta_retry": "Yritä uudelleen",
+    "scene4": {
+      "section": "Kohtaus 4 – Clawback-oikeuden aktivointi",
+      "pre": {
+        "dialog1": "Näytän teille nyt, miten clawback todella toimii – livenä testnetissä. Luomme oman tokenin liikkeeseenlaskijana.",
+        "dialog2": "Oikeasti livenä? Oikealla lohkoketjulla?",
+        "dialog3": "Kyllä – testnetissä. Aktivoimme clawbackin luonnin yhteydessä ja lähetämme 100 TRUST-tokenia demoosoitteeseen.",
+        "dialog4": "Mielenkiintoista. Tämä näyttää, kuinka helposti liikkeeseenlaskija saa tämän vallan."
+      },
+      "action1": {
+        "header": "Vaihe 1/2 – Tokenin luominen ja julkaisu",
+        "label": "Luo ja lähetä TRUST-token",
+        "description": "Aktivoi clawback tilillesi, luo TRUST-tokenin ja lähettää 100 TRUST demoosoitteeseen.",
+        "step_friendbot": "Valmistellaan demotiliä...",
+        "step_setflags": "Aktivoidaan clawback-oikeutta...",
+        "step_trustline": "Luodaan trustline...",
+        "step_payment": "Lähetetään 100 TRUST...",
+        "success": "100 TRUST julkaistu onnistuneesti – clawback on aktiivinen.",
+        "testnet_note": "Vain testnet. Ei oikeaa rahaa.",
+        "error": "Luominen epäonnistui. Yritä uudelleen."
+      },
+      "bridge": {
+        "dialog1": "Token on olemassa. 100 TRUST on demoosoitteessa – clawback-oikeudella.",
+        "dialog2": "Ja nyt voit vain ottaa ne takaisin?",
+        "dialog3": "Juuri niin teemme nyt."
+      }
+    },
+    "scene5": {
+      "section": "Kohtaus 5 – Clawbackin suorittaminen",
+      "pre": {
+        "dialog1": "Teettekö sen oikeasti? Peruutuksen – livenä?",
+        "dialog2": "Kyllä. Liikkeeseenlaskijana meillä on valta – ja nyt käytämme sitä.",
+        "dialog3": "Jos huijarilla, joka petti minut, olisi ollut tällainen liikkeeseenlaskija..."
+      },
+      "action2": {
+        "header": "Vaihe 2/2 – Clawbackin suorittaminen",
+        "label": "Suorita clawback",
+        "description": "Palauttaa 100 TRUST-tokenia demoosoitteesta. Mahdollista vain clawback-oikeuden omaavalle liikkeeseenlaskijalle.",
+        "locked": "Suorita ensin vaihe 1.",
+        "success": "100 TRUST palautettu onnistuneesti.",
+        "error": "Clawback epäonnistui. Yritä uudelleen."
+      },
+      "post": {
+        "dialog1": "Valmis. 100 TRUST on takaisin – palautus onnistui.",
+        "dialog2": "Uskomaton. Niin nopeasti?",
+        "dialog3": "Se on clawback. Täydellinen, välitön, peruuttamaton – vastaanottajalle.",
+        "dialog4": "Siksi: liikkeeseenlaskijaan luottaminen ei ole valinnaista – se on pakollista.",
+        "dialog5": "Nyt ymmärrän, miksi varoitit, Erik. Clawback voi suojata – tai kontrolloida."
+      }
+    },
+    "summary": {
+      "section": "Yhteenveto",
+      "learning1": "Mitä clawback on – liikkeeseenlaskijan toiminto tokenien peruuttamiseksi",
+      "learning2": "Että vain liikkeeseenlaskija voi aktivoida ja suorittaa clawbackin – ei käyttäjä",
+      "learning3": "Miten clawback voi auttaa petoksen uhreja – mutta vain jos liikkeeseenlaskija käyttää sitä",
+      "learning4": "Että sama valta voidaan käyttää kontrollointiin",
+      "learning5": "Miksi pitäisi aina tarkistaa: Onko tässä omaisuudessa clawback? Luotanko liikkeeseenlaskijaan?"
+    },
+    "scene6": {
+      "section": "Kohtaus 6 – Luotatko liikkeeseenlaskijaan?",
+      "dialog1": "Nyt kun olette molemmat kokeneet tämän – sallikaa minun kysyä teiltä molemmilta jotain.",
+      "dialog2": "Sofia: Olet nähnyt, miten clawback voi auttaa. Erik: Olet nähnyt, miten clawback antaa valtaa.",
+      "dialog3": "Ja sinä – mitä otat mukaan tästä?",
+      "choice": {
+        "question": "Mikä on tärkein edellytys sille, että clawback toimii suojauksena?",
+        "a": "Käyttäjän täytyy pystyä aktivoimaan clawback itse",
+        "b": "Omaisuuden täytyy perustua Stellariin",
+        "c": "Liikkeeseenlaskijalla täytyy olla clawback aktivoituna JA oltava halukas käyttämään sitä",
+        "d": "Tapahtuman täytyy olla alle 1 tunti vanha",
+        "wrong": "Ei ihan. Clawback on täysin liikkeeseenlaskijan käsissä. Vain hän voi aktivoida ja suorittaa sen – käyttäjällä ei ole suoraa kontrollia siihen.",
+        "hint2": "Vihje: Lumio selitti – vain se, joka laskee tokenin liikkeelle, hallitsee clawback-valtaa.",
+        "correct": "Juuri niin! Clawback on liikkeeseenlaskijan valtaa – käytetäänkö sitä suojaukseen vai kontrolliin riippuu luottamuksesta.",
+        "retry_btn": "Yritä uudelleen"
+      }
+    },
+    "quiz": {
+      "section": "Kohtaus 7 – Minikysely",
+      "wrong_msg": "Ei aivan oikein. Yritä uudelleen!",
+      "retry_btn": "Yritä uudelleen",
+      "correct_cta": "Jatka",
+      "q1": "Kuka voi suorittaa clawbackin Stellar-omaisuuteen?",
+      "q1_a1": "Vain liikkeeseenlaskija – se, joka on laskenut tokenin liikkeelle.",
+      "q1_a2": "Kuka tahansa käyttäjä, jolla on token.",
+      "q1_a3": "Stellar Development Foundation.",
+      "q1_a4": "Käyttäjä, jonka tokenit varastettiin.",
+      "q1_explanation": "Clawback on liikkeeseenlaskijalle yksinomainen toiminto. Vain se tilin haltija, joka alun perin laski tokenin liikkeelle, voi peruuttaa sen.",
+      "q1_hint2": "Vihje: Kuka laskee tokenin liikkeelle? Juuri sillä henkilöllä on clawback-valta.",
+      "q2": "Milloin clawback on sinulle käyttäjänä riski?",
+      "q2_a1": "Kun et luota liikkeeseenlaskijaan – hän voisi peruuttaa tokenisi milloin tahansa.",
+      "q2_a2": "Kun sinulla on liikaa tokeneita.",
+      "q2_a3": "Kun clawback ei ole aktivoitu.",
+      "q2_a4": "Kun tapahtuma oli liian nopea.",
+      "q2_explanation": "Clawback antaa liikkeeseenlaskijalle vallan peruuttaa tokeneita mistä tahansa osoitteesta – myös sinulta. Se on riski, jos et luota liikkeeseenlaskijaan.",
+      "q2_hint2": "Vihje: Mitä tapahtuu, kun jollakin on valtaa – eikä hän käytä sitä hyvin?",
+      "q3": "Mitä sinun pitäisi aina tarkistaa ennen omaisuuden ostamista?",
+      "q3_a1": "Onko clawback aktivoitu – ja luotatko liikkeeseenlaskijaan tarpeeksi.",
+      "q3_a2": "Sisältääkö tokenin nimi vain isoja kirjaimia.",
+      "q3_a3": "Onko liikkeeseenlaskijalla sininen vahvistusmerkki.",
+      "q3_a4": "Onko token vähintään 1 vuotta vanha.",
+      "q3_explanation": "Ennen Stellar-omaisuuden ostamista: tarkista, onko clawback käytössä. Jos on – luota vain omaisuuksiin liikkeeseenlaskijoilta, joihin todella luotat.",
+      "q3_hint2": "Vihje: Erikin tärkein viesti tässä luvussa oli: tarkista aina, onko clawback aktiivinen – ja luotatko."
+    },
+    "scene8": {
+      "section": "Kohtaus 8 – Opetus",
+      "dialog1": "Toivon, että tokenieni liikkeeseenlaskijalla olisi ollut clawback aktivoituna.",
+      "dialog2": "Ja toivon, että useammat ihmiset tarkistaisivat, kehen luottavat – ennen ostamista.",
+      "dialog3": "Molemmat ovat oikeassa. Se on opetus."
+    }
   }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useStory } from "./StoryContext";
@@ -11,11 +11,42 @@ function navTo(subpath) {
   } catch { /* noop */ }
 }
 
-const TOTAL_CHAPTERS = 7;
+const TOTAL_CHAPTERS = 9;
+const ADVANCED_CHAPTERS = [8, 9];
+
+// ─── Chapter registry (tested flag) ──────────────────────────────────────────
+const CHAPTER_REGISTRY = {
+  1: { tested: true },
+  2: { tested: true },
+  3: { tested: false },
+  4: { tested: false },
+  5: { tested: false },
+  6: { tested: false },
+  7: { tested: false },
+  8: { tested: false },
+  9: { tested: false },
+};
+
+const isDev =
+  typeof window !== "undefined" &&
+  (window.location.hostname === "localhost" || import.meta.env.DEV);
+
+const UNTESTED_TOOLTIP = {
+  de: "Noch nicht getestet. Bitte Story durchspielen und danach 'tested: true' im Chapter-Registry setzen.",
+  en: "Not yet tested. Please play through the story and then set 'tested: true' in the chapter registry.",
+  es: "Aún no probado. Por favor juega la historia completa y luego establece 'tested: true' en el registro de capítulos.",
+  fi: "Ei vielä testattu. Pelaa tarina läpi ja aseta sitten 'tested: true' luvun rekisterissä.",
+  fr: "Pas encore testé. Veuillez jouer toute l'histoire puis définir 'tested: true' dans le registre des chapitres.",
+  hr: "Još nije testirano. Molimo odigrajte priču i zatim postavite 'tested: true' u registru poglavlja.",
+  it: "Non ancora testato. Gioca tutta la storia e poi imposta 'tested: true' nel registro dei capitoli.",
+  nl: "Nog niet getest. Speel het verhaal door en zet daarna 'tested: true' in het hoofdstukregister.",
+  ru: "Ещё не протестировано. Пройдите историю и затем установите 'tested: true' в реестре глав.",
+};
 
 export default function ChapterSelect() {
-  const { t } = useTranslation("story");
+  const { t, i18n } = useTranslation("story");
   const { currentChapter, chaptersCompleted, sceneIndex, goToChapter, setShowChapterSelect, onExit } = useStory();
+  const [hoveredBadge, setHoveredBadge] = useState(null);
 
   const handleSelect = (n) => {
     if (n === currentChapter) {
@@ -109,6 +140,7 @@ export default function ChapterSelect() {
           const isCompleted = chaptersCompleted.includes(n);
           const isCurrent = n === currentChapter;
           const isLocked = n > 1 && !chaptersCompleted.includes(n - 1) && !isCurrent;
+          const isAdvanced = ADVANCED_CHAPTERS.includes(n);
 
           return (
             <motion.button
@@ -135,6 +167,7 @@ export default function ChapterSelect() {
                 }`,
                 borderRadius: "14px",
                 padding: "14px 18px",
+                position: "relative",
                 display: "flex",
                 alignItems: "center",
                 gap: "14px",
@@ -169,13 +202,24 @@ export default function ChapterSelect() {
 
               {/* Title + status */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{
-                  fontSize: "14px",
-                  fontWeight: 700,
-                  color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : isLocked ? "rgba(255,255,255,0.4)" : "white",
-                  marginBottom: "2px",
-                }}>
-                  {t(`chapter${n}.title`, `Kapitel ${n}`)}
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px", flexWrap: "wrap" }}>
+                  <span style={{
+                    fontSize: "14px",
+                    fontWeight: 700,
+                    color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : isLocked ? "rgba(255,255,255,0.4)" : "white",
+                  }}>
+                    {t(`chapter${n}.title`, `Kapitel ${n}`)}
+                  </span>
+                  {isAdvanced && (
+                    <span style={{
+                      fontSize: "9px", fontWeight: 700, letterSpacing: "0.05em",
+                      color: "#ff5b5b", background: "rgba(255,91,91,0.15)",
+                      border: "1px solid rgba(255,91,91,0.3)",
+                      borderRadius: "4px", padding: "1px 5px", flexShrink: 0,
+                    }}>
+                      🔴 {t("ui.difficulty.advanced", "Fortgeschritten")}
+                    </span>
+                  )}
                 </div>
                 <div style={{
                   fontSize: "11px",
@@ -202,6 +246,50 @@ export default function ChapterSelect() {
                 <span style={{ fontSize: "16px", color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : "rgba(255,255,255,0.3)" }}>
                   ›
                 </span>
+              )}
+
+              {/* Dev: untested badge (top-left, localhost/dev only) */}
+              {isDev && !CHAPTER_REGISTRY[n]?.tested && (
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  style={{ position: "absolute", top: "8px", left: "8px", zIndex: 10 }}
+                >
+                  <div
+                    onMouseEnter={() => setHoveredBadge(n)}
+                    onMouseLeave={() => setHoveredBadge(null)}
+                    style={{ position: "relative", display: "inline-block" }}
+                  >
+                    <span style={{
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "10px", lineHeight: 1,
+                      background: "rgba(255,140,0,0.18)", border: "1px solid rgba(255,140,0,0.4)",
+                      borderRadius: "4px", padding: "2px 5px", cursor: "help",
+                      userSelect: "none", color: "rgba(255,180,60,0.9)",
+                    }}>
+                      🔧
+                    </span>
+                    {hoveredBadge === n && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.15 }}
+                        style={{
+                          position: "absolute", top: "calc(100% + 4px)", left: 0,
+                          background: "rgba(15,15,25,0.97)",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: "8px", padding: "8px 10px",
+                          fontSize: "11px", color: "rgba(255,255,255,0.65)",
+                          maxWidth: "260px", lineHeight: 1.5,
+                          whiteSpace: "normal", zIndex: 50,
+                          pointerEvents: "none",
+                          boxShadow: "0 4px 16px rgba(0,0,0,0.45)",
+                        }}
+                      >
+                        {UNTESTED_TOOLTIP[i18n.language] ?? UNTESTED_TOOLTIP.en}
+                      </motion.div>
+                    )}
+                  </div>
+                </div>
               )}
             </motion.button>
           );

@@ -127,7 +127,10 @@
     "explorer_confirm_title": "Vanjska veza",
     "explorer_confirm_text": "Otvorit će se nova kartica.",
     "explorer_confirm_cancel": "Odustani",
-    "explorer_confirm_ok": "Otvori"
+    "explorer_confirm_ok": "Otvori",
+    "difficulty": {
+      "advanced": "Napredno"
+    }
   },
   "placeholder": {
     "chapter_label": "Poglavlje",
@@ -675,5 +678,286 @@
     "learning2": "2-od-3 pruža toleranciju na greške: jedan izgubljeni ključ ne zaključava novčanik",
     "learning3": "Multisig je prikladan za poduzeća, obitelji, DAOe i novčanike visoke sigurnosti",
     "learning4": "2-od-2 ima nultu toleranciju na greške – ako se izgubi jedan ključ, sredstva su zauvijek nedostupna"
+  },
+  "chapter8": {
+    "title": "Automatski Ugovor",
+    "description": "Lumio upoznaje Marca, koji nikad više ne želi biti prevaren. Zajedno otkrivaju Soroban – Stellarovu platformu za pametne ugovore.",
+    "cta_continue": "Nastavi",
+    "scene1": {
+      "section": "Scena 1 – Problem",
+      "dialog1": "Lumio, dosta mi je. Prošli tjedan mi kupac nije platio – jednostavno nestao nakon dostave.",
+      "dialog2": "Razumijem. A ako tražiš plaćanje unaprijed, kupac ti ne vjeruje.",
+      "dialog3": "Točno ta dilema! Kupac ne vjeruje prodavaču. Prodavač ne vjeruje kupcu.",
+      "dialog4": "A što ako ni jedan ni drugi ne bi trebali vjerovati?",
+      "dialog5": "Kako je to moguće?",
+      "dialog6": "Ugovorom koji se sam izvršava."
+    },
+    "scene2": {
+      "section": "Scena 2 – Što je pametni ugovor?",
+      "dialog1": "Zamislite automat. Ubacite novčić – dobijete sok. Nema prodavača, nema pregovora, nema iznimki.",
+      "dialog2": "Jasno, ali to je samo stroj.",
+      "dialog3": "Pametni ugovor je isto – ali za novac i uvjete. 'Ako Marco isporuči I kupac potvrdi → tada plati automatski.' Kod odlučuje, ne čovjek.",
+      "dialog4": "A tko kontrolira kod?",
+      "dialog5": "Nitko – radi na blockchainu. Nepromjenjiv, vidljiv svima.",
+      "glossary_btn": "Što je pametni ugovor?"
+    },
+    "scene3": {
+      "section": "Scena 3 – Soroban na Stellaru",
+      "dialog1": "Stellar ima vlastitu platformu za pametne ugovore – zove se Soroban.",
+      "dialog2": "Čuo sam nešto slično za Ethereum. Je li to isto?",
+      "dialog3": "Sličan koncept, ali Stellar je brži, jeftiniji i spreman za jednostavne zadatke.",
+      "dialog4": "Zvuči bolje.",
+      "dialog5": "Za tvoj slučaj upotrebe? Apsolutno. Soroban je tehnički zreo za točno takve scenarije.",
+      "card": {
+        "label": "Usporedba",
+        "title": "Ethereum vs. Stellar / Soroban",
+        "eth_speed": "Sporiji (12–15 sek.)",
+        "eth_fees": "Visoke naknade (Gas)",
+        "eth_complexity": "Vrlo složen",
+        "sol_speed": "Brz (3–5 sek.)",
+        "sol_fees": "Niske naknade",
+        "sol_complexity": "Jednostavan za jasne slučajeve upotrebe",
+        "cta": "Razumijem! Nastavi →"
+      }
+    },
+    "scene4": {
+      "section": "Scena 4 – Testnet Escrow",
+      "pre": {
+        "dialog1": "Isprobajmo odmah! Stvorit ću pravi escrow na testnetu.",
+        "dialog2": "Pravi? Kako?",
+        "dialog3": "Stellar ima ugrađenu funkciju za to: Claimable Balances. Zaključavaš sredstva pod uvjetima – kupac ih može preuzeti tek kada obje strane ispune svoje uvjete.",
+        "dialog4": "Dakle, sada zaključavamo pravi testnet novac?"
+      },
+      "action": {
+        "label": "Kreiraj Escrow",
+        "description": "Zaključava 1 XLM na testnetu za demo kupca. Kupac ga može preuzeti odmah; ti možeš tražiti povrat nakon 1 sat.",
+        "success": "Escrow uspješno kreiran!",
+        "escrow_id_label": "ID Claimable Balance",
+        "testnet_note": "Samo testnet – bez pravog novca."
+      },
+      "post": {
+        "dialog1": "Bilo je jednostavnije nego što sam mislio!",
+        "dialog2": "Tako funkcionira decentralizirano povjerenje. Ugovor sada radi na blockchainu – bez posrednika, bez iznimaka."
+      }
+    },
+    "scene5": {
+      "section": "Scena 5 – Budućnost ugovora",
+      "intro": {
+        "dialog1": "Marco, ono što si upravo napravio – to je tek početak.",
+        "dialog2": "Što misliš?",
+        "dialog3": "Svugdje gdje danas stoji posrednik, javni bilježnik ili banka između dvije osobe – sutra bi mogao stajati pametni ugovor."
+      },
+      "list": {
+        "item1": "Kupnja nekretnine – Kupoprodajna cijena automatski se oslobađa čim se potvrdi upis u zemljišnu knjigu. Bez javnog bilježnika.",
+        "item2": "Ovjere – Ugovori pohranjeni na lancu, nepromjenjivi i dokazivi zauvijek. Bez papirologije.",
+        "item3": "Glazbene licence – Autorski honorari automatski teku izvođaču pri svakoj kupnji ili streamingu.",
+        "item4": "Osiguranja – Isplata štete automatski se pokreće čim se ispuni uvjet (npr. kašnjenje leta više od 3 sata).",
+        "item5": "Glasanja – Glasanja zaštićena od manipulacija za tvrtke, udruge ili općine.",
+        "item6": "Certifikati – Diplome i kvalifikacije pohranjene on-chain. Nikad izgubljene, nikad krivotvorene."
+      },
+      "outro": {
+        "dialog1": "To zvuči kao znanstvena fantastika.",
+        "dialog2": "Za pet godina bit će svakodnevica.",
+        "dialog3": "I sve to bez banke?",
+        "dialog4": "Bez banke. Bez čekanja. Bez naknada posredniku."
+      }
+    },
+    "scene6": {
+      "section": "Scena 6 – Ispravno razumijevanje Sorobana",
+      "dialog1": "Zvuči savršeno. Nema li nikakvih slabosti?",
+      "dialog2": "Da – ali nisu u samom Sorobanu.",
+      "dialog3": "Soroban radi točno ono što programer u njega upiše. Ni više ni manje.",
+      "dialog4": "Pravi rizik: loše napisan ugovor ima rupe – a na blockchainu nema poništavanja.",
+      "dialog5": "Dakle, ovisi o majstoru, a ne o alatu?",
+      "dialog6": "Točno. Soroban je alat. Hoće li dobro funkcionirati ovisi o majstoru.",
+      "choice": {
+        "question": "Koji je najveći rizik kod pametnog ugovora?",
+        "a1": "Soroban nije tehnički zreo",
+        "a2": "Programer ne poznaje Soroban dovoljno dobro",
+        "a3": "Pametni ugovori su prespori za Stellar",
+        "a4": "Nitko ne može pročitati ugovor",
+        "correct": "Točno! Soroban je alat – programer određuje kvalitetu.",
+        "wrong": "Nije baš. Soroban je tehnički zreo za jednostavne aplikacije. Pravi rizik leži kod programera – mora dobro poznavati Soroban kako bi pisao sigurne ugovore.",
+        "retry_btn": "Pokušaj ponovno",
+        "hint2": "Savjet: Lumio je rekao 'Soroban je alat. Hoće li dobro funkcionirati ovisi o...'"
+      }
+    },
+    "quiz": {
+      "section": "Scena 7 – Mini-kviz",
+      "wrong_msg": "Nije sasvim točno. Pokušaj ponovo!",
+      "retry_btn": "Pokušaj ponovno",
+      "correct_cta": "Nastavi",
+      "q1": "Što pametni ugovor radi automatski?",
+      "q1_a1": "Izvršava radnju čim se ispuni uvjet.",
+      "q1_a2": "Mijenja kriptovalute u fiat novac.",
+      "q1_a3": "Štiti tvoj novčanik od hakera.",
+      "q1_a4": "Uvijek šalje XLM Lumiju.",
+      "q1_explanation": "Pametni ugovor automatski izvršava radnju kada se ispuni unaprijed definirani uvjet – bez posrednika.",
+      "q1_hint2": "Razmisli o automatu: ubaciš novčić i dobije...",
+      "q2": "Po čemu se Soroban uglavnom razlikuje od Ethereum pametnih ugovora?",
+      "q2_a1": "Stellar/Soroban je brži i jeftiniji za jednostavne slučajeve korištenja.",
+      "q2_a2": "Soroban radi na Bitcoin blockchainu.",
+      "q2_a3": "Ethereum nema pametnih ugovora.",
+      "q2_a4": "Soroban ne treba internet.",
+      "q2_explanation": "Soroban je Stellarova platforma za pametne ugovore i brža je i jeftinija u usporedbi s Ethereumom – posebno za jednostavne slučajeve korištenja.",
+      "q2_hint2": "Pogledaj ponovo karticu usporedbe: Ethereum vs. Stellar/Soroban.",
+      "q3": "Kada se otpuštaju tokeni u Marcovom escrowu?",
+      "q3_a1": "Čim kupac potvrdi primitak.",
+      "q3_a2": "Automatski nakon 24 sata.",
+      "q3_a3": "Kada Marco ručno klikne na 'Plati'.",
+      "q3_a4": "Čim se Marco prijavi.",
+      "q3_explanation": "U pravom escrow scenariju: kupac potvrđuje primitak robe – tek tada pametni ugovor oslobađa novac.",
+      "q3_hint2": "Razmisli o Marcovom problemu: htio je biti siguran da plaća kada roba stigne."
+    },
+    "summary": {
+      "learning1": "Što je pametni ugovor i kako se automatski izvršava",
+      "learning2": "Što je Soroban – Stellarova vlastita platforma za pametne ugovore",
+      "learning3": "Kako escrow ugovor štiti kupce i prodavače",
+      "learning4": "Koje buduće slučajeve korištenja pametni ugovori omogućuju (nekretnine, bilježnik, glazba, osiguranje, glasanje, certifikati)",
+      "learning5": "Da rizik leži kod programera, a ne u samom Sorobanu"
+    }
+  },
+  "chapter9": {
+    "title": "Moć Opoziva",
+    "description": "Lumio upoznaje Sofiju, koja je prevarom izgubila svoje tokene – i Erika, koji upozorava na previše kontrole. Što je clawback zapravo: zaštita ili moć?",
+    "cta_continue": "Nastavi",
+    "scene1": {
+      "section": "Scena 1 – Sofia upoznaje Lumia",
+      "dialog1": "Lumio – trebam tvoju pomoć. Opljačkali su me.",
+      "dialog2": "Što se dogodilo?",
+      "dialog3": "Netko se pretvarao da je podrška. Rekli su da moj račun ima problem. Poslala sam tokene na njihovu adresu – i nestali su.",
+      "dialog4": "Poznajem to. Klasičan napad socijalnog inženjeringa.",
+      "dialog5": "Čula sam da postoji nešto poput opoziva. Mogu li dobiti svoje tokene natrag?",
+      "dialog6": "Ovisi. Sjedni – ovo moramo pažljivo objasniti."
+    },
+    "scene2": {
+      "section": "Scena 2 – Što je Clawback?",
+      "dialog1": "Clawback je funkcija koju izdavatelj – onaj tko stvara token – može aktivirati pri stvaranju.",
+      "dialog2": "I onda može opozvati tokene?",
+      "dialog3": "Točno. Ako je clawback aktiviran, izdavatelj može zatražiti tokene s bilo koje adrese – uključujući prevarantovu.",
+      "dialog4": "To je savršeno! Znači mogu dobiti svoje tokene natrag?",
+      "dialog5": "Samo ako je izdavatelj tvog sredstva aktivirao clawback – i ako je spreman upotrijebiti ga za tebe.",
+      "dialog6": "A što ako nije?",
+      "dialog7": "Tada nema puta natrag. Na blockchainu ne postoji 'poništi'.",
+      "glossary_btn": "Što je Clawback?"
+    },
+    "scene3": {
+      "section": "Scena 3 – Erik se pojavljuje",
+      "dialog1": "Oprostite – nisam mogao ne čuti. Clawback nije rješenje. To je trojanski konj.",
+      "dialog2": "Što? Mogao bi mi vratiti tokene!",
+      "dialog3": "A sutra isti izdavatelj može uzeti tokene od tebe – samo zato što želi.",
+      "dialog4": "Erik ima poantu, Sofija. Clawback je mač s dvije oštrice.",
+      "dialog5": "Ali bez clawbacka, žrtve prevara su potpuno bespomoćne!",
+      "dialog6": "Zato uvijek provjeravam: ima li ovo sredstvo aktiviran clawback? Ako da, vjerujem izdavatelju – ili ga ne kupujem.",
+      "dialog7": "To je upravo ključno pitanje: vjeruješ li izdavatelju?"
+    },
+    "cta_retry": "Pokušaj ponovo",
+    "scene4": {
+      "section": "Scena 4 – Aktivacija Clawbacka",
+      "pre": {
+        "dialog1": "Sad ću vam pokazati kako clawback zaista funkcionira – uživo na testnetu. Kreirati ćemo vlastiti token kao izdavatelj.",
+        "dialog2": "Stvarno uživo? Na pravom blockchainu?",
+        "dialog3": "Da – na testnetu. Aktiviramo clawback pri kreiranju i šaljemo 100 TRUST tokena na demo adresu.",
+        "dialog4": "Zanimljivo. Tako se vidi koliko je lako izdavatelju dobiti ovu moć."
+      },
+      "action1": {
+        "header": "Korak 1 od 2 – Kreiranje i izdavanje tokena",
+        "label": "Kreiraj i pošalji TRUST token",
+        "description": "Aktivira clawback na vašem računu, kreira TRUST token i šalje 100 TRUST na demo adresu.",
+        "step_friendbot": "Priprema demo računa...",
+        "step_setflags": "Aktiviranje clawback ovlaštenja...",
+        "step_trustline": "Postavljanje trustline...",
+        "step_payment": "Slanje 100 TRUST...",
+        "success": "100 TRUST uspješno izdano – clawback je aktivan.",
+        "testnet_note": "Samo testnet. Nema pravog novca.",
+        "error": "Greška pri kreiranju. Molimo pokušajte ponovo."
+      },
+      "bridge": {
+        "dialog1": "Token postoji. 100 TRUST je na demo adresi – s clawback ovlaštenjem.",
+        "dialog2": "I sad ih možeš jednostavno uzeti natrag?",
+        "dialog3": "Upravo to radimo sada."
+      }
+    },
+    "scene5": {
+      "section": "Scena 5 – Izvršavanje Clawbacka",
+      "pre": {
+        "dialog1": "Stvarno to radite? Opoziv – uživo?",
+        "dialog2": "Da. Kao izdavatelj imamo moć – i sada je koristimo.",
+        "dialog3": "Da je prevarant koji me prevario imao takvog izdavatelja..."
+      },
+      "action2": {
+        "header": "Korak 2 od 2 – Izvršavanje clawbacka",
+        "label": "Izvrši clawback",
+        "description": "Opoziva 100 TRUST tokena s demo adrese. Moguće samo kao izdavatelju s clawback ovlaštenjem.",
+        "locked": "Molimo najprije završite korak 1.",
+        "success": "100 TRUST uspješno opozvano.",
+        "error": "Clawback nije uspio. Molimo pokušajte ponovo."
+      },
+      "post": {
+        "dialog1": "Gotovo. 100 TRUST je natrag – opoziv je bio uspješan.",
+        "dialog2": "Nevjerojatno. Toliko brzo?",
+        "dialog3": "To je clawback. Potpun, trenutan, neopoziv – za primatelja.",
+        "dialog4": "Zato: povjerenje u izdavatelja nije opcija – to je obveza.",
+        "dialog5": "Sad razumijem zašto si upozorio, Erik. Clawback može zaštititi – ili kontrolirati."
+      }
+    },
+    "summary": {
+      "section": "Sažetak",
+      "learning1": "Što je clawback – funkcija izdavatelja za opoziv tokena",
+      "learning2": "Da samo izdavatelj može aktivirati i izvršiti clawback – ne korisnik",
+      "learning3": "Kako clawback može pomoći žrtvama prijevare – ali samo ako ga izdavatelj koristi",
+      "learning4": "Da ista moć može biti zloupotrijebljena za kontrolu",
+      "learning5": "Zašto bi uvijek trebalo provjeriti: Ima li ova imovina clawback? Vjerujem li izdavatelju?"
+    },
+    "scene6": {
+      "section": "Scena 6 – Vjerujete li izdavatelju?",
+      "dialog1": "Sad kad ste oboje to iskusili – dopustite mi da vas oba nešto pitam.",
+      "dialog2": "Sofia: Vidjela si kako clawback može pomoći. Erik: Vidio si kako clawback daje moć.",
+      "dialog3": "A ti – što ponosiš sa sobom?",
+      "choice": {
+        "question": "Koji je najvažniji uvjet za funkcioniranje clawbacka kao zaštite?",
+        "a": "Korisnik mora moći sam aktivirati clawback",
+        "b": "Imovina mora biti temeljena na Stellaru",
+        "c": "Izdavatelj mora imati clawback aktiviran I biti spreman koristiti ga",
+        "d": "Transakcija mora biti mlađa od 1 sat",
+        "wrong": "Ne sasvim. Clawback je potpuno u rukama izdavatelja. Samo on može aktivirati i izvršiti clawback – korisnik nema direktnu kontrolu nad tim.",
+        "hint2": "Savjet: Lumio je objasnio – samo onaj tko izdaje token ima moć clawbacka.",
+        "correct": "Točno! Clawback je moć izdavatelja – koristi li se za zaštitu ili kontrolu ovisi o povjerenju.",
+        "retry_btn": "Pokušaj ponovo"
+      }
+    },
+    "quiz": {
+      "section": "Scena 7 – Mini-kviz",
+      "wrong_msg": "Nije sasvim točno. Pokušaj ponovo!",
+      "retry_btn": "Pokušaj ponovo",
+      "correct_cta": "Nastavi",
+      "q1": "Tko može izvršiti clawback na Stellar imovini?",
+      "q1_a1": "Samo izdavatelj – onaj tko je izdao token.",
+      "q1_a2": "Svaki korisnik koji posjeduje token.",
+      "q1_a3": "Stellar Development Foundation.",
+      "q1_a4": "Korisnik čiji su tokeni ukradeni.",
+      "q1_explanation": "Clawback je isključiva funkcija izdavatelja. Samo vlasnik računa koji je izvorno izdao token može ga opozvati.",
+      "q1_hint2": "Savjet: Tko izdaje token? Ta ista osoba ima moć clawbacka.",
+      "q2": "Kada je clawback rizik za tebe kao korisnika?",
+      "q2_a1": "Kad ne vjeruješ izdavatelju – mogao bi povući tvoje tokene u bilo koje vrijeme.",
+      "q2_a2": "Kada imaš previše tokena.",
+      "q2_a3": "Kada clawback nije aktiviran.",
+      "q2_a4": "Kada je transakcija bila prebrza.",
+      "q2_explanation": "Clawback daje izdavatelju moć da opozove tokene s bilo koje adrese – uključujući tvoju. To je rizik ako ne vjeruješ izdavatelju.",
+      "q2_hint2": "Savjet: Što se dogodi kad netko ima moć – i ne koristi je dobro?",
+      "q3": "Što bi uvijek trebao provjeriti prije kupnje imovine?",
+      "q3_a1": "Je li clawback aktiviran – i vjeruješ li dovoljno izdavatelju.",
+      "q3_a2": "Sadrži li naziv tokena samo velika slova.",
+      "q3_a3": "Ima li izdavatelj plavu verifikaciju.",
+      "q3_a4": "Je li token star najmanje 1 godinu.",
+      "q3_explanation": "Prije kupnje ili povjerenja Stellar imovini: provjeri je li clawback aktiviran. Ako jest – vjeruj samo imovini izdavatelja kojima zaista vjeruješ.",
+      "q3_hint2": "Savjet: Erikova ključna poruka u ovom poglavlju bila je: uvijek provjeri je li clawback aktivan – i vjeruješ li."
+    },
+    "scene8": {
+      "section": "Scena 8 – Lekcija",
+      "dialog1": "Volio/la bih da je izdavatelj mojih tokena imao aktiviran clawback.",
+      "dialog2": "I volio/la bih da više ljudi provjerava kome vjeruju – prije kupnje.",
+      "dialog3": "Oboje je ispravno. To je lekcija."
+    }
   }
 }
