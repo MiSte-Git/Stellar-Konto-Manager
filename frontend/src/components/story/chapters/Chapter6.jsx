@@ -21,8 +21,9 @@ const FRIENDBOT_URL = "https://friendbot.stellar.org";
 /** Konstruiert die M-Adresse aus Basis-G-Adresse + ID */
 function getMuxedAddress() {
   // TESTNET ONLY – StellarSdk.MuxedAccount verbindet G-Adresse + numerische ID zu M-Adresse
-  const kp = StellarSdk.Keypair.fromPublicKey(DEMO_BASE_KEY);
-  return new StellarSdk.MuxedAccount(kp, DEMO_MUXED_ID).accountId();
+  // MuxedAccount requires an Account object (not a Keypair) as first argument (SDK v13+)
+  const baseAccount = new StellarSdk.Account(DEMO_BASE_KEY, "0");
+  return new StellarSdk.MuxedAccount(baseAccount, DEMO_MUXED_ID).accountId();
 }
 
 async function ensureDemoFunded() {
@@ -34,7 +35,34 @@ async function ensureDemoFunded() {
   }
 }
 
-async function sendMuxedPayment(sourceKeypair) {
+/** Beispiel 1 – Kundeneinzahlung: 150 XLM an Marcos Muxed-Adresse (ID 42) */
+async function sendCustomerDeposit(sourceKeypair) {
+  if (!sourceKeypair) throw new Error("no_keypair");
+  await ensureDemoFunded();
+
+  const mAddress = getMuxedAddress();
+  const server = new StellarSdk.Horizon.Server(HORIZON_TESTNET);
+  const account = await server.loadAccount(sourceKeypair.publicKey());
+
+  const tx = new StellarSdk.TransactionBuilder(account, {
+    fee: StellarSdk.BASE_FEE,
+    networkPassphrase: StellarSdk.Networks.TESTNET,
+  })
+    .addOperation(StellarSdk.Operation.payment({
+      destination: mAddress,
+      asset: StellarSdk.Asset.native(),
+      amount: "150",
+    }))
+    .setTimeout(30)
+    .build();
+
+  tx.sign(sourceKeypair);
+  const txResult = await server.submitTransaction(tx);
+  return { ...txResult, mAddress };
+}
+
+/** Beispiel 2 – Lohnzahlung: 2564.88 XLM + Memo (i18n-Text) */
+async function sendMuxedPayment(sourceKeypair, memo) {
   if (!sourceKeypair) throw new Error("no_keypair");
   await ensureDemoFunded();
 
@@ -50,14 +78,16 @@ async function sendMuxedPayment(sourceKeypair) {
     .addOperation(StellarSdk.Operation.payment({
       destination: mAddress, // TESTNET ONLY – M-Adresse als Ziel
       asset: StellarSdk.Asset.native(),
-      amount: "1",
+      amount: "2564.88",
     }))
+    .addMemo(StellarSdk.Memo.text(memo))
     .setTimeout(30)
     .build();
 
   tx.sign(sourceKeypair);
-  const result = await server.submitTransaction(tx);
-  return { result, mAddress };
+  // Spread result so result.hash is accessible at top level (required by TestnetAction's TxHashLink)
+  const txResult = await server.submitTransaction(tx);
+  return { ...txResult, mAddress };
 }
 
 // ─── MuxedVisualCard ──────────────────────────────────────────────────────────
@@ -65,9 +95,9 @@ async function sendMuxedPayment(sourceKeypair) {
 function MuxedVisualCard({ next, t, openGlossary }) {
   const baseShort = `${DEMO_BASE_KEY.slice(0, 6)}…${DEMO_BASE_KEY.slice(-4)}`;
   const employees = [
-    { id: "0001", name: "Anna", role: t("chapter6.explain_anna"), color: "#FF9A3D" },
-    { id: "0002", name: "Ben",  role: t("chapter6.explain_ben"),  color: "#3DD6FF" },
-    { id: "0003", name: "Clara",role: t("chapter6.explain_clara"), color: "#48c78e" },
+    { id: "0001", name: "Lena", role: t("chapter6.explain_cust1"), color: "#FF9A3D" },
+    { id: "0002", name: "Tom",  role: t("chapter6.explain_cust2"), color: "#3DD6FF" },
+    { id: "0003", name: "Mia",  role: t("chapter6.explain_cust3"), color: "#48c78e" },
   ];
 
   return (
@@ -573,19 +603,20 @@ function QuizQuestion({ question, choices, correctValue, explanation, hint2, nex
 
 function buildScenes({ keypair, completeChapter, openGlossary, setShowChapterSelect, t }) {
   return [
+    // ── Einleitung ────────────────────────────────────────────────────────────
     // 0 – Intro narrator
     {
       type: "narrator",
       sectionTitle: t("chapter6.section_intro"),
       lines: [t("chapter6.intro_narrator1"), t("chapter6.intro_narrator2")],
     },
-    // 1 – Marco klagt
+    // 1 – Sofia schildert Kunden-Chaos
     {
       type: "dialog",
-      speaker: "marco",
+      speaker: "sofia",
       lines: [t("chapter6.marco_chaos1"), t("chapter6.marco_chaos2")],
     },
-    // 2 – Sofia frustriert
+    // 2 – Sofia: auch Lohnbuchhaltung betroffen
     {
       type: "dialog",
       speaker: "sofia",
@@ -597,58 +628,103 @@ function buildScenes({ keypair, completeChapter, openGlossary, setShowChapterSel
       speaker: "lumio",
       lines: [t("chapter6.lumio_fix")],
     },
-    // 4 – Muxed Account Erklärung
+
+    // ── Beispiel 1: Kundeneinzahlungen (Empfänger-Seite) ─────────────────────
+    // 4 – Konzept-Visualkarte (zeigt Kunden mit Muxed-IDs)
     {
       type: "custom",
-      sectionTitle: t("chapter6.section_explain"),
+      sectionTitle: t("chapter6.section_example1"),
       render: (next) => <MuxedVisualCard next={next} t={t} openGlossary={openGlossary} />,
     },
-    // 5 – Lohnbuchhaltungs-Workflow
-    {
-      type: "custom",
-      sectionTitle: t("chapter6.section_payroll"),
-      render: (next) => <PayrollCard next={next} t={t} />,
-    },
-    // 6 – Weitere Anwendungsfälle
-    {
-      type: "custom",
-      sectionTitle: t("chapter6.section_usecases"),
-      render: (next) => <UseCasesCard next={next} t={t} />,
-    },
-    // 7 – Entscheidungsszene
-    {
-      type: "custom",
-      sectionTitle: t("chapter6.section_decision"),
-      render: (next) => <DecisionScene next={next} t={t} />,
-    },
-    // 8 – TestnetAction: Muxed Payment
+    // 5 – TestnetAction: Kundeneinzahlung 150 XLM
     {
       type: "action",
-      sectionTitle: t("chapter6.section_action"),
-      actionId: "muxed_payment_ch6",
+      actionId: "customer_deposit_ch6",
+      icon: "🧾",
+      label: t("chapter6.action_customer_label"),
+      description: t("chapter6.action_customer_desc"),
+      xpReward: 30,
+      execute: async (kp) => {
+        if (!kp) throw new Error(t("chapter6.action_error"));
+        return sendCustomerDeposit(kp);
+      },
+    },
+    // 6 – Lumio erklärt Ergebnis (G-Adresse im Explorer, Muxed-ID intern)
+    {
+      type: "dialog",
+      speaker: "lumio",
+      lines: [t("chapter6.lumio_after_example1")],
+    },
+
+    // ── Brücke zu Beispiel 2 ──────────────────────────────────────────────────
+    // 7 – Lumio: Übergang zum Senden
+    {
+      type: "dialog",
+      speaker: "lumio",
+      lines: [t("chapter6.lumio_bridge")],
+    },
+
+    // ── Beispiel 2: Lohnzahlung (Sender-Seite) ────────────────────────────────
+    // 8 – Lumio: Lohnzahlung Intro
+    {
+      type: "dialog",
+      speaker: "lumio",
+      sectionTitle: t("chapter6.section_example2"),
+      lines: [t("chapter6.lumio_payroll_intro")],
+    },
+    // 9 – Narrator: Memo erklärt vor der Aktion
+    {
+      type: "narrator",
+      lines: [t("chapter6.narrator_before_action")],
+    },
+    // 10 – TestnetAction: Lohnzahlung 2564.88 XLM + Memo
+    {
+      type: "action",
+      actionId: "salary_payment_ch6",
       icon: "🏷️",
       label: t("chapter6.action_label"),
       description: t("chapter6.action_desc"),
       xpReward: 50,
       execute: async (kp) => {
         if (!kp) throw new Error(t("chapter6.action_error"));
-        return sendMuxedPayment(kp);
-      },
-      onSuccess: (res) => {
-        // res.mAddress is available for display – TestnetAction shows the TX hash
-        // The M-address is part of res.result
+        const memo = t("chapter6.salaryMemo") || "Gehalt April 2026";
+        return sendMuxedPayment(kp, memo);
       },
     },
-    // 9 – Lumio nach der Aktion
+    // 11 – Lumio nach der Lohnzahlung
     {
       type: "dialog",
       speaker: "lumio",
-      lines: [t("chapter6.lumio_after_action")],
+      lines: [t("chapter6.lumio_after_action"), t("chapter6.lumio_after_action2")],
     },
-    // 10 – Quiz 1
+
+    // ── Quiz & Abschluss ──────────────────────────────────────────────────────
+    // 12 – Entscheidungsszene
+    {
+      type: "custom",
+      sectionTitle: t("chapter6.section_decision"),
+      render: (next) => <DecisionScene next={next} t={t} />,
+    },
+    // 13 – Quiz 4 (Kundeneinzahlung – receiver-side use case)
     {
       type: "custom",
       sectionTitle: t("chapter6.section_quiz"),
+      render: (next) => (
+        <QuizQuestion
+          question={t("chapter6.quiz4_q")} correctValue="a1"
+          choices={[
+            { value: "a1", label: t("chapter6.quiz4_a1"), hint: t("chapter6.quiz4_a1_hint") },
+            { value: "a2", label: t("chapter6.quiz4_a2"), hint: t("chapter6.quiz4_a2_hint") },
+            { value: "a3", label: t("chapter6.quiz4_a3"), hint: t("chapter6.quiz4_a3_hint") },
+          ]}
+          explanation={t("chapter6.quiz4_explanation")} hint2={t("chapter6.quiz4_hint2")}
+          next={next} t={t}
+        />
+      ),
+    },
+    // 14 – Quiz 1
+    {
+      type: "custom",
       render: (next) => (
         <QuizQuestion
           question={t("chapter6.quiz1_q")} correctValue="a2"
@@ -662,7 +738,7 @@ function buildScenes({ keypair, completeChapter, openGlossary, setShowChapterSel
         />
       ),
     },
-    // 11 – Quiz 2
+    // 15 – Quiz 2
     {
       type: "custom",
       render: (next) => (
@@ -678,7 +754,7 @@ function buildScenes({ keypair, completeChapter, openGlossary, setShowChapterSel
         />
       ),
     },
-    // 12 – Quiz 3
+    // 16 – Quiz 3
     {
       type: "custom",
       render: (next) => (
@@ -694,7 +770,7 @@ function buildScenes({ keypair, completeChapter, openGlossary, setShowChapterSel
         />
       ),
     },
-    // 13 – ChapterSummary
+    // 17 – ChapterSummary
     {
       type: "custom",
       render: (next) => (

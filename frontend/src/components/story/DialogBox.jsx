@@ -121,10 +121,9 @@ export default function DialogBox({
   onDone,
   autoAdvance = false,
 }) {
-  const { lumioMood, openGlossary } = useStory();
+  const { lumioMood, openGlossary, dialogLineIndex: lineIndex, setDialogLineIndex: setLineIndex } = useStory();
   const { t } = useTranslation("story");
   const linesArr = Array.isArray(lines) ? lines : [lines];
-  const [lineIndex, setLineIndex] = useState(0);
   const isLast = lineIndex >= linesArr.length - 1;
   const mood = MOOD_CONFIG[lumioMood] || MOOD_CONFIG.happy;
 
@@ -143,14 +142,11 @@ export default function DialogBox({
   const advance = () => {
     if (!done) { skip(); return; }
     if (!isLast) {
-      setLineIndex((i) => i + 1);
+      setLineIndex(lineIndex + 1);
     } else {
       onDone?.();
     }
   };
-
-  // Reset when lines change externally
-  useEffect(() => { setLineIndex(0); }, [lines]);
 
   const isNarrator = speaker === "narrator";
 
@@ -203,10 +199,10 @@ export default function DialogBox({
                 fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
-                color: mood.border,
+                color: "rgba(0,0,0,0.65)",
                 marginBottom: "6px",
               }}>
-                Lumio
+                {speaker.charAt(0).toUpperCase() + speaker.slice(1)}
               </div>
             )}
 

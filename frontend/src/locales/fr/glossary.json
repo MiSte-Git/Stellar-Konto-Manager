@@ -225,8 +225,8 @@
   "anchor": {
     "title": "Ancre",
     "original": "Anchor",
-    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Une ancre est une entreprise qui relie l'argent réel, tel que des euros ou des dollars, avec Stellar. Par exemple, vous donnez à l'ancre des euros et recevez en retour un jeton euro sur Stellar."
+    "short": "Prestataire financier agréé reliant la monnaie fiduciaire à Stellar.",
+    "desc": "Un Anchor est un prestataire de services financiers agréé qui relie de l'argent réel au réseau Stellar. Il accepte de la monnaie fiduciaire (p.ex. par virement bancaire) et émet des tokens sur Stellar en contrepartie – et inversement. On appelle cela On-Ramp (entrée d'argent) et Off-Ramp (sortie d'argent).\n\nAnchors connus sur Stellar :\n- Kado – USD, EUR, CHF (mondial)\n- MoneyGram – dépôts/retraits en espèces via USDC dans 170+ pays\n- Tempo – EUR stablecoin, Europe\n- Bitso – MXN, USD, Amérique latine\n- Circle – USDC et EURC, dans le monde entier\n\nActuellement, il existe plus de 60 Anchors sur Stellar couvrant plus de 170 devises."
   },
   "exchange": {
     "title": "Bourse des valeurs",

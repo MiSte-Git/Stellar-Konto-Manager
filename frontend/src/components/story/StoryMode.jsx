@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { StoryProvider, useStory } from "./StoryContext";
 import GlossaryPopup from "./GlossaryPopup";
 import ChapterSelect from "./ChapterSelect";
+import { TOTAL_CHAPTERS } from "./storyChapters.config.js";
 
 // ─── Lazy-load chapters ───────────────────────────────────────────────────────
 
@@ -27,7 +28,6 @@ function StoryHUD() {
     openGlossary, showChapterSelect, setShowChapterSelect,
   } = useStory();
   const { t } = useTranslation("story");
-  const TOTAL_CHAPTERS = 9;
 
   const moodEmoji = {
     happy:   "⭐",

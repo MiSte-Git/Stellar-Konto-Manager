@@ -31,6 +31,14 @@ export default function SceneRunner({ scenes = [], onFinish, onIndexChange }) {
   const current = scenes[index];
   const isLast = index >= scenes.length - 1;
 
+  // Guard: if sceneIndex is out of bounds (e.g. stale localStorage value after
+  // scenes were changed), silently reset to 0 instead of rendering nothing.
+  useEffect(() => {
+    if (scenes.length > 0 && index >= scenes.length) {
+      setSceneIndex(0);
+    }
+  }, [index, scenes.length, setSceneIndex]);
+
   // Report index changes to parent if needed
   useEffect(() => {
     onIndexChange?.(index);

@@ -225,8 +225,8 @@
   "anchor": {
     "title": "Ankkuri",
     "original": "Anchor",
-    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Ankkuri on yritys, joka yhdistää oikean rahan, kuten eurot tai dollarit, Stellariin. Esimerkiksi, annat ankkurille euroja ja saat vastineeksi eurotokenin Stellarissa."
+    "short": "Lisensoitu rahoituspalveluntarjoaja, joka yhdistää fiat-rahan Stellariin.",
+    "desc": "Anchor on lisensoitu rahoituspalveluntarjoaja, joka yhdistää oikean rahan Stellar-verkkoon. Se vastaanottaa fiat-rahaa (esim. pankkisiirron kautta) ja laskee vastineeksi liikkeelle tokeneita Stellarissa – ja päinvastoin. Tätä kutsutaan On-Rampiksi (raha sisään) ja Off-Rampiksi (raha ulos).\n\nTunnettuja Anchoreja Stellarissa:\n- Kado – USD, EUR, CHF (globaali)\n- MoneyGram – käteissisään/ulosotto USDC:n kautta 170+ maassa\n- Tempo – EUR stablecoin, Eurooppa\n- Bitso – MXN, USD, Latinalainen Amerikka\n- Circle – USDC ja EURC, maailmanlaajuisesti\n\nTällä hetkellä Stellarissa on yli 60 Anchoria, jotka kattavat yli 170 valuuttaa."
   },
   "exchange": {
     "title": "Pörssi",

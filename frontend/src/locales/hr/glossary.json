@@ -225,8 +225,8 @@
   "anchor": {
     "title": "Sidro",
     "original": "Anchor",
-    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Sidro je tvrtka koja povezuje stvarni novac, kao što su euri ili dolari, sa Stellaru. Na primjer, vi date sidru eure i zauzvrat primite euro token na Stellar."
+    "short": "Licencirani pružatelj financijskih usluga koji povezuje fiat novac sa Stellarom.",
+    "desc": "Anchor je licencirani pružatelj financijskih usluga koji povezuje pravi novac s mrežom Stellar. Prima fiat novac (npr. bankovnim prijenosom) i zauzvrat izdaje tokene na Stellaru – i obrnuto. To se naziva On-Ramp (novac unutra) i Off-Ramp (novac van).\n\nPoznati Anchori na Stellaru:\n- Kado – USD, EUR, CHF (globalno)\n- MoneyGram – gotovinsko uplaćivanje/podizanje putem USDC u 170+ zemalja\n- Tempo – EUR stablecoin, Europa\n- Bitso – MXN, USD, Latinska Amerika\n- Circle – USDC i EURC, diljem svijeta\n\nTrenutno postoji više od 60 Anchora na Stellaru koji pokrivaju više od 170 valuta."
   },
   "exchange": {
     "title": "Burza dionica",

@@ -225,8 +225,8 @@
   "anchor": {
     "title": "Anker",
     "original": "Anchor",
-    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Een anchor is een bedrijf dat echt geld, zoals euro's of dollars, met Stellar verbindt. Bijvoorbeeld, je geeft de anchor euro's en ontvangt daarvoor een euro-token op Stellar."
+    "short": "Gelicenseerde financiële dienstverlener die fiatgeld verbindt met Stellar.",
+    "desc": "Een Anchor is een gelicenseerde financiële dienstverlener die echt geld verbindt met het Stellar-netwerk. Hij accepteert fiatgeld (bijv. via bankoverschrijving) en geeft daarvoor tokens uit op Stellar – en vice versa. Dit heet On-Ramp (geld erin) en Off-Ramp (geld eruit).\n\nBekende Anchors op Stellar:\n- Kado – USD, EUR, CHF (wereldwijd)\n- MoneyGram – geld in/uitstorten via USDC in 170+ landen\n- Tempo – EUR stablecoin, Europa\n- Bitso – MXN, USD, Latijns-Amerika\n- Circle – USDC en EURC, wereldwijd\n\nMomenteel zijn er meer dan 60 Anchors op Stellar die meer dan 170 valuta's dekken."
   },
   "exchange": {
     "title": "Aandelenbeurs",

@@ -9,14 +9,14 @@
  *  - Wie erkennt man gefälschte QR-Codes und Phishing-Domains?
  *
  * Ablauf:
- *  1. Intro – Lumio trifft Marco den Kaffeeröster (Narrator + Dialog)
+ *  1. Intro – Lumio trifft Marco den Obsthändler (Narrator + Dialog)
  *  2. Was ist ein Asset? Was ist ein Anchor? (Dialog + Narrator)
  *  3. Trust Line Erklärung – visuelles Info-Card (Narrator + Custom)
  *  4. Gefahren: Fake QR-Codes & Phishing-Domains (Dialog + Narrator)
  *  5. QR-Code Entscheidung – Choice Scene
  *  6. Trust Line einrichten (Dialog + Custom Preview + TestnetAction)
  *  7. Mini-Quiz 3 Fragen (3× Choice)
- *  8. CAFE Token empfangen (Dialog + TestnetAction)
+ *  8. BERRY-Token empfangen (Dialog + TestnetAction)
  *  9. Chapter Summary (Custom)
  */
 
@@ -32,7 +32,7 @@ import { changeTrust, friendbotFund } from "../TestnetAction";
 // ─── Marco's Testnet Issuer Keypair ────────────────────────────────────────────
 //
 // TESTNET ONLY – a fresh ephemeral keypair is generated per browser session and
-// funded via Friendbot on first use.  This means CAFE is a different asset each
+// funded via Friendbot on first use.  This means BERRY is a different asset each
 // session, which is fine for a self-contained demo.
 //
 // For a stable testnet demo (e.g. shared classroom use) replace with a real
@@ -60,12 +60,12 @@ async function ensureMarcoFunded() {
 }
 
 /**
- * Marco (as issuer) mints and sends 10 CAFE tokens to the user's account.
+ * Marco (as issuer) mints and sends 10 BERRY tokens to the user's account.
  * Requires the user to have set up a trust line first (Scene 6).
  */
-async function sendCafeToUser(destinationPublicKey) {
+async function sendBerryToUser(destinationPublicKey) {
   await ensureMarcoFunded();
-  const cafeAsset = new StellarSdk.Asset("CAFE", MARCO_PUBLIC_KEY);
+  const cafeAsset = new StellarSdk.Asset("BERRY", MARCO_PUBLIC_KEY);
   const account = await server.loadAccount(MARCO_PUBLIC_KEY);
   const tx = new StellarSdk.TransactionBuilder(account, {
     fee: StellarSdk.BASE_FEE,
@@ -86,7 +86,7 @@ async function sendCafeToUser(destinationPublicKey) {
 // ─── TrustLineInfoCard ─────────────────────────────────────────────────────────
 
 /**
- * Visual explanation of a Trust Line: its 3 components and 3 ways to add one.
+ * Visual explanation of a Trust Line: its 3 components and 4 ways to add one.
  * Used in Scene 3 (educational visual).
  */
 function TrustLineInfoCard({ next, t }) {
@@ -117,7 +117,7 @@ function TrustLineInfoCard({ next, t }) {
         </p>
 
         {[
-          { label: t("chapter3.tl_code_label"),   value: "CAFE",      color: "#FFD93D", mono: false },
+          { label: t("chapter3.tl_code_label"),   value: "BERRY",     color: "#FFD93D", mono: false },
           { label: t("chapter3.tl_issuer_label"),  value: shortMarco,  color: "#a0c4ff", mono: true  },
           { label: t("chapter3.tl_limit_label"),   value: t("chapter3.tl_limit_val"), color: "#48c78e", mono: false },
         ].map(({ label, value, color, mono }, i) => (
@@ -198,6 +198,7 @@ function TrustLineInfoCard({ next, t }) {
           { emoji: "⌨️", text: t("chapter3.tl_method1") },
           { emoji: "📷", text: t("chapter3.tl_method2") },
           { emoji: "🌐", text: t("chapter3.tl_method3") },
+          { emoji: "🔍", text: t("chapter3.tl_method4") },
         ].map(({ emoji, text }, i) => (
           <div key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
             <span style={{ fontSize: "16px", flexShrink: 0 }}>{emoji}</span>
@@ -266,7 +267,7 @@ function TrustLinePreview({ t, onReady }) {
             <span style={{ color: "rgba(255,255,255,0.45)", marginRight: "4px" }}>
               {t("chapter3.tl_code_label")}:
             </span>
-            <span style={{ color: "#FFD93D", fontWeight: 700 }}>CAFE</span>
+            <span style={{ color: "#FFD93D", fontWeight: 700 }}>BERRY</span>
           </span>
           <span style={{ fontSize: "11px", fontFamily: "monospace" }}>
             <span style={{ color: "rgba(255,255,255,0.45)", marginRight: "4px" }}>
@@ -347,6 +348,7 @@ function buildScenes({ keypair, completeChapter, goToChapter, t }) {
       speaker: "narrator",
       lines: [
         t("chapter3.marco_asset_1"),
+        t("chapter3.marco_asset_3"),
         t("chapter3.marco_asset_2"),
       ],
     },
@@ -417,16 +419,17 @@ function buildScenes({ keypair, completeChapter, goToChapter, t }) {
     },
     {
       type: "action",
-      actionId: "trust_line_cafe_ch3",
+      actionId: "trust_line_berry_ch3",
       icon: "🤝",
       label: t("chapter3.action_tl_label"),
       description: t("chapter3.action_tl_desc"),
       xpReward: 60,
       execute: async (kp) => {
         if (!kp) throw new Error(t("chapter3.error_no_keypair"));
+        await ensureMarcoFunded();
         return changeTrust({
           sourceKeypair: kp,
-          assetCode: "CAFE",
+          assetCode: "BERRY",
           assetIssuer: MARCO_PUBLIC_KEY,
         });
       },
@@ -465,17 +468,17 @@ function buildScenes({ keypair, completeChapter, goToChapter, t }) {
       question: t("chapter3.q2_question"),
       choices: [
         {
-          value: "q2_correct",
+          value: "q2_wrong1",
           label: t("chapter3.q2_a"),
-          correct: true,
+          correct: false,
           hint: t("chapter3.q2_a_hint"),
-          xp: 20,
         },
         {
-          value: "q2_wrong1",
+          value: "q2_correct",
           label: t("chapter3.q2_b"),
-          correct: false,
+          correct: true,
           hint: t("chapter3.q2_b_hint"),
+          xp: 20,
         },
         {
           value: "q2_wrong2",
@@ -511,7 +514,7 @@ function buildScenes({ keypair, completeChapter, goToChapter, t }) {
       ],
     },
 
-    // ── Scene 8: CAFE Token empfangen ──────────────────────────────────────────
+    // ── Scene 8: BERRY-Token empfangen ─────────────────────────────────────────
     {
       sectionTitle: t("chapter3.section_receive"),
       type: "dialog",
@@ -530,14 +533,14 @@ function buildScenes({ keypair, completeChapter, goToChapter, t }) {
     },
     {
       type: "action",
-      actionId: "receive_cafe_ch3",
-      icon: "☕",
+      actionId: "receive_berry_ch3",
+      icon: "🍓",
       label: t("chapter3.action_receive_label"),
       description: t("chapter3.action_receive_desc"),
       xpReward: 80,
       execute: async (kp) => {
         if (!kp) throw new Error(t("chapter3.error_no_keypair"));
-        return sendCafeToUser(kp.publicKey());
+        return sendBerryToUser(kp.publicKey());
       },
     },
 
