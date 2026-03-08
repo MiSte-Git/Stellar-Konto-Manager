@@ -304,7 +304,7 @@
     "title": "Oracle",
     "original": "Oracle",
     "short": "Usluga koja donosi vanjske podatke (npr. cijene, vrijeme) u smart contracte na blockchainu.",
-    "desc": "Blockchains su po prirodi odvojeni od vanjskog svijeta—smart contract ne može sam dohvatiti cijenu Bitcoina ili EUR/USD tečaj. Oracles to rješavaju tako što donose pouzdane vanjske podatke u blockchain. Poznate oracle usluge su Chainlink i Pyth Network. Bez oraclea mnoge DeFi aplikacije poput lending protokola ili sintetičkih asseta ne bi bile moguće."
+    "desc": "Blockchains su po prirodi odvojeni od vanjskog svijeta—smart contract ne može sam dohvatiti cijenu Bitcoina ili EUR/USD tečaj. Oracles to rješavaju tako što donose pouzdane vanjske podatke u blockchain. Poznate oracle usluge su Chainlink i Pyth Network. Bez oraclea mnoge DeFi aplikacije poput lending protokola ili sintetičkih asseta ne bi bile moguće. Konkretni primjeri: XLM/USD tečaj (za Stellar aplikacije), vremenski podaci (za osiguranje usjeva), status dostave (za trgovačke ugovore), potpis notara (za transakcije nekretninama), rezultati izbora (za decentralizirana glasanja)."
   },
   "cex": {
     "title": "Centralizirana burza",

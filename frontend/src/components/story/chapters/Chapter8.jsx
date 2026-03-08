@@ -33,7 +33,7 @@ async function createClaimableBalance(keypair) {
     .addOperation(
       StellarSdk.Operation.createClaimableBalance({
         asset: StellarSdk.Asset.native(),
-        amount: "500",
+        amount: "50",
         claimants: [
           new StellarSdk.Claimant(
             BUYER_ADDRESS,
@@ -770,6 +770,7 @@ function SorobanExampleScene({ next, t }) {
     ?.replace(/\/(account|address)\/\{address\}$/, "")
     ?? "https://stellar.expert/explorer/testnet";
   const contractUrl = `${explorerBase}/contract/${HELLO_CONTRACT_ID}`;
+  const contractsOverviewUrl = `${explorerBase}/contracts`;
 
   return (
     <motion.div
@@ -814,6 +815,28 @@ function SorobanExampleScene({ next, t }) {
         >
           {t("chapter8.sorobanExample.explorer_btn")}
         </button>
+
+        {/* Fallback: contracts overview */}
+        <div style={{
+          marginTop: "4px", paddingTop: "10px",
+          borderTop: "1px solid rgba(61,214,255,0.12)",
+          display: "flex", flexDirection: "column", gap: "6px",
+        }}>
+          <code style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", lineHeight: 1.55 }}>
+            {t("chapter8.sorobanExample.fallback_note")}
+          </code>
+          <button
+            onClick={() => setConfirmUrl(contractsOverviewUrl)}
+            style={{
+              background: "rgba(160,196,255,0.07)", border: "1px solid rgba(160,196,255,0.2)",
+              borderRadius: "5px", padding: "2px 8px", color: "rgba(160,196,255,0.7)",
+              fontSize: "11px", fontWeight: 600, fontFamily: "inherit",
+              cursor: "pointer", alignSelf: "flex-start",
+            }}
+          >
+            {t("chapter8.sorobanExample.fallback_btn")}
+          </button>
+        </div>
       </div>
 
       {/* Source reference */}
@@ -960,6 +983,9 @@ function buildScenes({ openGlossary, keypair, addXP, completeAction, hasComplete
     // Source: https://github.com/stellar/soroban-examples
     { type: "dialog", speaker: "lumio", lines: [t("chapter8.codeTransparency.lumio")] },
     { type: "dialog", speaker: "marco", lines: [t("chapter8.codeTransparency.marco")] },
+
+    // ── Überleitung: Hauskauf als komplexes Beispiel ──────────────────────────
+    { type: "dialog", speaker: "marco", lines: [t("chapter8.housePurchase.transition")] },
 
     // ── Oracle Problem ────────────────────────────────────────────────────────
     { type: "dialog", speaker: "lumio", lines: [t("chapter8.oracleProblem.lumio")] },

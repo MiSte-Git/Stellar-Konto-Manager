@@ -721,7 +721,7 @@
     "cta_continue": "Continue",
     "scene1": {
       "section": "Scene 1 – The Problem",
-      "dialog1": "Lumio, I'm fed up. Last week a buyer didn't pay me – just disappeared after delivery.",
+      "dialog1": "Lumio, I'm fed up. Last week I had a buyer – I delivered, and then he just didn't pay.",
       "dialog2": "I know the feeling. And if you ask for payment upfront, the buyer doesn't trust you.",
       "dialog3": "Exactly that dilemma! Buyer doesn't trust seller. Seller doesn't trust buyer.",
       "dialog4": "What if neither had to trust the other?",
@@ -734,7 +734,7 @@
       "dialog2": "Sure, but that's just a machine.",
       "dialog3": "A smart contract is the same – but for money and conditions. 'If Marco delivers AND buyer confirms → then pay automatically.' The code decides, not a person.",
       "dialog4": "And who controls the code?",
-      "dialog5": "Nobody – it runs on the blockchain. Immutable, visible to everyone.",
+      "dialog5": "Nobody – it runs on the blockchain. Immutable.",
       "glossary_btn": "What is a Smart Contract?"
     },
     "scene3": {
@@ -743,7 +743,7 @@
       "dialog2": "I've heard of something like that from Ethereum. Is it the same?",
       "dialog3": "Similar concept, but Stellar is faster, cheaper and ready to use for simple tasks.",
       "dialog4": "Sounds better.",
-      "dialog5": "For your use case? Absolutely. Soroban is technically mature for exactly these scenarios.",
+      "dialog5": "Imagine you could deposit the money with a neutral trustee – who only releases it when both parties are satisfied. That's exactly what's called escrow.",
       "card": {
         "label": "Comparison",
         "title": "Ethereum vs. Stellar / Soroban",
@@ -759,17 +759,18 @@
     "scene4": {
       "section": "Scene 4 – Testnet Escrow",
       "pre": {
-        "dialog1": "Let's try this right now! I'll create a real escrow on the testnet.",
-        "dialog2": "A real one? How?",
-        "dialog3": "Stellar has a built-in feature for this: Claimable Balances. You lock funds under conditions – the buyer can only claim them once both sides have met their condition.",
-        "dialog4": "So we're locking real testnet money now?"
+        "dialog1": "Let's try this right now! I'll show you how in a moment – but first let me explain what escrow actually means.",
+        "dialog2": "A what?",
+        "dialog3": "Stellar has built this trustee principle directly into the protocol – as a native feature called Claimable Balance. An amount of XLM or tokens is locked and tied to a condition: who may claim it? From when? And until when can the sender reclaim it? Only when the condition is met can the recipient withdraw the funds.",
+        "dialog4": "So we're locking testnet money now?"
       },
       "action": {
         "label": "Create Escrow",
-        "description": "Locks 1 XLM on the testnet for a demo buyer. The buyer can claim it immediately; you can reclaim it after 1 hour.",
+        "description": "Locks 50 XLM on the testnet for a demo buyer. The buyer can claim them immediately; you can reclaim them after 1 hour if nothing happens.",
         "success": "Escrow successfully created!",
         "escrow_id_label": "Claimable Balance ID",
-        "testnet_note": "Testnet only – no real money."
+        "testnet_note": "Testnet only – no real money.",
+        "locked_note": "The 50 XLM are now locked – neither you nor the buyer can simply withdraw them. The funds are waiting for the condition."
       },
       "post": {
         "dialog1": "That was simpler than I thought!",
@@ -854,7 +855,7 @@
     },
     "subtitle": "Escrow & Smart Contracts – built-in vs. programmable",
     "escrowVsSmartContract": {
-      "marco": "Hold on – before we try this, I want to briefly explain why we don't need a smart contract here. Stellar has many common use cases built directly into the protocol – as native features, no programming, no WASM. Claimable Balance is exactly one of those native features: it works via standard transactions with built-in conditions, directly on the blockchain. Soroban – real smart contracts – only comes into play when the protocol can't do something out of the box. That's when you write arbitrary code in Rust and deploy it. Let's look at the built-in escrow feature first – and then real smart contracts."
+      "marco": "Exactly – and the key point: Claimable Balance is not a smart contract. It is a native protocol feature that Stellar ships with out of the box. No Rust code, no WASM, no programming. Escrow, airdrops, conditional payments – all of that works with built-in features. You only need Soroban when the protocol itself cannot do something. Then you write your own code and deploy it. Two clearly separate tools."
     },
     "sorobanExample": {
       "intro": "And now let me show you a real example – a smart contract that actually lives on the blockchain.",
@@ -862,7 +863,9 @@
       "contract_label": "Hello World Contract – Testnet",
       "explorer_btn": "View in Explorer ↗",
       "source_label": "Public Source Code",
-      "message": "Serious projects publish their source code. You can use it to verify that the code on the blockchain actually matches what's on GitHub."
+      "message": "Serious projects publish their source code. You can use it to verify that the code on the blockchain actually matches what's on GitHub.",
+      "fallback_note": "Contract not found? Testnet contracts are reset regularly.",
+      "fallback_btn": "View all current contracts ↗"
     },
     "escrowExplanation": "An escrow is like a safe held by a neutral party. The money is deposited and only released when a condition is met – for example, when the work is completed. Neither party can simply access it.",
     "contractVerification": {
@@ -871,26 +874,27 @@
     },
     "codeTransparency": {
       "lumio": "But wait – you said 'immutable, visible to everyone'. Who can actually read the code?",
-      "marco": "Technically no one without prior knowledge: on the blockchain the code lives as a WASM file – compiled machine code. That's why serious projects publish their original Rust source code on GitHub so experts can audit it. In the Stellar Lab there's even a 'Build Verified' function: it checks whether the WASM hash on-chain matches the published source. Without a published source, you only see the code's fingerprint – but not what it actually does."
+      "marco": "Technically no one without prior knowledge: on the blockchain the code lives as a WASM file – compiled machine code that almost no one can read directly. That's why serious projects publish their original Rust source code on GitHub. In the Stellar Lab and Explorer you can spot verified contracts by a green badge next to the contract ID – often labelled \"Build Verified\". This means: the developer submitted a GitHub attestation and the WASM hash on-chain was matched against the published source code. If you don't see that badge, you only see the code's fingerprint – but not what it actually does."
     },
     "oracleProblem": {
-      "lumio": "And what if the buyer just doesn't confirm they received the house – does the money stay locked forever?",
+      "lumio": "And if the buyer doesn't confirm that they received the house – how is the smart contract supposed to know? It needs an [[Oracle|oracle]], right?",
       "marco": "That's called the oracle problem! Smart contracts can't fetch external data. You need a middleman – a so-called [[Oracle|oracle]] – that brings real-world data into the blockchain. For example, a notary oracle that confirms the transfer of ownership.",
       "glossary_btn": "What is an Oracle?"
     },
     "housePurchase": {
-      "lumio1": "Imagine: I'm buying a house. I put 500 XLM into an escrow contract. The seller gets them once the notary confirms.",
-      "marco1": "Perfect example! The escrow contract holds the money until the condition is met. No person can simply take it. Only the contract decides.",
+      "lumio1": "Imagine: the buyer deposits the agreed purchase price into a smart contract. The seller receives the money as soon as the notary confirms the handover.",
+      "marco1": "Perfect example! The smart contract holds the money until the condition is met. No one can simply take it. Only the contract decides.",
       "lumio2": "But then the oracle problem appears again – who tells the contract that the notary actually signed?",
       "marco2": "Exactly! You need a trusted oracle. That's the crux of smart contracts for real-world assets. Ethereum networks use solutions like Chainlink – it works, but makes it more complex.",
       "lumio3": "And is that even legally recognized? Can I buy my house via smart contract?",
-      "marco3": "Not really yet. In most countries, courts don't recognize smart contracts as legally binding agreements. The technology is there – but the law still needs to catch up."
+      "marco3": "Not really yet. In most countries, courts don't recognize smart contracts as legally binding agreements. The technology is there – but the law still needs to catch up.",
+      "transition": "Smart contracts are particularly well suited for more complex agreements – for example a house purchase where many conditions must be met at the same time."
     },
     "futureVision": {
       "marco1": "When land registries, banks, and authorities connect their systems directly to the blockchain – and this is already happening in some countries – no oracle is needed for that data anymore. The contract reads the land registry entry directly. Then theory becomes reality: buying a house without a notary, without waiting, without manual checks. We're not quite there yet – but the direction is clear.",
       "lumio": "That means what we're learning here isn't science fiction – it's happening right now.",
-      "marco2": "Exactly. Two real-world examples: Estonia has been securing its state registers – land registry, wills, company register – with blockchain technology since 2012. Not as an experiment, but in live production. Switzerland goes even further: SIX Digital Exchange (SDX), regulated by FINMA, trades and holds tokenized securities on the blockchain. The Swiss National Bank already settles transactions in digital central bank money. Over 1 billion francs have been processed this way.",
-      "note": "Estonia uses a private blockchain (KSI by Guardtime), not a public one like Stellar – but the principle is the same: data no one can tamper with."
+      "marco2": "Exactly. Two real-world examples: Since 2012, Estonia records every change to government registers – land registry, wills, commercial register, court files – cryptographically. The data itself isn't stored in the blockchain, but any manipulation is immediately detected. Not as an experiment – in production. Switzerland goes even further: the SIX Digital Exchange (SDX), regulated by FINMA, trades and custodies tokenized securities on blockchain. The Swiss National Bank already settles transactions in digital central bank money. Over 1 billion francs have already been processed this way.",
+      "note": "Estonia uses blockchain for integrity verification: every change to a register is recorded cryptographically and is verifiable – manipulation is detected. A private blockchain (KSI by Guardtime), not a public one like Stellar – but the principle is the same."
     }
   },
   "chapter9": {

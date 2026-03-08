@@ -159,12 +159,14 @@ export default function SceneRunner({ scenes = [], onFinish, onIndexChange }) {
       {/* Navigation buttons */}
       <StoryNavButtons />
 
-      {/* Scene counter (subtle) */}
+      {/* Dot navigation + scene number */}
       <div style={{
         display: "flex",
+        alignItems: "center",
         justifyContent: "center",
         gap: "4px",
         paddingTop: "4px",
+        position: "relative",
       }}>
         {scenes.map((_, i) => (
           <div
@@ -182,6 +184,17 @@ export default function SceneRunner({ scenes = [], onFinish, onIndexChange }) {
             }}
           />
         ))}
+        <span style={{
+          position: "absolute",
+          right: 0,
+          fontSize: "10px",
+          color: "rgba(255,255,255,0.2)",
+          fontVariantNumeric: "tabular-nums",
+          letterSpacing: "0.03em",
+          userSelect: "none",
+        }}>
+          {index + 1} / {scenes.length}
+        </span>
       </div>
     </div>
   );

@@ -721,7 +721,7 @@
     "cta_continue": "Nastavi",
     "scene1": {
       "section": "Scena 1 – Problem",
-      "dialog1": "Lumio, dosta mi je. Prošli tjedan mi kupac nije platio – jednostavno nestao nakon dostave.",
+      "dialog1": "Lumio, dosta mi je. Prošli tjedan sam imao kupca – isporučio sam robu, a on jednostavno nije platio.",
       "dialog2": "Razumijem. A ako tražiš plaćanje unaprijed, kupac ti ne vjeruje.",
       "dialog3": "Točno ta dilema! Kupac ne vjeruje prodavaču. Prodavač ne vjeruje kupcu.",
       "dialog4": "A što ako ni jedan ni drugi ne bi trebali vjerovati?",
@@ -734,7 +734,7 @@
       "dialog2": "Jasno, ali to je samo stroj.",
       "dialog3": "Pametni ugovor je isto – ali za novac i uvjete. 'Ako Marco isporuči I kupac potvrdi → tada plati automatski.' Kod odlučuje, ne čovjek.",
       "dialog4": "A tko kontrolira kod?",
-      "dialog5": "Nitko – radi na blockchainu. Nepromjenjiv, vidljiv svima.",
+      "dialog5": "Nitko – radi na blockchainu. Nepromjenjiv.",
       "glossary_btn": "Što je pametni ugovor?"
     },
     "scene3": {
@@ -743,7 +743,7 @@
       "dialog2": "Čuo sam nešto slično za Ethereum. Je li to isto?",
       "dialog3": "Sličan koncept, ali Stellar je brži, jeftiniji i spreman za jednostavne zadatke.",
       "dialog4": "Zvuči bolje.",
-      "dialog5": "Za tvoj slučaj upotrebe? Apsolutno. Soroban je tehnički zreo za točno takve scenarije.",
+      "dialog5": "Zamislite da možete položiti novac kod neutralnog povjerenika – koji ga oslobađa samo kada su obje strane zadovoljne. To se točno naziva escrow.",
       "card": {
         "label": "Usporedba",
         "title": "Ethereum vs. Stellar / Soroban",
@@ -759,17 +759,18 @@
     "scene4": {
       "section": "Scena 4 – Testnet Escrow",
       "pre": {
-        "dialog1": "Isprobajmo odmah! Stvorit ću pravi escrow na testnetu.",
-        "dialog2": "Pravi? Kako?",
-        "dialog3": "Stellar ima ugrađenu funkciju za to: Claimable Balances. Zaključavaš sredstva pod uvjetima – kupac ih može preuzeti tek kada obje strane ispune svoje uvjete.",
-        "dialog4": "Dakle, sada zaključavamo pravi testnet novac?"
+        "dialog1": "Isprobajmo odmah! Za trenutak ću ti pokazati kako – ali prvo ti objasni što escrow zapravo znači.",
+        "dialog2": "Što takvo?",
+        "dialog3": "Stellar je ovaj princip povjerenika ugradio izravno u protokol – kao nativnu značajku zvanu Claimable Balance. Iznos XLM-a ili tokena se zaključava i veže uz uvjet: tko može zatražiti? Od kada? I do kada pošiljatelj može povući nazad? Tek kad je uvjet ispunjen, primatelj može podići sredstva.",
+        "dialog4": "Dakle, sada zaključavamo testnet novac?"
       },
       "action": {
         "label": "Kreiraj Escrow",
-        "description": "Zaključava 1 XLM na testnetu za demo kupca. Kupac ga može preuzeti odmah; ti možeš tražiti povrat nakon 1 sat.",
+        "description": "Zaključava 50 XLM na testnetu za demo kupca. Kupac ih može odmah zatražiti; možete ih povući nakon 1 sata ako se ništa ne dogodi.",
         "success": "Escrow uspješno kreiran!",
         "escrow_id_label": "ID Claimable Balance",
-        "testnet_note": "Samo testnet – bez pravog novca."
+        "testnet_note": "Samo testnet – bez pravog novca.",
+        "locked_note": "50 XLM su sada zaključani – ni ti ni kupac ne možete ih jednostavno podići. Sredstva čekaju na uvjet."
       },
       "post": {
         "dialog1": "Bilo je jednostavnije nego što sam mislio!",
@@ -854,7 +855,7 @@
     },
     "subtitle": "Escrow i pametni ugovori – ugrađeno vs. programabilno",
     "escrowVsSmartContract": {
-      "marco": "Čekaj – prije nego što isprobamo, ukratko ću objasniti zašto ovdje ne trebamo pametni ugovor. Stellar ima mnoge uobičajene slučajeve korištenja izravno ugrađene u protokol – kao nativne značajke, bez programiranja, bez WASM-a. Claimable Balance je upravo takva nativna značajka: radi putem standardnih transakcija s ugrađenim uvjetima, izravno na blockchainu. Soroban – pravi pametni ugovori – potreban je tek kada protokol nešto ne može sam od sebe. Tada pišeš proizvoljni kod u Rustu i deployaš ga. Pogledajmo prvo ugrađenu escrow-značajku – a zatim prave pametne ugovore."
+      "marco": "Točno – i ključna stvar: Claimable Balance nije pametni ugovor. To je nativna funkcija protokola koju Stellar isporučuje iz kutije. Bez Rust koda, bez WASM-a, bez programiranja. Escrow, airdropovi, uvjetna plaćanja – sve to radi s ugrađenim funkcijama. Soroban trebaš tek kada protokol sam ne može nešto napraviti. Tada pišeš vlastiti kod i deployaš ga. Dva jasno odvojena alata."
     },
     "sorobanExample": {
       "intro": "A sada ti pokazujem pravi primjer – pametni ugovor koji zaista živi na blockchainu.",
@@ -862,7 +863,9 @@
       "contract_label": "Hello World Contract – Testnet",
       "explorer_btn": "Pogledaj u Exploreru ↗",
       "source_label": "Javni izvorni kod",
-      "message": "Ozbiljni projekti objavljuju svoj izvorni kod. Možeš ga koristiti za provjeru odgovara li kod na blockchainu zaista onome što je na GitHubu."
+      "message": "Ozbiljni projekti objavljuju svoj izvorni kod. Možeš ga koristiti za provjeru odgovara li kod na blockchainu zaista onome što je na GitHubu.",
+      "fallback_note": "Contract nije pronađen? Testnet contracti se redovito resetiraju.",
+      "fallback_btn": "Pogledaj sve trenutne contracte ↗"
     },
     "escrowExplanation": "Escrow je poput sefa kod neutralne strane. Novac se polaže i oslobađa tek kada je uvjet ispunjen – na primjer, kada je posao završen. Ni jedna od strana ne može mu jednostavno pristupiti.",
     "contractVerification": {
@@ -871,26 +874,27 @@
     },
     "codeTransparency": {
       "lumio": "Ali čekaj – rekao si 'nepromjenjiv, vidljiv svima'. Tko može zapravo pročitati kod?",
-      "marco": "Tehnički nitko bez prethodnog znanja: na blockchainu kod postoji kao WASM datoteka – kompajlirani strojni kod. Zato ozbiljni projekti objavljuju originalni Rust izvorni kod na GitHubu kako bi ga stručnjaci mogli pregledati. U Stellar Labu postoji čak i funkcija 'Build Verified': provjerava odgovara li WASM hash na lancu objavljenom izvornom kodu. Bez objavljenog izvornog koda vidiš samo otisak koda – ali ne i što zapravo radi."
+      "marco": "Tehnički nitko bez prethodnog znanja: na blockchainu kod postoji kao WASM datoteka – kompajlirani strojni kod koji gotovo nitko ne može čitati izravno. Zato ozbiljni projekti objavljuju originalni Rust izvorni kod na GitHubu. U Stellar Labu i Exploreru prepoznaješ verificirane contracte po zelenom badgeu pored ID-a contracta – često s oznakom \"Build Verified\". To znači: developer je predao GitHub atestaciju i WASM hash na lancu je uspoređen s objavljenim izvornim kodom. Ako ne vidiš taj badge, vidiš samo otisak koda – ali ne i što zapravo radi."
     },
     "oracleProblem": {
-      "lumio": "A što ako kupac jednostavno ne potvrdi da je dobio kuću – ostaje li novac zauvijek zaključan?",
+      "lumio": "A ako kupac ne potvrdi da je primio kuću – kako pametni ugovor uopće može to znati? Treba mu [[Oracle|oracle]], zar ne?",
       "marco": "To se zove oracle problem! Pametni ugovori ne mogu dohvatiti vanjske podatke. Potreban je posrednik – takozvani [[Oracle|oracle]] – koji donosi podatke iz stvarnog svijeta u blockchain. Na primjer, notarski oracle koji potvrđuje prijenos vlasništva.",
       "glossary_btn": "Što je Oracle?"
     },
     "housePurchase": {
-      "lumio1": "Zamislite: kupujem kuću. Stavim 500 XLM u escrow ugovor. Prodavač ih dobiva čim notar potvrdi.",
-      "marco1": "Savršen primjer! Escrow ugovor zadržava novac – sve dok se uvjet ne ispuni. Nitko ne može jednostavno uzeti. Samo ugovor odlučuje.",
+      "lumio1": "Zamislimo: kupac polaže dogovorenu kupoprodajnu cijenu u pametni ugovor. Prodavač dobiva novac čim notar potvrdi predaju.",
+      "marco1": "Savršen primjer! Pametni ugovor čuva novac sve dok uvjet nije ispunjen. Nitko ga ne može jednostavno uzeti. Samo ugovor odlučuje.",
       "lumio2": "Ali tada se pojavljuje oracle problem – tko govori ugovoru da je notar stvarno potpisao?",
       "marco2": "Točno! Potreban je pouzdani oracle. To je ključna točka kod pametnih ugovora za stvarna dobra. Ethereum mreže koriste rješenja poput Chainlink – funkcionira, ali je kompleksnije.",
       "lumio3": "I je li to pravno priznato? Mogu li kupiti kuću putem pametnog ugovora?",
-      "marco3": "Još ne baš. U većini zemalja sudovi ne priznaju pametne ugovore kao pravno obvezujuće sporazume. Tehnologija postoji – ali pravo još mora pratiti."
+      "marco3": "Još ne baš. U većini zemalja sudovi ne priznaju pametne ugovore kao pravno obvezujuće sporazume. Tehnologija postoji – ali pravo još mora pratiti.",
+      "transition": "Pametni ugovori posebno su pogodni za složenije sporazume – na primjer kupoprodaju nekretnine u kojoj istovremeno mora biti ispunjeno mnogo uvjeta."
     },
     "futureVision": {
       "marco1": "Kada katastarski uredi, banke i vlasti povežu svoje sustave izravno s blockchainom – a to se već događa u nekim zemljama – za te podatke više neće biti potreban oracle. Ugovor čita upis u zemljišne knjige izravno. Tada teorija postaje stvarnost: kupovina kuće bez javnog bilježnika, bez čekanja, bez ručnih provjera. Još nismo sasvim tamo – ali smjer je jasan.",
       "lumio": "To znači da ono što ovdje učimo nije glazba budućnosti – događa se upravo sada.",
-      "marco2": "Točno. Dva primjera iz stvarnog svijeta: Estonija osigurava svoje državne registre – zemljišne knjige, testamente, registar poduzeća – blockchain tehnologijom od 2012. Ne kao eksperiment, nego u produkcijskom radu. Švicarska ide još dalje: SIX Digital Exchange (SDX), regulirana od FINMA-e, trguje i čuva tokenizirane vrijednosne papire na blockchainu. Švicarska nacionalna banka već podmiruje transakcije u digitalnom novcu središnje banke. Već je tako obrađeno više od milijardu franaka.",
-      "note": "Estonija koristi privatni blockchain (KSI od Guardtime), ne javni poput Stellara – ali načelo je isto: podaci koje nitko ne može manipulirati."
+      "marco2": "Točno. Dva primjera iz stvarnog svijeta: Od 2012. godine Estonija kriptografski bilježi svaku promjenu u državnim registrima – zemljišnoj knjizi, oporukama, trgovačkom registru, sudskim spisima. Sami podaci nisu pohranjeni u blockchainu, ali svaka manipulacija odmah se otkriva. Ne kao eksperiment, nego u produkciji. Švicarska ide još dalje: SIX Digital Exchange (SDX), reguliran od FINMA-e, trguje i čuva tokenizirane vrijednosne papire na blockchainu. Švicarska nacionalna banka već podmiruje transakcije u digitalnom novcu središnje banke. Više od milijardu franaka već je obrađeno na taj način.",
+      "note": "Estonija koristi blockchain za provjeru integriteta: svaka promjena u registru kriptografski se bilježi i može se provjeriti – manipulacija se otkriva. Privatni blockchain (KSI tvrtke Guardtime), ne javni poput Stellara – ali princip je isti."
     }
   },
   "chapter9": {

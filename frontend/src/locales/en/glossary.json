@@ -304,7 +304,7 @@
     "title": "Oracle",
     "original": "Oracle",
     "short": "A service that brings real‑world data (e.g., prices or weather) to smart contracts on a blockchain.",
-    "desc": "Blockchains are cut off from the outside world by default—a smart contract cannot fetch the current Bitcoin price or the EUR/USD rate on its own. Oracles solve this by providing trusted external data to the blockchain. Well-known oracle services include Chainlink and Pyth Network. Without oracles, many DeFi applications like lending protocols or synthetic assets would not be possible."
+    "desc": "Blockchains are cut off from the outside world by default—a smart contract cannot fetch the current Bitcoin price or the EUR/USD rate on its own. Oracles solve this by providing trusted external data to the blockchain. Well-known oracle services include Chainlink and Pyth Network. Without oracles, many DeFi applications like lending protocols or synthetic assets would not be possible. Concrete examples: XLM/USD price (for Stellar apps), weather data (for crop insurance), delivery status (for trade contracts), notary signature (for real-estate transactions), election results (for decentralised voting)."
   },
   "cex": {
     "title": "Centralized Exchange",
