@@ -721,7 +721,7 @@
     "cta_continue": "Jatka",
     "scene1": {
       "section": "Kohtaus 1 – Ongelma",
-      "dialog1": "Lumio, olen kyllästynyt. Viime viikolla ostaja ei maksanut – katosi vain toimituksen jälkeen.",
+      "dialog1": "Lumio, olen kyllästynyt. Viime viikolla minulla oli ostaja – toimitin tilauksen, minkä jälkeen hän ei vain maksanut.",
       "dialog2": "Tiedän tunteen. Ja jos pyydät ennakkomaksua, ostaja ei luota sinuun.",
       "dialog3": "Juuri tuo dilemma! Ostaja ei luota myyjään. Myyjä ei luota ostajaan.",
       "dialog4": "Entä jos kummankaan ei tarvitsisi luottaa toiseen?",
@@ -734,7 +734,7 @@
       "dialog2": "Totta, mutta se on vain kone.",
       "dialog3": "Älysopimus on sama – mutta rahalle ja ehdoille. 'Jos Marco toimittaa JA ostaja vahvistaa → maksa automaattisesti.' Koodi päättää, ei ihminen.",
       "dialog4": "Ja kuka hallitsee koodia?",
-      "dialog5": "Ei kukaan – se toimii lohkoketjussa. Muuttumaton, kaikkien nähtävissä.",
+      "dialog5": "Ei kukaan – se toimii lohkoketjussa. Muuttumaton.",
       "glossary_btn": "Mikä on älysopimus?"
     },
     "scene3": {
@@ -743,7 +743,7 @@
       "dialog2": "Olen kuullut jotain vastaavaa Ethereumista. Onko se sama?",
       "dialog3": "Samanlainen konsepti, mutta Stellar on nopeampi, halvempi ja valmis yksinkertaisiin tehtäviin.",
       "dialog4": "Kuulostaa paremmalta.",
-      "dialog5": "Käyttötapauksellesi? Ehdottomasti. Soroban on teknisesti kypsä juuri tällaisiin skenaarioihin.",
+      "dialog5": "Kuvittele, että voisit tallettaa rahat neutraalille välittäjälle – joka vapauttaa ne vasta, kun molemmat osapuolet ovat tyytyväisiä. Juuri tätä kutsutaan escrowiksi.",
       "card": {
         "label": "Vertailu",
         "title": "Ethereum vs. Stellar / Soroban",
@@ -759,17 +759,18 @@
     "scene4": {
       "section": "Kohtaus 4 – Testnet-escrow",
       "pre": {
-        "dialog1": "Kokeillaan heti! Luon oikean escrow-sopimuksen testnetissä.",
-        "dialog2": "Oikean? Miten?",
-        "dialog3": "Stellarissa on tähän sisäänrakennettu toiminto: Claimable Balances. Lukitset varat ehtojen alle – ostaja voi vaatia ne vain kun molemmat osapuolet ovat täyttäneet ehtonsa.",
-        "dialog4": "Eli lukitsemme nyt oikeaa testnet-rahaa?"
+        "dialog1": "Kokeillaan heti! Näytän sinulle heti kuinka – mutta ensin selitän sinulle mitä escrow oikeasti tarkoittaa.",
+        "dialog2": "Mikä sellainen?",
+        "dialog3": "Stellar on rakentanut tämän välittäjäperiaatteen suoraan protokollaan – natiivina ominaisuutena nimeltä Claimable Balance. XLM-summa tai tokenit lukitaan ja sidotaan ehtoihin: kuka saa vaatia ne? Mistä alkaen? Ja mihin asti lähettäjä voi vaatia ne takaisin? Vasta ehdon täyttyessä vastaanottaja voi nostaa varat.",
+        "dialog4": "Eli lukitsemme nyt testnet-rahaa?"
       },
       "action": {
         "label": "Luo Escrow",
-        "description": "Lukitsee 1 XLM testnetissä demo-ostajalle. Ostaja voi vaatia sen välittömästi; voit vaatia sen takaisin tunnin kuluttua.",
+        "description": "Lukitsee 50 XLM testiverkossa demo-ostajalle. Ostaja voi vaatia ne heti; voit vaatia ne takaisin tunnin kuluttua, jos mitään ei tapahdu.",
         "success": "Escrow luotu onnistuneesti!",
         "escrow_id_label": "Claimable Balance -tunnus",
-        "testnet_note": "Vain testnet – ei oikeaa rahaa."
+        "testnet_note": "Vain testnet – ei oikeaa rahaa.",
+        "locked_note": "50 XLM on nyt lukittu – et sinä etkä ostaja voi vain nostaa niitä. Varat odottavat ehtoa."
       },
       "post": {
         "dialog1": "Se oli yksinkertaisempaa kuin luulin!",
@@ -854,7 +855,7 @@
     },
     "subtitle": "Escrow ja älykkäät sopimukset – sisäänrakennettu vs. ohjelmoitava",
     "escrowVsSmartContract": {
-      "marco": "Hetki – ennen kuin kokeilemme tätä, haluan lyhyesti selittää miksi emme tarvitse tässä älykästä sopimusta. Stellarissa on monia yleisiä käyttötapauksia rakennettu suoraan protokollaan – natiiviominaisuuksina ilman ohjelmointia ja ilman WASM:ia. Claimable Balance on juuri tällainen natiivi ominaisuus: se toimii tavallisilla transaktioilla sisäänrakennetuilla ehdoilla suoraan lohkoketjussa. Sorobania – eli oikeita älykkäitä sopimuksia – tarvitaan vasta kun protokolla ei osaa jotain valmiiksi. Silloin kirjoitat mielivaltaista koodia Rustilla ja otat sen käyttöön. Katsotaan ensin sisäänrakennettua escrow-ominaisuutta – ja sen jälkeen oikeita älykkäitä sopimuksia."
+      "marco": "Juuri niin – ja keskeinen kohta: Claimable Balance ei ole älykäs sopimus. Se on natiivi protokollaominaisuus, jonka Stellar toimittaa valmiina. Ei Rust-koodia, ei WASM:ia, ei ohjelmointia. Escrow, airdropit, ehdolliset maksut – kaikki tämä onnistuu sisäänrakennetuilla ominaisuuksilla. Sorobania tarvitset vasta kun protokolla itse ei pysty johonkin. Silloin kirjoitat oman koodin ja otat sen käyttöön. Kaksi selvästi erillistä työkalua."
     },
     "sorobanExample": {
       "intro": "Ja nyt näytän sinulle oikean esimerkin – älykkään sopimuksen, joka todella elää lohkoketjussa.",
@@ -862,7 +863,9 @@
       "contract_label": "Hello World Contract – Testnet",
       "explorer_btn": "Näytä Explorerissa ↗",
       "source_label": "Julkinen lähdekoodi",
-      "message": "Vakavat projektit julkaisevat lähdekoodinsa. Voit käyttää sitä varmistaaksesi, että lohkoketjun koodi todella vastaa GitHubissa olevaa."
+      "message": "Vakavat projektit julkaisevat lähdekoodinsa. Voit käyttää sitä varmistaaksesi, että lohkoketjun koodi todella vastaa GitHubissa olevaa.",
+      "fallback_note": "Sopimusta ei löydy? Testnet-sopimukset nollataan säännöllisesti.",
+      "fallback_btn": "Näytä kaikki nykyiset sopimukset ↗"
     },
     "escrowExplanation": "Escrow on kuin turvasäilö puolueettoman osapuolen hallussa. Rahat talletetaan ja vapautetaan vasta kun ehto täyttyy – esimerkiksi kun työ on valmis. Kumpikaan osapuoli ei voi yksinkertaisesti käyttää niitä.",
     "contractVerification": {
@@ -871,26 +874,27 @@
     },
     "codeTransparency": {
       "lumio": "Mutta odota – sanoit 'muuttumaton, kaikkien nähtävillä'. Kuka voi oikeasti lukea koodin?",
-      "marco": "Teknisesti ottaen kukaan ilman aiempaa osaamista: lohkoketjussa koodi on WASM-tiedostona – käännettyä konekoodia. Siksi vakavat projektit julkaisevat alkuperäisen Rust-lähdekoodinsa GitHubissa, jotta asiantuntijat voivat tarkistaa sen. Stellar Labissa on jopa 'Build Verified' -toiminto: se tarkistaa, vastaako ketjussa oleva WASM-hash julkaistua lähdekoodia. Ilman julkaistua lähdekoodia näet vain koodin sormenjäljen – mutta et sitä, mitä se oikeasti tekee."
+      "marco": "Teknisesti ottaen kukaan ilman aiempaa osaamista: lohkoketjussa koodi on WASM-tiedostona – käännettyä konekoodia, jota lähes kukaan ei pysty lukemaan suoraan. Siksi vakavat projektit julkaisevat alkuperäisen Rust-lähdekoodinsa GitHubissa. Stellar Labissa ja Explorerissa tunnistat varmennetut sopimukset vihreästä merkistä sopimusten ID:n vieressä – usein tekstillä \"Build Verified\". Tämä tarkoittaa: kehittäjä on toimittanut GitHub-attestoinnin ja ketjussa oleva WASM-hash on tarkistettu julkaistua lähdekoodia vasten. Jos et näe tätä merkkiä, näet vain koodin sormenjäljen – mutta et sitä, mitä se oikeasti tekee."
     },
     "oracleProblem": {
-      "lumio": "Entä jos ostaja ei vahvista saaneensa talon – jääkö raha ikuisesti lukituksi?",
+      "lumio": "Ja jos ostaja ei vahvista saaneensa talon – miten älykäs sopimus voi tietää sen? Sehän tarvitsee [[Oracle|oracle]]n, vai mitä?",
       "marco": "Sitä kutsutaan oracle-ongelmaksi! Älysopimukset eivät voi hakea ulkoisia tietoja. Tarvitaan välittäjä – niin kutsuttu [[Oracle|oracle]] – joka tuo todellisen maailman tietoja lohkoketjuun. Esimerkiksi notaari-oracle, joka vahvistaa omistusoikeuden siirron.",
       "glossary_btn": "Mikä on Oracle?"
     },
     "housePurchase": {
-      "lumio1": "Kuvittele: ostan talon. Laitan 500 XLM escrow-sopimukseen. Myyjä saa ne, kun notaari vahvistaa.",
-      "marco1": "Täydellinen esimerkki! Escrow-sopimus pidättää rahat, kunnes ehto täyttyy. Kukaan ei voi vain ottaa niitä. Vain sopimus päättää.",
+      "lumio1": "Kuvittele: ostaja tallettaa sovitun kauppahinnan älykkääseen sopimukseen. Myyjä saa rahat heti kun notaari vahvistaa luovutuksen.",
+      "marco1": "Täydellinen esimerkki! Älykäs sopimus pitää rahat hallussaan, kunnes ehto täyttyy. Kukaan ei voi yksinkertaisesti ottaa niitä. Vain sopimus päättää.",
       "lumio2": "Mutta sitten oracle-ongelma ilmaantuu taas – kuka kertoo sopimukselle, että notaari todella allekirjoitti?",
       "marco2": "Juuri niin! Tarvitaan luotettava oracle. Se on avainasia älysopimuksissa todellisille hyödykkeille. Ethereum-verkot käyttävät ratkaisuja kuten Chainlink – se toimii, mutta tekee siitä monimutkaisempaa.",
       "lumio3": "Ja onko se ylipäätään laillisesti tunnustettua? Voinko ostaa kotini älysopimuksella?",
-      "marco3": "Ei vielä oikeastaan. Useimmissa maissa tuomioistuimet eivät tunnusta älysopimuksia oikeudellisesti sitoviksi sopimuksiksi. Teknologia on olemassa – mutta lain täytyy vielä ottaa kiinni."
+      "marco3": "Ei vielä oikeastaan. Useimmissa maissa tuomioistuimet eivät tunnusta älysopimuksia oikeudellisesti sitoviksi sopimuksiksi. Teknologia on olemassa – mutta lain täytyy vielä ottaa kiinni.",
+      "transition": "Älykkäät sopimukset soveltuvat erityisen hyvin monimutkaisempiin sopimuksiin – esimerkiksi asuntokauppaan, jossa useita ehtoja on täytyttävä samanaikaisesti."
     },
     "futureVision": {
       "marco1": "Kun kiinteistörekisterit, pankit ja viranomaiset yhdistävät järjestelmänsä suoraan lohkoketjuun – ja tämä tapahtuu jo joissain maissa – oracle-välittäjää ei enää tarvita niille tiedoille. Sopimus lukee kiinteistörekisterin merkinnän suoraan. Sitten teoria muuttuu todellisuudeksi: talon osto ilman notaaria, ilman odottelua, ilman manuaalisia tarkistuksia. Emme ole ihan siellä vielä – mutta suunta on selvä.",
       "lumio": "Se tarkoittaa, että mitä opimme tässä, ei ole tulevaisuuden musiikkia – se tapahtuu juuri nyt.",
-      "marco2": "Juuri niin. Kaksi esimerkkiä todellisesta maailmasta: Viro on turvannut valtion rekisterinsä – kiinteistörekisterin, testamentit, yritysrekisterin – lohkoketjutekniikalla vuodesta 2012. Ei kokeiluna, vaan tuotantokäytössä. Sveitsi menee vielä pidemmälle: SIX Digital Exchange (SDX), FINMAn valvonnassa, kauppaa ja säilyttää tokenoituja arvopapereita lohkoketjussa. Sveitsin keskuspankki selvittää jo transaktioita digitaalisessa keskuspankkirahassa. Yli miljardia frangia on jo käsitelty näin.",
-      "note": "Viro käyttää yksityistä lohkoketjua (KSI Guardtime:lta), ei julkista kuten Stellar – mutta periaate on sama: tietoja, joita kukaan ei voi väärentää."
+      "marco2": "Juuri niin. Kaksi esimerkkiä todellisesta maailmasta: Vuodesta 2012 lähtien Viro on kirjannut kryptografisesti jokaisen muutoksen julkisiin rekistereihin – kiinteistörekisteriin, testamentteihin, kaupparekisteriin ja oikeudenkäyntiasiakirjoihin. Itse tiedot eivät ole lohkoketjussa, mutta kaikki manipulointi havaitaan välittömästi. Ei kokeiluna, vaan tuotantokäytössä. Sveitsi menee vielä pidemmälle: FINMA:n sääntelemä SIX Digital Exchange (SDX) käy kauppaa lohkoketjussa tokenisoiduilla arvopapereilla ja säilyttää niitä. Sveitsin kansallispankki selvittää jo transaktioita digitaalisessa keskuspankkirahassa. Näin on käsitelty jo yli miljardi frangia.",
+      "note": "Viro käyttää lohkoketjua eheyden tarkistamiseen: jokainen muutos rekisteriin kirjataan kryptografisesti ja on todennettavissa – manipulointi havaitaan. Yksityinen lohkoketju (Guardtimen KSI), ei julkinen kuten Stellar – mutta periaate on sama."
     }
   },
   "chapter9": {

@@ -304,7 +304,7 @@
     "title": "Oracle",
     "original": "Oracle",
     "short": "Een dienst die real‑world data (bijv. prijzen, weer) beschikbaar maakt voor smart contracts.",
-    "desc": "Blockchains zijn standaard afgesneden van de buitenwereld—een smart contract kan niet zelf de Bitcoin‑prijs of de EUR/USD‑koers ophalen. Oracles lossen dit op door betrouwbare externe data naar de blockchain te brengen. Bekende oracle‑diensten zijn Chainlink en Pyth Network. Zonder oracles zouden veel DeFi‑toepassingen zoals lending‑protocollen of synthetische assets niet mogelijk zijn."
+    "desc": "Blockchains zijn standaard afgesneden van de buitenwereld—een smart contract kan niet zelf de Bitcoin‑prijs of de EUR/USD‑koers ophalen. Oracles lossen dit op door betrouwbare externe data naar de blockchain te brengen. Bekende oracle‑diensten zijn Chainlink en Pyth Network. Zonder oracles zouden veel DeFi‑toepassingen zoals lending‑protocollen of synthetische assets niet mogelijk zijn. Concrete voorbeelden: XLM/USD‑koers (voor Stellar‑apps), weerdata (voor oogstverzekeringen), bezorgstatus (voor handelscontracten), notarishandtekening (voor vastgoedtransacties), verkiezingsuitslag (voor gedecentraliseerde stemmingen)."
   },
   "cex": {
     "title": "Gecentraliseerde beurs",

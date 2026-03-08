@@ -721,7 +721,7 @@
     "cta_continue": "Continua",
     "scene1": {
       "section": "Scena 1 – Il problema",
-      "dialog1": "Lumio, sono stanco. La settimana scorsa un acquirente non mi ha pagato – è sparito dopo la consegna.",
+      "dialog1": "Lumio, sono stanco. La settimana scorsa avevo un acquirente – ho consegnato, e poi semplicemente non ha pagato.",
       "dialog2": "Lo capisco. E se chiedi il pagamento anticipato, l'acquirente non si fida di te.",
       "dialog3": "Esattamente quel dilemma! L'acquirente non si fida del venditore. Il venditore non si fida dell'acquirente.",
       "dialog4": "E se nessuno dei due dovesse fidarsi dell'altro?",
@@ -734,7 +734,7 @@
       "dialog2": "Certo, ma è solo una macchina.",
       "dialog3": "Uno smart contract è lo stesso – ma per soldi e condizioni. 'Se Marco consegna E l'acquirente conferma → allora paga automaticamente.' Decide il codice, non una persona.",
       "dialog4": "E chi controlla il codice?",
-      "dialog5": "Nessuno – gira sulla blockchain. Immutabile, visibile a tutti.",
+      "dialog5": "Nessuno – gira sulla blockchain. Immutabile.",
       "glossary_btn": "Cos'è uno Smart Contract?"
     },
     "scene3": {
@@ -743,7 +743,7 @@
       "dialog2": "Ho sentito qualcosa del genere da Ethereum. È la stessa cosa?",
       "dialog3": "Concetto simile, ma Stellar è più veloce, meno costoso e pronto per le attività semplici.",
       "dialog4": "Sembra meglio.",
-      "dialog5": "Per il tuo caso d'uso? Assolutamente. Soroban è tecnicamente maturo per esattamente questi scenari.",
+      "dialog5": "Immagina di poter depositare il denaro presso un fiduciario neutrale – che lo svincola solo quando entrambe le parti sono soddisfatte. Questo si chiama esattamente escrow.",
       "card": {
         "label": "Confronto",
         "title": "Ethereum vs. Stellar / Soroban",
@@ -759,17 +759,18 @@
     "scene4": {
       "section": "Scena 4 – Testnet Escrow",
       "pre": {
-        "dialog1": "Proviamolo subito! Creerò un escrow reale sulla testnet.",
-        "dialog2": "Uno vero? Come?",
-        "dialog3": "Stellar ha una funzione integrata per questo: i Claimable Balances. Blocchi fondi sotto condizioni – il compratore può reclamarli solo quando entrambe le parti hanno soddisfatto la propria condizione.",
-        "dialog4": "Quindi stiamo bloccando vero denaro testnet adesso?"
+        "dialog1": "Proviamolo subito! Fra un momento ti mostro come – ma prima lasciami spiegare cosa significa davvero escrow.",
+        "dialog2": "Un cosa?",
+        "dialog3": "Stellar ha incorporato questo principio di fiducia direttamente nel protocollo, come funzione nativa chiamata Claimable Balance. Un importo in XLM o token viene bloccato e collegato a una condizione: chi può reclamarlo? Da quando? E fino a quando il mittente può richiederlo indietro? Solo quando la condizione è soddisfatta il destinatario può prelevare i fondi.",
+        "dialog4": "Quindi stiamo bloccando fondi testnet adesso?"
       },
       "action": {
         "label": "Crea Escrow",
-        "description": "Blocca 1 XLM sulla testnet per un acquirente demo. Il compratore può reclamarlo immediatamente; puoi richiedere il rimborso dopo 1 ora.",
+        "description": "Blocca 50 XLM sulla testnet per un acquirente demo. L'acquirente può reclamarli immediatamente; puoi recuperarli dopo 1 ora se non succede nulla.",
         "success": "Escrow creato con successo!",
         "escrow_id_label": "ID Claimable Balance",
-        "testnet_note": "Solo testnet – nessun denaro reale."
+        "testnet_note": "Solo testnet – nessun denaro reale.",
+        "locked_note": "I 50 XLM sono ora bloccati – né tu né il compratore potete semplicemente prelevarli. I fondi attendono la condizione."
       },
       "post": {
         "dialog1": "È stato più semplice di quanto pensassi!",
@@ -854,7 +855,7 @@
     },
     "subtitle": "Escrow e smart contract – integrato vs. programmabile",
     "escrowVsSmartContract": {
-      "marco": "Aspetta – prima di provare voglio spiegarti brevemente perché qui non abbiamo bisogno di uno smart contract. Stellar ha integrato molti casi d'uso comuni direttamente nel protocollo – come funzionalità native, senza programmazione, senza WASM. Il Claimable Balance è esattamente una di queste funzionalità native: funziona tramite transazioni standard con condizioni integrate, direttamente sulla blockchain. Soroban – i veri smart contract – entra in gioco solo quando il protocollo non riesce a fare qualcosa nativamente. Allora scrivi codice arbitrario in Rust e lo esegui il deploy. Prima guardiamo la funzionalità escrow integrata – e poi i veri smart contract."
+      "marco": "Esatto – e il punto chiave: Claimable Balance non è uno smart contract. È una funzionalità nativa del protocollo che Stellar include di default. Nessun codice Rust, nessun WASM, nessuna programmazione. Escrow, airdrop, pagamenti condizionali – tutto funziona con le funzionalità integrate. Soroban ti serve solo quando il protocollo stesso non riesce a fare qualcosa. Allora scrivi il tuo codice e lo esegui il deploy. Due strumenti chiaramente separati."
     },
     "sorobanExample": {
       "intro": "E ora ti mostro un esempio reale – uno smart contract che vive davvero sulla blockchain.",
@@ -862,7 +863,9 @@
       "contract_label": "Hello World Contract – Testnet",
       "explorer_btn": "Visualizza nell'Explorer ↗",
       "source_label": "Codice sorgente pubblico",
-      "message": "I progetti seri pubblicano il loro codice sorgente. Puoi usarlo per verificare che il codice sulla blockchain corrisponda davvero a quello su GitHub."
+      "message": "I progetti seri pubblicano il loro codice sorgente. Puoi usarlo per verificare che il codice sulla blockchain corrisponda davvero a quello su GitHub.",
+      "fallback_note": "Contratto non trovato? I contratti testnet vengono azzerati regolarmente.",
+      "fallback_btn": "Visualizza tutti i contratti attuali ↗"
     },
     "escrowExplanation": "Un escrow è come una cassaforte tenuta da una parte neutrale. Il denaro viene depositato e rilasciato solo quando una condizione è soddisfatta – ad esempio, quando il lavoro è completato. Nessuna delle due parti può semplicemente accedervi.",
     "contractVerification": {
@@ -871,26 +874,27 @@
     },
     "codeTransparency": {
       "lumio": "Ma aspetta – hai detto 'immutabile, visibile a tutti'. Chi può davvero leggere il codice?",
-      "marco": "Tecnicamente nessuno senza conoscenze pregresse: sulla blockchain il codice esiste come file WASM – codice macchina compilato. Ecco perché i progetti seri pubblicano il loro codice sorgente Rust originale su GitHub affinché gli esperti possano verificarlo. Nel Stellar Lab esiste persino una funzione 'Build Verified': controlla se l'hash WASM sulla chain corrisponde al codice sorgente pubblicato. Senza codice sorgente pubblicato vedi solo l'impronta del codice – ma non quello che fa davvero."
+      "marco": "Tecnicamente nessuno senza conoscenze pregresse: sulla blockchain il codice esiste come file WASM – codice macchina compilato che quasi nessuno riesce a leggere direttamente. Ecco perché i progetti seri pubblicano il loro codice sorgente Rust originale su GitHub. Nel Stellar Lab e nell'Explorer puoi riconoscere i contratti verificati da un badge verde accanto all'ID del contratto – spesso con l'etichetta \"Build Verified\". Significa: lo sviluppatore ha inviato un'attestazione GitHub e l'hash WASM sulla chain è stato confrontato con il codice sorgente pubblicato. Se non vedi quel badge, vedi solo l'impronta del codice – ma non quello che fa davvero."
     },
     "oracleProblem": {
-      "lumio": "E se il compratore semplicemente non conferma di aver ricevuto la casa – il denaro rimane bloccato per sempre?",
+      "lumio": "E se il compratore non conferma di aver ricevuto la casa – come dovrebbe saperlo lo smart contract? Ha bisogno di un [[Oracle|oracle]], no?",
       "marco": "Questo si chiama il problema dell'oracle! I contratti intelligenti non possono recuperare dati esterni. Serve un intermediario – il cosiddetto [[Oracle|oracle]] – che porta dati del mondo reale nella blockchain. Ad esempio, un oracle notarile che conferma il trasferimento di proprietà.",
       "glossary_btn": "Cos'è un Oracle?"
     },
     "housePurchase": {
-      "lumio1": "Immagina: compro una casa. Metto 500 XLM in un contratto escrow. Il venditore li riceve non appena il notaio conferma.",
-      "marco1": "Esempio perfetto! Il contratto escrow trattiene il denaro finché la condizione non è soddisfatta. Nessuno può semplicemente prenderlo. Solo il contratto decide.",
+      "lumio1": "Immagina: il compratore deposita il prezzo di acquisto concordato in uno smart contract. Il venditore riceve il denaro non appena il notaio conferma il trasferimento.",
+      "marco1": "Esempio perfetto! Lo smart contract trattiene il denaro finché la condizione non è soddisfatta. Nessuno può semplicemente prenderlo. Solo il contratto decide.",
       "lumio2": "Ma allora il problema dell'oracle riappare – chi dice al contratto che il notaio ha davvero firmato?",
       "marco2": "Esatto! Serve un oracle affidabile. Questo è il nodo cruciale degli smart contract per beni reali. Le reti Ethereum usano soluzioni come Chainlink – funziona, ma lo rende più complesso.",
       "lumio3": "Ed è legalmente riconosciuto? Posso comprare la mia casa tramite un contratto intelligente?",
-      "marco3": "Non ancora davvero. In molti paesi, i tribunali non riconoscono i contratti intelligenti come accordi giuridicamente vincolanti. La tecnologia c'è – ma il diritto deve ancora adeguarsi."
+      "marco3": "Non ancora davvero. In molti paesi, i tribunali non riconoscono i contratti intelligenti come accordi giuridicamente vincolanti. La tecnologia c'è – ma il diritto deve ancora adeguarsi.",
+      "transition": "I contratti intelligenti sono particolarmente adatti per accordi più complessi – per esempio un acquisto immobiliare in cui devono essere soddisfatte molte condizioni contemporaneamente."
     },
     "futureVision": {
       "marco1": "Quando i registri catastali, le banche e le autorità collegheranno i loro sistemi direttamente alla blockchain – e questo sta già accadendo in alcuni paesi – non sarà più necessario un oracle per quei dati. Il contratto legge direttamente l'iscrizione nel registro fondiario. Allora la teoria diventa realtà: comprare una casa senza notaio, senza attese, senza controlli manuali. Non siamo ancora del tutto lì – ma la direzione è chiara.",
       "lumio": "Significa che quello che stiamo imparando qui non è musica del futuro – sta accadendo adesso.",
-      "marco2": "Esatto. Due esempi dal mondo reale: l'Estonia protegge i suoi registri statali – catasto, testamenti, registro delle imprese – con la tecnologia blockchain dal 2012. Non come esperimento, ma in produzione reale. La Svizzera va ancora oltre: la SIX Digital Exchange (SDX), regolamentata dalla FINMA, negozia e custodisce titoli tokenizzati sulla blockchain. La Banca Nazionale Svizzera regola già transazioni in denaro digitale della banca centrale. Oltre 1 miliardo di franchi sono stati già elaborati in questo modo.",
-      "note": "L'Estonia usa una blockchain privata (KSI di Guardtime), non una pubblica come Stellar – ma il principio è lo stesso: dati che nessuno può manipolare."
+      "marco2": "Esatto. Due esempi concreti: Dal 2012, l'Estonia registra crittograficamente ogni modifica ai registri pubblici – catasto, testamenti, registro delle imprese, fascicoli giudiziari. I dati stessi non sono archiviati nella blockchain, ma qualsiasi manipolazione viene rilevata immediatamente. Non come esperimento, ma in produzione. La Svizzera va ancora oltre: SIX Digital Exchange (SDX), regolamentata dalla FINMA, negocia e custodisce titoli tokenizzati su blockchain. La Banca Nazionale Svizzera liquida già transazioni in moneta digitale della banca centrale. Oltre 1 miliardo di franchi sono già stati elaborati in questo modo.",
+      "note": "L'Estonia usa la blockchain per la verifica dell'integrità: ogni modifica a un registro viene registrata crittograficamente ed è verificabile – la manipolazione viene rilevata. Una blockchain privata (KSI di Guardtime), non pubblica come Stellar – ma il principio è lo stesso."
     }
   },
   "chapter9": {

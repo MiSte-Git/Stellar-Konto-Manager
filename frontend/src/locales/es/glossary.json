@@ -573,7 +573,7 @@
     "title": "Operación"
   },
   "oracle": {
-    "desc": "Por defecto, las blockchains están aisladas del mundo exterior—un smart contract no puede obtener por sí mismo el precio de Bitcoin o el tipo EUR/USD. Los oráculos resuelven esto llevando datos externos fiables a la blockchain. Servicios conocidos: Chainlink o Pyth Network. Sin oráculos, muchas aplicaciones DeFi como protocolos de lending o activos sintéticos no serían posibles.",
+    "desc": "Por defecto, las blockchains están aisladas del mundo exterior—un smart contract no puede obtener por sí mismo el precio de Bitcoin o el tipo EUR/USD. Los oráculos resuelven esto llevando datos externos fiables a la blockchain. Servicios conocidos: Chainlink o Pyth Network. Sin oráculos, muchas aplicaciones DeFi como protocolos de lending o activos sintéticos no serían posibles. Ejemplos concretos: precio XLM/USD (para aplicaciones Stellar), datos meteorológicos (para seguros agrícolas), estado de entrega (para contratos comerciales), firma notarial (para transacciones inmobiliarias), resultados electorales (para votaciones descentralizadas).",
     "original": "Oracle",
     "short": "Un servicio que lleva datos del mundo real (precios, clima, etc.) a smart contracts en blockchain.",
     "title": "Oracle"

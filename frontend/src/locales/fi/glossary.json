@@ -304,7 +304,7 @@
     "title": "Oracle",
     "original": "Oracle",
     "short": "Palvelu, joka tuo ulkomaailman dataa (esim. hinnat, sää) smart contracteille.",
-    "desc": "Lohkoketjut ovat oletuksena eristettyjä—smart contract ei voi itse hakea Bitcoin‑hintaa tai EUR/USD‑kurssia. Oraclet ratkaisevat tämän tuomalla luotettavaa ulkoista dataa lohkoketjuun. Tunnettuja oraclet‑palveluita ovat Chainlink ja Pyth Network. Ilman oracleta monet DeFi‑sovellukset kuten lainaprotokollat tai synteettiset varat eivät olisi mahdollisia."
+    "desc": "Lohkoketjut ovat oletuksena eristettyjä—smart contract ei voi itse hakea Bitcoin‑hintaa tai EUR/USD‑kurssia. Oraclet ratkaisevat tämän tuomalla luotettavaa ulkoista dataa lohkoketjuun. Tunnettuja oraclet‑palveluita ovat Chainlink ja Pyth Network. Ilman oracleta monet DeFi‑sovellukset kuten lainaprotokollat tai synteettiset varat eivät olisi mahdollisia. Konkreettisia esimerkkejä: XLM/USD‑kurssi (Stellar‑sovelluksille), säätiedot (satovakuutuksille), toimituksen tila (kauppasopimuksille), notaarin allekirjoitus (kiinteistökauppoihin), vaalitulokset (hajautetuille äänestyksilleen)."
   },
   "cex": {
     "title": "Keskitetty pörssi",

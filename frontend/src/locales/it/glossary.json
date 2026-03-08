@@ -304,7 +304,7 @@
     "title": "Oracle",
     "original": "Oracle",
     "short": "Un servizio che porta dati del mondo reale (prezzi, meteo, ecc.) ai smart contract.",
-    "desc": "Le blockchain sono isolate dal mondo esterno—un smart contract non può recuperare da solo il prezzo di Bitcoin o il cambio EUR/USD. Gli oracoli risolvono questo problema fornendo dati esterni affidabili alla blockchain. Servizi noti: Chainlink o Pyth Network. Senza oracoli, molte applicazioni DeFi come i protocolli di lending o gli asset sintetici non sarebbero possibili."
+    "desc": "Le blockchain sono isolate dal mondo esterno—un smart contract non può recuperare da solo il prezzo di Bitcoin o il cambio EUR/USD. Gli oracoli risolvono questo problema fornendo dati esterni affidabili alla blockchain. Servizi noti: Chainlink o Pyth Network. Senza oracoli, molte applicazioni DeFi come i protocolli di lending o gli asset sintetici non sarebbero possibili. Esempi concreti: prezzo XLM/USD (per le applicazioni Stellar), dati meteo (per le assicurazioni agricole), stato di consegna (per i contratti commerciali), firma notarile (per le transazioni immobiliari), risultati elettorali (per le votazioni decentralizzate)."
   },
   "cex": {
     "title": "Exchange centralizzato",

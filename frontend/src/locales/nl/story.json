@@ -721,7 +721,7 @@
     "cta_continue": "Verder",
     "scene1": {
       "section": "Scène 1 – Het probleem",
-      "dialog1": "Lumio, ik ben het zat. Vorige week betaalde een koper me niet – gewoon verdwenen na levering.",
+      "dialog1": "Lumio, ik ben het zat. Vorige week had ik een koper – ik heb geleverd, en daarna betaalde hij gewoon niet.",
       "dialog2": "Ik begrijp het. En als je vooruitbetaling vraagt, vertrouwt de koper je niet.",
       "dialog3": "Precies dat dilemma! Koper vertrouwt verkoper niet. Verkoper vertrouwt koper niet.",
       "dialog4": "Wat als geen van beiden de ander hoefde te vertrouwen?",
@@ -734,7 +734,7 @@
       "dialog2": "Natuurlijk, maar dat is gewoon een machine.",
       "dialog3": "Een smart contract is hetzelfde – maar voor geld en voorwaarden. 'Als Marco levert EN koper bevestigt → dan automatisch betalen.' De code beslist, niet een mens.",
       "dialog4": "En wie controleert de code?",
-      "dialog5": "Niemand – het draait op de blockchain. Onveranderlijk, voor iedereen zichtbaar.",
+      "dialog5": "Niemand – het draait op de blockchain. Onveranderlijk.",
       "glossary_btn": "Wat is een Smart Contract?"
     },
     "scene3": {
@@ -743,7 +743,7 @@
       "dialog2": "Ik heb zoiets gehoord van Ethereum. Is het hetzelfde?",
       "dialog3": "Vergelijkbaar concept, maar Stellar is sneller, goedkoper en klaar voor eenvoudige taken.",
       "dialog4": "Klinkt beter.",
-      "dialog5": "Voor jouw gebruik? Absoluut. Soroban is technisch volwassen voor precies dit soort scenario's.",
+      "dialog5": "Stel je voor dat je het geld bij een neutrale bewaarder kunt storten – die het alleen vrijgeeft als beide partijen tevreden zijn. Dat noemen we precies escrow.",
       "card": {
         "label": "Vergelijking",
         "title": "Ethereum vs. Stellar / Soroban",
@@ -759,17 +759,18 @@
     "scene4": {
       "section": "Scène 4 – Testnet Escrow",
       "pre": {
-        "dialog1": "Laten we dit meteen uitproberen! Ik maak een echte escrow op het testnet.",
-        "dialog2": "Een echte? Hoe?",
-        "dialog3": "Stellar heeft een ingebouwde functie hiervoor: Claimable Balances. Je vergrendelt geld onder voorwaarden – de koper kan het alleen claimen als beide partijen hun voorwaarde hebben vervuld.",
-        "dialog4": "Dus we vergrendelen nu echt testnet-geld?"
+        "dialog1": "Laten we dit meteen uitproberen! Zo dadelijk laat ik je zien hoe – maar eerst leg ik je uit wat escrow eigenlijk betekent.",
+        "dialog2": "Een wat?",
+        "dialog3": "Stellar heeft dit bewaardersprincipe direct in het protocol ingebouwd – als native functie genaamd Claimable Balance. Een bedrag in XLM of tokens wordt vergrendeld en gekoppeld aan een voorwaarde: wie mag het claimen? Vanaf wanneer? En tot wanneer kan de afzender het terugvorderen? Pas als aan de voorwaarde is voldaan, kan de ontvanger het geld opnemen.",
+        "dialog4": "Dus we vergrendelen nu testnet-geld?"
       },
       "action": {
         "label": "Escrow Aanmaken",
-        "description": "Vergrendelt 1 XLM op het testnet voor een demokoper. De koper kan het meteen claimen; jij kunt het na 1 uur terugvorderen.",
+        "description": "Vergrendelt 50 XLM op het testnet voor een demo-koper. De koper kan ze direct claimen; jij kunt ze na 1 uur terugvorderen als er niets gebeurt.",
         "success": "Escrow succesvol aangemaakt!",
         "escrow_id_label": "Claimable Balance ID",
-        "testnet_note": "Alleen testnet – geen echt geld."
+        "testnet_note": "Alleen testnet – geen echt geld.",
+        "locked_note": "De 50 XLM zijn nu vergrendeld – noch jij noch de koper kan ze zomaar opnemen. Het geld wacht op de voorwaarde."
       },
       "post": {
         "dialog1": "Dat was eenvoudiger dan ik dacht!",
@@ -854,7 +855,7 @@
     },
     "subtitle": "Escrow en slimme contracten – ingebouwd vs. programmeerbaar",
     "escrowVsSmartContract": {
-      "marco": "Wacht even – voordat we dit uitproberen, wil ik kort uitleggen waarom we hier geen slim contract nodig hebben. Stellar heeft veel veelgebruikte toepassingen direct in het protocol ingebouwd – als native functies, zonder programmeren, zonder WASM. Claimable Balance is precies zo'n native functie: het werkt via standaard transacties met ingebouwde voorwaarden, direct op de blockchain. Soroban – echte slimme contracten – komt pas in beeld als het protocol iets niet standaard kan. Dan schrijf je willekeurige code in Rust en deploy je die. Laten we eerst de ingebouwde escrow-functie bekijken – en dan echte slimme contracten."
+      "marco": "Precies – en het kernpunt: Claimable Balance is geen slim contract. Het is een native protocolfeature die Stellar standaard meelevt. Geen Rust-code, geen WASM, geen programmeren. Escrow, airdrops, voorwaardelijke betalingen – dat alles werkt met ingebouwde functies. Soroban heb je pas nodig als het protocol zelf iets niet kan. Dan schrijf je je eigen code en deploy je die. Twee duidelijk gescheiden tools."
     },
     "sorobanExample": {
       "intro": "En nu laat ik je een echt voorbeeld zien – een slim contract dat echt op de blockchain leeft.",
@@ -862,7 +863,9 @@
       "contract_label": "Hello World Contract – Testnet",
       "explorer_btn": "Bekijk in Explorer ↗",
       "source_label": "Openbare broncode",
-      "message": "Serieuze projecten publiceren hun broncode. Je kunt daarmee controleren of de code op de blockchain echt overeenkomt met wat op GitHub staat."
+      "message": "Serieuze projecten publiceren hun broncode. Je kunt daarmee controleren of de code op de blockchain echt overeenkomt met wat op GitHub staat.",
+      "fallback_note": "Contract niet gevonden? Testnet-contracten worden regelmatig gereset.",
+      "fallback_btn": "Alle huidige contracten bekijken ↗"
     },
     "escrowExplanation": "Een escrow is als een kluis bij een neutrale partij. Het geld wordt gestort en pas vrijgegeven als een voorwaarde is vervuld – bijvoorbeeld wanneer het werk is voltooid. Geen van beide partijen kan er zomaar bij.",
     "contractVerification": {
@@ -871,26 +874,27 @@
     },
     "codeTransparency": {
       "lumio": "Maar wacht – je zei 'onveranderbaar, voor iedereen zichtbaar'. Wie kan de code dan echt lezen?",
-      "marco": "Technisch gezien niemand zonder voorkennis: op de blockchain bestaat de code als een WASM-bestand – gecompileerde machinecode. Daarom publiceren serieuze projecten hun originele Rust-broncode op GitHub zodat experts het kunnen controleren. In de Stellar Lab is er zelfs een 'Build Verified'-functie: die controleert of de WASM-hash op de chain overeenkomt met de gepubliceerde broncode. Zonder gepubliceerde broncode zie je alleen de vingerafdruk van de code – maar niet wat hij werkelijk doet."
+      "marco": "Technisch gezien niemand zonder voorkennis: op de blockchain bestaat de code als een WASM-bestand – gecompileerde machinecode die bijna niemand direct kan lezen. Daarom publiceren serieuze projecten hun originele Rust-broncode op GitHub. In de Stellar Lab en Explorer herken je geverifieerde contracten aan een groen badge naast het contract-ID – vaak aangeduid als \"Build Verified\". Dit betekent: de ontwikkelaar heeft een GitHub-attestatie ingediend en de WASM-hash op de chain is vergeleken met de gepubliceerde broncode. Zie je dat badge niet, dan zie je alleen de vingerafdruk van de code – maar niet wat hij werkelijk doet."
     },
     "oracleProblem": {
-      "lumio": "En als de koper gewoon niet bevestigt dat ze het huis hebben ontvangen – blijft het geld dan voor altijd geblokkeerd?",
+      "lumio": "En als de koper niet bevestigt dat hij het huis heeft ontvangen – hoe zou het slimme contract dat moeten weten? Het heeft toch een [[Oracle|oracle]] nodig, of niet?",
       "marco": "Dat heet het oracle-probleem! Slimme contracten kunnen geen externe gegevens ophalen. Je hebt een tussenpersoon nodig – een zogenaamde [[Oracle|oracle]] – die echte gegevens in de blockchain brengt. Bijvoorbeeld een notaris-oracle die de eigendomsoverdracht bevestigt.",
       "glossary_btn": "Wat is een Oracle?"
     },
     "housePurchase": {
-      "lumio1": "Stel je voor: ik koop een huis. Ik zet 500 XLM in een escrow-contract. De verkoper krijgt ze zodra de notaris bevestigt.",
-      "marco1": "Perfect voorbeeld! Het escrow-contract houdt het geld vast tot de voorwaarde is vervuld. Niemand kan het zomaar nemen. Alleen het contract beslist.",
+      "lumio1": "Stel je voor: de koper stort de overeengekomen koopprijs in een slim contract. De verkoper ontvangt het geld zodra de notaris de overdracht bevestigt.",
+      "marco1": "Perfect voorbeeld! Het slimme contract houdt het geld vast totdat de voorwaarde is vervuld. Niemand kan het zomaar pakken. Alleen het contract beslist.",
       "lumio2": "Maar dan verschijnt het oracle-probleem weer – wie vertelt het contract dat de notaris echt heeft getekend?",
       "marco2": "Precies! Je hebt een betrouwbare oracle nodig. Dat is het kernpunt bij slimme contracten voor echte activa. Ethereum-netwerken gebruiken oplossingen zoals Chainlink – het werkt, maar maakt het complexer.",
       "lumio3": "En is dat ook wettelijk erkend? Kan ik mijn huis kopen via een slim contract?",
-      "marco3": "Nog niet echt. In de meeste landen erkennen rechtbanken slimme contracten niet als juridisch bindende overeenkomsten. De technologie is er – maar de wet moet nog bijbenen."
+      "marco3": "Nog niet echt. In de meeste landen erkennen rechtbanken slimme contracten niet als juridisch bindende overeenkomsten. De technologie is er – maar de wet moet nog bijbenen.",
+      "transition": "Slimme contracten zijn bijzonder geschikt voor complexere overeenkomsten – zoals een huisaankoop waarbij tegelijkertijd aan veel voorwaarden moet worden voldaan."
     },
     "futureVision": {
       "marco1": "Wanneer kadasters, banken en autoriteiten hun systemen direct met de blockchain verbinden – en dit gebeurt al in sommige landen – is er geen oracle meer nodig voor die gegevens. Het contract leest de kadasterinschrijving rechtstreeks. Dan wordt theorie werkelijkheid: een huis kopen zonder notaris, zonder wachten, zonder handmatige controles. We zijn er nog niet helemaal – maar de richting is duidelijk.",
       "lumio": "Dat betekent dat wat we hier leren geen toekomstmuziek is – het gebeurt nu.",
-      "marco2": "Precies. Twee voorbeelden uit de echte wereld: Estland beveiligt zijn staatsregisters – kadaster, testamenten, handelsregister – al sinds 2012 met blockchain-technologie. Niet als experiment, maar in productieomgeving. Zwitserland gaat nog verder: de SIX Digital Exchange (SDX), gereguleerd door FINMA, handelt en bewaart getokeniseerde effecten op de blockchain. De Zwitserse Nationale Bank verwerkt al transacties in digitaal centraal bankgeld. Er is al meer dan 1 miljard frank op deze manier verwerkt.",
-      "note": "Estland gebruikt een private blockchain (KSI van Guardtime), geen publieke zoals Stellar – maar het principe is hetzelfde: data die niemand kan manipuleren."
+      "marco2": "Precies. Twee voorbeelden uit de echte wereld: Sinds 2012 legt Estland elke wijziging in overheidsregisters – kadaster, testamenten, handelsregister, rechtbankdossiers – cryptografisch vast. De data zelf staat niet in de blockchain, maar elke manipulatie wordt onmiddellijk opgemerkt. Niet als experiment, maar in productie. Zwitserland gaat nog verder: de SIX Digital Exchange (SDX), gereguleerd door FINMA, handelt en bewaart getokeniseerde effecten op de blockchain. De Zwitserse Nationale Bank verrekent transacties al in digitaal centraal bankgeld. Meer dan 1 miljard frank is al op die manier verwerkt.",
+      "note": "Estland gebruikt blockchain voor integriteitscontrole: elke wijziging in een register wordt cryptografisch vastgelegd en is verifieerbaar – manipulatie wordt herkend. Een private blockchain (KSI van Guardtime), geen publieke zoals Stellar – maar het principe is hetzelfde."
     }
   },
   "chapter9": {
