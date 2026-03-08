@@ -413,7 +413,11 @@ export default function TestnetAction({
       // alreadyDone flipping true before the success block renders
     } catch (err) {
       console.error(`[TestnetAction:${actionId}]`, err);
-      setError(err.message || "Unbekannter Fehler");
+      const horizonCodes = err?.response?.data?.extras?.result_codes;
+      const detail = horizonCodes
+        ? JSON.stringify(horizonCodes)
+        : err.message || "Unbekannter Fehler";
+      setError(detail);
       setStatus("error");
       onError?.(err);
     }

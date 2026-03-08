@@ -470,6 +470,10 @@ function buildScenes({ keypair, createKeypair, completeChapter, goToChapter, t }
     {
       sectionTitle: t("chapter1.keypairTitle"),
       type: "narrator",
+      // TRANSLATOR NOTE (keypairNarrator): The IBAN analogy is primarily used in European
+      // countries. For non-European locales please adapt to a regionally appropriate
+      // equivalent (e.g. "bank account number", "routing number + account number", etc.).
+      // Russia/RU already uses "номер банковского счёта" instead of IBAN.
       lines: t("chapter1.keypairNarrator"),
     },
     {

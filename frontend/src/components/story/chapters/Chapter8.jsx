@@ -3,18 +3,20 @@
  * Thema: Soroban – Stellars Smart Contract Plattform
  */
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import ExplorerConfirmDialog from "../ExplorerConfirmDialog";
 import { useTranslation } from "react-i18next";
 import { useStory } from "../StoryContext";
 import SceneRunner from "../SceneRunner";
 import ChapterSummary from "../ChapterSummary";
 import * as StellarSdk from "@stellar/stellar-sdk";
+import { useSettings } from "../../../utils/useSettings";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const BUYER_ADDRESS = "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37";
 const HORIZON_TESTNET = "https://horizon-testnet.stellar.org";
-const ACTION_ID = "ch8-escrow";
+const ACTION_ID = "ch8-escrow-v2";
 const ESCROW_XP = 80;
 const CHOICE_XP = 25;
 const SUMMARY_XP = 175;
@@ -31,7 +33,7 @@ async function createClaimableBalance(keypair) {
     .addOperation(
       StellarSdk.Operation.createClaimableBalance({
         asset: StellarSdk.Asset.native(),
-        amount: "1",
+        amount: "500",
         claimants: [
           new StellarSdk.Claimant(
             BUYER_ADDRESS,
@@ -68,6 +70,12 @@ function EscrowActionScene({ next, t, keypair, addXP, completeAction, hasComplet
   const [balanceId, setBalanceId] = useState(null);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [confirmUrl, setConfirmUrl] = useState(null);
+  const { explorers, defaultExplorer: defaultExplorerKey } = useSettings();
+  const activeExplorer = explorers.find((e) => e.key === defaultExplorerKey) ?? explorers[0];
+  const explorerBase = activeExplorer?.testnetUrlTemplate
+    ?.replace(/\/(account|address)\/\{address\}$/, "")
+    ?? "https://stellar.expert/explorer/testnet";
 
   async function handleRun() {
     if (!keypair) {
@@ -205,11 +213,17 @@ function EscrowActionScene({ next, t, keypair, addXP, completeAction, hasComplet
                   {copied ? "✓" : "📋"}
                 </motion.button>
               </div>
-              <a href={`https://stellar.expert/explorer/testnet/claimable-balance/${balanceId}`}
-                target="_blank" rel="noopener noreferrer"
-                style={{ fontSize: "11px", color: "rgba(61,214,255,0.6)", textDecoration: "none" }}>
-                → Explorer ↗
-              </a>
+              <button
+                onClick={() => setConfirmUrl(`${explorerBase}/claimable-balance/${balanceId}`)}
+                style={{
+                  background: "rgba(160,196,255,0.1)", border: "1px solid rgba(160,196,255,0.3)",
+                  borderRadius: "5px", padding: "2px 8px", color: "#a0c4ff",
+                  fontSize: "11px", fontWeight: 600, fontFamily: "inherit",
+                  cursor: "pointer", whiteSpace: "nowrap", alignSelf: "flex-start",
+                }}
+              >
+                Im Explorer ansehen ↗
+              </button>
             </div>
           )}
 
@@ -228,6 +242,16 @@ function EscrowActionScene({ next, t, keypair, addXP, completeAction, hasComplet
           </motion.button>
         </motion.div>
       )}
+
+      <AnimatePresence>
+        {confirmUrl && (
+          <ExplorerConfirmDialog
+            url={confirmUrl}
+            explorerName={activeExplorer?.name}
+            onClose={() => setConfirmUrl(null)}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -680,6 +704,160 @@ function SorobanInfoCard({ next, t }) {
   );
 }
 
+// ─── OracleGlossaryScene ──────────────────────────────────────────────────────
+
+function OracleGlossaryScene({ next, t, openGlossary }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      style={{ display: "flex", flexDirection: "column", gap: "14px" }}
+    >
+      <div style={{
+        display: "flex", gap: "10px", alignItems: "flex-start",
+        background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: "0 14px 14px 14px", padding: "12px 14px",
+      }}>
+        <span style={{ fontSize: "20px", flexShrink: 0 }}>☕</span>
+        <p style={{ margin: 0, fontSize: "14px", color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>
+          {t("chapter8.oracleProblem.marco")}
+        </p>
+      </div>
+
+      <motion.button
+        initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+        whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+        onClick={() => openGlossary("oracle")}
+        style={{
+          background: "rgba(61,214,255,0.08)", border: "1.5px solid rgba(61,214,255,0.25)",
+          borderRadius: "12px", padding: "11px 16px", textAlign: "left",
+          cursor: "pointer", fontFamily: "inherit", width: "100%",
+          display: "flex", alignItems: "center", gap: "10px",
+        }}
+      >
+        <span style={{ fontSize: "18px" }}>📖</span>
+        <span style={{ fontSize: "13px", fontWeight: 600, color: "#3DD6FF" }}>
+          {t("chapter8.oracleProblem.glossary_btn")}
+        </span>
+        <span style={{ marginLeft: "auto", fontSize: "16px", color: "rgba(61,214,255,0.5)" }}>?</span>
+      </motion.button>
+
+      <motion.button
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+        whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={next}
+        style={{
+          background: "rgba(255,255,255,0.07)", border: "1.5px solid rgba(255,255,255,0.15)",
+          borderRadius: "12px", padding: "12px 24px", fontSize: "14px", fontWeight: 600,
+          color: "rgba(255,255,255,0.7)", fontFamily: "inherit", cursor: "pointer",
+        }}
+      >
+        {t("chapter8.cta_continue")} →
+      </motion.button>
+    </motion.div>
+  );
+}
+
+// ─── SorobanExampleScene ──────────────────────────────────────────────────────
+
+const HELLO_CONTRACT_ID = "CACDYF3CYMJEJTIVFESQYZTN67GO2R5D5IUABTCUG3HXQSRXCSOROBAN";
+const SOROBAN_EXAMPLES_REPO = "github.com/stellar/soroban-examples";
+
+function SorobanExampleScene({ next, t }) {
+  const [confirmUrl, setConfirmUrl] = useState(null);
+  const { explorers, defaultExplorer: defaultExplorerKey } = useSettings();
+  const activeExplorer = explorers.find((e) => e.key === defaultExplorerKey) ?? explorers[0];
+  const explorerBase = activeExplorer?.testnetUrlTemplate
+    ?.replace(/\/(account|address)\/\{address\}$/, "")
+    ?? "https://stellar.expert/explorer/testnet";
+  const contractUrl = `${explorerBase}/contract/${HELLO_CONTRACT_ID}`;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      style={{ display: "flex", flexDirection: "column", gap: "14px" }}
+    >
+      <div style={{
+        display: "flex", gap: "10px", alignItems: "flex-start",
+        background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: "0 14px 14px 14px", padding: "12px 14px",
+      }}>
+        <span style={{ fontSize: "20px", flexShrink: 0 }}>☕</span>
+        <p style={{ margin: 0, fontSize: "14px", color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>
+          {t("chapter8.sorobanExample.marco")}
+        </p>
+      </div>
+
+      {/* Contract card */}
+      <div style={{
+        background: "rgba(61,214,255,0.06)", border: "1.5px solid rgba(61,214,255,0.2)",
+        borderRadius: "14px", padding: "14px 16px",
+        display: "flex", flexDirection: "column", gap: "8px",
+      }}>
+        <p style={{ margin: 0, fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#3DD6FF" }}>
+          {t("chapter8.sorobanExample.contract_label")}
+        </p>
+        <code style={{
+          fontSize: "10px", color: "#3DD6FF", wordBreak: "break-all",
+          background: "rgba(61,214,255,0.05)", borderRadius: "6px", padding: "6px 8px",
+        }}>
+          {HELLO_CONTRACT_ID}
+        </code>
+        <button
+          onClick={() => setConfirmUrl(contractUrl)}
+          style={{
+            background: "rgba(160,196,255,0.1)", border: "1px solid rgba(160,196,255,0.3)",
+            borderRadius: "5px", padding: "2px 8px", color: "#a0c4ff",
+            fontSize: "11px", fontWeight: 600, fontFamily: "inherit",
+            cursor: "pointer", alignSelf: "flex-start",
+          }}
+        >
+          {t("chapter8.sorobanExample.explorer_btn")}
+        </button>
+      </div>
+
+      {/* Source reference */}
+      <div style={{
+        background: "rgba(72,199,142,0.06)", border: "1px solid rgba(72,199,142,0.2)",
+        borderRadius: "12px", padding: "12px 16px",
+        display: "flex", flexDirection: "column", gap: "6px",
+      }}>
+        <p style={{ margin: 0, fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "#48c78e" }}>
+          {t("chapter8.sorobanExample.source_label")}
+        </p>
+        <code style={{ fontSize: "12px", color: "rgba(255,255,255,0.55)", wordBreak: "break-all" }}>
+          {SOROBAN_EXAMPLES_REPO}
+        </code>
+        <p style={{ margin: 0, fontSize: "13px", color: "rgba(255,255,255,0.75)", lineHeight: 1.55 }}>
+          {t("chapter8.sorobanExample.message")}
+        </p>
+      </div>
+
+      <motion.button
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+        whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={next}
+        style={{
+          background: "rgba(255,255,255,0.07)", border: "1.5px solid rgba(255,255,255,0.15)",
+          borderRadius: "12px", padding: "12px 24px", fontSize: "14px", fontWeight: 600,
+          color: "rgba(255,255,255,0.7)", fontFamily: "inherit", cursor: "pointer",
+        }}
+      >
+        {t("chapter8.cta_continue")} →
+      </motion.button>
+
+      <AnimatePresence>
+        {confirmUrl && (
+          <ExplorerConfirmDialog
+            url={confirmUrl}
+            explorerName={activeExplorer?.name}
+            onClose={() => setConfirmUrl(null)}
+          />
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
 // ─── GlossaryScene ────────────────────────────────────────────────────────────
 
 function GlossaryScene({ next, t, openGlossary }) {
@@ -735,7 +913,7 @@ function GlossaryScene({ next, t, openGlossary }) {
 
 // ─── Scene builder ─────────────────────────────────────────────────────────────
 
-function buildScenes({ openGlossary, keypair, addXP, completeAction, hasCompleted, completeChapter, t }) {
+function buildScenes({ openGlossary, keypair, addXP, completeAction, hasCompleted, completeChapter, goToChapter, t }) {
   return [
     // ── SZENE 1 – Das Problem ────────────────────────────────────────────────
     { type: "dialog", sectionTitle: t("chapter8.scene1.section"), speaker: "marco", lines: [t("chapter8.scene1.dialog1")] },
@@ -765,6 +943,9 @@ function buildScenes({ openGlossary, keypair, addXP, completeAction, hasComplete
     { type: "dialog", speaker: "marco", lines: [t("chapter8.scene4.pre.dialog2")] },
     { type: "dialog", speaker: "lumio", lines: [t("chapter8.scene4.pre.dialog3")] },
     { type: "dialog", speaker: "marco", lines: [t("chapter8.scene4.pre.dialog4")] },
+    // ── Escrow vs. Smart Contract Erklärung ──────────────────────────────────
+    { type: "dialog", speaker: "marco", lines: [t("chapter8.escrowVsSmartContract.marco")] },
+    { type: "dialog", speaker: "lumio", lines: [t("chapter8.escrowExplanation")] },
     {
       type: "custom",
       render: (next) => (
@@ -774,6 +955,38 @@ function buildScenes({ openGlossary, keypair, addXP, completeAction, hasComplete
     },
     { type: "dialog", speaker: "marco", lines: [t("chapter8.scene4.post.dialog1")] },
     { type: "dialog", speaker: "lumio", lines: [t("chapter8.scene4.post.dialog2")] },
+
+    // ── Code-Transparenz: WASM, GitHub, Build Verified ────────────────────────
+    // Source: https://github.com/stellar/soroban-examples
+    { type: "dialog", speaker: "lumio", lines: [t("chapter8.codeTransparency.lumio")] },
+    { type: "dialog", speaker: "marco", lines: [t("chapter8.codeTransparency.marco")] },
+
+    // ── Oracle Problem ────────────────────────────────────────────────────────
+    { type: "dialog", speaker: "lumio", lines: [t("chapter8.oracleProblem.lumio")] },
+    { type: "custom", render: (next) => <OracleGlossaryScene next={next} t={t} openGlossary={openGlossary} /> },
+
+    // ── Hauskauf-Beispiel ─────────────────────────────────────────────────────
+    { type: "dialog", speaker: "lumio", lines: [t("chapter8.housePurchase.lumio1")] },
+    { type: "dialog", speaker: "marco", lines: [t("chapter8.housePurchase.marco1")] },
+    { type: "dialog", speaker: "lumio", lines: [t("chapter8.housePurchase.lumio2")] },
+    { type: "dialog", speaker: "marco", lines: [t("chapter8.housePurchase.marco2")] },
+    { type: "dialog", speaker: "lumio", lines: [t("chapter8.housePurchase.lumio3")] },
+    { type: "dialog", speaker: "marco", lines: [t("chapter8.housePurchase.marco3")] },
+
+    // ── Zukunftsvision: Behörden on-chain ─────────────────────────────────────
+    // Sources:
+    // Estland: https://e-estonia.com/blockchain-security-control-for-government-registers/
+    // Schweiz SDX: https://www.sdx.com/
+    // Schweiz wCBDC: https://www.six-group.com/en/newsroom/media-releases/2024/20240620-six-helvetia-pilot.html
+    { type: "dialog", speaker: "marco", lines: [t("chapter8.futureVision.marco1")] },
+    { type: "dialog", speaker: "lumio", lines: [t("chapter8.futureVision.lumio")] },
+    { type: "dialog", speaker: "marco", lines: [t("chapter8.futureVision.marco2")] },
+    { type: "dialog", speaker: "lumio", lines: [t("chapter8.futureVision.note")] },
+
+    // ── Echtes Soroban-Beispiel: Hello World Contract ─────────────────────────
+    // Source: https://github.com/stellar/soroban-examples
+    { type: "dialog", speaker: "marco", lines: [t("chapter8.sorobanExample.intro")] },
+    { type: "custom", render: (next) => <SorobanExampleScene next={next} t={t} /> },
 
     // ── SZENE 5 – Die Zukunft der Verträge ───────────────────────────────────
     { type: "dialog", sectionTitle: t("chapter8.scene5.section"), speaker: "lumio", lines: [t("chapter8.scene5.intro.dialog1")] },
@@ -856,8 +1069,8 @@ function buildScenes({ openGlossary, keypair, addXP, completeAction, hasComplete
             t("chapter8.summary.learning5"),
           ]}
           xpEarned={SUMMARY_XP}
-          onNext={() => { addXP(SUMMARY_XP); completeChapter(8); next(); }}
-          isLast={true}
+          onNext={() => { addXP(SUMMARY_XP); completeChapter(8); goToChapter(9); }}
+          isLast={false}
         />
       ),
     },
@@ -869,12 +1082,12 @@ function buildScenes({ openGlossary, keypair, addXP, completeAction, hasComplete
 export default function Chapter8() {
   const {
     openGlossary, setShowChapterSelect, keypair,
-    addXP, completeAction, hasCompleted, completeChapter,
+    addXP, completeAction, hasCompleted, completeChapter, goToChapter,
   } = useStory();
   const { t } = useTranslation("story");
 
   const scenes = buildScenes({
-    openGlossary, keypair, addXP, completeAction, hasCompleted, completeChapter, t,
+    openGlossary, keypair, addXP, completeAction, hasCompleted, completeChapter, goToChapter, t,
   });
 
   return (

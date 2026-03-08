@@ -48,10 +48,10 @@
     "title": "Creador de mercado automatizado"
   },
   "anchor": {
-    "desc": "Un anclaje es una empresa que conecta dinero real, como euros o dólares, con Stellar. Por ejemplo, le das euros al anclaje y recibes a cambio un token de euro en Stellar.",
+    "title": "Anchor",
     "original": "Anchor",
-    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "title": "Ancla"
+    "short": "Proveedor financiero licenciado que conecta dinero fiat con Stellar.",
+    "desc": "Un Anchor es un proveedor de servicios financieros autorizado que conecta dinero real con la red Stellar. Acepta dinero fiat (p.ej. por transferencia bancaria) y emite tokens en Stellar a cambio – y viceversa. Esto se llama On-Ramp (dinero dentro) y Off-Ramp (dinero fuera).\n\nAnchors conocidos en Stellar:\n- Kado – USD, EUR, CHF (Global)\n- MoneyGram – retiros/depósitos en efectivo via USDC en 170+ países\n- Tempo – EUR stablecoin, Europa\n- Bitso – MXN, USD, Latinoamérica\n- Circle – USDC y EURC, en todo el mundo\n\nActualmente hay más de 60 Anchors en Stellar que cubren más de 170 monedas."
   },
   "asset": {
     "desc": "En Stellar, un token se llama activo. Un activo siempre está vinculado a una cuenta emisora. Por ejemplo, una cuenta puede emitir un token en euros, y este token en euros se considera un activo.",

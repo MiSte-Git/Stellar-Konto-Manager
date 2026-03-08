@@ -225,8 +225,8 @@
   "anchor": {
     "title": "Ancora",
     "original": "Anchor",
-    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "Un'ancora è un'azienda che connette denaro reale, come euro o dollari, con Stellar. Ad esempio, tu dai all'ancora euro e ricevi in cambio un token in euro su Stellar."
+    "short": "Fornitore di servizi finanziari autorizzato che collega la moneta fiat a Stellar.",
+    "desc": "Un Anchor è un fornitore di servizi finanziari autorizzato che collega denaro reale alla rete Stellar. Accetta denaro fiat (p.es. tramite bonifico bancario) e in cambio emette token su Stellar – e viceversa. Questo si chiama On-Ramp (denaro in entrata) e Off-Ramp (denaro in uscita).\n\nAnchor noti su Stellar:\n- Kado – USD, EUR, CHF (globale)\n- MoneyGram – depositi/prelievi in contanti tramite USDC in 170+ paesi\n- Tempo – EUR stablecoin, Europa\n- Bitso – MXN, USD, America Latina\n- Circle – USDC e EURC, in tutto il mondo\n\nAttualmente esistono oltre 60 Anchor su Stellar che coprono più di 170 valute."
   },
   "exchange": {
     "title": "Borsa valori",

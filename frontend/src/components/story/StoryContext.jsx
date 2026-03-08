@@ -1,5 +1,36 @@
-import React, { createContext, useContext, useReducer, useCallback } from "react";
+import React, { createContext, useContext, useReducer, useCallback, useEffect } from "react";
 import * as StellarSdk from "@stellar/stellar-sdk";
+
+// ─── localStorage Persistence ──────────────────────────────────────────────────
+
+const STORAGE_KEY = "stellar_story_progress";
+const TOTAL_CHAPTERS = 9;
+
+function loadSavedProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return {};
+    const saved = JSON.parse(raw);
+    const result = {};
+    if (typeof saved.currentChapter === "number") result.currentChapter = saved.currentChapter;
+    if (typeof saved.sceneIndex === "number") result.sceneIndex = saved.sceneIndex;
+    if (typeof saved.showChapterSelect === "boolean") result.showChapterSelect = saved.showChapterSelect;
+    if (Array.isArray(saved.chaptersCompleted)) result.chaptersCompleted = saved.chaptersCompleted;
+    if (typeof saved.xp === "number") result.xp = saved.xp;
+    if (typeof saved.hearts === "number") result.hearts = saved.hearts;
+    if (Array.isArray(saved.completedActions)) result.completedActions = saved.completedActions;
+    if (saved.actionResults && typeof saved.actionResults === "object") result.actionResults = saved.actionResults;
+    if (saved.accountFunded === true) result.accountFunded = true;
+    if (typeof saved.keypairSecret === "string" && saved.keypairSecret) {
+      try {
+        result.keypair = StellarSdk.Keypair.fromSecret(saved.keypairSecret);
+      } catch {}
+    }
+    return result;
+  } catch {
+    return {};
+  }
+}
 
 // ─── Initial State ─────────────────────────────────────────────────────────────
 
@@ -13,6 +44,9 @@ const initialState = {
 
   // Scene-level navigation (shared with SceneRunner)
   sceneIndex: 0,
+
+  // Line-level navigation within a dialog scene (shared with DialogBox + StoryNavButtons)
+  dialogLineIndex: 0,
 
   // Saved action results (actionId → result) for alreadyDone re-use
   actionResults: {},
@@ -46,6 +80,7 @@ const A = {
   SET_PHASE: "SET_PHASE",
   SET_CHAPTER_SELECT: "SET_CHAPTER_SELECT",
   SET_SCENE_INDEX: "SET_SCENE_INDEX",
+  SET_DIALOG_LINE_INDEX: "SET_DIALOG_LINE_INDEX",
   SET_ACTION_RESULT: "SET_ACTION_RESULT",
   CREATE_KEYPAIR: "CREATE_KEYPAIR",
   SET_FUNDED: "SET_FUNDED",
@@ -65,7 +100,7 @@ const A = {
 function storyReducer(state, { type, payload }) {
   switch (type) {
     case A.SET_CHAPTER:
-      return { ...state, currentChapter: payload, currentScene: 0, sceneIndex: 0, phase: "story", showChapterSelect: false };
+      return { ...state, currentChapter: payload, currentScene: 0, sceneIndex: 0, dialogLineIndex: 0, phase: "story", showChapterSelect: false };
 
     case A.SET_SCENE:
       return { ...state, currentScene: payload };
@@ -74,10 +109,17 @@ function storyReducer(state, { type, payload }) {
       return { ...state, phase: payload };
 
     case A.SET_CHAPTER_SELECT:
-      return { ...state, showChapterSelect: payload };
+      // Reset dialog line position when resuming a chapter (payload=false),
+      // so DialogBox never shows with a stale out-of-bounds lineIndex.
+      return payload === false
+        ? { ...state, showChapterSelect: false, dialogLineIndex: 0 }
+        : { ...state, showChapterSelect: true };
 
     case A.SET_SCENE_INDEX:
-      return { ...state, sceneIndex: Math.max(0, payload) };
+      return { ...state, sceneIndex: Math.max(0, payload), dialogLineIndex: 0 };
+
+    case A.SET_DIALOG_LINE_INDEX:
+      return { ...state, dialogLineIndex: Math.max(0, payload) };
 
     case A.SET_ACTION_RESULT:
       return { ...state, actionResults: { ...state.actionResults, [payload.id]: payload.result } };
@@ -134,7 +176,32 @@ function storyReducer(state, { type, payload }) {
 const StoryContext = createContext(null);
 
 export function StoryProvider({ children, onExit }) {
-  const [state, dispatch] = useReducer(storyReducer, initialState);
+  const [state, dispatch] = useReducer(storyReducer, null, () => ({
+    ...initialState,
+    ...loadSavedProgress(),
+  }));
+
+  // ── Persist progress to localStorage ─────────────────────────────────────────
+
+  useEffect(() => {
+    // When a chapter is completed (but not the last), advance the saved position
+    // to the next chapter so the user resumes there on return.
+    const chapterDone = state.chaptersCompleted.includes(state.currentChapter)
+      && state.currentChapter < TOTAL_CHAPTERS;
+    const toSave = {
+      currentChapter: chapterDone ? state.currentChapter + 1 : state.currentChapter,
+      sceneIndex: chapterDone ? 0 : state.sceneIndex,
+      showChapterSelect: chapterDone ? true : state.showChapterSelect,
+      chaptersCompleted: state.chaptersCompleted,
+      xp: state.xp,
+      hearts: state.hearts,
+      completedActions: state.completedActions,
+      actionResults: state.actionResults,
+      accountFunded: state.accountFunded,
+      keypairSecret: state.keypair?.secret(),
+    };
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave)); } catch {}
+  }, [state]);
 
   // ── Navigation ───────────────────────────────────────────────────────────────
 
@@ -144,6 +211,7 @@ export function StoryProvider({ children, onExit }) {
   const setPhase = useCallback((p) => dispatch({ type: A.SET_PHASE, payload: p }), []);
   const setShowChapterSelect = useCallback((v) => dispatch({ type: A.SET_CHAPTER_SELECT, payload: v }), []);
   const setSceneIndex = useCallback((n) => dispatch({ type: A.SET_SCENE_INDEX, payload: n }), []);
+  const setDialogLineIndex = useCallback((n) => dispatch({ type: A.SET_DIALOG_LINE_INDEX, payload: n }), []);
 
   // ── Keypair ───────────────────────────────────────────────────────────────────
 
@@ -183,7 +251,10 @@ export function StoryProvider({ children, onExit }) {
     dispatch({ type: A.SET_PHASE, payload: "summary" });
   }, []);
 
-  const reset = useCallback(() => dispatch({ type: A.RESET }), []);
+  const reset = useCallback(() => {
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+    dispatch({ type: A.RESET });
+  }, []);
 
   // ── Glossary ──────────────────────────────────────────────────────────────────
 
@@ -199,6 +270,7 @@ export function StoryProvider({ children, onExit }) {
     setPhase,
     setShowChapterSelect,
     setSceneIndex,
+    setDialogLineIndex,
     createKeypair,
     setFunded,
     recordChoice,

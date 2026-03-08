@@ -101,16 +101,25 @@ function ConfirmDialog({ text, cancelLabel, confirmLabel, onCancel, onConfirm })
  * Reads onExit, sceneIndex, setSceneIndex, setShowChapterSelect from StoryContext.
  */
 export default function StoryNavButtons() {
-  const { onExit, setShowChapterSelect } = useStory();
+  const { onExit, sceneIndex, setSceneIndex, setShowChapterSelect, dialogLineIndex, setDialogLineIndex } = useStory();
   const { t } = useTranslation("story");
-  const [confirm, setConfirm] = useState(null); // null | "home" | "chapters" | "back"
+  const [confirm, setConfirm] = useState(null); // null | "home" | "chapters"
 
   const handleConfirm = () => {
     const action = confirm;
     setConfirm(null);
     if (action === "home") onExit();
     else if (action === "chapters") setShowChapterSelect(true);
-    else if (action === "back") navTo("discover");
+  };
+
+  const handleBack = () => {
+    if (dialogLineIndex > 0) {
+      setDialogLineIndex(dialogLineIndex - 1);
+    } else if (sceneIndex > 0) {
+      setSceneIndex(sceneIndex - 1);
+    } else {
+      setShowChapterSelect(true);
+    }
   };
 
   const btnBase = {
@@ -157,11 +166,11 @@ export default function StoryNavButtons() {
           📖 {t("nav.to_chapters", "Kapitel")}
         </motion.button>
 
-        {/* ← Zurück → /discover */}
+        {/* ← Zurück: eine Szene zurück, oder zur Kapitelauswahl */}
         <motion.button
           whileHover={{ borderColor: "rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.8)" }}
           whileTap={{ scale: 0.96 }}
-          onClick={() => setConfirm("back")}
+          onClick={handleBack}
           style={btnBase}
         >
           ←

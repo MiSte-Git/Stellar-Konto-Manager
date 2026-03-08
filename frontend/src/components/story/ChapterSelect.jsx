@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useStory } from "./StoryContext";
 import { buildPath } from "../../utils/basePath.js";
+import { TOTAL_CHAPTERS, ADVANCED_CHAPTERS, CHAPTER_REGISTRY } from "./storyChapters.config.js";
 
 function navTo(subpath) {
   try {
@@ -11,50 +12,118 @@ function navTo(subpath) {
   } catch { /* noop */ }
 }
 
-const TOTAL_CHAPTERS = 9;
-const ADVANCED_CHAPTERS = [8, 9];
-
-// ─── Chapter registry (tested flag) ──────────────────────────────────────────
-const CHAPTER_REGISTRY = {
-  1: { tested: true },
-  2: { tested: true },
-  3: { tested: false },
-  4: { tested: false },
-  5: { tested: false },
-  6: { tested: false },
-  7: { tested: false },
-  8: { tested: false },
-  9: { tested: false },
-};
-
 const isDev =
   typeof window !== "undefined" &&
   (window.location.hostname === "localhost" || import.meta.env.DEV);
 
-const UNTESTED_TOOLTIP = {
-  de: "Noch nicht getestet. Bitte Story durchspielen und danach 'tested: true' im Chapter-Registry setzen.",
-  en: "Not yet tested. Please play through the story and then set 'tested: true' in the chapter registry.",
-  es: "Aún no probado. Por favor juega la historia completa y luego establece 'tested: true' en el registro de capítulos.",
-  fi: "Ei vielä testattu. Pelaa tarina läpi ja aseta sitten 'tested: true' luvun rekisterissä.",
-  fr: "Pas encore testé. Veuillez jouer toute l'histoire puis définir 'tested: true' dans le registre des chapitres.",
-  hr: "Još nije testirano. Molimo odigrajte priču i zatim postavite 'tested: true' u registru poglavlja.",
-  it: "Non ancora testato. Gioca tutta la storia e poi imposta 'tested: true' nel registro dei capitoli.",
-  nl: "Nog niet getest. Speel het verhaal door en zet daarna 'tested: true' in het hoofdstukregister.",
-  ru: "Ещё не протестировано. Пройдите историю и затем установите 'tested: true' в реестре глав.",
-};
+// ─── Hint Dialog ──────────────────────────────────────────────────────────────
+
+function ChapterHintDialog({ t, onContinue, onGoTo1 }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onContinue}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.65)",
+        backdropFilter: "blur(4px)",
+        zIndex: 200,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "16px",
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ type: "spring", stiffness: 300, damping: 28 }}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "linear-gradient(160deg, #1a1a2e, #0f1a2e)",
+          border: "1px solid rgba(255,255,255,0.12)",
+          borderRadius: "16px",
+          padding: "24px",
+          maxWidth: "340px",
+          width: "100%",
+          fontFamily: "'Nunito', 'Poppins', sans-serif",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+          <span style={{ fontSize: "22px", flexShrink: 0 }}>💡</span>
+          <p style={{ margin: 0, fontSize: "14px", color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>
+            {t("chapterHint")}
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button
+            onClick={onContinue}
+            style={{
+              flex: 1,
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: "8px",
+              padding: "10px 12px",
+              color: "rgba(255,255,255,0.6)",
+              fontSize: "13px",
+              fontFamily: "inherit",
+              cursor: "pointer",
+            }}
+          >
+            {t("chapterHintContinue")}
+          </button>
+          <button
+            onClick={onGoTo1}
+            style={{
+              flex: 1,
+              background: "rgba(255,217,61,0.15)",
+              border: "1.5px solid #FFD93D",
+              borderRadius: "8px",
+              padding: "10px 12px",
+              color: "#FFD93D",
+              fontSize: "13px",
+              fontWeight: 700,
+              fontFamily: "inherit",
+              cursor: "pointer",
+            }}
+          >
+            {t("chapterHintGoTo1")}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ─── ChapterSelect ────────────────────────────────────────────────────────────
 
 export default function ChapterSelect() {
-  const { t, i18n } = useTranslation("story");
+  const { t } = useTranslation("story");
   const { currentChapter, chaptersCompleted, sceneIndex, goToChapter, setShowChapterSelect, onExit } = useStory();
   const [hoveredBadge, setHoveredBadge] = useState(null);
+  const [pendingChapter, setPendingChapter] = useState(null);
+
+  const ch1Done = chaptersCompleted.includes(1);
+
+  const proceed = (n) => {
+    if (n === currentChapter) setShowChapterSelect(false);
+    else goToChapter(n);
+  };
 
   const handleSelect = (n) => {
-    if (n === currentChapter) {
-      // Resume current chapter
-      setShowChapterSelect(false);
-    } else {
-      goToChapter(n);
+    // Show hint when chapter 1 not yet finished and user picks n > 1
+    if (n > 1 && !ch1Done) {
+      setPendingChapter(n);
+      return;
     }
+    proceed(n);
   };
 
   return (
@@ -69,7 +138,7 @@ export default function ChapterSelect() {
         padding: "40px 20px",
       }}
     >
-      {/* Nav row: HOME → / | BACK → /discover */}
+      {/* Nav row */}
       <div style={{ display: "flex", gap: "8px", alignSelf: "flex-start" }}>
         <motion.button
           whileHover={{ borderColor: "rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.8)" }}
@@ -139,30 +208,26 @@ export default function ChapterSelect() {
           const n = i + 1;
           const isCompleted = chaptersCompleted.includes(n);
           const isCurrent = n === currentChapter;
-          const isLocked = n > 1 && !chaptersCompleted.includes(n - 1) && !isCurrent;
           const isAdvanced = ADVANCED_CHAPTERS.includes(n);
+          const duration = CHAPTER_REGISTRY[n]?.durationMinutes;
 
           return (
             <motion.button
               key={n}
-              whileHover={!isLocked ? { scale: 1.02, x: 2 } : {}}
-              whileTap={!isLocked ? { scale: 0.98 } : {}}
-              onClick={() => !isLocked && handleSelect(n)}
+              whileHover={{ scale: 1.02, x: 2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => handleSelect(n)}
               style={{
                 background: isCurrent
                   ? "rgba(255,217,61,0.12)"
                   : isCompleted
                   ? "rgba(72,199,142,0.08)"
-                  : isLocked
-                  ? "rgba(255,255,255,0.03)"
                   : "rgba(255,255,255,0.05)",
                 border: `1.5px solid ${
                   isCurrent
                     ? "rgba(255,217,61,0.5)"
                     : isCompleted
                     ? "rgba(72,199,142,0.4)"
-                    : isLocked
-                    ? "rgba(255,255,255,0.07)"
                     : "rgba(255,255,255,0.13)"
                 }`,
                 borderRadius: "14px",
@@ -171,9 +236,8 @@ export default function ChapterSelect() {
                 display: "flex",
                 alignItems: "center",
                 gap: "14px",
-                cursor: isLocked ? "default" : "pointer",
+                cursor: "pointer",
                 fontFamily: "inherit",
-                opacity: isLocked ? 0.4 : 1,
                 transition: "all 0.25s",
                 width: "100%",
                 textAlign: "left",
@@ -197,16 +261,29 @@ export default function ChapterSelect() {
                 color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : "rgba(255,255,255,0.5)",
                 flexShrink: 0,
               }}>
-                {isCompleted ? "✓" : isLocked ? "🔒" : n}
+                {isCompleted ? "✓" : n}
               </div>
 
               {/* Title + status */}
               <div style={{ flex: 1, minWidth: 0 }}>
+                {/* "Kapitel N" label */}
+                <div style={{
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: isCurrent ? "rgba(255,217,61,0.6)" : isCompleted ? "rgba(72,199,142,0.55)" : "rgba(255,255,255,0.3)",
+                  marginBottom: "1px",
+                }}>
+                  {t("chapterLabel")} {n}
+                </div>
+
+                {/* Title + Advanced badge */}
                 <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px", flexWrap: "wrap" }}>
                   <span style={{
                     fontSize: "14px",
                     fontWeight: 700,
-                    color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : isLocked ? "rgba(255,255,255,0.4)" : "white",
+                    color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : "white",
                   }}>
                     {t(`chapter${n}.title`, `Kapitel ${n}`)}
                   </span>
@@ -221,6 +298,18 @@ export default function ChapterSelect() {
                     </span>
                   )}
                 </div>
+
+                {/* Subtitle */}
+                <div style={{
+                  fontSize: "11px",
+                  color: "rgba(255,255,255,0.42)",
+                  marginBottom: "3px",
+                  fontStyle: "italic",
+                }}>
+                  {t(`chapter${n}.subtitle`)}
+                </div>
+
+                {/* Status + duration */}
                 <div style={{
                   fontSize: "11px",
                   color: isCurrent
@@ -228,25 +317,31 @@ export default function ChapterSelect() {
                     : isCompleted
                     ? "rgba(72,199,142,0.7)"
                     : "rgba(255,255,255,0.35)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
                 }}>
-                  {isLocked
-                    ? t("nav.chapter_locked", "Gesperrt")
-                    : isCurrent && sceneIndex > 0
-                    ? t("nav.chapter_current", "Weiter spielen")
-                    : isCurrent
-                    ? t("nav.chapter_start", "Starten")
-                    : isCompleted
-                    ? t("nav.chapter_completed", "Abgeschlossen")
-                    : t("nav.chapter_start", "Starten")}
+                  <span>
+                    {isCurrent && sceneIndex > 0
+                      ? t("nav.chapter_current", "Weiter spielen")
+                      : isCurrent
+                      ? t("nav.chapter_start", "Starten")
+                      : isCompleted
+                      ? t("nav.chapter_completed", "Abgeschlossen")
+                      : t("nav.chapter_start", "Starten")}
+                  </span>
+                  {duration && (
+                    <span style={{ opacity: 0.6 }}>
+                      · {t("nav.duration_min", "~{{count}} Min.", { count: duration })}
+                    </span>
+                  )}
                 </div>
               </div>
 
               {/* Arrow */}
-              {!isLocked && (
-                <span style={{ fontSize: "16px", color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : "rgba(255,255,255,0.3)" }}>
-                  ›
-                </span>
-              )}
+              <span style={{ fontSize: "16px", color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : "rgba(255,255,255,0.3)" }}>
+                ›
+              </span>
 
               {/* Dev: untested badge (top-left, localhost/dev only) */}
               {isDev && !CHAPTER_REGISTRY[n]?.tested && (
@@ -285,7 +380,7 @@ export default function ChapterSelect() {
                           boxShadow: "0 4px 16px rgba(0,0,0,0.45)",
                         }}
                       >
-                        {UNTESTED_TOOLTIP[i18n.language] ?? UNTESTED_TOOLTIP.en}
+                        {t("dev.untestedHint")}
                       </motion.div>
                     )}
                   </div>
@@ -295,6 +390,17 @@ export default function ChapterSelect() {
           );
         })}
       </div>
+
+      {/* Chapter 1 hint dialog */}
+      <AnimatePresence>
+        {pendingChapter !== null && (
+          <ChapterHintDialog
+            t={t}
+            onContinue={() => { const n = pendingChapter; setPendingChapter(null); proceed(n); }}
+            onGoTo1={() => { setPendingChapter(null); goToChapter(1); }}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

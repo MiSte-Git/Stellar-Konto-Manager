@@ -225,8 +225,8 @@
   "anchor": {
     "title": "Anchor",
     "original": "Anchor",
-    "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
-    "desc": "An anchor is a company that connects real money, such as euros or dollars, with Stellar. For example, you give the anchor euros and receive a euro token on Stellar in return."
+    "short": "Licensed financial service provider connecting fiat money to Stellar.",
+    "desc": "An Anchor is a licensed financial service provider that connects real money to the Stellar network. It accepts fiat money (e.g. via bank transfer) and issues tokens on Stellar in return – and vice versa. This is called On-Ramp (money in) and Off-Ramp (money out).\n\nWell-known Anchors on Stellar:\n- Kado – USD, EUR, CHF (Global)\n- MoneyGram – cash in/out via USDC in 170+ countries\n- Tempo – EUR stablecoin, Europe\n- Bitso – MXN, USD, Latin America\n- Circle – USDC and EURC, worldwide\n\nCurrently there are over 60 Anchors on Stellar covering more than 170 currencies."
   },
   "exchange": {
     "title": "Stock exchange",
