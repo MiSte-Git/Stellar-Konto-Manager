@@ -300,7 +300,8 @@
       "scan_payments_fast": "Scannen van betalingen (schnell) – pagina {{page}}…",
       "scan_tx": "Transacties scannen",
       "sync": "Synchroniseer betalingen…",
-      "txFetch": "Lade Transaktionsdetails…"
+      "txFetch": "Lade Transaktionsdetails…",
+      "done": "Klaar"
     },
     "wrongMemos": {
       "failed": "Fout bij het laden van betalingen met onjuiste/leeg memo."

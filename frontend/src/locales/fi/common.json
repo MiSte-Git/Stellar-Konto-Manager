@@ -300,7 +300,8 @@
       "scan_payments_fast": "Skannaa maksut (schnell) – sivu {{page}}…",
       "scan_tx": "Skannaa tapahtumat",
       "sync": "Synkronoi maksut…",
-      "txFetch": "Ladataan tapahtumatietoja…"
+      "txFetch": "Ladataan tapahtumatietoja…",
+      "done": "Valmis"
     },
     "wrongMemos": {
       "failed": "Virhe maksujen latauksessa virheellisellä/tyhjällä muistutuksella."

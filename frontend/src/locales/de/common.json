@@ -300,7 +300,8 @@
       "scan_payments_fast": "Scanne Zahlungen (schnell) – Seite {{page}}…",
       "scan_tx": "Transaktionen scannen",
       "sync": "Synchronisiere Zahlungen…",
-      "txFetch": "Lade Transaktionsdetails…"
+      "txFetch": "Lade Transaktionsdetails…",
+      "done": "Fertig"
     },
     "wrongMemos": {
       "failed": "Fehler beim Laden der Zahlungen mit falschem/leerem Memo."
@@ -383,10 +384,10 @@
   },
   "payment": {
     "send": {
-    "title": "Zahlung senden",
-    "recipient": "Empfänger",
-    "recipientRefresh": "Empfänger aktualisieren",
-    "amount": "Betrag",
+      "title": "Zahlung senden",
+      "recipient": "Empfänger",
+      "recipientRefresh": "Empfänger aktualisieren",
+      "amount": "Betrag",
       "asset": "Asset",
       "memo": "Memo",
       "memoType": "Memo Typ",

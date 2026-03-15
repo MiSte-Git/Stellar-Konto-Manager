@@ -300,7 +300,8 @@
       "scan_payments_fast": "Scanne Zahlungen (schnell) – Seite {{page}}…",
       "scan_tx": "Scan transactions",
       "sync": "Synchronisiere Zahlungen…",
-      "txFetch": "Lade Transaktionsdetails…"
+      "txFetch": "Lade Transaktionsdetails…",
+      "done": "Done"
     },
     "wrongMemos": {
       "failed": "Error loading payments with incorrect/empty memo."

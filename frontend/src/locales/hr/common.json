@@ -300,7 +300,8 @@
       "scan_payments_fast": "Skeniraj plaćanja (schnell) – stranica {{page}}…",
       "scan_tx": "Skeniraj transakcije",
       "sync": "Sinkroniziraj plaćanja…",
-      "txFetch": "Učitavam podatke o transakcijama…"
+      "txFetch": "Učitavam podatke o transakcijama…",
+      "done": "Gotovo"
     },
     "wrongMemos": {
       "failed": "Pogreška pri učitavanju uplata s netočnom ili praznom napomenom."

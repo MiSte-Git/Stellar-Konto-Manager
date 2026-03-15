@@ -108,6 +108,7 @@ export default function ChapterSelect() {
   const { t } = useTranslation("story");
   const { currentChapter, chaptersCompleted, sceneIndex, goToChapter, setShowChapterSelect, onExit } = useStory();
   const [hoveredBadge, setHoveredBadge] = useState(null);
+  const [hoveredComingSoon, setHoveredComingSoon] = useState(null);
   const [pendingChapter, setPendingChapter] = useState(null);
 
   const ch1Done = chaptersCompleted.includes(1);
@@ -209,22 +210,28 @@ export default function ChapterSelect() {
           const isCompleted = chaptersCompleted.includes(n);
           const isCurrent = n === currentChapter;
           const isAdvanced = ADVANCED_CHAPTERS.includes(n);
+          const isComingSoon = CHAPTER_REGISTRY[n]?.tested === false;
           const duration = CHAPTER_REGISTRY[n]?.durationMinutes;
 
           return (
             <motion.button
               key={n}
-              whileHover={{ scale: 1.02, x: 2 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => handleSelect(n)}
+              whileHover={isComingSoon ? {} : { scale: 1.02, x: 2 }}
+              whileTap={isComingSoon ? {} : { scale: 0.98 }}
+              onClick={isComingSoon ? undefined : () => handleSelect(n)}
+              disabled={isComingSoon}
               style={{
-                background: isCurrent
+                background: isComingSoon
+                  ? "rgba(255,255,255,0.03)"
+                  : isCurrent
                   ? "rgba(255,217,61,0.12)"
                   : isCompleted
                   ? "rgba(72,199,142,0.08)"
                   : "rgba(255,255,255,0.05)",
                 border: `1.5px solid ${
-                  isCurrent
+                  isComingSoon
+                    ? "rgba(255,255,255,0.07)"
+                    : isCurrent
                     ? "rgba(255,217,61,0.5)"
                     : isCompleted
                     ? "rgba(72,199,142,0.4)"
@@ -236,11 +243,12 @@ export default function ChapterSelect() {
                 display: "flex",
                 alignItems: "center",
                 gap: "14px",
-                cursor: "pointer",
+                cursor: isComingSoon ? "default" : "pointer",
                 fontFamily: "inherit",
                 transition: "all 0.25s",
                 width: "100%",
                 textAlign: "left",
+                opacity: isComingSoon ? 0.45 : 1,
               }}
             >
               {/* Chapter number badge */}
@@ -338,10 +346,49 @@ export default function ChapterSelect() {
                 </div>
               </div>
 
-              {/* Arrow */}
-              <span style={{ fontSize: "16px", color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : "rgba(255,255,255,0.3)" }}>
-                ›
-              </span>
+              {/* Arrow / Coming Soon badge */}
+              {isComingSoon ? (
+                <div
+                  style={{ position: "relative", flexShrink: 0 }}
+                  onMouseEnter={() => setHoveredComingSoon(n)}
+                  onMouseLeave={() => setHoveredComingSoon(null)}
+                >
+                  <span style={{
+                    display: "inline-flex", alignItems: "center",
+                    fontSize: "9px", fontWeight: 700, letterSpacing: "0.04em",
+                    color: "rgba(255,255,255,0.4)",
+                    background: "rgba(255,255,255,0.07)",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    borderRadius: "5px", padding: "2px 6px",
+                    userSelect: "none", whiteSpace: "nowrap",
+                  }}>
+                    {t("comingSoon")}
+                  </span>
+                  {hoveredComingSoon === n && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.15 }}
+                      style={{
+                        position: "absolute", bottom: "calc(100% + 6px)", right: 0,
+                        background: "rgba(15,15,25,0.97)",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        borderRadius: "8px", padding: "7px 10px",
+                        fontSize: "11px", color: "rgba(255,255,255,0.6)",
+                        whiteSpace: "nowrap", zIndex: 50,
+                        pointerEvents: "none",
+                        boxShadow: "0 4px 16px rgba(0,0,0,0.45)",
+                      }}
+                    >
+                      {t("comingSoon")}
+                    </motion.div>
+                  )}
+                </div>
+              ) : (
+                <span style={{ fontSize: "16px", color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : "rgba(255,255,255,0.3)" }}>
+                  ›
+                </span>
+              )}
 
               {/* Dev: untested badge (top-left, localhost/dev only) */}
               {isDev && !CHAPTER_REGISTRY[n]?.tested && (

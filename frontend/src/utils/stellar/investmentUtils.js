@@ -62,30 +62,34 @@ export async function fetchGroupfundByMemo({
     let pagesSeen = 0;
 
     let lastOldest = '';
-    while (true) {
+    let stopEarly = false;
+    while (!stopEarly) {
       if (signal?.aborted) throw new Error('fetch.groupfund.aborted');
       const recs = page?.records || [];
       if (recs.length === 0) { break; }
       for (const rec of recs) {
         const type = rec.type || '';
-        // Optionaler Zeitfilter (ISO vergleichbar)
-        if (toISO && rec.created_at && rec.created_at >= toISO) {
-          // zu neu für das Fenster, überspringen
-          continue;
-        }
+        const created = rec.created_at || '';
+        // Obere Grenze: zu neu → überspringen (Seite weiter scannen, DESC-Reihenfolge)
+        if (toISO && created && created >= toISO) continue;
+        // Untere Grenze: zu alt → Abbruch (alle folgenden Records + Seiten sind noch älter)
+        if (fromISO && created && created < fromISO) { stopEarly = true; break; }
         // Nur ausgehende Zahlungen vom eigenen Konto berücksichtigen
         const fromAddr = rec.from || (type === 'create_account' ? rec.funder : null);
         if (fromAddr !== publicKey) continue;
         // Nur native (XLM) bzw. create_account
         const isNative = rec.asset_type === 'native' || type === 'create_account';
         if (!isNative) continue;
-        // Memo aus eingebetteter TX lesen
-        const memo = rec?.transaction?.memo != null ? String(rec.transaction.memo).trim() : '';
+        // Memo aus eingebetteter TX lesen (mit Fallback auf direkte Felder)
+        const memoRaw = rec?.transaction?.memo != null
+          ? String(rec.transaction.memo)
+          : (rec?.transaction_memo != null ? String(rec.transaction_memo) : '');
+        const memo = memoRaw.trim();
         if (!memo) continue;
 
         const amountXlm = parseFloat(type === 'create_account' ? (rec.starting_balance || '0') : (rec.amount || '0')) || 0;
         const txHash = rec.transaction_hash || '';
-        const createdAt = rec.created_at || null;
+        const createdAt = created || null;
         let destAddr = null;
         if (type === 'create_account') destAddr = rec.account || null; else destAddr = rec.to || rec.to_muxed || null;
 
@@ -105,8 +109,7 @@ export async function fetchGroupfundByMemo({
       const oldestOnPage = recs[recs.length - 1]?.created_at || '';
       lastOldest = oldestOnPage;
       onProgress?.({ phase: 'scan_payments', page: pagesSeen, elapsedMs: Date.now() - t0, oldestOnPage });
-      // Frühabbruch, wenn Zeitfenster erreicht (älteste Seite ist älter als fromISO)
-      if (fromISO && oldestOnPage && oldestOnPage < fromISO) break;
+      if (stopEarly) break;
       if (pagesSeen >= limitPages) break;
 
       // Cursor bestimmen und nächste Seite holen (robust gegen Horizon-Limits)
@@ -128,8 +131,13 @@ export async function fetchGroupfundByMemo({
       }
     }
 
-    // Fallback: Wenn früh gestoppt und wir den fromISO-Rand noch nicht erreicht haben → Tx-First Pfad
-    if (pagesSeen < limitPages && (!fromISO || (lastOldest && lastOldest >= fromISO))) {
+    // Fallback TX-First:
+    //  a) Standard: Seiten nicht erschöpft und fromISO-Rand noch nicht erreicht (fehlende Seiten)
+    //  b) Sicherheitsnetz: Payments-Pfad fand 0 Gruppen (z.B. join lieferte keine Memos) → TX-Pfad als Fallback
+    if (
+      (pagesSeen < limitPages && (!fromISO || (lastOldest && lastOldest >= fromISO))) ||
+      memoGroups.size === 0
+    ) {
       onProgress?.({ phase: 'fallback_tx', page: pagesSeen, oldestOnPage: lastOldest });
       // 1) Transaktionen rückwärts scannen und Memos einsammeln
       let txPage = await withRetry(() => server.transactions().forAccount(publicKey).order('desc').limit(200).call(), { signal });

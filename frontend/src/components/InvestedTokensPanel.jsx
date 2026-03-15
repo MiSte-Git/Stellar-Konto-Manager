@@ -112,7 +112,13 @@ export default function InvestedTokensPanel({ publicKey }) {
       if (view === 'memo') {
         const mkISO = (d, end) => {
           if (!d) return undefined;
-          return end ? `${d}T23:59:59Z` : `${d}T00:00:00Z`;
+          if (end) {
+            // Mitternacht des Folgetags → alle Sekunden des toDate sind inkludiert
+            const dt = new Date(`${d}T00:00:00Z`);
+            dt.setUTCDate(dt.getUTCDate() + 1);
+            return dt.toISOString();
+          }
+          return `${d}T00:00:00Z`;
         };
         const fromISO = mkISO(fromDate, false);
         const toISO = mkISO(toDate, true);
@@ -135,6 +141,7 @@ export default function InvestedTokensPanel({ publicKey }) {
       clearInterval(hb);
       if (heartbeatRef.current) { try { clearInterval(heartbeatRef.current); } catch { /* noop */ } heartbeatRef.current = null; }
       setLoading(false);
+      setProgressState((s) => s.phase !== 'idle' ? { ...s, phase: 'done' } : s);
     }
   };
 
@@ -266,7 +273,7 @@ export default function InvestedTokensPanel({ publicKey }) {
       {(loading || (view === 'memo' && progressState.elapsedMs > 0)) && (
         <div className="mt-2">
           <ProgressBar
-            progress={null}
+            progress={loading ? null : 1}
             phase={progressState.phase || (view === 'memo' ? 'scan_payments' : 'scan_tx')}
             page={progressState.page}
             etaMs={progressState.etaMs}
