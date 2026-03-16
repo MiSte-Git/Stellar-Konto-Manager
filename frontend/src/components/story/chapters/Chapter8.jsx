@@ -344,9 +344,9 @@ function FutureListScene({ next, t }) {
         whileTap={{ scale: 0.97 }}
         onClick={next}
         style={{
-          background: "linear-gradient(135deg, #3DD6FF, #48c78e)", border: "none",
-          borderRadius: "14px", padding: "14px 32px", fontSize: "15px", fontWeight: 700,
-          color: "#1a1a2e", fontFamily: "inherit", cursor: "pointer",
+          background: "rgba(255,255,255,0.07)", border: "1.5px solid rgba(255,255,255,0.15)",
+          borderRadius: "12px", padding: "12px 24px", fontSize: "14px", fontWeight: 600,
+          color: "rgba(255,255,255,0.7)", fontFamily: "inherit", cursor: "pointer",
         }}
       >
         {t("chapter8.cta_continue")} →
@@ -693,9 +693,9 @@ function SorobanInfoCard({ next, t }) {
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
         whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={next}
         style={{
-          background: "linear-gradient(135deg, #3DD6FF, #48c78e)", border: "none",
-          borderRadius: "14px", padding: "14px 32px", fontSize: "15px", fontWeight: 700,
-          color: "#1a1a2e", fontFamily: "inherit", cursor: "pointer",
+          background: "rgba(255,255,255,0.07)", border: "1.5px solid rgba(255,255,255,0.15)",
+          borderRadius: "12px", padding: "12px 24px", fontSize: "14px", fontWeight: 600,
+          color: "rgba(255,255,255,0.7)", fontFamily: "inherit", cursor: "pointer",
         }}
       >
         {t("chapter8.scene3.card.cta")}

@@ -978,5 +978,11 @@
     "original": "Keypair",
     "short": "Yhteenkuuluva Public Key ja Secret Key -yhdistelmä.",
     "desc": "Avainpari koostuu kahdesta yhteenkuuluvasta avaimesta: Public Key (osoitteesi) ja Secret Key (salasanasi). Molemmat avaimet kuuluvat yhteen ja muodostavat kokonaisuuden. Public Key jaetaan julkisesti – Secret Key pidetään aina itsellä."
+  },
+  "fba": {
+    "title": "Federated Byzantine Agreement",
+    "original": "Federated Byzantine Agreement",
+    "short": "SCP:n taustalla oleva konsensusperiaate: jokainen validaattori valitsee itse kehen luottaa – mikään keskuskomitea ei päätä sitä.",
+    "desc": "FBA (Federated Byzantine Agreement) on Stellar Consensus Protocolin ydin. Toisin kuin PoW:ssa tai PoS:ssa, louhintaa tai panostukseen perustuvaa äänestystä ei ole. Sen sijaan jokainen validaattorioperaattori valitsee itsenäisesti, mihin muihin validaattoreihin luottaa – tämä määrittää hänen kvorumjoukkonsa. Jotta transaktio vahvistetaan, päällekkäisten kvorumjoukkojen on sovittava (noin 2/3 enemmistö). Tulos: hajautettu, energiatehokas verkko ilman keskeistä hallintoviranomaista."
   }
 }

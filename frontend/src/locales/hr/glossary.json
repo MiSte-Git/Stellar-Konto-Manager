@@ -978,5 +978,11 @@
     "original": "Keypair",
     "short": "Odgovarajuća kombinacija javnog i tajnog ključa.",
     "desc": "Keypair se sastoji od dva odgovarajuća ključa: javnog ključa (Public Key – tvoja adresa) i tajnog ključa (Secret Key – tvoja lozinka). Oba ključa idu zajedno i čine jednu cjelinu. Javni ključ dijeliš javno – tajni ključ uvijek čuvaš za sebe."
+  },
+  "fba": {
+    "title": "Federated Byzantine Agreement",
+    "original": "Federated Byzantine Agreement",
+    "short": "Načelo konsenzusa iza SCP-a: svaki validator sam bira kome vjeruje – nikakav centralni odbor to ne odlučuje.",
+    "desc": "FBA (Federated Byzantine Agreement) je srce Stellar Consensus Protocola. Za razliku od PoW-a ili PoS-a, nema rudarenja ni glasanja temeljenog na ulogu. Umjesto toga, svaki operator validatora neovisno bira kojim drugim validatorima vjeruje – to definira njegov kvorum set. Da bi se transakcija potvrdila, preklapajući kvorum setovi moraju se složiti (otprilike 2/3 većina). Rezultat: decentralizirana, energetski učinkovita mreža bez centralnog tijela kontrole."
   }
 }

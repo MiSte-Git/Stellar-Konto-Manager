@@ -267,28 +267,34 @@ export default function DialogBox({
           </motion.div>
         </div>
 
-        {/* Tap to continue hint – shown when typewriter is done */}
+        {/* Continue button – shown when typewriter is done */}
         <AnimatePresence>
           {done && (
-            <motion.p
+            <motion.button
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1, y: [0, -3, 0] }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{
-                opacity: { duration: 0.3 },
-                y: { duration: 1.2, repeat: Infinity, ease: "easeInOut" },
-              }}
+              transition={{ duration: 0.2 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={(e) => { e.stopPropagation(); advance(); }}
               style={{
-                margin: 0,
-                textAlign: "center",
-                fontSize: "12px",
-                color: "rgba(255,255,255,0.38)",
-                letterSpacing: "0.03em",
-                paddingBottom: "2px",
+                background: "rgba(255,255,255,0.07)",
+                border: "1.5px solid rgba(255,255,255,0.15)",
+                borderRadius: "12px",
+                padding: "12px 24px",
+                fontSize: "14px",
+                fontWeight: 600,
+                color: "rgba(255,255,255,0.7)",
+                fontFamily: "inherit",
+                cursor: "pointer",
+                width: "100%",
               }}
             >
-              {t("ui.tap_to_continue", "Tippe um weiterzumachen")} ›
-            </motion.p>
+              {isLast
+                ? t("ui.continue", "Weiter")
+                : t("ui.tap_to_continue", "Weiter")} →
+            </motion.button>
           )}
         </AnimatePresence>
       </motion.div>

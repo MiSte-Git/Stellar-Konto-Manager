@@ -978,5 +978,11 @@
     "original": "Keypair",
     "short": "Combinaison associée de Clé Publique et de Clé Secrète.",
     "desc": "Un keypair se compose de deux clés associées : la Clé Publique (ton adresse) et la Clé Secrète (ton mot de passe). Les deux clés vont ensemble et forment une unité. Tu partages la Clé Publique publiquement – la Clé Secrète, tu la gardes toujours pour toi."
+  },
+  "fba": {
+    "title": "Federated Byzantine Agreement",
+    "original": "Federated Byzantine Agreement",
+    "short": "Le principe de consensus derrière SCP : chaque validateur choisit lui-même à qui il fait confiance – aucun comité central ne décide cela.",
+    "desc": "FBA (Federated Byzantine Agreement) est le cœur du Stellar Consensus Protocol. Contrairement au PoW ou au PoS, il n'y a pas de minage ni de vote basé sur la mise. Au lieu de cela, chaque opérateur de validateur choisit indépendamment à quels autres validateurs il fait confiance – cela définit son quorum set. Pour qu'une transaction soit confirmée, des quorum sets qui se chevauchent doivent s'accorder (environ une majorité des 2/3). Le résultat : un réseau décentralisé et économe en énergie sans autorité de contrôle centrale."
   }
 }

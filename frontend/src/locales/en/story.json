@@ -937,7 +937,7 @@
       "pre": {
         "dialog1": "I'll show you now how clawback really works – live on the testnet. We'll create our own token as the issuer.",
         "dialog2": "Really live? On the actual blockchain?",
-        "dialog3": "Yes – on the testnet. We'll activate clawback during creation and send 100 TRUST tokens to a demo address.",
+        "dialog3": "Yes – on the [[testnet|testnet]]. We'll activate clawback during creation and send 100 TRUST tokens to a demo address.",
         "dialog4": "Interesting. This shows how easily an issuer gains this power."
       },
       "action1": {
@@ -971,7 +971,8 @@
         "description": "Recalls 100 TRUST tokens from the demo address. Only possible as issuer with clawback permission.",
         "locked": "Please complete Step 1 first.",
         "success": "100 TRUST successfully recalled.",
-        "error": "Clawback failed. Please try again."
+        "error": "Clawback failed. Please try again.",
+        "error_no_sofia": "Error: Sofia's demo address is missing. Please complete Action 1 first."
       },
       "post": {
         "dialog1": "Done. The 100 TRUST are back – the recall was successful.",
@@ -1039,7 +1040,76 @@
       "dialog2": "And I wish more people would check who they trust – before they buy.",
       "dialog3": "Both are right. That is the lesson."
     },
-    "subtitle": "Clawback"
+    "subtitle": "Clawback",
+    "scene5b": {
+      "section": "A double-edged sword",
+      "dialog1": "[[Clawback|clawback]] is a double-edged sword. I want you to know when an issuer uses this power legitimately – and when they don't.",
+      "dialog2": "A reputable issuer only uses clawback in exceptional cases: proven fraud, a regulatory requirement, or correcting a technical error. And they announce it in advance.",
+      "dialog3": "My advice: before you set a trust line, check in the explorer whether the token has the clawback flag. In Stellar Expert you can see this under the asset detail – it shows 'auth_clawback_enabled: true' if the flag is set.",
+      "dialog4": "Read the issuer's terms before holding tokens. You recognise trustworthiness through transparency – not the token name.",
+      "dialog5": "Let me be direct: anyone who has clawback enabled has power over your balance. Control and trust are mutually exclusive.",
+      "dialog6": "But if an issuer acts responsibly, clawback can also protect – for example with stolen or accidentally sent tokens.",
+      "dialog7": "Exactly. The technology is neutral – the issuer decides how to use it. That's why awareness is so important."
+    },
+    "cert_title": "Expert Certificate",
+    "cert_tagline": "You have completed all 9 chapters – congratulations!",
+    "cert_public_key_label": "Public key",
+    "cert_date_label": "Completion date",
+    "cert_chapters_label": "Completed chapters",
+    "cert_xp_label": "Total XP",
+    "cert_badge1": "Basic Certificate",
+    "cert_badge2": "Advanced Certificate",
+    "cert_badge3": "Expert Certificate",
+    "cert_print_btn": "Save certificate",
+    "cert_home_btn": "Go to home",
+    "section_cert": "Your Expert Certificate",
+    "scene5c": {
+      "section": "The limits of clawback",
+      "dialog1": "There's something important you should know: [[DEX|dex]] transactions make clawback powerless.",
+      "dialog2": "Clawback only works on the specific asset – and only as long as the recipient still holds it. Once the token has been exchanged for something else, it no longer exists in that form.",
+      "dialog3": "Imagine: a scammer receives 100 CAFE tokens. They immediately swap them on the DEX for XLM. What happens?",
+      "dialog4": "The issuer can call clawback – but there's nothing left to reclaim. The CAFE tokens are gone, transformed into XLM that belongs to the scammer.",
+      "dialog5": "See? Real security looks different. Anyone who swaps quickly is out of reach.",
+      "dialog6": "But it’s better than nothing. With regulated assets, scammers usually aren’t that fast – because between fraud and intervention, weeks or months often pass – plenty of time for the scammer to exchange the tokens.",
+      "dialog7": "Exactly. Clawback is no silver bullet against fraud – but it's an effective tool as long as the original asset is still held by the recipient."
+    },
+    "act1": {
+      "title": "Action 1 of 2 – Create & Issue Token",
+      "description": "Activates Clawback on your account, creates a TRUST token and sends 100 TRUST to a demo account.",
+      "btn_start": "Execute now",
+      "step_friendbot": "Preparing demo account...",
+      "step_setflags": "Activating Clawback permission...",
+      "step_trustline": "Setting up trustline...",
+      "step_payment": "Issuing 100 TRUST...",
+      "success": "100 TRUST issued – Clawback is active ✓",
+      "tx_label": "TX Hash:",
+      "xp": "+60 XP",
+      "error_retry": "Try again"
+    },
+    "act2": {
+      "title": "Action 2 of 2 – Execute Clawback",
+      "description": "Recalls the 100 TRUST tokens from the demo account. Only possible as an Issuer with Clawback permission.",
+      "locked": "Please complete Action 1 first.",
+      "btn_start": "Execute now",
+      "step_clawback": "Executing Clawback...",
+      "success": "100 TRUST successfully recalled ✓",
+      "tx_label": "TX Hash:",
+      "xp": "+60 XP",
+      "error_retry": "Try again",
+      "error_no_sofia": "Error: Demo address missing. Please run Action 1 first."
+    },
+    "accounts": {
+      "title": "Account Overview",
+      "issuer_label": "Your Account (Issuer)",
+      "demo_label": "Demo Account",
+      "demo_pending": "will be created in Action 1",
+      "view_account": "View account →",
+      "view_token": "View token (Clawback flag) →",
+      "view_history": "View token history →",
+      "explorer_note": "Stellarchain currently shows the Clawback flag only at the issuer account level – which incorrectly implies that all tokens of this account carry the flag. Stellar.expert shows it correctly directly on the token under “Summary”, and under “Transactions” you can clearly see how the tokens were recalled via Clawback.\n\nFor this step we therefore recommend Stellar.expert. Stellarchain is a great explorer – we hope this detail view will follow soon.",
+      "view_on_stellar_expert": "View on Stellar.expert",
+      "view_on_stellarchain": "View on Stellarchain"
+    }
   },
   "chapterLabel": "Chapter",
   "chapterHint": "Tip: For the best learning experience, we recommend starting with Chapter 1.",
@@ -1157,7 +1227,38 @@
       "learning2": "Quorum Slices allow flexible, decentralized trust in the network.",
       "learning3": "Decentralization means: mathematics replaces authority – for everyone."
     },
-    "subtitle": "The Stellar Consensus Protocol"
+    "subtitle": "The Stellar Consensus Protocol",
+    "s5b": {
+      "section": "FBA – The Heart of SCP",
+      "card": {
+        "title": "Federated Byzantine Agreement",
+        "body": "FBA is the principle behind SCP: each validator chooses which others it trusts – no central committee decides that. For a transaction to be confirmed, roughly 2/3 of the validators in the quorum set must agree.",
+        "cta": "Got it"
+      },
+      "glossary_fba": "What is FBA?",
+      "glossary_quorum": "What is a Quorum Set?",
+      "lumio1": "The great thing about it: because every validator decides for itself, there is no central point of failure. Even if a few validators go offline, the network can keep going.",
+      "sofia1": "But who decides which validators are trustworthy?"
+    },
+    "s5c": {
+      "section": "Who do I really trust?",
+      "lumio1": "That's a very good question! As a user you don't explicitly trust anyone – you just click 'Send'.",
+      "lumio2": "The trust is configured by validator operators: companies, exchanges, and universities that run a Stellar node and decide in advance which other validators they trust.",
+      "sofia1": "And how does that work when I send a payment?",
+      "lumio3": "Imagine 30 accountants in different cities – they agreed among themselves whom to trust. When you send, they vote automatically in the background. You don't notice a thing. Once 2/3 agree, it's confirmed.",
+      "lumio4": "Important: you are implicitly trusting these operators. That's why transparency matters so much – you should be able to see who secures the network."
+    },
+    "s5d": {
+      "section": "Who secures the network?",
+      "card": {
+        "title": "View validators",
+        "body": "You can check at any time who secures the Stellar network – uptime, operator, and quorum set are all publicly visible. Well-known reputable operators: Stellar Development Foundation, Coinbase, SatoshiPay, Franklin Templeton.",
+        "url_label": "Where to look:",
+        "url_note": "(not clickable – type the address manually into your browser)",
+        "cta": "Continue"
+      },
+      "lumio1": "Stellar is transparent – that sets it apart from many other networks. You don't have to trust anyone blindly."
+    }
   },
   "chapter11": {
     "title": "The Loyalty Program",
@@ -1274,7 +1375,7 @@
       "q1_explanation": "No special wallet needed – a trust line to the correct issuer is enough. It's the permission to hold a specific token.",
       "q1_hint2": "The trust line tells Stellar: 'I trust this issuer and am willing to hold their token.'",
       "q2": "Two tokens are both called 'BERRY'. What makes them different?",
-      "q2_a1": "The issuer – any address can name a token BERRY",
+      "q2_a1": "The issuer – anyone can create a token named BERRY, the issuer is what makes the difference",
       "q2_a2": "The price",
       "q2_a3": "The number of tokens",
       "q2_explanation": "Price and quantity can be identical. Only the issuer – the creating address – distinguishes two tokens with the same name.",
@@ -1292,6 +1393,18 @@
       "learning3": "Same token name ≠ same token. Only the issuer makes the difference.",
       "learning4": "Spot fake tokens by their issuer address – always verify it against a trusted source.",
       "learning5": "Trust lines connect customers to your loyalty program – without a trust line, no token can be received."
-    }
+    },
+    "cert_title": "Master Certificate",
+    "cert_tagline": "All 11 chapters completed – you know Stellar from the ground up!",
+    "cert_badge1": "Stellar Master",
+    "cert_badge2": "Token Expert",
+    "cert_badge3": "Loyalty Pioneer",
+    "cert_public_key_label": "Your public key",
+    "cert_date_label": "Completed on",
+    "cert_chapters_label": "Completed chapters",
+    "cert_xp_label": "Total XP",
+    "cert_print_btn": "Print certificate",
+    "cert_home_btn": "Go to home",
+    "section_cert": "Your master certificate"
   }
 }

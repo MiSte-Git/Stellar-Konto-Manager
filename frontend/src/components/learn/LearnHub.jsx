@@ -2,6 +2,9 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { buildPath } from "../../utils/basePath.js";
+import { TOTAL_CHAPTERS } from "../story/storyChapters.config.js";
+import lessons from "../../data/learn/lessons.json";
+import scenarios from "../../data/learn/scam-scenarios/scenarios.js";
 
 function nav(path) {
   try {
@@ -15,6 +18,7 @@ const CARDS = [
     icon: "🧠",
     titleKey: "learn.quiz_title",
     subKey: "learn.quiz_sub",
+    count: lessons.length,
     iconBg: "rgba(99,102,241,0.2)",
     iconBorder: "rgba(99,102,241,0.5)",
     path: "quiz",
@@ -23,6 +27,7 @@ const CARDS = [
     icon: "🛡️",
     titleKey: "learn.scam_title",
     subKey: "learn.scam_sub",
+    count: scenarios.length,
     iconBg: "rgba(239,68,68,0.2)",
     iconBorder: "rgba(239,68,68,0.5)",
     path: "learn/scam-simulator",
@@ -31,6 +36,7 @@ const CARDS = [
     icon: "⭐",
     titleKey: "learn.story_title",
     subKey: "learn.story_sub",
+    count: TOTAL_CHAPTERS,
     iconBg: "rgba(255,217,61,0.2)",
     iconBorder: "rgba(255,217,61,0.5)",
     path: "story",
@@ -130,7 +136,7 @@ export default function LearnHub({ onBack }) {
                   {t(card.titleKey)}
                 </span>
                 <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", lineHeight: 1.4 }}>
-                  {t(card.subKey)}
+                  {t(card.subKey, { count: card.count })}
                 </span>
               </div>
               <span style={{ opacity: 0.4, fontSize: "20px", color: "white" }}>›</span>

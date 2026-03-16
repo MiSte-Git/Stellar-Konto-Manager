@@ -221,6 +221,59 @@ function QuizQ({ question, choices, correctValue, feedbackCorrect, feedbackWrong
   );
 }
 
+// ─── ValidatorCard (Szene s5d) ────────────────────────────────────────────────
+
+function ValidatorCard({ title, body, urlLabel, urlNote, cta, onNext }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+    >
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontSize: "40px", marginBottom: "6px" }}>🔭</div>
+        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 800, color: "white" }}>{title}</h3>
+      </div>
+      <div style={{
+        background: "rgba(61,214,255,0.04)", border: "1px solid rgba(61,214,255,0.18)",
+        borderRadius: "14px", padding: "16px 18px",
+        display: "flex", flexDirection: "column", gap: "12px",
+      }}>
+        <p style={{ margin: 0, fontSize: "14px", lineHeight: 1.75, color: "rgba(255,255,255,0.82)" }}>
+          {body}
+        </p>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "12px" }}>
+          <p style={{ margin: "0 0 4px", fontSize: "12px", color: "rgba(255,255,255,0.45)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            {urlLabel}
+          </p>
+          <code style={{
+            display: "block", fontSize: "13px", fontFamily: "monospace",
+            color: "#3DD6FF", background: "rgba(61,214,255,0.07)",
+            border: "1px solid rgba(61,214,255,0.2)", borderRadius: "8px",
+            padding: "8px 12px", wordBreak: "break-all",
+          }}>
+            stellarbeat.io
+          </code>
+          <p style={{ margin: "6px 0 0", fontSize: "11px", color: "rgba(255,255,255,0.32)", fontStyle: "italic" }}>
+            {urlNote}
+          </p>
+        </div>
+      </div>
+      <motion.button
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+        whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={onNext}
+        style={{
+          background: "linear-gradient(135deg, #3DD6FF, #48c78e)", border: "none",
+          borderRadius: "14px", padding: "14px 32px", fontSize: "15px", fontWeight: 700,
+          color: "#1a1a2e", fontFamily: "inherit", cursor: "pointer",
+        }}
+      >
+        {cta} →
+      </motion.button>
+    </motion.div>
+  );
+}
+
 // ─── ReflectionChoice (Szene 7) ───────────────────────────────────────────────
 
 function ReflectionChoice({ question, choices, continueLabel, onNext }) {
@@ -384,6 +437,73 @@ function buildScenes({ openGlossary, addXP, completeChapter, t }) {
     { type: "dialog", speaker: "lumio", lines: [t("chapter10.s5.lumio2")] },
     cd("sofia",  t("chapter10.s5.sofia2")),
     { type: "dialog", speaker: "lumio", lines: [t("chapter10.s5.lumio3")] },
+
+    // ── Szene 5b: FBA – Das Herzstück von SCP ────────────────────────────────
+    {
+      type: "custom",
+      sectionTitle: t("chapter10.s5b.section"),
+      render: (next) => (
+        <InfoCard icon="🏛️" title={t("chapter10.s5b.card.title")}
+          body={t("chapter10.s5b.card.body")} cta={t("chapter10.s5b.card.cta")} onNext={next}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <GlossaryButton label={t("chapter10.s5b.glossary_fba")} termKey="fba" openGlossary={openGlossary} />
+            <GlossaryButton label={t("chapter10.s5b.glossary_quorum")} termKey="quorumSet" openGlossary={openGlossary} />
+          </div>
+        </InfoCard>
+      ),
+    },
+    {
+      type: "custom",
+      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5b.lumio1")} onNext={next} />,
+    },
+    {
+      type: "custom",
+      render: (next) => <CharacterDialog speaker="sofia" text={t("chapter10.s5b.sofia1")} onNext={next} />,
+    },
+
+    // ── Szene 5c: Wem vertraue ich wirklich? ─────────────────────────────────
+    {
+      type: "custom",
+      sectionTitle: t("chapter10.s5c.section"),
+      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio1")} onNext={next} />,
+    },
+    {
+      type: "custom",
+      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio2")} onNext={next} />,
+    },
+    {
+      type: "custom",
+      render: (next) => <CharacterDialog speaker="sofia" text={t("chapter10.s5c.sofia1")} onNext={next} />,
+    },
+    {
+      type: "custom",
+      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio3")} onNext={next} />,
+    },
+    {
+      type: "custom",
+      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio4")} onNext={next} />,
+    },
+
+    // ── Szene 5d: Wer sichert das Netzwerk ab? ───────────────────────────────
+    {
+      type: "custom",
+      sectionTitle: t("chapter10.s5d.section"),
+      render: (next) => (
+        <ValidatorCard
+          title={t("chapter10.s5d.card.title")}
+          body={t("chapter10.s5d.card.body")}
+          urlLabel={t("chapter10.s5d.card.url_label")}
+          urlNote={t("chapter10.s5d.card.url_note")}
+          cta={t("chapter10.s5d.card.cta")}
+          onNext={next}
+        />
+      ),
+    },
+    {
+      type: "custom",
+      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5d.lumio1")} onNext={next} />,
+    },
 
     // ── Szene 6: Quiz (3 Fragen) ──────────────────────────────────────────
     {

@@ -25,7 +25,7 @@ export const CHAPTER_REGISTRY = {
   6: { tested: true, durationMinutes: 10, subtitle: "Muxed Accounts" },
   7: { tested: true, durationMinutes: 12, subtitle: "Multisignatur" },
   8: { tested: false, durationMinutes: 15, subtitle: "Smart Contracts & Soroban" },
-  9: { tested: false, durationMinutes: 15, subtitle: "Clawback" },
+  9: { tested: true, durationMinutes: 15, subtitle: "Clawback" },
  10: { tested: false, durationMinutes: 12, subtitle: "Stellar Consensus Protocol" },
- 11: { tested: false, durationMinutes: 10, subtitle: "Das Treueprogramm" },
+ 11: { tested: true, durationMinutes: 10, subtitle: "Das Treueprogramm" },
 };

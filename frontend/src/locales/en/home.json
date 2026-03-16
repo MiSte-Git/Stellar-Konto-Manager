@@ -7,13 +7,13 @@
     "back": "Back",
     "title": "Discover Stellar",
     "quiz_title": "Test Your Knowledge",
-    "quiz_sub": "13 lessons about Stellar",
+    "quiz_sub": "{{count}} lessons about Stellar",
     "quiz_tooltip": "13 lessons, multiple choice and true/false – test how much you know",
     "scam_title": "Spot the Dangers",
-    "scam_sub": "Learn to recognize real scams",
+    "scam_sub": "{{count}} interactive scenarios",
     "scam_tooltip": "Real scam scenarios to practice – recognize fraud before it gets you",
     "story_title": "Lumio's Adventure",
-    "story_sub": "Experience the blockchain with Lumio",
+    "story_sub": "{{count}} chapters with Lumio",
     "story_tooltip": "Join Lumio on the Stellar blockchain – with real Testnet to try"
   }
 }

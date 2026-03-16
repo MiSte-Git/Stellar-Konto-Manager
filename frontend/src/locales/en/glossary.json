@@ -978,5 +978,11 @@
     "original": "Keypair",
     "short": "Matching combination of Public Key and Secret Key.",
     "desc": "A keypair consists of two matching keys: the Public Key (your address) and the Secret Key (your password). Both keys belong together and form a unit. You share the Public Key publicly – the Secret Key you always keep to yourself."
+  },
+  "fba": {
+    "title": "Federated Byzantine Agreement",
+    "original": "Federated Byzantine Agreement",
+    "short": "The consensus principle behind SCP: each validator chooses which others it trusts – no central committee decides that.",
+    "desc": "FBA (Federated Byzantine Agreement) is the core of the Stellar Consensus Protocol. Unlike PoW or PoS there is no mining and no stake-based voting. Instead, each validator operator independently chooses which other validators it trusts – this defines its quorum set. For a transaction to be confirmed, overlapping quorum sets must agree (roughly a 2/3 majority). The result: a decentralized, energy-efficient network with no central controlling authority."
   }
 }

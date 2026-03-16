@@ -937,7 +937,7 @@
       "pre": {
         "dialog1": "Ich zeige euch jetzt, wie Clawback wirklich funktioniert – live auf dem Testnet. Wir erstellen als Issuer einen eigenen Token.",
         "dialog2": "Wirklich live? Auf der echten Blockchain?",
-        "dialog3": "Ja – auf dem Testnet. Wir aktivieren Clawback beim Erstellen und senden 100 TRUST Token an eine Demo-Adresse.",
+        "dialog3": "Ja – auf dem [[Testnet|testnet]]. Wir aktivieren Clawback beim Erstellen und senden 100 TRUST Token an eine Demo-Adresse.",
         "dialog4": "Interessant. So sieht man, wie einfach ein Issuer diese Macht erhält."
       },
       "action1": {
@@ -971,7 +971,8 @@
         "description": "Ruft 100 TRUST Token von der Demo-Adresse zurück. Nur möglich als Issuer mit Clawback-Berechtigung.",
         "locked": "Bitte zuerst Schritt 1 abschliessen.",
         "success": "100 TRUST erfolgreich zurückgerufen.",
-        "error": "Fehler beim Clawback. Bitte nochmal versuchen."
+        "error": "Fehler beim Clawback. Bitte nochmal versuchen.",
+        "error_no_sofia": "Fehler: Sofias Demo-Adresse fehlt. Bitte führe zuerst Aktion 1 aus."
       },
       "post": {
         "dialog1": "Erledigt. Die 100 TRUST sind zurück – der Rückruf war erfolgreich.",
@@ -1039,7 +1040,76 @@
       "dialog2": "Und ich wünschte, mehr Menschen würden prüfen, wem sie vertrauen – bevor sie kaufen.",
       "dialog3": "Beides ist richtig. Das ist die Lektion."
     },
-    "subtitle": "Clawback"
+    "subtitle": "Clawback",
+    "scene5b": {
+      "section": "Ein zweischneidiges Schwert",
+      "dialog1": "[[Clawback|clawback]] ist ein zweischneidiges Schwert. Ich möchte, dass du weißt, wann ein Issuer diese Macht legitim einsetzt – und wann nicht.",
+      "dialog2": "Ein seriöser Issuer setzt Clawback nur in Ausnahmefällen ein: bei nachgewiesenem Betrug, auf regulatorische Anordnung, oder um einen technischen Fehler zu korrigieren. Und er kündigt das vorher an.",
+      "dialog3": "Mein Rat: Bevor du eine Trust Line setzt, prüfe im Explorer, ob der Token den Clawback-Flag hat. Im Stellar Expert siehst du das unter dem Asset-Detail – dort steht 'auth_clawback_enabled: true', wenn der Flag gesetzt ist.",
+      "dialog4": "Lies die Bedingungen des Issuers, bevor du Token hältst. Seriosität erkennst du an Transparenz – nicht am Token-Namen.",
+      "dialog5": "Ich sage es direkt: Wer Clawback aktiviert hat, hat Macht über dein Guthaben. Kontrolle und Vertrauen schließen sich aus.",
+      "dialog6": "Aber wenn ein Issuer verantwortungsvoll handelt, kann Clawback auch schützen – zum Beispiel bei gestohlenen oder irrtümlich gesendeten Token.",
+      "dialog7": "Genau das. Die Technologie ist neutral – der Issuer entscheidet, wie er sie nutzt. Deshalb ist Aufklärung so wichtig."
+    },
+    "cert_title": "Experten-Zertifikat",
+    "cert_tagline": "Du hast alle 9 Kapitel abgeschlossen – Glückwunsch!",
+    "cert_public_key_label": "Öffentlicher Schlüssel",
+    "cert_date_label": "Abschlussdatum",
+    "cert_chapters_label": "Abgeschlossene Kapitel",
+    "cert_xp_label": "XP gesamt",
+    "cert_badge1": "Basis-Zertifikat",
+    "cert_badge2": "Fortgeschrittenen-Zertifikat",
+    "cert_badge3": "Experten-Zertifikat",
+    "cert_print_btn": "Zertifikat speichern",
+    "cert_home_btn": "Zur Startseite",
+    "section_cert": "Dein Experten-Zertifikat",
+    "scene5c": {
+      "section": "Die Grenzen von Clawback",
+      "dialog1": "Es gibt noch etwas Wichtiges, das du wissen solltest: [[DEX|dex]]-Transaktionen machen Clawback wirkungslos.",
+      "dialog2": "Clawback funktioniert nur auf das spezifische Asset – und nur solange der Empfänger es noch hält. Sobald der Token gegen etwas anderes getauscht wurde, existiert er in dieser Form nicht mehr.",
+      "dialog3": "Stell dir vor: Ein Scammer erhält 100 CAFE-Token. Er tauscht sie sofort auf dem DEX gegen XLM. Was passiert?",
+      "dialog4": "Der Issuer kann Clawback aufrufen – aber es gibt nichts mehr zurückzurufen. Die CAFE-Token sind weg, verwandelt in XLM, das dem Scammer gehört.",
+      "dialog5": "Siehst du? Echte Sicherheit sieht anders aus. Wer schnell tauscht, ist außer Reichweite.",
+      "dialog6": "Aber es ist besser als gar nichts. Bei regulierten Assets sind Scammer meist nicht so schnell – denn zwischen Betrug und Eingriff vergehen oft Wochen oder Monate – genug Zeit für den Scammer, die Token längst zu tauschen.",
+      "dialog7": "Genau. Clawback ist kein Allheilmittel gegen Betrug – aber ein wirksames Werkzeug, solange das originale Asset noch beim Empfänger liegt."
+    },
+    "act1": {
+      "title": "Aktion 1 von 2 – Token erstellen & ausgeben",
+      "description": "Aktiviert Clawback auf deinem Konto, erstellt einen TRUST Token und sendet 100 TRUST an ein Demo-Konto.",
+      "btn_start": "Jetzt ausführen",
+      "step_friendbot": "Demo-Konto wird vorbereitet...",
+      "step_setflags": "Clawback-Berechtigung wird aktiviert...",
+      "step_trustline": "Trustline wird eingerichtet...",
+      "step_payment": "100 TRUST werden ausgegeben...",
+      "success": "100 TRUST ausgegeben – Clawback ist aktiv ✓",
+      "tx_label": "TX-Hash:",
+      "xp": "+60 XP",
+      "error_retry": "Nochmal versuchen"
+    },
+    "act2": {
+      "title": "Aktion 2 von 2 – Clawback ausführen",
+      "description": "Ruft die 100 TRUST Token vom Demo-Konto zurück. Nur möglich als Issuer mit Clawback-Berechtigung.",
+      "locked": "Bitte zuerst Aktion 1 ausführen.",
+      "btn_start": "Jetzt ausführen",
+      "step_clawback": "Clawback wird ausgeführt...",
+      "success": "100 TRUST erfolgreich zurückgerufen ✓",
+      "tx_label": "TX-Hash:",
+      "xp": "+60 XP",
+      "error_retry": "Nochmal versuchen",
+      "error_no_sofia": "Fehler: Demo-Adresse fehlt. Bitte Aktion 1 ausführen."
+    },
+    "accounts": {
+      "title": "Konten-Übersicht",
+      "issuer_label": "Dein Konto (Issuer)",
+      "demo_label": "Demo-Konto",
+      "demo_pending": "wird in Aktion 1 erstellt",
+      "view_account": "Konto ansehen →",
+      "view_token": "Token ansehen (Clawback-Flag) →",
+      "view_history": "Token-Verlauf ansehen →",
+      "explorer_note": "Stellarchain zeigt das Clawback-Flag aktuell nur auf dem Issuer-Konto an – das impliziert fälschlicherweise, dass alle Token dieses Kontos das Flag tragen. Stellar.expert zeigt es korrekt direkt beim Token unter „Summary“, und unter „Transactions“ sieht man deutlich, wie die Token per Clawback zurückgeholt wurden.\n\nFür diesen Schritt empfehlen wir daher Stellar.expert. Stellarchain ist ein toller Explorer – wir hoffen, dass diese Detail-Ansicht bald nachgezogen wird.",
+      "view_on_stellar_expert": "Auf Stellar.expert ansehen",
+      "view_on_stellarchain": "Auf Stellarchain ansehen"
+    }
   },
   "chapterLabel": "Kapitel",
   "chapterHint": "Tipp: Für das beste Lernerlebnis empfehlen wir mit Kapitel 1 zu starten.",
@@ -1157,7 +1227,38 @@
       "learning2": "Quorum Slices erlauben flexibles, dezentrales Vertrauen im Netzwerk.",
       "learning3": "Dezentralisierung bedeutet: Mathematik ersetzt Autorität – für alle."
     },
-    "subtitle": "Das Stellar Consensus Protocol"
+    "subtitle": "Das Stellar Consensus Protocol",
+    "s5b": {
+      "section": "FBA – Das Herzstück von SCP",
+      "card": {
+        "title": "Federated Byzantine Agreement",
+        "body": "FBA ist das Prinzip hinter SCP: Jeder Validator wählt selbst, welchen anderen er vertraut – kein zentrales Komitee entscheidet das. Damit eine Transaktion bestätigt wird, müssen ca. 2/3 der Validatoren im Quorum Set zustimmen.",
+        "cta": "Verstanden"
+      },
+      "glossary_fba": "Was ist FBA?",
+      "glossary_quorum": "Was ist ein Quorum Set?",
+      "lumio1": "Das Tolle daran: Weil jeder Validator selbst entscheidet, gibt es keine zentrale Schwachstelle. Selbst wenn ein paar Validatoren ausfallen, kann das Netzwerk weitermachen.",
+      "sofia1": "Aber wer entscheidet, welche Validatoren vertrauenswürdig sind?"
+    },
+    "s5c": {
+      "section": "Wem vertraue ich wirklich?",
+      "lumio1": "Das ist eine sehr gute Frage! Du als Nutzer sprichst selbst niemandem Vertrauen aus – du klickst einfach auf 'Senden'.",
+      "lumio2": "Das Vertrauen wird von Validator-Betreibern konfiguriert: Unternehmen, Börsen und Universitäten, die einen Stellar-Node betreiben und vorher festlegen, welchen anderen Validatoren sie vertrauen.",
+      "sofia1": "Und wie läuft das dann ab, wenn ich eine Zahlung sende?",
+      "lumio3": "Stell dir 30 Buchhalter in verschiedenen Städten vor – die haben untereinander vereinbart, wem sie vertrauen. Wenn du sendest, stimmen sie automatisch im Hintergrund ab. Du merkst nichts davon. Sobald 2/3 einig sind, ist es bestätigt.",
+      "lumio4": "Wichtig: Du vertraust diesen Betreibern also implizit. Deshalb ist Transparenz so wichtig – du solltest wissen können, wer das Netzwerk absichert."
+    },
+    "s5d": {
+      "section": "Wer sichert das Netzwerk ab?",
+      "card": {
+        "title": "Validatoren einsehen",
+        "body": "Du kannst jederzeit prüfen, wer das Stellar-Netzwerk absichert – Uptime, Betreiber und Quorum Set sind öffentlich einsehbar. Bekannte seriöse Betreiber: Stellar Development Foundation, Coinbase, SatoshiPay, Franklin Templeton.",
+        "url_label": "Wo du nachschauen kannst:",
+        "url_note": "(nicht anklickbar – gib die Adresse manuell in deinen Browser ein)",
+        "cta": "Weiter"
+      },
+      "lumio1": "Stellar ist transparent – das unterscheidet es von vielen anderen Netzwerken. Du musst niemandem blind vertrauen."
+    }
   },
   "chapter11": {
     "title": "Das Treueprogramm",
@@ -1274,7 +1375,7 @@
       "q1_explanation": "Kein spezielles Wallet nötig – eine Trust Line zum richtigen Issuer genügt. Sie ist die Erlaubnis, einen bestimmten Token zu halten.",
       "q1_hint2": "Die Trust Line sagt Stellar: 'Ich vertraue diesem Issuer und bin bereit, seinen Token zu halten.'",
       "q2": "Zwei Token heissen beide 'BERRY'. Was macht sie unterschiedlich?",
-      "q2_a1": "Der Issuer – jede Adresse kann einen Token BERRY nennen",
+      "q2_a1": "Der Issuer – jeder kann einen Token mit dem Namen BERRY erstellen, der Issuer macht den Unterschied",
       "q2_a2": "Der Preis",
       "q2_a3": "Die Anzahl der Token",
       "q2_explanation": "Preis und Menge können identisch sein. Nur der Issuer – also die erstellende Adresse – unterscheidet zwei Token mit gleichem Namen.",
@@ -1292,6 +1393,18 @@
       "learning3": "Gleicher Token-Name ≠ gleicher Token. Nur der Issuer macht den Unterschied.",
       "learning4": "Fake-Token erkennst du an der Issuer-Adresse – prüfe sie immer mit einer vertrauenswürdigen Quelle.",
       "learning5": "Trust Lines verbinden Kunden mit deinem Treueprogramm – ohne Trust Line kein Token-Empfang."
-    }
+    },
+    "cert_title": "Meister-Zertifikat",
+    "cert_tagline": "Alle 11 Kapitel abgeschlossen – du kennst Stellar von Grund auf!",
+    "cert_badge1": "Stellar-Meister",
+    "cert_badge2": "Token-Experte",
+    "cert_badge3": "Loyalty-Pionier",
+    "cert_public_key_label": "Dein öffentlicher Schlüssel",
+    "cert_date_label": "Abgeschlossen am",
+    "cert_chapters_label": "Abgeschlossene Kapitel",
+    "cert_xp_label": "XP gesamt",
+    "cert_print_btn": "Zertifikat drucken",
+    "cert_home_btn": "Zur Startseite",
+    "section_cert": "Dein Meister-Zertifikat"
   }
 }

@@ -937,7 +937,7 @@
       "pre": {
         "dialog1": "Ik laat jullie nu zien hoe clawback echt werkt – live op het testnet. We maken onze eigen token aan als uitgevende partij.",
         "dialog2": "Echt live? Op de echte blockchain?",
-        "dialog3": "Ja – op het testnet. We activeren clawback bij het aanmaken en sturen 100 TRUST naar een demo-adres.",
+        "dialog3": "Ja – op het [[testnet|testnet]]. We activeren clawback bij het aanmaken en sturen 100 TRUST naar een demo-adres.",
         "dialog4": "Interessant. Zo zie je hoe gemakkelijk een uitgevende partij deze macht krijgt."
       },
       "action1": {
@@ -971,7 +971,8 @@
         "description": "Vordert 100 TRUST tokens terug van het demo-adres. Alleen mogelijk als uitgevende partij met clawback-toestemming.",
         "locked": "Voltooi eerst stap 1.",
         "success": "100 TRUST succesvol teruggevorderd.",
-        "error": "Clawback mislukt. Probeer het opnieuw."
+        "error": "Clawback mislukt. Probeer het opnieuw.",
+        "error_no_sofia": "Fout: Sofia's demo-adres ontbreekt. Voer eerst Actie 1 uit."
       },
       "post": {
         "dialog1": "Klaar. De 100 TRUST zijn terug – de terugvordering is geslaagd.",
@@ -1039,7 +1040,76 @@
       "dialog2": "En ik had gewild dat meer mensen controleren wie ze vertrouwen – voordat ze kopen.",
       "dialog3": "Beiden hebben gelijk. Dat is de les."
     },
-    "subtitle": "Clawback"
+    "subtitle": "Clawback",
+    "scene5b": {
+      "section": "Een tweesnijdend zwaard",
+      "dialog1": "[[Clawback|clawback]] is een tweesnijdend zwaard. Ik wil dat je weet wanneer een uitgever deze macht legitiem gebruikt – en wanneer niet.",
+      "dialog2": "Een serieuze uitgever gebruikt clawback alleen in uitzonderlijke gevallen: bewezen fraude, een regelgevingsverplichting, of om een technische fout te corrigeren. En dat kondigt hij van tevoren aan.",
+      "dialog3": "Mijn advies: controleer in de explorer of het token de clawback-vlag heeft voordat je een vertrouwenslijn instelt. In Stellar Expert zie je dat onder de asset-details – daar staat 'auth_clawback_enabled: true' als de vlag is ingesteld.",
+      "dialog4": "Lees de voorwaarden van de uitgever voordat je tokens houdt. Betrouwbaarheid herken je aan transparantie – niet aan de naam van het token.",
+      "dialog5": "Ik zeg het direct: wie clawback heeft ingeschakeld, heeft macht over je saldo. Controle en vertrouwen sluiten elkaar uit.",
+      "dialog6": "Maar als een uitgever verantwoordelijk handelt, kan clawback ook beschermen – bijvoorbeeld bij gestolen of per ongeluk verzonden tokens.",
+      "dialog7": "Precies. De technologie is neutraal – de uitgever beslist hoe die wordt gebruikt. Daarom is bewustwording zo belangrijk."
+    },
+    "cert_title": "Expertcertificaat",
+    "cert_tagline": "Je hebt alle 9 hoofdstukken afgerond – gefeliciteerd!",
+    "cert_public_key_label": "Publieke sleutel",
+    "cert_date_label": "Voltooiingsdatum",
+    "cert_chapters_label": "Voltooide hoofdstukken",
+    "cert_xp_label": "Totaal XP",
+    "cert_badge1": "Basiscertificaat",
+    "cert_badge2": "Gevorderd certificaat",
+    "cert_badge3": "Expertcertificaat",
+    "cert_print_btn": "Certificaat opslaan",
+    "cert_home_btn": "Naar startpagina",
+    "section_cert": "Jouw Expertcertificaat",
+    "scene5c": {
+      "section": "De grenzen van clawback",
+      "dialog1": "Er is iets belangrijks dat je moet weten: transacties op de [[DEX|dex]] maken clawback nutteloos.",
+      "dialog2": "Clawback werkt alleen op het specifieke asset – en alleen zolang de ontvanger het nog bezit. Zodra het token is ingewisseld voor iets anders, bestaat het niet meer in die vorm.",
+      "dialog3": "Stel je voor: een oplichter ontvangt 100 CAFE-tokens. Ze wisselen ze meteen op de DEX in voor XLM. Wat gebeurt er?",
+      "dialog4": "De uitgever kan clawback aanroepen – maar er is niets meer om terug te vorderen. De CAFE-tokens zijn verdwenen, omgezet in XLM dat de oplichter toebehoort.",
+      "dialog5": "Zie je? Echte beveiliging ziet er anders uit. Wie snel inwisselt, is buiten bereik.",
+      "dialog6": "Maar het is beter dan niets. Bij gereguleerde assets zijn oplichters meestal niet zo snel – want tussen fraude en ingrijpen verstrijken vaak weken of maanden – meer dan genoeg tijd voor de oplichter om de tokens al lang te hebben omgewisseld.",
+      "dialog7": "Precies. Clawback is geen wondermiddel tegen fraude – maar een effectief hulpmiddel zolang het originele asset nog bij de ontvanger ligt."
+    },
+    "act1": {
+      "title": "Actie 1 van 2 – Token aanmaken & uitgeven",
+      "description": "Activeert Clawback op je account, maakt een TRUST token aan en stuurt 100 TRUST naar een demo-account.",
+      "btn_start": "Nu uitvoeren",
+      "step_friendbot": "Demo-account voorbereiden...",
+      "step_setflags": "Clawback-toestemming activeren...",
+      "step_trustline": "Trustline instellen...",
+      "step_payment": "100 TRUST uitgeven...",
+      "success": "100 TRUST uitgegeven – Clawback is actief ✓",
+      "tx_label": "TX-hash:",
+      "xp": "+60 XP",
+      "error_retry": "Opnieuw proberen"
+    },
+    "act2": {
+      "title": "Actie 2 van 2 – Clawback uitvoeren",
+      "description": "Haalt de 100 TRUST tokens terug van het demo-account. Alleen mogelijk als Uitgever met Clawback-toestemming.",
+      "locked": "Voltooi eerst Actie 1.",
+      "btn_start": "Nu uitvoeren",
+      "step_clawback": "Clawback uitvoeren...",
+      "success": "100 TRUST succesvol teruggehaald ✓",
+      "tx_label": "TX-hash:",
+      "xp": "+60 XP",
+      "error_retry": "Opnieuw proberen",
+      "error_no_sofia": "Fout: demo-adres ontbreekt. Voer eerst Actie 1 uit."
+    },
+    "accounts": {
+      "title": "Accountoverzicht",
+      "issuer_label": "Jouw account (Uitgever)",
+      "demo_label": "Demo-account",
+      "demo_pending": "wordt aangemaakt in Actie 1",
+      "view_account": "Account bekijken →",
+      "view_token": "Token bekijken (Clawback-vlag) →",
+      "view_history": "Token-geschiedenis bekijken →",
+      "explorer_note": "Stellarchain toont de Clawback-vlag momenteel alleen op het niveau van de uitgeversaccount – wat ten onrechte impliceert dat alle tokens van dit account de vlag hebben. Stellar.expert toont het correct, direct bij de token onder «Summary», en onder «Transactions» is duidelijk te zien hoe de tokens via Clawback zijn teruggehaald.\n\nVoor deze stap raden wij daarom Stellar.expert aan. Stellarchain is een geweldige explorer – we hopen dat deze detailweergave snel wordt toegevoegd.",
+      "view_on_stellar_expert": "Bekijk op Stellar.expert",
+      "view_on_stellarchain": "Bekijk op Stellarchain"
+    }
   },
   "chapterLabel": "Hoofdstuk",
   "chapterHint": "Tip: Voor de beste leerervaring raden we aan te beginnen met Hoofdstuk 1.",
@@ -1157,7 +1227,38 @@
       "learning2": "Quorum Slices maken flexibel, gedecentraliseerd vertrouwen in het netwerk mogelijk.",
       "learning3": "Decentralisatie betekent: wiskunde vervangt autoriteit – voor iedereen."
     },
-    "subtitle": "Het Stellar Consensus Protocol"
+    "subtitle": "Het Stellar Consensus Protocol",
+    "s5b": {
+      "section": "FBA – Het hart van SCP",
+      "card": {
+        "title": "Federated Byzantine Agreement",
+        "body": "FBA is het principe achter SCP: elke validator kiest zelf wie hij vertrouwt – geen centraal comité beslist dat. Om een transactie te bevestigen moeten ongeveer 2/3 van de validators in het quorum set het eens zijn.",
+        "cta": "Begrepen"
+      },
+      "glossary_fba": "Wat is FBA?",
+      "glossary_quorum": "Wat is een Quorum Set?",
+      "lumio1": "Het mooie ervan: omdat elke validator zelf beslist, is er geen centraal storingspunt. Zelfs als een paar validators uitvallen, kan het netwerk doorgaan.",
+      "sofia1": "Maar wie bepaalt welke validators betrouwbaar zijn?"
+    },
+    "s5c": {
+      "section": "Wie vertrouw ik echt?",
+      "lumio1": "Heel goede vraag! Als gebruiker spreek jij niemand expliciet vertrouwen toe – je klikt gewoon op 'Verzenden'.",
+      "lumio2": "Het vertrouwen wordt geconfigureerd door validator-operators: bedrijven, exchanges en universiteiten die een Stellar-node beheren en van tevoren bepalen welke andere validators ze vertrouwen.",
+      "sofia1": "En hoe werkt dat als ik een betaling verstuur?",
+      "lumio3": "Stel je 30 boekhouders voor in verschillende steden – ze hebben onderling afgesproken wie ze vertrouwen. Als jij verzendt, stemmen ze automatisch op de achtergrond. Je merkt er niets van. Zodra 2/3 het eens is, is het bevestigd.",
+      "lumio4": "Belangrijk: je vertrouwt deze operators dus impliciet. Daarom is transparantie zo belangrijk – je moet kunnen zien wie het netwerk beveiligt."
+    },
+    "s5d": {
+      "section": "Wie beveiligt het netwerk?",
+      "card": {
+        "title": "Validators bekijken",
+        "body": "Je kunt op elk moment controleren wie het Stellar-netwerk beveiligt – uptime, operator en quorum set zijn openbaar zichtbaar. Bekende betrouwbare operators: Stellar Development Foundation, Coinbase, SatoshiPay, Franklin Templeton.",
+        "url_label": "Waar je kunt kijken:",
+        "url_note": "(niet klikbaar – typ het adres handmatig in je browser)",
+        "cta": "Verder"
+      },
+      "lumio1": "Stellar is transparant – dat onderscheidt het van veel andere netwerken. Je hoeft niemand blind te vertrouwen."
+    }
   },
   "chapter11": {
     "title": "Het Loyaliteitsprogramma",
@@ -1274,7 +1375,7 @@
       "q1_explanation": "Geen speciale portemonnee nodig – een vertrouwenslijn naar de juiste uitgever is voldoende. Het is de toestemming om een specifieke token te houden.",
       "q1_hint2": "De vertrouwenslijn vertelt Stellar: 'Ik vertrouw deze uitgever en ben bereid hun token te houden.'",
       "q2": "Twee tokens heten allebei 'BERRY'. Wat maakt ze anders?",
-      "q2_a1": "De uitgever – elk adres kan een token BERRY noemen",
+      "q2_a1": "De uitgever – iedereen kan een token BERRY noemen, de uitgever maakt het verschil",
       "q2_a2": "De prijs",
       "q2_a3": "Het aantal tokens",
       "q2_explanation": "Prijs en hoeveelheid kunnen identiek zijn. Alleen de uitgever – het aanmakende adres – onderscheidt twee tokens met dezelfde naam.",
@@ -1292,6 +1393,18 @@
       "learning3": "Zelfde tokennaam ≠ zelfde token. Alleen de uitgever maakt het verschil.",
       "learning4": "Herken nep-tokens aan hun uitgeveradres – controleer dit altijd met een betrouwbare bron.",
       "learning5": "Vertrouwenslijnen verbinden klanten met je loyaliteitsprogramma – zonder vertrouwenslijn kan geen token ontvangen worden."
-    }
+    },
+    "cert_title": "Meestercertificaat",
+    "cert_tagline": "Alle 11 hoofdstukken voltooid – je kent Stellar van binnen en buiten!",
+    "cert_badge1": "Stellar-meester",
+    "cert_badge2": "Token-expert",
+    "cert_badge3": "Loyalty-pionier",
+    "cert_public_key_label": "Jouw publieke sleutel",
+    "cert_date_label": "Voltooid op",
+    "cert_chapters_label": "Voltooide hoofdstukken",
+    "cert_xp_label": "Totaal XP",
+    "cert_print_btn": "Certificaat afdrukken",
+    "cert_home_btn": "Naar startpagina",
+    "section_cert": "Jouw meestercertificaat"
   }
 }

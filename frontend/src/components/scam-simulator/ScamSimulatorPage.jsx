@@ -195,10 +195,16 @@ export default function ScamSimulatorPage({ scenarios = [], onBack, onGoHome }) 
                       {t(`ui.category.${catKey}`)}
                     </span>
                   </div>
-                  {isDone
-                    ? <span className="shrink-0 text-lg" title="Abgeschlossen">✅</span>
-                    : <span className="shrink-0 text-gray-300 dark:text-gray-600 text-lg">›</span>
-                  }
+                  <div className="relative shrink-0 flex items-center justify-center w-6 h-6">
+                    <span className="text-gray-300 dark:text-gray-600 text-lg">›</span>
+                    {isDone && (
+                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-green-500 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                        <svg viewBox="0 0 10 10" className="w-2.5 h-2.5" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M1.5 5 L4 7.5 L8.5 2.5" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
                 </motion.button>
               );
             })}

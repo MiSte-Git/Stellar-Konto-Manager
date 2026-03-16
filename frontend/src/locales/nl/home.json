@@ -7,13 +7,13 @@
     "back": "Terug",
     "title": "Ontdek Stellar",
     "quiz_title": "Test uw kennis",
-    "quiz_sub": "13 lessen over Stellar",
+    "quiz_sub": "{{count}} lessen over Stellar",
     "quiz_tooltip": "13 lessen, meerkeuze en waar/onwaar – test hoeveel u weet",
     "scam_title": "Gevaren herkennen",
-    "scam_sub": "Leer echte oplichterij herkennen",
+    "scam_sub": "{{count}} interactieve scenario's",
     "scam_tooltip": "Echte oplichterscenario's om te oefenen – herken fraude voordat het u treft",
     "story_title": "Lumio's avontuur",
-    "story_sub": "Beleef de blockchain met Lumio",
+    "story_sub": "{{count}} hoofdstukken met Lumio",
     "story_tooltip": "Vergezelt Lumio op de Stellar blockchain – met een echte Testnet om te verkennen"
   }
 }

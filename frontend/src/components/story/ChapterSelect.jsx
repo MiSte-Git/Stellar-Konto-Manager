@@ -252,24 +252,34 @@ export default function ChapterSelect() {
               }}
             >
               {/* Chapter number badge */}
-              <div style={{
-                width: "34px",
-                height: "34px",
-                borderRadius: "10px",
-                background: isCurrent
-                  ? "rgba(255,217,61,0.2)"
-                  : isCompleted
-                  ? "rgba(72,199,142,0.18)"
-                  : "rgba(255,255,255,0.08)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "15px",
-                fontWeight: 800,
-                color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : "rgba(255,255,255,0.5)",
-                flexShrink: 0,
-              }}>
-                {isCompleted ? "✓" : n}
+              <div style={{ position: "relative", width: "34px", height: "34px", flexShrink: 0 }}>
+                <div style={{
+                  width: "34px",
+                  height: "34px",
+                  borderRadius: "10px",
+                  background: isCurrent ? "rgba(255,217,61,0.2)" : "rgba(255,255,255,0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "15px",
+                  fontWeight: 800,
+                  color: isCurrent ? "#FFD93D" : "rgba(255,255,255,0.5)",
+                }}>
+                  {n}
+                </div>
+                {isCompleted && (
+                  <div style={{
+                    position: "absolute", top: "-5px", right: "-5px",
+                    width: "15px", height: "15px", borderRadius: "50%",
+                    background: "#48c78e",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    boxShadow: "0 0 0 2px #1a1a2e",
+                  }}>
+                    <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M1.5 5 L4 7.5 L8.5 2.5" />
+                    </svg>
+                  </div>
+                )}
               </div>
 
               {/* Title + status */}

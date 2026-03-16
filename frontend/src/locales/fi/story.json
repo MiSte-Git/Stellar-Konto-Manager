@@ -937,7 +937,7 @@
       "pre": {
         "dialog1": "Näytän teille nyt, miten clawback todella toimii – livenä testnetissä. Luomme oman tokenin liikkeeseenlaskijana.",
         "dialog2": "Oikeasti livenä? Oikealla lohkoketjulla?",
-        "dialog3": "Kyllä – testnetissä. Aktivoimme clawbackin luonnin yhteydessä ja lähetämme 100 TRUST-tokenia demoosoitteeseen.",
+        "dialog3": "Kyllä – [[testnetissä|testnet]]. Aktivoimme clawbackin luonnin yhteydessä ja lähetämme 100 TRUST-tokenia demoosoitteeseen.",
         "dialog4": "Mielenkiintoista. Tämä näyttää, kuinka helposti liikkeeseenlaskija saa tämän vallan."
       },
       "action1": {
@@ -971,7 +971,8 @@
         "description": "Palauttaa 100 TRUST-tokenia demoosoitteesta. Mahdollista vain clawback-oikeuden omaavalle liikkeeseenlaskijalle.",
         "locked": "Suorita ensin vaihe 1.",
         "success": "100 TRUST palautettu onnistuneesti.",
-        "error": "Clawback epäonnistui. Yritä uudelleen."
+        "error": "Clawback epäonnistui. Yritä uudelleen.",
+        "error_no_sofia": "Virhe: Sofian demoosoite puuttuu. Suorita ensin Toiminto 1."
       },
       "post": {
         "dialog1": "Valmis. 100 TRUST on takaisin – palautus onnistui.",
@@ -1039,7 +1040,76 @@
       "dialog2": "Ja toivon, että useammat ihmiset tarkistaisivat, kehen luottavat – ennen ostamista.",
       "dialog3": "Molemmat ovat oikeassa. Se on opetus."
     },
-    "subtitle": "Clawback"
+    "subtitle": "Clawback",
+    "scene5b": {
+      "section": "Kaksiteräinen miekka",
+      "dialog1": "[[Clawback|clawback]] on kaksiteräinen miekka. Haluan sinun tietävän, milloin liikkeeseenlaskija käyttää tätä valtaa laillisesti – ja milloin ei.",
+      "dialog2": "Seriöösinen liikkeeseenlaskija käyttää clawbackia vain poikkeustapauksissa: todistetussa petoksessa, sääntelyvelvoitteen perusteella tai teknisen virheen korjaamiseksi. Ja he ilmoittavat siitä etukäteen.",
+      "dialog3": "Neuvoni: ennen kuin asetat luottamusrivin, tarkista Explorer-sovelluksesta, onko tokenilla clawback-lippu. Stellar Expertissa näet sen omaisuuserän tiedoissa – siellä lukee 'auth_clawback_enabled: true', jos lippu on asetettu.",
+      "dialog4": "Lue liikkeeseenlaskijan ehdot ennen kuin pidät tokeneita. Luotettavuus näkyy läpinäkyvyydestä – ei tokenin nimestä.",
+      "dialog5": "Sanon suoraan: kuka tahansa, jolla on clawback käytössä, hallitsee saldoasi. Kontrolli ja luottamus sulkevat toisensa pois.",
+      "dialog6": "Mutta jos liikkeeseenlaskija toimii vastuullisesti, clawback voi myös suojata – esimerkiksi varastettujen tai vahingossa lähetettyjen tokeneiden tapauksessa.",
+      "dialog7": "Juuri niin. Teknologia on neutraali – liikkeeseenlaskija päättää, miten sitä käyttää. Siksi tietoisuus on niin tärkeää."
+    },
+    "cert_title": "Asiantuntijasertifikaatti",
+    "cert_tagline": "Olet suorittanut kaikki 9 lukua – onnittelut!",
+    "cert_public_key_label": "Julkinen avain",
+    "cert_date_label": "Suorituspäivä",
+    "cert_chapters_label": "Suoritetut luvut",
+    "cert_xp_label": "XP yhteensä",
+    "cert_badge1": "Perussertifikaatti",
+    "cert_badge2": "Edistyneen sertifikaatti",
+    "cert_badge3": "Asiantuntijasertifikaatti",
+    "cert_print_btn": "Tallenna sertifikaatti",
+    "cert_home_btn": "Etusivulle",
+    "section_cert": "Asiantuntijasertifikaattisi",
+    "scene5c": {
+      "section": "Clawbackin rajoitukset",
+      "dialog1": "On jotain tärkeää, mitä sinun pitäisi tietää: [[DEX|dex]]-transaktiot tekevät clawbackista tehottoman.",
+      "dialog2": "Clawback toimii vain tiettyyn omaisuuserään – ja vain niin kauan kuin vastaanottaja yhä pitää sen hallussaan. Kun token on vaihdettu johonkin muuhun, se ei enää ole olemassa siinä muodossa.",
+      "dialog3": "Kuvittele: huijari saa 100 CAFE-tokenia. Hän vaihtaa ne välittömästi DEX:ssä XLM:ksi. Mitä tapahtuu?",
+      "dialog4": "Liikkeeseenlaskija voi kutsua clawbackin – mutta mitään ei enää ole takaisinperittävää. CAFE-tokenit ovat poissa, muuntuneet XLM:ksi, joka kuuluu huijarille.",
+      "dialog5": "Näetkö? Todellinen turvallisuus näyttää erilaiselta. Kuka vaihtaa nopeasti, on tavoittamattomissa.",
+      "dialog6": "Mutta se on parempi kuin ei mitään. Säänneltyjen omaisuuserien kohdalla huijarit eivät yleensä ole niin nopeita – sillä petoksen ja toimenpiteiden välillä kuluu usein viikkoja tai kuukausia – riittävästi aikaa huijarille vaihtaa tokenit.",
+      "dialog7": "Juuri niin. Clawback ei ole taikakeino petosta vastaan – mutta se on tehokas työkalu niin kauan kuin alkuperäinen omaisuuserä on yhä vastaanottajan hallussa."
+    },
+    "act1": {
+      "title": "Toiminto 1/2 – Luo ja myönnä token",
+      "description": "Aktivoi Clawback-oikeus tililläsi, luo TRUST-tokenin ja lähettää 100 TRUST demo-tilille.",
+      "btn_start": "Suorita nyt",
+      "step_friendbot": "Valmistellaan demo-tiliä...",
+      "step_setflags": "Aktivoidaan Clawback-oikeus...",
+      "step_trustline": "Luodaan trustline...",
+      "step_payment": "Myönnetään 100 TRUST...",
+      "success": "100 TRUST myönnetty – Clawback on aktiivinen ✓",
+      "tx_label": "TX-tiiviste:",
+      "xp": "+60 XP",
+      "error_retry": "Yritä uudelleen"
+    },
+    "act2": {
+      "title": "Toiminto 2/2 – Suorita Clawback",
+      "description": "Peruuttaa 100 TRUST-tokenin demo-tililtä. Mahdollista vain Issuereille, joilla on Clawback-oikeus.",
+      "locked": "Suorita ensin toiminto 1.",
+      "btn_start": "Suorita nyt",
+      "step_clawback": "Suoritetaan Clawback...",
+      "success": "100 TRUST peruutettu onnistuneesti ✓",
+      "tx_label": "TX-tiiviste:",
+      "xp": "+60 XP",
+      "error_retry": "Yritä uudelleen",
+      "error_no_sofia": "Virhe: Demo-osoite puuttuu. Suorita ensin toiminto 1."
+    },
+    "accounts": {
+      "title": "Tilien yleiskatsaus",
+      "issuer_label": "Oma tilisi (Issuer)",
+      "demo_label": "Demo-tili",
+      "demo_pending": "luodaan toiminnossa 1",
+      "view_account": "Näytä tili →",
+      "view_token": "Näytä token (Clawback-lippu) →",
+      "view_history": "Näytä token-historia →",
+      "explorer_note": "Stellarchain näyttää Clawback-lipun tällä hetkellä vain issuer-tilin tasolla – tämä antaa virheellisesti ymmärtää, että kaikilla tämän tilin tokeneilla on lippu. Stellar.expert näyttää sen oikein suoraan tokenin «Summary»-osiossa, ja «Transactions»-osiossa näkee selvästi, kuinka tokenit palautettiin Clawbackin avulla.\n\nTätä vaihetta varten suosittelemme siksi Stellar.expertia. Stellarchain on loistava explorer – toivomme, että tämä yksityiskohtanäkymä lisätään pian.",
+      "view_on_stellar_expert": "Näytä Stellar.expertissa",
+      "view_on_stellarchain": "Näytä Stellarchainissa"
+    }
   },
   "chapterLabel": "Luku",
   "chapterHint": "Vinkki: Parhaan oppimiskokemuksen saamiseksi suosittelemme aloittamaan luvusta 1.",
@@ -1157,7 +1227,38 @@
       "learning2": "Quorum Slice -ryhmät mahdollistavat joustavan, hajautetun luottamuksen verkossa.",
       "learning3": "Hajauttaminen tarkoittaa: matematiikka korvaa auktoriteetin – kaikille."
     },
-    "subtitle": "Stellar Consensus Protocol"
+    "subtitle": "Stellar Consensus Protocol",
+    "s5b": {
+      "section": "FBA – SCP:n ydin",
+      "card": {
+        "title": "Federated Byzantine Agreement",
+        "body": "FBA on SCP:n taustalla oleva periaate: jokainen validaattori valitsee itse, kehen luottaa – mikään keskuskomitea ei päätä sitä. Jotta transaktio vahvistetaan, noin 2/3 kvorumijoukon validaattoreista täytyy olla samaa mieltä.",
+        "cta": "Selvä"
+      },
+      "glossary_fba": "Mikä on FBA?",
+      "glossary_quorum": "Mikä on kvorumjoukko?",
+      "lumio1": "Hienoa siinä on: koska jokainen validaattori päättää itse, ei ole yhtä keskeistä vikapistettä. Vaikka muutama validaattori kaatuisi, verkko voi jatkaa toimintaansa.",
+      "sofia1": "Mutta kuka päättää, mitkä validaattorit ovat luotettavia?"
+    },
+    "s5c": {
+      "section": "Kehen oikeasti luotan?",
+      "lumio1": "Erittäin hyvä kysymys! Käyttäjänä et luota kenellekään nimenomaisesti – klikkaat vain 'Lähetä'.",
+      "lumio2": "Luottamuksen konfiguroivat validaattorioperaattorit: yritykset, pörssit ja yliopistot, jotka pyörittävät Stellar-nodea ja päättävät etukäteen, keihin muihin validaattoreihin he luottavat.",
+      "sofia1": "Ja miten se toimii, kun lähetän maksun?",
+      "lumio3": "Kuvittele 30 kirjanpitäjää eri kaupungeissa – he ovat sopineet keskenään, kehen luottavat. Kun lähetät, he äänestävät automaattisesti taustalla. Et huomaa mitään. Kun 2/3 on samaa mieltä, se on vahvistettu.",
+      "lumio4": "Tärkeää: luotat näihin operaattoreihin implisiittisesti. Siksi läpinäkyvyys on niin tärkeää – sinun pitäisi voida nähdä, kuka turvaa verkon."
+    },
+    "s5d": {
+      "section": "Kuka turvaa verkon?",
+      "card": {
+        "title": "Tarkastele validaattoreita",
+        "body": "Voit milloin tahansa tarkistaa, kuka turvaa Stellar-verkon – käyttöaste, operaattori ja kvorumjoukko ovat julkisesti nähtävissä. Tunnettuja luotettavia operaattoreita: Stellar Development Foundation, Coinbase, SatoshiPay, Franklin Templeton.",
+        "url_label": "Mistä voit tarkistaa:",
+        "url_note": "(ei klikattava – kirjoita osoite manuaalisesti selaimeen)",
+        "cta": "Jatka"
+      },
+      "lumio1": "Stellar on läpinäkyvä – se erottaa sen monista muista verkoista. Sinun ei tarvitse luottaa sokeasti kehenkään."
+    }
   },
   "chapter11": {
     "title": "Kanta-asiakasohjelma",
@@ -1274,7 +1375,7 @@
       "q1_explanation": "Erityistä lompakkoa ei tarvita – luottamusrivi oikealle liikkeeseenlaskijalle riittää. Se on lupa pitää tiettyä tokenia.",
       "q1_hint2": "Luottamusrivi kertoo Stellarille: 'Luotan tähän liikkeeseenlaskijaan ja olen valmis pitämään heidän tokeniaan.'",
       "q2": "Kaksi tokenia on molemmat nimeltään 'BERRY'. Mikä tekee niistä erilaisia?",
-      "q2_a1": "Liikkeeseenlaskija – mikä tahansa osoite voi nimetä tokenin BERRYksi",
+      "q2_a1": "Liikkeeseenlaskija – kuka tahansa voi luoda BERRY-nimisen tokenin, liikkeeseenlaskija tekee eron",
       "q2_a2": "Hinta",
       "q2_a3": "Tokenien määrä",
       "q2_explanation": "Hinta ja määrä voivat olla identtiset. Vain liikkeeseenlaskija – luova osoite – erottaa kaksi saman nimistä tokenia.",
@@ -1292,6 +1393,18 @@
       "learning3": "Sama tokenin nimi ≠ sama token. Vain liikkeeseenlaskija tekee eron.",
       "learning4": "Tunnista väärennettyjä tokeneita niiden liikkeeseenlaskijan osoitteen perusteella – tarkista se aina luotettavasta lähteestä.",
       "learning5": "Luottamusrivit yhdistävät asiakkaat kanta-asiakasohjelmaasi – ilman luottamusriviä tokenia ei voi vastaanottaa."
-    }
+    },
+    "cert_title": "Mestaritodistus",
+    "cert_tagline": "Kaikki 11 lukua suoritettu – tunnet Stellarin alusta loppuun!",
+    "cert_badge1": "Stellar-mestari",
+    "cert_badge2": "Token-asiantuntija",
+    "cert_badge3": "Lojaliteetti-pioneeri",
+    "cert_public_key_label": "Julkinen avaimesi",
+    "cert_date_label": "Suoritettu",
+    "cert_chapters_label": "Suoritetut luvut",
+    "cert_xp_label": "XP yhteensä",
+    "cert_print_btn": "Tulosta todistus",
+    "cert_home_btn": "Etusivulle",
+    "section_cert": "Mestaritodistuksesi"
   }
 }

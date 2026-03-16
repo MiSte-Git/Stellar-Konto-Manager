@@ -198,14 +198,17 @@ export default function QuizIndex() {
             <div key={quizId} className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
               {/* Main row */}
               <div className="flex items-center gap-3 px-4 py-3">
-                {/* Number / check */}
-                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${completed ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'}`}>
-                  {completed ? (
-                    <svg viewBox="0 0 20 20" className="w-4 h-4" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  ) : (
-                    idx + 1
+                {/* Number + completion badge */}
+                <div className="relative flex-shrink-0 w-8 h-8">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                    {idx + 1}
+                  </div>
+                  {completed && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-green-500 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                      <svg viewBox="0 0 10 10" className="w-2.5 h-2.5" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M1.5 5 L4 7.5 L8.5 2.5" />
+                      </svg>
+                    </div>
                   )}
                 </div>
 

@@ -937,7 +937,7 @@
       "pre": {
         "dialog1": "Sad ću vam pokazati kako clawback zaista funkcionira – uživo na testnetu. Kreirati ćemo vlastiti token kao izdavatelj.",
         "dialog2": "Stvarno uživo? Na pravom blockchainu?",
-        "dialog3": "Da – na testnetu. Aktiviramo clawback pri kreiranju i šaljemo 100 TRUST tokena na demo adresu.",
+        "dialog3": "Da – na [[testnetu|testnet]]. Aktiviramo clawback pri kreiranju i šaljemo 100 TRUST tokena na demo adresu.",
         "dialog4": "Zanimljivo. Tako se vidi koliko je lako izdavatelju dobiti ovu moć."
       },
       "action1": {
@@ -971,7 +971,8 @@
         "description": "Opoziva 100 TRUST tokena s demo adrese. Moguće samo kao izdavatelju s clawback ovlaštenjem.",
         "locked": "Molimo najprije završite korak 1.",
         "success": "100 TRUST uspješno opozvano.",
-        "error": "Clawback nije uspio. Molimo pokušajte ponovo."
+        "error": "Clawback nije uspio. Molimo pokušajte ponovo.",
+        "error_no_sofia": "Pogreška: nedostaje Sofijina demo adresa. Najprije izvršite Radnju 1."
       },
       "post": {
         "dialog1": "Gotovo. 100 TRUST je natrag – opoziv je bio uspješan.",
@@ -1039,7 +1040,76 @@
       "dialog2": "I volio/la bih da više ljudi provjerava kome vjeruju – prije kupnje.",
       "dialog3": "Oboje je ispravno. To je lekcija."
     },
-    "subtitle": "Clawback"
+    "subtitle": "Clawback",
+    "scene5b": {
+      "section": "Mač s dvije oštrice",
+      "dialog1": "[[Clawback|clawback]] je mač s dvije oštrice. Želim da znaš kada izdavatelj legitimno koristi ovu moć – i kada je ne koristi.",
+      "dialog2": "Ozbiljan izdavatelj koristi clawback samo u iznimnim slučajevima: dokazane prijevare, regulatorne obveze ili ispravka tehničke greške. I to unaprijed najavljuje.",
+      "dialog3": "Moj savjet: prije nego što postaviš liniju povjerenja, provjeri u istraživaču ima li token oznaku clawback. U Stellar Expertu to vidiš u pojedinostima imovine – piše 'auth_clawback_enabled: true' ako je oznaka postavljena.",
+      "dialog4": "Pročitaj uvjete izdavatelja prije nego što čuvaš tokene. Ozbiljnost se prepoznaje po transparentnosti – ne po nazivu tokena.",
+      "dialog5": "Reći ću izravno: tko ima aktiviran clawback, ima moć nad tvojim saldom. Kontrola i povjerenje međusobno se isključuju.",
+      "dialog6": "Ali ako izdavatelj postupa odgovorno, clawback može i zaštititi – na primjer u slučaju ukradenih ili greškom poslanih tokena.",
+      "dialog7": "Točno. Tehnologija je neutralna – izdavatelj odlučuje kako je koristiti. Zato je informiranost toliko važna."
+    },
+    "cert_title": "Stručni certifikat",
+    "cert_tagline": "Završio si svih 9 poglavlja – čestitamo!",
+    "cert_public_key_label": "Javni ključ",
+    "cert_date_label": "Datum završetka",
+    "cert_chapters_label": "Završena poglavlja",
+    "cert_xp_label": "Ukupni XP",
+    "cert_badge1": "Osnovni certifikat",
+    "cert_badge2": "Napredni certifikat",
+    "cert_badge3": "Stručni certifikat",
+    "cert_print_btn": "Spremi certifikat",
+    "cert_home_btn": "Na početnu stranicu",
+    "section_cert": "Tvoj Stručni certifikat",
+    "scene5c": {
+      "section": "Granice klawbacka",
+      "dialog1": "Postoji nešto važno što bi trebao znati: transakcije na [[DEX|dex]]-u čine clawback beskorisnim.",
+      "dialog2": "Clawback funkcionira samo na specifičnu imovinu – i samo dok je primatelj još drži. Čim se token zamijeni za nešto drugo, više ne postoji u tom obliku.",
+      "dialog3": "Zamislite: prevarant dobiva 100 CAFE tokena. Odmah ih zamijeni na DEX-u za XLM. Što se dogodi?",
+      "dialog4": "Izdavatelj može pozvati clawback – ali više nema ništa za povrat. CAFE tokeni su nestali, pretvoreni u XLM koji pripada prevarantu.",
+      "dialog5": "Vidite? Prava sigurnost izgleda drugačije. Tko brzo zamijeni, van je dosega.",
+      "dialog6": "Ali bolje je nego ništa. Kod reguliranih imovina prevaranti obično nisu tako brzi – jer između prijevare i intervencije često prolaze tjedni ili mjeseci – dovoljno vremena da prevarant odavno zamijeni tokene.",
+      "dialog7": "Točno. Clawback nije čarobno rješenje protiv prijevare – ali je učinkovit alat dok god se originalna imovina još nalazi kod primatelja."
+    },
+    "act1": {
+      "title": "Akcija 1 od 2 – Stvori i izdaj token",
+      "description": "Aktivira Clawback na tvom računu, stvara TRUST token i šalje 100 TRUST demo računu.",
+      "btn_start": "Izvrši sada",
+      "step_friendbot": "Priprema demo računa...",
+      "step_setflags": "Aktiviranje Clawback dozvole...",
+      "step_trustline": "Postavljanje trustline...",
+      "step_payment": "Izdavanje 100 TRUST...",
+      "success": "Izdano 100 TRUST – Clawback je aktivan ✓",
+      "tx_label": "TX Hash:",
+      "xp": "+60 XP",
+      "error_retry": "Pokušaj ponovo"
+    },
+    "act2": {
+      "title": "Akcija 2 od 2 – Izvrši Clawback",
+      "description": "Opoziva 100 TRUST tokena s demo računa. Moguće samo kao Izdavatelj s Clawback dozvolom.",
+      "locked": "Molimo najprije završi akciju 1.",
+      "btn_start": "Izvrši sada",
+      "step_clawback": "Izvršavanje Clawbacka...",
+      "success": "100 TRUST uspješno opozvano ✓",
+      "tx_label": "TX Hash:",
+      "xp": "+60 XP",
+      "error_retry": "Pokušaj ponovo",
+      "error_no_sofia": "Greška: nedostaje demo adresa. Molimo najprije izvrši akciju 1."
+    },
+    "accounts": {
+      "title": "Pregled računa",
+      "issuer_label": "Tvoj račun (Izdavatelj)",
+      "demo_label": "Demo račun",
+      "demo_pending": "bit će stvoren u akciji 1",
+      "view_account": "Pogledaj račun →",
+      "view_token": "Pogledaj token (Clawback zastavica) →",
+      "view_history": "Pogledaj povijest tokena →",
+      "explorer_note": "Stellarchain trenutno prikazuje Clawback zastavicu samo na razini računa izdavatelja – što pogrešno implicira da svi tokeni tog računa imaju zastavicu. Stellar.expert je prikazuje ispravno izravno na tokenu pod «Summary», a pod «Transactions» jasno se vidi kako su tokeni vraćeni putem Clawbacka.\n\nZa ovaj korak stoga preporučujemo Stellar.expert. Stellarchain je odličan explorer – nadamo se da će ovaj prikaz detalja uskoro biti dodan.",
+      "view_on_stellar_expert": "Pogledaj na Stellar.expert",
+      "view_on_stellarchain": "Pogledaj na Stellarchain"
+    }
   },
   "chapterLabel": "Poglavlje",
   "chapterHint": "Savjet: Za najbolje iskustvo učenja preporučujemo početak s Poglavljem 1.",
@@ -1157,7 +1227,38 @@
       "learning2": "Quorum Slices omogućuju fleksibilno, decentralizirano povjerenje u mreži.",
       "learning3": "Decentralizacija znači: matematika zamjenjuje autoritet – za sve."
     },
-    "subtitle": "Stellar Consensus Protocol"
+    "subtitle": "Stellar Consensus Protocol",
+    "s5b": {
+      "section": "FBA – Srce SCP-a",
+      "card": {
+        "title": "Federated Byzantine Agreement",
+        "body": "FBA je načelo iza SCP-a: svaki validator sam bira kome vjeruje – nikakav centralni odbor to ne odlučuje. Da bi se transakcija potvrdila, otprilike 2/3 validatora u kvorum setu mora biti suglasno.",
+        "cta": "Razumijem"
+      },
+      "glossary_fba": "Što je FBA?",
+      "glossary_quorum": "Što je kvorum set?",
+      "lumio1": "Sjajno je to što: budući da svaki validator sam odlučuje, ne postoji centralna točka kvara. Čak i ako nekoliko validatora otkaže, mreža može nastaviti.",
+      "sofia1": "Ali tko odlučuje koji su validatori pouzdani?"
+    },
+    "s5c": {
+      "section": "Kome zapravo vjerujem?",
+      "lumio1": "Odlično pitanje! Ti kao korisnik nikome eksplicitno ne ukazuješ povjerenje – jednostavno klikneš 'Pošalji'.",
+      "lumio2": "Povjerenje konfiguriraju operateri validatora: tvrtke, burze i sveučilišta koja pokreću Stellar čvor i unaprijed odlučuju kojim drugim validatorima vjeruju.",
+      "sofia1": "A kako to funkcionira kad šaljem plaćanje?",
+      "lumio3": "Zamislite 30 računovođa u različitim gradovima – dogovorili su se međusobno kome vjeruju. Kada pošalješ, oni automatski glasuju u pozadini. Ti ništa ne primjećuješ. Čim se 2/3 složi, potvrđeno je.",
+      "lumio4": "Važno: implicitno vjeruješ tim operaterima. Zato je transparentnost toliko važna – trebao bi moći vidjeti tko osigurava mrežu."
+    },
+    "s5d": {
+      "section": "Tko osigurava mrežu?",
+      "card": {
+        "title": "Pregled validatora",
+        "body": "Možeš u bilo kojem trenutku provjeriti tko osigurava Stellar mrežu – dostupnost, operater i kvorum set su javno vidljivi. Poznati pouzdani operateri: Stellar Development Foundation, Coinbase, SatoshiPay, Franklin Templeton.",
+        "url_label": "Gdje možeš provjeriti:",
+        "url_note": "(nije klikabilno – upiši adresu ručno u preglednik)",
+        "cta": "Nastavi"
+      },
+      "lumio1": "Stellar je transparentan – to ga razlikuje od mnogih drugih mreža. Ne moraš nikome slijepo vjerovati."
+    }
   },
   "chapter11": {
     "title": "Program Vjernosti",
@@ -1274,7 +1375,7 @@
       "q1_explanation": "Nije potreban poseban novčanik – dovoljna je linija povjerenja prema ispravnom izdavatelju. To je dozvola za držanje određenog tokena.",
       "q1_hint2": "Linija povjerenja govori Stellaru: 'Vjerujem ovom izdavatelju i spreman sam držati njegov token.'",
       "q2": "Dva tokena se oba zovu 'BERRY'. Što ih čini različitima?",
-      "q2_a1": "Izdavatelj – bilo koja adresa može nazvati token BERRY",
+      "q2_a1": "Izdavatelj – svatko može stvoriti token po imenu BERRY, izdavatelj je ono što čini razliku",
       "q2_a2": "Cijena",
       "q2_a3": "Broj tokena",
       "q2_explanation": "Cijena i količina mogu biti identične. Samo izdavatelj – adresa koja je stvorila token – razlikuje dva tokena s istim imenom.",
@@ -1292,6 +1393,18 @@
       "learning3": "Isto ime tokena ≠ isti token. Samo izdavatelj čini razliku.",
       "learning4": "Lažne tokene prepoznaj po adresi izdavatelja – uvijek je provjeri s pouzdanim izvorom.",
       "learning5": "Linije povjerenja povezuju kupce s tvojim programom lojalnosti – bez linije povjerenja nema primanja tokena."
-    }
+    },
+    "cert_title": "Majstorski Certifikat",
+    "cert_tagline": "Sva 11 poglavlja završena – poznaješ Stellar od temelja!",
+    "cert_badge1": "Stellar-majstor",
+    "cert_badge2": "Token-stručnjak",
+    "cert_badge3": "Loyalty-pionir",
+    "cert_public_key_label": "Tvoj javni ključ",
+    "cert_date_label": "Završeno",
+    "cert_chapters_label": "Završena poglavlja",
+    "cert_xp_label": "Ukupno XP",
+    "cert_print_btn": "Isprintaj certifikat",
+    "cert_home_btn": "Na početnu stranicu",
+    "section_cert": "Tvoj majstorski certifikat"
   }
 }

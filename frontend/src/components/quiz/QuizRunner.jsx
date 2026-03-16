@@ -314,8 +314,11 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
     const answersStr = JSON.stringify(selected);
     const answersHash = computeHash(answersStr);
     const numericId = String(lessonId).replace(/[^0-9]/g, '') || '1';
+    const storageKey = lessonId === 'multisig' ? 'lesson13'
+      : lessonId === 'cashback-loyalty' ? 'cashback-loyalty'
+      : `lesson${numericId}`;
     const before = readLocalAchievements(numericId).map((a) => a?.id).filter(Boolean);
-    const res = recordQuizResult(`lesson${numericId}`, { score: pct, answersHash, passPercent: passRaw, threeStarPercent: threeRaw });
+    const res = recordQuizResult(storageKey, { score: pct, answersHash, passPercent: passRaw, threeStarPercent: threeRaw });
     try {
       const afterList = readLocalAchievements(numericId);
       const newly = afterList.filter((a) => a && a.id && !before.includes(a.id));
@@ -327,7 +330,7 @@ export default function QuizRunner({ lessonId, data, onComplete, onExit, stickyF
         } catch { /* noop */ }
       });
       try {
-        const st = res?.v1?.lessons?.[`lesson${numericId}`] || {};
+        const st = res?.v1?.lessons?.[storageKey] || {};
         setEarnedStars(Math.max(0, Math.min(3, Number(st.stars || 0))));
       } catch { /* noop */ }
     } catch { /* noop */ }

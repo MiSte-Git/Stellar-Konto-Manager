@@ -365,6 +365,7 @@ export default function TestnetAction({
   actionId,
   label = "Ausführen",
   description,
+  successMessage,
   xpReward = 75,
   execute,
   onSuccess,
@@ -530,7 +531,7 @@ export default function TestnetAction({
           animate={{ opacity: 1, height: "auto" }}
           style={{ fontSize: "13px", color: "#48c78e", display: "flex", flexDirection: "column", gap: "10px" }}
         >
-          <span>✓ {t("ui.tx_success", "Transaktion erfolgreich!")}</span>
+          <span>✓ {successMessage || t("ui.tx_success", "Transaktion erfolgreich!")}</span>
           <TxHashLink hash={result?.hash || result?.id} />
           <motion.button
             initial={{ opacity: 0, y: 4 }}

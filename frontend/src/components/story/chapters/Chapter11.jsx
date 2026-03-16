@@ -10,16 +10,18 @@
  * Szenen 1–6 implementiert; Rest folgt.
  * Charaktere: Lumio, Marco (speaker: "narrator")
  */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
 import SceneRunner from "../SceneRunner";
 import ChapterSummary from "../ChapterSummary";
 import { useStory } from "../StoryContext";
 import { changeTrust, friendbotFund } from "../TestnetAction";
 import ExplorerConfirmDialog from "../ExplorerConfirmDialog";
 import { useSettings } from "../../../utils/useSettings";
+import Lumio from "../../quiz/Lumio";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -38,6 +40,10 @@ const ACTION_ID = "chapter11_receive_berry";
 const XP_ACTION = 60;
 const XP_CHOICE = 25;
 const XP_SUMMARY = 140;
+
+// XP per chapter (ch1–ch11) for the master certificate
+const CHAPTER_XP_ALL = [100, 110, 120, 150, 200, 160, 200, 280, 320, 175, 225];
+const TOTAL_XP_ALL = CHAPTER_XP_ALL.reduce((a, b) => a + b, 0);
 
 // ─── Stellar helpers ──────────────────────────────────────────────────────────
 
@@ -131,12 +137,12 @@ function LoyaltyInfoCard({ onNext, t, openGlossary }) {
         whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
         onClick={onNext}
         style={{
-          background: "linear-gradient(135deg, #FFD93D, #48c78e)", border: "none",
-          borderRadius: "14px", padding: "13px 28px", fontSize: "15px", fontWeight: 700,
-          color: "#1a1a2e", fontFamily: "inherit", cursor: "pointer",
+          background: "rgba(255,255,255,0.07)", border: "1.5px solid rgba(255,255,255,0.15)",
+          borderRadius: "12px", padding: "12px 24px", fontSize: "14px", fontWeight: 600,
+          color: "rgba(255,255,255,0.7)", fontFamily: "inherit", cursor: "pointer",
         }}
       >
-        {t("chapter11.s2.card.cta")}
+        {t("chapter11.s2.card.cta")} →
       </motion.button>
     </motion.div>
   );
@@ -575,12 +581,12 @@ function ScamRevealScene({ next, t, openGlossary }) {
             whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
             onClick={next}
             style={{
-              background: "linear-gradient(135deg, #ff5b5b, #FFD93D)", border: "none",
-              borderRadius: "14px", padding: "13px 28px", fontSize: "15px", fontWeight: 700,
-              color: "#1a1a2e", fontFamily: "inherit", cursor: "pointer",
+              background: "rgba(255,255,255,0.07)", border: "1.5px solid rgba(255,255,255,0.15)",
+              borderRadius: "12px", padding: "12px 24px", fontSize: "14px", fontWeight: 600,
+              color: "rgba(255,255,255,0.7)", fontFamily: "inherit", cursor: "pointer",
             }}
           >
-            {t("chapter11.s5.cta_next")}
+            {t("chapter11.s5.cta_next")} →
           </motion.button>
         </motion.div>
       )}
@@ -857,9 +863,174 @@ function QuizQuestion({ qKey, choices, correctValue, t, next }) {
   );
 }
 
+// ─── MasterCertificateScreen ──────────────────────────────────────────────────
+
+function MasterCertificateScreen({ t, i18n, keypair, onHome }) {
+  useEffect(() => {
+    const fire = (opts) => confetti({
+      particleCount: 130, spread: 90,
+      colors: ["#FFD93D", "#FF9A3D", "#48c78e", "#3DD6FF", "#ff8fab", "#ffffff"],
+      ...opts,
+    });
+    fire({ origin: { x: 0.25, y: 0.7 } });
+    setTimeout(() => fire({ origin: { x: 0.75, y: 0.7 } }), 200);
+    setTimeout(() => fire({ origin: { x: 0.5, y: 0.2 }, particleCount: 220 }), 500);
+    setTimeout(() => fire({ origin: { x: 0.3, y: 0.5 } }), 900);
+    setTimeout(() => fire({ origin: { x: 0.7, y: 0.5 } }), 1100);
+
+    const style = document.createElement("style");
+    style.id = "ch11-print-style";
+    style.textContent = `@media print {
+      body > * { visibility: hidden !important; }
+      #ch11-certificate { visibility: visible !important; position: fixed !important;
+        top: 0 !important; left: 0 !important; width: 100% !important;
+        background: white !important; color: #111 !important;
+        border: 2px solid #b45309 !important; border-radius: 0 !important;
+        padding: 40px !important; box-shadow: none !important; }
+      #ch11-certificate * { visibility: visible !important; color: #111 !important; }
+      #ch11-certificate .cert-xp-badge { background: #fef3c7 !important; border: 1px solid #b45309 !important; }
+    }`;
+    document.head.appendChild(style);
+    return () => document.getElementById("ch11-print-style")?.remove();
+  }, []);
+
+  const pubKey = keypair?.publicKey();
+  const truncatedKey = pubKey ? `${pubKey.slice(0, 8)}...${pubKey.slice(-8)}` : "—";
+  const dateStr = new Date().toLocaleDateString(i18n.language);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4 }}
+      style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}
+    >
+      <div
+        id="ch11-certificate"
+        style={{
+          width: "100%",
+          background: "linear-gradient(160deg, #1a1a2e, #1a0f00)",
+          border: "2px solid rgba(255,154,61,0.5)", borderRadius: "20px", padding: "28px 24px",
+          display: "flex", flexDirection: "column", alignItems: "center",
+          gap: "16px", textAlign: "center", boxShadow: "0 0 40px rgba(255,154,61,0.15)",
+        }}
+      >
+        <Lumio state="celebrate" size={72} />
+        <div>
+          <p style={{ margin: "0 0 4px", fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,154,61,0.7)", textTransform: "uppercase" }}>
+            Stellar Konto Manager
+          </p>
+          <h2 style={{ margin: 0, fontSize: "18px", fontWeight: 900, color: "#FF9A3D", lineHeight: 1.3 }}>
+            {t("chapter11.cert_title")}
+          </h2>
+        </div>
+        <p style={{ margin: 0, fontSize: "14px", color: "#48c78e", fontWeight: 700 }}>
+          {t("chapter11.cert_tagline")}
+        </p>
+
+        <div style={{ width: "100%", height: "1px", background: "rgba(255,154,61,0.15)" }} />
+
+        {/* Public key */}
+        <div style={{ width: "100%" }}>
+          <p style={{ margin: "0 0 4px", fontSize: "11px", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            {t("chapter11.cert_public_key_label")}
+          </p>
+          <p style={{
+            margin: 0, fontFamily: "monospace", fontSize: "12px", color: "#a0c4ff",
+            background: "rgba(160,196,255,0.08)", padding: "6px 10px", borderRadius: "6px", wordBreak: "break-all",
+          }}>
+            {truncatedKey}
+          </p>
+        </div>
+
+        {/* Date */}
+        <div style={{ width: "100%" }}>
+          <p style={{ margin: "0 0 4px", fontSize: "11px", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            {t("chapter11.cert_date_label")}
+          </p>
+          <p style={{ margin: 0, fontSize: "13px", color: "rgba(255,255,255,0.8)" }}>{dateStr}</p>
+        </div>
+
+        {/* Chapters list */}
+        <div style={{ width: "100%" }}>
+          <p style={{ margin: "0 0 8px", fontSize: "11px", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            {t("chapter11.cert_chapters_label")}
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            {[1,2,3,4,5,6,7,8,9,10,11].map(n => (
+              <div key={n} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px" }}>
+                <span style={{ color: "#48c78e", width: "16px", flexShrink: 0 }}>✓</span>
+                <span style={{ color: "rgba(255,255,255,0.75)", flex: 1, textAlign: "left" }}>{t(`chapter${n}.title`)}</span>
+                <span style={{ color: "#FFD93D", fontSize: "11px", fontWeight: 700 }}>+{CHAPTER_XP_ALL[n - 1]} XP</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Badges */}
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "center" }}>
+          {[
+            { icon: "🥇", key: "cert_badge1", color: "#FFD93D",  bg: "rgba(255,217,61,0.1)",  border: "rgba(255,217,61,0.3)" },
+            { icon: "🏆", key: "cert_badge2", color: "#FF9A3D",  bg: "rgba(255,154,61,0.1)",  border: "rgba(255,154,61,0.3)" },
+            { icon: "🌟", key: "cert_badge3", color: "#48c78e",  bg: "rgba(72,199,142,0.1)",  border: "rgba(72,199,142,0.3)" },
+          ].map(({ icon, key, color, bg, border }) => (
+            <div key={key} style={{
+              display: "flex", alignItems: "center", gap: "6px",
+              background: bg, border: `1px solid ${border}`,
+              borderRadius: "20px", padding: "5px 14px", fontSize: "12px",
+            }}>
+              <span>{icon}</span>
+              <span style={{ fontWeight: 700, color }}>{t(`chapter11.${key}`)}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Total XP */}
+        <div
+          className="cert-xp-badge"
+          style={{
+            display: "flex", alignItems: "center", gap: "8px",
+            background: "rgba(255,154,61,0.1)", border: "1px solid rgba(255,154,61,0.25)",
+            borderRadius: "30px", padding: "8px 20px",
+          }}
+        >
+          <span style={{ fontSize: "20px" }}>⭐</span>
+          <span style={{ fontSize: "18px", fontWeight: 800, color: "#FF9A3D" }}>
+            {TOTAL_XP_ALL} {t("chapter11.cert_xp_label")}
+          </span>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+        <motion.button
+          whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+          onClick={() => window.print()}
+          style={{
+            background: "linear-gradient(135deg, #FF9A3D, #FFD93D)", border: "none",
+            borderRadius: "14px", padding: "14px 24px", fontSize: "15px", fontWeight: 700,
+            color: "#1a1a2e", fontFamily: "inherit", cursor: "pointer",
+            boxShadow: "0 4px 16px rgba(255,154,61,0.3)",
+          }}
+        >
+          🖨️ {t("chapter11.cert_print_btn")}
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={onHome}
+          style={{
+            background: "rgba(255,255,255,0.07)", border: "1.5px solid rgba(255,255,255,0.15)",
+            borderRadius: "14px", padding: "13px 24px", fontSize: "14px", fontWeight: 600,
+            color: "rgba(255,255,255,0.7)", fontFamily: "inherit", cursor: "pointer",
+          }}
+        >
+          🏠 {t("chapter11.cert_home_btn")}
+        </motion.button>
+      </div>
+    </motion.div>
+  );
+}
+
 // ─── buildScenes ───────────────────────────────────────────────────────────────
 
-function buildScenes({ openGlossary, setShowChapterSelect, keypair, addXP, hasCompleted, completeAction, completeChapter, t }) {
+function buildScenes({ openGlossary, setShowChapterSelect, keypair, addXP, hasCompleted, completeAction, completeChapter, t, i18n, onExit }) {
   return [
 
     // ── Szene 1: Marcos neue Idee ──────────────────────────────────────────────
@@ -1078,10 +1249,19 @@ function buildScenes({ openGlossary, setShowChapterSelect, keypair, addXP, hasCo
           onNext={() => {
             addXP(XP_SUMMARY);
             completeChapter(11);
-            setShowChapterSelect(true);
+            next();
           }}
-          isLast={false}
+          isLast
         />
+      ),
+    },
+
+    // ── Meister-Zertifikat ────────────────────────────────────────────────────
+    {
+      type: "custom",
+      sectionTitle: t("chapter11.section_cert"),
+      render: () => (
+        <MasterCertificateScreen t={t} i18n={i18n} keypair={keypair} onHome={onExit} />
       ),
     },
   ];
@@ -1090,10 +1270,10 @@ function buildScenes({ openGlossary, setShowChapterSelect, keypair, addXP, hasCo
 // ─── Chapter11 ─────────────────────────────────────────────────────────────────
 
 export default function Chapter11() {
-  const { t } = useTranslation("story");
-  const { openGlossary, setShowChapterSelect, keypair, addXP, hasCompleted, completeAction, completeChapter } = useStory();
+  const { t, i18n } = useTranslation("story");
+  const { openGlossary, setShowChapterSelect, keypair, addXP, hasCompleted, completeAction, completeChapter, onExit } = useStory();
 
-  const scenes = buildScenes({ openGlossary, setShowChapterSelect, keypair, addXP, hasCompleted, completeAction, completeChapter, t });
+  const scenes = buildScenes({ openGlossary, setShowChapterSelect, keypair, addXP, hasCompleted, completeAction, completeChapter, t, i18n, onExit });
 
   return <SceneRunner scenes={scenes} />;
 }
