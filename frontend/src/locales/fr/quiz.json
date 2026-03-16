@@ -566,5 +566,76 @@
     "off": "De",
     "warnOnActiveQuiz": "Afficher un avertissement pendant un quiz en cours.",
     "warnOnActiveQuiz.desc": "Avertissez des questions déjà répondues avant de quitter la page."
+  },
+  "l14": {
+    "title": "Consensus sur Stellar",
+    "q1": {
+      "question": "Que signifie le consensus dans un réseau blockchain ?",
+      "hint": "Imagine que tout le monde doit s'accorder sur la même liste.",
+      "a": "Tous les Nodes s'accordent sur la même version valide du Ledger.",
+      "b": "Une autorité centrale stocke toutes les transactions.",
+      "c": "Chaque Node maintient sa propre version privée du Ledger.",
+      "d": "Le consensus signifie que les transactions sont chiffrées.",
+      "a.fb": "Correct ! Sans consensus, différents Nodes auraient différentes versions – le réseau serait peu fiable.",
+      "b.fb": "Faux. C'est tout le contraire : la blockchain fonctionne de manière décentralisée, sans autorité centrale.",
+      "c.fb": "Faux. Alors le réseau serait inutilisable – personne ne saurait quelle version est correcte.",
+      "d.fb": "Faux. Le chiffrement est différent du consensus."
+    },
+    "q2": {
+      "question": "Que se passerait-il s'il n'y avait pas de consensus dans un réseau blockchain ?",
+      "hint": "Réfléchis à ce qui se passe quand chacun a une version différente de la vérité.",
+      "a": "Les transactions deviendraient plus rapides.",
+      "b": "Seule la SDF pourrait confirmer les transactions.",
+      "c": "Différents Nodes auraient des Ledgers contradictoires – les paiements seraient peu fiables.",
+      "d": "Le réseau passerait automatiquement au minage.",
+      "a.fb": "Faux. Sans consensus, c'est le contraire qui se produirait – le chaos total.",
+      "b.fb": "Faux. La SDF n'a pas de pouvoir spécial dans le réseau.",
+      "c.fb": "Correct ! Sans consensus, personne ne saurait quelles transactions sont réellement valides.",
+      "d.fb": "Faux. Le minage est un mécanisme de consensus différent – pas un repli automatique."
+    },
+    "q3": {
+      "question": "Comment les Nodes du réseau Stellar se mettent-ils d'accord sur le Ledger ?",
+      "hint": "Il n'y a pas de minage – à la place, les Nodes votent entre eux.",
+      "a": "Via le Stellar Consensus Protocol – les Nodes votent en groupes de confiance (Quorum Slices).",
+      "b": "Par le minage : celui qui résout le problème en premier détermine le prochain bloc.",
+      "c": "Une autorité centrale de la Stellar Development Foundation décide.",
+      "d": "Aléatoirement – un Node est choisi par tirage au sort.",
+      "a.fb": "Correct ! SCP est le propre mécanisme de consensus de Stellar – pas de minage, pas de contrôleur central.",
+      "b.fb": "Faux. Le minage existe avec Bitcoin. Stellar utilise le vote plutôt que la puissance de calcul.",
+      "c.fb": "Faux. La SDF exploite certains Nodes, mais n'a pas de pouvoir décisionnel sur le consensus.",
+      "d.fb": "Faux. Le consensus est atteint par vote mutuel, pas par hasard."
+    },
+    "q4": {
+      "question": "Qu'est-ce qu'un Quorum Slice ?",
+      "hint": "Chaque Node choisit lui-même à qui il fait confiance.",
+      "a": "Le groupe de Nodes qu'un Node particulier considère comme dignes de confiance.",
+      "b": "Un jeton de sécurité pour les transactions.",
+      "c": "Le nombre maximum de transactions par seconde.",
+      "d": "Un super-Node auquel tous les autres Nodes doivent faire confiance.",
+      "a.fb": "Correct ! Chaque Node définit son propre Quorum Slice – cela rend SCP décentralisé et flexible.",
+      "b.fb": "Faux. Cela n'a rien à voir avec les jetons de sécurité.",
+      "c.fb": "Faux. Les Quorum Slices concernent la confiance, pas le débit.",
+      "d.fb": "Faux. Avec SCP, il n'y a pas de super-Node central auquel tous doivent faire confiance."
+    },
+    "q5": {
+      "question": "Les transactions Stellar ne nécessitent pas de minage et sont donc très économes en énergie.",
+      "hint": "Compare cela avec Bitcoin.",
+      "true": "Vrai",
+      "false": "Faux",
+      "true.fb": "Correct ! SCP se passe de minage énergivore – Stellar est très économe en ressources.",
+      "false.fb": "Faux. C'est effectivement vrai – Stellar n'a pas besoin de minage."
+    },
+    "q6": {
+      "question": "Comment reconnaître un Node digne de confiance dans le réseau Stellar ?",
+      "hint": "Il n'y a pas de certification officielle – la confiance repose sur autre chose.",
+      "a": "Il a été officiellement certifié par un gouvernement.",
+      "b": "Il est anonyme – cela le protège de la manipulation.",
+      "c": "L'opérateur est connu, le Node fonctionne de manière fiable et ses votes sont publiquement visibles.",
+      "d": "La SDF l'a désigné comme Node obligatoire pour tous.",
+      "a.fb": "Faux. Il n'existe pas de certification gouvernementale pour les Nodes.",
+      "b.fb": "Faux. L'anonymat rend un Node moins fiable – la transparence est plus importante.",
+      "c.fb": "Correct ! Aucun système n'est parfait – mais la transparence et l'observabilité publique rendent la manipulation plus difficile.",
+      "d.fb": "Faux. La SDF publie une liste de recommandations, mais personne n'est obligé de la suivre."
+    }
   }
 }

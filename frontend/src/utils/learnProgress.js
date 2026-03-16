@@ -23,6 +23,7 @@ const LESSON_TYPE = {
   lesson10: 'practice',
   lesson11: 'theory',
   lesson12: 'theory',
+  lesson14: 'theory',
   'scam-simulator': 'theory', // Interaktiv, aber kein on-chain Check erforderlich
 };
 

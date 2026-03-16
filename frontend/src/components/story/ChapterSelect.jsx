@@ -210,7 +210,7 @@ export default function ChapterSelect() {
           const isCompleted = chaptersCompleted.includes(n);
           const isCurrent = n === currentChapter;
           const isAdvanced = ADVANCED_CHAPTERS.includes(n);
-          const isComingSoon = CHAPTER_REGISTRY[n]?.tested === false;
+          const isComingSoon = CHAPTER_REGISTRY[n]?.tested === false && !isDev;
           const duration = CHAPTER_REGISTRY[n]?.durationMinutes;
 
           return (

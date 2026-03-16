@@ -566,5 +566,76 @@
     "off": "Alkaen",
     "warnOnActiveQuiz": "Näytä varoitus käynnissä olevan tietovisan aikana.",
     "warnOnActiveQuiz.desc": "Varoita jo vastatuista kysymyksistä ennen sivun poistumista."
+  },
+  "l14": {
+    "title": "Konsensus Stellarissa",
+    "q1": {
+      "question": "Mitä konsensus tarkoittaa lohkoketjuverkossa?",
+      "hint": "Kuvittele, että kaikkien täytyy sopia samasta listasta.",
+      "a": "Kaikki Nodet sopivat samasta kelvollisesta Ledger-versiosta.",
+      "b": "Keskitetty taho tallentaa kaikki tapahtumat.",
+      "c": "Jokainen Node ylläpitää omaa yksityistä Ledger-versiotaan.",
+      "d": "Konsensus tarkoittaa, että tapahtumat salataan.",
+      "a.fb": "Oikein! Ilman konsensusta eri Nodeilla olisi eri versiot – verkko olisi epäluotettava.",
+      "b.fb": "Väärin. Päinvastoin: lohkoketju toimii hajautetusti ilman keskitettyä tahoa.",
+      "c.fb": "Väärin. Silloin verkko olisi käyttökelvoton – kukaan ei tietäisi, mikä versio on oikea.",
+      "d.fb": "Väärin. Salaus on eri asia kuin konsensus."
+    },
+    "q2": {
+      "question": "Mitä tapahtuisi, jos lohkoketjuverkossa ei olisi konsensusta?",
+      "hint": "Ajattele, mitä tapahtuu, kun kaikilla on eri versio totuudesta.",
+      "a": "Tapahtumat nopeutuisivat.",
+      "b": "Vain SDF voisi vahvistaa tapahtumat.",
+      "c": "Eri Nodeilla olisi ristiriitaisia Ledgereita – maksut olisivat epäluotettavia.",
+      "d": "Verkko siirtyisi automaattisesti louhintaan.",
+      "a.fb": "Väärin. Ilman konsensusta tapahtuisi päinvastoin – täydellinen kaaos.",
+      "b.fb": "Väärin. SDF:llä ei ole erityisvaltaa verkossa.",
+      "c.fb": "Oikein! Ilman konsensusta kukaan ei tietäisi, mitkä tapahtumat ovat todella kelvollisia.",
+      "d.fb": "Väärin. Louhinta on eri konsensusmenetelmä – ei automaattinen varasuunnitelma."
+    },
+    "q3": {
+      "question": "Miten Nodet Stellar-verkossa sopivat Ledgeristä?",
+      "hint": "Louhintaa ei ole – sen sijaan Nodet äänestävät keskenään.",
+      "a": "Stellar Consensus Protocolin kautta – Nodet äänestävät luotetuissa ryhmissä (Quorum Slices).",
+      "b": "Louhinnan avulla: se joka ratkaisee tehtävän ensin, määrää seuraavan lohkon.",
+      "c": "Stellar Development Foundationin keskitetty taho päättää.",
+      "d": "Satunnaisesti – Node valitaan arvalla.",
+      "a.fb": "Oikein! SCP on Stellarin oma konsensusmenetelmä – ei louhintaa, ei keskitettyä ohjaajaa.",
+      "b.fb": "Väärin. Louhinta on Bitcoinissa. Stellar käyttää äänestystä laskentatehokkuuden sijaan.",
+      "c.fb": "Väärin. SDF ylläpitää joitain Nodeja, mutta sillä ei ole päätösvaltaa konsensuksessa.",
+      "d.fb": "Väärin. Konsensus saavutetaan keskinäisellä äänestyksellä, ei satunnaisesti."
+    },
+    "q4": {
+      "question": "Mikä on Quorum Slice?",
+      "hint": "Jokainen Node valitsee itse, kehen se luottaa.",
+      "a": "Joukko Nodeja, joita tietty Node pitää luotettavina.",
+      "b": "Turvallisuustunnus tapahtumille.",
+      "c": "Tapahtumien maksimimäärä sekunnissa.",
+      "d": "Super-Node, johon kaikkien muiden Nodeiden täytyy luottaa.",
+      "a.fb": "Oikein! Jokainen Node määrittää oman Quorum Slicensa – se tekee SCP:stä hajautetun ja joustavan.",
+      "b.fb": "Väärin. Sillä ei ole mitään tekemistä turvallisuustunnusten kanssa.",
+      "c.fb": "Väärin. Quorum Slicet koskevat luottamusta, ei suorituskykyä.",
+      "d.fb": "Väärin. SCP:ssä ei ole keskitettyä Super-Nodea, johon kaikkien täytyy luottaa."
+    },
+    "q5": {
+      "question": "Stellar-tapahtumat eivät vaadi louhintaa ja ovat siksi erittäin energiatehokkaita.",
+      "hint": "Vertaa tätä Bitcoiniin.",
+      "true": "Totta",
+      "false": "Epätotta",
+      "true.fb": "Oikein! SCP toimii ilman energiaintensiivistä louhintaa – Stellar on erittäin resurssitehokas.",
+      "false.fb": "Väärin. Se on totta – Stellar ei tarvitse louhintaa."
+    },
+    "q6": {
+      "question": "Mistä tunnistaa luotettavan Noden Stellar-verkossa?",
+      "hint": "Virallista sertifiointia ei ole – luottamus perustuu muuhun.",
+      "a": "Se on virallisesti hallituksen sertifioima.",
+      "b": "Se on anonyymi – se suojaa sitä manipuloinnilta.",
+      "c": "Ylläpitäjä on tunnettu, Node toimii luotettavasti ja sen äänestykset ovat julkisesti nähtävissä.",
+      "d": "SDF on määrittänyt sen kaikkien pakolliseksi Nodeksi.",
+      "a.fb": "Väärin. Nodeille ei ole olemassa valtion sertifiointia.",
+      "b.fb": "Väärin. Anonymiteetti tekee Nodesta vähemmän luotettavan – läpinäkyvyys on tärkeämpää.",
+      "c.fb": "Oikein! Mikään järjestelmä ei ole täydellinen – mutta läpinäkyvyys ja julkinen havaittavuus vaikeuttavat manipulointia.",
+      "d.fb": "Väärin. SDF julkaisee suositusluettelon, mutta kukaan ei ole velvollinen seuraamaan sitä."
+    }
   }
 }

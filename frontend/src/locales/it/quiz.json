@@ -566,5 +566,76 @@
     "off": "Da",
     "warnOnActiveQuiz": "Mostra un avviso durante un quiz in corso.",
     "warnOnActiveQuiz.desc": "Avvisa riguardo alle domande già risposte prima di lasciare la pagina."
+  },
+  "l14": {
+    "title": "Consenso su Stellar",
+    "q1": {
+      "question": "Cosa significa consenso in una rete blockchain?",
+      "hint": "Immagina che tutti debbano concordare sulla stessa lista.",
+      "a": "Tutti i Node concordano sulla stessa versione valida del Ledger.",
+      "b": "Un'autorità centrale memorizza tutte le transazioni.",
+      "c": "Ogni Node mantiene la propria versione privata del Ledger.",
+      "d": "Consenso significa che le transazioni vengono crittografate.",
+      "a.fb": "Corretto! Senza consenso, diversi Node avrebbero versioni diverse – la rete sarebbe inaffidabile.",
+      "b.fb": "Falso. È esattamente il contrario: la blockchain funziona in modo decentralizzato, senza un'autorità centrale.",
+      "c.fb": "Falso. Allora la rete sarebbe inutilizzabile – nessuno saprebbe quale versione è corretta.",
+      "d.fb": "Falso. La crittografia è diversa dal consenso."
+    },
+    "q2": {
+      "question": "Cosa succederebbe se non ci fosse consenso in una rete blockchain?",
+      "hint": "Pensa a cosa succede quando tutti hanno una versione diversa della verità.",
+      "a": "Le transazioni diventerebbero più veloci.",
+      "b": "Solo la SDF potrebbe confermare le transazioni.",
+      "c": "Diversi Node avrebbero Ledger contraddittori – i pagamenti sarebbero inaffidabili.",
+      "d": "La rete passerebbe automaticamente al mining.",
+      "a.fb": "Falso. Senza consenso accadrebbe il contrario – caos totale.",
+      "b.fb": "Falso. La SDF non ha poteri speciali nella rete.",
+      "c.fb": "Corretto! Senza consenso, nessuno saprebbe quali transazioni sono effettivamente valide.",
+      "d.fb": "Falso. Il mining è un meccanismo di consenso diverso – non un fallback automatico."
+    },
+    "q3": {
+      "question": "Come si accordano i Node nella rete Stellar sul Ledger?",
+      "hint": "Non c'è mining – invece i Node votano tra loro.",
+      "a": "Tramite lo Stellar Consensus Protocol – i Node votano in gruppi di fiducia (Quorum Slices).",
+      "b": "Attraverso il mining: chi risolve il problema per primo determina il prossimo blocco.",
+      "c": "Un'autorità centrale della Stellar Development Foundation decide.",
+      "d": "Casualmente – un Node viene scelto a sorte.",
+      "a.fb": "Corretto! SCP è il meccanismo di consenso proprio di Stellar – nessun mining, nessun controllore centrale.",
+      "b.fb": "Falso. Il mining esiste con Bitcoin. Stellar usa la votazione invece della potenza di calcolo.",
+      "c.fb": "Falso. La SDF gestisce alcuni Node, ma non ha potere decisionale sul consenso.",
+      "d.fb": "Falso. Il consenso si raggiunge attraverso votazione reciproca, non per caso."
+    },
+    "q4": {
+      "question": "Cos'è un Quorum Slice?",
+      "hint": "Ogni Node sceglie da solo di chi si fida.",
+      "a": "Il gruppo di Node che un determinato Node considera affidabili.",
+      "b": "Un token di sicurezza per le transazioni.",
+      "c": "Il numero massimo di transazioni al secondo.",
+      "d": "Un super-Node di cui tutti gli altri Node devono fidarsi.",
+      "a.fb": "Corretto! Ogni Node definisce il proprio Quorum Slice – questo rende SCP decentralizzato e flessibile.",
+      "b.fb": "Falso. Non ha nulla a che fare con i token di sicurezza.",
+      "c.fb": "Falso. I Quorum Slices riguardano la fiducia, non il throughput.",
+      "d.fb": "Falso. Con SCP non c'è un super-Node centrale di cui tutti devono fidarsi."
+    },
+    "q5": {
+      "question": "Le transazioni Stellar non richiedono mining e sono quindi molto efficienti dal punto di vista energetico.",
+      "hint": "Confronta con Bitcoin.",
+      "true": "Vero",
+      "false": "Falso",
+      "true.fb": "Corretto! SCP funziona senza il mining ad alta intensità energetica – Stellar è molto efficiente nelle risorse.",
+      "false.fb": "Falso. È effettivamente vero – Stellar non ha bisogno di mining."
+    },
+    "q6": {
+      "question": "Come si riconosce un Node affidabile nella rete Stellar?",
+      "hint": "Non esiste una certificazione ufficiale – la fiducia si basa su qualcos'altro.",
+      "a": "È stato ufficialmente certificato da un governo.",
+      "b": "È anonimo – questo lo protegge dalla manipolazione.",
+      "c": "L'operatore è noto, il Node funziona in modo affidabile e le sue votazioni sono pubblicamente visibili.",
+      "d": "La SDF lo ha designato come Node obbligatorio per tutti.",
+      "a.fb": "Falso. Non esiste una certificazione governativa per i Node.",
+      "b.fb": "Falso. L'anonimato rende un Node meno affidabile – la trasparenza è più importante.",
+      "c.fb": "Corretto! Nessun sistema è perfetto – ma la trasparenza e l'osservabilità pubblica rendono più difficile la manipolazione.",
+      "d.fb": "Falso. La SDF pubblica un elenco di raccomandazioni, ma nessuno è obbligato a seguirlo."
+    }
   }
 }

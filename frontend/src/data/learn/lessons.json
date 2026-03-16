@@ -108,6 +108,14 @@
     "reward": "⭐ 2 – Multisig-Starter"
   },
   {
+    "id": "lesson14",
+    "title": "Consensus auf Stellar",
+    "goal": "Verstehen, wie das Stellar Consensus Protocol (SCP) funktioniert.",
+    "task": "Beantworte Fragen zu SCP, Quorum Slices und dem Unterschied zu Mining.",
+    "learningOutcome": "SCP ermöglicht schnellen, dezentralen Konsens ohne Mining – jeder Node wählt selbst, wem er vertraut.",
+    "reward": "⭐ 2 – Konsens-Kenner"
+  },
+  {
     "id": "scam-simulator",
     "type": "scam-simulator",
     "route": "/learn/scam-simulator",

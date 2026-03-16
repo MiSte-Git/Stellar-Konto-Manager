@@ -1045,5 +1045,118 @@
   "chapterHint": "Tip: Voor de beste leerervaring raden we aan te beginnen met Hoofdstuk 1.",
   "chapterHintContinue": "Toch starten",
   "chapterHintGoTo1": "Naar Hoofdstuk 1",
-  "comingSoon": "Binnenkort beschikbaar"
+  "comingSoon": "Binnenkort beschikbaar",
+  "chapter10": {
+    "title": "Hoe worden ze het eens?",
+    "description": "Lumio legt uit hoe duizenden nodes tot dezelfde conclusie komen zonder leider – het Stellar Consensus Protocol.",
+    "placeholder": "Dit hoofdstuk komt binnenkort beschikbaar.",
+    "s1": {
+      "sofia1": "Lumio, ik begrijp nu wallets en transacties – maar wie beslist eigenlijk of een transactie geldig is?",
+      "lumio1": "Goede vraag! Niemand alleen. Duizenden computers over de hele wereld – zogenaamde nodes – beslissen dat samen.",
+      "sofia2": "Maar hoe kunnen duizenden computers het eens worden zonder dat er een baas is?",
+      "lumio2": "Precies dat maakt Stellar bijzonder. Laat me dat uitleggen..."
+    },
+    "s2": {
+      "card": {
+        "title": "Wat is Consensus?",
+        "body": "Stel je voor dat je hele klas moet beslissen waar jullie op excursie gaan – zonder lerares. Iedereen stemt en vertrouwt bepaalde klasgenoten meer. Als genoeg overlappende groepen tot hetzelfde resultaat komen, geldt dat als beslissing. In het Stellar-netwerk doen duizenden nodes precies dit – dat heet consensus.",
+        "cta": "Begrepen!"
+      },
+      "lumio1": "In het Stellar Consensus Protocol – kortweg SCP – stemt elke node met een groep andere nodes die hij vertrouwt.",
+      "sofia1": "En wie bepaalt welke nodes je vertrouwt?",
+      "lumio2": "Elke node zelf! Dat heet een Quorum Slice."
+    },
+    "s3": {
+      "card": {
+        "title": "Quorum Slice",
+        "body": "Elke node in het netwerk kiest zelf een groep nodes die hij vertrouwt – zijn Quorum Slice. Als de Quorum Slices van nodes overlappen, kan het hele netwerk consensus bereiken. Niemand hoeft iedereen te vertrouwen – alleen genoeg overlap is nodig.",
+        "cta": "Verder"
+      },
+      "glossary_btn": "Wat is een Quorum Set? (Woordenlijst openen)",
+      "sofia1": "Maar hoe herken je eigenlijk een betrouwbare Node?",
+      "lumio1": "Meestal kijk je naar drie dingen: Is de beheerder bekend – een universiteit, een organisatie, een bedrijf? Werkt de Node betrouwbaar en correct? En: Beveelt de Stellar Development Foundation deze Node aan?",
+      "sofia2": "Moet je de aanbeveling van de SDF volgen?",
+      "lumio2": "Nee, niemand hoeft dat. De SDF publiceert een lijst als richtlijn – maar elke Node beslist zelf.",
+      "sofia3": "Even wachten. Universiteiten worden vaak gesponsord door bedrijven. Kunnen die dan toch onder druk worden gezet?",
+      "lumio3": "Je hebt volkomen gelijk, Sofia. Geen beheerder is automatisch betrouwbaar alleen omdat hij bekend is. Dat is een echt probleem – en er is geen perfecte oplossing.",
+      "sofia4": "Dan is het hele systeem onveilig?",
+      "lumio4": "Niet onveiliger dan wat dan ook – alleen anders. Het verschil met een bank of een staat: in het Stellar-netwerk zijn alle stemmen publiekelijk zichtbaar. Als een Node raar begint te stemmen, merkt iedereen dat meteen.",
+      "sofia5": "Dus transparantie beschermt meer dan blind vertrouwen?",
+      "lumio5": "Precies. En hoe meer onafhankelijke Nodes er zijn, hoe moeilijker het wordt om er genoeg te manipuleren. Geen enkel systeem is perfect – maar veel zichtbare, onafhankelijke deelnemers zijn robuuster dan één centrale instantie."
+    },
+    "s4": {
+      "card": {
+        "title": "Waarom geen Mining?",
+        "body": "Bitcoin en andere netwerken gebruiken mining: computers lossen moeilijke rekenproblemen op en verbruiken daarbij veel stroom, en de snelste mag het volgende blok bepalen. Stellar heeft dat niet nodig. SCP bereikt overeenstemming door te stemmen – niet door rekenkracht. Dat maakt Stellar zeer energiezuinig.",
+        "cta": "Verder"
+      },
+      "sofia1": "Dat klinkt veel zinvoller dan mining.",
+      "lumio1": "Precies. Stellar is bewust zo gebouwd – voor snelle, goedkope betalingen zonder energieverspilling."
+    },
+    "s5": {
+      "lumio1": "Stel je voor dat elke node een andere versie van het ledger had. Sommigen zeggen dat je betaling is aangekomen, anderen niet. Chaos!",
+      "sofia1": "Dat zou verschrikkelijk zijn.",
+      "lumio2": "Precies daarom is consensus het hart van elke blockchain. Alle nodes zijn het eens over dezelfde waarheid – dezelfde lijst van alle transacties.",
+      "sofia2": "En dat gebeurt automatisch, zonder dat iemand ingrijpt?",
+      "lumio3": "Ja! Daarom heet het gedecentraliseerd. Geen baas, geen server, geen bank – alleen wiskunde en wederzijds vertrouwen. Niet blind – maar verifieerbaar."
+    },
+    "summary": {
+      "learning1": "SCP is Stellars consensusmechanisme – geen centrale autoriteit nodig.",
+      "learning2": "Elke node kiest zijn eigen Quorum Slice – zijn vertrouwensgroep.",
+      "learning3": "Consensus ontstaat uit overlappende Quorum Slices, niet uit mining.",
+      "learning4": "Stellar bereikt consensus in 3–5 seconden – energiezuinig en snel."
+    },
+    "s6": {
+      "q1": {
+        "question": "Wat maakt SCP bijzonder?",
+        "a": "Alle nodes volgen een centrale server",
+        "b": "Nodes stemmen in vertrouwde groepen – zonder mining",
+        "c": "De snelste node beslist over het volgende blok",
+        "feedback_correct": "Precies! SCP gebruikt Quorum Slices in plaats van mining of centrale controle.",
+        "feedback_wrong": "Nee, dat zou meer op Bitcoin of een gecentraliseerd systeem lijken."
+      },
+      "q2": {
+        "question": "Hoe lang heeft Stellar nodig om consensus te bereiken?",
+        "a": "Tot 10 minuten zoals Bitcoin",
+        "b": "Direct – minder dan 1 seconde",
+        "c": "3 tot 5 seconden",
+        "feedback_correct": "Juist! 3–5 seconden is heel snel voor een gedecentraliseerd netwerk.",
+        "feedback_wrong": "Niet helemaal. Stellar is snel, maar niet onmiddellijk – en veel sneller dan Bitcoin."
+      },
+      "q3": {
+        "question": "Wat is een Quorum Slice?",
+        "a": "De groep nodes die een node vertrouwt",
+        "b": "Een algoritme voor het berekenen van hashes",
+        "c": "Het maximale aantal transacties per seconde",
+        "feedback_correct": "Juist! Elke node kiest zijn eigen Quorum Slice.",
+        "feedback_wrong": "Dat is het niet. Een Quorum Slice is een vertrouwensgroep – geen algoritme of limiet."
+      },
+      "retry": "Opnieuw proberen",
+      "next": "Verder"
+    },
+    "s7": {
+      "question": "Sofia, je hebt nu veel geleerd over consensus. Wat vind je het meest indrukwekkend?",
+      "a": "Dat duizenden computers het eens worden zonder leider",
+      "b": "Dat het in 3–5 seconden gebeurt",
+      "c": "Dat er geen mining en geen energieverspilling is",
+      "response_a": "Dat vind ik ook fascinerend! Decentralisatie betekent: niemand heeft het laatste woord – en toch werkt het.",
+      "response_b": "Ja, de snelheid is indrukwekkend! Stel je voor dat je geld naar het buitenland stuurt – in minder dan 5 seconden is het er.",
+      "response_c": "Precies! Veel mensen denken dat blockchain veel energie verbruikt. Stellar bewijst dat dat niet zo hoeft te zijn.",
+      "continue": "Verder"
+    },
+    "s8": {
+      "sofia1": "Lumio, ik denk dat ik nu echt begrijp hoe Stellar werkt.",
+      "lumio1": "Dat doet me goed! Je hebt een lange weg afgelegd – van je eerste wallet tot het consensusprotocol.",
+      "sofia2": "Weet je wat me het meest verraste? Dat zoveel mensen kunnen samenwerken zonder elkaar te kennen.",
+      "lumio2": "Dat is de kern van gedecentraliseerde systemen. Vertrouwen komt niet van bekendheid – maar van wiskunde.",
+      "sofia3": "Dank je, Lumio. Dit was de beste financiële les van mijn leven!",
+      "lumio3": "En dit is nog maar het begin. De Stellar-wereld wacht op je, Sofia! ⭐"
+    },
+    "s9": {
+      "learning1": "SCP maakt consensus in seconden mogelijk – zonder mining, zonder leider.",
+      "learning2": "Quorum Slices maken flexibel, gedecentraliseerd vertrouwen in het netwerk mogelijk.",
+      "learning3": "Decentralisatie betekent: wiskunde vervangt autoriteit – voor iedereen."
+    },
+    "subtitle": "Het Stellar Consensus Protocol"
+  }
 }

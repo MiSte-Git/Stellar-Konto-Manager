@@ -566,5 +566,76 @@
     "off": "Od",
     "warnOnActiveQuiz": "Prikaži upozorenje tijekom aktualnog kviza.",
     "warnOnActiveQuiz.desc": "Upozorite na već odgovorena pitanja prije nego što napustite stranicu."
+  },
+  "l14": {
+    "title": "Konsenzus na Stellaru",
+    "q1": {
+      "question": "Što znači konsenzus u blockchain mreži?",
+      "hint": "Zamislite da se svi moraju dogovoriti o istom popisu.",
+      "a": "Svi Nodes se slažu oko iste valjane verzije Ledgera.",
+      "b": "Središnja institucija pohranjuje sve transakcije.",
+      "c": "Svaki Node održava svoju privatnu verziju Ledgera.",
+      "d": "Konsenzus znači da su transakcije šifrirane.",
+      "a.fb": "Točno! Bez konsenzusa različiti Nodes bi imali različite verzije – mreža bi bila nepouzdana.",
+      "b.fb": "Netočno. Upravo suprotno: blockchain funkcionira decentralizirano, bez središnje institucije.",
+      "c.fb": "Netočno. Tada bi mreža bila neupotrebljiva – nitko ne bi znao koja je verzija ispravna.",
+      "d.fb": "Netočno. Šifriranje je nešto drugo od konsenzusa."
+    },
+    "q2": {
+      "question": "Što bi se dogodilo da u blockchain mreži nema konsenzusa?",
+      "hint": "Razmislite što se događa kad svi imaju drugu verziju istine.",
+      "a": "Transakcije bi postale brže.",
+      "b": "Samo SDF bi mogao potvrđivati transakcije.",
+      "c": "Različiti Nodes bi imali proturječne Ledgere – plaćanja bi bila nepouzdana.",
+      "d": "Mreža bi se automatski prebacila na rudarenje.",
+      "a.fb": "Netočno. Bez konsenzusa bilo bi suprotno – totalni kaos.",
+      "b.fb": "Netočno. SDF nema posebnu moć u mreži.",
+      "c.fb": "Točno! Bez konsenzusa nitko ne bi znao koje su transakcije zapravo valjane.",
+      "d.fb": "Netočno. Rudarenje je drugi mehanizam konsenzusa – nije automatski zamjenski plan."
+    },
+    "q3": {
+      "question": "Kako se Nodes u Stellar mreži dogovaraju o Ledgeru?",
+      "hint": "Nema rudarenja – umjesto toga, Nodes glasuju međusobno.",
+      "a": "Putem Stellar Consensus Protocola – Nodes glasuju u pouzdanim grupama (Quorum Slices).",
+      "b": "Rudarenjem: tko prvi riješi zadatak, određuje sljedeći blok.",
+      "c": "Središnja institucija u Stellar Development Foundationu odlučuje.",
+      "d": "Nasumično – Node se bira izvlačenjem.",
+      "a.fb": "Točno! SCP je vlastiti mehanizam konsenzusa Stellara – bez rudarenja, bez središnjeg kontrolora.",
+      "b.fb": "Netočno. Rudarenje postoji kod Bitcoina. Stellar koristi glasovanje umjesto računalne snage.",
+      "c.fb": "Netočno. SDF upravlja nekim Nodeovima, ali nema moć odlučivanja o konsenzusu.",
+      "d.fb": "Netočno. Konsenzus se postiže međusobnim glasovanjem, ne slučajno."
+    },
+    "q4": {
+      "question": "Što je Quorum Slice?",
+      "hint": "Svaki Node sam bira kome vjeruje.",
+      "a": "Skupina Nodova koje određeni Node smatra pouzdanim.",
+      "b": "Sigurnosni token za transakcije.",
+      "c": "Maksimalni broj transakcija u sekundi.",
+      "d": "Super-Node kojem svi drugi moraju vjerovati.",
+      "a.fb": "Točno! Svaki Node definira vlastiti Quorum Slice – to čini SCP decentraliziranim i fleksibilnim.",
+      "b.fb": "Netočno. To nema nikakve veze sa sigurnosnim tokenima.",
+      "c.fb": "Netočno. Quorum Slices se tiču povjerenja, ne propusnosti.",
+      "d.fb": "Netočno. U SCP-u nema središnjeg Super-Nodea kojemu svi moraju vjerovati."
+    },
+    "q5": {
+      "question": "Stellar transakcije ne zahtijevaju rudarenje i stoga su vrlo energetski učinkovite.",
+      "hint": "Usporedi to s Bitcoinom.",
+      "true": "Točno",
+      "false": "Netočno",
+      "true.fb": "Točno! SCP funkcionira bez energetski intenzivnog rudarenja – Stellar je vrlo učinkovit u korištenju resursa.",
+      "false.fb": "Netočno. To je zapravo istina – Stellar ne treba rudarenje."
+    },
+    "q6": {
+      "question": "Kako prepoznati pouzdan Node u Stellar mreži?",
+      "hint": "Nema službene certifikacije – povjerenje se temelji na nečem drugom.",
+      "a": "Vlada ga je službeno certificirala.",
+      "b": "Anoniman je – to ga štiti od manipulacije.",
+      "c": "Operater je poznat, Node radi pouzdano i njegova glasanja su javno vidljiva.",
+      "d": "SDF ga je odredio kao obvezni Node za sve.",
+      "a.fb": "Netočno. Ne postoji državna certifikacija za Nodes.",
+      "b.fb": "Netočno. Anonimnost čini Node manje pouzdanim – transparentnost je važnija.",
+      "c.fb": "Točno! Nijedan sustav nije savršen – ali transparentnost i javna vidljivost otežavaju manipulaciju.",
+      "d.fb": "Netočno. SDF objavljuje popis preporuka, ali nitko nije dužan slijediti ih."
+    }
   }
 }

@@ -11,9 +11,9 @@
  * No component or locale file needs to be touched for these data changes.
  */
 
-export const TOTAL_CHAPTERS = 9;
+export const TOTAL_CHAPTERS = 10;
 
-export const ADVANCED_CHAPTERS = [8, 9];
+export const ADVANCED_CHAPTERS = [8, 9, 10];
 
 /** @type {Record<number, { durationMinutes: number, tested: boolean, subtitle: string }>} */
 export const CHAPTER_REGISTRY = {
@@ -26,4 +26,5 @@ export const CHAPTER_REGISTRY = {
   7: { tested: true, durationMinutes: 12, subtitle: "Multisignatur" },
   8: { tested: false, durationMinutes: 15, subtitle: "Smart Contracts & Soroban" },
   9: { tested: false, durationMinutes: 15, subtitle: "Clawback" },
+ 10: { tested: false, durationMinutes: 12, subtitle: "Stellar Consensus Protocol" },
 };

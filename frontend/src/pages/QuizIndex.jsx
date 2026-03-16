@@ -7,7 +7,7 @@ import lessons from '../data/learn/lessons.json';
 import MultisigIntro from './learn/MultisigIntro.jsx';
 
 // Map quiz ID → lesson data from lessons.json
-// Quiz IDs are '1'-'12' + 'multisig', lesson IDs are 'lesson1'-'lesson13'
+// Quiz IDs are '1'-'12' + 'multisig' + '14', lesson IDs are 'lesson1'-'lesson14'
 function getLessonForQuizId(quizId) {
   if (quizId === 'multisig') return lessons.find(l => l.id === 'lesson13') || null;
   return lessons.find(l => l.id === `lesson${quizId}`) || null;
@@ -19,7 +19,7 @@ const BADGE_CHAPTERS = {
   sicherheit: ['lesson7', 'lesson8', 'lesson9'],
   praxis: ['lesson10'],
 };
-const ALL_LESSON_IDS = Array.from({ length: 13 }, (_, i) => `lesson${i + 1}`);
+const ALL_LESSON_IDS = Array.from({ length: 14 }, (_, i) => `lesson${i + 1}`);
 
 /** Count how many lessons in a list have ≥ 2 stars. */
 function countQualified(lessonIds, progress) {

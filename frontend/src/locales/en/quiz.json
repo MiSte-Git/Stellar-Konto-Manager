@@ -566,5 +566,76 @@
     "off": "From",
     "warnOnActiveQuiz": "Display a warning during an ongoing quiz.",
     "warnOnActiveQuiz.desc": "Warn about already answered questions before leaving the page."
+  },
+  "l14": {
+    "title": "Consensus on Stellar",
+    "q1": {
+      "question": "What does consensus mean in a blockchain network?",
+      "hint": "Imagine everyone has to agree on the same list.",
+      "a": "All Nodes agree on the same valid version of the Ledger.",
+      "b": "A central authority stores all transactions.",
+      "c": "Each Node maintains its own private version of the Ledger.",
+      "d": "Consensus means that transactions are encrypted.",
+      "a.fb": "Correct! Without consensus, different Nodes would have different versions – the network would be unreliable.",
+      "b.fb": "Wrong. The opposite: blockchain works decentralized, without a central authority.",
+      "c.fb": "Wrong. Then the network would be unusable – nobody would know which version is correct.",
+      "d.fb": "Wrong. Encryption is different from consensus."
+    },
+    "q2": {
+      "question": "What would happen if there were no consensus in a blockchain network?",
+      "hint": "Think about what happens when everyone has a different version of the truth.",
+      "a": "Transactions would become faster.",
+      "b": "Only the SDF could confirm transactions.",
+      "c": "Different Nodes would have contradictory Ledgers – payments would be unreliable.",
+      "d": "The network would automatically switch to mining.",
+      "a.fb": "Wrong. Without consensus the opposite would happen – total chaos.",
+      "b.fb": "Wrong. The SDF has no special power in the network.",
+      "c.fb": "Correct! Without consensus, nobody would know which transactions are actually valid.",
+      "d.fb": "Wrong. Mining is a different consensus mechanism – not an automatic fallback."
+    },
+    "q3": {
+      "question": "How do Nodes in the Stellar network agree on the Ledger?",
+      "hint": "There's no mining – instead, Nodes vote with each other.",
+      "a": "Through the Stellar Consensus Protocol – Nodes vote in trusted groups (Quorum Slices).",
+      "b": "Through mining: whoever solves the puzzle first determines the next block.",
+      "c": "A central authority at the Stellar Development Foundation decides.",
+      "d": "Randomly – a Node is chosen by lottery.",
+      "a.fb": "Correct! SCP is Stellar's own consensus mechanism – no mining, no central controller.",
+      "b.fb": "Wrong. Mining exists with Bitcoin. Stellar uses voting instead of computing power.",
+      "c.fb": "Wrong. The SDF operates some Nodes, but has no decision-making power over consensus.",
+      "d.fb": "Wrong. Consensus is achieved through mutual voting, not by chance."
+    },
+    "q4": {
+      "question": "What is a Quorum Slice?",
+      "hint": "Each Node chooses for itself who it trusts.",
+      "a": "The group of Nodes that a particular Node considers trustworthy.",
+      "b": "A security token for transactions.",
+      "c": "The maximum number of transactions per second.",
+      "d": "A super-Node that all other Nodes must trust.",
+      "a.fb": "Correct! Each Node defines its own Quorum Slice – that makes SCP decentralized and flexible.",
+      "b.fb": "Wrong. That has nothing to do with security tokens.",
+      "c.fb": "Wrong. Quorum Slices are about trust, not throughput.",
+      "d.fb": "Wrong. With SCP there's no central super-Node that everyone must trust."
+    },
+    "q5": {
+      "question": "Stellar transactions require no mining and are therefore very energy-efficient.",
+      "hint": "Compare this with Bitcoin.",
+      "true": "True",
+      "false": "False",
+      "true.fb": "Correct! SCP gets by without energy-intensive mining – Stellar is very resource-efficient.",
+      "false.fb": "Wrong. That's actually true – Stellar doesn't need mining."
+    },
+    "q6": {
+      "question": "How do you recognize a trustworthy Node in the Stellar network?",
+      "hint": "There's no official certification – trust is based on something else.",
+      "a": "It was officially certified by a government.",
+      "b": "It is anonymous – that protects it from manipulation.",
+      "c": "The operator is known, the Node runs reliably, and its votes are publicly visible.",
+      "d": "The SDF has designated it as a mandatory Node for everyone.",
+      "a.fb": "Wrong. There is no government certification for Nodes.",
+      "b.fb": "Wrong. Anonymity makes a Node less trustworthy – transparency is more important.",
+      "c.fb": "Correct! No system is perfect – but transparency and public observability make manipulation harder.",
+      "d.fb": "Wrong. The SDF publishes a recommendation list, but nobody is obligated to follow it."
+    }
   }
 }

@@ -18,6 +18,7 @@ const chapters = {
   7: lazy(() => import("./chapters/Chapter7")),
   8: lazy(() => import("./chapters/Chapter8")),
   9: lazy(() => import("./chapters/Chapter9")),
+ 10: lazy(() => import("./chapters/Chapter10")),
 };
 
 // ─── HUD – Hearts, XP, Chapter indicator ─────────────────────────────────────

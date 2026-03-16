@@ -566,5 +566,76 @@
     "off": "Vanaf",
     "warnOnActiveQuiz": "Geef een waarschuwing weer tijdens een lopende quiz.",
     "warnOnActiveQuiz.desc": "Waarschuw voor al beantwoorde vragen voordat je de pagina verlaat."
+  },
+  "l14": {
+    "title": "Consensus op Stellar",
+    "q1": {
+      "question": "Wat betekent consensus in een blockchain-netwerk?",
+      "hint": "Stel je voor dat iedereen het eens moet worden over dezelfde lijst.",
+      "a": "Alle Nodes zijn het eens over dezelfde geldige versie van de Ledger.",
+      "b": "Een centrale instantie slaat alle transacties op.",
+      "c": "Elke Node onderhoudt zijn eigen privéversie van de Ledger.",
+      "d": "Consensus betekent dat transacties worden versleuteld.",
+      "a.fb": "Correct! Zonder consensus zouden verschillende Nodes verschillende versies hebben – het netwerk zou onbetrouwbaar zijn.",
+      "b.fb": "Onjuist. Juist het tegenovergestelde: blockchain werkt gedecentraliseerd, zonder centrale instantie.",
+      "c.fb": "Onjuist. Dan zou het netwerk onbruikbaar zijn – niemand zou weten welke versie correct is.",
+      "d.fb": "Onjuist. Versleuteling is iets anders dan consensus."
+    },
+    "q2": {
+      "question": "Wat zou er gebeuren als er geen consensus was in een blockchain-netwerk?",
+      "hint": "Denk na wat er gebeurt als iedereen een andere versie van de waarheid heeft.",
+      "a": "Transacties zouden sneller worden.",
+      "b": "Alleen de SDF kon transacties bevestigen.",
+      "c": "Verschillende Nodes zouden tegenstrijdige Ledgers hebben – betalingen zouden onbetrouwbaar zijn.",
+      "d": "Het netwerk zou automatisch overschakelen op mining.",
+      "a.fb": "Onjuist. Zonder consensus zou het tegenovergestelde gebeuren – totale chaos.",
+      "b.fb": "Onjuist. De SDF heeft geen speciale bevoegdheden in het netwerk.",
+      "c.fb": "Correct! Zonder consensus zou niemand weten welke transacties werkelijk geldig zijn.",
+      "d.fb": "Onjuist. Mining is een ander consensusmechanisme – geen automatische terugvaloptie."
+    },
+    "q3": {
+      "question": "Hoe komen Nodes in het Stellar-netwerk tot overeenstemming over de Ledger?",
+      "hint": "Er is geen mining – in plaats daarvan stemmen Nodes met elkaar.",
+      "a": "Via het Stellar Consensus Protocol – Nodes stemmen in vertrouwde groepen (Quorum Slices).",
+      "b": "Door mining: wie het probleem als eerste oplost, bepaalt het volgende blok.",
+      "c": "Een centrale instantie bij de Stellar Development Foundation beslist.",
+      "d": "Willekeurig – een Node wordt door loting gekozen.",
+      "a.fb": "Correct! SCP is Stellar's eigen consensusmechanisme – geen mining, geen centrale controleur.",
+      "b.fb": "Onjuist. Mining bestaat bij Bitcoin. Stellar gebruikt stemmen in plaats van rekenkracht.",
+      "c.fb": "Onjuist. De SDF beheert enkele Nodes, maar heeft geen beslissingsbevoegdheid over de consensus.",
+      "d.fb": "Onjuist. Consensus wordt bereikt door onderlinge stemming, niet door toeval."
+    },
+    "q4": {
+      "question": "Wat is een Quorum Slice?",
+      "hint": "Elke Node kiest zelf wie het vertrouwt.",
+      "a": "De groep Nodes die een bepaalde Node als betrouwbaar beschouwt.",
+      "b": "Een beveiligingstoken voor transacties.",
+      "c": "Het maximale aantal transacties per seconde.",
+      "d": "Een super-Node waaraan alle andere Nodes vertrouwen moeten geven.",
+      "a.fb": "Correct! Elke Node definieert zijn eigen Quorum Slice – dat maakt SCP gedecentraliseerd en flexibel.",
+      "b.fb": "Onjuist. Dat heeft niets te maken met beveiligingstokens.",
+      "c.fb": "Onjuist. Quorum Slices gaan over vertrouwen, niet over doorvoer.",
+      "d.fb": "Onjuist. Bij SCP is er geen centrale super-Node waaraan iedereen vertrouwen moet geven."
+    },
+    "q5": {
+      "question": "Stellar-transacties vereisen geen mining en zijn daarom zeer energiezuinig.",
+      "hint": "Vergelijk dit met Bitcoin.",
+      "true": "Waar",
+      "false": "Onwaar",
+      "true.fb": "Correct! SCP werkt zonder energie-intensief mining – Stellar is zeer zuinig in het gebruik van middelen.",
+      "false.fb": "Onjuist. Dat is inderdaad waar – Stellar heeft geen mining nodig."
+    },
+    "q6": {
+      "question": "Hoe herken je een betrouwbare Node in het Stellar-netwerk?",
+      "hint": "Er is geen officiële certificering – vertrouwen is gebaseerd op iets anders.",
+      "a": "Het is officieel gecertificeerd door een overheid.",
+      "b": "Het is anoniem – dat beschermt het tegen manipulatie.",
+      "c": "De beheerder is bekend, de Node werkt betrouwbaar en zijn stemmen zijn publiekelijk zichtbaar.",
+      "d": "De SDF heeft het aangewezen als verplichte Node voor iedereen.",
+      "a.fb": "Onjuist. Er bestaat geen overheidscertificering voor Nodes.",
+      "b.fb": "Onjuist. Anonimiteit maakt een Node minder betrouwbaar – transparantie is belangrijker.",
+      "c.fb": "Correct! Geen enkel systeem is perfect – maar transparantie en publieke zichtbaarheid maken manipulatie moeilijker.",
+      "d.fb": "Onjuist. De SDF publiceert een aanbevelingslijst, maar niemand is verplicht deze te volgen."
+    }
   }
 }

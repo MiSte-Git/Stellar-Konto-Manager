@@ -1045,5 +1045,118 @@
   "chapterHint": "Vinkki: Parhaan oppimiskokemuksen saamiseksi suosittelemme aloittamaan luvusta 1.",
   "chapterHintContinue": "Aloita silti",
   "chapterHintGoTo1": "Siirry lukuun 1",
-  "comingSoon": "Tulossa pian"
+  "comingSoon": "Tulossa pian",
+  "chapter10": {
+    "title": "Kuinka he sopivat?",
+    "description": "Lumio selittää, kuinka tuhannet solmut pääsevät samaan tulokseen ilman johtajaa – Stellar Consensus Protocol.",
+    "placeholder": "Tämä luku on tulossa pian.",
+    "s1": {
+      "sofia1": "Lumio, ymmärrän nyt lompakot ja transaktiot – mutta kuka oikeastaan päättää, onko transaktio kelvollinen?",
+      "lumio1": "Hyvä kysymys! Ei kukaan yksin. Tuhannet tietokoneet ympäri maailmaa – niin kutsutut nodes – päättävät sen yhdessä.",
+      "sofia2": "Mutta miten tuhannet tietokoneet voivat sopia asiasta ilman, että kukaan on johtaja?",
+      "lumio2": "Juuri se tekee Stellarista erityisen. Anna minun selittää..."
+    },
+    "s2": {
+      "card": {
+        "title": "Mitä on konsensus?",
+        "body": "Kuvittele, että koko luokkasi täytyy päättää, minne retkelle mennään – ilman opettajaa. Jokainen äänestää ja luottaa enemmän tiettyihin luokkakavereihin. Kun tarpeeksi päällekkäiset ryhmät pääsevät samaan tulokseen, se katsotaan päätökseksi. Stellar-verkossa tuhannet nodes tekevät juuri näin – sitä kutsutaan konsensukseksi.",
+        "cta": "Selvä!"
+      },
+      "lumio1": "Stellar Consensus Protocolissa – lyhyesti SCP – jokainen node äänestää muiden nodeiden ryhmän kanssa, johon se luottaa.",
+      "sofia1": "Ja kuka päättää, mihin nodesiin luotetaan?",
+      "lumio2": "Jokainen node itse! Sitä kutsutaan Quorum Sliceksi."
+    },
+    "s3": {
+      "card": {
+        "title": "Quorum Slice",
+        "body": "Jokainen node verkossa valitsee oman ryhmänsä nodesista, joihin se luottaa – Quorum Slicen. Kun nodeiden Quorum Slicet menevät päällekkäin, koko verkko voi saavuttaa konsensuksen. Kenenkään ei tarvitse luottaa kaikkiin – riittää tarpeeksi päällekkäisyyttä.",
+        "cta": "Jatka"
+      },
+      "glossary_btn": "Mikä on Quorum Set? (Avaa sanasto)",
+      "sofia1": "Mutta miten ylipäätään tunnistaa luotettavan Noden?",
+      "lumio1": "Yleensä katsotaan kolmea asiaa: Onko operaattori tunnettu – yliopisto, organisaatio, yritys? Toimiiko Node luotettavasti ja oikein? Ja: Suositteleeko Stellar Development Foundation tätä Nodea?",
+      "sofia2": "Pitääkö SDF:n suositusta noudattaa?",
+      "lumio2": "Ei, kenenkään ei tarvitse. SDF julkaisee listan suuntaviivoiksi – mutta jokainen Node päättää itse.",
+      "sofia3": "Hetkinen. Yliopistoja sponsoroivat usein yritykset. Eikö niitä silti voida painostaa?",
+      "lumio3": "Olet täysin oikeassa, Sofia. Mikään operaattori ei ole automaattisesti luotettava vain siksi, että se on tunnettu. Se on todellinen ongelma – eikä täydellistä ratkaisua ole.",
+      "sofia4": "Onko koko järjestelmä siis epävarma?",
+      "lumio4": "Ei sen epävarmempi kuin mikään muu – vain erilainen. Ero pankkiin tai valtioon: Stellar-verkossa kaikki äänestykset ovat julkisesti nähtävissä. Jos Node alkaa äänestää oudosti, kaikki huomaavat sen välittömästi.",
+      "sofia5": "Niin läpinäkyvyys suojaa enemmän kuin sokea luottamus?",
+      "lumio5": "Juuri niin. Ja mitä enemmän riippumattomia Nodeja on, sitä vaikeampaa on manipuloida tarpeeksi monta. Mikään järjestelmä ei ole täydellinen – mutta monet näkyvät, riippumattomat osallistujat ovat vakaampia kuin yksi keskitetty taho."
+    },
+    "s4": {
+      "card": {
+        "title": "Miksi ei louhintaa?",
+        "body": "Bitcoin ja muut verkot käyttävät louhintaa: tietokoneet ratkaisevat vaikeita laskutehtäviä kuluttaen paljon virtaa, ja nopein saa määrätä seuraavan lohkon. Stellar ei tarvitse sitä. SCP pääsee sopimukseen äänestämällä – ei laskentateholla. Se tekee Stellarista erittäin energiatehokkaan.",
+        "cta": "Jatka"
+      },
+      "sofia1": "Se kuulostaa paljon järkevämmältä kuin louhinta.",
+      "lumio1": "Juuri niin. Stellar rakennettiin tarkoituksella näin – nopeita ja halpoja maksuja varten ilman energianhukkaa."
+    },
+    "s5": {
+      "lumio1": "Kuvittele, että jokaisella nodella olisi erilainen versio ledgeristä. Jotkut sanovat maksusi saapui, toiset eivät. Kaaos!",
+      "sofia1": "Se olisi kamalaa.",
+      "lumio2": "Juuri siksi konsensus on jokaisen blockchainin ydin. Kaikki nodes sopivat samasta totuudesta – samasta kaikkien transaktioiden listasta.",
+      "sofia2": "Ja se tapahtuu automaattisesti, ilman että kukaan puuttuu asiaan?",
+      "lumio3": "Kyllä! Siksi sitä kutsutaan hajautetuksi. Ei johtajaa, ei palvelinta, ei pankkia – vain matematiikkaa ja keskinäistä luottamusta. Ei sokeaa – vaan todennettavaa."
+    },
+    "summary": {
+      "learning1": "SCP on Stellarin konsensusmekanismi – ei tarvita keskitettyä auktoriteettia.",
+      "learning2": "Jokainen node valitsee oman Quorum Slicen – luottamusryhmänsä.",
+      "learning3": "Konsensus syntyy päällekkäisistä Quorum Sliceista, ei louhinnasta.",
+      "learning4": "Stellar saavuttaa konsensuksen 3–5 sekunnissa – energiatehokas ja nopea."
+    },
+    "s6": {
+      "q1": {
+        "question": "Mikä tekee SCP:stä erityisen?",
+        "a": "Kaikki solmut seuraavat keskuspalvelinta",
+        "b": "Solmut äänestävät luotetuissa ryhmissä – ilman louhintaa",
+        "c": "Nopein solmu päättää seuraavan lohkon",
+        "feedback_correct": "Juuri niin! SCP käyttää Quorum Slice -ryhmiä louhinnan tai keskitetyn hallinnan sijaan.",
+        "feedback_wrong": "Ei, se muistuttaisi enemmän Bitcoinia tai keskitettyä järjestelmää."
+      },
+      "q2": {
+        "question": "Kuinka kauan Stellar tarvitsee konsensukseen?",
+        "a": "Jopa 10 minuuttia kuten Bitcoin",
+        "b": "Välittömästi – alle 1 sekunti",
+        "c": "3–5 sekuntia",
+        "feedback_correct": "Oikein! 3–5 sekuntia on erittäin nopeaa hajautetulle verkolle.",
+        "feedback_wrong": "Ei aivan. Stellar on nopea, mutta ei välitön – ja paljon nopeampi kuin Bitcoin."
+      },
+      "q3": {
+        "question": "Mikä on Quorum Slice?",
+        "a": "Solmujen ryhmä, johon solmu luottaa",
+        "b": "Algoritmi hajautusarvojen laskemiseen",
+        "c": "Suurin mahdollinen transaktioiden määrä sekunnissa",
+        "feedback_correct": "Oikein! Jokainen solmu valitsee oman Quorum Slice -ryhmänsä.",
+        "feedback_wrong": "Ei se ole. Quorum Slice on luottamusryhmä – ei algoritmi eikä raja."
+      },
+      "retry": "Yritä uudelleen",
+      "next": "Jatka"
+    },
+    "s7": {
+      "question": "Sofia, olet nyt oppinut paljon konsensuksesta. Mikä sinua eniten vaikuttaa?",
+      "a": "Että tuhannet tietokoneet sopivat ilman johtajaa",
+      "b": "Että se tapahtuu 3–5 sekunnissa",
+      "c": "Että louhintaa ja energiaa ei haaskata",
+      "response_a": "Minustakin se on kiehtovaa! Hajauttaminen tarkoittaa: kenelläkään ei ole viimeistä sanaa – ja silti se toimii.",
+      "response_b": "Kyllä, nopeus on vaikuttavaa! Kuvittele rahan siirtäminen ulkomaille – alle 5 sekunnissa se on perillä.",
+      "response_c": "Juuri niin! Monet luulevat, että lohkoketju tarvitsee paljon energiaa. Stellar todistaa, ettei sen tarvitse olla niin.",
+      "continue": "Jatka"
+    },
+    "s8": {
+      "sofia1": "Lumio, luulen, että ymmärrän nyt todella, miten Stellar toimii.",
+      "lumio1": "Olen iloinen! Olet kulkenut pitkän matkan – ensimmäisestä lompakostasi konsensusprotokollaan.",
+      "sofia2": "Tiedätkö, mikä minua eniten yllätti? Että niin monet ihmiset voivat tehdä yhteistyötä tuntematta toisiaan.",
+      "lumio2": "Se on hajautettujen järjestelmien ydin. Luottamus ei synny tuttuudesta – vaan matematiikasta.",
+      "sofia3": "Kiitos, Lumio. Tämä oli elämäni paras taloustunti!",
+      "lumio3": "Ja tämä on vasta alkua. Stellarin maailma odottaa sinua, Sofia! ⭐"
+    },
+    "s9": {
+      "learning1": "SCP mahdollistaa konsensuksen sekunneissa – ilman louhintaa, ilman johtajaa.",
+      "learning2": "Quorum Slice -ryhmät mahdollistavat joustavan, hajautetun luottamuksen verkossa.",
+      "learning3": "Hajauttaminen tarkoittaa: matematiikka korvaa auktoriteetin – kaikille."
+    },
+    "subtitle": "Stellar Consensus Protocol"
+  }
 }

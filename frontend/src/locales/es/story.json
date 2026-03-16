@@ -1045,5 +1045,118 @@
   "chapterHint": "Consejo: Para la mejor experiencia de aprendizaje, recomendamos empezar por el Capítulo 1.",
   "chapterHintContinue": "Empezar de todas formas",
   "chapterHintGoTo1": "Ir al Capítulo 1",
-  "comingSoon": "Próximamente"
+  "comingSoon": "Próximamente",
+  "chapter10": {
+    "title": "¿Cómo llegan a un acuerdo?",
+    "description": "Lumio explica cómo miles de nodos alcanzan la misma conclusión sin un líder – el Stellar Consensus Protocol.",
+    "placeholder": "Este capítulo estará disponible pronto.",
+    "s1": {
+      "sofia1": "Lumio, ya entiendo las wallets y las transacciones – pero ¿quién decide en realidad si una transacción es válida?",
+      "lumio1": "¡Buena pregunta! Nadie por sí solo. Miles de ordenadores en todo el mundo – llamados nodes – lo deciden juntos.",
+      "sofia2": "Pero ¿cómo pueden ponerse de acuerdo miles de ordenadores sin que ninguno sea el jefe?",
+      "lumio2": "Eso es exactamente lo que hace especial a Stellar. Deja que te lo explique..."
+    },
+    "s2": {
+      "card": {
+        "title": "¿Qué es el Consenso?",
+        "body": "Imagina que toda tu clase tiene que decidir adónde ir de excursión – sin profesora. Cada persona vota y confía más en ciertos compañeros. Cuando suficientes grupos que se solapan llegan al mismo resultado, se considera una decisión tomada. En la red Stellar, miles de nodes hacen exactamente esto – eso se llama consenso.",
+        "cta": "¡Entendido!"
+      },
+      "lumio1": "En el Stellar Consensus Protocol – SCP para abreviar – cada node vota con un grupo de otros nodes en los que confía.",
+      "sofia1": "¿Y quién decide en qué nodes confiar?",
+      "lumio2": "¡Cada node lo decide por sí mismo! Eso se llama Quorum Slice."
+    },
+    "s3": {
+      "card": {
+        "title": "Quorum Slice",
+        "body": "Cada node de la red elige su propio grupo de nodes en los que confía – su Quorum Slice. Cuando los Quorum Slices de los nodes se solapan, toda la red puede alcanzar un consenso. Nadie tiene que confiar en todos – solo hace falta suficiente solapamiento.",
+        "cta": "Continuar"
+      },
+      "glossary_btn": "¿Qué es un Quorum Set? (Abrir glosario)",
+      "sofia1": "Pero ¿cómo se reconoce un Node de confianza?",
+      "lumio1": "Normalmente se miran tres cosas: ¿Es conocido el operador – una universidad, una organización, una empresa? ¿Funciona el Node de forma fiable y correcta? Y: ¿Recomienda la Stellar Development Foundation este Node?",
+      "sofia2": "¿Hay que seguir la recomendación de la SDF?",
+      "lumio2": "No, nadie está obligado. La SDF publica una lista como orientación – pero cada Node decide por sí mismo.",
+      "sofia3": "Un momento. Las universidades a menudo son patrocinadas por empresas. ¿No pueden ser presionadas igualmente?",
+      "lumio3": "Tienes toda la razón, Sofía. Ningún operador es automáticamente de confianza solo por ser conocido. Es un problema real – y no hay solución perfecta.",
+      "sofia4": "¿Entonces todo el sistema es inseguro?",
+      "lumio4": "No es más inseguro que cualquier otra cosa – solo diferente. La diferencia con un banco o un Estado: en la red de Stellar, todas las votaciones son públicamente visibles. Si un Node empieza a votar de forma extraña, todo el mundo lo nota de inmediato.",
+      "sofia5": "¿Entonces la transparencia protege más que la confianza ciega?",
+      "lumio5": "Exacto. Y cuantos más Nodes independientes haya, más difícil será manipular suficientes de ellos. Ningún sistema es perfecto – pero muchos participantes visibles e independientes son más robustos que una única entidad central."
+    },
+    "s4": {
+      "card": {
+        "title": "¿Por qué no hay minería?",
+        "body": "Bitcoin y otras redes usan la minería: los ordenadores resuelven difíciles problemas matemáticos consumiendo mucha energía, y el más rápido determina el siguiente bloque. Stellar no necesita eso. SCP llega a un acuerdo mediante votación – no por potencia de cálculo. Eso hace a Stellar muy eficiente energéticamente.",
+        "cta": "Continuar"
+      },
+      "sofia1": "Eso suena mucho más sensato que la minería.",
+      "lumio1": "Exacto. Stellar fue construida deliberadamente así – para pagos rápidos y baratos sin desperdiciar energía."
+    },
+    "s5": {
+      "lumio1": "Imagina que cada node tuviera una versión diferente del ledger. Unos dicen que tu pago llegó, otros que no. ¡Un caos!",
+      "sofia1": "Eso sería terrible.",
+      "lumio2": "Por eso el consenso es el corazón de toda blockchain. Todos los nodes se ponen de acuerdo en la misma verdad – la misma lista de todas las transacciones.",
+      "sofia2": "¿Y eso ocurre automáticamente, sin que nadie intervenga?",
+      "lumio3": "¡Sí! Por eso se llama descentralizado. Sin jefe, sin servidor, sin banco – solo matemáticas y confianza mutua. No ciega – sino verificable."
+    },
+    "summary": {
+      "learning1": "SCP es el mecanismo de consenso de Stellar – sin necesidad de una autoridad central.",
+      "learning2": "Cada node elige su propio Quorum Slice – su grupo de confianza.",
+      "learning3": "El consenso surge de Quorum Slices superpuestos, no de la minería.",
+      "learning4": "Stellar alcanza el consenso en 3–5 segundos – eficiente energéticamente y rápido."
+    },
+    "s6": {
+      "q1": {
+        "question": "¿Qué hace especial al SCP?",
+        "a": "Todos los nodos siguen un servidor central",
+        "b": "Los nodos votan en grupos de confianza – sin minería",
+        "c": "El nodo más rápido decide el siguiente bloque",
+        "feedback_correct": "¡Exacto! SCP usa Quorum Slices en lugar de minería o control central.",
+        "feedback_wrong": "No, eso se parecería más a Bitcoin o a un sistema centralizado."
+      },
+      "q2": {
+        "question": "¿Cuánto tiempo necesita Stellar para alcanzar el consenso?",
+        "a": "Hasta 10 minutos como Bitcoin",
+        "b": "Al instante – menos de 1 segundo",
+        "c": "De 3 a 5 segundos",
+        "feedback_correct": "¡Correcto! 3–5 segundos es muy rápido para una red descentralizada.",
+        "feedback_wrong": "No del todo. Stellar es rápido, pero no instantáneo – y mucho más rápido que Bitcoin."
+      },
+      "q3": {
+        "question": "¿Qué es un Quorum Slice?",
+        "a": "El grupo de nodos en el que un nodo confía",
+        "b": "Un algoritmo para calcular hashes",
+        "c": "El máximo de transacciones por segundo",
+        "feedback_correct": "¡Correcto! Cada nodo elige su propio Quorum Slice.",
+        "feedback_wrong": "Eso no es. Un Quorum Slice es un grupo de confianza – no un algoritmo ni un límite."
+      },
+      "retry": "Intentar de nuevo",
+      "next": "Continuar"
+    },
+    "s7": {
+      "question": "Sofía, ahora has aprendido mucho sobre el consenso. ¿Qué es lo que más te impresiona?",
+      "a": "Que miles de computadoras se pongan de acuerdo sin un líder",
+      "b": "Que eso ocurra en 3–5 segundos",
+      "c": "Que no haya minería ni derroche de energía",
+      "response_a": "¡A mí también me parece fascinante! La descentralización significa: nadie tiene la última palabra – y aun así funciona.",
+      "response_b": "¡Sí, la velocidad es impresionante! Imagina transferir dinero al extranjero – en menos de 5 segundos ya está.",
+      "response_c": "¡Exacto! Mucha gente cree que blockchain necesita mucha energía. Stellar demuestra que no tiene por qué ser así.",
+      "continue": "Continuar"
+    },
+    "s8": {
+      "sofia1": "Lumio, creo que ahora entiendo de verdad cómo funciona Stellar.",
+      "lumio1": "¡Me alegra! Has recorrido un largo camino – desde tu primera cartera hasta el protocolo de consenso.",
+      "sofia2": "¿Sabes qué es lo que más me ha sorprendido? Que tanta gente pueda colaborar sin conocerse.",
+      "lumio2": "Ese es el núcleo de los sistemas descentralizados. La confianza no viene del conocimiento mutuo – viene de las matemáticas.",
+      "sofia3": "¡Gracias, Lumio. Esta ha sido la mejor lección de finanzas de mi vida!",
+      "lumio3": "Y esto es solo el comienzo. ¡El mundo de Stellar te espera, Sofía! ⭐"
+    },
+    "s9": {
+      "learning1": "SCP permite el consenso en segundos – sin minería, sin un líder.",
+      "learning2": "Los Quorum Slices permiten una confianza flexible y descentralizada en la red.",
+      "learning3": "La descentralización significa: las matemáticas reemplazan a la autoridad – para todos."
+    },
+    "subtitle": "El Stellar Consensus Protocol"
+  }
 }

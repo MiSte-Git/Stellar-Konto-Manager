@@ -1045,5 +1045,118 @@
   "chapterHint": "Savjet: Za najbolje iskustvo učenja preporučujemo početak s Poglavljem 1.",
   "chapterHintContinue": "Ipak započni",
   "chapterHintGoTo1": "Na Poglavlje 1",
-  "comingSoon": "Uskoro"
+  "comingSoon": "Uskoro",
+  "chapter10": {
+    "title": "Kako se slažu?",
+    "description": "Lumio objašnjava kako tisuće čvorova dolaze do istog zaključka bez vođe – Stellar Consensus Protocol.",
+    "placeholder": "Ovo poglavlje uskoro će biti dostupno.",
+    "s1": {
+      "sofia1": "Lumio, sada razumijem wallete i transakcije – ali tko zapravo odlučuje je li transakcija valjana?",
+      "lumio1": "Dobro pitanje! Nitko sam. Tisuće računala diljem svijeta – zvanih nodes – odlučuju zajednički.",
+      "sofia2": "Ali kako se tisuće računala mogu složiti bez da itko od njih bude šef?",
+      "lumio2": "Upravo to čini Stellar posebnim. Dopusti da ti objasnim..."
+    },
+    "s2": {
+      "card": {
+        "title": "Što je Konsenzus?",
+        "body": "Zamislite da cijeli vaš razred mora odlučiti kamo ići na izlet – bez učiteljice. Svaka osoba glasuje i više vjeruje određenim suučenicima. Kada dovoljno preklapajućih skupina dođe do istog rezultata, to se smatra odlukom. U Stellar mreži tisuće nodes rade točno to – to se zove konsenzus.",
+        "cta": "Shvaćeno!"
+      },
+      "lumio1": "U Stellar Consensus Protocolu – skraćeno SCP – svaki node glasuje s grupom drugih nodes kojima vjeruje.",
+      "sofia1": "A tko odlučuje kojim nodes se vjeruje?",
+      "lumio2": "Svaki node sam! To se zove Quorum Slice."
+    },
+    "s3": {
+      "card": {
+        "title": "Quorum Slice",
+        "body": "Svaki node u mreži bira vlastitu grupu nodes kojima vjeruje – svoj Quorum Slice. Kada se Quorum Slices nodeva preklapaju, cijela mreža može pronaći konsenzus. Nitko ne mora vjerovati svima – dovoljno je samo preklapanje.",
+        "cta": "Nastavi"
+      },
+      "glossary_btn": "Što je Quorum Set? (Otvori pojmovnik)",
+      "sofia1": "Ali kako uopće prepoznati pouzdan Node?",
+      "lumio1": "Obično se gleda na tri stvari: Je li operater poznat – sveučilište, organizacija, tvrtka? Radi li Node pouzdano i ispravno? I: Preporučuje li Stellar Development Foundation ovaj Node?",
+      "sofia2": "Mora li se slijediti preporuka SDF-a?",
+      "lumio2": "Ne, nitko ne mora. SDF objavljuje popis kao smjernicu – ali svaki Node odlučuje sam.",
+      "sofia3": "Trenutak. Sveučilišta su često sponzorirana od strane tvrtki. Ne mogu li i ona biti pod pritiskom?",
+      "lumio3": "U potpunosti si u pravu, Sofia. Nijedan operater nije automatski pouzdan samo zato što je poznat. To je pravi problem – i nema savršenog rješenja.",
+      "sofia4": "Znači li to da je cijeli sustav nesiguran?",
+      "lumio4": "Nije nesigurniji od svega ostalog – samo drugačiji. Razlika od banke ili države: u Stellar mreži sva su glasanja javno vidljiva. Ako Node počne glasati čudno, svi to odmah primijete.",
+      "sofia5": "Dakle, transparentnost štiti više od slijepe vjere?",
+      "lumio5": "Točno. I što je više neovisnih Nodova, teže je manipulirati dovoljno njih. Nijedan sustav nije savršen – ali mnogi vidljivi, neovisni sudionici robusniji su od jednog centralnog mjesta."
+    },
+    "s4": {
+      "card": {
+        "title": "Zašto nema rudarenja?",
+        "body": "Bitcoin i druge mreže koriste rudarenje: računala rješavaju teške računske zadatke trošeći puno struje, a najbrže smije odrediti sljedeći blok. Stellar to ne treba. SCP postiže dogovor glasanjem – ne računalnom snagom. To čini Stellar vrlo energetski učinkovitim.",
+        "cta": "Nastavi"
+      },
+      "sofia1": "To zvuči puno razumnije od rudarenja.",
+      "lumio1": "Točno. Stellar je namjerno tako izgrađen – za brza, jeftina plaćanja bez rasipanja energije."
+    },
+    "s5": {
+      "lumio1": "Zamislite da svaki node ima drugu verziju ledgera. Neki kažu da je vaša uplata stigla, drugi ne. Kaos!",
+      "sofia1": "To bi bilo strašno.",
+      "lumio2": "Upravo zato je konsenzus srce svake blockchaina. Svi nodes se slažu oko iste istine – iste liste svih transakcija.",
+      "sofia2": "I to se događa automatski, bez da itko intervenira?",
+      "lumio3": "Da! Zato se to zove decentralizirano. Nema šefa, nema servera, nema banke – samo matematika i uzajamno povjerenje. Ne slijepo – nego provjerljivo."
+    },
+    "summary": {
+      "learning1": "SCP je Stellarov mehanizam konsenzusa – nije potrebna centralna vlast.",
+      "learning2": "Svaki node bira vlastiti Quorum Slice – svoju grupu povjerenja.",
+      "learning3": "Konsenzus nastaje iz preklapajućih Quorum Slices, a ne rudarenjem.",
+      "learning4": "Stellar postiže konsenzus za 3–5 sekundi – energetski učinkovit i brz."
+    },
+    "s6": {
+      "q1": {
+        "question": "Što SCP čini posebnim?",
+        "a": "Svi čvorovi prate središnji poslužitelj",
+        "b": "Čvorovi glasaju u pouzdanim grupama – bez rudarenja",
+        "c": "Najbrži čvor odlučuje o sljedećem bloku",
+        "feedback_correct": "Točno! SCP koristi Quorum Slices umjesto rudarenja ili centralne kontrole.",
+        "feedback_wrong": "Ne, to bi više ličilo na Bitcoin ili centralizirani sustav."
+      },
+      "q2": {
+        "question": "Koliko vremena treba Stellar za konsenzus?",
+        "a": "Do 10 minuta kao Bitcoin",
+        "b": "Odmah – manje od 1 sekunde",
+        "c": "3 do 5 sekundi",
+        "feedback_correct": "Točno! 3–5 sekundi je vrlo brzo za decentraliziranu mrežu.",
+        "feedback_wrong": "Ne baš. Stellar je brz, ali ne trenutan – i mnogo brži od Bitcoina."
+      },
+      "q3": {
+        "question": "Što je Quorum Slice?",
+        "a": "Skupina čvorova kojoj čvor vjeruje",
+        "b": "Algoritam za izračun hashova",
+        "c": "Maksimalan broj transakcija u sekundi",
+        "feedback_correct": "Točno! Svaki čvor sam bira svoj Quorum Slice.",
+        "feedback_wrong": "To nije to. Quorum Slice je skupina povjerenja – nije algoritam ni ograničenje."
+      },
+      "retry": "Pokušaj ponovo",
+      "next": "Nastavi"
+    },
+    "s7": {
+      "question": "Sofia, sada si puno naučila o konsenzusu. Što te najviše impresionira?",
+      "a": "Da se tisuće računala slažu bez vođe",
+      "b": "Da se to dogodi u 3–5 sekundi",
+      "c": "Da nema rudarenja ni rasipanja energije",
+      "response_a": "I meni je to fascinantno! Decentralizacija znači: nitko nema posljednju riječ – a ipak funkcionira.",
+      "response_b": "Da, brzina je impresivna! Zamisli slanje novca u inozemstvo – za manje od 5 sekundi već je tamo.",
+      "response_c": "Točno! Mnogi misle da blockchain troši puno energije. Stellar dokazuje da to ne mora biti tako.",
+      "continue": "Nastavi"
+    },
+    "s8": {
+      "sofia1": "Lumio, mislim da sada stvarno razumijem kako Stellar funkcionira.",
+      "lumio1": "Drago mi je! Prošla si dug put – od prvog novčanika do protokola konsenzusa.",
+      "sofia2": "Znaš što me najviše iznenadilo? Da toliko ljudi može surađivati bez da se poznaju.",
+      "lumio2": "To je srž decentraliziranih sustava. Povjerenje ne dolazi od poznanstva – dolazi od matematike.",
+      "sofia3": "Hvala, Lumio. To je bila najbolja financijska lekcija mog života!",
+      "lumio3": "I ovo je tek početak. Stellarov svijet čeka te, Sofia! ⭐"
+    },
+    "s9": {
+      "learning1": "SCP omogućuje konsenzus u sekundama – bez rudarenja, bez vođe.",
+      "learning2": "Quorum Slices omogućuju fleksibilno, decentralizirano povjerenje u mreži.",
+      "learning3": "Decentralizacija znači: matematika zamjenjuje autoritet – za sve."
+    },
+    "subtitle": "Stellar Consensus Protocol"
+  }
 }
