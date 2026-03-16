@@ -1158,5 +1158,140 @@
       "learning3": "Decentralizzazione significa: la matematica sostituisce l'autorità – per tutti."
     },
     "subtitle": "Il Stellar Consensus Protocol"
+  },
+  "chapter11": {
+    "title": "Il Programma Fedeltà",
+    "subtitle": "Custom Assets & Loyalty Tokens",
+    "description": "Marco avvia un programma fedeltà con token BERRY – e Lumio svela una trappola pericolosa.",
+    "placeholder": "Questo capitolo sarà disponibile a breve.",
+    "s1": {
+      "section": "La nuova idea di Marco",
+      "marco1": "Lumio, ho una nuova idea per il mio mercato della frutta! Voglio dare ai miei clienti abituali dei token BERRY come ricompensa per ogni acquisto.",
+      "lumio1": "Sembra emozionante! Come lo immagini?",
+      "marco2": "Semplice: chiunque spenda 10 XLM nel mio negozio riceve 1 BERRY indietro. I token possono essere riscattati al prossimo acquisto.",
+      "marco3": "Ma come lo configuro su Stellar? Conosco già BERRY – avete usato i miei token nel capitolo 3.",
+      "lumio2": "Buona domanda! Conosci già i token BERRY dal capitolo 3. Ma sai davvero cosa significa essere l'emittente di un token?"
+    },
+    "s2": {
+      "section": "Cos'è un Loyalty Token?",
+      "card": {
+        "title": "Cos'è un Loyalty Token?",
+        "body": "Un Loyalty Token è un asset personalizzato su Stellar – un token che crei ed emetti tu stesso. Come emittente decidi: Quanti token esistono? Quanto valgono? Quali regole si applicano? I tuoi clienti hanno bisogno di una Trust Line al tuo token prima di poterlo ricevere.",
+        "cta": "Capito!"
+      },
+      "glossary_loyalty": "Cos'è un Loyalty Token? (Glossario)",
+      "glossary_issuer": "Cos'è un Issuer? (Glossario)",
+      "lumio1": "Immagina di stampare i tuoi francobolli per buoni. Tu decidi quanti ce ne sono e quanto valgono.",
+      "marco1": "Quindi sono praticamente il capo della mia valuta?",
+      "lumio2": "Esattamente – ma molto limitata. BERRY vale solo nel tuo negozio, e solo perché tu, Marco, sei l'emittente. Un emittente con un indirizzo diverso che usa lo stesso nome BERRY è un token completamente diverso.",
+      "lumio3": "Questo è un punto importante: stesso nome del token, emittente diverso – token diverso. Senza una Trust Line verso il giusto emittente, il tuo cliente non può ricevere nessun BERRY."
+    },
+    "s3": {
+      "section": "BERRY nel dettaglio",
+      "lumio1": "Concretizziamo: 1 BERRY nel tuo negozio è un buono per 100g di fragole. I clienti raccolgono BERRY, tu li riscatti in negozio.",
+      "marco1": "Perfetto! E io controllo quanti BERRY emetto e quando li riprendo.",
+      "lumio2": "Ti ricordi le Trust Line del capitolo 3? Esattamente lo stesso principio. Prima che un cliente possa ricevere BERRY, deve impostare una Trust Line al tuo token BERRY.",
+      "marco2": "Quindi ogni cliente deve prima conoscere il mio indirizzo come emittente?",
+      "lumio3": "Esatto. Ed è anche per questo che il valore di un Loyalty Token dipende completamente dall'emittente. Senza Marco – nessun BERRY. Se smetti di gestire il tuo mercato, i token perdono il loro valore."
+    },
+    "s4": {
+      "section": "Ricevere BERRY",
+      "marco1": "Lumio, vorrei provarlo dal vivo. Come riceve un cliente i suoi primi token BERRY?",
+      "lumio1": "Semplice! Due passi: imposta una linea di fiducia, poi Marco ti invia 10 BERRY come emittente. Proviamoci!",
+      "action": {
+        "label": "Ricevere token BERRY",
+        "description": "Passo 1: Imposta una linea di fiducia per il token BERRY di Marco. Passo 2: Marco ti invia 10 BERRY come emittente.",
+        "step1": "Imposta la linea di fiducia per BERRY",
+        "step2": "Ricevi 10 BERRY da Marco",
+        "run_btn": "Linea di fiducia e ricevi BERRY",
+        "success": "Hai ricevuto 10 BERRY! Il programma fedeltà di Marco funziona.",
+        "testnet_note": "Solo su testnet – questi BERRY non hanno valore reale.",
+        "error_no_keypair": "Nessun account trovato – crea prima un account."
+      },
+      "cta_continue": "Continua",
+      "lumio2": "Perfetto! Imposta una linea di fiducia, ricevi token – è esattamente così che funziona il principio dell'emittente su Stellar.",
+      "hint": "Chi ha già pagato con BERRY da Marco possiede già questa linea di fiducia – perché senza una linea di fiducia non si possono ricevere token."
+    },
+    "s5": {
+      "section": "La falsa offerta BERRY",
+      "lumio1": "Aspetta – devo mostrarti qualcosa di importante. Guarda questo messaggio che avresti presumibilmente ricevuto:",
+      "scam": {
+        "sender_name": "Berry Market Ufficiale",
+        "sender": "berry-market.app",
+        "message": "🎉 GRATIS: 50 token BERRY! Clicca ora e aggiungi la linea di fiducia!",
+        "question": "Cosa noti? Analizziamolo insieme.",
+        "reveal_prompt": "Avvia analisi",
+        "reveal_next": "Avanti",
+        "lesson": "Stesso nome ≠ stesso token. Controlla sempre prima l'emittente!",
+        "reveal1": {
+          "label": "Nome del token",
+          "text": "Il token si chiama davvero BERRY ✓"
+        },
+        "reveal2": {
+          "label": "Indirizzo emittente",
+          "text": "Questo indirizzo NON è quello di Marco – uno sconosciuto ha creato questo token ✗"
+        },
+        "reveal3": {
+          "label": "Valore del token",
+          "text": "Questi BERRY sono privi di valore – chiunque può creare un token chiamato BERRY. Senza l'indirizzo di Marco come emittente, non conta."
+        }
+      },
+      "glossary_issuer": "Cos'è un Emittente? (Glossario)",
+      "cta_next": "Bene saperlo!",
+      "lumio2": "Chiunque può creare un token chiamato BERRY. Il solo nome non dice nulla sul valore – conta solo l'emittente. I BERRY di Marco hanno valore perché Marco li garantisce come emittente.",
+      "compare": {
+        "real_label": "Vero emittente BERRY di Marco",
+        "fake_label": "Emittente sconosciuto (dal messaggio)",
+        "lumio_comment": "Vedi la differenza? Stesso nome – ma indirizzo completamente diverso."
+      }
+    },
+    "s6": {
+      "section": "Prendere la decisione giusta",
+      "lumio1": "Un'ultima domanda: ricevi una richiesta di [[linea di fiducia|trustline]] per 'BERRY'. Cosa fai prima?",
+      "choice": {
+        "question": "Cosa fai prima di confermare la linea di fiducia?",
+        "a": "A) Conferma direttamente – conosco già BERRY",
+        "b": "B) Confronta l'emittente con l'indirizzo ufficiale di Marco",
+        "c": "C) Cerca il nome del token su Google",
+        "wrong_title": "Non del tutto corretto",
+        "wrong": "Il solo nome del token non dice nulla sul suo valore. Chiunque può creare un token chiamato BERRY.",
+        "hint2": "Suggerimento: Si tratta di CHI sta dietro al token – non di come si chiama.",
+        "correct": "Esattamente giusto! Solo se l'indirizzo dell'emittente corrisponde è il token corretto.",
+        "retry_btn": "Riprova",
+        "cta_next": "Continua"
+      },
+      "lumio2": "Perfetto! Non importa quanto affidabile suoni il nome di un token – controlla sempre prima l'emittente. È il tuo strumento più importante contro le truffe di token."
+    },
+    "s7": {
+      "section": "Mini-Quiz",
+      "wrong_msg": "Non del tutto corretto",
+      "retry_btn": "Riprova",
+      "correct_cta": "Continua",
+      "q1": "Di cosa ha bisogno un cliente prima di ricevere i token BERRY?",
+      "q1_a1": "Una linea di fiducia verso l'emittente BERRY",
+      "q1_a2": "Un portafoglio speciale",
+      "q1_a3": "Una registrazione con Marco",
+      "q1_explanation": "Non serve un portafoglio speciale – una linea di fiducia verso l'emittente corretto è sufficiente. È il permesso di detenere un token specifico.",
+      "q1_hint2": "La linea di fiducia dice a Stellar: 'Mi fido di questo emittente e sono disposto a detenere il suo token.'",
+      "q2": "Due token si chiamano entrambi 'BERRY'. Cosa li rende diversi?",
+      "q2_a1": "L'emittente – qualsiasi indirizzo può chiamare un token BERRY",
+      "q2_a2": "Il prezzo",
+      "q2_a3": "Il numero di token",
+      "q2_explanation": "Prezzo e quantità possono essere identici. Solo l'emittente – l'indirizzo creatore – distingue due token con lo stesso nome.",
+      "q2_hint2": "Ricorda l'esempio di truffa: stesso nome 'BERRY', ma un'altra persona lo ha creato.",
+      "q3": "Ricevi un messaggio: '50 BERRY gratis, aggiungi la linea di fiducia ora!' Qual è il primo passo?",
+      "q3_a1": "Confrontare l'indirizzo dell'emittente con l'indirizzo ufficiale di Marco",
+      "q3_a2": "Aggiungere subito la linea di fiducia",
+      "q3_a3": "Spendere i token direttamente",
+      "q3_explanation": "Non aggiungere mai una linea di fiducia prima di aver verificato l'emittente. Un emittente sbagliato significa token privi di valore.",
+      "q3_hint2": "Le offerte gratuite sono un trucco classico. Chiedi sempre prima: chi è l'emittente?"
+    },
+    "summary": {
+      "learning1": "Un token fedeltà è un asset personalizzato su Stellar – l'emittente ne determina il valore.",
+      "learning2": "Come emittente hai una responsabilità: crei il token e ne stabilisci le regole.",
+      "learning3": "Stesso nome del token ≠ stesso token. Solo l'emittente fa la differenza.",
+      "learning4": "Individua i token falsi tramite l'indirizzo dell'emittente – verificalo sempre con una fonte affidabile.",
+      "learning5": "Le linee di fiducia collegano i clienti al tuo programma fedeltà – senza linea di fiducia, nessun token può essere ricevuto."
+    }
   }
 }

@@ -226,6 +226,53 @@
         "limitedSpots": "Aikapaine 'rajoitettujen paikkojen' kautta"
       },
       "explanation": "Lailliset työnantajat eivät koskaan pyydä ennakkomaksuja tai talletuksia. Kuka tahansa joka vaatii kryptoa 'turvallisuusmaksuna' on huijari. Tutki aina yritykset itsenäisesti ennen rahan lähettämistä."
+    },
+    "fakeCashback": {
+      "contact": {
+        "name": "Marcon Markkinapaikka",
+        "subtitle": "Mainosviesti"
+      },
+      "messages": {
+        "01": "🎉 Marcon Markkinapaikka – Erikoistarjous!\nVain tänään: 50 ilmaista BERRY-tokenia kaikille uusille asiakkaille!\nLisää Trust Line nyt ja saat tokenisi.\n[Lisää Trust Line]",
+        "02": "Liikkeeseenlaskijan osoite: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nLisää vain Trust Line – tokenit saapuvat lompakkoosi heti! 🍓",
+        "03": "⚠️ Vinkki: Tarkista aina tokenin liikkeeseenlaskija ennen Trust Linen lisäämistä."
+      },
+      "options": {
+        "nothingSuspicious": "Ei mitään – näyttää lailliselta. Lisää Trust Line.",
+        "tooGenerous": "50 ilmaista BERRY kuulostaa paljolta.",
+        "checkIssuer": "Tarkistaisin liikkeeseenlaskijan ensin.",
+        "addAnyway": "Lisää Trust Line joka tapauksessa – ehkä se on ok.",
+        "rejectVerify": "Hylkää ja kysy Marcolta suoraan oikea BERRY-osoite.",
+        "buyDex": "Osta token DEX:stä."
+      },
+      "followUp": {
+        "scam": {
+          "01": "Trust Line lisätty onnistuneesti! 50 BERRY-tokenisi ovat matkalla. 🍓",
+          "02": "Sait 50 BERRY-tokenia väärältä liikkeeseenlaskijalta – mutta yksikään kauppa ei hyväksy niitä. Liikkeeseenlaskija on tuntematon. Nämä tokenit ovat arvottomia ja saattavat olla alku lisäyrityksilleen."
+        },
+        "generous": {
+          "01": "Se todella on kertaluonteinen tarjous! Virallinen liikkeeseenlaskijan osoite on verkkosivustollamme.",
+          "02": "Virallinen BERRY-liikkeeseenlaskija (Marcon sivuston mukaan):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77\n\nTässä viestissä oleva liikkeeseenlaskija:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Täysin eri osoitteet! Tämän viestin token on väärennös."
+        },
+        "issuer": {
+          "01": "Virallinen BERRY-liikkeeseenlaskija (Marcon sivuston mukaan):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77",
+          "02": "Tässä viestissä oleva liikkeeseenlaskija:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Ei sama! Sama tokenin nimi, eri liikkeeseenlaskija – tämä BERRY on arvoton."
+        },
+        "addAnyway": {
+          "01": "Trust Line lisätty onnistuneesti! 50 BERRY-tokenisi ovat matkalla. 🍓",
+          "02": "Vaikka näit liikkeeseenlaskijaeron, lisäsit silti Trust Linen. 50 BERRY-tokenia tulee väärältä liikkeeseenlaskijalta ja on arvottomia – yksikään kauppa ei hyväksy niitä."
+        },
+        "buyDex": {
+          "01": "⚠️ DEX:ssä on monia BERRY-nimisiä tokeneita eri liikkeeseenlaskijoilta. Ilman virallista liikkeeseenlaskijan osoitetta saatat myös ostaa arvottomia tokeneita. Liikkeeseenlaskija on ratkaiseva – myös DEX:stä ostaessa."
+        }
+      },
+      "redFlags": {
+        "freeTokens": "Ilmaiset tokenit ilman todellista vastiketta ovat aina epäilyttäviä",
+        "fakeIssuer": "Viestissä oleva liikkeeseenlaskija ei vastaa virallista",
+        "urgency": "\"Vain tänään\" – keinotekoinen kiire estää kriittistä ajattelua",
+        "sameNameDifferentIssuer": "Sama tokenin nimi (BERRY) ei tarkoita samaa tokenia – vain liikkeeseenlaskija tekee eron"
+      },
+      "explanation": "Stellarin mukautetut tokenit määräytyvät liikkeeseenlaskijansa mukaan – ei nimensä. Kaksi tokenia voivat molemmat olla nimeltään 'BERRY', mutta tulla täysin eri liikkeeseenlaskijoilta. Vain Marcon Markkinapaikan virallinen liikkeeseenlaskija laskee liikkeelle aitoja, lunastettavia BERRY-tokeneita. Ennen Trust Linen lisäämistä tarkista aina liikkeeseenlaskijan osoite palveluntarjoajan viralliselta verkkosivustolta."
     }
   }
 }

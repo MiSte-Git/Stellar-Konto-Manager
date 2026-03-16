@@ -1158,5 +1158,140 @@
       "learning3": "Hajauttaminen tarkoittaa: matematiikka korvaa auktoriteetin – kaikille."
     },
     "subtitle": "Stellar Consensus Protocol"
+  },
+  "chapter11": {
+    "title": "Kanta-asiakasohjelma",
+    "subtitle": "Custom Assets & Loyalty Tokens",
+    "description": "Marco käynnistää kanta-asiakasohjelman BERRY-tokeneilla – ja Lumio paljastaa vaarallisen ansan.",
+    "placeholder": "Tämä luku on tulossa pian.",
+    "s1": {
+      "section": "Marcon uusi idea",
+      "marco1": "Lumio, minulla on uusi idea hedelmämarkkinalleni! Haluan antaa vakioasiakkailleni BERRY-tokeneita palkintona jokaisesta ostoksesta.",
+      "lumio1": "Kuulostaa jännittävältä! Miten kuvittelet sen toimivan?",
+      "marco2": "Yksinkertaisesti: kuka tahansa, joka käyttää 10 XLM kaupassani, saa 1 BERRY takaisin. Tokenit voi lunastaa seuraavalla ostoksella.",
+      "marco3": "Mutta miten otan tämän käyttöön Stellarissa? Tunnen BERRY:n jo – käytitte minun tokeneitani luvussa 3.",
+      "lumio2": "Hyvä kysymys! Tunnet BERRY-tokenit jo luvusta 3. Mutta tiedätkö oikeastaan, mitä tarkoittaa olla tokenin liikkeeseenlaskija?"
+    },
+    "s2": {
+      "section": "Mikä on Loyalty Token?",
+      "card": {
+        "title": "Mikä on Loyalty Token?",
+        "body": "Loyalty Token on mukautettu omaisuuserä Stellarissa – token, jonka itse luot ja liikkeelle lasket. Liikkeeseenlaskijana päätät: Kuinka monta tokenia on olemassa? Mitä ne ovat arvoltaan? Mitkä säännöt pätevät? Asiakkaasi tarvitsevat Trust Line -yhteyden tokeniisi ennen kuin he voivat vastaanottaa sen.",
+        "cta": "Ymmärsin!"
+      },
+      "glossary_loyalty": "Mikä on Loyalty Token? (Sanasto)",
+      "glossary_issuer": "Mikä on Issuer? (Sanasto)",
+      "lumio1": "Kuvittele painatustasi omia kuponkimerkkejäsi. Sinä päätät, kuinka monta niitä on ja mitä ne ovat arvoltaan.",
+      "marco1": "Niin olen siis käytännössä oman valuuttani pomo?",
+      "lumio2": "Aivan – mutta hyvin rajallinen sellainen. BERRY pätee vain kaupassasi, ja vain siksi, että sinä, Marco, olet liikkeeseenlaskija. Eri osoitteessa oleva liikkeeseenlaskija samalla nimellä BERRY on täysin eri token.",
+      "lumio3": "Se on tärkeä seikka: sama tokenin nimi, eri liikkeeseenlaskija – eri token. Ilman Trust Line -yhteyttä oikeaan liikkeeseenlaskijaan asiakkaasi ei voi vastaanottaa yhtään BERRY:ä."
+    },
+    "s3": {
+      "section": "BERRY yksityiskohtaisesti",
+      "lumio1": "Tehdään tämä konkreettiseksi: 1 BERRY kaupassasi on kuponki 100g mansikoille. Asiakkaat keräävät BERRY:ä, sinä lunastat ne kaupassa.",
+      "marco1": "Täydellinen! Ja minä hallitsen, kuinka monta BERRY:ä liikkeelle lasken ja milloin otan ne takaisin.",
+      "lumio2": "Muistatko luvun 3 Trust Linet? Täsmälleen sama periaate. Ennen kuin asiakas voi vastaanottaa BERRY:ä, hänen täytyy luoda Trust Line -yhteys BERRY-tokeniisi.",
+      "marco2": "Eli jokaisen asiakkaan on ensin tiedettävä osoitteeni liikkeeseenlaskijana?",
+      "lumio3": "Oikein. Ja siksi myös Loyalty Tokenin arvo riippuu täysin liikkeeseenlaskijasta. Ilman Marcoa – ei BERRY:ä. Jos lopetat markkinasi toiminnan, tokenit menettävät arvonsa."
+    },
+    "s4": {
+      "section": "Vastaanota BERRY",
+      "marco1": "Lumio, haluaisin kokeilla tätä livenä. Miten asiakas saa ensimmäiset BERRY-tokeninsa?",
+      "lumio1": "Yksinkertaista! Kaksi vaihetta: aseta luottamusrivi, sitten Marco lähettää sinulle 10 BERRYä liikkeeseenlaskijana. Kokeillaan!",
+      "action": {
+        "label": "Vastaanota BERRY-tokeneita",
+        "description": "Vaihe 1: Aseta luottamusrivi Marcon BERRY-tokenille. Vaihe 2: Marco lähettää sinulle 10 BERRYä liikkeeseenlaskijana.",
+        "step1": "Aseta luottamusrivi BERRYlle",
+        "step2": "Vastaanota 10 BERRYä Marcolta",
+        "run_btn": "Luottamusrivi ja vastaanota BERRY",
+        "success": "Sait 10 BERRYä! Marcon kanta-asiakasohjelma toimii.",
+        "testnet_note": "Vain testiverkossa – näillä BERRYillä ei ole todellista arvoa.",
+        "error_no_keypair": "Tiliä ei löydy – luo ensin tili."
+      },
+      "cta_continue": "Jatka",
+      "lumio2": "Täydellistä! Aseta luottamusrivi, vastaanota tokeneita – näin liikkeeseenlaskijaperiaate toimii Stellarissa.",
+      "hint": "Kuka tahansa, joka on jo maksanut BERRYllä Marcon liikkeessä, on jo asettanut tämän luottamusrivin – sillä ilman luottamusriviä ei voi vastaanottaa tokeneita."
+    },
+    "s5": {
+      "section": "Väärä BERRY-tarjous",
+      "lumio1": "Odota – minun täytyy näyttää sinulle jotain tärkeää. Katso tätä viestiä, jonka väitetään saapuneen sinulle:",
+      "scam": {
+        "sender_name": "Berry Market Virallinen",
+        "sender": "berry-market.app",
+        "message": "🎉 ILMAINEN: 50 BERRY-tokenia! Klikkaa nyt ja lisää luottamusrivi!",
+        "question": "Mitä huomaat? Analysoidaan se yhdessä.",
+        "reveal_prompt": "Aloita analyysi",
+        "reveal_next": "Seuraava",
+        "lesson": "Sama nimi ≠ sama token. Tarkista aina ensin liikkeeseenlaskija!",
+        "reveal1": {
+          "label": "Tokenin nimi",
+          "text": "Tokenin nimi on todella BERRY ✓"
+        },
+        "reveal2": {
+          "label": "Liikkeeseenlaskijan osoite",
+          "text": "Tämä osoite EI ole Marcon osoite – tuntematon henkilö loi tämän tokenin ✗"
+        },
+        "reveal3": {
+          "label": "Tokenin arvo",
+          "text": "Nämä BERRYt ovat arvottomia – kuka tahansa voi luoda BERRY-nimisen tokenin. Ilman Marcon osoitetta liikkeeseenlaskijana se ei laske."
+        }
+      },
+      "glossary_issuer": "Mikä on liikkeeseenlaskija? (Sanasto)",
+      "cta_next": "Hyvä tietää!",
+      "lumio2": "Kuka tahansa voi luoda BERRY-nimisen tokenin. Pelkkä nimi ei kerro arvosta – vain liikkeeseenlaskija ratkaisee. Marcon BERRYt ovat arvokkaita, koska Marco seisoo niiden takana liikkeeseenlaskijana.",
+      "compare": {
+        "real_label": "Marcon aito BERRY-liikkeeseenlaskija",
+        "fake_label": "Tuntematon liikkeeseenlaskija (viestistä)",
+        "lumio_comment": "Näetkö eron? Sama nimi – mutta täysin eri osoite."
+      }
+    },
+    "s6": {
+      "section": "Oikea päätös",
+      "lumio1": "Yksi viimeinen kysymys: Saat [[luottamusrivi|trustline]]pyynnön 'BERRYlle'. Mitä teet ensin?",
+      "choice": {
+        "question": "Mitä teet ensin ennen luottamusrivin vahvistamista?",
+        "a": "A) Vahvistan suoraan – tunnen BERRYn jo",
+        "b": "B) Vertaan liikkeeseenlaskijaa Marcon viralliseen osoitteeseen",
+        "c": "C) Googlaan tokenin nimen",
+        "wrong_title": "Ei aivan oikein",
+        "wrong": "Pelkkä tokenin nimi ei kerro sen arvosta. Kuka tahansa voi luoda BERRY-nimisen tokenin.",
+        "hint2": "Vinkki: Kyse on siitä, KUKA seisoo tokenin takana – ei miten se on nimetty.",
+        "correct": "Täsmälleen oikein! Vain jos liikkeeseenlaskijan osoite täsmää, se on oikea token.",
+        "retry_btn": "Yritä uudelleen",
+        "cta_next": "Jatka"
+      },
+      "lumio2": "Täydellistä! Olipa tokenin nimi kuinka luotettava tahansa – tarkista aina ensin liikkeeseenlaskija. Se on tärkein työkalusi token-huijauksia vastaan."
+    },
+    "s7": {
+      "section": "Pikakisa",
+      "wrong_msg": "Ei aivan oikein",
+      "retry_btn": "Yritä uudelleen",
+      "correct_cta": "Jatka",
+      "q1": "Mitä asiakas tarvitsee ennen BERRY-tokenien vastaanottamista?",
+      "q1_a1": "Luottamusrivi BERRY-liikkeeseenlaskijalle",
+      "q1_a2": "Erityinen lompakko",
+      "q1_a3": "Rekisteröityminen Marcon kanssa",
+      "q1_explanation": "Erityistä lompakkoa ei tarvita – luottamusrivi oikealle liikkeeseenlaskijalle riittää. Se on lupa pitää tiettyä tokenia.",
+      "q1_hint2": "Luottamusrivi kertoo Stellarille: 'Luotan tähän liikkeeseenlaskijaan ja olen valmis pitämään heidän tokeniaan.'",
+      "q2": "Kaksi tokenia on molemmat nimeltään 'BERRY'. Mikä tekee niistä erilaisia?",
+      "q2_a1": "Liikkeeseenlaskija – mikä tahansa osoite voi nimetä tokenin BERRYksi",
+      "q2_a2": "Hinta",
+      "q2_a3": "Tokenien määrä",
+      "q2_explanation": "Hinta ja määrä voivat olla identtiset. Vain liikkeeseenlaskija – luova osoite – erottaa kaksi saman nimistä tokenia.",
+      "q2_hint2": "Muista huijausesimerkki: sama nimi 'BERRY', mutta eri henkilö loi sen.",
+      "q3": "Saat viestin: '50 ilmaista BERRYä, lisää luottamusrivi nyt!' Mikä on ensimmäinen askel?",
+      "q3_a1": "Vertaa liikkeeseenlaskijan osoitetta Marcon viralliseen osoitteeseen",
+      "q3_a2": "Lisää luottamusrivi heti",
+      "q3_a3": "Käytä tokenit heti",
+      "q3_explanation": "Älä koskaan lisää luottamusriviä ennen kuin olet tarkistanut liikkeeseenlaskijan. Väärä liikkeeseenlaskija tarkoittaa arvottomia tokeneita.",
+      "q3_hint2": "Ilmaistarjoukset ovat klassinen temppu. Kysy aina ensin: kuka on liikkeeseenlaskija?"
+    },
+    "summary": {
+      "learning1": "Kanta-asiakastoken on mukautettu omaisuuserä Stellarissa – liikkeeseenlaskija määrittää sen arvon.",
+      "learning2": "Liikkeeseenlaskijana kannat vastuun: luot tokenin ja määrität sen säännöt.",
+      "learning3": "Sama tokenin nimi ≠ sama token. Vain liikkeeseenlaskija tekee eron.",
+      "learning4": "Tunnista väärennettyjä tokeneita niiden liikkeeseenlaskijan osoitteen perusteella – tarkista se aina luotettavasta lähteestä.",
+      "learning5": "Luottamusrivit yhdistävät asiakkaat kanta-asiakasohjelmaasi – ilman luottamusriviä tokenia ei voi vastaanottaa."
+    }
   }
 }

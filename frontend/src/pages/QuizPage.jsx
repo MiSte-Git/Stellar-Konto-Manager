@@ -75,6 +75,8 @@ export default function QuizPage() {
     const id = String(lessonNum);
     const loader = id === 'multisig'
       ? () => import('../data/quiz/quizMultisig.json')
+      : id === 'cashback-loyalty'
+      ? () => import('../data/quiz/quizCashbackLoyalty.json')
       : () => import(`../data/learn/quiz/lesson${id}.json`);
     loader().then((mod) => {
       if (!alive) return;

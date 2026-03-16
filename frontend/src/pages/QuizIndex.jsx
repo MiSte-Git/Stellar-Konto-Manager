@@ -7,9 +7,10 @@ import lessons from '../data/learn/lessons.json';
 import MultisigIntro from './learn/MultisigIntro.jsx';
 
 // Map quiz ID → lesson data from lessons.json
-// Quiz IDs are '1'-'12' + 'multisig' + '14', lesson IDs are 'lesson1'-'lesson14'
+// Quiz IDs are '1'-'12' + 'multisig' + '14' + 'cashback-loyalty'
 function getLessonForQuizId(quizId) {
   if (quizId === 'multisig') return lessons.find(l => l.id === 'lesson13') || null;
+  if (quizId === 'cashback-loyalty') return lessons.find(l => l.id === 'cashback-loyalty') || null;
   return lessons.find(l => l.id === `lesson${quizId}`) || null;
 }
 
@@ -45,6 +46,8 @@ export default function QuizIndex() {
     const id = String(expandedLesson);
     const loader = id === 'multisig'
       ? () => import('../data/quiz/quizMultisig.json')
+      : id === 'cashback-loyalty'
+      ? () => import('../data/quiz/quizCashbackLoyalty.json')
       : () => import(`../data/learn/quiz/lesson${id}.json`);
     loader().then((mod) => {
       if (!alive) return;
@@ -178,7 +181,7 @@ export default function QuizIndex() {
       <div className="space-y-2">
         {QUIZ_ORDER.map((quizId, idx) => {
           const lesson = getLessonForQuizId(quizId);
-          const lessonKey = quizId === 'multisig' ? 'lesson13' : `lesson${quizId}`;
+          const lessonKey = quizId === 'multisig' ? 'lesson13' : quizId === 'cashback-loyalty' ? 'cashback-loyalty' : `lesson${quizId}`;
           const prog = progress[lessonKey] || { completed: false, stars: 0 };
           const stars = Math.max(0, Math.min(3, Number(prog.stars || 0)));
           const completed = !!prog.completed;
@@ -187,7 +190,7 @@ export default function QuizIndex() {
           const isExpanded = expandedLesson === quizId;
 
           // Try i18n title first, fall back to lessons.json
-          const titleKey = quizId === 'multisig' ? 'quizMultisig:title' : `quiz:l${quizId}.title`;
+          const titleKey = quizId === 'multisig' ? 'quizMultisig:title' : quizId === 'cashback-loyalty' ? 'quizCashbackLoyalty:title' : `quiz:l${quizId}.title`;
           const i18nTitle = t(titleKey);
           const title = (i18nTitle && i18nTitle !== titleKey) ? i18nTitle : (lesson?.title || `Lektion ${quizId}`);
 

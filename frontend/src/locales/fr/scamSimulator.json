@@ -226,6 +226,53 @@
         "limitedSpots": "Pression temporelle via 'places limitées'"
       },
       "explanation": "Les employeurs légitimes ne demandent jamais de paiements anticipés ni de dépôts. Quiconque exige de la crypto comme 'paiement de sécurité' est un escroc. Recherchez toujours les entreprises de manière indépendante avant d'envoyer de l'argent."
+    },
+    "fakeCashback": {
+      "contact": {
+        "name": "Marché de Marco",
+        "subtitle": "Message promotionnel"
+      },
+      "messages": {
+        "01": "🎉 Marché de Marco – Offre spéciale !\nAujourd'hui seulement : 50 BERRY gratuits pour tous les nouveaux clients !\nAjoutez une Trust Line maintenant et recevez vos tokens.\n[Ajouter une Trust Line]",
+        "02": "Adresse de l'émetteur : GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nAjoutez simplement la Trust Line – les tokens arrivent immédiatement dans votre portefeuille ! 🍓",
+        "03": "⚠️ Conseil : Vérifiez toujours l'émetteur du token avant d'ajouter une Trust Line."
+      },
+      "options": {
+        "nothingSuspicious": "Rien – ça a l'air sérieux. Ajouter la Trust Line.",
+        "tooGenerous": "50 BERRY gratuits, ça semble beaucoup.",
+        "checkIssuer": "Je vérifierais d'abord l'émetteur.",
+        "addAnyway": "Ajouter quand même la Trust Line – peut-être que c'est correct.",
+        "rejectVerify": "Refuser et demander directement à Marco le vrai adresse BERRY.",
+        "buyDex": "Acheter le token sur le DEX."
+      },
+      "followUp": {
+        "scam": {
+          "01": "Trust Line ajoutée avec succès ! Vos 50 BERRY sont en route. 🍓",
+          "02": "Vous avez reçu 50 BERRY du mauvais émetteur – mais aucun magasin ne les accepte. L'émetteur est inconnu. Ces tokens sont sans valeur et pourraient être le début de nouvelles tentatives de phishing."
+        },
+        "generous": {
+          "01": "C'est vraiment une offre unique ! L'adresse officielle de l'émetteur est sur notre site web.",
+          "02": "Émetteur officiel de BERRY (selon le site de Marco) :\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77\n\nÉmetteur dans ce message :\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Adresses complètement différentes ! Le token de ce message est faux."
+        },
+        "issuer": {
+          "01": "Émetteur officiel de BERRY (selon le site de Marco) :\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77",
+          "02": "Émetteur dans ce message :\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Pas identiques ! Même nom de token, émetteur différent – ce BERRY est sans valeur."
+        },
+        "addAnyway": {
+          "01": "Trust Line ajoutée avec succès ! Vos 50 BERRY sont en route. 🍓",
+          "02": "Même si vous avez vu la différence d'émetteur, vous avez quand même ajouté la Trust Line. Les 50 BERRY proviennent du mauvais émetteur et sont sans valeur – aucun magasin ne les accepte."
+        },
+        "buyDex": {
+          "01": "⚠️ Sur le DEX, il existe de nombreux tokens nommés BERRY de différents émetteurs. Sans l'adresse officielle de l'émetteur, vous risquez d'acheter des tokens sans valeur. L'émetteur est décisif – même lors d'un achat sur le DEX."
+        }
+      },
+      "redFlags": {
+        "freeTokens": "Les tokens gratuits sans contrepartie réelle sont toujours suspects",
+        "fakeIssuer": "L'émetteur dans le message ne correspond pas à l'officiel",
+        "urgency": "\"Aujourd'hui seulement\" – urgence artificielle pour empêcher la réflexion critique",
+        "sameNameDifferentIssuer": "Le même nom de token (BERRY) ne signifie pas le même token – seul l'émetteur fait la différence"
+      },
+      "explanation": "Les tokens personnalisés sur Stellar sont définis par leur émetteur – pas par leur nom. Deux tokens peuvent tous deux s'appeler 'BERRY' mais provenir d'émetteurs complètement différents. Seul l'émetteur officiel du Marché de Marco émet des BERRY vrais et échangeables. Avant d'ajouter une Trust Line, vérifiez toujours l'adresse de l'émetteur sur le site officiel du prestataire."
     }
   }
 }

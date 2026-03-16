@@ -1,0 +1,74 @@
+{
+  "title": "Cashback & Loyalty Token",
+  "introText": "Teste dein Wissen zu Loyalty Token, Trust Lines und Issuer-Verifizierung auf Stellar.",
+  "q1": {
+    "question": "Was ist ein Loyalty Token?",
+    "hint": "Denke an benutzerdefinierte Assets auf der Blockchain.",
+    "a1": "Ein Custom Asset auf Stellar, das ein Unternehmen als Belohnung ausgibt.",
+    "a1fb": "Richtig: Loyalty Token sind Custom Assets, die Unternehmen selbst erschaffen und ausgeben.",
+    "a2": "Ein spezieller XLM-Bonus.",
+    "a2fb": "Falsch: XLM ist die native Währung von Stellar. Loyalty Token sind davon unabhängige Custom Assets.",
+    "a3": "Ein Token der Stellar Development Foundation.",
+    "a3fb": "Falsch: Die SDF gibt keine Loyalty Token aus. Jedes Unternehmen erstellt seinen eigenen."
+  },
+  "q2": {
+    "question": "Was braucht ein Kunde, bevor er Loyalty Token empfangen kann?",
+    "hint": "Stellar erfordert ausdrückliches Vertrauen, bevor ein Token empfangen werden kann.",
+    "a1": "Eine Trust Line zum Issuer des Tokens.",
+    "a1fb": "Richtig: Ohne Trust Line zum Issuer kann kein Token empfangen werden.",
+    "a2": "Ein verifiziertes Konto.",
+    "a2fb": "Falsch: Stellar-Konten brauchen keine externe Verifizierung für Custom Assets.",
+    "a3": "Mindestens 10 XLM im Wallet.",
+    "a3fb": "Falsch: Es gibt keine Mindestmenge an XLM für Trust Lines."
+  },
+  "q3": {
+    "question": "Marco nennt seinen Token \"BERRY\". Ein anderes Unternehmen macht dasselbe. Sind die Token gleich?",
+    "hint": "Was unterscheidet zwei Token mit identischem Namen auf Stellar?",
+    "a1": "Nein – der Issuer ist verschieden, also sind es verschiedene Token.",
+    "a1fb": "Richtig: Auf Stellar identifiziert nicht der Name, sondern Name + Issuer-Adresse einen Token eindeutig.",
+    "a2": "Ja – gleicher Name bedeutet gleicher Token.",
+    "a2fb": "Falsch: Gleicher Name bedeutet nicht gleicher Token. Der Issuer ist das entscheidende Merkmal.",
+    "a3": "Das hängt vom Preis ab.",
+    "a3fb": "Falsch: Der Preis ist irrelevant. Zwei BERRY-Token mit verschiedenen Issuern sind grundsätzlich verschieden."
+  },
+  "q4": {
+    "question": "Was bestimmt den Wert eines Loyalty Token?",
+    "hint": "Wer steht hinter dem Token und entscheidet über seine Regeln?",
+    "a1": "Der Issuer – er legt fest, was der Token wert ist und wie er eingelöst werden kann.",
+    "a1fb": "Richtig: Ohne Issuer hat ein Loyalty Token keinen Wert. Er legt Einlösebedingungen und Menge fest.",
+    "a2": "Der Marktpreis auf dem DEX.",
+    "a2fb": "Falsch: Loyalty Token haben oft keinen DEX-Kurs. Ihr Wert kommt vom Versprechen des Issuers.",
+    "a3": "Die Stellar Development Foundation.",
+    "a3fb": "Falsch: Die SDF legt keine Regeln für private Loyalty Token fest."
+  },
+  "q5": {
+    "question": "Du bekommst 50 Gratis-BERRY per Nachricht angeboten. Was ist der sicherste erste Schritt?",
+    "hint": "Wer ist der eigentliche Ersteller dieses Tokens?",
+    "a1": "Die Issuer-Adresse mit der offiziellen Adresse des Unternehmens vergleichen.",
+    "a1fb": "Richtig: Nur ein Vergleich der Issuer-Adresse schützt vor wertlosen Fake-Token.",
+    "a2": "Die Trust Line sofort hinzufügen.",
+    "a2fb": "Falsch: Eine Trust Line zu einem unverifizierten Issuer kann zu wertlosen Token führen.",
+    "a3": "Den Token-Namen im Internet suchen.",
+    "a3fb": "Falsch: Der Name allein sagt nichts aus – jeder kann einen Token \"BERRY\" nennen."
+  },
+  "q6": {
+    "question": "Ein Token hat denselben Namen wie ein echter Loyalty Token, aber einen anderen Issuer. Was bedeutet das?",
+    "hint": "Was macht einen Token auf Stellar eindeutig?",
+    "a1": "Der Token ist wertlos – ohne den richtigen Issuer hat er keine Einlösbarkeit.",
+    "a1fb": "Richtig: Name + Issuer = eindeutiger Token. Anderer Issuer = anderer, wertloser Token.",
+    "a2": "Er ist dasselbe, nur von einer anderen Adresse.",
+    "a2fb": "Falsch: Es ist ein grundlegend anderer Token, nicht \"dasselbe von woanders\".",
+    "a3": "Er ist sicherer, weil er dezentraler ist.",
+    "a3fb": "Falsch: Ein anderer Issuer macht den Token nicht sicherer, sondern bedeutungslos."
+  },
+  "q7": {
+    "question": "Kann ein Unternehmen seinen Loyalty Token zurückrufen?",
+    "hint": "Welche Flags kann ein Issuer bei der Token-Erstellung setzen?",
+    "a1": "Ja, wenn der Token mit Clawback-Flag erstellt wurde.",
+    "a1fb": "Richtig: Das Clawback-Flag erlaubt dem Issuer, Token von Empfängern zurückzurufen.",
+    "a2": "Nein, Blockchain-Token sind immer permanent.",
+    "a2fb": "Falsch: Mit dem Clawback-Flag können Token zurückgerufen werden. Das ist eine bewusste Designentscheidung.",
+    "a3": "Nur die Stellar Development Foundation kann das.",
+    "a3fb": "Falsch: Nur der Issuer selbst kann Clawback nutzen, nicht die SDF."
+  }
+}

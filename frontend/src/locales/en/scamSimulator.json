@@ -226,6 +226,53 @@
         "limitedSpots": "Time pressure through 'limited spots'"
       },
       "explanation": "Legitimate employers never ask for advance payments or deposits. Anyone demanding crypto as a 'security payment' is a scammer. Always research companies independently before sending money."
+    },
+    "fakeCashback": {
+      "contact": {
+        "name": "Marco's Marketplace",
+        "subtitle": "Promotional message"
+      },
+      "messages": {
+        "01": "🎉 Marco's Marketplace – Special Offer!\nToday only: 50 free BERRY for all new customers!\nAdd a Trust Line now and receive your tokens.\n[Add Trust Line]",
+        "02": "Issuer address: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nJust add the Trust Line – tokens land in your wallet immediately! 🍓",
+        "03": "⚠️ Tip: Always check the token issuer before adding a Trust Line for a new token."
+      },
+      "options": {
+        "nothingSuspicious": "Nothing – looks legit. Add the Trust Line.",
+        "tooGenerous": "50 free BERRY sounds like a lot.",
+        "checkIssuer": "I'd check the issuer first.",
+        "addAnyway": "Add the Trust Line anyway – maybe it's fine.",
+        "rejectVerify": "Decline and ask Marco directly for the real BERRY address.",
+        "buyDex": "Buy the token on the DEX."
+      },
+      "followUp": {
+        "scam": {
+          "01": "Trust Line successfully added! Your 50 BERRY are on their way. 🍓",
+          "02": "You received 50 BERRY from the wrong issuer – but not a single shop accepts them. The issuer is unknown. These tokens are worthless and could be the start of further phishing attempts."
+        },
+        "generous": {
+          "01": "It really is a one-time offer! The official issuer address is on our website.",
+          "02": "Official BERRY issuer (from Marco's website):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77\n\nIssuer from this message:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Completely different addresses! The token in this message is fake."
+        },
+        "issuer": {
+          "01": "Official BERRY issuer (from Marco's website):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77",
+          "02": "Issuer from this message:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Not identical! Same token name, different issuer – this BERRY is worthless."
+        },
+        "addAnyway": {
+          "01": "Trust Line successfully added! Your 50 BERRY are on their way. 🍓",
+          "02": "Even though you saw the issuer mismatch, you added the Trust Line anyway. The 50 BERRY come from the wrong issuer and are worthless – no shop accepts them."
+        },
+        "buyDex": {
+          "01": "⚠️ On the DEX there are many tokens named BERRY from different issuers. Without the official issuer address, you might also buy worthless tokens. The issuer is key – even when buying on the DEX."
+        }
+      },
+      "redFlags": {
+        "freeTokens": "Free tokens with no real consideration are always suspicious",
+        "fakeIssuer": "The issuer in the message does not match the official one",
+        "urgency": "\"Today only\" – artificial urgency to prevent critical thinking",
+        "sameNameDifferentIssuer": "Same token name (BERRY) does not mean same token – only the issuer makes the difference"
+      },
+      "explanation": "Custom tokens on Stellar are defined by their issuer – not their name. Two tokens can both be called 'BERRY' but come from completely different issuers. Only the official issuer of Marco's Marketplace issues real, redeemable BERRY. Before adding a Trust Line, always verify the issuer address on the provider's official website."
     }
   }
 }

@@ -1158,5 +1158,140 @@
       "learning3": "Decentralizacija znači: matematika zamjenjuje autoritet – za sve."
     },
     "subtitle": "Stellar Consensus Protocol"
+  },
+  "chapter11": {
+    "title": "Program Vjernosti",
+    "subtitle": "Custom Assets & Loyalty Tokens",
+    "description": "Marco pokreće program vjernosti s BERRY tokenima – a Lumio otkriva opasnu zamku.",
+    "placeholder": "Ovo poglavlje uskoro stiže.",
+    "s1": {
+      "section": "Marcova nova ideja",
+      "marco1": "Lumio, imam novu ideju za svoju tržnicu voća! Želim davati stalnim kupcima BERRY tokene kao nagradu za svaku kupovinu.",
+      "lumio1": "Zvuči uzbudljivo! Kako to zamišljaš?",
+      "marco2": "Jednostavno: tko god potroši 10 XLM u mojoj trgovini, dobiva 1 BERRY natrag. Tokeni se mogu iskoristiti pri sljedećoj kupovini.",
+      "marco3": "Ali kako to postaviti na Stellaru? Već poznajem BERRY – koristili ste moje tokene u poglavlju 3.",
+      "lumio2": "Dobro pitanje! Već poznaješ BERRY tokene iz poglavlja 3. Ali znaš li zapravo što znači biti izdavatelj tokena?"
+    },
+    "s2": {
+      "section": "Što je Loyalty Token?",
+      "card": {
+        "title": "Što je Loyalty Token?",
+        "body": "Loyalty Token je prilagođena imovina na Stellaru – token koji sam kreiraš i izdaješ. Kao izdavatelj odlučuješ: Koliko tokena postoji? Kolika im je vrijednost? Koja pravila vrijede? Tvoji kupci trebaju Trust Line do tvog tokena prije nego što ga mogu primiti.",
+        "cta": "Razumijem!"
+      },
+      "glossary_loyalty": "Što je Loyalty Token? (Rječnik)",
+      "glossary_issuer": "Što je Issuer? (Rječnik)",
+      "lumio1": "Zamislite da tiskate vlastite markice za bonove. Vi odlučujete koliko ih ima i kolika im je vrijednost.",
+      "marco1": "Dakle ja sam u osnovi šef vlastite valute?",
+      "lumio2": "Točno – ali vrlo ograničene. BERRY vrijedi samo u tvojoj trgovini, i samo zato što si ti, Marco, izdavatelj. Drugi izdavatelj s istim imenom BERRY je potpuno drugi token.",
+      "lumio3": "To je važna točka: isto ime tokena, drugi izdavatelj – drugi token. Bez Trust Linea do pravog izdavatelja, tvoj kupac ne može primiti BERRY."
+    },
+    "s3": {
+      "section": "BERRY u detalje",
+      "lumio1": "Neka bude konkretno: 1 BERRY u tvojoj trgovini je bon za 100g jagoda. Kupci skupljaju BERRY, ti ih naplaćuješ u trgovini.",
+      "marco1": "Savršeno! I ja kontroliram koliko BERRY izdajem i kada ih uzimam natrag.",
+      "lumio2": "Sjećaš li se Trust Linea iz poglavlja 3? Potpuno isti princip. Prije nego što kupac može primiti BERRY, mora postaviti Trust Line do tvog BERRY tokena.",
+      "marco2": "Dakle svaki kupac mora prvo znati moju adresu kao izdavatelja?",
+      "lumio3": "Točno. I to je razlog zašto vrijednost Loyalty Tokena u potpunosti ovisi o izdavatelju. Bez Marca – nema BERRY-ja. Ako prestaneš voditi svoju tržnicu, tokeni gube vrijednost."
+    },
+    "s4": {
+      "section": "Primanje BERRY tokena",
+      "marco1": "Lumio, htio bih ovo isprobati uživo. Kako kupac dobiva svoje prve BERRY tokene?",
+      "lumio1": "Jednostavno! Dva koraka: postavi liniju povjerenja, zatim će ti Marco poslati 10 BERRY kao izdavatelj. Isprobajmo!",
+      "action": {
+        "label": "Primanje BERRY tokena",
+        "description": "Korak 1: Postavi liniju povjerenja za Markov BERRY token. Korak 2: Marco ti šalje 10 BERRY kao izdavatelj.",
+        "step1": "Postavi liniju povjerenja za BERRY",
+        "step2": "Primanje 10 BERRY od Marca",
+        "run_btn": "Linija povjerenja i primanje BERRY",
+        "success": "Primio si 10 BERRY! Markov program lojalnosti radi.",
+        "testnet_note": "Samo na testnoj mreži – ovi BERRY nemaju stvarnu vrijednost.",
+        "error_no_keypair": "Račun nije pronađen – najprije stvori račun."
+      },
+      "cta_continue": "Nastavi",
+      "lumio2": "Savršeno! Postavi liniju povjerenja, primi tokene – točno tako funkcionira princip izdavatelja na Stellaru.",
+      "hint": "Tko je već platio BERRYjem u Marcovoj trgovini, već ima ovu liniju povjerenja – jer bez linije povjerenja ne možeš primiti tokene."
+    },
+    "s5": {
+      "section": "Lažna BERRY ponuda",
+      "lumio1": "Pričekaj – moram ti pokazati nešto važno. Pogledaj ovu poruku koju si navodno primio:",
+      "scam": {
+        "sender_name": "Berry Market Službeni",
+        "sender": "berry-market.app",
+        "message": "🎉 BESPLATNO: 50 BERRY tokena! Klikni sada i dodaj liniju povjerenja!",
+        "question": "Što primjećuješ? Analizirajmo to zajedno.",
+        "reveal_prompt": "Pokreni analizu",
+        "reveal_next": "Dalje",
+        "lesson": "Isti naziv ≠ isti token. Uvijek prvo provjeri izdavatelja!",
+        "reveal1": {
+          "label": "Naziv tokena",
+          "text": "Token se stvarno zove BERRY ✓"
+        },
+        "reveal2": {
+          "label": "Adresa izdavatelja",
+          "text": "Ova adresa NIJE Marcova adresa – nepoznata osoba je stvorila ovaj token ✗"
+        },
+        "reveal3": {
+          "label": "Vrijednost tokena",
+          "text": "Ovi BERRY su bezvrijedni – svatko može stvoriti token pod nazivom BERRY. Bez Marcove adrese kao izdavatelja, to se ne računa."
+        }
+      },
+      "glossary_issuer": "Što je Izdavatelj? (Pojmovnik)",
+      "cta_next": "Dobro je znati!",
+      "lumio2": "Svatko može stvoriti token pod nazivom BERRY. Sam naziv ne govori ništa o vrijednosti – samo izdavatelj je važan. Markovi BERRY su vrijedni jer Marco stoji iza njih kao izdavatelj.",
+      "compare": {
+        "real_label": "Marcov pravi BERRY izdavatelj",
+        "fake_label": "Nepoznati izdavatelj (iz poruke)",
+        "lumio_comment": "Vidiš li razliku? Isto ime – ali potpuno druga adresa."
+      }
+    },
+    "s6": {
+      "section": "Donošenje ispravne odluke",
+      "lumio1": "Još jedno pitanje: primiš zahtjev za [[liniju povjerenja|trustline]] za 'BERRY'. Što radiš prvo?",
+      "choice": {
+        "question": "Što radiš prvo prije potvrde linije povjerenja?",
+        "a": "A) Samo potvrdim – poznajem BERRY",
+        "b": "B) Usporedim izdavatelja s Marcovom službenom adresom",
+        "c": "C) Guglam naziv tokena",
+        "wrong_title": "Nije sasvim točno",
+        "wrong": "Sam naziv tokena ne govori ništa o njegovoj vrijednosti. Svatko može stvoriti token pod nazivom BERRY.",
+        "hint2": "Savjet: Radi se o tome TKO stoji iza tokena – ne kako se zove.",
+        "correct": "Točno! Samo ako se adresa izdavatelja podudara, to je pravi token.",
+        "retry_btn": "Pokušaj ponovo",
+        "cta_next": "Nastavi"
+      },
+      "lumio2": "Savršeno! Bez obzira koliko pouzdano zvuči naziv tokena – uvijek prvo provjeri izdavatelja. To je tvoj najvažniji alat protiv prijevara s tokenima."
+    },
+    "s7": {
+      "section": "Mini-kviz",
+      "wrong_msg": "Nije sasvim točno",
+      "retry_btn": "Pokušaj ponovo",
+      "correct_cta": "Nastavi",
+      "q1": "Što kupac treba prije primanja BERRY tokena?",
+      "q1_a1": "Liniju povjerenja prema BERRY izdavatelju",
+      "q1_a2": "Poseban novčanik",
+      "q1_a3": "Registraciju kod Marca",
+      "q1_explanation": "Nije potreban poseban novčanik – dovoljna je linija povjerenja prema ispravnom izdavatelju. To je dozvola za držanje određenog tokena.",
+      "q1_hint2": "Linija povjerenja govori Stellaru: 'Vjerujem ovom izdavatelju i spreman sam držati njegov token.'",
+      "q2": "Dva tokena se oba zovu 'BERRY'. Što ih čini različitima?",
+      "q2_a1": "Izdavatelj – bilo koja adresa može nazvati token BERRY",
+      "q2_a2": "Cijena",
+      "q2_a3": "Broj tokena",
+      "q2_explanation": "Cijena i količina mogu biti identične. Samo izdavatelj – adresa koja je stvorila token – razlikuje dva tokena s istim imenom.",
+      "q2_hint2": "Sjeti se primjera prijevare: isto ime 'BERRY', ali ga je stvorila druga osoba.",
+      "q3": "Primiš poruku: '50 besplatnih BERRY, dodaj liniju povjerenja odmah!' Koji je prvi korak?",
+      "q3_a1": "Usporedi adresu izdavatelja s Marcovom službenom adresom",
+      "q3_a2": "Odmah dodaj liniju povjerenja",
+      "q3_a3": "Odmah potroši tokene",
+      "q3_explanation": "Nikada ne dodavaj liniju povjerenja prije provjere izdavatelja. Pogrešan izdavatelj znači bezvrijedne tokene.",
+      "q3_hint2": "Besplatne ponude klasičan su trik. Uvijek se prvo pitaj: tko je izdavatelj?"
+    },
+    "summary": {
+      "learning1": "Token lojalnosti je prilagođena imovina na Stellaru – izdavatelj određuje njegovu vrijednost.",
+      "learning2": "Kao izdavatelj nosiš odgovornost: stvaraš token i postavljaš njegova pravila.",
+      "learning3": "Isto ime tokena ≠ isti token. Samo izdavatelj čini razliku.",
+      "learning4": "Lažne tokene prepoznaj po adresi izdavatelja – uvijek je provjeri s pouzdanim izvorom.",
+      "learning5": "Linije povjerenja povezuju kupce s tvojim programom lojalnosti – bez linije povjerenja nema primanja tokena."
+    }
   }
 }

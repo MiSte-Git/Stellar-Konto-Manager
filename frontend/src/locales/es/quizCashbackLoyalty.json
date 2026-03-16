@@ -1,0 +1,74 @@
+{
+  "title": "Cashback y Tokens de Fidelidad",
+  "introText": "Pon a prueba tu conocimiento sobre tokens de fidelidad, líneas de confianza y verificación de emisores en Stellar.",
+  "q1": {
+    "question": "¿Qué es un token de fidelidad?",
+    "hint": "Piensa en activos personalizados en la blockchain.",
+    "a1": "Un activo personalizado en Stellar que una empresa emite como recompensa.",
+    "a1fb": "Correcto: Los tokens de fidelidad son activos personalizados que las empresas crean y emiten ellas mismas.",
+    "a2": "Un bono especial de XLM.",
+    "a2fb": "Incorrecto: XLM es la moneda nativa de Stellar. Los tokens de fidelidad son activos personalizados independientes.",
+    "a3": "Un token emitido por la Stellar Development Foundation.",
+    "a3fb": "Incorrecto: La SDF no emite tokens de fidelidad. Cada empresa crea el suyo propio."
+  },
+  "q2": {
+    "question": "¿Qué necesita un cliente antes de recibir tokens de fidelidad?",
+    "hint": "Stellar requiere confianza explícita antes de que se pueda recibir un token.",
+    "a1": "Una línea de confianza hacia el emisor del token.",
+    "a1fb": "Correcto: Sin una línea de confianza al emisor, no se puede recibir ningún token.",
+    "a2": "Una cuenta verificada.",
+    "a2fb": "Incorrecto: Las cuentas de Stellar no requieren verificación externa para activos personalizados.",
+    "a3": "Al menos 10 XLM en la billetera.",
+    "a3fb": "Incorrecto: No hay requisito mínimo de XLM para las líneas de confianza."
+  },
+  "q3": {
+    "question": "Marco llama a su token \"BERRY\". Otra empresa hace lo mismo. ¿Son iguales los tokens?",
+    "hint": "¿Qué distingue a dos tokens con un nombre idéntico en Stellar?",
+    "a1": "No – el emisor es diferente, así que son tokens distintos.",
+    "a1fb": "Correcto: En Stellar, no solo el nombre sino nombre + dirección del emisor identifica un token de forma única.",
+    "a2": "Sí – el mismo nombre significa el mismo token.",
+    "a2fb": "Incorrecto: El mismo nombre no significa el mismo token. El emisor es el factor decisivo.",
+    "a3": "Depende del precio.",
+    "a3fb": "Incorrecto: El precio es irrelevante. Dos tokens BERRY con emisores diferentes son fundamentalmente distintos."
+  },
+  "q4": {
+    "question": "¿Qué determina el valor de un token de fidelidad?",
+    "hint": "¿Quién respalda el token y decide sus reglas?",
+    "a1": "El emisor – él define qué vale el token y cómo puede canjearse.",
+    "a1fb": "Correcto: Sin emisor, un token de fidelidad no tiene valor. Él fija las condiciones de canje y el suministro.",
+    "a2": "El precio de mercado en el DEX.",
+    "a2fb": "Incorrecto: Los tokens de fidelidad a menudo no tienen precio en el DEX. Su valor viene de la promesa del emisor.",
+    "a3": "La Stellar Development Foundation.",
+    "a3fb": "Incorrecto: La SDF no establece reglas para los tokens de fidelidad privados."
+  },
+  "q5": {
+    "question": "Recibes una oferta de 50 BERRY gratis por mensaje. ¿Cuál es el primer paso más seguro?",
+    "hint": "¿Quién es el creador real de este token?",
+    "a1": "Comparar la dirección del emisor con la dirección oficial de la empresa.",
+    "a1fb": "Correcto: Solo comparar la dirección del emisor protege contra tokens falsos sin valor.",
+    "a2": "Añadir la línea de confianza de inmediato.",
+    "a2fb": "Incorrecto: Añadir una línea de confianza a un emisor no verificado puede resultar en tokens sin valor.",
+    "a3": "Buscar el nombre del token en Internet.",
+    "a3fb": "Incorrecto: El nombre por sí solo no dice nada – cualquiera puede llamar a un token \"BERRY\"."
+  },
+  "q6": {
+    "question": "Un token tiene el mismo nombre que un token de fidelidad real pero un emisor diferente. ¿Qué significa eso?",
+    "hint": "¿Qué hace único a un token en Stellar?",
+    "a1": "El token es inútil – sin el emisor correcto no tiene valor de canje.",
+    "a1fb": "Correcto: Nombre + emisor = token único. Emisor diferente = token diferente y sin valor.",
+    "a2": "Es lo mismo, solo de una dirección diferente.",
+    "a2fb": "Incorrecto: Es un token fundamentalmente diferente, no \"lo mismo desde otro lugar\".",
+    "a3": "Es más seguro porque es más descentralizado.",
+    "a3fb": "Incorrecto: Un emisor diferente no hace el token más seguro, lo hace insignificante."
+  },
+  "q7": {
+    "question": "¿Puede una empresa recuperar su token de fidelidad?",
+    "hint": "¿Qué indicadores puede establecer un emisor al crear un token?",
+    "a1": "Sí, si el token fue creado con el indicador de clawback.",
+    "a1fb": "Correcto: El indicador de clawback permite al emisor recuperar tokens de los destinatarios.",
+    "a2": "No, los tokens de blockchain son siempre permanentes.",
+    "a2fb": "Incorrecto: Con el indicador de clawback, los tokens pueden recuperarse. Es una decisión de diseño deliberada.",
+    "a3": "Solo la Stellar Development Foundation puede hacer eso.",
+    "a3fb": "Incorrecto: Solo el propio emisor puede usar clawback, no la SDF."
+  }
+}

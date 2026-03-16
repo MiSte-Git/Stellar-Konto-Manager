@@ -226,6 +226,53 @@
         "limitedSpots": "Vremenski pritisak kroz 'ograničena mjesta'"
       },
       "explanation": "Legitimni poslodavci nikada ne traže predujmove ni pologe. Tko traži kriptovalute kao 'sigurnosnu uplatu', prevarant je. Uvijek istraži tvrtke neovisno prije slanja novca."
+    },
+    "fakeCashback": {
+      "contact": {
+        "name": "Marcova Tržnica",
+        "subtitle": "Promotivna poruka"
+      },
+      "messages": {
+        "01": "🎉 Marcova Tržnica – Posebna ponuda!\nSamo danas: 50 besplatnih BERRY tokena za sve nove korisnike!\nDodaj Trust Line sada i primi tokene.\n[Dodaj Trust Line]",
+        "02": "Adresa izdavatelja: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nSamo dodaj Trust Line – tokeni odmah dolaze u tvoj novčanik! 🍓",
+        "03": "⚠️ Savjet: Uvijek provjeri izdavatelja tokena prije dodavanja Trust Linea."
+      },
+      "options": {
+        "nothingSuspicious": "Ništa – izgleda legitimno. Dodaj Trust Line.",
+        "tooGenerous": "50 besplatnih BERRY zvuči previše.",
+        "checkIssuer": "Prvo bih provjerio/la izdavatelja.",
+        "addAnyway": "Dodaj Trust Line svejedno – možda je u redu.",
+        "rejectVerify": "Odbij i pitaj Marca izravno za pravu BERRY adresu.",
+        "buyDex": "Kupi token na DEX-u."
+      },
+      "followUp": {
+        "scam": {
+          "01": "Trust Line uspješno dodan! Tvojih 50 BERRY je na putu. 🍓",
+          "02": "Primio/la si 50 BERRY od pogrešnog izdavatelja – ali niti jedna trgovina ih ne prihvaća. Izdavatelj je nepoznat. Ovi tokeni su bezvrijedni i mogli bi biti početak daljnjih phishing pokušaja."
+        },
+        "generous": {
+          "01": "Zaista je jedinstven! Službena adresa izdavatelja je na našoj web stranici.",
+          "02": "Službeni BERRY izdavatelj (prema Marcovoj web stranici):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77\n\nIzdavatelj iz ove poruke:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Potpuno različite adrese! Token u ovoj poruci je lažan."
+        },
+        "issuer": {
+          "01": "Službeni BERRY izdavatelj (prema Marcovoj web stranici):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77",
+          "02": "Izdavatelj iz ove poruke:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Nisu iste! Isto ime tokena, drugi izdavatelj – ovaj BERRY je bezvrijedan."
+        },
+        "addAnyway": {
+          "01": "Trust Line uspješno dodan! Tvojih 50 BERRY je na putu. 🍓",
+          "02": "Iako si vidio/la razliku u izdavatelju, ipak si dodao/la Trust Line. 50 BERRY dolazi od pogrešnog izdavatelja i bezvrijedno je – niti jedna trgovina ih ne prihvaća."
+        },
+        "buyDex": {
+          "01": "⚠️ Na DEX-u postoji mnogo tokena koji se zovu BERRY od različitih izdavatelja. Bez službene adrese izdavatelja možeš i kupiti bezvrijedne tokene. Izdavatelj je ključan – čak i pri kupnji na DEX-u."
+        }
+      },
+      "redFlags": {
+        "freeTokens": "Besplatni tokeni bez stvarne naknade uvijek su sumnjivi",
+        "fakeIssuer": "Izdavatelj u poruci ne odgovara službenom",
+        "urgency": "\"Samo danas\" – umjetni hitnost sprječava kritično razmišljanje",
+        "sameNameDifferentIssuer": "Isto ime tokena (BERRY) ne znači isti token – samo izdavatelj čini razliku"
+      },
+      "explanation": "Prilagođeni tokeni na Stellaru definirani su svojim izdavateljem – ne imenom. Dva tokena mogu se oba zvati 'BERRY', ali dolaziti od potpuno različitih izdavatelja. Samo službeni izdavatelj Marcove Tržnice izdaje prave, unovčive BERRY tokene. Prije dodavanja Trust Linea, uvijek provjeri adresu izdavatelja na službenoj web stranici pružatelja usluge."
     }
   }
 }

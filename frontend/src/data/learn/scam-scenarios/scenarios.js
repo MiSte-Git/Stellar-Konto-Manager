@@ -565,6 +565,220 @@ const scenarios = [
 
     explanationKey: 'scenarios.fakeJob01.explanation',
   },
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SZENARIO 6: Fake Cashback – Zu gut um wahr zu sein
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    id: 'fake-cashback',
+    category: 'fake-airdrop',
+    i18nKey: 'scenarios.fakeCashback',
+
+    contact: {
+      nameKey: 'scenarios.fakeCashback.contact.name',
+      subtitleKey: 'scenarios.fakeCashback.contact.subtitle',
+      avatar: '🛒',
+      verified: false,
+    },
+
+    messages: [
+      {
+        id: 'msg-01',
+        from: 'them',
+        i18nKey: 'scenarios.fakeCashback.messages.01',
+        delay: 480,
+      },
+      {
+        id: 'msg-02',
+        from: 'them',
+        i18nKey: 'scenarios.fakeCashback.messages.02',
+        delay: 1200,
+      },
+      {
+        id: 'msg-03',
+        from: 'system',
+        i18nKey: 'scenarios.fakeCashback.messages.03',
+        delay: 900,
+      },
+      {
+        id: 'decision-01',
+        from: 'decision',
+        delay: 0,
+      },
+    ],
+
+    options: [
+      {
+        id: 'nothing-suspicious',
+        i18nKey: 'scenarios.fakeCashback.options.nothingSuspicious',
+        isScam: true,
+        scamType: 'xlm-sent',
+        xp: -10,
+        followUp: [
+          {
+            id: 'followup-scam-01',
+            from: 'them',
+            i18nKey: 'scenarios.fakeCashback.followUp.scam.01',
+            delay: 900,
+          },
+          {
+            id: 'followup-scam-02',
+            from: 'system',
+            i18nKey: 'scenarios.fakeCashback.followUp.scam.02',
+            delay: 1200,
+          },
+        ],
+      },
+      {
+        id: 'too-generous',
+        i18nKey: 'scenarios.fakeCashback.options.tooGenerous',
+        isScam: false,
+        xp: 10,
+        followUp: [
+          {
+            id: 'followup-gen-01',
+            from: 'them',
+            i18nKey: 'scenarios.fakeCashback.followUp.generous.01',
+            delay: 900,
+          },
+          {
+            id: 'followup-gen-02',
+            from: 'system',
+            i18nKey: 'scenarios.fakeCashback.followUp.generous.02',
+            delay: 1500,
+          },
+          {
+            id: 'decision-02',
+            from: 'decision',
+            delay: 0,
+            options: [
+              {
+                id: 'add-anyway',
+                i18nKey: 'scenarios.fakeCashback.options.addAnyway',
+                isScam: true,
+                scamType: 'xlm-sent',
+                xp: -10,
+                followUp: [
+                  {
+                    id: 'followup-add-01',
+                    from: 'them',
+                    i18nKey: 'scenarios.fakeCashback.followUp.addAnyway.01',
+                    delay: 900,
+                  },
+                  {
+                    id: 'followup-add-02',
+                    from: 'system',
+                    i18nKey: 'scenarios.fakeCashback.followUp.addAnyway.02',
+                    delay: 1200,
+                  },
+                ],
+              },
+              {
+                id: 'reject-verify',
+                i18nKey: 'scenarios.fakeCashback.options.rejectVerify',
+                isScam: false,
+                xp: 20,
+                followUp: [],
+              },
+              {
+                id: 'buy-dex',
+                i18nKey: 'scenarios.fakeCashback.options.buyDex',
+                isScam: true,
+                scamType: 'xlm-sent',
+                xp: -10,
+                followUp: [
+                  {
+                    id: 'followup-dex-01',
+                    from: 'system',
+                    i18nKey: 'scenarios.fakeCashback.followUp.buyDex.01',
+                    delay: 1200,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'check-issuer',
+        i18nKey: 'scenarios.fakeCashback.options.checkIssuer',
+        isScam: false,
+        xp: 25,
+        followUp: [
+          {
+            id: 'followup-issuer-01',
+            from: 'system',
+            i18nKey: 'scenarios.fakeCashback.followUp.issuer.01',
+            delay: 900,
+          },
+          {
+            id: 'followup-issuer-02',
+            from: 'system',
+            i18nKey: 'scenarios.fakeCashback.followUp.issuer.02',
+            delay: 1500,
+          },
+          {
+            id: 'decision-02b',
+            from: 'decision',
+            delay: 0,
+            options: [
+              {
+                id: 'add-anyway-2',
+                i18nKey: 'scenarios.fakeCashback.options.addAnyway',
+                isScam: true,
+                scamType: 'xlm-sent',
+                xp: -10,
+                followUp: [
+                  {
+                    id: 'followup-add-01b',
+                    from: 'them',
+                    i18nKey: 'scenarios.fakeCashback.followUp.addAnyway.01',
+                    delay: 900,
+                  },
+                  {
+                    id: 'followup-add-02b',
+                    from: 'system',
+                    i18nKey: 'scenarios.fakeCashback.followUp.addAnyway.02',
+                    delay: 1200,
+                  },
+                ],
+              },
+              {
+                id: 'reject-verify-2',
+                i18nKey: 'scenarios.fakeCashback.options.rejectVerify',
+                isScam: false,
+                xp: 20,
+                followUp: [],
+              },
+              {
+                id: 'buy-dex-2',
+                i18nKey: 'scenarios.fakeCashback.options.buyDex',
+                isScam: true,
+                scamType: 'xlm-sent',
+                xp: -10,
+                followUp: [
+                  {
+                    id: 'followup-dex-01b',
+                    from: 'system',
+                    i18nKey: 'scenarios.fakeCashback.followUp.buyDex.01',
+                    delay: 1200,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+
+    redFlags: [
+      'scenarios.fakeCashback.redFlags.freeTokens',
+      'scenarios.fakeCashback.redFlags.fakeIssuer',
+      'scenarios.fakeCashback.redFlags.urgency',
+      'scenarios.fakeCashback.redFlags.sameNameDifferentIssuer',
+    ],
+
+    explanationKey: 'scenarios.fakeCashback.explanation',
+  },
 ];
 
 export default scenarios;

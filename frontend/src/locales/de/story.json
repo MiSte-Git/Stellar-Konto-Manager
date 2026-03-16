@@ -1158,5 +1158,140 @@
       "learning3": "Dezentralisierung bedeutet: Mathematik ersetzt Autorität – für alle."
     },
     "subtitle": "Das Stellar Consensus Protocol"
+  },
+  "chapter11": {
+    "title": "Das Treueprogramm",
+    "subtitle": "Custom Assets & Loyalty Tokens",
+    "description": "Marco startet ein Treueprogramm mit BERRY-Token – und Lumio enthüllt eine gefährliche Falle.",
+    "placeholder": "Dieses Kapitel ist bald verfügbar.",
+    "s1": {
+      "section": "Marcos neue Idee",
+      "marco1": "Lumio, ich habe eine neue Idee für meinen Obstmarkt! Ich möchte meinen Stammkunden für jeden Einkauf BERRY-Token als Belohnung geben.",
+      "lumio1": "Das klingt spannend! Wie stellst du dir das vor?",
+      "marco2": "Ganz einfach: Wer für 10 XLM bei mir einkauft, bekommt 1 BERRY zurück. Die Token können sie beim nächsten Einkauf einlösen.",
+      "marco3": "Aber wie richte ich das auf Stellar ein? Ich kenne BERRY schon – ihr habt ja in Kapitel 3 meine Token verwendet.",
+      "lumio2": "Gute Frage! Du kennst BERRY-Token ja schon von Kapitel 3. Aber weisst du eigentlich, was es bedeutet, der Issuer eines Tokens zu sein?"
+    },
+    "s2": {
+      "section": "Was ist ein Loyalty Token?",
+      "card": {
+        "title": "Was ist ein Loyalty Token?",
+        "body": "Ein Loyalty Token ist ein Custom Asset auf Stellar – ein Token, den du selbst erschaffst und ausgibst. Als Issuer bestimmst du: Wie viele Token existieren? Was sind sie wert? Welche Regeln gelten? Deine Kunden brauchen eine Trust Line zu deinem Token, bevor sie ihn empfangen können.",
+        "cta": "Verstanden!"
+      },
+      "glossary_loyalty": "Was ist ein Loyalty Token? (Glossar)",
+      "glossary_issuer": "Was ist ein Issuer? (Glossar)",
+      "lumio1": "Stell dir vor, du druckst deine eigenen Gutscheinmarken. Du bestimmst, wie viele es gibt und was sie wert sind.",
+      "marco1": "Also bin ich quasi der Chef meiner eigenen Währung?",
+      "lumio2": "Genau – aber eine sehr begrenzte. BERRY gilt nur bei dir, und nur weil du als Marco der Issuer bist. Ein anderer Issuer mit dem Namen BERRY ist ein komplett anderer Token.",
+      "lumio3": "Das ist ein wichtiger Punkt: Gleicher Token-Name, anderer Issuer – anderer Token. Ohne Trust Line zum richtigen Issuer kann dein Kunde keinen BERRY empfangen."
+    },
+    "s3": {
+      "section": "BERRY im Detail",
+      "lumio1": "Lass mich das konkret machen: 1 BERRY bei dir ist ein Gutschein für 100g Erdbeeren. Kunden sammeln BERRY, du löst sie im Laden ein.",
+      "marco1": "Perfekt! Und ich kontrolliere, wie viele BERRY ich ausgebe und wann ich sie zurücknehme.",
+      "lumio2": "Du erinnerst dich an Trust Lines aus Kapitel 3? Genau dasselbe Prinzip. Bevor ein Kunde BERRY empfangen kann, muss er eine Trust Line zu deinem BERRY-Token einrichten.",
+      "marco2": "Also muss jeder Kunde erst meine Adresse als Issuer kennen?",
+      "lumio3": "Richtig. Und das ist auch der Grund, warum der Wert eines Loyalty Token komplett vom Issuer abhängt. Ohne Marco – keinen BERRY. Wenn du aufhörst, deinen Markt zu betreiben, verlieren die Token ihren Wert."
+    },
+    "s4": {
+      "section": "BERRY empfangen",
+      "marco1": "Lumio, ich würde das gerne live ausprobieren. Wie bekommt ein Kunde seine ersten BERRY-Token?",
+      "lumio1": "Ganz einfach! Zwei Schritte: Trust Line einrichten, dann sendet dir Marco als Issuer 10 BERRY. Probieren wir es aus!",
+      "action": {
+        "label": "BERRY Token empfangen",
+        "description": "Schritt 1: Trust Line für Marcos BERRY-Token einrichten. Schritt 2: Marco sendet dir 10 BERRY als Issuer.",
+        "step1": "Trust Line für BERRY einrichten",
+        "step2": "10 BERRY von Marco empfangen",
+        "run_btn": "Trust Line & BERRY empfangen",
+        "success": "Du hast 10 BERRY erhalten! Marcos Treueprogramm funktioniert.",
+        "testnet_note": "Nur auf dem Testnet – diese BERRY haben keinen echten Wert.",
+        "error_no_keypair": "Kein Konto gefunden – bitte zuerst ein Konto erstellen."
+      },
+      "cta_continue": "Weiter",
+      "lumio2": "Perfekt! Trust Line einrichten, Token empfangen – genau so funktioniert das Issuer-Prinzip auf Stellar.",
+      "hint": "Wer bei Marco bereits mit BERRY bezahlt hat, hat diese Trust Line schon – denn ohne Trust Line kann man keine Token empfangen."
+    },
+    "s5": {
+      "section": "Die gefälschte BERRY-Aktion",
+      "lumio1": "Warte kurz – ich muss dir etwas Wichtiges zeigen. Schau dir diese Nachricht an, die du angeblich bekommen hast:",
+      "scam": {
+        "sender_name": "Berry Market Official",
+        "sender": "berry-market.app",
+        "message": "🎉 GRATIS: 50 BERRY Token! Klick jetzt und füge die Trust Line hinzu!",
+        "question": "Was fällt dir auf? Analysieren wir das gemeinsam.",
+        "reveal_prompt": "Analyse starten",
+        "reveal_next": "Weiter",
+        "lesson": "Gleicher Name ≠ gleicher Token. Immer zuerst den Issuer prüfen!",
+        "reveal1": {
+          "label": "Token-Name",
+          "text": "Der Token heisst wirklich BERRY ✓"
+        },
+        "reveal2": {
+          "label": "Issuer-Adresse",
+          "text": "Diese Adresse ist NICHT Marcos Adresse – ein unbekannter Fremder hat diesen Token erstellt ✗"
+        },
+        "reveal3": {
+          "label": "Wert der Token",
+          "text": "Diese BERRY sind wertlos – jeder kann einen Token namens BERRY erschaffen. Ohne Marcos Adresse als Issuer zählt er nicht."
+        }
+      },
+      "glossary_issuer": "Was ist ein Issuer? (Glossar)",
+      "cta_next": "Gut zu wissen!",
+      "lumio2": "Jeder kann einen Token namens BERRY erstellen. Der Name allein sagt nichts über den Wert aus – nur der Issuer zählt. Marcos BERRY sind wertvoll, weil Marco als Issuer dahintersteht.",
+      "compare": {
+        "real_label": "Marcos echter BERRY-Issuer",
+        "fake_label": "Unbekannter Issuer (aus der Nachricht)",
+        "lumio_comment": "Siehst du den Unterschied? Gleicher Name – aber komplett andere Adresse."
+      }
+    },
+    "s6": {
+      "section": "Richtig entscheiden",
+      "lumio1": "Eine letzte Frage: Du bekommst eine [[Trust Line|trustline]] Anfrage für 'BERRY'. Was machst du als erstes?",
+      "choice": {
+        "question": "Was machst du als erstes, bevor du die Trust Line bestätigst?",
+        "a": "A) Einfach bestätigen – BERRY kenne ich ja",
+        "b": "B) Den Issuer mit Marcos offizieller Adresse vergleichen",
+        "c": "C) Den Token-Namen googeln",
+        "wrong_title": "Nicht ganz richtig",
+        "wrong": "Der Token-Name allein sagt nichts über den Wert aus. Jeder kann einen Token namens BERRY erstellen.",
+        "hint2": "Tipp: Es geht darum, WER hinter dem Token steht – nicht wie er heisst.",
+        "correct": "Genau richtig! Nur wenn die Issuer-Adresse stimmt, ist es der richtige Token.",
+        "retry_btn": "Nochmal versuchen",
+        "cta_next": "Weiter"
+      },
+      "lumio2": "Perfekt! Egal wie vertrauenswürdig ein Token-Name klingt – prüfe immer zuerst den Issuer. Das ist dein wichtigstes Werkzeug gegen Token-Scams."
+    },
+    "s7": {
+      "section": "Mini-Quiz",
+      "wrong_msg": "Nicht ganz richtig",
+      "retry_btn": "Nochmal versuchen",
+      "correct_cta": "Weiter",
+      "q1": "Was braucht ein Kunde, bevor er BERRY-Token empfangen kann?",
+      "q1_a1": "Eine Trust Line zum BERRY-Issuer",
+      "q1_a2": "Ein spezielles Wallet",
+      "q1_a3": "Eine Registrierung bei Marco",
+      "q1_explanation": "Kein spezielles Wallet nötig – eine Trust Line zum richtigen Issuer genügt. Sie ist die Erlaubnis, einen bestimmten Token zu halten.",
+      "q1_hint2": "Die Trust Line sagt Stellar: 'Ich vertraue diesem Issuer und bin bereit, seinen Token zu halten.'",
+      "q2": "Zwei Token heissen beide 'BERRY'. Was macht sie unterschiedlich?",
+      "q2_a1": "Der Issuer – jede Adresse kann einen Token BERRY nennen",
+      "q2_a2": "Der Preis",
+      "q2_a3": "Die Anzahl der Token",
+      "q2_explanation": "Preis und Menge können identisch sein. Nur der Issuer – also die erstellende Adresse – unterscheidet zwei Token mit gleichem Namen.",
+      "q2_hint2": "Erinnere dich ans Scam-Beispiel: gleicher Name 'BERRY', aber ein anderer hat ihn erstellt.",
+      "q3": "Du bekommst eine Nachricht: '50 Gratis-BERRY, Trust Line jetzt hinzufügen!'. Was ist der erste Schritt?",
+      "q3_a1": "Issuer-Adresse mit Marcos offizieller Adresse vergleichen",
+      "q3_a2": "Trust Line sofort hinzufügen",
+      "q3_a3": "Die Token direkt ausgeben",
+      "q3_explanation": "Niemals eine Trust Line hinzufügen, bevor der Issuer geprüft wurde. Ein falscher Issuer bedeutet wertlose Token.",
+      "q3_hint2": "Gratis-Angebote sind ein klassischer Trick. Immer zuerst: Wer ist der Issuer?"
+    },
+    "summary": {
+      "learning1": "Ein Loyalty Token ist ein Custom Asset auf Stellar – der Issuer bestimmt seinen Wert.",
+      "learning2": "Als Issuer trägst du Verantwortung: Du erschaffst den Token und legst seine Regeln fest.",
+      "learning3": "Gleicher Token-Name ≠ gleicher Token. Nur der Issuer macht den Unterschied.",
+      "learning4": "Fake-Token erkennst du an der Issuer-Adresse – prüfe sie immer mit einer vertrauenswürdigen Quelle.",
+      "learning5": "Trust Lines verbinden Kunden mit deinem Treueprogramm – ohne Trust Line kein Token-Empfang."
+    }
   }
 }

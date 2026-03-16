@@ -1,0 +1,89 @@
+{
+  "lessonId": "cashback-loyalty",
+  "titleKey": "quizCashbackLoyalty:title",
+  "meta": {
+    "estimatedMinutes": 4,
+    "passPercent": 0.75,
+    "threeStarPercent": 0.9
+  },
+  "introKey": "quizCashbackLoyalty:introText",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "single",
+      "questionKey": "quizCashbackLoyalty:q1.question",
+      "hintKey": "quizCashbackLoyalty:q1.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizCashbackLoyalty:q1.a1", "correct": true,  "feedbackKey": "quizCashbackLoyalty:q1.a1fb" },
+        { "id": "a2", "textKey": "quizCashbackLoyalty:q1.a2", "correct": false, "feedbackKey": "quizCashbackLoyalty:q1.a2fb" },
+        { "id": "a3", "textKey": "quizCashbackLoyalty:q1.a3", "correct": false, "feedbackKey": "quizCashbackLoyalty:q1.a3fb" }
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "single",
+      "questionKey": "quizCashbackLoyalty:q2.question",
+      "hintKey": "quizCashbackLoyalty:q2.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizCashbackLoyalty:q2.a1", "correct": true,  "feedbackKey": "quizCashbackLoyalty:q2.a1fb" },
+        { "id": "a2", "textKey": "quizCashbackLoyalty:q2.a2", "correct": false, "feedbackKey": "quizCashbackLoyalty:q2.a2fb" },
+        { "id": "a3", "textKey": "quizCashbackLoyalty:q2.a3", "correct": false, "feedbackKey": "quizCashbackLoyalty:q2.a3fb" }
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "single",
+      "questionKey": "quizCashbackLoyalty:q3.question",
+      "hintKey": "quizCashbackLoyalty:q3.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizCashbackLoyalty:q3.a1", "correct": true,  "feedbackKey": "quizCashbackLoyalty:q3.a1fb" },
+        { "id": "a2", "textKey": "quizCashbackLoyalty:q3.a2", "correct": false, "feedbackKey": "quizCashbackLoyalty:q3.a2fb" },
+        { "id": "a3", "textKey": "quizCashbackLoyalty:q3.a3", "correct": false, "feedbackKey": "quizCashbackLoyalty:q3.a3fb" }
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "single",
+      "questionKey": "quizCashbackLoyalty:q4.question",
+      "hintKey": "quizCashbackLoyalty:q4.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizCashbackLoyalty:q4.a1", "correct": true,  "feedbackKey": "quizCashbackLoyalty:q4.a1fb" },
+        { "id": "a2", "textKey": "quizCashbackLoyalty:q4.a2", "correct": false, "feedbackKey": "quizCashbackLoyalty:q4.a2fb" },
+        { "id": "a3", "textKey": "quizCashbackLoyalty:q4.a3", "correct": false, "feedbackKey": "quizCashbackLoyalty:q4.a3fb" }
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "single",
+      "questionKey": "quizCashbackLoyalty:q5.question",
+      "hintKey": "quizCashbackLoyalty:q5.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizCashbackLoyalty:q5.a1", "correct": true,  "feedbackKey": "quizCashbackLoyalty:q5.a1fb" },
+        { "id": "a2", "textKey": "quizCashbackLoyalty:q5.a2", "correct": false, "feedbackKey": "quizCashbackLoyalty:q5.a2fb" },
+        { "id": "a3", "textKey": "quizCashbackLoyalty:q5.a3", "correct": false, "feedbackKey": "quizCashbackLoyalty:q5.a3fb" }
+      ]
+    },
+    {
+      "id": "q6",
+      "type": "single",
+      "questionKey": "quizCashbackLoyalty:q6.question",
+      "hintKey": "quizCashbackLoyalty:q6.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizCashbackLoyalty:q6.a1", "correct": true,  "feedbackKey": "quizCashbackLoyalty:q6.a1fb" },
+        { "id": "a2", "textKey": "quizCashbackLoyalty:q6.a2", "correct": false, "feedbackKey": "quizCashbackLoyalty:q6.a2fb" },
+        { "id": "a3", "textKey": "quizCashbackLoyalty:q6.a3", "correct": false, "feedbackKey": "quizCashbackLoyalty:q6.a3fb" }
+      ]
+    },
+    {
+      "id": "q7",
+      "type": "single",
+      "questionKey": "quizCashbackLoyalty:q7.question",
+      "hintKey": "quizCashbackLoyalty:q7.hint",
+      "options": [
+        { "id": "a1", "textKey": "quizCashbackLoyalty:q7.a1", "correct": true,  "feedbackKey": "quizCashbackLoyalty:q7.a1fb" },
+        { "id": "a2", "textKey": "quizCashbackLoyalty:q7.a2", "correct": false, "feedbackKey": "quizCashbackLoyalty:q7.a2fb" },
+        { "id": "a3", "textKey": "quizCashbackLoyalty:q7.a3", "correct": false, "feedbackKey": "quizCashbackLoyalty:q7.a3fb" }
+      ]
+    }
+  ]
+}

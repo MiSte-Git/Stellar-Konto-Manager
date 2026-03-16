@@ -1,0 +1,74 @@
+{
+  "title": "Cashback e Token Fedeltà",
+  "introText": "Metti alla prova le tue conoscenze sui token fedeltà, le linee di fiducia e la verifica degli emittenti su Stellar.",
+  "q1": {
+    "question": "Cos'è un token fedeltà?",
+    "hint": "Pensa agli asset personalizzati sulla blockchain.",
+    "a1": "Un asset personalizzato su Stellar che un'azienda emette come ricompensa.",
+    "a1fb": "Corretto: I token fedeltà sono asset personalizzati che le aziende creano ed emettono da sé.",
+    "a2": "Un bonus XLM speciale.",
+    "a2fb": "Sbagliato: XLM è la valuta nativa di Stellar. I token fedeltà sono asset personalizzati indipendenti.",
+    "a3": "Un token emesso dalla Stellar Development Foundation.",
+    "a3fb": "Sbagliato: La SDF non emette token fedeltà. Ogni azienda crea il proprio."
+  },
+  "q2": {
+    "question": "Di cosa ha bisogno un cliente prima di ricevere token fedeltà?",
+    "hint": "Stellar richiede fiducia esplicita prima che un token possa essere ricevuto.",
+    "a1": "Una linea di fiducia verso l'emittente del token.",
+    "a1fb": "Corretto: Senza una linea di fiducia verso l'emittente, non si può ricevere nessun token.",
+    "a2": "Un account verificato.",
+    "a2fb": "Sbagliato: Gli account Stellar non richiedono verifica esterna per gli asset personalizzati.",
+    "a3": "Almeno 10 XLM nel portafoglio.",
+    "a3fb": "Sbagliato: Non c'è un minimo XLM richiesto per le linee di fiducia."
+  },
+  "q3": {
+    "question": "Marco chiama il suo token \"BERRY\". Un'altra azienda fa lo stesso. I token sono uguali?",
+    "hint": "Cosa distingue due token con un nome identico su Stellar?",
+    "a1": "No – l'emittente è diverso, quindi sono token diversi.",
+    "a1fb": "Corretto: Su Stellar, non solo il nome ma nome + indirizzo dell'emittente identifica un token in modo univoco.",
+    "a2": "Sì – lo stesso nome significa lo stesso token.",
+    "a2fb": "Sbagliato: Lo stesso nome non significa lo stesso token. L'emittente è il fattore decisivo.",
+    "a3": "Dipende dal prezzo.",
+    "a3fb": "Sbagliato: Il prezzo è irrilevante. Due token BERRY con emittenti diversi sono fondamentalmente diversi."
+  },
+  "q4": {
+    "question": "Cosa determina il valore di un token fedeltà?",
+    "hint": "Chi sta dietro al token e decide le sue regole?",
+    "a1": "L'emittente – lui definisce il valore del token e come può essere riscattato.",
+    "a1fb": "Corretto: Senza emittente, un token fedeltà non ha valore. Lui fissa i termini di riscatto e la quantità.",
+    "a2": "Il prezzo di mercato sul DEX.",
+    "a2fb": "Sbagliato: I token fedeltà spesso non hanno un prezzo sul DEX. Il loro valore viene dalla promessa dell'emittente.",
+    "a3": "La Stellar Development Foundation.",
+    "a3fb": "Sbagliato: La SDF non stabilisce regole per i token fedeltà privati."
+  },
+  "q5": {
+    "question": "Ricevi un'offerta di 50 BERRY gratis tramite messaggio. Qual è il primo passo più sicuro?",
+    "hint": "Chi è il vero creatore di questo token?",
+    "a1": "Confrontare l'indirizzo dell'emittente con l'indirizzo ufficiale dell'azienda.",
+    "a1fb": "Corretto: Solo il confronto dell'indirizzo dell'emittente protegge dai token falsi senza valore.",
+    "a2": "Aggiungere subito la linea di fiducia.",
+    "a2fb": "Sbagliato: Aggiungere una linea di fiducia a un emittente non verificato può portare a token senza valore.",
+    "a3": "Cercare il nome del token su Internet.",
+    "a3fb": "Sbagliato: Il solo nome non dice nulla – chiunque può chiamare un token \"BERRY\"."
+  },
+  "q6": {
+    "question": "Un token ha lo stesso nome di un vero token fedeltà ma un emittente diverso. Cosa significa?",
+    "hint": "Cosa rende un token unico su Stellar?",
+    "a1": "Il token è privo di valore – senza l'emittente giusto non ha valore di riscatto.",
+    "a1fb": "Corretto: Nome + emittente = token unico. Emittente diverso = token diverso e senza valore.",
+    "a2": "È la stessa cosa, solo da un indirizzo diverso.",
+    "a2fb": "Sbagliato: È un token fondamentalmente diverso, non «la stessa cosa da altrove».",
+    "a3": "È più sicuro perché è più decentralizzato.",
+    "a3fb": "Sbagliato: Un emittente diverso non rende il token più sicuro, lo rende privo di significato."
+  },
+  "q7": {
+    "question": "Può un'azienda richiamare il proprio token fedeltà?",
+    "hint": "Quali flag può impostare un emittente durante la creazione di un token?",
+    "a1": "Sì, se il token è stato creato con il flag clawback.",
+    "a1fb": "Corretto: Il flag clawback consente all'emittente di recuperare i token dai destinatari.",
+    "a2": "No, i token blockchain sono sempre permanenti.",
+    "a2fb": "Sbagliato: Con il flag clawback, i token possono essere richiamati. È una scelta di progettazione deliberata.",
+    "a3": "Solo la Stellar Development Foundation può farlo.",
+    "a3fb": "Sbagliato: Solo l'emittente stesso può usare clawback, non la SDF."
+  }
+}

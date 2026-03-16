@@ -1158,5 +1158,140 @@
       "learning3": "Decentralisatie betekent: wiskunde vervangt autoriteit – voor iedereen."
     },
     "subtitle": "Het Stellar Consensus Protocol"
+  },
+  "chapter11": {
+    "title": "Het Loyaliteitsprogramma",
+    "subtitle": "Custom Assets & Loyalty Tokens",
+    "description": "Marco start een loyaliteitsprogramma met BERRY-tokens – en Lumio ontdekt een gevaarlijke val.",
+    "placeholder": "Dit hoofdstuk komt binnenkort beschikbaar.",
+    "s1": {
+      "section": "Marco's nieuwe idee",
+      "marco1": "Lumio, ik heb een nieuw idee voor mijn fruitmarkt! Ik wil mijn vaste klanten BERRY-tokens geven als beloning voor elke aankoop.",
+      "lumio1": "Dat klinkt spannend! Hoe stel je je dat voor?",
+      "marco2": "Simpel: wie 10 XLM bij mij uitgeeft, krijgt 1 BERRY terug. De tokens kunnen worden ingewisseld bij de volgende aankoop.",
+      "marco3": "Maar hoe stel ik dit in op Stellar? Ik ken BERRY al – jullie gebruikten mijn tokens in hoofdstuk 3.",
+      "lumio2": "Goede vraag! Je kent BERRY-tokens al uit hoofdstuk 3. Maar weet je eigenlijk wat het betekent om de uitgever van een token te zijn?"
+    },
+    "s2": {
+      "section": "Wat is een Loyalty Token?",
+      "card": {
+        "title": "Wat is een Loyalty Token?",
+        "body": "Een Loyalty Token is een aangepast bezit op Stellar – een token dat je zelf aanmaakt en uitgeeft. Als uitgever bepaal je: Hoeveel tokens bestaan er? Wat zijn ze waard? Welke regels gelden er? Je klanten hebben een Trust Line naar je token nodig voordat ze het kunnen ontvangen.",
+        "cta": "Begrepen!"
+      },
+      "glossary_loyalty": "Wat is een Loyalty Token? (Woordenlijst)",
+      "glossary_issuer": "Wat is een Issuer? (Woordenlijst)",
+      "lumio1": "Stel je voor dat je je eigen bonuszegels drukt. Jij bepaalt hoeveel er zijn en wat ze waard zijn.",
+      "marco1": "Dus ik ben eigenlijk de baas van mijn eigen munt?",
+      "lumio2": "Precies – maar een heel beperkte. BERRY geldt alleen in jouw winkel, en alleen omdat jij, Marco, de uitgever bent. Een uitgever met een ander adres die dezelfde naam BERRY gebruikt, is een volledig ander token.",
+      "lumio3": "Dat is een belangrijk punt: zelfde tokennaam, andere uitgever – ander token. Zonder een Trust Line naar de juiste uitgever kan je klant geen BERRY ontvangen."
+    },
+    "s3": {
+      "section": "BERRY in detail",
+      "lumio1": "Laat me dit concreet maken: 1 BERRY in jouw winkel is een bon voor 100g aardbeien. Klanten sparen BERRY, jij lost ze in in de winkel.",
+      "marco1": "Perfect! En ik beheers hoeveel BERRY ik uitgeef en wanneer ik ze terugkrijg.",
+      "lumio2": "Herinner je je de Trust Lines uit hoofdstuk 3? Precies hetzelfde principe. Voordat een klant BERRY kan ontvangen, moet hij een Trust Line instellen naar jouw BERRY-token.",
+      "marco2": "Dus elke klant moet eerst mijn adres kennen als uitgever?",
+      "lumio3": "Correct. En dat is ook waarom de waarde van een Loyalty Token volledig afhangt van de uitgever. Zonder Marco – geen BERRY. Als je stopt met het runnen van je markt, verliezen de tokens hun waarde."
+    },
+    "s4": {
+      "section": "BERRY ontvangen",
+      "marco1": "Lumio, ik wil dit live uitproberen. Hoe krijgt een klant zijn eerste BERRY-tokens?",
+      "lumio1": "Eenvoudig! Twee stappen: een vertrouwenslijn instellen, dan stuurt Marco je 10 BERRY als uitgever. Laten we het proberen!",
+      "action": {
+        "label": "BERRY-tokens ontvangen",
+        "description": "Stap 1: Stel een vertrouwenslijn in voor Marco's BERRY-token. Stap 2: Marco stuurt je 10 BERRY als uitgever.",
+        "step1": "Vertrouwenslijn instellen voor BERRY",
+        "step2": "10 BERRY van Marco ontvangen",
+        "run_btn": "Vertrouwenslijn en BERRY ontvangen",
+        "success": "Je hebt 10 BERRY ontvangen! Marco's loyaliteitsprogramma werkt.",
+        "testnet_note": "Alleen op testnet – deze BERRY hebben geen echte waarde.",
+        "error_no_keypair": "Geen account gevonden – maak eerst een account aan."
+      },
+      "cta_continue": "Doorgaan",
+      "lumio2": "Perfect! Een vertrouwenslijn instellen, tokens ontvangen – zo werkt het uitgeversbeginsel op Stellar precies.",
+      "hint": "Wie al met BERRY bij Marco heeft betaald, heeft deze vertrouwenslijn al – want zonder vertrouwenslijn kun je geen tokens ontvangen."
+    },
+    "s5": {
+      "section": "Het neppe BERRY-aanbod",
+      "lumio1": "Wacht – ik moet je iets belangrijks laten zien. Kijk naar dit bericht dat je vermoedelijk hebt ontvangen:",
+      "scam": {
+        "sender_name": "Berry Market Officieel",
+        "sender": "berry-market.app",
+        "message": "🎉 GRATIS: 50 BERRY-tokens! Klik nu en voeg de vertrouwenslijn toe!",
+        "question": "Wat valt je op? Laten we het samen analyseren.",
+        "reveal_prompt": "Analyse starten",
+        "reveal_next": "Volgende",
+        "lesson": "Zelfde naam ≠ zelfde token. Controleer altijd eerst de uitgever!",
+        "reveal1": {
+          "label": "Tokennaam",
+          "text": "De token heet echt BERRY ✓"
+        },
+        "reveal2": {
+          "label": "Uitgeveradres",
+          "text": "Dit adres is NIET Marco's adres – een onbekende vreemde heeft dit token aangemaakt ✗"
+        },
+        "reveal3": {
+          "label": "Tokenwaarde",
+          "text": "Deze BERRY zijn waardeloos – iedereen kan een token genaamd BERRY aanmaken. Zonder Marco's adres als uitgever telt het niet."
+        }
+      },
+      "glossary_issuer": "Wat is een Uitgever? (Woordenlijst)",
+      "cta_next": "Goed om te weten!",
+      "lumio2": "Iedereen kan een token genaamd BERRY aanmaken. Alleen de naam zegt niets over de waarde – alleen de uitgever telt. Marco's BERRY zijn waardevol omdat Marco erachter staat als uitgever.",
+      "compare": {
+        "real_label": "Marco's echte BERRY-uitgever",
+        "fake_label": "Onbekende uitgever (uit het bericht)",
+        "lumio_comment": "Zie je het verschil? Zelfde naam – maar volledig ander adres."
+      }
+    },
+    "s6": {
+      "section": "De juiste beslissing nemen",
+      "lumio1": "Nog één laatste vraag: je ontvangt een [[vertrouwenslijn|trustline]]verzoek voor 'BERRY'. Wat doe je als eerste?",
+      "choice": {
+        "question": "Wat doe je als eerste voordat je de vertrouwenslijn bevestigt?",
+        "a": "A) Gewoon bevestigen – BERRY ken ik al",
+        "b": "B) De uitgever vergelijken met Marco's officiële adres",
+        "c": "C) De tokennaam googelen",
+        "wrong_title": "Niet helemaal goed",
+        "wrong": "De tokennaam alleen zegt niets over de waarde. Iedereen kan een token genaamd BERRY aanmaken.",
+        "hint2": "Tip: Het gaat erom WIE achter de token staat – niet hoe hij heet.",
+        "correct": "Precies goed! Alleen als het uitgeveradres klopt is het de juiste token.",
+        "retry_btn": "Opnieuw proberen",
+        "cta_next": "Doorgaan"
+      },
+      "lumio2": "Perfect! Hoe betrouwbaar een tokennaam ook klinkt – controleer altijd eerst de uitgever. Dat is je belangrijkste wapen tegen tokenoplichting."
+    },
+    "s7": {
+      "section": "Mini-Quiz",
+      "wrong_msg": "Niet helemaal goed",
+      "retry_btn": "Opnieuw proberen",
+      "correct_cta": "Doorgaan",
+      "q1": "Wat heeft een klant nodig voordat hij BERRY-tokens kan ontvangen?",
+      "q1_a1": "Een vertrouwenslijn naar de BERRY-uitgever",
+      "q1_a2": "Een speciale portemonnee",
+      "q1_a3": "Een registratie bij Marco",
+      "q1_explanation": "Geen speciale portemonnee nodig – een vertrouwenslijn naar de juiste uitgever is voldoende. Het is de toestemming om een specifieke token te houden.",
+      "q1_hint2": "De vertrouwenslijn vertelt Stellar: 'Ik vertrouw deze uitgever en ben bereid hun token te houden.'",
+      "q2": "Twee tokens heten allebei 'BERRY'. Wat maakt ze anders?",
+      "q2_a1": "De uitgever – elk adres kan een token BERRY noemen",
+      "q2_a2": "De prijs",
+      "q2_a3": "Het aantal tokens",
+      "q2_explanation": "Prijs en hoeveelheid kunnen identiek zijn. Alleen de uitgever – het aanmakende adres – onderscheidt twee tokens met dezelfde naam.",
+      "q2_hint2": "Denk aan het oplichtersverhaal: zelfde naam 'BERRY', maar een ander heeft het aangemaakt.",
+      "q3": "Je ontvangt een bericht: '50 gratis BERRY, voeg de vertrouwenslijn nu toe!' Wat is de eerste stap?",
+      "q3_a1": "Het uitgeveradres vergelijken met Marco's officiële adres",
+      "q3_a2": "De vertrouwenslijn onmiddellijk toevoegen",
+      "q3_a3": "De tokens direct uitgeven",
+      "q3_explanation": "Voeg nooit een vertrouwenslijn toe voordat je de uitgever hebt geverifieerd. Een verkeerde uitgever betekent waardeloze tokens.",
+      "q3_hint2": "Gratis aanbiedingen zijn een klassieke truc. Vraag altijd eerst: wie is de uitgever?"
+    },
+    "summary": {
+      "learning1": "Een loyaliteitstoken is een aangepast actief op Stellar – de uitgever bepaalt de waarde.",
+      "learning2": "Als uitgever draag je verantwoordelijkheid: je maakt de token en stelt de regels in.",
+      "learning3": "Zelfde tokennaam ≠ zelfde token. Alleen de uitgever maakt het verschil.",
+      "learning4": "Herken nep-tokens aan hun uitgeveradres – controleer dit altijd met een betrouwbare bron.",
+      "learning5": "Vertrouwenslijnen verbinden klanten met je loyaliteitsprogramma – zonder vertrouwenslijn kan geen token ontvangen worden."
+    }
   }
 }

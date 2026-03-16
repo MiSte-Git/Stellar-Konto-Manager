@@ -226,6 +226,53 @@
         "limitedSpots": "Tijdsdruk via 'beperkte plaatsen'"
       },
       "explanation": "Legitieme werkgevers vragen nooit om vooruitbetalingen of borgsommen. Wie crypto eist als 'veiligheidsbetaling' is een oplichter. Onderzoek bedrijven altijd onafhankelijk voordat je geld stuurt."
+    },
+    "fakeCashback": {
+      "contact": {
+        "name": "Marco's Marktplaats",
+        "subtitle": "Promotioneel bericht"
+      },
+      "messages": {
+        "01": "🎉 Marco's Marktplaats – Speciale aanbieding!\nVandaag alleen: 50 gratis BERRY voor alle nieuwe klanten!\nVoeg nu een Trust Line toe en ontvang je tokens.\n[Trust Line toevoegen]",
+        "02": "Adres van de uitgever: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nVoeg gewoon de Trust Line toe – tokens komen direct in je wallet! 🍓",
+        "03": "⚠️ Tip: Controleer altijd de tokenuitgever voordat je een Trust Line toevoegt."
+      },
+      "options": {
+        "nothingSuspicious": "Niets – ziet er legitiem uit. Trust Line toevoegen.",
+        "tooGenerous": "50 gratis BERRY klinkt als heel veel.",
+        "checkIssuer": "Ik zou eerst de uitgever controleren.",
+        "addAnyway": "Trust Line toch toevoegen – misschien is het goed.",
+        "rejectVerify": "Weigeren en Marco direct vragen om het echte BERRY-adres.",
+        "buyDex": "De token op de DEX kopen."
+      },
+      "followUp": {
+        "scam": {
+          "01": "Trust Line succesvol toegevoegd! Je 50 BERRY zijn onderweg. 🍓",
+          "02": "Je hebt 50 BERRY van de verkeerde uitgever ontvangen – maar geen enkele winkel accepteert ze. De uitgever is onbekend. Deze tokens zijn waardeloos en kunnen het begin zijn van verdere phishing-pogingen."
+        },
+        "generous": {
+          "01": "Het is echt een eenmalig aanbod! Het officiële adres van de uitgever staat op onze website.",
+          "02": "Officiële BERRY-uitgever (van Marco's website):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77\n\nUitgever in dit bericht:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Volledig verschillende adressen! De token in dit bericht is nep."
+        },
+        "issuer": {
+          "01": "Officiële BERRY-uitgever (van Marco's website):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77",
+          "02": "Uitgever in dit bericht:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Niet identiek! Zelfde tokennaam, andere uitgever – deze BERRY is waardeloos."
+        },
+        "addAnyway": {
+          "01": "Trust Line succesvol toegevoegd! Je 50 BERRY zijn onderweg. 🍓",
+          "02": "Hoewel je het verschil in uitgever zag, voegde je toch de Trust Line toe. De 50 BERRY komen van de verkeerde uitgever en zijn waardeloos – geen enkele winkel accepteert ze."
+        },
+        "buyDex": {
+          "01": "⚠️ Op de DEX zijn er veel tokens genaamd BERRY van verschillende uitgevers. Zonder het officiële adres van de uitgever koop je mogelijk ook waardeloze tokens. De uitgever is bepalend – ook bij het kopen op de DEX."
+        }
+      },
+      "redFlags": {
+        "freeTokens": "Gratis tokens zonder echte tegenprestatie zijn altijd verdacht",
+        "fakeIssuer": "De uitgever in het bericht komt niet overeen met de officiële",
+        "urgency": "\"Alleen vandaag\" – kunstmatige urgentie om kritisch denken te voorkomen",
+        "sameNameDifferentIssuer": "Dezelfde tokennaam (BERRY) betekent niet dezelfde token – alleen de uitgever maakt het verschil"
+      },
+      "explanation": "Aangepaste tokens op Stellar worden gedefinieerd door hun uitgever – niet door hun naam. Twee tokens kunnen allebei 'BERRY' heten maar van volledig verschillende uitgevers komen. Alleen de officiële uitgever van Marco's Marktplaats geeft echte, inwisselbare BERRY uit. Controleer voordat je een Trust Line toevoegt altijd het adres van de uitgever op de officiële website van de aanbieder."
     }
   }
 }

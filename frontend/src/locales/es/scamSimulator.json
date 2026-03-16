@@ -226,6 +226,53 @@
         "limitedSpots": "Presión de tiempo por 'plazas limitadas'"
       },
       "explanation": "Los empleadores legítimos nunca piden pagos anticipados ni depósitos. Quien exige cripto como 'pago de seguridad' es un estafador. Siempre investiga las empresas de forma independiente antes de enviar dinero."
+    },
+    "fakeCashback": {
+      "contact": {
+        "name": "Mercado de Marco",
+        "subtitle": "Mensaje publicitario"
+      },
+      "messages": {
+        "01": "🎉 Mercado de Marco – ¡Oferta especial!\n¡Solo hoy: 50 BERRY gratis para todos los nuevos clientes!\nAgrega una Trust Line ahora y recibe los tokens.\n[Agregar Trust Line]",
+        "02": "Dirección del emisor: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n¡Solo agrega la Trust Line y los tokens llegan de inmediato a tu cartera! 🍓",
+        "03": "⚠️ Consejo: Verifica siempre el emisor del token antes de agregar una Trust Line."
+      },
+      "options": {
+        "nothingSuspicious": "Nada – parece legítimo. Agregar la Trust Line.",
+        "tooGenerous": "50 BERRY gratis suena como mucho.",
+        "checkIssuer": "Primero comprobaría el emisor.",
+        "addAnyway": "Agregar la Trust Line de todas formas – quizás esté bien.",
+        "rejectVerify": "Rechazar y preguntarle directamente a Marco la dirección real de BERRY.",
+        "buyDex": "Comprar el token en el DEX."
+      },
+      "followUp": {
+        "scam": {
+          "01": "¡Trust Line agregada con éxito! Tus 50 BERRY están en camino. 🍓",
+          "02": "Recibiste 50 BERRY del emisor equivocado, pero ninguna tienda los acepta. El emisor es desconocido. Estos tokens no tienen valor y podrían ser el inicio de más intentos de phishing."
+        },
+        "generous": {
+          "01": "¡Realmente es una oferta única! La dirección oficial del emisor está en nuestro sitio web.",
+          "02": "Emisor oficial de BERRY (según el sitio de Marco):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77\n\nEmisor de este mensaje:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ ¡Direcciones completamente diferentes! El token de este mensaje es falso."
+        },
+        "issuer": {
+          "01": "Emisor oficial de BERRY (según el sitio de Marco):\nGDMARCXXX7XXBXXXXX3XXXXXKXXXXX4XXXXXNXXXXX2XXXPXXXARCO77",
+          "02": "Emisor de este mensaje:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ ¡No son iguales! Mismo nombre de token, emisor diferente – este BERRY no tiene valor."
+        },
+        "addAnyway": {
+          "01": "¡Trust Line agregada con éxito! Tus 50 BERRY están en camino. 🍓",
+          "02": "Aunque viste la discrepancia del emisor, agregaste la Trust Line de todas formas. Los 50 BERRY provienen del emisor equivocado y no tienen valor – ninguna tienda los acepta."
+        },
+        "buyDex": {
+          "01": "⚠️ En el DEX hay muchos tokens llamados BERRY de diferentes emisores. Sin la dirección oficial del emisor, también podrías comprar tokens sin valor. El emisor es clave, incluso al comprar en el DEX."
+        }
+      },
+      "redFlags": {
+        "freeTokens": "Los tokens gratuitos sin contraprestación real siempre son sospechosos",
+        "fakeIssuer": "El emisor en el mensaje no coincide con el oficial",
+        "urgency": "\"Solo hoy\" – urgencia artificial para evitar el pensamiento crítico",
+        "sameNameDifferentIssuer": "El mismo nombre de token (BERRY) no significa el mismo token – solo el emisor marca la diferencia"
+      },
+      "explanation": "Los tokens personalizados en Stellar están definidos por su emisor, no por su nombre. Dos tokens pueden llamarse 'BERRY' pero provenir de emisores completamente diferentes. Solo el emisor oficial del Mercado de Marco emite BERRY reales y canjeables. Antes de agregar una Trust Line, verifica siempre la dirección del emisor en el sitio web oficial del proveedor."
     }
   }
 }

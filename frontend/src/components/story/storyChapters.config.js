@@ -11,7 +11,7 @@
  * No component or locale file needs to be touched for these data changes.
  */
 
-export const TOTAL_CHAPTERS = 10;
+export const TOTAL_CHAPTERS = 11;
 
 export const ADVANCED_CHAPTERS = [8, 9, 10];
 
@@ -27,4 +27,5 @@ export const CHAPTER_REGISTRY = {
   8: { tested: false, durationMinutes: 15, subtitle: "Smart Contracts & Soroban" },
   9: { tested: false, durationMinutes: 15, subtitle: "Clawback" },
  10: { tested: false, durationMinutes: 12, subtitle: "Stellar Consensus Protocol" },
+ 11: { tested: false, durationMinutes: 10, subtitle: "Das Treueprogramm" },
 };

@@ -116,6 +116,16 @@
     "reward": "⭐ 2 – Konsens-Kenner"
   },
   {
+    "id": "cashback-loyalty",
+    "title": "Cashback & Loyalty Token",
+    "titleKey": "quizCashbackLoyalty:title",
+    "path": "quiz/cashback-loyalty",
+    "goal": "Verstehen, wie Custom Assets als Loyalty Token auf Stellar funktionieren.",
+    "task": "Beantworte Fragen zu Loyalty Token, Trust Lines und Issuer-Verifizierung.",
+    "learningOutcome": "Gleicher Token-Name bedeutet nicht gleicher Token – nur der Issuer macht den Unterschied.",
+    "reward": "⭐ 2 – Loyalty-Experte"
+  },
+  {
     "id": "scam-simulator",
     "type": "scam-simulator",
     "route": "/learn/scam-simulator",

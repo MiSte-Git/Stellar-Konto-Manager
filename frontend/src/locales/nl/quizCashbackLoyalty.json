@@ -1,0 +1,74 @@
+{
+  "title": "Cashback en Loyaliteitstokens",
+  "introText": "Test je kennis over loyaliteitstokens, vertrouwenslijnen en uitgeversverificatie op Stellar.",
+  "q1": {
+    "question": "Wat is een loyaliteitstoken?",
+    "hint": "Denk aan aangepaste activa op de blockchain.",
+    "a1": "Een aangepast actief op Stellar dat een bedrijf uitgeeft als beloning.",
+    "a1fb": "Juist: Loyaliteitstokens zijn aangepaste activa die bedrijven zelf aanmaken en uitgeven.",
+    "a2": "Een speciale XLM-bonus.",
+    "a2fb": "Onjuist: XLM is de native valuta van Stellar. Loyaliteitstokens zijn onafhankelijke aangepaste activa.",
+    "a3": "Een token uitgegeven door de Stellar Development Foundation.",
+    "a3fb": "Onjuist: De SDF geeft geen loyaliteitstokens uit. Elk bedrijf maakt zijn eigen aan."
+  },
+  "q2": {
+    "question": "Wat heeft een klant nodig voordat hij loyaliteitstokens kan ontvangen?",
+    "hint": "Stellar vereist expliciete toestemming voordat een token ontvangen kan worden.",
+    "a1": "Een vertrouwenslijn naar de uitgever van de token.",
+    "a1fb": "Juist: Zonder vertrouwenslijn naar de uitgever kan geen token ontvangen worden.",
+    "a2": "Een geverifieerd account.",
+    "a2fb": "Onjuist: Stellar-accounts vereisen geen externe verificatie voor aangepaste activa.",
+    "a3": "Minimaal 10 XLM in de portemonnee.",
+    "a3fb": "Onjuist: Er is geen minimum XLM vereist voor vertrouwenslijnen."
+  },
+  "q3": {
+    "question": "Marco noemt zijn token \"BERRY\". Een ander bedrijf doet hetzelfde. Zijn de tokens gelijk?",
+    "hint": "Wat onderscheidt twee tokens met een identieke naam op Stellar?",
+    "a1": "Nee – de uitgever is anders, dus het zijn verschillende tokens.",
+    "a1fb": "Juist: Op Stellar identificeert niet alleen de naam, maar naam + uitgeveradres een token uniek.",
+    "a2": "Ja – dezelfde naam betekent dezelfde token.",
+    "a2fb": "Onjuist: Dezelfde naam betekent niet dezelfde token. De uitgever is de beslissende factor.",
+    "a3": "Het hangt af van de prijs.",
+    "a3fb": "Onjuist: De prijs is irrelevant. Twee BERRY-tokens met verschillende uitgevers zijn fundamenteel anders."
+  },
+  "q4": {
+    "question": "Wat bepaalt de waarde van een loyaliteitstoken?",
+    "hint": "Wie staat achter de token en beslist over de regels?",
+    "a1": "De uitgever – hij bepaalt wat de token waard is en hoe hij ingewisseld kan worden.",
+    "a1fb": "Juist: Zonder uitgever heeft een loyaliteitstoken geen waarde. Hij stelt inwisselingsvoorwaarden en aanbod vast.",
+    "a2": "De marktprijs op de DEX.",
+    "a2fb": "Onjuist: Loyaliteitstokens hebben vaak geen DEX-prijs. Hun waarde komt van de belofte van de uitgever.",
+    "a3": "De Stellar Development Foundation.",
+    "a3fb": "Onjuist: De SDF stelt geen regels voor privé-loyaliteitstokens."
+  },
+  "q5": {
+    "question": "Je ontvangt een aanbod van 50 gratis BERRY per bericht. Wat is de veiligste eerste stap?",
+    "hint": "Wie is de werkelijke maker van deze token?",
+    "a1": "Het uitgeveradres vergelijken met het officiële adres van het bedrijf.",
+    "a1fb": "Juist: Alleen het vergelijken van het uitgeveradres beschermt tegen waardeloze nep-tokens.",
+    "a2": "De vertrouwenslijn onmiddellijk toevoegen.",
+    "a2fb": "Onjuist: Een vertrouwenslijn toevoegen aan een niet-geverifieerde uitgever kan leiden tot waardeloze tokens.",
+    "a3": "De tokennaam op internet zoeken.",
+    "a3fb": "Onjuist: De naam alleen zegt niets – iedereen kan een token \"BERRY\" noemen."
+  },
+  "q6": {
+    "question": "Een token heeft dezelfde naam als een echte loyaliteitstoken maar een andere uitgever. Wat betekent dat?",
+    "hint": "Wat maakt een token uniek op Stellar?",
+    "a1": "De token is waardeloos – zonder de juiste uitgever heeft hij geen inwisselingswaarde.",
+    "a1fb": "Juist: Naam + uitgever = unieke token. Andere uitgever = andere, waardeloze token.",
+    "a2": "Het is hetzelfde, alleen van een ander adres.",
+    "a2fb": "Onjuist: Het is een fundamenteel andere token, niet \"hetzelfde van elders\".",
+    "a3": "Hij is veiliger omdat hij gedecentraliseerder is.",
+    "a3fb": "Onjuist: Een andere uitgever maakt de token niet veiliger, maar betekenisloos."
+  },
+  "q7": {
+    "question": "Kan een bedrijf zijn loyaliteitstoken terugroepen?",
+    "hint": "Welke vlaggen kan een uitgever instellen bij het aanmaken van een token?",
+    "a1": "Ja, als de token is aangemaakt met de clawback-vlag.",
+    "a1fb": "Juist: De clawback-vlag stelt de uitgever in staat tokens van ontvangers terug te vorderen.",
+    "a2": "Nee, blockchain-tokens zijn altijd permanent.",
+    "a2fb": "Onjuist: Met de clawback-vlag kunnen tokens worden teruggeroepen. Het is een bewuste ontwerpkeuze.",
+    "a3": "Alleen de Stellar Development Foundation kan dat.",
+    "a3fb": "Onjuist: Alleen de uitgever zelf kan clawback gebruiken, niet de SDF."
+  }
+}

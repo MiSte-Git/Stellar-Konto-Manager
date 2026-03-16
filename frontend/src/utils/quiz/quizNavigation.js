@@ -4,7 +4,7 @@
  */
 
 export const QUIZ_ORDER = [
-  '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'multisig', '14',
+  '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'multisig', '14', 'cashback-loyalty',
 ];
 
 /**
@@ -14,6 +14,7 @@ export const QUIZ_ORDER = [
 function normalise(id) {
   const s = String(id ?? '').trim().toLowerCase();
   if (s === 'multisig') return 'multisig';
+  if (s === 'cashback-loyalty') return 'cashback-loyalty';
   const digits = s.replace(/[^0-9]/g, '');
   return digits || null;
 }
