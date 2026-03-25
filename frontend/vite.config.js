@@ -36,6 +36,18 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    build: {
+      chunkSizeWarningLimit: 4000,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'stellar': ['@stellar/stellar-sdk'],
+            'vendor': ['react', 'react-dom', 'framer-motion'],
+            'i18n': ['i18next', 'react-i18next'],
+          },
+        },
+      },
+    },
     test: {
       environment: 'jsdom',
       setupFiles: 'src/test/setupTests.js',

@@ -1,7 +1,7 @@
 // import trustlineLogo from './assets/Trustline-Logo.jpg';
 import './i18n'; // Initialisiert die Sprachunterstützung
 import { useTranslation } from 'react-i18next';
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef, lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Link } from 'react-router-dom';
 import { BACKEND_URL } from './config';
@@ -91,18 +91,18 @@ import {
   handleSort
 } from './utils/uiHelpers.js';
 import XlmByMemoPanel from './components/XlmByMemoPanel';
-import XlmByMemoPage from './pages/XlmByMemoPage';
-import InvestedTokensPage from './pages/InvestedTokensPage';
-import SettingsPage from './pages/SettingsPage.jsx';
-import MultisigCreatePage from './pages/MultisigCreatePage.jsx';
-import MultisigEditPage from './pages/MultisigEditPage.jsx';
-import BalancePage from './pages/BalancePage.jsx';
-import SendPaymentPage from './pages/SendPaymentPage.jsx';
-import FeedbackPage from './pages/FeedbackPage.jsx';
-import MuxedAccountsPage from './pages/MuxedAccountsPage.jsx';
-import MultisigJobList from './pages/MultisigJobList.jsx';
-import MultisigJobDetail from './pages/MultisigJobDetail.jsx';
-import TradingAssetsPage from './pages/TradingAssetsPage.jsx';
+const XlmByMemoPage      = lazy(() => import('./pages/XlmByMemoPage'));
+const InvestedTokensPage = lazy(() => import('./pages/InvestedTokensPage'));
+const SettingsPage       = lazy(() => import('./pages/SettingsPage.jsx'));
+const MultisigCreatePage = lazy(() => import('./pages/MultisigCreatePage.jsx'));
+const MultisigEditPage   = lazy(() => import('./pages/MultisigEditPage.jsx'));
+const BalancePage        = lazy(() => import('./pages/BalancePage.jsx'));
+const SendPaymentPage    = lazy(() => import('./pages/SendPaymentPage.jsx'));
+const FeedbackPage       = lazy(() => import('./pages/FeedbackPage.jsx'));
+const MuxedAccountsPage  = lazy(() => import('./pages/MuxedAccountsPage.jsx'));
+const MultisigJobList    = lazy(() => import('./pages/MultisigJobList.jsx'));
+const MultisigJobDetail  = lazy(() => import('./pages/MultisigJobDetail.jsx'));
+const TradingAssetsPage  = lazy(() => import('./pages/TradingAssetsPage.jsx'));
 
 
 migrateLegacyStorageKeys();
@@ -774,6 +774,7 @@ function Main() {
   };
 
   return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-[200px] text-gray-400 text-sm"><span className="animate-pulse">...</span></div>}>
      <>
       <div className="max-w-4xl mx-auto px-4 pt-4 text-center mt-4-500" style={{ paddingBottom: 'max(1rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
         {/* 🌍 Global: Titel & Info */}
@@ -1304,6 +1305,7 @@ function Main() {
         </div>
       )}
     </>
+    </Suspense>
   );
 }
 

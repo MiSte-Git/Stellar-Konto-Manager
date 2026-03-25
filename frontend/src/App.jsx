@@ -1,27 +1,26 @@
 import './i18n';
 import 'flag-icons/css/flag-icons.min.css';
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BrowserRouter, useLocation } from 'react-router-dom';
 import Main from './main.jsx';
 import LanguageSelector from './components/LanguageSelector';
-import BugTrackerAdmin from './routes/BugTrackerAdmin.tsx';
+const BugTrackerAdmin  = lazy(() => import('./routes/BugTrackerAdmin.tsx'));
+const GlossaryPage     = lazy(() => import('./pages/GlossaryPage.tsx'));
+const LearnHub         = lazy(() => import('./components/learn/LearnHub.jsx'));
+const QuizPage         = lazy(() => import('./pages/QuizPage.jsx'));
+const QuizIndex        = lazy(() => import('./pages/QuizIndex.jsx'));
+const BackupSettings   = lazy(() => import('./pages/BackupSettings.jsx'));
+const MultisigJobDetail = lazy(() => import('./pages/MultisigJobDetail.jsx'));
+const MultisigJobList  = lazy(() => import('./pages/MultisigJobList.jsx'));
+const Legal            = lazy(() => import('./pages/Legal.jsx'));
+const SettingsPage     = lazy(() => import('./pages/SettingsPage.jsx'));
+const TradingAssetsPage = lazy(() => import('./pages/TradingAssetsPage.jsx'));
+const ScamSimulatorPage = lazy(() => import('./components/scam-simulator/ScamSimulatorPage.jsx'));
+const StoryMode        = lazy(() => import('./components/story/StoryMode.jsx'));
 import SmallAdminLink from './components/SmallAdminLink.jsx';
 import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizDetailPath, isQuizIndexPath, getMultisigJobId, isSettingsPath, isTradingAssetsPath, isMultisigJobsListPath, isScamSimulatorPath, isStoryPath, isDiscoverPath } from './utils/basePath.js';
-import GlossaryPage from './pages/GlossaryPage.tsx';
-import LearnHub from './components/learn/LearnHub.jsx';
-
-import QuizPage from './pages/QuizPage.jsx';
-import QuizIndex from './pages/QuizIndex.jsx';
-import BackupSettings from './pages/BackupSettings.jsx';
-import MultisigJobDetail from './pages/MultisigJobDetail.jsx';
-import MultisigJobList from './pages/MultisigJobList.jsx';
-import Legal from './pages/Legal.jsx';
-import SettingsPage from './pages/SettingsPage.jsx';
-import TradingAssetsPage from './pages/TradingAssetsPage.jsx';
-import ScamSimulatorPage from './components/scam-simulator/ScamSimulatorPage.jsx';
 import scenarios from './data/learn/scam-scenarios/scenarios.js';
-import StoryMode from './components/story/StoryMode.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { formatErrorForUi } from './utils/formatErrorForUi.js';
@@ -282,6 +281,7 @@ function AppShell() {
   }
 
   const content = (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-[200px] text-gray-400 text-sm"><span className="animate-pulse">...</span></div>}>
     <ErrorBoundary t={t}>
       {isBugTrackerRoute ? (
         <BugTrackerAdmin />
@@ -513,6 +513,7 @@ function AppShell() {
         </>
       )}
     </ErrorBoundary>
+    </Suspense>
   );
 
   return (
