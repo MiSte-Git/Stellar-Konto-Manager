@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Keypair } from '@stellar/stellar-sdk';
 import { validateSecretKey } from '../utils/stellar/stellarUtils';
 import { formatErrorForUi } from '../utils/formatErrorForUi.js';
-import { getSessionSecrets } from '../utils/sessionSecrets.js';
 
 function SecretKeyModal({
   onConfirm,
@@ -20,17 +19,12 @@ function SecretKeyModal({
   initialCollectAllSignaturesLocally = false,
   onBackToSelection = null,
   secretContext = '',
+  initialSecretValues = [],
 }) {
   const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey']);
-  const [secretInputs, setSecretInputs] = useState(['']);
-  useEffect(() => {
-    if (!masterPublicKey) return;
-    const saved = getSessionSecrets(masterPublicKey);
-    const savedValues = Object.values(saved);
-    if (savedValues.length > 0) {
-      setSecretInputs(savedValues);
-    }
-  }, [masterPublicKey]);
+  const [secretInputs, setSecretInputs] = useState(
+    () => initialSecretValues.length > 0 ? initialSecretValues : ['']
+  );
   const [showSecret, setShowSecret] = useState(false);
   const [rememberSession, setRememberSession] = useState(true);
   const [error, setError] = useState(errorMessage || '');

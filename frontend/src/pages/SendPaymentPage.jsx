@@ -4,6 +4,7 @@ import { getHorizonServer, resolveOrValidateAccount, isValidAccountId, extractBa
 import { Asset, Keypair, Networks, Operation, TransactionBuilder, Memo, StrKey } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import SecretKeyModal from '../components/SecretKeyModal';
+import { getSessionSecrets } from '../utils/sessionSecrets.js';
 import { isMultisigAccount } from '../utils/stellar/isMultisigAccount.js';
 import { apiUrl } from '../utils/apiBase.js';
 import { mergeSignedXdr } from '../utils/multisigApi.js';
@@ -1879,6 +1880,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
       {showSecretModal && (
         <SecretKeyModal
+          initialSecretValues={publicKey ? Object.values(getSessionSecrets(publicKey)) : []}
           errorMessage={secretError}
           onCancel={closeSecretModal}
           thresholds={thresholdsForModal}
