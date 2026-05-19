@@ -1,6 +1,6 @@
 # 🌍 Internationale Übersetzung (i18n) – Migration & Pflege
 
-Dieses Dokument beschreibt die Umstellung auf eine neue Schlüsselstruktur für die Übersetzungen sowie die zukünftige Pflege der Sprachdateien im Projekt **Stellar Trustline Manager**.
+Dieses Dokument beschreibt die Umstellung auf eine neue Schlüsselstruktur für die Übersetzungen sowie die zukünftige Pflege der Sprachdateien im Projekt **Stellar Konto Manager**.
 
 ---
 
@@ -111,7 +111,6 @@ Rückfrage bei Michael oder im Projektchannel
 
 👆 **Das ist die Datei. Kein Kommentar mehr. Nur kopieren und einfügen.**  
 Wenn du magst, generiere ich dir jetzt auch ein Inhaltsverzeichnis für `docs/`, z. B. `README.md` mit Verlinkung auf diese Datei. Sag einfach: **„Ja, bitte docs-Übersicht“** ✅
-
 
 
 

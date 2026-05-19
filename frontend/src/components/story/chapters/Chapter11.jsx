@@ -1030,7 +1030,7 @@ function MasterCertificateScreen({ t, i18n, keypair, onHome }) {
 
 // ─── buildScenes ───────────────────────────────────────────────────────────────
 
-function buildScenes({ openGlossary, setShowChapterSelect, keypair, addXP, hasCompleted, completeAction, completeChapter, t, i18n, onExit }) {
+function buildScenes({ openGlossary, keypair, addXP, hasCompleted, completeAction, completeChapter, t, i18n, onExit }) {
   return [
 
     // ── Szene 1: Marcos neue Idee ──────────────────────────────────────────────
@@ -1271,9 +1271,9 @@ function buildScenes({ openGlossary, setShowChapterSelect, keypair, addXP, hasCo
 
 export default function Chapter11() {
   const { t, i18n } = useTranslation("story");
-  const { openGlossary, setShowChapterSelect, keypair, addXP, hasCompleted, completeAction, completeChapter, onExit } = useStory();
+  const { openGlossary, keypair, addXP, hasCompleted, completeAction, completeChapter, onExit } = useStory();
 
-  const scenes = buildScenes({ openGlossary, setShowChapterSelect, keypair, addXP, hasCompleted, completeAction, completeChapter, t, i18n, onExit });
+  const scenes = buildScenes({ openGlossary, keypair, addXP, hasCompleted, completeAction, completeChapter, t, i18n, onExit });
 
   return <SceneRunner scenes={scenes} />;
 }

@@ -310,7 +310,7 @@ function TrustLinePreview({ t, onReady }) {
 
 // ─── Scenes ────────────────────────────────────────────────────────────────────
 
-function buildScenes({ keypair, completeChapter, goToChapter, t }) {
+function buildScenes({ completeChapter, goToChapter, t }) {
   return [
 
     // ── Scene 1: Intro – Lumio trifft Marco ────────────────────────────────────
@@ -572,9 +572,9 @@ function buildScenes({ keypair, completeChapter, goToChapter, t }) {
 // ─── Chapter3 Component ────────────────────────────────────────────────────────
 
 export default function Chapter3() {
-  const { keypair, completeChapter, goToChapter } = useStory();
+  const { completeChapter, goToChapter } = useStory();
   const { t } = useTranslation("story");
-  const scenes = buildScenes({ keypair, completeChapter, goToChapter, t });
+  const scenes = buildScenes({ completeChapter, goToChapter, t });
 
   return (
     <SceneRunner

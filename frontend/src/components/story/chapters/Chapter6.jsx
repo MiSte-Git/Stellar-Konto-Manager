@@ -601,7 +601,7 @@ function QuizQuestion({ question, choices, correctValue, explanation, hint2, nex
 
 // ─── Scene builder ────────────────────────────────────────────────────────────
 
-function buildScenes({ keypair, completeChapter, openGlossary, setShowChapterSelect, t }) {
+function buildScenes({ completeChapter, openGlossary, t }) {
   return [
     // ── Einleitung ────────────────────────────────────────────────────────────
     // 0 – Intro narrator
@@ -795,11 +795,11 @@ function buildScenes({ keypair, completeChapter, openGlossary, setShowChapterSel
 // ─── Chapter6 component ───────────────────────────────────────────────────────
 
 export default function Chapter6() {
-  const { keypair, completeChapter, openGlossary, setShowChapterSelect } = useStory();
+  const { completeChapter, openGlossary, setShowChapterSelect } = useStory();
   const { t } = useTranslation("story");
 
   const scenes = buildScenes({
-    keypair, completeChapter, openGlossary, setShowChapterSelect, t,
+    completeChapter, openGlossary, t,
   });
 
   return (

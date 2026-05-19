@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-// eslint-disable-next-line no-unused-vars -- motion is used as <motion.div> etc.
+
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import QuestionCard from './QuestionCard.jsx';
@@ -11,7 +11,7 @@ import { buildPath } from '../../utils/basePath.js';
 import { getQuizSettings, setQuizSettings } from '../../utils/quiz/settings.js';
 import { getWarnOnActiveQuiz } from '../../utils/quiz/globalSettings.js';
 import { getAchievements } from '../../utils/quiz/storage.js';
-import { getNextQuizId, getQuizIndex, getTotalQuizCount } from '../../utils/quiz/quizNavigation.js';
+import { getNextQuizId } from '../../utils/quiz/quizNavigation.js';
 
 function computeHash(str) {
   try {

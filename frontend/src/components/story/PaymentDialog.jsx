@@ -76,7 +76,7 @@ export default function PaymentDialog({
   };
 
   const handleCopySender = async () => {
-    try { await navigator.clipboard.writeText(sourcePublicKey); } catch {}
+    try { await navigator.clipboard.writeText(sourcePublicKey); } catch { /* noop */ }
     setSenderCopied(true);
     setTimeout(() => setSenderCopied(false), 2000);
   };

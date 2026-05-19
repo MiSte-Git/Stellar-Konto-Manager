@@ -24,7 +24,7 @@ function loadSavedProgress() {
     if (typeof saved.keypairSecret === "string" && saved.keypairSecret) {
       try {
         result.keypair = StellarSdk.Keypair.fromSecret(saved.keypairSecret);
-      } catch {}
+      } catch { /* noop */ }
     }
     return result;
   } catch {
@@ -200,7 +200,7 @@ export function StoryProvider({ children, onExit }) {
       accountFunded: state.accountFunded,
       keypairSecret: state.keypair?.secret(),
     };
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave)); } catch {}
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave)); } catch { /* noop */ }
   }, [state]);
 
   // ── Navigation ───────────────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ export function StoryProvider({ children, onExit }) {
   }, []);
 
   const reset = useCallback(() => {
-    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+    try { localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
     dispatch({ type: A.RESET });
   }, []);
 

@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-// eslint-disable-next-line no-unused-vars -- motion used as JSX element
+
 import { motion, AnimatePresence } from 'framer-motion';
 
 /** Pulsing three-dot overlay shown while Testnet account is still initializing */

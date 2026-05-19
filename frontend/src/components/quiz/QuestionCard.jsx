@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-// eslint-disable-next-line no-unused-vars -- motion is used as <motion.button>, <motion.div> etc.
+
 import { motion, AnimatePresence } from 'framer-motion';
 
 const bounceVariant = {

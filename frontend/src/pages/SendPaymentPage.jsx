@@ -180,6 +180,32 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     return detail;
   }, [describeHorizonError, t]);
 
+  const isAmbiguousSubmitError = useCallback((err) => {
+    const extras = err?.response?.data?.extras;
+    if (extras?.result_codes) return false;
+    const status = err?.response?.status;
+    return !status || status === 408 || status === 429 || status === 500 || status === 502 || status === 503 || status === 504;
+  }, []);
+
+  const findSubmittedTransaction = useCallback(async (hash, { attempts = 8, delayMs = 1500 } = {}) => {
+    if (!hash) return null;
+    for (let attempt = 0; attempt < attempts; attempt += 1) {
+      try {
+        const record = await server.transactions().transaction(hash).call();
+        if (record?.hash || record?.id) return record;
+      } catch (lookupErr) {
+        const status = lookupErr?.response?.status;
+        if (status && status !== 404) {
+          console.debug?.('payment confirmation lookup failed', lookupErr);
+        }
+      }
+      if (attempt < attempts - 1) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
+    return null;
+  }, [server]);
+
   const applySendResult = useCallback((payload) => {
     setStatus(payload.hash);
     setSentInfo({
@@ -513,9 +539,18 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const submitPayment = useCallback(async (signerKeypairs) => {
     const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
     const { tx, meta } = await buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true });
-    const res = await server.submitTransaction(tx);
+    const txHash = tx.hash().toString('hex');
+    let res;
+    try {
+      res = await server.submitTransaction(tx);
+    } catch (err) {
+      if (!isAmbiguousSubmitError(err)) throw err;
+      const confirmed = await findSubmittedTransaction(txHash);
+      if (!confirmed) throw err;
+      res = confirmed;
+    }
     return {
-      hash: res.hash || res.id || '',
+      hash: res.hash || res.id || txHash,
       recipient: meta.recipient,
       amountDisplay: meta.amountDisplay,
       asset: meta.asset,
@@ -523,7 +558,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       activated: meta.activated,
       network: netLabel,
     };
-  }, [buildPaymentTx, netLabel, server]);
+  }, [buildPaymentTx, findSubmittedTransaction, isAmbiguousSubmitError, netLabel, server]);
 
   const handleExportXdr = useCallback(async () => {
     try {

@@ -208,7 +208,7 @@ function buildScenes({ keypair, completeChapter, goToChapter, t, pendingPaymentR
     // ── Szene 12: Summary ─────────────────────────────────────────────────────
     {
       type: "custom",
-      render: (next) => (
+      render: () => (
         <ChapterSummary
           chapter={2}
           title={t("chapter2.title")}

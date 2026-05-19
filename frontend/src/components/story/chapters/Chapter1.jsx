@@ -24,7 +24,7 @@ import SceneRunner from "../SceneRunner";
 import ChapterSummary from "../ChapterSummary";
 import { useStory } from "../StoryContext";
 import { friendbotFund } from "../TestnetAction";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useSettings } from "../../../utils/useSettings";
 import ExplorerConfirmDialog from "../ExplorerConfirmDialog";
 
@@ -451,7 +451,7 @@ function ExplorerInfo({ next }) {
 
 // ─── Scenes ────────────────────────────────────────────────────────────────────
 
-function buildScenes({ keypair, createKeypair, completeChapter, goToChapter, t }) {
+function buildScenes({ createKeypair, completeChapter, goToChapter, t }) {
   return [
     // ── Scene 0: Intro ────────────────────────────────────────────────────────
     {
@@ -577,7 +577,7 @@ function buildScenes({ keypair, createKeypair, completeChapter, goToChapter, t }
     // ── Scene 8: Summary ──────────────────────────────────────────────────────
     {
       type: "custom",
-      render: (next) => (
+      render: () => (
         <ChapterSummary
           chapter={1}
           title={t("chapter1.title")}
@@ -602,9 +602,9 @@ function buildScenes({ keypair, createKeypair, completeChapter, goToChapter, t }
 // ─── Chapter1 Component ────────────────────────────────────────────────────────
 
 export default function Chapter1() {
-  const { keypair, createKeypair, completeChapter, goToChapter } = useStory();
+  const { createKeypair, completeChapter, goToChapter } = useStory();
   const { t } = useTranslation("story");
-  const scenes = buildScenes({ keypair, createKeypair, completeChapter, goToChapter, t });
+  const scenes = buildScenes({ createKeypair, completeChapter, goToChapter, t });
 
   return (
     <SceneRunner

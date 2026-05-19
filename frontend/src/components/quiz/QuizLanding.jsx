@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-// eslint-disable-next-line no-unused-vars -- motion is used as <motion.button>, <motion.div>
+
 import { motion } from 'framer-motion';
 import Lumio from './Lumio.jsx';
 import { getStartInNewTabGlobal, getStartInNewTabForId, setStartInNewTabForId } from '../../utils/quiz/startInNewTab.js';

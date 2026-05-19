@@ -125,7 +125,7 @@ function ExplorerLink({ url, label, explorerName, flex }) {
 // ─── AccountsOverview ─────────────────────────────────────────────────────────
 
 function AccountsOverview({ issuerPubKey, sofiaAddr, action1Done, action2Done, t }) {
-  const { name: explorerName, account: explorerAccount, asset: explorerAsset, tx: explorerTx } = useExplorer();
+  const { name: explorerName, account: explorerAccount } = useExplorer();
   const { explorers } = useSettings();
 
   // Derive asset URL for a specific explorer key (regardless of configured default)
@@ -1304,7 +1304,7 @@ function ExpertCertificateScreen({ t, i18n, keypair, onHome }) {
 
 // ─── Scene builder ─────────────────────────────────────────────────────────────
 
-function buildScenes({ openGlossary, setShowChapterSelect, t, i18n, keypair, addXP, completeChapter, completeAction, sofiaRef, onExit }) {
+function buildScenes({ openGlossary, t, i18n, keypair, addXP, completeChapter, completeAction, sofiaRef, onExit }) {
   const cd = (speaker, textKey) =>
     (next) => <CharacterDialog speaker={speaker} text={t(textKey)} next={next} t={t} openGlossary={openGlossary} />;
 
@@ -1535,7 +1535,7 @@ export default function Chapter9() {
   const sofiaRef = useRef(null);
 
   const scenes = buildScenes({
-    openGlossary, setShowChapterSelect, t, i18n,
+    openGlossary, t, i18n,
     keypair, addXP, completeChapter, completeAction,
     sofiaRef, onExit,
   });

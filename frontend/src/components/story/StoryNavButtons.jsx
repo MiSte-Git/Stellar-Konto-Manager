@@ -2,14 +2,6 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useStory } from "./StoryContext";
-import { buildPath } from "../../utils/basePath.js";
-
-function navTo(subpath) {
-  try {
-    window.history.pushState({}, '', buildPath(subpath));
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  } catch { /* noop */ }
-}
 
 // ─── Confirm Dialog ───────────────────────────────────────────────────────────
 

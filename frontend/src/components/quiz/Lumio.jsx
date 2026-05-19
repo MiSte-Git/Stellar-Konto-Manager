@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-unused-vars -- motion is used as <motion.svg>, <motion.path> etc.
+
 import { motion } from 'framer-motion';
 
 const starPath =

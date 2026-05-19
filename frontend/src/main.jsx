@@ -209,7 +209,7 @@ function Main() {
    const [xlmPriceChangeMap, setXlmPriceChangeMap] = useState({});
    const [xlmPriceLoading, setXlmPriceLoading] = useState(false);
    const [xlmPriceError, setXlmPriceError] = useState('');
-   const [xlmPriceLoaded, setXlmPriceLoaded] = useState(false);
+   const xlmPriceLoadedRef = useRef(false);
    const [xlmPriceUpdatedAt, setXlmPriceUpdatedAt] = useState(null);
 
   const walletInfoMap = useMemo(() => createWalletInfoMap(wallets), [wallets]);
@@ -720,8 +720,8 @@ function Main() {
     let isActive = true;
     const controller = new AbortController();
     const fetchPrices = async () => {
-      if (!xlmPriceLoaded) setXlmPriceLoading(true);
-      if (!xlmPriceLoaded) setXlmPriceError('');
+      if (!xlmPriceLoadedRef.current) setXlmPriceLoading(true);
+      if (!xlmPriceLoadedRef.current) setXlmPriceError('');
       try {
         const currencies = XLM_PRICE_PAIRS.map((pair) => pair.currency).join(',');
         const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=stellar&vs_currencies=${currencies}&include_24hr_change=true`, { signal: controller.signal });
@@ -737,14 +737,14 @@ function Main() {
         });
         setXlmPriceMap(nextPriceMap);
         setXlmPriceChangeMap(nextChangeMap);
-        setXlmPriceLoaded(true);
+        xlmPriceLoadedRef.current = true;
         setXlmPriceUpdatedAt(new Date());
       } catch (err) {
         if (err?.name === 'AbortError') return;
         if (!isActive) return;
-        if (!xlmPriceLoaded) setXlmPriceError(String(err?.message || 'price.fetchFailed'));
+        if (!xlmPriceLoadedRef.current) setXlmPriceError(String(err?.message || 'price.fetchFailed'));
       } finally {
-        if (isActive && !xlmPriceLoaded) setXlmPriceLoading(false);
+        if (isActive && !xlmPriceLoadedRef.current) setXlmPriceLoading(false);
       }
     };
     fetchPrices();

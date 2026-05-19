@@ -1083,7 +1083,7 @@ function buildScenes({ openGlossary, keypair, addXP, completeAction, hasComplete
     // ── SZENE 8 – ChapterSummary ─────────────────────────────────────────────
     {
       type: "custom",
-      render: (next) => (
+      render: () => (
         <ChapterSummary
           chapter={8}
           title={t("chapter8.title")}

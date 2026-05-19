@@ -728,7 +728,7 @@ function AdvancedCertificateScreen({ t, i18n, keypair, onHome }) {
 
 // ─── Scene builder ─────────────────────────────────────────────────────────────
 
-function buildScenes({ keypair, completeChapter, openGlossary, setShowChapterSelect, onExit, t, i18n }) {
+function buildScenes({ keypair, completeChapter, openGlossary, onExit, t, i18n }) {
   return [
     // 0 – Intro narrator
     {
@@ -925,7 +925,7 @@ export default function Chapter7() {
   const { t, i18n } = useTranslation("story");
 
   const scenes = buildScenes({
-    keypair, completeChapter, openGlossary, setShowChapterSelect, onExit, t, i18n,
+    keypair, completeChapter, openGlossary, onExit, t, i18n,
   });
 
   return (
