@@ -17,6 +17,102 @@ import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from '../utils/walletInfo.js';
 import { getSessionSecret, rememberSessionSecrets } from '../utils/sessionSecrets.js';
 
+function HistoryInput({
+  value,
+  onChange,
+  onFocus,
+  onBlur,
+  onSelect,
+  suggestions = [],
+  className = '',
+  inputProps = {},
+  rightAdornment = null,
+}) {
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef(null);
+
+  const filteredSuggestions = useMemo(() => {
+    const query = String(value || '').trim().toLowerCase();
+    const unique = [];
+    const seen = new Set();
+    for (const suggestion of suggestions) {
+      const item = String(suggestion || '').trim();
+      if (!item || seen.has(item)) continue;
+      if (!query || item.toLowerCase().includes(query)) {
+        seen.add(item);
+        unique.push(item);
+      }
+    }
+    return unique;
+  }, [suggestions, value]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('touchstart', onPointerDown);
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('touchstart', onPointerDown);
+    };
+  }, [open]);
+
+  return (
+    <div className="relative" ref={wrapperRef}>
+      <input
+        className={className}
+        value={value}
+        onFocus={(event) => {
+          onFocus?.(event);
+          setOpen(true);
+        }}
+        onBlur={(event) => {
+          onBlur?.(event);
+          window.setTimeout(() => {
+            if (wrapperRef.current && !wrapperRef.current.contains(document.activeElement)) {
+              setOpen(false);
+            }
+          }, 0);
+        }}
+        onChange={(event) => {
+          onChange?.(event);
+          setOpen(true);
+        }}
+        autoComplete="off"
+        {...inputProps}
+      />
+      {rightAdornment}
+      {open && filteredSuggestions.length > 0 && (
+        <div className="absolute z-20 mt-1 w-full max-h-48 overflow-y-auto rounded border bg-white dark:bg-gray-900 shadow-lg">
+          {filteredSuggestions.map((suggestion, index) => (
+            <button
+              key={`${suggestion}-${index}`}
+              type="button"
+              className="w-full text-left px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+              onMouseDown={(event) => {
+                event.preventDefault();
+                onSelect?.(suggestion);
+                setOpen(false);
+              }}
+              onTouchStart={(event) => {
+                event.preventDefault();
+                onSelect?.(suggestion);
+                setOpen(false);
+              }}
+            >
+              <span className="break-all">{suggestion}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function SendPaymentPage({ publicKey, onBack: _onBack, initial }) {
   const { t, i18n } = useTranslation(['common', 'errors', 'publicKey', 'secretKey', 'investedTokens', 'wallet', 'multisig', 'network']);
   void _onBack;
@@ -1279,32 +1375,35 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           <div className="grid grid-cols-1 sm:grid-cols-[2fr_3fr] gap-3 mt-2">
           <div className="flex flex-col min-w-0">
           <label className="text-sm">{t('common:payment.send.amount')}</label>
-          <div className="relative">
-          <input type="text" inputMode="decimal" className="border rounded pr-8 px-2 py-1 text-base md:text-sm w-full appearance-none [-moz-appearance:textfield]" list="hist-amounts"
-                  value={amountFocused ? amount : (amount ? amountFmt.format(Number(amount) || 0) : '')}
-                  onFocus={()=>setAmountFocused(true)}
-                  onBlur={()=>{ setAmountFocused(false); pushHistory('stm.hist.amounts', amount, setHistoryAmounts); }}
-                  onChange={(e)=>{
-                    clearSuccess();
-                    let s = e.target.value || '';
-                    s = s.replace(/,/g, '.');
-                    s = s.replace(/[^0-9.]/g, '');
-                    const i = s.indexOf('.');
-                    if (i !== -1) {
-                      s = s.slice(0, i + 1) + s.slice(i + 1).replace(/\./g, '');
-                      const decimals = s.length - i - 1;
-                      if (decimals > 7) s = s.slice(0, i + 1 + 7);
-                    }
-                    setAmount(s);
-                  }}
-                />
-          {amount && (
-          <button type="button" onClick={()=>{ clearSuccess(); setAmount(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
-          )}
-          <datalist id="hist-amounts">
-          {historyAmounts.map((v,i)=>(<option key={v+i} value={v} />))}
-          </datalist>
-          </div>
+          <HistoryInput
+            value={amountFocused ? amount : (amount ? amountFmt.format(Number(amount) || 0) : '')}
+            suggestions={historyAmounts}
+            className="border rounded pr-8 px-2 py-1 text-base md:text-sm w-full appearance-none [-moz-appearance:textfield]"
+            inputProps={{ type: 'text', inputMode: 'decimal' }}
+            onFocus={() => setAmountFocused(true)}
+            onBlur={() => { setAmountFocused(false); pushHistory('stm.hist.amounts', amount, setHistoryAmounts); }}
+            onSelect={(next) => {
+              clearSuccess();
+              setAmount(String(next || ''));
+              pushHistory('stm.hist.amounts', next, setHistoryAmounts);
+            }}
+            onChange={(e) => {
+              clearSuccess();
+              let s = e.target.value || '';
+              s = s.replace(/,/g, '.');
+              s = s.replace(/[^0-9.]/g, '');
+              const i = s.indexOf('.');
+              if (i !== -1) {
+                s = s.slice(0, i + 1) + s.slice(i + 1).replace(/\./g, '');
+                const decimals = s.length - i - 1;
+                if (decimals > 7) s = s.slice(0, i + 1 + 7);
+              }
+              setAmount(s);
+            }}
+            rightAdornment={amount ? (
+              <button type="button" onClick={()=>{ clearSuccess(); setAmount(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
+            ) : null}
+          />
           </div>
           <div className="flex flex-col min-w-0">
           <label className="text-sm">{t('common:payment.send.asset')}</label>
@@ -1364,15 +1463,21 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             </div>
             <div>
               <label className="block text-sm">{t('common:payment.send.memo')}</label>
-              <div className="relative">
-                <input className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm" list="hist-memos" value={memoVal} onChange={(e)=>{ clearSuccess(); setMemoVal(e.target.value); }} onBlur={()=>pushHistory('stm.hist.memos', memoVal, setHistoryMemos)} />
-                {memoVal && (
+              <HistoryInput
+                value={memoVal}
+                suggestions={historyMemos}
+                className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm"
+                onChange={(e)=>{ clearSuccess(); setMemoVal(e.target.value); }}
+                onBlur={()=>pushHistory('stm.hist.memos', memoVal, setHistoryMemos)}
+                onSelect={(next) => {
+                  clearSuccess();
+                  setMemoVal(next);
+                  pushHistory('stm.hist.memos', next, setHistoryMemos);
+                }}
+                rightAdornment={memoVal ? (
                   <button type="button" onClick={()=>{ clearSuccess(); setMemoVal(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
-                )}
-                <datalist id="hist-memos">
-                  {historyMemos.map((v,i)=>(<option key={v+i} value={v} />))}
-                </datalist>
-              </div>
+                ) : null}
+              />
             </div>
           </div>
 
