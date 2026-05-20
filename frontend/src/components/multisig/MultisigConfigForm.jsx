@@ -20,6 +20,8 @@ export default function MultisigConfigForm({
   signerCountLimitTitle = '',
   signers = [],
   signerOptions = [],
+  onRemoveSignerOption = null,
+  onClearSignerOptions = null,
   signerPlaceholder = '',
   onSignerKeyChange = null,
   onSignerWeightChange = null,
@@ -120,6 +122,8 @@ export default function MultisigConfigForm({
               onSelect={(next) => onSignerKeyChange && onSignerKeyChange(i, next)}
               placeholder={signerPlaceholder}
               options={signerOptions}
+              onRemoveOption={onRemoveSignerOption ? (entry) => onRemoveSignerOption(entry.value) : undefined}
+              onClearOptions={onClearSignerOptions || undefined}
               inputClassName="w-full border rounded px-2 py-1 font-mono text-sm"
               inputProps={{
                 spellCheck: false,

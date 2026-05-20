@@ -189,5 +189,12 @@
     "rowsSkipped": "{{count}} lignes vides ignorées",
     "termsUpdated": "{{count}} termes mis à jour",
     "termsAdded": "{{count}} nouveaux termes ajoutés"
+  },
+  "inputHistory": {
+    "title": "Saisies enregistrées",
+    "description": "Supprime les suggestions enregistrées localement pour les portefeuilles, destinataires de paiement, montants et mémos.",
+    "clearAll": "Effacer tous les historiques des champs de texte",
+    "confirm": "Effacer toutes les saisies enregistrées ? Cette action supprime les entrées d’historique de tous les champs de texte.",
+    "done": "Les historiques des champs de texte ont été effacés."
   }
 }

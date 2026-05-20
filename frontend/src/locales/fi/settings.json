@@ -189,5 +189,12 @@
     "rowsSkipped": "{{count}} tyhjää riviä ohitettu",
     "termsUpdated": "{{count}} termiä päivitetty",
     "termsAdded": "{{count}} uutta termiä lisätty"
+  },
+  "inputHistory": {
+    "title": "Tallennetut syötteet",
+    "description": "Poistaa paikallisesti tallennetut ehdotukset lompakoille, maksun vastaanottajille, summille ja memoille.",
+    "clearAll": "Tyhjennä kaikkien tekstikenttien historiat",
+    "confirm": "Tyhjennetäänkö kaikki tallennetut syötteet? Tämä poistaa kaikkien tekstikenttien historiat.",
+    "done": "Tekstikenttien historiat on tyhjennetty."
   }
 }

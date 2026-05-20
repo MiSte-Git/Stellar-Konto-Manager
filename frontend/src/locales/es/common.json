@@ -1201,5 +1201,9 @@
       "learningOutcome": "Revisa lo que has aprendido, reconoce tu propio progreso.",
       "reward": "🎖 Profesional Estelar"
     }
+  },
+  "inputHistory": {
+    "removeEntry": "Eliminar del historial",
+    "clearField": "Borrar el historial de este campo"
   }
 }

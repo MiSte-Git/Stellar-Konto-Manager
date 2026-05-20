@@ -189,5 +189,12 @@
     "rowsSkipped": "{{count}} lege rijen overgeslagen",
     "termsUpdated": "{{count}} termen bijgewerkt",
     "termsAdded": "{{count}} nieuwe termen toegevoegd"
+  },
+  "inputHistory": {
+    "title": "Opgeslagen invoer",
+    "description": "Verwijdert lokaal opgeslagen suggesties voor wallets, betalingsontvangers, bedragen en memo’s.",
+    "clearAll": "Alle tekstveldgeschiedenissen wissen",
+    "confirm": "Alle opgeslagen invoer wissen? Hiermee worden de geschiedenisitems van alle tekstvelden verwijderd.",
+    "done": "De geschiedenissen van tekstvelden zijn gewist."
   }
 }

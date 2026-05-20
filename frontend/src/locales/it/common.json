@@ -1201,5 +1201,9 @@
       "learningOutcome": "Rivedi ciò che hai imparato, riconosci il tuo progresso.",
       "reward": "🎖 Professionista Stellare"
     }
+  },
+  "inputHistory": {
+    "removeEntry": "Rimuovi dalla cronologia",
+    "clearField": "Cancella la cronologia di questo campo"
   }
 }

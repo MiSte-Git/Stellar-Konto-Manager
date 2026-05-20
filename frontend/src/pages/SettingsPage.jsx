@@ -8,6 +8,7 @@ import QuizExportImport from '../components/settings/QuizExportImport.jsx';
 import GlossaryExportImport from '../components/settings/GlossaryExportImport.jsx';
 import { useSettings } from '../utils/useSettings.js';
 import { buildPath } from '../utils/basePath.js';
+import { clearAllTextInputHistories } from '../utils/inputHistory.js';
 
 export default function SettingsPage({ publicKey, onBack: _onBack }) {
   const { t } = useTranslation(['settings', 'quiz']);
@@ -38,6 +39,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
   const isEditingExplorer = Boolean(editingExplorerId);
   const [importError, setImportError] = useState('');
   const [importSuccess, setImportSuccess] = useState('');
+  const [clearHistoryDone, setClearHistoryDone] = useState(false);
   const importFileRef = React.useRef(null);
   void _onBack;
 
@@ -164,6 +166,13 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
 
   const setAsDefault = (id) => setDefaultExplorer(id);
 
+  const handleClearInputHistory = () => {
+    if (!window.confirm(t('settings:inputHistory.confirm'))) return;
+    clearAllTextInputHistories();
+    setClearHistoryDone(true);
+    setTimeout(() => setClearHistoryDone(false), 3000);
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-10 space-y-6">
       <div className="flex flex-col gap-3">
@@ -215,6 +224,20 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
               />
               <span className="text-sm text-gray-600 dark:text-gray-300">{t('settings:multisig.seconds', 'Sekunden')}</span>
             </div>
+          </div>
+          <div className="border rounded p-3 space-y-2">
+            <h3 className="font-semibold">{t('settings:inputHistory.title')}</h3>
+            <p className="text-sm text-gray-700 dark:text-gray-300">{t('settings:inputHistory.description')}</p>
+            {clearHistoryDone && (
+              <p className="text-sm text-green-700 dark:text-green-400">{t('settings:inputHistory.done')}</p>
+            )}
+            <button
+              type="button"
+              onClick={handleClearInputHistory}
+              className="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 text-sm"
+            >
+              {t('settings:inputHistory.clearAll')}
+            </button>
           </div>
           <section className="mt-6 space-y-2">
             <h3 className="font-semibold">{t('settings:export.title')}</h3>

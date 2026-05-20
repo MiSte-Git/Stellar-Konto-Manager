@@ -189,5 +189,12 @@
     "rowsSkipped": "{{count}} praznih redaka preskočeno",
     "termsUpdated": "{{count}} pojmova ažurirano",
     "termsAdded": "{{count}} novih pojmova dodano"
+  },
+  "inputHistory": {
+    "title": "Spremljeni unosi",
+    "description": "Briše lokalno spremljene prijedloge za novčanike, primatelje plaćanja, iznose i memoe.",
+    "clearAll": "Obriši sve povijesti tekstnih polja",
+    "confirm": "Obrisati sve spremljene unose? Time se uklanjaju unosi povijesti za sva tekstna polja.",
+    "done": "Povijesti tekstnih polja su obrisane."
   }
 }

@@ -27,7 +27,7 @@ function CompareTrustlines({
 }) {
   const { t } = useTranslation(['publicKey', 'secretKey', 'common', 'trustline']);
   const [destNotFound, setDestNotFound] = React.useState(false);
-  const { recentWalletOptions } = useRecentWalletOptions();
+  const { recentWalletOptions, removeRecentWalletOption, clearRecentWalletOptions } = useRecentWalletOptions();
 
   const handleCompare = async () => {
     let destinationKey;
@@ -110,6 +110,8 @@ function CompareTrustlines({
         onSelect={(next) => { setDestinationPublicKey(next); if (destNotFound) setDestNotFound(false); }}
         placeholder="e.g., GBZVTOY..."
         options={recentWalletOptions}
+        onRemoveOption={(entry) => removeRecentWalletOption(entry.value)}
+        onClearOptions={clearRecentWalletOptions}
         inputClassName={`wallet-input w-full p-2 border rounded pr-8 font-mono text-sm ${destNotFound ? 'border-red-500 ring-1 ring-red-400' : 'border-gray-300'}`}
         inputProps={{
           spellCheck: false,

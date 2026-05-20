@@ -1201,5 +1201,9 @@
       "learningOutcome": "Pregledajte što ste naučili, prepoznajte vlastiti napredak.",
       "reward": "🎖 Izvanredni profesionalac"
     }
+  },
+  "inputHistory": {
+    "removeEntry": "Ukloni iz povijesti",
+    "clearField": "Obriši povijest ovog polja"
   }
 }

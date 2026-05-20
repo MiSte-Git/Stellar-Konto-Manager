@@ -1201,5 +1201,9 @@
       "learningOutcome": "Herzie wat je hebt geleerd, erken je eigen vooruitgang.",
       "reward": "🎖 Sterke Professional"
     }
+  },
+  "inputHistory": {
+    "removeEntry": "Uit geschiedenis verwijderen",
+    "clearField": "Geschiedenis van dit veld wissen"
   }
 }

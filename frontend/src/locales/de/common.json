@@ -1201,5 +1201,9 @@
       "learningOutcome": "Gelerntes wiederholen, eigene Fortschritte erkennen.",
       "reward": "🎖 Stellar-Profi"
     }
+  },
+  "inputHistory": {
+    "removeEntry": "Aus Verlauf entfernen",
+    "clearField": "Verlauf dieses Feldes löschen"
   }
 }

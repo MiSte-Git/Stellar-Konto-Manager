@@ -1201,5 +1201,9 @@
       "learningOutcome": "Tarkista oppimasi ja tunnista oma edistymisesi.",
       "reward": "🎖 Tähtiammattilainen"
     }
+  },
+  "inputHistory": {
+    "removeEntry": "Poista historiasta",
+    "clearField": "Tyhjennä tämän kentän historia"
   }
 }

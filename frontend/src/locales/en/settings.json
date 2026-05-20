@@ -189,5 +189,12 @@
     "rowsSkipped": "{{count}} empty rows skipped",
     "termsUpdated": "{{count}} terms updated",
     "termsAdded": "{{count}} new terms added"
+  },
+  "inputHistory": {
+    "title": "Saved inputs",
+    "description": "Deletes locally saved suggestions for wallets, payment recipients, amounts, and memos.",
+    "clearAll": "Clear all text field histories",
+    "confirm": "Clear all saved inputs? This removes the history entries for all text fields.",
+    "done": "Text field histories have been cleared."
   }
 }

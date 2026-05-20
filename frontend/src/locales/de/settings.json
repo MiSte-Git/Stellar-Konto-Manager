@@ -189,5 +189,12 @@
     "rowsSkipped": "{{count}} leere Zeilen übersprungen",
     "termsUpdated": "{{count}} Begriffe aktualisiert",
     "termsAdded": "{{count}} neue Begriffe hinzugefügt"
+  },
+  "inputHistory": {
+    "title": "Gespeicherte Eingaben",
+    "description": "Löscht die lokal gespeicherten Vorschläge für Wallets, Zahlungsempfänger, Beträge und Memos.",
+    "clearAll": "Alle Textfeld-Verläufe löschen",
+    "confirm": "Alle gespeicherten Eingaben löschen? Diese Aktion entfernt die Verlaufseinträge aller Textfelder.",
+    "done": "Textfeld-Verläufe wurden gelöscht."
   }
 }

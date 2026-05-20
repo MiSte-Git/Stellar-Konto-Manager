@@ -189,5 +189,12 @@
     "rowsSkipped": "{{count}} filas vacías omitidas",
     "termsUpdated": "{{count}} términos actualizados",
     "termsAdded": "{{count}} nuevos términos añadidos"
+  },
+  "inputHistory": {
+    "title": "Entradas guardadas",
+    "description": "Elimina las sugerencias guardadas localmente para billeteras, destinatarios de pago, importes y memos.",
+    "clearAll": "Borrar todos los historiales de campos de texto",
+    "confirm": "¿Borrar todas las entradas guardadas? Esta acción elimina el historial de todos los campos de texto.",
+    "done": "Se borraron los historiales de los campos de texto."
   }
 }

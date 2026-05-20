@@ -3,6 +3,12 @@ import { useTrustedWallets } from './useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from './walletInfo.js';
 import { isTestnetAccount } from './stellar/accountUtils.js';
 import { extractBasePublicKeyFromMuxed } from './stellar/stellarUtils.js';
+import {
+  INPUT_HISTORY_CHANGED_EVENT,
+  RECENT_WALLETS_KEY,
+  clearHistoryKey,
+  removeRecentWallet,
+} from './inputHistory.js';
 
 function normalizeStoredWallet(entry) {
   if (typeof entry === 'string') {
@@ -30,6 +36,20 @@ export function useRecentWalletOptions() {
   const [recentWallets, setRecentWallets] = useState(() => loadRecentWalletsFromStorage());
   const persistRecent = useCallback((list) => {
     try { localStorage.setItem('recentWallets', JSON.stringify(list)); } catch { /* noop */ }
+  }, []);
+
+  useEffect(() => {
+    const syncRecentWallets = (event) => {
+      const keys = event?.detail?.keys;
+      if (Array.isArray(keys) && !keys.includes(RECENT_WALLETS_KEY)) return;
+      setRecentWallets(loadRecentWalletsFromStorage());
+    };
+    window.addEventListener(INPUT_HISTORY_CHANGED_EVENT, syncRecentWallets);
+    window.addEventListener('storage', syncRecentWallets);
+    return () => {
+      window.removeEventListener(INPUT_HISTORY_CHANGED_EVENT, syncRecentWallets);
+      window.removeEventListener('storage', syncRecentWallets);
+    };
   }, []);
 
   useEffect(() => {
@@ -81,5 +101,15 @@ export function useRecentWalletOptions() {
       .filter(Boolean);
   }, [recentWallets, walletInfoMap]);
 
-  return { recentWalletOptions, recentWallets };
+  const removeRecentWalletOption = useCallback((value) => {
+    const next = removeRecentWallet(value);
+    setRecentWallets(next.map(normalizeStoredWallet).filter(Boolean));
+  }, []);
+
+  const clearRecentWalletOptions = useCallback(() => {
+    clearHistoryKey(RECENT_WALLETS_KEY);
+    setRecentWallets([]);
+  }, []);
+
+  return { recentWalletOptions, recentWallets, removeRecentWalletOption, clearRecentWalletOptions };
 }

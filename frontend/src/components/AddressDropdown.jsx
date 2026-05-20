@@ -5,6 +5,8 @@ export default function AddressDropdown({
   value,
   onChange,
   onSelect,
+  onRemoveOption,
+  onClearOptions,
   onBlur,
   placeholder,
   options = [],
@@ -39,6 +41,9 @@ export default function AddressDropdown({
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, [open]);
 
+  const canClearOptions = typeof onClearOptions === 'function' && options.length > 0;
+  const showDropdown = open && (filtered.length > 0 || canClearOptions);
+
   return (
     <div className={['relative', className].filter(Boolean).join(' ')} ref={wrapperRef}>
       <input
@@ -56,32 +61,64 @@ export default function AddressDropdown({
         {...inputProps}
       />
       {rightAdornment}
-      {open && filtered.length > 0 && (
+      {showDropdown && (
         <div className="absolute z-20 mt-1 w-full max-h-64 overflow-y-auto rounded border bg-white dark:bg-gray-900 shadow-lg">
           {filtered.map((entry, i) => (
-            <button
+            <div
               key={`${entry.value}-${i}`}
+              className="flex items-stretch text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <button
+                type="button"
+                className="min-w-0 flex-1 text-left px-3 py-1"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  onSelect?.(entry.value);
+                  setOpen(false);
+                }}
+              >
+                <div className="font-mono break-all">{entry.displayValue || entry.value}</div>
+                {(entry.isTestnet || entry.label) && (
+                  <div className="text-xs text-gray-600 dark:text-gray-400 flex flex-wrap gap-2">
+                    {entry.isTestnet && (
+                      <span className="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200">
+                        {t('common:account.testnetLabel', '(Testnet)')}
+                      </span>
+                    )}
+                    {entry.label && <span>{entry.label}</span>}
+                  </div>
+                )}
+              </button>
+              {typeof onRemoveOption === 'function' && entry.removable !== false && (
+                <button
+                  type="button"
+                  className="shrink-0 px-3 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-300"
+                  title={t('common:inputHistory.removeEntry', 'Aus Verlauf entfernen')}
+                  aria-label={t('common:inputHistory.removeEntry', 'Aus Verlauf entfernen')}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onRemoveOption(entry);
+                  }}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ))}
+          {canClearOptions && (
+            <button
               type="button"
-              className="w-full text-left px-3 py-0 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="w-full border-t px-3 py-2 text-left text-xs text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/30"
               onMouseDown={(e) => {
                 e.preventDefault();
-                onSelect?.(entry.value);
+                onClearOptions();
                 setOpen(false);
               }}
             >
-              <div className="font-mono break-all">{entry.value}</div>
-              {(entry.isTestnet || entry.label) && (
-                <div className="text-xs text-gray-600 dark:text-gray-400 flex flex-wrap gap-2">
-                  {entry.isTestnet && (
-                    <span className="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200">
-                      {t('common:account.testnetLabel', '(Testnet)')}
-                    </span>
-                  )}
-                  {entry.label && <span>{entry.label}</span>}
-                </div>
-              )}
+              {t('common:inputHistory.clearField', 'Verlauf dieses Feldes löschen')}
             </button>
-          ))}
+          )}
         </div>
       )}
     </div>

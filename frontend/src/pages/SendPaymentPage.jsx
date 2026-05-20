@@ -16,6 +16,16 @@ import AddressDropdown from '../components/AddressDropdown.jsx';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from '../utils/walletInfo.js';
 import { getSessionSecret, rememberSessionSecrets } from '../utils/sessionSecrets.js';
+import {
+  INPUT_HISTORY_CHANGED_EVENT,
+  PAYMENT_AMOUNT_HISTORY_KEY,
+  PAYMENT_MEMO_HISTORY_KEY,
+  PAYMENT_RECIPIENT_HISTORY_KEY,
+  clearHistoryKey,
+  readHistoryArray,
+  removeHistoryValue,
+  writeHistoryArray,
+} from '../utils/inputHistory.js';
 
 function HistoryInput({
   value,
@@ -23,11 +33,14 @@ function HistoryInput({
   onFocus,
   onBlur,
   onSelect,
+  onRemoveSuggestion,
+  onClearSuggestions,
   suggestions = [],
   className = '',
   inputProps = {},
   rightAdornment = null,
 }) {
+  const { t } = useTranslation(['common']);
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
 
@@ -61,6 +74,9 @@ function HistoryInput({
     };
   }, [open]);
 
+  const canClearSuggestions = typeof onClearSuggestions === 'function' && suggestions.length > 0;
+  const showDropdown = open && (filteredSuggestions.length > 0 || canClearSuggestions);
+
   return (
     <div className="relative" ref={wrapperRef}>
       <input
@@ -86,31 +102,73 @@ function HistoryInput({
         {...inputProps}
       />
       {rightAdornment}
-      {open && filteredSuggestions.length > 0 && (
+      {showDropdown && (
         <div className="absolute z-20 mt-1 w-full max-h-48 overflow-y-auto rounded border bg-white dark:bg-gray-900 shadow-lg">
           {filteredSuggestions.map((suggestion, index) => (
-            <button
+            <div
               key={`${suggestion}-${index}`}
+              className="flex items-stretch text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <button
+                type="button"
+                className="min-w-0 flex-1 text-left px-3 py-1.5"
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                  onSelect?.(suggestion);
+                  setOpen(false);
+                }}
+                onTouchStart={(event) => {
+                  event.preventDefault();
+                  onSelect?.(suggestion);
+                  setOpen(false);
+                }}
+              >
+                <span className="break-all">{suggestion}</span>
+              </button>
+              {typeof onRemoveSuggestion === 'function' && (
+                <button
+                  type="button"
+                  className="shrink-0 px-3 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-300"
+                  title={t('common:inputHistory.removeEntry', 'Aus Verlauf entfernen')}
+                  aria-label={t('common:inputHistory.removeEntry', 'Aus Verlauf entfernen')}
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    onRemoveSuggestion(suggestion);
+                  }}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ))}
+          {canClearSuggestions && (
+            <button
               type="button"
-              className="w-full text-left px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="w-full border-t px-3 py-2 text-left text-xs text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/30"
               onMouseDown={(event) => {
                 event.preventDefault();
-                onSelect?.(suggestion);
-                setOpen(false);
-              }}
-              onTouchStart={(event) => {
-                event.preventDefault();
-                onSelect?.(suggestion);
+                onClearSuggestions();
                 setOpen(false);
               }}
             >
-              <span className="break-all">{suggestion}</span>
+              {t('common:inputHistory.clearField', 'Verlauf dieses Feldes löschen')}
             </button>
-          ))}
+          )}
         </div>
       )}
     </div>
   );
+}
+
+function normalizeRecipientHistoryValue(raw) {
+  const trimmed = String(raw || '').trim();
+  if (!trimmed) return '';
+  const pkMatch = trimmed.match(/G[A-Z0-9]{55}/);
+  if (pkMatch) return pkMatch[0];
+  const withoutTestnet = trimmed.replace(/\s*\(Testnet\)\s*/i, '').trim();
+  const base = withoutTestnet.split(' - ')[0].trim();
+  return base;
 }
 
 export default function SendPaymentPage({ publicKey, onBack: _onBack, initial }) {
@@ -1131,9 +1189,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const availableXLM = Math.max(0, nativeBalance - reservedTotal - xlmInOffers);
 
   // Histories for inputs
-  const [historyRecipients, setHistoryRecipients] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.recipients')||'[]'); } catch { return []; } });
-  const [historyAmounts, setHistoryAmounts] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.amounts')||'[]'); } catch { return []; } });
-  const [historyMemos, setHistoryMemos] = useState(() => { try { return JSON.parse(localStorage.getItem('stm.hist.memos')||'[]'); } catch { return []; } });
+  const [historyRecipients, setHistoryRecipients] = useState(() => readHistoryArray(PAYMENT_RECIPIENT_HISTORY_KEY));
+  const [historyAmounts, setHistoryAmounts] = useState(() => readHistoryArray(PAYMENT_AMOUNT_HISTORY_KEY));
+  const [historyMemos, setHistoryMemos] = useState(() => readHistoryArray(PAYMENT_MEMO_HISTORY_KEY));
   const [recipientTestnetMap, setRecipientTestnetMap] = useState({});
   useEffect(() => {
     let cancelled = false;
@@ -1166,17 +1224,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     const options = [];
     const seen = new Set();
     const testnetSuffix = t('common:account.testnetLabel', '(Testnet)');
-    const normalizeRecipient = (raw) => {
-      const trimmed = String(raw || '').trim();
-      if (!trimmed) return '';
-      const pkMatch = trimmed.match(/G[A-Z0-9]{55}/);
-      if (pkMatch) return pkMatch[0];
-      const withoutTestnet = trimmed.replace(/\s*\(Testnet\)\s*/i, '').trim();
-      const base = withoutTestnet.split(' - ')[0].trim();
-      return base;
-    };
     const add = (value, info = {}) => {
-      const trimmed = normalizeRecipient(value);
+      const trimmed = normalizeRecipientHistoryValue(value);
       if (!trimmed || seen.has(trimmed)) return;
       seen.add(trimmed);
       const isTestnet = typeof info.isTestnet === 'boolean'
@@ -1188,23 +1237,24 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         displayValue,
         label: info.label || '',
         isTestnet,
+        removable: info.removable !== false,
       });
     };
     historyRecipients.forEach((entry) => {
-      const normalized = normalizeRecipient(entry);
+      const normalized = normalizeRecipientHistoryValue(entry);
       const info = findWalletInfo(walletInfoMap, normalized) || {};
-      add(normalized, info);
+      add(normalized, { ...info, removable: true });
     });
     wallets.forEach((wallet) => {
       if (!wallet || typeof wallet !== 'object') return;
       const info = { label: String(wallet.label || '').trim(), isTestnet: !!wallet.isTestnet };
       const address = String(wallet.address || wallet.publicKey || '').trim();
       if (address) {
-        add(address, info);
+        add(address, { ...info, removable: false });
       }
       const federation = String(wallet.federation || wallet.federationAddress || '').trim();
       if (federation) {
-        add(federation, info);
+        add(federation, { ...info, removable: false });
       }
     });
     return options;
@@ -1214,11 +1264,45 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const v = String(val||'').trim(); if (!v) return;
       setter(prev => {
         const next = [v, ...prev.filter(x => x !== v)].slice(0, limit);
-        localStorage.setItem(key, JSON.stringify(next));
+        writeHistoryArray(key, next, { silent: true });
         return next;
       });
     } catch { /* noop */ }
   };
+  const removeFromHistory = (key, value, setter) => {
+    setter(removeHistoryValue(key, value));
+  };
+  const removeRecipientFromHistory = (value) => {
+    const target = normalizeRecipientHistoryValue(value);
+    const next = historyRecipients.filter((entry) => normalizeRecipientHistoryValue(entry) !== target);
+    writeHistoryArray(PAYMENT_RECIPIENT_HISTORY_KEY, next);
+    setHistoryRecipients(next);
+  };
+  const clearHistory = (key, setter) => {
+    clearHistoryKey(key);
+    setter([]);
+  };
+  useEffect(() => {
+    const syncPaymentHistories = (event) => {
+      const keys = event?.detail?.keys;
+      if (Array.isArray(keys) && !keys.some((key) => [
+        PAYMENT_RECIPIENT_HISTORY_KEY,
+        PAYMENT_AMOUNT_HISTORY_KEY,
+        PAYMENT_MEMO_HISTORY_KEY,
+      ].includes(key))) {
+        return;
+      }
+      setHistoryRecipients(readHistoryArray(PAYMENT_RECIPIENT_HISTORY_KEY));
+      setHistoryAmounts(readHistoryArray(PAYMENT_AMOUNT_HISTORY_KEY));
+      setHistoryMemos(readHistoryArray(PAYMENT_MEMO_HISTORY_KEY));
+    };
+    window.addEventListener(INPUT_HISTORY_CHANGED_EVENT, syncPaymentHistories);
+    window.addEventListener('storage', syncPaymentHistories);
+    return () => {
+      window.removeEventListener(INPUT_HISTORY_CHANGED_EVENT, syncPaymentHistories);
+      window.removeEventListener('storage', syncPaymentHistories);
+    };
+  }, []);
  
   const assetOptions = useMemo(() => {
     const opts = [{ key: 'XLM', label: 'XLM' }];
@@ -1303,9 +1387,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             onSelect={(next) => {
               clearSuccess();
               setDest(next);
-              pushHistory('stm.hist.recipients', next, setHistoryRecipients);
+              pushHistory(PAYMENT_RECIPIENT_HISTORY_KEY, next, setHistoryRecipients);
             }}
-            onBlur={() => pushHistory('stm.hist.recipients', dest, setHistoryRecipients)}
+            onRemoveOption={(entry) => removeRecipientFromHistory(entry.value)}
+            onClearOptions={historyRecipients.length > 0 ? () => clearHistory(PAYMENT_RECIPIENT_HISTORY_KEY, setHistoryRecipients) : undefined}
+            onBlur={() => pushHistory(PAYMENT_RECIPIENT_HISTORY_KEY, dest, setHistoryRecipients)}
             placeholder="G... oder user*domain"
             options={recipientSuggestions}
             inputClassName="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm font-mono"
@@ -1381,12 +1467,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             className="border rounded pr-8 px-2 py-1 text-base md:text-sm w-full appearance-none [-moz-appearance:textfield]"
             inputProps={{ type: 'text', inputMode: 'decimal' }}
             onFocus={() => setAmountFocused(true)}
-            onBlur={() => { setAmountFocused(false); pushHistory('stm.hist.amounts', amount, setHistoryAmounts); }}
+            onBlur={() => { setAmountFocused(false); pushHistory(PAYMENT_AMOUNT_HISTORY_KEY, amount, setHistoryAmounts); }}
             onSelect={(next) => {
               clearSuccess();
               setAmount(String(next || ''));
-              pushHistory('stm.hist.amounts', next, setHistoryAmounts);
+              pushHistory(PAYMENT_AMOUNT_HISTORY_KEY, next, setHistoryAmounts);
             }}
+            onRemoveSuggestion={(next) => removeFromHistory(PAYMENT_AMOUNT_HISTORY_KEY, next, setHistoryAmounts)}
+            onClearSuggestions={() => clearHistory(PAYMENT_AMOUNT_HISTORY_KEY, setHistoryAmounts)}
             onChange={(e) => {
               clearSuccess();
               let s = e.target.value || '';
@@ -1468,12 +1556,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 suggestions={historyMemos}
                 className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm"
                 onChange={(e)=>{ clearSuccess(); setMemoVal(e.target.value); }}
-                onBlur={()=>pushHistory('stm.hist.memos', memoVal, setHistoryMemos)}
+                onBlur={()=>pushHistory(PAYMENT_MEMO_HISTORY_KEY, memoVal, setHistoryMemos)}
                 onSelect={(next) => {
                   clearSuccess();
                   setMemoVal(next);
-                  pushHistory('stm.hist.memos', next, setHistoryMemos);
+                  pushHistory(PAYMENT_MEMO_HISTORY_KEY, next, setHistoryMemos);
                 }}
+                onRemoveSuggestion={(next) => removeFromHistory(PAYMENT_MEMO_HISTORY_KEY, next, setHistoryMemos)}
+                onClearSuggestions={() => clearHistory(PAYMENT_MEMO_HISTORY_KEY, setHistoryMemos)}
                 rightAdornment={memoVal ? (
                   <button type="button" onClick={()=>{ clearSuccess(); setMemoVal(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
                 ) : null}

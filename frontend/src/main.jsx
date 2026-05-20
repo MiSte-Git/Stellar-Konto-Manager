@@ -20,6 +20,12 @@ import AddressDropdown from './components/AddressDropdown.jsx';
 import { isTestnetAccount } from './utils/stellar/accountUtils.js';
 import { requiresGAccount, isIdentityMode } from './utils/accountMode.js';
 import { clearSessionSecrets, getSessionSecretCount, hasSessionSecrets } from './utils/sessionSecrets.js';
+import {
+  INPUT_HISTORY_CHANGED_EVENT,
+  RECENT_WALLETS_KEY,
+  clearHistoryKey,
+  removeRecentWallet,
+} from './utils/inputHistory.js';
 
 function migrateLegacyStorageKeys() {
   if (typeof window === 'undefined') return;
@@ -402,6 +408,20 @@ function Main() {
   }, []);
 
   useEffect(() => {
+    const syncRecentWallets = (event) => {
+      const keys = event?.detail?.keys;
+      if (Array.isArray(keys) && !keys.includes(RECENT_WALLETS_KEY)) return;
+      setRecentWallets(loadRecentWalletsFromStorage());
+    };
+    window.addEventListener(INPUT_HISTORY_CHANGED_EVENT, syncRecentWallets);
+    window.addEventListener('storage', syncRecentWallets);
+    return () => {
+      window.removeEventListener(INPUT_HISTORY_CHANGED_EVENT, syncRecentWallets);
+      window.removeEventListener('storage', syncRecentWallets);
+    };
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
     async function ensureRecentFlags() {
       if (!recentWallets.some((entry) => entry && typeof entry.isTestnet === 'undefined')) return;
@@ -629,18 +649,16 @@ function Main() {
     setXlmBalance(null);
   }
 
-  function handleRecentDelete() {
-    const key = (walletHeaderInput || '').trim();
+  function handleRecentRemove(value) {
+    const key = (value || '').trim();
     if (!key) return;
-    setRecentWallets(prev => {
-      const next = prev.filter(entry => entry.publicKey !== key);
-      persistRecent(next);
-      return next;
-    });
-    // Falls der geladene Key dem gelöschten entspricht: entladen
-    if ((sourceMuxedAddress && sourceMuxedAddress === key) || (sourcePublicKey && sourcePublicKey === key)) {
-      unloadActiveWallet();
-    }
+    const next = removeRecentWallet(key).map(normalizeStoredWallet).filter(Boolean);
+    setRecentWallets(next);
+  }
+
+  function handleRecentClear() {
+    clearHistoryKey(RECENT_WALLETS_KEY);
+    setRecentWallets([]);
   }
 
   // Aktuelle Wallet automatisch in "Zuletzt verwendet" aufnehmen
@@ -847,6 +865,8 @@ function Main() {
               onSelect={(next) => setWalletHeaderInput(next)}
               placeholder={t('publicKey:placeholder')}
               options={recentWalletOptions}
+              onRemoveOption={(entry) => handleRecentRemove(entry.value)}
+              onClearOptions={handleRecentClear}
               inputClassName={`wallet-input w-full border ${notFound ? 'border-red-500 ring-1 ring-red-400' : (devTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : 'border-gray-300')} rounded p-2 pr-8 font-mono text-base md:text-sm`}
               inputProps={{
                 spellCheck: false,
@@ -936,14 +956,6 @@ function Main() {
                   title="Wallet übernehmen"
                 >
                   {t('publicKey:load')}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleRecentDelete}
-                  disabled={isLoading || !recentWallets.some((entry) => entry.publicKey === (walletHeaderInput || '').trim())}
-                  className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
-                >
-                  {t('publicKey:deleteFromList')}
                 </button>
                 {sourceMuxedAddress && (
                   <button

@@ -72,7 +72,7 @@ export default function MultisigCreatePage() {
   const [showInfo2, setShowInfo2] = useState(false);
   const [showKeyWarning, setShowKeyWarning] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const { recentWalletOptions } = useRecentWalletOptions();
+  const { recentWalletOptions, removeRecentWalletOption, clearRecentWalletOptions } = useRecentWalletOptions();
 
   const server = useMemo(() => getHorizonServer(network === 'TESTNET' ? HORIZON_TEST : HORIZON_MAIN), [network]);
   const passphrase = network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC;
@@ -523,6 +523,8 @@ export default function MultisigCreatePage() {
             signerCountLimitTitle={t('multisigConfig:signersCountLimit')}
             signers={plannedSigners}
             signerOptions={recentWalletOptions}
+            onRemoveSignerOption={removeRecentWalletOption}
+            onClearSignerOptions={clearRecentWalletOptions}
             signerPlaceholder="G..."
             onSignerKeyChange={handleSignerChange}
             onSignerWeightChange={handleSignerWeightChange}

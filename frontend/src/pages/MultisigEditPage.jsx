@@ -49,7 +49,7 @@ function NetworkSelector({ value, onChange }) {
 
 export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const { t } = useTranslation(['network', 'common', 'multisigConfig', 'publicKey', 'multisig', 'glossary']);
-  const { recentWalletOptions } = useRecentWalletOptions();
+  const { recentWalletOptions, removeRecentWalletOption, clearRecentWalletOptions } = useRecentWalletOptions();
 
   const [network, setNetwork] = useState(() => {
   try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
@@ -561,6 +561,8 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           signerCountLimitTitle={t('multisigConfig:signersCountLimit')}
           signers={signers}
           signerOptions={recentWalletOptions}
+          onRemoveSignerOption={removeRecentWalletOption}
+          onClearSignerOptions={clearRecentWalletOptions}
           signerWeightHeaderLabel={t('common:multisigEdit.weight', 'Gewicht')}
           signerPlaceholder="G..."
           onSignerKeyChange={updateSignerKey}

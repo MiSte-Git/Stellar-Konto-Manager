@@ -1201,5 +1201,9 @@
       "learningOutcome": "Review what you've learned, recognize your own progress.",
       "reward": "🎖 Stellar Professional"
     }
+  },
+  "inputHistory": {
+    "removeEntry": "Remove from history",
+    "clearField": "Clear history for this field"
   }
 }
