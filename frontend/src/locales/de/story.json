@@ -762,7 +762,9 @@
         "dialog1": "Lass uns das direkt ausprobieren! Gleich zeige ich dir wie – aber zuerst erkläre ich dir, was Escrow eigentlich bedeutet.",
         "dialog2": "Escrow was?",
         "dialog3": "Escrow ist ein Treuhänder-Prinzip: Ein Betrag wird bei einer neutralen Stelle hinterlegt und erst freigegeben, wenn eine Bedingung erfüllt ist – zum Beispiel wenn eine Arbeit abgeschlossen wurde oder ein Käufer den Erhalt bestätigt. Bis dahin kann keine Partei einfach darauf zugreifen.",
-        "dialog4": "Und Stellar kann dieses Prinzip direkt im Protokoll abbilden?"
+        "dialog4": "Und Stellar kann dieses Prinzip direkt im Protokoll abbilden?",
+        "dialog5": "Also wie bei Digitec: Der Käufer zahlt, aber der Verkäufer bekommt das Geld erst, wenn der Käufer den Erhalt bestätigt?",
+        "dialog6": "Genau. Digitec übernimmt dort die Treuhänder-Rolle. Auf Stellar kann eine Claimable Balance den Sperrteil technisch abbilden. Die App darum herum entscheidet dann, wann jemand claimen darf oder wann zurückgezahlt wird."
       },
       "action": {
         "label": "Escrow erstellen",
@@ -778,7 +780,12 @@
         "success": "Escrow erfolgreich erstellt!",
         "escrow_id_label": "Claimable Balance (Escrow) ID",
         "testnet_note": "Nur Testnet – kein echtes Geld.",
-        "locked_note": "Die 50 XLM liegen jetzt in einer Claimable Balance (Escrow). Der Explorer zeigt die ID und die Regeln, wer den Betrag wann beanspruchen darf."
+        "locked_note": "Die 50 XLM liegen jetzt in einer Claimable Balance (Escrow). Das ist der Sperr-Schritt: Das Geld liegt nicht mehr frei in deiner Wallet, aber es ist auch noch nicht automatisch beim Verkäufer angekommen.",
+        "result_rules_title": "Ablauf in dieser Demo",
+        "rule1": "Der Demo-Käufer darf die 50 XLM sofort claimen, also aktiv aus der Claimable Balance abholen.",
+        "rule2": "Wenn der Demo-Käufer nichts tut, darfst du die 50 XLM nach 1 Stunde zurückfordern.",
+        "rule3": "Eine echte „Erhalt bestätigen“-Schaltfläche ist in dieser Demo noch nicht eingebaut.",
+        "rule4": "Beim Digitec-Beispiel wäre diese Bestätigung der nächste App-Schritt: Der Käufer klickt „Erhalt bestätigt“, und die Plattform löst danach die Auszahlung an den Verkäufer aus. Auf Stellar wäre das eine zweite Transaktion, die die Claimable Balance beansprucht."
       },
       "post": {
         "dialog1": "Das war einfacher als ich dachte!",

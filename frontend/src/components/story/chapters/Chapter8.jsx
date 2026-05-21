@@ -22,6 +22,7 @@ const ESCROW_XP = 80;
 const CHOICE_XP = 25;
 const SUMMARY_XP = 175;
 const ESCROW_STEP_KEYS = ["step1", "step2", "step3", "step4"];
+const ESCROW_RESULT_RULE_KEYS = ["rule1", "rule2", "rule3", "rule4"];
 
 // ─── Escrow transaction helpers ───────────────────────────────────────────────
 
@@ -227,6 +228,27 @@ function EscrowActionScene({ next, t, keypair, addXP, completeAction, hasComplet
           <p style={{ margin: 0, fontSize: "13px", color: "rgba(255,255,255,0.68)", lineHeight: 1.55 }}>
             {t("chapter8.scene4.action.locked_note")}
           </p>
+
+          <div style={{
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: "12px",
+            padding: "12px 14px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+          }}>
+            <p style={{ margin: 0, fontSize: "12px", fontWeight: 800, color: "white" }}>
+              {t("chapter8.scene4.action.result_rules_title")}
+            </p>
+            <ol style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "6px" }}>
+              {ESCROW_RESULT_RULE_KEYS.map((key) => (
+                <li key={key} style={{ fontSize: "12px", color: "rgba(255,255,255,0.72)", lineHeight: 1.5 }}>
+                  {t(`chapter8.scene4.action.${key}`)}
+                </li>
+              ))}
+            </ol>
+          </div>
 
           {balanceId && (
             <div style={{
@@ -1010,6 +1032,8 @@ function buildScenes({ openGlossary, keypair, addXP, completeAction, hasComplete
     { type: "dialog", speaker: "marco", lines: [t("chapter8.scene4.pre.dialog2")] },
     { type: "dialog", speaker: "lumio", lines: [t("chapter8.scene4.pre.dialog3")] },
     { type: "dialog", speaker: "marco", lines: [t("chapter8.scene4.pre.dialog4")] },
+    { type: "dialog", speaker: "lumio", lines: [t("chapter8.scene4.pre.dialog5")] },
+    { type: "dialog", speaker: "marco", lines: [t("chapter8.scene4.pre.dialog6")] },
     // ── Escrow vs. Smart Contract Erklärung ──────────────────────────────────
     { type: "dialog", speaker: "marco", lines: [t("chapter8.escrowVsSmartContract.marco")] },
     {
