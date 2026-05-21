@@ -10,6 +10,7 @@ import { useStory } from "./StoryContext";
  *   learnings  – string[]    bullet points of what was learned
  *   xpEarned   – number      XP gained in this chapter
  *   onNext     – () => void  continue to next chapter or home
+ *   onReplay   – () => void  optional replay current chapter
  *   isLast     – bool        last chapter → show completion screen
  */
 export default function ChapterSummary({
@@ -18,6 +19,8 @@ export default function ChapterSummary({
   learnings = [],
   xpEarned,
   onNext,
+  onReplay,
+  replayLabel,
   isLast = false,
 }) {
   const { xp } = useStory();
@@ -198,6 +201,32 @@ export default function ChapterSummary({
       >
         {isLast ? "🏆 Abschlusszertifikat ansehen" : "Weiter zu Kapitel " + (chapter + 1) + " →"}
       </motion.button>
+
+      {onReplay && (
+        <motion.button
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={onReplay}
+          style={{
+            background: "rgba(255,255,255,0.07)",
+            border: "1.5px solid rgba(255,255,255,0.15)",
+            borderRadius: "12px",
+            padding: "12px 24px",
+            fontSize: "14px",
+            fontWeight: 600,
+            color: "rgba(255,255,255,0.72)",
+            fontFamily: "inherit",
+            cursor: "pointer",
+            width: "100%",
+            maxWidth: "320px",
+          }}
+        >
+          {replayLabel || `Kapitel ${chapter} wiederholen`}
+        </motion.button>
+      )}
     </motion.div>
   );
 }

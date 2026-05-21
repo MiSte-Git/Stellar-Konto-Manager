@@ -35,13 +35,13 @@ const SPEAKER = {
 // ─── CharacterDialog ──────────────────────────────────────────────────────────
 
 function CharacterDialog({ speaker, text, onNext }) {
+  const { t } = useTranslation("story");
   const s = SPEAKER[speaker] || SPEAKER.lumio;
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      onClick={onNext}
-      style={{ cursor: "pointer", userSelect: "none", display: "flex", flexDirection: "column", gap: "10px" }}
+      style={{ display: "flex", flexDirection: "column", gap: "14px" }}
     >
       <div style={{ display: "flex", gap: "12px", alignItems: "flex-end" }}>
         <div style={{ fontSize: "32px", flexShrink: 0, lineHeight: 1 }}>{s.avatar}</div>
@@ -61,7 +61,28 @@ function CharacterDialog({ speaker, text, onNext }) {
           </p>
         </div>
       </div>
-      <p style={{ textAlign: "center", fontSize: "11px", color: "rgba(255,255,255,0.22)", margin: 0 }}>▼</p>
+      <motion.button
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.25 }}
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
+        onClick={onNext}
+        style={{
+          background: "rgba(255,255,255,0.07)",
+          border: "1.5px solid rgba(255,255,255,0.15)",
+          borderRadius: "12px",
+          padding: "12px 24px",
+          fontSize: "14px",
+          fontWeight: 600,
+          color: "rgba(255,255,255,0.7)",
+          fontFamily: "inherit",
+          cursor: "pointer",
+          width: "100%",
+        }}
+      >
+        {t("ui.continue", "Weiter")} →
+      </motion.button>
     </motion.div>
   );
 }
@@ -371,7 +392,7 @@ function ReflectionChoice({ question, choices, continueLabel, onNext }) {
 
 // ─── buildScenes ──────────────────────────────────────────────────────────────
 
-function buildScenes({ openGlossary, addXP, completeChapter, t }) {
+function buildScenes({ openGlossary, completeChapter, goToChapter, t }) {
   const cd = (speaker, text) => ({
     type: "custom",
     render: (next) => <CharacterDialog speaker={speaker} text={text} onNext={next} />,
@@ -396,7 +417,37 @@ function buildScenes({ openGlossary, addXP, completeChapter, t }) {
     cd("sofia",  t("chapter10.s2.sofia1")),
     { type: "dialog", speaker: "lumio", lines: [t("chapter10.s2.lumio2")] },
 
-    // ── Szene 3: Quorum Slice und Vertrauen ───────────────────────────────
+    // ── Szene 3: Warum ist Konsens wichtig? ──────────────────────────────
+    { type: "dialog", speaker: "lumio", lines: [t("chapter10.s5.lumio1")] },
+    cd("sofia",  t("chapter10.s5.sofia1")),
+    { type: "dialog", speaker: "lumio", lines: [t("chapter10.s5.lumio2")] },
+    cd("sofia",  t("chapter10.s5.sofia2")),
+    { type: "dialog", speaker: "lumio", lines: [t("chapter10.s5.lumio3")] },
+
+    // ── Szene 4: Nutzer vs. Validatoren ───────────────────────────────────
+    {
+      type: "custom",
+      sectionTitle: t("chapter10.s5c.section"),
+      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio1")} onNext={next} />,
+    },
+    {
+      type: "custom",
+      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio2")} onNext={next} />,
+    },
+    {
+      type: "custom",
+      render: (next) => <CharacterDialog speaker="sofia" text={t("chapter10.s5c.sofia1")} onNext={next} />,
+    },
+    {
+      type: "custom",
+      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio3")} onNext={next} />,
+    },
+    {
+      type: "custom",
+      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio4")} onNext={next} />,
+    },
+
+    // ── Szene 5: Quorum Slice und Vertrauen ───────────────────────────────
     {
       type: "custom",
       render: (next) => (
@@ -419,26 +470,7 @@ function buildScenes({ openGlossary, addXP, completeChapter, t }) {
     cd("sofia",  t("chapter10.s3.sofia5")),
     { type: "dialog", speaker: "lumio", lines: [t("chapter10.s3.lumio5")] },
 
-    // ── Szene 4: Kein Mining nötig ────────────────────────────────────────
-    {
-      type: "custom",
-      render: (next) => (
-        <InfoCard icon="⚡" title={t("chapter10.s4.card.title")}
-          body={t("chapter10.s4.card.body")} cta={t("chapter10.s4.card.cta")}
-          accentColor="#FFD93D" onNext={next} />
-      ),
-    },
-    cd("sofia",  t("chapter10.s4.sofia1")),
-    { type: "dialog", speaker: "lumio", lines: [t("chapter10.s4.lumio1")] },
-
-    // ── Szene 5: Warum ist Konsens wichtig? ──────────────────────────────
-    { type: "dialog", speaker: "lumio", lines: [t("chapter10.s5.lumio1")] },
-    cd("sofia",  t("chapter10.s5.sofia1")),
-    { type: "dialog", speaker: "lumio", lines: [t("chapter10.s5.lumio2")] },
-    cd("sofia",  t("chapter10.s5.sofia2")),
-    { type: "dialog", speaker: "lumio", lines: [t("chapter10.s5.lumio3")] },
-
-    // ── Szene 5b: FBA – Das Herzstück von SCP ────────────────────────────────
+    // ── Szene 6: FBA – Das Herzstück von SCP ────────────────────────────────
     {
       type: "custom",
       sectionTitle: t("chapter10.s5b.section"),
@@ -462,30 +494,7 @@ function buildScenes({ openGlossary, addXP, completeChapter, t }) {
       render: (next) => <CharacterDialog speaker="sofia" text={t("chapter10.s5b.sofia1")} onNext={next} />,
     },
 
-    // ── Szene 5c: Wem vertraue ich wirklich? ─────────────────────────────────
-    {
-      type: "custom",
-      sectionTitle: t("chapter10.s5c.section"),
-      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio1")} onNext={next} />,
-    },
-    {
-      type: "custom",
-      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio2")} onNext={next} />,
-    },
-    {
-      type: "custom",
-      render: (next) => <CharacterDialog speaker="sofia" text={t("chapter10.s5c.sofia1")} onNext={next} />,
-    },
-    {
-      type: "custom",
-      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio3")} onNext={next} />,
-    },
-    {
-      type: "custom",
-      render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5c.lumio4")} onNext={next} />,
-    },
-
-    // ── Szene 5d: Wer sichert das Netzwerk ab? ───────────────────────────────
+    // ── Szene 7: Wer sichert das Netzwerk ab? ───────────────────────────────
     {
       type: "custom",
       sectionTitle: t("chapter10.s5d.section"),
@@ -505,7 +514,19 @@ function buildScenes({ openGlossary, addXP, completeChapter, t }) {
       render: (next) => <CharacterDialog speaker="lumio" text={t("chapter10.s5d.lumio1")} onNext={next} />,
     },
 
-    // ── Szene 6: Quiz (3 Fragen) ──────────────────────────────────────────
+    // ── Szene 8: Kein Mining nötig ────────────────────────────────────────
+    {
+      type: "custom",
+      render: (next) => (
+        <InfoCard icon="⚡" title={t("chapter10.s4.card.title")}
+          body={t("chapter10.s4.card.body")} cta={t("chapter10.s4.card.cta")}
+          accentColor="#FFD93D" onNext={next} />
+      ),
+    },
+    cd("sofia",  t("chapter10.s4.sofia1")),
+    { type: "dialog", speaker: "lumio", lines: [t("chapter10.s4.lumio1")] },
+
+    // ── Szene 9: Quiz (3 Fragen) ──────────────────────────────────────────
     {
       type: "custom",
       render: (next) => (
@@ -592,7 +613,7 @@ function buildScenes({ openGlossary, addXP, completeChapter, t }) {
     // ── Szene 9: ChapterSummary ───────────────────────────────────────────
     {
       type: "custom",
-      render: (next) => (
+      render: () => (
         <ChapterSummary
           chapter={10}
           title={t("chapter10.title")}
@@ -602,12 +623,13 @@ function buildScenes({ openGlossary, addXP, completeChapter, t }) {
             t("chapter10.s9.learning3"),
           ]}
           xpEarned={XP_SUMMARY}
-          isLast={true}
+          isLast={false}
           onNext={() => {
-            addXP(XP_SUMMARY);
-            completeChapter(10);
-            next();
+            completeChapter(10, XP_SUMMARY);
+            goToChapter(11);
           }}
+          onReplay={() => goToChapter(10)}
+          replayLabel="Kapitel 10 wiederholen"
         />
       ),
     },
@@ -618,9 +640,9 @@ function buildScenes({ openGlossary, addXP, completeChapter, t }) {
 
 export default function Chapter10() {
   const { t } = useTranslation("story");
-  const { addXP, completeChapter, openGlossary } = useStory();
+  const { completeChapter, goToChapter, openGlossary } = useStory();
 
-  const scenes = buildScenes({ openGlossary, addXP, completeChapter, t });
+  const scenes = buildScenes({ openGlossary, completeChapter, goToChapter, t });
 
   return <SceneRunner scenes={scenes} />;
 }

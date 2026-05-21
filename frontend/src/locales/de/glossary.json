@@ -107,6 +107,24 @@
     "short": "Zustimmung, einen Token eines bestimmten Herausgebers zu halten.",
     "desc": "Eine Trustline ist wie ein Ja ich akzeptiere diesen Token. Du sagst damit dass dein Konto bereit ist einen bestimmten Token von einem bestimmten Herausgeber zu halten. Ohne Trustline kannst du diesen Token nicht empfangen.\n\nBeispiel: Eine Trustline wird als CODE:ISSUER angegeben. Für EURT vom Herausgeber GDUKMGUGDZQK6Y… lautet sie EURT:GDUKMGUGDZQK6Y…"
   },
+  "trustlineLimit": {
+    "title": "Trustline-Limit",
+    "original": "Trustline Limit",
+    "short": "Maximaler Bestand eines bestimmten Assets auf einer Trustline.",
+    "desc": "Das Trustline-Limit legt fest, wie viele Einheiten eines bestimmten Assets dein Konto maximal halten darf. Es ist keine Kauforder und reserviert keine Token. Ein niedriges Limit kann versehentliche Überzahlungen verhindern; ein zu niedriges Limit kann aber einen gewünschten Empfang oder Swap blockieren."
+  },
+  "authorizationFlags": {
+    "title": "Autorisierungs-Flags",
+    "original": "Authorization Flags",
+    "short": "Issuer-Regeln wie auth_required, auth_revocable oder immutable.",
+    "desc": "Autorisierungs-Flags sind Einstellungen am Issuer-Konto. auth_required bedeutet, dass der Issuer eine Trustline erst freigeben muss. auth_revocable bedeutet, dass eine Freigabe später widerrufen werden kann. auth_immutable bedeutet, dass diese Flags nicht mehr geändert werden können. Diese Flags sind wichtig, weil sie beeinflussen, ob du einen Token empfangen, halten oder weiterbewegen kannst."
+  },
+  "issuerMasterKey": {
+    "title": "Issuer-Master-Key",
+    "original": "Issuer Master Key",
+    "short": "Hauptschlüssel des Issuer-Kontos.",
+    "desc": "Der Issuer-Master-Key ist der Hauptschlüssel des Kontos, das ein Asset ausgibt. Wenn sein Gewicht auf 0 gesetzt ist, kann der Master-Key allein keine neuen Aktionen mehr signieren. Das kann ein gutes Zeichen sein, weil der Issuer dadurch weniger leicht heimlich Regeln ändern kann. Entscheidend bleibt aber die gesamte Kontokonfiguration inklusive weiterer Signer und Flags."
+  },
   "token": {
     "title": "Token",
     "original": "Token",
@@ -118,6 +136,30 @@
     "original": "Asset",
     "short": "Jeder digitale Vermögenswert auf einer Blockchain – von Kryptowährungen über Token bis hin zu Stablecoins.",
     "desc": "Ein Asset ist im weitesten Sinne alles, was einen Wert darstellt und übertragen werden kann. Auf Stellar kann jeder ein Asset ausgeben – z.B. eine Airline ihre Meilen als Token, eine Bank ihren Dollar als Stablecoin. Jedes Stellar-Asset wird durch zwei Dinge definiert: den Asset-Code (z.B. 'USDC') und den Issuer (die G-Adresse des Herausgebers). XLM ist das einzige Asset ohne Issuer, da es das native Asset des Netzwerks ist."
+  },
+  "assetCode": {
+    "title": "Asset-Code",
+    "original": "Asset Code",
+    "short": "Kurzname eines Stellar-Assets, z.B. USDC oder EURC.",
+    "desc": "Der Asset-Code ist der sichtbare Kurzname eines Stellar-Assets. Er allein reicht nicht zur eindeutigen Identifikation, weil mehrere Issuer denselben Code verwenden können. Erst Code plus Issuer-Adresse ergeben ein eindeutiges Stellar-Asset."
+  },
+  "issuer": {
+    "title": "Issuer",
+    "original": "Issuer",
+    "short": "Stellar-Konto, das ein Asset ausgibt und dessen Regeln bestimmt.",
+    "desc": "Der Issuer ist das Stellar-Konto, das ein Asset ausgibt. Bei ausgegebenen Assets ist der Issuer Teil der Identität des Tokens. Er kann je nach Kontoflags Regeln wie Autorisierung, Rückholung (Clawback) oder eingefrorene Berechtigungen beeinflussen. Deshalb sollte man nicht nur den Asset-Code prüfen, sondern immer auch die Issuer-Adresse und die öffentliche Projektinformation."
+  },
+  "homeDomain": {
+    "title": "Home Domain",
+    "original": "Home Domain",
+    "short": "Domain, die ein Stellar-Issuer in seinem Konto hinterlegt.",
+    "desc": "Die Home Domain ist eine vom Issuer im Stellar-Konto hinterlegte Domain. Sie hilft, ein Asset mit einer Website und einer stellar.toml-Datei zu verbinden. Eine Home Domain ist kein Beweis für Vertrauenswürdigkeit, aber ohne sie fehlen wichtige Prüfinformationen."
+  },
+  "stellarToml": {
+    "title": "stellar.toml",
+    "original": "stellar.toml",
+    "short": "Öffentliche Beschreibungsdatei einer Stellar-Domain.",
+    "desc": "Die stellar.toml ist eine öffentliche Datei unter der Home Domain eines Stellar-Projekts. Sie kann Informationen zu Issuer, Assets, Kontakt, Dokumentation und CURRENCIES-Einträgen enthalten. Wenn ein Asset dort nicht gelistet ist oder die Datei nicht erreichbar ist, ist zusätzliche Vorsicht sinnvoll."
   },
   "xlm": {
     "title": "XLM",
@@ -352,6 +394,60 @@
     "original": "Slippage",
     "short": "Die Differenz zwischen dem erwarteten und dem tatsächlich ausgeführten Handelspreis.",
     "desc": "Slippage entsteht, wenn zwischen dem Absenden einer Order und ihrer Ausführung der Marktpreis schwankt, oder wenn ein Trade so groß ist, dass er das Orderbuch \"durchfrisst\". Beispiel: Du möchtest zu 1.00 USDC kaufen, aber aufgrund mangelnder Liquidität wird der Trade zu 1.05 USDC ausgeführt – das ist 5% Slippage. Bei Liquiditätspools ist Slippage bei großen Trades besonders relevant. Viele DEX erlauben es, eine maximale Slippage-Toleranz festzulegen."
+  },
+  "quote": {
+    "title": "Quote",
+    "original": "Quote",
+    "short": "Momentane Preisauskunft für einen geplanten Swap.",
+    "desc": "Eine Quote ist eine aktuelle Schätzung, wie viel du bei einem Swap erhalten würdest. Sie ist keine Garantie, weil sich Orderbuch, Liquiditätspools und Preise bis zur Signatur ändern können. Deshalb sollte eine App die Route direkt vor dem Signieren erneut prüfen."
+  },
+  "effectiveRate": {
+    "title": "Effektiver Kurs",
+    "original": "Effective Rate",
+    "short": "Tatsächliches Verhältnis zwischen gesendetem und erwartetem Betrag.",
+    "desc": "Der effektive Kurs beschreibt, wie viele Ziel-Token du pro gesendetem Token nach der aktuellen Quote erwartest. Er ist oft aussagekräftiger als ein einzelner Marktpreis, weil er Route, Orderbuch und Pool-Liquidität berücksichtigt."
+  },
+  "minimumReceived": {
+    "title": "Garantiertes Minimum",
+    "original": "Minimum Received",
+    "short": "Mindestbetrag, unter dem ein Swap nicht ausgeführt werden soll.",
+    "desc": "Das garantierte Minimum ist der niedrigste Zielbetrag, den du akzeptierst. Es wird aus der Quote und deiner Slippage-Toleranz berechnet. Liegt die frisch geprüfte Route darunter, sollte der Swap abgebrochen werden."
+  },
+  "liquidityRoute": {
+    "title": "Liquiditätsroute",
+    "original": "Liquidity Route",
+    "short": "Weg, über den ein Swap durch Orderbücher oder Pools geleitet wird.",
+    "desc": "Die Liquiditätsroute zeigt, über welche Assets und Märkte ein Swap läuft. Eine Route kann direkt sein oder über Zwischenassets führen. Bei Stellar können Orderbuch-Offers und AMM-Liquiditätspools zusammen genutzt werden, um einen Pfad zu finden."
+  },
+  "bid": {
+    "title": "Bid",
+    "original": "Bid",
+    "short": "Kaufgebot im Orderbuch.",
+    "desc": "Ein Bid ist ein Kaufgebot. Es zeigt, zu welchem Preis jemand bereit ist, ein Asset zu kaufen. Der beste Bid ist meist das höchste aktuelle Kaufgebot im Orderbuch."
+  },
+  "ask": {
+    "title": "Ask",
+    "original": "Ask",
+    "short": "Verkaufsangebot im Orderbuch.",
+    "desc": "Ein Ask ist ein Verkaufsangebot. Es zeigt, zu welchem Preis jemand bereit ist, ein Asset zu verkaufen. Der beste Ask ist meist das niedrigste aktuelle Verkaufsangebot im Orderbuch."
+  },
+  "marketDepth": {
+    "title": "Markttiefe",
+    "original": "Market Depth",
+    "short": "Menge an Liquidität nahe am aktuellen Marktpreis.",
+    "desc": "Markttiefe beschreibt, wie viel Volumen im Orderbuch oder in Pools nahe am aktuellen Preis verfügbar ist. Hohe Tiefe bedeutet, dass größere Trades den Preis weniger stark bewegen. Niedrige Tiefe erhöht Slippage und Preisimpact."
+  },
+  "priceImpact": {
+    "title": "Preisimpact",
+    "original": "Price Impact",
+    "short": "Wie stark ein Trade den erzielten Preis gegenüber dem Marktpreis verschlechtert.",
+    "desc": "Preisimpact entsteht, wenn ein Trade im Verhältnis zur verfügbaren Liquidität groß ist. Dann reicht der beste Preis nicht für den ganzen Betrag und der Trade nutzt schlechtere Orderbuchstufen oder verändert Pool-Preise. Hoher Preisimpact ist ein Warnsignal."
+  },
+  "staleQuote": {
+    "title": "Veraltete Quote",
+    "original": "Stale Quote",
+    "short": "Eine Quote, die möglicherweise nicht mehr den aktuellen Markt widerspiegelt.",
+    "desc": "Eine Quote kann veralten, weil andere Nutzer handeln, Orders gelöscht werden oder Liquiditätspools sich ändern. Je älter eine Quote ist, desto wichtiger ist ein Refresh direkt vor der Signatur."
   },
   "impermanentLoss": {
     "title": "Impermanenter Verlust",

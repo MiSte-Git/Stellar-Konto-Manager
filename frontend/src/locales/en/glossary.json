@@ -107,6 +107,24 @@
     "short": "Agreement to hold a token from a specific issuer.",
     "desc": "A trustline is like a \"Yes, I accept this token.\" By setting it up, you're indicating that your account is ready to hold a specific token from a specific issuer. Without a trustline, you cannot receive this token.\n\nExample: A trustline is specified as CODE:ISSUER. For EURT from the issuer GDUKMGUGDZQK6Y…, it would be EURT:GDUKMGUGDZQK6Y…"
   },
+  "trustlineLimit": {
+    "title": "Trustline Limit",
+    "original": "Trustline Limit",
+    "short": "Maximum balance of a specific asset on a trustline.",
+    "desc": "The trustline limit defines how many units of a specific asset your account may hold at most. It is not a buy order and does not reserve tokens. A low limit can prevent accidental overpayments, but a limit that is too low can block an intended receipt or swap."
+  },
+  "authorizationFlags": {
+    "title": "Authorization Flags",
+    "original": "Authorization Flags",
+    "short": "Issuer rules such as auth_required, auth_revocable, or immutable.",
+    "desc": "Authorization flags are settings on the issuer account. auth_required means the issuer must approve a trustline first. auth_revocable means approval can later be revoked. auth_immutable means these flags can no longer be changed. These flags matter because they affect whether you can receive, hold, or move a token."
+  },
+  "issuerMasterKey": {
+    "title": "Issuer Master Key",
+    "original": "Issuer Master Key",
+    "short": "Main key of the issuer account.",
+    "desc": "The issuer master key is the main key of the account that issues an asset. If its weight is set to 0, the master key alone can no longer sign new actions. This can be a good sign because it makes it harder for the issuer to silently change rules. The full account configuration, including other signers and flags, still matters."
+  },
   "token": {
     "title": "Token",
     "original": "Token",
@@ -118,6 +136,30 @@
     "original": "Asset",
     "short": "Any digital store of value on a blockchain – from cryptocurrencies to tokens to stablecoins.",
     "desc": "An asset is, in the broadest sense, anything that represents value and can be transferred. On Stellar, anyone can issue an asset – e.g. an airline its miles as a token, a bank its dollar as a stablecoin. Every Stellar asset is defined by two things: the asset code (e.g. 'USDC') and the issuer (the G-address of the entity that created it). XLM is the only asset without an issuer, as it is the native asset of the network."
+  },
+  "assetCode": {
+    "title": "Asset Code",
+    "original": "Asset Code",
+    "short": "Short name of a Stellar asset, such as USDC or EURC.",
+    "desc": "The asset code is the visible short name of a Stellar asset. By itself it is not unique, because several issuers can use the same code. Only code plus issuer address uniquely identify a Stellar asset."
+  },
+  "issuer": {
+    "title": "Issuer",
+    "original": "Issuer",
+    "short": "The Stellar account that issues an asset and controls its rules.",
+    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+  },
+  "homeDomain": {
+    "title": "Home Domain",
+    "original": "Home Domain",
+    "short": "Domain stored by a Stellar issuer account.",
+    "desc": "The home domain is a domain stored on the issuer account. It helps connect an asset to a website and a stellar.toml file. A home domain is not proof of trustworthiness, but without it important verification information is missing."
+  },
+  "stellarToml": {
+    "title": "stellar.toml",
+    "original": "stellar.toml",
+    "short": "Public metadata file for a Stellar domain.",
+    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
   },
   "xlm": {
     "title": "XLM",
@@ -341,6 +383,60 @@
     "original": "Slippage",
     "short": "The difference between the expected price and the actual execution price of a trade.",
     "desc": "Slippage happens when the market price moves between sending and executing an order, or when a trade is so large that it “eats through” the order book. Example: you want to buy at 1.00 USDC but due to low liquidity the trade executes at 1.05 USDC – that is 5% slippage. With liquidity pools, slippage is especially relevant for large trades. Many DEXs let you set a maximum slippage tolerance."
+  },
+  "quote": {
+    "title": "Quote",
+    "original": "Quote",
+    "short": "Current price estimate for a planned swap.",
+    "desc": "A quote is a current estimate of how much you would receive in a swap. It is not a guarantee because order books, liquidity pools, and prices can change before signing. That is why an app should refresh the route directly before signing."
+  },
+  "effectiveRate": {
+    "title": "Effective Rate",
+    "original": "Effective Rate",
+    "short": "Actual ratio between sent amount and expected received amount.",
+    "desc": "The effective rate describes how many destination tokens you expect per sent token based on the current quote. It is often more useful than a single market price because it includes route, order book, and pool liquidity."
+  },
+  "minimumReceived": {
+    "title": "Minimum Received",
+    "original": "Minimum Received",
+    "short": "Minimum amount below which a swap should not execute.",
+    "desc": "The minimum received amount is the lowest destination amount you accept. It is calculated from the quote and your slippage tolerance. If the refreshed route falls below it, the swap should be aborted."
+  },
+  "liquidityRoute": {
+    "title": "Liquidity Route",
+    "original": "Liquidity Route",
+    "short": "Path through which a swap is routed across order books or pools.",
+    "desc": "The liquidity route shows which assets and markets a swap passes through. A route can be direct or go through intermediate assets. On Stellar, order book offers and AMM liquidity pools can both be used to find a path."
+  },
+  "bid": {
+    "title": "Bid",
+    "original": "Bid",
+    "short": "Buy offer in the order book.",
+    "desc": "A bid is a buy offer. It shows the price at which someone is willing to buy an asset. The best bid is usually the highest current buy offer in the order book."
+  },
+  "ask": {
+    "title": "Ask",
+    "original": "Ask",
+    "short": "Sell offer in the order book.",
+    "desc": "An ask is a sell offer. It shows the price at which someone is willing to sell an asset. The best ask is usually the lowest current sell offer in the order book."
+  },
+  "marketDepth": {
+    "title": "Market Depth",
+    "original": "Market Depth",
+    "short": "Amount of liquidity near the current market price.",
+    "desc": "Market depth describes how much volume is available in the order book or pools near the current price. High depth means larger trades move the price less. Low depth increases slippage and price impact."
+  },
+  "priceImpact": {
+    "title": "Price Impact",
+    "original": "Price Impact",
+    "short": "How much a trade worsens the achieved price compared with the market price.",
+    "desc": "Price impact happens when a trade is large relative to available liquidity. Then the best price is not enough for the whole amount and the trade consumes worse order book levels or changes pool prices. High price impact is a warning signal."
+  },
+  "staleQuote": {
+    "title": "Stale Quote",
+    "original": "Stale Quote",
+    "short": "A quote that may no longer reflect the current market.",
+    "desc": "A quote can become stale because other users trade, orders are removed, or liquidity pools change. The older a quote is, the more important it is to refresh it directly before signing."
   },
   "impermanentLoss": {
     "title": "Impermanent Loss",

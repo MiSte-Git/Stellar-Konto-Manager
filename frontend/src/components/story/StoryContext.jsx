@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useReducer, useCallback, useEffect } from "react";
 import * as StellarSdk from "@stellar/stellar-sdk";
+import { TOTAL_CHAPTERS } from "./storyChapters.config.js";
 
 // ─── localStorage Persistence ──────────────────────────────────────────────────
 
 const STORAGE_KEY = "stellar_story_progress";
-const TOTAL_CHAPTERS = 9;
 
 function loadSavedProgress() {
   try {

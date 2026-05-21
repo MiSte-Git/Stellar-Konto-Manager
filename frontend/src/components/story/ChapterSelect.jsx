@@ -114,7 +114,7 @@ export default function ChapterSelect() {
   const ch1Done = chaptersCompleted.includes(1);
 
   const proceed = (n) => {
-    if (n === currentChapter) setShowChapterSelect(false);
+    if (n === currentChapter && !chaptersCompleted.includes(n)) setShowChapterSelect(false);
     else goToChapter(n);
   };
 
@@ -340,12 +340,12 @@ export default function ChapterSelect() {
                   gap: "6px",
                 }}>
                   <span>
-                    {isCurrent && sceneIndex > 0
+                    {isCompleted
+                      ? t("nav.chapter_completed", "Abgeschlossen")
+                      : isCurrent && sceneIndex > 0
                       ? t("nav.chapter_current", "Weiter spielen")
                       : isCurrent
                       ? t("nav.chapter_start", "Starten")
-                      : isCompleted
-                      ? t("nav.chapter_completed", "Abgeschlossen")
                       : t("nav.chapter_start", "Starten")}
                   </span>
                   {duration && (

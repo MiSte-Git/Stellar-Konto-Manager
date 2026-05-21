@@ -1124,55 +1124,55 @@
       "sofia1": "Lumio, ich verstehe jetzt Wallets und Transaktionen – aber wer entscheidet eigentlich, ob eine Transaktion gültig ist?",
       "lumio1": "Gute Frage! Niemand alleine. Tausende Computer auf der ganzen Welt – sogenannte Nodes – entscheiden das gemeinsam.",
       "sofia2": "Aber wie sollen sich Tausende Computer einigen, ohne dass einer der Chef ist?",
-      "lumio2": "Genau das macht Stellar besonders. Lass mich das erklären..."
+      "lumio2": "Genau das macht Stellar besonders. Wir gehen es Schritt für Schritt durch: erst das Problem, dann wer wirklich abstimmt, und danach warum Stellar dafür kein Mining braucht."
     },
     "s2": {
       "card": {
         "title": "Was ist Konsens?",
-        "body": "Stell dir vor, deine ganze Schulklasse muss entscheiden, wohin der Ausflug geht – ohne Lehrerin. Jede Person stimmt ab und vertraut bestimmten Klassenkameraden mehr. Wenn genug überlappende Gruppen zum gleichen Ergebnis kommen, gilt das als Beschluss. Im Stellar-Netzwerk machen das Tausende Nodes genauso – das nennt man Konsens.",
+        "body": "Konsens bedeutet: Viele Computer einigen sich auf dieselbe Version des Ledgers. Sie prüfen also gemeinsam, welche Transaktionen gültig sind und in welcher Reihenfolge sie gelten. Erst wenn das Netzwerk sich einig ist, ist eine Zahlung bestätigt.",
         "cta": "Verstanden!"
       },
-      "lumio1": "Beim Stellar Consensus Protocol – kurz SCP – stimmt jeder Node mit einer Gruppe anderer Nodes ab, denen er vertraut.",
-      "sofia1": "Und wer bestimmt, welchen Nodes man vertraut?",
-      "lumio2": "Jeder Node selbst! Das nennt man einen Quorum Slice."
+      "lumio1": "Beim Stellar Consensus Protocol – kurz SCP – geht es also nicht darum, dass ein einzelner Computer gewinnt. Es geht darum, dass genug zuverlässige Validatoren zur gleichen Entscheidung kommen.",
+      "sofia1": "Also entscheidet nicht mein Wallet allein, ob meine Zahlung gültig ist?",
+      "lumio2": "Genau. Dein Wallet erstellt und unterschreibt die Transaktion. Das Netzwerk prüft sie danach gemeinsam."
     },
     "s3": {
       "card": {
         "title": "Quorum Slice",
-        "body": "Jeder Node im Netzwerk wählt selbst eine Gruppe von Nodes, denen er vertraut – seinen Quorum Slice. Wenn sich die Quorum Slices der Nodes überlappen, kann das ganze Netzwerk einen Konsens finden. Niemand muss allen vertrauen – nur genug Überschneidungen sind nötig.",
+        "body": "Ein Quorum Slice ist die Gruppe anderer Validatoren, deren Zustimmung ein Validator für ausreichend hält. Wichtig: Das richtet ein Validator-Betreiber ein, nicht ein normaler Wallet-Nutzer. Wenn sich diese Vertrauensgruppen im Netzwerk ausreichend überschneiden, kann Stellar zu einer gemeinsamen Entscheidung kommen.",
         "cta": "Weiter"
       },
       "glossary_btn": "Was ist ein Quorum Set? (Glossar öffnen)",
       "sofia1": "Aber woran erkennt man überhaupt einen vertrauenswürdigen Node?",
-      "lumio1": "Meist schaut man auf drei Dinge: Ist der Betreiber bekannt – eine Universität, eine Organisation, eine Firma? Läuft der Node zuverlässig und korrekt? Und: Empfiehlt die Stellar Development Foundation diesen Node?",
-      "sofia2": "Muss man der SDF-Empfehlung folgen?",
+      "lumio1": "Validator-Betreiber können zum Beispiel Stiftungen, Börsen, Zahlungsanbieter, Infrastruktur-Firmen oder auch Universitäten sein. Wichtig ist nicht nur der Name, sondern: Ist der Betreiber bekannt? Läuft der Validator zuverlässig? Stimmt er nachvollziehbar ab? Und gibt es Empfehlungen oder Beobachtungen aus dem Netzwerk?",
+      "sofia2": "Und wenn die SDF bestimmte Validatoren empfiehlt – muss man dieser Empfehlung folgen?",
       "lumio2": "Nein, niemand muss. Die SDF veröffentlicht eine Liste als Orientierungshilfe – aber jeder Node entscheidet selbst.",
       "sofia3": "Moment. Universitäten werden oft von Firmen gesponsert. Können die dann nicht trotzdem unter Druck gesetzt werden?",
-      "lumio3": "Du hast absolut Recht, Sofia. Kein Betreiber ist automatisch vertrauenswürdig, nur weil er bekannt ist. Das ist ein echtes Problem – und es gibt keine perfekte Lösung.",
+      "lumio3": "Du hast Recht, Sofia. Kein Betreiber ist automatisch vertrauenswürdig, nur weil er bekannt ist. Deshalb ist die Zusammensetzung der Validatoren wichtig – und sie sollte nicht von nur einer Art Organisation abhängen.",
       "sofia4": "Dann ist das ganze System unsicher?",
-      "lumio4": "Nicht unsicherer als alles andere – nur anders. Der Unterschied zu einer Bank oder einem Staat: Beim Stellar-Netzwerk sind alle Abstimmungen öffentlich einsehbar. Wenn ein Node anfängt, seltsam abzustimmen, bemerkt das jeder sofort.",
+      "lumio4": "Nicht automatisch. Es bedeutet: Das Vertrauen liegt nicht bei einer einzigen Stelle, sondern bei vielen sichtbaren Validatoren und ihren Überschneidungen. Beim Stellar-Netzwerk sind diese Strukturen öffentlich einsehbar.",
       "sofia5": "Also schützt Transparenz mehr als blindes Vertrauen?",
-      "lumio5": "Genau. Und je mehr unabhängige Nodes es gibt, desto schwieriger wird es, genug davon zu manipulieren. Kein System ist perfekt – aber viele sichtbare, unabhängige Teilnehmer sind robuster als eine einzige zentrale Stelle."
+      "lumio5": "Genau. Und je unabhängiger die Validatoren sind, desto schwieriger wird es, genug davon gleichzeitig zu beeinflussen. Kein System ist perfekt – aber sichtbare, unabhängige Teilnehmer sind robuster als eine einzelne zentrale Stelle."
     },
     "s4": {
       "card": {
         "title": "Warum kein Mining?",
-        "body": "Bitcoin und andere Netzwerke nutzen Mining: Computer lösen schwierige Rechenaufgaben, verbrauchen dabei viel Strom, und der Schnellste darf den nächsten Block bestimmen. Stellar braucht das nicht. SCP einigt sich durch Abstimmung – nicht durch Rechenpower. Das macht Stellar sehr energieeffizient.",
+        "body": "Jetzt wird auch klar, warum Stellar kein Mining braucht. Bei Bitcoin konkurrieren Miner mit Rechenleistung darum, wer den nächsten Block anhängen darf. Das bedeutet: Der erfolgreiche Miner fügt einen neuen Block zur Bitcoin-Blockchain hinzu und erhält dafür eine Belohnung – neue BTC plus Transaktionsgebühren. Stellar macht es anders: Validatoren einigen sich über SCP auf denselben Ledger-Zustand. Die Sicherheit kommt also nicht aus Stromverbrauch, sondern aus Abstimmung, Überschneidung und öffentlicher Prüfbarkeit.",
         "cta": "Weiter"
       },
-      "sofia1": "Das klingt viel sinnvoller als Mining.",
-      "lumio1": "Genau. Stellar wurde bewusst so gebaut – für schnelle, günstige Zahlungen ohne Energieverschwendung."
+      "sofia1": "Jetzt verstehe ich den Vergleich besser: Mining ist eine andere Methode, um Einigkeit zu erreichen.",
+      "lumio1": "Genau. Mining ist nicht der nächste Schritt in Stellar, sondern der Kontrast. Stellar wurde bewusst für schnelle, günstige Zahlungen ohne energieintensive Rechenwettbewerbe gebaut."
     },
     "s5": {
       "lumio1": "Stell dir vor, jeder Node hätte eine andere Version des Ledgers. Manche sagen deine Zahlung ist angekommen, andere nicht. Chaos!",
       "sofia1": "Das wäre ja schrecklich.",
       "lumio2": "Genau deshalb ist Konsens das Herzstück jeder Blockchain. Alle Nodes einigen sich auf dieselbe Wahrheit – dieselbe Liste aller Transaktionen.",
       "sofia2": "Und das passiert automatisch, ohne dass jemand eingreift?",
-      "lumio3": "Ja! Deshalb nennt man es dezentral. Kein Chef, kein Server, keine Bank – nur Mathematik und gegenseitiges Vertrauen. Nicht blind – sondern überprüfbar."
+      "lumio3": "Ja. Dafür braucht es Validatoren, die nach denselben Regeln prüfen und sich über SCP einigen. Ohne diesen gemeinsamen Ledger gäbe es keine verlässliche Zahlung."
     },
     "summary": {
       "learning1": "SCP ist Stellars Konsensmechanismus – keine zentrale Autorität nötig.",
-      "learning2": "Jeder Node wählt selbst seinen Quorum Slice – seine Vertrauensgruppe.",
+      "learning2": "Validator-Betreiber wählen Quorum Sets – normale Wallet-Nutzer tun das nicht.",
       "learning3": "Konsens entsteht durch überlappende Quorum Slices, nicht durch Mining.",
       "learning4": "Stellar erreicht Konsens in 3–5 Sekunden – energieeffizient und schnell."
     },
@@ -1180,9 +1180,9 @@
       "q1": {
         "question": "Was macht SCP besonders?",
         "a": "Alle Nodes folgen einem zentralen Server",
-        "b": "Nodes stimmen in vertrauenswürdigen Gruppen ab – ohne Mining",
+        "b": "Validatoren stimmen über Quorum Sets ab – ohne Mining",
         "c": "Der schnellste Node entscheidet den nächsten Block",
-        "feedback_correct": "Genau! SCP nutzt Quorum Slices statt Mining oder zentraler Kontrolle.",
+        "feedback_correct": "Genau! SCP nutzt Quorum Sets statt Mining oder zentraler Kontrolle.",
         "feedback_wrong": "Nein, das wäre eher wie Bitcoin oder ein zentrales System."
       },
       "q2": {
@@ -1195,10 +1195,10 @@
       },
       "q3": {
         "question": "Was ist ein Quorum Slice?",
-        "a": "Die Gruppe von Nodes, der ein Node vertraut",
+        "a": "Die Gruppe von Validatoren, die ein Validator für seine Entscheidung berücksichtigt",
         "b": "Ein Algorithmus zum Berechnen von Hashes",
         "c": "Das Maximum an Transaktionen pro Sekunde",
-        "feedback_correct": "Korrekt! Jeder Node wählt selbst seinen Quorum Slice.",
+        "feedback_correct": "Korrekt! Jeder Validator-Betreiber konfiguriert sein Quorum Set.",
         "feedback_wrong": "Das trifft nicht zu. Ein Quorum Slice ist eine Vertrauensgruppe – kein Algorithmus oder Limit."
       },
       "retry": "Nochmal versuchen",
@@ -1224,7 +1224,7 @@
     },
     "s9": {
       "learning1": "SCP ermöglicht Konsens in Sekunden – ohne Mining, ohne Chef.",
-      "learning2": "Quorum Slices erlauben flexibles, dezentrales Vertrauen im Netzwerk.",
+      "learning2": "Quorum Sets erklären, wo das Vertrauen im Netzwerk tatsächlich konfiguriert wird.",
       "learning3": "Dezentralisierung bedeutet: Mathematik ersetzt Autorität – für alle."
     },
     "subtitle": "Das Stellar Consensus Protocol",
@@ -1232,32 +1232,32 @@
       "section": "FBA – Das Herzstück von SCP",
       "card": {
         "title": "Federated Byzantine Agreement",
-        "body": "FBA ist das Prinzip hinter SCP: Jeder Validator wählt selbst, welchen anderen er vertraut – kein zentrales Komitee entscheidet das. Damit eine Transaktion bestätigt wird, müssen ca. 2/3 der Validatoren im Quorum Set zustimmen.",
+        "body": "FBA ist das Prinzip hinter SCP: Jeder Validator-Betreiber wählt selbst, welche anderen Validatoren für seine Entscheidung wichtig sind. Aus diesen überlappenden Quorum Sets entsteht ein gemeinsamer Konsens – ohne zentrales Komitee und ohne Mining.",
         "cta": "Verstanden"
       },
       "glossary_fba": "Was ist FBA?",
       "glossary_quorum": "Was ist ein Quorum Set?",
-      "lumio1": "Das Tolle daran: Weil jeder Validator selbst entscheidet, gibt es keine zentrale Schwachstelle. Selbst wenn ein paar Validatoren ausfallen, kann das Netzwerk weitermachen.",
-      "sofia1": "Aber wer entscheidet, welche Validatoren vertrauenswürdig sind?"
+      "lumio1": "Das Tolle daran: Es muss keine zentrale Liste geben, die für alle gilt. Gleichzeitig ist die Qualität der Quorum Sets wichtig, weil schlechte oder zu einseitige Auswahl das Netzwerk schwächen kann.",
+      "sofia1": "Dann ist die Frage nicht: Wem vertraue ich als Nutzer? Sondern: Wie gut wählen die Validator-Betreiber ihre Quorum Sets?"
     },
     "s5c": {
-      "section": "Wem vertraue ich wirklich?",
-      "lumio1": "Das ist eine sehr gute Frage! Du als Nutzer sprichst selbst niemandem Vertrauen aus – du klickst einfach auf 'Senden'.",
-      "lumio2": "Das Vertrauen wird von Validator-Betreibern konfiguriert: Unternehmen, Börsen und Universitäten, die einen Stellar-Node betreiben und vorher festlegen, welchen anderen Validatoren sie vertrauen.",
-      "sofia1": "Und wie läuft das dann ab, wenn ich eine Zahlung sende?",
-      "lumio3": "Stell dir 30 Buchhalter in verschiedenen Städten vor – die haben untereinander vereinbart, wem sie vertrauen. Wenn du sendest, stimmen sie automatisch im Hintergrund ab. Du merkst nichts davon. Sobald 2/3 einig sind, ist es bestätigt.",
-      "lumio4": "Wichtig: Du vertraust diesen Betreibern also implizit. Deshalb ist Transparenz so wichtig – du solltest wissen können, wer das Netzwerk absichert."
+      "section": "Wer wählt hier eigentlich Vertrauen?",
+      "lumio1": "Wichtig ist: Du als normaler Nutzer sprichst beim Senden keiner bestimmten Node dein Vertrauen aus. Du hast in deinem Wallet normalerweise gar keine Auswahl dafür.",
+      "lumio2": "Diese Auswahl passiert auf Validator-Ebene. Wer einen Stellar-Validator betreibt, konfiguriert vorher, welche anderen Validatoren für ihn zählen. Diese Liste nennt man Quorum Set.",
+      "sofia1": "Das heisst: Ich sende nur die Transaktion – und die Validatoren einigen sich im Hintergrund?",
+      "lumio3": "Genau. Dein Wallet unterschreibt die Zahlung. Danach prüfen Validatoren im Netzwerk, ob sie gültig ist, und stimmen nach ihren Quorum Sets ab.",
+      "lumio4": "Darum ist die richtige Frage nicht: 'Welchem Node vertraue ich persönlich?' Sondern: 'Welche Validatoren sichern das Netzwerk ab, und sind ihre Quorum Sets gesund und unabhängig genug?'"
     },
     "s5d": {
       "section": "Wer sichert das Netzwerk ab?",
       "card": {
         "title": "Validatoren einsehen",
-        "body": "Du kannst jederzeit prüfen, wer das Stellar-Netzwerk absichert – Uptime, Betreiber und Quorum Set sind öffentlich einsehbar. Bekannte seriöse Betreiber: Stellar Development Foundation, Coinbase, SatoshiPay, Franklin Templeton.",
+        "body": "Du kannst prüfen, wer das Stellar-Netzwerk absichert: Betreiber, Erreichbarkeit und Quorum Sets sind öffentlich einsehbar. Das hilft zu erkennen, ob das Netzwerk breit abgestützt ist oder ob zu viele Validatoren von denselben Stellen abhängen.",
         "url_label": "Wo du nachschauen kannst:",
         "url_note": "(nicht anklickbar – gib die Adresse manuell in deinen Browser ein)",
         "cta": "Weiter"
       },
-      "lumio1": "Stellar ist transparent – das unterscheidet es von vielen anderen Netzwerken. Du musst niemandem blind vertrauen."
+      "lumio1": "Stellar ist transparent: Du musst die Validatoren nicht selbst auswählen, aber du kannst nachvollziehen, welche Betreiber das Netzwerk absichern."
     }
   },
   "chapter11": {
