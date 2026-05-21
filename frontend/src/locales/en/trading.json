@@ -51,7 +51,10 @@
       "unknown": "Not checked yet",
       "added": "Trustline was added.",
       "balance": "Balance",
-      "limit": "Limit"
+      "limit": "Limit",
+      "authorization": "Authorization",
+      "authorized": "Authorized",
+      "unauthorized": "Not authorized"
     },
     "swapPreview": {
       "title": "Swap preview",
@@ -72,15 +75,27 @@
       "expected": "Estimated received",
       "minimum": "Minimum after slippage",
       "route": "Route",
+      "routeDetailed": "Route with issuers",
+      "effectiveRate": "Effective rate",
+      "minimumRate": "Minimum rate after slippage",
+      "slippageBuffer": "Slippage buffer",
+      "hops": "Market hops",
+      "quoteAge": "Quote age",
+      "ageSeconds": "{{count}} seconds",
+      "ageMinutes": "{{count}} minutes",
+      "refreshComparison": "Refresh comparison",
+      "notAvailable": "Not available",
       "invalidAmount": "Please enter a valid amount in {{asset}}.",
       "invalidSlippage": "Please enter slippage between 0 and 50 percent.",
       "invalidTarget": "Please search and select a destination token or enter it exactly as CODE:ISSUER.",
       "sameAsset": "Source and destination must not be the same asset.",
       "destinationTrustlineMissing": "The destination token trustline is still missing on this account.",
+      "destinationTrustlineUnauthorized": "The destination trustline is not authorized by the issuer yet.",
       "minimumMissing": "The minimum amount could not be calculated.",
       "previewRequired": "Please check the price first.",
       "noRoute": "No swap route found.",
       "failed": "Swap preview could not be loaded.",
+      "quoteWorseThanMinimum": "The refreshed route is below the confirmed minimum amount. Please check the price again.",
       "success": "Swap was executed. Transaction:"
     },
     "swapConfirm": {
@@ -90,7 +105,7 @@
       "minimum": "Guaranteed minimum",
       "source": "Source",
       "destination": "Destination",
-      "routeRefresh": "The route and minimum are checked again directly before signing. If no valid route exists anymore, signing will not continue.",
+      "routeRefresh": "The route is checked again directly before signing. If the refreshed quote is below the confirmed minimum shown here, signing will not continue.",
       "continue": "Continue to signature"
     },
     "market": {
@@ -101,7 +116,50 @@
       "asks": "Asks",
       "amm": "Liquidity pools",
       "empty": "No data found.",
-      "failed": "Market data could not be loaded."
+      "failed": "Market data could not be loaded.",
+      "spread": "Spread",
+      "priceImpact": "Price impact (estimate)",
+      "topDepth": "Top-5 ask depth",
+      "marketAge": "Market data age",
+      "bestBid": "Best bid",
+      "bestAsk": "Best ask",
+      "depthCoversAmount": "Depth covers amount",
+      "poolCount": "AMM pools"
+    },
+    "limitOffer": {
+      "title": "Limit orders",
+      "description": "Place an offer in the Stellar orderbook. It stays open until it is filled, replaced, or deleted. Every open offer increases the minimum reserve.",
+      "refresh": "Reload offers",
+      "direction": {
+        "label": "Direction",
+        "sellTokenForXlm": "Sell {{asset}} for XLM",
+        "sellXlmForToken": "Offer XLM for {{asset}}"
+      },
+      "amount": "Selling amount {{asset}}",
+      "price": "Price: {{buying}} per 1 {{selling}}",
+      "create": "Place limit order",
+      "confirmTitle": "Confirm limit order",
+      "cancelTitle": "Delete limit order",
+      "warning": "This order can be partially or fully filled immediately if a matching counter-offer exists. Check price and direction before signing.",
+      "cancelWarning": "This deletes the open offer by replacing it with amount 0.",
+      "continue": "Continue to signature",
+      "openOffers": "Open offers for this token",
+      "noOffers": "No open offers found for this token.",
+      "loadFailed": "Open offers could not be loaded.",
+      "invalidPair": "This limit order is missing a valid asset pair.",
+      "invalidAmount": "Please enter a valid selling amount in {{asset}}.",
+      "invalidPrice": "Please enter a valid price greater than 0.",
+      "createSuccess": "Limit order was placed. Transaction:",
+      "cancelSuccess": "Limit order was deleted. Transaction:",
+      "cancelAmount": "0 (delete offer)",
+      "cancel": "Delete",
+      "columns": {
+        "selling": "Selling",
+        "buying": "Buying",
+        "amount": "Amount",
+        "price": "Price",
+        "actions": "Actions"
+      }
     },
     "trustlineConfirm": {
       "title": "Confirm trustline",
@@ -109,8 +167,29 @@
       "warning": "A trustline allows this asset to be held in your account. Check the facts, especially issuer, home domain, stellar.toml, authorization, and clawback before signing.",
       "continue": "Continue to signature"
     },
+    "trustlineFlow": {
+      "title": "Prepare trustline",
+      "limitHelp": "The limit is the maximum token balance on this trustline. It is not a buy order and does not reserve tokens.",
+      "reserveIncrease": "Additional minimum reserve",
+      "reserveAfter": "Minimum reserve after",
+      "spendableAfter": "XLM spendable after reserve",
+      "authRequiredHint": "This asset uses auth_required. The trustline can be created, but the issuer must authorize it before you can receive or buy the token via swap.",
+      "combinedTitle": "Optional: trustline + swap",
+      "combinedAction": "Execute trustline + swap",
+      "combinedConfirmTitle": "Confirm trustline + swap",
+      "combinedWarning": "This transaction creates the trustline first and executes the swap afterwards. The route is checked again directly before signing.",
+      "combinedContinue": "Continue to signature",
+      "combinedOnlyXlm": "The combined flow is only available for XLM -> token here.",
+      "authRequiredCombinedBlocked": "Combined trustline+swap is disabled for auth_required assets because the issuer must authorize the new trustline first.",
+      "invalidLimit": "Please enter a valid trustline limit greater than 0.",
+      "limitBelowExpected": "The trustline limit is below the expected received amount.",
+      "alreadyPresent": "The trustline already exists now. Please reload and use the normal swap.",
+      "combinedSuccess": "Trustline and swap were executed. Transaction:"
+    },
     "facts": {
       "title": "Token facts",
+      "sourceTitle": "Source token facts",
+      "destinationTitle": "Destination token facts",
       "disclaimer": "This is not a rating or recommendation. The app only shows found data; the decision stays with the user.",
       "loading": "Loading token facts...",
       "issuerLoadFailed": "Issuer account could not be loaded.",
@@ -140,6 +219,16 @@
         "authImmutable": "Authorization immutable",
         "clawbackEnabled": "Clawback enabled"
       }
+    },
+    "risk": {
+      "title": "Checks before signing",
+      "issuerLoadFailed": "Issuer data could not be loaded.",
+      "noHomeDomain": "The issuer has no home domain.",
+      "tomlNotLoaded": "The stellar.toml is not loaded or not reachable.",
+      "tomlAssetMissing": "This asset is not listed in the issuer's stellar.toml.",
+      "issuerUnlocked": "The issuer master key is not locked.",
+      "authRequired": "This asset requires issuer authorization.",
+      "clawbackEnabled": "Clawback is enabled for this asset."
     },
     "detail": {
       "status": {

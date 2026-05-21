@@ -1,15 +1,24 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Asset, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
+import { Asset, Networks } from '@stellar/stellar-sdk';
 import { getHorizonServer, loadTrustlines, resolveOrValidateAccount } from '../../utils/stellar/stellarUtils.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
 import { apiUrl } from '../../utils/apiBase.js';
+import {
+  buildChangeTrustAndPathPaymentStrictSendTransaction,
+  buildChangeTrustTransaction,
+  buildManageSellOfferTransaction,
+  buildPathPaymentStrictSendTransaction,
+  signTransactionWithCollectedSigners,
+} from '../../utils/stellar/tradingTransactions.js';
 
 const STELLAR_PUBLIC_KEY_RE = /^G[A-Z2-7]{55}$/;
 const ASSET_CODE_RE = /^[A-Za-z0-9]{1,12}$/;
 const AMOUNT_RE = /^\d+(?:\.\d{1,7})?$/;
+const DEFAULT_TRUSTLINE_LIMIT = '1000000';
+const BASE_RESERVE_XLM = 0.5;
 const EMPTY_ASSET_FACTS = {
   loading: false,
   error: '',
@@ -94,9 +103,30 @@ function calculateMinimumDestinationAmount(destinationAmount, slippageValue) {
   return min > 0 ? min.toFixed(7).replace(/\.?0+$/, '') : '';
 }
 
+function normalizeTrustlineLimit(value) {
+  return normalizeAmount(value);
+}
+
 function formatAssetLabel(asset) {
   if (!asset || asset.isNative?.() || asset.asset_type === 'native') return 'XLM';
   return asset.assetCode || asset.code || asset.asset_code || 'Asset';
+}
+
+function getAssetIssuer(asset) {
+  if (!asset || asset.isNative?.() || asset.asset_type === 'native') return '';
+  return asset.assetIssuer || asset.issuer || asset.asset_issuer || '';
+}
+
+function getAssetCode(asset) {
+  if (!asset || asset.isNative?.() || asset.asset_type === 'native') return 'XLM';
+  return asset.assetCode || asset.code || asset.asset_code || '';
+}
+
+function formatAssetLabelWithIssuer(asset) {
+  if (!asset || asset.isNative?.() || asset.asset_type === 'native') return 'XLM';
+  const code = getAssetCode(asset) || 'Asset';
+  const issuer = getAssetIssuer(asset);
+  return issuer ? `${code}:${shortenKey(issuer)}` : code;
 }
 
 function formatAssetPath(path = [], sourceAsset = Asset.native(), destinationAsset = Asset.native()) {
@@ -109,9 +139,20 @@ function formatAssetPath(path = [], sourceAsset = Asset.native(), destinationAss
   return [sourceLabel, ...intermediate, destinationLabel].join(' -> ');
 }
 
+function formatDetailedAssetPath(path = [], sourceAsset = Asset.native(), destinationAsset = Asset.native()) {
+  const intermediate = Array.isArray(path) ? path.map(assetFromPathRecord) : [];
+  return [sourceAsset, ...intermediate, destinationAsset].map(formatAssetLabelWithIssuer).join(' -> ');
+}
+
 function assetFromPathRecord(asset) {
   if (!asset || asset.asset_type === 'native') return Asset.native();
   return new Asset(asset.asset_code, asset.asset_issuer);
+}
+
+function assetFromOfferSide(offer, prefix) {
+  const type = offer?.[`${prefix}_asset_type`];
+  if (!type || type === 'native') return Asset.native();
+  return new Asset(offer?.[`${prefix}_asset_code`], offer?.[`${prefix}_asset_issuer`]);
 }
 
 function assetFromSearchResult(asset) {
@@ -183,6 +224,26 @@ function getAssetAmountNumber(asset) {
   return parseHorizonNumber(value);
 }
 
+function getOfferPriceNumber(item) {
+  const direct = parseHorizonNumber(item?.price);
+  if (direct != null) return direct;
+  const numerator = parseHorizonNumber(item?.price_r?.n);
+  const denominator = parseHorizonNumber(item?.price_r?.d);
+  if (numerator != null && denominator != null && denominator !== 0) return numerator / denominator;
+  return null;
+}
+
+function sumOrderbookAmount(items = [], limit = 5) {
+  return items.slice(0, limit).reduce((sum, item) => sum + (parseHorizonNumber(item?.amount) || 0), 0);
+}
+
+function calculatePercentChange(next, previous) {
+  const current = parseHorizonNumber(next);
+  const base = parseHorizonNumber(previous);
+  if (current == null || base == null || base <= 0) return null;
+  return ((current - base) / base) * 100;
+}
+
 function getCollectedSignerWeight(collectedSigners, horizonSigners) {
   const signers = Array.isArray(collectedSigners) ? collectedSigners : [];
   const knownSigners = Array.isArray(horizonSigners) ? horizonSigners : [];
@@ -209,6 +270,33 @@ function getAccountFlag(account, snakeKey, camelKey) {
   return Boolean(flags[snakeKey] ?? flags[camelKey] ?? false);
 }
 
+function getNativeBalance(account) {
+  const native = Array.isArray(account?.balances)
+    ? account.balances.find((balance) => balance.asset_type === 'native')
+    : null;
+  return parseHorizonNumber(native?.balance) ?? null;
+}
+
+function getAccountSubentryCount(account) {
+  return parseHorizonNumber(account?.subentry_count ?? account?.subentryCount) ?? 0;
+}
+
+function getTrustlineReserveSummary(account) {
+  if (!account) return null;
+  const subentries = getAccountSubentryCount(account);
+  const currentMinimum = (2 + subentries) * BASE_RESERVE_XLM;
+  const afterTrustlineMinimum = (2 + subentries + 1) * BASE_RESERVE_XLM;
+  const nativeBalance = getNativeBalance(account);
+  return {
+    reservePerEntry: BASE_RESERVE_XLM,
+    currentMinimum,
+    afterTrustlineMinimum,
+    extraReserve: BASE_RESERVE_XLM,
+    nativeBalance,
+    spendableAfterTrustline: nativeBalance == null ? null : nativeBalance - afterTrustlineMinimum,
+  };
+}
+
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
   const [assetQuery, setAssetQuery] = useState('');
@@ -223,11 +311,13 @@ export default function AssetSearch() {
   const [accountStatus, setAccountStatus] = useState({ loading: false, error: '' });
   const [accountInfo, setAccountInfo] = useState(null);
   const [network, setNetwork] = useState(() => getStoredNetwork());
-  const [trustlineStatus, setTrustlineStatus] = useState({ loading: false, state: 'unknown', error: '', balance: null, limit: null });
+  const [trustlineStatus, setTrustlineStatus] = useState({ loading: false, state: 'unknown', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
+  const [trustlineLimit, setTrustlineLimit] = useState(DEFAULT_TRUSTLINE_LIMIT);
   const [assetFacts, setAssetFacts] = useState(EMPTY_ASSET_FACTS);
   const [trustlineRefreshToken, setTrustlineRefreshToken] = useState(0);
   const [showSecretModal, setShowSecretModal] = useState(false);
   const [showTrustlineConfirm, setShowTrustlineConfirm] = useState(false);
+  const [showTrustlineSwapConfirm, setShowTrustlineSwapConfirm] = useState(false);
   const [showSwapConfirm, setShowSwapConfirm] = useState(false);
   const [modalAction, setModalAction] = useState('');
   const [modalError, setModalError] = useState('');
@@ -242,15 +332,39 @@ export default function AssetSearch() {
   const [swapTargetError, setSwapTargetError] = useState('');
   const [swapTargetLoading, setSwapTargetLoading] = useState(false);
   const [selectedSwapTargetAsset, setSelectedSwapTargetAsset] = useState(null);
-  const [swapPreview, setSwapPreview] = useState({ loading: false, error: '', path: null });
-  const [marketData, setMarketData] = useState({ loading: false, error: '', orderbook: null, liquidityPools: [] });
+  const [swapPreview, setSwapPreview] = useState({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
+  const [marketData, setMarketData] = useState({ loading: false, error: '', orderbook: null, liquidityPools: [], loadedAt: null });
+  const [targetAssetFacts, setTargetAssetFacts] = useState(EMPTY_ASSET_FACTS);
+  const [limitOfferDirection, setLimitOfferDirection] = useState('sell-token-for-xlm');
+  const [limitOfferAmount, setLimitOfferAmount] = useState('');
+  const [limitOfferPrice, setLimitOfferPrice] = useState('');
+  const [limitOfferStatus, setLimitOfferStatus] = useState({ loading: false, error: '', offers: [] });
+  const [limitOfferRefreshToken, setLimitOfferRefreshToken] = useState(0);
+  const [pendingOfferAction, setPendingOfferAction] = useState(null);
+  const [showOfferConfirm, setShowOfferConfirm] = useState(false);
+  const [isSubmittingOffer, setIsSubmittingOffer] = useState(false);
 
   const parsedQuery = useMemo(() => parseAssetSearchQuery(assetQuery), [assetQuery]);
   const parsedSwapTarget = useMemo(() => parseAssetSearchQuery(swapTargetQuery), [swapTargetQuery]);
-  const modalOperationType = modalAction === 'swap' ? 'payment' : 'changeTrust';
+  const modalOperationType = modalAction === 'swap'
+    ? 'payment'
+    : modalAction === 'trustlineSwap'
+      ? 'payment'
+    : (modalAction === 'offer' || modalAction === 'cancelOffer')
+      ? 'manageOffer'
+      : 'changeTrust';
   const requiredThreshold = useMemo(
-    () => getRequiredThreshold(modalOperationType, accountInfo?.thresholds || null),
-    [accountInfo, modalOperationType]
+    () => {
+      if (modalAction === 'trustlineSwap') {
+        const thresholds = accountInfo?.thresholds || null;
+        return Math.max(
+          getRequiredThreshold('changeTrust', thresholds),
+          getRequiredThreshold('payment', thresholds)
+        );
+      }
+      return getRequiredThreshold(modalOperationType, accountInfo?.thresholds || null);
+    },
+    [accountInfo, modalAction, modalOperationType]
   );
   const selectedStellarAsset = useMemo(
     () => (selectedAsset ? assetFromSearchResult(selectedAsset) : null),
@@ -262,6 +376,10 @@ export default function AssetSearch() {
     [numberLocale]
   );
   const amountFormatter = useMemo(
+    () => new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 7 }),
+    [numberLocale]
+  );
+  const ratioFormatter = useMemo(
     () => new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 7 }),
     [numberLocale]
   );
@@ -303,6 +421,32 @@ export default function AssetSearch() {
   }, [selectedStellarAsset, swapDirection, targetStellarAsset]);
   const swapSourceLabel = formatAssetLabel(swapSourceAsset);
   const swapDestinationLabel = formatAssetLabel(swapDestinationAsset);
+  const selectedAssetFactsTitleKey = swapDirection === 'xlm-to-token'
+    ? 'trading:assetSearch.facts.destinationTitle'
+    : 'trading:assetSearch.facts.sourceTitle';
+  const limitOfferSellingAsset = useMemo(
+    () => (limitOfferDirection === 'sell-token-for-xlm' ? selectedStellarAsset : Asset.native()),
+    [limitOfferDirection, selectedStellarAsset]
+  );
+  const limitOfferBuyingAsset = useMemo(
+    () => (limitOfferDirection === 'sell-token-for-xlm' ? Asset.native() : selectedStellarAsset),
+    [limitOfferDirection, selectedStellarAsset]
+  );
+  const limitOfferSellingLabel = formatAssetLabel(limitOfferSellingAsset);
+  const limitOfferBuyingLabel = formatAssetLabel(limitOfferBuyingAsset);
+  const trustlineLimitAmount = normalizeTrustlineLimit(trustlineLimit);
+  const selectedAssetAuthRequired = getAccountFlag(assetFacts.issuerAccount, 'auth_required', 'authRequired');
+  const selectedAssetNeedsAuthorization = selectedAssetAuthRequired && trustlineStatus.state !== 'present';
+  const selectedTrustlineUnauthorized = trustlineStatus.state === 'present' && trustlineStatus.isAuthorized === false;
+  const trustlineReserveSummary = useMemo(() => getTrustlineReserveSummary(accountInfo), [accountInfo]);
+  const canPreviewTrustlineSwap = Boolean(
+    selectedAsset &&
+    accountId &&
+    trustlineStatus.state === 'missing' &&
+    swapDirection === 'xlm-to-token' &&
+    !assetFacts.loading &&
+    !selectedAssetAuthRequired
+  );
   const sortedAssetResults = useMemo(() => {
     const scoreFacts = (facts) => {
       if (facts.homeDomain && facts.tomlListed) return 3;
@@ -354,7 +498,7 @@ export default function AssetSearch() {
     const input = String(accountInput || '').trim();
     setAccountId('');
     setAccountInfo(null);
-    setTrustlineStatus({ loading: false, state: 'unknown', error: '', balance: null, limit: null });
+    setTrustlineStatus({ loading: false, state: 'unknown', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
     if (!input) {
       setAccountStatus({ loading: false, error: '' });
       return () => { cancelled = true; };
@@ -394,11 +538,11 @@ export default function AssetSearch() {
   useEffect(() => {
     let cancelled = false;
     if (!selectedAsset || !accountId) {
-      setTrustlineStatus({ loading: false, state: accountId ? 'unknown' : 'noAccount', error: '', balance: null, limit: null });
+      setTrustlineStatus({ loading: false, state: accountId ? 'unknown' : 'noAccount', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
       return () => { cancelled = true; };
     }
 
-    setTrustlineStatus({ loading: true, state: 'loading', error: '', balance: null, limit: null });
+    setTrustlineStatus({ loading: true, state: 'loading', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
     const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
     loadTrustlines(accountId, server, { includeOps: false, ttlMs: 10000 })
       .then((trustlines) => {
@@ -414,9 +558,11 @@ export default function AssetSearch() {
             error: '',
             balance: match.assetBalance,
             limit: match.limit,
+            isAuthorized: match.isAuthorized,
+            isAuthorizedToMaintainLiabilities: match.isAuthorizedToMaintainLiabilities,
           });
         } else {
-          setTrustlineStatus({ loading: false, state: 'missing', error: '', balance: null, limit: null });
+          setTrustlineStatus({ loading: false, state: 'missing', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
         }
       })
       .catch((err) => {
@@ -427,15 +573,84 @@ export default function AssetSearch() {
           error: err?.message || 'error.loadTrustlines',
           balance: null,
           limit: null,
+          isAuthorized: null,
+          isAuthorizedToMaintainLiabilities: null,
         });
       });
     return () => { cancelled = true; };
   }, [accountId, network, selectedAsset, trustlineRefreshToken]);
 
   useEffect(() => {
-    setSwapPreview({ loading: false, error: '', path: null });
-    setMarketData({ loading: false, error: '', orderbook: null, liquidityPools: [] });
+    setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
+    setMarketData({ loading: false, error: '', orderbook: null, liquidityPools: [], loadedAt: null });
   }, [selectedAsset, network, swapDirection, swapTargetQuery, selectedSwapTargetAsset]);
+
+  useEffect(() => {
+    setTrustlineLimit(DEFAULT_TRUSTLINE_LIMIT);
+    setShowTrustlineConfirm(false);
+    setShowTrustlineSwapConfirm(false);
+    setSwapDirection('xlm-to-token');
+  }, [selectedAsset, network]);
+
+  useEffect(() => {
+    setLimitOfferAmount('');
+    setLimitOfferPrice('');
+    setPendingOfferAction(null);
+    setShowOfferConfirm(false);
+  }, [selectedAsset, network]);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!accountId || !selectedAsset) {
+      setLimitOfferStatus({ loading: false, error: '', offers: [] });
+      return () => { cancelled = true; };
+    }
+
+    const loadOffers = async () => {
+      setLimitOfferStatus((current) => ({ ...current, loading: true, error: '' }));
+      try {
+        const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+        const response = await server.offers().forAccount(accountId).limit(30).call();
+        if (!cancelled) {
+          setLimitOfferStatus({
+            loading: false,
+            error: '',
+            offers: Array.isArray(response?.records) ? response.records : [],
+          });
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setLimitOfferStatus({
+            loading: false,
+            error: error?.message || 'offerLoadFailed',
+            offers: [],
+          });
+        }
+      }
+    };
+
+    loadOffers();
+    return () => { cancelled = true; };
+  }, [accountId, limitOfferRefreshToken, network, selectedAsset]);
+
+  const loadAssetFactsForIdentity = useCallback(async ({ code, issuer }) => {
+    const params = new URLSearchParams({ code, issuer, network });
+    const response = await fetch(`${apiUrl('trade/assets/facts')}?${params.toString()}`);
+    const facts = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(facts?.error || 'assetFacts.failed:generic');
+    return {
+      loading: false,
+      error: '',
+      issuerAccount: facts?.issuerAccount || null,
+      toml: {
+        status: facts?.toml?.status || 'notChecked',
+        url: facts?.toml?.url || '',
+        currencies: Array.isArray(facts?.toml?.currencies) ? facts.toml.currencies : [],
+        matches: Array.isArray(facts?.toml?.matches) ? facts.toml.matches : [],
+        error: facts?.toml?.error || '',
+      },
+    };
+  }, [network]);
 
   useEffect(() => {
     let cancelled = false;
@@ -447,27 +662,12 @@ export default function AssetSearch() {
     const loadFacts = async () => {
       setAssetFacts({ ...EMPTY_ASSET_FACTS, loading: true });
       try {
-        const params = new URLSearchParams({
+        const facts = await loadAssetFactsForIdentity({
           code: selectedAsset.assetCode,
           issuer: selectedAsset.assetIssuer,
-          network,
         });
-        const response = await fetch(`${apiUrl('trade/assets/facts')}?${params.toString()}`);
-        const facts = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(facts?.error || 'assetFacts.failed:generic');
         if (cancelled) return;
-        setAssetFacts({
-          loading: false,
-          error: '',
-          issuerAccount: facts?.issuerAccount || null,
-          toml: {
-            status: facts?.toml?.status || 'notChecked',
-            url: facts?.toml?.url || '',
-            currencies: Array.isArray(facts?.toml?.currencies) ? facts.toml.currencies : [],
-            matches: Array.isArray(facts?.toml?.matches) ? facts.toml.matches : [],
-            error: facts?.toml?.error || '',
-          },
-        });
+        setAssetFacts(facts);
       } catch (error) {
         if (!cancelled) {
           setAssetFacts({
@@ -481,7 +681,36 @@ export default function AssetSearch() {
 
     loadFacts();
     return () => { cancelled = true; };
-  }, [selectedAsset, network]);
+  }, [loadAssetFactsForIdentity, selectedAsset]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const code = getAssetCode(targetStellarAsset);
+    const issuer = getAssetIssuer(targetStellarAsset);
+    if (swapDirection !== 'token-to-token' || !code || !issuer) {
+      setTargetAssetFacts(EMPTY_ASSET_FACTS);
+      return () => { cancelled = true; };
+    }
+
+    const loadFacts = async () => {
+      setTargetAssetFacts({ ...EMPTY_ASSET_FACTS, loading: true });
+      try {
+        const facts = await loadAssetFactsForIdentity({ code, issuer });
+        if (!cancelled) setTargetAssetFacts(facts);
+      } catch (error) {
+        if (!cancelled) {
+          setTargetAssetFacts({
+            ...EMPTY_ASSET_FACTS,
+            loading: false,
+            error: error?.message || 'issuerLoadFailed',
+          });
+        }
+      }
+    };
+
+    loadFacts();
+    return () => { cancelled = true; };
+  }, [loadAssetFactsForIdentity, targetStellarAsset, swapDirection]);
 
   useEffect(() => {
     let cancelled = false;
@@ -577,11 +806,11 @@ export default function AssetSearch() {
 
   const factValue = (value) => (value ? t('trading:assetSearch.facts.yes') : t('trading:assetSearch.facts.no'));
 
-  const tomlStatusLabel = () => {
-    if (assetFacts.toml.status === 'loading') return t('trading:assetSearch.facts.toml.loading');
-    if (assetFacts.toml.status === 'loaded') return t('trading:assetSearch.facts.toml.loaded');
-    if (assetFacts.toml.status === 'failed') return t('trading:assetSearch.facts.toml.failed');
-    if (assetFacts.toml.status === 'noHomeDomain') return t('trading:assetSearch.facts.toml.noHomeDomain');
+  const tomlStatusLabel = (facts = assetFacts) => {
+    if (facts.toml.status === 'loading') return t('trading:assetSearch.facts.toml.loading');
+    if (facts.toml.status === 'loaded') return t('trading:assetSearch.facts.toml.loaded');
+    if (facts.toml.status === 'failed') return t('trading:assetSearch.facts.toml.failed');
+    if (facts.toml.status === 'noHomeDomain') return t('trading:assetSearch.facts.toml.noHomeDomain');
     return t('trading:assetSearch.facts.notChecked');
   };
 
@@ -589,6 +818,84 @@ export default function AssetSearch() {
   const minimumDestinationAmount = useMemo(() => {
     return calculateMinimumDestinationAmount(bestDestinationAmount, swapSlippage);
   }, [bestDestinationAmount, swapSlippage]);
+  const quoteDetails = useMemo(() => {
+    const sourceAmount = Number(normalizeAmount(swapAmount));
+    const destinationAmount = Number(bestDestinationAmount || 0);
+    const minimumAmount = Number(minimumDestinationAmount || 0);
+    if (!Number.isFinite(sourceAmount) || sourceAmount <= 0 || !Number.isFinite(destinationAmount) || destinationAmount <= 0) {
+      return null;
+    }
+    const effectiveRate = destinationAmount / sourceAmount;
+    const minimumRate = minimumAmount > 0 ? minimumAmount / sourceAmount : null;
+    const slippageBuffer = minimumAmount > 0 ? destinationAmount - minimumAmount : null;
+    const hops = (Array.isArray(swapPreview.path?.path) ? swapPreview.path.path.length : 0) + 1;
+    return {
+      effectiveRate,
+      minimumRate,
+      slippageBuffer,
+      hops,
+      ageSeconds: swapPreview.loadedAt ? Math.max(0, Math.floor((Date.now() - swapPreview.loadedAt) / 1000)) : null,
+      detailedRoute: formatDetailedAssetPath(swapPreview.path?.path, swapSourceAsset, swapDestinationAsset),
+    };
+  }, [bestDestinationAmount, minimumDestinationAmount, swapAmount, swapDestinationAsset, swapPreview.loadedAt, swapPreview.path, swapSourceAsset]);
+  const formatQuoteAge = (seconds) => {
+    if (seconds == null) return t('trading:assetSearch.swapPreview.notAvailable');
+    if (seconds < 60) return t('trading:assetSearch.swapPreview.ageSeconds', { count: seconds });
+    return t('trading:assetSearch.swapPreview.ageMinutes', { count: Math.floor(seconds / 60) });
+  };
+  const formatPercent = (value) => (
+    value == null || !Number.isFinite(value)
+      ? '—'
+      : `${ratioFormatter.format(value)}%`
+  );
+  const marketQuality = useMemo(() => {
+    const orderbook = marketData.orderbook || {};
+    const bids = Array.isArray(orderbook.bids) ? orderbook.bids : [];
+    const asks = Array.isArray(orderbook.asks) ? orderbook.asks : [];
+    const bestBid = getOfferPriceNumber(bids[0]);
+    const bestAsk = getOfferPriceNumber(asks[0]);
+    const mid = bestBid != null && bestAsk != null ? (bestBid + bestAsk) / 2 : null;
+    const spread = bestBid != null && bestAsk != null ? bestAsk - bestBid : null;
+    const spreadPercent = spread != null && mid && mid > 0 ? (spread / mid) * 100 : null;
+    const topBidDepth = sumOrderbookAmount(bids);
+    const topAskDepth = sumOrderbookAmount(asks);
+    const sourceAmount = Number(normalizeAmount(swapAmount));
+    const estimatedImpactPercent = quoteDetails?.effectiveRate && bestBid != null && bestBid > 0
+      ? ((quoteDetails.effectiveRate - bestBid) / bestBid) * 100
+      : null;
+    const topAskCoversSource = Number.isFinite(sourceAmount) && sourceAmount > 0 && topAskDepth > 0
+      ? topAskDepth >= sourceAmount
+      : null;
+    const poolCount = Array.isArray(marketData.liquidityPools) ? marketData.liquidityPools.length : 0;
+    return {
+      bestBid,
+      bestAsk,
+      spread,
+      spreadPercent,
+      topBidDepth,
+      topAskDepth,
+      estimatedImpactPercent,
+      topAskCoversSource,
+      poolCount,
+      ageSeconds: marketData.loadedAt ? Math.max(0, Math.floor((Date.now() - marketData.loadedAt) / 1000)) : null,
+    };
+  }, [marketData, quoteDetails, swapAmount]);
+  const selectedRelatedOffers = useMemo(() => {
+    if (!selectedStellarAsset) return [];
+    return limitOfferStatus.offers.filter((offer) => {
+      const selling = assetFromOfferSide(offer, 'selling');
+      const buying = assetFromOfferSide(offer, 'buying');
+      return assetsEqual(selling, selectedStellarAsset) || assetsEqual(buying, selectedStellarAsset);
+    });
+  }, [limitOfferStatus.offers, selectedStellarAsset]);
+
+  const findTrustlineForAsset = async (server, asset, ttlMs = 10000) => {
+    if (!accountId || !asset || asset.isNative?.()) return null;
+    const trustlines = await loadTrustlines(accountId, server, { includeOps: false, ttlMs });
+    return trustlines.find((tl) =>
+      tl.assetCode === asset.code && tl.assetIssuer === asset.issuer
+    ) || null;
+  };
 
   const validateSwapPair = () => {
     if (swapDirection === 'token-to-token') {
@@ -602,34 +909,35 @@ export default function AssetSearch() {
     return '';
   };
 
-  const handleSwapPreview = async () => {
+  const handleSwapPreview = async ({ allowMissingDestinationTrustline = false } = {}) => {
     if (!selectedAsset) return;
     const sourceAmount = normalizeAmount(swapAmount);
     if (!sourceAmount) {
-      setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.invalidAmount', { asset: swapSourceLabel }), path: null });
+      setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.invalidAmount', { asset: swapSourceLabel }), path: null, loadedAt: null, refreshComparison: null });
       return;
     }
     const slippage = Number(String(swapSlippage || '').replace(',', '.'));
     if (!Number.isFinite(slippage) || slippage < 0 || slippage > 50) {
-      setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.invalidSlippage'), path: null });
+      setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.invalidSlippage'), path: null, loadedAt: null, refreshComparison: null });
       return;
     }
     const pairError = validateSwapPair();
     if (pairError) {
-      setSwapPreview({ loading: false, error: pairError, path: null });
+      setSwapPreview({ loading: false, error: pairError, path: null, loadedAt: null, refreshComparison: null });
       return;
     }
 
-    setSwapPreview({ loading: true, error: '', path: null });
+    setSwapPreview({ loading: true, error: '', path: null, loadedAt: null, refreshComparison: null });
     try {
       const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
       if (accountId && !swapDestinationAsset.isNative()) {
-        const trustlines = await loadTrustlines(accountId, server, { includeOps: false, ttlMs: 10000 });
-        const hasDestinationTrustline = trustlines.some((tl) =>
-          tl.assetCode === swapDestinationAsset.code && tl.assetIssuer === swapDestinationAsset.issuer
-        );
-        if (!hasDestinationTrustline) {
-          setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.destinationTrustlineMissing'), path: null });
+        const destinationTrustline = await findTrustlineForAsset(server, swapDestinationAsset, 10000);
+        if (!destinationTrustline && !allowMissingDestinationTrustline) {
+          setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.destinationTrustlineMissing'), path: null, loadedAt: null, refreshComparison: null });
+          return;
+        }
+        if (destinationTrustline?.isAuthorized === false) {
+          setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.destinationTrustlineUnauthorized'), path: null, loadedAt: null, refreshComparison: null });
           return;
         }
       }
@@ -638,13 +946,13 @@ export default function AssetSearch() {
         .call();
       const records = Array.isArray(response?.records) ? response.records : [];
       if (!records.length) {
-        setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.noRoute'), path: null });
+        setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.noRoute'), path: null, loadedAt: null, refreshComparison: null });
         return;
       }
       const best = [...records].sort((a, b) => Number(b.destination_amount || 0) - Number(a.destination_amount || 0))[0];
-      setSwapPreview({ loading: false, error: '', path: best });
+      setSwapPreview({ loading: false, error: '', path: best, loadedAt: Date.now(), refreshComparison: null });
     } catch {
-      setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.failed'), path: null });
+      setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.failed'), path: null, loadedAt: null, refreshComparison: null });
     }
   };
 
@@ -652,11 +960,11 @@ export default function AssetSearch() {
     if (!selectedAsset) return;
     const pairError = validateSwapPair();
     if (pairError) {
-      setMarketData({ loading: false, error: pairError, orderbook: null, liquidityPools: [] });
+      setMarketData({ loading: false, error: pairError, orderbook: null, liquidityPools: [], loadedAt: null });
       return;
     }
 
-    setMarketData({ loading: true, error: '', orderbook: null, liquidityPools: [] });
+    setMarketData({ loading: true, error: '', orderbook: null, liquidityPools: [], loadedAt: null });
     try {
       const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
       const [orderbook, pools] = await Promise.all([
@@ -668,6 +976,7 @@ export default function AssetSearch() {
         error: '',
         orderbook,
         liquidityPools: Array.isArray(pools?.records) ? pools.records : [],
+        loadedAt: Date.now(),
       });
     } catch {
       setMarketData({
@@ -675,6 +984,7 @@ export default function AssetSearch() {
         error: t('trading:assetSearch.market.failed'),
         orderbook: null,
         liquidityPools: [],
+        loadedAt: null,
       });
     }
   };
@@ -702,7 +1012,8 @@ export default function AssetSearch() {
       setSwapTargetResults(items);
       if (query.mode === 'exact') {
         const exact = items.find((item) =>
-          item.assetCode === query.code && item.assetIssuer === query.issuer
+          String(item.assetCode || '').toUpperCase() === String(query.code || '').toUpperCase() &&
+          item.assetIssuer === query.issuer
         );
         if (exact) setSelectedSwapTargetAsset(exact);
       }
@@ -736,18 +1047,14 @@ export default function AssetSearch() {
 
     const feeStats = await server.feeStats();
     const fee = String(Number(feeStats?.fee_charged?.mode || 100));
-    const tx = new TransactionBuilder(account, {
+    const tx = buildChangeTrustTransaction({
+      account,
+      asset,
+      limit,
       fee,
       networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
-    })
-      .addOperation(Operation.changeTrust({ asset, limit }))
-      .setTimeout(60)
-      .build();
-
-    signers.forEach((signer) => {
-      try { tx.sign(signer.keypair); } catch (error) { console.debug?.('sign failed', error); }
     });
-    return server.submitTransaction(tx);
+    return server.submitTransaction(signTransactionWithCollectedSigners(tx, signers));
   };
 
   const submitSwapTx = async ({ collectedSigners }) => {
@@ -772,11 +1079,9 @@ export default function AssetSearch() {
     if (current < required) throw new Error('submitTransaction.failed:multisig.insufficientWeight');
 
     if (!swapDestinationAsset.isNative()) {
-      const trustlines = await loadTrustlines(accountId, server, { includeOps: false, ttlMs: 0 });
-      const hasDestinationTrustline = trustlines.some((tl) =>
-        tl.assetCode === swapDestinationAsset.code && tl.assetIssuer === swapDestinationAsset.issuer
-      );
-      if (!hasDestinationTrustline) throw new Error(t('trading:assetSearch.swapPreview.destinationTrustlineMissing'));
+      const destinationTrustline = await findTrustlineForAsset(server, swapDestinationAsset, 0);
+      if (!destinationTrustline) throw new Error(t('trading:assetSearch.swapPreview.destinationTrustlineMissing'));
+      if (destinationTrustline.isAuthorized === false) throw new Error(t('trading:assetSearch.swapPreview.destinationTrustlineUnauthorized'));
     }
 
     const latestPathResponse = await server
@@ -785,38 +1090,147 @@ export default function AssetSearch() {
     const latestRecords = Array.isArray(latestPathResponse?.records) ? latestPathResponse.records : [];
     if (!latestRecords.length) throw new Error(t('trading:assetSearch.swapPreview.noRoute'));
     const latestBest = [...latestRecords].sort((a, b) => Number(b.destination_amount || 0) - Number(a.destination_amount || 0))[0];
-    const latestMinimumDestinationAmount = calculateMinimumDestinationAmount(latestBest?.destination_amount, swapSlippage);
-    if (!latestMinimumDestinationAmount) throw new Error(t('trading:assetSearch.swapPreview.minimumMissing'));
-    setSwapPreview({ loading: false, error: '', path: latestBest });
+    const confirmedDestinationAmount = swapPreview.path?.destination_amount || '';
+    const confirmedMinimumDestinationAmount = minimumDestinationAmount;
+    const refreshComparison = {
+      previousDestinationAmount: confirmedDestinationAmount,
+      latestDestinationAmount: latestBest?.destination_amount || '',
+      deltaPercent: calculatePercentChange(latestBest?.destination_amount, confirmedDestinationAmount),
+      checkedAt: Date.now(),
+    };
+    if (!confirmedMinimumDestinationAmount) throw new Error(t('trading:assetSearch.swapPreview.minimumMissing'));
+    if (Number(latestBest?.destination_amount || 0) < Number(confirmedMinimumDestinationAmount)) {
+      setSwapPreview((current) => ({ ...current, loading: false, error: '', refreshComparison }));
+      throw new Error(t('trading:assetSearch.swapPreview.quoteWorseThanMinimum'));
+    }
+    setSwapPreview((current) => ({ ...current, loading: false, error: '', path: latestBest, loadedAt: Date.now(), refreshComparison }));
 
     const path = Array.isArray(latestBest.path) ? latestBest.path.map(assetFromPathRecord) : [];
     const feeStats = await server.feeStats();
     const fee = String(Number(feeStats?.fee_charged?.mode || 100));
-    const tx = new TransactionBuilder(account, {
+    const tx = buildPathPaymentStrictSendTransaction({
+      account,
+      sendAsset: swapSourceAsset,
+      sendAmount,
+      destination: accountId,
+      destAsset: swapDestinationAsset,
+      destMin: confirmedMinimumDestinationAmount,
+      path,
       fee,
       networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
-    })
-      .addOperation(Operation.pathPaymentStrictSend({
-        sendAsset: swapSourceAsset,
-        sendAmount,
-        destination: accountId,
-        destAsset: swapDestinationAsset,
-        destMin: latestMinimumDestinationAmount,
-        path,
-      }))
-      .setTimeout(60)
-      .build();
-
-    signers.forEach((signer) => {
-      try { tx.sign(signer.keypair); } catch (error) { console.debug?.('sign failed', error); }
     });
-    return server.submitTransaction(tx);
+    return server.submitTransaction(signTransactionWithCollectedSigners(tx, signers));
+  };
+
+  const submitTrustlineAndSwapTx = async ({ collectedSigners }) => {
+    if (!accountId || !selectedStellarAsset || !swapPreview.path) throw new Error('submitTransaction.failed:trustlines.invalidInput');
+    if (swapDirection !== 'xlm-to-token') throw new Error(t('trading:assetSearch.trustlineFlow.combinedOnlyXlm'));
+    if (assetFacts.loading) throw new Error(t('trading:assetSearch.facts.loading'));
+    if (selectedAssetAuthRequired) throw new Error(t('trading:assetSearch.trustlineFlow.authRequiredCombinedBlocked'));
+    const trustLimit = normalizeTrustlineLimit(trustlineLimit);
+    if (!trustLimit) throw new Error(t('trading:assetSearch.trustlineFlow.invalidLimit'));
+    const sendAmount = normalizeAmount(swapAmount);
+    if (!sendAmount) throw new Error(t('trading:assetSearch.swapPreview.invalidAmount', { asset: swapSourceLabel }));
+    const slippage = Number(String(swapSlippage || '').replace(',', '.'));
+    if (!Number.isFinite(slippage) || slippage < 0 || slippage > 50) {
+      throw new Error(t('trading:assetSearch.swapPreview.invalidSlippage'));
+    }
+
+    const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const account = await server.loadAccount(accountId);
+    const thresholds = account?.thresholds || {};
+    const required = Math.max(
+      getRequiredThreshold('changeTrust', thresholds),
+      getRequiredThreshold('payment', thresholds)
+    );
+    const horizonSigners = account?.signers || [];
+    const signers = Array.isArray(collectedSigners) ? collectedSigners : [];
+    const current = getCollectedSignerWeight(signers, horizonSigners);
+    if (current <= 0) throw new Error('submitTransaction.failed:multisig.noKeysProvided');
+    if (current < required) throw new Error('submitTransaction.failed:multisig.insufficientWeight');
+
+    const existingTrustline = await findTrustlineForAsset(server, selectedStellarAsset, 0);
+    if (existingTrustline?.isAuthorized === false) throw new Error(t('trading:assetSearch.swapPreview.destinationTrustlineUnauthorized'));
+    if (existingTrustline) throw new Error(t('trading:assetSearch.trustlineFlow.alreadyPresent'));
+
+    const latestPathResponse = await server
+      .strictSendPaths(Asset.native(), sendAmount, [selectedStellarAsset])
+      .call();
+    const latestRecords = Array.isArray(latestPathResponse?.records) ? latestPathResponse.records : [];
+    if (!latestRecords.length) throw new Error(t('trading:assetSearch.swapPreview.noRoute'));
+    const latestBest = [...latestRecords].sort((a, b) => Number(b.destination_amount || 0) - Number(a.destination_amount || 0))[0];
+    const confirmedDestinationAmount = swapPreview.path?.destination_amount || '';
+    const confirmedMinimumDestinationAmount = minimumDestinationAmount;
+    const refreshComparison = {
+      previousDestinationAmount: confirmedDestinationAmount,
+      latestDestinationAmount: latestBest?.destination_amount || '',
+      deltaPercent: calculatePercentChange(latestBest?.destination_amount, confirmedDestinationAmount),
+      checkedAt: Date.now(),
+    };
+    if (!confirmedMinimumDestinationAmount) throw new Error(t('trading:assetSearch.swapPreview.minimumMissing'));
+    if (Number(latestBest?.destination_amount || 0) < Number(confirmedMinimumDestinationAmount)) {
+      setSwapPreview((current) => ({ ...current, loading: false, error: '', refreshComparison }));
+      throw new Error(t('trading:assetSearch.swapPreview.quoteWorseThanMinimum'));
+    }
+    if (Number(latestBest?.destination_amount || 0) > Number(trustLimit)) {
+      throw new Error(t('trading:assetSearch.trustlineFlow.limitBelowExpected'));
+    }
+    setSwapPreview((current) => ({ ...current, loading: false, error: '', path: latestBest, loadedAt: Date.now(), refreshComparison }));
+
+    const path = Array.isArray(latestBest.path) ? latestBest.path.map(assetFromPathRecord) : [];
+    const feeStats = await server.feeStats();
+    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    const tx = buildChangeTrustAndPathPaymentStrictSendTransaction({
+      account,
+      trustAsset: selectedStellarAsset,
+      trustLimit,
+      sendAsset: Asset.native(),
+      sendAmount,
+      destination: accountId,
+      destAsset: selectedStellarAsset,
+      destMin: confirmedMinimumDestinationAmount,
+      path,
+      fee,
+      networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+    });
+    return server.submitTransaction(signTransactionWithCollectedSigners(tx, signers));
+  };
+
+  const submitManageSellOfferTx = async ({ selling, buying, amount, price, offerId = '0', collectedSigners }) => {
+    if (!accountId || !selling || !buying) throw new Error('submitTransaction.failed:trustlines.invalidInput');
+    const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const account = await server.loadAccount(accountId);
+    const thresholds = account?.thresholds || {};
+    const required = getRequiredThreshold('manageOffer', thresholds);
+    const horizonSigners = account?.signers || [];
+    const signers = Array.isArray(collectedSigners) ? collectedSigners : [];
+    const current = getCollectedSignerWeight(signers, horizonSigners);
+    if (current <= 0) throw new Error('submitTransaction.failed:multisig.noKeysProvided');
+    if (current < required) throw new Error('submitTransaction.failed:multisig.insufficientWeight');
+
+    const feeStats = await server.feeStats();
+    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    const tx = buildManageSellOfferTransaction({
+      account,
+      selling,
+      buying,
+      amount,
+      price,
+      offerId,
+      fee,
+      networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
+    });
+    return server.submitTransaction(signTransactionWithCollectedSigners(tx, signers));
   };
 
   const openTrustlineModal = (asset) => {
     setSelectedAsset(asset);
     setModalError('');
     setActionMessage('');
+    if (!normalizeTrustlineLimit(trustlineLimit)) {
+      setActionMessage(t('trading:assetSearch.trustlineFlow.invalidLimit'));
+      return;
+    }
     setShowTrustlineConfirm(true);
   };
 
@@ -825,6 +1239,52 @@ export default function AssetSearch() {
     setModalError('');
     setActionMessage('');
     setShowTrustlineConfirm(false);
+    setShowSecretModal(true);
+  };
+
+  const openTrustlineSwapModal = () => {
+    if (!canPreviewTrustlineSwap) {
+      const message = selectedAssetAuthRequired
+        ? t('trading:assetSearch.trustlineFlow.authRequiredCombinedBlocked')
+        : t('trading:assetSearch.trustlineFlow.combinedOnlyXlm');
+      setModalError(message);
+      setActionMessage(message);
+      return;
+    }
+    if (!normalizeTrustlineLimit(trustlineLimit)) {
+      const message = t('trading:assetSearch.trustlineFlow.invalidLimit');
+      setModalError(message);
+      setActionMessage(message);
+      return;
+    }
+    if (!swapPreview.path) {
+      const message = t('trading:assetSearch.swapPreview.previewRequired');
+      setModalError(message);
+      setActionMessage(message);
+      return;
+    }
+    if (!minimumDestinationAmount) {
+      const message = t('trading:assetSearch.swapPreview.minimumMissing');
+      setModalError(message);
+      setActionMessage(message);
+      return;
+    }
+    if (Number(bestDestinationAmount || 0) > Number(normalizeTrustlineLimit(trustlineLimit))) {
+      const message = t('trading:assetSearch.trustlineFlow.limitBelowExpected');
+      setModalError(message);
+      setActionMessage(message);
+      return;
+    }
+    setModalError('');
+    setActionMessage('');
+    setShowTrustlineSwapConfirm(true);
+  };
+
+  const handleConfirmTrustlineSwap = () => {
+    setModalAction('trustlineSwap');
+    setModalError('');
+    setActionMessage('');
+    setShowTrustlineSwapConfirm(false);
     setShowSecretModal(true);
   };
 
@@ -848,6 +1308,65 @@ export default function AssetSearch() {
     setShowSecretModal(true);
   };
 
+  const openCreateOfferModal = () => {
+    const amount = normalizeAmount(limitOfferAmount);
+    const price = normalizeAmount(limitOfferPrice);
+    if (!selectedAsset || !limitOfferSellingAsset || !limitOfferBuyingAsset) {
+      const message = t('trading:assetSearch.limitOffer.invalidPair');
+      setModalError(message);
+      setActionMessage(message);
+      return;
+    }
+    if (!amount) {
+      const message = t('trading:assetSearch.limitOffer.invalidAmount', { asset: limitOfferSellingLabel });
+      setModalError(message);
+      setActionMessage(message);
+      return;
+    }
+    if (!price) {
+      const message = t('trading:assetSearch.limitOffer.invalidPrice');
+      setModalError(message);
+      setActionMessage(message);
+      return;
+    }
+    setPendingOfferAction({
+      type: 'create',
+      selling: limitOfferSellingAsset,
+      buying: limitOfferBuyingAsset,
+      amount,
+      price,
+      offerId: '0',
+    });
+    setModalError('');
+    setActionMessage('');
+    setShowOfferConfirm(true);
+  };
+
+  const openCancelOfferModal = (offer) => {
+    const selling = assetFromOfferSide(offer, 'selling');
+    const buying = assetFromOfferSide(offer, 'buying');
+    setPendingOfferAction({
+      type: 'cancel',
+      selling,
+      buying,
+      amount: '0',
+      price: offer?.price || '1',
+      offerId: offer?.id || '0',
+      offer,
+    });
+    setModalError('');
+    setActionMessage('');
+    setShowOfferConfirm(true);
+  };
+
+  const handleConfirmOffer = () => {
+    setModalAction(pendingOfferAction?.type === 'cancel' ? 'cancelOffer' : 'offer');
+    setModalError('');
+    setActionMessage('');
+    setShowOfferConfirm(false);
+    setShowSecretModal(true);
+  };
+
   const handleCreateTrustline = async (collectedSigners) => {
     try {
       if (!selectedAsset) throw new Error('submitTransaction.failed:trustlines.invalidInput');
@@ -855,9 +1374,11 @@ export default function AssetSearch() {
       setModalError('');
       setActionMessage('');
       const stellarAsset = new Asset(selectedAsset.assetCode, selectedAsset.assetIssuer);
+      const limit = normalizeTrustlineLimit(trustlineLimit);
+      if (!limit) throw new Error(t('trading:assetSearch.trustlineFlow.invalidLimit'));
       await submitChangeTrustTx({
         asset: stellarAsset,
-        limit: '1000000',
+        limit,
         collectedSigners,
       });
       setActionMessage(t('trading:assetSearch.trustlineStatus.added'));
@@ -884,7 +1405,7 @@ export default function AssetSearch() {
         : t('trading:assetSearch.swapPreview.success'));
       setShowSecretModal(false);
       setModalAction('');
-      setSwapPreview({ loading: false, error: '', path: null });
+      setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
       setTrustlineRefreshToken((value) => value + 1);
     } catch (error) {
       const formatted = formatErrorForUi(t, error);
@@ -892,6 +1413,60 @@ export default function AssetSearch() {
       setActionMessage(formatted);
     } finally {
       setIsSubmittingSwap(false);
+    }
+  };
+
+  const handleExecuteTrustlineSwap = async (collectedSigners) => {
+    try {
+      setIsSubmittingSwap(true);
+      setModalError('');
+      setActionMessage('');
+      const result = await submitTrustlineAndSwapTx({ collectedSigners });
+      const hash = result?.hash || result?.id || '';
+      setActionMessage(hash
+        ? `${t('trading:assetSearch.trustlineFlow.combinedSuccess')} ${hash}`
+        : t('trading:assetSearch.trustlineFlow.combinedSuccess'));
+      setShowSecretModal(false);
+      setModalAction('');
+      setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
+      setTrustlineRefreshToken((value) => value + 1);
+    } catch (error) {
+      const formatted = formatErrorForUi(t, error);
+      setModalError(formatted);
+      setActionMessage(formatted);
+    } finally {
+      setIsSubmittingSwap(false);
+    }
+  };
+
+  const handleSubmitOfferAction = async (collectedSigners) => {
+    try {
+      if (!pendingOfferAction) throw new Error('submitTransaction.failed:trustlines.invalidInput');
+      setIsSubmittingOffer(true);
+      setModalError('');
+      setActionMessage('');
+      const result = await submitManageSellOfferTx({
+        ...pendingOfferAction,
+        collectedSigners,
+      });
+      const hash = result?.hash || result?.id || '';
+      const successKey = pendingOfferAction.type === 'cancel'
+        ? 'trading:assetSearch.limitOffer.cancelSuccess'
+        : 'trading:assetSearch.limitOffer.createSuccess';
+      setActionMessage(hash ? `${t(successKey)} ${hash}` : t(successKey));
+      setShowSecretModal(false);
+      setModalAction('');
+      setPendingOfferAction(null);
+      setLimitOfferAmount('');
+      setLimitOfferPrice('');
+      setLimitOfferRefreshToken((value) => value + 1);
+      setTrustlineRefreshToken((value) => value + 1);
+    } catch (error) {
+      const formatted = formatErrorForUi(t, error);
+      setModalError(formatted);
+      setActionMessage(formatted);
+    } finally {
+      setIsSubmittingOffer(false);
     }
   };
 
@@ -937,16 +1512,34 @@ export default function AssetSearch() {
     }
   };
 
-  const issuerHomeDomain = assetFacts.issuerAccount?.home_domain || assetFacts.issuerAccount?.homeDomain || '';
-  const issuerMasterWeight = selectedAsset
-    ? getIssuerMasterWeight(assetFacts.issuerAccount, selectedAsset.assetIssuer)
-    : null;
-  const tomlContainsAsset = assetFacts.toml.status === 'loaded' && assetFacts.toml.matches.length > 0;
-  const tomlCurrencyCount = Array.isArray(assetFacts.toml.currencies) ? assetFacts.toml.currencies.length : 0;
-  const authRequired = getAccountFlag(assetFacts.issuerAccount, 'auth_required', 'authRequired');
-  const authRevocable = getAccountFlag(assetFacts.issuerAccount, 'auth_revocable', 'authRevocable');
-  const authImmutable = getAccountFlag(assetFacts.issuerAccount, 'auth_immutable', 'authImmutable');
-  const clawbackEnabled = getAccountFlag(assetFacts.issuerAccount, 'auth_clawback_enabled', 'authClawbackEnabled');
+  const getFactsSnapshot = (facts = assetFacts, asset = selectedAsset) => {
+    const issuer = getAssetIssuer(asset);
+    const issuerMasterWeight = issuer ? getIssuerMasterWeight(facts.issuerAccount, issuer) : null;
+    return {
+      issuerHomeDomain: facts.issuerAccount?.home_domain || facts.issuerAccount?.homeDomain || '',
+      issuerMasterWeight,
+      tomlContainsAsset: facts.toml.status === 'loaded' && facts.toml.matches.length > 0,
+      tomlCurrencyCount: Array.isArray(facts.toml.currencies) ? facts.toml.currencies.length : 0,
+      authRequired: getAccountFlag(facts.issuerAccount, 'auth_required', 'authRequired'),
+      authRevocable: getAccountFlag(facts.issuerAccount, 'auth_revocable', 'authRevocable'),
+      authImmutable: getAccountFlag(facts.issuerAccount, 'auth_immutable', 'authImmutable'),
+      clawbackEnabled: getAccountFlag(facts.issuerAccount, 'auth_clawback_enabled', 'authClawbackEnabled'),
+    };
+  };
+
+  const getAssetRiskWarnings = (facts = assetFacts, asset = selectedAsset) => {
+    if (!asset || facts.loading) return [];
+    if (facts.error) return [t('trading:assetSearch.risk.issuerLoadFailed')];
+    const snapshot = getFactsSnapshot(facts, asset);
+    const warnings = [];
+    if (!snapshot.issuerHomeDomain) warnings.push(t('trading:assetSearch.risk.noHomeDomain'));
+    if (facts.toml.status !== 'loaded') warnings.push(t('trading:assetSearch.risk.tomlNotLoaded'));
+    if (facts.toml.status === 'loaded' && !snapshot.tomlContainsAsset) warnings.push(t('trading:assetSearch.risk.tomlAssetMissing'));
+    if (snapshot.issuerMasterWeight !== null && snapshot.issuerMasterWeight !== 0) warnings.push(t('trading:assetSearch.risk.issuerUnlocked'));
+    if (snapshot.authRequired) warnings.push(t('trading:assetSearch.risk.authRequired'));
+    if (snapshot.clawbackEnabled) warnings.push(t('trading:assetSearch.risk.clawbackEnabled'));
+    return warnings;
+  };
 
   const renderFactMark = (checked, loading, label) => (
     <span
@@ -964,71 +1557,89 @@ export default function AssetSearch() {
     </span>
   );
 
-  const renderTokenFactsSummary = ({ includeDisclaimer = false } = {}) => (
-    <>
+  const renderRiskWarnings = (facts = assetFacts, asset = selectedAsset) => {
+    const warnings = getAssetRiskWarnings(facts, asset);
+    if (!warnings.length) return null;
+    return (
+      <div className="mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+        <div className="mb-1 font-semibold">{t('trading:assetSearch.risk.title')}</div>
+        <ul className="list-disc pl-4">
+          {warnings.map((warning) => (
+            <li key={warning}>{warning}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  const renderTokenFactsSummary = ({ includeDisclaimer = false, facts = assetFacts, asset = selectedAsset, includeRoute = true } = {}) => {
+    const snapshot = getFactsSnapshot(facts, asset);
+    return (
+      <>
       {includeDisclaimer && (
         <p className="mb-3 text-xs text-gray-700 dark:text-blue-100">
           {t('trading:assetSearch.facts.disclaimer')}
         </p>
       )}
-      {assetFacts.loading && (
+      {facts.loading && (
         <div className="text-xs text-gray-700 dark:text-blue-100">
           {t('trading:assetSearch.facts.loading')}
         </div>
       )}
-      {assetFacts.error && (
+      {facts.error && (
         <div className="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
           {t('trading:assetSearch.facts.issuerLoadFailed')}
         </div>
       )}
-      {!assetFacts.loading && !assetFacts.error && (
+      {!facts.loading && !facts.error && (
         <dl className="grid gap-2 text-xs sm:grid-cols-2">
           <div>
             <dt className="font-semibold">{t('trading:assetSearch.facts.homeDomain')}</dt>
-            <dd className="break-all font-mono">{issuerHomeDomain || t('trading:assetSearch.facts.notAvailable')}</dd>
+            <dd className="break-all font-mono">{snapshot.issuerHomeDomain || t('trading:assetSearch.facts.notAvailable')}</dd>
           </div>
           <div>
             <dt className="font-semibold">{t('trading:assetSearch.facts.issuerMasterWeight')}</dt>
-            <dd className="font-mono">{issuerMasterWeight === null ? t('trading:assetSearch.facts.notAvailable') : issuerMasterWeight}</dd>
+            <dd className="font-mono">{snapshot.issuerMasterWeight === null ? t('trading:assetSearch.facts.notAvailable') : snapshot.issuerMasterWeight}</dd>
           </div>
           <div>
             <dt className="font-semibold">{t('trading:assetSearch.facts.issuerLocked')}</dt>
-            <dd>{issuerMasterWeight === null ? t('trading:assetSearch.facts.notAvailable') : factValue(issuerMasterWeight === 0)}</dd>
+            <dd>{snapshot.issuerMasterWeight === null ? t('trading:assetSearch.facts.notAvailable') : factValue(snapshot.issuerMasterWeight === 0)}</dd>
           </div>
           <div>
             <dt className="font-semibold">{t('trading:assetSearch.facts.toml.status')}</dt>
-            <dd>{tomlStatusLabel()}</dd>
+            <dd>{tomlStatusLabel(facts)}</dd>
           </div>
-          {assetFacts.toml.url && (
+          {facts.toml.url && (
             <div className="sm:col-span-2">
               <dt className="font-semibold">{t('trading:assetSearch.facts.toml.url')}</dt>
-              <dd className="break-all font-mono">{assetFacts.toml.url}</dd>
+              <dd className="break-all font-mono">{facts.toml.url}</dd>
             </div>
           )}
           <div>
             <dt className="font-semibold">{t('trading:assetSearch.facts.toml.assetListed')}</dt>
-            <dd>{assetFacts.toml.status === 'loaded' ? factValue(tomlContainsAsset) : t('trading:assetSearch.facts.notAvailable')}</dd>
+            <dd>{facts.toml.status === 'loaded' ? factValue(snapshot.tomlContainsAsset) : t('trading:assetSearch.facts.notAvailable')}</dd>
           </div>
           <div>
             <dt className="font-semibold">{t('trading:assetSearch.facts.toml.currencyCount')}</dt>
-            <dd className="font-mono">{assetFacts.toml.status === 'loaded' ? tomlCurrencyCount : t('trading:assetSearch.facts.notAvailable')}</dd>
+            <dd className="font-mono">{facts.toml.status === 'loaded' ? snapshot.tomlCurrencyCount : t('trading:assetSearch.facts.notAvailable')}</dd>
           </div>
           <div>
             <dt className="font-semibold">{t('trading:assetSearch.facts.flags.authRequired')}</dt>
-            <dd>{factValue(authRequired)}</dd>
+            <dd>{factValue(snapshot.authRequired)}</dd>
           </div>
           <div>
             <dt className="font-semibold">{t('trading:assetSearch.facts.flags.authRevocable')}</dt>
-            <dd>{factValue(authRevocable)}</dd>
+            <dd>{factValue(snapshot.authRevocable)}</dd>
           </div>
           <div>
             <dt className="font-semibold">{t('trading:assetSearch.facts.flags.authImmutable')}</dt>
-            <dd>{factValue(authImmutable)}</dd>
+            <dd>{factValue(snapshot.authImmutable)}</dd>
           </div>
           <div>
             <dt className="font-semibold">{t('trading:assetSearch.facts.flags.clawbackEnabled')}</dt>
-            <dd>{factValue(clawbackEnabled)}</dd>
+            <dd>{factValue(snapshot.clawbackEnabled)}</dd>
           </div>
+          {includeRoute && (
           <div>
             <dt className="font-semibold">{t('trading:assetSearch.facts.liquidityRoute')}</dt>
             <dd>
@@ -1039,10 +1650,13 @@ export default function AssetSearch() {
                   : t('trading:assetSearch.facts.notChecked')}
             </dd>
           </div>
+          )}
         </dl>
       )}
+      {renderRiskWarnings(facts, asset)}
     </>
-  );
+    );
+  };
 
   return (
     <section className="space-y-4">
@@ -1272,12 +1886,25 @@ export default function AssetSearch() {
                   <dt className="font-semibold">{t('trading:assetSearch.trustlineStatus.limit')}</dt>
                   <dd>{trustlineStatus.limit ?? '—'}</dd>
                 </div>
+                <div>
+                  <dt className="font-semibold">{t('trading:assetSearch.trustlineStatus.authorization')}</dt>
+                  <dd>
+                    {trustlineStatus.isAuthorized === false
+                      ? t('trading:assetSearch.trustlineStatus.unauthorized')
+                      : t('trading:assetSearch.trustlineStatus.authorized')}
+                  </dd>
+                </div>
               </div>
             )}
           </dl>
           <p className="mt-3 text-xs text-blue-900 dark:text-blue-100">
             {t('trading:assetSearch.detail.nextStepHint', 'Known in Horizon only. Check issuer and trust before signing a trustline or swap.')}
           </p>
+          {selectedTrustlineUnauthorized && (
+            <p className="mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+              {t('trading:assetSearch.swapPreview.destinationTrustlineUnauthorized')}
+            </p>
+          )}
           <section className="mt-4 rounded border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
             <h3 className="mb-3 text-sm font-semibold">
               {t('trading:assetSearch.facts.title')}
@@ -1285,7 +1912,50 @@ export default function AssetSearch() {
             {renderTokenFactsSummary({ includeDisclaimer: true })}
           </section>
           {trustlineStatus.state === 'missing' && accountId && (
-            <div className="mt-4">
+            <section className="mt-4 rounded border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
+              <h3 className="mb-3 text-sm font-semibold">
+                {t('trading:assetSearch.trustlineFlow.title')}
+              </h3>
+              <label className="block text-xs font-semibold" htmlFor="trustline-limit-input">
+                {t('trading:assetSearch.trustlineConfirm.limit')}
+              </label>
+              <input
+                id="trustline-limit-input"
+                type="text"
+                inputMode="decimal"
+                value={trustlineLimit}
+                onChange={(event) => setTrustlineLimit(event.target.value)}
+                className="mt-1 w-full max-w-xs rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+              />
+              <p className="mt-2 text-xs text-gray-700 dark:text-blue-100">
+                {t('trading:assetSearch.trustlineFlow.limitHelp')}
+              </p>
+              {trustlineReserveSummary && (
+                <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2">
+                  <div>
+                    <dt className="font-semibold">{t('trading:assetSearch.trustlineFlow.reserveIncrease')}</dt>
+                    <dd>{amountFormatter.format(trustlineReserveSummary.extraReserve)} XLM</dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold">{t('trading:assetSearch.trustlineFlow.reserveAfter')}</dt>
+                    <dd>{amountFormatter.format(trustlineReserveSummary.afterTrustlineMinimum)} XLM</dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold">{t('trading:assetSearch.trustlineFlow.spendableAfter')}</dt>
+                    <dd>
+                      {trustlineReserveSummary.spendableAfterTrustline == null
+                        ? t('trading:assetSearch.swapPreview.notAvailable')
+                        : `${amountFormatter.format(trustlineReserveSummary.spendableAfterTrustline)} XLM`}
+                    </dd>
+                  </div>
+                </dl>
+              )}
+              {selectedAssetNeedsAuthorization && (
+                <p className="mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+                  {t('trading:assetSearch.trustlineFlow.authRequiredHint')}
+                </p>
+              )}
+              <div className="mt-4 flex flex-wrap gap-3">
               <button
                 type="button"
                 onClick={() => openTrustlineModal(selectedAsset)}
@@ -1296,9 +1966,86 @@ export default function AssetSearch() {
                   ? t('common:main.processing')
                   : t('trading:assetSearch.actions.trustlineAdd', 'Add trustline')}
               </button>
-            </div>
+              </div>
+              <div className="mt-5 border-t border-gray-200 pt-4 dark:border-gray-700">
+                <h4 className="mb-2 text-sm font-semibold">{t('trading:assetSearch.trustlineFlow.combinedTitle')}</h4>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <label className="block text-xs">
+                    <span className="mb-1 block font-semibold">{t('trading:assetSearch.swapPreview.sendAmount', { asset: 'XLM' })}</span>
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={swapAmount}
+                      onChange={(event) => setSwapAmount(event.target.value)}
+                      className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+                    />
+                  </label>
+                  <label className="block text-xs">
+                    <span className="mb-1 block font-semibold">{t('trading:assetSearch.swapPreview.slippage')}</span>
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={swapSlippage}
+                      onChange={(event) => setSwapSlippage(event.target.value)}
+                      className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+                    />
+                  </label>
+                  <div className="flex items-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleSwapPreview({ allowMissingDestinationTrustline: canPreviewTrustlineSwap })}
+                      disabled={swapPreview.loading || !canPreviewTrustlineSwap}
+                      className="rounded border border-blue-300 px-3 py-2 text-xs font-semibold text-blue-800 hover:bg-blue-50 disabled:opacity-50 dark:border-blue-700 dark:text-blue-100 dark:hover:bg-blue-900"
+                    >
+                      {swapPreview.loading ? t('common:loading', 'Loading...') : t('trading:assetSearch.swapPreview.check')}
+                    </button>
+                  </div>
+                </div>
+                {!canPreviewTrustlineSwap && (
+                  <p className="mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+                    {selectedAssetAuthRequired
+                      ? t('trading:assetSearch.trustlineFlow.authRequiredCombinedBlocked')
+                      : t('trading:assetSearch.trustlineFlow.combinedOnlyXlm')}
+                  </p>
+                )}
+                {swapPreview.error && (
+                  <div className="mt-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+                    {swapPreview.error}
+                  </div>
+                )}
+                {swapPreview.path && (
+                  <div className="mt-3 rounded border border-blue-100 bg-blue-50 p-3 text-xs text-blue-950 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100">
+                    <dl className="grid gap-2 sm:grid-cols-2">
+                      <div>
+                        <dt className="font-semibold">{t('trading:assetSearch.swapPreview.expected')}</dt>
+                        <dd className="font-mono">{bestDestinationAmount} {swapDestinationLabel}</dd>
+                      </div>
+                      <div>
+                        <dt className="font-semibold">{t('trading:assetSearch.swapPreview.minimum')}</dt>
+                        <dd className="font-mono">{minimumDestinationAmount || '—'} {swapDestinationLabel}</dd>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <dt className="font-semibold">{t('trading:assetSearch.swapPreview.routeDetailed')}</dt>
+                        <dd className="break-all font-mono">{quoteDetails?.detailedRoute || formatDetailedAssetPath(swapPreview.path.path, swapSourceAsset, swapDestinationAsset)}</dd>
+                      </div>
+                    </dl>
+                    <button
+                      type="button"
+                      onClick={openTrustlineSwapModal}
+                      disabled={isSubmittingSwap || !canPreviewTrustlineSwap}
+                      className="mt-3 rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {isSubmittingSwap
+                        ? t('common:main.processing')
+                        : t('trading:assetSearch.trustlineFlow.combinedAction')}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </section>
           )}
           {trustlineStatus.state === 'present' && (
+            <>
             <section className="mt-4 rounded border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
               <h3 className="mb-3 text-sm font-semibold">
                 {t('trading:assetSearch.swapPreview.title')}
@@ -1368,6 +2115,14 @@ export default function AssetSearch() {
                       <div className="break-all font-mono">{selectedSwapTargetAsset.assetIssuer}</div>
                     </div>
                   )}
+                  {targetStellarAsset && (
+                    <div className="mt-3 rounded border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900">
+                      <h4 className="mb-2 text-xs font-semibold">
+                        {t('trading:assetSearch.facts.destinationTitle')}
+                      </h4>
+                      {renderTokenFactsSummary({ facts: targetAssetFacts, asset: targetStellarAsset, includeRoute: false })}
+                    </div>
+                  )}
                   {swapTargetResults.length > 0 && (
                     <div className="mt-3 max-h-56 overflow-y-auto rounded border border-gray-200 dark:border-gray-700">
                       {swapTargetResults.map((item, index) => (
@@ -1420,8 +2175,8 @@ export default function AssetSearch() {
                 <div className="flex items-end">
                   <button
                     type="button"
-                    onClick={handleSwapPreview}
-                    disabled={swapPreview.loading}
+                    onClick={() => handleSwapPreview()}
+                    disabled={swapPreview.loading || selectedTrustlineUnauthorized}
                     className="w-full rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
                   >
                     {swapPreview.loading
@@ -1450,11 +2205,54 @@ export default function AssetSearch() {
                       <dt className="font-semibold">{t('trading:assetSearch.swapPreview.route')}</dt>
                       <dd className="font-mono">{formatAssetPath(swapPreview.path.path, swapSourceAsset, swapDestinationAsset)}</dd>
                     </div>
+                    {quoteDetails && (
+                      <>
+                        <div>
+                          <dt className="font-semibold">{t('trading:assetSearch.swapPreview.effectiveRate')}</dt>
+                          <dd className="font-mono">
+                            1 {swapSourceLabel} = {ratioFormatter.format(quoteDetails.effectiveRate)} {swapDestinationLabel}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="font-semibold">{t('trading:assetSearch.swapPreview.minimumRate')}</dt>
+                          <dd className="font-mono">
+                            {quoteDetails.minimumRate ? `1 ${swapSourceLabel} = ${ratioFormatter.format(quoteDetails.minimumRate)} ${swapDestinationLabel}` : '—'}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="font-semibold">{t('trading:assetSearch.swapPreview.slippageBuffer')}</dt>
+                          <dd className="font-mono">
+                            {quoteDetails.slippageBuffer != null ? `${amountFormatter.format(Math.max(0, quoteDetails.slippageBuffer))} ${swapDestinationLabel}` : '—'}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="font-semibold">{t('trading:assetSearch.swapPreview.hops')}</dt>
+                          <dd className="font-mono">{quoteDetails.hops}</dd>
+                        </div>
+                        <div>
+                          <dt className="font-semibold">{t('trading:assetSearch.swapPreview.quoteAge')}</dt>
+                          <dd className="font-mono">{formatQuoteAge(quoteDetails.ageSeconds)}</dd>
+                        </div>
+                        <div className="sm:col-span-2">
+                          <dt className="font-semibold">{t('trading:assetSearch.swapPreview.routeDetailed')}</dt>
+                          <dd className="break-all font-mono">{quoteDetails.detailedRoute}</dd>
+                        </div>
+                        {swapPreview.refreshComparison && (
+                          <div className="sm:col-span-2 rounded border border-blue-200 bg-blue-50 px-3 py-2 dark:border-blue-900 dark:bg-blue-950">
+                            <dt className="font-semibold">{t('trading:assetSearch.swapPreview.refreshComparison')}</dt>
+                            <dd className="font-mono">
+                              {swapPreview.refreshComparison.previousDestinationAmount} {'->'} {swapPreview.refreshComparison.latestDestinationAmount} {swapDestinationLabel}
+                              {' '}({formatPercent(swapPreview.refreshComparison.deltaPercent)})
+                            </dd>
+                          </div>
+                        )}
+                      </>
+                    )}
                     <div className="sm:col-span-2">
                       <button
                         type="button"
                         onClick={openSwapModal}
-                        disabled={isSubmittingSwap || !minimumDestinationAmount}
+                        disabled={isSubmittingSwap || !minimumDestinationAmount || selectedTrustlineUnauthorized}
                         className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
                       >
                         {isSubmittingSwap
@@ -1485,7 +2283,42 @@ export default function AssetSearch() {
                   </div>
                 )}
                 {(marketData.orderbook || marketData.liquidityPools.length > 0) && (
-                  <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                  <div className="mt-3 space-y-3">
+                  <dl className="grid gap-2 rounded border border-gray-200 p-3 text-xs dark:border-gray-700 sm:grid-cols-2 lg:grid-cols-4">
+                    <div>
+                      <dt className="font-semibold">{t('trading:assetSearch.market.spread')}</dt>
+                      <dd className="font-mono">{marketQuality.spreadPercent == null ? '—' : formatPercent(marketQuality.spreadPercent)}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold">{t('trading:assetSearch.market.priceImpact')}</dt>
+                      <dd className="font-mono">{marketQuality.estimatedImpactPercent == null ? '—' : formatPercent(marketQuality.estimatedImpactPercent)}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold">{t('trading:assetSearch.market.topDepth')}</dt>
+                      <dd className="font-mono">{amountFormatter.format(marketQuality.topAskDepth)} {swapSourceLabel}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold">{t('trading:assetSearch.market.marketAge')}</dt>
+                      <dd className="font-mono">{formatQuoteAge(marketQuality.ageSeconds)}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold">{t('trading:assetSearch.market.bestBid')}</dt>
+                      <dd className="font-mono">{marketQuality.bestBid == null ? '—' : ratioFormatter.format(marketQuality.bestBid)}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold">{t('trading:assetSearch.market.bestAsk')}</dt>
+                      <dd className="font-mono">{marketQuality.bestAsk == null ? '—' : ratioFormatter.format(marketQuality.bestAsk)}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold">{t('trading:assetSearch.market.depthCoversAmount')}</dt>
+                      <dd>{marketQuality.topAskCoversSource == null ? '—' : factValue(marketQuality.topAskCoversSource)}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold">{t('trading:assetSearch.market.poolCount')}</dt>
+                      <dd className="font-mono">{countFormatter.format(marketQuality.poolCount)}</dd>
+                    </div>
+                  </dl>
+                  <div className="grid gap-3 lg:grid-cols-2">
                     <div className="rounded border border-gray-200 p-3 dark:border-gray-700">
                       <h5 className="mb-2 text-xs font-semibold">{t('trading:assetSearch.market.orderbook')}</h5>
                       <div className="grid gap-3 sm:grid-cols-2">
@@ -1530,9 +2363,144 @@ export default function AssetSearch() {
                       ))}
                     </div>
                   </div>
+                  </div>
                 )}
               </div>
             </section>
+            <section className="mt-4 rounded border border-gray-200 bg-white p-3 dark:border-blue-900 dark:bg-blue-900/40">
+              <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <h3 className="text-sm font-semibold">
+                  {t('trading:assetSearch.limitOffer.title')}
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setLimitOfferRefreshToken((value) => value + 1)}
+                  disabled={limitOfferStatus.loading}
+                  className="rounded border border-gray-300 px-3 py-2 text-xs font-semibold hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800"
+                >
+                  {limitOfferStatus.loading
+                    ? t('common:loading', 'Loading...')
+                    : t('trading:assetSearch.limitOffer.refresh')}
+                </button>
+              </div>
+              <p className="mb-3 text-xs text-gray-700 dark:text-blue-100">
+                {t('trading:assetSearch.limitOffer.description')}
+              </p>
+              <div className="grid gap-3 lg:grid-cols-[180px_1fr_1fr_auto]">
+                <label className="text-xs">
+                  <span className="mb-1 block font-semibold">{t('trading:assetSearch.limitOffer.direction.label')}</span>
+                  <select
+                    value={limitOfferDirection}
+                    onChange={(event) => {
+                      setLimitOfferDirection(event.target.value);
+                      setModalError('');
+                      setActionMessage('');
+                    }}
+                    className="w-full rounded border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
+                  >
+                    <option value="sell-token-for-xlm">{t('trading:assetSearch.limitOffer.direction.sellTokenForXlm', { asset: formatAssetLabel(selectedStellarAsset) })}</option>
+                    <option value="sell-xlm-for-token">{t('trading:assetSearch.limitOffer.direction.sellXlmForToken', { asset: formatAssetLabel(selectedStellarAsset) })}</option>
+                  </select>
+                </label>
+                <label className="text-xs">
+                  <span className="mb-1 block font-semibold">
+                    {t('trading:assetSearch.limitOffer.amount', { asset: limitOfferSellingLabel })}
+                  </span>
+                  <input
+                    value={limitOfferAmount}
+                    onChange={(event) => {
+                      setLimitOfferAmount(event.target.value);
+                      setModalError('');
+                      setActionMessage('');
+                    }}
+                    className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+                    inputMode="decimal"
+                  />
+                </label>
+                <label className="text-xs">
+                  <span className="mb-1 block font-semibold">
+                    {t('trading:assetSearch.limitOffer.price', { selling: limitOfferSellingLabel, buying: limitOfferBuyingLabel })}
+                  </span>
+                  <input
+                    value={limitOfferPrice}
+                    onChange={(event) => {
+                      setLimitOfferPrice(event.target.value);
+                      setModalError('');
+                      setActionMessage('');
+                    }}
+                    className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
+                    inputMode="decimal"
+                  />
+                </label>
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={openCreateOfferModal}
+                    disabled={isSubmittingOffer}
+                    className="w-full rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                  >
+                    {isSubmittingOffer
+                      ? t('common:main.processing')
+                      : t('trading:assetSearch.limitOffer.create')}
+                  </button>
+                </div>
+              </div>
+              <div className="mt-4 border-t border-gray-200 pt-3 dark:border-blue-900">
+                <h4 className="mb-2 text-sm font-semibold">{t('trading:assetSearch.limitOffer.openOffers')}</h4>
+                {limitOfferStatus.error && (
+                  <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+                    {t('trading:assetSearch.limitOffer.loadFailed')}
+                  </div>
+                )}
+                {!limitOfferStatus.error && selectedRelatedOffers.length === 0 && (
+                  <div className="text-xs text-gray-600 dark:text-blue-100">
+                    {limitOfferStatus.loading
+                      ? t('common:loading', 'Loading...')
+                      : t('trading:assetSearch.limitOffer.noOffers')}
+                  </div>
+                )}
+                {selectedRelatedOffers.length > 0 && (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full text-xs">
+                      <thead>
+                        <tr className="text-left">
+                          <th className="py-2 pr-3">{t('trading:assetSearch.limitOffer.columns.selling')}</th>
+                          <th className="py-2 pr-3">{t('trading:assetSearch.limitOffer.columns.buying')}</th>
+                          <th className="py-2 pr-3">{t('trading:assetSearch.limitOffer.columns.amount')}</th>
+                          <th className="py-2 pr-3">{t('trading:assetSearch.limitOffer.columns.price')}</th>
+                          <th className="py-2 pr-3">{t('trading:assetSearch.limitOffer.columns.actions')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedRelatedOffers.map((offer) => {
+                          const selling = assetFromOfferSide(offer, 'selling');
+                          const buying = assetFromOfferSide(offer, 'buying');
+                          return (
+                            <tr key={offer.id} className="border-t border-gray-200 dark:border-gray-700">
+                              <td className="py-2 pr-3 font-mono">{formatAssetLabelWithIssuer(selling)}</td>
+                              <td className="py-2 pr-3 font-mono">{formatAssetLabelWithIssuer(buying)}</td>
+                              <td className="py-2 pr-3 font-mono">{offer.amount}</td>
+                              <td className="py-2 pr-3 font-mono">{offer.price}</td>
+                              <td className="py-2 pr-3">
+                                <button
+                                  type="button"
+                                  onClick={() => openCancelOfferModal(offer)}
+                                  disabled={isSubmittingOffer}
+                                  className="rounded border border-red-300 px-2 py-1 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-red-900 dark:text-red-200 dark:hover:bg-red-950"
+                                >
+                                  {t('trading:assetSearch.limitOffer.cancel')}
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </section>
+            </>
           )}
           </div>
         </div>
@@ -1550,13 +2518,25 @@ export default function AssetSearch() {
               </div>
               <div>
                 <dt className="font-semibold">{t('trading:assetSearch.trustlineConfirm.limit')}</dt>
-                <dd className="font-mono">1000000 {selectedAsset.assetCode}</dd>
+                <dd className="font-mono">{trustlineLimitAmount || trustlineLimit} {selectedAsset.assetCode}</dd>
               </div>
               <div className="sm:col-span-2">
                 <dt className="font-semibold">{t('trading:assetSearch.result.columns.issuer')}</dt>
                 <dd className="break-all font-mono">{selectedAsset.assetIssuer}</dd>
               </div>
             </dl>
+            {trustlineReserveSummary && (
+              <dl className="mt-4 grid gap-3 rounded border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 sm:grid-cols-2">
+                <div>
+                  <dt className="font-semibold">{t('trading:assetSearch.trustlineFlow.reserveIncrease')}</dt>
+                  <dd>{amountFormatter.format(trustlineReserveSummary.extraReserve)} XLM</dd>
+                </div>
+                <div>
+                  <dt className="font-semibold">{t('trading:assetSearch.trustlineFlow.reserveAfter')}</dt>
+                  <dd>{amountFormatter.format(trustlineReserveSummary.afterTrustlineMinimum)} XLM</dd>
+                </div>
+              </dl>
+            )}
             <section className="mt-4 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
               <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
                 {t('trading:assetSearch.facts.title')}
@@ -1580,6 +2560,56 @@ export default function AssetSearch() {
                 className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700"
               >
                 {t('trading:assetSearch.trustlineConfirm.continue')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showTrustlineSwapConfirm && selectedAsset && swapPreview.path && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50 p-4">
+          <div className="my-auto w-full max-w-2xl rounded-lg bg-white p-5 shadow-lg dark:bg-gray-800">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+              {t('trading:assetSearch.trustlineFlow.combinedConfirmTitle')}
+            </h2>
+            <dl className="grid gap-3 text-sm text-gray-800 dark:text-gray-100">
+              <div className="grid gap-1">
+                <dt className="font-semibold">{t('trading:assetSearch.trustlineConfirm.limit')}</dt>
+                <dd className="font-mono">{trustlineLimitAmount || trustlineLimit} {selectedAsset.assetCode}</dd>
+              </div>
+              <div className="grid gap-1">
+                <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.send')}</dt>
+                <dd className="font-mono">{normalizeAmount(swapAmount) || swapAmount} XLM</dd>
+              </div>
+              <div className="grid gap-1">
+                <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.receive')}</dt>
+                <dd className="font-mono">{swapPreview.path.destination_amount} {swapDestinationLabel}</dd>
+              </div>
+              <div className="grid gap-1">
+                <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.minimum')}</dt>
+                <dd className="font-mono">{minimumDestinationAmount} {swapDestinationLabel}</dd>
+              </div>
+              <div className="grid gap-1">
+                <dt className="font-semibold">{t('trading:assetSearch.swapPreview.routeDetailed')}</dt>
+                <dd className="break-all font-mono">{quoteDetails?.detailedRoute || formatDetailedAssetPath(swapPreview.path.path, swapSourceAsset, swapDestinationAsset)}</dd>
+              </div>
+            </dl>
+            <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+              {t('trading:assetSearch.trustlineFlow.combinedWarning')}
+            </p>
+            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setShowTrustlineSwapConfirm(false)}
+                className="rounded border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
+              >
+                {t('common:cancel', 'Cancel')}
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmTrustlineSwap}
+                className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+              >
+                {t('trading:assetSearch.trustlineFlow.combinedContinue')}
               </button>
             </div>
           </div>
@@ -1622,13 +2652,46 @@ export default function AssetSearch() {
                 <dt className="font-semibold">{t('trading:assetSearch.swapPreview.route')}</dt>
                 <dd className="font-mono">{formatAssetPath(swapPreview.path.path, swapSourceAsset, swapDestinationAsset)}</dd>
               </div>
+              {quoteDetails && (
+                <>
+                  <div className="grid gap-1">
+                    <dt className="font-semibold">{t('trading:assetSearch.swapPreview.effectiveRate')}</dt>
+                    <dd className="font-mono">1 {swapSourceLabel} = {ratioFormatter.format(quoteDetails.effectiveRate)} {swapDestinationLabel}</dd>
+                  </div>
+                  <div className="grid gap-1">
+                    <dt className="font-semibold">{t('trading:assetSearch.swapPreview.quoteAge')}</dt>
+                    <dd className="font-mono">{formatQuoteAge(quoteDetails.ageSeconds)}</dd>
+                  </div>
+                  <div className="grid gap-1">
+                    <dt className="font-semibold">{t('trading:assetSearch.swapPreview.routeDetailed')}</dt>
+                    <dd className="break-all font-mono">{quoteDetails.detailedRoute}</dd>
+                  </div>
+                  {swapPreview.refreshComparison && (
+                    <div className="grid gap-1">
+                      <dt className="font-semibold">{t('trading:assetSearch.swapPreview.refreshComparison')}</dt>
+                      <dd className="font-mono">
+                        {swapPreview.refreshComparison.previousDestinationAmount} {'->'} {swapPreview.refreshComparison.latestDestinationAmount} {swapDestinationLabel}
+                        {' '}({formatPercent(swapPreview.refreshComparison.deltaPercent)})
+                      </dd>
+                    </div>
+                  )}
+                </>
+              )}
             </dl>
             <section className="mt-4 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
               <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
-                {t('trading:assetSearch.facts.title')}
+                {t(selectedAssetFactsTitleKey)}
               </h3>
-              {renderTokenFactsSummary({ includeDisclaimer: true })}
+              {renderTokenFactsSummary({ includeDisclaimer: true, facts: assetFacts, asset: selectedAsset })}
             </section>
+            {swapDirection === 'token-to-token' && targetStellarAsset && (
+              <section className="mt-4 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
+                <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
+                  {t('trading:assetSearch.facts.destinationTitle')}
+                </h3>
+                {renderTokenFactsSummary({ facts: targetAssetFacts, asset: targetStellarAsset, includeRoute: false })}
+              </section>
+            )}
             <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
               {t('trading:assetSearch.swapConfirm.routeRefresh')}
             </p>
@@ -1651,16 +2714,75 @@ export default function AssetSearch() {
           </div>
         </div>
       )}
+      {showOfferConfirm && pendingOfferAction && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50 p-4">
+          <div className="my-auto w-full max-w-2xl rounded-lg bg-white p-5 shadow-lg dark:bg-gray-800">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+              {pendingOfferAction.type === 'cancel'
+                ? t('trading:assetSearch.limitOffer.cancelTitle')
+                : t('trading:assetSearch.limitOffer.confirmTitle')}
+            </h2>
+            <dl className="grid gap-3 text-sm text-gray-800 dark:text-gray-100 sm:grid-cols-2">
+              <div>
+                <dt className="font-semibold">{t('trading:assetSearch.limitOffer.columns.selling')}</dt>
+                <dd className="font-mono">{formatAssetLabelWithIssuer(pendingOfferAction.selling)}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold">{t('trading:assetSearch.limitOffer.columns.buying')}</dt>
+                <dd className="font-mono">{formatAssetLabelWithIssuer(pendingOfferAction.buying)}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold">{t('trading:assetSearch.limitOffer.columns.amount')}</dt>
+                <dd className="font-mono">
+                  {pendingOfferAction.type === 'cancel'
+                    ? t('trading:assetSearch.limitOffer.cancelAmount')
+                    : `${pendingOfferAction.amount} ${formatAssetLabel(pendingOfferAction.selling)}`}
+                </dd>
+              </div>
+              <div>
+                <dt className="font-semibold">{t('trading:assetSearch.limitOffer.columns.price')}</dt>
+                <dd className="font-mono">{pendingOfferAction.price}</dd>
+              </div>
+            </dl>
+            <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+              {pendingOfferAction.type === 'cancel'
+                ? t('trading:assetSearch.limitOffer.cancelWarning')
+                : t('trading:assetSearch.limitOffer.warning')}
+            </p>
+            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setShowOfferConfirm(false)}
+                className="rounded border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
+              >
+                {t('common:cancel', 'Cancel')}
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmOffer}
+                className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700"
+              >
+                {t('trading:assetSearch.limitOffer.continue')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {showSecretModal && (
         <SecretKeyModal
-          onConfirm={(collected) => (modalAction === 'swap' ? handleExecuteSwap(collected) : handleCreateTrustline(collected))}
+          onConfirm={(collected) => {
+            if (modalAction === 'swap') return handleExecuteSwap(collected);
+            if (modalAction === 'trustlineSwap') return handleExecuteTrustlineSwap(collected);
+            if (modalAction === 'offer' || modalAction === 'cancelOffer') return handleSubmitOfferAction(collected);
+            return handleCreateTrustline(collected);
+          }}
           onCancel={() => {
             setShowSecretModal(false);
             setModalAction('');
             setModalError('');
           }}
           errorMessage={modalError}
-          isProcessing={isSubmittingTrustline || isSubmittingSwap}
+          isProcessing={isSubmittingTrustline || isSubmittingSwap || isSubmittingOffer}
           thresholds={accountInfo?.thresholds || null}
           signers={accountInfo?.signers || []}
           operationType={modalOperationType}

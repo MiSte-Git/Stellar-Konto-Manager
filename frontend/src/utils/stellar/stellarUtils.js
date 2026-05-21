@@ -220,6 +220,7 @@ export async function loadTrustlines(publicKey, serverOverride, options = {}) {
         buyingLiabilities: asset.buying_liabilities,
         sellingLiabilities: asset.selling_liabilities,
         isAuthorized: asset.is_authorized,
+        isAuthorizedToMaintainLiabilities: asset.is_authorized_to_maintain_liabilities,
         createdAt: includeOps ? (changeOp?.created_at || 'unknown') : undefined,
       };
     });

@@ -132,6 +132,11 @@ function normalize_asset_search_input(): array {
     return ['code' => $code, 'issuer' => $issuer, 'limit' => $limit];
 }
 
+function case_insensitive_code_variants(string $code): array {
+    if ($code === '') return [''];
+    return array_values(array_unique([$code, strtoupper($code), strtolower($code)]));
+}
+
 function normalize_asset_identity(): array {
     $code = trim((string)($_GET['code'] ?? ''));
     $issuer = trim((string)($_GET['issuer'] ?? ''));
@@ -148,14 +153,26 @@ function normalize_asset_identity(): array {
 
 function search_assets(): void {
     $query = normalize_asset_search_input();
-    $params = ['limit' => (string)$query['limit']];
-    if ($query['code'] !== '') $params['asset_code'] = $query['code'];
-    if ($query['issuer'] !== '') $params['asset_issuer'] = $query['issuer'];
 
     try {
-        $url = horizon_base_url() . '/assets?' . http_build_query($params);
-        $data = fetch_json($url);
-        $records = $data['_embedded']['records'] ?? [];
+        $records = [];
+        $seen = [];
+        foreach (case_insensitive_code_variants($query['code']) as $codeVariant) {
+            $params = ['limit' => (string)$query['limit']];
+            if ($codeVariant !== '') $params['asset_code'] = $codeVariant;
+            if ($query['issuer'] !== '') $params['asset_issuer'] = $query['issuer'];
+            $url = horizon_base_url() . '/assets?' . http_build_query($params);
+            $data = fetch_json($url);
+            $pageRecords = $data['_embedded']['records'] ?? [];
+            if (!is_array($pageRecords)) continue;
+            foreach ($pageRecords as $record) {
+                if (!is_array($record)) continue;
+                $key = (string)($record['asset_code'] ?? '') . ':' . (string)($record['asset_issuer'] ?? '');
+                if (isset($seen[$key])) continue;
+                $seen[$key] = true;
+                $records[] = $record;
+            }
+        }
         $items = [];
         if (is_array($records)) {
             foreach ($records as $record) {

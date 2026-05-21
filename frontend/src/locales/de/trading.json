@@ -51,7 +51,10 @@
       "unknown": "Noch nicht geprüft",
       "added": "Trustline wurde hinzugefügt.",
       "balance": "Balance",
-      "limit": "Limit"
+      "limit": "Limit",
+      "authorization": "Autorisierung",
+      "authorized": "Autorisiert",
+      "unauthorized": "Nicht autorisiert"
     },
     "swapPreview": {
       "title": "Swap-Preview",
@@ -72,15 +75,27 @@
       "expected": "Geschätzt erhalten",
       "minimum": "Minimum nach Slippage",
       "route": "Route",
+      "routeDetailed": "Route mit Issuern",
+      "effectiveRate": "Effektiver Kurs",
+      "minimumRate": "Mindestkurs nach Slippage",
+      "slippageBuffer": "Slippage-Puffer",
+      "hops": "Markt-Hops",
+      "quoteAge": "Quote-Alter",
+      "ageSeconds": "{{count}} Sekunden",
+      "ageMinutes": "{{count}} Minuten",
+      "refreshComparison": "Vergleich nach Refresh",
+      "notAvailable": "Nicht verfügbar",
       "invalidAmount": "Bitte einen gültigen Betrag in {{asset}} eingeben.",
       "invalidSlippage": "Bitte eine Slippage zwischen 0 und 50 Prozent eingeben.",
       "invalidTarget": "Bitte einen Ziel-Token suchen und auswählen oder exakt als CODE:ISSUER eingeben.",
       "sameAsset": "Quelle und Ziel dürfen nicht dasselbe Asset sein.",
       "destinationTrustlineMissing": "Für den Ziel-Token fehlt in diesem Account noch die Trustline.",
+      "destinationTrustlineUnauthorized": "Die Ziel-Trustline ist noch nicht vom Issuer autorisiert.",
       "minimumMissing": "Der Mindestbetrag konnte nicht berechnet werden.",
       "previewRequired": "Bitte zuerst den Preis prüfen.",
       "noRoute": "Keine Swap-Route gefunden.",
       "failed": "Swap-Preview konnte nicht geladen werden.",
+      "quoteWorseThanMinimum": "Die frische Route liegt unter dem bestätigten Mindestbetrag. Bitte den Preis erneut prüfen.",
       "success": "Swap wurde ausgeführt. Transaktion:"
     },
     "swapConfirm": {
@@ -90,7 +105,7 @@
       "minimum": "Garantiertes Minimum",
       "source": "Quelle",
       "destination": "Ziel",
-      "routeRefresh": "Die Route und das Minimum werden direkt vor dem Signieren erneut geprüft. Wenn keine gültige Route mehr existiert, wird nicht signiert.",
+      "routeRefresh": "Die Route wird direkt vor dem Signieren erneut geprüft. Wenn die frische Quote unter dem hier bestätigten Minimum liegt, wird nicht signiert.",
       "continue": "Weiter zur Signatur"
     },
     "market": {
@@ -101,7 +116,50 @@
       "asks": "Asks",
       "amm": "Liquidity Pools",
       "empty": "Keine Daten gefunden.",
-      "failed": "Marktdaten konnten nicht geladen werden."
+      "failed": "Marktdaten konnten nicht geladen werden.",
+      "spread": "Spread",
+      "priceImpact": "Preisimpact (Schätzung)",
+      "topDepth": "Top-5 Ask-Tiefe",
+      "marketAge": "Marktdaten-Alter",
+      "bestBid": "Bester Bid",
+      "bestAsk": "Bester Ask",
+      "depthCoversAmount": "Tiefe deckt Betrag",
+      "poolCount": "AMM-Pools"
+    },
+    "limitOffer": {
+      "title": "Limit-Orders",
+      "description": "Platziere ein Angebot im Stellar-Orderbook. Es bleibt offen, bis es ausgeführt, ersetzt oder gelöscht wird. Jede offene Offer erhöht die Mindestreserve.",
+      "refresh": "Offers neu laden",
+      "direction": {
+        "label": "Richtung",
+        "sellTokenForXlm": "{{asset}} gegen XLM verkaufen",
+        "sellXlmForToken": "XLM gegen {{asset}} anbieten"
+      },
+      "amount": "Verkaufte Menge {{asset}}",
+      "price": "Preis: {{buying}} pro 1 {{selling}}",
+      "create": "Limit-Order platzieren",
+      "confirmTitle": "Limit-Order bestätigen",
+      "cancelTitle": "Limit-Order löschen",
+      "warning": "Diese Order kann sofort teilweise oder vollständig ausgeführt werden, wenn ein passendes Gegenangebot existiert. Prüfe Preis und Richtung vor der Signatur.",
+      "cancelWarning": "Diese Aktion löscht die offene Offer, indem sie mit Menge 0 ersetzt wird.",
+      "continue": "Weiter zur Signatur",
+      "openOffers": "Offene Offers für diesen Token",
+      "noOffers": "Keine offenen Offers für diesen Token gefunden.",
+      "loadFailed": "Offene Offers konnten nicht geladen werden.",
+      "invalidPair": "Für diese Limit-Order fehlt ein gültiges Asset-Paar.",
+      "invalidAmount": "Bitte eine gültige Verkaufsmenge in {{asset}} eingeben.",
+      "invalidPrice": "Bitte einen gültigen Preis größer 0 eingeben.",
+      "createSuccess": "Limit-Order wurde platziert. Transaktion:",
+      "cancelSuccess": "Limit-Order wurde gelöscht. Transaktion:",
+      "cancelAmount": "0 (Offer löschen)",
+      "cancel": "Löschen",
+      "columns": {
+        "selling": "Verkauft",
+        "buying": "Kauft",
+        "amount": "Menge",
+        "price": "Preis",
+        "actions": "Aktionen"
+      }
     },
     "trustlineConfirm": {
       "title": "Trustline bestätigen",
@@ -109,8 +167,29 @@
       "warning": "Eine Trustline erlaubt diesem Asset, in deinem Account gehalten zu werden. Prüfe die Fakten, insbesondere Issuer, Home Domain, stellar.toml, Authorization und Clawback, bevor du signierst.",
       "continue": "Weiter zur Signatur"
     },
+    "trustlineFlow": {
+      "title": "Trustline vorbereiten",
+      "limitHelp": "Das Limit ist der maximale Token-Bestand auf dieser Trustline. Es ist keine Kauforder und reserviert keine Token.",
+      "reserveIncrease": "Zusätzliche Mindestreserve",
+      "reserveAfter": "Mindestreserve danach",
+      "spendableAfter": "XLM frei nach Reserve",
+      "authRequiredHint": "Dieses Asset nutzt auth_required. Die Trustline kann angelegt werden, aber der Issuer muss sie autorisieren, bevor du den Token empfangen oder per Swap kaufen kannst.",
+      "combinedTitle": "Optional: Trustline + Swap",
+      "combinedAction": "Trustline + Swap ausführen",
+      "combinedConfirmTitle": "Trustline + Swap bestätigen",
+      "combinedWarning": "Diese Transaktion legt zuerst die Trustline an und führt danach den Swap aus. Die Route wird direkt vor der Signatur erneut geprüft.",
+      "combinedContinue": "Weiter zur Signatur",
+      "combinedOnlyXlm": "Der kombinierte Flow ist hier nur für XLM -> Token verfügbar.",
+      "authRequiredCombinedBlocked": "Kombinierter Trustline+Swap ist für auth_required-Assets deaktiviert, weil der Issuer die neue Trustline erst autorisieren muss.",
+      "invalidLimit": "Bitte ein gültiges Trustline-Limit größer 0 eingeben.",
+      "limitBelowExpected": "Das Trustline-Limit liegt unter dem erwarteten Empfangsbetrag.",
+      "alreadyPresent": "Die Trustline ist inzwischen bereits vorhanden. Bitte neu laden und den normalen Swap verwenden.",
+      "combinedSuccess": "Trustline und Swap wurden ausgeführt. Transaktion:"
+    },
     "facts": {
       "title": "Token-Fakten",
+      "sourceTitle": "Quell-Token-Fakten",
+      "destinationTitle": "Ziel-Token-Fakten",
       "disclaimer": "Das ist keine Bewertung und keine Empfehlung. Die App zeigt nur gefundene Daten, die Entscheidung liegt beim Nutzer.",
       "loading": "Token-Fakten werden geladen...",
       "issuerLoadFailed": "Issuer-Account konnte nicht geladen werden.",
@@ -140,6 +219,16 @@
         "authImmutable": "Authorization immutable",
         "clawbackEnabled": "Clawback enabled"
       }
+    },
+    "risk": {
+      "title": "Prüfpunkte vor dem Signieren",
+      "issuerLoadFailed": "Issuer-Daten konnten nicht geladen werden.",
+      "noHomeDomain": "Der Issuer hat keine Home Domain.",
+      "tomlNotLoaded": "Die stellar.toml ist nicht geladen oder nicht erreichbar.",
+      "tomlAssetMissing": "Dieses Asset ist nicht in der stellar.toml des Issuers gelistet.",
+      "issuerUnlocked": "Der Issuer-Master-Key ist nicht gesperrt.",
+      "authRequired": "Dieses Asset benötigt Issuer-Autorisierung.",
+      "clawbackEnabled": "Clawback ist für dieses Asset aktiviert."
     },
     "detail": {
       "status": {

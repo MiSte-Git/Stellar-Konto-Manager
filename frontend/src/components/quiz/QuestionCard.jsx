@@ -96,6 +96,11 @@ export default function QuestionCard({
     return null;
   };
 
+  const selectedOption = React.useMemo(
+    () => options.find((opt) => opt.id === selectedOptionId),
+    [options, selectedOptionId]
+  );
+
   return (
     <div>
       <h3 id={headingId} className="sr-only">{t(questionKey)}</h3>
@@ -190,6 +195,12 @@ export default function QuestionCard({
           </div>
         )}
       </div>
+
+      {showFeedback && selectedOption?.feedbackKey && (
+        <div role="status" className="sr-only">
+          {t(selectedOption.feedbackKey)}
+        </div>
+      )}
 
     </div>
   );
