@@ -13,7 +13,7 @@
     "i18n:ack": "node ../scripts/i18n_ack_update.mjs"
   },
   "dependencies": {
-    "@stellar/stellar-sdk": "^13.3.0",
+    "@stellar/stellar-sdk": "^15.1.0",
     "baseline-browser-mapping": "^2.9.15",
     "caniuse-lite": "^1.0.30001764",
     "canvas-confetti": "^1.9.4",
@@ -26,6 +26,9 @@
     "react-dom": "^19.1.0",
     "react-i18next": "^15.6.0",
     "react-router-dom": "^7.10.1"
+  },
+  "overrides": {
+    "axios": "^1.15.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
