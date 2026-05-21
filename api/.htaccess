@@ -1,3 +1,5 @@
 RewriteEngine On
 # Route /api/multisig/... to multisig.php
 RewriteRule ^multisig($|/.*$) /api/multisig.php [L,QSA]
+# Route /api/trade/... to trade.php
+RewriteRule ^trade($|/.*$) /api/trade.php [L,QSA]
