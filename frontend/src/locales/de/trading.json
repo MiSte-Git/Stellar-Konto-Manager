@@ -1,8 +1,12 @@
 {
   "assetSearch": {
-    "title": "Asset-Suche",
-    "description": "Suche nach Assets über den Trading-Endpunkt (Horizon).",
+    "title": "Token suchen",
+    "description": "Suche nach Asset-Code, Issuer-Adresse oder der exakten Kombination CODE:ISSUER.",
     "form": {
+      "query": {
+        "label": "Suchbegriff",
+        "placeholder": "USDC, G... oder USDC:G..."
+      },
       "code": {
         "label": "Asset-Code",
         "placeholder": "z. B. USDC"
@@ -13,17 +17,167 @@
       },
       "submit": "Suchen"
     },
+    "examples": {
+      "label": "Beispiele"
+    },
+    "mode": {
+      "code": "Suche nach Asset-Code",
+      "issuer": "Suche nach Issuer",
+      "exact": "Exaktes Asset"
+    },
+    "actions": {
+      "details": "Details",
+      "trustline": "Trustline",
+      "trustlineAdd": "Trustline hinzufügen",
+      "trustlinePresent": "Trustline vorhanden",
+      "trustlineNext": "Nächster Schritt: Trustline direkt aus dem Suchergebnis hinzufügen",
+      "swap": "Swap",
+      "swapNext": "Asset auswählen und Swap-Preview öffnen"
+    },
+    "account": {
+      "active": "Aktiver Account",
+      "network": "Netzwerk",
+      "none": "Kein Account geladen",
+      "missing": "Kein Account geladen",
+      "loading": "Account wird geprüft...",
+      "invalid": "Der geladene Account ist ungültig."
+    },
+    "trustlineStatus": {
+      "label": "Trustline-Status",
+      "loading": "Trustline wird geprüft...",
+      "present": "Trustline vorhanden",
+      "missing": "Trustline fehlt",
+      "error": "Trustline-Status konnte nicht geladen werden",
+      "unknown": "Noch nicht geprüft",
+      "added": "Trustline wurde hinzugefügt.",
+      "balance": "Balance",
+      "limit": "Limit"
+    },
+    "swapPreview": {
+      "title": "Swap-Preview",
+      "direction": {
+        "xlmToToken": "XLM -> Token",
+        "tokenToXlm": "Token -> XLM",
+        "tokenToToken": "Token -> Token"
+      },
+      "sendAmount": "Du sendest {{asset}}",
+      "targetAsset": "Ziel-Token",
+      "targetPlaceholder": "USDC, G... oder EURC:G...",
+      "targetSearch": "Ziel suchen",
+      "targetSelected": "Ausgewählter Ziel-Token",
+      "slippage": "Slippage %",
+      "check": "Preis prüfen",
+      "execute": "Swap ausführen",
+      "executing": "Swap wird ausgeführt...",
+      "expected": "Geschätzt erhalten",
+      "minimum": "Minimum nach Slippage",
+      "route": "Route",
+      "invalidAmount": "Bitte einen gültigen Betrag in {{asset}} eingeben.",
+      "invalidSlippage": "Bitte eine Slippage zwischen 0 und 50 Prozent eingeben.",
+      "invalidTarget": "Bitte einen Ziel-Token suchen und auswählen oder exakt als CODE:ISSUER eingeben.",
+      "sameAsset": "Quelle und Ziel dürfen nicht dasselbe Asset sein.",
+      "destinationTrustlineMissing": "Für den Ziel-Token fehlt in diesem Account noch die Trustline.",
+      "minimumMissing": "Der Mindestbetrag konnte nicht berechnet werden.",
+      "previewRequired": "Bitte zuerst den Preis prüfen.",
+      "noRoute": "Keine Swap-Route gefunden.",
+      "failed": "Swap-Preview konnte nicht geladen werden.",
+      "success": "Swap wurde ausgeführt. Transaktion:"
+    },
+    "swapConfirm": {
+      "title": "Swap bestätigen",
+      "send": "Du sendest",
+      "receive": "Geschätzt erhältst du",
+      "minimum": "Garantiertes Minimum",
+      "source": "Quelle",
+      "destination": "Ziel",
+      "routeRefresh": "Die Route und das Minimum werden direkt vor dem Signieren erneut geprüft. Wenn keine gültige Route mehr existiert, wird nicht signiert.",
+      "continue": "Weiter zur Signatur"
+    },
+    "market": {
+      "title": "Orderbook / AMM",
+      "load": "Marktdaten laden",
+      "orderbook": "Orderbook",
+      "bids": "Bids",
+      "asks": "Asks",
+      "amm": "Liquidity Pools",
+      "empty": "Keine Daten gefunden.",
+      "failed": "Marktdaten konnten nicht geladen werden."
+    },
+    "trustlineConfirm": {
+      "title": "Trustline bestätigen",
+      "limit": "Trustline-Limit",
+      "warning": "Eine Trustline erlaubt diesem Asset, in deinem Account gehalten zu werden. Prüfe die Fakten, insbesondere Issuer, Home Domain, stellar.toml, Authorization und Clawback, bevor du signierst.",
+      "continue": "Weiter zur Signatur"
+    },
+    "facts": {
+      "title": "Token-Fakten",
+      "disclaimer": "Das ist keine Bewertung und keine Empfehlung. Die App zeigt nur gefundene Daten, die Entscheidung liegt beim Nutzer.",
+      "loading": "Token-Fakten werden geladen...",
+      "issuerLoadFailed": "Issuer-Account konnte nicht geladen werden.",
+      "notAvailable": "Nicht verfügbar",
+      "notChecked": "Nicht geprüft",
+      "yes": "Ja",
+      "no": "Nein",
+      "homeDomain": "Home Domain",
+      "issuerMasterWeight": "Master-Key-Gewicht",
+      "issuerLocked": "Issuer-Master-Key gesperrt",
+      "liquidityRoute": "Swap-Route",
+      "routeAvailable": "Route gefunden",
+      "routeUnavailable": "Keine Route gefunden",
+      "toml": {
+        "status": "stellar.toml Status",
+        "url": "stellar.toml URL",
+        "loading": "stellar.toml wird geladen...",
+        "loaded": "stellar.toml geladen",
+        "failed": "stellar.toml nicht abrufbar",
+        "noHomeDomain": "Keine Home Domain im Issuer-Account",
+        "assetListed": "Asset in stellar.toml gelistet",
+        "currencyCount": "CURRENCIES-Einträge"
+      },
+      "flags": {
+        "authRequired": "Authorization required",
+        "authRevocable": "Authorization revocable",
+        "authImmutable": "Authorization immutable",
+        "clawbackEnabled": "Clawback enabled"
+      }
+    },
+    "detail": {
+      "status": {
+        "ledgerKnown": "In Horizon bekannt"
+      },
+      "nextStepHint": "Nur in Horizon bekannt. Prüfe Issuer und Vertrauen, bevor du eine Trustline oder einen Swap signierst."
+    },
     "result": {
       "empty": "Keine Assets gefunden.",
+      "count": "Gefundene Tokens: {{count}}",
+      "qualityHint": "Hinweis: Aussagekräftiger sind Trustlines zusammen mit Domain und TOML. Die Gesamtmenge findest du in den Details, sie ist aber kein Echtheitsindikator.",
       "columns": {
         "code": "Code",
         "issuer": "Issuer",
-        "numAccounts": "Accounts",
-        "amount": "Gesamtmenge"
+        "numAccounts": "Trustlines",
+        "amount": "Gesamtmenge",
+        "domain": "Domain",
+        "toml": "TOML",
+        "actions": "Aktionen"
+      },
+      "columnHelp": {
+        "numAccounts": "Anzahl der Trustlines/Accounts laut Horizon.",
+        "amount": "Von Horizon gemeldete Gesamtmenge dieses Assets. Falls Horizon Authorization-Kategorien liefert, werden diese summiert."
+      },
+      "sort": {
+        "numAccounts": "Nach Trustlines sortieren"
+      },
+      "factLabels": {
+        "domain": "Issuer-Account hat eine Home Domain",
+        "toml": "Asset ist in der stellar.toml dieses Issuers gelistet"
       }
     },
     "invalidInput": {
-      "codeMissing": "Bitte einen Asset-Code eingeben."
+      "codeMissing": "Bitte einen Asset-Code eingeben.",
+      "queryMissing": "Bitte einen Asset-Code, eine Issuer-Adresse oder CODE:ISSUER eingeben.",
+      "queryInvalid": "Bitte einen gueltigen Asset-Code, eine Issuer-Adresse oder CODE:ISSUER eingeben.",
+      "codeInvalid": "Asset-Codes duerfen nur aus 1 bis 12 Buchstaben/Zahlen bestehen.",
+      "issuerInvalid": "Bitte eine gueltige Stellar-Issuer-Adresse eingeben."
     },
     "failed": {
       "generic": "Die Asset-Suche ist fehlgeschlagen. Bitte später erneut versuchen."

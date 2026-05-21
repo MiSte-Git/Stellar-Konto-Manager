@@ -8,6 +8,8 @@
     "start": "node server.js",
     "dev": "node scripts/start-dev.js",
     "start-build": "node scripts/start-build.js",
+    "test": "node --test --test-isolation=none test/*.test.js",
+    "test:trade": "node --test --test-isolation=none test/tradeService.test.js",
     "i18n:extract-glossary-keys": "node scripts/dev/extractGlossaryKeys.js",
     "i18n:sync-glossary": "node scripts/dev/syncGlossaryNamespace.mjs",
     "i18n:sync-learn": "node scripts/dev/syncLearnNamespace.mjs"
@@ -22,7 +24,8 @@
     "file-saver": "^2.0.5",
     "flag-icons": "^7.5.0",
     "framer-motion": "^12.34.0",
-    "jspdf": "^4.0.0"
+    "jspdf": "^4.0.0",
+    "toml": "^3.0.0"
   },
   "devDependencies": {
     "concurrently": "^9.2.0",

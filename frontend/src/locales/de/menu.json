@@ -10,10 +10,11 @@
   "createAccount": "Konto erstellen + Multisig",
   "multisigEdit": "Multisig bearbeiten",
   "multisigJobs": "Multisig-Aufträge",
-  "listAll": "Alle Trustlines auflisten",
+  "listAll": "Meine Token / Trustlines",
   "compareTrustlines": "Vergleiche Trustlines zw. Konten",
   "settings": "Einstellungen",
   "tokenPurchases": "Token-Käufe",
+  "swap": "Globale Token-Suche / Swap",
   "learn": "Stellar-Quiz für Anfänger",
   "unknown": "Unbekannte Menüauswahl"
 }

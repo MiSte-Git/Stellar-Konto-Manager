@@ -10,7 +10,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const fsSync = require('fs');
 const crypto = require('crypto');
-const { searchAssets } = require('./backend/src/services/tradeService.js');
+const { searchAssets, fetchAssetFacts } = require('./services/tradeService.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
 (function loadDotEnv() {
@@ -46,6 +46,12 @@ const app = express();
 const port = parseInt(process.env.PORT, 10) || 3000;
 const HORIZON_URL = 'https://horizon.stellar.org';
 const horizon = new StellarSdk.Horizon.Server(HORIZON_URL);
+
+function getTradeHorizon(network = 'PUBLIC') {
+  return String(network || '').toUpperCase() === 'TESTNET'
+    ? new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org')
+    : horizon;
+}
 
 // Allow dev origins (5173, 8080) and same-origin in production
 app.use(cors({ origin: true }));
@@ -641,12 +647,33 @@ app.get('/trustlines', async (req, res) => {
 });
 
 app.get('/api/trade/assets/search', async (req, res) => {
-  const { code, issuer } = req.query;
+  const { code, issuer, limit, network } = req.query;
   try {
-    const items = await searchAssets({ assetCode: code, issuer, horizon });
+    const items = await searchAssets({
+      assetCode: code,
+      issuer,
+      limit,
+      horizon: getTradeHorizon(network),
+    });
     res.json({ items });
   } catch (error) {
     const message = error?.message || 'assetSearch.failed:generic';
+    const status = String(message).startsWith('assetSearch.invalidInput') ? 400 : 502;
+    res.status(status).json({ error: message });
+  }
+});
+
+app.get('/api/trade/assets/facts', async (req, res) => {
+  const { code, issuer, network } = req.query;
+  try {
+    const facts = await fetchAssetFacts({
+      assetCode: code,
+      issuer,
+      horizon: getTradeHorizon(network),
+    });
+    res.json(facts);
+  } catch (error) {
+    const message = error?.message || 'assetFacts.failed:generic';
     const status = String(message).startsWith('assetSearch.invalidInput') ? 400 : 502;
     res.status(status).json({ error: message });
   }

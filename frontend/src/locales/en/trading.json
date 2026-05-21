@@ -1,8 +1,12 @@
 {
   "assetSearch": {
-    "title": "Asset search",
-    "description": "Search for assets via the trading endpoint (Horizon).",
+    "title": "Token search",
+    "description": "Search by asset code, issuer address, or the exact CODE:ISSUER combination.",
     "form": {
+      "query": {
+        "label": "Search term",
+        "placeholder": "USDC, G... or USDC:G..."
+      },
       "code": {
         "label": "Asset code",
         "placeholder": "e.g., USDC"
@@ -13,17 +17,167 @@
       },
       "submit": "Search"
     },
+    "examples": {
+      "label": "Examples"
+    },
+    "mode": {
+      "code": "Asset code search",
+      "issuer": "Issuer search",
+      "exact": "Exact asset"
+    },
+    "actions": {
+      "details": "Details",
+      "trustline": "Trustline",
+      "trustlineAdd": "Add trustline",
+      "trustlinePresent": "Trustline exists",
+      "trustlineNext": "Next step: create trustline from search result",
+      "swap": "Swap",
+      "swapNext": "Select asset and open swap preview"
+    },
+    "account": {
+      "active": "Active account",
+      "network": "Network",
+      "none": "No account loaded",
+      "missing": "No account loaded",
+      "loading": "Checking account...",
+      "invalid": "The loaded account is invalid."
+    },
+    "trustlineStatus": {
+      "label": "Trustline status",
+      "loading": "Checking trustline...",
+      "present": "Trustline exists",
+      "missing": "Trustline missing",
+      "error": "Trustline status could not be loaded",
+      "unknown": "Not checked yet",
+      "added": "Trustline was added.",
+      "balance": "Balance",
+      "limit": "Limit"
+    },
+    "swapPreview": {
+      "title": "Swap preview",
+      "direction": {
+        "xlmToToken": "XLM -> Token",
+        "tokenToXlm": "Token -> XLM",
+        "tokenToToken": "Token -> Token"
+      },
+      "sendAmount": "You send {{asset}}",
+      "targetAsset": "Destination token",
+      "targetPlaceholder": "USDC, G... or EURC:G...",
+      "targetSearch": "Search target",
+      "targetSelected": "Selected destination token",
+      "slippage": "Slippage %",
+      "check": "Check price",
+      "execute": "Execute swap",
+      "executing": "Executing swap...",
+      "expected": "Estimated received",
+      "minimum": "Minimum after slippage",
+      "route": "Route",
+      "invalidAmount": "Please enter a valid amount in {{asset}}.",
+      "invalidSlippage": "Please enter slippage between 0 and 50 percent.",
+      "invalidTarget": "Please search and select a destination token or enter it exactly as CODE:ISSUER.",
+      "sameAsset": "Source and destination must not be the same asset.",
+      "destinationTrustlineMissing": "The destination token trustline is still missing on this account.",
+      "minimumMissing": "The minimum amount could not be calculated.",
+      "previewRequired": "Please check the price first.",
+      "noRoute": "No swap route found.",
+      "failed": "Swap preview could not be loaded.",
+      "success": "Swap was executed. Transaction:"
+    },
+    "swapConfirm": {
+      "title": "Confirm swap",
+      "send": "You send",
+      "receive": "Estimated receive",
+      "minimum": "Guaranteed minimum",
+      "source": "Source",
+      "destination": "Destination",
+      "routeRefresh": "The route and minimum are checked again directly before signing. If no valid route exists anymore, signing will not continue.",
+      "continue": "Continue to signature"
+    },
+    "market": {
+      "title": "Orderbook / AMM",
+      "load": "Load market data",
+      "orderbook": "Orderbook",
+      "bids": "Bids",
+      "asks": "Asks",
+      "amm": "Liquidity pools",
+      "empty": "No data found.",
+      "failed": "Market data could not be loaded."
+    },
+    "trustlineConfirm": {
+      "title": "Confirm trustline",
+      "limit": "Trustline limit",
+      "warning": "A trustline allows this asset to be held in your account. Check the facts, especially issuer, home domain, stellar.toml, authorization, and clawback before signing.",
+      "continue": "Continue to signature"
+    },
+    "facts": {
+      "title": "Token facts",
+      "disclaimer": "This is not a rating or recommendation. The app only shows found data; the decision stays with the user.",
+      "loading": "Loading token facts...",
+      "issuerLoadFailed": "Issuer account could not be loaded.",
+      "notAvailable": "Not available",
+      "notChecked": "Not checked",
+      "yes": "Yes",
+      "no": "No",
+      "homeDomain": "Home domain",
+      "issuerMasterWeight": "Master key weight",
+      "issuerLocked": "Issuer master key locked",
+      "liquidityRoute": "Swap route",
+      "routeAvailable": "Route found",
+      "routeUnavailable": "No route found",
+      "toml": {
+        "status": "stellar.toml status",
+        "url": "stellar.toml URL",
+        "loading": "Loading stellar.toml...",
+        "loaded": "stellar.toml loaded",
+        "failed": "stellar.toml not reachable",
+        "noHomeDomain": "No home domain on issuer account",
+        "assetListed": "Asset listed in stellar.toml",
+        "currencyCount": "CURRENCIES entries"
+      },
+      "flags": {
+        "authRequired": "Authorization required",
+        "authRevocable": "Authorization revocable",
+        "authImmutable": "Authorization immutable",
+        "clawbackEnabled": "Clawback enabled"
+      }
+    },
+    "detail": {
+      "status": {
+        "ledgerKnown": "Known in Horizon"
+      },
+      "nextStepHint": "Known in Horizon only. Check issuer and trust before signing a trustline or swap."
+    },
     "result": {
       "empty": "No assets found.",
+      "count": "Found tokens: {{count}}",
+      "qualityHint": "Note: Trustlines together with domain and TOML are more meaningful. The total amount is shown in the details, but it is not an authenticity signal.",
       "columns": {
         "code": "Code",
         "issuer": "Issuer",
-        "numAccounts": "Accounts",
-        "amount": "Total amount"
+        "numAccounts": "Trustlines",
+        "amount": "Total amount",
+        "domain": "Domain",
+        "toml": "TOML",
+        "actions": "Actions"
+      },
+      "columnHelp": {
+        "numAccounts": "Number of trustlines/accounts according to Horizon.",
+        "amount": "Total amount of this asset reported by Horizon. If Horizon returns authorization buckets, they are summed."
+      },
+      "sort": {
+        "numAccounts": "Sort by trustlines"
+      },
+      "factLabels": {
+        "domain": "Issuer account has a home domain",
+        "toml": "Asset is listed in this issuer's stellar.toml"
       }
     },
     "invalidInput": {
-      "codeMissing": "Please enter an asset code."
+      "codeMissing": "Please enter an asset code.",
+      "queryMissing": "Please enter an asset code, issuer address, or CODE:ISSUER.",
+      "queryInvalid": "Please enter a valid asset code, issuer address, or CODE:ISSUER.",
+      "codeInvalid": "Asset codes may only contain 1 to 12 letters/numbers.",
+      "issuerInvalid": "Please enter a valid Stellar issuer address."
     },
     "failed": {
       "generic": "The asset search has failed. Please try again later."

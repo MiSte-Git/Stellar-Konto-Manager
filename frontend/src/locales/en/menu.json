@@ -10,10 +10,11 @@
   "createAccount": "Create account + Multisig",
   "multisigEdit": "Edit multisig",
   "multisigJobs": "Multisig orders",
-  "listAll": "List all trustlines",
+  "listAll": "My tokens / trustlines",
   "compareTrustlines": "Compare trustlines between accounts.",
   "settings": "Settings",
   "tokenPurchases": "Token purchases",
+  "swap": "Global token search / Swap",
   "learn": "Stellar Quiz for Beginners",
   "unknown": "Unknown menu selection"
 }

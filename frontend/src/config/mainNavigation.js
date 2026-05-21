@@ -15,7 +15,7 @@ export const MAIN_MENU_NAV = [
   // Gruppe 2
   { id: 'payments', labelKey: 'menu:tokenPurchases', group: 2 },
   { id: 'xlmByMemo', labelKey: 'menu:xlmByMemo', group: 2 },
-  { id: 'tradingAssets', labelKey: 'trading:assetSearch.title', group: 2 },
+  { id: 'tradingAssets', labelKey: 'menu:swap', group: 2 },
 
   // Gruppe 3
   { id: 'multisigEdit', labelKey: 'menu:multisigEdit', group: 3 },
