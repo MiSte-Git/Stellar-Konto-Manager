@@ -760,21 +760,29 @@
       "section": "Szene 4 – Testnet Escrow",
       "pre": {
         "dialog1": "Lass uns das direkt ausprobieren! Gleich zeige ich dir wie – aber zuerst erkläre ich dir, was Escrow eigentlich bedeutet.",
-        "dialog2": "Einen was?",
-        "dialog3": "Stellar hat dieses Treuhänder-Prinzip direkt ins Protokoll eingebaut – als natives Feature namens Claimable Balance. Dabei wird ein Betrag XLM oder Token gesperrt und an eine Bedingung geknüpft: Wer darf es beanspruchen? Ab wann? Und bis wann kann der Absender es zurückfordern? Erst wenn die Bedingung erfüllt ist, kann der Empfänger das Geld abheben.",
-        "dialog4": "Also sperren wir jetzt Testnet-Geld?"
+        "dialog2": "Escrow was?",
+        "dialog3": "Escrow ist ein Treuhänder-Prinzip: Ein Betrag wird bei einer neutralen Stelle hinterlegt und erst freigegeben, wenn eine Bedingung erfüllt ist – zum Beispiel wenn eine Arbeit abgeschlossen wurde oder ein Käufer den Erhalt bestätigt. Bis dahin kann keine Partei einfach darauf zugreifen.",
+        "dialog4": "Und Stellar kann dieses Prinzip direkt im Protokoll abbilden?"
       },
       "action": {
         "label": "Escrow erstellen",
-        "description": "Sperrt 50 XLM auf dem Testnet für einen Demo-Käufer. Der Käufer kann sie sofort beanspruchen; du kannst sie nach 1 Stunde zurückfordern, falls nichts passiert.",
+        "description": "Stellar bildet diesen Testnet-Escrow als Claimable Balance (Escrow) ab. Das ist kein Häkchen im Konto, sondern eine eigene Operation innerhalb einer Stellar-Transaktion.",
+        "how_title": "So entsteht der Escrow",
+        "step1": "Dein Testnet-Konto wird aus deinem Keypair geladen.",
+        "step2": "Der Code baut eine Transaktion mit der Operation createClaimableBalance.",
+        "step3": "In dieser Operation stehen Asset, Betrag und Anspruchsregeln: Der Demo-Käufer darf sofort claimen; du darfst nach 1 Stunde zurückfordern.",
+        "step4": "Dein Konto signiert die Transaktion und sendet sie an Horizon Testnet.",
+        "wallet_note_title": "Wichtig für normale Wallets",
+        "wallet_note": "Du setzt dafür kein Claimable-Balance-Flag. Eine Wallet muss diese Operation ausdrücklich anbieten, sonst kannst du sie dort nicht per Klick erstellen. Praktisch macht man das über eine App wie diese, über Stellar Laboratory oder über Code mit dem Stellar SDK.",
+        "creating": "Escrow wird erstellt…",
         "success": "Escrow erfolgreich erstellt!",
-        "escrow_id_label": "Claimable Balance ID",
+        "escrow_id_label": "Claimable Balance (Escrow) ID",
         "testnet_note": "Nur Testnet – kein echtes Geld.",
-        "locked_note": "Die 50 XLM sind jetzt gesperrt – weder du noch der Käufer können sie einfach abheben. Das Geld wartet auf die Bedingung."
+        "locked_note": "Die 50 XLM liegen jetzt in einer Claimable Balance (Escrow). Der Explorer zeigt die ID und die Regeln, wer den Betrag wann beanspruchen darf."
       },
       "post": {
         "dialog1": "Das war einfacher als ich dachte!",
-        "dialog2": "So funktioniert dezentrales Vertrauen. Der Vertrag läuft jetzt auf der Blockchain – ohne Zwischenhändler, ohne Ausnahmen."
+        "dialog2": "So funktioniert dezentrales Vertrauen. Die Anspruchsregeln liegen jetzt direkt auf der Blockchain – ohne Zwischenhändler, ohne versteckten Schalter im Wallet."
       }
     },
     "scene5": {

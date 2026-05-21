@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useStory } from "../StoryContext";
 import SceneRunner from "../SceneRunner";
 import ChapterSummary from "../ChapterSummary";
+import { renderWithGlossaryLinks } from "../parseGlossaryTerms";
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { useSettings } from "../../../utils/useSettings";
 
@@ -20,6 +21,7 @@ const ACTION_ID = "ch8-escrow-v2";
 const ESCROW_XP = 80;
 const CHOICE_XP = 25;
 const SUMMARY_XP = 175;
+const ESCROW_STEP_KEYS = ["step1", "step2", "step3", "step4"];
 
 // ─── Escrow transaction helpers ───────────────────────────────────────────────
 
@@ -134,6 +136,44 @@ function EscrowActionScene({ next, t, keypair, addXP, completeAction, hasComplet
         </p>
       </div>
 
+      <div style={{
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: "14px",
+        padding: "14px 16px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+      }}>
+        <p style={{ margin: 0, fontSize: "12px", fontWeight: 800, color: "white" }}>
+          {t("chapter8.scene4.action.how_title")}
+        </p>
+        <ol style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "7px" }}>
+          {ESCROW_STEP_KEYS.map((key) => (
+            <li key={key} style={{ fontSize: "12px", color: "rgba(255,255,255,0.72)", lineHeight: 1.5 }}>
+              {t(`chapter8.scene4.action.${key}`)}
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div style={{
+        background: "rgba(255,217,61,0.06)",
+        border: "1px solid rgba(255,217,61,0.18)",
+        borderRadius: "14px",
+        padding: "12px 14px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "6px",
+      }}>
+        <p style={{ margin: 0, fontSize: "12px", fontWeight: 800, color: "#FFD93D" }}>
+          {t("chapter8.scene4.action.wallet_note_title")}
+        </p>
+        <p style={{ margin: 0, fontSize: "12px", color: "rgba(255,255,255,0.72)", lineHeight: 1.5 }}>
+          {t("chapter8.scene4.action.wallet_note")}
+        </p>
+      </div>
+
       {(phase === "idle" || phase === "error") && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -165,7 +205,7 @@ function EscrowActionScene({ next, t, keypair, addXP, completeAction, hasComplet
             ⚙️
           </motion.div>
           <p style={{ margin: 0, fontSize: "14px", color: "rgba(255,255,255,0.5)" }}>
-            Escrow wird erstellt…
+            {t("chapter8.scene4.action.creating")}
           </p>
         </motion.div>
       )}
@@ -183,6 +223,10 @@ function EscrowActionScene({ next, t, keypair, addXP, completeAction, hasComplet
               {t("chapter8.scene4.action.success")}
             </p>
           </div>
+
+          <p style={{ margin: 0, fontSize: "13px", color: "rgba(255,255,255,0.68)", lineHeight: 1.55 }}>
+            {t("chapter8.scene4.action.locked_note")}
+          </p>
 
           {balanceId && (
             <div style={{
@@ -720,7 +764,7 @@ function OracleGlossaryScene({ next, t, openGlossary }) {
       }}>
         <span style={{ fontSize: "20px", flexShrink: 0 }}>☕</span>
         <p style={{ margin: 0, fontSize: "14px", color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>
-          {t("chapter8.oracleProblem.marco")}
+          {renderWithGlossaryLinks(t("chapter8.oracleProblem.marco"), openGlossary)}
         </p>
       </div>
 
@@ -957,9 +1001,9 @@ function buildScenes({ openGlossary, keypair, addXP, completeAction, hasComplete
     { type: "dialog", sectionTitle: t("chapter8.scene3.section"), speaker: "lumio", lines: [t("chapter8.scene3.dialog1")] },
     { type: "dialog", speaker: "marco", lines: [t("chapter8.scene3.dialog2")] },
     { type: "dialog", speaker: "lumio", lines: [t("chapter8.scene3.dialog3")] },
+    { type: "custom", render: (next) => <SorobanInfoCard next={next} t={t} /> },
     { type: "dialog", speaker: "marco", lines: [t("chapter8.scene3.dialog4")] },
     { type: "dialog", speaker: "lumio", lines: [t("chapter8.scene3.dialog5")] },
-    { type: "custom", render: (next) => <SorobanInfoCard next={next} t={t} /> },
 
     // ── SZENE 4 – Testnet Escrow ─────────────────────────────────────────────
     { type: "dialog", sectionTitle: t("chapter8.scene4.section"), speaker: "lumio", lines: [t("chapter8.scene4.pre.dialog1")] },
@@ -968,7 +1012,6 @@ function buildScenes({ openGlossary, keypair, addXP, completeAction, hasComplete
     { type: "dialog", speaker: "marco", lines: [t("chapter8.scene4.pre.dialog4")] },
     // ── Escrow vs. Smart Contract Erklärung ──────────────────────────────────
     { type: "dialog", speaker: "marco", lines: [t("chapter8.escrowVsSmartContract.marco")] },
-    { type: "dialog", speaker: "lumio", lines: [t("chapter8.escrowExplanation")] },
     {
       type: "custom",
       render: (next) => (
