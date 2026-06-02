@@ -762,7 +762,7 @@ function Main() {
         if (!isActive) return;
         if (!xlmPriceLoadedRef.current) setXlmPriceError(String(err?.message || 'price.fetchFailed'));
       } finally {
-        if (isActive && !xlmPriceLoadedRef.current) setXlmPriceLoading(false);
+        if (isActive) setXlmPriceLoading(false);
       }
     };
     fetchPrices();

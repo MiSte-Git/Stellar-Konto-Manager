@@ -223,18 +223,18 @@ export default function ChapterSelect() {
               style={{
                 background: isComingSoon
                   ? "rgba(255,255,255,0.03)"
-                  : isCurrent
-                  ? "rgba(255,217,61,0.12)"
                   : isCompleted
                   ? "rgba(72,199,142,0.08)"
+                  : isCurrent
+                  ? "rgba(255,217,61,0.12)"
                   : "rgba(255,255,255,0.05)",
                 border: `1.5px solid ${
                   isComingSoon
                     ? "rgba(255,255,255,0.07)"
-                    : isCurrent
-                    ? "rgba(255,217,61,0.5)"
                     : isCompleted
                     ? "rgba(72,199,142,0.4)"
+                    : isCurrent
+                    ? "rgba(255,217,61,0.5)"
                     : "rgba(255,255,255,0.13)"
                 }`,
                 borderRadius: "14px",
@@ -257,13 +257,13 @@ export default function ChapterSelect() {
                   width: "34px",
                   height: "34px",
                   borderRadius: "10px",
-                  background: isCurrent ? "rgba(255,217,61,0.2)" : "rgba(255,255,255,0.08)",
+                  background: isCompleted ? "rgba(72,199,142,0.15)" : isCurrent ? "rgba(255,217,61,0.2)" : "rgba(255,255,255,0.08)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: "15px",
                   fontWeight: 800,
-                  color: isCurrent ? "#FFD93D" : "rgba(255,255,255,0.5)",
+                  color: isCompleted ? "#48c78e" : isCurrent ? "#FFD93D" : "rgba(255,255,255,0.5)",
                 }}>
                   {n}
                 </div>
@@ -290,7 +290,7 @@ export default function ChapterSelect() {
                   fontWeight: 600,
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
-                  color: isCurrent ? "rgba(255,217,61,0.6)" : isCompleted ? "rgba(72,199,142,0.55)" : "rgba(255,255,255,0.3)",
+                  color: isCompleted ? "rgba(72,199,142,0.55)" : isCurrent ? "rgba(255,217,61,0.6)" : "rgba(255,255,255,0.3)",
                   marginBottom: "1px",
                 }}>
                   {t("chapterLabel")} {n}
@@ -301,7 +301,7 @@ export default function ChapterSelect() {
                   <span style={{
                     fontSize: "14px",
                     fontWeight: 700,
-                    color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : "white",
+                    color: isCompleted ? "#48c78e" : isCurrent ? "#FFD93D" : "white",
                   }}>
                     {t(`chapter${n}.title`, `Kapitel ${n}`)}
                   </span>
@@ -330,10 +330,10 @@ export default function ChapterSelect() {
                 {/* Status + duration */}
                 <div style={{
                   fontSize: "11px",
-                  color: isCurrent
-                    ? "rgba(255,217,61,0.7)"
-                    : isCompleted
+                  color: isCompleted
                     ? "rgba(72,199,142,0.7)"
+                    : isCurrent
+                    ? "rgba(255,217,61,0.7)"
                     : "rgba(255,255,255,0.35)",
                   display: "flex",
                   alignItems: "center",
@@ -395,7 +395,7 @@ export default function ChapterSelect() {
                   )}
                 </div>
               ) : (
-                <span style={{ fontSize: "16px", color: isCurrent ? "#FFD93D" : isCompleted ? "#48c78e" : "rgba(255,255,255,0.3)" }}>
+                <span style={{ fontSize: "16px", color: isCompleted ? "#48c78e" : isCurrent ? "#FFD93D" : "rgba(255,255,255,0.3)" }}>
                   ›
                 </span>
               )}
