@@ -23,10 +23,13 @@ export async function createPendingMultisigJob(payload) {
   }
 }
 
-// Load a pending multisig job by id
-export async function getPendingMultisigJob(id) {
+// Load a pending multisig job by id. `accessToken` is the per-job token returned
+// when the job was created/listed (B3) - required by the backend to view the job.
+export async function getPendingMultisigJob(id, accessToken) {
   try {
-    const r = await fetch(apiUrl(`multisig/jobs/${encodeURIComponent(id)}`));
+    const r = await fetch(apiUrl(`multisig/jobs/${encodeURIComponent(id)}`), {
+      headers: accessToken ? { 'x-job-token': accessToken } : undefined,
+    });
     const data = await r.json().catch(() => ({}));
     ensureOk(r);
     return data;
@@ -36,12 +39,16 @@ export async function getPendingMultisigJob(id) {
   }
 }
 
-// Merge a signed XDR into an existing job
+// Merge a signed XDR into an existing job. `payload.accessToken` is the per-job
+// token (B3) - required by the backend to merge a signature into the job.
 export async function mergeSignedXdr(payload) {
   try {
     const r = await fetch(apiUrl(`multisig/jobs/${encodeURIComponent(payload.jobId)}/merge-signed-xdr`), {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+        ...(payload.accessToken ? { 'x-job-token': payload.accessToken } : {}),
+      },
       body: JSON.stringify({
         signedXdr: payload.signedXdr,
         clientCollected: payload.clientCollected,

@@ -4,8 +4,9 @@ import { getPendingMultisigJob, mergeSignedXdr } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
 import { Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
+import { getMultisigJobToken } from '../utils/basePath.js';
 
-function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
+function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const { t } = useTranslation(['multisig', 'common']);
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -16,12 +17,20 @@ function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
   const [showSecretPrompt, setShowSecretPrompt] = useState(false);
   const [secretInput, setSecretInput] = useState('');
 
+  // The access token (B3) may arrive as a prop (in-app navigation, e.g. from the
+  // job list) or, when this page was opened via a bookmarked/shared link, as a
+  // ?token= query parameter that App.jsx doesn't parse for us in every call site.
+  const effectiveToken = useMemo(
+    () => accessToken || getMultisigJobToken(),
+    [accessToken]
+  );
+
   const fetchJob = useCallback(async () => {
     if (!jobId) return;
     setLoading(true);
     setError('');
     try {
-      const data = await getPendingMultisigJob(jobId);
+      const data = await getPendingMultisigJob(jobId, effectiveToken);
       setJob(data);
       setInfo('');
     } catch (e) {
@@ -29,7 +38,7 @@ function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
     } finally {
       setLoading(false);
     }
-  }, [jobId]);
+  }, [jobId, effectiveToken]);
 
   useEffect(() => {
     void fetchJob();
@@ -40,7 +49,7 @@ function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
     setImporting(true);
     setError('');
     try {
-      const data = await mergeSignedXdr({ jobId, signedXdr: importXdr.trim() });
+      const data = await mergeSignedXdr({ jobId, signedXdr: importXdr.trim(), accessToken: effectiveToken });
       setJob(data);
       setImportXdr('');
       setInfo(t('multisig:job.detail.signedXdr.success.body', { status: data?.status || '' }));
@@ -54,7 +63,7 @@ function MultisigJobDetail({ jobId, onBack, currentPublicKey }) {
     } finally {
       setImporting(false);
     }
-  }, [importXdr, jobId, t]);
+  }, [importXdr, jobId, effectiveToken, t]);
 
   const collectedSet = useMemo(() => new Set((job?.collectedSigners || []).map((s) => s.publicKey)), [job]);
   const shortPk = useCallback((pk) => {

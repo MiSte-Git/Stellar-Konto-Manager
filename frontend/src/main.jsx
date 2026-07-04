@@ -207,6 +207,7 @@ function Main() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [showSecretInfo, setShowSecretInfo] = useState(false);
   const [activeJobId, setActiveJobId] = useState(null);
+  const [activeJobToken, setActiveJobToken] = useState(null);
   // Dev/Testnet toggle state synced with localStorage
   const [devTestnet, setDevTestnet] = useState(false);
    // Send Payment initial values (e.g., for donation)
@@ -1235,7 +1236,7 @@ function Main() {
           <MultisigJobList
             publicKey={sourcePublicKey}
             onBack={() => setMenuSelection(null)}
-            onOpenDetail={(id) => setActiveJobId(id)}
+            onOpenDetail={(id, token) => { setActiveJobId(id); setActiveJobToken(token || null); }}
           />
         </div>
       )}
@@ -1336,13 +1337,13 @@ function Main() {
               <button
                 type="button"
                 className="text-sm px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => setActiveJobId(null)}
+                onClick={() => { setActiveJobId(null); setActiveJobToken(null); }}
               >
                 {t('common:option.back', 'Zurück')}
               </button>
             </div>
             <div className="p-4">
-              <MultisigJobDetail jobId={activeJobId} currentPublicKey={sourcePublicKey} />
+              <MultisigJobDetail jobId={activeJobId} accessToken={activeJobToken} currentPublicKey={sourcePublicKey} />
             </div>
           </div>
         </div>

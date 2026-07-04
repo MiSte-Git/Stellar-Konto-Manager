@@ -36,10 +36,22 @@ class SubmitFailedException extends \Exception {
     }
 }
 
-// CORS headers
-header('Access-Control-Allow-Origin: *');
+// CORS headers, restricted to known dev/prod origins (was previously a wildcard
+// '*' — finding B3). Mirrors the allowlist pattern already used in bugreport.php.
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowedOrigins = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'https://skm.steei.de',
+];
+$prodOrigin = getenv('PROD_ORIGIN');
+if ($prodOrigin) $allowedOrigins[] = $prodOrigin;
+if ($origin !== '' && in_array($origin, $allowedOrigins, true)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Vary: Origin');
+}
 header('Access-Control-Allow-Methods: GET,POST,DELETE,OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, x-job-token');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -66,6 +78,28 @@ function sendError(string $error, ?string $detail = null, int $status = 500): vo
     $payload = ['error' => $error];
     if ($detail) $payload['detail'] = $detail;
     sendJson($payload, $status);
+}
+
+// Per-job access token (B3): required to view a job's full details or merge a
+// signature into it. Accepted via the x-job-token header (what the frontend
+// sends for both backends) or a ?token= query parameter (fallback for direct
+// links), never trusted from anywhere else.
+function newAccessToken(): string {
+    return bin2hex(random_bytes(32));
+}
+
+function getRequestToken(): string {
+    $header = $_SERVER['HTTP_X_JOB_TOKEN'] ?? '';
+    if (is_string($header) && $header !== '') return trim($header);
+    $query = $_GET['token'] ?? '';
+    return is_string($query) ? trim($query) : '';
+}
+
+function hasValidJobToken(array $job): bool {
+    $expected = (string)($job['accessToken'] ?? '');
+    $provided = getRequestToken();
+    if ($expected === '' || $provided === '') return false;
+    return hash_equals($expected, $provided);
 }
 
 // Storage helpers
@@ -474,6 +508,7 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
 
         $job = [
             'id' => bin2hex(random_bytes(12)),
+            'accessToken' => newAccessToken(),
             'network' => $net,
             'accountId' => $accountId,
             'txHash' => $hash,
@@ -544,6 +579,7 @@ if ($method === 'GET' && ($m = matchRoute($path, '/api/multisig/jobs/:id'))) {
     $items = loadJobs($jobFile);
     foreach ($items as $j) {
         if (($j['id'] ?? '') === $id) {
+            if (!hasValidJobToken($j)) return sendJson(['error' => 'forbidden'], 403);
             return sendJson(summarizeJob($j));
         }
     }
@@ -573,6 +609,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
             if (($j['id'] ?? '') === $id) { $job = $j; break; }
         }
         if (!$job) return sendJson(['error' => 'not_found'], 404);
+        if (!hasValidJobToken($job)) return sendJson(['error' => 'forbidden'], 403);
 
         $net = $job['network'] ?? 'public';
         $parseErr = null;

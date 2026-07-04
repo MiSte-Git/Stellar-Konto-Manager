@@ -19,7 +19,7 @@ const TradingAssetsPage = lazy(() => import('./pages/TradingAssetsPage.jsx'));
 const ScamSimulatorPage = lazy(() => import('./components/scam-simulator/ScamSimulatorPage.jsx'));
 const StoryMode         = lazy(() => import('./components/story/StoryMode.jsx'));
 import SmallAdminLink from './components/SmallAdminLink.jsx';
-import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizDetailPath, isQuizIndexPath, getMultisigJobId, isSettingsPath, isTradingAssetsPath, isMultisigJobsListPath, isScamSimulatorPath, isStoryPath, isDiscoverPath } from './utils/basePath.js';
+import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizDetailPath, isQuizIndexPath, getMultisigJobId, getMultisigJobToken, isSettingsPath, isTradingAssetsPath, isMultisigJobsListPath, isScamSimulatorPath, isStoryPath, isDiscoverPath } from './utils/basePath.js';
 import scenarios from './data/learn/scam-scenarios/scenarios.js';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -170,6 +170,14 @@ function AppShell() {
     }
   }, [pathname]);
 
+  const multisigJobToken = React.useMemo(() => {
+    try {
+      return getMultisigJobToken(location?.search || '');
+    } catch {
+      return null;
+    }
+  }, [location?.search]);
+
   const isMultisigJobListRoute = React.useMemo(() => {
     try {
       return isMultisigJobsListPath(pathname);
@@ -287,7 +295,7 @@ function AppShell() {
         <BugTrackerAdmin />
       ) : multisigJobId ? (
         <div className="max-w-4xl mx-auto p-4">
-          <MultisigJobDetail jobId={multisigJobId} />
+          <MultisigJobDetail jobId={multisigJobId} accessToken={multisigJobToken} />
         </div>
       ) : isMultisigJobListRoute ? (
         <div className="max-w-5xl mx-auto p-4">

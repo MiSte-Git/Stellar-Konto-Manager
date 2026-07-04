@@ -267,10 +267,16 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
                       className="text-blue-700 dark:text-blue-200 hover:underline"
                       onClick={() => {
                         if (onOpenDetail) {
-                          onOpenDetail(j.id);
+                          onOpenDetail(j.id, j.accessToken);
                         } else {
                           try {
-                            const url = buildPath(`multisig/jobs/${j.id}`);
+                            // Token als Query-Parameter, damit ein gespeicherter/geteilter
+                            // Link weiterhin funktioniert (B3): nur wer den Link (inkl. Token)
+                            // kennt, kann den Job öffnen.
+                            const base = buildPath(`multisig/jobs/${j.id}`);
+                            const url = j.accessToken
+                              ? `${base}?token=${encodeURIComponent(j.accessToken)}`
+                              : base;
                             window.history.pushState({}, '', url);
                             window.dispatchEvent(new PopStateEvent('popstate'));
                           } catch (e) {

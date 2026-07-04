@@ -57,10 +57,29 @@ function getTradeHorizon(network = 'PUBLIC') {
 app.use(cors({ origin: true }));
 app.use(bodyParser.json());
 
-// Explicit CORS headers for multisig routes to ensure preflight succeeds behind proxies
+// Explicit CORS headers for multisig routes, restricted to known dev/prod origins
+// (was previously a wildcard '*' — finding B3).
+function deriveOrigin(url) {
+  try { return new URL(url).origin; } catch { return null; }
+}
+const allowedMultisigOrigins = new Set([
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  process.env.PROD_ORIGIN,
+  deriveOrigin(process.env.PROD_API_URL),
+].filter(Boolean));
 app.use('/api/multisig', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  const origin = req.headers.origin;
+  // The global cors({ origin: true }) above already reflected the request's origin
+  // unconditionally; explicitly override/remove it here so an origin outside our
+  // allowlist never ends up with an Access-Control-Allow-Origin header.
+  if (origin && allowedMultisigOrigins.has(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Vary', 'Origin');
+  } else {
+    res.removeHeader('Access-Control-Allow-Origin');
+  }
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-job-token');
   res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   if (req.method === 'OPTIONS') return res.sendStatus(200);
   return next();
@@ -384,6 +403,20 @@ function newJobId() {
   return `${Date.now().toString(36)}-${Math.random().toString(16).slice(2, 10)}`;
 }
 
+// Per-job access token (B3): required to view a job's full XDR or merge a signature
+// into it. Sent/checked via the x-job-token header, never via the URL, so it never
+// ends up in browser history or server access logs.
+function newAccessToken() {
+  return crypto.randomBytes(32).toString('base64url');
+}
+
+function hasValidJobToken(job, req) {
+  const provided = sanitizeHeader(req.headers['x-job-token'] || '');
+  const expected = String(job?.accessToken || '');
+  if (!expected || !provided) return false;
+  return timingSafeEqualStrings(provided, expected);
+}
+
 async function loadAccount(server, accountId) {
   return server.loadAccount(accountId);
 }
@@ -463,6 +496,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
     const shouldSubmit = collectedWeight >= requiredWeight && requiredWeight > 0;
     const job = {
       id: newJobId(),
+      accessToken: newAccessToken(),
       network: net,
       accountId: accountId.trim(),
       txHash: parsed.hashHex,
@@ -536,6 +570,7 @@ app.get('/api/multisig/jobs/:id', async (req, res) => {
     const { id } = req.params;
     const job = multisigDb.items.find((j) => j.id === id);
     if (!job) return res.status(404).json({ error: 'not_found' });
+    if (!hasValidJobToken(job, req)) return res.status(403).json({ error: 'forbidden' });
     res.json(job);
   } catch (e) {
     console.error('multisig.jobs.get.failed', e);
@@ -549,6 +584,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
     const { signedXdr } = req.body || {};
     const job = multisigDb.items.find((j) => j.id === id);
     if (!job) return res.status(404).json({ error: 'not_found' });
+    if (!hasValidJobToken(job, req)) return res.status(403).json({ error: 'forbidden' });
     if (!signedXdr || typeof signedXdr !== 'string') {
       return res.status(400).json({ error: 'invalid_xdr' });
     }

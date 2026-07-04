@@ -23,6 +23,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - PendingMultisigJobs mit XDR-Export/Import, Status-Badges und Signatur-Fortschritt.
 - Signieren auf mehreren Geräten (PC/Laptop/Handy); optional alle Signaturen lokal sammeln (Checkbox im SecretKeyModal).
 - Zahlungen im Multisig-Produktivmodus (Job/XDR) oder lokal (wenn alle Keys vorhanden).
+- Jeder Job hat ein zufälliges Zugriffstoken; Abruf eines Jobs und Signatur-Einreichung erfordern es (per Header oder im geteilten Link), Joblisten selbst bleiben ungeschützt (nötig für „meine offenen Jobs“ per Konto/Signer).
 
 ### E. Lernbereich / Glossar / Quiz
 - Learn-Seiten mit Diagrammen (z. B. Multisig Single vs Multi Signer).
@@ -39,7 +40,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 ## Architekturüberblick
 - Frontend: React + Vite, Ordner `frontend/`.
 - Backend: Node.js/Express, `server.js` im Projekt-Root, lokale Dateiablage.
-- Env-Konfiguration: `.env` im Projekt-Root (siehe `.env.example`), u. a. `PROD_API_URL` für Produktions-Builds (`npm run start-build`) und die Prod-Backend-Option von `npm run dev`.
+- Env-Konfiguration: `.env` im Projekt-Root (siehe `.env.example`), u. a. `PROD_API_URL` für Produktions-Builds (`npm run start-build`) und die Prod-Backend-Option von `npm run dev`. Optional `PROD_ORIGIN`, um die CORS-Allowlist der Multisig-Endpunkte (`server.js` und `api/multisig.php`) auf eine abweichende Produktions-Origin zu erweitern (Default: `https://skm.steei.de`).
 - Daten (Node-Backend): `data/bugreports.json`, `data/multisig_jobs.json`.
 - PHP-Alternative: `api/` (siehe Abschnitt „PHP-Backend“ unten).
 - Keine externen Server, keine zentrale Datenspeicherung.
