@@ -65,11 +65,11 @@ try {
         'tableOk' => $tableOk,
     ]);
 } catch (Throwable $e) {
+    error_log('[health] check failed: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'ok' => false,
         'db' => false,
         'error' => 'exception',
-        'message' => $e->getMessage(),
     ]);
 }
