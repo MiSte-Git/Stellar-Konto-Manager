@@ -1,7 +1,7 @@
 import {
   Horizon,
   StrKey,
-  FederationServer,
+  Federation,
   Keypair,
   Networks,
   Operation,
@@ -159,8 +159,9 @@ export function getHorizonServer(url = HORIZON_URL) {
  */
 export async function resolveFederationAddress(federationAddress) {
   // Use domain discovery per SEP-2 via stellar.toml → FEDERATION_SERVER.
-  // The static FederationServer.resolve() performs discovery for the provided address domain.
-  const response = await FederationServer.resolve(federationAddress);
+  // The static Federation.Server.resolve() performs discovery for the provided address domain
+  // (SDK 16 moved FederationServer under the Federation namespace, same as Horizon.Server).
+  const response = await Federation.Server.resolve(federationAddress);
   if (!response?.account_id) throw new Error('error.noFederationId');
   return response.account_id;
 }
