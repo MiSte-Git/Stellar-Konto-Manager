@@ -48,6 +48,7 @@
       "tx_bad_auth": "Transactie geweigerd: Ongeldige handtekening",
       "tx_failed": "Transactie mislukt",
       "unknown": "Onbekende fout in de transactie",
+      "signingFailed": "Een of meer handtekeningen konden niet worden aangemaakt. Probeer het opnieuw.",
       "multisig": {
         "invalidSecret": "Een van de ingevoerde geheime sleutels is ongeldig.",
         "notASigner": "Een van de ingevoerde geheime sleutels behoort niet tot de geregistreerde ondertekenaars.",

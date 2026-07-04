@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Asset, Networks } from '@stellar/stellar-sdk';
 import { getHorizonServer, loadTrustlines, resolveOrValidateAccount } from '../../utils/stellar/stellarUtils.js';
@@ -334,6 +334,7 @@ export default function AssetSearch() {
   const [swapTargetLoading, setSwapTargetLoading] = useState(false);
   const [selectedSwapTargetAsset, setSelectedSwapTargetAsset] = useState(null);
   const [swapPreview, setSwapPreview] = useState({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
+  const swapPreviewRequestRef = useRef(0);
   const [marketData, setMarketData] = useState({ loading: false, error: '', orderbook: null, liquidityPools: [], loadedAt: null });
   const [targetAssetFacts, setTargetAssetFacts] = useState(EMPTY_ASSET_FACTS);
   const [limitOfferDirection, setLimitOfferDirection] = useState('sell-token-for-xlm');
@@ -929,11 +930,15 @@ export default function AssetSearch() {
       return;
     }
 
+    const requestId = ++swapPreviewRequestRef.current;
+    const isStale = () => swapPreviewRequestRef.current !== requestId;
+
     setSwapPreview({ loading: true, error: '', path: null, loadedAt: null, refreshComparison: null });
     try {
       const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
       if (accountId && !swapDestinationAsset.isNative()) {
         const destinationTrustline = await findTrustlineForAsset(server, swapDestinationAsset, 10000);
+        if (isStale()) return;
         if (!destinationTrustline && !allowMissingDestinationTrustline) {
           setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.destinationTrustlineMissing'), path: null, loadedAt: null, refreshComparison: null });
           return;
@@ -946,6 +951,7 @@ export default function AssetSearch() {
       const response = await server
         .strictSendPaths(swapSourceAsset, sourceAmount, [swapDestinationAsset])
         .call();
+      if (isStale()) return;
       const records = Array.isArray(response?.records) ? response.records : [];
       if (!records.length) {
         setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.noRoute'), path: null, loadedAt: null, refreshComparison: null });
@@ -954,6 +960,7 @@ export default function AssetSearch() {
       const best = [...records].sort((a, b) => Number(b.destination_amount || 0) - Number(a.destination_amount || 0))[0];
       setSwapPreview({ loading: false, error: '', path: best, loadedAt: Date.now(), refreshComparison: null });
     } catch {
+      if (isStale()) return;
       setSwapPreview({ loading: false, error: t('trading:assetSearch.swapPreview.failed'), path: null, loadedAt: null, refreshComparison: null });
     }
   };
@@ -1038,7 +1045,9 @@ export default function AssetSearch() {
   const submitChangeTrustTx = async ({ asset, limit, collectedSigners }) => {
     if (!accountId) throw new Error('submitTransaction.failed:trustlines.invalidInput');
     const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
-    const account = await server.loadAccount(accountId);
+    const accountPromise = server.loadAccount(accountId);
+    const feeStatsPromise = server.feeStats();
+    const account = await accountPromise;
     const thresholds = account?.thresholds || {};
     const required = getRequiredThreshold('changeTrust', thresholds);
     const horizonSigners = account?.signers || [];
@@ -1047,7 +1056,7 @@ export default function AssetSearch() {
     if (current <= 0) throw new Error('submitTransaction.failed:multisig.noKeysProvided');
     if (current < required) throw new Error('submitTransaction.failed:multisig.insufficientWeight');
 
-    const feeStats = await server.feeStats();
+    const feeStats = await feeStatsPromise;
     const fee = String(Number(feeStats?.fee_charged?.mode || 100));
     const tx = buildChangeTrustTransaction({
       account,
@@ -1071,6 +1080,7 @@ export default function AssetSearch() {
     if (pairError) throw new Error(pairError);
 
     const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const feeStatsPromise = server.feeStats();
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
     const required = getRequiredThreshold('payment', thresholds);
@@ -1108,7 +1118,7 @@ export default function AssetSearch() {
     setSwapPreview((current) => ({ ...current, loading: false, error: '', path: latestBest, loadedAt: Date.now(), refreshComparison }));
 
     const path = Array.isArray(latestBest.path) ? latestBest.path.map(assetFromPathRecord) : [];
-    const feeStats = await server.feeStats();
+    const feeStats = await feeStatsPromise;
     const fee = String(Number(feeStats?.fee_charged?.mode || 100));
     const tx = buildPathPaymentStrictSendTransaction({
       account,
@@ -1139,6 +1149,7 @@ export default function AssetSearch() {
     }
 
     const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const feeStatsPromise = server.feeStats();
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
     const required = Math.max(
@@ -1180,7 +1191,7 @@ export default function AssetSearch() {
     setSwapPreview((current) => ({ ...current, loading: false, error: '', path: latestBest, loadedAt: Date.now(), refreshComparison }));
 
     const path = Array.isArray(latestBest.path) ? latestBest.path.map(assetFromPathRecord) : [];
-    const feeStats = await server.feeStats();
+    const feeStats = await feeStatsPromise;
     const fee = String(Number(feeStats?.fee_charged?.mode || 100));
     const tx = buildChangeTrustAndPathPaymentStrictSendTransaction({
       account,
@@ -1201,6 +1212,7 @@ export default function AssetSearch() {
   const submitManageSellOfferTx = async ({ selling, buying, amount, price, offerId = '0', collectedSigners }) => {
     if (!accountId || !selling || !buying) throw new Error('submitTransaction.failed:trustlines.invalidInput');
     const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
+    const feeStatsPromise = server.feeStats();
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
     const required = getRequiredThreshold('manageOffer', thresholds);
@@ -1210,7 +1222,7 @@ export default function AssetSearch() {
     if (current <= 0) throw new Error('submitTransaction.failed:multisig.noKeysProvided');
     if (current < required) throw new Error('submitTransaction.failed:multisig.insufficientWeight');
 
-    const feeStats = await server.feeStats();
+    const feeStats = await feeStatsPromise;
     const fee = String(Number(feeStats?.fee_charged?.mode || 100));
     const tx = buildManageSellOfferTransaction({
       account,

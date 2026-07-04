@@ -48,6 +48,7 @@
       "tx_bad_auth": "Maksutapahtuma hylätty: Virheellinen allekirjoitus",
       "tx_failed": "Tapahtuma epäonnistui",
       "unknown": "Tuntematon virhe tapahtumassa",
+      "signingFailed": "Yhtä tai useampaa allekirjoitusta ei voitu luoda. Yritä uudelleen.",
       "multisig": {
         "invalidSecret": "Yksi syötetyistä salausavaimista on virheellinen.",
         "notASigner": "Yksi syötetyistä salaisista avaimista ei kuulu rekisteröityneille allekirjoittajille.",

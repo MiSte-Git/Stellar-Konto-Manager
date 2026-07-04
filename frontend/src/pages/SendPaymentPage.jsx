@@ -659,9 +659,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
 
     if (signTx && signerList.length) {
+      const signFailures = [];
       signerList.forEach((kpItem) => {
-        try { tx.sign(kpItem); } catch (err) { console.debug?.('sign failed', err); }
+        try { tx.sign(kpItem); } catch (err) { signFailures.push(err); }
       });
+      if (signFailures.length > 0) {
+        console.error('[SKM] Payment signing failed for one or more keys', signFailures);
+        throw new Error(t('errors:submitTransaction.failed.signingFailed', 'One or more signatures could not be created. Please try again.'));
+      }
       if (import.meta.env.MODE !== 'production') {
         const required = requiredThreshold || 0;
         const signerMeta = signerList.map((s) => ({ publicKey: s.publicKey(), weight: (signersForModal.find((si)=>si.public_key===s.publicKey())?.weight)||0 }));

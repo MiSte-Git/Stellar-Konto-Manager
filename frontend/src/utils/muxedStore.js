@@ -5,12 +5,13 @@
 import { buildMuxedAddress } from './muxed.js';
 
 const STORAGE_KEY = 'muxedAccounts_v3';
+const isDev = import.meta.env.MODE !== 'production';
 
 function _getNet(explicitNet) {
   try {
     const n = explicitNet || window.localStorage.getItem('SKM_NETWORK') || 'PUBLIC';
     const resolved = n === 'TESTNET' ? 'TESTNET' : 'PUBLIC';
-    try { console.debug('[muxedStore._getNet]', { explicitNet, stored: n, resolved }); } catch { /* noop */ }
+    if (isDev) { try { console.debug('[muxedStore._getNet]', { explicitNet, stored: n, resolved }); } catch { /* noop */ } }
     return resolved;
   } catch {
     return 'PUBLIC';
@@ -44,7 +45,7 @@ export function listMuxed(publicKey, net) {
   const all = _loadAll();
   const perNet = all[network] || {};
   const arr = perNet[publicKey] || [];
-  try { console.debug('[muxedStore.listMuxed]', { publicKey, network, count: Array.isArray(arr) ? arr.length : 0 }); } catch { /* noop */ }
+  if (isDev) { try { console.debug('[muxedStore.listMuxed]', { publicKey, network, count: Array.isArray(arr) ? arr.length : 0 }); } catch { /* noop */ } }
   if (!Array.isArray(arr)) return [];
   return [...arr].sort((a, b) => {
     try {
@@ -96,7 +97,7 @@ export function addMuxed(publicKey, { id, address, label, note }, net) {
   perNet[publicKey] = list;
   all[network] = perNet;
   _saveAll(all);
-  try { console.debug('[muxedStore.addMuxed]', { publicKey, network, id: String(id), address: String(address), label, note, total: list.length }); } catch { /* noop */ }
+  if (isDev) { try { console.debug('[muxedStore.addMuxed]', { publicKey, network, id: String(id), address: String(address), label, note, total: list.length }); } catch { /* noop */ } }
   return perNet[publicKey];
 }
 
@@ -115,7 +116,7 @@ export function removeMuxed(publicKey, ids, net) {
   all[network] = perNet;
   _saveAll(all);
   const removed = before - next.length;
-  try { console.debug('[muxedStore.removeMuxed]', { publicKey, network, ids: Array.from(idSet), removed, totalAfter: next.length }); } catch { /* noop */ }
+  if (isDev) { try { console.debug('[muxedStore.removeMuxed]', { publicKey, network, ids: Array.from(idSet), removed, totalAfter: next.length }); } catch { /* noop */ } }
   return { removed };
 }
 
@@ -126,7 +127,7 @@ export function exportMuxedCsv(publicKey, filename = 'muxed_accounts.csv', net, 
   if (!publicKey) return;
   const network = _getNet(net);
   const rows = listMuxed(publicKey, network);
-  try { console.debug('[muxedStore.exportMuxedCsv]', { publicKey, network, count: rows.length, filename, delimiter }); } catch { /* noop */ }
+  if (isDev) { try { console.debug('[muxedStore.exportMuxedCsv]', { publicKey, network, count: rows.length, filename, delimiter }); } catch { /* noop */ } }
 
   const headers = [
     'network',
@@ -189,7 +190,7 @@ export function importMuxedCsvText(publicKey, csvText, net) {
   const result = { imported: 0, skipped: 0, errors: 0 };
   if (!publicKey || !csvText) return result;
   const network = _getNet(net);
-  try { console.debug('[muxedStore.importMuxedCsvText] start', { publicKey, network, size: csvText.length }); } catch { /* noop */ }
+  if (isDev) { try { console.debug('[muxedStore.importMuxedCsvText] start', { publicKey, network, size: csvText.length }); } catch { /* noop */ } }
 
   function detectDelimiter(text) {
     // Inspect first non-empty line to detect delimiter among , ; \t

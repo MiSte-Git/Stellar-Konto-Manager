@@ -48,6 +48,7 @@
       "tx_bad_auth": "Transaction refusée : Signature invalide",
       "tx_failed": "Transaction échouée",
       "unknown": "Erreur inconnue dans la transaction",
+      "signingFailed": "Une ou plusieurs signatures n'ont pas pu être créées. Veuillez réessayer.",
       "multisig": {
         "invalidSecret": "L'une des clés secrètes saisies est invalide.",
         "notASigner": "L'une des clés secrètes saisies n'appartient pas aux signataires enregistrés.",

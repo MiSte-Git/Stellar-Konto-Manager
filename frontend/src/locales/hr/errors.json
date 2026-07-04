@@ -48,6 +48,7 @@
       "tx_bad_auth": "Transakcija odbijena: Nevažeći potpis",
       "tx_failed": "Transakcija nije uspjela",
       "unknown": "Nepoznata greška u transakciji",
+      "signingFailed": "Jedan ili više potpisa nije bilo moguće izraditi. Pokušajte ponovno.",
       "multisig": {
         "invalidSecret": "Jedan od unesenih tajnih ključeva je nevažeći.",
         "notASigner": "Jedan od unesenih tajnih ključeva ne pripada registriranim potpisnicima.",

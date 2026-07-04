@@ -69,7 +69,6 @@ async function withHorizonRetry(fn, { retries = 3, baseDelay = 1200, maxDelay = 
 // In-memory light cache + de-dup for loadAccount and feeStats
 const _accountCache = new Map(); // key => { ts, data }
 const _inflightAccount = new Map(); // key => Promise
-let _feeCache = { ts: 0, mode: 100 };
 
 async function loadAccountCached(server, publicKey, { ttlMs = 15000 } = {}) {
   const baseUrl = (server?.serverURL && String(server.serverURL)) || 'unknown';
@@ -252,73 +251,6 @@ export function assertKeyPairMatch(secretKey, expectedPublicKey) {
 }
 
 /**
- * Löscht eine oder mehrere Trustlines durch Setzen des Limits auf 0
- * @param {Object} params - Enthält secretKey & zu löschende Trustlines
- * @param {string} params.secretKey - Secret Key des Wallets
- * @param {Array} params.trustlines - [{ assetCode, assetIssuer }]
- * @returns {Array} - Erfolgreich gelöschte Trustlines
- * @throws {Error} - Bei Horizon- oder Transaktionsfehlern
- */
-export async function deleteTrustlines({ secretKey, trustlines }) {
-  const sourceKeypair = Keypair.fromSecret(secretKey);
-  const publicKey = sourceKeypair.publicKey();
-  
-  if (trustlines.length === 0) {
-    throw new Error("Keine gültigen Trustlines zum Löschen vorhanden.");
-  }
-
-  const server = getHorizonServer();
-  const account = await server.loadAccount(publicKey);
-  const txBuilder = new TransactionBuilder(account, {
-    fee: Number(await getBaseFee()),
-    networkPassphrase: Networks.PUBLIC,
-  });
-
-  trustlines.forEach((tl) => {
-    txBuilder.addOperation(
-      Operation.changeTrust({
-        asset: new Asset(tl.assetCode, tl.assetIssuer),
-        limit: "0",
-      })
-    );
-  });
-
-  const transaction = txBuilder.setTimeout(60).build();
-  transaction.sign(sourceKeypair);
-
-  try {
-    const server = getHorizonServer();
-    const result = await server.submitTransaction(transaction);
-
-    return trustlines.map(tl => ({
-      assetCode: tl.assetCode,
-      assetIssuer: tl.assetIssuer,
-      txId: result.id
-    }));
-  } catch (err) {
-    const txCode = err.response?.data?.extras?.result_codes?.transaction;
-    const opCodes = err.response?.data?.extras?.result_codes?.operations;
-    const txHash = err.response?.data?.hash;
-
-    const detail = opCodes?.[0] || txCode || 'unknown';
-    const isRealError = detail !== 'op_success' && detail !== 'tx_success';
-
-    if (!isRealError && txHash) {
-      console.warn('[SKM] Horizon reported error but tx might have succeeded:', txHash);
-      return trustlines.map(tl => ({
-        assetCode: tl.assetCode,
-        assetIssuer: tl.assetIssuer,
-        txId: txHash
-      }));
-    }
-
-    console.error('[SKM] Trustline deletion failed:', err);
-    // Keep throw format: submitTransaction.failed:<detail>
-    throw new Error('submitTransaction.failed:' + detail);
-  }
-}
-
-/**
  * Prüft und löst Eingabe in Federation-Adresse oder Public Key auf
  * @param {string} input - Federation-Adresse oder Public Key
  * @returns {Promise<string>} - Gültiger öffentlicher Schlüssel (G...)
@@ -446,26 +378,6 @@ export function validateSecretKey(secret) {
 }
 
 /**
- * Holt die aktuelle Netzwerk-Fee (mode) vom Horizon-Server
- * @returns {Promise<string>} - Basis-Fee als String (z.B. "100")
- */
-async function getBaseFee() {
-  const now = Date.now();
-  if (now - _feeCache.ts < 60000) {
-    return Number(_feeCache.mode || 100);
-  }
-  const server = getHorizonServer();
-  try {
-    const feeStats = await withHorizonRetry(() => server.feeStats(), { retries: 3, baseDelay: 1000 });
-    const mode = Number(feeStats?.fee_charged?.mode || 100);
-    _feeCache = { ts: Date.now(), mode };
-    return mode;
-  } catch {
-    return Number(_feeCache.mode || 100);
-  }
-}
-
-/**
  * Lädt eine kompakte Konto-Zusammenfassung für Header/Status-Anzeige.
  * Nutzt nur einen Account-Call und kein Operations-Listing.
  */
@@ -559,33 +471,6 @@ export async function handleSourceSubmit(sourceInput, t, networkOverride /* 'PUB
   }
 }
 /**
- * Löscht ausgewählte Trustlines und lädt danach die aktualisierte Liste.
- * Wird im Realmodus ausgeführt.
- */
-export async function handleDeleteTrustlines({
-  secretKey,
-  trustlinesToDelete,
-  sourcePublicKey,
-  t,
-}) {
-  const keypair = Keypair.fromSecret(secretKey);
-  const pubKeyFromSecret = keypair.publicKey();
-
-  if (pubKeyFromSecret !== sourcePublicKey) {
-    throw new Error(t('secretKey:mismatch'));
-  }
-
-  // Optional: Validierung der Trustlines hier ergänzen
-  const deleted = await deleteTrustlines({ secretKey, trustlines: trustlinesToDelete });
-
-  const updatedTrustlines = await loadTrustlines(sourcePublicKey);
-
-  return {
-    deleted,
-    updatedTrustlines,
-  };
-}
-/**
  * Teilt ein Array in gleich große Blöcke (Chunks) auf
  */
 export function chunkArray(array, size) {
@@ -656,9 +541,14 @@ export async function deleteTrustlinesInChunks({
     });
 
     const tx = txb.setTimeout(60).build();
+    const signFailures = [];
     signerList.forEach((kp) => {
-      try { tx.sign(kp); } catch (e) { console.debug?.('sign failed', e); }
+      try { tx.sign(kp); } catch (e) { signFailures.push(e); }
     });
+    if (signFailures.length > 0) {
+      console.error('[SKM] Trustline delete: signing failed for one or more keys', signFailures);
+      throw new Error('submitTransaction.failed:signingFailed');
+    }
 
     const res = await server.submitTransaction(tx);
     const txId = res?.id || res?.hash || '';

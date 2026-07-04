@@ -19,10 +19,12 @@ async function accountExists(serverUrl, publicKey) {
  * This avoids labeling accounts as testnet when they also exist on mainnet.
  */
 export async function isTestnetAccount(publicKey) {
-  const mainnetExists = await accountExists('https://horizon.stellar.org', publicKey);
+  const [mainnetExists, testnetExists] = await Promise.all([
+    accountExists('https://horizon.stellar.org', publicKey),
+    accountExists('https://horizon-testnet.stellar.org', publicKey),
+  ]);
   if (mainnetExists === true) return false;
   if (mainnetExists === null) return false;
-  const testnetExists = await accountExists('https://horizon-testnet.stellar.org', publicKey);
   return testnetExists === true;
 }
 

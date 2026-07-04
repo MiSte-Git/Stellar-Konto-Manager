@@ -3,6 +3,8 @@
 import { StrKey } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 
+const isDev = import.meta.env.MODE !== 'production';
+
 /**
  * Build an M-address from a base G-address and a uint64 ID.
  *
@@ -17,18 +19,19 @@ export function buildMuxedAddress(basePublicKey, muxedIdStr) {
   // Wirf Error('submitTransaction.failed:<key>') damit die UI
   // den Key via t() übersetzen kann.
 
-  try {
-    const net = typeof window !== 'undefined' ? window.localStorage?.getItem('SKM_NETWORK') : undefined;
-    // Use console.log so it shows even when DevTools isn't in Verbose mode
-    console.log('[muxed.buildMuxedAddress] called', { basePublicKey, muxedIdStr: String(muxedIdStr), net });
-  } catch { /* noop */ }
+  if (isDev) {
+    try {
+      const net = typeof window !== 'undefined' ? window.localStorage?.getItem('SKM_NETWORK') : undefined;
+      console.log('[muxed.buildMuxedAddress] called', { basePublicKey, muxedIdStr: String(muxedIdStr), net });
+    } catch { /* noop */ }
+  }
 
   if (!basePublicKey || typeof basePublicKey !== 'string') {
-    console.warn('[muxed.buildMuxedAddress] invalid basePublicKey', basePublicKey);
+    if (isDev) console.warn('[muxed.buildMuxedAddress] invalid basePublicKey', basePublicKey);
     throw new Error('submitTransaction.failed:muxed.error.invalidBaseAccount');
   }
   if (muxedIdStr === undefined || muxedIdStr === null || muxedIdStr === '') {
-    console.warn('[muxed.buildMuxedAddress] missing muxedIdStr');
+    if (isDev) console.warn('[muxed.buildMuxedAddress] missing muxedIdStr');
     throw new Error('submitTransaction.failed:muxed.error.noId');
   }
 
@@ -37,12 +40,12 @@ export function buildMuxedAddress(basePublicKey, muxedIdStr) {
   try {
     asBig = BigInt(muxedIdStr);
   } catch (e) {
-    console.error('[muxed.buildMuxedAddress] BigInt conversion failed', { muxedIdStr, error: e });
+    if (isDev) console.error('[muxed.buildMuxedAddress] BigInt conversion failed', { muxedIdStr, error: e });
     throw new Error('submitTransaction.failed:createAccount.muxedIdInvalid');
   }
   const MAX = 18446744073709551615n;
   if (asBig < 0n || asBig > MAX) {
-    console.warn('[muxed.buildMuxedAddress] ID out of range', { asBig: asBig.toString() });
+    if (isDev) console.warn('[muxed.buildMuxedAddress] ID out of range', { asBig: asBig.toString() });
     throw new Error('submitTransaction.failed:createAccount.muxedIdInvalid');
   }
 
@@ -50,12 +53,12 @@ export function buildMuxedAddress(basePublicKey, muxedIdStr) {
   try {
     // Validate base key early
     if (!StrKey.isValidEd25519PublicKey(basePublicKey)) {
-      console.warn('[muxed.buildMuxedAddress] basePublicKey invalid format');
+      if (isDev) console.warn('[muxed.buildMuxedAddress] basePublicKey invalid format');
       throw new Error('submitTransaction.failed:muxed.error.invalidBaseAccount');
     }
 
     if (typeof StrKey.decodeEd25519PublicKey !== 'function' || typeof StrKey.encodeMed25519PublicKey !== 'function') {
-      console.error('[muxed.buildMuxedAddress] StrKey med25519 helpers missing in current SDK build');
+      if (isDev) console.error('[muxed.buildMuxedAddress] StrKey med25519 helpers missing in current SDK build');
       throw new Error('submitTransaction.failed:muxed.error.invalidBaseAccount');
     }
 
@@ -73,14 +76,14 @@ export function buildMuxedAddress(basePublicKey, muxedIdStr) {
     const m = StrKey.encodeMed25519PublicKey(payload);
 
     if (typeof m !== 'string' || !/^M[A-Z2-7]{10,}/.test(m)) {
-      console.error('[muxed.buildMuxedAddress] StrKey.encodeMed25519PublicKey returned invalid value', { type: typeof m, m });
+      if (isDev) console.error('[muxed.buildMuxedAddress] StrKey.encodeMed25519PublicKey returned invalid value', { type: typeof m, m });
       throw new Error('submitTransaction.failed:muxed.error.invalidBaseAccount');
     }
 
-    console.debug('[muxed.buildMuxedAddress] success (StrKey)', { addr: m });
+    if (isDev) console.debug('[muxed.buildMuxedAddress] success (StrKey)', { addr: m });
     return m;
   } catch (e) {
-    console.error('[muxed.buildMuxedAddress] build failed', e);
+    if (isDev) console.error('[muxed.buildMuxedAddress] build failed', e);
     throw new Error('submitTransaction.failed:muxed.error.invalidBaseAccount');
   }
 }

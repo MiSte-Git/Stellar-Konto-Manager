@@ -48,6 +48,7 @@
       "tx_bad_auth": "Transazione rifiutata: Firma non valida",
       "tx_failed": "Transazione fallita",
       "unknown": "Errore sconosciuto nella transazione",
+      "signingFailed": "Non è stato possibile creare una o più firme. Riprova.",
       "multisig": {
         "invalidSecret": "Una delle chiavi segrete inserite non è valida.",
         "notASigner": "Una delle chiavi segrete inserite non appartiene ai firmatari registrati.",
