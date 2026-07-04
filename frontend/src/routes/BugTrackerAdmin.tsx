@@ -183,16 +183,79 @@ const BugTrackerAdmin: React.FC = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [csvDelimiter, setCsvDelimiter] = useState<string>(',');
 
-  // Determines if the current user is allowed to access the admin view.
-  const isAuthorized = useMemo(() => {
+  // Admin auth now lives server-side as a session cookie (finding A2) - no
+  // secret is ever shipped in the frontend bundle. authState starts as
+  // 'loading' until the initial /api/admin/check call resolves.
+  const [authState, setAuthState] = useState<'loading' | 'authed' | 'anon'>('loading');
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const isAuthorized = authState === 'authed';
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(apiUrl('admin/check'), { credentials: 'include' });
+        const data = await res.json().catch(() => ({}));
+        if (!cancelled) setAuthState(data?.authenticated ? 'authed' : 'anon');
+      } catch {
+        if (!cancelled) setAuthState('anon');
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const handleLogin = useCallback(async () => {
+    const value = String(secretInput || '').trim();
+    if (!value) return;
+    setIsLoggingIn(true);
+    setLoginError(null);
     try {
-      const secret = import.meta.env.VITE_BUGTRACKER_ADMIN_SECRET;
-      if (!secret) return false;
-      const token = window.sessionStorage?.getItem('BUGTRACKER_ADMIN_TOKEN');
-      return token === secret;
+      const res = await fetch(apiUrl('admin/login'), {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret: value }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data?.ok) {
+        setSecretInput('');
+        setAuthState('authed');
+      } else {
+        setLoginError(t('common:bugReport.admin.loginFailed', 'Falsches Secret.'));
+      }
     } catch {
-      return false;
+      setLoginError(t('common:bugReport.admin.loginFailed', 'Falsches Secret.'));
+    } finally {
+      setIsLoggingIn(false);
     }
+  }, [secretInput, t]);
+
+  const handleLogout = useCallback(async () => {
+    try {
+      await fetch(apiUrl('admin/logout'), { method: 'POST', credentials: 'include' });
+    } catch {
+      /* ignore - still clear local state below */
+    }
+    setAuthState('anon');
+  }, []);
+
+  // Tries the PHP-style endpoint first, falls back to the Node-style one if
+  // that route doesn't exist (404) - lets the same frontend code work against
+  // either backend variant without knowing which one is live.
+  const fetchWithBackendFallback = useCallback(async (paths: string[], init: RequestInit) => {
+    let lastError: unknown = null;
+    for (const path of paths) {
+      try {
+        const res = await fetch(apiUrl(path), { ...init, credentials: 'include' });
+        if (res.status === 404) { lastError = new Error('status_404'); continue; }
+        return res;
+      } catch (err) {
+        if ((err as any)?.name === 'AbortError') throw err;
+        lastError = err;
+      }
+    }
+    throw lastError instanceof Error ? lastError : new Error('bugreport.unknown');
   }, []);
 
   // Loads bug reports from the backend using current filters and pagination.
@@ -211,7 +274,8 @@ const BugTrackerAdmin: React.FC = () => {
     try {
       if (debouncedSearch.trim()) params.set('q', debouncedSearch.trim());
       if (sortKey) { params.set('sort', sortKey); params.set('dir', sortDir); }
-      const res = await fetch(`${apiUrl('bugreport.php')}?${params.toString()}`, {
+      const qs = params.toString();
+      const res = await fetchWithBackendFallback([`bugreport.php?${qs}`, `bugreport?${qs}`], {
         method: 'GET',
         headers: { Accept: 'application/json' },
         signal,
@@ -229,21 +293,30 @@ const BugTrackerAdmin: React.FC = () => {
     } finally {
       if (!signal?.aborted) setIsLoading(false);
     }
-  }, [isAuthorized, page, priorityFilter, statusFilter, categoryFilter, pageFilter, debouncedSearch, sortKey, sortDir, t]);
+  }, [isAuthorized, page, priorityFilter, statusFilter, categoryFilter, pageFilter, debouncedSearch, sortKey, sortDir, t, fetchWithBackendFallback]);
 
-  // Persists updates via POST to the PHP endpoint. Optionally accepts an override draft for immediate save.
+  // Persists updates against whichever backend is live. Auth is now the
+  // session cookie (finding A2) - no secret header. The PHP and Node variants
+  // use different shapes (POST+action vs PATCH+id-in-url), so unlike the
+  // read-only GET fallback this tries each request shape directly.
   const saveReport = useCallback(async (id: number, override?: UpdateDraft) => {
     const draft = override ?? drafts[id];
     if (!draft) return;
     try {
-      const res = await fetch(apiUrl('bugreport.php'), {
+      let res = await fetch(apiUrl('bugreport.php'), {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-admin-secret': import.meta.env.VITE_BUGTRACKER_ADMIN_SECRET ?? ''
-        },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'update', id, ...draft })
       });
+      if (res.status === 404) {
+        res = await fetch(apiUrl(`bugreport/${id}`), {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(draft)
+        });
+      }
       if (!res.ok) {
         throw new Error(`status_${res.status}`);
       }
@@ -346,11 +419,19 @@ const BugTrackerAdmin: React.FC = () => {
   }, [resizing]);
 
 
+  if (authState === 'loading') {
+    return (
+      <div className="mx-auto max-w-xl p-6">
+        <p className="text-sm text-gray-500">{t('common:common.loading')}</p>
+      </div>
+    );
+  }
+
   if (!isAuthorized) {
     return (
       <div className="mx-auto max-w-xl p-6">
         <h1 className="text-2xl font-semibold mb-2">{t('common:bugReport.admin.title')}</h1>
-        <p className="text-sm mb-4">{t('common:bugReport.admin.locked', 'Zugriff verweigert. Setze das Admin-Secret im lokalen Speicher und lade die Seite neu.')}</p>
+        <p className="text-sm mb-4">{t('common:bugReport.admin.locked', 'Zugriff verweigert. Bitte melde dich mit dem Admin-Secret an.')}</p>
         <div className="space-y-2">
           <label className="block text-xs mb-1">{t('common:bugReport.admin.enterSecret', 'Admin-Secret eingeben')}</label>
           <div className="relative">
@@ -358,6 +439,7 @@ const BugTrackerAdmin: React.FC = () => {
               type={showAdminSecret ? 'text' : 'password'}
               value={secretInput}
               onChange={(e) => setSecretInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !isLoggingIn) handleLogin(); }}
               placeholder={t('common:bugReport.admin.secretPlaceholder', '••••••••')}
               className="w-full border rounded px-2 py-2 pr-10"
               autoFocus
@@ -384,23 +466,18 @@ const BugTrackerAdmin: React.FC = () => {
               )}
             </button>
           </div>
+          {loginError && (
+            <p className="text-xs text-red-700 dark:text-red-300">{loginError}</p>
+          )}
           <div className="flex gap-2">
             <button
               type="button"
-              className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-              onClick={() => {
-                try {
-                  const val = String(secretInput || '').trim();
-                  if (!val) return;
-                  window.sessionStorage?.setItem('BUGTRACKER_ADMIN_TOKEN', val);
-                  window.location.reload();
-                } catch (err) {
-                  console.error('bugReport.admin.navigate.failed', err);
-                }
-              }}
+              className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40"
+              onClick={handleLogin}
+              disabled={isLoggingIn || !secretInput.trim()}
               title={t('common:bugReport.admin.confirm', 'Öffnen')}
             >
-              {t('common:bugReport.admin.confirm', 'Öffnen')}
+              {isLoggingIn ? t('common:common.loading') : t('common:bugReport.admin.confirm', 'Öffnen')}
             </button>
             <button
               type="button"
@@ -412,10 +489,6 @@ const BugTrackerAdmin: React.FC = () => {
             </button>
           </div>
         </div>
-        <pre className="bg-gray-100 dark:bg-gray-900 rounded p-3 text-xs overflow-auto mt-4">{`// Secret im Browser setzen und Seite neu laden:
-sessionStorage.setItem('BUGTRACKER_ADMIN_TOKEN', '<DEIN-SECRET>');
-// Aufrufen:
-window.location.assign(window.location.pathname);`}</pre>
       </div>
     );
   }
@@ -609,10 +682,11 @@ window.location.assign(window.location.pathname);`}</pre>
         const params = new URLSearchParams(base);
         params.set('limit', String(limit));
         params.set('offset', String(offset));
-              const res = await fetch(`${apiUrl('bugreport.php')}?${params.toString()}`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' }
-      });
+        const qs = params.toString();
+        const res = await fetchWithBackendFallback([`bugreport.php?${qs}`, `bugreport?${qs}`], {
+          method: 'GET',
+          headers: { Accept: 'application/json' }
+        });
         if (!res.ok) throw new Error(`status_${res.status}`);
         const data = await res.json();
         const items: BugReportRow[] = Array.isArray(data.items) ? data.items : [];
@@ -649,6 +723,14 @@ window.location.assign(window.location.pathname);`}</pre>
             {t('common:back', 'Zurück')}
           </button>
           <h1 className="text-2xl font-semibold">{t('common:bugReport.admin.title')}</h1>
+          <button
+            type="button"
+            className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            onClick={handleLogout}
+            title={t('common:bugReport.admin.logout', 'Abmelden')}
+          >
+            {t('common:bugReport.admin.logout', 'Abmelden')}
+          </button>
         </div>
         <div className="flex items-center gap-2">
           <input

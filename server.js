@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 const rateLimit = require('express-rate-limit');
 const StellarSdk = require('@stellar/stellar-sdk');
 const { WebAuth } = require('@stellar/stellar-sdk');
@@ -57,12 +58,12 @@ function getTradeHorizon(network = 'PUBLIC') {
 app.use(cors({ origin: true }));
 app.use(bodyParser.json());
 
-// Explicit CORS headers for multisig routes, restricted to known dev/prod origins
+// Explicit CORS headers for routes restricted to known dev/prod origins
 // (was previously a wildcard '*' — finding B3).
 function deriveOrigin(url) {
   try { return new URL(url).origin; } catch { return null; }
 }
-const allowedMultisigOrigins = new Set([
+const allowedAppOrigins = new Set([
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   process.env.PROD_ORIGIN,
@@ -73,7 +74,7 @@ app.use('/api/multisig', (req, res, next) => {
   // The global cors({ origin: true }) above already reflected the request's origin
   // unconditionally; explicitly override/remove it here so an origin outside our
   // allowlist never ends up with an Access-Control-Allow-Origin header.
-  if (origin && allowedMultisigOrigins.has(origin)) {
+  if (origin && allowedAppOrigins.has(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
     res.header('Vary', 'Origin');
   } else {
@@ -84,6 +85,36 @@ app.use('/api/multisig', (req, res, next) => {
   if (req.method === 'OPTIONS') return res.sendStatus(200);
   return next();
 });
+
+// Session-cookie-protected routes (bugtracker admin auth, finding A2) need a
+// specific origin + Access-Control-Allow-Credentials - '*' cannot be combined
+// with cookies per the fetch/CORS spec.
+app.use(['/api/admin', '/api/bugreport'], (req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && allowedAppOrigins.has(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Vary', 'Origin');
+  } else {
+    res.removeHeader('Access-Control-Allow-Origin');
+  }
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PATCH,OPTIONS');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  return next();
+});
+
+app.use(session({
+  name: 'skm_admin_session',
+  secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: 'auto', // https in prod, plain http in local dev
+    sameSite: 'lax',
+  },
+}));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -223,6 +254,41 @@ const allowedPage = new Set(['start','trustlines','trustlineCompare','balance','
 const ADMIN_SECRET = process.env.BUGTRACKER_ADMIN_SECRET || '';
 const multisigStatus = new Set(['pending_signatures', 'ready_to_submit', 'submitted_success', 'submitted_failed', 'expired', 'obsolete_seq']);
 
+// Bugtracker admin session auth (finding A2): replaces the client-side secret
+// comparison (VITE_BUGTRACKER_ADMIN_SECRET baked into the JS bundle) with a
+// real server-side login that sets a session cookie. Same endpoint paths and
+// JSON contracts as the PHP variant (api/admin.php) so the frontend needs no
+// backend-specific branching.
+app.post('/api/admin/login', (req, res) => {
+  const provided = sanitizeHeader(String(req.body?.secret || ''));
+  if (!ADMIN_SECRET || !timingSafeEqualStrings(provided, ADMIN_SECRET)) {
+    return res.status(401).json({ ok: false, error: 'forbidden' });
+  }
+  req.session.regenerate((err) => {
+    if (err) return res.status(500).json({ ok: false, error: 'session_failed' });
+    req.session.bugtrackerAdmin = true;
+    res.json({ ok: true });
+  });
+});
+
+app.get('/api/admin/check', (req, res) => {
+  res.json({ authenticated: !!req.session?.bugtrackerAdmin });
+});
+
+app.post('/api/admin/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.json({ ok: true });
+  });
+});
+
+function requireAdminSession(req, res) {
+  if (!req.session?.bugtrackerAdmin) {
+    res.status(403).json({ error: 'bugReport.admin.forbidden' });
+    return false;
+  }
+  return true;
+}
+
 app.post('/api/bugreport', async (req, res) => {
   try {
     const { url, userAgent, language, title, subject, description, ts, appVersion, status, priority, category, page, reportToken, contactEmail, rejectionReason, comment } = req.body || {};
@@ -283,6 +349,11 @@ app.post('/api/bugreport', async (req, res) => {
 
 app.get('/api/bugreport', async (req, res) => {
   try {
+    // Listing exposes contact emails/free-text reports - admin-only (was
+    // unprotected before the A2 fix, since the admin UI's client-side secret
+    // check was the only prior gate).
+    if (!requireAdminSession(req, res)) return;
+
     let { limit = '20', offset = '0', status, priority, category, page, q, sort, dir } = req.query;
     let items = bugDb.items.slice();
     if (status && allowedStatus.has(String(status))) items = items.filter((r) => r.status === status);
@@ -346,10 +417,7 @@ app.get('/api/bugreport', async (req, res) => {
 
 app.patch('/api/bugreport/:id', async (req, res) => {
   try {
-    const provided = sanitizeHeader(req.headers['x-admin-secret'] || '');
-    if (!ADMIN_SECRET || !timingSafeEqualStrings(provided, ADMIN_SECRET)) {
-      return res.status(403).json({ error: 'bugReport.admin.forbidden' });
-    }
+    if (!requireAdminSession(req, res)) return;
     const id = parseInt(String(req.params.id), 10);
     const item = bugDb.items.find((r) => r.id === id);
     if (!item) return res.status(404).json({ error: 'bugReport.notFound' });

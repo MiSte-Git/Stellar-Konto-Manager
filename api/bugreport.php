@@ -7,27 +7,37 @@
 
 declare(strict_types=1);
 
+require __DIR__ . '/admin_session.php';
+
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-// CORS for local dev (Vite) → PROD API
+// CORS for local dev (Vite) → PROD API. Session-cookie-protected endpoints
+// (admin listing/update, finding A2) need a specific origin + credentials
+// flag - '*' is not usable together with cookies.
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $allowedOrigins = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
+    'https://skm.steei.de',
 ];
+$prodOrigin = getenv('PROD_ORIGIN');
+if ($prodOrigin) $allowedOrigins[] = $prodOrigin;
 if (in_array($origin, $allowedOrigins, true)) {
     header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Credentials: true');
     header('Vary: Origin');
 }
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, x-admin-secret');
+header('Access-Control-Allow-Headers: Content-Type');
 
 // Handle preflight without DB access
 if (strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET')) === 'OPTIONS') {
     http_response_code(204);
     exit;
 }
+
+admin_session_start();
 
 function json_out(array $payload, int $status = 200): void {
     http_response_code($status);
@@ -74,16 +84,8 @@ function read_json_body(): array {
     return $data;
 }
 
-function header_value(string $name): string {
-    $key = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
-    $val = $_SERVER[$key] ?? '';
-    return is_string($val) ? $val : '';
-}
-
-function require_admin(array $cfg): void {
-    $expected = (string)($cfg['BUGTRACKER_ADMIN_SECRET'] ?? '');
-    $given = header_value('x-admin-secret');
-    if ($expected === '' || !hash_equals($expected, $given)) {
+function require_admin(): void {
+    if (!is_admin_authenticated()) {
         json_out(['ok' => false, 'error' => 'forbidden'], 403);
     }
 }
@@ -105,6 +107,11 @@ $allowedPage = ['start','trustlines','trustlineCompare','balance','xlmByMemo','s
 
 try {
     if ($method === 'GET') {
+        // Listing exposes contact emails/free-text reports - admin-only (was
+        // unprotected before the A2 fix, since the admin UI's client-side
+        // secret check was the only prior gate).
+        require_admin();
+
         $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
         $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
         $limit = max(1, min(500, $limit));
@@ -194,7 +201,7 @@ try {
         $action = isset($data['action']) ? (string)$data['action'] : '';
 
         if ($action === 'update') {
-            require_admin($cfg);
+            require_admin();
 
             $id = isset($data['id']) ? (int)$data['id'] : 0;
             if ($id <= 0) json_out(['ok' => false, 'error' => 'invalid_id'], 400);

@@ -32,7 +32,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 
 ### F. Bugtracker
 - Fehler melden über UI; Speicherung in `data/bugreports.json` (Node-Backend) bzw. per MySQL, wenn die PHP-Variante (`api/bugreport.php`) genutzt wird.
-- Admin-Modus zum Anzeigen/Löschen (S-Key-geschützt).
+- Admin-Modus zum Anzeigen/Löschen, geschützt durch serverseitigen Session-Login (Admin-Secret nie im Frontend-Bundle, siehe `POST /api/admin/login`).
 
 ### G. Spenden
 - Menüpunkt „Spenden“ (optional, Feature-Flag) öffnet den regulären Zahlungsdialog (freiwillig).
@@ -40,7 +40,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 ## Architekturüberblick
 - Frontend: React + Vite, Ordner `frontend/`.
 - Backend: Node.js/Express, `server.js` im Projekt-Root, lokale Dateiablage.
-- Env-Konfiguration: `.env` im Projekt-Root (siehe `.env.example`), u. a. `PROD_API_URL` für Produktions-Builds (`npm run start-build`) und die Prod-Backend-Option von `npm run dev`. Optional `PROD_ORIGIN`, um die CORS-Allowlist der Multisig-Endpunkte (`server.js` und `api/multisig.php`) auf eine abweichende Produktions-Origin zu erweitern (Default: `https://skm.steei.de`).
+- Env-Konfiguration: `.env` im Projekt-Root (siehe `.env.example`), u. a. `PROD_API_URL` für Produktions-Builds (`npm run start-build`) und die Prod-Backend-Option von `npm run dev`. Optional `PROD_ORIGIN`, um die CORS-Allowlist der Multisig-/Admin-Endpunkte (`server.js` und `api/multisig.php`/`api/admin.php`) auf eine abweichende Produktions-Origin zu erweitern (Default: `https://skm.steei.de`). `BUGTRACKER_ADMIN_SECRET` (Bugtracker-Admin-Login, serverseitig geprüft) und `SESSION_SECRET` (signiert das Admin-Session-Cookie) sind für die Node-Variante nötig.
 - Daten (Node-Backend): `data/bugreports.json`, `data/multisig_jobs.json` (lokale Laufzeitdaten, bewusst nicht in Git getrackt, siehe `.gitignore`).
 - PHP-Alternative: `api/` (siehe Abschnitt „PHP-Backend“ unten).
 - Keine externen Server, keine zentrale Datenspeicherung.
@@ -89,7 +89,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Empfehlung: echte Wallet-Keys nur auf vertrauenswürdigen Geräten, Backups offline halten.
 
 ## PHP-Backend (wenn Node nicht erlaubt ist)
-- Ordner: `api/` enthält `multisig.php`, `trade.php`, `bugreport.php`, `health.php`, `.htaccess`, `composer.json`/`composer.lock` sowie den Fallback-Routing-Unterordner `trade/assets/{search,facts}/index.php`. Speicherung der Multisig-Jobs in `api/data/multisig_jobs.json` (schreibbar machen).
+- Ordner: `api/` enthält `multisig.php`, `trade.php`, `bugreport.php`, `health.php`, `admin.php` (Bugtracker-Admin-Login/Check/Logout per PHP-Session, siehe `admin_session.php`), `.htaccess`, `composer.json`/`composer.lock` sowie den Fallback-Routing-Unterordner `trade/assets/{search,facts}/index.php`. Speicherung der Multisig-Jobs in `api/data/multisig_jobs.json` (schreibbar machen).
 - **Vor dem ersten Start**: `api/_config.php` anlegen (Datei ist `.gitignore`t und liegt nicht im Repo!). Muss ein PHP-Array zurückgeben, mindestens:
   ```php
   <?php
@@ -98,7 +98,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
       'DB_USER' => '...',
       'DB_PASS' => '...',
       'DB_TABLE_BUGREPORTS' => 'bugreports',
-      'BUGTRACKER_ADMIN_SECRET' => '...', // eigenständiger Zufallswert, NICHT identisch mit DB_PASS
+      'BUGTRACKER_ADMIN_SECRET' => '...', // eigenständiger Zufallswert, NICHT identisch mit DB_PASS; nur serverseitig geprüft (POST /api/admin/login), landet nie im Frontend-Bundle
   ];
   ```
   Ohne diese Datei antworten `bugreport.php` und `health.php` mit `missing_config`.
@@ -111,7 +111,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   ```
 - Upload/Deploy: `api/*.php`, `api/.htaccess`, `api/composer.json`, `api/composer.lock`, `api/_config.php` (manuell, nicht per Git!), kompletter `api/vendor/` und sicherstellen, dass `api/data/` beschreibbar ist.
 - Falls lokal kein PHP/Composer verfügbar (z. B. Windows ohne Extensions): Composer-Installer per `php composer-setup.php`, danach `php composer.phar install --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-gmp` ausführen, anschließend den erzeugten `vendor/` hochladen.
-- Routing: Apache muss `/api/multisig/...` und `/api/trade/...` per `.htaccess` im `api/`-Ordner auf `multisig.php` bzw. `trade.php` leiten.
+- Routing: Apache muss `/api/multisig/...`, `/api/trade/...` und `/api/admin/...` per `.htaccess` im `api/`-Ordner auf `multisig.php`, `trade.php` bzw. `admin.php` leiten.
 - Frontend-Builds: `npm run start-build` setzt `VITE_BACKEND_URL` automatisch auf `PROD_API_URL`, wenn nicht explizit gesetzt. Alternativ `VITE_BACKEND_URL=https://www.skm.steei.de` in `.env` definieren, um jeden Build auf die produktive API zu pinnen.
 
 ## Rechtliches

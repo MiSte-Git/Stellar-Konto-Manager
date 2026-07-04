@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { buildPath } from '../utils/basePath.js';
+import { apiUrl } from '../utils/apiBase.js';
 
 const ADMIN_NAV = [
   {
@@ -21,6 +22,8 @@ export default function SmallAdminLink() {
   const [secret, setSecret] = useState('');
   const [showSecret, setShowSecret] = useState(false);
   const [portalRoot, setPortalRoot] = useState(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [error, setError] = useState(null);
 
   // Öffnet das Modal mit leerem Eingabefeld.
   const handleLinkClick = (event) => {
@@ -28,19 +31,34 @@ export default function SmallAdminLink() {
     if (typeof window === 'undefined') return;
     setSecret('');
     setShowSecret(false);
+    setError(null);
     setIsOpen(true);
   };
 
-  // Bestätigt das Secret, speichert es und navigiert zur Admin-Seite.
-  const handleConfirm = () => {
+  // Loggt gegen die serverseitige Session ein (A2-Fix, kein Secret mehr im
+  // Frontend) und navigiert erst bei Erfolg zur Admin-Seite.
+  const handleConfirm = async () => {
+    const value = String(secret || '').trim();
+    if (!value || isLoggingIn) return;
+    setIsLoggingIn(true);
+    setError(null);
     try {
-      const value = String(secret || '').trim();
-      if (!value) return;
-      window.sessionStorage?.setItem('BUGTRACKER_ADMIN_TOKEN', value);
-      const target = buildPath('bugtracker');
-      window.location.assign(target);
-    } catch (error) {
-      throw new Error('bugReport.admin.navigate.failed:' + (error?.message || 'unknown'));
+      const res = await fetch(apiUrl('admin/login'), {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret: value }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data?.ok) {
+        window.location.assign(buildPath('bugtracker'));
+      } else {
+        setError(t('common:bugReport.admin.loginFailed', 'Falsches Secret.'));
+      }
+    } catch {
+      setError(t('common:bugReport.admin.loginFailed', 'Falsches Secret.'));
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -117,6 +135,9 @@ export default function SmallAdminLink() {
                 )}
               </button>
             </div>
+            {error && (
+              <p className="text-xs text-red-700 dark:text-red-300 mb-2">{error}</p>
+            )}
             <div className="flex gap-2 justify-end">
               <button
                 type="button"
@@ -128,11 +149,12 @@ export default function SmallAdminLink() {
               </button>
               <button
                 type="button"
-                className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40"
                 onClick={handleConfirm}
+                disabled={isLoggingIn || !secret.trim()}
                 title={t('common:bugReport.admin.confirm')}
               >
-                {t('common:bugReport.admin.confirm')}
+                {isLoggingIn ? t('common:common.loading') : t('common:bugReport.admin.confirm')}
               </button>
             </div>
           </div>
