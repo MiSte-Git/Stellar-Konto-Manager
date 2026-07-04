@@ -38,8 +38,8 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 
 ## Architekturüberblick
 - Frontend: React + Vite, Ordner `frontend/`.
-- Backend (aktiv genutzt): Node.js/Express, `server.js` im Projekt-Root, lokale Dateiablage.
-- Zusätzlicher Ordner `backend/`: eigenes `package.json`, aber `backend/server.js` ist nur ein dünner Wrapper, der den Root-`server.js` per `require('../server.js')` startet – keine eigenständige zweite Implementierung im Betrieb. `backend/src/*` (u. a. eine SQLite-basierte Bugtracker-Variante) ist aktuell nicht eingebunden.
+- Backend: Node.js/Express, `server.js` im Projekt-Root, lokale Dateiablage.
+- Env-Konfiguration: `.env` im Projekt-Root (siehe `.env.example`), u. a. `PROD_API_URL` für Produktions-Builds (`npm run start-build`) und die Prod-Backend-Option von `npm run dev`.
 - Daten (Node-Backend): `data/bugreports.json`, `data/multisig_jobs.json`.
 - PHP-Alternative: `api/` (siehe Abschnitt „PHP-Backend“ unten).
 - Keine externen Server, keine zentrale Datenspeicherung.

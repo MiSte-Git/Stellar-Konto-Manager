@@ -12,6 +12,7 @@ ChatGPT - Stellar Trustline Manager_files/
 *.pdf
 *.ods
 *.md
+!CLAUDE.md
 dist/
 # Ignoriere sensible Umgebungsdateien
 .env
@@ -44,6 +45,7 @@ api/_config.php
 api/vendor/
 api/composer.phar
 api/composer-setup.php
+api/data/
 
 frontend/SSH_Cyon
 frontend/SSH_Cyon.pub
