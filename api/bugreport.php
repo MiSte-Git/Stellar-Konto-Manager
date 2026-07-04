@@ -94,10 +94,6 @@ function allowlist(string $value, array $allowed, string $fallback): string {
     return in_array($value, $allowed, true) ? $value : $fallback;
 }
 
-$cfg = require_config();
-$pdo = get_pdo($cfg);
-$table = (string)($cfg['DB_TABLE_BUGREPORTS'] ?? 'bugreports');
-
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 
 $allowedStatus = ['open', 'in_progress', 'closed', 'rejected'];
@@ -106,6 +102,14 @@ $allowedCategory = ['bug', 'idea', 'improve', 'other'];
 $allowedPage = ['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','createAccount','multisigEdit','settings','feedback','other'];
 
 try {
+    // Inside the try/catch (not before it) so a DB connection failure - which
+    // PDO always raises as an exception, even outside ERRMODE_EXCEPTION - goes
+    // through the same generic-error handling instead of leaking a raw
+    // PDOException (with DB user/host) to the client.
+    $cfg = require_config();
+    $pdo = get_pdo($cfg);
+    $table = (string)($cfg['DB_TABLE_BUGREPORTS'] ?? 'bugreports');
+
     if ($method === 'GET') {
         // Listing exposes contact emails/free-text reports - admin-only (was
         // unprotected before the A2 fix, since the admin UI's client-side
@@ -320,5 +324,6 @@ try {
 
     json_out(['ok' => false, 'error' => 'method_not_allowed'], 405);
 } catch (Throwable $e) {
-    json_out(['ok' => false, 'error' => 'exception', 'message' => $e->getMessage()], 500);
+    error_log('[bugreport] request failed: ' . $e->getMessage());
+    json_out(['ok' => false, 'error' => 'server_error'], 500);
 }

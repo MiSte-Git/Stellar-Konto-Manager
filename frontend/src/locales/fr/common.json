@@ -102,6 +102,7 @@
       "cancel": "Annuler",
       "logout": "Se déconnecter",
       "loginFailed": "Secret incorrect.",
+      "tooManyAttempts": "Trop de tentatives. Veuillez réessayer plus tard.",
       "filter": "Filtre",
       "status": "Statut",
       "priority": "Priorité",

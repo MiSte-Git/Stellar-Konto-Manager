@@ -102,6 +102,7 @@
       "cancel": "Abbrechen",
       "logout": "Abmelden",
       "loginFailed": "Falsches Secret.",
+      "tooManyAttempts": "Zu viele Versuche. Bitte später erneut versuchen.",
       "filter": "Filter",
       "status": "Status",
       "priority": "Priorität",

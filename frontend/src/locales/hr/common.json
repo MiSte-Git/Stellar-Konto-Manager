@@ -102,6 +102,7 @@
       "cancel": "Otkazati",
       "logout": "Odjava",
       "loginFailed": "Pogrešna tajna.",
+      "tooManyAttempts": "Previše pokušaja. Pokušajte ponovno kasnije.",
       "filter": "Filter",
       "status": "Status",
       "priority": "Prioritet",

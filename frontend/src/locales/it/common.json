@@ -102,6 +102,7 @@
       "cancel": "Annulla",
       "logout": "Disconnetti",
       "loginFailed": "Segreto errato.",
+      "tooManyAttempts": "Troppi tentativi. Riprova più tardi.",
       "filter": "Filtro",
       "status": "Stato",
       "priority": "Priorità",

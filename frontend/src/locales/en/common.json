@@ -102,6 +102,7 @@
       "cancel": "Cancel",
       "logout": "Log out",
       "loginFailed": "Incorrect secret.",
+      "tooManyAttempts": "Too many attempts. Please try again later.",
       "filter": "Filter",
       "status": "Status",
       "priority": "Priority",

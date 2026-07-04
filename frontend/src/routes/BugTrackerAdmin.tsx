@@ -221,6 +221,8 @@ const BugTrackerAdmin: React.FC = () => {
       if (res.ok && data?.ok) {
         setSecretInput('');
         setAuthState('authed');
+      } else if (data?.error === 'too_many_attempts') {
+        setLoginError(t('common:bugReport.admin.tooManyAttempts', 'Zu viele Versuche. Bitte später erneut versuchen.'));
       } else {
         setLoginError(t('common:bugReport.admin.loginFailed', 'Falsches Secret.'));
       }

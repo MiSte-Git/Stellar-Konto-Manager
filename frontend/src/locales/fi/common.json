@@ -102,6 +102,7 @@
       "cancel": "Peruuttaa",
       "logout": "Kirjaudu ulos",
       "loginFailed": "Väärä salasana.",
+      "tooManyAttempts": "Liian monta yritystä. Yritä myöhemmin uudelleen.",
       "filter": "Suodatin",
       "status": "Tila",
       "priority": "Prioriteetti",

@@ -52,6 +52,8 @@ export default function SmallAdminLink() {
       const data = await res.json().catch(() => ({}));
       if (res.ok && data?.ok) {
         window.location.assign(buildPath('bugtracker'));
+      } else if (data?.error === 'too_many_attempts') {
+        setError(t('common:bugReport.admin.tooManyAttempts', 'Zu viele Versuche. Bitte später erneut versuchen.'));
       } else {
         setError(t('common:bugReport.admin.loginFailed', 'Falsches Secret.'));
       }

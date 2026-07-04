@@ -732,7 +732,10 @@ app.get('/trustlines', async (req, res) => {
   try {
     let account;
     if (publicKey.includes('*')) {
-      const resolved = await horizon.resolveFederationAddress(publicKey);
+      // Horizon.Server has no resolveFederationAddress() method (never did in
+      // recent SDK versions); SEP-2 federation lookups go through the
+      // dedicated Federation.Server.resolve() helper instead.
+      const resolved = await StellarSdk.Federation.Server.resolve(publicKey);
       if (!resolved || !resolved.account_id) {
         throw new Error('Invalid federation address');
       }

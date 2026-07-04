@@ -102,6 +102,7 @@
       "cancel": "Annuleren",
       "logout": "Afmelden",
       "loginFailed": "Onjuist geheim.",
+      "tooManyAttempts": "Te veel pogingen. Probeer het later opnieuw.",
       "filter": "Filter",
       "status": "Status",
       "priority": "Prioriteit",
