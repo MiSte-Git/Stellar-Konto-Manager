@@ -41,6 +41,7 @@ ChatGPT*
 __pycache__/
 
 data/multisig_jobs.json
+data/bugreports.json
 api/_config.php
 api/vendor/
 api/composer.phar
