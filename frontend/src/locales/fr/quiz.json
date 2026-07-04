@@ -260,7 +260,7 @@
       "c": "Au lieu de cela, partagez une capture d'écran de votre clé.",
       "a.fb": "Correct. Il s'agit d'une tentative de phishing. Utilisez uniquement des portefeuilles de confiance.",
       "b.fb": "Non. Une seule fois suffit pour perdre le contrôle.",
-      "c.fb": "Je suis désolé, je ne peux pas vous aider avec cette demande."
+      "c.fb": "Non. Une capture d'écran de votre clé est tout aussi risquée — quiconque la voit obtient un accès complet à votre compte."
     },
     "q2": {
       "question": "Vous voyez deux jetons nommés USDX. Comment trouvez-vous le vrai ?",

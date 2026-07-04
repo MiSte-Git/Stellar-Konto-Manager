@@ -12,7 +12,7 @@
   },
   "balance": {
     "buttons": {
-      "details": "Podaci su do listopada 2023.",
+      "details": "Više detalja",
       "explorer": "Istraživač",
       "payments": "Nedavne operacije"
     },
@@ -37,7 +37,7 @@
         "date": "Datum",
         "direction": "Smjer",
         "memo": "Memorandum",
-        "tx": "Na vašem raspolaganju su podaci do listopada 2023. godine.",
+        "tx": "Tx",
         "txLabel": "Vaši poruka izgleda da je nepotpuna. Možete li, molim vas, pružiti više konteksta ili detalja?",
         "type": "Vrsta"
       },
@@ -53,7 +53,7 @@
       "limit": "Broj",
       "outgoing": "Izlaz",
       "title": "Nedavne operacije",
-      "to": "Do Октобра 2023."
+      "to": "Do"
     },
     "paymentsHint": "Možete filtrirati ulaze/izlaze u Exploreru.",
     "title": "Prikaži podatke o računu"
@@ -167,7 +167,7 @@
     "lastRefresh": "Zadnje ažuriranje: {{ts}}"
   },
   "clear": "Brisanje unosa",
-  "close": "Obučen si na podacima do listopada 2023.",
+  "close": "Zatvori",
   "networkLabel": "Mreža",
   "loading": "Učitavanje…",
   "refresh": "Učitaj ponovno",
@@ -225,7 +225,7 @@
   "account": {
     "createdAt": "Račun kreiran na",
     "createdAtUnknown": "Ne može se utvrditi.",
-    "testnetLabel": "(__BEHALTEN_EN_TERM_1__)"
+    "testnetLabel": "(Testnet)"
   },
   "fetch": {
     "groupfund": {
@@ -587,7 +587,7 @@
   },
   "i18n": {
     "translate": {
-      "skipOriginal": "Obučeni ste na podacima do listopada 2023."
+      "skipOriginal": "Ne prevodi izvorni pojam: {{detail}}"
     }
   },
   "common": {

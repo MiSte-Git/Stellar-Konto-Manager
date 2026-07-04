@@ -238,7 +238,11 @@
     "original": "Horizon history depth",
     "short": "Describes how far back the transaction history provided by public Horizon servers extends.",
     "desc": "The public Horizon servers (Mainnet und Testnet) operated by the Stellar Development Foundation only provide a limited history – currently approximately one year retroactively. Older data can no longer be retrieved through these free endpoints. If you need to go further back in time, you essentially have two options: (1) you can run your own Horizon node with full history (inklusive History Archives), or (2) you can use third-party or paid services that store and provide long-term historical Stellar data.",
-    "seeAlso": "Es wurde kein spezifischer Text zur Übersetzung bereitgestellt. Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
+    "seeAlso": [
+      "horizon",
+      "serverHorizon",
+      "historyArchive"
+    ]
   },
   "scp": {
     "title": "Stellar Consensus Protocol",

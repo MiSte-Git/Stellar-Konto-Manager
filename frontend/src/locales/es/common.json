@@ -12,7 +12,7 @@
   },
   "balance": {
     "buttons": {
-      "details": "Estás entrenado con datos hasta octubre de 2023.",
+      "details": "Más detalles",
       "explorer": "Explorador",
       "payments": "Operaciones recientes"
     },
@@ -37,8 +37,8 @@
         "date": "Fecha",
         "direction": "Dirección",
         "memo": "Nota",
-        "tx": "Lo siento, pero parece que el texto que has proporcionado está incompleto o no es claro. Si tienes un texto específico en alemán que necesites traducir al español, por favor proporciónalo y estaré encantado de ayudarte.",
-        "txLabel": "Lo siento, pero tu mensaje parece estar incompleto. ¿Podrías proporcionar más contexto o detalles?",
+        "tx": "Tx",
+        "txLabel": "Tx",
         "type": "Escribe"
       },
       "empty": "No se encontraron operaciones.",
@@ -166,8 +166,8 @@
     "lastPaymentAt": "Último pago: {{val}}",
     "lastRefresh": "Última actualización: {{ts}}"
   },
-  "clear": "Se te han entrenado con datos hasta octubre de 2023.",
-  "close": "Estás entrenado con datos hasta octubre de 2023.",
+  "clear": "Borrar entrada",
+  "close": "Cerrar",
   "networkLabel": "Red neuronal",
   "loading": "Laden…",
   "refresh": "Recargar",
@@ -225,7 +225,7 @@
   "account": {
     "createdAt": "Cuenta creada el",
     "createdAtUnknown": "No se puede determinar.",
-    "testnetLabel": "(__BEHALTEN_EN_TERM_1__)"
+    "testnetLabel": "(Testnet)"
   },
   "fetch": {
     "groupfund": {
@@ -247,7 +247,7 @@
   "option": {
     "add": "Agregar",
     "cancel": "Cancelar",
-    "close": "Usted ha sido entrenado con datos hasta octubre de 2023.",
+    "close": "Cerrar",
     "back": "Regresar",
     "backToSelection": "Volver a la selección",
     "confirm": {
@@ -271,13 +271,13 @@
     "cancel": "Cancelar",
     "canceled": "Abortado",
     "counts": "Verificado: {{ops}} • Coincidencias: {{matches}}",
-    "done": "Hasta octubre de 2023.",
+    "done": "Completado",
     "duration": "Duración: {{val}}",
     "elapsed": "Duración: {{time}}",
     "eta": "ETA: {{minutes}} min.",
     "firstMatchAt": "Último depósito: {{date}}",
     "mode": {
-      "cache": "Estás entrenado con datos hasta octubre de 2023.",
+      "cache": "Modo: Caché",
       "live": "Modo: En vivo (Horizon)"
     },
     "oldest": "La fecha más antigua en esta página: {{date}}",
@@ -329,7 +329,7 @@
       "title": "Publicidad"
     },
     "explorer": {
-      "edit": "Estás entrenado con datos hasta octubre de 2023.",
+      "edit": "Editar",
       "editTitle": "Editar entrada del Explorador"
     },
     "error": {
@@ -587,7 +587,7 @@
   },
   "i18n": {
     "translate": {
-      "skipOriginal": "Estás entrenado con datos hasta octubre de 2023."
+      "skipOriginal": "No traducir el término original: {{detail}}"
     }
   },
   "common": {
@@ -672,7 +672,7 @@
       "destination": "Cartera objetivo",
       "issuer": "Emisor",
       "label": "Etiqueta",
-      "memo": "Hasta octubre de 2023, tienes entrenamiento en datos.",
+      "memo": "Memo",
       "payments": "Pagos",
       "date": "Fecha",
       "token": "Ficha"
@@ -896,7 +896,7 @@
       "desc": "En Stellar, un token se llama activo. Un activo siempre está vinculado a una cuenta emisora. Por ejemplo, una cuenta puede emitir un token en euros. Este token en euros sería entonces un activo."
     },
     "xlm": {
-      "title": "Eres entrenado con datos hasta octubre de 2023.",
+      "title": "XLM",
       "original": "XLM",
       "short": "Moneda nativa de Stellar para tarifas y activación.",
       "desc": "XLM es la moneda base de Stellar. Necesitas XLM para pagar tarifas y para iniciar una nueva cuenta."
@@ -1065,7 +1065,7 @@
       "uniqueWallets": "Carteras Únicas: {{n}}"
     },
     "time": {
-      "setToNow": "No puedo establecer el tiempo actual, pero mi entrenamiento incluye información hasta octubre de 2023.",
+      "setToNow": "Establecer hora actual",
       "setToNowHint": "Establece el campo de tiempo a la hora actual."
     },
     "title": "XLM total según el memo",

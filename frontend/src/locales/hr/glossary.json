@@ -196,7 +196,11 @@
     "original": "Horizon history depth",
     "short": "Opisuje koliko daleko povijest transakcija koju pružaju javni Horizon poslužitelji seže unatrag.",
     "desc": "Javni Horizon serveri (Mainnet und Testnet) kojima upravlja Zaklada za razvoj Stellara pružaju samo ograničenu povijest – trenutno otprilike jednu godinu unatrag. Stariji podaci više se ne mogu dohvatiti putem ovih besplatnih krajnjih točaka. Ako trebate ići dalje unatrag u vremenu, u suštini imate dvije opcije: (1) možete pokrenuti vlastiti Horizon čvor s punom poviješću (inklusive History Archives), ili (2) možete koristiti usluge trećih strana ili plaćene usluge koje pohranjuju i pružaju dugoročnu povijesnu Stellarovu bazu podataka.",
-    "seeAlso": "Oprosti zbog nesporazuma. Molim te da mi dostaviš tekst koji želiš da prevedem."
+    "seeAlso": [
+      "horizon",
+      "serverHorizon",
+      "historyArchive"
+    ]
   },
   "scp": {
     "title": "Stellar Consensus Protocol",

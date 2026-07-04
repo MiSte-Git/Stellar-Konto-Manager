@@ -6,18 +6,60 @@
     "providerLabel": "Fornitore:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Indirizzo:",
-    "addressLines": "Es tut mir leid, das war ein Missverständnis. Bitte geben Sie den deutschen Text an, den Sie ins Italienische übersetzen möchten.",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Svizzera"
+    ],
     "emailLabel": "Email:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Dichiarazione di esclusione di responsabilità",
-    "body": "Mi dispiace, non ho ricevuto alcun testo da tradurre. Potresti fornirmi il testo che vorresti che traducessi in inglese?"
+    "body": [
+      "I contenuti di questa applicazione sono stati creati con la massima cura. Tuttavia, non possiamo garantire l'esattezza, la completezza e l'attualità dei contenuti.",
+      "In qualità di fornitore di servizi, siamo responsabili dei nostri contenuti. Gli obblighi di rimozione o blocco dell'utilizzo di informazioni ai sensi delle leggi generali rimangono invariati. Tuttavia, una responsabilità in tal senso è possibile solo dal momento in cui si viene a conoscenza di una concreta violazione di legge. Non appena veniamo a conoscenza di tali violazioni, rimuoveremo immediatamente questi contenuti.",
+      "Questa applicazione può contenere link a siti web esterni di terzi, sui cui contenuti non abbiamo alcuna influenza. Non possiamo assumerci alcuna responsabilità per questi contenuti di terzi. Il rispettivo fornitore o gestore delle pagine collegate è sempre responsabile dei propri contenuti."
+    ]
   },
   "privacy": {
     "title": "Politica sulla riservatezza",
     "intro": "Prendiamo molto sul serio la protezione dei tuoi dati personali. Di seguito, ti informiamo sul trattamento dei dati personali durante l'utilizzo di questa applicazione.",
-    "sections": "Sei stato addestrato su dati fino a ottobre 2023."
+    "sections": [
+      {
+        "title": "Responsabile",
+        "body": [
+          "Il responsabile del trattamento dei dati è il fornitore indicato nelle note legali.",
+          "Per domande sulla protezione dei dati potete contattarci all'indirizzo e-mail indicato."
+        ]
+      },
+      {
+        "title": "Raccolta e utilizzo dei dati",
+        "body": [
+          "L'utilizzo di questa applicazione è generalmente possibile senza fornire dati personali.",
+          "Qualora vengano raccolti dati personali (ad es. indirizzo e-mail), ciò avviene, ove possibile, sempre su base volontaria e solo per l'elaborazione della vostra richiesta."
+        ]
+      },
+      {
+        "title": "Dati di log",
+        "body": [
+          "Durante l'accesso a questa applicazione, il vostro browser può trasmettere automaticamente dati tecnici (ad es. indirizzo IP, orario di accesso, browser utilizzato). Queste informazioni sono utilizzate esclusivamente per garantire il funzionamento tecnico."
+        ]
+      },
+      {
+        "title": "Trasmissione dei dati",
+        "body": [
+          "I vostri dati personali saranno trasmessi a terzi solo se ciò è legalmente consentito o se avete dato il vostro consenso."
+        ]
+      },
+      {
+        "title": "I vostri diritti",
+        "body": [
+          "Avete diritto a informazioni sui dati memorizzati su di voi, nonché il diritto alla rettifica, cancellazione o limitazione del trattamento di tali dati.",
+          "Per questo, vi preghiamo di contattare l'indirizzo e-mail indicato nelle note legali."
+        ]
+      }
+    ]
   },
   "lastUpdated": "Ultimo aggiornamento: {{date}}",
   "meta": {

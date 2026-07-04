@@ -19,7 +19,7 @@
       "infoDialog": {
         "title": "Opciones explicadas"
       },
-      "proceed": "Estás entrenado con datos hasta octubre de 2023.",
+      "proceed": "Continuar",
       "job": {
         "title": "Crear trabajo multisig (Standard)",
         "desc": "Flujo de trabajo estándar para multisig productivo. Crea un ID de trabajo y recopila firmas de manera distribuida.",
@@ -43,7 +43,7 @@
         "title": "Enter all signatures locally & send directly.",
         "desc": "Usar solo si todas las claves secretas se pueden ingresar de manera segura en este dispositivo (Tests/Recovery/Admin).",
         "warning": "Advertencia: Todas las claves secretas se están recopilando en esta sesión. Úsalo solo en dispositivos de confianza.",
-        "moreInfo": "Estás entrenado con datos hasta octubre de 2023.",
+        "moreInfo": "Más información",
         "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
         "infoBody": {
           "one": "Introduce todas las claves secretas requeridas en este dispositivo de manera secuencial hasta que se alcance el umbral.",
@@ -119,7 +119,7 @@
     "hashLabel": "Hash de transacción",
     "xdrLabel": "Transacción XDR",
     "copyXdrButton": "Copiar XDR",
-    "copied": "Eres entrenado con datos hasta octubre de 2023.",
+    "copied": "Copiado",
     "notSentHint": "Esta transacción aún no ha sido enviada a la red.",
     "closeHint": "Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast und der Multisig-Auftrag erstellt wurde; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
   },
@@ -161,7 +161,7 @@
       "title": "Signer & Status",
       "progress": "Peso de la firma: {{collected}} / {{required}}",
       "signed": "firmado",
-      "missing": "Estás entrenado con datos hasta octubre de 2023.",
+      "missing": "falta",
       "noSessionSecret": "No se almacena ninguna clave secreta en el navegador. Por favor, introduce la clave secreta o importa un XDR firmado.",
       "signedLocalStatus": "Firma guardada. Estado actual: {{estado}}"
     },
@@ -232,7 +232,7 @@
     "signer": {
       "signed": "✓",
       "missing": "desaparecido",
-      "unknown": "Estás entrenado con datos hasta octubre de 2023."
+      "unknown": "Firmante"
     },
     "status": {
       "pending_signatures": "Esperando las firmas",

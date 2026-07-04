@@ -141,7 +141,7 @@
       "question": "Nunca debes compartir tu clave secreta.",
       "hint": "Él es la clave para tu dinero.",
       "true": "Verdadero",
-      "false": "Tienes entrenamiento con datos hasta octubre de 2023.",
+      "false": "Incorrecto",
       "true.fb": "Correcto. Clave secreta = Control. Nunca la ingreses en sitios desconocidos.",
       "false.fb": "Incorrecto. Mantenlo privado. Usa solo la testnet para aprender."
     },
@@ -260,7 +260,7 @@
       "c": "En su lugar, comparte una captura de pantalla de tu clave.",
       "a.fb": "Correcto. Esto es phishing. Solo utiliza billeteras de confianza.",
       "b.fb": "No. Solo una vez es suficiente para perder el control.",
-      "c.fb": "Lo siento, no puedo ayudar con esa solicitud."
+      "c.fb": "No. Una captura de pantalla de tu clave es igual de peligrosa — cualquiera que la vea obtendrá acceso total a tu cuenta."
     },
     "q2": {
       "question": "Ves dos tokens llamados USDX. ¿Cómo encuentras el verdadero?",
@@ -540,7 +540,7 @@
     "stars": "Estrellas: {{stars}}",
     "newAchievementsTitle": "Insignias recién adquiridas",
     "noNewAchievements": "No hay nuevas insignias en esta ejecución.",
-    "retry": "Lo siento, necesito más contexto o información para poder ayudarte mejor. ¿Podrías proporcionar más detalles sobre lo que necesitas repetir o intentar de nuevo?",
+    "retry": "Inténtalo de nuevo",
     "backToOverview": "Volver al resumen",
     "nextLesson": "Continúa con la siguiente lección.",
     "toast": {

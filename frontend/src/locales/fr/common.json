@@ -37,8 +37,8 @@
         "date": "Date",
         "direction": "Direction",
         "memo": "Mémo",
-        "tx": "Je suis désolé, mais il semble que le texte que vous avez fourni soit incomplet ou peu clair. Si vous avez un texte spécifique en allemand que vous souhaitez traduire en anglais, veuillez fournir ce texte, et je serai heureux de vous aider.",
-        "txLabel": "Je suis désolé, mais votre message semble être incomplet. Pourriez-vous s'il vous plaît fournir plus de contexte ou de détails ?",
+        "tx": "Tx",
+        "txLabel": "Tx",
         "type": "Tapez"
       },
       "empty": "Aucune opération trouvée.",
@@ -225,7 +225,7 @@
   "account": {
     "createdAt": "Compte créé le",
     "createdAtUnknown": "Ne peut pas être déterminé.",
-    "testnetLabel": "(__BEHALTEN_EN_TERM_1__)"
+    "testnetLabel": "(Testnet)"
   },
   "fetch": {
     "groupfund": {
@@ -1065,7 +1065,7 @@
       "uniqueWallets": "Portefeuilles Uniques : {{n}}"
     },
     "time": {
-      "setToNow": "Je suis désolé, mais je ne suis pas capable de définir ou de connaître l'heure actuelle. Je peux seulement fournir des informations et des réponses basées sur les données avec lesquelles j'ai été formé jusqu'en octobre 2023.",
+      "setToNow": "Définir l'heure actuelle",
       "setToNowHint": "Réglez le champ de l'heure sur l'heure actuelle."
     },
     "title": "XLM total selon le mémo",

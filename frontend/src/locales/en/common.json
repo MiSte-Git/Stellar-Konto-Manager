@@ -37,8 +37,8 @@
         "date": "Date",
         "direction": "Direction",
         "memo": "Memo",
-        "tx": "I'm sorry, but it looks like the text you provided is incomplete or unclear. If you have a specific text in German that you need translated into English, please provide that text, and I'll be happy to help.",
-        "txLabel": "I'm sorry, but your message seems to be incomplete. Could you please provide more context or details?",
+        "tx": "Tx",
+        "txLabel": "Tx",
         "type": "Type"
       },
       "empty": "No operations found.",
@@ -225,7 +225,7 @@
   "account": {
     "createdAt": "Account created on",
     "createdAtUnknown": "Cannot be determined.",
-    "testnetLabel": "(__BEHALTEN_EN_TERM_1__)"
+    "testnetLabel": "(Testnet)"
   },
   "fetch": {
     "groupfund": {

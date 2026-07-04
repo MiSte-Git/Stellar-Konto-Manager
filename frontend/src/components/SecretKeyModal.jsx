@@ -320,7 +320,7 @@ function SecretKeyModal({
           />
           {t('secretKey:remember.label', 'Remember for this session')}
         </label>
-        <p className="text-xs text-gray-500 mt-1">{t('secretKey:remember.hint', 'Stored in memory until you close this tab. Never sent to a server.')}</p>
+        <p className="text-xs text-gray-500 mt-1">{t('secretKey:remember.hint', "Stored in your browser's session storage until you close this tab — readable by any script running on this page. Never sent to a server.")}</p>
 
         <p className="text-xs text-gray-500 mt-2">{t('secretKey:info', 'Enter your secret key only if you want to sign transactions. Without it, you can only view data.')}</p>
 

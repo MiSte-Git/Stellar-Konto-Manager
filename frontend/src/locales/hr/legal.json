@@ -6,18 +6,60 @@
     "providerLabel": "Pružatelj:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Adresa:",
-    "addressLines": "Vi ste obrazovani na podacima do oktobra 2023.",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Švicarska"
+    ],
     "emailLabel": "Email:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Odricanje od odgovornosti",
-    "body": "Žao mi je, nisam primio tekst za prijevod. Možete li mi molim vas dostaviti tekst koji biste željeli da prevedem na engleski?"
+    "body": [
+      "Sadržaj ove aplikacije izrađen je s najvećom pažnjom. Međutim, ne možemo jamčiti točnost, potpunost i aktualnost sadržaja.",
+      "Kao pružatelj usluga, odgovorni smo za vlastiti sadržaj. Obveze uklanjanja ili blokiranja korištenja informacija prema općim zakonima ostaju time nedirnute. Odgovornost u tom pogledu moguća je tek od trenutka saznanja o konkretnoj povredi prava. Nakon što saznamo za takve povrede, odmah ćemo ukloniti taj sadržaj.",
+      "Ova aplikacija može sadržavati poveznice na vanjske web stranice trećih strana, na čiji sadržaj nemamo utjecaja. Za taj tuđi sadržaj ne možemo preuzeti odgovornost. Za sadržaj povezanih stranica uvijek je odgovoran dotični pružatelj usluga ili operater."
+    ]
   },
   "privacy": {
     "title": "Politika privatnosti",
     "intro": "Zaštitu vaših osobnih podataka shvaćamo ozbiljno. U nastavku ćemo vas obavijestiti o obradi osobnih podataka prilikom korištenja ove aplikacije.",
-    "sections": "Žao mi je, čini se da nije dan nikakav tekst za prevođenje. Možete li, molim vas, pružiti tekst koji želite prevesti na engleski?"
+    "sections": [
+      {
+        "title": "Odgovorna osoba",
+        "body": [
+          "Za obradu podataka odgovoran je pružatelj usluga naveden u impresumu.",
+          "Za pitanja o zaštiti podataka možete nas kontaktirati na navedenu adresu e-pošte."
+        ]
+      },
+      {
+        "title": "Prikupljanje i korištenje podataka",
+        "body": [
+          "Korištenje ove aplikacije u pravilu je moguće bez navođenja osobnih podataka.",
+          "Ako se prikupljaju osobni podaci (npr. adresa e-pošte), to se, kad god je moguće, uvijek događa na dobrovoljnoj osnovi i samo radi obrade vašeg upita."
+        ]
+      },
+      {
+        "title": "Podaci dnevnika",
+        "body": [
+          "Pri pristupu ovoj aplikaciji vaš preglednik može automatski prenijeti tehničke podatke (npr. IP adresu, vrijeme pristupa, korišteni preglednik). Ove informacije koriste se isključivo za osiguravanje tehničkog rada."
+        ]
+      },
+      {
+        "title": "Prosljeđivanje podataka",
+        "body": [
+          "Vaši osobni podaci prosljeđuju se trećim stranama samo ako je to zakonski dopušteno ili ste za to dali svoj pristanak."
+        ]
+      },
+      {
+        "title": "Vaša prava",
+        "body": [
+          "Imate pravo na informacije o podacima pohranjenim o vama, kao i pravo na ispravak, brisanje ili ograničenje obrade tih podataka.",
+          "Za to se obratite na adresu e-pošte navedenu u impresumu."
+        ]
+      }
+    ]
   },
   "lastUpdated": "Posljednji put ažurirano: {{date}}",
   "meta": {

@@ -141,7 +141,7 @@
       "question": "Je moet je geheime sleutel nooit delen.",
       "hint": "Hij is de sleutel tot jouw geld.",
       "true": "Waar.",
-      "false": "Je bent getraind op gegevens tot oktober 2023.",
+      "false": "Onjuist",
       "true.fb": "Correct. Geheime sleutel = Controle. Voer het nooit in op onbekende sites.",
       "false.fb": "Onjuist. Houd het privé. Gebruik het testnet alleen om te leren."
     },
@@ -260,7 +260,7 @@
       "c": "Deel in plaats daarvan een screenshot van je sleutel.",
       "a.fb": "Correct. Dit is phishing. Gebruik alleen vertrouwde wallets.",
       "b.fb": "Nee, één keer is genoeg om de controle te verliezen.",
-      "c.fb": "Het spijt me, ik kan daar niet mee helpen."
+      "c.fb": "Nee. Een screenshot van je sleutel is net zo riskant — iedereen die het ziet krijgt volledige toegang tot je account."
     },
     "q2": {
       "question": "Je ziet twee tokens met de naam USDX. Hoe vind je de echte?",
@@ -540,7 +540,7 @@
     "stars": "Sterren: {{stars}}",
     "newAchievementsTitle": "Nieuw verworven insignes",
     "noNewAchievements": "Geen nieuwe badges in deze ronde.",
-    "retry": "Je bent getraind op gegevens tot en met oktober 2023.",
+    "retry": "Opnieuw proberen",
     "backToOverview": "Terug naar overzicht",
     "nextLesson": "Ga verder naar de volgende les.",
     "toast": {

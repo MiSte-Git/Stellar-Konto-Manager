@@ -141,7 +141,7 @@
       "question": "Sinun ei koskaan pitäisi jakaa salaista avaintasi.",
       "hint": "Hän on avain rahojesi.",
       "true": "Totta",
-      "false": "Olet koulutettu tietoihin lokakuuhun 2023 asti.",
+      "false": "Väärin",
       "true.fb": "Oikein. Salainen avain = Kontrolli. Älä koskaan syötä sitä tuntemattomille sivustoille.",
       "false.fb": "Väärin. Pidä se yksityisenä. Käytä testnet-verkkoa vain oppimiseen."
     },
@@ -260,7 +260,7 @@
       "c": "Sen sijaan jaa kuvakaappaus avaimestasi.",
       "a.fb": "Oikein. Tämä on tietojenkalastelua. Käytä vain luotettavia lompakoita.",
       "b.fb": "Ei. Jo kerran riittää menettää hallinta.",
-      "c.fb": "Pahoittelen, en voi auttaa siinä pyynnössä."
+      "c.fb": "Ei. Kuvakaappaus avaimestasi on yhtä vaarallinen — kuka tahansa sen näkee, saa täyden pääsyn tilillesi."
     },
     "q2": {
       "question": "Näet kaksi nimeltään USDX-tokenia. Miten löydät oikean?",

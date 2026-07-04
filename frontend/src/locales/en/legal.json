@@ -6,18 +6,60 @@
     "providerLabel": "Provider:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Address:",
-    "addressLines": "Es gibt keinen deutschen Text im Beitrag zum Übersetzen. Bitte stellen Sie den Text bereit, den Sie übersetzt haben möchten.",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Switzerland"
+    ],
     "emailLabel": "Email:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Disclaimer",
-    "body": "I'm sorry, I didn't receive any text to translate. Could you please provide the text you would like me to translate into English?"
+    "body": [
+      "The content of this application has been created with the greatest care. However, we cannot guarantee the accuracy, completeness, and timeliness of the content.",
+      "As a service provider, we are responsible for our own content. Obligations to remove or block the use of information under general laws remain unaffected. However, liability in this regard is only possible from the point in time at which a specific infringement becomes known. Upon becoming aware of any such infringements, we will remove this content immediately.",
+      "This application may contain links to external third-party websites, over whose content we have no influence. We cannot assume any liability for this third-party content. The respective provider or operator of the linked pages is always responsible for their content."
+    ]
   },
   "privacy": {
     "title": "Privacy policy",
     "intro": "We take the protection of your personal data seriously. Below, we inform you about the processing of personal data when using this application.",
-    "sections": "I'm sorry, it seems there is no text provided for translation. Could you please provide the text you'd like translated into English?"
+    "sections": [
+      {
+        "title": "Data controller",
+        "body": [
+          "The provider named in the imprint is responsible for data processing.",
+          "If you have questions about data protection, you can contact us at the email address provided."
+        ]
+      },
+      {
+        "title": "Collection and use of data",
+        "body": [
+          "This application can generally be used without providing personal data.",
+          "Where personal data (e.g. email address) is collected, this is done, where possible, always on a voluntary basis and only to process your request."
+        ]
+      },
+      {
+        "title": "Log data",
+        "body": [
+          "When accessing this application, technical data (e.g. IP address, time of access, browser used) may be automatically transmitted by your browser. This information is used exclusively to ensure technical operation."
+        ]
+      },
+      {
+        "title": "Disclosure of data",
+        "body": [
+          "Your personal data will only be transmitted to third parties if this is legally permitted or you have given your consent."
+        ]
+      },
+      {
+        "title": "Your rights",
+        "body": [
+          "You have the right to information about the data stored about you, as well as the right to correction, deletion, or restriction of the processing of this data.",
+          "Please contact the email address provided in the imprint for this."
+        ]
+      }
+    ]
   },
   "lastUpdated": "Last updated: {{date}}",
   "meta": {

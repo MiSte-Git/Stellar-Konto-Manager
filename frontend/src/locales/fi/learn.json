@@ -53,7 +53,7 @@
     "testnetOnly": "Käytä vain TESTNETtiä. Älä koskaan syötä oikeita salaisia avaimia. Emme tallenna salaisuuksia."
   },
   "import": {
-    "title": "Tuoja on koulutettu dataan lokakuuhun 2023 asti.",
+    "title": "Tuo edistyminen",
     "summary": "Yhteenveto: {lessons} oppituntia, yhteensä {stars} tähteä. Harjoituksen metatiedot: {meta}",
     "metaYes": "kyllä",
     "metaNo": "ei",

@@ -6,18 +6,60 @@
     "providerLabel": "Aanbieder:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Adres:",
-    "addressLines": "Entschuldigung, das war ein Fehler. Bitte stellen Sie mir den Text zur Verfügung, den Sie ins Niederländische übersetzt haben möchten.",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Zwitserland"
+    ],
     "emailLabel": "E-mail:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Disclaimer",
-    "body": "Mijn excuses, ik heb geen tekst ontvangen om te vertalen. Zou je me de tekst kunnen geven die je naar het Nederlands vertaald wilt hebben?"
+    "body": [
+      "De inhoud van deze applicatie is met de grootste zorg samengesteld. Voor de juistheid, volledigheid en actualiteit van de inhoud kan echter geen garantie worden gegeven.",
+      "Als dienstverlener zijn wij verantwoordelijk voor onze eigen inhoud. Verplichtingen tot verwijdering of blokkering van het gebruik van informatie op grond van de algemene wetgeving blijven hierdoor onaangetast. Aansprakelijkheid in dit verband is echter pas mogelijk vanaf het moment waarop een concrete schending bekend wordt. Zodra wij kennis krijgen van dergelijke schendingen, zullen wij deze inhoud onmiddellijk verwijderen.",
+      "Deze applicatie kan links bevatten naar externe websites van derden, waarop wij geen invloed hebben. Voor deze vreemde inhoud kunnen wij geen aansprakelijkheid aanvaarden. Voor de inhoud van de gelinkte pagina's is steeds de betreffende aanbieder of exploitant verantwoordelijk."
+    ]
   },
   "privacy": {
     "title": "Privacybeleid",
     "intro": "Wij nemen de bescherming van uw persoonlijke gegevens serieus. Hieronder informeren wij u over de verwerking van persoonlijke gegevens bij het gebruik van deze applicatie.",
-    "sections": "Je bent getraind op gegevens tot oktober 2023."
+    "sections": [
+      {
+        "title": "Verantwoordelijke",
+        "body": [
+          "Verantwoordelijk voor de gegevensverwerking is de in het colofon genoemde aanbieder.",
+          "Bij vragen over gegevensbescherming kunt u contact met ons opnemen via het opgegeven e-mailadres."
+        ]
+      },
+      {
+        "title": "Verzameling en gebruik van gegevens",
+        "body": [
+          "Het gebruik van deze applicatie is in principe mogelijk zonder het opgeven van persoonsgegevens.",
+          "Voor zover persoonsgegevens (bijv. e-mailadres) worden verzameld, gebeurt dit, voor zover mogelijk, altijd op vrijwillige basis en uitsluitend voor de verwerking van uw aanvraag."
+        ]
+      },
+      {
+        "title": "Logbestanden",
+        "body": [
+          "Bij toegang tot deze applicatie kunnen technische gegevens (bijv. IP-adres, tijdstip van toegang, gebruikte browser) automatisch door uw browser worden doorgegeven. Deze informatie wordt uitsluitend gebruikt om de technische werking te waarborgen."
+        ]
+      },
+      {
+        "title": "Doorgifte van gegevens",
+        "body": [
+          "Uw persoonsgegevens worden alleen aan derden doorgegeven indien dit wettelijk is toegestaan of u hiervoor toestemming heeft gegeven."
+        ]
+      },
+      {
+        "title": "Uw rechten",
+        "body": [
+          "U heeft recht op informatie over de over u opgeslagen gegevens, evenals het recht op correctie, verwijdering of beperking van de verwerking van deze gegevens.",
+          "Neem hiervoor contact op via het in het colofon vermelde e-mailadres."
+        ]
+      }
+    ]
   },
   "lastUpdated": "Laatst bijgewerkt: {{date}}",
   "meta": {

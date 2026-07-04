@@ -47,7 +47,7 @@
     "success": "Éxito",
     "validation": "Validación",
     "pending": "Esperando validación",
-    "retry": "Estás entrenado con datos hasta octubre de 2023.",
+    "retry": "Por favor, inténtalo de nuevo",
     "noData": "No hay cuestionario disponible",
     "comingSoon": "La práctica para esta lección seguirá en breve.",
     "testnetOnly": "Utiliza solo TESTNET. Nunca ingreses claves secretas reales. No almacenamos secretos."

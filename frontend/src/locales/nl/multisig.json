@@ -19,7 +19,7 @@
       "infoDialog": {
         "title": "Opties uitgelegd"
       },
-      "proceed": "U bent getraind op gegevens tot oktober 2023.",
+      "proceed": "Doorgaan",
       "job": {
         "title": "Creëer multisig job (Standard)",
         "desc": "Standaardworkflow voor productieve multisig. Creëert een job-ID en verzamelt handtekeningen op een gedistribueerde manier.",
@@ -152,7 +152,7 @@
     "importSignedXdrDescription": "Voeg een ondertekende XDR in. Nieuwe handtekeningen zullen aan de huidige transactie worden toegevoegd.",
     "importSignedXdrPlaceholder": "Base64 gecodeerde ondertekende XDR",
     "importSignedXdrButton": "Ondertekende XDR overname",
-    "updatedAt": "Bijgewerkt tot oktober 2023.",
+    "updatedAt": "Bijgewerkt op",
     "signers": {
       "required": "Vereiste handtekeningen",
       "collected": "Reeds verzamelde handtekeningen"

@@ -19,7 +19,7 @@
       "infoDialog": {
         "title": "Opzioni spiegate"
       },
-      "proceed": "Sei addestrato su dati fino a ottobre 2023.",
+      "proceed": "Continua",
       "job": {
         "title": "Crea un lavoro multisig (Standard)",
         "desc": "Flusso di lavoro standard per multisig produttivo. Crea un ID lavoro e raccoglie firme in modo distribuito.",
@@ -92,7 +92,7 @@
         "status": "Transazione inviata con successo alla rete.",
         "hashLabel": "Hash della transazione",
         "copyDetails": "Copia i dettagli",
-        "copiedDetails": "Sei addestrato su dati fino a ottobre 2023."
+        "copiedDetails": "Copiato"
       },
       "xdr": {
         "title": "XDR preparato (nicht gesendet)",
@@ -152,7 +152,7 @@
     "importSignedXdrDescription": "Inserisci un XDR firmato. Nuove firme verranno incluse nella transazione attuale.",
     "importSignedXdrPlaceholder": "XDR firmato codificato in Base64",
     "importSignedXdrButton": "Firme su XDR assume il controllo",
-    "updatedAt": "Aggiornato a ottobre 2023.",
+    "updatedAt": "Aggiornato il",
     "signers": {
       "required": "Firme richieste",
       "collected": "Firme già raccolte"

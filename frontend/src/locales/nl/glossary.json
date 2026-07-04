@@ -120,7 +120,7 @@
     "desc": "Een asset is in de breedste zin alles wat waarde vertegenwoordigt en overdraagbaar is. Op Stellar kan iedereen een asset uitgeven – bijv. een luchtvaartmaatschappij haar miles als token, een bank haar dollar als stablecoin. Elk Stellar-asset wordt gedefinieerd door twee dingen: de assetcode (bijv. 'USDC') en de uitgever (het G-adres van de maker). XLM is het enige asset zonder uitgever, omdat het het native asset van het netwerk is."
   },
   "xlm": {
-    "title": "Je suis een taalmodel getraind op gegevens tot en met oktober 2023.",
+    "title": "XLM",
     "original": "XLM",
     "short": "Inheemse valuta van Stellar voor kosten en activatie.",
     "desc": "XLM is de native valuta van Stellar. Je hebt XLM nodig om kosten te betalen en om een nieuw account te starten."

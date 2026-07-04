@@ -6,18 +6,60 @@
     "providerLabel": "Fournisseur :",
     "providerName": "Michael Stegmann",
     "addressLabel": "Adresse :",
-    "addressLines": "Ich entschuldige mich für das Missverständnis. Bitte stellen Sie den deutschen Text bereit, den Sie übersetzt haben möchten, und ich werde ihn gerne für Sie ins Französische übersetzen.",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Suisse"
+    ],
     "emailLabel": "E-mail :",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Avis de non-responsabilité",
-    "body": "Je suis désolé, je n'ai pas reçu de texte à traduire. Pourriez-vous s'il vous plaît fournir le texte que vous souhaitez que je traduise en français?"
+    "body": [
+      "Le contenu de cette application a été créé avec le plus grand soin. Cependant, nous ne pouvons garantir l'exactitude, l'exhaustivité et l'actualité du contenu.",
+      "En tant que fournisseur de services, nous sommes responsables de notre propre contenu. Les obligations de suppression ou de blocage de l'utilisation d'informations en vertu des lois générales restent inchangées. Toutefois, une responsabilité à cet égard n'est possible qu'à partir du moment où une violation concrète du droit est connue. Dès que nous aurons connaissance de telles violations, nous supprimerons immédiatement ce contenu.",
+      "Cette application peut contenir des liens vers des sites web externes de tiers, sur le contenu desquels nous n'avons aucune influence. Nous ne pouvons assumer aucune responsabilité pour ce contenu tiers. Le fournisseur ou exploitant respectif des pages liées est toujours responsable de leur contenu."
+    ]
   },
   "privacy": {
     "title": "Politique de confidentialité",
     "intro": "Nous prenons au sérieux la protection de vos données personnelles. Ci-dessous, nous vous informons sur le traitement des données personnelles lors de l'utilisation de cette application.",
-    "sections": "Je suis désolé, il semble qu'aucun texte n'ait été fourni pour la traduction. Pourriez-vous s'il vous plaît fournir le texte que vous souhaitez faire traduire en français ?"
+    "sections": [
+      {
+        "title": "Responsable",
+        "body": [
+          "Le responsable du traitement des données est le prestataire mentionné dans les mentions légales.",
+          "Pour toute question relative à la protection des données, vous pouvez nous contacter à l'adresse e-mail indiquée."
+        ]
+      },
+      {
+        "title": "Collecte et utilisation des données",
+        "body": [
+          "L'utilisation de cette application est en principe possible sans indication de données personnelles.",
+          "Dans la mesure où des données personnelles (par exemple l'adresse e-mail) sont collectées, cela se fait, dans la mesure du possible, toujours sur une base volontaire et uniquement pour traiter votre demande."
+        ]
+      },
+      {
+        "title": "Données de journalisation",
+        "body": [
+          "Lors de l'accès à cette application, des données techniques (par exemple l'adresse IP, l'heure d'accès, le navigateur utilisé) peuvent être automatiquement transmises par votre navigateur. Ces informations sont utilisées exclusivement pour assurer le fonctionnement technique."
+        ]
+      },
+      {
+        "title": "Transmission des données",
+        "body": [
+          "Vos données personnelles ne seront transmises à des tiers que si la loi l'autorise ou si vous y avez consenti."
+        ]
+      },
+      {
+        "title": "Vos droits",
+        "body": [
+          "Vous avez le droit d'obtenir des informations sur les données vous concernant qui sont enregistrées, ainsi que le droit de rectification, de suppression ou de limitation du traitement de ces données.",
+          "Veuillez vous adresser pour cela à l'adresse e-mail indiquée dans les mentions légales."
+        ]
+      }
+    ]
   },
   "lastUpdated": "Dernière mise à jour : {{date}}",
   "meta": {

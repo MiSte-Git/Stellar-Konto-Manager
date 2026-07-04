@@ -186,7 +186,7 @@ const BugTrackerAdmin: React.FC = () => {
     try {
       const secret = import.meta.env.VITE_BUGTRACKER_ADMIN_SECRET;
       if (!secret) return false;
-      const token = window.localStorage?.getItem('BUGTRACKER_ADMIN_TOKEN');
+      const token = window.sessionStorage?.getItem('BUGTRACKER_ADMIN_TOKEN');
       return token === secret;
     } catch {
       return false;
@@ -378,7 +378,7 @@ const BugTrackerAdmin: React.FC = () => {
                 try {
                   const val = String(secretInput || '').trim();
                   if (!val) return;
-                  window.localStorage?.setItem('BUGTRACKER_ADMIN_TOKEN', val);
+                  window.sessionStorage?.setItem('BUGTRACKER_ADMIN_TOKEN', val);
                   window.location.reload();
                 } catch (err) {
                   console.error('bugReport.admin.navigate.failed', err);
@@ -399,7 +399,7 @@ const BugTrackerAdmin: React.FC = () => {
           </div>
         </div>
         <pre className="bg-gray-100 dark:bg-gray-900 rounded p-3 text-xs overflow-auto mt-4">{`// Secret im Browser setzen und Seite neu laden:
-localStorage.setItem('BUGTRACKER_ADMIN_TOKEN', '<DEIN-SECRET>');
+sessionStorage.setItem('BUGTRACKER_ADMIN_TOKEN', '<DEIN-SECRET>');
 // Aufrufen:
 window.location.assign(window.location.pathname);`}</pre>
       </div>

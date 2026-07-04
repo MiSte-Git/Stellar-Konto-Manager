@@ -36,7 +36,7 @@ export default function SmallAdminLink() {
     try {
       const value = String(secret || '').trim();
       if (!value) return;
-      window.localStorage?.setItem('BUGTRACKER_ADMIN_TOKEN', value);
+      window.sessionStorage?.setItem('BUGTRACKER_ADMIN_TOKEN', value);
       const target = buildPath('bugtracker');
       window.location.assign(target);
     } catch (error) {

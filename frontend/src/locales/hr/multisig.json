@@ -43,7 +43,7 @@
         "title": "Enter all signatures locally & send directly.",
         "desc": "Koristi samo ako svi tajni ključevi mogu biti sigurno uneseni na ovaj uređaj (Tests/Recovery/Admin).",
         "warning": "Upozorenje: Svi tajni ključevi se prikupljaju u ovoj sesiji. Koristite samo na pouzdanim uređajima.",
-        "moreInfo": "Vi ste obučeni na podacima do listopada 2023.",
+        "moreInfo": "Više informacija",
         "infoTitle": "Kako funkcioniše „Svi potpisi lokalno“?",
         "infoBody": {
           "one": "Na ovaj uređaj unosite sve potrebne tajne ključeve uzastopno dok se ne postigne prag.",

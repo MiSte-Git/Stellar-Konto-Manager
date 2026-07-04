@@ -47,7 +47,7 @@
     "success": "Uspjeh",
     "validation": "Validacija",
     "pending": "Čekanje na potvrdu",
-    "retry": "Obučeni ste na podacima do listopada 2023. godine.",
+    "retry": "Molimo pokušajte ponovno",
     "noData": "Nema dostupnog kviza",
     "comingSoon": "Vježba za ovu lekciju uslijedit će uskoro.",
     "testnetOnly": "Koristite samo TESTNET. Nikada nemojte unositi prave tajne ključeve. Ne pohranjujemo tajne."

@@ -37,8 +37,8 @@
         "date": "Data",
         "direction": "Direzione",
         "memo": "Memorandum",
-        "tx": "Mi dispiace, ma sembra che il testo fornito sia incompleto o poco chiaro. Se hai un testo specifico in tedesco che desideri tradurre in inglese, per favore forniscilo, e sarò felice di aiutarti.",
-        "txLabel": "Mi dispiace, ma il tuo messaggio sembra essere incompleto. Potresti fornire più contesto o dettagli?",
+        "tx": "Tx",
+        "txLabel": "Tx",
         "type": "Digita"
       },
       "empty": "Nessuna operazione trovata.",
@@ -225,7 +225,7 @@
   "account": {
     "createdAt": "Account creato il",
     "createdAtUnknown": "Non può essere determinato.",
-    "testnetLabel": "(__BEHALTEN_EN_TERM_1__)"
+    "testnetLabel": "(Testnet)"
   },
   "fetch": {
     "groupfund": {
@@ -587,7 +587,7 @@
   },
   "i18n": {
     "translate": {
-      "skipOriginal": "Sei addestrato su dati fino a ottobre 2023."
+      "skipOriginal": "Non tradurre il termine originale: {{detail}}"
     }
   },
   "common": {

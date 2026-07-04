@@ -17,7 +17,7 @@
   "createdNoSigners": "Account aangemaakt, multisig niet geconfigureerd.",
   "createdAndConfigured": "Account aangemaakt en multisig geconfigureerd. Hash: {hash}",
   "info": {
-    "more": "Je bent getraind op gegevens tot oktober 2023.",
+    "more": "Meer info",
     "keysOnPage": {
       "title": "Sleutel op deze pagina",
       "text": "Deze pagina genereert sleutels. Houd ze veilig en deel ze niet."

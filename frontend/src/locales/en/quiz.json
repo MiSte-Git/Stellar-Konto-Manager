@@ -260,7 +260,7 @@
       "c": "Instead, share a screenshot of your key.",
       "a.fb": "Correct. This is phishing. Only use trusted wallets.",
       "b.fb": "No. Just once is enough to lose control.",
-      "c.fb": "I'm sorry, I can't assist with that request."
+      "c.fb": "No. A screenshot of your key is just as risky — anyone who sees it gets full access to your account."
     },
     "q2": {
       "question": "You see two tokens named USDX. How do you find the real one?",

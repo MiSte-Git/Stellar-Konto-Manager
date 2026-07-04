@@ -141,7 +141,7 @@
       "question": "Nikada ne biste trebali dijeliti svoj tajni ključ.",
       "hint": "On je ključ vašeg novca.",
       "true": "Istina",
-      "false": "Vaši podaci su ažurirani do oktobra 2023.",
+      "false": "Netočno",
       "true.fb": "Točno. Tajni ključ = Kontrola. Nikada ga ne unosite na nepoznate stranice.",
       "false.fb": "Netočno. Držite to privatnim. Koristite samo testnet za učenje."
     },
@@ -260,7 +260,7 @@
       "c": "Umjesto toga, podijelite snimku zaslona svog ključa.",
       "a.fb": "Točno. Ovo je phishing. Koristite samo pouzdane novčanike.",
       "b.fb": "Ne. Dovoljan je samo jedan put da se izgubi kontrola.",
-      "c.fb": "Žao mi je, ne mogu pomoći s tim zahtjevom."
+      "c.fb": "Ne. Snimka zaslona tvog ključa jednako je opasna — tko god je vidi, dobiva potpuni pristup tvom računu."
     },
     "q2": {
       "question": "Vidite dva tokena pod nazivom USDX. Kako ćete pronaći pravi?",
@@ -540,7 +540,7 @@
     "stars": "Zvijezde: {{stars}}",
     "newAchievementsTitle": "Novo stečene značke",
     "noNewAchievements": "Nema novih znački u ovoj rundi.",
-    "retry": "Obučeni ste na podacima do listopada 2023.",
+    "retry": "Pokušaj ponovno",
     "backToOverview": "Povratak na pregled",
     "nextLesson": "Prijeđi na sljedeću lekciju.",
     "toast": {

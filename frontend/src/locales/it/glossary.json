@@ -196,7 +196,11 @@
     "original": "Horizon history depth",
     "short": "Descrive fino a che punto si estende la cronologia delle transazioni fornita dai server pubblici Horizon.",
     "desc": "I server pubblici Horizon (Mainnet und Testnet) gestiti dalla Stellar Development Foundation forniscono solo una cronologia limitata – attualmente retroattiva di circa un anno. I dati più vecchi non possono più essere recuperati tramite questi endpoint gratuiti. Se hai bisogno di tornare più indietro nel tempo, essenzialmente hai due opzioni: (1) puoi eseguire il tuo nodo Horizon con cronologia completa (inklusive History Archives), oppure (2) puoi utilizzare servizi di terze parti o a pagamento che memorizzano e forniscono dati storici a lungo termine di Stellar.",
-    "seeAlso": "Es wurde kein spezifischer Text zur Übersetzung bereitgestellt. Bitte geben Sie den Text ein, den Sie übersetzt haben möchten."
+    "seeAlso": [
+      "horizon",
+      "serverHorizon",
+      "historyArchive"
+    ]
   },
   "scp": {
     "title": "Stellar Consensus Protocol",

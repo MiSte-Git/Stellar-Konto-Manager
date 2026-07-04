@@ -2,7 +2,7 @@
   "desc": "Экспортируйте или импортируйте данные вашей викторины (Einstellungen, Fortschritt, Abzeichen).",
   "export": {
     "button": "Начать экспорт",
-    "fileName": "Вы обучены на данных до октября 2023 года.",
+    "fileName": "quiz-backup.json",
     "success": "Экспорт создан"
   },
   "import": {
@@ -16,7 +16,7 @@
         "progress": "Прогресс: {{count}} Quiz(e)",
         "settings": "Настройки: {{count}} викторин(e)"
       },
-      "title": "Вы обучены на данных до октября 2023 года."
+      "title": "Предпросмотр"
     },
     "selectFile": "Выберите файл",
     "strategy": {
@@ -27,7 +27,7 @@
     "title": "Импорт"
   },
   "nav": {
-    "back": "Вы обучены на данных до октября 2023 года."
+    "back": "Назад"
   },
   "title": "Backup & Recovery",
   "toast": {

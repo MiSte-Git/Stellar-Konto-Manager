@@ -17,7 +17,7 @@
   "createdNoSigners": "Cuenta creada, multisig no configurado.",
   "createdAndConfigured": "Cuenta creada y multisig configurado. Hash: {hash}",
   "info": {
-    "more": "Mi entrenamiento se basa en datos hasta octubre de 2023.",
+    "more": "Más información",
     "keysOnPage": {
       "title": "Clave en esta página",
       "text": "Esta página genera claves. Mántenlas seguras y no las compartas."

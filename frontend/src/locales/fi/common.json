@@ -12,7 +12,7 @@
   },
   "balance": {
     "buttons": {
-      "details": "Olet koulutettu tietoihin lokakuuhun 2023 saakka.",
+      "details": "Lisätiedot",
       "explorer": "Tutkimusmatkailija",
       "payments": "Viimeaikaiset toimet"
     },
@@ -37,7 +37,7 @@
         "date": "Päivämäärä",
         "direction": "Suunta",
         "memo": "Muistio",
-        "tx": "Sinua on koulutettu tietoihin lokakuuhun 2023 asti.",
+        "tx": "Tx",
         "txLabel": "Valitettavasti viestisi vaikuttaa olevan puutteellinen. Voisitko ystävällisesti antaa lisää kontekstia tai yksityiskohtia?",
         "type": "Kirjoita"
       },
@@ -225,7 +225,7 @@
   "account": {
     "createdAt": "Tili luotu päivämäärällä",
     "createdAtUnknown": "Ei voida määrittää.",
-    "testnetLabel": "(__BEHALTEN_EN_TERM_1__)"
+    "testnetLabel": "(Testnet)"
   },
   "fetch": {
     "groupfund": {
@@ -587,7 +587,7 @@
   },
   "i18n": {
     "translate": {
-      "skipOriginal": "Olet koulutettu tietoihin lokakuuhun 2023 asti."
+      "skipOriginal": "Älä käännä alkuperäistä termiä: {{detail}}"
     }
   },
   "common": {

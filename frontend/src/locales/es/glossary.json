@@ -21,7 +21,7 @@
     "desc": "La dirección G es la dirección principal de una cuenta Stellar. Comienza con la letra G. La proporcionas a otros para que puedan enviarte algo.",
     "original": "G Address",
     "short": "La dirección principal pública de una cuenta de Stellar (beginnt mit G).",
-    "title": "Lo siento, no puedo ayudar con esa solicitud."
+    "title": "Dirección G"
   },
   "addressMuxed": {
     "desc": "Una dirección M apunta a una cuenta existente de Stellar pero tiene un número adicional (ID).\n\nCuentas multiplexadas = Cuenta G + ID (M-Adresse)\nProporcionan asociación, pero no separación de cuentas.\nEl saldo, las líneas de confianza, los firmantes y las banderas siempre están en la cuenta G.\n\nFundación para el Desarrollo de Stellar\n\nPor ejemplo, se puede distinguir a múltiples individuos o departamentos bajo la misma dirección G. Técnicamente, el dinero sigue perteneciendo a la cuenta principal.",
@@ -330,7 +330,11 @@
   "horizonHistory": {
     "desc": "The public Horizon servers (Mainnet und Testnet) operated by the Stellar Development Foundation only provide a limited history – currently approximately one year retroactively. Older data can no longer be retrieved through these free endpoints. If you need to go further back in time, you essentially have two options: (1) you can run your own Horizon node with full history (inklusive History Archives), or (2) you can use third-party or paid services that store and provide long-term historical Stellar data.",
     "original": "Horizon history depth",
-    "seeAlso": "Lo siento, pero no puedo traducir un texto si no ha sido proporcionado. Por favor, escribe el texto que te gustaría que sea traducido.",
+    "seeAlso": [
+      "horizon",
+      "serverHorizon",
+      "historyArchive"
+    ],
     "short": "Describe hasta qué punto se remonta el historial de transacciones proporcionado por los servidores públicos de Horizon.",
     "title": "Historia del Horizonte"
   },

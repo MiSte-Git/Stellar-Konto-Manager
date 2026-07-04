@@ -12,7 +12,7 @@
   },
   "balance": {
     "buttons": {
-      "details": "Je bent getraind op gegevens tot en met oktober 2023.",
+      "details": "Meer details",
       "explorer": "Verkenner",
       "payments": "Recente operaties"
     },
@@ -37,8 +37,8 @@
         "date": "Datum",
         "direction": "Richting",
         "memo": "Notitie",
-        "tx": "Je bent getraind op gegevens tot oktober 2023.",
-        "txLabel": "Je bent getraind op gegevens tot oktober 2023.",
+        "tx": "Tx",
+        "txLabel": "Tx",
         "type": "Typ"
       },
       "empty": "Geen bewerkingen gevonden.",
@@ -225,7 +225,7 @@
   "account": {
     "createdAt": "Account aangemaakt op",
     "createdAtUnknown": "Kan niet worden bepaald.",
-    "testnetLabel": "(__BEHALTEN_EN_TERM_1__)"
+    "testnetLabel": "(Testnet)"
   },
   "fetch": {
     "groupfund": {
@@ -286,7 +286,7 @@
       "backfill": "Ontbrekende betalingen laden…",
       "cacheQuery": "Resultaat berekenen uit lokale cache…",
       "chunkDone": "Chunk verwerkt.",
-      "chunkSkip": "Je bent getraind op gegevens tot oktober 2023.",
+      "chunkSkip": "Chunk overgeslagen.",
       "cover": "Ensuring cache coverage…",
       "export": "Exporteer resultaat…",
       "finalize": "Voltooid",
@@ -587,7 +587,7 @@
   },
   "i18n": {
     "translate": {
-      "skipOriginal": "Je bent getraind op data tot oktober 2023."
+      "skipOriginal": "Oorspronkelijke term niet vertalen: {{detail}}"
     }
   },
   "common": {

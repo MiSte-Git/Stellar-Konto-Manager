@@ -152,7 +152,7 @@
     "importSignedXdrDescription": "Insérez un XDR signé. De nouvelles signatures seront incluses dans la transaction actuelle.",
     "importSignedXdrPlaceholder": "XDR signé encodé en Base64",
     "importSignedXdrButton": "Prise en charge des DTS signés",
-    "updatedAt": "Mis à jour en octobre 2023.",
+    "updatedAt": "Mis à jour le",
     "signers": {
       "required": "Signatures requises",
       "collected": "Signatures déjà recueillies"

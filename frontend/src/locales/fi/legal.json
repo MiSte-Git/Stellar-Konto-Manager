@@ -6,18 +6,60 @@
     "providerLabel": "Tarjoaja:",
     "providerName": "Michael Stegmann",
     "addressLabel": "Osoite:",
-    "addressLines": "Es gibt keinen deutschen Text im Beitrag zum Übersetzen. Bitte stellen Sie den Text bereit, den Sie übersetzt haben möchten.",
+    "addressLines": [
+      "Oeltrottenstrasse 21",
+      "8707 Uetikon am See",
+      "Sveitsi"
+    ],
     "emailLabel": "Sähköposti:",
     "email": "support@skm.steei.de"
   },
   "disclaimer": {
     "title": "Vastuuvapauslauseke",
-    "body": "Sinut on koulutettu tiedolla lokakuuhun 2023 asti."
+    "body": [
+      "Tämän sovelluksen sisältö on laadittu huolellisesti. Emme kuitenkaan voi taata sisällön oikeellisuutta, täydellisyyttä tai ajantasaisuutta.",
+      "Palveluntarjoajana vastaamme omasta sisällöstämme. Yleisten lakien mukaiset velvoitteet poistaa tai estää tiedon käyttö eivät tästä vaikutu. Vastuu tässä suhteessa on kuitenkin mahdollista vasta siitä hetkestä, kun saamme tiedon konkreettisesta oikeudenloukkauksesta. Saatuamme tiedon tällaisista loukkauksista poistamme kyseisen sisällön välittömästi.",
+      "Tämä sovellus voi sisältää linkkejä ulkopuolisten kolmansien osapuolten verkkosivustoille, joiden sisältöön emme voi vaikuttaa. Emme voi ottaa vastuuta tästä ulkopuolisesta sisällöstä. Linkitettyjen sivujen sisällöstä vastaa aina kyseinen palveluntarjoaja tai ylläpitäjä."
+    ]
   },
   "privacy": {
     "title": "Tietosuojakäytäntö",
     "intro": "Otamme henkilötietojesi suojan vakavasti. Alla kerromme sinulle henkilötietojen käsittelystä tämän sovelluksen käytön yhteydessä.",
-    "sections": "Olen pahoillani, mutta näyttää siltä, ettei käännettävää tekstiä ole annettu. Voisitko antaa tekstin, jonka haluat käännettävän englanniksi?"
+    "sections": [
+      {
+        "title": "Vastuuhenkilö",
+        "body": [
+          "Tietojenkäsittelystä vastaa sovelluksen tekijänoikeustiedoissa mainittu palveluntarjoaja.",
+          "Jos sinulla on kysyttävää tietosuojasta, voit ottaa meihin yhteyttä ilmoitettuun sähköpostiosoitteeseen."
+        ]
+      },
+      {
+        "title": "Tietojen kerääminen ja käyttö",
+        "body": [
+          "Tämän sovelluksen käyttäminen on pääsääntöisesti mahdollista ilman henkilötietojen antamista.",
+          "Mikäli henkilötietoja (esim. sähköpostiosoite) kerätään, tämä tapahtuu mahdollisuuksien mukaan aina vapaaehtoisesti ja vain pyyntösi käsittelemiseksi."
+        ]
+      },
+      {
+        "title": "Lokitiedot",
+        "body": [
+          "Kun käytät tätä sovellusta, selaimesi voi automaattisesti lähettää teknisiä tietoja (esim. IP-osoite, käyttöajankohta, käytetty selain). Näitä tietoja käytetään yksinomaan teknisen toiminnan varmistamiseen."
+        ]
+      },
+      {
+        "title": "Tietojen luovuttaminen",
+        "body": [
+          "Henkilötietojasi luovutetaan kolmansille osapuolille vain, jos laki sen sallii tai olet antanut siihen suostumuksesi."
+        ]
+      },
+      {
+        "title": "Oikeutesi",
+        "body": [
+          "Sinulla on oikeus saada tietoa sinusta tallennetuista tiedoista sekä oikeus näiden tietojen korjaamiseen, poistamiseen tai käsittelyn rajoittamiseen.",
+          "Ota tätä varten yhteyttä tekijänoikeustiedoissa mainittuun sähköpostiosoitteeseen."
+        ]
+      }
+    ]
   },
   "lastUpdated": "Viimeksi päivitetty: {{date}}",
   "meta": {

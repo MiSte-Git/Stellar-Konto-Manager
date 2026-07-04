@@ -152,7 +152,7 @@
     "importSignedXdrDescription": "Lisää allekirjoitettu XDR. Uudet allekirjoitukset sisältyvät nykyiseen tapahtumaan.",
     "importSignedXdrPlaceholder": "Base64-koodattu allekirjoitettu XDR",
     "importSignedXdrButton": "Allekirjoitettu XDR haltuunotto",
-    "updatedAt": "Päivitetty lokakuussa 2023 saakka.",
+    "updatedAt": "Päivitetty",
     "signers": {
       "required": "Vaaditut allekirjoitukset",
       "collected": "Kerätyt allekirjoitukset"

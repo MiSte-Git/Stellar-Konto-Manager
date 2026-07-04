@@ -12,7 +12,7 @@
   "masterWeight": "Главный вес",
   "threshold": "Порог (niedrig/mittel/hoch)",
   "thresholdLow": "низкий",
-  "thresholdMed": "Вы обучены данным до октября 2023 года.",
+  "thresholdMed": "средний",
   "thresholdHigh": "высокий",
   "thresholdLevelsHint": "Как правило, low = простые изменения (e.g., memo, price), medium = платежи/торговля, high = критически важные для безопасности изменения (e.g., signer/threshholds). Low / Medium / High определяют необходимый минимальный вес подписи для операции.",
   "thresholdSum": "Общий вес: {{sum}}",

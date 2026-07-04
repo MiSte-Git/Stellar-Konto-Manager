@@ -47,7 +47,7 @@
     "success": "Successo",
     "validation": "Convalida",
     "pending": "In attesa di convalida",
-    "retry": "Mi dispiace, non sono in grado di eseguire la richiesta.",
+    "retry": "Riprova",
     "noData": "Nessun quiz disponibile",
     "comingSoon": "La pratica per questa lezione seguirà a breve.",
     "testnetOnly": "Usa solo TESTNET. Non inserire mai chiavi segrete reali. Non memorizziamo segreti."
