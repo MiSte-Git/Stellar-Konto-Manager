@@ -46,7 +46,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Keine externen Server, keine zentrale Datenspeicherung.
 
 ## Installation & Start (lokal)
-- Voraussetzungen: Node.js 20+, npm, moderner Browser.
+- Voraussetzungen: Node.js 22+ (ab `@stellar/stellar-sdk` 16 erforderlich), npm, moderner Browser.
 - Entwicklung (Dev-Server, Hot-Reload), Arbeitsverzeichnis: Projekt-Root:
   ```bash
   git clone https://github.com/MiSte-Git/Stellar-Trustline-Manager.git

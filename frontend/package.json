@@ -13,7 +13,7 @@
     "i18n:ack": "node ../scripts/i18n_ack_update.mjs"
   },
   "dependencies": {
-    "@stellar/stellar-sdk": "^15.1.0",
+    "@stellar/stellar-sdk": "^16.0.1",
     "canvas-confetti": "^1.9.4",
     "exceljs": "^3.4.0",
     "flag-icons": "^7.2.3",
