@@ -196,5 +196,12 @@
     "clearAll": "Effacer tous les historiques des champs de texte",
     "confirm": "Effacer toutes les saisies enregistrées ? Cette action supprime les entrées d’historique de tous les champs de texte.",
     "done": "Les historiques des champs de texte ont été effacés."
+  },
+  "paymentCache": {
+    "title": "Cache des paiements",
+    "description": "Supprime l'historique des paiements enregistré localement (y compris les mémos, stockés chiffrés). Les données seront rechargées depuis Horizon si nécessaire.",
+    "clearAll": "Vider le cache des paiements",
+    "confirm": "Vraiment vider le cache local des paiements ? Les données seront resynchronisées si nécessaire.",
+    "done": "Le cache des paiements a été vidé."
   }
 }

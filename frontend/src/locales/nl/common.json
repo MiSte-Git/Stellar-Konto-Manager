@@ -130,6 +130,7 @@
       "exportError": "Export mislukt",
       "exportPage": "CSV (__KEEP_EN_TERM 1__)",
       "exporting": "Exporteer…",
+      "exportTruncated": "Export beperkt tot de eerste {{count}} items.",
       "columns": {
         "title": "Kolommen",
         "manage": "Kolommen aanpassen",

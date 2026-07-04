@@ -3,6 +3,7 @@
 // Structure v3: { [network]: { [basePublicKey]: Array<{ id: string, address: string, createdAt: string, label?: string, note?: string }> } }
 
 import { buildMuxedAddress } from './muxed.js';
+import { csvEscape } from './csvEscape.js';
 
 const STORAGE_KEY = 'muxedAccounts_v3';
 const isDev = import.meta.env.MODE !== 'production';
@@ -139,14 +140,7 @@ export function exportMuxedCsv(publicKey, filename = 'muxed_accounts.csv', net, 
     'createdAt',
   ];
 
-  function esc(v) {
-    if (v === undefined || v === null) return '';
-    const s = String(v);
-    if (s.includes('"') || s.includes(delimiter) || s.includes('\n')) {
-      return '"' + s.replace(/"/g, '""') + '"';
-    }
-    return s;
-  }
+  const esc = (v) => csvEscape(v, delimiter);
 
   const lines = [];
   lines.push(headers.join(delimiter));

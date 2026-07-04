@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiUrl } from '../utils/apiBase.js';
+import { csvEscape } from '../utils/csvEscape.js';
 
 type BugStatus = 'open' | 'in_progress' | 'closed' | 'rejected';
 type BugPriority = 'low' | 'normal' | 'high' | 'urgent';
@@ -174,6 +175,7 @@ const BugTrackerAdmin: React.FC = () => {
   const [showColumnManager, setShowColumnManager] = useState(false);
   const [resizing, setResizing] = useState<{ key: ColumnKey; startX: number; startW: number } | null>(null);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [sortKey, setSortKey] = useState<ColumnKey | null>(null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [secretInput, setSecretInput] = useState('');
@@ -194,7 +196,8 @@ const BugTrackerAdmin: React.FC = () => {
   }, []);
 
   // Loads bug reports from the backend using current filters and pagination.
-  const fetchReports = useCallback(async () => {
+  // Accepts an optional AbortSignal so overlapping requests (fast filter changes) can be cancelled.
+  const fetchReports = useCallback(async (signal?: AbortSignal) => {
     if (!isAuthorized) return;
     setIsLoading(true);
     setNotice(null);
@@ -206,11 +209,12 @@ const BugTrackerAdmin: React.FC = () => {
     if (categoryFilter !== 'all') params.set('category', categoryFilter);
     if (pageFilter !== 'all') params.set('page', pageFilter);
     try {
-      if (search.trim()) params.set('q', search.trim());
+      if (debouncedSearch.trim()) params.set('q', debouncedSearch.trim());
       if (sortKey) { params.set('sort', sortKey); params.set('dir', sortDir); }
       const res = await fetch(`${apiUrl('bugreport.php')}?${params.toString()}`, {
         method: 'GET',
-        headers: { Accept: 'application/json' }
+        headers: { Accept: 'application/json' },
+        signal,
       });
       if (!res.ok) {
         throw new Error(`status_${res.status}`);
@@ -219,12 +223,13 @@ const BugTrackerAdmin: React.FC = () => {
       setReports(Array.isArray(data.items) ? data.items : []);
       setTotal(typeof data.total === 'number' ? data.total : 0);
     } catch (error) {
+      if ((error as any)?.name === 'AbortError') return;
       console.error(error);
       setNotice(t('common:bugReport.admin.loadError'));
     } finally {
-      setIsLoading(false);
+      if (!signal?.aborted) setIsLoading(false);
     }
-  }, [isAuthorized, page, priorityFilter, statusFilter, categoryFilter, pageFilter, search, sortKey, sortDir, t]);
+  }, [isAuthorized, page, priorityFilter, statusFilter, categoryFilter, pageFilter, debouncedSearch, sortKey, sortDir, t]);
 
   // Persists updates via POST to the PHP endpoint. Optionally accepts an override draft for immediate save.
   const saveReport = useCallback(async (id: number, override?: UpdateDraft) => {
@@ -307,8 +312,17 @@ const BugTrackerAdmin: React.FC = () => {
     });
   }, [saveReport]);
 
+  // Debounce the search term before it drives a server request (F3).
   useEffect(() => {
-    fetchReports();
+    const handle = setTimeout(() => setDebouncedSearch(search), 400);
+    return () => clearTimeout(handle);
+  }, [search]);
+
+  // Abort an in-flight request when filters/search/sort change again before it resolves (F5).
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchReports(controller.signal);
+    return () => controller.abort();
   }, [fetchReports]);
 
   useEffect(() => {
@@ -544,14 +558,6 @@ window.location.assign(window.location.pathname);`}</pre>
     }
   }, [i18n?.language, t]);
 
-  const csvEscape = (v: string, delimiter: string) => {
-    const s = String(v ?? '');
-    if (s.includes('"') || s.includes('\n') || s.includes(delimiter)) {
-      return '"' + s.replace(/"/g, '""') + '"';
-    }
-    return s;
-  };
-
   const buildCsvAndDownload = (items: BugReportRow[], suffix: string, delimiter: string) => {
     const headers = visibleColumns.map((k) => labelForColumn(k));
     const rows = items.map((r) => visibleColumns.map((k) => getCellString(r, k)));
@@ -587,7 +593,9 @@ window.location.assign(window.location.pathname);`}</pre>
     setNotice(t('common:bugReport.admin.exporting', 'Exportiere…'));
     try {
       const limit = 500;
+      const MAX_EXPORT_ROWS = 20000; // hard safety cap against runaway loops (backend bug/race)
       let offset = 0;
+      let truncated = false;
       const all: BugReportRow[] = [];
       // Build base params with current filters/search/sort
       const base = new URLSearchParams();
@@ -611,9 +619,15 @@ window.location.assign(window.location.pathname);`}</pre>
         all.push(...items);
         if (items.length < limit) break;
         offset += limit;
+        if (all.length >= MAX_EXPORT_ROWS) {
+          truncated = true;
+          break;
+        }
       }
       buildCsvAndDownload(all, 'all', csvDelimiter);
-      setNotice(null);
+      setNotice(truncated
+        ? t('common:bugReport.admin.exportTruncated', { count: MAX_EXPORT_ROWS, defaultValue: `Export auf die ersten ${MAX_EXPORT_ROWS} Einträge begrenzt.` })
+        : null);
     } catch (e) {
       console.error(e);
       setNotice(t('common:bugReport.admin.exportError', 'Export fehlgeschlagen'));

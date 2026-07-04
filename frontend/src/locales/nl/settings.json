@@ -196,5 +196,12 @@
     "clearAll": "Alle tekstveldgeschiedenissen wissen",
     "confirm": "Alle opgeslagen invoer wissen? Hiermee worden de geschiedenisitems van alle tekstvelden verwijderd.",
     "done": "De geschiedenissen van tekstvelden zijn gewist."
+  },
+  "paymentCache": {
+    "title": "Betalingscache",
+    "description": "Verwijdert de lokaal opgeslagen betalingsgeschiedenis (inclusief memo's, versleuteld opgeslagen). Gegevens worden indien nodig opnieuw geladen vanaf Horizon.",
+    "clearAll": "Betalingscache wissen",
+    "confirm": "Lokale betalingscache echt wissen? Gegevens worden indien nodig opnieuw gesynchroniseerd.",
+    "done": "Betalingscache is gewist."
   }
 }

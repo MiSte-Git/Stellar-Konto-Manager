@@ -14,10 +14,100 @@ function normMemo(s){
   return String(s||'').replace(/[\u200B-\u200D\uFEFF]/g,'').trim().replace(/\s+/g,' ').toUpperCase();
 }
 
-/** Whitelist → nur klonbare Felder speichern */
-function toSafePayment(accountId, rec){
+// --- At-rest encryption for memo fields (F6) -------------------------------
+// Memos are free text and may contain names, invoice numbers etc. They are
+// encrypted (AES-GCM) before being written to IndexedDB. The key itself lives
+// in the same origin's IndexedDB (META store), so this does not protect
+// against a same-origin XSS attacker who could call these same functions —
+// it protects against casual/non-JS inspection of the raw IndexedDB storage
+// (devtools "Application" tab, browser profile/disk access, extensions that
+// read storage without executing page JS).
+const ENC_PREFIX = 'enc1:';
+const ENC_KEY_META_KEY = 'encKey:v1';
+let _encKeyPromise = null;
+
+function bytesToBase64(bytes) {
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+function base64ToBytes(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+async function getEncryptionKey() {
+  if (_encKeyPromise) return _encKeyPromise;
+  _encKeyPromise = (async () => {
+    const db = await openDb();
+    try {
+      const existing = await new Promise((resolve, reject) => {
+        const tx = db.transaction([META], 'readonly');
+        const req = tx.objectStore(META).get(ENC_KEY_META_KEY);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+      });
+      if (existing) {
+        return await crypto.subtle.importKey('raw', base64ToBytes(existing), { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
+      }
+      const key = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+      const exported = new Uint8Array(await crypto.subtle.exportKey('raw', key));
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction([META], 'readwrite');
+        tx.objectStore(META).put(bytesToBase64(exported), ENC_KEY_META_KEY);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+      return key;
+    } finally {
+      db.close?.();
+    }
+  })();
+  return _encKeyPromise;
+}
+
+/** Encrypts a text field for storage. Empty values stay empty (no crypto overhead). */
+async function encryptField(plaintext) {
+  const s = String(plaintext ?? '');
+  if (!s) return '';
+  try {
+    const key = await getEncryptionKey();
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(s));
+    return ENC_PREFIX + bytesToBase64(iv) + ':' + bytesToBase64(new Uint8Array(ct));
+  } catch {
+    // crypto.subtle unavailable (very old browser) → fail open rather than losing the memo.
+    return s;
+  }
+}
+
+/** Decrypts a stored text field. Plaintext/legacy values (pre-encryption cache entries) pass through unchanged. */
+async function decryptField(stored) {
+  const s = String(stored ?? '');
+  if (!s || !s.startsWith(ENC_PREFIX)) return s;
+  try {
+    const [ivB64, ctB64] = s.slice(ENC_PREFIX.length).split(':');
+    const key = await getEncryptionKey();
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: base64ToBytes(ivB64) }, key, base64ToBytes(ctB64));
+    return new TextDecoder().decode(plain);
+  } catch {
+    return ''; // corrupted/undecryptable — fail safe, do not crash the UI
+  }
+}
+
+/** Whitelist → nur klonbare Felder speichern. Memo-Felder werden verschlüsselt (F6). */
+async function toSafePayment(accountId, rec){
   const paging_token = asStr(rec?.paging_token);
   if (!paging_token) return null; // ohne keyPath nicht speicherbar
+  const rawMemo = extractMemo(rec);
+  const rawTransactionMemo = asStr(rec?.transaction?.memo ?? '');
+  const [encMemo, encTransactionMemo, encMemoNorm] = await Promise.all([
+    encryptField(rawMemo),
+    encryptField(rawTransactionMemo),
+    encryptField(normMemo(rawMemo)),
+  ]);
   return {
     paging_token,
     id: asStr(rec?.id),
@@ -34,11 +124,13 @@ function toSafePayment(accountId, rec){
     asset_issuer: asStr(rec?.asset_issuer),
     created_at: asStr(rec?.created_at || rec?.transaction?.created_at),
     transaction_hash: asStr(rec?.transaction_hash || rec?.transaction?.hash),
-    // Memo-Felder: für spätere Normalisierung/Debug
-    memo: extractMemo(rec),
+    // Memo-Felder: verschlüsselt gespeichert. memo_norm diente einem (ungenutzten)
+    // Such-Index, der durch die Verschlüsselung ohnehin keine Klartext-Exakttreffer
+    // mehr liefern kann - bleibt aus Schema-Kompatibilität bestehen, aber ebenfalls verschlüsselt.
+    memo: encMemo,
     memo_type: asStr(rec?.memo_type ?? rec?.transaction?.memo_type ?? ''),
-    transaction_memo: asStr(rec?.transaction?.memo ?? ''),
-    memo_norm: normMemo(extractMemo(rec)),   // normalisierte Memo-Spalte für Index
+    transaction_memo: encTransactionMemo,
+    memo_norm: encMemoNorm,
     accountId: asStr(accountId),
   };
 }
@@ -78,16 +170,22 @@ function openDb() {
 export async function bulkUpsertPayments(accountId, items = []) {
   try {
     const db = await openDb();
+    // Encrypt/prepare all payloads BEFORE opening the write transaction: IndexedDB
+    // transactions auto-commit if control returns to the event loop (i.e. on await)
+    // without a pending request, so no async work may happen inside the tx below.
+    const prepared = [];
+    for (const raw of items) {
+      const safe = await toSafePayment(accountId, raw);
+      if (!safe) continue;
+      // Roundtrip erzwingt strukturelle Klonbarkeit
+      prepared.push(JSON.parse(JSON.stringify(safe)));
+    }
     await new Promise((resolve, reject) => {
       try {
         const tx = db.transaction([STORE], 'readwrite');
         const store = tx.objectStore(STORE);
 
-        for (const raw of items) {
-          const safe = toSafePayment(accountId, raw);
-          if (!safe) continue;
-          // Roundtrip erzwingt strukturelle Klonbarkeit
-          const plain = JSON.parse(JSON.stringify(safe));
+        for (const plain of prepared) {
           store.put(plain); // keyPath = 'paging_token'
         }
 
@@ -139,11 +237,18 @@ export async function getPaymentsByRangeAndMemo(accountId, { fromISO, toISO }) {
   });
 
   db.close?.();
-  return out;
+  return Promise.all(out.map(async (v) => ({
+    ...v,
+    memo: await decryptField(v.memo),
+    transaction_memo: await decryptField(v.transaction_memo),
+  })));
 }
 
  /**
  * Backfill für memo_norm im Zeitraum. Nützlich nach Upgrade, damit der neue Index sofort greift.
+ * UNGENUTZT und seit F6 (Memo-Verschlüsselung) inkompatibel: memo/memo_norm sind jetzt
+ * verschlüsselt, `normMemo()` auf den Chiffretext anzuwenden ergäbe sinnlose Werte.
+ * Vor einer Reaktivierung müsste diese Funktion die Felder erst entschlüsseln.
  * @param {object} p
  * @param {string} p.accountId
  * @param {string} [p.fromISO]
@@ -352,6 +457,9 @@ export async function getNewestCreatedAt(accountId) {
           const memo = (tr?.memo || '').toString();
           const mt   = (tr?.memo_type || '').toString();
           if (memo) {
+            // Verschlüsseln VOR dem Öffnen der Schreib-TX (kein await im TX-Callback erlaubt).
+            const encMemo = await encryptField(memo);
+            const encMemoNorm = await encryptField(normMemo(memo));
             // getrennte Schreib-TX, kein Cursor mehr offen
             const wdb = await openDb();
             await new Promise((resolve, reject) => {
@@ -361,7 +469,7 @@ export async function getNewestCreatedAt(accountId) {
               getReq.onsuccess = () => {
                 const v = getReq.result;
                 if (v) {
-                  v.memo = memo; v.memo_type = mt; v.memo_norm = normMemo(memo);
+                  v.memo = encMemo; v.memo_type = mt; v.memo_norm = encMemoNorm;
                   store.put(v);
                 }
               };
@@ -384,9 +492,16 @@ export async function getNewestCreatedAt(accountId) {
   return { scanned, candidates, updated };
 }
 
+// UNGENUTZT und seit F6 (Memo-Verschlüsselung) funktional eingeschränkt: `memo` wird
+// jetzt verschlüsselt gespeichert, wodurch der native `by_account_memo`-Index nur noch
+// Chiffretexte enthält. Ein exakter Treffer auf einen Klartext-`memoQuery` ist über den
+// IndexedDB-Index damit nicht mehr möglich (die Filterung passiert auf Engine-Ebene, bevor
+// app-seitig entschlüsselt werden könnte). Bei Reaktivierung: stattdessen über
+// `by_account_created` scannen, entschlüsseln und den Vergleich in JS durchführen.
 export async function iterateByAccountMemoRange({ accountId, memoQuery, fromISO, toISO, onRow }) {
   const db = await openDb();
   const memoRaw = String(memoQuery || '').trim();
+  const rows = [];
   await new Promise((resolve, reject) => {
     try {
       const tx = db.transaction([STORE], 'readonly');
@@ -405,13 +520,17 @@ export async function iterateByAccountMemoRange({ accountId, memoQuery, fromISO,
         if ((fromISO && v.created_at < fromISO) || (toISO && v.created_at > toISO)) {
           return cur.continue();
         }
-        onRow?.(v);
+        rows.push(v);
         cur.continue();
       };
       req.onerror = () => reject(new Error('error.cache.indexIterFailed'));
     } catch (e) { reject(e); }
   });
   db.close?.();
+  // Entschlüsseln nach Transaktionsende (kein await innerhalb einer offenen IDB-TX möglich).
+  for (const v of rows) {
+    onRow?.({ ...v, memo: await decryptField(v.memo), transaction_memo: await decryptField(v.transaction_memo) });
+  }
 }
 
 /**
@@ -420,6 +539,7 @@ export async function iterateByAccountMemoRange({ accountId, memoQuery, fromISO,
  */
 export async function iterateByAccountCreatedRange({ accountId, fromISO, toISO, onRow }) {
   const db = await openDb();
+  const rows = [];
   await new Promise((resolve, reject) => {
     try {
       const tx = db.transaction([STORE], 'readonly');
@@ -428,16 +548,43 @@ export async function iterateByAccountCreatedRange({ accountId, fromISO, toISO, 
       // toISO ist exklusive Obergrenze
       const lower = [accountId, fromISO || ''];
       const upper = [accountId, toISO   || '\uffff'];
-      const req = idx.openCursor(IDBKeyRange.bound(lower, upper), 'prev'); // neu→alt
-      
+      const req = idx.openCursor(IDBKeyRange.bound(lower, upper), 'prev'); // neu->alt
+
       req.onsuccess = () => {
         const cur = req.result;
         if (!cur) return resolve();
-        onRow?.(cur.value);
+        rows.push(cur.value);
         cur.continue();
       };
       req.onerror = () => reject(new Error('error.cache.indexIterFailed'));
     } catch (e) { reject(e); }
   });
   db.close?.();
+  // Entschluesseln nach Transaktionsende (kein await innerhalb einer offenen IDB-TX moeglich);
+  // Reihenfolge bleibt identisch zur bisherigen Cursor-Reihenfolge (neu->alt).
+  for (const v of rows) {
+    onRow?.({ ...v, memo: await decryptField(v.memo), transaction_memo: await decryptField(v.transaction_memo) });
+  }
+}
+
+/**
+ * Löscht den kompletten lokalen Zahlungs-Cache (alle Konten) inkl. gespeicherter
+ * Paging-Cursor. Für eine sichtbare "Cache leeren"-Funktion in den Einstellungen (F6).
+ */
+export async function clearAllCachedPayments() {
+  const db = await openDb();
+  await new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction([STORE, META], 'readwrite');
+      tx.objectStore(STORE).clear();
+      tx.objectStore(META).clear();
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error || new Error('error.cache.clearFailed:txAborted'));
+    } catch (e) { reject(e); }
+  });
+  db.close?.();
+  // The encryption key just got wiped from META along with everything else;
+  // drop the in-memory cache so the next write generates+persists a fresh one.
+  _encKeyPromise = null;
 }

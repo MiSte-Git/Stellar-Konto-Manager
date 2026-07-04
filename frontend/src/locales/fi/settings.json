@@ -196,5 +196,12 @@
     "clearAll": "Tyhjennä kaikkien tekstikenttien historiat",
     "confirm": "Tyhjennetäänkö kaikki tallennetut syötteet? Tämä poistaa kaikkien tekstikenttien historiat.",
     "done": "Tekstikenttien historiat on tyhjennetty."
+  },
+  "paymentCache": {
+    "title": "Maksujen välimuisti",
+    "description": "Poistaa paikallisesti tallennetun maksuhistorian (mukaan lukien memot, jotka on tallennettu salattuina). Tiedot ladataan tarvittaessa uudelleen Horizonista.",
+    "clearAll": "Tyhjennä maksujen välimuisti",
+    "confirm": "Tyhjennetäänkö paikallinen maksujen välimuisti? Tiedot synkronoidaan tarvittaessa uudelleen.",
+    "done": "Maksujen välimuisti on tyhjennetty."
   }
 }

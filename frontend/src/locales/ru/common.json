@@ -130,6 +130,7 @@
       "exportError": "Экспорт не выполнен",
       "exportPage": "CSV (__KEEP_EN_TERM 1__)",
       "exporting": "Exportiere…",
+      "exportTruncated": "Экспорт ограничен первыми {{count}} записями.",
       "columns": {
         "title": "Столбцы",
         "manage": "Настроить столбцы",

@@ -130,6 +130,7 @@
       "exportError": "Izvoz nije uspio",
       "exportPage": "CSV (Comma Separated Values)",
       "exporting": "Izvozite…",
+      "exportTruncated": "Izvoz je ograničen na prvih {{count}} unosa.",
       "columns": {
         "title": "Stupci",
         "manage": "Prilagodite stupce",

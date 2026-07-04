@@ -162,6 +162,8 @@ const PricePairSelector = React.memo(function PricePairSelector({ value, onChang
   );
 });
 
+const isDev = import.meta.env.MODE !== 'production';
+
 function Main() {
 	//console.log('main.jsx In function Main');
   const { t, i18n } = useTranslation(['common', 'quiz', 'learn', 'glossary', 'legal']);
@@ -178,6 +180,10 @@ function Main() {
   const [currentPage, setCurrentPage] = useState(0);
   const ITEMS_PER_PAGE = 333;const [menuSelection, setMenuSelection] = useState(null);
   const autoRestoredRef = useRef(false);
+  // Shared "latest wins" token for the wallet-identity operations below
+  // (fetchXlmBalanceFor, handleHeaderApply, revalidateActiveWallet, auto-restore),
+  // since they all write overlapping state (sourcePublicKey, xlmBalance, notFound, error, ...).
+  const walletOpRequestRef = useRef(0);
 
   const [sourcePublicKey, setSourcePublicKey] = useState('');
   const [sourceMuxedAddress, setSourceMuxedAddress] = useState('');
@@ -373,7 +379,7 @@ function Main() {
       const next = toggleTrustlineSelection(tl, prev);
       try {
         const wasSelected = prev.some(s => s.assetCode === tl.assetCode && s.assetIssuer === tl.assetIssuer);
-        console.debug('[Toggle One]', tl.assetCode, tl.assetIssuer, 'wasSelected?', wasSelected, '-> newLen', next.length);
+        if (isDev) console.debug('[Toggle One]', tl.assetCode, tl.assetIssuer, 'wasSelected?', wasSelected, '-> newLen', next.length);
       } catch { /* noop */ }
       return next;
     });
@@ -468,24 +474,28 @@ function Main() {
 
   async function fetchXlmBalanceFor(pk, net) {
     if (!pk) { setXlmBalance(null); return; }
+    const requestId = ++walletOpRequestRef.current;
     try {
       setXlmBalanceLoading(true);
       const server = net === 'TESTNET'
         ? getHorizonServer('https://horizon-testnet.stellar.org')
         : getHorizonServer('https://horizon.stellar.org');
       const summary = await getAccountSummary(pk, server);
+      if (walletOpRequestRef.current !== requestId) return;
       setXlmBalance(summary?.xlmBalance ?? null);
     } catch {
       // Unfunded or error → null
+      if (walletOpRequestRef.current !== requestId) return;
       setXlmBalance(null);
     } finally {
-      setXlmBalanceLoading(false);
+      if (walletOpRequestRef.current === requestId) setXlmBalanceLoading(false);
     }
   }
 
   async function handleHeaderApply() {
     const input = (walletHeaderInput || '').trim();
     if (!input) return;
+    const requestId = ++walletOpRequestRef.current;
     setIsLoading(true);
     setError('');
     try {
@@ -493,6 +503,7 @@ function Main() {
       const displayInput = resolved.muxedAddress || resolved.accountId;
       // Phase 1: nur leichte Konto-Zusammenfassung (verhindert Burst beim bloßen Laden)
       const { publicKey, summary } = await submitSourceInput(resolved.accountId, t, devTestnet ? 'TESTNET' : 'PUBLIC', { includeTrustlines: false });
+      if (walletOpRequestRef.current !== requestId) return;
       setSourcePublicKey(publicKey);
       setSourceMuxedAddress(resolved.muxedAddress || '');
       setWalletHeaderInput(displayInput);
@@ -504,11 +515,12 @@ function Main() {
       setRefreshToken(prev => prev + 1);
       // Trustlines werden erst geladen, wenn der Nutzer „Alle anzeigen“ oder andere Funktionen öffnet
     } catch (err) {
+      if (walletOpRequestRef.current !== requestId) return;
       const msg = String(err?.message || '');
       setError(msg);
       setNotFound(/nicht gefunden|not found/i.test(msg));
     } finally {
-      setIsLoading(false);
+      if (walletOpRequestRef.current === requestId) setIsLoading(false);
     }
   }
 
@@ -551,22 +563,25 @@ function Main() {
   // Revalidate active wallet when other parts toggle network
   const revalidateActiveWallet = useCallback(async () => {
     if (!sourcePublicKey) return;
+    const requestId = ++walletOpRequestRef.current;
     setIsLoading(true);
     setError('');
     try {
       const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
       // Nur leichte Zusammenfassung nach Netzwechsel neu laden
       const { publicKey, summary } = await submitSourceInput(sourcePublicKey, t, net, { includeTrustlines: false });
+      if (walletOpRequestRef.current !== requestId) return;
       setSourcePublicKey(publicKey);
       setXlmBalance(summary?.xlmBalance ?? null);
       setNotFound(false);
       setRefreshToken(prev => prev + 1);
     } catch (err) {
+      if (walletOpRequestRef.current !== requestId) return;
       const msg = String(err?.message || '');
       setError(msg);
       setNotFound(/nicht gefunden|not found/i.test(msg));
     } finally {
-      setIsLoading(false);
+      if (walletOpRequestRef.current === requestId) setIsLoading(false);
     }
   }, [sourcePublicKey, t]);
 
@@ -618,6 +633,7 @@ function Main() {
       // Already loaded for this account (including empty list)
       return;
     }
+    let cancelled = false;
     setIsLoading(true);
     (async () => {
       try {
@@ -625,17 +641,20 @@ function Main() {
           ? getHorizonServer('https://horizon-testnet.stellar.org')
           : getHorizonServer('https://horizon.stellar.org');
         const tls = await loadTrustlines(sourcePublicKey, server);
+        if (cancelled) return;
         setTrustlines(tls);
         setTrustlinesOwner(sourcePublicKey);
       } catch (e) {
+        if (cancelled) return;
         setError(String(e?.message || ''));
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     })();
+    return () => { cancelled = true; };
   }, [menuSelection, sourcePublicKey, devTestnet, trustlinesOwner, trustlines.length]);
 
-  function unloadActiveWallet() {
+  const unloadActiveWallet = useCallback(() => {
     setSourcePublicKey('');
     setSourceMuxedAddress('');
     try { window.localStorage?.removeItem('SKM_LAST_ACCOUNT'); } catch { /* noop */ }
@@ -647,19 +666,19 @@ function Main() {
     setIssuerAddress('');
     setError('');
     setXlmBalance(null);
-  }
+  }, []);
 
-  function handleRecentRemove(value) {
+  const handleRecentRemove = useCallback((value) => {
     const key = (value || '').trim();
     if (!key) return;
     const next = removeRecentWallet(key).map(normalizeStoredWallet).filter(Boolean);
     setRecentWallets(next);
-  }
+  }, []);
 
-  function handleRecentClear() {
+  const handleRecentClear = useCallback(() => {
     clearHistoryKey(RECENT_WALLETS_KEY);
     setRecentWallets([]);
-  }
+  }, []);
 
   // Aktuelle Wallet automatisch in "Zuletzt verwendet" aufnehmen
   useEffect(() => {
@@ -670,13 +689,17 @@ function Main() {
 
   // Global error handler
   useEffect(() => {
+    const previousOnError = window.onerror;
     const handleError = (message, source, lineno, colno, error) => {
       console.error('Global error:', { message, source, lineno, colno, error });
       setError(`Script error: ${message} at ${source}:${lineno}:${colno}${error ? ' - ' + error.message : ''}`);
+      if (typeof previousOnError === 'function') {
+        try { previousOnError(message, source, lineno, colno, error); } catch { /* noop */ }
+      }
       return true; // Prevent default browser error handling
     };
     window.onerror = handleError;
-    return () => { window.onerror = null; };
+    return () => { window.onerror = previousOnError; };
   }, []);
 
   // Handle scroll for Back to Top button
@@ -689,6 +712,7 @@ function Main() {
   }, []);
   
   useEffect(() => {
+    if (!isDev) return;
     console.log('[menuSelection]', JSON.stringify(menuSelection));
     console.debug('[DEBUG] useEffect check: menuSelection is', menuSelection);
   }, [menuSelection]);
@@ -701,6 +725,8 @@ function Main() {
     const trimmed = stored.trim();
     if (!trimmed) return;
     autoRestoredRef.current = true;
+    let cancelled = false;
+    const requestId = ++walletOpRequestRef.current;
     (async () => {
       setIsLoading(true);
       setError('');
@@ -709,6 +735,7 @@ function Main() {
         const resolved = await resolveOrValidateAccount(trimmed);
         const displayInput = resolved.muxedAddress || resolved.accountId;
         const { publicKey, summary } = await submitSourceInput(resolved.accountId, t, net, { includeTrustlines: false });
+        if (cancelled || walletOpRequestRef.current !== requestId) return;
         setSourcePublicKey(publicKey);
         setSourceMuxedAddress(resolved.muxedAddress || '');
         setWalletHeaderInput(displayInput);
@@ -716,11 +743,13 @@ function Main() {
         setNotFound(false);
         setRefreshToken(prev => prev + 1);
       } catch (err) {
+        if (cancelled || walletOpRequestRef.current !== requestId) return;
         setError(String(err?.message || ''));
       } finally {
-        setIsLoading(false);
+        if (!cancelled && walletOpRequestRef.current === requestId) setIsLoading(false);
       }
     })();
+    return () => { cancelled = true; };
   }, [sourcePublicKey, t]);
 
   const errorDisplay = React.useMemo(() => {
@@ -775,21 +804,23 @@ function Main() {
   }, []);
 
   // Filter-Update
-  function handleFilterChange(key, value) {
-    setFilters({ ...filters, [key]: value });
+  const handleFilterChange = useCallback((key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
     setCurrentPage(0); // Bei Filterwechsel auf Seite 1 zurück
-  }
+  }, []);
 
   // Alle auf aktueller Seite toggeln
-  const handleToggleAll = (paginatedList) => {
-    const next = toggleAllTrustlines(paginatedList, selectedTrustlines);
-    // Debug
-    try {
-      const deletable = paginatedList.filter(t => parseFloat(t.assetBalance) === 0).length;
-      console.debug('[Toggle All] pageItems', paginatedList.length, 'deletable', deletable, 'before', selectedTrustlines.length, 'after', next.length);
-    } catch { /* noop */ }
-    setSelectedTrustlines(next);
-  };
+  const handleToggleAll = useCallback((paginatedList) => {
+    setSelectedTrustlines((prevSelected) => {
+      const next = toggleAllTrustlines(paginatedList, prevSelected);
+      // Debug
+      try {
+        const deletable = paginatedList.filter(t => parseFloat(t.assetBalance) === 0).length;
+        if (isDev) console.debug('[Toggle All] pageItems', paginatedList.length, 'deletable', deletable, 'before', prevSelected.length, 'after', next.length);
+      } catch { /* noop */ }
+      return next;
+    });
+  }, []);
 
   return (
     <Suspense fallback={<div className="flex items-center justify-center min-h-[200px] text-gray-400 text-sm"><span className="animate-pulse">...</span></div>}>
@@ -1018,7 +1049,7 @@ function Main() {
           <MainMenu
             onSelect={(value) => {
               const next = (value ?? '').trim();
-              console.log('[MainMenu onSelect]', JSON.stringify(next));
+              if (isDev) console.log('[MainMenu onSelect]', JSON.stringify(next));
               handleMenuSelect(next);
             }}
           />

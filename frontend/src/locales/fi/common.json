@@ -130,6 +130,7 @@
       "exportError": "Vienti epäonnistui",
       "exportPage": "CSV (__KEEP_EN_TERM 1__)",
       "exporting": "Vie…",
+      "exportTruncated": "Vienti rajoitettu ensimmäiseen {{count}} merkintään.",
       "columns": {
         "title": "Sarakkeet",
         "manage": "Säädä sarakkeita",

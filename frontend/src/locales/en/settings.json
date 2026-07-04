@@ -196,5 +196,12 @@
     "clearAll": "Clear all text field histories",
     "confirm": "Clear all saved inputs? This removes the history entries for all text fields.",
     "done": "Text field histories have been cleared."
+  },
+  "paymentCache": {
+    "title": "Payment cache",
+    "description": "Deletes the locally cached payment history (including memos, stored encrypted). Data is reloaded from Horizon as needed.",
+    "clearAll": "Clear payment cache",
+    "confirm": "Really clear the local payment cache? Data will be re-synced as needed.",
+    "done": "Payment cache has been cleared."
   }
 }

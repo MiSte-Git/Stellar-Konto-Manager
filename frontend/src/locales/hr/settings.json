@@ -196,5 +196,12 @@
     "clearAll": "Obriši sve povijesti tekstnih polja",
     "confirm": "Obrisati sve spremljene unose? Time se uklanjaju unosi povijesti za sva tekstna polja.",
     "done": "Povijesti tekstnih polja su obrisane."
+  },
+  "paymentCache": {
+    "title": "Predmemorija plaćanja",
+    "description": "Briše lokalno spremljenu povijest plaćanja (uključujući memoe, pohranjene šifrirano). Podaci će se prema potrebi ponovno učitati s Horizona.",
+    "clearAll": "Isprazni predmemoriju plaćanja",
+    "confirm": "Stvarno isprazniti lokalnu predmemoriju plaćanja? Podaci će se prema potrebi ponovno sinkronizirati.",
+    "done": "Predmemorija plaćanja je ispražnjena."
   }
 }

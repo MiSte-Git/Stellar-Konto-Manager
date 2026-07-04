@@ -196,5 +196,12 @@
     "clearAll": "Alle Textfeld-Verläufe löschen",
     "confirm": "Alle gespeicherten Eingaben löschen? Diese Aktion entfernt die Verlaufseinträge aller Textfelder.",
     "done": "Textfeld-Verläufe wurden gelöscht."
+  },
+  "paymentCache": {
+    "title": "Zahlungs-Cache",
+    "description": "Löscht den lokal gespeicherten Zahlungsverlauf (inkl. Memos, verschlüsselt abgelegt). Die Daten werden bei Bedarf erneut von Horizon geladen.",
+    "clearAll": "Zahlungs-Cache leeren",
+    "confirm": "Lokalen Zahlungs-Cache wirklich löschen? Die Daten werden bei Bedarf neu synchronisiert.",
+    "done": "Zahlungs-Cache wurde geleert."
   }
 }

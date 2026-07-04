@@ -196,5 +196,12 @@
     "clearAll": "Borrar todos los historiales de campos de texto",
     "confirm": "¿Borrar todas las entradas guardadas? Esta acción elimina el historial de todos los campos de texto.",
     "done": "Se borraron los historiales de los campos de texto."
+  },
+  "paymentCache": {
+    "title": "Caché de pagos",
+    "description": "Elimina el historial de pagos almacenado localmente (incluidos los memos, guardados cifrados). Los datos se recargarán desde Horizon cuando sea necesario.",
+    "clearAll": "Borrar caché de pagos",
+    "confirm": "¿Borrar realmente la caché local de pagos? Los datos se volverán a sincronizar cuando sea necesario.",
+    "done": "La caché de pagos se ha borrado."
   }
 }

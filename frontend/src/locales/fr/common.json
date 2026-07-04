@@ -130,6 +130,7 @@
       "exportError": "Échec de l'exportation",
       "exportPage": "CSV (__KEEP_EN_TERM 1__)",
       "exporting": "Exportiere…",
+      "exportTruncated": "Export limité aux {{count}} premières entrées.",
       "columns": {
         "title": "Colonnes",
         "manage": "Ajuster les colonnes",

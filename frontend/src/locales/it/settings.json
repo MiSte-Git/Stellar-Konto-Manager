@@ -196,5 +196,12 @@
     "clearAll": "Cancella tutte le cronologie dei campi di testo",
     "confirm": "Cancellare tutti gli input salvati? Questa azione rimuove le voci della cronologia da tutti i campi di testo.",
     "done": "Le cronologie dei campi di testo sono state cancellate."
+  },
+  "paymentCache": {
+    "title": "Cache dei pagamenti",
+    "description": "Elimina la cronologia dei pagamenti salvata localmente (inclusi i memo, memorizzati crittografati). I dati verranno ricaricati da Horizon quando necessario.",
+    "clearAll": "Svuota la cache dei pagamenti",
+    "confirm": "Svuotare davvero la cache locale dei pagamenti? I dati verranno risincronizzati quando necessario.",
+    "done": "La cache dei pagamenti è stata svuotata."
   }
 }

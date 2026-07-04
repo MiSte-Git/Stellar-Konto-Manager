@@ -130,6 +130,7 @@
       "exportError": "Export fehlgeschlagen",
       "exportPage": "CSV (Seite)",
       "exporting": "Exportiere…",
+      "exportTruncated": "Export auf die ersten {{count}} Einträge begrenzt.",
       "columns": {
         "title": "Spalten",
         "manage": "Spalten anpassen",
