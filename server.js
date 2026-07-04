@@ -79,6 +79,13 @@ const composeMailEnabled = process.env.ENABLE_COMPOSE_MAIL !== '0';
 const sanitizeHeader = (value = '') => value.replace(/[\r\n]+/g, ' ').trim();
 const normalizeBody = (value = '') => value.replace(/\r\n/g, '\n');
 
+function timingSafeEqualStrings(a = '', b = '') {
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
 async function createComposeFile({ to, subject, body }) {
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'stm-compose-'));
   const tmpFile = path.join(tmpDir, 'compose.eml');
@@ -321,7 +328,7 @@ app.get('/api/bugreport', async (req, res) => {
 app.patch('/api/bugreport/:id', async (req, res) => {
   try {
     const provided = sanitizeHeader(req.headers['x-admin-secret'] || '');
-    if (ADMIN_SECRET && provided !== ADMIN_SECRET) {
+    if (!ADMIN_SECRET || !timingSafeEqualStrings(provided, ADMIN_SECRET)) {
       return res.status(403).json({ error: 'bugReport.admin.forbidden' });
     }
     const id = parseInt(String(req.params.id), 10);
@@ -704,51 +711,6 @@ app.use('/expert', async (req, res) => {
   } catch (e) {
     console.error('Expert proxy failed:', e?.message || e);
     res.status(502).json({ error: 'expert.proxy.failed' });
-  }
-});
-
-app.post('/delete-trustlines', async (req, res) => {
-  const { publicKey, secretKey } = req.body;
-
-  if (!publicKey || !secretKey) {
-    return res.status(400).json({ error: 'Public key and secret key are required' });
-  }
-
-  try {
-    const sourceKeypair = StellarSdk.Keypair.fromSecret(secretKey);
-    if (sourceKeypair.publicKey() !== publicKey) {
-      throw new Error('Secret key does not match public key');
-    }
-
-    const account = await horizon.accounts().accountId(publicKey).call();
-    const trustlines = account.balances.filter(balance => balance.asset_type !== 'native');
-
-    if (trustlines.length === 0) {
-      return res.json({ message: 'No trustlines to delete' });
-    }
-
-    let transaction = new StellarSdk.TransactionBuilder(new StellarSdk.Account(publicKey, account.sequence), {
-      fee: StellarSdk.BASE_FEE,
-      networkPassphrase: StellarSdk.Networks.PUBLIC,
-    });
-
-    for (const trustline of trustlines) {
-      transaction = transaction.addOperation(
-        StellarSdk.Operation.changeTrust({
-          asset: new StellarSdk.Asset(trustline.asset_code, trustline.asset_issuer),
-          limit: '0',
-        })
-      );
-    }
-
-    transaction = transaction.setTimeout(30).build();
-    transaction.sign(sourceKeypair);
-
-    const result = await horizon.submitTransaction(transaction);
-    res.json({ message: 'Trustlines deleted successfully', transactionHash: result.hash });
-  } catch (error) {
-    console.error('Error deleting trustlines:', error.message);
-    res.status(500).json({ error: 'Failed to delete trustlines' });
   }
 });
 

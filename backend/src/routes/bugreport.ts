@@ -1,9 +1,18 @@
 import type { NextFunction, Request, Response } from 'express';
 import { Router } from 'express';
+import { timingSafeEqual } from 'crypto';
 import type { BugPriority, BugStatus } from '../db/bugtracker';
 import { insertBug, listBugs, updateBug } from '../db/bugtracker';
 
 const router = Router();
+
+// Constant-time string comparison to avoid timing side-channels on secret checks.
+function timingSafeEqualStrings(a: string, b: string): boolean {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) return false;
+  return timingSafeEqual(bufA, bufB);
+}
 
 const allowedStatus: BugStatus[] = ['open', 'in_progress', 'closed'];
 const allowedPriority: BugPriority[] = ['low', 'normal', 'high', 'urgent'];
@@ -92,7 +101,8 @@ router.get('/', (req: Request, res: Response, next: NextFunction) => {
 router.patch('/:id', (req: Request, res: Response, next: NextFunction) => {
   try {
     const adminSecret = process.env.BUGTRACKER_ADMIN_SECRET;
-    if (!adminSecret || req.header('x-admin-secret') !== adminSecret) {
+    const provided = req.header('x-admin-secret') ?? '';
+    if (!adminSecret || !timingSafeEqualStrings(provided, adminSecret)) {
       return res.status(401).json({ error: 'bugReport.unauthorized' });
     }
     const id = Number(req.params.id);
