@@ -10,6 +10,7 @@
     "done": "Импорт завершен",
     "invalid": "Недопустимый файл для импорта",
     "noFile": "Файл не выбран",
+    "perform": "Выполнить импорт",
     "preview": {
       "stats": {
         "achievements": "Значок: {{count}} Quiz(e)",

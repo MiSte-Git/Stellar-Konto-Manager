@@ -1,44 +1,4 @@
 {
-  "backup": {
-    "title": "Backup & Wiederherstellung",
-    "desc": "Exportiere oder importiere deine Quiz-Daten (Einstellungen, Fortschritt, Abzeichen).",
-    "export": {
-      "button": "Export starten",
-      "success": "Export erstellt",
-      "error": "Export fehlgeschlagen",
-      "fileName": "quiz-backup.json"
-    },
-    "import": {
-      "title": "Import",
-      "selectFile": "Datei auswählen",
-      "noFile": "Keine Datei ausgewählt",
-      "strategy": {
-        "label": "Strategie",
-        "merge": "Zusammenführen",
-        "replace": "Ersetzen"
-      },
-      "preview": {
-        "title": "Vorschau",
-        "stats": {
-          "settings": "Einstellungen: {{count}} Quiz(e)",
-          "progress": "Fortschritte: {{count}} Quiz(e)",
-          "achievements": "Abzeichen: {{count}} Quiz(e)"
-        }
-      },
-      "perform": "Import durchführen",
-      "done": "Import abgeschlossen",
-      "backupCreated": "Automatisches Backup gespeichert",
-      "invalid": "Ungültige Importdatei",
-      "error": "Import fehlgeschlagen"
-    },
-    "toast": {
-      "exported": "Backup exportiert",
-      "backupBeforeImport": "Vor Import wurde ein Backup gespeichert"
-    },
-    "nav": {
-      "back": "Zurück"
-    }
-  },
   "cache": {
     "help": "Beschleunigt Abfragen durch lokalen Zahlungs-Cache, kann jedoch das initiale Laden verlängern.",
     "label": "Cache benutzen (Beta)",

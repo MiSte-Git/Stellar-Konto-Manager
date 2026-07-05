@@ -1,44 +1,4 @@
 {
-  "backup": {
-    "title": "Backup & Recovery",
-    "desc": "Exportar o importar los datos de tu cuestionario (Einstellungen, Fortschritt, Abzeichen).",
-    "export": {
-      "button": "Iniciar exportación",
-      "success": "Exportación creada",
-      "error": "Exportación fallida",
-      "fileName": "quiz-backup.json"
-    },
-    "import": {
-      "title": "Importación",
-      "selectFile": "Seleccionar archivo",
-      "noFile": "Ningún archivo seleccionado",
-      "strategy": {
-        "label": "Estrategia",
-        "merge": "Fusionar",
-        "replace": "Reemplazar"
-      },
-      "preview": {
-        "title": "Vista previa",
-        "stats": {
-          "settings": "Configuraciones: {{count}} Quiz(e)",
-          "progress": "Progreso: {{count}} Cuestionario(e)",
-          "achievements": "Distintivo: {{count}} Quiz(e)"
-        }
-      },
-      "perform": "Realizar importación",
-      "done": "Importación completada",
-      "backupCreated": "Copia de seguridad automática guardada",
-      "invalid": "Archivo de importación no válido",
-      "error": "Error de importación"
-    },
-    "toast": {
-      "exported": "Copia de seguridad exportada",
-      "backupBeforeImport": "Se guardó una copia de seguridad antes de la importación."
-    },
-    "nav": {
-      "back": "Atrás"
-    }
-  },
   "cache": {
     "help": "Acelera las consultas mediante el uso de una caché de pagos local, pero puede aumentar el tiempo de carga inicial.",
     "label": "Usar caché (Beta)",

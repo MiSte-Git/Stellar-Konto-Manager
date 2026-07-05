@@ -1,44 +1,4 @@
 {
-  "backup": {
-    "title": "Backup & Recovery",
-    "desc": "Vie tai tuo tietokilpailutietosi (Einstellungen, Fortschritt, Abzeichen).",
-    "export": {
-      "button": "Aloita vienti",
-      "success": "Vienti luotu",
-      "error": "Vienti epäonnistui",
-      "fileName": "quiz-backup.json"
-    },
-    "import": {
-      "title": "Tuoja",
-      "selectFile": "Valitse tiedosto",
-      "noFile": "Ei tiedostoa valittu",
-      "strategy": {
-        "label": "Strategia",
-        "merge": "Yhdistä",
-        "replace": "Korvaa"
-      },
-      "preview": {
-        "title": "Esikatselu",
-        "stats": {
-          "settings": "Asetukset: {{count}} Visailu(e)",
-          "progress": "Eteneminen: {{count}} Quiz(e)",
-          "achievements": "Merkki: {{count}} quiz(e)"
-        }
-      },
-      "perform": "Suorita tuonti",
-      "done": "Tuo on valmis",
-      "backupCreated": "Automaattinen varmuuskopiointi tallennettu",
-      "invalid": "Virheellinen tuontitiedosto",
-      "error": "Tuonti epäonnistui"
-    },
-    "toast": {
-      "exported": "Varmuuskopio viety",
-      "backupBeforeImport": "Varmuuskopio tallennettiin ennen tuontia."
-    },
-    "nav": {
-      "back": "Takaisin"
-    }
-  },
   "cache": {
     "help": "Nopeuttaa kyselyitä paikallisen maksuvälimuistin avulla, mutta voi pidentää alkuperäistä latausaikaa.",
     "label": "Käytä välimuistia (Beta)",

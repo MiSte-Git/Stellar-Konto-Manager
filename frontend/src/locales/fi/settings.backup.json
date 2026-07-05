@@ -10,6 +10,7 @@
     "done": "Tuonti on suoritettu",
     "invalid": "Virheellinen tuontitiedosto",
     "noFile": "Ei tiedostoa valittu",
+    "perform": "Suorita tuonti",
     "preview": {
       "stats": {
         "achievements": "Merkki: {{count}} Quiz(e)",

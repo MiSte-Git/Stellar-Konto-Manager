@@ -1,44 +1,4 @@
 {
-  "backup": {
-    "title": "Backup & Recovery",
-    "desc": "Izvoz ili uvoz vaših podataka kviza (Einstellungen, Fortschritt, Abzeichen).",
-    "export": {
-      "button": "Pokreni izvoz",
-      "success": "Izvoz stvoren",
-      "error": "Izvoz nije uspio.",
-      "fileName": "quiz-backup.json"
-    },
-    "import": {
-      "title": "Uvoz",
-      "selectFile": "Odaberi datoteku",
-      "noFile": "Nijedna datoteka nije odabrana",
-      "strategy": {
-        "label": "Strategija",
-        "merge": "Spoji",
-        "replace": "Zamijeniti"
-      },
-      "preview": {
-        "title": "Pregled",
-        "stats": {
-          "settings": "Postavke: {{count}} Kviz(e)",
-          "progress": "Napredak: {{count}} Kviz(e)",
-          "achievements": "Značka: {{count}} kviz(e)"
-        }
-      },
-      "perform": "Izvrši uvoz",
-      "done": "Uvoz dovršen",
-      "backupCreated": "Automatska sigurnosna kopija spremljena",
-      "invalid": "Nevažeća datoteka za uvoz",
-      "error": "Uvoz nije uspio"
-    },
-    "toast": {
-      "exported": "Izvoz sigurnosne kopije izvršen",
-      "backupBeforeImport": "Sigurnosna kopija je spremljena prije uvoza."
-    },
-    "nav": {
-      "back": "Nazad"
-    }
-  },
   "cache": {
     "help": "Ubrzava upite kroz lokalnu predmemoriju plaćanja, ali može produžiti početno vrijeme učitavanja.",
     "label": "Koristi predmemoriju (Beta)",

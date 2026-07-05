@@ -10,6 +10,7 @@
     "done": "Importation terminée.",
     "invalid": "Fichier d'importation invalide",
     "noFile": "Aucun fichier sélectionné",
+    "perform": "Effectuer l'importation",
     "preview": {
       "stats": {
         "achievements": "Badge : {{count}} Quiz(e)",

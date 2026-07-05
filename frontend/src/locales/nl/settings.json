@@ -1,44 +1,4 @@
 {
-  "backup": {
-    "title": "Backup & Recovery",
-    "desc": "Exporteer of importeer je quizgegevens (Einstellungen, Fortschritt, Abzeichen).",
-    "export": {
-      "button": "Export starten",
-      "success": "Export gemaakt",
-      "error": "Export mislukt",
-      "fileName": "quiz-backup.json"
-    },
-    "import": {
-      "title": "Importeren",
-      "selectFile": "Bestand selecteren",
-      "noFile": "Geen bestand geselecteerd",
-      "strategy": {
-        "label": "Strategie",
-        "merge": "Samenvoegen",
-        "replace": "Vervangen"
-      },
-      "preview": {
-        "title": "Voorproefje",
-        "stats": {
-          "settings": "Instellingen: {{count}} Quiz(e)",
-          "progress": "Voortgang: {{count}} Quiz(e)",
-          "achievements": "Badge: {{count}} Quiz(e)"
-        }
-      },
-      "perform": "Voer import uit",
-      "done": "Import voltooid",
-      "backupCreated": "Automatische back-up opgeslagen",
-      "invalid": "Ongeldig importbestand",
-      "error": "Importeren mislukt"
-    },
-    "toast": {
-      "exported": "Back-up geëxporteerd",
-      "backupBeforeImport": "Er is een back-up opgeslagen voordat er geïmporteerd werd."
-    },
-    "nav": {
-      "back": "Terug"
-    }
-  },
   "cache": {
     "help": "Versnelt zoekopdrachten via lokale betalingscache, maar kan de initiële laadtijd verlengen.",
     "label": "Gebruik cache (cache)",
