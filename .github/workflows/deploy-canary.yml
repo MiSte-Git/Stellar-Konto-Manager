@@ -37,11 +37,12 @@ jobs:
           VITE_HORIZON_URL: ${{ env.VITE_HORIZON_URL }}
           VITE_BACKEND_URL: ${{ env.VITE_BACKEND_URL }}
         run: |
-          # optional: Build-Beweis-Skripte (liegen im Repo-Root, nicht unter frontend/)
-          if [ -f ../scripts/gen-build-info.mjs ]; then (cd .. && node scripts/gen-build-info.mjs); fi
-          if [ -f ../scripts/hash-dist.mjs ]; then echo "hash-dist will run after build"; fi
-
           npm run build
+
+          # Build-Beweis-Skript laeuft NACH dem Build, da frontend/dist/ vorher
+          # noch nicht existiert (writeFileSync in gen-build-info.mjs erwartet den
+          # Ordner bereits vorhanden). Liegt im Repo-Root, nicht unter frontend/.
+          if [ -f ../scripts/gen-build-info.mjs ]; then (cd .. && node scripts/gen-build-info.mjs); fi
 
           # .htaccess aus Template erzeugen (BASE ohne Slash am Ende!)
           BASE_NO_TRAIL="${VITE_BASE%/}"
@@ -50,7 +51,8 @@ jobs:
           # Smoke-Check: Base in index.html
           grep -n "${VITE_BASE}" ./dist/index.html || (echo "Base nicht gefunden" && exit 1)
 
-          # optional: dist nachträglich hashen
+          # dist nachtraeglich hashen (nach build-info.json/.htaccess, damit beide
+          # im Manifest landen)
           if [ -f ../scripts/hash-dist.mjs ]; then (cd .. && node scripts/hash-dist.mjs); fi
 
       - name: Setup SSH
