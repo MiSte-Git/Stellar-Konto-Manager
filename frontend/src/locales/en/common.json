@@ -89,7 +89,7 @@
     "admin": {
       "rejected": "Declined",
       "rejectedReasonTitle": "Reason for rejection",
-      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "rejectedReasonRequired": "Please provide a reason for rejection if the status is “Declined”.",
       "title": "Bug tracker",
       "locked": "Access denied. Please log in with the admin secret.",
       "placeholderTitle": "Bug tracker",

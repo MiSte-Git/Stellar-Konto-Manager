@@ -121,7 +121,7 @@
     "copyXdrButton": "Kopioi XDR",
     "copied": "Kopioitu",
     "notSentHint": "Tätä tapahtumaa ei ole vielä lähetetty verkkoon.",
-    "closeHint": "Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast und der Multisig-Auftrag erstellt wurde; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
+    "closeHint": "Voit sulkea tämän ikkunan heti, kun olet allekirjoittanut ja monisig-työ on luotu; seuraava allekirjoittaja löytää työtunnuksen valikosta “Monisig-tapahtumat”."
   },
   "testMode": {
     "modalTitle": "Yhden käyttäjän allekirjoitus",

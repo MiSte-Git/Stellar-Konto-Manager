@@ -121,7 +121,7 @@
     "copyXdrButton": "Copy XDR",
     "copied": "Copied",
     "notSentHint": "This transaction has not yet been sent to the network.",
-    "closeHint": "Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast und der Multisig-Auftrag erstellt wurde; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
+    "closeHint": "You can close this dialog once you have signed and the multisig order has been created; the next signer will find the Job ID in the “Multisig orders” menu."
   },
   "testMode": {
     "modalTitle": "Single-user signature",

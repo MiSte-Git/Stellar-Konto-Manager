@@ -89,7 +89,7 @@
     "admin": {
       "rejected": "Rifiutato",
       "rejectedReasonTitle": "Motivo del rifiuto",
-      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "rejectedReasonRequired": "Indica un motivo di rifiuto se lo stato è “Rifiutato”.",
       "title": "Tracciatore di bug",
       "locked": "Accesso negato. Accedi con il segreto amministrativo.",
       "placeholderTitle": "Strumento di monitoraggio dei bug",

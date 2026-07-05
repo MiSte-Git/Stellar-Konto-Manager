@@ -89,7 +89,7 @@
     "admin": {
       "rejected": "Hylätty",
       "rejectedReasonTitle": "Kieltäytymisen syy",
-      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "rejectedReasonRequired": "Anna hylkäyksen syy, jos tila on “Hylätty”.",
       "title": "Virheenseurantajärjestelmä",
       "locked": "Pääsy evätty. Kirjaudu sisään ylläpitäjän salasanalla.",
       "placeholderTitle": "Virheseurantaohjelma",

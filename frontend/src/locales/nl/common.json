@@ -89,7 +89,7 @@
     "admin": {
       "rejected": "Afgewezen",
       "rejectedReasonTitle": "Reden voor afwijzing",
-      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "rejectedReasonRequired": "Geef een reden voor afwijzing op als de status “Afgewezen” is.",
       "title": "Foutvolgprogramma",
       "locked": "Toegang geweigerd. Log in met het beheerdersgeheim.",
       "placeholderTitle": "Bugtracker",

@@ -89,7 +89,7 @@
     "admin": {
       "rejected": "Rechazado",
       "rejectedReasonTitle": "Razón del rechazo",
-      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "rejectedReasonRequired": "Indica un motivo de rechazo si el estado es “Rechazado”.",
       "title": "Sistema de seguimiento de errores",
       "locked": "Acceso denegado. Inicia sesión con el secreto de administrador.",
       "placeholderTitle": "Rastreador de errores",

@@ -89,7 +89,7 @@
     "admin": {
       "rejected": "Refusé",
       "rejectedReasonTitle": "Motif de refus",
-      "rejectedReasonRequired": "Bitte einen Ablehnungsgrund angeben, wenn der Status „Abgelehnt“ ist.",
+      "rejectedReasonRequired": "Veuillez indiquer un motif de refus si le statut est « Refusé ».",
       "title": "Outil de suivi des bogues",
       "locked": "Accès refusé. Connectez-vous avec le secret administrateur.",
       "placeholderTitle": "Suivi des bogues",
