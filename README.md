@@ -109,7 +109,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
   cd /path/to/project/api
   composer install
   ```
-- Upload/Deploy: `api/*.php`, `api/.htaccess`, `api/composer.json`, `api/composer.lock`, `api/_config.php` (manuell, nicht per Git!), kompletter `api/vendor/` und sicherstellen, dass `api/data/` beschreibbar ist.
+- Upload/Deploy: `api/*.php`, `api/.htaccess`, `api/composer.json`, `api/composer.lock`, `api/_config.php` (manuell, nicht per Git!), kompletter `api/vendor/` und sicherstellen, dass `api/data/` beschreibbar ist. `api/data/.htaccess` (sperrt direkten HTTP-Zugriff auf `multisig_jobs.json`/`signers_cache.json` u. a. – enthält Access-Tokens/XDRs) liegt im Repo und wird mit hochgeladen.
 - Falls lokal kein PHP/Composer verfügbar (z. B. Windows ohne Extensions): Composer-Installer per `php composer-setup.php`, danach `php composer.phar install --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-gmp` ausführen, anschließend den erzeugten `vendor/` hochladen.
 - Routing: Apache muss `/api/multisig/...`, `/api/trade/...` und `/api/admin/...` per `.htaccess` im `api/`-Ordner auf `multisig.php`, `trade.php` bzw. `admin.php` leiten.
 - Frontend-Builds: `npm run start-build` setzt `VITE_BACKEND_URL` automatisch auf `PROD_API_URL`, wenn nicht explizit gesetzt. Alternativ `VITE_BACKEND_URL=https://www.skm.steei.de` in `.env` definieren, um jeden Build auf die produktive API zu pinnen.

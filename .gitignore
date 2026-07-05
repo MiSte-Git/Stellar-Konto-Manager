@@ -46,7 +46,8 @@ api/_config.php
 api/vendor/
 api/composer.phar
 api/composer-setup.php
-api/data/
+api/data/*
+!api/data/.htaccess
 
 frontend/SSH_Cyon
 frontend/SSH_Cyon.pub
