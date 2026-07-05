@@ -762,7 +762,9 @@
         "dialog1": "Kokeillaan heti! Näytän sinulle heti kuinka – mutta ensin selitän sinulle mitä escrow oikeasti tarkoittaa.",
         "dialog2": "Mikä sellainen?",
         "dialog3": "Stellar on rakentanut tämän välittäjäperiaatteen suoraan protokollaan – natiivina ominaisuutena nimeltä Claimable Balance. XLM-summa tai tokenit lukitaan ja sidotaan ehtoihin: kuka saa vaatia ne? Mistä alkaen? Ja mihin asti lähettäjä voi vaatia ne takaisin? Vasta ehdon täyttyessä vastaanottaja voi nostaa varat.",
-        "dialog4": "Eli lukitsemme nyt testnet-rahaa?"
+        "dialog4": "Eli lukitsemme nyt testnet-rahaa?",
+        "dialog5": "Eli aivan kuten Digitecin tapauksessa: ostaja maksaa, mutta myyjä saa rahat vasta, kun ostaja on vahvistanut vastaanottaneensa tuotteen?",
+        "dialog6": "Exactly. Digitec acts as the trustee in that context. On Stellar, a “claimable balance” can technically represent the locked portion. The app built around it then determines when someone is allowed to claim it or when it is repaid."
       },
       "action": {
         "label": "Luo Escrow",
@@ -770,7 +772,20 @@
         "success": "Escrow luotu onnistuneesti!",
         "escrow_id_label": "Claimable Balance -tunnus",
         "testnet_note": "Vain testnet – ei oikeaa rahaa.",
-        "locked_note": "50 XLM on nyt lukittu – et sinä etkä ostaja voi vain nostaa niitä. Varat odottavat ehtoa."
+        "locked_note": "50 XLM on nyt lukittu – et sinä etkä ostaja voi vain nostaa niitä. Varat odottavat ehtoa.",
+        "how_title": "Näin escrow-menettely toimii",
+        "step1": "Testnet-tilisi tiedot ladataan avainparistasi.",
+        "step2": "Koodi luo transaktion `createClaimableBalance`-operaation avulla.",
+        "step3": "Tässä tapahtumassa määritellään kohde, summa ja lunastussäännöt: Demon ostaja voi lunastaa sen välittömästi; voit lunastaa sen takaisin 1 tunnin kuluttua.",
+        "step4": "Tilisi allekirjoittaa tapahtuman ja lähettää sen Horizon Testnetiin.",
+        "wallet_note_title": "Tärkeää tavallisille lompakoille",
+        "wallet_note": "Tätä varten ei aseteta ”Claimable Balance” -lippua. Lompakon on tuettava tätä toimintoa nimenomaisesti; muuten sitä ei voi luoda siellä yhdellä napsautuksella. Käytännössä tämä tehdään tällaisen sovelluksen avulla, Stellar Laboratoryn kautta tai koodin avulla Stellar SDK:ta käyttäen.",
+        "creating": "Escrow-tilin avaaminen on käynnissä…",
+        "result_rules_title": "Tämän esittelyn menettelytapa",
+        "rule1": "The demo buyer may claim the 50 XLM immediately—that is, actively withdraw them from the Claimable Balance.",
+        "rule2": "Jos demokäyttäjä ei tee mitään, voit pyytää 50 XLM:n palautusta tunnin kuluttua.",
+        "rule3": "Eine echte „Erhalt bestätigen“-Schaltfläche ist in dieser Demo noch nicht eingebaut.",
+        "rule4": "Beim Digitec-Beispiel wäre diese Bestätigung der nächste App-Schritt: Der Käufer klickt „Erhalt bestätigt“, und die Plattform löst danach die Auszahlung an den Verkäufer aus. Auf Stellar wäre das eine zweite Transaktion, die die Claimable Balance beansprucht."
       },
       "post": {
         "dialog1": "Se oli yksinkertaisempaa kuin luulin!",

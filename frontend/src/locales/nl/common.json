@@ -129,9 +129,9 @@
       "empty": "Geen vermeldingen gevonden.",
       "loading": "Laden…",
       "resize": "Sleep om aan te passen",
-      "exportAll": "CSV (Alle)",
+      "exportAll": "CSV (Alles)",
       "exportError": "Export mislukt",
-      "exportPage": "CSV (__KEEP_EN_TERM 1__)",
+      "exportPage": "CSV (Pagina)",
       "exporting": "Exporteer…",
       "exportTruncated": "Export beperkt tot de eerste {{count}} items.",
       "columns": {

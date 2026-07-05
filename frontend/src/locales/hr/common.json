@@ -129,9 +129,9 @@
       "empty": "Nema pronađenih unosa.",
       "loading": "Učitavanje…",
       "resize": "Povuci za podešavanje",
-      "exportAll": "CSV (Comma-Separated Values)",
+      "exportAll": "CSV (Sve)",
       "exportError": "Izvoz nije uspio",
-      "exportPage": "CSV (Comma Separated Values)",
+      "exportPage": "CSV (Stranica)",
       "exporting": "Izvozite…",
       "exportTruncated": "Izvoz je ograničen na prvih {{count}} unosa.",
       "columns": {

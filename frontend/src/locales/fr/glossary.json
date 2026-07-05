@@ -12,7 +12,7 @@
     "tokensAssets": "Token & Assets",
     "transactionsFees": "Transactions & Fees",
     "marketsTrading": "Markets & Trading",
-    "networkProtocol": "Network & Protocol",
+    "networkProtocol": "Réseau et protocole",
     "smartContracts": "Contrats intelligents",
     "blockchainBasics": "Principes de base de la blockchain",
     "security": "Security & Fraud",
@@ -266,7 +266,9 @@
     "title": "Connaissance client",
     "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
     "short": "Vérification d’identité obligatoire que les services financiers demandent avant l’utilisation.",
-    "desc": "Le KYC (Know Your Customer) est une procédure réglementaire où l’utilisateur prouve son identité avec des documents et parfois un selfie. Le but est d’empêcher le blanchiment d’argent (AML), le financement du terrorisme et la fraude. Les protocoles décentralisés comme le Stellar DEX n’exigent pas de KYC—on trade directement depuis son wallet. Les services onramp et offramp doivent faire du KYC car ils relient monnaie fiat et crypto."
+    "desc": "Le KYC (Know Your Customer) est une procédure réglementaire où l’utilisateur prouve son identité avec des documents et parfois un selfie. Le but est d’empêcher le blanchiment d’argent (AML), le financement du terrorisme et la fraude. Les protocoles décentralisés comme le Stellar DEX n’exigent pas de KYC—on trade directement depuis son wallet. Les services onramp et offramp doivent faire du KYC car ils relient monnaie fiat et crypto.",
+    "externalDomains": "",
+    "domainsHeading": "Prestataires KYC reconnus (Domains zum selbst Eintippen) :"
   },
   "defi": {
     "title": "Finance décentralisée",
@@ -988,5 +990,101 @@
     "original": "Federated Byzantine Agreement",
     "short": "Le principe de consensus derrière SCP : chaque validateur choisit lui-même à qui il fait confiance – aucun comité central ne décide cela.",
     "desc": "FBA (Federated Byzantine Agreement) est le cœur du Stellar Consensus Protocol. Contrairement au PoW ou au PoS, il n'y a pas de minage ni de vote basé sur la mise. Au lieu de cela, chaque opérateur de validateur choisit indépendamment à quels autres validateurs il fait confiance – cela définit son quorum set. Pour qu'une transaction soit confirmée, des quorum sets qui se chevauchent doivent s'accorder (environ une majorité des 2/3). Le résultat : un réseau décentralisé et économe en énergie sans autorité de contrôle centrale."
+  },
+  "trustlineLimit": {
+    "title": "Limite Trustline",
+    "original": "Trustline Limit",
+    "short": "Solde maximal d'un actif donné sur une ligne de crédit fiduciaire.",
+    "desc": "La limite « Trustline » définit le nombre maximal d'unités d'un actif donné que votre compte peut détenir. Il ne s'agit pas d'un ordre d'achat et cela ne réserve pas de jetons. Une limite basse peut éviter les surpaiements accidentels, mais une limite trop basse peut empêcher une réception ou un échange prévu."
+  },
+  "authorizationFlags": {
+    "title": "Indicateurs d'autorisation",
+    "original": "Authorization Flags",
+    "short": "Règles d'émetteur telles que « auth_required », « auth_revocable » ou « immutable ».",
+    "desc": "Les indicateurs d'autorisation sont des paramètres associés au compte de l'émetteur. « auth_required » signifie que l'émetteur doit d'abord approuver une « trustline ». « auth_revocable » signifie que l'approbation peut être révoquée ultérieurement. « auth_immutable » signifie que ces indicateurs ne peuvent plus être modifiés. Ces indicateurs sont importants car ils déterminent si vous pouvez recevoir, conserver ou transférer un jeton."
+  },
+  "issuerMasterKey": {
+    "title": "Clé principale de l'émetteur",
+    "original": "Issuer Master Key",
+    "short": "Clé principale du compte de l'émetteur.",
+    "desc": "La clé principale de l'émetteur est la clé principale du compte qui émet un actif. Si sa pondération est définie sur 0, la clé principale ne peut plus, à elle seule, signer de nouvelles actions. Cela peut être un signe positif, car cela rend plus difficile pour l'émetteur de modifier les règles à l'insu des autres. La configuration complète du compte, y compris les autres signataires et les indicateurs, reste toutefois déterminante."
+  },
+  "assetCode": {
+    "title": "Code d'actif",
+    "original": "Asset Code",
+    "short": "Nom abrégé d'un actif Stellar, tel que USDC ou EURC.",
+    "desc": "Le code d'actif est le nom abrégé visible d'un actif Stellar. En soi, il n'est pas unique, car plusieurs émetteurs peuvent utiliser le même code. Seuls le code et l'adresse de l'émetteur permettent d'identifier de manière unique un actif Stellar."
+  },
+  "issuer": {
+    "title": "Émetteur",
+    "original": "Issuer",
+    "short": "Le compte Stellar qui émet un actif et en gère les règles.",
+    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+  },
+  "homeDomain": {
+    "title": "Domaine d'origine",
+    "original": "Home Domain",
+    "short": "Domaine enregistré par un compte d'émetteur Stellar.",
+    "desc": "Le domaine d'origine est un domaine enregistré sur le compte de l'émetteur. Il permet d'associer un actif à un site web et à un fichier stellar.toml. Un domaine d'origine ne constitue pas une preuve de fiabilité, mais son absence entraîne le manque d'informations de vérification importantes."
+  },
+  "stellarToml": {
+    "title": "stellar.toml",
+    "original": "stellar.toml",
+    "short": "Fichier de métadonnées publiques pour un domaine Stellar.",
+    "desc": "Le fichier stellar.toml est un fichier public situé dans le répertoire racine d’un projet Stellar. Il peut contenir des informations sur les émetteurs, les actifs, les contacts, la documentation et les entrées « CURRENCIES ». Si un actif n’y figure pas ou si le fichier est inaccessible, la plus grande prudence s’impose."
+  },
+  "quote": {
+    "title": "Citation",
+    "original": "Quote",
+    "short": "Estimation actuelle du prix pour un swap prévu.",
+    "desc": "Une cotation correspond à une estimation en temps réel du montant que vous recevriez dans le cadre d'un swap. Il ne s'agit pas d'une garantie, car les carnets d'ordres, les réserves de liquidité et les prix peuvent évoluer avant la signature. C'est pourquoi une application doit actualiser le parcours juste avant la signature."
+  },
+  "effectiveRate": {
+    "title": "Taux effectif",
+    "original": "Effective Rate",
+    "short": "Rapport réel entre le montant envoyé et le montant que l'on s'attend à recevoir.",
+    "desc": "Le taux effectif indique le nombre de jetons de destination que vous pouvez espérer obtenir pour chaque jeton envoyé, sur la base du cours actuel. Il s'avère souvent plus utile qu'un simple cours de marché, car il tient compte de l'itinéraire, du carnet d'ordres et de la liquidité du pool."
+  },
+  "minimumReceived": {
+    "title": "Montant minimum reçu",
+    "original": "Minimum Received",
+    "short": "Montant minimum en dessous duquel un swap ne doit pas être exécuté.",
+    "desc": "Le montant minimum reçu correspond au montant de destination le plus bas que vous acceptez. Il est calculé à partir du devis et de votre tolérance au slippage. Si le parcours actualisé passe en dessous de ce seuil, l'opération doit être annulée."
+  },
+  "liquidityRoute": {
+    "title": "Voie de liquidité",
+    "original": "Liquidity Route",
+    "short": "Chemin emprunté par un swap pour transiter entre les carnets d'ordres ou les pools.",
+    "desc": "Le parcours de liquidité indique par quels actifs et marchés transite un swap. Un parcours peut être direct ou passer par des actifs intermédiaires. Sur Stellar, il est possible d'utiliser aussi bien les offres du carnet d'ordres que les pools de liquidité AMM pour trouver un parcours."
+  },
+  "bid": {
+    "title": "Priez",
+    "original": "Bid",
+    "short": "Offre d'achat dans le carnet d'ordres.",
+    "desc": "Une offre d'achat est une proposition d'achat. Elle indique le prix auquel un investisseur est prêt à acheter un actif. La meilleure offre d'achat correspond généralement à l'offre d'achat la plus élevée figurant actuellement dans le carnet d'ordres."
+  },
+  "ask": {
+    "title": "Demander",
+    "original": "Ask",
+    "short": "Offre de vente dans le carnet d'ordres.",
+    "desc": "Un cours vendeur est une offre de vente. Il indique le prix auquel un intervenant est prêt à vendre un actif. Le meilleur cours vendeur correspond généralement à l'offre de vente la plus basse figurant actuellement dans le carnet d'ordres."
+  },
+  "marketDepth": {
+    "title": "Profondeur du marché",
+    "original": "Market Depth",
+    "short": "Volume de liquidité proche du cours actuel du marché.",
+    "desc": "La profondeur du marché décrit le volume disponible dans le carnet d'ordres ou les pools à proximité du cours actuel. Une profondeur élevée signifie que les transactions importantes ont moins d'impact sur le cours. Une faible profondeur augmente le glissement et l'impact sur le cours."
+  },
+  "priceImpact": {
+    "title": "Impact sur les prix",
+    "original": "Price Impact",
+    "short": "Dans quelle mesure une transaction fait baisser le prix obtenu par rapport au prix du marché.",
+    "desc": "On parle d'impact sur les prix lorsqu'une transaction est importante par rapport à la liquidité disponible. Dans ce cas, le meilleur prix n'est pas suffisant pour couvrir la totalité du montant, et la transaction épuise les niveaux les moins avantageux du carnet d'ordres ou modifie les prix du pool. Un impact élevé sur les prix constitue un signal d'alerte."
+  },
+  "staleQuote": {
+    "title": "Citation éculée",
+    "original": "Stale Quote",
+    "short": "Une cotation qui ne reflète peut-être plus la situation actuelle du marché.",
+    "desc": "Une cotation peut devenir obsolète en raison des transactions effectuées par d'autres utilisateurs, de la suppression d'ordres ou de l'évolution des réserves de liquidité. Plus une cotation est ancienne, plus il est important de l'actualiser juste avant de signer."
   }
 }

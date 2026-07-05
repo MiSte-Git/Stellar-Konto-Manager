@@ -262,7 +262,9 @@
     "title": "Know Your Customer",
     "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
     "short": "Lakisääteinen henkilöllisyyden tarkistus, jota finanssipalvelut vaativat ennen käyttöä.",
-    "desc": "KYC (Know Your Customer) on sääntelyprosessi, jossa käyttäjä todistaa henkilöllisyytensä asiakirjoilla ja joskus selfiellä. Tavoite on estää rahanpesu (AML), terrorismin rahoitus ja petokset. Hajautetut protokollat kuten Stellar DEX eivät vaadi KYC:tä—käyt kauppaa suoraan walletista. Onramp- ja offramp‑palvelut ovat velvoitettuja tekemään KYC:n, koska ne yhdistävät fiat- ja kryptomaailman."
+    "desc": "KYC (Know Your Customer) on sääntelyprosessi, jossa käyttäjä todistaa henkilöllisyytensä asiakirjoilla ja joskus selfiellä. Tavoite on estää rahanpesu (AML), terrorismin rahoitus ja petokset. Hajautetut protokollat kuten Stellar DEX eivät vaadi KYC:tä—käyt kauppaa suoraan walletista. Onramp- ja offramp‑palvelut ovat velvoitettuja tekemään KYC:n, koska ne yhdistävät fiat- ja kryptomaailman.",
+    "externalDomains": "",
+    "domainsHeading": "Tunnettuja KYC-palveluntarjoajia (Domains zum selbst Eintippen):"
   },
   "defi": {
     "title": "Hajautettu rahoitus",
@@ -984,5 +986,101 @@
     "original": "Federated Byzantine Agreement",
     "short": "SCP:n taustalla oleva konsensusperiaate: jokainen validaattori valitsee itse kehen luottaa – mikään keskuskomitea ei päätä sitä.",
     "desc": "FBA (Federated Byzantine Agreement) on Stellar Consensus Protocolin ydin. Toisin kuin PoW:ssa tai PoS:ssa, louhintaa tai panostukseen perustuvaa äänestystä ei ole. Sen sijaan jokainen validaattorioperaattori valitsee itsenäisesti, mihin muihin validaattoreihin luottaa – tämä määrittää hänen kvorumjoukkonsa. Jotta transaktio vahvistetaan, päällekkäisten kvorumjoukkojen on sovittava (noin 2/3 enemmistö). Tulos: hajautettu, energiatehokas verkko ilman keskeistä hallintoviranomaista."
+  },
+  "trustlineLimit": {
+    "title": "Trustline-raja",
+    "original": "Trustline Limit",
+    "short": "Tiettyä omaisuuserää koskeva enimmäissaldo luottolimiitillä.",
+    "desc": "Trustline-raja määrittää, kuinka monta yksikköä tiettyä omaisuutta tililläsi voi olla enintään. Se ei ole ostotilaus eikä se varaa tokeneita. Alhainen raja voi estää tahattomia ylimaksuja, mutta liian alhainen raja voi estää aiotun vastaanoton tai vaihdon."
+  },
+  "authorizationFlags": {
+    "title": "Valtuutusmerkit",
+    "original": "Authorization Flags",
+    "short": "Liikkeeseenlaskijan säännöt, kuten auth_required, auth_revocable tai immutable.",
+    "desc": "Valtuutusliput ovat myöntäjän tilillä olevia asetuksia. auth_required tarkoittaa, että myöntäjän on ensin hyväksyttävä luottolinjat. auth_revocable tarkoittaa, että hyväksyntä voidaan myöhemmin peruuttaa. auth_immutable tarkoittaa, että näitä lippuja ei voi enää muuttaa. Näillä lipuilla on merkitystä, koska ne vaikuttavat siihen, voitko vastaanottaa, pitää hallussasi tai siirtää tunnusta."
+  },
+  "issuerMasterKey": {
+    "title": "Liikkeeseenlaskijan pääavain",
+    "original": "Issuer Master Key",
+    "short": "Liikkeeseenlaskijan tilin pääavain.",
+    "desc": "Liikkeeseenlaskijan pääavain on sen tilin pääavain, joka laskee liikkeeseen omaisuuserän. Jos sen painoarvo asetetaan arvoon 0, pääavain yksinään ei voi enää allekirjoittaa uusia toimia. Tämä voi olla hyvä merkki, koska se vaikeuttaa liikkeeseenlaskijan mahdollisuutta muuttaa sääntöjä huomaamatta. Tilin koko kokoonpano, mukaan lukien muut allekirjoittajat ja asetukset, on edelleen merkityksellinen."
+  },
+  "assetCode": {
+    "title": "Omaisuuskoodi",
+    "original": "Asset Code",
+    "short": "Stellar-varallisuuserän lyhenne, kuten USDC tai EURC.",
+    "desc": "Omaisuuskoodi on Stellar-omaisuuserän näkyvä lyhenne. Se ei sinänsä ole yksilöivä, sillä useat liikkeeseenlaskijat voivat käyttää samaa koodia. Vasta koodi yhdessä liikkeeseenlaskijan osoitteen kanssa yksilöi Stellar-omaisuuserän yksilöllisesti."
+  },
+  "issuer": {
+    "title": "Liikkeeseenlaskija",
+    "original": "Issuer",
+    "short": "Stellar-tili, joka laskee liikkeeseen varan ja hallinnoi sen sääntöjä.",
+    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+  },
+  "homeDomain": {
+    "title": "Etusivu Verkkotunnus",
+    "original": "Home Domain",
+    "short": "Stellar-liikkeeseenlaskijan tilillä tallennettu verkkotunnus.",
+    "desc": "Kotiverkkotunnus on verkkotunnus, joka on tallennettu myöntäjän tilille. Sen avulla omaisuuserä voidaan liittää verkkosivustoon ja stellar.toml-tiedostoon. Kotiverkkotunnus ei ole luotettavuuden osoitus, mutta ilman sitä puuttuu tärkeitä vahvistustietoja."
+  },
+  "stellarToml": {
+    "title": "stellar.toml",
+    "original": "stellar.toml",
+    "short": "Stellar-verkkotunnuksen julkinen metatietotiedosto.",
+    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
+  },
+  "quote": {
+    "title": "Lainaus",
+    "original": "Quote",
+    "short": "Suunnitellun vaihtokaupan nykyinen hinta-arvio.",
+    "desc": "Tarjous on ajantasainen arvio siitä, kuinka paljon vaihtokaupasta saisi. Se ei ole takuu, sillä tilauskirjat, likviditeettipoolit ja hinnat voivat muuttua ennen kaupan vahvistamista. Siksi sovelluksen tulisi päivittää reitti juuri ennen kaupan vahvistamista."
+  },
+  "effectiveRate": {
+    "title": "Efektiivinen korko",
+    "original": "Effective Rate",
+    "short": "Lähetetyn summan ja odotetun vastaanotetun summan välinen todellinen suhde.",
+    "desc": "Efektiivinen kurssi kuvaa, kuinka monta kohdetokenia odotetaan saatavan yhtä lähetettyä tokenia kohti nykyisen kurssitiedon perusteella. Se on usein hyödyllisempi kuin yksittäinen markkinahinta, koska se ottaa huomioon reitin, tilauskirjan ja likviditeettipoolin."
+  },
+  "minimumReceived": {
+    "title": "Vähimmäissumma",
+    "original": "Minimum Received",
+    "short": "Vähimmäismäärä, jota pienempää swap-kauppaa ei tulisi toteuttaa.",
+    "desc": "Vähimmäisvastaanottosumma on pienin kohdesumma, jonka hyväksyt. Se lasketaan tarjouksen ja liukumatoleranssisi perusteella. Jos päivitetty reitti alittaa tämän rajan, swap-kauppa tulisi keskeyttää."
+  },
+  "liquidityRoute": {
+    "title": "Likviditeettireitti",
+    "original": "Liquidity Route",
+    "short": "Reitti, jota pitkin swap-kauppa ohjataan tilauskirjojen tai poolien kautta.",
+    "desc": "Likviditeettireitti osoittaa, minkä omaisuuserien ja markkinoiden kautta swap-kauppa kulkee. Reitti voi olla suora tai kulkea välivaiheena toimivien omaisuuserien kautta. Stellar-verkostossa reitin löytämiseen voidaan käyttää sekä tilauskirjan tarjouksia että AMM-likviditeettipoolia."
+  },
+  "bid": {
+    "title": "Rukoile",
+    "original": "Bid",
+    "short": "Ostotarjous tilauskirjassa.",
+    "desc": "Ostotarjous on ostotarjousta. Se ilmaisee hinnan, jolla joku on valmis ostamaan omaisuuserän. Paras ostotarjous on yleensä tilauskirjassa tällä hetkellä oleva korkein ostotarjous."
+  },
+  "ask": {
+    "title": "Kysy",
+    "original": "Ask",
+    "short": "Myyntitarjous tilauskirjassa.",
+    "desc": "Myyntihinta on myyntitarjous. Se ilmaisee hinnan, jolla joku on valmis myymään omaisuuserän. Paras myyntihinta on yleensä tilauskirjassa oleva alhaisin voimassa oleva myyntitarjous."
+  },
+  "marketDepth": {
+    "title": "Markkinan syvyys",
+    "original": "Market Depth",
+    "short": "Nykyisen markkinahinnan lähellä oleva likviditeetin määrä.",
+    "desc": "Markkinasyvyys kuvaa, kuinka paljon volyymiä on saatavilla tilauskirjassa tai markkinapoolissa nykyisen hinnan läheisyydessä. Suuri syvyys tarkoittaa, että suuret kaupat vaikuttavat hintaan vähemmän. Pieni syvyys lisää liukumaa ja hintavaikutusta."
+  },
+  "priceImpact": {
+    "title": "Vaikutus hintaan",
+    "original": "Price Impact",
+    "short": "Kuinka paljon kauppa heikentää saavutettua hintaa verrattuna markkinahintaan.",
+    "desc": "Hintavaikutus syntyy, kun kauppa on suuri suhteessa käytettävissä olevaan likviditeettiin. Tällöin paras hinta ei riitä koko kaupan määrälle, ja kauppa kuluttaa huonompia tasoja tilauskirjasta tai muuttaa poolin hintoja. Voimakas hintavaikutus on varoitusmerkki."
+  },
+  "staleQuote": {
+    "title": "Vanha lainaus",
+    "original": "Stale Quote",
+    "short": "Hinta, joka ei ehkä enää vastaa nykyistä markkinatilannetta.",
+    "desc": "Hintatarjous voi vanhentua, koska muut käyttäjät tekevät kauppoja, toimeksiannot peruutetaan tai likviditeettipoolit muuttuvat. Mitä vanhempi hintatarjous on, sitä tärkeämpää on päivittää se juuri ennen allekirjoittamista."
   }
 }

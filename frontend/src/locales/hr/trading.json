@@ -11,7 +11,11 @@
         "label": "Izdavatelj (optional)",
         "placeholder": "G… (G…=neobavezno)"
       },
-      "submit": "Pretraživanje"
+      "submit": "Pretraživanje",
+      "query": {
+        "label": "Početni izraz",
+        "placeholder": "USDC, G... ili USDC:G..."
+      }
     },
     "result": {
       "empty": "Nisu pronađena sredstva.",
@@ -19,11 +23,31 @@
         "code": "Kôd",
         "issuer": "Izdavatelj",
         "numAccounts": "Računi",
-        "amount": "Ukupni iznos"
+        "amount": "Ukupni iznos",
+        "domain": "Domena",
+        "toml": "TOML",
+        "actions": "Dionice"
+      },
+      "count": "Pronađene žetone: {{count}}",
+      "qualityHint": "Napomena: Trustlines zajedno s domenom i TOML-om imaju veći značaj. U detaljima je prikazan ukupan iznos, ali to nije signal autentičnosti.",
+      "columnHelp": {
+        "numAccounts": "Broj trustline računa prema Horizonu.",
+        "amount": "Ukupni iznos ove imovine koji je prijavio Horizon. Ako Horizon vrati kontejetere za autorizaciju, oni se zbrajaju."
+      },
+      "sort": {
+        "numAccounts": "Sortiraj po linijama povjerenja"
+      },
+      "factLabels": {
+        "domain": "Račun izdavatelja ima matičnu domenu.",
+        "toml": "Imovina je navedena u stellar.toml ovog izdavatelja."
       }
     },
     "invalidInput": {
-      "codeMissing": "Molimo unesite šifru imovine."
+      "codeMissing": "Molimo unesite šifru imovine.",
+      "queryMissing": "Molimo unesite kod imovine, adresu izdavatelja ili KOD:IZDAVATELJ.",
+      "queryInvalid": "Molimo unesite valjani kod imovine, adresu izdavatelja ili KOD:IZDAVATELJ.",
+      "codeInvalid": "Kodovi imovine mogu sadržavati samo 1 do 12 slova/brojeva.",
+      "issuerInvalid": "Molimo unesite valjanu adresu izdavatelja Stellara."
     },
     "failed": {
       "generic": "Pretraga imovine nije uspjela. Molimo pokušajte ponovno kasnije."
@@ -32,6 +56,271 @@
       "title": "Status nejasan – ne šaljite ponovno",
       "body": "Poslužitelj nije mogao jednoznačno potvrditi posljednju transakciju (istek vremena ili greška poslužitelja). Provjerite hash transakcije u exploreru prije nego što pokušate ponovno.",
       "acknowledge": "Status provjeren – ponovno omogući radnje"
+    },
+    "examples": {
+      "label": "Primjeri"
+    },
+    "help": {
+      "issuer": "Stellar račun koji je izdao ovaj token. Kôd i izdavatelj zajedno jedinstveno identificiraju imovinu.",
+      "trustlines": "Broj računa koji imaju trustline prema ovoj imovini prema Horizonu. Ovo je signal upotrebe, a ne dokaz autentičnosti.",
+      "totalAmount": "Ukupni iznos ove imovine koju je prijavio Horizon. Sama opskrba ne govori ništa o kvaliteti ili pouzdanosti.",
+      "trustlineStatus": "Pokazuje može li vaš tekući račun već držati ovu imovinu.",
+      "trustlineBalance": "Trenutni saldo ove imovine na vašem Trustlineu.",
+      "trustlineLimit": "Maksimalni saldo ove imovine koji vaš račun može držati putem ove trustline.",
+      "authorization": "Za auth_required sredstva izdavatelj mora autorizirati vašu trustline prije nego što možete primiti ili razmjenjivati token.",
+      "homeDomain": "Domena pohranjena na računu izdavatelja. Pomaže u pronalaženju datoteke stellar.toml.",
+      "issuerMasterWeight": "Težina glavnog ključa izdavatelja. 0 znači da glavni ključ sam više ne može potpisati.",
+      "issuerLocked": "Prikazuje je li glavni ključ izdavatelja onemogućen. To može biti pozitivan signal, ali ne zamjenjuje provjeru cjelokupne konfiguracije.",
+      "tomlStatus": "Status datoteke stellar.toml u domeni izdavatelja.",
+      "tomlUrl": "Adresa otkrivene datoteke stellar.toml.",
+      "tomlAssetListed": "Pokazuje je li ova imovina navedena u unosima CURRENCIES u datoteci stellar.toml.",
+      "tomlCurrencyCount": "Broj unosa VALUTA u stellar.toml.",
+      "authRequired": "Izdavatelj mora pojedinačno autorizirati trustlines.",
+      "authRevocable": "Izdavatelj može naknadno opozvati postojeće ovlaštenje.",
+      "authImmutable": "Zastavice ovlaštenja izdavatelja više se ne mogu mijenjati.",
+      "clawbackEnabled": "Izdavatelj može povratiti tokene s računa prema određenim pravilima.",
+      "liquidityRoute": "Pokazuje je li pronađen put za trenutni smjer zamjene.",
+      "reserveIncrease": "Dodatna minimalna rezerva XLM-a zaključana je stvaranjem nove trustline.",
+      "reserveAfter": "Procijenjeni minimalni iznos koji mora ostati na računu nakon dodavanja trustline.",
+      "spendableAfter": "Procijenjeni XLM saldo i dalje je slobodno dostupan nakon dodatne rezerve.",
+      "expected": "Procijenjeni iznos primljen prema trenutnoj ponudi.",
+      "minimum": "Minimalni iznos nakon tolerancije klizanja. Swap se poništava ispod ovog iznosa.",
+      "route": "Staza imovine koju bi Stellar koristio za zamjenu.",
+      "effectiveRate": "Očekivana stvarna stopa na temelju iznosa poslanog i primljenog.",
+      "minimumRate": "Najgora prihvaćena stopa nakon tolerancije klizanja.",
+      "slippageBuffer": "Razlika između očekivane ponude i minimalnog iznosa.",
+      "hops": "Broj tržišnih segmenata u ruti.",
+      "quoteAge": "Starost trenutno prikazanog citata. Starije citate treba osvježiti prije potpisivanja.",
+      "routeDetailed": "Ruta s kodom imovine i skraćeni izdavač kako bi tokeni s istim kodom ostali razlikovni.",
+      "spread": "Razlika između najbolje ponude i najbolje potražnje.",
+      "priceImpact": "Procjena koliko trgovanje pogoršava postignutu cijenu u usporedbi s tržišnom cijenom.",
+      "topDepth": "Zbroj prvih pet razina ponuda u knjizi naloga.",
+      "marketAge": "Doba podignutih tržišnih podataka.",
+      "bestBid": "Najviša trenutačna ponuda za kupnju u knjizi naloga.",
+      "bestAsk": "Najniža trenutačna ponuda prodaje u knjizi naloga.",
+      "depthCoversAmount": "Prikazuje je li vidljiva dubina naloga za kupnju/prodaju dovoljna za unesenu količinu.",
+      "poolCount": "Broj AMM likvidnosnih bazena pronađenih za ovaj trgovački par.",
+      "limitOfferDirection": "Definira koju imovinu prodajete i koju imovinu želite primiti.",
+      "limitOfferAmount": "Iznos imovine koji želite prodati u limitiranoj narudžbi.",
+      "limitOfferPrice": "Cijena po jednoj prodanoj imovini, izražena u kupovanoj imovini."
+    },
+    "mode": {
+      "code": "Pretraga koda imovine",
+      "issuer": "Pretraga izdavatelja",
+      "exact": "Točna imovina"
+    },
+    "actions": {
+      "details": "Detalji",
+      "trustline": "Pouzdanost",
+      "trustlineAdd": "Dodaj trustline",
+      "trustlinePresent": "Trustline postoji",
+      "trustlineNext": "Sljedeći korak: stvorite trustline iz rezultata pretraživanja",
+      "swap": "Zamjena",
+      "swapNext": "Odaberite imovinu i otvorite pretpregled zamjene."
+    },
+    "account": {
+      "active": "Aktivni račun",
+      "network": "Mreža",
+      "none": "Nije učitana nijedna računica.",
+      "missing": "Nije učitana nijedna računica.",
+      "loading": "Provjera računa...",
+      "invalid": "Napunjeni račun je nevažeći."
+    },
+    "trustlineStatus": {
+      "label": "Status Trustlinea",
+      "loading": "Provjerava trustline...",
+      "present": "Trustline postoji",
+      "missing": "Trustline nedostaje",
+      "error": "Status Trustlinea nije mogao biti učitani",
+      "unknown": "Još nije provjereno",
+      "added": "Trustline je dodan.",
+      "balance": "Ravnoteža",
+      "limit": "Ograničenje",
+      "authorization": "Oautorizacija",
+      "authorized": "Ovlašteni",
+      "unauthorized": "Nije ovlašteno"
+    },
+    "swapPreview": {
+      "title": "Pregled zamjene",
+      "direction": {
+        "xlmToToken": "XLM -> Token",
+        "tokenToXlm": "Token -> XLM",
+        "tokenToToken": "Token -> Token"
+      },
+      "sendAmount": "Pošaljete {{asset}}",
+      "targetAsset": "Odredišni token",
+      "targetPlaceholder": "USDC, G... ili EURC:G...",
+      "targetSearch": "Cilj pretraživanja",
+      "targetSelected": "Odabrani token odredišta",
+      "slippage": "Slippage %",
+      "check": "Provjeri cijenu",
+      "execute": "Izvršiti zamjenu",
+      "executing": "Izvršavanje zamjene...",
+      "expected": "Procijenjeno primljeno",
+      "minimum": "Minimalno nakon klizanja",
+      "route": "Cesta",
+      "routeDetailed": "Ruta s izdavateljima",
+      "effectiveRate": "Učinkovita stopa",
+      "minimumRate": "Minimalna stopa nakon klizanja",
+      "slippageBuffer": "Puffer za klizanje",
+      "hops": "Tržni hmelj",
+      "quoteAge": "Cijena citata",
+      "ageSeconds": "{{count}} sekundi",
+      "ageMinutes": "{{count}} minuta",
+      "refreshComparison": "Osvježi usporedbu",
+      "notAvailable": "Nije dostupno",
+      "invalidAmount": "Molimo unesite valjan iznos u {{asset}}.",
+      "invalidSlippage": "Molimo unesite klizanje između 0 i 50 posto.",
+      "invalidTarget": "Molimo pretražite i odaberite odredišni token ili ga unesite točno kao CODE:ISSUER.",
+      "sameAsset": "Izvor i odredište ne smiju biti ista sredstvo.",
+      "destinationTrustlineMissing": "Destination token trustline još uvijek nedostaje na ovom računu.",
+      "destinationTrustlineUnauthorized": "Odredišna linija povjerenja još nije ovlaštena od strane izdavatelja.",
+      "minimumMissing": "Minimalni iznos nije mogao biti izračunat.",
+      "previewRequired": "Molimo provjerite cijenu prije.",
+      "noRoute": "Nije pronađena ruta za presjedanje.",
+      "failed": "Pregled zamjene nije uspio učitati.",
+      "quoteWorseThanMinimum": "Ažurirana ruta je ispod potvrđene minimalne količine. Molimo provjerite cijenu ponovno.",
+      "success": "Zamjena je izvršena. Transakcija:"
+    },
+    "swapConfirm": {
+      "title": "Potvrdi zamjenu",
+      "send": "Pošaljete",
+      "receive": "Procijenjeno primanje",
+      "minimum": "Jamčeni minimum",
+      "source": "Izvor",
+      "destination": "Odredište",
+      "routeRefresh": "Ruta se ponovno provjerava neposredno prije potpisivanja. Ako je ažurirana ponuda niža od ovdje prikazanog potvrđenog minimuma, potpisivanje neće biti nastavljeno.",
+      "continue": "Nastavi prema potpisu"
+    },
+    "market": {
+      "title": "Knjiga narudžbi / AMM",
+      "load": "Učitaj tržišne podatke",
+      "orderbook": "Knjiga narudžbi",
+      "bids": "Ponude",
+      "asks": "Traži",
+      "amm": "Resevi likvidnosti",
+      "empty": "Nisu pronađeni podaci.",
+      "failed": "Podaci s tržišta nisu mogli biti učitani.",
+      "spread": "rasprostranjenost",
+      "priceImpact": "Utjecaj cijene (estimate)",
+      "topDepth": "Top-5 dubina pitanja",
+      "marketAge": "Starost tržišnih podataka",
+      "bestBid": "Najbolja ponuda",
+      "bestAsk": "Najbolje je pitati",
+      "depthCoversAmount": "Količina pokrivanja dubine",
+      "poolCount": "AMM bazeni"
+    },
+    "limitOffer": {
+      "title": "Nalozi s ograničenjem",
+      "description": "Postavite ponudu u Stellar knjigu naloga. Ostaje otvorena dok se ne ispuni, ne bude zamijenjena ili ne bude izbrisana. Svaka otvorena ponuda povećava minimalnu rezervu.",
+      "refresh": "Ponude za ponovno učitavanje",
+      "direction": {
+        "label": "Upravljanje",
+        "sellTokenForXlm": "Prodaj {{asset}} za XLM",
+        "sellXlmForToken": "Ponudite XLM za {{asset}}"
+      },
+      "amount": "Iznos prodaje {{asset}}",
+      "price": "Cijena: {{buying}} po 1 {{selling}}",
+      "create": "Postaviti limitiranu narudžbu",
+      "confirmTitle": "Potvrdi limitiranu narudžbu",
+      "cancelTitle": "Izbrisi limitiranu narudžbu",
+      "warning": "Ovaj nalog može biti djelomično ili u cijelosti odmah izvršen ako postoji odgovarajuća protuponuda. Provjerite cijenu i smjer prije potpisivanja.",
+      "cancelWarning": "Ovo briše otvorenu ponudu zamjenom iznosa 0.",
+      "continue": "Nastavi prema potpisu",
+      "openOffers": "Otvorene ponude za ovaj token",
+      "noOffers": "Nije pronađena nijedna otvorena ponuda za ovaj token.",
+      "loadFailed": "Ponude nisu mogle biti učitane.",
+      "invalidPair": "Ovoj limitiranoj narudžbi nedostaje valjana kombinacija imovina.",
+      "invalidAmount": "Molimo unesite valjan iznos prodaje u {{asset}}.",
+      "invalidPrice": "Molimo unesite valjanu cijenu veću od 0.",
+      "createSuccess": "Limitirana narudžba je postavljena. Transakcija:",
+      "cancelSuccess": "Limitirana narudžba je izbrisana. Transakcija:",
+      "cancelAmount": "0 (delete offer)",
+      "cancel": "Izbriši",
+      "columns": {
+        "selling": "Prodaja",
+        "buying": "Kupnja",
+        "amount": "Iznos",
+        "price": "Cijena",
+        "actions": "Dionice"
+      }
+    },
+    "trustlineConfirm": {
+      "title": "Potvrdi trustline",
+      "limit": "Gornja granica Trustlinea",
+      "warning": "Trustline omogućuje da se ova imovina drži na vašem računu. Provjerite činjenice, osobito izdavatelja, matičnu domenu, stellar.toml, autorizaciju i povlačenje prije potpisivanja.",
+      "continue": "Nastavi prema potpisu"
+    },
+    "trustlineFlow": {
+      "title": "Pripremite trustline",
+      "limitHelp": "Ograničenje je maksimalni saldo tokena na ovoj trustline. To nije nalog za kupnju i ne rezervira tokene.",
+      "reserveIncrease": "Dodatna minimalna rezerva",
+      "reserveAfter": "Minimalna rezerva nakon",
+      "spendableAfter": "XLM za potrošnju nakon rezervacije",
+      "authRequiredHint": "Ova imovina koristi auth_required. Trustline se može stvoriti, ali izdavatelj ga mora autorizirati prije nego što ga možete primiti ili kupiti putem zamjene.",
+      "combinedTitle": "Opcionalno: trustline + zamjena",
+      "combinedAction": "Izvršite trustline + swap",
+      "combinedConfirmTitle": "Potvrdi trustline + zamjena",
+      "combinedWarning": "Ova transakcija prvo stvara trustline, a zatim izvršava zamjenu. Ruta se ponovno provjerava neposredno prije potpisivanja.",
+      "combinedContinue": "Nastavi prema potpisu",
+      "combinedOnlyXlm": "Kombinirani tok je dostupan samo za XLM -> token ovdje.",
+      "authRequiredCombinedBlocked": "Kombinirani trustline+swap je onemogućen za auth_required resurse jer izdavatelj mora prvo odobriti novu trustline.",
+      "invalidLimit": "Molimo unesite valjani trustline limit veći od 0.",
+      "limitBelowExpected": "Gornja granica trustline je ispod očekivanog primljenog iznosa.",
+      "alreadyPresent": "Trustline već sada postoji. Molimo ponovno učitajte i koristite normalnu zamjenu.",
+      "combinedSuccess": "Trustline i swap su izvršeni. Transakcija:"
+    },
+    "facts": {
+      "title": "Činjenične oznake",
+      "sourceTitle": "Izvor činjenica o tokenu",
+      "destinationTitle": "Činjenice o tokenu destinacije",
+      "expand": "Prikaži",
+      "collapse": "Sakrij",
+      "disclaimer": "Ovo nije ocjena niti preporuka. Aplikacija prikazuje samo pronađene podatke; odluka je na korisniku.",
+      "loading": "Učitavanje činjenica o tokenu...",
+      "issuerLoadFailed": "Račun izdavatelja nije uspio učitati se.",
+      "notAvailable": "Nije dostupno",
+      "notChecked": "Nije provjereno",
+      "yes": "Da",
+      "no": "Od",
+      "homeDomain": "Domaća domena",
+      "issuerMasterWeight": "Težina glavnog ključa",
+      "issuerLocked": "Glavni ključ izdavatelja je zaključan",
+      "liquidityRoute": "Zamjenska ruta",
+      "routeAvailable": "Pronađena ruta",
+      "routeUnavailable": "Nije pronađena ruta",
+      "toml": {
+        "status": "stellar.toml status",
+        "url": "stellar.toml URL",
+        "loading": "Učitavanje stellar.toml...",
+        "loaded": "stellar.toml učitano",
+        "failed": "stellar.toml nije dostupan",
+        "noHomeDomain": "Nema domene na korisničkom računu izdavatelja",
+        "assetListed": "Imovina navedena u stellar.toml",
+        "currencyCount": "ULAZAK U VALUTE"
+      },
+      "flags": {
+        "authRequired": "Potrebna autorizacija",
+        "authRevocable": "Opozivljiva autorizacija",
+        "authImmutable": "Autorizacija nepromjenjiva",
+        "clawbackEnabled": "Oduzimanje omogućeno"
+      }
+    },
+    "risk": {
+      "title": "Provjere prije potpisivanja",
+      "issuerLoadFailed": "Podaci izdavatelja nisu mogli biti učitani.",
+      "noHomeDomain": "Izdavatelj nema matičnu domenu.",
+      "tomlNotLoaded": "stellar.toml nije učitan ili nije dostupan.",
+      "tomlAssetMissing": "Ova imovina nije navedena u stellar.toml izdavatelja.",
+      "issuerUnlocked": "Glavni ključ izdavatelja nije zaključan.",
+      "authRequired": "Ova imovina zahtijeva odobrenje izdavatelja.",
+      "clawbackEnabled": "Za ovu imovinu omogućen je povrat."
+    },
+    "detail": {
+      "status": {
+        "ledgerKnown": "Poznat u Horizonu"
+      },
+      "nextStepHint": "Poznato samo u Horizonu. Provjerite izdavatelja i trust prije potpisivanja trustlinea ili swap-a."
     }
   }
 }

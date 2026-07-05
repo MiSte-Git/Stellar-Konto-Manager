@@ -295,7 +295,7 @@
     "marketsTrading": "Markets & Trading",
     "moneyFinance": "Dinero & Finanzas",
     "multisigSecurity": "Multisig & Account Security",
-    "networkProtocol": "Network & Protocol",
+    "networkProtocol": "Red y protocolo",
     "onrampOfframp": "Onramp / Offramp",
     "security": "Security & Fraud",
     "smartContracts": "Contratos inteligentes",
@@ -390,7 +390,9 @@
     "desc": "KYC (Know Your Customer) es un proceso regulatorio donde los usuarios prueban su identidad con documentos y a veces un selfie. El objetivo es prevenir el lavado de dinero (AML), la financiación del terrorismo y el fraude. Los protocolos descentralizados como el Stellar DEX no requieren KYC—operas directamente desde tu wallet. Los servicios de onramp y offramp deben hacer KYC porque conectan el mundo fiat y cripto.",
     "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
     "short": "Verificación de identidad obligatoria que los servicios financieros exigen antes de usar sus servicios.",
-    "title": "Conoce a tu cliente"
+    "title": "Conoce a tu cliente",
+    "externalDomains": "",
+    "domainsHeading": "Proveedores de servicios KYC de reconocido prestigio (Domains zum selbst Eintippen):"
   },
   "layer1Layer2": {
     "desc": "Layer 1 (L1) es la blockchain principal—por ejemplo Bitcoin, Ethereum o Stellar. Layer 2 (L2) son protocolos que se construyen sobre L1 para mejorar velocidad y costos. Ejemplos: Lightning Network (en Bitcoin) o Polygon (en Ethereum). Stellar es una L1 rápida y barata gracias a SCP, por eso necesita menos soluciones L2 que Ethereum.",
@@ -988,5 +990,101 @@
     "original": "Federated Byzantine Agreement",
     "short": "El principio de consenso detrás de SCP: cada validador elige a quién confiar – ningún comité central decide eso.",
     "desc": "FBA (Federated Byzantine Agreement) es el núcleo del Protocolo de Consenso Stellar. A diferencia de PoW o PoS, no hay minería ni votación por participación. En cambio, cada operador de validador elige independientemente a qué otros validadores confiar – esto define su conjunto de quórum. Para que una transacción sea confirmada, los conjuntos de quórum superpuestos deben coincidir (aproximadamente una mayoría de 2/3). El resultado: una red descentralizada y eficiente energéticamente sin autoridad central de control."
+  },
+  "trustlineLimit": {
+    "title": "Límite de Trustline",
+    "original": "Trustline Limit",
+    "short": "Saldo máximo de un activo concreto en una línea de crédito fiduciaria.",
+    "desc": "El límite de la línea de crédito define el número máximo de unidades de un activo concreto que puede tener tu cuenta. No se trata de una orden de compra y no reserva tokens. Un límite bajo puede evitar pagos excesivos accidentales, pero un límite demasiado bajo puede impedir una recepción o un intercambio previstos."
+  },
+  "authorizationFlags": {
+    "title": "Indicadores de autorización",
+    "original": "Authorization Flags",
+    "short": "Reglas del emisor como «auth_required», «auth_revocable» o «immutable».",
+    "desc": "Los indicadores de autorización son ajustes de la cuenta del emisor. «auth_required» significa que el emisor debe aprobar primero una línea de confianza. «auth_revocable» significa que la aprobación puede revocarse posteriormente. «auth_immutable» significa que estos indicadores ya no pueden modificarse. Estos indicadores son importantes porque determinan si puedes recibir, conservar o transferir un token."
+  },
+  "issuerMasterKey": {
+    "title": "Clave maestra del emisor",
+    "original": "Issuer Master Key",
+    "short": "Clave principal de la cuenta del emisor.",
+    "desc": "La clave maestra del emisor es la clave principal de la cuenta que emite un activo. Si su peso se establece en 0, la clave maestra por sí sola ya no podrá firmar nuevas acciones. Esto puede ser una buena señal, ya que dificulta que el emisor modifique las reglas de forma silenciosa. La configuración completa de la cuenta, incluidos otros firmantes y los indicadores, sigue siendo importante."
+  },
+  "assetCode": {
+    "title": "Código de activo",
+    "original": "Asset Code",
+    "short": "Nombre abreviado de un activo de Stellar, como USDC o EURC.",
+    "desc": "El código del activo es el nombre abreviado visible de un activo de Stellar. Por sí solo no es único, ya que varios emisores pueden utilizar el mismo código. Solo la combinación del código y la dirección del emisor identifica de forma única a un activo de Stellar."
+  },
+  "issuer": {
+    "title": "Emisor",
+    "original": "Issuer",
+    "short": "La cuenta de Stellar que emite un activo y controla sus normas.",
+    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+  },
+  "homeDomain": {
+    "title": "Página de inicio Dominio",
+    "original": "Home Domain",
+    "short": "Dominio almacenado por una cuenta de emisor de Stellar.",
+    "desc": "El dominio principal es un dominio almacenado en la cuenta del emisor. Sirve para vincular un activo a un sitio web y a un archivo stellar.toml. Un dominio principal no es una garantía de fiabilidad, pero sin él falta información importante para la verificación."
+  },
+  "stellarToml": {
+    "title": "stellar.toml",
+    "original": "stellar.toml",
+    "short": "Archivo de metadatos públicos de un dominio Stellar.",
+    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
+  },
+  "quote": {
+    "title": "Cita",
+    "original": "Quote",
+    "short": "Estimación actual del precio para un canje previsto.",
+    "desc": "Una cotización es una estimación actualizada de la cantidad que recibirías en un intercambio. No es una garantía, ya que los libros de órdenes, los fondos de liquidez y los precios pueden variar antes de la firma. Por eso, la aplicación debería actualizar la ruta justo antes de la firma."
+  },
+  "effectiveRate": {
+    "title": "Tasa efectiva",
+    "original": "Effective Rate",
+    "short": "Proporción real entre el importe enviado y el importe que se espera recibir.",
+    "desc": "La tasa efectiva describe cuántos tokens de destino se espera obtener por cada token enviado, según la cotización actual. A menudo resulta más útil que un simple precio de mercado, ya que tiene en cuenta la ruta, el libro de órdenes y la liquidez del fondo común."
+  },
+  "minimumReceived": {
+    "title": "Mínimo recibido",
+    "original": "Minimum Received",
+    "short": "Importe mínimo por debajo del cual no debe ejecutarse un swap.",
+    "desc": "El importe mínimo recibido es el importe de destino más bajo que aceptas. Se calcula a partir de la cotización y de tu tolerancia al deslizamiento. Si la ruta actualizada queda por debajo de ese importe, la operación de swap debería abortarse."
+  },
+  "liquidityRoute": {
+    "title": "Vía de liquidez",
+    "original": "Liquidity Route",
+    "short": "Ruta por la que se canaliza un intercambio a través de los libros de órdenes o los fondos comunes.",
+    "desc": "La ruta de liquidez muestra por qué activos y mercados pasa un swap. Una ruta puede ser directa o pasar por activos intermedios. En Stellar, tanto las ofertas del libro de órdenes como los fondos de liquidez AMM pueden utilizarse para encontrar una ruta."
+  },
+  "bid": {
+    "title": "Reza",
+    "original": "Bid",
+    "short": "Oferta de compra en el libro de órdenes.",
+    "desc": "Una oferta de compra es una propuesta de compra. Indica el precio al que alguien está dispuesto a comprar un activo. La mejor oferta de compra suele ser la oferta de compra más alta que figura en ese momento en el libro de órdenes."
+  },
+  "ask": {
+    "title": "Preguntar",
+    "original": "Ask",
+    "short": "Oferta de venta en el libro de órdenes.",
+    "desc": "Una cotización de venta es una oferta de venta. Indica el precio al que alguien está dispuesto a vender un activo. La mejor cotización de venta suele ser la oferta de venta más baja que figura en ese momento en el libro de órdenes."
+  },
+  "marketDepth": {
+    "title": "Profundidad del mercado",
+    "original": "Market Depth",
+    "short": "Volumen de liquidez cercano al precio de mercado actual.",
+    "desc": "La profundidad del mercado describe el volumen disponible en el libro de órdenes o en los fondos comunes cerca del precio actual. Una profundidad elevada significa que las operaciones de mayor volumen influyen menos en el precio. Una profundidad baja aumenta el deslizamiento y el impacto en el precio."
+  },
+  "priceImpact": {
+    "title": "Repercusión en los precios",
+    "original": "Price Impact",
+    "short": "En qué medida una operación empeora el precio obtenido en comparación con el precio de mercado.",
+    "desc": "El impacto en el precio se produce cuando una operación es de gran volumen en relación con la liquidez disponible. En ese caso, el mejor precio no es suficiente para cubrir el importe total y la operación agota los niveles más desfavorables del libro de órdenes o altera los precios del mercado. Un impacto elevado en el precio es una señal de alerta."
+  },
+  "staleQuote": {
+    "title": "Cita manida",
+    "original": "Stale Quote",
+    "short": "Una cotización que quizá ya no refleje la situación actual del mercado.",
+    "desc": "Una cotización puede quedar desactualizada porque otros usuarios realizan operaciones, se retiran órdenes o cambian los fondos de liquidez. Cuanto más antigua sea una cotización, más importante es actualizarla justo antes de firmar."
   }
 }

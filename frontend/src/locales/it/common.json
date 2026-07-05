@@ -129,9 +129,9 @@
       "empty": "Nessuna voce trovata.",
       "loading": "Caricamento…",
       "resize": "Trascina per regolare",
-      "exportAll": "CSV (Alle)",
+      "exportAll": "CSV (Tutti)",
       "exportError": "Esportazione fallita",
-      "exportPage": "CSV (__KEEP_EN_TERM 1__)",
+      "exportPage": "CSV (Pagina)",
       "exporting": "Esporta…",
       "exportTruncated": "Esportazione limitata alle prime {{count}} voci.",
       "columns": {

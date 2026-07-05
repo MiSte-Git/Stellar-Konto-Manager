@@ -156,5 +156,26 @@
     "task": "Vergelijk Single-Sig met Multisig en onderzoek een voorbeeldproces.",
     "learningOutcome": "Meerdere handtekeningen verhogen de veiligheid; drempels bepalen hoeveel handtekeningen er nodig zijn.",
     "reward": "⭐ 2 – Multisig Starter"
+  },
+  "lesson14": {
+    "title": "Consensus over Stellar",
+    "goal": "Begrijp hoe het Stellar Consensus Protocol (SCP) werkt.",
+    "task": "Beantwoord vragen over SCP, quorum slices en hoe deze verschillen van mining.",
+    "learningOutcome": "SCP maakt een snelle, decentrale consensus mogelijk zonder mining – elk knooppunt kiest zelf wie het vertrouwt.",
+    "reward": "⭐ 2 – Consensus-expert"
+  },
+  "cashback-loyalty": {
+    "title": "Cashback & loyaliteitstoken",
+    "goal": "Ontdek hoe Custom Assets op Stellar als loyaliteitsmunten werken.",
+    "task": "Beantwoord vragen over loyaliteitsmunten, vertrouwenslijnen en verificatie van uitgevers.",
+    "learningOutcome": "Dezelfde tokennaam betekent niet dat het om hetzelfde token gaat – alleen de uitgever maakt het verschil.",
+    "reward": "⭐ 2 – Loyaliteitsexpert"
+  },
+  "scam-simulator": {
+    "title": "",
+    "goal": "Herken pogingen tot fraude tijdens live chats en reageer daarop op de juiste manier.",
+    "task": "",
+    "learningOutcome": "Je kunt typische oplichtingspatronen herkennen, zoals nep-klantenservice, tijdsdruk en verzoeken om sleutels.",
+    "reward": "🛡️ Oplichtingsdetector"
   }
 }

@@ -156,5 +156,26 @@
     "task": "Beantworte Fragen zu Single-Sig vs. Multisig, Schwellen und Signierern.",
     "learningOutcome": "Bei Multisig braucht man mehrere Unterschriften. Das schützt vor Alleingängen.",
     "reward": "⭐ 2 – Multisig-Starter"
+  },
+  "lesson14": {
+    "title": "Consensus auf Stellar",
+    "goal": "Verstehen, wie das Stellar Consensus Protocol (SCP) funktioniert.",
+    "task": "Beantworte Fragen zu SCP, Quorum Slices und dem Unterschied zu Mining.",
+    "learningOutcome": "SCP ermöglicht schnellen, dezentralen Konsens ohne Mining – jeder Node wählt selbst, wem er vertraut.",
+    "reward": "⭐ 2 – Konsens-Kenner"
+  },
+  "cashback-loyalty": {
+    "title": "Cashback & Loyalty Token",
+    "goal": "Verstehen, wie Custom Assets als Loyalty Token auf Stellar funktionieren.",
+    "task": "Beantworte Fragen zu Loyalty Token, Trust Lines und Issuer-Verifizierung.",
+    "learningOutcome": "Gleicher Token-Name bedeutet nicht gleicher Token – nur der Issuer macht den Unterschied.",
+    "reward": "⭐ 2 – Loyalty-Experte"
+  },
+  "scam-simulator": {
+    "title": "",
+    "goal": "Betrugsversuche im echten Chat-Kontext erkennen und richtig reagieren.",
+    "task": "",
+    "learningOutcome": "Du erkennst typische Scam-Muster wie Fake Support, Zeitdruck und Key-Abfragen.",
+    "reward": "🛡️ Scam-Detektor"
   }
 }

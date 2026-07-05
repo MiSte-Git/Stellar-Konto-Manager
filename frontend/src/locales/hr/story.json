@@ -762,7 +762,9 @@
         "dialog1": "Isprobajmo odmah! Za trenutak ću ti pokazati kako – ali prvo ti objasni što escrow zapravo znači.",
         "dialog2": "Što takvo?",
         "dialog3": "Stellar je ovaj princip povjerenika ugradio izravno u protokol – kao nativnu značajku zvanu Claimable Balance. Iznos XLM-a ili tokena se zaključava i veže uz uvjet: tko može zatražiti? Od kada? I do kada pošiljatelj može povući nazad? Tek kad je uvjet ispunjen, primatelj može podići sredstva.",
-        "dialog4": "Dakle, sada zaključavamo testnet novac?"
+        "dialog4": "Dakle, sada zaključavamo testnet novac?",
+        "dialog5": "Dakle, baš kao kod Digiteca: kupac plaća, ali prodavatelj ne prima novac dok kupac ne potvrdi primitak?",
+        "dialog6": "Exactly. Digitec acts as the trustee in that context. On Stellar, a “claimable balance” can technically represent the locked portion. The app built around it then determines when someone is allowed to claim it or when it is repaid."
       },
       "action": {
         "label": "Kreiraj Escrow",
@@ -770,7 +772,20 @@
         "success": "Escrow uspješno kreiran!",
         "escrow_id_label": "ID Claimable Balance",
         "testnet_note": "Samo testnet – bez pravog novca.",
-        "locked_note": "50 XLM su sada zaključani – ni ti ni kupac ne možete ih jednostavno podići. Sredstva čekaju na uvjet."
+        "locked_note": "50 XLM su sada zaključani – ni ti ni kupac ne možete ih jednostavno podići. Sredstva čekaju na uvjet.",
+        "how_title": "Evo kako escrow funkcionira",
+        "step1": "Vaš testnet račun se puni iz vašeg para ključeva.",
+        "step2": "Kod stvara transakciju koristeći operaciju `createClaimableBalance`.",
+        "step3": "Ova transakcija određuje imovinu, iznos i pravila potraživanja: kupac demo može odmah podnijeti zahtjev; vi ga možete povratiti nakon 1 sata.",
+        "step4": "Vaš račun potpisuje transakciju i šalje je na Horizon Testnet.",
+        "wallet_note_title": "Važno za standardne novčanike",
+        "wallet_note": "Ne postavljate zastavicu 'Claimable Balance' za ovo. Novčanik mora izričito podržavati ovu operaciju; inače je ne možete stvoriti tamo jednim klikom. U praksi to radite pomoću aplikacije poput ove, putem Stellar Laboratory ili kodom koristeći Stellar SDK.",
+        "creating": "Escrow se postavlja…",
+        "result_rules_title": "Postupak u ovoj demonstraciji",
+        "rule1": "Kupac demo računa može odmah preuzeti 50 XLM — to jest, aktivno ih povući iz stanja za preuzimanje.",
+        "rule2": "Ako kupac demo ne poduzme ništa, možete zatražiti povrat 50 XLM nakon jednog sata.",
+        "rule3": "Eine echte „Erhalt bestätigen“-Schaltfläche ist in dieser Demo noch nicht eingebaut.",
+        "rule4": "Beim Digitec-Beispiel wäre diese Bestätigung der nächste App-Schritt: Der Käufer klickt „Erhalt bestätigt“, und die Plattform löst danach die Auszahlung an den Verkäufer aus. Auf Stellar wäre das eine zweite Transaktion, die die Claimable Balance beansprucht."
       },
       "post": {
         "dialog1": "Bilo je jednostavnije nego što sam mislio!",

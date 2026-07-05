@@ -762,7 +762,9 @@
         "dialog1": "Proviamolo subito! Fra un momento ti mostro come – ma prima lasciami spiegare cosa significa davvero escrow.",
         "dialog2": "Un cosa?",
         "dialog3": "Stellar ha incorporato questo principio di fiducia direttamente nel protocollo, come funzione nativa chiamata Claimable Balance. Un importo in XLM o token viene bloccato e collegato a una condizione: chi può reclamarlo? Da quando? E fino a quando il mittente può richiederlo indietro? Solo quando la condizione è soddisfatta il destinatario può prelevare i fondi.",
-        "dialog4": "Quindi stiamo bloccando fondi testnet adesso?"
+        "dialog4": "Quindi stiamo bloccando fondi testnet adesso?",
+        "dialog5": "Quindi, proprio come nel caso di Digitec: l’acquirente paga, ma il venditore non riceve il denaro finché l’acquirente non conferma la ricezione?",
+        "dialog6": "Esatto. Digitec funge da fiduciario in tale contesto. Su Stellar, un “saldo reclamabile” può tecnicamente rappresentare la parte bloccata. L’app sviluppata attorno a questo concetto determina poi quando qualcuno è autorizzato a reclamarlo o quando viene rimborsato."
       },
       "action": {
         "label": "Crea Escrow",
@@ -770,7 +772,20 @@
         "success": "Escrow creato con successo!",
         "escrow_id_label": "ID Claimable Balance",
         "testnet_note": "Solo testnet – nessun denaro reale.",
-        "locked_note": "I 50 XLM sono ora bloccati – né tu né il compratore potete semplicemente prelevarli. I fondi attendono la condizione."
+        "locked_note": "I 50 XLM sono ora bloccati – né tu né il compratore potete semplicemente prelevarli. I fondi attendono la condizione.",
+        "how_title": "Ecco come funziona il deposito a garanzia",
+        "step1": "Il tuo account sulla rete di test viene caricato dalla tua coppia di chiavi.",
+        "step2": "Il codice crea una transazione utilizzando l'operazione `createClaimableBalance`.",
+        "step3": "Questa transazione specifica l'asset, l'importo e le regole di riscossione: l'acquirente della versione demo può riscuotere immediatamente; tu puoi riscuoterlo dopo 1 ora.",
+        "step4": "Il tuo account firma la transazione e la invia a Horizon Testnet.",
+        "wallet_note_title": "Informazioni importanti per i portafogli standard",
+        "wallet_note": "Non è necessario impostare un flag \"Saldo richiedibile\" per questa operazione. Un wallet deve supportare esplicitamente questa operazione; in caso contrario, non è possibile crearla con un solo clic. In pratica, si utilizza un'app come questa, tramite Stellar Laboratory, oppure tramite codice utilizzando l'SDK di Stellar.",
+        "creating": "Si sta procedendo all'apertura del conto di garanzia…",
+        "result_rules_title": "Procedura illustrata in questa demo",
+        "rule1": "The demo buyer may claim the 50 XLM immediately—that is, actively withdraw them from the Claimable Balance.",
+        "rule2": "Se l'acquirente della versione demo non effettua alcuna operazione, potrai richiedere la restituzione dei 50 XLM dopo 1 ora.",
+        "rule3": "Eine echte „Erhalt bestätigen“-Schaltfläche ist in dieser Demo noch nicht eingebaut.",
+        "rule4": "Beim Digitec-Beispiel wäre diese Bestätigung der nächste App-Schritt: Der Käufer klickt „Erhalt bestätigt“, und die Plattform löst danach die Auszahlung an den Verkäufer aus. Auf Stellar wäre das eine zweite Transaktion, die die Claimable Balance beansprucht."
       },
       "post": {
         "dialog1": "È stato più semplice di quanto pensassi!",

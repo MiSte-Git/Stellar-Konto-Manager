@@ -11,7 +11,11 @@
         "label": "Uitgevende instelling (optional)",
         "placeholder": "G… (G…=optional)"
       },
-      "submit": "Zoeken"
+      "submit": "Zoeken",
+      "query": {
+        "label": "Zoekterm",
+        "placeholder": "USDC, G... of USDC:G..."
+      }
     },
     "result": {
       "empty": "Geen activa gevonden.",
@@ -19,11 +23,31 @@
         "code": "Code",
         "issuer": "Uitgever",
         "numAccounts": "Accounts",
-        "amount": "Totaalbedrag"
+        "amount": "Totaalbedrag",
+        "domain": "Domein",
+        "toml": "TOML",
+        "actions": "Acties"
+      },
+      "count": "Gevonden tokens: {{count}}",
+      "qualityHint": "Opmerking: Trustlines zijn, in combinatie met het domein en TOML, veelzeggender. Het totale aantal wordt in de details weergegeven, maar vormt geen indicator voor authenticiteit.",
+      "columnHelp": {
+        "numAccounts": "Aantal trustlines/accounts volgens Horizon.",
+        "amount": "Het totale bedrag van dit activum zoals gerapporteerd door Horizon. Als Horizon autorisatiebuckets retourneert, worden deze bij elkaar opgeteld."
+      },
+      "sort": {
+        "numAccounts": "Sorteren op trustlines"
+      },
+      "factLabels": {
+        "domain": "De uitgeversaccount heeft een eigen domein",
+        "toml": "Het activum staat vermeld in het bestand stellar.toml van deze emittent"
       }
     },
     "invalidInput": {
-      "codeMissing": "Voer a.u.b. een activacode in."
+      "codeMissing": "Voer a.u.b. een activacode in.",
+      "queryMissing": "Voer een activacode, het adres van de emittent of CODE:ISSUER in.",
+      "queryInvalid": "Voer een geldige activacode, het adres van de emittent of CODE:ISSUER in.",
+      "codeInvalid": "Assetcodes mogen slechts 1 tot 12 letters of cijfers bevatten.",
+      "issuerInvalid": "Voer een geldig Stellar-uitgeversadres in."
     },
     "failed": {
       "generic": "Het zoeken naar activa is mislukt. Probeer het later opnieuw."
@@ -32,6 +56,271 @@
       "title": "Status onduidelijk – niet opnieuw verzenden",
       "body": "De server kon de laatste transactie niet eenduidig bevestigen (timeout of serverfout). Controleer de transactiehash in een explorer voordat u het opnieuw probeert.",
       "acknowledge": "Status gecontroleerd – acties weer vrijgeven"
+    },
+    "examples": {
+      "label": "Voorbeelden"
+    },
+    "help": {
+      "issuer": "Het Stellar-account dat dit token heeft uitgegeven. De code en de uitgever vormen samen een unieke identificatie van het activum.",
+      "trustlines": "Aantal accounts die volgens Horizon een trustline naar dit activum hebben. Dit is een gebruiksindicatie, geen bewijs van authenticiteit.",
+      "totalAmount": "Het totale bedrag van dit activum zoals gerapporteerd door Horizon. Het aanbod op zich zegt niets over de kwaliteit of betrouwbaarheid.",
+      "trustlineStatus": "Geeft aan of je huidige account dit activum al kan bevatten.",
+      "trustlineBalance": "Huidige stand van dit activum op uw Trustline.",
+      "trustlineLimit": "Het maximale saldo van dit activum dat op uw rekening via deze trustline mag worden aangehouden.",
+      "authorization": "Bij assets waarvoor authenticatie vereist is (auth_required), moet de uitgever uw trustline goedkeuren voordat u het token kunt ontvangen of verhandelen.",
+      "homeDomain": "Domein dat is opgeslagen op het account van de uitgever. Dit helpt bij het vinden van het bestand stellar.toml.",
+      "issuerMasterWeight": "Gewicht van de hoofdcode van de uitgever. Een waarde van 0 betekent dat de hoofdcode alleen niet meer kan ondertekenen.",
+      "issuerLocked": "Geeft aan of de hoofdcode van de uitgever is uitgeschakeld. Dit kan een positief teken zijn, maar vervangt niet het controleren van de volledige configuratie.",
+      "tomlStatus": "Status van het bestand stellar.toml onder het thuisdomein van de uitgever.",
+      "tomlUrl": "Adres van het gevonden bestand stellar.toml.",
+      "tomlAssetListed": "Geeft aan of dit activum is opgenomen in de CURRENCIES-vermeldingen van het bestand stellar.toml.",
+      "tomlCurrencyCount": "Aantal vermeldingen onder „CURRENCIES“ in het bestand stellar.toml.",
+      "authRequired": "De uitgever moet elke trustline afzonderlijk goedkeuren.",
+      "authRevocable": "De uitgever kan een bestaande machtiging later intrekken.",
+      "authImmutable": "De autorisatievlaggen van de uitgever kunnen niet meer worden gewijzigd.",
+      "clawbackEnabled": "De uitgever kan onder bepaalde voorwaarden tokens van accounts terugvorderen.",
+      "liquidityRoute": "Geeft aan of er een route is gevonden voor de huidige wisselrichting.",
+      "reserveIncrease": "Extra XLM-minimale reserve geblokkeerd door het aanmaken van een nieuwe trustline.",
+      "reserveAfter": "Geschat minimumsaldo dat op de rekening moet blijven staan nadat de trustline is toegevoegd.",
+      "spendableAfter": "Geschat XLM-saldo dat na de aanvullende reserve nog steeds vrij beschikbaar is.",
+      "expected": "Geschat te ontvangen bedrag op basis van de huidige offerte.",
+      "minimum": "Minimumbedrag na toepassing van de slippage-tolerantie. Onder dit bedrag wordt de swap afgebroken.",
+      "route": "Het pad naar het bestand dat Stellar zou gebruiken voor de swap.",
+      "effectiveRate": "Verwachte werkelijke koers op basis van het verzonden en ontvangen bedrag.",
+      "minimumRate": "Slechtste geaccepteerde koers na toepassing van de slippage-tolerantie.",
+      "slippageBuffer": "Verschil tussen de verwachte offerte en het minimumbedrag.",
+      "hops": "Aantal marktsegmenten op de route.",
+      "quoteAge": "Leeftijd van de momenteel weergegeven offerte. Oudere offertes moeten vóór ondertekening worden vernieuwd.",
+      "routeDetailed": "Route met activacode en afgekorte uitgever, zodat tokens met dezelfde code van elkaar te onderscheiden blijven.",
+      "spread": "Verschil tussen de hoogste biedprijs en de hoogste laatprijs.",
+      "priceImpact": "Schatting van de mate waarin de transactie de gerealiseerde prijs negatief beïnvloedt ten opzichte van de marktprijs.",
+      "topDepth": "De som van de eerste vijf vraagprijzen in het orderboek.",
+      "marketAge": "Leeftijd van de geladen marktgegevens.",
+      "bestBid": "Het hoogste huidige koopbod in het orderboek.",
+      "bestAsk": "Het laagste huidige verkoopbod in het orderboek.",
+      "depthCoversAmount": "Geeft aan of de zichtbare diepte van het orderboek het ingevoerde bedrag dekt.",
+      "poolCount": "Aantal AMM-liquiditeitspools dat voor dit handelspaar is gevonden.",
+      "limitOfferDirection": "Hiermee wordt bepaald welk activum u verkoopt en welk activum u wilt ontvangen.",
+      "limitOfferAmount": "Het bedrag van het activum dat u via de limietorder wilt verkopen.",
+      "limitOfferPrice": "Prijs per verkocht activum, uitgedrukt in het gekochte activum."
+    },
+    "mode": {
+      "code": "Zoeken op activacode",
+      "issuer": "Zoeken naar emittenten",
+      "exact": "Exacte activa"
+    },
+    "actions": {
+      "details": "Details",
+      "trustline": "Trustline",
+      "trustlineAdd": "Trustline toevoegen",
+      "trustlinePresent": "Trustline bestaat",
+      "trustlineNext": "Volgende stap: een trustline aanmaken vanuit het zoekresultaat",
+      "swap": "Ruilen",
+      "swapNext": "Selecteer het activum en open het swap-voorbeeld"
+    },
+    "account": {
+      "active": "Actief account",
+      "network": "Netwerk",
+      "none": "Er is geen account geladen",
+      "missing": "Er is geen account geladen",
+      "loading": "Betaalrekening...",
+      "invalid": "Het geladen account is ongeldig."
+    },
+    "trustlineStatus": {
+      "label": "Trustline-status",
+      "loading": "Trustline wordt gecontroleerd...",
+      "present": "Trustline bestaat",
+      "missing": "Trustline ontbreekt",
+      "error": "De status van Trustline kon niet worden geladen",
+      "unknown": "Nog niet gecontroleerd",
+      "added": "Trustline is toegevoegd.",
+      "balance": "Saldo",
+      "limit": "Limiet",
+      "authorization": "Autorisatie",
+      "authorized": "Goedgekeurd",
+      "unauthorized": "Geen toestemming"
+    },
+    "swapPreview": {
+      "title": "Voorbeeld van de ruil",
+      "direction": {
+        "xlmToToken": "XLM -> Token",
+        "tokenToXlm": "Token -> XLM",
+        "tokenToToken": "Token -> Token"
+      },
+      "sendAmount": "Je verstuurt {{asset}}",
+      "targetAsset": "Bestemmings-token",
+      "targetPlaceholder": "USDC, G... of EURC:G...",
+      "targetSearch": "Zoekterm",
+      "targetSelected": "Geselecteerd bestemmings-token",
+      "slippage": "Slippage %",
+      "check": "Prijs bekijken",
+      "execute": "Swap uitvoeren",
+      "executing": "Swap wordt uitgevoerd...",
+      "expected": "Geschatte ontvangstdatum",
+      "minimum": "Minimum na slippage",
+      "route": "Route",
+      "routeDetailed": "Route met emittenten",
+      "effectiveRate": "Effectief tarief",
+      "minimumRate": "Minimumkoers na slippage",
+      "slippageBuffer": "Slippage-buffer",
+      "hops": "Marktbezoeken",
+      "quoteAge": "Leeftijd van het citaat",
+      "ageSeconds": "{{count}} seconden",
+      "ageMinutes": "{{count}} minuten",
+      "refreshComparison": "Vergelijking vernieuwen",
+      "notAvailable": "Niet beschikbaar",
+      "invalidAmount": "Voer een geldig bedrag in bij {{asset}}.",
+      "invalidSlippage": "Voer een slippage in tussen 0 en 50 procent.",
+      "invalidTarget": "Zoek en selecteer een bestemmings-token of voer het precies in als CODE:ISSUER.",
+      "sameAsset": "De bron en de bestemming mogen niet hetzelfde activum zijn.",
+      "destinationTrustlineMissing": "De trustline met het token ‘destination’ ontbreekt nog steeds op dit account.",
+      "destinationTrustlineUnauthorized": "De trustline van de bestemming is nog niet geautoriseerd door de uitgever.",
+      "minimumMissing": "Het minimumbedrag kon niet worden berekend.",
+      "previewRequired": "Kijk alstublieft eerst even naar de prijs.",
+      "noRoute": "Er is geen ruilroute gevonden.",
+      "failed": "Het voorbeeld van de swap kon niet worden geladen.",
+      "quoteWorseThanMinimum": "De bijgewerkte route ligt onder het bevestigde minimumbedrag. Controleer de prijs nogmaals.",
+      "success": "De swap is uitgevoerd. Transactie:"
+    },
+    "swapConfirm": {
+      "title": "Swap bevestigen",
+      "send": "Je stuurt",
+      "receive": "Geschatte ontvangst",
+      "minimum": "Gegarandeerd minimum",
+      "source": "Bron",
+      "destination": "Bestemming",
+      "routeRefresh": "De route wordt vlak voor het ondertekenen nogmaals gecontroleerd. Als de bijgewerkte offerte onder het hier weergegeven bevestigde minimum ligt, wordt het ondertekenen niet voortgezet.",
+      "continue": "Ga verder naar de handtekening"
+    },
+    "market": {
+      "title": "Orderbook / AMM",
+      "load": "Marktgegevens laden",
+      "orderbook": "Orderbook",
+      "bids": "Offertes",
+      "asks": "Vraagt",
+      "amm": "Liquiditeitspools",
+      "empty": "Er zijn geen gegevens gevonden.",
+      "failed": "De marktgegevens konden niet worden geladen.",
+      "spread": "Spreiding",
+      "priceImpact": "Prijsimpact (estimate)",
+      "topDepth": "Top 5: vraagdiepte",
+      "marketAge": "Leeftijd van marktgegevens",
+      "bestBid": "Hoogste bod",
+      "bestAsk": "Je kunt het beste vragen",
+      "depthCoversAmount": "Diepte bedraagt bedrag",
+      "poolCount": "AMM-pools"
+    },
+    "limitOffer": {
+      "title": "Limietorders",
+      "description": "Plaats een bod in het Stellar-orderboek. Het blijft openstaan totdat het is uitgevoerd, vervangen of verwijderd. Elk openstaand bod verhoogt de minimumreserve.",
+      "refresh": "Aanbiedingen vernieuwen",
+      "direction": {
+        "label": "Directie",
+        "sellTokenForXlm": "Verkoop {{asset}} voor XLM",
+        "sellXlmForToken": "Bied XLM aan voor {{asset}}"
+      },
+      "amount": "Verkoopbedrag {{asset}}",
+      "price": "Prijs: {{buying}} per 1 {{selling}}",
+      "create": "Een limietorder plaatsen",
+      "confirmTitle": "Limietorder bevestigen",
+      "cancelTitle": "Limietorder verwijderen",
+      "warning": "Deze order kan onmiddellijk geheel of gedeeltelijk worden uitgevoerd als er een passend tegenbod is. Controleer de koers en de richting voordat u tekent.",
+      "cancelWarning": "Hiermee wordt het openstaande bod verwijderd en vervangen door de waarde 0.",
+      "continue": "Ga verder naar de handtekening",
+      "openOffers": "Openstaande biedingen op dit token",
+      "noOffers": "Er zijn geen openstaande aanbiedingen gevonden voor dit token.",
+      "loadFailed": "De openstaande aanbiedingen konden niet worden geladen.",
+      "invalidPair": "Bij deze limietorder ontbreekt een geldig activapaar.",
+      "invalidAmount": "Voer een geldig verkoopbedrag in voor {{asset}}.",
+      "invalidPrice": "Voer een geldige prijs in die groter is dan 0.",
+      "createSuccess": "Er is een limietorder geplaatst. Transactie:",
+      "cancelSuccess": "De limietorder is verwijderd. Transactie:",
+      "cancelAmount": "0 (delete offer)",
+      "cancel": "Verwijderen",
+      "columns": {
+        "selling": "Verkoop",
+        "buying": "Kopen",
+        "amount": "Bedrag",
+        "price": "Prijs",
+        "actions": "Acties"
+      }
+    },
+    "trustlineConfirm": {
+      "title": "Trustline bevestigen",
+      "limit": "Trustline-limiet",
+      "warning": "Met een trustline kan dit activum op je account worden aangehouden. Controleer de gegevens, met name de uitgever, het thuisdomein, het stellar.toml-bestand, de autorisatie en de terugvorderingsclausule, voordat je ondertekent.",
+      "continue": "Ga verder naar de handtekening"
+    },
+    "trustlineFlow": {
+      "title": "Trustline voorbereiden",
+      "limitHelp": "De limiet is het maximale tokensaldo op deze trustline. Het is geen kooporder en er worden geen tokens gereserveerd.",
+      "reserveIncrease": "Extra minimumreserve",
+      "reserveAfter": "Minimale reserve na",
+      "spendableAfter": "XLM kan worden uitgegeven nadat de reserve is opgebruikt",
+      "authRequiredHint": "Dit asset maakt gebruik van `auth_required`. De trustline kan worden aangemaakt, maar de uitgever moet deze eerst autoriseren voordat je het token via een swap kunt ontvangen of kopen.",
+      "combinedTitle": "Optioneel: trustline + swap",
+      "combinedAction": "Voer trustline + swap uit",
+      "combinedConfirmTitle": "Trustline bevestigen + omwisselen",
+      "combinedWarning": "Bij deze transactie wordt eerst de trustline aangemaakt en daarna de swap uitgevoerd. Vlak voor het ondertekenen wordt de route nogmaals gecontroleerd.",
+      "combinedContinue": "Ga verder naar de handtekening",
+      "combinedOnlyXlm": "De gecombineerde transactie is hier alleen beschikbaar voor XLM -> token.",
+      "authRequiredCombinedBlocked": "Combined trustline+swap is disabled for auth_required assets because the issuer must authorize the new trustline first.",
+      "invalidLimit": "Voer een geldige Trustline-limiet in die groter is dan 0.",
+      "limitBelowExpected": "Het limietbedrag van de trustline ligt onder het verwachte ontvangstbedrag.",
+      "alreadyPresent": "De trustline bestaat nu al. Verfris de pagina en gebruik de normale swap.",
+      "combinedSuccess": "Trustline en swap zijn uitgevoerd. Transactie:"
+    },
+    "facts": {
+      "title": "Weetjes over tokens",
+      "sourceTitle": "Feiten over bron-tokens",
+      "destinationTitle": "Feiten over bestemmings-tokens",
+      "expand": "Weergeven",
+      "collapse": "Verbergen",
+      "disclaimer": "Dit is geen beoordeling of aanbeveling. De app toont alleen de gevonden gegevens; de beslissing ligt bij de gebruiker.",
+      "loading": "Gegevens over tokens worden geladen...",
+      "issuerLoadFailed": "De rekening van de uitgever kon niet worden geladen.",
+      "notAvailable": "Niet beschikbaar",
+      "notChecked": "Niet aangevinkt",
+      "yes": "Ja",
+      "no": "Van",
+      "homeDomain": "Thuisdomein",
+      "issuerMasterWeight": "Gewicht van de hoofdsleutel",
+      "issuerLocked": "Hoofdsleutel van de uitgever is vergrendeld",
+      "liquidityRoute": "Route wijzigen",
+      "routeAvailable": "Route gevonden",
+      "routeUnavailable": "Er is geen route gevonden",
+      "toml": {
+        "status": "status van stellar.toml",
+        "url": "URL van stellar.toml",
+        "loading": "Stellar.toml wordt geladen...",
+        "loaded": "stellar.toml geladen",
+        "failed": "stellar.toml is niet bereikbaar",
+        "noHomeDomain": "Geen eigen domein op de account van de uitgever",
+        "assetListed": "Asset opgenomen in stellar.toml",
+        "currencyCount": "Vermeldingen onder „VALUTA’S”"
+      },
+      "flags": {
+        "authRequired": "Toestemming vereist",
+        "authRevocable": "Toestemming kan worden ingetrokken",
+        "authImmutable": "Autorisatie onveranderlijk",
+        "clawbackEnabled": "Terugvordering ingeschakeld"
+      }
+    },
+    "risk": {
+      "title": "Controles vóór ondertekening",
+      "issuerLoadFailed": "De gegevens van de emittent konden niet worden geladen.",
+      "noHomeDomain": "De uitgever heeft geen eigen domein.",
+      "tomlNotLoaded": "Het bestand stellar.toml is niet geladen of niet bereikbaar.",
+      "tomlAssetMissing": "Dit activum staat niet vermeld in het bestand `stellar.toml` van de emittent.",
+      "issuerUnlocked": "De hoofdcode van de uitgever is niet vergrendeld.",
+      "authRequired": "Voor dit bestand is toestemming van de uitgever vereist.",
+      "clawbackEnabled": "Voor dit activum is clawback ingeschakeld."
+    },
+    "detail": {
+      "status": {
+        "ledgerKnown": "Bekend in Horizon"
+      },
+      "nextStepHint": "Alleen bekend in Horizon. Controleer de uitgever en de trust voordat je een trustline of swap ondertekent."
     }
   }
 }

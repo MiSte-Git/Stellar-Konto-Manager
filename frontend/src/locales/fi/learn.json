@@ -156,5 +156,26 @@
     "task": "Vertaa Single-Sig- ja Multisig-malleja ja tarkastele esimerkkiprosessia.",
     "learningOutcome": "Useita allekirjoituksia lisää turvallisuutta; kynnykset määrittävät, kuinka monta allekirjoitusta tarvitaan.",
     "reward": "⭐ 2 – Multisig Aloittelija"
+  },
+  "lesson14": {
+    "title": "Yksimielisyys Stellarista",
+    "goal": "Tutustu Stellar-konsensusprotokollan (SCP) toimintaan.",
+    "task": "Vastaa kysymyksiin, jotka koskevat SCP:tä, quorum-slicejä ja sitä, miten ne eroavat louhinnasta.",
+    "learningOutcome": "SCP mahdollistaa nopean, hajautetun konsensuksen ilman louhintaa – jokainen solmu valitsee itse, kehen se luottaa.",
+    "reward": "⭐ 2 – Asiantuntijoiden yksimielinen arvio"
+  },
+  "cashback-loyalty": {
+    "title": "Cashback & Loyalty Token",
+    "goal": "Tutustu siihen, miten Custom Assets -varat toimivat kanta-asiakasmerkeinä Stellar-verkostossa.",
+    "task": "Vastaa kysymyksiin, jotka koskevat uskollisuustunnuksia, luottolinjia ja liikkeeseenlaskijan todentamista.",
+    "learningOutcome": "Sama tokenin nimi ei tarkoita samaa tokenia – ero on ainoastaan liikkeeseenlaskijassa.",
+    "reward": "⭐ 2 – Kanta-asiakasasiantuntija"
+  },
+  "scam-simulator": {
+    "title": "",
+    "goal": "Tunnista petosyritykset reaaliaikaisissa chat-tilanteissa ja reagoi niihin asianmukaisesti.",
+    "task": "",
+    "learningOutcome": "Voit tunnistaa tyypillisiä huijausmalleja, kuten valetukea, aikapaineita ja avainpyyntöjä.",
+    "reward": "🛡️ Huijausilmaisin"
   }
 }

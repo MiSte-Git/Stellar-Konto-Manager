@@ -156,5 +156,26 @@
     "task": "Usporedite Single-Sig i Multisig te ispitajte primjer procesa.",
     "learningOutcome": "Višestruki potpisi povećavaju sigurnost; pragovi određuju koliko potpisa je potrebno.",
     "reward": "⭐ 2 – Početnik za multisig"
+  },
+  "lesson14": {
+    "title": "Konsenzus o Stellaru",
+    "goal": "Razumite kako funkcionira Stellar Consensus Protocol (SCP).",
+    "task": "Odgovorite na pitanja o SCP-u, kvorumskim kriškama i o tome kako se one razlikuju od rudarenja.",
+    "learningOutcome": "SCP omogućuje brzi, decentralizirani konsenzus bez rudarenja – svaki čvor samostalno odlučuje kome vjeruje.",
+    "reward": "⭐ 2 – Konsenzusni stručnjak"
+  },
+  "cashback-loyalty": {
+    "title": "Cashback & Loyalty Token",
+    "goal": "Razumite kako prilagođena sredstva funkcioniraju kao tokeni lojalnosti na Stellaru.",
+    "task": "Odgovorite na pitanja o žetonima lojalnosti, linijama povjerenja i provjeri izdavatelja.",
+    "learningOutcome": "Isto ime tokena ne znači isti token – razliku čini samo izdavač.",
+    "reward": "⭐ 2 – Stručnjak za lojalnost"
+  },
+  "scam-simulator": {
+    "title": "",
+    "goal": "Prepoznajte pokušaje prijevare u razgovorima u stvarnom vremenu i odgovorite primjereno.",
+    "task": "",
+    "learningOutcome": "Možete prepoznati tipične obrasce prijevare kao što su lažna podrška, pritisak na vrijeme i zahtjevi za ključevima.",
+    "reward": "🛡️ Detektor prijevara"
   }
 }

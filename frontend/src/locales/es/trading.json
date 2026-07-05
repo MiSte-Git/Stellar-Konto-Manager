@@ -11,7 +11,11 @@
         "label": "Emisor (optional)",
         "placeholder": "G… (G…=optional)"
       },
-      "submit": "Buscar"
+      "submit": "Buscar",
+      "query": {
+        "label": "Término de búsqueda",
+        "placeholder": "USDC, G... o USDC:G..."
+      }
     },
     "result": {
       "empty": "No se encontraron activos.",
@@ -19,11 +23,31 @@
         "code": "Código",
         "issuer": "Emisor",
         "numAccounts": "Cuentas",
-        "amount": "Cantidad total"
+        "amount": "Cantidad total",
+        "domain": "Dominio",
+        "toml": "TOML",
+        "actions": "Acciones"
+      },
+      "count": "Fichas encontradas: {{count}}",
+      "qualityHint": "Nota: Las «Trustlines», junto con el dominio y el TOML, aportan más información. La cantidad total aparece en los detalles, pero no constituye una señal de autenticidad.",
+      "columnHelp": {
+        "numAccounts": "Número de líneas de crédito/cuentas según Horizon.",
+        "amount": "Importe total de este activo declarado por Horizon. Si Horizon devuelve bloques de autorización, estos se suman."
+      },
+      "sort": {
+        "numAccounts": "Ordenar por líneas de confianza"
+      },
+      "factLabels": {
+        "domain": "La cuenta del emisor tiene un dominio propio",
+        "toml": "El activo figura en el archivo «stellar.toml» de este emisor."
       }
     },
     "invalidInput": {
-      "codeMissing": "Por favor, introduzca un código de activo."
+      "codeMissing": "Por favor, introduzca un código de activo.",
+      "queryMissing": "Introduce un código de activo, la dirección del emisor o CODE:ISSUER.",
+      "queryInvalid": "Introduce un código de activo válido, una dirección de emisor o «CODE:ISSUER».",
+      "codeInvalid": "Los códigos de activos solo pueden contener entre 1 y 12 letras o números.",
+      "issuerInvalid": "Introduce una dirección válida de emisor de Stellar."
     },
     "failed": {
       "generic": "La búsqueda de activos ha fallado. Por favor, inténtelo de nuevo más tarde."
@@ -32,6 +56,271 @@
       "title": "Estado poco claro – no reenviar",
       "body": "El servidor no pudo confirmar de forma inequívoca la última transacción (tiempo de espera agotado o error del servidor). Compruebe el hash de la transacción en un explorador antes de volver a intentarlo.",
       "acknowledge": "Estado comprobado – volver a habilitar las acciones"
+    },
+    "examples": {
+      "label": "Ejemplos"
+    },
+    "help": {
+      "issuer": "La cuenta de Stellar que emitió este token. El código y el emisor identifican de forma única el activo.",
+      "trustlines": "Número de cuentas que tienen una «trustline» con este activo según Horizon. Se trata de un indicador de uso, no de una prueba de autenticidad.",
+      "totalAmount": "Cantidad total de este activo declarada por Horizon. La oferta por sí sola no dice nada sobre la calidad ni la fiabilidad.",
+      "trustlineStatus": "Indica si tu cuenta corriente ya puede albergar este activo.",
+      "trustlineBalance": "Saldo actual de este activo en tu cuenta «Trustline».",
+      "trustlineLimit": "Saldo máximo de este activo que tu cuenta puede mantener a través de esta línea de crédito.",
+      "authorization": "En el caso de los activos «auth_required», el emisor debe autorizar tu «trustline» antes de que puedas recibir o negociar el token.",
+      "homeDomain": "Dominio almacenado en la cuenta del emisor. Sirve para localizar el archivo stellar.toml.",
+      "issuerMasterWeight": "Peso de la clave maestra del emisor. Un valor de 0 significa que la clave maestra ya no puede firmar por sí sola.",
+      "issuerLocked": "Indica si la clave maestra del emisor está desactivada. Esto puede ser una señal positiva, pero no sustituye a la comprobación de la configuración completa.",
+      "tomlStatus": "Estado del archivo «stellar.toml» en el dominio principal del emisor.",
+      "tomlUrl": "Dirección del archivo «stellar.toml» encontrado.",
+      "tomlAssetListed": "Indica si este activo figura en las entradas «CURRENCIES» del archivo stellar.toml.",
+      "tomlCurrencyCount": "Número de entradas de «CURRENCIES» en el archivo stellar.toml.",
+      "authRequired": "El emisor debe autorizar cada línea de crédito de forma individual.",
+      "authRevocable": "El emisor puede revocar posteriormente una autorización ya concedida.",
+      "authImmutable": "Ya no es posible modificar los indicadores de autorización del emisor.",
+      "clawbackEnabled": "El emisor puede recuperar tokens de las cuentas siguiendo unas normas determinadas.",
+      "liquidityRoute": "Indica si se ha encontrado una ruta para la dirección de intercambio actual.",
+      "reserveIncrease": "Se ha bloqueado una reserva mínima adicional de XLM mediante la creación de una nueva «trustline».",
+      "reserveAfter": "Saldo mínimo estimado que debe quedar en la cuenta tras añadir la línea de crédito fiduciaria.",
+      "spendableAfter": "Saldo estimado de XLM que sigue estando disponible libremente tras la reserva adicional.",
+      "expected": "Importe estimado a recibir según el presupuesto actual.",
+      "minimum": "Importe mínimo tras aplicar la tolerancia al deslizamiento. Por debajo de este importe, la operación de swap se cancela.",
+      "route": "Ruta del activo que Stellar utilizaría para el intercambio.",
+      "effectiveRate": "Tipo de cambio real previsto en función del importe enviado y del importe recibido.",
+      "minimumRate": "La peor tasa aceptada tras aplicar la tolerancia al deslizamiento.",
+      "slippageBuffer": "Diferencia entre el presupuesto previsto y el importe mínimo.",
+      "hops": "Número de segmentos de mercado en la ruta.",
+      "quoteAge": "Antigüedad de la cotización que se muestra actualmente. Las cotizaciones más antiguas deben actualizarse antes de firmar.",
+      "routeDetailed": "Ruta con el código del activo y el nombre abreviado del emisor, de modo que los tokens con el mismo código sigan siendo distinguibles.",
+      "spread": "Diferencia entre el mejor precio de compra y el mejor precio de venta.",
+      "priceImpact": "Estimación de en qué medida la operación empeora el precio obtenido en comparación con el precio de mercado.",
+      "topDepth": "Suma de los cinco primeros niveles de oferta del libro de órdenes.",
+      "marketAge": "Antigüedad de los datos de mercado cargados.",
+      "bestBid": "La oferta de compra más alta del libro de órdenes.",
+      "bestAsk": "La oferta de venta más baja actual en el libro de órdenes.",
+      "depthCoversAmount": "Indica si la profundidad visible de la cartera de órdenes superior cubre la cantidad introducida.",
+      "poolCount": "Número de fondos de liquidez de AMM encontrados para este par de negociación.",
+      "limitOfferDirection": "Define qué activo vendes y qué activo quieres recibir.",
+      "limitOfferAmount": "Cantidad del activo que deseas vender en la orden a precio límite.",
+      "limitOfferPrice": "Precio por unidad del activo vendido, expresado en la moneda del activo comprado."
+    },
+    "mode": {
+      "code": "Búsqueda por código de activo",
+      "issuer": "Búsqueda de emisores",
+      "exact": "Activo exacto"
+    },
+    "actions": {
+      "details": "Detalles",
+      "trustline": "Trustline",
+      "trustlineAdd": "Añadir línea de confianza",
+      "trustlinePresent": "Trustline existe",
+      "trustlineNext": "Siguiente paso: crear una línea de confianza a partir del resultado de la búsqueda",
+      "swap": "Intercambio",
+      "swapNext": "Selecciona un activo y abre la vista previa del swap"
+    },
+    "account": {
+      "active": "Cuenta activa",
+      "network": "Red",
+      "none": "No se ha cargado ninguna cuenta",
+      "missing": "No se ha cargado ninguna cuenta",
+      "loading": "Cuenta corriente...",
+      "invalid": "La cuenta cargada no es válida."
+    },
+    "trustlineStatus": {
+      "label": "Estado de Trustline",
+      "loading": "Comprobando Trustline...",
+      "present": "Trustline existe",
+      "missing": "Falta la línea de confianza",
+      "error": "No se ha podido cargar el estado de Trustline",
+      "unknown": "Aún no se ha comprobado",
+      "added": "Se ha añadido Trustline.",
+      "balance": "Saldo",
+      "limit": "Límite",
+      "authorization": "Autorización",
+      "authorized": "Autorizado",
+      "unauthorized": "No autorizado"
+    },
+    "swapPreview": {
+      "title": "Vista previa del intercambio",
+      "direction": {
+        "xlmToToken": "XLM -> Token",
+        "tokenToXlm": "Token -> XLM",
+        "tokenToToken": "Token -> Token"
+      },
+      "sendAmount": "Envías {{asset}}",
+      "targetAsset": "Token de destino",
+      "targetPlaceholder": "USDC, G... o EURC:G...",
+      "targetSearch": "Objeto de búsqueda",
+      "targetSelected": "Token de destino seleccionado",
+      "slippage": "Slippage %",
+      "check": "Consultar precio",
+      "execute": "Ejecutar el intercambio",
+      "executing": "Ejecutando el intercambio...",
+      "expected": "Importe estimado recibido",
+      "minimum": "Mínimo tras el deslizamiento",
+      "route": "Carretera",
+      "routeDetailed": "Itinerario con los emisores",
+      "effectiveRate": "Tasa efectiva",
+      "minimumRate": "Tasa mínima tras el deslizamiento",
+      "slippageBuffer": "Reserva contra el deslizamiento",
+      "hops": "Salto de mercado",
+      "quoteAge": "Edad de la cita",
+      "ageSeconds": "{{count}} segundos",
+      "ageMinutes": "{{count}} minutos",
+      "refreshComparison": "Actualizar comparación",
+      "notAvailable": "No disponible",
+      "invalidAmount": "Introduce un importe válido en {{asset}}.",
+      "invalidSlippage": "Introduce un valor de deslizamiento comprendido entre el 0 y el 50 por ciento.",
+      "invalidTarget": "Busca y selecciona un token de destino o introdúcelo exactamente en el formato CODE:ISSUER.",
+      "sameAsset": "El origen y el destino no deben ser el mismo activo.",
+      "destinationTrustlineMissing": "En esta cuenta sigue sin aparecer la línea de confianza del token de destino.",
+      "destinationTrustlineUnauthorized": "La línea de confianza de destino aún no ha sido autorizada por el emisor.",
+      "minimumMissing": "No se ha podido calcular el importe mínimo.",
+      "previewRequired": "Por favor, comprueba primero el precio.",
+      "noRoute": "No se ha encontrado ninguna ruta de intercambio.",
+      "failed": "No se ha podido cargar la vista previa de Swap.",
+      "quoteWorseThanMinimum": "La ruta actualizada está por debajo del importe mínimo confirmado. Por favor, comprueba de nuevo el precio.",
+      "success": "Se ha ejecutado el intercambio. Transacción:"
+    },
+    "swapConfirm": {
+      "title": "Confirmar intercambio",
+      "send": "Envías",
+      "receive": "Recepción estimada",
+      "minimum": "Mínimo garantizado",
+      "source": "Fuente",
+      "destination": "Destino",
+      "routeRefresh": "La ruta se comprueba de nuevo justo antes de la firma. Si el presupuesto actualizado es inferior al mínimo confirmado que se muestra aquí, no se seguirá adelante con la firma.",
+      "continue": "Continuar hasta la firma"
+    },
+    "market": {
+      "title": "Libro de órdenes / AMM",
+      "load": "Cargar datos de mercado",
+      "orderbook": "Libro de órdenes",
+      "bids": "Ofertas",
+      "asks": "Pregunta",
+      "amm": "Fondos de liquidez",
+      "empty": "No se han encontrado datos.",
+      "failed": "No se han podido cargar los datos del mercado.",
+      "spread": "Diferencial",
+      "priceImpact": "Repercusión en el precio (estimate)",
+      "topDepth": "Las 5 preguntas más frecuentes",
+      "marketAge": "Antigüedad de los datos de mercado",
+      "bestBid": "Mejor oferta",
+      "bestAsk": "Lo mejor es preguntar",
+      "depthCoversAmount": "La profundidad cubre la cantidad",
+      "poolCount": "Fondos comunes de AMM"
+    },
+    "limitOffer": {
+      "title": "Órdenes limitadas",
+      "description": "Introduce una oferta en el libro de órdenes de Stellar. Permanecerá abierta hasta que se ejecute, se sustituya o se elimine. Cada oferta abierta aumenta la reserva mínima.",
+      "refresh": "Ofertas de recarga",
+      "direction": {
+        "label": "Dirección",
+        "sellTokenForXlm": "Vender {{asset}} por XLM",
+        "sellXlmForToken": "Ofrece XLM a cambio de {{asset}}"
+      },
+      "amount": "Importe de la venta {{asset}}",
+      "price": "Precio: {{compra}} por 1 {{venta}}",
+      "create": "Realizar una orden limitada",
+      "confirmTitle": "Confirmar orden limitada",
+      "cancelTitle": "Eliminar orden limitada",
+      "warning": "Esta orden puede ejecutarse parcial o totalmente de forma inmediata si existe una contraoferta que coincida con ella. Comprueba el precio y la dirección antes de firmar.",
+      "cancelWarning": "Esto elimina la oferta pendiente y la sustituye por el importe 0.",
+      "continue": "Continuar hasta la firma",
+      "openOffers": "Ofertas activas para este token",
+      "noOffers": "No se han encontrado ofertas abiertas para este token.",
+      "loadFailed": "No se han podido cargar las ofertas abiertas.",
+      "invalidPair": "A esta orden limitada le falta un par de activos válido.",
+      "invalidAmount": "Introduce un importe de venta válido en {{asset}}.",
+      "invalidPrice": "Introduce un precio válido superior a 0.",
+      "createSuccess": "Se ha realizado una orden limitada. Transacción:",
+      "cancelSuccess": "Se ha eliminado la orden limitada. Transacción:",
+      "cancelAmount": "0 (delete offer)",
+      "cancel": "Eliminar",
+      "columns": {
+        "selling": "Venta",
+        "buying": "Comprar",
+        "amount": "Importe",
+        "price": "Precio",
+        "actions": "Acciones"
+      }
+    },
+    "trustlineConfirm": {
+      "title": "Confirmar la línea de confianza",
+      "limit": "Límite de Trustline",
+      "warning": "Una «trustline» permite que este activo se mantenga en tu cuenta. Comprueba los datos, especialmente el emisor, el dominio de origen, el archivo «stellar.toml», la autorización y la cláusula de recuperación antes de firmar.",
+      "continue": "Continuar hasta la firma"
+    },
+    "trustlineFlow": {
+      "title": "Preparar la línea de confianza",
+      "limitHelp": "El límite es el saldo máximo de tokens de esta línea de crédito. No se trata de una orden de compra y no reserva tokens.",
+      "reserveIncrease": "Reserva mínima adicional",
+      "reserveAfter": "Reserva mínima tras",
+      "spendableAfter": "XLM disponible para gastar tras la reserva",
+      "authRequiredHint": "Este activo utiliza «auth_required». La «trustline» se puede crear, pero el emisor debe autorizarla antes de que puedas recibir o comprar el token mediante un intercambio.",
+      "combinedTitle": "Opcional: trustline + swap",
+      "combinedAction": "Ejecutar «trustline + swap»",
+      "combinedConfirmTitle": "Confirmar «trustline» + intercambio",
+      "combinedWarning": "Esta transacción crea primero la línea de confianza y, a continuación, ejecuta el intercambio. La ruta se comprueba de nuevo justo antes de la firma.",
+      "combinedContinue": "Continuar hasta la firma",
+      "combinedOnlyXlm": "El flujo combinado solo está disponible para XLM → token en este caso.",
+      "authRequiredCombinedBlocked": "Combined trustline+swap is disabled for auth_required assets because the issuer must authorize the new trustline first.",
+      "invalidLimit": "Introduce un límite de Trustline válido superior a 0.",
+      "limitBelowExpected": "El límite de la línea de crédito es inferior al importe que se espera recibir.",
+      "alreadyPresent": "La línea de confianza ya existe. Por favor, actualiza la página y utiliza el intercambio habitual.",
+      "combinedSuccess": "Se han ejecutado «Trustline» y «swap». Transacción:"
+    },
+    "facts": {
+      "title": "Datos sobre los tokens",
+      "sourceTitle": "Datos sobre los tokens de origen",
+      "destinationTitle": "Datos sobre el token de destino",
+      "expand": "Mostrar",
+      "collapse": "Ocultar",
+      "disclaimer": "Esto no es una valoración ni una recomendación. La aplicación solo muestra los datos que ha encontrado; la decisión la toma el usuario.",
+      "loading": "Cargando datos sobre los tokens...",
+      "issuerLoadFailed": "No se ha podido cargar la cuenta del emisor.",
+      "notAvailable": "No disponible",
+      "notChecked": "No marcado",
+      "yes": "Sí",
+      "no": "De",
+      "homeDomain": "Dominio de inicio",
+      "issuerMasterWeight": "Peso de la llave maestra",
+      "issuerLocked": "Clave maestra del emisor bloqueada",
+      "liquidityRoute": "Cambiar ruta",
+      "routeAvailable": "Ruta encontrada",
+      "routeUnavailable": "No se ha encontrado ninguna ruta",
+      "toml": {
+        "status": "Estado de stellar.toml",
+        "url": "URL de stellar.toml",
+        "loading": "Cargando stellar.toml...",
+        "loaded": "Se ha cargado el archivo «stellar.toml»",
+        "failed": "No se puede acceder a «stellar.toml»",
+        "noHomeDomain": "No hay dominio principal en la cuenta del emisor",
+        "assetListed": "Recurso incluido en el archivo «stellar.toml»",
+        "currencyCount": "Entradas de «DIVISAS»"
+      },
+      "flags": {
+        "authRequired": "Se requiere autorización",
+        "authRevocable": "Autorización revocable",
+        "authImmutable": "Autorización inmutable",
+        "clawbackEnabled": "Recuperación activada"
+      }
+    },
+    "risk": {
+      "title": "Comprobaciones antes de firmar",
+      "issuerLoadFailed": "No se han podido cargar los datos del emisor.",
+      "noHomeDomain": "El emisor no tiene dominio propio.",
+      "tomlNotLoaded": "El archivo «stellar.toml» no se ha cargado o no es accesible.",
+      "tomlAssetMissing": "Este activo no figura en el archivo «stellar.toml» del emisor.",
+      "issuerUnlocked": "La clave maestra del emisor no está bloqueada.",
+      "authRequired": "Este activo requiere la autorización del emisor.",
+      "clawbackEnabled": "La cláusula de recuperación está activa para este activo."
+    },
+    "detail": {
+      "status": {
+        "ledgerKnown": "Conocido en Horizon"
+      },
+      "nextStepHint": "Solo se conoce en Horizon. Comprueba quién es el emisor y la línea de confianza antes de firmar una línea de confianza o un intercambio."
     }
   }
 }

@@ -12,7 +12,7 @@
     "tokensAssets": "Token & Assets",
     "transactionsFees": "Transactions & Fees",
     "marketsTrading": "Markets & Trading",
-    "networkProtocol": "Network & Protocol",
+    "networkProtocol": "Mreža i protokol",
     "smartContracts": "Pametni ugovori",
     "blockchainBasics": "Osnove blockchaina",
     "security": "Security & Fraud",
@@ -266,7 +266,9 @@
     "title": "Know Your Customer",
     "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
     "short": "Zakonom obavezna provjera identiteta koju financijske usluge traže prije korištenja.",
-    "desc": "KYC (Know Your Customer) je regulatorni postupak u kojem korisnici dokazuju identitet dokumentima i ponekad selfijem. Cilj je spriječiti pranje novca (AML), financiranje terorizma i prijevare. Decentralizirani protokoli poput Stellar DEX‑a ne zahtijevaju KYC—trguješ izravno iz walleta. Onramp i offramp usluge moraju provoditi KYC jer povezuju fiat i kripto."
+    "desc": "KYC (Know Your Customer) je regulatorni postupak u kojem korisnici dokazuju identitet dokumentima i ponekad selfijem. Cilj je spriječiti pranje novca (AML), financiranje terorizma i prijevare. Decentralizirani protokoli poput Stellar DEX‑a ne zahtijevaju KYC—trguješ izravno iz walleta. Onramp i offramp usluge moraju provoditi KYC jer povezuju fiat i kripto.",
+    "externalDomains": "",
+    "domainsHeading": "Poznati KYC pružatelji (Domains zum selbst Eintippen):"
   },
   "defi": {
     "title": "Decentralizirane financije",
@@ -988,5 +990,101 @@
     "original": "Federated Byzantine Agreement",
     "short": "Načelo konsenzusa iza SCP-a: svaki validator sam bira kome vjeruje – nikakav centralni odbor to ne odlučuje.",
     "desc": "FBA (Federated Byzantine Agreement) je srce Stellar Consensus Protocola. Za razliku od PoW-a ili PoS-a, nema rudarenja ni glasanja temeljenog na ulogu. Umjesto toga, svaki operator validatora neovisno bira kojim drugim validatorima vjeruje – to definira njegov kvorum set. Da bi se transakcija potvrdila, preklapajući kvorum setovi moraju se složiti (otprilike 2/3 većina). Rezultat: decentralizirana, energetski učinkovita mreža bez centralnog tijela kontrole."
+  },
+  "trustlineLimit": {
+    "title": "Gornja granica Trustlinea",
+    "original": "Trustline Limit",
+    "short": "Maksimalni saldo određene imovine na trustlineu.",
+    "desc": "Ograničenje trustline definira koliko jedinica određene imovine vaš račun može najviše držati. To nije nalog za kupnju i ne rezervira tokene. Nisko ograničenje može spriječiti slučajne preplate, ali premalo ograničenje može blokirati namjeravani prijem ili zamjenu."
+  },
+  "authorizationFlags": {
+    "title": "Zastavice autorizacije",
+    "original": "Authorization Flags",
+    "short": "Pravila izdavatelja kao što su auth_required, auth_revocable ili immutable.",
+    "desc": "Zastavice autorizacije su postavke na računu izdavatelja. auth_required znači da izdavatelj mora prvo odobriti trustline. auth_revocable znači da se odobrenje može naknadno opozvati. auth_immutable znači da se te zastavice više ne mogu mijenjati. Te zastavice su važne jer utječu na to možete li primiti, držati ili premjestiti token."
+  },
+  "issuerMasterKey": {
+    "title": "Glavni ključ izdavatelja",
+    "original": "Issuer Master Key",
+    "short": "Glavni ključ računa izdavatelja.",
+    "desc": "Glavni ključ izdavatelja je glavni ključ računa koji izdaje imovinu. Ako je njegova težina postavljena na 0, sam glavni ključ više ne može potpisati nove radnje. To može biti dobar znak jer izdavatelju otežava tiho mijenjanje pravila. Potpuna konfiguracija računa, uključujući ostale potpisnike i zastavice, i dalje je važna."
+  },
+  "assetCode": {
+    "title": "Šifra imovine",
+    "original": "Asset Code",
+    "short": "Skraćeni naziv Stellar aktive, kao što su USDC ili EURC.",
+    "desc": "Kod imovine je vidljivo kratko ime Stellar imovine. Sam po sebi nije jedinstven, jer više izdavatelja može koristiti isti kod. Samo kod zajedno s adresom izdavatelja jedinstveno identificira Stellar imovinu."
+  },
+  "issuer": {
+    "title": "Izdavatelj",
+    "original": "Issuer",
+    "short": "Stellar račun koji izdaje imovinu i kontrolira njezina pravila.",
+    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+  },
+  "homeDomain": {
+    "title": "Početna domena",
+    "original": "Home Domain",
+    "short": "Domena pohranjena na računu izdavatelja Stellara.",
+    "desc": "Domašnja domena je domena pohranjena na računu izdavatelja. Pomaže povezati sredstvo s web-stranicom i datotekom stellar.toml. Domašnja domena nije dokaz pouzdanosti, ali bez nje nedostaju važne informacije za provjeru."
+  },
+  "stellarToml": {
+    "title": "izvrsno.toml",
+    "original": "stellar.toml",
+    "short": "Javna metapodatkovna datoteka za Stellar domenu.",
+    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
+  },
+  "quote": {
+    "title": "Citat",
+    "original": "Quote",
+    "short": "Trenutna procjena cijene za planiranu zamjenu.",
+    "desc": "Cijena je trenutna procjena koliko biste dobili u zamjeni. To nije jamstvo jer se knjige naloga, bazeni likvidnosti i cijene mogu promijeniti prije potpisivanja. Zato bi aplikacija trebala osvježiti rutu neposredno prije potpisivanja."
+  },
+  "effectiveRate": {
+    "title": "Učinkovita stopa",
+    "original": "Effective Rate",
+    "short": "Stvarni omjer između iznosa poslanog i očekivanog primljenog iznosa.",
+    "desc": "Učinkovita stopa opisuje koliko tokena odredišta očekujete po poslanom tokenu na temelju trenutnog tečaja. Često je korisnija od jedne tržišne cijene jer uključuje likvidnost rute, knjige naloga i pool-a."
+  },
+  "minimumReceived": {
+    "title": "Minimalni primljeni iznos",
+    "original": "Minimum Received",
+    "short": "Minimalni iznos ispod kojeg swap ne bi trebao biti izvršen.",
+    "desc": "Minimalni primljeni iznos je najniži ciljni iznos koji prihvaćate. Izračunava se na temelju ponude i vaše tolerancije klizanja. Ako osvježena ruta padne ispod tog iznosa, zamjena bi trebala biti prekinuta."
+  },
+  "liquidityRoute": {
+    "title": "Put likvidnosti",
+    "original": "Liquidity Route",
+    "short": "Put kroz koji se zamjena usmjerava kroz knjige naloga ili bazene.",
+    "desc": "Ruta likvidnosti pokazuje kroz koja se sredstva i tržišta swap provodi. Ruta može biti izravna ili prolaziti kroz posredna sredstva. Na Stellaru se za pronalaženje puta mogu koristiti i ponude u knjizi naloga i AMM bazeni likvidnosti."
+  },
+  "bid": {
+    "title": "Moli se",
+    "original": "Bid",
+    "short": "Kupnja ponude u knjizi naloga.",
+    "desc": "Ponuda je ponuda za kupnju. Pokazuje cijenu po kojoj je netko spreman kupiti imovinu. Najbolja ponuda je obično najviša trenutačna ponuda za kupnju u knjizi naloga."
+  },
+  "ask": {
+    "title": "Pitaj",
+    "original": "Ask",
+    "short": "Ponuda prodaje u knjizi naloga.",
+    "desc": "Ask je ponuda za prodaju. Pokazuje cijenu po kojoj je netko spreman prodati imovinu. Najbolji ask obično je najniža trenutačna ponuda za prodaju u knjizi naloga."
+  },
+  "marketDepth": {
+    "title": "Dubina tržišta",
+    "original": "Market Depth",
+    "short": "Visina likvidnosti u odnosu na trenutnu tržišnu cijenu.",
+    "desc": "Dubina tržišta opisuje koliko je volumena dostupno u knjizi naloga ili bazenima blizu trenutne cijene. Visoka dubina znači da veći trgovi manje pomiču cijenu. Niska dubina povećava klizanje i utjecaj na cijenu."
+  },
+  "priceImpact": {
+    "title": "Utjecaj na cijenu",
+    "original": "Price Impact",
+    "short": "Koliko trgovina pogoršava postignutu cijenu u usporedbi s tržišnom cijenom.",
+    "desc": "Učinak na cijenu događa se kada je trgovanje veliko u odnosu na raspoloživu likvidnost. Tada najbolja cijena nije dovoljna za cijeli iznos i trgovanje troši lošije razine knjige naloga ili mijenja cijene u bazenu likvidnosti. Visok učinak na cijenu je signal upozorenja."
+  },
+  "staleQuote": {
+    "title": "Zastarjeli citat",
+    "original": "Stale Quote",
+    "short": "Cijena koja možda više ne odražava trenutno tržište.",
+    "desc": "Cijena ponude može zastarjeti jer drugi korisnici trguju, narudžbe se uklanjaju ili se mijenjaju likvidnosni bazeni. Što je ponuda starija, to je važnije osvježiti je neposredno prije potpisivanja."
   }
 }

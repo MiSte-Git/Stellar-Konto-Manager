@@ -15,5 +15,6 @@
   "settings": "Postavke",
   "tokenPurchases": "Kupnje tokena",
   "learn": "Zvjezdani kviz za početnike",
-  "unknown": "Nepoznata stavka izbornika"
+  "unknown": "Nepoznata stavka izbornika",
+  "swap": "Globalna pretraga tokena / zamjena"
 }

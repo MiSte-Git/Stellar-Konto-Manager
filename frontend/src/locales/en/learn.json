@@ -156,5 +156,26 @@
     "task": "Compare Single-Sig vs. Multisig and examine an example process.",
     "learningOutcome": "Multiple signatures increase security; thresholds determine how many signatures are needed.",
     "reward": "⭐ 2 – Multisig Starter"
+  },
+  "lesson14": {
+    "title": "Consensus on Stellar",
+    "goal": "Understand how the Stellar Consensus Protocol (SCP) works.",
+    "task": "Answer questions about SCP, quorum slices, and how they differ from mining.",
+    "learningOutcome": "SCP ermöglicht schnellen, dezentralen Konsens ohne Mining – jeder Node wählt selbst, wem er vertraut.",
+    "reward": "⭐ 2 – Consensus Expert"
+  },
+  "cashback-loyalty": {
+    "title": "Cashback & Loyalty Token",
+    "goal": "Understand how Custom Assets work as loyalty tokens on Stellar.",
+    "task": "Answer questions about loyalty tokens, trust lines, and issuer verification.",
+    "learningOutcome": "Gleicher Token-Name bedeutet nicht gleicher Token – nur der Issuer macht den Unterschied.",
+    "reward": "⭐ 2 – Loyalty Expert"
+  },
+  "scam-simulator": {
+    "title": "",
+    "goal": "Recognize fraud attempts in real-time chat situations and respond appropriately.",
+    "task": "",
+    "learningOutcome": "You can recognize typical scam patterns such as fake support, time pressure, and requests for keys.",
+    "reward": "🛡️ Scam Detector"
   }
 }

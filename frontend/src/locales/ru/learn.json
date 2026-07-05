@@ -156,5 +156,26 @@
     "task": "Сравните одноразовую подпись (Single-Sig) и мультиподпись (Multisig), а затем рассмотрите пример процесса.",
     "learningOutcome": "Множественные подписи повышают безопасность; пороги определяют, сколько подписей необходимо.",
     "reward": "⭐ 2 – Мультиподпись для начинающих"
+  },
+  "lesson14": {
+    "title": "Консенсус по Stellar",
+    "goal": "Понять, как работает протокол консенсуса Stellar (SCP).",
+    "task": "Ответьте на вопросы о SCP, кворумных фрагментах и о том, чем они отличаются от майнинга.",
+    "learningOutcome": "SCP ermöglicht schnellen, dezentralen Konsens ohne Mining – jeder Node wählt selbst, wem er vertraut.",
+    "reward": "⭐ 2 – Consensus Expert"
+  },
+  "cashback-loyalty": {
+    "title": "Cashback & Loyalty Token",
+    "goal": "Узнайте, как пользовательские активы работают в качестве токенов лояльности в сети Stellar.",
+    "task": "Ответьте на вопросы о токенах лояльности, линиях доверия и проверке эмитентов.",
+    "learningOutcome": "Gleicher Token-Name bedeutet nicht gleicher Token – nur der Issuer macht den Unterschied.",
+    "reward": "⭐ 2 – Loyalty Expert"
+  },
+  "scam-simulator": {
+    "title": "",
+    "goal": "Распознавайте попытки мошенничества в режиме реального времени во время чата и реагируйте на них надлежащим образом.",
+    "task": "",
+    "learningOutcome": "Вы можете распознать типичные схемы мошенничества, такие как поддельная служба поддержки, давление временем и просьбы предоставить ключи.",
+    "reward": "🛡️ Детектор мошенничества"
   }
 }

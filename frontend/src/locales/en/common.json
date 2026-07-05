@@ -129,9 +129,9 @@
       "empty": "No entries found.",
       "loading": "Laden…",
       "resize": "Drag to adjust",
-      "exportAll": "CSV (Alle)",
+      "exportAll": "CSV (All)",
       "exportError": "Export failed",
-      "exportPage": "CSV (__KEEP_EN_TERM 1__)",
+      "exportPage": "CSV (Page)",
       "exporting": "Exportiere…",
       "exportTruncated": "Export limited to the first {{count}} entries.",
       "columns": {

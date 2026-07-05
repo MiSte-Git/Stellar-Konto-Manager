@@ -129,9 +129,9 @@
       "empty": "Aucune entrée trouvée.",
       "loading": "Chargement…",
       "resize": "Faites glisser pour ajuster",
-      "exportAll": "CSV (Alle)",
+      "exportAll": "CSV (Tout)",
       "exportError": "Échec de l'exportation",
-      "exportPage": "CSV (__KEEP_EN_TERM 1__)",
+      "exportPage": "CSV (Page)",
       "exporting": "Exportiere…",
       "exportTruncated": "Export limité aux {{count}} premières entrées.",
       "columns": {

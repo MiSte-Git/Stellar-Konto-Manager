@@ -12,7 +12,7 @@
     "tokensAssets": "Token & Assets",
     "transactionsFees": "Transactions & Fees",
     "marketsTrading": "Markets & Trading",
-    "networkProtocol": "Network & Protocol",
+    "networkProtocol": "Rete e protocollo",
     "smartContracts": "Contratti intelligenti",
     "blockchainBasics": "Nozioni di Base sulla Blockchain",
     "security": "Security & Fraud",
@@ -266,7 +266,9 @@
     "title": "Know Your Customer",
     "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
     "short": "Verifica d’identità obbligatoria che i servizi finanziari richiedono prima dell’uso.",
-    "desc": "KYC (Know Your Customer) è una procedura normativa in cui gli utenti provano la propria identità con documenti e talvolta un selfie. L’obiettivo è prevenire il riciclaggio di denaro (AML), il finanziamento del terrorismo e le frodi. I protocolli decentralizzati come lo Stellar DEX non richiedono KYC—tradi direttamente dal tuo wallet. I servizi onramp e offramp devono effettuare il KYC perché collegano il mondo fiat e quello crypto."
+    "desc": "KYC (Know Your Customer) è una procedura normativa in cui gli utenti provano la propria identità con documenti e talvolta un selfie. L’obiettivo è prevenire il riciclaggio di denaro (AML), il finanziamento del terrorismo e le frodi. I protocolli decentralizzati come lo Stellar DEX non richiedono KYC—tradi direttamente dal tuo wallet. I servizi onramp e offramp devono effettuare il KYC perché collegano il mondo fiat e quello crypto.",
+    "externalDomains": "",
+    "domainsHeading": "Famosi fornitori di servizi KYC (Domains zum selbst Eintippen):"
   },
   "defi": {
     "title": "Finanza decentralizzata",
@@ -988,5 +990,101 @@
     "original": "Federated Byzantine Agreement",
     "short": "Il principio di consenso alla base di SCP: ogni validatore sceglie da solo di chi fidarsi – nessun comitato centrale lo decide.",
     "desc": "FBA (Federated Byzantine Agreement) è il cuore dello Stellar Consensus Protocol. A differenza di PoW o PoS, non c'è mining né votazione basata sullo stake. Invece, ogni operatore di validatore sceglie indipendentemente di quali altri validatori fidarsi – questo definisce il suo quorum set. Perché una transazione venga confermata, quorum set sovrapposti devono concordare (circa una maggioranza dei 2/3). Il risultato: una rete decentralizzata ed efficiente dal punto di vista energetico senza un'autorità centrale di controllo."
+  },
+  "trustlineLimit": {
+    "title": "Limite Trustline",
+    "original": "Trustline Limit",
+    "short": "Saldo massimo di una specifica attività su una linea di credito fiduciaria.",
+    "desc": "Il limite della linea di credito definisce il numero massimo di unità di un determinato asset che il tuo conto può detenere. Non si tratta di un ordine di acquisto e non riserva alcun token. Un limite basso può impedire pagamenti eccessivi accidentali, ma un limite troppo basso può impedire una ricezione o uno scambio voluti."
+  },
+  "authorizationFlags": {
+    "title": "Indicatori di autorizzazione",
+    "original": "Authorization Flags",
+    "short": "Regole dell'emittente quali auth_required, auth_revocable o immutable.",
+    "desc": "I flag di autorizzazione sono impostazioni relative all'account dell'emittente. \"auth_required\" significa che l'emittente deve prima approvare una trustline. \"auth_revocable\" significa che l'approvazione può essere successivamente revocata. \"auth_immutable\" significa che questi flag non possono più essere modificati. Questi flag sono importanti perché determinano se è possibile ricevere, detenere o trasferire un token."
+  },
+  "issuerMasterKey": {
+    "title": "Chiave principale dell'emittente",
+    "original": "Issuer Master Key",
+    "short": "Chiave principale del conto dell'emittente.",
+    "desc": "La chiave principale dell'emittente è la chiave principale dell'account che emette un asset. Se il suo peso è impostato su 0, la chiave principale da sola non può più firmare nuove azioni. Questo può essere un segnale positivo perché rende più difficile per l'emittente modificare le regole in modo silenzioso. La configurazione completa dell'account, inclusi gli altri firmatari e i flag, rimane comunque rilevante."
+  },
+  "assetCode": {
+    "title": "Codice bene",
+    "original": "Asset Code",
+    "short": "Nome abbreviato di un asset Stellar, come USDC o EURC.",
+    "desc": "Il codice dell'asset è il nome abbreviato visibile di un asset Stellar. Di per sé non è univoco, poiché diversi emittenti possono utilizzare lo stesso codice. Solo il codice, insieme all'indirizzo dell'emittente, identifica in modo univoco un asset Stellar."
+  },
+  "issuer": {
+    "title": "Emittente",
+    "original": "Issuer",
+    "short": "L'account Stellar che emette un asset e ne gestisce le regole.",
+    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+  },
+  "homeDomain": {
+    "title": "Home Dominio",
+    "original": "Home Domain",
+    "short": "Dominio registrato da un account emittente Stellar.",
+    "desc": "Il dominio di origine è un dominio memorizzato sull'account dell'emittente. Serve a collegare un asset a un sito web e a un file stellar.toml. Un dominio di origine non costituisce una prova di affidabilità, ma senza di esso mancano importanti informazioni di verifica."
+  },
+  "stellarToml": {
+    "title": "stellar.toml",
+    "original": "stellar.toml",
+    "short": "File di metadati pubblico relativo a un dominio Stellar.",
+    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
+  },
+  "quote": {
+    "title": "Citazione",
+    "original": "Quote",
+    "short": "Stima attuale del prezzo per uno swap previsto.",
+    "desc": "Una quotazione è una stima aggiornata dell'importo che si riceverebbe in uno swap. Non costituisce una garanzia, poiché i registri degli ordini, i pool di liquidità e i prezzi possono variare prima della firma. Ecco perché un'app dovrebbe aggiornare il percorso immediatamente prima della firma."
+  },
+  "effectiveRate": {
+    "title": "Tasso effettivo",
+    "original": "Effective Rate",
+    "short": "Rapporto effettivo tra l'importo inviato e l'importo che ci si aspettava di ricevere.",
+    "desc": "Il tasso effettivo indica il numero di token di destinazione che ci si aspetta di ricevere per ogni token inviato, in base alla quotazione corrente. Spesso risulta più utile di un singolo prezzo di mercato, poiché tiene conto della rotta, del libro degli ordini e della liquidità del pool."
+  },
+  "minimumReceived": {
+    "title": "Importo minimo ricevuto",
+    "original": "Minimum Received",
+    "short": "Importo minimo al di sotto del quale uno swap non dovrebbe essere eseguito.",
+    "desc": "L'importo minimo ricevuto è l'importo di destinazione più basso che accetti. Viene calcolato in base al preventivo e alla tua tolleranza allo slippage. Se il percorso aggiornato scende al di sotto di tale valore, l'operazione dovrebbe essere interrotta."
+  },
+  "liquidityRoute": {
+    "title": "Percorso di liquidità",
+    "original": "Liquidity Route",
+    "short": "Percorso attraverso il quale uno swap viene instradato attraverso i registri degli ordini o i pool.",
+    "desc": "Il percorso di liquidità indica attraverso quali asset e mercati passa uno swap. Un percorso può essere diretto oppure passare attraverso asset intermedi. Su Stellar, per individuare un percorso è possibile ricorrere sia alle offerte del libro degli ordini che ai pool di liquidità AMM."
+  },
+  "bid": {
+    "title": "Prega",
+    "original": "Bid",
+    "short": "Offerta di acquisto nel libro degli ordini.",
+    "desc": "Un bid è un'offerta di acquisto. Indica il prezzo al quale qualcuno è disposto ad acquistare un titolo. Il miglior bid è solitamente l'offerta di acquisto più alta attualmente presente nel libro degli ordini."
+  },
+  "ask": {
+    "title": "Chiedi",
+    "original": "Ask",
+    "short": "Offerta di vendita nel libro degli ordini.",
+    "desc": "Il prezzo di vendita è un'offerta di vendita. Indica il prezzo al quale qualcuno è disposto a vendere un titolo. Il miglior prezzo di vendita è solitamente l'offerta di vendita più bassa attualmente presente nel libro degli ordini."
+  },
+  "marketDepth": {
+    "title": "Profondità di mercato",
+    "original": "Market Depth",
+    "short": "Quantità di liquidità a un prezzo prossimo a quello di mercato.",
+    "desc": "La profondità di mercato indica il volume disponibile nel libro degli ordini o nei pool in prossimità del prezzo corrente. Una profondità elevata significa che le operazioni di grandi dimensioni incidono meno sul prezzo. Una profondità ridotta aumenta lo slippage e l'impatto sul prezzo."
+  },
+  "priceImpact": {
+    "title": "Impatto sui prezzi",
+    "original": "Price Impact",
+    "short": "Di quanto un'operazione peggiora il prezzo ottenuto rispetto al prezzo di mercato.",
+    "desc": "Si verifica un impatto sul prezzo quando un'operazione è di entità tale da risultare sproporzionata rispetto alla liquidità disponibile. In tal caso, il prezzo migliore non è sufficiente a coprire l'intero importo e l'operazione assorbe i livelli peggiori del libro degli ordini o modifica i prezzi del pool. Un impatto elevato sul prezzo costituisce un segnale di allarme."
+  },
+  "staleQuote": {
+    "title": "Citazione trita e ritrita",
+    "original": "Stale Quote",
+    "short": "Una quotazione che potrebbe non rispecchiare più l'attuale situazione di mercato.",
+    "desc": "Una quotazione può diventare obsoleta a causa delle operazioni effettuate da altri utenti, della cancellazione di ordini o delle variazioni nei pool di liquidità. Più una quotazione è datata, più è importante aggiornarla immediatamente prima di confermare l'operazione."
   }
 }

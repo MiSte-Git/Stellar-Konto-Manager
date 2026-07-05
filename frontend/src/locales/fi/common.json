@@ -129,9 +129,9 @@
       "empty": "Ei merkintöjä löytynyt.",
       "loading": "Ladataan…",
       "resize": "Vedä säätääksesi",
-      "exportAll": "CSV (Alle)",
+      "exportAll": "CSV (Kaikki)",
       "exportError": "Vienti epäonnistui",
-      "exportPage": "CSV (__KEEP_EN_TERM 1__)",
+      "exportPage": "CSV (Sivu)",
       "exporting": "Vie…",
       "exportTruncated": "Vienti rajoitettu ensimmäiseen {{count}} merkintään.",
       "columns": {

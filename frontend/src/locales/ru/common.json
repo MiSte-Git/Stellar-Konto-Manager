@@ -129,9 +129,9 @@
       "empty": "Записей не найдено.",
       "loading": "Загрузка…",
       "resize": "Перетащите для настройки.",
-      "exportAll": "CSV (CSV)",
+      "exportAll": "CSV (Все)",
       "exportError": "Экспорт не выполнен",
-      "exportPage": "CSV (__KEEP_EN_TERM 1__)",
+      "exportPage": "CSV (Страница)",
       "exporting": "Exportiere…",
       "exportTruncated": "Экспорт ограничен первыми {{count}} записями.",
       "columns": {

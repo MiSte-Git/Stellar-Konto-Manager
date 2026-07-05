@@ -762,7 +762,9 @@
         "dialog1": "Laten we dit meteen uitproberen! Zo dadelijk laat ik je zien hoe – maar eerst leg ik je uit wat escrow eigenlijk betekent.",
         "dialog2": "Een wat?",
         "dialog3": "Stellar heeft dit bewaardersprincipe direct in het protocol ingebouwd – als native functie genaamd Claimable Balance. Een bedrag in XLM of tokens wordt vergrendeld en gekoppeld aan een voorwaarde: wie mag het claimen? Vanaf wanneer? En tot wanneer kan de afzender het terugvorderen? Pas als aan de voorwaarde is voldaan, kan de ontvanger het geld opnemen.",
-        "dialog4": "Dus we vergrendelen nu testnet-geld?"
+        "dialog4": "Dus we vergrendelen nu testnet-geld?",
+        "dialog5": "Dus net als bij Digitec: de koper betaalt, maar de verkoper ontvangt het geld pas als de koper de ontvangst heeft bevestigd?",
+        "dialog6": "Exactly. Digitec acts as the trustee in that context. On Stellar, a “claimable balance” can technically represent the locked portion. The app built around it then determines when someone is allowed to claim it or when it is repaid."
       },
       "action": {
         "label": "Escrow Aanmaken",
@@ -770,7 +772,20 @@
         "success": "Escrow succesvol aangemaakt!",
         "escrow_id_label": "Claimable Balance ID",
         "testnet_note": "Alleen testnet – geen echt geld.",
-        "locked_note": "De 50 XLM zijn nu vergrendeld – noch jij noch de koper kan ze zomaar opnemen. Het geld wacht op de voorwaarde."
+        "locked_note": "De 50 XLM zijn nu vergrendeld – noch jij noch de koper kan ze zomaar opnemen. Het geld wacht op de voorwaarde.",
+        "how_title": "Zo werkt een escrow-regeling",
+        "step1": "Je testnet-account wordt geladen op basis van je sleutelpaar.",
+        "step2": "De code maakt een transactie aan met behulp van de bewerking `createClaimableBalance`.",
+        "step3": "In deze transactie worden het activum, het bedrag en de regels voor het claimen vastgelegd: de demo-koper kan het bedrag onmiddellijk claimen; jij kunt het na 1 uur terugvorderen.",
+        "step4": "Je account ondertekent de transactie en stuurt deze naar Horizon Testnet.",
+        "wallet_note_title": "Belangrijk voor standaardportefeuilles",
+        "wallet_note": "Hiervoor stel je geen ‘Claimable Balance’-vlag in. Een wallet moet deze bewerking expliciet ondersteunen; anders kun je deze daar niet met één klik aanmaken. In de praktijk doe je dit met een app zoals deze, via Stellar Laboratory, of via code met behulp van de Stellar SDK.",
+        "creating": "De escrow-regeling wordt momenteel opgezet…",
+        "result_rules_title": "Werkwijze in deze demo",
+        "rule1": "De demo-koper kan de 50 XLM onmiddellijk opeisen — dat wil zeggen: ze actief opnemen uit het opeisbare saldo.",
+        "rule2": "Als de demo-koper niets onderneemt, kun je na 1 uur de 50 XLM terugvragen.",
+        "rule3": "Eine echte „Erhalt bestätigen“-Schaltfläche ist in dieser Demo noch nicht eingebaut.",
+        "rule4": "Beim Digitec-Beispiel wäre diese Bestätigung der nächste App-Schritt: Der Käufer klickt „Erhalt bestätigt“, und die Plattform löst danach die Auszahlung an den Verkäufer aus. Auf Stellar wäre das eine zweite Transaktion, die die Claimable Balance beansprucht."
       },
       "post": {
         "dialog1": "Dat was eenvoudiger dan ik dacht!",

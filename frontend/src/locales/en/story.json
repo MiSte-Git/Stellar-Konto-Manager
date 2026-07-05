@@ -762,7 +762,9 @@
         "dialog1": "Let's try this right now! I'll show you how in a moment – but first let me explain what escrow actually means.",
         "dialog2": "A what?",
         "dialog3": "Stellar has built this trustee principle directly into the protocol – as a native feature called Claimable Balance. An amount of XLM or tokens is locked and tied to a condition: who may claim it? From when? And until when can the sender reclaim it? Only when the condition is met can the recipient withdraw the funds.",
-        "dialog4": "So we're locking testnet money now?"
+        "dialog4": "So we're locking testnet money now?",
+        "dialog5": "So, just like with Digitec: The buyer pays, but the seller doesn't receive the money until the buyer confirms receipt?",
+        "dialog6": "Exactly. Digitec acts as the trustee in that context. On Stellar, a “claimable balance” can technically represent the locked portion. The app built around it then determines when someone is allowed to claim it or when it is repaid."
       },
       "action": {
         "label": "Create Escrow",
@@ -770,7 +772,20 @@
         "success": "Escrow successfully created!",
         "escrow_id_label": "Claimable Balance ID",
         "testnet_note": "Testnet only – no real money.",
-        "locked_note": "The 50 XLM are now locked – neither you nor the buyer can simply withdraw them. The funds are waiting for the condition."
+        "locked_note": "The 50 XLM are now locked – neither you nor the buyer can simply withdraw them. The funds are waiting for the condition.",
+        "how_title": "This Is How Escrow Works",
+        "step1": "Your testnet account is loaded from your key pair.",
+        "step2": "The code creates a transaction using the `createClaimableBalance` operation.",
+        "step3": "This transaction specifies the asset, amount, and claim rules: The demo buyer can claim immediately; you can reclaim it after 1 hour.",
+        "step4": "Your account signs the transaction and sends it to Horizon Testnet.",
+        "wallet_note_title": "Important for standard wallets",
+        "wallet_note": "You don't set a Claimable Balance flag for this. A wallet must explicitly support this operation; otherwise, you can't create it there with a single click. In practice, you do this using an app like this one, through Stellar Laboratory, or via code using the Stellar SDK.",
+        "creating": "Escrow is being set up…",
+        "result_rules_title": "Procedure in This Demo",
+        "rule1": "The demo buyer may claim the 50 XLM immediately—that is, actively withdraw them from the Claimable Balance.",
+        "rule2": "If the demo buyer does nothing, you may request the 50 XLM back after 1 hour.",
+        "rule3": "Eine echte „Erhalt bestätigen“-Schaltfläche ist in dieser Demo noch nicht eingebaut.",
+        "rule4": "Beim Digitec-Beispiel wäre diese Bestätigung der nächste App-Schritt: Der Käufer klickt „Erhalt bestätigt“, und die Plattform löst danach die Auszahlung an den Verkäufer aus. Auf Stellar wäre das eine zweite Transaktion, die die Claimable Balance beansprucht."
       },
       "post": {
         "dialog1": "That was simpler than I thought!",

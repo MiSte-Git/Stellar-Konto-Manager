@@ -308,7 +308,9 @@
     "title": "Know Your Customer",
     "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
     "short": "A legally required identity check that financial services demand before you can use them.",
-    "desc": "KYC (Know Your Customer) is a regulatory process where users prove their identity with documents and sometimes a selfie. The goal is to prevent money laundering (AML), terrorist financing, and fraud. Decentralized protocols like the Stellar DEX do not require KYC—you trade directly from your wallet. Onramp and offramp services must perform KYC because they bridge fiat and crypto."
+    "desc": "KYC (Know Your Customer) is a regulatory process where users prove their identity with documents and sometimes a selfie. The goal is to prevent money laundering (AML), terrorist financing, and fraud. Decentralized protocols like the Stellar DEX do not require KYC—you trade directly from your wallet. Onramp and offramp services must perform KYC because they bridge fiat and crypto.",
+    "externalDomains": "",
+    "domainsHeading": "Well-known KYC providers (Domains zum selbst Eintippen):"
   },
   "defi": {
     "title": "Decentralized Finance",

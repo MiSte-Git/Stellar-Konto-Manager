@@ -24,7 +24,9 @@
       "c": "Solo le banche possono vederli.",
       "a.fb": "Corretto. I dati sono pubblici, ma le identità non sono incluse.",
       "b.fb": "No. Il registro è pubblico per trasparenza.",
-      "c.fb": "No. Chiunque può verificare le transazioni."
+      "c.fb": "No. Chiunque può verificare le transazioni.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q3": {
       "question": "Perché i blocchi sono \"concatenati\" tra loro?",
@@ -34,7 +36,9 @@
       "c": "In modo che tutto funzioni offline per sempre.",
       "a.fb": "Sì. Ogni blocco protegge il precedente attraverso la matematica (Hashes).",
       "b.fb": "No, è una questione di sicurezza, non di stile.",
-      "c.fb": "No. I nodi devono ancora sincronizzarsi."
+      "c.fb": "No. I nodi devono ancora sincronizzarsi.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q4": {
       "question": "È possibile semplicemente eliminare un errore in una transazione?",
@@ -42,7 +46,11 @@
       "a": "No. Si effettua una nuova transazione di correzione.",
       "b": "Sì, basta rimuoverli dalla catena.",
       "a.fb": "Corretto. Il registro è solo append. Facciamo correzioni con nuove voci.",
-      "b.fb": "No. Le voci passate non vengono cancellate."
+      "b.fb": "No. Le voci passate non vengono cancellate.",
+      "c": "Una modalità di gioco nascosta nel portafoglio.",
+      "c.fb": "Bella idea 🎮, ma questo non è un gioco. Si tratta di vera e propria tecnologia di rete.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     }
   },
   "l2": {
@@ -55,7 +63,9 @@
       "c": "Stellar ha bisogno di più energia di Bitcoin.",
       "a.fb": "Corretto. Stellar conferma in 3-5 secondi, Bitcoin spesso richiede minuti o ore.",
       "b.fb": "Sbagliato. Stellar è una rete di pagamento seria.",
-      "c.fb": "Sbagliato. Stellar non richiede mining ed è molto efficiente dal punto di vista energetico."
+      "c.fb": "Sbagliato. Stellar non richiede mining ed è molto efficiente dal punto di vista energetico.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q2": {
       "question": "Le transazioni Stellar si completano di solito in meno di 10 secondi.",
@@ -73,7 +83,9 @@
       "c": "Un token emesso da una banca.",
       "a.fb": "Corretto. XLM è la moneta nativa di Stellar.",
       "b.fb": "Sbagliato. Il valore di XLM varia come le altre criptovalute.",
-      "c.fb": "Sbagliato. XLM è integrato direttamente nel protocollo Stellar."
+      "c.fb": "Sbagliato. XLM è integrato direttamente nel protocollo Stellar.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q4": {
       "question": "A cosa è destinato principalmente Stellar?",
@@ -83,7 +95,21 @@
       "c": "Archiviazione dati decentralizzata.",
       "a.fb": "Corretto. Stellar è stato creato per pagamenti e trasferimenti di denaro tra paesi.",
       "b.fb": "Sbagliato. Quelli sono più tipici casi d'uso di Ethereum.",
-      "c.fb": "Sbagliato. L'archiviazione dati non è lo scopo principale di Stellar."
+      "c.fb": "Sbagliato. L'archiviazione dati non è lo scopo principale di Stellar.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
+    },
+    "q5": {
+      "question": "Che cos’è lo Stellar DEX?",
+      "hint": "Überlege dir: Ist es eine Firma – oder eine Funktion direkt in der Blockchain? Die DEX gehört nicht einer einzelnen Person oder Firma.",
+      "a": "Un exchange decentralizzato costruito direttamente sulla blockchain di Stellar, dove gli utenti possono scambiare token.",
+      "a.fb": "Esatto. Il DEX di Stellar è integrato direttamente nella blockchain. È possibile scambiare token su questa piattaforma senza che ci sia un’entità centrale a gestire il proprio denaro. Le transazioni avvengono automaticamente attraverso la rete.",
+      "b": "Una super app che distribuisce automaticamente i profitti.",
+      "b.fb": "Sarebbe bello 😄 – ma un DEX non distribuisce profitti. È una piattaforma di trading sulla blockchain.",
+      "c": "Un archivio digitale in cui sono conservati tutti i token.",
+      "c.fb": "Gute Vorstellung 🏦, aber falsch. Eine DEX sammelt nichts – sie ermöglicht nur den Tausch zwischen Nutzern.",
+      "d": "Un concorso in cui puoi vincere punti XLM.",
+      "d.fb": "Sembra divertente 🎮 – ma un DEX non è un gioco, bensì un vero e proprio mercato di token."
     }
   },
   "l3": {
@@ -96,7 +122,9 @@
       "c": "Solo il mittente conosce la transazione.",
       "a.fb": "Corretto. Le chiavi pubbliche sono visibili ma non direttamente collegate a identità.",
       "b.fb": "Sbagliato. Tutte le transazioni sono pubblicamente visibili nel registro.",
-      "c.fb": "Sbagliato. Il registro è pubblico per tutti."
+      "c.fb": "Sbagliato. Il registro è pubblico per tutti.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q2": {
       "question": "Si possono cercare transazioni Stellar in un explorer?",
@@ -114,7 +142,9 @@
       "c": "Niente, tutto è crittografato.",
       "a.fb": "Corretto. La blockchain mostra dati tecnici, non identità.",
       "b.fb": "Sbagliato. I nomi reali non sono memorizzati sulla blockchain.",
-      "c.fb": "Sbagliato. I dati delle transazioni sono leggibili pubblicamente."
+      "c.fb": "Sbagliato. I dati delle transazioni sono leggibili pubblicamente.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q4": {
       "question": "Perché la pseudonimità non è una privacy completa?",
@@ -124,7 +154,9 @@
       "c": "Perché serve sempre un documento d'identità.",
       "a.fb": "Corretto. Con dati aggiuntivi, gli indirizzi possono a volte essere rintracciati.",
       "b.fb": "Sbagliato. Stellar non memorizza nomi.",
-      "c.fb": "Sbagliato. Stellar stesso non richiede un documento d'identità."
+      "c.fb": "Sbagliato. Stellar stesso non richiede un documento d'identità.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     }
   },
   "l4": {
@@ -135,7 +167,11 @@
       "a": "Un indirizzo per ricevere. Puoi condividerlo.",
       "b": "Una password segreta per controllare il tuo account.",
       "a.fb": "Sì. Puoi condividere la tua chiave pubblica.",
-      "b.fb": "Quello descrive la Chiave Segreta, non la Chiave Pubblica."
+      "b.fb": "Quello descrive la Chiave Segreta, non la Chiave Pubblica.",
+      "c": "Una modalità di gioco nascosta nel portafoglio.",
+      "c.fb": "Bella idea 🎮, ma questo non è un gioco. Si tratta di vera e propria tecnologia di rete.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q2": {
       "question": "Non dovresti mai condividere la tua chiave segreta.",
@@ -153,7 +189,9 @@
       "c": "Perché le transazioni sono sempre lente.",
       "a.fb": "Corretto. Piccole commissioni prevengono lo spam e ricompensano i validatori.",
       "b.fb": "No. Le commissioni sono minime e servono per scopi di sicurezza.",
-      "c.fb": "No. Stellar è veloce ed economico."
+      "c.fb": "No. Stellar è veloce ed economico.",
+      "d": "In questo modo potrai ottenere un bonus extra in XLM.",
+      "d.fb": "Sarebbe bello 😄 – ma chiunque conosca la tua Secret Key può rubarti il credito."
     },
     "q4": {
       "question": "Cos'è una linea di fiducia?",
@@ -163,7 +201,21 @@
       "c": "Uno sconto speciale sulle commissioni di trading.",
       "a.fb": "Sì. Scegli quali emittenti/token di cui ti fidi.",
       "b.fb": "No. Non è una chat, ma un permesso di soggiorno.",
-      "c.fb": "No. Le Trustline comportano il possesso di asset."
+      "c.fb": "No. Le Trustline comportano il possesso di asset.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
+    },
+    "q5": {
+      "question": "Che cos’è una Trustline?",
+      "hint": "È come un permesso.",
+      "a": "Autorizzazione a detenere un token specifico.",
+      "a.fb": "Sì. Sei tu a scegliere di quali emittenti o token ti fidi.",
+      "b": "Una funzione premium speciale riservata esclusivamente ai miliardari.",
+      "b.fb": "Sembra una cosa esclusiva 😄 – ma qui si tratta di una funzione fondamentale della blockchain, non di un accesso di lusso.",
+      "c": "Una modalità di gioco nascosta nel portafoglio.",
+      "c.fb": "Bella idea 🎮, ma questo non è un gioco. Si tratta di vera e propria tecnologia di rete.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     }
   },
   "l5": {
@@ -176,7 +228,9 @@
       "c": "Una commissione per pagamenti internazionali.",
       "a.fb": "Corretto. Senza trustline non puoi ricevere un token.",
       "b.fb": "Sbagliato. Le trustline non hanno nulla a che fare con le password.",
-      "c.fb": "Sbagliato. Una trustline è un permesso, non un costo."
+      "c.fb": "Sbagliato. Una trustline è un permesso, non un costo.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q2": {
       "question": "Ogni transazione Stellar richiede una piccola commissione in XLM.",
@@ -194,7 +248,9 @@
       "c": "Stellar non crea nuovi conti automaticamente.",
       "a.fb": "Corretto. Se invii abbastanza XLM, il conto viene attivato.",
       "b.fb": "Sbagliato. Stellar può attivare nuovi conti tramite pagamenti in entrata.",
-      "c.fb": "Sbagliato. Con abbastanza XLM, il conto viene creato automaticamente."
+      "c.fb": "Sbagliato. Con abbastanza XLM, il conto viene creato automaticamente.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q4": {
       "question": "A cosa serve un memo in una transazione?",
@@ -204,7 +260,9 @@
       "c": "Per crittografare la transazione.",
       "a.fb": "Corretto. I memo sono usati dagli exchange per identificare i depositi.",
       "b.fb": "Sbagliato. I memo non influenzano la commissione.",
-      "c.fb": "Sbagliato. I memo sono leggibili pubblicamente."
+      "c.fb": "Sbagliato. I memo sono leggibili pubblicamente.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     }
   },
   "l6": {
@@ -217,7 +275,9 @@
       "c": "L'emittente determina sempre il prezzo.",
       "a.fb": "Corretto. Il DEX è un mercato libero senza fissazione centralizzata dei prezzi.",
       "b.fb": "Sbagliato. Stellar non interviene nella formazione dei prezzi.",
-      "c.fb": "Sbagliato. Dopo l'emissione, il mercato determina il prezzo."
+      "c.fb": "Sbagliato. Dopo l'emissione, il mercato determina il prezzo.",
+      "d": "Un concorso in cui puoi vincere punti XLM.",
+      "d.fb": "Sembra divertente 🎮 – ma un DEX non è un gioco, bensì un vero e proprio mercato di token."
     },
     "q2": {
       "question": "Qual è la differenza tra un DEX e un CEX?",
@@ -227,7 +287,9 @@
       "c": "Nessuna differenza, entrambi sono uguali.",
       "a.fb": "Corretto. Con un DEX mantieni il controllo, con un CEX no.",
       "b.fb": "Sbagliato. Il DEX è spesso più economico perché non c'è intermediario.",
-      "c.fb": "Sbagliato. La differenza è fondamentale."
+      "c.fb": "Sbagliato. La differenza è fondamentale.",
+      "d": "Un concorso in cui puoi vincere punti XLM.",
+      "d.fb": "Sembra divertente 🎮 – ma un DEX non è un gioco, bensì un vero e proprio mercato di token."
     },
     "q3": {
       "question": "Cos'è un pool di liquidità?",
@@ -237,7 +299,9 @@
       "c": "Un metodo per guadagnare XLM senza fare trading.",
       "a.fb": "Corretto. I pool di liquidità consentono il trading automatizzato (AMM).",
       "b.fb": "Sbagliato. Non è un conto bancario ma un pool basato su smart contract.",
-      "c.fb": "Sbagliato. I pool di liquidità servono per il trading, non solo per guadagni passivi."
+      "c.fb": "Sbagliato. I pool di liquidità servono per il trading, non solo per guadagni passivi.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q4": {
       "question": "Cosa significa volatilità nelle criptovalute?",
@@ -247,7 +311,9 @@
       "c": "La commissione di trading giornaliera di un token.",
       "a.fb": "Corretto. I mercati crypto sono noti per la loro alta volatilità.",
       "b.fb": "Sbagliato. Sarebbe il contrario: stabilità.",
-      "c.fb": "Sbagliato. La volatilità descrive le oscillazioni di prezzo, non le commissioni."
+      "c.fb": "Sbagliato. La volatilità descrive le oscillazioni di prezzo, non le commissioni.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     }
   },
   "l7": {
@@ -260,7 +326,9 @@
       "c": "Invece, condividi uno screenshot della tua chiave.",
       "a.fb": "Corretto. Questo è un tentativo di phishing. Usa solo portafogli fidati.",
       "b.fb": "No. Basta una sola volta per perdere il controllo.",
-      "c.fb": "No. Uno screenshot della tua chiave è altrettanto rischioso — chiunque lo veda ottiene accesso completo al tuo account."
+      "c.fb": "No. Uno screenshot della tua chiave è altrettanto rischioso — chiunque lo veda ottiene accesso completo al tuo account.",
+      "d": "In questo modo potrai ottenere un bonus extra in XLM.",
+      "d.fb": "Sarebbe bello 😄 – ma chiunque conosca la tua Secret Key può rubarti il credito."
     },
     "q2": {
       "question": "Vedi due token chiamati USDX. Come trovi quello reale?",
@@ -270,7 +338,9 @@
       "c": "Lancio della moneta. Sono uguali.",
       "a.fb": "Sì. Il codice dell'asset non è sufficiente. Verifica l'emittente e il dominio.",
       "b.fb": "I loghi possono essere contraffatti. Verifica l'emittente/dominio.",
-      "c.fb": "No. Possono essere molto diversi. Controlla sempre."
+      "c.fb": "No. Possono essere molto diversi. Controlla sempre.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q3": {
       "question": "In einfachen Worten ist ‚Verifizierung/KYC‘ (Know Your Customer) ein Prozess, bei dem Unternehmen bestätigen, wer ihre Kunden sind. Dies geschieht oft durch das Überprüfen von Ausweisdokumenten und anderen Informationen, um sicherzustellen, dass die Kunden wirklich die sind, die sie vorgeben zu sein.",
@@ -280,7 +350,9 @@
       "c": "Condividere la sua chiave segreta con una banca.",
       "a.fb": "Corretto. Questo aiuta a prevenire le frodi e a rispettare le leggi.",
       "b.fb": "No. Si tratta di identità, non di velocità.",
-      "c.fb": "No. Non condividere mai la tua chiave segreta. KYC non ne ha bisogno."
+      "c.fb": "No. Non condividere mai la tua chiave segreta. KYC non ne ha bisogno.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q4": {
       "question": "Cos'è uno \"Zero-Knowledge Proof\" (ZK) in parole semplici?",
@@ -290,7 +362,9 @@
       "c": "Un modo più veloce per inviare pagamenti.",
       "a.fb": "Sì. Esempio: Dimostra che hai più di 13 anni senza indicare la tua data di nascita.",
       "b.fb": "No. Le prove ZK dimostrano i fatti ma non cancellano le voci.",
-      "c.fb": "No, si tratta di dimostrazioni efficienti in termini di dati."
+      "c.fb": "No, si tratta di dimostrazioni efficienti in termini di dati.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     }
   },
   "l8": {
@@ -303,7 +377,9 @@
       "c": "Key Your Cryptography – un metodo di crittografia.",
       "a.fb": "Corretto. Il KYC è legalmente obbligatorio per i servizi onramp/offramp.",
       "b.fb": "Sbagliato. KYC significa Know Your Customer.",
-      "c.fb": "Sbagliato. Quello è un significato inventato."
+      "c.fb": "Sbagliato. Quello è un significato inventato.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q2": {
       "question": "Il DEX Stellar richiede la verifica KYC.",
@@ -321,7 +397,9 @@
       "c": "Solo attraverso il nome del token.",
       "a.fb": "Corretto. stellar.toml contiene informazioni verificate sull'emittente.",
       "b.fb": "Sbagliato. Molte transazioni possono provenire anche da truffe.",
-      "c.fb": "Sbagliato. I nomi possono essere facilmente copiati."
+      "c.fb": "Sbagliato. I nomi possono essere facilmente copiati.",
+      "d": "Un concorso in cui puoi vincere punti XLM.",
+      "d.fb": "Sembra divertente 🎮 – ma un DEX non è un gioco, bensì un vero e proprio mercato di token."
     },
     "q4": {
       "question": "Perché i servizi onramp richiedono il KYC?",
@@ -331,7 +409,21 @@
       "c": "Per aumentare le commissioni.",
       "a.fb": "Corretto. Le leggi KYC/AML si applicano a tutte le transizioni fiat-crypto.",
       "b.fb": "Sbagliato. Il KYC è un obbligo normativo, non un modello di business.",
-      "c.fb": "Sbagliato. Il KYC non ha nulla a che fare con le commissioni."
+      "c.fb": "Sbagliato. Il KYC non ha nulla a che fare con le commissioni.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
+    },
+    "q5": {
+      "question": "Perché i servizi di onramp richiedono la verifica dell'identità (KYC)?",
+      "hint": "Si tratta di leggi e sicurezza.",
+      "a": "Poiché sono tenuti per legge a prevenire il riciclaggio di denaro (AML).",
+      "a.fb": "Esatto. Le normative KYC/AML si applicano a tutte le transazioni da valuta fiat a criptovaluta.",
+      "b": "Una funzione premium speciale riservata esclusivamente ai miliardari.",
+      "b.fb": "Sembra una cosa esclusiva 😄 – ma qui si tratta di una funzione fondamentale della blockchain, non di un accesso di lusso.",
+      "c": "Una modalità di gioco nascosta nel portafoglio.",
+      "c.fb": "Bella idea 🎮, ma questo non è un gioco. Si tratta di vera e propria tecnologia di rete.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     }
   },
   "l9": {
@@ -344,7 +436,9 @@
       "c": "Un conto vuoto senza saldo.",
       "a.fb": "Corretto. Le prove ZK consentono privacy mantenendo la verificabilità.",
       "b.fb": "Sbagliato. Le prove ZK sono dimostrazioni, non occultamento.",
-      "c.fb": "Sbagliato. Zero Knowledge si riferisce alla crittografia, non ai saldi."
+      "c.fb": "Sbagliato. Zero Knowledge si riferisce alla crittografia, non ai saldi.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q2": {
       "question": "Con una prova ZK puoi dimostrare di avere più di 18 anni senza mostrare la data di nascita.",
@@ -362,7 +456,9 @@
       "c": "Per eliminare le commissioni.",
       "a.fb": "Corretto. Le prove ZK possono abilitare la privacy nelle transazioni blockchain.",
       "b.fb": "Sbagliato. La velocità non è lo scopo principale del ZK.",
-      "c.fb": "Sbagliato. Il ZK non ha impatto sulle commissioni."
+      "c.fb": "Sbagliato. Il ZK non ha impatto sulle commissioni.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q4": {
       "question": "Cosa significa 'Zero' in Zero-Knowledge?",
@@ -372,7 +468,9 @@
       "c": "Il conto ha zero saldo.",
       "a.fb": "Corretto. Il verificatore non apprende nulla sul segreto reale.",
       "b.fb": "Sbagliato. Zero Knowledge non ha nulla a che fare con le commissioni.",
-      "c.fb": "Sbagliato. Si tratta di crittografia, non di saldi."
+      "c.fb": "Sbagliato. Si tratta di crittografia, non di saldi.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     }
   },
   "l10": {
@@ -385,7 +483,9 @@
       "c": "Perché il testnet è più gratuito.",
       "a.fb": "Corretto. Il testnet è un ambiente di pratica sicuro con XLM di test.",
       "b.fb": "Sbagliato. La velocità non è il motivo – la sicurezza lo è.",
-      "c.fb": "Sbagliato. Il testnet non ha costi reali, ma il motivo principale è la sicurezza."
+      "c.fb": "Sbagliato. Il testnet non ha costi reali, ma il motivo principale è la sicurezza.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q2": {
       "question": "Gli XLM di test sul testnet hanno un valore monetario reale.",
@@ -403,7 +503,9 @@
       "c": "Inviare un'e-mail al supporto.",
       "a.fb": "Corretto. Il saldo minimo (base reserve) attiva il conto.",
       "b.fb": "Sbagliato. Stellar è decentralizzato – nessuna richiesta necessaria.",
-      "c.fb": "Sbagliato. I conti vengono attivati tramite transazioni, non tramite il supporto."
+      "c.fb": "Sbagliato. I conti vengono attivati tramite transazioni, non tramite il supporto.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q4": {
       "question": "Cosa devi fare prima di poter ricevere USDC su Stellar?",
@@ -413,7 +515,9 @@
       "c": "Completare il KYC presso Stellar.",
       "a.fb": "Corretto. Senza trustline non puoi ricevere asset esterni.",
       "b.fb": "Sbagliato. Lo Stellar Account Manager supporta tutti gli asset con trustline.",
-      "c.fb": "Sbagliato. Stellar stesso non richiede KYC."
+      "c.fb": "Sbagliato. Stellar stesso non richiede KYC.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     }
   },
   "l11": {
@@ -426,7 +530,9 @@
       "c": "Stellar rimborsa automaticamente l'importo.",
       "a.fb": "Corretto. Le transazioni blockchain sono definitive. Controlla sempre l'indirizzo!",
       "b.fb": "Sbagliato. Non ci sono storni sulla blockchain.",
-      "c.fb": "Sbagliato. Stellar non può annullare le transazioni."
+      "c.fb": "Sbagliato. Stellar non può annullare le transazioni.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q2": {
       "question": "Stellar può annullare transazioni errate.",
@@ -444,7 +550,9 @@
       "c": "Chiamare il supporto per conferma.",
       "a.fb": "Corretto. Un piccolo test protegge da errori costosi.",
       "b.fb": "Sbagliato. La velocità è meno importante della prudenza.",
-      "c.fb": "Sbagliato. Le reti decentralizzate non hanno un supporto centrale."
+      "c.fb": "Sbagliato. Le reti decentralizzate non hanno un supporto centrale.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q4": {
       "question": "Qual è la regola più importante per la tua chiave segreta?",
@@ -454,7 +562,9 @@
       "c": "Condividerla con amici come backup.",
       "a.fb": "Corretto. Chi ha la chiave segreta controlla completamente il conto.",
       "b.fb": "Sbagliato. Il cloud non è sicuro per le chiavi segrete.",
-      "c.fb": "Sbagliato. Non condividere mai la chiave segreta con altri."
+      "c.fb": "Sbagliato. Non condividere mai la chiave segreta con altri.",
+      "d": "In questo modo potrai ottenere un bonus extra in XLM.",
+      "d.fb": "Sarebbe bello 😄 – ma chiunque conosca la tua Secret Key può rubarti il credito."
     }
   },
   "l12": {
@@ -467,7 +577,9 @@
       "c": "Un servizio di chat crittografato.",
       "a.fb": "Corretto. Decentralizzato, immutabile, trasparente – queste sono le caratteristiche principali.",
       "b.fb": "Sbagliato. Le blockchain sono decentralizzate, non centralizzate.",
-      "c.fb": "Sbagliato. Le blockchain sono database, non strumenti di comunicazione."
+      "c.fb": "Sbagliato. Le blockchain sono database, non strumenti di comunicazione.",
+      "d": "Un club top secret di programmatori.",
+      "d.fb": "That's exciting! 😄 But a blockchain isn't a secret society—it's a publicly accessible network."
     },
     "q2": {
       "question": "Quali tre cose rendono Stellar speciale?",
@@ -477,7 +589,9 @@
       "c": "Basato sul mining, decentralizzato, anonimo.",
       "a.fb": "Corretto. Questi sono i tre vantaggi principali di Stellar.",
       "b.fb": "Sbagliato. Stellar è noto per velocità e bassi costi.",
-      "c.fb": "Sbagliato. Stellar non usa il mining ed è pseudonimo, non anonimo."
+      "c.fb": "Sbagliato. Stellar non usa il mining ed è pseudonimo, non anonimo.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q3": {
       "question": "Cosa non dovresti MAI fare?",
@@ -487,7 +601,9 @@
       "c": "Configurare trustline.",
       "a.fb": "Corretto. La chiave segreta è sacra – non condividerla mai!",
       "b.fb": "Sbagliato. Usare il testnet è persino consigliato per esercitarsi.",
-      "c.fb": "Sbagliato. Le trustline sono azioni normali e necessarie."
+      "c.fb": "Sbagliato. Le trustline sono azioni normali e necessarie.",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     },
     "q4": {
       "question": "Hai completato tutte le lezioni. Cosa sei adesso?",
@@ -497,7 +613,9 @@
       "c": "Pronto per la pensione.",
       "a.fb": "Esattamente! Hai padroneggiato le basi. Continua così!",
       "b.fb": "Non ancora – ma hai costruito una solida base!",
-      "c.fb": "Non ancora – ma hai fatto un grande passo avanti!"
+      "c.fb": "Non ancora – ma hai fatto un grande passo avanti!",
+      "d": "Un trucco per diventare ricchi più in fretta.",
+      "d.fb": "Sarebbe bello 😄 – ma le criptovalute funzionano secondo regole tecniche, non secondo trucchi di magia."
     }
   },
   "meta": {
@@ -637,5 +755,49 @@
       "c.fb": "Corretto! Nessun sistema è perfetto – ma la trasparenza e l'osservabilità pubblica rendono più difficile la manipolazione.",
       "d.fb": "Falso. La SDF pubblica un elenco di raccomandazioni, ma nessuno è obbligato a seguirlo."
     }
+  },
+  "ui": {
+    "allDone": "Hai completato tutti i quiz! Congratulazioni!",
+    "backToLearn": "Torna alla sezione \"Impara\"",
+    "beforeUnloadMessage": "Sei sicuro di voler uscire dal quiz? Le risposte non salvate andranno perse.",
+    "cancel": "Annulla",
+    "correct": "Corretto",
+    "explanation": "Perché?",
+    "failed": "Non riuscito",
+    "finish": "Esci",
+    "hideDetails": "Nascondi i dettagli",
+    "hint": "Nota",
+    "incorrect": "Sbagliato",
+    "indexSubtitle": "Scegli una lezione",
+    "jump": "Vai a",
+    "jumpToQuestion": "Vai direttamente alla domanda",
+    "lessonProgress": "Lezione {{current}} di {{total}}",
+    "next": "Continua",
+    "nextQuiz": "Prossimo quiz",
+    "noDataHelp": "Non sono stati trovati dati relativi ai quiz.",
+    "of": "di",
+    "off": "Da",
+    "on": "Il",
+    "openInNewTab": "Apri in una nuova scheda",
+    "openInNewTab.default": "Apri il quiz in una nuova scheda per impostazione predefinita",
+    "openInNewTab.once": "Apri in una nuova scheda",
+    "passed": "File",
+    "practice": "Esercitazione",
+    "prev": "Indietro",
+    "prevQuiz": "Quiz precedente",
+    "question": "Domanda",
+    "quiz": "Quiz",
+    "retry": "Riprova",
+    "routeTitle": "Quiz L{{id}}",
+    "showDetails": "Visualizza i dettagli",
+    "startInNewTab": "Avvia il quiz in una nuova scheda",
+    "startPractice": "Avvia uno studio",
+    "startQuiz": "Inizia il quiz",
+    "stickyNav": "Navigazione fissa",
+    "summaryCount": "{{corretto}}/{{totale}} risposte corrette",
+    "timeRemaining": "Tempo rimanente",
+    "viewResults": "Visualizza i risultati",
+    "warnOnActiveQuiz": "Visualizza un avviso mentre il quiz è in corso",
+    "yourScore": "Il tuo risultato"
   }
 }

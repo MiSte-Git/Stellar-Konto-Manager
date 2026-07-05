@@ -262,7 +262,9 @@
     "title": "Know Your Customer",
     "original": "KYC / AML – Know Your Customer / Anti-Money Laundering",
     "short": "Wettelijk verplichte identiteitscontrole die financiële diensten vragen voordat je ze gebruikt.",
-    "desc": "KYC (Know Your Customer) is een regelgevingsproces waarbij gebruikers hun identiteit bewijzen met documenten en soms een selfie. Het doel is het voorkomen van witwassen (AML), terrorismefinanciering en fraude. Decentrale protocollen zoals de Stellar DEX vereisen geen KYC—je handelt direct vanuit je wallet. Onramp- en offrampdiensten moeten wél KYC uitvoeren omdat ze fiat en crypto verbinden."
+    "desc": "KYC (Know Your Customer) is een regelgevingsproces waarbij gebruikers hun identiteit bewijzen met documenten en soms een selfie. Het doel is het voorkomen van witwassen (AML), terrorismefinanciering en fraude. Decentrale protocollen zoals de Stellar DEX vereisen geen KYC—je handelt direct vanuit je wallet. Onramp- en offrampdiensten moeten wél KYC uitvoeren omdat ze fiat en crypto verbinden.",
+    "externalDomains": "",
+    "domainsHeading": "Bekende KYC-aanbieders (Domains zum selbst Eintippen):"
   },
   "defi": {
     "title": "Gedecentraliseerde financiën",
@@ -984,5 +986,101 @@
     "original": "Federated Byzantine Agreement",
     "short": "Het consensusprincipe achter SCP: elke validator kiest zelf wie hij vertrouwt – geen centraal comité beslist dat.",
     "desc": "FBA (Federated Byzantine Agreement) is de kern van het Stellar Consensus Protocol. In tegenstelling tot PoW of PoS is er geen mining en geen stake-gebaseerd stemmen. In plaats daarvan kiest elke validator-operator onafhankelijk welke andere validators hij vertrouwt – dit definieert zijn quorum set. Om een transactie te bevestigen moeten overlappende quorum sets het eens zijn (ongeveer een 2/3 meerderheid). Het resultaat: een gedecentraliseerd, energiezuinig netwerk zonder centrale controlerende autoriteit."
+  },
+  "trustlineLimit": {
+    "title": "Trustline-limiet",
+    "original": "Trustline Limit",
+    "short": "Maximaal saldo van een bepaald activum op een trustlijn.",
+    "desc": "De trustline-limiet bepaalt hoeveel eenheden van een bepaald activum je account maximaal mag bevatten. Het is geen kooporder en er worden geen tokens gereserveerd. Een lage limiet kan onbedoelde te hoge betalingen voorkomen, maar een te lage limiet kan een beoogde ontvangst of ruil blokkeren."
+  },
+  "authorizationFlags": {
+    "title": "Autorisatievlaggen",
+    "original": "Authorization Flags",
+    "short": "Regels van de uitgever, zoals `auth_required`, `auth_revocable` of `immutable`.",
+    "desc": "Autorisatievlaggen zijn instellingen op de rekening van de uitgever. ‘auth_required’ betekent dat de uitgever een trustline eerst moet goedkeuren. ‘auth_revocable’ betekent dat de goedkeuring later kan worden ingetrokken. ‘auth_immutable’ betekent dat deze vlaggen niet meer kunnen worden gewijzigd. Deze vlaggen zijn van belang omdat ze bepalen of je een token kunt ontvangen, aanhouden of verplaatsen."
+  },
+  "issuerMasterKey": {
+    "title": "Hoofdsleutel van de uitgever",
+    "original": "Issuer Master Key",
+    "short": "Hoofdsleutel van de rekening van de uitgever.",
+    "desc": "De hoofdcode van de uitgever is de hoofdcode van het account dat een asset uitgeeft. Als het gewicht ervan op 0 is ingesteld, kan de hoofdcode alleen geen nieuwe acties meer ondertekenen. Dit kan een positief teken zijn, omdat het voor de uitgever hierdoor moeilijker wordt om regels stilletjes te wijzigen. De volledige accountconfiguratie, inclusief andere ondertekenaars en vlaggen, blijft echter van belang."
+  },
+  "assetCode": {
+    "title": "Activacode",
+    "original": "Asset Code",
+    "short": "Korte naam van een Stellar-asset, zoals USDC of EURC.",
+    "desc": "De activacode is de zichtbare korte naam van een Stellar-actief. Op zichzelf is deze code niet uniek, omdat meerdere uitgevers dezelfde code kunnen gebruiken. Alleen de combinatie van de code en het adres van de uitgever identificeert een Stellar-actief op unieke wijze."
+  },
+  "issuer": {
+    "title": "Uitgever",
+    "original": "Issuer",
+    "short": "Het Stellar-account dat een activum uitgeeft en de regels daarvoor beheert.",
+    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+  },
+  "homeDomain": {
+    "title": "Startpagina Domein",
+    "original": "Home Domain",
+    "short": "Domein dat is opgeslagen door een Stellar-uitgeversaccount.",
+    "desc": "Het thuisdomein is een domein dat is opgeslagen op het account van de uitgever. Het helpt bij het koppelen van een asset aan een website en een stellar.toml-bestand. Een thuisdomein is geen bewijs van betrouwbaarheid, maar zonder dit domein ontbreekt belangrijke verificatie-informatie."
+  },
+  "stellarToml": {
+    "title": "stellar.toml",
+    "original": "stellar.toml",
+    "short": "Openbaar metadatabestand voor een Stellar-domein.",
+    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
+  },
+  "quote": {
+    "title": "Citaat",
+    "original": "Quote",
+    "short": "Huidige prijsraming voor een geplande ruiltransactie.",
+    "desc": "Een koersnotering is een actuele schatting van het bedrag dat je bij een swap zou ontvangen. Het is geen garantie, omdat orderboeken, liquiditeitspools en koersen kunnen veranderen voordat de transactie wordt gesloten. Daarom moet een app de route vlak voor het sluiten van de transactie vernieuwen."
+  },
+  "effectiveRate": {
+    "title": "Effectief tarief",
+    "original": "Effective Rate",
+    "short": "Werkelijke verhouding tussen het verzonden bedrag en het verwachte ontvangen bedrag.",
+    "desc": "Het effectieve tarief geeft aan hoeveel bestemmings-tokens je per verzonden token verwacht op basis van de huidige koers. Dit is vaak nuttiger dan een enkele marktprijs, omdat het rekening houdt met de route, het orderboek en de liquiditeit van de pool."
+  },
+  "minimumReceived": {
+    "title": "Minimaal ontvangen bedrag",
+    "original": "Minimum Received",
+    "short": "Het minimumbedrag waaronder een swap niet mag worden uitgevoerd.",
+    "desc": "Het minimale ontvangstbedrag is het laagste bestemmingsbedrag dat je accepteert. Dit wordt berekend op basis van de koersnotering en je slippagetolerantie. Als de vernieuwde route hieronder komt te liggen, moet de swap worden afgebroken."
+  },
+  "liquidityRoute": {
+    "title": "Liquiditeitsroute",
+    "original": "Liquidity Route",
+    "short": "Het pad waarlangs een swap door orderboeken of pools wordt geleid.",
+    "desc": "De liquiditeitsroute geeft aan via welke activa en markten een swap verloopt. Een route kan rechtstreeks zijn of via tussenliggende activa lopen. Op Stellar kunnen zowel aanbiedingen in het orderboek als AMM-liquiditeitspools worden gebruikt om een pad te vinden."
+  },
+  "bid": {
+    "title": "Bid",
+    "original": "Bid",
+    "short": "Kooporder in het orderboek.",
+    "desc": "Een bod is een koopaanbod. Het geeft de prijs aan waarvoor iemand bereid is een activum te kopen. Het beste bod is doorgaans het hoogste actuele koopaanbod in het orderboek."
+  },
+  "ask": {
+    "title": "Vraag",
+    "original": "Ask",
+    "short": "Verkooporder in het orderboek.",
+    "desc": "Een ‘ask’ is een verkoopbod. Het geeft de prijs aan waartegen iemand bereid is een activum te verkopen. De beste ‘ask’ is doorgaans het laagste huidige verkoopbod in het orderboek."
+  },
+  "marketDepth": {
+    "title": "Marktdiepte",
+    "original": "Market Depth",
+    "short": "Hoeveelheid liquiditeit in de buurt van de huidige marktprijs.",
+    "desc": "De marktdiepte geeft aan hoeveel volume er in het orderboek of in de pools rond de huidige koers beschikbaar is. Een grote diepte betekent dat grotere transacties de koers minder beïnvloeden. Een geringe diepte leidt tot meer slippage en een grotere koersimpact."
+  },
+  "priceImpact": {
+    "title": "Prijsgevolgen",
+    "original": "Price Impact",
+    "short": "In hoeverre een transactie de gerealiseerde prijs verslechtert ten opzichte van de marktprijs.",
+    "desc": "Er is sprake van prijseffect wanneer een transactie groot is in verhouding tot de beschikbare liquiditeit. In dat geval volstaat de beste prijs niet voor het volledige bedrag, waardoor de transactie slechtere niveaus in het orderboek opneemt of de prijzen in de liquiditeitspool beïnvloedt. Een groot prijseffect is een waarschuwingssignaal."
+  },
+  "staleQuote": {
+    "title": "Een afgezaagde uitspraak",
+    "original": "Stale Quote",
+    "short": "Een koers die mogelijk niet meer overeenkomt met de huidige markt.",
+    "desc": "Een koers kan verouderd raken doordat andere gebruikers handelen, orders worden verwijderd of liquiditeitspools veranderen. Hoe ouder een koers is, hoe belangrijker het is om deze vlak voor het ondertekenen te vernieuwen."
   }
 }
