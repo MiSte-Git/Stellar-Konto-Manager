@@ -61,7 +61,9 @@ jobs:
       - name: Trust cyon host key
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H "${{ secrets.CYON_HOST }}" >> ~/.ssh/known_hosts
+          set -x
+          ssh-keyscan -T 10 -H "${{ secrets.CYON_HOST }}" >> ~/.ssh/known_hosts
+          echo "ssh-keyscan exit code: $?"
 
       - name: Deploy via rsync
         run: |
