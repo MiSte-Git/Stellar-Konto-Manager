@@ -37,9 +37,9 @@ jobs:
           VITE_HORIZON_URL: ${{ env.VITE_HORIZON_URL }}
           VITE_BACKEND_URL: ${{ env.VITE_BACKEND_URL }}
         run: |
-          # optional: Build-Beweis-Skripte
-          if [ -f ./scripts/gen-build-info.mjs ]; then node ./scripts/gen-build-info.mjs; fi
-          if [ -f ./scripts/hash-dist.mjs ]; then echo "hash-dist will run after build"; fi
+          # optional: Build-Beweis-Skripte (liegen im Repo-Root, nicht unter frontend/)
+          if [ -f ../scripts/gen-build-info.mjs ]; then (cd .. && node scripts/gen-build-info.mjs); fi
+          if [ -f ../scripts/hash-dist.mjs ]; then echo "hash-dist will run after build"; fi
 
           npm run build
 
@@ -51,7 +51,7 @@ jobs:
           grep -n "${VITE_BASE}" ./dist/index.html || (echo "Base nicht gefunden" && exit 1)
 
           # optional: dist nachträglich hashen
-          if [ -f ./scripts/hash-dist.mjs ]; then node ./scripts/hash-dist.mjs ./dist; fi
+          if [ -f ../scripts/hash-dist.mjs ]; then (cd .. && node scripts/hash-dist.mjs); fi
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
