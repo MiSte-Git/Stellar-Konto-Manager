@@ -76,40 +76,50 @@ def translate_text_deepl(text: str, target_lang: str, api_key: str, api_url: str
     """Übersetze via DeepL REST API ohne zusätzliche Abhängigkeiten.
     Setzt 'DEEPL_API_URL' optional, sonst api-free.deepl.com.
     Bei Fehlern wird eine Exception geworfen, damit die aktuelle Sprache abgebrochen werden kann.
+    Bei 429 (Rate Limit) wird mit Backoff automatisch erneut versucht, statt sofort abzubrechen.
     """
-    import urllib.parse
+    import time
     import urllib.request
     import urllib.error
 
     raw_url = api_url if api_url is not None else os.getenv("DEEPL_API_URL")
     url: str = (raw_url or "https://api-free.deepl.com/v2/translate")
     url = url.strip()
-    params = {
-        "auth_key": api_key,
-        "text": text,
+    # DeepL hat die Form-Body-Authentifizierung (auth_key als POST-Parameter) im
+    # November 2025 abgeschaltet. Stattdessen: Header-basierte Auth + JSON-Body.
+    body = {
+        "text": [text],
         "target_lang": target_lang.upper(),  # z. B. EN, DE, FR
     }
-    data = urllib.parse.urlencode(params).encode("utf-8")
-    req = urllib.request.Request(url, data=data, method="POST")
-    req.add_header("Content-Type", "application/x-www-form-urlencoded")
+    data = json.dumps(body).encode("utf-8")
 
-    try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            payload = json.loads(resp.read().decode("utf-8"))
-            trans_list = payload.get("translations") or []
-            if trans_list:
-                return (trans_list[0].get("text") or text).strip()
-            # Unerwartete Antwort -> Fehler werfen
-            raise RuntimeError("DeepL: leere Antwort erhalten")
-    except urllib.error.HTTPError as e:
-        if e.code == 429:
-            raise RuntimeError("DeepL: 429 Too Many Requests (Rate Limit). Abbruch der aktuellen Sprache.")
-        else:
+    max_retries = 5
+    backoff = 2.0
+    time.sleep(0.25)  # kleine, proaktive Drosselung, um 429s von vornherein seltener zu machen
+    for attempt in range(max_retries):
+        req = urllib.request.Request(url, data=data, method="POST")
+        req.add_header("Content-Type", "application/json")
+        req.add_header("Authorization", f"DeepL-Auth-Key {api_key}")
+        try:
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+                trans_list = payload.get("translations") or []
+                if trans_list:
+                    return (trans_list[0].get("text") or text).strip()
+                raise RuntimeError("DeepL: leere Antwort erhalten")
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                if attempt < max_retries - 1:
+                    print(f"INFO: DeepL 429 (Rate Limit) - warte {backoff:.0f}s und versuche erneut ({attempt + 1}/{max_retries})")
+                    time.sleep(backoff)
+                    backoff *= 2
+                    continue
+                raise RuntimeError("DeepL: 429 Too Many Requests (Rate Limit) - auch nach mehreren Versuchen. Abbruch der aktuellen Sprache.")
             raise RuntimeError(f"DeepL: HTTP {e.code} {e.reason}")
-    except urllib.error.URLError as e:
-        raise RuntimeError(f"DeepL: Netzwerkfehler: {e.reason}")
-    except Exception as e:
-        raise RuntimeError(f"DeepL: unbekannter Fehler: {e}")
+        except urllib.error.URLError as e:
+            raise RuntimeError(f"DeepL: Netzwerkfehler: {e.reason}")
+        except Exception as e:
+            raise RuntimeError(f"DeepL: unbekannter Fehler: {e}")
 
 
 def translate_text(
