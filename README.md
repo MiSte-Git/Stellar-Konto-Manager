@@ -40,7 +40,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 ## Architekturüberblick
 - Frontend: React + Vite, Ordner `frontend/`.
 - Backend: Node.js/Express, `server.js` im Projekt-Root, lokale Dateiablage.
-- Env-Konfiguration: `.env` im Projekt-Root (siehe `.env.example`), u. a. `PROD_API_URL` für Produktions-Builds (`npm run start-build`) und die Prod-Backend-Option von `npm run dev`. Optional `PROD_ORIGIN`, um die CORS-Allowlist der Multisig-/Admin-Endpunkte (`server.js` und `api/multisig.php`/`api/admin.php`) auf eine abweichende Produktions-Origin zu erweitern (Default: `https://skm.steei.de`). `BUGTRACKER_ADMIN_SECRET` (Bugtracker-Admin-Login, serverseitig geprüft) und `SESSION_SECRET` (signiert das Admin-Session-Cookie) sind für die Node-Variante nötig.
+- Env-Konfiguration: `.env` im Projekt-Root (siehe `.env.example`), u. a. `PROD_API_URL` für Produktions-Builds (`npm run start-build`) und die Prod-Backend-Option von `npm run dev`. Optional `PROD_ORIGIN`, um die CORS-Allowlist aller Backend-Endpunkte (`server.js` via `services/corsConfig.js`; alle `api/*.php` via die gemeinsame `api/cors.php`) auf eine abweichende Produktions-Origin zu erweitern (Default: `https://skm.steei.de`). `BUGTRACKER_ADMIN_SECRET` (Bugtracker-Admin-Login, serverseitig geprüft) und `SESSION_SECRET` (signiert das Admin-Session-Cookie) sind für die Node-Variante nötig.
 - Daten (Node-Backend): `data/bugreports.json`, `data/multisig_jobs.json` (lokale Laufzeitdaten, bewusst nicht in Git getrackt, siehe `.gitignore`).
 - PHP-Alternative: `api/` (siehe Abschnitt „PHP-Backend“ unten).
 - Keine externen Server, keine zentrale Datenspeicherung.

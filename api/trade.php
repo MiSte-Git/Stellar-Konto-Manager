@@ -7,20 +7,15 @@
 
 declare(strict_types=1);
 
+require __DIR__ . '/cors.php';
+
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-$allowedOrigins = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-];
-if (in_array($origin, $allowedOrigins, true)) {
-    header('Access-Control-Allow-Origin: ' . $origin);
-    header('Vary: Origin');
-}
-header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+// Shared allowlist in cors.php (finding #9) - this used to be its own,
+// narrower copy missing skm.steei.de/PROD_ORIGIN that the other three
+// api/*.php files already had, a real drift the centralization fixes.
+apply_cors_headers(['GET', 'OPTIONS'], ['Content-Type']);
 
 if (strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET')) === 'OPTIONS') {
     http_response_code(204);
@@ -210,13 +205,13 @@ function normalize_asset_search_input(): array {
     $limit = max(1, min(50, (int)($_GET['limit'] ?? 20)));
 
     if ($code === '' && $issuer === '') {
-        json_out(['error' => 'assetSearch.invalidInput:queryMissing'], 400);
+        json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:queryMissing'], 400);
     }
     if ($code !== '' && !preg_match(ASSET_CODE_RE, $code)) {
-        json_out(['error' => 'assetSearch.invalidInput:codeInvalid'], 400);
+        json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:codeInvalid'], 400);
     }
     if ($issuer !== '' && !preg_match(STELLAR_PUBLIC_KEY_RE, $issuer)) {
-        json_out(['error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
+        json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
     }
 
     return ['code' => $code, 'issuer' => $issuer, 'limit' => $limit];
@@ -232,10 +227,10 @@ function normalize_asset_identity(): array {
     $issuer = trim((string)($_GET['issuer'] ?? ''));
 
     if ($code === '' || !preg_match(ASSET_CODE_RE, $code)) {
-        json_out(['error' => 'assetSearch.invalidInput:codeInvalid'], 400);
+        json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:codeInvalid'], 400);
     }
     if ($issuer === '' || !preg_match(STELLAR_PUBLIC_KEY_RE, $issuer)) {
-        json_out(['error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
+        json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
     }
 
     return ['code' => $code, 'issuer' => $issuer];
@@ -290,7 +285,7 @@ function search_assets(): void {
         }
         json_out(['items' => $items]);
     } catch (Throwable $e) {
-        json_out(['error' => 'assetSearch.failed:' . $e->getMessage()], 502);
+        json_out(['ok' => false, 'error' => 'assetSearch.failed:' . $e->getMessage()], 502);
     }
 }
 
@@ -447,6 +442,7 @@ function failed_asset_facts(array $asset, string $error): array {
             'error' => $error,
         ],
         'error' => 'assetFacts.failed:' . $error,
+        'ok' => false,
     ];
 }
 
@@ -498,7 +494,7 @@ function asset_facts(): void {
             json_out($facts);
         }
     } catch (Throwable $e) {
-        json_out(failed_asset_facts($asset, $e->getMessage() ?: 'fetchFailed'));
+        json_out(failed_asset_facts($asset, $e->getMessage() ?: 'fetchFailed'), 502);
     }
 }
 
@@ -510,4 +506,4 @@ if (preg_match('#/api/trade/assets/facts$#', $path)) {
     asset_facts();
 }
 
-json_out(['error' => 'trade.notFound'], 404);
+json_out(['ok' => false, 'error' => 'trade.notFound'], 404);

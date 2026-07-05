@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const session = require('express-session');
 const rateLimit = require('express-rate-limit');
 const StellarSdk = require('@stellar/stellar-sdk');
@@ -12,6 +11,8 @@ const fs = require('fs/promises');
 const fsSync = require('fs');
 const crypto = require('crypto');
 const { searchAssets, fetchAssetFacts } = require('./services/tradeService.js');
+const { createCorsMiddleware } = require('./services/corsConfig.js');
+const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
 (function loadDotEnv() {
@@ -56,69 +57,50 @@ function getTradeHorizon(network = 'PUBLIC') {
 
 // Allow dev origins (5173, 8080) and same-origin in production
 app.use(cors({ origin: true }));
-app.use(bodyParser.json());
+app.use(express.json()); // built into Express 4.16+ (finding #16), no separate body-parser dependency needed
 
 // Explicit CORS headers for routes restricted to known dev/prod origins
-// (was previously a wildcard '*' — finding B3).
-function deriveOrigin(url) {
-  try { return new URL(url).origin; } catch { return null; }
-}
-const allowedAppOrigins = new Set([
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-  process.env.PROD_ORIGIN,
-  deriveOrigin(process.env.PROD_API_URL),
-].filter(Boolean));
-app.use('/api/multisig', (req, res, next) => {
-  const origin = req.headers.origin;
-  // The global cors({ origin: true }) above already reflected the request's origin
-  // unconditionally; explicitly override/remove it here so an origin outside our
-  // allowlist never ends up with an Access-Control-Allow-Origin header.
-  if (origin && allowedAppOrigins.has(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Vary', 'Origin');
-  } else {
-    res.removeHeader('Access-Control-Allow-Origin');
-  }
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-job-token');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  if (req.method === 'OPTIONS') return res.sendStatus(200);
-  return next();
-});
+// (was previously a wildcard '*' — finding B3). Origin allowlist + middleware
+// factory live in services/corsConfig.js (finding #9) so it's a single
+// source of truth shared with no duplicated per-route logic.
+app.use('/api/multisig', createCorsMiddleware({
+  methods: ['GET', 'POST', 'OPTIONS'],
+  headers: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'x-job-token'],
+}));
 
 // Session-cookie-protected routes (bugtracker admin auth, finding A2) need a
 // specific origin + Access-Control-Allow-Credentials - '*' cannot be combined
 // with cookies per the fetch/CORS spec.
-app.use(['/api/admin', '/api/bugreport'], (req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin && allowedAppOrigins.has(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Vary', 'Origin');
-  } else {
-    res.removeHeader('Access-Control-Allow-Origin');
-  }
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PATCH,OPTIONS');
-  if (req.method === 'OPTIONS') return res.sendStatus(200);
-  return next();
-});
+app.use(['/api/admin', '/api/bugreport'], createCorsMiddleware({
+  methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
+  headers: ['Content-Type'],
+  credentials: true,
+}));
 
+// Uses the default in-memory MemoryStore. server.js is documented (README)
+// as the local/dev backend only - the production variant is the PHP backend
+// on cyon hosting, which uses PHP's own session mechanism instead. A
+// restarted dev server dropping admin sessions is an accepted, correctly-
+// scoped tradeoff here; swapping in a persistent store (e.g. connect-sqlite3,
+// connect-redis) would only be warranted if this backend were ever run as
+// more than a single dev instance.
 app.use(session({
   name: 'skm_admin_session',
   secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
   resave: false,
   saveUninitialized: false,
+  rolling: true, // finding #13: refresh cookie.maxAge on every request, so this is an inactivity timeout, not an absolute session lifetime
   cookie: {
     httpOnly: true,
     secure: 'auto', // https in prod, plain http in local dev
     sameSite: 'lax',
+    maxAge: 30 * 60 * 1000, // 30 min inactivity timeout (finding #13)
   },
 }));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  limit: 100, // renamed from `max` (express-rate-limit v7+, finding #16)
   message: 'Too many requests from this IP, please try again later.',
 });
 app.use(limiter);
@@ -159,7 +141,7 @@ if (composeMailEnabled) {
     try {
       const { to, subject = '', body = '' } = req.body || {};
       if (!to || typeof to !== 'string') {
-        return res.status(400).json({ error: 'composeMail.invalidRecipient' });
+        return res.status(400).json({ ok: false, error: 'composeMail.invalidRecipient' });
       }
       const target = process.env.COMPOSE_MAIL_BIN || 'claws-mail';
       const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -184,7 +166,7 @@ if (composeMailEnabled) {
       res.json({ ok: true });
     } catch (error) {
       console.error('composeMail error', error);
-      res.status(500).json({ error: 'composeMail.spawnFailed' });
+      res.status(500).json({ ok: false, error: 'composeMail.spawnFailed' });
     }
   });
 }
@@ -219,7 +201,7 @@ async function loadBugDb() {
 async function saveBugDb() {
   try {
     await ensureDbDir();
-    await fs.writeFile(BUG_DB_PATH, JSON.stringify(bugDb, null, 2), 'utf8');
+    await writeJsonFileLocked(BUG_DB_PATH, bugDb);
   } catch (e) {
     console.error('bugdb.save.failed', e?.message || e);
   }
@@ -239,7 +221,7 @@ async function loadMultisigDb() {
 async function saveMultisigDb() {
   try {
     await ensureDbDir();
-    await fs.writeFile(MULTISIG_DB_PATH, JSON.stringify(multisigDb, null, 2), 'utf8');
+    await writeJsonFileLocked(MULTISIG_DB_PATH, multisigDb);
   } catch (e) {
     console.error('multisigdb.save.failed', e?.message || e);
   }
@@ -283,7 +265,7 @@ app.post('/api/admin/logout', (req, res) => {
 
 function requireAdminSession(req, res) {
   if (!req.session?.bugtrackerAdmin) {
-    res.status(403).json({ error: 'bugReport.admin.forbidden' });
+    res.status(403).json({ ok: false, error: 'bugReport.admin.forbidden' });
     return false;
   }
   return true;
@@ -306,7 +288,7 @@ app.post('/api/bugreport', async (req, res) => {
       : (typeof subject === 'string' ? clamp(subject).trim() : null);
 
     if (!normalizedTitle) {
-      return res.status(400).json({ error: 'bugReport.invalidPayload.title' });
+      return res.status(400).json({ ok: false, error: 'bugReport.invalidPayload.title' });
     }
 
     // Backward compatibility: some clients send "rejection_reason" instead of "rejectionReason"
@@ -316,7 +298,7 @@ app.post('/api/bugreport', async (req, res) => {
     if (normalizedStatus === 'rejected') {
       const reason = String(normalizedRejectionReasonFinal || '').trim();
       if (!reason) {
-        return res.status(400).json({ error: 'bugReport.rejectionReason.required' });
+        return res.status(400).json({ ok: false, error: 'bugReport.rejectionReason.required' });
       }
     }
 
@@ -343,7 +325,7 @@ app.post('/api/bugreport', async (req, res) => {
     res.json({ ok: true, id: item.id });
   } catch (e) {
     console.error('bugreport.post.failed', e?.message || e);
-    res.status(500).json({ error: 'bugReport.saveFailed' });
+    res.status(500).json({ ok: false, error: 'bugReport.saveFailed' });
   }
 });
 
@@ -411,7 +393,7 @@ app.get('/api/bugreport', async (req, res) => {
     res.json({ total, items: pageItems });
   } catch (e) {
     console.error('bugreport.list.failed', e?.message || e);
-    res.status(500).json({ error: 'bugReport.listFailed' });
+    res.status(500).json({ ok: false, error: 'bugReport.listFailed' });
   }
 });
 
@@ -420,7 +402,7 @@ app.patch('/api/bugreport/:id', async (req, res) => {
     if (!requireAdminSession(req, res)) return;
     const id = parseInt(String(req.params.id), 10);
     const item = bugDb.items.find((r) => r.id === id);
-    if (!item) return res.status(404).json({ error: 'bugReport.notFound' });
+    if (!item) return res.status(404).json({ ok: false, error: 'bugReport.notFound' });
     const { status, priority, contactEmail, rejectionReason, comment } = req.body || {};
 
     if (allowedStatus.has(status)) item.status = status;
@@ -432,7 +414,7 @@ app.patch('/api/bugreport/:id', async (req, res) => {
     if (String(item.status) === 'rejected') {
       const reason = String(item.rejectionReason || '').trim();
       if (!reason) {
-        return res.status(400).json({ error: 'bugReport.rejectionReason.required' });
+        return res.status(400).json({ ok: false, error: 'bugReport.rejectionReason.required' });
       }
     }
 
@@ -440,7 +422,7 @@ app.patch('/api/bugreport/:id', async (req, res) => {
     res.json({ ok: true });
   } catch (e) {
     console.error('bugreport.patch.failed', e?.message || e);
-    res.status(500).json({ error: 'bugReport.saveFailed' });
+    res.status(500).json({ ok: false, error: 'bugReport.saveFailed' });
   }
 });
 
@@ -535,14 +517,14 @@ app.post('/api/multisig/jobs', async (req, res) => {
   try {
     const { network, accountId, txXdr, createdBy } = req.body || {};
     const net = normalizeNetwork(network);
-    if (!net) return res.status(400).json({ error: 'invalid_network' });
-    if (!accountId || typeof accountId !== 'string') return res.status(400).json({ error: 'invalid_account' });
-    if (!txXdr || typeof txXdr !== 'string') return res.status(400).json({ error: 'invalid_xdr' });
+    if (!net) return res.status(400).json({ ok: false, error: 'invalid_network' });
+    if (!accountId || typeof accountId !== 'string') return res.status(400).json({ ok: false, error: 'invalid_account' });
+    if (!txXdr || typeof txXdr !== 'string') return res.status(400).json({ ok: false, error: 'invalid_xdr' });
     let parsed;
     try {
       parsed = parseTxAndHash(txXdr, net);
     } catch (e) {
-      return res.status(400).json({ error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' });
+      return res.status(400).json({ ok: false, error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' });
     }
     let account = null;
     let signerMeta = { signers: [], thresholds: { low: 0, med: 0, high: 0 } };
@@ -601,7 +583,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
     res.json(job);
   } catch (e) {
     console.error('multisig.jobs.post.failed', e);
-    res.status(500).json({ error: 'multisig.jobs.save_failed' });
+    res.status(500).json({ ok: false, error: 'multisig.jobs.save_failed' });
   }
 });
 
@@ -634,7 +616,7 @@ app.get('/api/multisig/jobs', async (req, res) => {
     res.json(items.map(({ txXdrCurrent, txXdrOriginal, accessToken, ...meta }) => meta));
   } catch (e) {
     console.error('multisig.jobs.list.failed', e);
-    res.status(500).json({ error: 'multisig.jobs.list_failed' });
+    res.status(500).json({ ok: false, error: 'multisig.jobs.list_failed' });
   }
 });
 
@@ -642,12 +624,12 @@ app.get('/api/multisig/jobs/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const job = multisigDb.items.find((j) => j.id === id);
-    if (!job) return res.status(404).json({ error: 'not_found' });
-    if (!hasValidJobToken(job, req)) return res.status(403).json({ error: 'forbidden' });
+    if (!job) return res.status(404).json({ ok: false, error: 'not_found' });
+    if (!hasValidJobToken(job, req)) return res.status(403).json({ ok: false, error: 'forbidden' });
     res.json(job);
   } catch (e) {
     console.error('multisig.jobs.get.failed', e);
-    res.status(500).json({ error: 'multisig.jobs.get_failed' });
+    res.status(500).json({ ok: false, error: 'multisig.jobs.get_failed' });
   }
 });
 
@@ -660,13 +642,13 @@ app.get('/api/multisig/jobs/:id/token', async (req, res) => {
   try {
     const { id } = req.params;
     const job = multisigDb.items.find((j) => j.id === id);
-    if (!job) return res.status(404).json({ error: 'not_found' });
+    if (!job) return res.status(404).json({ ok: false, error: 'not_found' });
 
     const signerPk = sanitizeHeader(String(req.query.signer || '')).trim();
     try {
       StellarSdk.Keypair.fromPublicKey(signerPk);
     } catch {
-      return res.status(400).json({ error: 'invalid_signer' });
+      return res.status(400).json({ ok: false, error: 'invalid_signer' });
     }
 
     const serverForNet = job.network === 'public'
@@ -677,17 +659,17 @@ app.get('/api/multisig/jobs/:id/token', async (req, res) => {
       const account = await loadAccount(serverForNet, job.accountId);
       signerMeta = extractSignerMeta(account);
     } catch {
-      return res.status(403).json({ error: 'forbidden' });
+      return res.status(403).json({ ok: false, error: 'forbidden' });
     }
     const isActiveSigner = (signerMeta.signers || []).some(
       (s) => s.publicKey === signerPk && Number(s.weight || 0) > 0
     );
-    if (!isActiveSigner) return res.status(403).json({ error: 'forbidden' });
+    if (!isActiveSigner) return res.status(403).json({ ok: false, error: 'forbidden' });
 
     res.json({ accessToken: job.accessToken });
   } catch (e) {
     console.error('multisig.jobs.token.failed', e);
-    res.status(500).json({ error: 'multisig.jobs.token_failed' });
+    res.status(500).json({ ok: false, error: 'multisig.jobs.token_failed' });
   }
 });
 
@@ -696,20 +678,20 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
     const { id } = req.params;
     const { signedXdr } = req.body || {};
     const job = multisigDb.items.find((j) => j.id === id);
-    if (!job) return res.status(404).json({ error: 'not_found' });
-    if (!hasValidJobToken(job, req)) return res.status(403).json({ error: 'forbidden' });
+    if (!job) return res.status(404).json({ ok: false, error: 'not_found' });
+    if (!hasValidJobToken(job, req)) return res.status(403).json({ ok: false, error: 'forbidden' });
     if (!signedXdr || typeof signedXdr !== 'string') {
-      return res.status(400).json({ error: 'invalid_xdr' });
+      return res.status(400).json({ ok: false, error: 'invalid_xdr' });
     }
     const net = job.network === 'public' ? 'public' : 'testnet';
     let incoming;
     try {
       incoming = parseTxAndHash(signedXdr, net);
     } catch (e) {
-      return res.status(400).json({ error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' });
+      return res.status(400).json({ ok: false, error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' });
     }
     if (incoming.hashHex !== job.txHash) {
-      return res.status(400).json({ error: 'mismatched_hash' });
+      return res.status(400).json({ ok: false, error: 'mismatched_hash' });
     }
     const current = parseTxAndHash(job.txXdrCurrent || job.txXdrOriginal, net);
 
@@ -763,7 +745,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
     res.json(updated);
   } catch (e) {
     console.error('multisig.jobs.merge.failed', e);
-    res.status(500).json({ error: 'multisig.jobs.merge_failed' });
+    res.status(500).json({ ok: false, error: 'multisig.jobs.merge_failed' });
   }
 });
 
@@ -771,7 +753,7 @@ app.get('/trustlines', async (req, res) => {
   const { publicKey } = req.query;
 
   if (!publicKey) {
-    return res.status(400).json({ error: 'Public key is required' });
+    return res.status(400).json({ ok: false, error: 'Public key is required' });
   }
 
   try {
@@ -801,7 +783,7 @@ app.get('/trustlines', async (req, res) => {
     res.json({ trustlines });
   } catch (error) {
     console.error('Error fetching trustlines:', error.message);
-    res.status(500).json({ error: 'Failed to fetch trustlines' });
+    res.status(500).json({ ok: false, error: 'Failed to fetch trustlines' });
   }
 });
 
@@ -818,7 +800,7 @@ app.get('/api/trade/assets/search', async (req, res) => {
   } catch (error) {
     const message = error?.message || 'assetSearch.failed:generic';
     const status = String(message).startsWith('assetSearch.invalidInput') ? 400 : 502;
-    res.status(status).json({ error: message });
+    res.status(status).json({ ok: false, error: message });
   }
 });
 
@@ -834,7 +816,7 @@ app.get('/api/trade/assets/facts', async (req, res) => {
   } catch (error) {
     const message = error?.message || 'assetFacts.failed:generic';
     const status = String(message).startsWith('assetSearch.invalidInput') ? 400 : 502;
-    res.status(status).json({ error: message });
+    res.status(status).json({ ok: false, error: message });
   }
 });
 
@@ -862,7 +844,7 @@ app.use('/expert', async (req, res) => {
     res.send(Buffer.from(buf));
   } catch (e) {
     console.error('Expert proxy failed:', e?.message || e);
-    res.status(502).json({ error: 'expert.proxy.failed' });
+    res.status(502).json({ ok: false, error: 'expert.proxy.failed' });
   }
 });
 

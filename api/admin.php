@@ -11,24 +11,11 @@
 declare(strict_types=1);
 
 require __DIR__ . '/admin_session.php';
+require __DIR__ . '/cors.php';
 
 // CORS: session cookies require a specific origin (not '*') plus the
-// credentials flag, matching the allowlist already used in bugreport.php.
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-$allowedOrigins = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'https://skm.steei.de',
-];
-$prodOrigin = getenv('PROD_ORIGIN');
-if ($prodOrigin) $allowedOrigins[] = $prodOrigin;
-if ($origin !== '' && in_array($origin, $allowedOrigins, true)) {
-    header('Access-Control-Allow-Origin: ' . $origin);
-    header('Access-Control-Allow-Credentials: true');
-    header('Vary: Origin');
-}
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+// credentials flag - shared allowlist in cors.php (finding #9).
+apply_cors_headers(['GET', 'POST', 'OPTIONS'], ['Content-Type'], true);
 
 if (strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET')) === 'OPTIONS') {
     http_response_code(204);

@@ -8,28 +8,15 @@
 declare(strict_types=1);
 
 require __DIR__ . '/admin_session.php';
+require __DIR__ . '/cors.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
 // CORS for local dev (Vite) → PROD API. Session-cookie-protected endpoints
 // (admin listing/update, finding A2) need a specific origin + credentials
-// flag - '*' is not usable together with cookies.
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-$allowedOrigins = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'https://skm.steei.de',
-];
-$prodOrigin = getenv('PROD_ORIGIN');
-if ($prodOrigin) $allowedOrigins[] = $prodOrigin;
-if (in_array($origin, $allowedOrigins, true)) {
-    header('Access-Control-Allow-Origin: ' . $origin);
-    header('Access-Control-Allow-Credentials: true');
-    header('Vary: Origin');
-}
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+// flag - shared allowlist in cors.php (finding #9).
+apply_cors_headers(['GET', 'POST', 'OPTIONS'], ['Content-Type'], true);
 
 // Handle preflight without DB access
 if (strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET')) === 'OPTIONS') {

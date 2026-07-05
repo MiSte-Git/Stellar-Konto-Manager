@@ -9,13 +9,15 @@
 
 declare(strict_types=1);
 
+require __DIR__ . '/cors.php';
+
 $autoload = __DIR__ . '/vendor/autoload.php';
 if (file_exists($autoload)) {
     require $autoload;
 } else {
     http_response_code(500);
     header('Content-Type: application/json');
-    echo json_encode(['error' => 'vendor_autoload_missing']);
+    echo json_encode(['ok' => false, 'error' => 'vendor_autoload_missing']);
     exit;
 }
 
@@ -37,21 +39,8 @@ class SubmitFailedException extends \Exception {
 }
 
 // CORS headers, restricted to known dev/prod origins (was previously a wildcard
-// '*' — finding B3). Mirrors the allowlist pattern already used in bugreport.php.
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-$allowedOrigins = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'https://skm.steei.de',
-];
-$prodOrigin = getenv('PROD_ORIGIN');
-if ($prodOrigin) $allowedOrigins[] = $prodOrigin;
-if ($origin !== '' && in_array($origin, $allowedOrigins, true)) {
-    header('Access-Control-Allow-Origin: ' . $origin);
-    header('Vary: Origin');
-}
-header('Access-Control-Allow-Methods: GET,POST,DELETE,OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, x-job-token');
+// '*' — finding B3). Shared allowlist in cors.php (finding #9).
+apply_cors_headers(['GET', 'POST', 'DELETE', 'OPTIONS'], ['Content-Type', 'x-job-token']);
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -75,7 +64,7 @@ function sendJson($data, int $status = 200): void {
 }
 
 function sendError(string $error, ?string $detail = null, int $status = 500): void {
-    $payload = ['error' => $error];
+    $payload = ['ok' => false, 'error' => $error];
     if ($detail) $payload['detail'] = $detail;
     sendJson($payload, $status);
 }
@@ -476,13 +465,13 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
                 if ($pk && $w > 0) $clientCollected[] = ['publicKey' => $pk, 'weight' => $w];
             }
         }
-        if (!$net) return sendJson(['error' => 'invalid_network'], 400);
-        if (!$accountId) return sendJson(['error' => 'invalid_account'], 400);
-        if (!$txXdr) return sendJson(['error' => 'invalid_xdr'], 400);
+        if (!$net) return sendJson(['ok' => false, 'error' => 'invalid_network'], 400);
+        if (!$accountId) return sendJson(['ok' => false, 'error' => 'invalid_account'], 400);
+        if (!$txXdr) return sendJson(['ok' => false, 'error' => 'invalid_xdr'], 400);
 
         $parseErr = null;
         $tx = parseTx($txXdr, $net, $parseErr);
-        if (!$tx) return sendJson(['error' => 'invalid_xdr', 'detail' => $parseErr], 400);
+        if (!$tx) return sendJson(['ok' => false, 'error' => 'invalid_xdr', 'detail' => $parseErr], 400);
         $hash = txHash($tx, $net);
         // Signers/thresholds are always derived from the real on-chain account state.
         // Client-supplied signer/weight data is never trusted for authorization decisions (C2).
@@ -583,11 +572,11 @@ if ($method === 'GET' && ($m = matchRoute($path, '/api/multisig/jobs/:id'))) {
     $items = loadJobs($jobFile);
     foreach ($items as $j) {
         if (($j['id'] ?? '') === $id) {
-            if (!hasValidJobToken($j)) return sendJson(['error' => 'forbidden'], 403);
+            if (!hasValidJobToken($j)) return sendJson(['ok' => false, 'error' => 'forbidden'], 403);
             return sendJson(summarizeJob($j));
         }
     }
-    return sendJson(['error' => 'not_found'], 404);
+    return sendJson(['ok' => false, 'error' => 'not_found'], 404);
 }
 
 // GET /api/multisig/jobs/:id/token - issues a job's access token to a caller
@@ -601,7 +590,7 @@ if ($method === 'GET' && ($m = matchRoute($path, '/api/multisig/jobs/:id/token')
     try {
         KeyPair::fromAccountId($signerPk);
     } catch (\Throwable $e) {
-        return sendJson(['error' => 'invalid_signer'], 400);
+        return sendJson(['ok' => false, 'error' => 'invalid_signer'], 400);
     }
 
     $items = loadJobs($jobFile);
@@ -609,7 +598,7 @@ if ($method === 'GET' && ($m = matchRoute($path, '/api/multisig/jobs/:id/token')
     foreach ($items as $j) {
         if (($j['id'] ?? '') === $id) { $job = $j; break; }
     }
-    if (!$job) return sendJson(['error' => 'not_found'], 404);
+    if (!$job) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
 
     $net = $job['network'] ?? 'public';
     $meta = fetchAccountSignersCached($job['accountId'] ?? '', $net);
@@ -620,7 +609,7 @@ if ($method === 'GET' && ($m = matchRoute($path, '/api/multisig/jobs/:id/token')
             break;
         }
     }
-    if (!$isActiveSigner) return sendJson(['error' => 'forbidden'], 403);
+    if (!$isActiveSigner) return sendJson(['ok' => false, 'error' => 'forbidden'], 403);
 
     return sendJson(['accessToken' => $job['accessToken'] ?? '']);
 }
@@ -639,7 +628,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 if ($pk && $w > 0) $clientCollected[] = ['publicKey' => $pk, 'weight' => $w];
             }
         }
-        if (!$signedXdr) return sendJson(['error' => 'invalid_xdr'], 400);
+        if (!$signedXdr) return sendJson(['ok' => false, 'error' => 'invalid_xdr'], 400);
 
         // Fail fast on obvious client errors before taking the write lock.
         $preCheck = loadJobs($jobFile);
@@ -647,15 +636,15 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         foreach ($preCheck as $j) {
             if (($j['id'] ?? '') === $id) { $job = $j; break; }
         }
-        if (!$job) return sendJson(['error' => 'not_found'], 404);
-        if (!hasValidJobToken($job)) return sendJson(['error' => 'forbidden'], 403);
+        if (!$job) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
+        if (!hasValidJobToken($job)) return sendJson(['ok' => false, 'error' => 'forbidden'], 403);
 
         $net = $job['network'] ?? 'public';
         $parseErr = null;
         $incoming = parseTx($signedXdr, $net, $parseErr);
-        if (!$incoming) return sendJson(['error' => 'invalid_xdr', 'detail' => $parseErr], 400);
+        if (!$incoming) return sendJson(['ok' => false, 'error' => 'invalid_xdr', 'detail' => $parseErr], 400);
         $hash = txHash($incoming, $net);
-        if ($hash !== ($job['txHash'] ?? '')) return sendJson(['error' => 'mismatched_hash'], 400);
+        if ($hash !== ($job['txHash'] ?? '')) return sendJson(['ok' => false, 'error' => 'mismatched_hash'], 400);
 
         $resultRow = null;
         withJobsLock($jobFile, function (array $items) use ($id, $net, $incoming, $clientCollected, &$resultRow) {
@@ -721,7 +710,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
             return $items;
         });
 
-        if (!$resultRow) return sendJson(['error' => 'not_found'], 404);
+        if (!$resultRow) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
         return sendJson($resultRow);
     } catch (\Throwable $e) {
         error_log('[multisig] jobs.merge failed: ' . $e->getMessage());
@@ -736,14 +725,14 @@ if ($method === 'DELETE' && $path === '/api/multisig/jobs') {
     $adminToken = $_SERVER['HTTP_X_ADMIN_TOKEN'] ?? '';
     $requiredToken = getenv('MULTISIG_ADMIN_TOKEN') ?: '';
 
-    if (!$net) return sendJson(['error' => 'invalid_network'], 400);
+    if (!$net) return sendJson(['ok' => false, 'error' => 'invalid_network'], 400);
     if ($net === 'testnet') {
-        if ($confirm !== 'DELETE TESTNET JOBS') return sendJson(['error' => 'confirm_required'], 400);
+        if ($confirm !== 'DELETE TESTNET JOBS') return sendJson(['ok' => false, 'error' => 'confirm_required'], 400);
     } else {
         if (!$requiredToken || !$adminToken || $adminToken !== $requiredToken) {
-            return sendJson(['error' => 'unauthorized'], 401);
+            return sendJson(['ok' => false, 'error' => 'unauthorized'], 401);
         }
-        if ($confirm !== 'DELETE ALL JOBS') return sendJson(['error' => 'confirm_required'], 400);
+        if ($confirm !== 'DELETE ALL JOBS') return sendJson(['ok' => false, 'error' => 'confirm_required'], 400);
     }
 
     $before = 0;
@@ -765,4 +754,4 @@ if ($method === 'DELETE' && $path === '/api/multisig/jobs') {
 }
 
 // Fallback
-sendJson(['error' => 'not_found'], 404);
+sendJson(['ok' => false, 'error' => 'not_found'], 404);
