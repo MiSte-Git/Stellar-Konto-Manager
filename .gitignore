@@ -57,6 +57,9 @@ frontend/SSH_Cyon.pub
 # Local process output
 nohup.out
 
+# Dead root-level leftover (no-op Windows batch stub, unreferenced by any script)
+/true.cmd
+
 # Config: keep folder, ignore contents
 config/*
 !config/.gitkeep
