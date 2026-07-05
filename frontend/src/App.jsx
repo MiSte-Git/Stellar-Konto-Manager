@@ -11,15 +11,11 @@ const LearnHub          = lazy(() => import('./components/learn/LearnHub.jsx'));
 const QuizPage          = lazy(() => import('./pages/QuizPage.jsx'));
 const QuizIndex         = lazy(() => import('./pages/QuizIndex.jsx'));
 const BackupSettings    = lazy(() => import('./pages/BackupSettings.jsx'));
-const MultisigJobDetail = lazy(() => import('./pages/MultisigJobDetail.jsx'));
-const MultisigJobList   = lazy(() => import('./pages/MultisigJobList.jsx'));
 const Legal             = lazy(() => import('./pages/Legal.jsx'));
-const SettingsPage      = lazy(() => import('./pages/SettingsPage.jsx'));
-const TradingAssetsPage = lazy(() => import('./pages/TradingAssetsPage.jsx'));
 const ScamSimulatorPage = lazy(() => import('./components/scam-simulator/ScamSimulatorPage.jsx'));
 const StoryMode         = lazy(() => import('./components/story/StoryMode.jsx'));
 import SmallAdminLink from './components/SmallAdminLink.jsx';
-import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizDetailPath, isQuizIndexPath, getMultisigJobId, getMultisigJobToken, isSettingsPath, isTradingAssetsPath, isMultisigJobsListPath, isScamSimulatorPath, isStoryPath, isDiscoverPath } from './utils/basePath.js';
+import { isBugtrackerPath, isGlossaryPath, isLearnPath, isLessonQuizPath, isQuizRunPath, isQuizSettingsPath, isQuizAchievementsPath, isSettingsBackupPath, buildPath, isQuizDetailPath, isQuizIndexPath, isScamSimulatorPath, isStoryPath, isDiscoverPath } from './utils/basePath.js';
 import scenarios from './data/learn/scam-scenarios/scenarios.js';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -162,40 +158,6 @@ function AppShell() {
     }
   }, [pathname]);
 
-  const multisigJobId = React.useMemo(() => {
-    try {
-      return getMultisigJobId(pathname);
-    } catch {
-      return null;
-    }
-  }, [pathname]);
-
-  const multisigJobToken = React.useMemo(() => {
-    try {
-      return getMultisigJobToken(location?.search || '');
-    } catch {
-      return null;
-    }
-  }, [location?.search]);
-
-  // Only used when this page was reached without an explicit ?token= (e.g. via
-  // the job list rendered further below with no in-app account context): lets
-  // MultisigJobDetail resolve its own access token, verified against whichever
-  // account is currently active in the app - same fallback source MultisigJobList
-  // itself uses when it isn't given a publicKey prop.
-  let lastActiveAccountId = '';
-  try {
-    lastActiveAccountId = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_LAST_ACCOUNT')) || '';
-  } catch { /* noop */ }
-
-  const isMultisigJobListRoute = React.useMemo(() => {
-    try {
-      return isMultisigJobsListPath(pathname);
-    } catch {
-      return false;
-    }
-  }, [pathname]);
-
   const isScamSimulatorRoute = React.useMemo(() => {
     try {
       return isScamSimulatorPath(pathname);
@@ -246,22 +208,6 @@ function AppShell() {
     }
   }, [pathname]);
 
-  const isSettingsRoute = React.useMemo(() => {
-    try {
-      return isSettingsPath(pathname);
-    } catch {
-      return false;
-    }
-  }, [pathname]);
-
-  const isTradingAssetsRoute = React.useMemo(() => {
-    try {
-      return isTradingAssetsPath(pathname);
-    } catch {
-      return false;
-    }
-  }, [pathname]);
-
   const isLegalRoute = React.useMemo(() => {
     try {
       const target = buildPath('legal');
@@ -291,10 +237,6 @@ function AppShell() {
       isQuizSettingsRoute,
       isQuizAchievementsRoute,
       isQuizRoute,
-      isSettingsRoute,
-      isTradingAssetsRoute,
-      multisigJobId,
-      isMultisigJobListRoute,
     });
   }
 
@@ -303,14 +245,6 @@ function AppShell() {
     <ErrorBoundary t={t}>
       {isBugTrackerRoute ? (
         <BugTrackerAdmin />
-      ) : multisigJobId ? (
-        <div className="max-w-4xl mx-auto p-4">
-          <MultisigJobDetail jobId={multisigJobId} accessToken={multisigJobToken} currentPublicKey={lastActiveAccountId || undefined} />
-        </div>
-      ) : isMultisigJobListRoute ? (
-        <div className="max-w-5xl mx-auto p-4">
-          <MultisigJobList />
-        </div>
       ) : isScamSimulatorRoute ? (
         <div className="max-w-lg mx-auto p-4">
           <ScamSimulatorPage
@@ -346,12 +280,6 @@ function AppShell() {
       ) : isQuizRoute ? (
         <div className="max-w-4xl mx-auto p-4">
           <QuizPage />
-        </div>
-      ) : isTradingAssetsRoute ? (
-        <TradingAssetsPage />
-      ) : isSettingsRoute ? (
-        <div className="max-w-4xl mx-auto p-4">
-          <SettingsPage />
         </div>
       ) : isLegalRoute ? (
         <div className="max-w-4xl mx-auto p-4">

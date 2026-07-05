@@ -26,6 +26,14 @@ import {
   clearHistoryKey,
   removeRecentWallet,
 } from './utils/inputHistory.js';
+import {
+  buildPath,
+  getMultisigJobId,
+  getMultisigJobToken,
+  isMultisigJobsListPath,
+  isSettingsPath,
+  isTradingAssetsPath,
+} from './utils/basePath.js';
 
 function migrateLegacyStorageKeys() {
   if (typeof window === 'undefined') return;
@@ -164,6 +172,44 @@ const PricePairSelector = React.memo(function PricePairSelector({ value, onChang
 
 const isDev = import.meta.env.MODE !== 'production';
 
+// Navigation consolidation (finding #8): settings, trading assets and
+// multisig jobs used to be reachable through two entirely separate
+// mechanisms - App.jsx's URL-pathname routing (rendering standalone pages,
+// unmounting Main and losing all of its in-memory wallet state) and this
+// component's own menuSelection state (keeping Main mounted, no URL
+// reflection at all). This component is now the single source of truth for
+// those 3 features; the URL is only mirrored for deep-linking/back-forward/
+// bookmarking, never a second place that independently decides what to render.
+const MANAGED_MENU_SELECTIONS = ['settings', 'tradingAssets', 'multisigJobs'];
+
+function readMenuStateFromUrl() {
+  if (typeof window === 'undefined') return { menuSelection: null, activeJobId: null, activeJobToken: null };
+  const pathname = window.location.pathname;
+  const search = window.location.search;
+  const jobId = getMultisigJobId(pathname);
+  if (jobId) {
+    return { menuSelection: 'multisigJobs', activeJobId: jobId, activeJobToken: getMultisigJobToken(search) };
+  }
+  if (isMultisigJobsListPath(pathname)) {
+    return { menuSelection: 'multisigJobs', activeJobId: null, activeJobToken: null };
+  }
+  if (isSettingsPath(pathname)) {
+    return { menuSelection: 'settings', activeJobId: null, activeJobToken: null };
+  }
+  if (isTradingAssetsPath(pathname)) {
+    return { menuSelection: 'tradingAssets', activeJobId: null, activeJobToken: null };
+  }
+  return { menuSelection: null, activeJobId: null, activeJobToken: null };
+}
+
+function pathForMenuState(menuSelection, activeJobId) {
+  if (activeJobId) return buildPath(`multisig/jobs/${activeJobId}`);
+  if (menuSelection === 'settings') return buildPath('settings');
+  if (menuSelection === 'tradingAssets') return buildPath('trading/assets');
+  if (menuSelection === 'multisigJobs') return buildPath('multisig/jobs');
+  return null;
+}
+
 function Main() {
 	//console.log('main.jsx In function Main');
   const { t, i18n } = useTranslation(['common', 'quiz', 'learn', 'glossary', 'legal']);
@@ -178,7 +224,7 @@ function Main() {
   const [sortColumn, setSortColumn] = useState('assetCode');
   const [sortDirection, setSortDirection] = useState('asc');
   const [currentPage, setCurrentPage] = useState(0);
-  const ITEMS_PER_PAGE = 333;const [menuSelection, setMenuSelection] = useState(null);
+  const ITEMS_PER_PAGE = 333;const [menuSelection, setMenuSelection] = useState(() => readMenuStateFromUrl().menuSelection);
   const autoRestoredRef = useRef(false);
   // Shared "latest wins" token for the wallet-identity operations below
   // (fetchXlmBalanceFor, handleHeaderApply, revalidateActiveWallet, auto-restore),
@@ -206,8 +252,8 @@ function Main() {
   const [identityGuard, setIdentityGuard] = useState({ open: false, nextAction: '' });
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [showSecretInfo, setShowSecretInfo] = useState(false);
-  const [activeJobId, setActiveJobId] = useState(null);
-  const [activeJobToken, setActiveJobToken] = useState(null);
+  const [activeJobId, setActiveJobId] = useState(() => readMenuStateFromUrl().activeJobId);
+  const [activeJobToken, setActiveJobToken] = useState(() => readMenuStateFromUrl().activeJobToken);
   // Dev/Testnet toggle state synced with localStorage
   const [devTestnet, setDevTestnet] = useState(false);
    // Send Payment initial values (e.g., for donation)
@@ -608,12 +654,47 @@ function Main() {
     return () => window.removeEventListener('stm-network-changed', handler);
   }, [sourcePublicKey]);
 
-  // Listen for settings open requests from the language bar
+  // Navigation consolidation (finding #8): reacts to the URL changing outside
+  // of this component's own control - browser back/forward, or App.jsx's own
+  // pushState+popstate buttons (e.g. the Settings button in the top bar). Only
+  // touches menuSelection/activeJobId when the URL is (or was) one of the 3
+  // synced paths, so it never clobbers an unrelated in-app selection (e.g.
+  // "payments") when some other part of the app navigates for its own reasons
+  // (Glossar, Discover, ...).
   useEffect(() => {
-    const openSettings = () => setMenuSelection('settings');
-    window.addEventListener('stm:openSettings', openSettings);
-    return () => window.removeEventListener('stm:openSettings', openSettings);
+    const applyFromUrl = () => {
+      const next = readMenuStateFromUrl();
+      setMenuSelection((prev) => (next.menuSelection !== null || MANAGED_MENU_SELECTIONS.includes(prev) ? next.menuSelection : prev));
+      setActiveJobId(next.activeJobId);
+      setActiveJobToken(next.activeJobToken);
+    };
+    window.addEventListener('popstate', applyFromUrl);
+    return () => window.removeEventListener('popstate', applyFromUrl);
   }, []);
+
+  // The other direction: mirrors menuSelection/activeJobId changes back into
+  // the URL, so deep-linking/bookmarking/back-forward keep working for these
+  // 3 features without a second, independent rendering path (App.jsx used to
+  // have its own standalone routes for the same 3 pages, which unmounted this
+  // entire component - and all of its in-memory wallet state - whenever the
+  // URL changed; that duplication is gone, this is now the only place that
+  // decides what to render for them).
+  useEffect(() => {
+    try {
+      const target = pathForMenuState(menuSelection, activeJobId);
+      const current = window.location.pathname;
+      if (target) {
+        if (current !== target) {
+          window.history.pushState({}, '', target);
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        }
+      } else if (readMenuStateFromUrl().menuSelection !== null) {
+        const home = buildPath('');
+        window.history.pushState({}, '', home);
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
+    } catch { /* noop */ }
+  }, [menuSelection, activeJobId]);
 
   // Listen for menu open requests from the language bar (e.g., feedback, donate)
   useEffect(() => {

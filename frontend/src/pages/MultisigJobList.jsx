@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiUrl } from '../utils/apiBase.js';
-import { buildPath } from '../utils/basePath.js';
 
 function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
   const { t } = useTranslation(['multisig', 'common']);
@@ -265,23 +264,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
                   <td className="px-2 py-1 text-right">
                     <button
                       className="text-blue-700 dark:text-blue-200 hover:underline"
-                      onClick={() => {
-                        if (onOpenDetail) {
-                          onOpenDetail(j.id);
-                        } else {
-                          try {
-                            // The job list no longer carries an access token (B3-follow-up),
-                            // so there is nothing to put in the URL here anymore - the detail
-                            // page resolves its own token on demand, verified against the
-                            // account currently loaded in the app.
-                            const url = buildPath(`multisig/jobs/${j.id}`);
-                            window.history.pushState({}, '', url);
-                            window.dispatchEvent(new PopStateEvent('popstate'));
-                          } catch (e) {
-                            console.error('nav failed', e);
-                          }
-                        }
-                      }}
+                      onClick={() => onOpenDetail(j.id)}
                     >
                       {t('multisig:list.details', 'Details anzeigen')}
                     </button>
