@@ -43,19 +43,32 @@ function flatten(obj, prefix = '') {
   return res;
 }
 
-function getGermanRef() {
-  const base = readJson(path.join(LOCALES, 'de.json'));
-  const deDir = path.join(LOCALES, 'de');
-  let merged = { ...base };
-  if (fs.existsSync(deDir)) {
-    for (const f of fs.readdirSync(deDir)) {
-      if (f.endsWith('.json')) {
-        const ns = f.replace(/\.json$/, '');
-        merged = deepMerge(merged, { [ns]: readJson(path.join(deDir, f)) });
-      }
+// Locale directories are plain two-letter language codes (de, en, es, ...).
+// This also excludes non-locale housekeeping dirs under locales/ such as
+// .i18n_ack, .i18n_hash, or __pycache__.
+const LANG_DIR_RE = /^[a-z]{2}$/;
+
+function listLangDirs() {
+  return fs.readdirSync(LOCALES).filter((f) => LANG_DIR_RE.test(f) && fs.statSync(path.join(LOCALES, f)).isDirectory());
+}
+
+function readNamespacedLocale(dir) {
+  let merged = {};
+  for (const f of fs.readdirSync(dir)) {
+    if (f.endsWith('.json')) {
+      const ns = f.replace(/\.json$/, '');
+      merged = deepMerge(merged, { [ns]: readJson(path.join(dir, f)) });
     }
   }
   return merged;
+}
+
+function getGermanRef() {
+  const deDir = path.join(LOCALES, 'de');
+  if (!fs.existsSync(deDir)) {
+    throw new Error(`German reference directory not found: ${deDir}`);
+  }
+  return readNamespacedLocale(deDir);
 }
 
 function main() {
@@ -63,12 +76,12 @@ function main() {
     const ref = getGermanRef();
     const refFlat = flatten(ref);
 
-    const langs = fs.readdirSync(LOCALES).filter(f => f.endsWith('.json') && f !== 'de.json').map(f => f.replace(/\.json$/, ''));
+    const langs = listLangDirs().filter((l) => l !== 'de');
     let ok = true;
 
     for (const lang of langs) {
-      const file = path.join(LOCALES, `${lang}.json`);
-      const cur = readJson(file);
+      const dir = path.join(LOCALES, lang);
+      const cur = readNamespacedLocale(dir);
       const curFlat = flatten(cur);
 
       const missing = Object.keys(refFlat).filter(k => !(k in curFlat));
@@ -84,10 +97,13 @@ function main() {
         ok = false;
       }
 
-      const sizeKB = Math.round((fs.statSync(file).size / 1024) * 10) / 10;
-      if (sizeKB > 200) {
-        console.warn(`[CI:i18n] ${lang}.json is large (${sizeKB} KB). Consider splitting.
+      for (const f of fs.readdirSync(dir)) {
+        if (!f.endsWith('.json')) continue;
+        const sizeKB = Math.round((fs.statSync(path.join(dir, f)).size / 1024) * 10) / 10;
+        if (sizeKB > 200) {
+          console.warn(`[CI:i18n] ${lang}/${f} is large (${sizeKB} KB). Consider splitting.
 `);
+        }
       }
     }
 
