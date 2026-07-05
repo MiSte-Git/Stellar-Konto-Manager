@@ -60,6 +60,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.CYON_SSH_KEY }}
 
+      - name: Show runner IP
+        run: curl -s https://api.ipify.org
+
       - name: Trust cyon host key
         run: |
           mkdir -p ~/.ssh
