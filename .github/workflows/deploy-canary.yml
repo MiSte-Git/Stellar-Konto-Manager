@@ -64,7 +64,8 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           set -x
-          ssh-keyscan -T 10 -H "${{ secrets.CYON_HOST }}" >> ~/.ssh/known_hosts
+          nc -zv -w 10 "${{ secrets.CYON_HOST }}" 22 || echo "Port 22 nicht erreichbar"
+          ssh-keyscan -v -T 10 -H "${{ secrets.CYON_HOST }}" >> ~/.ssh/known_hosts
           echo "ssh-keyscan exit code: $?"
 
       - name: Deploy via rsync
