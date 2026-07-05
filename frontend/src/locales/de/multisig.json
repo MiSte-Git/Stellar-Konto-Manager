@@ -194,7 +194,9 @@
       "signNow": "Jetzt signieren"
     },
     "submitFailed": "Beim Senden ist ein Fehler aufgetreten: {{reason}}",
-    "submitNoExtras": "Keine weiteren Fehlerdetails verfügbar."
+    "submitNoExtras": "Keine weiteren Fehlerdetails verfügbar.",
+    "noAccessToken": "Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.",
+    "notASigner": "Dieses Konto ist kein aktiver Signer dieses Auftrags."
   },
   "secretModal": {
     "options": {

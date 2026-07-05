@@ -194,7 +194,9 @@
       "signNow": "Firma ora"
     },
     "submitFailed": "Si è verificato un errore durante l'invio: {{reason}}",
-    "submitNoExtras": "Nessun ulteriore dettaglio sull'errore disponibile."
+    "submitNoExtras": "Nessun ulteriore dettaglio sull'errore disponibile.",
+    "noAccessToken": "Nessun token di accesso disponibile. Carica prima l'account che è firmatario di questo job.",
+    "notASigner": "Questo account non è un firmatario attivo di questo job."
   },
   "secretModal": {
     "options": {

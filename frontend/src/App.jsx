@@ -178,6 +178,16 @@ function AppShell() {
     }
   }, [location?.search]);
 
+  // Only used when this page was reached without an explicit ?token= (e.g. via
+  // the job list rendered further below with no in-app account context): lets
+  // MultisigJobDetail resolve its own access token, verified against whichever
+  // account is currently active in the app - same fallback source MultisigJobList
+  // itself uses when it isn't given a publicKey prop.
+  let lastActiveAccountId = '';
+  try {
+    lastActiveAccountId = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_LAST_ACCOUNT')) || '';
+  } catch { /* noop */ }
+
   const isMultisigJobListRoute = React.useMemo(() => {
     try {
       return isMultisigJobsListPath(pathname);
@@ -295,7 +305,7 @@ function AppShell() {
         <BugTrackerAdmin />
       ) : multisigJobId ? (
         <div className="max-w-4xl mx-auto p-4">
-          <MultisigJobDetail jobId={multisigJobId} accessToken={multisigJobToken} />
+          <MultisigJobDetail jobId={multisigJobId} accessToken={multisigJobToken} currentPublicKey={lastActiveAccountId || undefined} />
         </div>
       ) : isMultisigJobListRoute ? (
         <div className="max-w-5xl mx-auto p-4">

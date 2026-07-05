@@ -194,7 +194,9 @@
       "signNow": "Signez maintenant"
     },
     "submitFailed": "Une erreur s'est produite lors de l'envoi : {{raison}}",
-    "submitNoExtras": "Aucun détail d'erreur supplémentaire disponible."
+    "submitNoExtras": "Aucun détail d'erreur supplémentaire disponible.",
+    "noAccessToken": "Aucun jeton d'accès disponible. Veuillez d'abord charger le compte qui est signataire de cette tâche.",
+    "notASigner": "Ce compte n'est pas un signataire actif de cette tâche."
   },
   "secretModal": {
     "options": {

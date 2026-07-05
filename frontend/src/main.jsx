@@ -1236,7 +1236,7 @@ function Main() {
           <MultisigJobList
             publicKey={sourcePublicKey}
             onBack={() => setMenuSelection(null)}
-            onOpenDetail={(id, token) => { setActiveJobId(id); setActiveJobToken(token || null); }}
+            onOpenDetail={(id) => { setActiveJobId(id); setActiveJobToken(null); }}
           />
         </div>
       )}

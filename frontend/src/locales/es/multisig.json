@@ -194,7 +194,9 @@
       "signNow": "Firma ahora"
     },
     "submitFailed": "Se produjo un error al enviar: {{reason}}",
-    "submitNoExtras": "No hay más detalles de error disponibles."
+    "submitNoExtras": "No hay más detalles de error disponibles.",
+    "noAccessToken": "No hay ningún token de acceso disponible. Cargue primero la cuenta que es firmante de este trabajo.",
+    "notASigner": "Esta cuenta no es un firmante activo de este trabajo."
   },
   "secretModal": {
     "options": {

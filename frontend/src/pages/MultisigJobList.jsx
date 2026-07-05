@@ -267,16 +267,14 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
                       className="text-blue-700 dark:text-blue-200 hover:underline"
                       onClick={() => {
                         if (onOpenDetail) {
-                          onOpenDetail(j.id, j.accessToken);
+                          onOpenDetail(j.id);
                         } else {
                           try {
-                            // Token als Query-Parameter, damit ein gespeicherter/geteilter
-                            // Link weiterhin funktioniert (B3): nur wer den Link (inkl. Token)
-                            // kennt, kann den Job öffnen.
-                            const base = buildPath(`multisig/jobs/${j.id}`);
-                            const url = j.accessToken
-                              ? `${base}?token=${encodeURIComponent(j.accessToken)}`
-                              : base;
+                            // The job list no longer carries an access token (B3-follow-up),
+                            // so there is nothing to put in the URL here anymore - the detail
+                            // page resolves its own token on demand, verified against the
+                            // account currently loaded in the app.
+                            const url = buildPath(`multisig/jobs/${j.id}`);
                             window.history.pushState({}, '', url);
                             window.dispatchEvent(new PopStateEvent('popstate'));
                           } catch (e) {

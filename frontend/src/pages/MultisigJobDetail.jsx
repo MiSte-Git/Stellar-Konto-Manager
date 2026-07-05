@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getPendingMultisigJob, mergeSignedXdr } from '../utils/multisigApi.js';
+import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobAccessToken } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
 import { Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
@@ -17,28 +17,49 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const [showSecretPrompt, setShowSecretPrompt] = useState(false);
   const [secretInput, setSecretInput] = useState('');
 
-  // The access token (B3) may arrive as a prop (in-app navigation, e.g. from the
-  // job list) or, when this page was opened via a bookmarked/shared link, as a
-  // ?token= query parameter that App.jsx doesn't parse for us in every call site.
-  const effectiveToken = useMemo(
-    () => accessToken || getMultisigJobToken(),
-    [accessToken]
-  );
+  // A job's access token may arrive as a prop (bookmarked/shared link handled
+  // by App.jsx) or as a ?token= query parameter. The job list no longer hands
+  // out tokens at all (anyone who knew the public accountId could otherwise
+  // read every pending job's token straight from the list) - if neither is
+  // present, resolveToken() fetches it on demand, verified server-side against
+  // currentPublicKey being an active signer of the job's account. Cached in a
+  // ref (not state) since it never affects what's rendered by itself.
+  const fetchedTokenRef = useRef(null);
+
+  const resolveToken = useCallback(async () => {
+    if (accessToken) return accessToken;
+    const fromUrl = getMultisigJobToken();
+    if (fromUrl) return fromUrl;
+    if (fetchedTokenRef.current) return fetchedTokenRef.current;
+    if (!currentPublicKey) {
+      throw Object.assign(new Error('multisig:detail.noAccessToken'), { code: 'no_public_key' });
+    }
+    const token = await getMultisigJobAccessToken(jobId, currentPublicKey);
+    fetchedTokenRef.current = token;
+    return token;
+  }, [accessToken, jobId, currentPublicKey]);
 
   const fetchJob = useCallback(async () => {
     if (!jobId) return;
     setLoading(true);
     setError('');
     try {
-      const data = await getPendingMultisigJob(jobId, effectiveToken);
+      const token = await resolveToken();
+      const data = await getPendingMultisigJob(jobId, token);
       setJob(data);
       setInfo('');
     } catch (e) {
-      setError(e?.message || 'fetch_failed');
+      if (e?.code === 'no_public_key') {
+        setError(t('multisig:detail.noAccessToken', 'Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.'));
+      } else if (e?.status === 403) {
+        setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
+      } else {
+        setError(e?.message || 'fetch_failed');
+      }
     } finally {
       setLoading(false);
     }
-  }, [jobId, effectiveToken]);
+  }, [jobId, resolveToken, t]);
 
   useEffect(() => {
     void fetchJob();
@@ -49,13 +70,18 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     setImporting(true);
     setError('');
     try {
-      const data = await mergeSignedXdr({ jobId, signedXdr: importXdr.trim(), accessToken: effectiveToken });
+      const token = await resolveToken();
+      const data = await mergeSignedXdr({ jobId, signedXdr: importXdr.trim(), accessToken: token });
       setJob(data);
       setImportXdr('');
       setInfo(t('multisig:job.detail.signedXdr.success.body', { status: data?.status || '' }));
     } catch (e) {
       const raw = e?.message || 'merge_failed';
-      if (raw === 'mismatched_hash') {
+      if (e?.code === 'no_public_key') {
+        setError(t('multisig:detail.noAccessToken', 'Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.'));
+      } else if (e?.status === 403) {
+        setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
+      } else if (raw === 'mismatched_hash') {
         setError(t('multisig:errors.mismatchedHash'));
       } else {
         setError(raw);
@@ -63,7 +89,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     } finally {
       setImporting(false);
     }
-  }, [importXdr, jobId, effectiveToken, t]);
+  }, [importXdr, jobId, resolveToken, t]);
 
   const collectedSet = useMemo(() => new Set((job?.collectedSigners || []).map((s) => s.publicKey)), [job]);
   const shortPk = useCallback((pk) => {
@@ -108,11 +134,13 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
         publicKey: kp.publicKey(),
         weight: signerMeta.find((s) => s.publicKey === kp.publicKey())?.weight ?? 0,
       }];
+      const token = await resolveToken();
       const merged = await mergeSignedXdr({
         jobId,
         signedXdr: tx.toXDR(),
         clientCollected,
         signers: signerMeta,
+        accessToken: token,
       });
       setJob(merged);
       const st = merged?.status || 'pending_signatures';
@@ -126,11 +154,17 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       setShowSecretPrompt(false);
       setSecretInput('');
     } catch (e) {
-      setError(String(e?.message || 'multisig.jobs.merge_failed'));
+      if (e?.code === 'no_public_key') {
+        setError(t('multisig:detail.noAccessToken', 'Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.'));
+      } else if (e?.status === 403) {
+        setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
+      } else {
+        setError(String(e?.message || 'multisig.jobs.merge_failed'));
+      }
     } finally {
       setLoading(false);
     }
-  }, [job, jobId, canCurrentSign, t]);
+  }, [job, jobId, canCurrentSign, t, resolveToken]);
 
   const handleSignWithSession = useCallback(async () => {
     if (!job) return;

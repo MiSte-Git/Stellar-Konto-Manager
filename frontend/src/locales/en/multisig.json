@@ -194,7 +194,9 @@
       "signNow": "Sign now"
     },
     "submitFailed": "An error occurred while sending: {{reason}}",
-    "submitNoExtras": "No further error details available."
+    "submitNoExtras": "No further error details available.",
+    "noAccessToken": "No access token available. Please load the account that is a signer of this job first.",
+    "notASigner": "This account is not an active signer of this job."
   },
   "secretModal": {
     "options": {

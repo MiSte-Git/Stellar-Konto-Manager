@@ -194,7 +194,9 @@
       "signNow": "Allekirjoita nyt"
     },
     "submitFailed": "Virhe tapahtui lähetettäessä: {{reason}}",
-    "submitNoExtras": "Ei lisätietoja virheestä saatavilla."
+    "submitNoExtras": "Ei lisätietoja virheestä saatavilla.",
+    "noAccessToken": "Käyttötunnusta ei ole saatavilla. Lataa ensin tili, joka on tämän tehtävän allekirjoittaja.",
+    "notASigner": "Tämä tili ei ole tämän tehtävän aktiivinen allekirjoittaja."
   },
   "secretModal": {
     "options": {

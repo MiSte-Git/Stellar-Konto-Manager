@@ -626,7 +626,12 @@ app.get('/api/multisig/jobs', async (req, res) => {
     if (status && multisigStatus.has(String(status))) {
       items = items.filter((j) => j.status === status);
     }
-    res.json(items.map(({ txXdrCurrent, txXdrOriginal, ...meta }) => meta));
+    // accessToken is never included in the list response (B3-follow-up): anyone
+    // who knows a public accountId/signer key could otherwise read every pending
+    // job's token straight out of the list, defeating the per-job token check
+    // below. Clients fetch the token per job via GET /:id/token instead, which
+    // verifies the requester's public key against the account's live signers.
+    res.json(items.map(({ txXdrCurrent, txXdrOriginal, accessToken, ...meta }) => meta));
   } catch (e) {
     console.error('multisig.jobs.list.failed', e);
     res.status(500).json({ error: 'multisig.jobs.list_failed' });
@@ -643,6 +648,46 @@ app.get('/api/multisig/jobs/:id', async (req, res) => {
   } catch (e) {
     console.error('multisig.jobs.get.failed', e);
     res.status(500).json({ error: 'multisig.jobs.get_failed' });
+  }
+});
+
+// Issues a job's access token to a caller who proves - via the account's real,
+// live signer list (never the client-supplied job.signers snapshot) - that the
+// claimed public key is an active signer (weight > 0) of the job's account.
+// This is the only way to obtain a job's token now that the list endpoint no
+// longer includes it.
+app.get('/api/multisig/jobs/:id/token', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = multisigDb.items.find((j) => j.id === id);
+    if (!job) return res.status(404).json({ error: 'not_found' });
+
+    const signerPk = sanitizeHeader(String(req.query.signer || '')).trim();
+    try {
+      StellarSdk.Keypair.fromPublicKey(signerPk);
+    } catch {
+      return res.status(400).json({ error: 'invalid_signer' });
+    }
+
+    const serverForNet = job.network === 'public'
+      ? new StellarSdk.Horizon.Server('https://horizon.stellar.org')
+      : new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
+    let signerMeta;
+    try {
+      const account = await loadAccount(serverForNet, job.accountId);
+      signerMeta = extractSignerMeta(account);
+    } catch {
+      return res.status(403).json({ error: 'forbidden' });
+    }
+    const isActiveSigner = (signerMeta.signers || []).some(
+      (s) => s.publicKey === signerPk && Number(s.weight || 0) > 0
+    );
+    if (!isActiveSigner) return res.status(403).json({ error: 'forbidden' });
+
+    res.json({ accessToken: job.accessToken });
+  } catch (e) {
+    console.error('multisig.jobs.token.failed', e);
+    res.status(500).json({ error: 'multisig.jobs.token_failed' });
   }
 });
 

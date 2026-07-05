@@ -194,7 +194,9 @@
       "signNow": "Potpiši sada"
     },
     "submitFailed": "Došlo je do pogreške prilikom slanja: {{razlog}}",
-    "submitNoExtras": "Nema dodatnih detalja o grešci."
+    "submitNoExtras": "Nema dodatnih detalja o grešci.",
+    "noAccessToken": "Nema dostupnog pristupnog tokena. Prvo učitajte račun koji je potpisnik ovog zadatka.",
+    "notASigner": "Ovaj račun nije aktivni potpisnik ovog zadatka."
   },
   "secretModal": {
     "options": {

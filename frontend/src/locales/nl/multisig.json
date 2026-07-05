@@ -194,7 +194,9 @@
       "signNow": "Nu ondertekenen"
     },
     "submitFailed": "Er is een fout opgetreden bij het verzenden: {{reason}}",
-    "submitNoExtras": "Er zijn geen verdere foutdetails beschikbaar."
+    "submitNoExtras": "Er zijn geen verdere foutdetails beschikbaar.",
+    "noAccessToken": "Geen toegangstoken beschikbaar. Laad eerst het account dat ondertekenaar van deze taak is.",
+    "notASigner": "Dit account is geen actieve ondertekenaar van deze taak."
   },
   "secretModal": {
     "options": {

@@ -563,10 +563,14 @@ if ($method === 'GET' && $path === '/api/multisig/jobs') {
     $page = array_slice($items, $offset, $limit);
 
     $page = array_map('summarizeJob', $page);
-    // hide raw XDR in list
+    // hide raw XDR in list; accessToken is never included either (B3-follow-up):
+    // anyone who knows a public accountId/signer key could otherwise read every
+    // pending job's token straight out of the list, defeating the per-job token
+    // check below. Clients fetch the token per job via GET /:id/token instead,
+    // which verifies the requester's public key against the account's live signers.
     $out = array_map(function ($j) {
         $c = $j;
-        unset($c['txXdrCurrent'], $c['txXdrOriginal']);
+        unset($c['txXdrCurrent'], $c['txXdrOriginal'], $c['accessToken']);
         return $c;
     }, $page);
     header('X-Total-Count: ' . $total);
@@ -584,6 +588,41 @@ if ($method === 'GET' && ($m = matchRoute($path, '/api/multisig/jobs/:id'))) {
         }
     }
     return sendJson(['error' => 'not_found'], 404);
+}
+
+// GET /api/multisig/jobs/:id/token - issues a job's access token to a caller
+// who proves, via the account's real, live signer list (never the stored
+// job.signers snapshot), that the claimed public key is an active signer
+// (weight > 0) of the job's account. This is the only way to obtain a job's
+// token now that the list endpoint no longer includes it.
+if ($method === 'GET' && ($m = matchRoute($path, '/api/multisig/jobs/:id/token'))) {
+    $id = $m['id'] ?? '';
+    $signerPk = trim((string)($_GET['signer'] ?? ''));
+    try {
+        KeyPair::fromAccountId($signerPk);
+    } catch (\Throwable $e) {
+        return sendJson(['error' => 'invalid_signer'], 400);
+    }
+
+    $items = loadJobs($jobFile);
+    $job = null;
+    foreach ($items as $j) {
+        if (($j['id'] ?? '') === $id) { $job = $j; break; }
+    }
+    if (!$job) return sendJson(['error' => 'not_found'], 404);
+
+    $net = $job['network'] ?? 'public';
+    $meta = fetchAccountSignersCached($job['accountId'] ?? '', $net);
+    $isActiveSigner = false;
+    foreach ($meta['signers'] ?? [] as $s) {
+        if (($s['publicKey'] ?? '') === $signerPk && (int)($s['weight'] ?? 0) > 0) {
+            $isActiveSigner = true;
+            break;
+        }
+    }
+    if (!$isActiveSigner) return sendJson(['error' => 'forbidden'], 403);
+
+    return sendJson(['accessToken' => $job['accessToken'] ?? '']);
 }
 
 // POST /api/multisig/jobs/:id/merge-signed-xdr
