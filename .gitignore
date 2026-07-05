@@ -49,8 +49,6 @@ api/composer-setup.php
 api/data/*
 !api/data/.htaccess
 
-frontend/SSH_Cyon
-frontend/SSH_Cyon.pub
 *.pem
 *.key
 *.ppk
