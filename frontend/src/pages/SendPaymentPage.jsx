@@ -191,6 +191,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [memoType, setMemoType] = useState('text'); // 'none' | 'text' | 'id' | 'hash' | 'return'
   const [memoVal, setMemoVal] = useState('');
   const [showSecretModal, setShowSecretModal] = useState(false);
+  const [secretModalPrefill, setSecretModalPrefill] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showOptionInfo, setShowOptionInfo] = useState(false);
   const [confirmChoice, setConfirmChoice] = useState('job');
@@ -231,6 +232,24 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setForceSignerCount(null);
     setSecretReturnTo('');
   }, []);
+
+  // Pre-fills the secret modal's inputs with any secret(s) already remembered
+  // for this account/session. Decryption is async (Web Crypto), so this can't
+  // happen inline in the render below - it resolves into state just before/as
+  // the modal becomes visible instead.
+  useEffect(() => {
+    let cancelled = false;
+    if (!showSecretModal || !publicKey) {
+      setSecretModalPrefill([]);
+      return undefined;
+    }
+    (async () => {
+      const map = await getSessionSecrets(publicKey);
+      if (!cancelled) setSecretModalPrefill(Object.values(map));
+    })();
+    return () => { cancelled = true; };
+  }, [showSecretModal, publicKey]);
+
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
   const [ambiguousSubmission, setAmbiguousSubmission] = useState(null); // { hash } - set when a submit's outcome could not be confirmed
@@ -795,7 +814,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         setError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
         return;
       }
-      const saved = getSessionSecret(publicKey, publicKey);
+      const saved = await getSessionSecret(publicKey, publicKey);
       let storedSigner = null;
       try {
         storedSigner = saved ? Keypair.fromSecret(saved) : null;
@@ -1141,7 +1160,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       setError(memoErr?.message || t('errors:unknown', 'Unbekannter Fehler'));
       return;
     }
-    const saved = getSessionSecret(publicKey, publicKey);
+    const saved = await getSessionSecret(publicKey, publicKey);
     if (saved) {
       try {
         openReviewDialog([Keypair.fromSecret(saved)], preflightResult);
@@ -2112,7 +2131,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
       {showSecretModal && (
         <SecretKeyModal
-          initialSecretValues={publicKey ? Object.values(getSessionSecrets(publicKey)) : []}
+          initialSecretValues={secretModalPrefill}
           errorMessage={secretError}
           onCancel={closeSecretModal}
           thresholds={thresholdsForModal}
@@ -2239,7 +2258,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
               if (remember) {
                 try {
-                  rememberSessionSecrets(publicKey, collected);
+                  await rememberSessionSecrets(publicKey, collected);
                   try { window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: { publicKey } })); } catch { /* noop */ }
                 } catch { /* noop */ }
               }

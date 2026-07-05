@@ -320,7 +320,17 @@ function SecretKeyModal({
           />
           {t('secretKey:remember.label', 'Remember for this session')}
         </label>
-        <p className="text-xs text-gray-500 mt-1">{t('secretKey:remember.hint', "Stored in your browser's session storage until you close this tab — readable by any script running on this page. Never sent to a server.")}</p>
+        <p className="text-xs text-gray-500 mt-1">
+          {t('secretKey:remember.hint', 'Wird verschlüsselt in deiner Sitzung gespeichert. Automatische Löschung nach 15 Minuten ohne Aktivität oder beim Schließen des Tabs. Schützt nicht vor aktivem Schadcode auf dieser Seite (XSS).')}
+          {' '}
+          <span
+            className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-gray-400 text-[10px] font-bold text-gray-600 dark:border-gray-500 dark:text-gray-300 cursor-help"
+            title={t('secretKey:remember.xssTooltip', 'XSS (Cross-Site Scripting) bedeutet: Schadcode, der über eine Sicherheitslücke auf dieser Seite ausgeführt wird. Gegen aktiven Schadcode kann keine Speichermethode vollständig schützen.')}
+            aria-label={t('secretKey:remember.xssTooltip', 'XSS (Cross-Site Scripting) bedeutet: Schadcode, der über eine Sicherheitslücke auf dieser Seite ausgeführt wird. Gegen aktiven Schadcode kann keine Speichermethode vollständig schützen.')}
+          >
+            ?
+          </span>
+        </p>
 
         <p className="text-xs text-gray-500 mt-2">{t('secretKey:info', 'Enter your secret key only if you want to sign transactions. Without it, you can only view data.')}</p>
 

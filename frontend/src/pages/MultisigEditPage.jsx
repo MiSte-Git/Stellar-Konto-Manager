@@ -91,7 +91,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     return [...master, ...others];
   }, [defaultPublicKey, masterWeight, signers]);
 
-  const getSessionSecretForAccount = useCallback((pk) => {
+  const getSessionSecretForAccount = useCallback(async (pk) => {
     if (!pk) return '';
     return getSessionSecret(pk, pk);
   }, []);
@@ -383,7 +383,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       let preparedTx = tx;
       const pk = (defaultPublicKey || '').trim();
       const initialCollected = [];
-      const sessionSecret = getSessionSecretForAccount(pk);
+      const sessionSecret = await getSessionSecretForAccount(pk);
       if (sessionSecret) {
         try {
           const kp = Keypair.fromSecret(sessionSecret);

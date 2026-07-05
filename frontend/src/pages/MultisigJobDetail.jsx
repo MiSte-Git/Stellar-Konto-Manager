@@ -172,7 +172,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       setError(t('multisig:detail.signatures.missing', 'fehlt'));
       return;
     }
-    const secret = getSessionSecret(job?.accountId || '', currentPublicKey);
+    const secret = await getSessionSecret(job?.accountId || '', currentPublicKey);
     if (!secret) {
       setError(t('multisig:detail.noSessionSecret', 'Kein Secret Key im Browser gespeichert. Bitte Secret eingeben oder signiertes XDR importieren.'));
       setShowSecretPrompt(true);
