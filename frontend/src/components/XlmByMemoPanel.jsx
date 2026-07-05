@@ -5,8 +5,13 @@ import { getHorizonServer } from "../utils/stellar/stellarUtils";
 import ProgressBar from "../components/ProgressBar.jsx";
 import { formatLocalDateTime, formatElapsedMmSs } from '../utils/datetime';
 import { buildDefaultFilename } from '../utils/filename';
-import { sumIncomingXLMByMemoNoCacheExact_Hybrid as sumIncomingXLMByMemoNoCacheExact } from "../utils/stellar/queryUtils";
+import { sumIncomingXLMByMemoNoCacheExact_Hybrid as sumIncomingXLMByMemoNoCacheExact, withRetry } from "../utils/stellar/queryUtils";
 import { getNewestCreatedAt } from '../utils/db/indexedDbClient';
+
+// Message queryUtils.js/handleCancel use to signal a user-initiated abort -
+// never shown as an error, in any of the 4 scan operations.
+const ABORT_MESSAGE = 'submitTransaction.failed:cache.backfill.aborted';
+const isAbortError = (e) => e?.message === ABORT_MESSAGE;
 
 // Erlaubte Payment-Operationen (Modulweit; stabil für Hooks)
 const PAY_TYPES = new Set([
@@ -49,6 +54,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   const [resultAmount, setResultAmount] = useState(null);
   const [lastPaymentISO, setLastPaymentISO] = useState(null);
   const rowsRef = useRef([]); // Trefferzeilen für Export „Treffer (Memo)“
+  const [exportLoading, setExportLoading] = useState(false);
   // Für Extra-Auswertung: Zahlungen mit falschem/leerem Memo
   const [wrongRows, setWrongRows] = useState([]);
   const [wrongLoading, setWrongLoading] = useState(false);
@@ -289,7 +295,10 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
         incomingOverview: res.incomingOverview || p.incomingOverview
       }));
     } catch (e) {
-      setErrorKey(e?.message || 'error.xlmByMemo.paymentsFetch');
+      // User-initiated cancellation (handleCancel) is not an error - show
+      // nothing instead of leaking queryUtils.js's internal, untranslated
+      // abort message (was previously displayed raw to the user).
+      setErrorKey(isAbortError(e) ? '' : (e?.message || 'error.xlmByMemo.paymentsFetch'));
       const newestISO = await getNewestCreatedAt(publicKey);
       setLastPaymentISO(newestISO);
       setProg((p) => ({
@@ -345,7 +354,10 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
 
   // Export: Alle eingehenden nativen Payments im Zeitraum (inkl. memo) mit robustem Nachladen
   const handleExportCsv = useCallback(async () => {
+    setExportLoading(true);
     try {
+      abortRef.current = new AbortController();
+      const { signal } = abortRef.current;
       const fromISO = toUTCISO(fromDate, fromTime, tz, ROLE.FROM);
       const toISOExc = plus1sIso(toUTCISO(toDate, toTime, tz, ROLE.TO));
 
@@ -356,12 +368,12 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       setProg(p => ({ ...p, phase: 'export', progress: 0, etaMs, page: 0 }));
 
       // Ungefilterter Export: alle Operations für den Account im Zeitraum
-      let page = await server
+      let page = await withRetry(() => server
         .operations()
         .forAccount(publicKey)
         .order('desc')
         .limit(200)
-        .call();
+        .call());
 
       const rows = [];
       const pending = []; // fehlende Memos ggf. nachladen
@@ -373,6 +385,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       ];
 
       while (!stop) {
+        if (signal.aborted) throw new Error(ABORT_MESSAGE);
         const recs = page?.records || [];
         for (const r of recs) {
           const created = r.created_at || r?.transaction?.created_at || '';
@@ -435,7 +448,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
         if (stop || !page.next) break;
         pages += 1;
         if (pages % 5 === 0) setProg(p => ({ ...p, phase: 'export', page: pages }));
-        page = await page.next();
+        page = await withRetry(() => page.next());
       }
 
       // Fehlende Memos nachladen: effizient über /transactions Feed innerhalb des Fensters
@@ -447,14 +460,15 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
           if (!byHash.has(p.tx_hash)) byHash.set(p.tx_hash, []);
           byHash.get(p.tx_hash).push(p.rowIndex);
         }
-        let pageTx = await server
+        let pageTx = await withRetry(() => server
           .transactions()
           .forAccount(publicKey)
           .order('desc')
           .limit(200)
-          .call();
+          .call());
         let stopTx = false;
         while (!stopTx && need.size > 0) {
+          if (signal.aborted) throw new Error(ABORT_MESSAGE);
           const trecs = pageTx?.records || [];
           for (const tr of trecs) {
             const created = tr.created_at || '';
@@ -470,7 +484,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
             }
           }
           if (stopTx || !pageTx.next) break;
-          pageTx = await pageTx.next();
+          pageTx = await withRetry(() => pageTx.next());
         }
       }
 
@@ -480,9 +494,10 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
 
       setProg(p => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
     } catch (e) {
-      void e;
-      setErrorKey('exportCsv.failed');
+      setErrorKey(isAbortError(e) ? '' : 'exportCsv.failed');
       setProg(p => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
+    } finally {
+      setExportLoading(false);
     }
   }, [fromDate, fromTime, toDate, toTime, tz, publicKey, server, ROLE.FROM, ROLE.TO, t]);
 
@@ -492,6 +507,8 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   const handleShowWrongMemos = useCallback(async () => {
     try {
       setWrongLoading(true);
+      abortRef.current = new AbortController();
+      const { signal } = abortRef.current;
       setProg(p => ({ ...p, phase: 'scan', progress: 0, page: 0 }));
       setShowWrong(false);
       setWrongRows([]);
@@ -503,14 +520,15 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
 
       // 1) Transaktions-Memos im Zeitfenster vorab einsammeln (Hash -> Memo)
       const txMemo = new Map();
-      let txPage = await server
+      let txPage = await withRetry(() => server
         .transactions()
         .forAccount(publicKey)
         .order('desc')
         .limit(200)
-        .call();
+        .call());
       let txStop = false;
       while (!txStop) {
+        if (signal.aborted) throw new Error(ABORT_MESSAGE);
         const trecs = txPage?.records || [];
         for (const tr of trecs) {
           const created = tr.created_at || '';
@@ -519,7 +537,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
           txMemo.set(tr.hash, tr?.memo != null ? String(tr.memo) : '');
         }
         if (txStop || !txPage.next) break;
-        txPage = await txPage.next();
+        txPage = await withRetry(() => txPage.next());
       }
 
       // 2) Scan über payments; Memo aus txMemo-Map beziehen
@@ -527,16 +545,17 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       const uniq = new Set();
       const qClean = cleanMemo(q);
 
-      let page = await server
+      let page = await withRetry(() => server
         .payments()
         .forAccount(publicKey)
         .order('desc')
         .limit(200)
-        .call();
+        .call());
 
       let stop = false;
       let pages = 0;
       while (!stop) {
+        if (signal.aborted) throw new Error(ABORT_MESSAGE);
         const recs = page?.records || [];
         for (const r of recs) {
           const created = r.created_at || '';
@@ -584,7 +603,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
         if (stop || !page.next) break;
         pages += 1;
         if (pages % 3 === 0) setProg(p => ({ ...p, phase: 'scan', page: pages }));
-        page = await page.next();
+        page = await withRetry(() => page.next());
       }
 
       const sum = rows.reduce((a, r) => a + (parseFloat(r.amount) || 0), 0);
@@ -593,8 +612,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       setShowWrong(true);
       setProg(p => ({ ...p, phase: 'finalize', progress: 1 }));
     } catch (e) {
-      void e;
-      setErrorKey('xlmByMemo.wrongMemos.failed');
+      setErrorKey(isAbortError(e) ? '' : 'xlmByMemo.wrongMemos.failed');
     } finally {
       setWrongLoading(false);
     }
@@ -604,6 +622,8 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
   const handleShowTopLargest = useCallback(async () => {
    try {
    setTopLoading(true);
+   abortRef.current = new AbortController();
+   const { signal } = abortRef.current;
    setProg(p => ({ ...p, phase: 'scan', progress: 0, page: 0 }));
    setShowTop(false);
    setTopRows([]);
@@ -615,14 +635,15 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
 
       // 1) Transaktions-Memos im Zeitfenster einsammeln (Hash -> Memo)
       const txMemo = new Map();
-      let txPage = await server
+      let txPage = await withRetry(() => server
         .transactions()
         .forAccount(publicKey)
         .order('desc')
         .limit(200)
-        .call();
+        .call());
       let txStop = false;
       while (!txStop) {
+        if (signal.aborted) throw new Error(ABORT_MESSAGE);
         const trecs = txPage?.records || [];
         for (const tr of trecs) {
           const created = tr.created_at || '';
@@ -631,21 +652,22 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
           txMemo.set(tr.hash, tr?.memo != null ? String(tr.memo) : '');
         }
         if (txStop || !txPage.next) break;
-        txPage = await txPage.next();
+        txPage = await withRetry(() => txPage.next());
       }
 
       // 2) Zahlungen scannen, passende Memos sammeln
-      let page = await server
+      let page = await withRetry(() => server
         .payments()
         .forAccount(publicKey)
         .order('desc')
         .limit(200)
-        .call();
+        .call());
 
       const rows = [];
       let stop = false;
       let pages = 0;
       while (!stop) {
+        if (signal.aborted) throw new Error(ABORT_MESSAGE);
         const recs = page?.records || [];
         for (const r of recs) {
           const created = r.created_at || '';
@@ -691,7 +713,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
         if (stop || !page.next) break;
         pages += 1;
         if (pages % 3 === 0) setProg(p => ({ ...p, phase: 'scan', page: pages }));
-        page = await page.next();
+        page = await withRetry(() => page.next());
       }
 
       // 3) Top 20 nach Betrag
@@ -702,21 +724,33 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       setShowTop(true);
       setProg(p => ({ ...p, phase: 'finalize', progress: 1 }));
     } catch (e) {
-      void e;
-      setErrorKey('error.xlmByMemo.failedUnknown');
+      setErrorKey(isAbortError(e) ? '' : 'error.xlmByMemo.failedUnknown');
     } finally {
       setTopLoading(false);
     }
   }, [fromDate, fromTime, toDate, toTime, tz, memoQuery, publicKey, server, cleanMemo, ROLE.FROM, ROLE.TO]);
 
-  // Bricht laufende Requests ab und beendet die UI sauber.
+  // Bricht laufende Requests ab und beendet die UI sauber. Da immer nur eine
+  // der 4 Scan-Operationen gleichzeitig laufen kann (siehe isBusy unten),
+  // gehört der abgebrochene Lauf immer zu genau einem dieser Flags - alle
+  // vier hier sofort zurückzusetzen ist harmlos und macht den Button sofort
+  // wieder nutzbar, statt auf den asynchronen Abbruch der Schleife zu warten.
   // Sichtbarer Text kommt aus i18n (progress.canceled).
   const handleCancel = () => {
     try { abortRef.current?.abort(); } catch {void 0;}
     setIsLoading(false);
+    setExportLoading(false);
+    setWrongLoading(false);
+    setTopLoading(false);
     setProg((p) => ({ ...p, phase: 'finalize', progress: 1, etaMs: 0 }));
     startedAtRef.current = 0;
   };
+
+  // Gegenseitige Sperre (Fund #11-8): solange irgendeine der 4 Operationen
+  // läuft, werden alle 4 Buttons deaktiviert - verhindert parallele Scans,
+  // die sich sonst dieselbe Fortschrittsanzeige/denselben Abort-Controller
+  // streitig machen würden.
+  const isBusy = isLoading || exportLoading || wrongLoading || topLoading;
 
   return (
     <div className="p-4 rounded-xl border">
@@ -887,20 +921,20 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
       <button
         className="mt-4 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
         onClick={handleCalculate}
-        disabled={isLoading || !memoQuery}
+        disabled={isBusy || !memoQuery}
       >
         {isLoading ? t("xlmByMemo:action.loading") : t("xlmByMemo:action.calculate")}
       </button>
 
       {/* Export */}
       <div className="mt-2 flex items-start gap-3">
-        <button onClick={handleExportCsv} className="btn btn-secondary">
+        <button onClick={handleExportCsv} className="btn btn-secondary disabled:opacity-50" disabled={isBusy}>
           {t('xlmByMemo:export.csvAll')}
         </button>
         <button
           onClick={handleShowWrongMemos}
           className="px-2 py-1 text-sm rounded border bg-amber-600 text-white hover:bg-amber-500 disabled:opacity-50"
-          disabled={wrongLoading || !memoQuery}
+          disabled={isBusy || !memoQuery}
           title={t('xlmByMemo:wrongMemos.hint')}
         >
           {t('xlmByMemo:wrongMemos.button')}
@@ -910,7 +944,7 @@ export default function XlmByMemoPanel({ publicKey, horizonUrl = "https://horizo
         <button
           onClick={handleShowTopLargest}
           className="px-2 py-1 text-sm rounded border bg-emerald-700 text-white hover:bg-emerald-600 disabled:opacity-50"
-          disabled={topLoading || !memoQuery}
+          disabled={isBusy || !memoQuery}
         >
           {t('xlmByMemo:topLargest.button')}
         </button>
