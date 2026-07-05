@@ -69,7 +69,7 @@
     "button": "Report error",
     "title": "Report error",
     "descLabel": "Short Description (optional)",
-    "descPlaceholder": "Was ist passiert? Schritte, erwartetes Verhalten …",
+    "descPlaceholder": "What happened? Steps, expected behavior …",
     "send": "Send feedback",
     "cancel": "Cancel",
     "toast": {
@@ -159,7 +159,7 @@
       },
       "rejectionReason": {
         "label": "Reason",
-        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
+        "required": "Please provide a reason if the status is \"Declined\"."
       },
       "secretVisibilityToggle": "Show/Hide Admin Secret"
     }
@@ -215,7 +215,7 @@
     "message": "Message",
     "contactEmailOptional": "Contact email (optional)",
     "emailPlaceholder": "e.g., name@example.com",
-    "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
+    "emailHint": "If you would like a reply, please enter your email.",
     "form": {
       "clearButton": "Clear fields",
       "multiEntryHint": "Please create only one message per error, suggestion, or idea to keep the editing process clear and organized."
@@ -241,7 +241,7 @@
     "invalid": "Invalid emitter address."
   },
   "main": {
-    "processing": "Vorgang läuft, bitte warten …",
+    "processing": "Processing, please wait …",
     "title": "Stellar Account Manager"
   },
   "badges": {
@@ -287,7 +287,7 @@
     "oldest": "oldest date on this page: {{date}}",
     "oldestMatchInRangeAt": "First deposit in the period: {{date}}",
     "phase": {
-      "backfill": "Lade fehlende Zahlungen…",
+      "backfill": "Loading missing payments…",
       "cacheQuery": "Calculating result from local cache…",
       "chunkDone": "Chunk processed.",
       "chunkSkip": "Chunk skipped.",
@@ -301,10 +301,10 @@
       "scan": "Scanning payments (page {{page}})…",
       "scan_ops": "Scanne Operationen…",
       "scan_payments": "Scanning payments (page {{page}})…",
-      "scan_payments_fast": "Scanne Zahlungen (schnell) – Seite {{page}}…",
+      "scan_payments_fast": "Scanning payments (fast) – page {{page}}…",
       "scan_tx": "Scan transactions",
-      "sync": "Synchronisiere Zahlungen…",
-      "txFetch": "Lade Transaktionsdetails…",
+      "sync": "Syncing payments…",
+      "txFetch": "Loading transaction details…",
       "done": "Done"
     },
     "wrongMemos": {
@@ -320,7 +320,7 @@
     "network": {
       "title": "Network",
       "desc": "Optional: Full-History Horizon for deep history",
-      "fullUrl": "Full-History Horizon URL",
+      "fullUrl": "Full-history Horizon URL",
       "autoUseFull": "Automatically use if necessary (when the From-Date is older than the server history)"
     },
     "description": "Currently, there are no settings yet.",
@@ -477,51 +477,51 @@
     "infoButtonLabel": "Information",
     "info": {
       "title": "What is a Muxed account?",
-      "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
-      "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
+      "intro1": "A Muxed account combines a regular account address (G-address) with an additional 64-bit Muxed ID.",
+      "intro2": "Technically it is an alias that always points to the same base account but is uniquely distinguishable via the ID.",
       "purposeTitle": "Purpose and Benefits",
-      "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
-      "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
+      "purposeText": "Muxed accounts are used to manage many sub-accounts under a single Stellar address – ideal when many deposits/withdrawals run through a shared main account, but each transaction must be assigned to a person, department, or project.",
+      "examplesTitle": "Examples – what are Muxed accounts useful for?",
       "examples": {
-        "ex1": "Firmenzahlungen: Jede Mitarbeiterin/jeder Mitarbeiter erhält eine eigene Muxed‑ID, damit Lohnzahlungen eindeutig zugeordnet werden können.",
-        "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
+        "ex1": "Company payments: Every employee gets their own Muxed ID so salary payments can be uniquely assigned.",
+        "ex2": "Exchanges or platforms: Each user gets their own Muxed ID so deposits via a shared wallet are booked correctly automatically.",
         "ex3": "Projects or sub-accounts: An organization can allocate budgets or revenues to individual projects.",
-        "ex4": "Kundenzuordnung: Eine M‑Adresse pro Kunde; die ID entspricht der Kunden‑ID – Zahlungen sind eindeutig zuordenbar, auch ohne Memo.",
+        "ex4": "Customer assignment: One M-address per customer; the ID matches the customer ID – payments can be clearly assigned, even without a memo.",
         "ex5": "Services without memos: Differentiate deposits when the service does not support memos.",
-        "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
-        "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
+        "ex6": "Payouts/payroll runs: One M-address per employee/partner for internal accounting and reports.",
+        "ex7": "Shop/orders: One M-address per order; refunds can be matched to the order.",
         "ex8": "Departments/Cost Centers: IDs as cost centers; automatically group payments by area.",
-        "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
+        "ex9": "Multi-tenant services: Every tenant gets their own M-address under the same base account."
       },
       "pageTitle": "What this page does in the SKM",
-      "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
-      "createTitle": "Neue Muxed‑Konten erstellen",
+      "pageDesc": "This page is for managing the Muxed accounts of your currently selected Stellar account:",
+      "createTitle": "Create new Muxed accounts",
       "createItems": {
-        "i1": "Erzeugt neue Muxed‑Adressen (M...) aus deiner Basisadresse (G...).",
+        "i1": "Creates new Muxed addresses (M...) from your base address (G...).",
         "i2": "Optional with label (Name) and note (z. B. Projekt oder Zweck)."
       },
-      "importTitle": "Import aus CSV‑Dateien",
+      "importTitle": "Import from CSV files",
       "importItems": {
-        "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
+        "i1": "Bulk-create Muxed accounts, e.g. from an employee list.",
         "i2": "Read columns muxedId, label, note."
       },
-      "exportTitle": "Export vorhandener Muxed‑Konten",
+      "exportTitle": "Export existing Muxed accounts",
       "exportItems": {
         "i1": "Export all saved entries as CSV.",
         "i2": "Fields: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
       },
       "templateTitle": "Template‑Export",
       "templateItems": {
-        "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
-        "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
+        "i1": "Creates an empty CSV file with the column headers muxedId,label,note.",
+        "i2": "Useful for HR or accounting departments to prepare new entries."
       },
       "manageTitle": "Management & Overview",
       "manageItems": {
-        "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
-        "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
+        "i1": "All saved Muxed addresses are shown in a table.",
+        "i2": "Selection, deletion, and label/note management directly possible."
       },
       "shortTitle": "In short",
-      "shortText": "Muxed‑Konten machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
+      "shortText": "Muxed accounts make your Stellar account fine-grained and traceable – ideal for organizations that process many payments through a central account but still want to assign every transaction unambiguously."
     },
     "selectBaseAccount": "Basic account (G-Adresse)",
     "selectPlaceholder": "Please select an account",
@@ -701,7 +701,7 @@
       "tokenShort": "Token: {{token}}"
     },
     "missingPublicKey": "Public key missing.",
-    "moreTruncated": "… und {{extra}} weitere Gruppen",
+    "moreTruncated": "… and {{extra}} more groups",
     "toWallet": "to Wallet: {{address}}",
     "total": "Number of tokens purchased: {{count}}",
     "totalTokens": "Number of invested tokens (Assets): {{count}}",
@@ -712,7 +712,7 @@
     "view": {
       "label": "Filter by:",
       "memo": "Memos",
-      "token": "Token (gekaufte Menge)"
+      "token": "Token (amount purchased)"
     },
     "toggles": {
       "showTotals": "Total sum",
@@ -728,7 +728,7 @@
     },
     "history": {
       "availableFrom": "Server (Horizon) – History from",
-      "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+      "hintFullHistory": "Note: The ledger history from the Horizon server only goes back to {{available}}. Only data up to that point is shown. The selected from-date is therefore limited. Older data requires a (usually paid) full-history provider (may come in the future!)."
     }
   },
   "network": {
@@ -835,7 +835,7 @@
     "blockchain": {
       "title": "Blockchain",
       "original": "Blockchain",
-      "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
+      "short": "Shared digital ledger – many computers store the same entries.",
       "desc": "A blockchain is like a digital ledger. Many computers store the same entries, so no one can secretly alter anything."
     },
     "wallet": {
@@ -859,7 +859,7 @@
     "publicKey": {
       "title": "Public key",
       "original": "Public Key",
-      "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+      "short": "Address you may share; on Stellar usually the G-address.",
       "desc": "The public key is the address you are allowed to show. In Stellar, this is the G-address. Others use it to send you money."
     },
     "privateKey": {
@@ -871,13 +871,13 @@
     "addressFederation": {
       "title": "Federation address",
       "original": "Federation Address",
-      "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+      "short": "Short address like an email, points to a G-address.",
       "desc": "A federation address looks like an email. Example: name*domain.com. This short address points to a regular G address. It is easier to remember."
     },
     "addressMuxed": {
       "title": "Muxed account",
       "original": "Muxed Account",
-      "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
+      "short": "M-address with an additional ID – shares a base account.",
       "desc": "An M-address points to an existing Stellar account but additionally has its own number (ID). This allows, for example, for distinguishing between multiple people or departments under the same G-address. Technically, the money still belongs to the main account."
     },
     "multisig": {
@@ -913,7 +913,7 @@
     "mainnet": {
       "title": "Mainnet",
       "original": "Mainnet",
-      "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+      "short": "Real Stellar network with real value.",
       "desc": "The real Stellar network with actual value. Transactions are final, and fees are paid in genuine XLM."
     },
     "testnet": {
@@ -949,13 +949,13 @@
     "horizon": {
       "title": "Horizon",
       "original": "Horizon",
-      "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+      "short": "API service through which apps talk to Stellar.",
       "desc": "Horizon is the service that allows programs to communicate with the Stellar Blockchain. Our tool queries Horizon to load account balances and transactions."
     },
     "anchor": {
       "title": "Anchor",
       "original": "Anchor",
-      "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+      "short": "Company that connects fiat money with Stellar.",
       "desc": "An anchor is a company that connects real money such as Euro or Dollar with Stellar. For example, you give the anchor Euros and receive a Euro token on Stellar in return."
     },
     "exchange": {
@@ -985,13 +985,13 @@
     "protocolUpdate": {
       "title": "Protocol Update",
       "original": "Protocol Update",
-      "short": "Aktualisierung der Netzwerk‑Regeln.",
+      "short": "Update of the network rules.",
       "desc": "A protocol update is an upgrade of the rules in the Stellar network, such as new features or security changes. All nodes in the network must use the same rules."
     },
     "soroban": {
       "title": "Soroban",
       "original": "Soroban",
-      "short": "Stellars Smart‑Contract‑System.",
+      "short": "Stellar's smart contract system.",
       "desc": "Soroban is the smart contract system of Stellar. A smart contract is program code on the blockchain. The code can independently verify rules and trigger actions without a bank in between."
     },
     "missingKey": "Missing glossary key: {{detail}}"
@@ -1082,7 +1082,7 @@
       "button": "Top 20 Entries (Memo)",
       "clipboard": "Copy to clipboard",
       "csv": "Download CSV",
-      "scanning": "… scannt Top-Eingänge",
+      "scanning": "… scanning top incoming payments",
       "title": "Top 20 entries for memo during the period"
     },
     "tz": {
@@ -1108,7 +1108,7 @@
       "csv": "Download CSV",
       "failed": "Error loading payments with incorrect/empty memo.",
       "hint": "Filters incoming payments within the period and displays senders with incorrect/empty memos.",
-      "scanning": "… scannt falsche/leere Memos",
+      "scanning": "… scanning wrong/empty memos",
       "summary": "Count: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
       "title": "False/Empty Memos in the Time Period"
     }

@@ -14,7 +14,7 @@
       "stats": {
         "achievements": "Insignia: {{count}} Quiz(e)",
         "progress": "Progreso: {{count}} Cuestionarios(e)",
-        "settings": "Einstellungen: {{count}} Quiz(e)"
+        "settings": "Configuración: {{count}} cuestionario(s)"
       },
       "title": "Vista previa"
     },

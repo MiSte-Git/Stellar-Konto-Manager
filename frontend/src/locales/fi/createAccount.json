@@ -35,7 +35,7 @@
       "text": "Julkinen avain voidaan jakaa turvallisesti – se on kuin tilinumero.\n\nSalainen avain antaa pääsyn tiliisi. Kohtele sitä kuin salasanaa:\n• ÄLÄ KOSKAAN tallenna sitä pilvipalveluihin, sähköposteihin tai turvattomiin muistiinpanoihin\n• Kirjoita se paperille tai käytä laitteistolompakkoa\n• Luo useita varmuuskopioita ja säilytä ne turvallisissa, erillisissä paikoissa\n• Jos salainen avain katoaa, pääsy tilille menetetään pysyvästi"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
+      "title": "Multisig (Moniallekirjoitus)",
       "text": "Moniallekirjoituksen avulla voit määrittää useita allekirjoittajia tilillesi. Tapahtumat vaativat sitten allekirjoituksia useilta avaimilta (multisig).\n\nEdut:\n• Parannettu turvallisuus (security)\n• Jaetut tilit (shared accounts)\n• Hätäpalautus (emergency recovery)\n\nHUOMIO: Testaa moniallekirjoitus ensin testnetissä ennen kuin otat sen käyttöön pääverkossa! Väärä kokoonpano voi johtaa tilin käyttöoikeuden menettämiseen."
     },
     "diagram": {

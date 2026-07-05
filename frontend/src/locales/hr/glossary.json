@@ -48,7 +48,7 @@
   "publicKey": {
     "title": "Javni ključ",
     "original": "Public Key",
-    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+    "short": "Adresa koju smiješ dijeliti; kod Stellara obično G-adresa.",
     "desc": "Javni ključ je adresa koju smijete dijeliti. U Stellar-u, to je G-adresa. Drugi ga koriste kako bi vam poslali novac."
   },
   "privateKey": {
@@ -60,7 +60,7 @@
   "addressFederation": {
     "title": "Adresa federacije",
     "original": "Federation Address",
-    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+    "short": "Kratka adresa poput e-pošte, upućuje na G-adresu.",
     "desc": "Federacijska adresa izgleda poput e-maila. Primjer: ime*domena.com. Ova kratka adresa pokazuje na regularnu G-adresu. Lakše ju je zapamtiti."
   },
   "addressMuxed": {
@@ -128,7 +128,7 @@
   "mainnet": {
     "title": "Glavna mreža",
     "original": "Mainnet",
-    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "short": "Prava Stellar mreža sa stvarnom vrijednošću.",
     "desc": "Prava Stellar mreža s stvarnom vrijednošću. Transakcije su konačne, a naknade se plaćaju u stvarnim XLM-ima."
   },
   "testnet": {
@@ -188,7 +188,7 @@
   "horizon": {
     "title": "Horizon",
     "original": "Horizon",
-    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "short": "API usluga putem koje aplikacije komuniciraju sa Stellarom.",
     "desc": "Horizon je usluga putem koje programi komuniciraju s Stellar blockchainom. Naš alat upitima komunicira s Horizon-om kako bi učitao stanja računa i transakcije."
   },
   "horizonHistory": {
@@ -397,13 +397,13 @@
   "protocolUpdate": {
     "title": "Ažuriranje protokola",
     "original": "Protocol Update",
-    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "short": "Ažuriranje mrežnih pravila.",
     "desc": "Ažuriranje protokola predstavlja nadogradnju pravila u mreži Stellar, kao što su nove funkcionalnosti ili promjene sigurnosti. Svi čvorovi u mreži moraju koristiti ista pravila."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Stellars Smart‑Contract‑System.",
+    "short": "Stellarov sustav pametnih ugovora.",
     "desc": "Soroban je sustav pametnih ugovora Stellara. Pametni ugovor je programski kod na blockchainu. Kod može neovisno provjeravati pravila i pokretati radnje bez potrebe za posrednikom poput banke."
   },
   "multiSignature": {

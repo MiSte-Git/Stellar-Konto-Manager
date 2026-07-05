@@ -159,7 +159,7 @@
       },
       "rejectionReason": {
         "label": "Reden",
-        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
+        "required": "Geef een reden op als de status \"Afgewezen\" is."
       },
       "secretVisibilityToggle": "Admingeheim verbergen/weergeven"
     }
@@ -215,7 +215,7 @@
     "message": "Bericht",
     "contactEmailOptional": "Contact e-mailadres (optional)",
     "emailPlaceholder": "bijv. naam@voorbeeld.com",
-    "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
+    "emailHint": "Als je een reactie wilt, vul dan je e-mailadres in.",
     "form": {
       "clearButton": "Velden wissen",
       "multiEntryHint": "Maak alstublieft slechts één bericht per fout, suggestie of idee om het bewerkingsproces duidelijk en georganiseerd te houden."
@@ -304,7 +304,7 @@
       "scan_payments_fast": "Scannen van betalingen (schnell) – pagina {{page}}…",
       "scan_tx": "Transacties scannen",
       "sync": "Synchroniseer betalingen…",
-      "txFetch": "Lade Transaktionsdetails…",
+      "txFetch": "Transactiedetails laden…",
       "done": "Klaar"
     },
     "wrongMemos": {
@@ -477,51 +477,51 @@
     "infoButtonLabel": "Informatie",
     "info": {
       "title": "Wat is een gemuxed account?",
-      "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
-      "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
+      "intro1": "Een Muxed-account combineert een normaal accountadres (G-adres) met een extra 64-bit Muxed-ID.",
+      "intro2": "Technisch is het een alias die altijd naar dezelfde basisaccount verwijst, maar via de ID uniek te onderscheiden is.",
       "purposeTitle": "Doel en Voordelen",
-      "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
-      "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
+      "purposeText": "Muxed-accounts dienen om veel subaccounts onder één Stellar-adres te beheren – ideaal wanneer veel stortingen/opnames via een gedeelde hoofdaccount lopen, maar elke transactie aan een persoon, afdeling of project moet worden toegewezen.",
+      "examplesTitle": "Voorbeelden – waarvoor zijn Muxed-accounts nuttig?",
       "examples": {
-        "ex1": "Firmenzahlungen: Jede Mitarbeiterin/jeder Mitarbeiter erhält eine eigene Muxed‑ID, damit Lohnzahlungen eindeutig zugeordnet werden können.",
-        "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
+        "ex1": "Bedrijfsbetalingen: elke medewerker krijgt een eigen Muxed-ID, zodat loonbetalingen eenduidig toegewezen kunnen worden.",
+        "ex2": "Beurzen of platforms: elke gebruiker krijgt een eigen Muxed-ID, zodat stortingen via een gedeelde wallet automatisch correct worden geboekt.",
         "ex3": "Projecten of subrekeningen: Een organisatie kan budgetten of inkomsten toewijzen aan individuele projecten.",
         "ex4": "Klanttoewijzing: één M‑adres per klant; de ID komt overeen met de klant‑ID – betalingen zijn duidelijk toewijsbaar, zelfs zonder memo.",
         "ex5": "Diensten zonder memo's: Onderscheid stortingen wanneer de dienst geen memo's ondersteunt.",
         "ex6": "Uitbetalingen/Loonsverwerking: Eén M‑adres per medewerker/partner voor interne boekhouding en rapportages.",
-        "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
+        "ex7": "Winkel/bestellingen: één M-adres per bestelling; terugbetalingen zijn te koppelen aan de bestelling.",
         "ex8": "Afdelingen/Kostenplaatsen: ID's als kostenplaatsen; betalingen automatisch per gebied groeperen.",
-        "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
+        "ex9": "Multi-tenant diensten: elke tenant krijgt een eigen M-adres onder dezelfde basisaccount."
       },
       "pageTitle": "Wat deze pagina doet in de SKM",
-      "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
-      "createTitle": "Neue Muxed‑Konten erstellen",
+      "pageDesc": "Deze pagina is bedoeld voor het beheren van de Muxed-accounts van je huidig geselecteerde Stellar-account:",
+      "createTitle": "Nieuwe Muxed-accounts aanmaken",
       "createItems": {
-        "i1": "Erzeugt neue Muxed‑Adressen (M...) aus deiner Basisadresse (G...).",
+        "i1": "Genereert nieuwe Muxed-adressen (M...) op basis van je basisadres (G...).",
         "i2": "Optioneel met label (Name) en notitie (z. B. Projekt oder Zweck)."
       },
-      "importTitle": "Import aus CSV‑Dateien",
+      "importTitle": "Importeren uit CSV-bestanden",
       "importItems": {
-        "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
+        "i1": "Bulkaanmaak van Muxed-accounts, bijv. vanuit een medewerkerslijst.",
         "i2": "Lees de kolommen muxedId, label, notitie."
       },
-      "exportTitle": "Export vorhandener Muxed‑Konten",
+      "exportTitle": "Bestaande Muxed-accounts exporteren",
       "exportItems": {
         "i1": "Exporteer alle opgeslagen items als CSV.",
         "i2": "Velden: basePublicKey, muxedId, muxedAddress, label, notitie, aangemaaktOp."
       },
       "templateTitle": "Template‑Export",
       "templateItems": {
-        "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
-        "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
+        "i1": "Maakt een leeg CSV-bestand met de kolomkoppen muxedId,label,note.",
+        "i2": "Nuttig voor HR- of boekhoudafdelingen bij het voorbereiden van nieuwe items."
       },
       "manageTitle": "Beheer & Overzicht",
       "manageItems": {
-        "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
-        "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
+        "i1": "Alle opgeslagen Muxed-adressen worden in een tabel weergegeven.",
+        "i2": "Selecteren, verwijderen en label-/notitiebeheer direct mogelijk."
       },
       "shortTitle": "In het kort.",
-      "shortText": "Muxed‑Konten machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
+      "shortText": "Muxed-accounts maken je Stellar-account fijnmazig en traceerbaar – ideaal voor organisaties die veel betalingen via een centrale account verwerken, maar toch elke transactie eenduidig willen toewijzen."
     },
     "selectBaseAccount": "Basisaccount (G-Adresse)",
     "selectPlaceholder": "Selecteer een account alstublieft.",
@@ -701,7 +701,7 @@
       "tokenShort": "Token: {{token}}"
     },
     "missingPublicKey": "Openbare sleutel ontbreekt.",
-    "moreTruncated": "… und {{extra}} weitere Gruppen",
+    "moreTruncated": "… en {{extra}} meer groepen",
     "toWallet": "naar Wallet: {{address}}",
     "total": "Aantal gekochte tokens: {{count}}",
     "totalTokens": "Aantal geïnvesteerde tokens (Assets): {{count}}",
@@ -712,7 +712,7 @@
     "view": {
       "label": "Filteren op:",
       "memo": "Memo's",
-      "token": "Token (gekaufte Menge)"
+      "token": "Token (gekochte hoeveelheid)"
     },
     "toggles": {
       "showTotals": "Totale som",
@@ -728,7 +728,7 @@
     },
     "history": {
       "availableFrom": "Server (Horizon) – Geschiedenis vanaf",
-      "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+      "hintFullHistory": "Let op: De ledgergeschiedenis van de Horizon-server gaat slechts terug tot {{available}}. Alleen gegevens tot dat moment worden getoond. De gekozen vanaf-datum is daarom beperkt. Voor oudere gegevens is een (meestal betaalde) full-history-provider nodig (komt misschien in de toekomst!)."
     }
   },
   "network": {
@@ -859,7 +859,7 @@
     "publicKey": {
       "title": "Publieke sleutel",
       "original": "Public Key",
-      "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+      "short": "Adres dat je mag delen; bij Stellar meestal het G-adres.",
       "desc": "De openbare sleutel is het adres dat je mag tonen. In Stellar is dit het G-adres. Anderen gebruiken het om je geld te sturen."
     },
     "privateKey": {
@@ -871,7 +871,7 @@
     "addressFederation": {
       "title": "Federatieadres",
       "original": "Federation Address",
-      "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+      "short": "Kort adres zoals een e-mail, verwijst naar een G-adres.",
       "desc": "Een federatieadres lijkt op een e-mailadres. Voorbeeld: naam*domein.com. Dit korte adres verwijst naar een regulier G-adres. Het is gemakkelijker te onthouden."
     },
     "addressMuxed": {
@@ -913,7 +913,7 @@
     "mainnet": {
       "title": "Mainnet",
       "original": "Mainnet",
-      "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+      "short": "Echt Stellar-netwerk met echte waarde.",
       "desc": "Het echte Stellar-netwerk met daadwerkelijke waarde. Transacties zijn definitief en kosten worden betaald in echte XLM."
     },
     "testnet": {
@@ -949,13 +949,13 @@
     "horizon": {
       "title": "Horizon",
       "original": "Horizon",
-      "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+      "short": "API-service waarmee apps met Stellar communiceren.",
       "desc": "Horizon is de dienst die programma's in staat stelt om te communiceren met de Stellar Blockchain. Onze tool bevraagt Horizon om accountbalansen en transacties te laden."
     },
     "anchor": {
       "title": "Anker",
       "original": "Anchor",
-      "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+      "short": "Bedrijf dat fiatgeld met Stellar verbindt.",
       "desc": "Een anchor is een bedrijf dat echt geld, zoals de euro of dollar, met Stellar verbindt. Bijvoorbeeld, je geeft de anchor euro's en ontvangt in ruil daarvoor een euro-token op Stellar."
     },
     "exchange": {
@@ -985,13 +985,13 @@
     "protocolUpdate": {
       "title": "Protocoolupdate",
       "original": "Protocol Update",
-      "short": "Aktualisierung der Netzwerk‑Regeln.",
+      "short": "Update van de netwerkregels.",
       "desc": "Een protocolupdate is een upgrade van de regels in het Stellar-netwerk, zoals nieuwe functies of beveiligingswijzigingen. Alle nodes in het netwerk moeten dezelfde regels gebruiken."
     },
     "soroban": {
       "title": "Soroban",
       "original": "Soroban",
-      "short": "Stellars Smart‑Contract‑System.",
+      "short": "Stellar's systeem voor smart contracts.",
       "desc": "Soroban is het smart contract-systeem van Stellar. Een smart contract is programmacode op de blockchain. De code kan onafhankelijk regels verifiëren en acties uitvoeren zonder dat er een bank tussen zit."
     },
     "missingKey": "Missende woordenlijst sleutel: {{detail}}"

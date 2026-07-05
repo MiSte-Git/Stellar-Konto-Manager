@@ -98,7 +98,7 @@
     "defaultLabel": "Vakioetsin",
     "nameLabel": "Nimi",
     "urlLabel": "URL",
-    "testnetUrlLabel": "Testnet-URL (optional)",
+    "testnetUrlLabel": "Testnet-URL (valinnainen)",
     "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
     "addButton": "Lisää Explorer",
     "removeButton": "Poista",

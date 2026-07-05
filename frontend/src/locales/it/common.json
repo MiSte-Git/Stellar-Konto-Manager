@@ -69,7 +69,7 @@
     "button": "Segnala errore",
     "title": "Segnala errore",
     "descLabel": "Breve Descrizione (optional)",
-    "descPlaceholder": "Was ist passiert? Schritte, erwartetes Verhalten …",
+    "descPlaceholder": "Cos'è successo? Passaggi, comportamento atteso …",
     "send": "Invia feedback",
     "cancel": "Annulla",
     "toast": {
@@ -159,7 +159,7 @@
       },
       "rejectionReason": {
         "label": "Ragione",
-        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
+        "required": "Indica un motivo se lo stato è \"Rifiutato\"."
       },
       "secretVisibilityToggle": "Mostra/Nascondi Segreto Admin"
     }
@@ -215,7 +215,7 @@
     "message": "Messaggio",
     "contactEmailOptional": "Email di contatto (optional)",
     "emailPlaceholder": "ad esempio, nome@esempio.com",
-    "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
+    "emailHint": "Se desideri una risposta, inserisci la tua email.",
     "form": {
       "clearButton": "Cancella campi",
       "multiEntryHint": "Si prega di creare un solo messaggio per ogni errore, suggerimento o idea per mantenere il processo di modifica chiaro e organizzato."
@@ -241,7 +241,7 @@
     "invalid": "Indirizzo di emittente non valido."
   },
   "main": {
-    "processing": "Vorgang läuft, bitte warten …",
+    "processing": "Elaborazione in corso, attendere …",
     "title": "Responsabile Account Stellar"
   },
   "badges": {
@@ -303,8 +303,8 @@
       "scan_payments": "Scansione dei pagamenti (pagina {{page}})…",
       "scan_payments_fast": "Scansiona pagamenti (schnell) – pagina {{page}}…",
       "scan_tx": "Scansiona le transazioni",
-      "sync": "Synchronisiere Zahlungen…",
-      "txFetch": "Lade Transaktionsdetails…",
+      "sync": "Sincronizzazione pagamenti…",
+      "txFetch": "Caricamento dettagli transazione…",
       "done": "Completato"
     },
     "wrongMemos": {
@@ -477,51 +477,51 @@
     "infoButtonLabel": "Informazione",
     "info": {
       "title": "Cos'è un account Muxed?",
-      "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
-      "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
+      "intro1": "Un account Muxed combina un normale indirizzo di conto (indirizzo G) con un ID Muxed aggiuntivo a 64 bit.",
+      "intro2": "Tecnicamente è un alias che punta sempre allo stesso account base, ma che è chiaramente distinguibile tramite l'ID.",
       "purposeTitle": "Scopo e benefici",
-      "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
-      "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
+      "purposeText": "Gli account Muxed servono a gestire molti sottoconti sotto un unico indirizzo Stellar – ideali quando molti depositi/prelievi passano attraverso un conto principale condiviso, ma ogni operazione deve essere assegnata a una persona, un reparto o un progetto.",
+      "examplesTitle": "Esempi: a cosa servono gli account Muxed?",
       "examples": {
-        "ex1": "Firmenzahlungen: Jede Mitarbeiterin/jeder Mitarbeiter erhält eine eigene Muxed‑ID, damit Lohnzahlungen eindeutig zugeordnet werden können.",
-        "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
+        "ex1": "Pagamenti aziendali: ogni dipendente riceve un proprio Muxed ID, così i pagamenti dello stipendio possono essere assegnati in modo univoco.",
+        "ex2": "Exchange o piattaforme: ogni utente riceve un proprio Muxed ID, così i depositi tramite un wallet condiviso vengono registrati automaticamente in modo corretto.",
         "ex3": "Progetti o sottoconti: un'organizzazione può allocare budget o ricavi ai singoli progetti.",
-        "ex4": "Kundenzuordnung: Eine M‑Adresse pro Kunde; die ID entspricht der Kunden‑ID – Zahlungen sind eindeutig zuordenbar, auch ohne Memo.",
+        "ex4": "Assegnazione clienti: un indirizzo M per cliente; l'ID corrisponde all'ID cliente – i pagamenti sono chiaramente assegnabili, anche senza memo.",
         "ex5": "Servizi senza memo: Differenziare i depositi quando il servizio non supporta i memo.",
-        "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
-        "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
+        "ex6": "Pagamenti/stipendi: un indirizzo M per dipendente/partner per la contabilità interna e i report.",
+        "ex7": "Negozio/ordini: un indirizzo M per ordine; i rimborsi possono essere associati all'ordine.",
         "ex8": "Dipartimenti/Centri di costo: ID come centri di costo; raggruppamento automatico dei pagamenti per area.",
-        "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
+        "ex9": "Servizi multi-tenant: ogni tenant riceve un proprio indirizzo M sotto lo stesso account di base."
       },
       "pageTitle": "Che cosa fa questa pagina nel SKM?",
-      "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
-      "createTitle": "Neue Muxed‑Konten erstellen",
+      "pageDesc": "Questa pagina serve per gestire gli account Muxed del tuo account Stellar attualmente selezionato:",
+      "createTitle": "Crea nuovi account Muxed",
       "createItems": {
-        "i1": "Erzeugt neue Muxed‑Adressen (M...) aus deiner Basisadresse (G...).",
+        "i1": "Genera nuovi indirizzi Muxed (M...) a partire dal tuo indirizzo base (G...).",
         "i2": "Facoltativo con etichetta (Name) e nota (z. B. Projekt oder Zweck)."
       },
-      "importTitle": "Import aus CSV‑Dateien",
+      "importTitle": "Importa da file CSV",
       "importItems": {
-        "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
+        "i1": "Creazione massiva di account Muxed, ad es. da un elenco dipendenti.",
         "i2": "Leggi le colonne muxedId, label, note."
       },
-      "exportTitle": "Export vorhandener Muxed‑Konten",
+      "exportTitle": "Esporta account Muxed esistenti",
       "exportItems": {
         "i1": "Esporta tutte le voci salvate come CSV.",
         "i2": "Campi: basePublicKey, muxedId, muxedAddress, etichetta, nota, createdAt."
       },
       "templateTitle": "Template‑Export",
       "templateItems": {
-        "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
-        "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
+        "i1": "Crea un file CSV vuoto con le intestazioni di colonna muxedId,label,note.",
+        "i2": "Utile per i reparti HR o contabilità per preparare nuove voci."
       },
       "manageTitle": "Management & Overview",
       "manageItems": {
-        "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
-        "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
+        "i1": "Tutti gli indirizzi Muxed salvati vengono mostrati in una tabella.",
+        "i2": "Selezione, eliminazione e gestione di etichetta/nota direttamente possibili."
       },
       "shortTitle": "In breve",
-      "shortText": "Muxed‑Konten machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
+      "shortText": "Gli account Muxed rendono il tuo account Stellar granulare e tracciabile – ideali per organizzazioni che gestiscono molti pagamenti tramite un conto centrale ma vogliono comunque assegnare ogni transazione in modo univoco."
     },
     "selectBaseAccount": "Account di base (G-Adresse)",
     "selectPlaceholder": "Si prega di selezionare un account",
@@ -712,7 +712,7 @@
     "view": {
       "label": "Filtra per:",
       "memo": "Promemoria",
-      "token": "Token (gekaufte Menge)"
+      "token": "Token (quantità acquistata)"
     },
     "toggles": {
       "showTotals": "Somma totale",
@@ -835,7 +835,7 @@
     "blockchain": {
       "title": "Blockchain",
       "original": "Blockchain",
-      "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
+      "short": "Registro digitale condiviso: molti computer memorizzano le stesse voci.",
       "desc": "Una blockchain è come un registro digitale. Molti computer memorizzano le stesse voci, quindi nessuno può alterare qualcosa in segreto."
     },
     "wallet": {
@@ -859,7 +859,7 @@
     "publicKey": {
       "title": "Chiave pubblica",
       "original": "Public Key",
-      "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+      "short": "Indirizzo che puoi condividere; su Stellar di solito l'indirizzo G.",
       "desc": "La chiave pubblica è l'indirizzo che puoi mostrare. In Stellar, questo è l'indirizzo G. Altri lo utilizzano per inviarti denaro."
     },
     "privateKey": {
@@ -871,13 +871,13 @@
     "addressFederation": {
       "title": "Indirizzo della Federazione",
       "original": "Federation Address",
-      "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+      "short": "Indirizzo breve come un'email, punta a un indirizzo G.",
       "desc": "Un indirizzo di federazione assomiglia a un'email. Esempio: nome*dominio.com. Questo breve indirizzo punta a un normale indirizzo G. È più facile da ricordare."
     },
     "addressMuxed": {
       "title": "Account muxed",
       "original": "Muxed Account",
-      "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
+      "short": "Indirizzo M con un ID aggiuntivo: condivide un account di base.",
       "desc": "Un indirizzo M punta a un account Stellar esistente ma ha anche un proprio numero (ID). Questo consente, ad esempio, di distinguere tra più persone o dipartimenti sotto lo stesso indirizzo G. Tecnicamente, il denaro appartiene ancora all'account principale."
     },
     "multisig": {
@@ -913,7 +913,7 @@
     "mainnet": {
       "title": "Mainnet",
       "original": "Mainnet",
-      "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+      "short": "Vera rete Stellar con valore reale.",
       "desc": "La rete Stellar reale con valore effettivo. Le transazioni sono definitive e le commissioni vengono pagate in XLM autentico."
     },
     "testnet": {
@@ -949,13 +949,13 @@
     "horizon": {
       "title": "Orizzonte",
       "original": "Horizon",
-      "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+      "short": "Servizio API tramite cui le app comunicano con Stellar.",
       "desc": "Horizon è il servizio che consente ai programmi di comunicare con la Blockchain di Stellar. Il nostro strumento interroga Horizon per caricare i saldi degli account e le transazioni."
     },
     "anchor": {
       "title": "Ancora",
       "original": "Anchor",
-      "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+      "short": "Azienda che collega il denaro fiat con Stellar.",
       "desc": "Un'ancora è un'azienda che collega denaro reale come Euro o Dollaro con Stellar. Ad esempio, fornisci Euro all'ancora e ricevi in cambio un token Euro su Stellar."
     },
     "exchange": {
@@ -985,13 +985,13 @@
     "protocolUpdate": {
       "title": "Aggiornamento del protocollo",
       "original": "Protocol Update",
-      "short": "Aktualisierung der Netzwerk‑Regeln.",
+      "short": "Aggiornamento delle regole di rete.",
       "desc": "Un aggiornamento del protocollo è un miglioramento delle regole nella rete Stellar, come nuove funzionalità o modifiche alla sicurezza. Tutti i nodi nella rete devono utilizzare le stesse regole."
     },
     "soroban": {
       "title": "Soroban",
       "original": "Soroban",
-      "short": "Stellars Smart‑Contract‑System.",
+      "short": "Il sistema di smart contract di Stellar.",
       "desc": "Soroban è il sistema di smart contract di Stellar. Uno smart contract è un codice di programma sulla blockchain. Il codice può verificare autonomamente le regole e attivare azioni senza l'intervento di una banca."
     },
     "missingKey": "Chiave del glossario mancante: {{detail}}"
@@ -1082,7 +1082,7 @@
       "button": "Voci principali (Memo)",
       "clipboard": "Copia negli appunti",
       "csv": "Scarica CSV",
-      "scanning": "… scannt Top-Eingänge",
+      "scanning": "… scansione top entrate",
       "title": "I 20 migliori voci per promemoria durante il periodo"
     },
     "tz": {
@@ -1108,7 +1108,7 @@
       "csv": "Scarica CSV",
       "failed": "Errore nel caricamento dei pagamenti con memo errato/vuoto.",
       "hint": "Filtra i pagamenti in entrata nel periodo e visualizza i mittenti con memo errati o vuoti.",
-      "scanning": "… scannt falsche/leere Memos",
+      "scanning": "… scansione memo errati/vuoti",
       "summary": "Conteggio: {{count}} • Totale: {{sum}} XLM • Portafogli unici: {{unique}}",
       "title": "Promemoria false/vuote nel periodo di tempo"
     }

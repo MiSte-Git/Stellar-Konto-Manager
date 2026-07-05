@@ -27,7 +27,7 @@
       "c.fb": "Ei. Kuka tahansa voi tarkastella tapahtumia."
     },
     "q3": {
-      "question": "Warum sind Blöcke miteinander ‚verkettet‘?",
+      "question": "Miksi lohkot ovat toisiinsa \"ketjutettuja\"?",
       "hint": "Vanhat sivut pitäisi olla vaikeita muuttaa.",
       "a": "Jotta vanhojen tietojen muuttaminen käy hyvin vaikeaksi.",
       "b": "Saadaksesi sovelluksen näyttämään siistimmältä.",
@@ -253,7 +253,7 @@
   "l7": {
     "title": "Turvallisuus, tietojenkalastelu ja luottamus",
     "q1": {
-      "question": "Eine Website will deinen Secret Key, um dein Guthaben zu ‚prüfen‘. Was tust du?",
+      "question": "Verkkosivusto haluaa salaisen avaimesi \"tarkistaakseen\" saldosi. Mitä teet?",
       "hint": "Älä koskaan jaa salaista avaintasi.",
       "a": "Poistu sivulta. Älä koskaan syötä salaista avainta.",
       "b": "Syötä, mutta vain kerran.",
@@ -283,7 +283,7 @@
       "c.fb": "Ei. Älä koskaan jaa salausavaintasi. KYC ei tarvitse sitä."
     },
     "q4": {
-      "question": "Was ist ein ‚Zero-Knowledge Proof‘ (ZK) in einfachen Worten?",
+      "question": "Mikä on \"Zero-Knowledge Proof\" (ZK) yksinkertaisesti sanottuna?",
       "hint": "Todista, että tiedät jotain paljastamatta salaisuutta.",
       "a": "Todiste siitä, että jokin on totta paljastamatta salaisuutta.",
       "b": "Työkalu, joka piilottaa kaikki tapahtumat ikuisesti.",

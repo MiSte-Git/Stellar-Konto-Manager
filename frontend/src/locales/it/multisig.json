@@ -25,17 +25,17 @@
         "desc": "Flusso di lavoro standard per multisig produttivo. Crea un ID lavoro e raccoglie firme in modo distribuito.",
         "short": "Crea un lavoro multisig (Job-ID) e raccoglie firme distribuite.",
         "moreInfo": "Maggiori informazioni",
-        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoTitle": "Come funziona \"Crea lavoro multisig\"?",
         "infoBody": {
           "one": "La transazione viene memorizzata come un lavoro multisig nel backend e riceve un ID lavoro. Non viene inviato nulla direttamente.",
-          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "two": "Tutti i firmatari successivi aprono la voce di menu \"Ordini multisig\" nella loro istanza SKM, caricano il lavoro e firmano.",
           "three": "Una volta che sono state raccolte abbastanza firme (Threshold erreicht), la transazione verrà inviata o può essere inviata.",
-          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+          "four": "Puoi passare l'ID lavoro ad altri firmatari, oppure possono selezionare il lavoro direttamente in \"Ordini multisig\"."
         },
         "steps": {
           "one": "Passo 1: Viene creato un lavoro multisig e riceve un ID lavoro.",
-          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
-          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "two": "Passo 2: tutti i firmatari successivi aprono la voce di menu \"Ordini multisig\" nella loro istanza SKM, caricano il lavoro e firmano.",
+          "three": "Passo 3: il secondo firmatario apre la voce di menu \"Ordini multisig\" nella sua istanza SKM, carica il lavoro e firma.",
           "four": "Passaggio 4: Una volta raccolte abbastanza firme, la transazione viene inviata o può essere inviata."
         }
       },
@@ -44,10 +44,10 @@
         "desc": "Usare solo se tutte le chiavi segrete possono essere inserite in modo sicuro su questo dispositivo (Tests/Recovery/Admin).",
         "warning": "Avviso: Tutte le chiavi segrete vengono raccolte in questa sessione. Utilizzare solo su dispositivi fidati.",
         "moreInfo": "Ulteriori informazioni",
-        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoTitle": "Come funziona \"Tutte le firme in locale\"?",
         "infoBody": {
           "one": "Devi inserire tutte le chiavi segrete richieste su questo dispositivo in sequenza fino a raggiungere la soglia.",
-          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "two": "Questo non è più un flusso multisig distribuito, ma \"multi-chiave su un dispositivo\" – usalo solo su dispositivi fidati.",
           "three": "Una volta raccolte abbastanza firme, la transazione viene inviata direttamente a Horizon (ohne Multisig-Job)."
         }
       },
@@ -81,8 +81,8 @@
         "infoTitle": "Cosa bisogna fare adesso",
         "info": {
           "share": "Inoltra l'ID del lavoro o XDR ai prossimi firmatari (E-Mail, Messenger wie Telegram/WhatsApp).",
-          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
-          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+          "sign": "I firmatari scelgono l'opzione 3 (\"Importa XDR\") e firmano l'XDR, OPPURE aprono la voce di menu \"ID lavoro\" nel SKM, caricano il lavoro e firmano lì.",
+          "submit": "Una volta raccolte firme sufficienti, uno dei firmatari invia infine il lavoro alla rete nel SKM (menu \"ID lavoro\")."
         },
         "copyJobId": "Copia ID lavoro",
         "copiedJobId": "Copiato"
@@ -109,7 +109,7 @@
     "prepareDescription": "Prepara solo XDR per la multisig di produzione. Nulla verrà inviato immediatamente.",
     "prepareButton": "Preparare XDR (nicht senden)"
   },
-  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "jobCreated": "Lavoro multisig creato (ID: {{id}}). Apri \"Ordini multisig\" per vedere lo stato.",
   "errors": {
     "mismatchedHash": "L'XDR firmato non appartiene a questa transazione."
   },
@@ -140,7 +140,7 @@
     }
   },
   "detail": {
-    "title": "Pending-Multisig-Job",
+    "title": "Lavoro multisig in sospeso",
     "idLabel": "ID lavoro",
     "accountLabel": "Account di origine",
     "statusLabel": "Stato",

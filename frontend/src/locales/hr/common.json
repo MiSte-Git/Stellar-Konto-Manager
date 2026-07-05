@@ -69,7 +69,7 @@
     "button": "Prijavi grešku",
     "title": "Prijavi grešku",
     "descLabel": "Kratak opis (optional)",
-    "descPlaceholder": "Was ist passiert? Schritte, erwartetes Verhalten …",
+    "descPlaceholder": "Što se dogodilo? Koraci, očekivano ponašanje …",
     "send": "Pošalji povratne informacije",
     "cancel": "Otkazati",
     "toast": {
@@ -159,7 +159,7 @@
       },
       "rejectionReason": {
         "label": "Razum",
-        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
+        "required": "Molim navedite razlog ako je status „Odbijeno“."
       },
       "secretVisibilityToggle": "Prikaži/Sakrij administratorsku tajnu"
     }
@@ -477,51 +477,51 @@
     "infoButtonLabel": "Informacija",
     "info": {
       "title": "Što je muxed račun?",
-      "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
-      "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
+      "intro1": "Muxed račun kombinira običnu adresu računa (G-adresa) s dodatnim 64-bitnim Muxed ID-om.",
+      "intro2": "Tehnički je to alias koji uvijek upućuje na isti bazni račun, ali je putem ID-a jednoznačno razlučiv.",
       "purposeTitle": "Svrha i koristi",
-      "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
-      "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
+      "purposeText": "Muxed računi služe za upravljanje mnogim podračunima pod jednom Stellar adresom – idealno kada mnoge uplate/isplate prolaze kroz zajednički glavni račun, ali svaka transakcija mora biti dodijeljena osobi, odjelu ili projektu.",
+      "examplesTitle": "Primjeri – čemu služe Muxed računi?",
       "examples": {
         "ex1": "Isplate firmi: Svaka zaposlenica/svaki zaposlenik dobiva vlastiti Muxed‑ID kako bi se plaće mogle jednoznačno dodijeliti.",
-        "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
+        "ex2": "Burze ili platforme: svaki korisnik dobiva vlastiti Muxed ID kako bi se uplate preko zajedničkog novčanika automatski ispravno knjižile.",
         "ex3": "Projekti ili podračuni: Organizacija može raspodijeliti proračune ili prihode na pojedinačne projekte.",
-        "ex4": "Kundenzuordnung: Eine M‑Adresse pro Kunde; die ID entspricht der Kunden‑ID – Zahlungen sind eindeutig zuordenbar, auch ohne Memo.",
+        "ex4": "Dodjela kupcima: jedna M-adresa po kupcu; ID odgovara ID-u kupca – uplate se mogu jasno dodijeliti, čak i bez memoa.",
         "ex5": "Usluge bez memoranduma: Razlikujte depozite kada usluga ne podržava memorandume.",
-        "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
-        "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
+        "ex6": "Isplate/obračun plaća: jedna M-adresa po zaposleniku/partneru za internu knjigovodstvo i izvještaje.",
+        "ex7": "Trgovina/narudžbe: jedna M-adresa po narudžbi; povrati se mogu povezati s narudžbom.",
         "ex8": "Odjeli/Troškovni centri: Identifikacijski brojevi kao troškovni centri; automatski grupirati uplate po području.",
-        "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
+        "ex9": "Multi-tenant usluge: svaki najmoprimac dobiva vlastitu M-adresu pod istim baznim računom."
       },
       "pageTitle": "Što ova stranica radi u SKM-u?",
-      "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
-      "createTitle": "Neue Muxed‑Konten erstellen",
+      "pageDesc": "Ova stranica služi za upravljanje Muxed računima tvog trenutno odabranog Stellar računa:",
+      "createTitle": "Stvori nove Muxed račune",
       "createItems": {
-        "i1": "Erzeugt neue Muxed‑Adressen (M...) aus deiner Basisadresse (G...).",
+        "i1": "Stvara nove Muxed adrese (M...) iz tvoje bazne adrese (G...).",
         "i2": "Opcionalno s oznakom (Name) i napomenom (z. B. Projekt oder Zweck)."
       },
-      "importTitle": "Import aus CSV‑Dateien",
+      "importTitle": "Uvoz iz CSV datoteka",
       "importItems": {
-        "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
+        "i1": "Masovno stvaranje Muxed računa, npr. iz popisa zaposlenika.",
         "i2": "Pročitaj stupce muxedId, label, note."
       },
-      "exportTitle": "Export vorhandener Muxed‑Konten",
+      "exportTitle": "Izvezi postojeće Muxed račune",
       "exportItems": {
         "i1": "Izvezi sve spremljene unose kao CSV.",
         "i2": "Polja: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
       },
       "templateTitle": "Template‑Export",
       "templateItems": {
-        "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
-        "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
+        "i1": "Stvara praznu CSV datoteku sa zaglavljima stupaca muxedId,label,note.",
+        "i2": "Korisno za HR ili računovodstvene odjele za pripremu novih unosa."
       },
       "manageTitle": "Management & Overview",
       "manageItems": {
-        "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
-        "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
+        "i1": "Sve spremljene Muxed adrese prikazane su u tablici.",
+        "i2": "Odabir, brisanje te uređivanje oznake/napomene izravno mogući."
       },
       "shortTitle": "Ukratko",
-      "shortText": "Muxed‑Konten machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
+      "shortText": "Muxed računi čine tvoj Stellar račun finije granuliranim i sljedivim – idealno za organizacije koje obrađuju mnoge uplate preko središnjeg računa, ali ipak žele jednoznačno dodijeliti svaku transakciju."
     },
     "selectBaseAccount": "Osnovni račun (G-Adresse)",
     "selectPlaceholder": "Molimo odaberite račun",
@@ -859,7 +859,7 @@
     "publicKey": {
       "title": "Javni ključ",
       "original": "Public Key",
-      "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+      "short": "Adresa koju smiješ dijeliti; kod Stellara obično G-adresa.",
       "desc": "Javni ključ je adresa koju smijete pokazati. U Stellar sustavu, to je G-adresa. Drugi je koriste kako bi vam poslali novac."
     },
     "privateKey": {
@@ -871,13 +871,13 @@
     "addressFederation": {
       "title": "Adresa federacije",
       "original": "Federation Address",
-      "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+      "short": "Kratka adresa poput e-pošte, upućuje na G-adresu.",
       "desc": "Federativna adresa izgleda kao email. Primjer: ime*domena.com. Ova kratka adresa upućuje na običnu G adresu. Lakše je zapamtiti."
     },
     "addressMuxed": {
       "title": "Promiješani račun",
       "original": "Muxed Account",
-      "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
+      "short": "M-adresa s dodatnim ID-om – dijeli bazni račun.",
       "desc": "M-adresa pokazuje na postojeći Stellar račun, ali dodatno ima svoj vlastiti broj (ID). Ovo omogućava, na primjer, razlikovanje između više osoba ili odjela pod istom G-adresom. Tehnički, novac i dalje pripada glavnom računu."
     },
     "multisig": {
@@ -913,7 +913,7 @@
     "mainnet": {
       "title": "Glavna mreža",
       "original": "Mainnet",
-      "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+      "short": "Prava Stellar mreža sa stvarnom vrijednošću.",
       "desc": "Prava Stellar mreža s stvarnom vrijednošću. Transakcije su konačne, a naknade se plaćaju u pravom XLM-u."
     },
     "testnet": {
@@ -949,13 +949,13 @@
     "horizon": {
       "title": "Horizon",
       "original": "Horizon",
-      "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+      "short": "API usluga putem koje aplikacije komuniciraju sa Stellarom.",
       "desc": "Horizon je usluga koja omogućava programima da komuniciraju sa Stellar Blockchainom. Naš alat ispituje Horizon kako bi učitao stanja na računima i transakcije."
     },
     "anchor": {
       "title": "Sidro",
       "original": "Anchor",
-      "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+      "short": "Tvrtka koja povezuje fiat novac sa Stellarom.",
       "desc": "Anchor je tvrtka koja povezuje stvarni novac, poput eura ili dolara, sa Stellarom. Na primjer, dajete anchoru eure i zauzvrat dobivate euro token na Stellar mreži."
     },
     "exchange": {
@@ -985,13 +985,13 @@
     "protocolUpdate": {
       "title": "Ažuriranje protokola",
       "original": "Protocol Update",
-      "short": "Aktualisierung der Netzwerk‑Regeln.",
+      "short": "Ažuriranje mrežnih pravila.",
       "desc": "Ažuriranje protokola je nadogradnja pravila u mreži Stellar, kao što su nove značajke ili sigurnosne promjene. Svi čvorovi u mreži moraju koristiti ista pravila."
     },
     "soroban": {
       "title": "Soroban",
       "original": "Soroban",
-      "short": "Stellars Smart‑Contract‑System.",
+      "short": "Stellarov sustav pametnih ugovora.",
       "desc": "Soroban je sustav pametnih ugovora Stellara. Pametni ugovor je programski kod na blockchainu. Kod može neovisno provjeravati pravila i pokrenuti radnje bez posredovanja banke."
     },
     "missingKey": "Nedostaje ključ glosara: {{detail}}"
@@ -1082,7 +1082,7 @@
       "button": "Top 20 prijava (Memo)",
       "clipboard": "Kopiraj u međuspremnik",
       "csv": "Preuzmi CSV",
-      "scanning": "… scannt Top-Eingänge",
+      "scanning": "… skenira najveće uplate",
       "title": "20 najvažnijih unosa za memorandum tijekom tog razdoblja"
     },
     "tz": {
@@ -1108,7 +1108,7 @@
       "csv": "Preuzmi CSV",
       "failed": "Pogreška pri učitavanju uplata s netočnom/praznom napomenom.",
       "hint": "Filtrira dolazne uplate unutar razdoblja i prikazuje pošiljatelje s pogrešnim/praznim memo bilješkama.",
-      "scanning": "… scannt falsche/leere Memos",
+      "scanning": "… skenira pogrešne/prazne memoe",
       "summary": "Brojanje: {{count}} • Ukupno: {{sum}} XLM • Jedinstveni novčanici: {{unique}}",
       "title": "Lažne/prazne bilješke u razdoblju vremena"
     }

@@ -25,17 +25,17 @@
         "desc": "Flux de travail standard pour la multisignature productive. Crée un identifiant de tâche et collecte les signatures de manière distribuée.",
         "short": "Crée un travail multisig (Job-ID) et collecte des signatures distribuées.",
         "moreInfo": "Plus d'informations",
-        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoTitle": "Comment fonctionne « Créer une tâche multisignatures » ?",
         "infoBody": {
           "one": "La transaction est enregistrée en tant que tâche multisig dans le backend et reçoit un identifiant de tâche. Rien n'est envoyé directement.",
-          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "two": "Tous les signataires suivants ouvrent l'élément de menu « Ordres multisignatures » dans leur instance SKM, chargent la tâche et signent.",
           "three": "Une fois qu'un nombre suffisant de signatures est fourni (Threshold erreicht), la transaction sera envoyée ou peut être envoyée.",
-          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+          "four": "Vous pouvez transmettre l'ID de poste à d'autres signataires, ou ils peuvent sélectionner directement la tâche dans « Ordres multisignatures »."
         },
         "steps": {
           "one": "Étape 1 : Un travail multisignature est créé et reçoit un identifiant de travail.",
-          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
-          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "two": "Étape 2 : tous les signataires suivants ouvrent l'élément de menu « Ordres multisignatures » dans leur instance SKM, chargent la tâche et signent.",
+          "three": "Étape 3 : le deuxième signataire ouvre l'élément de menu « Ordres multisignatures » dans son instance SKM, charge la tâche et signe.",
           "four": "Étape 4 : Une fois qu'un nombre suffisant de signatures a été recueilli, la transaction est envoyée ou peut être envoyée."
         }
       },
@@ -44,10 +44,10 @@
         "desc": "Utilisez uniquement si toutes les clés secrètes peuvent être saisies de manière sécurisée sur cet appareil (Tests/Recovery/Admin).",
         "warning": "Avertissement : Toutes les clés secrètes sont collectées au cours de cette session. N'utilisez que sur des appareils de confiance.",
         "moreInfo": "Plus d'informations",
-        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoTitle": "Comment fonctionne « Toutes les signatures en local » ?",
         "infoBody": {
           "one": "Vous entrez toutes les clés secrètes requises sur cet appareil de manière séquentielle jusqu'à ce que le seuil soit atteint.",
-          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "two": "Il ne s'agit plus d'un flux multisignatures distribué, mais de « plusieurs clés sur un seul appareil » – à utiliser uniquement sur des appareils de confiance.",
           "three": "Une fois qu'un nombre suffisant de signatures est recueilli, la transaction est envoyée directement à Horizon (ohne Multisig-Job)."
         }
       },
@@ -81,8 +81,8 @@
         "infoTitle": "Ce qui doit être fait maintenant",
         "info": {
           "share": "Transmettez l'ID du travail ou le XDR aux signataires suivants (E-Mail, Messenger wie Telegram/WhatsApp).",
-          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
-          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+          "sign": "Les signataires choisissent soit l'option 3 (« Importer XDR ») et signent le XDR, SOIT ouvrent l'élément de menu « ID de poste » dans le SKM, chargent la tâche et signent à cet endroit.",
+          "submit": "Une fois suffisamment de signatures collectées, l'un des signataires envoie finalement la tâche au réseau dans le SKM (menu « ID de poste »)."
         },
         "copyJobId": "Copier l'identifiant du travail",
         "copiedJobId": "Copié"
@@ -109,7 +109,7 @@
     "prepareDescription": "Préparez uniquement le XDR pour la multisignature de production. Rien ne sera envoyé immédiatement.",
     "prepareButton": "Préparer XDR (nicht senden)"
   },
-  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "jobCreated": "Tâche multisignatures créée (ID : {{id}}). Ouvrez « Ordres multisignatures » pour voir le statut.",
   "errors": {
     "mismatchedHash": "Le XDR signé n'appartient pas à cette transaction."
   },

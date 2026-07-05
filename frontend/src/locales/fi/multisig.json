@@ -25,17 +25,17 @@
         "desc": "Vakio työnkulku tuottavalle multisigille. Luo työtehtävän tunnuksen ja kerää allekirjoituksia hajautetusti.",
         "short": "Luo multisig-työn (Job-ID) ja kerää jaettuja allekirjoituksia.",
         "moreInfo": "Lisätietoja.",
-        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoTitle": "Miten \"Luo multisig-työ\" toimii?",
         "infoBody": {
           "one": "Tapahtuma tallennetaan taustajärjestelmässä multisig-tehtävänä ja sille annetaan tehtävä-ID. Mitään ei lähetetä suoraan.",
-          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "two": "Kaikki seuraavat allekirjoittajat avaavat SKM-instanssissaan valikkokohdan \"Monisig-tapahtumat\", lataavat työn ja allekirjoittavat.",
           "three": "Kun tarpeeksi allekirjoituksia on saatu (Threshold erreicht), transaktio lähetetään tai se voidaan lähettää.",
-          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+          "four": "Voit antaa työtunnuksen muille allekirjoittajille, tai he voivat valita työn suoraan kohdasta \"Monisig-tapahtumat\"."
         },
         "steps": {
           "one": "Vaihe 1: Luodaan moniallekirjoitus-tehtävä, ja sille annetaan tehtävän tunnus.",
-          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
-          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "two": "Vaihe 2: Kaikki seuraavat allekirjoittajat avaavat SKM-instanssissaan valikkokohdan \"Monisig-tapahtumat\", lataavat työn ja allekirjoittavat.",
+          "three": "Vaihe 3: Toinen allekirjoittaja avaa SKM-instanssissaan valikkokohdan \"Monisig-tapahtumat\", lataa työn ja allekirjoittaa.",
           "four": "Vaihe 4: Kun riittävästi allekirjoituksia on kerätty, tapahtuma lähetetään tai se voidaan lähettää."
         }
       },
@@ -44,10 +44,10 @@
         "desc": "Käytä vain, jos kaikki salaiset avaimet voidaan syöttää turvallisesti tähän laitteeseen (Tests/Recovery/Admin).",
         "warning": "Varoitus: Kaikki salaiset avaimet kerätään tässä istunnossa. Käytä vain luotettavilla laitteilla.",
         "moreInfo": "Lisätietoja",
-        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoTitle": "Miten \"Kaikki allekirjoitukset paikallisesti\" toimii?",
         "infoBody": {
           "one": "Syötät kaikki vaaditut salaiset avaimet tälle laitteelle peräkkäin, kunnes kynnysarvo saavutetaan.",
-          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "two": "Tämä ei ole enää hajautettu multisig-vuo, vaan \"usea avain samalla laitteella\" – käytä vain luotetuilla laitteilla.",
           "three": "Kun riittävästi allekirjoituksia on kerätty, tapahtuma lähetetään suoraan Horizonille (ohne Multisig-Job)."
         }
       },
@@ -81,8 +81,8 @@
         "infoTitle": "Mitä täytyy tehdä nyt?",
         "info": {
           "share": "Lähetä työtehtävän tunniste tai XDR seuraaville allekirjoittajille (E-Mail, Messenger wie Telegram/WhatsApp).",
-          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
-          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+          "sign": "Allekirjoittajat joko valitsevat vaihtoehdon 3 (\"Tuo XDR\") ja allekirjoittavat XDR:n TAI avaavat SKM:ssä valikkokohdan \"Työtunnus\", lataavat työn ja allekirjoittavat siellä.",
+          "submit": "Kun tarpeeksi allekirjoituksia on kerätty, joku allekirjoittajista lähettää työn lopulta verkkoon SKM:ssä (valikko \"Työtunnus\")."
         },
         "copyJobId": "Kopioi työn tunnus",
         "copiedJobId": "Kopioitu"
@@ -109,7 +109,7 @@
     "prepareDescription": "Valmistele vain XDR tuotantokäyttöön multisig-toiminnolla. Mitään ei lähetetä heti.",
     "prepareButton": "Valmistele XDR (nicht senden)"
   },
-  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "jobCreated": "Multisig-työ luotu (tunnus: {{id}}). Avaa \"Monisig-tapahtumat\" nähdäksesi tilan.",
   "errors": {
     "mismatchedHash": "Allekirjoitettu XDR ei kuulu tähän tapahtumaan."
   },

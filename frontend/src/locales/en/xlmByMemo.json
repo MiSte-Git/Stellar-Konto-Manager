@@ -53,7 +53,7 @@
     "button": "Top 20 Entrances (Memo)",
     "clipboard": "Copy to clipboard",
     "csv": "Download CSV",
-    "scanning": "… scannt Top-Eingänge",
+    "scanning": "… scanning top incoming payments",
     "title": "Top 20 Entries for Memo in the Period"
   },
   "tz": {
@@ -79,7 +79,7 @@
     "csv": "Download CSV",
     "failed": "Error loading payments with incorrect/empty memo.",
     "hint": "Filters incoming payments within the period and displays senders with incorrect/empty memo.",
-    "scanning": "… scannt falsche/leere Memos",
+    "scanning": "… scanning wrong/empty memos",
     "summary": "Count: {{count}} • Total: {{sum}} XLM • Unique Wallets: {{unique}}",
     "title": "False/Empty memos during the period"
   }

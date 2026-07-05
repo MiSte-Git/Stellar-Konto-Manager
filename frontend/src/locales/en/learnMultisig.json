@@ -17,7 +17,7 @@
   "examples": {
     "title": "Practical examples",
     "item1": "Company account: Two team members must sign each payment.",
-    "item2": "Vereinskonto: Schatzmeister + Vorsitzender signieren gemeinsam.",
+    "item2": "Club account: treasurer + chairperson sign jointly.",
     "item3": "Secure Vault: Hardware key plus backup key required."
   },
   "skmSupport": {

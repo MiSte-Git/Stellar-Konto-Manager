@@ -14,7 +14,7 @@
       "stats": {
         "achievements": "Badge: {{count}} Quiz(e)",
         "progress": "Progresso: {{count}} Quiz(e)",
-        "settings": "Einstellungen: {{count}} Quiz(e)"
+        "settings": "Impostazioni: {{count}} quiz"
       },
       "title": "Anteprima"
     },

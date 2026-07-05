@@ -27,7 +27,7 @@
       "c.fb": "No. Anyone can look up transactions."
     },
     "q3": {
-      "question": "Warum sind Blöcke miteinander ‚verkettet‘?",
+      "question": "Why are blocks \"chained\" together?",
       "hint": "Old pages should be difficult to change.",
       "a": "So that changing old data becomes very difficult.",
       "b": "To make the app look cooler.",
@@ -253,7 +253,7 @@
   "l7": {
     "title": "Security, Phishing, and Trust",
     "q1": {
-      "question": "Eine Website will deinen Secret Key, um dein Guthaben zu ‚prüfen‘. Was tust du?",
+      "question": "A website wants your secret key to \"check\" your balance. What do you do?",
       "hint": "Never share your secret key.",
       "a": "Leave the page. Never enter the Secret Key.",
       "b": "Enter, but only once.",
@@ -283,7 +283,7 @@
       "c.fb": "No. Never share your secret key. KYC does not need it."
     },
     "q4": {
-      "question": "Was ist ein ‚Zero-Knowledge Proof‘ (ZK) in einfachen Worten?",
+      "question": "What is a \"Zero-Knowledge Proof\" (ZK) in simple terms?",
       "hint": "Prove that you know something without revealing the secret.",
       "a": "A proof that something is true without revealing the secret.",
       "b": "A tool that hides all transactions forever.",

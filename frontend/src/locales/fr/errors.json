@@ -85,6 +85,6 @@
     "paymentsFetch": "Erreur de chargement des paiements",
     "serverInvalid": "Serveur non valide"
   },
-  "backendConnectError": "Verbindung zum Backend fehlgeschlagen: {{url}}",
+  "backendConnectError": "Échec de la connexion au backend : {{url}}",
   "rateLimited": "Limite de taux d'Horizon dépassée. Veuillez attendre quelques secondes et réessayer."
 }

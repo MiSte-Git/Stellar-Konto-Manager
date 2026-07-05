@@ -47,7 +47,7 @@
   "network": {
     "title": "Network",
     "desc": "Optional: Full-History Horizon for Deep History",
-    "fullUrl": "Full-History Horizon URL",
+    "fullUrl": "Full-history Horizon URL",
     "autoUseFull": "Automatically use if necessary (when From-Date is older than server history)",
     "historyInfo": "The free Horizon servers operated by the Stellar Development Foundation provide only about one year of history. For older data, you either need to operate your own Horizon node or rely on third-party/paid services."
   },

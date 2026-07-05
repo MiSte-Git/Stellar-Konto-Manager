@@ -25,17 +25,17 @@
         "desc": "Standaardworkflow voor productieve multisig. Creëert een job-ID en verzamelt handtekeningen op een gedistribueerde manier.",
         "short": "Creëert een multisig-taak (Job-ID) en verzamelt gedistribueerde handtekeningen.",
         "moreInfo": "Meer informatie",
-        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoTitle": "Hoe werkt \"Multisig-taak aanmaken\"?",
         "infoBody": {
           "one": "De transactie wordt als een multisig-taak opgeslagen in de backend en krijgt een taak-ID. Er wordt niets direct verzonden.",
-          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "two": "Alle volgende ondertekenaars openen in hun SKM-instantie het menu-item \"Multisig-bestellingen\", laden de taak en ondertekenen.",
           "three": "Zodra voldoende handtekeningen zijn verzameld (Threshold erreicht), zal de transactie worden verzonden of kan deze worden verzonden.",
-          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+          "four": "Je kunt de Job-ID doorgeven aan andere ondertekenaars, of zij kunnen de taak direct selecteren in \"Multisig-bestellingen\"."
         },
         "steps": {
           "one": "Stap 1: Er wordt een multisig-taak aangemaakt en er wordt een taak-ID toegewezen.",
-          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
-          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "two": "Stap 2: alle volgende ondertekenaars openen in hun SKM-instantie het menu-item \"Multisig-bestellingen\", laden de taak en ondertekenen.",
+          "three": "Stap 3: de tweede ondertekenaar opent in zijn SKM-instantie het menu-item \"Multisig-bestellingen\", laadt de taak en ondertekent.",
           "four": "Stap 4: Zodra er voldoende handtekeningen zijn verzameld, wordt de transactie verzonden of kan deze worden verzonden."
         }
       },
@@ -44,10 +44,10 @@
         "desc": "Alleen gebruiken als alle geheime sleutels veilig op dit apparaat kunnen worden ingevoerd (Tests/Recovery/Admin).",
         "warning": "Waarschuwing: Alle geheime sleutels worden in deze sessie verzameld. Gebruik alleen op vertrouwde apparaten.",
         "moreInfo": "Meer informatie",
-        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoTitle": "Hoe werkt \"Alle handtekeningen lokaal\"?",
         "infoBody": {
           "one": "Je voert alle vereiste geheime sleutels op dit apparaat achtereenvolgens in totdat de drempel is bereikt.",
-          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "two": "Dit is geen gedistribueerde multisig-flow meer, maar \"meerdere sleutels op één apparaat\" – gebruik dit alleen op vertrouwde apparaten.",
           "three": "Zodra er voldoende handtekeningen zijn verzameld, wordt de transactie direct naar Horizon (ohne Multisig-Job) gestuurd."
         }
       },
@@ -81,8 +81,8 @@
         "infoTitle": "Wat moet er nu gedaan worden?",
         "info": {
           "share": "Stuur de job-ID of XDR naar de volgende ondertekenaars (E-Mail, Messenger wie Telegram/WhatsApp).",
-          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
-          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+          "sign": "Ondertekenaars kiezen ofwel optie 3 (\"XDR importeren\") en ondertekenen de XDR, OF openen in het SKM het menu-item \"Job-ID\", laden de taak en ondertekenen daar.",
+          "submit": "Zodra er genoeg handtekeningen zijn verzameld, verstuurt een van de ondertekenaars de taak in het SKM definitief naar het netwerk (menu \"Job-ID\")."
         },
         "copyJobId": "Kopieer vacature-ID",
         "copiedJobId": "Gekopieerd"
@@ -109,7 +109,7 @@
     "prepareDescription": "Bereid alleen XDR voor multi-handtekening productiedoeleinden voor. Er zal niets onmiddellijk verzonden worden.",
     "prepareButton": "Bereid XDR (nicht senden) voor."
   },
-  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "jobCreated": "Multisig-taak aangemaakt (ID: {{id}}). Open \"Multisig-bestellingen\" om de status te zien.",
   "errors": {
     "mismatchedHash": "De ondertekende XDR behoort niet tot deze transactie."
   },

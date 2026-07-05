@@ -25,17 +25,17 @@
         "desc": "Standard workflow for productive multisig. Creates a job ID and collects signatures in a distributed manner.",
         "short": "Creates a multisig job (Job-ID) and collects distributed signatures.",
         "moreInfo": "More info",
-        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoTitle": "How does \"Create multisig job\" work?",
         "infoBody": {
           "one": "The transaction is stored as a multisig job in the backend and receives a job ID. Nothing is sent directly.",
-          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "two": "All subsequent signers open the \"Multisig orders\" menu item in their SKM instance, load the job, and sign.",
           "three": "Once enough signatures are provided (Threshold erreicht), the transaction will be sent or can be sent.",
-          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+          "four": "You can pass the job ID on to other signers, or they can select the job directly in \"Multisig orders\"."
         },
         "steps": {
           "one": "Step 1: A multisig job is created and receives a job ID.",
-          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
-          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "two": "Step 2: All subsequent signers open the \"Multisig orders\" menu item in their SKM instance, load the job, and sign.",
+          "three": "Step 3: The second signer opens the \"Multisig orders\" menu item in their SKM instance, loads the job, and signs.",
           "four": "Step 4: Once enough signatures have been collected, the transaction is sent or can be sent."
         }
       },
@@ -44,10 +44,10 @@
         "desc": "Only use if all secret keys can be securely entered on this device (Tests/Recovery/Admin).",
         "warning": "Warning: All secret keys are being collected in this session. Use only on trusted devices.",
         "moreInfo": "More info",
-        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoTitle": "How does \"All signatures locally\" work?",
         "infoBody": {
           "one": "You enter all the required secret keys on this device sequentially until the threshold is reached.",
-          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "two": "This is no longer a distributed multisig flow, but \"multi-key on one device\" – only use this on trusted devices.",
           "three": "Once enough signatures are collected, the transaction is sent directly to Horizon (ohne Multisig-Job)."
         }
       },
@@ -81,8 +81,8 @@
         "infoTitle": "What needs to be done now",
         "info": {
           "share": "Forward the job ID or XDR to the next signers (E-Mail, Messenger wie Telegram/WhatsApp).",
-          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
-          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+          "sign": "Signers either choose option 3 (\"Import XDR\") and sign the XDR, OR open the \"Job ID\" menu item in the SKM, load the job, and sign there.",
+          "submit": "Once enough signatures have been collected, one of the signers finally sends the job to the network in the SKM (menu \"Job ID\")."
         },
         "copyJobId": "Copy job ID",
         "copiedJobId": "Copied"
@@ -109,7 +109,7 @@
     "prepareDescription": "Only prepare XDR for production multisig. Nothing will be sent immediately.",
     "prepareButton": "Prepare XDR (nicht senden)"
   },
-  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "jobCreated": "Multisig job created (ID: {{id}}). Open \"Multisig orders\" to see the status.",
   "errors": {
     "mismatchedHash": "The signed XDR does not belong to this transaction."
   },
@@ -140,7 +140,7 @@
     }
   },
   "detail": {
-    "title": "Pending-Multisig-Job",
+    "title": "Pending multisig job",
     "idLabel": "Job ID",
     "accountLabel": "Source account",
     "statusLabel": "Status",

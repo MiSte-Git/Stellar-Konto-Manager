@@ -159,7 +159,7 @@
       },
       "rejectionReason": {
         "label": "Причина",
-        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
+        "required": "Пожалуйста, укажите причину, если статус «Отказано»."
       },
       "secretVisibilityToggle": "Показать/Скрыть Админский Секрет"
     }
@@ -215,7 +215,7 @@
     "message": "Сообщение",
     "contactEmailOptional": "Контактный адрес электронной почты (optional)",
     "emailPlaceholder": "например, name@example.com",
-    "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
+    "emailHint": "Если хотите получить ответ, укажите свой email.",
     "form": {
       "clearButton": "Очистить поля",
       "multiEntryHint": "Пожалуйста, создавайте только одно сообщение для каждой ошибки, предложения или идеи, чтобы процесс редактирования был понятным и организованным."
@@ -241,7 +241,7 @@
     "invalid": "Недопустимый адрес отправителя."
   },
   "main": {
-    "processing": "Vorgang läuft, bitte warten …",
+    "processing": "Идёт обработка, подождите …",
     "title": "Менеджер по работе с клиентами Stellar"
   },
   "badges": {
@@ -303,7 +303,7 @@
       "scan_payments": "Сканирование платежей (страница {{page}})…",
       "scan_payments_fast": "Сканирование платежей (schnell) – страница {{page}}…",
       "scan_tx": "Сканировать транзакции",
-      "sync": "Synchronisiere Zahlungen…",
+      "sync": "Синхронизация платежей…",
       "txFetch": "Загрузка деталей транзакции…",
       "done": "Готово"
     },
@@ -477,32 +477,32 @@
     "infoButtonLabel": "Информация",
     "info": {
       "title": "Что такое мультиплексный счет?",
-      "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
-      "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
+      "intro1": "Muxed-счёт объединяет обычный адрес счёта (G-адрес) с дополнительным 64-битным Muxed ID.",
+      "intro2": "Технически это алиас, который всегда указывает на один и тот же базовый счёт, но однозначно различим благодаря ID.",
       "purposeTitle": "Цель и преимущества",
-      "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
-      "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
+      "purposeText": "Muxed-счета служат для управления множеством подсчетов под одним Stellar-адресом – идеально, когда много депозитов/выводов проходит через общий главный счёт, но каждую операцию нужно относить к конкретному человеку, отделу или проекту.",
+      "examplesTitle": "Примеры – для чего полезны Muxed-счета?",
       "examples": {
         "ex1": "Выплаты компаниям: каждому сотруднику предоставляется уникальный Muxed‑ID, чтобы платежи заработной платы могли быть однозначно сопоставлены.",
-        "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
+        "ex2": "Биржи или платформы: каждый пользователь получает собственный Muxed ID, чтобы депозиты через общий кошелёк автоматически правильно засчитывались.",
         "ex3": "Проекты или субсчета: Организация может распределять бюджеты или доходы на отдельные проекты.",
-        "ex4": "Kundenzuordnung: Eine M‑Adresse pro Kunde; die ID entspricht der Kunden‑ID – Zahlungen sind eindeutig zuordenbar, auch ohne Memo.",
+        "ex4": "Привязка к клиенту: один M-адрес на клиента; ID соответствует ID клиента – платежи однозначно сопоставляются, даже без мемо.",
         "ex5": "Услуги без мемо: различение депозитов, когда услуга не поддерживает мемо.",
-        "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
-        "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
+        "ex6": "Выплаты/зарплатные проекты: один M-адрес на сотрудника/партнёра для внутреннего учёта и отчётности.",
+        "ex7": "Магазин/заказы: один M-адрес на заказ; возвраты можно сопоставить с заказом.",
         "ex8": "Отделы/Центры затрат: идентификаторы как центры затрат; автоматически группировать платежи по области.",
-        "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
+        "ex9": "Мультитенантные сервисы: каждый арендатор получает собственный M-адрес под одним базовым счётом."
       },
       "pageTitle": "Что делает эта страница в SKM?",
-      "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
-      "createTitle": "Neue Muxed‑Konten erstellen",
+      "pageDesc": "Эта страница предназначена для управления Muxed-счетами вашего текущего выбранного Stellar-счёта:",
+      "createTitle": "Создать новые Muxed-счета",
       "createItems": {
-        "i1": "Erzeugt neue Muxed‑Adressen (M...) aus deiner Basisadresse (G...).",
+        "i1": "Создаёт новые Muxed-адреса (M...) на основе вашего базового адреса (G...).",
         "i2": "Опционально с меткой (Name) и примечанием (z. B. Projekt oder Zweck)."
       },
       "importTitle": "Импорт из CSV‑файлов",
       "importItems": {
-        "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
+        "i1": "Массовое создание Muxed-счетов, например, из списка сотрудников.",
         "i2": "Прочитайте столбцы muxedId, label, note."
       },
       "exportTitle": "Экспорт существующих Muxed‑аккаунтов.",
@@ -512,16 +512,16 @@
       },
       "templateTitle": "Template‑Export",
       "templateItems": {
-        "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
-        "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
+        "i1": "Создаёт пустой CSV-файл с заголовками столбцов muxedId,label,note.",
+        "i2": "Полезно для HR- или бухгалтерских отделов при подготовке новых записей."
       },
       "manageTitle": "Management & Overview",
       "manageItems": {
-        "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
-        "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
+        "i1": "Все сохранённые Muxed-адреса отображаются в таблице.",
+        "i2": "Выбор, удаление и управление меткой/заметкой доступны напрямую."
       },
       "shortTitle": "Короче говоря,",
-      "shortText": "Muxed‑Konten machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
+      "shortText": "Muxed-счета делают ваш Stellar-счёт детализированным и прослеживаемым – идеально для организаций, обрабатывающих много платежей через центральный счёт, но желающих однозначно относить каждую транзакцию."
     },
     "selectBaseAccount": "Базовый аккаунт (G-Adresse)",
     "selectPlaceholder": "Пожалуйста, выберите аккаунт",
@@ -728,7 +728,7 @@
     },
     "history": {
       "availableFrom": "Server (Horizon) – История с",
-      "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+      "hintFullHistory": "Примечание: история леджера с сервера Horizon доступна только до {{available}}. Отображаются только данные до этой даты. Поэтому выбранная начальная дата ограничена. Для более старых данных нужен (обычно платный) провайдер полной истории (возможно, в будущем!)."
     }
   },
   "network": {
@@ -835,7 +835,7 @@
     "blockchain": {
       "title": "Блокчейн",
       "original": "Blockchain",
-      "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
+      "short": "Общий цифровой реестр – множество компьютеров хранят одни и те же записи.",
       "desc": "Блокчейн подобен цифровой книге учета. Многие компьютеры хранят одни и те же записи, поэтому никто не может тайно изменить что-либо."
     },
     "wallet": {
@@ -859,7 +859,7 @@
     "publicKey": {
       "title": "Публичный ключ",
       "original": "Public Key",
-      "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+      "short": "Адрес, которым можно делиться; в Stellar обычно это G-адрес.",
       "desc": "Публичный ключ – это адрес, который вы можете показывать. В системе Stellar это G-адрес. Другие используют его, чтобы отправить вам деньги."
     },
     "privateKey": {
@@ -871,13 +871,13 @@
     "addressFederation": {
       "title": "Адрес федерации",
       "original": "Federation Address",
-      "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+      "short": "Короткий адрес, похожий на email, указывает на G-адрес.",
       "desc": "Адрес федерации выглядит как электронная почта. Пример: имя*домен.com. Этот короткий адрес указывает на обычный адрес G. Его проще запомнить."
     },
     "addressMuxed": {
       "title": "Мультиплексированный счет",
       "original": "Muxed Account",
-      "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
+      "short": "M-адрес с дополнительным ID – использует общий базовый счёт.",
       "desc": "M-адрес указывает на существующий аккаунт в системе Stellar, но дополнительно имеет собственный номер (ID). Это позволяет, например, различать нескольких людей или отделы в рамках одного G-адреса. Технически деньги все равно принадлежат основному аккаунту."
     },
     "multisig": {
@@ -913,7 +913,7 @@
     "mainnet": {
       "title": "Основная сеть",
       "original": "Mainnet",
-      "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+      "short": "Настоящая сеть Stellar с реальной ценностью.",
       "desc": "Настоящая сеть Stellar с фактической ценностью. Транзакции являются окончательными, а комиссии оплачиваются настоящими XLM."
     },
     "testnet": {
@@ -949,13 +949,13 @@
     "horizon": {
       "title": "Горизонт",
       "original": "Horizon",
-      "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+      "short": "API-сервис, через который приложения общаются со Stellar.",
       "desc": "Horizon — это сервис, который позволяет программам взаимодействовать с блокчейном Stellar. Наш инструмент отправляет запросы в Horizon для загрузки балансов счетов и транзакций."
     },
     "anchor": {
       "title": "Якорь",
       "original": "Anchor",
-      "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+      "short": "Компания, соединяющая фиатные деньги со Stellar.",
       "desc": "Анкор — это компания, которая соединяет реальные деньги, такие как евро или доллар, со Stellar. Например, вы отдаёте анкору евро и получаете взамен токен евро на платформе Stellar."
     },
     "exchange": {
@@ -985,13 +985,13 @@
     "protocolUpdate": {
       "title": "Обновление протокола",
       "original": "Protocol Update",
-      "short": "Aktualisierung der Netzwerk‑Regeln.",
+      "short": "Обновление правил сети.",
       "desc": "Обновление протокола представляет собой усовершенствование правил в сети Stellar, включающее новые функции или изменения в области безопасности. Все узлы в сети должны использовать одни и те же правила."
     },
     "soroban": {
       "title": "Соробан",
       "original": "Soroban",
-      "short": "Stellars Smart‑Contract‑System.",
+      "short": "Система Stellar для smart contracts.",
       "desc": "Soroban — это система смарт-контрактов на платформе Stellar. Смарт-контракт представляет собой программный код в блокчейне. Этот код может самостоятельно проверять правила и инициировать действия без участия банка."
     },
     "missingKey": "Отсутствует ключ глоссария: {{detail}}"
@@ -1108,7 +1108,7 @@
       "csv": "Загрузить CSV",
       "failed": "Ошибка загрузки платежей с неправильной/пустой пометкой.",
       "hint": "Фильтрует входящие платежи за период и отображает отправителей с некорректными или пустыми заметками.",
-      "scanning": "… scannt falsche/leere Memos",
+      "scanning": "… сканирование неверных/пустых мемо",
       "summary": "Количество: {{count}} • Всего: {{sum}} XLM • Уникальные кошельки: {{unique}}",
       "title": "Ложные/Пустые записки в этот период времени"
     }

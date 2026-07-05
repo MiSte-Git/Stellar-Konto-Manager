@@ -53,7 +53,7 @@
     "button": "Top 20 Entrances (Memo)",
     "clipboard": "Kopioi leikepöydälle",
     "csv": "Lataa CSV",
-    "scanning": "… scannt Top-Eingänge",
+    "scanning": "… skannaa suurimpia saapuvia",
     "title": "Muistion aikajakson 20 parasta merkintää"
   },
   "tz": {
@@ -79,7 +79,7 @@
     "csv": "Lataa CSV",
     "failed": "Virhe maksujen lataamisessa, kun muistio on virheellinen tai tyhjä.",
     "hint": "Suodattaa saapuvat maksut ajanjaksolla ja näyttää lähettäjät, joiden muistiinpano on virheellinen/tyhjä.",
-    "scanning": "… scannt falsche/leere Memos",
+    "scanning": "… skannaa vääriä/tyhjiä muistiinpanoja",
     "summary": "Lukumäärä: {{count}} • Yhteensä: {{sum}} XLM • Uniikit lompakot: {{unique}}",
     "title": "Väärät/tyhjät muistiot ajanjakson aikana"
   }

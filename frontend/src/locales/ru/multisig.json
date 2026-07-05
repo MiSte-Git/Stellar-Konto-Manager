@@ -25,17 +25,17 @@
         "desc": "Стандартный рабочий процесс для продуктивного multisig. Создает идентификатор задачи и собирает подписи в распределенном порядке.",
         "short": "Создает multisig задачу (Job-ID) и собирает распределенные подписи.",
         "moreInfo": "Подробнее",
-        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoTitle": "Как работает «Создать multisig-задание»?",
         "infoBody": {
           "one": "Транзакция сохраняется как мультиподписанная задача в бекэнде и получает идентификатор задачи. Ничего не отправляется напрямую.",
-          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "two": "Все следующие подписанты открывают в своём экземпляре SKM пункт меню «Multisig-задания», загружают задание и подписывают.",
           "three": "Как только будет предоставлено достаточное количество подписей (Threshold erreicht), транзакция будет отправлена или может быть отправлена.",
-          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+          "four": "Вы можете передать ID задания другим подписантам, либо они могут выбрать задание напрямую в разделе «Multisig-задания»."
         },
         "steps": {
           "one": "Шаг 1: Создаётся мультиподписная задача и получает идентификатор задачи.",
-          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
-          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "two": "Шаг 2: все следующие подписанты открывают в своём экземпляре SKM пункт меню «Multisig-задания», загружают задание и подписывают.",
+          "three": "Шаг 3: второй подписант открывает в своём экземпляре SKM пункт меню «Multisig-задания», загружает задание и подписывает.",
           "four": "Шаг 4: Как только собрано достаточное количество подписей, транзакция отправляется или может быть отправлена."
         }
       },
@@ -47,7 +47,7 @@
         "infoTitle": "Как работает „Все подписи локально“?",
         "infoBody": {
           "one": "Вы вводите все необходимые секретные ключи на этом устройстве поочередно, пока не будет достигнут порог.",
-          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "two": "Это уже не распределённый multisig-процесс, а «несколько ключей на одном устройстве» – используйте только на доверенных устройствах.",
           "three": "Как только будет собрано достаточное количество подписей, транзакция будет отправлена непосредственно в Horizon (ohne Multisig-Job)."
         }
       },
@@ -81,8 +81,8 @@
         "infoTitle": "Вам нужно сделать следующее:",
         "info": {
           "share": "Перешлите идентификатор работы или XDR следующим подписантам (E-Mail, Messenger wie Telegram/WhatsApp).",
-          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
-          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+          "sign": "Подписанты либо выбирают опцию 3 («Импортировать XDR») и подписывают XDR, ЛИБО открывают в SKM пункт меню «Job-ID», загружают задание и подписывают там.",
+          "submit": "Когда собрано достаточно подписей, один из подписантов окончательно отправляет задание в сеть в SKM (меню «Job-ID»)."
         },
         "copyJobId": "Скопировать ID задачи",
         "copiedJobId": "Скопировано"
@@ -109,7 +109,7 @@
     "prepareDescription": "Подготовьте XDR только для производственного мультиподписи. Немедленная отправка не будет осуществлена.",
     "prepareButton": "Подготовьте XDR (nicht senden)."
   },
-  "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
+  "jobCreated": "Multisig-задание создано (ID: {{id}}). Откройте «Multisig-задания», чтобы увидеть статус.",
   "errors": {
     "mismatchedHash": "Подписанный XDR не относится к этой транзакции."
   },
@@ -121,7 +121,7 @@
     "copyXdrButton": "Копировать XDR",
     "copied": "Скопировано",
     "notSentHint": "Эта транзакция еще не была отправлена в сеть.",
-    "closeHint": "Du kannst diesen Dialog schließen, sobald Du unterzeichnet hast und der Multisig-Auftrag erstellt wurde; der nächste Signer findet die Job-ID im Menü „Multisig-Jobs“."
+    "closeHint": "Вы можете закрыть это окно, как только подпишете и multisig-задание будет создано; следующий подписант найдёт ID задания в меню «Multisig-задания»."
   },
   "testMode": {
     "modalTitle": "Подпись одного пользователя",

@@ -14,7 +14,7 @@
   "addressFederation": {
     "desc": "Una dirección de federación se parece a un correo electrónico. Ejemplo: nombre*dominio.com. Esta dirección corta apunta a una dirección G regular. Es más fácil de recordar.",
     "original": "Federation Address",
-    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+    "short": "Dirección corta como un correo electrónico, apunta a una dirección G.",
     "title": "Dirección de la federación"
   },
   "addressG": {
@@ -324,7 +324,7 @@
   "horizon": {
     "desc": "Horizon es el servicio a través del cual los programas se comunican con la cadena de bloques de Stellar. Nuestra herramienta consulta Horizon para cargar los saldos de las cuentas y las transacciones.",
     "original": "Horizon",
-    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "short": "Servicio API a través del cual las aplicaciones se comunican con Stellar.",
     "title": "Horizonte"
   },
   "horizonHistory": {
@@ -431,7 +431,7 @@
   "mainnet": {
     "desc": "La red Stellar real con valor actual. Las transacciones son definitivas y las tarifas se pagan en XLM real.",
     "original": "Mainnet",
-    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "short": "Red Stellar real con valor real.",
     "title": "Mainnet"
   },
   "marketCap": {
@@ -671,7 +671,7 @@
   "protocolUpdate": {
     "desc": "Una actualización de protocolo es una mejora de las reglas en la red Stellar, como nuevas funciones o cambios de seguridad. Todos los nodos en la red deben usar las mismas reglas.",
     "original": "Protocol Update",
-    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "short": "Actualización de las reglas de la red.",
     "title": "Actualización del Protocolo"
   },
   "publicBlockchain": {
@@ -683,7 +683,7 @@
   "publicKey": {
     "desc": "La clave pública es la dirección que puedes compartir. En Stellar, esta es la dirección G. Otros la usan para enviarte dinero.",
     "original": "Public Key",
-    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+    "short": "Dirección que puedes compartir; en Stellar suele ser la dirección G.",
     "title": "Clave pública"
   },
   "publicKeyCryptography": {
@@ -788,7 +788,7 @@
   "soroban": {
     "desc": "Soroban es el sistema de contratos inteligentes de Stellar. Un contrato inteligente es un código de programa en la cadena de bloques. El código puede verificar reglas de manera independiente y desencadenar acciones sin la necesidad de un intermediario bancario.",
     "original": "Soroban",
-    "short": "Stellars Smart‑Contract‑System.",
+    "short": "El sistema de contratos inteligentes de Stellar.",
     "title": "Soroban"
   },
   "sponsor": {

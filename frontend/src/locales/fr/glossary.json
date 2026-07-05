@@ -48,7 +48,7 @@
   "publicKey": {
     "title": "Clé publique",
     "original": "Public Key",
-    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+    "short": "Adresse que vous pouvez partager ; sur Stellar, généralement l'adresse G.",
     "desc": "La clé publique est l'adresse que vous avez le droit de partager. Dans Stellar, c'est l'adresse G. Les autres l'utilisent pour vous envoyer de l'argent."
   },
   "privateKey": {
@@ -60,7 +60,7 @@
   "addressFederation": {
     "title": "Adresse de la fédération",
     "original": "Federation Address",
-    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+    "short": "Adresse courte comme un e-mail, pointe vers une adresse G.",
     "desc": "Une adresse de fédération ressemble à un e-mail. Exemple : nom*domain.com. Cette adresse courte pointe vers une adresse G régulière. Elle est plus facile à mémoriser."
   },
   "addressMuxed": {
@@ -128,7 +128,7 @@
   "mainnet": {
     "title": "Mainnet",
     "original": "Mainnet",
-    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "short": "Vrai réseau Stellar avec une valeur réelle.",
     "desc": "Le véritable réseau Stellar avec une valeur réelle. Les transactions sont définitives et les frais sont payés en XLM réel."
   },
   "testnet": {
@@ -188,7 +188,7 @@
   "horizon": {
     "title": "Horizon",
     "original": "Horizon",
-    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "short": "Service API par lequel les applications communiquent avec Stellar.",
     "desc": "Horizon est le service par lequel les programmes communiquent avec la blockchain Stellar. Notre outil interroge Horizon pour charger les soldes des comptes et les transactions."
   },
   "horizonHistory": {
@@ -397,13 +397,13 @@
   "protocolUpdate": {
     "title": "Mise à jour du protocole",
     "original": "Protocol Update",
-    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "short": "Mise à jour des règles du réseau.",
     "desc": "Une mise à jour du protocole est une mise à niveau des règles du réseau Stellar, telle que l'ajout de nouvelles fonctionnalités ou des modifications de sécurité. Tous les nœuds du réseau doivent utiliser les mêmes règles."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Stellars Smart‑Contract‑System.",
+    "short": "Le système de contrats intelligents de Stellar.",
     "desc": "Soroban est le système de contrats intelligents de Stellar. Un contrat intelligent est un code de programme sur la blockchain. Le code peut vérifier de manière indépendante les règles et déclencher des actions sans besoin d'un intermédiaire bancaire."
   },
   "multiSignature": {

@@ -35,7 +35,7 @@
       "text": "The public key can be safely shared – it is like an account number.\n\nThe secret key grants access to your account. Treat it like a password:\n• NEVER store it in cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the secret key is lost, access to the account is permanently lost"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
+      "title": "Multisig (Multi-signature)",
       "text": "With multisig, you can define multiple signatories for your account. Transactions then require signatures from multiple keys (multisig).\n\nAdvantages:\n• Enhanced security (security)\n• Shared accounts (shared accounts)\n• Emergency recovery (emergency recovery)\n\nCAUTION: Test multisig on the testnet first before deploying it on the mainnet! Incorrect configuration can result in losing access to the account."
     },
     "diagram": {
@@ -61,7 +61,7 @@
     "text1": "You have generated a new key pair.",
     "text2": "Secure BOTH keys IMMEDIATELY before proceeding:",
     "list1": "Public Key: Your account address, can be shared",
-    "list2": "Secret Key (Geheimschlüssel): Ihr Passwort – NIEMALS teilen oder online speichern!",
+    "list2": "Secret Key: your password – NEVER share it or store it online!",
     "list3": "If the secret key is lost, access is irrevocably lost.",
     "confirm": "I have secured both keys."
   },

@@ -27,7 +27,7 @@
       "c.fb": "Non. N'importe qui peut consulter les transactions."
     },
     "q3": {
-      "question": "Warum sind Blöcke miteinander ‚verkettet‘?",
+      "question": "Pourquoi les blocs sont-ils « enchaînés » entre eux ?",
       "hint": "Les anciennes pages devraient être difficiles à modifier.",
       "a": "Ainsi, il devient très difficile de modifier les anciennes données.",
       "b": "Pour rendre l'application plus stylée.",
@@ -253,7 +253,7 @@
   "l7": {
     "title": "Sécurité, hameçonnage et confiance",
     "q1": {
-      "question": "Eine Website will deinen Secret Key, um dein Guthaben zu ‚prüfen‘. Was tust du?",
+      "question": "Un site web veut votre clé secrète pour « vérifier » votre solde. Que faites-vous ?",
       "hint": "Ne partagez jamais votre clé secrète.",
       "a": "Quittez la page. N'entrez jamais la clé secrète.",
       "b": "Entrez, mais seulement une fois.",
@@ -283,7 +283,7 @@
       "c.fb": "Non. Ne partagez jamais votre clé secrète. La vérification d'identité (KYC) n'en a pas besoin."
     },
     "q4": {
-      "question": "Was ist ein ‚Zero-Knowledge Proof‘ (ZK) in einfachen Worten?",
+      "question": "Qu'est-ce qu'une « preuve à divulgation nulle de connaissance » (ZK) en termes simples ?",
       "hint": "Prouve que tu sais quelque chose sans révéler le secret.",
       "a": "Une preuve qu'une chose est vraie sans révéler le secret.",
       "b": "Un outil qui cache toutes les transactions pour toujours.",

@@ -53,7 +53,7 @@
     "button": "Las 20 mejores Entradas (Memo)",
     "clipboard": "Copiar al portapapeles",
     "csv": "Descargar CSV",
-    "scanning": "… scannt Top-Eingänge",
+    "scanning": "… escaneando los mayores ingresos",
     "title": "Las 20 principales entradas para el memo en el período."
   },
   "tz": {
@@ -79,7 +79,7 @@
     "csv": "Descargar CSV",
     "failed": "Error al cargar pagos con un memo incorrecto/vacío.",
     "hint": "Filtra los pagos entrantes dentro del período y muestra los remitentes con memorandos incorrectos o vacíos.",
-    "scanning": "… scannt falsche/leere Memos",
+    "scanning": "… escaneando memos incorrectos/vacíos",
     "summary": "Cuenta: {{count}} • Total: {{sum}} XLM • Carteras Únicas: {{unique}}",
     "title": "Memorandos falsos/vacíos durante el período"
   }

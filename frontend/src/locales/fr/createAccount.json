@@ -35,7 +35,7 @@
       "text": "La clé publique peut être partagée en toute sécurité – c'est comme un numéro de compte.\n\nLa clé secrète donne accès à votre compte. Traitez-la comme un mot de passe :\n• NE LA STOCKEZ JAMAIS dans des services cloud, des emails ou des notes non sécurisées\n• Notez-la sur papier ou utilisez un portefeuille matériel\n• Créez plusieurs sauvegardes et stockez-les dans des lieux sécurisés et distincts\n• Si la clé secrète est perdue, l'accès au compte est définitivement perdu"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
+      "title": "Multisig (Signature multiple)",
       "text": "Avec la multisignature, vous pouvez définir plusieurs signataires pour votre compte. Les transactions nécessitent alors des signatures de plusieurs clés (multisig).\n\nAvantages :\n• Sécurité renforcée (security)\n• Comptes partagés (shared accounts)\n• Récupération d'urgence (emergency recovery)\n\nATTENTION : Testez d'abord la multisignature sur le réseau de test avant de la déployer sur le réseau principal ! Une mauvaise configuration peut entraîner la perte d'accès au compte."
     },
     "diagram": {

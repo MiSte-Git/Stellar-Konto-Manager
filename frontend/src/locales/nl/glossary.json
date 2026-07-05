@@ -48,7 +48,7 @@
   "publicKey": {
     "title": "Openbare sleutel",
     "original": "Public Key",
-    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+    "short": "Adres dat je mag delen; bij Stellar meestal het G-adres.",
     "desc": "De openbare sleutel is het adres dat je mag delen. In Stellar is dit het G-adres. Anderen gebruiken het om je geld te sturen."
   },
   "privateKey": {
@@ -60,7 +60,7 @@
   "addressFederation": {
     "title": "Federatieadres",
     "original": "Federation Address",
-    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+    "short": "Kort adres zoals een e-mail, verwijst naar een G-adres.",
     "desc": "Een federatieadres ziet eruit als een e-mailadres. Voorbeeld: naam*domein.com. Dit korte adres verwijst naar een regulier G-adres. Het is gemakkelijker te onthouden."
   },
   "addressMuxed": {
@@ -88,7 +88,7 @@
       "setupWeights": "In een voorbeeld met drie gelijke rollen, ontvangen allen dezelfde ondertekeningssterkte:\n- Ondertekenaar (Signer) A (Management): Gewicht 2\n- Ondertekenaar (Signer) B (Finanzen): Gewicht 2\n- Ondertekenaar (Signer) C (Compliance/Backup): Gewicht 2",
       "setupThresholds": "Geschikte drempels/gewichten zijn als volgt ingesteld:\n- Laag (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- Hoog (high_threshold): 4 (voor structurele wijzigingen zoals het toevoegen/verwijderen van ondertekenaars (Signer) of het wijzigen van de drempel/gewicht (Thresholds))\n\nDit zorgt ervoor dat elke bevoegde persoon betalingen kan uitvoeren, maar dat geen enkele persoon alleen de accountstructuur kan wijzigen.",
       "behavior": "Met deze configuratie kunnen betalingen door elk van de drie bevoegde personen alleen worden uitgevoerd, omdat het gewicht van elk individu aan de middelhoge drempel voldoet. Voor structurele wijzigingen, zoals het verwijderen van een ondertekenaar, het aanpassen van de drempels/gewichten of het samenvoegen of sluiten van de rekening, is de hoge drempel vereist. Deze waarde kan alleen worden bereikt wanneer ten minste twee van de drie ondertekenaars samen ondertekenen. Deze opstelling houdt de rekening flexibel voor dagelijks gebruik en biedt tegelijkertijd sterke bescherming tegen misbruik.",
-      "removal": "Wenn eine Person das Unternehmen verlässt oder nicht mehr vertrauenswürdig ist, können zwei der verbleibenden Unterzeichner (Signer) gemeinsam die Signaturrechte dieser Person entfernen. Kein einzelner Unterzeichner (Signer) – weder ein Mitarbeiter noch die Geschäftsführung – kann andere eigenständig aus dem Konto ausschließen. Der Entzug von Berechtigungen erfolgt also immer kontrolliert und nachvollziehbar durch mindestens zwei Verantwortliche.",
+      "removal": "Als een persoon het bedrijf verlaat of niet langer betrouwbaar is, kunnen twee van de resterende ondertekenaars (Signer) samen de ondertekeningsrechten van die persoon intrekken. Geen enkele individuele ondertekenaar (Signer) – noch een medewerker, noch de directie – kan anderen op eigen houtje van het account uitsluiten. Het intrekken van rechten gebeurt dus altijd gecontroleerd en traceerbaar, met minstens twee verantwoordelijke personen.",
       "summary": "Dit type multisig-structuur stelt individuele partijen in staat om efficiënt betalingen te verwerken terwijl de controle over de rekening behouden blijft onder meerdere deelnemers. Het vermindert het risico op accountovernames, beschermt tegen unilaterale beslissingen, en is bijzonder geschikt voor zakelijke rekeningen waar zowel veiligheid als operationele flexibiliteit belangrijk zijn.",
       "closeLabel": "Dichtbij",
       "linkLabel": "Wat betekent Multi-Signature?",
@@ -128,7 +128,7 @@
   "mainnet": {
     "title": "Mainnet",
     "original": "Mainnet",
-    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "short": "Echt Stellar-netwerk met echte waarde.",
     "desc": "Het echte Stellar-netwerk met daadwerkelijke waarde. Transacties zijn definitief en kosten worden betaald in echte XLM."
   },
   "testnet": {
@@ -188,7 +188,7 @@
   "horizon": {
     "title": "Horizon",
     "original": "Horizon",
-    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "short": "API-service waarmee apps met Stellar communiceren.",
     "desc": "Horizon is de dienst waarmee programma's communiceren met de Stellar-blockchain. Onze tool raadpleegt Horizon om rekeningoverzichten en transacties te laden."
   },
   "horizonHistory": {
@@ -393,13 +393,13 @@
   "protocolUpdate": {
     "title": "Protocolbijwerking",
     "original": "Protocol Update",
-    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "short": "Update van de netwerkregels.",
     "desc": "Een protocolupdate is een upgrade van de regels in het Stellar-netwerk, zoals nieuwe functies of beveiligingswijzigingen. Alle knooppunten in het netwerk moeten dezelfde regels gebruiken."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Stellars Smart‑Contract‑System.",
+    "short": "Stellar's systeem voor smart contracts.",
     "desc": "Soroban is het smart contract systeem van Stellar. Een smart contract is programmacode op de blockchain. De code kan onafhankelijk regels verifiëren en acties activeren zonder de noodzaak van een tussenkomst van een bank."
   },
   "multiSignature": {

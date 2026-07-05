@@ -53,7 +53,7 @@
     "button": "Top 20 ulaza (Memo)",
     "clipboard": "Kopiraj u međuspremnik",
     "csv": "Preuzimanje CSV-a",
-    "scanning": "… scannt Top-Eingänge",
+    "scanning": "… skenira najveće uplate",
     "title": "20 najboljih unosa za memo u razdoblju"
   },
   "tz": {
@@ -79,7 +79,7 @@
     "csv": "Preuzmi CSV",
     "failed": "Pogreška pri učitavanju uplata s netočnom/praznom zabilješkom.",
     "hint": "Filtrira dolazne uplate unutar razdoblja i prikazuje pošiljatelje s netočnim/praznim opisom.",
-    "scanning": "… scannt falsche/leere Memos",
+    "scanning": "… skenira pogrešne/prazne memoe",
     "summary": "Broj: {{count}} • Ukupno: {{sum}} XLM • Jedinstveni novčanici: {{unique}}",
     "title": "Lažne/prazne bilješke tijekom razdoblja"
   }

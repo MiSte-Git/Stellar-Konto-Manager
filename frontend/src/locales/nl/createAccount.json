@@ -35,7 +35,7 @@
       "text": "De openbare sleutel kan veilig gedeeld worden – het is zoals een rekeningnummer.\n\nDe geheime sleutel verleent toegang tot je account. Behandel het als een wachtwoord:\n• BEWAAR het NOOIT in clouddiensten, e-mails of onveilige notities\n• Schrijf het op papier of gebruik een hardware wallet\n• Maak meerdere back-ups en bewaar ze op veilige, aparte locaties\n• Als de geheime sleutel verloren gaat, is toegang tot het account permanent verloren"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
+      "title": "Multisig (Meervoudige handtekening)",
       "text": "Met multisig kun je meerdere ondertekenaars voor je account definiëren. Transacties vereisen vervolgens handtekeningen van meerdere sleutels (multisig).\n\nVoordelen:\n• Verbeterde beveiliging (security)\n• Gedeelde accounts (shared accounts)\n• Noodherstel (emergency recovery)\n\nLET OP: Test multisig eerst op het testnet voordat je het op het mainnet implementeert! Onjuiste configuratie kan leiden tot verlies van toegang tot het account."
     },
     "diagram": {

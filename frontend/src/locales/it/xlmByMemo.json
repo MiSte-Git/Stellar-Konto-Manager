@@ -12,7 +12,7 @@
     "to": "Fino a (optional)"
   },
   "debug": {
-    "incoming": "Incoming – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
+    "incoming": "In entrata – to: {{toMe}}, create→me: {{createToMe}}, native→me: {{nativeInToMe}}",
     "incomingOverview": "Voci: {{total}} • Portafogli coinvolti: {{unique}}",
     "memo": "Memo in finestra: {{any}} • memo esatti: {{exact}}",
     "types": "Tipi – pagamento: {{pay}}, percorso: {{path}}, creare: {{create}}, altro: {{other}}"
@@ -53,7 +53,7 @@
     "button": "Le 20 migliori entrate (Memo)",
     "clipboard": "Copia negli appunti",
     "csv": "Scarica CSV",
-    "scanning": "… scannt Top-Eingänge",
+    "scanning": "… scansione top entrate",
     "title": "I 20 migliori voci per Memo nel periodo"
   },
   "tz": {

@@ -48,7 +48,7 @@
   "publicKey": {
     "title": "Публичный ключ",
     "original": "Public Key",
-    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+    "short": "Адрес, которым можно делиться; в Stellar обычно это G-адрес.",
     "desc": "Публичный ключ — это адрес, который вы можете делиться с другими. В Stellar это адрес, начинающийся с буквы \"G\". Другие использует его, чтобы отправлять вам деньги."
   },
   "privateKey": {
@@ -128,7 +128,7 @@
   "mainnet": {
     "title": "Основная сеть",
     "original": "Mainnet",
-    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "short": "Настоящая сеть Stellar с реальной ценностью.",
     "desc": "Настоящая сеть Stellar с фактической стоимостью. Транзакции окончательны, а комиссии оплачиваются в реальных XLM."
   },
   "testnet": {
@@ -397,13 +397,13 @@
   "protocolUpdate": {
     "title": "Обновление протокола",
     "original": "Protocol Update",
-    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "short": "Обновление правил сети.",
     "desc": "Обновление протокола — это обновление правил в сети Stellar, включающее новые функции или изменения в области безопасности. Все узлы в сети должны использовать одни и те же правила."
   },
   "soroban": {
     "title": "Соробан",
     "original": "Soroban",
-    "short": "Stellars Smart‑Contract‑System.",
+    "short": "Система Stellar для smart contracts.",
     "desc": "Soroban - это система смарт-контрактов Stellar. Смарт-контракт - это программный код на блокчейне. Код может самостоятельно проверять правила и вызывать действия без необходимости участия банка-посредника."
   },
   "multiSignature": {

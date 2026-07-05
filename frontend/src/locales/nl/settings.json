@@ -98,7 +98,7 @@
     "defaultLabel": "Standaard Explorer",
     "nameLabel": "Naam",
     "urlLabel": "URL",
-    "testnetUrlLabel": "Testnet-URL (optional)",
+    "testnetUrlLabel": "Testnet-URL (optioneel)",
     "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
     "addButton": "Explorer toevoegen",
     "removeButton": "Verwijderen",

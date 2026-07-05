@@ -35,7 +35,7 @@
       "text": "Javni ključ se može sigurno dijeliti – slično je kao broj računa.\n\nTajni ključ omogućuje pristup vašem računu. Tretirajte ga kao lozinku:\n• NIKADA ga nemojte pohranjivati u oblak usluge, e-poruke ili nesigurne bilješke\n• Zapišite ga na papir ili koristite hardverski novčanik\n• Izradite višestruke sigurnosne kopije i pohranite ih na sigurna, odvojena mjesta\n• Ako se tajni ključ izgubi, pristup računu je trajno izgubljen"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
+      "title": "Multisig (Višestruki potpis)",
       "text": "Kod multisig možete definirati više potpisnika za vaš račun. Transakcije tada zahtijevaju potpise s više ključeva (multisig).\n\nPrednosti:\n• Poboljšana sigurnost (security)\n• Zajednički računi (shared accounts)\n• Hitni oporavak (emergency recovery)\n\nOPREZ: Prvo testirajte multisig na testnetu prije implementacije na glavnu mrežu! Pogrešna konfiguracija može rezultirati gubitkom pristupa računu."
     },
     "diagram": {

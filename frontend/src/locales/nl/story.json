@@ -485,7 +485,7 @@
     "explain_ben": "Brander",
     "explain_clara": "Boekhouding",
     "explain_flow_desc": "Alle stortingen komen aan op hetzelfde G-adres – het ingebedde ID onthult welke klant het was.",
-    "explain_memo_vs_title": "Muxed Account vs. Memo",
+    "explain_memo_vs_title": "Muxed-account vs. memo",
     "explain_memo_desc": "Vrij tekstveld, niet gestandaardiseerd. Kan worden vergeten of verkeerd ingevoerd.",
     "explain_muxed_desc": "Gestructureerd numeriek ID direct in het adres. Betrouwbaar voor geautomatiseerde boekhouding.",
     "explain_cta": "Begrepen! Naar de toepassing →",
@@ -1262,7 +1262,7 @@
   },
   "chapter11": {
     "title": "Het Loyaliteitsprogramma",
-    "subtitle": "Custom Assets & Loyalty Tokens",
+    "subtitle": "Aangepaste assets en loyaliteitstokens",
     "description": "Marco start een loyaliteitsprogramma met BERRY-tokens – en Lumio ontdekt een gevaarlijke val.",
     "placeholder": "Dit hoofdstuk komt binnenkort beschikbaar.",
     "s1": {

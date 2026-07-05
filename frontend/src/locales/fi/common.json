@@ -159,7 +159,7 @@
       },
       "rejectionReason": {
         "label": "Syy",
-        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
+        "required": "Anna syy, jos tila on \"Hylätty\"."
       },
       "secretVisibilityToggle": "Näytä/piilota ylläpitäjän salaisuus"
     }
@@ -215,7 +215,7 @@
     "message": "Viesti",
     "contactEmailOptional": "Yhteystieto sähköposti (optional)",
     "emailPlaceholder": "z. B. nimi@esimerkki.com",
-    "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
+    "emailHint": "Jos haluat vastauksen, anna sähköpostiosoitteesi.",
     "form": {
       "clearButton": "Tyhjennä kentät",
       "multiEntryHint": "Lähetä vain yksi viesti kutakin virhettä, ehdotusta tai ideaa kohden, jotta muokkausprosessi pysyy selkeänä ja järjestettynä."
@@ -241,7 +241,7 @@
     "invalid": "Virheellinen lähettäjän osoite."
   },
   "main": {
-    "processing": "Vorgang läuft, bitte warten …",
+    "processing": "Käsitellään, odota hetki …",
     "title": "Stellar-tilinhoitaja"
   },
   "badges": {
@@ -320,7 +320,7 @@
     "network": {
       "title": "Verkko",
       "desc": "Vaihtoehtoinen: Täydellinen historiahorisontti syvälle historialle",
-      "fullUrl": "Full-History Horizon URL",
+      "fullUrl": "Horizon-URL (koko historia)",
       "autoUseFull": "Käytä automaattisesti tarvittaessa (when the From-Date is older than the server history)"
     },
     "description": "Tällä hetkellä asetuksia ei ole vielä olemassa.",
@@ -477,51 +477,51 @@
     "infoButtonLabel": "Tiedot",
     "info": {
       "title": "Mikä on multiplisoitu tili?",
-      "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
-      "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
+      "intro1": "Muxed-tili yhdistää tavallisen tiliosoitteen (G-osoite) ylimääräiseen 64-bittiseen Muxed-ID:hen.",
+      "intro2": "Teknisesti se on alias, joka osoittaa aina samaan perustiliin, mutta on ID:n avulla yksiselitteisesti erotettavissa.",
       "purposeTitle": "Tarkoitus ja hyödyt",
-      "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
-      "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
+      "purposeText": "Muxed-tilit palvelevat monien alitilien hallintaa yhden Stellar-osoitteen alla – ihanteellinen, kun monet talletukset/nostot kulkevat yhteisen pääterin kautta, mutta jokainen tapahtuma on kohdistettava henkilölle, osastolle tai projektille.",
+      "examplesTitle": "Esimerkkejä – mihin Muxed-tilit ovat hyödyllisiä?",
       "examples": {
         "ex1": "Yritysmaksut: Jokainen työntekijä saa oman Muxed‑ID:n, jotta palkanmaksut voidaan yksiselitteisesti kohdistaa.",
-        "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
+        "ex2": "Pörssit tai alustat: jokainen käyttäjä saa oman Muxed-ID:n, jotta talletukset yhteisen lompakon kautta kirjataan automaattisesti oikein.",
         "ex3": "Projektit tai alatilit: Organisaatio voi kohdentaa budjetit tai tulot yksittäisille projekteille.",
-        "ex4": "Kundenzuordnung: Eine M‑Adresse pro Kunde; die ID entspricht der Kunden‑ID – Zahlungen sind eindeutig zuordenbar, auch ohne Memo.",
+        "ex4": "Asiakaskohdistus: yksi M-osoite asiakasta kohden; ID vastaa asiakas-ID:tä – maksut voidaan kohdistaa selkeästi myös ilman muistiinpanoa.",
         "ex5": "Palvelut ilman muistiinpanoja: Erittele talletukset, kun palvelu ei tue muistiinpanoja.",
-        "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
-        "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
+        "ex6": "Maksut/palkanmaksut: yksi M-osoite työntekijää/kumppania kohden sisäistä kirjanpitoa ja raportointia varten.",
+        "ex7": "Kauppa/tilaukset: yksi M-osoite tilausta kohden; palautukset voidaan kohdistaa tilaukseen.",
         "ex8": "Osastot/Kustannuspaikat: Tunnukset kustannuspaikkoina; maksuja ryhmitellään automaattisesti alueittain.",
-        "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
+        "ex9": "Monivuokralaispalvelut: jokainen vuokralainen saa oman M-osoitteen saman perustilin alla."
       },
       "pageTitle": "Mitä tämä sivu tekee SKM:ssä?",
-      "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
-      "createTitle": "Neue Muxed‑Konten erstellen",
+      "pageDesc": "Tämä sivu on tarkoitettu tällä hetkellä valitun Stellar-tilisi Muxed-tilien hallintaan:",
+      "createTitle": "Luo uusia Muxed-tilejä",
       "createItems": {
         "i1": "Luo uusia Muxed‑osoitteita (M...) perusosoitteestasi (G...).",
         "i2": "Valinnainen, jossa on tunniste (Name) ja huomautus (z. B. Projekt oder Zweck)."
       },
-      "importTitle": "Import aus CSV‑Dateien",
+      "importTitle": "Tuo CSV-tiedostoista",
       "importItems": {
-        "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
+        "i1": "Muxed-tilien joukkoluonti, esim. työntekijäluettelosta.",
         "i2": "Lue sarakkeet muxedId, label, note."
       },
-      "exportTitle": "Export vorhandener Muxed‑Konten",
+      "exportTitle": "Vie olemassa olevat Muxed-tilit",
       "exportItems": {
         "i1": "Vie kaikki tallennetut merkinnät CSV-muodossa.",
         "i2": "Kentät: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
       },
       "templateTitle": "Template‑Export",
       "templateItems": {
-        "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
-        "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
+        "i1": "Luo tyhjän CSV-tiedoston, jossa on sarakeotsikot muxedId,label,note.",
+        "i2": "Hyödyllinen HR- tai kirjanpito-osastoille uusien merkintöjen valmisteluun."
       },
       "manageTitle": "Management & Overview",
       "manageItems": {
-        "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
-        "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
+        "i1": "Kaikki tallennetut Muxed-osoitteet näytetään taulukossa.",
+        "i2": "Valinta, poisto sekä nimikkeen/muistiinpanon hallinta suoraan mahdollista."
       },
       "shortTitle": "Lyhyesti sanottuna",
-      "shortText": "Muxed‑Konten machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
+      "shortText": "Muxed-tilit tekevät Stellar-tilistäsi hienojakoisen ja jäljitettävän – ihanteellinen organisaatioille, jotka käsittelevät paljon maksuja keskitetyn tilin kautta mutta haluavat silti kohdistaa jokaisen tapahtuman yksiselitteisesti."
     },
     "selectBaseAccount": "Perustili (G-Adresse)",
     "selectPlaceholder": "Valitse tili",
@@ -701,7 +701,7 @@
       "tokenShort": "Token: {{token}}"
     },
     "missingPublicKey": "Julkinen avain puuttuu.",
-    "moreTruncated": "… und {{extra}} weitere Gruppen",
+    "moreTruncated": "… ja {{extra}} muuta ryhmää",
     "toWallet": "lompakkoon: {{address}}",
     "total": "Ostettujen merkkien määrä: {{count}}",
     "totalTokens": "Sijoitettujen tokenien määrä (Assets): {{count}}",
@@ -712,7 +712,7 @@
     "view": {
       "label": "Suodata:",
       "memo": "Muistiot",
-      "token": "Token (gekaufte Menge)"
+      "token": "Token (ostettu määrä)"
     },
     "toggles": {
       "showTotals": "Kokonaissumma",
@@ -728,7 +728,7 @@
     },
     "history": {
       "availableFrom": "Server (Horizon) – Historia alkaen",
-      "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+      "hintFullHistory": "Huomio: Horizon-palvelimen ledger-historia ulottuu vain {{available}} asti. Vain siihen asti olevat tiedot näytetään. Valittu alkupäivä on siksi rajoitettu. Vanhempia tietoja varten tarvitaan (yleensä maksullinen) Full-History-palveluntarjoaja (ehkä tulevaisuudessa!)."
     }
   },
   "network": {
@@ -859,7 +859,7 @@
     "publicKey": {
       "title": "Julkinen avain",
       "original": "Public Key",
-      "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+      "short": "Osoite, jonka voit jakaa; Stellarissa yleensä G-osoite.",
       "desc": "Julkinen avain on osoite, jonka voit näyttää. Stellarissa tämä on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
     },
     "privateKey": {
@@ -871,7 +871,7 @@
     "addressFederation": {
       "title": "Liiton osoite",
       "original": "Federation Address",
-      "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+      "short": "Lyhyt osoite kuin sähköposti, osoittaa G-osoitteeseen.",
       "desc": "Liitto-osoite näyttää sähköpostilta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa tavalliseen G-osoitteeseen. Se on helpompi muistaa."
     },
     "addressMuxed": {
@@ -913,7 +913,7 @@
     "mainnet": {
       "title": "Pääverkko",
       "original": "Mainnet",
-      "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+      "short": "Todellinen Stellar-verkko todellisella arvolla.",
       "desc": "Todellinen Stellar-verkko todellisella arvolla. Tapahtumat ovat lopullisia, ja maksut suoritetaan aidoilla XLM:llä."
     },
     "testnet": {
@@ -949,13 +949,13 @@
     "horizon": {
       "title": "Horisontti",
       "original": "Horizon",
-      "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+      "short": "API-palvelu, jonka kautta sovellukset puhuvat Stellarin kanssa.",
       "desc": "Horizon on palvelu, jonka avulla ohjelmat voivat kommunikoida Stellar-lohkoketjun kanssa. Työkalumme tekee kyselyjä Horizonille ladatakseen tilien saldot ja tapahtumat."
     },
     "anchor": {
       "title": "Ankkuri",
       "original": "Anchor",
-      "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+      "short": "Yritys, joka yhdistää fiat-rahan Stellariin.",
       "desc": "Ankkuri on yritys, joka yhdistää oikean rahan, kuten euron tai dollarin, Stellariin. Esimerkiksi annat ankkurille euroja ja saat vastineeksi euron tokenin Stellarissa."
     },
     "exchange": {
@@ -985,13 +985,13 @@
     "protocolUpdate": {
       "title": "Protokollin päivitys",
       "original": "Protocol Update",
-      "short": "Aktualisierung der Netzwerk‑Regeln.",
+      "short": "Verkon sääntöjen päivitys.",
       "desc": "Protokollipäivitys on sääntöjen päivitys Stellar-verkossa, kuten uusien ominaisuuksien tai turvallisuusmuutosten lisääminen. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
     },
     "soroban": {
       "title": "Soroban",
       "original": "Soroban",
-      "short": "Stellars Smart‑Contract‑System.",
+      "short": "Stellarin älysopimusjärjestelmä.",
       "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on ohjelmakoodi lohkoketjussa. Koodi voi itsenäisesti tarkistaa sääntöjä ja käynnistää toimintoja ilman välikätenä olevaa pankkia."
     },
     "missingKey": "Puuttuva sanastokohta: {{detail}}"
@@ -1082,7 +1082,7 @@
       "button": "20 parasta merkintää (Memo)",
       "clipboard": "Kopioi leikepöydälle",
       "csv": "Lataa CSV",
-      "scanning": "… scannt Top-Eingänge",
+      "scanning": "… skannaa suurimpia saapuvia",
       "title": "Muistion 20 parasta merkintää ajanjaksolta"
     },
     "tz": {

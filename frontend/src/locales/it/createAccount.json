@@ -35,7 +35,7 @@
       "text": "La chiave pubblica può essere condivisa in sicurezza – è come un numero di conto.\n\nLa chiave segreta consente l'accesso al tuo conto. Trattala come una password:\n• NON conservarla mai in servizi cloud, e-mail o note non sicure\n• Trascrivila su carta o utilizza un portafoglio hardware\n• Crea più copie di backup e conservale in posizioni sicure e separate\n• Se la chiave segreta viene persa, l'accesso al conto è perso per sempre"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
+      "title": "Multisig (Firma multipla)",
       "text": "Con il multisig, puoi definire più firmatari per il tuo account. Le transazioni richiedono quindi firme da più chiavi (multisig).\n\nVantaggi:\n• Maggiore sicurezza (security)\n• Conti condivisi (shared accounts)\n• Recupero di emergenza (emergency recovery)\n\nATTENZIONE: Testa il multisig prima sulla testnet prima di implementarlo sulla mainnet! Una configurazione errata può comportare la perdita dell'accesso all'account."
     },
     "diagram": {

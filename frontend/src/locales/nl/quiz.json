@@ -27,7 +27,7 @@
       "c.fb": "Nee. Iedereen kan transacties opzoeken."
     },
     "q3": {
-      "question": "Warum sind Blöcke miteinander ‚verkettet‘?",
+      "question": "Waarom zijn blokken aan elkaar \"geketend\"?",
       "hint": "Oude pagina's zouden moeilijk te veranderen moeten zijn.",
       "a": "Zodat het veranderen van oude gegevens zeer moeilijk wordt.",
       "b": "Om de app er cooler uit te laten zien.",
@@ -253,7 +253,7 @@
   "l7": {
     "title": "Beveiliging, Phishing en Vertrouwen",
     "q1": {
-      "question": "Eine Website will deinen Secret Key, um dein Guthaben zu ‚prüfen‘. Was tust du?",
+      "question": "Een website wil je secret key om je saldo te \"controleren\". Wat doe je?",
       "hint": "Deel je geheime sleutel nooit.",
       "a": "Verlaat de pagina. Voer nooit de geheime sleutel in.",
       "b": "Voer binnen, maar slechts één keer.",
@@ -283,7 +283,7 @@
       "c.fb": "Nee. Deel je geheime sleutel nooit. KYC heeft deze niet nodig."
     },
     "q4": {
-      "question": "Was ist ein ‚Zero-Knowledge Proof‘ (ZK) in einfachen Worten?",
+      "question": "Wat is een \"Zero-Knowledge Proof\" (ZK) in eenvoudige bewoordingen?",
       "hint": "Bewijs dat je iets weet zonder het geheim te onthullen.",
       "a": "Een bewijs dat iets waar is zonder het geheim te onthullen.",
       "b": "Een hulpmiddel dat alle transacties voor altijd verbergt.",

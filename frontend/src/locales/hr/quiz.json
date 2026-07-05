@@ -27,7 +27,7 @@
       "c.fb": "Ne. Svatko može provjeriti transakcije."
     },
     "q3": {
-      "question": "Warum sind Blöcke miteinander ‚verkettet‘?",
+      "question": "Zašto su blokovi međusobno \"povezani u lanac\"?",
       "hint": "Stare stranice trebaju biti teško promijeniti.",
       "a": "Tako da postane vrlo teško mijenjati stare podatke.",
       "b": "Da bi aplikacija izgledala bolje.",
@@ -253,7 +253,7 @@
   "l7": {
     "title": "Sigurnost, krađa identiteta i povjerenje",
     "q1": {
-      "question": "Eine Website will deinen Secret Key, um dein Guthaben zu ‚prüfen‘. Was tust du?",
+      "question": "Web-stranica želi tvoj tajni ključ kako bi \"provjerila\" tvoje stanje. Što činiš?",
       "hint": "Nikada ne dijelite svoj tajni ključ.",
       "a": "Napusti stranicu. Nikada ne unosi Tajni Ključ.",
       "b": "Unesite, ali samo jednom.",
@@ -283,7 +283,7 @@
       "c.fb": "Ne. Nikada ne dijelite svoj tajni ključ. KYC ga ne treba."
     },
     "q4": {
-      "question": "Was ist ein ‚Zero-Knowledge Proof‘ (ZK) in einfachen Worten?",
+      "question": "Što je \"Zero-Knowledge Proof\" (ZK) jednostavnim riječima?",
       "hint": "Dokaži da znaš nešto bez otkrivanja tajne.",
       "a": "Dokaz da je nešto istinito bez otkrivanja tajne.",
       "b": "Alat koji zauvijek skriva sve transakcije.",

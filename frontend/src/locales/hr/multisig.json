@@ -25,12 +25,12 @@
         "desc": "Standardni tijek rada za produktivni multisig. Stvara ID posla i prikuplja potpise na distribuirani način.",
         "short": "Stvara posao s višestrukim potpisom (Job-ID) i prikuplja distribuirane potpise.",
         "moreInfo": "Više informacija",
-        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoTitle": "Kako funkcionira \"Stvori multisig zadatak\"?",
         "infoBody": {
           "one": "Transakcija se pohranjuje kao multisig zadatak u pozadini i dobiva ID zadatka. Ništa se ne šalje izravno.",
           "two": "Svi sljedeći potpisnici otvaraju u svojoj SKM-instance izbornik „Multisig-Jobs“, preuzimaju zadatak i potpisuju ga.",
           "three": "Nakon što se prikupi dovoljno potpisa (Threshold erreicht), transakcija će biti poslana ili može biti poslana.",
-          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+          "four": "Možeš proslijediti ID zadatka drugim potpisnicima, ili oni mogu odabrati zadatak izravno u \"Nalozi s višestrukim potpisom\"."
         },
         "steps": {
           "one": "Korak 1: Kreira se multisig zadatak i dodjeljuje mu se ID zadatka.",

@@ -25,17 +25,17 @@
         "desc": "Flujo de trabajo estándar para multisig productivo. Crea un ID de trabajo y recopila firmas de manera distribuida.",
         "short": "Crea un trabajo multisig (Job-ID) y recopila firmas distribuidas.",
         "moreInfo": "Más información",
-        "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
+        "infoTitle": "¿Cómo funciona \"Crear trabajo multisig\"?",
         "infoBody": {
           "one": "La transacción se almacena como un trabajo multisig en el backend y recibe un ID de trabajo. No se envía nada directamente.",
-          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "two": "Todos los siguientes firmantes abren el elemento de menú \"Órdenes multisig\" en su instancia de SKM, cargan el trabajo y firman.",
           "three": "Una vez que se proporcionen suficientes firmas (Threshold erreicht), la transacción será enviada o puede ser enviada.",
-          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+          "four": "Puedes pasar el ID de trabajo a otros firmantes, o pueden seleccionar el trabajo directamente en \"Órdenes multisig\"."
         },
         "steps": {
           "one": "Paso 1: Se crea un trabajo multisig y recibe un ID de trabajo.",
-          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
-          "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
+          "two": "Paso 2: Todos los siguientes firmantes abren el elemento de menú \"Órdenes multisig\" en su instancia de SKM, cargan el trabajo y firman.",
+          "three": "Paso 3: El segundo firmante abre el elemento de menú \"Órdenes multisig\" en su instancia de SKM, carga el trabajo y firma.",
           "four": "Paso 4: Una vez que se hayan recopilado suficientes firmas, la transacción se envía o puede ser enviada."
         }
       },
@@ -44,10 +44,10 @@
         "desc": "Usar solo si todas las claves secretas se pueden ingresar de manera segura en este dispositivo (Tests/Recovery/Admin).",
         "warning": "Advertencia: Todas las claves secretas se están recopilando en esta sesión. Úsalo solo en dispositivos de confianza.",
         "moreInfo": "Más información",
-        "infoTitle": "Wie funktioniert „Alle Signaturen lokal“?",
+        "infoTitle": "¿Cómo funciona \"Todas las firmas localmente\"?",
         "infoBody": {
           "one": "Introduce todas las claves secretas requeridas en este dispositivo de manera secuencial hasta que se alcance el umbral.",
-          "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
+          "two": "Esto ya no es un flujo multisig distribuido, sino \"multi-clave en un dispositivo\": úsalo solo en dispositivos de confianza.",
           "three": "Una vez que se recopilen suficientes firmas, la transacción se envía directamente a Horizon (ohne Multisig-Job)."
         }
       },
@@ -81,8 +81,8 @@
         "infoTitle": "Qué hay que hacer ahora",
         "info": {
           "share": "Reenvía el ID del trabajo o XDR a los siguientes firmantes (E-Mail, Messenger wie Telegram/WhatsApp).",
-          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
-          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+          "sign": "Los firmantes eligen la opción 3 (\"Importar XDR\") y firman el XDR, O abren el elemento de menú \"ID de trabajo\" en el SKM, cargan el trabajo y firman allí.",
+          "submit": "Una vez recogidas suficientes firmas, uno de los firmantes envía finalmente el trabajo a la red en el SKM (menú \"ID de trabajo\")."
         },
         "copyJobId": "Copiar ID de trabajo",
         "copiedJobId": "Copiado"

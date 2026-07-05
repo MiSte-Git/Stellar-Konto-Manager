@@ -48,7 +48,7 @@
   "publicKey": {
     "title": "Public key",
     "original": "Public Key",
-    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+    "short": "Address you may share; on Stellar usually the G-address.",
     "desc": "The public key is the address you are allowed to share. In Stellar, this is the G-address. Others use it to send you money."
   },
   "privateKey": {
@@ -60,7 +60,7 @@
   "addressFederation": {
     "title": "Federation address",
     "original": "Federation Address",
-    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+    "short": "Short address like an email, points to a G-address.",
     "desc": "A federation address looks like an email. Example: name*domain.com. This short address points to a regular G-address. It's easier to remember."
   },
   "addressMuxed": {
@@ -88,7 +88,7 @@
       "setupWeights": "In an example with three equal roles, all receive the same signature strength:\n- Signer (Signer) A (Management): Weight 2\n- Signer (Signer) B (Finanzen): Weight 2\n- Signer (Signer) C (Compliance/Backup): Weight 2",
       "setupThresholds": "Appropriate thresholds/weights are set as follows:\n- Low (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- High (high_threshold): 4 (for structural changes such as adding/removing signers (Signer) or changing the threshold/weight (Thresholds))\nThis ensures that each authorized person can execute payments, but no individual person can alter the account structure alone.",
       "behavior": "With this configuration, payments can be made by any of the three eligible individuals alone because each individual's weight meets the medium threshold/Threshold. For structural changes such as removing a signer/Signers, adjusting the thresholds/weights, or merging or closing the account, the high threshold/high_threshold is required. This value can only be achieved when at least two of the three signers/Signer sign together. This setup keeps the account flexible for daily use while providing strong protection against misuse.",
-      "removal": "Wenn eine Person das Unternehmen verlässt oder nicht mehr vertrauenswürdig ist, können zwei der verbleibenden Unterzeichner (Signer) gemeinsam die Signaturrechte dieser Person entfernen. Kein einzelner Unterzeichner (Signer) – weder ein Mitarbeiter noch die Geschäftsführung – kann andere eigenständig aus dem Konto ausschließen. Der Entzug von Berechtigungen erfolgt also immer kontrolliert und nachvollziehbar durch mindestens zwei Verantwortliche.",
+      "removal": "If a person leaves the company or is no longer trustworthy, two of the remaining signers (Signer) can jointly remove that person's signing rights. No single signer (Signer) – neither an employee nor management – can exclude others from the account on their own. Revoking permissions therefore always happens in a controlled and traceable way, with at least two responsible people involved.",
       "summary": "This type of multi-sig structure allows individual parties to efficiently process payments while maintaining control of the account among multiple participants. It reduces the risk of account takeovers, protects against unilateral decisions, and is particularly suitable for corporate accounts where both security and operational flexibility are important.",
       "closeLabel": "Close",
       "linkLabel": "What does Multi-Signature mean?",
@@ -170,7 +170,7 @@
   "mainnet": {
     "title": "Mainnet",
     "original": "Mainnet",
-    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "short": "Real Stellar network with real value.",
     "desc": "The real Stellar network with actual value. Transactions are final and fees are paid in real XLM."
   },
   "testnet": {
@@ -230,7 +230,7 @@
   "horizon": {
     "title": "Horizon",
     "original": "Horizon",
-    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "short": "API service through which apps talk to Stellar.",
     "desc": "Horizon is the service through which programs communicate with the Stellar blockchain. Our tool queries Horizon to load account balances and transactions."
   },
   "horizonHistory": {
@@ -493,13 +493,13 @@
   "protocolUpdate": {
     "title": "Protocol Update",
     "original": "Protocol Update",
-    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "short": "Update of the network rules.",
     "desc": "A Protocol Update is an upgrade of the rules in the Stellar network, such as new features or security changes. All nodes in the network must use the same rules."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Stellars Smart‑Contract‑System.",
+    "short": "Stellar's smart contract system.",
     "desc": "Soroban is the smart contract system of Stellar. A smart contract is program code on the blockchain. The code can independently verify rules and trigger actions without the need for a bank intermediary."
   },
   "multiSignature": {

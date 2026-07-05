@@ -48,7 +48,7 @@
   "publicKey": {
     "title": "Julkinen avain",
     "original": "Public Key",
-    "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+    "short": "Osoite, jonka voit jakaa; Stellarissa yleensä G-osoite.",
     "desc": "Julkinen avain on osoite, jonka saat jakaa. Stellarissa tämä on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
   },
   "privateKey": {
@@ -60,7 +60,7 @@
   "addressFederation": {
     "title": "Liiton osoite",
     "original": "Federation Address",
-    "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+    "short": "Lyhyt osoite kuin sähköposti, osoittaa G-osoitteeseen.",
     "desc": "Liittouman osoite näyttää sähköpostiosoitteelta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa normaaliin G-osoitteeseen. Se on helpompi muistaa."
   },
   "addressMuxed": {
@@ -128,7 +128,7 @@
   "mainnet": {
     "title": "Mainnet",
     "original": "Mainnet",
-    "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+    "short": "Todellinen Stellar-verkko todellisella arvolla.",
     "desc": "Todellinen Stellar-verkko todellisella arvolla. Tapahtumat ovat lopullisia ja maksut suoritetaan oikealla XLM:llä."
   },
   "testnet": {
@@ -188,7 +188,7 @@
   "horizon": {
     "title": "Horisontti",
     "original": "Horizon",
-    "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+    "short": "API-palvelu, jonka kautta sovellukset puhuvat Stellarin kanssa.",
     "desc": "Horizon on palvelu, jonka kautta ohjelmat kommunikoivat Stellar-lohkoketjun kanssa. Työkalumme kysyy Horizonilta tilien saldot ja tapahtumat."
   },
   "horizonHistory": {
@@ -393,13 +393,13 @@
   "protocolUpdate": {
     "title": "Protokollipäivitys",
     "original": "Protocol Update",
-    "short": "Aktualisierung der Netzwerk‑Regeln.",
+    "short": "Verkon sääntöjen päivitys.",
     "desc": "Protokollipäivitys on sääntöjen päivitys Stellar-verkossa, kuten uusia ominaisuuksia tai tietoturvamuutoksia. Kaikkien verkon solmujen on käytettävä samoja sääntöjä."
   },
   "soroban": {
     "title": "Soroban",
     "original": "Soroban",
-    "short": "Stellars Smart‑Contract‑System.",
+    "short": "Stellarin älysopimusjärjestelmä.",
     "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on lohkoketjussa olevaa ohjelmakoodia. Koodi voi itsenäisesti varmistaa sääntöjen noudattamisen ja käynnistää toimia ilman pankin välittäjää."
   },
   "multiSignature": {

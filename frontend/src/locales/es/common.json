@@ -69,7 +69,7 @@
     "button": "Informar error",
     "title": "Informar error",
     "descLabel": "Descripción breve (optional)",
-    "descPlaceholder": "Was ist passiert? Schritte, erwartetes Verhalten …",
+    "descPlaceholder": "¿Qué pasó? Pasos, comportamiento esperado …",
     "send": "Enviar comentarios",
     "cancel": "Cancelar",
     "toast": {
@@ -159,7 +159,7 @@
       },
       "rejectionReason": {
         "label": "Razón",
-        "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
+        "required": "Indica un motivo si el estado es \"Rechazado\"."
       },
       "secretVisibilityToggle": "Mostrar/Ocultar Secreto de Administrador"
     }
@@ -215,7 +215,7 @@
     "message": "Mensaje",
     "contactEmailOptional": "Correo electrónico de contacto (optional)",
     "emailPlaceholder": "por ejemplo, nombre@ejemplo.com",
-    "emailHint": "Wenn Rückmeldung erwünscht, bitte E‑Mail eintragen.",
+    "emailHint": "Si deseas una respuesta, indica tu correo electrónico.",
     "form": {
       "clearButton": "Campos despejados",
       "multiEntryHint": "Por favor, crea solo un mensaje por error, sugerencia o idea para mantener el proceso de edición claro y organizado."
@@ -241,7 +241,7 @@
     "invalid": "Dirección de emisor no válida."
   },
   "main": {
-    "processing": "Vorgang läuft, bitte warten …",
+    "processing": "Procesando, espera …",
     "title": "Gerente de Cuentas de Stellar"
   },
   "badges": {
@@ -301,10 +301,10 @@
       "scan": "Escaneando pagos (página {{page}})…",
       "scan_ops": "Escaneando operaciones…",
       "scan_payments": "Escaneando pagos (página {{page}})…",
-      "scan_payments_fast": "Scanne Zahlungen (schnell) – Seite {{page}}…",
+      "scan_payments_fast": "Escaneando pagos (rápido) – página {{page}}…",
       "scan_tx": "Escanear transacciones",
       "sync": "Sincronizar pagos…",
-      "txFetch": "Lade Transaktionsdetails…",
+      "txFetch": "Cargando detalles de la transacción…",
       "done": "Listo"
     },
     "wrongMemos": {
@@ -477,51 +477,51 @@
     "infoButtonLabel": "Información",
     "info": {
       "title": "¿Qué es una cuenta multiplexada?",
-      "intro1": "Ein Muxed‑Konto kombiniert eine normale Konto‑Adresse (G‑Adresse) mit einer zusätzlichen 64‑Bit‑Muxed‑ID.",
-      "intro2": "Technisch ist es ein Alias, der immer auf dasselbe Basis‑Konto zeigt, aber durch die ID eindeutig unterscheidbar ist.",
+      "intro1": "Una cuenta Muxed combina una dirección de cuenta normal (dirección G) con un ID Muxed adicional de 64 bits.",
+      "intro2": "Técnicamente es un alias que siempre apunta a la misma cuenta base, pero que se distingue de forma inequívoca mediante el ID.",
       "purposeTitle": "Propósito y beneficios",
-      "purposeText": "Muxed‑Konten dienen dazu, viele Unterkonten unter einer einzigen Stellar‑Adresse zu verwalten – ideal, wenn viele Ein‑/Auszahlungen über ein gemeinsames Hauptkonto laufen, aber jeder Vorgang einer Person, Abteilung oder einem Projekt zugeordnet werden muss.",
-      "examplesTitle": "Beispiele – wofür sind Muxed‑Konten nützlich?",
+      "purposeText": "Las cuentas Muxed sirven para gestionar muchas subcuentas bajo una única dirección Stellar; ideal cuando muchos depósitos/retiros pasan por una cuenta principal compartida, pero cada operación debe asignarse a una persona, departamento o proyecto.",
+      "examplesTitle": "Ejemplos: ¿para qué sirven las cuentas Muxed?",
       "examples": {
         "ex1": "Pagos de la empresa: Cada empleada/empleado recibe una Muxed‑ID única para que los pagos de salario puedan ser asignados de manera clara.",
-        "ex2": "Börsen oder Plattformen: Jede/r Benutzer/in erhält eine eigene Muxed‑ID, damit Einzahlungen über ein gemeinsames Wallet automatisch richtig verbucht werden.",
+        "ex2": "Bolsas o plataformas: cada usuario recibe su propio Muxed ID para que los depósitos a través de una billetera compartida se contabilicen correctamente de forma automática.",
         "ex3": "Proyectos o subcuentas: Una organización puede asignar presupuestos o ingresos a proyectos individuales.",
-        "ex4": "Kundenzuordnung: Eine M‑Adresse pro Kunde; die ID entspricht der Kunden‑ID – Zahlungen sind eindeutig zuordenbar, auch ohne Memo.",
+        "ex4": "Asignación de clientes: una dirección M por cliente; el ID coincide con el ID del cliente, los pagos se pueden asignar claramente incluso sin memo.",
         "ex5": "Servicios sin memorandos: Diferenciar los depósitos cuando el servicio no admite memorandos.",
-        "ex6": "Auszahlungen/Gehaltsläufe: Eine M‑Adresse pro Mitarbeiter/Partner für interne Buchhaltung und Reports.",
-        "ex7": "Shop/Bestellungen: Pro Bestellung eine M‑Adresse; Rückerstattungen lassen sich der Bestellung zuordnen.",
+        "ex6": "Pagos/nóminas: una dirección M por empleado/socio para contabilidad interna e informes.",
+        "ex7": "Tienda/pedidos: una dirección M por pedido; los reembolsos se pueden asociar al pedido.",
         "ex8": "Departamentos/Centros de Costos: IDs como centros de costos; agrupar automáticamente los pagos por área.",
-        "ex9": "Multi‑Tenant‑Dienste: Jeder Mandant erhält eine eigene M‑Adresse unter demselben Basiskonto."
+        "ex9": "Servicios multiinquilino: cada inquilino recibe su propia dirección M bajo la misma cuenta base."
       },
       "pageTitle": "Qué hace esta página en el SKM",
-      "pageDesc": "Diese Seite dient zur Verwaltung der Muxed‑Konten deines aktuell gewählten Stellar‑Kontos:",
-      "createTitle": "Neue Muxed‑Konten erstellen",
+      "pageDesc": "Esta página sirve para gestionar las cuentas Muxed de tu cuenta Stellar seleccionada actualmente:",
+      "createTitle": "Crear nuevas cuentas Muxed",
       "createItems": {
-        "i1": "Erzeugt neue Muxed‑Adressen (M...) aus deiner Basisadresse (G...).",
+        "i1": "Genera nuevas direcciones Muxed (M...) a partir de tu dirección base (G...).",
         "i2": "Opcional con etiqueta (Name) y nota (z. B. Projekt oder Zweck)."
       },
-      "importTitle": "Import aus CSV‑Dateien",
+      "importTitle": "Importar desde archivos CSV",
       "importItems": {
-        "i1": "Massenanlage von Muxed‑Konten, z. B. aus einer Mitarbeiterliste.",
+        "i1": "Creación masiva de cuentas Muxed, p. ej. a partir de una lista de empleados.",
         "i2": "Lee las columnas muxedId, label, note."
       },
-      "exportTitle": "Export vorhandener Muxed‑Konten",
+      "exportTitle": "Exportar cuentas Muxed existentes",
       "exportItems": {
         "i1": "Exportar todas las entradas guardadas como CSV.",
         "i2": "Campos: clavePúblicaBase, idMultiplexado, direcciónMultiplexada, etiqueta, nota, creadoEn."
       },
       "templateTitle": "Template‑Export",
       "templateItems": {
-        "i1": "Erstellt eine leere CSV‑Datei mit Spaltenüberschriften muxedId,label,note.",
-        "i2": "Nützlich für HR‑ oder Buchhaltungsabteilungen zur Vorbereitung neuer Einträge."
+        "i1": "Crea un archivo CSV vacío con los encabezados de columna muxedId,label,note.",
+        "i2": "Útil para los departamentos de RR. HH. o contabilidad al preparar nuevas entradas."
       },
       "manageTitle": "Management & Overview",
       "manageItems": {
-        "i1": "Alle gespeicherten Muxed‑Adressen werden in einer Tabelle angezeigt.",
-        "i2": "Auswahl, Löschen sowie Label‑/Notizpflege direkt möglich."
+        "i1": "Todas las direcciones Muxed guardadas se muestran en una tabla.",
+        "i2": "Selección, eliminación y gestión de etiquetas/notas directamente posibles."
       },
       "shortTitle": "En resumen",
-      "shortText": "Muxed‑Konten machen dein Stellar‑Konto feingranular und buchbar – ideal für Organisationen, die viele Zahlungen über ein zentrales Konto abwickeln, aber trotzdem jede Transaktion eindeutig zuordnen möchten."
+      "shortText": "Las cuentas Muxed hacen que tu cuenta Stellar sea granular y trazable: ideal para organizaciones que procesan muchos pagos a través de una cuenta central pero aun así quieren asignar cada transacción de forma inequívoca."
     },
     "selectBaseAccount": "Cuenta básica (G-Adresse)",
     "selectPlaceholder": "Por favor, selecciona una cuenta",
@@ -701,7 +701,7 @@
       "tokenShort": "Token: {{token}}"
     },
     "missingPublicKey": "Clave pública faltante.",
-    "moreTruncated": "… und {{extra}} weitere Gruppen",
+    "moreTruncated": "… y {{extra}} grupos más",
     "toWallet": "a Cartera: {{address}}",
     "total": "Número de fichas compradas: {{count}}",
     "totalTokens": "Número de tokens invertidos (Assets): {{count}}",
@@ -712,7 +712,7 @@
     "view": {
       "label": "Filtrar por:",
       "memo": "Memorandos",
-      "token": "Token (gekaufte Menge)"
+      "token": "Token (cantidad comprada)"
     },
     "toggles": {
       "showTotals": "Suma total",
@@ -728,7 +728,7 @@
     },
     "history": {
       "availableFrom": "Servidor (Horizon) – Historia desde",
-      "hintFullHistory": "Hinweis: Die Ledger Historie vom Horizon-Server reicht nur bis {{available}} zurück. Es werden nur Daten bis dahin angezeigt. Das gewählte Von-Datum ist daher begrenzt. Für ältere Daten ist ein (meist kostenpflichtiger) Full‑History‑Provider erforderlich (Kommt vielleicht in der Zukunft!)."
+      "hintFullHistory": "Nota: El historial del ledger del servidor Horizon solo se remonta hasta {{available}}. Solo se muestran datos hasta ese punto. La fecha \"desde\" seleccionada está por tanto limitada. Para datos más antiguos se necesita un proveedor de historial completo (normalmente de pago) (¡tal vez en el futuro!)."
     }
   },
   "network": {
@@ -835,7 +835,7 @@
     "blockchain": {
       "title": "Cadena de bloques",
       "original": "Blockchain",
-      "short": "Gemeinsames digitales Kassenbuch – viele Computer speichern die gleichen Einträge.",
+      "short": "Libro de contabilidad digital compartido: muchos ordenadores guardan las mismas entradas.",
       "desc": "Una blockchain es como un libro mayor digital. Muchos ordenadores almacenan las mismas entradas, por lo que nadie puede alterar nada en secreto."
     },
     "wallet": {
@@ -859,7 +859,7 @@
     "publicKey": {
       "title": "Clave pública",
       "original": "Public Key",
-      "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
+      "short": "Dirección que puedes compartir; en Stellar suele ser la dirección G.",
       "desc": "La clave pública es la dirección que puedes mostrar. En Stellar, esta es la dirección G. Otros la usan para enviarte dinero."
     },
     "privateKey": {
@@ -871,13 +871,13 @@
     "addressFederation": {
       "title": "Dirección de la federación",
       "original": "Federation Address",
-      "short": "Kurze Adresse wie E‑Mail, zeigt auf eine G‑Adresse.",
+      "short": "Dirección corta como un correo electrónico, apunta a una dirección G.",
       "desc": "Una dirección de federación se parece a un correo electrónico. Ejemplo: nombre*dominio.com. Esta dirección corta apunta a una dirección G regular. Es más fácil de recordar."
     },
     "addressMuxed": {
       "title": "Cuenta combinada",
       "original": "Muxed Account",
-      "short": "M‑Adresse mit zusätzlicher ID – teilt ein Basiskonto.",
+      "short": "Dirección M con un ID adicional: comparte una cuenta base.",
       "desc": "Una dirección M apunta a una cuenta existente de Stellar, pero además tiene su propio número (ID). Esto permite, por ejemplo, distinguir entre varias personas o departamentos bajo la misma dirección G. Técnicamente, el dinero sigue perteneciendo a la cuenta principal."
     },
     "multisig": {
@@ -913,7 +913,7 @@
     "mainnet": {
       "title": "Red principal",
       "original": "Mainnet",
-      "short": "Echtes Stellar‑Netzwerk mit realem Wert.",
+      "short": "Red Stellar real con valor real.",
       "desc": "La red Stellar real con valor actual. Las transacciones son finales y las tarifas se pagan en XLM genuinos."
     },
     "testnet": {
@@ -949,13 +949,13 @@
     "horizon": {
       "title": "Horizonte",
       "original": "Horizon",
-      "short": "API‑Dienst, über den Apps mit Stellar sprechen.",
+      "short": "Servicio API a través del cual las aplicaciones se comunican con Stellar.",
       "desc": "Horizon es el servicio que permite a los programas comunicarse con la Blockchain de Stellar. Nuestra herramienta consulta Horizon para cargar saldos de cuentas y transacciones."
     },
     "anchor": {
       "title": "Ancla",
       "original": "Anchor",
-      "short": "Firma, die Fiat‑Geld mit Stellar verbindet.",
+      "short": "Empresa que conecta dinero fiat con Stellar.",
       "desc": "Un anchor es una empresa que conecta dinero real, como el euro o el dólar, con Stellar. Por ejemplo, entregas euros al anchor y recibes a cambio un token de euro en Stellar."
     },
     "exchange": {
@@ -985,13 +985,13 @@
     "protocolUpdate": {
       "title": "Actualización del Protocolo",
       "original": "Protocol Update",
-      "short": "Aktualisierung der Netzwerk‑Regeln.",
+      "short": "Actualización de las reglas de la red.",
       "desc": "Una actualización de protocolo es una mejora de las reglas en la red Stellar, como nuevas funciones o cambios de seguridad. Todos los nodos en la red deben usar las mismas reglas."
     },
     "soroban": {
       "title": "Soroban",
       "original": "Soroban",
-      "short": "Stellars Smart‑Contract‑System.",
+      "short": "El sistema de contratos inteligentes de Stellar.",
       "desc": "Soroban es el sistema de contratos inteligentes de Stellar. Un contrato inteligente es un código de programa en la blockchain. El código puede verificar reglas de manera independiente y activar acciones sin un banco intermediario."
     },
     "missingKey": "Falta la clave del glosario: {{detail}}"
@@ -1108,7 +1108,7 @@
       "csv": "Descargar CSV",
       "failed": "Error al cargar pagos con memo incorrecto/vacío.",
       "hint": "Filtra los pagos entrantes dentro del periodo y muestra los remitentes con memorandos incorrectos o vacíos.",
-      "scanning": "… scannt falsche/leere Memos",
+      "scanning": "… escaneando memos incorrectos/vacíos",
       "summary": "Recuento: {{count}} • Total: {{sum}} XLM • Billeteras Únicas: {{unique}}",
       "title": "Memorandos falsos/vacíos en el período de tiempo"
     }

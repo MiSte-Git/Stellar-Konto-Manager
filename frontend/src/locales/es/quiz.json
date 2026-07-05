@@ -27,7 +27,7 @@
       "c.fb": "No. Cualquiera puede buscar transacciones."
     },
     "q3": {
-      "question": "Warum sind Blöcke miteinander ‚verkettet‘?",
+      "question": "¿Por qué los bloques están \"encadenados\" entre sí?",
       "hint": "Las páginas antiguas deberían ser difíciles de cambiar.",
       "a": "Para que cambiar datos antiguos se vuelva muy difícil.",
       "b": "Para que la aplicación se vea más atractiva.",
@@ -253,7 +253,7 @@
   "l7": {
     "title": "Seguridad, phishing y confianza",
     "q1": {
-      "question": "Eine Website will deinen Secret Key, um dein Guthaben zu ‚prüfen‘. Was tust du?",
+      "question": "Un sitio web quiere tu clave secreta para \"comprobar\" tu saldo. ¿Qué haces?",
       "hint": "Nunca compartas tu clave secreta.",
       "a": "Sal de la página. Nunca ingreses la Clave Secreta.",
       "b": "Entra, pero solo una vez.",
@@ -283,7 +283,7 @@
       "c.fb": "No. Nunca compartas tu clave secreta. KYC no la necesita."
     },
     "q4": {
-      "question": "Was ist ein ‚Zero-Knowledge Proof‘ (ZK) in einfachen Worten?",
+      "question": "¿Qué es una \"Zero-Knowledge Proof\" (ZK) en términos simples?",
       "hint": "Demuestra que sabes algo sin revelar el secreto.",
       "a": "Una prueba de que algo es verdadero sin revelar el secreto.",
       "b": "Una herramienta que oculta todas las transacciones para siempre.",

@@ -35,7 +35,7 @@
       "text": "The public key can be safely shared – it is like an account number.\n\nThe secret key grants access to your account. Treat it like a password:\n• NEVER store it in cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the secret key is lost, access to the account is permanently lost"
     },
     "multisigSection": {
-      "title": "Multisig (Mehrfachsignatur)",
+      "title": "Multisig (Firma múltiple)",
       "text": "Con multisig, puedes definir múltiples firmantes para tu cuenta. Las transacciones requieren firmas de múltiples claves (multisig).\n\nVentajas:\n• Seguridad mejorada (security)\n• Cuentas compartidas (shared accounts)\n• Recuperación de emergencia (emergency recovery)\n\nPRECAUCIÓN: ¡Prueba multisig primero en la red de prueba antes de implementarlo en la red principal! Una configuración incorrecta puede resultar en la pérdida de acceso a la cuenta."
     },
     "diagram": {
