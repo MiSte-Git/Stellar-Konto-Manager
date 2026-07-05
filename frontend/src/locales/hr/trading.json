@@ -27,6 +27,11 @@
     },
     "failed": {
       "generic": "Pretraga imovine nije uspjela. Molimo pokušajte ponovno kasnije."
+    },
+    "ambiguousResult": {
+      "title": "Status nejasan – ne šaljite ponovno",
+      "body": "Poslužitelj nije mogao jednoznačno potvrditi posljednju transakciju (istek vremena ili greška poslužitelja). Provjerite hash transakcije u exploreru prije nego što pokušate ponovno.",
+      "acknowledge": "Status provjeren – ponovno omogući radnje"
     }
   }
 }

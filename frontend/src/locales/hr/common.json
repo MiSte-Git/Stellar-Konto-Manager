@@ -441,7 +441,12 @@
         "noteAdjust": "Vaš saldo nije dovoljan za aktivaciju. Ako nastavite, minimalni iznos će biti poslan automatski."
       },
       "activated": "Ciljani račun je aktiviran.",
-      "recipientRefresh": "Osvježi primatelja"
+      "recipientRefresh": "Osvježi primatelja",
+      "ambiguousResult": {
+        "title": "Status nejasan – ne šaljite ponovno",
+        "body": "Poslužitelj nije mogao jednoznačno potvrditi transakciju (istek vremena ili greška poslužitelja). Provjerite hash transakcije u exploreru prije nego što pokušate ponovno.",
+        "acknowledge": "Status provjeren – ponovno omogući slanje"
+      }
     }
   },
   "activation": {

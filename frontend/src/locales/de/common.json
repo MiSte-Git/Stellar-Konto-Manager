@@ -441,7 +441,12 @@
         "adjustedAmount": "Vorgeschlagener Betrag (zum Aktivieren)",
         "noteAdjust": "Ihr Betrag reicht für die Aktivierung nicht aus. Wenn Sie fortfahren, wird automatisch der Mindestbetrag gesendet."
       },
-      "activated": "Das Zielkonto wurde aktiviert."
+      "activated": "Das Zielkonto wurde aktiviert.",
+      "ambiguousResult": {
+        "title": "Status unklar – nicht erneut senden",
+        "body": "Die Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.",
+        "acknowledge": "Status geprüft – Senden wieder freigeben"
+      }
     }
   },
   "activation": {

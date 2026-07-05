@@ -27,6 +27,11 @@
     },
     "failed": {
       "generic": "La ricerca dell'asset non è riuscita. Si prega di riprovare più tardi."
+    },
+    "ambiguousResult": {
+      "title": "Stato incerto – non inviare di nuovo",
+      "body": "Il server non ha potuto confermare in modo univoco l'ultima transazione (timeout o errore del server). Verifica l'hash della transazione in un explorer prima di riprovare.",
+      "acknowledge": "Stato verificato – sblocca di nuovo le azioni"
     }
   }
 }

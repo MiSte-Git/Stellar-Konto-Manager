@@ -27,6 +27,11 @@
     },
     "failed": {
       "generic": "La búsqueda de activos ha fallado. Por favor, inténtelo de nuevo más tarde."
+    },
+    "ambiguousResult": {
+      "title": "Estado poco claro – no reenviar",
+      "body": "El servidor no pudo confirmar de forma inequívoca la última transacción (tiempo de espera agotado o error del servidor). Compruebe el hash de la transacción en un explorador antes de volver a intentarlo.",
+      "acknowledge": "Estado comprobado – volver a habilitar las acciones"
     }
   }
 }

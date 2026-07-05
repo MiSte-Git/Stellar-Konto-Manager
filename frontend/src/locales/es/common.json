@@ -441,7 +441,12 @@
         "noteAdjust": "Su saldo es insuficiente para la activación. Si continúa, se enviará automáticamente la cantidad mínima."
       },
       "activated": "La cuenta objetivo ha sido activada.",
-      "recipientRefresh": "Actualizar destinatario"
+      "recipientRefresh": "Actualizar destinatario",
+      "ambiguousResult": {
+        "title": "Estado poco claro – no reenviar",
+        "body": "El servidor no pudo confirmar la transacción de forma inequívoca (tiempo de espera agotado o error del servidor). Compruebe el hash de la transacción en un explorador antes de volver a intentarlo.",
+        "acknowledge": "Estado comprobado – volver a habilitar el envío"
+      }
     }
   },
   "activation": {

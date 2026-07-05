@@ -27,6 +27,11 @@
     },
     "failed": {
       "generic": "La recherche d'actifs a échoué. Veuillez réessayer plus tard."
+    },
+    "ambiguousResult": {
+      "title": "Statut incertain – ne pas renvoyer",
+      "body": "Le serveur n'a pas pu confirmer la dernière transaction de manière univoque (délai dépassé ou erreur serveur). Vérifiez le hash de la transaction dans un explorateur avant de réessayer.",
+      "acknowledge": "Statut vérifié – réactiver les actions"
     }
   }
 }

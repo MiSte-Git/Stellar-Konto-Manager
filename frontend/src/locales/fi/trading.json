@@ -27,6 +27,11 @@
     },
     "failed": {
       "generic": "Varojen haku epäonnistui. Yritä myöhemmin uudelleen."
+    },
+    "ambiguousResult": {
+      "title": "Tila epäselvä – älä lähetä uudelleen",
+      "body": "Palvelin ei pystynyt vahvistamaan viimeistä tapahtumaa yksiselitteisesti (aikakatkaisu tai palvelinvirhe). Tarkista tapahtuman tiiviste selaimessa ennen kuin yrität uudelleen.",
+      "acknowledge": "Tila tarkistettu – vapauta toiminnot uudelleen"
     }
   }
 }

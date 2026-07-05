@@ -27,6 +27,11 @@
     },
     "failed": {
       "generic": "Het zoeken naar activa is mislukt. Probeer het later opnieuw."
+    },
+    "ambiguousResult": {
+      "title": "Status onduidelijk – niet opnieuw verzenden",
+      "body": "De server kon de laatste transactie niet eenduidig bevestigen (timeout of serverfout). Controleer de transactiehash in een explorer voordat u het opnieuw probeert.",
+      "acknowledge": "Status gecontroleerd – acties weer vrijgeven"
     }
   }
 }

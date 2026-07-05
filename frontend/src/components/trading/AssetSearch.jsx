@@ -13,6 +13,7 @@ import {
   buildPathPaymentStrictSendTransaction,
   signTransactionWithCollectedSigners,
 } from '../../utils/stellar/tradingTransactions.js';
+import { submitTransactionSafely, AmbiguousSubmitResultError } from '../../utils/stellar/submitTransactionSafely.js';
 
 const STELLAR_PUBLIC_KEY_RE = /^G[A-Z2-7]{55}$/;
 const ASSET_CODE_RE = /^[A-Za-z0-9]{1,12}$/;
@@ -345,6 +346,7 @@ export default function AssetSearch() {
   const [pendingOfferAction, setPendingOfferAction] = useState(null);
   const [showOfferConfirm, setShowOfferConfirm] = useState(false);
   const [isSubmittingOffer, setIsSubmittingOffer] = useState(false);
+  const [pendingAmbiguousSubmission, setPendingAmbiguousSubmission] = useState(null); // { hash } - set when a submit's outcome could not be confirmed
 
   const parsedQuery = useMemo(() => parseAssetSearchQuery(assetQuery), [assetQuery]);
   const parsedSwapTarget = useMemo(() => parseAssetSearchQuery(swapTargetQuery), [swapTargetQuery]);
@@ -793,7 +795,7 @@ export default function AssetSearch() {
 
   const canAddTrustlineFor = (asset) => {
     const isSelected = selectedAsset?.assetCode === asset.assetCode && selectedAsset?.assetIssuer === asset.assetIssuer;
-    return !!accountId && isSelected && trustlineStatus.state === 'missing' && !trustlineStatus.loading && !isSubmittingTrustline;
+    return !!accountId && isSelected && trustlineStatus.state === 'missing' && !trustlineStatus.loading && !isSubmittingTrustline && !pendingAmbiguousSubmission;
   };
 
   const trustlineStatusLabel = () => {
@@ -1065,7 +1067,7 @@ export default function AssetSearch() {
       fee,
       networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
     });
-    return server.submitTransaction(signTransactionWithCollectedSigners(tx, signers));
+    return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
 
   const submitSwapTx = async ({ collectedSigners }) => {
@@ -1131,7 +1133,7 @@ export default function AssetSearch() {
       fee,
       networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
     });
-    return server.submitTransaction(signTransactionWithCollectedSigners(tx, signers));
+    return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
 
   const submitTrustlineAndSwapTx = async ({ collectedSigners }) => {
@@ -1206,7 +1208,7 @@ export default function AssetSearch() {
       fee,
       networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
     });
-    return server.submitTransaction(signTransactionWithCollectedSigners(tx, signers));
+    return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
 
   const submitManageSellOfferTx = async ({ selling, buying, amount, price, offerId = '0', collectedSigners }) => {
@@ -1234,7 +1236,7 @@ export default function AssetSearch() {
       fee,
       networkPassphrase: network === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
     });
-    return server.submitTransaction(signTransactionWithCollectedSigners(tx, signers));
+    return submitTransactionSafely(server, signTransactionWithCollectedSigners(tx, signers));
   };
 
   const openTrustlineModal = (asset) => {
@@ -1399,9 +1401,15 @@ export default function AssetSearch() {
       setShowSecretModal(false);
       setTrustlineRefreshToken((value) => value + 1);
     } catch (error) {
-      const formatted = formatErrorForUi(t, error);
-      setModalError(formatted);
-      setActionMessage(formatted);
+      if (error instanceof AmbiguousSubmitResultError) {
+        setPendingAmbiguousSubmission({ hash: error.hash });
+        setShowSecretModal(false);
+        setModalAction('');
+      } else {
+        const formatted = formatErrorForUi(t, error);
+        setModalError(formatted);
+        setActionMessage(formatted);
+      }
     } finally {
       setIsSubmittingTrustline(false);
     }
@@ -1422,9 +1430,15 @@ export default function AssetSearch() {
       setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
       setTrustlineRefreshToken((value) => value + 1);
     } catch (error) {
-      const formatted = formatErrorForUi(t, error);
-      setModalError(formatted);
-      setActionMessage(formatted);
+      if (error instanceof AmbiguousSubmitResultError) {
+        setPendingAmbiguousSubmission({ hash: error.hash });
+        setShowSecretModal(false);
+        setModalAction('');
+      } else {
+        const formatted = formatErrorForUi(t, error);
+        setModalError(formatted);
+        setActionMessage(formatted);
+      }
     } finally {
       setIsSubmittingSwap(false);
     }
@@ -1445,9 +1459,15 @@ export default function AssetSearch() {
       setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
       setTrustlineRefreshToken((value) => value + 1);
     } catch (error) {
-      const formatted = formatErrorForUi(t, error);
-      setModalError(formatted);
-      setActionMessage(formatted);
+      if (error instanceof AmbiguousSubmitResultError) {
+        setPendingAmbiguousSubmission({ hash: error.hash });
+        setShowSecretModal(false);
+        setModalAction('');
+      } else {
+        const formatted = formatErrorForUi(t, error);
+        setModalError(formatted);
+        setActionMessage(formatted);
+      }
     } finally {
       setIsSubmittingSwap(false);
     }
@@ -1476,9 +1496,15 @@ export default function AssetSearch() {
       setLimitOfferRefreshToken((value) => value + 1);
       setTrustlineRefreshToken((value) => value + 1);
     } catch (error) {
-      const formatted = formatErrorForUi(t, error);
-      setModalError(formatted);
-      setActionMessage(formatted);
+      if (error instanceof AmbiguousSubmitResultError) {
+        setPendingAmbiguousSubmission({ hash: error.hash });
+        setShowSecretModal(false);
+        setModalAction('');
+      } else {
+        const formatted = formatErrorForUi(t, error);
+        setModalError(formatted);
+        setActionMessage(formatted);
+      }
     } finally {
       setIsSubmittingOffer(false);
     }
@@ -1743,6 +1769,25 @@ export default function AssetSearch() {
         )}
       </form>
 
+      {pendingAmbiguousSubmission && (
+        <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100">
+          <div className="font-semibold">{t('trading:assetSearch.ambiguousResult.title', 'Status unklar – nicht erneut senden')}</div>
+          <div className="mt-1 text-xs">
+            {t('trading:assetSearch.ambiguousResult.body', 'Die letzte Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.')}
+          </div>
+          {pendingAmbiguousSubmission.hash && (
+            <div className="mt-1 break-all font-mono text-xs">{pendingAmbiguousSubmission.hash}</div>
+          )}
+          <button
+            type="button"
+            className="mt-2 rounded border border-amber-400 px-2 py-1 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-900"
+            onClick={() => setPendingAmbiguousSubmission(null)}
+          >
+            {t('trading:assetSearch.ambiguousResult.acknowledge', 'Status geprüft – Aktionen wieder freigeben')}
+          </button>
+        </div>
+      )}
+
       {actionMessage && (
         <div className={`rounded border px-3 py-2 text-sm ${
           modalError
@@ -2000,7 +2045,7 @@ export default function AssetSearch() {
               <button
                 type="button"
                 onClick={() => openTrustlineModal(selectedAsset)}
-                disabled={isSubmittingTrustline}
+                disabled={isSubmittingTrustline || !!pendingAmbiguousSubmission}
                 className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
               >
                 {isSubmittingTrustline
@@ -2073,7 +2118,7 @@ export default function AssetSearch() {
                     <button
                       type="button"
                       onClick={openTrustlineSwapModal}
-                      disabled={isSubmittingSwap || !canPreviewTrustlineSwap}
+                      disabled={isSubmittingSwap || !canPreviewTrustlineSwap || !!pendingAmbiguousSubmission}
                       className="mt-3 rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
                     >
                       {isSubmittingSwap
@@ -2293,7 +2338,7 @@ export default function AssetSearch() {
                       <button
                         type="button"
                         onClick={openSwapModal}
-                        disabled={isSubmittingSwap || !minimumDestinationAmount || selectedTrustlineUnauthorized}
+                        disabled={isSubmittingSwap || !minimumDestinationAmount || selectedTrustlineUnauthorized || !!pendingAmbiguousSubmission}
                         className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
                       >
                         {isSubmittingSwap
@@ -2477,7 +2522,7 @@ export default function AssetSearch() {
                   <button
                     type="button"
                     onClick={openCreateOfferModal}
-                    disabled={isSubmittingOffer}
+                    disabled={isSubmittingOffer || !!pendingAmbiguousSubmission}
                     className="w-full rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
                   >
                     {isSubmittingOffer
@@ -2526,7 +2571,7 @@ export default function AssetSearch() {
                                 <button
                                   type="button"
                                   onClick={() => openCancelOfferModal(offer)}
-                                  disabled={isSubmittingOffer}
+                                  disabled={isSubmittingOffer || !!pendingAmbiguousSubmission}
                                   className="rounded border border-red-300 px-2 py-1 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-red-900 dark:text-red-200 dark:hover:bg-red-950"
                                 >
                                   {t('trading:assetSearch.limitOffer.cancel')}
@@ -2815,7 +2860,14 @@ export default function AssetSearch() {
             if (modalAction === 'swap') return handleExecuteSwap(collected);
             if (modalAction === 'trustlineSwap') return handleExecuteTrustlineSwap(collected);
             if (modalAction === 'offer' || modalAction === 'cancelOffer') return handleSubmitOfferAction(collected);
-            return handleCreateTrustline(collected);
+            if (modalAction === 'trustline') return handleCreateTrustline(collected);
+            // Unknown/empty modalAction (e.g. a stale re-render) must not silently
+            // fall through to a trustline change the user never confirmed.
+            const message = t('errors:unknown', 'Unbekannter Fehler');
+            setModalError(message);
+            setActionMessage(message);
+            setShowSecretModal(false);
+            return undefined;
           }}
           onCancel={() => {
             setShowSecretModal(false);

@@ -441,7 +441,12 @@
         "noteAdjust": "Saldoasi ei ole riittävästi aktivointia varten. Jos jatkat, vähimmäismäärä lähetetään automaattisesti."
       },
       "activated": "Kohdetili on aktivoitu.",
-      "recipientRefresh": "Vastaanottajan päivitys"
+      "recipientRefresh": "Vastaanottajan päivitys",
+      "ambiguousResult": {
+        "title": "Tila epäselvä – älä lähetä uudelleen",
+        "body": "Palvelin ei pystynyt vahvistamaan tapahtumaa yksiselitteisesti (aikakatkaisu tai palvelinvirhe). Tarkista tapahtuman tiiviste selaimessa ennen kuin yrität uudelleen.",
+        "acknowledge": "Tila tarkistettu – vapauta lähetys uudelleen"
+      }
     }
   },
   "activation": {

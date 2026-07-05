@@ -441,7 +441,12 @@
         "adjustedAmount": "Proposed Amount (zum Aktivieren)",
         "noteAdjust": "Your balance is insufficient for activation. If you continue, the minimum amount will be sent automatically."
       },
-      "activated": "The target account has been activated."
+      "activated": "The target account has been activated.",
+      "ambiguousResult": {
+        "title": "Status unclear – do not resend",
+        "body": "The transaction could not be confirmed unambiguously by the server (timeout or server error). Please check the transaction hash in an explorer before trying again.",
+        "acknowledge": "Status checked – unlock sending again"
+      }
     }
   },
   "activation": {

@@ -441,7 +441,12 @@
         "noteAdjust": "Il tuo saldo è insufficiente per l'attivazione. Se continui, l'importo minimo verrà inviato automaticamente."
       },
       "activated": "L'account di destinazione è stato attivato.",
-      "recipientRefresh": "Aggiorna destinatario"
+      "recipientRefresh": "Aggiorna destinatario",
+      "ambiguousResult": {
+        "title": "Stato incerto – non inviare di nuovo",
+        "body": "Il server non ha potuto confermare in modo univoco la transazione (timeout o errore del server). Verifica l'hash della transazione in un explorer prima di riprovare.",
+        "acknowledge": "Stato verificato – sblocca di nuovo l'invio"
+      }
     }
   },
   "activation": {

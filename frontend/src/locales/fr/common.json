@@ -441,7 +441,12 @@
         "noteAdjust": "Votre solde est insuffisant pour l'activation. Si vous continuez, le montant minimum sera envoyé automatiquement."
       },
       "activated": "Le compte cible a été activé.",
-      "recipientRefresh": "Actualiser le destinataire"
+      "recipientRefresh": "Actualiser le destinataire",
+      "ambiguousResult": {
+        "title": "Statut incertain – ne pas renvoyer",
+        "body": "Le serveur n'a pas pu confirmer la transaction de manière univoque (délai dépassé ou erreur serveur). Vérifiez le hash de la transaction dans un explorateur avant de réessayer.",
+        "acknowledge": "Statut vérifié – réactiver l'envoi"
+      }
     }
   },
   "activation": {

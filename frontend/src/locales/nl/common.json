@@ -441,7 +441,12 @@
         "noteAdjust": "Uw saldo is onvoldoende voor activatie. Als u doorgaat, wordt automatisch het minimale bedrag verzonden."
       },
       "activated": "De doeldaccount is geactiveerd.",
-      "recipientRefresh": "Ontvanger verversen"
+      "recipientRefresh": "Ontvanger verversen",
+      "ambiguousResult": {
+        "title": "Status onduidelijk – niet opnieuw verzenden",
+        "body": "De server kon de transactie niet eenduidig bevestigen (timeout of serverfout). Controleer de transactiehash in een explorer voordat u het opnieuw probeert.",
+        "acknowledge": "Status gecontroleerd – verzenden weer vrijgeven"
+      }
     }
   },
   "activation": {

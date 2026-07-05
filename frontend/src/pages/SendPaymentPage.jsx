@@ -26,6 +26,13 @@ import {
   removeHistoryValue,
   writeHistoryArray,
 } from '../utils/inputHistory.js';
+import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/stellar/submitTransactionSafely.js';
+
+// Immediate local submits (single-sig send, or a multisig job collected and
+// submitted right away) expect a near-term Horizon confirmation, unlike a
+// multisig job's XDR which may sit unsigned for up to a day - so they get a
+// short-lived timeout instead of the long job timeout below.
+const LOCAL_SUBMIT_TIMEOUT_SECONDS = 180;
 
 function HistoryInput({
   value,
@@ -226,6 +233,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   }, []);
   const [status, setStatus] = useState('');
   const [sentInfo, setSentInfo] = useState(null);
+  const [ambiguousSubmission, setAmbiguousSubmission] = useState(null); // { hash } - set when a submit's outcome could not be confirmed
   const [isProcessing, setIsProcessing] = useState(false); // Zeigt einen globalen Processing-Indikator während des Payment-Flows an.
   const [error, setError] = useState('');
   const [preflight, setPreflight] = useState({
@@ -333,32 +341,6 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setError(t('common:payment.send.error', { detail }));
     return detail;
   }, [describeHorizonError, t]);
-
-  const isAmbiguousSubmitError = useCallback((err) => {
-    const extras = err?.response?.data?.extras;
-    if (extras?.result_codes) return false;
-    const status = err?.response?.status;
-    return !status || status === 408 || status === 429 || status === 500 || status === 502 || status === 503 || status === 504;
-  }, []);
-
-  const findSubmittedTransaction = useCallback(async (hash, { attempts = 8, delayMs = 1500 } = {}) => {
-    if (!hash) return null;
-    for (let attempt = 0; attempt < attempts; attempt += 1) {
-      try {
-        const record = await server.transactions().transaction(hash).call();
-        if (record?.hash || record?.id) return record;
-      } catch (lookupErr) {
-        const status = lookupErr?.response?.status;
-        if (status && status !== 404) {
-          console.debug?.('payment confirmation lookup failed', lookupErr);
-        }
-      }
-      if (attempt < attempts - 1) {
-        await new Promise((resolve) => setTimeout(resolve, delayMs));
-      }
-    }
-    return null;
-  }, [server]);
 
   const applySendResult = useCallback((payload) => {
     setStatus(payload.hash);
@@ -594,7 +576,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     return Number(master?.weight || 0);
   }, [signersForModal, publicKey]);
 
-  const buildPaymentTx = useCallback(async ({ signers, signTx = false, requireSigners = false } = {}) => {
+  const buildPaymentTx = useCallback(async ({ signers, signTx = false, requireSigners = false, immediateSubmit = false } = {}) => {
     const signerList = Array.isArray(signers) ? signers.filter(Boolean) : [];
     const primary = signerList[0];
     if (requireSigners && !primary) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
@@ -636,7 +618,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
 
     let tx;
-    const txTimeout = Math.max(60, Number(multisigTimeoutSeconds || 0) || 86400);
+    const txTimeout = immediateSubmit
+      ? LOCAL_SUBMIT_TIMEOUT_SECONDS
+      : Math.max(60, Number(multisigTimeoutSeconds || 0) || 86400);
     let activated = false;
     if (!destExists) {
       if (assetKey !== 'XLM') {
@@ -697,17 +681,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
   const submitPayment = useCallback(async (signerKeypairs) => {
     const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
-    const { tx, meta } = await buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true });
+    const { tx, meta } = await buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true, immediateSubmit: true });
     const txHash = tx.hash().toString('hex');
-    let res;
-    try {
-      res = await server.submitTransaction(tx);
-    } catch (err) {
-      if (!isAmbiguousSubmitError(err)) throw err;
-      const confirmed = await findSubmittedTransaction(txHash);
-      if (!confirmed) throw err;
-      res = confirmed;
-    }
+    const res = await submitTransactionSafely(server, tx);
     return {
       hash: res.hash || res.id || txHash,
       recipient: meta.recipient,
@@ -717,7 +693,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       activated: meta.activated,
       network: netLabel,
     };
-  }, [buildPaymentTx, findSubmittedTransaction, isAmbiguousSubmitError, netLabel, server]);
+  }, [buildPaymentTx, netLabel, server]);
 
   const handleExportXdr = useCallback(async () => {
     try {
@@ -1123,8 +1099,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       closeReviewDialog();
       setSecretError('');
     } catch (err) {
-      const detail = handlePaymentError(err);
-      setReviewError(detail);
+      if (err instanceof AmbiguousSubmitResultError) {
+        setAmbiguousSubmission({ hash: err.hash });
+        closeReviewDialog();
+      } else {
+        const detail = handlePaymentError(err);
+        setReviewError(detail);
+      }
     } finally {
       setReviewProcessing(false);
       setIsProcessing(false);
@@ -1349,6 +1330,22 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       </div>
 
       {error && <div className="text-red-600 text-sm text-center">{error}</div>}
+      {ambiguousSubmission && (
+        <div className="text-sm bg-amber-100 dark:bg-amber-900/30 border border-amber-300/60 text-amber-800 dark:text-amber-200 rounded p-3 max-w-4xl mx-auto">
+          <div className="font-semibold mb-1">{t('common:payment.send.ambiguousResult.title', 'Status unklar – nicht erneut senden')}</div>
+          <div>{t('common:payment.send.ambiguousResult.body', 'Die Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.')}</div>
+          {ambiguousSubmission.hash && (
+            <div className="mt-1 font-mono break-all text-xs">{ambiguousSubmission.hash}</div>
+          )}
+          <button
+            type="button"
+            className="mt-2 px-3 py-1 rounded border border-amber-400 text-xs font-semibold hover:bg-amber-200/60 dark:hover:bg-amber-900/60"
+            onClick={() => setAmbiguousSubmission(null)}
+          >
+            {t('common:payment.send.ambiguousResult.acknowledge', 'Status geprüft – Senden wieder freigeben')}
+          </button>
+        </div>
+      )}
       {sentInfo && sentInfo.account === publicKey && (
         <div className="text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-3 max-w-4xl mx-auto">
           <div className="font-semibold mb-1">{t('common:payment.send.successShort', 'Erfolgreich gesendet')}</div>
@@ -1578,7 +1575,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
           <button
             className="mt-3 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
-            disabled={!dest || !amount || (Number(amount) || 0) <= 0}
+            disabled={!dest || !amount || (Number(amount) || 0) <= 0 || !!ambiguousSubmission}
             onClick={handleSendClick}
           >
             {t('common:payment.send.sendButton')}
@@ -1823,7 +1820,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 type="button"
                 className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
                 onClick={handleReviewConfirm}
-                disabled={reviewProcessing}
+                disabled={reviewProcessing || !!ambiguousSubmission}
               >
                 {reviewProcessing ? t('common:main.processing') : t('common:option.confirm.action.text', 'Bestätigen')}
               </button>
@@ -2271,9 +2268,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               setSecretError('');
               closeSecretModal();
             } catch (e) {
-              const detail = handlePaymentError(e);
-              setSecretError(detail);
-              if (detail) showErrorMessage(detail);
+              if (e instanceof AmbiguousSubmitResultError) {
+                setAmbiguousSubmission({ hash: e.hash });
+                closeSecretModal();
+              } else {
+                const detail = handlePaymentError(e);
+                setSecretError(detail);
+                if (detail) showErrorMessage(detail);
+              }
             } finally {
               setIsProcessing(false);
             }

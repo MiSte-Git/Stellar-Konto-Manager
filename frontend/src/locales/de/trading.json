@@ -316,6 +316,11 @@
     },
     "failed": {
       "generic": "Die Asset-Suche ist fehlgeschlagen. Bitte später erneut versuchen."
+    },
+    "ambiguousResult": {
+      "title": "Status unklar – nicht erneut senden",
+      "body": "Die letzte Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.",
+      "acknowledge": "Status geprüft – Aktionen wieder freigeben"
     }
   }
 }

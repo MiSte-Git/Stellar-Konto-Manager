@@ -316,6 +316,11 @@
     },
     "failed": {
       "generic": "The asset search has failed. Please try again later."
+    },
+    "ambiguousResult": {
+      "title": "Status unclear – do not resend",
+      "body": "The last transaction could not be confirmed unambiguously by the server (timeout or server error). Please check the transaction hash in an explorer before trying again.",
+      "acknowledge": "Status checked – unlock actions again"
     }
   }
 }
