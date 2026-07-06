@@ -54,6 +54,7 @@ import AssetResultsTable from './AssetResultsTable.jsx';
 import ConfirmActionModal from './ConfirmActionModal.jsx';
 import useLimitOffers from './hooks/useLimitOffers.js';
 import useSwapPreview from './hooks/useSwapPreview.js';
+import useTrustlineStatus from './hooks/useTrustlineStatus.js';
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
@@ -70,10 +71,15 @@ export default function AssetSearch() {
   const [accountStatus, setAccountStatus] = useState({ loading: false, error: '' });
   const [accountInfo, setAccountInfo] = useState(null);
   const [network, setNetwork] = useState(() => getStoredNetwork());
-  const [trustlineStatus, setTrustlineStatus] = useState({ loading: false, state: 'unknown', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
-  const [trustlineLimit, setTrustlineLimit] = useState(DEFAULT_TRUSTLINE_LIMIT);
+  const {
+    trustlineStatus,
+    setTrustlineStatus,
+    trustlineLimit,
+    setTrustlineLimit,
+    trustlineRefreshToken,
+    setTrustlineRefreshToken,
+  } = useTrustlineStatus({ accountId, network, selectedAsset });
   const [assetFacts, setAssetFacts] = useState(EMPTY_ASSET_FACTS);
-  const [trustlineRefreshToken, setTrustlineRefreshToken] = useState(0);
   const [showSecretModal, setShowSecretModal] = useState(false);
   const [showTrustlineConfirm, setShowTrustlineConfirm] = useState(false);
   const [showTrustlineSwapConfirm, setShowTrustlineSwapConfirm] = useState(false);
@@ -294,7 +300,7 @@ export default function AssetSearch() {
         setAccountStatus({ loading: false, error: t('trading:assetSearch.account.invalid') });
       });
     return () => { cancelled = true; };
-  }, [accountInput, t]);
+  }, [accountInput, t, setTrustlineStatus]);
 
   useEffect(() => {
     let cancelled = false;
@@ -313,60 +319,13 @@ export default function AssetSearch() {
     return () => { cancelled = true; };
   }, [accountId, network, trustlineRefreshToken]);
 
+  // Trustline status loading and its trustlineLimit reset now live in
+  // useTrustlineStatus; swapPreview/marketData reset and swapDirection reset
+  // live in useSwapPreview. showTrustlineConfirm/showTrustlineSwapConfirm are
+  // container-level UI state (modal-visibility is step-6 confirm/submit-
+  // pipeline territory); tokenFactsExpanded is a plain expand/collapse toggle
+  // with no data-fetch effect of its own. Both stay here permanently.
   useEffect(() => {
-    let cancelled = false;
-    if (!selectedAsset || !accountId) {
-      setTrustlineStatus({ loading: false, state: accountId ? 'unknown' : 'noAccount', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
-      return () => { cancelled = true; };
-    }
-
-    setTrustlineStatus({ loading: true, state: 'loading', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
-    const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
-    loadTrustlines(accountId, server, { includeOps: false, ttlMs: 10000 })
-      .then((trustlines) => {
-        if (cancelled) return;
-        const match = trustlines.find((tl) =>
-          tl.assetCode === selectedAsset.assetCode &&
-          tl.assetIssuer === selectedAsset.assetIssuer
-        );
-        if (match) {
-          setTrustlineStatus({
-            loading: false,
-            state: 'present',
-            error: '',
-            balance: match.assetBalance,
-            limit: match.limit,
-            isAuthorized: match.isAuthorized,
-            isAuthorizedToMaintainLiabilities: match.isAuthorizedToMaintainLiabilities,
-          });
-        } else {
-          setTrustlineStatus({ loading: false, state: 'missing', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
-        }
-      })
-      .catch((err) => {
-        if (cancelled) return;
-        setTrustlineStatus({
-          loading: false,
-          state: 'error',
-          error: err?.message || 'error.loadTrustlines',
-          balance: null,
-          limit: null,
-          isAuthorized: null,
-          isAuthorizedToMaintainLiabilities: null,
-        });
-      });
-    return () => { cancelled = true; };
-  }, [accountId, network, selectedAsset, trustlineRefreshToken]);
-
-  // swapPreview/marketData reset and swapDirection reset now live in
-  // useSwapPreview. trustlineLimit stays here for now (moves to
-  // useTrustlineStatus in the next step); showTrustlineConfirm/
-  // showTrustlineSwapConfirm/tokenFactsExpanded are container-level UI state
-  // (modal-visibility is step-6 confirm/submit-pipeline territory,
-  // tokenFactsExpanded is a plain expand/collapse toggle with no data-fetch
-  // effect of its own) and stay here permanently.
-  useEffect(() => {
-    setTrustlineLimit(DEFAULT_TRUSTLINE_LIMIT);
     setShowTrustlineConfirm(false);
     setShowTrustlineSwapConfirm(false);
     setTokenFactsExpanded(false);
