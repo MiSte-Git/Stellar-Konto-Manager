@@ -7,9 +7,9 @@ import { getHorizonServer } from '../../../utils/stellar/stellarUtils.js';
  * Extracted from AssetSearch.jsx (step 5 of the file-split, hook 1/6).
  *
  * pendingOfferAction/showOfferConfirm/isSubmittingOffer stay in the
- * container - they're part of the modalAction confirm/submit dispatch
- * pipeline (SecretKeyModal onConfirm branching) that step 6 reworks, not
- * limit-order-specific state on their own. Correspondingly, the original
+ * container - they're the offer confirm-dialog's own state, feeding
+ * beginAction's payload (see useTradingSubmit, step 6), not limit-order-
+ * specific state on their own. Correspondingly, the original
  * combined reset effect (AssetSearch.jsx, before this extraction: resetting
  * limitOfferAmount/limitOfferPrice/pendingOfferAction/showOfferConfirm
  * together on [selectedAsset, network]) is split: this hook only resets the

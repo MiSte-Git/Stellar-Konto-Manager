@@ -9,9 +9,9 @@ import TokenFactsSummary from './TokenFactsSummary.jsx';
  * (step 4 of the file-split) without any behavior change - pure
  * presentation, all state/handlers stay in the container and are passed in
  * as props. Selected via `kind` rather than four separate components since
- * they share the same overlay/box/button shell and this mirrors the
- * modalAction string-discriminator pattern already used everywhere else in
- * this feature (deliberately not touched by this refactor).
+ * they share the same overlay/box/button shell. Unrelated to and unaffected
+ * by the pendingAction/beginAction dispatch pipeline in useTradingSubmit
+ * (step 6) - `kind` only picks which review layout to render here.
  */
 export default function ConfirmActionModal({
   kind, // 'trustline' | 'trustlineSwap' | 'swap' | 'offer'

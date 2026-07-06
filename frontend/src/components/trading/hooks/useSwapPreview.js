@@ -10,7 +10,8 @@ import { useEffect, useRef, useState } from 'react';
  * container's handleSwapPreview() increments/reads `.current` directly for
  * stale-response detection - that handler stays in the container (not an
  * effect, and tightly coupled to submitSwapTx/submitTrustlineAndSwapTx which
- * are part of the modalAction confirm/submit pipeline reserved for step 6).
+ * are part of the confirm/submit pipeline now built around pendingAction/
+ * beginAction in useTradingSubmit - see that hook's file, step 6).
  *
  * Reset cascade: the original combined [selectedAsset, network]-reset effect
  * (AssetSearch.jsx, before this extraction) also reset trustlineLimit,

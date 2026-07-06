@@ -54,6 +54,7 @@ import useTrustlineStatus from './hooks/useTrustlineStatus.js';
 import useAssetFacts from './hooks/useAssetFacts.js';
 import useAssetSearch from './hooks/useAssetSearch.js';
 import useTradingAccount from './hooks/useTradingAccount.js';
+import useTradingSubmit from './hooks/useTradingSubmit.js';
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
@@ -89,11 +90,16 @@ export default function AssetSearch() {
     trustlineRefreshToken,
     setTrustlineRefreshToken,
   } = useTrustlineStatus({ accountId, network, accountInput, selectedAsset });
-  const [showSecretModal, setShowSecretModal] = useState(false);
+  const {
+    pendingAction,
+    setPendingAction,
+    showSecretModal,
+    setShowSecretModal,
+    beginAction,
+  } = useTradingSubmit();
   const [showTrustlineConfirm, setShowTrustlineConfirm] = useState(false);
   const [showTrustlineSwapConfirm, setShowTrustlineSwapConfirm] = useState(false);
   const [showSwapConfirm, setShowSwapConfirm] = useState(false);
-  const [modalAction, setModalAction] = useState('');
   const [modalError, setModalError] = useState('');
   const [isSubmittingTrustline, setIsSubmittingTrustline] = useState(false);
   const [isSubmittingSwap, setIsSubmittingSwap] = useState(false);
@@ -138,16 +144,16 @@ export default function AssetSearch() {
 
   const parsedQuery = useMemo(() => parseAssetSearchQuery(assetQuery), [assetQuery]);
   const parsedSwapTarget = useMemo(() => parseAssetSearchQuery(swapTargetQuery), [swapTargetQuery]);
-  const modalOperationType = modalAction === 'swap'
+  const modalOperationType = pendingAction?.type === 'swap'
     ? 'payment'
-    : modalAction === 'trustlineSwap'
+    : pendingAction?.type === 'trustlineSwap'
       ? 'payment'
-    : (modalAction === 'offer' || modalAction === 'cancelOffer')
+    : (pendingAction?.type === 'offer' || pendingAction?.type === 'cancelOffer')
       ? 'manageOffer'
       : 'changeTrust';
   const requiredThreshold = useMemo(
     () => {
-      if (modalAction === 'trustlineSwap') {
+      if (pendingAction?.type === 'trustlineSwap') {
         const thresholds = accountInfo?.thresholds || null;
         return Math.max(
           getRequiredThreshold('changeTrust', thresholds),
@@ -156,7 +162,7 @@ export default function AssetSearch() {
       }
       return getRequiredThreshold(modalOperationType, accountInfo?.thresholds || null);
     },
-    [accountInfo, modalAction, modalOperationType]
+    [accountInfo, pendingAction?.type, modalOperationType]
   );
   const selectedStellarAsset = useMemo(
     () => (selectedAsset ? assetFromSearchResult(selectedAsset) : null),
@@ -300,17 +306,17 @@ export default function AssetSearch() {
   // Trustline status loading and its trustlineLimit reset now live in
   // useTrustlineStatus; swapPreview/marketData reset and swapDirection reset
   // live in useSwapPreview. showTrustlineConfirm/showTrustlineSwapConfirm are
-  // container-level UI state (modal-visibility is step-6 confirm/submit-
-  // pipeline territory); tokenFactsExpanded is a plain expand/collapse toggle
-  // with no data-fetch effect of its own. Both stay here permanently.
+  // container-level confirm-dialog visibility state; tokenFactsExpanded is a
+  // plain expand/collapse toggle with no data-fetch effect of its own. Both
+  // stay here permanently.
   useEffect(() => {
     setShowTrustlineConfirm(false);
     setShowTrustlineSwapConfirm(false);
     setTokenFactsExpanded(false);
   }, [selectedAsset, network]);
 
-  // pendingOfferAction/showOfferConfirm are part of the modalAction
-  // confirm/submit dispatch pipeline (step 6 territory) - useLimitOffers
+  // pendingOfferAction/showOfferConfirm are the offer confirm-dialog's own
+  // state (feeds beginAction's payload once confirmed) - useLimitOffers
   // resets its own limitOfferAmount/limitOfferPrice fields itself.
   useEffect(() => {
     setPendingOfferAction(null);
@@ -788,11 +794,10 @@ export default function AssetSearch() {
   };
 
   const handleConfirmTrustline = () => {
-    setModalAction('trustline');
     setModalError('');
     setActionMessage('');
     setShowTrustlineConfirm(false);
-    setShowSecretModal(true);
+    beginAction('trustline', null, handleCreateTrustline);
   };
 
   const openTrustlineSwapModal = () => {
@@ -834,11 +839,10 @@ export default function AssetSearch() {
   };
 
   const handleConfirmTrustlineSwap = () => {
-    setModalAction('trustlineSwap');
     setModalError('');
     setActionMessage('');
     setShowTrustlineSwapConfirm(false);
-    setShowSecretModal(true);
+    beginAction('trustlineSwap', null, handleExecuteTrustlineSwap);
   };
 
   const openSwapModal = () => {
@@ -854,11 +858,10 @@ export default function AssetSearch() {
   };
 
   const handleConfirmSwap = () => {
-    setModalAction('swap');
     setModalError('');
     setActionMessage('');
     setShowSwapConfirm(false);
-    setShowSecretModal(true);
+    beginAction('swap', null, handleExecuteSwap);
   };
 
   const openCreateOfferModal = () => {
@@ -913,11 +916,14 @@ export default function AssetSearch() {
   };
 
   const handleConfirmOffer = () => {
-    setModalAction(pendingOfferAction?.type === 'cancel' ? 'cancelOffer' : 'offer');
     setModalError('');
     setActionMessage('');
     setShowOfferConfirm(false);
-    setShowSecretModal(true);
+    beginAction(
+      pendingOfferAction?.type === 'cancel' ? 'cancelOffer' : 'offer',
+      pendingOfferAction,
+      handleSubmitOfferAction
+    );
   };
 
   const handleCreateTrustline = async (collectedSigners) => {
@@ -941,7 +947,7 @@ export default function AssetSearch() {
       if (error instanceof AmbiguousSubmitResultError) {
         setPendingAmbiguousSubmission({ hash: error.hash });
         setShowSecretModal(false);
-        setModalAction('');
+        setPendingAction(null);
       } else {
         const formatted = formatErrorForUi(t, error);
         setModalError(formatted);
@@ -963,14 +969,14 @@ export default function AssetSearch() {
         ? `${t('trading:assetSearch.swapPreview.success')} ${hash}`
         : t('trading:assetSearch.swapPreview.success'));
       setShowSecretModal(false);
-      setModalAction('');
+      setPendingAction(null);
       setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
       setTrustlineRefreshToken((value) => value + 1);
     } catch (error) {
       if (error instanceof AmbiguousSubmitResultError) {
         setPendingAmbiguousSubmission({ hash: error.hash });
         setShowSecretModal(false);
-        setModalAction('');
+        setPendingAction(null);
       } else {
         const formatted = formatErrorForUi(t, error);
         setModalError(formatted);
@@ -992,14 +998,14 @@ export default function AssetSearch() {
         ? `${t('trading:assetSearch.trustlineFlow.combinedSuccess')} ${hash}`
         : t('trading:assetSearch.trustlineFlow.combinedSuccess'));
       setShowSecretModal(false);
-      setModalAction('');
+      setPendingAction(null);
       setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
       setTrustlineRefreshToken((value) => value + 1);
     } catch (error) {
       if (error instanceof AmbiguousSubmitResultError) {
         setPendingAmbiguousSubmission({ hash: error.hash });
         setShowSecretModal(false);
-        setModalAction('');
+        setPendingAction(null);
       } else {
         const formatted = formatErrorForUi(t, error);
         setModalError(formatted);
@@ -1026,7 +1032,7 @@ export default function AssetSearch() {
         : 'trading:assetSearch.limitOffer.createSuccess';
       setActionMessage(hash ? `${t(successKey)} ${hash}` : t(successKey));
       setShowSecretModal(false);
-      setModalAction('');
+      setPendingAction(null);
       setPendingOfferAction(null);
       setLimitOfferAmount('');
       setLimitOfferPrice('');
@@ -1036,7 +1042,7 @@ export default function AssetSearch() {
       if (error instanceof AmbiguousSubmitResultError) {
         setPendingAmbiguousSubmission({ hash: error.hash });
         setShowSecretModal(false);
-        setModalAction('');
+        setPendingAction(null);
       } else {
         const formatted = formatErrorForUi(t, error);
         setModalError(formatted);
@@ -1411,11 +1417,8 @@ export default function AssetSearch() {
       {showSecretModal && (
         <SecretKeyModal
           onConfirm={(collected) => {
-            if (modalAction === 'swap') return handleExecuteSwap(collected);
-            if (modalAction === 'trustlineSwap') return handleExecuteTrustlineSwap(collected);
-            if (modalAction === 'offer' || modalAction === 'cancelOffer') return handleSubmitOfferAction(collected);
-            if (modalAction === 'trustline') return handleCreateTrustline(collected);
-            // Unknown/empty modalAction (e.g. a stale re-render) must not silently
+            if (pendingAction?.execute) return pendingAction.execute(collected);
+            // No/unknown pendingAction (e.g. a stale re-render) must not silently
             // fall through to a trustline change the user never confirmed.
             const message = t('errors:unknown', 'Unbekannter Fehler');
             setModalError(message);
@@ -1425,7 +1428,7 @@ export default function AssetSearch() {
           }}
           onCancel={() => {
             setShowSecretModal(false);
-            setModalAction('');
+            setPendingAction(null);
             setModalError('');
           }}
           errorMessage={modalError}
