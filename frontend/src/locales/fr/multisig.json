@@ -111,7 +111,8 @@
   },
   "jobCreated": "Tâche multisignatures créée (ID : {{id}}). Ouvrez « Ordres multisignatures » pour voir le statut.",
   "errors": {
-    "mismatchedHash": "Le XDR signé n'appartient pas à cette transaction."
+    "mismatchedHash": "Le XDR signé n'appartient pas à cette transaction.",
+    "signersUnavailable": "La liste des signataires de ce compte n'est actuellement pas disponible dans Horizon. La signature n'a pas été appliquée. Veuillez réessayer dans quelques secondes."
   },
   "prepare": {
     "title": "Transaction préparée pour multisig",

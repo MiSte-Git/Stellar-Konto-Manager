@@ -111,7 +111,8 @@
   },
   "jobCreated": "Multisig-taak aangemaakt (ID: {{id}}). Open \"Multisig-bestellingen\" om de status te zien.",
   "errors": {
-    "mismatchedHash": "De ondertekende XDR behoort niet tot deze transactie."
+    "mismatchedHash": "De ondertekende XDR behoort niet tot deze transactie.",
+    "signersUnavailable": "De lijst met ondertekenaars van het account is momenteel niet beschikbaar in Horizon. De handtekening is niet geplaatst. Probeer het over een paar seconden nog eens."
   },
   "prepare": {
     "title": "Transactie voorbereid voor multisig",

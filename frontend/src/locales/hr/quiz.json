@@ -759,7 +759,7 @@
   "ui": {
     "allDone": "Završili ste sve kvizove! Čestitamo!",
     "backToLearn": "Povratak u učenje",
-    "beforeUnloadMessage": "Jeste li sigurni da želite izaći iz kviza? Sve neodspremljene odgovore bit će izgubljene.",
+    "beforeUnloadMessage": "Jeste li sigurni da želite izaći iz kviza? Sve neodspremljene odgovore izgubit ćete.",
     "cancel": "Otkaži",
     "correct": "Ispravno",
     "explanation": "Zašto?",

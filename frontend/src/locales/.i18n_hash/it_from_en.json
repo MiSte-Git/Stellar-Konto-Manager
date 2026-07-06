@@ -4983,5 +4983,6 @@
   "xlmByMemo.wrongMemos.title": "909de34df295c4d859b22b2455dc957a1e3ef14ab57631eda5cb570e25647cb5",
   "multisig.detail.noLocalSecretForToken": "14d82584d48bbb86d11215e7e6a80cffc2b501bdc11f53d6bb21b903083c9ec1",
   "secretKey.remember.insecureContextError": "8ad1a2cd510ff0fef25f7377735bb386fd1133901886ad689f9d7d2a5692c7c6",
-  "errors.cache.insecureContext": "87e91fa786970da9c7fcd459318edea4520a3792c8da1b5f82faaf15aeb35742"
+  "errors.cache.insecureContext": "87e91fa786970da9c7fcd459318edea4520a3792c8da1b5f82faaf15aeb35742",
+  "multisig.errors.signersUnavailable": "06c3f3e9d7d64d27aa28c3ff7a79812d01471104eec493cfe424cf1de9a376ed"
 }

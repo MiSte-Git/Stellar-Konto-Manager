@@ -111,7 +111,8 @@
   },
   "jobCreated": "Multisig-työ luotu (tunnus: {{id}}). Avaa \"Monisig-tapahtumat\" nähdäksesi tilan.",
   "errors": {
-    "mismatchedHash": "Allekirjoitettu XDR ei kuulu tähän tapahtumaan."
+    "mismatchedHash": "Allekirjoitettu XDR ei kuulu tähän tapahtumaan.",
+    "signersUnavailable": "Tilin allekirjoittajaluetteloa ei tällä hetkellä ole saatavilla Horizonissa. Allekirjoitusta ei ole tehty. Yritä uudelleen muutaman sekunnin kuluttua."
   },
   "prepare": {
     "title": "Moniallekirjoituksen tapahtuma valmisteltu",

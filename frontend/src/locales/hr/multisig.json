@@ -111,7 +111,8 @@
   },
   "jobCreated": "Multisig posao je kreiran (ID: {{id}}). Otvorite „Multisig poslovi“ da vidite status.",
   "errors": {
-    "mismatchedHash": "Potpisani XDR ne pripada ovoj transakciji."
+    "mismatchedHash": "Potpisani XDR ne pripada ovoj transakciji.",
+    "signersUnavailable": "Popis potpisnika računa trenutno nije dostupan u Horizonu. Potpis nije primijenjen. Molimo pokušajte ponovno za nekoliko sekundi."
   },
   "prepare": {
     "title": "Transakcija pripremljena za multisig",

@@ -101,6 +101,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
         setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
       } else if (raw === 'mismatched_hash') {
         setError(t('multisig:errors.mismatchedHash'));
+      } else if (raw === 'signers_unavailable') {
+        setError(t('multisig:errors.signersUnavailable'));
       } else {
         setError(raw);
       }
@@ -178,6 +180,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
         setError(t('multisig:detail.noLocalSecretForToken', 'Kein gespeichertes Secret für dieses Konto in diesem Browser. Bitte über einen geteilten Link mit Zugriffstoken öffnen, oder das Konto einmal mit "Secret merken" laden.'));
       } else if (e?.status === 403) {
         setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
+      } else if (String(e?.message || '') === 'signers_unavailable') {
+        setError(t('multisig:errors.signersUnavailable'));
       } else {
         setError(String(e?.message || 'multisig.jobs.merge_failed'));
       }

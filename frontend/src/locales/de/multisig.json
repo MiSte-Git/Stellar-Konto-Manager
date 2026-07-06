@@ -111,7 +111,8 @@
   },
   "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
   "errors": {
-    "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion."
+    "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion.",
+    "signersUnavailable": "Die Signer-Liste des Kontos ist bei Horizon gerade nicht abrufbar. Die Signatur wurde nicht übernommen. Bitte in ein paar Sekunden erneut versuchen."
   },
   "prepare": {
     "title": "Transaktion für Multisig vorbereitet",

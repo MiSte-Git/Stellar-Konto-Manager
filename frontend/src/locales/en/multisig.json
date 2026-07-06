@@ -111,7 +111,8 @@
   },
   "jobCreated": "Multisig job created (ID: {{id}}). Open \"Multisig orders\" to see the status.",
   "errors": {
-    "mismatchedHash": "The signed XDR does not belong to this transaction."
+    "mismatchedHash": "The signed XDR does not belong to this transaction.",
+    "signersUnavailable": "The account's list of signers is currently unavailable in Horizon. The signature was not applied. Please try again in a few seconds."
   },
   "prepare": {
     "title": "Transaction prepared for multisig",

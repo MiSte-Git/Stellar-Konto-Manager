@@ -111,7 +111,8 @@
   },
   "jobCreated": "Lavoro multisig creato (ID: {{id}}). Apri \"Ordini multisig\" per vedere lo stato.",
   "errors": {
-    "mismatchedHash": "L'XDR firmato non appartiene a questa transazione."
+    "mismatchedHash": "L'XDR firmato non appartiene a questa transazione.",
+    "signersUnavailable": "L'elenco dei firmatari dell'account non è attualmente disponibile in Horizon. La firma non è stata applicata. Riprova tra qualche secondo."
   },
   "prepare": {
     "title": "Transazione preparata per il multisig.",
