@@ -5,21 +5,16 @@
 
 declare(strict_types=1);
 
+require __DIR__ . '/cors.php';
+
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-// CORS for local dev (Vite) → PROD API
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-$allowedOrigins = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-];
-if (in_array($origin, $allowedOrigins, true)) {
-    header('Access-Control-Allow-Origin: ' . $origin);
-    header('Vary: Origin');
-}
-header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, x-admin-secret');
+// Shared allowlist in cors.php (finding #9) - this endpoint used to have its
+// own, independent CORS implementation that had drifted from the shared
+// allowlist (missing skm.steei.de/PROD_ORIGIN) and still allowed a retired
+// admin-secret request header, even though this endpoint never checks it.
+apply_cors_headers(['GET', 'OPTIONS'], ['Content-Type']);
 
 if (strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET')) === 'OPTIONS') {
     http_response_code(204);
