@@ -539,8 +539,8 @@ function Main() {
     }
   }
 
-  async function handleHeaderApply() {
-    const input = (walletHeaderInput || '').trim();
+  async function handleHeaderApply(inputOverride) {
+    const input = (inputOverride ?? walletHeaderInput ?? '').trim();
     if (!input) return;
     const requestId = ++walletOpRequestRef.current;
     setIsLoading(true);
@@ -975,7 +975,7 @@ function Main() {
             <AddressDropdown
               value={walletHeaderInput}
               onChange={(next) => setWalletHeaderInput(next)}
-              onSelect={(next) => setWalletHeaderInput(next)}
+              onSelect={(next) => { setWalletHeaderInput(next); handleHeaderApply(next); }}
               placeholder={t('publicKey:placeholder')}
               options={recentWalletOptions}
               onRemoveOption={(entry) => handleRecentRemove(entry.value)}
