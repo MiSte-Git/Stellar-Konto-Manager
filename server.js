@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const session = require('express-session');
 const rateLimit = require('express-rate-limit');
 const StellarSdk = require('@stellar/stellar-sdk');
@@ -15,6 +14,7 @@ const { createCorsMiddleware } = require('./services/corsConfig.js');
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 const { filterValidSignatures } = require('./services/txSignatures.js');
+const { isLoopbackAddress } = require('./services/network.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
 (function loadDotEnv() {
@@ -57,14 +57,18 @@ function getTradeHorizon(network = 'PUBLIC') {
     : horizon;
 }
 
-// Allow dev origins (5173, 8080) and same-origin in production
-app.use(cors({ origin: true }));
-app.use(express.json()); // built into Express 4.16+ (finding #16), no separate body-parser dependency needed
-
 // Explicit CORS headers for routes restricted to known dev/prod origins
 // (was previously a wildcard '*' — finding B3). Origin allowlist + middleware
 // factory live in services/corsConfig.js (finding #9) so it's a single
 // source of truth shared with no duplicated per-route logic.
+//
+// These path-scoped middlewares are registered BEFORE the global fallback
+// below on purpose: each handles (and short-circuits) its own OPTIONS
+// preflight with the extra headers/credentials those routes specifically
+// need (x-job-token, cookies). If the global fallback ran first, it would
+// answer those preflights itself - without x-job-token/credentials allowed -
+// and the browser would block the real request before these more specific
+// middlewares ever got a chance to run.
 app.use('/api/multisig', createCorsMiddleware({
   methods: ['GET', 'POST', 'OPTIONS'],
   headers: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'x-job-token'],
@@ -78,6 +82,21 @@ app.use(['/api/admin', '/api/bugreport'], createCorsMiddleware({
   headers: ['Content-Type'],
   credentials: true,
 }));
+
+// Global allowlist fallback for every route not already covered above
+// (/api/composeMail, /trustlines, /api/trade/*, /expert) - replaces the
+// previous cors middleware call, configured to reflect *any* request's
+// Origin header at the CORS layer. That made the browser's same-origin
+// policy no protection at all for these routes: a state-changing POST like
+// /api/composeMail (see below) would still run server-side when triggered
+// from an arbitrary third-party page, even though that page couldn't read
+// the (CORS-blocked) response. Runs before express.json()/routes, so an origin
+// outside the allowlist never reaches a route handler, preflight included.
+app.use(createCorsMiddleware({
+  methods: ['GET', 'POST', 'OPTIONS'],
+  headers: ['Content-Type'],
+}));
+app.use(express.json()); // built into Express 4.16+ (finding #16), no separate body-parser dependency needed
 
 // Uses the default in-memory MemoryStore. server.js is documented (README)
 // as the local/dev backend only - the production variant is the PHP backend
@@ -141,6 +160,20 @@ async function createComposeFile({ to, subject, body }) {
 if (composeMailEnabled) {
   app.post('/api/composeMail', async (req, res) => {
     try {
+      // composeMail spawns a local GUI mail client on whatever machine runs
+      // this process - only ever meaningful triggered from the same machine's
+      // own frontend (per README, server.js is the local/dev backend only).
+      // The CORS allowlist above stops a *browser* from completing a
+      // cross-origin drive-by request, but CORS is a browser-enforced policy,
+      // not server-side authentication - a non-browser caller (curl, a local
+      // script, or a remote client if this port were ever reachable beyond
+      // localhost) ignores the Origin header entirely. Checking the actual
+      // TCP peer address instead lets the endpoint stay unauthenticated (no
+      // extra secret to configure for a pure dev convenience feature) while
+      // still only being triggerable from the same host.
+      if (!isLoopbackAddress(req.socket?.remoteAddress)) {
+        return res.status(403).json({ ok: false, error: 'composeMail.forbidden' });
+      }
       const { to, subject = '', body = '' } = req.body || {};
       if (!to || typeof to !== 'string') {
         return res.status(400).json({ ok: false, error: 'composeMail.invalidRecipient' });
