@@ -27,8 +27,6 @@ import {
   formatAssetLabel,
   getAssetIssuer,
   getAssetCode,
-  formatAssetLabelWithIssuer,
-  formatAssetPath,
   formatDetailedAssetPath,
   assetFromPathRecord,
   assetFromOfferSide,
@@ -53,6 +51,7 @@ import SwapSection from './SwapSection.jsx';
 import TrustlineSection from './TrustlineSection.jsx';
 import AssetSearchForm from './AssetSearchForm.jsx';
 import AssetResultsTable from './AssetResultsTable.jsx';
+import ConfirmActionModal from './ConfirmActionModal.jsx';
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
@@ -1553,267 +1552,69 @@ export default function AssetSearch() {
         </div>
       )}
       {showTrustlineConfirm && selectedAsset && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50 p-4">
-          <div className="my-auto w-full max-w-2xl rounded-lg bg-white p-5 shadow-lg dark:bg-gray-800">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-              {t('trading:assetSearch.trustlineConfirm.title')}
-            </h2>
-            <dl className="grid gap-3 text-sm text-gray-800 dark:text-gray-100 sm:grid-cols-2">
-              <div>
-                <dt className="font-semibold">{t('trading:assetSearch.result.columns.code')}</dt>
-                <dd className="font-mono">{selectedAsset.assetCode}</dd>
-              </div>
-              <div>
-                <dt className="font-semibold">{t('trading:assetSearch.trustlineConfirm.limit')}</dt>
-                <dd className="font-mono">{trustlineLimitAmount || trustlineLimit} {selectedAsset.assetCode}</dd>
-              </div>
-              <div className="sm:col-span-2">
-                <dt className="font-semibold">{t('trading:assetSearch.result.columns.issuer')}</dt>
-                <dd className="break-all font-mono">{selectedAsset.assetIssuer}</dd>
-              </div>
-            </dl>
-            {trustlineReserveSummary && (
-              <dl className="mt-4 grid gap-3 rounded border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 sm:grid-cols-2">
-                <div>
-                  <dt className="font-semibold">{t('trading:assetSearch.trustlineFlow.reserveIncrease')}</dt>
-                  <dd>{amountFormatter.format(trustlineReserveSummary.extraReserve)} XLM</dd>
-                </div>
-                <div>
-                  <dt className="font-semibold">{t('trading:assetSearch.trustlineFlow.reserveAfter')}</dt>
-                  <dd>{amountFormatter.format(trustlineReserveSummary.afterTrustlineMinimum)} XLM</dd>
-                </div>
-              </dl>
-            )}
-            <section className="mt-4 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
-              <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
-                {t('trading:assetSearch.facts.title')}
-              </h3>
-              <TokenFactsSummary facts={assetFacts} asset={selectedAsset} includeDisclaimer routeStatus={swapRouteStatus} />
-            </section>
-            <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
-              {t('trading:assetSearch.trustlineConfirm.warning')}
-            </p>
-            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                onClick={() => setShowTrustlineConfirm(false)}
-                className="rounded border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
-              >
-                {t('common:cancel', 'Cancel')}
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmTrustline}
-                className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700"
-              >
-                {t('trading:assetSearch.trustlineConfirm.continue')}
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmActionModal
+          kind="trustline"
+          onCancel={() => setShowTrustlineConfirm(false)}
+          onConfirm={handleConfirmTrustline}
+          selectedAsset={selectedAsset}
+          trustlineLimitAmount={trustlineLimitAmount}
+          trustlineLimit={trustlineLimit}
+          trustlineReserveSummary={trustlineReserveSummary}
+          amountFormatter={amountFormatter}
+          assetFacts={assetFacts}
+          swapRouteStatus={swapRouteStatus}
+        />
       )}
       {showTrustlineSwapConfirm && selectedAsset && swapPreview.path && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50 p-4">
-          <div className="my-auto w-full max-w-2xl rounded-lg bg-white p-5 shadow-lg dark:bg-gray-800">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-              {t('trading:assetSearch.trustlineFlow.combinedConfirmTitle')}
-            </h2>
-            <dl className="grid gap-3 text-sm text-gray-800 dark:text-gray-100">
-              <div className="grid gap-1">
-                <dt className="font-semibold">{t('trading:assetSearch.trustlineConfirm.limit')}</dt>
-                <dd className="font-mono">{trustlineLimitAmount || trustlineLimit} {selectedAsset.assetCode}</dd>
-              </div>
-              <div className="grid gap-1">
-                <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.send')}</dt>
-                <dd className="font-mono">{normalizeAmount(swapAmount) || swapAmount} XLM</dd>
-              </div>
-              <div className="grid gap-1">
-                <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.receive')}</dt>
-                <dd className="font-mono">{swapPreview.path.destination_amount} {swapDestinationLabel}</dd>
-              </div>
-              <div className="grid gap-1">
-                <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.minimum')}</dt>
-                <dd className="font-mono">{minimumDestinationAmount} {swapDestinationLabel}</dd>
-              </div>
-              <div className="grid gap-1">
-                <dt className="font-semibold">{t('trading:assetSearch.swapPreview.routeDetailed')}</dt>
-                <dd className="break-all font-mono">{quoteDetails?.detailedRoute || formatDetailedAssetPath(swapPreview.path.path, swapSourceAsset, swapDestinationAsset)}</dd>
-              </div>
-            </dl>
-            <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
-              {t('trading:assetSearch.trustlineFlow.combinedWarning')}
-            </p>
-            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                onClick={() => setShowTrustlineSwapConfirm(false)}
-                className="rounded border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
-              >
-                {t('common:cancel', 'Cancel')}
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmTrustlineSwap}
-                className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-              >
-                {t('trading:assetSearch.trustlineFlow.combinedContinue')}
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmActionModal
+          kind="trustlineSwap"
+          onCancel={() => setShowTrustlineSwapConfirm(false)}
+          onConfirm={handleConfirmTrustlineSwap}
+          selectedAsset={selectedAsset}
+          trustlineLimitAmount={trustlineLimitAmount}
+          trustlineLimit={trustlineLimit}
+          swapAmount={swapAmount}
+          swapPreview={swapPreview}
+          swapDestinationLabel={swapDestinationLabel}
+          minimumDestinationAmount={minimumDestinationAmount}
+          quoteDetails={quoteDetails}
+          swapSourceAsset={swapSourceAsset}
+          swapDestinationAsset={swapDestinationAsset}
+        />
       )}
       {showSwapConfirm && selectedAsset && swapPreview.path && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50 p-4">
-          <div className="my-auto w-full max-w-2xl rounded-lg bg-white p-5 shadow-lg dark:bg-gray-800">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-              {t('trading:assetSearch.swapConfirm.title')}
-            </h2>
-            <dl className="grid gap-3 text-sm text-gray-800 dark:text-gray-100">
-              <div className="grid gap-1">
-                <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.send')}</dt>
-                <dd className="font-mono">{normalizeAmount(swapAmount) || swapAmount} {swapSourceLabel}</dd>
-              </div>
-              <div className="grid gap-1">
-                <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.receive')}</dt>
-                <dd className="font-mono">{swapPreview.path.destination_amount} {swapDestinationLabel}</dd>
-              </div>
-              <div className="grid gap-1">
-                <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.minimum')}</dt>
-                <dd className="font-mono">{minimumDestinationAmount} {swapDestinationLabel}</dd>
-              </div>
-              <div className="grid gap-1">
-                <dt className="font-semibold">{t('trading:assetSearch.swapPreview.slippage')}</dt>
-                <dd className="font-mono">{String(swapSlippage || '').replace(',', '.')}%</dd>
-              </div>
-              <div className="grid gap-1">
-                <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.source')}</dt>
-                <dd className="break-all font-mono">{selectedAsset.assetIssuer}</dd>
-              </div>
-              {swapDirection === 'token-to-token' && targetStellarAsset && (
-                <div className="grid gap-1">
-                  <dt className="font-semibold">{t('trading:assetSearch.swapConfirm.destination')}</dt>
-                  <dd className="break-all font-mono">{targetStellarAsset.issuer}</dd>
-                </div>
-              )}
-              <div className="grid gap-1">
-                <dt className="font-semibold">{t('trading:assetSearch.swapPreview.route')}</dt>
-                <dd className="font-mono">{formatAssetPath(swapPreview.path.path, swapSourceAsset, swapDestinationAsset)}</dd>
-              </div>
-              {quoteDetails && (
-                <>
-                  <div className="grid gap-1">
-                    <dt className="font-semibold">{t('trading:assetSearch.swapPreview.effectiveRate')}</dt>
-                    <dd className="font-mono">1 {swapSourceLabel} = {ratioFormatter.format(quoteDetails.effectiveRate)} {swapDestinationLabel}</dd>
-                  </div>
-                  <div className="grid gap-1">
-                    <dt className="font-semibold">{t('trading:assetSearch.swapPreview.quoteAge')}</dt>
-                    <dd className="font-mono">{formatQuoteAge(quoteDetails.ageSeconds)}</dd>
-                  </div>
-                  <div className="grid gap-1">
-                    <dt className="font-semibold">{t('trading:assetSearch.swapPreview.routeDetailed')}</dt>
-                    <dd className="break-all font-mono">{quoteDetails.detailedRoute}</dd>
-                  </div>
-                  {swapPreview.refreshComparison && (
-                    <div className="grid gap-1">
-                      <dt className="font-semibold">{t('trading:assetSearch.swapPreview.refreshComparison')}</dt>
-                      <dd className="font-mono">
-                        {swapPreview.refreshComparison.previousDestinationAmount} {'->'} {swapPreview.refreshComparison.latestDestinationAmount} {swapDestinationLabel}
-                        {' '}({formatPercent(swapPreview.refreshComparison.deltaPercent)})
-                      </dd>
-                    </div>
-                  )}
-                </>
-              )}
-            </dl>
-            <section className="mt-4 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
-              <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
-                {t(selectedAssetFactsTitleKey)}
-              </h3>
-              <TokenFactsSummary facts={assetFacts} asset={selectedAsset} includeDisclaimer routeStatus={swapRouteStatus} />
-            </section>
-            {swapDirection === 'token-to-token' && targetStellarAsset && (
-              <section className="mt-4 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
-                <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
-                  {t('trading:assetSearch.facts.destinationTitle')}
-                </h3>
-                <TokenFactsSummary facts={targetAssetFacts} asset={targetStellarAsset} includeRoute={false} />
-              </section>
-            )}
-            <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
-              {t('trading:assetSearch.swapConfirm.routeRefresh')}
-            </p>
-            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                onClick={() => setShowSwapConfirm(false)}
-                className="rounded border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
-              >
-                {t('common:cancel', 'Cancel')}
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmSwap}
-                className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700"
-              >
-                {t('trading:assetSearch.swapConfirm.continue')}
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmActionModal
+          kind="swap"
+          onCancel={() => setShowSwapConfirm(false)}
+          onConfirm={handleConfirmSwap}
+          selectedAsset={selectedAsset}
+          swapAmount={swapAmount}
+          swapPreview={swapPreview}
+          swapSourceLabel={swapSourceLabel}
+          swapDestinationLabel={swapDestinationLabel}
+          minimumDestinationAmount={minimumDestinationAmount}
+          swapSlippage={swapSlippage}
+          swapDirection={swapDirection}
+          targetStellarAsset={targetStellarAsset}
+          targetAssetFacts={targetAssetFacts}
+          swapSourceAsset={swapSourceAsset}
+          swapDestinationAsset={swapDestinationAsset}
+          quoteDetails={quoteDetails}
+          ratioFormatter={ratioFormatter}
+          formatQuoteAge={formatQuoteAge}
+          formatPercent={formatPercent}
+          selectedAssetFactsTitleKey={selectedAssetFactsTitleKey}
+          assetFacts={assetFacts}
+          swapRouteStatus={swapRouteStatus}
+        />
       )}
       {showOfferConfirm && pendingOfferAction && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50 p-4">
-          <div className="my-auto w-full max-w-2xl rounded-lg bg-white p-5 shadow-lg dark:bg-gray-800">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-              {pendingOfferAction.type === 'cancel'
-                ? t('trading:assetSearch.limitOffer.cancelTitle')
-                : t('trading:assetSearch.limitOffer.confirmTitle')}
-            </h2>
-            <dl className="grid gap-3 text-sm text-gray-800 dark:text-gray-100 sm:grid-cols-2">
-              <div>
-                <dt className="font-semibold">{t('trading:assetSearch.limitOffer.columns.selling')}</dt>
-                <dd className="font-mono">{formatAssetLabelWithIssuer(pendingOfferAction.selling)}</dd>
-              </div>
-              <div>
-                <dt className="font-semibold">{t('trading:assetSearch.limitOffer.columns.buying')}</dt>
-                <dd className="font-mono">{formatAssetLabelWithIssuer(pendingOfferAction.buying)}</dd>
-              </div>
-              <div>
-                <dt className="font-semibold">{t('trading:assetSearch.limitOffer.columns.amount')}</dt>
-                <dd className="font-mono">
-                  {pendingOfferAction.type === 'cancel'
-                    ? t('trading:assetSearch.limitOffer.cancelAmount')
-                    : `${pendingOfferAction.amount} ${formatAssetLabel(pendingOfferAction.selling)}`}
-                </dd>
-              </div>
-              <div>
-                <dt className="font-semibold">{t('trading:assetSearch.limitOffer.columns.price')}</dt>
-                <dd className="font-mono">{pendingOfferAction.price}</dd>
-              </div>
-            </dl>
-            <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
-              {pendingOfferAction.type === 'cancel'
-                ? t('trading:assetSearch.limitOffer.cancelWarning')
-                : t('trading:assetSearch.limitOffer.warning')}
-            </p>
-            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                onClick={() => setShowOfferConfirm(false)}
-                className="rounded border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
-              >
-                {t('common:cancel', 'Cancel')}
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmOffer}
-                className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700"
-              >
-                {t('trading:assetSearch.limitOffer.continue')}
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmActionModal
+          kind="offer"
+          onCancel={() => setShowOfferConfirm(false)}
+          onConfirm={handleConfirmOffer}
+          pendingOfferAction={pendingOfferAction}
+        />
       )}
       {showSecretModal && (
         <SecretKeyModal
