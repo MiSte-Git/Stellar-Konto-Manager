@@ -308,12 +308,17 @@ function requireAdminSession(req, res) {
 
 app.post('/api/bugreport', async (req, res) => {
   try {
-    const { url, userAgent, language, title, subject, description, ts, appVersion, status, priority, category, page, reportToken, contactEmail, rejectionReason, comment } = req.body || {};
+    const { url, userAgent, language, title, subject, description, ts, appVersion, priority, category, page, reportToken, contactEmail, rejectionReason, comment } = req.body || {};
     const nowIso = new Date().toISOString();
     const clamp = (s = '') => String(s || '').slice(0, 5000);
     const emailNorm = typeof contactEmail === 'string' ? contactEmail.trim() : '';
     const emailValid = emailNorm && /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(emailNorm) ? emailNorm : null;
-    const normalizedStatus = allowedStatus.has(String(status)) ? String(status) : 'open';
+    // N4: a newly-submitted report is always "open", regardless of what the
+    // (unauthenticated) reporter's payload claims - otherwise anyone could
+    // file a report that's already "closed"/"rejected" and never show up in
+    // the admin queue. Status transitions after creation go through the
+    // admin-only PATCH route below.
+    const normalizedStatus = 'open';
     const normalizedRejectionReason = typeof rejectionReason === 'string' ? clamp(rejectionReason) : null;
     const normalizedComment = typeof comment === 'string' ? clamp(comment).trim() : null;
 
@@ -329,13 +334,6 @@ app.post('/api/bugreport', async (req, res) => {
     // Backward compatibility: some clients send "rejection_reason" instead of "rejectionReason"
     const rejectionReasonSnake = req.body && typeof req.body.rejection_reason === 'string' ? clamp(req.body.rejection_reason) : null;
     const normalizedRejectionReasonFinal = normalizedRejectionReason ?? rejectionReasonSnake;
-
-    if (normalizedStatus === 'rejected') {
-      const reason = String(normalizedRejectionReasonFinal || '').trim();
-      if (!reason) {
-        return res.status(400).json({ ok: false, error: 'bugReport.rejectionReason.required' });
-      }
-    }
 
     const item = {
       id: ++bugDb.lastId,

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/admin_session.php';
 require __DIR__ . '/cors.php';
+require __DIR__ . '/bugreportGuard.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -252,20 +253,33 @@ try {
             json_out(['ok' => true], 200);
         }
 
-        // Create new bugreport
-        $title = isset($data['title']) ? trim((string)$data['title']) : '';
-        if ($title === '' && isset($data['subject'])) {
-            $title = trim((string)$data['subject']);
+        // Create new bugreport (public, unauthenticated) - N3 rate limit
+        // applies only here, not to the admin-only GET/update actions above.
+        $ip = (string)($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+        $retryAfter = bugReportRateLimitCheckAndRecord($ip);
+        if ($retryAfter > 0) {
+            header('Retry-After: ' . $retryAfter);
+            json_out(['ok' => false, 'error' => 'too_many_requests', 'retryAfter' => $retryAfter], 429);
         }
 
-        $description = isset($data['description']) ? (string)$data['description'] : null;
-        $url = isset($data['url']) ? (string)$data['url'] : '';
-        $userAgent = isset($data['userAgent']) ? (string)$data['userAgent'] : (string)($_SERVER['HTTP_USER_AGENT'] ?? '');
-        $language = isset($data['language']) ? (string)$data['language'] : '';
-        $contactEmail = isset($data['contactEmail']) ? trim((string)$data['contactEmail']) : '';
-        $appVersion = isset($data['appVersion']) ? (string)$data['appVersion'] : null;
+        $title = isset($data['title']) ? clamp_field(trim((string)$data['title'])) : '';
+        if ($title === '' && isset($data['subject'])) {
+            $title = clamp_field(trim((string)$data['subject']));
+        }
 
-        $status = allowlist(isset($data['status']) ? (string)$data['status'] : 'open', $allowedStatus, 'open');
+        $description = isset($data['description']) ? clamp_field((string)$data['description']) : null;
+        $url = isset($data['url']) ? clamp_field((string)$data['url']) : '';
+        $userAgent = isset($data['userAgent']) ? clamp_field((string)$data['userAgent']) : clamp_field((string)($_SERVER['HTTP_USER_AGENT'] ?? ''));
+        $language = isset($data['language']) ? clamp_field((string)$data['language']) : '';
+        $contactEmail = isset($data['contactEmail']) ? trim((string)$data['contactEmail']) : '';
+        $appVersion = isset($data['appVersion']) ? clamp_field((string)$data['appVersion']) : null;
+
+        // N4: a newly-submitted report is always "open", regardless of what
+        // the (unauthenticated) reporter's payload claims - otherwise anyone
+        // could file a report that's already "closed"/"rejected" and never
+        // show up in the admin queue. Status transitions after creation go
+        // through the admin-only action=update above.
+        $status = 'open';
         $priority = allowlist(isset($data['priority']) ? (string)$data['priority'] : 'normal', $allowedPriority, 'normal');
         $category = allowlist(isset($data['category']) ? (string)$data['category'] : 'bug', $allowedCategory, 'bug');
         $page = allowlist(isset($data['page']) ? (string)$data['page'] : 'other', $allowedPage, 'other');
