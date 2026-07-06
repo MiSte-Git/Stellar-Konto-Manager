@@ -17,7 +17,6 @@ import { submitTransactionSafely, AmbiguousSubmitResultError } from '../../utils
 import {
   DEFAULT_TRUSTLINE_LIMIT,
   EMPTY_ASSET_FACTS,
-  shortenKey,
   assetResultKey,
   parseAssetSearchQuery,
   getStoredAccountInput,
@@ -52,6 +51,8 @@ import TokenFactsSummary from './TokenFactsSummary.jsx';
 import LimitOrdersSection from './LimitOrdersSection.jsx';
 import SwapSection from './SwapSection.jsx';
 import TrustlineSection from './TrustlineSection.jsx';
+import AssetSearchForm from './AssetSearchForm.jsx';
+import AssetResultsTable from './AssetResultsTable.jsx';
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
@@ -1297,209 +1298,46 @@ export default function AssetSearch() {
     }
   };
 
-  const renderFactMark = (checked, loading, label) => (
-    <span
-      className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-sm font-bold ${
-        loading
-          ? 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
-          : checked
-            ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100'
-            : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-100'
-      }`}
-      title={label}
-      aria-label={`${label}: ${checked ? t('trading:assetSearch.facts.yes') : t('trading:assetSearch.facts.no')}`}
-    >
-      {loading ? '...' : checked ? '✓' : '×'}
-    </span>
-  );
-
   // 'available' | 'unavailable' | 'notChecked' - passed to TokenFactsSummary's
   // includeRoute block instead of it reading swapPreview directly.
   const swapRouteStatus = swapPreview.path ? 'available' : swapPreview.error ? 'unavailable' : 'notChecked';
 
   return (
     <section className="space-y-4">
-      <p className="text-sm text-gray-600 dark:text-gray-300">
-        {t('trading:assetSearch.description', 'Suche nach Asset-Code, Issuer-Adresse oder CODE:ISSUER.')}
-      </p>
-      <div className="rounded border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
-        <div>
-          <span className="font-semibold">{t('trading:assetSearch.account.active', 'Active account')}:</span>{' '}
-          {accountInput ? <span className="font-mono break-all">{accountInput}</span> : <span>{t('trading:assetSearch.account.none', 'No account loaded')}</span>}
-        </div>
-        <div>
-          <span className="font-semibold">{t('trading:assetSearch.account.network', 'Network')}:</span>{' '}
-          <span>{network}</span>
-        </div>
-      </div>
-      <form className="space-y-3" onSubmit={handleAssetSearch}>
-        <label className="block text-sm font-semibold" htmlFor="asset-query-input">
-          {t('trading:assetSearch.form.query.label')}
-        </label>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <input
-            id="asset-query-input"
-            className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-900"
-            value={assetQuery}
-            onChange={(e) => {
-              setAssetQuery(e.target.value);
-              if (assetError) setAssetError('');
-            }}
-            placeholder={t('trading:assetSearch.form.query.placeholder', 'USDC, G... oder USDC:G...')}
-          />
-          <button
-            type="submit"
-            disabled={assetLoading}
-            className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {assetLoading ? t('common:loading', 'Loading…') : t('trading:assetSearch.form.submit')}
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2 text-xs text-gray-600 dark:text-gray-300">
-          <span>{t('trading:assetSearch.examples.label', 'Examples')}:</span>
-          <code>USDC</code>
-          <code>G...</code>
-          <code>USDC:G...</code>
-          {!parsedQuery.error && parsedQuery.mode && (
-            <span className="rounded bg-gray-100 px-2 py-0.5 dark:bg-gray-800">
-              {describeSearchMode(parsedQuery.mode)}
-            </span>
-          )}
-        </div>
-        {assetError && (
-          <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
-            {assetError}
-          </div>
-        )}
-      </form>
+      <AssetSearchForm
+        accountInput={accountInput}
+        network={network}
+        assetQuery={assetQuery}
+        onQueryChange={(value) => {
+          setAssetQuery(value);
+          if (assetError) setAssetError('');
+        }}
+        onSubmit={handleAssetSearch}
+        assetLoading={assetLoading}
+        parsedQuery={parsedQuery}
+        describeSearchMode={describeSearchMode}
+        assetError={assetError}
+        pendingAmbiguousSubmission={pendingAmbiguousSubmission}
+        onAcknowledgeAmbiguous={() => setPendingAmbiguousSubmission(null)}
+        actionMessage={actionMessage}
+        modalError={modalError}
+      />
 
-      {pendingAmbiguousSubmission && (
-        <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100">
-          <div className="font-semibold">{t('trading:assetSearch.ambiguousResult.title', 'Status unklar – nicht erneut senden')}</div>
-          <div className="mt-1 text-xs">
-            {t('trading:assetSearch.ambiguousResult.body', 'Die letzte Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.')}
-          </div>
-          {pendingAmbiguousSubmission.hash && (
-            <div className="mt-1 break-all font-mono text-xs">{pendingAmbiguousSubmission.hash}</div>
-          )}
-          <button
-            type="button"
-            className="mt-2 rounded border border-amber-400 px-2 py-1 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-900"
-            onClick={() => setPendingAmbiguousSubmission(null)}
-          >
-            {t('trading:assetSearch.ambiguousResult.acknowledge', 'Status geprüft – Aktionen wieder freigeben')}
-          </button>
-        </div>
-      )}
-
-      {actionMessage && (
-        <div className={`rounded border px-3 py-2 text-sm ${
-          modalError
-            ? 'border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200'
-            : 'border-green-200 bg-green-50 text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-100'
-        }`}>
-          {actionMessage}
-        </div>
-      )}
-
-      <div className="rounded border border-gray-200 dark:border-gray-700">
-        {assetResults.length === 0 && !assetError && !assetLoading && (
-          <div className="px-3 py-2 text-sm text-gray-600 dark:text-gray-300">
-            {t('trading:assetSearch.result.empty')}
-          </div>
-        )}
-        {assetResults.length > 0 && (
-          <>
-            <div className="border-b border-gray-200 px-3 py-2 text-xs text-gray-600 dark:border-gray-700 dark:text-gray-300">
-              <div>{t('trading:assetSearch.result.count', { count: countFormatter.format(assetResults.length) })}</div>
-              <div className="mt-1">{t('trading:assetSearch.result.qualityHint')}</div>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
-                <thead>
-                  <tr className="text-left">
-                    <th className="py-2 pr-3">{t('trading:assetSearch.result.columns.code')}</th>
-                    <th className="py-2 pr-3">{t('trading:assetSearch.result.columns.issuer')}</th>
-                    <th className="py-2 pr-3" title={t('trading:assetSearch.result.columnHelp.numAccounts')}>
-                      <button
-                        type="button"
-                        onClick={() => toggleAssetSort('trustlines')}
-                        className="font-semibold hover:text-blue-700 dark:hover:text-blue-300"
-                        aria-label={t('trading:assetSearch.result.sort.numAccounts')}
-                      >
-                        {t('trading:assetSearch.result.columns.numAccounts', 'Trustlines')}{sortIndicator('trustlines')}
-                      </button>
-                    </th>
-                    <th className="py-2 pr-3">{t('trading:assetSearch.result.columns.domain')}</th>
-                    <th className="py-2 pr-3">{t('trading:assetSearch.result.columns.toml')}</th>
-                    <th className="py-2 pr-3">{t('trading:assetSearch.result.columns.actions', 'Actions')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedAssetResults.map((r, idx) => {
-                    const rowFacts = assetResultFacts[assetResultKey(r)] || {};
-                    return (
-                      <tr key={`${r.assetCode}-${r.assetIssuer}-${idx}`} className="border-t border-gray-200 dark:border-gray-700">
-                        <td className="py-2 pl-3 pr-3 font-mono font-semibold">{r.assetCode}</td>
-                        <td className="py-2 pr-3 font-mono" title={r.assetIssuer || ''}>
-                          {shortenKey(r.assetIssuer || '') || '—'}
-                        </td>
-                        <td className="py-2 pr-3">{formatTrustlineCount(r)}</td>
-                        <td className="py-2 pr-3">
-                          {renderFactMark(
-                            rowFacts.homeDomain,
-                            rowFacts.loading,
-                            t('trading:assetSearch.result.factLabels.domain')
-                          )}
-                        </td>
-                        <td className="py-2 pr-3">
-                          {renderFactMark(
-                            rowFacts.tomlListed,
-                            rowFacts.loading,
-                            t('trading:assetSearch.result.factLabels.toml')
-                          )}
-                        </td>
-                        <td className="py-2 pr-3">
-                          <div className="flex flex-wrap gap-2">
-                            <button
-                              type="button"
-                              onClick={() => setSelectedAsset(r)}
-                              className="rounded border border-gray-300 px-2 py-1 text-xs hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
-                            >
-                              {t('trading:assetSearch.actions.details', 'Details')}
-                            </button>
-                            <button
-                              type="button"
-                              disabled={!canAddTrustlineFor(r)}
-                              onClick={() => openTrustlineModal(r)}
-                              className={`rounded border px-2 py-1 text-xs ${
-                                canAddTrustlineFor(r)
-                                  ? 'border-green-300 text-green-800 hover:bg-green-50 dark:border-green-700 dark:text-green-200 dark:hover:bg-green-900'
-                                  : 'border-gray-200 text-gray-400 dark:border-gray-800'
-                              }`}
-                              title={t('trading:assetSearch.actions.trustlineNext', 'Next step: create trustline from search result')}
-                            >
-                              {trustlineActionLabel(r)}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setSelectedAsset(r)}
-                              className="rounded border border-blue-300 px-2 py-1 text-xs text-blue-800 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-200 dark:hover:bg-blue-900"
-                              title={t('trading:assetSearch.actions.swapNext', 'Select asset and open swap preview')}
-                            >
-                              {t('trading:assetSearch.actions.swap', 'Swap')}
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
-      </div>
+      <AssetResultsTable
+        assetResults={assetResults}
+        assetError={assetError}
+        assetLoading={assetLoading}
+        countFormatter={countFormatter}
+        sortedAssetResults={sortedAssetResults}
+        assetResultFacts={assetResultFacts}
+        toggleAssetSort={toggleAssetSort}
+        sortIndicator={sortIndicator}
+        formatTrustlineCount={formatTrustlineCount}
+        onSelectAsset={setSelectedAsset}
+        canAddTrustlineFor={canAddTrustlineFor}
+        onOpenTrustlineModal={openTrustlineModal}
+        trustlineActionLabel={trustlineActionLabel}
+      />
 
       {selectedAsset && (
         <div className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-black bg-opacity-50 p-4">
