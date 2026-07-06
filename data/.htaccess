@@ -1,0 +1,11 @@
+# Blocks all direct HTTP access to this directory. bugreports.json and
+# multisig_jobs.json contain contact emails and per-job access tokens/
+# transaction XDRs; they must only ever be read/written by the Node backend
+# (server.js) via the filesystem, never served directly by the webserver.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>
