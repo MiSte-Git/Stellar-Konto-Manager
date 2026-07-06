@@ -52,6 +52,7 @@ import TrustlineSection from './TrustlineSection.jsx';
 import AssetSearchForm from './AssetSearchForm.jsx';
 import AssetResultsTable from './AssetResultsTable.jsx';
 import ConfirmActionModal from './ConfirmActionModal.jsx';
+import useLimitOffers from './hooks/useLimitOffers.js';
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
@@ -93,11 +94,16 @@ export default function AssetSearch() {
   const swapPreviewRequestRef = useRef(0);
   const [marketData, setMarketData] = useState({ loading: false, error: '', orderbook: null, liquidityPools: [], loadedAt: null });
   const [targetAssetFacts, setTargetAssetFacts] = useState(EMPTY_ASSET_FACTS);
-  const [limitOfferDirection, setLimitOfferDirection] = useState('sell-token-for-xlm');
-  const [limitOfferAmount, setLimitOfferAmount] = useState('');
-  const [limitOfferPrice, setLimitOfferPrice] = useState('');
-  const [limitOfferStatus, setLimitOfferStatus] = useState({ loading: false, error: '', offers: [] });
-  const [limitOfferRefreshToken, setLimitOfferRefreshToken] = useState(0);
+  const {
+    limitOfferDirection,
+    setLimitOfferDirection,
+    limitOfferAmount,
+    setLimitOfferAmount,
+    limitOfferPrice,
+    setLimitOfferPrice,
+    limitOfferStatus,
+    setLimitOfferRefreshToken,
+  } = useLimitOffers({ selectedAsset, accountId, network });
   const [pendingOfferAction, setPendingOfferAction] = useState(null);
   const [showOfferConfirm, setShowOfferConfirm] = useState(false);
   const [isSubmittingOffer, setIsSubmittingOffer] = useState(false);
@@ -352,46 +358,13 @@ export default function AssetSearch() {
     setTokenFactsExpanded(false);
   }, [selectedAsset, network]);
 
+  // pendingOfferAction/showOfferConfirm are part of the modalAction
+  // confirm/submit dispatch pipeline (step 6 territory) - useLimitOffers
+  // resets its own limitOfferAmount/limitOfferPrice fields itself.
   useEffect(() => {
-    setLimitOfferAmount('');
-    setLimitOfferPrice('');
     setPendingOfferAction(null);
     setShowOfferConfirm(false);
   }, [selectedAsset, network]);
-
-  useEffect(() => {
-    let cancelled = false;
-    if (!accountId || !selectedAsset) {
-      setLimitOfferStatus({ loading: false, error: '', offers: [] });
-      return () => { cancelled = true; };
-    }
-
-    const loadOffers = async () => {
-      setLimitOfferStatus((current) => ({ ...current, loading: true, error: '' }));
-      try {
-        const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
-        const response = await server.offers().forAccount(accountId).limit(30).call();
-        if (!cancelled) {
-          setLimitOfferStatus({
-            loading: false,
-            error: '',
-            offers: Array.isArray(response?.records) ? response.records : [],
-          });
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setLimitOfferStatus({
-            loading: false,
-            error: error?.message || 'offerLoadFailed',
-            offers: [],
-          });
-        }
-      }
-    };
-
-    loadOffers();
-    return () => { cancelled = true; };
-  }, [accountId, limitOfferRefreshToken, network, selectedAsset]);
 
   const loadAssetFactsForIdentity = useCallback(async ({ code, issuer }) => {
     const params = new URLSearchParams({ code, issuer, network });
