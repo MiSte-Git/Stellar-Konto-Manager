@@ -713,7 +713,7 @@ if ($method === 'DELETE' && $path === '/api/multisig/jobs') {
     if ($net === 'testnet') {
         if ($confirm !== 'DELETE TESTNET JOBS') return sendJson(['ok' => false, 'error' => 'confirm_required'], 400);
     } else {
-        if (!$requiredToken || !$adminToken || $adminToken !== $requiredToken) {
+        if (!$requiredToken || !$adminToken || !hash_equals($requiredToken, $adminToken)) {
             return sendJson(['ok' => false, 'error' => 'unauthorized'], 401);
         }
         if ($confirm !== 'DELETE ALL JOBS') return sendJson(['ok' => false, 'error' => 'confirm_required'], 400);
