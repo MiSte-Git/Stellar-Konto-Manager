@@ -38,6 +38,14 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 ### G. Spenden
 - Menüpunkt „Spenden“ (optional, Feature-Flag) öffnet den regulären Zahlungsdialog (freiwillig).
 
+### H. Trading
+- Asset-Suche mit Issuer-Risikoprüfung (Home Domain, TOML-Abgleich, Auth-Flags, Master-Weight).
+- Trustline-Anlage, auch kombiniert mit Swap in einer Transaktion.
+- Market-Swap via `pathPaymentStrictSend` inkl. Slippage-Berechnung.
+- Limit-Orders (`manageSellOffer`): Erstellen, eigene offene Orders anzeigen, Stornierung.
+- Orderbook-Tiefe (Bid/Ask) zum gewählten Asset.
+- Multisig-Signing-Unterstützung im Trading-Flow (gleiches Signer-Sammel-Muster wie bei Zahlungen).
+
 ## Architekturüberblick
 - Frontend: React + Vite, Ordner `frontend/`.
 - Backend: Node.js/Express, `server.js` im Projekt-Root, lokale Dateiablage.
