@@ -11,7 +11,7 @@ env:
   # VITE_BACKEND_URL: https://<DEINE-DOMAIN>/api
 
   # === Zielpfad auf cyon ===
-  REMOTE_PATH: /home/michael/public_html/SKM/
+  REMOTE_PATH: /home/stegmann/public_html/SKM/
 
 jobs:
   build-and-deploy:
