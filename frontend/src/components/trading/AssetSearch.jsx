@@ -45,10 +45,12 @@ import {
   sumOrderbookAmount,
   calculatePercentChange,
   getCollectedSignerWeight,
-  getIssuerMasterWeight,
   getAccountFlag,
   getTrustlineReserveSummary,
 } from './assetSearchUtils.js';
+import { factValue } from './assetFactsUtils.js';
+import HelpLabel from './HelpLabel.jsx';
+import TokenFactsSummary from './TokenFactsSummary.jsx';
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
@@ -559,16 +561,6 @@ export default function AssetSearch() {
     if (trustlineStatus.state === 'missing') return t('trading:assetSearch.trustlineStatus.missing');
     if (trustlineStatus.state === 'error') return t('trading:assetSearch.trustlineStatus.error');
     return t('trading:assetSearch.trustlineStatus.unknown');
-  };
-
-  const factValue = (value) => (value ? t('trading:assetSearch.facts.yes') : t('trading:assetSearch.facts.no'));
-
-  const tomlStatusLabel = (facts = assetFacts) => {
-    if (facts.toml.status === 'loading') return t('trading:assetSearch.facts.toml.loading');
-    if (facts.toml.status === 'loaded') return t('trading:assetSearch.facts.toml.loaded');
-    if (facts.toml.status === 'failed') return t('trading:assetSearch.facts.toml.failed');
-    if (facts.toml.status === 'noHomeDomain') return t('trading:assetSearch.facts.toml.noHomeDomain');
-    return t('trading:assetSearch.facts.notChecked');
   };
 
   const bestDestinationAmount = swapPreview.path?.destination_amount || '';
@@ -1304,35 +1296,6 @@ export default function AssetSearch() {
     }
   };
 
-  const getFactsSnapshot = (facts = assetFacts, asset = selectedAsset) => {
-    const issuer = getAssetIssuer(asset);
-    const issuerMasterWeight = issuer ? getIssuerMasterWeight(facts.issuerAccount, issuer) : null;
-    return {
-      issuerHomeDomain: facts.issuerAccount?.home_domain || facts.issuerAccount?.homeDomain || '',
-      issuerMasterWeight,
-      tomlContainsAsset: facts.toml.status === 'loaded' && facts.toml.matches.length > 0,
-      tomlCurrencyCount: Array.isArray(facts.toml.currencies) ? facts.toml.currencies.length : 0,
-      authRequired: getAccountFlag(facts.issuerAccount, 'auth_required', 'authRequired'),
-      authRevocable: getAccountFlag(facts.issuerAccount, 'auth_revocable', 'authRevocable'),
-      authImmutable: getAccountFlag(facts.issuerAccount, 'auth_immutable', 'authImmutable'),
-      clawbackEnabled: getAccountFlag(facts.issuerAccount, 'auth_clawback_enabled', 'authClawbackEnabled'),
-    };
-  };
-
-  const getAssetRiskWarnings = (facts = assetFacts, asset = selectedAsset) => {
-    if (!asset || facts.loading) return [];
-    if (facts.error) return [t('trading:assetSearch.risk.issuerLoadFailed')];
-    const snapshot = getFactsSnapshot(facts, asset);
-    const warnings = [];
-    if (!snapshot.issuerHomeDomain) warnings.push(t('trading:assetSearch.risk.noHomeDomain'));
-    if (facts.toml.status !== 'loaded') warnings.push(t('trading:assetSearch.risk.tomlNotLoaded'));
-    if (facts.toml.status === 'loaded' && !snapshot.tomlContainsAsset) warnings.push(t('trading:assetSearch.risk.tomlAssetMissing'));
-    if (snapshot.issuerMasterWeight !== null && snapshot.issuerMasterWeight !== 0) warnings.push(t('trading:assetSearch.risk.issuerUnlocked'));
-    if (snapshot.authRequired) warnings.push(t('trading:assetSearch.risk.authRequired'));
-    if (snapshot.clawbackEnabled) warnings.push(t('trading:assetSearch.risk.clawbackEnabled'));
-    return warnings;
-  };
-
   const renderFactMark = (checked, loading, label) => (
     <span
       className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-sm font-bold ${
@@ -1349,121 +1312,9 @@ export default function AssetSearch() {
     </span>
   );
 
-  const renderRiskWarnings = (facts = assetFacts, asset = selectedAsset) => {
-    const warnings = getAssetRiskWarnings(facts, asset);
-    if (!warnings.length) return null;
-    return (
-      <div className="mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
-        <div className="mb-1 font-semibold">{t('trading:assetSearch.risk.title')}</div>
-        <ul className="list-disc pl-4">
-          {warnings.map((warning) => (
-            <li key={warning}>{warning}</li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
-
-  const renderHelpLabel = (label, helpKey) => {
-    const help = t(helpKey);
-    return (
-      <span className="inline-flex items-center gap-1" title={help}>
-        <span>{label}</span>
-        <span
-          className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-gray-300 text-[10px] font-bold text-gray-600 dark:border-gray-600 dark:text-gray-200"
-          aria-label={help}
-        >
-          ?
-        </span>
-      </span>
-    );
-  };
-
-  const renderTokenFactsSummary = ({ includeDisclaimer = false, facts = assetFacts, asset = selectedAsset, includeRoute = true } = {}) => {
-    const snapshot = getFactsSnapshot(facts, asset);
-    return (
-      <>
-      {includeDisclaimer && (
-        <p className="mb-3 text-xs text-gray-700 dark:text-blue-100">
-          {t('trading:assetSearch.facts.disclaimer')}
-        </p>
-      )}
-      {facts.loading && (
-        <div className="text-xs text-gray-700 dark:text-blue-100">
-          {t('trading:assetSearch.facts.loading')}
-        </div>
-      )}
-      {facts.error && (
-        <div className="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
-          {t('trading:assetSearch.facts.issuerLoadFailed')}
-        </div>
-      )}
-      {!facts.loading && !facts.error && (
-        <dl className="grid gap-2 text-xs sm:grid-cols-2">
-          <div>
-            <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.homeDomain'), 'trading:assetSearch.help.homeDomain')}</dt>
-            <dd className="break-all font-mono">{snapshot.issuerHomeDomain || t('trading:assetSearch.facts.notAvailable')}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.issuerMasterWeight'), 'trading:assetSearch.help.issuerMasterWeight')}</dt>
-            <dd className="font-mono">{snapshot.issuerMasterWeight === null ? t('trading:assetSearch.facts.notAvailable') : snapshot.issuerMasterWeight}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.issuerLocked'), 'trading:assetSearch.help.issuerLocked')}</dt>
-            <dd>{snapshot.issuerMasterWeight === null ? t('trading:assetSearch.facts.notAvailable') : factValue(snapshot.issuerMasterWeight === 0)}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.toml.status'), 'trading:assetSearch.help.tomlStatus')}</dt>
-            <dd>{tomlStatusLabel(facts)}</dd>
-          </div>
-          {facts.toml.url && (
-            <div className="sm:col-span-2">
-              <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.toml.url'), 'trading:assetSearch.help.tomlUrl')}</dt>
-              <dd className="break-all font-mono">{facts.toml.url}</dd>
-            </div>
-          )}
-          <div>
-            <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.toml.assetListed'), 'trading:assetSearch.help.tomlAssetListed')}</dt>
-            <dd>{facts.toml.status === 'loaded' ? factValue(snapshot.tomlContainsAsset) : t('trading:assetSearch.facts.notAvailable')}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.toml.currencyCount'), 'trading:assetSearch.help.tomlCurrencyCount')}</dt>
-            <dd className="font-mono">{facts.toml.status === 'loaded' ? snapshot.tomlCurrencyCount : t('trading:assetSearch.facts.notAvailable')}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.flags.authRequired'), 'trading:assetSearch.help.authRequired')}</dt>
-            <dd>{factValue(snapshot.authRequired)}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.flags.authRevocable'), 'trading:assetSearch.help.authRevocable')}</dt>
-            <dd>{factValue(snapshot.authRevocable)}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.flags.authImmutable'), 'trading:assetSearch.help.authImmutable')}</dt>
-            <dd>{factValue(snapshot.authImmutable)}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.flags.clawbackEnabled'), 'trading:assetSearch.help.clawbackEnabled')}</dt>
-            <dd>{factValue(snapshot.clawbackEnabled)}</dd>
-          </div>
-          {includeRoute && (
-          <div>
-            <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.facts.liquidityRoute'), 'trading:assetSearch.help.liquidityRoute')}</dt>
-            <dd>
-              {swapPreview.path
-                ? t('trading:assetSearch.facts.routeAvailable')
-                : swapPreview.error
-                  ? t('trading:assetSearch.facts.routeUnavailable')
-                  : t('trading:assetSearch.facts.notChecked')}
-            </dd>
-          </div>
-          )}
-        </dl>
-      )}
-      {renderRiskWarnings(facts, asset)}
-    </>
-    );
-  };
+  // 'available' | 'unavailable' | 'notChecked' - passed to TokenFactsSummary's
+  // includeRoute block instead of it reading swapPreview directly.
+  const swapRouteStatus = swapPreview.path ? 'available' : swapPreview.error ? 'unavailable' : 'notChecked';
 
   return (
     <section className="space-y-4">
@@ -1671,21 +1522,21 @@ export default function AssetSearch() {
             </div>
           <dl className="grid gap-2">
             <div>
-              <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.result.columns.issuer'), 'trading:assetSearch.help.issuer')}</dt>
+              <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.result.columns.issuer')} helpKey='trading:assetSearch.help.issuer' /></dt>
               <dd className="break-all font-mono">{selectedAsset.assetIssuer}</dd>
             </div>
             <div className="grid gap-2 sm:grid-cols-2">
               <div>
-                <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.result.columns.numAccounts', 'Trustlines'), 'trading:assetSearch.help.trustlines')}</dt>
+                <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.result.columns.numAccounts', 'Trustlines')} helpKey='trading:assetSearch.help.trustlines' /></dt>
                 <dd>{formatTrustlineCount(selectedAsset)}</dd>
               </div>
               <div>
-                <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.result.columns.amount', 'Amount'), 'trading:assetSearch.help.totalAmount')}</dt>
+                <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.result.columns.amount', 'Amount')} helpKey='trading:assetSearch.help.totalAmount' /></dt>
                 <dd>{formatAssetAmount(selectedAsset)}</dd>
               </div>
             </div>
             <div>
-              <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.trustlineStatus.label'), 'trading:assetSearch.help.trustlineStatus')}</dt>
+              <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.trustlineStatus.label')} helpKey='trading:assetSearch.help.trustlineStatus' /></dt>
               <dd>
                 <span className={`inline-flex rounded px-2 py-1 text-xs font-semibold ${
                   trustlineStatus.state === 'present'
@@ -1703,15 +1554,15 @@ export default function AssetSearch() {
             {trustlineStatus.state === 'present' && (
               <div className="grid gap-2 sm:grid-cols-2">
                 <div>
-                  <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.trustlineStatus.balance'), 'trading:assetSearch.help.trustlineBalance')}</dt>
+                  <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.trustlineStatus.balance')} helpKey='trading:assetSearch.help.trustlineBalance' /></dt>
                   <dd>{trustlineStatus.balance ?? '—'}</dd>
                 </div>
                 <div>
-                  <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.trustlineStatus.limit'), 'trading:assetSearch.help.trustlineLimit')}</dt>
+                  <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.trustlineStatus.limit')} helpKey='trading:assetSearch.help.trustlineLimit' /></dt>
                   <dd>{trustlineStatus.limit ?? '—'}</dd>
                 </div>
                 <div>
-                  <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.trustlineStatus.authorization'), 'trading:assetSearch.help.authorization')}</dt>
+                  <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.trustlineStatus.authorization')} helpKey='trading:assetSearch.help.authorization' /></dt>
                   <dd>
                     {trustlineStatus.isAuthorized === false
                       ? t('trading:assetSearch.trustlineStatus.unauthorized')
@@ -1745,7 +1596,7 @@ export default function AssetSearch() {
             </button>
             {tokenFactsExpanded && (
               <div className="mt-3">
-                {renderTokenFactsSummary({ includeDisclaimer: true })}
+                <TokenFactsSummary facts={assetFacts} asset={selectedAsset} includeDisclaimer routeStatus={swapRouteStatus} />
               </div>
             )}
           </section>
@@ -1755,7 +1606,7 @@ export default function AssetSearch() {
                 {t('trading:assetSearch.trustlineFlow.title')}
               </h3>
               <label className="block text-xs font-semibold" htmlFor="trustline-limit-input">
-                {renderHelpLabel(t('trading:assetSearch.trustlineConfirm.limit'), 'trading:assetSearch.help.trustlineLimit')}
+                <HelpLabel label={t('trading:assetSearch.trustlineConfirm.limit')} helpKey='trading:assetSearch.help.trustlineLimit' />
               </label>
               <input
                 id="trustline-limit-input"
@@ -1771,15 +1622,15 @@ export default function AssetSearch() {
               {trustlineReserveSummary && (
                 <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2">
                   <div>
-                    <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.trustlineFlow.reserveIncrease'), 'trading:assetSearch.help.reserveIncrease')}</dt>
+                    <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.trustlineFlow.reserveIncrease')} helpKey='trading:assetSearch.help.reserveIncrease' /></dt>
                     <dd>{amountFormatter.format(trustlineReserveSummary.extraReserve)} XLM</dd>
                   </div>
                   <div>
-                    <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.trustlineFlow.reserveAfter'), 'trading:assetSearch.help.reserveAfter')}</dt>
+                    <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.trustlineFlow.reserveAfter')} helpKey='trading:assetSearch.help.reserveAfter' /></dt>
                     <dd>{amountFormatter.format(trustlineReserveSummary.afterTrustlineMinimum)} XLM</dd>
                   </div>
                   <div>
-                    <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.trustlineFlow.spendableAfter'), 'trading:assetSearch.help.spendableAfter')}</dt>
+                    <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.trustlineFlow.spendableAfter')} helpKey='trading:assetSearch.help.spendableAfter' /></dt>
                     <dd>
                       {trustlineReserveSummary.spendableAfterTrustline == null
                         ? t('trading:assetSearch.swapPreview.notAvailable')
@@ -1958,7 +1809,7 @@ export default function AssetSearch() {
                       <h4 className="mb-2 text-xs font-semibold">
                         {t('trading:assetSearch.facts.destinationTitle')}
                       </h4>
-                      {renderTokenFactsSummary({ facts: targetAssetFacts, asset: targetStellarAsset, includeRoute: false })}
+                      <TokenFactsSummary facts={targetAssetFacts} asset={targetStellarAsset} includeRoute={false} />
                     </div>
                   )}
                   {swapTargetResults.length > 0 && (
@@ -2032,47 +1883,47 @@ export default function AssetSearch() {
                 {swapPreview.path && (
                   <dl className="grid gap-2 sm:grid-cols-2">
                     <div>
-                      <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.swapPreview.expected'), 'trading:assetSearch.help.expected')}</dt>
+                      <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.swapPreview.expected')} helpKey='trading:assetSearch.help.expected' /></dt>
                       <dd className="font-mono">{swapPreview.path.destination_amount} {swapDestinationLabel}</dd>
                     </div>
                     <div>
-                      <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.swapPreview.minimum'), 'trading:assetSearch.help.minimum')}</dt>
+                      <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.swapPreview.minimum')} helpKey='trading:assetSearch.help.minimum' /></dt>
                       <dd className="font-mono">{minimumDestinationAmount || '—'} {swapDestinationLabel}</dd>
                     </div>
                     <div className="sm:col-span-2">
-                      <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.swapPreview.route'), 'trading:assetSearch.help.route')}</dt>
+                      <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.swapPreview.route')} helpKey='trading:assetSearch.help.route' /></dt>
                       <dd className="font-mono">{formatAssetPath(swapPreview.path.path, swapSourceAsset, swapDestinationAsset)}</dd>
                     </div>
                     {quoteDetails && (
                       <>
                         <div>
-                          <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.swapPreview.effectiveRate'), 'trading:assetSearch.help.effectiveRate')}</dt>
+                          <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.swapPreview.effectiveRate')} helpKey='trading:assetSearch.help.effectiveRate' /></dt>
                           <dd className="font-mono">
                             1 {swapSourceLabel} = {ratioFormatter.format(quoteDetails.effectiveRate)} {swapDestinationLabel}
                           </dd>
                         </div>
                         <div>
-                          <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.swapPreview.minimumRate'), 'trading:assetSearch.help.minimumRate')}</dt>
+                          <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.swapPreview.minimumRate')} helpKey='trading:assetSearch.help.minimumRate' /></dt>
                           <dd className="font-mono">
                             {quoteDetails.minimumRate ? `1 ${swapSourceLabel} = ${ratioFormatter.format(quoteDetails.minimumRate)} ${swapDestinationLabel}` : '—'}
                           </dd>
                         </div>
                         <div>
-                          <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.swapPreview.slippageBuffer'), 'trading:assetSearch.help.slippageBuffer')}</dt>
+                          <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.swapPreview.slippageBuffer')} helpKey='trading:assetSearch.help.slippageBuffer' /></dt>
                           <dd className="font-mono">
                             {quoteDetails.slippageBuffer != null ? `${amountFormatter.format(Math.max(0, quoteDetails.slippageBuffer))} ${swapDestinationLabel}` : '—'}
                           </dd>
                         </div>
                         <div>
-                          <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.swapPreview.hops'), 'trading:assetSearch.help.hops')}</dt>
+                          <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.swapPreview.hops')} helpKey='trading:assetSearch.help.hops' /></dt>
                           <dd className="font-mono">{quoteDetails.hops}</dd>
                         </div>
                         <div>
-                          <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.swapPreview.quoteAge'), 'trading:assetSearch.help.quoteAge')}</dt>
+                          <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.swapPreview.quoteAge')} helpKey='trading:assetSearch.help.quoteAge' /></dt>
                           <dd className="font-mono">{formatQuoteAge(quoteDetails.ageSeconds)}</dd>
                         </div>
                         <div className="sm:col-span-2">
-                          <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.swapPreview.routeDetailed'), 'trading:assetSearch.help.routeDetailed')}</dt>
+                          <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.swapPreview.routeDetailed')} helpKey='trading:assetSearch.help.routeDetailed' /></dt>
                           <dd className="break-all font-mono">{quoteDetails.detailedRoute}</dd>
                         </div>
                         {swapPreview.refreshComparison && (
@@ -2124,35 +1975,35 @@ export default function AssetSearch() {
                   <div className="mt-3 space-y-3">
                   <dl className="grid gap-2 rounded border border-gray-200 p-3 text-xs dark:border-gray-700 sm:grid-cols-2 lg:grid-cols-4">
                     <div>
-                      <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.market.spread'), 'trading:assetSearch.help.spread')}</dt>
+                      <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.market.spread')} helpKey='trading:assetSearch.help.spread' /></dt>
                       <dd className="font-mono">{marketQuality.spreadPercent == null ? '—' : formatPercent(marketQuality.spreadPercent)}</dd>
                     </div>
                     <div>
-                      <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.market.priceImpact'), 'trading:assetSearch.help.priceImpact')}</dt>
+                      <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.market.priceImpact')} helpKey='trading:assetSearch.help.priceImpact' /></dt>
                       <dd className="font-mono">{marketQuality.estimatedImpactPercent == null ? '—' : formatPercent(marketQuality.estimatedImpactPercent)}</dd>
                     </div>
                     <div>
-                      <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.market.topDepth'), 'trading:assetSearch.help.topDepth')}</dt>
+                      <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.market.topDepth')} helpKey='trading:assetSearch.help.topDepth' /></dt>
                       <dd className="font-mono">{amountFormatter.format(marketQuality.topAskDepth)} {swapSourceLabel}</dd>
                     </div>
                     <div>
-                      <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.market.marketAge'), 'trading:assetSearch.help.marketAge')}</dt>
+                      <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.market.marketAge')} helpKey='trading:assetSearch.help.marketAge' /></dt>
                       <dd className="font-mono">{formatQuoteAge(marketQuality.ageSeconds)}</dd>
                     </div>
                     <div>
-                      <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.market.bestBid'), 'trading:assetSearch.help.bestBid')}</dt>
+                      <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.market.bestBid')} helpKey='trading:assetSearch.help.bestBid' /></dt>
                       <dd className="font-mono">{marketQuality.bestBid == null ? '—' : ratioFormatter.format(marketQuality.bestBid)}</dd>
                     </div>
                     <div>
-                      <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.market.bestAsk'), 'trading:assetSearch.help.bestAsk')}</dt>
+                      <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.market.bestAsk')} helpKey='trading:assetSearch.help.bestAsk' /></dt>
                       <dd className="font-mono">{marketQuality.bestAsk == null ? '—' : ratioFormatter.format(marketQuality.bestAsk)}</dd>
                     </div>
                     <div>
-                      <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.market.depthCoversAmount'), 'trading:assetSearch.help.depthCoversAmount')}</dt>
-                      <dd>{marketQuality.topAskCoversSource == null ? '—' : factValue(marketQuality.topAskCoversSource)}</dd>
+                      <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.market.depthCoversAmount')} helpKey='trading:assetSearch.help.depthCoversAmount' /></dt>
+                      <dd>{marketQuality.topAskCoversSource == null ? '—' : factValue(marketQuality.topAskCoversSource, t)}</dd>
                     </div>
                     <div>
-                      <dt className="font-semibold">{renderHelpLabel(t('trading:assetSearch.market.poolCount'), 'trading:assetSearch.help.poolCount')}</dt>
+                      <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.market.poolCount')} helpKey='trading:assetSearch.help.poolCount' /></dt>
                       <dd className="font-mono">{countFormatter.format(marketQuality.poolCount)}</dd>
                     </div>
                   </dl>
@@ -2226,7 +2077,7 @@ export default function AssetSearch() {
               </p>
               <div className="grid gap-3 lg:grid-cols-[180px_1fr_1fr_auto]">
                 <label className="text-xs">
-                  <span className="mb-1 block font-semibold">{renderHelpLabel(t('trading:assetSearch.limitOffer.direction.label'), 'trading:assetSearch.help.limitOfferDirection')}</span>
+                  <span className="mb-1 block font-semibold"><HelpLabel label={t('trading:assetSearch.limitOffer.direction.label')} helpKey='trading:assetSearch.help.limitOfferDirection' /></span>
                   <select
                     value={limitOfferDirection}
                     onChange={(event) => {
@@ -2242,7 +2093,7 @@ export default function AssetSearch() {
                 </label>
                 <label className="text-xs">
                   <span className="mb-1 block font-semibold">
-                    {renderHelpLabel(t('trading:assetSearch.limitOffer.amount', { asset: limitOfferSellingLabel }), 'trading:assetSearch.help.limitOfferAmount')}
+                    <HelpLabel label={t('trading:assetSearch.limitOffer.amount', { asset: limitOfferSellingLabel })} helpKey='trading:assetSearch.help.limitOfferAmount' />
                   </span>
                   <input
                     value={limitOfferAmount}
@@ -2257,7 +2108,7 @@ export default function AssetSearch() {
                 </label>
                 <label className="text-xs">
                   <span className="mb-1 block font-semibold">
-                    {renderHelpLabel(t('trading:assetSearch.limitOffer.price', { selling: limitOfferSellingLabel, buying: limitOfferBuyingLabel }), 'trading:assetSearch.help.limitOfferPrice')}
+                    <HelpLabel label={t('trading:assetSearch.limitOffer.price', { selling: limitOfferSellingLabel, buying: limitOfferBuyingLabel })} helpKey='trading:assetSearch.help.limitOfferPrice' />
                   </span>
                   <input
                     value={limitOfferPrice}
@@ -2379,7 +2230,7 @@ export default function AssetSearch() {
               <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
                 {t('trading:assetSearch.facts.title')}
               </h3>
-              {renderTokenFactsSummary({ includeDisclaimer: true })}
+              <TokenFactsSummary facts={assetFacts} asset={selectedAsset} includeDisclaimer routeStatus={swapRouteStatus} />
             </section>
             <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
               {t('trading:assetSearch.trustlineConfirm.warning')}
@@ -2520,14 +2371,14 @@ export default function AssetSearch() {
               <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
                 {t(selectedAssetFactsTitleKey)}
               </h3>
-              {renderTokenFactsSummary({ includeDisclaimer: true, facts: assetFacts, asset: selectedAsset })}
+              <TokenFactsSummary facts={assetFacts} asset={selectedAsset} includeDisclaimer routeStatus={swapRouteStatus} />
             </section>
             {swapDirection === 'token-to-token' && targetStellarAsset && (
               <section className="mt-4 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
                 <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
                   {t('trading:assetSearch.facts.destinationTitle')}
                 </h3>
-                {renderTokenFactsSummary({ facts: targetAssetFacts, asset: targetStellarAsset, includeRoute: false })}
+                <TokenFactsSummary facts={targetAssetFacts} asset={targetStellarAsset} includeRoute={false} />
               </section>
             )}
             <p className="mt-4 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
