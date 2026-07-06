@@ -68,19 +68,24 @@ async function getEncryptionKey() {
   return _encKeyPromise;
 }
 
-/** Encrypts a text field for storage. Empty values stay empty (no crypto overhead). */
-async function encryptField(plaintext) {
+/**
+ * Encrypts a text field for storage. Empty values stay empty (no crypto overhead).
+ * Fails closed: if crypto.subtle is unavailable (non-secure origin, very old
+ * browser), this throws instead of returning the plaintext memo - a caller
+ * that can't encrypt a memo must not persist it at rest in plaintext. The
+ * thrown key follows this file's existing error.cache.* convention (see the
+ * module comment at the top) so the UI can translate it with t().
+ */
+export async function encryptField(plaintext) {
   const s = String(plaintext ?? '');
   if (!s) return '';
-  try {
-    const key = await getEncryptionKey();
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(s));
-    return ENC_PREFIX + bytesToBase64(iv) + ':' + bytesToBase64(new Uint8Array(ct));
-  } catch {
-    // crypto.subtle unavailable (very old browser) → fail open rather than losing the memo.
-    return s;
+  if (typeof crypto === 'undefined' || !crypto.subtle) {
+    throw new Error('error.cache.insecureContext');
   }
+  const key = await getEncryptionKey();
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(s));
+  return ENC_PREFIX + bytesToBase64(iv) + ':' + bytesToBase64(new Uint8Array(ct));
 }
 
 /** Decrypts a stored text field. Plaintext/legacy values (pre-encryption cache entries) pass through unchanged. */

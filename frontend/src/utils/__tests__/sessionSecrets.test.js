@@ -5,6 +5,7 @@ import {
   getSessionSecretCount,
   getSessionSecrets,
   hasSessionSecrets,
+  InsecureCryptoContextError,
   rememberSessionSecrets,
   setSessionSecrets,
 } from '../sessionSecrets.js';
@@ -82,5 +83,29 @@ describe('sessionSecrets (hardened storage)', () => {
     const result = await setSessionSecrets(ACCOUNT, {});
     expect(result).toBe(false);
     expect(hasSessionSecrets(ACCOUNT)).toBe(false);
+  });
+
+  describe('fail-closed when crypto.subtle is unavailable (non-secure origin)', () => {
+    let realSubtle;
+    beforeEach(() => {
+      realSubtle = crypto.subtle;
+      // Simulates a non-secure origin (e.g. plain http over a LAN IP), where
+      // the Web Crypto API's subtle property is not exposed at all.
+      Object.defineProperty(crypto, 'subtle', { value: undefined, configurable: true });
+    });
+    afterEach(() => {
+      Object.defineProperty(crypto, 'subtle', { value: realSubtle, configurable: true });
+    });
+
+    it('setSessionSecrets throws InsecureCryptoContextError instead of storing the secret in plaintext', async () => {
+      await expect(setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET })).rejects.toBeInstanceOf(InsecureCryptoContextError);
+      expect(sessionStorage.getItem(`stm.session.secrets.${ACCOUNT}`)).toBeNull();
+    });
+
+    it('rememberSessionSecrets propagates the same error instead of silently no-op-ing', async () => {
+      await expect(rememberSessionSecrets(ACCOUNT, [{ keypair: fakeKeypair(SIGNER, SECRET) }]))
+        .rejects.toBeInstanceOf(InsecureCryptoContextError);
+      expect(hasSessionSecrets(ACCOUNT)).toBe(false);
+    });
   });
 });

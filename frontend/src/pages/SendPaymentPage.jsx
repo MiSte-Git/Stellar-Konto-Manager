@@ -15,7 +15,7 @@ import { isTestnetAccount } from '../utils/stellar/accountUtils.js';
 import AddressDropdown from '../components/AddressDropdown.jsx';
 import { useTrustedWallets } from '../utils/useTrustedWallets.js';
 import { createWalletInfoMap, findWalletInfo } from '../utils/walletInfo.js';
-import { getSessionSecret, rememberSessionSecrets } from '../utils/sessionSecrets.js';
+import { getSessionSecret, rememberSessionSecrets, InsecureCryptoContextError } from '../utils/sessionSecrets.js';
 import {
   INPUT_HISTORY_CHANGED_EVENT,
   PAYMENT_AMOUNT_HISTORY_KEY,
@@ -2260,7 +2260,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 try {
                   await rememberSessionSecrets(publicKey, collected);
                   try { window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: { publicKey } })); } catch { /* noop */ }
-                } catch { /* noop */ }
+                } catch (rememberErr) {
+                  // Fail-closed: crypto.subtle is unavailable (non-secure origin),
+                  // so the secret was NOT stored in plaintext - tell the user
+                  // clearly instead of silently pretending "remember" worked.
+                  if (rememberErr instanceof InsecureCryptoContextError) {
+                    showErrorMessage(t('secretKey:remember.insecureContextError'));
+                  }
+                }
               }
               const collectLocally = !!options.collectAllSignaturesLocally;
               if (!isMultisig) {

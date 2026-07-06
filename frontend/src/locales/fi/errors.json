@@ -22,7 +22,8 @@
     "readFailed": "Välimuistin lukeminen epäonnistui",
     "rehydrateFailed": "Muistioiden lataaminen epäonnistui.",
     "rehydrateWriteFailed": "Muistion kirjoittaminen välimuistiin epäonnistui.",
-    "writeFailed": "Välimuistiin kirjoittaminen epäonnistui"
+    "writeFailed": "Välimuistiin kirjoittaminen epäonnistui",
+    "insecureContext": "Tallennus ei onnistu: Tämä toiminto edellyttää suojattua yhteyttä (HTTPS)."
   },
   "connection": {
     "backend": "Ei voi muodostaa yhteyttä taustajärjestelmään. Varmista, että"

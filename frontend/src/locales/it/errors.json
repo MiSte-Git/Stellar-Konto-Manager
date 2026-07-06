@@ -22,7 +22,8 @@
     "readFailed": "Impossibile leggere dalla cache",
     "rehydrateFailed": "Impossibile caricare i promemoria mancanti.",
     "rehydrateWriteFailed": "Impossibile scrivere le memorie nella cache",
-    "writeFailed": "Errore durante la scrittura nella cache"
+    "writeFailed": "Errore durante la scrittura nella cache",
+    "insecureContext": "Impossibile salvare: questa funzione richiede una connessione sicura (HTTPS)."
   },
   "connection": {
     "backend": "Impossibile connettersi al backend. Assicurati di"

@@ -22,7 +22,8 @@
     "readFailed": "Error al leer desde la caché",
     "rehydrateFailed": "Error al cargar los memos faltantes.",
     "rehydrateWriteFailed": "Error al escribir las memorias en la caché",
-    "writeFailed": "Error al escribir en la caché."
+    "writeFailed": "Error al escribir en la caché.",
+    "insecureContext": "No se puede guardar: esta función requiere una conexión segura (HTTPS)."
   },
   "connection": {
     "backend": "No se puede conectar al servidor. Por favor, asegúrate de que"

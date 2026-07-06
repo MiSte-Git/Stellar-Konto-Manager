@@ -22,7 +22,8 @@
     "readFailed": "Neuspješno čitanje iz predmemorije",
     "rehydrateFailed": "Učitavanje nedostajućih bilješki nije uspjelo.",
     "rehydrateWriteFailed": "Nije uspjelo zapisivanje memoranduma u predmemoriju.",
-    "writeFailed": "Nije uspjelo zapisivanje u predmemoriju"
+    "writeFailed": "Nije uspjelo zapisivanje u predmemoriju",
+    "insecureContext": "Ne može spremiti: Ova značajka zahtijeva sigurnu vezu (HTTPS)."
   },
   "connection": {
     "backend": "Nije moguće povezivanje s backendom. Molimo osigurajte"

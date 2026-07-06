@@ -22,7 +22,8 @@
     "readFailed": "Échec de la lecture à partir du cache",
     "rehydrateFailed": "Échec du chargement des mémos manquants.",
     "rehydrateWriteFailed": "Échec d'écriture des mémos dans le cache.",
-    "writeFailed": "Échec de l'écriture dans le cache"
+    "writeFailed": "Échec de l'écriture dans le cache",
+    "insecureContext": "Impossible d'enregistrer : cette fonctionnalité nécessite une connexion sécurisée (HTTPS)."
   },
   "connection": {
     "backend": "Impossible de se connecter au backend. Veuillez vous assurer"

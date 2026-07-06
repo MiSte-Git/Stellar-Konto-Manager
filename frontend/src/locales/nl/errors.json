@@ -22,7 +22,8 @@
     "readFailed": "Kon lezen uit de cache niet.",
     "rehydrateFailed": "Kan de ontbrekende memo's niet laden.",
     "rehydrateWriteFailed": "Kon niet memos naar de cache schrijven",
-    "writeFailed": "Kan niet naar cache schrijven."
+    "writeFailed": "Kan niet naar cache schrijven.",
+    "insecureContext": "Kan niet opslaan: voor deze functie is een beveiligde verbinding vereist (HTTPS)."
   },
   "connection": {
     "backend": "Kan geen verbinding maken met de backend. Zorg ervoor dat"

@@ -25,6 +25,25 @@ const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000;
 
 let _encryptionKeyPromise = null;
 
+// Thrown by encryptSecret() when crypto.subtle is unavailable (e.g. a
+// non-secure origin such as plain http over a LAN IP - the Web Crypto API is
+// only exposed in secure contexts). Callers MUST NOT fall back to storing the
+// secret in plaintext when this is thrown; they should surface
+// secretKey:remember.insecureContextError to the user instead and simply not
+// remember the secret for this session.
+export class InsecureCryptoContextError extends Error {
+  constructor() {
+    super('sessionSecrets.insecureContext');
+    this.name = 'InsecureCryptoContextError';
+  }
+}
+
+function requireSubtleCrypto() {
+  if (typeof crypto === 'undefined' || !crypto.subtle) {
+    throw new InsecureCryptoContextError();
+  }
+}
+
 function bytesToBase64(bytes) {
   let binary = '';
   for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
@@ -45,19 +64,21 @@ function getEncryptionKey() {
   return _encryptionKeyPromise;
 }
 
-/** Encrypts a secret for storage. Empty values stay empty (no crypto overhead). */
+/**
+ * Encrypts a secret for storage. Empty values stay empty (no crypto overhead).
+ * Fails closed: if crypto.subtle is unavailable (non-secure origin, very old
+ * browser), this throws InsecureCryptoContextError instead of returning the
+ * plaintext secret - a caller that can't encrypt a secret key must not store
+ * it at all.
+ */
 async function encryptSecret(plaintext) {
   const s = String(plaintext ?? '');
   if (!s) return '';
-  try {
-    const key = await getEncryptionKey();
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(s));
-    return ENC_PREFIX + bytesToBase64(iv) + ':' + bytesToBase64(new Uint8Array(ct));
-  } catch {
-    // crypto.subtle unavailable (very old browser) → fail open rather than losing the secret.
-    return s;
-  }
+  requireSubtleCrypto();
+  const key = await getEncryptionKey();
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(s));
+  return ENC_PREFIX + bytesToBase64(iv) + ':' + bytesToBase64(new Uint8Array(ct));
 }
 
 /**
@@ -144,7 +165,10 @@ export async function setSessionSecrets(accountPublicKey, secretsMap) {
     sessionStorage.setItem(mapKey, JSON.stringify(Object.fromEntries(encryptedEntries)));
     sessionStorage.removeItem(`${LEGACY_PREFIX}${accountPublicKey}`);
     return true;
-  } catch {
+  } catch (e) {
+    // Fail-closed (no plaintext fallback): let the caller know encryption
+    // wasn't possible at all, instead of silently reporting success/no-op.
+    if (e instanceof InsecureCryptoContextError) throw e;
     return false;
   }
 }

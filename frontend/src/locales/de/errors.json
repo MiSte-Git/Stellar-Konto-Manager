@@ -22,7 +22,8 @@
     "readFailed": "Lesen aus dem Cache fehlgeschlagen",
     "rehydrateFailed": "Nachladen fehlender Memos fehlgeschlagen",
     "rehydrateWriteFailed": "Schreiben der Memos in den Cache fehlgeschlagen",
-    "writeFailed": "Schreiben in den Cache fehlgeschlagen"
+    "writeFailed": "Schreiben in den Cache fehlgeschlagen",
+    "insecureContext": "Speichern nicht möglich: Diese Funktion benötigt eine sichere Verbindung (HTTPS)."
   },
   "connection": {
     "backend": "Keine Verbindung zum Backend möglich. Stellen Sie sicher"

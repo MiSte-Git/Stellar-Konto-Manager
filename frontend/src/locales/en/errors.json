@@ -22,7 +22,8 @@
     "readFailed": "Failed to read from cache",
     "rehydrateFailed": "Failed to load missing memos.",
     "rehydrateWriteFailed": "Failed to write memos to the cache",
-    "writeFailed": "Failed to write to cache"
+    "writeFailed": "Failed to write to cache",
+    "insecureContext": "Cannot save: This feature requires a secure connection (HTTPS)."
   },
   "connection": {
     "backend": "Unable to connect to the backend. Please ensure"

@@ -4980,5 +4980,8 @@
   "xlmByMemo.wrongMemos.hint": "dc21fff4977ce0c3b7089054217da0ea20bc434ca616c2c79bfe6f8df130dc0f",
   "xlmByMemo.wrongMemos.scanning": "29dbf957e8c87fc5d621b54188ebb0610938bcdb7512c9e1eaa804a08b86491b",
   "xlmByMemo.wrongMemos.summary": "1dd3dffd155cc68fbac5f96bf7648c2fbf9835ceb4982d30635bd8d47a362450",
-  "xlmByMemo.wrongMemos.title": "909de34df295c4d859b22b2455dc957a1e3ef14ab57631eda5cb570e25647cb5"
+  "xlmByMemo.wrongMemos.title": "909de34df295c4d859b22b2455dc957a1e3ef14ab57631eda5cb570e25647cb5",
+  "multisig.detail.noLocalSecretForToken": "14d82584d48bbb86d11215e7e6a80cffc2b501bdc11f53d6bb21b903083c9ec1",
+  "secretKey.remember.insecureContextError": "8ad1a2cd510ff0fef25f7377735bb386fd1133901886ad689f9d7d2a5692c7c6",
+  "errors.cache.insecureContext": "87e91fa786970da9c7fcd459318edea4520a3792c8da1b5f82faaf15aeb35742"
 }
