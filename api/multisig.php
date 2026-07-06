@@ -24,6 +24,7 @@ if (file_exists($autoload)) {
 }
 
 require __DIR__ . '/challengeStore.php';
+require __DIR__ . '/txSignatures.php';
 
 use Soneso\StellarSDK\StellarSDK;
 use Soneso\StellarSDK\AbstractTransaction;
@@ -336,59 +337,11 @@ function matchRoute(string $uri, string $pattern): ?array {
     return null;
 }
 
-function verifyCollected(AbstractTransaction $tx, string $net, array $signers): array {
-    $network = networkObj($net);
-    $base = $tx->signatureBase($network);
-    $result = [];
-    $seen = [];
-    foreach ($signers as $s) {
-        $pub = $s['publicKey'] ?? null;
-        $weight = (int)($s['weight'] ?? 0);
-        if (!$pub || $weight <= 0) continue;
-        try {
-            $kp = KeyPair::fromAccountId($pub);
-        } catch (\Throwable $e) {
-            continue;
-        }
-        $hint = $kp->getHint();
-        foreach ($tx->getSignatures() as $sig) {
-            if (!$sig instanceof XdrDecoratedSignature) continue;
-            if ($sig->getHint() !== $hint) continue;
-            try {
-                if ($kp->verifySignature($sig->getRawSignature(), $base)) {
-                    $accId = $kp->getAccountId();
-                    if (!isset($seen[$accId])) {
-                        $result[] = ['publicKey' => $accId, 'weight' => $weight];
-                        $seen[$accId] = true;
-                    }
-                    break;
-                }
-            } catch (\Throwable $e) {
-                continue;
-            }
-        }
-    }
-    return $result;
-}
-
-function mergeSignatures(AbstractTransaction $target, AbstractTransaction $incoming): AbstractTransaction {
-    $map = [];
-    $merged = [];
-    $addSig = function (XdrDecoratedSignature $sig) use (&$map, &$merged) {
-        $key = base64_encode($sig->getHint() . $sig->getSignature());
-        if (isset($map[$key])) return;
-        $map[$key] = true;
-        $merged[] = $sig;
-    };
-    foreach ($target->getSignatures() as $s) {
-        if ($s instanceof XdrDecoratedSignature) $addSig($s);
-    }
-    foreach ($incoming->getSignatures() as $s) {
-        if ($s instanceof XdrDecoratedSignature) $addSig($s);
-    }
-    $target->setSignatures($merged);
-    return $target;
-}
+// verifyCollected() and mergeSignatures() now live in txSignatures.php
+// alongside filterValidSignatures(), which they're tightly coupled to - all
+// three are stateless helpers over a transaction's signature list, moved out
+// so they (and the H2/M1 fixes in them) can be exercised directly in tests
+// without loading this whole routed script.
 
 /**
  * Enriches a job array with collected/missing signer info and recalculates status if not final.
@@ -461,14 +414,6 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         $net = normalizeNetwork($body['network'] ?? null);
         $accountId = $body['accountId'] ?? '';
         $txXdr = $body['txXdr'] ?? '';
-        $clientCollected = [];
-        if (isset($body['clientCollected']) && is_array($body['clientCollected'])) {
-            foreach ($body['clientCollected'] as $s) {
-                $pk = $s['publicKey'] ?? '';
-                $w = (int)($s['weight'] ?? 0);
-                if ($pk && $w > 0) $clientCollected[] = ['publicKey' => $pk, 'weight' => $w];
-            }
-        }
         if (!$net) return sendJson(['ok' => false, 'error' => 'invalid_network'], 400);
         if (!$accountId) return sendJson(['ok' => false, 'error' => 'invalid_account'], 400);
         if (!$txXdr) return sendJson(['ok' => false, 'error' => 'invalid_xdr'], 400);
@@ -478,14 +423,14 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         if (!$tx) return sendJson(['ok' => false, 'error' => 'invalid_xdr', 'detail' => $parseErr], 400);
         $hash = txHash($tx, $net);
         // Signers/thresholds are always derived from the real on-chain account state.
-        // Client-supplied signer/weight data is never trusted for authorization decisions (C2).
+        // Client-supplied signer/weight data is never trusted for authorization decisions
+        // (C2/H2) - a request-body fallback used to exist here that let a caller fabricate
+        // arbitrary (publicKey, weight) pairs never actually verified against the
+        // transaction's signatures; removed.
         $meta = fetchAccountSignersCached($accountId, $net);
         $signerMeta = $meta['signers'];
         $requiredWeight = (int)($meta['thresholds']['med'] ?? 0);
         $collected = verifyCollected($tx, $net, $signerMeta);
-        if (!$collected && $clientCollected) {
-            $collected = $clientCollected;
-        }
         $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
         $status = ($requiredWeight > 0 && $collectedWeight >= $requiredWeight) ? 'ready_to_submit' : 'pending_signatures';
         $submittedResult = null;
@@ -673,14 +618,6 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         $id = $m['id'] ?? '';
         $body = jsonBody();
         $signedXdr = $body['signedXdr'] ?? '';
-        $clientCollected = [];
-        if (isset($body['clientCollected']) && is_array($body['clientCollected'])) {
-            foreach ($body['clientCollected'] as $s) {
-                $pk = $s['publicKey'] ?? '';
-                $w = (int)($s['weight'] ?? 0);
-                if ($pk && $w > 0) $clientCollected[] = ['publicKey' => $pk, 'weight' => $w];
-            }
-        }
         if (!$signedXdr) return sendJson(['ok' => false, 'error' => 'invalid_xdr'], 400);
 
         // Fail fast on obvious client errors before taking the write lock.
@@ -700,7 +637,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         if ($hash !== ($job['txHash'] ?? '')) return sendJson(['ok' => false, 'error' => 'mismatched_hash'], 400);
 
         $resultRow = null;
-        withJobsLock($jobFile, function (array $items) use ($id, $net, $incoming, $clientCollected, &$resultRow) {
+        withJobsLock($jobFile, function (array $items) use ($id, $net, $incoming, &$resultRow) {
             foreach ($items as &$j) {
                 if (($j['id'] ?? '') !== $id) continue;
 
@@ -717,24 +654,18 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 $j['requiredWeight'] = (int)($meta['thresholds']['med'] ?? 0);
                 $j['signers'] = $signerMeta;
 
+                // M1 fix: drop anything that doesn't verify against a real account
+                // signer and cap at Stellar's 20-signature protocol limit before
+                // persisting - previously every submitted signature was stored
+                // verbatim, valid or not.
+                $merged->setSignatures(filterValidSignatures($merged, $net, $signerMeta));
+
+                // Recomputed fresh from the (now-filtered) merged signature set, which
+                // already carries forward every previously-valid signature via
+                // mergeSignatures() above - no need to also merge in the job's stale
+                // stored collectedSigners or (H2 fix) any client-supplied data, which
+                // was never verified against the transaction's actual signatures.
                 $collected = verifyCollected($merged, $net, $signerMeta);
-                // Merge in client-provided collected and previously stored collected to avoid losing signatures
-                $collectedAll = array_merge(
-                    is_array($collected) ? $collected : [],
-                    is_array($clientCollected) ? $clientCollected : [],
-                    is_array($j['collectedSigners'] ?? null) ? $j['collectedSigners'] : []
-                );
-                // Deduplicate by publicKey, prefer highest weight
-                $byPk = [];
-                foreach ($collectedAll as $c) {
-                    $pk = $c['publicKey'] ?? '';
-                    $w = (int)($c['weight'] ?? 0);
-                    if (!$pk) continue;
-                    if (!isset($byPk[$pk]) || $w > (int)($byPk[$pk]['weight'] ?? 0)) {
-                        $byPk[$pk] = ['publicKey' => $pk, 'weight' => $w];
-                    }
-                }
-                $collected = array_values($byPk);
                 $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
                 $required = (int)($j['requiredWeight'] ?? 0);
                 $status = ($required > 0 && $collectedWeight >= $required) ? 'ready_to_submit' : 'pending_signatures';

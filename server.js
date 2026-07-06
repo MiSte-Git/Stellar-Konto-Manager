@@ -14,6 +14,7 @@ const { searchAssets, fetchAssetFacts } = require('./services/tradeService.js');
 const { createCorsMiddleware } = require('./services/corsConfig.js');
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
+const { filterValidSignatures } = require('./services/txSignatures.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
 (function loadDotEnv() {
@@ -752,8 +753,17 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
       }
     });
 
-    const newXdr = current.tx.toXDR();
     const signers = Array.isArray(job.signers) ? job.signers : [];
+    // M1 fix: drop anything that doesn't verify against a real account signer
+    // and cap at Stellar's 20-signature protocol limit before persisting -
+    // previously every submitted signature was stored verbatim, valid or not.
+    // `tx.signatures` has no public setter (stellar-sdk throws "Transaction is
+    // immutable" on assignment) - the array itself is mutable in place, so
+    // clear it and push the filtered set back rather than reassigning it.
+    const validSignatures = filterValidSignatures(current.tx, signers);
+    current.tx.signatures.length = 0;
+    current.tx.signatures.push(...validSignatures);
+    const newXdr = current.tx.toXDR();
     const collected = collectSignersForTx(current.tx, signers);
     const collectedWeight = collected.reduce((acc, s) => acc + Number(s.weight || 0), 0);
     const requiredWeight = Number(job.requiredWeight || 0);
