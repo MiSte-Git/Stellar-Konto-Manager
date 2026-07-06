@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Asset, Networks } from '@stellar/stellar-sdk';
 import { getHorizonServer, loadTrustlines, resolveOrValidateAccount } from '../../utils/stellar/stellarUtils.js';
@@ -53,6 +53,7 @@ import AssetSearchForm from './AssetSearchForm.jsx';
 import AssetResultsTable from './AssetResultsTable.jsx';
 import ConfirmActionModal from './ConfirmActionModal.jsx';
 import useLimitOffers from './hooks/useLimitOffers.js';
+import useSwapPreview from './hooks/useSwapPreview.js';
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
@@ -82,17 +83,29 @@ export default function AssetSearch() {
   const [isSubmittingTrustline, setIsSubmittingTrustline] = useState(false);
   const [isSubmittingSwap, setIsSubmittingSwap] = useState(false);
   const [actionMessage, setActionMessage] = useState('');
-  const [swapAmount, setSwapAmount] = useState('10');
-  const [swapSlippage, setSwapSlippage] = useState('0.5');
-  const [swapDirection, setSwapDirection] = useState('xlm-to-token');
-  const [swapTargetQuery, setSwapTargetQuery] = useState('');
-  const [swapTargetResults, setSwapTargetResults] = useState([]);
-  const [swapTargetError, setSwapTargetError] = useState('');
-  const [swapTargetLoading, setSwapTargetLoading] = useState(false);
-  const [selectedSwapTargetAsset, setSelectedSwapTargetAsset] = useState(null);
-  const [swapPreview, setSwapPreview] = useState({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
-  const swapPreviewRequestRef = useRef(0);
-  const [marketData, setMarketData] = useState({ loading: false, error: '', orderbook: null, liquidityPools: [], loadedAt: null });
+  const {
+    swapAmount,
+    setSwapAmount,
+    swapSlippage,
+    setSwapSlippage,
+    swapDirection,
+    setSwapDirection,
+    swapTargetQuery,
+    setSwapTargetQuery,
+    swapTargetResults,
+    setSwapTargetResults,
+    swapTargetError,
+    setSwapTargetError,
+    swapTargetLoading,
+    setSwapTargetLoading,
+    selectedSwapTargetAsset,
+    setSelectedSwapTargetAsset,
+    swapPreview,
+    setSwapPreview,
+    swapPreviewRequestRef,
+    marketData,
+    setMarketData,
+  } = useSwapPreview({ selectedAsset, network });
   const [targetAssetFacts, setTargetAssetFacts] = useState(EMPTY_ASSET_FACTS);
   const {
     limitOfferDirection,
@@ -345,16 +358,17 @@ export default function AssetSearch() {
     return () => { cancelled = true; };
   }, [accountId, network, selectedAsset, trustlineRefreshToken]);
 
-  useEffect(() => {
-    setSwapPreview({ loading: false, error: '', path: null, loadedAt: null, refreshComparison: null });
-    setMarketData({ loading: false, error: '', orderbook: null, liquidityPools: [], loadedAt: null });
-  }, [selectedAsset, network, swapDirection, swapTargetQuery, selectedSwapTargetAsset]);
-
+  // swapPreview/marketData reset and swapDirection reset now live in
+  // useSwapPreview. trustlineLimit stays here for now (moves to
+  // useTrustlineStatus in the next step); showTrustlineConfirm/
+  // showTrustlineSwapConfirm/tokenFactsExpanded are container-level UI state
+  // (modal-visibility is step-6 confirm/submit-pipeline territory,
+  // tokenFactsExpanded is a plain expand/collapse toggle with no data-fetch
+  // effect of its own) and stay here permanently.
   useEffect(() => {
     setTrustlineLimit(DEFAULT_TRUSTLINE_LIMIT);
     setShowTrustlineConfirm(false);
     setShowTrustlineSwapConfirm(false);
-    setSwapDirection('xlm-to-token');
     setTokenFactsExpanded(false);
   }, [selectedAsset, network]);
 
