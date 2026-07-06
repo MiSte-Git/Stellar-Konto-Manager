@@ -3,7 +3,8 @@
 // Bugreport API for shared hosting (cyon) backed by MySQL.
 // - GET: list bug reports with optional filters and paging
 // - POST: create bug report
-// - POST with { action: "update" }: admin update (requires x-admin-secret)
+// - POST with { action: "update" }: admin update (requires an authenticated
+//   admin session, see require_admin()/admin_session.php - finding A2)
 
 declare(strict_types=1);
 
