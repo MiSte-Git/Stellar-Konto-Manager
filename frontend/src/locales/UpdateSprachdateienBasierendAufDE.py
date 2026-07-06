@@ -323,6 +323,13 @@ def merge_keys_missing_or_changed(
     for key, value in base_dict.items():
         cur_path = f"{prefix}.{key}" if prefix else key
         if isinstance(value, dict):
+            # Achtung Signatur: failed_paths kommt VOR prefix. Der rekursive
+            # Aufruf hatte hier lange ein Argument zu wenig - cur_path rutschte
+            # in den failed_paths-Slot und prefix blieb leer, wodurch
+            # verschachtelte Keys mit nacktem Blattnamen (statt dot-Pfad) gegen
+            # changed_paths/forced_paths geprüft wurden: geänderte oder per
+            # --force-key erzwungene verschachtelte Keys wurden nie neu
+            # übersetzt (nur komplett fehlende ergänzt).
             out[key] = merge_keys_missing_or_changed(
                 value,
                 out.get(key, {}),
@@ -333,6 +340,7 @@ def merge_keys_missing_or_changed(
                 changed_paths,
                 forced_paths,
                 counters,
+                failed_paths,
                 cur_path,
             )
         else:
