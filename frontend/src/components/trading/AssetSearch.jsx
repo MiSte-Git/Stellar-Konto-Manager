@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Asset, Networks } from '@stellar/stellar-sdk';
 import { getHorizonServer, loadTrustlines, resolveOrValidateAccount } from '../../utils/stellar/stellarUtils.js';
@@ -25,8 +25,6 @@ import {
   calculateMinimumDestinationAmount,
   normalizeTrustlineLimit,
   formatAssetLabel,
-  getAssetIssuer,
-  getAssetCode,
   formatDetailedAssetPath,
   assetFromPathRecord,
   assetFromOfferSide,
@@ -55,6 +53,7 @@ import ConfirmActionModal from './ConfirmActionModal.jsx';
 import useLimitOffers from './hooks/useLimitOffers.js';
 import useSwapPreview from './hooks/useSwapPreview.js';
 import useTrustlineStatus from './hooks/useTrustlineStatus.js';
+import useAssetFacts from './hooks/useAssetFacts.js';
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
@@ -79,7 +78,6 @@ export default function AssetSearch() {
     trustlineRefreshToken,
     setTrustlineRefreshToken,
   } = useTrustlineStatus({ accountId, network, selectedAsset });
-  const [assetFacts, setAssetFacts] = useState(EMPTY_ASSET_FACTS);
   const [showSecretModal, setShowSecretModal] = useState(false);
   const [showTrustlineConfirm, setShowTrustlineConfirm] = useState(false);
   const [showTrustlineSwapConfirm, setShowTrustlineSwapConfirm] = useState(false);
@@ -112,7 +110,6 @@ export default function AssetSearch() {
     marketData,
     setMarketData,
   } = useSwapPreview({ selectedAsset, network });
-  const [targetAssetFacts, setTargetAssetFacts] = useState(EMPTY_ASSET_FACTS);
   const {
     limitOfferDirection,
     setLimitOfferDirection,
@@ -192,6 +189,12 @@ export default function AssetSearch() {
     if (parsedSwapTarget.error || parsedSwapTarget.mode !== 'exact') return null;
     return assetFromExactQuery(parsedSwapTarget);
   }, [parsedSwapTarget, selectedSwapTargetAsset, swapDirection]);
+  const { assetFacts, targetAssetFacts } = useAssetFacts({
+    selectedAsset,
+    network,
+    targetStellarAsset,
+    swapDirection,
+  });
   const swapSourceAsset = useMemo(() => {
     if (!selectedStellarAsset) return Asset.native();
     if (swapDirection === 'xlm-to-token') return Asset.native();
@@ -338,85 +341,6 @@ export default function AssetSearch() {
     setPendingOfferAction(null);
     setShowOfferConfirm(false);
   }, [selectedAsset, network]);
-
-  const loadAssetFactsForIdentity = useCallback(async ({ code, issuer }) => {
-    const params = new URLSearchParams({ code, issuer, network });
-    const response = await fetch(`${apiUrl('trade/assets/facts')}?${params.toString()}`);
-    const facts = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(facts?.error || 'assetFacts.failed:generic');
-    return {
-      loading: false,
-      error: '',
-      issuerAccount: facts?.issuerAccount || null,
-      toml: {
-        status: facts?.toml?.status || 'notChecked',
-        url: facts?.toml?.url || '',
-        currencies: Array.isArray(facts?.toml?.currencies) ? facts.toml.currencies : [],
-        matches: Array.isArray(facts?.toml?.matches) ? facts.toml.matches : [],
-        error: facts?.toml?.error || '',
-      },
-    };
-  }, [network]);
-
-  useEffect(() => {
-    let cancelled = false;
-    if (!selectedAsset?.assetIssuer) {
-      setAssetFacts(EMPTY_ASSET_FACTS);
-      return () => { cancelled = true; };
-    }
-
-    const loadFacts = async () => {
-      setAssetFacts({ ...EMPTY_ASSET_FACTS, loading: true });
-      try {
-        const facts = await loadAssetFactsForIdentity({
-          code: selectedAsset.assetCode,
-          issuer: selectedAsset.assetIssuer,
-        });
-        if (cancelled) return;
-        setAssetFacts(facts);
-      } catch (error) {
-        if (!cancelled) {
-          setAssetFacts({
-            ...EMPTY_ASSET_FACTS,
-            loading: false,
-            error: error?.message || 'issuerLoadFailed',
-          });
-        }
-      }
-    };
-
-    loadFacts();
-    return () => { cancelled = true; };
-  }, [loadAssetFactsForIdentity, selectedAsset]);
-
-  useEffect(() => {
-    let cancelled = false;
-    const code = getAssetCode(targetStellarAsset);
-    const issuer = getAssetIssuer(targetStellarAsset);
-    if (swapDirection !== 'token-to-token' || !code || !issuer) {
-      setTargetAssetFacts(EMPTY_ASSET_FACTS);
-      return () => { cancelled = true; };
-    }
-
-    const loadFacts = async () => {
-      setTargetAssetFacts({ ...EMPTY_ASSET_FACTS, loading: true });
-      try {
-        const facts = await loadAssetFactsForIdentity({ code, issuer });
-        if (!cancelled) setTargetAssetFacts(facts);
-      } catch (error) {
-        if (!cancelled) {
-          setTargetAssetFacts({
-            ...EMPTY_ASSET_FACTS,
-            loading: false,
-            error: error?.message || 'issuerLoadFailed',
-          });
-        }
-      }
-    };
-
-    loadFacts();
-    return () => { cancelled = true; };
-  }, [loadAssetFactsForIdentity, targetStellarAsset, swapDirection]);
 
   useEffect(() => {
     let cancelled = false;
