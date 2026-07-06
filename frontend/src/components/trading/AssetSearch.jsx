@@ -54,22 +54,32 @@ import useLimitOffers from './hooks/useLimitOffers.js';
 import useSwapPreview from './hooks/useSwapPreview.js';
 import useTrustlineStatus from './hooks/useTrustlineStatus.js';
 import useAssetFacts from './hooks/useAssetFacts.js';
+import useAssetSearch from './hooks/useAssetSearch.js';
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
-  const [assetQuery, setAssetQuery] = useState('');
-  const [assetResults, setAssetResults] = useState([]);
-  const [assetResultFacts, setAssetResultFacts] = useState({});
-  const [assetSort, setAssetSort] = useState({ field: 'quality', direction: 'desc' });
-  const [assetError, setAssetError] = useState('');
-  const [assetLoading, setAssetLoading] = useState(false);
-  const [selectedAsset, setSelectedAsset] = useState(null);
   const [tokenFactsExpanded, setTokenFactsExpanded] = useState(false);
   const [accountInput, setAccountInput] = useState(() => getStoredAccountInput());
   const [accountId, setAccountId] = useState('');
   const [accountStatus, setAccountStatus] = useState({ loading: false, error: '' });
   const [accountInfo, setAccountInfo] = useState(null);
   const [network, setNetwork] = useState(() => getStoredNetwork());
+  const {
+    assetQuery,
+    setAssetQuery,
+    assetResults,
+    setAssetResults,
+    assetResultFacts,
+    setAssetResultFacts,
+    assetSort,
+    setAssetSort,
+    assetError,
+    setAssetError,
+    assetLoading,
+    setAssetLoading,
+    selectedAsset,
+    setSelectedAsset,
+  } = useAssetSearch({ network });
   const {
     trustlineStatus,
     setTrustlineStatus,
@@ -341,59 +351,6 @@ export default function AssetSearch() {
     setPendingOfferAction(null);
     setShowOfferConfirm(false);
   }, [selectedAsset, network]);
-
-  useEffect(() => {
-    let cancelled = false;
-    if (!assetResults.length) {
-      setAssetResultFacts({});
-      return () => { cancelled = true; };
-    }
-
-    const initialFacts = {};
-    assetResults.forEach((asset) => {
-      initialFacts[assetResultKey(asset)] = { loading: true, homeDomain: false, tomlListed: false, error: '' };
-    });
-    setAssetResultFacts(initialFacts);
-
-    const loadFactsForAsset = async (asset) => {
-      const key = assetResultKey(asset);
-      try {
-        const params = new URLSearchParams({
-          code: asset.assetCode,
-          issuer: asset.assetIssuer,
-          network,
-        });
-        const response = await fetch(`${apiUrl('trade/assets/facts')}?${params.toString()}`);
-        const facts = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(facts?.error || 'assetFacts.failed:generic');
-        if (cancelled) return;
-        const homeDomain = Boolean(facts?.issuerAccount?.homeDomain || facts?.issuerAccount?.home_domain);
-        const tomlListed = facts?.toml?.status === 'loaded' && Array.isArray(facts?.toml?.matches) && facts.toml.matches.length > 0;
-        setAssetResultFacts((current) => ({
-          ...current,
-          [key]: { loading: false, homeDomain, tomlListed, error: '' },
-        }));
-      } catch (error) {
-        if (cancelled) return;
-        setAssetResultFacts((current) => ({
-          ...current,
-          [key]: { loading: false, homeDomain: false, tomlListed: false, error: error?.message || 'assetFacts.failed:generic' },
-        }));
-      }
-    };
-
-    const queue = [...assetResults];
-    const workerCount = Math.min(4, queue.length);
-    const workers = Array.from({ length: workerCount }, async () => {
-      while (queue.length && !cancelled) {
-        const asset = queue.shift();
-        await loadFactsForAsset(asset);
-      }
-    });
-    Promise.all(workers).catch(() => {});
-
-    return () => { cancelled = true; };
-  }, [assetResults, network]);
 
   const describeSearchMode = (mode) => {
     if (mode === 'issuer') return t('trading:assetSearch.mode.issuer', 'Issuer search');
