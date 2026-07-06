@@ -8,11 +8,25 @@ import { DEFAULT_TRUSTLINE_LIMIT } from '../assetSearchUtils.js';
  * field, and a refresh token to re-check after a submitted change. Extracted
  * from AssetSearch.jsx (step 5 of the file-split, hook 3/6).
  *
- * trustlineRefreshToken is returned (with its setter) rather than kept
- * private, because the container's own accountInfo-loading effect (not yet
- * extracted - that's useTradingAccount, hook 6) also depends on it: a
- * submitted trustline change must refresh both the trustline check here and
- * the account's reserve/balance snapshot there.
+ * trustlineRefreshToken is returned (with its setter) because the
+ * container's own accountInfo-loading effect (accountId/network are owned by
+ * useTradingAccount, hook 6, but the effect itself stays in the container -
+ * see that hook's file comment for why) also depends on it: a submitted
+ * trustline change must refresh both the trustline check here and the
+ * account's reserve/balance snapshot there.
+ *
+ * accountInput is taken as a parameter purely to reset trustlineStatus to
+ * 'unknown' the instant the account input changes - previously done directly
+ * by the container's accountInput-resolution effect (a foreign write into
+ * this hook's state). Since useTradingAccount needs trustlineRefreshToken
+ * (owned here) for its own accountInfo effect, and this hook needs
+ * accountId/network/accountInput (owned there), extracting both hooks
+ * without a cycle means each hook only ever calls its own setters - so this
+ * reset moved here instead of staying a cross-hook setter call. The result
+ * is unchanged: whenever accountInput changes, useTradingAccount transiently
+ * sets accountId to '' and, in the same effect-flush, this hook's own
+ * accountId-driven effect below reacts to that and settles on 'noAccount' -
+ * exactly as when a single combined effect did both steps before this split.
  *
  * Reset cascade: the original combined [selectedAsset, network]-reset effect
  * (AssetSearch.jsx, before this extraction) also reset showTrustlineConfirm/
@@ -21,10 +35,14 @@ import { DEFAULT_TRUSTLINE_LIMIT } from '../assetSearchUtils.js';
  * the trustlineLimit reset; the container keeps the rest (both step-6/
  * confirm-pipeline territory or a plain UI toggle with no fetch effect).
  */
-export default function useTrustlineStatus({ accountId, network, selectedAsset }) {
+export default function useTrustlineStatus({ accountId, network, accountInput, selectedAsset }) {
   const [trustlineStatus, setTrustlineStatus] = useState({ loading: false, state: 'unknown', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
   const [trustlineLimit, setTrustlineLimit] = useState(DEFAULT_TRUSTLINE_LIMIT);
   const [trustlineRefreshToken, setTrustlineRefreshToken] = useState(0);
+
+  useEffect(() => {
+    setTrustlineStatus({ loading: false, state: 'unknown', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
+  }, [accountInput]);
 
   useEffect(() => {
     let cancelled = false;

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Asset, Networks } from '@stellar/stellar-sdk';
-import { getHorizonServer, loadTrustlines, resolveOrValidateAccount } from '../../utils/stellar/stellarUtils.js';
+import { getHorizonServer, loadTrustlines } from '../../utils/stellar/stellarUtils.js';
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import { getRequiredThreshold } from '../../utils/getRequiredThreshold.js';
 import { formatErrorForUi } from '../../utils/formatErrorForUi.js';
@@ -19,8 +19,6 @@ import {
   EMPTY_ASSET_FACTS,
   assetResultKey,
   parseAssetSearchQuery,
-  getStoredAccountInput,
-  getStoredNetwork,
   normalizeAmount,
   calculateMinimumDestinationAmount,
   normalizeTrustlineLimit,
@@ -55,15 +53,19 @@ import useSwapPreview from './hooks/useSwapPreview.js';
 import useTrustlineStatus from './hooks/useTrustlineStatus.js';
 import useAssetFacts from './hooks/useAssetFacts.js';
 import useAssetSearch from './hooks/useAssetSearch.js';
+import useTradingAccount from './hooks/useTradingAccount.js';
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
   const [tokenFactsExpanded, setTokenFactsExpanded] = useState(false);
-  const [accountInput, setAccountInput] = useState(() => getStoredAccountInput());
-  const [accountId, setAccountId] = useState('');
-  const [accountStatus, setAccountStatus] = useState({ loading: false, error: '' });
-  const [accountInfo, setAccountInfo] = useState(null);
-  const [network, setNetwork] = useState(() => getStoredNetwork());
+  const {
+    accountInput,
+    accountId,
+    accountStatus,
+    accountInfo,
+    setAccountInfo,
+    network,
+  } = useTradingAccount({ t });
   const {
     assetQuery,
     setAssetQuery,
@@ -82,12 +84,11 @@ export default function AssetSearch() {
   } = useAssetSearch({ network });
   const {
     trustlineStatus,
-    setTrustlineStatus,
     trustlineLimit,
     setTrustlineLimit,
     trustlineRefreshToken,
     setTrustlineRefreshToken,
-  } = useTrustlineStatus({ accountId, network, selectedAsset });
+  } = useTrustlineStatus({ accountId, network, accountInput, selectedAsset });
   const [showSecretModal, setShowSecretModal] = useState(false);
   const [showTrustlineConfirm, setShowTrustlineConfirm] = useState(false);
   const [showTrustlineSwapConfirm, setShowTrustlineSwapConfirm] = useState(false);
@@ -271,50 +272,14 @@ export default function AssetSearch() {
     });
   }, [assetResultFacts, assetResults, assetSort]);
 
-  useEffect(() => {
-    const syncAccount = (event) => {
-      const next = String(event?.detail?.address || getStoredAccountInput() || '').trim();
-      setAccountInput(next);
-    };
-    const syncNetwork = (event) => {
-      const next = typeof event?.detail === 'string' ? event.detail : getStoredNetwork();
-      setNetwork(next === 'TESTNET' ? 'TESTNET' : 'PUBLIC');
-    };
-    window.addEventListener('stm:accountSelected', syncAccount);
-    window.addEventListener('stm:accountChanged', syncAccount);
-    window.addEventListener('stm-network-changed', syncNetwork);
-    return () => {
-      window.removeEventListener('stm:accountSelected', syncAccount);
-      window.removeEventListener('stm:accountChanged', syncAccount);
-      window.removeEventListener('stm-network-changed', syncNetwork);
-    };
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    const input = String(accountInput || '').trim();
-    setAccountId('');
-    setAccountInfo(null);
-    setTrustlineStatus({ loading: false, state: 'unknown', error: '', balance: null, limit: null, isAuthorized: null, isAuthorizedToMaintainLiabilities: null });
-    if (!input) {
-      setAccountStatus({ loading: false, error: '' });
-      return () => { cancelled = true; };
-    }
-    setAccountStatus({ loading: true, error: '' });
-    resolveOrValidateAccount(input)
-      .then((resolved) => {
-        if (cancelled) return;
-        setAccountId(resolved.accountId || '');
-        setAccountStatus({ loading: false, error: '' });
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setAccountId('');
-        setAccountStatus({ loading: false, error: t('trading:assetSearch.account.invalid') });
-      });
-    return () => { cancelled = true; };
-  }, [accountInput, t, setTrustlineStatus]);
-
+  // The event-listener sync effect and the accountInput-resolution effect
+  // now live in useTradingAccount (trustlineStatus's immediate reset to
+  // 'unknown' moved into useTrustlineStatus itself, keyed on accountInput -
+  // see that hook's comment). This accountInfo-loading effect stays here: it
+  // needs trustlineRefreshToken (owned by useTrustlineStatus) and accountId/
+  // network (owned by useTradingAccount) together, which would make either
+  // hook depend on the other's output - a real cycle. Coordinating effects
+  // that straddle two hooks' state belong at the composition level.
   useEffect(() => {
     let cancelled = false;
     if (!accountId) {
@@ -330,7 +295,7 @@ export default function AssetSearch() {
         if (!cancelled) setAccountInfo(null);
       });
     return () => { cancelled = true; };
-  }, [accountId, network, trustlineRefreshToken]);
+  }, [accountId, network, trustlineRefreshToken, setAccountInfo]);
 
   // Trustline status loading and its trustlineLimit reset now live in
   // useTrustlineStatus; swapPreview/marketData reset and swapDirection reset
