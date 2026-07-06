@@ -1,17 +1,17 @@
-name: Deploy CANARY (/STM_next)
+name: Deploy CANARY (/SKM_next)
 
 on:
   workflow_dispatch:
 
 env:
   # === Build-Variablen ===
-  VITE_BASE: /STM_next/
+  VITE_BASE: /SKM_next/
   VITE_HORIZON_URL: https://horizon.stellar.org
   # Optional: nur setzen, wenn vorhanden – sonst Zeile löschen
   # VITE_BACKEND_URL: https://<DEINE-DOMAIN>/api
 
   # === Zielpfad auf cyon ===
-  REMOTE_PATH: /home/michael/public_html/STM_next/
+  REMOTE_PATH: /home/michael/public_html/SKM_next/
 
 jobs:
   build-and-deploy:
@@ -30,7 +30,7 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Build (VITE_BASE=/STM_next/)
+      - name: Build (VITE_BASE=/SKM_next/)
         working-directory: frontend
         env:
           VITE_BASE: ${{ env.VITE_BASE }}
