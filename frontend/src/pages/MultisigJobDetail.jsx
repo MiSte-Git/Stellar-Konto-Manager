@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobAccessToken } from '../utils/multisigApi.js';
+import { getPendingMultisigJob, mergeSignedXdr, getMultisigJobChallenge, signMultisigJobChallenge, getMultisigJobAccessToken } from '../utils/multisigApi.js';
 import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
 import { Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
@@ -26,6 +26,14 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   // ref (not state) since it never affects what's rendered by itself.
   const fetchedTokenRef = useRef(null);
 
+  // Fetching a token from scratch (no prop/URL token yet) now requires proving
+  // possession of currentPublicKey's private key (H1 fix): get a one-time
+  // challenge, sign it locally, then redeem it for the token. This only works
+  // if a session secret for currentPublicKey is already remembered in this
+  // browser (the self-bucket lookup below matches how SendPaymentPage/
+  // MultisigEditPage store it after "remember for this session") - if none is
+  // stored, there is no secret to sign with yet, so this surfaces a distinct
+  // error instead of silently failing the signature check server-side.
   const resolveToken = useCallback(async () => {
     if (accessToken) return accessToken;
     const fromUrl = getMultisigJobToken();
@@ -34,7 +42,13 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     if (!currentPublicKey) {
       throw Object.assign(new Error('multisig:detail.noAccessToken'), { code: 'no_public_key' });
     }
-    const token = await getMultisigJobAccessToken(jobId, currentPublicKey);
+    const secret = await getSessionSecret(currentPublicKey, currentPublicKey);
+    if (!secret) {
+      throw Object.assign(new Error('multisig:detail.noLocalSecretForToken'), { code: 'no_local_secret' });
+    }
+    const { challenge } = await getMultisigJobChallenge(jobId, currentPublicKey);
+    const signature = signMultisigJobChallenge(secret, challenge);
+    const token = await getMultisigJobAccessToken(jobId, currentPublicKey, signature);
     fetchedTokenRef.current = token;
     return token;
   }, [accessToken, jobId, currentPublicKey]);
@@ -51,6 +65,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     } catch (e) {
       if (e?.code === 'no_public_key') {
         setError(t('multisig:detail.noAccessToken', 'Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.'));
+      } else if (e?.code === 'no_local_secret') {
+        setError(t('multisig:detail.noLocalSecretForToken', 'Kein gespeichertes Secret für dieses Konto in diesem Browser. Bitte über einen geteilten Link mit Zugriffstoken öffnen, oder das Konto einmal mit "Secret merken" laden.'));
       } else if (e?.status === 403) {
         setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
       } else {
@@ -79,6 +95,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       const raw = e?.message || 'merge_failed';
       if (e?.code === 'no_public_key') {
         setError(t('multisig:detail.noAccessToken', 'Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.'));
+      } else if (e?.code === 'no_local_secret') {
+        setError(t('multisig:detail.noLocalSecretForToken', 'Kein gespeichertes Secret für dieses Konto in diesem Browser. Bitte über einen geteilten Link mit Zugriffstoken öffnen, oder das Konto einmal mit "Secret merken" laden.'));
       } else if (e?.status === 403) {
         setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
       } else if (raw === 'mismatched_hash') {
@@ -156,6 +174,8 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     } catch (e) {
       if (e?.code === 'no_public_key') {
         setError(t('multisig:detail.noAccessToken', 'Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.'));
+      } else if (e?.code === 'no_local_secret') {
+        setError(t('multisig:detail.noLocalSecretForToken', 'Kein gespeichertes Secret für dieses Konto in diesem Browser. Bitte über einen geteilten Link mit Zugriffstoken öffnen, oder das Konto einmal mit "Secret merken" laden.'));
       } else if (e?.status === 403) {
         setError(t('multisig:detail.notASigner', 'Dieses Konto ist kein aktiver Signer dieses Auftrags.'));
       } else {

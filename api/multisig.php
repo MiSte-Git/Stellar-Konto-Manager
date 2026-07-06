@@ -5,6 +5,8 @@
 //   POST   /api/multisig/jobs
 //   GET    /api/multisig/jobs
 //   GET    /api/multisig/jobs/:id
+//   POST   /api/multisig/jobs/:id/challenge
+//   POST   /api/multisig/jobs/:id/token
 //   POST   /api/multisig/jobs/:id/merge-signed-xdr
 
 declare(strict_types=1);
@@ -20,6 +22,8 @@ if (file_exists($autoload)) {
     echo json_encode(['ok' => false, 'error' => 'vendor_autoload_missing']);
     exit;
 }
+
+require __DIR__ . '/challengeStore.php';
 
 use Soneso\StellarSDK\StellarSDK;
 use Soneso\StellarSDK\AbstractTransaction;
@@ -579,26 +583,75 @@ if ($method === 'GET' && ($m = matchRoute($path, '/api/multisig/jobs/:id'))) {
     return sendJson(['ok' => false, 'error' => 'not_found'], 404);
 }
 
-// GET /api/multisig/jobs/:id/token - issues a job's access token to a caller
-// who proves, via the account's real, live signer list (never the stored
-// job.signers snapshot), that the claimed public key is an active signer
-// (weight > 0) of the job's account. This is the only way to obtain a job's
-// token now that the list endpoint no longer includes it.
-if ($method === 'GET' && ($m = matchRoute($path, '/api/multisig/jobs/:id/token'))) {
-    $id = $m['id'] ?? '';
-    $signerPk = trim((string)($_GET['signer'] ?? ''));
+function findJobById(string $jobFile, string $id): ?array {
+    foreach (loadJobs($jobFile) as $j) {
+        if (($j['id'] ?? '') === $id) return $j;
+    }
+    return null;
+}
+
+function parseSignerPublicKey(string $raw): ?string {
+    $signerPk = trim($raw);
     try {
         KeyPair::fromAccountId($signerPk);
     } catch (\Throwable $e) {
-        return sendJson(['ok' => false, 'error' => 'invalid_signer'], 400);
+        return null;
     }
+    return $signerPk;
+}
 
-    $items = loadJobs($jobFile);
-    $job = null;
-    foreach ($items as $j) {
-        if (($j['id'] ?? '') === $id) { $job = $j; break; }
+// POST /api/multisig/jobs/:id/challenge - issues a short-lived, single-use
+// nonce for (jobId, signerPublicKey), the first half of the possession proof
+// required by the /token endpoint below (H1 fix): naming a public key is not
+// enough, the caller must additionally sign this nonce with the matching
+// private key.
+if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/challenge'))) {
+    $id = $m['id'] ?? '';
+    if (!findJobById($jobFile, $id)) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
+
+    $body = jsonBody();
+    $signerPk = parseSignerPublicKey((string)($body['signer'] ?? ''));
+    if ($signerPk === null) return sendJson(['ok' => false, 'error' => 'invalid_signer'], 400);
+
+    try {
+        return sendJson(createChallenge($id, $signerPk));
+    } catch (\Throwable $e) {
+        error_log('[multisig] jobs.challenge failed: ' . $e->getMessage());
+        return sendError('server_error', null, 500);
     }
+}
+
+// POST /api/multisig/jobs/:id/token - issues a job's access token to a caller
+// who proves BOTH that they hold the private key for the claimed signer
+// public key (a valid signature over the nonce obtained from /challenge
+// above, checked first and consumed regardless of outcome so it can never be
+// replayed) AND - via the account's real, live signer list, never the stored
+// job.signers snapshot - that this public key is an active signer (weight > 0)
+// of the job's account. This is the only way to obtain a job's token now that
+// the list endpoint no longer includes it. (H1 fix: merely naming an active
+// signer's public key used to be sufficient, even without ever holding its
+// private key.)
+if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/token'))) {
+    $id = $m['id'] ?? '';
+    $job = findJobById($jobFile, $id);
     if (!$job) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
+
+    $body = jsonBody();
+    $signerPk = parseSignerPublicKey((string)($body['signer'] ?? ''));
+    if ($signerPk === null) return sendJson(['ok' => false, 'error' => 'invalid_signer'], 400);
+    $signature = trim((string)($body['signature'] ?? ''));
+    if ($signature === '') return sendJson(['ok' => false, 'error' => 'missing_signature'], 400);
+
+    try {
+        $pending = consumeChallenge($id, $signerPk);
+    } catch (\Throwable $e) {
+        error_log('[multisig] jobs.token challenge lookup failed: ' . $e->getMessage());
+        return sendError('server_error', null, 500);
+    }
+    if ($pending === null) return sendJson(['ok' => false, 'error' => 'challenge_missing_or_expired'], 400);
+    if (!verifyChallengeSignature($pending['nonce'], $signature, $signerPk)) {
+        return sendJson(['ok' => false, 'error' => 'invalid_signature'], 403);
+    }
 
     $net = $job['network'] ?? 'public';
     $meta = fetchAccountSignersCached($job['accountId'] ?? '', $net);

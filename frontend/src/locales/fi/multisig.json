@@ -196,7 +196,8 @@
     "submitFailed": "Virhe tapahtui lähetettäessä: {{reason}}",
     "submitNoExtras": "Ei lisätietoja virheestä saatavilla.",
     "noAccessToken": "Käyttötunnusta ei ole saatavilla. Lataa ensin tili, joka on tämän tehtävän allekirjoittaja.",
-    "notASigner": "Tämä tili ei ole tämän tehtävän aktiivinen allekirjoittaja."
+    "notASigner": "Tämä tili ei ole tämän tehtävän aktiivinen allekirjoittaja.",
+    "noLocalSecretForToken": "Tälle selaimelle ei ole tallennettu tämän tilin salasanaa. Avaa tili käyttämällä jaettua linkkiä, jossa on pääsytunnus, tai lataa tili kerran valitsemalla ”Muista salasana”."
   },
   "secretModal": {
     "options": {

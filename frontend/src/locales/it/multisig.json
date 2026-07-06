@@ -196,7 +196,8 @@
     "submitFailed": "Si è verificato un errore durante l'invio: {{reason}}",
     "submitNoExtras": "Nessun ulteriore dettaglio sull'errore disponibile.",
     "noAccessToken": "Nessun token di accesso disponibile. Carica prima l'account che è firmatario di questo job.",
-    "notASigner": "Questo account non è un firmatario attivo di questo job."
+    "notASigner": "Questo account non è un firmatario attivo di questo job.",
+    "noLocalSecretForToken": "In questo browser non è stato salvato alcun segreto per questo account. Si prega di aprirlo utilizzando un link condiviso con un token di accesso, oppure di caricare l'account una volta utilizzando l'opzione \"Ricorda segreto\"."
   },
   "secretModal": {
     "options": {

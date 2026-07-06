@@ -1,3 +1,5 @@
+import { Keypair } from '@stellar/stellar-sdk';
+import { Buffer } from 'buffer';
 import { apiUrl } from './apiBase.js';
 
 function ensureOk(res) {
@@ -39,16 +41,57 @@ export async function getPendingMultisigJob(id, accessToken) {
   }
 }
 
-// Fetches the per-job access token for a caller who is verified server-side as
-// an active signer (weight > 0) of the job's account - checked against the
+// Requests a short-lived (60s), single-use nonce for (jobId, signerPublicKey) -
+// the first half of the possession proof the /token endpoint requires (H1
+// fix): the caller must sign this nonce with the matching private key before
+// a token is issued, so merely naming an active signer's public key is no
+// longer sufficient on its own.
+export async function getMultisigJobChallenge(jobId, signerPublicKey) {
+  try {
+    const r = await fetch(apiUrl(`multisig/jobs/${encodeURIComponent(jobId)}/challenge`), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ signer: signerPublicKey || '' }),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      const err = new Error(data?.error || 'multisig.jobs.challenge_failed');
+      err.status = r.status;
+      throw err;
+    }
+    return data; // { challenge, expiresAt }
+  } catch (e) {
+    if (e?.status) throw e;
+    throw new Error(e?.message || 'multisig.jobs.challenge_failed');
+  }
+}
+
+// Signs a base64 challenge nonce with the given secret key, raw ed25519 (not a
+// Stellar transaction - there is no XDR/network/sequence number involved,
+// just a possession proof over server-issued random bytes). Returns the
+// signature as base64, ready for getMultisigJobAccessToken().
+export function signMultisigJobChallenge(secret, challengeB64) {
+  const keypair = Keypair.fromSecret(secret);
+  const nonceBytes = Buffer.from(String(challengeB64 || ''), 'base64');
+  const signature = keypair.sign(nonceBytes);
+  return Buffer.from(signature).toString('base64');
+}
+
+// Fetches the per-job access token for a caller who proves BOTH that they
+// hold the private key for signerPublicKey (a valid `signature` over a
+// getMultisigJobChallenge() nonce, H1 fix) AND is verified server-side as an
+// active signer (weight > 0) of the job's account - checked against the
 // account's live Horizon signer list, never trusted from client input. This is
 // the only way to obtain a job's token, since the job list response no longer
 // includes it (it used to, which let anyone who knew a public accountId read
 // every pending job's token straight out of the list).
-export async function getMultisigJobAccessToken(jobId, signerPublicKey) {
+export async function getMultisigJobAccessToken(jobId, signerPublicKey, signature) {
   try {
-    const url = apiUrl(`multisig/jobs/${encodeURIComponent(jobId)}/token?signer=${encodeURIComponent(signerPublicKey || '')}`);
-    const r = await fetch(url);
+    const r = await fetch(apiUrl(`multisig/jobs/${encodeURIComponent(jobId)}/token`), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ signer: signerPublicKey || '', signature: signature || '' }),
+    });
     const data = await r.json().catch(() => ({}));
     if (!r.ok) {
       const err = new Error(data?.error || 'multisig.jobs.token_failed');

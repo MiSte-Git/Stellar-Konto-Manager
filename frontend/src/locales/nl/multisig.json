@@ -196,7 +196,8 @@
     "submitFailed": "Er is een fout opgetreden bij het verzenden: {{reason}}",
     "submitNoExtras": "Er zijn geen verdere foutdetails beschikbaar.",
     "noAccessToken": "Geen toegangstoken beschikbaar. Laad eerst het account dat ondertekenaar van deze taak is.",
-    "notASigner": "Dit account is geen actieve ondertekenaar van deze taak."
+    "notASigner": "Dit account is geen actieve ondertekenaar van deze taak.",
+    "noLocalSecretForToken": "Er is geen geheim opgeslagen voor dit account in deze browser. Open het account via een gedeelde link met een toegangstoken, of laad het account eenmalig via de optie „Geheim onthouden“."
   },
   "secretModal": {
     "options": {

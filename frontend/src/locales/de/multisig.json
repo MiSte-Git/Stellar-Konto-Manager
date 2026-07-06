@@ -196,6 +196,7 @@
     "submitFailed": "Beim Senden ist ein Fehler aufgetreten: {{reason}}",
     "submitNoExtras": "Keine weiteren Fehlerdetails verfügbar.",
     "noAccessToken": "Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.",
+    "noLocalSecretForToken": "Kein gespeichertes Secret für dieses Konto in diesem Browser. Bitte über einen geteilten Link mit Zugriffstoken öffnen, oder das Konto einmal mit \"Secret merken\" laden.",
     "notASigner": "Dieses Konto ist kein aktiver Signer dieses Auftrags."
   },
   "secretModal": {

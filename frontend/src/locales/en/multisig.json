@@ -196,7 +196,8 @@
     "submitFailed": "An error occurred while sending: {{reason}}",
     "submitNoExtras": "No further error details available.",
     "noAccessToken": "No access token available. Please load the account that is a signer of this job first.",
-    "notASigner": "This account is not an active signer of this job."
+    "notASigner": "This account is not an active signer of this job.",
+    "noLocalSecretForToken": "There is no saved secret for this account in this browser. Please open it using a shared link with an access token, or load the account once using \"Remember Secret.\""
   },
   "secretModal": {
     "options": {

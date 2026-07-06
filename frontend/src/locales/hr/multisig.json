@@ -196,7 +196,8 @@
     "submitFailed": "Došlo je do pogreške prilikom slanja: {{razlog}}",
     "submitNoExtras": "Nema dodatnih detalja o grešci.",
     "noAccessToken": "Nema dostupnog pristupnog tokena. Prvo učitajte račun koji je potpisnik ovog zadatka.",
-    "notASigner": "Ovaj račun nije aktivni potpisnik ovog zadatka."
+    "notASigner": "Ovaj račun nije aktivni potpisnik ovog zadatka.",
+    "noLocalSecretForToken": "Za ovaj račun u ovom pregledniku nije pohranjena tajna. Molimo otvorite ga pomoću zajedničke poveznice s pristupnim tokenom ili jednom učitajte račun pomoću opcije \"Zapamti tajnu\"."
   },
   "secretModal": {
     "options": {

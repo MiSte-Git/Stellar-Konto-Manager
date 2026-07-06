@@ -196,7 +196,8 @@
     "submitFailed": "Se produjo un error al enviar: {{reason}}",
     "submitNoExtras": "No hay más detalles de error disponibles.",
     "noAccessToken": "No hay ningún token de acceso disponible. Cargue primero la cuenta que es firmante de este trabajo.",
-    "notASigner": "Esta cuenta no es un firmante activo de este trabajo."
+    "notASigner": "Esta cuenta no es un firmante activo de este trabajo.",
+    "noLocalSecretForToken": "No hay ningún secreto guardado para esta cuenta en este navegador. Ábrela mediante un enlace compartido con un token de acceso o carga la cuenta una vez utilizando la opción «Recordar secreto»."
   },
   "secretModal": {
     "options": {

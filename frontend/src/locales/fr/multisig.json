@@ -196,7 +196,8 @@
     "submitFailed": "Une erreur s'est produite lors de l'envoi : {{raison}}",
     "submitNoExtras": "Aucun détail d'erreur supplémentaire disponible.",
     "noAccessToken": "Aucun jeton d'accès disponible. Veuillez d'abord charger le compte qui est signataire de cette tâche.",
-    "notASigner": "Ce compte n'est pas un signataire actif de cette tâche."
+    "notASigner": "Ce compte n'est pas un signataire actif de cette tâche.",
+    "noLocalSecretForToken": "Aucun secret n'est enregistré pour ce compte dans ce navigateur. Veuillez l'ouvrir à l'aide d'un lien partagé comportant un jeton d'accès, ou charger le compte une seule fois en utilisant l'option « Mémoriser le secret »."
   },
   "secretModal": {
     "options": {

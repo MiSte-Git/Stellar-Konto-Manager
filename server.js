@@ -13,6 +13,7 @@ const crypto = require('crypto');
 const { searchAssets, fetchAssetFacts } = require('./services/tradeService.js');
 const { createCorsMiddleware } = require('./services/corsConfig.js');
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
+const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
 (function loadDotEnv() {
@@ -633,22 +634,65 @@ app.get('/api/multisig/jobs/:id', async (req, res) => {
   }
 });
 
-// Issues a job's access token to a caller who proves - via the account's real,
-// live signer list (never the client-supplied job.signers snapshot) - that the
-// claimed public key is an active signer (weight > 0) of the job's account.
-// This is the only way to obtain a job's token now that the list endpoint no
-// longer includes it.
-app.get('/api/multisig/jobs/:id/token', async (req, res) => {
+function findMultisigJob(id) {
+  return multisigDb.items.find((j) => j.id === id);
+}
+
+function parseSignerPublicKey(raw) {
+  const signerPk = sanitizeHeader(String(raw || '')).trim();
+  try {
+    StellarSdk.Keypair.fromPublicKey(signerPk);
+  } catch {
+    return null;
+  }
+  return signerPk;
+}
+
+// Issues a short-lived, single-use nonce for (jobId, signerPublicKey) - the
+// first half of the possession proof required by the /token endpoint below
+// (H1 fix): naming a public key is not enough, the caller must additionally
+// sign this nonce with the matching private key.
+app.post('/api/multisig/jobs/:id/challenge', (req, res) => {
   try {
     const { id } = req.params;
-    const job = multisigDb.items.find((j) => j.id === id);
+    const job = findMultisigJob(id);
     if (!job) return res.status(404).json({ ok: false, error: 'not_found' });
 
-    const signerPk = sanitizeHeader(String(req.query.signer || '')).trim();
-    try {
-      StellarSdk.Keypair.fromPublicKey(signerPk);
-    } catch {
-      return res.status(400).json({ ok: false, error: 'invalid_signer' });
+    const signerPk = parseSignerPublicKey(req.body?.signer);
+    if (!signerPk) return res.status(400).json({ ok: false, error: 'invalid_signer' });
+
+    const { challenge, expiresAt } = createChallenge(id, signerPk);
+    res.json({ challenge, expiresAt });
+  } catch (e) {
+    console.error('multisig.jobs.challenge.failed', e);
+    res.status(500).json({ ok: false, error: 'multisig.jobs.challenge_failed' });
+  }
+});
+
+// Issues a job's access token to a caller who proves BOTH that they hold the
+// private key for the claimed signer public key (a valid signature over the
+// nonce obtained from /challenge above, checked first and consumed regardless
+// of outcome so it can never be replayed) AND - via the account's real, live
+// signer list, never the client-supplied job.signers snapshot - that this
+// public key is an active signer (weight > 0) of the job's account. This is
+// the only way to obtain a job's token now that the list endpoint no longer
+// includes it. (H1 fix: merely naming an active signer's public key used to
+// be sufficient, even without ever holding its private key.)
+app.post('/api/multisig/jobs/:id/token', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = findMultisigJob(id);
+    if (!job) return res.status(404).json({ ok: false, error: 'not_found' });
+
+    const signerPk = parseSignerPublicKey(req.body?.signer);
+    if (!signerPk) return res.status(400).json({ ok: false, error: 'invalid_signer' });
+    const signature = String(req.body?.signature || '').trim();
+    if (!signature) return res.status(400).json({ ok: false, error: 'missing_signature' });
+
+    const pending = consumeChallenge(id, signerPk);
+    if (!pending) return res.status(400).json({ ok: false, error: 'challenge_missing_or_expired' });
+    if (!verifyChallengeSignature(pending.nonce, signature, signerPk)) {
+      return res.status(403).json({ ok: false, error: 'invalid_signature' });
     }
 
     const serverForNet = job.network === 'public'
