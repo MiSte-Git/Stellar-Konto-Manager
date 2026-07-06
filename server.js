@@ -784,7 +784,34 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
       }
     });
 
-    const signers = Array.isArray(job.signers) ? job.signers : [];
+    let signers = Array.isArray(job.signers) ? job.signers : [];
+    // Fail closed on an empty signer list: filterValidSignatures() below would
+    // otherwise wipe every previously collected signature from txXdrCurrent -
+    // irrecoverably, since the XDR is their only home. An empty snapshot only
+    // ever means the account lookup failed when the job was created (the
+    // best-effort fallback in the create route), because an existing account
+    // always has at least its master key as a signer. Try once to heal the
+    // job with the live signer list; if Horizon (still) can't answer, abort
+    // the merge and leave the job untouched so the client can simply retry.
+    if (!signers.length) {
+      try {
+        const serverForNet = net === 'public'
+          ? new StellarSdk.Horizon.Server('https://horizon.stellar.org')
+          : new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
+        const account = await loadAccount(serverForNet, job.accountId);
+        const signerMeta = extractSignerMeta(account);
+        signers = signerMeta.signers || [];
+        if (signers.length) {
+          job.signers = signers;
+          job.requiredWeight = requiredWeightForPayment(signerMeta.thresholds);
+        }
+      } catch (healErr) {
+        console.warn('multisig.jobs.merge.signer_heal_failed', healErr?.message || healErr);
+      }
+      if (!signers.length) {
+        return res.status(502).json({ ok: false, error: 'signers_unavailable' });
+      }
+    }
     // M1 fix: drop anything that doesn't verify against a real account signer
     // and cap at Stellar's 20-signature protocol limit before persisting -
     // previously every submitted signature was stored verbatim, valid or not.

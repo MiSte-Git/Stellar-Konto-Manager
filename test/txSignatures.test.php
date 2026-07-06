@@ -168,5 +168,37 @@ check(
     $multisigSource !== false && strpos($multisigSource, 'clientCollected') === false
 );
 
+// --- empty-signer-list guard (M1 follow-up): a failed Horizon lookup during
+// merge must abort the request, never run filterValidSignatures() against an
+// empty list (which would wipe every collected signature from txXdrCurrent).
+// multisig.php routes and exits on require, so - same approach as the
+// clientCollected guard above - these check the source for the specific
+// patterns the fix requires.
+$mergeRouteIdx = strpos($multisigSource, "matchRoute(\$path, '/api/multisig/jobs/:id/merge-signed-xdr')");
+$guardIdx = strpos($multisigSource, '$signersUnavailable = true;');
+$filterIdx = strpos($multisigSource, 'filterValidSignatures($merged');
+check(
+    'regression guard: merge route has the empty-signers abort, positioned before filterValidSignatures()',
+    $mergeRouteIdx !== false && $guardIdx !== false && $filterIdx !== false
+        && $mergeRouteIdx < $guardIdx && $guardIdx < $filterIdx
+);
+check(
+    'regression guard: the empty-signers abort surfaces as a signers_unavailable error response',
+    strpos($multisigSource, "sendError('signers_unavailable'") !== false
+);
+check(
+    "regression guard: fetchAccountSigners() marks failed lookups with 'ok' => false",
+    strpos($multisigSource, "'ok' => false, 'signers' => []") !== false
+);
+// The failure marker only helps if the cache layer honors it: a cached
+// failure would otherwise be served for the full TTL, re-triggering the
+// empty-list abort for 30s after a single transient Horizon hiccup.
+$cacheWriteIdx = strpos($multisigSource, "if ((\$data['ok'] ?? true) !== false) {");
+$cacheSaveIdx = $cacheWriteIdx !== false ? strpos($multisigSource, 'saveSignersCache($cacheFile, $cache);', $cacheWriteIdx) : false;
+check(
+    'regression guard: fetchAccountSignersCached() skips the cache write for failed lookups',
+    $cacheWriteIdx !== false && $cacheSaveIdx !== false
+);
+
 echo "\n{$passed} passed, {$failed} failed\n";
 exit($failed > 0 ? 1 : 0);

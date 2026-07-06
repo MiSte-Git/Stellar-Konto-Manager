@@ -278,6 +278,7 @@ function fetchAccountSigners(string $accountId, string $net): array {
         }
         $thr = $account->getThresholds();
         return [
+            'ok' => true,
             'signers' => $signers,
             'thresholds' => [
                 'low' => (int)$thr->getLowThreshold(),
@@ -286,7 +287,13 @@ function fetchAccountSigners(string $accountId, string $net): array {
             ],
         ];
     } catch (\Throwable $e) {
-        return ['signers' => [], 'thresholds' => ['low' => 0, 'med' => 0, 'high' => 0]];
+        // 'ok' => false marks this as a failed lookup (Horizon unreachable or
+        // account not found), as opposed to a genuinely empty signer list -
+        // which cannot occur for an existing account (Horizon always reports
+        // at least the master key as a signer). Callers that would destroy
+        // data on an empty list (the merge route's signature filtering) must
+        // treat this as "unknown", never as "no signers".
+        return ['ok' => false, 'signers' => [], 'thresholds' => ['low' => 0, 'med' => 0, 'high' => 0]];
     }
 }
 
@@ -324,8 +331,15 @@ function fetchAccountSignersCached(string $accountId, string $net, int $ttlSecon
 
     $data = fetchAccountSigners($accountId, $net);
     $memo[$key] = $data;
-    $cache[$key] = ['data' => $data, 'fetchedAt' => time()];
-    saveSignersCache($cacheFile, $cache);
+    // Failed lookups are never written to the cache: a cached failure would
+    // otherwise be served for the full TTL, turning one transient Horizon
+    // hiccup into 30 seconds of "this account has no signers" - which the
+    // merge route must treat as a hard error (see there). The in-request memo
+    // above still holds it so a single request stays self-consistent.
+    if (($data['ok'] ?? true) !== false) {
+        $cache[$key] = ['data' => $data, 'fetchedAt' => time()];
+        saveSignersCache($cacheFile, $cache);
+    }
     return $data;
 }
 
@@ -637,7 +651,8 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         if ($hash !== ($job['txHash'] ?? '')) return sendJson(['ok' => false, 'error' => 'mismatched_hash'], 400);
 
         $resultRow = null;
-        withJobsLock($jobFile, function (array $items) use ($id, $net, $incoming, &$resultRow) {
+        $signersUnavailable = false;
+        withJobsLock($jobFile, function (array $items) use ($id, $net, $incoming, &$resultRow, &$signersUnavailable) {
             foreach ($items as &$j) {
                 if (($j['id'] ?? '') !== $id) continue;
 
@@ -650,6 +665,18 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                 // state, never trusted from the request body (C2).
                 $meta = fetchAccountSignersCached($j['accountId'] ?? '', $net);
                 $signerMeta = $meta['signers'];
+                // Fail closed on an empty signer list: it only ever means the
+                // Horizon lookup failed or the account doesn't exist (an existing
+                // account always has at least its master key as a signer).
+                // Running filterValidSignatures() against an empty list would
+                // wipe every previously collected signature from txXdrCurrent -
+                // irrecoverably, since the XDR is their only home. Abort the
+                // merge instead and leave the job untouched; the client simply
+                // retries once Horizon answers again.
+                if (!$signerMeta) {
+                    $signersUnavailable = true;
+                    break;
+                }
                 $j['thresholds'] = $meta['thresholds'];
                 $j['requiredWeight'] = (int)($meta['thresholds']['med'] ?? 0);
                 $j['signers'] = $signerMeta;
@@ -694,6 +721,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
             return $items;
         });
 
+        if ($signersUnavailable) return sendError('signers_unavailable', null, 502);
         if (!$resultRow) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
         return sendJson($resultRow);
     } catch (\Throwable $e) {
