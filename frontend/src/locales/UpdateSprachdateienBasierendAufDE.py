@@ -143,8 +143,21 @@ def translate_text(
 
 # -------- Original-Key Handling (never translate, copy from de.json) --------
 ORIGINAL_RE = re.compile(r'(^|\.)original$')
-# Sonderzeichen-Erkennung (z.B. ★, Emojis), die wir nicht verlieren dürfen
-SPECIAL_CHAR_RE = re.compile(r"[^\w\s.,;:!?'\"()\[\]{}<>\\\-\/]")
+# Sonderzeichen-Erkennung (z.B. ★, Emojis), die wir nicht verlieren dürfen.
+# Enthält bewusst KEINE gängige Interpunktion (&, Gedankenstriche, Ellipse,
+# typografische Anführungszeichen, Guillemets) - ein Übersetzer/DeepL darf diese
+# legitim an die Zielsprache anpassen (z.B. "&" -> "und"/"and", "–" -> ein anderer
+# Strich-Stil). Wären sie hier als "special" gelistet, würde jede solche (inhaltlich
+# korrekte) Abweichung _preserve_special_chars dazu bringen, die KOMPLETTE Übersetzung
+# zu verwerfen und stattdessen den unübersetzten deutschen Text durchzureichen - das
+# ist genau der Bug, der bei "&" und "–" beobachtet wurde. Echte Icons/Symbole wie
+# ★ oder Emoji bleiben weiterhin geschützt.
+SPECIAL_CHAR_RE = re.compile(
+    r"[^\w\s.,;:!?'\"()\[\]{}<>\\\-\/"
+    r"&–—―‐‑‒…"
+    r"‘’‚‛“”„‟"
+    r"«»‹›]"
+)
 
 def is_original_key(path: str) -> bool:
     return bool(ORIGINAL_RE.search(path))
@@ -250,6 +263,53 @@ def _sha256(s: str) -> str:
     return hashlib.sha256(s.encode("utf-8")).hexdigest()
 
 
+def check_namespace_key_collisions(de_ns_dir: str, ns_files: list[str]) -> None:
+    """Warnt laut, falls zwei verschiedene Quellen denselben zusammengesetzten
+    Manifest-Schlüssel "<namespace>.<relativer Key>" erzeugen würden - z.B.
+    Namespace-Datei "quiz.ui.json" (ns_name="quiz.ui", Key "allDone") kollidiert
+    mit einem verschachtelten "ui"-Objekt in "quiz.json" (ns_name="quiz",
+    relativer Key "ui.allDone" -> ebenfalls "quiz.ui.allDone").
+
+    Ohne diese Prüfung überschreiben sich beide Quellen gegenseitig im
+    Hash-Manifest (wer zuletzt verarbeitet wird, gewinnt), und die
+    Änderungserkennung wird für BEIDE Quellen dauerhaft unzuverlässig - das war
+    die tatsächliche Ursache der wiederkehrenden "quiz.ui.*"-Drift bei jedem
+    Lauf, unabhängig von --force-key.
+    """
+    key_origin: Dict[str, str] = {}
+    collisions: Set[str] = set()
+    for ns_file in sorted(ns_files):
+        ns_name = ns_file[:-5]
+        data = load_json(os.path.join(de_ns_dir, ns_file))
+        if not isinstance(data, dict):
+            continue
+        for rel in _collect_leaf_paths(data):
+            composite = f"{ns_name}.{rel}"
+            origin = f"{ns_file} ({rel})"
+            if composite in key_origin and key_origin[composite] != origin:
+                collisions.add(f"{composite}:  {key_origin[composite]}  <->  {origin}")
+            else:
+                key_origin[composite] = origin
+    if collisions:
+        print(
+            "⚠️  WARNUNG: Namespace-Key-Kollisionen im Hash-Manifest entdeckt - "
+            "zwei verschiedene Quellen erzeugen denselben Manifest-Schlüssel, "
+            "die Änderungserkennung wird für beide unzuverlässig:"
+        )
+        for c in sorted(collisions):
+            print(f"   {c}")
+
+
+def _missing_rel_keys(base_flat_rel: Dict[str, Any], target_dict: Dict[str, Any]) -> Set[str]:
+    """Relative Keys aus base_flat_rel, die im (noch verschachtelten) target_dict fehlen.
+    Wird gebraucht, um das Hash-Manifest nur für tatsächlich neu befüllte/übersetzte
+    Keys zu aktualisieren (siehe merge_keys_missing_or_changed: fehlende Keys werden
+    immer ergänzt, unabhängig von changed_paths/forced_paths).
+    """
+    existing_flat = _flatten_dict(target_dict)
+    return set(base_flat_rel.keys()) - set(existing_flat.keys())
+
+
 def _load_manifest(lang: str, from_pivot: str) -> Dict[str, str]:
     path = os.path.join(HASH_DIR, f"{lang}_from_{from_pivot}.json")
     try:
@@ -284,19 +344,57 @@ def _get_node_by_path(d: Dict[str, Any], path: str):
     return node
 
 
-def expand_forced_paths(base_dict: Dict[str, Any], forced_list: list[str]) -> Set[str]:
+def expand_forced_paths(base_dict: Dict[str, Any], forced_list: list[str], namespace: str | None = None) -> Set[str]:
+    """Löst --force-key-Pfade zu relativen Leaf-Paths innerhalb von base_dict auf.
+
+    Zwei Modi:
+    - namespace=None (Legacy-Root): forced_list-Einträge sind bereits Pfade
+      relativ zu base_dict (verschachteltes de.json).
+    - namespace=<name> (Namespace-Modus, Standardfall): base_dict ist das
+      namespace-eigene Dict OHNE Namespace-Wrapper (z.B. ns_base für "menu"
+      ist direkt {"createAccount": ..., ...}, nicht {"menu": {...}}).
+      forced_list-Einträge haben die dokumentierte Form "<namespace>.<key>"
+      oder exakt "<namespace>" (= ganzer Namespace). Nur Einträge, deren
+      führendes Segment zu DIESEM Namespace passt, werden berücksichtigt -
+      alle anderen gehören zu einem anderen Namespace-File und werden still
+      übersprungen (kein "nicht gefunden", das ist kein Fehler). Der
+      Namespace-Präfix wird vor dem Lookup abgeschnitten, denn base_dict
+      selbst hat diesen Präfix nicht - und die zurückgegebenen Pfade müssen
+      namespace-RELATIV sein, weil changed_rel/de_flat_rel/en_flat_rel
+      ebenfalls relative (unpräfixierte) Keys verwenden.
+
+      Vorher (Bug): der volle "<namespace>.<key>"-Pfad wurde direkt gegen
+      das unpräfixierte base_dict aufgelöst -> _get_node_by_path fand nie
+      etwas (das erste Pfadsegment war ja der Namespace-Name, kein echter
+      Top-Level-Key), --force-key griff für JEDEN Namespace ins Leere und
+      hatte de facto NIE eine Wirkung auf bereits vorhandene Keys.
+    """
     out: Set[str] = set()
     for p in forced_list:
         if not p:
             continue
-        node = _get_node_by_path(base_dict, p)
+        if namespace is not None:
+            if p == namespace:
+                rel = ""
+            elif p.startswith(f"{namespace}."):
+                rel = p[len(namespace) + 1:]
+            else:
+                continue
+        else:
+            rel = p
+
+        if rel == "":
+            out |= _collect_leaf_paths(base_dict, "")
+            continue
+
+        node = _get_node_by_path(base_dict, rel)
         if node is None:
             print(f"INFO: Warnung: erzwungener Schlüssel nicht gefunden: {p}")
             continue
         if isinstance(node, dict):
-            out |= _collect_leaf_paths(node, p)
+            out |= _collect_leaf_paths(node, rel)
         else:
-            out.add(p)
+            out.add(rel)
     return out
 
 
@@ -535,6 +633,12 @@ def main():
     args = parser.parse_args()
 
     base_path = args.base_path
+    # HASH_DIR war bisher fest an das Skriptverzeichnis gebunden und ignorierte
+    # --base-path - ein --base-path-Lauf (z.B. Tests, alternativer Checkout) hat
+    # dadurch unbemerkt die Manifeste im ECHTEN Repo mitverändert. HASH_DIR folgt
+    # jetzt konsistent dem gewählten base_path (Default unverändert = Skriptverzeichnis).
+    global HASH_DIR
+    HASH_DIR = os.path.join(base_path, ".i18n_hash")
     provider = args.provider
     # --full schaltet bewusst in den Voll-Lauf; ohne Flag wird inkrementell (nur neue/geänderte Keys laut Hash) gearbeitet.
     do_full = bool(args.full)
@@ -612,6 +716,8 @@ def main():
             print(f"INFO: Keine Namespaces in {de_ns_dir} gefunden. Nichts zu tun.")
             return
 
+        check_namespace_key_collisions(de_ns_dir, ns_files)
+
         for ns_file in sorted(ns_files):
             ns_name = ns_file[:-5]
             ns_base_path = os.path.join(de_ns_dir, ns_file)
@@ -623,7 +729,7 @@ def main():
             print(f"\n🧩 Namespace '{ns_name}':")
 
             # Force-Keys für diesen Namespace
-            forced_paths = expand_forced_paths(ns_base, forced_list) if forced_list else set()
+            forced_paths = expand_forced_paths(ns_base, forced_list, namespace=ns_name) if forced_list else set()
 
             # Phase A: de -> en (hash-basiert)
             try:
@@ -638,15 +744,20 @@ def main():
                 de_flat_pref = {f"{ns_name}.{k}": v for k, v in de_flat_rel.items()}
                 man_en = _load_manifest("en", "de")
 
-                # Inkrementell: nur Keys mit geändertem Hash (oder erzwungene) übersetzen; Full-Lauf übersetzt alles.
+                # Inkrementell: nur Keys mit geändertem Hash übersetzen; Full-Lauf übersetzt alles.
+                # Ein gezielter --force-key-Lauf (ohne --full) rührt NUR die erzwungenen Pfade an -
+                # keine generelle Hash-Drift-Erkennung über den ganzen Namespace, damit unabhängige,
+                # längst übersetzte Keys nicht durch einen zufällig abweichenden Hash (z.B. History-
+                # bedingte Manifest/Content-Drift) erneut angefasst werden.
                 if do_full:
                     changed_rel = set(de_flat_rel.keys())
+                elif forced_paths:
+                    changed_rel = set(forced_paths)
                 else:
                     changed_rel = set(
                         k for k, v in de_flat_rel.items()
                         if man_en.get(f"{ns_name}.{k}") != _sha256(str(v))
                     )
-                    changed_rel |= forced_paths
 
                 if do_full:
                     en_translated = translate_full(
@@ -678,10 +789,15 @@ def main():
                 save_json(en_out, en_translated)
                 print(f"   → en/{ns_name}.json aktualisiert")
 
-                # Manifest aktualisieren (EN from DE)
+                # Manifest aktualisieren (EN from DE) - NUR für Keys, die dieser Lauf
+                # tatsächlich übersetzt/ergänzt hat (do_full: alle; sonst: fehlende + changed_rel).
+                # Alle anderen Keys behalten ihren bisherigen Manifest-Eintrag unangetastet, damit
+                # echte, noch nicht nachgezogene Drift nicht durch einen unbeteiligten --force-key-
+                # Lauf still als "erledigt" markiert wird, ohne je neu übersetzt worden zu sein.
+                touched_rel_en = set(de_flat_rel.keys()) if do_full else (_missing_rel_keys(de_flat_rel, en_existing) | changed_rel)
                 for k, v in de_flat_pref.items():
                     rel = k.split(f"{ns_name}.", 1)[-1]
-                    if rel in failed_paths_en:
+                    if rel in failed_paths_en or rel not in touched_rel_en:
                         continue
                     man_en[k] = _sha256(str(v))
                 _save_manifest("en", "de", man_en)
@@ -708,12 +824,13 @@ def main():
 
                     if do_full:
                         changed_rel_lang = set(en_flat_rel.keys())
+                    elif forced_paths:
+                        changed_rel_lang = set(forced_paths)
                     else:
                         changed_rel_lang = set(
                             k for k, v in en_flat_rel.items()
                             if man_lang.get(f"{ns_name}.{k}") != _sha256(str(v))
                         )
-                        changed_rel_lang |= forced_paths
 
                     if do_full:
                         translated = translate_full(
@@ -745,10 +862,12 @@ def main():
                     save_json(out_file, translated)
                     print(f"   → {lang}/{ns_name}.json aktualisiert")
 
-                    # Manifest aktualisieren (lang from EN)
+                    # Manifest aktualisieren (lang from EN) - NUR für tatsächlich verarbeitete Keys
+                    # (siehe Kommentar bei Phase A oben - gleiche Begründung).
+                    touched_rel_lang = set(en_flat_rel.keys()) if do_full else (_missing_rel_keys(en_flat_rel, existing) | changed_rel_lang)
                     for k, v in en_flat_pref.items():
                         rel = k.split(f"{ns_name}.", 1)[-1]
-                        if rel in failed_paths_lang:
+                        if rel in failed_paths_lang or rel not in touched_rel_lang:
                             continue
                         man_lang[k] = _sha256(str(v))
                     _save_manifest(lang, "en", man_lang)
