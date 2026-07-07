@@ -1086,5 +1086,11 @@
     "original": "Stale Quote",
     "short": "Una cotización que quizá ya no refleje la situación actual del mercado.",
     "desc": "Una cotización puede quedar desactualizada porque otros usuarios realizan operaciones, se retiran órdenes o cambian los fondos de liquidez. Cuanto más antigua sea una cotización, más importante es actualizarla justo antes de firmar."
+  },
+  "tokenTrading": {
+    "title": "Buscar e intercambiar tokens",
+    "original": "Token Trading",
+    "short": "Encuentra tokens en la red y cómpralos, véndelos o intercambia directamente.",
+    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
   }
 }

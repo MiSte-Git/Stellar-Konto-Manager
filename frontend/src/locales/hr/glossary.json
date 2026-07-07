@@ -1086,5 +1086,11 @@
     "original": "Stale Quote",
     "short": "Cijena koja možda više ne odražava trenutno tržište.",
     "desc": "Cijena ponude može zastarjeti jer drugi korisnici trguju, narudžbe se uklanjaju ili se mijenjaju likvidnosni bazeni. Što je ponuda starija, to je važnije osvježiti je neposredno prije potpisivanja."
+  },
+  "tokenTrading": {
+    "title": "Pronađi i trguj tokenima",
+    "original": "Token Trading",
+    "short": "Pronađite tokene na mreži i kupujte, prodajte ili ih izravno razmjenjujte.",
+    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
   }
 }

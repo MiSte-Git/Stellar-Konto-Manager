@@ -15,10 +15,7 @@ export const MAIN_MENU_NAV = [
   // Gruppe 2
   { id: 'payments', labelKey: 'menu:tokenPurchases', group: 2 },
   { id: 'xlmByMemo', labelKey: 'menu:xlmByMemo', group: 2 },
-  // TODO: Kein passender Glossar-Eintrag für "Swap" vorhanden (nur "dex", das einen
-  // anderen Begriff beschreibt). Info-Icon hier erst ergänzen, wenn ein eigener
-  // Glossar-Eintrag "swap" in allen 9 Sprachen existiert.
-  { id: 'tradingAssets', labelKey: 'menu:swap', group: 2 },
+  { id: 'tradingAssets', labelKey: 'menu:swap', group: 2, glossaryTerm: 'tokenTrading' },
 
   // Gruppe 3
   { id: 'multisigEdit', labelKey: 'menu:multisigEdit', group: 3 },

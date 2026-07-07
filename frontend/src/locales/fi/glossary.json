@@ -1082,5 +1082,11 @@
     "original": "Stale Quote",
     "short": "Hinta, joka ei ehkä enää vastaa nykyistä markkinatilannetta.",
     "desc": "Hintatarjous voi vanhentua, koska muut käyttäjät tekevät kauppoja, toimeksiannot peruutetaan tai likviditeettipoolit muuttuvat. Mitä vanhempi hintatarjous on, sitä tärkeämpää on päivittää se juuri ennen allekirjoittamista."
+  },
+  "tokenTrading": {
+    "title": "Etsi ja vaihda poletteja",
+    "original": "Token Trading",
+    "short": "Etsi verkosta tokeneita ja osta, myy tai vaihda niitä suoraan.",
+    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
   }
 }

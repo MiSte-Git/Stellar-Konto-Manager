@@ -1082,5 +1082,11 @@
     "original": "Stale Quote",
     "short": "Een koers die mogelijk niet meer overeenkomt met de huidige markt.",
     "desc": "Een koers kan verouderd raken doordat andere gebruikers handelen, orders worden verwijderd of liquiditeitspools veranderen. Hoe ouder een koers is, hoe belangrijker het is om deze vlak voor het ondertekenen te vernieuwen."
+  },
+  "tokenTrading": {
+    "title": "Tokens zoeken en verhandelen",
+    "original": "Token Trading",
+    "short": "Zoek tokens op het netwerk en koop, verkoop of ruil ze direct.",
+    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
   }
 }

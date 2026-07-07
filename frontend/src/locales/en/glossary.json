@@ -1086,5 +1086,11 @@
     "original": "Federated Byzantine Agreement",
     "short": "The consensus principle behind SCP: each validator chooses which others it trusts – no central committee decides that.",
     "desc": "FBA (Federated Byzantine Agreement) is the core of the Stellar Consensus Protocol. Unlike PoW or PoS there is no mining and no stake-based voting. Instead, each validator operator independently chooses which other validators it trusts – this defines its quorum set. For a transaction to be confirmed, overlapping quorum sets must agree (roughly a 2/3 majority). The result: a decentralized, energy-efficient network with no central controlling authority."
+  },
+  "tokenTrading": {
+    "title": "Find and Trade Tokens",
+    "original": "Token Trading",
+    "short": "Find tokens on the network and buy, sell, or trade them directly.",
+    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
   }
 }

@@ -1086,5 +1086,11 @@
     "original": "Stale Quote",
     "short": "Цитата, которая, возможно, уже не отражает текущую рыночную ситуацию.",
     "desc": "Котировка может устареть из-за того, что другие пользователи совершают сделки, ордера удаляются или меняются пулы ликвидности. Чем старше котировка, тем важнее обновить её непосредственно перед подписанием."
+  },
+  "tokenTrading": {
+    "title": "Найти и обменять токены",
+    "original": "Token Trading",
+    "short": "Найдите токены в сети и покупайте, продавайте или обменивайте их напрямую.",
+    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
   }
 }

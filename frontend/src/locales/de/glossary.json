@@ -286,6 +286,12 @@
     "short": "Dezentrale Börse direkt auf der Blockchain.",
     "desc": "DEX bedeutet Dezentrale Börse. Hier handeln die Leute direkt miteinander auf der Blockchain. Es gibt keinen einzelnen Betreiber. Stellar hat eine DEX direkt eingebaut."
   },
+  "tokenTrading": {
+    "title": "Token suchen und handeln",
+    "original": "Token Trading",
+    "short": "Token im Netzwerk finden und direkt kaufen, verkaufen oder tauschen.",
+    "desc": "Hier kannst du Token auf dem Stellar-Netzwerk suchen und direkt kaufen, verkaufen oder gegen einen anderen Token tauschen. Im Hintergrund läuft dieser Handel über die eingebaute Dezentrale Börse (DEX) von Stellar. Mehr zur Technik dahinter findest du im Glossareintrag DEX."
+  },
   "liquidityPool": {
     "title": "Liquiditätspool",
     "original": "Liquidity Pool",

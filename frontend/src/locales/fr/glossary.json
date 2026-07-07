@@ -1086,5 +1086,11 @@
     "original": "Stale Quote",
     "short": "Une cotation qui ne reflète peut-être plus la situation actuelle du marché.",
     "desc": "Une cotation peut devenir obsolète en raison des transactions effectuées par d'autres utilisateurs, de la suppression d'ordres ou de l'évolution des réserves de liquidité. Plus une cotation est ancienne, plus il est important de l'actualiser juste avant de signer."
+  },
+  "tokenTrading": {
+    "title": "Rechercher et échanger des jetons",
+    "original": "Token Trading",
+    "short": "Recherchez des jetons sur le réseau et achetez-les, vendez-les ou échangez-les directement.",
+    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
   }
 }

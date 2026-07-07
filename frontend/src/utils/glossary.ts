@@ -82,6 +82,7 @@ export const glossaryGroups = [
     slugs: [
       'exchange',
       'dex',
+      'tokenTrading',
       'liquidityPool',
       'cex',
       'orderBook',

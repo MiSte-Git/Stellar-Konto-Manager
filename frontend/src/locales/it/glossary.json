@@ -1086,5 +1086,11 @@
     "original": "Stale Quote",
     "short": "Una quotazione che potrebbe non rispecchiare più l'attuale situazione di mercato.",
     "desc": "Una quotazione può diventare obsoleta a causa delle operazioni effettuate da altri utenti, della cancellazione di ordini o delle variazioni nei pool di liquidità. Più una quotazione è datata, più è importante aggiornarla immediatamente prima di confermare l'operazione."
+  },
+  "tokenTrading": {
+    "title": "Trova e scambia token",
+    "original": "Token Trading",
+    "short": "Trova i token sulla rete e acquistali, vendili o scambiali direttamente.",
+    "desc": "Qui puoi cercare token sulla rete Stellar e acquistarli, venderli o scambiarli immediatamente con un altro token. Dietro le quinte, queste transazioni avvengono tramite l’exchange decentralizzato integrato in Stellar (DEX). Puoi trovare ulteriori informazioni sulla tecnologia alla base di questo sistema nella voce dedicata al DEX nel glossario."
   }
 }
