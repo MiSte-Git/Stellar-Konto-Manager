@@ -15,16 +15,19 @@ export const MAIN_MENU_NAV = [
   // Gruppe 2
   { id: 'payments', labelKey: 'menu:tokenPurchases', group: 2 },
   { id: 'xlmByMemo', labelKey: 'menu:xlmByMemo', group: 2 },
+  // TODO: Kein passender Glossar-Eintrag für "Swap" vorhanden (nur "dex", das einen
+  // anderen Begriff beschreibt). Info-Icon hier erst ergänzen, wenn ein eigener
+  // Glossar-Eintrag "swap" in allen 9 Sprachen existiert.
   { id: 'tradingAssets', labelKey: 'menu:swap', group: 2 },
 
   // Gruppe 3
   { id: 'multisigEdit', labelKey: 'menu:multisigEdit', group: 3 },
   { id: 'multisigJobs', labelKey: 'menu:multisigJobs', group: 3 },
-  { id: 'muxed', labelKey: 'menu:muxed', group: 3 },
+  { id: 'muxed', labelKey: 'menu:muxed', group: 3, glossaryTerm: 'addressMuxed' },
 
   // Gruppe 4
-  { id: 'listAll', labelKey: 'menu:listAll', group: 4 },
-  { id: 'compare', labelKey: 'menu:compareTrustlines', group: 4 },
+  { id: 'listAll', labelKey: 'menu:listAll', group: 4, glossaryTerm: 'trustline' },
+  { id: 'compare', labelKey: 'menu:compareTrustlines', group: 4, glossaryTerm: 'trustline' },
 ];
 
 /** @type {MainNavItem[]} */

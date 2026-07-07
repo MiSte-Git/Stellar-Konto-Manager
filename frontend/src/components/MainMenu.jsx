@@ -2,17 +2,23 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MAIN_MENU_NAV } from '../config/mainNavigation.js';
+import GlossaryInfoIcon from './GlossaryInfoIcon.jsx';
 
 function MainMenu({ onSelect }) {
   // Explicitly request the namespaces used here to ensure they are loaded
   const { t } = useTranslation(['menu', 'createAccount', 'multisigEdit', 'trading']);
 
-  const buttons = MAIN_MENU_NAV.map((item) => ({
-    ...item,
-    value: item.id,
-    label: t(item.labelKey, item.fallback || item.id),
-    title: item.titleKey ? t(item.titleKey, item.titleFallback || '') : '',
-  }));
+  const buttons = MAIN_MENU_NAV.map((item) => {
+    const label = t(item.labelKey, item.fallback || item.id);
+    return {
+      ...item,
+      value: item.id,
+      label,
+      // title-Attribut: bevorzugt ein explizites titleKey, sonst das volle Label
+      // als Tooltip-Fallback, falls der Text im Button abgeschnitten wird (siehe truncate unten).
+      title: item.titleKey ? t(item.titleKey, item.titleFallback || '') : label,
+    };
+  });
 
   const baseBtn =
     'text-white bg-black hover:bg-zinc-900 ' +
@@ -32,14 +38,21 @@ function MainMenu({ onSelect }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
       {buttons.map((btn) => (
-        <button
-          key={btn.value}
-          onClick={() => onSelect(btn.value)}
-          className={`${baseBtn} ${groupBorder[btn.group] || 'border-zinc-700'}`}
-          title={btn.title || ''}
-        >
-          {btn.label}
-        </button>
+        <div key={btn.value} className="relative flex">
+          <button
+            onClick={() => onSelect(btn.value)}
+            className={`flex-1 min-w-0 ${baseBtn} ${groupBorder[btn.group] || 'border-zinc-700'}`}
+            title={btn.title || ''}
+          >
+            <span className="block truncate">{btn.label}</span>
+          </button>
+          {btn.glossaryTerm && (
+            <GlossaryInfoIcon
+              term={btn.glossaryTerm}
+              className="absolute right-1.5 top-1.5"
+            />
+          )}
+        </div>
       ))}
     </div>
   );
