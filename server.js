@@ -9,7 +9,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const fsSync = require('fs');
 const crypto = require('crypto');
-const { searchAssets, fetchAssetFacts } = require('./services/tradeService.js');
+const { searchAssets, fetchAssetFacts, fetchExpertDirectoryEntry } = require('./services/tradeService.js');
 const { createCorsMiddleware } = require('./services/corsConfig.js');
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
@@ -927,6 +927,24 @@ app.get('/api/trade/assets/facts', async (req, res) => {
     res.json(facts);
   } catch (error) {
     const message = error?.message || 'assetFacts.failed:generic';
+    const status = String(message).startsWith('assetSearch.invalidInput') ? 400 : 502;
+    res.status(status).json({ ok: false, error: message });
+  }
+});
+
+// Third-party StellarExpert directory hint for the selected asset's issuer.
+// Deliberately its own endpoint (not part of /facts): /facts is called once
+// per search result, this only once per selected asset - that plus the
+// service-level cache keeps us inside the public API's rate limits.
+// fetchExpertDirectoryEntry never throws on upstream failure (it degrades to
+// status "unavailable"), so an outage there can't block the token display.
+app.get('/api/trade/assets/expert', async (req, res) => {
+  const { issuer, network } = req.query;
+  try {
+    const entry = await fetchExpertDirectoryEntry({ issuer, network });
+    res.json(entry);
+  } catch (error) {
+    const message = error?.message || 'assetExpert.failed:generic';
     const status = String(message).startsWith('assetSearch.invalidInput') ? 400 : 502;
     res.status(status).json({ ok: false, error: message });
   }

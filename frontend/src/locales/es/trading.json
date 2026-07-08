@@ -40,7 +40,9 @@
       "factLabels": {
         "domain": "La cuenta del emisor tiene un dominio propio",
         "toml": "El activo figura en el archivo «stellar.toml» de este emisor."
-      }
+      },
+      "duplicateCodeWarning": "Atención: {{codes}} tiene varios resultados de emisores distintos. El código por sí solo no dice nada sobre la autenticidad; solo la dirección del emisor lo determina. Compárala con atención antes de añadir una trustline o intercambiar.",
+      "duplicateCodeBadge": "{{count}} emisores distintos utilizan este código de activo."
     },
     "invalidInput": {
       "codeMissing": "Por favor, introduzca un código de activo.",
@@ -63,14 +65,14 @@
     "help": {
       "issuer": "La cuenta de Stellar que emitió este token. El código y el emisor identifican de forma única el activo.",
       "trustlines": "Número de cuentas que tienen una «trustline» con este activo según Horizon. Se trata de un indicador de uso, no de una prueba de autenticidad.",
-      "totalAmount": "Cantidad total de este activo declarada por Horizon. La oferta por sí sola no dice nada sobre la calidad ni la fiabilidad.",
+      "totalAmount": "Cantidad total de este activo declarada por Horizon: trustlines, saldos reclamables, pools de liquidez y contratos sumados. La oferta por sí sola no dice nada sobre la calidad ni la fiabilidad.",
       "trustlineStatus": "Indica si tu cuenta corriente ya puede albergar este activo.",
       "trustlineBalance": "Saldo actual de este activo en tu cuenta «Trustline».",
       "trustlineLimit": "Saldo máximo de este activo que tu cuenta puede mantener a través de esta línea de crédito.",
       "authorization": "En el caso de los activos «auth_required», el emisor debe autorizar tu «trustline» antes de que puedas recibir o negociar el token.",
       "homeDomain": "Dominio almacenado en la cuenta del emisor. Sirve para localizar el archivo stellar.toml.",
       "issuerMasterWeight": "Peso de la clave maestra del emisor. Un valor de 0 significa que la clave maestra ya no puede firmar por sí sola.",
-      "issuerLocked": "Indica si la clave maestra del emisor está desactivada. Esto puede ser una señal positiva, pero no sustituye a la comprobación de la configuración completa.",
+      "issuerLocked": "Indica si la clave maestra del emisor sigue activa. «Gestión activa» es normal en proyectos gestionados de forma continua, como las stablecoins, y no es una señal de alarma. «Completamente bloqueada» es una señal positiva en activos que prometen inmutabilidad. «Aparentemente bloqueada» significa que la clave maestra está desactivada, pero otras claves podrían seguir controlando la cuenta.",
       "tomlStatus": "Estado del archivo «stellar.toml» en el dominio principal del emisor.",
       "tomlUrl": "Dirección del archivo «stellar.toml» encontrado.",
       "tomlAssetListed": "Indica si este activo figura en las entradas «CURRENCIES» del archivo stellar.toml.",
@@ -102,7 +104,8 @@
       "poolCount": "Número de fondos de liquidez de AMM encontrados para este par de negociación.",
       "limitOfferDirection": "Define qué activo vendes y qué activo quieres recibir.",
       "limitOfferAmount": "Cantidad del activo que deseas vender en la orden a precio límite.",
-      "limitOfferPrice": "Precio por unidad del activo vendido, expresado en la moneda del activo comprado."
+      "limitOfferPrice": "Precio por unidad del activo vendido, expresado en la moneda del activo comprado.",
+      "expertDirectory": "Comparación con el directorio público de stellar.expert (un tercero). Una entrada es solo una indicación, no una garantía de autenticidad ni de seguridad. La ausencia de una entrada tampoco es indicio de fraude. Verifica siempre la dirección del emisor también a través de su sitio web oficial."
     },
     "mode": {
       "code": "Búsqueda por código de activo",
@@ -285,7 +288,7 @@
       "no": "De",
       "homeDomain": "Dominio de inicio",
       "issuerMasterWeight": "Peso de la llave maestra",
-      "issuerLocked": "Clave maestra del emisor bloqueada",
+      "issuerLocked": "Estado de la clave maestra del emisor",
       "liquidityRoute": "Cambiar ruta",
       "routeAvailable": "Ruta encontrada",
       "routeUnavailable": "No se ha encontrado ninguna ruta",
@@ -304,6 +307,25 @@
         "authRevocable": "Autorización revocable",
         "authImmutable": "Autorización inmutable",
         "clawbackEnabled": "Recuperación activada"
+      },
+      "issuerLockStatus": {
+        "active": "Gestión activa",
+        "locked": "Completamente bloqueada",
+        "appearsLocked": "Aparentemente bloqueada"
+      },
+      "amountBreakdown": {
+        "trustlines": "De ello, {{amount}} en trustlines",
+        "claimable": "{{amount}} en saldos reclamables",
+        "pools": "{{amount}} en pools de liquidez",
+        "contracts": "{{amount}} en contratos"
+      },
+      "expert": {
+        "label": "Directorio de StellarExpert",
+        "listed": "Incluido en el directorio",
+        "listedAs": "Incluido en el directorio como «{{name}}»",
+        "notListed": "No figura en el directorio; esto no dice nada sobre la autenticidad: muchos activos serios no están incluidos.",
+        "unavailable": "StellarExpert no está disponible; no se pudo cargar la indicación.",
+        "notChecked": "No comprobado (el directorio solo cubre la red pública)."
       }
     },
     "risk": {
@@ -314,7 +336,10 @@
       "tomlAssetMissing": "Este activo no figura en el archivo «stellar.toml» del emisor.",
       "issuerUnlocked": "La clave maestra del emisor no está bloqueada.",
       "authRequired": "Este activo requiere la autorización del emisor.",
-      "clawbackEnabled": "La cláusula de recuperación está activa para este activo."
+      "clawbackEnabled": "La cláusula de recuperación está activa para este activo.",
+      "issuerAppearsLocked": "Atención: la clave maestra está desactivada, pero otras claves podrían seguir controlando la cuenta del emisor. La cuenta no está realmente bloqueada.",
+      "authRevocable": "El emisor puede revocar una autorización ya concedida y congelar tu saldo de este token.",
+      "expertFlagged": "Atención: este emisor está marcado como dañino en el directorio de StellarExpert ({{tags}}). Se desaconseja encarecidamente añadir una trustline, comprar o intercambiar."
     },
     "detail": {
       "status": {

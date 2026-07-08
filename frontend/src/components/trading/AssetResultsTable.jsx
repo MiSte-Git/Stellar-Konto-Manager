@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { shortenKey, assetResultKey } from './assetSearchUtils.js';
 
@@ -47,6 +47,22 @@ export default function AssetResultsTable({
   trustlineActionLabel,
 }) {
   const { t } = useTranslation(['trading', 'common']);
+  // Asset codes are case-sensitive on Stellar and, on their own, prove
+  // nothing about legitimacy - only the issuer address does. Group counts
+  // by exact code so duplicate-code hits (e.g. many different issuers all
+  // using "USDC") can be flagged instead of silently ranked by quality score.
+  const codeCounts = useMemo(() => {
+    const counts = new Map();
+    assetResults.forEach((r) => {
+      const code = r.assetCode || '';
+      counts.set(code, (counts.get(code) || 0) + 1);
+    });
+    return counts;
+  }, [assetResults]);
+  const duplicateCodes = useMemo(
+    () => [...codeCounts.entries()].filter(([, count]) => count > 1).map(([code]) => code),
+    [codeCounts]
+  );
   return (
     <div className="rounded border border-gray-200 dark:border-gray-700">
       {assetResults.length === 0 && !assetError && !assetLoading && (
@@ -60,6 +76,11 @@ export default function AssetResultsTable({
             <div>{t('trading:assetSearch.result.count', { count: countFormatter.format(assetResults.length) })}</div>
             <div className="mt-1">{t('trading:assetSearch.result.qualityHint')}</div>
           </div>
+          {duplicateCodes.length > 0 && (
+            <div className="border-b border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+              {t('trading:assetSearch.result.duplicateCodeWarning', { codes: duplicateCodes.join(', ') })}
+            </div>
+          )}
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
@@ -84,10 +105,25 @@ export default function AssetResultsTable({
               <tbody>
                 {sortedAssetResults.map((r, idx) => {
                   const rowFacts = assetResultFacts[assetResultKey(r)] || {};
+                  const isDuplicateCode = (codeCounts.get(r.assetCode || '') || 0) > 1;
                   return (
                     <tr key={`${r.assetCode}-${r.assetIssuer}-${idx}`} className="border-t border-gray-200 dark:border-gray-700">
-                      <td className="py-2 pl-3 pr-3 font-mono font-semibold">{r.assetCode}</td>
-                      <td className="py-2 pr-3 font-mono" title={r.assetIssuer || ''}>
+                      <td className="py-2 pl-3 pr-3">
+                        <span className="font-mono font-semibold">{r.assetCode}</span>
+                        {isDuplicateCode && (
+                          <span
+                            className="ml-1 inline-flex items-center rounded bg-amber-100 px-1 text-[10px] font-semibold text-amber-800 dark:bg-amber-900 dark:text-amber-100"
+                            title={t('trading:assetSearch.result.duplicateCodeBadge', { count: codeCounts.get(r.assetCode || '') })}
+                          >
+                            {codeCounts.get(r.assetCode || '')}×
+                          </span>
+                        )}
+                      </td>
+                      {/* Issuer address is deliberately styled at least as prominently as
+                          the code: on Stellar the code alone never proves authenticity,
+                          only the issuer does - de-emphasizing it here would repeat the
+                          exact confusion this table is meant to prevent. */}
+                      <td className="py-2 pr-3 font-mono font-semibold" title={r.assetIssuer || ''}>
                         {shortenKey(r.assetIssuer || '') || '—'}
                       </td>
                       <td className="py-2 pr-3">{formatTrustlineCount(r)}</td>

@@ -40,7 +40,9 @@
       "factLabels": {
         "domain": "Le compte de l'émetteur dispose d'un domaine principal",
         "toml": "L'actif figure dans le fichier stellar.toml de cet émetteur."
-      }
+      },
+      "duplicateCodeWarning": "Attention : {{codes}} correspond à plusieurs résultats avec des émetteurs différents. Le code seul ne prouve rien quant à l'authenticité – seule l'adresse de l'émetteur fait foi. Comparez-la attentivement avant d'ajouter une trustline ou d'effectuer un échange.",
+      "duplicateCodeBadge": "{{count}} émetteurs différents utilisent ce code d'actif."
     },
     "invalidInput": {
       "codeMissing": "Veuillez entrer un code d'actif.",
@@ -63,14 +65,14 @@
     "help": {
       "issuer": "Le compte Stellar qui a émis ce jeton. Le code et l'émetteur identifient ensemble l'actif de manière unique.",
       "trustlines": "Nombre de comptes disposant d'une « trustline » vers cet actif, selon Horizon. Il s'agit d'un indicateur d'utilisation, et non d'une preuve d'authenticité.",
-      "totalAmount": "Quantité totale de cet actif déclarée par Horizon. L'offre en soi ne dit rien sur la qualité ou la fiabilité.",
+      "totalAmount": "Quantité totale de cet actif déclarée par Horizon – trustlines, soldes récupérables, pools de liquidité et contrats cumulés. L'offre en soi ne dit rien sur la qualité ou la fiabilité.",
       "trustlineStatus": "Indique si votre compte courant peut déjà détenir cet actif.",
       "trustlineBalance": "Solde actuel de cet actif sur votre compte « Trustline ».",
       "trustlineLimit": "Solde maximal que votre compte peut détenir pour cet actif via cette ligne de crédit.",
       "authorization": "Pour les actifs « auth_required », l'émetteur doit autoriser votre « trustline » avant que vous ne puissiez recevoir ou échanger le token.",
       "homeDomain": "Domaine enregistré sur le compte de l'émetteur. Il permet de localiser le fichier stellar.toml.",
       "issuerMasterWeight": "Poids de la clé principale de l'émetteur. La valeur 0 signifie que la clé principale ne peut plus signer à elle seule.",
-      "issuerLocked": "Indique si la clé principale de l'émetteur est désactivée. Cela peut être un signe positif, mais ne remplace pas la vérification de l'ensemble de la configuration.",
+      "issuerLocked": "Indique si la clé principale de l'émetteur est encore active. « Gestion active » est normal pour des projets gérés en continu comme les stablecoins et ne constitue pas un signal d'alerte. « Entièrement verrouillée » est un signal positif pour les actifs qui promettent l'immuabilité. « Apparemment verrouillée » signifie que la clé principale est désactivée, mais que d'autres signataires pourraient tout de même contrôler le compte.",
       "tomlStatus": "État du fichier « stellar.toml » situé dans le domaine d'accueil de l'émetteur.",
       "tomlUrl": "Emplacement du fichier « stellar.toml » détecté.",
       "tomlAssetListed": "Indique si cet actif figure dans les entrées « CURRENCIES » du fichier stellar.toml.",
@@ -102,7 +104,8 @@
       "poolCount": "Nombre de réserves de liquidité AMM trouvées pour cette paire de devises.",
       "limitOfferDirection": "Permet de préciser quel actif vous vendez et quel actif vous souhaitez recevoir.",
       "limitOfferAmount": "Montant de l'actif que vous souhaitez vendre dans le cadre de l'ordre à cours limité.",
-      "limitOfferPrice": "Prix par unité vendue, exprimé dans la devise de l'actif acheté."
+      "limitOfferPrice": "Prix par unité vendue, exprimé dans la devise de l'actif acheté.",
+      "expertDirectory": "Comparaison avec l'annuaire public de stellar.expert (un tiers). Une entrée n'est qu'une indication, pas une garantie d'authenticité ou de sécurité. L'absence d'entrée n'est pas non plus un indice de fraude. Vérifiez toujours l'adresse de l'émetteur également via son site web officiel."
     },
     "mode": {
       "code": "Recherche par code d'élément",
@@ -285,7 +288,7 @@
       "no": "De",
       "homeDomain": "Domaine d'origine",
       "issuerMasterWeight": "Poids de la clé passe-partout",
-      "issuerLocked": "Clé principale de l'émetteur verrouillée",
+      "issuerLocked": "État de la clé principale de l'émetteur",
       "liquidityRoute": "Changer d'itinéraire",
       "routeAvailable": "Itinéraire trouvé",
       "routeUnavailable": "Aucun itinéraire trouvé",
@@ -304,6 +307,25 @@
         "authRevocable": "Autorisation révocable",
         "authImmutable": "Autorisation immuable",
         "clawbackEnabled": "Fonctionnalité de récupération activée"
+      },
+      "issuerLockStatus": {
+        "active": "Gestion active",
+        "locked": "Entièrement verrouillée",
+        "appearsLocked": "Apparemment verrouillée"
+      },
+      "amountBreakdown": {
+        "trustlines": "Dont {{amount}} sur des trustlines",
+        "claimable": "{{amount}} en soldes récupérables",
+        "pools": "{{amount}} dans des pools de liquidité",
+        "contracts": "{{amount}} dans des contrats"
+      },
+      "expert": {
+        "label": "Annuaire StellarExpert",
+        "listed": "Répertorié dans l'annuaire",
+        "listedAs": "Répertorié dans l'annuaire sous « {{name}} »",
+        "notListed": "Absent de l'annuaire – cela ne dit rien sur l'authenticité ; de nombreux actifs sérieux n'y figurent pas.",
+        "unavailable": "StellarExpert inaccessible – l'indication n'a pas pu être chargée.",
+        "notChecked": "Non vérifié (l'annuaire ne couvre que le réseau public)."
       }
     },
     "risk": {
@@ -314,7 +336,10 @@
       "tomlAssetMissing": "Cet actif ne figure pas dans le fichier stellar.toml de l'émetteur.",
       "issuerUnlocked": "La clé principale de l'émetteur n'est pas verrouillée.",
       "authRequired": "Cet élément nécessite l'autorisation de l'émetteur.",
-      "clawbackEnabled": "La clause de récupération est activée pour cet actif."
+      "clawbackEnabled": "La clause de récupération est activée pour cet actif.",
+      "issuerAppearsLocked": "Attention : la clé principale est désactivée, mais d'autres clés pourraient encore contrôler le compte de l'émetteur. Le compte n'est donc pas réellement verrouillé.",
+      "authRevocable": "L'émetteur peut révoquer une autorisation déjà accordée et geler votre solde de ce token.",
+      "expertFlagged": "Attention : cet émetteur est signalé comme malveillant dans l'annuaire StellarExpert ({{tags}}). Il est fortement déconseillé d'ajouter une trustline, d'acheter ou d'échanger."
     },
     "detail": {
       "status": {

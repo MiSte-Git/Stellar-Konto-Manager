@@ -17,9 +17,33 @@ export default function useAssetFacts({ selectedAsset, network, targetStellarAss
   const [assetFacts, setAssetFacts] = useState(EMPTY_ASSET_FACTS);
   const [targetAssetFacts, setTargetAssetFacts] = useState(EMPTY_ASSET_FACTS);
 
+  // Third-party StellarExpert directory hint. Fetched alongside the facts but
+  // strictly non-blocking: any failure (rate limit, outage, bad JSON) degrades
+  // to status 'unavailable' instead of throwing, so the token facts always
+  // render even when stellar.expert is down.
+  const loadExpertEntryForIssuer = useCallback(async (issuer) => {
+    try {
+      const params = new URLSearchParams({ issuer, network });
+      const response = await fetch(`${apiUrl('trade/assets/expert')}?${params.toString()}`);
+      const entry = await response.json().catch(() => null);
+      if (!response.ok || !entry) return { ...EMPTY_ASSET_FACTS.expert, status: 'unavailable' };
+      return {
+        status: entry.status || 'unavailable',
+        name: entry.name || '',
+        domain: entry.domain || '',
+        tags: Array.isArray(entry.tags) ? entry.tags : [],
+      };
+    } catch {
+      return { ...EMPTY_ASSET_FACTS.expert, status: 'unavailable' };
+    }
+  }, [network]);
+
   const loadAssetFactsForIdentity = useCallback(async ({ code, issuer }) => {
     const params = new URLSearchParams({ code, issuer, network });
-    const response = await fetch(`${apiUrl('trade/assets/facts')}?${params.toString()}`);
+    const [response, expert] = await Promise.all([
+      fetch(`${apiUrl('trade/assets/facts')}?${params.toString()}`),
+      loadExpertEntryForIssuer(issuer),
+    ]);
     const facts = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(facts?.error || 'assetFacts.failed:generic');
     return {
@@ -33,8 +57,9 @@ export default function useAssetFacts({ selectedAsset, network, targetStellarAss
         matches: Array.isArray(facts?.toml?.matches) ? facts.toml.matches : [],
         error: facts?.toml?.error || '',
       },
+      expert,
     };
-  }, [network]);
+  }, [network, loadExpertEntryForIssuer]);
 
   useEffect(() => {
     let cancelled = false;

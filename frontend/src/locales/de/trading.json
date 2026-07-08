@@ -23,14 +23,14 @@
     "help": {
       "issuer": "Stellar-Konto, das diesen Token ausgegeben hat. Code und Issuer zusammen identifizieren das Asset eindeutig.",
       "trustlines": "Anzahl der Accounts, die laut Horizon eine Trustline zu diesem Asset haben. Das ist ein Nutzungssignal, aber kein Echtheitsbeweis.",
-      "totalAmount": "Von Horizon gemeldete Gesamtmenge dieses Assets. Die Menge allein sagt nichts über Qualität oder Seriosität aus.",
+      "totalAmount": "Von Horizon gemeldete Gesamtmenge dieses Assets – Trustlines, Claimable Balances, Liquidity Pools und Contracts zusammengerechnet. Die Menge allein sagt nichts über Qualität oder Seriosität aus.",
       "trustlineStatus": "Zeigt, ob dein aktueller Account dieses Asset bereits halten darf.",
       "trustlineBalance": "Aktueller Bestand dieses Assets auf deiner Trustline.",
       "trustlineLimit": "Maximaler Bestand dieses Assets, den dein Account über diese Trustline halten darf.",
       "authorization": "Bei auth_required-Assets muss der Issuer deine Trustline freigeben, bevor du den Token empfangen oder handeln kannst.",
       "homeDomain": "Domain, die der Issuer im Stellar-Konto hinterlegt hat. Sie hilft beim Auffinden der stellar.toml.",
       "issuerMasterWeight": "Gewicht des Issuer-Hauptschlüssels. 0 bedeutet, dass der Master-Key allein nicht mehr signieren kann.",
-      "issuerLocked": "Zeigt, ob der Issuer-Master-Key deaktiviert ist. Das kann ein positives Signal sein, ersetzt aber keine Prüfung der gesamten Konfiguration.",
+      "issuerLocked": "Zeigt, ob der Issuer-Master-Key noch aktiv ist. \"Aktiv verwaltet\" ist bei laufend betreuten Token wie Stablecoins normal und kein Warnsignal. \"Vollständig gesperrt\" ist ein positives Signal bei Token, die Unveränderlichkeit versprechen. \"Scheinbar gesperrt\" bedeutet: Der Master-Key ist zwar deaktiviert, andere Signer könnten das Konto aber trotzdem noch steuern.",
       "tomlStatus": "Status der stellar.toml-Datei unter der Home Domain des Issuers.",
       "tomlUrl": "Adresse der gefundenen stellar.toml-Datei.",
       "tomlAssetListed": "Zeigt, ob dieses Asset in den CURRENCIES-Einträgen der stellar.toml gelistet ist.",
@@ -62,7 +62,8 @@
       "poolCount": "Anzahl gefundener AMM-Liquiditätspools für dieses Handelspaar.",
       "limitOfferDirection": "Legt fest, welches Asset du verkaufst und welches du dafür erhalten möchtest.",
       "limitOfferAmount": "Menge des Assets, das du in der Limit-Order verkaufen möchtest.",
-      "limitOfferPrice": "Preis pro 1 verkauftem Asset, angegeben im gekauften Asset."
+      "limitOfferPrice": "Preis pro 1 verkauftem Asset, angegeben im gekauften Asset.",
+      "expertDirectory": "Abgleich mit dem öffentlich gepflegten Verzeichnis von stellar.expert (Drittanbieter). Ein Eintrag ist nur ein Hinweis und keine Echtheits- oder Sicherheitsgarantie. Ein fehlender Eintrag ist umgekehrt kein Betrugsindiz. Prüfe die Issuer-Adresse immer zusätzlich über die offizielle Website des Herausgebers."
     },
     "mode": {
       "code": "Suche nach Asset-Code",
@@ -245,7 +246,7 @@
       "no": "Nein",
       "homeDomain": "Home Domain",
       "issuerMasterWeight": "Master-Key-Gewicht",
-      "issuerLocked": "Issuer-Master-Key gesperrt",
+      "issuerLocked": "Issuer-Master-Key-Status",
       "liquidityRoute": "Swap-Route",
       "routeAvailable": "Route gefunden",
       "routeUnavailable": "Keine Route gefunden",
@@ -264,6 +265,25 @@
         "authRevocable": "Authorization revocable",
         "authImmutable": "Authorization immutable",
         "clawbackEnabled": "Clawback enabled"
+      },
+      "issuerLockStatus": {
+        "active": "Aktiv verwaltet",
+        "locked": "Vollständig gesperrt",
+        "appearsLocked": "Scheinbar gesperrt"
+      },
+      "amountBreakdown": {
+        "trustlines": "Davon {{amount}} auf Trustlines",
+        "claimable": "{{amount}} in Claimable Balances",
+        "pools": "{{amount}} in Liquidity Pools",
+        "contracts": "{{amount}} in Contracts"
+      },
+      "expert": {
+        "label": "StellarExpert-Verzeichnis",
+        "listed": "Im Verzeichnis eingetragen",
+        "listedAs": "Im Verzeichnis eingetragen als „{{name}}“",
+        "notListed": "Nicht im Verzeichnis – das sagt nichts über die Echtheit aus; viele seriöse Assets sind dort nicht eingetragen.",
+        "unavailable": "StellarExpert nicht erreichbar – Hinweis konnte nicht geladen werden.",
+        "notChecked": "Nicht geprüft (Verzeichnis gilt nur für das öffentliche Netzwerk)."
       }
     },
     "risk": {
@@ -274,7 +294,10 @@
       "tomlAssetMissing": "Dieses Asset ist nicht in der stellar.toml des Issuers gelistet.",
       "issuerUnlocked": "Der Issuer-Master-Key ist nicht gesperrt.",
       "authRequired": "Dieses Asset benötigt Issuer-Autorisierung.",
-      "clawbackEnabled": "Clawback ist für dieses Asset aktiviert."
+      "clawbackEnabled": "Clawback ist für dieses Asset aktiviert.",
+      "issuerAppearsLocked": "Achtung: Der Master-Key ist zwar deaktiviert, aber andere Schlüssel könnten das Issuer-Konto weiterhin steuern. Das Konto ist nicht wirklich gesperrt.",
+      "authRevocable": "Der Issuer kann eine bereits erteilte Autorisierung widerrufen und dein Guthaben in diesem Token einfrieren.",
+      "expertFlagged": "Achtung: Dieser Issuer ist im StellarExpert-Verzeichnis als schädlich markiert ({{tags}}). Von Trustline, Kauf oder Tausch wird dringend abgeraten."
     },
     "detail": {
       "status": {
@@ -305,7 +328,9 @@
       "factLabels": {
         "domain": "Issuer-Account hat eine Home Domain",
         "toml": "Asset ist in der stellar.toml dieses Issuers gelistet"
-      }
+      },
+      "duplicateCodeWarning": "Achtung: Für {{codes}} gibt es mehrere Treffer mit unterschiedlichen Ausstellern. Der Code allein sagt nichts über Echtheit aus – nur die Issuer-Adresse entscheidet. Vergleiche sie sorgfältig, bevor du eine Trustline anlegst oder tauschst.",
+      "duplicateCodeBadge": "{{count}} unterschiedliche Aussteller verwenden diesen Asset-Code."
     },
     "invalidInput": {
       "codeMissing": "Bitte einen Asset-Code eingeben.",

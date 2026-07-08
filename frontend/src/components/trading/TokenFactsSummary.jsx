@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { getFactsSnapshot, getAssetRiskWarnings, factValue, tomlStatusLabel } from './assetFactsUtils.js';
+import { getFactsSnapshot, getAssetRiskWarnings, factValue, tomlStatusLabel, issuerLockStatusLabel, expertStatusLabel, isExpertFlagged, getExpertWarningTags } from './assetFactsUtils.js';
 import HelpLabel from './HelpLabel.jsx';
 
 // Risk-warning list shown under the facts grid. Only ever rendered from
@@ -72,7 +72,15 @@ export default function TokenFactsSummary({
           </div>
           <div>
             <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.facts.issuerLocked')} helpKey="trading:assetSearch.help.issuerLocked" /></dt>
-            <dd>{snapshot.issuerMasterWeight === null ? t('trading:assetSearch.facts.notAvailable') : factValue(snapshot.issuerMasterWeight === 0, t)}</dd>
+            <dd className={
+              snapshot.issuerLockStatus.status === 'appearsLocked'
+                ? 'font-semibold text-red-700 dark:text-red-400'
+                : snapshot.issuerLockStatus.status === 'locked'
+                  ? 'text-green-700 dark:text-green-400'
+                  : ''
+            }>
+              {issuerLockStatusLabel(snapshot.issuerLockStatus.status, t)}
+            </dd>
           </div>
           <div>
             <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.facts.toml.status')} helpKey="trading:assetSearch.help.tomlStatus" /></dt>
@@ -108,6 +116,12 @@ export default function TokenFactsSummary({
             <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.facts.flags.clawbackEnabled')} helpKey="trading:assetSearch.help.clawbackEnabled" /></dt>
             <dd>{factValue(snapshot.clawbackEnabled, t)}</dd>
           </div>
+          <div className="sm:col-span-2">
+            <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.facts.expert.label')} helpKey="trading:assetSearch.help.expertDirectory" /></dt>
+            <dd className={isExpertFlagged(facts) ? 'font-semibold text-red-700 dark:text-red-400' : ''}>
+              {expertStatusLabel(facts, t)}
+            </dd>
+          </div>
           {includeRoute && (
           <div>
             <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.facts.liquidityRoute')} helpKey="trading:assetSearch.help.liquidityRoute" /></dt>
@@ -121,6 +135,14 @@ export default function TokenFactsSummary({
           </div>
           )}
         </dl>
+      )}
+      {!facts.loading && !facts.error && isExpertFlagged(facts) && (
+        <div
+          className="mt-3 rounded border border-red-300 bg-red-50 px-3 py-2 text-xs font-semibold text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
+          role="alert"
+        >
+          {t('trading:assetSearch.risk.expertFlagged', { tags: getExpertWarningTags(facts).join(', ') })}
+        </div>
       )}
       <RiskWarnings facts={facts} asset={asset} t={t} />
     </>

@@ -5,6 +5,7 @@ const StellarSdk = require('@stellar/stellar-sdk');
 const {
   searchAssets,
   fetchAssetFacts,
+  fetchExpertDirectoryEntry,
   parseCurrencySectionsFromToml,
   assertSafeScheme,
   ssrfSafeLookup,
@@ -58,7 +59,7 @@ function makeAssetSearchHorizon(recordsOrResolver) {
   };
 }
 
-function makeFactsHorizon({ issuer, homeDomain = 'example.org', flags = {}, signerWeight = 0 }) {
+function makeFactsHorizon({ issuer, homeDomain = 'example.org', flags = {}, signerWeight = 0, signers, thresholds }) {
   return {
     async loadAccount(accountId) {
       assert.equal(accountId, issuer);
@@ -66,7 +67,8 @@ function makeFactsHorizon({ issuer, homeDomain = 'example.org', flags = {}, sign
         account_id: issuer,
         home_domain: homeDomain,
         flags,
-        signers: [{ key: issuer, weight: signerWeight }],
+        signers: signers || [{ key: issuer, weight: signerWeight }],
+        thresholds: thresholds || { low_threshold: 1, med_threshold: 2, high_threshold: 3 },
       };
     },
   };
@@ -92,8 +94,33 @@ test('searchAssets searches by asset code', async () => {
     assetIssuer: issuer,
     amount: '1000.0000000',
     numAccounts: 12,
+    claimableBalancesAmount: '',
+    liquidityPoolsAmount: '',
+    contractsAmount: '',
     pagingToken: 'abc',
   }]);
+});
+
+test('searchAssets captures claimable-balance, liquidity-pool, and contract amounts from the Horizon record (not just the trustline total)', async () => {
+  const issuer = makeIssuer();
+  const horizon = makeAssetSearchHorizon([
+    {
+      asset_code: 'USDC',
+      asset_issuer: issuer,
+      amount: '1000.0000000',
+      num_accounts: 12,
+      claimable_balances_amount: '50.0000000',
+      liquidity_pools_amount: '20.0000000',
+      contracts_amount: '5.0000000',
+      paging_token: 'abc',
+    },
+  ]);
+
+  const result = await searchAssets({ assetCode: 'USDC', horizon, limit: 30 });
+
+  assert.equal(result[0].claimableBalancesAmount, '50.0000000');
+  assert.equal(result[0].liquidityPoolsAmount, '20.0000000');
+  assert.equal(result[0].contractsAmount, '5.0000000');
 });
 
 test('searchAssets searches by issuer address', async () => {
@@ -263,10 +290,58 @@ test('fetchAssetFacts loads issuer facts and matches stellar.toml currency', asy
   assert.equal(facts.issuerAccount.issuerMasterWeight, 0);
   assert.equal(facts.issuerAccount.flags.auth_required, true);
   assert.equal(facts.issuerAccount.flags.auth_clawback_enabled, true);
+  assert.deepEqual(facts.issuerAccount.thresholds, { low_threshold: 1, med_threshold: 2, high_threshold: 3 });
   assert.equal(facts.toml.status, 'loaded');
   assert.equal(facts.toml.currencies.length, 1);
   assert.equal(facts.toml.matches.length, 1);
   assert.deepEqual(facts.toml.matches[0].conditions, ['one', 'two # stays inside']);
+});
+
+test('fetchAssetFacts matches stellar.toml CURRENCIES case-sensitively (Stellar asset codes are case-sensitive)', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => ({
+    ok: true,
+    async text() {
+      return `
+        [[CURRENCIES]]
+        code = "usdc"
+        issuer = "${issuer}"
+      `;
+    },
+  });
+
+  const facts = await fetchAssetFacts({
+    assetCode: 'USDC',
+    issuer,
+    horizon: makeFactsHorizon({ issuer }),
+  });
+
+  assert.equal(facts.toml.status, 'loaded');
+  assert.equal(facts.toml.currencies.length, 1, 'the toml entry is still parsed and listed');
+  assert.equal(facts.toml.matches.length, 0, 'but "usdc" must not confirm a search for "USDC" - they are different assets');
+});
+
+test('fetchAssetFacts passes through the issuer account thresholds unchanged', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => {
+    throw new Error('fetch should not be called');
+  };
+
+  const facts = await fetchAssetFacts({
+    assetCode: 'USDC',
+    issuer,
+    horizon: makeFactsHorizon({
+      issuer,
+      homeDomain: '',
+      thresholds: { low_threshold: 5, med_threshold: 10, high_threshold: 20 },
+    }),
+  });
+
+  assert.deepEqual(facts.issuerAccount.thresholds, { low_threshold: 5, med_threshold: 10, high_threshold: 20 });
 });
 
 test('fetchAssetFacts reports loaded TOML without asset match', async (t) => {
@@ -504,4 +579,102 @@ test('readTextWithLimit falls back to response.text() for a response with no str
   const response = { ok: true, async text() { return 'plain body'; } };
   const text = await readTextWithLimit(response, MAX_TOML_RESPONSE_BYTES);
   assert.equal(text, 'plain body');
+});
+
+// --- StellarExpert directory hint -------------------------------------------
+// Note: the service keeps a module-level cache keyed by issuer, and the test
+// runner shares module state across files (--test-isolation=none), so every
+// test below uses its own freshly generated issuer key.
+
+test('fetchExpertDirectoryEntry returns a listed entry with normalized tags (leading # stripped, lowercased)', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async (url) => {
+    assert.equal(url, `https://api.stellar.expert/explorer/directory/${issuer}`);
+    return {
+      ok: true,
+      status: 200,
+      async json() {
+        return { address: issuer, name: 'Fake Anchor', domain: 'fake.example', tags: ['#Malicious', '#unsafe'] };
+      },
+    };
+  };
+
+  const entry = await fetchExpertDirectoryEntry({ issuer, network: 'PUBLIC' });
+
+  assert.equal(entry.status, 'listed');
+  assert.equal(entry.name, 'Fake Anchor');
+  assert.equal(entry.domain, 'fake.example');
+  assert.deepEqual(entry.tags, ['malicious', 'unsafe']);
+});
+
+test('fetchExpertDirectoryEntry treats a 404 as the normal "not listed" answer, not a failure', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => ({ ok: false, status: 404, async json() { return {}; } });
+
+  const entry = await fetchExpertDirectoryEntry({ issuer, network: 'PUBLIC' });
+
+  assert.equal(entry.status, 'notListed');
+  assert.deepEqual(entry.tags, []);
+});
+
+test('fetchExpertDirectoryEntry degrades to "unavailable" on a rate-limit response instead of throwing', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => ({ ok: false, status: 429, async json() { return {}; } });
+
+  const entry = await fetchExpertDirectoryEntry({ issuer, network: 'PUBLIC' });
+
+  assert.equal(entry.status, 'unavailable');
+});
+
+test('fetchExpertDirectoryEntry degrades to "unavailable" on a network error instead of throwing', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => { throw new Error('ECONNRESET'); };
+
+  const entry = await fetchExpertDirectoryEntry({ issuer, network: 'PUBLIC' });
+
+  assert.equal(entry.status, 'unavailable');
+});
+
+test('fetchExpertDirectoryEntry skips the upstream call entirely on testnet (directory covers the public network only)', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => { throw new Error('fetch should not be called for TESTNET'); };
+
+  const entry = await fetchExpertDirectoryEntry({ issuer, network: 'TESTNET' });
+
+  assert.equal(entry.status, 'notChecked');
+});
+
+test('fetchExpertDirectoryEntry rejects an invalid issuer address', async () => {
+  await assert.rejects(
+    () => fetchExpertDirectoryEntry({ issuer: 'not-an-issuer', network: 'PUBLIC' }),
+    /assetSearch\.invalidInput:issuerInvalid/
+  );
+});
+
+test('fetchExpertDirectoryEntry serves repeat lookups for the same issuer from the cache (one upstream call)', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  let callCount = 0;
+  global.fetch = async () => {
+    callCount += 1;
+    return { ok: false, status: 404, async json() { return {}; } };
+  };
+
+  const first = await fetchExpertDirectoryEntry({ issuer, network: 'PUBLIC' });
+  const second = await fetchExpertDirectoryEntry({ issuer, network: 'PUBLIC' });
+
+  assert.equal(first.status, 'notListed');
+  assert.equal(second.status, 'notListed');
+  assert.equal(callCount, 1);
 });

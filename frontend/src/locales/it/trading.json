@@ -40,7 +40,9 @@
       "factLabels": {
         "domain": "L'account dell'emittente dispone di un dominio principale",
         "toml": "L'asset è elencato nel file stellar.toml di questo emittente"
-      }
+      },
+      "duplicateCodeWarning": "Attenzione: per {{codes}} sono presenti più risultati con emittenti diversi. Il codice da solo non garantisce l'autenticità: conta solo l'indirizzo dell'emittente. Confrontalo attentamente prima di aggiungere una trustline o effettuare uno scambio.",
+      "duplicateCodeBadge": "{{count}} emittenti diversi utilizzano questo codice asset."
     },
     "invalidInput": {
       "codeMissing": "Per favore inserisci un codice di asset.",
@@ -63,14 +65,14 @@
     "help": {
       "issuer": "L'account Stellar che ha emesso questo token. Il codice e l'emittente identificano in modo univoco l'asset.",
       "trustlines": "Numero di account che, secondo Horizon, presentano una “trustline” verso questo asset. Si tratta di un indicatore di utilizzo, non di una prova di autenticità.",
-      "totalAmount": "Quantità totale di questa risorsa riportata da Horizon. La disponibilità di per sé non dice nulla sulla qualità o sull’affidabilità.",
+      "totalAmount": "Quantità totale di questa risorsa riportata da Horizon, somma di trustline, saldi rivendicabili, pool di liquidità e contratti. La disponibilità di per sé non dice nulla sulla qualità o sull'affidabilità.",
       "trustlineStatus": "Indica se il tuo conto corrente può già contenere questo asset.",
       "trustlineBalance": "Saldo attuale di questa voce sul tuo conto fiduciario.",
       "trustlineLimit": "Saldo massimo di questa attività che il tuo conto può detenere tramite questa linea di credito.",
       "authorization": "Per gli asset di tipo \"auth_required\", l'emittente deve autorizzare la tua trustline prima che tu possa ricevere o scambiare il token.",
       "homeDomain": "Dominio memorizzato sull'account dell'emittente. Serve a individuare il file stellar.toml.",
       "issuerMasterWeight": "Peso della chiave principale dell'emittente. Il valore 0 indica che la chiave principale da sola non è più in grado di firmare.",
-      "issuerLocked": "Indica se la chiave master dell'emittente è disabilitata. Questo può essere un segnale positivo, ma non sostituisce la verifica della configurazione completa.",
+      "issuerLocked": "\"Gestione attiva\" è normale per progetti gestiti in modo continuativo, come le stablecoin, e non è un segnale d'allarme. \"Completamente bloccata\" è un segnale positivo per asset che promettono immutabilità. \"Apparentemente bloccata\" significa che la chiave principale è disattivata, ma altri firmatari potrebbero comunque controllare il conto. Indica se la chiave principale dell'emittente è ancora attiva.",
       "tomlStatus": "Stato del file stellar.toml nel dominio di origine dell'emittente.",
       "tomlUrl": "Indirizzo del file stellar.toml individuato.",
       "tomlAssetListed": "Indica se questa risorsa è presente nelle voci CURRENCIES del file stellar.toml.",
@@ -102,7 +104,8 @@
       "poolCount": "Numero di pool di liquidità AMM individuati per questa coppia di trading.",
       "limitOfferDirection": "Indica quale bene vendi e quale bene desideri ricevere.",
       "limitOfferAmount": "Quantità del titolo che si desidera vendere nell'ordine con limite di prezzo.",
-      "limitOfferPrice": "Prezzo per 1 bene venduto, espresso nella valuta del bene acquistato."
+      "limitOfferPrice": "Prezzo per 1 bene venduto, espresso nella valuta del bene acquistato.",
+      "expertDirectory": "Confronto con la directory pubblica di stellar.expert (una terza parte). Una voce è solo un'indicazione, non una garanzia di autenticità o sicurezza. Allo stesso modo, l'assenza di una voce non è un indizio di frode. Verifica sempre l'indirizzo dell'emittente anche tramite il suo sito web ufficiale."
     },
     "mode": {
       "code": "Ricerca per codice asset",
@@ -285,7 +288,7 @@
       "no": "Da",
       "homeDomain": "Dominio principale",
       "issuerMasterWeight": "Peso della chiave maestra",
-      "issuerLocked": "Chiave principale dell'emittente bloccata",
+      "issuerLocked": "Stato della chiave principale dell'emittente",
       "liquidityRoute": "Percorso alternativo",
       "routeAvailable": "Percorso trovato",
       "routeUnavailable": "Percorso non trovato",
@@ -304,6 +307,25 @@
         "authRevocable": "Autorizzazione revocabile",
         "authImmutable": "Autorizzazione immutabile",
         "clawbackEnabled": "Recupero attivato"
+      },
+      "issuerLockStatus": {
+        "active": "Gestione attiva",
+        "locked": "Completamente bloccata",
+        "appearsLocked": "Apparentemente bloccata"
+      },
+      "amountBreakdown": {
+        "trustlines": "Di cui {{amount}} su trustline",
+        "claimable": "{{amount}} in saldi rivendicabili",
+        "pools": "{{amount}} in pool di liquidità",
+        "contracts": "{{amount}} in contratti"
+      },
+      "expert": {
+        "label": "Directory StellarExpert",
+        "listed": "Presente nella directory",
+        "listedAs": "Presente nella directory come \"{{name}}\"",
+        "notListed": "Non presente nella directory: questo non dice nulla sull'autenticità; molti asset seri non vi sono elencati.",
+        "unavailable": "StellarExpert non raggiungibile: non è stato possibile caricare l'indicazione.",
+        "notChecked": "Non verificato (la directory copre solo la rete pubblica)."
       }
     },
     "risk": {
@@ -314,7 +336,10 @@
       "tomlAssetMissing": "Questo asset non è elencato nel file stellar.toml dell'emittente.",
       "issuerUnlocked": "La chiave principale dell'emittente non è bloccata.",
       "authRequired": "Questa risorsa richiede l'autorizzazione dell'emittente.",
-      "clawbackEnabled": "Per questo asset è attiva la clausola di recupero."
+      "clawbackEnabled": "Per questo asset è attiva la clausola di recupero.",
+      "issuerAppearsLocked": "Attenzione: la chiave principale è disattivata, ma altre chiavi potrebbero comunque controllare il conto dell'emittente. Il conto non è quindi realmente bloccato.",
+      "authRevocable": "L'emittente può revocare un'autorizzazione già concessa e bloccare il tuo saldo di questo token.",
+      "expertFlagged": "Attenzione: questo emittente è contrassegnato come dannoso nella directory StellarExpert ({{tags}}). È fortemente sconsigliato aggiungere una trustline, acquistare o scambiare."
     },
     "detail": {
       "status": {

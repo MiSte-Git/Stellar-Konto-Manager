@@ -21,6 +21,15 @@ export const EMPTY_ASSET_FACTS = {
     matches: [],
     error: '',
   },
+  // Third-party StellarExpert directory hint for the issuer. status:
+  // 'notChecked' | 'listed' | 'notListed' | 'unavailable'. Kept strictly
+  // informational - a listing is no legitimacy proof, absence no scam signal.
+  expert: {
+    status: 'notChecked',
+    name: '',
+    domain: '',
+    tags: [],
+  },
 };
 
 export function shortenKey(value = '') {
@@ -215,6 +224,21 @@ export function getAssetAmountNumber(asset) {
   return parseHorizonNumber(value);
 }
 
+// getAssetAmountNumber() only covers units held on trustlines. Horizon's
+// /assets response separately reports units locked in claimable balances,
+// liquidity pools, and Soroban contracts - those are outstanding supply too,
+// so a label that says "Gesamtmenge" (total amount) needs to include them.
+export function getAssetTotalAmountNumber(asset) {
+  const parts = [
+    getAssetAmountNumber(asset),
+    parseHorizonNumber(asset?.claimableBalancesAmount),
+    parseHorizonNumber(asset?.liquidityPoolsAmount),
+    parseHorizonNumber(asset?.contractsAmount),
+  ];
+  if (parts.every((part) => part == null)) return null;
+  return parts.reduce((sum, part) => sum + (part ?? 0), 0);
+}
+
 export function getOfferPriceNumber(item) {
   const direct = parseHorizonNumber(item?.price);
   if (direct != null) return direct;
@@ -254,6 +278,86 @@ export function getIssuerMasterWeight(account, issuer) {
   const signers = Array.isArray(account?.signers) ? account.signers : [];
   const master = signers.find((signer) => signer.key === issuer || signer.public_key === issuer);
   return master ? Number(master.weight || 0) : null;
+}
+
+// Coerces a Horizon weight/threshold value to a finite, non-negative number,
+// treating anything unparseable as 0 rather than propagating NaN through the
+// comparisons below (fails toward "no protection", i.e. toward a warning
+// rather than silently claiming a healthy status on bad data).
+function safeNonNegativeNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 ? number : 0;
+}
+
+/**
+ * Classifies the issuer account's master-key state for legitimacy checks.
+ *
+ * A raw "master weight === 0" check is misleading: it is normal (not a
+ * warning) for actively managed assets like regulated stablecoins, and it
+ * can be a false "locked" signal if other signers still hold enough weight
+ * to reach the account's own thresholds.
+ *
+ * A weight-0 signer (including a "disabled" master key) can never produce a
+ * usable signature on Stellar, regardless of the threshold value - a
+ * threshold of 0 only means no *extra* weight is needed on top of a single
+ * valid (weight > 0) signer, not that a weight-0 signer becomes usable. So
+ * an issuer with no other weighted signers is genuinely, permanently locked
+ * even if its thresholds were never explicitly configured (the common
+ * default of 0/0/0) - that is in fact Stellar's documented way to lock a
+ * fixed-supply issuer.
+ *
+ * Returns one of:
+ * - 'active'        masterWeight > 0 - normal for managed assets, not a risk.
+ * - 'locked'         masterWeight === 0 and no other signer holds enough
+ *                    weight to control the account.
+ * - 'appearsLocked'  masterWeight === 0 but other signers hold enough weight
+ *                    to reach at least one threshold - the deceptive case
+ *                    that a plain "gesperrt: Ja" hides.
+ * - 'unknown'        master signer not found in the account's signer list.
+ */
+export function getIssuerLockStatus(account, issuer) {
+  const masterWeight = getIssuerMasterWeight(account, issuer);
+  if (masterWeight === null) {
+    return { status: 'unknown', masterWeight: null, otherSignersWeight: null, minThreshold: null };
+  }
+  if (masterWeight > 0) {
+    return { status: 'active', masterWeight, otherSignersWeight: null, minThreshold: null };
+  }
+
+  const signers = Array.isArray(account?.signers) ? account.signers : [];
+  const otherSignersWeight = signers.reduce((sum, signer) => {
+    const key = signer.key || signer.public_key;
+    if (key === issuer) return sum;
+    return sum + safeNonNegativeNumber(signer.weight);
+  }, 0);
+
+  // No other signer can produce a usable (weight > 0) signature at all, so
+  // the account is locked no matter what the thresholds say.
+  if (otherSignersWeight <= 0) {
+    return { status: 'locked', masterWeight, otherSignersWeight: 0, minThreshold: null };
+  }
+
+  const thresholds = account?.thresholds;
+  if (!thresholds || typeof thresholds !== 'object') {
+    return { status: 'appearsLocked', masterWeight, otherSignersWeight, minThreshold: null };
+  }
+
+  const low = safeNonNegativeNumber(thresholds.low_threshold ?? thresholds.lowThreshold);
+  const med = safeNonNegativeNumber(thresholds.med_threshold ?? thresholds.medThreshold);
+  const high = safeNonNegativeNumber(thresholds.high_threshold ?? thresholds.highThreshold);
+  const minThreshold = Math.min(low, med, high);
+
+  // minThreshold === 0 means that category needs no weight beyond a single
+  // valid signer, which the remaining signers already provide (weight > 0
+  // confirmed above).
+  const controllable = minThreshold === 0 || otherSignersWeight >= minThreshold;
+
+  return {
+    status: controllable ? 'appearsLocked' : 'locked',
+    masterWeight,
+    otherSignersWeight,
+    minThreshold,
+  };
 }
 
 export function getAccountFlag(account, snakeKey, camelKey) {

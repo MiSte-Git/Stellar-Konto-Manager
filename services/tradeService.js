@@ -188,6 +188,7 @@ function simplifyIssuerAccount(account, issuer) {
   const flags = account?.flags || {};
   const signers = Array.isArray(account?.signers) ? account.signers : [];
   const master = signers.find((signer) => signer.key === issuer || signer.public_key === issuer);
+  const thresholds = account?.thresholds || {};
   return {
     accountId: account?.account_id || account?.id || issuer,
     homeDomain: account?.home_domain || account?.homeDomain || '',
@@ -203,6 +204,14 @@ function simplifyIssuerAccount(account, issuer) {
       public_key: signer.public_key || signer.key || '',
       weight: Number(signer.weight || 0),
     })),
+    // Needed by the frontend to tell a genuinely locked issuer apart from one
+    // where other signers (or a 0-value threshold) could still control the
+    // account despite master_weight === 0.
+    thresholds: {
+      low_threshold: Number(thresholds.low_threshold ?? thresholds.lowThreshold ?? 0),
+      med_threshold: Number(thresholds.med_threshold ?? thresholds.medThreshold ?? 0),
+      high_threshold: Number(thresholds.high_threshold ?? thresholds.highThreshold ?? 0),
+    },
     issuerMasterWeight: master ? Number(master.weight || 0) : null,
   };
 }
@@ -272,8 +281,15 @@ function mapAssetRecord(record) {
   return {
     assetCode: record.asset_code,
     assetIssuer: record.asset_issuer,
+    // "amount" is the trustline-held total only. Horizon's /assets response
+    // separately reports units locked in claimable balances, liquidity
+    // pools, and Soroban contracts - those are real outstanding supply too,
+    // so they're captured here rather than silently left out of "Gesamtmenge".
     amount: formatAssetAmount(record.balances ?? record.amount ?? record.total_amount ?? record.balance ?? ''),
     numAccounts: formatSplitHorizonNumber(record.accounts ?? record.num_accounts ?? record.numAccounts ?? ''),
+    claimableBalancesAmount: formatAssetAmount(record.claimable_balances_amount ?? record.claimableBalancesAmount ?? ''),
+    liquidityPoolsAmount: formatAssetAmount(record.liquidity_pools_amount ?? record.liquidityPoolsAmount ?? ''),
+    contractsAmount: formatAssetAmount(record.contracts_amount ?? record.contractsAmount ?? ''),
     pagingToken: record.paging_token,
   };
 }
@@ -340,8 +356,12 @@ async function fetchAssetFacts({ assetCode, issuer, horizon }) {
     try {
       const tomlText = await fetchTextWithTimeout(tomlUrl);
       const currencies = parseCurrencySectionsFromToml(tomlText);
+      // Asset codes are case-sensitive on Stellar (USDC and usdc are
+      // different assets even for the same issuer), so this must not
+      // upcase either side - a differently-cased fake would otherwise be
+      // confirmed as "listed in the issuer's stellar.toml".
       const matches = currencies.filter((currency) =>
-        String(currency.code || '').toUpperCase() === asset.code.toUpperCase() &&
+        String(currency.code || '') === asset.code &&
         String(currency.issuer || '') === asset.issuer
       );
       return {
@@ -373,9 +393,89 @@ async function fetchAssetFacts({ assetCode, issuer, horizon }) {
   }
 }
 
+// --- StellarExpert directory lookup ----------------------------------------
+// Third-party hint only: the curated stellar.expert directory tags known
+// accounts (exchanges, anchors, and - most valuable here - #malicious /
+// #unsafe scam issuers). A listing is never treated as proof of legitimacy
+// and a missing listing is never treated as a scam indicator; the caller
+// renders both as neutral hints. The endpoint is queried only for the
+// user-selected asset (not per search result) to stay well inside the
+// public API's rate limits, with a small in-memory cache on top.
+
+const EXPERT_DIRECTORY_BASE_URL = 'https://api.stellar.expert/explorer/directory';
+const EXPERT_FETCH_TIMEOUT_MS = 5000;
+const EXPERT_CACHE_TTL_MS = 10 * 60 * 1000;
+// Failures (rate limit, outage) are cached much shorter so the hint comes
+// back quickly once the API recovers, without hammering it while it is down.
+const EXPERT_UNAVAILABLE_TTL_MS = 60 * 1000;
+const EXPERT_CACHE_MAX_ENTRIES = 500;
+const expertDirectoryCache = new Map();
+
+function normalizeExpertTags(rawTags) {
+  if (!Array.isArray(rawTags)) return [];
+  return rawTags
+    .map((tag) => String(tag || '').replace(/^#/, '').trim().toLowerCase())
+    .filter(Boolean);
+}
+
+async function fetchExpertDirectoryEntry({ issuer, network }) {
+  const accountId = String(issuer || '').trim();
+  if (!accountId || !StellarSdk.StrKey.isValidEd25519PublicKey(accountId)) {
+    throw new Error('assetSearch.invalidInput:issuerInvalid');
+  }
+
+  // The directory covers the public network; testnet issuers are throwaway
+  // keys that can never be listed, so skip the upstream call entirely.
+  const isPublic = String(network || 'PUBLIC').toUpperCase() !== 'TESTNET';
+  if (!isPublic) {
+    return { issuer: accountId, status: 'notChecked', name: '', domain: '', tags: [] };
+  }
+
+  const cached = expertDirectoryCache.get(accountId);
+  if (cached && cached.expires > Date.now()) return cached.entry;
+
+  const entry = await loadExpertDirectoryEntry(accountId);
+  if (expertDirectoryCache.size >= EXPERT_CACHE_MAX_ENTRIES) expertDirectoryCache.clear();
+  expertDirectoryCache.set(accountId, {
+    entry,
+    expires: Date.now() + (entry.status === 'unavailable' ? EXPERT_UNAVAILABLE_TTL_MS : EXPERT_CACHE_TTL_MS),
+  });
+  return entry;
+}
+
+async function loadExpertDirectoryEntry(accountId) {
+  const base = { issuer: accountId, name: '', domain: '', tags: [] };
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const timer = controller ? setTimeout(() => controller.abort(), EXPERT_FETCH_TIMEOUT_MS) : null;
+  try {
+    const response = await fetch(`${EXPERT_DIRECTORY_BASE_URL}/${accountId}`, {
+      headers: { accept: 'application/json' },
+      signal: controller?.signal,
+    });
+    // 404 is the API's way of saying "no directory entry" - a perfectly
+    // normal answer for most legitimate assets, not a failure.
+    if (response.status === 404) return { ...base, status: 'notListed' };
+    if (!response.ok) return { ...base, status: 'unavailable' };
+    const data = await response.json().catch(() => null);
+    if (!data || typeof data !== 'object') return { ...base, status: 'unavailable' };
+    return {
+      ...base,
+      status: 'listed',
+      name: String(data.name || ''),
+      domain: String(data.domain || ''),
+      tags: normalizeExpertTags(data.tags),
+    };
+  } catch {
+    return { ...base, status: 'unavailable' };
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
 module.exports = {
   searchAssets,
   fetchAssetFacts,
+  fetchExpertDirectoryEntry,
   parseCurrencySectionsFromToml,
   // Exported for direct unit testing of the SSRF hardening (N1/N2) without
   // needing real network access or a running server.

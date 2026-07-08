@@ -23,14 +23,14 @@
     "help": {
       "issuer": "The Stellar account that issued this token. Code and issuer together uniquely identify the asset.",
       "trustlines": "Number of accounts that have a trustline to this asset according to Horizon. This is a usage signal, not proof of authenticity.",
-      "totalAmount": "Total amount of this asset reported by Horizon. Supply alone says nothing about quality or trustworthiness.",
+      "totalAmount": "Total amount of this asset reported by Horizon - trustlines, claimable balances, liquidity pools, and contracts combined. Supply alone says nothing about quality or trustworthiness.",
       "trustlineStatus": "Shows whether your current account can already hold this asset.",
       "trustlineBalance": "Current balance of this asset on your trustline.",
       "trustlineLimit": "Maximum balance of this asset your account may hold through this trustline.",
       "authorization": "For auth_required assets, the issuer must authorize your trustline before you can receive or trade the token.",
       "homeDomain": "Domain stored on the issuer account. It helps locate the stellar.toml file.",
       "issuerMasterWeight": "Weight of the issuer master key. 0 means the master key alone can no longer sign.",
-      "issuerLocked": "Shows whether the issuer master key is disabled. This can be a positive signal but does not replace checking the full configuration.",
+      "issuerLocked": "Shows whether the issuer master key is still active. \"Actively managed\" is normal for ongoing projects like stablecoins and is not a warning. \"Fully locked\" is a positive signal for tokens that promise immutability. \"Appears locked\" means the master key is disabled, but other signers could still control the account.",
       "tomlStatus": "Status of the stellar.toml file under the issuer home domain.",
       "tomlUrl": "Address of the discovered stellar.toml file.",
       "tomlAssetListed": "Shows whether this asset is listed in the CURRENCIES entries of the stellar.toml.",
@@ -62,7 +62,8 @@
       "poolCount": "Number of AMM liquidity pools found for this trading pair.",
       "limitOfferDirection": "Defines which asset you sell and which asset you want to receive.",
       "limitOfferAmount": "Amount of the asset you want to sell in the limit order.",
-      "limitOfferPrice": "Price per 1 sold asset, denominated in the bought asset."
+      "limitOfferPrice": "Price per 1 sold asset, denominated in the bought asset.",
+      "expertDirectory": "Cross-check against the publicly maintained directory at stellar.expert (a third party). A listing is only a hint, not a proof of authenticity or safety. A missing listing is likewise no indication of fraud. Always verify the issuer address via the issuer’s official website as well."
     },
     "mode": {
       "code": "Asset code search",
@@ -245,7 +246,7 @@
       "no": "No",
       "homeDomain": "Home domain",
       "issuerMasterWeight": "Master key weight",
-      "issuerLocked": "Issuer master key locked",
+      "issuerLocked": "Issuer master key status",
       "liquidityRoute": "Swap route",
       "routeAvailable": "Route found",
       "routeUnavailable": "No route found",
@@ -264,6 +265,25 @@
         "authRevocable": "Authorization revocable",
         "authImmutable": "Authorization immutable",
         "clawbackEnabled": "Clawback enabled"
+      },
+      "issuerLockStatus": {
+        "active": "Actively managed",
+        "locked": "Fully locked",
+        "appearsLocked": "Appears locked"
+      },
+      "amountBreakdown": {
+        "trustlines": "Of that, {{amount}} on trustlines",
+        "claimable": "{{amount}} in claimable balances",
+        "pools": "{{amount}} in liquidity pools",
+        "contracts": "{{amount}} in contracts"
+      },
+      "expert": {
+        "label": "StellarExpert directory",
+        "listed": "Listed in the directory",
+        "listedAs": "Listed in the directory as \"{{name}}\"",
+        "notListed": "Not in the directory - this says nothing about authenticity; many reputable assets are not listed there.",
+        "unavailable": "StellarExpert not reachable - the hint could not be loaded.",
+        "notChecked": "Not checked (the directory only covers the public network)."
       }
     },
     "risk": {
@@ -274,7 +294,10 @@
       "tomlAssetMissing": "This asset is not listed in the issuer's stellar.toml.",
       "issuerUnlocked": "The issuer master key is not locked.",
       "authRequired": "This asset requires issuer authorization.",
-      "clawbackEnabled": "Clawback is enabled for this asset."
+      "clawbackEnabled": "Clawback is enabled for this asset.",
+      "issuerAppearsLocked": "Warning: the master key is disabled, but other signers could still control the issuer account. It is not actually locked.",
+      "authRevocable": "The issuer can revoke a granted authorization and freeze your balance of this token.",
+      "expertFlagged": "Warning: this issuer is flagged as harmful in the StellarExpert directory ({{tags}}). Adding a trustline, buying, or swapping is strongly discouraged."
     },
     "detail": {
       "status": {
@@ -305,7 +328,9 @@
       "factLabels": {
         "domain": "Issuer account has a home domain",
         "toml": "Asset is listed in this issuer's stellar.toml"
-      }
+      },
+      "duplicateCodeWarning": "Warning: {{codes}} has multiple results from different issuers. The code alone says nothing about authenticity - only the issuer address does. Compare it carefully before adding a trustline or swapping.",
+      "duplicateCodeBadge": "{{count}} different issuers use this asset code."
     },
     "invalidInput": {
       "codeMissing": "Please enter an asset code.",

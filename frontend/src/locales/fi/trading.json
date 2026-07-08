@@ -40,7 +40,9 @@
       "factLabels": {
         "domain": "Liikkeeseenlaskijan tilillä on kotiverkkotunnus",
         "toml": "Asset on lueteltu tämän liikkeeseenlaskijan stellar.toml-tiedostossa"
-      }
+      },
+      "duplicateCodeWarning": "Huomio: koodilla {{codes}} on useita tuloksia eri liikkeeseenlaskijoilta. Pelkkä koodi ei kerro aitoudesta mitään – vain liikkeeseenlaskijan osoite ratkaisee. Vertaa sitä huolellisesti ennen trust-linjan lisäämistä tai vaihtoa.",
+      "duplicateCodeBadge": "{{count}} eri liikkeeseenlaskijaa käyttää tätä omaisuuserän koodia."
     },
     "invalidInput": {
       "codeMissing": "Anna oma varallisuuskoodi.",
@@ -63,14 +65,14 @@
     "help": {
       "issuer": "Stellar-tili, joka on laskenut tämän tokenin liikkeeseen. Koodi ja liikkeeseenlaskija yhdessä yksilöivät kyseisen omaisuuserän.",
       "trustlines": "Horizonin mukaan tämän omaisuuserän kanssa luottosuhteen muodostaneiden tilien lukumäärä. Tämä on käyttöä koskeva merkki, ei aitouden todiste.",
-      "totalAmount": "Horizonin ilmoittama tämän omaisuuserän kokonaismäärä. Pelkkä tarjonta ei kerro mitään laadusta tai luotettavuudesta.",
+      "totalAmount": "Horizonin ilmoittama tämän omaisuuserän kokonaismäärä – trust-linjat, lunastettavat saldot, likviditeettipoolit ja sopimukset yhteenlaskettuna. Pelkkä tarjonta ei kerro mitään laadusta tai luotettavuudesta.",
       "trustlineStatus": "Ilmaisee, voiko nykyisellä tililläsi jo olla kyseistä omaisuutta.",
       "trustlineBalance": "Tämän varan nykyinen saldo Trustline-tililläsi.",
       "trustlineLimit": "Tämän omaisuuserän enimmäissaldo, joka tililläsi voi olla tämän luottorajan puitteissa.",
       "authorization": "Kun kyseessä ovat auth_required-resurssit, myöntäjän on hyväksyttävä luottolinjasi, ennen kuin voit vastaanottaa tai vaihtaa tokenia.",
       "homeDomain": "Välittäjän tilille tallennettu verkkotunnus. Sen avulla voidaan paikantaa stellar.toml-tiedosto.",
       "issuerMasterWeight": "Liikkeeseenlaskijan pääavaimen painoarvo. Arvo 0 tarkoittaa, että pääavaimella ei enää voida allekirjoittaa.",
-      "issuerLocked": "Ilmaisee, onko liikkeeseenlaskijan pääavain poistettu käytöstä. Tämä voi olla myönteinen merkki, mutta se ei korvaa koko kokoonpanon tarkistamista.",
+      "issuerLocked": "Ilmaisee, onko liikkeeseenlaskijan pääavain edelleen aktiivinen. \"Aktiivisesti hallinnoitu\" on normaalia jatkuvasti ylläpidetyille kohteille, kuten vakaakolikoille, eikä se ole varoitusmerkki. \"Täysin lukittu\" on myönteinen merkki omaisuuserille, jotka lupaavat muuttumattomuutta. \"Näyttää lukitulta\" tarkoittaa, että pääavain on poistettu käytöstä, mutta muut allekirjoittajat voisivat silti hallita tiliä.",
       "tomlStatus": "stellar.toml-tiedoston tila liikkeeseenlaskijan kotiverkkotunnuksen alla.",
       "tomlUrl": "Löydetyn stellar.toml-tiedoston sijainti.",
       "tomlAssetListed": "Ilmaisee, onko tämä omaisuuserä lueteltu tiedoston stellar.toml CURRENCIES-kohdassa.",
@@ -102,7 +104,8 @@
       "poolCount": "Tälle kaupankäyntiparille löytyneiden AMM-likviditeettipoolien lukumäärä.",
       "limitOfferDirection": "Määrittää, minkä omaisuuserän myyt ja minkä omaisuuserän haluat vastaanottaa.",
       "limitOfferAmount": "Se summa, jonka haluat myydä rajoitetussa toimeksiannossa.",
-      "limitOfferPrice": "Hinta yhtä myytyä omaisuuserää kohti, ilmaistuna ostetun omaisuuserän valuutassa."
+      "limitOfferPrice": "Hinta yhtä myytyä omaisuuserää kohti, ilmaistuna ostetun omaisuuserän valuutassa.",
+      "expertDirectory": "Vertailu stellar.expert-sivuston julkisesti ylläpitämään hakemistoon (kolmas osapuoli). Merkintä on vain vihje, ei todiste aitoudesta tai turvallisuudesta. Puuttuva merkintä ei myöskään ole merkki huijauksesta. Tarkista liikkeeseenlaskijan osoite aina myös sen virallisilta verkkosivuilta."
     },
     "mode": {
       "code": "Omaisuuskoodin haku",
@@ -285,7 +288,7 @@
       "no": "Alkaen",
       "homeDomain": "Kotiverkkotunnus",
       "issuerMasterWeight": "Pääavaimen paino",
-      "issuerLocked": "Liikkeeseenlaskijan pääavain lukittu",
+      "issuerLocked": "Liikkeeseenlaskijan pääavaimen tila",
       "liquidityRoute": "Vaihda reittiä",
       "routeAvailable": "Reitti löytyi",
       "routeUnavailable": "Reittiä ei löytynyt",
@@ -304,6 +307,25 @@
         "authRevocable": "Valtuutus on peruutettavissa",
         "authImmutable": "Valtuutus on muuttumaton",
         "clawbackEnabled": "Takaisinperintä käytössä"
+      },
+      "issuerLockStatus": {
+        "active": "Aktiivisesti hallinnoitu",
+        "locked": "Täysin lukittu",
+        "appearsLocked": "Näyttää lukitulta"
+      },
+      "amountBreakdown": {
+        "trustlines": "Josta {{amount}} trust-linjoilla",
+        "claimable": "{{amount}} lunastettavissa saldoissa",
+        "pools": "{{amount}} likviditeettipooleissa",
+        "contracts": "{{amount}} sopimuksissa"
+      },
+      "expert": {
+        "label": "StellarExpert-hakemisto",
+        "listed": "Merkitty hakemistoon",
+        "listedAs": "Merkitty hakemistoon nimellä \"{{name}}\"",
+        "notListed": "Ei hakemistossa – tämä ei kerro mitään aitoudesta; monet luotettavat omaisuuserät puuttuvat sieltä.",
+        "unavailable": "StellarExpert ei ole tavoitettavissa – vihjettä ei voitu ladata.",
+        "notChecked": "Ei tarkistettu (hakemisto kattaa vain julkisen verkon)."
       }
     },
     "risk": {
@@ -314,7 +336,10 @@
       "tomlAssetMissing": "Tätä omaisuuserää ei ole mainittu liikkeeseenlaskijan stellar.toml-tiedostossa.",
       "issuerUnlocked": "Lähettäjän pääavainta ei ole lukittu.",
       "authRequired": "Tämä resurssi edellyttää julkaisijan valtuutusta.",
-      "clawbackEnabled": "Tälle omaisuuserälle on otettu käyttöön takaisinperintä."
+      "clawbackEnabled": "Tälle omaisuuserälle on otettu käyttöön takaisinperintä.",
+      "issuerAppearsLocked": "Huomio: pääavain on poistettu käytöstä, mutta muut avaimet voisivat silti hallita liikkeeseenlaskijan tiliä. Tili ei siis ole todellisuudessa lukittu.",
+      "authRevocable": "Liikkeeseenlaskija voi peruuttaa myönnetyn valtuutuksen ja jäädyttää tämän tokenin saldosi.",
+      "expertFlagged": "Varoitus: tämä liikkeeseenlaskija on merkitty haitalliseksi StellarExpert-hakemistossa ({{tags}}). Trust-linjan lisäämistä, ostamista tai vaihtamista ei suositella."
     },
     "detail": {
       "status": {

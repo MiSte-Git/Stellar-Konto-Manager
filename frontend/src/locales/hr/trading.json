@@ -40,7 +40,9 @@
       "factLabels": {
         "domain": "Račun izdavatelja ima matičnu domenu.",
         "toml": "Imovina je navedena u stellar.toml ovog izdavatelja."
-      }
+      },
+      "duplicateCodeWarning": "Pažnja: za {{codes}} postoji više rezultata s različitim izdavateljima. Sam kod ništa ne govori o autentičnosti – odlučuje samo adresa izdavatelja. Pažljivo je usporedite prije dodavanja trustlinea ili zamjene.",
+      "duplicateCodeBadge": "{{count}} različitih izdavatelja koristi ovaj kod imovine."
     },
     "invalidInput": {
       "codeMissing": "Molimo unesite šifru imovine.",
@@ -63,14 +65,14 @@
     "help": {
       "issuer": "Stellar račun koji je izdao ovaj token. Kôd i izdavatelj zajedno jedinstveno identificiraju imovinu.",
       "trustlines": "Broj računa koji imaju trustline prema ovoj imovini prema Horizonu. Ovo je signal upotrebe, a ne dokaz autentičnosti.",
-      "totalAmount": "Ukupni iznos ove imovine koju je prijavio Horizon. Sama opskrba ne govori ništa o kvaliteti ili pouzdanosti.",
+      "totalAmount": "Ukupni iznos ove imovine koju je prijavio Horizon – zbroj trustlineova, potraživanih stanja, poolova likvidnosti i ugovora. Sama opskrba ne govori ništa o kvaliteti ili pouzdanosti.",
       "trustlineStatus": "Pokazuje može li vaš tekući račun već držati ovu imovinu.",
       "trustlineBalance": "Trenutni saldo ove imovine na vašem Trustlineu.",
       "trustlineLimit": "Maksimalni saldo ove imovine koji vaš račun može držati putem ove trustline.",
       "authorization": "Za auth_required sredstva izdavatelj mora autorizirati vašu trustline prije nego što možete primiti ili razmjenjivati token.",
       "homeDomain": "Domena pohranjena na računu izdavatelja. Pomaže u pronalaženju datoteke stellar.toml.",
       "issuerMasterWeight": "Težina glavnog ključa izdavatelja. 0 znači da glavni ključ sam više ne može potpisati.",
-      "issuerLocked": "Prikazuje je li glavni ključ izdavatelja onemogućen. To može biti pozitivan signal, ali ne zamjenjuje provjeru cjelokupne konfiguracije.",
+      "issuerLocked": "Prikazuje je li glavni ključ izdavatelja i dalje aktivan. \"Aktivno upravljano\" je normalno za projekte koji se kontinuirano održavaju, poput stabilnih valuta, i nije upozorenje. \"Potpuno zaključano\" pozitivan je signal za imovinu koja obećava nepromjenjivost. \"Prividno zaključano\" znači da je glavni ključ onemogućen, no drugi potpisnici i dalje bi mogli kontrolirati račun.",
       "tomlStatus": "Status datoteke stellar.toml u domeni izdavatelja.",
       "tomlUrl": "Adresa otkrivene datoteke stellar.toml.",
       "tomlAssetListed": "Pokazuje je li ova imovina navedena u unosima CURRENCIES u datoteci stellar.toml.",
@@ -102,7 +104,8 @@
       "poolCount": "Broj AMM likvidnosnih bazena pronađenih za ovaj trgovački par.",
       "limitOfferDirection": "Definira koju imovinu prodajete i koju imovinu želite primiti.",
       "limitOfferAmount": "Iznos imovine koji želite prodati u limitiranoj narudžbi.",
-      "limitOfferPrice": "Cijena po jednoj prodanoj imovini, izražena u kupovanoj imovini."
+      "limitOfferPrice": "Cijena po jednoj prodanoj imovini, izražena u kupovanoj imovini.",
+      "expertDirectory": "Usporedba s javno održavanim imenikom na stellar.expert (treća strana). Upis je samo napomena, a ne jamstvo autentičnosti ili sigurnosti. Nepostojanje upisa također nije znak prijevare. Uvijek dodatno provjerite adresu izdavatelja putem njegove službene web-stranice."
     },
     "mode": {
       "code": "Pretraga koda imovine",
@@ -285,7 +288,7 @@
       "no": "Od",
       "homeDomain": "Domaća domena",
       "issuerMasterWeight": "Težina glavnog ključa",
-      "issuerLocked": "Glavni ključ izdavatelja je zaključan",
+      "issuerLocked": "Status glavnog ključa izdavatelja",
       "liquidityRoute": "Zamjenska ruta",
       "routeAvailable": "Pronađena ruta",
       "routeUnavailable": "Nije pronađena ruta",
@@ -304,6 +307,25 @@
         "authRevocable": "Opozivljiva autorizacija",
         "authImmutable": "Autorizacija nepromjenjiva",
         "clawbackEnabled": "Oduzimanje omogućeno"
+      },
+      "issuerLockStatus": {
+        "active": "Aktivno upravljano",
+        "locked": "Potpuno zaključano",
+        "appearsLocked": "Prividno zaključano"
+      },
+      "amountBreakdown": {
+        "trustlines": "Od toga {{amount}} na trustlineovima",
+        "claimable": "{{amount}} u potraživanim stanjima",
+        "pools": "{{amount}} u poolovima likvidnosti",
+        "contracts": "{{amount}} u ugovorima"
+      },
+      "expert": {
+        "label": "StellarExpert imenik",
+        "listed": "Upisan u imenik",
+        "listedAs": "Upisan u imenik kao „{{name}}“",
+        "notListed": "Nije u imeniku – to ništa ne govori o autentičnosti; mnoga ozbiljna sredstva tamo nisu upisana.",
+        "unavailable": "StellarExpert nije dostupan – napomena se nije mogla učitati.",
+        "notChecked": "Nije provjereno (imenik vrijedi samo za javnu mrežu)."
       }
     },
     "risk": {
@@ -314,7 +336,10 @@
       "tomlAssetMissing": "Ova imovina nije navedena u stellar.toml izdavatelja.",
       "issuerUnlocked": "Glavni ključ izdavatelja nije zaključan.",
       "authRequired": "Ova imovina zahtijeva odobrenje izdavatelja.",
-      "clawbackEnabled": "Za ovu imovinu omogućen je povrat."
+      "clawbackEnabled": "Za ovu imovinu omogućen je povrat.",
+      "issuerAppearsLocked": "Pažnja: glavni ključ je onemogućen, ali drugi potpisnici i dalje bi mogli kontrolirati račun izdavatelja. Račun zapravo nije zaključan.",
+      "authRevocable": "Izdavatelj može opozvati već izdano ovlaštenje i zamrznuti vaše stanje ovog tokena.",
+      "expertFlagged": "Pažnja: ovaj je izdavatelj u StellarExpert imeniku označen kao štetan ({{tags}}). Izrazito se ne preporučuje dodavanje trustlinea, kupnja ili zamjena."
     },
     "detail": {
       "status": {

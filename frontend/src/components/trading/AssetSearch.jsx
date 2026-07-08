@@ -33,6 +33,7 @@ import {
   getAssetTrustlineCount,
   getAssetTrustlineCountNumber,
   getAssetAmountNumber,
+  getAssetTotalAmountNumber,
   getOfferPriceNumber,
   sumOrderbookAmount,
   calculatePercentChange,
@@ -187,8 +188,23 @@ export default function AssetSearch() {
     return value == null ? '—' : countFormatter.format(value);
   };
   const formatAssetAmount = (asset) => {
-    const value = getAssetAmountNumber(asset);
+    const value = getAssetTotalAmountNumber(asset);
     return value == null ? '—' : amountFormatter.format(value);
+  };
+  // Only shown when at least one non-trustline component is non-zero, so the
+  // common case (everything on trustlines) doesn't get a clutter breakdown.
+  const getAssetAmountBreakdown = (asset) => {
+    const trustlines = getAssetAmountNumber(asset);
+    const claimable = parseHorizonNumber(asset?.claimableBalancesAmount);
+    const pools = parseHorizonNumber(asset?.liquidityPoolsAmount);
+    const contracts = parseHorizonNumber(asset?.contractsAmount);
+    if (!(claimable > 0) && !(pools > 0) && !(contracts > 0)) return null;
+    return {
+      trustlines: trustlines == null ? '—' : amountFormatter.format(trustlines),
+      claimable: claimable > 0 ? amountFormatter.format(claimable) : null,
+      pools: pools > 0 ? amountFormatter.format(pools) : null,
+      contracts: contracts > 0 ? amountFormatter.format(contracts) : null,
+    };
   };
   const toggleAssetSort = (field) => {
     setAssetSort((current) => ({
@@ -1169,6 +1185,18 @@ export default function AssetSearch() {
               <div>
                 <dt className="font-semibold"><HelpLabel label={t('trading:assetSearch.result.columns.amount', 'Amount')} helpKey='trading:assetSearch.help.totalAmount' /></dt>
                 <dd>{formatAssetAmount(selectedAsset)}</dd>
+                {(() => {
+                  const breakdown = getAssetAmountBreakdown(selectedAsset);
+                  if (!breakdown) return null;
+                  return (
+                    <dd className="mt-1 text-xs text-gray-600 dark:text-blue-200">
+                      {t('trading:assetSearch.facts.amountBreakdown.trustlines', { amount: breakdown.trustlines })}
+                      {breakdown.claimable && <>, {t('trading:assetSearch.facts.amountBreakdown.claimable', { amount: breakdown.claimable })}</>}
+                      {breakdown.pools && <>, {t('trading:assetSearch.facts.amountBreakdown.pools', { amount: breakdown.pools })}</>}
+                      {breakdown.contracts && <>, {t('trading:assetSearch.facts.amountBreakdown.contracts', { amount: breakdown.contracts })}</>}
+                    </dd>
+                  );
+                })()}
               </div>
             </div>
             <div>

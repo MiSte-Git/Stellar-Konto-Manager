@@ -40,7 +40,9 @@
       "factLabels": {
         "domain": "De uitgeversaccount heeft een eigen domein",
         "toml": "Het activum staat vermeld in het bestand stellar.toml van deze emittent"
-      }
+      },
+      "duplicateCodeWarning": "Let op: voor {{codes}} zijn er meerdere resultaten met verschillende uitgevers. De code alleen zegt niets over echtheid – alleen het uitgeveradres is doorslaggevend. Vergelijk dit zorgvuldig voordat je een trustline toevoegt of wisselt.",
+      "duplicateCodeBadge": "{{count}} verschillende uitgevers gebruiken deze activacode."
     },
     "invalidInput": {
       "codeMissing": "Voer a.u.b. een activacode in.",
@@ -63,14 +65,14 @@
     "help": {
       "issuer": "Het Stellar-account dat dit token heeft uitgegeven. De code en de uitgever vormen samen een unieke identificatie van het activum.",
       "trustlines": "Aantal accounts die volgens Horizon een trustline naar dit activum hebben. Dit is een gebruiksindicatie, geen bewijs van authenticiteit.",
-      "totalAmount": "Het totale bedrag van dit activum zoals gerapporteerd door Horizon. Het aanbod op zich zegt niets over de kwaliteit of betrouwbaarheid.",
+      "totalAmount": "Het totale bedrag van dit activum zoals gerapporteerd door Horizon – trustlines, opeisbare saldi, liquiditeitspools en contracten opgeteld. Het aanbod op zich zegt niets over de kwaliteit of betrouwbaarheid.",
       "trustlineStatus": "Geeft aan of je huidige account dit activum al kan bevatten.",
       "trustlineBalance": "Huidige stand van dit activum op uw Trustline.",
       "trustlineLimit": "Het maximale saldo van dit activum dat op uw rekening via deze trustline mag worden aangehouden.",
       "authorization": "Bij assets waarvoor authenticatie vereist is (auth_required), moet de uitgever uw trustline goedkeuren voordat u het token kunt ontvangen of verhandelen.",
       "homeDomain": "Domein dat is opgeslagen op het account van de uitgever. Dit helpt bij het vinden van het bestand stellar.toml.",
       "issuerMasterWeight": "Gewicht van de hoofdcode van de uitgever. Een waarde van 0 betekent dat de hoofdcode alleen niet meer kan ondertekenen.",
-      "issuerLocked": "Geeft aan of de hoofdcode van de uitgever is uitgeschakeld. Dit kan een positief teken zijn, maar vervangt niet het controleren van de volledige configuratie.",
+      "issuerLocked": "Geeft aan of de hoofdsleutel van de uitgever nog actief is. \"Actief beheerd\" is normaal voor doorlopend beheerde projecten zoals stablecoins en is geen waarschuwing. \"Volledig vergrendeld\" is een positief signaal bij activa die onveranderlijkheid beloven. \"Schijnbaar vergrendeld\" betekent dat de hoofdsleutel is uitgeschakeld, maar andere ondertekenaars nog steeds controle over de rekening kunnen uitoefenen.",
       "tomlStatus": "Status van het bestand stellar.toml onder het thuisdomein van de uitgever.",
       "tomlUrl": "Adres van het gevonden bestand stellar.toml.",
       "tomlAssetListed": "Geeft aan of dit activum is opgenomen in de CURRENCIES-vermeldingen van het bestand stellar.toml.",
@@ -102,7 +104,8 @@
       "poolCount": "Aantal AMM-liquiditeitspools dat voor dit handelspaar is gevonden.",
       "limitOfferDirection": "Hiermee wordt bepaald welk activum u verkoopt en welk activum u wilt ontvangen.",
       "limitOfferAmount": "Het bedrag van het activum dat u via de limietorder wilt verkopen.",
-      "limitOfferPrice": "Prijs per verkocht activum, uitgedrukt in het gekochte activum."
+      "limitOfferPrice": "Prijs per verkocht activum, uitgedrukt in het gekochte activum.",
+      "expertDirectory": "Vergelijking met het openbaar bijgehouden register van stellar.expert (een derde partij). Een vermelding is slechts een aanwijzing, geen garantie voor echtheid of veiligheid. Het ontbreken van een vermelding is evenmin een teken van fraude. Controleer het uitgeveradres altijd ook via de officiële website van de uitgever."
     },
     "mode": {
       "code": "Zoeken op activacode",
@@ -285,7 +288,7 @@
       "no": "Van",
       "homeDomain": "Thuisdomein",
       "issuerMasterWeight": "Gewicht van de hoofdsleutel",
-      "issuerLocked": "Hoofdsleutel van de uitgever is vergrendeld",
+      "issuerLocked": "Status van de hoofdsleutel van de uitgever",
       "liquidityRoute": "Route wijzigen",
       "routeAvailable": "Route gevonden",
       "routeUnavailable": "Er is geen route gevonden",
@@ -304,6 +307,25 @@
         "authRevocable": "Toestemming kan worden ingetrokken",
         "authImmutable": "Autorisatie onveranderlijk",
         "clawbackEnabled": "Terugvordering ingeschakeld"
+      },
+      "issuerLockStatus": {
+        "active": "Actief beheerd",
+        "locked": "Volledig vergrendeld",
+        "appearsLocked": "Schijnbaar vergrendeld"
+      },
+      "amountBreakdown": {
+        "trustlines": "Waarvan {{amount}} op trustlines",
+        "claimable": "{{amount}} in opeisbare saldi",
+        "pools": "{{amount}} in liquiditeitspools",
+        "contracts": "{{amount}} in contracten"
+      },
+      "expert": {
+        "label": "StellarExpert-register",
+        "listed": "Opgenomen in het register",
+        "listedAs": "Opgenomen in het register als \"{{name}}\"",
+        "notListed": "Niet in het register – dit zegt niets over de echtheid; veel betrouwbare activa staan er niet in.",
+        "unavailable": "StellarExpert niet bereikbaar – de aanwijzing kon niet worden geladen.",
+        "notChecked": "Niet gecontroleerd (het register geldt alleen voor het openbare netwerk)."
       }
     },
     "risk": {
@@ -314,7 +336,10 @@
       "tomlAssetMissing": "Dit activum staat niet vermeld in het bestand `stellar.toml` van de emittent.",
       "issuerUnlocked": "De hoofdcode van de uitgever is niet vergrendeld.",
       "authRequired": "Voor dit bestand is toestemming van de uitgever vereist.",
-      "clawbackEnabled": "Voor dit activum is clawback ingeschakeld."
+      "clawbackEnabled": "Voor dit activum is clawback ingeschakeld.",
+      "issuerAppearsLocked": "Let op: de hoofdsleutel is uitgeschakeld, maar andere sleutels kunnen de rekening van de uitgever nog steeds beheersen. De rekening is dus niet echt vergrendeld.",
+      "authRevocable": "De uitgever kan een reeds verleende machtiging intrekken en jouw tegoed van dit token bevriezen.",
+      "expertFlagged": "Let op: deze uitgever is in het StellarExpert-register als schadelijk gemarkeerd ({{tags}}). Het toevoegen van een trustline, kopen of wisselen wordt sterk afgeraden."
     },
     "detail": {
       "status": {

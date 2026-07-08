@@ -40,6 +40,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 
 ### H. Trading
 - Asset-Suche mit Issuer-Risikoprüfung (Home Domain, TOML-Abgleich, Auth-Flags, Master-Weight).
+- StellarExpert-Verzeichnis-Hinweis zum gewählten Asset (`GET /api/trade/assets/expert`, Node und PHP): kuratierte Drittanbieter-Tags, rote Warnung bei `#malicious`/`#unsafe`; bewusst nur Hinweis, kein Echtheitsbeweis, Ausfall blockiert die Anzeige nicht.
 - Trustline-Anlage, auch kombiniert mit Swap in einer Transaktion.
 - Market-Swap via `pathPaymentStrictSend` inkl. Slippage-Berechnung.
 - Limit-Orders (`manageSellOffer`): Erstellen, eigene offene Orders anzeigen, Stornierung.
@@ -98,7 +99,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Empfehlung: echte Wallet-Keys nur auf vertrauenswürdigen Geräten, Backups offline halten.
 
 ## PHP-Backend (wenn Node nicht erlaubt ist)
-- Ordner: `api/` enthält `multisig.php` (nutzt `challengeStore.php` für die Challenge-Response-Tokenausgabe), `trade.php`, `bugreport.php`, `health.php`, `admin.php` (Bugtracker-Admin-Login/Check/Logout per PHP-Session, siehe `admin_session.php`), `.htaccess`, `composer.json`/`composer.lock` sowie den Fallback-Routing-Unterordner `trade/assets/{search,facts}/index.php`. Speicherung der Multisig-Jobs in `api/data/multisig_jobs.json`, der Challenge-Nonces in `api/data/challenges.json` (beide schreibbar machen).
+- Ordner: `api/` enthält `multisig.php` (nutzt `challengeStore.php` für die Challenge-Response-Tokenausgabe), `trade.php`, `bugreport.php`, `health.php`, `admin.php` (Bugtracker-Admin-Login/Check/Logout per PHP-Session, siehe `admin_session.php`), `.htaccess`, `composer.json`/`composer.lock` sowie den Fallback-Routing-Unterordner `trade/assets/{search,facts,expert}/index.php`. Speicherung der Multisig-Jobs in `api/data/multisig_jobs.json`, der Challenge-Nonces in `api/data/challenges.json` (beide schreibbar machen).
 - **Vor dem ersten Start**: `api/_config.php` anlegen (Datei ist `.gitignore`t und liegt nicht im Repo!). Muss ein PHP-Array zurückgeben, mindestens:
   ```php
   <?php

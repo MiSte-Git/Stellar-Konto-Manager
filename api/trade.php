@@ -4,6 +4,7 @@
 // Supports:
 // - GET /api/trade/assets/search
 // - GET /api/trade/assets/facts
+// - GET /api/trade/assets/expert
 
 declare(strict_types=1);
 
@@ -246,6 +247,7 @@ function parse_currency_sections_from_toml(string $tomlText): array {
 function simplify_issuer_account(array $account, string $issuer): array {
     $flags = is_array($account['flags'] ?? null) ? $account['flags'] : [];
     $signers = is_array($account['signers'] ?? null) ? $account['signers'] : [];
+    $thresholds = is_array($account['thresholds'] ?? null) ? $account['thresholds'] : [];
     $issuerMasterWeight = null;
     $mappedSigners = [];
     foreach ($signers as $signer) {
@@ -271,6 +273,14 @@ function simplify_issuer_account(array $account, string $issuer): array {
             'auth_clawback_enabled' => (bool)($flags['auth_clawback_enabled'] ?? false),
         ],
         'signers' => $mappedSigners,
+        // Needed by the frontend to tell a genuinely locked issuer apart from
+        // one where other signers could still control the account despite
+        // master_weight === 0.
+        'thresholds' => [
+            'low_threshold' => (int)($thresholds['low_threshold'] ?? 0),
+            'med_threshold' => (int)($thresholds['med_threshold'] ?? 0),
+            'high_threshold' => (int)($thresholds['high_threshold'] ?? 0),
+        ],
         'issuerMasterWeight' => $issuerMasterWeight,
     ];
 }
@@ -316,9 +326,13 @@ function asset_facts(): void {
         try {
             $tomlText = fetch_text($tomlUrl);
             $currencies = parse_currency_sections_from_toml($tomlText);
+            // Asset codes are case-sensitive on Stellar (USDC and usdc are
+            // different assets even for the same issuer), so this must not
+            // upcase either side - a differently-cased fake would otherwise
+            // be confirmed as "listed in the issuer's stellar.toml".
             $matches = array_values(array_filter($currencies, function ($currency) use ($asset): bool {
                 if (!is_array($currency)) return false;
-                return strtoupper((string)($currency['code'] ?? '')) === strtoupper($asset['code'])
+                return (string)($currency['code'] ?? '') === $asset['code']
                     && (string)($currency['issuer'] ?? '') === $asset['issuer'];
             }));
             $facts['toml'] = [
@@ -344,12 +358,52 @@ function asset_facts(): void {
     }
 }
 
+// Third-party StellarExpert directory hint for an issuer account. Mirrors
+// the Node implementation in services/tradeService.js: 404 from the API is
+// the normal "not listed" answer, any other failure degrades to
+// "unavailable" so an outage there never blocks the token display. A listing
+// is a hint only - the frontend wording never presents it as proof of
+// legitimacy, nor a missing listing as a scam indicator.
+function expert_directory(): void {
+    $issuer = trim((string)($_GET['issuer'] ?? ''));
+    if ($issuer === '' || !preg_match(STELLAR_PUBLIC_KEY_RE, $issuer)) {
+        json_out(['ok' => false, 'error' => 'assetSearch.invalidInput:issuerInvalid'], 400);
+    }
+    $entry = ['issuer' => $issuer, 'status' => 'notChecked', 'name' => '', 'domain' => '', 'tags' => []];
+
+    // The directory covers the public network; testnet issuers can never be
+    // listed, so skip the upstream call entirely.
+    $network = strtoupper((string)($_GET['network'] ?? 'PUBLIC'));
+    if ($network === 'TESTNET') json_out($entry);
+
+    try {
+        $data = fetch_json('https://api.stellar.expert/explorer/directory/' . rawurlencode($issuer));
+        $tags = [];
+        foreach ((array)($data['tags'] ?? []) as $tag) {
+            $tag = strtolower(trim(ltrim((string)$tag, '#')));
+            if ($tag !== '') $tags[] = $tag;
+        }
+        json_out(array_merge($entry, [
+            'status' => 'listed',
+            'name' => (string)($data['name'] ?? ''),
+            'domain' => (string)($data['domain'] ?? ''),
+            'tags' => $tags,
+        ]));
+    } catch (Throwable $e) {
+        $status = ($e->getMessage() === 'HTTP 404') ? 'notListed' : 'unavailable';
+        json_out(array_merge($entry, ['status' => $status]));
+    }
+}
+
 $path = request_path();
 if (preg_match('#/api/trade/assets/search$#', $path)) {
     search_assets();
 }
 if (preg_match('#/api/trade/assets/facts$#', $path)) {
     asset_facts();
+}
+if (preg_match('#/api/trade/assets/expert$#', $path)) {
+    expert_directory();
 }
 
 json_out(['ok' => false, 'error' => 'trade.notFound'], 404);
