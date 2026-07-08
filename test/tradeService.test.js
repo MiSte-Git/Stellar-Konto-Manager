@@ -609,6 +609,19 @@ test('fetchExpertDirectoryEntry returns a listed entry with normalized tags (lea
   assert.deepEqual(entry.tags, ['malicious', 'unsafe']);
 });
 
+test('fetchExpertDirectoryEntry treats HTTP 200 with an empty object as "not listed", not "listed" - this is how the real API actually answers for unlisted accounts (verified live against api.stellar.expert), not with a 404', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => ({ ok: true, status: 200, async json() { return {}; } });
+
+  const entry = await fetchExpertDirectoryEntry({ issuer, network: 'PUBLIC' });
+
+  assert.equal(entry.status, 'notListed');
+  assert.equal(entry.name, '');
+  assert.deepEqual(entry.tags, []);
+});
+
 test('fetchExpertDirectoryEntry treats a 404 as the normal "not listed" answer, not a failure', async (t) => {
   const issuer = makeIssuer();
   const previousFetch = global.fetch;

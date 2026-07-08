@@ -378,6 +378,13 @@ function expert_directory(): void {
 
     try {
         $data = fetch_json('https://api.stellar.expert/explorer/directory/' . rawurlencode($issuer));
+        // The directory endpoint answers "no entry" with HTTP 200 and an
+        // empty object (verified live), not a 404 - only a body that carries
+        // the account's own address is a real listing. Without this check
+        // every unlisted (i.e. almost every) asset was mislabeled "listed".
+        if (!isset($data['address'])) {
+            json_out(array_merge($entry, ['status' => 'notListed']));
+        }
         $tags = [];
         foreach ((array)($data['tags'] ?? []) as $tag) {
             $tag = strtolower(trim(ltrim((string)$tag, '#')));
@@ -390,6 +397,8 @@ function expert_directory(): void {
             'tags' => $tags,
         ]));
     } catch (Throwable $e) {
+        // 404 is also handled defensively in case the API's behavior differs
+        // for some accounts/versions - not currently observed, but cheap to keep.
         $status = ($e->getMessage() === 'HTTP 404') ? 'notListed' : 'unavailable';
         json_out(array_merge($entry, ['status' => $status]));
     }

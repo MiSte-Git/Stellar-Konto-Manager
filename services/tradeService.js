@@ -452,12 +452,17 @@ async function loadExpertDirectoryEntry(accountId) {
       headers: { accept: 'application/json' },
       signal: controller?.signal,
     });
-    // 404 is the API's way of saying "no directory entry" - a perfectly
-    // normal answer for most legitimate assets, not a failure.
+    // 404 is the API's way of saying "no directory entry" for some routes -
+    // a perfectly normal answer for most legitimate assets, not a failure.
     if (response.status === 404) return { ...base, status: 'notListed' };
     if (!response.ok) return { ...base, status: 'unavailable' };
     const data = await response.json().catch(() => null);
     if (!data || typeof data !== 'object') return { ...base, status: 'unavailable' };
+    // The directory endpoint actually answers "no entry" with HTTP 200 and an
+    // empty object (verified live), not a 404 - only a body that carries the
+    // account's own address is a real listing. Without this check every
+    // unlisted (i.e. almost every) asset was mislabeled "listed".
+    if (!data.address) return { ...base, status: 'notListed' };
     return {
       ...base,
       status: 'listed',
