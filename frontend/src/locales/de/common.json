@@ -27,6 +27,9 @@
       "noneConfigured": "Keine Explorer konfiguriert.",
       "settingsHint": "Explorer kannst du in den Einstellungen bearbeiten."
     },
+    "identityMode": {
+      "totalBalanceHint": "Dies ist der Gesamtsaldo des zugrundeliegenden G-Kontos, nicht nur dieser Unteradresse. Unteradressen haben kein eigenes, getrenntes Guthaben."
+    },
     "noPublicKey": "Bitte gib zuerst einen Public Key ein.",
     "payments": {
       "all": "Alle",
@@ -230,6 +233,16 @@
     "createdAt": "Konto erstellt am",
     "createdAtUnknown": "Kann nicht ermittelt werden.",
     "testnetLabel": "(Testnet)"
+  },
+  "accountMode": {
+    "identity": "Muxed-Identität",
+    "account": "G-Konto",
+    "muxedAddress": "Muxed-Adresse",
+    "baseAccount": "Basis-G-Konto",
+    "muxedId": "Muxed-ID",
+    "switchToBase": "Zum Basiskonto wechseln",
+    "guardTitle": "Muxed-Identität ist schreibgeschützt",
+    "guardText": "Diese Aktion benötigt das Basis-G-Konto. Wechsle zum Basiskonto, um fortzufahren."
   },
   "fetch": {
     "groupfund": {

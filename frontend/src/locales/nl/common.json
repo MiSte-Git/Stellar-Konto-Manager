@@ -56,7 +56,10 @@
       "to": "Tot"
     },
     "paymentsHint": "Je kunt invoer/uitvoer filteren in de Explorer.",
-    "title": "Accountinformatie weergeven"
+    "title": "Accountinformatie weergeven",
+    "identityMode": {
+      "totalBalanceHint": "Dit is het totale saldo van de onderliggende G-rekening, niet alleen van dit subadres. Subadressen hebben geen eigen, afzonderlijke saldi."
+    }
   },
   "buildInfo": {
     "branch": "Tak",
@@ -446,7 +449,21 @@
         "title": "Status onduidelijk – niet opnieuw verzenden",
         "body": "De server kon de transactie niet eenduidig bevestigen (timeout of serverfout). Controleer de transactiehash in een explorer voordat u het opnieuw probeert.",
         "acknowledge": "Status gecontroleerd – verzenden weer vrijgeven"
-      }
+      },
+      "memoFederationHint": "Notitie overgenomen van de federatieserver – je kunt deze indien nodig aanpassen.",
+      "memoMismatch": {
+        "title": "Bekijk de memo van de federatie",
+        "textMappable": "De federatieserver verwacht de notitie \"{{expected}}\", maar je huidige notitie is \"{{current}}\".",
+        "textUnmappable": "De federatieserver verwacht een memo die niet automatisch kon worden toegepast. Je huidige memo is \"{{current}}\".",
+        "empty": "(empty)",
+        "sendAnyway": "Toch verzenden",
+        "applyExpected": "Federatiememo toepassen"
+      },
+      "trustlineError": {
+        "noTrustline": "De ontvanger heeft nog geen trustline voor {{asset}} – de betaling zou mislukken.",
+        "notAuthorized": "De ontvanger heeft een trustline voor {{asset}}, maar de uitgever heeft deze nog niet goedgekeurd – de betaling zou mislukken."
+      },
+      "muxedActivationCapture": "Het account is geactiveerd; er zijn minimale extra transactiekosten in rekening gebracht om ook de gemuxte ID op de blockchain vast te leggen."
     }
   },
   "activation": {
@@ -1214,5 +1231,15 @@
   "inputHistory": {
     "removeEntry": "Uit geschiedenis verwijderen",
     "clearField": "Geschiedenis van dit veld wissen"
+  },
+  "accountMode": {
+    "identity": "Muxed Identity",
+    "account": "G-Account",
+    "muxedAddress": "Muxed-adres",
+    "baseAccount": "Basic G-account",
+    "muxedId": "Muxed-ID",
+    "switchToBase": "Overstappen naar het Basic-account",
+    "guardTitle": "De Muxed-identiteit is alleen-lezen",
+    "guardText": "Voor deze handeling is een Basic G-account vereist. Schakel over naar het Basic-account om door te gaan."
   }
 }

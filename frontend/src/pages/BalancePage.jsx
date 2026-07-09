@@ -276,6 +276,12 @@ const muxedId = useMemo(() => {
               </div>
               <div aria-hidden="true" />
             </div>
+            {muxedAddress && (
+              <div className="mb-3 flex items-start gap-2 text-xs text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded p-2">
+                <span aria-hidden="true">ℹ️</span>
+                <span>{t('common:balance.identityMode.totalBalanceHint')}</span>
+              </div>
+            )}
             {/* Desktop: Tabelle mit horizontal scroll */}
             <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-sm min-w-[500px]">

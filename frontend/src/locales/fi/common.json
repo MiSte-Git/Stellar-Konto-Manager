@@ -56,7 +56,10 @@
       "to": "Saakka"
     },
     "paymentsHint": "Voit suodattaa syötteitä/tulosteita Explorerissa.",
-    "title": "Näytä tilitiedot"
+    "title": "Näytä tilitiedot",
+    "identityMode": {
+      "totalBalanceHint": "Tämä on kyseisen G-tilin kokonaissaldo, ei pelkästään tämän aliosoitteen saldo. Aliosoitteilla ei ole omia erillisiä saldoja."
+    }
   },
   "buildInfo": {
     "branch": "Haara",
@@ -446,7 +449,21 @@
         "title": "Tila epäselvä – älä lähetä uudelleen",
         "body": "Palvelin ei pystynyt vahvistamaan tapahtumaa yksiselitteisesti (aikakatkaisu tai palvelinvirhe). Tarkista tapahtuman tiiviste selaimessa ennen kuin yrität uudelleen.",
         "acknowledge": "Tila tarkistettu – vapauta lähetys uudelleen"
-      }
+      },
+      "memoFederationHint": "Liiton palvelimelta kopioitu muistio – voit muokata sitä tarvittaessa.",
+      "memoMismatch": {
+        "title": "Tarkista liiton muistio",
+        "textMappable": "Liittovaltion palvelin odottaa muistiinpanoa ”{{expected}}”, mutta nykyinen muistiinpanosi on ”{{current}}”.",
+        "textUnmappable": "Liittovaltion palvelin odottaa muistiinpanoa, jota ei voitu ottaa käyttöön automaattisesti. Nykyinen muistiinpanosi on ”{{current}}”.",
+        "empty": "(empty)",
+        "sendAnyway": "Lähetä silti",
+        "applyExpected": "Käytä liittovaltion muistion ohjeita"
+      },
+      "trustlineError": {
+        "noTrustline": "Vastaanottajalla ei ole vielä luottolinjaa kohteelle {{asset}} – maksu epäonnistuisi.",
+        "notAuthorized": "Vastaanottajalla on luottoraja {{asset}}:lle, mutta myöntäjä ei ole vielä hyväksynyt sitä – maksu epäonnistuisi."
+      },
+      "muxedActivationCapture": "Tili on aktivoitu; lisäksi perittiin vähäinen lisämaksu, jotta myös yhdistetty tunnus (muxed ID) kirjattiin lohkoketjuun."
     }
   },
   "activation": {
@@ -1214,5 +1231,15 @@
   "inputHistory": {
     "removeEntry": "Poista historiasta",
     "clearField": "Tyhjennä tämän kentän historia"
+  },
+  "accountMode": {
+    "identity": "Monikerroksinen identiteetti",
+    "account": "G-tili",
+    "muxedAddress": "Muxed-osoite",
+    "baseAccount": "Basic G -tili",
+    "muxedId": "Muxed-ID",
+    "switchToBase": "Vaihda Basic-tiliin",
+    "guardTitle": "Muxed-tunnus on vain luku -muotoinen",
+    "guardText": "Tämän toiminnon suorittaminen edellyttää Basic G -tiliä. Vaihda Basic-tiliin jatkaaksesi."
   }
 }

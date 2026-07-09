@@ -56,7 +56,10 @@
       "to": "Do"
     },
     "paymentsHint": "Možete filtrirati ulaze/izlaze u Exploreru.",
-    "title": "Prikaži podatke o računu"
+    "title": "Prikaži podatke o računu",
+    "identityMode": {
+      "totalBalanceHint": "Ovo je ukupan saldo temeljnog G računa, a ne samo saldo ove podadrese. Podadrese nemaju vlastite zasebne salde."
+    }
   },
   "buildInfo": {
     "branch": "Grana",
@@ -446,7 +449,21 @@
         "title": "Status nejasan – ne šaljite ponovno",
         "body": "Poslužitelj nije mogao jednoznačno potvrditi transakciju (istek vremena ili greška poslužitelja). Provjerite hash transakcije u exploreru prije nego što pokušate ponovno.",
         "acknowledge": "Status provjeren – ponovno omogući slanje"
-      }
+      },
+      "memoFederationHint": "Memo preuzet sa servera federacije – možete ga prilagoditi ako je potrebno.",
+      "memoMismatch": {
+        "title": "Provjerite memorandum federacije",
+        "textMappable": "Federacijski poslužitelj očekuje memo \"{{expected}}\", ali je vaš trenutni memo \"{{current}}\".",
+        "textUnmappable": "Federacijski poslužitelj očekuje memo koji se nije mogao automatski primijeniti. Vaš trenutni memo je \"{{current}}\".",
+        "empty": "(empty)",
+        "sendAnyway": "Pošalji svejedno",
+        "applyExpected": "Primijeni memorandum federacije"
+      },
+      "trustlineError": {
+        "noTrustline": "Primatelj još nema trustline za {{asset}} – plaćanje bi propalo.",
+        "notAuthorized": "Primatelj ima trustline za {{asset}}, ali izdavatelj ga još nije autorizirao – plaćanje bi propalo."
+      },
+      "muxedActivationCapture": "Račun je aktiviran; naplaćena je dodatna minimalna naknada za transakciju kako bi se muxed ID zabilježio na lancu."
     }
   },
   "activation": {
@@ -1214,5 +1231,15 @@
   "inputHistory": {
     "removeEntry": "Ukloni iz povijesti",
     "clearField": "Obriši povijest ovog polja"
+  },
+  "accountMode": {
+    "identity": "Muxed Identitet",
+    "account": "G-račun",
+    "muxedAddress": "Muxed adresa",
+    "baseAccount": "Osnovni G račun",
+    "muxedId": "Muxed-ID",
+    "switchToBase": "Prelazi na osnovni račun",
+    "guardTitle": "Identitet Muxed je samo za čitanje.",
+    "guardText": "Ova radnja zahtijeva osnovni G račun. Prebacite se na osnovni račun da biste nastavili."
   }
 }

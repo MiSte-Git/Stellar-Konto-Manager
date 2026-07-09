@@ -56,7 +56,10 @@
       "to": "Fino a"
     },
     "paymentsHint": "Puoi filtrare gli input/gli output nell'Esploratore.",
-    "title": "Visualizza le informazioni dell'account"
+    "title": "Visualizza le informazioni dell'account",
+    "identityMode": {
+      "totalBalanceHint": "Questo è il saldo totale del conto G sottostante, non solo di questo sottoindirizzo. I sottoindirizzi non hanno saldi separati propri."
+    }
   },
   "buildInfo": {
     "branch": "Ramo",
@@ -446,7 +449,21 @@
         "title": "Stato incerto – non inviare di nuovo",
         "body": "Il server non ha potuto confermare in modo univoco la transazione (timeout o errore del server). Verifica l'hash della transazione in un explorer prima di riprovare.",
         "acknowledge": "Stato verificato – sblocca di nuovo l'invio"
-      }
+      },
+      "memoFederationHint": "Appunti tratti dal server della federazione – è possibile modificarli se necessario.",
+      "memoMismatch": {
+        "title": "Controlla la nota della federazione",
+        "textMappable": "Il server della federazione si aspetta il memo \"{{expected}}\", ma il tuo memo attuale è \"{{current}}\".",
+        "textUnmappable": "Il server della federazione richiede una nota che non è stato possibile applicare automaticamente. La nota attuale è \"{{current}}\".",
+        "empty": "(empty)",
+        "sendAnyway": "Invia comunque",
+        "applyExpected": "Applicare la circolare sulla federazione"
+      },
+      "trustlineError": {
+        "noTrustline": "Il destinatario non dispone ancora di una linea di fiducia per {{asset}}: il pagamento non andrebbe a buon fine.",
+        "notAuthorized": "Il destinatario dispone di una linea di credito per {{asset}}, ma l'emittente non l'ha ancora autorizzata: il pagamento non andrebbe a buon fine."
+      },
+      "muxedActivationCapture": "L'account è stato attivato; è stata applicata una commissione minima aggiuntiva per registrare anche l'ID muxed sulla blockchain."
     }
   },
   "activation": {
@@ -1214,5 +1231,15 @@
   "inputHistory": {
     "removeEntry": "Rimuovi dalla cronologia",
     "clearField": "Cancella la cronologia di questo campo"
+  },
+  "accountMode": {
+    "identity": "Identità mista",
+    "account": "G-Account",
+    "muxedAddress": "Indirizzo Muxed",
+    "baseAccount": "Account G di base",
+    "muxedId": "Muxed-ID",
+    "switchToBase": "Passa all'account Basic",
+    "guardTitle": "L'identità Muxed è di sola lettura",
+    "guardText": "Per eseguire questa operazione è necessario un account G Basic. Passa all'account Basic per continuare."
   }
 }

@@ -56,7 +56,10 @@
       "to": "Jusqu'à"
     },
     "paymentsHint": "Vous pouvez filtrer les entrées/sorties dans l'Explorer.",
-    "title": "Afficher les informations du compte"
+    "title": "Afficher les informations du compte",
+    "identityMode": {
+      "totalBalanceHint": "Il s'agit du solde total du compte G sous-jacent, et non pas uniquement de celui de cette sous-adresse. Les sous-adresses ne disposent pas de soldes distincts."
+    }
   },
   "buildInfo": {
     "branch": "Branche",
@@ -446,7 +449,21 @@
         "title": "Statut incertain – ne pas renvoyer",
         "body": "Le serveur n'a pas pu confirmer la transaction de manière univoque (délai dépassé ou erreur serveur). Vérifiez le hash de la transaction dans un explorateur avant de réessayer.",
         "acknowledge": "Statut vérifié – réactiver l'envoi"
-      }
+      },
+      "memoFederationHint": "Note extraite du serveur de la fédération – vous pouvez la modifier si nécessaire.",
+      "memoMismatch": {
+        "title": "Consulter la note de service de la fédération",
+        "textMappable": "Le serveur de fédération attend la note « {{expected}} », mais votre note actuelle est « {{current}} ».",
+        "textUnmappable": "Le serveur de fédération attend une note qui n'a pas pu être appliquée automatiquement. Votre note actuelle est « {{current}} ».",
+        "empty": "(empty)",
+        "sendAnyway": "Envoyer quand même",
+        "applyExpected": "Appliquer la note de service de la fédération"
+      },
+      "trustlineError": {
+        "noTrustline": "Le destinataire ne dispose pas encore d'une ligne de confiance pour {{asset}} – le paiement échouerait.",
+        "notAuthorized": "Le destinataire dispose d'une ligne de confiance pour {{asset}}, mais l'émetteur ne l'a pas encore autorisée : le paiement échouerait."
+      },
+      "muxedActivationCapture": "Le compte a été activé ; des frais de transaction minimes supplémentaires ont été appliqués afin d'enregistrer également l'identifiant multiplexé sur la blockchain."
     }
   },
   "activation": {
@@ -1214,5 +1231,15 @@
   "inputHistory": {
     "removeEntry": "Supprimer de l’historique",
     "clearField": "Effacer l’historique de ce champ"
+  },
+  "accountMode": {
+    "identity": "Identité multiple",
+    "account": "Compte G",
+    "muxedAddress": "Adresse multiplexée",
+    "baseAccount": "Compte G de base",
+    "muxedId": "Muxed-ID",
+    "switchToBase": "Passer au compte Basic",
+    "guardTitle": "L'identité Muxed est en lecture seule",
+    "guardText": "Cette opération nécessite un compte G Basic. Passez au compte Basic pour continuer."
   }
 }

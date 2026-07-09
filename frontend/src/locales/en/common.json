@@ -56,7 +56,10 @@
       "to": "Until"
     },
     "paymentsHint": "You can filter inputs/outputs in the Explorer.",
-    "title": "Display account information"
+    "title": "Display account information",
+    "identityMode": {
+      "totalBalanceHint": "This is the total balance of the underlying G account, not just this subaddress. Subaddresses do not have their own separate balances."
+    }
   },
   "buildInfo": {
     "branch": "Branch",
@@ -1228,5 +1231,15 @@
   "inputHistory": {
     "removeEntry": "Remove from history",
     "clearField": "Clear history for this field"
+  },
+  "accountMode": {
+    "identity": "Muxed Identity",
+    "account": "G-Account",
+    "muxedAddress": "Muxed address",
+    "baseAccount": "Basic G Account",
+    "muxedId": "Muxed-ID",
+    "switchToBase": "Switch to the Basic Account",
+    "guardTitle": "The Muxed identity is read-only",
+    "guardText": "This action requires a Basic G Account. Switch to the Basic Account to continue."
   }
 }
