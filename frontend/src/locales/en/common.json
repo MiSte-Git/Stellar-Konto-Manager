@@ -404,6 +404,10 @@
         "sendAnyway": "Send anyway",
         "applyExpected": "Apply federation memo"
       },
+      "trustlineError": {
+        "noTrustline": "The recipient doesn't have a trustline for {{asset}} yet – the payment would fail.",
+        "notAuthorized": "The recipient has a trustline for {{asset}}, but the issuer hasn't authorized it yet – the payment would fail."
+      },
       "memoTypes": {
         "none": "Memo (kein Memo)",
         "text": "Memo text",

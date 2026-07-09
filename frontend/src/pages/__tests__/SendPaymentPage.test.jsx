@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import { Account, Keypair } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
@@ -18,6 +18,9 @@ const SENDER = {
   publicKey: 'GATHPDLDMA5UAHHUUBFAQNW7B3573IUMEGPZGXMT25CNUPY4BOYFAV7F',
 };
 const DEST_PK = Keypair.random().publicKey();
+const ISSUER_PK = Keypair.random().publicKey();
+const ASSET_CODE = 'FOO';
+const ASSET_KEY = `${ASSET_CODE}:${ISSUER_PK}`;
 const FED_WITH_MEMO = 'friend*example.com';
 const FED_NO_MEMO = 'nomemo*example.com';
 const FED_UNMAPPABLE = 'weird*example.com';
@@ -53,15 +56,17 @@ vi.mock('../../utils/stellar/submitTransactionSafely.js', async (importOriginal)
 }));
 
 // Builds a real stellar-sdk Account (so TransactionBuilder can use it) plus the
-// Horizon fields the page reads (signers/thresholds/balances/...).
-function makeFundedAccount(publicKey, sequence = '100') {
+// Horizon fields the page reads (signers/thresholds/balances/...). extraBalances lets
+// trustline tests add a credit_alphanum4 line; flags lets them set the issuer's
+// AUTH_REQUIRED bit.
+function makeFundedAccount(publicKey, { sequence = '100', extraBalances = [], flags = {} } = {}) {
   const account = new Account(publicKey, sequence);
   return Object.assign(account, {
     account_id: publicKey,
     thresholds: { low_threshold: 0, med_threshold: 0, high_threshold: 0 },
     signers: [{ key: publicKey, weight: 1, type: 'ed25519_public_key' }],
-    balances: [{ asset_type: 'native', balance: '10000.0000000' }],
-    flags: {},
+    balances: [{ asset_type: 'native', balance: '10000.0000000' }, ...extraBalances],
+    flags,
     subentry_count: 1,
   });
 }
@@ -90,12 +95,21 @@ const destInput = () => screen.getByPlaceholderText('G... oder user*domain');
 const memoInput = () => inputAfterLabel('Memo');
 const memoTypeSelect = () => selectAfterLabel('Memo Typ');
 const amountInput = () => inputAfterLabel('Betrag');
+const assetSelect = () => selectAfterLabel('Asset');
 const FEDERATION_HINT_TEXT = 'Memo vom Federation-Server übernommen – kann bei Bedarf angepasst werden.';
+
+// The sender always carries a FOO trustline so the asset <select> lists it as an option -
+// harmless for the XLM-only K1/G1/M1+M2 tests above, needed for the trustline tests below.
+const SENDER_FOO_BALANCE = { asset_type: 'credit_alphanum4', asset_code: ASSET_CODE, asset_issuer: ISSUER_PK, balance: '500.0000000', limit: '1000.0000000', is_authorized: true };
 
 beforeEach(() => {
   vi.clearAllMocks();
   window.localStorage.clear();
-  hoisted.loadAccountMock.mockImplementation(async (pk) => makeFundedAccount(pk));
+  hoisted.loadAccountMock.mockImplementation(async (pk) => (
+    pk === SENDER.publicKey
+      ? makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] })
+      : makeFundedAccount(pk)
+  ));
   hoisted.resolveOrValidateAccountMock.mockImplementation(async (input) => {
     if (input === FED_WITH_MEMO) {
       return { accountId: DEST_PK, muxedAddress: null, address: input, memo: '999', memoType: 'id' };
@@ -243,5 +257,250 @@ describe('federation memo mismatch confirmation before sending (M1+M2)', () => {
     expect(screen.getByText(/nicht automatisch übernommen werden konnte/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Federation-Memo übernehmen' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Trotzdem senden' })).toBeInTheDocument();
+  });
+});
+
+describe('recipient trustline preflight before sending (a5)', () => {
+  const authorizedFooBalance = {
+    asset_type: 'credit_alphanum4',
+    asset_code: ASSET_CODE,
+    asset_issuer: ISSUER_PK,
+    balance: '0.0000000',
+    limit: '1000.0000000',
+    is_authorized: true,
+  };
+  const unauthorizedFooBalance = { ...authorizedFooBalance, is_authorized: false };
+
+  async function selectAsset() {
+    await waitFor(() => {
+      const values = Array.from(assetSelect().options).map((o) => o.value);
+      expect(values).toContain(ASSET_KEY);
+    });
+    fireEvent.change(assetSelect(), { target: { value: ASSET_KEY } });
+  }
+
+  async function fillAndConfirm({ withAsset = true, dest = DEST_PK } = {}) {
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    if (withAsset) await selectAsset();
+    fireEvent.change(destInput(), { target: { value: dest } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Transaktion bestätigen');
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+  }
+
+  it('blocks sending when the recipient has no trustline for the asset', async () => {
+    await fillAndConfirm();
+    await screen.findByText(/hat noch keine Trustline für FOO/);
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('blocks sending when the trustline exists but the issuer has not authorized it', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [unauthorizedFooBalance] });
+      if (pk === ISSUER_PK) return makeFundedAccount(pk, { flags: { auth_required: true } });
+      return makeFundedAccount(pk);
+    });
+    await fillAndConfirm();
+    await screen.findByText(/diese ist aber vom Emittenten noch nicht autorisiert/);
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('lets an authorized trustline through', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [authorizedFooBalance] });
+      return makeFundedAccount(pk);
+    });
+    await fillAndConfirm();
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+  });
+
+  it('skips the check entirely for native XLM', async () => {
+    await fillAndConfirm({ withAsset: false });
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+  });
+
+  it('does not block on a not-yet-activated destination - the existing activation path handles it instead', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) {
+        const err = new Error('Not Found');
+        err.response = { status: 404 };
+        throw err;
+      }
+      return makeFundedAccount(pk);
+    });
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    await selectAsset();
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    // The pre-existing non-XLM/unfunded-destination guard lives in runPreflight, which
+    // already blocks before the review dialog even opens - so this new check never even
+    // gets a chance to run for this destination, exactly as intended ("no new block").
+    await screen.findByText('Zielkonto ist nicht aktiv. Bitte zuerst XLM zur Aktivierung senden oder Asset auf XLM wechseln.');
+    expect(screen.queryByText('Transaktion bestätigen')).not.toBeInTheDocument();
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('does not hard-block when the check itself fails (Horizon unreachable)', async () => {
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    await selectAsset();
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    // Review dialog opens normally - runPreflight's own destExists check for DEST_PK
+    // succeeded here, using the still-default (always-funded) mock from beforeEach.
+    await screen.findByText('Transaktion bestätigen');
+
+    // Now arm a mock that fails exactly once for DEST_PK - the single loadAccount call
+    // checkRecipientTrustlineStatus makes when "Bestätigen" is clicked below. Any later
+    // DEST_PK call (buildPaymentTx's own destExists check) succeeds again, simulating a
+    // transient Horizon hiccup rather than a genuinely missing/unauthorized trustline.
+    let armedCalls = 0;
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) {
+        armedCalls += 1;
+        if (armedCalls === 1) throw new Error('Network Error'); // no .response -> not a 404
+        return makeFundedAccount(pk, { extraBalances: [authorizedFooBalance] });
+      }
+      return makeFundedAccount(pk);
+    });
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+    expect(warnSpy).toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+
+  it('does not block a payment to the asset issuer itself (redemption/burn) (K1)', async () => {
+    // The issuer holds no trustline on its own asset (protocol-valid) - the default mock
+    // for ISSUER_PK below reflects that (no FOO balance), same as the no_trustline case
+    // would otherwise trigger if the issuer weren't special-cased.
+    await fillAndConfirm({ dest: ISSUER_PK });
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+  });
+
+  it('blocks on an unauthorized trustline even when the issuer currently has no AUTH_REQUIRED flag (M2)', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [unauthorizedFooBalance] });
+      // Issuer explicitly does NOT have AUTH_REQUIRED set. stellar-core still rejects the
+      // payment based on the trustline's own is_authorized flag - gating on the issuer's
+      // current flag (as the pre-M2 implementation did) would have wrongly let this through.
+      return makeFundedAccount(pk, { flags: { auth_required: false } });
+    });
+    await fillAndConfirm();
+    await screen.findByText(/diese ist aber vom Emittenten noch nicht autorisiert/);
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('resets the review dialog\'s busy state after a hard block (G2)', async () => {
+    await fillAndConfirm(); // default DEST_PK has no FOO trustline -> no_trustline block
+    await screen.findByText(/hat noch keine Trustline für FOO/);
+    // If reviewProcessing stayed stuck at true, the button would still read "Verarbeite..."
+    // (and every button in the dialog, including Cancel, would stay disabled) - this query
+    // only succeeds if the busy state was actually released.
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Bist du sicher?' })).not.toBeDisabled());
+  });
+});
+
+describe('pre-submit checks also cover the collect-locally multisig path (M1)', () => {
+  const unauthorizedFooBalance = {
+    asset_type: 'credit_alphanum4',
+    asset_code: ASSET_CODE,
+    asset_issuer: ISSUER_PK,
+    balance: '0.0000000',
+    limit: '1000.0000000',
+    is_authorized: false,
+  };
+
+  async function selectAsset() {
+    await waitFor(() => {
+      const values = Array.from(assetSelect().options).map((o) => o.value);
+      expect(values).toContain(ASSET_KEY);
+    });
+    fireEvent.change(assetSelect(), { target: { value: ASSET_KEY } });
+  }
+
+  // Drives the account into the "collect all signatures locally" branch: pick the "local"
+  // option in the multisig confirm modal, then submit the secret key modal that follows.
+  // high_threshold > 1 makes isMultisigAccount() true without a second signer; med_threshold
+  // stays at 1 so the sender's own (already-known) secret alone meets the payment threshold.
+  async function driveToCollectLocallySubmit() {
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    await selectAsset();
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Alle Signaturen lokal eingeben & direkt senden');
+    fireEvent.click(screen.getByRole('radio', { name: /Alle Signaturen lokal eingeben/ }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Weiter' })).not.toBeDisabled());
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+
+    const secretHeading = await screen.findByText('Geben Sie den Quell-Geheimschlüssel (S-Key) ein');
+    const modal = secretHeading.parentElement;
+    fireEvent.change(within(modal).getByPlaceholderText('z.B.'), { target: { value: SENDER.secret } });
+    fireEvent.click(within(modal).getByRole('button', { name: 'Senden' }));
+  }
+
+  beforeEach(() => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      return makeFundedAccount(pk);
+    });
+  });
+
+  it('trustline check blocks the direct submitPayment call this path used to skip', async () => {
+    // DEST_PK carries no FOO balance (default makeFundedAccount) -> no_trustline.
+    await driveToCollectLocallySubmit();
+    await screen.findByText(/hat noch keine Trustline für FOO/);
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('memo mismatch dialog also gates this path, and "send anyway" resumes it', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
+      return makeFundedAccount(pk);
+    });
+    hoisted.resolveOrValidateAccountMock.mockImplementation(async (input) => {
+      if (input === DEST_PK) return { accountId: DEST_PK, muxedAddress: null, address: input, memo: '42', memoType: 'id' };
+      return { accountId: input, muxedAddress: null, address: input };
+    });
+
+    await driveToCollectLocallySubmit();
+    await screen.findByText('Federation-Memo prüfen');
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Trotzdem senden' }));
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+  });
+
+  it('lets the payment through once trustline and memo both check out', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
+      return makeFundedAccount(pk);
+    });
+    await driveToCollectLocallySubmit();
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
   });
 });

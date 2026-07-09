@@ -404,6 +404,10 @@
         "sendAnyway": "Trotzdem senden",
         "applyExpected": "Federation-Memo übernehmen"
       },
+      "trustlineError": {
+        "noTrustline": "Der Empfänger hat noch keine Trustline für {{asset}} – die Zahlung würde fehlschlagen.",
+        "notAuthorized": "Der Empfänger hat zwar eine Trustline für {{asset}}, diese ist aber vom Emittenten noch nicht autorisiert – die Zahlung würde fehlschlagen."
+      },
       "memoTypes": {
         "none": "Memo (kein Memo)",
         "text": "Memo Text",

@@ -814,6 +814,85 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     if (action) await action();
   }, [closeMemoMismatchDialog]);
 
+  // Send-time guard against a payment that's protocol-guaranteed to fail: the recipient has
+  // no trustline for the asset, or has one the issuer hasn't authorized. Unlike the memo
+  // mismatch check above, this hard-blocks - there is no legitimate "send anyway", the
+  // transaction cannot succeed either way. A destination that doesn't exist yet is left
+  // alone (no trustline can exist on an unfunded account; the existing activation path
+  // already covers that case), and a genuine Horizon failure (network/timeout) never blocks
+  // - only a definitive "no trustline"/"not authorized" answer does, same as before this
+  // check existed, just with a console warning for debugging.
+  const checkRecipientTrustlineStatus = useCallback(async () => {
+    if (assetKey === 'XLM') return { status: 'ok' };
+    const v = (dest || '').trim();
+    if (!v) return { status: 'ok' };
+    const [assetCode, assetIssuer] = assetKey.split(':');
+
+    let resolvedAccountId;
+    try {
+      const resolved = await resolveOrValidateAccount(v);
+      resolvedAccountId = resolved.accountId;
+    } catch {
+      return { status: 'ok' }; // resolution failure is reported by buildPaymentTx's own error handling
+    }
+
+    // The issuer never holds a trustline on its own asset - sending back to it (redemption/
+    // burn) is protocol-valid without one, so it must never be treated as "no trustline".
+    if (resolvedAccountId === assetIssuer) return { status: 'ok' };
+
+    let account;
+    try {
+      account = await server.loadAccount(resolvedAccountId);
+    } catch (e) {
+      if (e?.response?.status === 404) return { status: 'ok' }; // unfunded - activation path handles this
+      console.warn('[SKM] trustline preflight: could not load recipient account', e);
+      return { status: 'ok' };
+    }
+
+    const balance = (account.balances || []).find(
+      (b) => b.asset_code === assetCode && b.asset_issuer === assetIssuer
+    );
+    if (!balance) return { status: 'no_trustline', assetLabel: assetCode };
+
+    // stellar-core checks only the trustline's own authorized flag at payment time - an
+    // issuer that later drops AUTH_REQUIRED does not retroactively authorize existing
+    // trustlines, so gating on the issuer's current flag would let a still-unauthorized
+    // trustline through. is_authorized === false is sufficient on its own.
+    if (balance.is_authorized === false) {
+      return { status: 'not_authorized', assetLabel: assetCode };
+    }
+    return { status: 'ok' };
+  }, [assetKey, dest, server]);
+
+  // Runs both pre-submit guards - trustline (hard block, no override) then federation-memo
+  // (soft block via a confirmation dialog) - in the same order at every entry point that can
+  // actually move funds, so none of them can skip either check. `onTrustlineBlock(message)`
+  // is invoked (and this resolves to false without calling `proceed`) when the payment is
+  // protocol-guaranteed to fail. Otherwise `proceed` either runs immediately (both checks
+  // passed) or is captured in pendingMemoActionRef for the memo dialog's "send anyway" to
+  // resume later - callers must give `proceed` its own try/catch/finally, since it may run
+  // from that later, unguarded call instead of from here.
+  const runPreSubmitChecks = useCallback(async (proceed, onTrustlineBlock) => {
+    const trustlineStatus = await checkRecipientTrustlineStatus();
+    if (trustlineStatus.status === 'no_trustline') {
+      onTrustlineBlock(t('common:payment.send.trustlineError.noTrustline', { asset: trustlineStatus.assetLabel }));
+      return false;
+    }
+    if (trustlineStatus.status === 'not_authorized') {
+      onTrustlineBlock(t('common:payment.send.trustlineError.notAuthorized', { asset: trustlineStatus.assetLabel }));
+      return false;
+    }
+
+    const memoOk = await checkFederationMemoMismatch();
+    if (!memoOk) {
+      pendingMemoActionRef.current = proceed;
+      return false;
+    }
+
+    await proceed();
+    return true;
+  }, [checkRecipientTrustlineStatus, checkFederationMemoMismatch, t]);
+
   const submitPayment = useCallback(async (signerKeypairs) => {
     const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
     const { tx, meta } = await buildPaymentTx({ signers: signerList, signTx: true, requireSigners: true, immediateSubmit: true });
@@ -1035,18 +1114,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         }
       };
 
-      const ok = await checkFederationMemoMismatch();
-      if (!ok) {
-        pendingMemoActionRef.current = proceed;
-        return;
-      }
-      await proceed();
+      await runPreSubmitChecks(proceed, (msg) => showErrorMessage(msg));
     } catch (err) {
       const detail = err?.message || handlePaymentError(err);
       showErrorMessage(detail || '');
       closeConfirmDialogs();
     }
-  }, [accountInfo, buildPaymentTx, checkFederationMemoMismatch, closeConfirmDialogs, handlePaymentError, masterWeight, netLabel, openSecretModal, preflight, publicKey, requiredThreshold, showErrorMessage, t]);
+  }, [accountInfo, buildPaymentTx, runPreSubmitChecks, closeConfirmDialogs, handlePaymentError, masterWeight, netLabel, openSecretModal, preflight, publicKey, requiredThreshold, showErrorMessage, t]);
 
   const handleConfirmProceed = useCallback(async () => {
     if (confirmChoice === 'local') {
@@ -1321,13 +1395,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         setIsProcessing(false);
       }
     };
-    const ok = await checkFederationMemoMismatch();
-    if (!ok) {
-      pendingMemoActionRef.current = proceed;
-      return;
+
+    // Reuses the review dialog's existing busy indicator to cover the pre-submit checks
+    // below too, so the extra Horizon round-trip doesn't look like the click did nothing.
+    // try/finally guarantees the lock releases even if a future edit makes a check throw -
+    // proceed() manages its own true/false around the actual submit, so this is a no-op
+    // once proceed has already run; it only matters for the blocked/dialog-opened branches.
+    setReviewProcessing(true);
+    try {
+      await runPreSubmitChecks(proceed, (msg) => setReviewError(msg));
+    } finally {
+      setReviewProcessing(false);
     }
-    await proceed();
-  }, [applySendResult, checkFederationMemoMismatch, closeReviewDialog, handlePaymentError, openSentResultDialog, reviewDialog, submitPayment, t]);
+  }, [applySendResult, runPreSubmitChecks, closeReviewDialog, handlePaymentError, openSentResultDialog, reviewDialog, submitPayment, t]);
 
   const handleSendClick = useCallback(async () => {
     clearSuccess();
@@ -2553,11 +2633,31 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 closeSecretModal();
                 return;
               }
-              const result = await submitPayment(collected.map((s) => s.keypair));
-              applySendResult(result);
-              openSentResultDialog(result);
-              setSecretError('');
-              closeSecretModal();
+              // Own try/catch/finally (mirroring the outer one) rather than relying on it:
+              // this proceed may run right here, or later via sendAnywayDespiteMemoMismatch
+              // (the memo-mismatch dialog's "send anyway" button), which awaits it unguarded.
+              const proceedWithLocalSubmit = async () => {
+                try {
+                  setIsProcessing(true);
+                  const result = await submitPayment(collected.map((s) => s.keypair));
+                  applySendResult(result);
+                  openSentResultDialog(result);
+                  setSecretError('');
+                  closeSecretModal();
+                } catch (err) {
+                  if (err instanceof AmbiguousSubmitResultError) {
+                    setAmbiguousSubmission({ hash: err.hash });
+                    closeSecretModal();
+                  } else {
+                    const detail = handlePaymentError(err);
+                    setSecretError(detail);
+                    if (detail) showErrorMessage(detail);
+                  }
+                } finally {
+                  setIsProcessing(false);
+                }
+              };
+              await runPreSubmitChecks(proceedWithLocalSubmit, (msg) => { setSecretError(msg); showErrorMessage(msg); });
             } catch (e) {
               if (e instanceof AmbiguousSubmitResultError) {
                 setAmbiguousSubmission({ hash: e.hash });
