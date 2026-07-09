@@ -619,6 +619,16 @@ app.post('/api/multisig/jobs', async (req, res) => {
 app.get('/api/multisig/jobs', async (req, res) => {
   try {
     const { network, accountId, status, signer } = req.query;
+    // Without a scoping filter this would enumerate every job of every
+    // account (accountId/signer/status/createdBy metadata across all users) -
+    // the frontend's two legitimate discovery flows ("my own jobs" by
+    // accountId, "jobs where I'm a signer" by signer public key) always send
+    // one of these, so requiring it here costs no real functionality. Mirrors
+    // the identical fix in api/multisig.php (analyse_multisig.md a3);
+    // checked before any job data is even read.
+    if (!accountId && !signer) {
+      return res.status(400).json({ ok: false, error: 'accountId_or_signer_required' });
+    }
     let items = multisigDb.items.slice();
     if (network) {
       const net = normalizeNetwork(network);

@@ -25,6 +25,7 @@ if (file_exists($autoload)) {
 
 require __DIR__ . '/challengeStore.php';
 require __DIR__ . '/txSignatures.php';
+require __DIR__ . '/multisigJobsGuard.php';
 
 use Soneso\StellarSDK\StellarSDK;
 use Soneso\StellarSDK\AbstractTransaction;
@@ -165,6 +166,7 @@ function withJobsLock(string $jobFile, callable $mutator): array {
         }
         $items = loadJobs($jobFile);
         $items = $mutator($items);
+        $items = expireStalePendingJobs($items);
         $items = pruneOldJobs($items);
         saveJobs($jobFile, $items);
         return $items;
@@ -426,6 +428,16 @@ $path = parse_url($uri, PHP_URL_PATH) ?? '/';
 // POST /api/multisig/jobs
 if ($method === 'POST' && $path === '/api/multisig/jobs') {
     try {
+        // Public, unauthenticated action (anyone may propose a job for any
+        // account) - rate-limited per IP so it can't be used to grow
+        // multisig_jobs.json without bound (analyse_multisig.md a2).
+        $ip = (string)($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+        $retryAfter = multisigJobRateLimitCheckAndRecord($ip);
+        if ($retryAfter > 0) {
+            header('Retry-After: ' . $retryAfter);
+            return sendJson(['ok' => false, 'error' => 'too_many_requests', 'retryAfter' => $retryAfter], 429);
+        }
+
         $body = jsonBody();
         $net = normalizeNetwork($body['network'] ?? null);
         $accountId = $body['accountId'] ?? '';
@@ -492,12 +504,21 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
 
 // GET /api/multisig/jobs
 if ($method === 'GET' && $path === '/api/multisig/jobs') {
-    $items = loadJobs($jobFile);
     $net = normalizeNetwork($_GET['network'] ?? null);
     $accountId = $_GET['accountId'] ?? null;
     $signer = $_GET['signer'] ?? null;
     $status = $_GET['status'] ?? null;
 
+    // Without a scoping filter this would enumerate every job of every
+    // account (accountId/signer/status/createdBy metadata across all users) -
+    // the frontend's two legitimate discovery flows ("my own jobs" by
+    // accountId, "jobs where I'm a signer" by signer public key) always send
+    // one of these, so requiring it here costs no real functionality.
+    if (!$accountId && !$signer) {
+        return sendJson(['ok' => false, 'error' => 'accountId_or_signer_required'], 400);
+    }
+
+    $items = loadJobs($jobFile);
     $items = array_filter($items, function ($j) use ($net, $accountId, $signer, $status) {
         if ($net && ($j['network'] ?? '') !== $net) return false;
         if ($accountId && ($j['accountId'] ?? '') !== $accountId) return false;
@@ -740,14 +761,19 @@ if ($method === 'DELETE' && $path === '/api/multisig/jobs') {
     $requiredToken = getenv('MULTISIG_ADMIN_TOKEN') ?: '';
 
     if (!$net) return sendJson(['ok' => false, 'error' => 'invalid_network'], 400);
-    if ($net === 'testnet') {
-        if ($confirm !== 'DELETE TESTNET JOBS') return sendJson(['ok' => false, 'error' => 'confirm_required'], 400);
-    } else {
-        if (!$requiredToken || !$adminToken || !hash_equals($requiredToken, $adminToken)) {
-            return sendJson(['ok' => false, 'error' => 'unauthorized'], 401);
-        }
-        if ($confirm !== 'DELETE ALL JOBS') return sendJson(['ok' => false, 'error' => 'confirm_required'], 400);
+    // This bulk-deletes every job of an entire network in one call - equally
+    // destructive for other users' testnet jobs as for mainnet ones (fremde
+    // Jobs löschen ist fremde Jobs löschen), so both now require the same
+    // real, server-side secret (MULTISIG_ADMIN_TOKEN via hash_equals), not
+    // just a fixed confirm string that's public knowledge (shown verbatim in
+    // the frontend's own UI) and gave testnet callers no actual auth check at
+    // all. The confirm string is kept in addition, scoped per network, as a
+    // second guard against an admin accidentally wiping the wrong network.
+    if (!$requiredToken || !$adminToken || !hash_equals($requiredToken, $adminToken)) {
+        return sendJson(['ok' => false, 'error' => 'unauthorized'], 401);
     }
+    $expectedConfirm = $net === 'testnet' ? 'DELETE TESTNET JOBS' : 'DELETE ALL JOBS';
+    if ($confirm !== $expectedConfirm) return sendJson(['ok' => false, 'error' => 'confirm_required'], 400);
 
     $before = 0;
     $after = 0;
