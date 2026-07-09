@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildMuxedAddress } from '../utils/muxed.js';
 import usePageMeta from '../utils/usePageMeta.js';
-import { listMuxed, addMuxed, removeMuxed, exportMuxedCsv, importMuxedCsvText, exportMuxedTemplateCsv } from '../utils/muxedStore.js';
+import { listMuxed, addMuxed, removeMuxed, exportMuxedCsv, importMuxedCsvText, exportMuxedTemplateCsv, getNextMuxedId, setNextMuxedId } from '../utils/muxedStore.js';
 
 // TEMP DEBUG for muxed page investigations
 const DBG = {
@@ -272,11 +272,9 @@ export default function MuxedAccountsPage({ publicKey }) {
     }
 
     try {
-      // höchste vergebene ID bestimmen
-      const currentMax = rows.reduce((m, r) => {
-        try { const v = BigInt(r.id); return v > m ? v : m; } catch { return m; }
-      }, 0n);
-      const startId = (rows.length === 0 ? 1n : currentMax + 1n);
+      // Nächste ID aus dem persistenten Zähler holen (nicht aus der aktuellen Liste
+      // ableiten - sonst würde eine gelöschte ID samt M-Adresse erneut vergeben).
+      const startId = BigInt(getNextMuxedId(publicKey, netLabel));
       const MAX = 18446744073709551615n;
       const lastId = startId + BigInt(countNum - 1);
       if (lastId > MAX) {
@@ -303,6 +301,9 @@ export default function MuxedAccountsPage({ publicKey }) {
           netLabel
         );
       }
+      // Zähler erst nach erfolgreichem Erstellen weiterrücken, damit ein abgebrochener
+      // Lauf (z. B. wegen rangeOverflow oben) die ID-Range nicht verbraucht.
+      setNextMuxedId(publicKey, (lastId + 1n).toString(), netLabel);
 
       const next = listMuxed(publicKey, netLabel);
       DBG.log('after generate listMuxed ->', next);
@@ -318,7 +319,7 @@ export default function MuxedAccountsPage({ publicKey }) {
         : msg;
       setError(t(detail, t('common:muxed.error.unknown', 'Unknown error while generating muxed address.')));
     }
-  }, [publicKey, countInput, rows, netLabel, t]);
+  }, [publicKey, countInput, netLabel, t]);
 
   const onCopy = React.useCallback(async (text) => {
     DBG.log('onCopy', text);

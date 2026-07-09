@@ -34,6 +34,11 @@ import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/st
 // short-lived timeout instead of the long job timeout below.
 const LOCAL_SUBMIT_TIMEOUT_SECONDS = 180;
 
+// createAccount can only target a base G-account, never a muxed destination. When the
+// activation path fires for a muxed recipient, this minimal follow-up payment (1 stroop,
+// the smallest indivisible XLM unit) captures the muxed ID on-chain so it isn't silently lost.
+const MUXED_ACTIVATION_STROOP = '0.0000001';
+
 function HistoryInput({
   value,
   onChange,
@@ -168,6 +173,26 @@ function HistoryInput({
   );
 }
 
+// Maps a SEP-2 federation memo (memo_type/memo) onto SKM's local memo form model.
+// 'hash' memos are base64 per SEP-2 but SKM's hash field expects hex — convert and
+// validate length so a malformed federation response never silently mis-fills the form.
+function federationMemoToLocal(memoType, memoValue) {
+  if (typeof memoValue !== 'string' || !memoValue) return null;
+  if (memoType === 'text' || memoType === 'id') {
+    return { memoType, memoVal: memoValue };
+  }
+  if (memoType === 'hash') {
+    try {
+      const hex = Buffer.from(memoValue, 'base64').toString('hex');
+      if (!/^[0-9a-fA-F]{64}$/.test(hex)) return null;
+      return { memoType: 'hash', memoVal: hex };
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
 function normalizeRecipientHistoryValue(raw) {
   const trimmed = String(raw || '').trim();
   if (!trimmed) return '';
@@ -190,6 +215,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [assetKey, setAssetKey] = useState('XLM'); // 'XLM' or 'CODE:ISSUER'
   const [memoType, setMemoType] = useState('text'); // 'none' | 'text' | 'id' | 'hash' | 'return'
   const [memoVal, setMemoVal] = useState('');
+  const memoValRef = useRef(memoVal);
+  useEffect(() => { memoValRef.current = memoVal; }, [memoVal]);
+  // Tracks the memo value WE last auto-filled from a federation lookup, so a later lookup
+  // (e.g. after the user changes the recipient) can tell "field still holds what we put
+  // there" (safe to overwrite/clear) apart from "user has since edited it" (never touch
+  // again). `null` means the user has taken manual control; a string means that value is
+  // still ours. Initialized to '' to match the pristine (never-touched) memoVal state.
+  const autoFilledMemoRef = useRef('');
   const [showSecretModal, setShowSecretModal] = useState(false);
   const [secretModalPrefill, setSecretModalPrefill] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -371,6 +404,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       asset: payload.asset,
       memo: payload.memo,
       activated: !!payload.activated,
+      muxedActivationCapture: !!payload.muxedActivationCapture,
     });
   }, [publicKey]);
 
@@ -611,10 +645,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     const { memo, display: memoDisplay } = buildMemoObject();
     let resolvedDest;
     let resolvedAccountId;
+    let isMuxedDestination;
     try {
       const resolved = await resolveOrValidateAccount(dest);
       resolvedAccountId = resolved.accountId;
       resolvedDest = resolved.muxedAddress || resolved.accountId;
+      isMuxedDestination = !!resolved.muxedAddress;
     } catch (resolveError) {
       throw new Error(t(resolveError?.message || 'resolveOrValidatePublicKey.invalid'));
     }
@@ -641,6 +677,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       ? LOCAL_SUBMIT_TIMEOUT_SECONDS
       : Math.max(60, Number(multisigTimeoutSeconds || 0) || 86400);
     let activated = false;
+    let muxedActivationCapture = false;
     if (!destExists) {
       if (assetKey !== 'XLM') {
         throw new Error(t('common:payment.send.destUnfundedNonNative', 'Destination account is not active. Please send XLM to activate it first or switch the asset to XLM.'));
@@ -648,10 +685,20 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       const desired = parseFloat(paymentAmount);
       const minStart = Math.max(desired, (baseReserve || 0.5) * 2);
       const startingBalance = (Math.round(minStart * 1e7) / 1e7).toFixed(7).replace(/\.0+$/, '');
-      tx = new TransactionBuilder(account, { fee, networkPassphrase: net, memo })
-        .addOperation(Operation.createAccount({ destination: resolvedAccountId, startingBalance }))
-        .setTimeout(txTimeout)
-        .build();
+      const builder = new TransactionBuilder(account, { fee, networkPassphrase: net, memo })
+        .addOperation(Operation.createAccount({ destination: resolvedAccountId, startingBalance }));
+      if (isMuxedDestination) {
+        // createAccount can only target the base G-account, so the muxed ID would otherwise
+        // never reach the ledger. A minimal follow-up payment to the muxed destination (same
+        // tx, executes after the account exists) captures the ID via a real muxed operation.
+        builder.addOperation(Operation.payment({
+          destination: resolvedDest,
+          amount: MUXED_ACTIVATION_STROOP,
+          asset: Asset.native(),
+        }));
+        muxedActivationCapture = true;
+      }
+      tx = builder.setTimeout(txTimeout).build();
       activated = true;
       assetLabel = 'XLM';
     } else {
@@ -694,9 +741,78 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         asset: assetLabel,
         memo: memoDisplay,
         activated,
+        muxedActivationCapture,
       },
     };
   }, [assetKey, baseReserve, buildMemoObject, dest, multisigTimeoutSeconds, normalizeAmountValue, publicKey, requiredThreshold, server, signersForModal, t]);
+
+  // Send-time guard against sending without a memo a federation server expects (SEP-2).
+  // Re-resolves `dest` fresh (same call buildPaymentTx itself makes) rather than trusting
+  // the resolve-effect's state, so a debounced/stale effect can't let a mismatch slip
+  // through. Returns true when it's fine to proceed immediately; false when it has opened
+  // a confirmation dialog and the caller must stop (the dialog resumes via
+  // pendingMemoActionRef for "send anyway", or the user re-triggers send after "apply memo").
+  const [memoMismatchDialog, setMemoMismatchDialog] = useState(null);
+  const pendingMemoActionRef = useRef(null);
+
+  const checkFederationMemoMismatch = useCallback(async () => {
+    const v = (dest || '').trim();
+    if (!v) return true;
+    let resolved;
+    try {
+      resolved = await resolveOrValidateAccount(v);
+    } catch {
+      return true; // resolution failure is reported by buildPaymentTx's own error handling
+    }
+    if (!resolved?.memo) return true; // Fall C: no expected memo, nothing to confirm
+    const mapped = federationMemoToLocal(resolved.memoType, resolved.memo);
+    let currentMemoDisplay = '';
+    try {
+      currentMemoDisplay = buildMemoObject().display || '';
+    } catch {
+      return true; // an invalid memo is already reported by buildMemoObject's own caller
+    }
+    if (mapped && currentMemoDisplay.trim() === mapped.memoVal.trim()) return true;
+    setMemoMismatchDialog({
+      mappable: !!mapped,
+      expectedMemo: mapped ? mapped.memoVal : '',
+      expectedMemoType: mapped ? mapped.memoType : null,
+      currentMemo: currentMemoDisplay,
+    });
+    return false;
+  }, [dest, buildMemoObject]);
+
+  const closeMemoMismatchDialog = useCallback(() => {
+    setMemoMismatchDialog(null);
+    pendingMemoActionRef.current = null;
+  }, []);
+
+  // Applies the federation-expected memo to the form. Deliberately does NOT auto-resume the
+  // send afterwards - re-reading component state synchronously after a setState call would
+  // still observe the pre-update value, so silently resubmitting here risks sending with the
+  // very state the user just changed on screen. Requiring an explicit second click on Send
+  // is safer for a money-movement action, and now the mismatch check will pass.
+  const acceptExpectedFederationMemo = useCallback(() => {
+    setMemoMismatchDialog((dlg) => {
+      if (dlg?.mappable) {
+        setMemoType(dlg.expectedMemoType);
+        setMemoVal(dlg.expectedMemo);
+        autoFilledMemoRef.current = dlg.expectedMemo;
+        setFederationMemoApplied(true);
+      }
+      return null;
+    });
+    pendingMemoActionRef.current = null;
+  }, []);
+
+  // "Send anyway": safe to resume the exact action that was paused, even though it was
+  // captured in an earlier render's closure - nothing relevant (dest/memo state) has changed
+  // between the check and this click, since the user only interacted with the dialog itself.
+  const sendAnywayDespiteMemoMismatch = useCallback(async () => {
+    const action = pendingMemoActionRef.current;
+    closeMemoMismatchDialog();
+    if (action) await action();
+  }, [closeMemoMismatchDialog]);
 
   const submitPayment = useCallback(async (signerKeypairs) => {
     const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
@@ -710,6 +826,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       asset: meta.asset,
       memo: meta.memo,
       activated: meta.activated,
+      muxedActivationCapture: meta.muxedActivationCapture,
       network: netLabel,
     };
   }, [buildPaymentTx, netLabel, server]);
@@ -840,80 +957,96 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       if (!signers.length && masterWeight <= 0) {
         // master=0 -> Job ohne lokale Signatur erstellen
       }
-      const { tx, meta } = await buildPaymentTx({ signers, signTx: signers.length > 0, requireSigners: false });
-      const hashHex = tx.hash().toString('hex');
-      const xdr = tx.toXDR();
-      const signerMeta = (accountInfo?.signers || []).map((s) => ({
-        publicKey: s.key || s.publicKey || s.public_key || '',
-        weight: Number(s.weight || 0),
-      })).filter((s) => s.publicKey && s.weight > 0);
-      const requiredWeight = (() => {
-        if (requiredThreshold) return requiredThreshold;
-        const thr = accountInfo?.thresholds || {};
-        return Number(thr.med_threshold ?? thr.med ?? 0) || 0;
-      })();
-      const collectedForJob = Array.isArray(signers)
-        ? signers.map((kp) => {
-            const pk = kp?.publicKey?.() || '';
-            const w = signerMeta.find((s) => s.publicKey === pk)?.weight ?? 0;
-            return pk ? { publicKey: pk, weight: w } : null;
-          }).filter(Boolean)
-        : [];
-      const payload = {
-        network: netLabel === 'TESTNET' ? 'testnet' : 'public',
-        accountId: publicKey,
-        txXdr: xdr,
-        createdBy: 'local',
-        signers: signerMeta,
-        requiredWeight: requiredWeight || null,
-        clientCollected: collectedForJob,
-      };
-      let job = null;
-      try {
-        const r = await fetch(apiUrl('multisig/jobs'), {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        const data = await r.json().catch(() => ({}));
-        if (!r.ok) {
-          const detail = data?.detail ? `: ${data.detail}` : '';
-          throw new Error((data?.error || 'multisig.jobs.create_failed') + detail);
+
+      const proceed = async () => {
+        try {
+          const { tx, meta } = await buildPaymentTx({ signers, signTx: signers.length > 0, requireSigners: false });
+          const hashHex = tx.hash().toString('hex');
+          const xdr = tx.toXDR();
+          const signerMeta = (accountInfo?.signers || []).map((s) => ({
+            publicKey: s.key || s.publicKey || s.public_key || '',
+            weight: Number(s.weight || 0),
+          })).filter((s) => s.publicKey && s.weight > 0);
+          const requiredWeight = (() => {
+            if (requiredThreshold) return requiredThreshold;
+            const thr = accountInfo?.thresholds || {};
+            return Number(thr.med_threshold ?? thr.med ?? 0) || 0;
+          })();
+          const collectedForJob = Array.isArray(signers)
+            ? signers.map((kp) => {
+                const pk = kp?.publicKey?.() || '';
+                const w = signerMeta.find((s) => s.publicKey === pk)?.weight ?? 0;
+                return pk ? { publicKey: pk, weight: w } : null;
+              }).filter(Boolean)
+            : [];
+          const payload = {
+            network: netLabel === 'TESTNET' ? 'testnet' : 'public',
+            accountId: publicKey,
+            txXdr: xdr,
+            createdBy: 'local',
+            signers: signerMeta,
+            requiredWeight: requiredWeight || null,
+            clientCollected: collectedForJob,
+          };
+          let job = null;
+          try {
+            const r = await fetch(apiUrl('multisig/jobs'), {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            const data = await r.json().catch(() => ({}));
+            if (!r.ok) {
+              const detail = data?.detail ? `: ${data.detail}` : '';
+              throw new Error((data?.error || 'multisig.jobs.create_failed') + detail);
+            }
+            job = data;
+          } catch (e) {
+            const detail = e?.message || 'multisig.jobs.create_failed';
+            showErrorMessage(detail);
+            closeConfirmDialogs();
+            return;
+          }
+          const jobId = job?.id || job?.jobId || '';
+          const jobHash = job?.txHash || job?.tx_hash || hashHex;
+          const jobXdr = job?.txXdrCurrent || job?.tx_xdr_current || xdr;
+          if (!jobId) {
+            handlePaymentError(new Error('multisig.jobs.create_failed'));
+            return;
+          }
+          setResultDialog({
+            type: 'job',
+            summary: {
+              source: publicKey,
+              recipient: meta.recipient,
+              amount: `${meta.amountDisplay} ${meta.asset}`,
+              memo: meta.memo || '-',
+              network: netLabel,
+            },
+            jobId,
+            hash: jobHash,
+            xdr: jobXdr,
+          });
+          closeConfirmDialogs();
+        } catch (err) {
+          const detail = err?.message || handlePaymentError(err);
+          showErrorMessage(detail || '');
+          closeConfirmDialogs();
         }
-        job = data;
-      } catch (e) {
-        const detail = e?.message || 'multisig.jobs.create_failed';
-        showErrorMessage(detail);
-        closeConfirmDialogs();
+      };
+
+      const ok = await checkFederationMemoMismatch();
+      if (!ok) {
+        pendingMemoActionRef.current = proceed;
         return;
       }
-      const jobId = job?.id || job?.jobId || '';
-      const jobHash = job?.txHash || job?.tx_hash || hashHex;
-      const jobXdr = job?.txXdrCurrent || job?.tx_xdr_current || xdr;
-      if (!jobId) {
-        handlePaymentError(new Error('multisig.jobs.create_failed'));
-        return;
-      }
-      setResultDialog({
-        type: 'job',
-        summary: {
-          source: publicKey,
-          recipient: meta.recipient,
-          amount: `${meta.amountDisplay} ${meta.asset}`,
-          memo: meta.memo || '-',
-          network: netLabel,
-        },
-        jobId,
-        hash: jobHash,
-        xdr: jobXdr,
-      });
-      closeConfirmDialogs();
+      await proceed();
     } catch (err) {
       const detail = err?.message || handlePaymentError(err);
       showErrorMessage(detail || '');
       closeConfirmDialogs();
     }
-  }, [accountInfo, buildPaymentTx, closeConfirmDialogs, handlePaymentError, masterWeight, netLabel, openSecretModal, preflight, publicKey, requiredThreshold, showErrorMessage, t]);
+  }, [accountInfo, buildPaymentTx, checkFederationMemoMismatch, closeConfirmDialogs, handlePaymentError, masterWeight, netLabel, openSecretModal, preflight, publicKey, requiredThreshold, showErrorMessage, t]);
 
   const handleConfirmProceed = useCallback(async () => {
     if (confirmChoice === 'local') {
@@ -934,8 +1067,59 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [resolvedAccount, setResolvedAccount] = useState('');
   const [resolvedFederation, setResolvedFederation] = useState('');
   const [inputWasFederation, setInputWasFederation] = useState(false);
+  const [federationMemoApplied, setFederationMemoApplied] = useState(false);
   const [recipientRefreshKey, setRecipientRefreshKey] = useState(0);
-  
+
+  // Holds the memoType that belongs to the auto-fill the memoVal updater below just
+  // decided to apply (or `null` for a clear), so the effect further down can sync
+  // memoType/federationMemoApplied once that decision has actually landed in state.
+  // `undefined` means "the updater declined to touch memoVal - nothing to sync".
+  // React does not guarantee a functional setState updater runs synchronously (it may be
+  // deferred to the render phase), so reading the outcome immediately after calling
+  // setMemoVal is not reliable - this ref + effect pairing waits for the real commit instead.
+  const pendingAutoFillMemoTypeRef = useRef(undefined);
+
+  // Applies (or clears) the federation-sourced memo for the just-resolved destination. Only
+  // touches the field if it still holds exactly what a PREVIOUS auto-fill put there
+  // (autoFilledMemoRef) — a manual edit (see markMemoManuallyEdited) permanently opts the
+  // field out until this runs again with a genuinely new lookup result. Passing `mapped =
+  // null` clears a stale auto-filled memo when the new destination has none (e.g. the user
+  // switched away from a federation address). Uses a functional update on memoVal so a
+  // same-tick keystroke from the user can never be clobbered by a slow-returning lookup.
+  const applyFederationMemo = useCallback((mapped) => {
+    setMemoVal((prev) => {
+      const safeToTouch = autoFilledMemoRef.current !== null && prev === autoFilledMemoRef.current;
+      if (!safeToTouch) {
+        pendingAutoFillMemoTypeRef.current = undefined;
+        return prev;
+      }
+      const next = mapped ? mapped.memoVal : '';
+      autoFilledMemoRef.current = next;
+      pendingAutoFillMemoTypeRef.current = mapped ? mapped.memoType : null;
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    const pendingType = pendingAutoFillMemoTypeRef.current;
+    if (pendingType === undefined) return; // updater left memoVal untouched
+    pendingAutoFillMemoTypeRef.current = undefined;
+    if (pendingType) {
+      setMemoType(pendingType);
+      setFederationMemoApplied(true);
+    } else {
+      setFederationMemoApplied(false);
+    }
+  }, [memoVal]);
+
+  // Any manual memo change (typing, clearing, picking a history suggestion, or an external
+  // prefill) takes the field out of federation-autofill control until a fresh lookup applies
+  // a genuinely new value — see applyFederationMemo's safeToTouch check above.
+  const markMemoManuallyEdited = useCallback(() => {
+    autoFilledMemoRef.current = null;
+    setFederationMemoApplied(false);
+  }, []);
+
   // Destination XLM balance state (resolved recipient account)
   const [destXlmBalance, setDestXlmBalance] = useState(undefined); // undefined = not resolved yet; null = unfunded/error; string = balance
   const [destXlmLoading, setDestXlmLoading] = useState(false);
@@ -944,19 +1128,22 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     async function resolve() {
       try {
         const v = (dest || '').trim();
-        if (!v) { setResolvedAccount(''); setResolvedFederation(''); setInputWasFederation(false); return; }
+        if (!v) { setResolvedAccount(''); setResolvedFederation(''); setInputWasFederation(false); applyFederationMemo(null); return; }
         if (v.includes('*')) {
           const acc = await resolveOrValidateAccount(v);
           if (!active) return;
           setResolvedAccount(acc.accountId);
           setResolvedFederation(v);
           setInputWasFederation(true);
+          const mapped = federationMemoToLocal(acc.memoType, acc.memo);
+          applyFederationMemo(mapped);
         } else if (isValidAccountId(v)) {
           const resolved = StrKey.isValidMed25519PublicKey(v)
             ? extractBasePublicKeyFromMuxed(v)
             : v;
           setResolvedAccount(resolved);
           setInputWasFederation(false);
+          applyFederationMemo(null);
           // Try reverse federation lookup via home_domain → stellar.toml → FEDERATION_SERVER
           try {
             const acct = await server.loadAccount(resolved);
@@ -984,17 +1171,19 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           setResolvedAccount('');
           setResolvedFederation('');
           setInputWasFederation(false);
+          applyFederationMemo(null);
         }
       } catch {
         if (!active) return;
         setResolvedAccount('');
         setResolvedFederation('');
         setInputWasFederation(false);
+        applyFederationMemo(null);
       }
     }
     resolve();
     return () => { active = false; };
-  }, [dest, server, recipientRefreshKey]);
+  }, [dest, server, recipientRefreshKey, applyFederationMemo]);
 
   // Load destination account XLM balance for the resolved recipient
   useEffect(() => {
@@ -1101,6 +1290,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         network: result.network,
       },
       hash: result.hash,
+      muxedActivationCapture: !!result.muxedActivationCapture,
     });
   }, [publicKey]);
 
@@ -1109,27 +1299,35 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       setReviewError(t('secretKey:errorMissing', 'Secret Key fehlt für den Versand.'));
       return;
     }
-    try {
-      setReviewProcessing(true);
-      setIsProcessing(true);
-      const result = await submitPayment(reviewDialog.signers);
-      applySendResult(result);
-      openSentResultDialog(result);
-      closeReviewDialog();
-      setSecretError('');
-    } catch (err) {
-      if (err instanceof AmbiguousSubmitResultError) {
-        setAmbiguousSubmission({ hash: err.hash });
+    const proceed = async () => {
+      try {
+        setReviewProcessing(true);
+        setIsProcessing(true);
+        const result = await submitPayment(reviewDialog.signers);
+        applySendResult(result);
+        openSentResultDialog(result);
         closeReviewDialog();
-      } else {
-        const detail = handlePaymentError(err);
-        setReviewError(detail);
+        setSecretError('');
+      } catch (err) {
+        if (err instanceof AmbiguousSubmitResultError) {
+          setAmbiguousSubmission({ hash: err.hash });
+          closeReviewDialog();
+        } else {
+          const detail = handlePaymentError(err);
+          setReviewError(detail);
+        }
+      } finally {
+        setReviewProcessing(false);
+        setIsProcessing(false);
       }
-    } finally {
-      setReviewProcessing(false);
-      setIsProcessing(false);
+    };
+    const ok = await checkFederationMemoMismatch();
+    if (!ok) {
+      pendingMemoActionRef.current = proceed;
+      return;
     }
-  }, [applySendResult, closeReviewDialog, handlePaymentError, openSentResultDialog, reviewDialog, submitPayment, t]);
+    await proceed();
+  }, [applySendResult, checkFederationMemoMismatch, closeReviewDialog, handlePaymentError, openSentResultDialog, reviewDialog, submitPayment, t]);
 
   const handleSendClick = useCallback(async () => {
     clearSuccess();
@@ -1326,9 +1524,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       clearSuccess();
       if (initial.recipient) setDest(initial.recipient);
       if (initial.amount != null) setAmount(String(initial.amount));
-      if (initial.memoText) { setMemoType('text'); setMemoVal(initial.memoText); }
+      if (initial.memoText) { markMemoManuallyEdited(); setMemoType('text'); setMemoVal(initial.memoText); }
     } catch { /* noop */ }
-  }, [initial, clearSuccess]);
+  }, [initial, clearSuccess, markMemoManuallyEdited]);
 
   const sentAmountText = sentInfo
     ? sentInfo.amountDisplay || (Number.isFinite(sentInfo.amount) ? amountFmt.format(sentInfo.amount) : '')
@@ -1374,6 +1572,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span> {sentInfo.memo || '-'}</div>
             {sentInfo.activated && (
               <div className="text-green-800 dark:text-green-200 font-medium">{t('common:payment.send.activated', 'The destination account was activated.')}</div>
+            )}
+            {sentInfo.muxedActivationCapture && (
+              <div className="text-green-800 dark:text-green-200 font-medium">{t('common:payment.send.muxedActivationCapture', 'Account was activated; an additional minimal transaction fee applied to also record the muxed ID on-chain.')}</div>
             )}
             {status && (<div><span className="text-gray-600 dark:text-gray-400">TX:</span> <span className="font-mono break-all">{status}</span></div>)}
           </div>
@@ -1576,19 +1777,23 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 value={memoVal}
                 suggestions={historyMemos}
                 className="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm"
-                onChange={(e)=>{ clearSuccess(); setMemoVal(e.target.value); }}
+                onChange={(e)=>{ clearSuccess(); markMemoManuallyEdited(); setMemoVal(e.target.value); }}
                 onBlur={()=>pushHistory(PAYMENT_MEMO_HISTORY_KEY, memoVal, setHistoryMemos)}
                 onSelect={(next) => {
                   clearSuccess();
+                  markMemoManuallyEdited();
                   setMemoVal(next);
                   pushHistory(PAYMENT_MEMO_HISTORY_KEY, next, setHistoryMemos);
                 }}
                 onRemoveSuggestion={(next) => removeFromHistory(PAYMENT_MEMO_HISTORY_KEY, next, setHistoryMemos)}
                 onClearSuggestions={() => clearHistory(PAYMENT_MEMO_HISTORY_KEY, setHistoryMemos)}
                 rightAdornment={memoVal ? (
-                  <button type="button" onClick={()=>{ clearSuccess(); setMemoVal(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
+                  <button type="button" onClick={()=>{ clearSuccess(); markMemoManuallyEdited(); setMemoVal(''); }} title={t('common:clear', 'Clear')} aria-label={t('common:clear', 'Clear')} className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 md:w-6 md:h-6 rounded-full bg-gray-300 hover:bg-red-500 text-gray-600 hover:text-white text-sm flex items-center justify-center">×</button>
                 ) : null}
               />
+              {inputWasFederation && federationMemoApplied && (
+                <div className="text-xs text-amber-700 dark:text-amber-400 mt-1">{t('common:payment.send.memoFederationHint')}</div>
+              )}
             </div>
           </div>
 
@@ -1848,6 +2053,61 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         </div>
       )}
 
+      {memoMismatchDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[57] overflow-y-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-lg my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <h3 className="text-lg font-semibold">{t('common:payment.send.memoMismatch.title', 'Check federation memo')}</h3>
+              <button
+                type="button"
+                className="p-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+                onClick={closeMemoMismatchDialog}
+                aria-label={t('common:close')}
+              >
+                ×
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+              {memoMismatchDialog.mappable
+                ? t('common:payment.send.memoMismatch.textMappable', 'The federation server expects the memo "{{expected}}", but your current memo is "{{current}}".', {
+                    expected: memoMismatchDialog.expectedMemo,
+                    current: memoMismatchDialog.currentMemo || t('common:payment.send.memoMismatch.empty', '(empty)'),
+                  })
+                : t('common:payment.send.memoMismatch.textUnmappable', 'The federation server expects a memo that could not be applied automatically. Your current memo is "{{current}}".', {
+                    current: memoMismatchDialog.currentMemo || t('common:payment.send.memoMismatch.empty', '(empty)'),
+                  })}
+            </p>
+
+            <div className="flex flex-wrap justify-end gap-2">
+              <button
+                type="button"
+                className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={closeMemoMismatchDialog}
+              >
+                {t('common:option.cancel', 'Cancel')}
+              </button>
+              <button
+                type="button"
+                className="px-3 py-2 rounded border border-amber-500 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/30"
+                onClick={sendAnywayDespiteMemoMismatch}
+              >
+                {t('common:payment.send.memoMismatch.sendAnyway', 'Send anyway')}
+              </button>
+              {memoMismatchDialog.mappable && (
+                <button
+                  type="button"
+                  className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                  onClick={acceptExpectedFederationMemo}
+                >
+                  {t('common:payment.send.memoMismatch.applyExpected', 'Apply federation memo')}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {resultDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[55] overflow-y-auto p-4">
           <div className="bg-white dark:bg-gray-800 rounded p-4 w-full max-w-2xl my-auto max-h-[calc(100svh-2rem)] overflow-y-auto">
@@ -1879,6 +2139,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     ? t('multisig:confirm.result.sent.copiedDetails', 'Kopiert')
                     : t('multisig:confirm.result.sent.copyDetails', 'Details kopieren')}
                 </button>
+              </div>
+            )}
+            {resultDialog.type === 'sent' && resultDialog.muxedActivationCapture && (
+              <div className="text-sm text-green-800 dark:text-green-200 font-medium mb-3">
+                {t('common:payment.send.muxedActivationCapture', 'Account was activated; an additional minimal transaction fee applied to also record the muxed ID on-chain.')}
               </div>
             )}
             {resultDialog.type === 'job' && (

@@ -3,9 +3,16 @@
 // Structure v3: { [network]: { [basePublicKey]: Array<{ id: string, address: string, createdAt: string, label?: string, note?: string }> } }
 
 import { buildMuxedAddress } from './muxed.js';
+import { extractMuxedIdFromAddress } from './stellar/stellarUtils.js';
 import { csvEscape } from './csvEscape.js';
 
 const STORAGE_KEY = 'muxedAccounts_v3';
+// Persists the next muxed ID to hand out per (network, basePublicKey), independent of
+// the entry list above. Deriving "next id" from max(current list) + 1 would reissue an
+// already-used (and possibly already-shared) M-address as soon as its entry is deleted -
+// this counter only ever moves forward.
+const STORAGE_KEY_NEXT_ID = 'muxedNextId_v1';
+const MAX_MUXED_ID = 18446744073709551615n;
 const isDev = import.meta.env.MODE !== 'production';
 
 function _getNet(explicitNet) {
@@ -61,6 +68,63 @@ export function listMuxed(publicKey, net) {
     }
     return 0;
   });
+}
+
+function _loadNextIds() {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY_NEXT_ID);
+    if (!raw) return {};
+    const obj = JSON.parse(raw);
+    return obj && typeof obj === 'object' ? obj : {};
+  } catch {
+    return {};
+  }
+}
+
+function _saveNextIds(map) {
+  try {
+    window.localStorage.setItem(STORAGE_KEY_NEXT_ID, JSON.stringify(map));
+  } catch {
+    // ignore write errors
+  }
+}
+
+// getNextMuxedId(publicKey, net?)
+// Returns the next muxed ID to assign for this (network, base account) as a decimal
+// string, starting at 1. Backed by a persistent counter (see STORAGE_KEY_NEXT_ID) that
+// only moves forward via setNextMuxedId - it is never derived from the current entry
+// list, so deleting entries can never cause an ID (and therefore its M-address) to be
+// reissued to someone else.
+export function getNextMuxedId(publicKey, net) {
+  if (!publicKey) return '1';
+  const network = _getNet(net);
+  const nextIds = _loadNextIds();
+  const stored = nextIds[network]?.[publicKey];
+  if (stored !== undefined) {
+    try {
+      const v = BigInt(stored);
+      if (v >= 1n) return v.toString();
+    } catch { /* fall through to migration below */ }
+  }
+  // First call after upgrading from a version without this counter: seed it from the
+  // highest ID already present so we don't reissue an address that's already in use.
+  const existingMax = listMuxed(publicKey, network).reduce((m, r) => {
+    try { const v = BigInt(r.id); return v > m ? v : m; } catch { return m; }
+  }, 0n);
+  return (existingMax + 1n).toString();
+}
+
+// setNextMuxedId(publicKey, nextId, net?)
+// Persists the next muxed ID to hand out. Call after actually creating IDs (not just
+// previewing a range) so the counter reflects what was really assigned.
+export function setNextMuxedId(publicKey, nextId, net) {
+  if (!publicKey) return;
+  const network = _getNet(net);
+  const nextIds = _loadNextIds();
+  const perNet = nextIds[network] || {};
+  perNet[publicKey] = String(nextId);
+  nextIds[network] = perNet;
+  _saveNextIds(nextIds);
 }
 
 // addMuxed(publicKey, { id, address, label, note }, net?)
@@ -299,16 +363,20 @@ export function importMuxedCsvText(publicKey, csvText, net) {
     } catch {
       result.skipped++; continue;
     }
+    // Canonicalize the ID from the encoded address rather than trusting the raw CSV
+    // string: BigInt() accepts "0x10"/"010"/etc., which would otherwise let the same
+    // muxed address slip past duplicate detection under two different id spellings.
+    const canonicalId = extractMuxedIdFromAddress(address);
 
     try {
       const current = listMuxed(publicKey, network);
-      const exists = current.find((e) => String(e.id) === rowId);
-      addMuxed(publicKey, { id: rowId, address, label, note }, network);
+      const exists = current.find((e) => String(e.id) === canonicalId);
+      addMuxed(publicKey, { id: canonicalId, address, label, note }, network);
       if (!exists && createdAt) {
         const all = _loadAll();
         const perNet = all[network] || {};
         const list = perNet[publicKey] || [];
-        const idxEntry = list.findIndex((e) => String(e.id) === rowId);
+        const idxEntry = list.findIndex((e) => String(e.id) === canonicalId);
         if (idxEntry >= 0) {
           list[idxEntry].createdAt = createdAt;
           perNet[publicKey] = list;

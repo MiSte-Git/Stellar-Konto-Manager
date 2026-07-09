@@ -395,6 +395,15 @@
       "asset": "Asset",
       "memo": "Memo",
       "memoType": "Memo type",
+      "memoFederationHint": "Memo taken from the federation server – you can adjust it if needed.",
+      "memoMismatch": {
+        "title": "Check federation memo",
+        "textMappable": "The federation server expects the memo \"{{expected}}\", but your current memo is \"{{current}}\".",
+        "textUnmappable": "The federation server expects a memo that could not be applied automatically. Your current memo is \"{{current}}\".",
+        "empty": "(empty)",
+        "sendAnyway": "Send anyway",
+        "applyExpected": "Apply federation memo"
+      },
       "memoTypes": {
         "none": "Memo (kein Memo)",
         "text": "Memo text",
@@ -442,6 +451,7 @@
         "noteAdjust": "Your balance is insufficient for activation. If you continue, the minimum amount will be sent automatically."
       },
       "activated": "The target account has been activated.",
+      "muxedActivationCapture": "Account was activated; an additional minimal transaction fee applied to also record the muxed ID on-chain.",
       "ambiguousResult": {
         "title": "Status unclear – do not resend",
         "body": "The transaction could not be confirmed unambiguously by the server (timeout or server error). Please check the transaction hash in an explorer before trying again.",

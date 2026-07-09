@@ -163,7 +163,11 @@ export async function resolveFederationAddress(federationAddress) {
   // (SDK 16 moved FederationServer under the Federation namespace, same as Horizon.Server).
   const response = await Federation.Server.resolve(federationAddress);
   if (!response?.account_id) throw new Error('error.noFederationId');
-  return response.account_id;
+  return {
+    accountId: response.account_id,
+    memo: typeof response.memo === 'string' ? response.memo : undefined,
+    memoType: typeof response.memo_type === 'string' ? response.memo_type : undefined,
+  };
 }
 
 /**
@@ -292,15 +296,20 @@ export function extractMuxedIdFromAddress(muxedAddress) {
 export async function resolveOrValidateAccount(input) {
   if (!input) throw new Error('resolveOrValidatePublicKey.empty');
   let value = input;
+  let federationMemo;
+  let federationMemoType;
   if (value.includes('*')) {
-    value = await resolveFederationAddress(value);
+    const fed = await resolveFederationAddress(value);
+    value = fed.accountId;
+    federationMemo = fed.memo;
+    federationMemoType = fed.memoType;
   }
   if (StrKey.isValidEd25519PublicKey(value)) {
-    return { accountId: value, muxedAddress: null, address: value };
+    return { accountId: value, muxedAddress: null, address: value, memo: federationMemo, memoType: federationMemoType };
   }
   if (StrKey.isValidMed25519PublicKey(value)) {
     const base = extractBasePublicKeyFromMuxed(value);
-    return { accountId: base, muxedAddress: value, address: value };
+    return { accountId: base, muxedAddress: value, address: value, memo: federationMemo, memoType: federationMemoType };
   }
   throw new Error('resolveOrValidatePublicKey.invalid');
 }

@@ -395,6 +395,15 @@
       "asset": "Asset",
       "memo": "Memo",
       "memoType": "Memo Typ",
+      "memoFederationHint": "Memo vom Federation-Server übernommen – kann bei Bedarf angepasst werden.",
+      "memoMismatch": {
+        "title": "Federation-Memo prüfen",
+        "textMappable": "Der Federation-Server erwartet das Memo \"{{expected}}\", dein aktuelles Memo ist \"{{current}}\".",
+        "textUnmappable": "Der Federation-Server erwartet ein Memo, das nicht automatisch übernommen werden konnte. Dein aktuelles Memo ist \"{{current}}\".",
+        "empty": "(leer)",
+        "sendAnyway": "Trotzdem senden",
+        "applyExpected": "Federation-Memo übernehmen"
+      },
       "memoTypes": {
         "none": "Memo (kein Memo)",
         "text": "Memo Text",
@@ -442,6 +451,7 @@
         "noteAdjust": "Ihr Betrag reicht für die Aktivierung nicht aus. Wenn Sie fortfahren, wird automatisch der Mindestbetrag gesendet."
       },
       "activated": "Das Zielkonto wurde aktiviert.",
+      "muxedActivationCapture": "Konto wurde aktiviert; zusätzlich ist eine minimale Transaktionsgebühr angefallen, um die Muxed-ID ebenfalls on-chain zu erfassen.",
       "ambiguousResult": {
         "title": "Status unklar – nicht erneut senden",
         "body": "Die Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.",
