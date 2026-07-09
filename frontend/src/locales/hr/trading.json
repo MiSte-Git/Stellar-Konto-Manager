@@ -300,7 +300,15 @@
         "failed": "stellar.toml nije dostupan",
         "noHomeDomain": "Nema domene na korisničkom računu izdavatelja",
         "assetListed": "Imovina navedena u stellar.toml",
-        "currencyCount": "ULAZAK U VALUTE"
+        "currencyCount": "ULAZAK U VALUTE",
+        "errors": {
+          "notFound": "Ova domena ne pruža datoteku stellar.toml. To je problem s podacima na strani izdavača, a ne problem sa SKM-om.",
+          "httpError": "Poslužitelj domene je prijavio pogrešku pri učitavanju stranice.",
+          "timeout": "Vrijeme isteka tijekom dohvaćanja. To može biti uzrokovano sporom ili nedostupnom domenom.",
+          "blocked": "Povezanost s domenom je blokirana iz sigurnosnih razloga.",
+          "connectionError": "Nije moguće povezati se s domenom.",
+          "invalidFormat": "Datoteka je dostupna, ali je nečitljiva ili pogrešno formatirana."
+        }
       },
       "flags": {
         "authRequired": "Potrebna autorizacija",

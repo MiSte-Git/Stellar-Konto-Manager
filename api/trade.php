@@ -325,6 +325,9 @@ function asset_facts(): void {
 
         try {
             $tomlText = fetch_text($tomlUrl);
+            if (looks_like_html($tomlText)) {
+                throw new RuntimeException('toml_invalid_format');
+            }
             $currencies = parse_currency_sections_from_toml($tomlText);
             // Asset codes are case-sensitive on Stellar (USDC and usdc are
             // different assets even for the same issuer), so this must not
@@ -349,7 +352,7 @@ function asset_facts(): void {
                 'url' => $tomlUrl,
                 'currencies' => [],
                 'matches' => [],
-                'error' => $e->getMessage() ?: 'fetchFailed',
+                'error' => classify_toml_error($e->getMessage() ?: 'fetchFailed'),
             ];
             json_out($facts);
         }

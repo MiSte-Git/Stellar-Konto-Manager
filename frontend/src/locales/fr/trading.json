@@ -300,7 +300,15 @@
         "failed": "Fichier « stellar.toml » inaccessible",
         "noHomeDomain": "Pas de domaine d'origine associé au compte de l'émetteur",
         "assetListed": "Ressource répertoriée dans le fichier stellar.toml",
-        "currencyCount": "Entrées « DEVISES »"
+        "currencyCount": "Entrées « DEVISES »",
+        "errors": {
+          "notFound": "Ce domaine ne fournit pas de fichier stellar.toml. Il s'agit d'un problème lié aux données du côté de l'éditeur, et non d'un problème lié à SKM.",
+          "httpError": "Le serveur du domaine a signalé une erreur lors du chargement de la page.",
+          "timeout": "Dépassement du délai d'attente lors de la récupération. Cela peut être dû à un domaine trop lent ou inaccessible.",
+          "blocked": "La connexion au domaine a été bloquée pour des raisons de sécurité.",
+          "connectionError": "Impossible de se connecter au domaine.",
+          "invalidFormat": "Le fichier est accessible, mais il est illisible ou mal formaté."
+        }
       },
       "flags": {
         "authRequired": "Autorisation requise",

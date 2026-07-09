@@ -184,6 +184,54 @@ function parseCurrencySectionsFromToml(tomlText) {
   return list.map(normalizeCurrencyEntry).filter(Boolean);
 }
 
+// A server that answers with an HTML error/redirect page instead of the
+// TOML file (misconfiguration, WAF/CDN block page) is common enough to
+// deserve its own "invalidFormat" category rather than falling through to
+// toml.parse()'s often-cryptic SyntaxError.
+function looksLikeHtml(text) {
+  return /^\s*<(!doctype|html)/i.test(String(text || ''));
+}
+
+// Normalizes the wide range of internal fetch/parse failures into a small,
+// UI-stable set of categories so the frontend can tell a real data problem
+// at the issuer's domain (noHomeDomain/notFound/invalidFormat) apart from a
+// network condition (timeout/connectionError) or our own SSRF guard
+// stepping in (blocked) - instead of surfacing a single generic message for
+// every cause. Raw internal error messages (ssrf.blocked:*, HTTP nnn, ...)
+// are deliberately left unchanged at their throw sites so existing callers/
+// tests of assertSafeScheme()/ssrfSafeLookup() keep seeing the raw reason;
+// this classification only applies where fetchAssetFacts turns a caught
+// error into the public toml.error field.
+function classifyTomlError(error) {
+  if (error?.name === 'AbortError') return 'timeout';
+  if (error?.name === 'SyntaxError') return 'invalidFormat'; // toml.parse() syntax error
+  const message = String(error?.message || '');
+  if (message === 'toml.invalidFormat') return 'invalidFormat';
+
+  const httpMatch = message.match(/^HTTP (\d+)$/);
+  if (httpMatch) return httpMatch[1] === '404' ? 'notFound' : 'httpError';
+
+  const classifySsrfReason = (reason) =>
+    (reason === 'dnsLookupFailed' || reason === 'noAddress') ? 'connectionError' : 'blocked';
+  if (message.startsWith('ssrf.blocked:')) {
+    return classifySsrfReason(message.slice('ssrf.blocked:'.length));
+  }
+  // undici wraps network-level failures (DNS, connection refused/reset) from
+  // our custom connect.lookup - including the ssrf.blocked:* errors it
+  // raises - in a generic TypeError('fetch failed') with the real reason on
+  // .cause, rather than surfacing it as the top-level message/name.
+  const cause = error?.cause;
+  const causeMessage = String(cause?.message || '');
+  if (causeMessage.startsWith('ssrf.blocked:')) {
+    return classifySsrfReason(causeMessage.slice('ssrf.blocked:'.length));
+  }
+  if (cause?.code === 'ETIMEDOUT') return 'timeout';
+  if (['ENOTFOUND', 'ECONNREFUSED', 'ECONNRESET', 'EAI_AGAIN'].includes(cause?.code)) return 'connectionError';
+  if (message === 'fetch failed') return 'connectionError';
+
+  return 'fetchFailed';
+}
+
 function simplifyIssuerAccount(account, issuer) {
   const flags = account?.flags || {};
   const signers = Array.isArray(account?.signers) ? account.signers : [];
@@ -355,6 +403,7 @@ async function fetchAssetFacts({ assetCode, issuer, horizon }) {
 
     try {
       const tomlText = await fetchTextWithTimeout(tomlUrl);
+      if (looksLikeHtml(tomlText)) throw new Error('toml.invalidFormat');
       const currencies = parseCurrencySectionsFromToml(tomlText);
       // Asset codes are case-sensitive on Stellar (USDC and usdc are
       // different assets even for the same issuer), so this must not
@@ -382,7 +431,7 @@ async function fetchAssetFacts({ assetCode, issuer, horizon }) {
           url: tomlUrl,
           currencies: [],
           matches: [],
-          error: error?.name === 'AbortError' ? 'timeout' : (error?.message || 'fetchFailed'),
+          error: classifyTomlError(error),
         },
       };
     }
@@ -488,4 +537,5 @@ module.exports = {
   ssrfSafeLookup,
   readTextWithLimit,
   MAX_TOML_RESPONSE_BYTES,
+  classifyTomlError,
 };

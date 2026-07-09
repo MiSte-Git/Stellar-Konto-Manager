@@ -124,5 +124,34 @@ check(
         : $dnsError === 'ssrf_blocked_unresolved' // offline sandbox: acceptable, still not a false negative
 );
 
+// --- looks_like_html ----------------------------------------------------
+check('looks_like_html detects a doctype-led HTML error page', looks_like_html("<!DOCTYPE html>\n<html><body>blocked</body></html>") === true);
+check('looks_like_html detects a bare <html> tag with leading whitespace', looks_like_html("  \n<html><head></head></html>") === true);
+check('looks_like_html does not flag a real stellar.toml as HTML', looks_like_html("ACCOUNTS=[\"G...\"]\n\n[[CURRENCIES]]\ncode=\"USDC\"") === false);
+check('looks_like_html does not flag empty content as HTML', looks_like_html('') === false);
+
+// --- classify_toml_error: every internal failure -> its public category ---
+check('classify_toml_error maps "timeout" to "timeout"', classify_toml_error('timeout') === 'timeout');
+check('classify_toml_error maps "connection_error" to "connectionError"', classify_toml_error('connection_error') === 'connectionError');
+check('classify_toml_error maps "toml_invalid_format" to "invalidFormat"', classify_toml_error('toml_invalid_format') === 'invalidFormat');
+check('classify_toml_error maps "HTTP 404" to "notFound"', classify_toml_error('HTTP 404') === 'notFound');
+check('classify_toml_error maps "HTTP 500" to "httpError"', classify_toml_error('HTTP 500') === 'httpError');
+check('classify_toml_error maps "HTTP 403" to "httpError"', classify_toml_error('HTTP 403') === 'httpError');
+check('classify_toml_error maps "ssrf_blocked_ip" (private address) to "blocked"', classify_toml_error('ssrf_blocked_ip') === 'blocked');
+check('classify_toml_error maps "ssrf_blocked_scheme" to "blocked"', classify_toml_error('ssrf_blocked_scheme') === 'blocked');
+check('classify_toml_error maps "ssrf_blocked_localhost" to "blocked"', classify_toml_error('ssrf_blocked_localhost') === 'blocked');
+check('classify_toml_error maps "ssrf_blocked_response_too_large" to "blocked"', classify_toml_error('ssrf_blocked_response_too_large') === 'blocked');
+check('classify_toml_error maps "ssrf_blocked_invalid_url" to "blocked"', classify_toml_error('ssrf_blocked_invalid_url') === 'blocked');
+check('classify_toml_error maps "ssrf_blocked_host" to "blocked"', classify_toml_error('ssrf_blocked_host') === 'blocked');
+check('classify_toml_error maps "redirect_without_location" to "blocked"', classify_toml_error('redirect_without_location') === 'blocked');
+check('classify_toml_error maps "too_many_redirects" to "blocked"', classify_toml_error('too_many_redirects') === 'blocked');
+// A DNS name that never resolves at all is a domain-availability problem,
+// not our guard actively intervening for safety - unlike the other
+// ssrf_blocked_* cases above, which all involve a resolved-but-forbidden
+// target or a rejected input.
+check('classify_toml_error maps "ssrf_blocked_unresolved" to "connectionError", not "blocked"', classify_toml_error('ssrf_blocked_unresolved') === 'connectionError');
+check('classify_toml_error falls back to "fetchFailed" for an unrecognized message', classify_toml_error('something unexpected') === 'fetchFailed');
+check('classify_toml_error falls back to "fetchFailed" for an empty message', classify_toml_error('') === 'fetchFailed');
+
 echo "\n{$passed} passed, {$failed} failed\n";
 exit($failed > 0 ? 1 : 0);

@@ -258,7 +258,15 @@
         "failed": "stellar.toml not reachable",
         "noHomeDomain": "No home domain on issuer account",
         "assetListed": "Asset listed in stellar.toml",
-        "currencyCount": "CURRENCIES entries"
+        "currencyCount": "CURRENCIES entries",
+        "errors": {
+          "notFound": "This domain does not provide a stellar.toml file. This is a data issue on the publisher's end, not a problem with SKM.",
+          "httpError": "The domain's server reported an error when the page was loaded.",
+          "timeout": "Timeout during retrieval. This may be due to a slow or unreachable domain.",
+          "blocked": "Connection to the domain has been blocked for security reasons.",
+          "connectionError": "Unable to connect to the domain.",
+          "invalidFormat": "The file is accessible, but it is unreadable or incorrectly formatted."
+        }
       },
       "flags": {
         "authRequired": "Authorization required",

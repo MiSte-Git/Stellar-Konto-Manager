@@ -300,7 +300,15 @@
         "failed": "No se puede acceder a «stellar.toml»",
         "noHomeDomain": "No hay dominio principal en la cuenta del emisor",
         "assetListed": "Recurso incluido en el archivo «stellar.toml»",
-        "currencyCount": "Entradas de «DIVISAS»"
+        "currencyCount": "Entradas de «DIVISAS»",
+        "errors": {
+          "notFound": "Este dominio no proporciona un archivo «stellar.toml». Se trata de un problema relacionado con los datos por parte del editor, no de un problema con SKM.",
+          "httpError": "El servidor del dominio ha notificado un error al cargar la página.",
+          "timeout": "Se ha producido un tiempo de espera durante la recuperación. Esto puede deberse a que el dominio es lento o no está accesible.",
+          "blocked": "Se ha bloqueado la conexión al dominio por motivos de seguridad.",
+          "connectionError": "No se puede conectar al dominio.",
+          "invalidFormat": "Se puede acceder al archivo, pero es ilegible o tiene un formato incorrecto."
+        }
       },
       "flags": {
         "authRequired": "Se requiere autorización",

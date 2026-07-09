@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { getAssetRiskWarnings, isExpertFlagged, getExpertWarningTags, expertStatusLabel } from '../assetFactsUtils.js';
+import { getAssetRiskWarnings, isExpertFlagged, getExpertWarningTags, expertStatusLabel, tomlStatusLabel } from '../assetFactsUtils.js';
 
 const ISSUER = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
 const OTHER_SIGNER = 'GBXOTHERKEY00000000000000000000000000000000000000000000';
@@ -75,6 +75,34 @@ describe('getAssetRiskWarnings', () => {
     const facts = baseFacts({ toml: { status: 'loaded', matches: [], currencies: [] } });
     const warnings = getAssetRiskWarnings(facts, ASSET, t);
     expect(warnings).toContain('trading:assetSearch.risk.tomlAssetMissing');
+  });
+});
+
+describe('tomlStatusLabel', () => {
+  it('labels loading/loaded/noHomeDomain and the not-checked default unchanged', () => {
+    expect(tomlStatusLabel(baseFacts({ toml: { status: 'loading' } }), t)).toBe('trading:assetSearch.facts.toml.loading');
+    expect(tomlStatusLabel(baseFacts({ toml: { status: 'loaded' } }), t)).toBe('trading:assetSearch.facts.toml.loaded');
+    expect(tomlStatusLabel(baseFacts({ toml: { status: 'noHomeDomain' } }), t)).toBe('trading:assetSearch.facts.toml.noHomeDomain');
+    expect(tomlStatusLabel(baseFacts({ toml: { status: 'notChecked' } }), t)).toBe('trading:assetSearch.facts.notChecked');
+  });
+
+  it.each([
+    ['notFound', 'trading:assetSearch.facts.toml.errors.notFound'],
+    ['httpError', 'trading:assetSearch.facts.toml.errors.httpError'],
+    ['timeout', 'trading:assetSearch.facts.toml.errors.timeout'],
+    ['blocked', 'trading:assetSearch.facts.toml.errors.blocked'],
+    ['connectionError', 'trading:assetSearch.facts.toml.errors.connectionError'],
+    ['invalidFormat', 'trading:assetSearch.facts.toml.errors.invalidFormat'],
+  ])('renders a distinct, laienverständliche label for toml.error %s', (error, expectedKey) => {
+    const facts = baseFacts({ toml: { status: 'failed', error } });
+    expect(tomlStatusLabel(facts, t)).toBe(expectedKey);
+  });
+
+  it('falls back to the generic "failed" label for an unrecognized or empty error category', () => {
+    expect(tomlStatusLabel(baseFacts({ toml: { status: 'failed', error: 'somethingUnrecognized' } }), t))
+      .toBe('trading:assetSearch.facts.toml.failed');
+    expect(tomlStatusLabel(baseFacts({ toml: { status: 'failed', error: '' } }), t))
+      .toBe('trading:assetSearch.facts.toml.failed');
   });
 });
 

@@ -4988,5 +4988,11 @@
   "xlmByMemo.wrongMemos.hint": "dc21fff4977ce0c3b7089054217da0ea20bc434ca616c2c79bfe6f8df130dc0f",
   "xlmByMemo.wrongMemos.scanning": "29dbf957e8c87fc5d621b54188ebb0610938bcdb7512c9e1eaa804a08b86491b",
   "xlmByMemo.wrongMemos.summary": "1dd3dffd155cc68fbac5f96bf7648c2fbf9835ceb4982d30635bd8d47a362450",
-  "xlmByMemo.wrongMemos.title": "909de34df295c4d859b22b2455dc957a1e3ef14ab57631eda5cb570e25647cb5"
+  "xlmByMemo.wrongMemos.title": "909de34df295c4d859b22b2455dc957a1e3ef14ab57631eda5cb570e25647cb5",
+  "trading.assetSearch.facts.toml.errors.notFound": "a6e22cc987c3a35600a88cbd0baaf5d186f8b594a22a2ca063d2ae13bf7a986b",
+  "trading.assetSearch.facts.toml.errors.httpError": "2b6a59d577037ce13fff7aacc16a1140730e248b6d41b0b2ba8ac62aee77f9bb",
+  "trading.assetSearch.facts.toml.errors.timeout": "76900b268b2dad53c33cb0835c6d5164d5e3e06231118448e58ab0b834e6e32d",
+  "trading.assetSearch.facts.toml.errors.blocked": "bbf2074f2e661348e93f5ad10f532c08d1238aaf9b4bee53a8287ea88cc1d82c",
+  "trading.assetSearch.facts.toml.errors.connectionError": "390173dc9d575feb400ce47557869c858d2be5f1bfea666ad3fe08ffc5449f1a",
+  "trading.assetSearch.facts.toml.errors.invalidFormat": "9d679b8825eb9c4d93ff626d71ccdfc0d9ee892ed07e7941a2481d8a4c689357"
 }

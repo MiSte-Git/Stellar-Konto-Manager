@@ -300,7 +300,15 @@
         "failed": "stellar.toml non raggiungibile",
         "noHomeDomain": "Nessun dominio di origine nell'account dell'emittente",
         "assetListed": "Risorsa elencata nel file stellar.toml",
-        "currencyCount": "Voci relative alle VALUTE"
+        "currencyCount": "Voci relative alle VALUTE",
+        "errors": {
+          "notFound": "Questo dominio non mette a disposizione un file stellar.toml. Si tratta di un problema relativo ai dati da parte dell'editore, non di un problema legato a SKM.",
+          "httpError": "Il server del dominio ha segnalato un errore durante il caricamento della pagina.",
+          "timeout": "Timeout durante il recupero. Ciò potrebbe essere dovuto a un dominio lento o non raggiungibile.",
+          "blocked": "La connessione al dominio è stata bloccata per motivi di sicurezza.",
+          "connectionError": "Impossibile connettersi al dominio.",
+          "invalidFormat": "Il file è accessibile, ma è illeggibile o formattato in modo errato."
+        }
       },
       "flags": {
         "authRequired": "È richiesta l'autorizzazione",

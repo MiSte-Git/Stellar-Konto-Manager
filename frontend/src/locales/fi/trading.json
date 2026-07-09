@@ -300,7 +300,15 @@
         "failed": "stellar.toml ei ole käytettävissä",
         "noHomeDomain": "Liikkeeseenlaskijan tilillä ei ole kotiverkkotunnusta",
         "assetListed": "Stellar.toml-tiedostossa lueteltu omaisuuserä",
-        "currencyCount": "VALUUTAT-merkinnät"
+        "currencyCount": "VALUUTAT-merkinnät",
+        "errors": {
+          "notFound": "Tällä verkkotunnuksella ei ole stellar.toml-tiedostoa. Kyseessä on julkaisijan puolella oleva tietoon liittyvä ongelma, ei SKM:n ongelma.",
+          "httpError": "Verkkotunnuksen palvelin ilmoitti virheestä, kun sivua ladattiin.",
+          "timeout": "Aikakatkaisu tietojen hakuvaiheessa. Tämä voi johtua hitaasta tai saavuttamattomasta verkkotunnuksesta.",
+          "blocked": "Yhteys verkkotunnukseen on estetty turvallisuussyistä.",
+          "connectionError": "Yhteyttä verkkotunnukseen ei voitu muodostaa.",
+          "invalidFormat": "Tiedostoon pääsee käsiksi, mutta se on lukukelvoton tai muotoiltu virheellisesti."
+        }
       },
       "flags": {
         "authRequired": "Vaaditaan valtuutus",

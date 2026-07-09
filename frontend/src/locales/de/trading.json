@@ -256,6 +256,14 @@
         "loading": "stellar.toml wird geladen...",
         "loaded": "stellar.toml geladen",
         "failed": "stellar.toml nicht abrufbar",
+        "errors": {
+          "notFound": "Diese Domain stellt keine stellar.toml bereit. Das ist ein Datenproblem beim Herausgeber, keine Störung in SKM.",
+          "httpError": "Der Server der Domain hat beim Abruf einen Fehler gemeldet.",
+          "timeout": "Zeitüberschreitung beim Abruf. Das kann an einer langsamen oder nicht erreichbaren Domain liegen.",
+          "blocked": "Verbindung zur Domain aus Sicherheitsgründen blockiert.",
+          "connectionError": "Verbindung zur Domain nicht möglich.",
+          "invalidFormat": "Die Datei ist erreichbar, aber nicht lesbar oder falsch formatiert."
+        },
         "noHomeDomain": "Keine Home Domain im Issuer-Account",
         "assetListed": "Asset in stellar.toml gelistet",
         "currencyCount": "CURRENCIES-Einträge"

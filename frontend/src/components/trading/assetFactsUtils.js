@@ -59,10 +59,27 @@ export function issuerLockStatusLabel(status, t) {
   return t('trading:assetSearch.facts.notAvailable');
 }
 
+// Maps the backend's normalized toml.error category (see classifyTomlError()
+// in services/tradeService.js / classify_toml_error() in api/trade.php) to
+// its laienverständliche label. Anything not in this list (empty string,
+// future/unknown category) falls back to the generic "nicht abrufbar" text
+// below instead of showing nothing or a raw error code.
+const TOML_ERROR_LABEL_KEYS = {
+  notFound: 'trading:assetSearch.facts.toml.errors.notFound',
+  httpError: 'trading:assetSearch.facts.toml.errors.httpError',
+  timeout: 'trading:assetSearch.facts.toml.errors.timeout',
+  blocked: 'trading:assetSearch.facts.toml.errors.blocked',
+  connectionError: 'trading:assetSearch.facts.toml.errors.connectionError',
+  invalidFormat: 'trading:assetSearch.facts.toml.errors.invalidFormat',
+};
+
 export function tomlStatusLabel(facts, t) {
   if (facts.toml.status === 'loading') return t('trading:assetSearch.facts.toml.loading');
   if (facts.toml.status === 'loaded') return t('trading:assetSearch.facts.toml.loaded');
-  if (facts.toml.status === 'failed') return t('trading:assetSearch.facts.toml.failed');
+  if (facts.toml.status === 'failed') {
+    const key = TOML_ERROR_LABEL_KEYS[facts.toml.error];
+    return t(key || 'trading:assetSearch.facts.toml.failed');
+  }
   if (facts.toml.status === 'noHomeDomain') return t('trading:assetSearch.facts.toml.noHomeDomain');
   return t('trading:assetSearch.facts.notChecked');
 }

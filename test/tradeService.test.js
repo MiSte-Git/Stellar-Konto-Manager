@@ -11,6 +11,7 @@ const {
   ssrfSafeLookup,
   readTextWithLimit,
   MAX_TOML_RESPONSE_BYTES,
+  classifyTomlError,
 } = require('../services/tradeService.js');
 
 function lookupAsync(hostname) {
@@ -390,7 +391,7 @@ test('fetchAssetFacts reports noHomeDomain without fetching TOML', async (t) => 
   assert.equal(facts.toml.url, '');
 });
 
-test('fetchAssetFacts reports TOML fetch failure as fact', async (t) => {
+test('fetchAssetFacts reports TOML fetch failure as fact, classified as "notFound" for a 404', async (t) => {
   const issuer = makeIssuer();
   const previousFetch = global.fetch;
   t.after(() => { global.fetch = previousFetch; });
@@ -409,7 +410,167 @@ test('fetchAssetFacts reports TOML fetch failure as fact', async (t) => {
   });
 
   assert.equal(facts.toml.status, 'failed');
-  assert.equal(facts.toml.error, 'HTTP 404');
+  assert.equal(facts.toml.error, 'notFound');
+});
+
+test('fetchAssetFacts classifies a non-404 HTTP failure as "httpError"', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => ({
+    ok: false,
+    status: 500,
+    async text() { return ''; },
+  });
+
+  const facts = await fetchAssetFacts({
+    assetCode: 'USDC',
+    issuer,
+    horizon: makeFactsHorizon({ issuer }),
+  });
+
+  assert.equal(facts.toml.status, 'failed');
+  assert.equal(facts.toml.error, 'httpError');
+});
+
+test('fetchAssetFacts classifies an HTML error/block page served instead of the TOML as "invalidFormat"', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => ({
+    ok: true,
+    status: 200,
+    headers: { get: () => null },
+    async text() { return '<!DOCTYPE html><html><body>Blocked</body></html>'; },
+  });
+
+  const facts = await fetchAssetFacts({
+    assetCode: 'USDC',
+    issuer,
+    horizon: makeFactsHorizon({ issuer }),
+  });
+
+  assert.equal(facts.toml.status, 'failed');
+  assert.equal(facts.toml.error, 'invalidFormat');
+});
+
+test('fetchAssetFacts classifies genuinely malformed (non-HTML) TOML content as "invalidFormat"', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => ({
+    ok: true,
+    status: 200,
+    headers: { get: () => null },
+    async text() { return 'this is not [valid toml at all ==='; },
+  });
+
+  const facts = await fetchAssetFacts({
+    assetCode: 'USDC',
+    issuer,
+    horizon: makeFactsHorizon({ issuer }),
+  });
+
+  assert.equal(facts.toml.status, 'failed');
+  assert.equal(facts.toml.error, 'invalidFormat');
+});
+
+test('fetchAssetFacts classifies a home_domain pointing at a private/internal address as "blocked" (SSRF guard), without ever calling fetch', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => {
+    throw new Error('fetch should not be called - assertSafeScheme must reject first');
+  };
+
+  const facts = await fetchAssetFacts({
+    assetCode: 'USDC',
+    issuer,
+    horizon: makeFactsHorizon({ issuer, homeDomain: '169.254.169.254' }),
+  });
+
+  assert.equal(facts.toml.status, 'failed');
+  assert.equal(facts.toml.error, 'blocked');
+});
+
+test('fetchAssetFacts classifies a connection-level failure (e.g. connection refused) as "connectionError"', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => {
+    const err = new TypeError('fetch failed');
+    err.cause = Object.assign(new Error('connect ECONNREFUSED'), { code: 'ECONNREFUSED' });
+    throw err;
+  };
+
+  const facts = await fetchAssetFacts({
+    assetCode: 'USDC',
+    issuer,
+    horizon: makeFactsHorizon({ issuer }),
+  });
+
+  assert.equal(facts.toml.status, 'failed');
+  assert.equal(facts.toml.error, 'connectionError');
+});
+
+test('fetchAssetFacts classifies an aborted (timed-out) fetch as "timeout"', async (t) => {
+  const issuer = makeIssuer();
+  const previousFetch = global.fetch;
+  t.after(() => { global.fetch = previousFetch; });
+  global.fetch = async () => {
+    const err = new Error('This operation was aborted');
+    err.name = 'AbortError';
+    throw err;
+  };
+
+  const facts = await fetchAssetFacts({
+    assetCode: 'USDC',
+    issuer,
+    horizon: makeFactsHorizon({ issuer }),
+  });
+
+  assert.equal(facts.toml.status, 'failed');
+  assert.equal(facts.toml.error, 'timeout');
+});
+
+// --- classifyTomlError() unit coverage: every branch in isolation, without
+// needing to drive a full fetchAssetFacts() call per case. --------------
+
+test('classifyTomlError maps every known internal failure to its public category', () => {
+  assert.equal(classifyTomlError(Object.assign(new Error('aborted'), { name: 'AbortError' })), 'timeout');
+  assert.equal(classifyTomlError(Object.assign(new Error('bad syntax'), { name: 'SyntaxError' })), 'invalidFormat');
+  assert.equal(classifyTomlError(new Error('toml.invalidFormat')), 'invalidFormat');
+  assert.equal(classifyTomlError(new Error('HTTP 404')), 'notFound');
+  assert.equal(classifyTomlError(new Error('HTTP 500')), 'httpError');
+  assert.equal(classifyTomlError(new Error('HTTP 403')), 'httpError');
+  assert.equal(classifyTomlError(new Error('ssrf.blocked:privateAddress')), 'blocked');
+  assert.equal(classifyTomlError(new Error('ssrf.blocked:scheme')), 'blocked');
+  assert.equal(classifyTomlError(new Error('ssrf.blocked:invalidUrl')), 'blocked');
+  assert.equal(classifyTomlError(new Error('ssrf.blocked:tooManyRedirects')), 'blocked');
+  assert.equal(classifyTomlError(new Error('ssrf.blocked:responseTooLarge')), 'blocked');
+  assert.equal(classifyTomlError(new Error('ssrf.blocked:localhost')), 'blocked');
+  assert.equal(classifyTomlError(new Error('ssrf.blocked:dnsLookupFailed')), 'connectionError');
+  assert.equal(classifyTomlError(new Error('ssrf.blocked:noAddress')), 'connectionError');
+
+  const dnsViaFetchFailed = new TypeError('fetch failed');
+  dnsViaFetchFailed.cause = new Error('ssrf.blocked:dnsLookupFailed');
+  assert.equal(classifyTomlError(dnsViaFetchFailed), 'connectionError');
+
+  const privateAddressViaFetchFailed = new TypeError('fetch failed');
+  privateAddressViaFetchFailed.cause = new Error('ssrf.blocked:privateAddress');
+  assert.equal(classifyTomlError(privateAddressViaFetchFailed), 'blocked');
+
+  const connRefused = new TypeError('fetch failed');
+  connRefused.cause = Object.assign(new Error('connect ECONNREFUSED'), { code: 'ECONNREFUSED' });
+  assert.equal(classifyTomlError(connRefused), 'connectionError');
+
+  const timedOut = new TypeError('fetch failed');
+  timedOut.cause = Object.assign(new Error('timed out'), { code: 'ETIMEDOUT' });
+  assert.equal(classifyTomlError(timedOut), 'timeout');
+
+  assert.equal(classifyTomlError(new TypeError('fetch failed')), 'connectionError');
+  assert.equal(classifyTomlError(new Error('something unexpected')), 'fetchFailed');
+  assert.equal(classifyTomlError(undefined), 'fetchFailed');
 });
 
 test('fetchAssetFacts rejects invalid issuer address', async () => {

@@ -300,7 +300,15 @@
         "failed": "stellar.toml is niet bereikbaar",
         "noHomeDomain": "Geen eigen domein op de account van de uitgever",
         "assetListed": "Asset opgenomen in stellar.toml",
-        "currencyCount": "Vermeldingen onder „VALUTA’S”"
+        "currencyCount": "Vermeldingen onder „VALUTA’S”",
+        "errors": {
+          "notFound": "Dit domein bevat geen bestand `stellar.toml`. Dit is een gegevensprobleem aan de kant van de uitgever, geen probleem met SKM.",
+          "httpError": "De server van het domein heeft een fout gemeld toen de pagina werd geladen.",
+          "timeout": "Time-out tijdens het ophalen. Dit kan te wijten zijn aan een traag of onbereikbaar domein.",
+          "blocked": "De verbinding met het domein is om veiligheidsredenen geblokkeerd.",
+          "connectionError": "Er kan geen verbinding worden gemaakt met het domein.",
+          "invalidFormat": "Het bestand is weliswaar toegankelijk, maar het is onleesbaar of verkeerd opgemaakt."
+        }
       },
       "flags": {
         "authRequired": "Toestemming vereist",
