@@ -372,19 +372,21 @@ function summarizeJob(array $job): array {
         $job['thresholds'] = $job['thresholds'] ?? $meta['thresholds'];
     }
 
-    $requiredWeight = (int)($job['requiredWeight'] ?? ($job['thresholds']['med'] ?? 0));
+    // Parsed once up front (rather than inside the txXdr branch below) so the
+    // requiredWeight fallback can inspect the transaction's actual operations
+    // instead of blindly assuming med_threshold (see requiredWeightForOperations()).
+    $parseErr = null;
+    $tx = $txXdr ? parseTx($txXdr, $net, $parseErr) : null;
+
+    $requiredWeight = (int)($job['requiredWeight'] ?? ($tx ? requiredWeightForOperations($tx, $job['thresholds'] ?? []) : ($job['thresholds']['med'] ?? 0)));
     $job['signers'] = $signers;
     $job['requiredWeight'] = $requiredWeight;
 
     $collected = [];
     $collectedWeight = 0;
-    $parseErr = null;
-    if ($txXdr) {
-        $tx = parseTx($txXdr, $net, $parseErr);
-        if ($tx) {
-            $collected = verifyCollected($tx, $net, $signers);
-            $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
-        }
+    if ($tx) {
+        $collected = verifyCollected($tx, $net, $signers);
+        $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
     }
     // Fallback to existing collected info if parsing failed
     if (!$collected && isset($job['collectedSigners']) && is_array($job['collectedSigners'])) {
@@ -443,7 +445,7 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         // transaction's signatures; removed.
         $meta = fetchAccountSignersCached($accountId, $net);
         $signerMeta = $meta['signers'];
-        $requiredWeight = (int)($meta['thresholds']['med'] ?? 0);
+        $requiredWeight = requiredWeightForOperations($tx, $meta['thresholds']);
         $collected = verifyCollected($tx, $net, $signerMeta);
         $collectedWeight = array_reduce($collected, fn($c, $s) => $c + (int)($s['weight'] ?? 0), 0);
         $status = ($requiredWeight > 0 && $collectedWeight >= $requiredWeight) ? 'ready_to_submit' : 'pending_signatures';
@@ -678,7 +680,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                     break;
                 }
                 $j['thresholds'] = $meta['thresholds'];
-                $j['requiredWeight'] = (int)($meta['thresholds']['med'] ?? 0);
+                $j['requiredWeight'] = requiredWeightForOperations($merged, $meta['thresholds']);
                 $j['signers'] = $signerMeta;
 
                 // M1 fix: drop anything that doesn't verify against a real account

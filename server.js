@@ -13,7 +13,7 @@ const { searchAssets, fetchAssetFacts, fetchExpertDirectoryEntry } = require('./
 const { createCorsMiddleware } = require('./services/corsConfig.js');
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
-const { filterValidSignatures } = require('./services/txSignatures.js');
+const { filterValidSignatures, requiredWeightForOperations } = require('./services/txSignatures.js');
 const { isLoopbackAddress } = require('./services/network.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
@@ -522,10 +522,6 @@ function extractSignerMeta(account) {
   };
 }
 
-function requiredWeightForPayment(thresholds) {
-  return Number(thresholds?.med || 0) || 0;
-}
-
 function collectSignersForTx(tx, signers = []) {
   const collected = [];
   for (const s of signers) {
@@ -571,7 +567,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
       // Best-effort fallback: allow job creation even if account lookup fails (no blocking)
       console.warn('multisig.jobs.account_load_failed', e?.message || e);
     }
-    const requiredWeight = requiredWeightForPayment(signerMeta.thresholds);
+    const requiredWeight = requiredWeightForOperations(parsed.tx.operations, signerMeta.thresholds);
     const signers = signerMeta.signers || [];
     const collectedSigners = signers.length ? collectSignersForTx(parsed.tx, signers) : [];
     const collectedWeight = collectedSigners.reduce((acc, s) => acc + Number(s.weight || 0), 0);
@@ -803,7 +799,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
         signers = signerMeta.signers || [];
         if (signers.length) {
           job.signers = signers;
-          job.requiredWeight = requiredWeightForPayment(signerMeta.thresholds);
+          job.requiredWeight = requiredWeightForOperations(current.tx.operations, signerMeta.thresholds);
         }
       } catch (healErr) {
         console.warn('multisig.jobs.merge.signer_heal_failed', healErr?.message || healErr);

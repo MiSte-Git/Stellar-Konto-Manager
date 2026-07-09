@@ -15,12 +15,58 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use Soneso\StellarSDK\AbstractOperation;
 use Soneso\StellarSDK\AbstractTransaction;
 use Soneso\StellarSDK\Crypto\KeyPair;
 use Soneso\StellarSDK\Network;
+use Soneso\StellarSDK\Transaction;
 use Soneso\StellarSDK\Xdr\XdrDecoratedSignature;
 
 const MAX_TX_SIGNATURES = 20; // Stellar XDR: Signatures is DecoratedSignature<20>
+
+// Stellar's protocol assigns each operation type to a threshold category
+// (low/medium/high) - SetOptions and AccountMerge are High, AllowTrust/
+// Inflation/BumpSequence/SetTrustLineFlags are Low, everything else
+// (Payment, CreateAccount, ChangeTrust, ManageData, ...) is Medium. Mirrors
+// the identical categorization in server.js's requiredWeightForOperations().
+const HIGH_THRESHOLD_OP_CLASSES = ['SetOptionsOperation', 'AccountMergeOperation'];
+const LOW_THRESHOLD_OP_CLASSES = ['AllowTrustOperation', 'InflationOperation', 'BumpSequenceOperation', 'SetTrustLineFlagsOperation'];
+
+function classBasename(string $class): string {
+    $pos = strrpos($class, '\\');
+    return $pos === false ? $class : substr($class, $pos + 1);
+}
+
+function operationThresholdCategory(AbstractOperation $op): string {
+    $class = classBasename(get_class($op));
+    if (in_array($class, HIGH_THRESHOLD_OP_CLASSES, true)) return 'high';
+    if (in_array($class, LOW_THRESHOLD_OP_CLASSES, true)) return 'low';
+    return 'med';
+}
+
+/**
+ * Mirrors frontend/src/utils/getRequiredThreshold.js's per-category fallback
+ * chains (used when an account leaves a threshold at 0), generalized across
+ * every operation in the transaction: each operation is checked on-chain
+ * against its own category, so the weight the whole transaction needs is
+ * driven by whichever category present demands the most (high > med > low) -
+ * a weight that satisfies the highest category automatically satisfies the
+ * lower ones too, since thresholds are expected to be non-decreasing
+ * (low <= med <= high).
+ * @param array{low: int, med: int, high: int} $thresholds
+ */
+function requiredWeightForOperations(AbstractTransaction $tx, array $thresholds): int {
+    $low = (int)($thresholds['low'] ?? 0);
+    $med = (int)($thresholds['med'] ?? 0);
+    $high = (int)($thresholds['high'] ?? 0);
+    $operations = $tx instanceof Transaction ? $tx->getOperations() : [];
+    if (empty($operations)) return $med ?: 0;
+
+    $categories = array_unique(array_map('operationThresholdCategory', $operations));
+    if (in_array('high', $categories, true)) return $high ?: ($med ?: ($low ?: 0));
+    if (in_array('med', $categories, true)) return $med ?: ($high ?: ($low ?: 0));
+    return $med ?: ($low ?: ($high ?: 0)); // pure low-category transaction
+}
 
 /**
  * @param array{publicKey: string, weight: int}[] $signers

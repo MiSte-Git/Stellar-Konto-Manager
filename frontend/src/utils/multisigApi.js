@@ -9,22 +9,6 @@ function ensureOk(res) {
   throw err;
 }
 
-export async function createPendingMultisigJob(payload) {
-  try {
-    const r = await fetch(apiUrl('multisig/jobs'), {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const data = await r.json().catch(() => ({}));
-    ensureOk(r);
-    return data;
-  } catch (e) {
-    const msg = e?.message || 'multisig.jobs.create_failed';
-    throw new Error(msg);
-  }
-}
-
 // Load a pending multisig job by id. `accessToken` is the per-job token returned
 // when the job was created/listed (B3) - required by the backend to view the job.
 export async function getPendingMultisigJob(id, accessToken) {

@@ -20,9 +20,13 @@ require __DIR__ . '/../api/txSignatures.php';
 
 use Soneso\StellarSDK\Account;
 use Soneso\StellarSDK\AbstractTransaction;
+use Soneso\StellarSDK\Asset;
 use Soneso\StellarSDK\BumpSequenceOperationBuilder;
 use Soneso\StellarSDK\Crypto\KeyPair;
+use Soneso\StellarSDK\FeeBumpTransactionBuilder;
 use Soneso\StellarSDK\Network;
+use Soneso\StellarSDK\PaymentOperationBuilder;
+use Soneso\StellarSDK\SetOptionsOperationBuilder;
 use Soneso\StellarSDK\TransactionBuilder;
 use Soneso\StellarSDK\Xdr\XdrDecoratedSignature;
 use phpseclib3\Math\BigInteger;
@@ -198,6 +202,84 @@ $cacheSaveIdx = $cacheWriteIdx !== false ? strpos($multisigSource, 'saveSignersC
 check(
     'regression guard: fetchAccountSignersCached() skips the cache write for failed lookups',
     $cacheWriteIdx !== false && $cacheSaveIdx !== false
+);
+
+// --- operationThresholdCategory / requiredWeightForOperations --------------
+// Bug fix (analyse_multisig.md b1): requiredWeight used to be hardcoded to
+// med_threshold regardless of operation type. setOptions (what "Multisig
+// bearbeiten" builds) is a High-threshold operation on the real Stellar
+// protocol, so a job for it must require high_threshold, not med_threshold.
+
+check('operationThresholdCategory classifies a SetOptionsOperation as high', operationThresholdCategory((new SetOptionsOperationBuilder())->setMasterKeyWeight(2)->build()) === 'high');
+check('operationThresholdCategory classifies a PaymentOperation as medium', operationThresholdCategory((new PaymentOperationBuilder(KeyPair::random()->getAccountId(), Asset::native(), '1'))->build()) === 'med');
+check('operationThresholdCategory classifies a BumpSequenceOperation as low', operationThresholdCategory((new BumpSequenceOperationBuilder(new BigInteger('101')))->build()) === 'low');
+
+function buildTxFor(array $operations): AbstractTransaction {
+    $source = KeyPair::random();
+    $account = new Account($source->getAccountId(), new BigInteger('100'));
+    $builder = new TransactionBuilder($account);
+    foreach ($operations as $op) $builder->addOperation($op);
+    return $builder->build();
+}
+
+$setOptionsTx = buildTxFor([
+    (new SetOptionsOperationBuilder())->setMasterKeyWeight(2)->build(),
+    (new SetOptionsOperationBuilder())->setLowThreshold(1)->setMediumThreshold(2)->setHighThreshold(3)->build(),
+]);
+check(
+    'requiredWeightForOperations uses high_threshold for a real setOptions-only transaction (the actual bug)',
+    requiredWeightForOperations($setOptionsTx, ['low' => 1, 'med' => 2, 'high' => 3]) === 3
+);
+
+$paymentTx = buildTxFor([(new PaymentOperationBuilder(KeyPair::random()->getAccountId(), Asset::native(), '1'))->build()]);
+check(
+    'requiredWeightForOperations uses med_threshold for a real payment-only transaction',
+    requiredWeightForOperations($paymentTx, ['low' => 1, 'med' => 2, 'high' => 3]) === 2
+);
+
+$mixedTx = buildTxFor([
+    (new PaymentOperationBuilder(KeyPair::random()->getAccountId(), Asset::native(), '1'))->build(),
+    (new SetOptionsOperationBuilder())->setMasterKeyWeight(2)->build(),
+]);
+check(
+    'requiredWeightForOperations picks high over co-occurring medium (mixed payment + setOptions)',
+    requiredWeightForOperations($mixedTx, ['low' => 1, 'med' => 2, 'high' => 3]) === 3
+);
+
+$lowMedTx = buildTxFor([
+    (new BumpSequenceOperationBuilder(new BigInteger('101')))->build(),
+    (new PaymentOperationBuilder(KeyPair::random()->getAccountId(), Asset::native(), '1'))->build(),
+]);
+check(
+    'requiredWeightForOperations picks medium over a co-occurring low-category operation',
+    requiredWeightForOperations($lowMedTx, ['low' => 1, 'med' => 2, 'high' => 3]) === 2
+);
+
+check(
+    'requiredWeightForOperations falls back med -> low -> high when high_threshold is 0',
+    requiredWeightForOperations($setOptionsTx, ['low' => 1, 'med' => 2, 'high' => 0]) === 2
+);
+check(
+    'requiredWeightForOperations falls back to low_threshold when both med and high are 0',
+    requiredWeightForOperations($setOptionsTx, ['low' => 1, 'med' => 0, 'high' => 0]) === 1
+);
+check(
+    'requiredWeightForOperations returns 0 for an all-zero threshold set (account has no multisig configured)',
+    requiredWeightForOperations($setOptionsTx, ['low' => 0, 'med' => 0, 'high' => 0]) === 0
+);
+
+// A FeeBumpTransaction has no getOperations() of its own (it wraps an inner
+// Transaction) - requiredWeightForOperations() must degrade to the med-only
+// fallback rather than throwing, exactly like the pre-fix behavior for an
+// unparseable/operationless transaction.
+$innerForBump = buildTxFor([(new SetOptionsOperationBuilder())->setMasterKeyWeight(2)->build()]);
+$feeBumpTx = (new FeeBumpTransactionBuilder($innerForBump))
+    ->setFeeAccount(KeyPair::random()->getAccountId())
+    ->setBaseFee(100)
+    ->build();
+check(
+    'requiredWeightForOperations falls back to med_threshold for a non-Transaction AbstractTransaction (e.g. FeeBumpTransaction)',
+    requiredWeightForOperations($feeBumpTx, ['low' => 1, 'med' => 2, 'high' => 3]) === 2
 );
 
 echo "\n{$passed} passed, {$failed} failed\n";

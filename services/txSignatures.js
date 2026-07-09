@@ -42,4 +42,49 @@ function filterValidSignatures(tx, signers = []) {
   return kept.slice(0, MAX_TX_SIGNATURES);
 }
 
-module.exports = { filterValidSignatures, MAX_TX_SIGNATURES };
+// Stellar's protocol assigns each operation type to a threshold category
+// (low/medium/high) - SetOptions and AccountMerge are High, AllowTrust/
+// Inflation/BumpSequence/SetTrustLineFlags are Low, everything else
+// (Payment, CreateAccount, ChangeTrust, ManageData, ...) is Medium. Mirrors
+// the identical categorization in api/txSignatures.php's requiredWeightForOperations().
+const HIGH_THRESHOLD_OP_TYPES = new Set(['setOptions', 'accountMerge']);
+const LOW_THRESHOLD_OP_TYPES = new Set(['allowTrust', 'inflation', 'bumpSequence', 'setTrustLineFlags']);
+
+function operationThresholdCategory(opType) {
+  if (HIGH_THRESHOLD_OP_TYPES.has(opType)) return 'high';
+  if (LOW_THRESHOLD_OP_TYPES.has(opType)) return 'low';
+  return 'med';
+}
+
+/**
+ * Mirrors frontend/src/utils/getRequiredThreshold.js's per-category fallback
+ * chains (used when an account leaves a threshold at 0), generalized across
+ * every operation in the transaction: each operation is checked on-chain
+ * against its own category, so the weight the whole transaction needs is
+ * driven by whichever category present demands the most (high > med > low) -
+ * a weight that satisfies the highest category automatically satisfies the
+ * lower ones too, since thresholds are expected to be non-decreasing
+ * (low <= med <= high).
+ * @param {{ type?: string }[]} operations
+ * @param {{ low?: number, med?: number, high?: number }} thresholds
+ * @returns {number}
+ */
+function requiredWeightForOperations(operations, thresholds) {
+  const low = Number(thresholds?.low || 0);
+  const med = Number(thresholds?.med || 0);
+  const high = Number(thresholds?.high || 0);
+  const opTypes = (operations || []).map((op) => op?.type).filter(Boolean);
+  if (!opTypes.length) return med || 0;
+
+  const categories = new Set(opTypes.map(operationThresholdCategory));
+  if (categories.has('high')) return high || med || low || 0;
+  if (categories.has('med')) return med || high || low || 0;
+  return med || low || high || 0; // pure low-category transaction
+}
+
+module.exports = {
+  filterValidSignatures,
+  MAX_TX_SIGNATURES,
+  operationThresholdCategory,
+  requiredWeightForOperations,
+};

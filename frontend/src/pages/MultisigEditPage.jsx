@@ -6,16 +6,24 @@ import MultisigPrepareDialog from '../components/MultisigPrepareDialog.jsx';
 import MultisigConfigForm from '../components/multisig/MultisigConfigForm.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
+import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 import { validateMultisigConfig } from '../utils/validateMultisigConfig.js';
 import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
 import { Keypair, Networks, Operation, TransactionBuilder, StrKey } from '@stellar/stellar-sdk';
 import { apiUrl } from '../utils/apiBase.js';
-import { createPendingMultisigJob } from '../utils/multisigApi.js';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
+import { useSettings } from '../utils/useSettings.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
+// Same rationale as SendPaymentPage.jsx: a transaction that gets submitted
+// immediately after signing (test-mode direct submit) only needs to survive
+// the round-trip to Horizon, but one prepared for a distributed, asynchronous
+// multisig job (handlePrepareMultisig) must stay valid long enough for other
+// signers to load, sign, and merge it - governed by the user's configured
+// multisigTimeoutSeconds (default 24h) instead.
+const LOCAL_SUBMIT_TIMEOUT_SECONDS = 180;
 
 function clampByte(n) {
   const v = Number(n);
@@ -50,6 +58,7 @@ function NetworkSelector({ value, onChange }) {
 export default function MultisigEditPage({ defaultPublicKey = '' }) {
   const { t } = useTranslation(['network', 'common', 'multisigConfig', 'publicKey', 'multisig', 'glossary']);
   const { recentWalletOptions, removeRecentWalletOption, clearRecentWalletOptions } = useRecentWalletOptions();
+  const { multisigTimeoutSeconds } = useSettings();
 
   const [network, setNetwork] = useState(() => {
   try { return (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC'; } catch { return 'PUBLIC'; }
@@ -200,7 +209,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
   }
 
   // Build and submit transaction
-  const buildSetOptionsTx = useCallback(async (collectedSigners, { signTx = false, requireSigners = false } = {}) => {
+  const buildSetOptionsTx = useCallback(async (collectedSigners, { signTx = false, requireSigners = false, immediateSubmit = false } = {}) => {
     const pk = (defaultPublicKey || '').trim();
     if (!pk) { throw new Error(t('publicKey:invalid')); }
     if (hasSafetyErrors) {
@@ -285,7 +294,12 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       txb.addOperation(Operation.setOptions({ masterWeight: plannedMaster }));
     }
 
-    const tx = txb.setTimeout(60).build();
+    const txTimeout = getMultisigTxTimeout({
+      immediateSubmit,
+      localSubmitTimeoutSeconds: LOCAL_SUBMIT_TIMEOUT_SECONDS,
+      multisigTimeoutSeconds,
+    });
+    const tx = txb.setTimeout(txTimeout).build();
     if (signTx && Array.isArray(collectedSigners)) {
       collectedSigners.forEach((s) => {
         try { tx.sign(s.keypair); } catch (e) { console.debug?.('sign failed', e); }
@@ -299,7 +313,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
       }
     }
     return { tx, plannedThresholds, plannedMaster, plannedSigners };
-  }, [defaultPublicKey, hasSafetyErrors, highT, lowT, masterWeight, medT, passphrase, server, signers, t]);
+  }, [defaultPublicKey, hasSafetyErrors, highT, lowT, masterWeight, medT, multisigTimeoutSeconds, passphrase, server, signers, t]);
 
   async function submitChanges(collectedSigners) {
     setShowSecretModal(false);
@@ -308,7 +322,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     setInfo('');
     try {
       const planned = buildPlannedChanges();
-      const { tx } = await buildSetOptionsTx(collectedSigners, { signTx: true, requireSigners: true });
+      const { tx } = await buildSetOptionsTx(collectedSigners, { signTx: true, requireSigners: true, immediateSubmit: true });
       const res = await server.submitTransaction(tx);
       setInfo(t('common:multisigEdit.saved', { hash: res?.hash || res?.id || '' }));
       // Update local snapshot so new signers/weights are recognized for further actions
@@ -465,24 +479,6 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     return { accountId: pk, changes, thresholds: plannedThresholds, masterWeight: currentMaster };
   }, [defaultPublicKey, lowT, medT, highT, masterWeight, signers]);
 
-  const handleCreateMultisigJob = useCallback(async () => {
-    if (hasSafetyErrors) {
-      setError(t('common:multisigEdit.error.safetyBlocked'));
-      return;
-    }
-    try {
-      const planned = buildPlannedChanges();
-      const payload = {
-        accountId: planned.accountId,
-        network: network === 'TESTNET' ? 'testnet' : 'public',
-        changes: planned.changes,
-      };
-      const res = await createPendingMultisigJob(payload);
-      setInfo(t('multisig:job.create.success.title') + ' ' + t('multisig:job.create.success.body', { id: res?.id || '' }));
-    } catch (err) {
-      setError(String(err?.message || err));
-    }
-  }, [buildPlannedChanges, hasSafetyErrors, network, t]);
   const securityGuaranteeText = t('common:multisigEdit.securityGuarantee.text');
   const securityGuaranteeParts = securityGuaranteeText.split('{link}');
   const securityGuaranteeBefore = securityGuaranteeParts[0] || '';
@@ -693,7 +689,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
                 </p>
                 <button
                   type="button"
-                  onClick={mode === 'prod' ? handleCreateMultisigJob : handlePrepareMultisig}
+                  onClick={handlePrepareMultisig}
                   className="w-full px-3 py-2 rounded border border-blue-200 text-blue-700 dark:text-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900"
                   disabled={hasSafetyErrors}
                 >
