@@ -24,7 +24,7 @@
   "blockchain": {
     "title": "Блокчейн",
     "original": "Blockchain",
-    "short": "Общий цифровой регистр – многие компьютеры хранят одни и те же записи.",
+    "short": "Общий цифровой реестр — одна и та же запись хранится на многих компьютерах.",
     "desc": "Блокчейн подобен цифровой книге учета. Многие компьютеры хранят одни и те же записи, что гарантирует невозможность тайного внесения изменений."
   },
   "wallet": {
@@ -66,7 +66,7 @@
   "addressMuxed": {
     "title": "Подадрес",
     "original": "Muxed Account",
-    "short": "M‑адрес с дополнительным идентификатором – делится базовым счетом.",
+    "short": "M-адрес с дополнительным идентификатором — использует общий базовый аккаунт.",
     "desc": "Субадрес (M-адрес, официальное название — «Muxed Account») указывает на существующий аккаунт в сети Stellar, но при этом имеет собственный номер (ID).\n\nСубадрес = G-аккаунт + ID (M-адрес)\nОн служит для идентификации, но не разделяет аккаунты.\nБаланс, трастовые линии, подписанты и флаги всегда хранятся на G-счете.\n\nФонд развития Stellar\n\nЭто позволяет, например, различать нескольких людей или отделы в рамках одного G-адреса. Технически средства по-прежнему принадлежат основному счету."
   },
   "muxedAccountsUseCases": {
@@ -110,7 +110,7 @@
   "token": {
     "title": "Токен",
     "original": "Token",
-    "short": "Цифровая единица – например, деньги, баллы или кредиты.",
+    "short": "Цифровая единица измерения — например, деньги, баллы или кредит.",
     "desc": "Токен — это цифровая единица на блокчейне. Токен может представлять деньги, очки или кредиты за услугу."
   },
   "asset": {
@@ -1019,7 +1019,7 @@
     "title": "Эмитент",
     "original": "Issuer",
     "short": "Аккаунт в сети Stellar, который выпускает актив и управляет правилами его использования.",
-    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+    "desc": "Эмитент — это учетная запись в сети Stellar, которая выпускает актив. В случае выпущенных активов эмитент является частью идентификационных данных токена. В зависимости от флагов учетной записи он может влиять на такие правила, как авторизация, отзыв (Clawback) или заморозка разрешений. Поэтому следует не только проверять код актива, но и всегда проверять адрес эмитента и общедоступную информацию о проекте."
   },
   "homeDomain": {
     "title": "Домен «Домой»",
@@ -1031,7 +1031,7 @@
     "title": "stellar.toml",
     "original": "stellar.toml",
     "short": "Файл общедоступных метаданных для домена Stellar.",
-    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
+    "desc": "Файл stellar.toml — это общедоступный файл, расположенный в корневом каталоге проекта Stellar. Он может содержать информацию об эмитенте, активах, контактные данные, документацию, а также записи CURRENCIES. Если какой-либо актив не указан в этом файле или файл недоступен, рекомендуется проявить особую осторожность."
   },
   "quote": {
     "title": "Цитата",
@@ -1091,6 +1091,6 @@
     "title": "Найти и обменять токены",
     "original": "Token Trading",
     "short": "Найдите токены в сети и покупайте, продавайте или обменивайте их напрямую.",
-    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
+    "desc": "Здесь вы можете искать токены в сети Stellar и сразу же покупать, продавать или обменивать их на другие токены. В фоновом режиме эти транзакции осуществляются через встроенную в Stellar децентрализованную биржу (DEX). Подробнее о технологии, лежащей в основе этой системы, можно узнать в статье «DEX» в глоссарии."
   }
 }

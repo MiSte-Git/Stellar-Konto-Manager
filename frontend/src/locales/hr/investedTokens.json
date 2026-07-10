@@ -26,7 +26,7 @@
     "tokenShort": "Token: {{token}}"
   },
   "missingPublicKey": "Javni ključ nedostaje.",
-  "moreTruncated": "… and {{extra}} additional groups",
+  "moreTruncated": "… i {{extra}} više grupa",
   "toWallet": "na novčanik: {{address}}",
   "total": "Broj kupljenih tokena: {{count}}",
   "totalTokens": "Broj uloženih tokena (Assets): {{count}}",

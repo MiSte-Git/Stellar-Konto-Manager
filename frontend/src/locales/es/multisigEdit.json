@@ -21,6 +21,6 @@
   "title": "Editar una cuenta multifirma",
   "validation": {
     "signerKeyHint": "Nota: Los signatarios deben comenzar con \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Dirección de firmante no válida. Se espera una dirección G… (ed25519)."
+    "signerKeyInvalid": "Dirección del firmante no válida. Se espera una dirección G… (ed25519)."
   }
 }

@@ -914,7 +914,7 @@
     "token": {
       "title": "Token",
       "original": "Token",
-      "short": "Digital unit – e.g., money, points, or credit.",
+      "short": "Digital unit—e.g., money, points, or credit.",
       "desc": "A token is a digital unit on the blockchain. A token can represent money, points, or credits for a service."
     },
     "asset": {
@@ -1025,7 +1025,7 @@
         "realWarning": "Attention: Genuine Trustline(s) will be deleted",
         "simulation": "Simulation mode"
       },
-      "notFound": "No deletable trust lines found – all still contain balances.",
+      "notFound": "No trustlines that can be deleted were found—all of them still have a balance.",
       "resultText": "Count: {{count}} • Mode: {{mode}}",
       "resultTitle": "Deleted Trustline(s)",
       "simulated": "Simulation: {{count}} Trustlines would be deleted.",

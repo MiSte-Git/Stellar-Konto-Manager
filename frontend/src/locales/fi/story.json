@@ -604,7 +604,7 @@
     "explain_desc": "Yleensä yksi avain hallitsee lompakkoa. Multisigilla määrität kuinka monen mahdollisista allekirjoittajista tulee hyväksyä transaktio.",
     "explain_1of1_label": "Normaali: 1-of-1",
     "explain_1of1_desc": "Yksi avain hallitsee kaikkea. Kenellä on tämä avain, on täysi pääsy – ei suojaa väärinkäytöltä tai katoamiselta.",
-    "explain_multisig_label": "Multisig: N-of-M",
+    "explain_multisig_label": "Multisig: N/M",
     "explain_multisig_desc": "Useita allekirjoittajia, määritelty kynnysarvo. Vasta kun tarpeeksi allekirjoituksia on, transaktio suoritetaan.",
     "explain_threshold_label": "Mikä on Kynnysarvo?",
     "explain_threshold_desc": "Kynnysarvo on vähimmäismäärä allekirjoituksia, joita tarvitaan transaktion valtuuttamiseen. 2-of-3:lla minkä tahansa 2 kolmesta allekirjoittajasta on allekirjoitettava.",
@@ -764,7 +764,7 @@
         "dialog3": "Stellar on rakentanut tämän välittäjäperiaatteen suoraan protokollaan – natiivina ominaisuutena nimeltä Claimable Balance. XLM-summa tai tokenit lukitaan ja sidotaan ehtoihin: kuka saa vaatia ne? Mistä alkaen? Ja mihin asti lähettäjä voi vaatia ne takaisin? Vasta ehdon täyttyessä vastaanottaja voi nostaa varat.",
         "dialog4": "Eli lukitsemme nyt testnet-rahaa?",
         "dialog5": "Eli aivan kuten Digitecin tapauksessa: ostaja maksaa, mutta myyjä saa rahat vasta, kun ostaja on vahvistanut vastaanottaneensa tuotteen?",
-        "dialog6": "Exactly. Digitec acts as the trustee in that context. On Stellar, a “claimable balance” can technically represent the locked portion. The app built around it then determines when someone is allowed to claim it or when it is repaid."
+        "dialog6": "Aivan. Digitec toimii tässä yhteydessä hallinnoijana. Stellar-verkostossa ”Claimable Balance” voi teknisesti katsoen edustaa lukittua osuutta. Sen ympärille rakennettu sovellus määrittää sitten, milloin joku saa lunastaa sen tai milloin se maksetaan takaisin."
       },
       "action": {
         "label": "Luo Escrow",
@@ -782,7 +782,7 @@
         "wallet_note": "Tätä varten ei aseteta ”Claimable Balance” -lippua. Lompakon on tuettava tätä toimintoa nimenomaisesti; muuten sitä ei voi luoda siellä yhdellä napsautuksella. Käytännössä tämä tehdään tällaisen sovelluksen avulla, Stellar Laboratoryn kautta tai koodin avulla Stellar SDK:ta käyttäen.",
         "creating": "Escrow-tilin avaaminen on käynnissä…",
         "result_rules_title": "Tämän esittelyn menettelytapa",
-        "rule1": "The demo buyer may claim the 50 XLM immediately—that is, actively withdraw them from the Claimable Balance.",
+        "rule1": "Demo-ostaja voi lunastaa 50 XLM:ää välittömästi – toisin sanoen nostaa ne aktiivisesti Claimable Balance -saldosta.",
         "rule2": "Jos demokäyttäjä ei tee mitään, voit pyytää 50 XLM:n palautusta tunnin kuluttua.",
         "rule3": "Tähän esittelyversioon ei ole vielä lisätty varsinaista ”Vahvista vastaanotto” -painiketta.",
         "rule4": "Digitecin esimerkissä tämä vahvistus olisi sovelluksen seuraava vaihe: ostaja napsauttaa ”Kuitti vahvistettu”, minkä jälkeen alusta käynnistää maksun myyjälle. Stellar-alustalla tämä olisi toinen tapahtuma, jossa käytetään lunastettavaa saldoa."

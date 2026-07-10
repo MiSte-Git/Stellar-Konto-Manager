@@ -914,7 +914,7 @@
     "token": {
       "title": "Token",
       "original": "Token",
-      "short": "Digitale eenheid – bijvoorbeeld geld, punten of krediet.",
+      "short": "Digitale eenheid — bijvoorbeeld geld, punten of tegoed.",
       "desc": "Een token is een digitale eenheid op de blockchain. Een token kan geld, punten of tegoeden voor een dienst vertegenwoordigen."
     },
     "asset": {
@@ -1025,7 +1025,7 @@
         "realWarning": "Let op: Genuine Trustline(s) zal worden verwijderd",
         "simulation": "Simulatiemodus"
       },
-      "notFound": "Geen verwijderbare vertrouwenslijnen gevonden – allemaal bevatten ze nog saldi.",
+      "notFound": "Er zijn geen verwijderbare Trustline(s) gevonden — ze bevatten allemaal nog saldo.",
       "resultText": "Aantal: {{count}} • Modus: {{mode}}",
       "resultTitle": "Verwijderde Trustline(s)",
       "simulated": "Simulatie: {{count}} trustlines zouden worden verwijderd.",

@@ -21,6 +21,6 @@
   "title": "Multisig-account bewerken",
   "validation": {
     "signerKeyHint": "Opmerking: Ondertekenaars moeten beginnen met \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
+    "signerKeyInvalid": "Ongeldig adres van de ondertekenaar. Er wordt een G…-adres verwacht (ed25519)."
   }
 }

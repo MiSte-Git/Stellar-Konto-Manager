@@ -24,7 +24,7 @@
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
-    "short": "Shared digital ledger – many computers store the same entries.",
+    "short": "Shared digital ledger—many computers store the same entries.",
     "desc": "A blockchain is like a digital ledger. Many computers store the same entries, ensuring that no one can secretly make changes."
   },
   "wallet": {
@@ -66,7 +66,7 @@
   "addressMuxed": {
     "title": "Subaddress",
     "original": "Muxed Account",
-    "short": "M‑address with additional ID – shares a base account.",
+    "short": "M-Address with additional ID – shares a base account.",
     "desc": "A subaddress (M-address, officially “Muxed Account”) points to an existing Stellar account but also has its own number (ID).\n\nSubaddress = G-account + ID (M-address)\nIt provides identification but does not separate accounts.\nBalance, trustlines, signers, and flags are always held in the G-account.\n\nStellar Development Foundation\n\nThis allows, for example, multiple people or departments to be distinguished under the same G-address. Technically, the funds still belong to the main account."
   },
   "muxedAccountsUseCases": {
@@ -128,7 +128,7 @@
   "token": {
     "title": "Token",
     "original": "Token",
-    "short": "Digital unit – for example, money, points, or credits.",
+    "short": "Digital unit—e.g., money, points, or credit.",
     "desc": "A token is a digital unit on the blockchain. A token can represent money, points, or credits for a service."
   },
   "asset": {
@@ -147,7 +147,7 @@
     "title": "Issuer",
     "original": "Issuer",
     "short": "The Stellar account that issues an asset and controls its rules.",
-    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can influence rules such as authorization, recall (Clawback), or frozen permissions. Therefore, you should not only check the asset code, but also always verify the issuer address and the public project information."
   },
   "homeDomain": {
     "title": "Home Domain",
@@ -159,7 +159,7 @@
     "title": "stellar.toml",
     "original": "stellar.toml",
     "short": "Public metadata file for a Stellar domain.",
-    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
+    "desc": "The stellar.toml file is a public file located on the home domain of a Stellar project. It may contain information about the issuer, assets, contact details, documentation, and CURRENCIES entries. If an asset is not listed there or the file is inaccessible, it is advisable to exercise extra caution."
   },
   "xlm": {
     "title": "XLM",
@@ -1091,6 +1091,6 @@
     "title": "Find and Trade Tokens",
     "original": "Token Trading",
     "short": "Find tokens on the network and buy, sell, or trade them directly.",
-    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
+    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more about the technology behind it in the DEX glossary entry."
   }
 }

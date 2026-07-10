@@ -26,7 +26,7 @@
     "tokenShort": "Tokeni: {{token}}"
   },
   "missingPublicKey": "Julkinen avain puuttuu.",
-  "moreTruncated": "… and {{extra}} additional groups",
+  "moreTruncated": "… ja {{extra}} muuta ryhmää",
   "toWallet": "lompakkoon: {{osoite}}",
   "total": "Ostettujen tokenien määrä: {{count}}",
   "totalTokens": "Sijoitettujen tokenien määrä (Assets): {{count}}",

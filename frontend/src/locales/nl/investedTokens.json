@@ -26,7 +26,7 @@
     "tokenShort": "Token: {{token}}"
   },
   "missingPublicKey": "Openbare sleutel ontbreekt.",
-  "moreTruncated": "… and {{extra}} additional groups",
+  "moreTruncated": "… en {{extra}} andere groepen",
   "toWallet": "naar portemonnee: {{address}}",
   "total": "Aantal gekochte tokens: {{count}}",
   "totalTokens": "Aantal geïnvesteerde tokens (Assets): {{count}}",

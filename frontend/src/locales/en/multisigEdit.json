@@ -21,6 +21,6 @@
   "title": "Edit multisig account",
   "validation": {
     "signerKeyHint": "Note: Signers must start with \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
+    "signerKeyInvalid": "Invalid signer address. A G… address is expected (ed25519)."
   }
 }

@@ -59,7 +59,7 @@
     "nameLabel": "Nimi",
     "urlLabel": "URL",
     "testnetUrlLabel": "Testnet-URL (valinnainen)",
-    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
+    "testnetUrlPlaceholder": "https://…{address} (jätä tyhjäksi, jos haluat käyttää pääverkon URL-osoitetta myös testiverkossa)",
     "addButton": "Lisää Explorer",
     "removeButton": "Poista",
     "setDefault": "Aseta oletukseksi",

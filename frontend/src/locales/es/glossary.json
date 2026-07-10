@@ -26,7 +26,7 @@
   "addressMuxed": {
     "desc": "Una subdirección (dirección M, oficialmente «cuenta Muxed») apunta a una cuenta Stellar ya existente, pero también tiene su propio número (ID).\n\nSubdirección = cuenta G + ID (dirección M)\nSirve para identificar, pero no separa las cuentas.\nEl saldo, las líneas de confianza, los firmantes y los indicadores se mantienen siempre en la cuenta G.\n\nFundación para el Desarrollo de Stellar\n\nEsto permite, por ejemplo, distinguir entre varias personas o departamentos bajo la misma dirección G. Técnicamente, los fondos siguen perteneciendo a la cuenta principal.",
     "original": "Muxed Account",
-    "short": "M‑address with additional ID – shares a base account.",
+    "short": "Dirección M con identificador adicional: comparte una cuenta base.",
     "title": "Subdirección"
   },
   "airdrop": {
@@ -80,7 +80,7 @@
   "blockchain": {
     "desc": "Una blockchain es como un libro mayor digital. Muchos ordenadores almacenan las mismas entradas, asegurando que nadie pueda hacer cambios en secreto.",
     "original": "Blockchain",
-    "short": "Shared digital ledger – many computers store the same entries.",
+    "short": "Libro mayor digital compartido: muchas computadoras almacenan las mismas entradas.",
     "title": "Blockchain"
   },
   "blockchainComparison": {
@@ -850,7 +850,7 @@
   "token": {
     "desc": "Un token es una unidad digital en la cadena de bloques. Un token puede representar dinero, puntos o créditos para un servicio.",
     "original": "Token",
-    "short": "Digital unit – for example, money, points, or credits.",
+    "short": "Unidad digital: por ejemplo, dinero, puntos o crédito.",
     "title": "Ficha"
   },
   "transaction": {
@@ -1019,7 +1019,7 @@
     "title": "Emisor",
     "original": "Issuer",
     "short": "La cuenta de Stellar que emite un activo y controla sus normas.",
-    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+    "desc": "El emisor es la cuenta de Stellar que emite un activo. En el caso de los activos emitidos, el emisor forma parte de la identidad del token. En función de los indicadores de la cuenta, puede influir en normas como la autorización, la recuperación (Clawback) o la congelación de permisos. Por lo tanto, no solo debes comprobar el código del activo, sino también verificar siempre la dirección del emisor y la información pública del proyecto."
   },
   "homeDomain": {
     "title": "Página de inicio Dominio",
@@ -1031,7 +1031,7 @@
     "title": "stellar.toml",
     "original": "stellar.toml",
     "short": "Archivo de metadatos públicos de un dominio Stellar.",
-    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
+    "desc": "El archivo «stellar.toml» es un archivo público ubicado en el dominio principal de un proyecto de Stellar. Puede contener información sobre el emisor, los activos, los datos de contacto, la documentación y las entradas de «CURRENCIES». Si un activo no aparece en la lista o no se puede acceder al archivo, se recomienda actuar con especial precaución."
   },
   "quote": {
     "title": "Cita",
@@ -1091,6 +1091,6 @@
     "title": "Buscar e intercambiar tokens",
     "original": "Token Trading",
     "short": "Encuentra tokens en la red y cómpralos, véndelos o intercambia directamente.",
-    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
+    "desc": "Aquí puedes buscar tokens en la red Stellar y comprarlos, venderlos o cambiarlos por otro token al instante. En segundo plano, estas transacciones se llevan a cabo a través del intercambio descentralizado (DEX) integrado en Stellar. Puedes encontrar más información sobre la tecnología que hay detrás en la entrada del glosario dedicada al DEX."
   }
 }

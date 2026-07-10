@@ -26,7 +26,7 @@
     "tokenShort": "Jeton : {{token}}"
   },
   "missingPublicKey": "Clé publique manquante.",
-  "moreTruncated": "… et {{extra}} groupes supplémentaires",
+  "moreTruncated": "… et {{extra}} autres groupes",
   "toWallet": "vers le portefeuille : {{adresse}}",
   "total": "Nombre de jetons achetés : {{count}}",
   "totalTokens": "Nombre de jetons investis (Assets) : {{count}}",

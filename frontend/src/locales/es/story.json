@@ -604,7 +604,7 @@
     "explain_desc": "Normalmente una sola clave controla una billetera. Con Multisig defines cuántos de cuántos posibles firmantes deben aprobar una transacción.",
     "explain_1of1_label": "Normal: 1-de-1",
     "explain_1of1_desc": "Una clave controla todo. Quien tiene esta clave tiene acceso completo – sin protección contra el mal uso o la pérdida.",
-    "explain_multisig_label": "Multisig: N-de-M",
+    "explain_multisig_label": "Multisig: N de M",
     "explain_multisig_desc": "Múltiples firmantes, umbral definido. Solo cuando hay suficientes firmas se ejecuta la transacción.",
     "explain_threshold_label": "¿Qué es un Umbral?",
     "explain_threshold_desc": "El umbral es el número mínimo de firmas requeridas para autorizar una transacción. Con 2-de-3, cualquiera de los 2 de los 3 firmantes debe firmar.",
@@ -764,7 +764,7 @@
         "dialog3": "Stellar ha incorporado este principio de fideicomiso directamente en el protocolo, como una función nativa llamada Claimable Balance. Un importe en XLM o tokens se bloquea y se vincula a una condición: ¿quién puede reclamarlo? ¿Desde cuándo? ¿Y hasta cuándo puede el remitente reclamarlo de vuelta? Solo cuando se cumple la condición puede el destinatario retirar los fondos.",
         "dialog4": "¿Entonces estamos bloqueando dinero de la testnet ahora?",
         "dialog5": "Entonces, igual que con Digitec: ¿el comprador paga, pero el vendedor no recibe el dinero hasta que el comprador confirme la recepción?",
-        "dialog6": "Exactly. Digitec acts as the trustee in that context. On Stellar, a “claimable balance” can technically represent the locked portion. The app built around it then determines when someone is allowed to claim it or when it is repaid."
+        "dialog6": "Exacto. Digitec actúa como fideicomisario en ese contexto. En Stellar, un «saldo reclamable» puede representar técnicamente la parte bloqueada. La aplicación creada en torno a ello determina entonces cuándo se permite a alguien reclamarlo o cuándo se devuelve."
       },
       "action": {
         "label": "Crear Escrow",
@@ -782,7 +782,7 @@
         "wallet_note": "No hay que activar ningún indicador de «Saldo reclamable» para esto. Un monedero debe admitir explícitamente esta operación; de lo contrario, no se puede crear allí con un solo clic. En la práctica, esto se hace utilizando una aplicación como esta, a través de Stellar Laboratory o mediante código con el SDK de Stellar.",
         "creating": "Se está tramitando la cuenta de garantía bloqueada…",
         "result_rules_title": "Procedimiento de esta demostración",
-        "rule1": "The demo buyer may claim the 50 XLM immediately—that is, actively withdraw them from the Claimable Balance.",
+        "rule1": "El comprador de la demo puede reclamar los 50 XLM de inmediato, es decir, retirarlos directamente del saldo reclamable.",
         "rule2": "Si el comprador de la demo no hace nada, puedes solicitar que te devuelvan los 50 XLM al cabo de una hora.",
         "rule3": "Aún no se ha añadido un botón de «Confirmar recepción» a esta demostración.",
         "rule4": "En el ejemplo de Digitec, esta confirmación sería el siguiente paso en la aplicación: el comprador hace clic en «Recibo confirmado» y, a continuación, la plataforma inicia el pago al vendedor. En Stellar, esto supondría una segunda transacción que se deduciría del saldo reclamable."

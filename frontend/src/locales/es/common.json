@@ -914,7 +914,7 @@
     "token": {
       "title": "Ficha",
       "original": "Token",
-      "short": "Digital unit – e.g., money, points, or credit.",
+      "short": "Unidad digital: por ejemplo, dinero, puntos o crédito.",
       "desc": "Un token es una unidad digital en la blockchain. Un token puede representar dinero, puntos o créditos para un servicio."
     },
     "asset": {
@@ -1025,7 +1025,7 @@
         "realWarning": "Atención: Genuine Trustline(s) será eliminado",
         "simulation": "Modo de simulación"
       },
-      "notFound": "No deletable trust lines found – all still contain balances.",
+      "notFound": "No se encontraron Trustline(s) eliminables; todas ellas siguen teniendo saldo.",
       "resultText": "Recuento: {{count}} • Modo: {{mode}}",
       "resultTitle": "Línea de confianza eliminada(s)",
       "simulated": "Simulación: Se eliminarían {{count}} Trustlines.",

@@ -24,7 +24,7 @@
   "blockchain": {
     "title": "Blokčejn",
     "original": "Blockchain",
-    "short": "Zajednički digitalni registar – mnogi računari pohranjuju iste unose.",
+    "short": "Zajednička digitalna knjiga—mnogi računala pohranjuju iste unose.",
     "desc": "Blockchain je poput digitalne knjige računa. Mnoga računala pohranjuju iste zapise, osiguravajući da nitko ne može tajno izvršiti promjene."
   },
   "wallet": {
@@ -66,7 +66,7 @@
   "addressMuxed": {
     "title": "Podadresa",
     "original": "Muxed Account",
-    "short": "M‑address with additional ID – shares a base account.",
+    "short": "M-adresa s dodatnim ID-om – dijeli osnovni račun.",
     "desc": "Podadresa (M-adresa, službeno \"Muxed račun\") upućuje na postojeći Stellar račun, ali ima i vlastiti broj (ID).\n\nPodadresa = G-račun + ID (M-adresa)\nOna omogućuje identifikaciju, ali ne odvojuje račune.\nStanje, trustlineovi, potpisnici i zastavice uvijek se čuvaju na G-računu.\n\nStellar Development Foundation\n\nTo omogućuje, na primjer, da se pod istom G-adresom razlikuju više osoba ili odjela. Tehnički gledano, sredstva i dalje pripadaju glavnom računu."
   },
   "muxedAccountsUseCases": {
@@ -110,7 +110,7 @@
   "token": {
     "title": "Token",
     "original": "Token",
-    "short": "Digitalna jedinica – na primjer, novac, bodovi ili krediti.",
+    "short": "Digitalna jedinica—npr. novac, bodovi ili kredit.",
     "desc": "Token je digitalna jedinica na blockchainu. Token može predstavljati novac, bodove ili kredite za neku uslugu."
   },
   "asset": {
@@ -1019,7 +1019,7 @@
     "title": "Izdavatelj",
     "original": "Issuer",
     "short": "Stellar račun koji izdaje imovinu i kontrolira njezina pravila.",
-    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+    "desc": "Izdavatelj je Stellar račun koji izdaje imovinu. Za izdane imovine izdavatelj je dio identiteta tokena. Ovisno o zastavicama računa, može utjecati na pravila kao što su autorizacija, povlačenje (Clawback) ili zamrznute dozvole. Stoga ne biste trebali provjeravati samo kod imovine, već uvijek i adresu izdavatelja te javne informacije o projektu."
   },
   "homeDomain": {
     "title": "Početna domena",
@@ -1031,7 +1031,7 @@
     "title": "izvrsno.toml",
     "original": "stellar.toml",
     "short": "Javna metapodatkovna datoteka za Stellar domenu.",
-    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
+    "desc": "Datoteka stellar.toml je javna datoteka smještena na glavnoj domeni Stellar projekta. Može sadržavati informacije o izdavatelju, imovini, kontaktnim podacima, dokumentaciji i unosima valuta. Ako imovina nije navedena tamo ili je datoteka nedostupna, preporučuje se dodatna opreznost."
   },
   "quote": {
     "title": "Citat",
@@ -1091,6 +1091,6 @@
     "title": "Pronađi i trguj tokenima",
     "original": "Token Trading",
     "short": "Pronađite tokene na mreži i kupujte, prodajte ili ih izravno razmjenjujte.",
-    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
+    "desc": "Ovdje možete pretraživati tokene na Stellar mreži i odmah ih kupiti, prodati ili zamijeniti za drugi token. Iza kulisa se te transakcije odvijaju putem ugrađene decentralizirane burze (DEX) Stellar mreže. Više o tehnologiji koja stoji iza toga možete pronaći u DEX unosu u rječniku."
   }
 }

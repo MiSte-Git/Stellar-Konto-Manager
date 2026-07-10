@@ -604,7 +604,7 @@
     "explain_desc": "Obično jedan ključ kontrolira novčanik. S Multisigom definirate koliko od mogućih potpisnika mora odobriti transakciju.",
     "explain_1of1_label": "Normalno: 1-od-1",
     "explain_1of1_desc": "Jedan ključ kontrolira sve. Tko ima ovaj ključ ima potpuni pristup – bez zaštite od zlouporabe ili gubitka.",
-    "explain_multisig_label": "Multisig: N-od-M",
+    "explain_multisig_label": "Multisig: N od M",
     "explain_multisig_desc": "Više potpisnika, definirani prag. Tek kada ima dovoljno potpisa, transakcija se izvršava.",
     "explain_threshold_label": "Što je Prag?",
     "explain_threshold_desc": "Prag je minimalni broj potpisa potrebnih za autorizaciju transakcije. Kod 2-od-3, bilo koja 2 od 3 potpisnika moraju potpisati.",
@@ -764,7 +764,7 @@
         "dialog3": "Stellar je ovaj princip povjerenika ugradio izravno u protokol – kao nativnu značajku zvanu Claimable Balance. Iznos XLM-a ili tokena se zaključava i veže uz uvjet: tko može zatražiti? Od kada? I do kada pošiljatelj može povući nazad? Tek kad je uvjet ispunjen, primatelj može podići sredstva.",
         "dialog4": "Dakle, sada zaključavamo testnet novac?",
         "dialog5": "Dakle, baš kao kod Digiteca: kupac plaća, ali prodavatelj ne prima novac dok kupac ne potvrdi primitak?",
-        "dialog6": "Exactly. Digitec acts as the trustee in that context. On Stellar, a “claimable balance” can technically represent the locked portion. The app built around it then determines when someone is allowed to claim it or when it is repaid."
+        "dialog6": "Upravo tako. Digitec u tom kontekstu djeluje kao povjerenik. Na Stellaru \"Claimable Balance\" tehnički može predstavljati zaključani dio. Aplikacija izgrađena oko toga zatim određuje kada netko smije preuzeti taj iznos ili kada je on vraćen."
       },
       "action": {
         "label": "Kreiraj Escrow",
@@ -782,7 +782,7 @@
         "wallet_note": "Ne postavljate zastavicu 'Claimable Balance' za ovo. Novčanik mora izričito podržavati ovu operaciju; inače je ne možete stvoriti tamo jednim klikom. U praksi to radite pomoću aplikacije poput ove, putem Stellar Laboratory ili kodom koristeći Stellar SDK.",
         "creating": "Escrow se postavlja…",
         "result_rules_title": "Postupak u ovoj demonstraciji",
-        "rule1": "Kupac demo računa može odmah preuzeti 50 XLM — to jest, aktivno ih povući iz stanja za preuzimanje.",
+        "rule1": "Kupac demo računa može odmah preuzeti 50 XLM — to jest, aktivno ih povući iz Claimable Balance.",
         "rule2": "Ako kupac demo ne poduzme ništa, možete zatražiti povrat 50 XLM nakon jednog sata.",
         "rule3": "Pravo gumbom \"Potvrdi primitak\" još nije dodano u ovu demo verziju.",
         "rule4": "U primjeru Digiteca, ova potvrda bi bila sljedeći korak u aplikaciji: kupac klikne na \"Potvrđeno račun\", a platforma zatim pokreće uplatu prodavaču. Na Stellaru bi to bila druga transakcija koja se oslanja na preuzimljivi saldo."

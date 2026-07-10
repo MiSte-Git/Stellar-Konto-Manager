@@ -26,7 +26,7 @@
     "tokenShort": "Token: {{token}}"
   },
   "missingPublicKey": "Clave pública ausente.",
-  "moreTruncated": "… y {{extra}} grupos adicionales",
+  "moreTruncated": "… y {{extra}} grupos más",
   "toWallet": "a Cartera: {{address}}",
   "total": "Número de fichas compradas: {{count}}",
   "totalTokens": "Número de tokens invertidos (Assets): {{count}}",

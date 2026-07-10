@@ -604,7 +604,7 @@
     "explain_desc": "Normalmente una sola chiave controlla un portafoglio. Con il Multisig definisci quanti dei possibili firmatari devono approvare una transazione.",
     "explain_1of1_label": "Normale: 1-su-1",
     "explain_1of1_desc": "Una chiave controlla tutto. Chi ha questa chiave ha accesso completo – nessuna protezione da uso improprio o perdita.",
-    "explain_multisig_label": "Multisig: N-su-M",
+    "explain_multisig_label": "Multisig: N su M",
     "explain_multisig_desc": "Più firmatari, soglia definita. Solo quando ci sono abbastanza firme la transazione viene eseguita.",
     "explain_threshold_label": "Cos'è una Soglia?",
     "explain_threshold_desc": "La soglia è il numero minimo di firme necessarie per autorizzare una transazione. Con 2-su-3, qualsiasi 2 dei 3 firmatari devono firmare.",
@@ -764,7 +764,7 @@
         "dialog3": "Stellar ha incorporato questo principio di fiducia direttamente nel protocollo, come funzione nativa chiamata Claimable Balance. Un importo in XLM o token viene bloccato e collegato a una condizione: chi può reclamarlo? Da quando? E fino a quando il mittente può richiederlo indietro? Solo quando la condizione è soddisfatta il destinatario può prelevare i fondi.",
         "dialog4": "Quindi stiamo bloccando fondi testnet adesso?",
         "dialog5": "Quindi, proprio come nel caso di Digitec: l’acquirente paga, ma il venditore non riceve il denaro finché l’acquirente non conferma la ricezione?",
-        "dialog6": "Esatto. Digitec funge da fiduciario in tale contesto. Su Stellar, un “saldo reclamabile” può tecnicamente rappresentare la parte bloccata. L’app sviluppata attorno a questo concetto determina poi quando qualcuno è autorizzato a reclamarlo o quando viene rimborsato."
+        "dialog6": "Esatto. Digitec funge da fiduciario in tale contesto. Su Stellar, un “saldo richiedibile” può tecnicamente rappresentare la parte bloccata. L’app sviluppata attorno a questo concetto determina poi quando qualcuno è autorizzato a reclamarlo o quando viene rimborsato."
       },
       "action": {
         "label": "Crea Escrow",
@@ -782,7 +782,7 @@
         "wallet_note": "Non è necessario impostare un flag \"Saldo richiedibile\" per questa operazione. Un wallet deve supportare esplicitamente questa operazione; in caso contrario, non è possibile crearla con un solo clic. In pratica, si utilizza un'app come questa, tramite Stellar Laboratory, oppure tramite codice utilizzando l'SDK di Stellar.",
         "creating": "Si sta procedendo all'apertura del conto di garanzia…",
         "result_rules_title": "Procedura illustrata in questa demo",
-        "rule1": "The demo buyer may claim the 50 XLM immediately—that is, actively withdraw them from the Claimable Balance.",
+        "rule1": "L'acquirente demo può richiedere immediatamente i 50 XLM, ovvero prelevarli dal saldo richiedibile.",
         "rule2": "Se l'acquirente della versione demo non effettua alcuna operazione, potrai richiedere la restituzione dei 50 XLM dopo 1 ora.",
         "rule3": "In questa versione demo non è ancora stato aggiunto un vero e proprio pulsante \"Conferma ricezione\".",
         "rule4": "Nell'esempio di Digitec, questa conferma rappresenterebbe il passo successivo nell'app: l'acquirente clicca su “Ricevuta confermata” e la piattaforma avvia quindi il pagamento al venditore. Su Stellar, si tratterebbe di una seconda transazione che attinge al saldo reclamabile."

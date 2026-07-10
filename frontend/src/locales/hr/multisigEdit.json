@@ -21,6 +21,6 @@
   "title": "Uredi multisig račun",
   "validation": {
     "signerKeyHint": "Napomena: Potpisnici moraju početi s \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
+    "signerKeyInvalid": "Neispravna adresa potpisnika. Očekuje se adresa G… (ed25519)."
   }
 }

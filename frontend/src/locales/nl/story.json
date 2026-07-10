@@ -764,7 +764,7 @@
         "dialog3": "Stellar heeft dit bewaardersprincipe direct in het protocol ingebouwd – als native functie genaamd Claimable Balance. Een bedrag in XLM of tokens wordt vergrendeld en gekoppeld aan een voorwaarde: wie mag het claimen? Vanaf wanneer? En tot wanneer kan de afzender het terugvorderen? Pas als aan de voorwaarde is voldaan, kan de ontvanger het geld opnemen.",
         "dialog4": "Dus we vergrendelen nu testnet-geld?",
         "dialog5": "Dus net als bij Digitec: de koper betaalt, maar de verkoper ontvangt het geld pas als de koper de ontvangst heeft bevestigd?",
-        "dialog6": "Exactly. Digitec acts as the trustee in that context. On Stellar, a “claimable balance” can technically represent the locked portion. The app built around it then determines when someone is allowed to claim it or when it is repaid."
+        "dialog6": "Precies. Digitec treedt in dat verband op als beheerder. Op Stellar kan een Claimable Balance technisch gezien het geblokkeerde deel vertegenwoordigen. De app die hieromheen is gebouwd, bepaalt vervolgens wanneer iemand dit mag opeisen of wanneer het wordt terugbetaald."
       },
       "action": {
         "label": "Escrow Aanmaken",
@@ -782,7 +782,7 @@
         "wallet_note": "Hiervoor stel je geen ‘Claimable Balance’-vlag in. Een wallet moet deze bewerking expliciet ondersteunen; anders kun je deze daar niet met één klik aanmaken. In de praktijk doe je dit met een app zoals deze, via Stellar Laboratory, of via code met behulp van de Stellar SDK.",
         "creating": "De escrow-regeling wordt momenteel opgezet…",
         "result_rules_title": "Werkwijze in deze demo",
-        "rule1": "De demo-koper kan de 50 XLM onmiddellijk opeisen — dat wil zeggen: ze actief opnemen uit het opeisbare saldo.",
+        "rule1": "De demo-koper kan de 50 XLM onmiddellijk opeisen — dat wil zeggen: ze actief opnemen uit de Claimable Balance.",
         "rule2": "Als de demo-koper niets onderneemt, kun je na 1 uur de 50 XLM terugvragen.",
         "rule3": "Er is nog geen echte knop \"Ontvangst bevestigen\" aan deze demo toegevoegd.",
         "rule4": "In het voorbeeld van Digitec zou deze bevestiging de volgende stap in de app zijn: de koper klikt op ‘Ontvangst bevestigd’, waarna het platform de betaling aan de verkoper in gang zet. Op Stellar zou dit een tweede transactie zijn waarbij gebruik wordt gemaakt van het ‘Claimable Balance’."

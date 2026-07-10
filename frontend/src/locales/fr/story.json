@@ -604,7 +604,7 @@
     "explain_desc": "Normalement, une seule clé contrôle un portefeuille. Avec le Multisig, tu définis combien de signataires parmi les signataires possibles doivent approuver une transaction.",
     "explain_1of1_label": "Normal : 1-sur-1",
     "explain_1of1_desc": "Une clé contrôle tout. Qui possède cette clé a un accès complet – aucune protection contre le mauvais usage ou la perte.",
-    "explain_multisig_label": "Multisig : N-sur-M",
+    "explain_multisig_label": "Multisig : N sur M",
     "explain_multisig_desc": "Plusieurs signataires, seuil défini. Ce n'est que lorsqu'il y a suffisamment de signatures que la transaction est exécutée.",
     "explain_threshold_label": "Qu'est-ce qu'un Seuil ?",
     "explain_threshold_desc": "Le seuil est le nombre minimum de signatures nécessaires pour autoriser une transaction. Avec 2-sur-3, n'importe quels 2 des 3 signataires doivent signer.",
@@ -764,7 +764,7 @@
         "dialog3": "Stellar a intégré ce principe de tiers de confiance directement dans le protocole, en tant que fonctionnalité native appelée Claimable Balance. Un montant en XLM ou en tokens est bloqué et lié à une condition : qui peut le réclamer ? À partir de quand ? Et jusqu'à quand l'expéditeur peut-il le récupérer ? Ce n'est que lorsque la condition est remplie que le destinataire peut retirer les fonds.",
         "dialog4": "Donc on bloque des fonds testnet maintenant ?",
         "dialog5": "Donc, exactement comme chez Digitec : l'acheteur paie, mais le vendeur ne reçoit l'argent qu'une fois que l'acheteur a confirmé la réception ?",
-        "dialog6": "Exactly. Digitec acts as the trustee in that context. On Stellar, a “claimable balance” can technically represent the locked portion. The app built around it then determines when someone is allowed to claim it or when it is repaid."
+        "dialog6": "Exactement. Digitec joue le rôle de fiduciaire dans ce contexte. Sur Stellar, un « solde réclamable » peut techniquement correspondre à la partie bloquée. L’application conçue autour de ce concept détermine ensuite à quel moment une personne est autorisée à le réclamer ou à quel moment il est remboursé."
       },
       "action": {
         "label": "Créer l'Escrow",
@@ -782,7 +782,7 @@
         "wallet_note": "Il ne faut pas activer l'indicateur « Solde réclamable » pour cela. Un portefeuille doit prendre explicitement en charge cette opération ; sinon, vous ne pouvez pas la créer d'un simple clic. En pratique, vous effectuez cette opération à l'aide d'une application comme celle-ci, via Stellar Laboratory, ou par le biais d'un code utilisant le SDK Stellar.",
         "creating": "Le compte séquestre est en cours de mise en place…",
         "result_rules_title": "Déroulement de cette démonstration",
-        "rule1": "The demo buyer may claim the 50 XLM immediately—that is, actively withdraw them from the Claimable Balance.",
+        "rule1": "L'acheteur de la version démo peut réclamer les 50 XLM immédiatement, c'est-à-dire les retirer du « solde réclamable ».",
         "rule2": "Si l'acheteur de la démo ne fait rien, vous pouvez demander le remboursement des 50 XLM au bout d'une heure.",
         "rule3": "Un véritable bouton « Confirmer la réception » n'a pas encore été ajouté à cette démo.",
         "rule4": "Dans l'exemple de Digitec, cette confirmation correspondrait à l'étape suivante dans l'application : l'acheteur clique sur « Reçu confirmé », puis la plateforme lance le paiement au vendeur. Sur Stellar, il s'agirait d'une deuxième transaction prélevant sur le solde réclamable."

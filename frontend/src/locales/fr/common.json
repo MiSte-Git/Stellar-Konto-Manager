@@ -914,7 +914,7 @@
     "token": {
       "title": "Jeton",
       "original": "Token",
-      "short": "Unité numérique – par exemple, argent, points ou crédit.",
+      "short": "Unité numérique — par exemple, de l'argent, des points ou un crédit.",
       "desc": "Un jeton est une unité numérique sur la blockchain. Un jeton peut représenter de l'argent, des points ou des crédits pour un service."
     },
     "asset": {
@@ -1025,7 +1025,7 @@
         "realWarning": "Attention : Genuine Trustline (s) sera supprimé.",
         "simulation": "Mode de simulation"
       },
-      "notFound": "No deletable trust lines found – all still contain balances.",
+      "notFound": "Aucune Trustline(s) supprimable trouvée : elles présentent toutes encore un solde.",
       "resultText": "Nombre : {{count}} • Mode : {{mode}}",
       "resultTitle": "Deleted Trustline (s)",
       "simulated": "Simulation : {{count}} Trustlines seraient supprimées.",

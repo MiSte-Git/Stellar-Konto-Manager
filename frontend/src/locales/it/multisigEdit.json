@@ -21,6 +21,6 @@
   "title": "Modifica account multisig",
   "validation": {
     "signerKeyHint": "Nota: I firmatari devono iniziare con \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Indirizzo del firmatario non valido. È previsto un indirizzo G… (ed25519)."
+    "signerKeyInvalid": "Indirizzo del firmatario non valido. È richiesto un indirizzo G… (ed25519)."
   }
 }

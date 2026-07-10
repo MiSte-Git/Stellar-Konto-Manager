@@ -24,7 +24,7 @@
   "blockchain": {
     "title": "Blockchain",
     "original": "Blockchain",
-    "short": "Gedeeld digitaal grootboek – veel computers slaan dezelfde invoeringen op.",
+    "short": "Gedeeld digitaal grootboek — veel computers slaan dezelfde gegevens op.",
     "desc": "Een blockchain is als een digitaal grootboek. Veel computers slaan dezelfde gegevens op, waardoor niemand stiekem wijzigingen kan aanbrengen."
   },
   "wallet": {
@@ -66,7 +66,7 @@
   "addressMuxed": {
     "title": "Subadres",
     "original": "Muxed Account",
-    "short": "M‑address with additional ID – shares a base account.",
+    "short": "M-adres met extra ID – maakt gebruik van hetzelfde basisaccount.",
     "desc": "Een subadres (M-adres, officieel „Muxed Account“) verwijst naar een bestaand Stellar-account, maar heeft ook een eigen nummer (ID).\n\nSubadres = G-account + ID (M-adres)\nHet dient ter identificatie, maar maakt geen onderscheid tussen accounts.\nHet saldo, de trustlines, de ondertekenaars en de vlaggen worden altijd in de G-account bewaard.\n\nStellar Development Foundation\n\nHierdoor kunnen bijvoorbeeld meerdere personen of afdelingen onder hetzelfde G-adres worden onderscheiden. Technisch gezien behoren de middelen nog steeds toe aan de hoofdaccount."
   },
   "muxedAccountsUseCases": {
@@ -110,7 +110,7 @@
   "token": {
     "title": "Token",
     "original": "Token",
-    "short": "Digitale eenheid – bijvoorbeeld geld, punten of tegoeden.",
+    "short": "Digitale eenheid — bijvoorbeeld geld, punten of tegoed.",
     "desc": "Een token is een digitale eenheid op de blockchain. Een token kan geld, punten of kredieten voor een dienst vertegenwoordigen."
   },
   "asset": {
@@ -1015,7 +1015,7 @@
     "title": "Uitgever",
     "original": "Issuer",
     "short": "Het Stellar-account dat een activum uitgeeft en de regels daarvoor beheert.",
-    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+    "desc": "De uitgever is het Stellar-account dat een asset uitgeeft. Bij uitgegeven assets maakt de uitgever deel uit van de identiteit van het token. Afhankelijk van de accountvlaggen kan dit van invloed zijn op regels zoals autorisatie, terugvordering (Clawback) of bevroren rechten. Controleer daarom niet alleen de activacode, maar verifieer ook altijd het adres van de uitgever en de openbare projectinformatie."
   },
   "homeDomain": {
     "title": "Startpagina Domein",
@@ -1027,7 +1027,7 @@
     "title": "stellar.toml",
     "original": "stellar.toml",
     "short": "Openbaar metadatabestand voor een Stellar-domein.",
-    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
+    "desc": "Het bestand stellar.toml is een openbaar bestand dat zich op het hoofddomein van een Stellar-project bevindt. Het kan informatie bevatten over de uitgever, activa, contactgegevens, documentatie en CURRENCIES-vermeldingen. Als een activum daar niet wordt vermeld of als het bestand niet toegankelijk is, is het raadzaam extra voorzichtig te zijn."
   },
   "quote": {
     "title": "Citaat",
@@ -1087,6 +1087,6 @@
     "title": "Tokens zoeken en verhandelen",
     "original": "Token Trading",
     "short": "Zoek tokens op het netwerk en koop, verkoop of ruil ze direct.",
-    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
+    "desc": "Hier kun je zoeken naar tokens op het Stellar-netwerk en deze direct kopen, verkopen of inwisselen voor een ander token. Achter de schermen vinden deze transacties plaats via de ingebouwde gedecentraliseerde beurs (DEX) van Stellar. Meer informatie over de technologie hierachter vind je in het DEX-lemma in de woordenlijst."
   }
 }

@@ -59,7 +59,7 @@
     "nameLabel": "Nome",
     "urlLabel": "URL",
     "testnetUrlLabel": "URL del Testnet (optional)",
-    "testnetUrlPlaceholder": "https://…{address} (leave blank to use the Mainnet URL for Testnet as well)",
+    "testnetUrlPlaceholder": "https://…{address} (lasciare vuoto per utilizzare l'URL della mainnet anche per la testnet)",
     "addButton": "Aggiungi Esploratore",
     "removeButton": "Rimuovi",
     "setDefault": "Imposta come predefinito",

@@ -914,7 +914,7 @@
     "token": {
       "title": "Gettone",
       "original": "Token",
-      "short": "Unità digitale – ad esempio, denaro, punti o credito.",
+      "short": "Unità digitale — ad esempio, denaro, punti o credito.",
       "desc": "Un token è un'unità digitale sulla blockchain. Un token può rappresentare denaro, punti o crediti per un servizio."
     },
     "asset": {
@@ -1025,7 +1025,7 @@
         "realWarning": "Attenzione: Genuine Trustline(s) sarà eliminato",
         "simulation": "Modalità di simulazione"
       },
-      "notFound": "Nessuna linea di fiducia eliminabile trovata – contengono ancora tutte dei saldi.",
+      "notFound": "Nessuna Trustline eliminabile trovata: contengono tutte ancora un saldo.",
       "resultText": "Conteggio: {{count}} • Modalità: {{mode}}",
       "resultTitle": "Trustline eliminato(s)",
       "simulated": "Simulazione: verrebbero eliminate {{count}} linee di fiducia.",

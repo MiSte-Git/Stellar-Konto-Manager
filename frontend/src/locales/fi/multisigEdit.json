@@ -21,6 +21,6 @@
   "title": "Muokkaa multisig-tiliä",
   "validation": {
     "signerKeyHint": "Huomautus: Allekirjoittajien on aloitettava kirjaimella \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
+    "signerKeyInvalid": "Allekirjoittajan osoite on virheellinen. Odotetaan G…-osoitetta (ed25519)."
   }
 }

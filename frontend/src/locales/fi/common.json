@@ -914,7 +914,7 @@
     "token": {
       "title": "Tunnus",
       "original": "Token",
-      "short": "Digitaalinen yksikkö – esim. raha, pisteet tai luotto.",
+      "short": "Digitaalinen yksikkö – esim. raha, pisteet tai hyvitys.",
       "desc": "Token on digitaalinen yksikkö lohkoketjussa. Token voi edustaa rahaa, pisteitä tai palvelun krediittejä."
     },
     "asset": {
@@ -1025,7 +1025,7 @@
         "realWarning": "Huomio: Aito Trustline(s) poistetaan",
         "simulation": "Simulointitila"
       },
-      "notFound": "Ei poistettavia luottolinjoja löydetty – kaikissa on vielä saldoja.",
+      "notFound": "Poistettavia Trustlineja ei löytynyt – kaikilla on edelleen saldoa.",
       "resultText": "Lukumäärä: {{count}} • Tila: {{mode}}",
       "resultTitle": "Poistettu luottolinja (s)",
       "simulated": "Simulaatio: {{count}} luottolinjaa poistettaisiin.",

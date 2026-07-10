@@ -21,6 +21,6 @@
   "title": "Modifier le compte multisig",
   "validation": {
     "signerKeyHint": "Remarque : Les signataires doivent commencer par \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Adresse du signataire invalide. Une adresse G… (ed25519) est attendue."
+    "signerKeyInvalid": "Adresse du signataire non valide. Une adresse G… est attendue (ed25519)."
   }
 }

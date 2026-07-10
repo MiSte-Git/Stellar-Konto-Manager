@@ -24,7 +24,7 @@
   "blockchain": {
     "title": "Lohkoketju",
     "original": "Blockchain",
-    "short": "Jaettu digitaalinen pääkirja – monet tietokoneet tallentavat samat merkinnät.",
+    "short": "Jaettu digitaalinen tilikirja – useat tietokoneet tallentavat samat merkinnät.",
     "desc": "Lohkoketju on kuin digitaalinen pääkirja. Monet tietokoneet tallentavat samat merkinnät, varmistaen, ettei kukaan voi salaa tehdä muutoksia."
   },
   "wallet": {
@@ -66,7 +66,7 @@
   "addressMuxed": {
     "title": "Aliosoite",
     "original": "Muxed Account",
-    "short": "M‑address with additional ID – shares a base account.",
+    "short": "M-osoite, jossa on lisätunniste – käyttää samaa perustiliä.",
     "desc": "Aliosoite (M-osoite, virallisesti ”Muxed Account”) viittaa olemassa olevaan Stellar-tiliin, mutta sillä on myös oma numeronsa (tunnus).\n\nAliosoite = G-tili + tunnus (M-osoite)\nSe toimii tunnisteena, mutta ei erota tilejä toisistaan.\nSaldot, trustlines, allekirjoittajat ja liput säilytetään aina G-tilillä.\n\nStellar Development Foundation\n\nTämän ansiosta esimerkiksi useita henkilöitä tai osastoja voidaan erottaa toisistaan saman G-osoitteen alla. Teknisesti varat kuuluvat edelleen päätilille."
   },
   "muxedAccountsUseCases": {
@@ -110,7 +110,7 @@
   "token": {
     "title": "Merkki",
     "original": "Token",
-    "short": "Digitaalinen yksikkö – esimerkiksi raha, pisteet tai hyvitykset.",
+    "short": "Digitaalinen yksikkö – esim. raha, pisteet tai hyvitys.",
     "desc": "Tokeni on digitaalinen yksikkö lohkoketjussa. Tokeni voi edustaa rahaa, pisteitä tai palvelun hyvityksiä."
   },
   "asset": {
@@ -1015,7 +1015,7 @@
     "title": "Liikkeeseenlaskija",
     "original": "Issuer",
     "short": "Stellar-tili, joka laskee liikkeeseen varan ja hallinnoi sen sääntöjä.",
-    "desc": "The issuer is the Stellar account that issues an asset. For issued assets, the issuer is part of the token’s identity. Depending on account flags, it can affect rules such as authorization, clawback, or immutable permissions. Therefore you should check not only the asset code, but also the issuer address and public project information."
+    "desc": "Liikkeeseenlaskija on se Stellar-tili, joka laskee varan liikkeeseen. Liikkeeseenlaskettujen varojen osalta liikkeeseenlaskija on osa tokenin identiteettiä. Tilin asetusten mukaan se voi vaikuttaa esimerkiksi valtuutukseen, takaisinperintään (Clawback) tai jäädytettyihin käyttöoikeuksiin. Siksi sinun ei tule tarkistaa pelkästään varallisuuskoodia, vaan myös aina varmistaa liikkeeseenlaskijan osoite ja julkiset projektitiedot."
   },
   "homeDomain": {
     "title": "Etusivu Verkkotunnus",
@@ -1027,7 +1027,7 @@
     "title": "stellar.toml",
     "original": "stellar.toml",
     "short": "Stellar-verkkotunnuksen julkinen metatietotiedosto.",
-    "desc": "The stellar.toml file is a public file under a Stellar project’s home domain. It can contain information about issuers, assets, contacts, documentation, and CURRENCIES entries. If an asset is not listed there or the file cannot be reached, extra caution is warranted."
+    "desc": "Stellar.toml-tiedosto on julkinen tiedosto, joka sijaitsee Stellar-projektin kotiverkkotunnuksessa. Se voi sisältää tietoja liikkeeseenlaskijasta, varoista, yhteystiedoista, dokumentaatiosta sekä CURRENCIES-merkinnöistä. Jos tiettyä varallisuuseriä ei ole lueteltu siinä tai tiedostoon ei pääse käsiksi, on suositeltavaa noudattaa erityistä varovaisuutta."
   },
   "quote": {
     "title": "Lainaus",
@@ -1087,6 +1087,6 @@
     "title": "Etsi ja vaihda poletteja",
     "original": "Token Trading",
     "short": "Etsi verkosta tokeneita ja osta, myy tai vaihda niitä suoraan.",
-    "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more information about the technology behind it in the DEX glossary entry."
+    "desc": "Täällä voit etsiä Stellar-verkoston tokeneita ja ostaa, myydä tai vaihtaa niitä toiseen tokeneen heti. Taustalla nämä transaktiot tapahtuvat Stellarin sisäänrakennetun hajautetun pörssin (DEX) kautta. Lisätietoja tämän taustalla olevasta tekniikasta löydät DEX-sanastokohdasta."
   }
 }

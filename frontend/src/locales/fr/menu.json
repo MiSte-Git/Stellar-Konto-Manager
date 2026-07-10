@@ -1,6 +1,6 @@
 {
   "balance": "Afficher les informations du compte",
-  "devTestnet": "Réseau de test (for developers)",
+  "devTestnet": "Testnet (pour les développeurs)",
   "sendPayment": "Envoyer le paiement",
   "donate": "Dons",
   "feedback": "Retour d'information",

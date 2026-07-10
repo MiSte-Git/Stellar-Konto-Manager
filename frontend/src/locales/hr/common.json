@@ -914,7 +914,7 @@
     "token": {
       "title": "Token",
       "original": "Token",
-      "short": "Digitalna jedinica – npr. novac, bodovi ili kredit.",
+      "short": "Digitalna jedinica—npr. novac, bodovi ili kredit.",
       "desc": "Token je digitalna jedinica na blockchainu. Token može predstavljati novac, bodove ili kredite za neku uslugu."
     },
     "asset": {
@@ -1025,7 +1025,7 @@
         "realWarning": "Pažnja: Prava Trustline(s) bit će obrisana",
         "simulation": "Način simulacije"
       },
-      "notFound": "Nema izbrisivih linija povjerenja – sve još uvijek sadrže salda.",
+      "notFound": "Nije pronađena nijedna Trustline koja se može izbrisati—sve još imaju stanje.",
       "resultText": "Brojanje: {{count}} • Način: {{mode}}",
       "resultTitle": "Izbrisana povjerenička linija (s)",
       "simulated": "Simulacija: {{count}} trustlinija bi bilo obrisano.",

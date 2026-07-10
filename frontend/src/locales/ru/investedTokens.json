@@ -26,7 +26,7 @@
     "tokenShort": "Токен: {{token}}"
   },
   "missingPublicKey": "Отсутствует открытый ключ.",
-  "moreTruncated": "… и {{extra}} дополнительные группы",
+  "moreTruncated": "… и ещё {{extra}} групп",
   "toWallet": "на кошелек: {{address}}",
   "total": "Количество приобретённых токенов: {{count}}",
   "totalTokens": "Количество инвестированных токенов (Assets): {{count}}",
