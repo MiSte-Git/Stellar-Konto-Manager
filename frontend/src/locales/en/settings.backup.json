@@ -13,9 +13,12 @@
     "perform": "Perform import",
     "preview": {
       "stats": {
-        "achievements": "Badge: {{count}} Quiz(e)",
-        "progress": "Progress: {{count}} Quiz(e)",
-        "settings": "Settings: {{count}} Quiz(e)"
+        "achievements_one": "Badges: {{count}} Quiz",
+        "achievements_other": "Badges: {{count}} Quizzes",
+        "progress_one": "Progress: {{count}} quiz",
+        "progress_other": "Progress: {{count}} quizzes",
+        "settings_one": "Settings: {{count}} quiz",
+        "settings_other": "Settings: {{count}} quizzes"
       },
       "title": "Preview"
     },

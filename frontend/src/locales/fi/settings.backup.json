@@ -13,9 +13,12 @@
     "perform": "Suorita tuonti",
     "preview": {
       "stats": {
-        "achievements": "Merkki: {{count}} Quiz(e)",
-        "progress": "Edistyminen: {{count}} Visailu(e)",
-        "settings": "Asetukset: {{count}} Visa(e)"
+        "achievements_one": "Merkit: {{count}} tietokilpailu",
+        "achievements_other": "Merkit: {{count}} tietokilpailua",
+        "progress_one": "Edistyminen: {{count}} tietokilpailu",
+        "progress_other": "Edistyminen: {{count}} tietokilpailua",
+        "settings_one": "Asetukset: {{count}} tietokilpailu",
+        "settings_other": "Asetukset: {{count}} tietokilpailua"
       },
       "title": "Esikatselu"
     },

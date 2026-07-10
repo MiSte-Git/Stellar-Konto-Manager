@@ -13,9 +13,12 @@
     "perform": "Realizar importación",
     "preview": {
       "stats": {
-        "achievements": "Insignia: {{count}} Quiz(e)",
-        "progress": "Progreso: {{count}} Cuestionarios(e)",
-        "settings": "Configuración: {{count}} cuestionario(s)"
+        "achievements_one": "Insignias: {{count}} Cuestionario",
+        "achievements_other": "Insignias: {{count}} Cuestionarios",
+        "progress_one": "Progreso: {{count}} cuestionario",
+        "progress_other": "Progreso: {{count}} cuestionarios",
+        "settings_one": "Configuración: {{count}} cuestionario",
+        "settings_other": "Configuración: {{count}} cuestionarios"
       },
       "title": "Vista previa"
     },

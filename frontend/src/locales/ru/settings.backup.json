@@ -13,9 +13,18 @@
     "perform": "Выполнить импорт",
     "preview": {
       "stats": {
-        "achievements": "Значок: {{count}} Quiz(e)",
-        "progress": "Прогресс: {{count}} Quiz(e)",
-        "settings": "Настройки: {{count}} викторин(e)"
+        "achievements_one": "Значки: {{count}} тест",
+        "achievements_few": "Значки: {{count}} теста",
+        "achievements_many": "Значки: {{count}} тестов",
+        "achievements_other": "Значки: {{count}} теста",
+        "progress_one": "Прогресс: {{count}} тест",
+        "progress_few": "Прогресс: {{count}} теста",
+        "progress_many": "Прогресс: {{count}} тестов",
+        "progress_other": "Прогресс: {{count}} теста",
+        "settings_one": "Настройки: {{count}} тест",
+        "settings_few": "Настройки: {{count}} теста",
+        "settings_many": "Настройки: {{count}} тестов",
+        "settings_other": "Настройки: {{count}} теста"
       },
       "title": "Предпросмотр"
     },

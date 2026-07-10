@@ -13,9 +13,12 @@
     "perform": "Voer import uit",
     "preview": {
       "stats": {
-        "achievements": "Badge: {{count}} Quiz(e)",
-        "progress": "Voortgang: {{count}} Quiz(e)",
-        "settings": "Instellingen: {{count}} Quiz(e)"
+        "achievements_one": "Badges: {{count}} quiz",
+        "achievements_other": "Badges: {{count}} quizzen",
+        "progress_one": "Voortgang: {{count}} quiz",
+        "progress_other": "Voortgang: {{count}} quizzen",
+        "settings_one": "Instellingen: {{count}} quiz",
+        "settings_other": "Instellingen: {{count}} quizzen"
       },
       "title": "Voorbeschouwing"
     },

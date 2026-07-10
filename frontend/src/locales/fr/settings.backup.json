@@ -13,9 +13,12 @@
     "perform": "Effectuer l'importation",
     "preview": {
       "stats": {
-        "achievements": "Badge : {{count}} Quiz(e)",
-        "progress": "Progrès : {{count}} Quiz(e)",
-        "settings": "Paramètres : {{count}} Quiz(e)"
+        "achievements_one": "Badges : {{count}} quiz",
+        "achievements_other": "Badges : {{count}} quiz",
+        "progress_one": "Progression : {{count}} quiz",
+        "progress_other": "Progression : {{count}} quiz",
+        "settings_one": "Paramètres : {{count}} quiz",
+        "settings_other": "Paramètres : {{count}} quiz"
       },
       "title": "Aperçu"
     },

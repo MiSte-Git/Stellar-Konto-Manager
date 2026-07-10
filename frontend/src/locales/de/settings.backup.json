@@ -13,9 +13,12 @@
     "perform": "Import durchführen",
     "preview": {
       "stats": {
-        "achievements": "Abzeichen: {{count}} Quiz(e)",
-        "progress": "Fortschritte: {{count}} Quiz(e)",
-        "settings": "Einstellungen: {{count}} Quiz(e)"
+        "achievements_one": "Abzeichen: {{count}} Quiz",
+        "achievements_other": "Abzeichen: {{count}} Quiz",
+        "progress_one": "Fortschritte: {{count}} Quiz",
+        "progress_other": "Fortschritte: {{count}} Quiz",
+        "settings_one": "Einstellungen: {{count}} Quiz",
+        "settings_other": "Einstellungen: {{count}} Quiz"
       },
       "title": "Vorschau"
     },

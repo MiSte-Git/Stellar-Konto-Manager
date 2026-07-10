@@ -13,9 +13,15 @@
     "perform": "Izvrši uvoz",
     "preview": {
       "stats": {
-        "achievements": "Oznaka: {{count}} Kviz(e)",
-        "progress": "Napredak: {{count}} Kviz(e)",
-        "settings": "Postavke: {{count}} Kviz(e)"
+        "achievements_one": "Znakovi: {{count}} kviz",
+        "achievements_few": "Znakovi: {{count}} kviza",
+        "achievements_other": "Znakovi: {{count}} kvizova",
+        "progress_one": "Napredak: {{count}} kviz",
+        "progress_few": "Napredak: {{count}} kviza",
+        "progress_other": "Napredak: {{count}} kvizova",
+        "settings_one": "Postavke: {{count}} kviz",
+        "settings_few": "Postavke: {{count}} kviza",
+        "settings_other": "Postavke: {{count}} kvizova"
       },
       "title": "Pregled"
     },

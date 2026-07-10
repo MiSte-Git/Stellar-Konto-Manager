@@ -5034,5 +5034,11 @@
   "xlmByMemo.wrongMemos.summary": "f807f9f2ca4902d613fee0c2d2c88b7974d994811d8dc9e47425ac3c3bedf983",
   "xlmByMemo.wrongMemos.title": "65be3a1afbea57be08d8ea737b14a48ffb6d6d725971996defa3670b6720220e",
   "common.payment.send.muxedActivationCaptureXdr": "7bbc674a9715fe2b090873679e51aff7a8a669a60d7d790ba491b920c39b9984",
-  "common.payment.send.muxedActivationCaptureJob": "66caf98934cbb34045a8ddfd8fb308f2152e9027c8ec9795561e81f471dd4b8e"
+  "common.payment.send.muxedActivationCaptureJob": "66caf98934cbb34045a8ddfd8fb308f2152e9027c8ec9795561e81f471dd4b8e",
+  "settings.backup.import.preview.stats.achievements_one": "7754f590a06f20f9e2aa8935a828d4cb2a2c4e3f3d71d40455c09b422fe3e2c5",
+  "settings.backup.import.preview.stats.achievements_other": "7754f590a06f20f9e2aa8935a828d4cb2a2c4e3f3d71d40455c09b422fe3e2c5",
+  "settings.backup.import.preview.stats.progress_one": "726537d986ccb98e1984185d475f99c891badda87125fb0ef2e09101f1a4c390",
+  "settings.backup.import.preview.stats.progress_other": "726537d986ccb98e1984185d475f99c891badda87125fb0ef2e09101f1a4c390",
+  "settings.backup.import.preview.stats.settings_one": "452184ec3982932bf07b5b763341cbc4c80a9f851e4f825b29972ec2e98ca0fa",
+  "settings.backup.import.preview.stats.settings_other": "452184ec3982932bf07b5b763341cbc4c80a9f851e4f825b29972ec2e98ca0fa"
 }
