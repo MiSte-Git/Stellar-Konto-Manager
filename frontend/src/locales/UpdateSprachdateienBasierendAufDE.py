@@ -222,6 +222,19 @@ KEEP_EN_RE = re.compile(r"\(([^()]*)\)")
 ASCII_EN_ALLOWED = re.compile(r"^[A-Za-z0-9 ,._\-/:]+$")
 
 
+
+# Bindestrich-Komposita, deren letzter Teil ein gewöhnliches deutsches Wort ist, obwohl
+# der Rest des Kompositums (Großbuchstabe/Ziffer) wie ein Fachbegriff aussieht - konkret
+# zweimal unabhängig gefunden: "Hash-Vorlage" und "M-Adresse" (siehe
+# _looks_like_kept_english_term-Docstring für die ausführliche Begründung, warum das
+# NICHT über eine allgemeine Form-Regel lösbar ist). Bewusst eine kleine, kuratierte
+# Denylist statt eines Wörterbuchs: jeder Eintrag hier bedeutet zweifelsfrei "das ist
+# deutsch, nicht schützen" (keine Fehlalarme möglich) - ein noch nicht gelisteter Fall
+# bleibt einfach beim bisherigen (sicheren) Default "schützen" hängen, bis er auffällt
+# und ergänzt wird. Kleingeschrieben, da nur das Wort selbst verglichen wird.
+GERMAN_COMPOUND_TAILS_NOT_KEPT = {"vorlage", "adresse"}
+
+
 def _looks_like_kept_english_term(inner: str) -> bool:
     """Grenzt "Mehrfachsignatur (Multi-Signature)" (schützen) von "(leer)"/"(zum
     Aktivieren)" (normal übersetzen) ab. Reines ASCII-Alphabet allein reicht nicht -
@@ -240,10 +253,30 @@ def _looks_like_kept_english_term(inner: str) -> bool:
     Verhalten nachvollziehbar und testbar zu halten. Deckt nicht jeden Fall ab (z.B.
     "Alle" bliebe fälschlich geschützt, da großgeschrieben), reduziert die Falsch-
     Positiv-Rate aber drastisch gegenüber der reinen ASCII-Prüfung.
+
+    Dritte, bewusst enger gefasste Ergänzung für Bindestrich-Komposita ("Hash-Vorlage",
+    "M-Adresse" wurden dadurch fälschlich geschützt und blieben unübersetzt): Eine
+    allgemeine Form-Regel ("beide Seiten müssen das Signal erfüllen") wurde geprüft und
+    verworfen, weil sie sich als nicht tragfähig erwiesen hat - "S-Key" (muss geschützt
+    bleiben) und "M-Adresse" (darf nicht geschützt bleiben) haben exakt dieselbe Form
+    (ein Großbuchstabe + ein großgeschriebenes Wort), ebenso "Multi-Signature" (muss
+    geschützt bleiben) und "Hash-Vorlage" (darf nicht). Deutsche Substantive werden
+    genauso großgeschrieben wie englische Fachbegriffe/Eigennamen - Form allein
+    (Länge, Großschreibung, Bindestrich-Position) kann die beiden Sprachen hier nicht
+    unterscheiden, das ist keine Lücke in der Regel, sondern eine echte Mehrdeutigkeit.
+    Deshalb: nur der Wortteil NACH dem letzten Bindestrich wird gegen
+    GERMAN_COMPOUND_TAILS_NOT_KEPT geprüft (kleine, gezielte Denylist statt Form-Regel);
+    ein Treffer schaltet den Schutz für das gesamte Kompositum ab.
     """
     if not inner or " " in inner:
         return False
-    return bool(re.search(r"[0-9A-Z_:/]", inner))
+    if not re.search(r"[0-9A-Z_:/]", inner):
+        return False
+    if "-" in inner:
+        tail = inner.rsplit("-", 1)[-1]
+        if tail.lower() in GERMAN_COMPOUND_TAILS_NOT_KEPT:
+            return False
+    return True
 
 
 def protect_parenthesized_english(text: str) -> tuple[str, dict[str, str]]:

@@ -429,6 +429,47 @@ class ParenthesizedEnglishPhaseTests(unittest.TestCase):
                 protected, placeholders = usd.protect_parenthesized_english_for_target(text, "en")
                 self.assertIn(term, placeholders.values(), f"{term!r} sollte weiterhin geschützt werden")
 
+    def test_phase_a_does_not_protect_hyphenated_german_compounds(self):
+        # Dritte Bug-Ebene, unabhängig von den beiden obigen: ein Bindestrich-Kompositum
+        # (kein Leerzeichen!) mit einem gewöhnlichen deutschen Wortteil rutschte bisher
+        # trotzdem durch, weil IRGENDEIN Großbuchstabe im gesamten String reichte - und
+        # deutsche Substantive sind immer großgeschrieben. Konkret zweimal beobachtet:
+        # "hashX (Hash-Vorlage)" und "(M-Adresse)" blieben unübersetzt stehen.
+        cases = ["Hash-Vorlage", "M-Adresse", "G-Adresse"]
+        for term in cases:
+            with self.subTest(term=term):
+                text = f"Wert ({term}) im Kontext."
+                protected, placeholders = usd.protect_parenthesized_english_for_target(text, "en")
+                self.assertEqual(placeholders, {}, f"{term!r} sollte NICHT mehr geschützt werden")
+                self.assertEqual(protected, text)
+
+    def test_phase_a_still_protects_hyphenated_english_terms(self):
+        # Gegenprobe zur vorigen Ergänzung: "S-Key" (bereits oben abgedeckt) und
+        # "Multi-Signature" haben exakt dieselbe Form wie die jetzt freigegebenen
+        # Fälle (Großbuchstabe/Wort + Bindestrich + großgeschriebenes Wort) - der Fix
+        # unterscheidet gezielt über den Wortteil nach dem Bindestrich, nicht über die
+        # Form, damit genau diese weiterhin geschützt bleiben.
+        cases = ["Multi-Signature", "S-Key"]
+        for term in cases:
+            with self.subTest(term=term):
+                text = f"Wert ({term}) im Kontext."
+                protected, placeholders = usd.protect_parenthesized_english_for_target(text, "en")
+                self.assertIn(term, placeholders.values(), f"{term!r} sollte weiterhin geschützt werden")
+
+    def test_hyphenated_german_compound_denylist_is_documented_and_limited(self):
+        # Dokumentiert bewusst die Abwägung: Form allein (Großschreibung, Bindestrich-
+        # Position, Länge) kann Deutsch nicht zuverlässig von Englisch unterscheiden -
+        # "S-Key" (schützen) und "M-Adresse" (nicht schützen) haben identische Form.
+        # Der Fix verwendet daher eine kleine, kuratierte Denylist statt einer
+        # allgemeinen Regel. Das hat eine bekannte, akzeptierte Grenze: ein noch nicht
+        # gelisteter deutscher Wortteil bleibt weiterhin (fälschlich) geschützt, bis er
+        # auffällt und ergänzt wird - sicherer Default (bewahrt den Text unverändert)
+        # statt eines Blindfluges in die andere Richtung.
+        self.assertFalse(usd._looks_like_kept_english_term("Hash-Vorlage"))
+        self.assertFalse(usd._looks_like_kept_english_term("M-Adresse"))
+        # Noch nicht in der Denylist -> bleibt (bekanntermaßen) geschützt, keine Regression:
+        self.assertTrue(usd._looks_like_kept_english_term("Bild-Vorschau"))
+
     def test_phase_b_does_not_mask_short_english_words(self):
         protected, placeholders = usd.protect_parenthesized_english_for_target("(empty)", "es")
         self.assertEqual(placeholders, {}, "Phase B darf keine Platzhalter erzeugen")

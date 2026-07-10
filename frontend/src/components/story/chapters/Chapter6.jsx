@@ -134,7 +134,7 @@ function MuxedVisualCard({ next, t, openGlossary }) {
             <p style={{ margin: 0, fontFamily: "monospace", fontSize: "12px", color: "#FFD93D" }}>{baseShort}</p>
           </div>
           <button
-            onClick={() => openGlossary("muxedAccount")}
+            onClick={() => openGlossary("addressMuxed")}
             style={{
               background: "rgba(255,217,61,0.12)", border: "1px solid rgba(255,217,61,0.3)",
               borderRadius: "50%", width: "20px", height: "20px", fontSize: "11px", color: "#FFD93D",
