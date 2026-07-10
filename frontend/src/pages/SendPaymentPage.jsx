@@ -910,32 +910,49 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     };
   }, [buildPaymentTx, netLabel, server]);
 
+  // Export produces an unsigned XDR that may be signed and submitted later - possibly by a
+  // different person, offline, well after this click. Skipping the pre-submit guards here
+  // would let a protocol-guaranteed-to-fail (no trustline) or federation-memo-mismatched XDR
+  // out the door, only to surface as a raw error code at submit time, far removed from this
+  // form's context. Routed through the same runPreSubmitChecks as the other send paths so
+  // none of them can drift out of sync again; the trustline block hard-stops (no "export
+  // anyway" - the tx cannot succeed either way), while a memo mismatch reuses the existing
+  // confirmation dialog and resumes via "Send anyway" into export instead of submitPayment.
   const handleExportXdr = useCallback(async () => {
     try {
       if (preflight.loading || preflight.err) {
         setError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
         return;
       }
-      const { tx, meta } = await buildPaymentTx({ signTx: false, requireSigners: false });
-      const hashHex = tx.hash().toString('hex');
-      const xdr = tx.toXDR();
-      setResultDialog({
-        type: 'xdr',
-        summary: {
-          source: publicKey,
-          recipient: meta.recipient,
-          amount: `${meta.amountDisplay} ${meta.asset}`,
-          memo: meta.memo || '-',
-          network: netLabel,
-        },
-        hash: hashHex,
-        xdr,
-      });
-      closeConfirmDialogs();
+
+      const proceed = async () => {
+        try {
+          const { tx, meta } = await buildPaymentTx({ signTx: false, requireSigners: false });
+          const hashHex = tx.hash().toString('hex');
+          const xdr = tx.toXDR();
+          setResultDialog({
+            type: 'xdr',
+            summary: {
+              source: publicKey,
+              recipient: meta.recipient,
+              amount: `${meta.amountDisplay} ${meta.asset}`,
+              memo: meta.memo || '-',
+              network: netLabel,
+            },
+            hash: hashHex,
+            xdr,
+          });
+          closeConfirmDialogs();
+        } catch (err) {
+          handlePaymentError(err);
+        }
+      };
+
+      await runPreSubmitChecks(proceed, (msg) => showErrorMessage(msg));
     } catch (err) {
       handlePaymentError(err);
     }
-  }, [buildPaymentTx, closeConfirmDialogs, handlePaymentError, netLabel, preflight, publicKey, t]);
+  }, [buildPaymentTx, closeConfirmDialogs, handlePaymentError, netLabel, preflight, publicKey, runPreSubmitChecks, showErrorMessage, t]);
 
   useEffect(() => {
     clearSuccess();

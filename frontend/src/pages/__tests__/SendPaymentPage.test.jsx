@@ -504,3 +504,154 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
     await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
   });
 });
+
+describe('pre-submit checks also cover the XDR export path (G3)', () => {
+  const unauthorizedFooBalance = {
+    asset_type: 'credit_alphanum4',
+    asset_code: ASSET_CODE,
+    asset_issuer: ISSUER_PK,
+    balance: '0.0000000',
+    limit: '1000.0000000',
+    is_authorized: false,
+  };
+
+  async function selectAsset() {
+    await waitFor(() => {
+      const values = Array.from(assetSelect().options).map((o) => o.value);
+      expect(values).toContain(ASSET_KEY);
+    });
+    fireEvent.change(assetSelect(), { target: { value: ASSET_KEY } });
+  }
+
+  beforeEach(() => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      return makeFundedAccount(pk);
+    });
+  });
+
+  // Drives the account into the multisig confirm modal, picks "XDR exportieren" and clicks
+  // through - exercising handleExportXdr via the same confirm-modal entry point a real user
+  // would use, rather than calling the handler directly.
+  async function driveToXdrExport() {
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    await selectAsset();
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('XDR exportieren (nicht senden)');
+    fireEvent.click(screen.getByRole('radio', { name: /XDR exportieren/ }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Weiter' })).not.toBeDisabled());
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+  }
+
+  it('blocks the export when the recipient has no trustline for the asset', async () => {
+    // DEST_PK carries no FOO balance (default makeFundedAccount) -> no_trustline.
+    await driveToXdrExport();
+    await screen.findByText(/hat noch keine Trustline für FOO/);
+    expect(screen.queryByText('XDR vorbereitet (nicht gesendet)')).not.toBeInTheDocument();
+  });
+
+  it('blocks the export when the trustline exists but the issuer has not authorized it', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [unauthorizedFooBalance] });
+      return makeFundedAccount(pk);
+    });
+    await driveToXdrExport();
+    await screen.findByText(/diese ist aber vom Emittenten noch nicht autorisiert/);
+    expect(screen.queryByText('XDR vorbereitet (nicht gesendet)')).not.toBeInTheDocument();
+  });
+
+  it('a federation memo mismatch opens the confirmation dialog instead of exporting immediately', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
+      return makeFundedAccount(pk);
+    });
+    hoisted.resolveOrValidateAccountMock.mockImplementation(async (input) => {
+      if (input === DEST_PK) return { accountId: DEST_PK, muxedAddress: null, address: input, memo: '42', memoType: 'id' };
+      return { accountId: input, muxedAddress: null, address: input };
+    });
+
+    await driveToXdrExport();
+    await screen.findByText('Federation-Memo prüfen');
+    expect(screen.queryByText('XDR vorbereitet (nicht gesendet)')).not.toBeInTheDocument();
+  });
+
+  it('"Send anyway" after a memo mismatch triggers the export, not submitPayment', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
+      return makeFundedAccount(pk);
+    });
+    hoisted.resolveOrValidateAccountMock.mockImplementation(async (input) => {
+      if (input === DEST_PK) return { accountId: DEST_PK, muxedAddress: null, address: input, memo: '42', memoType: 'id' };
+      return { accountId: input, muxedAddress: null, address: input };
+    });
+
+    await driveToXdrExport();
+    await screen.findByText('Federation-Memo prüfen');
+    fireEvent.click(screen.getByRole('button', { name: 'Trotzdem senden' }));
+
+    await screen.findByText('XDR vorbereitet (nicht gesendet)');
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('"Apply federation memo" updates the form without auto-exporting', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
+      return makeFundedAccount(pk);
+    });
+    hoisted.resolveOrValidateAccountMock.mockImplementation(async (input) => {
+      if (input === DEST_PK) return { accountId: DEST_PK, muxedAddress: null, address: input, memo: '42', memoType: 'id' };
+      return { accountId: input, muxedAddress: null, address: input };
+    });
+
+    await driveToXdrExport();
+    await screen.findByText('Federation-Memo prüfen');
+    fireEvent.click(screen.getByRole('button', { name: 'Federation-Memo übernehmen' }));
+
+    expect(screen.queryByText('Federation-Memo prüfen')).not.toBeInTheDocument();
+    expect(screen.queryByText('XDR vorbereitet (nicht gesendet)')).not.toBeInTheDocument();
+    expect(memoInput().value).toBe('42');
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('lets the export through once trustline and memo both check out', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
+      return makeFundedAccount(pk);
+    });
+    await driveToXdrExport();
+    await screen.findByText('XDR vorbereitet (nicht gesendet)');
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+});
