@@ -40,7 +40,7 @@
         }
       },
       "local": {
-        "title": "Enter all signatures locally & send directly.",
+        "title": "Inserire tutte le firme localmente",
         "desc": "Usare solo se tutte le chiavi segrete possono essere inserite in modo sicuro su questo dispositivo (Tests/Recovery/Admin).",
         "warning": "Avviso: Tutte le chiavi segrete vengono raccolte in questa sessione. Utilizzare solo su dispositivi fidati.",
         "moreInfo": "Ulteriori informazioni",
@@ -48,7 +48,7 @@
         "infoBody": {
           "one": "Devi inserire tutte le chiavi segrete richieste su questo dispositivo in sequenza fino a raggiungere la soglia.",
           "two": "Questo non è più un flusso multisig distribuito, ma \"multi-chiave su un dispositivo\" – usalo solo su dispositivi fidati.",
-          "three": "Una volta raccolte un numero sufficiente di firme, la transazione viene inviata direttamente a Horizon (senza un’operazione multisig)."
+          "three": "Una volta raccolte un numero sufficiente di firme, è possibile verificare la transazione nella finestra di dialogo di verifica prima che venga inviata a Horizon (senza un’operazione multisig)."
         }
       },
       "xdr": {

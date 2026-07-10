@@ -2662,31 +2662,23 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 closeSecretModal();
                 return;
               }
-              // Own try/catch/finally (mirroring the outer one) rather than relying on it:
-              // this proceed may run right here, or later via sendAnywayDespiteMemoMismatch
-              // (the memo-mismatch dialog's "send anyway" button), which awaits it unguarded.
-              const proceedWithLocalSubmit = async () => {
-                try {
-                  setIsProcessing(true);
-                  const result = await submitPayment(collected.map((s) => s.keypair));
-                  applySendResult(result);
-                  openSentResultDialog(result);
-                  setSecretError('');
-                  closeSecretModal();
-                } catch (err) {
-                  if (err instanceof AmbiguousSubmitResultError) {
-                    setAmbiguousSubmission({ hash: err.hash });
-                    closeSecretModal();
-                  } else {
-                    const detail = handlePaymentError(err);
-                    setSecretError(detail);
-                    if (detail) showErrorMessage(detail);
-                  }
-                } finally {
-                  setIsProcessing(false);
-                }
-              };
-              await runPreSubmitChecks(proceedWithLocalSubmit, (msg) => { setSecretError(msg); showErrorMessage(msg); });
+              // Collect-locally now takes the exact same path as the single-sig case: open
+              // the review dialog instead of submitting immediately. handleReviewConfirm
+              // already runs runPreSubmitChecks (trustline + memo-mismatch) on every send, so
+              // this branch no longer needs its own separate call - a prior version of this
+              // handler skipped the review step (and, transitively, ever saw those checks
+              // applied) entirely for this branch, which was never intentional.
+              // Reuses the already-computed `preflight` state (same guard handleExportXdr and
+              // handlePrepareMultisig use) instead of re-running runPreflight, since it was
+              // already kicked off when the confirm modal opened.
+              if (preflight.loading || preflight.err) {
+                setSecretError(preflight.err || t('errors:unknown', 'Unbekannter Fehler'));
+                return;
+              }
+              openReviewDialog(collected.map((s) => s.keypair), preflight);
+              setSecretError('');
+              closeSecretModal();
+              return;
             } catch (e) {
               if (e instanceof AmbiguousSubmitResultError) {
                 setAmbiguousSubmission({ hash: e.hash });

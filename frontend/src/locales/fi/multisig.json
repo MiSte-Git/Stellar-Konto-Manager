@@ -40,7 +40,7 @@
         }
       },
       "local": {
-        "title": "Enter all signatures locally & send directly.",
+        "title": "Syötä kaikki allekirjoitukset paikallisesti",
         "desc": "Käytä vain, jos kaikki salaiset avaimet voidaan syöttää turvallisesti tähän laitteeseen (Tests/Recovery/Admin).",
         "warning": "Varoitus: Kaikki salaiset avaimet kerätään tässä istunnossa. Käytä vain luotettavilla laitteilla.",
         "moreInfo": "Lisätietoja",
@@ -48,7 +48,7 @@
         "infoBody": {
           "one": "Syötät kaikki vaaditut salaiset avaimet tälle laitteelle peräkkäin, kunnes kynnysarvo saavutetaan.",
           "two": "Tämä ei ole enää hajautettu multisig-vuo, vaan \"usea avain samalla laitteella\" – käytä vain luotetuilla laitteilla.",
-          "three": "Kun riittävä määrä allekirjoituksia on kerätty, tapahtuma lähetetään suoraan Horizonille (ilman monen allekirjoituksen tehtävää)."
+          "three": "Kun allekirjoituksia on kerätty riittävästi, voit tarkistaa tapahtuman tarkistusikkunassa ennen kuin se lähetetään Horizonille (ilman monen allekirjoituksen tehtävää)."
         }
       },
       "xdr": {

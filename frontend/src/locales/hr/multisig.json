@@ -40,7 +40,7 @@
         }
       },
       "local": {
-        "title": "Enter all signatures locally & send directly.",
+        "title": "Unesite sve potpise lokalno",
         "desc": "Koristi samo ako svi tajni ključevi mogu biti sigurno uneseni na ovaj uređaj (Tests/Recovery/Admin).",
         "warning": "Upozorenje: Svi tajni ključevi se prikupljaju u ovoj sesiji. Koristite samo na pouzdanim uređajima.",
         "moreInfo": "Više informacija",
@@ -48,7 +48,7 @@
         "infoBody": {
           "one": "Na ovaj uređaj unosite sve potrebne tajne ključeve uzastopno dok se ne postigne prag.",
           "two": "Ovo više nije distribuirani multisig tijek, već „višeključni na jednom uređaju“ – koristiti samo na pouzdanim uređajima.",
-          "three": "Kad se prikupi dovoljno potpisa, transakcija se šalje izravno na Horizon (bez multisig posla)."
+          "three": "Kad se prikupi dovoljno potpisa, možete pregledati transakciju u dijalogu za pregled prije nego što se pošalje na Horizon (bez multisig zadatka)."
         }
       },
       "xdr": {

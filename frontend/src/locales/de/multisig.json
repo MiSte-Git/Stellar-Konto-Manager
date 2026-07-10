@@ -40,7 +40,7 @@
         }
       },
       "local": {
-        "title": "Alle Signaturen lokal eingeben & direkt senden",
+        "title": "Alle Signaturen lokal eingeben",
         "desc": "Nur nutzen, wenn alle Secret Keys sicher auf diesem Gerät eingegeben werden können (Tests/Recovery/Admin).",
         "warning": "Warnung: Alle Secret Keys werden in dieser Sitzung gesammelt. Nur auf vertrauenswürdigen Geräten verwenden.",
         "moreInfo": "Mehr Infos",
@@ -48,7 +48,7 @@
         "infoBody": {
           "one": "Du gibst alle benötigten Secret Keys nacheinander auf diesem Gerät ein, bis das Threshold erreicht ist.",
           "two": "Das ist kein verteilter Multisig-Flow mehr, sondern „Multi-Key auf einem Gerät“ – nur auf vertrauenswürdigen Geräten nutzen.",
-          "three": "Sobald genügend Signaturen vorliegen, wird die Transaktion direkt an Horizon gesendet (ohne Multisig-Job)."
+          "three": "Sobald genügend Signaturen vorliegen, kannst du die Transaktion im Review-Dialog prüfen, bevor sie an Horizon gesendet wird (ohne Multisig-Job)."
         }
       },
       "xdr": {

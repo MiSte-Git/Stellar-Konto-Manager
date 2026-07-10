@@ -40,7 +40,7 @@
         }
       },
       "local": {
-        "title": "Enter all signatures locally & send directly.",
+        "title": "Introduce todas las firmas de forma local",
         "desc": "Usar solo si todas las claves secretas se pueden ingresar de manera segura en este dispositivo (Tests/Recovery/Admin).",
         "warning": "Advertencia: Todas las claves secretas se están recopilando en esta sesión. Úsalo solo en dispositivos de confianza.",
         "moreInfo": "Más información",
@@ -48,7 +48,7 @@
         "infoBody": {
           "one": "Introduce todas las claves secretas requeridas en este dispositivo de manera secuencial hasta que se alcance el umbral.",
           "two": "Esto ya no es un flujo multisig distribuido, sino \"multi-clave en un dispositivo\": úsalo solo en dispositivos de confianza.",
-          "three": "Una vez que se han recogido suficientes firmas, la transacción se envía directamente a Horizon (sin necesidad de un proceso multisig)."
+          "three": "Una vez que se hayan recopilado suficientes firmas, podrás revisar la transacción en el cuadro de diálogo de revisión antes de que se envíe a Horizon (sin una tarea de firma múltiple)."
         }
       },
       "xdr": {

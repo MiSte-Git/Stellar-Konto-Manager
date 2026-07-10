@@ -431,17 +431,19 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
   }
 
   // Drives the account into the "collect all signatures locally" branch: pick the "local"
-  // option in the multisig confirm modal, then submit the secret key modal that follows.
-  // high_threshold > 1 makes isMultisigAccount() true without a second signer; med_threshold
-  // stays at 1 so the sender's own (already-known) secret alone meets the payment threshold.
-  async function driveToCollectLocallySubmit() {
+  // option in the multisig confirm modal, submit the secret key modal that follows, and stop
+  // once the review dialog opens - this branch no longer submits directly (G-collectlocal-1),
+  // it now goes through the exact same review step as the single-sig path. high_threshold > 1
+  // makes isMultisigAccount() true without a second signer; med_threshold stays at 1 so the
+  // sender's own (already-known) secret alone meets the payment threshold.
+  async function driveToCollectLocallyReview() {
     renderPage();
     fireEvent.change(amountInput(), { target: { value: '10' } });
     await selectAsset();
     fireEvent.change(destInput(), { target: { value: DEST_PK } });
 
     fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
-    await screen.findByText('Alle Signaturen lokal eingeben & direkt senden');
+    await screen.findByText('Alle Signaturen lokal eingeben');
     fireEvent.click(screen.getByRole('radio', { name: /Alle Signaturen lokal eingeben/ }));
     await waitFor(() => expect(screen.getByRole('button', { name: 'Weiter' })).not.toBeDisabled());
     fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
@@ -450,6 +452,7 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
     const modal = secretHeading.parentElement;
     fireEvent.change(within(modal).getByPlaceholderText('z.B.'), { target: { value: SENDER.secret } });
     fireEvent.click(within(modal).getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Transaktion bestätigen');
   }
 
   beforeEach(() => {
@@ -463,9 +466,30 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
     });
   });
 
-  it('trustline check blocks the direct submitPayment call this path used to skip', async () => {
+  it('opens the review dialog instead of submitting immediately (G-collectlocal-1)', async () => {
+    await driveToCollectLocallyReview();
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('confirming the review dialog triggers the actual send', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
+      return makeFundedAccount(pk);
+    });
+    await driveToCollectLocallyReview();
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+  });
+
+  it('trustline check (now run from the review dialog) blocks the send', async () => {
     // DEST_PK carries no FOO balance (default makeFundedAccount) -> no_trustline.
-    await driveToCollectLocallySubmit();
+    await driveToCollectLocallyReview();
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
     await screen.findByText(/hat noch keine Trustline für FOO/);
     expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
   });
@@ -485,7 +509,8 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
       return { accountId: input, muxedAddress: null, address: input };
     });
 
-    await driveToCollectLocallySubmit();
+    await driveToCollectLocallyReview();
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
     await screen.findByText('Federation-Memo prüfen');
     expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
 
@@ -503,8 +528,40 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
       if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
       return makeFundedAccount(pk);
     });
-    await driveToCollectLocallySubmit();
+    await driveToCollectLocallyReview();
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
     await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+  });
+
+  it('remembers all collected S-Keys (master + signer) for the session after a successful send, and prefills them next time', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      if (pk === DEST_PK) return makeFundedAccount(pk, { extraBalances: [{ ...unauthorizedFooBalance, is_authorized: true }] });
+      return makeFundedAccount(pk);
+    });
+    await driveToCollectLocallyReview();
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+
+    const { getSessionSecrets } = await import('../../utils/sessionSecrets.js');
+    const stored = await getSessionSecrets(SENDER.publicKey);
+    expect(stored[SENDER.publicKey]).toBe(SENDER.secret);
+
+    // Re-opening the secret modal for the same account should now prefill the remembered
+    // secret rather than showing an empty input.
+    hoisted.getSessionSecretMock.mockResolvedValue(null); // force the modal path, not straight-to-review
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Alle Signaturen lokal eingeben');
+    fireEvent.click(screen.getByRole('radio', { name: /Alle Signaturen lokal eingeben/ }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Weiter' })).not.toBeDisabled());
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    const secretHeading = await screen.findByText('Geben Sie den Quell-Geheimschlüssel (S-Key) ein');
+    const modal = secretHeading.parentElement;
+    await waitFor(() => expect(within(modal).getByPlaceholderText('z.B.').value).toBe(SENDER.secret));
   });
 });
 

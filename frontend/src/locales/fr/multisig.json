@@ -40,7 +40,7 @@
         }
       },
       "local": {
-        "title": "Enter all signatures locally & send directly.",
+        "title": "Saisir toutes les signatures localement",
         "desc": "Utilisez uniquement si toutes les clés secrètes peuvent être saisies de manière sécurisée sur cet appareil (Tests/Recovery/Admin).",
         "warning": "Avertissement : Toutes les clés secrètes sont collectées au cours de cette session. N'utilisez que sur des appareils de confiance.",
         "moreInfo": "Plus d'informations",
@@ -48,7 +48,7 @@
         "infoBody": {
           "one": "Vous entrez toutes les clés secrètes requises sur cet appareil de manière séquentielle jusqu'à ce que le seuil soit atteint.",
           "two": "Il ne s'agit plus d'un flux multisignatures distribué, mais de « plusieurs clés sur un seul appareil » – à utiliser uniquement sur des appareils de confiance.",
-          "three": "Une fois qu'un nombre suffisant de signatures a été recueilli, la transaction est envoyée directement à Horizon (sans passer par une tâche multisig)."
+          "three": "Une fois qu'un nombre suffisant de signatures a été recueilli, vous pouvez vérifier la transaction dans la boîte de dialogue de vérification avant qu'elle ne soit envoyée à Horizon (sans tâche multisig)."
         }
       },
       "xdr": {

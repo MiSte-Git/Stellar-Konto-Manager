@@ -40,7 +40,7 @@
         }
       },
       "local": {
-        "title": "Enter all signatures locally & send directly.",
+        "title": "Voer alle handtekeningen lokaal in",
         "desc": "Alleen gebruiken als alle geheime sleutels veilig op dit apparaat kunnen worden ingevoerd (Tests/Recovery/Admin).",
         "warning": "Waarschuwing: Alle geheime sleutels worden in deze sessie verzameld. Gebruik alleen op vertrouwde apparaten.",
         "moreInfo": "Meer informatie",
@@ -48,7 +48,7 @@
         "infoBody": {
           "one": "Je voert alle vereiste geheime sleutels op dit apparaat achtereenvolgens in totdat de drempel is bereikt.",
           "two": "Dit is geen gedistribueerde multisig-flow meer, maar \"meerdere sleutels op één apparaat\" – gebruik dit alleen op vertrouwde apparaten.",
-          "three": "Zodra er voldoende handtekeningen zijn verzameld, wordt de transactie rechtstreeks naar Horizon verzonden (zonder een multisig-taak)."
+          "three": "Zodra er voldoende handtekeningen zijn verzameld, kun je de transactie in het controlevenster bekijken voordat deze naar Horizon wordt verzonden (zonder multisig-taak)."
         }
       },
       "xdr": {

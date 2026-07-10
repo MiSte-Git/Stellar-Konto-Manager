@@ -40,7 +40,7 @@
         }
       },
       "local": {
-        "title": "Enter all signatures locally & send directly.",
+        "title": "Enter all signatures locally",
         "desc": "Only use if all secret keys can be securely entered on this device (Tests/Recovery/Admin).",
         "warning": "Warning: All secret keys are being collected in this session. Use only on trusted devices.",
         "moreInfo": "More info",
@@ -48,7 +48,7 @@
         "infoBody": {
           "one": "You enter all the required secret keys on this device sequentially until the threshold is reached.",
           "two": "This is no longer a distributed multisig flow, but \"multi-key on one device\" – only use this on trusted devices.",
-          "three": "Once enough signatures have been collected, the transaction is sent directly to Horizon (without a multisig job)."
+          "three": "Once enough signatures have been collected, you can review the transaction in the review dialog before it is sent to Horizon (without a multisig job)."
         }
       },
       "xdr": {

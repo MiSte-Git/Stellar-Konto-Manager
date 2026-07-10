@@ -1,5 +1,5 @@
 // src/components/SecretKeyModal.jsx
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Keypair } from '@stellar/stellar-sdk';
 import { validateSecretKey } from '../utils/stellar/stellarUtils';
@@ -123,6 +123,23 @@ function SecretKeyModal({
       return [...prev, ...Array.from({ length: minSignerCount - prev.length }, () => '')];
     });
   }, [minSignerCount]);
+
+  // initialSecretValues resolves asynchronously in the parent (decrypting remembered
+  // session secrets is itself async), so it almost never has data yet on this component's
+  // first render - the useState(() => ...) lazy initializer above only ever sees the empty
+  // default. Without this, a re-opened modal for an account with remembered secrets would
+  // silently show empty inputs instead of prefilling them. Runs once (prefillAppliedRef)
+  // rather than on every value change, and only overwrites still-empty inputs, so it can't
+  // clobber a secret the user already started typing during that async window.
+  const prefillAppliedRef = useRef(false);
+  useEffect(() => {
+    if (prefillAppliedRef.current || !initialSecretValues.length) return;
+    prefillAppliedRef.current = true;
+    setSecretInputs((prev) => {
+      if (prev.some((v) => v)) return prev;
+      return prev.map((_, i) => initialSecretValues[i] || '');
+    });
+  }, [initialSecretValues]);
 
   React.useEffect(() => {
     setError(errorMessage || '');
