@@ -542,7 +542,7 @@
       "shortTitle": "En bref",
       "shortText": "Les sous-adresses permettent de gérer votre compte Stellar de manière très précise et de faciliter les opérations de comptabilisation. Elles constituent la solution idéale pour les organisations qui traitent de nombreux paiements via un compte central, mais qui souhaitent néanmoins identifier de manière unique chaque transaction."
     },
-    "selectBaseAccount": "Compte de base (G-Adresse)",
+    "selectBaseAccount": "Compte de base (adresse G)",
     "selectPlaceholder": "Veuillez sélectionner un compte",
     "baseAccountInfo": "Ce compte reste techniquement le propriétaire. L'adresse multiplexée (M...) ne fait que pointer vers ce compte.",
     "generateButton": "Créer une sous-adresse",

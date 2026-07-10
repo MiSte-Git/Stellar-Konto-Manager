@@ -542,7 +542,7 @@
       "shortTitle": "In het kort.",
       "shortText": "Dankzij subadressen is uw Stellar-account zeer gedetailleerd en boekbaar – ideaal voor organisaties die veel betalingen via een centrale rekening verwerken, maar toch elke transactie afzonderlijk willen identificeren."
     },
-    "selectBaseAccount": "Basisaccount (G-Adresse)",
+    "selectBaseAccount": "Basisaccount (G-adres)",
     "selectPlaceholder": "Selecteer een account alstublieft.",
     "baseAccountInfo": "Deze rekening blijft technisch gezien de eigenaar. Het gemuxte adres (M...) wijst slechts naar deze rekening.",
     "generateButton": "Een subadres aanmaken",

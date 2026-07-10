@@ -32,7 +32,7 @@
     "assetCodeHelp": "Kratki naziv imovine (1–12 znakova, npr. TESTUSD).",
     "issuerLabel": "Izdavatelj (Public Key)",
     "issuerPlaceholder": "z.B., G...Izdavatelj",
-    "issuerHelp": "Javni ključ (G-Adresse) računa izdavatelja koji izdaje sredstvo.",
+    "issuerHelp": "Javni ključ (G-adresa) računa izdavatelja koji izdaje imovinu.",
     "limitLabel": "Ograničenje",
     "limitPlaceholder": "npr., 1.000.000 (jedan milijun)",
     "limitHelp": "Limit je maksimalan iznos ove imovine kojem ovaj račun može vjerovati. U praksi, trebao bi biti postavljen tako visoko koliko očekujete da će biti vaš maksimalni saldo u ovoj imovini.",

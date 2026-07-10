@@ -32,7 +32,7 @@
     "assetCodeHelp": "Asset short name (1–12 characters, e.g., TESTUSD).",
     "issuerLabel": "Issuer (Public Key)",
     "issuerPlaceholder": "e.g., G...Issuer",
-    "issuerHelp": "Public key (G-Adresse) of the issuer account that issues the asset.",
+    "issuerHelp": "Public key (G-address) of the issuer account that issues the asset.",
     "limitLabel": "Limit",
     "limitPlaceholder": "e.g., 1,000,000 (one million)",
     "limitHelp": "The limit is the maximum amount of this asset that this account can trust. In practice, it should be set as high as your anticipated maximum balance in this asset.",

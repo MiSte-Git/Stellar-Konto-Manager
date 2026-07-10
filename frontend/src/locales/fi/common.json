@@ -542,7 +542,7 @@
       "shortTitle": "Lyhyesti sanottuna",
       "shortText": "Aliosoitteiden ansiosta Stellar-tilisi on erittäin tarkasti jaoteltu ja varattavissa – tämä on ihanteellinen ratkaisu organisaatioille, jotka käsittelevät paljon maksuja keskitililtä mutta haluavat silti tunnistaa jokaisen tapahtuman yksilöllisesti."
     },
-    "selectBaseAccount": "Perustili (G-Adresse)",
+    "selectBaseAccount": "Perustili (G-osoite)",
     "selectPlaceholder": "Valitse tili",
     "baseAccountInfo": "Tämä tili pysyy teknisesti omistajana. Muksattu osoite (M...) viittaa vain tähän tiliin.",
     "generateButton": "Luo aliosoite",

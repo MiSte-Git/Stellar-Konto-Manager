@@ -542,7 +542,7 @@
       "shortTitle": "In short",
       "shortText": "Subaddresses make your Stellar account highly granular and bookable—ideal for organizations that process many payments through a central account but still want to uniquely identify each transaction."
     },
-    "selectBaseAccount": "Basic account (G-Adresse)",
+    "selectBaseAccount": "Basic Account (G-Address)",
     "selectPlaceholder": "Please select an account",
     "baseAccountInfo": "This account technically remains the owner. The muxed address (M...) merely points to this account.",
     "generateButton": "Create a subaddress",

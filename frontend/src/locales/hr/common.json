@@ -542,7 +542,7 @@
       "shortTitle": "Ukratko",
       "shortText": "Podadresi čine vaš Stellar račun izuzetno granularnim i rezervabilnim—idealnim za organizacije koje obrađuju mnogo uplata putem centralnog računa, a ipak žele jedinstveno identificirati svaku transakciju."
     },
-    "selectBaseAccount": "Osnovni račun (G-Adresse)",
+    "selectBaseAccount": "Osnovni račun (G-adresa)",
     "selectPlaceholder": "Molimo odaberite račun",
     "baseAccountInfo": "Ovaj račun tehnički ostaje vlasnik. Multipleksirana adresa (M...) samo ukazuje na ovaj račun.",
     "generateButton": "Stvorite podadresu",

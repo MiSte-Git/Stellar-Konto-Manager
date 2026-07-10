@@ -542,7 +542,7 @@
       "shortTitle": "In breve",
       "shortText": "I sottoindirizzi rendono il tuo conto Stellar altamente granulare e gestibile, rendendolo ideale per le organizzazioni che elaborano numerosi pagamenti tramite un conto centrale ma desiderano comunque identificare in modo univoco ogni singola transazione."
     },
-    "selectBaseAccount": "Account di base (G-Adresse)",
+    "selectBaseAccount": "Account base (indirizzo G)",
     "selectPlaceholder": "Si prega di selezionare un account",
     "baseAccountInfo": "Questo account rimane tecnicamente il proprietario. L'indirizzo multiplexato (M...) punta semplicemente a questo account.",
     "generateButton": "Crea un sottoindirizzo",

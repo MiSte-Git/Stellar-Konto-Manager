@@ -32,7 +32,7 @@
     "assetCodeHelp": "Omaisuusero nimi (1–12 merkkiä, esim. TESTUSD).",
     "issuerLabel": "Laskija (Public Key)",
     "issuerPlaceholder": "z. B. G...liikkeeseenlaskija",
-    "issuerHelp": "Liikkeeseenlaskutilin julkinen avain (G-Adresse), joka laskee liikkeelle varat.",
+    "issuerHelp": "Sen tilin julkinen avain (G-osoite), joka laskee liikkeeseen kyseisen omaisuuserän.",
     "limitLabel": "Raja",
     "limitPlaceholder": "esim. 1 000 000 (yksi miljoona)",
     "limitHelp": "Raja on tämän varan enimmäismäärä, jonka tämä tili voi luottaa. Käytännössä sen tulisi olla asetettu niin korkeaksi kuin odotettu enimmäissaldosi tässä varassa.",

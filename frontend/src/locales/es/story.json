@@ -553,7 +553,7 @@
     "quiz3_a3_hint": "No exactamente – los empleados pueden tener sus propias cuentas Stellar; el ID Muxed solo es relevante para el lado contable.",
     "quiz3_explanation": "Los IDs Muxed son una herramienta de organización interna de la empresa. El empleado tiene su propia cuenta Stellar. La dirección M ayuda al software de Sofia a asignar internamente los pagos entrantes.",
     "quiz3_hint2": "Pista: Las Cuentas Muxed están diseñadas desde la perspectiva de la empresa – no del receptor.",
-    "learning1": "Una Cuenta Muxed es una sub-dirección virtual (M-address) en una dirección base Stellar",
+    "learning1": "Una Cuenta Muxed es una sub-dirección virtual (M-dirección) en una dirección base Stellar",
     "learning2": "Las Cuentas Muxed simplifican la nómina: una dirección, muchos IDs – totalmente automatizable",
     "learning3": "Los exchanges y tiendas online usan Cuentas Muxed para asignación única de clientes",
     "learning4": "Los memos pueden olvidarse – los IDs Muxed están codificados en la dirección y son confiables",

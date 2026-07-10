@@ -542,7 +542,7 @@
       "shortTitle": "En resumen",
       "shortText": "Las subdirecciones permiten que tu cuenta de Stellar sea muy detallada y fácil de gestionar, lo que resulta ideal para organizaciones que procesan muchos pagos a través de una cuenta central, pero que, aun así, desean identificar de forma única cada transacción."
     },
-    "selectBaseAccount": "Cuenta básica (G-Adresse)",
+    "selectBaseAccount": "Cuenta básica (dirección G)",
     "selectPlaceholder": "Por favor, selecciona una cuenta",
     "baseAccountInfo": "Esta cuenta sigue siendo técnicamente el propietario. La dirección multiplexada (M...) simplemente apunta a esta cuenta.",
     "generateButton": "Crear una subdirección",

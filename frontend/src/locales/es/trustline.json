@@ -32,7 +32,7 @@
     "assetCodeHelp": "Nombre corto del activo (1–12 caracteres, p. ej., TESTUSD).",
     "issuerLabel": "Emisor (Public Key)",
     "issuerPlaceholder": "por ejemplo, G...Emisor",
-    "issuerHelp": "Clave pública (G-Adresse) de la cuenta emisora que emite el activo.",
+    "issuerHelp": "Clave pública (dirección G) de la cuenta del emisor que emite el activo.",
     "limitLabel": "Límite",
     "limitPlaceholder": "p. ej., 1 000 000 (un millón)",
     "limitHelp": "El límite es la cantidad máxima de este activo que esta cuenta puede confiar. En la práctica, debe fijarse tan alto como su saldo máximo anticipado en este activo.",
