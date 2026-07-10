@@ -343,14 +343,14 @@
       "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q3": {
-      "question": "In einfachen Worten ist ‚Verifizierung/KYC‘ (Know Your Customer) ein Prozess, bei dem Unternehmen bestätigen, wer ihre Kunden sind. Dies geschieht oft durch das Überprüfen von Ausweisdokumenten und anderen Informationen, um sicherzustellen, dass die Kunden wirklich die sind, die sie vorgeben zu sein.",
+      "question": "Mitä 'varmennus/KYC' tarkoittaa yksinkertaisesti selitettynä?",
       "hint": "Jotkin palvelut tarvitsevat tietää, kuka olet.",
       "a": "Prosessi, jossa palvelu varmistaa henkilöllisyytesi.",
-      "b": "Menetelmä lohkoketjun nopeuttamiseksi.",
-      "c": "Jaa hänen salainen avain pankin kanssa.",
+      "b": "Erityinen premium-ominaisuus, joka on tarkoitettu yksinomaan miljardööreille.",
+      "c": "Lompakossa on piilotettu pelitila.",
       "a.fb": "Oikein. Tämä auttaa estämään petosta ja noudattaa lakeja.",
-      "b.fb": "Ei. Kyse on identiteetistä, ei nopeudesta.",
-      "c.fb": "Ei. Älä koskaan jaa salausavaintasi. KYC ei tarvitse sitä.",
+      "b.fb": "Kuulostaa eksklusiiviselta 😄—mutta kyse on lohkoketjun perusominaisuudesta, ei ylellisestä pääsystä.",
+      "c.fb": "Hieno idea 🎮, mutta tämä ei ole peli. Kyse on oikeasta verkostoteknologiasta.",
       "d": "Vinkki, jolla rikastut nopeammin.",
       "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },

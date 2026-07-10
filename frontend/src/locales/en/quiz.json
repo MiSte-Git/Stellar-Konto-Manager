@@ -343,14 +343,14 @@
       "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q3": {
-      "question": "In einfachen Worten ist ‚Verifizierung/KYC‘ (Know Your Customer) ein Prozess, bei dem Unternehmen bestätigen, wer ihre Kunden sind. Dies geschieht oft durch das Überprüfen von Ausweisdokumenten und anderen Informationen, um sicherzustellen, dass die Kunden wirklich die sind, die sie vorgeben zu sein.",
+      "question": "What is 'verification/KYC' in simple terms?",
       "hint": "Some services need to know who you are.",
       "a": "A process in which a service verifies your identity.",
-      "b": "A method to accelerate blockchain.",
-      "c": "Share his secret key with a bank.",
+      "b": "A special premium feature exclusively for billionaires.",
+      "c": "A hidden game mode in the wallet.",
       "a.fb": "Correct. This helps prevent fraud and complies with laws.",
-      "b.fb": "No. It's about identity, not speed.",
-      "c.fb": "No. Never share your secret key. KYC does not need it.",
+      "b.fb": "Sounds exclusive 😄—but this is about a fundamental feature of blockchain, not luxury access.",
+      "c.fb": "Nice idea 🎮, but this isn't a game. It's about real network technology.",
       "d": "A trick to get rich faster.",
       "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
