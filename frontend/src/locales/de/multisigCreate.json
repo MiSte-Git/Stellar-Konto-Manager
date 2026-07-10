@@ -29,7 +29,7 @@
     },
     "multisigSection": {
       "title": "Multisig (Mehrfachsignatur)",
-      "text": "Mit Multisig können Sie mehrere Unterzeichner für Ihr Konto definieren. Transaktionen erfordern dann Signaturen von mehreren Keys (z. B. 2 von 3).\\n\\nVorteile:\\n• Erhöhte Sicherheit (ein kompromittierter Key reicht nicht)\\n• Gemeinsame Konten (z. B. Firmen, Partnerschaften)\\n• Notfall-Wiederherstellung (mehrere Backups bei verschiedenen Personen)\\n\\nACHTUNG: Testen Sie Multisig zuerst im Testnet, bevor Sie es auf dem Mainnet einsetzen! Bei falscher Konfiguration kann der Zugang zum Konto verloren gehen."
+      "text": "Mit Multisig können Sie mehrere Unterzeichner für Ihr Konto definieren. Transaktionen erfordern dann Signaturen von mehreren Keys (z. B. 2 von 3).\n\nVorteile:\n• Erhöhte Sicherheit (ein kompromittierter Key reicht nicht)\n• Gemeinsame Konten (z. B. Firmen, Partnerschaften)\n• Notfall-Wiederherstellung (mehrere Backups bei verschiedenen Personen)\n\nACHTUNG: Testen Sie Multisig zuerst im Testnet, bevor Sie es auf dem Mainnet einsetzen! Bei falscher Konfiguration kann der Zugang zum Konto verloren gehen."
     },
     "diagram": {
       "title": "Signatur-Ablauf"

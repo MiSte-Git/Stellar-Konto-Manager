@@ -318,7 +318,7 @@
     "cache": {
       "help": "Acelera las consultas a través de la caché de pagos local, pero puede extender la carga inicial.",
       "label": "Utilizar caché (Beta)",
-      "prefetchHelp": "Plazo de entrega para cargar entradas/transacciones en días (einmalig beim ersten Aktivieren)"
+      "prefetchHelp": "Plazo de carga de los registros/transacciones, en días (configuración única al realizar la activación inicial)"
     },
     "network": {
       "title": "Red neuronal",
@@ -378,7 +378,7 @@
       },
       "title": "Mis Carteras de Confianza",
       "validation": {
-        "hint": "Al menos una línea es inválida (fehlende/duplizierte Adresse)."
+        "hint": "Al menos una línea no es válida (falta la dirección o hay una dirección duplicada)."
       }
     }
   },
@@ -387,7 +387,7 @@
       "deletingProgress": "Eliminación en progreso: {{current}} / {{total}}",
       "success": "Éxito: {{count}} Trustline(s) eliminado."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) omitidos (noch Guthaben vorhanden)."
+    "skippedDueToBalance": "{{count}} Trustline(s) omitidas (aún hay crédito disponible)."
   },
   "payment": {
     "send": {
@@ -398,7 +398,7 @@
       "memo": "Memorándum",
       "memoType": "Tipo de memo",
       "memoTypes": {
-        "none": "Memo (kein Memo)",
+        "none": "Nota (sin nota)",
         "text": "Texto de nota",
         "id": "ID de Memorando",
         "hash": "Memo Hash",
@@ -407,7 +407,7 @@
           "none": "Sin memorándum. Usa esto si el destinatario no espera un memorándum.",
           "text": "Texto libre de hasta 28 bytes. A menudo se utiliza para la asignación en pagos simples.",
           "id": "ID numérico (uint64). Muchos intercambios utilizan el Memo ID para asignar depósitos.",
-          "hash": "Hash SHA-256 de 32 bytes (als 64-stellige Hex-Zeichenfolge). Utilizado por servicios para referencias.",
+          "hash": "Hash SHA-256 de 32 bytes (en forma de cadena hexadecimal de 64 caracteres). Lo utilizan los servicios con fines de referencia.",
           "return": "Hash de 32 bytes para devoluciones. Utilizado para devoluciones (MEMO_RETURN)."
         }
       },
@@ -429,7 +429,7 @@
       "successShort": "Enviado con éxito",
       "error": "Error al enviar: {{detalle}}",
       "amountMissing": "Por favor, introduzca una cantidad.",
-      "amountInvalid": "Monto no válido (max. 7 Nachkommastellen).",
+      "amountInvalid": "Importe no válido (máx. 7 decimales).",
       "amountPositive": "La cantidad debe ser mayor que 0.",
       "timeout": "Tiempo de espera de Horizon (504). Por favor, inténtelo de nuevo en breve.",
       "httpError": "Error de horizonte (estado {{status}}).",
@@ -440,7 +440,7 @@
         "info": "La cuenta objetivo aún no está activa. Se requiere una cantidad mínima para la activación.",
         "minReserve": "Monto mínimo (2 × reserva base)",
         "yourAmount": "Su cantidad ingresada",
-        "adjustedAmount": "Monto Propuesto (zum Aktivieren)",
+        "adjustedAmount": "Importe recomendado (para activar)",
         "noteAdjust": "Su saldo es insuficiente para la activación. Si continúa, se enviará automáticamente la cantidad mínima."
       },
       "activated": "La cuenta objetivo ha sido activada.",
@@ -455,7 +455,7 @@
         "title": "Consulta el memorándum de la federación",
         "textMappable": "El servidor de la federación espera el texto «{{expected}}», pero tu texto actual es «{{current}}».",
         "textUnmappable": "El servidor de la federación espera una nota que no se ha podido aplicar automáticamente. Tu nota actual es «{{current}}».",
-        "empty": "(empty)",
+        "empty": "(en blanco)",
         "sendAnyway": "Enviar de todos modos",
         "applyExpected": "Aplicar el memorándum de la federación"
       },
@@ -515,7 +515,7 @@
       "createTitle": "Crear nuevas cuentas Muxed",
       "createItems": {
         "i1": "Genera nuevas direcciones Muxed (M...) a partir de tu dirección base (G...).",
-        "i2": "Opcional con etiqueta (Name) y nota (z. B. Projekt oder Zweck)."
+        "i2": "Opcionalmente, con una etiqueta (Nombre) y una nota (por ejemplo, proyecto o finalidad)."
       },
       "importTitle": "Importar desde archivos CSV",
       "importItems": {
@@ -776,7 +776,7 @@
     },
     "securityGuarantee": {
       "title": "🔒 Garantía de Seguridad SKM (Multisig)",
-      "text": "El Gestor de Cuentas de Stellar previene todos los bloqueos de cuentas inducidos técnicamente que puedan surgir de una configuración incorrecta de multisig.\n\nEspecíficamente, SKM bloquea:\n- Deshabilitar la clave maestra sin firmantes accesibles\n- Umbrales inaccesibles (low / med / high)\n- Errores de secuencia en los cambios de firmante y umbral\n- Eliminar al último firmante alto válido\n- Configuraciones multisig donde SetOptions ya no puede ser firmado\n- Calles sin salida debido a hashX o preAuthTx como el firmante final\n\nSKM solo establece firmantes ed25519. Para otros tipos de firmantes, utiliza {link}.\n\nSKM garantiza:\n- Cada cambio confirmado deja al menos un camino válido abierto para la gestión futura de la cuenta\n- SetOptions sigue siendo accesible después del cambio\n\nNo garantizado (systembedingt):\n- Pérdida de claves secretas o monederos de hardware\n- Inaccesibilidad o falla de firmantes externos\n\nConclusión:\nSKM protege de manera confiable contra bloqueos de configuración.\nLos riesgos organizacionales se muestran de manera transparente, pero no pueden prevenirse técnicamente.",
+      "text": "El Gestor de Cuentas Stellar evita todos los bloqueos de cuentas por causas técnicas que puedan derivarse de una configuración incorrecta de la firma múltiple.\n\nEn concreto, el SKM bloquea:\n- La desactivación de la clave maestra cuando no se puede contactar con ningún firmante\n- Umbrales inalcanzables (bajo / medio / alto)\n- Errores de ordenación al cambiar firmantes o umbrales\n- La eliminación del último firmante de nivel alto válido\n- Configuraciones de multifirma en las que ya no se puede firmar SetOptions\n- Callejones sin salida causados por hashX o preAuthTx como último firmante\n\nSKM utiliza únicamente firmantes ed25519. Para otros tipos de firmantes, utilice {link}.\n\nSKM garantiza:\n- Que cada cambio confirmado deja al menos una ruta válida abierta para la gestión posterior de la cuenta\n- Que SetOptions sigue siendo accesible tras el cambio\n\nNo se puede garantizar (debido a limitaciones del sistema):\n- La pérdida de claves secretas o carteras de hardware\n- La indisponibilidad o el fallo de los firmantes externos\n\nConclusión:\nSKM ofrece una protección fiable contra los bloqueos de configuración.\nLos riesgos organizativos se muestran de forma transparente, pero no pueden evitarse técnicamente.",
       "linkLabel": "lab.stellar.org"
     },
     "hint": "Cargar una cuenta existente, ajustar firmantes, pesos, peso maestro y umbrales, y guardar los cambios.",
@@ -826,7 +826,7 @@
   "secretKey": {
     "cleared": "La clave secreta ha sido eliminada.",
     "empty": "El campo de clave secreta está vacío.",
-    "info": "⚠️ IMPORTANTE: ¡Este sitio web NUNCA guarda tu Clave Secreta!\n\nLa Clave Secreta que se muestra aquí existe solo en tu navegador. Tan pronto como recargues o salgas de la página, se perderá irremediablemente.\n\nCopia o anota la Clave Secreta inmediatamente después de generarla, antes de cerrar la página.\n\nVerificación: Puedes verificar utilizando las herramientas de desarrollador del navegador (F12 → Red) que ninguna Clave Secreta se transmite externamente. Solo se envían transacciones firmadas, nunca tu Clave Secreta.",
+    "info": "⚠️ IMPORTANTE: ¡Esta página web NUNCA almacena tu clave secreta!\n\nLa clave secreta que se muestra aquí solo existe en tu navegador (localmente, en la memoria). En cuanto actualices la página o salgas de ella, se perderá de forma irrecuperable.\n\nCopia o anota la clave secreta inmediatamente después de que se genere, antes de cerrar la página.\n\nVerificación: Puedes utilizar las herramientas de desarrollo de tu navegador (F12 → Red) para comprobar que no se transmite ninguna clave secreta al exterior. Solo se envían las transacciones firmadas, nunca tu clave secreta.",
     "invalid": "Clave secreta inválida.",
     "label": "Geben Sie den Quellgeheimschlüssel ein (S-Key)",
     "mismatch": "La clave secreta no coincide con la dirección pública.",
@@ -846,7 +846,7 @@
     "pageTitle": "Glosario",
     "pageIntro": "Aquí encontrarás palabras importantes del mundo de la blockchain y de la red Stellar. Todo está explicado en términos sencillos.",
     "searchLabel": "Término de búsqueda",
-    "searchPlaceholder": "Término de búsqueda (z. B. Konto, Account, Muxed)",
+    "searchPlaceholder": "Busca un término (por ejemplo, «Konto», «Account», «Muxed»)",
     "searchHint": "La búsqueda encuentra palabras y explicaciones.",
     "noResults": "Sin coincidencia.",
     "blockchain": {
@@ -870,7 +870,7 @@
     "addressG": {
       "title": "G-dirección",
       "original": "G Address",
-      "short": "La dirección principal pública de una cuenta Stellar (beginnt mit G).",
+      "short": "La dirección pública principal de una cuenta de Stellar (que empieza por G).",
       "desc": "La dirección G es la dirección principal de una cuenta Stellar. Comienza con la letra G. La proporcionas a otros para que puedan enviarte algo."
     },
     "publicKey": {
@@ -1043,7 +1043,7 @@
     "deletingProgress": "Borrando en progreso: {{current}} / {{total}}",
     "success": "Éxito: {{count}} Trustline(s) eliminado."
   },
-  "skippedDueToBalance": "{{count}} Trustlines (s) omitidos (noch Guthaben vorhanden).",
+  "skippedDueToBalance": "{{count}} Trustline(s) omitidas (aún hay crédito disponible).",
   "xlmByMemo": {
     "action": {
       "calculate": "Calcular",
@@ -1087,7 +1087,7 @@
       "count": "Cantidad: {{n}}",
       "label": "Comparación (all inputs)",
       "otherCount": "Entradas con memo incorrecto/faltante: {{n}}",
-      "unique": "Billeteras Únicas (alle): {{n}}",
+      "unique": "Carteras únicas (todas): {{n}}",
       "uniqueWallets": "Carteras Únicas: {{n}}"
     },
     "time": {
@@ -1110,7 +1110,7 @@
       "local": "Zona horaria local",
       "note": "La fecha y la hora se interpretan en la zona horaria seleccionada y se convierten automáticamente a UTC antes de buscar.",
       "utc": "UTC",
-      "window": "Ventana de tiempo utilizada UTC: {{from}} → {{to}} (Bis exklusiv)"
+      "window": "Intervalo de tiempo UTC utilizado: {{from}} → {{to}} (fin exclusivo)"
     },
     "wrongMemos": {
       "button": "Mostrar carteras con memo incorrecto/vacío",

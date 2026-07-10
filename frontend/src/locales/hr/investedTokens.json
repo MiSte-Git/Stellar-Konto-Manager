@@ -53,6 +53,6 @@
   },
   "history": {
     "availableFrom": "Server (Horizon) – Povijest od",
-    "hintFullHistory": "Note: The Ledger history from the Horizon server only goes back to {{available}}. Only data up to that date is displayed. Therefore, the selected \"From\" date is limited. For older data, a (meist kostenpflichtiger) Full‑History‑Provider is required (possibly coming in the future!)."
+    "hintFullHistory": "Napomena: Povijest glavne knjige s Horizon servera seže samo do {{available}}. Prikazuju se samo podaci do tog trenutka. Stoga je odabrani datum \"Od\" ograničen. Za starije podatke potreban je (obično plaćeni) pružatelj pune povijesti (možda u budućnosti!)."
   }
 }

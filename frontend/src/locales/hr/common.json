@@ -318,7 +318,7 @@
     "cache": {
       "help": "Ubrzava upite putem lokalne predmemorije plaćanja, ali može produžiti početno učitavanje.",
       "label": "Koristi cache (Beta)",
-      "prefetchHelp": "Vrijeme čekanja za učitavanje unosa/transakcija u danima (einmalig beim ersten Aktivieren)"
+      "prefetchHelp": "Vrijeme potrebno za učitavanje unosa/transakcija, u danima (jednokratno podešavanje pri početnoj aktivaciji)"
     },
     "network": {
       "title": "Mreža",
@@ -378,7 +378,7 @@
       },
       "title": "Moji Pouzdani Novčanici",
       "validation": {
-        "hint": "Barem jedan redak je nevažeći (fehlende/duplizierte Adresse)."
+        "hint": "Najmanje jedna linija je nevažeća (nedostaje adresa ili je adresa duplicirana)."
       }
     }
   },
@@ -387,7 +387,7 @@
       "deletingProgress": "Brisanje u tijeku: {{current}} / {{total}}",
       "success": "Uspješno: {{count}} Trustline(s) izbrisano."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) preskočeno (noch Guthaben vorhanden)."
+    "skippedDueToBalance": "{{count}} Trustline(a) preskočeno (kredit je i dalje dostupan)."
   },
   "payment": {
     "send": {
@@ -398,7 +398,7 @@
       "memo": "Zapisnik",
       "memoType": "Vrsta dopisa",
       "memoTypes": {
-        "none": "Memorandum (kein Memo)",
+        "none": "Bilješka (nema bilješke)",
         "text": "Memorandum",
         "id": "ID memoranduma",
         "hash": "Memo Hash",
@@ -407,7 +407,7 @@
           "none": "Nema zabilješke. Koristite ovo ako primatelj ne očekuje zabilješku.",
           "text": "Slobodan tekst do 28 bajtova. Često se koristi za alokaciju u jednostavnim plaćanjima.",
           "id": "Numerički ID (uint64). Mnoge burze koriste ID memoranduma za dodjelu depozita.",
-          "hash": "32-bajtni SHA-256 hash (als 64-stellige Hex-Zeichenfolge). Koristi se od strane usluga za reference.",
+          "hash": "32-bajtni SHA-256 hash (kao niz od 64 heksadecimalna znaka). Koriste ga usluge u referentne svrhe.",
           "return": "32-bajtni hash za povrate. Koristi se za povrate (MEMO_RETURN)."
         }
       },
@@ -429,7 +429,7 @@
       "successShort": "Uspješno poslano",
       "error": "Pogreška prilikom slanja: {{detail}}",
       "amountMissing": "Molimo unesite iznos.",
-      "amountInvalid": "Nevažeći iznos (max. 7 Nachkommastellen).",
+      "amountInvalid": "Neispravan iznos (najviše 7 decimalnih mjesta).",
       "amountPositive": "Iznos mora biti veći od 0.",
       "timeout": "Horizon Timeout (504). Molimo pokušajte ponovno uskoro.",
       "httpError": "Greška horizonta (status {{status}}).",
@@ -440,7 +440,7 @@
         "info": "Ciljani račun još nije aktivan. Za aktivaciju je potreban minimalni iznos.",
         "minReserve": "Minimalni iznos (2 × osnovna rezerva)",
         "yourAmount": "Uneseni iznos",
-        "adjustedAmount": "Predloženi iznos (zum Aktivieren)",
+        "adjustedAmount": "Predloženi iznos (za aktivaciju)",
         "noteAdjust": "Vaš saldo nije dovoljan za aktivaciju. Ako nastavite, minimalni iznos će biti poslan automatski."
       },
       "activated": "Ciljani račun je aktiviran.",
@@ -455,7 +455,7 @@
         "title": "Provjerite memorandum federacije",
         "textMappable": "Federacijski poslužitelj očekuje memo \"{{expected}}\", ali je vaš trenutni memo \"{{current}}\".",
         "textUnmappable": "Federacijski poslužitelj očekuje memo koji se nije mogao automatski primijeniti. Vaš trenutni memo je \"{{current}}\".",
-        "empty": "(empty)",
+        "empty": "(prazno)",
         "sendAnyway": "Pošalji svejedno",
         "applyExpected": "Primijeni memorandum federacije"
       },
@@ -515,7 +515,7 @@
       "createTitle": "Stvori nove Muxed račune",
       "createItems": {
         "i1": "Stvara nove Muxed adrese (M...) iz tvoje bazne adrese (G...).",
-        "i2": "Opcionalno s oznakom (Name) i napomenom (z. B. Projekt oder Zweck)."
+        "i2": "Opcionalno s etiketom (ime) i bilješkom (npr. projekt ili svrha)."
       },
       "importTitle": "Uvoz iz CSV datoteka",
       "importItems": {
@@ -776,7 +776,7 @@
     },
     "securityGuarantee": {
       "title": "🔒 SKM Sigurnosno jamstvo (Multisig)",
-      "text": "Stellar Account Manager sprječava sve tehnički izazvane blokade računa koje mogu nastati zbog netočne multisig konfiguracije.\n\nKonkretno, SKM blokira:\n- Onesposobljavanje glavnog ključa bez dostupnih potpisnika\n- Nedostupne pragove (low / med / high)\n- Sekvencijske greške u promjenama potpisnika i pragova\n- Uklanjanje zadnjeg valjanog visokog potpisnika\n- Multisig postavke gdje se više ne može potpisati SetOptions\n- Slijepe ulice zbog hashX ili preAuthTx kao konačnog potpisnika\n\nSKM postavlja samo ed25519 potpisnike. Za druge vrste potpisnika, koristite {link}.\n\nSKM jamči:\n- Svaka potvrđena promjena ostavlja barem jedan valjani put otvoren za daljnje upravljanje računom\n- SetOptions ostaje dostupan nakon promjene\n\nNije zajamčeno (systembedingt):\n- Gubitak tajnih ključeva ili hardverskih novčanika\n- Nedostupnost ili neuspjeh vanjskih potpisnika\n\nZaključak:\nSKM pouzdano štiti od blokada konfiguracija.\nOrganizacijski rizici su transparentno prikazani, ali se tehnički ne mogu spriječiti.",
+      "text": "Stellar Account Manager sprječava sva tehnička zaključavanja računa koja mogu nastati zbog neispravne konfiguracije multisiga.\n\nKonkretno, SKM blokira:\n- Deaktivaciju glavnog ključa kada nijedan potpisnik nije dostupan\n- Nedostupne pragove (niski / srednji / visoki)\n- Pogreške pri naručivanju prilikom promjene potpisnika ili pragova\n- Uklanjanje posljednjeg valjanog potpisnika s visokim pragom\n- Multisig postavke u kojima se SetOptions više ne može potpisati\n- Bezizlazne situacije uzrokovane hashX-om ili preAuthTx-om kao posljednjim potpisnikom\n\nSKM koristi samo potpisnike ed25519. Za druge vrste potpisnika, upotrijebite {link}.\n\nSKM jamči:\n- Svaka potvrđena promjena ostavlja barem jednu valjanu putanju otvorenom za daljnje upravljanje računom\n- SetOptions ostaje dostupan nakon promjene\n\nNe može se jamčiti (zbog ograničenja sustava):\n- Gubitak tajnih ključeva ili hardverskih novčanika\n- Nedostupnost ili kvar vanjskih potpisnika\n\nZaključak:\nSKM pruža pouzdanu zaštitu od zaključavanja konfiguracije.\nOrganizacijski rizici se transparentno prikazuju, ali se tehnički ne mogu spriječiti.",
       "linkLabel": "lab.stellar.org"
     },
     "hint": "Učitaj postojeći račun, prilagodi potpisnike, težine, glavnu težinu i pragove, te sačuvaj promjene.",
@@ -826,7 +826,7 @@
   "secretKey": {
     "cleared": "Tajni ključ je izbrisan.",
     "empty": "Polje tajnog ključa je prazno.",
-    "info": "⚠️ VAŽNO: Ova web stranica NIKADA ne pohranjuje vaš Tajni Ključ!\n\nTajni Ključ koji je ovdje prikazan postoji samo u vašem pregledniku (lokal im Arbeitsspeicher). Čim osvježite ili napustite stranicu, nepovratno ga gubite.\n\nKopirajte ili zabilježite Tajni Ključ odmah nakon generiranja, prije nego zatvorite stranicu.\n\nProvjera: Možete provjeriti pomoću alata za razvojne programere u pregledniku (F12 → Mreža) da se nijedan Tajni Ključ ne prenosi vanjski. Samo potpisane transakcije se šalju, nikada vaš Tajni Ključ.",
+    "info": "⚠️ VAŽNO: Ova web stranica NIKADA ne pohranjuje vaš tajni ključ!\n\nTajni ključ prikazan ovdje postoji samo u vašem pregledniku (lokalno u memoriji). Čim ponovno učitate stranicu ili je napustite, on je nepovratno izgubljen.\n\nKopirajte ili zapišite tajni ključ odmah nakon što ga generirate, prije nego što zatvorite stranicu.\n\nProvjera: Možete koristiti alate za programere u svom pregledniku (F12 → Network) kako biste provjerili da se tajni ključ ne prenosi izvana. Šalju se samo potpisane transakcije — nikada vaš tajni ključ.",
     "invalid": "Pogrešan tajni ključ.",
     "label": "Unesite tajni izvorni ključ (S-Key)",
     "mismatch": "Tajni ključ ne odgovara javnoj adresi.",
@@ -846,7 +846,7 @@
     "pageTitle": "Rječnik",
     "pageIntro": "Ovdje ćete pronaći važne riječi iz svijeta blockchaina i Stellar mreže. Sve je objašnjeno jednostavnim riječima.",
     "searchLabel": "Pojam za pretragu",
-    "searchPlaceholder": "Pojam za pretraživanje (z. B. Konto, Account, Muxed)",
+    "searchPlaceholder": "Pretraži pojam (npr. Konto, Account, Muxed)",
     "searchHint": "Pretraga pronalazi riječi i objašnjenja.",
     "noResults": "Nema podudaranja.",
     "blockchain": {
@@ -870,7 +870,7 @@
     "addressG": {
       "title": "G-adresa",
       "original": "G Address",
-      "short": "Javna glavna adresa Stellar računa (beginnt mit G).",
+      "short": "Javna primarna adresa Stellar računa (počinje s G).",
       "desc": "G-adresa je glavna adresa Stellar računa. Počinje s slovom G. Dajete je drugima kako bi vam mogli nešto poslati."
     },
     "publicKey": {
@@ -1043,7 +1043,7 @@
     "deletingProgress": "Brisanje u tijeku: {{current}} / {{total}}",
     "success": "Uspjeh: {{count}} Trustline(s) obrisano."
   },
-  "skippedDueToBalance": "{{count}} Trustlines (s) preskočeno (noch Guthaben vorhanden).",
+  "skippedDueToBalance": "{{count}} Trustline(a) preskočeno (kredit je i dalje dostupan).",
   "xlmByMemo": {
     "action": {
       "calculate": "Izračunaj",
@@ -1087,7 +1087,7 @@
       "count": "Količina: {{n}}",
       "label": "Usporedba (all inputs)",
       "otherCount": "Unosi s netočnim/nedostajućim memo: {{n}}",
-      "unique": "Jedinstveni novčanici (alle): {{n}}",
+      "unique": "Jedinstvene novčanike (sve): {{n}}",
       "uniqueWallets": "Jedinstveni novčanici: {{n}}"
     },
     "time": {
@@ -1110,7 +1110,7 @@
       "local": "Lokalna vremenska zona",
       "note": "Datum i vrijeme tumače se u odabranoj vremenskoj zoni i automatski se pretvaraju u UTC prije pretraživanja.",
       "utc": "UTC",
-      "window": "Korišten vremenski okvir po UTC-u: {{from}} → {{to}} (Bis exklusiv)"
+      "window": "UTC vremenski prozor korišten: {{from}} → {{to}} (kraj isključen)"
     },
     "wrongMemos": {
       "button": "Prikaži novčanike s netočnom/praznom napomenom.",

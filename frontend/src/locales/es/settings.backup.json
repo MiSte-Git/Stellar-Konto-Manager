@@ -1,5 +1,5 @@
 {
-  "desc": "Exporta o importa tus datos del cuestionario (Einstellungen, Fortschritt, Abzeichen).",
+  "desc": "Exporta o importa los datos de tu cuestionario (configuración, progreso, insignias).",
   "export": {
     "button": "Iniciar exportación",
     "fileName": "copia de seguridad del cuestionario.json",

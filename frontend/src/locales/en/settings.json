@@ -123,7 +123,7 @@
     },
     "title": "My Trusted Wallets",
     "validation": {
-      "hint": "At least one line is invalid (fehlende/duplizierte Adresse)."
+      "hint": "At least one line is invalid (missing or duplicate address)."
     }
   },
   "maintenance": {

@@ -8,7 +8,7 @@
   },
   "singleVsMulti": {
     "title": "Single-sig vs. Multisig",
-    "text": "Single-Sig = 1 avain riittää. Multisig = tarvitaan useita allekirjoituksia (z. B. 2 von 3)."
+    "text": "Yksiallekirjoitus = Yksi avain riittää. Moniallekirjoitus = Vaaditaan useita allekirjoituksia (esim. 2 kolmesta)."
   },
   "stellarHow": {
     "title": "Kuinka Stellar toteuttaa moniallekirjoituksen",

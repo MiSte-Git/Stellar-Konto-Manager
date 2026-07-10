@@ -1,5 +1,5 @@
 {
-  "desc": "Izvezite ili uvezite podatke svog kviza (Einstellungen, Fortschritt, Abzeichen).",
+  "desc": "Izvezite ili uvezite podatke svog kviza (postavke, napredak, bedževe).",
   "export": {
     "button": "Pokreni izvoz",
     "fileName": "kviz-sigurnosna-kopija.json",

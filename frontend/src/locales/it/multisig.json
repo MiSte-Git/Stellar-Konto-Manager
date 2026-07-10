@@ -29,7 +29,7 @@
         "infoBody": {
           "one": "La transazione viene memorizzata come un lavoro multisig nel backend e riceve un ID lavoro. Non viene inviato nulla direttamente.",
           "two": "Tutti i firmatari successivi aprono la voce di menu \"Ordini multisig\" nella loro istanza SKM, caricano il lavoro e firmano.",
-          "three": "Una volta che sono state raccolte abbastanza firme (Threshold erreicht), la transazione verrà inviata o può essere inviata.",
+          "three": "Non appena viene raccolto un numero sufficiente di firme (una volta raggiunta la soglia), la transazione viene inviata o può essere inviata.",
           "four": "Puoi passare l'ID lavoro ad altri firmatari, oppure possono selezionare il lavoro direttamente in \"Ordini multisig\"."
         },
         "steps": {
@@ -48,11 +48,11 @@
         "infoBody": {
           "one": "Devi inserire tutte le chiavi segrete richieste su questo dispositivo in sequenza fino a raggiungere la soglia.",
           "two": "Questo non è più un flusso multisig distribuito, ma \"multi-chiave su un dispositivo\" – usalo solo su dispositivi fidati.",
-          "three": "Una volta raccolte abbastanza firme, la transazione viene inviata direttamente a Horizon (ohne Multisig-Job)."
+          "three": "Una volta raccolte un numero sufficiente di firme, la transazione viene inviata direttamente a Horizon (senza un’operazione multisig)."
         }
       },
       "xdr": {
-        "title": "Esporta XDR (nicht senden)",
+        "title": "Esporta XDR (non inviare)",
         "desc": "Genera una transazione XDR grezza per strumenti offline o portafogli hardware.",
         "short": "Esporta la transazione come XDR senza inviarla direttamente.",
         "moreInfo": "Ulteriori informazioni.",
@@ -64,7 +64,7 @@
         },
         "steps": {
           "one": "Viene generato un XDR, ma non viene inviato nulla.",
-          "two": "Puoi firmare esternamente l'XDR (Offline-Rechner, Hardware-Wallet, anderes Tool).",
+          "two": "È possibile firmare l'XDR esternamente (utilizzando un computer offline, un portafoglio hardware o un altro strumento).",
           "three": "Per inviare, è necessario reimportare l'XDR (e.g., via multisig jobs or another tool) e firmarlo/inviarlo lì."
         }
       }
@@ -80,7 +80,7 @@
         "infoButton": "Passi successivi",
         "infoTitle": "Cosa bisogna fare adesso",
         "info": {
-          "share": "Inoltra l'ID del lavoro o XDR ai prossimi firmatari (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "share": "Inoltra l'ID del lavoro o l'XDR ai firmatari successivi (tramite e-mail o app di messaggistica come Telegram o WhatsApp).",
           "sign": "I firmatari scelgono l'opzione 3 (\"Importa XDR\") e firmano l'XDR, OPPURE aprono la voce di menu \"ID lavoro\" nel SKM, caricano il lavoro e firmano lì.",
           "submit": "Una volta raccolte firme sufficienti, uno dei firmatari invia infine il lavoro alla rete nel SKM (menu \"ID lavoro\")."
         },
@@ -95,11 +95,11 @@
         "copiedDetails": "Copiato"
       },
       "xdr": {
-        "title": "XDR preparato (nicht gesendet)",
+        "title": "Compatibile con XDR (non inviato)",
         "status": "È stato generato solo un XDR. Nulla è stato inviato alla rete.",
         "noJob": "Nessun lavoro multisig è stato creato.",
         "hashLabel": "Hash della transazione",
-        "hint": "Passa l'XDR ad altri firmatari o strumenti (z. B. Hardware-Wallet, Offline-Rechner). Per inviare, successivamente importi nuovamente l'XDR (ggf. signierte) nel SKM (z. B. Option 3) e lo invii alla rete."
+        "hint": "Inoltra l'XDR ad altri firmatari o strumenti (ad esempio, un portafoglio hardware o un computer offline). Per inviarlo, importa nuovamente l'XDR (firmato, se del caso) nell'SKM in un secondo momento (ad esempio, Opzione 3) e invialo alla rete."
       }
     },
     "testModeTitle": "Tutte le firme locali",
@@ -107,7 +107,7 @@
     "testModeButton": "Sign directly & send",
     "prepareTitle": "Prepara transazione per multisig",
     "prepareDescription": "Prepara solo XDR per la multisig di produzione. Nulla verrà inviato immediatamente.",
-    "prepareButton": "Preparare XDR (nicht senden)"
+    "prepareButton": "Preparare l'XDR (non inviare)"
   },
   "jobCreated": "Lavoro multisig creato (ID: {{id}}). Apri \"Ordini multisig\" per vedere lo stato.",
   "errors": {
@@ -211,7 +211,7 @@
       },
       "localAll": {
         "title": "Inserisci tutte le firme localmente.",
-        "body": "Scegli questa opzione solo se controlli tutte le chiavi segrete associate a questo account (z. B. nach einer Kontorettung mit mehreren Unterzeichnern). Il Gestore Account Stellar raccoglierà quindi tutte le firme localmente e invierà la transazione direttamente a Horizon.",
+        "body": "Selezionare questa opzione solo se si hanno sotto controllo tutte le chiavi private associate a questo account (ad esempio, in seguito a un recupero dell'account che ha coinvolto più firmatari). Lo Stellar Account Manager raccoglierà quindi tutte le firme a livello locale e invierà la transazione direttamente a Horizon.",
         "checkboxLabel": "Inserisci tutte le firme localmente in questo dialogo e inviale direttamente.",
         "warning": "Nota: Se inserisci tutte le firme localmente, tutte le chiavi segrete saranno presenti in questa sessione. Usa questa opzione solo su dispositivi fidati."
       }

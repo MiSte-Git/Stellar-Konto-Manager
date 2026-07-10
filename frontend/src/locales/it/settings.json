@@ -123,7 +123,7 @@
     },
     "title": "I miei portafogli fidati",
     "validation": {
-      "hint": "Almeno una riga non è valida (fehlende/duplizierte Adresse)."
+      "hint": "Almeno una riga non è valida (indirizzo mancante o duplicato)."
     }
   },
   "maintenance": {

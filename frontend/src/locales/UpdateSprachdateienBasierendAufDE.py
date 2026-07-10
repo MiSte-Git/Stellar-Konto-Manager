@@ -87,9 +87,20 @@ def translate_text_deepl(text: str, target_lang: str, api_key: str, api_url: str
     url = url.strip()
     # DeepL hat die Form-Body-Authentifizierung (auth_key als POST-Parameter) im
     # November 2025 abgeschaltet. Stattdessen: Header-basierte Auth + JSON-Body.
+    #
+    # source_lang: Diese Pipeline übersetzt strukturell IMMER DE -> EN (Phase A) oder
+    # vom bereits geschriebenen EN-Pivot in eine der anderen 7 Sprachen (Phase B) - die
+    # Quellsprache ist also nie unbekannt und lässt sich direkt aus target_lang ableiten
+    # (target=EN -> Quelle ist zwingend DE; jedes andere Ziel -> Quelle ist zwingend EN).
+    # Ohne source_lang verlässt sich DeepL auf Auto-Detection, die bei kurzen,
+    # kontextlosen Strings (einzelne Wörter ohne Satzkontext) ambige/falsche Ergebnisse
+    # liefert. Konkret beobachtet und gegen die echte API verifiziert: "(leer)" wurde
+    # als Afrikaans erkannt (detected_source_language: "AF") und zu "(learn)" statt
+    # "(empty)" übersetzt; mit explizitem source_lang="DE" korrekt zu "(blank)".
     body = {
         "text": [text],
         "target_lang": target_lang.upper(),  # z. B. EN, DE, FR
+        "source_lang": "DE" if target_lang.upper() == "EN" else "EN",
     }
     data = json.dumps(body).encode("utf-8")
 
@@ -201,7 +212,38 @@ def _preserve_special_chars(source: Any, translated: str, path: str, counters: D
 
 # -------- Klammer-Begriffe vor Übersetzung schützen --------
 KEEP_EN_RE = re.compile(r"\(([^()]*)\)")
+# ASCII_EN_ALLOWED prüft nur das ZEICHEN-Alphabet (verhindert Umlaute/Sonderzeichen),
+# nicht ob der Inhalt tatsächlich Englisch ist - Deutsch ohne Umlaute ist genauso ASCII
+# (z.B. "leer", "schnell", "systembedingt" oder ganze Phrasen wie "zum Aktivieren").
+# ASCII_EN_ALLOWED bleibt daher bewusst als reine Zeichen-Vorprüfung bestehen; das
+# eigentliche Gate unten (_looks_like_kept_english_term) verlangt zusätzlich ein
+# konkretes Signal für "das ist ein bewusst beibehaltener Fachbegriff", nicht irgendein
+# ASCII-Text.
 ASCII_EN_ALLOWED = re.compile(r"^[A-Za-z0-9 ,._\-/:]+$")
+
+
+def _looks_like_kept_english_term(inner: str) -> bool:
+    """Grenzt "Mehrfachsignatur (Multi-Signature)" (schützen) von "(leer)"/"(zum
+    Aktivieren)" (normal übersetzen) ab. Reines ASCII-Alphabet allein reicht nicht -
+    gewöhnliche deutsche Wörter/Sätze ohne Umlaute sind ebenfalls ASCII (konkret
+    beobachtet: "(leer)" wurde dadurch in Phase A/DE->EN maskiert, die Übersetzung
+    "empty" kam nie an, EN blieb wörtlich "(leer)" stehen).
+
+    Zwei Kriterien, beide müssen erfüllt sein:
+    - Kein Leerzeichen: schließt mehrwortige deutsche Phrasen/Sätze aus (die absolute
+      Mehrheit der falschen Treffer, z.B. "einmalig beim ersten Aktivieren").
+    - Enthält eine Ziffer, einen Großbuchstaben oder eines von "_:/" - ein Signal für
+      bewusst gewählte Fachbegriffe/Codes (Testnet, uint64, ed25519, MEMO_RETURN, M...,
+      CODE:ISSUER, S-Key) statt eines gewöhnlichen klein geschriebenen Wortes (leer,
+      optional, schnell).
+    Kein Wörterbuch, keine Sprachdetektion - bewusst konservativ und mechanisch, um das
+    Verhalten nachvollziehbar und testbar zu halten. Deckt nicht jeden Fall ab (z.B.
+    "Alle" bliebe fälschlich geschützt, da großgeschrieben), reduziert die Falsch-
+    Positiv-Rate aber drastisch gegenüber der reinen ASCII-Prüfung.
+    """
+    if not inner or " " in inner:
+        return False
+    return bool(re.search(r"[0-9A-Z_:/]", inner))
 
 
 def protect_parenthesized_english(text: str) -> tuple[str, dict[str, str]]:
@@ -215,7 +257,7 @@ def protect_parenthesized_english(text: str) -> tuple[str, dict[str, str]]:
 
     def _repl(match: re.Match[str]) -> str:
         inner = match.group(1)
-        if not inner or not ASCII_EN_ALLOWED.fullmatch(inner):
+        if not inner or not ASCII_EN_ALLOWED.fullmatch(inner) or not _looks_like_kept_english_term(inner):
             return match.group(0)
         placeholder = f"__KEEP_EN_TERM_{len(placeholders) + 1}__"
         placeholders[placeholder] = inner
@@ -232,6 +274,22 @@ def restore_parenthesized_english(text: str, mapping: dict[str, str]) -> str:
     for placeholder, original in mapping.items():
         restored = restored.replace(placeholder, original)
     return restored
+
+
+def protect_parenthesized_english_for_target(text: str, target_lang: str) -> tuple[str, dict[str, str]]:
+    """Wendet protect_parenthesized_english() NUR für Phase A (DE -> EN, target_lang == "en")
+    an. Grund: Die Maskierung soll bewusst gewählte englische Fachbegriffe in einem
+    NICHT-englischen Quelltext bewahren (z.B. "Mehrfachsignatur (Multi-Signature)"). In
+    Phase B (EN-Pivot -> andere Sprache) ist der Quelltext aber bereits vollständig
+    Englisch - ASCII_EN_ALLOWED matcht dort JEDES kurze Klammer-Wort (nicht nur bewusst
+    beibehaltene Fachbegriffe), maskiert es zu einem Platzhalter-Token, und DeepL lässt
+    einen Platzhalter-Token (keine natürliche Sprache) unverändert stehen - die Übersetzung
+    kommt dadurch nie an. Konkret beobachtet: "(empty)" blieb dadurch in allen 7
+    Nicht-EN-Sprachen unübersetzt "(empty)" statt z.B. "(vacío)"/"(leer)"/... zu werden.
+    """
+    if target_lang != "en":
+        return text, {}
+    return protect_parenthesized_english(text)
 
 
 # -------- Hash-basierte Änderungs-Erkennung --------
@@ -344,44 +402,37 @@ def _get_node_by_path(d: Dict[str, Any], path: str):
     return node
 
 
-def expand_forced_paths(base_dict: Dict[str, Any], forced_list: list[str], namespace: str | None = None) -> Set[str]:
+def expand_forced_paths(base_dict: Dict[str, Any], forced_list: list[str], namespace: str) -> Set[str]:
     """Löst --force-key-Pfade zu relativen Leaf-Paths innerhalb von base_dict auf.
 
-    Zwei Modi:
-    - namespace=None (Legacy-Root): forced_list-Einträge sind bereits Pfade
-      relativ zu base_dict (verschachteltes de.json).
-    - namespace=<name> (Namespace-Modus, Standardfall): base_dict ist das
-      namespace-eigene Dict OHNE Namespace-Wrapper (z.B. ns_base für "menu"
-      ist direkt {"createAccount": ..., ...}, nicht {"menu": {...}}).
-      forced_list-Einträge haben die dokumentierte Form "<namespace>.<key>"
-      oder exakt "<namespace>" (= ganzer Namespace). Nur Einträge, deren
-      führendes Segment zu DIESEM Namespace passt, werden berücksichtigt -
-      alle anderen gehören zu einem anderen Namespace-File und werden still
-      übersprungen (kein "nicht gefunden", das ist kein Fehler). Der
-      Namespace-Präfix wird vor dem Lookup abgeschnitten, denn base_dict
-      selbst hat diesen Präfix nicht - und die zurückgegebenen Pfade müssen
-      namespace-RELATIV sein, weil changed_rel/de_flat_rel/en_flat_rel
-      ebenfalls relative (unpräfixierte) Keys verwenden.
+    base_dict ist das namespace-eigene Dict OHNE Namespace-Wrapper (z.B. ns_base
+    für "menu" ist direkt {"createAccount": ..., ...}, nicht {"menu": {...}}).
+    forced_list-Einträge haben die dokumentierte Form "<namespace>.<key>" oder
+    exakt "<namespace>" (= ganzer Namespace). Nur Einträge, deren führendes
+    Segment zu DIESEM Namespace passt, werden berücksichtigt - alle anderen
+    gehören zu einem anderen Namespace-File und werden still übersprungen
+    (kein "nicht gefunden", das ist kein Fehler). Der Namespace-Präfix wird vor
+    dem Lookup abgeschnitten, denn base_dict selbst hat diesen Präfix nicht -
+    und die zurückgegebenen Pfade müssen namespace-RELATIV sein, weil
+    changed_rel/de_flat_rel/en_flat_rel ebenfalls relative (unpräfixierte)
+    Keys verwenden.
 
-      Vorher (Bug): der volle "<namespace>.<key>"-Pfad wurde direkt gegen
-      das unpräfixierte base_dict aufgelöst -> _get_node_by_path fand nie
-      etwas (das erste Pfadsegment war ja der Namespace-Name, kein echter
-      Top-Level-Key), --force-key griff für JEDEN Namespace ins Leere und
-      hatte de facto NIE eine Wirkung auf bereits vorhandene Keys.
+    Vorher (Bug): der volle "<namespace>.<key>"-Pfad wurde direkt gegen das
+    unpräfixierte base_dict aufgelöst -> _get_node_by_path fand nie etwas (das
+    erste Pfadsegment war ja der Namespace-Name, kein echter Top-Level-Key),
+    --force-key griff für JEDEN Namespace ins Leere und hatte de facto NIE
+    eine Wirkung auf bereits vorhandene Keys.
     """
     out: Set[str] = set()
     for p in forced_list:
         if not p:
             continue
-        if namespace is not None:
-            if p == namespace:
-                rel = ""
-            elif p.startswith(f"{namespace}."):
-                rel = p[len(namespace) + 1:]
-            else:
-                continue
+        if p == namespace:
+            rel = ""
+        elif p.startswith(f"{namespace}."):
+            rel = p[len(namespace) + 1:]
         else:
-            rel = p
+            continue
 
         if rel == "":
             out |= _collect_leaf_paths(base_dict, "")
@@ -455,7 +506,7 @@ def merge_keys_missing_or_changed(
                 continue
             needs_update = (key not in out) or (cur_path in changed_paths)
             if needs_update:
-                protected, placeholders = protect_parenthesized_english(value if isinstance(value, str) else "")
+                protected, placeholders = protect_parenthesized_english_for_target(value if isinstance(value, str) else "", lang)
                 translated_raw = translate_text(protected, lang, provider, openai_key, deepl_key)
                 if translated_raw is None:
                     failed_paths.add(cur_path)
@@ -515,7 +566,7 @@ def translate_full(
             else:
                 # Bestehende Übersetzungen nur überschreiben, wenn erzwungen
                 if existing_val is None or cur_path in forced_paths:
-                    protected, placeholders = protect_parenthesized_english(value if isinstance(value, str) else "")
+                    protected, placeholders = protect_parenthesized_english_for_target(value if isinstance(value, str) else "", lang)
                     translated_raw = translate_text(protected, lang, provider, openai_key, deepl_key)
                     if translated_raw is None:
                         if failed_paths is not None:
@@ -576,13 +627,11 @@ def main():
             "                       Mehrfach nutzbar oder komma-separiert.\n"
             "                       Beispiele: feedback.title  |  menu.feedback  |  feedback\n"
             "  --full               Vollständiger Lauf: alle Schlüssel neu übersetzen (langsamer/teurer).\n"
-            "  --legacy-root        Verarbeite die alte Legacy-Struktur (de.json). Nicht empfohlen.\n"
             "\n"
             "Beispiele:\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --force-key feedback.title --force-key menu.feedback\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --full\n"
-            "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --legacy-root\n"
         ),
         formatter_class=RawTextHelpFormatter,
     )
@@ -617,12 +666,7 @@ def main():
     parser.add_argument(
         "--namespaced-only",
         action="store_true",
-        help="[veraltet] Namespaces verarbeiten. Standard ist bereits Namespaces; für Legacy de.json siehe --legacy-root.",
-    )
-    parser.add_argument(
-        "--legacy-root",
-        action="store_true",
-        help="Verarbeite die alte Legacy-Struktur (de.json). Standard ist Namespaces de/<ns>.json → en → andere.",
+        help="[veraltet, ohne Wirkung] Verarbeitung ist bereits ausschließlich Namespace-basiert (de/<ns>.json → en → andere).",
     )
     # Wenn ohne Argumente aufgerufen: vollständige Hilfe zeigen und beenden
     if len(sys.argv) == 1:
@@ -660,233 +704,12 @@ def main():
         print(f"INFO: DeepL endpoint: {(os.getenv('DEEPL_API_URL') or 'https://api-free.deepl.com/v2/translate')}")
 
     # Standard: Namespaces verarbeiten (de/<ns>.json → en/<ns>.json → andere/<ns>.json)
-    if not args.legacy_root:
-        de_ns_dir = os.path.join(base_path, BASE_LANG)
-        if not os.path.isdir(de_ns_dir):
-            print(f"❌ Namespace-Verzeichnis fehlt: {de_ns_dir}")
-            return
-
-        # Learn-Sync: lessons.json → de/learn.json (nur fehlende Keys ergänzen)
-        try:
-            lessons_path = os.path.normpath(os.path.join(base_path, "..", "data", "learn", "lessons.json"))
-            lessons_raw = load_json(lessons_path)
-            if isinstance(lessons_raw, list):
-                learn_from_lessons: Dict[str, Any] = {}
-                for l in lessons_raw:
-                    if not isinstance(l, dict):
-                        continue
-                    lid = l.get("id")
-                    if not isinstance(lid, str) or not lid:
-                        continue
-                    learn_from_lessons[lid] = {
-                        "title": l.get("title", ""),
-                        "goal": l.get("goal", ""),
-                        "task": l.get("task", ""),
-                        "learningOutcome": l.get("learningOutcome", ""),
-                        "reward": l.get("reward", ""),
-                    }
-                de_learn_file = os.path.join(de_ns_dir, "learn.json")
-                existing_learn = load_json(de_learn_file)
-                next_learn = json.loads(json.dumps(existing_learn)) if existing_learn else {}
-                diffs_ns_de: list[str] = []
-                deep_merge_missing(next_learn, learn_from_lessons, diffs_ns_de)
-                if json.dumps(existing_learn, ensure_ascii=False, sort_keys=True) != json.dumps(next_learn, ensure_ascii=False, sort_keys=True):
-                    os.makedirs(os.path.dirname(de_learn_file), exist_ok=True)
-                    save_json(de_learn_file, next_learn)
-                if diffs_ns_de:
-                    print(f"INFO: de/learn.json ergänzt. Abweichende bestehende Werte nicht überschrieben: {len(diffs_ns_de)}")
-            else:
-                print("INFO: Keine gültige lessons.json-Liste gefunden; Überspringe Learn-Sync.")
-        except Exception as e:
-            print(f"INFO: Learn-Sync (de/learn.json) übersprungen: {e}")
-
-        # API-Keys aus Umgebungsvariablen lesen (bereits oben geprüft, hier nur Variablen verwenden)
-        openai_key = os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_KEY")
-        deepl_key = os.getenv("DEEPL_API_KEY") or os.getenv("DEEPL_AUTH_KEY")
-        counters: Dict[str, int] = {"skippedOriginalKeysCount": 0, "copiedOriginalKeysCount": 0}
-
-        # Force-Keys einsammeln (dot-Pfade, können Subtrees sein)
-        force_keys_raw = args.force_keys or []
-        forced_list: list[str] = []
-        for raw in force_keys_raw:
-            forced_list.extend([s.strip() for s in raw.split(',') if s and s.strip()])
-
-        ns_files = [f for f in os.listdir(de_ns_dir) if f.endswith('.json')]
-        if not ns_files:
-            print(f"INFO: Keine Namespaces in {de_ns_dir} gefunden. Nichts zu tun.")
-            return
-
-        check_namespace_key_collisions(de_ns_dir, ns_files)
-
-        for ns_file in sorted(ns_files):
-            ns_name = ns_file[:-5]
-            ns_base_path = os.path.join(de_ns_dir, ns_file)
-            ns_base = load_json(ns_base_path)
-            if not isinstance(ns_base, dict):
-                print(f"INFO: Überspringe ungültigen Namespace {ns_name} ({ns_file})")
-                continue
-
-            print(f"\n🧩 Namespace '{ns_name}':")
-
-            # Force-Keys für diesen Namespace
-            forced_paths = expand_forced_paths(ns_base, forced_list, namespace=ns_name) if forced_list else set()
-
-            # Phase A: de -> en (hash-basiert)
-            try:
-                en_dir = os.path.join(base_path, "en")
-                os.makedirs(en_dir, exist_ok=True)
-                en_out = os.path.join(en_dir, f"{ns_name}.json")
-                en_existing = load_json(en_out)
-                failed_paths_en: Set[str] = set()
-
-                # Flatten DE-NS (relativ) und bilde Präfix für Manifest
-                de_flat_rel = _flatten_dict(ns_base, prefix="")
-                de_flat_pref = {f"{ns_name}.{k}": v for k, v in de_flat_rel.items()}
-                man_en = _load_manifest("en", "de")
-
-                # Inkrementell: nur Keys mit geändertem Hash übersetzen; Full-Lauf übersetzt alles.
-                # Ein gezielter --force-key-Lauf (ohne --full) rührt NUR die erzwungenen Pfade an -
-                # keine generelle Hash-Drift-Erkennung über den ganzen Namespace, damit unabhängige,
-                # längst übersetzte Keys nicht durch einen zufällig abweichenden Hash (z.B. History-
-                # bedingte Manifest/Content-Drift) erneut angefasst werden.
-                if do_full:
-                    changed_rel = set(de_flat_rel.keys())
-                elif forced_paths:
-                    changed_rel = set(forced_paths)
-                else:
-                    changed_rel = set(
-                        k for k, v in de_flat_rel.items()
-                        if man_en.get(f"{ns_name}.{k}") != _sha256(str(v))
-                    )
-
-                if do_full:
-                    en_translated = translate_full(
-                        ns_base,
-                        "en",
-                        provider,
-                        openai_key,
-                        deepl_key,
-                        target_existing={},
-                        forced_paths=forced_paths,
-                        counters=counters,
-                        failed_paths=failed_paths_en,
-                    )
-                else:
-                    en_translated = merge_keys_missing_or_changed(
-                        ns_base,
-                        en_existing,
-                        "en",
-                        provider,
-                        openai_key,
-                        deepl_key,
-                        changed_paths=changed_rel,
-                        forced_paths=forced_paths,
-                        counters=counters,
-                        failed_paths=failed_paths_en,
-                    )
-                if do_prune:
-                    en_translated = prune_extra_keys(ns_base, en_translated)
-                save_json(en_out, en_translated)
-                print(f"   → en/{ns_name}.json aktualisiert")
-
-                # Manifest aktualisieren (EN from DE) - NUR für Keys, die dieser Lauf
-                # tatsächlich übersetzt/ergänzt hat (do_full: alle; sonst: fehlende + changed_rel).
-                # Alle anderen Keys behalten ihren bisherigen Manifest-Eintrag unangetastet, damit
-                # echte, noch nicht nachgezogene Drift nicht durch einen unbeteiligten --force-key-
-                # Lauf still als "erledigt" markiert wird, ohne je neu übersetzt worden zu sein.
-                touched_rel_en = set(de_flat_rel.keys()) if do_full else (_missing_rel_keys(de_flat_rel, en_existing) | changed_rel)
-                for k, v in de_flat_pref.items():
-                    rel = k.split(f"{ns_name}.", 1)[-1]
-                    if rel in failed_paths_en or rel not in touched_rel_en:
-                        continue
-                    man_en[k] = _sha256(str(v))
-                _save_manifest("en", "de", man_en)
-            except Exception as e:
-                print(f"❌ Abbruch für Sprache en / Namespace {ns_name}: {e}")
-                continue
-
-            # Phase B: en -> andere (hash-basiert, Pivot EN-NS)
-            en_ns = load_json(en_out) or {}
-            en_flat_rel = _flatten_dict(en_ns, prefix="")
-            en_flat_pref = {f"{ns_name}.{k}": v for k, v in en_flat_rel.items()}
-
-            for lang in TARGET_LANGS:
-                if lang == "en":
-                    continue
-                try:
-                    out_dir = os.path.join(base_path, lang)
-                    os.makedirs(out_dir, exist_ok=True)
-                    out_file = os.path.join(out_dir, f"{ns_name}.json")
-                    existing = load_json(out_file)
-                    failed_paths_lang: Set[str] = set()
-
-                    man_lang = _load_manifest(lang, "en")
-
-                    if do_full:
-                        changed_rel_lang = set(en_flat_rel.keys())
-                    elif forced_paths:
-                        changed_rel_lang = set(forced_paths)
-                    else:
-                        changed_rel_lang = set(
-                            k for k, v in en_flat_rel.items()
-                            if man_lang.get(f"{ns_name}.{k}") != _sha256(str(v))
-                        )
-
-                    if do_full:
-                        translated = translate_full(
-                            en_ns,
-                            lang,
-                            provider,
-                            openai_key,
-                            deepl_key,
-                            target_existing={},
-                            forced_paths=set(),
-                            counters=counters,
-                            failed_paths=failed_paths_lang,
-                        )
-                    else:
-                        translated = merge_keys_missing_or_changed(
-                            en_ns,
-                            existing,
-                            lang,
-                            provider,
-                            openai_key,
-                            deepl_key,
-                            changed_paths=changed_rel_lang,
-                            forced_paths=forced_paths,
-                            counters=counters,
-                            failed_paths=failed_paths_lang,
-                        )
-                    if do_prune:
-                        translated = prune_extra_keys(en_ns, translated)
-                    save_json(out_file, translated)
-                    print(f"   → {lang}/{ns_name}.json aktualisiert")
-
-                    # Manifest aktualisieren (lang from EN) - NUR für tatsächlich verarbeitete Keys
-                    # (siehe Kommentar bei Phase A oben - gleiche Begründung).
-                    touched_rel_lang = set(en_flat_rel.keys()) if do_full else (_missing_rel_keys(en_flat_rel, existing) | changed_rel_lang)
-                    for k, v in en_flat_pref.items():
-                        rel = k.split(f"{ns_name}.", 1)[-1]
-                        if rel in failed_paths_lang or rel not in touched_rel_lang:
-                            continue
-                        man_lang[k] = _sha256(str(v))
-                    _save_manifest(lang, "en", man_lang)
-                except Exception as e:
-                    print(f"❌ Abbruch für Sprache {lang} / Namespace {ns_name}: {e}")
-                    continue
-
-        print(f"\nZusammenfassung Namespaces: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}}}")
-        print("\n✅ Namespaced-Verarbeitung abgeschlossen.")
+    de_ns_dir = os.path.join(base_path, BASE_LANG)
+    if not os.path.isdir(de_ns_dir):
+        print(f"❌ Namespace-Verzeichnis fehlt: {de_ns_dir}")
         return
 
-    # Lade die Basisdatei (de.json)
-    base_file = f"{base_path}/{BASE_LANG}.json"
-    base_dict = load_json(base_file)
-    if not base_dict:
-        print(f"❌ Basisdatei {base_file} konnte nicht geladen werden. Abbruch.")
-        return
-
-    # 1) Lerninhalte aus lessons.json als learn.* in de.json sicherstellen (nur fehlende Keys ergänzen)
+    # Learn-Sync: lessons.json → de/learn.json (nur fehlende Keys ergänzen)
     try:
         lessons_path = os.path.normpath(os.path.join(base_path, "..", "data", "learn", "lessons.json"))
         lessons_raw = load_json(lessons_path)
@@ -905,80 +728,102 @@ def main():
                     "learningOutcome": l.get("learningOutcome", ""),
                     "reward": l.get("reward", ""),
                 }
-            before = json.dumps(base_dict, ensure_ascii=False, sort_keys=True)
-            if not isinstance(base_dict.get("learn"), dict):
-                base_dict["learn"] = {}
-            diffs_learn_de: list[str] = []
-            deep_merge_missing(base_dict["learn"], learn_from_lessons, diffs_learn_de, prefix="learn")
-            after = json.dumps(base_dict, ensure_ascii=False, sort_keys=True)
-            if before != after:
-                save_json(base_file, base_dict)
-                print(f"INFO: de.json um fehlende learn.*-Keys aus lessons.json ergänzt ({len(diffs_learn_de)} Konflikte ohne Überschreiben)")
-            if diffs_learn_de:
-                for p in diffs_learn_de:
-                    print(f"   ~ Bestehender Wert abweichend, nicht überschrieben: {p}")
+            de_learn_file = os.path.join(de_ns_dir, "learn.json")
+            existing_learn = load_json(de_learn_file)
+            next_learn = json.loads(json.dumps(existing_learn)) if existing_learn else {}
+            diffs_ns_de: list[str] = []
+            deep_merge_missing(next_learn, learn_from_lessons, diffs_ns_de)
+            if json.dumps(existing_learn, ensure_ascii=False, sort_keys=True) != json.dumps(next_learn, ensure_ascii=False, sort_keys=True):
+                os.makedirs(os.path.dirname(de_learn_file), exist_ok=True)
+                save_json(de_learn_file, next_learn)
+            if diffs_ns_de:
+                print(f"INFO: de/learn.json ergänzt. Abweichende bestehende Werte nicht überschrieben: {len(diffs_ns_de)}")
         else:
             print("INFO: Keine gültige lessons.json-Liste gefunden; Überspringe Learn-Sync.")
     except Exception as e:
-        print(f"INFO: Learn-Sync übersprungen (Fehler): {e}")
+        print(f"INFO: Learn-Sync (de/learn.json) übersprungen: {e}")
 
-    # 2) Spiegel-Datei für de/learn.json erstellen/aktualisieren (nur fehlende Keys ergänzen)
-    try:
-        de_ns_file = f"{base_path}/{BASE_LANG}/learn.json"
-        existing = load_json(de_ns_file)
-        next_obj = json.loads(json.dumps(existing)) if existing else {}
-        diffs_ns_de: list[str] = []
-        learn_any = base_dict.get("learn")
-        learn_subtree: Dict[str, Any] = learn_any if isinstance(learn_any, dict) else {}
-        deep_merge_missing(next_obj, learn_subtree, diffs_ns_de)
-        if json.dumps(existing, ensure_ascii=False, sort_keys=True) != json.dumps(next_obj, ensure_ascii=False, sort_keys=True):
-            save_json(de_ns_file, next_obj)
-        if diffs_ns_de:
-            print(f"INFO: de/learn.json ergänzt. Abweichende bestehende Werte nicht überschrieben: {len(diffs_ns_de)}")
-    except Exception as e:
-        print(f"INFO: Spiegel-Erstellung de/learn.json übersprungen (Fehler): {e}")
+    # API-Keys aus Umgebungsvariablen lesen (bereits oben geprüft, hier nur Variablen verwenden)
+    openai_key = os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_KEY")
+    deepl_key = os.getenv("DEEPL_API_KEY") or os.getenv("DEEPL_AUTH_KEY")
+    counters: Dict[str, int] = {"skippedOriginalKeysCount": 0, "copiedOriginalKeysCount": 0}
 
-    # Hash-basierte Trigger auch im Legacy-Root-Modus verwenden
-
-    # Erzwungene Keys (per Argument)
+    # Force-Keys einsammeln (dot-Pfade, können Subtrees sein)
+    force_keys_raw = args.force_keys or []
     forced_list: list[str] = []
     for raw in force_keys_raw:
         forced_list.extend([s.strip() for s in raw.split(',') if s and s.strip()])
-    forced_paths: Set[str] = expand_forced_paths(base_dict, forced_list) if forced_list else set()
+    # True, sobald IRGENDEIN --force-key übergeben wurde - unabhängig davon, ob er zum
+    # gerade verarbeiteten Namespace gehört. Siehe Kommentar bei changed_rel unten:
+    # ein scoped --force-key-Lauf darf für Namespaces AUSSERHALB seines Ziels keine
+    # generische Hash-Drift-Erkennung mehr auslösen.
+    any_force_key = bool(forced_list)
 
-    # Zähler für Original-Keys
-    counters: Dict[str, int] = {"skippedOriginalKeysCount": 0, "copiedOriginalKeysCount": 0}
+    ns_files = [f for f in os.listdir(de_ns_dir) if f.endswith('.json')]
+    if not ns_files:
+        print(f"INFO: Keine Namespaces in {de_ns_dir} gefunden. Nichts zu tun.")
+        return
 
-    # Phase A (Legacy): DE → EN anhand Hash-Manifest
-    en_path = f"{base_path}/en.json"
-    en_existing = load_json(en_path) if os.path.exists(en_path) else {}
-    de_flat = _flatten_dict(base_dict)
-    man_en = _load_manifest("en", "de")
-    failed_paths_en: Set[str] = set()
+    check_namespace_key_collisions(de_ns_dir, ns_files)
 
-    if do_full:
-        changed_paths_en = set(de_flat.keys())
-    else:
-        changed_paths_en = set(k for k, v in de_flat.items() if man_en.get(k) != _sha256(str(v))) | forced_paths
+    for ns_file in sorted(ns_files):
+        ns_name = ns_file[:-5]
+        ns_base_path = os.path.join(de_ns_dir, ns_file)
+        ns_base = load_json(ns_base_path)
+        if not isinstance(ns_base, dict):
+            print(f"INFO: Überspringe ungültigen Namespace {ns_name} ({ns_file})")
+            continue
 
-    try:
-        if not do_full and not os.path.exists(en_path):
-            print(f"⚠️ Datei fehlt: {en_path}. Erstelle neue Datei mit allen Übersetzungen.")
-            en_translated = translate_full(
-                base_dict,
-                "en",
-                provider,
-                openai_key,
-                deepl_key,
-                target_existing={},
-                forced_paths=forced_paths,
-                counters=counters,
-                failed_paths=failed_paths_en,
-            )
-        else:
+        print(f"\n🧩 Namespace '{ns_name}':")
+
+        # Force-Keys für diesen Namespace
+        forced_paths = expand_forced_paths(ns_base, forced_list, namespace=ns_name) if forced_list else set()
+
+        # Phase A: de -> en (hash-basiert)
+        try:
+            en_dir = os.path.join(base_path, "en")
+            os.makedirs(en_dir, exist_ok=True)
+            en_out = os.path.join(en_dir, f"{ns_name}.json")
+            en_existing = load_json(en_out)
+            failed_paths_en: Set[str] = set()
+
+            # Flatten DE-NS (relativ) und bilde Präfix für Manifest
+            de_flat_rel = _flatten_dict(ns_base, prefix="")
+            de_flat_pref = {f"{ns_name}.{k}": v for k, v in de_flat_rel.items()}
+            man_en = _load_manifest("en", "de")
+
+            # Inkrementell: nur Keys mit geändertem Hash übersetzen; Full-Lauf übersetzt alles.
+            # Ein gezielter --force-key-Lauf (ohne --full) rührt NUR die erzwungenen Pfade an -
+            # keine generelle Hash-Drift-Erkennung über den ganzen Namespace, damit unabhängige,
+            # längst übersetzte Keys nicht durch einen zufällig abweichenden Hash (z.B. History-
+            # bedingte Manifest/Content-Drift) erneut angefasst werden.
+            #
+            # Bug (reproduziert u.a. an trading.json während eines --force-key
+            # common.accountMode-Laufs): war forced_paths für DIESEN Namespace leer (der
+            # Force-Key gehörte zu einem ANDEREN Namespace), fiel der Code in den
+            # generischen Hash-Drift-Zweig - und jede vorbestehende, unabhängige
+            # Manifest/Content-Drift (typischerweise von Hand-Edits an Sprachdateien vorbei
+            # am Skript) wurde bei diesem völlig unbeteiligten Lauf "gratis" mitübersetzt.
+            # any_force_key unterscheidet jetzt "kein --force-key angegeben" (normaler
+            # inkrementeller Lauf, Hash-Drift-Erkennung soll greifen) von "--force-key
+            # angegeben, aber nicht für DIESEN Namespace" (dieser Namespace bleibt komplett
+            # unangetastet - nur echte Lücken werden weiterhin gefüllt, siehe
+            # merge_keys_missing_or_changed: "key not in out" ist unabhängig von changed_rel).
+            if do_full:
+                changed_rel = set(de_flat_rel.keys())
+            elif forced_paths:
+                changed_rel = set(forced_paths)
+            elif any_force_key:
+                changed_rel = set()
+            else:
+                changed_rel = set(
+                    k for k, v in de_flat_rel.items()
+                    if man_en.get(f"{ns_name}.{k}") != _sha256(str(v))
+                )
+
             if do_full:
                 en_translated = translate_full(
-                    base_dict,
+                    ns_base,
                     "en",
                     provider,
                     openai_key,
@@ -990,64 +835,73 @@ def main():
                 )
             else:
                 en_translated = merge_keys_missing_or_changed(
-                    base_dict,
+                    ns_base,
                     en_existing,
                     "en",
                     provider,
                     openai_key,
                     deepl_key,
-                    changed_paths=changed_paths_en,
+                    changed_paths=changed_rel,
                     forced_paths=forced_paths,
                     counters=counters,
                     failed_paths=failed_paths_en,
                 )
-        if do_prune:
-            en_translated = prune_extra_keys(base_dict, en_translated)
-        save_json(en_path, en_translated)
-        # Manifest aktualisieren (EN from DE)
-        for k, v in de_flat.items():
-            if k in failed_paths_en:
-                continue
-            man_en[k] = _sha256(str(v))
-        _save_manifest("en", "de", man_en)
-    except Exception as e:
-        print(f"❌ Abbruch für Sprache en (legacy): {e}")
+            if do_prune:
+                en_translated = prune_extra_keys(ns_base, en_translated)
+            save_json(en_out, en_translated)
+            print(f"   → en/{ns_name}.json aktualisiert")
 
-    # Phase B (Legacy): EN → andere anhand Hash-Manifest
-    en_flat_after = _flatten_dict(load_json(en_path) or {})
-
-    for lang in TARGET_LANGS:
-        if lang == "en":
+            # Manifest aktualisieren (EN from DE) - NUR für Keys, die dieser Lauf
+            # tatsächlich übersetzt/ergänzt hat (do_full: alle; sonst: fehlende + changed_rel).
+            # Alle anderen Keys behalten ihren bisherigen Manifest-Eintrag unangetastet, damit
+            # echte, noch nicht nachgezogene Drift nicht durch einen unbeteiligten --force-key-
+            # Lauf still als "erledigt" markiert wird, ohne je neu übersetzt worden zu sein.
+            touched_rel_en = set(de_flat_rel.keys()) if do_full else (_missing_rel_keys(de_flat_rel, en_existing) | changed_rel)
+            for k, v in de_flat_pref.items():
+                rel = k.split(f"{ns_name}.", 1)[-1]
+                if rel in failed_paths_en or rel not in touched_rel_en:
+                    continue
+                man_en[k] = _sha256(str(v))
+            _save_manifest("en", "de", man_en)
+        except Exception as e:
+            print(f"❌ Abbruch für Sprache en / Namespace {ns_name}: {e}")
             continue
-        out_path = f"{base_path}/{lang}.json"
-        existing = load_json(out_path) if os.path.exists(out_path) else {}
-        man_lang = _load_manifest(lang, "en")
-        failed_paths_lang: Set[str] = set()
 
-    if do_full:
-        changed_paths_lang = set(en_flat_after.keys())
-    else:
-        changed_paths_lang = set(k for k, v in en_flat_after.items() if man_lang.get(k) != _sha256(str(v)))
-        changed_paths_lang |= forced_paths
+        # Phase B: en -> andere (hash-basiert, Pivot EN-NS)
+        en_ns = load_json(en_out) or {}
+        en_flat_rel = _flatten_dict(en_ns, prefix="")
+        en_flat_pref = {f"{ns_name}.{k}": v for k, v in en_flat_rel.items()}
 
-        try:
-            if not do_full and not os.path.exists(out_path):
-                print(f"⚠️ Datei fehlt: {out_path}. Erstelle neue Datei mit allen Übersetzungen.")
-                translated = translate_full(
-                    load_json(en_path) or {},
-                    lang,
-                    provider,
-                    openai_key,
-                    deepl_key,
-                    target_existing={},
-                    forced_paths=set(),
-                    counters=counters,
-                    failed_paths=failed_paths_lang,
-                )
-            else:
+        for lang in TARGET_LANGS:
+            if lang == "en":
+                continue
+            try:
+                out_dir = os.path.join(base_path, lang)
+                os.makedirs(out_dir, exist_ok=True)
+                out_file = os.path.join(out_dir, f"{ns_name}.json")
+                existing = load_json(out_file)
+                failed_paths_lang: Set[str] = set()
+
+                man_lang = _load_manifest(lang, "en")
+
+                # Gleiche Begründung wie bei changed_rel in Phase A oben: ein --force-key
+                # für einen anderen Namespace darf hier keine generische Hash-Drift-
+                # Erkennung auslösen.
+                if do_full:
+                    changed_rel_lang = set(en_flat_rel.keys())
+                elif forced_paths:
+                    changed_rel_lang = set(forced_paths)
+                elif any_force_key:
+                    changed_rel_lang = set()
+                else:
+                    changed_rel_lang = set(
+                        k for k, v in en_flat_rel.items()
+                        if man_lang.get(f"{ns_name}.{k}") != _sha256(str(v))
+                    )
+
                 if do_full:
                     translated = translate_full(
-                        load_json(en_path) or {},
+                        en_ns,
                         lang,
                         provider,
                         openai_key,
@@ -1059,31 +913,37 @@ def main():
                     )
                 else:
                     translated = merge_keys_missing_or_changed(
-                        load_json(en_path) or {},
+                        en_ns,
                         existing,
                         lang,
                         provider,
                         openai_key,
                         deepl_key,
-                        changed_paths=changed_paths_lang,
-                        forced_paths=set(),
+                        changed_paths=changed_rel_lang,
+                        forced_paths=forced_paths,
                         counters=counters,
                         failed_paths=failed_paths_lang,
                     )
-            if do_prune:
-                translated = prune_extra_keys(load_json(en_path) or {}, translated)
-            save_json(out_path, translated)
-            # Manifest aktualisieren (lang from EN)
-            for k, v in en_flat_after.items():
-                if k in failed_paths_lang:
-                    continue
-                man_lang[k] = _sha256(str(v))
-            _save_manifest(lang, "en", man_lang)
-        except Exception as e:
-            print(f"❌ Abbruch für Sprache {lang} (legacy): {e}")
+                if do_prune:
+                    translated = prune_extra_keys(en_ns, translated)
+                save_json(out_file, translated)
+                print(f"   → {lang}/{ns_name}.json aktualisiert")
 
-    print(f"\nZusammenfassung: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}}}")
-    print("\n✅ Alle Sprachdateien aktualisiert.")
+                # Manifest aktualisieren (lang from EN) - NUR für tatsächlich verarbeitete Keys
+                # (siehe Kommentar bei Phase A oben - gleiche Begründung).
+                touched_rel_lang = set(en_flat_rel.keys()) if do_full else (_missing_rel_keys(en_flat_rel, existing) | changed_rel_lang)
+                for k, v in en_flat_pref.items():
+                    rel = k.split(f"{ns_name}.", 1)[-1]
+                    if rel in failed_paths_lang or rel not in touched_rel_lang:
+                        continue
+                    man_lang[k] = _sha256(str(v))
+                _save_manifest(lang, "en", man_lang)
+            except Exception as e:
+                print(f"❌ Abbruch für Sprache {lang} / Namespace {ns_name}: {e}")
+                continue
+
+    print(f"\nZusammenfassung Namespaces: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}}}")
+    print("\n✅ Namespaced-Verarbeitung abgeschlossen.")
 
 
 if __name__ == "__main__":

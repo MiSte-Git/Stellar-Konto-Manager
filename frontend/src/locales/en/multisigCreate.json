@@ -29,7 +29,7 @@
     },
     "multisigSection": {
       "title": "Multisig",
-      "text": "With multisig, you can define multiple signers for your account. Transactions will then require signatures from multiple z. B. 2 von 3.\n\nAdvantages:\n• Increased ein kompromittierter Key reicht nicht\n• Shared z. B. Firmen, Partnerschaften\n• mehrere Backups bei verschiedenen Personen recovery\n\nWARNING: Test multisig on the testnet first before using it on the mainnet! Incorrect configuration can lead to losing access to the account."
+      "text": "With multisig, you can designate multiple signers for your account. Transactions then require signatures from multiple keys (e.g., 2 out of 3).\n\nAdvantages:\n• Increased security (a single compromised key is not enough)\n• Joint accounts (e.g., companies, partnerships)\n• Emergency recovery (multiple backups held by different people)\n\nWARNING: Test multisig on the testnet first before using it on the mainnet! Incorrect configuration can result in loss of access to the account."
     },
     "diagram": {
       "title": "Signature expiration"
@@ -43,8 +43,8 @@
   "mainnetActivateNote": "Note: Additional reserves are required for multisig. 1 XLM is often not enough.",
   "reserve": {
     "base": "Base reserve per entry: {{val}} XLM",
-    "recommended": "Recommended starting balance: {{val}} XLM (inkl. Puffer)",
-    "required": "Required Minimum Reserve (neu): {{val}} XLM"
+    "recommended": "Recommended starting balance: {{val}} XLM (including a buffer)",
+    "required": "Required minimum reserve (new): {{val}} XLM"
   },
   "signersCountLimit": "Note: Network boundary (Stellar): max. 20 additional signatories.",
   "startingBalance": "Starting credit (XLM)",

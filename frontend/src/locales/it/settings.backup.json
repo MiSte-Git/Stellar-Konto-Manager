@@ -1,5 +1,5 @@
 {
-  "desc": "Esporta o importa i dati del tuo quiz (Einstellungen, Fortschritt, Abzeichen).",
+  "desc": "Esporta o importa i dati dei tuoi quiz (impostazioni, progressi, badge).",
   "export": {
     "button": "Avvia esportazione",
     "fileName": "quiz-backup.json",

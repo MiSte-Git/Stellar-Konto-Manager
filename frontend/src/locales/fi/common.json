@@ -318,7 +318,7 @@
     "cache": {
       "help": "Nopeuttaa kyselyitä paikallisen maksuvälimuistin avulla, mutta saattaa pidentää alkuperäistä latausaikaa.",
       "label": "Käytä välimuistia (Beta)",
-      "prefetchHelp": "Lataamisen läpimenoaika merkinnöille/tapahtumille päivissä (einmalig beim ersten Aktivieren)"
+      "prefetchHelp": "Tietojen/tapahtumien lataamisen viive, päivinä (kertaluonteinen asetus ensimmäisen aktivoinnin yhteydessä)"
     },
     "network": {
       "title": "Verkko",
@@ -378,7 +378,7 @@
       },
       "title": "Luotettavat lompakkoni",
       "validation": {
-        "hint": "Ainakin yksi rivi on virheellinen (fehlende/duplizierte Adresse)."
+        "hint": "Ainakin yksi rivi on virheellinen (osoite puuttuu tai on toistunut)."
       }
     }
   },
@@ -387,7 +387,7 @@
       "deletingProgress": "Poistetaan: {{current}} / {{total}}",
       "success": "Onnistui: {{count}} Trustline(s) poistettu."
     },
-    "skippedDueToBalance": "{{count}} Trustline ohitettu (noch Guthaben vorhanden)."
+    "skippedDueToBalance": "{{count}} Trustline-palvelua ohitettu (krediittiä on vielä jäljellä)."
   },
   "payment": {
     "send": {
@@ -398,7 +398,7 @@
       "memo": "Muistio",
       "memoType": "Muistion tyyppi",
       "memoTypes": {
-        "none": "Muistio (kein Memo)",
+        "none": "Muistio (ei muistiota)",
         "text": "Muistion teksti",
         "id": "Muistio ID",
         "hash": "Muistiomuistio",
@@ -407,7 +407,7 @@
           "none": "Ei muistioita. Käytä tätä, jos vastaanottaja ei odota muistioa.",
           "text": "Vapaa teksti enintään 28 tavua. Käytetään usein yksinkertaisissa maksujen kohdistuksissa.",
           "id": "Numeerinen tunniste (uint64). Useat pörssit käyttävät Memo ID:tä talletusten osoittamiseen.",
-          "hash": "32-tavun SHA-256-hajautus (als 64-stellige Hex-Zeichenfolge). Käytetään viitteinä palveluissa.",
+          "hash": "32 tavun SHA-256-tiiviste (64 merkin pituinen heksadesimaalimerkkijono). Palvelut käyttävät sitä viitteenä.",
           "return": "32-tavunen hajautusarvo palautuksille. Käytetään palautuksissa (MEMO_RETURN)."
         }
       },
@@ -429,7 +429,7 @@
       "successShort": "Lähetetty onnistuneesti",
       "error": "Virhe lähettämisessä: {{detail}}",
       "amountMissing": "Anna jokin määrä.",
-      "amountInvalid": "Virheellinen summa (max. 7 Nachkommastellen).",
+      "amountInvalid": "Virheellinen summa (enintään 7 desimaalia).",
       "amountPositive": "Summa on oltava suurempi kuin 0.",
       "timeout": "Horizon Timeout (504). Yritä hetken kuluttua uudelleen.",
       "httpError": "Horisonttivirhe (tila {{status}}).",
@@ -440,7 +440,7 @@
         "info": "Kohdetili ei ole vielä aktiivinen. Aktivointia varten vaaditaan minimimäärä.",
         "minReserve": "Vähimmäismäärä (2 × perusvaranto)",
         "yourAmount": "Sinun syöttämäsi määrä",
-        "adjustedAmount": "Ehdotettu summa (zum Aktivieren)",
+        "adjustedAmount": "Suositeltu summa (aktivointia varten)",
         "noteAdjust": "Saldoasi ei ole riittävästi aktivointia varten. Jos jatkat, vähimmäismäärä lähetetään automaattisesti."
       },
       "activated": "Kohdetili on aktivoitu.",
@@ -455,7 +455,7 @@
         "title": "Tarkista liiton muistio",
         "textMappable": "Liittovaltion palvelin odottaa muistiinpanoa ”{{expected}}”, mutta nykyinen muistiinpanosi on ”{{current}}”.",
         "textUnmappable": "Liittovaltion palvelin odottaa muistiinpanoa, jota ei voitu ottaa käyttöön automaattisesti. Nykyinen muistiinpanosi on ”{{current}}”.",
-        "empty": "(empty)",
+        "empty": "(tyhjä)",
         "sendAnyway": "Lähetä silti",
         "applyExpected": "Käytä liittovaltion muistion ohjeita"
       },
@@ -515,7 +515,7 @@
       "createTitle": "Luo uusia Muxed-tilejä",
       "createItems": {
         "i1": "Luo uusia Muxed‑osoitteita (M...) perusosoitteestasi (G...).",
-        "i2": "Valinnainen, jossa on tunniste (Name) ja huomautus (z. B. Projekt oder Zweck)."
+        "i2": "Haluttaessa mukana voi olla nimilappu (Nimi) ja merkintä (esim. projekti tai käyttötarkoitus)."
       },
       "importTitle": "Tuo CSV-tiedostoista",
       "importItems": {
@@ -776,7 +776,7 @@
     },
     "securityGuarantee": {
       "title": "🔒 SKM-turvatakuu (Multisig)",
-      "text": "Stellar-tilinhallinta estää kaikki teknisesti aiheutetut tilin lukitukset, jotka voivat johtua virheellisestä multisig-konfiguraatiosta.\n\nSKM estää erityisesti seuraavat:\n- Pääavaimen poistaminen käytöstä ilman käytettävissä olevia allekirjoittajia\n- Käyttämättömät kynnykset (low / med / high)\n- Sekvenssivirheet allekirjoittajan ja kynnysarvojen muutoksissa\n- Viimeisen voimassa olevan korkean allekirjoittajan poistaminen\n- Multisig-asetukset, joissa SetOptionsia ei voida enää allekirjoittaa\n- Päättymättömyystilat hashX:n tai preAuthTx:n ollessa viimeisenä allekirjoittajana\n\nSKM asettaa vain ed25519-allekirjoittajia. Muiden allekirjoitustyyppien osalta käytä {link}.\n\nSKM takaa:\n- Jokainen vahvistettu muutos jättää vähintään yhden kelvollisen reitin avoimeksi tilinhallinnan jatkamiseksi\n- SetOptions pysyy käytettävissä muutoksen jälkeen\n\nEi takaa (systembedingt):\n- Salaisuusavainten tai laitteistolompakoiden katoaminen\n- Ulkopuolisten allekirjoittajien saavuttamattomuus tai epäonnistuminen\n\nJohtopäätös:\nSKM suojaa luotettavasti konfiguraation lukkiutumisilta.\nOrganisatoriset riskit esitetään läpinäkyvästi, mutta niitä ei voida teknisesti estää.",
+      "text": "Stellar Account Manager estää kaikki teknisistä syistä johtuvat tilin lukitukset, jotka voivat johtua virheellisestä monen allekirjoittajan (multisig) määrityksestä.\n\nErityisesti SKM estää seuraavat tilanteet:\n- Pääavaimen deaktivoitumisen, kun yhtään allekirjoittajaa ei tavoiteta\n- Tavoittamattomat kynnysarvot (matala / keskitaso / korkea)\n- Järjestysvirheet allekirjoittajia tai kynnysarvoja muutettaessa\n- Viimeisen kelvollisen korkean tason allekirjoittajan poistaminen\n- Monen allekirjoituksen asetukset, joissa SetOptions-komentoa ei enää voida allekirjoittaa\n- Umpikujat, jotka johtuvat siitä, että viimeisenä allekirjoittajana on hashX tai preAuthTx\n\nSKM käyttää ainoastaan ed25519-allekirjoittajia. Muita allekirjoittajatyyppejä varten käytä {linkki}.\n\nSKM takaa:\n- Jokainen vahvistettu muutos jättää vähintään yhden kelvollisen polun avoimeksi tilinhallinnan jatkamista varten\n- SetOptions-toimintoon pääsee edelleen käsiksi muutoksen jälkeen\n\nSeuraavia ei voida taata (järjestelmän rajoitusten vuoksi):\n- Salaisien avainten tai laitteistolompakoiden katoaminen\n- Ulkoisten allekirjoittajien saatavuuden puuttuminen tai toimintahäiriöt\n\nJohtopäätös:\nSKM tarjoaa luotettavan suojan konfiguraation lukkiutumista vastaan.\nOrganisaatiota koskevat riskit esitetään läpinäkyvästi, mutta niitä ei voida teknisesti estää.",
       "linkLabel": "lab.stellar.org"
     },
     "hint": "Lataa olemassa oleva tili, säädä allekirjoittajia, painotuksia, pääpainoa ja kynnysarvoja ja tallenna muutokset.",
@@ -826,7 +826,7 @@
   "secretKey": {
     "cleared": "Salainen avain on poistettu.",
     "empty": "Salainen avain -kenttä on tyhjä.",
-    "info": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto EI KOSKAAN tallenna salaisuusavaintasi!\n\nTässä näytetty salaisuusavain on olemassa vain selaimessasi (lokal im Arbeitsspeicher). Heti kun lataat sivun uudelleen tai poistut sivulta, se menetetään peruuttamattomasti.\n\nKopioi tai kirjaa ylös salaisuusavain heti sen luomisen jälkeen, ennen kuin suljet sivun.\n\nVarmistus: Voit tarkistaa selaimen kehittäjätyökalujen (F12 → Verkko) avulla, että yhtään salaisuusavainta ei lähetetä ulkopuolisille. Vain allekirjoitetut tapahtumat lähetetään, ei koskaan salaisuusavaintasi.",
+    "info": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto ei KOSKAAN tallenna salaisaa avainta!\n\nTäällä näkyvä salainen avain on olemassa vain selaimessasi (paikallisesti muistissa). Heti kun päivität sivun tai poistut sivulta, se katoaa lopullisesti.\n\nKopioi tai kirjoita salainen avain muistiin heti sen luomisen jälkeen, ennen kuin suljet sivun.\n\nTarkistus: Voit käyttää selaimesi kehittäjätyökaluja (F12 → Verkko) varmistaaksesi, ettei salainen avain lähetetä ulkoisesti. Vain allekirjoitetut transaktiot lähetetään – salainen avaimesi ei koskaan.",
     "invalid": "Virheellinen salainen avain.",
     "label": "Syötä lähteen salainen avain (S-Key)",
     "mismatch": "Salainen avain ei vastaa julkista osoitetta.",
@@ -846,7 +846,7 @@
     "pageTitle": "Sanasto",
     "pageIntro": "Täältä löydät tärkeitä sanoja lohkoketjun maailmasta ja Stellar-verkostosta. Kaikki on selitetty yksinkertaisin termein.",
     "searchLabel": "Hakutermi",
-    "searchPlaceholder": "Hakutermi (z. B. Konto, Account, Muxed)",
+    "searchPlaceholder": "Hae termiä (esim. Konto, Account, Muxed)",
     "searchHint": "Haku löytää sanoja ja selityksiä.",
     "noResults": "Ei vastaavuutta.",
     "blockchain": {
@@ -870,7 +870,7 @@
     "addressG": {
       "title": "G-osoite",
       "original": "G Address",
-      "short": "Stellar-tilin julkinen pääosoite (beginnt mit G).",
+      "short": "Stellar-tilin julkinen ensisijainen osoite (alkaa kirjaimella G).",
       "desc": "G-osoite on Stellarin tilin pääosoite. Se alkaa kirjaimella G. Annat sen muille, jotta he voivat lähettää sinulle jotain."
     },
     "publicKey": {
@@ -1043,7 +1043,7 @@
     "deletingProgress": "Poistetaan: {{current}} / {{total}}",
     "success": "Onnistui: {{count}} Trustline(s) poistettu."
   },
-  "skippedDueToBalance": "{{count}} Trustlines (s) ohitettiin (noch Guthaben vorhanden).",
+  "skippedDueToBalance": "{{count}} Trustline-palvelua ohitettu (krediittiä on vielä jäljellä).",
   "xlmByMemo": {
     "action": {
       "calculate": "Laskea",
@@ -1087,7 +1087,7 @@
       "count": "Määrä: {{n}}",
       "label": "Vertailu (all inputs)",
       "otherCount": "Merkinnät, joiden muistiot ovat virheellisiä/puuttuvat: {{n}}",
-      "unique": "Uniikit lompakot (alle): {{n}}",
+      "unique": "Ainutlaatuiset lompakot (kaikki): {{n}}",
       "uniqueWallets": "Ainutlaatuiset lompakot: {{n}}"
     },
     "time": {
@@ -1110,7 +1110,7 @@
       "local": "Paikallinen aikavyöhyke",
       "note": "Päivämäärä ja aika tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC-aikaan ennen hakemista.",
       "utc": "UTC",
-      "window": "Hyödynnetty UTC-aikaikkuna: {{from}} → {{to}} (Bis exklusiv)"
+      "window": "Käytetty UTC-aikaväli: {{from}} → {{to}} (loppu pois lukien)"
     },
     "wrongMemos": {
       "button": "Näytä lompakot, joissa on virheellinen/tyhjä muistiinpano",

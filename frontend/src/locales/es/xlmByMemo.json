@@ -41,7 +41,7 @@
     "count": "Cantidad: {{n}}",
     "label": "Comparación (all inputs)",
     "otherCount": "Entradas con memorando incorrecto/faltante: {{n}}",
-    "unique": "Carteras únicas (alle): {{n}}",
+    "unique": "Carteras únicas (todas): {{n}}",
     "uniqueWallets": "Monederos únicos: {{n}}"
   },
   "time": {
@@ -64,7 +64,7 @@
     "local": "Zona horaria local",
     "note": "La fecha y la hora se interpretan en la zona horaria seleccionada y se convierten automáticamente a UTC antes de buscar.",
     "utc": "UTC",
-    "window": "Ventana de tiempo UTC utilizada: {{from}} → {{to}} (Bis exklusiv)"
+    "window": "Intervalo de tiempo UTC utilizado: {{from}} → {{to}} (fin exclusivo)"
   },
   "wrongMemos": {
     "button": "Mostrar monederos con memo incorrecto/vacío.",

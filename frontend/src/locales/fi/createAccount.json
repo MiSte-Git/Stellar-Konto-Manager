@@ -27,7 +27,7 @@
     "more": "Lisätietoa",
     "keysOnPage": {
       "title": "Avain tällä sivulla",
-      "text": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto EI KOSKAAN tallenna salaisuuksien avaintasi!\n\nTäällä näytetty salaisuuksien avain on olemassa vain selaimessasi (lokal im Arbeitsspeicher). Kun päivität tai poistut sivulta, se menetetään pysyvästi.\n\nKopioi tai kirjoita salaisuuksien avain heti ylös sen luomisen jälkeen ennen sivun sulkemista.\n\nVarmistaminen: Voit käyttää selaimen kehittäjätyökaluja (F12 → Verkkoliikenne) tarkistaaksesi, ettei mitään salaisuuksien avainta lähetetä ulkopuolelle. Vain allekirjoitetut tapahtumat lähetetään, ei koskaan salaisuuksien avaintasi."
+      "text": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto ei KOSKAAN tallenna salaisaa avainta!\n\nTäällä näkyvä salainen avain on olemassa vain selaimessasi (paikallisesti muistissa). Heti kun päivität sivun tai poistut sivulta, se katoaa lopullisesti.\n\nKopioi tai kirjoita salainen avain muistiin heti sen luomisen jälkeen, ennen kuin suljet sivun.\n\nTarkistus: Voit käyttää selaimesi kehittäjätyökaluja (F12 → Verkko) varmistaaksesi, ettei salainen avain lähetetä ulkoisesti. Vain allekirjoitetut transaktiot lähetetään – salainen avaimesi ei koskaan."
     },
     "title": "Tärkeää tietoa",
     "secureKeys": {
@@ -50,8 +50,8 @@
   "mainnetActivateNote": "Huomaa: Multisig vaatii lisää varantoja. 1 XLM ei usein riitä.",
   "reserve": {
     "base": "Perusvaraus merkintää kohden: {{val}} XLM",
-    "recommended": "Suositeltu aloitussaldo: {{val}} XLM (inkl. Puffer)",
-    "required": "Vaatimuksena oleva vähimmäisvaranto (neu): {{val}} XLM"
+    "recommended": "Suositeltu alkusaldo: {{val}} XLM (sisältää varan)",
+    "required": "Vaadittu vähimmäisvaranto (uusi): {{val}} XLM"
   },
   "signersCountHint": "Määritä allekirjoitusten vähimmäismäärä alla kohdassa \"Required Signatures\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Huom: Verkon raja (Stellar): enintään 20 ylimääräistä allekirjoittajaa.",

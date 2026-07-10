@@ -29,7 +29,7 @@
     },
     "multisigSection": {
       "title": "Višepotpis (Multisig)",
-      "text": "Kod multisiga možete definirati više potpisnika za vaš račun. Transakcije će zatim zahtijevati potpise od više osoba, npr. 2 od 3.\n\nPrednosti:\n• Povećana sigurnost, kompromitiran ključ nije dovoljan\n• Zajedničko korištenje, npr. u tvrtkama, partnerstvima\n• Više sigurnosnih kopija kod različitih osoba za oporavak\n\nUPOZORENJE: Prvo testirajte multisig na testnetu prije nego što ga upotrijebite na mainnetu! Pogrešna konfiguracija može dovesti do gubitka pristupa računu."
+      "text": "S multisig potpisom možete odrediti više potpisnika za svoj račun. Transakcije zatim zahtijevaju potpise s više ključeva (npr. 2 od 3).\n\nPrednosti:\n• Povećana sigurnost (nije dovoljan samo jedan kompromitirani ključ)\n• Zajednički računi (npr. tvrtke, partnerstva)\n• Hitno oporavak (više sigurnosnih kopija koje posjeduju različite osobe)\n\nUPOZORENJE: Prvo testirajte multisig na testnetu prije nego što ga upotrijebite na mainnetu! Neispravna konfiguracija može rezultirati gubitkom pristupa računu."
     },
     "diagram": {
       "title": "Istek potpisa"
@@ -43,8 +43,8 @@
   "mainnetActivateNote": "Napomena: Za multisig su potrebne dodatne rezerve. 1 XLM često nije dovoljan.",
   "reserve": {
     "base": "Osnovna rezerva po unosu: {{val}} XLM",
-    "recommended": "Preporučeni početni saldo: {{val}} XLM (inkl. Puffer)",
-    "required": "Obvezna minimalna rezerva (neu): {{val}} XLM"
+    "recommended": "Preporučeni početni saldo: {{val}} XLM (uključujući rezervu)",
+    "required": "Potrebna minimalna rezerva (novo): {{val}} XLM"
   },
   "signersCountLimit": "Hinweis: Netzwerkgrenze (Stellar): maximal 20 zusätzliche Unterzeichner.",
   "startingBalance": "Početni kredit (XLM)",

@@ -29,7 +29,7 @@
     },
     "multisigSection": {
       "title": "Moniallekirjoitus",
-      "text": "Multisignaturilla (multisig) voit määrittää useita allekirjoittajia tilillesi. Tapahtumat vaativat silloin allekirjoituksia useammalta henkilöltä, esim. 2 kolmesta.\n\nEdut:\n• Lisääntynyt turvallisuus, yksi vaarantunut avain ei riitä\n• Jaettu käyttöoikeus esim. yrityksissä, kumppanuuksissa\n• Useita varmuuskopioita eri henkilöillä palautusta varten\n\nVAROITUS: Testaa multisig ensin testnetissä ennen kuin käytät sitä pääverkossa! Väärä konfiguraatio voi johtaa tilin käyttöoikeuden menettämiseen."
+      "text": "Multisig-toiminnon avulla voit nimetä tilillesi useita allekirjoittajia. Tällöin transaktiot edellyttävät allekirjoituksia useilta avaimilta (esim. 2/3).\n\nEdut:\n• Parempi turvallisuus (yhden vaarantuneen avaimen käyttö ei riitä)\n• Yhteistilit (esim. yritykset, kumppanuudet)\n• Hätätilanteiden palautus (eri henkilöillä on hallussaan useita varmuuskopioita)\n\nVAROITUS: Testaa multisig-toiminto ensin testnetissä ennen kuin otat sen käyttöön mainnetissä! Virheellinen konfigurointi voi johtaa tilin käyttöoikeuden menettämiseen."
     },
     "diagram": {
       "title": "Allekirjoituksen vanhentuminen"
@@ -43,8 +43,8 @@
   "mainnetActivateNote": "Huomio: Moniallekirjoituksille vaaditaan lisävarantoja. 1 XLM ei usein ole riittävä.",
   "reserve": {
     "base": "Perusvaraus per merkintä: {{val}} XLM",
-    "recommended": "Suositeltu aloitussaldo: {{val}} XLM (inkl. Puffer)",
-    "required": "Välttämätön vähimmäisvaranto (neu): {{val}} XLM"
+    "recommended": "Suositeltu alkusaldo: {{val}} XLM (sisältää varan)",
+    "required": "Vaadittu vähimmäisvaranto (uusi): {{val}} XLM"
   },
   "signersCountLimit": "Huomautus: Verkoston rajat (Stellar): enintään 20 lisäallekirjoittajaa.",
   "startingBalance": "Aloitusluotto (XLM)",

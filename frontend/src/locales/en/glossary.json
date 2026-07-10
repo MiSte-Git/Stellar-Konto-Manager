@@ -2,7 +2,7 @@
   "pageTitle": "Glossary",
   "pageIntro": "Here you will find important terms from the blockchain world and the Stellar network. Everything is explained in simple words.",
   "searchLabel": "Search term",
-  "searchPlaceholder": "Search term (z. B. Konto, Account, Muxed)",
+  "searchPlaceholder": "Search for a term (e.g., Konto, Account, Muxed)",
   "searchHint": "The search finds words and explanations.",
   "noResults": "No match.",
   "groups": {
@@ -42,7 +42,7 @@
   "addressG": {
     "title": "G address",
     "original": "G Address",
-    "short": "The public primary address of a Stellar account (beginnt mit G).",
+    "short": "The public primary address of a Stellar account (starts with G).",
     "desc": "The G-address is the main address of a Stellar account. It starts with the letter G. You provide it to others so they can send you something."
   },
   "publicKey": {
@@ -73,7 +73,7 @@
     "title": "Use cases for Muxed Accounts",
     "original": "Muxed accounts use cases",
     "short": "Examples, benefits, and limitations of M-addresses as a mapping aid.",
-    "desc": "Company - Example\n\nSetup:\n- A company G-account\n- One M-address per customer/use-case (ID)\n\nProcess:\n- Customer pays to their M-address\n- Everything goes to the company G-account\n- Accounting reads the ID -> unique allocation\n\nSuitable for:\n- Shops, payment providers, exchanges\n- Internal references without memo risks\n\nAssociation - Example\n\nSetup:\n- An association G-account\n- M-addresses for members, departments, purposes\n\nProcess:\n- Contribution/donation to the appropriate M-address\n- Allocation via ID, no memo errors\n\nSuitable for:\n- Membership fees\n- Earmarked revenues\n- Easy auditing\n\nWhat Muxed Accounts excel at:\n- Robust input allocation\n- One account, many identities\n- No memo requirement\n- Fewer operational errors\n\nWhat Muxed Accounts are not:\n- Not sub-accounts\n- No individual balance\n- No individual trustlines\n- No individual signers/rights\n\nTypically unsuitable use cases:\n- Salary payments/payroll accounts (benoetigen eigenes G-Konto)\n- Trust/Escrow for third parties (kein rechtlicher Vermoegenstrenner)\n- Role-based security (keine getrennten Signer/Thresholds)\n- Budget or limit separation (keine separaten Salden/Asset-Limits)\n- Compliance-separated accounts (KYC/Reporting nicht sauber trennbar)\n\nComparison (Kurz):\nAssigning payments: Yes\nSeparating assets: No\nDelegating access: No\nLegally separate account: No\nInternal accounting: Yes\n\nKey takeaway:\nMuxed Accounts address payments - they do not replace accounts.\nIf control, ownership, or separation is needed -> own G-account."
+    "desc": "Company - Example\n\nSetup:\n- One company G-account\n- One M-address per customer/use case (ID)\n\nProcess:\n- Customer pays to their M-address\n- All funds go to the company G-account\n- Accounting reads the ID -> unique assignment\n\nSuitable for:\n- Online stores, payment providers, exchanges\n- Internal references without memo risks\n\nClub - Example\n\nSetup:\n- One club G-account\n- M-Addresses for members, divisions, and purposes\n\nProcess:\n- Dues/donation sent to the appropriate M-Address\n- Allocation via ID, no memo errors\n\nSuitable for:\n- Membership dues\n- Earmarked revenue\n- Easy auditing\n\nWhat Muxed Accounts do well:\n- Robust incoming payment allocation\n- One account, many identities\n- No memo requirement\n- Fewer user errors\n\nWhat Muxed Accounts are not:\n- No subaccounts\n- No separate balance\n- No separate trustlines\n- No dedicated signers/permissions\n\nTypically unsuitable use cases:\n- Wage payments/payroll accounts (require a dedicated G-account)\n- Trust/custody for third parties (no legal segregation of assets)\n- Role-based security (no separate signers/thresholds)\n- Budget or limit segregation (no separate balances/asset limits)\n- Compliance-segregated accounts (KYC/reporting cannot be cleanly separated)\n\nComparison (Kurz):\nAssign payments: Yes\nSegregate assets: No\nDelegate access: No\nLegally separate account: No\nInternal accounting: Yes\n\nNote:\nMuxed accounts route payments—they do not replace accounts.\nIf control, ownership, or segregation is required -> use a separate G-account."
   },
   "multisig": {
     "title": "Multisignature",
@@ -237,7 +237,7 @@
     "title": "Horizon History",
     "original": "Horizon history depth",
     "short": "Describes how far back the transaction history provided by public Horizon servers extends.",
-    "desc": "The public Horizon servers (Mainnet und Testnet) operated by the Stellar Development Foundation only provide a limited history – currently approximately one year retroactively. Older data can no longer be retrieved through these free endpoints. If you need to go further back in time, you essentially have two options: (1) you can run your own Horizon node with full history (inklusive History Archives), or (2) you can use third-party or paid services that store and provide long-term historical Stellar data.",
+    "desc": "The public Horizon servers (Mainnet and Testnet) operated by the Stellar Development Foundation only provide a limited history—currently about one year back. Older data is no longer accessible via these free endpoints. If you need to go further back in time, you essentially have two options: (1) you run your own Horizon node with a complete history (including history archives), or (2) use third-party or paid services that store and provide historical Stellar data over the long term.",
     "seeAlso": [
       "horizon",
       "serverHorizon",
@@ -310,7 +310,7 @@
     "short": "A legally required identity check that financial services demand before you can use them.",
     "desc": "KYC (Know Your Customer) is a regulatory process where users prove their identity with documents and sometimes a selfie. The goal is to prevent money laundering (AML), terrorist financing, and fraud. Decentralized protocols like the Stellar DEX do not require KYC—you trade directly from your wallet. Onramp and offramp services must perform KYC because they bridge fiat and crypto.",
     "externalDomains": "",
-    "domainsHeading": "Well-known KYC providers (Domains zum selbst Eintippen):"
+    "domainsHeading": "Well-known KYC providers (domains to type in yourself):"
   },
   "defi": {
     "title": "Decentralized Finance",
@@ -514,7 +514,7 @@
     "title": "Signatory",
     "original": "Signer",
     "short": "Public key with weight, part of the account configuration.",
-    "desc": "A signer is a public key that belongs to an account and has a weight. Its signature counts towards the required threshold. Multiple signers can collectively authorize a transaction.\n\nSigner types:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM supports only ed25519. For additional options, visit https://lab.stellar.org."
+    "desc": "A signer is a public key associated with an account that has a weight. Its signature counts toward the required threshold. Multiple signers can jointly approve a transaction.\n\nSigner types:\n- ed25519 (normal key)\n- hashX (hash template)\n- preAuthTx (pre-authorized transaction)\n\nSKM only supports ed25519. For additional options, see https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Thresholds",

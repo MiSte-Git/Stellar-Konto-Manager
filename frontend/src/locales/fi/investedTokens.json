@@ -53,6 +53,6 @@
   },
   "history": {
     "availableFrom": "Server (Horizon) – Historia vuodesta",
-    "hintFullHistory": "Huomautus: Horizon-palvelimen pääkirjahistoria ulottuu vain {{available}} asti. Vain tuohon päivämäärään asti olevat tiedot näytetään. Tästä syystä valittu \"Alkaen\"-päivämäärä on rajoitettu. Vanhempia tietoja varten tarvitaan (meist kostenpflichtiger) Full‑History‑Provider (mahdollisesti tulevaisuudessa!)."
+    "hintFullHistory": "Huomautus: Horizon-palvelimen tilaushistoria ulottuu vain vuoteen {{available}} asti. Vain kyseiseen ajankohtaan asti ulottuvat tiedot näytetään. Valittu ”Alkaen”-päivämäärä on siis rajoitettu. Vanhempien tietojen saamiseksi tarvitaan (yleensä maksullinen) palveluntarjoaja, joka tarjoaa täydellisen historian (ehkä tulevaisuudessa!)."
   }
 }

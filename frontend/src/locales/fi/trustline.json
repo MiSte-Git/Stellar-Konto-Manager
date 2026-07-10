@@ -34,7 +34,7 @@
     "issuerPlaceholder": "z. B. G...liikkeeseenlaskija",
     "issuerHelp": "Liikkeeseenlaskutilin julkinen avain (G-Adresse), joka laskee liikkeelle varat.",
     "limitLabel": "Raja",
-    "limitPlaceholder": "z. B. 1 000 000 (eine Million)",
+    "limitPlaceholder": "esim. 1 000 000 (yksi miljoona)",
     "limitHelp": "Raja on tämän varan enimmäismäärä, jonka tämä tili voi luottaa. Käytännössä sen tulisi olla asetettu niin korkeaksi kuin odotettu enimmäissaldosi tässä varassa.",
     "submit": "Luo trustline",
     "cancel": "Peruuttaa",

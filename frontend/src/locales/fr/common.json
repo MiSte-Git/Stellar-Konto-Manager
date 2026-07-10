@@ -318,7 +318,7 @@
     "cache": {
       "help": "Accélère les requêtes grâce à un cache de paiement local, mais peut prolonger le chargement initial.",
       "label": "Utiliser le cache (Beta)",
-      "prefetchHelp": "Délai de traitement pour le chargement des entrées/transactions en jours (einmalig beim ersten Aktivieren)"
+      "prefetchHelp": "Délai de chargement des entrées/transactions, en jours (réglage unique lors de l'activation initiale)"
     },
     "network": {
       "title": "Réseau",
@@ -378,7 +378,7 @@
       },
       "title": "Mes portefeuilles de confiance",
       "validation": {
-        "hint": "Au moins une ligne est invalide (fehlende/duplizierte Adresse)."
+        "hint": "Au moins une ligne n'est pas valide (adresse manquante ou en double)."
       }
     }
   },
@@ -387,7 +387,7 @@
       "deletingProgress": "Suppression en cours : {{current}} / {{total}}",
       "success": "Succès : {{count}} Trustline(s) supprimée."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) sautéé(noch Guthaben vorhanden)."
+    "skippedDueToBalance": "{{count}} Trustline(s) ignorée(s) (crédit toujours disponible)."
   },
   "payment": {
     "send": {
@@ -398,7 +398,7 @@
       "memo": "Note",
       "memoType": "Type de mémo",
       "memoTypes": {
-        "none": "Mémo (kein Memo)",
+        "none": "Note (pas de note)",
         "text": "Texte de mémo",
         "id": "ID Mémo",
         "hash": "Mémo Hash",
@@ -407,7 +407,7 @@
           "none": "Pas de mémo. Utilisez ceci si le destinataire ne s'attend pas à recevoir un mémo.",
           "text": "Texte libre jusqu'à 28 octets. Souvent utilisé pour l'allocation dans les paiements simples.",
           "id": "ID numérique (uint64). De nombreuses plateformes utilisent un numéro de mémo pour attribuer des dépôts.",
-          "hash": "Hash SHA-256 de 32 octets (als 64-stellige Hex-Zeichenfolge). Utilisé par les services pour des références.",
+          "hash": "Hachage SHA-256 de 32 octets (sous forme de chaîne hexadécimale de 64 caractères). Utilisé par les services à titre de référence.",
           "return": "Hachage de 32 octets pour les retours. Utilisé pour les retours (MEMO_RETURN)."
         }
       },
@@ -429,7 +429,7 @@
       "successShort": "Envoyé avec succès",
       "error": "Erreur lors de l'envoi : {{détail}}",
       "amountMissing": "Veuillez entrer un montant.",
-      "amountInvalid": "Montant invalide (max. 7 Nachkommastellen).",
+      "amountInvalid": "Montant non valide (7 décimales au maximum).",
       "amountPositive": "Le montant doit être supérieur à 0.",
       "timeout": "Expiration de l'horizon (504). Veuillez réessayer sous peu.",
       "httpError": "Erreur d'horizon (statut {{status}}).",
@@ -440,7 +440,7 @@
         "info": "Le compte cible n'est pas encore actif. Un montant minimum est requis pour l'activation.",
         "minReserve": "Montant minimum (2 × réserve de base)",
         "yourAmount": "Montant saisi",
-        "adjustedAmount": "Montant proposé (zum Aktivieren)",
+        "adjustedAmount": "Montant recommandé (pour l'activation)",
         "noteAdjust": "Votre solde est insuffisant pour l'activation. Si vous continuez, le montant minimum sera envoyé automatiquement."
       },
       "activated": "Le compte cible a été activé.",
@@ -455,7 +455,7 @@
         "title": "Consulter la note de service de la fédération",
         "textMappable": "Le serveur de fédération attend la note « {{expected}} », mais votre note actuelle est « {{current}} ».",
         "textUnmappable": "Le serveur de fédération attend une note qui n'a pas pu être appliquée automatiquement. Votre note actuelle est « {{current}} ».",
-        "empty": "(empty)",
+        "empty": "(vide)",
         "sendAnyway": "Envoyer quand même",
         "applyExpected": "Appliquer la note de service de la fédération"
       },
@@ -515,7 +515,7 @@
       "createTitle": "Créer de nouveaux comptes Muxed",
       "createItems": {
         "i1": "Génère de nouvelles adresses Muxed (M...) à partir de votre adresse de base (G...).",
-        "i2": "Facultatif avec étiquette (Name) et note (z. B. Projekt oder Zweck)."
+        "i2": "Peut être accompagné d'une étiquette (Nom) et d'une note (par exemple, projet ou objectif)."
       },
       "importTitle": "Importer depuis des fichiers CSV",
       "importItems": {
@@ -776,7 +776,7 @@
     },
     "securityGuarantee": {
       "title": "🔒 Garantie de sécurité SKM (Multisig)",
-      "text": "Le gestionnaire de comptes Stellar empêche tous les blocages de compte d'origine technique pouvant survenir en raison d'une configuration incorrecte de multisignatures.\n\nPlus précisément, SKM bloque :\n- La désactivation de la clé principale sans signataires accessibles\n- Seuils inaccessibles (low / med / high)\n- Erreurs de séquence dans les modifications de signataires et de seuils\n- Suppression du dernier signataire principal valide\n- Configurations multisignatures où SetOptions ne peut plus être signé\n- Culs-de-sac dus à hashX ou preAuthTx comme signataire final\n\nSKM ne configure que des signataires ed25519. Pour d'autres types de signataires, utilisez {link}.\n\nSKM garantit :\n- Chaque modification confirmée laisse au moins un chemin valide ouvert pour une gestion ultérieure du compte\n- SetOptions reste accessible après la modification\n\nNon garanti (systembedingt) :\n- Perte de clés secrètes ou de portefeuilles matériels\n- Inaccessibilité ou échec des signataires externes\n\nConclusion :\nSKM protège de manière fiable contre les blocages de configuration.\nLes risques organisationnels sont affichés de manière transparente, mais ne peuvent être empêchés techniquement.",
+      "text": "Le Stellar Account Manager empêche tous les blocages de compte d'origine technique pouvant résulter d'une configuration multisig incorrecte.\n\nPlus précisément, le SKM bloque :\n- La désactivation de la clé principale lorsqu'aucun signataire n'est joignable\n- Les seuils inatteignables (bas / moyen / élevé)\n- Les erreurs d’ordre lors de la modification des signataires ou des seuils\n- La suppression du dernier signataire « haut » valide\n- Les configurations multisignatures où SetOptions ne peut plus être signé\n- Les impasses causées par hashX ou preAuthTx en tant que dernier signataire\n\nSKM utilise uniquement des signataires ed25519. Pour d’autres types de signataires, utilisez {link}.\n\nSKM garantit :\n- Chaque modification confirmée laisse au moins un chemin valide ouvert pour la gestion ultérieure du compte\n- SetOptions reste accessible après la modification\n\nNe peut être garanti (en raison des limitations du système) :\n- La perte de clés secrètes ou de portefeuilles matériels\n- L’indisponibilité ou la défaillance de signataires externes\n\nConclusion :\nSKM offre une protection fiable contre les blocages de configuration.\nLes risques organisationnels sont affichés de manière transparente, mais ne peuvent être techniquement évités.",
       "linkLabel": "lab.stellar.org"
     },
     "hint": "Chargez un compte existant, ajustez les signataires, les poids, le poids principal et les seuils, puis enregistrez les modifications.",
@@ -826,7 +826,7 @@
   "secretKey": {
     "cleared": "La clé secrète a été supprimée.",
     "empty": "Le champ de la clé secrète est vide.",
-    "info": "⚠️ IMPORTANT : Ce site web NE stocke JAMAIS votre Clé Secrète !\n\nLa Clé Secrète affichée ici existe uniquement dans votre navigateur (lokal im Arbeitsspeicher). Dès que vous rechargez ou quittez la page, elle est irrémédiablement perdue.\n\nCopiez ou notez immédiatement la Clé Secrète après l'avoir générée, avant de fermer la page.\n\nVérification : Vous pouvez vérifier à l'aide des outils de développement du navigateur (F12 → Réseau) qu'aucune Clé Secrète n'est transmise à l'extérieur. Seules les transactions signées sont envoyées, jamais votre Clé Secrète.",
+    "info": "⚠️ IMPORTANT : ce site web n'enregistre JAMAIS votre clé secrète !\n\nLa clé secrète affichée ici n'existe que dans votre navigateur (en mémoire locale). Dès que vous actualisez la page ou que vous la quittez, elle est irrémédiablement perdue.\n\nCopiez ou notez la clé secrète immédiatement après sa génération, avant de fermer la page.\n\nVérification : vous pouvez utiliser les outils de développement de votre navigateur (F12 → Réseau) pour vérifier qu’aucune clé secrète n’est transmise à l’extérieur. Seules les transactions signées sont envoyées — jamais votre clé secrète.",
     "invalid": "Clé secrète invalide.",
     "label": "Geben Sie den geheimen Quellschlüssel ein (S-Key)",
     "mismatch": "La clé secrète ne correspond pas à l'adresse publique.",
@@ -846,7 +846,7 @@
     "pageTitle": "Glossaire",
     "pageIntro": "Ici, vous trouverez des termes importants du monde de la blockchain et du réseau Stellar. Tout est expliqué en termes simples.",
     "searchLabel": "Terme de recherche",
-    "searchPlaceholder": "Terme de recherche (z. B. Konto, Account, Muxed)",
+    "searchPlaceholder": "Rechercher un terme (par exemple : Konto, Account, Muxed)",
     "searchHint": "La recherche trouve des mots et des explications.",
     "noResults": "Pas de correspondance.",
     "blockchain": {
@@ -870,7 +870,7 @@
     "addressG": {
       "title": "Adresse G",
       "original": "G Address",
-      "short": "L'adresse principale publique d'un compte Stellar (beginnt mit G).",
+      "short": "L'adresse publique principale d'un compte Stellar (commençant par G).",
       "desc": "L'adresse G est l'adresse principale d'un compte Stellar. Elle commence par la lettre G. Vous la donnez aux autres pour qu'ils puissent vous envoyer quelque chose."
     },
     "publicKey": {
@@ -1043,7 +1043,7 @@
     "deletingProgress": "Suppression en cours : {{current}} / {{total}}",
     "success": "Succès : {{count}} Trustline(s) supprimé."
   },
-  "skippedDueToBalance": "{{count}} Trustlines (s) ignorées (noch Guthaben vorhanden).",
+  "skippedDueToBalance": "{{count}} Trustline(s) ignorée(s) (crédit toujours disponible).",
   "xlmByMemo": {
     "action": {
       "calculate": "Calculer",
@@ -1087,7 +1087,7 @@
       "count": "Quantité : {{n}}",
       "label": "Comparaison (all inputs)",
       "otherCount": "Entrées avec mémo incorrect/manquant : {{n}}",
-      "unique": "Portefeuilles uniques (alle): {{n}}",
+      "unique": "Nombre total de portefeuilles (tous) : {{n}}",
       "uniqueWallets": "Portefeuilles Uniques : {{n}}"
     },
     "time": {
@@ -1110,7 +1110,7 @@
       "local": "Fuseau horaire local",
       "note": "La date et l'heure sont interprétées dans le fuseau horaire sélectionné et automatiquement converties en UTC avant la recherche.",
       "utc": "UTC",
-      "window": "Fenêtre de temps UTC utilisée : {{from}} → {{to}} (Bis exklusiv)"
+      "window": "Plage horaire UTC utilisée : {{from}} → {{to}} (fin exclue)"
     },
     "wrongMemos": {
       "button": "Afficher les portefeuilles avec un mémo incorrect/vide",

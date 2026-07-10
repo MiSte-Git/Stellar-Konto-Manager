@@ -2,7 +2,7 @@
   "pageTitle": "Rječnik",
   "pageIntro": "Ovdje ćete pronaći važne pojmove iz svijeta blockchaina i Stellar mreže. Sve je objašnjeno jednostavnim riječima.",
   "searchLabel": "Pojam pretraživanja",
-  "searchPlaceholder": "Pojam pretraživanja (z. B. Konto, Account, Muxed)",
+  "searchPlaceholder": "Pretraži pojam (npr. Konto, Account, Muxed)",
   "searchHint": "Pretraga pronalazi riječi i objašnjenja.",
   "noResults": "Nema podudaranja.",
   "groups": {
@@ -42,7 +42,7 @@
   "addressG": {
     "title": "G adresa",
     "original": "G Address",
-    "short": "Javna primarna adresa Stellar računa (beginnt mit G).",
+    "short": "Javna primarna adresa Stellar računa (počinje s G).",
     "desc": "G-adresa je glavna adresa Stellar računa. Počinje s slovom G. Pruža se drugima kako bi vam mogli poslati nešto."
   },
   "publicKey": {
@@ -73,7 +73,7 @@
     "title": "Upotreba za Muxed račune",
     "original": "Muxed accounts use cases",
     "short": "Primjeri, prednosti i ograničenja M-adresa kao pomoćnog sredstva za kartiranje.",
-    "desc": "Unternehmen - Beispiel\n\nEinrichtung:\n- Ein Unternehmens-G-Konto\n- Eine M-Adresse pro Kunde/Anwendungsfall (ID)\n\nProzess:\n- Kunde zahlt auf seine M-Adresse\n- Alles geht auf das Unternehmens-G-Konto\n- Buchhaltung liest die ID -> eindeutige Zuordnung\n\nGeeignet für:\n- Shops, Zahlungsanbieter, Börsen\n- Interne Verweise ohne Memo-Risiken\n\nVerein - Beispiel\n\nEinrichtung:\n- Ein Vereins-G-Konto\n- M-Adressen für Mitglieder, Abteilungen, Zwecke\n\nProzess:\n- Beitrag/Spende an die entsprechende M-Adresse\n- Zuordnung über ID, keine Memo-Fehler\n\nGeeignet für:\n- Mitgliedsbeiträge\n- Zweckgebundene Einnahmen\n- Einfache Prüfungen\n\nWorin Muxed Accounts hervorragend sind:\n- Robuste Eingabenzuordnung\n- Ein Konto, viele Identitäten\n- Keine Memo-Anforderung\n- Weniger betriebliche Fehler\n\nWas Muxed Accounts nicht sind:\n- Keine Unterkonten\n- Keine individuellen Salden\n- Keine individuellen Vertrauenslinien\n- Keine individuellen Unterzeichner/Rechte\n\nTypisch ungeeignete Anwendungsfälle:\n- Gehaltszahlungen/Gehaltskonten (benoetigen eigenes G-Konto)\n- Treuhand/Depot für Dritte (kein rechtlicher Vermoegenstrenner)\n- Rollenbasierte Sicherheit (keine getrennten Signer/Thresholds)\n- Budget- oder Limittrennung (keine separaten Salden/Asset-Limits)\n- Compliance-getrennte Konten (KYC/Reporting nicht sauber trennbar)\n\nVergleich (Kurz):\nZuweisung von Zahlungen: Ja\nTrennung von Vermögenswerten: Nein\nZugriff delegieren: Nein\nRechtlich getrenntes Konto: Nein\nInterne Buchhaltung: Ja\n\nWichtigste Erkenntnis:\nMuxed Accounts adressieren Zahlungen - sie ersetzen keine Konten.\nWenn Kontrolle, Eigentum oder Trennung benötigt wird -> eigenes G-Konto."
+    "desc": "Tvrtka - Primjer\n\nPostavka:\n- Jedan G-račun tvrtke\n- Jedna M-adresa po kupcu/slučaju upotrebe (ID)\n\nProces:\n- Kupac plaća na svoju M-adresu\n- Sva sredstva idu na G-račun tvrtke\n- Računovodstvo čita ID -> jedinstveno dodjeljivanje\n\nPogodno za:\n- Internetske trgovine, pružatelje usluga plaćanja, mjenjačnice\n- Interne reference bez rizika od napomena\n\nKlub - Primjer\n\nPostavka:\n- Jedan G-račun kluba\n- M-adrese za članove, odjele i svrhe\n\nProces:\n- Članarina/donacija se šalje na odgovarajuću M-adresu\n- Raspodjela putem ID-a, bez pogrešaka u napomeni\n\nPogodno za:\n- Članarine\n- Namjenski prihod\n- Jednostavno revidiranje\n\nŠto Muxed računi rade dobro:\n- Pouzdana raspodjela dolaznih uplata\n- Jedan račun, mnogo identiteta\n- Nije potrebna napomena\n- Manje korisničkih pogrešaka\n\nŠto Muxed računi nisu:\n- Nema podračuna\n- Nema odvojenog stanja\n- Nema odvojenih linija povjerenja\n- Nema namijenjenih potpisnika/ovlasti\n\nTipično neprimjereni slučajevi upotrebe:\n- Isplate plaća/plaćni računi (zahtijevaju namijenjeni G-račun)\n- Povjerenje/skrbništvo za treće strane (bez pravne segregacije imovine)\n- Sigurnost temeljena na ulogama (bez zasebnih potpisnika/pragova)\n- Segregacija proračuna ili ograničenja (bez zasebnih stanja/ograničenja imovine)\n- Računi odvojeni za usklađenost (KYC/izvještavanje se ne može čisto odvojiti)\n\nUsporedba (Kurz):\nDodjela isplata: Da\nSegregacija imovine: Ne\nDelegiranje pristupa: Ne\nPravna odvojenost računa: Ne\nInterna računovodstva: Da\n\nNapomena:\nMuxed računi usmjeravaju isplate — oni ne zamjenjuju račune.\nAko je potrebna kontrola, vlasništvo ili segregacija -> koristite zaseban G-račun."
   },
   "multisig": {
     "title": "Višepotpis (Multisignature)",
@@ -195,7 +195,7 @@
     "title": "Horizon povijest",
     "original": "Horizon history depth",
     "short": "Opisuje koliko daleko povijest transakcija koju pružaju javni Horizon poslužitelji seže unatrag.",
-    "desc": "Javni Horizon serveri (Mainnet und Testnet) kojima upravlja Zaklada za razvoj Stellara pružaju samo ograničenu povijest – trenutno otprilike jednu godinu unatrag. Stariji podaci više se ne mogu dohvatiti putem ovih besplatnih krajnjih točaka. Ako trebate ići dalje unatrag u vremenu, u suštini imate dvije opcije: (1) možete pokrenuti vlastiti Horizon čvor s punom poviješću (inklusive History Archives), ili (2) možete koristiti usluge trećih strana ili plaćene usluge koje pohranjuju i pružaju dugoročnu povijesnu Stellarovu bazu podataka.",
+    "desc": "Javni Horizon poslužitelji (Mainnet i Testnet) koje upravlja Stellar Development Foundation pružaju samo ograničenu povijest—trenutno unatrag otprilike godinu dana. Stariji podaci više nisu dostupni putem ovih besplatnih endpointova. Ako trebate ići dalje u prošlost, imate u osnovi dvije opcije: (1) pokrenuti vlastiti Horizon čvor s potpunom poviješću (uključujući arhive povijesti), ili (2) koristiti usluge trećih strana ili plaćene usluge koje dugoročno pohranjuju i pružaju povijesne Stellar podatke.",
     "seeAlso": [
       "horizon",
       "serverHorizon",
@@ -268,7 +268,7 @@
     "short": "Zakonom obavezna provjera identiteta koju financijske usluge traže prije korištenja.",
     "desc": "KYC (Know Your Customer) je regulatorni postupak u kojem korisnici dokazuju identitet dokumentima i ponekad selfijem. Cilj je spriječiti pranje novca (AML), financiranje terorizma i prijevare. Decentralizirani protokoli poput Stellar DEX‑a ne zahtijevaju KYC—trguješ izravno iz walleta. Onramp i offramp usluge moraju provoditi KYC jer povezuju fiat i kripto.",
     "externalDomains": "",
-    "domainsHeading": "Poznati KYC pružatelji (Domains zum selbst Eintippen):"
+    "domainsHeading": "Poznati KYC pružatelji (domene upišite sami):"
   },
   "defi": {
     "title": "Decentralizirane financije",
@@ -418,7 +418,7 @@
     "title": "Potpisnik",
     "original": "Signer",
     "short": "Javni ključ s težinom, dio konfiguracije računa.",
-    "desc": "Potpisnik je javni ključ koji pripada računu i ima težinu. Njegov potpis se računa kao dio potrebnog praga. Više potpisnika može kolektivno autorizirati transakciju.\n\nVrste potpisnika:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM podržava samo ed25519. Za dodatne opcije posjetite https://lab.stellar.org."
+    "desc": "Potpisnik je javni ključ povezan s računom koji ima težinu. Njegov potpis računa se u potrebni prag. Više potpisnika može zajednički odobriti transakciju.\n\nVrste potpisnika:\n- ed25519 (obični ključ)\n- hashX (hash predložak)\n- preAuthTx (prethodno odobrena transakcija)\n\nSKM podržava samo ed25519. Za dodatne opcije pogledajte https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Pragovi",

@@ -27,7 +27,7 @@
     "more": "Više informacija",
     "keysOnPage": {
       "title": "Ključ na ovoj stranici",
-      "text": "⚠️ VAŽNO: Ova web stranica NIKADA ne pohranjuje vaš tajni ključ!\n\nTajni ključ prikazan ovdje postoji samo u vašem pregledniku (lokal im Arbeitsspeicher). Nakon što ponovo učitate ili napustite stranicu, on je nepovratno izgubljen.\n\nKopirajte ili zabilježite tajni ključ odmah nakon generiranja prije zatvaranja stranice.\n\nProvjera: Možete koristiti alate za razvojne programere preglednika (F12 → Mreža) da provjerite da nijedan tajni ključ nije prenesen eksterno. Samo potpisane transakcije se šalju, nikada vaš tajni ključ."
+      "text": "⚠️ VAŽNO: Ova web stranica NIKADA ne pohranjuje vaš tajni ključ!\n\nTajni ključ prikazan ovdje postoji samo u vašem pregledniku (lokalno u memoriji). Čim ponovno učitate stranicu ili je napustite, on je nepovratno izgubljen.\n\nKopirajte ili zapišite tajni ključ odmah nakon generiranja, prije nego što zatvorite stranicu.\n\nProvjera: Možete koristiti alate za programere u svom pregledniku (F12 → Network) kako biste provjerili da se tajni ključ ne prenosi izvana. Šalju se samo potpisane transakcije — nikada vaš tajni ključ."
     },
     "title": "Važne informacije",
     "secureKeys": {
@@ -50,8 +50,8 @@
   "mainnetActivateNote": "Napomena: Dodatne rezerve su potrebne za Multisig. 1 XLM često nije dovoljan.",
   "reserve": {
     "base": "Osnovna rezerva po unosu: {{val}} XLM",
-    "recommended": "Preporučeni početni saldo: {{val}} XLM (inkl. Puffer)",
-    "required": "Obavezna minimalna rezerva (neu): {{val}} XLM"
+    "recommended": "Preporučeni početni saldo: {{val}} XLM (uključujući rezervu)",
+    "required": "Potrebna minimalna rezerva (novo): {{val}} XLM"
   },
   "signersCountHint": "Minimalni broj potpisa postavljate u nastavku pod \"Required Signatures\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Napomena: Granica mreže (Stellar): maksimalno 20 dodatnih potpisnika.",

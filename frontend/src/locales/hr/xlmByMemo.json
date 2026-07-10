@@ -41,7 +41,7 @@
     "count": "Količina: {{n}}",
     "label": "Poređenje (all inputs)",
     "otherCount": "Unosi s netočnim/nedostajućim zapisom: {{n}}",
-    "unique": "Jedinstveni novčanici (alle): {{n}}",
+    "unique": "Jedinstveni novčanici (svi): {{n}}",
     "uniqueWallets": "Jedinstveni novčanici: {{n}}"
   },
   "time": {
@@ -64,7 +64,7 @@
     "local": "Lokalna vremenska zona",
     "note": "Datum i vrijeme tumače se u odabranoj vremenskoj zoni i automatski se pretvaraju u UTC prije pretraživanja.",
     "utc": "UTC",
-    "window": "Korišteni vremenski okvir po UTC-u: {{from}} → {{to}} (Bis exklusiv)"
+    "window": "UTC vremenski prozor korišten: {{from}} → {{to}} (kraj isključen)"
   },
   "wrongMemos": {
     "button": "Prikaži novčanike s netočnom/praznom porukom",

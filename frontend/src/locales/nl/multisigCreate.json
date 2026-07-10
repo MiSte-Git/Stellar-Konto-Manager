@@ -29,7 +29,7 @@
     },
     "multisigSection": {
       "title": "Multisig",
-      "text": "Met multisig kun je meerdere ondertekenaars voor je account definiëren. Transacties vereisen dan handtekeningen van meerdere, bijvoorbeeld 2 van de 3.\n\nVoordelen:\n• Verhoogde veiligheid, een gecompromitteerde sleutel is niet voldoende\n• Gedeelde toegang, bijvoorbeeld voor bedrijven, samenwerkingsverbanden\n• Meerdere back-ups bij verschillende personen voor herstel\n\nWAARSCHUWING: Test multisig eerst op het testnet voordat je het op het mainnet gebruikt! Onjuiste configuratie kan ertoe leiden dat je de toegang tot het account verliest."
+      "text": "Met multisig kun je meerdere ondertekenaars voor je account aanwijzen. Voor transacties zijn dan handtekeningen van meerdere sleutels nodig (bijvoorbeeld 2 van de 3).\n\nVoordelen:\n• Verhoogde veiligheid (één gecompromitteerde sleutel is niet voldoende)\n• Gezamenlijke rekeningen (bijvoorbeeld bedrijven, partnerschappen)\n• Herstel in noodgevallen (meerdere back-ups in het bezit van verschillende personen)\n\nWAARSCHUWING: Test multisig eerst op het testnet voordat je het op het mainnet gebruikt! Een onjuiste configuratie kan leiden tot verlies van toegang tot de rekening."
     },
     "diagram": {
       "title": "Handtekening vervaldatum"
@@ -43,8 +43,8 @@
   "mainnetActivateNote": "Opmerking: Voor multisig zijn aanvullende reserves vereist. 1 XLM is vaak niet genoeg.",
   "reserve": {
     "base": "Basisreserve per invoer: {{val}} XLM",
-    "recommended": "Aanbevolen startbalans: {{val}} XLM (inkl. Puffer)",
-    "required": "Vereiste Minimumreserve (neu): {{val}} XLM"
+    "recommended": "Aanbevolen beginsaldo: {{val}} XLM (inclusief een buffer)",
+    "required": "Vereiste minimumreserve (nieuw): {{val}} XLM"
   },
   "signersCountLimit": "Opmerking: Netwerkgrens (Stellar): max. 20 extra ondertekenaars.",
   "startingBalance": "Startkrediet (XLM)",

@@ -8,7 +8,7 @@
   },
   "singleVsMulti": {
     "title": "Firma única vs. multifirma",
-    "text": "Single-Sig = 1 clave es suficiente. Multisig = se requieren múltiples firmas (z. B. 2 von 3)."
+    "text": "Firma única = Basta con una clave. Firma múltiple = Se requieren varias firmas (por ejemplo, 2 de 3)."
   },
   "stellarHow": {
     "title": "Cómo Stellar implementa Multisig",

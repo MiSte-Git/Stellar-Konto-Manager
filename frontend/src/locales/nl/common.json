@@ -318,7 +318,7 @@
     "cache": {
       "help": "Versnelt zoekopdrachten via lokale betalingscache, maar kan de initiële laadtijd verlengen.",
       "label": "Gebruik cache (Beta)",
-      "prefetchHelp": "Doorlooptijd voor het laden van inzendingen/transacties in dagen (einmalig beim ersten Aktivieren)"
+      "prefetchHelp": "Doorlooptijd voor het laden van boekingen/transacties, in dagen (eenmalige instelling bij de eerste activering)"
     },
     "network": {
       "title": "Netwerk",
@@ -378,7 +378,7 @@
       },
       "title": "Mijn Vertrouwde Portemonnees",
       "validation": {
-        "hint": "Ten minste één regel is ongeldig (fehlende/duplizierte Adresse)."
+        "hint": "Er is ten minste één regel ongeldig (ontbrekend of dubbel adres)."
       }
     }
   },
@@ -387,7 +387,7 @@
       "deletingProgress": "Bezig met verwijderen: {{current}} / {{total}}",
       "success": "Succes: {{count}} Trustline(s) verwijderd."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (noch Guthaben vorhanden)."
+    "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (er is nog krediet beschikbaar)."
   },
   "payment": {
     "send": {
@@ -398,7 +398,7 @@
       "memo": "Memo",
       "memoType": "Memotype",
       "memoTypes": {
-        "none": "Memo (kein Memo)",
+        "none": "Memo (geen memo)",
         "text": "Memotekst",
         "id": "Memo-ID",
         "hash": "Memo Hash",
@@ -407,7 +407,7 @@
           "none": "Geen memo. Gebruik dit als de ontvanger geen memo verwacht.",
           "text": "Vrije tekst tot 28 bytes. Vaak gebruikt voor toewijzing in eenvoudige betalingen.",
           "id": "Numerieke ID (uint64). Veel beurzen gebruiken Memo ID voor het toewijzen van stortingen.",
-          "hash": "32-byte SHA-256 hash (als 64-stellige Hex-Zeichenfolge). Gebruikt door diensten als referenties.",
+          "hash": "32-byte SHA-256-hash (als een hexadecimale tekenreeks van 64 tekens). Wordt door diensten gebruikt ter referentie.",
           "return": "32-byte hash voor retouren. Gebruikt voor retouren (MEMO_RETURN)."
         }
       },
@@ -429,7 +429,7 @@
       "successShort": "Succesvol verzonden",
       "error": "Fout bij het verzenden: {{detail}}",
       "amountMissing": "Voer alstublieft een bedrag in.",
-      "amountInvalid": "Ongeldig bedrag (max. 7 Nachkommastellen).",
+      "amountInvalid": "Ongeldig bedrag (max. 7 decimalen).",
       "amountPositive": "Het bedrag moet groter zijn dan 0.",
       "timeout": "Horizon Timeout (504). Probeer het over een paar ogenblikken opnieuw.",
       "httpError": "Horizon-fout (status {{status}}).",
@@ -440,7 +440,7 @@
         "info": "De doelaccount is nog niet actief. Er is een minimumbedrag vereist voor activatie.",
         "minReserve": "Minimumbedrag (2 × basisreserve)",
         "yourAmount": "Uw ingevoerde bedrag",
-        "adjustedAmount": "Voorgesteld Bedrag (zum Aktivieren)",
+        "adjustedAmount": "Aanbevolen bedrag (voor activering)",
         "noteAdjust": "Uw saldo is onvoldoende voor activatie. Als u doorgaat, wordt automatisch het minimale bedrag verzonden."
       },
       "activated": "De doeldaccount is geactiveerd.",
@@ -455,7 +455,7 @@
         "title": "Bekijk de memo van de federatie",
         "textMappable": "De federatieserver verwacht de notitie \"{{expected}}\", maar je huidige notitie is \"{{current}}\".",
         "textUnmappable": "De federatieserver verwacht een memo die niet automatisch kon worden toegepast. Je huidige memo is \"{{current}}\".",
-        "empty": "(empty)",
+        "empty": "(leeg)",
         "sendAnyway": "Toch verzenden",
         "applyExpected": "Federatiememo toepassen"
       },
@@ -515,7 +515,7 @@
       "createTitle": "Nieuwe Muxed-accounts aanmaken",
       "createItems": {
         "i1": "Genereert nieuwe Muxed-adressen (M...) op basis van je basisadres (G...).",
-        "i2": "Optioneel met label (Name) en notitie (z. B. Projekt oder Zweck)."
+        "i2": "Eventueel met een label (Naam) en een opmerking (bijv. project of doel)."
       },
       "importTitle": "Importeren uit CSV-bestanden",
       "importItems": {
@@ -776,7 +776,7 @@
     },
     "securityGuarantee": {
       "title": "🔒 SKM Beveiligingsgarantie (Multisig)",
-      "text": "De Stellar Account Manager voorkomt alle technisch veroorzaakte blokkeringen van accounts die kunnen ontstaan door onjuiste multisig-configuratie.\n\nSpecifiek blokkeert SKM:\n- Het uitschakelen van de hoofdsleutel zonder toegankelijke ondertekenaars\n- Onoverkomelijke drempels (low / med / high)\n- Volgordefouten bij het wijzigen van ondertekenaars en drempels\n- Het verwijderen van de laatste geldige hoogondertekenaar\n- Multisig-opstellingen waarbij SetOptions niet meer kan worden ondertekend\n- Doodlopende wegen door hashX of preAuthTx als laatste ondertekenaar\n\nSKM stelt alleen ed25519 ondertekenaars in. Gebruik voor andere ondertekenaartypes {link}.\n\nSKM garandeert:\n- Elke bevestigde wijziging laat minstens één geldig pad open voor verder accountbeheer\n- SetOptions blijft toegankelijk na de wijziging\n\nNiet gegarandeerd (systembedingt):\n- Verlies van geheime sleutels of hardware wallets\n- Onbereikbaarheid of falen van externe ondertekenaars\n\nConclusie:\nSKM beschermt betrouwbaar tegen configuratievergrendelingen.\nOrganisatorische risico's worden transparant weergegeven, maar kunnen niet technisch worden voorkomen.",
+      "text": "De Stellar Account Manager voorkomt alle technisch veroorzaakte accountblokkades die het gevolg kunnen zijn van een onjuiste multisig-configuratie.\n\nDe SKM blokkeert met name:\n- Deactivering van de hoofdsleutel wanneer er geen ondertekenaars bereikbaar zijn\n- Onbereikbare drempels (laag / gemiddeld / hoog)\n- Volgordefouten bij het wijzigen van ondertekenaars of drempels\n- Het verwijderen van de laatste geldige hoge ondertekenaar\n- Multisig-configuraties waarbij SetOptions niet langer kan worden ondertekend\n- Doodlopende situaties veroorzaakt door hashX of preAuthTx als laatste ondertekenaar\n\nSKM maakt uitsluitend gebruik van ed25519-ondertekenaars. Gebruik {link} voor andere soorten ondertekenaars.\n\nSKM garandeert:\n- Elke bevestigde wijziging laat ten minste één geldig pad open voor verder accountbeheer\n- SetOptions blijft na de wijziging toegankelijk\n\nKan niet worden gegarandeerd (vanwege systeembeperkingen):\n- Verlies van geheime sleutels of hardware-wallets\n- Onbeschikbaarheid of uitval van externe ondertekenaars\n\nConclusie:\nSKM biedt betrouwbare bescherming tegen configuratieblokkades.\nOrganisatorische risico’s worden transparant weergegeven, maar kunnen technisch niet worden voorkomen.",
       "linkLabel": "lab.stellar.org"
     },
     "hint": "Laad een bestaand account, pas ondertekenaars, gewichten, hoofdgewicht en drempels aan, en sla de wijzigingen op.",
@@ -826,7 +826,7 @@
   "secretKey": {
     "cleared": "Geheime sleutel is verwijderd.",
     "empty": "Het veld voor de geheime sleutel is leeg.",
-    "info": "⚠️ BELANGRIJK: Deze website slaat NOOIT je geheime sleutel op!\n\nDe hier weergegeven geheime sleutel bestaat alleen in je browser (lokal im Arbeitsspeicher). Zodra je de pagina vernieuwt of verlaat, gaat deze onherroepelijk verloren.\n\nKopieer of noteer de geheime sleutel onmiddellijk na het genereren, voordat je de pagina sluit.\n\nVerificatie: Je kunt controleren met de ontwikkelaarstools van je browser (F12 → Netwerk) dat er geen geheime sleutel extern wordt verzonden. Alleen ondertekende transacties worden verzonden, nooit je geheime sleutel.",
+    "info": "⚠️ BELANGRIJK: Deze website slaat je geheime sleutel NOOIT op!\n\nDe hier weergegeven geheime sleutel bestaat alleen in je browser (lokaal in het geheugen). Zodra je de pagina vernieuwt of verlaat, gaat deze onherroepelijk verloren.\n\nKopieer of noteer de geheime sleutel onmiddellijk nadat deze is gegenereerd, voordat u de pagina sluit.\n\nControle: U kunt de ontwikkelaarstools van uw browser (F12 → Netwerk) gebruiken om te controleren of er geen geheime sleutel naar buiten wordt verzonden. Alleen ondertekende transacties worden verzonden – nooit uw geheime sleutel.",
     "invalid": "Ongeldige geheime sleutel.",
     "label": "Voer de bron geheime sleutel in (__KEEP_NL_TERM_1__)",
     "mismatch": "Geheime sleutel komt niet overeen met het publieke adres.",
@@ -846,7 +846,7 @@
     "pageTitle": "Woordenlijst",
     "pageIntro": "Hier vind je belangrijke woorden uit de blockchainwereld en het Stellar-netwerk. Alles wordt in eenvoudige termen uitgelegd.",
     "searchLabel": "Zoekterm",
-    "searchPlaceholder": "Zoekterm (z. B. Konto, Account, Muxed)",
+    "searchPlaceholder": "Zoek naar een term (bijv. Konto, Account, Muxed)",
     "searchHint": "De zoekopdracht vindt woorden en verklaringen.",
     "noResults": "Geen overeenkomsten.",
     "blockchain": {
@@ -870,7 +870,7 @@
     "addressG": {
       "title": "G-adres",
       "original": "G Address",
-      "short": "Het publieke hoofdadres van een Stellar-account (beginnt mit G).",
+      "short": "Het openbare primaire adres van een Stellar-account (begint met G).",
       "desc": "Het G-adres is het hoofdadres van een Stellar-account. Het begint met de letter G. Je geeft het aan anderen zodat ze je iets kunnen sturen."
     },
     "publicKey": {
@@ -1043,7 +1043,7 @@
     "deletingProgress": "Verwijderen bezig: {{current}} / {{total}}",
     "success": "Succes: {{count}} Trustline(s) verwijderd."
   },
-  "skippedDueToBalance": "{{count}} Trustlines (s) overgeslagen (noch Guthaben vorhanden).",
+  "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (er is nog krediet beschikbaar).",
   "xlmByMemo": {
     "action": {
       "calculate": "Berekenen",
@@ -1087,7 +1087,7 @@
       "count": "Hoeveelheid: {{n}}",
       "label": "Vergelijking (Comparison)",
       "otherCount": "Inzendingen met onjuiste/ontbrekende memo: {{n}}",
-      "unique": "Unieke wallets (alle): {{n}}",
+      "unique": "Unieke portemonnees (totaal): {{n}}",
       "uniqueWallets": "Unieke portemonnees: {{n}}"
     },
     "time": {
@@ -1110,7 +1110,7 @@
       "local": "Lokale tijdzone",
       "note": "Datum en tijd worden in de geselecteerde tijdzone geïnterpreteerd en automatisch naar UTC omgezet voordat er gezocht wordt.",
       "utc": "UTC",
-      "window": "Gebruikt UTC-tijdvenster: {{from}} → {{to}} (Bis exklusiv)"
+      "window": "Gebruikt UTC-tijdvenster: {{from}} → {{to}} (einde exclusief)"
     },
     "wrongMemos": {
       "button": "Portefeuilles met onjuiste/lege memo weergeven",

@@ -123,7 +123,7 @@
     },
     "title": "Mis monederos de confianza",
     "validation": {
-      "hint": "Al menos una línea es inválida (fehlende/duplizierte Adresse)."
+      "hint": "Al menos una línea no es válida (falta la dirección o hay una dirección duplicada)."
     }
   },
   "maintenance": {

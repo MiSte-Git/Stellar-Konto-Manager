@@ -34,7 +34,7 @@
     "issuerPlaceholder": "ad esempio, Emittente",
     "issuerHelp": "Chiave pubblica (G-Adresse) dell'account emittente che emette l'asset.",
     "limitLabel": "Limite",
-    "limitPlaceholder": "ad esempio, 1.000.000 (eine Million)",
+    "limitPlaceholder": "ad es., 1.000.000 (un milione)",
     "limitHelp": "Il limite è la quantità massima di questo bene che questo conto può accettare. In pratica, dovrebbe essere impostato tanto quanto il saldo massimo previsto in questo bene.",
     "submit": "Crea una linea di fiducia",
     "cancel": "Annulla",

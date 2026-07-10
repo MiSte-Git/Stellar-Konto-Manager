@@ -8,7 +8,7 @@
   },
   "singleVsMulti": {
     "title": "Single-sig vs. Multisig",
-    "text": "Single-Sig = 1 chiave è sufficiente. Multisig = sono richieste firme multiple (z. B. 2 von 3)."
+    "text": "Single-sig = È sufficiente una sola chiave. Multisig = Sono necessarie più firme (ad esempio, 2 su 3)."
   },
   "stellarHow": {
     "title": "Come Stellar Implementa Multisig",

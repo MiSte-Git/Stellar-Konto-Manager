@@ -29,7 +29,7 @@
     },
     "multisigSection": {
       "title": "Multifirma",
-      "text": "Con multisig, puedes definir múltiples firmantes para tu cuenta. Las transacciones requerirán firmas de varios, por ejemplo, 2 de 3.\n\nVentajas:\n• Aumenta la seguridad: una clave comprometida no es suficiente\n• Compartida: por ejemplo, empresas, asociaciones\n• Recuperación mediante múltiples copias de seguridad en diferentes personas\n\nADVERTENCIA: ¡Prueba multisig primero en la red de prueba antes de usarlo en la red principal! Una configuración incorrecta puede llevar a perder el acceso a la cuenta."
+      "text": "Con la firma múltiple (multisig), puedes designar varios firmantes para tu cuenta. De este modo, las transacciones requieren firmas de varias claves (por ejemplo, 2 de 3).\n\nVentajas:\n• Mayor seguridad (no basta con que se vea comprometida una sola clave)\n• Cuentas conjuntas (por ejemplo, empresas, sociedades)\n• Recuperación de emergencia (varias copias de seguridad en poder de diferentes personas)\n\nADVERTENCIA: ¡Prueba primero la multifirma en la red de pruebas antes de utilizarla en la red principal! Una configuración incorrecta puede provocar la pérdida de acceso a la cuenta."
     },
     "diagram": {
       "title": "Expiración de la firma"
@@ -43,8 +43,8 @@
   "mainnetActivateNote": "Nota: Se requieren reservas adicionales para multisig. 1 XLM a menudo no es suficiente.",
   "reserve": {
     "base": "Reserva base por entrada: {{val}} XLM",
-    "recommended": "Saldo inicial recomendado: {{val}} XLM (inkl. Puffer)",
-    "required": "Reserva Mínima Requerida (neu): {{val}} XLM"
+    "recommended": "Saldo inicial recomendado: {{val}} XLM (incluido un margen de seguridad)",
+    "required": "Reserva mínima obligatoria (nueva): {{val}} XLM"
   },
   "signersCountLimit": "Nota: Límite de la red (Stellar): máximo 20 signatarios adicionales.",
   "startingBalance": "Crédito inicial (XLM)",

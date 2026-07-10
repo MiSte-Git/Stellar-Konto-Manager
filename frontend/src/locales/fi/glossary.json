@@ -2,7 +2,7 @@
   "pageTitle": "Sanasto",
   "pageIntro": "Täältä löydät tärkeitä termejä lohkoketjumaailmasta ja Stellar-verkosta. Kaikki on selitetty yksinkertaisin sanoin.",
   "searchLabel": "Hakusana",
-  "searchPlaceholder": "Hakutermi (z. B. Konto, Account, Muxed)",
+  "searchPlaceholder": "Hae termiä (esim. Konto, Account, Muxed)",
   "searchHint": "Haku löytää sanoja ja selityksiä.",
   "noResults": "Ei osumaa.",
   "groups": {
@@ -42,7 +42,7 @@
   "addressG": {
     "title": "G osoite",
     "original": "G Address",
-    "short": "Stellarin tilin julkinen ensisijainen osoite (beginnt mit G).",
+    "short": "Stellar-tilin julkinen ensisijainen osoite (alkaa kirjaimella G).",
     "desc": "G-osoite on Stellarin tilin pääosoite. Se alkaa kirjaimella G. Annat sen toisille, jotta he voivat lähettää sinulle jotain."
   },
   "publicKey": {
@@ -73,7 +73,7 @@
     "title": "Sekoitustilien käyttötapaukset",
     "original": "Muxed accounts use cases",
     "short": "Esimerkit, edut ja rajoitukset M-osoitteista kartoitusapuna.",
-    "desc": "Yritys - Esimerkki\n\nAsennus:\n- Yrityksen G-tili\n- Yksi M-osoite per asiakas/käyttötapaus (ID)\n\nProsessi:\n- Asiakas maksaa M-osoitteeseensa\n- Kaikki menee yrityksen G-tilille\n- Kirjanpito lukee tunnisteen -> yksilöllinen kohdistus\n\nSoveltuu:\n- Kaupoille, maksupalveluntarjoajille, pörsseille\n- Sisäiset viitteet ilman muistioiden riskejä\n\nYhdistys - Esimerkki\n\nAsennus:\n- Yhdistyksen G-tili\n- Jäsenten, osastojen, tarkoitusten M-osoitteet\n\nProsessi:\n- Jäsenmaksu/lahjoitus asianmukaiseen M-osoitteeseen\n- Kohdistus tunnisteen avulla, ei muistiovirheitä\n\nSoveltuu:\n- Jäsenmaksuihin\n- Korvamerkittyihin tuloihin\n- Helppoon tarkastukseen\n\nMissä Muxed Accounts loistavat:\n- Vahva syötteen kohdistus\n- Yksi tili, useita identiteettejä\n- Ei muistiovaatimusta\n- Vähemmän toimintavirheitä\n\nMissä Muxed Accounts eivät ole:\n- Eivät ole alipäällisiä\n- Ei erillistä saldoa\n- Ei yksittäisiä luottorajoja\n- Ei yksittäisiä allekirjoittajia/oikeuksia\n\nTyypillisesti soveltumattomat käyttötapaukset:\n- Palkkamaksut/palkkatilit (benoetigen eigenes G-Konto)\n- Luottamus/escrow kolmansille osapuolille (kein rechtlicher Vermoegenstrenner)\n- Roolipohjainen turvallisuus (keine getrennten Signer/Thresholds)\n- Budjetin tai rajan erottelu (keine separaten Salden/Asset-Limits)\n- Vaadittujen sääntöjen erottamat tilit (KYC/Reporting nicht sauber trennbar)\n\nVertailu (Kurz):\nMaksujen allokointi: Kyllä\nOmaisuuden erottelu: Ei\nPääsyn delegointi: Ei\nOikeudellisesti erillinen tili: Ei\nSisäinen kirjanpito: Kyllä\n\nTärkein huomio:\nMuxed Accounts koskevat maksuja - ne eivät korvaa tilejä.\nJos tarvitaan hallintaa, omistusta tai erottamista -> oma G-tili."
+    "desc": "Yritys – Esimerkki\n\nJärjestely:\n- Yksi yrityksen G-tili\n- Yksi M-osoite asiakasta/käyttötapausta (ID) kohti\n\nProsessi:\n- Asiakas maksaa omalle M-osoitteelleen\n- Kaikki varat menevät yrityksen G-tilille\n- Kirjanpito lukee ID:n -> yksilöllinen kohdistus\n\nSopii:\n- Verkkokaupoille, maksupalveluntarjoajille, pörsseille\n- Sisäisiin viitteisiin ilman viestiriskejä\n\nKlubi – Esimerkki\n\nJärjestely:\n- Yksi klubin G-tili\n- M-osoitteet jäsenille, osastoille ja käyttötarkoituksille\n\nProsessi:\n- Jäsenmaksut/lahjoitukset lähetetään oikeaan M-osoitteeseen\n- Kohdentaminen tunnisteen perusteella, ei viestivirheitä\n\nSopii:\n- Jäsenmaksut\n- Kohdennetut tulot\n- Helppo tilintarkastus\n\nMuxed-tilien vahvuudet:\n- Vankka saapuvien maksujen kohdentaminen\n- Yksi tili, useita identiteettejä\n- Ei viestivaatimusta\n- Vähemmän käyttäjävirheitä\n\nMitä Muxed-tilit eivät ole:\n- Ei alitilejä\n- Ei erillistä saldoa\n- Ei erillisiä luottorajoja\n- Ei erillisiä allekirjoittajia/käyttöoikeuksia\n\nTyypillisesti sopimattomat käyttötapaukset:\n- Palkkamaksut/palkkatilit (vaativat erillisen G-tilin)\n- Kolmansien osapuolten luottotilit/säilytystilit (varojen oikeudellista erottelua ei ole)\n- Roolipohjainen turvallisuus (ei erillisiä allekirjoittajia/kynnysarvoja)\n- Budjetti- tai rajoituserottelu (ei erillisiä saldoja/vararajoja)\n- Säännöstenmukaisesti erotetut tilit (KYC/raportointia ei voida erottaa selkeästi)\n\nVertailu (lyhyt):\nMaksujen osoittaminen: Kyllä\nVarojen erottelu: Ei\nKäyttöoikeuksien delegointi: Ei\nOikeudellisesti erillinen tili: Ei\nSisäinen kirjanpito: Kyllä\n\nHuomautus:\nMuxed-tilit reitittävät maksuja – ne eivät korvaa tilejä.\nJos hallintaa, omistajuutta tai erottelua vaaditaan -> käytä erillistä G-tiliä."
   },
   "multisig": {
     "title": "Moniallekirjoitus",
@@ -195,7 +195,7 @@
     "title": "Horisontti Historia",
     "original": "Horizon history depth",
     "short": "Kuvataan, kuinka pitkälle julkisten Horizon-palvelinten tarjoama tapahtumahistoria ulottuu.",
-    "desc": "Julkiset Horizon-palvelimet (Mainnet und Testnet), joita Stellar Development Foundation ylläpitää, tarjoavat vain rajoitetun historian – tällä hetkellä noin yksi vuosi taaksepäin. Vanhempia tietoja ei voi enää hakea näiden ilmaisten päätepisteiden kautta. Jos tarvitset tietoja pidemmältä ajalta, sinulla on käytännössä kaksi vaihtoehtoa: (1) voit käyttää omaa Horizon-solmua koko historiallaan (inklusive History Archives), tai (2) voit käyttää kolmannen osapuolen tai maksullisia palveluja, jotka tallentavat ja tarjoavat pitkäaikaisia Stellarin historiallisia tietoja.",
+    "desc": "Stellar Development Foundationin ylläpitämät julkiset Horizon-palvelimet (Mainnet ja Testnet) tarjoavat vain rajoitetun historiatiedon – tällä hetkellä noin vuoden ajalta. Vanhempiin tietoihin ei enää pääse käsiksi näiden ilmaisten päätelaitteiden kautta. Jos tarvitset vanhempia tietoja, sinulla on periaatteessa kaksi vaihtoehtoa: (1) voit ylläpitää omaa Horizon-solmua, jossa on täydellinen historiatieto (mukaan lukien historiatietojen arkistot), tai (2) voit käyttää kolmannen osapuolen tai maksullisia palveluita, jotka tallentavat ja tarjoavat Stellarin historiatietoja pitkällä aikavälillä.",
     "seeAlso": "Sinulle ei annettu erityistä käännettävää tekstiä. Ole hyvä ja anna teksti, jonka haluat kääntää."
   },
   "scp": {
@@ -264,7 +264,7 @@
     "short": "Lakisääteinen henkilöllisyyden tarkistus, jota finanssipalvelut vaativat ennen käyttöä.",
     "desc": "KYC (Know Your Customer) on sääntelyprosessi, jossa käyttäjä todistaa henkilöllisyytensä asiakirjoilla ja joskus selfiellä. Tavoite on estää rahanpesu (AML), terrorismin rahoitus ja petokset. Hajautetut protokollat kuten Stellar DEX eivät vaadi KYC:tä—käyt kauppaa suoraan walletista. Onramp- ja offramp‑palvelut ovat velvoitettuja tekemään KYC:n, koska ne yhdistävät fiat- ja kryptomaailman.",
     "externalDomains": "",
-    "domainsHeading": "Tunnettuja KYC-palveluntarjoajia (Domains zum selbst Eintippen):"
+    "domainsHeading": "Tunnettuja KYC-palveluntarjoajia (verkkotunnukset, jotka sinun on kirjoitettava itse):"
   },
   "defi": {
     "title": "Hajautettu rahoitus",
@@ -414,7 +414,7 @@
     "title": "Allekirjoittaja",
     "original": "Signer",
     "short": "Julkinen avain painotuksella, osa tilin kokoonpanoa.",
-    "desc": "Allekirjoittaja on tilille kuuluva julkinen avain ja sillä on painoarvo. Sen allekirjoitus lasketaan vaadittuun kynnysarvoon. Useat allekirjoittajat voivat yhdessä valtuuttaa tapahtuman.\n\nAllekirjoittajatyypit:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM tukee ainoastaan ed25519. Lisävaihtoehtoja varten käy osoitteessa https://lab.stellar.org."
+    "desc": "Allekirjoittaja on painoarvon omaavaan tiliin liitetty julkinen avain. Sen allekirjoitus lasketaan mukaan vaadittavaan kynnysarvoon. Useat allekirjoittajat voivat hyväksyä tapahtuman yhdessä.\n\nAllekirjoittajatyypit:\n- ed25519 (normaali avain)\n- hashX (hash-malli)\n- preAuthTx (ennakkovaltuutettu transaktio)\n\nSKM tukee vain ed25519-tyyppiä. Lisätietoja vaihtoehdoista on osoitteessa https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Kynnykset",

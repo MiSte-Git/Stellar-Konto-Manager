@@ -29,7 +29,7 @@
         "infoBody": {
           "one": "La transaction est enregistrée en tant que tâche multisig dans le backend et reçoit un identifiant de tâche. Rien n'est envoyé directement.",
           "two": "Tous les signataires suivants ouvrent l'élément de menu « Ordres multisignatures » dans leur instance SKM, chargent la tâche et signent.",
-          "three": "Une fois qu'un nombre suffisant de signatures est fourni (Threshold erreicht), la transaction sera envoyée ou peut être envoyée.",
+          "three": "Dès qu'un nombre suffisant de signatures a été recueilli (seuil atteint), la transaction est envoyée ou peut être envoyée.",
           "four": "Vous pouvez transmettre l'ID de poste à d'autres signataires, ou ils peuvent sélectionner directement la tâche dans « Ordres multisignatures »."
         },
         "steps": {
@@ -48,11 +48,11 @@
         "infoBody": {
           "one": "Vous entrez toutes les clés secrètes requises sur cet appareil de manière séquentielle jusqu'à ce que le seuil soit atteint.",
           "two": "Il ne s'agit plus d'un flux multisignatures distribué, mais de « plusieurs clés sur un seul appareil » – à utiliser uniquement sur des appareils de confiance.",
-          "three": "Une fois qu'un nombre suffisant de signatures est recueilli, la transaction est envoyée directement à Horizon (ohne Multisig-Job)."
+          "three": "Une fois qu'un nombre suffisant de signatures a été recueilli, la transaction est envoyée directement à Horizon (sans passer par une tâche multisig)."
         }
       },
       "xdr": {
-        "title": "Exporter XDR (nicht senden)",
+        "title": "Exporter XDR (ne pas envoyer)",
         "desc": "Générez une transaction XDR brute pour des outils hors ligne ou des portefeuilles matériels.",
         "short": "Exportez la transaction au format XDR sans l'envoyer directement.",
         "moreInfo": "Plus d'informations.",
@@ -64,7 +64,7 @@
         },
         "steps": {
           "one": "Un XDR est généré, mais rien n'est envoyé.",
-          "two": "Vous pouvez signer l'XDR (Offline-Rechner, Hardware-Wallet, anderes Tool) de manière externe.",
+          "two": "Vous pouvez signer le fichier XDR en externe (à l'aide d'un ordinateur hors ligne, d'un portefeuille matériel ou d'un autre outil).",
           "three": "Pour envoyer, vous devez réimporter le XDR (e.g., via multisig jobs or another tool) et le signer/l'envoyer là-bas."
         }
       }
@@ -80,7 +80,7 @@
         "infoButton": "Étapes suivantes",
         "infoTitle": "Ce qui doit être fait maintenant",
         "info": {
-          "share": "Transmettez l'ID du travail ou le XDR aux signataires suivants (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "share": "Transmettez l'identifiant de la mission ou le fichier XDR aux signataires suivants (par e-mail ou via des applications de messagerie telles que Telegram ou WhatsApp).",
           "sign": "Les signataires choisissent soit l'option 3 (« Importer XDR ») et signent le XDR, SOIT ouvrent l'élément de menu « ID de poste » dans le SKM, chargent la tâche et signent à cet endroit.",
           "submit": "Une fois suffisamment de signatures collectées, l'un des signataires envoie finalement la tâche au réseau dans le SKM (menu « ID de poste »)."
         },
@@ -95,11 +95,11 @@
         "copiedDetails": "Copié"
       },
       "xdr": {
-        "title": "XDR préparé (nicht gesendet)",
+        "title": "Compatible XDR (non envoyé)",
         "status": "Un seul XDR a été généré. Rien n'a été envoyé au réseau.",
         "noJob": "Aucun travail multisig n'a été créé.",
         "hashLabel": "Hachage de transaction",
-        "hint": "Transférez le XDR à d'autres signataires ou outils (z. B. Hardware-Wallet, Offline-Rechner). Pour envoyer, vous importez de nouveau le XDR (ggf. signierte) dans le SKM (z. B. Option 3) et le transmettez au réseau."
+        "hint": "Transférez le fichier XDR à d'autres signataires ou vers d'autres outils (par exemple, un portefeuille matériel ou un ordinateur hors ligne). Pour l'envoyer, réimportez le fichier XDR (signé, le cas échéant) dans le SKM ultérieurement (par exemple, option 3), puis envoyez-le sur le réseau."
       }
     },
     "testModeTitle": "Toutes les signatures sont locales.",
@@ -107,7 +107,7 @@
     "testModeButton": "Signez directement & envoyez",
     "prepareTitle": "Préparer une transaction pour la signature multiple",
     "prepareDescription": "Préparez uniquement le XDR pour la multisignature de production. Rien ne sera envoyé immédiatement.",
-    "prepareButton": "Préparer XDR (nicht senden)"
+    "prepareButton": "Préparer le XDR (ne pas envoyer)"
   },
   "jobCreated": "Tâche multisignatures créée (ID : {{id}}). Ouvrez « Ordres multisignatures » pour voir le statut.",
   "errors": {
@@ -211,7 +211,7 @@
       },
       "localAll": {
         "title": "Entrez toutes les signatures localement.",
-        "body": "Choisissez cette option seulement si vous contrôlez toutes les clés secrètes associées à ce compte (z. B. nach einer Kontorettung mit mehreren Unterzeichnern). Le gestionnaire de compte Stellar collectera alors toutes les signatures localement et enverra la transaction directement à Horizon.",
+        "body": "Ne sélectionnez cette option que si vous contrôlez toutes les clés privées associées à ce compte (par exemple, après une procédure de récupération de compte impliquant plusieurs signataires). Le Gestionnaire de compte Stellar collectera alors toutes les signatures localement et enverra la transaction directement à Horizon.",
         "checkboxLabel": "Saisissez toutes les signatures localement dans ce dialogue et envoyez directement.",
         "warning": "Remarque : Si vous saisissez toutes les signatures localement, toutes les clés secrètes seront présentes dans cette session. Utilisez cette option uniquement sur des appareils de confiance."
       }

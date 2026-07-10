@@ -41,7 +41,7 @@
     "count": "Quantity: {{n}}",
     "label": "Comparison (all inputs)",
     "otherCount": "Entries with incorrect/missing memo: {{n}}",
-    "unique": "Unique wallets (alle): {{n}}",
+    "unique": "Unique wallets (all): {{n}}",
     "uniqueWallets": "Unique wallets: {{n}}"
   },
   "time": {
@@ -64,7 +64,7 @@
     "local": "Local time zone",
     "note": "Date and time are interpreted in the selected time zone and automatically converted to UTC before searching.",
     "utc": "UTC",
-    "window": "Used UTC time window: {{from}} → {{to}} (Bis exklusiv)"
+    "window": "UTC time window used: {{from}} → {{to}} (end exclusive)"
   },
   "wrongMemos": {
     "button": "Display wallets with incorrect/empty memo",

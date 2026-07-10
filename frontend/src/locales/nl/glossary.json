@@ -2,7 +2,7 @@
   "pageTitle": "Woordenlijst",
   "pageIntro": "Hier vind je belangrijke termen uit de blockchainwereld en het Stellar-netwerk. Alles wordt in eenvoudige woorden uitgelegd.",
   "searchLabel": "Zoekterm",
-  "searchPlaceholder": "Zoekterm (z. B. Konto, Account, Muxed)",
+  "searchPlaceholder": "Zoek naar een term (bijv. Konto, Account, Muxed)",
   "searchHint": "De zoekopdracht vindt woorden en verklaringen.",
   "noResults": "Geen overeenkomst.",
   "groups": {
@@ -42,7 +42,7 @@
   "addressG": {
     "title": "G-adres",
     "original": "G Address",
-    "short": "Het publieke primaire adres van een Stellar-account (beginnt mit G).",
+    "short": "Het openbare primaire adres van een Stellar-account (begint met G).",
     "desc": "Het G-adres is het hoofdadres van een Stellar-account. Het begint met de letter G. Je geeft het aan anderen zodat ze je iets kunnen sturen."
   },
   "publicKey": {
@@ -73,7 +73,7 @@
     "title": "Toepassingsgevallen voor gemengde accounts",
     "original": "Muxed accounts use cases",
     "short": "Voorbeelden, voordelen en beperkingen van M-adressen als hulpmiddel bij het in kaart brengen.",
-    "desc": "Bedrijf - Voorbeeld\n\nInstallatie:\n- Een bedrijfs-G-account\n- Eén M-adres per klant/gebruiksdoel (ID)\n\nProces:\n- Klant betaalt naar hun M-adres\n- Alles gaat naar het bedrijfs-G-account\n- Boekhouding leest de ID -> unieke toewijzing\n\nGeschikt voor:\n- Winkels, betalingsproviders, beurzen\n- Interne referenties zonder memo-risico's\n\nVereniging - Voorbeeld\n\nInstallatie:\n- Een verenigings-G-account\n- M-adressen voor leden, afdelingen, doeleinden\n\nProces:\n- Bijdrage/donatie naar het juiste M-adres\n- Toewijzing via ID, geen memo-fouten\n\nGeschikt voor:\n- Lidmaatschapsgelden\n- Gelabelde inkomsten\n- Eenvoudige controle\n\nWaarin Muxed Accounts uitblinken:\n- Robuuste invoertoewijzing\n- Eén account, vele identiteiten\n- Geen memo-vereiste\n- Minder operationele fouten\n\nWat Muxed Accounts niet zijn:\n- Geen subaccounts\n- Geen individuele balans\n- Geen individuele trustlijnen\n- Geen individuele ondertekenaars/rechten\n\nMeestal ongeschikte gebruiksscenario's:\n- Salarisbetalingen/loonadministratie-accounts (benoetigen eigenes G-Konto)\n- Trust/Escrow voor derden (kein rechtlicher Vermoegenstrenner)\n- Op rollen gebaseerde beveiliging (keine getrennten Signer/Thresholds)\n- Begrotings- of limietscheiding (keine separaten Salden/Asset-Limits)\n- Naleving-gescheiden accounts (KYC/Reporting nicht sauber trennbar)\n\nVergelijking (Kurz):\nToewijzing van betalingen: Ja\nScheiding van activa: Nee\nToegang delegeren: Nee\nJuridisch gescheiden account: Nee\nInterne boekhouding: Ja\n\nBelangrijk om te onthouden:\nMuxed Accounts richten zich op betalingen - ze vervangen geen accounts.\nAls controle, eigendom of scheiding nodig is -> eigen G-account."
+    "desc": "Bedrijf - Voorbeeld\n\nOpzet:\n- Eén G-rekening voor het bedrijf\n- Eén M-adres per klant/toepassingsgeval (ID)\n\nProces:\n- De klant betaalt naar zijn M-adres\n- Alle gelden komen terecht op de G-rekening van het bedrijf\n- De boekhouding leest het ID -> unieke toewijzing\n\nGeschikt voor:\n- Webwinkels, betalingsproviders, beurzen\n- Interne referenties zonder risico op fouten in de mededeling\n\nClub - Voorbeeld\n\nOpzet:\n- Eén G-rekening voor de club\n- M-adressen voor leden, afdelingen en doeleinden\n\nProces:\n- Contributies/donaties worden naar het juiste M-adres gestuurd\n- Toewijzing via ID, geen fouten in de mededeling\n\nGeschikt voor:\n- Lidmaatschapsbijdragen\n- Bestemde inkomsten\n- Eenvoudige controle\n\nWat Muxed-rekeningen goed doen:\n- Robuuste toewijzing van inkomende betalingen\n- Eén rekening, vele identiteiten\n- Geen mededeling vereist\n- Minder gebruikersfouten\n\nWat Muxed-rekeningen niet zijn:\n- Geen subrekeningen\n- Geen afzonderlijk saldo\n- Geen afzonderlijke trustlijnen\n- Geen specifieke ondertekenaars/toestemmingen\n\nGebruikssituaties die doorgaans niet geschikt zijn:\n- Loonbetalingen/salarisrekeningen (vereisen een specifieke G-rekening)\n- Trust/bewaring voor derden (geen juridische scheiding van activa)\n- Op rollen gebaseerde beveiliging (geen aparte ondertekenaars/drempels)\n- Scheiding van budgetten of limieten (geen aparte saldi/activalimieten)\n- Accounts gescheiden voor compliance (KYC/rapportage kan niet duidelijk worden gescheiden)\n\nVergelijking (Kurz):\nBetalingen toewijzen: Ja\nActiva scheiden: Nee\nToegang delegeren: Nee\nJuridisch gescheiden rekening: Nee\nInterne boekhouding: Ja\n\nOpmerking:\nMuxed-rekeningen leiden betalingen door — ze vervangen geen rekeningen.\nAls controle, eigendom of scheiding vereist is -> gebruik dan een aparte G-rekening."
   },
   "multisig": {
     "title": "Multihandtekening",
@@ -195,7 +195,7 @@
     "title": "Horizon Geschiedenis",
     "original": "Horizon history depth",
     "short": "Beschrijft hoever terug de transactiegeschiedenis van openbare Horizon-servers reikt.",
-    "desc": "De publieke Horizon-servers (Mainnet und Testnet) die worden beheerd door de Stellar Development Foundation bieden slechts een beperkte geschiedenis – momenteel ongeveer één jaar terugwerkend. Oudere gegevens kunnen niet meer worden opgevraagd via deze gratis eindpunten. Als je verder terug in de tijd moet gaan, heb je eigenlijk twee opties: (1) je kunt je eigen Horizon-node met volledige geschiedenis (inklusive History Archives) draaien, of (2) je kunt gebruikmaken van externe of betaalde diensten die langetermijngeschiedenis van Stellar-gegevens opslaan en verschaffen.",
+    "desc": "De openbare Horizon-servers (Mainnet en Testnet) die door de Stellar Development Foundation worden beheerd, bieden slechts een beperkte geschiedenis – momenteel ongeveer één jaar terug. Oudere gegevens zijn niet langer toegankelijk via deze gratis eindpunten. Als u verder terug in de tijd wilt gaan, hebt u in principe twee opties: (1) u draait uw eigen Horizon-node met een volledige geschiedenis (inclusief geschiedenisarchieven), of (2) u maakt gebruik van diensten van derden of betaalde diensten die historische Stellar-gegevens op lange termijn opslaan en beschikbaar stellen.",
     "seeAlso": "U hebt geen specifieke tekst om te vertalen verstrekt. Voer alstublieft de tekst in die u vertaald wilt hebben."
   },
   "scp": {
@@ -264,7 +264,7 @@
     "short": "Wettelijk verplichte identiteitscontrole die financiële diensten vragen voordat je ze gebruikt.",
     "desc": "KYC (Know Your Customer) is een regelgevingsproces waarbij gebruikers hun identiteit bewijzen met documenten en soms een selfie. Het doel is het voorkomen van witwassen (AML), terrorismefinanciering en fraude. Decentrale protocollen zoals de Stellar DEX vereisen geen KYC—je handelt direct vanuit je wallet. Onramp- en offrampdiensten moeten wél KYC uitvoeren omdat ze fiat en crypto verbinden.",
     "externalDomains": "",
-    "domainsHeading": "Bekende KYC-aanbieders (Domains zum selbst Eintippen):"
+    "domainsHeading": "Bekende KYC-aanbieders (domeinnamen die je zelf moet invoeren):"
   },
   "defi": {
     "title": "Gedecentraliseerde financiën",
@@ -414,7 +414,7 @@
     "title": "Ondertekenaar",
     "original": "Signer",
     "short": "Openbare sleutel met gewicht, onderdeel van de accountconfiguratie.",
-    "desc": "Een ondertekenaar is een publieke sleutel die bij een account hoort en een gewicht heeft. De handtekening telt mee voor de vereiste drempel. Meerdere ondertekenaars kunnen gezamenlijk een transactie autoriseren.\n\nOndertekenaars types:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM ondersteunt alleen ed25519. Voor aanvullende opties, bezoek https://lab.stellar.org."
+    "desc": "Een ondertekenaar is een openbare sleutel die gekoppeld is aan een account met een gewicht. Zijn handtekening telt mee voor de vereiste drempelwaarde. Meerdere ondertekenaars kunnen gezamenlijk een transactie goedkeuren.\n\nSoorten ondertekenaars:\n- ed25519 (normale sleutel)\n- hashX (hash-sjabloon)\n- preAuthTx (vooraf geautoriseerde transactie)\n\nSKM ondersteunt alleen ed25519. Zie https://lab.stellar.org voor aanvullende opties."
   },
   "thresholds": {
     "title": "Drempels",

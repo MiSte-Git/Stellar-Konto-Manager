@@ -29,7 +29,7 @@
         "infoBody": {
           "one": "De transactie wordt als een multisig-taak opgeslagen in de backend en krijgt een taak-ID. Er wordt niets direct verzonden.",
           "two": "Alle volgende ondertekenaars openen in hun SKM-instantie het menu-item \"Multisig-bestellingen\", laden de taak en ondertekenen.",
-          "three": "Zodra voldoende handtekeningen zijn verzameld (Threshold erreicht), zal de transactie worden verzonden of kan deze worden verzonden.",
+          "three": "Zodra er voldoende handtekeningen zijn verzameld (drempel bereikt), wordt de transactie verzonden of kan deze worden verzonden.",
           "four": "Je kunt de Job-ID doorgeven aan andere ondertekenaars, of zij kunnen de taak direct selecteren in \"Multisig-bestellingen\"."
         },
         "steps": {
@@ -48,11 +48,11 @@
         "infoBody": {
           "one": "Je voert alle vereiste geheime sleutels op dit apparaat achtereenvolgens in totdat de drempel is bereikt.",
           "two": "Dit is geen gedistribueerde multisig-flow meer, maar \"meerdere sleutels op één apparaat\" – gebruik dit alleen op vertrouwde apparaten.",
-          "three": "Zodra er voldoende handtekeningen zijn verzameld, wordt de transactie direct naar Horizon (ohne Multisig-Job) gestuurd."
+          "three": "Zodra er voldoende handtekeningen zijn verzameld, wordt de transactie rechtstreeks naar Horizon verzonden (zonder een multisig-taak)."
         }
       },
       "xdr": {
-        "title": "Exporteer XDR (nicht senden)",
+        "title": "XDR exporteren (niet verzenden)",
         "desc": "Genereer een ruwe XDR-transactie voor offline tools of hardware wallets.",
         "short": "Exporteer de transactie als XDR zonder deze direct te verzenden.",
         "moreInfo": "Meer informatie.",
@@ -64,7 +64,7 @@
         },
         "steps": {
           "one": "Er wordt een XDR gegenereerd, maar er wordt niets verzonden.",
-          "two": "Je kunt de XDR (Offline-Rechner, Hardware-Wallet, anderes Tool) extern ondertekenen.",
+          "two": "Je kunt de XDR extern ondertekenen (met behulp van een offline computer, een hardware-wallet of een ander hulpmiddel).",
           "three": "Om te verzenden, moet je de XDR (e.g., via multisig jobs or another tool) opnieuw importeren en daar ondertekenen/verzenden."
         }
       }
@@ -80,7 +80,7 @@
         "infoButton": "Volgende stappen",
         "infoTitle": "Wat moet er nu gedaan worden?",
         "info": {
-          "share": "Stuur de job-ID of XDR naar de volgende ondertekenaars (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "share": "Stuur het vacature-ID of de XDR door naar de volgende ondertekenaars (via e-mail of berichtenapps zoals Telegram of WhatsApp).",
           "sign": "Ondertekenaars kiezen ofwel optie 3 (\"XDR importeren\") en ondertekenen de XDR, OF openen in het SKM het menu-item \"Job-ID\", laden de taak en ondertekenen daar.",
           "submit": "Zodra er genoeg handtekeningen zijn verzameld, verstuurt een van de ondertekenaars de taak in het SKM definitief naar het netwerk (menu \"Job-ID\")."
         },
@@ -95,11 +95,11 @@
         "copiedDetails": "Gekopieerd"
       },
       "xdr": {
-        "title": "XDR voorbereid (nicht gesendet)",
+        "title": "XDR-ready (niet verzonden)",
         "status": "Er werd slechts één XDR gegenereerd. Er werd niets naar het netwerk verzonden.",
         "noJob": "Er werd geen multisig-taak aangemaakt.",
         "hashLabel": "Transactiehash",
-        "hint": "Geef de XDR door aan andere ondertekenaars of tools (z. B. Hardware-Wallet, Offline-Rechner). Om te verzenden, importeer je later de (ggf. signierte) XDR opnieuw in de SKM (z. B. Option 3) en stuur je ze naar het netwerk."
+        "hint": "Stuur het XDR-bestand door naar andere ondertekenaars of hulpmiddelen (bijv. een hardware-wallet of een offline computer). Om het te verzenden, importeer je het XDR-bestand (indien van toepassing: ondertekend) later weer in de SKM (bijv. optie 3) en verstuur je het naar het netwerk."
       }
     },
     "testModeTitle": "Alle handtekeningen lokaal",
@@ -107,7 +107,7 @@
     "testModeButton": "Sign directly & send",
     "prepareTitle": "Bereid transactie voor multisig voor",
     "prepareDescription": "Bereid alleen XDR voor multi-handtekening productiedoeleinden voor. Er zal niets onmiddellijk verzonden worden.",
-    "prepareButton": "Bereid XDR (nicht senden) voor."
+    "prepareButton": "XDR voorbereiden (niet verzenden)"
   },
   "jobCreated": "Multisig-taak aangemaakt (ID: {{id}}). Open \"Multisig-bestellingen\" om de status te zien.",
   "errors": {
@@ -211,7 +211,7 @@
       },
       "localAll": {
         "title": "Voer alle handtekeningen lokaal in.",
-        "body": "Kies deze optie alleen als je alle geheime sleutels die aan deze account zijn gekoppeld kunt beheren (z. B. nach einer Kontorettung mit mehreren Unterzeichnern). De Stellar Account Manager zal vervolgens alle handtekeningen lokaal verzamelen en de transactie direct naar Horizon verzenden.",
+        "body": "Kies deze optie alleen als u over alle privésleutels beschikt die aan dit account zijn gekoppeld (bijvoorbeeld na een accountherstel waarbij meerdere ondertekenaars betrokken waren). De Stellar Account Manager verzamelt dan alle handtekeningen lokaal en verstuurt de transactie rechtstreeks naar Horizon.",
         "checkboxLabel": "Voer alle handtekeningen lokaal in deze dialoog in en stuur ze direct.",
         "warning": "Opmerking: Als je alle handtekeningen lokaal invoert, zullen alle geheime sleutels in deze sessie aanwezig zijn. Gebruik deze optie alleen op vertrouwde apparaten."
       }

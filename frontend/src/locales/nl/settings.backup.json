@@ -1,5 +1,5 @@
 {
-  "desc": "Exporteer of importeer uw quizgegevens (Einstellungen, Fortschritt, Abzeichen).",
+  "desc": "Exporteer of importeer je quizgegevens (instellingen, voortgang, badges).",
   "export": {
     "button": "Export starten",
     "fileName": "quiz-backup.json",

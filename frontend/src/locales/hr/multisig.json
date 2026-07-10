@@ -29,7 +29,7 @@
         "infoBody": {
           "one": "Transakcija se pohranjuje kao multisig zadatak u pozadini i dobiva ID zadatka. Ništa se ne šalje izravno.",
           "two": "Svi sljedeći potpisnici otvaraju u svojoj SKM-instance izbornik „Multisig-Jobs“, preuzimaju zadatak i potpisuju ga.",
-          "three": "Nakon što se prikupi dovoljno potpisa (Threshold erreicht), transakcija će biti poslana ili može biti poslana.",
+          "three": "Čim se prikupi dovoljno potpisa (prag je dostignut), transakcija se šalje ili se može poslati.",
           "four": "Možeš proslijediti ID zadatka drugim potpisnicima, ili oni mogu odabrati zadatak izravno u \"Nalozi s višestrukim potpisom\"."
         },
         "steps": {
@@ -48,11 +48,11 @@
         "infoBody": {
           "one": "Na ovaj uređaj unosite sve potrebne tajne ključeve uzastopno dok se ne postigne prag.",
           "two": "Ovo više nije distribuirani multisig tijek, već „višeključni na jednom uređaju“ – koristiti samo na pouzdanim uređajima.",
-          "three": "Nakon što je prikupljeno dovoljno potpisa, transakcija se šalje izravno na Horizon (ohne Multisig-Job)."
+          "three": "Kad se prikupi dovoljno potpisa, transakcija se šalje izravno na Horizon (bez multisig posla)."
         }
       },
       "xdr": {
-        "title": "Izvoz XDR (nicht senden)",
+        "title": "Izvoz XDR-a (ne šalji)",
         "desc": "Generiraj sirovu XDR transakciju za offline alate ili hardverske novčanike.",
         "short": "Izvezite transakciju kao XDR bez izravnog slanja.",
         "moreInfo": "Više informacija.",
@@ -64,7 +64,7 @@
         },
         "steps": {
           "one": "XDR je generiran, ali ništa nije poslano.",
-          "two": "Možete vanjski potpisati XDR (Offline-Rechner, Hardware-Wallet, anderes Tool).",
+          "two": "Možete potpisati XDR izvana (koristeći offline računalo, hardverski novčanik ili neki drugi alat).",
           "three": "Da biste poslali, trebate ponovo uvesti XDR (e.g., via multisig jobs or another tool) i tamo ga potpisati/poslati."
         }
       }
@@ -80,7 +80,7 @@
         "infoButton": "Sljedeći koraci",
         "infoTitle": "Što treba sada učiniti?",
         "info": {
-          "share": "Proslijedite ID posla ili XDR sljedećim potpisnicima (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "share": "Proslijedite ID posla ili XDR sljedećim potpisnicima (putem e-pošte ili aplikacija za razmjenu poruka kao što su Telegram ili WhatsApp).",
           "sign": "Potpisnici biraju ili opciju 3 („Uvoz XDR“) i potpisuju XDR ILI otvaraju u SKM stavku izbornika „Job-ID“, učitavaju posao i tamo potpisuju.",
           "submit": "Kada se prikupi dovoljno potpisa, jedan od potpisnika konačno šalje posao u SKM (izbornik „Job-ID“) na mrežu."
         },
@@ -95,11 +95,11 @@
         "copiedDetails": "Kopirano"
       },
       "xdr": {
-        "title": "XDR pripremljen (nicht gesendet)",
+        "title": "Spremno za XDR (nije poslano)",
         "status": "Generiran je samo jedan XDR. Ništa nije poslano na mrežu.",
         "noJob": "Nijedan posao s više potpisa nije kreiran.",
         "hashLabel": "Hash transakcije",
-        "hint": "Prenesite XDR drugim potpisnicima ili alatima (z. B. Hardware-Wallet, Offline-Rechner). Za slanje ponovno uvezite (ggf. signierte) XDR u SKM (z. B. Option 3) i pošaljite ih na mrežu."
+        "hint": "Proslijedite XDR drugim potpisnicima ili alatima (npr. hardverski novčanik, offline računalo). Da biste ga poslali, kasnije ponovno uvezite XDR (potpisani, ako je primjenjivo) u SKM (npr. opcija 3) i pošaljite ga mreži."
       }
     },
     "testModeTitle": "Svi potpisi su lokalni",
@@ -107,7 +107,7 @@
     "testModeButton": "Sign directly & send",
     "prepareTitle": "Pripremi transakciju za višestruki potpis",
     "prepareDescription": "Pripremi XDR samo za proizvodni multisig. Ništa se neće poslati odmah.",
-    "prepareButton": "Pripremi XDR (nicht senden)"
+    "prepareButton": "Pripremite XDR (ne šaljite)"
   },
   "jobCreated": "Multisig posao je kreiran (ID: {{id}}). Otvorite „Multisig poslovi“ da vidite status.",
   "errors": {
@@ -211,7 +211,7 @@
       },
       "localAll": {
         "title": "Unesite sve potpise lokalno",
-        "body": "Odaberite ovu opciju samo ako kontrolirate sve tajne ključeve povezane s ovim računom (z. B. nach einer Kontorettung mit mehreren Unterzeichnern). Tada će Stellar Account Manager prikupiti sve potpise lokalno i poslati transakciju izravno Horizonu.",
+        "body": "Odaberite ovu opciju samo ako kontrolirate sve privatne ključeve povezane s ovim računom (npr. nakon oporavka računa koji uključuje više potpisnika). Stellar Account Manager potom će prikupiti sve potpise lokalno i poslati transakciju izravno na Horizon.",
         "checkboxLabel": "Unesite sve potpise lokalno u ovom dijalogu i pošaljite izravno.",
         "warning": "Napomena: Ako unesete sve potpise lokalno, svi tajni ključevi će biti prisutni u ovoj sesiji. Koristite ovu opciju samo na pouzdanim uređajima."
       }

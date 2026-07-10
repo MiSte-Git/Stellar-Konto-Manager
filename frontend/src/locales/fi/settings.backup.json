@@ -1,5 +1,5 @@
 {
-  "desc": "Vie tai tuo visasi tiedot (Einstellungen, Fortschritt, Abzeichen).",
+  "desc": "Vie tai tuo tietokilpailutietosi (asetukset, edistymistiedot, merkit).",
   "export": {
     "button": "Vie vienti alkuun",
     "fileName": "Quiz-varmuuskopio.json",

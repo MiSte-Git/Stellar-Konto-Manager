@@ -123,7 +123,7 @@
     },
     "title": "Moji pouzdani novčanici",
     "validation": {
-      "hint": "Najmanje jedan redak je nevažeći (fehlende/duplizierte Adresse)."
+      "hint": "Najmanje jedna linija je nevažeća (nedostaje adresa ili je adresa duplikirana)."
     }
   },
   "maintenance": {

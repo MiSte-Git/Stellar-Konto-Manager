@@ -27,7 +27,7 @@
     "more": "Meer informatie",
     "keysOnPage": {
       "title": "Sleutel op deze pagina",
-      "text": "⚠️ BELANGRIJK: Deze website slaat je geheime sleutel NOOIT op!\n\nDe geheime sleutel die hier wordt weergegeven, bestaat alleen in je browser (lokal im Arbeitsspeicher). Zodra je de pagina herlaadt of verlaat, is deze onherroepelijk verloren.\n\nKopieer of noteer de geheime sleutel onmiddellijk na het genereren voordat je de pagina sluit.\n\nVerificatie: Je kunt de ontwikkelaarstools van de browser (F12 → Netwerk) gebruiken om te verifiëren dat er geen geheime sleutel extern wordt verzonden. Alleen ondertekende transacties worden verzonden, nooit je geheime sleutel."
+      "text": "⚠️ BELANGRIJK: Deze website slaat je geheime sleutel NOOIT op!\n\nDe hier weergegeven geheime sleutel bestaat alleen in je browser (lokaal in het geheugen). Zodra je de pagina vernieuwt of verlaat, gaat deze onherroepelijk verloren.\n\nKopieer of noteer de geheime sleutel onmiddellijk nadat u deze hebt gegenereerd, voordat u de pagina sluit.\n\nControle: U kunt de ontwikkelaarstools van uw browser (F12 → Netwerk) gebruiken om te controleren of er geen geheime sleutel naar buiten wordt verzonden. Alleen ondertekende transacties worden verzonden – nooit uw geheime sleutel."
     },
     "title": "Belangrijke informatie",
     "secureKeys": {
@@ -50,8 +50,8 @@
   "mainnetActivateNote": "Opmerking: Voor Multisig zijn extra reserves vereist. 1 XLM is vaak niet voldoende.",
   "reserve": {
     "base": "Basiseenlage per invoer: {{val}} XLM",
-    "recommended": "Aanbevolen beginsaldo: {{val}} XLM (inkl. Puffer)",
-    "required": "Vereiste Minimum Reserve (neu): {{val}} XLM"
+    "recommended": "Aanbevolen beginsaldo: {{val}} XLM (inclusief een buffer)",
+    "required": "Vereiste minimumreserve (nieuw): {{val}} XLM"
   },
   "signersCountHint": "Je stelt het minimum aantal handtekeningen hieronder in onder \"Vereiste Handtekeningen\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Opmerking: Netwerkgrens (Stellar): maximaal 20 extra ondertekenaars.",

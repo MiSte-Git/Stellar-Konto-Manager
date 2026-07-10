@@ -27,7 +27,7 @@
     "more": "Più informazioni",
     "keysOnPage": {
       "title": "Chiave su questa pagina",
-      "text": "⚠️ IMPORTANTE: Questo sito web NON memorizza MAI la tua chiave segreta!\n\nLa chiave segreta visualizzata qui esiste solo nel tuo browser (lokal im Arbeitsspeicher). Una volta ricaricata o lasciata la pagina, è persa irrimediabilmente.\n\nCopia o annota la chiave segreta immediatamente dopo la generazione prima di chiudere la pagina.\n\nVerifica: Puoi usare gli strumenti per sviluppatori del browser (F12 → Rete) per verificare che nessuna chiave segreta venga trasmessa esternamente. Vengono inviate solo transazioni firmate, mai la tua chiave segreta."
+      "text": "⚠️ IMPORTANTE: Questo sito web non memorizza MAI la tua chiave segreta!\n\nLa chiave segreta qui visualizzata esiste solo nel tuo browser (localmente nella memoria). Non appena ricarichi o esci dalla pagina, va irrimediabilmente persa.\n\nCopia o annota la chiave segreta immediatamente dopo averla generata, prima di chiudere la pagina.\n\nVerifica: puoi utilizzare gli strumenti di sviluppo del tuo browser (F12 → Rete) per verificare che nessuna chiave segreta venga trasmessa all’esterno. Vengono inviate solo le transazioni firmate, mai la tua chiave segreta."
     },
     "title": "Informazioni importanti",
     "secureKeys": {
@@ -50,8 +50,8 @@
   "mainnetActivateNote": "Nota: Sono necessarie riserve aggiuntive per Multisig. 1 XLM spesso non è sufficiente.",
   "reserve": {
     "base": "Riserva base per voce: {{val}} XLM",
-    "recommended": "Saldo iniziale consigliato: {{val}} XLM (inkl. Puffer)",
-    "required": "Riserva Minima Obbligatoria (neu): {{val}} XLM"
+    "recommended": "Saldo iniziale consigliato: {{val}} XLM (compreso un margine di sicurezza)",
+    "required": "Riserva minima richiesta (nuova): {{val}} XLM"
   },
   "signersCountHint": "Imposti il numero minimo di firme di seguito sotto \"Required Signatures\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Nota: Limite di Rete (Stellar): max. 20 firmatari aggiuntivi.",

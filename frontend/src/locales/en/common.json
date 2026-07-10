@@ -318,7 +318,7 @@
     "cache": {
       "help": "Speeds up queries through local payment cache, but may extend initial loading.",
       "label": "Use cache (Beta)",
-      "prefetchHelp": "Lead time for loading entries/transactions in days (einmalig beim ersten Aktivieren)"
+      "prefetchHelp": "Lead time for entries/transactions to be loaded, in days (one-time setting upon initial activation)"
     },
     "network": {
       "title": "Network",
@@ -378,7 +378,7 @@
       },
       "title": "My Trusted Wallets",
       "validation": {
-        "hint": "At least one line is invalid (fehlende/duplizierte Adresse)."
+        "hint": "At least one line is invalid (missing or duplicate address)."
       }
     }
   },
@@ -387,7 +387,7 @@
       "deletingProgress": "Deleting in progress: {{current}} / {{total}}",
       "success": "Success: {{count}} Trustline(s) deleted."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) skipped (noch Guthaben vorhanden)."
+    "skippedDueToBalance": "{{count}} Trustline(s) skipped (credit still available)."
   },
   "payment": {
     "send": {
@@ -403,7 +403,7 @@
         "title": "Check federation memo",
         "textMappable": "The federation server expects the memo \"{{expected}}\", but your current memo is \"{{current}}\".",
         "textUnmappable": "The federation server expects a memo that could not be applied automatically. Your current memo is \"{{current}}\".",
-        "empty": "(empty)",
+        "empty": "(blank)",
         "sendAnyway": "Send anyway",
         "applyExpected": "Apply federation memo"
       },
@@ -412,7 +412,7 @@
         "notAuthorized": "The recipient has a trustline for {{asset}}, but the issuer hasn't authorized it yet – the payment would fail."
       },
       "memoTypes": {
-        "none": "Memo (kein Memo)",
+        "none": "Memo (no memo)",
         "text": "Memo text",
         "id": "Memo ID",
         "hash": "Memo Hash",
@@ -421,7 +421,7 @@
           "none": "No memo. Use this if the recipient is not expecting a memo.",
           "text": "Free text up to 28 bytes. Often used for allocation in simple payments.",
           "id": "Numeric ID (uint64). Many exchanges use Memo ID for assigning deposits.",
-          "hash": "32-byte SHA-256 hash (als 64-stellige Hex-Zeichenfolge). Used by services for references.",
+          "hash": "32-byte SHA-256 hash (as a 64-character hex string). Used by services for reference purposes.",
           "return": "32-byte hash for returns. Used for returns (MEMO_RETURN)."
         }
       },
@@ -443,7 +443,7 @@
       "successShort": "Successfully sent",
       "error": "Error while sending: {{detail}}",
       "amountMissing": "Please enter an amount.",
-      "amountInvalid": "Invalid amount (max. 7 Nachkommastellen).",
+      "amountInvalid": "Invalid amount (max. 7 decimal places).",
       "amountPositive": "The amount must be greater than 0.",
       "timeout": "Horizon Timeout (504). Please try again shortly.",
       "httpError": "Horizon error (status {{status}}).",
@@ -454,7 +454,7 @@
         "info": "The target account is not yet active. A minimum amount is required for activation.",
         "minReserve": "Minimum amount (2 × base reserve)",
         "yourAmount": "Your entered amount",
-        "adjustedAmount": "Proposed Amount (zum Aktivieren)",
+        "adjustedAmount": "Suggested Amount (to Activate)",
         "noteAdjust": "Your balance is insufficient for activation. If you continue, the minimum amount will be sent automatically."
       },
       "activated": "The target account has been activated.",
@@ -515,7 +515,7 @@
       "createTitle": "Create new Muxed accounts",
       "createItems": {
         "i1": "Creates new Muxed addresses (M...) from your base address (G...).",
-        "i2": "Optional with label (Name) and note (z. B. Projekt oder Zweck)."
+        "i2": "Optionally with a label (Name) and a note (e.g., project or purpose)."
       },
       "importTitle": "Import from CSV files",
       "importItems": {
@@ -776,7 +776,7 @@
     },
     "securityGuarantee": {
       "title": "🔒 SKM Security Guarantee (Multisig)",
-      "text": "The Stellar Account Manager prevents all technically induced account locks that may arise from incorrect multisig configuration.\n\nSpecifically, SKM blocks:\n- Disabling the master key without accessible signers\n- Inaccessible thresholds (low / med / high)\n- Sequence errors in signer and threshold changes\n- Removing the last valid high signer\n- Multisig setups where SetOptions can no longer be signed\n- Dead ends due to hashX or preAuthTx as the final signer\n\nSKM only sets ed25519 signers. For other signer types, use {link}.\n\nSKM guarantees:\n- Every confirmed change leaves at least one valid path open for further account management\n- SetOptions remains accessible after the change\n\nNot guaranteed (systembedingt):\n- Loss of secret keys or hardware wallets\n- Inaccessibility or failure of external signers\n\nConclusion:\nSKM reliably protects against configuration lockouts.\nOrganizational risks are transparently displayed but cannot be technically prevented.",
+      "text": "The Stellar Account Manager prevents all technically caused account locks that may result from incorrect multisig configuration.\n\nIn particular, SKM blocks:\n- Deactivation of the master key when no signers are reachable\n- Unreachable thresholds (low / med / high)\n- Ordering errors when changing signers or thresholds\n- Removal of the last valid high signer\n- Multisig setups where SetOptions can no longer be signed\n- Dead ends caused by hashX or preAuthTx as the last signer\n\nSKM uses only ed25519 signers. For other signer types, use {link}.\n\nSKM guarantees:\n- Every confirmed change leaves at least one valid path open for further account management\n- SetOptions remains accessible after the change\n\nCannot be guaranteed (due to system limitations):\n- Loss of secret keys or hardware wallets\n- Unavailability or failure of external signers\n\nConclusion:\nSKM provides reliable protection against configuration lockouts.\nOrganizational risks are transparently displayed but cannot be technically prevented.",
       "linkLabel": "lab.stellar.org"
     },
     "hint": "Load an existing account, adjust signers, weights, master weight, and thresholds, and save the changes.",
@@ -826,7 +826,7 @@
   "secretKey": {
     "cleared": "Secret key has been deleted.",
     "empty": "Secret key field is empty.",
-    "info": "⚠️ IMPORTANT: This website NEVER stores your Secret Key!\n\nThe Secret Key displayed here exists only in your browser (lokal im Arbeitsspeicher). As soon as you reload or leave the page, it is irretrievably lost.\n\nCopy or note down the Secret Key immediately after generating it, before closing the page.\n\nVerification: You can verify using the browser developer tools (F12 → Network) that no Secret Key is transmitted externally. Only signed transactions are sent, never your Secret Key.",
+    "info": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe secret key displayed here exists only in your browser (locally in memory). As soon as you reload or leave the page, it is irretrievably lost.\n\nCopy or write down the secret key immediately after it is generated, before you close the page.\n\nVerification: You can use your browser’s developer tools (F12 → Network) to verify that no secret key is being transmitted externally. Only signed transactions are sent—never your secret key.",
     "invalid": "Invalid secret key.",
     "label": "Enter the source secret key (S-Key)",
     "mismatch": "Secret key does not match the public address.",
@@ -846,7 +846,7 @@
     "pageTitle": "Glossary",
     "pageIntro": "Here you will find important words from the blockchain world and the Stellar network. Everything is explained in simple terms.",
     "searchLabel": "Search term",
-    "searchPlaceholder": "Search term (z. B. Konto, Account, Muxed)",
+    "searchPlaceholder": "Search for a term (e.g., Konto, Account, Muxed)",
     "searchHint": "The search finds words and explanations.",
     "noResults": "No match.",
     "blockchain": {
@@ -870,7 +870,7 @@
     "addressG": {
       "title": "G-address",
       "original": "G Address",
-      "short": "The public main address of a Stellar account (beginnt mit G).",
+      "short": "The public primary address of a Stellar account (starts with G).",
       "desc": "The G-address is the main address of a Stellar account. It starts with the letter G. You give it to others so they can send you something."
     },
     "publicKey": {
@@ -1043,7 +1043,7 @@
     "deletingProgress": "Deleting in progress: {{current}} / {{total}}",
     "success": "Success: {{count}} Trustline(s) deleted."
   },
-  "skippedDueToBalance": "{{count}} Trustlines (s) skipped (noch Guthaben vorhanden).",
+  "skippedDueToBalance": "{{count}} Trustline(s) skipped (credit still available).",
   "xlmByMemo": {
     "action": {
       "calculate": "Calculate",
@@ -1087,7 +1087,7 @@
       "count": "Quantity: {{n}}",
       "label": "Comparison (all inputs)",
       "otherCount": "Entries with incorrect/missing memo: {{n}}",
-      "unique": "Unique Wallets (alle): {{n}}",
+      "unique": "Unique wallets (all): {{n}}",
       "uniqueWallets": "Unique Wallets: {{n}}"
     },
     "time": {
@@ -1110,7 +1110,7 @@
       "local": "Local time zone",
       "note": "Date and time are interpreted in the selected time zone and automatically converted to UTC before searching.",
       "utc": "UTC",
-      "window": "Utilized UTC time window: {{from}} → {{to}} (Bis exklusiv)"
+      "window": "UTC time window used: {{from}} → {{to}} (end exclusive)"
     },
     "wrongMemos": {
       "button": "Display wallets with incorrect/empty memo",

@@ -2,7 +2,7 @@
   "pageTitle": "Glossaire",
   "pageIntro": "Ici, vous trouverez des termes importants du monde de la blockchain et du réseau Stellar. Tout est expliqué en des mots simples.",
   "searchLabel": "Terme de recherche",
-  "searchPlaceholder": "Terme de recherche (z. B. Konto, Account, Muxed)",
+  "searchPlaceholder": "Rechercher un terme (par exemple : Konto, Account, Muxed)",
   "searchHint": "La recherche trouve des mots et des explications.",
   "noResults": "Pas de correspondance.",
   "groups": {
@@ -42,7 +42,7 @@
   "addressG": {
     "title": "G adresse",
     "original": "G Address",
-    "short": "L'adresse principale publique d'un compte Stellar (beginnt mit G).",
+    "short": "L'adresse publique principale d'un compte Stellar (commençant par G).",
     "desc": "L'adresse G est l'adresse principale d'un compte Stellar. Elle commence par la lettre G. Vous la fournissez aux autres pour qu'ils puissent vous envoyer quelque chose."
   },
   "publicKey": {
@@ -73,7 +73,7 @@
     "title": "Cas d'utilisation pour les comptes intermédiaires",
     "original": "Muxed accounts use cases",
     "short": "Exemples, avantages et limites des adresses M en tant qu'aide à la cartographie.",
-    "desc": "Entreprise - Exemple\n\nConfiguration :\n- Un compte G de l'entreprise\n- Une adresse M par client/cas d'utilisation (ID)\n\nProcessus :\n- Le client paie à son adresse M\n- Tout est versé sur le compte G de l'entreprise\n- La comptabilité lit l'ID -> attribution unique\n\nConvient pour :\n- Boutiques, fournisseurs de paiements, échanges\n- Références internes sans risques de mémo\n\nAssociation - Exemple\n\nConfiguration :\n- Un compte G de l'association\n- Adresses M pour les membres, départements, objectifs\n\nProcessus :\n- Contribution/don à l'adresse M appropriée\n- Attribution via ID, pas d'erreurs de mémo\n\nConvient pour :\n- Cotisations\n- Revenus affectés\n- Audit facilité\n\nCe que les comptes multiplexés excellent à faire :\n- Attribution d'entrées robuste\n- Un compte, multiples identités\n- Pas besoin de mémo\n- Moins d'erreurs opérationnelles\n\nCe que les comptes multiplexés ne sont pas :\n- Pas de sous-comptes\n- Pas de solde individuel\n- Pas de lignes de crédit individuelles\n- Pas de signataires/droits individuels\n\nCas d'utilisation généralement inappropriés :\n- Paiements de salaires/comptes de paie (benoetigen eigenes G-Konto)\n- Fiducies/séquestres pour tiers (kein rechtlicher Vermoegenstrenner)\n- Sécurité basée sur les rôles (keine getrennten Signer/Thresholds)\n- Séparation de budget ou de limite (keine separaten Salden/Asset-Limits)\n- Comptes séparés pour conformité (KYC/Reporting nicht sauber trennbar)\n\nComparaison (Kurz) :\nAttribuer des paiements : Oui\nSéparation des actifs : Non\nDélégation d'accès : Non\nCompte légalement séparé : Non\nComptabilité interne : Oui\n\nConclusion clé :\nLes comptes multiplexés gèrent des paiements - ils ne remplacent pas les comptes.\nSi contrôle, propriété ou séparation est nécessaire -> propre compte G."
+    "desc": "Entreprise - Exemple\n\nConfiguration :\n- Un compte G pour l'entreprise\n- Une adresse M par client/cas d'utilisation (ID)\n\nProcessus :\n- Le client effectue un paiement vers son adresse M\n- Tous les fonds sont versés sur le compte G de l'entreprise\n- Le service comptable identifie l'ID -> affectation unique\n\nConvient pour :\n- Boutiques en ligne, prestataires de paiement, plateformes d’échange\n- Références internes sans risque d’erreur de mémo\n\nClub - Exemple\n\nConfiguration :\n- Un compte G pour le club\n- Des adresses M pour les membres, les sections et les objectifs\n\nProcessus :\n- Cotisations/dons envoyés à l’adresse M appropriée\n- Affectation via l’identifiant, aucune erreur de référence\n\nConvient pour :\n- Cotisations d’adhésion\n- Recettes affectées à un usage précis\n- Audit simplifié\n\nLes atouts des comptes Muxed :\n- Affectation robuste des paiements entrants\n- Un seul compte, plusieurs identités\n- Aucune référence requise\n- Moins d’erreurs utilisateur\n\nCe que les comptes Muxed ne sont pas :\n- Pas de sous-comptes\n- Pas de solde distinct\n- Pas de lignes de confiance distinctes\n- Pas de signataires/autorisations dédiés\n\nCas d’utilisation généralement inadaptés :\n- Paiements de salaires/comptes de paie (nécessitent un compte G dédié)\n- Fiducie/garde pour des tiers (pas de séparation juridique des actifs)\n- Sécurité basée sur les rôles (pas de signataires/seuils distincts)\n- Séparation budgétaire ou par limites (pas de soldes/limites d’actifs distincts)\n- Comptes séparés à des fins de conformité (le KYC et le reporting ne peuvent pas être clairement séparés)\n\nComparaison (Kurz) :\nAttribuer des paiements : Oui\nSéparer les actifs : Non\nDéléguer l’accès : Non\nCompte juridiquement distinct : Non\nComptabilité interne : Oui\n\nRemarque :\nLes comptes « muxés » acheminent les paiements — ils ne remplacent pas les comptes.\nSi le contrôle, la propriété ou la séparation sont requis -> utilisez un compte G distinct."
   },
   "multisig": {
     "title": "Multisignature",
@@ -195,7 +195,7 @@
     "title": "Horizon Histoire",
     "original": "Horizon history depth",
     "short": "Décrit la durée historique des transactions fournie par les serveurs Horizon publics.",
-    "desc": "Les serveurs Horizon publics (Mainnet und Testnet) exploités par la Stellar Development Foundation ne fournissent qu'un historique limité – actuellement approximativement un an en rétroaction. Les données plus anciennes ne peuvent plus être récupérées via ces points de terminaison gratuits. Si vous avez besoin de remonter plus loin dans le temps, vous avez essentiellement deux options : (1) vous pouvez exécuter votre propre nœud Horizon avec un historique complet (inklusive History Archives), ou (2) vous pouvez utiliser des services tiers ou payants qui stockent et fournissent des données historiques de Stellar à long terme.",
+    "desc": "Les serveurs Horizon publics (Mainnet et Testnet) gérés par la Stellar Development Foundation ne fournissent qu'un historique limité — qui remonte actuellement à environ un an. Les données plus anciennes ne sont plus accessibles via ces points de terminaison gratuits. Si vous avez besoin de remonter plus loin dans le temps, deux options s’offrent à vous : (1) vous pouvez faire tourner votre propre nœud Horizon avec un historique complet (y compris les archives historiques), ou (2) vous pouvez recourir à des services tiers ou payants qui stockent et fournissent les données historiques de Stellar sur le long terme.",
     "seeAlso": [
       "horizon",
       "serverHorizon",
@@ -268,7 +268,7 @@
     "short": "Vérification d’identité obligatoire que les services financiers demandent avant l’utilisation.",
     "desc": "Le KYC (Know Your Customer) est une procédure réglementaire où l’utilisateur prouve son identité avec des documents et parfois un selfie. Le but est d’empêcher le blanchiment d’argent (AML), le financement du terrorisme et la fraude. Les protocoles décentralisés comme le Stellar DEX n’exigent pas de KYC—on trade directement depuis son wallet. Les services onramp et offramp doivent faire du KYC car ils relient monnaie fiat et crypto.",
     "externalDomains": "",
-    "domainsHeading": "Prestataires KYC reconnus (Domains zum selbst Eintippen) :"
+    "domainsHeading": "Prestataires KYC réputés (domaines à saisir vous-même) :"
   },
   "defi": {
     "title": "Finance décentralisée",
@@ -418,7 +418,7 @@
     "title": "Signataire",
     "original": "Signer",
     "short": "Clé publique avec poids, faisant partie de la configuration du compte.",
-    "desc": "Un signataire est une clé publique qui appartient à un compte et possède un poids. Sa signature contribue au seuil requis. Plusieurs signataires peuvent collectivement autoriser une transaction.\n\nTypes de signataires :\n- ed25519 (__GARDER_TERME_EN_1__)\n- hashX (__GARDER_TERME_EN_2__)\n- preAuthTx (__GARDER_TERME_EN_3__)\n\nSKM prend en charge uniquement ed25519. Pour des options supplémentaires, visitez https://lab.stellar.org."
+    "desc": "Un signataire est une clé publique associée à un compte doté d'un poids. Sa signature est prise en compte dans le calcul du seuil requis. Plusieurs signataires peuvent approuver conjointement une transaction.\n\nTypes de signataires :\n- ed25519 (clé normale)\n- hashX (modèle de hachage)\n- preAuthTx (transaction préautorisée)\n\nSKM ne prend en charge que le format ed25519. Pour plus d'options, consultez https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Seuils",

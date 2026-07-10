@@ -20,7 +20,7 @@
   "addressG": {
     "desc": "La dirección G es la dirección principal de una cuenta Stellar. Comienza con la letra G. La proporcionas a otros para que puedan enviarte algo.",
     "original": "G Address",
-    "short": "La dirección principal pública de una cuenta de Stellar (beginnt mit G).",
+    "short": "La dirección pública principal de una cuenta de Stellar (que empieza por G).",
     "title": "Dirección G"
   },
   "addressMuxed": {
@@ -328,7 +328,7 @@
     "title": "Horizonte"
   },
   "horizonHistory": {
-    "desc": "The public Horizon servers (Mainnet und Testnet) operated by the Stellar Development Foundation only provide a limited history – currently approximately one year retroactively. Older data can no longer be retrieved through these free endpoints. If you need to go further back in time, you essentially have two options: (1) you can run your own Horizon node with full history (inklusive History Archives), or (2) you can use third-party or paid services that store and provide long-term historical Stellar data.",
+    "desc": "Los servidores públicos de Horizon (Mainnet y Testnet) gestionados por la Fundación para el Desarrollo de Stellar solo ofrecen un historial limitado; actualmente, de aproximadamente un año. Ya no se puede acceder a datos más antiguos a través de estos puntos de acceso gratuitos. Si necesitas remontarte más atrás en el tiempo, básicamente tienes dos opciones: (1) ejecutar tu propio nodo Horizon con un historial completo (incluidos los archivos históricos), o (2) utilizar servicios de terceros o de pago que almacenen y proporcionen datos históricos de Stellar a largo plazo.",
     "original": "Horizon history depth",
     "seeAlso": [
       "horizon",
@@ -392,7 +392,7 @@
     "short": "Verificación de identidad obligatoria que los servicios financieros exigen antes de usar sus servicios.",
     "title": "Conoce a tu cliente",
     "externalDomains": "",
-    "domainsHeading": "Proveedores de servicios KYC de reconocido prestigio (Domains zum selbst Eintippen):"
+    "domainsHeading": "Proveedores de KYC conocidos (dominios que debes escribir tú mismo):"
   },
   "layer1Layer2": {
     "desc": "Layer 1 (L1) es la blockchain principal—por ejemplo Bitcoin, Ethereum o Stellar. Layer 2 (L2) son protocolos que se construyen sobre L1 para mejorar velocidad y costos. Ejemplos: Lightning Network (en Bitcoin) o Polygon (en Ethereum). Stellar es una L1 rápida y barata gracias a SCP, por eso necesita menos soluciones L2 que Ethereum.",
@@ -512,7 +512,7 @@
     "desc": "Ejemplo: Una empresa configura una cuenta Stellar con tres firmantes: CEO (peso 2), CFO (peso 2) y un miembro de la junta (peso 1). Los umbrales se configuran de modo que las operaciones de baja seguridad requieran peso 1, las operaciones medias (por ejemplo, pagos) requieran peso 3 y las operaciones altas (por ejemplo, cambiar firmantes) requieran peso 4. Esto significa que el CEO puede ver la cuenta solo, pero debe cooperar con el CFO o ambos firmantes para pagos y cambios de configuración."
   },
   "muxedAccountsUseCases": {
-    "desc": "Compañía - Ejemplo\n\nConfiguración:\n- Una cuenta G de la compañía\n- Una dirección M por cliente/caso de uso (ID)\n\nProceso:\n- El cliente paga a su dirección M\n- Todo va a la cuenta G de la compañía\n- Contabilidad lee el ID -> asignación única\n\nAdecuado para:\n- Tiendas, proveedores de pago, intercambios\n- Referencias internas sin riesgos de memo\n\nAsociación - Ejemplo\n\nConfiguración:\n- Una cuenta G de la asociación\n- Direcciones M para miembros, departamentos, propósitos\n\nProceso:\n- Contribución/donación a la dirección M adecuada\n- Asignación vía ID, sin errores de memo\n\nAdecuado para:\n- Cuotas de membresía\n- Ingresos asignados\n- Auditorías sencillas\n\nEn qué sobresalen las Cuentas Multiplicadas:\n- Asignación robusta de entradas\n- Una cuenta, muchas identidades\n- Sin requisito de memo\n- Menos errores operacionales\n\nLo que no son las Cuentas Multiplicadas:\n- No son subcuentas\n- Sin saldo individual\n- Sin líneas de confianza individuales\n- Sin firmantes/derechos individuales\n\nCasos de uso típicamente inadecuados:\n- Pagos de salario/cuentas de nómina (benoetigen eigenes G-Konto)\n- Confianza/Escrow para terceros (kein rechtlicher Vermoegenstrenner)\n- Seguridad basada en roles (keine getrennten Signer/Thresholds)\n- Separación de presupuesto o límite (keine separaten Salden/Asset-Limits)\n- Cuentas separadas por cumplimiento (KYC/Reporting nicht sauber trennbar)\n\nComparación (Kurz):\nAsignar pagos: Sí\nSeparar activos: No\nDelegar acceso: No\nLegalmente cuenta separada: No\nContabilidad interna: Sí\n\nConclusión clave:\nLas Cuentas Multiplicadas abordan los pagos - no reemplazan las cuentas.\nSi se necesita control, propiedad o separación -> cuenta G propia.",
+    "desc": "Empresa - Ejemplo\n\nConfiguración:\n- Una cuenta G de la empresa\n- Una dirección M por cliente/caso de uso (ID)\n\nProceso:\n- El cliente realiza el pago a su dirección M\n- Todos los fondos se ingresan en la cuenta G de la empresa\n- El departamento de contabilidad lee el ID -> asignación única\n\nAdecuado para:\n- Tiendas online, proveedores de pagos, plataformas de intercambio\n- Referencias internas sin riesgo de errores en los conceptos\n\nClub - Ejemplo\n\nConfiguración:\n- Una cuenta G del club\n- Direcciones M para socios, secciones y fines\n\nProceso:\n- Las cuotas o donaciones se envían a la dirección M correspondiente\n- Asignación mediante ID, sin errores en los conceptos\n\nAdecuado para:\n- Cuotas de afiliación\n- Ingresos destinados a fines específicos\n- Auditoría sencilla\n\nVentajas de las cuentas Muxed:\n- Asignación sólida de los pagos entrantes\n- Una sola cuenta, múltiples identidades\n- No se requiere concepto\n- Menos errores de los usuarios\n\nLo que las cuentas Muxed no son:\n- Sin subcuentas\n- Sin saldos separados\n- Sin líneas fiduciarias separadas\n- Sin firmantes ni permisos específicos\n\nCasos de uso que suelen no ser adecuados:\n- Pagos de salarios/cuentas de nómina (requieren una cuenta G específica)\n- Fideicomiso/custodia para terceros (sin segregación legal de activos)\n- Seguridad basada en roles (sin firmantes ni umbrales independientes)\n- Segregación presupuestaria o de límites (sin saldos ni límites de activos independientes)\n- Cuentas segregadas por motivos de cumplimiento normativo (el KYC y la presentación de informes no pueden separarse claramente)\n\nComparación (Kurz):\nAsignar pagos: Sí\nSegregar activos: No\nDelegar acceso: No\nCuenta separada legalmente: No\nContabilidad interna: Sí\n\nNota:\nLas cuentas «muxed» canalizan los pagos; no sustituyen a las cuentas.\nSi se requiere control, titularidad o segregación -> utiliza una cuenta G independiente.",
     "original": "Muxed accounts use cases",
     "short": "Ejemplos, beneficios y limitaciones de las direcciones M como una ayuda para mapeo.",
     "title": "Casos de uso para cuentas multiplexadas"
@@ -726,7 +726,7 @@
   },
   "searchHint": "La búsqueda encuentra palabras y explicaciones.",
   "searchLabel": "Término de búsqueda",
-  "searchPlaceholder": "Término de búsqueda (z. B. Konto, Account, Muxed)",
+  "searchPlaceholder": "Busca un término (por ejemplo, «Konto», «Account», «Muxed»)",
   "securityToken": {
     "desc": "Como un certificado de acciones. Puede prometer derechos o beneficios. A menudo se aplican reglas más estrictas para esto.",
     "original": "Security Token",
@@ -752,7 +752,7 @@
     "title": "Número de secuencia"
   },
   "signer": {
-    "desc": "Un firmante es una clave pública que pertenece a una cuenta y tiene un peso. Su firma cuenta para cumplir con el umbral requerido. Varios firmantes pueden autorizar conjuntamente una transacción.\n\nTipos de firmantes:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM solo admite ed25519. Para opciones adicionales, visite https://lab.stellar.org.",
+    "desc": "Un firmante es una clave pública asociada a una cuenta que tiene un peso. Su firma cuenta para alcanzar el umbral requerido. Varios firmantes pueden aprobar conjuntamente una transacción.\n\nTipos de firmantes:\n- ed25519 (clave normal)\n- hashX (plantilla de hash)\n- preAuthTx (transacción preautorizada)\n\nSKM solo admite ed25519. Para conocer otras opciones, consulta https://lab.stellar.org.",
     "original": "Signer",
     "short": "Clave pública con peso, parte de la configuración de la cuenta.",
     "title": "Signatario"

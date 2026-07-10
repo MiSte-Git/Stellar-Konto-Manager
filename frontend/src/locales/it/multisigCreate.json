@@ -29,7 +29,7 @@
     },
     "multisigSection": {
       "title": "Multifirma",
-      "text": "Con multisig, puoi definire più firmatari per il tuo account. Le transazioni richiederanno quindi firme multiple, ad esempio 2 su 3.\n\nVantaggi:\n• Maggiore sicurezza, una chiave compromessa non è sufficiente\n• Condivisione per esempio in aziende, partnership\n• più backup tra persone diverse per il recupero\n\nATTENZIONE: Testa il multisig prima sul testnet prima di utilizzarlo sul mainnet! Una configurazione errata può portare alla perdita di accesso all'account."
+      "text": "Con il multisig è possibile designare più firmatari per il proprio account. Le transazioni richiedono quindi le firme di più chiavi (ad esempio, 2 su 3).\n\nVantaggi:\n• Maggiore sicurezza (non è sufficiente che venga compromessa una sola chiave)\n• Conti congiunti (ad esempio, aziende, società di persone)\n• Ripristino di emergenza (più backup conservati da persone diverse)\n\nATTENZIONE: prova il multisig prima sulla testnet prima di utilizzarlo sulla mainnet! Una configurazione errata può comportare la perdita dell’accesso all’account."
     },
     "diagram": {
       "title": "Scadenza della firma"
@@ -43,8 +43,8 @@
   "mainnetActivateNote": "Nota: Sono necessarie riserve aggiuntive per il multisig. 1 XLM spesso non è sufficiente.",
   "reserve": {
     "base": "Riserve di base per voce: {{val}} XLM",
-    "recommended": "Saldo iniziale raccomandato: {{val}} XLM (inkl. Puffer)",
-    "required": "Riserva Minima Obbligatoria (neu): {{val}} XLM"
+    "recommended": "Saldo iniziale consigliato: {{val}} XLM (compreso un margine di sicurezza)",
+    "required": "Riserva minima richiesta (nuova): {{val}} XLM"
   },
   "signersCountLimit": "Nota: Limite della rete (Stellar): massimo 20 firmatari aggiuntivi.",
   "startingBalance": "Credito iniziale (XLM)",

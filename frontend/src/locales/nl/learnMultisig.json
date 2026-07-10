@@ -8,7 +8,7 @@
   },
   "singleVsMulti": {
     "title": "Single-sig vs. Multisig",
-    "text": "Single-Sig = 1 sleutel is voldoende. Multisig = meerdere handtekeningen vereist (z. B. 2 von 3)."
+    "text": "Single-sig = Eén sleutel is voldoende. Multisig = Er zijn meerdere handtekeningen vereist (bijvoorbeeld 2 van de 3)."
   },
   "stellarHow": {
     "title": "Hoe Stellar Multisig Implementeert",

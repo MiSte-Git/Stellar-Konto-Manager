@@ -41,7 +41,7 @@
     "count": "Hoeveelheid: {{n}}",
     "label": "Vergelijking (all inputs)",
     "otherCount": "Inzendingen met onjuiste/ontbrekende notitie: {{n}}",
-    "unique": "Unieke wallets (alle): {{n}}",
+    "unique": "Unieke portemonnees (totaal): {{n}}",
     "uniqueWallets": "Unieke wallets: {{n}}"
   },
   "time": {
@@ -64,7 +64,7 @@
     "local": "Lokale tijdzone",
     "note": "Datum en tijd worden geïnterpreteerd in de geselecteerde tijdzone en automatisch omgezet naar UTC voordat er gezocht wordt.",
     "utc": "UTC",
-    "window": "Gebruikte UTC-tijdvenster: {{from}} → {{to}} (Bis exklusiv)"
+    "window": "Gebruikt UTC-tijdvenster: {{from}} → {{to}} (einde exclusief)"
   },
   "wrongMemos": {
     "button": "Portemonnees weergeven met onjuiste/lege memo",

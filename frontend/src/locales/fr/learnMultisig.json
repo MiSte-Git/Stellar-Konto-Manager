@@ -8,7 +8,7 @@
   },
   "singleVsMulti": {
     "title": "Single-sig vs. Multisig",
-    "text": "Single-Sig = 1 clé est suffisante. Multisig = multiples signatures requises (z. B. 2 von 3)."
+    "text": "Signature unique = Une seule clé suffit. Signature multiple = Plusieurs signatures sont requises (par exemple, 2 sur 3)."
   },
   "stellarHow": {
     "title": "Comment Stellar met en œuvre le multi-signature",

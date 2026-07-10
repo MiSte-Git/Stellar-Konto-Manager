@@ -53,6 +53,6 @@
   },
   "history": {
     "availableFrom": "Server (Horizon) – Geschiedenis vanaf",
-    "hintFullHistory": "Let op: De grootboekgeschiedenis van de Horizon-server gaat slechts terug tot {{available}}. Alleen gegevens tot die datum worden weergegeven. Daarom is de geselecteerde \"Van\" datum beperkt. Voor oudere gegevens is een (meist kostenpflichtiger) Full‑History‑Provider vereist (mogelijk in de toekomst beschikbaar!)."
+    "hintFullHistory": "Opmerking: De transactiegeschiedenis van de Horizon-server gaat slechts terug tot {{available}}. Alleen gegevens tot dat moment worden weergegeven. De geselecteerde „Van”-datum is daarom beperkt. Voor oudere gegevens is een (meestal betaalde) aanbieder van de volledige geschiedenis nodig (misschien in de toekomst!)."
   }
 }

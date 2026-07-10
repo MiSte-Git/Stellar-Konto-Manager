@@ -29,7 +29,7 @@
         "infoBody": {
           "one": "The transaction is stored as a multisig job in the backend and receives a job ID. Nothing is sent directly.",
           "two": "All subsequent signers open the \"Multisig orders\" menu item in their SKM instance, load the job, and sign.",
-          "three": "Once enough signatures are provided (Threshold erreicht), the transaction will be sent or can be sent.",
+          "three": "As soon as enough signatures are collected (threshold reached), the transaction is sent or can be sent.",
           "four": "You can pass the job ID on to other signers, or they can select the job directly in \"Multisig orders\"."
         },
         "steps": {
@@ -48,11 +48,11 @@
         "infoBody": {
           "one": "You enter all the required secret keys on this device sequentially until the threshold is reached.",
           "two": "This is no longer a distributed multisig flow, but \"multi-key on one device\" – only use this on trusted devices.",
-          "three": "Once enough signatures are collected, the transaction is sent directly to Horizon (ohne Multisig-Job)."
+          "three": "Once enough signatures have been collected, the transaction is sent directly to Horizon (without a multisig job)."
         }
       },
       "xdr": {
-        "title": "Export XDR (nicht senden)",
+        "title": "Export XDR (do not send)",
         "desc": "Generate a raw XDR transaction for offline tools or hardware wallets.",
         "short": "Export the transaction as XDR without sending it directly.",
         "moreInfo": "More information.",
@@ -64,7 +64,7 @@
         },
         "steps": {
           "one": "An XDR is generated, but nothing is sent.",
-          "two": "You can externally sign the XDR (Offline-Rechner, Hardware-Wallet, anderes Tool).",
+          "two": "You can sign the XDR externally (using an offline computer, a hardware wallet, or another tool).",
           "three": "To send, you need to re-import the XDR (e.g., via multisig jobs or another tool) and sign/send it there."
         }
       }
@@ -80,7 +80,7 @@
         "infoButton": "Next steps",
         "infoTitle": "What needs to be done now",
         "info": {
-          "share": "Forward the job ID or XDR to the next signers (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "share": "Forward the job ID or XDR to the next signatories (via email or messaging apps such as Telegram or WhatsApp).",
           "sign": "Signers either choose option 3 (\"Import XDR\") and sign the XDR, OR open the \"Job ID\" menu item in the SKM, load the job, and sign there.",
           "submit": "Once enough signatures have been collected, one of the signers finally sends the job to the network in the SKM (menu \"Job ID\")."
         },
@@ -95,11 +95,11 @@
         "copiedDetails": "Copied"
       },
       "xdr": {
-        "title": "XDR prepared (nicht gesendet)",
+        "title": "XDR-ready (not sent)",
         "status": "Only one XDR was generated. Nothing was sent to the network.",
         "noJob": "No multisig job was created.",
         "hashLabel": "Transaction hash",
-        "hint": "Pass the XDR to other signers or tools (z. B. Hardware-Wallet, Offline-Rechner). To send, you later import the (ggf. signierte) XDR again in the SKM (z. B. Option 3) and send them to the network."
+        "hint": "Forward the XDR to other signers or tools (e.g., hardware wallet, offline computer). To send it, import the XDR (signed, if applicable) back into the SKM later (e.g., Option 3) and send it to the network."
       }
     },
     "testModeTitle": "All signatures local",
@@ -107,7 +107,7 @@
     "testModeButton": "Sign directly & send",
     "prepareTitle": "Prepare transaction for multisig",
     "prepareDescription": "Only prepare XDR for production multisig. Nothing will be sent immediately.",
-    "prepareButton": "Prepare XDR (nicht senden)"
+    "prepareButton": "Prepare XDR (do not send)"
   },
   "jobCreated": "Multisig job created (ID: {{id}}). Open \"Multisig orders\" to see the status.",
   "errors": {
@@ -211,7 +211,7 @@
       },
       "localAll": {
         "title": "Enter all signatures locally",
-        "body": "Choose this option only if you control all secret keys associated with this account (z. B. nach einer Kontorettung mit mehreren Unterzeichnern). The Stellar Account Manager will then collect all signatures locally and send the transaction directly to Horizon.",
+        "body": "Select this option only if you control all the private keys associated with this account (e.g., after an account recovery involving multiple signers). The Stellar Account Manager will then collect all signatures locally and send the transaction directly to Horizon.",
         "checkboxLabel": "Enter all signatures locally in this dialogue and send directly.",
         "warning": "Note: If you input all signatures locally, all secret keys will be present in this session. Use this option only on trusted devices."
       }

@@ -34,7 +34,7 @@
     "issuerPlaceholder": "e.g., G...Issuer",
     "issuerHelp": "Public key (G-Adresse) of the issuer account that issues the asset.",
     "limitLabel": "Limit",
-    "limitPlaceholder": "e.g., 1,000,000 (eine Million)",
+    "limitPlaceholder": "e.g., 1,000,000 (one million)",
     "limitHelp": "The limit is the maximum amount of this asset that this account can trust. In practice, it should be set as high as your anticipated maximum balance in this asset.",
     "submit": "Create a trustline",
     "cancel": "Cancel",

@@ -41,7 +41,7 @@
     "count": "Quantità: {{n}}",
     "label": "Confronto (all inputs)",
     "otherCount": "Voci con memo errato/mancante: {{n}}",
-    "unique": "Portafogli unici (alle): {{n}}",
+    "unique": "Portafogli unici (totale): {{n}}",
     "uniqueWallets": "Portafogli unici: {{n}}"
   },
   "time": {
@@ -64,7 +64,7 @@
     "local": "Fuso orario locale",
     "note": "La data e l'ora sono interpretate nel fuso orario selezionato e convertite automaticamente in UTC prima della ricerca.",
     "utc": "UTC",
-    "window": "Finestra temporale UTC utilizzata: {{from}} → {{to}} (Bis exklusiv)"
+    "window": "Intervallo di tempo UTC utilizzato: {{from}} → {{to}} (fine esclusa)"
   },
   "wrongMemos": {
     "button": "Mostra portafogli con memo errato/vuoto.",

@@ -2,7 +2,7 @@
   "pageTitle": "Glossario",
   "pageIntro": "Qui troverai termini importanti del mondo blockchain e della rete Stellar. Tutto è spiegato con parole semplici.",
   "searchLabel": "Termine di ricerca",
-  "searchPlaceholder": "Termine di ricerca (z. B. Konto, Account, Muxed)",
+  "searchPlaceholder": "Cerca un termine (ad es., Konto, Account, Muxed)",
   "searchHint": "La ricerca trova parole e spiegazioni.",
   "noResults": "Nessuna corrispondenza.",
   "groups": {
@@ -42,7 +42,7 @@
   "addressG": {
     "title": "G indirizzo",
     "original": "G Address",
-    "short": "L'indirizzo primario pubblico di un conto Stellar (beginnt mit G).",
+    "short": "L'indirizzo pubblico primario di un account Stellar (che inizia con G).",
     "desc": "L'indirizzo G è l'indirizzo principale di un conto Stellar. Inizia con la lettera G. Lo fornisci agli altri affinché possano inviarti qualcosa."
   },
   "publicKey": {
@@ -73,7 +73,7 @@
     "title": "Casi d'uso per gli account multipli",
     "original": "Muxed accounts use cases",
     "short": "Esempi, vantaggi e limiti degli indirizzi M come strumento di mappatura.",
-    "desc": "Azienda - Example\n\nConfigurazione:\n- Un conto G dell'azienda\n- Un M-address per cliente/caso d'uso (ID)\n\nProcesso:\n- Il cliente paga al proprio M-address\n- Tutto va al conto G dell'azienda\n- La contabilità legge l'ID -> allocazione unica\n\nAdatto per:\n- Negozi, fornitori di pagamento, scambi\n- Riferimenti interni senza rischi di memo\n\nAssociazione - Example\n\nConfigurazione:\n- Un conto G dell'associazione\n- M-addresses per membri, dipartimenti, scopi\n\nProcesso:\n- Contributo/donazione al M-address appropriato\n- Allocazione tramite ID, nessun errore di memo\n\nAdatto per:\n- Quote associative\n- Ricavi vincolati\n- Audit facile\n\nIn cosa eccellono i conti muxed:\n- Robusta allocazione degli input\n- Un conto, molte identità\n- Nessun requisito di memo\n- Meno errori operativi\n\nCosa non sono i conti muxed:\n- Non sono sotto-conti\n- Nessun saldo individuale\n- Nessuna linea di fiducia individuale\n- Nessun firmatario/diritti individuali\n\nCasi d'uso tipicamente non adatti:\n- Pagamenti salariali/conti stipendi (benoetigen eigenes G-Konto)\n- Fiducia/Deposito per terzi (kein rechtlicher Vermoegenstrenner)\n- Sicurezza basata sui ruoli (keine getrennten Signer/Thresholds)\n- Separazione di budget o limiti (keine separaten Salden/Asset-Limits)\n- Conti separati per conformità (KYC/Reporting nicht sauber trennbar)\n\nConfronto (Kurz):\nAssegnazione dei pagamenti: Sì\nSeparazione degli asset: No\nDelega dell'accesso: No\nConto legalmente separato: No\nContabilità interna: Sì\n\nPunto chiave:\nI conti muxed affrontano i pagamenti - non sostituiscono i conti.\nSe è necessario controllo, proprietà o separazione -> proprio conto G."
+    "desc": "Azienda - Esempio\n\nConfigurazione:\n- Un conto G aziendale\n- Un indirizzo M per ogni cliente/caso d’uso (ID)\n\nProcedura:\n- Il cliente effettua il pagamento al proprio indirizzo M\n- Tutti i fondi vengono accreditati sul conto G aziendale\n- Il reparto contabilità rileva l’ID -> assegnazione univoca\n\nAdatto per:\n- Negozi online, fornitori di servizi di pagamento, piattaforme di scambio\n- Riferimenti interni senza rischi legati alle note\n\nClub - Esempio\n\nConfigurazione:\n- Un conto G del club\n- Indirizzi M per soci, sezioni e finalità\n\nProcesso:\n- Quote associative/donazioni inviate all’indirizzo M appropriato\n- Assegnazione tramite ID, nessun errore di nota\n\nAdatto per:\n- Quote associative\n- Entrate destinate a scopi specifici\n- Facile verifica contabile\n\nPunti di forza dei conti Muxed:\n- Assegnazione affidabile dei pagamenti in entrata\n- Un unico conto, molteplici identità\n- Nessuna necessità di note\n- Meno errori da parte degli utenti\n\nCosa non sono i conti Muxed:\n- Nessun sottoconto\n- Nessun saldo separato\n- Nessuna linea fiduciaria separata\n- Nessun firmatario/autorizzazione dedicato\n\nCasi d’uso tipicamente non adatti:\n- Pagamenti salariali/conti paghe (richiedono un conto G dedicato)\n- Fiducia/custodia per terzi (nessuna separazione legale delle attività)\n- Sicurezza basata sui ruoli (nessun firmatario/soglia separata)\n- Separazione di budget o limiti (nessun saldo/limite di attività separato)\n- Conti separati per motivi di conformità (KYC/rendicontazione non separabili in modo netto)\n\nConfronto (Kurz):\nAssegnazione dei pagamenti: Sì\nSegregazione delle attività: No\nDelega dell’accesso: No\nConto separato dal punto di vista legale: No\nContabilità interna: Sì\n\nNota:\nI conti muxed instradano i pagamenti, ma non sostituiscono i conti.\nSe sono richiesti controllo, proprietà o segregazione -> utilizzare un conto G separato."
   },
   "multisig": {
     "title": "Multifirma",
@@ -195,7 +195,7 @@
     "title": "Storia dell'Orizzonte",
     "original": "Horizon history depth",
     "short": "Descrive fino a che punto si estende la cronologia delle transazioni fornita dai server pubblici Horizon.",
-    "desc": "I server pubblici Horizon (Mainnet und Testnet) gestiti dalla Stellar Development Foundation forniscono solo una cronologia limitata – attualmente retroattiva di circa un anno. I dati più vecchi non possono più essere recuperati tramite questi endpoint gratuiti. Se hai bisogno di tornare più indietro nel tempo, essenzialmente hai due opzioni: (1) puoi eseguire il tuo nodo Horizon con cronologia completa (inklusive History Archives), oppure (2) puoi utilizzare servizi di terze parti o a pagamento che memorizzano e forniscono dati storici a lungo termine di Stellar.",
+    "desc": "I server Horizon pubblici (Mainnet e Testnet) gestiti dalla Stellar Development Foundation forniscono solo una cronologia limitata, che attualmente risale a circa un anno fa. I dati più vecchi non sono più accessibili tramite questi endpoint gratuiti. Se hai bisogno di risalire più indietro nel tempo, hai essenzialmente due opzioni: (1) gestire un proprio nodo Horizon con una cronologia completa (compresi gli archivi storici), oppure (2) utilizzare servizi di terze parti o a pagamento che archiviano e forniscono dati storici di Stellar a lungo termine.",
     "seeAlso": [
       "horizon",
       "serverHorizon",
@@ -268,7 +268,7 @@
     "short": "Verifica d’identità obbligatoria che i servizi finanziari richiedono prima dell’uso.",
     "desc": "KYC (Know Your Customer) è una procedura normativa in cui gli utenti provano la propria identità con documenti e talvolta un selfie. L’obiettivo è prevenire il riciclaggio di denaro (AML), il finanziamento del terrorismo e le frodi. I protocolli decentralizzati come lo Stellar DEX non richiedono KYC—tradi direttamente dal tuo wallet. I servizi onramp e offramp devono effettuare il KYC perché collegano il mondo fiat e quello crypto.",
     "externalDomains": "",
-    "domainsHeading": "Famosi fornitori di servizi KYC (Domains zum selbst Eintippen):"
+    "domainsHeading": "Famosi fornitori di servizi KYC (domini da digitare manualmente):"
   },
   "defi": {
     "title": "Finanza decentralizzata",
@@ -418,7 +418,7 @@
     "title": "Firmatario",
     "original": "Signer",
     "short": "Chiave pubblica con peso, parte della configurazione dell'account.",
-    "desc": "Un firmatario è una chiave pubblica che appartiene a un account e ha un peso. La sua firma contribuisce al raggiungimento della soglia richiesta. Più firmatari possono autorizzare collettivamente una transazione.\n\nTipi di firmatari:\n- ed25519 (standard key)\n- hashX (Hash-Vorlage)\n- preAuthTx (vorab autorisierte Transaktion)\n\nSKM supporta solo ed25519. Per opzioni aggiuntive, visita https://lab.stellar.org."
+    "desc": "Un firmatario è una chiave pubblica associata a un conto a cui è assegnato un peso. La sua firma contribuisce al raggiungimento della soglia richiesta. Più firmatari possono approvare congiuntamente una transazione.\n\nTipi di firmatari:\n- ed25519 (chiave normale)\n- hashX (modello hash)\n- preAuthTx (transazione pre-autorizzata)\n\nSKM supporta solo ed25519. Per ulteriori opzioni, consultare https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Soglie",

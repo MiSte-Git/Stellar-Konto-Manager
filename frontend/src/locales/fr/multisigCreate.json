@@ -29,7 +29,7 @@
     },
     "multisigSection": {
       "title": "Multisig",
-      "text": "Avec le multisig, vous pouvez définir plusieurs signataires pour votre compte. Les transactions nécessiteront alors des signatures de plusieurs signataires, par exemple 2 sur 3.\n\nAvantages :\n• Sécurité accrue : une clé compromise ne suffit pas\n• Partage, par exemple pour les entreprises, les partenariats\n• Plusieurs sauvegardes chez différentes personnes pour la récupération\n\nATTENTION : Testez le multisig d'abord sur le réseau de test avant de l'utiliser sur le réseau principal ! Une configuration incorrecte peut entraîner la perte d'accès au compte."
+      "text": "Avec la signature multiple (multisig), vous pouvez désigner plusieurs signataires pour votre compte. Les transactions nécessitent alors les signatures de plusieurs clés (par exemple, 2 sur 3).\n\nAvantages :\n• Sécurité renforcée (la compromission d’une seule clé ne suffit pas)\n• Comptes joints (par exemple, entreprises, partenariats)\n• Récupération d'urgence (plusieurs sauvegardes détenues par différentes personnes)\n\nAVERTISSEMENT : Testez d'abord la fonction multisig sur le testnet avant de l'utiliser sur le mainnet ! Une configuration incorrecte peut entraîner la perte d'accès au compte."
     },
     "diagram": {
       "title": "Expiration de la signature"
@@ -43,8 +43,8 @@
   "mainnetActivateNote": "Remarque : Des réserves supplémentaires sont nécessaires pour les multisig. 1 XLM n'est souvent pas suffisant.",
   "reserve": {
     "base": "Réserve de base par entrée : {{val}} XLM",
-    "recommended": "Solde de départ recommandé : {{val}} XLM (inkl. Puffer)",
-    "required": "Reserve minimum requis (neu) : {{val}} XLM"
+    "recommended": "Solde initial recommandé : {{val}} XLM (marge comprise)",
+    "required": "Réserve minimale obligatoire (nouvelle) : {{val}} XLM"
   },
   "signersCountLimit": "Remarque : Limite du réseau (Stellar) : max. 20 signataires supplémentaires.",
   "startingBalance": "Crédit de départ (XLM)",

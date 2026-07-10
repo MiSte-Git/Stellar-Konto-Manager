@@ -27,7 +27,7 @@
     "more": "Plus d'informations",
     "keysOnPage": {
       "title": "Clé sur cette page",
-      "text": "⚠️ IMPORTANT : Ce site web NE stocke JAMAIS votre clé secrète !\n\nLa clé secrète affichée ici n'existe que dans votre navigateur (lokal im Arbeitsspeicher). Une fois que vous rechargez ou quittez la page, elle est irrémédiablement perdue.\n\nCopiez ou notez immédiatement la clé secrète après sa génération avant de fermer la page.\n\nVérification : Vous pouvez utiliser les outils de développement du navigateur (F12 → Réseau) pour vérifier qu'aucune clé secrète n'est transmise à l'extérieur. Seules les transactions signées sont envoyées, jamais votre clé secrète."
+      "text": "⚠️ IMPORTANT : ce site web n'enregistre JAMAIS votre clé secrète !\n\nLa clé secrète affichée ici n'existe que dans votre navigateur (en mémoire locale). Dès que vous actualisez la page ou que vous la quittez, elle est irrémédiablement perdue.\n\nCopiez ou notez la clé secrète immédiatement après l’avoir générée, avant de fermer la page.\n\nVérification : vous pouvez utiliser les outils de développement de votre navigateur (F12 → Réseau) pour vérifier qu’aucune clé secrète n’est transmise à l’extérieur. Seules les transactions signées sont envoyées — jamais votre clé secrète."
     },
     "title": "Informations importantes",
     "secureKeys": {
@@ -50,8 +50,8 @@
   "mainnetActivateNote": "Remarque : Des réserves supplémentaires sont nécessaires pour le Multisig. 1 XLM n'est souvent pas suffisant.",
   "reserve": {
     "base": "Réserve de base par entrée : {{val}} XLM",
-    "recommended": "Solde de départ recommandé : {{val}} XLM (inkl. Puffer)",
-    "required": "Réserve minimale requise (neu) : {{val}} XLM"
+    "recommended": "Solde initial recommandé : {{val}} XLM (marge comprise)",
+    "required": "Réserve minimale obligatoire (nouvelle) : {{val}} XLM"
   },
   "signersCountHint": "Vous définissez le nombre minimum de signatures ci-dessous sous \"Signatures requises\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Remarque : Limite du réseau (Stellar) : maximum de 20 signataires supplémentaires.",

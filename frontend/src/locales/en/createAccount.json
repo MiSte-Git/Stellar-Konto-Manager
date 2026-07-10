@@ -27,7 +27,7 @@
     "more": "More information",
     "keysOnPage": {
       "title": "Key on this page",
-      "text": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe secret key displayed here exists only in your browser (lokal im Arbeitsspeicher). Once you reload or leave the page, it is irretrievably lost.\n\nCopy or note down the secret key immediately after generation before closing the page.\n\nVerification: You can use the browser developer tools (F12 → Network) to verify that no secret key is transmitted externally. Only signed transactions are sent, never your secret key."
+      "text": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe secret key displayed here exists only in your browser (locally in memory). As soon as you reload or leave the page, it is irretrievably lost.\n\nCopy or write down the secret key immediately after generating it, before you close the page.\n\nVerification: You can use your browser’s developer tools (F12 → Network) to verify that no secret key is being transmitted externally. Only signed transactions are sent—never your secret key."
     },
     "title": "Important information",
     "secureKeys": {
@@ -50,8 +50,8 @@
   "mainnetActivateNote": "Note: Additional reserves are required for Multisig. 1 XLM is often not enough.",
   "reserve": {
     "base": "Base reserve per entry: {{val}} XLM",
-    "recommended": "Recommended starting balance: {{val}} XLM (inkl. Puffer)",
-    "required": "Required Minimum Reserve (neu): {{val}} XLM"
+    "recommended": "Recommended starting balance: {{val}} XLM (including a buffer)",
+    "required": "Required minimum reserve (new): {{val}} XLM"
   },
   "signersCountHint": "You set the minimum number of signatures below under \"Required Signatures\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Note: Network Boundary (Stellar): max. 20 additional signatories.",

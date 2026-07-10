@@ -29,7 +29,7 @@
         "infoBody": {
           "one": "Tapahtuma tallennetaan taustajärjestelmässä multisig-tehtävänä ja sille annetaan tehtävä-ID. Mitään ei lähetetä suoraan.",
           "two": "Kaikki seuraavat allekirjoittajat avaavat SKM-instanssissaan valikkokohdan \"Monisig-tapahtumat\", lataavat työn ja allekirjoittavat.",
-          "three": "Kun tarpeeksi allekirjoituksia on saatu (Threshold erreicht), transaktio lähetetään tai se voidaan lähettää.",
+          "three": "Heti kun riittävä määrä allekirjoituksia on kerätty (kynnysarvo saavutettu), tapahtuma lähetetään tai se voidaan lähettää.",
           "four": "Voit antaa työtunnuksen muille allekirjoittajille, tai he voivat valita työn suoraan kohdasta \"Monisig-tapahtumat\"."
         },
         "steps": {
@@ -48,11 +48,11 @@
         "infoBody": {
           "one": "Syötät kaikki vaaditut salaiset avaimet tälle laitteelle peräkkäin, kunnes kynnysarvo saavutetaan.",
           "two": "Tämä ei ole enää hajautettu multisig-vuo, vaan \"usea avain samalla laitteella\" – käytä vain luotetuilla laitteilla.",
-          "three": "Kun riittävästi allekirjoituksia on kerätty, tapahtuma lähetetään suoraan Horizonille (ohne Multisig-Job)."
+          "three": "Kun riittävä määrä allekirjoituksia on kerätty, tapahtuma lähetetään suoraan Horizonille (ilman monen allekirjoituksen tehtävää)."
         }
       },
       "xdr": {
-        "title": "Vie XDR (nicht senden)",
+        "title": "Vie XDR (älä lähetä)",
         "desc": "Luo raaka XDR-tapahtuma offline-työkaluille tai laitekolikoille.",
         "short": "Vie tapahtuma XDR-muotoon lähettämättä sitä suoraan.",
         "moreInfo": "Lisätietoja.",
@@ -64,7 +64,7 @@
         },
         "steps": {
           "one": "XDR luodaan, mutta mitään ei lähetetä.",
-          "two": "Voit allekirjoittaa XDR:n (Offline-Rechner, Hardware-Wallet, anderes Tool) ulkoisesti.",
+          "two": "Voit allekirjoittaa XDR:n ulkoisesti (offline-tietokoneella, laitteistolompakolla tai jollain muulla työkalulla).",
           "three": "Lähettääksesi sinun täytyy tuoda XDR (e.g., via multisig jobs or another tool) uudelleen ja allekirjoittaa/lähettää se siellä."
         }
       }
@@ -80,7 +80,7 @@
         "infoButton": "Seuraavat askeleet",
         "infoTitle": "Mitä täytyy tehdä nyt?",
         "info": {
-          "share": "Lähetä työtehtävän tunniste tai XDR seuraaville allekirjoittajille (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "share": "Lähetä työtunnus tai XDR-viesti seuraaville allekirjoittajille (sähköpostitse tai viestisovellusten, kuten Telegramin tai WhatsAppin, kautta).",
           "sign": "Allekirjoittajat joko valitsevat vaihtoehdon 3 (\"Tuo XDR\") ja allekirjoittavat XDR:n TAI avaavat SKM:ssä valikkokohdan \"Työtunnus\", lataavat työn ja allekirjoittavat siellä.",
           "submit": "Kun tarpeeksi allekirjoituksia on kerätty, joku allekirjoittajista lähettää työn lopulta verkkoon SKM:ssä (valikko \"Työtunnus\")."
         },
@@ -95,11 +95,11 @@
         "copiedDetails": "Kopioitu"
       },
       "xdr": {
-        "title": "XDR valmisteltu (nicht gesendet)",
+        "title": "XDR-valmis (ei lähetetty)",
         "status": "Vain yksi XDR luotiin. Mitään ei lähetetty verkkoon.",
         "noJob": "Multisig-työtä ei luotu.",
         "hashLabel": "Tapahtuma-hajautus",
-        "hint": "Siirrä XDR muille allekirjoittajille tai työkaluille (z. B. Hardware-Wallet, Offline-Rechner). Lähettämistä varten tuo myöhemmin (ggf. signierte) XDR takaisin SKM:ään (z. B. Option 3) ja lähetä ne verkkoon."
+        "hint": "Lähetä XDR eteenpäin muille allekirjoittajille tai työkaluille (esim. laitteistolompakko, offline-tietokone). Lähettämistä varten tuo XDR (tarvittaessa allekirjoitettuna) myöhemmin takaisin SKM:ään (esim. vaihtoehto 3) ja lähetä se verkkoon."
       }
     },
     "testModeTitle": "Kaikki allekirjoitukset paikallisia",
@@ -107,7 +107,7 @@
     "testModeButton": "Sign directly & send",
     "prepareTitle": "Valmistele tapahtuma multisigille",
     "prepareDescription": "Valmistele vain XDR tuotantokäyttöön multisig-toiminnolla. Mitään ei lähetetä heti.",
-    "prepareButton": "Valmistele XDR (nicht senden)"
+    "prepareButton": "Valmistele XDR (älä lähetä)"
   },
   "jobCreated": "Multisig-työ luotu (tunnus: {{id}}). Avaa \"Monisig-tapahtumat\" nähdäksesi tilan.",
   "errors": {
@@ -211,7 +211,7 @@
       },
       "localAll": {
         "title": "Anna kaikki allekirjoitukset paikallisesti",
-        "body": "Valitse tämä vaihtoehto vain, jos hallitset kaikkia tähän tiliin liittyviä salaisia avaimia (z. B. nach einer Kontorettung mit mehreren Unterzeichnern). Stellar-tilinhallintaohjelma kokoaa sitten kaikki allekirjoitukset paikallisesti ja lähettää tapahtuman suoraan Horizonille.",
+        "body": "Valitse tämä vaihtoehto vain, jos hallitset kaikkia tähän tiliin liittyviä yksityisiä avaimia (esim. kun tilin palautus on tapahtunut useiden allekirjoittajien toimesta). Tällöin Stellar Account Manager kerää kaikki allekirjoitukset paikallisesti ja lähettää tapahtuman suoraan Horizonille.",
         "checkboxLabel": "Syötä kaikki allekirjoitukset paikallisesti tähän keskusteluun ja lähetä ne suoraan.",
         "warning": "Huomio: Jos syötät kaikki allekirjoitukset paikallisesti, kaikki salaiset avaimet ovat läsnä tässä istunnossa. Käytä tätä vaihtoehtoa vain luotetuilla laitteilla."
       }

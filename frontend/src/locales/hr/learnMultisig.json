@@ -8,7 +8,7 @@
   },
   "singleVsMulti": {
     "title": "Jedan potpis (Single-sig) vs. višestruki potpisi (Multisig)",
-    "text": "Single-Sig = 1 ključ je dovoljan. Multisig = potrebni su višestruki potpisi (z. B. 2 von 3)."
+    "text": "Single-sig = Jedan potpis je dovoljan.   Multisig = Potrebno je više potpisa (npr. 2 od 3)."
   },
   "stellarHow": {
     "title": "Kako Stellar implementira višestruki potpis",

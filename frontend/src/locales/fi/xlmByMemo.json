@@ -41,7 +41,7 @@
     "count": "Määrä: {{n}}",
     "label": "Vertailu (all inputs)",
     "otherCount": "Merkintöjä, joissa on virheellinen/puuttuva muistiinpano: {{n}}",
-    "unique": "Ainutlaatuiset lompakot (alle): {{n}}",
+    "unique": "Ainutlaatuiset lompakot (kaikki): {{n}}",
     "uniqueWallets": "Uniikit lompakot: {{n}}"
   },
   "time": {
@@ -64,7 +64,7 @@
     "local": "Paikallinen aikavyöhyke",
     "note": "Päivämäärät ja ajat tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC-ajaksi ennen hakemista.",
     "utc": "UTC",
-    "window": "Käytetty UTC-aikaikkuna: {{from}} → {{to}} (Bis exklusiv)"
+    "window": "Käytetty UTC-aikaväli: {{from}} → {{to}} (loppu pois lukien)"
   },
   "wrongMemos": {
     "button": "Näytä lompakot, joissa on virheellinen/tyhjä muistio.",

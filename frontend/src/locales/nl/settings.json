@@ -123,7 +123,7 @@
     },
     "title": "Mijn Vertrouwde Portemonnees",
     "validation": {
-      "hint": "Minstens één regel is ongeldig (fehlende/duplizierte Adresse)."
+      "hint": "Er is ten minste één regel ongeldig (ontbrekend of dubbel adres)."
     }
   },
   "maintenance": {

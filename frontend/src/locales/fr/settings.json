@@ -123,7 +123,7 @@
     },
     "title": "Mes portefeuilles de confiance",
     "validation": {
-      "hint": "Au moins une ligne est invalide (fehlende/duplizierte Adresse)."
+      "hint": "Au moins une ligne n'est pas valide (adresse manquante ou en double)."
     }
   },
   "maintenance": {

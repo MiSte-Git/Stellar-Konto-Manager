@@ -318,7 +318,7 @@
     "cache": {
       "help": "Accelera le query tramite la cache di pagamento locale, ma potrebbe estendere il caricamento iniziale.",
       "label": "Usa la cache (Beta)",
-      "prefetchHelp": "Tempo di attesa per il caricamento delle voci/transazioni in giorni (einmalig beim ersten Aktivieren)"
+      "prefetchHelp": "Tempo di elaborazione per il caricamento delle voci/transazioni, in giorni (impostazione una tantum al momento dell'attivazione iniziale)"
     },
     "network": {
       "title": "Rete",
@@ -378,7 +378,7 @@
       },
       "title": "I miei portafogli fidati",
       "validation": {
-        "hint": "Almeno una riga non è valida (fehlende/duplizierte Adresse)."
+        "hint": "Almeno una riga non è valida (indirizzo mancante o duplicato)."
       }
     }
   },
@@ -387,7 +387,7 @@
       "deletingProgress": "Cancellazione in corso: {{current}} / {{total}}",
       "success": "Successo: {{count}} Trustline(s) eliminato."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) saltato (noch Guthaben vorhanden)."
+    "skippedDueToBalance": "{{count}} Trustline(s) saltate (credito ancora disponibile)."
   },
   "payment": {
     "send": {
@@ -398,7 +398,7 @@
       "memo": "Memorandum",
       "memoType": "Tipo di promemoria",
       "memoTypes": {
-        "none": "Memo (kein Memo)",
+        "none": "Nota (nessuna nota)",
         "text": "Testo del promemoria",
         "id": "ID Memo",
         "hash": "Memo Hash",
@@ -407,7 +407,7 @@
           "none": "Nessun promemoria. Usa questo se il destinatario non si aspetta un promemoria.",
           "text": "Testo libero fino a 28 byte. Spesso utilizzato per l'assegnazione in pagamenti semplici.",
           "id": "ID numerico (uint64). Molti scambi utilizzano l'ID memo per assegnare i depositi.",
-          "hash": "Hash SHA-256 a 32 byte (als 64-stellige Hex-Zeichenfolge). Utilizzato dai servizi per i riferimenti.",
+          "hash": "Hash SHA-256 da 32 byte (sotto forma di stringa esadecimale di 64 caratteri). Utilizzato dai servizi a scopo di riferimento.",
           "return": "Hash a 32 byte per i resi. Usato per i resi (MEMO_RETURN)."
         }
       },
@@ -429,7 +429,7 @@
       "successShort": "Inviato con successo",
       "error": "Errore durante l'invio: {{detail}}",
       "amountMissing": "Si prega di inserire un importo.",
-      "amountInvalid": "Importo non valido (max. 7 Nachkommastellen).",
+      "amountInvalid": "Importo non valido (max. 7 cifre decimali).",
       "amountPositive": "L'importo deve essere maggiore di 0.",
       "timeout": "Timeout di Horizon (504). Riprova tra poco.",
       "httpError": "Errore orizzonte (stato {{status}}).",
@@ -440,7 +440,7 @@
         "info": "L'account di destinazione non è ancora attivo. È richiesto un importo minimo per l'attivazione.",
         "minReserve": "Importo minimo (2 × riserva di base)",
         "yourAmount": "L'importo inserito",
-        "adjustedAmount": "Importo proposto (zum Aktivieren)",
+        "adjustedAmount": "Importo consigliato (per l'attivazione)",
         "noteAdjust": "Il tuo saldo è insufficiente per l'attivazione. Se continui, l'importo minimo verrà inviato automaticamente."
       },
       "activated": "L'account di destinazione è stato attivato.",
@@ -455,7 +455,7 @@
         "title": "Controlla la nota della federazione",
         "textMappable": "Il server della federazione si aspetta il memo \"{{expected}}\", ma il tuo memo attuale è \"{{current}}\".",
         "textUnmappable": "Il server della federazione richiede una nota che non è stato possibile applicare automaticamente. La nota attuale è \"{{current}}\".",
-        "empty": "(empty)",
+        "empty": "(vuoto)",
         "sendAnyway": "Invia comunque",
         "applyExpected": "Applicare la circolare sulla federazione"
       },
@@ -515,7 +515,7 @@
       "createTitle": "Crea nuovi account Muxed",
       "createItems": {
         "i1": "Genera nuovi indirizzi Muxed (M...) a partire dal tuo indirizzo base (G...).",
-        "i2": "Facoltativo con etichetta (Name) e nota (z. B. Projekt oder Zweck)."
+        "i2": "Facoltativamente con un'etichetta (Nome) e una nota (ad es., progetto o scopo)."
       },
       "importTitle": "Importa da file CSV",
       "importItems": {
@@ -776,7 +776,7 @@
     },
     "securityGuarantee": {
       "title": "🔒 Garanzia di Sicurezza SKM (Multisig)",
-      "text": "Il Gestore di Account Stellar previene tutti i blocchi dell'account causati tecnicamente che possono sorgere da una configurazione multisig errata.\n\nIn particolare, SKM blocca:\n- Disattivazione della chiave principale senza firmatari accessibili\n- Soglie inaccessibili (low / med / high)\n- Errori di sequenza nei cambiamenti di firmatari e soglie\n- Rimozione dell'ultimo firmatario valido di alto livello\n- Configurazioni multisig in cui SetOptions non può più essere firmato\n- Vicoli ciechi dovuti a hashX o preAuthTx come firmatario finale\n\nSKM imposta solo firmatari ed25519. Per altri tipi di firmatari, utilizzare {link}.\n\nSKM garantisce:\n- Ogni modifica confermata lascia aperto almeno un percorso valido per una gestione futura dell'account\n- SetOptions rimane accessibile dopo la modifica\n\nNon garantito (systembedingt):\n- Perdita di chiavi segrete o portafogli hardware\n- Inaccessibilità o fallimento dei firmatari esterni\n\nConclusione:\nSKM protegge affidabilmente contro i blocchi della configurazione.\nI rischi organizzativi sono mostrati in modo trasparente ma non possono essere tecnicamente prevenuti.",
+      "text": "Stellar Account Manager impedisce tutti i blocchi dell'account causati da problemi tecnici che potrebbero derivare da una configurazione multisig errata.\n\nIn particolare, SKM blocca:\n- La disattivazione della chiave master quando nessun firmatario è raggiungibile\n- Soglie irraggiungibili (bassa / media / alta)\n- Errori di ordinamento durante la modifica dei firmatari o delle soglie\n- La rimozione dell’ultimo firmatario di livello alto valido\n- Configurazioni multisig in cui SetOptions non può più essere firmato\n- Vicoli ciechi causati da hashX o preAuthTx come ultimo firmatario\n\nSKM utilizza esclusivamente firmatari ed25519. Per altri tipi di firmatari, utilizzare {link}.\n\nSKM garantisce:\n- Ogni modifica confermata lascia aperto almeno un percorso valido per l’ulteriore gestione dell’account\n- SetOptions rimane accessibile dopo la modifica\n\nNon può essere garantito (a causa di limitazioni del sistema):\n- La perdita di chiavi segrete o portafogli hardware\n- L’indisponibilità o il malfunzionamento dei firmatari esterni\n\nConclusione:\nSKM offre una protezione affidabile contro i blocchi di configurazione.\nI rischi organizzativi vengono visualizzati in modo trasparente, ma non possono essere tecnicamente prevenuti.",
       "linkLabel": "lab.stellar.org"
     },
     "hint": "Carica un account esistente, regola i firmatari, i pesi, il peso principale e le soglie, e salva le modifiche.",
@@ -826,7 +826,7 @@
   "secretKey": {
     "cleared": "La chiave segreta è stata eliminata.",
     "empty": "Il campo della chiave segreta è vuoto.",
-    "info": "⚠️ IMPORTANTE: Questo sito web NON memorizza MAI la tua Chiave Segreta!\n\nLa Chiave Segreta visualizzata qui esiste solo nel tuo browser (lokal im Arbeitsspeicher). Non appena ricarichi o lasci la pagina, viene persa irreversibilmente.\n\nCopia o annota immediatamente la Chiave Segreta dopo averla generata, prima di chiudere la pagina.\n\nVerifica: Puoi verificare utilizzando gli strumenti per sviluppatori del browser (F12 → Rete) che nessuna Chiave Segreta viene trasmessa esternamente. Vengono inviate solo transazioni firmate, mai la tua Chiave Segreta.",
+    "info": "⚠️ IMPORTANTE: Questo sito web non memorizza MAI la tua chiave segreta!\n\nLa chiave segreta qui visualizzata esiste solo nel tuo browser (localmente nella memoria). Non appena ricarichi o esci dalla pagina, va irrimediabilmente persa.\n\nCopia o annota la chiave segreta immediatamente dopo la sua generazione, prima di chiudere la pagina.\n\nVerifica: puoi utilizzare gli strumenti di sviluppo del tuo browser (F12 → Rete) per verificare che nessuna chiave segreta venga trasmessa all’esterno. Vengono inviate solo le transazioni firmate, mai la tua chiave segreta.",
     "invalid": "Chiave segreta non valida.",
     "label": "Geben Sie den geheimen Quellschlüssel ein (S-Key)",
     "mismatch": "La chiave segreta non corrisponde all'indirizzo pubblico.",
@@ -846,7 +846,7 @@
     "pageTitle": "Glossario",
     "pageIntro": "Qui troverai parole importanti dal mondo della blockchain e dal network Stellar. Tutto è spiegato in termini semplici.",
     "searchLabel": "Termine di ricerca",
-    "searchPlaceholder": "Termine di ricerca (z. B. Konto, Account, Muxed)",
+    "searchPlaceholder": "Cerca un termine (ad es., Konto, Account, Muxed)",
     "searchHint": "La ricerca trova parole e spiegazioni.",
     "noResults": "Nessuna corrispondenza.",
     "blockchain": {
@@ -870,7 +870,7 @@
     "addressG": {
       "title": "Indirizzo G",
       "original": "G Address",
-      "short": "L'indirizzo principale pubblico di un account Stellar (beginnt mit G).",
+      "short": "L'indirizzo pubblico primario di un account Stellar (che inizia con G).",
       "desc": "L'indirizzo G è l'indirizzo principale di un account Stellar. Inizia con la lettera G. Lo fornisci ad altri affinché possano inviarti qualcosa."
     },
     "publicKey": {
@@ -1043,7 +1043,7 @@
     "deletingProgress": "Eliminazione in corso: {{current}} / {{total}}",
     "success": "Successo: {{count}} Trustline(s) eliminato."
   },
-  "skippedDueToBalance": "{{count}} Trustlines (s) saltate (noch Guthaben vorhanden).",
+  "skippedDueToBalance": "{{count}} Trustline(s) saltate (credito ancora disponibile).",
   "xlmByMemo": {
     "action": {
       "calculate": "Calcolare",
@@ -1087,7 +1087,7 @@
       "count": "Quantità: {{n}}",
       "label": "Confronto (all inputs)",
       "otherCount": "Voci con memo errato/mancante: {{n}}",
-      "unique": "Portafogli unici (alle): {{n}}",
+      "unique": "Portafogli unici (totale): {{n}}",
       "uniqueWallets": "Portafogli unici: {{n}}"
     },
     "time": {
@@ -1110,7 +1110,7 @@
       "local": "Fuso orario locale",
       "note": "La data e l'ora vengono interpretate nel fuso orario selezionato e convertite automaticamente in UTC prima di effettuare la ricerca.",
       "utc": "UTC",
-      "window": "Finestra temporale UTC utilizzata: {{from}} → {{to}} (Bis exklusiv)"
+      "window": "Intervallo di tempo UTC utilizzato: {{from}} → {{to}} (fine esclusa)"
     },
     "wrongMemos": {
       "button": "Mostra portafogli con memo errato/vuoto",

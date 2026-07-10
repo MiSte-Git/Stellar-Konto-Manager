@@ -27,7 +27,7 @@
     "more": "Más información.",
     "keysOnPage": {
       "title": "Clave en esta página",
-      "text": "⚠️ IMPORTANTE: ¡Este sitio web NUNCA almacena tu clave secreta!\n\nLa clave secreta que se muestra aquí existe solo en tu navegador. Una vez que recargues o abandones la página, se perderá irremediablemente.\n\nCopia o anota la clave secreta inmediatamente después de generarla antes de cerrar la página.\n\nVerificación: Puedes utilizar las herramientas de desarrollo del navegador (F12 → Red) para verificar que no se transmite ninguna clave secreta externamente. Solo se envían transacciones firmadas, nunca tu clave secreta."
+      "text": "⚠️ IMPORTANTE: ¡Esta página web NUNCA almacena tu clave secreta!\n\nLa clave secreta que se muestra aquí solo existe en tu navegador (localmente, en la memoria). En cuanto actualices la página o salgas de ella, se perderá de forma irremediable.\n\nCopia o anota la clave secreta inmediatamente después de generarla, antes de cerrar la página.\n\nVerificación: Puedes utilizar las herramientas de desarrollador de tu navegador (F12 → Red) para comprobar que no se transmite ninguna clave secreta al exterior. Solo se envían las transacciones firmadas, nunca tu clave secreta."
     },
     "title": "Información importante",
     "secureKeys": {
@@ -50,8 +50,8 @@
   "mainnetActivateNote": "Nota: Se requieren reservas adicionales para Multisig. 1 XLM a menudo no es suficiente.",
   "reserve": {
     "base": "Reserva base por entrada: {{val}} XLM",
-    "recommended": "Saldo inicial recomendado: {{val}} XLM (inkl. Puffer)",
-    "required": "Reserva mínima requerida (neu): {{val}} XLM"
+    "recommended": "Saldo inicial recomendado: {{val}} XLM (incluido un margen de seguridad)",
+    "required": "Reserva mínima obligatoria (nueva): {{val}} XLM"
   },
   "signersCountHint": "Establece el número mínimo de firmas a continuación en \"Firmas requeridas\" (niedrig/mittel/hoch).",
   "signersCountLimit": "Nota: Red de Límites (Stellar): máx. 20 signatarios adicionales.",
