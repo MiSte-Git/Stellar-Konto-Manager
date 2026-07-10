@@ -149,5 +149,71 @@ check(
     $noCreatedAtResult[0]['status'] === 'pending_signatures'
 );
 
+// --- G5 stage 1: maxTimeUnix-based expiry ------------------------------------
+// A job's baked-in timebound (precomputed once at creation/merge time into
+// maxTimeUnix - see multisig.php) takes priority over the age-based
+// heuristic above: a job can be marked expired the moment its timebound
+// passes, long before PENDING_JOB_EXPIRY_DAYS would otherwise kick in.
+
+function jobWithMaxTime(string $status, int $maxTimeUnix, int $daysAgo = 0): array {
+    return [
+        'id' => bin2hex(random_bytes(4)),
+        'status' => $status,
+        'createdAt' => gmdate('c', time() - ($daysAgo * 86400)),
+        'maxTimeUnix' => $maxTimeUnix,
+    ];
+}
+
+$justExpired = jobWithMaxTime('pending_signatures', time() - 3600); // 1h ago, job itself only 1h old
+$justExpiredResult = expireStalePendingJobs([$justExpired]);
+check(
+    'a job whose maxTimeUnix has already passed is expired immediately, without waiting for PENDING_JOB_EXPIRY_DAYS',
+    $justExpiredResult[0]['status'] === 'expired'
+);
+
+$stillValid = jobWithMaxTime('pending_signatures', time() + 3600, PENDING_JOB_EXPIRY_DAYS + 10); // old by age, but still valid by timebound
+$stillValidResult = expireStalePendingJobs([$stillValid]);
+check(
+    'a job with a future maxTimeUnix is never expired by age, even far past PENDING_JOB_EXPIRY_DAYS (maxTimeUnix wins over the age heuristic)',
+    $stillValidResult[0]['status'] === 'pending_signatures'
+);
+
+$unboundedOld = jobWithMaxTime('pending_signatures', 0, PENDING_JOB_EXPIRY_DAYS + 1); // maxTimeUnix=0 (unbounded) - falls back to age heuristic
+$unboundedOldResult = expireStalePendingJobs([$unboundedOld]);
+check(
+    'a job with maxTimeUnix=0 (no upper bound) falls back to the age-based heuristic and does get expired once stale',
+    $unboundedOldResult[0]['status'] === 'expired'
+);
+
+$unboundedFresh = jobWithMaxTime('pending_signatures', 0, 1);
+$unboundedFreshResult = expireStalePendingJobs([$unboundedFresh]);
+check(
+    'a job with maxTimeUnix=0 (no upper bound) that is still fresh by age is left untouched',
+    $unboundedFreshResult[0]['status'] === 'pending_signatures'
+);
+
+$readyExpired = jobWithMaxTime('ready_to_submit', time() - 1);
+$readyExpiredResult = expireStalePendingJobs([$readyExpired]);
+check(
+    'a ready_to_submit job past its maxTimeUnix is expired too, not just pending_signatures ones',
+    $readyExpiredResult[0]['status'] === 'expired'
+);
+
+$finalUntouched = jobWithMaxTime('submitted_success', time() - 100000);
+$finalUntouchedResult = expireStalePendingJobs([$finalUntouched]);
+check(
+    'a job already in a final state is never touched, regardless of maxTimeUnix',
+    $finalUntouchedResult[0]['status'] === 'submitted_success'
+);
+
+// Legacy jobs stored before maxTimeUnix existed (field entirely absent, not
+// just 0) must fall back to the age heuristic exactly like maxTimeUnix=0.
+$legacyNoField = ['id' => bin2hex(random_bytes(4)), 'status' => 'pending_signatures', 'createdAt' => gmdate('c', time() - (PENDING_JOB_EXPIRY_DAYS + 1) * 86400)];
+$legacyNoFieldResult = expireStalePendingJobs([$legacyNoField]);
+check(
+    'a legacy job with no maxTimeUnix field at all falls back to the age heuristic',
+    $legacyNoFieldResult[0]['status'] === 'expired'
+);
+
 echo "\n{$passed} passed, {$failed} failed\n";
 exit($failed > 0 ? 1 : 0);

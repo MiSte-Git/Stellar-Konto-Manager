@@ -26,12 +26,14 @@ if (file_exists($autoload)) {
 require __DIR__ . '/challengeStore.php';
 require __DIR__ . '/txSignatures.php';
 require __DIR__ . '/multisigJobsGuard.php';
+require __DIR__ . '/multisigLifecycle.php';
 
 use Soneso\StellarSDK\StellarSDK;
 use Soneso\StellarSDK\AbstractTransaction;
 use Soneso\StellarSDK\Network;
 use Soneso\StellarSDK\Crypto\KeyPair;
 use Soneso\StellarSDK\Xdr\XdrDecoratedSignature;
+use phpseclib3\Math\BigInteger;
 
 class SubmitFailedException extends \Exception {
     private array $extras;
@@ -287,6 +289,10 @@ function fetchAccountSigners(string $accountId, string $net): array {
                 'med' => (int)$thr->getMedThreshold(),
                 'high' => (int)$thr->getHighThreshold(),
             ],
+            // G5 stage 1: the account's current live sequence number, used by
+            // computeMultisigLifecycleStatus() to detect a job whose baked-in
+            // sequence has already been consumed by another transaction.
+            'sequence' => (string)$account->getSequenceNumber(),
         ];
     } catch (\Throwable $e) {
         // 'ok' => false marks this as a failed lookup (Horizon unreachable or
@@ -295,7 +301,7 @@ function fetchAccountSigners(string $accountId, string $net): array {
         // at least the master key as a signer). Callers that would destroy
         // data on an empty list (the merge route's signature filtering) must
         // treat this as "unknown", never as "no signers".
-        return ['ok' => false, 'signers' => [], 'thresholds' => ['low' => 0, 'med' => 0, 'high' => 0]];
+        return ['ok' => false, 'signers' => [], 'thresholds' => ['low' => 0, 'med' => 0, 'high' => 0], 'sequence' => null];
     }
 }
 
@@ -367,12 +373,27 @@ function summarizeJob(array $job): array {
     $accountId = $job['accountId'] ?? '';
     $txXdr = $job['txXdrCurrent'] ?? ($job['txXdrOriginal'] ?? ($job['txXdr'] ?? ''));
 
+    $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'];
+    $isFinal = in_array($job['status'] ?? '', $finalStates, true);
     $signers = $job['signers'] ?? [];
-    if (!$signers || count($signers) === 0) {
-        $meta = fetchAccountSignersCached($accountId, $net);
+    $signersEmpty = !$signers || count($signers) === 0;
+
+    // G5 stage 1 / F2: fetched (cached, short TTL) only when it can actually
+    // change the outcome below - either the stored signers[] snapshot needs
+    // backfilling, or the job isn't final yet and the lifecycle check
+    // further down needs a live account sequence. A final job with an
+    // already-populated signer snapshot never uses $accountSequence (that
+    // branch is itself gated on !$isFinal), so skipping the Horizon
+    // round-trip here is free - avoids a lookup per already-done job on
+    // every list/detail call.
+    $meta = (!$isFinal || $signersEmpty) ? fetchAccountSignersCached($accountId, $net) : null;
+    if ($meta && $signersEmpty) {
         $signers = $meta['signers'];
         $job['thresholds'] = $job['thresholds'] ?? $meta['thresholds'];
     }
+    $accountSequence = ($meta && ($meta['ok'] ?? true) !== false && ($meta['sequence'] ?? null) !== null)
+        ? new BigInteger($meta['sequence'])
+        : null;
 
     // Parsed once up front (rather than inside the txXdr branch below) so the
     // requiredWeight fallback can inspect the transaction's actual operations
@@ -412,11 +433,15 @@ function summarizeJob(array $job): array {
     $job['missingSigners'] = $missing;
     $job['missingWeight'] = $missingWeight;
 
-    $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'];
-    if (!in_array($job['status'] ?? '', $finalStates, true)) {
-        $job['status'] = ($requiredWeight > 0 && $collectedWeight >= $requiredWeight)
-            ? 'ready_to_submit'
-            : 'pending_signatures';
+    if (!$isFinal) {
+        // G5 stage 1: a frozen sequence/timebound that has since become
+        // unreachable on-chain overrides the collected-vs-required weight
+        // computation below - no amount of additional signatures can save a
+        // job whose sequence slot was consumed by another transaction or
+        // whose timebound already passed.
+        $lifecycleStatus = $tx ? computeMultisigLifecycleStatus($tx, $accountSequence, time()) : null;
+        $job['status'] = $lifecycleStatus
+            ?? (($requiredWeight > 0 && $collectedWeight >= $requiredWeight) ? 'ready_to_submit' : 'pending_signatures');
     }
 
     return $job;
@@ -482,6 +507,9 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
             'txXdrCurrent' => $txXdr,
             'status' => $status,
             'createdAt' => gmdate('c'),
+            // G5 stage 1: precomputed once here so multisigJobsGuard.php's
+            // dependency-free expiry guard never needs to parse XDR itself.
+            'maxTimeUnix' => extractMaxTimeUnix($tx),
             'signers' => $signerMeta,
             'thresholds' => $meta['thresholds'],
             'requiredWeight' => $requiredWeight,
@@ -519,25 +547,40 @@ if ($method === 'GET' && $path === '/api/multisig/jobs') {
     }
 
     $items = loadJobs($jobFile);
-    $items = array_filter($items, function ($j) use ($net, $accountId, $signer, $status) {
+    $items = array_filter($items, function ($j) use ($net, $accountId, $signer) {
         if ($net && ($j['network'] ?? '') !== $net) return false;
         if ($accountId && ($j['accountId'] ?? '') !== $accountId) return false;
         if ($signer) {
             $s = array_filter($j['signers'] ?? [], fn($si) => ($si['publicKey'] ?? '') === $signer);
             if (count($s) === 0) return false;
         }
-        if ($status && ($j['status'] ?? '') !== $status) return false;
         return true;
     });
     // Jobs are stored newest-first; page through them so a single list call cannot
     // trigger an unbounded number of (now cached) Horizon lookups (C4).
     $items = array_values($items);
+    // G5 stage 1 / F3: $total (and pagination itself) intentionally no longer
+    // account for $status - status can only be known accurately after
+    // summarizeJob() recomputes it below (a stored status can be stale, e.g.
+    // a job that just went expired/obsolete_seq), and recomputing every job
+    // just to paginate correctly would defeat the point of paging (C4:
+    // bounding how many Horizon lookups a single list call can trigger). The
+    // X-Total-Count header therefore reflects net/accountId/signer scoping
+    // only when $status is also given - matches server.js, which has no
+    // pagination/total-count concept at all.
     $total = count($items);
     $limit = isset($_GET['limit']) ? max(1, min(200, (int)$_GET['limit'])) : 100;
     $offset = isset($_GET['offset']) ? max(0, (int)$_GET['offset']) : 0;
     $page = array_slice($items, $offset, $limit);
 
     $page = array_map('summarizeJob', $page);
+    // Filtered against the freshly recomputed status, not the stored one
+    // (server.js's annotateJobsLifecycleStatus() runs before its equivalent
+    // filter for the same reason) - a job that just became expired/
+    // obsolete_seq must not still be returned under its old ?status=.
+    if ($status !== null && $status !== '') {
+        $page = array_values(array_filter($page, fn($j) => ($j['status'] ?? '') === $status));
+    }
     // hide raw XDR in list; accessToken is never included either (B3-follow-up):
     // anyone who knows a public accountId/signer key could otherwise read every
     // pending job's token straight out of the list, defeating the per-job token
@@ -675,14 +718,38 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
 
         $resultRow = null;
         $signersUnavailable = false;
-        withJobsLock($jobFile, function (array $items) use ($id, $net, $incoming, &$resultRow, &$signersUnavailable) {
+        $lifecycleRejected = null;
+        withJobsLock($jobFile, function (array $items) use ($id, $net, $incoming, &$resultRow, &$signersUnavailable, &$lifecycleRejected) {
             foreach ($items as &$j) {
                 if (($j['id'] ?? '') !== $id) continue;
 
                 $currentErr = null;
                 $current = parseTx($j['txXdrCurrent'] ?? $j['txXdrOriginal'] ?? '', $net, $currentErr);
                 if (!$current) $current = $incoming;
-                $merged = mergeSignatures($current, $incoming);
+
+                // Backfill for jobs stored before maxTimeUnix existed (G5
+                // stage 1) - self-healing, mirrors the empty-signers heal
+                // below. Keeps multisigJobsGuard.php's dependency-free expiry
+                // guard accurate for jobs created before this field existed.
+                if (!isset($j['maxTimeUnix'])) {
+                    $j['maxTimeUnix'] = extractMaxTimeUnix($current);
+                }
+
+                // G5 stage 1 / b6: a job already in a final state (e.g.
+                // submitted_success) never accepts another merge - checked
+                // before any Horizon lookup or signature work, both to avoid
+                // pointless cost and, critically, so a genuinely successful
+                // submission can never be silently overwritten. Without this,
+                // a stale resubmission attempt would recompute the now-spent
+                // sequence as obsolete_seq and clobber the true
+                // submitted_success.
+                $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'];
+                $existingStatus = $j['status'] ?? '';
+                if (in_array($existingStatus, $finalStates, true)) {
+                    $lifecycleRejected = $existingStatus;
+                    $resultRow = summarizeJob($j);
+                    break;
+                }
 
                 // Signers/thresholds are always (re-)derived from the real on-chain account
                 // state, never trusted from the request body (C2).
@@ -701,8 +768,27 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                     break;
                 }
                 $j['thresholds'] = $meta['thresholds'];
-                $j['requiredWeight'] = requiredWeightForOperations($merged, $meta['thresholds']);
                 $j['signers'] = $signerMeta;
+
+                // G5 stage 1: reject the merge outright if the job's underlying
+                // transaction is already dead - its sequence has been consumed
+                // by another transaction, or its timebound has passed. Checked
+                // before touching any signature state so a doomed merge
+                // attempt never gets recorded as if it mattered.
+                $accountSequence = (($meta['ok'] ?? true) !== false && ($meta['sequence'] ?? null) !== null)
+                    ? new BigInteger($meta['sequence'])
+                    : null;
+                $lifecycleStatus = computeMultisigLifecycleStatus($current, $accountSequence, time());
+                if ($lifecycleStatus !== null) {
+                    $j['status'] = $lifecycleStatus;
+                    $j['requiredWeight'] = requiredWeightForOperations($current, $meta['thresholds']);
+                    $lifecycleRejected = $lifecycleStatus;
+                    $resultRow = summarizeJob($j);
+                    break;
+                }
+
+                $merged = mergeSignatures($current, $incoming);
+                $j['requiredWeight'] = requiredWeightForOperations($merged, $meta['thresholds']);
 
                 // M1 fix: drop anything that doesn't verify against a real account
                 // signer and cap at Stellar's 20-signature protocol limit before
@@ -725,8 +811,17 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
                         $submittedResult = submitToNetwork($merged, $net);
                         $status = 'submitted_success';
                     } catch (\Throwable $submitErr) {
-                        $submittedResult = ['error' => $submitErr->getMessage(), 'detail' => getSubmitErrorDetail($submitErr)];
-                        $status = 'submitted_failed';
+                        // G5 stage 1: a submission that fails specifically because
+                        // the sequence/timebound died between our pre-merge check
+                        // above and Horizon's authoritative processing must not be
+                        // reported as a generic submitted_failed - safety net for
+                        // that TOCTOU gap (the account sequence used above can be
+                        // up to 30s cached, see fetchAccountSignersCached()).
+                        $detail = getSubmitErrorDetail($submitErr);
+                        $resultCode = $detail['extras']['result_codes']['transaction'] ?? null;
+                        $mapped = mapSubmitResultCodeToLifecycleStatus($resultCode);
+                        $submittedResult = ['error' => $submitErr->getMessage(), 'detail' => $detail];
+                        $status = $mapped ?? 'submitted_failed';
                     }
                 }
 
@@ -745,6 +840,7 @@ if ($method === 'POST' && ($m = matchRoute($path, '/api/multisig/jobs/:id/merge-
         });
 
         if ($signersUnavailable) return sendError('signers_unavailable', null, 502);
+        if ($lifecycleRejected) return sendJson(['ok' => false, 'error' => $lifecycleRejected, 'job' => $resultRow], 409);
         if (!$resultRow) return sendJson(['ok' => false, 'error' => 'not_found'], 404);
         return sendJson($resultRow);
     } catch (\Throwable $e) {

@@ -70,20 +70,43 @@ function multisigJobRateLimitCheckAndRecord(string $ip): int {
 // A job left in a non-final state (pending_signatures/ready_to_submit) this
 // long is realistically abandoned - nothing else ever moves it out of that
 // state, so without this it would sit in multisig_jobs.json forever. Marking
-// it 'expired' (a status the frontend/i18n already recognize, previously
-// never actually set by any code path) makes that visible to whoever created
-// it, rather than silently deleting their in-progress signature collection.
-// pruneOldJobs()'s existing JOB_RETENTION_DAYS window then purges it from
-// disk like any other final-state job, once it's had time to actually be
-// seen in that state (7 days to expire, 30 more before physical removal).
+// it 'expired' (a status the frontend/i18n already recognize) makes that
+// visible to whoever created it, rather than silently deleting their
+// in-progress signature collection. pruneOldJobs()'s existing
+// JOB_RETENTION_DAYS window then purges it from disk like any other
+// final-state job, once it's had time to actually be seen in that state (7
+// days to expire, 30 more before physical removal).
+//
+// G5 stage 1: a job whose baked-in timebound (maxTimeUnix, computed once
+// from the transaction's timebounds at creation - see multisig.php's POST
+// /jobs and merge-signed-xdr routes) has already passed can never reach the
+// network again, so it is expired immediately rather than waiting on the
+// age-based heuristic below. maxTimeUnix never changes after creation
+// (merging only ever adds signatures, never alters sequence/timebounds), so
+// this stays a pure, dependency-free comparison - no XDR parsing/SDK needed
+// in this file, unlike the live sequence check that multisig.php's
+// summarizeJob() performs (which also needs a Horizon round-trip this
+// lightweight guard deliberately avoids).
+//
+// The original age-based heuristic is kept as the fallback for jobs with no
+// timebound at all (maxTimeUnix === 0 or missing) - either genuinely
+// unbounded transactions or jobs stored before maxTimeUnix existed.
 const PENDING_JOB_EXPIRY_DAYS = 7;
 
 function expireStalePendingJobs(array $items, int $maxAgeDays = PENDING_JOB_EXPIRY_DAYS): array {
     $finalStates = ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'];
     $cutoff = time() - ($maxAgeDays * 86400);
+    $now = time();
     foreach ($items as &$job) {
         $status = $job['status'] ?? '';
         if (in_array($status, $finalStates, true)) continue;
+
+        $maxTimeUnix = (int)($job['maxTimeUnix'] ?? 0);
+        if ($maxTimeUnix !== 0) {
+            if ($maxTimeUnix < $now) $job['status'] = 'expired';
+            continue;
+        }
+
         $createdAt = strtotime((string)($job['createdAt'] ?? ''));
         if ($createdAt === false || $createdAt >= $cutoff) continue;
         $job['status'] = 'expired';

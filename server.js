@@ -15,6 +15,8 @@ const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 const { filterValidSignatures, requiredWeightForOperations } = require('./services/txSignatures.js');
 const { isLoopbackAddress } = require('./services/network.js');
+const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus } = require('./services/multisigLifecycle.js');
+const { expireStalePendingJobs } = require('./services/multisigJobsGuard.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
 (function loadDotEnv() {
@@ -270,6 +272,7 @@ const allowedCategory = new Set(['bug', 'idea', 'improve', 'other']);
 const allowedPage = new Set(['start','trustlines','trustlineCompare','balance','xlmByMemo','sendPayment','investedTokens','createAccount','multisigEdit','settings','feedback','other']);
 const ADMIN_SECRET = process.env.BUGTRACKER_ADMIN_SECRET || '';
 const multisigStatus = new Set(['pending_signatures', 'ready_to_submit', 'submitted_success', 'submitted_failed', 'expired', 'obsolete_seq']);
+const multisigFinalStatus = new Set(['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq']);
 
 // Bugtracker admin session auth (finding A2): replaces the client-side secret
 // comparison (VITE_BUGTRACKER_ADMIN_SECRET baked into the JS bundle) with a
@@ -519,7 +522,89 @@ function extractSignerMeta(account) {
       med: Number(thresholds.med_threshold ?? 0),
       high: Number(thresholds.high_threshold ?? 0),
     },
+    // G5 stage 1: the account's current live sequence number, used by
+    // computeMultisigLifecycleStatus() to detect a job whose baked-in
+    // sequence has already been consumed by another transaction.
+    sequence: typeof account?.sequenceNumber === 'function' ? account.sequenceNumber() : null,
   };
+}
+
+function horizonServerForNet(net) {
+  return net === 'public'
+    ? new StellarSdk.Horizon.Server('https://horizon.stellar.org')
+    : new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
+}
+
+// Node equivalent of api/multisig.php's fetchAccountSignersCached() - a
+// persistent process can just hold this in memory (no file-backed cache
+// needed, unlike PHP's per-request CGI model). Same TTL rationale: listing
+// or merging several jobs of the same account within a short window should
+// not each trigger their own Horizon round-trip. G5 stage 1: this is now
+// called from the merge route's normal (non-heal) path too, not just when
+// job.signers is empty, because the lifecycle check needs the account's live
+// sequence number regardless of whether the stored signer snapshot is
+// already populated.
+const ACCOUNT_META_CACHE_TTL_MS = 30000;
+const accountMetaCache = new Map();
+
+async function fetchAccountMetaCached(net, accountId) {
+  const key = `${net}:${accountId}`;
+  const cached = accountMetaCache.get(key);
+  if (cached && (Date.now() - cached.fetchedAt) < ACCOUNT_META_CACHE_TTL_MS) {
+    return cached.data;
+  }
+  let data;
+  try {
+    const account = await loadAccount(horizonServerForNet(net), accountId);
+    data = { ok: true, ...extractSignerMeta(account) };
+  } catch (e) {
+    // Never cache a failed lookup (same rationale as the PHP version): a
+    // transient Horizon hiccup would otherwise be served as "this account
+    // has no signers" for the full TTL.
+    return { ok: false, signers: [], thresholds: { low: 0, med: 0, high: 0 }, sequence: null };
+  }
+  accountMetaCache.set(key, { data, fetchedAt: Date.now() });
+  return data;
+}
+
+function parseJobTx(job) {
+  try {
+    const passphrase = job.network === 'public' ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET;
+    return new StellarSdk.Transaction(job.txXdrCurrent || job.txXdrOriginal || '', passphrase);
+  } catch {
+    return null;
+  }
+}
+
+// G5 stage 1: ephemeral, read-time lifecycle overlay for the list/detail
+// routes - mirrors the non-final-status branch of api/multisig.php's
+// summarizeJob(), but (deliberately, matching the existing PHP behavior)
+// does NOT persist the result back to multisigDb; only create/merge (which
+// already hold the write lock via saveMultisigDb()) durably update a job's
+// status. A stale-but-still-live job simply gets recomputed fresh on every
+// read - cheap, since fetchAccountMetaCached() is TTL-cached per account.
+async function annotateJobsLifecycleStatus(items) {
+  const nowUnix = Math.floor(Date.now() / 1000);
+  const liveKeys = new Set();
+  for (const j of items) {
+    if (!multisigFinalStatus.has(j.status)) liveKeys.add(`${j.network}::${j.accountId}`);
+  }
+  const metaByKey = new Map();
+  await Promise.all(Array.from(liveKeys).map(async (key) => {
+    const sep = key.indexOf('::');
+    const net = key.slice(0, sep);
+    const accountId = key.slice(sep + 2);
+    metaByKey.set(key, await fetchAccountMetaCached(net, accountId));
+  }));
+  return items.map((j) => {
+    if (multisigFinalStatus.has(j.status)) return j;
+    const meta = metaByKey.get(`${j.network}::${j.accountId}`);
+    const tx = parseJobTx(j);
+    if (!tx) return j;
+    const accountSequence = meta && meta.ok ? meta.sequence : null;
+    const lifecycleStatus = computeMultisigLifecycleStatus(tx, accountSequence, nowUnix);
+    return lifecycleStatus ? { ...j, status: lifecycleStatus } : j;
+  });
 }
 
 function collectSignersForTx(tx, signers = []) {
@@ -558,10 +643,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
     let account = null;
     let signerMeta = { signers: [], thresholds: { low: 0, med: 0, high: 0 } };
     try {
-      const serverForNet = net === 'public'
-        ? new StellarSdk.Horizon.Server('https://horizon.stellar.org')
-        : new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
-      account = await loadAccount(serverForNet, accountId.trim());
+      account = await loadAccount(horizonServerForNet(net), accountId.trim());
       signerMeta = extractSignerMeta(account);
     } catch (e) {
       // Best-effort fallback: allow job creation even if account lookup fails (no blocking)
@@ -583,6 +665,9 @@ app.post('/api/multisig/jobs', async (req, res) => {
       txXdrCurrent: txXdr,
       status: shouldSubmit ? 'ready_to_submit' : 'pending_signatures',
       createdAt: nowIso,
+      // G5 stage 1: precomputed once here so the dependency-free
+      // expireStalePendingJobs() guard never needs to parse XDR itself.
+      maxTimeUnix: extractMaxTimeUnix(parsed.tx),
       createdBy: typeof createdBy === 'string' && createdBy.trim() ? createdBy.trim() : 'local',
       signers,
       requiredWeight,
@@ -603,13 +688,19 @@ app.post('/api/multisig/jobs', async (req, res) => {
       }
     }
     multisigDb.items.unshift(job);
+    multisigDb.items = expireStalePendingJobs(multisigDb.items);
+    // F4: respond with the post-guard object, not the pre-guard `job`
+    // reference - a dead-on-arrival XDR (already-expired timebound) can be
+    // marked 'expired' by the guard call above, and the response must
+    // reflect that rather than the stale in-memory object from before it ran.
+    const responseJob = multisigDb.items.find((j) => j.id === job.id) || job;
     try {
       await saveMultisigDb();
     } catch (saveErr) {
       console.warn('multisig.jobs.save_failed', saveErr?.message || saveErr);
       // continue; even if persistence fails, return job to caller
     }
-    res.json(job);
+    res.json(responseJob);
   } catch (e) {
     console.error('multisig.jobs.post.failed', e);
     res.status(500).json({ ok: false, error: 'multisig.jobs.save_failed' });
@@ -644,6 +735,10 @@ app.get('/api/multisig/jobs', async (req, res) => {
         items = items.filter((j) => Array.isArray(j.signers) && j.signers.some((si) => si.publicKey === s));
       }
     }
+    // G5 stage 1: recompute expired/obsolete_seq before the status filter
+    // below runs, so ?status=... is evaluated against each job's actual
+    // current viability, not a possibly-stale stored status.
+    items = await annotateJobsLifecycleStatus(items);
     if (status && multisigStatus.has(String(status))) {
       items = items.filter((j) => j.status === status);
     }
@@ -665,7 +760,8 @@ app.get('/api/multisig/jobs/:id', async (req, res) => {
     const job = multisigDb.items.find((j) => j.id === id);
     if (!job) return res.status(404).json({ ok: false, error: 'not_found' });
     if (!hasValidJobToken(job, req)) return res.status(403).json({ ok: false, error: 'forbidden' });
-    res.json(job);
+    const [annotated] = await annotateJobsLifecycleStatus([job]);
+    res.json(annotated);
   } catch (e) {
     console.error('multisig.jobs.get.failed', e);
     res.status(500).json({ ok: false, error: 'multisig.jobs.get_failed' });
@@ -777,6 +873,62 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
     }
     const current = parseTxAndHash(job.txXdrCurrent || job.txXdrOriginal, net);
 
+    // Backfill for jobs stored before maxTimeUnix existed (G5 stage 1) -
+    // self-healing, mirrors the empty-signers heal further below. Keeps
+    // expireStalePendingJobs()'s dependency-free expiry guard accurate for
+    // jobs created before this field existed.
+    if (job.maxTimeUnix === undefined) {
+      job.maxTimeUnix = extractMaxTimeUnix(current.tx);
+    }
+
+    // G5 stage 1 / b6-equivalent: a job already in a final state (e.g.
+    // submitted_success) never accepts another merge - checked before any
+    // Horizon lookup or signature work, both to avoid pointless cost and,
+    // critically, so a genuinely successful submission can never be silently
+    // overwritten. Without this, a stray signature arriving after success
+    // used to fall through to the `else` branch below and incorrectly revert
+    // a true submitted_success back to pending_signatures.
+    if (multisigFinalStatus.has(job.status)) {
+      return res.status(409).json({ ok: false, error: job.status, job });
+    }
+
+    // Signers/thresholds are always (re-)derived from the real on-chain account
+    // state, never trusted from the request body (C2). G5 stage 1: fetched
+    // unconditionally now (cached, short TTL) - not just when job.signers is
+    // empty - because the lifecycle check below needs the account's live
+    // sequence number regardless of whether the stored signer snapshot is
+    // already populated.
+    const meta = await fetchAccountMetaCached(net, job.accountId);
+    let signers = Array.isArray(job.signers) ? job.signers : [];
+    // Fail closed on an empty signer list: filterValidSignatures() below would
+    // otherwise wipe every previously collected signature from txXdrCurrent -
+    // irrecoverably, since the XDR is their only home. An empty snapshot only
+    // ever means the account lookup failed when the job was created (the
+    // best-effort fallback in the create route), because an existing account
+    // always has at least its master key as a signer.
+    if (meta.ok) {
+      signers = meta.signers || [];
+      job.signers = signers;
+      job.requiredWeight = requiredWeightForOperations(current.tx.operations, meta.thresholds);
+    }
+    if (!signers.length) {
+      return res.status(502).json({ ok: false, error: 'signers_unavailable' });
+    }
+
+    // G5 stage 1: reject the merge outright if the job's underlying
+    // transaction is already dead - its sequence has been consumed by
+    // another transaction, or its timebound has passed. Checked before
+    // touching any signature state so a doomed merge attempt never gets
+    // recorded as if it mattered.
+    const accountSequence = meta.ok ? meta.sequence : null;
+    const lifecycleStatus = computeMultisigLifecycleStatus(current.tx, accountSequence, Math.floor(Date.now() / 1000));
+    if (lifecycleStatus) {
+      const dead = { ...job, status: lifecycleStatus };
+      multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? dead : j));
+      await saveMultisigDb();
+      return res.status(409).json({ ok: false, error: lifecycleStatus, job: dead });
+    }
+
     const existingKeys = new Set(
       current.tx.signatures.map((s) => `${s.hint().toString('base64')}:${s.signature().toString('base64')}`)
     );
@@ -790,34 +942,6 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
       }
     });
 
-    let signers = Array.isArray(job.signers) ? job.signers : [];
-    // Fail closed on an empty signer list: filterValidSignatures() below would
-    // otherwise wipe every previously collected signature from txXdrCurrent -
-    // irrecoverably, since the XDR is their only home. An empty snapshot only
-    // ever means the account lookup failed when the job was created (the
-    // best-effort fallback in the create route), because an existing account
-    // always has at least its master key as a signer. Try once to heal the
-    // job with the live signer list; if Horizon (still) can't answer, abort
-    // the merge and leave the job untouched so the client can simply retry.
-    if (!signers.length) {
-      try {
-        const serverForNet = net === 'public'
-          ? new StellarSdk.Horizon.Server('https://horizon.stellar.org')
-          : new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
-        const account = await loadAccount(serverForNet, job.accountId);
-        const signerMeta = extractSignerMeta(account);
-        signers = signerMeta.signers || [];
-        if (signers.length) {
-          job.signers = signers;
-          job.requiredWeight = requiredWeightForOperations(current.tx.operations, signerMeta.thresholds);
-        }
-      } catch (healErr) {
-        console.warn('multisig.jobs.merge.signer_heal_failed', healErr?.message || healErr);
-      }
-      if (!signers.length) {
-        return res.status(502).json({ ok: false, error: 'signers_unavailable' });
-      }
-    }
     // M1 fix: drop anything that doesn't verify against a real account signer
     // and cap at Stellar's 20-signature protocol limit before persisting -
     // previously every submitted signature was stored verbatim, valid or not.
@@ -839,15 +963,22 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
       collectedWeight,
     };
 
-    // Auto-submit when threshold reached and not already submitted
-    if (requiredWeight > 0 && collectedWeight >= requiredWeight && job.status !== 'submitted_success') {
+    // Auto-submit when threshold reached
+    if (requiredWeight > 0 && collectedWeight >= requiredWeight) {
       try {
         const result = await submitTx(current.tx, net);
         updated.status = 'submitted_success';
         updated.submittedAt = new Date().toISOString();
         updated.submittedResult = { hash: result?.hash || result?.id || null };
       } catch (submitErr) {
-        updated.status = 'submitted_failed';
+        // G5 stage 1: a submission that fails specifically because the
+        // sequence/timebound died between our pre-merge check above and
+        // Horizon's authoritative processing must not be reported as a
+        // generic submitted_failed - safety net for that TOCTOU gap (the
+        // account sequence used above can be up to 30s cached).
+        const resultCode = submitErr?.response?.data?.extras?.result_codes?.transaction;
+        const mapped = mapSubmitResultCodeToLifecycleStatus(resultCode);
+        updated.status = mapped || 'submitted_failed';
         updated.submittedAt = new Date().toISOString();
         updated.submittedResult = { error: submitErr?.response?.data || submitErr?.message || 'submit_failed' };
       }
@@ -858,7 +989,7 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
       updated.status = 'pending_signatures';
     }
 
-    multisigDb.items = multisigDb.items.map((j) => (j.id === job.id ? updated : j));
+    multisigDb.items = expireStalePendingJobs(multisigDb.items.map((j) => (j.id === job.id ? updated : j)));
     await saveMultisigDb();
     res.json(updated);
   } catch (e) {
