@@ -784,8 +784,8 @@
         "result_rules_title": "Tämän esittelyn menettelytapa",
         "rule1": "The demo buyer may claim the 50 XLM immediately—that is, actively withdraw them from the Claimable Balance.",
         "rule2": "Jos demokäyttäjä ei tee mitään, voit pyytää 50 XLM:n palautusta tunnin kuluttua.",
-        "rule3": "Eine echte „Erhalt bestätigen“-Schaltfläche ist in dieser Demo noch nicht eingebaut.",
-        "rule4": "Beim Digitec-Beispiel wäre diese Bestätigung der nächste App-Schritt: Der Käufer klickt „Erhalt bestätigt“, und die Plattform löst danach die Auszahlung an den Verkäufer aus. Auf Stellar wäre das eine zweite Transaktion, die die Claimable Balance beansprucht."
+        "rule3": "Tähän esittelyversioon ei ole vielä lisätty varsinaista ”Vahvista vastaanotto” -painiketta.",
+        "rule4": "Digitecin esimerkissä tämä vahvistus olisi sovelluksen seuraava vaihe: ostaja napsauttaa ”Kuitti vahvistettu”, minkä jälkeen alusta käynnistää maksun myyjälle. Stellar-alustalla tämä olisi toinen tapahtuma, jossa käytetään lunastettavaa saldoa."
       },
       "post": {
         "dialog1": "Se oli yksinkertaisempaa kuin luulin!",

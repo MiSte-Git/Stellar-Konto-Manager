@@ -26,7 +26,7 @@
       "b.fb": "No. The ledger is public for transparency.",
       "c.fb": "No. Anyone can look up transactions.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q3": {
       "question": "Why are blocks \"chained\" together?",
@@ -38,7 +38,7 @@
       "b.fb": "No. It's about safety, not style.",
       "c.fb": "No. Nodes still need to synchronize.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q4": {
       "question": "Is it possible to simply delete an error in a transaction?",
@@ -50,7 +50,7 @@
       "c": "A hidden game mode in the wallet.",
       "c.fb": "Nice idea 🎮, but this isn't a game. It's about real networking technology.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     }
   },
   "l2": {
@@ -65,7 +65,7 @@
       "b.fb": "Wrong. Stellar is a serious payment network.",
       "c.fb": "Wrong. Stellar doesn't need mining and is very energy-efficient.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q2": {
       "question": "Stellar transactions are usually completed in under 10 seconds.",
@@ -85,7 +85,7 @@
       "b.fb": "Wrong. XLM fluctuates in value like other cryptocurrencies.",
       "c.fb": "Wrong. XLM is built directly into the Stellar protocol.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q4": {
       "question": "What is Stellar mainly designed for?",
@@ -97,19 +97,19 @@
       "b.fb": "Wrong. Those are more typical Ethereum use cases.",
       "c.fb": "Wrong. Data storage is not Stellar's core purpose.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q5": {
       "question": "What is the Stellar DEX?",
-      "hint": "Überlege dir: Ist es eine Firma – oder eine Funktion direkt in der Blockchain? Die DEX gehört nicht einer einzelnen Person oder Firma.",
+      "hint": "Ask yourself: Is it a company—or a function built directly into the blockchain? The DEX does not belong to any single person or company.",
       "a": "A decentralized exchange built directly on the Stellar blockchain where users can trade tokens.",
       "a.fb": "That's right. The Stellar DEX is built directly into the blockchain. You can trade tokens there without a central company managing your money. Trading takes place automatically over the network.",
       "b": "A super app that automatically distributes profits.",
-      "b.fb": "Das wäre schön 😄 – aber eine DEX verteilt keine Gewinne. Sie ist eine Handelsplattform auf der Blockchain.",
+      "b.fb": "That would be nice 😄 — but a DEX doesn't distribute profits. It's a trading platform on the blockchain.",
       "c": "A digital vault where all tokens are stored.",
-      "c.fb": "Gute Vorstellung 🏦, aber falsch. Eine DEX sammelt nichts – sie ermöglicht nur den Tausch zwischen Nutzern.",
+      "c.fb": "Good idea 🏦, but wrong. A DEX doesn't collect anything—it just facilitates exchanges between users.",
       "d": "A contest where you can win XLM points.",
-      "d.fb": "Klingt nach Spaß 🎮 – aber eine DEX ist kein Spiel, sondern ein echter Marktplatz für Token."
+      "d.fb": "Sounds like fun 🎮—but a DEX isn't a game; it's a real marketplace for tokens."
     }
   },
   "l3": {
@@ -124,7 +124,7 @@
       "b.fb": "Wrong. All transactions are publicly visible on the ledger.",
       "c.fb": "Wrong. The ledger is public for everyone.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q2": {
       "question": "Can you look up Stellar transactions in an explorer?",
@@ -144,7 +144,7 @@
       "b.fb": "Wrong. Real names are not stored on the blockchain.",
       "c.fb": "Wrong. Transaction data is publicly readable.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q4": {
       "question": "Why is pseudonymity not complete privacy?",
@@ -156,7 +156,7 @@
       "b.fb": "Wrong. Stellar does not store names.",
       "c.fb": "Wrong. Stellar itself does not require an ID.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     }
   },
   "l4": {
@@ -171,7 +171,7 @@
       "c": "A hidden game mode in the wallet.",
       "c.fb": "Nice idea 🎮, but this isn't a game. It's about real networking technology.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q2": {
       "question": "You should never share your secret key.",
@@ -191,7 +191,7 @@
       "b.fb": "No. The fees are minimal and serve security purposes.",
       "c.fb": "No. Stellar is fast and cheap.",
       "d": "So you can get extra bonus XLM.",
-      "d.fb": "Schön wär's 😄 – aber wer deinen Secret Key kennt, kann dein Guthaben stehlen."
+      "d.fb": "That would be nice 😄—but anyone who knows your secret key can steal your balance."
     },
     "q4": {
       "question": "What is a trustline?",
@@ -203,7 +203,7 @@
       "b.fb": "No. It is not a chat, but a holding permit.",
       "c.fb": "No. Trustlines involve the holding of assets.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q5": {
       "question": "What is a Trustline?",
@@ -211,11 +211,11 @@
       "a": "Permission to hold a specific token.",
       "a.fb": "Yes. You choose which issuers or tokens you trust.",
       "b": "A special premium feature exclusively for billionaires.",
-      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "b.fb": "Sounds exclusive 😄—but this is about a fundamental feature of blockchain, not luxury access.",
       "c": "A hidden game mode in the wallet.",
       "c.fb": "Nice idea 🎮, but this isn't a game. It's about real network technology.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     }
   },
   "l5": {
@@ -230,7 +230,7 @@
       "b.fb": "Wrong. Trustlines have nothing to do with passwords.",
       "c.fb": "Wrong. A trustline is a permission, not a cost.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q2": {
       "question": "Every Stellar transaction requires a small XLM fee.",
@@ -250,7 +250,7 @@
       "b.fb": "Wrong. Stellar can activate new accounts through incoming payments.",
       "c.fb": "Wrong. With enough XLM, the account is created automatically.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q4": {
       "question": "What is a memo used for in a transaction?",
@@ -262,7 +262,7 @@
       "b.fb": "Wrong. Memos do not affect the fee.",
       "c.fb": "Wrong. Memos are publicly readable.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     }
   },
   "l6": {
@@ -277,7 +277,7 @@
       "b.fb": "Wrong. Stellar does not intervene in price discovery.",
       "c.fb": "Wrong. After issuance, the market determines the price.",
       "d": "A contest where you can win XLM points.",
-      "d.fb": "Klingt nach Spaß 🎮 – aber eine DEX ist kein Spiel, sondern ein echter Marktplatz für Token."
+      "d.fb": "Sounds like fun 🎮—but a DEX isn't a game; it's a real marketplace for tokens."
     },
     "q2": {
       "question": "What is the difference between a DEX and a CEX?",
@@ -289,7 +289,7 @@
       "b.fb": "Wrong. DEX is often cheaper since there's no middleman.",
       "c.fb": "Wrong. The difference is fundamental.",
       "d": "A contest where you can win XLM points.",
-      "d.fb": "Klingt nach Spaß 🎮 – aber eine DEX ist kein Spiel, sondern ein echter Marktplatz für Token."
+      "d.fb": "Sounds like fun 🎮—but a DEX isn't a game; it's a real marketplace for tokens."
     },
     "q3": {
       "question": "What is a liquidity pool?",
@@ -301,7 +301,7 @@
       "b.fb": "Wrong. It's not a bank account but a smart-contract-based pool.",
       "c.fb": "Wrong. Liquidity pools are for trading, not just passive earning.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q4": {
       "question": "What does volatility mean in cryptocurrencies?",
@@ -313,7 +313,7 @@
       "b.fb": "Wrong. That would be the opposite – stability.",
       "c.fb": "Wrong. Volatility describes price swings, not fees.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     }
   },
   "l7": {
@@ -328,7 +328,7 @@
       "b.fb": "No. Just once is enough to lose control.",
       "c.fb": "No. A screenshot of your key is just as risky — anyone who sees it gets full access to your account.",
       "d": "So you can get extra bonus XLM.",
-      "d.fb": "Schön wär's 😄 – aber wer deinen Secret Key kennt, kann dein Guthaben stehlen."
+      "d.fb": "That would be nice 😄—but anyone who knows your secret key can steal your balance."
     },
     "q2": {
       "question": "You see two tokens named USDX. How do you find the real one?",
@@ -340,7 +340,7 @@
       "b.fb": "Logos can be forged. Verify the issuer/domain.",
       "c.fb": "No. They can be very different. Always check.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q3": {
       "question": "In einfachen Worten ist ‚Verifizierung/KYC‘ (Know Your Customer) ein Prozess, bei dem Unternehmen bestätigen, wer ihre Kunden sind. Dies geschieht oft durch das Überprüfen von Ausweisdokumenten und anderen Informationen, um sicherzustellen, dass die Kunden wirklich die sind, die sie vorgeben zu sein.",
@@ -352,7 +352,7 @@
       "b.fb": "No. It's about identity, not speed.",
       "c.fb": "No. Never share your secret key. KYC does not need it.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q4": {
       "question": "What is a \"Zero-Knowledge Proof\" (ZK) in simple terms?",
@@ -364,7 +364,7 @@
       "b.fb": "No. ZK proves facts but does not delete entries.",
       "c.fb": "No, it's about data-efficient proofs.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     }
   },
   "l8": {
@@ -379,7 +379,7 @@
       "b.fb": "Wrong. KYC stands for Know Your Customer.",
       "c.fb": "Wrong. That's a made-up meaning.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q2": {
       "question": "The Stellar DEX requires KYC verification.",
@@ -399,7 +399,7 @@
       "b.fb": "Wrong. Many transactions can also come from scams.",
       "c.fb": "Wrong. Names can be easily copied.",
       "d": "A contest where you can win XLM points.",
-      "d.fb": "Klingt nach Spaß 🎮 – aber eine DEX ist kein Spiel, sondern ein echter Marktplatz für Token."
+      "d.fb": "Sounds like fun 🎮—but a DEX isn't a game; it's a real marketplace for tokens."
     },
     "q4": {
       "question": "Why do onramp services require KYC?",
@@ -411,7 +411,7 @@
       "b.fb": "Wrong. KYC is a regulatory obligation, not a business model.",
       "c.fb": "Wrong. KYC has nothing to do with fees.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q5": {
       "question": "Why do onramp services require KYC?",
@@ -419,11 +419,11 @@
       "a": "Because they are legally required to prevent money laundering (AML).",
       "a.fb": "That's right. KYC/AML laws apply to all fiat-to-crypto transactions.",
       "b": "A special premium feature exclusively for billionaires.",
-      "b.fb": "Klingt exklusiv 😄 – aber hier geht es um eine grundlegende Funktion der Blockchain, nicht um Luxuszugang.",
+      "b.fb": "Sounds exclusive 😄—but this is about a fundamental feature of blockchain, not luxury access.",
       "c": "A hidden game mode in the wallet.",
       "c.fb": "Nice idea 🎮, but this isn't a game. It's about real networking technology.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     }
   },
   "l9": {
@@ -438,7 +438,7 @@
       "b.fb": "Wrong. ZK proofs are about proving, not hiding.",
       "c.fb": "Wrong. Zero knowledge refers to cryptography, not account balances.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q2": {
       "question": "With a ZK proof you can prove you are over 18 without showing your birthdate.",
@@ -458,7 +458,7 @@
       "b.fb": "Wrong. Speed is not the main purpose of ZK.",
       "c.fb": "Wrong. ZK has no impact on fees.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q4": {
       "question": "What does 'Zero' mean in Zero-Knowledge?",
@@ -470,7 +470,7 @@
       "b.fb": "Wrong. Zero knowledge has nothing to do with fees.",
       "c.fb": "Wrong. It's about cryptography, not balances.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     }
   },
   "l10": {
@@ -485,7 +485,7 @@
       "b.fb": "Wrong. Speed is not the reason – safety is.",
       "c.fb": "Wrong. The testnet has no real costs, but the main reason is safety.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q2": {
       "question": "Test XLM on the testnet has real monetary value.",
@@ -505,7 +505,7 @@
       "b.fb": "Wrong. Stellar is decentralized – no application needed.",
       "c.fb": "Wrong. Accounts are activated through transactions, not support.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q4": {
       "question": "What do you need to do before you can receive USDC on Stellar?",
@@ -517,7 +517,7 @@
       "b.fb": "Wrong. The Stellar Account Manager supports all assets with a trustline.",
       "c.fb": "Wrong. Stellar itself does not require KYC.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     }
   },
   "l11": {
@@ -532,7 +532,7 @@
       "b.fb": "Wrong. There are no chargebacks on the blockchain.",
       "c.fb": "Wrong. Stellar cannot reverse transactions.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q2": {
       "question": "Stellar can reverse faulty transactions.",
@@ -552,7 +552,7 @@
       "b.fb": "Wrong. Speed is less important than care.",
       "c.fb": "Wrong. Decentralized networks have no central support.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q4": {
       "question": "What is the most important rule for your secret key?",
@@ -564,7 +564,7 @@
       "b.fb": "Wrong. Cloud storage is insecure for secret keys.",
       "c.fb": "Wrong. Never share your secret key with others.",
       "d": "So you can get extra bonus XLM.",
-      "d.fb": "Schön wär's 😄 – aber wer deinen Secret Key kennt, kann dein Guthaben stehlen."
+      "d.fb": "That would be nice 😄—but anyone who knows your secret key can steal your balance."
     }
   },
   "l12": {
@@ -591,7 +591,7 @@
       "b.fb": "Wrong. Stellar is known for speed and low costs.",
       "c.fb": "Wrong. Stellar doesn't use mining and is pseudonymous, not anonymous.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q3": {
       "question": "What should you NEVER do?",
@@ -603,7 +603,7 @@
       "b.fb": "Wrong. Using the testnet is actually recommended for practice.",
       "c.fb": "Wrong. Trustlines are normal and necessary actions.",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     },
     "q4": {
       "question": "You've completed all lessons. What are you now?",
@@ -615,7 +615,7 @@
       "b.fb": "Not yet – but you've built a strong foundation!",
       "c.fb": "Not yet – but you've taken a big step forward!",
       "d": "A trick to get rich faster.",
-      "d.fb": "Schön wär's 😄 – aber Kryptowährungen funktionieren nach technischen Regeln, nicht nach Zaubertricks."
+      "d.fb": "That would be nice 😄—but cryptocurrencies operate according to technical rules, not magic tricks."
     }
   },
   "meta": {

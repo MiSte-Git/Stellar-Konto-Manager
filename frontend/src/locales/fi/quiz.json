@@ -26,7 +26,7 @@
       "b.fb": "Ei. Kirjanpito on julkinen läpinäkyvyyden vuoksi.",
       "c.fb": "Ei. Kuka tahansa voi tarkastella tapahtumia.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q3": {
       "question": "Miksi lohkot ovat toisiinsa \"ketjutettuja\"?",
@@ -38,7 +38,7 @@
       "b.fb": "Ei. Kyse on turvallisuudesta, ei tyylistä.",
       "c.fb": "Ei. Solmujen täytyy silti synkronoida.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q4": {
       "question": "Onko mahdollista poistaa virhe tapahtumasta yksinkertaisesti?",
@@ -50,7 +50,7 @@
       "c": "Lompakossa on piilotettu pelitila.",
       "c.fb": "Hieno idea 🎮, mutta tämä ei ole peli. Kyse on oikeasta verkko-tekniikasta.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     }
   },
   "l2": {
@@ -65,7 +65,7 @@
       "b.fb": "Väärin. Stellar on vakavasti otettava maksuverkko.",
       "c.fb": "Väärin. Stellar ei tarvitse louhintaa ja on erittäin energiatehokas.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q2": {
       "question": "Stellar-siirrot valmistuvat yleensä alle 10 sekunnissa.",
@@ -85,7 +85,7 @@
       "b.fb": "Väärin. XLM:n arvo vaihtelee kuten muidenkin kryptovaluuttojen.",
       "c.fb": "Väärin. XLM on rakennettu suoraan Stellar-protokollaan.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q4": {
       "question": "Mihin Stellar on ensisijaisesti suunniteltu?",
@@ -97,19 +97,19 @@
       "b.fb": "Väärin. Ne ovat enemmän Ethereumin käyttötapauksia.",
       "c.fb": "Väärin. Tietojen tallennus ei ole Stellarin ydintarkoitus.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q5": {
       "question": "Mikä on Stellar DEX?",
-      "hint": "Mieti: Onko kyseessä yritys – vai suoraan lohkoketjussa toimiva toiminto? DEX ei kuulu yhdellekään henkilölle tai yritykselle.",
+      "hint": "Kysy itseltäsi: Onko kyseessä yritys – vai suoraan lohkoketjuun rakennettu toiminto? DEX ei kuulu kenellekään yksittäiselle henkilölle tai yritykselle.",
       "a": "Suoraan Stellar-lohkoketjuun rakennettu hajautettu pörssi, jossa käyttäjät voivat käydä kauppaa tokeneilla.",
       "a.fb": "Aivan. Stellar-DEX on rakennettu suoraan lohkoketjuun. Siellä voit käydä kauppaa tokeneilla ilman, että jokin keskitetty yritys hallinnoisi rahojasi. Kaupankäynti tapahtuu automaattisesti verkon kautta.",
       "b": "Super-sovellus, joka jakaa voitot automaattisesti.",
-      "b.fb": "Se olisi kivaa 😄 – mutta DEX ei jaa voittoja. Se on lohkoketjussa toimiva kaupankäyntialusta.",
+      "b.fb": "Se olisi kivaa 😄 — mutta DEX ei jaa voittoja. Se on lohkoketjussa toimiva kaupankäyntialusta.",
       "c": "Digitaalinen säilytystila, johon kaikki tokenit tallennetaan.",
-      "c.fb": "Hyvä ajatus 🏦, mutta väärin. DEX ei kerää mitään – se vain mahdollistaa vaihdon käyttäjien välillä.",
+      "c.fb": "Hyvä idea 🏦, mutta väärin. DEX ei kerää mitään – se vain mahdollistaa vaihdon käyttäjien välillä.",
       "d": "Kilpailu, jossa voit voittaa XLM-pisteitä.",
-      "d.fb": "Kuulostaa hauskalta 🎮 – mutta DEX ei ole peli, vaan todellinen tokenien markkinapaikka."
+      "d.fb": "Kuulostaa hauskalta 🎮—mutta DEX ei ole peli, vaan oikea tokenien markkinapaikka."
     }
   },
   "l3": {
@@ -124,7 +124,7 @@
       "b.fb": "Väärin. Kaikki siirrot ovat julkisesti nähtävissä pääkirjassa.",
       "c.fb": "Väärin. Pääkirja on julkinen kaikille.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q2": {
       "question": "Voiko Stellar-siirtoja etsiä selaimella?",
@@ -144,7 +144,7 @@
       "b.fb": "Väärin. Oikeita nimiä ei tallenneta lohkoketjuun.",
       "c.fb": "Väärin. Siirtotiedot ovat julkisesti luettavissa.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q4": {
       "question": "Miksi pseudonyymiys ei ole täydellinen yksityisyydensuoja?",
@@ -156,7 +156,7 @@
       "b.fb": "Väärin. Stellar ei tallenna nimiä.",
       "c.fb": "Väärin. Stellar itsessään ei vaadi henkilöllisyystodistusta.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     }
   },
   "l4": {
@@ -171,7 +171,7 @@
       "c": "Lompakossa on piilotettu pelitila.",
       "c.fb": "Hieno idea 🎮, mutta tämä ei ole peli. Kyse on oikeasta verkostoteknologiasta.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q2": {
       "question": "Sinun ei koskaan pitäisi jakaa salaista avaintasi.",
@@ -191,7 +191,7 @@
       "b.fb": "Ei. Maksut ovat minimaalinen ja niillä on turvallisuuteen liittyvä tarkoitus.",
       "c.fb": "Ei. Stellar on nopea ja edullinen.",
       "d": "Näin voit saada ylimääräistä XLM-bonusta.",
-      "d.fb": "Olisi kiva 😄 – mutta kuka tahansa, joka tietää salaisen avaimesi, voi varastaa saldosi."
+      "d.fb": "Se olisi kivaa 😄—mutta kuka tahansa, joka tietää salaisen avaimesi, voi varastaa saldosi."
     },
     "q4": {
       "question": "Mikä on trustline?",
@@ -203,7 +203,7 @@
       "b.fb": "Ei. Se ei ole chat, vaan oleskelulupa.",
       "c.fb": "Ei. Trustline-suhteet sisältävät omaisuuserien hallussapidon.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q5": {
       "question": "Mikä on Trustline?",
@@ -211,11 +211,11 @@
       "a": "Oikeus pitää hallussaan tiettyä tunnusta.",
       "a.fb": "Kyllä. Voit itse valita, mihin liikkeeseenlaskijoihin tai tokeneihin luotat.",
       "b": "Erityinen premium-ominaisuus, joka on tarkoitettu yksinomaan miljardööreille.",
-      "b.fb": "Kuulostaa eksklusiiviselta 😄 – mutta kyseessä on lohkoketjun perustoiminto, ei mikään ylellinen pääsy.",
+      "b.fb": "Kuulostaa eksklusiiviselta 😄—mutta kyse on lohkoketjun perusominaisuudesta, ei ylellisestä pääsystä.",
       "c": "Lompakossa on piilotettu pelitila.",
       "c.fb": "Hieno idea 🎮, mutta tämä ei ole peli. Kyse on oikeasta verkkoteknologiasta.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     }
   },
   "l5": {
@@ -230,7 +230,7 @@
       "b.fb": "Väärin. Trustlineilla ei ole mitään tekemistä salasanojen kanssa.",
       "c.fb": "Väärin. Trustline on lupa, ei kustannus.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q2": {
       "question": "Jokainen Stellar-siirto vaatii pienen XLM-maksun.",
@@ -250,7 +250,7 @@
       "b.fb": "Väärin. Stellar voi aktivoida uusia tilejä saapuvien maksujen kautta.",
       "c.fb": "Väärin. Riittävällä XLM-määrällä tili luodaan automaattisesti.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q4": {
       "question": "Mihin memoa käytetään siirrossa?",
@@ -262,7 +262,7 @@
       "b.fb": "Väärin. Memot eivät vaikuta maksuun.",
       "c.fb": "Väärin. Memot ovat julkisesti luettavissa.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     }
   },
   "l6": {
@@ -277,7 +277,7 @@
       "b.fb": "Väärin. Stellar ei puutu hinnaselvitykseen.",
       "c.fb": "Väärin. Liikkeeseenlaskun jälkeen markkina määrää hinnan.",
       "d": "Kilpailu, jossa voit voittaa XLM-pisteitä.",
-      "d.fb": "Kuulostaa hauskalta 🎮 – mutta DEX ei ole peli, vaan todellinen tokenien markkinapaikka."
+      "d.fb": "Kuulostaa hauskalta 🎮—mutta DEX ei ole peli, vaan oikea tokenien markkinapaikka."
     },
     "q2": {
       "question": "Mikä on ero DEX:n ja CEX:n välillä?",
@@ -289,7 +289,7 @@
       "b.fb": "Väärin. DEX on usein halvempi, koska välikättä ei ole.",
       "c.fb": "Väärin. Ero on perustavanlaatuinen.",
       "d": "Kilpailu, jossa voit voittaa XLM-pisteitä.",
-      "d.fb": "Kuulostaa hauskalta 🎮 – mutta DEX ei ole peli, vaan todellinen tokenien markkinapaikka."
+      "d.fb": "Kuulostaa hauskalta 🎮—mutta DEX ei ole peli, vaan oikea tokenien markkinapaikka."
     },
     "q3": {
       "question": "Mikä on likviditeettipooli?",
@@ -301,7 +301,7 @@
       "b.fb": "Väärin. Se ei ole pankkitili vaan älysopimuspohjainen pooli.",
       "c.fb": "Väärin. Likviditeettipoolit ovat kaupankäyntiä varten, eivät vain passiivista ansaintaa.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q4": {
       "question": "Mitä volatiliteetti tarkoittaa kryptovaluutoissa?",
@@ -313,7 +313,7 @@
       "b.fb": "Väärin. Se olisi päinvastoin – vakaus.",
       "c.fb": "Väärin. Volatiliteetti kuvaa hintavaihteluja, ei maksuja.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     }
   },
   "l7": {
@@ -328,7 +328,7 @@
       "b.fb": "Ei. Jo kerran riittää menettää hallinta.",
       "c.fb": "Ei. Kuvakaappaus avaimestasi on yhtä vaarallinen — kuka tahansa sen näkee, saa täyden pääsyn tilillesi.",
       "d": "Näin voit saada ylimääräistä XLM-bonusta.",
-      "d.fb": "Olisi kiva 😄 – mutta kuka tahansa, joka tietää salaisen avaimesi, voi varastaa saldosi."
+      "d.fb": "Se olisi kivaa 😄—mutta kuka tahansa, joka tietää salaisen avaimesi, voi varastaa saldosi."
     },
     "q2": {
       "question": "Näet kaksi nimeltään USDX-tokenia. Miten löydät oikean?",
@@ -340,7 +340,7 @@
       "b.fb": "Logot voidaan väärentää. Varmista myöntäjä/verkko-osoite.",
       "c.fb": "Ei. Ne voivat olla hyvin erilaisia. Tarkista aina.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q3": {
       "question": "In einfachen Worten ist ‚Verifizierung/KYC‘ (Know Your Customer) ein Prozess, bei dem Unternehmen bestätigen, wer ihre Kunden sind. Dies geschieht oft durch das Überprüfen von Ausweisdokumenten und anderen Informationen, um sicherzustellen, dass die Kunden wirklich die sind, die sie vorgeben zu sein.",
@@ -352,7 +352,7 @@
       "b.fb": "Ei. Kyse on identiteetistä, ei nopeudesta.",
       "c.fb": "Ei. Älä koskaan jaa salausavaintasi. KYC ei tarvitse sitä.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q4": {
       "question": "Mikä on \"Zero-Knowledge Proof\" (ZK) yksinkertaisesti sanottuna?",
@@ -364,7 +364,7 @@
       "b.fb": "Ei. ZK todistaa faktoja, mutta ei poista merkintöjä.",
       "c.fb": "Ei, kyse on tietotehokkaista todistuksista.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     }
   },
   "l8": {
@@ -379,7 +379,7 @@
       "b.fb": "Väärin. KYC tarkoittaa Know Your Customer.",
       "c.fb": "Väärin. Se on keksitty merkitys.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q2": {
       "question": "Stellar DEX vaatii KYC-varmennuksen.",
@@ -399,7 +399,7 @@
       "b.fb": "Väärin. Monet transaktiot voivat myös johtua huijauksista.",
       "c.fb": "Väärin. Nimet voidaan helposti kopioida.",
       "d": "Kilpailu, jossa voit voittaa XLM-pisteitä.",
-      "d.fb": "Kuulostaa hauskalta 🎮 – mutta DEX ei ole peli, vaan todellinen tokenien markkinapaikka."
+      "d.fb": "Kuulostaa hauskalta 🎮—mutta DEX ei ole peli, vaan oikea tokenien markkinapaikka."
     },
     "q4": {
       "question": "Miksi onramp-palvelut vaativat KYC:n?",
@@ -411,7 +411,7 @@
       "b.fb": "Väärin. KYC on sääntelyn velvoite, ei liiketoimintamalli.",
       "c.fb": "Väärin. KYC:llä ei ole mitään tekemistä maksujen kanssa.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q5": {
       "question": "Miksi onramp-palvelut vaativat KYC-tunnistautumista?",
@@ -419,11 +419,11 @@
       "a": "Koska niillä on lakisääteinen velvollisuus estää rahanpesu (AML).",
       "a.fb": "Aivan. KYC- ja AML-säännökset koskevat kaikkia fiat-valuutasta kryptovaluuttaan tehtäviä siirtoja.",
       "b": "Erityinen premium-ominaisuus, joka on tarkoitettu yksinomaan miljardööreille.",
-      "b.fb": "Kuulostaa eksklusiiviselta 😄 – mutta kyseessä on lohkoketjun perustoiminto, ei mikään ylellinen pääsy.",
+      "b.fb": "Kuulostaa eksklusiiviselta 😄—mutta kyse on lohkoketjun perusominaisuudesta, ei ylellisestä pääsystä.",
       "c": "Lompakossa on piilotettu pelitila.",
       "c.fb": "Hieno idea 🎮, mutta tämä ei ole peli. Kyse on oikeasta verkostoteknologiasta.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     }
   },
   "l9": {
@@ -438,7 +438,7 @@
       "b.fb": "Väärin. ZK-todistukset ovat todistuksia, eivät piilottelua.",
       "c.fb": "Väärin. Zero Knowledge viittaa kryptografiaan, ei saldoihin.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q2": {
       "question": "ZK-todistuksella voit todistaa olevasi yli 18-vuotias näyttämättä syntymäpäivääsi.",
@@ -458,7 +458,7 @@
       "b.fb": "Väärin. Nopeus ei ole ZK:n päätarkoitus.",
       "c.fb": "Väärin. ZK ei vaikuta maksuihin.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q4": {
       "question": "Mitä 'Zero' tarkoittaa Zero-Knowledgessa?",
@@ -470,7 +470,7 @@
       "b.fb": "Väärin. Zero Knowledge ei liity maksuihin.",
       "c.fb": "Väärin. Kyse on kryptografiasta, ei saldoista.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     }
   },
   "l10": {
@@ -485,7 +485,7 @@
       "b.fb": "Väärin. Nopeus ei ole syy – turvallisuus on.",
       "c.fb": "Väärin. Testnetillä ei ole todellisia kustannuksia, mutta pääsyy on turvallisuus.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q2": {
       "question": "Testnetin testi-XLM:llä on todellista rahallista arvoa.",
@@ -505,7 +505,7 @@
       "b.fb": "Väärin. Stellar on hajautettu – hakemusta ei tarvita.",
       "c.fb": "Väärin. Tilit aktivoidaan siirroilla, ei tuella.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q4": {
       "question": "Mitä sinun pitää tehdä ennen kuin voit vastaanottaa USDC:tä Stellarissa?",
@@ -517,7 +517,7 @@
       "b.fb": "Väärin. Stellar Account Manager tukee kaikkia varoja trustlinella.",
       "c.fb": "Väärin. Stellar itsessään ei vaadi KYC:tä.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     }
   },
   "l11": {
@@ -532,7 +532,7 @@
       "b.fb": "Väärin. Lohkoketjussa ei ole palautuksia.",
       "c.fb": "Väärin. Stellar ei voi peruuttaa siirtoja.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q2": {
       "question": "Stellar voi peruuttaa virheelliset siirrot.",
@@ -552,7 +552,7 @@
       "b.fb": "Väärin. Nopeus on vähemmän tärkeää kuin huolellisuus.",
       "c.fb": "Väärin. Hajautetuilla verkoilla ei ole keskitettyä tukea.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q4": {
       "question": "Mikä on tärkein sääntö salaiselle avaimellesi?",
@@ -564,7 +564,7 @@
       "b.fb": "Väärin. Pilvipalvelu on turvaton salaisille avaimille.",
       "c.fb": "Väärin. Älä koskaan jaa salaista avaintasi muille.",
       "d": "Näin voit saada ylimääräistä XLM-bonusta.",
-      "d.fb": "Olisi kiva 😄 – mutta kuka tahansa, joka tietää salaisen avaimesi, voi varastaa saldosi."
+      "d.fb": "Se olisi kivaa 😄—mutta kuka tahansa, joka tietää salaisen avaimesi, voi varastaa saldosi."
     }
   },
   "l12": {
@@ -591,7 +591,7 @@
       "b.fb": "Väärin. Stellar tunnetaan nopeudesta ja alhaisista kustannuksista.",
       "c.fb": "Väärin. Stellar ei käytä louhintaa ja on pseudonyymi, ei anonyymi.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q3": {
       "question": "Mitä sinun EI KOSKAAN pitäisi tehdä?",
@@ -603,7 +603,7 @@
       "b.fb": "Väärin. Testnetin käyttö on jopa suositeltua harjoitteluun.",
       "c.fb": "Väärin. Trustlinet ovat normaaleja ja tarpeellisia toimia.",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kivaa 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q4": {
       "question": "Olet suorittanut kaikki oppitunnit. Mikä olet nyt?",
@@ -615,7 +615,7 @@
       "b.fb": "Ei vielä – mutta olet rakentanut vahvan perustan!",
       "c.fb": "Ei vielä – mutta olet ottanut suuren askeleen eteenpäin!",
       "d": "Vinkki, jolla rikastut nopeammin.",
-      "d.fb": "Olisi kiva 😄 – mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
+      "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     }
   },
   "meta": {

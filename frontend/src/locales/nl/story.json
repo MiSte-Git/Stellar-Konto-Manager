@@ -784,8 +784,8 @@
         "result_rules_title": "Werkwijze in deze demo",
         "rule1": "De demo-koper kan de 50 XLM onmiddellijk opeisen — dat wil zeggen: ze actief opnemen uit het opeisbare saldo.",
         "rule2": "Als de demo-koper niets onderneemt, kun je na 1 uur de 50 XLM terugvragen.",
-        "rule3": "Eine echte „Erhalt bestätigen“-Schaltfläche ist in dieser Demo noch nicht eingebaut.",
-        "rule4": "Beim Digitec-Beispiel wäre diese Bestätigung der nächste App-Schritt: Der Käufer klickt „Erhalt bestätigt“, und die Plattform löst danach die Auszahlung an den Verkäufer aus. Auf Stellar wäre das eine zweite Transaktion, die die Claimable Balance beansprucht."
+        "rule3": "Er is nog geen echte knop \"Ontvangst bevestigen\" aan deze demo toegevoegd.",
+        "rule4": "In het voorbeeld van Digitec zou deze bevestiging de volgende stap in de app zijn: de koper klikt op ‘Ontvangst bevestigd’, waarna het platform de betaling aan de verkoper in gang zet. Op Stellar zou dit een tweede transactie zijn waarbij gebruik wordt gemaakt van het ‘Claimable Balance’."
       },
       "post": {
         "dialog1": "Dat was eenvoudiger dan ik dacht!",

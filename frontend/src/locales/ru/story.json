@@ -784,8 +784,8 @@
         "result_rules_title": "Порядок действий в данной демонстрации",
         "rule1": "Покупатель в демо-режиме может сразу же получить 50 XLM — то есть активно вывести их из «баланса для получения».",
         "rule2": "Если покупатель в демо-режиме не предпримет никаких действий, вы сможете запросить возврат 50 XLM через 1 час.",
-        "rule3": "Eine echte „Erhalt bestätigen“-Schaltfläche ist in dieser Demo noch nicht eingebaut.",
-        "rule4": "Beim Digitec-Beispiel wäre diese Bestätigung der nächste App-Schritt: Der Käufer klickt „Erhalt bestätigt“, und die Plattform löst danach die Auszahlung an den Verkäufer aus. Auf Stellar wäre das eine zweite Transaktion, die die Claimable Balance beansprucht."
+        "rule3": "В эту демо-версию пока не добавлена настоящая кнопка «Подтвердить получение».",
+        "rule4": "В примере с Digitec таким подтверждением стал бы следующий шаг в приложении: покупатель нажимает кнопку «Подтвердить получение», после чего платформа инициирует платеж продавцу. В сети Stellar это была бы вторая транзакция, осуществляемая за счет «Claimable Balance»."
       },
       "post": {
         "dialog1": "Это было проще, чем я думал!",

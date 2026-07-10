@@ -26,7 +26,7 @@
       "b.fb": "Nee. Het grootboek is openbaar voor transparantie.",
       "c.fb": "Nee. Iedereen kan transacties opzoeken.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q3": {
       "question": "Waarom zijn blokken aan elkaar \"geketend\"?",
@@ -38,7 +38,7 @@
       "b.fb": "Nee. Het gaat om veiligheid, niet om stijl.",
       "c.fb": "Nee. Nodes moeten nog steeds synchroniseren.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q4": {
       "question": "Is het mogelijk om eenvoudig een fout in een transactie te verwijderen?",
@@ -50,7 +50,7 @@
       "c": "Een verborgen spelmodus in de portemonnee.",
       "c.fb": "Leuk idee 🎮, maar dit is geen spel. Het gaat om echte netwerktechnologie.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     }
   },
   "l2": {
@@ -65,7 +65,7 @@
       "b.fb": "Onjuist. Stellar is een serieus betalingsnetwerk.",
       "c.fb": "Onjuist. Stellar heeft geen mining nodig en is zeer energie-efficiënt.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q2": {
       "question": "Stellar-transacties zijn meestal binnen 10 seconden afgerond.",
@@ -85,7 +85,7 @@
       "b.fb": "Onjuist. De waarde van XLM schommelt zoals andere cryptovaluta's.",
       "c.fb": "Onjuist. XLM is direct ingebouwd in het Stellar-protocol.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q4": {
       "question": "Waarvoor is Stellar voornamelijk bedoeld?",
@@ -97,19 +97,19 @@
       "b.fb": "Onjuist. Dat zijn meer typische Ethereum-toepassingen.",
       "c.fb": "Onjuist. Gegevensopslag is niet het kerndoel van Stellar.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q5": {
       "question": "Wat is de Stellar DEX?",
-      "hint": "Denk eens na: is het een bedrijf – of een functie die rechtstreeks in de blockchain is ingebouwd? De DEX is geen eigendom van één persoon of bedrijf.",
+      "hint": "Stel jezelf de vraag: is het een bedrijf – of een functie die rechtstreeks in de blockchain is ingebouwd? De DEX is niet eigendom van één persoon of bedrijf.",
       "a": "Een gedecentraliseerde beurs die rechtstreeks op de Stellar-blockchain is gebouwd en waar gebruikers tokens kunnen verhandelen.",
       "a.fb": "Dat klopt. De Stellar DEX is rechtstreeks in de blockchain ingebouwd. Je kunt daar tokens verhandelen zonder dat een centrale instantie je geld beheert. De handel verloopt automatisch via het netwerk.",
       "b": "Een superapp die automatisch winst uitkeert.",
-      "b.fb": "Dat zou leuk zijn 😄 – maar een DEX keert geen winst uit. Het is een handelsplatform op de blockchain.",
+      "b.fb": "Dat zou leuk zijn 😄 — maar een DEX keert geen winst uit. Het is een handelsplatform op de blockchain.",
       "c": "Een digitale kluis waarin alle tokens worden bewaard.",
-      "c.fb": "Goede gedachte 🏦, maar niet juist. Een DEX verzamelt niets – het maakt alleen de ruil tussen gebruikers mogelijk.",
+      "c.fb": "Goed idee 🏦, maar niet juist. Een DEX int niets — het faciliteert alleen maar transacties tussen gebruikers.",
       "d": "Een wedstrijd waarbij je XLM-punten kunt winnen.",
-      "d.fb": "Klinkt leuk 🎮 – maar een DEX is geen spel, maar een echte marktplaats voor tokens."
+      "d.fb": "Klinkt leuk 🎮—maar een DEX is geen spel; het is een echte marktplaats voor tokens."
     }
   },
   "l3": {
@@ -124,7 +124,7 @@
       "b.fb": "Onjuist. Alle transacties zijn openbaar zichtbaar in het grootboek.",
       "c.fb": "Onjuist. Het grootboek is openbaar voor iedereen.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q2": {
       "question": "Kun je Stellar-transacties opzoeken in een explorer?",
@@ -144,7 +144,7 @@
       "b.fb": "Onjuist. Echte namen worden niet opgeslagen op de blockchain.",
       "c.fb": "Onjuist. Transactiegegevens zijn openbaar leesbaar.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q4": {
       "question": "Waarom is pseudonimiteit geen volledige privacy?",
@@ -156,7 +156,7 @@
       "b.fb": "Onjuist. Stellar slaat geen namen op.",
       "c.fb": "Onjuist. Stellar zelf vereist geen identiteitsbewijs.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     }
   },
   "l4": {
@@ -171,7 +171,7 @@
       "c": "Een verborgen spelmodus in de portemonnee.",
       "c.fb": "Leuk idee 🎮, maar dit is geen spel. Het gaat om echte netwerktechnologie.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q2": {
       "question": "Je moet je geheime sleutel nooit delen.",
@@ -191,7 +191,7 @@
       "b.fb": "Nee. De kosten zijn minimaal en dienen voor beveiligingsdoeleinden.",
       "c.fb": "Nee. Stellar is snel en goedkoop.",
       "d": "Zo kun je extra XLM-bonus verdienen.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar wie je geheime sleutel kent, kan je tegoed stelen."
+      "d.fb": "Dat zou leuk zijn 😄—maar iedereen die je geheime sleutel kent, kan je saldo stelen."
     },
     "q4": {
       "question": "Wat is een trustlijn?",
@@ -203,7 +203,7 @@
       "b.fb": "Nee. Het is geen chat, maar een verblijfsvergunning.",
       "c.fb": "Nee. Vertrouwenslijnen houden in dat er activa worden aangehouden.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q5": {
       "question": "Wat is een Trustline?",
@@ -211,11 +211,11 @@
       "a": "Toestemming om een bepaald token te bezitten.",
       "a.fb": "Ja. Je kiest zelf welke uitgevers of tokens je vertrouwt.",
       "b": "Een speciale premiumfunctie, exclusief voor miljardairs.",
-      "b.fb": "Klinkt exclusief 😄 – maar het gaat hier om een fundamentele functie van de blockchain, niet om exclusieve toegang.",
+      "b.fb": "Klinkt exclusief 😄—maar dit gaat over een fundamenteel kenmerk van blockchain, niet over toegang tot luxe.",
       "c": "Een verborgen spelmodus in de portemonnee.",
       "c.fb": "Leuk idee 🎮, maar dit is geen spel. Het gaat om echte netwerktechnologie.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     }
   },
   "l5": {
@@ -230,7 +230,7 @@
       "b.fb": "Onjuist. Trustlines hebben niets met wachtwoorden te maken.",
       "c.fb": "Onjuist. Een trustline is een toestemming, geen kostenpost.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q2": {
       "question": "Elke Stellar-transactie vereist een kleine XLM-vergoeding.",
@@ -250,7 +250,7 @@
       "b.fb": "Onjuist. Stellar kan nieuwe accounts activeren via inkomende betalingen.",
       "c.fb": "Onjuist. Met voldoende XLM wordt het account automatisch aangemaakt.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q4": {
       "question": "Waarvoor wordt een memo gebruikt in een transactie?",
@@ -262,7 +262,7 @@
       "b.fb": "Onjuist. Memo's beïnvloeden de vergoeding niet.",
       "c.fb": "Onjuist. Memo's zijn openbaar leesbaar.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     }
   },
   "l6": {
@@ -277,7 +277,7 @@
       "b.fb": "Onjuist. Stellar grijpt niet in bij de prijsvorming.",
       "c.fb": "Onjuist. Na uitgifte bepaalt de markt de prijs.",
       "d": "Een wedstrijd waarbij je XLM-punten kunt winnen.",
-      "d.fb": "Klinkt leuk 🎮 – maar een DEX is geen spel, maar een echte marktplaats voor tokens."
+      "d.fb": "Klinkt leuk 🎮—maar een DEX is geen spel; het is een echte marktplaats voor tokens."
     },
     "q2": {
       "question": "Wat is het verschil tussen een DEX en een CEX?",
@@ -289,7 +289,7 @@
       "b.fb": "Onjuist. DEX is vaak goedkoper omdat er geen tussenpersoon is.",
       "c.fb": "Onjuist. Het verschil is fundamenteel.",
       "d": "Een wedstrijd waarbij je XLM-punten kunt winnen.",
-      "d.fb": "Klinkt leuk 🎮 – maar een DEX is geen spel, maar een echte marktplaats voor tokens."
+      "d.fb": "Klinkt leuk 🎮—maar een DEX is geen spel; het is een echte marktplaats voor tokens."
     },
     "q3": {
       "question": "Wat is een liquiditeitspool?",
@@ -301,7 +301,7 @@
       "b.fb": "Onjuist. Het is geen bankrekening maar een op smart contracts gebaseerde pool.",
       "c.fb": "Onjuist. Liquiditeitspools zijn voor handel, niet alleen voor passief verdienen.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q4": {
       "question": "Wat betekent volatiliteit bij cryptovaluta's?",
@@ -313,7 +313,7 @@
       "b.fb": "Onjuist. Dat zou het tegenovergestelde zijn – stabiliteit.",
       "c.fb": "Onjuist. Volatiliteit beschrijft prijsschommelingen, geen vergoedingen.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     }
   },
   "l7": {
@@ -328,7 +328,7 @@
       "b.fb": "Nee, één keer is genoeg om de controle te verliezen.",
       "c.fb": "Nee. Een screenshot van je sleutel is net zo riskant — iedereen die het ziet krijgt volledige toegang tot je account.",
       "d": "Zo kun je extra XLM-bonus verdienen.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar wie je geheime sleutel kent, kan je tegoed stelen."
+      "d.fb": "Dat zou leuk zijn 😄—maar iedereen die je geheime sleutel kent, kan je saldo stelen."
     },
     "q2": {
       "question": "Je ziet twee tokens met de naam USDX. Hoe vind je de echte?",
@@ -340,7 +340,7 @@
       "b.fb": "Logo's kunnen vervalst worden. Verifieer de uitgever/domein.",
       "c.fb": "Nee. Ze kunnen heel verschillend zijn. Controleer altijd.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q3": {
       "question": "In einfachen Worten ist ‚Verifizierung/KYC‘ (Know Your Customer) ein Prozess, bei dem Unternehmen bestätigen, wer ihre Kunden sind. Dies geschieht oft durch das Überprüfen von Ausweisdokumenten und anderen Informationen, um sicherzustellen, dass die Kunden wirklich die sind, die sie vorgeben zu sein.",
@@ -352,7 +352,7 @@
       "b.fb": "Nee. Het gaat om identiteit, niet om snelheid.",
       "c.fb": "Nee. Deel je geheime sleutel nooit. KYC heeft deze niet nodig.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q4": {
       "question": "Wat is een \"Zero-Knowledge Proof\" (ZK) in eenvoudige bewoordingen?",
@@ -364,7 +364,7 @@
       "b.fb": "Nee. ZK bewijst feiten, maar verwijdert geen invoer.",
       "c.fb": "Nee, het gaat om data-efficiënte bewijzen.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     }
   },
   "l8": {
@@ -379,7 +379,7 @@
       "b.fb": "Onjuist. KYC staat voor Know Your Customer.",
       "c.fb": "Onjuist. Dat is een verzonnen betekenis.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q2": {
       "question": "De Stellar DEX vereist KYC-verificatie.",
@@ -399,7 +399,7 @@
       "b.fb": "Onjuist. Veel transacties kunnen ook van oplichting komen.",
       "c.fb": "Onjuist. Namen kunnen gemakkelijk worden gekopieerd.",
       "d": "Een wedstrijd waarbij je XLM-punten kunt winnen.",
-      "d.fb": "Klinkt leuk 🎮 – maar een DEX is geen spel, maar een echte marktplaats voor tokens."
+      "d.fb": "Klinkt leuk 🎮—maar een DEX is geen spel; het is een echte marktplaats voor tokens."
     },
     "q4": {
       "question": "Waarom vereisen onramp-diensten KYC?",
@@ -411,7 +411,7 @@
       "b.fb": "Onjuist. KYC is een wettelijke verplichting, geen verdienmodel.",
       "c.fb": "Onjuist. KYC heeft niets met kosten te maken.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q5": {
       "question": "Waarom is KYC vereist bij onramp-diensten?",
@@ -419,11 +419,11 @@
       "a": "Omdat zij wettelijk verplicht zijn om witwassen te voorkomen (AML).",
       "a.fb": "Dat klopt. De KYC/AML-wetgeving is van toepassing op alle transacties waarbij fiatgeld wordt omgewisseld voor cryptovaluta.",
       "b": "Een speciale premiumfunctie, exclusief voor miljardairs.",
-      "b.fb": "Klinkt exclusief 😄 – maar het gaat hier om een fundamentele functie van de blockchain, niet om exclusieve toegang.",
+      "b.fb": "Klinkt exclusief 😄—maar dit gaat over een fundamenteel kenmerk van blockchain, niet over toegang tot luxe.",
       "c": "Een verborgen spelmodus in de portemonnee.",
       "c.fb": "Leuk idee 🎮, maar dit is geen spel. Het gaat om echte netwerktechnologie.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     }
   },
   "l9": {
@@ -438,7 +438,7 @@
       "b.fb": "Onjuist. ZK-bewijzen zijn bewijzen, geen verhulling.",
       "c.fb": "Onjuist. Zero Knowledge verwijst naar cryptografie, niet naar saldi.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q2": {
       "question": "Met een ZK-bewijs kun je bewijzen dat je ouder bent dan 18 zonder je geboortedatum te tonen.",
@@ -458,7 +458,7 @@
       "b.fb": "Onjuist. Snelheid is niet het hoofddoel van ZK.",
       "c.fb": "Onjuist. ZK heeft geen invloed op kosten.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q4": {
       "question": "Wat betekent 'Zero' in Zero-Knowledge?",
@@ -470,7 +470,7 @@
       "b.fb": "Onjuist. Zero Knowledge heeft niets met kosten te maken.",
       "c.fb": "Onjuist. Het gaat om cryptografie, niet om saldi.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     }
   },
   "l10": {
@@ -485,7 +485,7 @@
       "b.fb": "Onjuist. Snelheid is niet de reden – veiligheid wel.",
       "c.fb": "Onjuist. Het testnet heeft geen echte kosten, maar de hoofdreden is veiligheid.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q2": {
       "question": "Test-XLM op het testnet heeft echte geldwaarde.",
@@ -505,7 +505,7 @@
       "b.fb": "Onjuist. Stellar is gedecentraliseerd – geen aanvraag nodig.",
       "c.fb": "Onjuist. Accounts worden geactiveerd door transacties, niet door support.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q4": {
       "question": "Wat moet je doen voordat je USDC kunt ontvangen op Stellar?",
@@ -517,7 +517,7 @@
       "b.fb": "Onjuist. De Stellar Account Manager ondersteunt alle assets met trustline.",
       "c.fb": "Onjuist. Stellar zelf vereist geen KYC.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     }
   },
   "l11": {
@@ -532,7 +532,7 @@
       "b.fb": "Onjuist. Er zijn geen terugboekingen op de blockchain.",
       "c.fb": "Onjuist. Stellar kan geen transacties ongedaan maken.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q2": {
       "question": "Stellar kan foutieve transacties ongedaan maken.",
@@ -552,7 +552,7 @@
       "b.fb": "Onjuist. Snelheid is minder belangrijk dan zorgvuldigheid.",
       "c.fb": "Onjuist. Gedecentraliseerde netwerken hebben geen centrale support.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q4": {
       "question": "Wat is de belangrijkste regel voor je geheime sleutel?",
@@ -564,7 +564,7 @@
       "b.fb": "Onjuist. Cloudopslag is onveilig voor geheime sleutels.",
       "c.fb": "Onjuist. Deel je geheime sleutel nooit met anderen.",
       "d": "Zo kun je extra XLM-bonussen verdienen.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar wie je Secret Key kent, kan je tegoed stelen."
+      "d.fb": "Dat zou leuk zijn 😄—maar iedereen die je geheime sleutel kent, kan je saldo stelen."
     }
   },
   "l12": {
@@ -591,7 +591,7 @@
       "b.fb": "Onjuist. Stellar staat bekend om snelheid en lage kosten.",
       "c.fb": "Onjuist. Stellar gebruikt geen mining en is pseudoniem, niet anoniem.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q3": {
       "question": "Wat mag je NOOIT doen?",
@@ -603,7 +603,7 @@
       "b.fb": "Onjuist. Het testnet gebruiken wordt zelfs aanbevolen om te oefenen.",
       "c.fb": "Onjuist. Trustlines zijn normale en noodzakelijke acties.",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
     "q4": {
       "question": "Je hebt alle lessen voltooid. Wat ben je nu?",
@@ -615,7 +615,7 @@
       "b.fb": "Nog niet – maar je hebt een stevig fundament gelegd!",
       "c.fb": "Nog niet – maar je hebt een grote stap vooruit gezet!",
       "d": "Een truc om sneller rijk te worden.",
-      "d.fb": "Dat zou mooi zijn 😄 – maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
+      "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     }
   },
   "meta": {

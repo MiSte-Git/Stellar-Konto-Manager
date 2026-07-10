@@ -161,14 +161,14 @@
     "title": "Консенсус по Stellar",
     "goal": "Понять, как работает протокол консенсуса Stellar (SCP).",
     "task": "Ответьте на вопросы о SCP, кворумных фрагментах и о том, чем они отличаются от майнинга.",
-    "learningOutcome": "SCP ermöglicht schnellen, dezentralen Konsens ohne Mining – jeder Node wählt selbst, wem er vertraut.",
+    "learningOutcome": "SCP обеспечивает быстрый децентрализованный консенсус без майнинга — каждый узел самостоятельно решает, кому доверять.",
     "reward": "⭐ 2 – Consensus Expert"
   },
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
     "goal": "Узнайте, как пользовательские активы работают в качестве токенов лояльности в сети Stellar.",
     "task": "Ответьте на вопросы о токенах лояльности, линиях доверия и проверке эмитентов.",
-    "learningOutcome": "Gleicher Token-Name bedeutet nicht gleicher Token – nur der Issuer macht den Unterschied.",
+    "learningOutcome": "Одинаковое название токена не означает, что это один и тот же токен — разница заключается в эмитенте.",
     "reward": "⭐ 2 – Loyalty Expert"
   },
   "scam-simulator": {

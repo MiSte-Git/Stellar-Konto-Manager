@@ -161,14 +161,14 @@
     "title": "Konsenzus o Stellaru",
     "goal": "Razumite kako funkcionira Stellar Consensus Protocol (SCP).",
     "task": "Odgovorite na pitanja o SCP-u, kvorumskim kriškama i o tome kako se one razlikuju od rudarenja.",
-    "learningOutcome": "SCP omogućuje brzi, decentralizirani konsenzus bez rudarenja – svaki čvor samostalno odlučuje kome vjeruje.",
+    "learningOutcome": "SCP omogućuje brzi, decentralizirani konsenzus bez rudarenja — svaki čvor samostalno odlučuje kome vjerovati.",
     "reward": "⭐ 2 – Konsenzusni stručnjak"
   },
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
     "goal": "Razumite kako prilagođena sredstva funkcioniraju kao tokeni lojalnosti na Stellaru.",
     "task": "Odgovorite na pitanja o žetonima lojalnosti, linijama povjerenja i provjeri izdavatelja.",
-    "learningOutcome": "Isto ime tokena ne znači isti token – razliku čini samo izdavač.",
+    "learningOutcome": "Isto ime tokena ne znači isti token—razliku čini izdavač.",
     "reward": "⭐ 2 – Stručnjak za lojalnost"
   },
   "scam-simulator": {

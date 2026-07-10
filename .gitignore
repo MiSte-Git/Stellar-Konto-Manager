@@ -64,3 +64,6 @@ config/*
 
 # Ignore .continue folder
 .continue
+
+# Lokale i18n-Backups/Reports (scripts/backup_locales.sh, i18n_ci_check.js)
+content_backups/

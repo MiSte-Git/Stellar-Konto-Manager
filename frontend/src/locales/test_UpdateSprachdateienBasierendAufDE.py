@@ -37,6 +37,14 @@ Deckt konkret aufgetretene Pipeline-Bugs ab:
    IMMER DE -> EN (Phase A) oder EN-Pivot -> andere Sprache (Phase B) uebersetzt, ist
    die Quellsprache nie unbekannt und wird jetzt explizit aus target_lang abgeleitet
    und mitgesendet. Siehe DeepLSourceLangTests.
+6. _get_node_by_path() zerlegte --force-key-Pfade naiv an jedem Punkt. Namespaces
+   mit FLACHEN Keys, die selbst einen Punkt enthalten (z.B. quiz.json: "d.fb" ist
+   EIN Key, keine Verschachtelung d -> fb), wurden dadurch nie gefunden, sobald
+   zusaetzlich ein gleichnamiges Prefix-Segment ("d") als eigener Key existierte
+   (die Antwortoption) - node["d"] ist dort ein String, nicht das Elternobjekt von
+   "fb". Konkret beobachtet: --force-key quiz.l1.q2.d.fb (und 44 strukturgleiche
+   Keys) schlugen mit "Warnung: erzwungener Schluessel nicht gefunden" fehl, obwohl
+   der Key existiert. Siehe DottedFlatKeyPathTests.
 
 Nur Standardbibliothek (unittest) - kein pytest/Netzwerk noetig.
 Aufruf: python3 -m unittest test_UpdateSprachdateienBasierendAufDE -v
@@ -543,6 +551,87 @@ class DeepLSourceLangTests(unittest.TestCase):
         self.assertEqual(captured["body"].get("source_lang"), "EN")
         self.assertEqual(captured["body"].get("target_lang"), "ES")
         self.assertEqual(result, "(vacío)")
+
+
+class DottedFlatKeyPathTests(unittest.TestCase):
+    """Bug 6: --force-key muss flache Keys mit Punkt im Namen (z.B. quiz.json
+    "d.fb") auflösen können, auch wenn ein gleichnamiges Prefix-Segment ("d")
+    zusätzlich als eigener Key existiert."""
+
+    def test_get_node_by_path_resolves_dotted_flat_leaf(self):
+        tree = {
+            "l1": {
+                "q2": {
+                    "question": "Wer kann sehen?",
+                    "d": "Ein Trick.",
+                    "d.fb": "Schön wär's!",
+                }
+            }
+        }
+        self.assertEqual(usd._get_node_by_path(tree, "l1.q2.d.fb"), "Schön wär's!")
+        self.assertEqual(usd._get_node_by_path(tree, "l1.q2.d"), "Ein Trick.")
+        self.assertEqual(usd._get_node_by_path(tree, "l1.q2.question"), "Wer kann sehen?")
+
+    def test_get_node_by_path_returns_none_for_missing_path(self):
+        tree = {"l1": {"q2": {"d": "x", "d.fb": "y"}}}
+        self.assertIsNone(usd._get_node_by_path(tree, "l1.q2.nichtVorhanden"))
+        self.assertIsNone(usd._get_node_by_path(tree, "l1.q9.d.fb"))
+
+    def test_force_key_translates_dotted_flat_key_end_to_end(self):
+        # Eigener API-Key-Scope: main() bricht ohne DEEPL_API_KEY sofort ab, bevor
+        # der gemockte translate_text_deepl je aufgerufen wird. Andere Testklassen
+        # setzen/entfernen dieselbe Variable in setUp/tearDown - ohne diesen eigenen
+        # Schutz wäre dieser Test von der Ausführungsreihenfolge abhängig.
+        os.environ["DEEPL_API_KEY"] = "test-key-not-used"
+        self.addCleanup(lambda: os.environ.pop("DEEPL_API_KEY", None))
+
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        base_path = tmp.name
+
+        de_dir = os.path.join(base_path, "de")
+        os.makedirs(de_dir, exist_ok=True)
+        with open(os.path.join(de_dir, "quiz.json"), "w", encoding="utf-8") as f:
+            json.dump({"l1": {"q2": {"d": "Ein Trick.", "d.fb": "Schön wär's!"}}}, f)
+
+        en_dir = os.path.join(base_path, "en")
+        os.makedirs(en_dir, exist_ok=True)
+        with open(os.path.join(en_dir, "quiz.json"), "w", encoding="utf-8") as f:
+            # "d.fb" ist (Bug-Symptom) unuebersetzt identisch zum deutschen Quelltext.
+            json.dump({"l1": {"q2": {"d": "A trick.", "d.fb": "Schön wär's!"}}}, f)
+
+        hash_dir = os.path.join(base_path, ".i18n_hash")
+        os.makedirs(hash_dir, exist_ok=True)
+        with open(os.path.join(hash_dir, "en_from_de.json"), "w", encoding="utf-8") as f:
+            json.dump({
+                "quiz.l1.q2.d": usd._sha256("Ein Trick."),
+                "quiz.l1.q2.d.fb": usd._sha256("Schön wär's!"),
+            }, f)
+
+        def fake_translate_text_deepl(text, target_lang, api_key, api_url=None):
+            return f"[{target_lang}] {text}"
+
+        argv = [
+            "UpdateSprachdateienBasierendAufDE.py",
+            "--provider", "deepl",
+            "--base-path", base_path,
+            "--force-key", "quiz.l1.q2.d.fb",
+        ]
+        with mock.patch.object(usd, "translate_text_deepl", side_effect=fake_translate_text_deepl), \
+             mock.patch.object(usd, "HASH_DIR", hash_dir), \
+             mock.patch.object(sys, "argv", argv):
+            usd.main()
+
+        with open(os.path.join(en_dir, "quiz.json"), encoding="utf-8") as f:
+            en_data = json.load(f)
+        self.assertEqual(
+            en_data["l1"]["q2"]["d.fb"], "[en] Schön wär's!",
+            "'d.fb' haette per --force-key neu uebersetzt werden muessen",
+        )
+        self.assertEqual(
+            en_data["l1"]["q2"]["d"], "A trick.",
+            "'d' war nicht angefragt und haette unangetastet bleiben muessen",
+        )
 
 
 if __name__ == "__main__":

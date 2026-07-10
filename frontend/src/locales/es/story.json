@@ -784,8 +784,8 @@
         "result_rules_title": "Procedimiento de esta demostración",
         "rule1": "The demo buyer may claim the 50 XLM immediately—that is, actively withdraw them from the Claimable Balance.",
         "rule2": "Si el comprador de la demo no hace nada, puedes solicitar que te devuelvan los 50 XLM al cabo de una hora.",
-        "rule3": "Eine echte „Erhalt bestätigen“-Schaltfläche ist in dieser Demo noch nicht eingebaut.",
-        "rule4": "Beim Digitec-Beispiel wäre diese Bestätigung der nächste App-Schritt: Der Käufer klickt „Erhalt bestätigt“, und die Plattform löst danach die Auszahlung an den Verkäufer aus. Auf Stellar wäre das eine zweite Transaktion, die die Claimable Balance beansprucht."
+        "rule3": "Aún no se ha añadido un botón de «Confirmar recepción» a esta demostración.",
+        "rule4": "En el ejemplo de Digitec, esta confirmación sería el siguiente paso en la aplicación: el comprador hace clic en «Recibo confirmado» y, a continuación, la plataforma inicia el pago al vendedor. En Stellar, esto supondría una segunda transacción que se deduciría del saldo reclamable."
       },
       "post": {
         "dialog1": "¡Fue más sencillo de lo que pensaba!",

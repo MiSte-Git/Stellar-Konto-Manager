@@ -784,8 +784,8 @@
         "result_rules_title": "Postupak u ovoj demonstraciji",
         "rule1": "Kupac demo računa može odmah preuzeti 50 XLM — to jest, aktivno ih povući iz stanja za preuzimanje.",
         "rule2": "Ako kupac demo ne poduzme ništa, možete zatražiti povrat 50 XLM nakon jednog sata.",
-        "rule3": "Eine echte „Erhalt bestätigen“-Schaltfläche ist in dieser Demo noch nicht eingebaut.",
-        "rule4": "Beim Digitec-Beispiel wäre diese Bestätigung der nächste App-Schritt: Der Käufer klickt „Erhalt bestätigt“, und die Plattform löst danach die Auszahlung an den Verkäufer aus. Auf Stellar wäre das eine zweite Transaktion, die die Claimable Balance beansprucht."
+        "rule3": "Pravo gumbom \"Potvrdi primitak\" još nije dodano u ovu demo verziju.",
+        "rule4": "U primjeru Digiteca, ova potvrda bi bila sljedeći korak u aplikaciji: kupac klikne na \"Potvrđeno račun\", a platforma zatim pokreće uplatu prodavaču. Na Stellaru bi to bila druga transakcija koja se oslanja na preuzimljivi saldo."
       },
       "post": {
         "dialog1": "Bilo je jednostavnije nego što sam mislio!",

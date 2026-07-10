@@ -190,10 +190,29 @@ def _extract_special_chars(text: str) -> Set[str]:
     return set(re.findall(SPECIAL_CHAR_RE, text or ""))
 
 
-def _preserve_special_chars(source: Any, translated: str, path: str, counters: Dict[str, int] | None = None) -> str:
+def _preserve_special_chars(
+    source: Any,
+    translated: str,
+    path: str,
+    counters: Dict[str, int] | None = None,
+    failed_paths: Set[str] | None = None,
+) -> str:
     """
-    Stellt sicher, dass Sonderzeichen (z.B. ★) aus dem Quelltext nicht verloren gehen.
-    Falls Zeichen fehlen, wird der Quelltext zurückgegeben, um Layout/Ikonen zu bewahren.
+    Stellt sicher, dass Sonderzeichen (z.B. ★, Emojis) aus dem Quelltext nicht verloren
+    gehen. Falls Zeichen fehlen, wird der Quelltext zurückgegeben, um Layout/Ikonen zu
+    bewahren.
+
+    Konkret beobachtet (quiz.json, mehrere l*.q*.d.fb/c.fb-Feedback-Texte mit Emoji):
+    dieser Fallback feuerte bei einem älteren DeepL-Lauf, weil das Emoji in der
+    Übersetzung fehlte - der deutsche Text blieb (korrekt, absichtlich) stehen. Das
+    Problem war nicht der Fallback selbst, sondern dass er komplett unsichtbar blieb:
+    weder in der Abschluss-Zusammenfassung sichtbar (siehe preservedSpecialCharKeys in
+    main()) noch als "nicht wirklich fertig" markiert - der Key landete trotzdem mit
+    aktuellem Hash im Manifest, ein inkrementeller Folgelauf hat ihn nie wieder
+    angefasst, obwohl DeepL das Emoji inzwischen zuverlässig überträgt. failed_paths
+    (falls übergeben) schließt den Key jetzt von der Manifest-Aktualisierung aus - der
+    nächste Lauf versucht es automatisch erneut, statt den Fallback für immer
+    einzufrieren.
     """
     if not isinstance(source, str):
         return translated
@@ -205,6 +224,8 @@ def _preserve_special_chars(source: Any, translated: str, path: str, counters: D
     if missing:
         if counters is not None:
             counters['preservedSpecialCharKeys'] = counters.get('preservedSpecialCharKeys', 0) + 1
+        if failed_paths is not None:
+            failed_paths.add(path)
         print(f"INFO: Bewahre Sonderzeichen für {path}: {''.join(missing)} → Originaltext übernommen")
         return source
     return translated_str
@@ -427,11 +448,34 @@ def _save_manifest(lang: str, from_pivot: str, data: Dict[str, str]) -> None:
 
 
 def _get_node_by_path(d: Dict[str, Any], path: str):
+    """Löst einen dot-Pfad zu seinem Knoten auf.
+
+    Manche Namespaces (z.B. quiz.json) haben flache Keys, die selbst einen
+    Punkt enthalten (z.B. "d.fb" als EIN Key, nicht verschachtelt d -> fb).
+    Ein naives path.split('.') zerlegt "l1.q2.d.fb" fälschlich in vier
+    Segmente und scheitert an node["d"], weil "d" dort ein String ist
+    (die Antwortoption), nicht das Elternobjekt von "fb". Ergebnis (beobachtet):
+    --force-key quiz.l1.q2.d.fb fand den Key nie, obwohl er existiert.
+    Fix: auf jeder Ebene wird unter den Kindschlüsseln der LÄNGSTE Präfix
+    von "remaining" gewählt, der ein echter Schlüssel-Übereinstimmung ist
+    (exakt oder gefolgt von einem Punkt) - das bevorzugt "d.fb" gegenüber "d".
+    """
     node: Any = d
-    for part in path.split('.'):
-        if not isinstance(node, dict) or part not in node:
+    remaining = path
+    while remaining:
+        if not isinstance(node, dict):
             return None
-        node = node[part]
+        candidates = [
+            k for k in node.keys()
+            if remaining == k or remaining.startswith(k + ".")
+        ]
+        if not candidates:
+            return None
+        best = max(candidates, key=len)
+        node = node[best]
+        remaining = remaining[len(best):]
+        if remaining.startswith("."):
+            remaining = remaining[1:]
     return node
 
 
@@ -546,7 +590,7 @@ def merge_keys_missing_or_changed(
                     out[key] = out.get(key, value)
                 else:
                     translated = restore_parenthesized_english(translated_raw, placeholders)
-                    translated = _preserve_special_chars(value, translated, cur_path, counters)
+                    translated = _preserve_special_chars(value, translated, cur_path, counters, failed_paths)
                     out[key] = translated
     return out
 
@@ -607,7 +651,7 @@ def translate_full(
                         target_dict[key] = existing_val if existing_val is not None else value
                     else:
                         translated = restore_parenthesized_english(translated_raw, placeholders)
-                        translated = _preserve_special_chars(value, translated, cur_path, counters)
+                        translated = _preserve_special_chars(value, translated, cur_path, counters, failed_paths)
                         target_dict[key] = translated
                 else:
                     target_dict[key] = existing_val
@@ -975,7 +1019,14 @@ def main():
                 print(f"❌ Abbruch für Sprache {lang} / Namespace {ns_name}: {e}")
                 continue
 
-    print(f"\nZusammenfassung Namespaces: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}}}")
+    print(f"\nZusammenfassung Namespaces: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}, 'preservedSpecialCharKeys': {counters.get('preservedSpecialCharKeys', 0)}}}")
+    if counters.get('preservedSpecialCharKeys', 0) > 0:
+        print(
+            f"⚠️  {counters['preservedSpecialCharKeys']} Key(s) blieben unübersetzt, weil ein Sonderzeichen "
+            "(z.B. Emoji) in der Übersetzung fehlte - siehe die 'Bewahre Sonderzeichen'-Zeilen oben. "
+            "Diese Keys wurden NICHT als erledigt ins Manifest übernommen und werden beim nächsten Lauf "
+            "automatisch erneut versucht."
+        )
     print("\n✅ Namespaced-Verarbeitung abgeschlossen.")
 
 

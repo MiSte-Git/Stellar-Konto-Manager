@@ -161,14 +161,14 @@
     "title": "Consensus on Stellar",
     "goal": "Understand how the Stellar Consensus Protocol (SCP) works.",
     "task": "Answer questions about SCP, quorum slices, and how they differ from mining.",
-    "learningOutcome": "SCP ermöglicht schnellen, dezentralen Konsens ohne Mining – jeder Node wählt selbst, wem er vertraut.",
+    "learningOutcome": "SCP enables fast, decentralized consensus without mining—each node decides for itself whom to trust.",
     "reward": "⭐ 2 – Consensus Expert"
   },
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
     "goal": "Understand how Custom Assets work as loyalty tokens on Stellar.",
     "task": "Answer questions about loyalty tokens, trust lines, and issuer verification.",
-    "learningOutcome": "Gleicher Token-Name bedeutet nicht gleicher Token – nur der Issuer macht den Unterschied.",
+    "learningOutcome": "The same token name does not mean the same token—it’s the issuer that makes the difference.",
     "reward": "⭐ 2 – Loyalty Expert"
   },
   "scam-simulator": {
