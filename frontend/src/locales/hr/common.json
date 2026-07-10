@@ -488,23 +488,23 @@
   },
   "muxed": {
     "seo": {
-      "title": "Kreiraj/upravljaj multipleksiranim računom",
+      "title": "Stvaranje/Upravljanje podadresama",
       "description": "Kreirajte i upravljajte aliasima multipleksiranih računa (M...) za Stellar račun. Generirajte ID-ove, dodajte oznake/bilješke, izvoz/uvoz CSV-a."
     },
-    "title": "Kreiraj/Upravljaj Muxed računom",
+    "title": "Stvaranje/Upravljanje podadresama",
     "explainer": "Izradite alias adrese (M...) s jedinstvenim muxed ID-om za postojeći račun. Alias adresa će uvijek pokazivati na isti račun.",
     "infoButtonLabel": "Informacija",
     "info": {
-      "title": "Što je muxed račun?",
-      "intro1": "Muxed račun kombinira običnu adresu računa (G-adresa) s dodatnim 64-bitnim Muxed ID-om.",
-      "intro2": "Tehnički je to alias koji uvijek upućuje na isti bazni račun, ali je putem ID-a jednoznačno razlučiv.",
+      "title": "Što je podadresa?",
+      "intro1": "Podadresica kombinira normalnu adresu računa (G-adresu) s dodatnim 64-bitnim višekanalnim ID-om.",
+      "intro2": "Tehnički, to je alias koji uvijek upućuje na isti osnovni račun, ali se može jedinstveno identificirati po svom ID-u.",
       "purposeTitle": "Svrha i koristi",
-      "purposeText": "Muxed računi služe za upravljanje mnogim podračunima pod jednom Stellar adresom – idealno kada mnoge uplate/isplate prolaze kroz zajednički glavni račun, ali svaka transakcija mora biti dodijeljena osobi, odjelu ili projektu.",
-      "examplesTitle": "Primjeri – čemu služe Muxed računi?",
+      "purposeText": "Podadrese se koriste za jedinstvenu identifikaciju više tokova plaćanja unutar jedne Stellar adrese—idealno kada mnogi depoziti i isplate prolaze kroz zajednički glavni račun, ali svaka transakcija mora biti dodijeljena određenoj osobi, odjelu ili projektu.",
+      "examplesTitle": "Primjeri – Za što se koriste podadrese?",
       "examples": {
         "ex1": "Isplate firmi: Svaka zaposlenica/svaki zaposlenik dobiva vlastiti Muxed‑ID kako bi se plaće mogle jednoznačno dodijeliti.",
         "ex2": "Burze ili platforme: svaki korisnik dobiva vlastiti Muxed ID kako bi se uplate preko zajedničkog novčanika automatski ispravno knjižile.",
-        "ex3": "Projekti ili podračuni: Organizacija može raspodijeliti proračune ili prihode na pojedinačne projekte.",
+        "ex3": "Projekti ili podračuni: Organizacija može dodijeliti proračune ili prihode pojedinačnim projektima.",
         "ex4": "Dodjela kupcima: jedna M-adresa po kupcu; ID odgovara ID-u kupca – uplate se mogu jasno dodijeliti, čak i bez memoa.",
         "ex5": "Usluge bez memoranduma: Razlikujte depozite kada usluga ne podržava memorandume.",
         "ex6": "Isplate/obračun plaća: jedna M-adresa po zaposleniku/partneru za internu knjigovodstvo i izvještaje.",
@@ -513,18 +513,18 @@
         "ex9": "Multi-tenant usluge: svaki najmoprimac dobiva vlastitu M-adresu pod istim baznim računom."
       },
       "pageTitle": "Što ova stranica radi u SKM-u?",
-      "pageDesc": "Ova stranica služi za upravljanje Muxed računima tvog trenutno odabranog Stellar računa:",
-      "createTitle": "Stvori nove Muxed račune",
+      "pageDesc": "Ova se stranica koristi za upravljanje podadresama vašeg trenutno odabranog Stellar računa:",
+      "createTitle": "Stvorite nove podadrese",
       "createItems": {
         "i1": "Stvara nove Muxed adrese (M...) iz tvoje bazne adrese (G...).",
         "i2": "Opcionalno s etiketom (ime) i bilješkom (npr. projekt ili svrha)."
       },
       "importTitle": "Uvoz iz CSV datoteka",
       "importItems": {
-        "i1": "Masovno stvaranje Muxed računa, npr. iz popisa zaposlenika.",
+        "i1": "Masovno stvaranje podadresa, npr. iz popisa zaposlenika.",
         "i2": "Pročitaj stupce muxedId, label, note."
       },
-      "exportTitle": "Izvezi postojeće Muxed račune",
+      "exportTitle": "Izvoz postojećih podadresa",
       "exportItems": {
         "i1": "Izvezi sve spremljene unose kao CSV.",
         "i2": "Polja: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
@@ -540,16 +540,16 @@
         "i2": "Odabir, brisanje te uređivanje oznake/napomene izravno mogući."
       },
       "shortTitle": "Ukratko",
-      "shortText": "Muxed računi čine tvoj Stellar račun finije granuliranim i sljedivim – idealno za organizacije koje obrađuju mnoge uplate preko središnjeg računa, ali ipak žele jednoznačno dodijeliti svaku transakciju."
+      "shortText": "Podadresi čine vaš Stellar račun izuzetno granularnim i rezervabilnim—idealnim za organizacije koje obrađuju mnogo uplata putem centralnog računa, a ipak žele jedinstveno identificirati svaku transakciju."
     },
     "selectBaseAccount": "Osnovni račun (G-Adresse)",
     "selectPlaceholder": "Molimo odaberite račun",
     "baseAccountInfo": "Ovaj račun tehnički ostaje vlasnik. Multipleksirana adresa (M...) samo ukazuje na ovaj račun.",
-    "generateButton": "Kreirajte muxed račun",
+    "generateButton": "Stvorite podadresu",
     "exportButton": "Izvoz",
     "importButton": "Uvoz",
-    "listTitle": "Postojeći miješani računi",
-    "none": "Nema spremljenih multipleksiranih računa.",
+    "listTitle": "Postojeće podadrese",
+    "none": "Nije spremljena nijedna podadresa.",
     "columns": {
       "id": "Muxed ID",
       "address": "Muxirana adresa",
@@ -581,8 +581,8 @@
     },
     "export": {
       "filename": "muxed_accounts.csv",
-      "success": "Uspješno izvezeni muxed računi.",
-      "failed": "Pogreška tijekom izvoza multipleksiranih računa."
+      "success": "Podadrese su uspješno izvezene.",
+      "failed": "Greška pri izvozu podadresica."
     },
     "import": {
       "success": "Uvezeno: {{imported}} • Preskočeno: {{skipped}} • Pogreške: {{errors}}.",
@@ -600,7 +600,7 @@
         "tab": "Kartica"
       }
     },
-    "nav": "Muxed računi",
+    "nav": "Podadrese",
     "error": {
       "noBaseAccount": "Molimo odaberite postojeći račun.",
       "noId": "Molimo navedite Muxed-ID.",
@@ -894,10 +894,10 @@
       "desc": "Federativna adresa izgleda kao email. Primjer: ime*domena.com. Ova kratka adresa upućuje na običnu G adresu. Lakše je zapamtiti."
     },
     "addressMuxed": {
-      "title": "Promiješani račun",
+      "title": "Podadresa",
       "original": "Muxed Account",
       "short": "M-adresa s dodatnim ID-om – dijeli bazni račun.",
-      "desc": "M-adresa pokazuje na postojeći Stellar račun, ali dodatno ima svoj vlastiti broj (ID). Ovo omogućava, na primjer, razlikovanje između više osoba ili odjela pod istom G-adresom. Tehnički, novac i dalje pripada glavnom računu."
+      "desc": "Pod-adresa (M-adresa, službeno \"Muxed Account\") upućuje na postojeći Stellar račun, ali ima i vlastiti broj (ID). To vam omogućuje, na primjer, da razlikujete više osoba ili odjela pod istom G-adresom. Tehnički, sredstva i dalje pripadaju glavnom računu."
     },
     "multisig": {
       "title": "Višestruki potpis",

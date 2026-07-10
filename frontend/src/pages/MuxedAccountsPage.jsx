@@ -145,7 +145,7 @@ export default function MuxedAccountsPage({ publicKey }) {
   const descKey = 'muxed.seo.description';
   const hasTitleInLang = !!i18n.getResource?.(i18n.language, 'translation', titleKey);
   const hasDescInLang = !!i18n.getResource?.(i18n.language, 'translation', descKey);
-  const metaTitle = hasTitleInLang ? t(titleKey) : 'Muxed account create/manage';
+  const metaTitle = hasTitleInLang ? t(titleKey) : 'Subaddress create/manage';
   const metaDesc = hasDescInLang ? t(descKey) : 'Create and manage muxed M-address aliases for a Stellar account. Generate IDs, add labels/notes, export/import CSV.';
   usePageMeta(metaTitle, metaDesc);
 
@@ -190,11 +190,11 @@ export default function MuxedAccountsPage({ publicKey }) {
     }
     try {
       exportMuxedCsv(publicKey, t('common:muxed.export.filename', 'muxed_accounts.csv'), netLabel);
-      setSuccess(t('common:muxed.export.success', 'Muxed-Konten erfolgreich exportiert.'));
+      setSuccess(t('common:muxed.export.success', 'Unteradressen erfolgreich exportiert.'));
       setError('');
     } catch (e) {
       DBG.error('exportMuxedCsv failed', e);
-      setError(t('common:muxed.export.failed', 'Fehler beim Export der Muxed-Konten.'));
+      setError(t('common:muxed.export.failed', 'Fehler beim Export der Unteradressen.'));
     }
   }, [publicKey, netLabel, t]);
 
@@ -410,7 +410,7 @@ export default function MuxedAccountsPage({ publicKey }) {
     <div className="max-w-6xl mx-auto px-3">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold">{t('common:muxed.title', 'Muxed account create/manage')}</h2>
+          <h2 className="text-xl font-semibold">{t('common:muxed.title', 'Subaddress create/manage')}</h2>
           <button
             type="button"
             className="inline-flex items-center gap-1 px-3 py-1.5 text-sm md:text-base rounded-md border border-blue-600 text-blue-700 bg-blue-50 hover:bg-blue-100 dark:border-blue-400 dark:text-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -426,12 +426,12 @@ export default function MuxedAccountsPage({ publicKey }) {
 
       {showInfo && (
         <div id="muxed-info-panel" className="mb-3 rounded border p-3 bg-blue-50 dark:bg-blue-900/30 text-sm text-gray-800 dark:text-gray-100">
-          <div className="font-semibold mb-1">{t('common:muxed.info.title', 'What is a muxed account?')}</div>
-          <p className="mb-2">{t('common:muxed.info.intro1', 'A muxed account combines a normal account address (G...) with an extra 64-bit muxed ID.')}</p>
+          <div className="font-semibold mb-1">{t('common:muxed.info.title', 'What is a subaddress?')}</div>
+          <p className="mb-2">{t('common:muxed.info.intro1', 'A subaddress combines a normal account address (G...) with an extra 64-bit muxed ID.')}</p>
           <p className="mb-3">{t('common:muxed.info.intro2', 'Technically it is an alias that always points to the same base account, but remains distinguishable by the ID.')}</p>
 
           <div className="font-semibold mb-1">{t('common:muxed.info.purposeTitle', 'Purpose and benefits')}</div>
-          <p className="mb-3">{t('common:muxed.info.purposeText', 'Use muxed addresses to manage many sub-accounts under one Stellar address — ideal when many deposits/withdrawals share one base wallet but each flow must be attributable to a person, department, or project.')}</p>
+          <p className="mb-3">{t('common:muxed.info.purposeText', 'Use subaddresses to attribute many payment flows under one Stellar address — ideal when many deposits/withdrawals share one base wallet but each flow must be attributable to a person, department, or project.')}</p>
 
           <div className="font-semibold mb-1">{t('common:muxed.info.examplesTitle', 'Examples')}</div>
           <ul className="list-disc ps-5 mb-3 space-y-1">
@@ -440,7 +440,7 @@ export default function MuxedAccountsPage({ publicKey }) {
                 {t(k, [
                   'Payroll: one muxed ID per employee so salaries can be attributed.',
                   'Exchanges/platforms: one muxed ID per user so deposits into a shared wallet are attributed automatically.',
-                  'Projects/sub-accounts: track budgets or revenue per project.',
+                  'Projects/subaddresses: track budgets or revenue per project.',
                   'Customer mapping: one M-address per customer; the ID matches the customer ID.',
                   'Services without memos: differentiate deposits when the service does not support memos.',
                   'Payout runs: one M-address per contractor/partner for internal accounting.',
@@ -453,11 +453,11 @@ export default function MuxedAccountsPage({ publicKey }) {
           </ul>
 
           <div className="font-semibold mb-1">{t('common:muxed.info.pageTitle', 'What this page does (SKM)')}</div>
-          <p className="mb-2">{t('common:muxed.info.pageDesc', 'Manage muxed addresses for your currently selected Stellar account:')}</p>
+          <p className="mb-2">{t('common:muxed.info.pageDesc', 'Manage subaddresses for your currently selected Stellar account:')}</p>
 
           <div className="grid sm:grid-cols-2 gap-3 mb-3">
             <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
-              <div className="font-semibold mb-1">{t('common:muxed.info.createTitle', 'Create muxed accounts')}</div>
+              <div className="font-semibold mb-1">{t('common:muxed.info.createTitle', 'Create subaddresses')}</div>
               <ul className="list-disc ps-5 space-y-1">
                 <li>{t('common:muxed.info.createItems.i1', 'Generate new muxed addresses (M...) from your base address (G...).')}</li>
                 <li>{t('common:muxed.info.createItems.i2', 'Optionally add a label (name) and note (project or purpose).')}</li>
@@ -466,12 +466,12 @@ export default function MuxedAccountsPage({ publicKey }) {
             <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
               <div className="font-semibold mb-1">{t('common:muxed.info.importTitle', 'Import from CSV')}</div>
               <ul className="list-disc ps-5 space-y-1">
-                <li>{t('common:muxed.info.importItems.i1', 'Bulk-create muxed accounts, e.g., from a staff list.')}</li>
+                <li>{t('common:muxed.info.importItems.i1', 'Bulk-create subaddresses, e.g., from a staff list.')}</li>
                 <li>{t('common:muxed.info.importItems.i2', 'Reads columns muxedId, label, note.')}</li>
               </ul>
             </div>
             <div className="border rounded p-3 bg-white/60 dark:bg-white/5">
-              <div className="font-semibold mb-1">{t('common:muxed.info.exportTitle', 'Export existing muxed accounts')}</div>
+              <div className="font-semibold mb-1">{t('common:muxed.info.exportTitle', 'Export existing subaddresses')}</div>
               <ul className="list-disc ps-5 space-y-1">
                 <li>{t('common:muxed.info.exportItems.i1', 'Export all saved entries as CSV.')}</li>
                 <li>{t('common:muxed.info.exportItems.i2', 'Fields: basePublicKey, muxedId, muxedAddress, label, note, createdAt.')}</li>
@@ -495,7 +495,7 @@ export default function MuxedAccountsPage({ publicKey }) {
           </div>
 
           <div className="font-semibold mb-1">{t('common:muxed.info.shortTitle', 'In short')}</div>
-          <p>{t('common:muxed.info.shortText', 'Muxed accounts make your Stellar wallet granular and bookable — ideal when running many payments through one account while keeping every transaction attributable.')}</p>
+          <p>{t('common:muxed.info.shortText', 'Subaddresses make your Stellar wallet granular and bookable — ideal when running many payments through one account while keeping every transaction attributable.')}</p>
         </div>
       )}
 
@@ -544,7 +544,7 @@ export default function MuxedAccountsPage({ publicKey }) {
               onClick={onGenerate}
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
-              {t('common:muxed.generateButton', 'Create muxed account')}
+              {t('common:muxed.generateButton', 'Create subaddress')}
             </button>
 
             <button
@@ -587,9 +587,9 @@ export default function MuxedAccountsPage({ publicKey }) {
         </div>
 
         <div className="mt-6">
-          <h3 className="font-semibold mb-2">{t('common:muxed.listTitle', 'Existing muxed accounts')}</h3>
+          <h3 className="font-semibold mb-2">{t('common:muxed.listTitle', 'Existing subaddresses')}</h3>
           {rows.length === 0 ? (
-            <div className="text-sm text-gray-600 dark:text-gray-300">{t('common:muxed.none', 'No muxed accounts stored.')}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">{t('common:muxed.none', 'No subaddresses stored.')}</div>
           ) : (
             <div className="overflow-x-auto border rounded">
               <table className="min-w-full text-sm">

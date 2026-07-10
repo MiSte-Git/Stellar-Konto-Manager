@@ -488,23 +488,23 @@
   },
   "muxed": {
     "seo": {
-      "title": "Créer/administrer un compte multiplexé",
+      "title": "Créer/Gérer des sous-adresses",
       "description": "Créer et gérer des alias de compte multiplexé (M...) pour un compte Stellar. Générer des ID, ajouter des étiquettes/notes, exporter/importer des fichiers CSV."
     },
-    "title": "Créer/Gérer un compte multiplexé",
+    "title": "Créer/Gérer des sous-adresses",
     "explainer": "Créez des adresses alias (M...) avec un identifiant multiplexé unique pour un compte existant. L'adresse alias pointera toujours vers le même compte.",
     "infoButtonLabel": "Information",
     "info": {
-      "title": "Qu'est-ce qu'un compte multiplexé ?",
-      "intro1": "Un compte Muxed combine une adresse de compte normale (adresse G) avec un ID Muxed supplémentaire de 64 bits.",
-      "intro2": "Techniquement, il s'agit d'un alias qui pointe toujours vers le même compte de base, mais qui est clairement distinguable grâce à l'ID.",
+      "title": "Qu'est-ce qu'une sous-adresse ?",
+      "intro1": "Une sous-adresse combine une adresse de compte standard (adresse G) avec un identifiant multiplexé supplémentaire de 64 bits.",
+      "intro2": "Techniquement, il s'agit d'un alias qui renvoie toujours vers le même compte de base, mais qui peut être identifié de manière unique grâce à son identifiant.",
       "purposeTitle": "Objectif et avantages",
-      "purposeText": "Les comptes Muxed servent à gérer de nombreux sous-comptes sous une seule adresse Stellar – idéal lorsque de nombreux dépôts/retraits transitent par un compte principal commun, mais que chaque opération doit être attribuée à une personne, un service ou un projet.",
-      "examplesTitle": "Exemples – à quoi servent les comptes Muxed ?",
+      "purposeText": "Les sous-adresses permettent d'identifier de manière unique plusieurs flux de paiement au sein d'une même adresse Stellar. Elles constituent la solution idéale lorsque de nombreux dépôts et retraits transitent par un compte principal partagé, mais que chaque transaction doit être attribuée à une personne, un service ou un projet spécifique.",
+      "examplesTitle": "Exemples – À quoi servent les sous-adresses ?",
       "examples": {
         "ex1": "Paiements aux salariés : chaque employé reçoit son propre Muxed ID afin que les versements de salaire puissent être attribués sans ambiguïté.",
         "ex2": "Bourses ou plateformes : chaque utilisateur reçoit son propre Muxed ID afin que les dépôts via un portefeuille commun soient automatiquement comptabilisés correctement.",
-        "ex3": "Projets ou sous-comptes : Une organisation peut allouer des budgets ou des revenus à des projets individuels.",
+        "ex3": "Projets ou sous-comptes : une organisation peut affecter des budgets ou des recettes à des projets spécifiques.",
         "ex4": "Attribution client : une adresse M par client ; l'ID correspond à l'ID client – les paiements peuvent être attribués clairement, même sans mémo.",
         "ex5": "Services sans mémos : différencier les dépôts lorsque le service ne prend pas en charge les mémos.",
         "ex6": "Versements/paie : une adresse M par employé/partenaire pour la comptabilité interne et les rapports.",
@@ -513,18 +513,18 @@
         "ex9": "Services multi-tenant : chaque locataire reçoit sa propre adresse M sous le même compte de base."
       },
       "pageTitle": "Ce que cette page fait dans le SKM",
-      "pageDesc": "Cette page permet de gérer les comptes Muxed de votre compte Stellar actuellement sélectionné :",
-      "createTitle": "Créer de nouveaux comptes Muxed",
+      "pageDesc": "Cette page permet de gérer les sous-adresses de votre compte Stellar actuellement sélectionné :",
+      "createTitle": "Créer de nouvelles sous-adresses",
       "createItems": {
         "i1": "Génère de nouvelles adresses Muxed (M...) à partir de votre adresse de base (G...).",
         "i2": "Peut être accompagné d'une étiquette (Nom) et d'une note (par exemple, projet ou objectif)."
       },
       "importTitle": "Importer depuis des fichiers CSV",
       "importItems": {
-        "i1": "Création en masse de comptes Muxed, par ex. à partir d'une liste d'employés.",
+        "i1": "Création groupée de sous-adresses, par exemple à partir d'une liste d'employés.",
         "i2": "Lisez les colonnes muxedId, label, note."
       },
-      "exportTitle": "Exporter les comptes Muxed existants",
+      "exportTitle": "Exporter les sous-adresses existantes",
       "exportItems": {
         "i1": "Exportez toutes les entrées enregistrées au format CSV.",
         "i2": "Champs : basePublicKey, muxedId, muxedAddress, label, note, createdAt."
@@ -540,16 +540,16 @@
         "i2": "Sélection, suppression ainsi que gestion des étiquettes/notes directement possibles."
       },
       "shortTitle": "En bref",
-      "shortText": "Les comptes Muxed rendent votre compte Stellar granulaire et traçable – idéal pour les organisations qui traitent de nombreux paiements via un compte central tout en souhaitant attribuer chaque transaction sans ambiguïté."
+      "shortText": "Les sous-adresses permettent de gérer votre compte Stellar de manière très précise et de faciliter les opérations de comptabilisation. Elles constituent la solution idéale pour les organisations qui traitent de nombreux paiements via un compte central, mais qui souhaitent néanmoins identifier de manière unique chaque transaction."
     },
     "selectBaseAccount": "Compte de base (G-Adresse)",
     "selectPlaceholder": "Veuillez sélectionner un compte",
     "baseAccountInfo": "Ce compte reste techniquement le propriétaire. L'adresse multiplexée (M...) ne fait que pointer vers ce compte.",
-    "generateButton": "Créer un compte multiplexé",
+    "generateButton": "Créer une sous-adresse",
     "exportButton": "Exportation",
     "importButton": "Importer",
-    "listTitle": "Comptes multiplexés existants",
-    "none": "Aucun compte multiplexé enregistré.",
+    "listTitle": "Sous-adresses existantes",
+    "none": "Aucune sous-adresse n'a été enregistrée.",
     "columns": {
       "id": "ID multiplexé",
       "address": "Adresse multiplexée",
@@ -581,8 +581,8 @@
     },
     "export": {
       "filename": "muxed_accounts.csv",
-      "success": "Comptes multiplexés exportés avec succès.",
-      "failed": "Erreur lors de l'exportation des comptes multiplexés."
+      "success": "Les sous-adresses ont été exportées avec succès.",
+      "failed": "Erreur lors de l'exportation des sous-adresses."
     },
     "import": {
       "success": "Importé : {{imported}} • Ignoré : {{skipped}} • Erreurs : {{errors}}.",
@@ -600,7 +600,7 @@
         "tab": "Tablette"
       }
     },
-    "nav": "Comptes multiplexés",
+    "nav": "Sous-adresses",
     "error": {
       "noBaseAccount": "Veuillez sélectionner un compte existant.",
       "noId": "Veuillez fournir un Muxed-ID.",
@@ -894,10 +894,10 @@
       "desc": "Une adresse fédérée ressemble à une adresse e-mail. Exemple : nom*domaine.com. Cette adresse courte renvoie à une adresse G régulière. Elle est plus facile à mémoriser."
     },
     "addressMuxed": {
-      "title": "Compte muxé",
+      "title": "Sous-adresse",
       "original": "Muxed Account",
       "short": "Adresse M avec un ID supplémentaire – partage un compte de base.",
-      "desc": "Une adresse M pointe vers un compte Stellar existant mais possède en plus son propre numéro (ID). Cela permet, par exemple, de distinguer plusieurs personnes ou départements sous la même adresse G. Techniquement, l'argent appartient toujours au compte principal."
+      "desc": "Une sous-adresse (M-adresse, officiellement appelée « compte multiplexé ») renvoie à un compte Stellar existant, mais dispose également de son propre numéro (ID). Cela vous permet, par exemple, de distinguer plusieurs personnes ou services relevant d'une même G-adresse. Techniquement, les fonds appartiennent toujours au compte principal."
     },
     "multisig": {
       "title": "Multisignature",

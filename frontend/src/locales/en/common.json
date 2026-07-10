@@ -488,23 +488,23 @@
   },
   "muxed": {
     "seo": {
-      "title": "Create/manage muxed account",
+      "title": "Create/Manage Subaddresses",
       "description": "Create and manage muxed account aliases (M...) for a Stellar account. Generate IDs, add labels/notes, export/import CSV."
     },
-    "title": "Create/Manage Muxed Account",
+    "title": "Create/Manage Subaddresses",
     "explainer": "Create alias addresses (M...) with a unique muxed ID for an existing account. The alias address will always point to the same account.",
     "infoButtonLabel": "Information",
     "info": {
-      "title": "What is a Muxed account?",
-      "intro1": "A Muxed account combines a regular account address (G-address) with an additional 64-bit Muxed ID.",
-      "intro2": "Technically it is an alias that always points to the same base account but is uniquely distinguishable via the ID.",
+      "title": "What is a subaddress?",
+      "intro1": "A subaddress combines a normal account address (G-address) with an additional 64-bit muxed ID.",
+      "intro2": "Technically, it is an alias that always points to the same base account, but can be uniquely identified by its ID.",
       "purposeTitle": "Purpose and Benefits",
-      "purposeText": "Muxed accounts are used to manage many sub-accounts under a single Stellar address – ideal when many deposits/withdrawals run through a shared main account, but each transaction must be assigned to a person, department, or project.",
-      "examplesTitle": "Examples – what are Muxed accounts useful for?",
+      "purposeText": "Subaddresses are used to uniquely identify multiple payment flows under a single Stellar address—ideal when many deposits and withdrawals go through a shared main account, but each transaction must be assigned to a specific person, department, or project.",
+      "examplesTitle": "Examples – What Are Subaddresses Used For?",
       "examples": {
         "ex1": "Company payments: Every employee gets their own Muxed ID so salary payments can be uniquely assigned.",
         "ex2": "Exchanges or platforms: Each user gets their own Muxed ID so deposits via a shared wallet are booked correctly automatically.",
-        "ex3": "Projects or sub-accounts: An organization can allocate budgets or revenues to individual projects.",
+        "ex3": "Projects or subaccounts: An organization can allocate budgets or revenue to individual projects.",
         "ex4": "Customer assignment: One M-address per customer; the ID matches the customer ID – payments can be clearly assigned, even without a memo.",
         "ex5": "Services without memos: Differentiate deposits when the service does not support memos.",
         "ex6": "Payouts/payroll runs: One M-address per employee/partner for internal accounting and reports.",
@@ -513,18 +513,18 @@
         "ex9": "Multi-tenant services: Every tenant gets their own M-address under the same base account."
       },
       "pageTitle": "What this page does in the SKM",
-      "pageDesc": "This page is for managing the Muxed accounts of your currently selected Stellar account:",
-      "createTitle": "Create new Muxed accounts",
+      "pageDesc": "This page is used to manage the subaddresses of your currently selected Stellar account:",
+      "createTitle": "Create new subaddresses",
       "createItems": {
         "i1": "Creates new Muxed addresses (M...) from your base address (G...).",
         "i2": "Optionally with a label (Name) and a note (e.g., project or purpose)."
       },
       "importTitle": "Import from CSV files",
       "importItems": {
-        "i1": "Bulk-create Muxed accounts, e.g. from an employee list.",
+        "i1": "Bulk creation of subaddresses, e.g., from an employee list.",
         "i2": "Read columns muxedId, label, note."
       },
-      "exportTitle": "Export existing Muxed accounts",
+      "exportTitle": "Export Existing Subaddresses",
       "exportItems": {
         "i1": "Export all saved entries as CSV.",
         "i2": "Fields: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
@@ -540,16 +540,16 @@
         "i2": "Selection, deletion, and label/note management directly possible."
       },
       "shortTitle": "In short",
-      "shortText": "Muxed accounts make your Stellar account fine-grained and traceable – ideal for organizations that process many payments through a central account but still want to assign every transaction unambiguously."
+      "shortText": "Subaddresses make your Stellar account highly granular and bookable—ideal for organizations that process many payments through a central account but still want to uniquely identify each transaction."
     },
     "selectBaseAccount": "Basic account (G-Adresse)",
     "selectPlaceholder": "Please select an account",
     "baseAccountInfo": "This account technically remains the owner. The muxed address (M...) merely points to this account.",
-    "generateButton": "Create a muxed account",
+    "generateButton": "Create a subaddress",
     "exportButton": "Export",
     "importButton": "Import",
-    "listTitle": "Existing Muxed Accounts",
-    "none": "No muxed accounts saved.",
+    "listTitle": "Existing subaddresses",
+    "none": "No subaddresses saved.",
     "columns": {
       "id": "Muxed ID",
       "address": "Muxed address",
@@ -581,8 +581,8 @@
     },
     "export": {
       "filename": "muxed_accounts.csv",
-      "success": "Muxed accounts successfully exported.",
-      "failed": "Error during export of the muxed accounts."
+      "success": "Subaddresses exported successfully.",
+      "failed": "Error exporting subaddresses."
     },
     "import": {
       "success": "Imported: {{imported}} • Skipped: {{skipped}} • Errors: {{errors}}.",
@@ -600,7 +600,7 @@
         "tab": "Tab"
       }
     },
-    "nav": "Muxed Accounts",
+    "nav": "Subaddresses",
     "error": {
       "noBaseAccount": "Please select an existing account.",
       "noId": "Please provide a Muxed-ID.",
@@ -894,10 +894,10 @@
       "desc": "A federation address looks like an email. Example: name*domain.com. This short address points to a regular G address. It is easier to remember."
     },
     "addressMuxed": {
-      "title": "Muxed account",
+      "title": "Subaddress",
       "original": "Muxed Account",
       "short": "M-address with an additional ID – shares a base account.",
-      "desc": "An M-address points to an existing Stellar account but additionally has its own number (ID). This allows, for example, for distinguishing between multiple people or departments under the same G-address. Technically, the money still belongs to the main account."
+      "desc": "A sub-address (M-address, officially a “Muxed Account”) points to an existing Stellar account but also has its own number (ID). This allows you, for example, to distinguish between multiple people or departments under the same G-address. Technically, the funds still belong to the main account."
     },
     "multisig": {
       "title": "Multisignature",

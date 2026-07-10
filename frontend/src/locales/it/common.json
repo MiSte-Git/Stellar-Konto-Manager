@@ -488,23 +488,23 @@
   },
   "muxed": {
     "seo": {
-      "title": "Crea/gestisci un account muxed",
+      "title": "Crea/Gestisci sottoindirizzi",
       "description": "Crea e gestisci alias di account muxed (M...) per un account Stellar. Genera ID, aggiungi etichette/note, esporta/importa CSV."
     },
-    "title": "Crea/Gestisci Account Multiplex",
+    "title": "Crea/Gestisci sottoindirizzi",
     "explainer": "Crea indirizzi alias (M...) con un ID muxed univoco per un account esistente. L'indirizzo alias punterà sempre allo stesso account.",
     "infoButtonLabel": "Informazione",
     "info": {
-      "title": "Cos'è un account Muxed?",
-      "intro1": "Un account Muxed combina un normale indirizzo di conto (indirizzo G) con un ID Muxed aggiuntivo a 64 bit.",
-      "intro2": "Tecnicamente è un alias che punta sempre allo stesso account base, ma che è chiaramente distinguibile tramite l'ID.",
+      "title": "Che cos’è un sottoindirizzo?",
+      "intro1": "Un sottoindirizzo combina un normale indirizzo di account (G-address) con un ID multiplexato aggiuntivo a 64 bit.",
+      "intro2": "Tecnicamente, si tratta di un alias che rimanda sempre allo stesso account di base, ma che può essere identificato in modo univoco tramite il proprio ID.",
       "purposeTitle": "Scopo e benefici",
-      "purposeText": "Gli account Muxed servono a gestire molti sottoconti sotto un unico indirizzo Stellar – ideali quando molti depositi/prelievi passano attraverso un conto principale condiviso, ma ogni operazione deve essere assegnata a una persona, un reparto o un progetto.",
-      "examplesTitle": "Esempi: a cosa servono gli account Muxed?",
+      "purposeText": "I sottoindirizzi vengono utilizzati per identificare in modo univoco più flussi di pagamento associati a un unico indirizzo Stellar: sono la soluzione ideale quando numerosi depositi e prelievi transitano attraverso un conto principale condiviso, ma ogni transazione deve essere assegnata a una persona, a un reparto o a un progetto specifico.",
+      "examplesTitle": "Esempi – A cosa servono i sottoindirizzi?",
       "examples": {
         "ex1": "Pagamenti aziendali: ogni dipendente riceve un proprio Muxed ID, così i pagamenti dello stipendio possono essere assegnati in modo univoco.",
         "ex2": "Exchange o piattaforme: ogni utente riceve un proprio Muxed ID, così i depositi tramite un wallet condiviso vengono registrati automaticamente in modo corretto.",
-        "ex3": "Progetti o sottoconti: un'organizzazione può allocare budget o ricavi ai singoli progetti.",
+        "ex3": "Progetti o sottoconti: un'organizzazione può assegnare budget o entrate a singoli progetti.",
         "ex4": "Assegnazione clienti: un indirizzo M per cliente; l'ID corrisponde all'ID cliente – i pagamenti sono chiaramente assegnabili, anche senza memo.",
         "ex5": "Servizi senza memo: Differenziare i depositi quando il servizio non supporta i memo.",
         "ex6": "Pagamenti/stipendi: un indirizzo M per dipendente/partner per la contabilità interna e i report.",
@@ -513,18 +513,18 @@
         "ex9": "Servizi multi-tenant: ogni tenant riceve un proprio indirizzo M sotto lo stesso account di base."
       },
       "pageTitle": "Che cosa fa questa pagina nel SKM?",
-      "pageDesc": "Questa pagina serve per gestire gli account Muxed del tuo account Stellar attualmente selezionato:",
-      "createTitle": "Crea nuovi account Muxed",
+      "pageDesc": "Questa pagina serve a gestire i sottoindirizzi dell'account Stellar attualmente selezionato:",
+      "createTitle": "Crea nuovi sottoindirizzi",
       "createItems": {
         "i1": "Genera nuovi indirizzi Muxed (M...) a partire dal tuo indirizzo base (G...).",
         "i2": "Facoltativamente con un'etichetta (Nome) e una nota (ad es., progetto o scopo)."
       },
       "importTitle": "Importa da file CSV",
       "importItems": {
-        "i1": "Creazione massiva di account Muxed, ad es. da un elenco dipendenti.",
+        "i1": "Creazione in blocco di indirizzi secondari, ad esempio a partire da un elenco di dipendenti.",
         "i2": "Leggi le colonne muxedId, label, note."
       },
-      "exportTitle": "Esporta account Muxed esistenti",
+      "exportTitle": "Esporta i sottoindirizzi esistenti",
       "exportItems": {
         "i1": "Esporta tutte le voci salvate come CSV.",
         "i2": "Campi: basePublicKey, muxedId, muxedAddress, etichetta, nota, createdAt."
@@ -540,16 +540,16 @@
         "i2": "Selezione, eliminazione e gestione di etichetta/nota direttamente possibili."
       },
       "shortTitle": "In breve",
-      "shortText": "Gli account Muxed rendono il tuo account Stellar granulare e tracciabile – ideali per organizzazioni che gestiscono molti pagamenti tramite un conto centrale ma vogliono comunque assegnare ogni transazione in modo univoco."
+      "shortText": "I sottoindirizzi rendono il tuo conto Stellar altamente granulare e gestibile, rendendolo ideale per le organizzazioni che elaborano numerosi pagamenti tramite un conto centrale ma desiderano comunque identificare in modo univoco ogni singola transazione."
     },
     "selectBaseAccount": "Account di base (G-Adresse)",
     "selectPlaceholder": "Si prega di selezionare un account",
     "baseAccountInfo": "Questo account rimane tecnicamente il proprietario. L'indirizzo multiplexato (M...) punta semplicemente a questo account.",
-    "generateButton": "Crea un account multiplexato",
+    "generateButton": "Crea un sottoindirizzo",
     "exportButton": "Esportazione",
     "importButton": "Importazione",
-    "listTitle": "Account Misti Esistenti",
-    "none": "Nessun account multiplex salvato.",
+    "listTitle": "Sottoindirizzi esistenti",
+    "none": "Non sono stati salvati sottoindirizzi.",
     "columns": {
       "id": "ID muxed",
       "address": "Indirizzo muxed",
@@ -581,8 +581,8 @@
     },
     "export": {
       "filename": "muxed_accounts.csv",
-      "success": "Account multipli esportati con successo.",
-      "failed": "Errore durante l'esportazione degli account multiplexati."
+      "success": "I sottoindirizzi sono stati esportati correttamente.",
+      "failed": "Errore durante l'esportazione dei sottoindirizzi."
     },
     "import": {
       "success": "Importati: {{imported}} • Saltati: {{skipped}} • Errori: {{errors}}.",
@@ -600,7 +600,7 @@
         "tab": "Tavolo"
       }
     },
-    "nav": "Account Muxed",
+    "nav": "Sottoindirizzi",
     "error": {
       "noBaseAccount": "Si prega di selezionare un account esistente.",
       "noId": "Per favore, fornisci un Muxed-ID.",
@@ -894,10 +894,10 @@
       "desc": "Un indirizzo di federazione assomiglia a un'email. Esempio: nome*dominio.com. Questo breve indirizzo punta a un normale indirizzo G. È più facile da ricordare."
     },
     "addressMuxed": {
-      "title": "Account muxed",
+      "title": "Sottoindirizzo",
       "original": "Muxed Account",
       "short": "Indirizzo M con un ID aggiuntivo: condivide un account di base.",
-      "desc": "Un indirizzo M punta a un account Stellar esistente ma ha anche un proprio numero (ID). Questo consente, ad esempio, di distinguere tra più persone o dipartimenti sotto lo stesso indirizzo G. Tecnicamente, il denaro appartiene ancora all'account principale."
+      "desc": "Un sottoindirizzo (M-address, ufficialmente denominato “Muxed Account”) rimanda a un conto Stellar esistente, ma dispone anche di un proprio numero (ID). Ciò consente, ad esempio, di distinguere tra più persone o reparti che fanno capo allo stesso G-address. Dal punto di vista tecnico, i fondi continuano ad appartenere al conto principale."
     },
     "multisig": {
       "title": "Multifirma",

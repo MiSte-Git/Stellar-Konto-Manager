@@ -488,23 +488,23 @@
   },
   "muxed": {
     "seo": {
-      "title": "Luo/hallinnoi yhdistettyä tiliä",
+      "title": "Alaosoitteiden luominen ja hallinta",
       "description": "Luo ja hallinnoi \"muxed account aliases\" (M...) Stellar-tilille. Luo tunnuksia, lisää tunnisteita/huomautuksia, vie/tuo CSV-tiedostona."
     },
-    "title": "Luo/Hallitse yhdistetty tili",
+    "title": "Alaosoitteiden luominen ja hallinta",
     "explainer": "Luo alias-osoitteita (M...) olemassa olevalle tilille ainutlaatuisella multipleksitunnuksella. Alias-osoite viittaa aina samaan tiliin.",
     "infoButtonLabel": "Tiedot",
     "info": {
-      "title": "Mikä on multiplisoitu tili?",
-      "intro1": "Muxed-tili yhdistää tavallisen tiliosoitteen (G-osoite) ylimääräiseen 64-bittiseen Muxed-ID:hen.",
-      "intro2": "Teknisesti se on alias, joka osoittaa aina samaan perustiliin, mutta on ID:n avulla yksiselitteisesti erotettavissa.",
+      "title": "Mikä on aliosoite?",
+      "intro1": "Aliosoite koostuu tavallisesta tiliosoitteesta (G-osoitteesta) ja siitä, että siihen on liitetty ylimääräinen 64-bittinen muxed-tunniste.",
+      "intro2": "Teknisesti kyseessä on alias, joka viittaa aina samaan perustiliin, mutta joka voidaan tunnistaa yksilöllisesti sen tunnisteen avulla.",
       "purposeTitle": "Tarkoitus ja hyödyt",
-      "purposeText": "Muxed-tilit palvelevat monien alitilien hallintaa yhden Stellar-osoitteen alla – ihanteellinen, kun monet talletukset/nostot kulkevat yhteisen pääterin kautta, mutta jokainen tapahtuma on kohdistettava henkilölle, osastolle tai projektille.",
-      "examplesTitle": "Esimerkkejä – mihin Muxed-tilit ovat hyödyllisiä?",
+      "purposeText": "Aliosoitteita käytetään yksilöimään useita maksovirtoja yhden Stellar-osoitteen alla – tämä on ihanteellinen ratkaisu tilanteissa, joissa jaetun päätilin kautta kulkee paljon talletuksia ja nostoja, mutta jokainen tapahtuma on kohdistettava tietylle henkilölle, osastolle tai projektille.",
+      "examplesTitle": "Esimerkkejä – Mihin aliosoitteita käytetään?",
       "examples": {
         "ex1": "Yritysmaksut: Jokainen työntekijä saa oman Muxed‑ID:n, jotta palkanmaksut voidaan yksiselitteisesti kohdistaa.",
         "ex2": "Pörssit tai alustat: jokainen käyttäjä saa oman Muxed-ID:n, jotta talletukset yhteisen lompakon kautta kirjataan automaattisesti oikein.",
-        "ex3": "Projektit tai alatilit: Organisaatio voi kohdentaa budjetit tai tulot yksittäisille projekteille.",
+        "ex3": "Hankkeet tai alatilit: Organisaatio voi kohdentaa budjetteja tai tuloja yksittäisille hankkeille.",
         "ex4": "Asiakaskohdistus: yksi M-osoite asiakasta kohden; ID vastaa asiakas-ID:tä – maksut voidaan kohdistaa selkeästi myös ilman muistiinpanoa.",
         "ex5": "Palvelut ilman muistiinpanoja: Erittele talletukset, kun palvelu ei tue muistiinpanoja.",
         "ex6": "Maksut/palkanmaksut: yksi M-osoite työntekijää/kumppania kohden sisäistä kirjanpitoa ja raportointia varten.",
@@ -513,18 +513,18 @@
         "ex9": "Monivuokralaispalvelut: jokainen vuokralainen saa oman M-osoitteen saman perustilin alla."
       },
       "pageTitle": "Mitä tämä sivu tekee SKM:ssä?",
-      "pageDesc": "Tämä sivu on tarkoitettu tällä hetkellä valitun Stellar-tilisi Muxed-tilien hallintaan:",
-      "createTitle": "Luo uusia Muxed-tilejä",
+      "pageDesc": "Tällä sivulla hallitaan valitsemasi Stellar-tilin aliosoitteita:",
+      "createTitle": "Luo uusia aliosoitteita",
       "createItems": {
         "i1": "Luo uusia Muxed‑osoitteita (M...) perusosoitteestasi (G...).",
         "i2": "Haluttaessa mukana voi olla nimilappu (Nimi) ja merkintä (esim. projekti tai käyttötarkoitus)."
       },
       "importTitle": "Tuo CSV-tiedostoista",
       "importItems": {
-        "i1": "Muxed-tilien joukkoluonti, esim. työntekijäluettelosta.",
+        "i1": "Aliosoitteiden joukkoluonti, esimerkiksi työntekijäluettelosta.",
         "i2": "Lue sarakkeet muxedId, label, note."
       },
-      "exportTitle": "Vie olemassa olevat Muxed-tilit",
+      "exportTitle": "Vie olemassa olevat aliosoitteet",
       "exportItems": {
         "i1": "Vie kaikki tallennetut merkinnät CSV-muodossa.",
         "i2": "Kentät: basePublicKey, muxedId, muxedAddress, label, note, createdAt."
@@ -540,16 +540,16 @@
         "i2": "Valinta, poisto sekä nimikkeen/muistiinpanon hallinta suoraan mahdollista."
       },
       "shortTitle": "Lyhyesti sanottuna",
-      "shortText": "Muxed-tilit tekevät Stellar-tilistäsi hienojakoisen ja jäljitettävän – ihanteellinen organisaatioille, jotka käsittelevät paljon maksuja keskitetyn tilin kautta mutta haluavat silti kohdistaa jokaisen tapahtuman yksiselitteisesti."
+      "shortText": "Aliosoitteiden ansiosta Stellar-tilisi on erittäin tarkasti jaoteltu ja varattavissa – tämä on ihanteellinen ratkaisu organisaatioille, jotka käsittelevät paljon maksuja keskitililtä mutta haluavat silti tunnistaa jokaisen tapahtuman yksilöllisesti."
     },
     "selectBaseAccount": "Perustili (G-Adresse)",
     "selectPlaceholder": "Valitse tili",
     "baseAccountInfo": "Tämä tili pysyy teknisesti omistajana. Muksattu osoite (M...) viittaa vain tähän tiliin.",
-    "generateButton": "Luo yhdistetty tili",
+    "generateButton": "Luo aliosoite",
     "exportButton": "Vienti",
     "importButton": "Tuoja",
-    "listTitle": "Olemassa olevat yhdistetyt tilit",
-    "none": "Ei tallennettuja yhdistelmätiliä.",
+    "listTitle": "Olemassa olevat aliosoitteet",
+    "none": "Aliosoitteita ei ole tallennettu.",
     "columns": {
       "id": "Muxed-ID",
       "address": "Sekoitettu osoite",
@@ -581,8 +581,8 @@
     },
     "export": {
       "filename": "muxed_accounts.csv",
-      "success": "Muksatut tilit viety onnistuneesti.",
-      "failed": "Virhe tilien yhdistelmäviennin aikana."
+      "success": "Aliosoitteet on viety onnistuneesti.",
+      "failed": "Virhe aliosoitteiden viennissä."
     },
     "import": {
       "success": "Tuotu: {{imported}} • Ohitettu: {{skipped}} • Virheet: {{errors}}.",
@@ -600,7 +600,7 @@
         "tab": "Välilehti"
       }
     },
-    "nav": "Muxed-tilit",
+    "nav": "Aliosoitteet",
     "error": {
       "noBaseAccount": "Valitse olemassa oleva tili.",
       "noId": "Ole hyvä ja anna Muxed-ID.",
@@ -894,10 +894,10 @@
       "desc": "Liitto-osoite näyttää sähköpostilta. Esimerkki: nimi*domain.com. Tämä lyhyt osoite viittaa tavalliseen G-osoitteeseen. Se on helpompi muistaa."
     },
     "addressMuxed": {
-      "title": "Yhdistetty tili",
+      "title": "Aliosoite",
       "original": "Muxed Account",
       "short": "M‑osoite lisätunnuksella – jakaa perustilin.",
-      "desc": "M-osoite viittaa olemassa olevaan Stellarin tiliin, mutta sillä on lisäksi oma numero (ID). Tämä mahdollistaa esimerkiksi sen, että useita henkilöitä tai osastoja voidaan erottaa saman G-osoitteen alla. Teknologisesti rahat kuuluvat edelleen päätilille."
+      "desc": "Aliosoite (M-osoite, virallisesti ”Muxed Account”) viittaa olemassa olevaan Stellar-tiliin, mutta sillä on myös oma numeronsa (tunnus). Tämän ansiosta voit esimerkiksi erottaa toisistaan useita henkilöitä tai osastoja, jotka kuuluvat samaan G-osoitteeseen. Teknisesti varat kuuluvat edelleen päätilille."
     },
     "multisig": {
       "title": "Moniallekirjoitus",

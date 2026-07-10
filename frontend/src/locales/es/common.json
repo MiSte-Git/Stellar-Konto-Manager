@@ -488,23 +488,23 @@
   },
   "muxed": {
     "seo": {
-      "title": "Crear/gestionar una cuenta multiplexada",
+      "title": "Crear/Gestionar subdirecciones",
       "description": "Crea y gestiona alias de cuentas multiplexadas (M...) para una cuenta Stellar. Genera ID, agrega etiquetas/notas, exporta/importa CSV."
     },
-    "title": "Crear/Gestionar cuenta multiplexada",
+    "title": "Crear/Gestionar subdirecciones",
     "explainer": "Crea direcciones alias (M...) con un ID multiplexado único para una cuenta existente. La dirección alias siempre apuntará a la misma cuenta.",
     "infoButtonLabel": "Información",
     "info": {
-      "title": "¿Qué es una cuenta multiplexada?",
-      "intro1": "Una cuenta Muxed combina una dirección de cuenta normal (dirección G) con un ID Muxed adicional de 64 bits.",
-      "intro2": "Técnicamente es un alias que siempre apunta a la misma cuenta base, pero que se distingue de forma inequívoca mediante el ID.",
+      "title": "¿Qué es una subdirección?",
+      "intro1": "Una subdirección combina una dirección de cuenta normal (dirección G) con un identificador multiplexado adicional de 64 bits.",
+      "intro2": "Técnicamente, se trata de un alias que siempre apunta a la misma cuenta base, pero que puede identificarse de forma única mediante su ID.",
       "purposeTitle": "Propósito y beneficios",
-      "purposeText": "Las cuentas Muxed sirven para gestionar muchas subcuentas bajo una única dirección Stellar; ideal cuando muchos depósitos/retiros pasan por una cuenta principal compartida, pero cada operación debe asignarse a una persona, departamento o proyecto.",
-      "examplesTitle": "Ejemplos: ¿para qué sirven las cuentas Muxed?",
+      "purposeText": "Las subdirecciones se utilizan para identificar de forma única múltiples flujos de pago bajo una única dirección de Stellar, lo que resulta ideal cuando se realizan muchos ingresos y retiradas a través de una cuenta principal compartida, pero cada transacción debe asignarse a una persona, un departamento o un proyecto concreto.",
+      "examplesTitle": "Ejemplos: ¿Para qué se utilizan las subdirecciones?",
       "examples": {
         "ex1": "Pagos de la empresa: Cada empleada/empleado recibe una Muxed‑ID única para que los pagos de salario puedan ser asignados de manera clara.",
         "ex2": "Bolsas o plataformas: cada usuario recibe su propio Muxed ID para que los depósitos a través de una billetera compartida se contabilicen correctamente de forma automática.",
-        "ex3": "Proyectos o subcuentas: Una organización puede asignar presupuestos o ingresos a proyectos individuales.",
+        "ex3": "Proyectos o subcuentas: Una organización puede asignar presupuestos o ingresos a proyectos concretos.",
         "ex4": "Asignación de clientes: una dirección M por cliente; el ID coincide con el ID del cliente, los pagos se pueden asignar claramente incluso sin memo.",
         "ex5": "Servicios sin memorandos: Diferenciar los depósitos cuando el servicio no admite memorandos.",
         "ex6": "Pagos/nóminas: una dirección M por empleado/socio para contabilidad interna e informes.",
@@ -513,18 +513,18 @@
         "ex9": "Servicios multiinquilino: cada inquilino recibe su propia dirección M bajo la misma cuenta base."
       },
       "pageTitle": "Qué hace esta página en el SKM",
-      "pageDesc": "Esta página sirve para gestionar las cuentas Muxed de tu cuenta Stellar seleccionada actualmente:",
-      "createTitle": "Crear nuevas cuentas Muxed",
+      "pageDesc": "Esta página sirve para gestionar las subdirecciones de tu cuenta de Stellar seleccionada actualmente:",
+      "createTitle": "Crear nuevas subdirecciones",
       "createItems": {
         "i1": "Genera nuevas direcciones Muxed (M...) a partir de tu dirección base (G...).",
         "i2": "Opcionalmente, con una etiqueta (Nombre) y una nota (por ejemplo, proyecto o finalidad)."
       },
       "importTitle": "Importar desde archivos CSV",
       "importItems": {
-        "i1": "Creación masiva de cuentas Muxed, p. ej. a partir de una lista de empleados.",
+        "i1": "Creación masiva de subdirecciones, por ejemplo, a partir de una lista de empleados.",
         "i2": "Lee las columnas muxedId, label, note."
       },
-      "exportTitle": "Exportar cuentas Muxed existentes",
+      "exportTitle": "Exportar subdirecciones existentes",
       "exportItems": {
         "i1": "Exportar todas las entradas guardadas como CSV.",
         "i2": "Campos: clavePúblicaBase, idMultiplexado, direcciónMultiplexada, etiqueta, nota, creadoEn."
@@ -540,16 +540,16 @@
         "i2": "Selección, eliminación y gestión de etiquetas/notas directamente posibles."
       },
       "shortTitle": "En resumen",
-      "shortText": "Las cuentas Muxed hacen que tu cuenta Stellar sea granular y trazable: ideal para organizaciones que procesan muchos pagos a través de una cuenta central pero aun así quieren asignar cada transacción de forma inequívoca."
+      "shortText": "Las subdirecciones permiten que tu cuenta de Stellar sea muy detallada y fácil de gestionar, lo que resulta ideal para organizaciones que procesan muchos pagos a través de una cuenta central, pero que, aun así, desean identificar de forma única cada transacción."
     },
     "selectBaseAccount": "Cuenta básica (G-Adresse)",
     "selectPlaceholder": "Por favor, selecciona una cuenta",
     "baseAccountInfo": "Esta cuenta sigue siendo técnicamente el propietario. La dirección multiplexada (M...) simplemente apunta a esta cuenta.",
-    "generateButton": "Crear una cuenta multiplexada",
+    "generateButton": "Crear una subdirección",
     "exportButton": "Exportación",
     "importButton": "Importar",
-    "listTitle": "Cuentas multiplexadas existentes",
-    "none": "No hay cuentas multiplexadas guardadas.",
+    "listTitle": "Subdirecciones existentes",
+    "none": "No hay subdirecciones guardadas.",
     "columns": {
       "id": "ID multiplexado",
       "address": "Dirección muxed",
@@ -581,8 +581,8 @@
     },
     "export": {
       "filename": "muxed_accounts.csv",
-      "success": "Cuentas multiplexadas exportadas correctamente.",
-      "failed": "Error durante la exportación de las cuentas multiplexadas."
+      "success": "Las subdirecciones se han exportado correctamente.",
+      "failed": "Error al exportar subdirecciones."
     },
     "import": {
       "success": "Importado: {{imported}} • Omitido: {{skipped}} • Errores: {{errors}}.",
@@ -600,7 +600,7 @@
         "tab": "Pestaña"
       }
     },
-    "nav": "Cuentas mezcladas",
+    "nav": "Subdirecciones",
     "error": {
       "noBaseAccount": "Por favor, selecciona una cuenta existente.",
       "noId": "Por favor, proporcione un Muxed-ID.",
@@ -894,10 +894,10 @@
       "desc": "Una dirección de federación se parece a un correo electrónico. Ejemplo: nombre*dominio.com. Esta dirección corta apunta a una dirección G regular. Es más fácil de recordar."
     },
     "addressMuxed": {
-      "title": "Cuenta combinada",
+      "title": "Subdirección",
       "original": "Muxed Account",
       "short": "Dirección M con un ID adicional: comparte una cuenta base.",
-      "desc": "Una dirección M apunta a una cuenta existente de Stellar, pero además tiene su propio número (ID). Esto permite, por ejemplo, distinguir entre varias personas o departamentos bajo la misma dirección G. Técnicamente, el dinero sigue perteneciendo a la cuenta principal."
+      "desc": "Una subdirección (M-dirección, oficialmente denominada «cuenta multiplexada») remite a una cuenta de Stellar ya existente, pero también tiene su propio número (ID). Esto permite, por ejemplo, distinguir entre varias personas o departamentos que comparten la misma G-dirección. Técnicamente, los fondos siguen perteneciendo a la cuenta principal."
     },
     "multisig": {
       "title": "Multifirma",

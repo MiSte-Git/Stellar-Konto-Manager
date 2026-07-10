@@ -488,23 +488,23 @@
   },
   "muxed": {
     "seo": {
-      "title": "Account met multiplex beheerde account aanmaken/beheren",
+      "title": "Subadressen aanmaken/beheren",
       "description": "Maak en beheer muxed account-aliasen (M...) voor een Stellar-account. Genereer ID's, voeg labels/notities toe, exporteer/importeer CSV."
     },
-    "title": "Maak/Beheer Gedeeld Account",
+    "title": "Subadressen aanmaken/beheren",
     "explainer": "Creëer aliasadressen (M...) met een unieke muxed ID voor een bestaand account. Het aliasadres zal altijd naar hetzelfde account verwijzen.",
     "infoButtonLabel": "Informatie",
     "info": {
-      "title": "Wat is een gemuxed account?",
-      "intro1": "Een Muxed-account combineert een normaal accountadres (G-adres) met een extra 64-bit Muxed-ID.",
-      "intro2": "Technisch is het een alias die altijd naar dezelfde basisaccount verwijst, maar via de ID uniek te onderscheiden is.",
+      "title": "Wat is een subadres?",
+      "intro1": "Een subadres bestaat uit een normaal accountadres (G-adres) in combinatie met een extra 64-bits gemuxte ID.",
+      "intro2": "Technisch gezien is het een alias die altijd naar hetzelfde basisaccount verwijst, maar die aan de hand van zijn ID op unieke wijze kan worden geïdentificeerd.",
       "purposeTitle": "Doel en Voordelen",
-      "purposeText": "Muxed-accounts dienen om veel subaccounts onder één Stellar-adres te beheren – ideaal wanneer veel stortingen/opnames via een gedeelde hoofdaccount lopen, maar elke transactie aan een persoon, afdeling of project moet worden toegewezen.",
-      "examplesTitle": "Voorbeelden – waarvoor zijn Muxed-accounts nuttig?",
+      "purposeText": "Subadressen worden gebruikt om meerdere betalingsstromen onder één Stellar-adres op unieke wijze te identificeren — ideaal wanneer er veel stortingen en opnames via een gedeelde hoofdrekening verlopen, maar elke transactie aan een specifieke persoon, afdeling of project moet worden toegewezen.",
+      "examplesTitle": "Voorbeelden – Waarvoor worden subadressen gebruikt?",
       "examples": {
         "ex1": "Bedrijfsbetalingen: elke medewerker krijgt een eigen Muxed-ID, zodat loonbetalingen eenduidig toegewezen kunnen worden.",
         "ex2": "Beurzen of platforms: elke gebruiker krijgt een eigen Muxed-ID, zodat stortingen via een gedeelde wallet automatisch correct worden geboekt.",
-        "ex3": "Projecten of subrekeningen: Een organisatie kan budgetten of inkomsten toewijzen aan individuele projecten.",
+        "ex3": "Projecten of subrekeningen: Een organisatie kan budgetten of inkomsten toewijzen aan afzonderlijke projecten.",
         "ex4": "Klanttoewijzing: één M‑adres per klant; de ID komt overeen met de klant‑ID – betalingen zijn duidelijk toewijsbaar, zelfs zonder memo.",
         "ex5": "Diensten zonder memo's: Onderscheid stortingen wanneer de dienst geen memo's ondersteunt.",
         "ex6": "Uitbetalingen/Loonsverwerking: Eén M‑adres per medewerker/partner voor interne boekhouding en rapportages.",
@@ -513,18 +513,18 @@
         "ex9": "Multi-tenant diensten: elke tenant krijgt een eigen M-adres onder dezelfde basisaccount."
       },
       "pageTitle": "Wat deze pagina doet in de SKM",
-      "pageDesc": "Deze pagina is bedoeld voor het beheren van de Muxed-accounts van je huidig geselecteerde Stellar-account:",
-      "createTitle": "Nieuwe Muxed-accounts aanmaken",
+      "pageDesc": "Deze pagina wordt gebruikt om de subadressen van je momenteel geselecteerde Stellar-account te beheren:",
+      "createTitle": "Nieuwe subadressen aanmaken",
       "createItems": {
         "i1": "Genereert nieuwe Muxed-adressen (M...) op basis van je basisadres (G...).",
         "i2": "Eventueel met een label (Naam) en een opmerking (bijv. project of doel)."
       },
       "importTitle": "Importeren uit CSV-bestanden",
       "importItems": {
-        "i1": "Bulkaanmaak van Muxed-accounts, bijv. vanuit een medewerkerslijst.",
+        "i1": "Het in bulk aanmaken van subadressen, bijvoorbeeld op basis van een werknemerslijst.",
         "i2": "Lees de kolommen muxedId, label, notitie."
       },
-      "exportTitle": "Bestaande Muxed-accounts exporteren",
+      "exportTitle": "Bestaande subadressen exporteren",
       "exportItems": {
         "i1": "Exporteer alle opgeslagen items als CSV.",
         "i2": "Velden: basePublicKey, muxedId, muxedAddress, label, notitie, aangemaaktOp."
@@ -540,16 +540,16 @@
         "i2": "Selecteren, verwijderen en label-/notitiebeheer direct mogelijk."
       },
       "shortTitle": "In het kort.",
-      "shortText": "Muxed-accounts maken je Stellar-account fijnmazig en traceerbaar – ideaal voor organisaties die veel betalingen via een centrale account verwerken, maar toch elke transactie eenduidig willen toewijzen."
+      "shortText": "Dankzij subadressen is uw Stellar-account zeer gedetailleerd en boekbaar – ideaal voor organisaties die veel betalingen via een centrale rekening verwerken, maar toch elke transactie afzonderlijk willen identificeren."
     },
     "selectBaseAccount": "Basisaccount (G-Adresse)",
     "selectPlaceholder": "Selecteer een account alstublieft.",
     "baseAccountInfo": "Deze rekening blijft technisch gezien de eigenaar. Het gemuxte adres (M...) wijst slechts naar deze rekening.",
-    "generateButton": "Maak een gemultiplexeerd account aan.",
+    "generateButton": "Een subadres aanmaken",
     "exportButton": "Exporteren",
     "importButton": "Importeer",
-    "listTitle": "Bestaande Gemuxte Accounts",
-    "none": "Geen gemuxte accounts opgeslagen.",
+    "listTitle": "Bestaande subadressen",
+    "none": "Er zijn geen subadressen opgeslagen.",
     "columns": {
       "id": "Muxed ID",
       "address": "Gemuxeerd adres",
@@ -581,8 +581,8 @@
     },
     "export": {
       "filename": "muxed_accounts.csv",
-      "success": "Gedeelde accounts succesvol geëxporteerd.",
-      "failed": "Fout tijdens het exporteren van de gemultiplexte accounts."
+      "success": "De subadressen zijn succesvol geëxporteerd.",
+      "failed": "Fout bij het exporteren van subadressen."
     },
     "import": {
       "success": "Geïmporteerd: {{imported}} • Overgeslagen: {{skipped}} • Fouten: {{errors}}.",
@@ -600,7 +600,7 @@
         "tab": "Tabblad"
       }
     },
-    "nav": "Gegroepeerde Accounts",
+    "nav": "Subadressen",
     "error": {
       "noBaseAccount": "Selecteer een bestaand account, alstublieft.",
       "noId": "Geef alstublieft een Muxed-ID.",
@@ -894,10 +894,10 @@
       "desc": "Een federatieadres lijkt op een e-mailadres. Voorbeeld: naam*domein.com. Dit korte adres verwijst naar een regulier G-adres. Het is gemakkelijker te onthouden."
     },
     "addressMuxed": {
-      "title": "Gemengd account",
+      "title": "Subadres",
       "original": "Muxed Account",
       "short": "M‑adres met extra ID – deelt een basaccount.",
-      "desc": "Een M-adres wijst naar een bestaand Stellar-account maar heeft daarnaast zijn eigen nummer (ID). Dit maakt het bijvoorbeeld mogelijk om onderscheid te maken tussen meerdere personen of afdelingen onder hetzelfde G-adres. Technisch gezien behoort het geld nog steeds tot het hoofdaccount."
+      "desc": "Een subadres (M-adres, officieel een „Muxed Account“) verwijst naar een bestaande Stellar-rekening, maar heeft ook een eigen nummer (ID). Hierdoor kun je bijvoorbeeld onderscheid maken tussen meerdere personen of afdelingen die onder hetzelfde G-adres vallen. Technisch gezien behoren de middelen nog steeds tot de hoofdrekening."
     },
     "multisig": {
       "title": "Multisignatuur",
