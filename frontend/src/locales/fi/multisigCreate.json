@@ -58,7 +58,7 @@
     "confirm": "Olen varmistanut molemmat avaimet."
   },
   "muxedId": "Muxed ID",
-  "muxedInfo": "Muxed-ID:llä luodaan M-Address (M...). Se osoittaa samaan tiliin kuin tavallinen osoite (G...).",
+  "muxedInfo": "M-osoite (M...) luodaan Muxed-tunnuksen avulla. Se viittaa samaan tiliin kuin tavallinen osoite (G...).",
   "muxedIdInvalid": "Muxed ID:n tulee olla kokonaisluku väliltä 0 ja 18,446,744,073,709,551,615.",
   "muxedAddress": "Multipleksoitu osoite",
   "muxedActivationInfo": "Muxed-osoitteet ovat aliaksia. Niitä ei tarvitse aktivoida erikseen."

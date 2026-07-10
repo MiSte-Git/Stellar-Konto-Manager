@@ -58,7 +58,7 @@
     "confirm": "Ho ottenuto entrambe le chiavi."
   },
   "muxedId": "ID Muxed",
-  "muxedInfo": "Con l'ID multiplexato, viene creata un M-Address (M...). Esso punta allo stesso account dell'indirizzo regolare (G...).",
+  "muxedInfo": "Un indirizzo M (M...) viene creato utilizzando l'ID Muxed. Esso rimanda allo stesso account dell'indirizzo standard (G...).",
   "muxedIdInvalid": "L'ID Muxed deve essere un numero intero compreso tra 0 e 18.446.744.073.709.551.615.",
   "muxedAddress": "Indirizzo muxed",
   "muxedActivationInfo": "Gli indirizzi muxed sono indirizzi alias. Non hanno bisogno di essere attivati separatamente."

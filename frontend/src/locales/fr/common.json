@@ -481,7 +481,7 @@
   },
   "createAccount": {
     "muxedId": "ID muxé",
-    "muxedInfo": "Un Muxed-ID est utilisé pour créer une M-address (M...). Elle pointe vers le même compte que l'adresse régulière (G...).",
+    "muxedInfo": "Une adresse M (M...) est créée à l'aide de l'identifiant Muxed. Elle renvoie vers le même compte que l'adresse classique (G...).",
     "muxedIdInvalid": "L'identifiant multiplexé doit être un entier compris entre 0 et 18 446 744 073 709 551 615.",
     "muxedAddress": "Adresse multiplexée",
     "muxedActivationInfo": "Les adresses multiplexées sont des adresses alias. Elles n'ont pas besoin d'être activées séparément."
@@ -897,7 +897,7 @@
       "title": "Sous-adresse",
       "original": "Muxed Account",
       "short": "Adresse M avec un ID supplémentaire – partage un compte de base.",
-      "desc": "Une sous-adresse (M-adresse, officiellement appelée « compte multiplexé ») renvoie à un compte Stellar existant, mais dispose également de son propre numéro (ID). Cela vous permet, par exemple, de distinguer plusieurs personnes ou services relevant d'une même G-adresse. Techniquement, les fonds appartiennent toujours au compte principal."
+      "desc": "Une sous-adresse (M-adresse, officiellement appelée « compte multiplexé ») renvoie à un compte Stellar existant, mais dispose également de son propre numéro (ID). Cela vous permet, par exemple, de distinguer plusieurs personnes ou services sous une même G-adresse. Techniquement, les fonds appartiennent toujours au compte principal."
     },
     "multisig": {
       "title": "Multisignature",

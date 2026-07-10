@@ -66,7 +66,7 @@
     "confirm": "Osigurao sam oba ključa."
   },
   "muxedId": "Muxed-ID",
-  "muxedInfo": "Mit der Muxed-ID wird eine M-Adresse (M...) erstellt. Sie verweist auf dasselbe Konto wie die reguläre Adresse (G...).",
+  "muxedInfo": "M-adresa (M...) stvara se pomoću Muxed ID-a. Ukazuje na isti račun kao i obična adresa (G...).",
   "muxedIdInvalid": "Muxed-ID mora biti cijeli broj između 0 i 18.446.744.073.709.551.615.",
   "muxedAddress": "Muxed adresa",
   "muxedActivationInfo": "Muxed adrese su alias adrese. Ne trebaju biti posebno aktivirane."

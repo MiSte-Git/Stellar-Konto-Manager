@@ -58,7 +58,7 @@
     "confirm": "I have secured both keys."
   },
   "muxedId": "Muxed ID",
-  "muxedInfo": "With the Muxed-ID, an M-Address (M...) is created. It points to the same account as the regular address (G...).",
+  "muxedInfo": "An M-address (M...) is created using the Muxed ID. It points to the same account as the regular address (G...).",
   "muxedIdInvalid": "The Muxed ID must be an integer between 0 and 18,446,744,073,709,551,615.",
   "muxedAddress": "Muxed address",
   "muxedActivationInfo": "Muxed addresses are alias addresses. They do not need to be activated separately."

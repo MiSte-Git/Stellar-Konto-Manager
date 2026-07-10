@@ -58,7 +58,7 @@
     "confirm": "He asegurado ambas llaves."
   },
   "muxedId": "Muxed ID",
-  "muxedInfo": "Con el Muxed-ID, se crea una M-Address (M...). Apunta a la misma cuenta que la dirección regular (G...).",
+  "muxedInfo": "Una dirección M (M...) se crea utilizando el Muxed ID. Apunta a la misma cuenta que la dirección normal (G...).",
   "muxedIdInvalid": "El ID multiplexado debe ser un número entero entre 0 y 18,446,744,073,709,551,615.",
   "muxedAddress": "Dirección multiplexada",
   "muxedActivationInfo": "Las direcciones muxed son direcciones alias. No necesitan ser activadas por separado."

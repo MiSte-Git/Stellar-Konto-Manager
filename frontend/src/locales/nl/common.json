@@ -481,7 +481,7 @@
   },
   "createAccount": {
     "muxedId": "Muxed-ID",
-    "muxedInfo": "Een Muxed-ID wordt gebruikt om een M-adres (M...) te creëren. Het wijst naar dezelfde account als het reguliere adres (G...).",
+    "muxedInfo": "Een M-adres (M...) wordt aangemaakt met behulp van de Muxed ID. Het verwijst naar hetzelfde account als het gewone adres (G...).",
     "muxedIdInvalid": "De Muxed-ID moet een geheel getal zijn tussen 0 en 18.446.744.073.709.551.615.",
     "muxedAddress": "Gemuxed adres",
     "muxedActivationInfo": "Gemuxte adressen zijn aliasadressen. Ze hoeven niet afzonderlijk geactiveerd te worden."

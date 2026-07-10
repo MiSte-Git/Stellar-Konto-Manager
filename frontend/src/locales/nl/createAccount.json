@@ -66,7 +66,7 @@
     "confirm": "Ik heb beide sleutels veiliggesteld."
   },
   "muxedId": "Muxed-ID",
-  "muxedInfo": "Met de Muxed-ID wordt een M-Adresse (M...) gecreëerd. Deze verwijst naar dezelfde rekening als het reguliere adres (G...).",
+  "muxedInfo": "Een M-adres (M...) wordt aangemaakt met behulp van de Muxed ID. Het verwijst naar hetzelfde account als het gewone adres (G...).",
   "muxedIdInvalid": "De Muxed-ID moet een geheel getal zijn tussen 0 en 18.446.744.073.709.551.615.",
   "muxedAddress": "Gemuxed adres",
   "muxedActivationInfo": "Gedeelde adressen zijn aliasadressen. Ze hoeven niet apart te worden geactiveerd."

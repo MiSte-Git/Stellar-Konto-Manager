@@ -481,7 +481,7 @@
   },
   "createAccount": {
     "muxedId": "Muxed-ID",
-    "muxedInfo": "Un Muxed-ID se utiliza para crear una M-dirección (M...). Apunta a la misma cuenta que la dirección regular (G...).",
+    "muxedInfo": "Una dirección M (M...) se crea utilizando el Muxed ID. Apunta a la misma cuenta que la dirección normal (G...).",
     "muxedIdInvalid": "El Muxed-ID debe ser un número entero entre 0 y 18,446,744,073,709,551,615.",
     "muxedAddress": "Dirección multiplexada",
     "muxedActivationInfo": "Las direcciones muxed son direcciones alias. No necesitan ser activadas por separado."
@@ -897,7 +897,7 @@
       "title": "Subdirección",
       "original": "Muxed Account",
       "short": "Dirección M con un ID adicional: comparte una cuenta base.",
-      "desc": "Una subdirección (M-dirección, oficialmente denominada «cuenta multiplexada») remite a una cuenta de Stellar ya existente, pero también tiene su propio número (ID). Esto permite, por ejemplo, distinguir entre varias personas o departamentos que comparten la misma G-dirección. Técnicamente, los fondos siguen perteneciendo a la cuenta principal."
+      "desc": "Una subdirección (M-dirección, oficialmente denominada «cuenta multiplexada») remite a una cuenta Stellar ya existente, pero también tiene su propio número (ID). Esto permite, por ejemplo, distinguir entre varias personas o departamentos que comparten la misma G-dirección. Técnicamente, los fondos siguen perteneciendo a la cuenta principal."
     },
     "multisig": {
       "title": "Multifirma",

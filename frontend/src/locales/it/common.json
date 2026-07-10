@@ -481,7 +481,7 @@
   },
   "createAccount": {
     "muxedId": "Muxed-ID",
-    "muxedInfo": "Ein Muxed-ID wird verwendet, um eine M-Adresse (M...) zu erstellen. Sie verweist auf dasselbe Konto wie die reguläre Adresse (G...).",
+    "muxedInfo": "Un indirizzo M (M...) viene creato utilizzando l'ID Muxed. Esso rimanda allo stesso account dell'indirizzo standard (G...).",
     "muxedIdInvalid": "L'ID Muxed deve essere un numero intero compreso tra 0 e 18.446.744.073.709.551.615.",
     "muxedAddress": "Indirizzo muxed",
     "muxedActivationInfo": "Gli indirizzi muxed sono indirizzi alias. Non necessitano di essere attivati separatamente."
@@ -897,7 +897,7 @@
       "title": "Sottoindirizzo",
       "original": "Muxed Account",
       "short": "Indirizzo M con un ID aggiuntivo: condivide un account di base.",
-      "desc": "Un sottoindirizzo (M-address, ufficialmente denominato “Muxed Account”) rimanda a un conto Stellar esistente, ma dispone anche di un proprio numero (ID). Ciò consente, ad esempio, di distinguere tra più persone o reparti che fanno capo allo stesso G-address. Dal punto di vista tecnico, i fondi continuano ad appartenere al conto principale."
+      "desc": "Un sottoindirizzo (indirizzo M, ufficialmente denominato “Muxed Account”) rimanda a un conto Stellar esistente, ma dispone anche di un proprio numero (ID). Ciò consente, ad esempio, di distinguere tra più persone o reparti che fanno capo allo stesso indirizzo G. Dal punto di vista tecnico, i fondi continuano ad appartenere al conto principale."
     },
     "multisig": {
       "title": "Multifirma",

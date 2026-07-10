@@ -481,7 +481,7 @@
   },
   "createAccount": {
     "muxedId": "Muxed-ID",
-    "muxedInfo": "Muxed-ID se koristi za stvaranje M-adrese (M...). Ona upućuje na isti račun kao i regularna adresa (G...).",
+    "muxedInfo": "M-adresa (M...) stvara se pomoću Muxed ID-a. Ukazuje na isti račun kao i obična adresa (G...).",
     "muxedIdInvalid": "Muxed-ID mora biti cijeli broj između 0 i 18.446.744.073.709.551.615.",
     "muxedAddress": "Multiplicirana adresa",
     "muxedActivationInfo": "Muxed adrese su alias adrese. Ne trebaju biti posebno aktivirane."
