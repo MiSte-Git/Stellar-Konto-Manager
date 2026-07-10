@@ -67,3 +67,6 @@ config/*
 
 # Lokale i18n-Backups/Reports (scripts/backup_locales.sh, i18n_ci_check.js)
 content_backups/
+
+# Verirrtes ImageMagick-PostScript-Artefakt (Title: "json"), kein Repo-Inhalt
+/frontend/src/locales/json

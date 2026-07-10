@@ -1236,12 +1236,12 @@
   },
   "accountMode": {
     "identity": "Muxed Identity",
-    "account": "G-Account",
+    "account": "G-account",
     "muxedAddress": "Muxed-adres",
-    "baseAccount": "Basic G-account",
+    "baseAccount": "Basis-G-account",
     "muxedId": "Muxed-ID",
-    "switchToBase": "Overstappen naar het Basic-account",
+    "switchToBase": "Overstappen naar het basisaccount",
     "guardTitle": "De Muxed-identiteit is alleen-lezen",
-    "guardText": "Voor deze handeling is een Basic G-account vereist. Schakel over naar het Basic-account om door te gaan."
+    "guardText": "Voor deze handeling is een Basis-G-account vereist. Schakel over naar het basisaccount om door te gaan."
   }
 }

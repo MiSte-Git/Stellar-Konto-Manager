@@ -67,7 +67,7 @@
     "title": "Aliosoite",
     "original": "Muxed Account",
     "short": "M‑address with additional ID – shares a base account.",
-    "desc": "Aliosoite (M-osoite, virallisesti ”muxed account”) viittaa olemassa olevaan Stellar-tiliin, mutta sillä on myös oma numeronsa (ID).\n\nAliosoite = G-tili + ID (M-osoite)\nSe mahdollistaa viittauksen, mutta ei erota tilejä toisistaan.\nSaldo, luottolinjat, allekirjoittajat ja liput säilytetään aina G-tilillä.\n\nStellar Development Foundation\n\nTämän ansiosta esimerkiksi useita henkilöitä tai osastoja voidaan erottaa toisistaan saman G-osoitteen alla. Teknisesti varat kuuluvat edelleen päätilille."
+    "desc": "Aliosoite (M-osoite, virallisesti ”Muxed Account”) viittaa olemassa olevaan Stellar-tiliin, mutta sillä on myös oma numeronsa (tunnus).\n\nAliosoite = G-tili + tunnus (M-osoite)\nSe toimii tunnisteena, mutta ei erota tilejä toisistaan.\nSaldot, trustlines, allekirjoittajat ja liput säilytetään aina G-tilillä.\n\nStellar Development Foundation\n\nTämän ansiosta esimerkiksi useita henkilöitä tai osastoja voidaan erottaa toisistaan saman G-osoitteen alla. Teknisesti varat kuuluvat edelleen päätilille."
   },
   "muxedAccountsUseCases": {
     "title": "Aliosoitteet – käyttöesimerkkejä",

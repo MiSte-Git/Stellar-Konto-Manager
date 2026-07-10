@@ -67,7 +67,7 @@
     "title": "Subaddress",
     "original": "Muxed Account",
     "short": "M‑address with additional ID – shares a base account.",
-    "desc": "A sub-address (M-address, officially a “muxed account”) points to an existing Stellar account but also has its own number (ID).\n\nSubaddress = G-account + ID (M-address)\nIt provides mapping, but does not separate accounts.\nBalance, trustlines, signers, and flags are always held in the G-account.\n\nStellar Development Foundation\n\nThis allows, for example, multiple people or departments to be distinguished under the same G-address. Technically, the funds still belong to the main account."
+    "desc": "A subaddress (M-address, officially “Muxed Account”) points to an existing Stellar account but also has its own number (ID).\n\nSubaddress = G-account + ID (M-address)\nIt provides identification but does not separate accounts.\nBalance, trustlines, signers, and flags are always held in the G-account.\n\nStellar Development Foundation\n\nThis allows, for example, multiple people or departments to be distinguished under the same G-address. Technically, the funds still belong to the main account."
   },
   "muxedAccountsUseCases": {
     "title": "Subaddresses – Examples of Use",

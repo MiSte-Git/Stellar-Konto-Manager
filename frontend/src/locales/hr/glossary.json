@@ -67,7 +67,7 @@
     "title": "Podadresa",
     "original": "Muxed Account",
     "short": "M‑address with additional ID – shares a base account.",
-    "desc": "Pod-adresa (M-adresa, službeno \"muxed račun\") upućuje na postojeći Stellar račun, ali ima i vlastiti broj (ID).\n\nPod-adresa = G-račun + ID (M-adresa)\nOna omogućuje mapiranje, ali ne odvojuje račune.\nStanje, linije povjerenja, potpisnici i zastavice uvijek se čuvaju na G-računu.\n\nStellar Development Foundation\n\nTo omogućuje, na primjer, da se pod istom G-adresom razlikuju više osoba ili odjela. Tehnički gledano, sredstva i dalje pripadaju glavnom računu."
+    "desc": "Podadresa (M-adresa, službeno \"Muxed račun\") upućuje na postojeći Stellar račun, ali ima i vlastiti broj (ID).\n\nPodadresa = G-račun + ID (M-adresa)\nOna omogućuje identifikaciju, ali ne odvojuje račune.\nStanje, trustlineovi, potpisnici i zastavice uvijek se čuvaju na G-računu.\n\nStellar Development Foundation\n\nTo omogućuje, na primjer, da se pod istom G-adresom razlikuju više osoba ili odjela. Tehnički gledano, sredstva i dalje pripadaju glavnom računu."
   },
   "muxedAccountsUseCases": {
     "title": "Podadrese – Primjeri upotrebe",

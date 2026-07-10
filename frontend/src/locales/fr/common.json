@@ -1240,8 +1240,8 @@
     "muxedAddress": "Adresse multiplexée",
     "baseAccount": "Compte G de base",
     "muxedId": "Muxed-ID",
-    "switchToBase": "Passer au compte Basic",
+    "switchToBase": "Passer au compte de base",
     "guardTitle": "L'identité Muxed est en lecture seule",
-    "guardText": "Cette opération nécessite un compte G Basic. Passez au compte Basic pour continuer."
+    "guardText": "Cette opération nécessite un compte G de base. Passez au compte de base pour continuer."
   }
 }

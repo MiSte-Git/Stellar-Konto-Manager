@@ -496,7 +496,7 @@
     "infoButtonLabel": "Informacija",
     "info": {
       "title": "Što je podadresa?",
-      "intro1": "Podadresica kombinira normalnu adresu računa (G-adresu) s dodatnim 64-bitnim višekanalnim ID-om.",
+      "intro1": "Podadresica kombinira normalnu adresu računa (G-adresu) s dodatnim 64-bitnim višekratnim ID-om.",
       "intro2": "Tehnički, to je alias koji uvijek upućuje na isti osnovni račun, ali se može jedinstveno identificirati po svom ID-u.",
       "purposeTitle": "Svrha i koristi",
       "purposeText": "Podadrese se koriste za jedinstvenu identifikaciju više tokova plaćanja unutar jedne Stellar adrese—idealno kada mnogi depoziti i isplate prolaze kroz zajednički glavni račun, ali svaka transakcija mora biti dodijeljena određenoj osobi, odjelu ili projektu.",
@@ -1240,7 +1240,7 @@
     "muxedAddress": "Muxed adresa",
     "baseAccount": "Osnovni G račun",
     "muxedId": "Muxed-ID",
-    "switchToBase": "Prelazi na osnovni račun",
+    "switchToBase": "Prelazak na osnovni račun",
     "guardTitle": "Identitet Muxed je samo za čitanje.",
     "guardText": "Ova radnja zahtijeva osnovni G račun. Prebacite se na osnovni račun da biste nastavili."
   }

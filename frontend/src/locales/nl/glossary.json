@@ -67,7 +67,7 @@
     "title": "Subadres",
     "original": "Muxed Account",
     "short": "M‑address with additional ID – shares a base account.",
-    "desc": "Een subadres (M-adres, officieel een „muxed account“) verwijst naar een bestaand Stellar-account, maar heeft ook een eigen nummer (ID).\n\nSubadres = G-account + ID (M-adres)\nHet zorgt voor koppeling, maar scheidt geen accounts.\nHet saldo, de trustlines, de ondertekenaars en de vlaggen worden altijd in de G-account bewaard.\n\nStellar Development Foundation\n\nHierdoor kunnen bijvoorbeeld meerdere personen of afdelingen onder hetzelfde G-adres worden onderscheiden. Technisch gezien behoren de middelen nog steeds toe aan de hoofdaccount."
+    "desc": "Een subadres (M-adres, officieel „Muxed Account“) verwijst naar een bestaand Stellar-account, maar heeft ook een eigen nummer (ID).\n\nSubadres = G-account + ID (M-adres)\nHet dient ter identificatie, maar maakt geen onderscheid tussen accounts.\nHet saldo, de trustlines, de ondertekenaars en de vlaggen worden altijd in de G-account bewaard.\n\nStellar Development Foundation\n\nHierdoor kunnen bijvoorbeeld meerdere personen of afdelingen onder hetzelfde G-adres worden onderscheiden. Technisch gezien behoren de middelen nog steeds toe aan de hoofdaccount."
   },
   "muxedAccountsUseCases": {
     "title": "Subadressen – Gebruiksvoorbeelden",

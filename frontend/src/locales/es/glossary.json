@@ -24,7 +24,7 @@
     "title": "Dirección G"
   },
   "addressMuxed": {
-    "desc": "Una subdirección (M-dirección, oficialmente una «cuenta multiplexada») apunta a una cuenta Stellar existente, pero también tiene su propio número (ID).\n\nSubdirección = cuenta G + ID (M-dirección)\nProporciona una correspondencia, pero no separa las cuentas.\nEl saldo, las líneas de confianza, los firmantes y los indicadores se mantienen siempre en la cuenta G.\n\nFundación para el Desarrollo de Stellar\n\nEsto permite, por ejemplo, distinguir entre varias personas o departamentos bajo la misma dirección G. Técnicamente, los fondos siguen perteneciendo a la cuenta principal.",
+    "desc": "Una subdirección (dirección M, oficialmente «cuenta Muxed») apunta a una cuenta Stellar ya existente, pero también tiene su propio número (ID).\n\nSubdirección = cuenta G + ID (dirección M)\nSirve para identificar, pero no separa las cuentas.\nEl saldo, las líneas de confianza, los firmantes y los indicadores se mantienen siempre en la cuenta G.\n\nFundación para el Desarrollo de Stellar\n\nEsto permite, por ejemplo, distinguir entre varias personas o departamentos bajo la misma dirección G. Técnicamente, los fondos siguen perteneciendo a la cuenta principal.",
     "original": "Muxed Account",
     "short": "M‑address with additional ID – shares a base account.",
     "title": "Subdirección"

@@ -67,7 +67,7 @@
     "title": "Sottoindirizzo",
     "original": "Muxed Account",
     "short": "M‑adress mit zusätzlicher ID – teilt ein Basis-Konto.",
-    "desc": "Un sottoindirizzo (M-address, ufficialmente denominato “muxed account”) rimanda a un conto Stellar esistente, ma possiede anche un proprio numero (ID).\n\nSottoindirizzo = G-account + ID (M-address)\nFornisce una mappatura, ma non separa i conti.\nIl saldo, le trustline, i firmatari e i flag sono sempre conservati nell’account G.\n\nStellar Development Foundation\n\nCiò consente, ad esempio, di distinguere più persone o reparti sotto lo stesso indirizzo G. Tecnicamente, i fondi appartengono comunque all’account principale."
+    "desc": "Un sottoindirizzo (indirizzo M, ufficialmente “Muxed Account”) rimanda a un conto Stellar esistente, ma possiede anche un proprio numero (ID).\n\nSottoindirizzo = account G + ID (indirizzo M)\nFunge da identificativo, ma non separa i conti.\nIl saldo, le trustline, i firmatari e i flag sono sempre gestiti nell’account G.\n\nStellar Development Foundation\n\nCiò consente, ad esempio, di distinguere più persone o reparti all’interno dello stesso indirizzo G. Tecnicamente, i fondi appartengono comunque all’account principale."
   },
   "muxedAccountsUseCases": {
     "title": "Sottoindirizzi – Esempi di utilizzo",

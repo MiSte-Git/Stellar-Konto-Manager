@@ -496,7 +496,7 @@
     "infoButtonLabel": "Informazione",
     "info": {
       "title": "Che cos’è un sottoindirizzo?",
-      "intro1": "Un sottoindirizzo combina un normale indirizzo di account (G-address) con un ID multiplexato aggiuntivo a 64 bit.",
+      "intro1": "Un sottoindirizzo combina un normale indirizzo di account (indirizzo G) con un ID multiplexato aggiuntivo a 64 bit.",
       "intro2": "Tecnicamente, si tratta di un alias che rimanda sempre allo stesso account di base, ma che può essere identificato in modo univoco tramite il proprio ID.",
       "purposeTitle": "Scopo e benefici",
       "purposeText": "I sottoindirizzi vengono utilizzati per identificare in modo univoco più flussi di pagamento associati a un unico indirizzo Stellar: sono la soluzione ideale quando numerosi depositi e prelievi transitano attraverso un conto principale condiviso, ma ogni transazione deve essere assegnata a una persona, a un reparto o a un progetto specifico.",
@@ -1236,12 +1236,12 @@
   },
   "accountMode": {
     "identity": "Identità mista",
-    "account": "G-Account",
+    "account": "Account G",
     "muxedAddress": "Indirizzo Muxed",
     "baseAccount": "Account G di base",
     "muxedId": "Muxed-ID",
-    "switchToBase": "Passa all'account Basic",
+    "switchToBase": "Passa all'account di base",
     "guardTitle": "L'identità Muxed è di sola lettura",
-    "guardText": "Per eseguire questa operazione è necessario un account G Basic. Passa all'account Basic per continuare."
+    "guardText": "Per eseguire questa operazione è necessario un account G di base. Passa all'account di base per continuare."
   }
 }

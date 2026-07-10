@@ -67,7 +67,7 @@
     "title": "Sous-adresse",
     "original": "Muxed Account",
     "short": "M‑address with additional ID – shares a base account.",
-    "desc": "Une sous-adresse (M-adresse, officiellement appelée « compte multiplexé ») renvoie à un compte Stellar existant tout en disposant de son propre numéro (ID).\n\nSous-adresse = compte G + ID (M-adresse)\nElle assure la mise en correspondance, mais ne sépare pas les comptes.\nLe solde, les lignes de confiance, les signataires et les indicateurs sont toujours conservés dans le compte G.\n\nFondation pour le développement de Stellar\n\nCela permet, par exemple, de distinguer plusieurs personnes ou services sous une même adresse G. Techniquement, les fonds appartiennent toujours au compte principal."
+    "desc": "Une sous-adresse (M-adresse, officiellement « Muxed Account ») renvoie à un compte Stellar existant, mais possède également son propre numéro (ID).\n\nSous-adresse = compte G + ID (M-adresse)\nElle sert à l’identification, mais ne sépare pas les comptes.\nLe solde, les « trustlines », les signataires et les indicateurs sont toujours conservés dans le compte G.\n\nFondation pour le développement de Stellar\n\nCela permet, par exemple, de distinguer plusieurs personnes ou services sous une même adresse G. Techniquement, les fonds appartiennent toujours au compte principal."
   },
   "muxedAccountsUseCases": {
     "title": "Sous-adresses – Exemples d'utilisation",

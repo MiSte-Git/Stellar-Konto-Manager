@@ -1238,10 +1238,10 @@
     "identity": "Monikerroksinen identiteetti",
     "account": "G-tili",
     "muxedAddress": "Muxed-osoite",
-    "baseAccount": "Basic G -tili",
+    "baseAccount": "Perus-G-tili",
     "muxedId": "Muxed-ID",
-    "switchToBase": "Vaihda Basic-tiliin",
+    "switchToBase": "Vaihda perustiliin",
     "guardTitle": "Muxed-tunnus on vain luku -muotoinen",
-    "guardText": "Tämän toiminnon suorittaminen edellyttää Basic G -tiliä. Vaihda Basic-tiliin jatkaaksesi."
+    "guardText": "Tämän toiminnon suorittaminen edellyttää Perus-G-tiliä. Vaihda perustiliin jatkaaksesi."
   }
 }
