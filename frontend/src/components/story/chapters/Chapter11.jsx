@@ -109,7 +109,7 @@ function LoyaltyInfoCard({ onNext, t, openGlossary }) {
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
         <motion.button
           whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-          onClick={() => openGlossary("loyaltyToken")}
+          onClick={() => openGlossary("stellarAsset")}
           style={{
             background: "rgba(255,217,61,0.07)", border: "1.5px solid rgba(255,217,61,0.28)",
             borderRadius: "10px", padding: "9px 14px", fontSize: "13px", fontWeight: 600,

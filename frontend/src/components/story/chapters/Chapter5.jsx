@@ -30,7 +30,7 @@ function RecapCard({ next, t, openGlossary }) {
   const lessons = [
     { icon: "🏦", title: t("chapter5.lesson1_title"), text: t("chapter5.lesson1_text"), glossary: "wallet" },
     { icon: "⚡", title: t("chapter5.lesson2_title"), text: t("chapter5.lesson2_text"), glossary: "transaction" },
-    { icon: "🔗", title: t("chapter5.lesson3_title"), text: t("chapter5.lesson3_text"), glossary: "trustLine" },
+    { icon: "🔗", title: t("chapter5.lesson3_title"), text: t("chapter5.lesson3_text"), glossary: "trustline" },
     { icon: "⚓", title: t("chapter5.lesson4_title"), text: t("chapter5.lesson4_text"), glossary: "anchor" },
     { icon: "🔑", title: t("chapter5.lesson5_title"), text: t("chapter5.lesson5_text"), glossary: "privateKey" },
   ];
