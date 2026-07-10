@@ -112,7 +112,8 @@
   "jobCreated": "Trabajo multisig creado (ID: {{id}}). Abre „Trabajos multisig“ para ver el estado.",
   "errors": {
     "mismatchedHash": "El XDR firmado no pertenece a esta transacción.",
-    "signersUnavailable": "La lista de firmantes de la cuenta no está disponible actualmente en Horizon. No se ha aplicado la firma. Inténtalo de nuevo dentro de unos segundos."
+    "signersUnavailable": "La lista de firmantes de la cuenta no está disponible actualmente en Horizon. No se ha aplicado la firma. Inténtalo de nuevo dentro de unos segundos.",
+    "timeboundTooLong": "El intervalo de tiempo es demasiado largo. Por favor, reduce el tiempo de espera de la firma múltiple a un máximo de {{maxDays}} días."
   },
   "prepare": {
     "title": "Transacción preparada para multisig.",
@@ -198,7 +199,33 @@
     "submitNoExtras": "No hay más detalles de error disponibles.",
     "noAccessToken": "No hay ningún token de acceso disponible. Cargue primero la cuenta que es firmante de este trabajo.",
     "notASigner": "Esta cuenta no es un firmante activo de este trabajo.",
-    "noLocalSecretForToken": "No hay ningún secreto guardado para esta cuenta en este navegador. Ábrela mediante un enlace compartido con un token de acceso o carga la cuenta una vez utilizando la opción «Recordar secreto»."
+    "noLocalSecretForToken": "No hay ningún secreto guardado para esta cuenta en este navegador. Ábrela mediante un enlace compartido con un token de acceso o carga la cuenta una vez utilizando la opción «Recordar secreto».",
+    "transparency": {
+      "title": "Detalles de la transacción"
+    },
+    "operations": {
+      "title": "Operaciones de la transacción",
+      "payment": "Pago: {{amount}} {{asset}} a {{destination}}",
+      "createAccount": "Crear una cuenta: {{destination}} con un saldo inicial de {{balance}} XLM",
+      "masterWeight": "Establece el peso maestro en {{weight}}",
+      "signerAdd": "Establecer el peso del firmante {{key}} en {{weight}}",
+      "signerRemove": "Eliminar al firmante {{key}}",
+      "thresholds": "Establecer umbrales: bajo={{low}}, medio={{med}}, alto={{high}}",
+      "homeDomain": "Establece el dominio de inicio en {{domain}}",
+      "changeTrust": "Configurar Trustline para {{asset}} (Límite: {{limit}})",
+      "accountMerge": "Fusionar la cuenta con {{destination}}",
+      "unknown": "Operación desconocida: {{type}}",
+      "none": "No se han detectado operaciones (no se ha podido descodificar el XDR)."
+    },
+    "validUntil": {
+      "label": "Válido hasta el",
+      "unbounded": "ilimitado"
+    },
+    "sequenceStatus": {
+      "label": "Estado de la secuencia",
+      "valid": "vigente actualmente",
+      "dead": "ya no se puede canjear"
+    }
   },
   "secretModal": {
     "options": {

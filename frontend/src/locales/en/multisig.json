@@ -112,7 +112,8 @@
   "jobCreated": "Multisig job created (ID: {{id}}). Open \"Multisig orders\" to see the status.",
   "errors": {
     "mismatchedHash": "The signed XDR does not belong to this transaction.",
-    "signersUnavailable": "The account's list of signers is currently unavailable in Horizon. The signature was not applied. Please try again in a few seconds."
+    "signersUnavailable": "The account's list of signers is currently unavailable in Horizon. The signature was not applied. Please try again in a few seconds.",
+    "timeboundTooLong": "The time window is too long. Please reduce the multisig timeout setting to a maximum of {{maxDays}} days."
   },
   "prepare": {
     "title": "Transaction prepared for multisig",
@@ -198,7 +199,33 @@
     "submitNoExtras": "No further error details available.",
     "noAccessToken": "No access token available. Please load the account that is a signer of this job first.",
     "notASigner": "This account is not an active signer of this job.",
-    "noLocalSecretForToken": "There is no saved secret for this account in this browser. Please open it using a shared link with an access token, or load the account once using \"Remember Secret.\""
+    "noLocalSecretForToken": "There is no saved secret for this account in this browser. Please open it using a shared link with an access token, or load the account once using \"Remember Secret.\"",
+    "transparency": {
+      "title": "Transaction Details"
+    },
+    "operations": {
+      "title": "Transaction operations",
+      "payment": "Payment: {{amount}} {{asset}} to {{destination}}",
+      "createAccount": "Create an account: {{destination}} with {{balance}} XLM starting balance",
+      "masterWeight": "Set the master weight to {{weight}}",
+      "signerAdd": "Set weight for signer {{key}} to {{weight}}",
+      "signerRemove": "Remove signer {{key}}",
+      "thresholds": "Set thresholds: low={{low}}, medium={{med}}, high={{high}}",
+      "homeDomain": "Set the home domain to {{domain}}",
+      "changeTrust": "Set Trustline for {{asset}} (Limit: {{limit}})",
+      "accountMerge": "Merge account with {{destination}}",
+      "unknown": "Unknown operation: {{type}}",
+      "none": "No operations detected (XDR could not be decoded)."
+    },
+    "validUntil": {
+      "label": "Valid until",
+      "unbounded": "unlimited"
+    },
+    "sequenceStatus": {
+      "label": "Sequence Status",
+      "valid": "currently valid",
+      "dead": "no longer redeemable"
+    }
   },
   "secretModal": {
     "options": {

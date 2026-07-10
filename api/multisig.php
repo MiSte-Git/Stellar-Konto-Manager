@@ -474,6 +474,19 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
         $parseErr = null;
         $tx = parseTx($txXdr, $net, $parseErr);
         if (!$tx) return sendJson(['ok' => false, 'error' => 'invalid_xdr', 'detail' => $parseErr], 400);
+
+        // G5 stage 2: reject a timebound longer than the app's own cap before
+        // any Horizon work - clientside multisigTimeoutSeconds is clamped to
+        // the same value, but that's trivially bypassable via a direct POST.
+        $maxTimeUnix = extractMaxTimeUnix($tx);
+        if (!isMultisigTimeboundWithinCap($maxTimeUnix, time())) {
+            return sendJson([
+                'ok' => false,
+                'error' => 'timebound_too_long',
+                'maxAllowedSeconds' => MULTISIG_JOB_MAX_TIMEBOUND_SECONDS,
+            ], 400);
+        }
+
         $hash = txHash($tx, $net);
         // Signers/thresholds are always derived from the real on-chain account state.
         // Client-supplied signer/weight data is never trusted for authorization decisions
@@ -509,7 +522,7 @@ if ($method === 'POST' && $path === '/api/multisig/jobs') {
             'createdAt' => gmdate('c'),
             // G5 stage 1: precomputed once here so multisigJobsGuard.php's
             // dependency-free expiry guard never needs to parse XDR itself.
-            'maxTimeUnix' => extractMaxTimeUnix($tx),
+            'maxTimeUnix' => $maxTimeUnix,
             'signers' => $signerMeta,
             'thresholds' => $meta['thresholds'],
             'requiredWeight' => $requiredWeight,

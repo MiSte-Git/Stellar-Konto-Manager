@@ -50,7 +50,8 @@
   "multisig": {
     "timeoutTitle": "Multisig-aikakatkaisu",
     "timeoutHint": "Moniallekirjoitusmaksujen voimassaoloaika sekunteina (esim. 86400 = 24 tuntia).",
-    "seconds": "Sekunnit"
+    "seconds": "Sekunnit",
+    "timeoutTooHigh": "Arvo ei saa ylittää {{maxDays}} päivää ({{maxSeconds}} sekuntia)."
   },
   "explorer": {
     "sectionTitle": "Tähti Tutkija",

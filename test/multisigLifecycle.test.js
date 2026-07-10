@@ -14,7 +14,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { Account, TransactionBuilder, Operation, Networks, Keypair } = require('@stellar/stellar-sdk');
-const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus } = require('../services/multisigLifecycle.js');
+const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus, isMultisigTimeboundWithinCap, MULTISIG_JOB_MAX_TIMEBOUND_SECONDS, MULTISIG_JOB_TIMEBOUND_GRACE_SECONDS } = require('../services/multisigLifecycle.js');
 
 // Builds a transaction from an account currently at sequence startSeq
 // (string), with an explicit maxTime (unix seconds; 0 = unbounded).
@@ -151,4 +151,34 @@ test('mapSubmitResultCodeToLifecycleStatus returns null for an unrelated result 
 test('mapSubmitResultCodeToLifecycleStatus returns null for a missing result code', () => {
   assert.equal(mapSubmitResultCodeToLifecycleStatus(null), null);
   assert.equal(mapSubmitResultCodeToLifecycleStatus(undefined), null);
+});
+
+// --- G5 stage 2: isMultisigTimeboundWithinCap / MULTISIG_JOB_MAX_TIMEBOUND_SECONDS ---
+
+test('MULTISIG_JOB_MAX_TIMEBOUND_SECONDS matches the documented 7-day cap', () => {
+  assert.equal(MULTISIG_JOB_MAX_TIMEBOUND_SECONDS, 604800);
+});
+
+test('a maxTimeUnix well within the cap is accepted', () => {
+  assert.equal(isMultisigTimeboundWithinCap(now + 3600, now), true);
+});
+
+test('a maxTimeUnix exactly at the cap boundary (before grace) is accepted', () => {
+  assert.equal(isMultisigTimeboundWithinCap(now + MULTISIG_JOB_MAX_TIMEBOUND_SECONDS, now), true);
+});
+
+test('a maxTimeUnix just within the clock-skew grace window past the cap is still accepted', () => {
+  assert.equal(isMultisigTimeboundWithinCap(now + MULTISIG_JOB_MAX_TIMEBOUND_SECONDS + MULTISIG_JOB_TIMEBOUND_GRACE_SECONDS, now), true);
+});
+
+test('a maxTimeUnix beyond the cap plus grace is rejected', () => {
+  assert.equal(isMultisigTimeboundWithinCap(now + MULTISIG_JOB_MAX_TIMEBOUND_SECONDS + MULTISIG_JOB_TIMEBOUND_GRACE_SECONDS + 1, now), false);
+});
+
+test('a maxTimeUnix of 0 (unbounded) is always rejected - the one case strictly worse than any capped duration', () => {
+  assert.equal(isMultisigTimeboundWithinCap(0, now), false);
+});
+
+test("a maxTimeUnix already in the past is accepted by the cap check (that is expired/obsolete_seq's job, not the cap's)", () => {
+  assert.equal(isMultisigTimeboundWithinCap(now - 3600, now), true);
 });

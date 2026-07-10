@@ -112,7 +112,8 @@
   "jobCreated": "Tâche multisignatures créée (ID : {{id}}). Ouvrez « Ordres multisignatures » pour voir le statut.",
   "errors": {
     "mismatchedHash": "Le XDR signé n'appartient pas à cette transaction.",
-    "signersUnavailable": "La liste des signataires de ce compte n'est actuellement pas disponible dans Horizon. La signature n'a pas été appliquée. Veuillez réessayer dans quelques secondes."
+    "signersUnavailable": "La liste des signataires de ce compte n'est actuellement pas disponible dans Horizon. La signature n'a pas été appliquée. Veuillez réessayer dans quelques secondes.",
+    "timeboundTooLong": "La durée est trop longue. Veuillez réduire le délai d'expiration de la signature multiple à {{maxDays}} jours au maximum."
   },
   "prepare": {
     "title": "Transaction préparée pour multisig",
@@ -198,7 +199,33 @@
     "submitNoExtras": "Aucun détail d'erreur supplémentaire disponible.",
     "noAccessToken": "Aucun jeton d'accès disponible. Veuillez d'abord charger le compte qui est signataire de cette tâche.",
     "notASigner": "Ce compte n'est pas un signataire actif de cette tâche.",
-    "noLocalSecretForToken": "Aucun secret n'est enregistré pour ce compte dans ce navigateur. Veuillez l'ouvrir à l'aide d'un lien partagé comportant un jeton d'accès, ou charger le compte une seule fois en utilisant l'option « Mémoriser le secret »."
+    "noLocalSecretForToken": "Aucun secret n'est enregistré pour ce compte dans ce navigateur. Veuillez l'ouvrir à l'aide d'un lien partagé comportant un jeton d'accès, ou charger le compte une seule fois en utilisant l'option « Mémoriser le secret ».",
+    "transparency": {
+      "title": "Détails de la transaction"
+    },
+    "operations": {
+      "title": "Opérations de la transaction",
+      "payment": "Paiement : {{amount}} {{asset}} vers {{destination}}",
+      "createAccount": "Créer un compte : {{destination}} avec un solde initial de {{balance}} XLM",
+      "masterWeight": "Réglez le poids de référence sur {{weight}}",
+      "signerAdd": "Définir le poids du signataire {{key}} sur {{weight}}",
+      "signerRemove": "Supprimer le signataire {{key}}",
+      "thresholds": "Définir les seuils : faible = {{low}}, moyen = {{med}}, élevé = {{high}}",
+      "homeDomain": "Définissez le domaine d'origine sur {{domain}}",
+      "changeTrust": "Définir Trustline pour {{asset}} (Limite : {{limit}})",
+      "accountMerge": "Fusionner le compte avec {{destination}}",
+      "unknown": "Opération inconnue : {{type}}",
+      "none": "Aucune opération détectée (impossible de décoder le XDR)."
+    },
+    "validUntil": {
+      "label": "Valable jusqu'au",
+      "unbounded": "illimité"
+    },
+    "sequenceStatus": {
+      "label": "État de la séquence",
+      "valid": "actuellement en vigueur",
+      "dead": "n'est plus valable"
+    }
   },
   "secretModal": {
     "options": {

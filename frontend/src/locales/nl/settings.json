@@ -50,7 +50,8 @@
   "multisig": {
     "timeoutTitle": "Multisig timeout",
     "timeoutHint": "Geldigheidsperiode voor multisig-betalingen in seconden (bijv. 86400 = 24 uur).",
-    "seconds": "Seconden"
+    "seconds": "Seconden",
+    "timeoutTooHigh": "De waarde mag niet hoger zijn dan {{maxDays}} dagen ({{maxSeconds}} seconden)."
   },
   "explorer": {
     "sectionTitle": "Stellar Explorer",

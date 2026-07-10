@@ -27,6 +27,7 @@ import {
   writeHistoryArray,
 } from '../utils/inputHistory.js';
 import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/stellar/submitTransactionSafely.js';
+import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
 // submitted right away) expect a near-term Horizon confirmation, unlike a
@@ -523,8 +524,15 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     if (summary.network) {
       items.push({ label: t('common:networkLabel', 'Netzwerk'), value: formatNetworkLabel(summary.network) });
     }
+    // G5 stage 2: only present for the async job/xdr-export flows (set at
+    // creation time below) - the immediate-submit 'sent' summary never
+    // carries this, since by the time that dialog shows, the transaction has
+    // already executed and a validity window is no longer meaningful.
+    if (summary.validUntil !== undefined) {
+      items.push({ label: t('multisig:detail.validUntil.label', 'Gültig bis'), value: formatValidUntil(summary.validUntil, i18n.language, t) });
+    }
     return items;
-  }, [formatNetworkLabel, t]);
+  }, [formatNetworkLabel, i18n.language, t]);
 
   const reopenSelection = useCallback((choice) => {
     setResultDialog(null);
@@ -938,6 +946,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               amount: `${meta.amountDisplay} ${meta.asset}`,
               memo: meta.memo || '-',
               network: netLabel,
+              validUntil: tx?.timeBounds?.maxTime,
             },
             hash: hashHex,
             xdr,
@@ -1094,6 +1103,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             });
             const data = await r.json().catch(() => ({}));
             if (!r.ok) {
+              if (data?.error === 'timebound_too_long') {
+                throw new Error(t('multisig:errors.timeboundTooLong', {
+                  maxDays: Math.round((data?.maxAllowedSeconds || 604800) / 86400),
+                  defaultValue: 'Das Zeitfenster ist zu lang. Bitte die Multisig-Timeout-Einstellung auf maximal {{maxDays}} Tage reduzieren.',
+                }));
+              }
               const detail = data?.detail ? `: ${data.detail}` : '';
               throw new Error((data?.error || 'multisig.jobs.create_failed') + detail);
             }
@@ -1119,6 +1134,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               amount: `${meta.amountDisplay} ${meta.asset}`,
               memo: meta.memo || '-',
               network: netLabel,
+              validUntil: tx?.timeBounds?.maxTime,
             },
             jobId,
             hash: jobHash,

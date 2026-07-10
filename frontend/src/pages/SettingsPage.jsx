@@ -6,7 +6,7 @@ import SettingsPanel from '../components/SettingsPanel';
 import QuizSettings from '../components/quiz/QuizSettings.jsx';
 import QuizExportImport from '../components/settings/QuizExportImport.jsx';
 import GlossaryExportImport from '../components/settings/GlossaryExportImport.jsx';
-import { useSettings } from '../utils/useSettings.js';
+import { useSettings, MULTISIG_TIMEOUT_MAX_SECONDS } from '../utils/useSettings.js';
 import { buildPath } from '../utils/basePath.js';
 import { clearAllTextInputHistories } from '../utils/inputHistory.js';
 import { clearAllCachedPayments } from '../utils/db/indexedDbClient.js';
@@ -25,6 +25,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
     setMultisigTimeoutSeconds,
   } = useSettings();
   const [activeTab, setActiveTab] = useState('general');
+  const [multisigTimeoutError, setMultisigTimeoutError] = useState('');
   const [typingSpeed, setTypingSpeed] = useState(() => {
     try { return localStorage.getItem('skm.scamSimulator.typingSpeed') || 'normal'; } catch { return 'normal'; }
   });
@@ -229,16 +230,29 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
               <input
                 type="number"
                 min="60"
+                max={MULTISIG_TIMEOUT_MAX_SECONDS}
                 value={multisigTimeoutSeconds}
                 onChange={(e) => {
                   const v = Number(e.target.value);
                   if (!Number.isFinite(v) || v <= 0) return;
+                  if (v > MULTISIG_TIMEOUT_MAX_SECONDS) {
+                    setMultisigTimeoutError(t('settings:multisig.timeoutTooHigh', {
+                      maxDays: Math.round(MULTISIG_TIMEOUT_MAX_SECONDS / 86400),
+                      maxSeconds: MULTISIG_TIMEOUT_MAX_SECONDS,
+                      defaultValue: 'Der Wert darf {{maxDays}} Tage ({{maxSeconds}} Sekunden) nicht überschreiten.',
+                    }));
+                    return;
+                  }
+                  setMultisigTimeoutError('');
                   setMultisigTimeoutSeconds(v);
                 }}
                 className="w-32 border rounded px-2 py-1 text-sm"
               />
               <span className="text-sm text-gray-600 dark:text-gray-300">{t('settings:multisig.seconds', 'Sekunden')}</span>
             </div>
+            {multisigTimeoutError && (
+              <p className="text-sm text-red-600 dark:text-red-400">{multisigTimeoutError}</p>
+            )}
           </div>
           <div className="border rounded p-3 space-y-2">
             <h3 className="font-semibold">{t('settings:inputHistory.title')}</h3>

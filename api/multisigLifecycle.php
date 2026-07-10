@@ -72,3 +72,31 @@ function mapSubmitResultCodeToLifecycleStatus(?string $resultCodeTransaction): ?
     if ($resultCodeTransaction === 'tx_too_late') return 'expired';
     return null;
 }
+
+// G5 stage 2: the frontend's own multisigTimeoutSeconds setting
+// (useSettings.js's MULTISIG_TIMEOUT_MAX_SECONDS) is clamped to 7 days
+// client-side, but that's trivially bypassable (a direct POST to
+// /api/multisig/jobs with a hand-built XDR) - a job that stays valid far
+// longer than any realistic asynchronous-signing scenario is exactly the
+// kind of long, drift-exposed window the G5 analysis flagged (P4: a fully
+// signed transaction becomes a bearer instrument for however long its
+// timebound allows). Enforced only at job creation, not on every merge -
+// this is a creation-time policy gate, not an ongoing validity check (that
+// remains computeMultisigLifecycleStatus()'s job).
+const MULTISIG_JOB_MAX_TIMEBOUND_SECONDS = 604800; // 7 days
+// Tolerates minor client/server clock drift around the cap boundary,
+// mirroring the tolerant style of this app's other short timing windows
+// (e.g. the 30s account-meta cache, the 60s challenge TTL) rather than
+// rejecting a request over a few seconds of skew.
+const MULTISIG_JOB_TIMEBOUND_GRACE_SECONDS = 300;
+
+// An unbounded timebound (maxTimeUnix === 0) is never acceptable for a
+// stored, asynchronously-signed job - it's the one case strictly worse than
+// any capped duration, since it never ages out on its own at all. This
+// app's own job-creation flows never produce one (getMultisigTxTimeout.js
+// always sets a positive integer), so rejecting it only affects
+// hand-crafted requests bypassing the client.
+function isMultisigTimeboundWithinCap(int $maxTimeUnix, int $nowUnixSeconds): bool {
+    if ($maxTimeUnix === 0) return false;
+    return $maxTimeUnix <= $nowUnixSeconds + MULTISIG_JOB_MAX_TIMEBOUND_SECONDS + MULTISIG_JOB_TIMEBOUND_GRACE_SECONDS;
+}

@@ -162,5 +162,34 @@ check('mapSubmitResultCodeToLifecycleStatus maps tx_too_late to expired', mapSub
 check('mapSubmitResultCodeToLifecycleStatus returns null for an unrelated result code', mapSubmitResultCodeToLifecycleStatus('tx_bad_auth') === null);
 check('mapSubmitResultCodeToLifecycleStatus returns null for a missing result code', mapSubmitResultCodeToLifecycleStatus(null) === null);
 
+// --- G5 stage 2: isMultisigTimeboundWithinCap / MULTISIG_JOB_MAX_TIMEBOUND_SECONDS ---
+
+check('MULTISIG_JOB_MAX_TIMEBOUND_SECONDS matches the documented 7-day cap', MULTISIG_JOB_MAX_TIMEBOUND_SECONDS === 604800);
+
+check(
+    'a maxTimeUnix well within the cap is accepted',
+    isMultisigTimeboundWithinCap($now + 3600, $now) === true
+);
+check(
+    'a maxTimeUnix exactly at the cap boundary (before grace) is accepted',
+    isMultisigTimeboundWithinCap($now + MULTISIG_JOB_MAX_TIMEBOUND_SECONDS, $now) === true
+);
+check(
+    'a maxTimeUnix just within the clock-skew grace window past the cap is still accepted',
+    isMultisigTimeboundWithinCap($now + MULTISIG_JOB_MAX_TIMEBOUND_SECONDS + MULTISIG_JOB_TIMEBOUND_GRACE_SECONDS, $now) === true
+);
+check(
+    'a maxTimeUnix beyond the cap plus grace is rejected',
+    isMultisigTimeboundWithinCap($now + MULTISIG_JOB_MAX_TIMEBOUND_SECONDS + MULTISIG_JOB_TIMEBOUND_GRACE_SECONDS + 1, $now) === false
+);
+check(
+    'a maxTimeUnix of 0 (unbounded) is always rejected - the one case strictly worse than any capped duration',
+    isMultisigTimeboundWithinCap(0, $now) === false
+);
+check(
+    'a maxTimeUnix already in the past is accepted by the cap check (that is expired/obsolete_seq\'s job, not the cap\'s)',
+    isMultisigTimeboundWithinCap($now - 3600, $now) === true
+);
+
 echo "\n{$passed} passed, {$failed} failed\n";
 exit($failed > 0 ? 1 : 0);

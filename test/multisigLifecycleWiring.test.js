@@ -30,8 +30,24 @@ test('sanity: the create route exists and precedes the list route', () => {
 });
 const createBlock = serverSource.slice(createRouteIndex, listRouteIndex);
 
-test('the create route precomputes and stores maxTimeUnix on the new job', () => {
-  assert.ok(createBlock.includes('maxTimeUnix: extractMaxTimeUnix(parsed.tx)'));
+test('the create route precomputes and stores maxTimeUnix (reusing the cap-check variable) on the new job', () => {
+  assert.ok(createBlock.includes('const maxTimeUnix = extractMaxTimeUnix(parsed.tx);'));
+  assert.ok(createBlock.includes('maxTimeUnix,'), 'the job object must reuse the variable, not recompute it');
+});
+
+test('G5 stage 2: the create route rejects a timebound beyond the cap before any Horizon lookup', () => {
+  const capCheckIndex = createBlock.indexOf('const maxTimeUnix = extractMaxTimeUnix(parsed.tx);');
+  const capRejectIndex = createBlock.indexOf("error: 'timebound_too_long'");
+  const horizonFetchIndex = createBlock.indexOf('loadAccount(horizonServerForNet(net), accountId.trim())');
+  assert.ok(capCheckIndex > -1, 'the create route must compute maxTimeUnix right after parsing the tx');
+  assert.ok(capRejectIndex > -1, 'the create route must reject with timebound_too_long');
+  assert.ok(horizonFetchIndex > -1, 'sanity: the create route still loads the account from Horizon');
+  assert.ok(capCheckIndex < horizonFetchIndex, 'the cap check must precede the Horizon lookup - cheapest possible early-out');
+  assert.ok(capRejectIndex < horizonFetchIndex, 'the cap rejection must precede the Horizon lookup too');
+  assert.ok(
+    createBlock.includes('isMultisigTimeboundWithinCap(maxTimeUnix, Math.floor(Date.now() / 1000))'),
+    'the cap check must call isMultisigTimeboundWithinCap()'
+  );
 });
 
 test('the create route runs expireStalePendingJobs() on the full item list before saving (write-time guard parity)', () => {

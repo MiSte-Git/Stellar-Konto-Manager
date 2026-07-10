@@ -81,13 +81,37 @@ check(
     $summarizeMapIdx !== false && $postFilterIdx !== false && $postFilterIdx > $summarizeMapIdx
 );
 
-// --- POST /jobs (create): maxTimeUnix precomputed -----------------------------
+// --- POST /jobs (create): maxTimeUnix precomputed + G5 stage 2 cap check -----
 
 $createRouteIdx = strpos($source, "\$method === 'POST' && \$path === '/api/multisig/jobs'");
+$mergeRouteIdxForCreateScope = strpos($source, "\$method === 'POST' && (\$m = matchRoute(\$path, '/api/multisig/jobs/:id/merge-signed-xdr'))");
 check('sanity: the create route exists', $createRouteIdx !== false);
+check('sanity: the merge route follows the create route', $mergeRouteIdxForCreateScope !== false && $mergeRouteIdxForCreateScope > $createRouteIdx);
+$createBlock = ($createRouteIdx !== false && $mergeRouteIdxForCreateScope !== false)
+    ? substr($source, $createRouteIdx, $mergeRouteIdxForCreateScope - $createRouteIdx)
+    : '';
+
 check(
-    'the create route precomputes and stores maxTimeUnix on the new job',
-    strpos($source, "'maxTimeUnix' => extractMaxTimeUnix(\$tx),", $createRouteIdx) !== false
+    'the create route precomputes and stores maxTimeUnix (reusing the cap-check variable) on the new job',
+    strpos($createBlock, "'maxTimeUnix' => \$maxTimeUnix,") !== false
+);
+
+$capCheckIdx = strpos($createBlock, '$maxTimeUnix = extractMaxTimeUnix($tx);');
+$capRejectIdx = strpos($createBlock, "'error' => 'timebound_too_long',");
+$horizonFetchIdx = strpos($createBlock, '$meta = fetchAccountSignersCached($accountId, $net);');
+check('G5 stage 2: the create route computes maxTimeUnix right after parsing the tx', $capCheckIdx !== false);
+check('G5 stage 2: the create route rejects a too-long timebound with timebound_too_long', $capRejectIdx !== false);
+check(
+    'G5 stage 2: the cap check runs before any Horizon lookup - cheapest possible early-out',
+    $capCheckIdx !== false && $horizonFetchIdx !== false && $capCheckIdx < $horizonFetchIdx
+);
+check(
+    'the cap rejection precedes the Horizon lookup too',
+    $capRejectIdx !== false && $horizonFetchIdx !== false && $capRejectIdx < $horizonFetchIdx
+);
+check(
+    'the cap check calls isMultisigTimeboundWithinCap()',
+    strpos($createBlock, 'isMultisigTimeboundWithinCap($maxTimeUnix, time())') !== false
 );
 
 // --- merge route: reject already-final jobs before any Horizon lookup --------

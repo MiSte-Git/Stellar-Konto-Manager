@@ -50,7 +50,8 @@
   "multisig": {
     "timeoutTitle": "Tiempo de espera de firma múltiple",
     "timeoutHint": "Período de validez para pagos multisig en segundos (por ejemplo, 86400 = 24 horas).",
-    "seconds": "Segundos"
+    "seconds": "Segundos",
+    "timeoutTooHigh": "El valor no debe superar los {{maxDays}} días ({{maxSeconds}} segundos)."
   },
   "explorer": {
     "sectionTitle": "Explorador Estelar",

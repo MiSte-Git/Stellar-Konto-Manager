@@ -50,7 +50,8 @@
   "multisig": {
     "timeoutTitle": "Multisig istek vremena",
     "timeoutHint": "Razdoblje valjanosti za multisig plaćanja u sekundama (npr., 86400 = 24 sata).",
-    "seconds": "Sekunde"
+    "seconds": "Sekunde",
+    "timeoutTooHigh": "Vrijednost ne smije prelaziti {{maxDays}} dana ({{maxSeconds}} sekundi)."
   },
   "explorer": {
     "sectionTitle": "Zvezdani istraživač",

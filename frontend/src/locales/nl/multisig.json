@@ -112,7 +112,8 @@
   "jobCreated": "Multisig-taak aangemaakt (ID: {{id}}). Open \"Multisig-bestellingen\" om de status te zien.",
   "errors": {
     "mismatchedHash": "De ondertekende XDR behoort niet tot deze transactie.",
-    "signersUnavailable": "De lijst met ondertekenaars van het account is momenteel niet beschikbaar in Horizon. De handtekening is niet geplaatst. Probeer het over een paar seconden nog eens."
+    "signersUnavailable": "De lijst met ondertekenaars van het account is momenteel niet beschikbaar in Horizon. De handtekening is niet geplaatst. Probeer het over een paar seconden nog eens.",
+    "timeboundTooLong": "Het tijdsbestek is te lang. Verlaag de time-outinstelling voor multisig alstublieft tot maximaal {{maxDays}} dagen."
   },
   "prepare": {
     "title": "Transactie voorbereid voor multisig",
@@ -198,7 +199,33 @@
     "submitNoExtras": "Er zijn geen verdere foutdetails beschikbaar.",
     "noAccessToken": "Geen toegangstoken beschikbaar. Laad eerst het account dat ondertekenaar van deze taak is.",
     "notASigner": "Dit account is geen actieve ondertekenaar van deze taak.",
-    "noLocalSecretForToken": "Er is geen geheim opgeslagen voor dit account in deze browser. Open het account via een gedeelde link met een toegangstoken, of laad het account eenmalig via de optie „Geheim onthouden“."
+    "noLocalSecretForToken": "Er is geen geheim opgeslagen voor dit account in deze browser. Open het account via een gedeelde link met een toegangstoken, of laad het account eenmalig via de optie „Geheim onthouden“.",
+    "transparency": {
+      "title": "Transactiegegevens"
+    },
+    "operations": {
+      "title": "Transactieoperaties",
+      "payment": "Betaling: {{amount}} {{asset}} naar {{destination}}",
+      "createAccount": "Een account aanmaken: {{destination}} met een starttegoed van {{balance}} XLM",
+      "masterWeight": "Stel het hoofdgewicht in op {{weight}}",
+      "signerAdd": "Gewicht van ondertekenaar {{key}} instellen op {{weight}}",
+      "signerRemove": "Ondertekenaar {{key}} verwijderen",
+      "thresholds": "Drempelwaarden instellen: laag={{low}}, gemiddeld={{med}}, hoog={{high}}",
+      "homeDomain": "Stel het thuisdomein in op {{domain}}",
+      "changeTrust": "Trustline instellen voor {{asset}} (limiet: {{limit}})",
+      "accountMerge": "Account samenvoegen met {{destination}}",
+      "unknown": "Onbekende bewerking: {{type}}",
+      "none": "Er zijn geen bewerkingen gedetecteerd (XDR kon niet worden gedecodeerd)."
+    },
+    "validUntil": {
+      "label": "Geldig tot",
+      "unbounded": "onbeperkt"
+    },
+    "sequenceStatus": {
+      "label": "Status van de reeks",
+      "valid": "momenteel geldig",
+      "dead": "niet meer inwisselbaar"
+    }
   },
   "secretModal": {
     "options": {

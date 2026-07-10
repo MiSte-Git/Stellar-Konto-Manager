@@ -10,6 +10,13 @@ import {
 
 const KEY_EXPLORERS = 'stm.explorers';
 const KEY_DEFAULT_EXPLORER = 'stm.defaultExplorerKey';
+// G5 stage 2: 7 days - the same cap the backends enforce at job creation
+// (api/multisigLifecycle.php / services/multisigLifecycle.js's
+// MULTISIG_JOB_MAX_TIMEBOUND_SECONDS). Kept in sync manually (frontend/
+// backend are separate deploy artifacts); a value above this can never
+// reach the server as a valid job anyway, so clamping here avoids a
+// confusing round-trip rejection.
+export const MULTISIG_TIMEOUT_MAX_SECONDS = 604800;
 // Feedback lists are static and i18n-driven; add new entries here plus translations (Settings-Tab removed for consistency).
 export const KNOWN_FEEDBACK_CATEGORIES = [
   { id: 'bug', labelKey: 'common:feedback.categories.bug', fallback: 'Fehler' },
@@ -98,10 +105,19 @@ export function useSettings() {
   const [decimalsMode, setDecimalsMode] = useState(() => localStorage.getItem('stm.decimalsMode') || 'auto'); // 'auto' | '0'..'7'
   const [fullHorizonUrl, setFullHorizonUrl] = useState(() => localStorage.getItem('stm.horizonFullUrl') || '');
   const [autoUseFullHorizon, setAutoUseFullHorizon] = useState(() => localStorage.getItem('stm.autoFullHorizon') === '1');
-   const [multisigTimeoutSeconds, setMultisigTimeoutSeconds] = useState(() => {
+   const [multisigTimeoutSeconds, setMultisigTimeoutSecondsState] = useState(() => {
     const raw = Number(localStorage.getItem('stm.multisigTimeoutSeconds') || 86400);
-    return Number.isFinite(raw) && raw > 0 ? raw : 86400;
+    if (!Number.isFinite(raw) || raw <= 0) return 86400;
+    return Math.min(raw, MULTISIG_TIMEOUT_MAX_SECONDS);
   });
+  // Clamped centrally so any caller (Settings UI, snapshot import below) can
+  // never end up with a stored value above the cap the backends will reject
+  // at job-creation time anyway (G5 stage 2).
+  const setMultisigTimeoutSeconds = (v) => {
+    const n = Number(v);
+    if (!Number.isFinite(n) || n <= 0) return;
+    setMultisigTimeoutSecondsState(Math.min(n, MULTISIG_TIMEOUT_MAX_SECONDS));
+  };
   const [explorers, setExplorersState] = useState(() => loadExplorers());
   const [defaultExplorerKey, setDefaultExplorerKey] = useState(() => {
     try {

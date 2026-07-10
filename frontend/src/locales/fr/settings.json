@@ -50,7 +50,8 @@
   "multisig": {
     "timeoutTitle": "Délai d'expiration Multisig",
     "timeoutHint": "Période de validité pour les paiements multisignatures en secondes (par exemple, 86400 = 24 heures).",
-    "seconds": "Secondes"
+    "seconds": "Secondes",
+    "timeoutTooHigh": "La valeur ne doit pas dépasser {{maxDays}} jours ({{maxSeconds}} secondes)."
   },
   "explorer": {
     "sectionTitle": "Stellar Explorer",

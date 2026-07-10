@@ -112,7 +112,8 @@
   "jobCreated": "Multisig-työ luotu (tunnus: {{id}}). Avaa \"Monisig-tapahtumat\" nähdäksesi tilan.",
   "errors": {
     "mismatchedHash": "Allekirjoitettu XDR ei kuulu tähän tapahtumaan.",
-    "signersUnavailable": "Tilin allekirjoittajaluetteloa ei tällä hetkellä ole saatavilla Horizonissa. Allekirjoitusta ei ole tehty. Yritä uudelleen muutaman sekunnin kuluttua."
+    "signersUnavailable": "Tilin allekirjoittajaluetteloa ei tällä hetkellä ole saatavilla Horizonissa. Allekirjoitusta ei ole tehty. Yritä uudelleen muutaman sekunnin kuluttua.",
+    "timeboundTooLong": "Aikaväli on liian pitkä. Lyhennä monen allekirjoituksen aikakatkaisua enintään {{maxDays}} päivään."
   },
   "prepare": {
     "title": "Moniallekirjoituksen tapahtuma valmisteltu",
@@ -198,7 +199,33 @@
     "submitNoExtras": "Ei lisätietoja virheestä saatavilla.",
     "noAccessToken": "Käyttötunnusta ei ole saatavilla. Lataa ensin tili, joka on tämän tehtävän allekirjoittaja.",
     "notASigner": "Tämä tili ei ole tämän tehtävän aktiivinen allekirjoittaja.",
-    "noLocalSecretForToken": "Tälle selaimelle ei ole tallennettu tämän tilin salasanaa. Avaa tili käyttämällä jaettua linkkiä, jossa on pääsytunnus, tai lataa tili kerran valitsemalla ”Muista salasana”."
+    "noLocalSecretForToken": "Tälle selaimelle ei ole tallennettu tämän tilin salasanaa. Avaa tili käyttämällä jaettua linkkiä, jossa on pääsytunnus, tai lataa tili kerran valitsemalla ”Muista salasana”.",
+    "transparency": {
+      "title": "Tapahtuman tiedot"
+    },
+    "operations": {
+      "title": "Tapahtuman toiminnot",
+      "payment": "Maksu: {{amount}} {{asset}} kohteeseen {{destination}}",
+      "createAccount": "Luo tili: {{destination}}, alkusaldo {{balance}} XLM",
+      "masterWeight": "Aseta pääpaino arvoon {{weight}}",
+      "signerAdd": "Aseta allekirjoittajan {{key}} painoksi {{weight}}",
+      "signerRemove": "Poista allekirjoittaja {{key}}",
+      "thresholds": "Aseta kynnysarvot: matala={{low}}, keskitaso={{med}}, korkea={{high}}",
+      "homeDomain": "Määritä kotiverkkotunnukseksi {{domain}}",
+      "changeTrust": "Määritä Trustline-arvo kohteelle {{asset}} (raja: {{limit}})",
+      "accountMerge": "Yhdistä tili {{destination}}:iin",
+      "unknown": "Tuntematon toiminto: {{type}}",
+      "none": "Toimintoja ei havaittu (XDR-tietoja ei voitu purkaa)."
+    },
+    "validUntil": {
+      "label": "Voimassa asti",
+      "unbounded": "rajoittamaton"
+    },
+    "sequenceStatus": {
+      "label": "Järjestyksen tila",
+      "valid": "tällä hetkellä voimassa oleva",
+      "dead": "ei enää lunastettavissa"
+    }
   },
   "secretModal": {
     "options": {

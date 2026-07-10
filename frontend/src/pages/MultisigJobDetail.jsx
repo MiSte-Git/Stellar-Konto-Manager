@@ -5,9 +5,11 @@ import MultisigJobStatusBadge from '../components/MultisigJobStatusBadge.jsx';
 import { Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { getMultisigJobToken } from '../utils/basePath.js';
+import { describeOperations } from '../utils/multisig/describeOperations.js';
+import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 
 function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
-  const { t } = useTranslation(['multisig', 'common']);
+  const { t, i18n } = useTranslation(['multisig', 'common']);
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -132,6 +134,41 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const isFinalState = useMemo(() => {
     const s = String(job?.status || '').toLowerCase();
     return ['submitted_success', 'submitted_failed', 'expired', 'obsolete_seq'].includes(s);
+  }, [job]);
+
+  // G5 stage 2: decoded client-side purely for display, so a signer can see
+  // what they're actually being asked to sign (operations, validity window)
+  // before doing so - the job list previously showed only hash/account/
+  // network. Decoding failures (malformed/missing XDR) degrade to an empty
+  // operations list and an unbounded validity display rather than breaking
+  // the page.
+  const decodedTx = useMemo(() => {
+    if (!job) return null;
+    try {
+      const netPass = (job.network === 'testnet' || job.network === 'TESTNET') ? Networks.TESTNET : Networks.PUBLIC;
+      return TransactionBuilder.fromXDR(job.txXdrCurrent || job.txXdrOriginal || job.txXdr || '', netPass);
+    } catch {
+      return null;
+    }
+  }, [job]);
+
+  const operationLines = useMemo(
+    () => (decodedTx ? describeOperations(decodedTx.operations, t) : []),
+    [decodedTx, t]
+  );
+
+  const validUntilLabel = useMemo(
+    () => formatValidUntil(decodedTx?.timeBounds?.maxTime, i18n.language, t),
+    [decodedTx, i18n.language, t]
+  );
+
+  // Deliberately NOT a new lifecycle computation (G5 stage 1's
+  // computeMultisigLifecycleStatus() already runs server-side on every GET -
+  // see summarizeJob()/annotateJobsLifecycleStatus()) - this only interprets
+  // the already-recomputed job.status the backend just sent.
+  const sequenceLooksAlive = useMemo(() => {
+    const s = String(job?.status || '').toLowerCase();
+    return s !== 'expired' && s !== 'obsolete_seq';
   }, [job]);
 
   const signWithSecret = useCallback(async (secret) => {
@@ -285,6 +322,38 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 {t(`multisig:job.statusHelp.${job.status}`, t('multisig:job.statusHelp.unknown'))}
               </div>
             )}
+          </div>
+
+          <div className="border rounded p-3 space-y-2 text-sm">
+            <div className="font-semibold">{t('multisig:detail.transparency.title', 'Transaktionsdetails')}</div>
+            <div>
+              <div className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
+                {t('multisig:detail.operations.title', 'Transaktionsoperationen')}
+              </div>
+              {operationLines.length > 0 ? (
+                <ul className="list-disc list-inside space-y-0.5 text-gray-800 dark:text-gray-100">
+                  {operationLines.map((line, idx) => <li key={idx}>{line}</li>)}
+                </ul>
+              ) : (
+                <div className="text-gray-600 dark:text-gray-300">
+                  {t('multisig:detail.operations.none', 'Keine Operationen erkennbar (XDR konnte nicht dekodiert werden).')}
+                </div>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-x-6 gap-y-1">
+              <div>
+                <span className="text-gray-600 dark:text-gray-300">{t('multisig:detail.validUntil.label', 'Gültig bis')}: </span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">{validUntilLabel}</span>
+              </div>
+              <div>
+                <span className="text-gray-600 dark:text-gray-300">{t('multisig:detail.sequenceStatus.label', 'Sequenz-Status')}: </span>
+                <span className={`font-medium ${sequenceLooksAlive ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
+                  {sequenceLooksAlive
+                    ? t('multisig:detail.sequenceStatus.valid', 'aktuell gültig')
+                    : t('multisig:detail.sequenceStatus.dead', 'nicht mehr einlösbar')}
+                </span>
+              </div>
+            </div>
           </div>
 
           {Array.isArray(job.changes) && job.changes.length > 0 && (

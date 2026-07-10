@@ -112,7 +112,8 @@
   "jobCreated": "Multisig-Job erstellt (ID: {{id}}). Öffne „Multisig-Jobs“, um den Status zu sehen.",
   "errors": {
     "mismatchedHash": "Die signierte XDR gehört nicht zu dieser Transaktion.",
-    "signersUnavailable": "Die Signer-Liste des Kontos ist bei Horizon gerade nicht abrufbar. Die Signatur wurde nicht übernommen. Bitte in ein paar Sekunden erneut versuchen."
+    "signersUnavailable": "Die Signer-Liste des Kontos ist bei Horizon gerade nicht abrufbar. Die Signatur wurde nicht übernommen. Bitte in ein paar Sekunden erneut versuchen.",
+    "timeboundTooLong": "Das Zeitfenster ist zu lang. Bitte die Multisig-Timeout-Einstellung auf maximal {{maxDays}} Tage reduzieren."
   },
   "prepare": {
     "title": "Transaktion für Multisig vorbereitet",
@@ -198,7 +199,33 @@
     "submitNoExtras": "Keine weiteren Fehlerdetails verfügbar.",
     "noAccessToken": "Kein Zugriffstoken verfügbar. Bitte zuerst das Konto laden, das Signer dieses Auftrags ist.",
     "noLocalSecretForToken": "Kein gespeichertes Secret für dieses Konto in diesem Browser. Bitte über einen geteilten Link mit Zugriffstoken öffnen, oder das Konto einmal mit \"Secret merken\" laden.",
-    "notASigner": "Dieses Konto ist kein aktiver Signer dieses Auftrags."
+    "notASigner": "Dieses Konto ist kein aktiver Signer dieses Auftrags.",
+    "transparency": {
+      "title": "Transaktionsdetails"
+    },
+    "operations": {
+      "title": "Transaktionsoperationen",
+      "payment": "Zahlung: {{amount}} {{asset}} an {{destination}}",
+      "createAccount": "Konto erstellen: {{destination}} mit {{balance}} XLM Startguthaben",
+      "masterWeight": "Master-Gewicht setzen auf {{weight}}",
+      "signerAdd": "Gewicht für Signer {{key}} auf {{weight}} setzen",
+      "signerRemove": "Signer {{key}} entfernen",
+      "thresholds": "Schwellenwerte setzen: niedrig={{low}}, mittel={{med}}, hoch={{high}}",
+      "homeDomain": "Home-Domain setzen auf {{domain}}",
+      "changeTrust": "Trustline für {{asset}} setzen (Limit: {{limit}})",
+      "accountMerge": "Konto zusammenführen mit {{destination}}",
+      "unknown": "Unbekannte Operation: {{type}}",
+      "none": "Keine Operationen erkennbar (XDR konnte nicht dekodiert werden)."
+    },
+    "validUntil": {
+      "label": "Gültig bis",
+      "unbounded": "unbegrenzt"
+    },
+    "sequenceStatus": {
+      "label": "Sequenz-Status",
+      "valid": "aktuell gültig",
+      "dead": "nicht mehr einlösbar"
+    }
   },
   "secretModal": {
     "options": {

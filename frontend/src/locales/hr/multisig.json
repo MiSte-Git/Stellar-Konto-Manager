@@ -112,7 +112,8 @@
   "jobCreated": "Multisig posao je kreiran (ID: {{id}}). Otvorite „Multisig poslovi“ da vidite status.",
   "errors": {
     "mismatchedHash": "Potpisani XDR ne pripada ovoj transakciji.",
-    "signersUnavailable": "Popis potpisnika računa trenutno nije dostupan u Horizonu. Potpis nije primijenjen. Molimo pokušajte ponovno za nekoliko sekundi."
+    "signersUnavailable": "Popis potpisnika računa trenutno nije dostupan u Horizonu. Potpis nije primijenjen. Molimo pokušajte ponovno za nekoliko sekundi.",
+    "timeboundTooLong": "Vremenski prozor je predug. Molimo smanjite postavku multisig timeouta na najviše {{maxDays}} dana."
   },
   "prepare": {
     "title": "Transakcija pripremljena za multisig",
@@ -198,7 +199,33 @@
     "submitNoExtras": "Nema dodatnih detalja o grešci.",
     "noAccessToken": "Nema dostupnog pristupnog tokena. Prvo učitajte račun koji je potpisnik ovog zadatka.",
     "notASigner": "Ovaj račun nije aktivni potpisnik ovog zadatka.",
-    "noLocalSecretForToken": "Za ovaj račun u ovom pregledniku nije pohranjena tajna. Molimo otvorite ga pomoću zajedničke poveznice s pristupnim tokenom ili jednom učitajte račun pomoću opcije \"Zapamti tajnu\"."
+    "noLocalSecretForToken": "Za ovaj račun u ovom pregledniku nije pohranjena tajna. Molimo otvorite ga pomoću zajedničke poveznice s pristupnim tokenom ili jednom učitajte račun pomoću opcije \"Zapamti tajnu\".",
+    "transparency": {
+      "title": "Detalji transakcije"
+    },
+    "operations": {
+      "title": "Operacije transakcije",
+      "payment": "Plaćanje: {{amount}} {{asset}} na {{destination}}",
+      "createAccount": "Kreirajte račun: {{destination}} s početnim stanjem od {{balance}} XLM",
+      "masterWeight": "Postavite glavnu težinu na {{weight}}",
+      "signerAdd": "Postavi težinu potpisnika {{key}} na {{weight}}",
+      "signerRemove": "Ukloni potpisnika {{key}}",
+      "thresholds": "Postavite pragove: nisko={{low}}, srednje={{med}}, visoko={{high}}",
+      "homeDomain": "Postavite domaću domenu na {{domain}}",
+      "changeTrust": "Postavi Trustline za {{asset}} (Ograničenje: {{limit}})",
+      "accountMerge": "Spajanje računa s {{destination}}",
+      "unknown": "Nepoznata operacija: {{type}}",
+      "none": "Nije otkrivena nijedna operacija (XDR nije mogao biti dešifriran)."
+    },
+    "validUntil": {
+      "label": "Važeće do",
+      "unbounded": "neograničeno"
+    },
+    "sequenceStatus": {
+      "label": "Status sekvence",
+      "valid": "trenutno važeći",
+      "dead": "Više nije iskoristivo"
+    }
   },
   "secretModal": {
     "options": {

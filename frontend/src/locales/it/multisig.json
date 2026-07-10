@@ -112,7 +112,8 @@
   "jobCreated": "Lavoro multisig creato (ID: {{id}}). Apri \"Ordini multisig\" per vedere lo stato.",
   "errors": {
     "mismatchedHash": "L'XDR firmato non appartiene a questa transazione.",
-    "signersUnavailable": "L'elenco dei firmatari dell'account non è attualmente disponibile in Horizon. La firma non è stata applicata. Riprova tra qualche secondo."
+    "signersUnavailable": "L'elenco dei firmatari dell'account non è attualmente disponibile in Horizon. La firma non è stata applicata. Riprova tra qualche secondo.",
+    "timeboundTooLong": "L'intervallo di tempo è troppo lungo. Si prega di ridurre l'impostazione del timeout della firma multipla a un massimo di {{maxDays}} giorni."
   },
   "prepare": {
     "title": "Transazione preparata per il multisig.",
@@ -198,7 +199,33 @@
     "submitNoExtras": "Nessun ulteriore dettaglio sull'errore disponibile.",
     "noAccessToken": "Nessun token di accesso disponibile. Carica prima l'account che è firmatario di questo job.",
     "notASigner": "Questo account non è un firmatario attivo di questo job.",
-    "noLocalSecretForToken": "In questo browser non è stato salvato alcun segreto per questo account. Si prega di aprirlo utilizzando un link condiviso con un token di accesso, oppure di caricare l'account una volta utilizzando l'opzione \"Ricorda segreto\"."
+    "noLocalSecretForToken": "In questo browser non è stato salvato alcun segreto per questo account. Si prega di aprirlo utilizzando un link condiviso con un token di accesso, oppure di caricare l'account una volta utilizzando l'opzione \"Ricorda segreto\".",
+    "transparency": {
+      "title": "Dettagli della transazione"
+    },
+    "operations": {
+      "title": "Operazioni della transazione",
+      "payment": "Pagamento: {{amount}} {{asset}} a {{destination}}",
+      "createAccount": "Crea un account: {{destination}} con un saldo iniziale di {{balance}} XLM",
+      "masterWeight": "Imposta il peso principale su {{weight}}",
+      "signerAdd": "Imposta il peso del firmatario {{key}} su {{weight}}",
+      "signerRemove": "Rimuovi il firmatario {{key}}",
+      "thresholds": "Imposta le soglie: bassa={{low}}, media={{med}}, alta={{high}}",
+      "homeDomain": "Imposta il dominio predefinito su {{domain}}",
+      "changeTrust": "Imposta Trustline per {{asset}} (Limite: {{limit}})",
+      "accountMerge": "Unisci l'account con {{destination}}",
+      "unknown": "Operazione sconosciuta: {{type}}",
+      "none": "Non sono state rilevate operazioni (impossibile decodificare XDR)."
+    },
+    "validUntil": {
+      "label": "Valido fino al",
+      "unbounded": "illimitato"
+    },
+    "sequenceStatus": {
+      "label": "Stato della sequenza",
+      "valid": "attualmente in vigore",
+      "dead": "non più riscattabile"
+    }
   },
   "secretModal": {
     "options": {

@@ -50,7 +50,8 @@
   "multisig": {
     "timeoutTitle": "Multisig-Timeout",
     "timeoutHint": "Gültigkeitsdauer für Multisig-Zahlungen in Sekunden (z. B. 86400 = 24 Stunden).",
-    "seconds": "Sekunden"
+    "seconds": "Sekunden",
+    "timeoutTooHigh": "Der Wert darf {{maxDays}} Tage ({{maxSeconds}} Sekunden) nicht überschreiten."
   },
   "explorer": {
     "sectionTitle": "Stellar Explorer",

@@ -15,7 +15,7 @@ const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
 const { filterValidSignatures, requiredWeightForOperations } = require('./services/txSignatures.js');
 const { isLoopbackAddress } = require('./services/network.js');
-const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus } = require('./services/multisigLifecycle.js');
+const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus, isMultisigTimeboundWithinCap, MULTISIG_JOB_MAX_TIMEBOUND_SECONDS } = require('./services/multisigLifecycle.js');
 const { expireStalePendingJobs } = require('./services/multisigJobsGuard.js');
 
 // Lightweight .env loader (root .env and backend/.env) without extra deps
@@ -640,6 +640,15 @@ app.post('/api/multisig/jobs', async (req, res) => {
     } catch (e) {
       return res.status(400).json({ ok: false, error: 'invalid_xdr', detail: e?.message || 'invalid_xdr' });
     }
+
+    // G5 stage 2: reject a timebound longer than the app's own cap before any
+    // Horizon work - clientside multisigTimeoutSeconds is clamped to the same
+    // value, but that's trivially bypassable via a direct POST.
+    const maxTimeUnix = extractMaxTimeUnix(parsed.tx);
+    if (!isMultisigTimeboundWithinCap(maxTimeUnix, Math.floor(Date.now() / 1000))) {
+      return res.status(400).json({ ok: false, error: 'timebound_too_long', maxAllowedSeconds: MULTISIG_JOB_MAX_TIMEBOUND_SECONDS });
+    }
+
     let account = null;
     let signerMeta = { signers: [], thresholds: { low: 0, med: 0, high: 0 } };
     try {
@@ -667,7 +676,7 @@ app.post('/api/multisig/jobs', async (req, res) => {
       createdAt: nowIso,
       // G5 stage 1: precomputed once here so the dependency-free
       // expireStalePendingJobs() guard never needs to parse XDR itself.
-      maxTimeUnix: extractMaxTimeUnix(parsed.tx),
+      maxTimeUnix,
       createdBy: typeof createdBy === 'string' && createdBy.trim() ? createdBy.trim() : 'local',
       signers,
       requiredWeight,

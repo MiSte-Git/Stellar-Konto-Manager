@@ -14,6 +14,7 @@ import { apiUrl } from '../utils/apiBase.js';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { useSettings } from '../utils/useSettings.js';
+import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
@@ -56,7 +57,7 @@ function NetworkSelector({ value, onChange }) {
 }
 
 export default function MultisigEditPage({ defaultPublicKey = '' }) {
-  const { t } = useTranslation(['network', 'common', 'multisigConfig', 'publicKey', 'multisig', 'glossary']);
+  const { t, i18n } = useTranslation(['network', 'common', 'multisigConfig', 'publicKey', 'multisig', 'glossary']);
   const { recentWalletOptions, removeRecentWalletOption, clearRecentWalletOptions } = useRecentWalletOptions();
   const { multisigTimeoutSeconds } = useSettings();
 
@@ -424,7 +425,15 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           }),
         });
         const data = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(data?.error || 'multisig.jobs.create_failed');
+        if (!r.ok) {
+          if (data?.error === 'timebound_too_long') {
+            throw new Error(t('multisig:errors.timeboundTooLong', {
+              maxDays: Math.round((data?.maxAllowedSeconds || 604800) / 86400),
+              defaultValue: 'Das Zeitfenster ist zu lang. Bitte die Multisig-Timeout-Einstellung auf maximal {{maxDays}} Tage reduzieren.',
+            }));
+          }
+          throw new Error(data?.error || 'multisig.jobs.create_failed');
+        }
         job = data;
       } catch (err) {
         setError(String(err?.message || err));
@@ -453,6 +462,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
             { label: t('multisigConfig:thresholdHigh'), value: String(plannedThresholds.high) },
             { label: t('common:signers', 'Signer'), value: String(plannedSigners.length) },
             { label: t('common:network', 'Netzwerk'), value: network },
+            { label: t('multisig:detail.validUntil.label', 'Gültig bis'), value: formatValidUntil(tx?.timeBounds?.maxTime, i18n.language, t) },
             jobId ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: jobId } : null,
           ].filter(Boolean),
         },
@@ -462,7 +472,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     } finally {
       setShowConfirmModal(false);
     }
-  }, [buildSetOptionsTx, defaultPublicKey, getSessionSecretForAccount, hasSafetyErrors, network, t]);
+  }, [buildSetOptionsTx, defaultPublicKey, getSessionSecretForAccount, hasSafetyErrors, i18n.language, network, t]);
 
   const buildPlannedChanges = useCallback(() => {
     const pk = (defaultPublicKey || '').trim();

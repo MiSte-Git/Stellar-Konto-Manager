@@ -50,7 +50,8 @@
   "multisig": {
     "timeoutTitle": "Мультиподпись: время ожидания",
     "timeoutHint": "Срок действия multisig-платежей в секундах (например, 86400 = 24 часа).",
-    "seconds": "Секунды"
+    "seconds": "Секунды",
+    "timeoutTooHigh": "Значение не должно превышать {{maxDays}} дней ({{maxSeconds}} секунд)."
   },
   "explorer": {
     "sectionTitle": "«Stellar Explorer»",
