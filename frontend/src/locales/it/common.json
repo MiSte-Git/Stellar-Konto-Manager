@@ -563,7 +563,7 @@
     "deleteSuccess": "Selezione eliminata.",
     "countLabel": "Numero",
     "countInfo": "Numero di nuovi indirizzi muxed, ID sequenziali.",
-    "invalidCount": "Si prega di inserire un numero valido (>= 1).",
+    "invalidCount": "Inserisci un numero valido (>= 1).",
     "tooMany": "Per favore, crea non più di 100 alla volta.",
     "rangeOverflow": "L'intervallo ID supera l'ID muxed massimo consentito.",
     "label": "Designazione",

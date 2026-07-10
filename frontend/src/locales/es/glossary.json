@@ -482,7 +482,7 @@
   "multiSignature": {
     "desc": "En una configuración de firma múltiple, varias claves deben firmar antes de que una acción se vuelva válida. Cada firmante tiene un peso, y la suma debe cumplir con el umbral requerido. Esto aumenta la seguridad porque una sola clave robada no es suficiente.",
     "original": "Multi-Signature",
-    "short": "Multiple signatures required; weights + threshold determine the release.",
+    "short": "Se requieren varias firmas; los pesos + el umbral determinan la aprobación.",
     "title": "Multifirma"
   },
   "multisig": {

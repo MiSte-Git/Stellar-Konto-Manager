@@ -267,7 +267,7 @@
       "combinedWarning": "Cette opération crée d'abord la ligne de confiance, puis exécute l'échange. L'itinéraire est vérifié une nouvelle fois juste avant la signature.",
       "combinedContinue": "Passer à la signature",
       "combinedOnlyXlm": "Le flux combiné n'est disponible ici que pour XLM → token.",
-      "authRequiredCombinedBlocked": "La combinaison « trustline+swap » est désactivée pour les ressources nécessitant une autorisation (auth_required), car l'émetteur doit d'abord autoriser la nouvelle trustline.",
+      "authRequiredCombinedBlocked": "La combinaison Trustline+Swap est désactivée pour les actifs « auth_required », car l'émetteur doit d'abord autoriser la nouvelle Trustline.",
       "invalidLimit": "Veuillez saisir une limite Trustline valide supérieure à 0.",
       "limitBelowExpected": "La limite de la ligne de crédit est inférieure au montant prévu à recevoir.",
       "alreadyPresent": "La ligne de confiance existe déjà. Veuillez actualiser la page et utiliser l'échange habituel.",

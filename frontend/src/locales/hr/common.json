@@ -563,7 +563,7 @@
     "deleteSuccess": "Izbor izbrisan.",
     "countLabel": "Broj",
     "countInfo": "Broj novih multipleksiranih adresa, sekvencijalni ID-ovi.",
-    "invalidCount": "Molimo unesite važeći broj (>= 1).",
+    "invalidCount": "Molimo unesite valjan broj (>= 1).",
     "tooMany": "Molim vas da ne kreirate više od 100 odjednom.",
     "rangeOverflow": "Raspon ID-a prelazi maksimalni dozvoljeni muxed ID.",
     "label": "Oznaka",

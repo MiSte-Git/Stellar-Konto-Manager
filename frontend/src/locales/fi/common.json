@@ -563,7 +563,7 @@
     "deleteSuccess": "Valinta poistettu.",
     "countLabel": "Numero",
     "countInfo": "Uusien sekoitettujen osoitteiden lukumäärä, peräkkäiset tunnisteet.",
-    "invalidCount": "Please enter a valid number (>= 1).",
+    "invalidCount": "Syötä kelvollinen luku (>= 1).",
     "tooMany": "Luo enintään 100 kerrallaan.",
     "rangeOverflow": "ID-alue ylittää sallitun maksimimukautetun ID:n.",
     "label": "Nimitys",

@@ -25,7 +25,7 @@
     "title": "Información importante",
     "secureKeys": {
       "title": "Clave secreta segura",
-      "text": "The Public Key can be safely shared – it's like an account number.\n\nThe Secret Key is the access to your account. Treat it like a password:\n• NEVER store it on cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the Secret Key is lost, access to the account is irrevocably lost"
+      "text": "La clave pública se puede compartir de forma segura: es como un número de cuenta.\\n\\nLa clave secreta es la forma de acceder a tu cuenta. Trátala como si fuera una contraseña:\\n• NUNCA la guardes en servicios en la nube, correos electrónicos o notas sin proteger\\n• Anótala en un papel o utiliza un monedero físico\\n• Crea varias copias de seguridad y guárdalas en lugares seguros e independientes\\n• Si pierdes tu clave secreta, el acceso a tu cuenta se perderá de forma irremediable"
     },
     "multisigSection": {
       "title": "Multifirma",

@@ -25,7 +25,7 @@
     "title": "Belangrijke informatie",
     "secureKeys": {
       "title": "Beveilig geheime sleutel",
-      "text": "De publieke sleutel kan veilig gedeeld worden – het is als een rekeningnummer.\n\nDe geheime sleutel is de toegang tot je account. Behandel het als een wachtwoord:\n• Bewaar het NOOIT op clouddiensten, e-mails of onveilige notities\n• Schrijf het op papier of gebruik een hardware wallet\n• Maak meerdere back-ups en bewaar ze op veilige, afzonderlijke locaties\n• Als de geheime sleutel verloren gaat, is de toegang tot de account onherroepelijk verloren"
+      "text": "De openbare sleutel kun je veilig delen – het is net als een rekeningnummer.\\n\\nDe geheime sleutel is de toegang tot je account. Behandel deze als een wachtwoord:\\n• Sla deze NOOIT op in clouddiensten, e-mails of onbeveiligde notities\\n• Schrijf deze op papier op of gebruik een hardware-wallet\\n• Maak meerdere back-ups en bewaar deze op veilige, afzonderlijke locaties\\n• Als u uw geheime sleutel kwijtraakt, is de toegang tot uw account onherstelbaar verloren"
     },
     "multisigSection": {
       "title": "Multisig",

@@ -267,7 +267,7 @@
       "combinedWarning": "Tässä transaktiossa luodaan ensin luottolinjat ja suoritetaan vaihto vasta sen jälkeen. Reitti tarkistetaan uudelleen juuri ennen allekirjoittamista.",
       "combinedContinue": "Jatka allekirjoitukseen",
       "combinedOnlyXlm": "Yhdistetty siirto on tässä käytettävissä vain XLM:stä tokeniin.",
-      "authRequiredCombinedBlocked": "Trustline+swap-yhdistelmä on poistettu käytöstä auth_required-resursseissa, koska myöntäjän on ensin hyväksyttävä uusi trustline.",
+      "authRequiredCombinedBlocked": "Trustline+Swap-yhdistelmä on poistettu käytöstä auth_required-resursseissa, koska liikkeeseenlaskijan on ensin hyväksyttävä uusi Trustline.",
       "invalidLimit": "Syötä kelvollinen Trustline-raja, joka on suurempi kuin 0.",
       "limitBelowExpected": "Trustline-raja on odotettua saamaa summaa pienempi.",
       "alreadyPresent": "Trustline on jo olemassa. Päivitä sivu ja käytä tavallista vaihtoa.",

@@ -267,7 +267,7 @@
       "combinedWarning": "Bij deze transactie wordt eerst de trustline aangemaakt en daarna de swap uitgevoerd. Vlak voor het ondertekenen wordt de route nogmaals gecontroleerd.",
       "combinedContinue": "Ga verder naar de handtekening",
       "combinedOnlyXlm": "De gecombineerde transactie is hier alleen beschikbaar voor XLM -> token.",
-      "authRequiredCombinedBlocked": "Combined trustline+swap is disabled for auth_required assets because the issuer must authorize the new trustline first.",
+      "authRequiredCombinedBlocked": "Gecombineerde Trustline+Swap is uitgeschakeld voor auth_required-assets, omdat de uitgever eerst de nieuwe Trustline moet autoriseren.",
       "invalidLimit": "Voer een geldige Trustline-limiet in die groter is dan 0.",
       "limitBelowExpected": "Het limietbedrag van de trustline ligt onder het verwachte ontvangstbedrag.",
       "alreadyPresent": "De trustline bestaat nu al. Verfris de pagina en gebruik de normale swap.",

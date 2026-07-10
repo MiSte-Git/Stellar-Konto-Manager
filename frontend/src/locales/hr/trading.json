@@ -267,7 +267,7 @@
       "combinedWarning": "Ova transakcija prvo stvara trustline, a zatim izvršava zamjenu. Ruta se ponovno provjerava neposredno prije potpisivanja.",
       "combinedContinue": "Nastavi prema potpisu",
       "combinedOnlyXlm": "Kombinirani tok je dostupan samo za XLM -> token ovdje.",
-      "authRequiredCombinedBlocked": "Kombinirani trustline+swap je onemogućen za auth_required resurse jer izdavatelj mora prvo odobriti novu trustline.",
+      "authRequiredCombinedBlocked": "Kombinirani Trustline+Swap je onemogućen za auth_required resurse jer izdavatelj mora prvo autorizirati novi Trustline.",
       "invalidLimit": "Molimo unesite valjani trustline limit veći od 0.",
       "limitBelowExpected": "Gornja granica trustline je ispod očekivanog primljenog iznosa.",
       "alreadyPresent": "Trustline već sada postoji. Molimo ponovno učitajte i koristite normalnu zamjenu.",

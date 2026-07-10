@@ -25,7 +25,7 @@
     "title": "Važne informacije",
     "secureKeys": {
       "title": "Siguran tajni ključ",
-      "text": "Javni ključ se može sigurno dijeliti – poput broja računa.\n\nTajni ključ je pristup vašem računu. Ponašajte se prema njemu kao prema lozinki:\n• NIKADA ga nemojte pohranjivati na uslugama u oblaku, e-mailovima ili nesigurnim bilješkama\n• Zapišite ga na papir ili koristite hardverski novčanik\n• Napravite više sigurnosnih kopija i pohranite ih na sigurna, odvojena mjesta\n• Ako se Tajni ključ izgubi, pristup računu je nepovratno izgubljen"
+      "text": "Javni ključ se može sigurno dijeliti—to je poput broja računa.\\n\\nTajni ključ je pristup vašem računu. Postupajte s njim kao s lozinkom:\\n• NIKADA ga ne pohranjujte u uslugama u oblaku, e-pošti ili nezaštićenim bilješkama\\n• Zapišite ga na papir ili koristite hardverski novčanik\\n• Napravite više sigurnosnih kopija i pohranite ih na sigurne, odvojene lokacije\\n• Ako izgubite svoj tajni ključ, pristup vašem računu je nepovratno izgubljen"
     },
     "multisigSection": {
       "title": "Višepotpis (Multisig)",

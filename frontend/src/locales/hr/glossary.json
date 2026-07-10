@@ -411,7 +411,7 @@
   "multiSignature": {
     "title": "Multisignatura",
     "original": "Multi-Signature",
-    "short": "Višestruki potpisi su potrebni; težine + prag određuju izdanje.",
+    "short": "Potrebno je više potpisa; težine + prag određuju odobrenje.",
     "desc": "U postavci s više potpisa, više ključeva mora potpisati prije nego što akcija postane važeća. Svaki potpisnik ima određenu važnost, a zbir mora zadovoljiti potreban prag. To povećava sigurnost jer jedan ukradeni ključ nije dovoljan."
   },
   "signer": {

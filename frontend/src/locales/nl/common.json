@@ -563,7 +563,7 @@
     "deleteSuccess": "Selectie verwijderd.",
     "countLabel": "Nummer",
     "countInfo": "Aantal nieuwe muxed adressen, opeenvolgende IDs.",
-    "invalidCount": "Voer een geldig nummer in (>= 1).",
+    "invalidCount": "Voer een geldig getal in (>= 1).",
     "tooMany": "Maak er niet meer dan 100 tegelijk.",
     "rangeOverflow": "Het ID-bereik overschrijdt de maximaal toegestane gemultiplexte ID.",
     "label": "Aanwijzing",

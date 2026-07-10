@@ -411,7 +411,7 @@
   "multiSignature": {
     "title": "Multisignature",
     "original": "Multi-Signature",
-    "short": "Multiple signatures required; weights + threshold determine the release.",
+    "short": "Plusieurs signatures requises ; les poids + le seuil déterminent la validation.",
     "desc": "Dans une configuration multi-signatures, plusieurs clés doivent signer avant qu'une action ne devienne valide. Chaque signataire a un poids, et la somme doit atteindre le seuil requis. Cela augmente la sécurité car une seule clé volée n'est pas suffisante."
   },
   "signer": {

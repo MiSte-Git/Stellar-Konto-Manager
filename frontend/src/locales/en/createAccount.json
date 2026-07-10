@@ -32,7 +32,7 @@
     "title": "Important information",
     "secureKeys": {
       "title": "Secure secret key",
-      "text": "The public key can be safely shared – it is like an account number.\n\nThe secret key grants access to your account. Treat it like a password:\n• NEVER store it in cloud services, emails, or insecure notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If the secret key is lost, access to the account is permanently lost"
+      "text": "The public key can be shared safely—it’s like an account number.\n\nThe secret key is the key to your account. Treat it like a password:\n• NEVER store it in cloud services, emails, or unsecured notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If you lose your secret key, access to your account is irretrievably lost"
     },
     "multisigSection": {
       "title": "Multisig (Multi-signature)",

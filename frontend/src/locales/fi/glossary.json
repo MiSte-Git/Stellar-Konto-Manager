@@ -407,7 +407,7 @@
   "multiSignature": {
     "title": "Moniallekirjoitus",
     "original": "Multi-Signature",
-    "short": "Multiple signatures required; weights + threshold determine the release.",
+    "short": "Useita allekirjoituksia vaaditaan; painot + kynnysarvo määrittävät hyväksynnän.",
     "desc": "Moniallekirjoitusjärjestelyssä useiden avainten on allekirjoitettava ennen kuin toiminto tulee päteväksi. Jokaisella allekirjoittajalla on painoarvo, ja summan on täytettävä vaadittu kynnysarvo. Tämä lisää turvallisuutta, koska yksi varastettu avain ei riitä."
   },
   "signer": {

@@ -411,7 +411,7 @@
   "multiSignature": {
     "title": "Multifirma",
     "original": "Multi-Signature",
-    "short": "Multiple signatures required; weights + threshold determine the release.",
+    "short": "Sono necessarie più firme; i pesi + la soglia determinano l'approvazione.",
     "desc": "In una configurazione multi-firma, più chiavi devono firmare prima che un'azione diventi valida. Ogni firmatario ha un peso, e la somma deve raggiungere la soglia richiesta. Questo aumenta la sicurezza perché una singola chiave rubata non è sufficiente."
   },
   "signer": {

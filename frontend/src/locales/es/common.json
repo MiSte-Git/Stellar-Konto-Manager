@@ -563,7 +563,7 @@
     "deleteSuccess": "Selección eliminada.",
     "countLabel": "Número",
     "countInfo": "Número de nuevas direcciones muxed, IDs secuenciales.",
-    "invalidCount": "Por favor, introduce un número válido (>= 1).",
+    "invalidCount": "Introduce un número válido (>= 1).",
     "tooMany": "Por favor, crea no más de 100 a la vez.",
     "rangeOverflow": "El rango de ID excede el ID multiplexado máximo permitido.",
     "label": "Designación",

@@ -45,6 +45,14 @@ Deckt konkret aufgetretene Pipeline-Bugs ab:
    "fb". Konkret beobachtet: --force-key quiz.l1.q2.d.fb (und 44 strukturgleiche
    Keys) schlugen mit "Warnung: erzwungener Schluessel nicht gefunden" fehl, obwohl
    der Key existiert. Siehe DottedFlatKeyPathTests.
+7. Nach einem erfolgreichen (nicht-None) DeepL-Response wurde nie geprueft, ob das
+   Ergebnis sich ueberhaupt vom Quelltext unterscheidet. Ein Response, der den
+   Ausgangstext unveraendert zurueckgibt (kein Sonderzeichen ging "verloren", also
+   griff _preserve_special_chars nicht), wurde als Erfolg gewertet und der Hash
+   dauerhaft gesperrt - kein spaeterer Lauf hat es je erneut versucht, obwohl Live-
+   Tests zeigen, dass DeepL dieselben Texte heute korrekt uebersetzt (81-Instanzen-
+   Root-Cause-Analyse, 16 von 23 betroffenen Keys ohne jedes Sonderzeichen). Siehe
+   UntranslatedEchoTests.
 
 Nur Standardbibliothek (unittest) - kein pytest/Netzwerk noetig.
 Aufruf: python3 -m unittest test_UpdateSprachdateienBasierendAufDE -v
@@ -631,6 +639,99 @@ class DottedFlatKeyPathTests(unittest.TestCase):
         self.assertEqual(
             en_data["l1"]["q2"]["d"], "A trick.",
             "'d' war nicht angefragt und haette unangetastet bleiben muessen",
+        )
+
+
+class UntranslatedEchoTests(unittest.TestCase):
+    """Bug 7: ein DeepL-Response, der den Quelltext unveraendert zurueckgibt, darf
+    nicht als erfolgreiche Uebersetzung gewertet werden."""
+
+    def test_long_multiword_echo_is_detected(self):
+        source = "The issuer is the Stellar account that issues an asset."
+        translated = source  # DeepL hat nichts veraendert
+        self.assertTrue(usd._looks_like_untranslated_echo(source, translated))
+
+    def test_genuine_translation_is_not_flagged(self):
+        source = "The issuer is the Stellar account that issues an asset."
+        translated = "El emisor es la cuenta de Stellar que emite un activo."
+        self.assertFalse(usd._looks_like_untranslated_echo(source, translated))
+
+    def test_short_single_word_echo_is_not_flagged(self):
+        # Kurze/einwortige Texte (Markennamen, Codes) sind legitim identisch,
+        # z.B. "Stellar", "XLM", "PDF".
+        self.assertFalse(usd._looks_like_untranslated_echo("Stellar", "Stellar"))
+
+    def test_short_multiword_echo_below_threshold_is_not_flagged(self):
+        # "Multisig: N-of-M" (17 Zeichen) liegt bewusst unter ECHO_MIN_LEN - ein
+        # bekannter, hier NICHT abgedeckter Grenzfall (siehe Docstring/Root-Cause).
+        self.assertFalse(usd._looks_like_untranslated_echo("Multisig: N-of-M", "Multisig: N-of-M"))
+
+    def test_whitespace_only_difference_still_counts_as_echo(self):
+        source = "  The issuer is the Stellar account that issues an asset.  "
+        translated = "The issuer is the Stellar account that issues an asset."
+        self.assertTrue(usd._looks_like_untranslated_echo(source, translated))
+
+    def test_echo_is_excluded_from_manifest_and_auto_retried_on_next_normal_run(self):
+        # Bildet den echten Bug nach: EIN normaler (nicht --force-key) Lauf trifft
+        # auf ein Echo, EIN SPAETERER normaler Lauf muss den Key automatisch erneut
+        # versuchen - genau das war vorher kaputt, weil der Hash trotz Echo sofort
+        # gesperrt wurde.
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        base_path = tmp.name
+
+        de_dir = os.path.join(base_path, "de")
+        os.makedirs(de_dir, exist_ok=True)
+        long_text = "This is a sufficiently long multi word sentence for the echo check."
+        with open(os.path.join(de_dir, "testns.json"), "w", encoding="utf-8") as f:
+            json.dump({"a": long_text}, f)
+
+        en_dir = os.path.join(base_path, "en")
+        os.makedirs(en_dir, exist_ok=True)
+        # "a" fehlt in EN noch komplett - erzwingt einen echten Uebersetzungsversuch.
+
+        hash_dir = os.path.join(base_path, ".i18n_hash")
+        os.makedirs(hash_dir, exist_ok=True)
+
+        os.environ["DEEPL_API_KEY"] = "test-key-not-used"
+        self.addCleanup(lambda: os.environ.pop("DEEPL_API_KEY", None))
+
+        def run(translate_side_effect):
+            argv = [
+                "UpdateSprachdateienBasierendAufDE.py",
+                "--provider", "deepl",
+                "--base-path", base_path,
+            ]
+            with mock.patch.object(usd, "translate_text_deepl", side_effect=translate_side_effect), \
+                 mock.patch.object(usd, "HASH_DIR", hash_dir), \
+                 mock.patch.object(sys, "argv", argv):
+                usd.main()
+
+        # Lauf 1: DeepL "antwortet", liefert aber den Quelltext unveraendert zurueck.
+        run(lambda text, target_lang, api_key, api_url=None: text)
+
+        with open(os.path.join(en_dir, "testns.json"), encoding="utf-8") as f:
+            en_after_run1 = json.load(f)
+        self.assertEqual(
+            en_after_run1["a"], long_text,
+            "Der Echo-Wert wird trotzdem geschrieben (Inhalt nicht schlechter als vorher)",
+        )
+        with open(os.path.join(hash_dir, "en_from_de.json"), encoding="utf-8") as f:
+            man_after_run1 = json.load(f)
+        self.assertNotIn(
+            "testns.a", man_after_run1,
+            "Ein Echo darf NICHT als erledigt ins Manifest uebernommen werden",
+        )
+
+        # Lauf 2: DeepL liefert diesmal eine echte Uebersetzung.
+        run(lambda text, target_lang, api_key, api_url=None: f"[{target_lang}] {text}")
+
+        with open(os.path.join(en_dir, "testns.json"), encoding="utf-8") as f:
+            en_after_run2 = json.load(f)
+        self.assertEqual(
+            en_after_run2["a"], f"[en] {long_text}",
+            "Ein spaeterer normaler Lauf muss den zuvor als Echo erkannten Key "
+            "automatisch erneut versuchen, statt ihn fuer immer uebersprungen zu lassen",
         )
 
 

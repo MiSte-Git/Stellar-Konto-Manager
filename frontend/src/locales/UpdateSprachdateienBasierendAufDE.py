@@ -231,6 +231,40 @@ def _preserve_special_chars(
     return translated_str
 
 
+# Mindestlänge, ab der eine wortgleiche "Übersetzung" als verdächtig gilt. Kürzere/
+# einwortige Texte (Markennamen, Codes, URLs) sind legitim sprachübergreifend identisch -
+# z.B. "Multisig: N-of-M" (17 Zeichen) wäre ein echter, aber bewusst NICHT abgedeckter
+# Fall (siehe 81-Instanzen-Root-Cause-Analyse). Das Leerzeichen-Kriterium schließt
+# einzelne technische Tokens zusätzlich aus.
+ECHO_MIN_LEN = 20
+
+
+def _looks_like_untranslated_echo(source: Any, translated: str) -> bool:
+    """
+    Erkennt einen DeepL-Response, der zwar erfolgreich (nicht None) war, aber textlich
+    IDENTISCH zum Ausgangstext ist - keine tatsächliche Übersetzung stattgefunden hat.
+
+    Konkret beobachtet (81-Instanzen-Analyse, "Phase B übersetzt Key für manche Sprachen
+    gar nicht"): 16 von 23 betroffenen Keys enthielten KEIN Sonderzeichen und wurden daher
+    nie von _preserve_special_chars aufgefangen (dort geht nichts "verloren", wenn der
+    komplette Text unverändert zurückkommt). Bisher wurde ein solcher Response als Erfolg
+    gewertet und der Hash dauerhaft gesperrt - kein späterer Lauf hat es je erneut
+    versucht, obwohl Live-Tests zeigen, dass DeepL dieselben Texte heute korrekt übersetzt
+    (reine historische/transiente Modellvarianz, kein reproduzierbarer Bug). Nur
+    ausreichend lange, mehrwortige Texte werden gewertet (siehe ECHO_MIN_LEN), um legitime
+    sprachübergreifend identische kurze Begriffe nicht fälschlich als Fehler zu markieren.
+    """
+    if not isinstance(source, str) or not isinstance(translated, str):
+        return False
+    src = source.strip()
+    tgt = translated.strip()
+    if src != tgt:
+        return False
+    if len(src) < ECHO_MIN_LEN or " " not in src:
+        return False
+    return True
+
+
 # -------- Klammer-Begriffe vor Übersetzung schützen --------
 KEEP_EN_RE = re.compile(r"\(([^()]*)\)")
 # ASCII_EN_ALLOWED prüft nur das ZEICHEN-Alphabet (verhindert Umlaute/Sonderzeichen),
@@ -591,6 +625,11 @@ def merge_keys_missing_or_changed(
                 else:
                     translated = restore_parenthesized_english(translated_raw, placeholders)
                     translated = _preserve_special_chars(value, translated, cur_path, counters, failed_paths)
+                    if _looks_like_untranslated_echo(value, translated):
+                        if counters is not None:
+                            counters['untranslatedEchoKeys'] = counters.get('untranslatedEchoKeys', 0) + 1
+                        failed_paths.add(cur_path)
+                        print(f"INFO: Unübersetztes Echo für {cur_path}: DeepL-Antwort identisch zum Quelltext → nicht als erledigt markiert")
                     out[key] = translated
     return out
 
@@ -652,6 +691,12 @@ def translate_full(
                     else:
                         translated = restore_parenthesized_english(translated_raw, placeholders)
                         translated = _preserve_special_chars(value, translated, cur_path, counters, failed_paths)
+                        if _looks_like_untranslated_echo(value, translated):
+                            if counters is not None:
+                                counters['untranslatedEchoKeys'] = counters.get('untranslatedEchoKeys', 0) + 1
+                            if failed_paths is not None:
+                                failed_paths.add(cur_path)
+                            print(f"INFO: Unübersetztes Echo für {cur_path}: DeepL-Antwort identisch zum Quelltext → nicht als erledigt markiert")
                         target_dict[key] = translated
                 else:
                     target_dict[key] = existing_val
@@ -1019,11 +1064,18 @@ def main():
                 print(f"❌ Abbruch für Sprache {lang} / Namespace {ns_name}: {e}")
                 continue
 
-    print(f"\nZusammenfassung Namespaces: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}, 'preservedSpecialCharKeys': {counters.get('preservedSpecialCharKeys', 0)}}}")
+    print(f"\nZusammenfassung Namespaces: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}, 'preservedSpecialCharKeys': {counters.get('preservedSpecialCharKeys', 0)}, 'untranslatedEchoKeys': {counters.get('untranslatedEchoKeys', 0)}}}")
     if counters.get('preservedSpecialCharKeys', 0) > 0:
         print(
             f"⚠️  {counters['preservedSpecialCharKeys']} Key(s) blieben unübersetzt, weil ein Sonderzeichen "
             "(z.B. Emoji) in der Übersetzung fehlte - siehe die 'Bewahre Sonderzeichen'-Zeilen oben. "
+            "Diese Keys wurden NICHT als erledigt ins Manifest übernommen und werden beim nächsten Lauf "
+            "automatisch erneut versucht."
+        )
+    if counters.get('untranslatedEchoKeys', 0) > 0:
+        print(
+            f"⚠️  {counters['untranslatedEchoKeys']} Key(s) blieben unübersetzt, weil DeepL den Quelltext "
+            "unverändert zurückgab - siehe die 'Unübersetztes Echo'-Zeilen oben. "
             "Diese Keys wurden NICHT als erledigt ins Manifest übernommen und werden beim nächsten Lauf "
             "automatisch erneut versucht."
         )

@@ -32,7 +32,7 @@
     "title": "Informazioni importanti",
     "secureKeys": {
       "title": "Chiave segreta sicura",
-      "text": "La chiave pubblica può essere condivisa in sicurezza – è come un numero di conto.\n\nLa chiave segreta consente l'accesso al tuo conto. Trattala come una password:\n• NON conservarla mai in servizi cloud, e-mail o note non sicure\n• Trascrivila su carta o utilizza un portafoglio hardware\n• Crea più copie di backup e conservale in posizioni sicure e separate\n• Se la chiave segreta viene persa, l'accesso al conto è perso per sempre"
+      "text": "La chiave pubblica può essere condivisa in tutta sicurezza: è come un numero di conto.\n\nLa chiave segreta è la chiave di accesso al tuo account. Trattala come una password:\n• NON conservarla MAI su servizi cloud, nelle e-mail o in appunti non protetti\n• Annotala su carta o utilizza un portafoglio hardware\n• Crea più copie di backup e conservale in luoghi sicuri e separati\n• Se perdi la tua chiave segreta, l’accesso al tuo conto andrà irrimediabilmente perso"
     },
     "multisigSection": {
       "title": "Multisig (Firma multipla)",

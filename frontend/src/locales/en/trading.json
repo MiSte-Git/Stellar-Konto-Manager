@@ -225,7 +225,7 @@
       "combinedWarning": "This transaction creates the trustline first and executes the swap afterwards. The route is checked again directly before signing.",
       "combinedContinue": "Continue to signature",
       "combinedOnlyXlm": "The combined flow is only available for XLM -> token here.",
-      "authRequiredCombinedBlocked": "Combined trustline+swap is disabled for auth_required assets because the issuer must authorize the new trustline first.",
+      "authRequiredCombinedBlocked": "Combined Trustline+Swap is disabled for auth_required assets because the issuer must first authorize the new Trustline.",
       "invalidLimit": "Please enter a valid trustline limit greater than 0.",
       "limitBelowExpected": "The trustline limit is below the expected received amount.",
       "alreadyPresent": "The trustline already exists now. Please reload and use the normal swap.",

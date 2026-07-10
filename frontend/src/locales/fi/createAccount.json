@@ -32,7 +32,7 @@
     "title": "Tärkeää tietoa",
     "secureKeys": {
       "title": "Turvallinen salausavain",
-      "text": "Julkinen avain voidaan jakaa turvallisesti – se on kuin tilinumero.\n\nSalainen avain antaa pääsyn tiliisi. Kohtele sitä kuin salasanaa:\n• ÄLÄ KOSKAAN tallenna sitä pilvipalveluihin, sähköposteihin tai turvattomiin muistiinpanoihin\n• Kirjoita se paperille tai käytä laitteistolompakkoa\n• Luo useita varmuuskopioita ja säilytä ne turvallisissa, erillisissä paikoissa\n• Jos salainen avain katoaa, pääsy tilille menetetään pysyvästi"
+      "text": "Julkista avainta voi jakaa turvallisesti – se on kuin tilinumero.\n\nSalainen avain on avain tilillesi. Käsittele sitä kuin salasanaa:\n• ÄLÄ KOSKAAN tallenna sitä pilvipalveluihin, sähköposteihin tai suojaamattomiin muistiinpanoihin\n• Kirjoita se paperille tai käytä laitteistolompakkoa\n• Luo useita varmuuskopioita ja säilytä ne turvallisissa, erillisissä paikoissa\n• Jos menetät salaisen avaimesi, pääsy tilillesi menetetään lopullisesti"
     },
     "multisigSection": {
       "title": "Multisig (Moniallekirjoitus)",

@@ -25,7 +25,7 @@
     "title": "Tärkeä tieto",
     "secureKeys": {
       "title": "Turvallinen salausavain",
-      "text": "Julkinen avain voidaan jakaa turvallisesti – se on kuin tilinumero.\n\nSalainen avain on pääsy tilillesi. Kohtele sitä kuin salasanaa:\n• ÄLÄ koskaan tallenna sitä pilvipalveluihin, sähköposteihin tai epävarmoihin muistiinpanoihin\n• Kirjoita se paperille tai käytä laitteistolompakkoa\n• Tee useita varmuuskopioita ja säilytä ne turvallisissa, erillisissä paikoissa\n• Jos salainen avain katoaa, pääsy tilille menetetään peruuttamattomasti"
+      "text": "Julkista avainta voi jakaa turvallisesti – se on kuin tilinumero.\\n\\nSalainen avain on pääsy tilillesi. Käsittele sitä kuin salasanaa:\\n• ÄLÄ KOSKAAN tallenna sitä pilvipalveluihin, sähköposteihin tai suojaamattomiin muistiinpanoihin\\n• Kirjoita se paperille tai käytä laitteistolompakkoa\\n• Luo useita varmuuskopioita ja säilytä ne turvallisissa, erillisissä paikoissa\\n• Jos menetät salaisen avaimesi, pääsy tilillesi menetetään lopullisesti"
     },
     "multisigSection": {
       "title": "Moniallekirjoitus",
