@@ -463,7 +463,9 @@
         "noTrustline": "El destinatario aún no dispone de una línea de confianza para {{asset}}; el pago no se podría realizar.",
         "notAuthorized": "El destinatario dispone de una línea de crédito para {{asset}}, pero el emisor aún no la ha autorizado, por lo que el pago no se podría realizar."
       },
-      "muxedActivationCapture": "La cuenta se ha activado; se ha aplicado una comisión mínima adicional por la transacción para registrar también el ID multiplexado en la cadena de bloques."
+      "muxedActivationCapture": "La cuenta se ha activado; se ha aplicado una comisión mínima adicional por la transacción para registrar también el ID multiplexado en la cadena de bloques.",
+      "muxedActivationCaptureXdr": "Esta transacción consta de dos operaciones (activación de la cuenta + asignación multiplexada) y, por lo tanto, conlleva dos comisiones de transacción.",
+      "muxedActivationCaptureJob": "Esta operación conlleva dos pasos (activación de la cuenta + asignación multiplexada) y, por lo tanto, conlleva dos comisiones por operación."
     }
   },
   "activation": {

@@ -463,7 +463,9 @@
         "noTrustline": "Primatelj još nema trustline za {{asset}} – plaćanje bi propalo.",
         "notAuthorized": "Primatelj ima trustline za {{asset}}, ali izdavatelj ga još nije autorizirao – plaćanje bi propalo."
       },
-      "muxedActivationCapture": "Račun je aktiviran; naplaćena je dodatna minimalna naknada za transakciju kako bi se muxed ID zabilježio na lancu."
+      "muxedActivationCapture": "Račun je aktiviran; naplaćena je dodatna minimalna naknada za transakciju kako bi se muxed ID zabilježio na lancu.",
+      "muxedActivationCaptureXdr": "Ova transakcija uključuje dvije operacije (aktivaciju računa + muxed alokaciju) i stoga podliježe dvjema naknadama za transakciju.",
+      "muxedActivationCaptureJob": "Ovaj posao uključuje dvije operacije (aktivaciju računa + dodjelu multipleksa) i stoga podliježe dvjema naknadama za operacije."
     }
   },
   "activation": {

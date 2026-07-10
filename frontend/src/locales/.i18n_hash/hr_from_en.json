@@ -5032,5 +5032,7 @@
   "xlmByMemo.wrongMemos.hint": "dc21fff4977ce0c3b7089054217da0ea20bc434ca616c2c79bfe6f8df130dc0f",
   "xlmByMemo.wrongMemos.scanning": "29dbf957e8c87fc5d621b54188ebb0610938bcdb7512c9e1eaa804a08b86491b",
   "xlmByMemo.wrongMemos.summary": "1dd3dffd155cc68fbac5f96bf7648c2fbf9835ceb4982d30635bd8d47a362450",
-  "xlmByMemo.wrongMemos.title": "909de34df295c4d859b22b2455dc957a1e3ef14ab57631eda5cb570e25647cb5"
+  "xlmByMemo.wrongMemos.title": "909de34df295c4d859b22b2455dc957a1e3ef14ab57631eda5cb570e25647cb5",
+  "common.payment.send.muxedActivationCaptureXdr": "c278f4f65ca4b2934365610a9966b4ec620a5d06f4b77917b1e563a1850fc829",
+  "common.payment.send.muxedActivationCaptureJob": "efbff362a38e6159b4492f4fd63c3876aea297833bdbff5586d07512576eded0"
 }

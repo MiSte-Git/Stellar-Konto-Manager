@@ -463,7 +463,9 @@
         "noTrustline": "Vastaanottajalla ei ole vielä luottolinjaa kohteelle {{asset}} – maksu epäonnistuisi.",
         "notAuthorized": "Vastaanottajalla on luottoraja {{asset}}:lle, mutta myöntäjä ei ole vielä hyväksynyt sitä – maksu epäonnistuisi."
       },
-      "muxedActivationCapture": "Tili on aktivoitu; lisäksi perittiin vähäinen lisämaksu, jotta myös yhdistetty tunnus (muxed ID) kirjattiin lohkoketjuun."
+      "muxedActivationCapture": "Tili on aktivoitu; lisäksi perittiin vähäinen lisämaksu, jotta myös yhdistetty tunnus (muxed ID) kirjattiin lohkoketjuun.",
+      "muxedActivationCaptureXdr": "Tämä tapahtuma koostuu kahdesta toiminnosta (tilin aktivointi + muxed-allokaatio), minkä vuoksi siitä peritään kaksi transaktiomaksua.",
+      "muxedActivationCaptureJob": "Tähän tehtävään liittyy kaksi toimenpidettä (tilin aktivointi + muxed-määritys), minkä vuoksi siitä peritään kaksi käsittelymaksua."
     }
   },
   "activation": {

@@ -469,6 +469,8 @@
       },
       "activated": "Das Zielkonto wurde aktiviert.",
       "muxedActivationCapture": "Konto wurde aktiviert; zusätzlich ist eine minimale Transaktionsgebühr angefallen, um die Muxed-ID ebenfalls on-chain zu erfassen.",
+      "muxedActivationCaptureXdr": "Diese Transaktion enthält zwei Operationen (Kontoaktivierung + Muxed-Zuordnung) und kostet entsprechend zwei Operationsgebühren.",
+      "muxedActivationCaptureJob": "Dieser Job enthält zwei Operationen (Kontoaktivierung + Muxed-Zuordnung) und kostet entsprechend zwei Operationsgebühren.",
       "ambiguousResult": {
         "title": "Status unklar – nicht erneut senden",
         "body": "Die Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.",

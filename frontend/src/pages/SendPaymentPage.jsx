@@ -941,6 +941,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             },
             hash: hashHex,
             xdr,
+            muxedActivationCapture: meta.muxedActivationCapture,
           });
           closeConfirmDialogs();
         } catch (err) {
@@ -1122,6 +1123,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             jobId,
             hash: jobHash,
             xdr: jobXdr,
+            muxedActivationCapture: meta.muxedActivationCapture,
           });
           closeConfirmDialogs();
         } catch (err) {
@@ -2248,6 +2250,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 {t('multisig:confirm.result.job.status')}
               </div>
             )}
+            {resultDialog.type === 'job' && resultDialog.muxedActivationCapture && (
+              <div className="text-sm text-blue-700 dark:text-blue-200 font-medium mb-3">
+                {t('common:payment.send.muxedActivationCaptureJob', 'This job contains two operations (account activation + muxed-ID capture), so it costs two operation fees.')}
+              </div>
+            )}
             {resultDialog.type === 'job' && (
               <div className="flex justify-end mb-3">
                 <button
@@ -2281,6 +2288,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 <div>{t('multisig:confirm.result.xdr.status')}</div>
                 <div>{t('multisig:confirm.result.xdr.noJob')}</div>
                 <div className="text-gray-700 dark:text-gray-200">{t('multisig:confirm.result.xdr.hint')}</div>
+              </div>
+            )}
+            {resultDialog.type === 'xdr' && resultDialog.muxedActivationCapture && (
+              <div className="text-sm text-amber-800 dark:text-amber-200 font-medium mb-3">
+                {t('common:payment.send.muxedActivationCaptureXdr', 'This transaction contains two operations (account activation + muxed-ID capture), so it costs two operation fees.')}
               </div>
             )}
 

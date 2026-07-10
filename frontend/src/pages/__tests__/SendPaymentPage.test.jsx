@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
-import { Account, Keypair } from '@stellar/stellar-sdk';
+import { Account, Keypair, MuxedAccount } from '@stellar/stellar-sdk';
 import i18n from '../../i18n.js';
 import SendPaymentPage from '../SendPaymentPage.jsx';
 
@@ -24,6 +24,9 @@ const ASSET_KEY = `${ASSET_CODE}:${ISSUER_PK}`;
 const FED_WITH_MEMO = 'friend*example.com';
 const FED_NO_MEMO = 'nomemo*example.com';
 const FED_UNMAPPABLE = 'weird*example.com';
+// A real muxed address (base G-account DEST_PK, id 42) - Operation.payment() builds a real
+// XDR operation from this string, so it must decode successfully, not just look M...-shaped.
+const MUXED_DEST = new MuxedAccount(new Account(DEST_PK, '0'), '42').accountId();
 
 // Mutable boxes so individual tests can steer the mocked lookups without re-declaring
 // the whole vi.mock factory (hoisted above this file's other declarations by Vitest).
@@ -653,5 +656,120 @@ describe('pre-submit checks also cover the XDR export path (G3)', () => {
     await driveToXdrExport();
     await screen.findByText('XDR vorbereitet (nicht gesendet)');
     expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('muxedActivationCapture hint surfaces on every result path (G4)', () => {
+  // Muxed destination whose base G-account is not yet funded - buildPaymentTx's
+  // !destExists branch adds the extra 1-stroop payment operation to capture the muxed ID,
+  // and returns meta.muxedActivationCapture = true regardless of which handler called it.
+  function armUnfundedMuxedDestination() {
+    hoisted.resolveOrValidateAccountMock.mockImplementation(async (input) => {
+      if (input === MUXED_DEST) return { accountId: DEST_PK, muxedAddress: MUXED_DEST, address: input };
+      return { accountId: input, muxedAddress: null, address: input };
+    });
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) {
+        const err = new Error('Not Found');
+        err.response = { status: 404 };
+        throw err;
+      }
+      return makeFundedAccount(pk);
+    });
+  }
+
+  it('shows the hint on the "sent" result after a direct (non-multisig) send', async () => {
+    armUnfundedMuxedDestination();
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '1' } });
+    fireEvent.change(destInput(), { target: { value: MUXED_DEST } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Transaktion bestätigen');
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+    // Renders both in the standalone success card and inside the result dialog - either is
+    // proof the hint made it through, so assert on presence rather than a single match.
+    await waitFor(() => expect(screen.getAllByText(/Muxed-ID ebenfalls on-chain/).length).toBeGreaterThan(0));
+  });
+
+  it('does not show the hint on the "sent" result for a plain (non-muxed) activation', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) {
+        const err = new Error('Not Found');
+        err.response = { status: 404 };
+        throw err;
+      }
+      return makeFundedAccount(pk);
+    });
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '1' } });
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Transaktion bestätigen');
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText('Das Zielkonto wurde aktiviert.')).toBeInTheDocument();
+    expect(screen.queryByText(/Muxed-ID ebenfalls on-chain/)).not.toBeInTheDocument();
+  });
+
+  describe('via the multisig confirm modal (job + XDR export)', () => {
+    beforeEach(() => {
+      hoisted.resolveOrValidateAccountMock.mockImplementation(async (input) => {
+        if (input === MUXED_DEST) return { accountId: DEST_PK, muxedAddress: MUXED_DEST, address: input };
+        return { accountId: input, muxedAddress: null, address: input };
+      });
+      hoisted.loadAccountMock.mockImplementation(async (pk) => {
+        if (pk === SENDER.publicKey) {
+          const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+          acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+          return acct;
+        }
+        if (pk === DEST_PK) {
+          const err = new Error('Not Found');
+          err.response = { status: 404 };
+          throw err;
+        }
+        return makeFundedAccount(pk);
+      });
+    });
+
+    async function driveToConfirmModal(radioName) {
+      renderPage();
+      // Unlike the other describe blocks above, this flow never touches the asset <select>
+      // (native XLM), so nothing else forces a wait for the sender's accountInfo to load -
+      // without it, "Senden" can fire before isMultisig (derived from accountInfo) flips
+      // true, taking the single-sig review-dialog branch instead of opening this modal.
+      await waitFor(() => expect(hoisted.loadAccountMock).toHaveBeenCalledWith(SENDER.publicKey));
+      fireEvent.change(amountInput(), { target: { value: '1' } });
+      fireEvent.change(destInput(), { target: { value: MUXED_DEST } });
+      fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+      await screen.findByText('XDR exportieren (nicht senden)');
+      fireEvent.click(screen.getByRole('radio', { name: radioName }));
+      await waitFor(() => expect(screen.getByRole('button', { name: 'Weiter' })).not.toBeDisabled());
+      fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    }
+
+    it('XDR export result dialog shows the two-operations hint', async () => {
+      await driveToConfirmModal(/XDR exportieren/);
+      await screen.findByText('XDR vorbereitet (nicht gesendet)');
+      expect(screen.getByText(/kostet entsprechend zwei Operationsgebühren/)).toBeInTheDocument();
+    });
+
+    it('multisig job result dialog shows the two-operations hint', async () => {
+      const fetchMock = vi.fn(async () => ({
+        ok: true,
+        json: async () => ({ id: 'job-123', txHash: 'deadbeefcafe', txXdrCurrent: 'AAAAAA==' }),
+      }));
+      vi.stubGlobal('fetch', fetchMock);
+      try {
+        await driveToConfirmModal(/Multisig-Job erstellen/);
+        await screen.findByText('Multisig-Job wurde erstellt. Die Transaktion wurde noch nicht gesendet.');
+        expect(screen.getByText(/kostet entsprechend zwei Operationsgebühren/)).toBeInTheDocument();
+      } finally {
+        vi.unstubAllGlobals();
+      }
+    });
   });
 });

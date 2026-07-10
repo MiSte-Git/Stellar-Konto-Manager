@@ -463,7 +463,9 @@
         "title": "Status unclear – do not resend",
         "body": "The transaction could not be confirmed unambiguously by the server (timeout or server error). Please check the transaction hash in an explorer before trying again.",
         "acknowledge": "Status checked – unlock sending again"
-      }
+      },
+      "muxedActivationCaptureXdr": "This transaction involves two operations (account activation + muxed allocation) and therefore incurs two transaction fees.",
+      "muxedActivationCaptureJob": "This job involves two operations (account activation + muxed assignment) and therefore incurs two operation fees."
     }
   },
   "activation": {

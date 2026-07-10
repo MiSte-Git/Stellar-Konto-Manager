@@ -463,7 +463,9 @@
         "noTrustline": "De ontvanger heeft nog geen trustline voor {{asset}} – de betaling zou mislukken.",
         "notAuthorized": "De ontvanger heeft een trustline voor {{asset}}, maar de uitgever heeft deze nog niet goedgekeurd – de betaling zou mislukken."
       },
-      "muxedActivationCapture": "Het account is geactiveerd; er zijn minimale extra transactiekosten in rekening gebracht om ook de gemuxte ID op de blockchain vast te leggen."
+      "muxedActivationCapture": "Het account is geactiveerd; er zijn minimale extra transactiekosten in rekening gebracht om ook de gemuxte ID op de blockchain vast te leggen.",
+      "muxedActivationCaptureXdr": "Deze transactie omvat twee bewerkingen (rekeningactivering + muxed-toewijzing) en er worden daarom twee transactiekosten in rekening gebracht.",
+      "muxedActivationCaptureJob": "Deze opdracht omvat twee handelingen (accountactivering + toewijzing via multiplex) en er worden daarom twee verwerkingskosten in rekening gebracht."
     }
   },
   "activation": {

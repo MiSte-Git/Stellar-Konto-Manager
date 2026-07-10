@@ -463,7 +463,9 @@
         "noTrustline": "Il destinatario non dispone ancora di una linea di fiducia per {{asset}}: il pagamento non andrebbe a buon fine.",
         "notAuthorized": "Il destinatario dispone di una linea di credito per {{asset}}, ma l'emittente non l'ha ancora autorizzata: il pagamento non andrebbe a buon fine."
       },
-      "muxedActivationCapture": "L'account è stato attivato; è stata applicata una commissione minima aggiuntiva per registrare anche l'ID muxed sulla blockchain."
+      "muxedActivationCapture": "L'account è stato attivato; è stata applicata una commissione minima aggiuntiva per registrare anche l'ID muxed sulla blockchain.",
+      "muxedActivationCaptureXdr": "Questa transazione prevede due operazioni (attivazione dell'account + allocazione muxed) e comporta quindi il pagamento di due commissioni di transazione.",
+      "muxedActivationCaptureJob": "Questa operazione prevede due fasi (attivazione dell'account + assegnazione multiplex) e comporta quindi il pagamento di due commissioni operative."
     }
   },
   "activation": {

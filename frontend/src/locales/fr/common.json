@@ -463,7 +463,9 @@
         "noTrustline": "Le destinataire ne dispose pas encore d'une ligne de confiance pour {{asset}} – le paiement échouerait.",
         "notAuthorized": "Le destinataire dispose d'une ligne de confiance pour {{asset}}, mais l'émetteur ne l'a pas encore autorisée : le paiement échouerait."
       },
-      "muxedActivationCapture": "Le compte a été activé ; des frais de transaction minimes supplémentaires ont été appliqués afin d'enregistrer également l'identifiant multiplexé sur la blockchain."
+      "muxedActivationCapture": "Le compte a été activé ; des frais de transaction minimes supplémentaires ont été appliqués afin d'enregistrer également l'identifiant multiplexé sur la blockchain.",
+      "muxedActivationCaptureXdr": "Cette transaction comporte deux opérations (activation du compte + allocation multiplexée) et entraîne donc deux frais de transaction.",
+      "muxedActivationCaptureJob": "Cette opération comprend deux étapes (activation du compte + attribution multiplexée) et donne donc lieu à deux frais d'opération."
     }
   },
   "activation": {
