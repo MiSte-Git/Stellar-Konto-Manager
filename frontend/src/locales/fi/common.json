@@ -465,7 +465,8 @@
       },
       "muxedActivationCapture": "Tili on aktivoitu; lisäksi perittiin vähäinen lisämaksu, jotta myös yhdistetty tunnus (muxed ID) kirjattiin lohkoketjuun.",
       "muxedActivationCaptureXdr": "Tämä tapahtuma koostuu kahdesta toiminnosta (tilin aktivointi + muxed-allokaatio), minkä vuoksi siitä peritään kaksi transaktiomaksua.",
-      "muxedActivationCaptureJob": "Tähän tehtävään liittyy kaksi toimenpidettä (tilin aktivointi + muxed-määritys), minkä vuoksi siitä peritään kaksi käsittelymaksua."
+      "muxedActivationCaptureJob": "Tähän tehtävään liittyy kaksi toimenpidettä (tilin aktivointi + muxed-määritys), minkä vuoksi siitä peritään kaksi käsittelymaksua.",
+      "txTooLateHint": "Tämä voi johtua virheellisestä järjestelmäajasta. Tarkista, ovatko laitteesi päivämäärä ja kellonaika oikein – ota tarvittaessa käyttöön automaattinen ajan synkronointi."
     }
   },
   "activation": {

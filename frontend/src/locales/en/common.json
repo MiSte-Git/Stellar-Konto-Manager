@@ -465,7 +465,8 @@
         "acknowledge": "Status checked – unlock sending again"
       },
       "muxedActivationCaptureXdr": "This transaction involves two operations (account activation + muxed allocation) and therefore incurs two transaction fees.",
-      "muxedActivationCaptureJob": "This job involves two operations (account activation + muxed assignment) and therefore incurs two operation fees."
+      "muxedActivationCaptureJob": "This job involves two operations (account activation + muxed assignment) and therefore incurs two operation fees.",
+      "txTooLateHint": "This may be due to an incorrect system time. Please check whether the date and time on your device are correct – enable automatic time synchronization if necessary."
     }
   },
   "activation": {

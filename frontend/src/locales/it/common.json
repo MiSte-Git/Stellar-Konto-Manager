@@ -465,7 +465,8 @@
       },
       "muxedActivationCapture": "L'account è stato attivato; è stata applicata una commissione minima aggiuntiva per registrare anche l'ID muxed sulla blockchain.",
       "muxedActivationCaptureXdr": "Questa transazione prevede due operazioni (attivazione dell'account + allocazione muxed) e comporta quindi il pagamento di due commissioni di transazione.",
-      "muxedActivationCaptureJob": "Questa operazione prevede due fasi (attivazione dell'account + assegnazione multiplex) e comporta quindi il pagamento di due commissioni operative."
+      "muxedActivationCaptureJob": "Questa operazione prevede due fasi (attivazione dell'account + assegnazione multiplex) e comporta quindi il pagamento di due commissioni operative.",
+      "txTooLateHint": "Ciò potrebbe essere dovuto a un'ora di sistema errata. Verifica che la data e l'ora sul tuo dispositivo siano corrette; se necessario, attiva la sincronizzazione automatica dell'ora."
     }
   },
   "activation": {

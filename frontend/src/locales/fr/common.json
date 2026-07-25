@@ -465,7 +465,8 @@
       },
       "muxedActivationCapture": "Le compte a été activé ; des frais de transaction minimes supplémentaires ont été appliqués afin d'enregistrer également l'identifiant multiplexé sur la blockchain.",
       "muxedActivationCaptureXdr": "Cette transaction comporte deux opérations (activation du compte + allocation multiplexée) et entraîne donc deux frais de transaction.",
-      "muxedActivationCaptureJob": "Cette opération comprend deux étapes (activation du compte + attribution multiplexée) et donne donc lieu à deux frais d'opération."
+      "muxedActivationCaptureJob": "Cette opération comprend deux étapes (activation du compte + attribution multiplexée) et donne donc lieu à deux frais d'opération.",
+      "txTooLateHint": "Cela peut être dû à une heure système incorrecte. Veuillez vérifier si la date et l'heure de votre appareil sont correctes ; activez la synchronisation automatique de l'heure si nécessaire."
     }
   },
   "activation": {

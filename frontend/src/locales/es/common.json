@@ -465,7 +465,8 @@
       },
       "muxedActivationCapture": "La cuenta se ha activado; se ha aplicado una comisión mínima adicional por la transacción para registrar también el ID multiplexado en la cadena de bloques.",
       "muxedActivationCaptureXdr": "Esta transacción consta de dos operaciones (activación de la cuenta + asignación multiplexada) y, por lo tanto, conlleva dos comisiones de transacción.",
-      "muxedActivationCaptureJob": "Esta operación conlleva dos pasos (activación de la cuenta + asignación multiplexada) y, por lo tanto, conlleva dos comisiones por operación."
+      "muxedActivationCaptureJob": "Esta operación conlleva dos pasos (activación de la cuenta + asignación multiplexada) y, por lo tanto, conlleva dos comisiones por operación.",
+      "txTooLateHint": "Esto puede deberse a que la hora del sistema no es correcta. Comprueba si la fecha y la hora de tu dispositivo son correctas; activa la sincronización automática de la hora si es necesario."
     }
   },
   "activation": {

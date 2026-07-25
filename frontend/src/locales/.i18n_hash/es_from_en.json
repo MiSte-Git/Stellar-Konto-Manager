@@ -5060,5 +5060,6 @@
   "multisig.detail.validUntil.label": "92cd054da773366b41bf8596d9a80361881a1580d794739b0db5cd1b1ff00fe9",
   "multisig.detail.validUntil.unbounded": "2044fbdb55f9238637ff4adbdd07a491f8225a62b4db057bca43b73de9b3abad",
   "multisig.errors.timeboundTooLong": "89682936fe2a30aadc119cbf4dbe688604796b3438cf780d0f7fddc9e233290b",
-  "settings.multisig.timeoutTooHigh": "df95725bdfa2beae2222395ded87b8bd53e94b6eca284b35215d82fa3ce3fbe9"
+  "settings.multisig.timeoutTooHigh": "df95725bdfa2beae2222395ded87b8bd53e94b6eca284b35215d82fa3ce3fbe9",
+  "common.payment.send.txTooLateHint": "ad9ba897a6aa7bd53be911b57189355f3e162e51872f0b9baf35c8be537de362"
 }

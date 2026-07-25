@@ -5060,5 +5060,6 @@
   "multisig.detail.sequenceStatus.label": "3a89bd76ce79a482fdcee00326b09b339959cc3b5d64893deaf5ba73c9c0b6d4",
   "multisig.detail.sequenceStatus.valid": "aaf6de2005a2148ab8f5255ceb69ffd5930f3aa6fd638378977f436a813445a9",
   "multisig.detail.sequenceStatus.dead": "633d13a87b03a145c2080c4e5ab221f11c6f9126885512bbae38018c5c35e131",
-  "settings.multisig.timeoutTooHigh": "82d66312867dd5068fe465a72daa41fa7bef7b35dbc8002e58e9171d75b16da9"
+  "settings.multisig.timeoutTooHigh": "82d66312867dd5068fe465a72daa41fa7bef7b35dbc8002e58e9171d75b16da9",
+  "common.payment.send.txTooLateHint": "f0a2d2b7a9f39f485f572d40e9f330902be2d3724ec37506df01d469eed8afcd"
 }
