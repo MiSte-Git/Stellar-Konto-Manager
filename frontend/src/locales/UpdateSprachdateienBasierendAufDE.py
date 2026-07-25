@@ -36,9 +36,17 @@ def load_json(file: str) -> Dict[str, Any]:
 
 
 def save_json(file: str, data: Dict[str, Any]) -> None:
-    """Speichere eine JSON-Datei."""
+    """Speichere eine JSON-Datei.
+
+    newline="\\n" erzwingt LF-Zeilenenden unabhängig vom Betriebssystem:
+    Ohne dieses Argument übersetzt Python im Textmodus unter Windows jedes
+    \\n beim Schreiben in \\r\\n, obwohl das Repo (.gitattributes: *.json
+    text eol=lf) LF erwartet. Ergebnis war reines CRLF-Rauschen bei jedem
+    Lauf, das git status als "modified" markierte, obwohl sich inhaltlich
+    nichts geändert hatte.
+    """
     try:
-        with open(file, "w", encoding="utf-8") as f:
+        with open(file, "w", encoding="utf-8", newline="\n") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         print(f"💾 Datei gespeichert: {file}")
     except Exception as e:
@@ -474,7 +482,8 @@ def _save_manifest(lang: str, from_pivot: str, data: Dict[str, str]) -> None:
     os.makedirs(HASH_DIR, exist_ok=True)
     path = os.path.join(HASH_DIR, f"{lang}_from_{from_pivot}.json")
     try:
-        with open(path, "w", encoding="utf-8") as f:
+        # newline="\n": siehe save_json() – erzwingt LF statt CRLF unter Windows.
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         print(f"💾 Manifest gespeichert: {path}")
     except Exception as e:
