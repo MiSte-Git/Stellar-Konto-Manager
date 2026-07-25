@@ -376,9 +376,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         const opText = Array.isArray(ops) ? ops.join(', ') : ops;
         codes = codes ? `${codes} / ${opText}` : opText;
       }
+      const hint = tx === 'tx_too_late' ? ` ${t('common:payment.send.txTooLateHint')}` : '';
       return codes
-        ? `${t('common:payment.send.horizonError')} (${codes})`
-        : t('common:payment.send.horizonError');
+        ? `${t('common:payment.send.horizonError')} (${codes})${hint}`
+        : `${t('common:payment.send.horizonError')}${hint}`;
     }
     const status = err?.response?.status;
     if (status === 504) return t('common:payment.send.timeout');
