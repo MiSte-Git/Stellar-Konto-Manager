@@ -124,6 +124,11 @@ function SecretKeyModal({
     });
   }, [minSignerCount]);
 
+  const firstSecretInputRef = useRef(null);
+  useEffect(() => {
+    firstSecretInputRef.current?.focus();
+  }, []);
+
   // initialSecretValues resolves asynchronously in the parent (decrypting remembered
   // session secrets is itself async), so it almost never has data yet on this component's
   // first render - the useState(() => ...) lazy initializer above only ever sees the empty
@@ -303,6 +308,7 @@ function SecretKeyModal({
           {secretInputs.map((val, idx) => (
             <input
               key={idx}
+              ref={idx === 0 ? firstSecretInputRef : undefined}
               type={showSecret ? 'text' : 'password'}
               value={val}
               onChange={(e) => {

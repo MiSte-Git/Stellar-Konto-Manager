@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useStory } from "./StoryContext";
@@ -26,6 +26,15 @@ function truncateKey(key) {
   return `${key.slice(0, 8)}…${key.slice(-8)}`;
 }
 
+// Named variants (instead of inline animate/exit objects) so onAnimationComplete's
+// `definition` argument is the label string "visible"/"exit" - lets us focus only
+// after the enter animation, not after AnimatePresence's exit animation.
+const panelVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 14 },
+  visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 28 } },
+  exit: { opacity: 0, scale: 0.95 },
+};
+
 // ─── PaymentDialog ────────────────────────────────────────────────────────────
 
 /**
@@ -52,6 +61,7 @@ export default function PaymentDialog({
   const [destination, setDestination] = useState(defaultPreset);
   const [selectedPreset, setSelectedPreset] = useState(defaultPreset || null);
   const [senderCopied, setSenderCopied] = useState(false);
+  const destinationInputRef = useRef(null);
 
   const validation = validateDestination(destination, sourcePublicKey);
 
@@ -123,10 +133,13 @@ export default function PaymentDialog({
       }}
     >
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 14 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ type: "spring", stiffness: 300, damping: 28 }}
+        variants={panelVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        onAnimationComplete={(definition) => {
+          if (definition === "visible") destinationInputRef.current?.focus();
+        }}
         style={{
           background: "linear-gradient(160deg, #1a1a2e, #0f1a2e)",
           border: "1px solid rgba(255,255,255,0.12)",
@@ -223,6 +236,7 @@ export default function PaymentDialog({
           {/* Manual input */}
           <div style={{ position: "relative" }}>
             <input
+              ref={destinationInputRef}
               type="text"
               value={destination}
               onChange={handleDestinationChange}

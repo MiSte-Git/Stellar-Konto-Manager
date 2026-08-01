@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { buildPath } from '../utils/basePath.js';
@@ -24,6 +24,7 @@ export default function SmallAdminLink() {
   const [portalRoot, setPortalRoot] = useState(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error, setError] = useState(null);
+  const secretInputRef = useRef(null);
 
   // Öffnet das Modal mit leerem Eingabefeld.
   const handleLinkClick = (event) => {
@@ -77,6 +78,12 @@ export default function SmallAdminLink() {
     };
   }, [isOpen]);
 
+  // autoFocus allein greift bei portal-gerenderten, bedingt gemounteten Dialogen
+  // unzuverlässig, deshalb Fokus explizit nach dem Öffnen setzen.
+  useEffect(() => {
+    if (isOpen) secretInputRef.current?.focus();
+  }, [isOpen]);
+
   const linkLabel = t(ADMIN_NAV[0].labelKey);
 
   return (
@@ -108,12 +115,12 @@ export default function SmallAdminLink() {
             <label className="block text-xs mb-1">{t('common:bugReport.admin.enterSecret')}</label>
             <div className="relative mb-4">
               <input
+                ref={secretInputRef}
                 type={showSecret ? 'text' : 'password'}
                 className="w-full border rounded px-2 py-2 pr-10"
                 placeholder={t('common:bugReport.admin.secretPlaceholder')}
                 value={secret}
                 onChange={(e) => setSecret(e.target.value)}
-                autoFocus
               />
               <button
                 type="button"

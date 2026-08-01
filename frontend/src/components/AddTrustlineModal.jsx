@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 function AddTrustlineModal({ onSubmit, onCancel }) {
@@ -7,6 +7,11 @@ function AddTrustlineModal({ onSubmit, onCancel }) {
   const [issuer, setIssuer] = useState('');
   const [limit, setLimit] = useState('1000000');
   const [error, setError] = useState('');
+  const assetCodeInputRef = useRef(null);
+
+  useEffect(() => {
+    assetCodeInputRef.current?.focus();
+  }, []);
 
   const handleSubmit = () => {
     const trimmedCode = String(code ?? '').trim();
@@ -46,6 +51,7 @@ function AddTrustlineModal({ onSubmit, onCancel }) {
           <div>
             <label className="block text-sm font-semibold mb-1">{t('trustline:add.assetCodeLabel')}</label>
             <input
+              ref={assetCodeInputRef}
               type="text"
               value={code}
               onChange={(e) => setCode(e.target.value)}
