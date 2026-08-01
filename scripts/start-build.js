@@ -93,6 +93,7 @@ function checkNodeAndNpm() {
 
   const npmVersion = runCapture(npmCmd(), ["--version"], {
     stdio: ["ignore", "pipe", "pipe"],
+    shell: true,
   });
   if (npmVersion.status !== 0) {
     console.error("npm is required but was not found.");
@@ -191,7 +192,7 @@ async function main() {
       {
         cwd: frontendDir,
         env: { ...process.env, BASE_REF: baseRef },
-        shell: false,
+        shell: true,
       }
     );
   }
@@ -216,7 +217,7 @@ async function main() {
   await run(npmCmd(), ["run", "build"], {
     cwd: frontendDir,
     env: process.env,
-    shell: false,
+    shell: true,
   });
 }
 
