@@ -1,7 +1,8 @@
 {
   "label": "Chiave pubblica o indirizzo di federazione",
   "placeholder": "Inserisci la tua chiave pubblica o un indirizzo di federazione.",
-  "load": "Negozio",
+  "load": "Carica",
+  "loadHint": "Di solito non necessario: selezionare dall'elenco o premere Invio carica il conto automaticamente. Usa questo pulsante come alternativa o per ricaricare il saldo.",
   "deleteFromList": "Rimuovi dall'elenco",
   "source": "Fonte",
   "destination": {

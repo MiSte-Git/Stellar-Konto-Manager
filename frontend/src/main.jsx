@@ -1065,8 +1065,8 @@ function Main() {
                 <button
                   type="submit"
                   disabled={isLoading || !walletHeaderInput.trim()}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-                  title="Wallet übernehmen"
+                  className="bg-blue-600 text-white px-3 py-1 text-sm rounded hover:bg-blue-700 disabled:opacity-50"
+                  title={t('publicKey:loadHint', 'Normalerweise nicht nötig: Auswahl aus der Liste oder Enter lädt das Konto automatisch. Nutze diesen Button als Fallback oder um den Kontostand neu zu laden.')}
                 >
                   {t('publicKey:load')}
                 </button>

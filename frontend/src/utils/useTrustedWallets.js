@@ -5,14 +5,29 @@ import { isTestnetAccount } from './stellar/accountUtils.js';
 
 const LS_KEY = 'stm_trusted_wallets';
 
+// Several components mounted on the same page each call useTrustedWallets()
+// independently (the wallet header, SendPaymentPage, the Settings editor) and
+// every call keeps its own React state. Without this event, editing the list
+// in one of them (e.g. Settings) never updates what another one (e.g. the
+// header's Föderationsadresse/Label) displays until that other component
+// remounts. Mirrors the INPUT_HISTORY_CHANGED_EVENT pattern in inputHistory.js.
+export const TRUSTED_WALLETS_CHANGED_EVENT = 'skm:trusted-wallets-changed';
+
+function emitTrustedWalletsChanged() {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent(TRUSTED_WALLETS_CHANGED_EVENT));
+}
+
+function readTrustedWalletsFromStorage() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* noop */ }
+  return defaultTrusted || { wallets: [] };
+}
+
 export function useTrustedWallets() {
-  const [data, setData] = useState(() => {
-    try {
-      const raw = localStorage.getItem(LS_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch { /* noop */ }
-    return defaultTrusted || { wallets: [] };
-  });
+  const [data, setData] = useState(() => readTrustedWalletsFromStorage());
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -20,6 +35,14 @@ export function useTrustedWallets() {
       localStorage.setItem(LS_KEY, JSON.stringify(data));
     } catch { /* noop */ }
   }, [data]);
+
+  // Re-reads from storage (not via setWallets) whenever another instance on this
+  // page reports a change, so this effect can never trigger another emit itself.
+  useEffect(() => {
+    const handleExternalChange = () => setData(readTrustedWalletsFromStorage());
+    window.addEventListener(TRUSTED_WALLETS_CHANGED_EVENT, handleExternalChange);
+    return () => window.removeEventListener(TRUSTED_WALLETS_CHANGED_EVENT, handleExternalChange);
+  }, []);
 
   const wallets = useMemo(() => Array.isArray(data?.wallets) ? data.wallets : [], [data]);
 
@@ -48,6 +71,7 @@ export function useTrustedWallets() {
       const annotated = await loadAccountsWithTestnetFlag(incoming);
       const shape = { wallets: annotated };
       setData(shape);
+      emitTrustedWalletsChanged();
     } catch (e) {
       setError(e?.message || 'settings.trustedWallets.editor.parseError');
     }

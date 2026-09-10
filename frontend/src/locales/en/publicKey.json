@@ -1,7 +1,8 @@
 {
   "label": "Public key or federation address",
   "placeholder": "Enter your public key or a federation address.",
-  "load": "Shop",
+  "load": "Load",
+  "loadHint": "Usually not needed: selecting from the list or pressing Enter loads the account automatically. Use this button as a fallback or to reload the balance.",
   "deleteFromList": "Remove from list",
   "source": "Source",
   "destination": {

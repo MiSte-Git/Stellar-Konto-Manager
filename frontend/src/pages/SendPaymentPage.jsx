@@ -400,7 +400,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     setStatus(payload.hash);
     setSentInfo({
       account: publicKey,
+      sourceFederation: payload.sourceFederation || '',
+      sourceLabel: payload.sourceLabel || '',
       recipient: payload.recipient,
+      recipientFederation: payload.recipientFederation || '',
+      recipientLabel: payload.recipientLabel || '',
       amount: Number(payload.amountDisplay),
       amountDisplay: payload.amountDisplay,
       asset: payload.asset,
@@ -518,10 +522,24 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     if (!summary) return [];
     const items = [
       { label: t('common:account.source', 'Quelle'), value: summary.source },
-      { label: t('common:payment.send.recipient'), value: summary.recipient },
+    ];
+    if (summary.sourceFederation) {
+      items.push({ label: t('wallet:federationDisplay.label', 'Föderationsadresse'), value: summary.sourceFederation });
+    }
+    if (summary.sourceLabel) {
+      items.push({ label: t('wallet:federationDisplay.accountLabel', 'Label'), value: summary.sourceLabel });
+    }
+    items.push({ label: t('common:payment.send.recipient'), value: summary.recipient });
+    if (summary.recipientFederation) {
+      items.push({ label: t('wallet:federationDisplay.label', 'Föderationsadresse'), value: summary.recipientFederation });
+    }
+    if (summary.recipientLabel) {
+      items.push({ label: t('wallet:federationDisplay.accountLabel', 'Label'), value: summary.recipientLabel });
+    }
+    items.push(
       { label: t('common:payment.send.amount'), value: summary.amount },
       { label: t('common:payment.send.memo'), value: summary.memo || '-' },
-    ];
+    );
     if (summary.network) {
       items.push({ label: t('common:networkLabel', 'Netzwerk'), value: formatNetworkLabel(summary.network) });
     }
@@ -1362,13 +1380,18 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         : null;
       const amountEnteredDisplay = amountFmt.format(desiredAmount);
       const amountToSendDisplay = amountFmt.format(adjustedAmount ?? desiredAmount);
+      const sourceInfo = findWalletInfo(walletInfoMap, publicKey) || {};
       setReviewDialog({
         open: true,
         signers: Array.isArray(signers) ? signers.filter(Boolean) : [],
         preflight: preflightResult || null,
         snapshot: {
           source: publicKey,
+          sourceFederation: sourceInfo.federation || '',
+          sourceLabel: sourceInfo.label || '',
           recipient: preflightResult?.resolvedDest || (dest || '').trim(),
+          recipientFederation: recipientFederationDisplay || '',
+          recipientLabel: recipientLabel || '',
           amountDisplay: amountEnteredDisplay,
           amountEntered: amountEnteredDisplay,
           amountToSend: amountToSendDisplay,
@@ -1386,7 +1409,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     } catch (e) {
       setError(e?.message || t('errors:unknown', 'Unbekannter Fehler'));
     }
-  }, [amountFmt, assetKey, buildMemoObject, dest, netLabel, normalizeAmountValue, publicKey, recipientCompromised, recipientDeactivated, t]);
+  }, [amountFmt, assetKey, buildMemoObject, dest, netLabel, normalizeAmountValue, publicKey, recipientCompromised, recipientDeactivated, recipientFederationDisplay, recipientLabel, t, walletInfoMap]);
 
   const openSentResultDialog = useCallback((result) => {
     if (!result) return;
@@ -1394,7 +1417,11 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       type: 'sent',
       summary: {
         source: publicKey,
+        sourceFederation: result.sourceFederation || '',
+        sourceLabel: result.sourceLabel || '',
         recipient: result.recipient,
+        recipientFederation: result.recipientFederation || '',
+        recipientLabel: result.recipientLabel || '',
         amount: `${result.amountDisplay} ${result.asset}`,
         memo: result.memo || '-',
         network: result.network,
@@ -1414,8 +1441,16 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         setReviewProcessing(true);
         setIsProcessing(true);
         const result = await submitPayment(reviewDialog.signers);
-        applySendResult(result);
-        openSentResultDialog(result);
+        const reviewSnapshot = reviewDialog.snapshot || {};
+        const resultWithWalletInfo = {
+          ...result,
+          sourceFederation: reviewSnapshot.sourceFederation,
+          sourceLabel: reviewSnapshot.sourceLabel,
+          recipientFederation: reviewSnapshot.recipientFederation,
+          recipientLabel: reviewSnapshot.recipientLabel,
+        };
+        applySendResult(resultWithWalletInfo);
+        openSentResultDialog(resultWithWalletInfo);
         closeReviewDialog();
         setSecretError('');
       } catch (err) {
@@ -1683,7 +1718,20 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         <div className="text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-3 max-w-4xl mx-auto">
           <div className="font-semibold mb-1">{t('common:payment.send.successShort', 'Erfolgreich gesendet')}</div>
           <div className="space-y-0.5">
+            <div><span className="text-gray-600 dark:text-gray-400">{t('common:account.source', 'Quelle')}:</span> <span className="font-mono break-all">{sentInfo.account}</span></div>
+            {sentInfo.sourceFederation && (
+              <div><span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.label', 'Föderationsadresse')}:</span> <span className="font-mono break-all">{sentInfo.sourceFederation}</span></div>
+            )}
+            {sentInfo.sourceLabel && (
+              <div><span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.accountLabel', 'Label')}:</span> {sentInfo.sourceLabel}</div>
+            )}
             <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span> <span className="font-mono break-all">{sentInfo.recipient}</span></div>
+            {sentInfo.recipientFederation && (
+              <div><span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.label', 'Föderationsadresse')}:</span> <span className="font-mono break-all">{sentInfo.recipientFederation}</span></div>
+            )}
+            {sentInfo.recipientLabel && (
+              <div><span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.accountLabel', 'Label')}:</span> {sentInfo.recipientLabel}</div>
+            )}
             <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.amount')}:</span> {sentAmountText || '0'} {sentInfo.asset}</div>
             <div><span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.memo')}:</span> {sentInfo.memo || '-'}</div>
             {sentInfo.activated && (
@@ -2087,10 +2135,34 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 <span className="text-gray-600 dark:text-gray-400">{t('common:account.source', 'Quelle')}:</span>
                 <span className="font-mono break-all text-right">{reviewDialog.snapshot?.source}</span>
               </div>
+              {reviewDialog.snapshot?.sourceFederation && (
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.label', 'Föderationsadresse')}:</span>
+                  <span className="font-mono break-all text-right">{reviewDialog.snapshot.sourceFederation}</span>
+                </div>
+              )}
+              {reviewDialog.snapshot?.sourceLabel && (
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.accountLabel', 'Label')}:</span>
+                  <span className="text-right">{reviewDialog.snapshot.sourceLabel}</span>
+                </div>
+              )}
               <div className="flex items-start justify-between gap-2">
                 <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.recipient')}:</span>
                 <span className="font-mono break-all text-right">{reviewDialog.snapshot?.recipient}</span>
               </div>
+              {reviewDialog.snapshot?.recipientFederation && (
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.label', 'Föderationsadresse')}:</span>
+                  <span className="font-mono break-all text-right">{reviewDialog.snapshot.recipientFederation}</span>
+                </div>
+              )}
+              {reviewDialog.snapshot?.recipientLabel && (
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.accountLabel', 'Label')}:</span>
+                  <span className="text-right">{reviewDialog.snapshot.recipientLabel}</span>
+                </div>
+              )}
               <div className="flex items-start justify-between gap-2">
                 <span className="text-gray-600 dark:text-gray-400">{t('common:payment.send.amount')}:</span>
                 <span className="text-right">

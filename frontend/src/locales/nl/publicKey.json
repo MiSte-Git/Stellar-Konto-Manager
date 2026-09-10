@@ -1,7 +1,8 @@
 {
   "label": "Openbare sleutel of federatieadres",
   "placeholder": "Voer uw openbare sleutel of een federatieadres in.",
-  "load": "Winkel",
+  "load": "Laden",
+  "loadHint": "Meestal niet nodig: een selectie uit de lijst of op Enter drukken laadt het account automatisch. Gebruik deze knop als terugvaloptie of om het saldo opnieuw te laden.",
   "deleteFromList": "Verwijderen uit lijst",
   "source": "Bron",
   "destination": {

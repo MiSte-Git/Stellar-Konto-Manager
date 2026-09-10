@@ -2,6 +2,7 @@
   "label": "Public Key oder Föderationsadresse",
   "placeholder": "Gib deinen Public Key oder eine Föderationsadresse ein",
   "load": "Laden",
+  "loadHint": "Normalerweise nicht nötig: Auswahl aus der Liste oder Enter lädt das Konto automatisch. Nutze diesen Button als Fallback oder um den Kontostand neu zu laden.",
   "deleteFromList": "Aus Liste entfernen",
   "source": "Quelle",
   "destination": {

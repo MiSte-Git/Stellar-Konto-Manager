@@ -1,7 +1,8 @@
 {
   "label": "Clé publique ou adresse de fédération",
   "placeholder": "Entrez votre clé publique ou une adresse de fédération.",
-  "load": "Magasin",
+  "load": "Charger",
+  "loadHint": "Généralement inutile : sélectionner dans la liste ou appuyer sur Entrée charge le compte automatiquement. Utilisez ce bouton en secours ou pour recharger le solde.",
   "deleteFromList": "Supprimer de la liste",
   "source": "Source",
   "destination": {

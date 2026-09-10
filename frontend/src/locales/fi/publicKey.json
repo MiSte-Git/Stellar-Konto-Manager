@@ -1,7 +1,8 @@
 {
   "label": "Julkinen avain tai federaatio-osoite",
   "placeholder": "Syötä julkinen avaimensi tai liittoutuman osoite.",
-  "load": "Kauppa",
+  "load": "Lataa",
+  "loadHint": "Ei yleensä tarpeen: tilin lataa automaattisesti valinta listalta tai Enter-näppäimen painallus. Käytä tätä painiketta varatoimena tai saldon päivittämiseen.",
   "deleteFromList": "Poista luettelosta",
   "source": "Lähde",
   "destination": {
