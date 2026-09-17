@@ -46,6 +46,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Limit-Orders (`manageSellOffer`): Erstellen, eigene offene Orders anzeigen, Stornierung.
 - Orderbook-Tiefe (Bid/Ask) zum gewählten Asset.
 - Multisig-Signing-Unterstützung im Trading-Flow (gleiches Signer-Sammel-Muster wie bei Zahlungen).
+- Referenzkurs XLM ↔ Token in der Token-Detailansicht: Orderbook-Mittelkurs plus simulierter Ausführungspreis (Pfadsuche, Referenzmenge 1), automatisch für das gerade angezeigte Asset, unabhängig von Trustline oder Swap-Eingabe.
 
 ## Architekturüberblick
 - Frontend: React + Vite, Ordner `frontend/`.

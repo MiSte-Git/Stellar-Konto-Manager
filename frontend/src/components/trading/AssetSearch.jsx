@@ -43,6 +43,7 @@ import {
 } from './assetSearchUtils.js';
 import HelpLabel from './HelpLabel.jsx';
 import TokenFactsSummary from './TokenFactsSummary.jsx';
+import TokenExchangeRate from './TokenExchangeRate.jsx';
 import LimitOrdersSection from './LimitOrdersSection.jsx';
 import SwapSection from './SwapSection.jsx';
 import TrustlineSection from './TrustlineSection.jsx';
@@ -53,6 +54,7 @@ import useLimitOffers from './hooks/useLimitOffers.js';
 import useSwapPreview from './hooks/useSwapPreview.js';
 import useTrustlineStatus from './hooks/useTrustlineStatus.js';
 import useAssetFacts from './hooks/useAssetFacts.js';
+import useExchangeRate from './hooks/useExchangeRate.js';
 import useAssetSearch from './hooks/useAssetSearch.js';
 import useTradingAccount from './hooks/useTradingAccount.js';
 import useTradingSubmit from './hooks/useTradingSubmit.js';
@@ -169,6 +171,11 @@ export default function AssetSearch() {
     () => (selectedAsset ? assetFromSearchResult(selectedAsset) : null),
     [selectedAsset]
   );
+  const exchangeRate = useExchangeRate({
+    selectedStellarAsset,
+    network,
+    enabled: tokenFactsExpanded,
+  });
   const numberLocale = i18n.resolvedLanguage || i18n.language || undefined;
   const countFormatter = useMemo(
     () => new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 0 }),
@@ -1260,6 +1267,14 @@ export default function AssetSearch() {
             </button>
             {tokenFactsExpanded && (
               <div className="mt-3">
+                {selectedStellarAsset && !selectedStellarAsset.isNative() && (
+                  <TokenExchangeRate
+                    tokenLabel={formatAssetLabel(selectedStellarAsset)}
+                    exchangeRate={exchangeRate}
+                    ratioFormatter={ratioFormatter}
+                    formatQuoteAge={formatQuoteAge}
+                  />
+                )}
                 <TokenFactsSummary facts={assetFacts} asset={selectedAsset} includeDisclaimer routeStatus={swapRouteStatus} />
               </div>
             )}

@@ -252,6 +252,46 @@ export function sumOrderbookAmount(items = [], limit = 5) {
   return items.slice(0, limit).reduce((sum, item) => sum + (parseHorizonNumber(item?.amount) || 0), 0);
 }
 
+// Mid-price of the native DEX order book for a base/counter pair, in both
+// directions. `orderbook` is a raw Horizon `/order_book` response for
+// (base=Asset.native(), counter=<token>) - the same call direction already
+// used elsewhere for the swap-preview market data, so "price" here is
+// counter-per-base (token per XLM), matching that existing usage. Falls back
+// to whichever single side (bid or ask) is present when there is no two-sided
+// market yet; returns nulls (never a division-by-zero) when the book is
+// completely empty, which callers show as "no active liquidity" rather than
+// an error - the token trust principle applies to this widget too.
+export function deriveOrderbookMidRate(orderbook) {
+  const bids = Array.isArray(orderbook?.bids) ? orderbook.bids : [];
+  const asks = Array.isArray(orderbook?.asks) ? orderbook.asks : [];
+  const bestBid = getOfferPriceNumber(bids[0]);
+  const bestAsk = getOfferPriceNumber(asks[0]);
+  const baseToCounter = bestBid != null && bestAsk != null
+    ? (bestBid + bestAsk) / 2
+    : (bestBid ?? bestAsk ?? null);
+  return {
+    baseToCounter,
+    counterToBase: baseToCounter ? 1 / baseToCounter : null,
+  };
+}
+
+// Best (highest-yield) destination amount from a Horizon strict-send paths
+// response, for a reference send amount - i.e. the rate a small swap would
+// actually execute at right now. Mirrors the record-selection already used
+// for the real swap preview (handleSwapPreview in AssetSearch.jsx); pulled
+// out here so both the swap preview and the read-only exchange-rate display
+// share one implementation. Returns null (no route) rather than 0, so a
+// missing path is never mistaken for a zero rate.
+export function bestPathDestinationAmount(pathsResponse) {
+  const records = Array.isArray(pathsResponse?.records) ? pathsResponse.records : [];
+  if (!records.length) return null;
+  const best = [...records].sort(
+    (a, b) => Number(b.destination_amount || 0) - Number(a.destination_amount || 0)
+  )[0];
+  const amount = parseHorizonNumber(best?.destination_amount);
+  return amount != null && amount > 0 ? amount : null;
+}
+
 export function calculatePercentChange(next, previous) {
   const current = parseHorizonNumber(next);
   const base = parseHorizonNumber(previous);

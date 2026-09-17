@@ -1,6 +1,11 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { getIssuerLockStatus, getAssetTotalAmountNumber } from '../assetSearchUtils.js';
+import {
+  getIssuerLockStatus,
+  getAssetTotalAmountNumber,
+  deriveOrderbookMidRate,
+  bestPathDestinationAmount,
+} from '../assetSearchUtils.js';
 
 const ISSUER = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
 const OTHER_SIGNER = 'GBXOTHERKEY00000000000000000000000000000000000000000000';
@@ -125,5 +130,58 @@ describe('getAssetTotalAmountNumber', () => {
 
   it('returns null when there is no amount data anywhere (not even 0)', () => {
     expect(getAssetTotalAmountNumber({})).toBe(null);
+  });
+});
+
+describe('deriveOrderbookMidRate', () => {
+  it('averages best bid and best ask when both sides are present', () => {
+    const rate = deriveOrderbookMidRate({
+      bids: [{ price: '10' }],
+      asks: [{ price: '12' }],
+    });
+    expect(rate.baseToCounter).toBe(11);
+    expect(rate.counterToBase).toBeCloseTo(1 / 11);
+  });
+
+  it('falls back to the single available side when the book is one-sided', () => {
+    const bidOnly = deriveOrderbookMidRate({ bids: [{ price: '10' }], asks: [] });
+    expect(bidOnly.baseToCounter).toBe(10);
+
+    const askOnly = deriveOrderbookMidRate({ bids: [], asks: [{ price: '12' }] });
+    expect(askOnly.baseToCounter).toBe(12);
+  });
+
+  it('returns nulls (never a division by zero) for a completely empty book', () => {
+    const rate = deriveOrderbookMidRate({ bids: [], asks: [] });
+    expect(rate.baseToCounter).toBe(null);
+    expect(rate.counterToBase).toBe(null);
+  });
+
+  it('treats a missing/malformed orderbook the same as an empty one', () => {
+    expect(deriveOrderbookMidRate(null)).toEqual({ baseToCounter: null, counterToBase: null });
+    expect(deriveOrderbookMidRate({})).toEqual({ baseToCounter: null, counterToBase: null });
+  });
+});
+
+describe('bestPathDestinationAmount', () => {
+  it('picks the record with the highest destination amount', () => {
+    const amount = bestPathDestinationAmount({
+      records: [
+        { destination_amount: '5.5' },
+        { destination_amount: '9.25' },
+        { destination_amount: '7' },
+      ],
+    });
+    expect(amount).toBe(9.25);
+  });
+
+  it('returns null (not 0) when there are no records, so "no route" is never mistaken for a zero rate', () => {
+    expect(bestPathDestinationAmount({ records: [] })).toBe(null);
+    expect(bestPathDestinationAmount(null)).toBe(null);
+  });
+
+  it('returns null for a non-positive or unparseable destination amount', () => {
+    expect(bestPathDestinationAmount({ records: [{ destination_amount: '0' }] })).toBe(null);
+    expect(bestPathDestinationAmount({ records: [{ destination_amount: 'not-a-number' }] })).toBe(null);
   });
 });

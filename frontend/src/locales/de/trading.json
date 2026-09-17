@@ -58,6 +58,8 @@
       "marketAge": "Alter der geladenen Marktdaten.",
       "bestBid": "Höchstes aktuelles Kaufgebot im Orderbuch.",
       "bestAsk": "Niedrigstes aktuelles Verkaufsangebot im Orderbuch.",
+      "exchangeRateQuick": "Mittelwert aus bestem Kauf- und Verkaufsgebot im nativen Stellar-Orderbook für dieses Paar. Ohne Handelstiefe kann kein Kurs angezeigt werden.",
+      "exchangeRateExecution": "Simulierter Ausführungspreis für eine Referenzmenge von 1 Einheit, inklusive möglicher Zwischenschritte und Liquidity Pools. Größere Beträge können zu einem schlechteren Preis führen (Slippage).",
       "depthCoversAmount": "Zeigt, ob die sichtbare Top-Orderbuch-Tiefe den eingegebenen Betrag abdeckt.",
       "poolCount": "Anzahl gefundener AMM-Liquiditätspools für dieses Handelspaar.",
       "limitOfferDirection": "Legt fest, welches Asset du verkaufst und welches du dafür erhalten möchtest.",
@@ -152,6 +154,17 @@
       "destination": "Ziel",
       "routeRefresh": "Die Route wird direkt vor dem Signieren erneut geprüft. Wenn die frische Quote unter dem hier bestätigten Minimum liegt, wird nicht signiert.",
       "continue": "Weiter zur Signatur"
+    },
+    "exchangeRate": {
+      "title": "Kurs zu XLM",
+      "quickLabel": "Marktkurs (Orderbook-Mitte)",
+      "executionLabel": "Ausführungspreis (Referenzmenge 1)",
+      "loading": "Kurs wird geladen...",
+      "noLiquidity": "Keine aktive Handelstiefe im nativen Orderbuch.",
+      "noRoute": "Kein Zahlungspfad gefunden.",
+      "failed": "Orderbuch konnte nicht geladen werden.",
+      "quoteAge": "Kurs-Alter",
+      "disclaimer": "Nur eine Kursreferenz, keine Bewertung. Bei größeren Beträgen kann der tatsächliche Preis abweichen (Slippage)."
     },
     "market": {
       "title": "Orderbook / AMM",
