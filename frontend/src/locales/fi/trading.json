@@ -105,7 +105,9 @@
       "limitOfferDirection": "Määrittää, minkä omaisuuserän myyt ja minkä omaisuuserän haluat vastaanottaa.",
       "limitOfferAmount": "Se summa, jonka haluat myydä rajoitetussa toimeksiannossa.",
       "limitOfferPrice": "Hinta yhtä myytyä omaisuuserää kohti, ilmaistuna ostetun omaisuuserän valuutassa.",
-      "expertDirectory": "Vertailu stellar.expert-sivuston julkisesti ylläpitämään hakemistoon (kolmas osapuoli). Merkintä on vain vihje, ei todiste aitoudesta tai turvallisuudesta. Puuttuva merkintä ei myöskään ole merkki huijauksesta. Tarkista liikkeeseenlaskijan osoite aina myös sen virallisilta verkkosivuilta."
+      "expertDirectory": "Vertailu stellar.expert-sivuston julkisesti ylläpitämään hakemistoon (kolmas osapuoli). Merkintä on vain vihje, ei todiste aitoudesta tai turvallisuudesta. Puuttuva merkintä ei myöskään ole merkki huijauksesta. Tarkista liikkeeseenlaskijan osoite aina myös sen virallisilta verkkosivuilta.",
+      "exchangeRateQuick": "Tämän valuuttaparin Stellar-pörssin omassa tarjous- ja kysyntäkirjassa ilmoitettujen parhaiden hintojen keskiarvo. Ilman kaupankäynnin syvyyttä hintaa ei voida näyttää.",
+      "exchangeRateExecution": "Simuloitu toteutushinta 1 yksikön viitemäärälle, mukaan lukien mahdolliset välivaiheet ja likviditeettipoolit. Suuremmat määrät voivat johtaa epäedullisempaan hintaan (slippage)."
     },
     "mode": {
       "code": "Omaisuuskoodin haku",
@@ -354,6 +356,17 @@
         "ledgerKnown": "Tunnettu Horizonissa"
       },
       "nextStepHint": "Tunnetaan vain Horizonissa. Tarkista myöntäjä ja luottosuhde ennen luottosuhdelinjan tai vaihdon allekirjoittamista."
+    },
+    "exchangeRate": {
+      "title": "XLM:n hinta",
+      "quickLabel": "Markkinahinta (tilauskirjan keskikohta)",
+      "executionLabel": "Toteutushinta (viitemäärä 1)",
+      "loading": "Kurssia ladataan...",
+      "noLiquidity": "Alkuperäisessä tilauskirjassa ei ole aktiivisia tilauksia.",
+      "noRoute": "Maksutapaa ei löytynyt.",
+      "failed": "Tilauskirjaa ei voitu ladata.",
+      "quoteAge": "Kurssin ikä",
+      "disclaimer": "Tämä on vain suuntaa-antava hinta; se ei ole tarjous. Suuremmilla määrillä todellinen hinta voi vaihdella (hintapoikkeama)."
     }
   }
 }

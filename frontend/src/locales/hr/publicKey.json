@@ -2,7 +2,7 @@
   "label": "Javni ključ ili adresa federacije",
   "placeholder": "Unesite svoj javni ključ ili adresu federacije.",
   "load": "Učitaj",
-  "loadHint": "Obično nije potrebno: odabir s popisa ili pritisak na Enter automatski učitava račun. Koristi ovaj gumb kao rezervnu opciju ili za ponovno učitavanje stanja.",
+  "loadHint": "Obično nije potrebno: odabir opcije s popisa ili pritiskanje Entera automatski učitava račun. Koristite ovo dugme kao rezervnu opciju ili za ponovno učitavanje stanja računa.",
   "deleteFromList": "Ukloni s popisa",
   "source": "Izvor",
   "destination": {

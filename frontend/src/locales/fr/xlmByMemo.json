@@ -64,7 +64,7 @@
     "local": "Fuseau horaire local",
     "note": "La date et l'heure sont interprétées dans le fuseau horaire sélectionné et automatiquement converties en UTC avant la recherche.",
     "utc": "UTC",
-    "window": "Plage horaire UTC utilisée : {{from}} → {{to}} (fin exclue)"
+    "window": "Plage horaire UTC utilisée : {{from}} → {{to}} (fin non incluse)"
   },
   "wrongMemos": {
     "button": "Afficher les portefeuilles avec un mémo incorrect/vide",

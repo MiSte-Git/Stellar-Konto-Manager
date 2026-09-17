@@ -414,7 +414,7 @@
     "title": "Allekirjoittaja",
     "original": "Signer",
     "short": "Julkinen avain painotuksella, osa tilin kokoonpanoa.",
-    "desc": "Allekirjoittaja on painoarvon omaavaan tiliin liitetty julkinen avain. Sen allekirjoitus lasketaan mukaan vaadittavaan kynnysarvoon. Useat allekirjoittajat voivat hyväksyä tapahtuman yhdessä.\n\nAllekirjoittajatyypit:\n- ed25519 (normaali avain)\n- hashX (hash-malli)\n- preAuthTx (ennakkovaltuutettu transaktio)\n\nSKM tukee vain ed25519-tyyppiä. Lisätietoja vaihtoehdoista on osoitteessa https://lab.stellar.org."
+    "desc": "Allekirjoittaja on painoarvon omaavaan tiliin liitetty julkinen avain. Sen allekirjoitus lasketaan mukaan vaadittuun kynnykseen. Useat allekirjoittajat voivat hyväksyä tapahtuman yhdessä.\n\nAllekirjoittajatyypit:\n- ed25519 (normaali avain)\n- hashX (hash-malli)\n- preAuthTx (ennakkovaltuutettu transaktio)\n\nSKM tukee vain ed25519-tyyppiä. Lisätietoja muista vaihtoehdoista on osoitteessa https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Kynnykset",

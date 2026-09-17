@@ -414,7 +414,7 @@
     "title": "Ondertekenaar",
     "original": "Signer",
     "short": "Openbare sleutel met gewicht, onderdeel van de accountconfiguratie.",
-    "desc": "Een ondertekenaar is een openbare sleutel die gekoppeld is aan een account met een gewicht. Zijn handtekening telt mee voor de vereiste drempelwaarde. Meerdere ondertekenaars kunnen gezamenlijk een transactie goedkeuren.\n\nSoorten ondertekenaars:\n- ed25519 (normale sleutel)\n- hashX (hash-sjabloon)\n- preAuthTx (vooraf geautoriseerde transactie)\n\nSKM ondersteunt alleen ed25519. Zie https://lab.stellar.org voor aanvullende opties."
+    "desc": "Een ondertekenaar is een openbare sleutel die is gekoppeld aan een account met een gewicht. Zijn handtekening telt mee voor de vereiste drempelwaarde. Meerdere ondertekenaars kunnen gezamenlijk een transactie goedkeuren.\n\nSoorten ondertekenaars:\n- ed25519 (normale sleutel)\n- hashX (hash-sjabloon)\n- preAuthTx (vooraf geautoriseerde transactie)\n\nSKM ondersteunt alleen ed25519. Zie https://lab.stellar.org voor aanvullende opties."
   },
   "thresholds": {
     "title": "Drempels",

@@ -105,7 +105,9 @@
       "limitOfferDirection": "Indica quale bene vendi e quale bene desideri ricevere.",
       "limitOfferAmount": "Quantità del titolo che si desidera vendere nell'ordine con limite di prezzo.",
       "limitOfferPrice": "Prezzo per 1 bene venduto, espresso nella valuta del bene acquistato.",
-      "expertDirectory": "Confronto con la directory pubblica di stellar.expert (una terza parte). Una voce è solo un'indicazione, non una garanzia di autenticità o sicurezza. Allo stesso modo, l'assenza di una voce non è un indizio di frode. Verifica sempre l'indirizzo dell'emittente anche tramite il suo sito web ufficiale."
+      "expertDirectory": "Confronto con la directory pubblica di stellar.expert (una terza parte). Una voce è solo un'indicazione, non una garanzia di autenticità o sicurezza. Allo stesso modo, l'assenza di una voce non è un indizio di frode. Verifica sempre l'indirizzo dell'emittente anche tramite il suo sito web ufficiale.",
+      "exchangeRateQuick": "La media tra il miglior prezzo di acquisto e quello di vendita nel libro degli ordini nativo di Stellar per questa coppia. In assenza di profondità di mercato, non è possibile visualizzare alcun prezzo.",
+      "exchangeRateExecution": "Prezzo di esecuzione simulato per una quantità di riferimento pari a 1 unità, comprensivo di eventuali fasi intermedie e pool di liquidità. Importi maggiori potrebbero comportare un prezzo meno favorevole (slippage)."
     },
     "mode": {
       "code": "Ricerca per codice asset",
@@ -354,6 +356,17 @@
         "ledgerKnown": "Conosciuto in Horizon"
       },
       "nextStepHint": "Conosciuto solo in Horizon. Verificare l'emittente e il trust prima di firmare una trustline o uno swap."
+    },
+    "exchangeRate": {
+      "title": "Prezzo dell'XLM",
+      "quickLabel": "Prezzo di mercato (al centro del libro degli ordini)",
+      "executionLabel": "Prezzo di esecuzione (Quantità di riferimento 1)",
+      "loading": "Il prezzo si sta caricando...",
+      "noLiquidity": "Nessuna profondità di ordine attiva nel libro degli ordini nativo.",
+      "noRoute": "Non è stato trovato alcun percorso di pagamento.",
+      "failed": "Impossibile caricare il registro degli ordini.",
+      "quoteAge": "Età del prezzo",
+      "disclaimer": "Si tratta solo di un prezzo indicativo; non è un preventivo. Per importi più elevati, il prezzo effettivo potrebbe variare (slippage)."
     }
   }
 }

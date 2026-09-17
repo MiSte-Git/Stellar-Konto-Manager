@@ -105,7 +105,9 @@
       "limitOfferDirection": "Definira koju imovinu prodajete i koju imovinu želite primiti.",
       "limitOfferAmount": "Iznos imovine koji želite prodati u limitiranoj narudžbi.",
       "limitOfferPrice": "Cijena po jednoj prodanoj imovini, izražena u kupovanoj imovini.",
-      "expertDirectory": "Usporedba s javno održavanim imenikom na stellar.expert (treća strana). Upis je samo napomena, a ne jamstvo autentičnosti ili sigurnosti. Nepostojanje upisa također nije znak prijevare. Uvijek dodatno provjerite adresu izdavatelja putem njegove službene web-stranice."
+      "expertDirectory": "Usporedba s javno održavanim imenikom na stellar.expert (treća strana). Upis je samo napomena, a ne jamstvo autentičnosti ili sigurnosti. Nepostojanje upisa također nije znak prijevare. Uvijek dodatno provjerite adresu izdavatelja putem njegove službene web-stranice.",
+      "exchangeRateQuick": "Prosjek najbolje ponude i najbolje potražnje u nativnoj Stellar knjizi naloga za ovaj par. Bez trgovačke dubine nijedna cijena se ne može prikazati.",
+      "exchangeRateExecution": "Simulirana izvršna cijena za referentnu količinu od 1 jedinice, uključujući moguće međukorake i likvidnosne bazene. Veće količine mogu rezultirati manje povoljnijom cijenom (slippage)."
     },
     "mode": {
       "code": "Pretraga koda imovine",
@@ -354,6 +356,17 @@
         "ledgerKnown": "Poznat u Horizonu"
       },
       "nextStepHint": "Poznato samo u Horizonu. Provjerite izdavatelja i trust prije potpisivanja trustlinea ili swap-a."
+    },
+    "exchangeRate": {
+      "title": "Cijena XLM-a",
+      "quickLabel": "Tržišna cijena (sredina knjige naloga)",
+      "executionLabel": "Cijena izvršenja (Referentna količina 1)",
+      "loading": "Tečaj se učitava...",
+      "noLiquidity": "Nema aktivne dubine naloga u nativnoj knjizi naloga.",
+      "noRoute": "Nije pronađen put plaćanja.",
+      "failed": "Nalog za narudžbu nije mogao biti učitani.",
+      "quoteAge": "Starost tečaja",
+      "disclaimer": "Ovo je samo referentna cijena; nije ponuda. Za veće iznose stvarna cijena može varirati (slippage)."
     }
   }
 }

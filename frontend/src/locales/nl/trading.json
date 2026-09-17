@@ -105,7 +105,9 @@
       "limitOfferDirection": "Hiermee wordt bepaald welk activum u verkoopt en welk activum u wilt ontvangen.",
       "limitOfferAmount": "Het bedrag van het activum dat u via de limietorder wilt verkopen.",
       "limitOfferPrice": "Prijs per verkocht activum, uitgedrukt in het gekochte activum.",
-      "expertDirectory": "Vergelijking met het openbaar bijgehouden register van stellar.expert (een derde partij). Een vermelding is slechts een aanwijzing, geen garantie voor echtheid of veiligheid. Het ontbreken van een vermelding is evenmin een teken van fraude. Controleer het uitgeveradres altijd ook via de officiële website van de uitgever."
+      "expertDirectory": "Vergelijking met het openbaar bijgehouden register van stellar.expert (een derde partij). Een vermelding is slechts een aanwijzing, geen garantie voor echtheid of veiligheid. Het ontbreken van een vermelding is evenmin een teken van fraude. Controleer het uitgeveradres altijd ook via de officiële website van de uitgever.",
+      "exchangeRateQuick": "Het gemiddelde van de beste bied- en laatkoersen in het eigen Stellar-orderboek voor dit valutapaar. Zonder handelsdiepte kan er geen koers worden weergegeven.",
+      "exchangeRateExecution": "Gesimuleerde uitvoeringsprijs voor een referentiehoeveelheid van 1 eenheid, inclusief eventuele tussenstappen en liquiditeitspools. Bij grotere hoeveelheden kan de prijs minder gunstig uitvallen (slippage)."
     },
     "mode": {
       "code": "Zoeken op activacode",
@@ -354,6 +356,17 @@
         "ledgerKnown": "Bekend in Horizon"
       },
       "nextStepHint": "Alleen bekend in Horizon. Controleer de uitgever en de trust voordat je een trustline of swap ondertekent."
+    },
+    "exchangeRate": {
+      "title": "XLM-koers",
+      "quickLabel": "Marktprijs (midden van het orderboek)",
+      "executionLabel": "Uitoefenprijs (referentiehoeveelheid 1)",
+      "loading": "De koers wordt geladen...",
+      "noLiquidity": "Er is geen actieve orderdiepte in het eigen orderboek.",
+      "noRoute": "Er is geen betalingsroute gevonden.",
+      "failed": "Het orderboek kon niet worden geladen.",
+      "quoteAge": "Leeftijd van de koers",
+      "disclaimer": "Dit is slechts een prijsindicatie; het is geen offerte. Bij grotere bedragen kan de daadwerkelijke prijs afwijken (slippage)."
     }
   }
 }

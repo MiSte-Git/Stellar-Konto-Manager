@@ -2,7 +2,7 @@
   "label": "Clave pública o dirección de federación",
   "placeholder": "Ingrese su clave pública o una dirección de federación.",
   "load": "Cargar",
-  "loadHint": "Normalmente no es necesario: seleccionar de la lista o pulsar Intro carga la cuenta automáticamente. Usa este botón como alternativa o para recargar el saldo.",
+  "loadHint": "Normalmente no es necesario: al seleccionar una opción de la lista o al pulsar Intro, la cuenta se carga automáticamente. Utiliza este botón como alternativa o para volver a cargar el saldo de la cuenta.",
   "deleteFromList": "Eliminar de la lista",
   "source": "Fuente",
   "destination": {

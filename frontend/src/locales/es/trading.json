@@ -105,7 +105,9 @@
       "limitOfferDirection": "Define qué activo vendes y qué activo quieres recibir.",
       "limitOfferAmount": "Cantidad del activo que deseas vender en la orden a precio límite.",
       "limitOfferPrice": "Precio por unidad del activo vendido, expresado en la moneda del activo comprado.",
-      "expertDirectory": "Comparación con el directorio público de stellar.expert (un tercero). Una entrada es solo una indicación, no una garantía de autenticidad ni de seguridad. La ausencia de una entrada tampoco es indicio de fraude. Verifica siempre la dirección del emisor también a través de su sitio web oficial."
+      "expertDirectory": "Comparación con el directorio público de stellar.expert (un tercero). Una entrada es solo una indicación, no una garantía de autenticidad ni de seguridad. La ausencia de una entrada tampoco es indicio de fraude. Verifica siempre la dirección del emisor también a través de su sitio web oficial.",
+      "exchangeRateQuick": "La media entre el mejor precio de compra y el mejor precio de venta en el libro de órdenes nativo de Stellar para este par. Si no hay profundidad de mercado, no se puede mostrar ningún precio.",
+      "exchangeRateExecution": "Precio de ejecución simulado para una cantidad de referencia de 1 unidad, incluyendo posibles pasos intermedios y fondos de liquidez. Las cantidades mayores pueden dar lugar a un precio menos favorable (deslizamiento)."
     },
     "mode": {
       "code": "Búsqueda por código de activo",
@@ -354,6 +356,17 @@
         "ledgerKnown": "Conocido en Horizon"
       },
       "nextStepHint": "Solo se conoce en Horizon. Comprueba quién es el emisor y la línea de confianza antes de firmar una línea de confianza o un intercambio."
+    },
+    "exchangeRate": {
+      "title": "Precio del XLM",
+      "quickLabel": "Precio de mercado (centro del libro de órdenes)",
+      "executionLabel": "Precio de ejecución (cantidad de referencia 1)",
+      "loading": "Se está cargando el precio...",
+      "noLiquidity": "No hay profundidad de orden activa en el libro de órdenes nativo.",
+      "noRoute": "No se ha encontrado ninguna forma de pago.",
+      "failed": "No se ha podido cargar la lista de pedidos.",
+      "quoteAge": "Antigüedad del precio",
+      "disclaimer": "Esto es solo una referencia de precios; no es un presupuesto. Para cantidades mayores, el precio real puede variar (deslizamiento)."
     }
   }
 }

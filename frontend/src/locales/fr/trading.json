@@ -105,7 +105,9 @@
       "limitOfferDirection": "Permet de préciser quel actif vous vendez et quel actif vous souhaitez recevoir.",
       "limitOfferAmount": "Montant de l'actif que vous souhaitez vendre dans le cadre de l'ordre à cours limité.",
       "limitOfferPrice": "Prix par unité vendue, exprimé dans la devise de l'actif acheté.",
-      "expertDirectory": "Comparaison avec l'annuaire public de stellar.expert (un tiers). Une entrée n'est qu'une indication, pas une garantie d'authenticité ou de sécurité. L'absence d'entrée n'est pas non plus un indice de fraude. Vérifiez toujours l'adresse de l'émetteur également via son site web officiel."
+      "expertDirectory": "Comparaison avec l'annuaire public de stellar.expert (un tiers). Une entrée n'est qu'une indication, pas une garantie d'authenticité ou de sécurité. L'absence d'entrée n'est pas non plus un indice de fraude. Vérifiez toujours l'adresse de l'émetteur également via son site web officiel.",
+      "exchangeRateQuick": "La moyenne des meilleurs cours acheteur et vendeur figurant dans le carnet d'ordres natif de Stellar pour cette paire. En l'absence de liquidité, aucun cours ne peut être affiché.",
+      "exchangeRateExecution": "Prix d'exécution simulé pour une quantité de référence de 1 unité, tenant compte des étapes intermédiaires éventuelles et des réserves de liquidité. Des montants plus importants peuvent entraîner un prix moins avantageux (glissement de prix)."
     },
     "mode": {
       "code": "Recherche par code d'élément",
@@ -354,6 +356,17 @@
         "ledgerKnown": "Connu dans Horizon"
       },
       "nextStepHint": "Connu uniquement dans Horizon. Vérifiez l'émetteur et la confiance avant de signer une ligne de confiance ou un échange."
+    },
+    "exchangeRate": {
+      "title": "Cours du XLM",
+      "quickLabel": "Cours du marché (au milieu du carnet d'ordres)",
+      "executionLabel": "Prix d'exécution (quantité de référence 1)",
+      "loading": "Chargement du cours...",
+      "noLiquidity": "Aucune profondeur de marché active dans le carnet d'ordres natif.",
+      "noRoute": "Aucun moyen de paiement trouvé.",
+      "failed": "Le carnet de commandes n'a pas pu être chargé.",
+      "quoteAge": "Âge du cours",
+      "disclaimer": "Il s'agit uniquement d'une indication de prix ; ce n'est pas un devis. Pour des montants plus importants, le prix réel peut varier (glissement de prix)."
     }
   }
 }

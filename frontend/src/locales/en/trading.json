@@ -63,7 +63,9 @@
       "limitOfferDirection": "Defines which asset you sell and which asset you want to receive.",
       "limitOfferAmount": "Amount of the asset you want to sell in the limit order.",
       "limitOfferPrice": "Price per 1 sold asset, denominated in the bought asset.",
-      "expertDirectory": "Cross-check against the publicly maintained directory at stellar.expert (a third party). A listing is only a hint, not a proof of authenticity or safety. A missing listing is likewise no indication of fraud. Always verify the issuer address via the issuer’s official website as well."
+      "expertDirectory": "Cross-check against the publicly maintained directory at stellar.expert (a third party). A listing is only a hint, not a proof of authenticity or safety. A missing listing is likewise no indication of fraud. Always verify the issuer address via the issuer’s official website as well.",
+      "exchangeRateQuick": "The average of the best bid and ask prices in the native Stellar order book for this pair. Without trading depth, no price can be displayed.",
+      "exchangeRateExecution": "Simulated execution price for a reference quantity of 1 unit, including possible intermediate steps and liquidity pools. Larger amounts may result in a less favorable price (Slippage)."
     },
     "mode": {
       "code": "Asset code search",
@@ -354,6 +356,17 @@
       "title": "Status unclear – do not resend",
       "body": "The last transaction could not be confirmed unambiguously by the server (timeout or server error). Please check the transaction hash in an explorer before trying again.",
       "acknowledge": "Status checked – unlock actions again"
+    },
+    "exchangeRate": {
+      "title": "XLM Price",
+      "quickLabel": "Market price (order book mid)",
+      "executionLabel": "Execution Price (Reference Quantity 1)",
+      "loading": "Rate is loading...",
+      "noLiquidity": "No active order depth in the native order book.",
+      "noRoute": "No payment path found.",
+      "failed": "The order book could not be loaded.",
+      "quoteAge": "Rate age",
+      "disclaimer": "This is only a price reference; it is not a quote. For larger amounts, the actual price may vary (Slippage)."
     }
   }
 }

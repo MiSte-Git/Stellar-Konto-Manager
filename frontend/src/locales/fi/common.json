@@ -1113,7 +1113,7 @@
       "local": "Paikallinen aikavyöhyke",
       "note": "Päivämäärä ja aika tulkitaan valitussa aikavyöhykkeessä ja muunnetaan automaattisesti UTC-aikaan ennen hakemista.",
       "utc": "UTC",
-      "window": "Käytetty UTC-aikaväli: {{from}} → {{to}} (loppu pois lukien)"
+      "window": "Käytetty UTC-aikaväli: {{from}} → {{to}} (loppuaikaa lukuun ottamatta)"
     },
     "wrongMemos": {
       "button": "Näytä lompakot, joissa on virheellinen/tyhjä muistiinpano",

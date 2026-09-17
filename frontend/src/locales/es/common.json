@@ -1113,7 +1113,7 @@
       "local": "Zona horaria local",
       "note": "La fecha y la hora se interpretan en la zona horaria seleccionada y se convierten automáticamente a UTC antes de buscar.",
       "utc": "UTC",
-      "window": "Intervalo de tiempo UTC utilizado: {{from}} → {{to}} (fin exclusivo)"
+      "window": "Intervalo de tiempo UTC utilizado: {{from}} → {{to}} (sin incluir el final)"
     },
     "wrongMemos": {
       "button": "Mostrar carteras con memo incorrecto/vacío",

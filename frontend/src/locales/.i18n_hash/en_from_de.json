@@ -5061,5 +5061,17 @@
   "multisig.detail.sequenceStatus.valid": "aaf6de2005a2148ab8f5255ceb69ffd5930f3aa6fd638378977f436a813445a9",
   "multisig.detail.sequenceStatus.dead": "633d13a87b03a145c2080c4e5ab221f11c6f9126885512bbae38018c5c35e131",
   "settings.multisig.timeoutTooHigh": "82d66312867dd5068fe465a72daa41fa7bef7b35dbc8002e58e9171d75b16da9",
-  "common.payment.send.txTooLateHint": "f0a2d2b7a9f39f485f572d40e9f330902be2d3724ec37506df01d469eed8afcd"
+  "common.payment.send.txTooLateHint": "f0a2d2b7a9f39f485f572d40e9f330902be2d3724ec37506df01d469eed8afcd",
+  "publicKey.loadHint": "94e2d7ba8eb2ea987f28e81f63b1e6856d5083011bd57de81d40543d2bb1eb48",
+  "trading.assetSearch.help.exchangeRateQuick": "5791c4c79435511110603b6bab89e472b1f1473c76981b7d492ffc39bfca7fb9",
+  "trading.assetSearch.help.exchangeRateExecution": "286460fc2806bfbf429d3478e654b6060ab3bd65fa92e1ba0f80972819ad354a",
+  "trading.assetSearch.exchangeRate.title": "fc8d5dd1dc964903daac0e944b75573ec261cd2f6292adff85c8af23a548779a",
+  "trading.assetSearch.exchangeRate.quickLabel": "d38dcb2d5d2d47bb23ca9e0c14cec50d32337d1fb777ef39d8f1c5d51a9e9756",
+  "trading.assetSearch.exchangeRate.executionLabel": "b21063c317bace5977f6a0146d7070b51a60054ab6f20b7cb7e8222f7e2fb762",
+  "trading.assetSearch.exchangeRate.loading": "83f0044d647bdec1dac192482db953cd0a7af9b039fb4333c62544f460ca8dd7",
+  "trading.assetSearch.exchangeRate.noLiquidity": "50a240d373dbe0fc8721259d9492a1ab400016bd23fa24d4a8cfa036781a5fe8",
+  "trading.assetSearch.exchangeRate.noRoute": "c3b80175ec1ea15b7d555438ac40e6f37e8003793399b65566742859249964de",
+  "trading.assetSearch.exchangeRate.failed": "d0617ffff9145075356e34b30fa0cfeba7efbcf57bc2a408c4811b5ecc831685",
+  "trading.assetSearch.exchangeRate.quoteAge": "857789243c1ab011b2200d97f0c11662deb1a4b5695e90219987818d17ccd4a0",
+  "trading.assetSearch.exchangeRate.disclaimer": "54d7cda53dd314dc4b67be2d1ee96880bafc691828f9691a7df3e05e5ae93a84"
 }

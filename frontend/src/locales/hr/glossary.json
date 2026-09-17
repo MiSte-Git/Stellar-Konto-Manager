@@ -418,7 +418,7 @@
     "title": "Potpisnik",
     "original": "Signer",
     "short": "Javni ključ s težinom, dio konfiguracije računa.",
-    "desc": "Potpisnik je javni ključ povezan s računom koji ima težinu. Njegov potpis računa se u potrebni prag. Više potpisnika može zajednički odobriti transakciju.\n\nVrste potpisnika:\n- ed25519 (obični ključ)\n- hashX (hash predložak)\n- preAuthTx (prethodno odobrena transakcija)\n\nSKM podržava samo ed25519. Za dodatne opcije pogledajte https://lab.stellar.org."
+    "desc": "Potpisnik je javni ključ povezan s računom koji ima težinu. Njegov potpis računa se u potrebni prag. Više potpisnika može zajednički odobriti transakciju.\n\nVrste potpisnika:\n- ed25519 (obični ključ)\n- hashX (šablona haša)\n- preAuthTx (prethodno autorizirana transakcija)\n\nSKM podržava samo ed25519. Za dodatne opcije pogledajte https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Pragovi",

@@ -64,7 +64,7 @@
     "local": "Lokale tijdzone",
     "note": "Datum en tijd worden geïnterpreteerd in de geselecteerde tijdzone en automatisch omgezet naar UTC voordat er gezocht wordt.",
     "utc": "UTC",
-    "window": "Gebruikt UTC-tijdvenster: {{from}} → {{to}} (einde exclusief)"
+    "window": "Gebruikt UTC-tijdvenster: {{from}} → {{to}} (eindtijd niet meegerekend)"
   },
   "wrongMemos": {
     "button": "Portemonnees weergeven met onjuiste/lege memo",

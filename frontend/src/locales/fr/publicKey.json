@@ -2,7 +2,7 @@
   "label": "Clé publique ou adresse de fédération",
   "placeholder": "Entrez votre clé publique ou une adresse de fédération.",
   "load": "Charger",
-  "loadHint": "Généralement inutile : sélectionner dans la liste ou appuyer sur Entrée charge le compte automatiquement. Utilisez ce bouton en secours ou pour recharger le solde.",
+  "loadHint": "Généralement inutile : le fait de sélectionner une option dans la liste ou d'appuyer sur Entrée charge automatiquement le compte. Utilisez ce bouton en dernier recours ou pour actualiser le solde du compte.",
   "deleteFromList": "Supprimer de la liste",
   "source": "Source",
   "destination": {

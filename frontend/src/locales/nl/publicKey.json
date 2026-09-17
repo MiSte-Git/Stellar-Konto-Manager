@@ -2,7 +2,7 @@
   "label": "Openbare sleutel of federatieadres",
   "placeholder": "Voer uw openbare sleutel of een federatieadres in.",
   "load": "Laden",
-  "loadHint": "Meestal niet nodig: een selectie uit de lijst of op Enter drukken laadt het account automatisch. Gebruik deze knop als terugvaloptie of om het saldo opnieuw te laden.",
+  "loadHint": "Meestal niet nodig: als je een optie uit de lijst selecteert of op Enter drukt, wordt het account automatisch geladen. Gebruik deze knop als noodoplossing of om het saldo van het account opnieuw te laden.",
   "deleteFromList": "Verwijderen uit lijst",
   "source": "Bron",
   "destination": {

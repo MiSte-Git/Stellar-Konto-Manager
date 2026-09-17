@@ -418,7 +418,7 @@
     "title": "Signataire",
     "original": "Signer",
     "short": "Clé publique avec poids, faisant partie de la configuration du compte.",
-    "desc": "Un signataire est une clé publique associée à un compte doté d'un poids. Sa signature est prise en compte dans le calcul du seuil requis. Plusieurs signataires peuvent approuver conjointement une transaction.\n\nTypes de signataires :\n- ed25519 (clé normale)\n- hashX (modèle de hachage)\n- preAuthTx (transaction préautorisée)\n\nSKM ne prend en charge que le format ed25519. Pour plus d'options, consultez https://lab.stellar.org."
+    "desc": "Un signataire est une clé publique associée à un compte doté d'un poids. Sa signature est prise en compte dans le calcul du seuil requis. Plusieurs signataires peuvent approuver conjointement une transaction.\n\nTypes de signataires :\n- ed25519 (clé normale)\n- hashX (modèle de hachage)\n- preAuthTx (transaction préautorisée)\n\nSKM ne prend en charge que le type ed25519. Pour plus d'options, consultez https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Seuils",

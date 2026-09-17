@@ -1113,7 +1113,7 @@
       "local": "Lokalna vremenska zona",
       "note": "Datum i vrijeme tumače se u odabranoj vremenskoj zoni i automatski se pretvaraju u UTC prije pretraživanja.",
       "utc": "UTC",
-      "window": "UTC vremenski prozor korišten: {{from}} → {{to}} (kraj isključen)"
+      "window": "Koristeni UTC vremenski prozor: {{from}} → {{to}} (kraj isključivo)"
     },
     "wrongMemos": {
       "button": "Prikaži novčanike s netočnom/praznom napomenom.",
