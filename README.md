@@ -92,6 +92,7 @@ Local-first Stellar Wallet & Account Manager: Trustlines, Zahlungen, Muxed Accou
 - Autoload aller Namespaces, keine Hardcoded-Texte.
 - Automatisches Übersetzungsskript: `UpdateSprachdateienBasierendAufDE.py` (bzw. Sync-Skripte im Repo).
   - Provider: `--provider openai` (erfordert `pip install openai` + `OPENAI_API_KEY`) oder `--provider deepl` (`DEEPL_API_KEY`/`DEEPL_AUTH_KEY`).
+  - Key-Auflösung (in dieser Reihenfolge, bricht erst ab, wenn keiner greift): Umgebungsvariable -> OS-Keyring (`pip install keyring`; Service/Username per `DEEPL_KEYRING_SERVICE`/`DEEPL_KEYRING_USERNAME` bzw. `OPENAI_KEYRING_SERVICE`/`OPENAI_KEYRING_USERNAME` überschreibbar, Default-Service `SKM-i18n`) -> interaktive Eingabe an einem echten Terminal (wird danach im Keyring gespeichert). Läuft nur an einem Terminal; unbeaufsichtigt (z. B. Cron) bricht das Skript wie bisher mit Fehlermeldung ab, statt zu hängen.
   - Optional Voll-Lauf: `--full`; gezielte Keys: `--force-key foo.bar`.
 
 ## Sicherheitshinweise

@@ -735,5 +735,182 @@ class UntranslatedEchoTests(unittest.TestCase):
         )
 
 
+class FakeKeyring:
+    """Minimales Doppel fuer das `keyring`-Paket, nur get_password/set_password/
+    get_keyring - reicht fuer resolve_api_key(), ohne einen echten OS-Keyring
+    (Session-Bus/Desktop-Sitzung) zu brauchen, der in CI/Sandboxen ohnehin nicht
+    verfuegbar ist."""
+
+    def __init__(self):
+        self.store = {}
+        self.set_password_calls = []
+
+    def get_password(self, service, username):
+        return self.store.get((service, username))
+
+    def set_password(self, service, username, value):
+        self.store[(service, username)] = value
+        self.set_password_calls.append((service, username, value))
+
+    def get_keyring(self):
+        return object()  # irgendein Nicht-fail-Backend-Objekt
+
+
+class _NeverMatchesFailKeyring:
+    """Ersatz fuer keyring.backends.fail.Keyring in Tests: isinstance(..., das hier)
+    ist fuer FakeKeyring.get_keyring()'s object() immer False, simuliert also ein
+    echtes (nicht-fail) Backend."""
+    pass
+
+
+class ApiKeyResolutionTests(unittest.TestCase):
+    """resolve_api_key(): Umgebungsvariable -> Keyring -> interaktive Eingabe.
+
+    Konkreter Anlass: das Skript brach bisher ab, sobald keine der beiden
+    API-Key-Umgebungsvariablen gesetzt war - auch wenn der Key laengst in einem
+    bereits eingerichteten OS-Keyring lag. resolve_api_key() darf dabei nie
+    stillschweigend einen bereits gefundenen Key verwerfen (siehe Bug: eine
+    fruehere Version las die Keys weiter unten in main() ein zweites Mal direkt
+    per os.getenv() und ueberschrieb damit einen aus Keyring/Eingabe stammenden
+    Wert - das ist hier bewusst mitabgedeckt ueber den kompletten main()-Codepfad
+    in test_second_read_does_not_shadow_keyring_key)."""
+
+    def setUp(self):
+        self._env_backup = dict(os.environ)
+        for name in (
+            "DEEPL_API_KEY", "DEEPL_AUTH_KEY", "OPENAI_API_KEY", "OPENAI_KEY",
+            "DEEPL_KEYRING_SERVICE", "DEEPL_KEYRING_USERNAME",
+            "OPENAI_KEYRING_SERVICE", "OPENAI_KEYRING_USERNAME",
+        ):
+            os.environ.pop(name, None)
+
+    def tearDown(self):
+        os.environ.clear()
+        os.environ.update(self._env_backup)
+
+    def _kwargs(self, **overrides):
+        base = dict(
+            env_names=["DEEPL_API_KEY", "DEEPL_AUTH_KEY"],
+            keyring_service_env="DEEPL_KEYRING_SERVICE",
+            keyring_username_env="DEEPL_KEYRING_USERNAME",
+            keyring_username_default="DEEPL_API_KEY",
+            label="DeepL",
+        )
+        base.update(overrides)
+        return base
+
+    def test_environment_variable_wins_over_keyring(self):
+        fake = FakeKeyring()
+        fake.store[(usd.DEFAULT_KEYRING_SERVICE, "DEEPL_API_KEY")] = "from-keyring"
+        os.environ["DEEPL_API_KEY"] = "from-env"
+        with mock.patch.object(usd, "keyring", fake), \
+             mock.patch.object(usd, "_FailKeyring", _NeverMatchesFailKeyring):
+            key, source = usd.resolve_api_key(**self._kwargs())
+        self.assertEqual(key, "from-env")
+        self.assertIn("Umgebungsvariable", source)
+
+    def test_falls_back_to_keyring_when_env_missing(self):
+        fake = FakeKeyring()
+        fake.store[(usd.DEFAULT_KEYRING_SERVICE, "DEEPL_API_KEY")] = "from-keyring"
+        with mock.patch.object(usd, "keyring", fake), \
+             mock.patch.object(usd, "_FailKeyring", _NeverMatchesFailKeyring):
+            key, source = usd.resolve_api_key(**self._kwargs())
+        self.assertEqual(key, "from-keyring")
+        self.assertIn("Keyring", source)
+
+    def test_keyring_service_and_username_are_overridable(self):
+        # Deckt genau den vom Nutzer beschriebenen Fall ab: ein bereits
+        # bestehender Keyring-Eintrag unter einem ANDEREN Service/Username als
+        # dem Skript-Default muss ohne Codeaenderung nutzbar sein.
+        fake = FakeKeyring()
+        fake.store[("custom-service", "custom-user")] = "from-custom-entry"
+        os.environ["DEEPL_KEYRING_SERVICE"] = "custom-service"
+        os.environ["DEEPL_KEYRING_USERNAME"] = "custom-user"
+        with mock.patch.object(usd, "keyring", fake), \
+             mock.patch.object(usd, "_FailKeyring", _NeverMatchesFailKeyring):
+            key, source = usd.resolve_api_key(**self._kwargs())
+        self.assertEqual(key, "from-custom-entry")
+
+    def test_fail_backend_is_treated_like_no_keyring(self):
+        # keyring.get_keyring() liefert den fail-Sentinel, wenn kein echtes
+        # Backend erreichbar ist (z.B. keine Desktop-Sitzung/kein D-Bus - der
+        # Normalfall in einer unbeaufsichtigten/Remote-Shell). get_password()
+        # darf dort gar nicht erst aufgerufen werden.
+        class FailSentinel:
+            pass
+
+        fake = FakeKeyring()
+        fake.get_keyring = lambda: FailSentinel()
+        fake.store[(usd.DEFAULT_KEYRING_SERVICE, "DEEPL_API_KEY")] = "should-not-be-used"
+        with mock.patch.object(usd, "keyring", fake), \
+             mock.patch.object(usd, "_FailKeyring", FailSentinel), \
+             mock.patch("sys.stdin.isatty", return_value=False):
+            key, source = usd.resolve_api_key(**self._kwargs())
+        self.assertIsNone(key)
+        self.assertIsNone(source)
+
+    def test_no_env_no_keyring_non_interactive_returns_none_without_hanging(self):
+        # Kein Terminal (z.B. Cron/CI): darf nie auf Eingabe warten, sondern muss
+        # sauber (None, None) liefern, statt zu haengen.
+        with mock.patch.object(usd, "keyring", None), \
+             mock.patch("sys.stdin.isatty", return_value=False):
+            key, source = usd.resolve_api_key(**self._kwargs())
+        self.assertIsNone(key)
+        self.assertIsNone(source)
+
+    def test_interactive_prompt_is_used_and_stored_in_keyring(self):
+        fake = FakeKeyring()
+        with mock.patch.object(usd, "keyring", fake), \
+             mock.patch.object(usd, "_FailKeyring", _NeverMatchesFailKeyring), \
+             mock.patch("sys.stdin.isatty", return_value=True), \
+             mock.patch("getpass.getpass", return_value="typed-key"):
+            key, source = usd.resolve_api_key(**self._kwargs())
+        self.assertEqual(key, "typed-key")
+        self.assertEqual(source, "interaktive Eingabe")
+        self.assertEqual(
+            fake.store.get((usd.DEFAULT_KEYRING_SERVICE, "DEEPL_API_KEY")), "typed-key",
+            "ein interaktiv eingegebener Key muss fuer kuenftige Laeufe im Keyring landen",
+        )
+
+    def test_interactive_prompt_empty_input_aborts_without_storing(self):
+        fake = FakeKeyring()
+        with mock.patch.object(usd, "keyring", fake), \
+             mock.patch.object(usd, "_FailKeyring", _NeverMatchesFailKeyring), \
+             mock.patch("sys.stdin.isatty", return_value=True), \
+             mock.patch("getpass.getpass", return_value="   "):
+            key, source = usd.resolve_api_key(**self._kwargs())
+        self.assertIsNone(key)
+        self.assertIsNone(source)
+        self.assertEqual(fake.set_password_calls, [])
+
+    def test_second_read_does_not_shadow_keyring_key(self):
+        # Regressionstest fuer den Bug, der beim Einbau der Keyring-Anbindung
+        # beinahe entstanden waere: main() las die Keys weiter unten ein
+        # zweites Mal direkt per os.getenv() ("bereits oben geprueft, hier nur
+        # Variablen verwenden") - das haette einen aus dem Keyring stammenden
+        # Key stillschweigend wieder auf None zurueckgesetzt, weil die
+        # Umgebungsvariable ja nach wie vor nicht gesetzt ist. Faehrt main() bis
+        # zur echten Namespace-Verarbeitung durch (kein Namespace-Verzeichnis im
+        # leeren temp-Ordner), muss der Abbruch an "Namespace-Verzeichnis fehlt"
+        # erfolgen - NICHT an "DEEPL_API_KEY ... nicht gesetzt", denn dann waere
+        # der Keyring-Key unterwegs verlorengegangen.
+        fake = FakeKeyring()
+        fake.store[(usd.DEFAULT_KEYRING_SERVICE, "DEEPL_API_KEY")] = "from-keyring"
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            argv = ["prog", "--provider", "deepl", "--base-path", tmp_dir]
+            with mock.patch.object(usd, "keyring", fake), \
+                 mock.patch.object(usd, "_FailKeyring", _NeverMatchesFailKeyring), \
+                 mock.patch.object(sys, "argv", argv), \
+                 mock.patch("builtins.print") as mock_print:
+                usd.main()
+            printed = "\n".join(str(call.args[0]) for call in mock_print.call_args_list if call.args)
+        self.assertNotIn(
+            "nicht gesetzt", printed,
+            "main() darf den aus dem Keyring geloesten Key nicht durch einen "
+            "zweiten os.getenv()-Read verwerfen",
+        )
+        self.assertIn("Namespace-Verzeichnis fehlt", printed)
+
+
 if __name__ == "__main__":
     unittest.main()

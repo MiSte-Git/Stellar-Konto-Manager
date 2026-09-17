@@ -2,6 +2,7 @@ import json
 import os
 import argparse
 from argparse import RawTextHelpFormatter
+import getpass
 import subprocess
 import sys
 import re
@@ -14,12 +15,25 @@ try:
 except Exception:  # pragma: no cover
     OpenAI = None  # type: ignore
 
+# Optionaler Import für die Keyring-Anbindung (siehe resolve_api_key()) - fehlt das
+# Paket, verhält sich das Skript wie vorher (nur Umgebungsvariable + Eingabeaufforderung).
+try:
+    import keyring  # type: ignore
+    from keyring.backends.fail import Keyring as _FailKeyring  # type: ignore
+except Exception:  # pragma: no cover
+    keyring = None  # type: ignore
+    _FailKeyring = None  # type: ignore
+
 BASE_LANG = "de"
 TARGET_LANGS = ["en", "nl", "es", "fr", "it", "fi", "hr", "ru"]
 # Standard-Basispfad: Verzeichnis dieser Datei, damit Aufruf von überall funktioniert
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 # Verzeichnis für Hash-Manifeste
 HASH_DIR = os.path.join(BASE_PATH, ".i18n_hash")
+# Keyring-"Service"-Name (== Eintrag/Ordner im OS-Schlüsselbund), Standard - per
+# DEEPL_KEYRING_SERVICE / OPENAI_KEYRING_SERVICE überschreibbar, falls ein bereits
+# vorhandener Keyring-Eintrag einen anderen Namen nutzt.
+DEFAULT_KEYRING_SERVICE = "SKM-i18n"
 
 
 def load_json(file: str) -> Dict[str, Any]:
@@ -746,6 +760,82 @@ def deep_merge_missing(target: Dict[str, Any], source: Dict[str, Any], diffs: li
                     diffs.append(cur)
 
 
+def _keyring_backend_available() -> bool:
+    """True nur, wenn `keyring` installiert ist UND ein echter Backend (nicht der
+    fail-Sentinel) verfügbar ist. Der fail-Backend ist typischerweise, was
+    `keyring.get_keyring()` liefert, wenn kein Session-Keyring erreichbar ist
+    (z. B. keine laufende Desktop-Sitzung/kein D-Bus) - `get_password()` würde dort
+    ohnehin nur fehlschlagen, also gar nicht erst versuchen."""
+    if keyring is None or _FailKeyring is None:
+        return False
+    try:
+        return not isinstance(keyring.get_keyring(), _FailKeyring)
+    except Exception:  # pragma: no cover
+        return False
+
+
+def resolve_api_key(
+    *,
+    env_names: list[str],
+    keyring_service_env: str,
+    keyring_username_env: str,
+    keyring_username_default: str,
+    label: str,
+    keyring_service_default: str = DEFAULT_KEYRING_SERVICE,
+) -> tuple[str | None, str | None]:
+    """Löst einen API-Key in dieser Reihenfolge auf (nie stillschweigend, jeder
+    Schritt gibt eine kurze Info aus, ohne den Key-Wert selbst zu loggen):
+      1. Umgebungsvariablen (env_names, erste gefundene gewinnt) - unverändertes
+         Verhalten, hat weiterhin Vorrang vor allem anderen.
+      2. OS-Keyring (Service/Username per *_KEYRING_SERVICE / *_KEYRING_USERNAME
+         überschreibbar, für den Fall, dass ein vorhandener Eintrag anders heißt).
+      3. Interaktive Eingabe (nur an einem echten Terminal - läuft das Skript z. B.
+         unbeaufsichtigt/aus einem Cronjob, wird hier korrekt übersprungen statt zu
+         hängen). Ein hier eingegebener Key wird - nach Rückfrage nicht nötig, aber
+         mit klarer Info - im Keyring für künftige Läufe gespeichert.
+    Gibt (key, quelle) zurück; (None, None), wenn nichts gefunden wurde - main()
+    entscheidet, ob das für den gewählten Provider ein Abbruchgrund ist.
+    """
+    for name in env_names:
+        value = os.getenv(name)
+        if value:
+            return value, f"Umgebungsvariable {name}"
+
+    service = os.getenv(keyring_service_env, keyring_service_default)
+    username = os.getenv(keyring_username_env, keyring_username_default)
+
+    if _keyring_backend_available():
+        try:
+            value = keyring.get_password(service, username)
+        except Exception as exc:  # pragma: no cover
+            print(f"WARNUNG: Keyring-Zugriff fehlgeschlagen ({exc}). Fahre ohne Keyring fort.")
+            value = None
+        if value:
+            return value, f"Keyring ({service}/{username})"
+    elif keyring is None:
+        print("INFO: Paket 'keyring' nicht installiert - überspringe Keyring-Suche (pip install keyring).")
+    else:
+        print("INFO: Kein Keyring-Backend erreichbar (z. B. keine Desktop-Sitzung) - überspringe Keyring-Suche.")
+
+    if sys.stdin.isatty():
+        print(f"Kein {label}-Key in Umgebungsvariablen oder Keyring gefunden.")
+        try:
+            entered = getpass.getpass(f"{label}-Key eingeben (Eingabe bleibt unsichtbar, leer = abbrechen): ").strip()
+        except (EOFError, KeyboardInterrupt):
+            return None, None
+        if not entered:
+            return None, None
+        if _keyring_backend_available():
+            try:
+                keyring.set_password(service, username, entered)
+                print(f"INFO: Key im Keyring gespeichert ({service}/{username}) - beim nächsten Lauf nicht erneut nötig.")
+            except Exception as exc:  # pragma: no cover
+                print(f"WARNUNG: Key konnte nicht im Keyring gespeichert werden ({exc}). Wird nur für diesen Lauf verwendet.")
+        return entered, "interaktive Eingabe"
+
+    return None, None
+
+
 def main():
     # Argumente parsen
     parser = argparse.ArgumentParser(
@@ -820,18 +910,38 @@ def main():
     force_keys_raw = args.force_keys or []
     do_prune = bool(args.prune_extra)
 
-    # API-Keys aus Umgebungsvariablen lesen
-    openai_key = os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_KEY")
-    deepl_key = os.getenv("DEEPL_API_KEY") or os.getenv("DEEPL_AUTH_KEY")
+    # API-Keys: Umgebungsvariable -> OS-Keyring -> interaktive Abfrage (mit Angebot,
+    # den eingegebenen Key im Keyring zu speichern - siehe resolve_api_key()). Nur
+    # relevant für den tatsächlich gewählten Provider, damit z. B. ein deepl-Lauf
+    # nicht unnötig nach einem OpenAI-Key fragt.
+    openai_key = openai_source = None
+    deepl_key = deepl_source = None
+    if provider == "openai":
+        openai_key, openai_source = resolve_api_key(
+            env_names=["OPENAI_API_KEY", "OPENAI_KEY"],
+            keyring_service_env="OPENAI_KEYRING_SERVICE",
+            keyring_username_env="OPENAI_KEYRING_USERNAME",
+            keyring_username_default="OPENAI_API_KEY",
+            label="OpenAI",
+        )
+    if provider == "deepl":
+        deepl_key, deepl_source = resolve_api_key(
+            env_names=["DEEPL_API_KEY", "DEEPL_AUTH_KEY"],
+            keyring_service_env="DEEPL_KEYRING_SERVICE",
+            keyring_username_env="DEEPL_KEYRING_USERNAME",
+            keyring_username_default="DEEPL_API_KEY",
+            label="DeepL",
+        )
 
     # Frühzeitige Validierung + Debug-Hinweis (ohne Secrets)
     if provider == "openai" and not openai_key:
-        print("❌ OPENAI_API_KEY nicht gesetzt. Abbruch.")
+        print("❌ OPENAI_API_KEY: nicht in Umgebungsvariablen, Keyring oder Eingabe gefunden. Abbruch.")
         return
     if provider == "deepl":
         if not deepl_key:
-            print("❌ DEEPL_API_KEY/DEEPL_AUTH_KEY nicht gesetzt. Abbruch.")
+            print("❌ DEEPL_API_KEY/DEEPL_AUTH_KEY: nicht in Umgebungsvariablen, Keyring oder Eingabe gefunden. Abbruch.")
             return
+        print(f"INFO: DeepL-Key-Quelle: {deepl_source}")
         print(f"INFO: DeepL endpoint: {(os.getenv('DEEPL_API_URL') or 'https://api-free.deepl.com/v2/translate')}")
 
     # Standard: Namespaces verarbeiten (de/<ns>.json → en/<ns>.json → andere/<ns>.json)
@@ -874,9 +984,10 @@ def main():
     except Exception as e:
         print(f"INFO: Learn-Sync (de/learn.json) übersprungen: {e}")
 
-    # API-Keys aus Umgebungsvariablen lesen (bereits oben geprüft, hier nur Variablen verwenden)
-    openai_key = os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_KEY")
-    deepl_key = os.getenv("DEEPL_API_KEY") or os.getenv("DEEPL_AUTH_KEY")
+    # openai_key/deepl_key wurden bereits weiter oben aufgelöst (Umgebungsvariable ->
+    # Keyring -> interaktive Eingabe, siehe resolve_api_key()) und sind hier als
+    # lokale Variablen derselben Funktion weiterhin gültig - kein erneutes Lesen,
+    # das würde einen aus Keyring/Eingabe stammenden Key stillschweigend verwerfen.
     counters: Dict[str, int] = {"skippedOriginalKeysCount": 0, "copiedOriginalKeysCount": 0}
 
     # Force-Keys einsammeln (dot-Pfade, können Subtrees sein)
