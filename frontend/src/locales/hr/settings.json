@@ -36,7 +36,8 @@
     "network": "Mreža",
     "quiz": "Kviz",
     "explorer": "Istraživač",
-    "glossary": "Pojmovnik"
+    "glossary": "Pojmovnik",
+    "scamSimulator": "Simulator prijevara"
   },
   "sections": {
     "general": "Opće postavke",

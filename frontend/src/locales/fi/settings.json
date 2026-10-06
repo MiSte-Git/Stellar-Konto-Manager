@@ -36,7 +36,8 @@
     "network": "Verkko",
     "quiz": "Tietovisa",
     "explorer": "Tutkija",
-    "glossary": "Sanasto"
+    "glossary": "Sanasto",
+    "scamSimulator": "Huijaussimulaattori"
   },
   "sections": {
     "general": "Yleiset asetukset",

@@ -36,7 +36,8 @@
     "network": "Сеть",
     "quiz": "Викторина",
     "explorer": "Исследователь",
-    "glossary": "Глоссарий"
+    "glossary": "Глоссарий",
+    "scamSimulator": "Симулятор мошенничества"
   },
   "sections": {
     "general": "Общие настройки",

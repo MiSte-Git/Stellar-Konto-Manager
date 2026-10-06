@@ -36,7 +36,8 @@
     "network": "Rete",
     "quiz": "Quiz",
     "explorer": "Esploratore",
-    "glossary": "Glossario"
+    "glossary": "Glossario",
+    "scamSimulator": "Simulatore di truffe"
   },
   "sections": {
     "general": "Impostazioni generali",

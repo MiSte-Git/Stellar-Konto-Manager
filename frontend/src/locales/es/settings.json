@@ -36,7 +36,8 @@
     "network": "Red neuronal",
     "quiz": "Cuestionario",
     "explorer": "Explorador",
-    "glossary": "Glosario"
+    "glossary": "Glosario",
+    "scamSimulator": "Simulador de estafas"
   },
   "sections": {
     "general": "Configuración general",

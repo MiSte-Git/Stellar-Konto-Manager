@@ -36,7 +36,8 @@
     "network": "Netwerk",
     "quiz": "Quiz",
     "explorer": "Ontdekkingsreiziger",
-    "glossary": "Woordenlijst"
+    "glossary": "Woordenlijst",
+    "scamSimulator": "Scam-simulator"
   },
   "sections": {
     "general": "Algemene instellingen",

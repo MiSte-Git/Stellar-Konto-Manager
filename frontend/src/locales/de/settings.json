@@ -36,7 +36,8 @@
     "network": "Netzwerk",
     "quiz": "Quiz",
     "explorer": "Explorer",
-    "glossary": "Glossar"
+    "glossary": "Glossar",
+    "scamSimulator": "Scam-Simulator"
   },
   "sections": {
     "general": "Allgemeine Einstellungen",
