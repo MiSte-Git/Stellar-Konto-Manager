@@ -999,6 +999,30 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   }, []);
 
 
+  // Loads the source account (balances, offers count, base reserve) from Horizon. Shared by
+  // the initial load effect below and the post-send refresh in handleReviewConfirm.
+  // `isCancelled` lets the caller drop a stale result (account/network switched mid-flight).
+  const loadSourceAccount = useCallback(async (isCancelled = () => false) => {
+    if (!publicKey) return;
+    const acct = await server.loadAccount(publicKey);
+    if (isCancelled()) return;
+    setAccountInfo(acct);
+    setBalances(acct.balances || []);
+    // offers count
+    try {
+      const offers = await server.offers().forAccount(publicKey).limit(1).call();
+      const total = (offers?.records?.length || 0) < 1 ? 0 : (offers?.records?._embedded?.records?.length || offers.records.length); // horizon may not provide total easily
+      // naive: follow next pages not needed just for count; approximate via first page length
+      if (!isCancelled()) setOffersCount(total);
+    } catch { if (!isCancelled()) setOffersCount(0); }
+    // latest ledger base reserve
+    try {
+      const ledgers = await server.ledgers().order('desc').limit(1).call();
+      const br = parseFloat((ledgers?.records?.[0]?.base_reserve_in_stroops || '5000000')) / 1e7;
+      if (!Number.isNaN(br) && !isCancelled()) setBaseReserve(br);
+    } catch { /* keep default */ }
+  }, [publicKey, server]);
+
   useEffect(() => {
     let cancelled = false;
     async function load() {
@@ -1007,30 +1031,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
       clearSuccess();
       setStatus('');
       try {
-        const acct = await server.loadAccount(publicKey);
-        if (cancelled) return;
-        setAccountInfo(acct);
-        setBalances(acct.balances || []);
-        // offers count
-        try {
-          const offers = await server.offers().forAccount(publicKey).limit(1).call();
-          const total = (offers?.records?.length || 0) < 1 ? 0 : (offers?.records?._embedded?.records?.length || offers.records.length); // horizon may not provide total easily
-          // naive: follow next pages not needed just for count; approximate via first page length
-          setOffersCount(total);
-        } catch { setOffersCount(0); }
-        // latest ledger base reserve
-        try {
-          const ledgers = await server.ledgers().order('desc').limit(1).call();
-          const br = parseFloat((ledgers?.records?.[0]?.base_reserve_in_stroops || '5000000')) / 1e7;
-          if (!Number.isNaN(br)) setBaseReserve(br);
-        } catch { /* keep default */ }
+        await loadSourceAccount(() => cancelled);
       } catch (e) {
         if (!cancelled) setError(t('common:error.loadTrustlines') + ': ' + (e?.message || ''));
       }
     }
     load();
     return () => { cancelled = true; };
-  }, [publicKey, server, t, clearSuccess]);
+  }, [publicKey, t, clearSuccess, loadSourceAccount]);
 
   // Close popup when clicking outside
   useEffect(() => {
@@ -1197,6 +1205,10 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const [inputWasFederation, setInputWasFederation] = useState(false);
   const [federationMemoApplied, setFederationMemoApplied] = useState(false);
   const [recipientRefreshKey, setRecipientRefreshKey] = useState(0);
+  // Bumped after a successful send so only the recipient balance reloads - deliberately
+  // separate from recipientRefreshKey, which would also re-run federation resolution and
+  // the memo auto-fill logic.
+  const [destBalanceRefreshKey, setDestBalanceRefreshKey] = useState(0);
 
   // Holds the memoType that belongs to the auto-fill the memoVal updater below just
   // decided to apply (or `null` for a clear), so the effect further down can sync
@@ -1343,7 +1355,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     }
     loadDestBalance();
     return () => { cancelled = true; };
-  }, [resolvedAccount, server, recipientRefreshKey]);
+  }, [resolvedAccount, server, recipientRefreshKey, destBalanceRefreshKey]);
 
   const trimmedRecipient = (dest || '').trim();
   const walletInfoFromInput = useMemo(() => findWalletInfo(walletInfoMap, trimmedRecipient), [walletInfoMap, trimmedRecipient]);
@@ -1431,6 +1443,16 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     });
   }, [publicKey]);
 
+  // After a send, re-read both balances from Horizon so the page reflects the new state
+  // without a manual reload. Fire-and-forget: a failed refresh is only logged and must never
+  // replace the success/ambiguous result the user is looking at.
+  const refreshBalancesAfterSend = useCallback(() => {
+    loadSourceAccount().catch((e) => {
+      console.warn('[SKM] post-send source balance refresh failed', e);
+    });
+    setDestBalanceRefreshKey((prev) => prev + 1);
+  }, [loadSourceAccount]);
+
   const handleReviewConfirm = useCallback(async () => {
     if (!Array.isArray(reviewDialog?.signers) || reviewDialog.signers.length < 1) {
       setReviewError(t('secretKey:errorMissing', 'Secret Key fehlt für den Versand.'));
@@ -1453,10 +1475,13 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         openSentResultDialog(resultWithWalletInfo);
         closeReviewDialog();
         setSecretError('');
+        refreshBalancesAfterSend();
       } catch (err) {
         if (err instanceof AmbiguousSubmitResultError) {
           setAmbiguousSubmission({ hash: err.hash });
           closeReviewDialog();
+          // Outcome unknown - current balances help the user judge whether it went through.
+          refreshBalancesAfterSend();
         } else {
           const detail = handlePaymentError(err);
           setReviewError(detail);
@@ -1478,7 +1503,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     } finally {
       setReviewProcessing(false);
     }
-  }, [applySendResult, runPreSubmitChecks, closeReviewDialog, handlePaymentError, openSentResultDialog, reviewDialog, submitPayment, t]);
+  }, [applySendResult, runPreSubmitChecks, closeReviewDialog, handlePaymentError, openSentResultDialog, refreshBalancesAfterSend, reviewDialog, submitPayment, t]);
 
   const handleSendClick = useCallback(async () => {
     clearSuccess();
