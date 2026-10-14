@@ -87,7 +87,9 @@ export default function SmallAdminLink() {
   const linkLabel = t(ADMIN_NAV[0].labelKey);
 
   return (
-    <div className="fixed bottom-2 right-3 text-xs opacity-60 hover:opacity-100 transition-opacity pointer-events-auto">
+    // Unauffaellig am Seitenende im Fluss statt fix positioniert, damit der Link
+    // auf schmalen Bildschirmen keinen Inhalt ueberdeckt.
+    <div className="px-4 pb-4 pt-2 text-right text-xs opacity-60 hover:opacity-100 transition-opacity" data-testid="admin-link">
       <a
         href={buildPath(ADMIN_NAV[0].to)}
         onClick={handleLinkClick}
