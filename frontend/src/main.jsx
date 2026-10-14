@@ -89,7 +89,7 @@ import ActivateAccountPrompt from './components/ActivateAccountPrompt.jsx';
 import { emitAccountSelected } from './utils/accountBus.js';
 
 import DestinationInput from './components/DestinationInput';
-import MainMenu from './components/MainMenu';
+import { consumePendingMainView, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
 import ListTrustlines from './components/ListTrustlines';
 import ResultDisplay from './components/ResultDisplay';
 import CompareTrustlines from './components/CompareTrustlines';
@@ -582,6 +582,12 @@ function Main() {
   const handleMenuSelect = useCallback((value) => {
     const next = (value ?? '').trim();
     if (!next) return;
+    // App-Shell: "home" = Wallet-Startseite (keine Unteransicht)
+    if (next === 'home') {
+      setSendInit(null);
+      setMenuSelection(null);
+      return;
+    }
     const actionTarget = next === 'donate' ? 'sendPayment' : next;
     if (isIdentityMode(sourceMuxedAddress) && requiresGAccount(actionTarget)) {
       setIdentityGuard({ open: true, nextAction: actionTarget });
@@ -696,7 +702,7 @@ function Main() {
     } catch { /* noop */ }
   }, [menuSelection, activeJobId]);
 
-  // Listen for menu open requests from the language bar (e.g., feedback, donate)
+  // Listen for menu open requests from the app shell (TopBar/Sidebar)
   useEffect(() => {
     const openMenu = (e) => {
       const target = typeof e?.detail === 'string' ? e.detail : '';
@@ -705,6 +711,25 @@ function Main() {
     window.addEventListener('stm:openMenu', openMenu);
     return () => window.removeEventListener('stm:openMenu', openMenu);
   }, [handleMenuSelect]);
+
+  // App-Shell: Main-Mount melden und eine vorgemerkte Ansicht uebernehmen
+  // (Sidebar-Klick von einer Seite aus, auf der Main nicht gemountet war).
+  const handleMenuSelectRef = useRef(handleMenuSelect);
+  handleMenuSelectRef.current = handleMenuSelect;
+  useEffect(() => {
+    setMainMounted(true);
+    const pending = consumePendingMainView();
+    if (pending) handleMenuSelectRef.current(pending);
+    return () => {
+      setMainMounted(false);
+      publishActiveMainView(null);
+    };
+  }, []);
+
+  // App-Shell: aktive Ansicht fuer die Markierung in der Sidebar melden
+  useEffect(() => {
+    publishActiveMainView(menuSelection);
+  }, [menuSelection]);
 
   // Lazy-load trustlines when needed by specific views
   useEffect(() => {
@@ -912,7 +937,7 @@ function Main() {
         <div className="relative mb-2">
           <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center gap-2">
             <div className="hidden sm:block" />
-            <h1 className="text-2xl font-bold text-center">{t('common:main.title')}</h1>
+            <div className="hidden sm:block" />
             <div className="flex flex-col items-center sm:items-end text-sm text-gray-800 dark:text-gray-200">
               <div className="flex items-center justify-center sm:justify-end gap-2">
                 <PricePairSelector value={selectedPricePair} onChange={handlePricePairChange} />
@@ -959,7 +984,7 @@ function Main() {
           </button>
         </p>
         {/* Fixierter Wallet-Header – immer sichtbar */}
-        <div className="sticky top-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b rounded-b px-3 py-2 mb-2">
+        <div className="sticky top-14 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b rounded-b px-3 py-2 mb-2">
           <form onSubmit={(e) => { e.preventDefault(); handleHeaderApply(); }} className="max-w-4xl mx-auto mb-0">
             <div className="flex items-center justify-between mb-1">
               <label className="block font-bold text-sm">{t('publicKey:label')}</label>
@@ -1099,15 +1124,6 @@ function Main() {
                     )}
                   </div>
                 )}
-                {menuSelection && (
-                  <button
-                    type="button"
-                    onClick={() => setMenuSelection(null)}
-                    className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
-                  >
-                    {t('navigation:backToMainMenu')}
-                  </button>
-                )}
               </div>
             </div>
 
@@ -1124,17 +1140,6 @@ function Main() {
               </div>
             )}
           </>
-        )}
-
-        {/* Menüauswahl sichtbar, unabhängig davon ob ein Wallet gesetzt ist */}
-        {!menuSelection && (
-          <MainMenu
-            onSelect={(value) => {
-              const next = (value ?? '').trim();
-              if (isDev) console.log('[MainMenu onSelect]', JSON.stringify(next));
-              handleMenuSelect(next);
-            }}
-          />
         )}
 
         {error && <p className="text-red-500 mt-4">{errorDisplay}</p>}
@@ -1276,7 +1281,8 @@ function Main() {
           <TradingAssetsPage />
         </div>
       )}
-      {menuSelection === 'balance' && (
+      {/* Wallet-Startseite: ohne Unteransicht wird die Kontoübersicht gezeigt */}
+      {(menuSelection === 'balance' || !menuSelection) && (
         <BalancePage
           key={refreshToken}
           publicKey={sourcePublicKey}

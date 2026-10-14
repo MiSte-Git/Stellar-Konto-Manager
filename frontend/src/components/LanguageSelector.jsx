@@ -1,21 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { languages } from '../config/languages.js';
 
 // Hinweis: Wir verwenden die CSS-Variante von flag-icons (fi fi-xx),
 // damit auf Mobilgeräten keine Probleme mit Asset-Pfaden auftreten.
 // Die CSS wird global in src/index.css bzw. App.jsx importiert.
 
-const languages = [
-  { code: 'de', name: 'Deutsch', flag: 'de' },
-  { code: 'en', name: 'English', flag: 'us' },
-  { code: 'fr', name: 'Français', flag: 'fr' },
-  { code: 'es', name: 'Español', flag: 'es' },
-  { code: 'it', name: 'Italiano', flag: 'it' },
-  { code: 'nl', name: 'Nederlands', flag: 'nl' },
-  { code: 'fi', name: 'Suomi', flag: 'fi' },
-  { code: 'hr', name: 'Hrvatski', flag: 'hr' },
-  { code: 'ru', name: 'Русский', flag: 'ru' }
-];
 
 function LanguageSelector() {
   const { i18n } = useTranslation();

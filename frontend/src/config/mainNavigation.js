@@ -47,3 +47,89 @@ export const STATIC_FEEDBACK_AREAS = [
   { id: 'global', labelKey: 'common:feedback.pages.global' },
   { id: 'other', labelKey: 'common:feedback.pages.other' },
 ];
+
+/**
+ * Seitenleisten-Navigation (App-Shell).
+ * kind: 'main'  -> Ansicht innerhalb von Main (menuSelection), geoeffnet ueber stm:openMenu
+ * kind: 'route' -> eigene Route (pushState auf buildPath(to))
+ * Abschnitte ohne titleKey werden ohne Ueberschrift gerendert.
+ *
+ * @typedef {{ id: string, kind: 'main'|'route', labelKey: string, fallback?: string, icon: string, to?: string, glossaryTerm?: string, activeFor?: string[], requiresFlag?: string }} SidebarItem
+ * @typedef {{ id: string, titleKey?: string, titleFallback?: string, items: SidebarItem[] }} SidebarSection
+ */
+
+/** @type {SidebarSection[]} */
+export const SIDEBAR_SECTIONS = [
+  {
+    id: 'start',
+    items: [
+      { id: 'home', kind: 'main', labelKey: 'menu:wallet', fallback: 'Wallet', icon: 'wallet', activeFor: ['home', 'balance'] },
+    ],
+  },
+  {
+    id: 'account',
+    titleKey: 'menu:sections.account',
+    titleFallback: 'Konto',
+    items: [
+      { id: 'sendPayment', kind: 'main', labelKey: 'menu:sendPayment', icon: 'send' },
+      { id: 'createAccount', kind: 'main', labelKey: 'menu:createAccount', icon: 'plusCircle' },
+    ],
+  },
+  {
+    id: 'trade',
+    titleKey: 'menu:sections.trade',
+    titleFallback: 'Handel',
+    items: [
+      { id: 'tradingAssets', kind: 'main', labelKey: 'menu:swap', icon: 'swap', glossaryTerm: 'tokenTrading' },
+    ],
+  },
+  {
+    id: 'reports',
+    titleKey: 'menu:sections.reports',
+    titleFallback: 'Auswertungen',
+    items: [
+      { id: 'payments', kind: 'main', labelKey: 'menu:tokenPurchases', icon: 'receipt' },
+      { id: 'xlmByMemo', kind: 'main', labelKey: 'menu:xlmByMemo', icon: 'search' },
+    ],
+  },
+  {
+    id: 'trustlines',
+    titleKey: 'menu:sections.trustlines',
+    titleFallback: 'Token-Freigaben',
+    items: [
+      { id: 'listAll', kind: 'main', labelKey: 'menu:listAll', icon: 'list', glossaryTerm: 'trustline', activeFor: ['listAll', 'deleteAll', 'deleteByIssuer'] },
+      { id: 'compare', kind: 'main', labelKey: 'menu:compareTrustlines', icon: 'compare', glossaryTerm: 'trustline' },
+    ],
+  },
+  {
+    id: 'advanced',
+    titleKey: 'menu:sections.advanced',
+    titleFallback: 'Erweitert',
+    items: [
+      { id: 'multisigEdit', kind: 'main', labelKey: 'menu:multisigEdit', icon: 'users' },
+      { id: 'multisigJobs', kind: 'main', labelKey: 'menu:multisigJobs', icon: 'clock' },
+      { id: 'muxed', kind: 'main', labelKey: 'menu:muxed', icon: 'branch', glossaryTerm: 'addressMuxed' },
+    ],
+  },
+  {
+    id: 'learn',
+    titleKey: 'menu:sections.learn',
+    titleFallback: 'Lernen',
+    items: [
+      { id: 'discover', kind: 'route', to: 'discover', labelKey: 'home:learn.button', icon: 'compass' },
+      { id: 'quiz', kind: 'route', to: 'quiz', labelKey: 'navigation:quiz', fallback: 'Quiz', icon: 'quiz' },
+      { id: 'scamSimulator', kind: 'route', to: 'learn/scam-simulator', labelKey: 'scamSimulator:ui.title', icon: 'shieldAlert' },
+      { id: 'story', kind: 'route', to: 'story', labelKey: 'home:learn.story_title', icon: 'bookOpen' },
+      { id: 'glossary', kind: 'route', to: 'glossar', labelKey: 'menu:glossary', icon: 'book', rememberPrevPath: true },
+    ],
+  },
+];
+
+/** Fussbereich der Seitenleiste (Feedback, Spenden, Einstellungen, Rechtliches). */
+/** @type {SidebarItem[]} */
+export const SIDEBAR_FOOTER_ITEMS = [
+  { id: 'feedback', kind: 'main', labelKey: 'menu:feedback', icon: 'message' },
+  { id: 'donate', kind: 'main', labelKey: 'menu:donate', icon: 'heart', requiresFlag: 'donate' },
+  { id: 'settings', kind: 'main', labelKey: 'menu:settings', icon: 'settings' },
+  { id: 'legal', kind: 'route', to: 'legal', labelKey: 'legal:footer.imprintLink', icon: 'info' },
+];
