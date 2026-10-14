@@ -80,7 +80,10 @@ def translate_text_openai(text: str, target_lang: str, api_key: str) -> str | No
             messages=[
                 {
                     "role": "system",
-                    "content": f"Übersetze den folgenden Text präzise ins {target_lang}. Behalte den Kontext und die Bedeutung bei.",
+                    "content": (
+                        f"Übersetze den folgenden Text präzise ins {target_lang}. Behalte den Kontext und die Bedeutung bei. "
+                        "Platzhalter der Form __KEEP_TERM_1__ oder __KEEP_EN_TERM_1__ sowie {{...}}-Variablen exakt unverändert übernehmen."
+                    ),
                 },
                 {"role": "user", "content": text},
             ],
@@ -284,6 +287,10 @@ def _looks_like_untranslated_echo(source: Any, translated: str) -> bool:
         return False
     if len(src) < ECHO_MIN_LEN or " " not in src:
         return False
+    if not _has_translatable_letters(protect_tech_terms(src)[0]):
+        # Besteht nur aus Fachbegriffen (z.B. "Secret Key / Public Key") - die bleiben
+        # per Entscheidung in allen Sprachen englisch, Gleichheit ist hier korrekt.
+        return False
     return True
 
 
@@ -400,6 +407,143 @@ def protect_parenthesized_english_for_target(text: str, target_lang: str) -> tup
     if target_lang != "en":
         return text, {}
     return protect_parenthesized_english(text)
+
+
+# -------- Fachbegriffe: in allen Sprachen englisch lassen --------
+# Entscheidung (Okt. 2026): Stellar-/Krypto-Fachbegriffe werden in KEINER Sprache
+# übersetzt, auch nicht im deutschen Quelltext. Anlass war eine Stichprobe über alle
+# Sprachen: DeepL hat "Trustline" in 93 Keys als "Kreditlinie" übersetzt (fi, it, ru,
+# es, fr, hr) - fachlich falsch - und Begriffe wie Trustline, Memo, Signer, Threshold
+# je Key mal übersetzt, mal englisch gelassen. Ein DeepL-Glossar wurde verworfen:
+# Platzhalter wirken für beide Provider (DeepL + OpenAI), in beiden Phasen (DE -> EN und
+# EN -> andere) und brauchen keine Glossar-Verwaltung pro Sprachpaar.
+# Neue Begriffe einfach hier ergänzen. Mehrwortige Begriffe matchen mit Leerzeichen
+# oder Bindestrich ("Public Key" / "Public-Key"), Plural-Endung -s/-n ist erlaubt
+# (Trustlines, Signern). Groß-/Kleinschreibung wird aus dem Quelltext übernommen.
+TECH_TERMS = [
+    "Muxed Account",
+    "Sequence Number",
+    "Secret Key",
+    "Public Key",
+    "Trustline",
+    "Multisig",
+    "Signer",
+    "Threshold",
+    "Memo",
+    "Anchor",
+    "Asset",
+    "Token",
+    "Wallet",
+    "Testnet",
+    "Mainnet",
+    "Lumen",
+]
+
+
+def _term_pattern(term: str) -> str:
+    words = [re.escape(w) for w in term.split()]
+    # (?<![\w{]): nicht innerhalb von i18next-Variablen wie {{memo}} / {memo}.
+    return r"(?<![\w{])" + r"[ \-]".join(words) + r"(?:s|n)?(?!\w)"
+
+
+# Längere Begriffe zuerst, damit "Muxed Account" vor Teilbegriffen greift.
+TECH_TERM_RXS = [
+    (t, re.compile(_term_pattern(t), re.IGNORECASE))
+    for t in sorted(TECH_TERMS, key=len, reverse=True)
+]
+TECH_TERM_RE = re.compile("|".join(rx.pattern for _, rx in TECH_TERM_RXS), re.IGNORECASE)
+KEEP_PLACEHOLDER_RE = re.compile(r"__KEEP_(?:EN_)?TERM_\d+__")
+
+
+def rx_fullmatch(term: str, text: str) -> bool:
+    return bool(re.fullmatch(_term_pattern(term), text, re.IGNORECASE))
+
+
+def protect_tech_terms(text: str) -> tuple[str, dict[str, str]]:
+    """Ersetzt Fachbegriffe aus TECH_TERMS durch Platzhalter __KEEP_TERM_n__.
+    Beispiel: "Trustline anlegen" -> "__KEEP_TERM_1__ anlegen".
+    Gilt in BEIDEN Phasen (anders als protect_parenthesized_english): die Begriffe sind
+    eine feste Liste, keine Heuristik, daher gibt es in Phase B keine Fehlalarme.
+    """
+    placeholders: dict[str, str] = {}
+    if not isinstance(text, str) or not text:
+        return text, placeholders
+
+    def _repl(match: re.Match[str]) -> str:
+        placeholder = f"__KEEP_TERM_{len(placeholders) + 1}__"
+        found = match.group(0)
+        # Deutscher Dativ-Plural ("mit den Signern") -> englischer Plural ("Signers"):
+        # Ziel ist nie Deutsch, die -n-Form wäre in jeder Zielsprache falsch.
+        if found[-1:].lower() == "n" and any(len(found) == len(t) + 1 for t in TECH_TERMS if rx_fullmatch(t, found)):
+            found = found[:-1] + "s"
+        placeholders[placeholder] = found
+        return placeholder
+
+    return TECH_TERM_RE.sub(_repl, text), placeholders
+
+
+def _has_translatable_letters(text: str) -> bool:
+    """True, wenn nach Entfernen aller Platzhalter noch Buchstaben übrig sind."""
+    rest = KEEP_PLACEHOLDER_RE.sub("", text or "")
+    return bool(re.search(r"[^\W\d_]", rest))
+
+
+def protect_for_translation(text: str, target_lang: str) -> tuple[str, dict[str, str]]:
+    """Kombiniert Klammer-Schutz (nur Phase A) und Fachbegriff-Schutz (beide Phasen)."""
+    protected, placeholders = protect_parenthesized_english_for_target(text, target_lang)
+    protected, term_placeholders = protect_tech_terms(protected)
+    placeholders.update(term_placeholders)
+    return protected, placeholders
+
+
+def translate_protected(
+    protected: str,
+    placeholders: dict[str, str],
+    lang: str,
+    provider: str,
+    openai_key: str | None,
+    deepl_key: str | None,
+    path: str,
+    counters: Dict[str, int] | None = None,
+) -> str | None:
+    """Übersetzt einen bereits maskierten Text.
+    - Besteht er nur aus Platzhaltern (z.B. "Trustlines"), wird gar nicht übersetzt
+      (spart API-Zeichen, das Ergebnis ist ohnehin der Begriff selbst).
+    - Fehlt in der Antwort ein Platzhalter, gilt die Übersetzung als fehlgeschlagen
+      (None): sonst würde der Fachbegriff still verschwinden. Der Key wird dann vom
+      Aufrufer als failed markiert und beim nächsten Lauf erneut versucht.
+    """
+    if placeholders and not _has_translatable_letters(protected):
+        return protected
+    translated_raw = translate_text(protected, lang, provider, openai_key, deepl_key)
+    if translated_raw is None:
+        return None
+    missing = [ph for ph in placeholders if ph not in translated_raw]
+    if missing:
+        if counters is not None:
+            counters["lostPlaceholderKeys"] = counters.get("lostPlaceholderKeys", 0) + 1
+        print(f"INFO: Platzhalter verloren für {path} ({lang}): {', '.join(missing)} → nicht übernommen, nächster Lauf versucht es erneut")
+        return None
+    return translated_raw
+
+
+def _terms_in(text: Any) -> Set[str]:
+    if not isinstance(text, str):
+        return set()
+    return {t for t, rx in TECH_TERM_RXS if rx.search(text)}
+
+
+def find_term_mismatches(source_flat: Dict[str, Any], target_flat: Dict[str, Any]) -> Set[str]:
+    """Keys, deren Quelltext einen Fachbegriff enthält, der in der vorhandenen
+    Übersetzung fehlt (z.B. "Trustline" -> "Kreditlinie"). Grundlage für --fix-terms.
+    Fehlende Keys zählen nicht - die werden ohnehin ergänzt."""
+    out: Set[str] = set()
+    for k, src in source_flat.items():
+        if is_original_key(k) or k not in target_flat:
+            continue
+        if _terms_in(src) - _terms_in(target_flat.get(k)):
+            out.add(k)
+    return out
 
 
 # -------- Hash-basierte Änderungs-Erkennung --------
@@ -640,8 +784,8 @@ def merge_keys_missing_or_changed(
                 continue
             needs_update = (key not in out) or (cur_path in changed_paths)
             if needs_update:
-                protected, placeholders = protect_parenthesized_english_for_target(value if isinstance(value, str) else "", lang)
-                translated_raw = translate_text(protected, lang, provider, openai_key, deepl_key)
+                protected, placeholders = protect_for_translation(value if isinstance(value, str) else "", lang)
+                translated_raw = translate_protected(protected, placeholders, lang, provider, openai_key, deepl_key, cur_path, counters)
                 if translated_raw is None:
                     failed_paths.add(cur_path)
                     out[key] = out.get(key, value)
@@ -705,8 +849,8 @@ def translate_full(
             else:
                 # Bestehende Übersetzungen nur überschreiben, wenn erzwungen
                 if existing_val is None or cur_path in forced_paths:
-                    protected, placeholders = protect_parenthesized_english_for_target(value if isinstance(value, str) else "", lang)
-                    translated_raw = translate_text(protected, lang, provider, openai_key, deepl_key)
+                    protected, placeholders = protect_for_translation(value if isinstance(value, str) else "", lang)
+                    translated_raw = translate_protected(protected, placeholders, lang, provider, openai_key, deepl_key, cur_path, counters)
                     if translated_raw is None:
                         if failed_paths is not None:
                             failed_paths.add(cur_path)
@@ -848,11 +992,13 @@ def main():
             "                       Mehrfach nutzbar oder komma-separiert.\n"
             "                       Beispiele: feedback.title  |  menu.feedback  |  feedback\n"
             "  --full               Vollständiger Lauf: alle Schlüssel neu übersetzen (langsamer/teurer).\n"
+            "  --fix-terms          Zusätzlich Keys neu übersetzen, in denen ein Fachbegriff (TECH_TERMS) fehlt.\n"
             "\n"
             "Beispiele:\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --force-key feedback.title --force-key menu.feedback\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --full\n"
+            "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --fix-terms\n"
         ),
         formatter_class=RawTextHelpFormatter,
     )
@@ -878,6 +1024,12 @@ def main():
         dest="force_keys",
         action="append",
         help="Erzwingt Neuübersetzung für bestimmte Schlüssel (dot-Pfade, mehrfach nutzbar oder komma-separiert)",
+    )
+    parser.add_argument(
+        "--fix-terms",
+        action="store_true",
+        help="Übersetzt zusätzlich alle Keys neu, deren Übersetzung einen Fachbegriff aus TECH_TERMS\n"
+             "nicht enthält (z.B. 'Trustline' als 'Kreditlinie' übersetzt). Pro Sprache geprüft.",
     )
     parser.add_argument(
         "--prune-extra",
@@ -909,6 +1061,7 @@ def main():
     do_full = bool(args.full)
     force_keys_raw = args.force_keys or []
     do_prune = bool(args.prune_extra)
+    do_fix_terms = bool(args.fix_terms)
 
     # API-Keys: Umgebungsvariable -> OS-Keyring -> interaktive Abfrage (mit Angebot,
     # den eingegebenen Key im Keyring zu speichern - siehe resolve_api_key()). Nur
@@ -1063,6 +1216,12 @@ def main():
                     if man_en.get(f"{ns_name}.{k}") != _sha256(str(v))
                 )
 
+            if do_fix_terms and not do_full:
+                fix_en = find_term_mismatches(de_flat_rel, _flatten_dict(en_existing))
+                if fix_en:
+                    print(f"   INFO: --fix-terms: {len(fix_en)} Key(s) in en/{ns_name}.json ohne passenden Fachbegriff")
+                changed_rel |= fix_en
+
             if do_full:
                 en_translated = translate_full(
                     ns_base,
@@ -1141,6 +1300,12 @@ def main():
                         if man_lang.get(f"{ns_name}.{k}") != _sha256(str(v))
                     )
 
+                if do_fix_terms and not do_full:
+                    fix_lang = find_term_mismatches(en_flat_rel, _flatten_dict(existing))
+                    if fix_lang:
+                        print(f"   INFO: --fix-terms: {len(fix_lang)} Key(s) in {lang}/{ns_name}.json ohne passenden Fachbegriff")
+                    changed_rel_lang |= fix_lang
+
                 if do_full:
                     translated = translate_full(
                         en_ns,
@@ -1184,7 +1349,7 @@ def main():
                 print(f"❌ Abbruch für Sprache {lang} / Namespace {ns_name}: {e}")
                 continue
 
-    print(f"\nZusammenfassung Namespaces: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}, 'preservedSpecialCharKeys': {counters.get('preservedSpecialCharKeys', 0)}, 'untranslatedEchoKeys': {counters.get('untranslatedEchoKeys', 0)}}}")
+    print(f"\nZusammenfassung Namespaces: {{'skippedOriginalKeysCount': {counters.get('skippedOriginalKeysCount', 0)}, 'copiedOriginalKeysCount': {counters.get('copiedOriginalKeysCount', 0)}, 'preservedSpecialCharKeys': {counters.get('preservedSpecialCharKeys', 0)}, 'untranslatedEchoKeys': {counters.get('untranslatedEchoKeys', 0)}, 'lostPlaceholderKeys': {counters.get('lostPlaceholderKeys', 0)}}}")
     if counters.get('preservedSpecialCharKeys', 0) > 0:
         print(
             f"⚠️  {counters['preservedSpecialCharKeys']} Key(s) blieben unübersetzt, weil ein Sonderzeichen "
@@ -1198,6 +1363,12 @@ def main():
             "unverändert zurückgab - siehe die 'Unübersetztes Echo'-Zeilen oben. "
             "Diese Keys wurden NICHT als erledigt ins Manifest übernommen und werden beim nächsten Lauf "
             "automatisch erneut versucht."
+        )
+    if counters.get('lostPlaceholderKeys', 0) > 0:
+        print(
+            f"⚠️  {counters['lostPlaceholderKeys']} Key(s) wurden nicht übernommen, weil der Übersetzer einen "
+            "Fachbegriff-Platzhalter verändert hat - siehe die 'Platzhalter verloren'-Zeilen oben. "
+            "Diese Keys werden beim nächsten Lauf automatisch erneut versucht."
         )
     print("\n✅ Namespaced-Verarbeitung abgeschlossen.")
 

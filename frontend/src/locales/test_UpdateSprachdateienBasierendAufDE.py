@@ -53,6 +53,11 @@ Deckt konkret aufgetretene Pipeline-Bugs ab:
    Tests zeigen, dass DeepL dieselben Texte heute korrekt uebersetzt (81-Instanzen-
    Root-Cause-Analyse, 16 von 23 betroffenen Keys ohne jedes Sonderzeichen). Siehe
    UntranslatedEchoTests.
+8. Fachbegriffe (Trustline, Memo, Signer, Threshold, ...) wurden je Key mal
+   uebersetzt, mal englisch gelassen - "Trustline" wurde in 93 Keys sogar zu
+   "Kreditlinie" (fi, it, ru, es, fr, hr). Entscheidung: Fachbegriffe bleiben in
+   allen Sprachen englisch; TECH_TERMS wird in beiden Phasen per Platzhalter
+   geschuetzt, --fix-terms repariert Bestandsuebersetzungen. Siehe TechTermTests.
 
 Nur Standardbibliothek (unittest) - kein pytest/Netzwerk noetig.
 Aufruf: python3 -m unittest test_UpdateSprachdateienBasierendAufDE -v
@@ -733,6 +738,94 @@ class UntranslatedEchoTests(unittest.TestCase):
             "Ein spaeterer normaler Lauf muss den zuvor als Echo erkannten Key "
             "automatisch erneut versuchen, statt ihn fuer immer uebersprungen zu lassen",
         )
+
+
+class TechTermTests(unittest.TestCase):
+    """Bug 8: Fachbegriffe bleiben in allen Sprachen englisch."""
+
+    def test_terms_masked_and_restored_in_phase_b(self):
+        protected, ph = usd.protect_for_translation("Create a trustline and add a memo.", "fr")
+        self.assertNotIn("trustline", protected.lower())
+        self.assertNotIn("memo", protected.lower())
+        self.assertEqual(sorted(ph.values()), ["memo", "trustline"])
+        restored = usd.restore_parenthesized_english(protected, ph)
+        self.assertEqual(restored, "Create a trustline and add a memo.")
+
+    def test_multiword_hyphen_and_plural(self):
+        _, ph = usd.protect_tech_terms("Ziel-Public-Key, Secret Keys und Muxed Accounts")
+        self.assertEqual(sorted(ph.values()), ["Muxed Accounts", "Public-Key", "Secret Keys"])
+
+    def test_german_dative_plural_becomes_english_plural(self):
+        _, ph = usd.protect_tech_terms("Fragen zu Signern")
+        self.assertEqual(list(ph.values()), ["Signers"])
+
+    def test_no_match_inside_words_variables_or_constants(self):
+        for text in ["Memofeld", "{{memo}} fehlt", "{memo}", "MEMO_RETURN", "Tokenizer"]:
+            _, ph = usd.protect_tech_terms(text)
+            self.assertEqual(ph, {}, text)
+
+    def test_only_terms_skips_api_call(self):
+        protected, ph = usd.protect_for_translation("Trustlines", "ru")
+        with mock.patch.object(usd, "translate_text") as tt:
+            out = usd.translate_protected(protected, ph, "ru", "deepl", None, "k", "p")
+        tt.assert_not_called()
+        self.assertEqual(usd.restore_parenthesized_english(out, ph), "Trustlines")
+
+    def test_lost_placeholder_counts_as_failure(self):
+        protected, ph = usd.protect_for_translation("Delete the trustline now", "fi")
+        counters = {}
+        with mock.patch.object(usd, "translate_text", return_value="Poista luottolinja nyt"):
+            out = usd.translate_protected(protected, ph, "fi", "deepl", None, "k", "p", counters)
+        self.assertIsNone(out)
+        self.assertEqual(counters.get("lostPlaceholderKeys"), 1)
+
+    def test_find_term_mismatches(self):
+        src = {"a": "Create trustline", "b": "Add memo", "c": "Plain text", "x.original": "Trustline"}
+        tgt = {"a": "Créer une ligne de crédit", "b": "Ajouter un memo", "c": "Texte", "x.original": "-"}
+        self.assertEqual(usd.find_term_mismatches(src, tgt), {"a"})
+
+    def test_fix_terms_end_to_end(self):
+        os.environ["DEEPL_API_KEY"] = "test-key-not-used"
+        self.addCleanup(lambda: os.environ.pop("DEEPL_API_KEY", None))
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        base_path = tmp.name
+        de = {"t": "Trustline löschen", "o": "Abbrechen"}
+        en = {"t": "Delete trustline", "o": "Cancel"}
+        fr = {"t": "Supprimer la ligne de crédit", "o": "Annuler"}
+        for lang, data in (("de", de), ("en", en), ("fr", fr)):
+            os.makedirs(os.path.join(base_path, lang), exist_ok=True)
+            with open(os.path.join(base_path, lang, "ns.json"), "w", encoding="utf-8") as f:
+                json.dump(data, f)
+        hash_dir = os.path.join(base_path, ".i18n_hash")
+        os.makedirs(hash_dir, exist_ok=True)
+        with open(os.path.join(hash_dir, "en_from_de.json"), "w", encoding="utf-8") as f:
+            json.dump({f"ns.{k}": usd._sha256(v) for k, v in de.items()}, f)
+        for lang in usd.TARGET_LANGS:
+            if lang == "en":
+                continue
+            with open(os.path.join(hash_dir, f"{lang}_from_en.json"), "w", encoding="utf-8") as f:
+                json.dump({f"ns.{k}": usd._sha256(v) for k, v in en.items()}, f)
+
+        sent = []
+
+        def fake_deepl(text, target_lang, api_key, api_url=None):
+            sent.append((target_lang, text))
+            return text.replace("Delete", "Supprimer")
+
+        argv = ["UpdateSprachdateienBasierendAufDE.py", "--provider", "deepl",
+                "--base-path", base_path, "--fix-terms"]
+        with mock.patch.object(usd, "TARGET_LANGS", ["en", "fr"]), \
+             mock.patch.object(usd, "translate_text_deepl", side_effect=fake_deepl), \
+             mock.patch.object(usd, "HASH_DIR", hash_dir), \
+             mock.patch.object(sys, "argv", argv):
+            usd.main()
+
+        with open(os.path.join(base_path, "fr", "ns.json"), encoding="utf-8") as f:
+            fr_out = json.load(f)
+        self.assertEqual(fr_out["t"], "Supprimer trustline")
+        self.assertEqual(fr_out["o"], "Annuler", "Key ohne Fachbegriff darf nicht angefasst werden")
+        self.assertEqual(sent, [("fr", "Delete __KEEP_TERM_1__")])
 
 
 class FakeKeyring:

@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import NavIcon from '../components/layout/NavIcon.jsx';
+import RecentActivity from '../components/wallet/RecentActivity.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { computeWalletSummary, shortenAddress } from '../utils/stellar/walletSummary.js';
 import { useSettings } from '../utils/useSettings.js';
@@ -312,6 +313,19 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
             {t('wallet:home.tokenNote', 'Ein Gegenwert wird nur für XLM angezeigt. SKM bewertet keine Token und trifft keine Aussage darüber, ob ein Token echt ist.')}
           </p>
         </section>
+      )}
+
+      {/* Letzte Aktivitaet */}
+      {summary && (
+        <RecentActivity
+          publicKey={publicKey}
+          muxedAddress={muxedAddress}
+          network={network}
+          reloadToken={reloadToken}
+          locale={locale}
+          fmt={fmt}
+          onShowAll={() => onAction?.('balance')}
+        />
       )}
     </div>
   );

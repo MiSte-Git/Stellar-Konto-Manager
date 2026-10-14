@@ -59,5 +59,37 @@
     "hintTrustline": "Andere Token als XLM kannst du erst empfangen, wenn du eine Token-Freigabe (Trustline) dafür hast.",
     "hintActivate": "Ein neues Konto wird erst mit einer ersten Einzahlung von mindestens 1 XLM aktiviert.",
     "hintMuxed": "Zahlungen an die M-Adresse landen auf deinem Basiskonto und sind mit der Muxed-ID gekennzeichnet. Nicht jede Wallet oder Börse unterstützt M-Adressen."
+  },
+  "activity": {
+    "title": "Letzte Aktivität",
+    "showAll": "Alle anzeigen",
+    "loadError": "Aktivität konnte nicht geladen werden.",
+    "empty": "Noch keine Zahlungen.",
+    "failed": "Fehlgeschlagen",
+    "lookalike": "Ähnliche Adresse",
+    "lookalikeHint": "Diese Adresse beginnt und endet wie eine Adresse, an die du gesendet hast, ist aber eine andere. Kopiere Empfänger nie aus dem Verlauf.",
+    "lookalikeWarning": "Achtung: Mindestens ein Absender ähnelt einer Adresse, an die du gesendet hast. Kopiere Empfänger nie aus dem Verlauf, sondern aus einer sicheren Quelle.",
+    "dust": "Kleinstbetrag",
+    "showDust": "Anzeigen",
+    "hideDust": "Ausblenden",
+    "from": "von",
+    "to": "an",
+    "memoHint": "Memo vom Absender. Inhalt nicht von SKM geprüft.",
+    "explorer": "Details",
+    "kind": {
+      "received": "Erhalten",
+      "sent": "Gesendet",
+      "self": "An dich selbst",
+      "pathIn": "Erhalten (umgetauscht)",
+      "pathOut": "Gesendet (umgetauscht)",
+      "accountCreated": "Konto aktiviert",
+      "createdAccount": "Konto erstellt",
+      "mergeIn": "Konto zusammengeführt",
+      "mergeOut": "Konto aufgelöst"
+    },
+    "dustHidden_one": "{{count}} Kleinstzahlung ausgeblendet (oft Spam).",
+    "dustHidden_other": "{{count}} Kleinstzahlungen ausgeblendet (oft Spam).",
+    "dustShown_one": "{{count}} Kleinstzahlung wird angezeigt.",
+    "dustShown_other": "{{count}} Kleinstzahlungen werden angezeigt."
   }
 }

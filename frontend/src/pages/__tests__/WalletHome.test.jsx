@@ -4,9 +4,10 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n.js';
 
 const loadAccount = vi.fn();
-vi.mock('../../utils/stellar/stellarUtils.js', () => ({
-  getHorizonServer: () => ({ loadAccount }),
-}));
+vi.mock('../../utils/stellar/stellarUtils.js', () => {
+  const chain = { forAccount: () => chain, order: () => chain, limit: () => chain, join: () => chain, call: async () => ({ records: [] }) };
+  return { getHorizonServer: () => ({ loadAccount, payments: () => chain }) };
+});
 
 import WalletHome from '../WalletHome.jsx';
 import { XlmPriceContext } from '../../utils/xlmPriceContext.js';
