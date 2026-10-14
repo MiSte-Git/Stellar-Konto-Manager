@@ -52,3 +52,11 @@ export function shortenAddress(value, head = 6, tail = 6) {
   if (s.length <= head + tail + 1) return s;
   return `${s.slice(0, head)}…${s.slice(-tail)}`;
 }
+
+/** Teilt eine Adresse in 4er-Gruppen, damit sie sich leichter vergleichen laesst. */
+export function groupAddress(address, size = 4) {
+  const s = String(address || '');
+  const parts = [];
+  for (let i = 0; i < s.length; i += size) parts.push(s.slice(i, i + size));
+  return parts;
+}

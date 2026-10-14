@@ -166,6 +166,14 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           <div className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
             {t('wallet:home.balance', 'Guthaben')}
           </div>
+          <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => onAction?.('balance')}
+            className="rounded-md border-0 bg-transparent px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-300 dark:hover:bg-gray-700 dark:hover:text-blue-200"
+          >
+            {t('wallet:home.actions.details', 'Kontodetails')}
+          </button>
           <button
             type="button"
             onClick={() => setReloadToken((v) => v + 1)}
@@ -176,6 +184,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           >
             <NavIcon name="refresh" className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
+          </div>
         </div>
 
         {notFound ? (
@@ -238,8 +247,8 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
 
         <div className="mt-5 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap">
           <ActionButton primary icon="send" label={t('wallet:home.actions.send', 'Senden')} onClick={() => onAction?.('sendPayment')} />
+          <ActionButton icon="receive" label={t('wallet:home.actions.receive', 'Empfangen')} onClick={() => onAction?.('receive')} />
           <ActionButton icon="swap" label={t('wallet:home.actions.swap', 'Tauschen')} onClick={() => onAction?.('tradingAssets')} />
-          <ActionButton icon="list" label={t('wallet:home.actions.details', 'Kontodetails')} onClick={() => onAction?.('balance')} />
         </div>
       </section>
 

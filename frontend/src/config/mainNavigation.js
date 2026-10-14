@@ -72,6 +72,7 @@ export const SIDEBAR_SECTIONS = [
     titleFallback: 'Konto',
     items: [
       { id: 'sendPayment', kind: 'main', labelKey: 'menu:sendPayment', icon: 'send' },
+      { id: 'receive', kind: 'main', labelKey: 'menu:receive', fallback: 'Empfangen', icon: 'receive' },
       { id: 'createAccount', kind: 'main', labelKey: 'menu:createAccount', icon: 'plusCircle' },
     ],
   },

@@ -131,6 +131,18 @@ const PATHS = {
       <path d="M20 20v-4h-4" />
     </>
   ),
+  receive: (
+    <>
+      <path d="M17 7 7 17" />
+      <path d="M16 17H7V8" />
+    </>
+  ),
+  copy: (
+    <>
+      <rect x="9" y="9" width="11" height="11" rx="2" />
+      <path d="M5 15V6a2 2 0 0 1 2-2h9" />
+    </>
+  ),
   menu: <path d="M4 6h16M4 12h16M4 18h16" />,
   close: <path d="M6 6l12 12M18 6 6 18" />,
   chevronDown: <path d="m6 9 6 6 6-6" />,

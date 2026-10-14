@@ -112,6 +112,7 @@ const MultisigCreatePage = lazy(() => import('./pages/MultisigCreatePage.jsx'));
 const MultisigEditPage   = lazy(() => import('./pages/MultisigEditPage.jsx'));
 const BalancePage        = lazy(() => import('./pages/BalancePage.jsx'));
 const WalletHome         = lazy(() => import('./pages/WalletHome.jsx'));
+const ReceivePage        = lazy(() => import('./pages/ReceivePage.jsx'));
 const SendPaymentPage    = lazy(() => import('./pages/SendPaymentPage.jsx'));
 const FeedbackPage       = lazy(() => import('./pages/FeedbackPage.jsx'));
 const MuxedAccountsPage  = lazy(() => import('./pages/MuxedAccountsPage.jsx'));
@@ -1149,6 +1150,9 @@ function Main() {
           onOpenRoute={(path) => navigateToPath(path)}
         />
       )}
+      {menuSelection === 'receive' && (
+        <ReceivePage publicKey={sourcePublicKey} muxedAddress={sourceMuxedAddress} />
+      )}
       {menuSelection === 'balance' && (
         <BalancePage
           key={refreshToken}
@@ -1196,7 +1200,7 @@ function Main() {
       )}
        
        {menuSelection &&
-       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','tradingAssets','settings','createAccount','multisigEdit','multisigJobs','balance','sendPayment','feedback','muxed'].includes(menuSelection) && (
+       !['listAll','compare','deleteAll','deleteByIssuer','xlmByMemo','payments','tradingAssets','settings','createAccount','multisigEdit','multisigJobs','balance','sendPayment','receive','feedback','muxed'].includes(menuSelection) && (
          <div className="p-3 text-sm text-red-600">
            {t('menu:unknown', { value: String(menuSelection) }, 'Unbekannte Menüauswahl')}
          </div>
