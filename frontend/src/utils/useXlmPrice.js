@@ -128,9 +128,14 @@ export function useXlmPrice() {
     return new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(updatedAt);
   }, [locale, updatedAt]);
 
+  const numericValue = value == null || Number.isNaN(Number(value)) ? null : Number(value);
+
   return {
     pairs: XLM_PRICE_PAIRS,
     selectedPair: pair.key,
+    symbol: pair.symbol,
+    value: numericValue,
+    locale,
     setSelectedPair,
     loading,
     error,

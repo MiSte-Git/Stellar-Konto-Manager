@@ -6,6 +6,7 @@ import Sidebar from './Sidebar.jsx';
 import TopBar from './TopBar.jsx';
 import XlmPriceTicker from './XlmPriceTicker.jsx';
 import { useXlmPrice } from '../../utils/useXlmPrice.js';
+import { XlmPriceContext } from '../../utils/xlmPriceContext.js';
 
 const FOCUSABLE = 'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
@@ -76,6 +77,7 @@ export default function AppLayout({ children }) {
   }, [drawerOpen]);
 
   return (
+    <XlmPriceContext.Provider value={price}>
     <div className="min-h-screen">
       <TopBar
         onOpenMenu={() => setDrawerOpen(true)}
@@ -132,5 +134,6 @@ export default function AppLayout({ children }) {
         </div>
       )}
     </div>
+    </XlmPriceContext.Provider>
   );
 }

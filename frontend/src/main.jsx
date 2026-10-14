@@ -89,7 +89,7 @@ import ActivateAccountPrompt from './components/ActivateAccountPrompt.jsx';
 import { emitAccountSelected } from './utils/accountBus.js';
 
 import DestinationInput from './components/DestinationInput';
-import { consumePendingMainView, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
+import { consumePendingMainView, navigateToPath, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
 import ListTrustlines from './components/ListTrustlines';
 import ResultDisplay from './components/ResultDisplay';
 import CompareTrustlines from './components/CompareTrustlines';
@@ -111,6 +111,7 @@ const SettingsPage       = lazy(() => import('./pages/SettingsPage.jsx'));
 const MultisigCreatePage = lazy(() => import('./pages/MultisigCreatePage.jsx'));
 const MultisigEditPage   = lazy(() => import('./pages/MultisigEditPage.jsx'));
 const BalancePage        = lazy(() => import('./pages/BalancePage.jsx'));
+const WalletHome         = lazy(() => import('./pages/WalletHome.jsx'));
 const SendPaymentPage    = lazy(() => import('./pages/SendPaymentPage.jsx'));
 const FeedbackPage       = lazy(() => import('./pages/FeedbackPage.jsx'));
 const MuxedAccountsPage  = lazy(() => import('./pages/MuxedAccountsPage.jsx'));
@@ -819,12 +820,6 @@ function Main() {
       <div className="max-w-4xl mx-auto px-4 pt-4 text-center mt-4-500" style={{ paddingBottom: 'max(1rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
         {/* 🌍 Global: Titel & Info */}
         <div className="relative mb-2">
-          {/* Active network banner */}
-          <div className="mt-2 text-xs text-center">
-            <span className={`inline-block px-2 py-0.5 rounded font-semibold ${devTestnet ? 'bg-yellow-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100'}`}>
-              {devTestnet ? t('network:testnet') : t('network:mainnet')}
-            </span>
-          </div>
           {sourcePublicKey && (
             <div className="mt-1 text-xs text-center">
               <span className={`inline-block px-2 py-0.5 rounded font-semibold ${accountMode === 'identity' ? 'bg-amber-200 text-amber-900' : 'bg-blue-100 text-blue-800'}`}>
@@ -840,7 +835,7 @@ function Main() {
             </div>
           )}
         </div>
-        <p className="mb-2 text-sm text-blue-200 rounded border">
+        <p className="mb-2 text-sm text-gray-700 dark:text-blue-200 rounded border border-gray-200 dark:border-gray-500">
           {t('secretKey:info')}
           <button type="button" onClick={()=>setShowSecretInfo(true)} className="ml-2 px-2 py-0.5 text-blue-700 underline">
             {t('createAccount:info.more')}
@@ -1144,8 +1139,17 @@ function Main() {
           <TradingAssetsPage />
         </div>
       )}
-      {/* Wallet-Startseite: ohne Unteransicht wird die Kontoübersicht gezeigt */}
-      {(menuSelection === 'balance' || !menuSelection) && (
+      {/* Wallet-Startseite: ohne Unteransicht */}
+      {!menuSelection && (
+        <WalletHome
+          key={refreshToken}
+          publicKey={sourcePublicKey}
+          muxedAddress={sourceMuxedAddress}
+          onAction={handleMenuSelect}
+          onOpenRoute={(path) => navigateToPath(path)}
+        />
+      )}
+      {menuSelection === 'balance' && (
         <BalancePage
           key={refreshToken}
           publicKey={sourcePublicKey}

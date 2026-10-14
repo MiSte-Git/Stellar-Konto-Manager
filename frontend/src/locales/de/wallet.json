@@ -10,5 +10,35 @@
     "deactivated": "Hinweis: Diese Wallet ist in deiner VertrauListe als deaktiviert markiert."
   },
   "xlmBalance": "XLM",
-  "unfunded": "Nicht aktiviert"
+  "unfunded": "Nicht aktiviert",
+  "home": {
+    "balance": "Guthaben",
+    "refresh": "Aktualisieren",
+    "available": "Verfügbar",
+    "reserved": "Reserviert",
+    "reservedHint": "Mindestreserve des Netzwerks (pro Token-Freigabe, Angebot oder Unterzeichner) plus XLM in offenen Verkaufsangeboten. Dieser Betrag kann nicht gesendet werden.",
+    "muxedNote": "Muxed-Identität: angezeigt wird das Guthaben des Basiskontos.",
+    "loadError": "Kontodaten konnten nicht geladen werden.",
+    "actions": {
+      "send": "Senden",
+      "swap": "Tauschen",
+      "details": "Kontodetails"
+    },
+    "assets": "Assets",
+    "manageTrustlines": "Token-Freigaben verwalten",
+    "poolShares": "Liquiditätspool-Anteile",
+    "pool": "Pool",
+    "issuer": "Herausgeber",
+    "noTrustlines": "Noch keine Token-Freigaben. Um andere Token zu halten, brauchst du zuerst eine Freigabe (Trustline).",
+    "tokenNote": "Ein Gegenwert wird nur für XLM angezeigt. SKM bewertet keine Token und trifft keine Aussage darüber, ob ein Token echt ist.",
+    "notFound": {
+      "title": "Konto noch nicht aktiviert",
+      "text": "Dieses Konto existiert im {{net}} noch nicht. Es wird aktiv, sobald es eine erste Einzahlung in XLM erhält."
+    },
+    "empty": {
+      "title": "Noch kein Konto geladen",
+      "text": "Gib oben deinen Public Key oder eine Föderationsadresse ein. Zum Ansehen reicht der Public Key, für Transaktionen brauchst du später deinen Secret Key.",
+      "learn": "Stellar kennenlernen"
+    }
+  }
 }
