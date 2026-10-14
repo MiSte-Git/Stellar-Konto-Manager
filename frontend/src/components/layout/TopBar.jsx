@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { openMainView } from '../../utils/appNavigation.js';
 import LanguageMenu from './LanguageMenu.jsx';
 import NavIcon from './NavIcon.jsx';
+import XlmPriceTicker from './XlmPriceTicker.jsx';
 
 function readNetwork() {
   try {
@@ -45,9 +46,9 @@ function NetworkBadge() {
 
 /**
  * Feste Titelleiste der App-Shell.
- * @param {{ onOpenMenu: () => void, menuOpen: boolean, menuButtonRef: React.RefObject<HTMLButtonElement> }} props
+ * @param {{ onOpenMenu: () => void, menuOpen: boolean, menuButtonRef: React.RefObject<HTMLButtonElement>, price?: object }} props
  */
-export default function TopBar({ onOpenMenu, menuOpen, menuButtonRef }) {
+export default function TopBar({ onOpenMenu, menuOpen, menuButtonRef, price }) {
   const { t } = useTranslation(['common', 'menu', 'settings']);
   const logoSrc = `${import.meta.env.BASE_URL || '/'}Trustline-Logo-Favicon.ico`;
   const iconBtn =
@@ -77,15 +78,16 @@ export default function TopBar({ onOpenMenu, menuOpen, menuButtonRef }) {
           title={t('common:main.title')}
         >
           <img src={logoSrc} alt="" className="h-7 w-7 shrink-0 rounded-md" />
-          <span className="hidden truncate text-[15px] font-semibold tracking-tight sm:inline">
+          <span className="hidden truncate text-[15px] font-semibold tracking-tight lg:inline">
             {t('common:main.title')}
           </span>
-          <span className="text-[15px] font-semibold tracking-tight sm:hidden">SKM</span>
+          <span className="text-[15px] font-semibold tracking-tight lg:hidden">SKM</span>
         </button>
 
         <NetworkBadge />
 
         <div className="ml-auto flex items-center gap-2">
+          <XlmPriceTicker price={price} className="hidden sm:inline-flex" />
           <LanguageMenu />
           <button
             type="button"

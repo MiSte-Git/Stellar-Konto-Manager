@@ -1244,5 +1244,11 @@
   "inputHistory": {
     "removeEntry": "Aus Verlauf entfernen",
     "clearField": "Verlauf dieses Feldes löschen"
+  },
+  "xlmPrice": {
+    "source": "Quelle: CoinGecko",
+    "updated": "aktualisiert {{time}}",
+    "pair": "Währung für den XLM-Kurs",
+    "unavailable": "Kurs nicht verfügbar"
   }
 }
