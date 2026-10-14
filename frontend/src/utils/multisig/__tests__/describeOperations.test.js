@@ -89,7 +89,7 @@ describe('describeOperations', () => {
   it('describes setOptions thresholds with all three levels interpolated', () => {
     const tx = buildTx([Operation.setOptions({ lowThreshold: 1, medThreshold: 2, highThreshold: 3 })]);
     const [line] = describeOperations(tx.operations, fakeT);
-    expect(line).toBe('Schwellenwerte setzen: niedrig=1, mittel=2, hoch=3');
+    expect(line).toBe('Thresholds setzen: niedrig=1, mittel=2, hoch=3');
   });
 
   it('a single setOptions operation combining masterWeight + signer + thresholds expands to three separate lines', () => {
@@ -105,7 +105,7 @@ describe('describeOperations', () => {
     expect(lines).toHaveLength(3);
     expect(lines[0]).toContain('Master-Gewicht');
     expect(lines[1]).toContain('Gewicht für Signer');
-    expect(lines[2]).toContain('Schwellenwerte');
+    expect(lines[2]).toContain('Thresholds');
   });
 
   it('describes changeTrust with asset code and limit', () => {

@@ -32,7 +32,7 @@
     "assetCodeHelp": "Kurzname des Assets (1–12 Zeichen, z. B. TESTUSD).",
     "issuerLabel": "Issuer (Public Key)",
     "issuerPlaceholder": "z. B. G...Issuer",
-    "issuerHelp": "Öffentlicher Schlüssel (G-Adresse) des Issuer-Kontos, das das Asset ausgibt.",
+    "issuerHelp": "Public Key (G-Adresse) des Issuer-Kontos, das das Asset ausgibt.",
     "limitLabel": "Limit",
     "limitPlaceholder": "z. B. 1000000 (eine Million)",
     "limitHelp": "Das Limit ist der maximale Betrag dieses Assets, dem dieses Konto vertraut. In der Praxis sollte es so hoch gewählt werden, wie dein voraussichtliches maximales Guthaben in diesem Asset.",

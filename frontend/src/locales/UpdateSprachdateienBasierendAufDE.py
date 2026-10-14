@@ -426,6 +426,7 @@ TECH_TERMS = [
     "Secret Key",
     "Public Key",
     "Trustline",
+    "Multi-Signature",
     "Multisig",
     "Signer",
     "Threshold",
@@ -533,17 +534,41 @@ def _terms_in(text: Any) -> Set[str]:
     return {t for t, rx in TECH_TERM_RXS if rx.search(text)}
 
 
-def find_term_mismatches(source_flat: Dict[str, Any], target_flat: Dict[str, Any]) -> Set[str]:
+def find_term_mismatches(
+    source_flat: Dict[str, Any],
+    target_flat: Dict[str, Any],
+    only_terms: Set[str] | None = None,
+) -> Set[str]:
     """Keys, deren Quelltext einen Fachbegriff enthält, der in der vorhandenen
     Übersetzung fehlt (z.B. "Trustline" -> "Kreditlinie"). Grundlage für --fix-terms.
+    only_terms schränkt auf bestimmte Begriffe ein (Kosten in Etappen verteilen).
     Fehlende Keys zählen nicht - die werden ohnehin ergänzt."""
     out: Set[str] = set()
     for k, src in source_flat.items():
         if is_original_key(k) or k not in target_flat:
             continue
-        if _terms_in(src) - _terms_in(target_flat.get(k)):
+        missing = _terms_in(src) - _terms_in(target_flat.get(k))
+        if only_terms is not None:
+            missing &= only_terms
+        if missing:
             out.add(k)
     return out
+
+
+def parse_fix_terms(raw: str | None) -> Set[str] | None:
+    """--fix-terms ohne Wert = alle Begriffe (None), sonst komma-separierte Auswahl."""
+    if raw is None or raw == "ALL":
+        return None
+    by_lower = {t.lower(): t for t in TECH_TERMS}
+    picked: Set[str] = set()
+    for part in raw.split(","):
+        name = part.strip()
+        if not name:
+            continue
+        if name.lower() not in by_lower:
+            raise SystemExit(f"Unbekannter Fachbegriff für --fix-terms: {name!r}. Erlaubt: {', '.join(TECH_TERMS)}")
+        picked.add(by_lower[name.lower()])
+    return picked
 
 
 # -------- Hash-basierte Änderungs-Erkennung --------
@@ -992,13 +1017,15 @@ def main():
             "                       Mehrfach nutzbar oder komma-separiert.\n"
             "                       Beispiele: feedback.title  |  menu.feedback  |  feedback\n"
             "  --full               Vollständiger Lauf: alle Schlüssel neu übersetzen (langsamer/teurer).\n"
-            "  --fix-terms          Zusätzlich Keys neu übersetzen, in denen ein Fachbegriff (TECH_TERMS) fehlt.\n"
+            "  --fix-terms [LISTE]  Zusätzlich Keys neu übersetzen, in denen ein Fachbegriff (TECH_TERMS) fehlt.\n"
+            "                       Optional nur bestimmte Begriffe, komma-separiert (Kosten in Etappen).\n"
             "\n"
             "Beispiele:\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --force-key feedback.title --force-key menu.feedback\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --full\n"
             "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --fix-terms\n"
+            "  python3 UpdateSprachdateienBasierendAufDE.py --provider deepl --fix-terms \"Trustline,Memo\"\n"
         ),
         formatter_class=RawTextHelpFormatter,
     )
@@ -1027,9 +1054,13 @@ def main():
     )
     parser.add_argument(
         "--fix-terms",
-        action="store_true",
+        nargs="?",
+        const="ALL",
+        default=None,
+        metavar="BEGRIFFE",
         help="Übersetzt zusätzlich alle Keys neu, deren Übersetzung einen Fachbegriff aus TECH_TERMS\n"
-             "nicht enthält (z.B. 'Trustline' als 'Kreditlinie' übersetzt). Pro Sprache geprüft.",
+             "nicht enthält (z.B. 'Trustline' als 'Kreditlinie' übersetzt). Pro Sprache geprüft.\n"
+             "Ohne Wert: alle Begriffe. Mit Wert nur Auswahl, z.B. --fix-terms \"Trustline,Memo\".",
     )
     parser.add_argument(
         "--prune-extra",
@@ -1061,7 +1092,8 @@ def main():
     do_full = bool(args.full)
     force_keys_raw = args.force_keys or []
     do_prune = bool(args.prune_extra)
-    do_fix_terms = bool(args.fix_terms)
+    do_fix_terms = args.fix_terms is not None
+    fix_only_terms = parse_fix_terms(args.fix_terms) if do_fix_terms else None
 
     # API-Keys: Umgebungsvariable -> OS-Keyring -> interaktive Abfrage (mit Angebot,
     # den eingegebenen Key im Keyring zu speichern - siehe resolve_api_key()). Nur
@@ -1217,7 +1249,7 @@ def main():
                 )
 
             if do_fix_terms and not do_full:
-                fix_en = find_term_mismatches(de_flat_rel, _flatten_dict(en_existing))
+                fix_en = find_term_mismatches(de_flat_rel, _flatten_dict(en_existing), fix_only_terms)
                 if fix_en:
                     print(f"   INFO: --fix-terms: {len(fix_en)} Key(s) in en/{ns_name}.json ohne passenden Fachbegriff")
                 changed_rel |= fix_en
@@ -1301,7 +1333,7 @@ def main():
                     )
 
                 if do_fix_terms and not do_full:
-                    fix_lang = find_term_mismatches(en_flat_rel, _flatten_dict(existing))
+                    fix_lang = find_term_mismatches(en_flat_rel, _flatten_dict(existing), fix_only_terms)
                     if fix_lang:
                         print(f"   INFO: --fix-terms: {len(fix_lang)} Key(s) in {lang}/{ns_name}.json ohne passenden Fachbegriff")
                     changed_rel_lang |= fix_lang

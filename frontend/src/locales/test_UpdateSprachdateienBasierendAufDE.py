@@ -784,6 +784,15 @@ class TechTermTests(unittest.TestCase):
         tgt = {"a": "Créer une ligne de crédit", "b": "Ajouter un memo", "c": "Texte", "x.original": "-"}
         self.assertEqual(usd.find_term_mismatches(src, tgt), {"a"})
 
+    def test_find_term_mismatches_only_selected_terms(self):
+        src = {"a": "Create trustline", "b": "Add memo"}
+        tgt = {"a": "Créer une ligne de crédit", "b": "Ajouter une note"}
+        self.assertEqual(usd.find_term_mismatches(src, tgt, {"Memo"}), {"b"})
+        self.assertEqual(usd.parse_fix_terms("trustline, Public Key"), {"Trustline", "Public Key"})
+        self.assertIsNone(usd.parse_fix_terms("ALL"))
+        with self.assertRaises(SystemExit):
+            usd.parse_fix_terms("Kreditlinie")
+
     def test_fix_terms_end_to_end(self):
         os.environ["DEEPL_API_KEY"] = "test-key-not-used"
         self.addCleanup(lambda: os.environ.pop("DEEPL_API_KEY", None))

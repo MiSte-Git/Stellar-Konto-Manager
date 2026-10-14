@@ -165,7 +165,7 @@ function FamilySavingsCard({ next, t }) {
           >
             <p style={{ margin: "0 0 4px", fontSize: "24px" }}>{s.icon}</p>
             <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: s.color }}>{s.name}</p>
-            <p style={{ margin: "2px 0 0", fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>Unterzeichner</p>
+            <p style={{ margin: "2px 0 0", fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>Signer</p>
           </motion.div>
         ))}
       </div>

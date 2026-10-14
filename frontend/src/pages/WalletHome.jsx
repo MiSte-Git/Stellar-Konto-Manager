@@ -228,7 +228,7 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-500 dark:text-gray-400" title={t('wallet:home.reservedHint', 'Mindestreserve des Netzwerks (pro Token-Freigabe, Angebot oder Unterzeichner) plus XLM in offenen Verkaufsangeboten. Dieser Betrag kann nicht gesendet werden.')}>
+                <dt className="text-xs text-gray-500 dark:text-gray-400" title={t('wallet:home.reservedHint', 'Mindestreserve des Netzwerks (pro Token-Freigabe, Angebot oder Signer) plus XLM in offenen Verkaufsangeboten. Dieser Betrag kann nicht gesendet werden.')}>
                   {t('wallet:home.reserved', 'Reserviert')}
                   <span aria-hidden="true" className="ml-1 cursor-help text-gray-400">ⓘ</span>
                 </dt>

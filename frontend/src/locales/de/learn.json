@@ -153,7 +153,7 @@
   "lesson13": {
     "title": "Multisig für Anfänger",
     "goal": "Verstehen, warum mehrere Unterschriften ein Konto sicherer machen.",
-    "task": "Beantworte Fragen zu Single-Sig vs. Multisig, Schwellen und Signierern.",
+    "task": "Beantworte Fragen zu Single-Sig vs. Multisig, Thresholds und Signern.",
     "learningOutcome": "Bei Multisig braucht man mehrere Unterschriften. Das schützt vor Alleingängen.",
     "reward": "⭐ 2 – Multisig-Starter"
   },

@@ -11,7 +11,7 @@
     "label": "Ziel-Public Key",
     "placeholder": "Gib den Ziel-Public Key ein"
   },
-  "invalid": "Ungültiger öffentlicher Schlüssel.",
+  "invalid": "Ungültiger Public Key.",
   "submit": {
     "button": "Senden"
   },

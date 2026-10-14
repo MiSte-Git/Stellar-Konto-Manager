@@ -73,7 +73,7 @@ export function describeOperations(operations, t) {
             low: op.lowThreshold ?? '-',
             med: op.medThreshold ?? '-',
             high: op.highThreshold ?? '-',
-            defaultValue: 'Schwellenwerte setzen: niedrig={{low}}, mittel={{med}}, hoch={{high}}',
+            defaultValue: 'Thresholds setzen: niedrig={{low}}, mittel={{med}}, hoch={{high}}',
           }));
         }
         if (op.homeDomain !== undefined && op.homeDomain !== null) {

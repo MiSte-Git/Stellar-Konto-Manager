@@ -28,7 +28,7 @@
     "a1fb": "Richtig: Falsche Thresholds führen zu Sperren oder zu wenig Sicherheit.",
     "a2": "Gar nichts, Thresholds sind nur Infos.",
     "a2fb": "Falsch: Thresholds steuern, wie viele Signaturen nötig sind.",
-    "a3": "Die Account-Sequenznummer wird zurückgesetzt.",
+    "a3": "Die Sequence Number des Accounts wird zurückgesetzt.",
     "a3fb": "Falsch: Thresholds haben keinen Einfluss auf die Sequence."
   },
   "q4": {

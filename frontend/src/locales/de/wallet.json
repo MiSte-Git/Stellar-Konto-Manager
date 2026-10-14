@@ -16,7 +16,7 @@
     "refresh": "Aktualisieren",
     "available": "Verfügbar",
     "reserved": "Reserviert",
-    "reservedHint": "Mindestreserve des Netzwerks (pro Token-Freigabe, Angebot oder Unterzeichner) plus XLM in offenen Verkaufsangeboten. Dieser Betrag kann nicht gesendet werden.",
+    "reservedHint": "Mindestreserve des Netzwerks (pro Token-Freigabe, Angebot oder Signer) plus XLM in offenen Verkaufsangeboten. Dieser Betrag kann nicht gesendet werden.",
     "muxedNote": "Muxed-Identität: angezeigt wird das Guthaben des Basiskontos.",
     "loadError": "Kontodaten konnten nicht geladen werden.",
     "actions": {

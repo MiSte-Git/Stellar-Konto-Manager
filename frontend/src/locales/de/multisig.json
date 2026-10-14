@@ -28,13 +28,13 @@
         "infoTitle": "Wie funktioniert „Multisig-Job erstellen“?",
         "infoBody": {
           "one": "Die Transaktion wird als Multisig-Job im Backend gespeichert und erhält eine Job-ID. Es wird nichts direkt gesendet.",
-          "two": "Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "two": "Alle nächsten Signer öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
           "three": "Sobald genügend Signaturen vorliegen (Threshold erreicht), wird die Transaktion gesendet oder kann gesendet werden.",
-          "four": "Du kannst die Job-ID an weitere Unterzeichner weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
+          "four": "Du kannst die Job-ID an weitere Signer weitergeben oder sie wählen den Job direkt in „Multisig-Jobs“ aus."
         },
         "steps": {
           "one": "Schritt 1: Multisig-Job wird erstellt und erhält eine Job-ID.",
-          "two": "Schritt 2: Alle nächsten Unterzeichner öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
+          "two": "Schritt 2: Alle nächsten Signer öffnen in ihrer SKM-Instanz den Menüpunkt „Multisig-Jobs“, laden den Job und unterschreiben.",
           "three": "Schritt 3: Der zweite Signer öffnet in seiner SKM-Instanz den Menüpunkt „Multisig-Jobs“, lädt den Job und unterschreibt.",
           "four": "Schritt 4: Sobald genug Signaturen gesammelt sind, wird die Transaktion gesendet oder kann gesendet werden."
         }
@@ -80,9 +80,9 @@
         "infoButton": "Nächste Schritte",
         "infoTitle": "Was jetzt zu tun ist",
         "info": {
-          "share": "Job-ID oder XDR an die nächsten Unterzeichner weitergeben (E-Mail, Messenger wie Telegram/WhatsApp).",
-          "sign": "Unterzeichner wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
-          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Unterzeichner den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
+          "share": "Job-ID oder XDR an die nächsten Signer weitergeben (E-Mail, Messenger wie Telegram/WhatsApp).",
+          "sign": "Signer wählen entweder Option 3 („XDR importieren“) und signieren die XDR ODER öffnen im SKM den Menüpunkt „Job-ID“, laden den Job und signieren dort.",
+          "submit": "Wenn genug Signaturen gesammelt sind, sendet einer der Signer den Job im SKM (Menü „Job-ID“) final an das Netzwerk."
         },
         "copyJobId": "Job-ID kopieren",
         "copiedJobId": "Kopiert"
@@ -99,7 +99,7 @@
         "status": "Es wurde nur eine XDR erzeugt. Es wurde nichts an das Netzwerk gesendet.",
         "noJob": "Es wurde kein Multisig-Job angelegt.",
         "hashLabel": "Transaktions-Hash",
-        "hint": "Gib die XDR an andere Unterzeichner oder Tools weiter (z. B. Hardware-Wallet, Offline-Rechner). Zum Senden importierst du die (ggf. signierte) XDR später im SKM erneut (z. B. Option 3) und sendest sie an das Netzwerk."
+        "hint": "Gib die XDR an andere Signer oder Tools weiter (z. B. Hardware-Wallet, Offline-Rechner). Zum Senden importierst du die (ggf. signierte) XDR später im SKM erneut (z. B. Option 3) und sendest sie an das Netzwerk."
       }
     },
     "testModeTitle": "Alle Signaturen lokal",
@@ -136,8 +136,8 @@
     "prod": {
       "label": "Produktivmodus (echtes Multisig mit XDR)",
       "banner": {
-        "title": "Produktivmodus für Mehrfachsignatur",
-        "body": "In diesem Modus verwendet der Stellar Konto Manager nur Ihren eigenen geheimen Schlüssel. Weitere Signaturen werden über exportierte XDR-Dateien gesammelt. Sichern Sie Ihre XDR-Dateien und teilen Sie sie nur mit vertrauenswürdigen Unterzeichnern."
+        "title": "Produktivmodus für Multisig",
+        "body": "In diesem Modus verwendet der Stellar Konto Manager nur Ihren eigenen Secret Key. Weitere Signaturen werden über exportierte XDR-Dateien gesammelt. Sichern Sie Ihre XDR-Dateien und teilen Sie sie nur mit vertrauenswürdigen Signern."
       }
     }
   },
@@ -175,14 +175,14 @@
     },
     "xdr": {
       "title": "Transaktion (XDR)",
-      "hint": "Dieses XDR können andere Unterzeichner in kompatiblen Wallets laden und signieren.",
+      "hint": "Dieses XDR können andere Signer in kompatiblen Wallets laden und signieren.",
       "copy": "XDR kopieren",
       "copy.success": "XDR in die Zwischenablage kopiert.",
       "copy.error": "XDR konnte nicht in die Zwischenablage kopiert werden."
     },
     "signedXdr": {
       "title": "Signiertes XDR importieren",
-      "hint": "Fügen Sie hier ein von einem anderen Unterzeichner signiertes XDR ein, um die Signaturen mit diesem Multisig-Job zu mergen.",
+      "hint": "Fügen Sie hier ein von einem anderen Signer signiertes XDR ein, um die Signaturen mit diesem Multisig-Job zu mergen.",
       "label": "Signiertes XDR",
       "submit": "Signiertes XDR mergen",
       "success": {
@@ -210,7 +210,7 @@
       "masterWeight": "Master-Gewicht setzen auf {{weight}}",
       "signerAdd": "Gewicht für Signer {{key}} auf {{weight}} setzen",
       "signerRemove": "Signer {{key}} entfernen",
-      "thresholds": "Schwellenwerte setzen: niedrig={{low}}, mittel={{med}}, hoch={{high}}",
+      "thresholds": "Thresholds setzen: niedrig={{low}}, mittel={{med}}, hoch={{high}}",
       "homeDomain": "Home-Domain setzen auf {{domain}}",
       "changeTrust": "Trustline für {{asset}} setzen (Limit: {{limit}})",
       "accountMerge": "Konto zusammenführen mit {{destination}}",
@@ -234,13 +234,13 @@
     "option": {
       "distributed": {
         "title": "Standard: Verteilter Multisig-Flow",
-        "body": "In der Standardeinstellung signiert diese Sitzung nur mit Ihrem eigenen geheimen Schlüssel. Weitere Signaturen werden über exportierte XDR-Dateien oder eine Job-ID von anderen Unterzeichnern ergänzt."
+        "body": "In der Standardeinstellung signiert diese Sitzung nur mit Ihrem eigenen Secret Key. Weitere Signaturen werden über exportierte XDR-Dateien oder eine Job-ID von anderen Signern ergänzt."
       },
       "localAll": {
         "title": "Alle Signaturen lokal eingeben",
-        "body": "Wähle diese Option nur, wenn Du alle zu diesem Konto gehörenden geheimen Schlüssel kontrollierst (z. B. nach einer Kontorettung mit mehreren Unterzeichnern). Der Stellar Konto Manager sammelt dann alle Signaturen lokal und sendet die Transaktion direkt an Horizon.",
+        "body": "Wähle diese Option nur, wenn Du alle zu diesem Konto gehörenden Secret Keys kontrollierst (z. B. nach einer Kontorettung mit mehreren Signern). Der Stellar Konto Manager sammelt dann alle Signaturen lokal und sendet die Transaktion direkt an Horizon.",
         "checkboxLabel": "Alle Signaturen in diesem Dialog lokal eingeben und direkt senden",
-        "warning": "Hinweis: Wenn Du alle Signaturen lokal eingibst, liegen alle geheimen Schlüssel in dieser Sitzung vor. Verwende diese Option nur auf vertrauenswürdigen Geräten."
+        "warning": "Hinweis: Wenn Du alle Signaturen lokal eingibst, liegen alle Secret Keys in dieser Sitzung vor. Verwende diese Option nur auf vertrauenswürdigen Geräten."
       }
     }
   },
@@ -285,7 +285,7 @@
     "create": {
       "success": {
         "title": "Multisig-Auftrag erstellt",
-        "body": "Der Multisig-Auftrag mit der ID {{id}} wurde erstellt. Weitere Unterzeichner können die XDR-Datei signieren, sobald sie exportiert wurde."
+        "body": "Der Multisig-Auftrag mit der ID {{id}} wurde erstellt. Weitere Signer können die XDR-Datei signieren, sobald sie exportiert wurde."
       }
     },
     "status": {
@@ -298,7 +298,7 @@
     },
     "statusHelp": {
       "pending": "Der Multisig-Auftrag wurde erstellt, aber es sind noch keine Signaturen vorhanden.",
-      "partiallySigned": "Einige Unterzeichner haben bereits signiert. Es fehlen noch weitere Signaturen.",
+      "partiallySigned": "Einige Signer haben bereits signiert. Es fehlen noch weitere Signaturen.",
       "readyToSubmit": "Es liegen genügend Signaturen vor. Die Transaktion kann an Horizon gesendet werden.",
       "submitted": "Die Transaktion wurde an das Netzwerk gesendet. Prüfen Sie bei Bedarf den endgültigen Kontostand.",
       "failed": "Beim Senden der Transaktion ist ein Fehler aufgetreten. Details finden Sie im Fehlerprotokoll.",

@@ -10,7 +10,7 @@
     "secret": "Bewahre diesen Secret Key sicher auf; niemals weitergeben."
   },
   "generateFirst": "Bitte generiere zuerst ein Schlüsselpaar.",
-  "confirmLowBalance": "Startguthaben {bal} XLM ist unterhalb der empfohlenen Reserve {req} XLM (Unterzeichner: {count}). Fortfahren?",
+  "confirmLowBalance": "Startguthaben {bal} XLM ist unterhalb der empfohlenen Reserve {req} XLM (Signer: {count}). Fortfahren?",
   "activated": "Konto wurde aktiviert. Hash: {hash}",
   "activatedTestnet": "Konto wurde im Testnet über Friendbot aktiviert.",
   "alreadyActive": "Konto ist bereits aktiviert.",
@@ -29,7 +29,7 @@
     },
     "multisigSection": {
       "title": "Multisig (Mehrfachsignatur)",
-      "text": "Mit Multisig können Sie mehrere Unterzeichner für Ihr Konto definieren. Transaktionen erfordern dann Signaturen von mehreren Keys (z. B. 2 von 3).\n\nVorteile:\n• Erhöhte Sicherheit (ein kompromittierter Key reicht nicht)\n• Gemeinsame Konten (z. B. Firmen, Partnerschaften)\n• Notfall-Wiederherstellung (mehrere Backups bei verschiedenen Personen)\n\nACHTUNG: Testen Sie Multisig zuerst im Testnet, bevor Sie es auf dem Mainnet einsetzen! Bei falscher Konfiguration kann der Zugang zum Konto verloren gehen."
+      "text": "Mit Multisig können Sie mehrere Signer für Ihr Konto definieren. Transaktionen erfordern dann Signaturen von mehreren Keys (z. B. 2 von 3).\n\nVorteile:\n• Erhöhte Sicherheit (ein kompromittierter Key reicht nicht)\n• Gemeinsame Konten (z. B. Firmen, Partnerschaften)\n• Notfall-Wiederherstellung (mehrere Backups bei verschiedenen Personen)\n\nACHTUNG: Testen Sie Multisig zuerst im Testnet, bevor Sie es auf dem Mainnet einsetzen! Bei falscher Konfiguration kann der Zugang zum Konto verloren gehen."
     },
     "diagram": {
       "title": "Signatur-Ablauf"
@@ -46,7 +46,7 @@
     "recommended": "Empfohlenes Startguthaben: {{val}} XLM (inkl. Puffer)",
     "required": "Benötigte Mindestreserve (neu): {{val}} XLM"
   },
-  "signersCountLimit": "Hinweis: Netzwerkgrenze (Stellar): max. 20 zusätzliche Unterzeichner.",
+  "signersCountLimit": "Hinweis: Netzwerkgrenze (Stellar): max. 20 zusätzliche Signer.",
   "startingBalance": "Startguthaben (XLM)",
   "keyWarning": {
     "title": "⚠️ Schlüssel jetzt sichern!",

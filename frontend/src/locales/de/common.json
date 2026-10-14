@@ -444,7 +444,7 @@
       "trustlines": "Trustlines ({{n}})",
       "lpTrustlines": "LP‑Trustlines",
       "offers": "Offene Angebote",
-      "signers": "Zusätzliche Unterzeichner",
+      "signers": "Zusätzliche Signer",
       "accountData": "Account‑Daten",
       "sponsoring": "Sponsoring",
       "sponsored": "Gesponsert",
@@ -767,29 +767,29 @@
   },
   "multisigEdit": {
     "confirm": {
-      "removeSigner": "Unterzeichner wirklich entfernen?"
+      "removeSigner": "Signer wirklich entfernen?"
     },
     "currentConfig": "Aktuelle / geplante Konfiguration",
     "error": {
       "thresholdTooHigh": "Schwellen dürfen die Summe der Gewichte nicht überschreiten.",
       "safetyTitle": "Sicherheitscheck blockiert",
       "safetyBlocked": "Sicherheitscheck blockiert: Bitte die Warnungen oben beheben.",
-      "noActiveSigners": "Mindestens ein aktiver Signer ist erforderlich. Vorschlag: Master-Gewicht > 0 setzen oder einen Unterzeichner mit Gewicht > 0 hinzufügen.",
-      "noEd25519Signers": "Mindestens ein Unterzeichner mit Gewicht > 0 ist erforderlich. Vorschlag: Master-Gewicht erhöhen oder Unterzeichner hinzufügen.",
+      "noActiveSigners": "Mindestens ein aktiver Signer ist erforderlich. Vorschlag: Master-Gewicht > 0 setzen oder einen Signer mit Gewicht > 0 hinzufügen.",
+      "noEd25519Signers": "Mindestens ein Signer mit Gewicht > 0 ist erforderlich. Vorschlag: Master-Gewicht erhöhen oder Signer hinzufügen.",
       "masterZeroInsufficientHigh": "Master-Gewicht ist 0 und die Summe der Signer-Gewichte reicht nicht für die High-Schwelle (Summe: {{sum}}, High: {{high}}). Vorschlag: Schwellen senken oder Gewichte/Signer erhöhen.",
       "thresholdHighUnreachable": "High-Schwelle nicht erreichbar (Summe: {{sum}}, High: {{high}}). Vorschlag: Schwelle senken oder Gewichte/Signer erhöhen.",
       "thresholdMedUnreachable": "Med-Schwelle nicht erreichbar (Summe: {{sum}}, Med: {{med}}). Vorschlag: Schwelle senken oder Gewichte/Signer erhöhen.",
-      "specialSignerLastHigh": "Spezial-Signer (hashX/preAuthTx) dürfen nicht die einzige High-Autorität sein. Vorschlag: Unterzeichner mit Gewicht >= High hinzufügen.",
-      "setOptionsNotSignable": "SetOptions wäre nach der Änderung nicht signierbar (Unterzeichner-Summe: {{sum}}, High: {{high}}). Vorschlag: Unterzeichner-Gewichtung erhöhen oder High senken."
+      "specialSignerLastHigh": "Spezial-Signer (hashX/preAuthTx) dürfen nicht die einzige High-Autorität sein. Vorschlag: Signer mit Gewicht >= High hinzufügen.",
+      "setOptionsNotSignable": "SetOptions wäre nach der Änderung nicht signierbar (Signer-Summe: {{sum}}, High: {{high}}). Vorschlag: Signer-Gewichtung erhöhen oder High senken."
     },
     "warning": {
       "safetyTitle": "Sicherheitswarnungen",
-      "highSingleSigner": "Nur ein Unterzeichner erreicht die High-Schwelle. Empfehlung: mindestens zwei unabhängige Unterzeichner.",
-      "medSingleSigner": "Med-Schwelle > 0, aber nur ein Unterzeichner vorhanden. Empfehlung: zweiten Unterzeichner hinzufügen."
+      "highSingleSigner": "Nur ein Signer erreicht die High-Schwelle. Empfehlung: mindestens zwei unabhängige Signer.",
+      "medSingleSigner": "Med-Schwelle > 0, aber nur ein Signer vorhanden. Empfehlung: zweiten Signer hinzufügen."
     },
     "securityGuarantee": {
       "title": "🔒 SKM Sicherheitsgarantie (Multisig)",
-      "text": "Der Stellar Konto Manager verhindert alle technisch verursachten Konto-Sperren, die durch falsche Multisig-Konfiguration entstehen können.\n\nSKM blockiert insbesondere:\n- Deaktivieren des Master-Keys ohne erreichbare Signer\n- Unerreichbare Schwellen (low / med / high)\n- Reihenfolgefehler bei Signer- und Threshold-Änderungen\n- Entfernen des letzten gültigen High-Signers\n- Multisig-Setups, bei denen SetOptions nicht mehr signierbar ist\n- Sackgassen durch hashX oder preAuthTx als letzten Signer\n\nSKM setzt nur ed25519-Unterzeichner. Für andere Signer-Typen nutze {link}.\n\nSKM garantiert:\n- Jede bestätigte Änderung lässt mindestens einen gültigen Weg zur weiteren Kontoverwaltung offen\n- SetOptions bleibt nach der Änderung erreichbar\n\nNicht garantierbar (systembedingt):\n- Verlust von Secret Keys oder Hardware-Wallets\n- Nichterreichbarkeit oder Ausfall externer Signer\n\nFazit:\nSKM schützt zuverlässig vor Konfigurations-Lockouts.\nOrganisatorische Risiken werden transparent angezeigt, können aber nicht technisch verhindert werden.",
+      "text": "Der Stellar Konto Manager verhindert alle technisch verursachten Konto-Sperren, die durch falsche Multisig-Konfiguration entstehen können.\n\nSKM blockiert insbesondere:\n- Deaktivieren des Master-Keys ohne erreichbare Signer\n- Unerreichbare Schwellen (low / med / high)\n- Reihenfolgefehler bei Signer- und Threshold-Änderungen\n- Entfernen des letzten gültigen High-Signers\n- Multisig-Setups, bei denen SetOptions nicht mehr signierbar ist\n- Sackgassen durch hashX oder preAuthTx als letzten Signer\n\nSKM setzt nur ed25519-Signer. Für andere Signer-Typen nutze {link}.\n\nSKM garantiert:\n- Jede bestätigte Änderung lässt mindestens einen gültigen Weg zur weiteren Kontoverwaltung offen\n- SetOptions bleibt nach der Änderung erreichbar\n\nNicht garantierbar (systembedingt):\n- Verlust von Secret Keys oder Hardware-Wallets\n- Nichterreichbarkeit oder Ausfall externer Signer\n\nFazit:\nSKM schützt zuverlässig vor Konfigurations-Lockouts.\nOrganisatorische Risiken werden transparent angezeigt, können aber nicht technisch verhindert werden.",
       "linkLabel": "lab.stellar.org"
     },
     "hint": "Lade ein bestehendes Konto, passe Signer, Gewichte, Master-Gewicht und Schwellen an und speichere die Änderungen.",
@@ -797,25 +797,25 @@
     "loaded": "Geladen. Zusätzliche Signer: {{count}}",
     "menu": "Multisig Konto bearbeiten",
     "menuHint": "Signer/Schwellen eines bestehenden Kontos anpassen",
-    "noteMaxSigners": "Hinweis: Stellar erlaubt max. 20 zusätzliche Unterzeichner pro Konto.",
-    "signerTypeNote": "Hinweis: SKM setzt nur ed25519-Unterzeichner. Für hashX/preAuthTx nutze",
+    "noteMaxSigners": "Hinweis: Stellar erlaubt max. 20 zusätzliche Signer pro Konto.",
+    "signerTypeNote": "Hinweis: SKM setzt nur ed25519-Signer. Für hashX/preAuthTx nutze",
     "signerTypeLink": "lab.stellar.org",
     "reload": "Neu laden",
     "save": "Änderungen speichern",
     "saved": "Änderungen gespeichert. TX: {{hash}}",
-    "signers": "Unterzeichner (ed25519)",
+    "signers": "Signer (ed25519)",
     "weight": "Gewichtung",
     "masterWeight": "Master-Gewicht",
     "title": "Multisig Konto bearbeiten",
     "validation": {
-      "signerKeyHint": "Hinweis: Unterzeichner müssen mit \"G\" beginnen (ed25519-öffentlicher Schlüssel).",
-      "signerKeyInvalid": "Ungültige Unterzeichner-Adresse. Erwartet wird eine G…-Adresse (ed25519)."
+      "signerKeyHint": "Hinweis: Signer müssen mit \"G\" beginnen (ed25519 Public Key).",
+      "signerKeyInvalid": "Ungültige Signer-Adresse. Erwartet wird eine G…-Adresse (ed25519)."
     }
   },
   "navigation": {
     "back": "Zurück",
     "backToMainMenu": "Zurück zum Menü",
-    "backToPublicKey": "Zurück zur öffentlichen Schlüssel Eingabe",
+    "backToPublicKey": "Zurück zur Public-Key-Eingabe",
     "backToTop": "Zurück nach Oben"
   },
   "publicKey": {
@@ -824,11 +824,11 @@
       "error": "Ungültiger Ziel-Schlüssel.",
       "input": "Ziel-Wallet-Adresse eingeben"
     },
-    "label": "Gib bitte die Quell-Föderationsadresse oder den öffentlichen Schlüssel ein:",
+    "label": "Gib bitte die Quell-Föderationsadresse oder den Public Key ein:",
     "load": "Laden…",
     "placeholder": "z.B.",
     "source": "Quell-Wallet-Adresse",
-    "invalid": "Ungültiger öffentlicher Schlüssel.",
+    "invalid": "Ungültiger Public Key.",
     "submit": {
       "button": "Senden"
     },
@@ -887,16 +887,16 @@
       "desc": "Die G-Adresse ist die Hauptadresse eines Stellar Kontos. Sie beginnt mit dem Buchstaben G. Du gibst sie anderen damit sie dir etwas schicken können."
     },
     "publicKey": {
-      "title": "Öffentlicher Schlüssel",
+      "title": "Public Key",
       "original": "Public Key",
       "short": "Adresse, die du teilen darfst; bei Stellar meist die G‑Adresse.",
-      "desc": "Der öffentliche Schlüssel ist die Adresse die du zeigen darfst. Bei Stellar ist das die G-Adresse. Andere nutzen ihn um dir Geld zu senden."
+      "desc": "Der Public Key ist die Adresse die du zeigen darfst. Bei Stellar ist das die G-Adresse. Andere nutzen ihn um dir Geld zu senden."
     },
     "privateKey": {
-      "title": "Geheimer Schlüssel",
+      "title": "Secret Key",
       "original": "Secret Key",
       "short": "Passwort zum Konto – niemals weitergeben.",
-      "desc": "Der geheime Schlüssel ist dein Passwort für das Konto. Wer diesen Schlüssel hat kann dein Geld bewegen. Niemals weitergeben."
+      "desc": "Der Secret Key ist dein Passwort für das Konto. Wer diesen Schlüssel hat kann dein Geld bewegen. Niemals weitergeben."
     },
     "addressFederation": {
       "title": "Föderationsadresse",
@@ -911,7 +911,7 @@
       "desc": "Eine Unteradresse (M-Adresse, offiziell „Muxed Account\") zeigt auf ein bestehendes Stellar-Konto, hat aber zusätzlich eine eigene Nummer (ID). So kann man z. B. mehrere Personen oder Abteilungen unter derselben G-Adresse unterscheiden. Technisch gehört das Geld weiter dem Hauptkonto."
     },
     "multisig": {
-      "title": "Mehrfachsignatur",
+      "title": "Multisig",
       "original": "Multi‑Sig",
       "short": "Wichtige Aktionen brauchen mehr als eine Unterschrift.",
       "desc": "Multi-Sig steht für mehrere Unterschriften. Eine wichtige Aktion braucht mehr als einen Schlüssel. Beispiel: Du und ein zweiter Schlüssel müssen beide zustimmen bevor etwas gesendet wird. Das macht Diebstahl schwerer."
@@ -1043,7 +1043,7 @@
       "success": "Erfolg: {{count}} Trustline(s) gelöscht."
     },
     "destination": {
-      "label": "Geben Sie den Ziel-Öffentlichen Schlüssel ein:",
+      "label": "Geben Sie den Ziel-Public-Key ein:",
       "placeholder": "z.B."
     },
     "noDuplicates": "Keine doppelten Trustline(s) gefunden.",
