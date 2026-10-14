@@ -23,10 +23,12 @@ import {
 import { SIDEBAR_FOOTER_ITEMS, SIDEBAR_SECTIONS } from '../config/mainNavigation.js';
 
 export const MENU_CHANGED_EVENT = 'stm:menuChanged';
+export const ACCOUNT_CHANGED_EVENT = 'stm:activeAccountChanged';
 
 let mainMounted = false;
 let pendingMainView = null;
 let activeMainView = null;
+let activeAccount = '';
 
 export function setMainMounted(value) {
   mainMounted = !!value;
@@ -53,6 +55,18 @@ export function publishActiveMainView(selection) {
 
 export function getActiveMainView() {
   return activeMainView;
+}
+
+/** Von Main aufgerufen, wenn das geladene Konto wechselt (nur Public Key, nie Secrets). */
+export function publishActiveAccount(publicKey) {
+  activeAccount = String(publicKey || '');
+  try {
+    window.dispatchEvent(new CustomEvent(ACCOUNT_CHANGED_EVENT, { detail: activeAccount }));
+  } catch { /* noop */ }
+}
+
+export function getActiveAccount() {
+  return activeAccount;
 }
 
 /** Navigiert per pushState und informiert Router/Listener. */

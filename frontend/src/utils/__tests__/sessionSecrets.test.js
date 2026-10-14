@@ -109,3 +109,42 @@ describe('sessionSecrets (hardened storage)', () => {
     });
   });
 });
+
+describe('sessionSecrets (lock / status helpers)', () => {
+  const OTHER = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
+
+  it('counts accounts with stored secrets without touching plaintext', async () => {
+    const { getSessionSecretAccountCount } = await import('../sessionSecrets.js');
+    expect(getSessionSecretAccountCount()).toBe(0);
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    await setSessionSecrets(OTHER, { [OTHER]: SECRET });
+    expect(getSessionSecretAccountCount()).toBe(2);
+    // legacy key counts too
+    sessionStorage.setItem('stm.session.secret.GLEGACY', 'x');
+    expect(getSessionSecretAccountCount()).toBe(3);
+  });
+
+  it('clearAllSessionSecrets wipes every account and leaves unrelated keys alone', async () => {
+    const { clearAllSessionSecrets, getSessionSecretAccountCount } = await import('../sessionSecrets.js');
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    await setSessionSecrets(OTHER, { [OTHER]: SECRET });
+    sessionStorage.setItem('stm.currentAccount', ACCOUNT);
+    expect(clearAllSessionSecrets()).toBe(true);
+    expect(getSessionSecretAccountCount()).toBe(0);
+    expect(hasSessionSecrets(ACCOUNT)).toBe(false);
+    expect(hasSessionSecrets(OTHER)).toBe(false);
+    expect(sessionStorage.getItem('stm.currentAccount')).toBe(ACCOUNT);
+    expect(clearAllSessionSecrets()).toBe(false);
+  });
+
+  it('clearSessionSecrets emits a change event carrying only the public key', async () => {
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    const seen = [];
+    const handler = (e) => seen.push(e.detail);
+    window.addEventListener('stm-session-secret-changed', handler);
+    clearSessionSecrets(ACCOUNT);
+    window.removeEventListener('stm-session-secret-changed', handler);
+    expect(seen).toEqual([{ publicKey: ACCOUNT }]);
+    expect(JSON.stringify(seen)).not.toContain(SECRET);
+  });
+});

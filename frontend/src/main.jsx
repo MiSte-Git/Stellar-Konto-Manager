@@ -19,7 +19,6 @@ import { createWalletInfoMap, findWalletInfo } from './utils/walletInfo.js';
 import AddressDropdown from './components/AddressDropdown.jsx';
 import { isTestnetAccount } from './utils/stellar/accountUtils.js';
 import { requiresGAccount, isIdentityMode } from './utils/accountMode.js';
-import { clearSessionSecrets, getSessionSecretCount, hasSessionSecrets } from './utils/sessionSecrets.js';
 import {
   INPUT_HISTORY_CHANGED_EVENT,
   RECENT_WALLETS_KEY,
@@ -89,7 +88,7 @@ import ActivateAccountPrompt from './components/ActivateAccountPrompt.jsx';
 import { emitAccountSelected } from './utils/accountBus.js';
 
 import DestinationInput from './components/DestinationInput';
-import { consumePendingMainView, navigateToPath, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
+import { consumePendingMainView, navigateToPath, publishActiveAccount, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
 import ListTrustlines from './components/ListTrustlines';
 import ResultDisplay from './components/ResultDisplay';
 import CompareTrustlines from './components/CompareTrustlines';
@@ -239,7 +238,6 @@ function Main() {
   const [sendInit, setSendInit] = useState(null);
   const [refreshToken, setRefreshToken] = useState(0);
    // Session secret key presence
-   const [hasSessionKey, setHasSessionKey] = useState(false);
    const [xlmBalance, setXlmBalance] = useState(null);
    const [xlmBalanceLoading, setXlmBalanceLoading] = useState(false);
 
@@ -304,40 +302,11 @@ function Main() {
     } catch { /* noop */ }
   }, []);
 
-   // Track if a session secret exists for current source key
-   useEffect(() => {
-   try {
-   if (!sourcePublicKey) { setHasSessionKey(false); setSessionSecretCount(0); return; }
-   setHasSessionKey(hasSessionSecrets(sourcePublicKey));
-   setSessionSecretCount(getSessionSecretCount(sourcePublicKey));
-   } catch { setHasSessionKey(false); setSessionSecretCount(0); }
-   }, [sourcePublicKey]);
-
-   // React to session secret changes (e.g., after entering secret in modal)
-   useEffect(() => {
-   const handler = (e) => {
-   try {
-     const pk = (e && e.detail && e.detail.publicKey) ? e.detail.publicKey : sourcePublicKey;
-       if (!pk) { setHasSessionKey(false); setSessionSecretCount(0); return; }
-         setHasSessionKey(hasSessionSecrets(pk));
-         setSessionSecretCount(getSessionSecretCount(pk));
-       } catch { /* noop */ }
-     };
-     window.addEventListener('stm-session-secret-changed', handler);
-     return () => window.removeEventListener('stm-session-secret-changed', handler);
-   }, [sourcePublicKey]);
- 
-   const clearSessionSecret = () => {
-     try {
-       if (sourcePublicKey) clearSessionSecrets(sourcePublicKey);
-       setHasSessionKey(false);
-       setSessionSecretCount(0);
-       setInfoMessage(t('secretKey:cleared'));
-     } catch { /* noop */ }
-   };
-
-
-   
+  // App-Shell: aktives Konto fuer den Signier-Status in der Titelleiste melden
+  useEffect(() => {
+    publishActiveAccount(sourcePublicKey);
+    return () => publishActiveAccount('');
+  }, [sourcePublicKey]);
 
   const handleSortClick = (column) => {
     handleSort(column, sortColumn, sortDirection, setSortColumn, setSortDirection);
@@ -361,7 +330,6 @@ function Main() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [deleteProgress, setDeleteProgress] = useState(null);
   const [infoMessage, setInfoMessage] = useState('');
-  const [sessionSecretCount, setSessionSecretCount] = useState(0);
 
   // Auto-hide info messages
   useEffect(() => {
@@ -962,26 +930,6 @@ function Main() {
                   >
                     {t('common:accountMode.switchToBase', 'Switch to base account')}
                   </button>
-                )}
-              </div>
-              {/* Rechte Buttons */}
-              <div className="flex items-center gap-2 ml-auto">
-                {hasSessionKey && (
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={clearSessionSecret}
-                      className="px-3 py-2 rounded bg-green-600 text-white border border-red-600 hover:bg-green-700"
-                      title={t('secretKey:clearSessionHint')}
-                    >
-                      {t('secretKey:clearSession')}
-                    </button>
-                    {sessionSecretCount > 1 && (
-                      <span className="text-xs text-gray-600 dark:text-gray-300">
-                        {t('secretKey:sessionCount', { count: sessionSecretCount, defaultValue: '{{count}} S-Keys gespeichert' })}
-                      </span>
-                    )}
-                  </div>
                 )}
               </div>
             </div>

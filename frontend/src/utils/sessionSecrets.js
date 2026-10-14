@@ -187,21 +187,48 @@ export async function rememberSessionSecrets(accountPublicKey, collected) {
   return setSessionSecrets(accountPublicKey, { ...current, ...next });
 }
 
+// Informs UI (status chip in the top bar, Main) that stored secrets changed.
+// The event never carries secret material - only the affected public key, if known.
+function emitSecretChanged(publicKey) {
+  try {
+    window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: publicKey ? { publicKey } : {} }));
+  } catch { /* noop */ }
+}
+
 export function clearSessionSecrets(accountPublicKey) {
   if (!accountPublicKey) return false;
   try {
     sessionStorage.removeItem(`${MAP_PREFIX}${accountPublicKey}`);
     sessionStorage.removeItem(`${LEGACY_PREFIX}${accountPublicKey}`);
+    emitSecretChanged(accountPublicKey);
     return true;
   } catch {
     return false;
   }
 }
 
-// Wipes every remembered secret across all accounts - the inactivity timeout
-// below is global (not tied to whichever account happens to be active), so it
-// needs to clear all of them, not just one.
-function clearAllSessionSecrets() {
+// Number of accounts that currently have at least one secret remembered in this
+// session. Reads only storage keys, never ciphertext or plaintext.
+export function getSessionSecretAccountCount() {
+  try {
+    const accounts = new Set();
+    for (let i = 0; i < sessionStorage.length; i += 1) {
+      const key = sessionStorage.key(i);
+      if (!key) continue;
+      if (key.startsWith(MAP_PREFIX)) accounts.add(key.slice(MAP_PREFIX.length));
+      else if (key.startsWith(LEGACY_PREFIX)) accounts.add(key.slice(LEGACY_PREFIX.length));
+    }
+    return accounts.size;
+  } catch {
+    return 0;
+  }
+}
+
+// Wipes every remembered secret across all accounts. Used by the global
+// inactivity timeout below and by the explicit lock button in the top bar -
+// both mean "this session must not be able to sign anything anymore", for any
+// account, not just the one that happens to be active.
+export function clearAllSessionSecrets() {
   try {
     const keysToRemove = [];
     for (let i = 0; i < sessionStorage.length; i += 1) {
@@ -226,11 +253,7 @@ let _inactivityTimer = null;
 function armInactivityTimer() {
   if (_inactivityTimer) clearTimeout(_inactivityTimer);
   _inactivityTimer = setTimeout(() => {
-    if (clearAllSessionSecrets()) {
-      try {
-        window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: {} }));
-      } catch { /* noop */ }
-    }
+    if (clearAllSessionSecrets()) emitSecretChanged();
   }, INACTIVITY_TIMEOUT_MS);
 }
 

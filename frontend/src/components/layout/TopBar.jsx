@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { openMainView } from '../../utils/appNavigation.js';
 import LanguageMenu from './LanguageMenu.jsx';
 import NavIcon from './NavIcon.jsx';
+import SigningStatus from './SigningStatus.jsx';
 import XlmPriceTicker from './XlmPriceTicker.jsx';
 
 function readNetwork() {
@@ -81,12 +82,13 @@ export default function TopBar({ onOpenMenu, menuOpen, menuButtonRef, price }) {
           <span className="hidden truncate text-[15px] font-semibold tracking-tight lg:inline">
             {t('common:main.title')}
           </span>
-          <span className="text-[15px] font-semibold tracking-tight lg:hidden">SKM</span>
+          <span className="hidden text-[15px] font-semibold tracking-tight sm:inline lg:hidden">SKM</span>
         </button>
 
         <NetworkBadge />
 
         <div className="ml-auto flex items-center gap-2">
+          <SigningStatus />
           <XlmPriceTicker price={price} className="hidden sm:inline-flex" />
           <LanguageMenu />
           <button
