@@ -7,7 +7,10 @@ import { buildExplorerUrl } from '../../utils/stellar/accountUtils.js';
 import {
   findLookalikeCounterparties,
   isDust,
+  isValidTxHash,
+  looksLikeNativeCode,
   matchesMuxed,
+  memoLooksLikeUrl,
   normalizeActivity,
   safeHttpUrl,
 } from '../../utils/stellar/activity.js';
@@ -160,7 +163,9 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
         </p>
       ) : visible.length === 0 ? (
         <p className="px-5 py-4 text-sm text-gray-500 dark:text-gray-400">
-          {t('wallet:activity.empty', 'Noch keine Zahlungen.')}
+          {dustCount > 0
+            ? t('wallet:activity.onlyDust', 'Nur Kleinstzahlungen vorhanden.')
+            : t('wallet:activity.empty', 'Noch keine Zahlungen.')}
         </p>
       ) : (
         <ul className="divide-y divide-gray-100 dark:divide-gray-700/70">
@@ -168,10 +173,14 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
             const incoming = item.direction === 'in';
             const suspicious = incoming && lookalikes.has(item.counterparty);
             const dust = isDust(item);
-            const href = item.hash && explorer
+            const href = isValidTxHash(item.hash) && explorer
               ? safeHttpUrl(buildExplorerUrl(explorer, item.hash, network, { type: 'tx' }))
               : '';
-            const date = item.createdAt && dateFmt ? dateFmt.format(new Date(item.createdAt)) : '';
+            const parsedDate = item.createdAt ? new Date(item.createdAt) : null;
+            const date = parsedDate && dateFmt && !Number.isNaN(parsedDate.getTime()) ? dateFmt.format(parsedDate) : '';
+            const urlInMemo = memoLooksLikeUrl(item.memo);
+            const fakeNative = looksLikeNativeCode(item.asset);
+            const warn = suspicious || dust || urlInMemo || fakeNative;
             const sign = incoming ? '+' : item.direction === 'out' ? '−' : '';
             return (
               <li key={item.id || item.hash} className="flex items-start gap-3 px-5 py-3" data-testid="activity-item">
@@ -207,6 +216,24 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
                         {t('wallet:activity.dust', 'Kleinstbetrag')}
                       </span>
                     )}
+                    {urlInMemo && (
+                      <span
+                        className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200"
+                        title={t('wallet:activity.urlHint', 'Das Memo enthält eine Webadresse. Seriöse Zahlungen brauchen das nicht. Nicht öffnen.')}
+                        data-testid="activity-url"
+                      >
+                        {t('wallet:activity.url', 'Enthält Webadresse')}
+                      </span>
+                    )}
+                    {fakeNative && (
+                      <span
+                        className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200"
+                        title={t('wallet:activity.fakeNativeHint', 'Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks.')}
+                        data-testid="activity-fake-native"
+                      >
+                        {t('wallet:activity.fakeNative', 'Token, kein natives XLM')}
+                      </span>
+                    )}
                   </div>
                   {item.counterparty && item.direction !== 'self' && (
                     <div className="truncate font-mono text-xs text-gray-500 dark:text-gray-400" title={item.counterparty}>
@@ -217,7 +244,10 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
                     {date && <span>{date}</span>}
                     {item.memo && (
                       <span className="min-w-0 break-all" title={t('wallet:activity.memoHint', 'Memo vom Absender. Inhalt nicht von SKM geprüft.')}>
-                        · {item.memoType === 'text' ? '' : `${item.memoType.toUpperCase()} `}„{item.memo}“
+                        · {item.memoType === 'text'
+                          ? t('wallet:activity.memoLabel', 'Memo')
+                          : `${t('wallet:activity.memoLabel', 'Memo')} (${item.memoType.toUpperCase()})`}
+                        : „{item.memo}“
                       </span>
                     )}
                     {href && (
@@ -234,7 +264,7 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
                 </div>
                 <div
                   className={`whitespace-nowrap text-right text-sm font-semibold tabular-nums ${
-                    incoming && !dust && !suspicious
+                    incoming && !warn
                       ? 'text-emerald-600 dark:text-emerald-400'
                       : incoming
                         ? 'text-gray-500 dark:text-gray-400'

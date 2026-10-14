@@ -5,6 +5,7 @@ import NavIcon from '../components/layout/NavIcon.jsx';
 import RecentActivity from '../components/wallet/RecentActivity.jsx';
 import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { computeWalletSummary, shortenAddress } from '../utils/stellar/walletSummary.js';
+import { looksLikeNativeCode } from '../utils/stellar/activity.js';
 import { useSettings } from '../utils/useSettings.js';
 import { useXlmPriceData } from '../utils/xlmPriceContext.js';
 
@@ -289,8 +290,16 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
               <li key={asset.key} className="flex items-center gap-3 px-5 py-3">
                 <AssetAvatar label={asset.isPool ? 'LP' : asset.code} />
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-semibold text-gray-900 dark:text-white">
-                    {asset.isPool ? t('wallet:home.poolShares', 'Liquiditätspool-Anteile') : asset.code}
+                  <div className="flex flex-wrap items-center gap-x-2 text-sm font-semibold text-gray-900 dark:text-white">
+                    <span className="truncate">{asset.isPool ? t('wallet:home.poolShares', 'Liquiditätspool-Anteile') : asset.code}</span>
+                    {looksLikeNativeCode({ code: asset.code, isNative: false }) && !asset.isPool && (
+                      <span
+                        className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 dark:bg-amber-400/15 dark:text-amber-200"
+                        title={t('wallet:activity.fakeNativeHint', 'Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks.')}
+                      >
+                        {t('wallet:activity.fakeNative', 'Token, kein natives XLM')}
+                      </span>
+                    )}
                   </div>
                   <div className="truncate font-mono text-xs text-gray-500 dark:text-gray-400" title={asset.issuer}>
                     {asset.isPool

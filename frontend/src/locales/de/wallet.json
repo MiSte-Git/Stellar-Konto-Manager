@@ -90,6 +90,12 @@
     "dustHidden_one": "{{count}} Kleinstzahlung ausgeblendet (oft Spam).",
     "dustHidden_other": "{{count}} Kleinstzahlungen ausgeblendet (oft Spam).",
     "dustShown_one": "{{count}} Kleinstzahlung wird angezeigt.",
-    "dustShown_other": "{{count}} Kleinstzahlungen werden angezeigt."
+    "dustShown_other": "{{count}} Kleinstzahlungen werden angezeigt.",
+    "memoLabel": "Memo",
+    "onlyDust": "Nur Kleinstzahlungen vorhanden.",
+    "url": "Enthält Webadresse",
+    "urlHint": "Das Memo enthält eine Webadresse. Seriöse Zahlungen brauchen das nicht. Nicht öffnen.",
+    "fakeNative": "Token, kein natives XLM",
+    "fakeNativeHint": "Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks."
   }
 }
