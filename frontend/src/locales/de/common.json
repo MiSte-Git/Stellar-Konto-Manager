@@ -837,16 +837,16 @@
     "historyPlaceholder": "Zuletzt verwendetes Wallet auswählen"
   },
   "secretKey": {
-    "cleared": "Geheimschlüssel wurde gelöscht.",
-    "empty": "Geheimschlüssel-Feld ist leer.",
-    "info": "⚠️ WICHTIG: Diese Webseite speichert NIEMALS Ihren Geheimschlüssel!\n\nDer hier angezeigte Secret Key existiert nur in Ihrem Browser (lokal im Arbeitsspeicher). Sobald Sie die Seite neu laden oder verlassen, ist er unwiederbringlich verloren.\n\nKopieren oder notieren Sie den Secret Key sofort nach der Erzeugung, bevor Sie die Seite schließen.\n\nÜberprüfung: Sie können mit den Browser-Entwickler-Tools (F12 → Netzwerk) nachprüfen, dass kein Geheimschlüssel nach außen übermittelt wird. Es werden nur signierte Transaktionen gesendet, niemals Ihr Secret Key.",
-    "invalid": "Ungültiger Geheimschlüssel.",
-    "label": "Geben Sie den Quell-Geheimschlüssel (S-Key) ein",
-    "mismatch": "Geheimschlüssel passt nicht zur öffentlichen Adresse.",
+    "cleared": "Secret Key wurde gelöscht.",
+    "empty": "Secret Key-Feld ist leer.",
+    "info": "⚠️ WICHTIG: Diese Webseite speichert NIEMALS Ihren Secret Key!\n\nDer hier angezeigte Secret Key existiert nur in Ihrem Browser (lokal im Arbeitsspeicher). Sobald Sie die Seite neu laden oder verlassen, ist er unwiederbringlich verloren.\n\nKopieren oder notieren Sie den Secret Key sofort nach der Erzeugung, bevor Sie die Seite schließen.\n\nÜberprüfung: Sie können mit den Browser-Entwickler-Tools (F12 → Netzwerk) nachprüfen, dass kein Secret Key nach außen übermittelt wird. Es werden nur signierte Transaktionen gesendet, niemals Ihr Secret Key.",
+    "invalid": "Ungültiger Secret Key.",
+    "label": "Geben Sie den Quell-Secret-Key (S-Key) ein",
+    "mismatch": "Secret Key passt nicht zur öffentlichen Adresse.",
     "placeholder": "z.B.",
     "valid": "✅ Secret Key ist gültig.",
     "remember": {
-      "label": "Geheimschlüssel für diese Sitzung merken",
+      "label": "Secret Key für diese Sitzung merken",
       "hint": "Wenn aktiviert, wird der Schlüssel bis zum Schließen des Tabs gespeichert und für weitere Zahlungen wiederverwendet."
     }
   },
@@ -870,7 +870,7 @@
       "title": "Wallet",
       "original": "Wallet",
       "short": "Digitale Geldbörse, die deine Schlüssel verwaltet.",
-      "desc": "Ein Wallet ist deine digitale Geldbörse. Es verwaltet die Schlüssel die du brauchst um auf dein Konto zuzugreifen und Transaktionen zu senden. Ein Wallet kann ein Programm sein oder eine App oder auch nur ein Zettel mit deinem Geheimschlüssel."
+      "desc": "Ein Wallet ist deine digitale Geldbörse. Es verwaltet die Schlüssel die du brauchst um auf dein Konto zuzugreifen und Transaktionen zu senden. Ein Wallet kann ein Programm sein oder eine App oder auch nur ein Zettel mit deinem Secret Key."
     },
     "account": {
       "title": "Konto",
@@ -1048,7 +1048,7 @@
     "nonZeroBalance": "Diese Trustline kann nicht gelöscht werden, da sie noch ein Guthaben enthält.",
     "notFound": "Keine Trustline(s) gefunden.",
     "onlyZeroBalanceInfo": "Nur Trustlines mit einem Guthaben von 0 können gelöscht werden.",
-    "showSecret": "Geheimschlüssel anzeigen"
+    "showSecret": "Secret Key anzeigen"
   },
   "deleted": {
     "deletingProgress": "Löschen läuft: {{current}} / {{total}}",

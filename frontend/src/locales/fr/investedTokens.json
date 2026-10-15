@@ -7,7 +7,7 @@
     "destination": "Portefeuille cible",
     "issuer": "Émetteur",
     "label": "Étiquette",
-    "memo": "Note de service",
+    "memo": "Memo",
     "payments": "Paiements",
     "date": "Date",
     "token": "Jeton"
@@ -17,11 +17,11 @@
     "label": "Décimales :"
   },
   "filter": {
-    "memoPlaceholder": "Filtrer par mémo, adresse de portefeuille ou étiquette",
+    "memoPlaceholder": "Filtrer par memo, adresse wallet ou étiquette",
     "tokenPlaceholder": "Filtrer par jeton (CODE:ISSUER)"
   },
   "item": {
-    "memo": "Mémo : « {{memo}} » (Paiements : {{occurrences}})",
+    "memo": "Memo : « {{memo}} » (Paiements : {{occurrences}})",
     "token": "Jeton : {{token}} (Paiements : {{occurrences}})",
     "tokenShort": "Jeton : {{token}}"
   },
@@ -47,7 +47,7 @@
     "qsiListSet": "Remarque : Vous pouvez trouver la liste GF sous Paramètres → Portefeuilles de confiance (QSI).",
     "pageTime": "Le chargement d'une page prend environ 0,2 seconde → 100 pages ≈ 20 secondes → 1000 pages ≈ 200 secondes (≈ 3:20 minutes)."
   },
-  "walletCapInfo": "Remarque : Un portefeuille peut contenir un maximum de 1000 lignes de crédit.",
+  "walletCapInfo": "Remarque : un wallet peut contenir au maximum 1 000 trustlines.",
   "action": {
     "load": "Boutique"
   },

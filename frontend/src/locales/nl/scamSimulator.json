@@ -233,21 +233,21 @@
         "subtitle": "Promotioneel bericht"
       },
       "messages": {
-        "01": "🎉 Marco's Marktplaats – Speciale aanbieding!\nVandaag alleen: 50 gratis BERRY voor alle nieuwe klanten!\nVoeg nu een Trust Line toe en ontvang je tokens.\n[Trust Line toevoegen]",
-        "02": "Adres van de uitgever: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nVoeg gewoon de Trust Line toe – tokens komen direct in je wallet! 🍓",
-        "03": "⚠️ Tip: Controleer altijd de tokenuitgever voordat je een Trust Line toevoegt."
+        "01": "🎉 Marco's Marketplace – Speciale aanbieding!\nAlleen vandaag: 50 BERRY gratis voor alle nieuwe klanten!\nVoeg nu Trustline toe en ontvang Tokens.\n[Voeg Trustline toe]",
+        "02": "Adres van de uitgever: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nVoeg gewoon Trustline toe — dan gaat Tokens rechtstreeks naar Wallet! 🍓",
+        "03": "⚠️ Tip: Controleer altijd de Token-uitgever voordat je een Trustline toevoegt voor een nieuwe Token."
       },
       "options": {
-        "nothingSuspicious": "Niets – ziet er legitiem uit. Trust Line toevoegen.",
+        "nothingSuspicious": "Niets – ziet er legitiem uit. Voeg Trustline toe.",
         "tooGenerous": "50 gratis BERRY klinkt als heel veel.",
         "checkIssuer": "Ik zou eerst de uitgever controleren.",
-        "addAnyway": "Trust Line toch toevoegen – misschien is het goed.",
-        "rejectVerify": "Weigeren en Marco direct vragen om het echte BERRY-adres.",
+        "addAnyway": "Trustline Zet het er toch maar bij – misschien is het wel waar.",
+        "rejectVerify": "Trustline Sla het aanbod af en vraag Marco rechtstreeks naar het echte BERRY-adres.",
         "buyDex": "De token op de DEX kopen."
       },
       "followUp": {
         "scam": {
-          "01": "Trust Line succesvol toegevoegd! Je 50 BERRY zijn onderweg. 🍓",
+          "01": "Trustline is succesvol toegevoegd! Je 50 BERRY zijn onderweg. 🍓",
           "02": "Je hebt 50 BERRY van de verkeerde uitgever ontvangen – maar geen enkele winkel accepteert ze. De uitgever is onbekend. Deze tokens zijn waardeloos en kunnen het begin zijn van verdere phishing-pogingen."
         },
         "generous": {
@@ -259,8 +259,8 @@
           "02": "Uitgever in dit bericht:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Niet identiek! Zelfde tokennaam, andere uitgever – deze BERRY is waardeloos."
         },
         "addAnyway": {
-          "01": "Trust Line succesvol toegevoegd! Je 50 BERRY zijn onderweg. 🍓",
-          "02": "Hoewel je het verschil in uitgever zag, voegde je toch de Trust Line toe. De 50 BERRY komen van de verkeerde uitgever en zijn waardeloos – geen enkele winkel accepteert ze."
+          "01": "Trustline is succesvol toegevoegd! Je 50 BERRY worden binnenkort naar je overgemaakt. 🍓",
+          "02": "Hoewel je het verschil in uitgevers hebt opgemerkt, heb je toch de Trustline toegevoegd. De 50 BERRY zijn afkomstig van de verkeerde uitgever en zijn waardeloos — geen enkele winkel accepteert ze."
         },
         "buyDex": {
           "01": "⚠️ Op de DEX zijn er veel tokens genaamd BERRY van verschillende uitgevers. Zonder het officiële adres van de uitgever koop je mogelijk ook waardeloze tokens. De uitgever is bepalend – ook bij het kopen op de DEX."
@@ -272,7 +272,7 @@
         "urgency": "\"Alleen vandaag\" – kunstmatige urgentie om kritisch denken te voorkomen",
         "sameNameDifferentIssuer": "Dezelfde tokennaam (BERRY) betekent niet dezelfde token – alleen de uitgever maakt het verschil"
       },
-      "explanation": "Aangepaste tokens op Stellar worden gedefinieerd door hun uitgever – niet door hun naam. Twee tokens kunnen allebei 'BERRY' heten maar van volledig verschillende uitgevers komen. Alleen de officiële uitgever van Marco's Marktplaats geeft echte, inwisselbare BERRY uit. Controleer voordat je een Trust Line toevoegt altijd het adres van de uitgever op de officiële website van de aanbieder."
+      "explanation": "Aangepaste Token op Stellar worden bepaald door hun uitgever — niet door hun naam. Twee Token kunnen allebei de naam „BERRY” hebben, maar afkomstig zijn van totaal verschillende uitgevers. Alleen de officiële uitgever van Marco’s Marketplace geeft echte, inwisselbare BERRY uit. Controleer altijd het adres van de uitgever op de officiële website van de aanbieder voordat je een Trustline toevoegt."
     }
   }
 }

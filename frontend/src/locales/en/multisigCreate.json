@@ -10,7 +10,7 @@
     "secret": "Keep this secret key safe; never share it."
   },
   "generateFirst": "Please generate a key pair first.",
-  "confirmLowBalance": "Starting balance of {bal} XLM is below the recommended reserve of {req} XLM (Signers: {count}). Continue?",
+  "confirmLowBalance": "The initial balance {bal} XLM is below the recommended reserve {req} XLM (Signer: {count}). Continue?",
   "activated": "Account has been activated. Hash: {hash}",
   "activatedTestnet": "Account was activated on the testnet via Friendbot.",
   "alreadyActive": "Account is already activated.",
@@ -24,12 +24,12 @@
     },
     "title": "Important information",
     "secureKeys": {
-      "title": "Secure secret key",
+      "title": "Save Secret Key",
       "text": "The public key can be shared safely—it’s like an account number.\\n\\nThe secret key is the access to your account. Treat it like a password:\\n• NEVER store it in cloud services, emails, or unsecured notes\\n• Write it down on paper or use a hardware wallet\\n• Create multiple backups and store them in secure, separate locations\\n• If you lose your secret key, access to your account is irretrievably lost"
     },
     "multisigSection": {
       "title": "Multisig",
-      "text": "With multisig, you can designate multiple signers for your account. Transactions then require signatures from multiple keys (e.g., 2 out of 3).\n\nAdvantages:\n• Increased security (a single compromised key is not enough)\n• Joint accounts (e.g., companies, partnerships)\n• Emergency recovery (multiple backups held by different people)\n\nWARNING: Test multisig on the testnet first before using it on the mainnet! Incorrect configuration can result in loss of access to the account."
+      "text": "With Multisig, you can define multiple Signer for your account. Transactions then require signatures from multiple keys (e.g., 2 out of 3).\n\nAdvantages:\n• Increased security (a single compromised key is not enough)\n• Joint accounts (e.g., companies, partnerships)\n• Emergency recovery (multiple backups held by different people)\n\nWARNING: Test Multisig first in the Testnet before using it on the Mainnet! Incorrect configuration may result in loss of access to the account."
     },
     "diagram": {
       "title": "Signature expiration"
@@ -46,8 +46,8 @@
     "recommended": "Recommended starting balance: {{val}} XLM (including a buffer)",
     "required": "Required minimum reserve (new): {{val}} XLM"
   },
-  "signersCountLimit": "Note: Network boundary (Stellar): max. 20 additional signatories.",
-  "startingBalance": "Starting credit (XLM)",
+  "signersCountLimit": "Note: Network limit (Stellar): max. 20 additional Signer.",
+  "startingBalance": "Starting balance (XLM)",
   "keyWarning": {
     "title": "⚠️ Secure your key now!",
     "text1": "You have generated a new key pair.",

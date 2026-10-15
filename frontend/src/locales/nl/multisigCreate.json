@@ -10,7 +10,7 @@
     "secret": "Bewaar deze geheime sleutel veilig; deel hem nooit."
   },
   "generateFirst": "Genereer alstublieft eerst een sleutelpaar.",
-  "confirmLowBalance": "Beginsaldo van {bal} XLM ligt onder de aanbevolen reserve van {req} XLM (Ondertekenaars: {count}). Doorgaan?",
+  "confirmLowBalance": "Het beginsaldo {bal} XLM ligt onder de aanbevolen reserve {req} XLM (Signer: {count}). Wilt u doorgaan?",
   "activated": "Account is geactiveerd. Hash: {hash}",
   "activatedTestnet": "Account werd geactiveerd op het testnet via Friendbot.",
   "alreadyActive": "Account is al geactiveerd.",
@@ -24,12 +24,12 @@
     },
     "title": "Belangrijke informatie",
     "secureKeys": {
-      "title": "Beveilig geheime sleutel",
+      "title": "Opslaan Secret Key",
       "text": "De openbare sleutel kun je veilig delen – het is net als een rekeningnummer.\\n\\nDe geheime sleutel is de toegang tot je account. Behandel deze als een wachtwoord:\\n• Sla deze NOOIT op in clouddiensten, e-mails of onbeveiligde notities\\n• Schrijf deze op papier op of gebruik een hardware-wallet\\n• Maak meerdere back-ups en bewaar deze op veilige, afzonderlijke locaties\\n• Als u uw geheime sleutel kwijtraakt, is de toegang tot uw account onherstelbaar verloren"
     },
     "multisigSection": {
       "title": "Multisig",
-      "text": "Met multisig kun je meerdere ondertekenaars voor je account aanwijzen. Voor transacties zijn dan handtekeningen van meerdere sleutels nodig (bijvoorbeeld 2 van de 3).\n\nVoordelen:\n• Verhoogde veiligheid (één gecompromitteerde sleutel is niet voldoende)\n• Gezamenlijke rekeningen (bijvoorbeeld bedrijven, partnerschappen)\n• Herstel in noodgevallen (meerdere back-ups in het bezit van verschillende personen)\n\nWAARSCHUWING: Test multisig eerst op het testnet voordat je het op het mainnet gebruikt! Een onjuiste configuratie kan leiden tot verlies van toegang tot de rekening."
+      "text": "Met Multisig kun je meerdere Signer voor je account instellen. Voor transacties zijn dan handtekeningen van meerdere sleutels vereist (bijvoorbeeld 2 van de 3).\n\nVoordelen:\n• Verhoogde beveiliging (één gecompromitteerde sleutel is niet voldoende)\n• Gezamenlijke rekeningen (bijv. bedrijven, partnerschappen)\n• Herstel in noodgevallen (meerdere back-ups in het bezit van verschillende personen)\n\nWAARSCHUWING: Test Multisig eerst in de Testnet voordat u het op de Mainnet gebruikt! Een onjuiste configuratie kan leiden tot verlies van toegang tot de account."
     },
     "diagram": {
       "title": "Handtekening vervaldatum"
@@ -38,7 +38,7 @@
   "activateHint": "Activering is noodzakelijk zodat het account kan bestaan. In de Testnet kan dit worden gedaan via Friendbot, en in de Mainnet via \"Account Aanmaken\" vanuit een bestaande wallet.",
   "activateNow": "Activeer account onmiddellijk",
   "activateOnly": "Alleen activeren",
-  "balanceWarning": "Het beginsaldo is waarschijnlijk te laag om de {{count}} extra ondertekenaars toe te voegen (Minimale reserve: {{req}} XLM)",
+  "balanceWarning": "Het beginsaldo is waarschijnlijk te laag om de {{count}} extra signers toe te voegen (minimumreserve: {{req}} XLM)",
   "createButton": "Maak / Stel Multisig in",
   "mainnetActivateNote": "Opmerking: Voor multisig zijn aanvullende reserves vereist. 1 XLM is vaak niet genoeg.",
   "reserve": {
@@ -46,8 +46,8 @@
     "recommended": "Aanbevolen beginsaldo: {{val}} XLM (inclusief een buffer)",
     "required": "Vereiste minimumreserve (nieuw): {{val}} XLM"
   },
-  "signersCountLimit": "Opmerking: Netwerkgrens (Stellar): max. 20 extra ondertekenaars.",
-  "startingBalance": "Startkrediet (XLM)",
+  "signersCountLimit": "Opmerking: Netwerkbeperking (Stellar): max. 20 extra Signer.",
+  "startingBalance": "Beginsaldo (XLM)",
   "keyWarning": {
     "title": "⚠️ Beveilig uw sleutel nu!",
     "text1": "U heeft een nieuw sleutelpaar gegenereerd.",

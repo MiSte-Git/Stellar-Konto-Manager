@@ -88,17 +88,17 @@
     "reward": "⭐ 1 – Détective de la vie privée"
   },
   "lesson4": {
-    "title": "Votre compte",
-    "goal": "Comprendre la structure et l'importance des clés publiques/privées.",
+    "title": "Clés, frais et Trustlines",
+    "goal": "Comprendre la différence entre Public Key et Secret Key, ainsi que les frais et Trustlines.",
     "task": "Jeu d'association : Qu'est-ce qui est public, qu'est-ce qui est secret ?",
-    "learningOutcome": "Seule la clé secrète permet l'accès ; la clé publique peut être partagée.",
+    "learningOutcome": "Public Key = Adresse de réception. Secret Key = À garder secret ! Trustline = Autorisation de détenir un Token.",
     "reward": "⭐ 1 – Gardien Clé"
   },
   "lesson5": {
     "title": "Envoyer & Recevoir",
-    "goal": "Comprendre le fonctionnement des transactions et des lignes de confiance",
-    "task": "Exécutez la transmission de test et visualisez les frais.",
-    "learningOutcome": "Chaque transaction entraîne un petit frais ; Trustline = permission de recevoir.",
+    "goal": "Comprendre le fonctionnement des transactions et de Trustlines",
+    "task": "Répondez aux questions concernant Trustlines, les frais, l'activation du compte et Memos.",
+    "learningOutcome": "Chaque transaction entraîne des frais minimes. Un Memo correspond à une référence de paiement.",
     "reward": "⭐ 2 – Débutant Trustline"
   },
   "lesson6": {
@@ -132,7 +132,7 @@
   "lesson10": {
     "title": "Pratique avec SKM",
     "goal": "Appliquer les connaissances acquises dans la pratique.",
-    "task": "Créer un compte sur le testnet, l'activer, établir une ligne de confiance, envoyer des jetons.",
+    "task": "Créez un compte dans le testnet, activez-le, définissez un trustline, envoyez tokens.",
     "learningOutcome": "Retracez les processus techniques d'une transaction.",
     "reward": "⭐ 3 – Projet pilote Blockchain"
   },
@@ -153,8 +153,8 @@
   "lesson13": {
     "title": "Multisig pour les débutants",
     "goal": "Comprendre les principes fondamentaux du multisig",
-    "task": "Comparez Single-Sig et Multisig et examinez un processus d'exemple.",
-    "learningOutcome": "Des signatures multiples augmentent la sécurité ; les seuils déterminent combien de signatures sont nécessaires.",
+    "task": "Répondez aux questions concernant la signature unique par rapport à Multisig, Thresholds et Signers.",
+    "learningOutcome": "Avec Multisig, plusieurs signatures sont requises. Cela empêche quiconque d'agir de son propre chef.",
     "reward": "⭐ 2 – Démarrage Multisig"
   },
   "lesson14": {
@@ -167,7 +167,7 @@
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
     "goal": "Découvrez comment les « Custom Assets » fonctionnent en tant que jetons de fidélité sur Stellar.",
-    "task": "Répondez aux questions concernant les jetons de fidélité, les lignes de confiance et la vérification de l'émetteur.",
+    "task": "Répondez aux questions concernant la fidélité Token, Trustlines et la vérification de l'émetteur.",
     "learningOutcome": "Le fait que deux jetons portent le même nom ne signifie pas qu’il s’agit du même jeton : c’est l’émetteur qui fait la différence.",
     "reward": "⭐ 2 – Expert en fidélisation"
   },

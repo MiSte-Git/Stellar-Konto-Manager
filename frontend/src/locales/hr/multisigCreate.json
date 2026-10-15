@@ -10,11 +10,11 @@
     "secret": "Čuvaj ovaj tajni ključ na sigurnom; nikad ga ne dijeli."
   },
   "generateFirst": "Molimo vas da prvo generirate par ključeva.",
-  "confirmLowBalance": "Početno stanje od {bal} XLM je ispod preporučene rezerve od {req} XLM (Potpisnici: {count}). Nastaviti?",
+  "confirmLowBalance": "Početni saldo {bal} XLM je ispod preporučene rezerve {req} XLM (Signer: {count}). Nastaviti?",
   "activated": "Račun je aktiviran. Hash: {hash}",
   "activatedTestnet": "Račun je aktiviran na testnetu putem Friendbota.",
   "alreadyActive": "Korisnički račun je već aktiviran.",
-  "createdNoSigners": "Korisnički račun kreiran, multisignatura nije konfigurirana.",
+  "createdNoSigners": "Račun je stvoren, multisig nije konfiguriran.",
   "createdAndConfigured": "Račun kreiran i multisig konfiguriran. Hash: {hash}",
   "info": {
     "more": "Više informacija",
@@ -24,12 +24,12 @@
     },
     "title": "Važne informacije",
     "secureKeys": {
-      "title": "Siguran tajni ključ",
+      "title": "Sačuvaj Secret Key",
       "text": "Javni ključ se može sigurno dijeliti—to je poput broja računa.\\n\\nTajni ključ je pristup vašem računu. Postupajte s njim kao s lozinkom:\\n• NIKADA ga ne pohranjujte u uslugama u oblaku, e-pošti ili nezaštićenim bilješkama\\n• Zapišite ga na papir ili koristite hardverski novčanik\\n• Napravite više sigurnosnih kopija i pohranite ih na sigurne, odvojene lokacije\\n• Ako izgubite svoj tajni ključ, pristup vašem računu je nepovratno izgubljen"
     },
     "multisigSection": {
       "title": "Višepotpis (Multisig)",
-      "text": "S multisig potpisom možete odrediti više potpisnika za svoj račun. Transakcije zatim zahtijevaju potpise s više ključeva (npr. 2 od 3).\n\nPrednosti:\n• Povećana sigurnost (nije dovoljan samo jedan kompromitirani ključ)\n• Zajednički računi (npr. tvrtke, partnerstva)\n• Hitno oporavak (više sigurnosnih kopija koje posjeduju različite osobe)\n\nUPOZORENJE: Prvo testirajte multisig na testnetu prije nego što ga upotrijebite na mainnetu! Neispravna konfiguracija može rezultirati gubitkom pristupa računu."
+      "text": "S Multisig možete definirati više Signer za svoj račun. Transakcije tada zahtijevaju potpise s više ključeva (npr. 2 od 3).\n\nPrednosti:\n• Povećana sigurnost (nije dovoljan jedan kompromitirani ključ)\n• Zajednički računi (npr. tvrtke, partnerstva)\n• Hitno oporavak (više sigurnosnih kopija koje posjeduju različite osobe)\n\nUPOZORENJE: Prvo testirajte Multisig u Testnet prije nego što ga upotrijebite na Mainnet! Neispravna konfiguracija može rezultirati gubitkom pristupa računu."
     },
     "diagram": {
       "title": "Istek potpisa"
@@ -38,7 +38,7 @@
   "activateHint": "Aktivacija je neophodna da bi račun postojao. Na Testnetu se to može obaviti putem Friendbota, a na Mainnetu preko opcije \"Create Account\" iz postojećeg novčanika.",
   "activateNow": "Odmah aktivirajte račun.",
   "activateOnly": "Aktiviraj samo",
-  "balanceWarning": "Početno stanje je vjerojatno prenisko za dodavanje dodatnih {{count}} potpisnika (Minimalna rezerva: {{req}} XLM).",
+  "balanceWarning": "Početni saldo je vjerojatno prenizak za dodavanje {{count}} dodatnih signers (Minimalna rezerva: {{req}} XLM)",
   "createButton": "Kreiraj / Postavi Multisig",
   "mainnetActivateNote": "Napomena: Za multisig su potrebne dodatne rezerve. 1 XLM često nije dovoljan.",
   "reserve": {
@@ -46,8 +46,8 @@
     "recommended": "Preporučeni početni saldo: {{val}} XLM (uključujući rezervu)",
     "required": "Potrebna minimalna rezerva (novo): {{val}} XLM"
   },
-  "signersCountLimit": "Hinweis: Netzwerkgrenze (Stellar): maximal 20 zusätzliche Unterzeichner.",
-  "startingBalance": "Početni kredit (XLM)",
+  "signersCountLimit": "Napomena: ograničenje mreže (Stellar): najviše 20 dodatnih Signer.",
+  "startingBalance": "Početno stanje (XLM)",
   "keyWarning": {
     "title": "⚠️ Osigurajte svoj ključ sada!",
     "text1": "Generirali ste novi par ključeva.",

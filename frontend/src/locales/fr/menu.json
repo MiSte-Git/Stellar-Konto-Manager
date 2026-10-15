@@ -9,12 +9,26 @@
   "glossary": "Glossaire",
   "createAccount": "Créer un nouveau compte",
   "multisigEdit": "Modifier multisig",
-  "multisigJobs": "Transactions multisignatures ouvertes",
+  "multisigJobs": "Transactions ouvertes Multisig",
   "listAll": "Autorisations de mon jeton",
   "compareTrustlines": "Comparer les autorisations par jeton",
   "settings": "Paramètres",
   "tokenPurchases": "Achats de jetons",
   "learn": "Quiz éblouissant pour débutants",
   "unknown": "Sélection de menu inconnue",
-  "swap": "Rechercher et échanger des jetons"
+  "swap": "Rechercher et échanger des jetons",
+  "wallet": "Wallet",
+  "sidebarLabel": "Navigation principale",
+  "openNavigation": "Ouvrir la navigation",
+  "closeNavigation": "Fermer la navigation",
+  "language": "Langue",
+  "sections": {
+    "account": "Compte",
+    "trade": "Commerce",
+    "reports": "Rapports",
+    "trustlines": "Token-Autorisations",
+    "advanced": "Avancé",
+    "learn": "Apprentissage"
+  },
+  "receive": "Recevoir"
 }

@@ -1,7 +1,7 @@
 {
   "title": "Multisig voor beginners",
   "menuTitle": "Begrip van multisig",
-  "teaser": "Waarom meerdere handtekeningen, hoe drempels werken en hoe SKM helpt.",
+  "teaser": "Waarom zijn er meerdere handtekeningen nodig, hoe werkt thresholds en hoe helpt SKM daarbij?",
   "why": {
     "title": "Waarom Multisig?",
     "text": "Meerdere handtekeningen verminderen het risico op individuele fouten of diefstal."
@@ -12,7 +12,7 @@
   },
   "stellarHow": {
     "title": "Hoe Stellar Multisig Implementeert",
-    "text": "Stellar gebruikt ondertekenaars met gewichten en drempels. Elke operatie vereist een drempelgewicht."
+    "text": "Stellar maakt gebruik van signers met gewichten en thresholds. Voor elke transactie is een threshold-gewicht vereist."
   },
   "examples": {
     "title": "Praktische voorbeelden",
@@ -26,7 +26,7 @@
   },
   "diagram": {
     "singleVsMulti": "Diagram: Single-Sig vs. Multisig",
-    "stellarHow": "Diagram: Ondertekenaar, Gewicht, Drempelwaarde",
+    "stellarHow": "Diagram: Signer, Gewicht, Threshold",
     "skmFlow": "Diagram: SKM Stroom Voorbereiding → Ondertekenen → Verzenden"
   }
 }

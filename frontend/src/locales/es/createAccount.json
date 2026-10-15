@@ -1,13 +1,13 @@
 {
-  "title": "Crear cuenta + multifirma",
+  "title": "Crear cuenta + multisig",
   "menu": "Crear cuenta + Multisig",
   "menuHint": "Crea una nueva cuenta y opcionalmente configura multisig.",
-  "hint": "Crea una nueva cuenta, actívala y, opcionalmente, configura la firma múltiple.",
+  "hint": "Crea una nueva cuenta, actívala y, si lo deseas, configura multisig.",
   "generateKeys": "Generar clave",
   "enableMultisig": "Habilitar multisig",
-  "signersTitle": "Firmante",
-  "signersInfo": "Agrega firmantes adicionales y establece umbrales apropiados.",
-  "signersCount": "Número de firmantes",
+  "signersTitle": "Signer",
+  "signersInfo": "Añade más Signer y establece los valores adecuados para Thresholds.",
+  "signersCount": "Número Signer",
   "bestPractices": {
     "title": "Mejores prácticas",
     "text": "Mantén las claves secretas seguras y no las distribuyas innecesariamente."
@@ -17,7 +17,7 @@
     "secret": "Mantén esta clave secreta segura; nunca la compartas."
   },
   "generateFirst": "Por favor, genera primero un par de claves.",
-  "confirmLowBalance": "El saldo inicial de {bal} XLM está por debajo de la reserva recomendada de {req} XLM (Firmantes: {count}). ¿Desea continuar?",
+  "confirmLowBalance": "El saldo inicial {bal} en XLM es inferior a la reserva recomendada {req} en XLM (Signer: {count}). ¿Deseas continuar?",
   "activated": "La cuenta ha sido activada. Hash: {hash}",
   "activatedTestnet": "La cuenta fue activada en la testnet a través de Friendbot.",
   "alreadyActive": "La cuenta ya está activada.",
@@ -27,16 +27,16 @@
     "more": "Más información.",
     "keysOnPage": {
       "title": "Clave en esta página",
-      "text": "⚠️ IMPORTANTE: ¡Esta página web NUNCA almacena tu clave secreta!\n\nLa clave secreta que se muestra aquí solo existe en tu navegador (localmente, en la memoria). En cuanto actualices la página o salgas de ella, se perderá de forma irremediable.\n\nCopia o anota la clave secreta inmediatamente después de generarla, antes de cerrar la página.\n\nVerificación: Puedes utilizar las herramientas de desarrollador de tu navegador (F12 → Red) para comprobar que no se transmite ninguna clave secreta al exterior. Solo se envían las transacciones firmadas, nunca tu clave secreta."
+      "text": "⚠️ IMPORTANTE: ¡Esta página web NUNCA almacena tu Secret Key!\n\nEl Secret Key que se muestra aquí solo existe en tu navegador (localmente, en la memoria). En cuanto actualices la página o salgas de ella, se perderá de forma irremediable.\n\nCopia o anota el Secret Key inmediatamente después de que se genere, antes de cerrar la página.\n\nVerificación: Puedes utilizar las herramientas de desarrollo de tu navegador (F12 → Red) para comprobar que no se transmite ningún Secret Key al exterior. Solo se envían las transacciones firmadas, nunca tu Secret Key."
     },
     "title": "Información importante",
     "secureKeys": {
-      "title": "Clave secreta segura",
+      "title": "Copia de seguridad de Secret Key",
       "text": "La clave pública se puede compartir de forma segura; es como un número de cuenta.\n\nLa clave secreta es la clave de tu cuenta. Trátala como si fuera una contraseña:\n• NUNCA la guardes en servicios en la nube, correos electrónicos o notas sin proteger\n• Anótala en un papel o utiliza un monedero físico\n• Crea varias copias de seguridad y guárdalas en lugares seguros e independientes\n• Si pierdes tu clave secreta, el acceso a tu cuenta se perderá de forma irremediable"
     },
     "multisigSection": {
-      "title": "Multisig (Firma múltiple)",
-      "text": "Con multisig, puedes definir múltiples firmantes para tu cuenta. Las transacciones requieren firmas de múltiples claves (multisig).\n\nVentajas:\n• Seguridad mejorada (security)\n• Cuentas compartidas (shared accounts)\n• Recuperación de emergencia (emergency recovery)\n\nPRECAUCIÓN: ¡Prueba multisig primero en la red de prueba antes de implementarlo en la red principal! Una configuración incorrecta puede resultar en la pérdida de acceso a la cuenta."
+      "title": "Multisig (Multi-signature)",
+      "text": "Con Multisig, puedes definir varios valores de Signer para tu cuenta. De este modo, las transacciones requerirán la firma de varias claves (por ejemplo, 2 de 3).\n\nVentajas:\n• Mayor seguridad (no basta con que se vea comprometida una sola clave)\n• Cuentas conjuntas (por ejemplo, empresas, sociedades)\n• Recuperación de emergencia (varias copias de seguridad en poder de diferentes personas)\n\nADVERTENCIA: ¡Prueba primero Multisig en el Testnet antes de utilizarlo en el Mainnet! Una configuración incorrecta puede provocar la pérdida de acceso a la cuenta."
     },
     "diagram": {
       "title": "Vencimiento de la firma"
@@ -45,8 +45,8 @@
   "activateHint": "La activación es necesaria para que la cuenta exista. En la Testnet, a través de Friendbot; en la Mainnet, a través de \"Crear Cuenta\" desde una billetera existente.",
   "activateNow": "Activa la cuenta inmediatamente",
   "activateOnly": "Solo activa",
-  "balanceWarning": "Es probable que el saldo inicial sea demasiado bajo para agregar los {{count}} firmantes adicionales (reserva mínima: {{req}} XLM)",
-  "createButton": "Crear / Configurar Multifirma",
+  "balanceWarning": "Es probable que el saldo inicial sea demasiado bajo para añadir los {{count}} signers adicionales (reserva mínima: {{req}} XLM)",
+  "createButton": "Crear / Establecer Multisig",
   "mainnetActivateNote": "Nota: Se requieren reservas adicionales para Multisig. 1 XLM a menudo no es suficiente.",
   "reserve": {
     "base": "Reserva base por entrada: {{val}} XLM",
@@ -54,7 +54,7 @@
     "required": "Reserva mínima obligatoria (nueva): {{val}} XLM"
   },
   "signersCountHint": "Establece el número mínimo de firmas a continuación en \"Firmas requeridas\" (niedrig/mittel/hoch).",
-  "signersCountLimit": "Nota: Red de Límites (Stellar): máx. 20 signatarios adicionales.",
+  "signersCountLimit": "Nota: Límite de la red (Stellar): máximo 20 Signer adicionales.",
   "startingBalance": "Saldo inicial (XLM)",
   "keyWarning": {
     "title": "⚠️ ¡Asegura la clave ahora!",

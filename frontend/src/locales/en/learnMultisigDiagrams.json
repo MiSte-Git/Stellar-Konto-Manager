@@ -30,7 +30,7 @@
     "title": "Multisig process",
     "step1": "Coordinator creates transaction",
     "step2": "SKM stores Pending Job",
-    "step3": "Sign B/C signing",
+    "step3": "Signer Sign B/C",
     "step4": "SKM sends completed transaction"
   }
 }

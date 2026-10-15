@@ -1,6 +1,6 @@
 {
   "title": "Cashback & Loyalty Tokens",
-  "introText": "Test your knowledge of loyalty tokens, trust lines, and issuer verification on Stellar.",
+  "introText": "Test your knowledge of Loyalty Token, Trustlines, and issuer verification on Stellar.",
   "q1": {
     "question": "What is a loyalty token?",
     "hint": "Think about custom assets on the blockchain.",
@@ -14,12 +14,12 @@
   "q2": {
     "question": "What does a customer need before receiving loyalty tokens?",
     "hint": "Stellar requires explicit trust before a token can be received.",
-    "a1": "A trust line to the token's issuer.",
-    "a1fb": "Correct: Without a trust line to the issuer, no token can be received.",
+    "a1": "A Trustline to the issuer of the Tokens.",
+    "a1fb": "Correct: Without Trustline from the issuer, Token cannot be received.",
     "a2": "A verified account.",
     "a2fb": "Wrong: Stellar accounts don't require external verification for custom assets.",
     "a3": "At least 10 XLM in the wallet.",
-    "a3fb": "Wrong: There is no minimum XLM requirement for trust lines."
+    "a3fb": "Incorrect: There is no minimum amount of XLM required for Trustlines."
   },
   "q3": {
     "question": "Marco names his token \"BERRY\". Another company does the same. Are the tokens the same?",
@@ -46,8 +46,8 @@
     "hint": "Who is the actual creator of this token?",
     "a1": "Compare the issuer address with the company's official address.",
     "a1fb": "Correct: Only comparing the issuer address protects against worthless fake tokens.",
-    "a2": "Add the trust line immediately.",
-    "a2fb": "Wrong: Adding a trust line to an unverified issuer can result in worthless tokens.",
+    "a2": "Add the Trustline immediately.",
+    "a2fb": "Incorrect: A Trustline associated with an unverified issuer can result in worthless Tokens.",
     "a3": "Search for the token name online.",
     "a3fb": "Wrong: The name alone means nothing – anyone can name a token \"BERRY\"."
   },

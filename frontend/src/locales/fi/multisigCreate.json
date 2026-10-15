@@ -1,6 +1,6 @@
 {
   "title": "Luo tili + multisig",
-  "menu": "Luo tili + Moniallekirjoitus",
+  "menu": "Luo tili + Multisig",
   "menuHint": "Luo uusi tili ja ota halutessasi käyttöön multisig.",
   "hint": "Luo uusi tili, aktivoi se ja määritä tarvittaessa multisig.",
   "generateKeys": "Luo avain",
@@ -10,12 +10,12 @@
     "secret": "Pidä tämä salainen avain turvassa; älä koskaan jaa sitä."
   },
   "generateFirst": "Luo ensin avainpari.",
-  "confirmLowBalance": "Aloitussaldo {bal} XLM on alle suositellun varauksen {req} XLM (Allekirjoittajat: {count}). Jatketaanko?",
+  "confirmLowBalance": "XLM:n alkusaldo {bal} on alle suositellun varannon {req} XLM (Signer: {count}). Haluatko jatkaa?",
   "activated": "Tili on aktivoitu. Siirtoavain: {hash}",
   "activatedTestnet": "Tili aktivoitiin testiverkolla Friendbotin kautta.",
   "alreadyActive": "Tili on jo aktivoitu.",
   "createdNoSigners": "Tili luotu, multisig ei ole määritetty.",
-  "createdAndConfigured": "Tili luotu ja moniallekirjoitus konfiguroitu. Tiiviste: {hash}",
+  "createdAndConfigured": "Tili on luotu ja multisig on määritetty. Hash: {hash}",
   "info": {
     "more": "Lisätietoja",
     "keysOnPage": {
@@ -24,12 +24,12 @@
     },
     "title": "Tärkeä tieto",
     "secureKeys": {
-      "title": "Turvallinen salausavain",
+      "title": "Tallenna Secret Key",
       "text": "Julkista avainta voi jakaa turvallisesti – se on kuin tilinumero.\\n\\nSalainen avain on pääsy tilillesi. Käsittele sitä kuin salasanaa:\\n• ÄLÄ KOSKAAN tallenna sitä pilvipalveluihin, sähköposteihin tai suojaamattomiin muistiinpanoihin\\n• Kirjoita se paperille tai käytä laitteistolompakkoa\\n• Luo useita varmuuskopioita ja säilytä ne turvallisissa, erillisissä paikoissa\\n• Jos menetät salaisen avaimesi, pääsy tilillesi menetetään lopullisesti"
     },
     "multisigSection": {
-      "title": "Moniallekirjoitus",
-      "text": "Multisig-toiminnon avulla voit nimetä tilillesi useita allekirjoittajia. Tällöin transaktiot edellyttävät allekirjoituksia useilta avaimilta (esim. 2/3).\n\nEdut:\n• Parempi turvallisuus (yhden vaarantuneen avaimen käyttö ei riitä)\n• Yhteistilit (esim. yritykset, kumppanuudet)\n• Hätätilanteiden palautus (eri henkilöillä on hallussaan useita varmuuskopioita)\n\nVAROITUS: Testaa multisig-toiminto ensin testnetissä ennen kuin otat sen käyttöön mainnetissä! Virheellinen konfigurointi voi johtaa tilin käyttöoikeuden menettämiseen."
+      "title": "Multisig",
+      "text": "Multisig:n avulla voit määrittää tilillesi useita Signer-arvoja. Tällöin transaktiot edellyttävät allekirjoituksia useilta avaimilta (esim. 2/3).\n\nEdut:\n• Parempi turvallisuus (yhden avaimen vaarantuminen ei riitä)\n• Yhteistilit (esim. yritykset, kumppanuudet)\n• Hätätilanteiden palautus (useita varmuuskopioita eri henkilöillä)\n\nVAROITUS: Testaa Multisig ensin Testnet:ssä ennen kuin otat sen käyttöön Mainnet:ssä! Virheellinen konfigurointi voi johtaa tilin käyttöoikeuden menettämiseen."
     },
     "diagram": {
       "title": "Allekirjoituksen vanhentuminen"
@@ -38,16 +38,16 @@
   "activateHint": "Tilin olemassaolo edellyttää aktivointia. Testnetissä tämä voidaan tehdä Friendbotin avulla, ja Mainnetissä \"Luo tili\" -toiminnon kautta olemassa olevasta lompakosta.",
   "activateNow": "Aktivoi tili heti",
   "activateOnly": "Aktivoi vain",
-  "balanceWarning": "Aloitussaldo on todennäköisesti liian alhainen {{count}} lisäallekirjoittajien lisäämiseksi (Vähimmäisvaraus: {{req}} XLM)",
+  "balanceWarning": "Alkusaldo on todennäköisesti liian pieni, jotta voitaisiin lisätä {{count}} uutta signers:tä (vähimmäisvaraus: {{req}} XLM)",
   "createButton": "Luo / Aseta Multisig",
-  "mainnetActivateNote": "Huomio: Moniallekirjoituksille vaaditaan lisävarantoja. 1 XLM ei usein ole riittävä.",
+  "mainnetActivateNote": "Huomautus: multisig:lle tarvitaan lisävaroja. 1 XLM ei useinkaan riitä.",
   "reserve": {
     "base": "Perusvaraus per merkintä: {{val}} XLM",
     "recommended": "Suositeltu alkusaldo: {{val}} XLM (sisältää varan)",
     "required": "Vaadittu vähimmäisvaranto (uusi): {{val}} XLM"
   },
-  "signersCountLimit": "Huomautus: Verkoston rajat (Stellar): enintään 20 lisäallekirjoittajaa.",
-  "startingBalance": "Aloitusluotto (XLM)",
+  "signersCountLimit": "Huomautus: Verkon rajoitus (Stellar): enintään 20 ylimääräistä Signer.",
+  "startingBalance": "Alkusaldo (XLM)",
   "keyWarning": {
     "title": "⚠️ Varmista avain nyt!",
     "text1": "Olet luonut uuden avainparin.",

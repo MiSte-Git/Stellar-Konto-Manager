@@ -1,31 +1,31 @@
 {
-  "signersTitle": "Signataire (ed25519)",
-  "signersInfo": "Ajoutez des signataires supplémentaires et définissez des seuils appropriés.",
-  "signersCount": "Nombre de signataires",
-  "signersCountLimit": "Remarque : Limite du réseau (Stellar) : max. 20 signataires supplémentaires.",
+  "signersTitle": "Signer (ed25519)",
+  "signersInfo": "Ajoutez d'autres instances de Signer et définissez les valeurs appropriées pour Thresholds.",
+  "signersCount": "Numéro Signer",
+  "signersCountLimit": "Remarque : limite du réseau (Stellar) : 20 Signer supplémentaires au maximum.",
   "bestPractices": {
     "title": "Meilleures pratiques",
     "text": "Gardez les clés secrètes en sécurité et ne les distribuez pas inutilement."
   },
-  "signerTypeNote": "Remarque : SKM utilise uniquement des signataires ed25519. Pour hashX/preAuthTx, utilisez",
+  "signerTypeNote": "Remarque : SKM utilise uniquement ed25519-Signer. Pour hashX/preAuthTx, utilisez",
   "signerTypeLink": "lab.stellar.org",
   "masterWeight": "Maîtriser le poids",
-  "threshold": "Threshold (niedrig/mittel/hoch)",
+  "threshold": "Threshold (faible/moyen/élevé)",
   "thresholdLow": "faible",
   "thresholdMed": "moyen",
   "thresholdHigh": "élevé",
-  "thresholdLevelsHint": "Typiquement, faible = changements simples (e.g., memo, price), moyen = paiements/commerce, élevé = changements critiques en matière de sécurité (e.g., signer/threshholds). Faible / Moyen / Élevé définissent le poids minimum requis de signataire pour une opération.",
+  "thresholdLevelsHint": "En règle générale : faible = modifications simples (par exemple, Memo, prix) ; moyen = paiements/transactions ; élevé = modifications critiques pour la sécurité (par exemple, Signer/thresholds). Les niveaux Faible / Moyen / Élevé définissent le poids minimum requis de Signer pour une opération.",
   "thresholdSum": "Poids totaux : {{sum}}",
-  "thresholdTooHigh": "Remarque : Un seuil ne doit pas dépasser la somme des poids. Veuillez ajuster les valeurs en conséquence.",
+  "thresholdTooHigh": "Remarque : la valeur de threshold ne doit pas dépasser la somme des poids. Veuillez ajuster les valeurs en conséquence.",
   "hints": {
     "byteRange": "(0–255)"
   },
   "tooltips": {
     "low": "Bas: changements simples (e.g., memo, price).",
     "med": "Moyens : Paiements et actions commerciales.",
-    "high": "Haut : modifications critiques pour la sécurité (e.g., signatories/thresholds).",
-    "signerWeight": "Poids des signataires (0–255) : De plus, les signataires disposent également de droits de vote. Le poids détermine combien de votes leur signature contribue. Lorsqu'une transaction est envoyée, tous les votes exprimés sont additionnés. Si le nombre minimum de votes prédéterminé (Threshold) est atteint, la transaction est considérée comme autorisée.",
-    "masterWeight": "Weight of the account holder (Master) (0-255): La clé principale du compte dispose d'un droit de vote. Plus son poids est élevé, plus le nombre de votes que représente sa signature est important. Ces votes sont additionnés avec ceux des autres signataires pour déterminer si la majorité requise est atteinte."
+    "high": "Élevé : modifications critiques pour la sécurité (par exemple, Signer/thresholds).",
+    "signerWeight": "Poids de Signer (0–255) : les Signer supplémentaires disposent également d’un droit de vote. La pondération détermine le nombre de voix attribuées à une signature. Lorsqu’une transaction est envoyée, toutes les voix exprimées sont additionnées. Si le nombre minimum de voix spécifié (Threshold) est atteint, la transaction est considérée comme autorisée.",
+    "masterWeight": "Poids du titulaire du compte (Maître) (0-255) : la clé primaire du compte dispose d’une voix. Plus le poids est élevé, plus la signature du titulaire du compte compte pour un nombre de voix important. Ces voix sont additionnées à celles des autres Signer afin de déterminer si la majorité requise a été atteinte."
   },
   "units": {
     "signatures": "Poids minimum"

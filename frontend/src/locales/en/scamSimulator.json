@@ -233,21 +233,21 @@
         "subtitle": "Promotional message"
       },
       "messages": {
-        "01": "🎉 Marco's Marketplace – Special Offer!\nToday only: 50 free BERRY for all new customers!\nAdd a Trust Line now and receive your tokens.\n[Add Trust Line]",
-        "02": "Issuer address: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nJust add the Trust Line – tokens land in your wallet immediately! 🍓",
-        "03": "⚠️ Tip: Always check the token issuer before adding a Trust Line for a new token."
+        "01": "🎉 Marco's Marketplace – Special Offer!\nToday only: 50 BERRY free for all new customers!\nAdd Trustline now and get Tokens.\n[Add Trustline]",
+        "02": "Issuer Address: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nJust add Trustline—the Tokens will go straight into the Wallet! 🍓",
+        "03": "⚠️ Tip: Always check the Token issuer before adding a Trustline for a new Token."
       },
       "options": {
-        "nothingSuspicious": "Nothing – looks legit. Add the Trust Line.",
+        "nothingSuspicious": "Nothing—looks legitimate. Add Trustline.",
         "tooGenerous": "50 free BERRY sounds like a lot.",
         "checkIssuer": "I'd check the issuer first.",
-        "addAnyway": "Add the Trust Line anyway – maybe it's fine.",
-        "rejectVerify": "Decline and ask Marco directly for the real BERRY address.",
+        "addAnyway": "Trustline Add it anyway—maybe it's true.",
+        "rejectVerify": "Trustline Decline and ask Marco directly for the real BERRY address.",
         "buyDex": "Buy the token on the DEX."
       },
       "followUp": {
         "scam": {
-          "01": "Trust Line successfully added! Your 50 BERRY are on their way. 🍓",
+          "01": "Trustline has been successfully added! Your 50 BERRY will be on its way. 🍓",
           "02": "You received 50 BERRY from the wrong issuer – but not a single shop accepts them. The issuer is unknown. These tokens are worthless and could be the start of further phishing attempts."
         },
         "generous": {
@@ -259,8 +259,8 @@
           "02": "Issuer from this message:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Not identical! Same token name, different issuer – this BERRY is worthless."
         },
         "addAnyway": {
-          "01": "Trust Line successfully added! Your 50 BERRY are on their way. 🍓",
-          "02": "Even though you saw the issuer mismatch, you added the Trust Line anyway. The 50 BERRY come from the wrong issuer and are worthless – no shop accepts them."
+          "01": "Trustline has been successfully added! Your 50 BERRY will be coming your way shortly. 🍓",
+          "02": "Even though you noticed the difference in issuers, you still added the Trustline. The 50 BERRY came from the wrong issuer and are worthless—no store accepts them."
         },
         "buyDex": {
           "01": "⚠️ On the DEX there are many tokens named BERRY from different issuers. Without the official issuer address, you might also buy worthless tokens. The issuer is key – even when buying on the DEX."
@@ -272,7 +272,7 @@
         "urgency": "\"Today only\" – artificial urgency to prevent critical thinking",
         "sameNameDifferentIssuer": "Same token name (BERRY) does not mean same token – only the issuer makes the difference"
       },
-      "explanation": "Custom tokens on Stellar are defined by their issuer – not their name. Two tokens can both be called 'BERRY' but come from completely different issuers. Only the official issuer of Marco's Marketplace issues real, redeemable BERRY. Before adding a Trust Line, always verify the issuer address on the provider's official website."
+      "explanation": "Custom Token on Stellar are defined by their issuer—not by their name. Two Token can both be named “BERRY,” but come from completely different issuers. Only the official issuer of Marco’s Marketplace issues genuine, redeemable BERRY. Before you add a Trustline, always check the issuer’s address on the provider’s official website."
     }
   }
 }

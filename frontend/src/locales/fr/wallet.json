@@ -10,5 +10,92 @@
     "deactivated": "Remarque : Ce portefeuille est marqué comme désactivé dans votre liste de confiance."
   },
   "xlmBalance": "XLM",
-  "unfunded": "Non activé"
+  "unfunded": "Non activé",
+  "home": {
+    "balance": "Solde",
+    "refresh": "Actualiser",
+    "available": "Disponible",
+    "reserved": "Réservé",
+    "reservedHint": "Réserve du réseau (par publication, offre ou Signer, selon la version Token) plus les XLM figurant dans les ordres de vente en cours. Ce montant ne peut pas être transféré.",
+    "muxedNote": "Identité Muxed : le solde du compte de base s'affiche.",
+    "loadError": "Impossible de charger les informations relatives au compte.",
+    "actions": {
+      "send": "Envoyer",
+      "swap": "Échange",
+      "details": "Détails du compte",
+      "receive": "Recevoir"
+    },
+    "assets": "Assets",
+    "manageTrustlines": "Gérer les partages Token",
+    "poolShares": "Parts du pool de liquidité",
+    "pool": "Piscine",
+    "issuer": "Éditeur",
+    "noTrustlines": "Aucune autorisation Token n'a encore été accordée. Pour conserver les autres Tokens, vous devez d'abord obtenir une autorisation (Trustline).",
+    "tokenNote": "Une valeur équivalente n'est affichée que pour XLM. SKM n'évalue pas Token et ne détermine pas si Token est authentique.",
+    "notFound": {
+      "title": "Compte non encore activé",
+      "text": "Ce compte n'existe pas encore sur {{net}}. Il sera activé dès qu'il aura reçu son premier versement en XLM."
+    },
+    "empty": {
+      "title": "Aucun compte n'a encore été chargé",
+      "text": "Saisissez votre Public Key ou une adresse de fédération ci-dessus. Le Public Key suffit pour la consultation ; pour les transactions, vous aurez besoin de votre Secret Key ultérieurement.",
+      "learn": "Découvrez Stellar"
+    }
+  },
+  "receive": {
+    "title": "Recevoir",
+    "intro": "Saisissez cette adresse pour recevoir des XLM ou des Token sur ce compte.",
+    "noAccount": "Commencez par ajouter un compte en haut de la page. Vous verrez alors s'afficher son adresse et le code QR ici.",
+    "testnet": "Vous êtes dans Testnet. Les soldes de Testnet n'ont aucune valeur.",
+    "variantLabel": "Type d'adresse",
+    "muxed": "Adresse multiplexée (M…)",
+    "base": "Compte de base (G…)",
+    "qrLabel": "Code QR correspondant à l'adresse {{address}}",
+    "addressLabel": "Votre adresse Stellar",
+    "muxedAddressLabel": "Adresse multiplexée",
+    "copy": "Copier l'adresse",
+    "copied": "Copié",
+    "hintCompare": "Demandez à l'expéditeur de vérifier le premier et le dernier caractère de l'adresse. Les escrocs utilisent délibérément des adresses qui se ressemblent.",
+    "hintTrustline": "Tu ne peux recevoir des Tokens autres que XLM que si tu disposes d'une autorisation de Token (Trustline) pour ceux-ci.",
+    "hintActivate": "Un nouveau compte n'est activé qu'après un premier dépôt d'au moins 1 XLM.",
+    "hintMuxed": "Les paiements envoyés à une adresse M sont crédités sur votre compte principal et sont identifiés par l'identifiant Muxed. Toutes les plateformes Wallet ou bourses ne prennent pas en charge les adresses M."
+  },
+  "activity": {
+    "title": "Dernière activité",
+    "showAll": "Tout afficher",
+    "loadError": "L'activité n'a pas pu être chargée.",
+    "empty": "Aucun paiement n'a encore été effectué.",
+    "failed": "Échec",
+    "lookalike": "Adresse similaire",
+    "lookalikeHint": "Cette adresse commence et se termine exactement comme une adresse à laquelle vous avez déjà envoyé un message, mais il s'agit d'une autre adresse. Ne copiez jamais les destinataires depuis votre historique.",
+    "lookalikeWarning": "Avertissement : au moins un expéditeur correspond à une adresse à laquelle vous avez déjà envoyé un message. Ne copiez jamais les destinataires depuis votre historique ; copiez-les toujours à partir d'une source fiable.",
+    "dust": "Petite quantité",
+    "showDust": "Publicités",
+    "hideDust": "Masquer",
+    "from": "par",
+    "to": "à",
+    "memoHint": "Memo provenant de l'expéditeur. Contenu non vérifié par SKM.",
+    "explorer": "Détails",
+    "kind": {
+      "received": "Reçu",
+      "sent": "Envoyé",
+      "self": "À toi-même",
+      "pathIn": "Reçu (échangé)",
+      "pathOut": "Envoyé (échangé)",
+      "accountCreated": "Compte activé",
+      "createdAccount": "Compte créé",
+      "mergeIn": "Comptes fusionnés",
+      "mergeOut": "Compte fermé"
+    },
+    "dustHidden_one": "{{count}} petits paiements masqués (souvent du spam).",
+    "dustHidden_other": "{{count}} petits paiements masqués (souvent du spam).",
+    "dustShown_one": "Le montant de {{count}} en micropaiement s'affiche.",
+    "dustShown_other": "{{count}} petits paiements sont affichés.",
+    "memoLabel": "Memo",
+    "onlyDust": "Seuls des montants très modestes sont disponibles.",
+    "url": "Contient une adresse Web",
+    "urlHint": "Le fichier Memo contient une adresse Web. Les paiements légitimes ne nécessitent pas cela. Ne l'ouvrez pas.",
+    "fakeNative": "Token, pas du XML natif",
+    "fakeNativeHint": "Il s'agit d'un Token provenant d'un éditeur, et non du format XLM natif du réseau."
+  }
 }

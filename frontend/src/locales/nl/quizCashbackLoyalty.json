@@ -1,6 +1,6 @@
 {
   "title": "Cashback en Loyaliteitstokens",
-  "introText": "Test je kennis over loyaliteitstokens, vertrouwenslijnen en uitgeversverificatie op Stellar.",
+  "introText": "Test je kennis over Loyalty Token, Trustlines en de verificatie van uitgevers op Stellar.",
   "q1": {
     "question": "Wat is een loyaliteitstoken?",
     "hint": "Denk aan aangepaste activa op de blockchain.",
@@ -14,12 +14,12 @@
   "q2": {
     "question": "Wat heeft een klant nodig voordat hij loyaliteitstokens kan ontvangen?",
     "hint": "Stellar vereist expliciete toestemming voordat een token ontvangen kan worden.",
-    "a1": "Een vertrouwenslijn naar de uitgever van de token.",
-    "a1fb": "Juist: Zonder vertrouwenslijn naar de uitgever kan geen token ontvangen worden.",
+    "a1": "Een Trustline aan de uitgever van de Tokens.",
+    "a1fb": "Juist: Zonder Trustline van de uitgever kan Token niet worden ontvangen.",
     "a2": "Een geverifieerd account.",
     "a2fb": "Onjuist: Stellar-accounts vereisen geen externe verificatie voor aangepaste activa.",
     "a3": "Minimaal 10 XLM in de portemonnee.",
-    "a3fb": "Onjuist: Er is geen minimum XLM vereist voor vertrouwenslijnen."
+    "a3fb": "Onjuist: Er geldt geen minimumhoeveelheid XLM voor Trustlines."
   },
   "q3": {
     "question": "Marco noemt zijn token \"BERRY\". Een ander bedrijf doet hetzelfde. Zijn de tokens gelijk?",
@@ -46,8 +46,8 @@
     "hint": "Wie is de werkelijke maker van deze token?",
     "a1": "Het uitgeveradres vergelijken met het officiële adres van het bedrijf.",
     "a1fb": "Juist: Alleen het vergelijken van het uitgeveradres beschermt tegen waardeloze nep-tokens.",
-    "a2": "De vertrouwenslijn onmiddellijk toevoegen.",
-    "a2fb": "Onjuist: Een vertrouwenslijn toevoegen aan een niet-geverifieerde uitgever kan leiden tot waardeloze tokens.",
+    "a2": "Voeg de Trustline onmiddellijk toe.",
+    "a2fb": "Onjuist: Een Trustline die gekoppeld is aan een niet-geverifieerde uitgever kan leiden tot een waardeloze Tokens.",
     "a3": "De tokennaam op internet zoeken.",
     "a3fb": "Onjuist: De naam alleen zegt niets – iedereen kan een token \"BERRY\" noemen."
   },

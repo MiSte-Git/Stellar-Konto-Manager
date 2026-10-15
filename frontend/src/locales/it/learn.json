@@ -88,17 +88,17 @@
     "reward": "⭐ 1 – Detective della Privacy"
   },
   "lesson4": {
-    "title": "Il tuo account",
-    "goal": "Comprendere la struttura e l'importanza delle chiavi pubbliche/private.",
+    "title": "Chiavi, commissioni e Trustlines",
+    "goal": "Comprendere la differenza tra Public Key e Secret Key, nonché le commissioni e Trustlines.",
     "task": "Gioco di abbinamento: Cosa è pubblico, cosa è segreto",
-    "learningOutcome": "Solo la chiave segreta fornisce l'accesso; la chiave pubblica può essere condivisa.",
+    "learningOutcome": "Public Key = Indirizzo di destinazione. Secret Key = Segreto! Trustline = Autorizzazione a detenere un Token.",
     "reward": "⭐ 1 – Guardiano Chiave"
   },
   "lesson5": {
     "title": "Send & Receive",
-    "goal": "Comprendere come funzionano le transazioni e le linee di fiducia",
-    "task": "Esegui la trasmissione di prova e visualizza la tariffa",
-    "learningOutcome": "Ogni transazione comporta una piccola commissione; Trustline = permesso di ricevere.",
+    "goal": "Comprendere il funzionamento delle transazioni e di Trustlines",
+    "task": "Rispondi alle domande su Trustlines, sulle commissioni, sull'attivazione del conto e su Memos.",
+    "learningOutcome": "Ogni transazione comporta una commissione minima. Un Memo è simile a una causale di pagamento.",
     "reward": "⭐ 2 – Principiante Trustline"
   },
   "lesson6": {
@@ -153,8 +153,8 @@
   "lesson13": {
     "title": "Multisig per Principianti",
     "goal": "Comprendere i principi fondamentali del multisig",
-    "task": "Confronta Single-Sig e Multisig ed esamina un esempio di processo.",
-    "learningOutcome": "Molteplici firme aumentano la sicurezza; le soglie determinano quante firme sono necessarie.",
+    "task": "Rispondi alle domande sul confronto tra \"single-sig\" e Multisig, Thresholds e Signers.",
+    "learningOutcome": "Con Multisig sono necessarie più firme. Ciò impedisce a chiunque di agire di propria iniziativa.",
     "reward": "⭐ 2 – Multisig per Iniziare"
   },
   "lesson14": {
@@ -167,7 +167,7 @@
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
     "goal": "Scopri come funzionano gli asset personalizzati come token di fidelizzazione su Stellar.",
-    "task": "Rispondi alle domande relative ai token di fedeltà, alle linee di fiducia e alla verifica dell'emittente.",
+    "task": "Rispondi alle domande relative al programma fedeltà Token, Trustlines e alla verifica dell'emittente.",
     "learningOutcome": "Il fatto che due token abbiano lo stesso nome non significa che si tratti dello stesso token: è l’emittente a fare la differenza.",
     "reward": "⭐ 2 – Esperto di fidelizzazione"
   },

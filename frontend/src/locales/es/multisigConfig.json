@@ -1,31 +1,31 @@
 {
-  "signersTitle": "Firmante (ed25519)",
-  "signersInfo": "Añadir signatarios adicionales y establecer umbrales apropiados.",
-  "signersCount": "Número de signatarios",
-  "signersCountLimit": "Nota: Límite de la red (Stellar): máximo 20 signatarios adicionales.",
+  "signersTitle": "Signer (ed25519)",
+  "signersInfo": "Añade más Signer y establece los valores adecuados para Thresholds.",
+  "signersCount": "Número Signer",
+  "signersCountLimit": "Nota: Límite de la red (Stellar): máximo 20 Signer adicionales.",
   "bestPractices": {
     "title": "Mejores prácticas",
     "text": "Mantén las claves secretas seguras y no las distribuyas innecesariamente."
   },
-  "signerTypeNote": "Nota: SKM utiliza solo firmantes ed25519. Para hashX/preAuthTx, use",
+  "signerTypeNote": "Nota: SKM solo utiliza ed25519-Signer. Para hashX/preAuthTx, utiliza",
   "signerTypeLink": "lab.stellar.org",
   "masterWeight": "Peso maestro",
-  "threshold": "Umbral (Threshold)",
+  "threshold": "Threshold (bajo/medio/alto)",
   "thresholdLow": "bajo",
   "thresholdMed": "medio",
   "thresholdHigh": "alto",
-  "thresholdLevelsHint": "Normalmente, bajo = cambios simples (e.g., memo, price), medio = pagos/comercio, alto = cambios críticos para la seguridad (e.g., signer/threshholds). Bajo / Medio / Alto definen el peso mínimo requerido del firmante para una operación.",
+  "thresholdLevelsHint": "Por lo general: bajo = cambios sencillos (p. ej., Memo, precio); medio = pagos/operaciones bursátiles; alto = cambios críticos para la seguridad (p. ej., Signer/thresholds). Bajo / Medio / Alto definen la ponderación mínima requerida de Signer para una operación.",
   "thresholdSum": "Pesos totales: {{sum}}",
-  "thresholdTooHigh": "Nota: Un umbral no debe exceder la suma de los pesos. Por favor, ajusta los valores en consecuencia.",
+  "thresholdTooHigh": "Nota: Un valor de threshold no debe superar la suma de los pesos. Por favor, ajusta los valores en consecuencia.",
   "hints": {
     "byteRange": "(0–255)"
   },
   "tooltips": {
     "low": "Bajo: cambios simples (e.g., memo, price).",
     "med": "Significa: Pagos y acciones comerciales.",
-    "high": "Alto: cambios críticos para la seguridad (e.g., signatories/thresholds).",
-    "signerWeight": "Peso de los firmantes (0–255): Además, los firmantes también tienen derechos de voto. El peso determina cuántos votos contribuye su firma. Cuando se envía una transacción, se suman todos los votos emitidos. Si se alcanza el número mínimo predeterminado de votos (Threshold), la transacción se considera autorizada.",
-    "masterWeight": "Peso del titular de la cuenta (Master) (0-255): La clave principal de la cuenta tiene derecho a voto. Cuanto mayor sea su peso, más votos contará su firma. Estos votos se suman junto con los votos de otros firmantes para determinar si se alcanza la mayoría requerida."
+    "high": "Alta: cambios críticos para la seguridad (p. ej., Signer/thresholds).",
+    "signerWeight": "Peso de Signer (0–255): Los Signer adicionales también tienen derecho a voto. La ponderación determina cuántos votos aporta cada firma. Cuando se envía una transacción, se suman todos los votos emitidos. Si se alcanza el número mínimo de votos especificado (Threshold), la transacción se considera autorizada.",
+    "masterWeight": "Ponderación del titular de la cuenta (Maestra) (0-255): La clave principal de la cuenta tiene un voto. Cuanto mayor sea la ponderación, más votos contará la firma del titular de la cuenta. Estos votos se suman a los votos de otros Signer para determinar si se ha alcanzado la mayoría requerida."
   },
   "units": {
     "signatures": "Peso mínimo"

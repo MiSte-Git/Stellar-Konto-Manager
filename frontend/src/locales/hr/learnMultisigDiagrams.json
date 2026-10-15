@@ -5,18 +5,18 @@
     "multiTitle": "Multisig",
     "account": "Račun",
     "singleKey": "1 ključ",
-    "keyA": "Potpisnik A",
-    "keyB": "Potpisnik B",
-    "keyC": "Potpisnik C",
+    "keyA": "Signer A",
+    "keyB": "Signer B",
+    "keyC": "Signer C",
     "singleNote": "Potpis je dovoljan.",
     "multiNote": "Najmanje 2 od 3 potpisa"
   },
   "weights": {
-    "ariaLabel": "Dijagram težina i pragova",
+    "ariaLabel": "Diagram težina i thresholds",
     "title": "Weights & Thresholds",
-    "sA": "Potpisnik A",
-    "sB": "Potpisnik B",
-    "sC": "Potpisati C",
+    "sA": "Signer A",
+    "sB": "Signer B",
+    "sC": "Signer C",
     "weight": "Težina:",
     "low": "niski",
     "med": "srednji",
@@ -26,11 +26,11 @@
     "highNote": "Kritične promjene"
   },
   "flow": {
-    "ariaLabel": "Dijagram toka s multisigom",
+    "ariaLabel": "Multisig Dijagram toka",
     "title": "Multisig proces",
     "step1": "Koordinator kreira transakciju.",
     "step2": "SKM pohranjuje Nezavršeni posao",
-    "step3": "Potpis B/C potpisivanje",
+    "step3": "Signer Potpis B/C",
     "step4": "SKM šalje dovršenu transakciju"
   }
 }

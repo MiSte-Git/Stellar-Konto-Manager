@@ -5,7 +5,7 @@
     }
   },
   "asset": {
-    "balance": "Credit balance",
+    "balance": "Balance",
     "code": "Asset code",
     "creationDate": "Created on",
     "issuer": "Issuer"
@@ -18,7 +18,7 @@
     },
     "current": "Current balance",
     "details": "Details in Block Explorers",
-    "empty": "No credits found.",
+    "empty": "No balances found.",
     "explorer": {
       "expert": "stellar.expert",
       "stellarchain": "Stellarchain.io",
@@ -387,7 +387,7 @@
       "deletingProgress": "Deleting in progress: {{current}} / {{total}}",
       "success": "Success: {{count}} Trustline(s) deleted."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) skipped (credit still available)."
+    "skippedDueToBalance": "{{count}} Trustline(s) skipped (balance remaining)."
   },
   "payment": {
     "send": {
@@ -434,7 +434,7 @@
       "trustlines": "Trustlines ({{n}})",
       "lpTrustlines": "LP‑Trustlines",
       "offers": "Open offers",
-      "signers": "Additional signatories",
+      "signers": "Additional Signer",
       "accountData": "Account‑Daten",
       "sponsoring": "Sponsorship",
       "sponsored": "Sponsored",
@@ -757,29 +757,29 @@
   },
   "multisigEdit": {
     "confirm": {
-      "removeSigner": "Really remove signer?"
+      "removeSigner": "Signer Really remove it?"
     },
     "currentConfig": "Current / Planned Configuration",
     "error": {
       "thresholdTooHigh": "Thresholds must not exceed the sum of the weights.",
       "safetyTitle": "Security check blocked",
       "safetyBlocked": "Security check blocked: Please resolve the warnings above.",
-      "noActiveSigners": "At least one active signer is required. Suggestion: Set master weight > 0 or add a signer with weight > 0.",
-      "noEd25519Signers": "At least one signer with weight > 0 is required. Suggestion: Increase master weight or add signer.",
+      "noActiveSigners": "At least one active Signer is required. Suggestion: Set the master weight to > 0 or add a Signer with a weight > 0.",
+      "noEd25519Signers": "At least one Signer with a weight greater than 0 is required. Suggestion: Increase the master weight or add Signer.",
       "masterZeroInsufficientHigh": "Master weight is 0 and the sum of the signer weights does not meet the high threshold (Sum: {{sum}}, High: {{high}}). Suggestion: Lower the thresholds or increase weights/signers.",
       "thresholdHighUnreachable": "High threshold not reachable (Sum: {{sum}}, High: {{high}}). Suggestion: lower threshold or increase weights/signers.",
       "thresholdMedUnreachable": "Med-threshold not reachable (Sum: {{sum}}, Med: {{med}}). Suggestion: Lower the threshold or increase weights/signers.",
-      "specialSignerLastHigh": "Special-Signer (hashX/preAuthTx) should not be the sole high authority. Suggestion: add signers with a weight >= high.",
-      "setOptionsNotSignable": "SetOptions would not be signable after the change (Signer Sum: {{sum}}, High: {{high}}). Suggestion: increase signer weight or lower high."
+      "specialSignerLastHigh": "Special-Signer (hashX/preAuthTx) should not be the only high-authority source. Suggestion: Add Signer with a weight of >= High.",
+      "setOptionsNotSignable": "SetOptions would not be signable after the change (Signer sum: {{sum}}, high: {{high}}). Suggestion: Increase the Signer weight or lower the high."
     },
     "warning": {
       "safetyTitle": "Security warnings",
-      "highSingleSigner": "Only one signer reaches the high threshold. Recommendation: at least two independent signers.",
-      "medSingleSigner": "Med-threshold > 0, but only one signatory present. Recommendation: add a second signatory."
+      "highSingleSigner": "Only one Signer meets the high threshold. Recommendation: at least two independent Signer.",
+      "medSingleSigner": "Med threshold > 0, but only one Signer is present. Recommendation: Add a second Signer."
     },
     "securityGuarantee": {
       "title": "🔒 SKM Security Guarantee (Multisig)",
-      "text": "The Stellar Account Manager prevents all technically caused account locks that may result from incorrect multisig configuration.\n\nIn particular, SKM blocks:\n- Deactivation of the master key when no signers are reachable\n- Unreachable thresholds (low / med / high)\n- Ordering errors when changing signers or thresholds\n- Removal of the last valid high signer\n- Multisig setups where SetOptions can no longer be signed\n- Dead ends caused by hashX or preAuthTx as the last signer\n\nSKM uses only ed25519 signers. For other signer types, use {link}.\n\nSKM guarantees:\n- Every confirmed change leaves at least one valid path open for further account management\n- SetOptions remains accessible after the change\n\nCannot be guaranteed (due to system limitations):\n- Loss of secret keys or hardware wallets\n- Unavailability or failure of external signers\n\nConclusion:\nSKM provides reliable protection against configuration lockouts.\nOrganizational risks are transparently displayed but cannot be technically prevented.",
+      "text": "The Stellar Account Manager prevents all technically caused account locks that may result from incorrect Multisig configuration.\n\nIn particular, SKM blocks:\n- Deactivation of the master key without an attainable Signer\n- Unattainable thresholds (low / med / high)\n- Ordering errors in Signer and Threshold changes\n- Removal of the last valid high Signers\n- Multisig setups where SetOptions can no longer be signed\n- Dead ends caused by hashX or preAuthTx as the last Signer\n\nSKM only sets ed25519-Signer. For other Signer types, use {link}.\n\nSKM guarantees:\n- Every confirmed change leaves at least one valid path open for further account management\n- SetOptions remains accessible after the change\n\nCannot be guaranteed (due to system limitations):\n- Loss of Secret Keys or hardware Wallets\n- Unavailability or failure of external Signer\n\nConclusion:\nSKM provides reliable protection against configuration lockouts.\nOrganizational risks are displayed transparently but cannot be technically prevented.",
       "linkLabel": "lab.stellar.org"
     },
     "hint": "Load an existing account, adjust signers, weights, master weight, and thresholds, and save the changes.",
@@ -787,25 +787,25 @@
     "loaded": "Loaded. Additional signers: {{count}}",
     "menu": "Edit multisig account",
     "menuHint": "Adjusting signers/thresholds of an existing account",
-    "noteMaxSigners": "Note: Stellar allows a maximum of 20 additional signers per account.",
-    "signerTypeNote": "Note: SKM only uses ed25519 signers. For hashX/preAuthTx, use",
+    "noteMaxSigners": "Note: Stellar allows a maximum of 20 additional Signer per account.",
+    "signerTypeNote": "Note: SKM only uses ed25519-Signer. For hashX/preAuthTx, use",
     "signerTypeLink": "lab.stellar.org",
     "reload": "Reload",
     "save": "Save changes",
     "saved": "Changes saved. TX: {{hash}}",
-    "signers": "Signatory (ed25519)",
+    "signers": "Signer (ed25519)",
     "weight": "Weighting",
     "masterWeight": "Master weight",
     "title": "Edit multisig account",
     "validation": {
-      "signerKeyHint": "Note: Signers must begin with \"G\" (ed25519 public key).",
-      "signerKeyInvalid": "Invalid signer address. A G… address (ed25519) is expected."
+      "signerKeyHint": "Note: Signer must begin with \"G\" (ed25519 Public Key).",
+      "signerKeyInvalid": "Invalid Signer address. A G… address (ed25519) is expected."
     }
   },
   "navigation": {
     "back": "Back",
     "backToMainMenu": "Back to the menu",
-    "backToPublicKey": "Return to public key input",
+    "backToPublicKey": "Back to the Public-Key entry",
     "backToTop": "Back to Top"
   },
   "publicKey": {
@@ -814,11 +814,11 @@
       "error": "Invalid target key.",
       "input": "Enter target wallet address"
     },
-    "label": "Please enter the source federation address or the public key:",
+    "label": "Please enter the source Federation address or the Public Key:",
     "load": "Laden…",
     "placeholder": "e.g.",
     "source": "Source wallet address",
-    "invalid": "Invalid public key.",
+    "invalid": "Invalid Public Key.",
     "submit": {
       "button": "Send"
     },
@@ -827,16 +827,16 @@
     "historyPlaceholder": "Select the last used wallet"
   },
   "secretKey": {
-    "cleared": "Secret key has been deleted.",
-    "empty": "Secret key field is empty.",
-    "info": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe secret key displayed here exists only in your browser (locally in memory). As soon as you reload or leave the page, it is irretrievably lost.\n\nCopy or write down the secret key immediately after it is generated, before you close the page.\n\nVerification: You can use your browser’s developer tools (F12 → Network) to verify that no secret key is being transmitted externally. Only signed transactions are sent—never your secret key.",
-    "invalid": "Invalid secret key.",
-    "label": "Enter the source secret key (S-Key)",
-    "mismatch": "Secret key does not match the public address.",
+    "cleared": "Secret Key has been deleted.",
+    "empty": "The Secret Key field is empty.",
+    "info": "⚠️ IMPORTANT: This website NEVER stores your Secret Key!\n\nThe Secret Key displayed here exists only in your browser (locally in memory). As soon as you reload or leave the page, it is irretrievably lost.\n\nCopy or write down the Secret Key immediately after it is generated, before you close the page.\n\nVerification: You can use your browser’s developer tools (F12 → Network) to verify that no Secret Key is transmitted externally. Only signed transactions are sent—never your Secret Key.",
+    "invalid": "Invalid Secret Key.",
+    "label": "Enter the source Secret-Key (S-Key)",
+    "mismatch": "Secret Key does not match the public address.",
     "placeholder": "e.g.",
     "valid": "✅ Secret key is valid.",
     "remember": {
-      "label": "Remember the secret key for this session",
+      "label": "Secret Key Remember this for this session",
       "hint": "When enabled, the key will be saved until the tab is closed and reused for further payments."
     }
   },
@@ -860,7 +860,7 @@
       "title": "Wallet",
       "original": "Wallet",
       "short": "Digital wallet that manages your keys.",
-      "desc": "A wallet is your digital purse. It manages the keys you need to access your account and send transactions. A wallet can be a program or an app, or even just a piece of paper with your private key."
+      "desc": "A Wallet is your digital wallet. It manages the keys you need to access your account and send transactions. A Wallet can be a program, an app, or even just a piece of paper with your Secret Key written on it."
     },
     "account": {
       "title": "Account",
@@ -875,16 +875,16 @@
       "desc": "The G-address is the main address of a Stellar account. It starts with the letter G. You give it to others so they can send you something."
     },
     "publicKey": {
-      "title": "Public key",
+      "title": "Public Key",
       "original": "Public Key",
       "short": "Address you may share; on Stellar usually the G-address.",
-      "desc": "The public key is the address you are allowed to show. In Stellar, this is the G-address. Others use it to send you money."
+      "desc": "The Public Key is the address you're allowed to share. On Stellar, this is the G-address. Others use it to send you money."
     },
     "privateKey": {
-      "title": "Secret key",
+      "title": "Secret Key",
       "original": "Secret Key",
       "short": "Password for the account – never share.",
-      "desc": "The secret key is your password for the account. Whoever has this key can move your money. Never share it."
+      "desc": "The Secret Key is your account password. Anyone who has this key can move your money. Never share it with anyone."
     },
     "addressFederation": {
       "title": "Federation address",
@@ -899,7 +899,7 @@
       "desc": "A sub-address (M-address, officially a “Muxed Account”) points to an existing Stellar account but also has its own number (ID). This allows you, for example, to distinguish between multiple people or departments under the same G-address. Technically, the funds still belong to the main account."
     },
     "multisig": {
-      "title": "Multisignature",
+      "title": "Multisig",
       "original": "Multi‑Sig",
       "short": "Important actions require more than a signature.",
       "desc": "Multi-Sig stands for multiple signatures. An important action requires more than one key. For example, you and a second key must both agree before something is sent. This makes theft more difficult."
@@ -1031,20 +1031,20 @@
       "success": "Success: {{count}} Trustline(s) deleted."
     },
     "destination": {
-      "label": "Enter the target public key:",
+      "label": "Enter the target Public-Key:",
       "placeholder": "e.g."
     },
     "noDuplicates": "No duplicate Trustlines(s) found.",
     "nonZeroBalance": "This trustline cannot be deleted because it still holds a balance.",
     "notFound": "No Trustline(s) found.",
     "onlyZeroBalanceInfo": "Only trustlines with a balance of 0 can be deleted.",
-    "showSecret": "Display secret key"
+    "showSecret": "Show Secret Key"
   },
   "deleted": {
     "deletingProgress": "Deleting in progress: {{current}} / {{total}}",
     "success": "Success: {{count}} Trustline(s) deleted."
   },
-  "skippedDueToBalance": "{{count}} Trustline(s) skipped (credit still available).",
+  "skippedDueToBalance": "{{count}} Trustline(s) skipped (balance remaining).",
   "xlmByMemo": {
     "action": {
       "calculate": "Calculate",
@@ -1242,5 +1242,11 @@
     "switchToBase": "Switch to the Basic Account",
     "guardTitle": "The Muxed identity is read-only",
     "guardText": "This action requires a Basic G Account. Switch to the Basic Account to continue."
+  },
+  "xlmPrice": {
+    "source": "Source: CoinGecko",
+    "updated": "Updated {{time}}",
+    "pair": "Currency for the XLM exchange rate",
+    "unavailable": "Course not available"
   }
 }

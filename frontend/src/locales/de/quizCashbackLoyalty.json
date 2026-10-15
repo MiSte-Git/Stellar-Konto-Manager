@@ -1,6 +1,6 @@
 {
   "title": "Cashback & Loyalty Token",
-  "introText": "Teste dein Wissen zu Loyalty Token, Trust Lines und Issuer-Verifizierung auf Stellar.",
+  "introText": "Teste dein Wissen zu Loyalty Token, Trustlines und Issuer-Verifizierung auf Stellar.",
   "q1": {
     "question": "Was ist ein Loyalty Token?",
     "hint": "Denke an benutzerdefinierte Assets auf der Blockchain.",
@@ -14,12 +14,12 @@
   "q2": {
     "question": "Was braucht ein Kunde, bevor er Loyalty Token empfangen kann?",
     "hint": "Stellar erfordert ausdrückliches Vertrauen, bevor ein Token empfangen werden kann.",
-    "a1": "Eine Trust Line zum Issuer des Tokens.",
-    "a1fb": "Richtig: Ohne Trust Line zum Issuer kann kein Token empfangen werden.",
+    "a1": "Eine Trustline zum Issuer des Tokens.",
+    "a1fb": "Richtig: Ohne Trustline zum Issuer kann kein Token empfangen werden.",
     "a2": "Ein verifiziertes Konto.",
     "a2fb": "Falsch: Stellar-Konten brauchen keine externe Verifizierung für Custom Assets.",
     "a3": "Mindestens 10 XLM im Wallet.",
-    "a3fb": "Falsch: Es gibt keine Mindestmenge an XLM für Trust Lines."
+    "a3fb": "Falsch: Es gibt keine Mindestmenge an XLM für Trustlines."
   },
   "q3": {
     "question": "Marco nennt seinen Token \"BERRY\". Ein anderes Unternehmen macht dasselbe. Sind die Token gleich?",
@@ -46,8 +46,8 @@
     "hint": "Wer ist der eigentliche Ersteller dieses Tokens?",
     "a1": "Die Issuer-Adresse mit der offiziellen Adresse des Unternehmens vergleichen.",
     "a1fb": "Richtig: Nur ein Vergleich der Issuer-Adresse schützt vor wertlosen Fake-Token.",
-    "a2": "Die Trust Line sofort hinzufügen.",
-    "a2fb": "Falsch: Eine Trust Line zu einem unverifizierten Issuer kann zu wertlosen Token führen.",
+    "a2": "Die Trustline sofort hinzufügen.",
+    "a2fb": "Falsch: Eine Trustline zu einem unverifizierten Issuer kann zu wertlosen Token führen.",
     "a3": "Den Token-Namen im Internet suchen.",
     "a3fb": "Falsch: Der Name allein sagt nichts aus – jeder kann einen Token \"BERRY\" nennen."
   },

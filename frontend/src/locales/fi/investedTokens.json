@@ -7,7 +7,7 @@
     "destination": "Kohdelompakko",
     "issuer": "Liikkeeseenlaskija",
     "label": "Merkintä",
-    "memo": "Muistio",
+    "memo": "Memo",
     "payments": "Maksut",
     "date": "Päivämäärä",
     "token": "Merkki"
@@ -17,11 +17,11 @@
     "label": "Desimaalit:"
   },
   "filter": {
-    "memoPlaceholder": "Suodata muistiolla, lompakon osoitteella tai tunnisteella.",
+    "memoPlaceholder": "Suodata memo:n, wallet:n osoitteen tai tunnisteen mukaan",
     "tokenPlaceholder": "Suodata tokenin avulla (CODE:ISSUER)"
   },
   "item": {
-    "memo": "Muistio: \"{{memo}}\" (Maksut: {{occurrences}})",
+    "memo": "Memo: \"{{memo}}\" (Maksut: {{occurrences}})",
     "token": "Tokeni: {{token}} (Maksut: {{occurrences}})",
     "tokenShort": "Tokeni: {{token}}"
   },
@@ -47,7 +47,7 @@
     "qsiListSet": "Huom: Löydät GF-listan asetuksista → Luotetut lompakot (QSI).",
     "pageTime": "Sivun lataaminen kestää noin 0,2 sekuntia → 100 sivua ≈ 20 sekuntia → 1000 sivua ≈ 200 sekuntia (≈ 3:20 minuuttia)."
   },
-  "walletCapInfo": "Huom: Lompakko voi sisältää enintään 1000 luottonlinjaa.",
+  "walletCapInfo": "Huomautus: Yksi wallet voi sisältää enintään 1000 trustlines:ta.",
   "action": {
     "load": "Kauppa"
   },

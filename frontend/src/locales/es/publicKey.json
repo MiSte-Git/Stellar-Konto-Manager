@@ -11,7 +11,7 @@
     "label": "Clave pública de destino",
     "placeholder": "Ingrese la clave pública de destino"
   },
-  "invalid": "Clave pública no válida.",
+  "invalid": "Public Key no es válido.",
   "submit": {
     "button": "Enviar"
   },

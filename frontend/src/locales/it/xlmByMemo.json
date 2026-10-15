@@ -27,7 +27,7 @@
     "failed": "Esportazione CSV fallita: {{detail}}"
   },
   "memo": {
-    "label": "Testo di ricerca promemoria (substring, case-sensitive)",
+    "label": "Memo testo da cercare (sottostringa, distingue maiuscole e minuscole)",
     "placeholder": "Memo (substring, case-sensitive)"
   },
   "overviewLine": "Ricevute di pagamento: {{total}} • portafogli coinvolti: {{unique}}",
@@ -37,7 +37,7 @@
   },
   "summary": {
     "amount": "Totale: {{amount}} XLM",
-    "correctCount": "Voci con promemoria corretto: {{n}}",
+    "correctCount": "Risultati con memo corretto: {{n}}",
     "count": "Quantità: {{n}}",
     "label": "Confronto (all inputs)",
     "otherCount": "Voci con memo errato/mancante: {{n}}",
@@ -73,7 +73,7 @@
       "amount": "Quantità",
       "created_at": "Creato il",
       "from": "A partire da",
-      "memo": "Promemoria",
+      "memo": "Memo",
       "tx_hash": "Hash della transazione"
     },
     "csv": "Scarica CSV",
@@ -81,6 +81,6 @@
     "hint": "Filtra i pagamenti in entrata nel periodo e visualizza i mittenti con memo errati/vuoti.",
     "scanning": "… scansiona memo falsi/vuoti",
     "summary": "Conteggio: {{count}} • Totale: {{sum}} XLM • Portafogli Unici: {{unique}}",
-    "title": "Promemoria falsi/vuoti durante il periodo"
+    "title": "Valore errato/vuoto per memos durante il periodo"
   }
 }

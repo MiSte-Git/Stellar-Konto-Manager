@@ -49,7 +49,7 @@
     "glossary": "Mantenimiento del glosario"
   },
   "multisig": {
-    "timeoutTitle": "Tiempo de espera de firma múltiple",
+    "timeoutTitle": "Multisig tiempo de espera",
     "timeoutHint": "Período de validez para pagos multisig en segundos (por ejemplo, 86400 = 24 horas).",
     "seconds": "Segundos",
     "timeoutTooHigh": "El valor no debe superar los {{maxDays}} días ({{maxSeconds}} segundos)."

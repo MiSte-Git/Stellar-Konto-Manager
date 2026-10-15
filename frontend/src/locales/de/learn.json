@@ -167,7 +167,7 @@
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
     "goal": "Verstehen, wie Custom Assets als Loyalty Token auf Stellar funktionieren.",
-    "task": "Beantworte Fragen zu Loyalty Token, Trust Lines und Issuer-Verifizierung.",
+    "task": "Beantworte Fragen zu Loyalty Token, Trustlines und Issuer-Verifizierung.",
     "learningOutcome": "Gleicher Token-Name bedeutet nicht gleicher Token – nur der Issuer macht den Unterschied.",
     "reward": "⭐ 2 – Loyalty-Experte"
   },

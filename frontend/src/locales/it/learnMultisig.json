@@ -1,7 +1,7 @@
 {
   "title": "Multisig per principianti",
   "menuTitle": "Comprendere il Multisig",
-  "teaser": "Perché le firme multiple, come funzionano le soglie e come SKM aiuta.",
+  "teaser": "Perché sono necessarie più firme, come funziona thresholds e in che modo SKM può essere d’aiuto.",
   "why": {
     "title": "Perché Multisig?",
     "text": "Le firme multiple riducono il rischio di errori individuali o furto."
@@ -12,7 +12,7 @@
   },
   "stellarHow": {
     "title": "Come Stellar Implementa Multisig",
-    "text": "Stellar utilizza i firmatari con pesi e soglie. Ogni operazione richiede un peso soglia."
+    "text": "Stellar utilizza signers con pesi e thresholds. Ogni operazione richiede un peso threshold."
   },
   "examples": {
     "title": "Esempi pratici",
@@ -26,7 +26,7 @@
   },
   "diagram": {
     "singleVsMulti": "Diagramma: Firma singola vs. Multisig",
-    "stellarHow": "Diagramma: Firmatario, Peso, Soglia",
+    "stellarHow": "Diagramma: Signer, Peso, Threshold",
     "skmFlow": "Diagramma: Preparazione del Flusso SKM → Firma → Invio"
   }
 }

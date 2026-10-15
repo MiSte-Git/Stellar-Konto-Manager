@@ -5,18 +5,18 @@
     "multiTitle": "Multisig",
     "account": "Account",
     "singleKey": "1 sleutel",
-    "keyA": "Ondertekener A",
+    "keyA": "Signer A",
     "keyB": "Signer B",
     "keyC": "Signer C",
     "singleNote": "Een handtekening is voldoende.",
     "multiNote": "Minstens 2 van de 3 handtekeningen"
   },
   "weights": {
-    "ariaLabel": "Diagrammen van gewichten en drempelwaarden",
-    "title": "Gewichten & Drempels",
-    "sA": "Ondertekener A",
-    "sB": "Ondertekenaar B",
-    "sC": "Ondertekenaar C",
+    "ariaLabel": "Gewichten in het diagram en thresholds",
+    "title": "Gewichten & Thresholds",
+    "sA": "Signer A",
+    "sB": "Signer B",
+    "sC": "Signer C",
     "weight": "Gewicht:",
     "low": "laag",
     "med": "gemiddeld",
@@ -30,7 +30,7 @@
     "title": "Multisig-proces",
     "step1": "Coördinator maakt transactie",
     "step2": "SKM slaat in behandeling zijnde banen op",
-    "step3": "Onderteken B/C ondertekening",
+    "step3": "Signer Cijfer B/C",
     "step4": "SKM stuurt voltooide transactie"
   }
 }

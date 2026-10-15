@@ -11,7 +11,7 @@
     "label": "Clé publique cible",
     "placeholder": "Entrez la clé publique cible"
   },
-  "invalid": "Clé publique invalide.",
+  "invalid": "Public Key n'est pas valide.",
   "submit": {
     "button": "Envoyer"
   },

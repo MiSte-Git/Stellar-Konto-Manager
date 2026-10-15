@@ -160,7 +160,7 @@
     }
   },
   "l4": {
-    "title": "Clés, frais et lignes de confiance",
+    "title": "Clés, frais et trustlines",
     "q1": {
       "question": "Qu'est-ce qu'une clé publique ?",
       "hint": "Comme votre adresse postale.",
@@ -194,7 +194,7 @@
       "d.fb": "Ce serait sympa 😄… mais n’importe qui connaissant ta clé secrète pourrait voler ton solde."
     },
     "q4": {
-      "question": "Qu'est-ce qu'une ligne de confiance ?",
+      "question": "Qu'est-ce qu'un trustline ?",
       "hint": "C'est comme une autorisation.",
       "a": "Une autorisation de détenir un jeton d'un émetteur.",
       "b": "Une ligne de chat secrète entre deux comptes.",
@@ -253,14 +253,14 @@
       "d.fb": "Ce serait sympa 😄 — mais les cryptomonnaies fonctionnent selon des règles techniques, pas grâce à des tours de magie."
     },
     "q4": {
-      "question": "À quoi sert un mémo dans une transaction ?",
+      "question": "À quoi sert un memo dans une transaction ?",
       "hint": "Pensez aux virements bancaires avec une référence.",
       "a": "Pour envoyer des informations supplémentaires comme un numéro de référence.",
       "b": "Pour réduire les frais.",
       "c": "Pour chiffrer la transaction.",
-      "a.fb": "Correct. Les mémos sont utilisés par les plateformes d'échange pour identifier les dépôts.",
-      "b.fb": "Faux. Les mémos n'affectent pas les frais.",
-      "c.fb": "Faux. Les mémos sont lisibles publiquement.",
+      "a.fb": "Exact. Les Memos sont utilisés, par exemple, par les plateformes d'échange pour identifier les dépôts.",
+      "b.fb": "Faux. Memos n'a aucune incidence sur les frais.",
+      "c.fb": "Faux. Les fichiers Memos sont accessibles en lecture publique.",
       "d": "Une astuce pour devenir riche plus vite.",
       "d.fb": "Ce serait bien 😄 — mais les cryptomonnaies fonctionnent selon des règles techniques, pas grâce à des tours de magie."
     }
@@ -620,7 +620,7 @@
   },
   "meta": {
     "estimatedMinutes": "Minutes estimées",
-    "passThreshold": "Seuil de passage",
+    "passThreshold": "Transmission de threshold",
     "threeStarThreshold": "3★ Frontière"
   },
   "landing": {
@@ -628,8 +628,8 @@
     "description": "Brève introduction à la leçon. Testez vos connaissances et collectez des étoiles.",
     "questionsLabel": "Questions",
     "estimatedMinutesLabel": "Minutes estimées",
-    "passThresholdLabel": "Seuil de passage",
-    "threeStarThresholdLabel": "Seuil de 3★",
+    "passThresholdLabel": "Transmission de threshold",
+    "threeStarThresholdLabel": "3★ threshold",
     "start": "Commencer le quiz",
     "startPractice": "Commencer le mode pratique.",
     "settings": "Paramètres",
@@ -651,10 +651,10 @@
   "result": {
     "score": "Votre résultat : {{score}} %",
     "summary": "{{correct}}/{{total}} corrects",
-    "passInfo": "Seuil de passage : {{pass}} % — Statut : {{status}}",
+    "passInfo": "Transmission de threshold : {{pass}} % — État : {{status}}",
     "passed": "Passé",
     "failed": "Échoué",
-    "threeStarThreshold": "Seuil de 3★ : {{value}}%",
+    "threeStarThreshold": "3★ threshold : {{value}} %",
     "stars": "Étoiles : {{stars}}",
     "newAchievementsTitle": "Badges nouvellement acquis",
     "noNewAchievements": "Aucun nouveau badge dans cette série.",

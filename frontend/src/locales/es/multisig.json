@@ -3,14 +3,14 @@
     "single": "Esta cuenta utiliza una sola firma.",
     "multi": "Esta cuenta utiliza múltiples firmas (Multisig)."
   },
-  "requiredThreshold": "Umbral requerido ({{level}}): {{value}}",
+  "requiredThreshold": "Obligatorio Threshold ({{level}}): {{value}}",
   "operationLabel": {
     "payment": "Pago",
     "setOptions": "Configuration (Signers & Thresholds)",
-    "changeTrust": "Cambiar línea de confianza",
+    "changeTrust": "Modificar Trustline",
     "unknown": "Acción"
   },
-  "multipleSignersInfo": "Esta acción requiere múltiples firmas. Por favor, proporcione suficientes claves secretas para cumplir con el umbral.",
+  "multipleSignersInfo": "Esta acción requiere varias firmas. Por favor, proporciona suficiente secret keys para cumplir con el threshold.",
   "confirm": {
     "options": {
       "recommended": "Recomendado",
@@ -28,14 +28,14 @@
         "infoTitle": "¿Cómo funciona \"Crear trabajo multisig\"?",
         "infoBody": {
           "one": "La transacción se almacena como un trabajo multisig en el backend y recibe un ID de trabajo. No se envía nada directamente.",
-          "two": "Todos los siguientes firmantes abren el elemento de menú \"Órdenes multisig\" en su instancia de SKM, cargan el trabajo y firman.",
-          "three": "En cuanto se hayan recogido suficientes firmas (se haya alcanzado el umbral), la transacción se envía o puede enviarse.",
-          "four": "Puedes pasar el ID de trabajo a otros firmantes, o pueden seleccionar el trabajo directamente en \"Órdenes multisig\"."
+          "two": "Todos los usuarios de Signer deben abrir la opción de menú «Multisig Jobs» en su instancia de SKM, cargar el trabajo y firmarlo.",
+          "three": "En cuanto se hayan recogido suficientes firmas (se haya alcanzado el valor de threshold), la transacción se envía o puede enviarse.",
+          "four": "Puedes compartir el ID del trabajo con otros Signer, o bien ellos pueden seleccionar el trabajo directamente desde «Trabajos de Multisig»."
         },
         "steps": {
           "one": "Paso 1: Se crea un trabajo multisig y recibe un ID de trabajo.",
-          "two": "Paso 2: Todos los siguientes firmantes abren el elemento de menú \"Órdenes multisig\" en su instancia de SKM, cargan el trabajo y firman.",
-          "three": "Paso 3: El segundo firmante abre el elemento de menú \"Órdenes multisig\" en su instancia de SKM, carga el trabajo y firma.",
+          "two": "Paso 2: Todos los usuarios de Signer deben abrir la opción de menú «Multisig Jobs» en su instancia de SKM, cargar el trabajo y firmarlo.",
+          "three": "Paso 3: El segundo signer abre la opción de menú «Multisig pedidos» en su instancia de SKM, carga el encargo y lo firma.",
           "four": "Paso 4: Una vez que se hayan recopilado suficientes firmas, la transacción se envía o puede ser enviada."
         }
       },
@@ -46,9 +46,9 @@
         "moreInfo": "Más información",
         "infoTitle": "¿Cómo funciona \"Todas las firmas localmente\"?",
         "infoBody": {
-          "one": "Introduce todas las claves secretas requeridas en este dispositivo de manera secuencial hasta que se alcance el umbral.",
+          "one": "Introduce todos los valores secret keys necesarios en este dispositivo de forma secuencial hasta alcanzar el valor threshold.",
           "two": "Esto ya no es un flujo multisig distribuido, sino \"multi-clave en un dispositivo\": úsalo solo en dispositivos de confianza.",
-          "three": "Una vez que se hayan recopilado suficientes firmas, podrás revisar la transacción en el cuadro de diálogo de revisión antes de que se envíe a Horizon (sin una tarea de firma múltiple)."
+          "three": "Una vez que se hayan recopilado suficientes firmas, podrás revisar la transacción en el cuadro de diálogo de revisión antes de que se envíe a Horizon (sin una tarea multisig)."
         }
       },
       "xdr": {
@@ -60,7 +60,7 @@
         "infoBody": {
           "one": "XDR es el formato de transacción sin procesar de Stellar. Nada se envía automáticamente.",
           "two": "Utiliza XDR para monederos de hardware, computadoras sin conexión u otros monederos/herramientas que puedan importar XDR.",
-          "three": "Eres responsable de firmar y/o enviar el XDR más tarde (e.g., via Multi-signature jobs or an external tool)."
+          "three": "Eres responsable de firmar y/o enviar el XDR más adelante (por ejemplo, mediante los trabajos Multisig o una herramienta externa)."
         },
         "steps": {
           "one": "Se genera un XDR, pero no se envía nada.",
@@ -73,16 +73,16 @@
       "backToSelection": "Atrás",
       "copyXdr": "Copiar XDR",
       "job": {
-        "title": "Transacción preparada para multigrado.",
-        "status": "Se creó un trabajo de firma múltiple. La transacción aún no ha sido enviada.",
+        "title": "Transacción preparada para multisig",
+        "status": "Se ha creado el trabajo Multisig. La transacción aún no se ha enviado.",
         "jobIdLabel": "ID de trabajo",
         "hashLabel": "Hash de transacción",
         "infoButton": "Próximos pasos",
         "infoTitle": "Qué hay que hacer ahora",
         "info": {
-          "share": "Reenvía el ID del trabajo o el XDR a los siguientes firmantes (por correo electrónico o mediante aplicaciones de mensajería como Telegram o WhatsApp).",
-          "sign": "Los firmantes eligen la opción 3 (\"Importar XDR\") y firman el XDR, O abren el elemento de menú \"ID de trabajo\" en el SKM, cargan el trabajo y firman allí.",
-          "submit": "Una vez recogidas suficientes firmas, uno de los firmantes envía finalmente el trabajo a la red en el SKM (menú \"ID de trabajo\")."
+          "share": "Reenvía el ID del trabajo o el XDR al siguiente Signer (por correo electrónico o mediante aplicaciones de mensajería como Telegram o WhatsApp).",
+          "sign": "Signer Selecciona la opción 3 («Importar XDR») y firma el XDR, O BIEN abre la opción de menú «ID de trabajo» en SKM, carga el trabajo y fírmalo desde allí.",
+          "submit": "Una vez que se hayan recogido suficientes firmas, uno de los Signers envía el trabajo a la red a través de SKM (en el menú «Job ID»)."
         },
         "copyJobId": "Copiar ID de trabajo",
         "copiedJobId": "Copiado"
@@ -99,21 +99,21 @@
         "status": "Solo se generó un XDR. No se envió nada a la red.",
         "noJob": "No se creó ningún trabajo multisig.",
         "hashLabel": "Hash de transacción",
-        "hint": "Reenvía el XDR a otros firmantes o herramientas (por ejemplo, un monedero físico o un ordenador sin conexión). Para enviarlo, importa el XDR (firmado, si procede) de nuevo al SKM más tarde (por ejemplo, Opción 3) y envíalo a la red."
+        "hint": "Reenvía el XDR a otros Signer o herramientas (por ejemplo, Wallet de hardware, ordenadores sin conexión). Para enviarlo, importa el XDR (firmado si es necesario) de nuevo en el SKM más tarde (por ejemplo, Opción 3) y envíalo a la red."
       }
     },
     "testModeTitle": "Todas las firmas locales",
-    "testModeDescription": "Flujo existente: Ingresar la clave secreta, reunir todas las firmas requeridas y enviar directamente a Horizon.",
+    "testModeDescription": "Proceso actual: Introducir Secret Key, recabar todas las firmas necesarias y enviarlas directamente a Horizon.",
     "testModeButton": "Sign directly & send",
-    "prepareTitle": "Preparar transacción para multifirma",
+    "prepareTitle": "Preparar la operación para multisig",
     "prepareDescription": "Solo prepara XDR para el multisig de producción. No se enviará nada de inmediato.",
     "prepareButton": "Preparar XDR (no enviar)"
   },
   "jobCreated": "Trabajo multisig creado (ID: {{id}}). Abre „Trabajos multisig“ para ver el estado.",
   "errors": {
     "mismatchedHash": "El XDR firmado no pertenece a esta transacción.",
-    "signersUnavailable": "La lista de firmantes de la cuenta no está disponible actualmente en Horizon. No se ha aplicado la firma. Inténtalo de nuevo dentro de unos segundos.",
-    "timeboundTooLong": "El intervalo de tiempo es demasiado largo. Por favor, reduce el tiempo de espera de la firma múltiple a un máximo de {{maxDays}} días."
+    "signersUnavailable": "La lista de signers de la cuenta no está disponible actualmente en Horizon. No se ha aplicado la firma. Inténtalo de nuevo dentro de unos segundos.",
+    "timeboundTooLong": "El intervalo de tiempo es demasiado largo. Por favor, reduce el valor de tiempo de espera de multisig a un máximo de {{maxDays}} días."
   },
   "prepare": {
     "title": "Transacción preparada para multisig.",
@@ -123,7 +123,7 @@
     "copyXdrButton": "Copiar XDR",
     "copied": "Copiado",
     "notSentHint": "Esta transacción aún no ha sido enviada a la red.",
-    "closeHint": "Puedes cerrar este diálogo en cuanto hayas firmado y se haya creado la orden multisig; el siguiente firmante encontrará el ID de trabajo en el menú “Órdenes multisig”."
+    "closeHint": "Puedes cerrar este cuadro de diálogo una vez que hayas firmado y se haya creado el pedido multisig; en el siguiente signer encontrarás el ID del trabajo en el menú «Pedidos Multisig»."
   },
   "testMode": {
     "modalTitle": "Firma de un solo usuario",
@@ -134,10 +134,10 @@
       "label": "Usa todas las teclas S localmente."
     },
     "prod": {
-      "label": "Modo de productividad (Produktivmodus)",
+      "label": "Modo de producción (true Multisig con XDR)",
       "banner": {
-        "title": "Modo productivo para multifirma",
-        "body": "En este modo, el Gestor de Cuentas Stellar utiliza solo tu propia clave secreta. Las firmas adicionales se recopilan a través de archivos XDR exportados. Asegura tus archivos XDR y compártelos solo con firmantes de confianza."
+        "title": "Modo de producción para Multisig",
+        "body": "En este modo, el gestor de cuentas de Stellar utiliza únicamente tu propio Secret Key. Las firmas adicionales se recopilan a través de archivos XDR exportados. Haz una copia de seguridad de tus archivos XDR y compártelos únicamente con personas de confianza Signers."
       }
     }
   },
@@ -169,20 +169,20 @@
     },
     "changes": {
       "title": "Cambios planeados",
-      "addSigner": "Agregar firmante: {{account}} (Peso {{weight}})",
-      "removeSigner": "Eliminar firmante: {{account}}",
-      "setThresholds": "Establecer umbrales: bajo={{low}}, medio={{med}}, alto={{high}}"
+      "addSigner": "Añadir signer: {{account}} (Peso {{weight}})",
+      "removeSigner": "Eliminar signer: {{account}}",
+      "setThresholds": "Establecer thresholds: mínimo={{low}}, medio={{med}}, máximo={{high}}"
     },
     "xdr": {
       "title": "Transacción (XDR)",
-      "hint": "Este XDR puede ser cargado y firmado por otros firmantes en billeteras compatibles.",
+      "hint": "Otros Signers pueden cargar y firmar este XDR en carteras compatibles.",
       "copy": "Copiar XDR",
       "copy.success": "XDR copiado al portapapeles.",
       "copy.error": "XDR no se pudo copiar al portapapeles."
     },
     "signedXdr": {
       "title": "Importación de XDR firmado",
-      "hint": "Inserta un XDR firmado por otro firmante aquí para combinar las firmas con este trabajo de firmas múltiples.",
+      "hint": "Inserta aquí un XDR firmado por otro Signer para fusionar las firmas con este trabajo Multisig.",
       "label": "XDR firmado",
       "submit": "Fusión firmada XDR",
       "success": {
@@ -197,8 +197,8 @@
     },
     "submitFailed": "Se produjo un error al enviar: {{reason}}",
     "submitNoExtras": "No hay más detalles de error disponibles.",
-    "noAccessToken": "No hay ningún token de acceso disponible. Cargue primero la cuenta que es firmante de este trabajo.",
-    "notASigner": "Esta cuenta no es un firmante activo de este trabajo.",
+    "noAccessToken": "No hay acceso disponible a token. Por favor, carga primero la cuenta que es un signer de este trabajo.",
+    "notASigner": "Esta cuenta no es una cuenta activa signer de este trabajo.",
     "noLocalSecretForToken": "No hay ningún secreto guardado para esta cuenta en este navegador. Ábrela mediante un enlace compartido con un token de acceso o carga la cuenta una vez utilizando la opción «Recordar secreto».",
     "transparency": {
       "title": "Detalles de la transacción"
@@ -208,9 +208,9 @@
       "payment": "Pago: {{amount}} {{asset}} a {{destination}}",
       "createAccount": "Crear una cuenta: {{destination}} con un saldo inicial de {{balance}} XLM",
       "masterWeight": "Establece el peso maestro en {{weight}}",
-      "signerAdd": "Establecer el peso del firmante {{key}} en {{weight}}",
-      "signerRemove": "Eliminar al firmante {{key}}",
-      "thresholds": "Establecer umbrales: bajo={{low}}, medio={{med}}, alto={{high}}",
+      "signerAdd": "Establecer el peso de signer {{key}} en {{weight}}",
+      "signerRemove": "Eliminar signer {{key}}",
+      "thresholds": "Establecer Thresholds: bajo={{low}}, medio={{med}}, alto={{high}}",
       "homeDomain": "Establece el dominio de inicio en {{domain}}",
       "changeTrust": "Configurar Trustline para {{asset}} (Límite: {{limit}})",
       "accountMerge": "Fusionar la cuenta con {{destination}}",
@@ -234,23 +234,23 @@
     "option": {
       "distributed": {
         "title": "Estándar: Flujo de Multisig Distribuido",
-        "body": "De forma predeterminada, esta sesión solo firma con tu propia clave secreta. Las firmas adicionales se complementan a través de archivos XDR exportados o un ID de trabajo de otros firmantes."
+        "body": "De forma predeterminada, esta sesión solo se firma con tu propio Secret Key. Las firmas adicionales se añaden a través de archivos XDR exportados o de un ID de trabajo procedente de otro Signers."
       },
       "localAll": {
         "title": "Introduce todas las firmas localmente",
-        "body": "Selecciona esta opción solo si controlas todas las claves privadas asociadas a esta cuenta (por ejemplo, tras una recuperación de cuenta en la que hayan intervenido varios firmantes). El Gestor de cuentas de Stellar recopilará entonces todas las firmas de forma local y enviará la transacción directamente a Horizon.",
+        "body": "Selecciona esta opción solo si controlas todos los Secret Keys asociados a esta cuenta (por ejemplo, tras una recuperación de cuenta en la que hayan intervenido varios Signers). El Gestor de cuentas de Stellar recopilará entonces todas las firmas localmente y enviará la transacción directamente a Horizon.",
         "checkboxLabel": "Ingrese todas las firmas localmente en este diálogo y envíelas directamente.",
-        "warning": "Nota: Si introduces todas las firmas localmente, todas las claves secretas estarán presentes en esta sesión. Usa esta opción solo en dispositivos de confianza."
+        "warning": "Nota: Si introduces todas las firmas de forma local, todos los Secret Keys estarán disponibles en esta sesión. Utiliza esta opción únicamente en dispositivos de confianza."
       }
     }
   },
   "multisigInfo": {
     "master": "Llave maestra",
-    "signerDisabled": "Desactivado el firmante (peso = 0)"
+    "signerDisabled": "Signer desactivado (ponderación = 0)"
   },
   "list": {
     "title": "Órdenes multisig",
-    "noAccount": "Primero cargue una cuenta para ver las transacciones multifirma.",
+    "noAccount": "Por favor, carga primero una cuenta para ver las transacciones de multisig.",
     "empty": "No se encontraron órdenes multisig.",
     "details": "Details & Signatures",
     "export": "Exportar",
@@ -258,12 +258,12 @@
     "signaturesProgress": "{{recopilado}} / {{requerido}} peso de la firma",
     "filter": {
       "mine": "Solo los pedidos que aún necesito firmar.",
-      "assigned": "También pedidos donde soy firmante."
+      "assigned": "También los pedidos en los que soy un signer."
     },
     "signer": {
       "signed": "✓",
       "missing": "desaparecido",
-      "unknown": "Firmante"
+      "unknown": "Signer"
     },
     "status": {
       "pending_signatures": "Esperando las firmas",
@@ -285,7 +285,7 @@
     "create": {
       "success": {
         "title": "Transacción multisig creada",
-        "body": "La transacción multisig con ID {{id}} ha sido creada. Los signatarios adicionales pueden firmar el archivo XDR una vez que haya sido exportado."
+        "body": "Se ha creado el trabajo Multisig con el ID {{id}}. Otros usuarios de Signers pueden firmar el archivo XDR una vez que se haya exportado."
       }
     },
     "status": {
@@ -298,7 +298,7 @@
     },
     "statusHelp": {
       "pending": "La transacción multisig ha sido creada, pero aún no hay firmas.",
-      "partiallySigned": "Algunos signatarios ya han firmado. Aún se necesitan más firmas.",
+      "partiallySigned": "Algunos Signer ya han firmado. Aún se necesitan más firmas.",
       "readyToSubmit": "Hay suficientes firmas presentes. La transacción puede enviarse a Horizon.",
       "submitted": "La transacción ha sido enviada a la red. Verifica el saldo final si es necesario.",
       "failed": "Se produjo un error al enviar la transacción. Por favor, consulte el registro de errores para más detalles.",

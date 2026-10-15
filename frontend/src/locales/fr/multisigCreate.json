@@ -1,16 +1,16 @@
 {
   "title": "Créer un compte + multisig",
   "menu": "Créer un compte + Multisig",
-  "menuHint": "Créez un nouveau compte et configurez éventuellement la signature multiple.",
-  "hint": "Créez un nouveau compte, activez-le et configurez éventuellement la multisignature.",
+  "menuHint": "Créez un nouveau compte et, si vous le souhaitez, configurez multisig",
+  "hint": "Créez un nouveau compte, activez-le et, si vous le souhaitez, configurez multisig.",
   "generateKeys": "Générer une clé",
-  "enableMultisig": "Activer la signature multiple",
+  "enableMultisig": "Activer multisig",
   "instructions": {
     "public": "Partagez cette clé publique avec d'autres pour les paiements.",
     "secret": "Gardez cette clé secrète en sécurité ; ne la partagez jamais."
   },
   "generateFirst": "Veuillez d'abord générer une paire de clés.",
-  "confirmLowBalance": "Le solde de départ de {bal} XLM est inférieur à la réserve recommandée de {req} XLM (Signataires : {count}). Continuer ?",
+  "confirmLowBalance": "Le solde initial {bal} en XLM est inférieur à la réserve recommandée {req} en XLM (Signer : {count}). Voulez-vous continuer ?",
   "activated": "Le compte a été activé. Hash : {hash}",
   "activatedTestnet": "Le compte a été activé sur le réseau de test via Friendbot.",
   "alreadyActive": "Le compte est déjà activé.",
@@ -24,12 +24,12 @@
     },
     "title": "Informations importantes",
     "secureKeys": {
-      "title": "Clé secrète sécurisée",
+      "title": "Enregistrer Secret Key",
       "text": "La clé publique peut être partagée en toute sécurité : c'est comme un numéro de compte.\\n\\nLa clé privée est la clé d'accès à votre compte. Traitez-la comme un mot de passe :\\n• Ne la stockez JAMAIS dans des services cloud, des e-mails ou des notes non sécurisées\\n• Notez-la sur papier ou utilisez un portefeuille matériel\\n• Créez plusieurs sauvegardes et stockez-les dans des emplacements sécurisés et distincts\\n• Si vous perdez votre clé secrète, l'accès à votre compte est irrémédiablement perdu"
     },
     "multisigSection": {
       "title": "Multisig",
-      "text": "Avec la signature multiple (multisig), vous pouvez désigner plusieurs signataires pour votre compte. Les transactions nécessitent alors les signatures de plusieurs clés (par exemple, 2 sur 3).\n\nAvantages :\n• Sécurité renforcée (la compromission d’une seule clé ne suffit pas)\n• Comptes joints (par exemple, entreprises, partenariats)\n• Récupération d'urgence (plusieurs sauvegardes détenues par différentes personnes)\n\nAVERTISSEMENT : Testez d'abord la fonction multisig sur le testnet avant de l'utiliser sur le mainnet ! Une configuration incorrecte peut entraîner la perte d'accès au compte."
+      "text": "Avec Multisig, vous pouvez définir plusieurs Signer pour votre compte. Les transactions nécessitent alors des signatures provenant de plusieurs clés (par exemple, 2 sur 3).\n\nAvantages :\n• Sécurité renforcée (la compromission d’une seule clé ne suffit pas)\n• Comptes communs (par exemple, entreprises, partenariats)\n• Récupération d’urgence (plusieurs sauvegardes détenues par différentes personnes)\n\nAVERTISSEMENT : Testez d’abord Multisig dans le Testnet avant de l’utiliser sur le Mainnet ! Une configuration incorrecte peut entraîner la perte d’accès au compte."
     },
     "diagram": {
       "title": "Expiration de la signature"
@@ -38,7 +38,7 @@
   "activateHint": "L'activation est nécessaire pour que le compte existe. Dans le Testnet, cela peut être fait via Friendbot, et dans le Mainnet, par \"Créer un compte\" à partir d'un portefeuille existant.",
   "activateNow": "Activez le compte immédiatement.",
   "activateOnly": "Activer seulement",
-  "balanceWarning": "Le solde initial est probablement trop bas pour ajouter les {{count}} signataires supplémentaires (Réserve minimale : {{req}} XLM)",
+  "balanceWarning": "Le solde initial est probablement trop faible pour ajouter les {{count}} signers supplémentaires (réserve minimale : {{req}} XLM)",
   "createButton": "Créer / Configurer un Multisig",
   "mainnetActivateNote": "Remarque : Des réserves supplémentaires sont nécessaires pour les multisig. 1 XLM n'est souvent pas suffisant.",
   "reserve": {
@@ -46,8 +46,8 @@
     "recommended": "Solde initial recommandé : {{val}} XLM (marge comprise)",
     "required": "Réserve minimale obligatoire (nouvelle) : {{val}} XLM"
   },
-  "signersCountLimit": "Remarque : Limite du réseau (Stellar) : max. 20 signataires supplémentaires.",
-  "startingBalance": "Crédit de départ (XLM)",
+  "signersCountLimit": "Remarque : limite du réseau (Stellar) : 20 Signer supplémentaires au maximum.",
+  "startingBalance": "Solde initial (XLM)",
   "keyWarning": {
     "title": "⚠️ Sécurisez votre clé dès maintenant !",
     "text1": "Vous avez généré une nouvelle paire de clés.",

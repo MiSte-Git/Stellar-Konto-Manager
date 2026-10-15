@@ -11,7 +11,7 @@
     "label": "Target public key",
     "placeholder": "Enter the target public key"
   },
-  "invalid": "Invalid public key.",
+  "invalid": "Invalid Public Key.",
   "submit": {
     "button": "Send"
   },

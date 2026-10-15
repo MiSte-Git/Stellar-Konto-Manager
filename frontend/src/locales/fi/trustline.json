@@ -1,9 +1,9 @@
 {
-  "all": "Listaa kaikki luottolinjat.",
+  "all": "Luettele kaikki trustlines.",
   "compare": "Vertaa Trustlines-sovellusta",
-  "delete": "Poista luottolinjat",
-  "onlyZeroBalanceInfo": "Vain nollasaldoiset luottorajat voidaan poistaa.",
-  "nonZeroBalance": "Tätä luottolinjaa ei voi poistaa, koska siinä on ei-nolla saldo.",
+  "delete": "Poista trustlines",
+  "onlyZeroBalanceInfo": "Vain trustlines, jonka saldo on 0, voidaan poistaa.",
+  "nonZeroBalance": "Tämän trustline:n saldo on eri kuin nolla, joten sitä ei voida poistaa.",
   "destination": {
     "label": "Kohdeosoite",
     "placeholder": "Määränpään julkinen avain tai federaatio-osoite",
@@ -11,28 +11,28 @@
   },
   "deleted": {
     "resultTitle": "Poista tulos",
-    "resultText": "{count} trustlinea käsiteltiin {mode} tilassa.",
+    "resultText": "{count} trustlines:tä käsiteltiin {mode} -tilassa.",
     "mode": {
       "simulation": "Simulaatio",
       "real": "Live-operaatio",
-      "realWarning": "Huomio! Tämä poistaa pysyvästi luottolinjat lohkoketjussa."
+      "realWarning": "Huomio! Tämä poistaa trustlines:n pysyvästi lohkoketjusta."
     },
-    "notFound": "Ei poistettavia luottolinjoja löytynyt.",
-    "simulated": "Simulointi: {count} luottolinjaa poistettaisiin.",
-    "success": "Onnistuneesti poistettu {count} luottolinjaa."
+    "notFound": "Poistettavaa vastaavaa trustlines-merkintää ei löytynyt.",
+    "simulated": "Simulointi: {count} trustlines poistettaisiin.",
+    "success": "{count} trustlines on poistettu onnistuneesti."
   },
-  "noDuplicates": "Ei päällekkäisiä luottamuslinjoja löytynyt.",
+  "noDuplicates": "Kaksoiskappaletta trustlines ei löytynyt.",
   "showSecret": "Näytä salainen avain",
-  "notFound": "Luottolinjaa (s) ei löytynyt.",
+  "notFound": "Trustline-merkintöjä ei löytynyt.",
   "add": {
-    "button": "Lisää luottolinja",
-    "title": "Luo uusi luottolinja",
+    "button": "Lisää trustline",
+    "title": "Määritä uusi trustline",
     "assetCodeLabel": "Omaisuuskoodi",
     "assetCodePlaceholder": "esim. USDC",
     "assetCodeHelp": "Omaisuusero nimi (1–12 merkkiä, esim. TESTUSD).",
     "issuerLabel": "Laskija (Public Key)",
     "issuerPlaceholder": "z. B. G...liikkeeseenlaskija",
-    "issuerHelp": "Sen tilin julkinen avain (G-osoite), joka laskee liikkeeseen kyseisen omaisuuserän.",
+    "issuerHelp": "Public Key (G-osoite) sen liikkeeseenlaskijan tilillä, joka laskee liikkeeseen Asset:n.",
     "limitLabel": "Raja",
     "limitPlaceholder": "esim. 1 000 000 (yksi miljoona)",
     "limitHelp": "Raja on tämän varan enimmäismäärä, jonka tämä tili voi luottaa. Käytännössä sen tulisi olla asetettu niin korkeaksi kuin odotettu enimmäissaldosi tässä varassa.",

@@ -160,7 +160,7 @@
     }
   },
   "l4": {
-    "title": "Chiavi, commissioni e fiduciarie",
+    "title": "Chiavi, commissioni e trustlines",
     "q1": {
       "question": "Cos'è una chiave pubblica?",
       "hint": "Come il tuo indirizzo postale.",
@@ -194,7 +194,7 @@
       "d.fb": "Sarebbe bello 😄—ma chiunque conosca la tua chiave segreta può rubarti il saldo."
     },
     "q4": {
-      "question": "Cos'è una linea di fiducia?",
+      "question": "Che cos’è un trustline?",
       "hint": "È come un permesso.",
       "a": "Un'autorizzazione a detenere un token da un emittente.",
       "b": "Una linea di chat segreta tra due account.",
@@ -620,7 +620,7 @@
   },
   "meta": {
     "estimatedMinutes": "Minuti stimati",
-    "passThreshold": "Soglia di superamento",
+    "passThreshold": "Passaggio di threshold",
     "threeStarThreshold": "3★ Confine"
   },
   "landing": {
@@ -628,8 +628,8 @@
     "description": "Breve introduzione alla lezione. Metti alla prova le tue conoscenze e colleziona stelle.",
     "questionsLabel": "Domande",
     "estimatedMinutesLabel": "Minuti stimati",
-    "passThresholdLabel": "Soglia di superamento",
-    "threeStarThresholdLabel": "Soglia di 3★",
+    "passThresholdLabel": "Passaggio di threshold",
+    "threeStarThresholdLabel": "3★ threshold",
     "start": "Inizia quiz",
     "startPractice": "Avvia la modalità di pratica.",
     "settings": "Impostazioni",
@@ -651,10 +651,10 @@
   "result": {
     "score": "Il tuo risultato: {{score}}%",
     "summary": "{{correct}}/{{total}} corrette",
-    "passInfo": "Soglia di superamento: {{pass}}% — Stato: {{status}}",
+    "passInfo": "Superamento di threshold: {{pass}}% — Stato: {{status}}",
     "passed": "Passato",
     "failed": "Fallito",
-    "threeStarThreshold": "Soglia 3★: {{value}}%",
+    "threeStarThreshold": "3★ threshold: {{value}}%",
     "stars": "Stelle: {{stars}}",
     "newAchievementsTitle": "Nuovi badge acquisiti",
     "noNewAchievements": "Nessun nuovo distintivo in questa sessione.",

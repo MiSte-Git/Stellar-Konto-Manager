@@ -31,7 +31,7 @@
     "title": "Wallet",
     "original": "Wallet",
     "short": "Digital wallet that manages your keys.",
-    "desc": "A wallet is your digital purse. It manages the keys you need to access your account and send transactions. A wallet can be a program, an app, or even just a piece of paper with your private key."
+    "desc": "A Wallet is your digital wallet. It manages the keys you need to access your account and send transactions. A Wallet can be a program, an app, or even just a piece of paper with your Secret Key written on it."
   },
   "account": {
     "title": "Account",
@@ -46,16 +46,16 @@
     "desc": "The G-address is the main address of a Stellar account. It starts with the letter G. You provide it to others so they can send you something."
   },
   "publicKey": {
-    "title": "Public key",
+    "title": "Public Key",
     "original": "Public Key",
     "short": "Address you may share; on Stellar usually the G-address.",
-    "desc": "The public key is the address you are allowed to share. In Stellar, this is the G-address. Others use it to send you money."
+    "desc": "The Public Key is the address you're allowed to share. On Stellar, this is the G-address. Others use it to send you money."
   },
   "privateKey": {
-    "title": "Secret key",
+    "title": "Secret Key",
     "original": "Secret Key",
     "short": "Password for the account – never share it.",
-    "desc": "The secret key is your password for the account. Whoever has this key can move your money. Never share it."
+    "desc": "The Secret Key is your account password. Anyone who has this key can move your money. Never share it with anyone."
   },
   "addressFederation": {
     "title": "Federation address",
@@ -76,19 +76,19 @@
     "desc": "Company - Example\n\nSetup:\n- One company G-account\n- One M-address per customer/use case (ID)\n\nProcess:\n- Customer pays to their M-address\n- All funds go to the company G-account\n- Accounting reads the ID -> unique assignment\n\nSuitable for:\n- Online stores, payment providers, exchanges\n- Internal references without memo risks\n\nClub - Example\n\nSetup:\n- One club G-account\n- M-Addresses for members, divisions, and purposes\n\nProcess:\n- Dues/donation sent to the appropriate M-Address\n- Allocation via ID, no memo errors\n\nSuitable for:\n- Membership dues\n- Earmarked revenue\n- Simple auditing\n\nWhat sub-addresses do well:\n- Robust incoming payment allocation\n- One account, many identities\n- No memo requirement\n- Fewer user errors\n\nWhat sub-addresses are not:\n- Not a standalone account\n- No separate balance\n- No separate trustlines\n- No separate signers/permissions\n\nTypically unsuitable use cases:\n- Payroll payments/salary accounts (require a separate G-account)\n- Trust/custody for third parties (no legal asset separator)\n- Role-based security (no separate signers/thresholds)\n- Budget or limit segregation (no separate balances/asset limits)\n- Compliance-segregated accounts (KYC/reporting cannot be clearly separated)\n\nComparison (Kurz):\nAssign payments: Yes\nSegregate assets: No\nDelegate access: No\nLegally separate account: No\nInternal accounting: Yes\n\nNote:\nSub-addresses route payments—they do not replace accounts.\nIf control, ownership, or segregation is required -> separate G-account."
   },
   "multisig": {
-    "title": "Multisignature",
+    "title": "Multisig",
     "original": "Multi‑Sig",
     "short": "Important actions require more than a signature.",
     "desc": "Multi-Sig stands for multiple signatures. An important action requires more than one key. Example: You and a second key must both agree before something is sent. This makes theft more difficult.",
     "help": {
-      "title": "General Explanation of a Multisignature (Multi-Signature) Company Account",
-      "intro": "A company can use a shared blockchain account in which several authorized individuals are involved. Typically, at least three signatories (Signer) are included, for example, the management, the financial officer, and compliance/backup. The objective is for individual persons to be able to execute payments independently without allowing a single person to control or take over the account alone.",
-      "problem": "If a signer (Signer) has enough weight to execute payments and simultaneously has enough weight for account changes, that person could remove other signers (Signer) or adjust the threshold/weighting (Thresholds) and thus take over the account. Conversely, the original owner should also not be able to easily exclude other signers (Signer) without checks and balances. A multi-signature structure ensures that important decisions are always collectively made by multiple people.",
+      "title": "General Statement Regarding a Multisig Business Account",
+      "intro": "A company can use a shared blockchain account involving multiple authorized individuals. Typically, at least three Signer are involved, such as the management, the finance officer, and the compliance/backup representative. The goal is to enable individual persons to execute payments independently without any single person being able to control or take over the account on their own.",
+      "problem": "If a Signer has enough weight to execute payments and also has enough weight to make account changes, that person could remove other Signers or adjust the Threshold/weighting (Thresholds), thereby taking control of the account. Conversely, the original owner should not be able to simply exclude other Signer without cross-checking. A multi-sig structure ensures that important decisions are always made jointly by multiple people.",
       "setupTitle": "Example of a secure multi-signature structure with three signers",
-      "setupWeights": "In an example with three equal roles, all receive the same signature strength:\n- Signer (Signer) A (Management): Weight 2\n- Signer (Signer) B (Finanzen): Weight 2\n- Signer (Signer) C (Compliance/Backup): Weight 2",
-      "setupThresholds": "Appropriate thresholds/weights are set as follows:\n- Low (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- High (high_threshold): 4 (for structural changes such as adding/removing signers (Signer) or changing the threshold/weight (Thresholds))\nThis ensures that each authorized person can execute payments, but no individual person can alter the account structure alone.",
-      "behavior": "With this configuration, payments can be made by any of the three eligible individuals alone because each individual's weight meets the medium threshold/Threshold. For structural changes such as removing a signer/Signers, adjusting the thresholds/weights, or merging or closing the account, the high threshold/high_threshold is required. This value can only be achieved when at least two of the three signers/Signer sign together. This setup keeps the account flexible for daily use while providing strong protection against misuse.",
-      "removal": "If a person leaves the company or is no longer trustworthy, two of the remaining signers (Signer) can jointly remove that person's signing rights. No single signer (Signer) – neither an employee nor management – can exclude others from the account on their own. Revoking permissions therefore always happens in a controlled and traceable way, with at least two responsible people involved.",
+      "setupWeights": "In an example with three roles of equal standing, all are assigned the same signature strength:\n- Signer A (Management): Weight 2\n- Signer B (Finanzen): Weight 2\n- Signer C (Compliance/Backup): Weight 2",
+      "setupThresholds": "To do this, set the appropriate Thresholds/weights:\n- Low (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium-level actions)\n- High (high_threshold): 4 (for structural changes such as adding or removing Signer or changing the Threshold/weighting (Thresholds))\nThis allows each authorized person to make payments, but no single person can change the account structure on their own.",
+      "behavior": "With this configuration, payments can be made by any one of the three authorized individuals acting alone, because the individual weight in each case meets the average Threshold/weighting. However, for structural changes such as removing a Signers, adjusting the Thresholds/weights, or merging or closing the account, the high Threshold/weighting (high_threshold). This value can only be achieved if at least two of the three Signer sign jointly. This ensures that the account remains flexible for everyday use while also being well protected against misuse.",
+      "removal": "If a person leaves the company or is no longer considered trustworthy, any two of the remaining Signer can jointly revoke that person’s signing rights. No single Signer—whether an employee or a member of management—can independently remove others from the account. The revocation of permissions is therefore always carried out in a controlled and traceable manner by at least two authorized individuals.",
       "summary": "This type of multi-sig structure allows individual parties to efficiently process payments while maintaining control of the account among multiple participants. It reduces the risk of account takeovers, protects against unilateral decisions, and is particularly suitable for corporate accounts where both security and operational flexibility are important.",
       "closeLabel": "Close",
       "linkLabel": "What does Multi-Signature mean?",
@@ -96,10 +96,10 @@
     }
   },
   "multisigCorporate": {
-    "title": "Multisignature - Example",
+    "title": "Multisig - Example",
     "original": "Multi-Signature - Example",
     "short": "Example of a multi-signature structure for corporate accounts with roles, weights, and thresholds.",
-    "desc": "Example: A company sets up a Stellar account with three signers: CEO (weight 2), CFO (weight 2), and a board member (weight 1). The thresholds are configured so that low-security operations require weight 1, medium operations (e.g. payments) require weight 3, and high operations (e.g. changing signers) require weight 4. This means the CEO alone can view the account, but must cooperate with the CFO or both other signers for payments and configuration changes."
+    "desc": "Example: A company sets up a Stellar account with three Signers: CEO (weight 2), CFO (weight 2), and a board member (weight 1). The Thresholds are configured so that low-security operations require a weight of 1, medium-security operations (e.g., payments) require a weight of 3, and high-security operations (e.g., changing the Signer) require a weight of 4. This way, the CEO can view the account alone but must collaborate with the CFO or both other Signers for payments and configuration changes."
   },
   "trustline": {
     "title": "Trustline",
@@ -189,7 +189,7 @@
     "title": "Transaction",
     "original": "Transaction",
     "short": "Action on the blockchain, e.g., payment or trustline.",
-    "desc": "A transaction is an action on the blockchain, such as sending money or establishing a trust line. Once confirmed, a transaction is permanently recorded."
+    "desc": "A transaction is an action on the blockchain. For example, sending money or creating a Trustline. Once a transaction is confirmed, it is stored permanently."
   },
   "fee": {
     "title": "Fee",
@@ -505,22 +505,22 @@
     "desc": "Soroban is the smart contract system of Stellar. A smart contract is program code on the blockchain. The code can independently verify rules and trigger actions without the need for a bank intermediary."
   },
   "multiSignature": {
-    "title": "Multisignature",
+    "title": "Multi-Signature",
     "original": "Multi-Signature",
     "short": "Multiple signatures required; weights + threshold determine the release.",
-    "desc": "In a multi-signature setup, multiple keys must sign before an action becomes valid. Each signer has a weight, and the sum must meet the required threshold. This increases security because a single stolen key is not sufficient."
+    "desc": "With Multisig, multiple keys must sign before an action becomes valid. Each Signer has a weight, and the sum must reach the required Threshold. This increases security because a single stolen key is not enough."
   },
   "signer": {
-    "title": "Signatory",
+    "title": "Signer",
     "original": "Signer",
-    "short": "Public key with weight, part of the account configuration.",
-    "desc": "A signer is a public key associated with an account that has a weight. Its signature counts toward the required threshold. Multiple signers can jointly approve a transaction.\n\nSigner types:\n- ed25519 (normal key)\n- hashX (hash template)\n- preAuthTx (pre-authorized transaction)\n\nSKM only supports ed25519. For additional options, see https://lab.stellar.org."
+    "short": "Public Key with weight, part of the account configuration.",
+    "desc": "A Signer is a Public Key associated with an account and assigned a weight. Its signature counts toward the required Threshold. Multiple Signers can collectively authorize a transaction.\n\nSigner types:\n- ed25519 (normal key)\n- hashX (hash template)\n- preAuthTx (pre-authorized transaction)\n\nSKM only supports ed25519. For additional options, see https://lab.stellar.org."
   },
   "thresholds": {
     "title": "Thresholds",
     "original": "Thresholds",
     "short": "Limits (low/med/high) that set the required total weight.",
-    "desc": "Thresholds define how many weighted signatures are required for actions: low for simple operations, med for payments, and high for critical changes. The sum of the signer weights must meet the respective threshold."
+    "desc": "Thresholds defines how many weighted signatures are required for actions: \"low\" for simple operations, \"med\" for payments, and \"high\" for critical changes. The sum of the Signer weights must equal the respective Threshold."
   },
   "masterWeight": {
     "title": "Master weight",
@@ -970,7 +970,7 @@
     "title": "Sequence Number",
     "original": "Sequence Number",
     "short": "A sequential number that uniquely identifies each transaction of an account and prevents double spending.",
-    "desc": "Every Stellar account has a sequence number that increases by 1 with each transaction. A transaction is only accepted if its sequence number matches exactly the current account sequence +1. This prevents the same transaction from being executed twice. If you send multiple transactions at the same time, they must be processed in the correct order."
+    "desc": "Every Stellar account has a Sequence Number that increases by 1 with each transaction. A transaction is only accepted if its Sequence Number is exactly the current account sequence +1. This prevents the same transaction from being executed twice. If you send several transactions at the same time, they must be processed in the correct order."
   },
   "baseReserve": {
     "title": "Base Reserve",

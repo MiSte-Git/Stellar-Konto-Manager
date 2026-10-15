@@ -160,7 +160,7 @@
     }
   },
   "l4": {
-    "title": "Ključevi, naknade i linije povjerenja",
+    "title": "Ključevi, naknade i trustlines",
     "q1": {
       "question": "Što je javni ključ?",
       "hint": "Kao vaša poštanska adresa.",
@@ -226,8 +226,8 @@
       "a": "Dozvola za primanje određenog tokena od izdavatelja.",
       "b": "Lozinka za brže transakcije.",
       "c": "Naknada za međunarodna plaćanja.",
-      "a.fb": "Točno. Bez trustlinea ne možete primiti token.",
-      "b.fb": "Netočno. Trustlineovi nemaju veze s lozinkama.",
+      "a.fb": "Ispravno. Bez trustline ne možete primiti token.",
+      "b.fb": "Pogrešno. Trustlines nemaju nikakve veze s lozinkama.",
       "c.fb": "Netočno. Trustline je dozvola, ne trošak.",
       "d": "Trik za brže obogaćivanje.",
       "d.fb": "To bi bilo lijepo 😄—ali kriptovalute funkcioniraju prema tehničkim pravilima, a ne magijskim trikovima."
@@ -258,9 +258,9 @@
       "a": "Za slanje dodatnih informacija poput referentnog broja.",
       "b": "Za smanjenje naknade.",
       "c": "Za šifriranje transakcije.",
-      "a.fb": "Točno. Memoe koriste npr. mjenjačnice za identifikaciju uplata.",
-      "b.fb": "Netočno. Memoi ne utječu na naknadu.",
-      "c.fb": "Netočno. Memoi su javno čitljivi.",
+      "a.fb": "Ispravno. Memos koriste burze, na primjer, za identifikaciju depozita.",
+      "b.fb": "Pogrešno. Memos ne utječu na naknadu.",
+      "c.fb": "Pogrešno. Memos su javno čitljivi.",
       "d": "Trik za brže obogaćivanje.",
       "d.fb": "To bi bilo lijepo 😄—ali kriptovalute funkcioniraju prema tehničkim pravilima, a ne magijskim trikovima."
     }
@@ -513,8 +513,8 @@
       "a": "Postaviti trustline za USDC.",
       "b": "Preuzeti poseban USDC novčanik.",
       "c": "Provesti KYC kod Stellara.",
-      "a.fb": "Točno. Bez trustlinea ne možete primiti vanjske tokene.",
-      "b.fb": "Netočno. Stellar Account Manager podržava sve tokene s trustlineom.",
+      "a.fb": "Ispravno. Bez trustline ne možete primati strane assets.",
+      "b.fb": "Pogrešno. Stellar Account Manager podržava sve assets s trustline.",
       "c.fb": "Netočno. Sam Stellar ne zahtijeva KYC.",
       "d": "Trik za brže obogaćivanje.",
       "d.fb": "To bi bilo lijepo 😄—ali kriptovalute funkcioniraju prema tehničkim pravilima, a ne magijskim trikovima."
@@ -598,10 +598,10 @@
       "hint": "Zlatno pravilo kripto sigurnosti.",
       "a": "Dijeliti tajni ključ ili ga unositi na nepoznate stranice.",
       "b": "Koristiti testnet.",
-      "c": "Postavljati trustlineove.",
+      "c": "Postavite trustlines.",
       "a.fb": "Točno. Tajni ključ je svet – nikada ga ne dijelite!",
       "b.fb": "Netočno. Korištenje testneta je čak preporučeno za vježbu.",
-      "c.fb": "Netočno. Trustlineovi su normalne i potrebne radnje.",
+      "c.fb": "Pogrešno. Trustlines su normalne i nužne radnje.",
       "d": "Trik za brže obogaćivanje.",
       "d.fb": "To bi bilo lijepo 😄—ali kriptovalute funkcioniraju prema tehničkim pravilima, a ne magijskim trikovima."
     },
@@ -620,7 +620,7 @@
   },
   "meta": {
     "estimatedMinutes": "Procijenjene minute",
-    "passThreshold": "Prag prolaza",
+    "passThreshold": "Prolaženje threshold",
     "threeStarThreshold": "3★ Granica"
   },
   "landing": {
@@ -628,8 +628,8 @@
     "description": "Kratki uvod u lekciju. Testirajte svoje znanje i skupljajte zvjezdice.",
     "questionsLabel": "Pitanja",
     "estimatedMinutesLabel": "Procijenjene minute",
-    "passThresholdLabel": "Prag praga",
-    "threeStarThresholdLabel": "Prag od 3★",
+    "passThresholdLabel": "Prolaženje threshold",
+    "threeStarThresholdLabel": "3★ threshold",
     "start": "Pokreni kviz",
     "startPractice": "Započni način vježbe.",
     "settings": "Postavke",
@@ -651,10 +651,10 @@
   "result": {
     "score": "Vaš rezultat: {{score}}%",
     "summary": "{{correct}}/{{total}} točno",
-    "passInfo": "Prag prolaznosti: {{pass}}% — Status: {{status}}",
+    "passInfo": "Prolazak threshold: {{pass}}% — Stanje: {{status}}",
     "passed": "Prošao",
     "failed": "Neuspjeh",
-    "threeStarThreshold": "Prag od 3★: {{value}}%",
+    "threeStarThreshold": "3★ threshold: {{value}}%",
     "stars": "Zvijezde: {{stars}}",
     "newAchievementsTitle": "Novo stečene značke",
     "noNewAchievements": "Nema novih znački u ovoj rundi.",

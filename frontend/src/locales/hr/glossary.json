@@ -31,7 +31,7 @@
     "title": "Novčanik",
     "original": "Wallet",
     "short": "Digitalni novčanik koji upravlja vašim ključevima.",
-    "desc": "Novčanik je vaša digitalna torbica. Upravlja ključevima koje trebate za pristup svom računu i slanje transakcija. Novčanik može biti program, aplikacija ili čak samo komad papira s vašim privatnim ključem."
+    "desc": "Wallet je vaš digitalni wallet. On upravlja ključevima koji su vam potrebni za pristup vašem računu i slanje transakcija. Wallet može biti program, aplikacija ili čak samo komad papira na kojem je napisan vaš Secret Key."
   },
   "account": {
     "title": "Račun",
@@ -46,16 +46,16 @@
     "desc": "G-adresa je glavna adresa Stellar računa. Počinje s slovom G. Pruža se drugima kako bi vam mogli poslati nešto."
   },
   "publicKey": {
-    "title": "Javni ključ",
+    "title": "Public Key",
     "original": "Public Key",
     "short": "Adresa koju smiješ dijeliti; kod Stellara obično G-adresa.",
-    "desc": "Javni ključ je adresa koju smijete dijeliti. U Stellar-u, to je G-adresa. Drugi ga koriste kako bi vam poslali novac."
+    "desc": "Public Key je adresa koju smijete dijeliti. Na Stellaru je to G-adresa. Drugi je koriste da vam pošalju novac."
   },
   "privateKey": {
-    "title": "Tajni ključ",
+    "title": "Secret Key",
     "original": "Secret Key",
     "short": "Lozinka za račun – nikad je ne dijeli.",
-    "desc": "Tajni ključ je vaša lozinka za račun. Tko god ima taj ključ, može premjestiti vaš novac. Nikada ga ne dijelite."
+    "desc": "Secret Key je lozinka vašeg računa. Svatko tko ima ovaj ključ može premjestiti vaš novac. Nikada ga nemojte dijeliti ni s kim."
   },
   "addressFederation": {
     "title": "Adresa federacije",
@@ -67,28 +67,28 @@
     "title": "Podadresa",
     "original": "Muxed Account",
     "short": "M-adresa s dodatnim ID-om – dijeli osnovni račun.",
-    "desc": "Podadresa (M-adresa, službeno \"Muxed račun\") upućuje na postojeći Stellar račun, ali ima i vlastiti broj (ID).\n\nPodadresa = G-račun + ID (M-adresa)\nOna omogućuje identifikaciju, ali ne odvojuje račune.\nStanje, trustlineovi, potpisnici i zastavice uvijek se čuvaju na G-računu.\n\nStellar Development Foundation\n\nTo omogućuje, na primjer, da se pod istom G-adresom razlikuju više osoba ili odjela. Tehnički gledano, sredstva i dalje pripadaju glavnom računu."
+    "desc": "Podadresa (M-adresa, službeno \"Muxed Account\") upućuje na postojeći Stellar račun, ali ima i vlastiti broj (ID).\n\nPodadresa = G-račun + ID (M-adresa)\nOna omogućuje identifikaciju, ali ne odvojuje račune.\nSaldo, trustlines, signers i oznake uvijek se čuvaju na G-računu.\n\nStellar Development Foundation\n\nTo omogućuje, na primjer, da se pod istom G-adresom razlikuju više osoba ili odjela. Tehnički gledano, sredstva i dalje pripadaju glavnom računu."
   },
   "muxedAccountsUseCases": {
     "title": "Podadrese – Primjeri upotrebe",
     "original": "Muxed accounts use cases",
     "short": "Primjeri, prednosti i ograničenja M-adresa kao pomoćnog sredstva za kartiranje.",
-    "desc": "Tvrtka - Primjer\n\nPostavka:\n- Jedan G-račun tvrtke\n- Jedna M-adresa po kupcu/slučaju upotrebe (ID)\n\nProces:\n- Kupac plaća na svoju M-adresu\n- Sva sredstva idu na G-račun tvrtke\n- Računovodstvo čita ID -> jedinstveno dodjeljivanje\n\nPogodno za:\n- Internetske trgovine, pružatelje plaćanja, mjenjačnice\n- Interne reference bez rizika od pogrešaka u opisu\n\nKlub - Primjer\n\nPostavljanje:\n- Jedan G-račun kluba\n- M-adrese za članove, odjele i svrhe\n\nPostupak:\n- Članarina/donacija se šalje na odgovarajuću M-adresu\n- Raspodjela putem ID-a, bez pogrešaka u napomeni\n\nPogodno za:\n- Članarine\n- Namjenska sredstva\n- Jednostavno revidiranje\n\nŠto pod-adrese dobro rade:\n- Robusna raspodjela dolaznih uplata\n- Jedan račun, mnogo identiteta\n- Nije potreban opis\n- Manje korisničkih pogrešaka\n\nŠto pod-adrese nisu:\n- Nisu samostalni račun\n- Nemaju odvojeni saldo\n- Nemaju odvojene linije povjerenja\n- Nemaju odvojene potpisnike/ovlasti\n\nTipično neprimjereni slučajevi upotrebe:\n- Isplate plaća/plaćni računi (zahtijevaju odvojeni G-račun)\n- Povjerenje/skrbništvo za treće strane (nema pravnog odvajanja imovine)\n- Sigurnost temeljena na ulogama (nema zasebnih potpisnika/pragova)\n- Odvajanje proračuna ili ograničenja (nema zasebnih stanja/ograničenja imovine)\n- Računi odvojeni za usklađenost (KYC/izvještavanje se ne može jasno odvojiti)\n\nUsporedba (Kurz):\nDodjela plaćanja: Da\nSegregacija imovine: Ne\nDelegiranje pristupa: Ne\nPravno odvojiv račun: Ne\nInterna računovodstva: Da\n\nNapomena:\nPod-adrese usmjeravaju plaćanja — one ne zamjenjuju račune.\nAko je potrebna kontrola, vlasništvo ili segregacija -> odvojiti G-račun."
+    "desc": "Tvrtka - Primjer\n\nPostavka:\n- Jedan G-račun tvrtke\n- Jedna M-adresa po kupcu/slučaju upotrebe (ID)\n\nProces:\n- Kupac plaća na svoju M-adresu\n- Sva sredstva idu na G-račun tvrtke\n- Računovodstvo čita ID -> jedinstveno dodjeljivanje\n\nPogodno za:\n- Internetske trgovine, pružatelje plaćanja, mjenjačnice\n- Interne reference bez rizika od memo\n\nKlub - Primjer\n\nPostavka:\n- Jedan G-račun kluba\n- M-adrese za članove, odjele i svrhe\n\nProces:\n- Članarina/donacija se šalje na odgovarajuću M-adresu\n- Raspodjela putem ID-a, bez pogrešaka memo\n\nPogodno za:\n- Članarine\n- Namjenska sredstva\n- Jednostavno revidiranje\n\nŠto pod-adrese dobro rade:\n- Robusna raspodjela dolaznih uplata\n- Jedan račun, mnogo identiteta\n- Nema potrebe za memo\n- Manje korisničkih pogrešaka\n\nŠto pod-adrese ne rade:\n- Nisu samostalan račun\n- Nemaju odvojeno stanje\n- Nema odvojenog trustlines\n- Nema odvojenog signers/ovlasti\n\nTipično neprimjereni slučajevi upotrebe:\n- Isplate plaća/plaćni računi (zahtijevaju odvojeni G-račun)\n- Povjerenje/skrbništvo za treće strane (nema pravnog asset odvojivača)\n- Sigurnost temeljena na ulogama (nema odvojenih signers/thresholds)\n- Odvajanje proračuna ili ograničenja (nema odvojenih stanja/asset ograničenja)\n- Računi odvojeni prema propisima (KYC/izvještavanje se ne može jasno odvojiti)\n\nUsporedba (Kurz):\nDodjeljivanje plaćanja: Da\nOdvajanje assets: Ne\nDelegiranje pristupa: Ne\nPravno odvojiv račun: Ne\nInterna računovodstva: Da\n\nNapomena:\nPod-adrese usmjeravaju uplate — one ne zamjenjuju račune.\nAko je potrebna kontrola, vlasništvo ili odvojenost -> odvojiti G-račun."
   },
   "multisig": {
-    "title": "Višepotpis (Multisignature)",
+    "title": "Multisig",
     "original": "Multi‑Sig",
     "short": "Važne akcije zahtijevaju više od potpisa.",
     "desc": "Multi-Sig označava višestruki potpisi. Važna akcija zahtijeva više od jednog ključa. Na primjer: Vi i drugi ključ morate se oboje složiti prije nego što se nešto pošalje. Time se krađa čini težom.",
     "help": {
-      "title": "Opće objašnjenje multissignature (Multi-Signature) poslovnog računa",
-      "intro": "Tvrtka može koristiti zajednički blockchain račun u kojem su uključene nekoliko ovlaštenih osoba. Obično se uključuju najmanje tri potpisnika (Signer), na primjer, menadžment, financijski službenik i osoba zadužena za usklađenost/pripremu. Cilj je da pojedinci mogu samostalno izvršavati plaćanja, a da jednoj osobi ne dopuštaju kontrolu ili preuzimanje računa.",
-      "problem": "Ako potpisnik (Signer) ima dovoljno težine da izvrši plaćanja i istovremeno ima dovoljno težine za promjene računa, ta osoba bi mogla ukloniti druge potpisnike (Signer) ili prilagoditi prag/važnost (Thresholds) i tako preuzeti račun. S druge strane, izvorni vlasnik također ne bi trebao biti u mogućnosti lako isključiti druge potpisnike (Signer) bez provjera i ravnoteža. Struktura s više potpisa osigurava da važne odluke uvijek kolektivno donosi više osoba.",
-      "setupTitle": "Primjer sigurne strukture s više potpisa s tri potpisnika",
-      "setupWeights": "U primjeru s tri jednaka uloge, svi dobivaju istu snagu potpisa:\n- Potpisnik (Signer) A (Management): Težina 2\n- Potpisnik (Signer) B (Finanzen): Težina 2\n- Potpisnik (Signer) C (Compliance/Backup): Težina 2",
-      "setupThresholds": "Odgovarajući pragovi/težine postavljeni su na sljedeći način:\n- Nizak (low_threshold): 1\n- Srednji (med_threshold): 2 (for payments and other medium actions)\n- Visok (high_threshold): 4 (za strukturne promjene kao što je dodavanje/uklanjanje potpisnika (Signer) ili promjena praga/težine (Thresholds))\nOvo osigurava da svaka ovlaštena osoba može izvršiti plaćanja, ali nijedna osoba pojedinačno ne može sama promijeniti strukturu računa.",
-      "behavior": "S ovom konfiguracijom, plaćanja može obaviti bilo koja od tri ovlaštene osobe samostalno jer težina svake osobe ispunjava srednji prag/threshold. Za strukturne promjene kao što su uklanjanje potpisnika/potpisnika, prilagodba pragova/težina ili spajanje ili zatvaranje računa, potreban je visoki prag/high_threshold. Ova vrijednost može se postići samo kada najmanje dva od tri potpisnika/potpisnika potpišu zajedno. Ova postavka omogućuje fleksibilnost računa za svakodnevnu upotrebu, a istovremeno pruža snažnu zaštitu protiv zloupotrebe.",
-      "removal": "Ako osoba napusti tvrtku ili više nije pouzdana, dva preostala potpisnika (Signer) zajedno mogu ukloniti prava potpisa te osobe. Nijedan pojedinačni potpisnik (Signer) – niti zaposlenik, niti uprava – ne može samostalno isključiti druge s računa. Oduzimanje ovlasti se uvijek provodi kontrolirano i transparentno od strane najmanje dvoje odgovornih.",
+      "title": "Opća izjava o Multisig poslovnom računu",
+      "intro": "Tvrtka može koristiti zajednički blockchain račun koji uključuje više ovlaštenih osoba. Obično su uključena najmanje tri Signer, poput uprave, financijskog službenika i predstavnika za usklađenost/rezervu. Cilj je omogućiti pojedincima da neovisno izvršavaju plaćanja, a da nijedna osoba ne može sama kontrolirati ili preuzeti račun.",
+      "problem": "Ako Signer ima dovoljno težine za izvršavanje uplata, a također i dovoljno težine za izvršavanje promjena na računu, ta bi osoba mogla ukloniti druge Signers ili prilagoditi Threshold/težinu (Thresholds), tako preuzimajući kontrolu nad računom. Suprotno tome, izvorni vlasnik ne bi trebao moći jednostavno isključiti druge Signer bez međusobne provjere. Više-potpisna struktura osigurava da se važne odluke uvijek donose zajednički od strane više osoba.",
+      "setupTitle": "Primjer sigurne strukture multi-signature s tri signers",
+      "setupWeights": "U primjeru s tri uloge jednakog statusa, svima je dodijeljena ista snaga potpisa:\n- Signer A (Uprava): Težina 2\n- Signer B (Financije): Težina 2\n- Signer C (Usklađenost/Rezervna kopija): Težina 2",
+      "setupThresholds": "Da biste to učinili, postavite odgovarajuće Thresholds/težine:\n- Niska (low_threshold): 1\n- Srednja (med_threshold): 2 (za uplate i druge radnje srednje razine)\n- Visoka (high_threshold): 4 (za strukturne promjene kao što su dodavanje ili uklanjanje Signer ili promjena Threshold/težine (Thresholds))\nTo omogućuje svakoj ovlaštenoj osobi da obavlja uplate, ali nijedna osoba sama ne može promijeniti strukturu računa.",
+      "behavior": "S ovom konfiguracijom isplate se mogu izvršiti bilo kojom od tri ovlaštene osobe koje djeluju samostalno, jer pojedinačna težina u svakom slučaju zadovoljava prosječnu Threshold/težinu. Međutim, za strukturne promjene poput uklanjanja Signers, prilagodbe Thresholds/težina ili spajanja ili zatvaranja računa, potrebna je visoka Threshold/težina (high_threshold). Ova se vrijednost može postići samo ako najmanje dvoje od troje Signer potpišu zajedno. To osigurava da račun ostane fleksibilan za svakodnevnu upotrebu, a istovremeno dobro zaštićen od zlouporabe.",
+      "removal": "Ako osoba napusti tvrtku ili se više ne smatra pouzdanom, bilo koja dva od preostalih Signer mogu zajednički opozvati prava te osobe na potpisivanje.  Nijedan pojedinačni Signer—bilo zaposlenik ili član uprave—ne može samostalno ukloniti druge s računa. Ukidanje ovlasti stoga se uvijek provodi na kontroliran i tragiv način od strane najmanje dvoje ovlaštenih osoba.",
       "summary": "Ova vrsta multi-sig strukture omogućava pojedinim stranama da učinkovito obrađuju uplate, dok istovremeno održavaju kontrolu nad računom među više sudionika. Smanjuje rizik preuzimanja računa, štiti od jednostranih odluka i posebno je pogodna za korporativne račune gdje su sigurnost i operativna fleksibilnost važni.",
       "closeLabel": "Zatvoren",
       "linkLabel": "Što znači Multi-Signature?",
@@ -96,16 +96,16 @@
     }
   },
   "multisigCorporate": {
-    "title": "Multisignatura - Primjer",
+    "title": "Multisig - Primjer",
     "original": "Multi-Signature - Example",
-    "short": "Primjer strukture s više potpisa za korporativne račune s ulogama, težinama i pragovima.",
-    "desc": "Primjer: Tvrtka postavlja Stellar račun s tri potpisnika: CEO (težina 2), CFO (težina 2) i član uprave (težina 1). Pragovi su konfigurirani tako da operacije niske sigurnosti zahtijevaju težinu 1, srednje operacije (npr. plaćanja) težinu 3, a visoke operacije (npr. promjena potpisnika) težinu 4. To znači da CEO može sam pregledavati račun, ali mora surađivati s CFO-om ili oba druga potpisnika za plaćanja i promjene konfiguracije."
+    "short": "Primjer strukture multi-signature za korporativne račune s ulogama, težinama i thresholds.",
+    "desc": "Primjer: Tvrtka postavlja Stellar račun s tri Signera: CEO (težina 2), CFO (težina 2) i član uprave (težina 1). Thresholds su konfigurirani tako da operacije niske sigurnosti zahtijevaju težinu 1, operacije srednje sigurnosti (npr. plaćanja) težinu 3, a operacije visoke sigurnosti (npr. promjena Signera) težinu 4. Tako CEO može sam pregledavati račun, ali za plaćanja i promjene konfiguracije mora surađivati s CFO-om ili s oba druga Signera."
   },
   "trustline": {
-    "title": "Povjerenička linija",
+    "title": "Trustline",
     "original": "Trustline",
     "short": "Sporazum o držanju tokena od određenog izdavatelja.",
-    "desc": "Povjerenička linija je kao \"Da, prihvaćam ovaj token.\" Postavljanjem povjereničke linije pokazujete da je vaš račun spreman držati određeni token od određenog izdavatelja. Bez povjereničke linije, ne možete primiti taj token.\n\nPrimjer: Povjerenička linija je specificirana kao ŠIFRA:IZDAVATELJ. Za EURT od izdavatelja GDUKMGUGDZQK6Y… bilo bi EURT:GDUKMGUGDZQK6Y…"
+    "desc": "trustline je poput \"Da, prihvaćam ovaj token.\" Postavljanjem istog dajete do znanja da je vaš račun spreman primiti određeni token od određenog izdavatelja. Bez trustline ne možete primiti ovaj token.\n\nPrimjer: trustline se navodi kao CODE:ISSUER. Za EURT od izdavatelja GDUKMGUGDZQK6Y…, to bi bilo EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
     "title": "Token",
@@ -138,7 +138,7 @@
     "desc": "Mreža javne prakse. Tokeni nemaju stvarnu vrijednost. Idealno za učenje i eksperimentiranje bez rizika."
   },
   "memo": {
-    "title": "Memorandum",
+    "title": "Memo",
     "original": "Memo",
     "short": "Kratka napomena u transakciji.",
     "desc": "Memo je mala bilješka koju možete poslati uz transakciju. Često mjenjačnica zahtijeva specifičan memo kako bi znala kome novac pripada."
@@ -147,7 +147,7 @@
     "title": "Transakcija",
     "original": "Transaction",
     "short": "Radnja na blockchainu, npr. plaćanje ili trustline.",
-    "desc": "Transakcija je radnja na blockchainu, kao što je slanje novca ili uspostavljanje linije povjerenja. Kada je potvrđena, transakcija se trajno bilježi."
+    "desc": "Transakcija je radnja na blockchainu. Na primjer, slanje novca ili stvaranje Trustline. Kad je transakcija potvrđena, trajno se pohranjuje."
   },
   "fee": {
     "title": "Naknada",
@@ -409,34 +409,34 @@
     "desc": "Soroban je sustav pametnih ugovora Stellara. Pametni ugovor je programski kod na blockchainu. Kod može neovisno provjeravati pravila i pokretati radnje bez potrebe za posrednikom poput banke."
   },
   "multiSignature": {
-    "title": "Multisignatura",
+    "title": "Multi-Signature",
     "original": "Multi-Signature",
-    "short": "Potrebno je više potpisa; težine + prag određuju odobrenje.",
-    "desc": "U postavci s više potpisa, više ključeva mora potpisati prije nego što akcija postane važeća. Svaki potpisnik ima određenu važnost, a zbir mora zadovoljiti potreban prag. To povećava sigurnost jer jedan ukradeni ključ nije dovoljan."
+    "short": "Potrebno je više potpisa; težine + threshold određuju izdanje.",
+    "desc": "Uz Multisig, više ključeva mora potpisati prije nego što radnja postane valjana. Svaki Signer ima težinu, a zbroj mora doseći potrebni Threshold. To povećava sigurnost jer jedan ukradeni ključ nije dovoljan."
   },
   "signer": {
-    "title": "Potpisnik",
+    "title": "Signer",
     "original": "Signer",
-    "short": "Javni ključ s težinom, dio konfiguracije računa.",
-    "desc": "Potpisnik je javni ključ povezan s računom koji ima težinu. Njegov potpis računa se u potrebni prag. Više potpisnika može zajednički odobriti transakciju.\n\nVrste potpisnika:\n- ed25519 (obični ključ)\n- hashX (šablona haša)\n- preAuthTx (prethodno autorizirana transakcija)\n\nSKM podržava samo ed25519. Za dodatne opcije pogledajte https://lab.stellar.org."
+    "short": "Public Key s težinom, dio konfiguracije računa.",
+    "desc": "Signer je Public Key povezan s računom i kojem je dodijeljena težina. Njegov potpis računa se u potrebni Threshold. Više Signers može zajednički autorizirati transakciju.\n\nTipovi Signer:\n- ed25519 (obični ključ)\n- hashX (šablona haša)\n- preAuthTx (prethodno autorizirana transakcija)\n\nSKM podržava samo ed25519. Za dodatne opcije pogledajte https://lab.stellar.org."
   },
   "thresholds": {
-    "title": "Pragovi",
+    "title": "Thresholds",
     "original": "Thresholds",
     "short": "Ograničenja (low/med/high) koja postavljaju potrebnu ukupnu težinu.",
-    "desc": "Pragovi definiraju koliko je ponderiranih potpisa potrebno za akcije: nizak za jednostavne operacije, srednji za plaćanja i visok za kritične promjene. Zbroj težina potpisnika mora ispuniti odgovarajući prag."
+    "desc": "Thresholds definira koliko potpisivanja s utezima je potrebno za radnje: \"low\" za jednostavne operacije, \"med\" za uplate i \"high\" za kritične promjene. Zbir utega Signer mora biti jednak odgovarajućem Threshold."
   },
   "masterWeight": {
     "title": "Glavna težina",
     "original": "master_weight",
     "short": "Težina glavnog ključa; određuje kolika je važnost glavnog ključa.",
-    "desc": "Glavna težina je težina glavnog ključa računa. Visoka glavna težina omogućava da glavni ključ samostalno potpisuje mnoge radnje; niska vrijednost zahtijeva dodatne potpisnike."
+    "desc": "Glavna težina je težina glavnog ključa računa. Visoka glavna težina omogućuje glavnom ključu da samostalno potpiše mnoge radnje; niska vrijednost zahtijeva dodatni signers."
   },
   "accountConfig": {
     "title": "Konfiguracija računa",
     "original": "Account Configuration",
-    "short": "Međusobno djelovanje između potpisnika i pragova određuje sigurnost računa.",
-    "desc": "Konfiguracija računa definira koji potpisnici postoje s kojim težinama i koji pragovi se primjenjuju. Promjene potpisnika ili pragova su kritične za sigurnost jer određuju koliko je potpisa potrebno."
+    "short": "Interakcija između signers i thresholds određuje sigurnost računa.",
+    "desc": "Konfiguracija računa definira koji signers postoje s kojim težinama i koji thresholds se primjenjuju. Promjene u signers ili thresholds su sigurnosno kritične jer određuju koliko je potpisa potrebno."
   },
   "distributedNetwork": {
     "title": "Distribuirana mreža",
@@ -874,13 +874,13 @@
     "title": "Redni broj",
     "original": "Sequence Number",
     "short": "Uzastopni broj koji jedinstveno označava svaku transakciju računa i sprječava dvostruku potrošnju.",
-    "desc": "Svaki Stellar račun ima redni broj koji se s svakom transakcijom povećava za 1. Transakcija se prihvaća samo ako njen redni broj točno odgovara trenutnoj sekvenci računa +1. To sprječava da se ista transakcija izvrši dva puta. Ako šalješ više transakcija istovremeno, moraju se obraditi ispravnim redoslijedom."
+    "desc": "Svaki Stellar račun ima Sequence Number, koji se pri svakoj transakciji povećava za 1. Transakcija se prihvaća samo ako njezin Sequence Number točno odgovara trenutnoj sekvenci računa +1. To sprječava da se ista transakcija izvrši dvaput. Ako istovremeno pošalješ više transakcija, moraju se obraditi ispravnim redoslijedom."
   },
   "baseReserve": {
     "title": "Osnovna rezerva",
     "original": "Base Reserve",
     "short": "Minimalni iznos XLM-a koji mora ostati na Stellar računu i ne može se potrošiti.",
-    "desc": "Na Stellaru svaki račun mora držati minimalni saldo u XLM-u. On se izračunava iz osnovne rezerve (trenutno 0,5 XLM) pomnožene s brojem 'unosa' na računu (npr. trustlineovi, potpisnici, ponude podataka). Prazan račun zahtijeva najmanje 1 XLM (2 × 0,5 XLM). Svaki trustline povećava minimalni saldo za dodatnih 0,5 XLM. Taj je saldo zaključan sve dok su unosi aktivni."
+    "desc": "Na Stellaru svaki račun mora imati minimalni saldo u XLM-u. Ovo se izračunava množenjem osnovne rezerve (trenutno 0,5 XLM) s brojem 'unosa' na računu (npr. trustlines, signers, ponude podataka). Prazan račun zahtijeva najmanje 1 XLM (2 × 0,5 XLM). Svaki trustline povećava minimalni saldo za dodatnih 0,5 XLM. Taj se saldo zaključava dok su unosi aktivni."
   },
   "coin": {
     "title": "Coin",
@@ -992,9 +992,9 @@
     "desc": "FBA (Federated Byzantine Agreement) je srce Stellar Consensus Protocola. Za razliku od PoW-a ili PoS-a, nema rudarenja ni glasanja temeljenog na ulogu. Umjesto toga, svaki operator validatora neovisno bira kojim drugim validatorima vjeruje – to definira njegov kvorum set. Da bi se transakcija potvrdila, preklapajući kvorum setovi moraju se složiti (otprilike 2/3 većina). Rezultat: decentralizirana, energetski učinkovita mreža bez centralnog tijela kontrole."
   },
   "trustlineLimit": {
-    "title": "Gornja granica Trustlinea",
+    "title": "Trustline Granica",
     "original": "Trustline Limit",
-    "short": "Maksimalni saldo određene imovine na trustlineu.",
+    "short": "Maksimalni saldo određenog asset na trustline.",
     "desc": "Ograničenje trustline definira koliko jedinica određene imovine vaš račun može najviše držati. To nije nalog za kupnju i ne rezervira tokene. Nisko ograničenje može spriječiti slučajne preplate, ali premalo ograničenje može blokirati namjeravani prijem ili zamjenu."
   },
   "authorizationFlags": {
@@ -1007,7 +1007,7 @@
     "title": "Glavni ključ izdavatelja",
     "original": "Issuer Master Key",
     "short": "Glavni ključ računa izdavatelja.",
-    "desc": "Glavni ključ izdavatelja je glavni ključ računa koji izdaje imovinu. Ako je njegova težina postavljena na 0, sam glavni ključ više ne može potpisati nove radnje. To može biti dobar znak jer izdavatelju otežava tiho mijenjanje pravila. Potpuna konfiguracija računa, uključujući ostale potpisnike i zastavice, i dalje je važna."
+    "desc": "Glavni ključ izdavatelja je glavni ključ računa koji izdaje asset. Ako je njegova težina postavljena na 0, sam glavni ključ više ne može potpisati nove radnje. To može biti dobar znak jer otežava izdavatelju da tiho mijenja pravila. Potpuna konfiguracija računa, uključujući ostale signers i zastavice, i dalje je važna."
   },
   "assetCode": {
     "title": "Šifra imovine",

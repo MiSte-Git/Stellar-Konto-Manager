@@ -10,5 +10,92 @@
     "deactivated": "Huom: Tämä lompakko on merkitty poistetuksi käytöstä luottamuslistassasi."
   },
   "xlmBalance": "XLM",
-  "unfunded": "Ei aktivoitu"
+  "unfunded": "Ei aktivoitu",
+  "home": {
+    "balance": "Tase",
+    "refresh": "Päivitä",
+    "available": "Saatavilla",
+    "reserved": "Varattu",
+    "reservedHint": "Verkon varanto (kunkin Token-julkaisun, tarjouksen tai Signer:n osalta) sekä avoimissa myyntitilauksissa olevat XLM-määrät. Tätä summaa ei voi lähettää.",
+    "muxedNote": "Muxed Identity: Perustilin saldo näkyy näytöllä.",
+    "loadError": "Tilitietoja ei voitu ladata.",
+    "actions": {
+      "send": "Lähetä",
+      "swap": "Pörssi",
+      "details": "Tilin tiedot",
+      "receive": "Vastaanota"
+    },
+    "assets": "Assets",
+    "manageTrustlines": "Hallitse Token-osuuksia",
+    "poolShares": "Likviditeettipoolin osuudet",
+    "pool": "Uima-allas",
+    "issuer": "Kustantaja",
+    "noTrustlines": "Token-hyväksyntöjä ei ole vielä annettu. Jotta voit säilyttää muut Tokens, sinun on ensin saatava hyväksyntä (Trustline).",
+    "tokenNote": "Vastaava arvo näytetään vain XLM:n kohdalla. SKM ei arvioi Token:tä eikä tee päätöstä siitä, onko Token aito.",
+    "notFound": {
+      "title": "Tiliä ei ole vielä aktivoitu",
+      "text": "Tätä tiliä ei vielä ole olemassa {{net}}:ssä. Se aktivoituu heti, kun sille on tehty ensimmäinen talletus XLM-valuutassa."
+    },
+    "empty": {
+      "title": "Tiliä ei ole vielä ladattu",
+      "text": "Syötä yllä oleva Public Key-osoitteesi tai federaatio-osoitteesi. Public Key riittää tietojen tarkasteluun; transaktioita varten tarvitset myöhemmin Secret Key-osoitteesi.",
+      "learn": "Tutustu Stellariin"
+    }
+  },
+  "receive": {
+    "title": "Vastaanota",
+    "intro": "Syötä tämä osoite, jotta voit vastaanottaa XLM:ää tai Token:tä tälle tilille.",
+    "noAccount": "Lisää ensin tili yläosassa. Sen jälkeen näet sen osoitteen ja QR-koodin tässä.",
+    "testnet": "Olet Testnet:ssä. Testnet:n saldot eivät ole merkityksellisiä.",
+    "variantLabel": "Osoitetyyppi",
+    "muxed": "Muxed-osoite (M…)",
+    "base": "Perustili (G…)",
+    "qrLabel": "QR-koodi osoitteelle {{address}}",
+    "addressLabel": "Stellar-osoitteesi",
+    "muxedAddressLabel": "Muxed-osoite",
+    "copy": "Kopioi osoite",
+    "copied": "Kopioitu",
+    "hintCompare": "Pyydä lähettäjää tarkistamaan osoitteen ensimmäinen ja viimeinen merkki. Huijarit käyttävät tarkoituksella osoitteita, jotka näyttävät samankaltaisilta.",
+    "hintTrustline": "Voit vastaanottaa muita Tokeneita kuin XLM:ää vasta, kun sinulla on niille Token-valtuutus (Trustline).",
+    "hintActivate": "Uusi tili aktivoidaan vasta, kun tilille on tehty vähintään 1 XLM:n suuruinen ensitalletus.",
+    "hintMuxed": "M-osoitteeseen lähetetyt maksut talletetaan perustilillesi, ja ne merkitään Muxed-tunnuksella. Kaikki Wallet-palvelut tai pörssit eivät tue M-osoitteita."
+  },
+  "activity": {
+    "title": "Viimeisin toiminta",
+    "showAll": "Näytä kaikki",
+    "loadError": "Toimintoa ei voitu ladata.",
+    "empty": "Maksuja ei ole vielä suoritettu.",
+    "failed": "Epäonnistui",
+    "lookalike": "Samankaltainen osoite",
+    "lookalikeHint": "Tämä osoite alkaa ja päättyy aivan kuten osoite, johon olet aiemmin lähettänyt viestin, mutta se on eri osoite. Älä koskaan kopioi vastaanottajia viestihistoriastasi.",
+    "lookalikeWarning": "Varoitus: Ainakin yksi lähettäjä muistuttaa osoitetta, johon olet aiemmin lähettänyt viestejä. Älä koskaan kopioi vastaanottajia viestihistoriastasi, vaan kopioi heidät aina luotettavasta lähteestä.",
+    "dust": "Pieni määrä",
+    "showDust": "Mainokset",
+    "hideDust": "Piilota",
+    "from": "kirjoittanut",
+    "to": "...",
+    "memoHint": "Memo lähettäjältä. SKM ei ole tarkistanut sisältöä.",
+    "explorer": "Tiedot",
+    "kind": {
+      "received": "Vastaanotettu",
+      "sent": "Lähetetty",
+      "self": "Itsellesi",
+      "pathIn": "Vastaanotettu (vaihdettu)",
+      "pathOut": "Lähetetty (vaihdettu)",
+      "accountCreated": "Tili on aktivoitu",
+      "createdAccount": "Tili luotu",
+      "mergeIn": "Tili yhdistetty",
+      "mergeOut": "Tili suljettu"
+    },
+    "dustHidden_one": "{{count}} piilotettua pientä maksua (usein roskapostia).",
+    "dustHidden_other": "{{count}} piilotettua pientä maksua (usein roskapostia).",
+    "dustShown_one": "Näytetään {{count}} mikromaksu.",
+    "dustShown_other": "Näytössä on {{count}} pientä maksua.",
+    "memoLabel": "Memo",
+    "onlyDust": "Saatavilla on vain hyvin pieniä maksuja.",
+    "url": "Sisältää verkkosoitteen",
+    "urlHint": "Memo sisältää verkkosoitteen. Laillisissa maksuissa tätä ei vaadita. Älä avaa sitä.",
+    "fakeNative": "Token, ei natiivi XML",
+    "fakeNativeHint": "Tämä on julkaisijan Token, ei verkoston omaa XLM-muotoa."
+  }
 }

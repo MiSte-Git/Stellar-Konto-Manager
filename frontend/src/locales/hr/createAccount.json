@@ -5,9 +5,9 @@
   "hint": "Kreiraj novi račun, aktiviraj ga i po želji konfiguriraj multisig.",
   "generateKeys": "Generiraj ključ",
   "enableMultisig": "Omogući multisig",
-  "signersTitle": "Potpisnik",
-  "signersInfo": "Dodaj dodatne potpisnike i postavi odgovarajuće pragove.",
-  "signersCount": "Broj potpisnika",
+  "signersTitle": "Signer",
+  "signersInfo": "Dodajte više Signer i postavite odgovarajuće vrijednosti Thresholds.",
+  "signersCount": "Broj Signer",
   "bestPractices": {
     "title": "Najbolje prakse",
     "text": "Čuvajte tajne ključeve sigurnima i nemojte ih distribuirati nepotrebno."
@@ -17,7 +17,7 @@
     "secret": "Čuvajte ovaj tajni ključ sigurnim; nikad ga nemojte dijeliti."
   },
   "generateFirst": "Molimo, prvo generirajte par ključeva.",
-  "confirmLowBalance": "Početno stanje {bal} XLM je ispod preporučene rezerve {req} XLM (Potpisnici: {count}). Nastaviti?",
+  "confirmLowBalance": "Početni saldo {bal} XLM je ispod preporučene rezerve {req} XLM (Signer: {count}). Nastaviti?",
   "activated": "Račun je aktiviran. Hash: {hash}",
   "activatedTestnet": "Račun je aktiviran na testnetu putem Friendbota.",
   "alreadyActive": "Korisnički račun je već aktiviran.",
@@ -27,16 +27,16 @@
     "more": "Više informacija",
     "keysOnPage": {
       "title": "Ključ na ovoj stranici",
-      "text": "⚠️ VAŽNO: Ova web stranica NIKADA ne pohranjuje vaš tajni ključ!\n\nTajni ključ prikazan ovdje postoji samo u vašem pregledniku (lokalno u memoriji). Čim ponovno učitate stranicu ili je napustite, on je nepovratno izgubljen.\n\nKopirajte ili zapišite tajni ključ odmah nakon generiranja, prije nego što zatvorite stranicu.\n\nProvjera: Možete koristiti alate za programere u svom pregledniku (F12 → Network) kako biste provjerili da se tajni ključ ne prenosi izvana. Šalju se samo potpisane transakcije — nikada vaš tajni ključ."
+      "text": "⚠️ VAŽNO: Ova web stranica NIKADA ne pohranjuje vaš Secret Key!\n\nOvdje prikazani Secret Key postoji samo u vašem pregledniku (lokalno u memoriji). Čim osvježite stranicu ili je napustite, on je nepovratno izgubljen.\n\nKopirajte ili zapišite Secret Key odmah nakon što je generiran, prije nego što zatvorite stranicu.\n\nProvjera: Možete koristiti alate za programere u svom pregledniku (F12 → Network) kako biste provjerili da se nijedan Secret Key ne prenosi izvana. Slanje je ograničeno na potpisane transakcije — nikada na vaš Secret Key."
     },
     "title": "Važne informacije",
     "secureKeys": {
-      "title": "Sigurni tajni ključ",
+      "title": "Sigurnosna kopija Secret Key",
       "text": "Javni ključ možete sigurno dijeliti — to je poput broja računa.\n\nTajni ključ je ključ do vašeg računa. Postupajte s njim kao s lozinkom:\n• NIKADA ga ne pohranjujte u uslugama u oblaku, e-pošti ili nezaštićenim bilješkama\n• Zapišite ga na papir ili upotrijebite hardverski novčanik\n• Napravite više sigurnosnih kopija i pohranite ih na sigurne, odvojene lokacije\n• Ako izgubite svoju tajnu ključnu riječ, pristup vašem računu je nepovratno izgubljen"
     },
     "multisigSection": {
-      "title": "Multisig (Višestruki potpis)",
-      "text": "Kod multisig možete definirati više potpisnika za vaš račun. Transakcije tada zahtijevaju potpise s više ključeva (multisig).\n\nPrednosti:\n• Poboljšana sigurnost (security)\n• Zajednički računi (shared accounts)\n• Hitni oporavak (emergency recovery)\n\nOPREZ: Prvo testirajte multisig na testnetu prije implementacije na glavnu mrežu! Pogrešna konfiguracija može rezultirati gubitkom pristupa računu."
+      "title": "Multisig (Multi-signature)",
+      "text": "S Multisig možete definirati više Signer za svoj račun. Transakcije tada zahtijevaju potpise s više ključeva (npr. 2 od 3).\n\nPrednosti:\n• Povećana sigurnost (nije dovoljan jedan kompromitirani ključ)\n• Zajednički računi (npr. tvrtke, partnerstva)\n• Hitno oporavak (više sigurnosnih kopija koje posjeduju različite osobe)\n\nUPOZORENJE: Prvo testirajte Multisig u Testnet prije nego što ga upotrijebite na Mainnet! Neispravna konfiguracija može rezultirati gubitkom pristupa računu."
     },
     "diagram": {
       "title": "Istek potpisa"
@@ -45,7 +45,7 @@
   "activateHint": "Aktivacija je potrebna kako bi račun postojao. Na Testnetu, putem Friendbot-a; na Mainnetu, putem \"Create Account\" iz postojećeg novčanika.",
   "activateNow": "Odmah aktivirajte račun.",
   "activateOnly": "Samo aktiviraj",
-  "balanceWarning": "Početno stanje je vjerojatno prenisko za dodavanje {{count}} dodatnih potpisnika (minimalna rezerva: {{req}} XLM).",
+  "balanceWarning": "Početni saldo je vjerojatno prenizak za dodavanje {{count}} dodatnih signers (minimalna rezerva: {{req}} XLM)",
   "createButton": "Kreiraj / Postavi Multisig",
   "mainnetActivateNote": "Napomena: Dodatne rezerve su potrebne za Multisig. 1 XLM često nije dovoljan.",
   "reserve": {
@@ -54,7 +54,7 @@
     "required": "Potrebna minimalna rezerva (novo): {{val}} XLM"
   },
   "signersCountHint": "Minimalni broj potpisa postavljate u nastavku pod \"Required Signatures\" (niedrig/mittel/hoch).",
-  "signersCountLimit": "Napomena: Granica mreže (Stellar): maksimalno 20 dodatnih potpisnika.",
+  "signersCountLimit": "Napomena: ograničenje mreže (Stellar): najviše 20 dodatnih Signer.",
   "startingBalance": "Početno stanje (XLM)",
   "keyWarning": {
     "title": "⚠️ Osiguraj ključ sada!",

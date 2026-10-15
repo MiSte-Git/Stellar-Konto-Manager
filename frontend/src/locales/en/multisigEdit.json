@@ -1,8 +1,8 @@
 {
   "menu": "Edit multisig",
-  "menuHint": "Adjust signers and thresholds of an existing account.",
+  "menuHint": "Adjust Signer and Thresholds for an existing account",
   "confirm": {
-    "removeSigner": "Really remove signer?"
+    "removeSigner": "Signer Really remove it?"
   },
   "currentConfig": "Current/Planned Configuration",
   "error": {
@@ -11,16 +11,16 @@
   "hint": "Load an existing account, adjust signers, weights, master weight, and thresholds, and save the changes.",
   "load": "Shop",
   "loaded": "Loaded. Additional signers: {{count}}",
-  "noteMaxSigners": "Note: Stellar allows a maximum of 20 additional signers per account.",
+  "noteMaxSigners": "Note: Stellar allows a maximum of 20 additional Signer per account.",
   "reload": "Reload",
   "save": "Save changes",
   "saved": "Changes saved. TX: {{hash}}",
-  "signers": "Signatory",
+  "signers": "Signer",
   "weight": "Weighting",
   "masterWeight": "Master weight",
   "title": "Edit multisig account",
   "validation": {
-    "signerKeyHint": "Note: Signers must start with \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Invalid signer address. A G… address is expected (ed25519)."
+    "signerKeyHint": "Note: Signer must begin with \"G\" (ed25519 Public Key).",
+    "signerKeyInvalid": "Invalid Signer address. A G… address (ed25519) is expected."
   }
 }

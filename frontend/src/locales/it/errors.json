@@ -17,11 +17,11 @@
       "oldestFailed": "Impossibile determinare la data più antica"
     },
     "indexIterFailed": "Iterazione dell'indice nella cache fallita.",
-    "memoNormBackfillFailed": "Il caricamento iniziale dei pagamenti per le note normalizzate non è riuscito.",
+    "memoNormBackfillFailed": "Il caricamento iniziale dei pagamenti per memos normalizzato non è andato a buon fine.",
     "openFailed": "La cache locale non può essere aperta.",
     "readFailed": "Impossibile leggere dalla cache",
-    "rehydrateFailed": "Impossibile caricare i promemoria mancanti.",
-    "rehydrateWriteFailed": "Impossibile scrivere le memorie nella cache",
+    "rehydrateFailed": "Impossibile caricare il file mancante memos.",
+    "rehydrateWriteFailed": "Impossibile scrivere memos nella cache",
     "writeFailed": "Errore durante la scrittura nella cache",
     "insecureContext": "Impossibile salvare: questa funzione richiede una connessione sicura (HTTPS)."
   },
@@ -34,11 +34,11 @@
   "horizon": {
     "paymentsFetch": "Errore nel caricamento dei pagamenti da Horizon"
   },
-  "loadTrustlines": "Le linee di fiducia non possono essere caricate. Riprova.",
-  "loadTrustlinesFailed": "Caricamento delle linee di fiducia fallito",
+  "loadTrustlines": "Impossibile caricare Trustlines. Riprovare.",
+  "loadTrustlinesFailed": "Impossibile caricare trustlines",
   "loadTrustlinesNotFound": "Account non trovato sulla rete '{{network}}'.",
   "accountNotFoundInNetwork": "Non trovato in '{{net}}'!",
-  "op_invalid_limit": "Il conto di fiducia non può essere eliminato. Potrebbe avere ancora un saldo o obblighi in sospeso.",
+  "op_invalid_limit": "Trustline non può essere cancellato. Potrebbe esserci ancora un saldo o degli obblighi in sospeso.",
   "query": {
     "invalidMemo": "Memo non valido",
     "invalidRange": "L'intervallo di tempo non è valido (Da > A)",
@@ -52,12 +52,12 @@
       "signingFailed": "Non è stato possibile creare una o più firme. Riprova.",
       "multisig": {
         "invalidSecret": "Una delle chiavi segrete inserite non è valida.",
-        "notASigner": "Una delle chiavi segrete inserite non appartiene ai firmatari registrati.",
+        "notASigner": "Uno dei valori inseriti secret keys non corrisponde al valore registrato signers.",
         "noKeysProvided": "Non sono state inserite chiavi segrete valide.",
         "insufficientWeight": "Le firme raccolte sono insufficienti per autorizzare questo cambiamento. Necessarie: {{required}}, disponibili: {{current}}.",
         "txBadAuth": "Transazione rifiutata: Le firme non sono sufficienti (tx_bad_auth).",
-        "zeroWeightSigner": "La chiave segreta inserita appartiene a un firmatario con peso 0 e non può autorizzare una transazione.",
-        "invalidConfig": "La configurazione pianificata di firmatari e soglie non può essere firmata. Si prega di controllare i pesi e le soglie.",
+        "zeroWeightSigner": "Il valore secret key inserito appartiene a un signer con peso 0 e non può autorizzare una transazione.",
+        "invalidConfig": "La configurazione prevista per signers e thresholds non può essere firmata. Si prega di verificare i pesi e thresholds.",
         "trustlines": {
           "invalidInput": "Si prega di controllare il codice dell'asset, l'emittente e il limite. Almeno uno dei campi non è valido."
         }
@@ -74,7 +74,7 @@
   },
   "trustline": {
     "submitFailed": "Errore nell'eliminazione della trustline.",
-    "unknown": "Errore sconosciuto durante l'eliminazione della linea di fiducia."
+    "unknown": "Errore sconosciuto durante l'eliminazione di trustline."
   },
   "xlmByMemo": {
     "aborted": "Operazione annullata dall'utente",

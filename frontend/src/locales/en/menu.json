@@ -16,5 +16,19 @@
   "tokenPurchases": "Token purchases",
   "swap": "Find and Trade Tokens",
   "learn": "Stellar Quiz for Beginners",
-  "unknown": "Unknown menu selection"
+  "unknown": "Unknown menu selection",
+  "wallet": "Wallet",
+  "sidebarLabel": "Main Navigation",
+  "openNavigation": "Open Navigation",
+  "closeNavigation": "Close Navigation",
+  "language": "Language",
+  "sections": {
+    "account": "Account",
+    "trade": "Trade",
+    "reports": "Reports",
+    "trustlines": "Token-Approvals",
+    "advanced": "Advanced",
+    "learn": "Learning"
+  },
+  "receive": "Receive"
 }

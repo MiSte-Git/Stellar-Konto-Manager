@@ -27,11 +27,11 @@
     "more": "Mehr Infos",
     "keysOnPage": {
       "title": "Schlüssel auf dieser Seite",
-      "text": "⚠️ WICHTIG: Diese Webseite speichert NIEMALS Deinen Geheimschlüssel!\n\nDer hier angezeigte Secret Key existiert nur in Deinem Browser (lokal im Arbeitsspeicher). Sobald Du die Seite neu lädst oder verlässt, ist er unwiederbringlich verloren.\n\nKopiere oder notiere den Secret Key sofort nach der Erzeugung, bevor Du die Seite schließt.\n\nÜberprüfung: Du kannst mit den Browser-Entwickler-Tools (F12 → Netzwerk) nachprüfen, dass kein Geheimschlüssel nach außen übermittelt wird. Es werden nur signierte Transaktionen gesendet, niemals Dein Secret Key."
+      "text": "⚠️ WICHTIG: Diese Webseite speichert NIEMALS Deinen Secret Key!\n\nDer hier angezeigte Secret Key existiert nur in Deinem Browser (lokal im Arbeitsspeicher). Sobald Du die Seite neu lädst oder verlässt, ist er unwiederbringlich verloren.\n\nKopiere oder notiere den Secret Key sofort nach der Erzeugung, bevor Du die Seite schließt.\n\nÜberprüfung: Du kannst mit den Browser-Entwickler-Tools (F12 → Netzwerk) nachprüfen, dass kein Secret Key nach außen übermittelt wird. Es werden nur signierte Transaktionen gesendet, niemals Dein Secret Key."
     },
     "title": "Wichtige Informationen",
     "secureKeys": {
-      "title": "Geheimschlüssel sichern",
+      "title": "Secret Key sichern",
       "text": "Der Public Key (öffentlicher Schlüssel) kann sicher geteilt werden – er ist wie eine Kontonummer.\n\nDer Secret Key (Geheimschlüssel) ist der Zugang zu Ihrem Konto. Behandeln Sie ihn wie ein Passwort:\n• Speichern Sie ihn NIEMALS in Cloud-Diensten, E-Mails oder unsicheren Notizen\n• Notieren Sie ihn auf Papier oder verwenden Sie einen Hardware-Wallet\n• Erstellen Sie mehrere Backups und lagern Sie diese an sicheren, getrennten Orten\n• Bei Verlust des Secret Keys ist der Zugang zum Konto unwiderruflich verloren"
     },
     "multisigSection": {

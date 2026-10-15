@@ -1,26 +1,26 @@
 {
   "menu": "Uredi multisig",
-  "menuHint": "Prilagodite potpisnike i pragove postojećeg računa.",
+  "menuHint": "Podesite Signer i Thresholds za postojeći račun",
   "confirm": {
-    "removeSigner": "Stvarno ukloniti potpisnika?"
+    "removeSigner": "Signer Stvarno ga ukloniti?"
   },
   "currentConfig": "Trenutna/Planirana konfiguracija",
   "error": {
-    "thresholdTooHigh": "Pragovi ne smiju prelaziti zbroj težina."
+    "thresholdTooHigh": "Thresholds ne smije prelaziti zbroj težina."
   },
-  "hint": "Učitaj postojeći račun, prilagodi potpisnike, težine, glavnu težinu i pragove te spremi promjene.",
+  "hint": "Učitajte postojeći račun, prilagodite signers, težine, glavnu težinu i thresholds te spremite promjene.",
   "load": "Trgovina",
-  "loaded": "Geladen. Zusätzliche Unterzeichner: {{count}}",
-  "noteMaxSigners": "Napomena: Stellar dopušta maksimalno 20 dodatnih potpisnika po računu.",
+  "loaded": "Učitano. Dodatno signers: {{count}}",
+  "noteMaxSigners": "Napomena: Stellar dopušta najviše 20 dodatnih Signer po računu.",
   "reload": "Ponovno učitaj",
   "save": "Spremi promjene",
   "saved": "Promjene spremljene. TX: {{hash}}",
-  "signers": "Potpisnik",
+  "signers": "Signer",
   "weight": "Vaganje",
   "masterWeight": "Glavna težina",
   "title": "Uredi multisig račun",
   "validation": {
-    "signerKeyHint": "Napomena: Potpisnici moraju početi s \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Neispravna adresa potpisnika. Očekuje se adresa G… (ed25519)."
+    "signerKeyHint": "Napomena: Signer mora započeti s \"G\" (ed25519 Public Key).",
+    "signerKeyInvalid": "Neispravna adresa Signer. Očekuje se adresa G… (ed25519)."
   }
 }

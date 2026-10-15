@@ -2,21 +2,21 @@
   "singleVsMulti": {
     "ariaLabel": "Diagrama de Firma Única vs. Multisig",
     "singleTitle": "Firma única (Single-Sig)",
-    "multiTitle": "Multifirma",
+    "multiTitle": "Multisig",
     "account": "Cuenta",
     "singleKey": "1 llave",
-    "keyA": "Firmante A",
-    "keyB": "Firmante B",
-    "keyC": "Firmar C",
+    "keyA": "Signer A",
+    "keyB": "Signer B",
+    "keyC": "Signer C",
     "singleNote": "Una firma es suficiente.",
     "multiNote": "Al menos 2 de cada 3 firmas."
   },
   "weights": {
-    "ariaLabel": "Pesos y umbrales del diagrama",
+    "ariaLabel": "Ponderaciones del diagrama y thresholds",
     "title": "Weights & Thresholds",
-    "sA": "Firmante A",
-    "sB": "Firmante B",
-    "sC": "Firmante C",
+    "sA": "Signer A",
+    "sB": "Signer B",
+    "sC": "Signer C",
     "weight": "Peso:",
     "low": "bajo",
     "med": "medicina",
@@ -30,7 +30,7 @@
     "title": "Proceso de Multisig",
     "step1": "Coordinador crea transacción",
     "step2": "SKM almacena trabajo pendiente",
-    "step3": "Firmar B/C firmando",
+    "step3": "Signer Signo B/C",
     "step4": "SKM envía transacción completada."
   }
 }

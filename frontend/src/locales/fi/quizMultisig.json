@@ -1,6 +1,6 @@
 {
   "title": "Multisig & Security",
-  "introText": "Testaa tietämyksesi allekirjoituksista, kynnysarvoista ja turvallisesta tallennuksesta.",
+  "introText": "Testaa tietosi allekirjoituksista, thresholds:stä ja turvallisesta tallennustilasta.",
   "q1": {
     "question": "Miksi käyttää multisig-tekniikkaa?",
     "hint": "Ajattele jaettua vastuuta.",
@@ -14,32 +14,32 @@
   "q2": {
     "question": "Milloin multisig-tilin tapahtuma on pätevä?",
     "hint": "Katso painotettuja allekirjoituksia.",
-    "a1": "Jos allekirjoitukset saavuttavat vaaditun kynnyksen.",
-    "a1fb": "Korjaus: Painojen summan on täytettävä kynnysarvo.",
+    "a1": "Jos allekirjoitusten määrä saavuttaa vaaditun threshold.",
+    "a1fb": "Oikein: Painojen summan on täytettävä ehto threshold.",
     "a2": "Heti kun jokin allekirjoitus on läsnä.",
-    "a2fb": "Väärin: Yksi allekirjoitus ei riitä, kun kynnysarvo on korkeampi.",
-    "a3": "Vain pääavaimella, kynnyksestä riippumatta.",
-    "a3fb": "Virheellinen: Pääavain on myös kynnysarvojen alainen."
+    "a2fb": "Väärin: Yksi allekirjoitus ei riitä, kun threshold on suurempi.",
+    "a3": "Vain pääavaimella, riippumatta threshold:stä.",
+    "a3fb": "Väärä: Myös pääavain on thresholds:n alainen."
   },
   "q3": {
-    "question": "Mitä tapahtuu, jos kynnysarvot asetetaan väärin?",
+    "question": "Mitä tapahtuu, jos thresholds on määritetty väärin?",
     "hint": "Arvot, jotka ovat liian korkeita tai liian matalia, voivat aiheuttaa seurauksia.",
     "a1": "Tapahtumat saattavat olla estettyjä tai liian helposti hyväksyttyjä.",
-    "a1fb": "Virheellinen: Väärät kynnysarvot johtavat lukituksiin tai riittämättömään turvallisuuteen.",
-    "a2": "Ei lainkaan, kynnykset ovat vain informaatiota.",
-    "a2fb": "Virheellinen: Kynnykset säätelevät, kuinka monta allekirjoitusta vaaditaan.",
-    "a3": "Tilin järjestysnumero palautetaan.",
-    "a3fb": "Virheellinen: Kynnyksillä ei ole vaikutusta sekvenssiin."
+    "a1fb": "Oikein: Virheellinen thresholds aiheuttaa lukituksia tai turvallisuuden puutteita.",
+    "a2": "Ei suinkaan, thresholds ovat vain tietoja.",
+    "a2fb": "Väärin: Thresholds määrittää, kuinka monta allekirjoitusta vaaditaan.",
+    "a3": "Tilin Sequence Number-arvo nollataan.",
+    "a3fb": "Väärin: Thresholds:llä ei ole vaikutusta järjestykseen."
   },
   "q4": {
-    "question": "Kuinka monta allekirjoitusta liiketoimi vaatii kynnyksellä med?",
-    "hint": "keskimääräinen kynnysarvo = keskimääräinen kynnysarvo.",
-    "a1": "Allekirjoitusten painojen on täytettävä vähintään keskitason kynnysarvo.",
-    "a1fb": "Oikein: Keskimmäinen kynnysarvo koskee maksuja.",
+    "question": "Kuinka monta allekirjoitusta transaktio vaatii Threshold med:n aikana?",
+    "hint": "med threshold = mean threshold.",
+    "a1": "Allekirjoitusten painoarvojen on oltava vähintään med-threshold.",
+    "a1fb": "Oikein: Keskimmäinen threshold koskee maksuja.",
     "a2": "Vain yksi allekirjoitus kerrallaan.",
-    "a2fb": "Väärin: Se riippuu painotuksista ja kynnysarvoista.",
-    "a3": "Aina kaikki allekirjoittajat.",
-    "a3fb": "Virheellinen: Vain tarpeeksi allekirjoituksia kynnysarvon saavuttamiseksi."
+    "a2fb": "Väärin: Se riippuu painoista ja thresholds:stä.",
+    "a3": "Aina kaikki signers.",
+    "a3fb": "Virheellinen: Allekirjoituksia on vain niin paljon, että ne täyttävät threshold:n vaatimukset."
   },
   "q5": {
     "question": "Miten salaiset avaimet tulisi säilyttää todellisissa multisig-kokoonpanoissa?",

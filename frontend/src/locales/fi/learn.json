@@ -88,17 +88,17 @@
     "reward": "⭐ 1 – Tietosuojadetektiivi"
   },
   "lesson4": {
-    "title": "Sinun tilisi",
-    "goal": "Ymmärtäminen julkisten/yksityisten avainten rakennetta ja merkitystä.",
+    "title": "Avaimet, maksut ja Trustlines",
+    "goal": "Ymmärrä ero Public Key:n ja Secret Key:n välillä sekä palkkiot ja Trustlines.",
     "task": "Yhteensopivuuspeli: Mikä on julkista, mikä on salaisuus",
-    "learningOutcome": "Vain salainen avain antaa pääsyn; julkista avainta voi jakaa.",
+    "learningOutcome": "Public Key = Vastaanottajan osoite. Secret Key = Pidä salassa! Trustline = Lupa pitää hallussaan Token.",
     "reward": "⭐ 1 – Avainvartija"
   },
   "lesson5": {
     "title": "Send & Receive",
-    "goal": "Ymmärtäminen siitä, miten tapahtumat ja luottolinjat toimivat",
-    "task": "Suorita testisiirto ja tarkastele maksua",
-    "learningOutcome": "Jokaisesta tapahtumasta peritään pieni maksu; Trustline = lupa vastaanottaa.",
+    "goal": "Transaktioiden ja Trustlines:n toiminnan ymmärtäminen",
+    "task": "Vastaa kysymyksiin, jotka koskevat Trustlines:tä, maksuja, tilin aktivointia ja Memos:ta.",
+    "learningOutcome": "Jokaisesta tapahtumasta peritään pieni maksu. Memo on ikään kuin maksutiedot.",
     "reward": "⭐ 2 – Trustline Aloittelija"
   },
   "lesson6": {
@@ -132,7 +132,7 @@
   "lesson10": {
     "title": "Harjoittele SKM:n kanssa",
     "goal": "Sovella opittu tieto käytäntöön.",
-    "task": "Luo tili testiverkossa, aktivoi se, aseta luottolimiitti, lähetä tokeneita.",
+    "task": "Luo tili testnet:ssä, aktivoi se, aseta trustline ja lähetä tokens.",
     "learningOutcome": "Seuraa tapahtuman teknisiä prosesseja.",
     "reward": "⭐ 3 – Blockchain-pilotti"
   },
@@ -152,9 +152,9 @@
   },
   "lesson13": {
     "title": "Multisig aloittelijoille",
-    "goal": "Moniallekirjoituksen perusperiaatteiden ymmärtäminen",
-    "task": "Vertaa Single-Sig- ja Multisig-malleja ja tarkastele esimerkkiprosessia.",
-    "learningOutcome": "Useita allekirjoituksia lisää turvallisuutta; kynnykset määrittävät, kuinka monta allekirjoitusta tarvitaan.",
+    "goal": "Multisig:n perusperiaatteiden ymmärtäminen",
+    "task": "Vastaa kysymyksiin, jotka koskevat single-sig-allekirjoitusta verrattuna Multisig-, Thresholds- ja Signers-allekirjoituksiin.",
+    "learningOutcome": "Kun käytössä on Multisig, vaaditaan useita allekirjoituksia. Tämä estää ketään toimimasta yksin.",
     "reward": "⭐ 2 – Multisig Aloittelija"
   },
   "lesson14": {
@@ -167,7 +167,7 @@
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
     "goal": "Tutustu siihen, miten Custom Assets -varat toimivat kanta-asiakasmerkeinä Stellar-verkostossa.",
-    "task": "Vastaa kysymyksiin, jotka koskevat uskollisuustunnuksia, luottolinjia ja liikkeeseenlaskijan todentamista.",
+    "task": "Vastaa kysymyksiin, jotka koskevat Loyalty Token-, Trustlines-ohjelmia sekä kortinmyöntäjän todentamista.",
     "learningOutcome": "Sama tokenin nimi ei tarkoita samaa tokenia – ero johtuu liikkeeseenlaskijasta.",
     "reward": "⭐ 2 – Kanta-asiakasasiantuntija"
   },

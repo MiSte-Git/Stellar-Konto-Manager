@@ -1,6 +1,6 @@
 {
   "title": "Multisig & Security",
-  "introText": "Pon a prueba tus conocimientos sobre firmas, umbrales y almacenamiento seguro.",
+  "introText": "Pon a prueba tus conocimientos sobre firmas, thresholds y almacenamiento seguro.",
   "q1": {
     "question": "¿Por qué usar multisig?",
     "hint": "Piensa en la responsabilidad compartida.",
@@ -14,32 +14,32 @@
   "q2": {
     "question": "¿Cuándo es válida una transacción en una cuenta de firmas múltiples (multisig)?",
     "hint": "Mira las firmas ponderadas.",
-    "a1": "Si las firmas alcanzan el umbral requerido.",
-    "a1fb": "Correcto: La suma de los pesos debe cumplir con el umbral.",
+    "a1": "Si se alcanzan las firmas necesarias en el plazo threshold.",
+    "a1fb": "Correcto: La suma de los pesos debe cumplir con el threshold.",
     "a2": "Tan pronto como haya una firma presente.",
-    "a2fb": "Incorrecto: Una sola firma no es suficiente cuando el umbral es más alto.",
-    "a3": "Solo con llave maestra, independientemente del umbral.",
-    "a3fb": "Incorrecto: La clave maestra también está sujeta a los umbrales."
+    "a2fb": "Incorrecto: Una sola firma no es suficiente cuando el valor de threshold es mayor.",
+    "a3": "Solo con la llave maestra, independientemente del valor de threshold.",
+    "a3fb": "Incorrecto: La clave maestra también está sujeta al thresholds."
   },
   "q3": {
-    "question": "¿Qué ocurre si los umbrales se establecen incorrectamente?",
+    "question": "¿Qué ocurre si los valores de thresholds se configuran de forma incorrecta?",
     "hint": "Los valores que son demasiado altos o demasiado bajos tienen consecuencias.",
     "a1": "Las transacciones podrían ser bloqueadas o autorizadas demasiado fácilmente.",
-    "a1fb": "Correcto: Umbrales incorrectos conducen a bloqueos o seguridad insuficiente.",
-    "a2": "En absoluto, los umbrales son solo información.",
-    "a2fb": "Incorrecto: Los umbrales controlan cuántas firmas se requieren.",
-    "a3": "El número de secuencia de la cuenta se está restableciendo.",
-    "a3fb": "Incorrecto: Los umbrales no tienen impacto en la secuencia."
+    "a1fb": "Correcto: Un uso incorrecto de thresholds puede provocar bloqueos o una seguridad insuficiente.",
+    "a2": "Para nada, thresholds son solo datos informativos.",
+    "a2fb": "Incorrecto: Thresholds controla cuántas firmas se requieren.",
+    "a3": "Se ha restablecido el valor de Sequence Number de la cuenta.",
+    "a3fb": "Incorrecto: Thresholds no tiene ningún efecto sobre la secuencia."
   },
   "q4": {
     "question": "¿Cuántas firmas requiere una transacción en Threshold med?",
-    "hint": "umbral medio = umbral promedio.",
-    "a1": "Los pesos de las firmas deben cumplir al menos con el umbral medio.",
-    "a1fb": "Correcto: El umbral medio se aplica a los pagos.",
+    "hint": "med threshold = media threshold.",
+    "a1": "Las ponderaciones de las firmas deben cumplir, como mínimo, el med-threshold.",
+    "a1fb": "Correcto: El término central threshold se aplica a los pagos.",
     "a2": "Solo una firma a la vez.",
-    "a2fb": "Incorrecto: Depende de pesos y umbrales.",
-    "a3": "Siempre todos los firmantes.",
-    "a3fb": "Incorrecto: Solo suficientes firmas para cumplir con el umbral."
+    "a2fb": "Incorrecto: Depende de los pesos y de thresholds.",
+    "a3": "Siempre todo signers.",
+    "a3fb": "Incorrecto: Solo hay firmas suficientes para cumplir con el threshold."
   },
   "q5": {
     "question": "¿Cómo se deben almacenar las claves secretas en configuraciones reales de multisig?",

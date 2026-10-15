@@ -11,7 +11,7 @@
     "label": "Doel openbaar sleutel",
     "placeholder": "Voer de doel publieke sleutel in."
   },
-  "invalid": "Ongeldige publieke sleutel.",
+  "invalid": "Ongeldige Public Key.",
   "submit": {
     "button": "Verstuur"
   },

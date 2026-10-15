@@ -1,26 +1,26 @@
 {
   "menu": "Editar multisig",
-  "menuHint": "Ajustar los firmantes y umbrales de una cuenta existente.",
+  "menuHint": "Ajusta Signer y Thresholds para una cuenta ya existente",
   "confirm": {
-    "removeSigner": "¿Realmente eliminar al firmante?"
+    "removeSigner": "Signer ¿De verdad quieres eliminarlo?"
   },
   "currentConfig": "Configuración actual/planeada",
   "error": {
-    "thresholdTooHigh": "Los umbrales no deben exceder la suma de los pesos."
+    "thresholdTooHigh": "Thresholds no debe superar la suma de los pesos."
   },
-  "hint": "Carga una cuenta existente, ajusta los firmantes, los pesos, el peso maestro y los umbrales, y guarda los cambios.",
+  "hint": "Carga una cuenta existente, ajusta signers, las ponderaciones, la ponderación maestra y thresholds, y guarda los cambios.",
   "load": "Tienda",
-  "loaded": "Cargado. Firmantes adicionales: {{count}}",
-  "noteMaxSigners": "Nota: Stellar permite un máximo de 20 firmantes adicionales por cuenta.",
+  "loaded": "Cargado. signers adicional: {{count}}",
+  "noteMaxSigners": "Nota: Stellar permite un máximo de 20 Signer adicionales por cuenta.",
   "reload": "Recargar",
   "save": "Guardar cambios",
   "saved": "Cambios guardados. TX: {{hash}}",
-  "signers": "Firmante",
+  "signers": "Signer",
   "weight": "Ponderación",
   "masterWeight": "Peso maestro",
-  "title": "Editar una cuenta multifirma",
+  "title": "Editar la cuenta multisig",
   "validation": {
-    "signerKeyHint": "Nota: Los signatarios deben comenzar con \"G\" (ed25519 public key).",
-    "signerKeyInvalid": "Dirección del firmante no válida. Se espera una dirección G… (ed25519)."
+    "signerKeyHint": "Nota: Signer debe comenzar por «G» (ed25519 Public Key).",
+    "signerKeyInvalid": "Dirección Signer no válida. Se espera una dirección G… (ed25519)."
   }
 }

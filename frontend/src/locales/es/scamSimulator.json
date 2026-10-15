@@ -233,21 +233,21 @@
         "subtitle": "Mensaje publicitario"
       },
       "messages": {
-        "01": "🎉 Mercado de Marco – ¡Oferta especial!\n¡Solo hoy: 50 BERRY gratis para todos los nuevos clientes!\nAgrega una Trust Line ahora y recibe los tokens.\n[Agregar Trust Line]",
-        "02": "Dirección del emisor: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n¡Solo agrega la Trust Line y los tokens llegan de inmediato a tu cartera! 🍓",
-        "03": "⚠️ Consejo: Verifica siempre el emisor del token antes de agregar una Trust Line."
+        "01": "🎉 Marco's Marketplace – ¡Oferta especial!\nSolo hoy: ¡50 BERRY gratis para todos los nuevos clientes!\nAñade ahora Trustline y consigue Tokens.\n[Añadir Trustline]",
+        "02": "Dirección del emisor: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n¡Solo tienes que añadir Trustline; el Tokens irá directamente al Wallet! 🍓",
+        "03": "⚠️ Consejo: Comprueba siempre el emisor Token antes de añadir un Trustline para un nuevo Token."
       },
       "options": {
-        "nothingSuspicious": "Nada – parece legítimo. Agregar la Trust Line.",
+        "nothingSuspicious": "Nada… parece correcto. Añade Trustline.",
         "tooGenerous": "50 BERRY gratis suena como mucho.",
         "checkIssuer": "Primero comprobaría el emisor.",
-        "addAnyway": "Agregar la Trust Line de todas formas – quizás esté bien.",
-        "rejectVerify": "Rechazar y preguntarle directamente a Marco la dirección real de BERRY.",
+        "addAnyway": "Trustline Añádelo de todos modos; quizá sea cierto.",
+        "rejectVerify": "Trustline Recházalo y pregúntale directamente a Marco cuál es la dirección real de BERRY.",
         "buyDex": "Comprar el token en el DEX."
       },
       "followUp": {
         "scam": {
-          "01": "¡Trust Line agregada con éxito! Tus 50 BERRY están en camino. 🍓",
+          "01": "¡Trustline se ha añadido correctamente! Tus 50 BERRY están en camino. 🍓",
           "02": "Recibiste 50 BERRY del emisor equivocado, pero ninguna tienda los acepta. El emisor es desconocido. Estos tokens no tienen valor y podrían ser el inicio de más intentos de phishing."
         },
         "generous": {
@@ -259,8 +259,8 @@
           "02": "Emisor de este mensaje:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ ¡No son iguales! Mismo nombre de token, emisor diferente – este BERRY no tiene valor."
         },
         "addAnyway": {
-          "01": "¡Trust Line agregada con éxito! Tus 50 BERRY están en camino. 🍓",
-          "02": "Aunque viste la discrepancia del emisor, agregaste la Trust Line de todas formas. Los 50 BERRY provienen del emisor equivocado y no tienen valor – ninguna tienda los acepta."
+          "01": "¡Trustline se ha añadido correctamente! En breve recibirás tus 50 BERRY. 🍓",
+          "02": "Aunque te diste cuenta de la diferencia entre los emisores, aun así añadiste el Trustline. Los 50 BERRY procedían del emisor equivocado y no valen nada: ninguna tienda los acepta."
         },
         "buyDex": {
           "01": "⚠️ En el DEX hay muchos tokens llamados BERRY de diferentes emisores. Sin la dirección oficial del emisor, también podrías comprar tokens sin valor. El emisor es clave, incluso al comprar en el DEX."
@@ -272,7 +272,7 @@
         "urgency": "\"Solo hoy\" – urgencia artificial para evitar el pensamiento crítico",
         "sameNameDifferentIssuer": "El mismo nombre de token (BERRY) no significa el mismo token – solo el emisor marca la diferencia"
       },
-      "explanation": "Los tokens personalizados en Stellar están definidos por su emisor, no por su nombre. Dos tokens pueden llamarse 'BERRY' pero provenir de emisores completamente diferentes. Solo el emisor oficial del Mercado de Marco emite BERRY reales y canjeables. Antes de agregar una Trust Line, verifica siempre la dirección del emisor en el sitio web oficial del proveedor."
+      "explanation": "Los Token personalizados en Stellar los define su emisor, no su nombre. Dos Token pueden llamarse ambos «BERRY», pero proceder de emisores completamente diferentes. Solo el emisor oficial de Marco’s Marketplace emite BERRY auténticos y canjeables. Antes de añadir un Trustline, comprueba siempre la dirección del emisor en la página web oficial del proveedor."
     }
   }
 }

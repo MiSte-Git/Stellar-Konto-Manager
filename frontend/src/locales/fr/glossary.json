@@ -31,7 +31,7 @@
     "title": "Portefeuille",
     "original": "Wallet",
     "short": "Portefeuille numérique qui gère vos clés.",
-    "desc": "Un portefeuille est votre bourse numérique. Il gère les clés dont vous avez besoin pour accéder à votre compte et effectuer des transactions. Un portefeuille peut être un programme, une application, ou même simplement un morceau de papier avec votre clé privée."
+    "desc": "Un Wallet est votre wallet numérique. Il gère les clés dont vous avez besoin pour accéder à votre compte et envoyer des transactions. Un Wallet peut être un programme, une application, ou même simplement un bout de papier sur lequel est inscrit votre Secret Key."
   },
   "account": {
     "title": "Compte",
@@ -46,16 +46,16 @@
     "desc": "L'adresse G est l'adresse principale d'un compte Stellar. Elle commence par la lettre G. Vous la fournissez aux autres pour qu'ils puissent vous envoyer quelque chose."
   },
   "publicKey": {
-    "title": "Clé publique",
+    "title": "Public Key",
     "original": "Public Key",
     "short": "Adresse que vous pouvez partager ; sur Stellar, généralement l'adresse G.",
-    "desc": "La clé publique est l'adresse que vous avez le droit de partager. Dans Stellar, c'est l'adresse G. Les autres l'utilisent pour vous envoyer de l'argent."
+    "desc": "Le Public Key est l'adresse que vous êtes autorisé à communiquer. Sur Stellar, il s'agit de l'adresse G. Les autres utilisateurs s'en servent pour vous envoyer de l'argent."
   },
   "privateKey": {
-    "title": "Clé secrète",
+    "title": "Secret Key",
     "original": "Secret Key",
     "short": "Mot de passe pour le compte – ne le partagez jamais.",
-    "desc": "La clé secrète est votre mot de passe pour le compte. Quiconque possède cette clé peut déplacer votre argent. Ne la partagez jamais."
+    "desc": "La clé Secret Key correspond au mot de passe de votre compte. Toute personne en possession de cette clé peut transférer votre argent. Ne la communiquez jamais à personne."
   },
   "addressFederation": {
     "title": "Adresse de la fédération",
@@ -67,28 +67,28 @@
     "title": "Sous-adresse",
     "original": "Muxed Account",
     "short": "Adresse M avec identifiant supplémentaire – partage un compte de base.",
-    "desc": "Une sous-adresse (M-adresse, officiellement « Muxed Account ») renvoie à un compte Stellar existant, mais possède également son propre numéro (ID).\n\nSous-adresse = compte G + ID (M-adresse)\nElle sert à l’identification, mais ne sépare pas les comptes.\nLe solde, les « trustlines », les signataires et les indicateurs sont toujours conservés dans le compte G.\n\nFondation pour le développement de Stellar\n\nCela permet, par exemple, de distinguer plusieurs personnes ou services sous une même adresse G. Techniquement, les fonds appartiennent toujours au compte principal."
+    "desc": "Une sous-adresse (adresse M, officiellement « Muxed Account ») pointe vers un compte Stellar existant, mais possède également son propre numéro (ID).\n\nSous-adresse = compte G + ID (adresse M)\nElle sert à l’identification, mais ne sépare pas les comptes.\nLe solde, trustlines, signers et les indicateurs sont toujours conservés dans le compte G.\n\nFondation pour le développement de Stellar\n\nCela permet, par exemple, de distinguer plusieurs personnes ou services sous une même adresse G. Techniquement, les fonds appartiennent toujours au compte principal."
   },
   "muxedAccountsUseCases": {
     "title": "Sous-adresses – Exemples d'utilisation",
     "original": "Muxed accounts use cases",
     "short": "Exemples, avantages et limites des adresses M en tant qu'aide à la cartographie.",
-    "desc": "Entreprise - Exemple\n\nConfiguration :\n- Un compte G pour l'entreprise\n- Une adresse M par client/cas d'utilisation (ID)\n\nProcessus :\n- Le client effectue un paiement vers son adresse M\n- Tous les fonds sont versés sur le compte G de l'entreprise\n- Le service comptable lit l’ID → affectation unique\n\nConvient pour :\n- Boutiques en ligne, prestataires de paiement, plateformes d’échange\n- Références internes sans risque d’erreur de mémo\n\nClub - Exemple\n\nConfiguration :\n- Un compte G pour le club\n- Des adresses M pour les membres, les sections et les objectifs\n\nProcessus :\n- Cotisations/dons envoyés à l’adresse M appropriée\n- Affectation via l’ID, aucune erreur de mémo\n\nConvient pour :\n- Cotisations d’adhésion\n- Recettes affectées à un usage précis\n- Audit simplifié\n\nLes avantages des sous-adresses :\n- Affectation fiable des paiements entrants\n- Un seul compte, plusieurs identités\n- Aucune mention requise\n- Moins d’erreurs de la part des utilisateurs\n\nCe que les sous-adresses ne sont pas :\n- Pas un compte autonome\n- Pas de solde distinct\n- Pas de lignes de confiance distinctes\n- Pas de signataires/autorisations distincts\n\nCas d’utilisation généralement inadaptés :\n- Paiements de paie/comptes de salaire (nécessitent un compte G distinct)\n- Fiducie/garde pour des tiers (pas de séparation juridique des actifs)\n- Sécurité basée sur les rôles (pas de signataires/seuils distincts)\n- Séparation budgétaire ou des limites (pas de soldes/limites d’actifs distincts)\n- Comptes séparés à des fins de conformité (le KYC et le reporting ne peuvent pas être clairement séparés)\n\nComparaison (en bref) :\nAttribuer des paiements : Oui\nSéparer les actifs : Non\nDéléguer l’accès : Non\nCompte juridiquement distinct : Non\nComptabilité interne : Oui\n\nRemarque :\nLes sous-adresses acheminent les paiements — elles ne remplacent pas les comptes.\nSi un contrôle, une propriété ou une séparation est requis -> compte G distinct."
+    "desc": "Entreprise - Exemple\n\nConfiguration :\n- Un compte G pour l'entreprise\n- Une adresse M par client/cas d'utilisation (ID)\n\nProcessus :\n- Le client effectue un paiement vers son adresse M\n- Tous les fonds sont versés sur le compte G de l’entreprise\n- Le service comptable identifie l’ID -> affectation unique\n\nConvient pour :\n- Boutiques en ligne, prestataires de paiement, plateformes d’échange\n- Références internes sans risques liés à memo\n\nClub - Exemple\n\nConfiguration :\n- Un compte G pour le club\n- Des adresses M pour les membres, les sections et les objectifs\n\nProcessus :\n- Cotisations/dons envoyés à l’adresse M appropriée\n- Affectation via l’ID, aucune erreur de type memo\n\nConvient pour :\n- Cotisations d’adhésion\n- Recettes affectées à un usage précis\n- Audit simplifié\n\nLes atouts des sous-adresses :\n- Répartition fiable des paiements entrants\n- Un seul compte, plusieurs identités\n- Aucune exigence de memo\n- Moins d’erreurs de la part des utilisateurs\n\nCe que les sous-adresses ne sont pas :\n- Ce n’est pas un compte autonome\n- Pas de solde distinct\n- Pas de trustlines distinct\n- Pas de signers/autorisations distinctes\n\nCas d'utilisation généralement inadaptés :\n- Paiements de paie/comptes de salaire (nécessitent un compte G distinct)\n- Fiducie/garde pour des tiers (pas de séparateur juridique asset)\n- Sécurité basée sur les rôles (pas de signers/thresholds distincts)\n- Séparation des budgets ou des limites (pas de soldes/limites asset distincts)\n- Comptes séparés à des fins de conformité (le KYC et le reporting ne peuvent pas être clairement séparés)\n\nComparaison (Kurz) :\nAttribuer des paiements : Oui\nSéparer assets : Non\nDéléguer l'accès : Non\nCompte juridiquement distinct : Non\nComptabilité interne : Oui\n\nRemarque :\nLes sous-adresses acheminent les paiements ; elles ne remplacent pas les comptes.\nSi un contrôle, une propriété ou une séparation est requis -> compte G distinct."
   },
   "multisig": {
-    "title": "Multisignature",
+    "title": "Multisig",
     "original": "Multi‑Sig",
     "short": "Des actions importantes nécessitent plus qu'une signature.",
     "desc": "Multi-Sig signifie signatures multiples. Une action importante nécessite plus d'une clé. Exemple : vous et une deuxième clé devez tous deux être d'accord avant qu'une chose soit envoyée. Cela rend le vol plus difficile.",
     "help": {
-      "title": "Explication générale d'un compte d'entreprise à signatures multiples (Multi-Signature)",
-      "intro": "Une entreprise peut utiliser un compte blockchain partagé dans lequel plusieurs personnes autorisées sont impliquées. En général, au moins trois signataires (Signer) sont inclus, par exemple, la direction, le responsable financier et la conformité/sauvegarde. L'objectif est que chaque personne puisse effectuer des paiements de manière indépendante sans permettre à une seule personne de contrôler ou de prendre le contrôle du compte seule.",
-      "problem": "Si un signataire (Signer) dispose d'un poids suffisant pour effectuer des paiements et qu'en même temps il a assez de poids pour les changements de compte, cette personne pourrait supprimer d'autres signataires (Signer) ou ajuster le seuil/pondération (Thresholds) et ainsi prendre le contrôle du compte. À l'inverse, le propriétaire initial ne devrait pas non plus pouvoir facilement exclure d'autres signataires (Signer) sans contrôles et équilibres. Une structure à signatures multiples garantit que les décisions importantes sont toujours prises collectivement par plusieurs personnes.",
-      "setupTitle": "Exemple d'une structure multi-signature sécurisée avec trois signataires",
-      "setupWeights": "Dans un exemple avec trois rôles égaux, tous reçoivent la même force de signature :\n- Signataire (Signer) A (Management) : Poids 2\n- Signataire (Signer) B (Finanzen) : Poids 2\n- Signataire (Signer) C (Compliance/Backup) : Poids 2",
-      "setupThresholds": "Les seuils/poids appropriés sont définis comme suit :\n- Bas (low_threshold) : 1\n- Moyen (med_threshold) : 2 (for payments and other medium actions)\n- Haut (high_threshold) : 4 (pour les modifications structurelles telles que l'ajout/suppression de signataires (Signer) ou la modification du seuil/poids (Thresholds))\nCela garantit que chaque personne autorisée peut réaliser des paiements, mais qu'aucun individu seul ne peut modifier la structure du compte.",
-      "behavior": "Avec cette configuration, les paiements peuvent être effectués par n'importe lequel des trois individus éligibles seul, car le poids de chaque individu atteint le seuil moyen. Pour les changements structurels tels que la suppression d'un signataire, l'ajustement des seuils/poids, ou la fusion ou la clôture du compte, le seuil élevé est requis. Cette valeur ne peut être atteinte que lorsque au moins deux des trois signataires signent ensemble. Cette configuration maintient le compte flexible pour une utilisation quotidienne tout en offrant une forte protection contre les abus.",
-      "removal": "Si une personne quitte l'entreprise ou n'est plus digne de confiance, deux des signataires restants (Signer) peuvent retirer conjointement les droits de signature de cette personne. Aucun signataire seul (Signer) – ni un employé ni la direction – ne peut exclure d'autres personnes du compte de sa propre initiative. Le retrait des droits se fait donc toujours de manière contrôlée et traçable, avec au moins deux responsables impliqués.",
+      "title": "Déclaration générale concernant un compte professionnel Multisig",
+      "intro": "Une entreprise peut utiliser un compte blockchain partagé impliquant plusieurs personnes autorisées. En règle générale, au moins trois Signer sont impliquées, telles que la direction, le responsable financier et le responsable de la conformité ou le représentant suppléant. L'objectif est de permettre à chaque personne d'effectuer des paiements de manière indépendante, sans qu'aucune d'entre elles ne puisse contrôler ou prendre le contrôle du compte à elle seule.",
+      "problem": "Si un Signer dispose d’un poids suffisant pour effectuer des paiements et d’un poids suffisant pour modifier le compte, cette personne pourrait supprimer d’autres Signers ou ajuster le Threshold/la pondération (Thresholds), prenant ainsi le contrôle du compte. À l’inverse, le propriétaire d’origine ne devrait pas pouvoir exclure simplement d’autres Signer sans recoupement des informations. Une structure multi-signature garantit que les décisions importantes sont toujours prises conjointement par plusieurs personnes.",
+      "setupTitle": "Exemple d'une structure multi-signature sécurisée comportant trois signers",
+      "setupWeights": "Dans un exemple comportant trois rôles de même niveau, tous se voient attribuer le même niveau d'importance :\n- Signer A (Direction) : Pondération 2\n- Signer B (Finances) : Pondération 2\n- Signer C (Conformité/Remplacement) : Pondération 2",
+      "setupThresholds": "Pour ce faire, définissez les valeurs appropriées pour Thresholds/weights :\n- Faible (low_threshold) : 1\n- Moyen (med_threshold) : 2 (pour les paiements et autres actions de niveau moyen)\n- Élevé (high_threshold) : 4 (pour les modifications structurelles telles que l'ajout ou la suppression de Signer ou la modification de la pondération de Threshold (Thresholds))\nCela permet à chaque personne autorisée d'effectuer des paiements, mais aucune personne ne peut modifier seule la structure du compte.",
+      "behavior": "Avec cette configuration, les paiements peuvent être effectués par n’importe laquelle des trois personnes autorisées agissant seule, car la pondération individuelle dans chaque cas respecte la moyenne Threshold/pondération. Toutefois, pour les modifications structurelles telles que la suppression d’un Signers, l’ajustement des Thresholds/pondérations, ou la fusion ou la clôture du compte, la pondération élevée Threshold/weighting (high_threshold) s’applique. Cette valeur ne peut être atteinte que si au moins deux des trois Signer signent conjointement. Cela garantit que le compte reste flexible pour une utilisation quotidienne tout en étant bien protégé contre les abus.",
+      "removal": "Si une personne quitte l’entreprise ou n’est plus considérée comme digne de confiance, deux des Signer restants peuvent conjointement révoquer les droits de signature de cette personne. Aucun Signer, qu’il s’agisse d’un salarié ou d’un membre de la direction, ne peut à lui seul retirer d’autres personnes du compte. La révocation des autorisations s’effectue donc toujours de manière contrôlée et traçable par au moins deux personnes autorisées.",
       "summary": "Ce type de structure multi-signature permet aux parties individuelles de traiter efficacement les paiements tout en maintenant le contrôle du compte parmi plusieurs participants. Il réduit le risque de prises de contrôle de compte, protège contre les décisions unilatérales et est particulièrement adapté aux comptes d'entreprise où la sécurité et la flexibilité opérationnelle sont importantes.",
       "closeLabel": "Fermer",
       "linkLabel": "Que signifie Multi-Signature ?",
@@ -96,16 +96,16 @@
     }
   },
   "multisigCorporate": {
-    "title": "Multisignature - Exemple",
+    "title": "Multisig - Exemple",
     "original": "Multi-Signature - Example",
-    "short": "Exemple d'une structure multi-signature pour les comptes d'entreprise avec rôles, poids et seuils.",
-    "desc": "Exemple : Une entreprise configure un compte Stellar avec trois signataires : PDG (poids 2), directeur financier (poids 2) et un membre du conseil (poids 1). Les seuils sont configurés de sorte que les opérations à faible sécurité nécessitent un poids de 1, les opérations moyennes (par ex. paiements) un poids de 3, et les opérations élevées (par ex. modification des signataires) un poids de 4. Ainsi, le PDG peut consulter le compte seul, mais doit coopérer avec le directeur financier ou les deux autres signataires pour les paiements et les modifications de configuration."
+    "short": "Exemple de structure multi-signature pour les comptes d'entreprise avec des rôles, des pondérations et thresholds.",
+    "desc": "Exemple : une entreprise crée un compte Stellar avec trois Signers : le PDG (poids 2), le directeur financier (poids 2) et un membre du conseil d’administration (poids 1). Les Thresholds sont configurés de telle sorte que les opérations à faible niveau de sécurité nécessitent un poids de 1, les opérations à sécurité moyenne (par exemple, les paiements) nécessitent un poids de 3, et les opérations à haute sécurité (par exemple, la modification des Signer) nécessitent un poids de 4. De cette manière, le PDG peut consulter le compte seul, mais doit collaborer avec le directeur financier ou les deux autres Signers pour les paiements et les modifications de configuration."
   },
   "trustline": {
-    "title": "Ligne de confiance",
+    "title": "Trustline",
     "original": "Trustline",
     "short": "Accord pour détenir un jeton d'un émetteur spécifique.",
-    "desc": "Une ligne de confiance est comme un \"Oui, j'accepte ce jeton.\" En la configurant, vous indiquez que votre compte est prêt à recevoir un jeton spécifique d'un émetteur spécifique. Sans une ligne de confiance, vous ne pouvez pas recevoir ce jeton.\n\nExemple : Une ligne de confiance est spécifiée comme CODE:EMETTEUR. Pour EURT de l'émetteur GDUKMGUGDZQK6Y…, elle serait EURT:GDUKMGUGDZQK6Y…"
+    "desc": "Un trustline revient à dire « Oui, j'accepte ce token ». En le configurant, vous indiquez que votre compte est prêt à détenir un token spécifique provenant d'un émetteur spécifique. Sans un trustline, vous ne pouvez pas recevoir ce token.\n\nExemple : un trustline est spécifié sous la forme CODE:ÉMETTEUR. Pour un EURT provenant de l’émetteur GDUKMGUGDZQK6Y…, cela donnerait EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
     "title": "Jeton",
@@ -138,16 +138,16 @@
     "desc": "Un réseau de pratique publique. Les jetons n'ont aucune valeur réelle. Idéal pour apprendre et expérimenter sans risque."
   },
   "memo": {
-    "title": "Note de service",
+    "title": "Memo",
     "original": "Memo",
     "short": "Brève note dans une transaction.",
-    "desc": "Un mémo est une petite note que vous pouvez envoyer avec une transaction. Souvent, un échange nécessite un mémo spécifique pour savoir à qui appartient l'argent."
+    "desc": "Un memo est une petite note que vous pouvez joindre à une transaction. Souvent, une plateforme d'échange exige un memo spécifique pour savoir à qui appartient l'argent."
   },
   "transaction": {
     "title": "Transaction",
     "original": "Transaction",
-    "short": "Action sur la blockchain, par exemple, paiement ou ligne de confiance.",
-    "desc": "Une transaction est une action sur la blockchain, telle que l'envoi d'argent ou l'établissement d'une ligne de confiance. Une fois confirmée, une transaction est enregistrée de manière permanente."
+    "short": "Action sur la blockchain, par exemple un paiement ou trustline.",
+    "desc": "Une transaction est une opération effectuée sur la blockchain. Par exemple, envoyer de l'argent ou créer un Trustline. Une fois qu'une transaction est confirmée, elle est stockée de manière permanente."
   },
   "fee": {
     "title": "Frais",
@@ -409,22 +409,22 @@
     "desc": "Soroban est le système de contrats intelligents de Stellar. Un contrat intelligent est un code de programme sur la blockchain. Le code peut vérifier de manière indépendante les règles et déclencher des actions sans besoin d'un intermédiaire bancaire."
   },
   "multiSignature": {
-    "title": "Multisignature",
+    "title": "Multi-Signature",
     "original": "Multi-Signature",
-    "short": "Plusieurs signatures requises ; les poids + le seuil déterminent la validation.",
-    "desc": "Dans une configuration multi-signatures, plusieurs clés doivent signer avant qu'une action ne devienne valide. Chaque signataire a un poids, et la somme doit atteindre le seuil requis. Cela augmente la sécurité car une seule clé volée n'est pas suffisante."
+    "short": "Plusieurs signatures sont requises ; les pondérations + threshold déterminent la version.",
+    "desc": "Avec Multisig, plusieurs clés doivent signer avant qu'une action ne soit valide. Chaque Signer a un poids, et leur somme doit atteindre la valeur requise de Threshold. Cela renforce la sécurité, car le vol d'une seule clé ne suffit pas."
   },
   "signer": {
-    "title": "Signataire",
+    "title": "Signer",
     "original": "Signer",
-    "short": "Clé publique avec poids, faisant partie de la configuration du compte.",
-    "desc": "Un signataire est une clé publique associée à un compte doté d'un poids. Sa signature est prise en compte dans le calcul du seuil requis. Plusieurs signataires peuvent approuver conjointement une transaction.\n\nTypes de signataires :\n- ed25519 (clé normale)\n- hashX (modèle de hachage)\n- preAuthTx (transaction préautorisée)\n\nSKM ne prend en charge que le type ed25519. Pour plus d'options, consultez https://lab.stellar.org."
+    "short": "Public Key avec un coefficient de pondération, qui fait partie de la configuration du compte.",
+    "desc": "Un Signer est un Public Key associé à un compte et auquel un poids a été attribué. Sa signature est prise en compte dans le calcul du Threshold requis. Plusieurs Signers peuvent autoriser collectivement une transaction.\n\nTypes de Signer :\n- ed25519 (clé normale)\n- hashX (modèle de hachage)\n- preAuthTx (transaction pré-autorisée)\n\nSKM ne prend en charge que le type ed25519. Pour plus d’options, consultez https://lab.stellar.org."
   },
   "thresholds": {
-    "title": "Seuils",
+    "title": "Thresholds",
     "original": "Thresholds",
     "short": "Limites (low/med/high) qui fixent le poids total requis.",
-    "desc": "Les seuils définissent combien de signatures pondérées sont nécessaires pour les actions : bas pour les opérations simples, moyen pour les paiements, et élevé pour les changements critiques. La somme des poids des signataires doit atteindre le seuil respectif."
+    "desc": "Thresholds définit le nombre de signatures pondérées requises pour les actions : « low » pour les opérations simples, « med » pour les paiements et « high » pour les modifications critiques. La somme des pondérations de Signer doit être égale à la valeur correspondante de Threshold."
   },
   "masterWeight": {
     "title": "Poids maître",
@@ -435,8 +435,8 @@
   "accountConfig": {
     "title": "Configuration du compte",
     "original": "Account Configuration",
-    "short": "L'interaction entre les signataires et les seuils détermine la sécurité du compte.",
-    "desc": "La configuration du compte définit quels signataires existent avec quels poids et quels seuils s'appliquent. Les modifications des signataires ou des seuils sont critiques pour la sécurité, car elles déterminent combien de signatures sont nécessaires."
+    "short": "L'interaction entre signers et thresholds détermine la sécurité du compte.",
+    "desc": "La configuration du compte définit quels signers existent, avec quelles pondérations, et quels thresholds s'appliquent. Les modifications apportées à signers ou thresholds sont cruciales pour la sécurité, car elles déterminent le nombre de signatures requises."
   },
   "distributedNetwork": {
     "title": "Réseau distribué",
@@ -874,13 +874,13 @@
     "title": "Numéro de séquence",
     "original": "Sequence Number",
     "short": "Un numéro séquentiel qui identifie de manière unique chaque transaction d'un compte et empêche la double dépense.",
-    "desc": "Chaque compte Stellar possède un numéro de séquence qui augmente de 1 à chaque transaction. Une transaction n'est acceptée que si son numéro de séquence correspond exactement à la séquence actuelle du compte +1. Cela empêche qu'une même transaction soit exécutée deux fois. Si vous envoyez plusieurs transactions en même temps, elles doivent être traitées dans le bon ordre."
+    "desc": "Chaque compte Stellar dispose d'un Sequence Number, qui est incrémenté de 1 à chaque transaction. Une transaction n'est acceptée que si son Sequence Number correspond exactement à la séquence actuelle du compte + 1. Cela empêche qu'une même transaction soit exécutée deux fois. Si tu envoies plusieurs transactions simultanément, elles doivent être traitées dans le bon ordre."
   },
   "baseReserve": {
     "title": "Réserve de base",
     "original": "Base Reserve",
     "short": "Le montant minimum de XLM qui doit rester sur un compte Stellar et ne peut pas être dépensé.",
-    "desc": "Sur Stellar, chaque compte doit détenir un solde minimum en XLM. Celui-ci est calculé à partir de la réserve de base (actuellement 0,5 XLM) multipliée par le nombre d'« entrées » sur le compte (par ex. trustlines, signataires, offres de données). Un compte vide nécessite au moins 1 XLM (2 × 0,5 XLM). Chaque trustline augmente le solde minimum de 0,5 XLM supplémentaire. Ce solde est bloqué tant que les entrées sont actives."
+    "desc": "Sur Stellar, chaque compte doit disposer d'un solde minimum en XLM. Ce montant est calculé à partir de la réserve de base (actuellement 0,5 XLM) multipliée par le nombre d’« entrées » sur le compte (par exemple, trustlines, signers, offres de données). Un compte vide nécessite au moins 1 XLM (2 × 0,5 XLM). Chaque trustline augmente le solde minimum de 0,5 XLM supplémentaire. Ce solde est bloqué tant que les entrées sont actives."
   },
   "coin": {
     "title": "Coin",
@@ -994,7 +994,7 @@
   "trustlineLimit": {
     "title": "Limite Trustline",
     "original": "Trustline Limit",
-    "short": "Solde maximal d'un actif donné sur une ligne de crédit fiduciaire.",
+    "short": "Solde maximal d'un asset spécifique sur un trustline.",
     "desc": "La limite « Trustline » définit le nombre maximal d'unités d'un actif donné que votre compte peut détenir. Il ne s'agit pas d'un ordre d'achat et cela ne réserve pas de jetons. Une limite basse peut éviter les surpaiements accidentels, mais une limite trop basse peut empêcher une réception ou un échange prévu."
   },
   "authorizationFlags": {

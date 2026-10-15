@@ -233,21 +233,21 @@
         "subtitle": "Messaggio promozionale"
       },
       "messages": {
-        "01": "🎉 Mercato di Marco – Offerta speciale!\nSolo oggi: 50 BERRY gratuiti per tutti i nuovi clienti!\nAggiungi una Trust Line ora e ricevi i tuoi token.\n[Aggiungi Trust Line]",
-        "02": "Indirizzo dell'emittente: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nBasta aggiungere la Trust Line – i token arrivano subito nel tuo portafoglio! 🍓",
-        "03": "⚠️ Consiglio: Controlla sempre l'emittente del token prima di aggiungere una Trust Line."
+        "01": "🎉 Marco's Marketplace – Offerta speciale!\nSolo oggi: 50 BERRY in omaggio per tutti i nuovi clienti!\nAggiungi subito Trustline e ricevi Tokens.\n[Aggiungi Trustline]",
+        "02": "Indirizzo dell'emittente: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nBasta aggiungere Trustline: il Tokens finirà direttamente nel Wallet! 🍓",
+        "03": "⚠️ Suggerimento: controlla sempre l'emittente Token prima di aggiungere un Trustline per un nuovo Token."
       },
       "options": {
-        "nothingSuspicious": "Niente – sembra legittimo. Aggiungi la Trust Line.",
+        "nothingSuspicious": "Niente: sembra tutto in regola. Aggiungi Trustline.",
         "tooGenerous": "50 BERRY gratis sembra molto.",
         "checkIssuer": "Controllerei prima l'emittente.",
-        "addAnyway": "Aggiungi la Trust Line comunque – forse va bene.",
-        "rejectVerify": "Rifiuta e chiedi direttamente a Marco il vero indirizzo BERRY.",
+        "addAnyway": "Trustline Aggiungilo comunque: magari è vero.",
+        "rejectVerify": "Trustline Rifiuta e chiedi direttamente a Marco l'indirizzo vero di BERRY.",
         "buyDex": "Acquista il token sul DEX."
       },
       "followUp": {
         "scam": {
-          "01": "Trust Line aggiunta con successo! I tuoi 50 BERRY sono in arrivo. 🍓",
+          "01": "Trustline è stato aggiunto con successo! I tuoi 50 BERRY ti saranno inviati a breve. 🍓",
           "02": "Hai ricevuto 50 BERRY dall'emittente sbagliato – ma nessun negozio li accetta. L'emittente è sconosciuto. Questi token non hanno valore e potrebbero essere l'inizio di ulteriori tentativi di phishing."
         },
         "generous": {
@@ -259,8 +259,8 @@
           "02": "Emittente in questo messaggio:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Non identici! Stesso nome del token, emittente diverso – questo BERRY non ha valore."
         },
         "addAnyway": {
-          "01": "Trust Line aggiunta con successo! I tuoi 50 BERRY sono in arrivo. 🍓",
-          "02": "Anche se hai visto la discrepanza dell'emittente, hai aggiunto la Trust Line lo stesso. I 50 BERRY provengono dall'emittente sbagliato e non hanno valore – nessun negozio li accetta."
+          "01": "Trustline è stato aggiunto con successo! Riceverai a breve i tuoi 50 BERRY. 🍓",
+          "02": "Anche se hai notato la differenza tra gli emittenti, hai comunque aggiunto il Trustline. I 50 BERRY provenivano dall'emittente sbagliato e non hanno alcun valore: nessun negozio li accetta."
         },
         "buyDex": {
           "01": "⚠️ Sul DEX ci sono molti token chiamati BERRY da emittenti diversi. Senza l'indirizzo ufficiale dell'emittente, potresti acquistare anche token senza valore. L'emittente è decisivo – anche quando si acquista sul DEX."
@@ -272,7 +272,7 @@
         "urgency": "\"Solo oggi\" – urgenza artificiale per impedire il pensiero critico",
         "sameNameDifferentIssuer": "Lo stesso nome del token (BERRY) non significa lo stesso token – solo l'emittente fa la differenza"
       },
-      "explanation": "I token personalizzati su Stellar sono definiti dal loro emittente – non dal nome. Due token possono entrambi chiamarsi 'BERRY' ma provenire da emittenti completamente diversi. Solo l'emittente ufficiale del Mercato di Marco emette BERRY autentici e riscattabili. Prima di aggiungere una Trust Line, verifica sempre l'indirizzo dell'emittente sul sito ufficiale del fornitore."
+      "explanation": "I Token personalizzati su Stellar sono definiti dal loro emittente, non dal loro nome. Due Token possono entrambi chiamarsi “BERRY”, ma provenire da emittenti completamente diversi. Solo l’emittente ufficiale di Marco’s Marketplace emette BERRY autentici e riscattabili. Prima di aggiungere un Trustline, controlla sempre l’indirizzo dell’emittente sul sito web ufficiale del fornitore."
     }
   }
 }

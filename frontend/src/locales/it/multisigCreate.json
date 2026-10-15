@@ -1,8 +1,8 @@
 {
-  "title": "Crea account + multfirma",
+  "title": "Crea un account + multisig",
   "menu": "Crea un account + Multisig",
-  "menuHint": "Crea un nuovo account e, facoltativamente, configura la firma multipla.",
-  "hint": "Crea un nuovo account, attivalo e configura facoltativamente la firma multipla.",
+  "menuHint": "Crea un nuovo account e, se lo desideri, configura multisig",
+  "hint": "Crea un nuovo account, attivalo e, se lo desideri, configura multisig.",
   "generateKeys": "Genera chiave",
   "enableMultisig": "Abilita multisig",
   "instructions": {
@@ -10,7 +10,7 @@
     "secret": "Tieni questa chiave segreta al sicuro; non condividerla mai."
   },
   "generateFirst": "Si prega di generare prima una coppia di chiavi.",
-  "confirmLowBalance": "Il saldo iniziale di {bal} XLM è inferiore alla riserva raccomandata di {req} XLM (Firmatari: {count}). Continuare?",
+  "confirmLowBalance": "Il saldo iniziale {bal} in XLM è inferiore alla riserva raccomandata {req} in XLM (Signer: {count}). Procedere?",
   "activated": "L'account è stato attivato. Hash: {hash}",
   "activatedTestnet": "L'account è stato attivato sulla testnet tramite Friendbot.",
   "alreadyActive": "L'account è già attivato.",
@@ -24,12 +24,12 @@
     },
     "title": "Informazioni importanti",
     "secureKeys": {
-      "title": "Chiave segreta sicura",
+      "title": "Salva Secret Key",
       "text": "La chiave pubblica può essere condivisa in tutta sicurezza: è come un numero di conto.\\n\\nLa chiave privata è la chiave di accesso al tuo conto. Trattala come una password:\\n• NON conservarla MAI su servizi cloud, nelle e-mail o in appunti non protetti\\n• Annotala su carta o utilizza un portafoglio hardware\\n• Crea più copie di backup e conservale in luoghi sicuri e separati\\n• Se perdi la tua chiave segreta, l’accesso al tuo conto andrà irrimediabilmente perso"
     },
     "multisigSection": {
-      "title": "Multifirma",
-      "text": "Con il multisig è possibile designare più firmatari per il proprio account. Le transazioni richiedono quindi le firme di più chiavi (ad esempio, 2 su 3).\n\nVantaggi:\n• Maggiore sicurezza (non è sufficiente che venga compromessa una sola chiave)\n• Conti congiunti (ad esempio, aziende, società di persone)\n• Ripristino di emergenza (più backup conservati da persone diverse)\n\nATTENZIONE: prova il multisig prima sulla testnet prima di utilizzarlo sulla mainnet! Una configurazione errata può comportare la perdita dell’accesso all’account."
+      "title": "Multisig",
+      "text": "Con Multisig, è possibile definire più valori di Signer per il proprio account. Le transazioni richiedono quindi la firma di più chiavi (ad esempio, 2 su 3).\n\nVantaggi:\n• Maggiore sicurezza (non è sufficiente che venga compromessa una sola chiave)\n• Conti congiunti (ad esempio, aziende, società di persone)\n• Ripristino di emergenza (più copie di backup conservate da persone diverse)\n\nATTENZIONE: testare prima Multisig nel Testnet prima di utilizzarlo sul Mainnet! Una configurazione errata potrebbe comportare la perdita dell’accesso all’account."
     },
     "diagram": {
       "title": "Scadenza della firma"
@@ -38,7 +38,7 @@
   "activateHint": "L'attivazione è necessaria affinché l'account esista. Nel Testnet, questo può essere fatto tramite Friendbot, mentre nel Mainnet, attraverso \"Crea Account\" da un portafoglio esistente.",
   "activateNow": "Attiva l'account immediatamente.",
   "activateOnly": "Attiva solo",
-  "balanceWarning": "Il saldo iniziale è probabilmente troppo basso per aggiungere i {{count}} firmatari aggiuntivi (Riserva minima: {{req}} XLM)",
+  "balanceWarning": "Il saldo iniziale è probabilmente troppo basso per aggiungere i {{count}} ulteriori signers (Riserva minima: {{req}} XLM)",
   "createButton": "Creare / Impostare Multisig",
   "mainnetActivateNote": "Nota: Sono necessarie riserve aggiuntive per il multisig. 1 XLM spesso non è sufficiente.",
   "reserve": {
@@ -46,8 +46,8 @@
     "recommended": "Saldo iniziale consigliato: {{val}} XLM (compreso un margine di sicurezza)",
     "required": "Riserva minima richiesta (nuova): {{val}} XLM"
   },
-  "signersCountLimit": "Nota: Limite della rete (Stellar): massimo 20 firmatari aggiuntivi.",
-  "startingBalance": "Credito iniziale (XLM)",
+  "signersCountLimit": "Nota: limite di rete (Stellar): max. 20 Signer aggiuntivi.",
+  "startingBalance": "Saldo iniziale (XLM)",
   "keyWarning": {
     "title": "⚠️ Proteggi subito la tua chiave!",
     "text1": "Hai generato una nuova coppia di chiavi.",

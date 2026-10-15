@@ -1,6 +1,6 @@
 {
   "title": "Multisig & Sicurezza",
-  "introText": "Metti alla prova le tue conoscenze su firme, soglie e archiviazione sicura.",
+  "introText": "Metti alla prova le tue conoscenze sulle firme, su thresholds e sull'archiviazione sicura.",
   "q1": {
     "question": "Perché utilizzare multisig?",
     "hint": "Pensa alla responsabilità condivisa.",
@@ -14,32 +14,32 @@
   "q2": {
     "question": "Quando è valida una transazione su un account multisig?",
     "hint": "Guarda le firme ponderate.",
-    "a1": "Se le firme raggiungono la soglia richiesta.",
-    "a1fb": "Corretto: La somma dei pesi deve soddisfare la soglia.",
+    "a1": "Se le firme raggiungono il threshold richiesto.",
+    "a1fb": "Corretto: La somma dei pesi deve soddisfare il threshold.",
     "a2": "Non appena è presente una firma.",
-    "a2fb": "Non corretto: Una singola firma non è sufficiente quando la soglia è più alta.",
-    "a3": "Solo con la chiave maestra, indipendentemente dalla soglia.",
-    "a3fb": "Non corretto: Anche la chiave maestra è soggetta alle soglie."
+    "a2fb": "Errato: una singola firma non è sufficiente quando il valore di threshold è superiore.",
+    "a3": "Solo con la chiave master, indipendentemente dal valore di threshold.",
+    "a3fb": "Errato: Anche la chiave principale è soggetta al thresholds."
   },
   "q3": {
-    "question": "Cosa succede se le soglie sono impostate in modo errato?",
+    "question": "Cosa succede se thresholds è impostato in modo errato?",
     "hint": "Valori che sono troppo alti o troppo bassi hanno conseguenze.",
     "a1": "Le transazioni potrebbero essere bloccate o autorizzate troppo facilmente.",
-    "a1fb": "Corretto: Soglie errate portano a blocchi o a una sicurezza insufficiente.",
-    "a2": "Per niente, le soglie sono solo informazioni.",
-    "a2fb": "Errato: Le soglie controllano quante firme sono necessarie.",
-    "a3": "Il numero di sequenza del conto viene reimpostato.",
-    "a3fb": "Errato: Le soglie non hanno alcun impatto sulla sequenza."
+    "a1fb": "Corretto: L'uso errato di thresholds comporta blocchi o una sicurezza insufficiente.",
+    "a2": "Niente affatto, thresholds sono solo informazioni.",
+    "a2fb": "Errato: Thresholds determina il numero di firme richieste.",
+    "a3": "Il valore Sequence Number dell'account viene azzerato.",
+    "a3fb": "Errato: Thresholds non ha alcun effetto sulla sequenza."
   },
   "q4": {
-    "question": "Quante firme sono necessarie per una transazione al livello soglia medio?",
-    "hint": "soglia media = soglia media.",
-    "a1": "I pesi delle firme devono almeno raggiungere la soglia media.",
-    "a1fb": "Corretto: La soglia media si applica ai pagamenti.",
+    "question": "Quante firme sono necessarie per una transazione con un periodo di validità di Threshold med?",
+    "hint": "med threshold = media threshold.",
+    "a1": "I pesi delle firme devono soddisfare almeno il valore med-threshold.",
+    "a1fb": "Corretto: il termine centrale threshold si applica ai pagamenti.",
     "a2": "Solo una firma alla volta.",
-    "a2fb": "Errato: Dipende da pesi e soglie.",
-    "a3": "Sempre tutti i firmatari.",
-    "a3fb": "Errato: Solo firme sufficienti per raggiungere la soglia."
+    "a2fb": "Errato: Dipende dai pesi e da thresholds.",
+    "a3": "Sempre e solo signers.",
+    "a3fb": "Errato: solo le firme necessarie per soddisfare il threshold."
   },
   "q5": {
     "question": "Come dovrebbero essere conservate le chiavi segrete in configurazioni multisig reali?",

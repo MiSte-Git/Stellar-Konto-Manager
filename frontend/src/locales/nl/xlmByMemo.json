@@ -37,10 +37,10 @@
   },
   "summary": {
     "amount": "Totaal: {{amount}} XLM",
-    "correctCount": "Invoeringen met correcte notitie: {{n}}",
+    "correctCount": "Invoer met correcte memo: {{n}}",
     "count": "Hoeveelheid: {{n}}",
     "label": "Vergelijking (all inputs)",
-    "otherCount": "Inzendingen met onjuiste/ontbrekende notitie: {{n}}",
+    "otherCount": "Vermeldingen met een onjuiste of ontbrekende memo: {{n}}",
     "unique": "Unieke portemonnees (totaal): {{n}}",
     "uniqueWallets": "Unieke wallets: {{n}}"
   },
@@ -78,7 +78,7 @@
     },
     "csv": "CSV downloaden",
     "failed": "Fout bij het laden van betalingen met onjuist/leeg memo.",
-    "hint": "Filtert inkomende betalingen binnen de periode en toont afzenders met onjuiste/lege notities.",
+    "hint": "Filtert inkomende betalingen binnen de betreffende periode en toont afzenders met een onjuiste of lege memo.",
     "scanning": "… scant valse/lege memo's",
     "summary": "Aantal: {{count}} • Totaal: {{sum}} XLM • Unieke Wallets: {{unique}}",
     "title": "Valse/Lege memo's gedurende de periode"

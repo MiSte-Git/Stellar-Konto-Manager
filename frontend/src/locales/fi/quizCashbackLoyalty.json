@@ -1,6 +1,6 @@
 {
   "title": "Cashback ja Kanta-asiakastokenit",
-  "introText": "Testaa tietämystäsi kanta-asiakastokeneista, luottamusriveistä ja liikkeeseenlaskijoiden varmistamisesta Stellarissa.",
+  "introText": "Testaa tietosi Stellar-verkoston kanta-asiakasohjelmista Token, Trustlines sekä kortinmyöntäjän todentamisesta.",
   "q1": {
     "question": "Mikä on kanta-asiakastoken?",
     "hint": "Mieti mukautettuja omaisuuseriä lohkoketjussa.",
@@ -14,12 +14,12 @@
   "q2": {
     "question": "Mitä asiakas tarvitsee ennen kanta-asiakastokenien vastaanottamista?",
     "hint": "Stellar vaatii nimenomaista luottamusta ennen kuin tokeni voidaan vastaanottaa.",
-    "a1": "Luottamusrivi tokenin liikkeeseenlaskijalle.",
-    "a1fb": "Oikein: Ilman luottamusriviä liikkeeseenlaskijalle ei voida vastaanottaa tokeneita.",
+    "a1": "Trustline:n myöntäjälle, joka on Tokens:n myöntäjä.",
+    "a1fb": "Oikein: Ilman liikkeeseenlaskijan antamaa Trustline:tä ei voida vastaanottaa Token:ta.",
     "a2": "Vahvistettu tili.",
     "a2fb": "Väärin: Stellar-tilit eivät vaadi ulkoista vahvistusta mukautetuille omaisuuserille.",
     "a3": "Vähintään 10 XLM lompakossa.",
-    "a3fb": "Väärin: Luottamusriveillä ei ole XLM-vähimmäisvaatimusta."
+    "a3fb": "Väärin: Trustlines:lle ei ole asetettu XLM:n vähimmäismäärää."
   },
   "q3": {
     "question": "Marco nimeää tokeninsa \"BERRYksi\". Toinen yritys tekee samoin. Ovatko tokenit samat?",
@@ -46,8 +46,8 @@
     "hint": "Kuka on tämän tokenin todellinen luoja?",
     "a1": "Vertaa liikkeeseenlaskijan osoitetta yrityksen viralliseen osoitteeseen.",
     "a1fb": "Oikein: Vain liikkeeseenlaskijan osoitteen vertaaminen suojaa arvottomilta väärennöksiltä.",
-    "a2": "Lisää luottamusrivi heti.",
-    "a2fb": "Väärin: Luottamusrivin lisääminen vahvistamattomalle liikkeeseenlaskijalle voi johtaa arvottomiin tokeneihin.",
+    "a2": "Lisää Trustline välittömästi.",
+    "a2fb": "Väärä: Todentamattomaan liikkeeseenlaskijaan liitetty Trustline voi johtaa arvottomaan Tokens:een.",
     "a3": "Etsi tokenin nimi Internetistä.",
     "a3fb": "Väärin: Pelkkä nimi ei kerro mitään – kuka tahansa voi nimetä tokenin \"BERRYksi\"."
   },

@@ -17,11 +17,11 @@
       "oldestFailed": "Fehler bei der Bestimmung des ältesten Datums"
     },
     "indexIterFailed": "Došlo je do pogreške pri iteraciji indeksa u međuspremniku.",
-    "memoNormBackfillFailed": "Početno učitavanje uplata za normalizirane bilješke nije uspjelo.",
+    "memoNormBackfillFailed": "Početno učitavanje plaćanja za normalizirani memos nije uspjelo.",
     "openFailed": "Lokalna predmemorija nije se mogla otvoriti.",
     "readFailed": "Neuspješno čitanje iz predmemorije",
-    "rehydrateFailed": "Učitavanje nedostajućih bilješki nije uspjelo.",
-    "rehydrateWriteFailed": "Nije uspjelo zapisivanje memoranduma u predmemoriju.",
+    "rehydrateFailed": "Neuspjelo učitavanje nedostajućeg memos.",
+    "rehydrateWriteFailed": "Nije uspjelo zapisati memos u predmemoriju",
     "writeFailed": "Nije uspjelo zapisivanje u predmemoriju",
     "insecureContext": "Ne može spremiti: Ova značajka zahtijeva sigurnu vezu (HTTPS)."
   },
@@ -35,12 +35,12 @@
     "paymentsFetch": "Pogreška pri učitavanju uplata iz Horizona"
   },
   "loadTrustlines": "Nije moguće učitati trustlines. Molimo pokušajte ponovo.",
-  "loadTrustlinesFailed": "Učitavanje povjereničkih linija nije uspjelo.",
+  "loadTrustlinesFailed": "Učitavanje trustlines nije uspjelo",
   "loadTrustlinesNotFound": "Račun nije pronađen na mreži '{{network}}'.",
   "accountNotFoundInNetwork": "Nije pronađeno u '{{net}}'!",
   "op_invalid_limit": "Trustline se ne može obrisati. Možda još uvijek ima stanje ili nepodmirene obaveze.",
   "query": {
-    "invalidMemo": "Nevažeći dopis",
+    "invalidMemo": "Neispravno memo",
     "invalidRange": "Vremenski prozor je nevažeći (Početak > Kraj)",
     "invalidTime": "Nevažeća specifikacija vremena"
   },
@@ -52,12 +52,12 @@
       "signingFailed": "Jedan ili više potpisa nije bilo moguće izraditi. Pokušajte ponovno.",
       "multisig": {
         "invalidSecret": "Jedan od unesenih tajnih ključeva je nevažeći.",
-        "notASigner": "Jedan od unesenih tajnih ključeva ne pripada registriranim potpisnicima.",
+        "notASigner": "Jedan od unesenih secret keys ne pripada registriranom signers.",
         "noKeysProvided": "Nisu uneseni valjani tajni ključevi.",
         "insufficientWeight": "Prikupljeni potpisi nisu dovoljni za odobrenje ove promjene. Potrebno: {{required}}, dostupno: {{current}}.",
         "txBadAuth": "Transakcija odbijena: Potpisi nisu dovoljno (tx_bad_auth).",
-        "zeroWeightSigner": "Uneseni tajni ključ pripada potpisniku s težinom 0 i ne može autorizirati transakciju.",
-        "invalidConfig": "Planirana konfiguracija potpisnika i pragova ne može se potpisati. Molimo provjerite težine i pragove.",
+        "zeroWeightSigner": "Uneseni secret key pripada signer s težinom 0 i ne može autorizirati transakciju.",
+        "invalidConfig": "Planirana konfiguracija signers i thresholds ne može se potpisati. Molimo provjerite težine i thresholds.",
         "trustlines": {
           "invalidInput": "Provjerite šifru imovine, izdavatelja i limit. Barem jedno od polja je nevažeće."
         }
@@ -73,8 +73,8 @@
     "title": "Pogreška pri transakciji"
   },
   "trustline": {
-    "submitFailed": "Pogreška prilikom brisanja povjereničke linije.",
-    "unknown": "Nepoznata greška prilikom brisanja linije povjerenja."
+    "submitFailed": "Greška pri brisanju trustline.",
+    "unknown": "Nepoznata pogreška tijekom brisanja trustline."
   },
   "xlmByMemo": {
     "aborted": "Operacija otkazana od strane korisnika.",
@@ -82,7 +82,7 @@
     "dateInvalid": "Nevažeći datum",
     "dateRange": "Nevažeći raspon datuma",
     "failedUnknown": "Nepoznata greška",
-    "memoInvalid": "Nevažeća bilješka",
+    "memoInvalid": "Neispravno memo",
     "paymentsFetch": "Pogreška pri učitavanju plaćanja",
     "serverInvalid": "Neispravan poslužitelj"
   },

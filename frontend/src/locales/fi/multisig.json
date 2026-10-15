@@ -3,14 +3,14 @@
     "single": "Tämä tili käyttää yhtä allekirjoitusta.",
     "multi": "Tämä tili käyttää useita allekirjoituksia (Multisig)."
   },
-  "requiredThreshold": "Vaadittu kynnysarvo ({{level}}): {{value}}",
+  "requiredThreshold": "Vaaditaan Threshold ({{level}}): {{value}}",
   "operationLabel": {
     "payment": "Maksu",
     "setOptions": "Configuration (Signers & Thresholds)",
-    "changeTrust": "Vaihda luottolimiitti",
+    "changeTrust": "Muuta Trustline",
     "unknown": "Toiminta"
   },
-  "multipleSignersInfo": "Tämä toiminto vaatii useita allekirjoituksia. Ole hyvä ja anna riittävästi salaisia avaimia kynnyksen täyttämiseksi.",
+  "multipleSignersInfo": "Tämä toimenpide vaatii useita allekirjoituksia. Anna riittävä määrä secret keys, jotta threshold täyttyy.",
   "confirm": {
     "options": {
       "recommended": "Suositeltava",
@@ -22,20 +22,20 @@
       "proceed": "Jatka",
       "job": {
         "title": "Luo multisig-työ (Standard)",
-        "desc": "Vakio työnkulku tuottavalle multisigille. Luo työtehtävän tunnuksen ja kerää allekirjoituksia hajautetusti.",
+        "desc": "Tuottavan multisig:n vakiotyönkulku. Luo työtunnuksen ja kerää allekirjoituksia hajautetusti.",
         "short": "Luo multisig-työn (Job-ID) ja kerää jaettuja allekirjoituksia.",
         "moreInfo": "Lisätietoja.",
         "infoTitle": "Miten \"Luo multisig-työ\" toimii?",
         "infoBody": {
           "one": "Tapahtuma tallennetaan taustajärjestelmässä multisig-tehtävänä ja sille annetaan tehtävä-ID. Mitään ei lähetetä suoraan.",
-          "two": "Kaikki seuraavat allekirjoittajat avaavat SKM-instanssissaan valikkokohdan \"Monisig-tapahtumat\", lataavat työn ja allekirjoittavat.",
-          "three": "Heti kun riittävä määrä allekirjoituksia on kerätty (kynnysarvo saavutettu), tapahtuma lähetetään tai se voidaan lähettää.",
-          "four": "Voit antaa työtunnuksen muille allekirjoittajille, tai he voivat valita työn suoraan kohdasta \"Monisig-tapahtumat\"."
+          "two": "Kaikkien Signer-käyttäjien tulisi avata SKM-instanssissaan valikkokohta ”Multisig Jobs”, ladata työ ja allekirjoittaa se.",
+          "three": "Heti kun riittävä määrä allekirjoituksia on kerätty (threshold saavutettu), tapahtuma lähetetään tai se voidaan lähettää.",
+          "four": "Voit jakaa työn tunnuksen muiden Signer:n kanssa, tai he voivat valita työn suoraan kohdasta ”Multisig:n työt”."
         },
         "steps": {
-          "one": "Vaihe 1: Luodaan moniallekirjoitus-tehtävä, ja sille annetaan tehtävän tunnus.",
-          "two": "Vaihe 2: Kaikki seuraavat allekirjoittajat avaavat SKM-instanssissaan valikkokohdan \"Monisig-tapahtumat\", lataavat työn ja allekirjoittavat.",
-          "three": "Vaihe 3: Toinen allekirjoittaja avaa SKM-instanssissaan valikkokohdan \"Monisig-tapahtumat\", lataa työn ja allekirjoittaa.",
+          "one": "Vaihe 1: multisig-tehtävä luodaan, ja sille annetaan tehtävän tunnus.",
+          "two": "Vaihe 2: Kaikkien Signer-käyttäjien tulee avata SKM-instanssissaan valikkokohta ”Multisig Jobs”, ladata työ ja allekirjoittaa se.",
+          "three": "Vaihe 3: Toinen signer avaa SKM-instanssissaan valikkokohdan ”Multisig-tilaukset”, lataa toimeksiannon ja allekirjoittaa sen.",
           "four": "Vaihe 4: Kun riittävästi allekirjoituksia on kerätty, tapahtuma lähetetään tai se voidaan lähettää."
         }
       },
@@ -46,9 +46,9 @@
         "moreInfo": "Lisätietoja",
         "infoTitle": "Miten \"Kaikki allekirjoitukset paikallisesti\" toimii?",
         "infoBody": {
-          "one": "Syötät kaikki vaaditut salaiset avaimet tälle laitteelle peräkkäin, kunnes kynnysarvo saavutetaan.",
+          "one": "Syötä kaikki vaaditut secret keys-arvot tähän laitteeseen peräkkäin, kunnes saavutetaan threshold.",
           "two": "Tämä ei ole enää hajautettu multisig-vuo, vaan \"usea avain samalla laitteella\" – käytä vain luotetuilla laitteilla.",
-          "three": "Kun allekirjoituksia on kerätty riittävästi, voit tarkistaa tapahtuman tarkistusikkunassa ennen kuin se lähetetään Horizonille (ilman monen allekirjoituksen tehtävää)."
+          "three": "Kun allekirjoituksia on kerätty riittävästi, voit tarkistaa tapahtuman tarkistusikkunassa ennen kuin se lähetetään Horizonille (ilman multisig-tehtävää)."
         }
       },
       "xdr": {
@@ -60,7 +60,7 @@
         "infoBody": {
           "one": "XDR on Stellarin raakatransaktiomuoto. Mitään ei lähetetä automaattisesti.",
           "two": "Käytä XDR:ää laitteistolompakoihin, offline-tietokoneisiin tai muihin lompakoihin/työkaluihin, jotka voivat tuoda XDR:ää.",
-          "three": "Sinä olet vastuussa XDR:n allekirjoittamisesta ja/tai lähettämisestä myöhemmin (e.g., via Multi-signature jobs or an external tool)."
+          "three": "Sinun vastuullasi on allekirjoittaa ja/tai lähettää XDR myöhemmin (esim. käyttämällä Multisig-tehtäviä tai ulkoista työkalua)."
         },
         "steps": {
           "one": "XDR luodaan, mutta mitään ei lähetetä.",
@@ -73,16 +73,16 @@
       "backToSelection": "Takaisin",
       "copyXdr": "Kopioi XDR",
       "job": {
-        "title": "Tapahtuma valmisteltu moniallekirjoitusta varten.",
+        "title": "Tapahtuma on valmisteltu ajaksi multisig",
         "status": "Multisig-työ luotiin. Tapahtumaa ei ole vielä lähetetty.",
         "jobIdLabel": "Työtunnus",
         "hashLabel": "Tapahtumatunniste",
         "infoButton": "Seuraavat askeleet",
         "infoTitle": "Mitä täytyy tehdä nyt?",
         "info": {
-          "share": "Lähetä työtunnus tai XDR-viesti seuraaville allekirjoittajille (sähköpostitse tai viestisovellusten, kuten Telegramin tai WhatsAppin, kautta).",
-          "sign": "Allekirjoittajat joko valitsevat vaihtoehdon 3 (\"Tuo XDR\") ja allekirjoittavat XDR:n TAI avaavat SKM:ssä valikkokohdan \"Työtunnus\", lataavat työn ja allekirjoittavat siellä.",
-          "submit": "Kun tarpeeksi allekirjoituksia on kerätty, joku allekirjoittajista lähettää työn lopulta verkkoon SKM:ssä (valikko \"Työtunnus\")."
+          "share": "Lähetä työtunnus tai XDR seuraavalle Signer:lle (sähköpostitse tai viestisovellusten, kuten Telegramin tai WhatsAppin, kautta).",
+          "sign": "Signer Valitse joko vaihtoehto 3 (”Tuo XDR”) ja allekirjoita XDR-tiedosto, TAI avaa SKM:ssä ”Job ID” -valikkokohta, lataa työ ja allekirjoita se siellä.",
+          "submit": "Kun riittävä määrä allekirjoituksia on kerätty, yksi Signers-käyttäjistä lähettää tehtävän verkkoon SKM:n kautta (”Job ID” -valikosta)."
         },
         "copyJobId": "Kopioi työn tunnus",
         "copiedJobId": "Kopioitu"
@@ -99,31 +99,31 @@
         "status": "Vain yksi XDR luotiin. Mitään ei lähetetty verkkoon.",
         "noJob": "Multisig-työtä ei luotu.",
         "hashLabel": "Tapahtuma-hajautus",
-        "hint": "Lähetä XDR eteenpäin muille allekirjoittajille tai työkaluille (esim. laitteistolompakko, offline-tietokone). Lähettämistä varten tuo XDR (tarvittaessa allekirjoitettuna) myöhemmin takaisin SKM:ään (esim. vaihtoehto 3) ja lähetä se verkkoon."
+        "hint": "Välitä XDR-tiedosto muihin Signer-laitteisiin tai -työkaluihin (esim. laitteistopohjaisiin Wallet-laitteisiin, offline-tietokoneisiin). Lähettämiseksi tuo XDR (tarvittaessa allekirjoitettuna) myöhemmin takaisin SKM:ään (esim. vaihtoehto 3) ja lähetä se verkkoon."
       }
     },
     "testModeTitle": "Kaikki allekirjoitukset paikallisia",
-    "testModeDescription": "Nykyinen prosessi: Anna salainen avain, kerää kaikki tarvittavat allekirjoitukset ja lähetä suoraan Horizonille.",
+    "testModeDescription": "Nykyinen toimintatapa: Syötä Secret Key, kerää kaikki tarvittavat allekirjoitukset ja lähetä ne suoraan Horizonille.",
     "testModeButton": "Sign directly & send",
-    "prepareTitle": "Valmistele tapahtuma multisigille",
+    "prepareTitle": "Valmistele tapahtuma multisig:lle",
     "prepareDescription": "Valmistele vain XDR tuotantokäyttöön multisig-toiminnolla. Mitään ei lähetetä heti.",
     "prepareButton": "Valmistele XDR (älä lähetä)"
   },
   "jobCreated": "Multisig-työ luotu (tunnus: {{id}}). Avaa \"Monisig-tapahtumat\" nähdäksesi tilan.",
   "errors": {
     "mismatchedHash": "Allekirjoitettu XDR ei kuulu tähän tapahtumaan.",
-    "signersUnavailable": "Tilin allekirjoittajaluetteloa ei tällä hetkellä ole saatavilla Horizonissa. Allekirjoitusta ei ole tehty. Yritä uudelleen muutaman sekunnin kuluttua.",
-    "timeboundTooLong": "Aikaväli on liian pitkä. Lyhennä monen allekirjoituksen aikakatkaisua enintään {{maxDays}} päivään."
+    "signersUnavailable": "Tilin signers-luetteloa ei ole tällä hetkellä käytettävissä Horizonissa. Allekirjoitusta ei voitu lisätä. Yritä uudelleen muutaman sekunnin kuluttua.",
+    "timeboundTooLong": "Aikaväli on liian pitkä. Pienennä multisig-aikakatkaisuasetusta enintään {{maxDays}} päivään."
   },
   "prepare": {
-    "title": "Moniallekirjoituksen tapahtuma valmisteltu",
+    "title": "Tapahtuma on valmisteltu ajaksi multisig",
     "subtitle": "Tapahtuma on rakennettu ja sen voi allekirjoittaa ulkoisesti.",
     "hashLabel": "Tapahtuman hash",
     "xdrLabel": "Tapahtuma XDR",
     "copyXdrButton": "Kopioi XDR",
     "copied": "Kopioitu",
     "notSentHint": "Tätä tapahtumaa ei ole vielä lähetetty verkkoon.",
-    "closeHint": "Voit sulkea tämän ikkunan heti, kun olet allekirjoittanut ja monisig-työ on luotu; seuraava allekirjoittaja löytää työtunnuksen valikosta “Monisig-tapahtumat”."
+    "closeHint": "Voit sulkea tämän valintaikkunan, kun olet allekirjoittanut ja multisig-tilaus on luotu; seuraava signer löytää työn tunnuksen valikosta ”Multisig-tilaukset”."
   },
   "testMode": {
     "modalTitle": "Yhden käyttäjän allekirjoitus",
@@ -134,10 +134,10 @@
       "label": "Käytä kaikkia S-avaimia paikallisesti"
     },
     "prod": {
-      "label": "Tuottavuustila (Produktivmodus)",
+      "label": "Tuotantotila (true Multisig XDR:n kanssa)",
       "banner": {
-        "title": "Tuottava tila moniallekirjoitukselle",
-        "body": "Tässä tilassa Stellar Account Manager käyttää vain omaa salaisuusavaintasi. Lisäallekirjoitukset kerätään vietyjen XDR-tiedostojen avulla. Suojaa XDR-tiedostosi ja jaa ne vain luotettujen allekirjoittajien kanssa."
+        "title": "Tuotantotila Multisig:lle",
+        "body": "Tässä tilassa Stellar Account Manager käyttää ainoastaan omaa Secret Key-tunnustasi. Muut allekirjoitukset kerätään vietyjen XDR-tiedostojen kautta. Varmuuskopioi XDR-tiedostosi ja jaa ne vain luotettavien Signers-henkilöiden kanssa."
       }
     }
   },
@@ -169,20 +169,20 @@
     },
     "changes": {
       "title": "Suunnitellut muutokset",
-      "addSigner": "Lisää allekirjoittaja: {{account}} (Paino {{weight}})",
-      "removeSigner": "Poista allekirjoittaja: {{account}}",
-      "setThresholds": "Aseta kynnykset: matala={{low}}, keski={{med}}, korkea={{high}}"
+      "addSigner": "Lisää signer: {{account}} (Paino {{weight}})",
+      "removeSigner": "Poista signer: {{account}}",
+      "setThresholds": "Aseta thresholds: alaraja={{low}}, keskiarvo={{med}}, yläraja={{high}}"
     },
     "xdr": {
       "title": "Tapahtuma (XDR)",
-      "hint": "Tämä XDR voidaan ladata ja allekirjoittaa muiden allekirjoittajien toimesta yhteensopivissa lompakoissa.",
+      "hint": "Muut Signers-laitteet voivat ladata ja allekirjoittaa tämän XDR-tiedoston yhteensopivissa lompakoissa.",
       "copy": "Kopioi XDR",
       "copy.success": "XDR kopioitu leikepöydälle.",
       "copy.error": "XDR:ää ei voitu kopioida leikepöydälle."
     },
     "signedXdr": {
       "title": "Allekirjoitetun XDR:n tuonti",
-      "hint": "Lisää tähän XDR, joka on allekirjoitettu toisen allekirjoittajan toimesta, jotta allekirjoitukset voidaan yhdistää tähän moniallekirjoitusprosessiin.",
+      "hint": "Lisää tähän toisen Signer:n allekirjoittama XDR, jotta allekirjoitukset yhdistetään tähän Multisig-tehtävään.",
       "label": "Allekirjoitettu XDR",
       "submit": "Yhdistä allekirjoitettu XDR",
       "success": {
@@ -197,8 +197,8 @@
     },
     "submitFailed": "Virhe tapahtui lähetettäessä: {{reason}}",
     "submitNoExtras": "Ei lisätietoja virheestä saatavilla.",
-    "noAccessToken": "Käyttötunnusta ei ole saatavilla. Lataa ensin tili, joka on tämän tehtävän allekirjoittaja.",
-    "notASigner": "Tämä tili ei ole tämän tehtävän aktiivinen allekirjoittaja.",
+    "noAccessToken": "Pääsyä token ei ole käytettävissä. Lataa ensin tili, joka on tämän työn signer.",
+    "notASigner": "Tämä tili ei ole tämän työn aktiivinen signer.",
     "noLocalSecretForToken": "Tälle selaimelle ei ole tallennettu tämän tilin salasanaa. Avaa tili käyttämällä jaettua linkkiä, jossa on pääsytunnus, tai lataa tili kerran valitsemalla ”Muista salasana”.",
     "transparency": {
       "title": "Tapahtuman tiedot"
@@ -208,9 +208,9 @@
       "payment": "Maksu: {{amount}} {{asset}} kohteeseen {{destination}}",
       "createAccount": "Luo tili: {{destination}}, alkusaldo {{balance}} XLM",
       "masterWeight": "Aseta pääpaino arvoon {{weight}}",
-      "signerAdd": "Aseta allekirjoittajan {{key}} painoksi {{weight}}",
-      "signerRemove": "Poista allekirjoittaja {{key}}",
-      "thresholds": "Aseta kynnysarvot: matala={{low}}, keskitaso={{med}}, korkea={{high}}",
+      "signerAdd": "Aseta painoarvo signer {{key}}:lle arvoksi {{weight}}",
+      "signerRemove": "Poista signer {{key}}",
+      "thresholds": "Aseta Thresholds: matala={{low}}, keskitaso={{med}}, korkea={{high}}",
       "homeDomain": "Määritä kotiverkkotunnukseksi {{domain}}",
       "changeTrust": "Määritä Trustline-arvo kohteelle {{asset}} (raja: {{limit}})",
       "accountMerge": "Yhdistä tili {{destination}}:iin",
@@ -233,20 +233,20 @@
     },
     "option": {
       "distributed": {
-        "title": "Standardi: Hajautettu moniallekirjoitusprosessi",
-        "body": "Oletusarvoisesti tämä istunto käyttää allekirjoittamiseen vain omaa salaisuutta avaintasi. Lisäallekirjoitukset lisätään vietyjen XDR-tiedostojen tai muiden allekirjoittajien tehtävä-ID:n kautta."
+        "title": "Standardi: Hajautettu Multisig-virtaus",
+        "body": "Oletusarvoisesti tämä istunto on allekirjoitettu vain omalla Secret Key-tunnuksellasi. Lisäallekirjoitukset lisätään vietyjen XDR-tiedostojen tai toisen Signers-tunnuksen työtunnuksen kautta."
       },
       "localAll": {
         "title": "Anna kaikki allekirjoitukset paikallisesti",
-        "body": "Valitse tämä vaihtoehto vain, jos hallitset kaikkia tähän tiliin liittyviä yksityisiä avaimia (esim. kun tilin palautus on tapahtunut useiden allekirjoittajien toimesta). Tällöin Stellar Account Manager kerää kaikki allekirjoitukset paikallisesti ja lähettää tapahtuman suoraan Horizonille.",
+        "body": "Valitse tämä vaihtoehto vain, jos hallitset kaikkia tähän tiliin liittyviä Secret Keys-tunnuksia (esim. kun tilin palautus on koskenut useita Signers-tunnuksia). Tällöin Stellar Account Manager kerää kaikki allekirjoitukset paikallisesti ja lähettää tapahtuman suoraan Horizonille.",
         "checkboxLabel": "Syötä kaikki allekirjoitukset paikallisesti tähän keskusteluun ja lähetä ne suoraan.",
-        "warning": "Huomio: Jos syötät kaikki allekirjoitukset paikallisesti, kaikki salaiset avaimet ovat läsnä tässä istunnossa. Käytä tätä vaihtoehtoa vain luotetuilla laitteilla."
+        "warning": "Huomautus: Jos syötät kaikki allekirjoitukset paikallisesti, kaikki Secret Keys-tiedot ovat käytettävissä tässä istunnossa. Käytä tätä vaihtoehtoa vain luotettavissa laitteissa."
       }
     }
   },
   "multisigInfo": {
     "master": "Pääavain",
-    "signerDisabled": "Allekirjoittaja deaktivoitu (paino = 0)"
+    "signerDisabled": "Signer poistettu käytöstä (painoarvo = 0)"
   },
   "list": {
     "title": "Multisig-tilaukset",
@@ -258,12 +258,12 @@
     "signaturesProgress": "{{kerätty}} / {{vaadittu}} allekirjoitusten määrä",
     "filter": {
       "mine": "Vain tilaukset, jotka minun täytyy vielä allekirjoittaa.",
-      "assigned": "Myös tilaukset, joissa olen allekirjoittajana."
+      "assigned": "Myös tilaukset, joissa olen signer."
     },
     "signer": {
       "signed": "✓",
       "missing": "puuttuu",
-      "unknown": "Allekirjoittaja"
+      "unknown": "Signer"
     },
     "status": {
       "pending_signatures": "Odotetaan allekirjoituksia",
@@ -284,8 +284,8 @@
   "job": {
     "create": {
       "success": {
-        "title": "Moniallekirjoitustapahtuma luotu",
-        "body": "Moniallekirjoitustapahtuma, jonka tunnus on {{id}}, on luotu. Lisäallekirjoittajat voivat allekirjoittaa XDR-tiedoston sen jälkeen, kun se on viety."
+        "title": "Multisig-tapahtuma luotu",
+        "body": "Tunnisteella {{id}} oleva Multisig-tehtävä on luotu. Muut Signers-tehtävät voivat allekirjoittaa XDR-tiedoston sen vientiä seuraavalla hetkellä."
       }
     },
     "status": {
@@ -298,11 +298,11 @@
     },
     "statusHelp": {
       "pending": "Multisig-tapahtuma on luotu, mutta siinä ei ole vielä allekirjoituksia.",
-      "partiallySigned": "Jotkut allekirjoittajat ovat jo allekirjoittaneet. Lisää allekirjoituksia tarvitaan vielä.",
+      "partiallySigned": "Jotkut Signer ovat jo allekirjoittaneet. Allekirjoituksia tarvitaan vielä lisää.",
       "readyToSubmit": "Allekirjoituksia on riittävästi. Tapahtuma voidaan lähettää Horizoniin.",
       "submitted": "Tapahtuma on lähetetty verkkoon. Tarkista lopullinen saldo tarvittaessa.",
       "failed": "Tapahtui virhe, kun lähetettiin tapahtumaa. Katso lisätietoja virhelokista.",
-      "pending_signatures": "Moniallekirjoitustapahtuma odottaa yhä allekirjoituksia.",
+      "pending_signatures": "multisig-transaktio odottaa edelleen allekirjoituksia.",
       "ready_to_submit": "Allekirjoituksia on tarpeeksi. Tilaus voidaan lähettää.",
       "submitted_success": "Tilaus on lähetetty.",
       "submitted_failed": "Lähettämisen aikana tapahtui virhe.",

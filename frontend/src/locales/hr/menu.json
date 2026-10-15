@@ -16,5 +16,19 @@
   "tokenPurchases": "Kupnje tokena",
   "learn": "Zvjezdani kviz za početnike",
   "unknown": "Nepoznata stavka izbornika",
-  "swap": "Pronađi i trguj tokenima"
+  "swap": "Pronađi i trguj tokenima",
+  "wallet": "Wallet",
+  "sidebarLabel": "Glavna navigacija",
+  "openNavigation": "Otvori navigaciju",
+  "closeNavigation": "Zatvori navigaciju",
+  "language": "Jezik",
+  "sections": {
+    "account": "Račun",
+    "trade": "Trgovina",
+    "reports": "Izvještaji",
+    "trustlines": "Token-Odobrenja",
+    "advanced": "Napredno",
+    "learn": "Učenje"
+  },
+  "receive": "Primiti"
 }

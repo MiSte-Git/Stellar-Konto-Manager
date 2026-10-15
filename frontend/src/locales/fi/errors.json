@@ -17,11 +17,11 @@
       "oldestFailed": "Ei onnistunut määrittämään vanhinta päivämäärää."
     },
     "indexIterFailed": "Välimuistin indeksin iteraatio epäonnistui.",
-    "memoNormBackfillFailed": "Alkuperäinen maksujen lataus normalisoitujen muistiinpanojen osalta epäonnistui.",
+    "memoNormBackfillFailed": "Maksujen alkuperäinen lataaminen normalisoidulle memos:lle epäonnistui.",
     "openFailed": "Paikallista välimuistia ei voitu avata.",
     "readFailed": "Välimuistin lukeminen epäonnistui",
-    "rehydrateFailed": "Muistioiden lataaminen epäonnistui.",
-    "rehydrateWriteFailed": "Muistion kirjoittaminen välimuistiin epäonnistui.",
+    "rehydrateFailed": "Puuttuvaa memos-tiedostoa ei voitu ladata.",
+    "rehydrateWriteFailed": "memos:n kirjoittaminen välimuistiin epäonnistui",
     "writeFailed": "Välimuistiin kirjoittaminen epäonnistui",
     "insecureContext": "Tallennus ei onnistu: Tämä toiminto edellyttää suojattua yhteyttä (HTTPS)."
   },
@@ -34,13 +34,13 @@
   "horizon": {
     "paymentsFetch": "Virhe maksuja ladattaessa Horizonista"
   },
-  "loadTrustlines": "Trustlineja ei voitu ladata. Yritä uudelleen.",
-  "loadTrustlinesFailed": "Luottolinjojen lataaminen epäonnistui",
+  "loadTrustlines": "Trustlines:tä ei voitu ladata. Yritä uudelleen.",
+  "loadTrustlinesFailed": "trustlines:n lataaminen epäonnistui",
   "loadTrustlinesNotFound": "Tiliä ei löydy '{{network}}' -verkosta.",
   "accountNotFoundInNetwork": "Ei löydy '{{net}}'istä!",
-  "op_invalid_limit": "Trustlinea ei voi poistaa. Se saattaa vielä sisältää saldoa tai avoimia velvoitteita.",
+  "op_invalid_limit": "Trustline:tä ei voi poistaa. Siinä saattaa vielä olla saldoa tai maksamattomia velvoitteita.",
   "query": {
-    "invalidMemo": "Virheellinen muistio",
+    "invalidMemo": "Virheellinen memo",
     "invalidRange": "Aikaväli on virheellinen (alkaa > loppuu)",
     "invalidTime": "Virheellinen ajanmääritys"
   },
@@ -52,12 +52,12 @@
       "signingFailed": "Yhtä tai useampaa allekirjoitusta ei voitu luoda. Yritä uudelleen.",
       "multisig": {
         "invalidSecret": "Yksi syötetyistä salausavaimista on virheellinen.",
-        "notASigner": "Yksi syötetyistä salaisista avaimista ei kuulu rekisteröityneille allekirjoittajille.",
+        "notASigner": "Yksi syötetyistä secret keys-arvoista ei kuulu rekisteröityyn signers-arvoon.",
         "noKeysProvided": "Yhtään kelvollista salaista avainta ei syötetty.",
         "insufficientWeight": "Kerätyt allekirjoitukset eivät riitä tämän muutoksen hyväksymiseen. Vaaditaan: {{required}}, saatavilla: {{current}}.",
         "txBadAuth": "Tapahtuma hylätty: Allekirjoitukset eivät riitä (tx_bad_auth).",
-        "zeroWeightSigner": "Syötetty salausavain kuuluu allekirjoittajalle, jonka painoarvo on 0, eikä se voi valtuuttaa tapahtumaa.",
-        "invalidConfig": "Suunniteltua allekirjoittajien ja kynnysten kokoonpanoa ei voida allekirjoittaa. Tarkista painot ja kynnykset.",
+        "zeroWeightSigner": "Syötetty secret key kuuluu painoarvoltaan 0 olevaan signer:een, eikä sillä voi hyväksyä tapahtumaa.",
+        "invalidConfig": "Suunniteltua signers- ja thresholds-kokoonpanoa ei voida allekirjoittaa. Tarkista painot ja thresholds.",
         "trustlines": {
           "invalidInput": "Tarkista varainimike, liikkeeseenlaskija ja raja. Ainakin yksi kentistä on virheellinen."
         }
@@ -73,8 +73,8 @@
     "title": "Tapahtumavirhe"
   },
   "trustline": {
-    "submitFailed": "Virhe luottolinjan poistamisessa.",
-    "unknown": "Tuntematon virhe poistettaessa luottolinjaa."
+    "submitFailed": "Virhe poistettaessa trustline.",
+    "unknown": "Tuntematon virhe poistettaessa trustline-muuttujaa."
   },
   "xlmByMemo": {
     "aborted": "Toiminto peruutettu käyttäjän toimesta.",
@@ -82,7 +82,7 @@
     "dateInvalid": "Virheellinen päiväys",
     "dateRange": "Virheellinen päivämääräväli",
     "failedUnknown": "Tuntematon virhe",
-    "memoInvalid": "Virheellinen muistio",
+    "memoInvalid": "Virheellinen memo",
     "paymentsFetch": "Virhe maksujen latauksessa",
     "serverInvalid": "Virheellinen palvelin"
   },

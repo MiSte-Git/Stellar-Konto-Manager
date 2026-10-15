@@ -10,5 +10,92 @@
     "deactivated": "Napomena: Ovaj novčanik je označen kao onemogućen na vašem popisu povjerenja."
   },
   "xlmBalance": "XLM",
-  "unfunded": "Nije aktivirano"
+  "unfunded": "Nije aktivirano",
+  "home": {
+    "balance": "Ravnoteža",
+    "refresh": "Osvježi",
+    "available": "Dostupno",
+    "reserved": "Rezervirano",
+    "reservedHint": "Mrežna rezerva (po Token otpuštanju, ponudi ili Signer) plus XLM u otvorenim prodajnim narudžbama. Ovaj iznos se ne može poslati.",
+    "muxedNote": "Muxed Identity: Prikazuje se stanje osnovnog računa.",
+    "loadError": "Informacije o računu nisu mogle biti učitane.",
+    "actions": {
+      "send": "Pošalji",
+      "swap": "Razmjena",
+      "details": "Podaci o računu",
+      "receive": "Primiti"
+    },
+    "assets": "Assets",
+    "manageTrustlines": "Upravljaj Token dionicama",
+    "poolShares": "Dionice likviditetskog fonda",
+    "pool": "Bazen",
+    "issuer": "Izdavač",
+    "noTrustlines": "Još nema odobrenja Token. Da biste zadržali ostala Tokens, prvo trebate odobrenje (Trustline).",
+    "tokenNote": "Ekvivalentna vrijednost prikazuje se samo za XLM. SKM ne procjenjuje Token i ne donosi nikakvu odluku o tome je li Token autentičan.",
+    "notFound": {
+      "title": "Račun još nije aktiviran",
+      "text": "Ovaj račun još ne postoji na {{net}}. Postat će aktivan čim primi svoj prvi depozit u XLM-u."
+    },
+    "empty": {
+      "title": "Još nije učitana nijedna računica.",
+      "text": "Unesite svoju Public Key ili federacijsku adresu iznad. Public Key je dovoljan za pregled; za transakcije će vam kasnije trebati vaša Secret Key.",
+      "learn": "Upoznajte Stellar"
+    }
+  },
+  "receive": {
+    "title": "Primiti",
+    "intro": "Unesite ovu adresu da biste primili XLM ili Token na ovaj račun.",
+    "noAccount": "Prvo dodajte račun na vrhu. Zatim ćete ovdje vidjeti njegovu adresu i QR kod.",
+    "testnet": "Vi ste u Testnet. Salda na Testnet nemaju vrijednost.",
+    "variantLabel": "Vrsta adrese",
+    "muxed": "Muxed adresa (M…)",
+    "base": "Osnovni račun (G…)",
+    "qrLabel": "QR kod za adresu {{address}}",
+    "addressLabel": "Vaša zvjezdana adresa",
+    "muxedAddressLabel": "Muxed adresa",
+    "copy": "Kopiraj adresu",
+    "copied": "Kopirano",
+    "hintCompare": "Neka pošiljatelj provjeri prvi i zadnji znak adrese. Prevaranti namjerno koriste adrese koje izgledaju slično.",
+    "hintTrustline": "Tokene osim XLM-a možeš primati tek kada za njih imaš Token-odobrenje (Trustline).",
+    "hintActivate": "Novi račun se aktivira tek nakon početnog depozita od najmanje 1 XLM.",
+    "hintMuxed": "Uplate poslane na M-adresu uplaćuju se na vaš osnovni račun i označene su Muxed ID-om. Ne podržava svaki Wallet ili mjenjačnica M-adrese."
+  },
+  "activity": {
+    "title": "Zadnja aktivnost",
+    "showAll": "Prikaži sve",
+    "loadError": "Aktivnost se nije mogla učitati.",
+    "empty": "Još nema uplata.",
+    "failed": "Neuspjelo",
+    "lookalike": "Slična adresa",
+    "lookalikeHint": "Ova adresa počinje i završava baš kao adresa na koju ste poslali poruku, ali je drugačija. Nikada ne kopirajte primatelje iz svoje povijesti.",
+    "lookalikeWarning": "Upozorenje: Najmanje jedan pošiljatelj nalikuje adresi na koju ste već poslali poruku. Nikada ne kopirajte primatelje iz svoje povijesti; uvijek ih kopirajte iz pouzdanog izvora.",
+    "dust": "Mala količina",
+    "showDust": "Oglasi",
+    "hideDust": "Sakrij",
+    "from": "od",
+    "to": "k",
+    "memoHint": "Memo od pošiljatelja. Sadržaj nije provjeren od strane SKM-a.",
+    "explorer": "Detalji",
+    "kind": {
+      "received": "Primljeno",
+      "sent": "Poslano",
+      "self": "Za sebe",
+      "pathIn": "Primljeno (razmijenjeno)",
+      "pathOut": "Poslano (razmijenjeno)",
+      "accountCreated": "Račun je aktiviran",
+      "createdAccount": "Račun je stvoren",
+      "mergeIn": "Račun je spojен",
+      "mergeOut": "Račun zatvoren"
+    },
+    "dustHidden_one": "{{count}} malih uplata skriveno (često spam).",
+    "dustHidden_other": "{{count}} malih uplata skriveno (često spam).",
+    "dustShown_one": "Prikazuje se {{count}} mikroplaćanje.",
+    "dustShown_other": "Prikazano je {{count}} malih uplata.",
+    "memoLabel": "Memo",
+    "onlyDust": "Dostupna su samo vrlo mala plaćanja.",
+    "url": "Sadrži internetsku adresu",
+    "urlHint": "Memo sadrži web-adresu. Za legitimne uplate ovo nije potrebno. Nemojte ga otvarati.",
+    "fakeNative": "Token, ne nativni XML",
+    "fakeNativeHint": "Ovo je Token od izdavača, a ne mrežni izvorni XLM."
+  }
 }

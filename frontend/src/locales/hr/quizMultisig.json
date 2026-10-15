@@ -1,6 +1,6 @@
 {
   "title": "Multisig & Security",
-  "introText": "Provjeri svoje znanje o potpisima, pragovima i sigurnom pohranjivanju.",
+  "introText": "Provjerite svoje znanje o potpisima, thresholds i sigurnom pohranjivanju.",
   "q1": {
     "question": "Zašto koristiti multisig?",
     "hint": "Razmislite o podijeljenoj odgovornosti.",
@@ -14,32 +14,32 @@
   "q2": {
     "question": "Kada je transakcija na multisig računu valjana?",
     "hint": "Pogledajte ponderisane potpise.",
-    "a1": "Ako potpisi dosegnu potrebni prag.",
-    "a1fb": "Točno: Zbroj težina mora zadovoljiti prag.",
+    "a1": "Ako potpisi dosegnu potrebni threshold.",
+    "a1fb": "Ispravno: Zbroj težina mora zadovoljiti threshold.",
     "a2": "Čim je prisutan bilo koji potpis.",
-    "a2fb": "Netačno: Jedan potpis nije dovoljan kada je prag viši.",
-    "a3": "Samo s glavnim ključem, bez obzira na prag.",
-    "a3fb": "Netočno: Glavni ključ također podliježe pragovima."
+    "a2fb": "Netočno: Jedan potpis nije dovoljan kada je threshold veći.",
+    "a3": "Samo s glavnim ključem, bez obzira na threshold.",
+    "a3fb": "Neispravno: Glavni ključ također podliježe thresholds."
   },
   "q3": {
-    "question": "Što se događa ako pragovi nisu pravilno postavljeni?",
+    "question": "Što se događa ako su thresholds postavljeni pogrešno?",
     "hint": "Vrijednosti koje su previsoke ili preniske imaju posljedice.",
     "a1": "Transakcije bi mogle biti blokirane ili prelakše odobrene.",
-    "a1fb": "Ispravka: Neispravni pragovi dovode do zaključavanja ili nedovoljne sigurnosti.",
-    "a2": "Nipošto, pragovi su samo informacije.",
-    "a2fb": "Pogrešno: Pragovi kontroliraju koliko je potpisa potrebno.",
-    "a3": "Broj računa se ponovno postavlja.",
-    "a3fb": "Netočno: Pragovi nemaju utjecaj na slijed."
+    "a1fb": "Ispravno: Neispravno thresholds dovodi do zaključavanja ili nedovoljne sigurnosti.",
+    "a2": "Uopće ne, thresholds su samo informacije.",
+    "a2fb": "Netočno: Thresholds kontrolira koliko je potpisa potrebno.",
+    "a3": "Sequence Number računa je resetiran.",
+    "a3fb": "Netočno: Thresholds nemaju utjecaja na slijed."
   },
   "q4": {
     "question": "Koliko potpisa zahtijeva transakcija na Threshold med?",
     "hint": "med threshold = mean threshold.",
-    "a1": "Težine potpisa moraju najmanje doseći srednji prag.",
-    "a1fb": "Ispravno: Srednji prag se primjenjuje na plaćanja.",
+    "a1": "Težine potpisa moraju barem zadovoljiti med-threshold.",
+    "a1fb": "Ispravno: Srednji threshold odnosi se na uplate.",
     "a2": "Samo jedan potpis u isto vrijeme.",
-    "a2fb": "Netačno: To zavisi od težina i pragova.",
-    "a3": "Uvijek svi potpisnici.",
-    "a3fb": "Nedovoljno: Samo dovoljno potpisa da se zadovolji prag."
+    "a2fb": "Netočno: Ovisi o težinama i thresholds.",
+    "a3": "Uvijek sve signers.",
+    "a3fb": "Netočno: Samo dovoljno potpisa za ispunjenje threshold."
   },
   "q5": {
     "question": "Kako bi tajni ključevi trebali biti pohranjeni u stvarnim multisig postavkama?",

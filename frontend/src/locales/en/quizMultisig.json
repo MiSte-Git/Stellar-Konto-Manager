@@ -28,7 +28,7 @@
     "a1fb": "Correct: Incorrect thresholds lead to locks or insufficient security.",
     "a2": "Not at all, thresholds are just information.",
     "a2fb": "Incorrect: Thresholds control how many signatures are required.",
-    "a3": "The account sequence number is being reset.",
+    "a3": "The account's Sequence Number is reset.",
     "a3fb": "Incorrect: Thresholds have no impact on the sequence."
   },
   "q4": {

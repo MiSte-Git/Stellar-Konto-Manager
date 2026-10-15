@@ -7,7 +7,7 @@
     "destination": "Portafoglio target",
     "issuer": "Emittente",
     "label": "Etichetta",
-    "memo": "Promemoria",
+    "memo": "Memo",
     "payments": "Pagamenti",
     "date": "Data",
     "token": "Gettone"

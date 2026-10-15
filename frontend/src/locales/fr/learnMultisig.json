@@ -1,18 +1,18 @@
 {
   "title": "Multisig pour les débutants.",
-  "menuTitle": "Comprendre le multisignature",
-  "teaser": "Pourquoi plusieurs signatures, comment fonctionnent les seuils, et comment SKM aide.",
+  "menuTitle": "Comprendre Multisig",
+  "teaser": "Pourquoi recourir à des signatures multiples, comment fonctionne thresholds et en quoi SKM est utile.",
   "why": {
     "title": "Pourquoi le multisig ?",
     "text": "Les signatures multiples réduisent le risque d'erreurs individuelles ou de vol."
   },
   "singleVsMulti": {
     "title": "Single-sig vs. Multisig",
-    "text": "Signature unique = Une seule clé suffit. Signature multiple = Plusieurs signatures sont requises (par exemple, 2 sur 3)."
+    "text": "Single-sig = Une seule clé suffit. Multisig = Plusieurs signatures sont requises (par exemple, 2 sur 3)."
   },
   "stellarHow": {
-    "title": "Comment Stellar met en œuvre le multi-signature",
-    "text": "Stellar utilise des signataires avec des poids et des seuils. Chaque opération nécessite un poids seuil."
+    "title": "Comment Stellar met en œuvre Multisig",
+    "text": "Stellar utilise signers avec des poids et thresholds. Chaque opération nécessite un poids threshold."
   },
   "examples": {
     "title": "Exemples pratiques",
@@ -22,11 +22,11 @@
   },
   "skmSupport": {
     "title": "Comment SKM soutient Multisig",
-    "text": "SKM construit des transactions multisignatures, collecte des signatures et stocke les tâches préparées."
+    "text": "SKM crée des transactions multisig, recueille les signatures et stocke les tâches préparées."
   },
   "diagram": {
     "singleVsMulti": "Diagramme : Single-Sig vs. Multisig",
-    "stellarHow": "Diagramme : Signataire, Poids, Seuil",
+    "stellarHow": "Schéma : Signer, Poids, Threshold",
     "skmFlow": "Schéma : Préparation du flux SKM → Signature → Envoi"
   }
 }

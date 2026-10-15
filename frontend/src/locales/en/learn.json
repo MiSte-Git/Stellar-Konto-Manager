@@ -88,17 +88,17 @@
     "reward": "⭐ 1 – Privacy Detective"
   },
   "lesson4": {
-    "title": "Your account",
-    "goal": "Understanding the structure and significance of public/private keys.",
+    "title": "Keys, Fees, and Trustlines",
+    "goal": "Understand the difference between Public Key and Secret Key, as well as fees and Trustlines.",
     "task": "Matching Game: What is public, what is secret",
-    "learningOutcome": "Only the Secret Key provides access; the Public Key may be shared.",
+    "learningOutcome": "Public Key = Receiving address. Secret Key = Keep secret! Trustline = Permission to hold a Token.",
     "reward": "⭐ 1 – Key Guardian"
   },
   "lesson5": {
     "title": "Send & Receive",
     "goal": "Understanding How Transactions and Trustlines Work",
-    "task": "Execute test transmission and view fee",
-    "learningOutcome": "Each transaction incurs a small fee; Trustline = permission to receive.",
+    "task": "Answer questions about Trustlines, fees, account activation, and Memos.",
+    "learningOutcome": "Every transaction incurs a tiny fee. A Memo is like a payment description.",
     "reward": "⭐ 2 – Trustline Starter"
   },
   "lesson6": {
@@ -153,8 +153,8 @@
   "lesson13": {
     "title": "Multisig for Beginners",
     "goal": "Understanding the Fundamental Principles of Multisig",
-    "task": "Compare Single-Sig vs. Multisig and examine an example process.",
-    "learningOutcome": "Multiple signatures increase security; thresholds determine how many signatures are needed.",
+    "task": "Answer questions about single-sig vs. Multisig, Thresholds, and Signers.",
+    "learningOutcome": "With Multisig, multiple signatures are required. This prevents anyone from acting on their own.",
     "reward": "⭐ 2 – Multisig Starter"
   },
   "lesson14": {
@@ -167,7 +167,7 @@
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
     "goal": "Understand how Custom Assets work as loyalty tokens on Stellar.",
-    "task": "Answer questions about loyalty tokens, trust lines, and issuer verification.",
+    "task": "Answer questions about Loyalty Token, Trustlines, and issuer verification.",
     "learningOutcome": "The same token name does not mean the same token—it’s the issuer that makes the difference.",
     "reward": "⭐ 2 – Loyalty Expert"
   },

@@ -8,13 +8,27 @@
   "muxed": "Aliosoitteiden hallinta",
   "glossary": "Sanasto",
   "createAccount": "Luo uusi tili",
-  "multisigEdit": "Muokkaa multisigiä",
-  "multisigJobs": "Avoimet monen allekirjoituksen transaktiot",
+  "multisigEdit": "Muokkaa multisig",
+  "multisigJobs": "Avaa Multisig-tapahtumat",
   "listAll": "Omat tunnuksen käyttöoikeudet",
   "compareTrustlines": "Vertaa tunnuksen valtuutuksia",
   "settings": "Asetukset",
   "tokenPurchases": "Token-ostot",
   "learn": "Aloittelijoiden tähtivisa",
   "unknown": "Tuntematon valikkovalinta",
-  "swap": "Etsi ja vaihda poletteja"
+  "swap": "Etsi ja vaihda poletteja",
+  "wallet": "Wallet",
+  "sidebarLabel": "Päävalikko",
+  "openNavigation": "Avaa navigointi",
+  "closeNavigation": "Sulje navigointi",
+  "language": "Kieli",
+  "sections": {
+    "account": "Tili",
+    "trade": "Kauppa",
+    "reports": "Raportit",
+    "trustlines": "Token-Hyväksynnät",
+    "advanced": "Edistynyt",
+    "learn": "Oppiminen"
+  },
+  "receive": "Vastaanota"
 }

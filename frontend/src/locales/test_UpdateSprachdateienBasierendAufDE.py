@@ -779,6 +779,13 @@ class TechTermTests(unittest.TestCase):
         self.assertIsNone(out)
         self.assertEqual(counters.get("lostPlaceholderKeys"), 1)
 
+    def test_lowercase_slash_list_in_parentheses_is_translated(self):
+        protected, ph = usd.protect_for_translation("Threshold (niedrig/mittel/hoch)", "en")
+        self.assertIn("niedrig/mittel/hoch", protected)
+        self.assertEqual(list(ph.values()), ["Threshold"])
+        # Echte Codes mit Schrägstrich bleiben geschützt
+        self.assertTrue(usd._looks_like_kept_english_term("CODE/ISSUER"))
+
     def test_find_term_mismatches(self):
         src = {"a": "Create trustline", "b": "Add memo", "c": "Plain text", "x.original": "Trustline"}
         tgt = {"a": "Créer une ligne de crédit", "b": "Ajouter un memo", "c": "Texte", "x.original": "-"}

@@ -103,7 +103,7 @@
       }
     },
     "testModeTitle": "Alle Signaturen lokal",
-    "testModeDescription": "Bestehender Flow: Geheimschlüssel eingeben, alle benötigten Signaturen sammeln und direkt an Horizon senden.",
+    "testModeDescription": "Bestehender Flow: Secret Key eingeben, alle benötigten Signaturen sammeln und direkt an Horizon senden.",
     "testModeButton": "Direkt signieren & senden",
     "prepareTitle": "Transaktion für Multisig vorbereiten",
     "prepareDescription": "Nur XDR vorbereiten für Produktiv-Multisig. Nichts wird sofort gesendet.",

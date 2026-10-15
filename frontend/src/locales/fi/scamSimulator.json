@@ -233,21 +233,21 @@
         "subtitle": "Mainosviesti"
       },
       "messages": {
-        "01": "🎉 Marcon Markkinapaikka – Erikoistarjous!\nVain tänään: 50 ilmaista BERRY-tokenia kaikille uusille asiakkaille!\nLisää Trust Line nyt ja saat tokenisi.\n[Lisää Trust Line]",
-        "02": "Liikkeeseenlaskijan osoite: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nLisää vain Trust Line – tokenit saapuvat lompakkoosi heti! 🍓",
-        "03": "⚠️ Vinkki: Tarkista aina tokenin liikkeeseenlaskija ennen Trust Linen lisäämistä."
+        "01": "🎉 Marco's Marketplace – Erikoistarjous!\nVain tänään: 50 BERRY ilmaiseksi kaikille uusille asiakkaille!\nLisää Trustline nyt ja saat Tokens.\n[Lisää Trustline]",
+        "02": "Liikkeeseenlaskijan osoite: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nLisää vain Trustline – niin Tokens menee suoraan Wallet:een! 🍓",
+        "03": "⚠️ Vinkki: Tarkista aina Token-liikkeeseenlaskija ennen kuin lisäät Trustline:n uudelle Token:lle."
       },
       "options": {
-        "nothingSuspicious": "Ei mitään – näyttää lailliselta. Lisää Trust Line.",
+        "nothingSuspicious": "Ei mitään – näyttää lailliselta. Lisää Trustline.",
         "tooGenerous": "50 ilmaista BERRY kuulostaa paljolta.",
         "checkIssuer": "Tarkistaisin liikkeeseenlaskijan ensin.",
-        "addAnyway": "Lisää Trust Line joka tapauksessa – ehkä se on ok.",
-        "rejectVerify": "Hylkää ja kysy Marcolta suoraan oikea BERRY-osoite.",
+        "addAnyway": "Trustline Lisää se silti – ehkä se on totta.",
+        "rejectVerify": "Trustline Kieltäydy ja kysy Marcolta suoraan oikeaa BERRY-osoitetta.",
         "buyDex": "Osta token DEX:stä."
       },
       "followUp": {
         "scam": {
-          "01": "Trust Line lisätty onnistuneesti! 50 BERRY-tokenisi ovat matkalla. 🍓",
+          "01": "Trustline on lisätty onnistuneesti! 50 BERRY-pisteesi ovat tulossa. 🍓",
           "02": "Sait 50 BERRY-tokenia väärältä liikkeeseenlaskijalta – mutta yksikään kauppa ei hyväksy niitä. Liikkeeseenlaskija on tuntematon. Nämä tokenit ovat arvottomia ja saattavat olla alku lisäyrityksilleen."
         },
         "generous": {
@@ -259,8 +259,8 @@
           "02": "Tässä viestissä oleva liikkeeseenlaskija:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Ei sama! Sama tokenin nimi, eri liikkeeseenlaskija – tämä BERRY on arvoton."
         },
         "addAnyway": {
-          "01": "Trust Line lisätty onnistuneesti! 50 BERRY-tokenisi ovat matkalla. 🍓",
-          "02": "Vaikka näit liikkeeseenlaskijaeron, lisäsit silti Trust Linen. 50 BERRY-tokenia tulee väärältä liikkeeseenlaskijalta ja on arvottomia – yksikään kauppa ei hyväksy niitä."
+          "01": "Trustline on lisätty onnistuneesti! Saat 50 BERRY:tä pian. 🍓",
+          "02": "Vaikka huomasitkin eron liikkeeseenlaskijoiden välillä, lisäsit silti Trustline:n. 50 BERRY:tä oli peräisin väärältä liikkeeseenlaskijalta, ja ne ovat arvottomia – yksikään kauppa ei hyväksy niitä."
         },
         "buyDex": {
           "01": "⚠️ DEX:ssä on monia BERRY-nimisiä tokeneita eri liikkeeseenlaskijoilta. Ilman virallista liikkeeseenlaskijan osoitetta saatat myös ostaa arvottomia tokeneita. Liikkeeseenlaskija on ratkaiseva – myös DEX:stä ostaessa."
@@ -272,7 +272,7 @@
         "urgency": "\"Vain tänään\" – keinotekoinen kiire estää kriittistä ajattelua",
         "sameNameDifferentIssuer": "Sama tokenin nimi (BERRY) ei tarkoita samaa tokenia – vain liikkeeseenlaskija tekee eron"
       },
-      "explanation": "Stellarin mukautetut tokenit määräytyvät liikkeeseenlaskijansa mukaan – ei nimensä. Kaksi tokenia voivat molemmat olla nimeltään 'BERRY', mutta tulla täysin eri liikkeeseenlaskijoilta. Vain Marcon Markkinapaikan virallinen liikkeeseenlaskija laskee liikkeelle aitoja, lunastettavia BERRY-tokeneita. Ennen Trust Linen lisäämistä tarkista aina liikkeeseenlaskijan osoite palveluntarjoajan viralliselta verkkosivustolta."
+      "explanation": "Stellar-verkostossa olevat mukautetut Token-tunnukset määritellään niiden liikkeeseenlaskijan perusteella – ei niiden nimen perusteella. Kaksi Token-tunnusta voi molemmat olla nimeltään ”BERRY”, mutta ne voivat olla peräisin täysin eri liikkeeseenlaskijoilta. Ainoastaan Marco’s Marketplacen virallinen liikkeeseenlaskija laskee liikkeeseen aitoja, lunastettavissa olevia BERRY-tokenia. Ennen kuin lisäät Trustline-tokenin, tarkista aina liikkeeseenlaskijan osoite palveluntarjoajan virallisilta verkkosivuilta."
     }
   }
 }

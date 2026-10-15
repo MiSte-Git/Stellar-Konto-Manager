@@ -22,7 +22,7 @@
       "columns": {
         "code": "Kôd",
         "issuer": "Izdavatelj",
-        "numAccounts": "Računi",
+        "numAccounts": "Trustlines",
         "amount": "Ukupni iznos",
         "domain": "Domena",
         "toml": "TOML",
@@ -35,13 +35,13 @@
         "amount": "Ukupni iznos ove imovine koji je prijavio Horizon. Ako Horizon vrati kontejetere za autorizaciju, oni se zbrajaju."
       },
       "sort": {
-        "numAccounts": "Sortiraj po linijama povjerenja"
+        "numAccounts": "Sortiraj po trustlines"
       },
       "factLabels": {
         "domain": "Račun izdavatelja ima matičnu domenu.",
         "toml": "Imovina je navedena u stellar.toml ovog izdavatelja."
       },
-      "duplicateCodeWarning": "Pažnja: za {{codes}} postoji više rezultata s različitim izdavateljima. Sam kod ništa ne govori o autentičnosti – odlučuje samo adresa izdavatelja. Pažljivo je usporedite prije dodavanja trustlinea ili zamjene.",
+      "duplicateCodeWarning": "Upozorenje: {{codes}} ima više rezultata od različitih izdavatelja. Sam kod ne govori ništa o autentičnosti – jedino adresa izdavatelja. Pažljivo ga usporedite prije dodavanja trustline ili zamjene.",
       "duplicateCodeBadge": "{{count}} različitih izdavatelja koristi ovaj kod imovine."
     },
     "invalidInput": {
@@ -65,14 +65,14 @@
     "help": {
       "issuer": "Stellar račun koji je izdao ovaj token. Kôd i izdavatelj zajedno jedinstveno identificiraju imovinu.",
       "trustlines": "Broj računa koji imaju trustline prema ovoj imovini prema Horizonu. Ovo je signal upotrebe, a ne dokaz autentičnosti.",
-      "totalAmount": "Ukupni iznos ove imovine koju je prijavio Horizon – zbroj trustlineova, potraživanih stanja, poolova likvidnosti i ugovora. Sama opskrba ne govori ništa o kvaliteti ili pouzdanosti.",
+      "totalAmount": "Ukupni iznos ovog asset koji je Horizon prijavio – trustlines, potraživani saldi, likvidni fondovi i ugovori zajedno. Ponuda sama po sebi ne govori ništa o kvaliteti ili pouzdanosti.",
       "trustlineStatus": "Pokazuje može li vaš tekući račun već držati ovu imovinu.",
-      "trustlineBalance": "Trenutni saldo ove imovine na vašem Trustlineu.",
+      "trustlineBalance": "Trenutni saldo ovog asset na vašem trustline.",
       "trustlineLimit": "Maksimalni saldo ove imovine koji vaš račun može držati putem ove trustline.",
       "authorization": "Za auth_required sredstva izdavatelj mora autorizirati vašu trustline prije nego što možete primiti ili razmjenjivati token.",
       "homeDomain": "Domena pohranjena na računu izdavatelja. Pomaže u pronalaženju datoteke stellar.toml.",
       "issuerMasterWeight": "Težina glavnog ključa izdavatelja. 0 znači da glavni ključ sam više ne može potpisati.",
-      "issuerLocked": "Prikazuje je li glavni ključ izdavatelja i dalje aktivan. \"Aktivno upravljano\" je normalno za projekte koji se kontinuirano održavaju, poput stabilnih valuta, i nije upozorenje. \"Potpuno zaključano\" pozitivan je signal za imovinu koja obećava nepromjenjivost. \"Prividno zaključano\" znači da je glavni ključ onemogućen, no drugi potpisnici i dalje bi mogli kontrolirati račun.",
+      "issuerLocked": "Pokazuje je li glavni ključ izdavatelja još uvijek aktivan. \"Aktivno upravljanje\" je uobičajeno za tekuće projekte poput stabilnih kovanica i nije upozorenje. \"Potpuno zaključano\" je pozitivan signal za tokens koji obećava nepromjenjivost. \"Izgleda zaključano\" znači da je glavni ključ onemogućen, ali drugi signers i dalje mogu kontrolirati račun.",
       "tomlStatus": "Status datoteke stellar.toml u domeni izdavatelja.",
       "tomlUrl": "Adresa otkrivene datoteke stellar.toml.",
       "tomlAssetListed": "Pokazuje je li ova imovina navedena u unosima CURRENCIES u datoteci stellar.toml.",
@@ -116,7 +116,7 @@
     },
     "actions": {
       "details": "Detalji",
-      "trustline": "Pouzdanost",
+      "trustline": "Trustline",
       "trustlineAdd": "Dodaj trustline",
       "trustlinePresent": "Trustline postoji",
       "trustlineNext": "Sljedeći korak: stvorite trustline iz rezultata pretraživanja",
@@ -132,11 +132,11 @@
       "invalid": "Napunjeni račun je nevažeći."
     },
     "trustlineStatus": {
-      "label": "Status Trustlinea",
+      "label": "Trustline status",
       "loading": "Provjerava trustline...",
       "present": "Trustline postoji",
       "missing": "Trustline nedostaje",
-      "error": "Status Trustlinea nije mogao biti učitani",
+      "error": "Trustline status se nije mogao učitati",
       "unknown": "Još nije provjereno",
       "added": "Trustline je dodan.",
       "balance": "Ravnoteža",
@@ -179,7 +179,7 @@
       "invalidTarget": "Molimo pretražite i odaberite odredišni token ili ga unesite točno kao CODE:ISSUER.",
       "sameAsset": "Izvor i odredište ne smiju biti ista sredstvo.",
       "destinationTrustlineMissing": "Destination token trustline još uvijek nedostaje na ovom računu.",
-      "destinationTrustlineUnauthorized": "Odredišna linija povjerenja još nije ovlaštena od strane izdavatelja.",
+      "destinationTrustlineUnauthorized": "Odredište trustline još nije ovlašteno od strane izdavatelja.",
       "minimumMissing": "Minimalni iznos nije mogao biti izračunat.",
       "previewRequired": "Molimo provjerite cijenu prije.",
       "noRoute": "Nije pronađena ruta za presjedanje.",
@@ -252,7 +252,7 @@
     },
     "trustlineConfirm": {
       "title": "Potvrdi trustline",
-      "limit": "Gornja granica Trustlinea",
+      "limit": "Trustline ograničenje",
       "warning": "Trustline omogućuje da se ova imovina drži na vašem računu. Provjerite činjenice, osobito izdavatelja, matičnu domenu, stellar.toml, autorizaciju i povlačenje prije potpisivanja.",
       "continue": "Nastavi prema potpisu"
     },
@@ -324,7 +324,7 @@
         "appearsLocked": "Prividno zaključano"
       },
       "amountBreakdown": {
-        "trustlines": "Od toga {{amount}} na trustlineovima",
+        "trustlines": "Od toga, {{amount}} na trustlines",
         "claimable": "{{amount}} u potraživanim stanjima",
         "pools": "{{amount}} u poolovima likvidnosti",
         "contracts": "{{amount}} u ugovorima"
@@ -347,25 +347,25 @@
       "issuerUnlocked": "Glavni ključ izdavatelja nije zaključan.",
       "authRequired": "Ova imovina zahtijeva odobrenje izdavatelja.",
       "clawbackEnabled": "Za ovu imovinu omogućen je povrat.",
-      "issuerAppearsLocked": "Pažnja: glavni ključ je onemogućen, ali drugi potpisnici i dalje bi mogli kontrolirati račun izdavatelja. Račun zapravo nije zaključan.",
+      "issuerAppearsLocked": "Upozorenje: glavni ključ je onemogućen, ali drugi signers i dalje mogu kontrolirati račun izdavatelja. On zapravo nije zaključan.",
       "authRevocable": "Izdavatelj može opozvati već izdano ovlaštenje i zamrznuti vaše stanje ovog tokena.",
-      "expertFlagged": "Pažnja: ovaj je izdavatelj u StellarExpert imeniku označen kao štetan ({{tags}}). Izrazito se ne preporučuje dodavanje trustlinea, kupnja ili zamjena."
+      "expertFlagged": "Upozorenje: ovaj izdavatelj je označen kao štetan u imeniku StellarExpert ({{tags}}). Dodavanje trustline, kupnja ili zamjena snažno se ne preporučuju."
     },
     "detail": {
       "status": {
         "ledgerKnown": "Poznat u Horizonu"
       },
-      "nextStepHint": "Poznato samo u Horizonu. Provjerite izdavatelja i trust prije potpisivanja trustlinea ili swap-a."
+      "nextStepHint": "Poznato samo u Horizonu. Provjerite izdavatelja i povjerenje prije potpisivanja trustline ili zamjene."
     },
     "exchangeRate": {
       "title": "Cijena XLM-a",
-      "quickLabel": "Tržišna cijena (sredina knjige naloga)",
+      "quickLabel": "Tržišna cijena (srednja cijena iz knjige naloga)",
       "executionLabel": "Cijena izvršenja (Referentna količina 1)",
-      "loading": "Tečaj se učitava...",
+      "loading": "Cijena se učitava...",
       "noLiquidity": "Nema aktivne dubine naloga u nativnoj knjizi naloga.",
       "noRoute": "Nije pronađen put plaćanja.",
       "failed": "Nalog za narudžbu nije mogao biti učitani.",
-      "quoteAge": "Starost tečaja",
+      "quoteAge": "Ocijeni dob",
       "disclaimer": "Ovo je samo referentna cijena; nije ponuda. Za veće iznose stvarna cijena može varirati (slippage)."
     }
   }

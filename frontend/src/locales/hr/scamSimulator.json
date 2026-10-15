@@ -233,21 +233,21 @@
         "subtitle": "Promotivna poruka"
       },
       "messages": {
-        "01": "🎉 Marcova Tržnica – Posebna ponuda!\nSamo danas: 50 besplatnih BERRY tokena za sve nove korisnike!\nDodaj Trust Line sada i primi tokene.\n[Dodaj Trust Line]",
-        "02": "Adresa izdavatelja: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nSamo dodaj Trust Line – tokeni odmah dolaze u tvoj novčanik! 🍓",
-        "03": "⚠️ Savjet: Uvijek provjeri izdavatelja tokena prije dodavanja Trust Linea."
+        "01": "🎉 Marco's Marketplace – Posebna ponuda!\nSamo danas: 50 BERRY besplatno za sve nove kupce!\nDodajte Trustline sada i ostvarite Tokens.\n[Dodajte Trustline]",
+        "02": "Adresa izdavatelja: GDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\nSamo dodajte Trustline—Tokens će ići ravno u Wallet! 🍓",
+        "03": "⚠️ Savjet: Uvijek provjerite izdavatelja Token prije dodavanja Trustline za novi Token."
       },
       "options": {
-        "nothingSuspicious": "Ništa – izgleda legitimno. Dodaj Trust Line.",
+        "nothingSuspicious": "Ništa—izgleda legitimno. Dodaj Trustline.",
         "tooGenerous": "50 besplatnih BERRY zvuči previše.",
         "checkIssuer": "Prvo bih provjerio/la izdavatelja.",
-        "addAnyway": "Dodaj Trust Line svejedno – možda je u redu.",
-        "rejectVerify": "Odbij i pitaj Marca izravno za pravu BERRY adresu.",
+        "addAnyway": "Trustline Ipak ga dodaj—možda je istina.",
+        "rejectVerify": "Trustline Odbij i pitaj Marca izravno za pravi BERRY adresa.",
         "buyDex": "Kupi token na DEX-u."
       },
       "followUp": {
         "scam": {
-          "01": "Trust Line uspješno dodan! Tvojih 50 BERRY je na putu. 🍓",
+          "01": "Trustline je uspješno dodan! Tvojih 50 BERRY bit će na putu. 🍓",
           "02": "Primio/la si 50 BERRY od pogrešnog izdavatelja – ali niti jedna trgovina ih ne prihvaća. Izdavatelj je nepoznat. Ovi tokeni su bezvrijedni i mogli bi biti početak daljnjih phishing pokušaja."
         },
         "generous": {
@@ -259,8 +259,8 @@
           "02": "Izdavatelj iz ove poruke:\nGDFAKEXX6XXXXRXXXXX5XXXXXMXXXXX3XXXXXYXXXXX7XXXQXXFAKE77\n\n❌ Nisu iste! Isto ime tokena, drugi izdavatelj – ovaj BERRY je bezvrijedan."
         },
         "addAnyway": {
-          "01": "Trust Line uspješno dodan! Tvojih 50 BERRY je na putu. 🍓",
-          "02": "Iako si vidio/la razliku u izdavatelju, ipak si dodao/la Trust Line. 50 BERRY dolazi od pogrešnog izdavatelja i bezvrijedno je – niti jedna trgovina ih ne prihvaća."
+          "01": "Trustline je uspješno dodan! Tvojih 50 BERRY uskoro će stići. 🍓",
+          "02": "Iako ste primijetili razliku u izdavateljima, ipak ste dodali Trustline. 50 BERRY potječu od pogrešnog izdavatelja i bezvrijedni su—ni jedna trgovina ih ne prihvaća."
         },
         "buyDex": {
           "01": "⚠️ Na DEX-u postoji mnogo tokena koji se zovu BERRY od različitih izdavatelja. Bez službene adrese izdavatelja možeš i kupiti bezvrijedne tokene. Izdavatelj je ključan – čak i pri kupnji na DEX-u."
@@ -272,7 +272,7 @@
         "urgency": "\"Samo danas\" – umjetni hitnost sprječava kritično razmišljanje",
         "sameNameDifferentIssuer": "Isto ime tokena (BERRY) ne znači isti token – samo izdavatelj čini razliku"
       },
-      "explanation": "Prilagođeni tokeni na Stellaru definirani su svojim izdavateljem – ne imenom. Dva tokena mogu se oba zvati 'BERRY', ali dolaziti od potpuno različitih izdavatelja. Samo službeni izdavatelj Marcove Tržnice izdaje prave, unovčive BERRY tokene. Prije dodavanja Trust Linea, uvijek provjeri adresu izdavatelja na službenoj web stranici pružatelja usluge."
+      "explanation": "Prilagođeni Token na Stellaru definirani su od strane izdavatelja—a ne po nazivu. Dva Token mogu se oboje nazivati \"BERRY\", ali potječu od potpuno različitih izdavatelja. Samo službeni izdavač Marco's Marketplacea izdaje prave, otkupive BERRY. Prije nego što dodate Trustline, uvijek provjerite adresu izdavača na službenoj web-stranici pružatelja."
     }
   }
 }

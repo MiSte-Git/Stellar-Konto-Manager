@@ -5,7 +5,7 @@
     }
   },
   "asset": {
-    "balance": "Kreditsaldo",
+    "balance": "Saldo",
     "code": "Activacode",
     "creationDate": "Gemaakt op",
     "issuer": "Uitgever"
@@ -18,7 +18,7 @@
     },
     "current": "Huidig saldo",
     "details": "Details in Block Explorers",
-    "empty": "Geen tegoeden gevonden.",
+    "empty": "Er zijn geen saldi gevonden.",
     "explorer": {
       "expert": "stellar.expert",
       "stellarchain": "Stellarchain.io",
@@ -36,7 +36,7 @@
         "counterparty": "Ontvangende rekening",
         "date": "Datum",
         "direction": "Richting",
-        "memo": "Notitie",
+        "memo": "Memo",
         "tx": "Tx",
         "txLabel": "Tx",
         "type": "Typ"
@@ -250,7 +250,7 @@
   "badges": {
     "testnet": "Testnet"
   },
-  "noIssuerTrustlinesFound": "Geen trustlijnen gevonden voor uitgever {{issuer}}.",
+  "noIssuerTrustlinesFound": "Er is geen trustlines gevonden voor uitgever {{issuer}}.",
   "option": {
     "add": "Toevoegen",
     "cancel": "Annuleren",
@@ -387,7 +387,7 @@
       "deletingProgress": "Bezig met verwijderen: {{current}} / {{total}}",
       "success": "Succes: {{count}} Trustline(s) verwijderd."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (er is nog krediet beschikbaar)."
+    "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (resterend saldo)."
   },
   "payment": {
     "send": {
@@ -396,10 +396,10 @@
       "amount": "Bedrag",
       "asset": "Activa",
       "memo": "Memo",
-      "memoType": "Memotype",
+      "memoType": "Memo type",
       "memoTypes": {
         "none": "Memo (geen memo)",
-        "text": "Memotekst",
+        "text": "Memo tekst",
         "id": "Memo-ID",
         "hash": "Memo Hash",
         "return": "Memo retour",
@@ -417,10 +417,10 @@
       "baseReserve": "Basisreserve",
       "extra": "Bovendien",
       "xlmInOffers": "Gebonden aan aanbiedingen",
-      "trustlines": "Vertrouwenslijnen ({{n}})",
+      "trustlines": "Trustlines ({{n}})",
       "lpTrustlines": "LP‑Trustlines",
       "offers": "Open aanbiedingen",
-      "signers": "Aanvullende ondertekenaars",
+      "signers": "Extra Signer",
       "accountData": "Account‑Daten",
       "sponsoring": "Sponsoring",
       "sponsored": "Gesponsord",
@@ -450,14 +450,14 @@
         "body": "De server kon de transactie niet eenduidig bevestigen (timeout of serverfout). Controleer de transactiehash in een explorer voordat u het opnieuw probeert.",
         "acknowledge": "Status gecontroleerd – verzenden weer vrijgeven"
       },
-      "memoFederationHint": "Notitie overgenomen van de federatieserver – je kunt deze indien nodig aanpassen.",
+      "memoFederationHint": "Memo afkomstig van de federatieserver – je kunt deze waarde indien nodig aanpassen.",
       "memoMismatch": {
         "title": "Bekijk de memo van de federatie",
-        "textMappable": "De federatieserver verwacht de notitie \"{{expected}}\", maar je huidige notitie is \"{{current}}\".",
+        "textMappable": "De federatieserver verwacht de waarde memo \"{{expected}}\", maar je huidige waarde voor memo is \"{{current}}\".",
         "textUnmappable": "De federatieserver verwacht een memo die niet automatisch kon worden toegepast. Je huidige memo is \"{{current}}\".",
         "empty": "(leeg)",
         "sendAnyway": "Toch verzenden",
-        "applyExpected": "Federatiememo toepassen"
+        "applyExpected": "Federatie toepassen memo"
       },
       "trustlineError": {
         "noTrustline": "De ontvanger heeft nog geen trustline voor {{asset}} – de betaling zou mislukken.",
@@ -652,7 +652,7 @@
     "horizon": {
       "paymentsFetch": "Fout bij het laden van betalingen van Horizon"
     },
-    "loadTrustlines": "Vertrouwenslijnen konden niet worden geladen. Probeer het alstublieft opnieuw.",
+    "loadTrustlines": "Trustlines kon niet worden geladen. Probeer het nog eens.",
     "loadTrustlinesFailed": "Het laden van trustlines is mislukt.",
     "loadTrustlinesNotFound": "Account in het netwerk '{{network}}' niet gevonden.",
     "accountNotFoundInNetwork": "Niet gevonden in '{{net}}'!",
@@ -687,7 +687,7 @@
       "dateInvalid": "Ongeldige datum",
       "dateRange": "Ongeldige datumbereik",
       "failedUnknown": "Onbekende fout",
-      "memoInvalid": "Ongeldige notitie",
+      "memoInvalid": "Ongeldig memo",
       "paymentsFetch": "Fout bij het laden van betalingen",
       "serverInvalid": "Ongeldige server"
     },
@@ -757,55 +757,55 @@
   },
   "multisigEdit": {
     "confirm": {
-      "removeSigner": "Echt de ondertekenaar verwijderen?"
+      "removeSigner": "Signer Echt verwijderen?"
     },
     "currentConfig": "Huidige / Geplande Configuratie",
     "error": {
-      "thresholdTooHigh": "Drempels mogen de som van de gewichten niet overschrijden.",
+      "thresholdTooHigh": "Thresholds mag niet groter zijn dan de som van de gewichten.",
       "safetyTitle": "Beveiligingscontrole geblokkeerd",
       "safetyBlocked": "Beveiligingscontrole geblokkeerd: los de bovenstaande waarschuwingen op.",
-      "noActiveSigners": "Er is ten minste één actieve ondertekenaar nodig. Suggestie: Stel mastergewicht in op > 0 of voeg een ondertekenaar toe met gewicht > 0.",
-      "noEd25519Signers": "Er is minstens één ondertekenaar met gewicht > 0 vereist. Suggestie: Verhoog het mastergewicht of voeg een ondertekenaar toe.",
-      "masterZeroInsufficientHigh": "De mastergewicht is 0 en de som van de ondertekenaarsgewichten voldoet niet aan de hoge drempel (Som: {{sum}}, Hoog: {{high}}). Suggestie: Verlaag de drempels of verhoog de gewichten/ondertekenaars.",
-      "thresholdHighUnreachable": "Hoge drempel niet bereikbaar (Som: {{sum}}, Hoog: {{high}}). Suggestie: verlaag de drempel of verhoog gewichten/ondertekenaars.",
-      "thresholdMedUnreachable": "Drempelwaarde niet haalbaar (Som: {{sum}}, Med: {{med}}). Suggestie: Verlaag de drempel of verhoog de gewichten/ondertekenaars.",
-      "specialSignerLastHigh": "Special-Signer (hashX/preAuthTx) moet niet de enige hoogste autoriteit zijn. Suggestie: voeg ondertekenaars toe met een gewicht >= hoog.",
-      "setOptionsNotSignable": "SetOptions zou niet ondertekend kunnen worden na de wijziging (Ondertekenaars Som: {{sum}}, Hoog: {{high}}). Suggestie: verhoog het ondertekenaarsgewicht of verlaag hoog."
+      "noActiveSigners": "Er is ten minste één actieve Signer vereist. Suggestie: stel het mastergewicht in op > 0 of voeg een Signer toe met een gewicht > 0.",
+      "noEd25519Signers": "Er is ten minste één Signer met een gewicht groter dan 0 vereist. Suggestie: Verhoog het mastergewicht of voeg Signer toe.",
+      "masterZeroInsufficientHigh": "Het mastergewicht is 0 en de som van de signer-gewichten voldoet niet aan de bovengrens van threshold (Som: {{sum}}, Bovengrens: {{high}}). Suggestie: Verlaag de thresholds of verhoog de gewichten/signers.",
+      "thresholdHighUnreachable": "De bovengrens van threshold is niet haalbaar (Totaal: {{sum}}, Bovengrens: {{high}}). Suggestie: verlaag threshold of verhoog de gewichten/signers.",
+      "thresholdMedUnreachable": "Med-threshold is niet haalbaar (Som: {{sum}}, Med: {{med}}). Suggestie: Verlaag de threshold of verhoog de gewichten/signers.",
+      "specialSignerLastHigh": "Special-Signer (hashX/preAuthTx) mag niet de enige bron met een hoge autoriteit zijn. Suggestie: voeg Signer toe met een gewicht van >= High.",
+      "setOptionsNotSignable": "SetOptions zou na de wijziging niet meer ondertekenbaar zijn (Signer som: {{sum}}, maximum: {{high}}). Suggestie: Verhoog het gewicht van Signer of verlaag het maximum."
     },
     "warning": {
       "safetyTitle": "Beveiligingswaarschuwingen",
-      "highSingleSigner": "Slechts één ondertekenaar bereikt de hoge drempel. Aanbeveling: ten minste twee onafhankelijke ondertekenaars.",
-      "medSingleSigner": "Mededrempel > 0, maar slechts één ondertekenaar aanwezig. Aanbeveling: voeg een tweede ondertekenaar toe."
+      "highSingleSigner": "Slechts één Signer voldoet aan de hoge threshold. Aanbeveling: ten minste twee onafhankelijke Signer.",
+      "medSingleSigner": "Med threshold > 0, maar er is slechts één Signer aanwezig. Aanbeveling: voeg een tweede Signer toe."
     },
     "securityGuarantee": {
       "title": "🔒 SKM Beveiligingsgarantie (Multisig)",
-      "text": "De Stellar Account Manager voorkomt alle technisch veroorzaakte accountblokkades die het gevolg kunnen zijn van een onjuiste multisig-configuratie.\n\nDe SKM blokkeert met name:\n- Deactivering van de hoofdsleutel wanneer er geen ondertekenaars bereikbaar zijn\n- Onbereikbare drempels (laag / gemiddeld / hoog)\n- Volgordefouten bij het wijzigen van ondertekenaars of drempels\n- Het verwijderen van de laatste geldige hoge ondertekenaar\n- Multisig-configuraties waarbij SetOptions niet langer kan worden ondertekend\n- Doodlopende situaties veroorzaakt door hashX of preAuthTx als laatste ondertekenaar\n\nSKM maakt uitsluitend gebruik van ed25519-ondertekenaars. Gebruik {link} voor andere soorten ondertekenaars.\n\nSKM garandeert:\n- Elke bevestigde wijziging laat ten minste één geldig pad open voor verder accountbeheer\n- SetOptions blijft na de wijziging toegankelijk\n\nKan niet worden gegarandeerd (vanwege systeembeperkingen):\n- Verlies van geheime sleutels of hardware-wallets\n- Onbeschikbaarheid of uitval van externe ondertekenaars\n\nConclusie:\nSKM biedt betrouwbare bescherming tegen configuratieblokkades.\nOrganisatorische risico’s worden transparant weergegeven, maar kunnen technisch niet worden voorkomen.",
+      "text": "De Stellar Account Manager voorkomt alle technisch veroorzaakte accountblokkades die het gevolg kunnen zijn van een onjuiste configuratie van Multisig.\n\nDe SKM blokkeert met name:\n- Deactivering van de hoofdsleutel zonder een haalbare Signer\n- Onbereikbare thresholds (laag / gemiddeld / hoog)\n- Volgordefouten bij wijzigingen in Signer en Threshold\n- Verwijdering van de laatste geldige hoge Signers\n- Multisig-configuraties waarbij SetOptions niet langer kan worden ondertekend\n- Doodlopende situaties veroorzaakt door hashX of preAuthTx als laatste Signer\n\nSKM stelt alleen ed25519-Signer in. Gebruik {link} voor andere Signer-typen.\n\nSKM garandeert:\n- Elke bevestigde wijziging laat ten minste één geldig pad open voor verder accountbeheer\n- SetOptions blijft toegankelijk na de wijziging\n\nKan niet worden gegarandeerd (vanwege systeembeperkingen):\n- Verlies van Secret Keys of hardware Wallets\n- Onbeschikbaarheid of storing van externe Signer\n\nConclusie:\nSKM biedt betrouwbare bescherming tegen configuratieblokkades.\nOrganisatorische risico’s worden transparant weergegeven, maar kunnen technisch niet worden voorkomen.",
       "linkLabel": "lab.stellar.org"
     },
-    "hint": "Laad een bestaand account, pas ondertekenaars, gewichten, hoofdgewicht en drempels aan, en sla de wijzigingen op.",
+    "hint": "Laad een bestaande rekening, pas signers, de wegingen, het hoofdgewicht en thresholds aan, en sla de wijzigingen op.",
     "load": "Laden",
-    "loaded": "Geladen. Extra ondertekenaars: {{count}}",
+    "loaded": "Geladen. Extra signers: {{count}}",
     "menu": "Multisig-account bewerken",
-    "menuHint": "Het aanpassen van ondertekenaars/drempels van een bestaande account",
-    "noteMaxSigners": "Opmerking: Stellar staat maximaal 20 extra ondertekenaars per account toe.",
-    "signerTypeNote": "Opmerking: SKM gebruikt alleen ed25519-ondertekenaars. Voor hashX/preAuthTx, gebruik",
+    "menuHint": "signers/thresholds van een bestaande rekening aanpassen",
+    "noteMaxSigners": "Opmerking: Stellar staat maximaal 20 extra Signer per account toe.",
+    "signerTypeNote": "Opmerking: SKM gebruikt uitsluitend ed25519-Signer. Gebruik voor hashX/preAuthTx",
     "signerTypeLink": "lab.stellar.org",
     "reload": "Herladen",
     "save": "Wijzigingen opslaan",
     "saved": "Wijzigingen opgeslagen. TX: {{hash}}",
-    "signers": "Ondertekenaar (ed25519)",
+    "signers": "Signer (ed25519)",
     "weight": "Weging",
     "masterWeight": "Meestergewicht",
     "title": "Bewerk multisig-account",
     "validation": {
-      "signerKeyHint": "Let op: Ondertekenaars moeten beginnen met \"G\" (ed25519 public key).",
-      "signerKeyInvalid": "Ongeldig ondertekenaarsadres. Er wordt een G…-adres (ed25519) verwacht."
+      "signerKeyHint": "Opmerking: Signer moet beginnen met een \"G\" (ed25519 Public Key).",
+      "signerKeyInvalid": "Ongeldig Signer-adres. Er wordt een G…-adres (ed25519) verwacht."
     }
   },
   "navigation": {
     "back": "Terug",
     "backToMainMenu": "Terug naar het menu",
-    "backToPublicKey": "Terug naar invoer van openbare sleutel",
+    "backToPublicKey": "Terug naar het item Public-Key",
     "backToTop": "Terug naar boven"
   },
   "publicKey": {
@@ -814,11 +814,11 @@
       "error": "Ongeldige doelsleutel.",
       "input": "Voer het doelportefeuilleadres in"
     },
-    "label": "Voer het bronfederatieadres of de publieke sleutel in:",
+    "label": "Voer het bronadres van de federatie of de Public Key in:",
     "load": "Laden…",
     "placeholder": "bijv.",
     "source": "Bronportemonnee-adres",
-    "invalid": "Ongeldige publieke sleutel.",
+    "invalid": "Ongeldige Public Key.",
     "submit": {
       "button": "Verstuur"
     },
@@ -827,16 +827,16 @@
     "historyPlaceholder": "Selecteer de laatst gebruikte portemonnee"
   },
   "secretKey": {
-    "cleared": "Geheime sleutel is verwijderd.",
-    "empty": "Het veld voor de geheime sleutel is leeg.",
-    "info": "⚠️ BELANGRIJK: Deze website slaat je geheime sleutel NOOIT op!\n\nDe hier weergegeven geheime sleutel bestaat alleen in je browser (lokaal in het geheugen). Zodra je de pagina vernieuwt of verlaat, gaat deze onherroepelijk verloren.\n\nKopieer of noteer de geheime sleutel onmiddellijk nadat deze is gegenereerd, voordat u de pagina sluit.\n\nControle: U kunt de ontwikkelaarstools van uw browser (F12 → Netwerk) gebruiken om te controleren of er geen geheime sleutel naar buiten wordt verzonden. Alleen ondertekende transacties worden verzonden – nooit uw geheime sleutel.",
-    "invalid": "Ongeldige geheime sleutel.",
-    "label": "Voer de bron geheime sleutel in (__KEEP_NL_TERM_1__)",
-    "mismatch": "Geheime sleutel komt niet overeen met het publieke adres.",
+    "cleared": "Secret Key is verwijderd.",
+    "empty": "Het veld Secret Key is leeg.",
+    "info": "⚠️ BELANGRIJK: Deze website slaat je Secret Key NOOIT op!\n\nDe hier weergegeven Secret Key bestaat alleen in je browser (lokaal in het geheugen). Zodra je de pagina vernieuwt of verlaat, gaat deze onherroepelijk verloren.\n\nKopieer of noteer de Secret Key onmiddellijk nadat deze is gegenereerd, voordat je de pagina sluit.\n\nControle: Je kunt de ontwikkelaarstools van je browser (F12 → Netwerk) gebruiken om te controleren of er geen Secret Key extern wordt verzonden. Alleen ondertekende transacties worden verzonden – nooit je Secret Key.",
+    "invalid": "Ongeldige Secret Key.",
+    "label": "Voer de bron Secret-Key (S-Key) in",
+    "mismatch": "Secret Key komt niet overeen met het openbare adres.",
     "placeholder": "bijv.",
     "valid": "✅ Geheime sleutel is geldig.",
     "remember": {
-      "label": "Vergeet de geheime sleutel voor deze sessie niet.",
+      "label": "Secret Key Onthoud dit voor deze sessie",
       "hint": "Wanneer ingeschakeld, wordt de sleutel opgeslagen totdat het tabblad wordt gesloten en hergebruikt voor verdere betalingen."
     }
   },
@@ -860,7 +860,7 @@
       "title": "Portemonnee",
       "original": "Wallet",
       "short": "Digitale portemonnee die uw sleutels beheert.",
-      "desc": "Een wallet is je digitale portemonnee. Het beheert de sleutels die je nodig hebt om toegang te krijgen tot je account en transacties te verzenden. Een wallet kan een programma of een app zijn, of zelfs gewoon een stuk papier met je private key."
+      "desc": "Een Wallet is je digitale wallet. Hiermee beheer je de sleutels die je nodig hebt om toegang te krijgen tot je account en transacties te versturen. Een Wallet kan een programma, een app of zelfs gewoon een stukje papier zijn waarop je Secret Key staat geschreven."
     },
     "account": {
       "title": "Account",
@@ -875,16 +875,16 @@
       "desc": "Het G-adres is het hoofdadres van een Stellar-account. Het begint met de letter G. Je geeft het aan anderen zodat ze je iets kunnen sturen."
     },
     "publicKey": {
-      "title": "Publieke sleutel",
+      "title": "Public Key",
       "original": "Public Key",
       "short": "Adres dat je mag delen; bij Stellar meestal het G-adres.",
-      "desc": "De openbare sleutel is het adres dat je mag tonen. In Stellar is dit het G-adres. Anderen gebruiken het om je geld te sturen."
+      "desc": "Het Public Key is het adres dat je mag delen. Op Stellar is dit het G-adres. Anderen gebruiken dit adres om je geld te sturen."
     },
     "privateKey": {
-      "title": "Geheime sleutel",
+      "title": "Secret Key",
       "original": "Secret Key",
       "short": "Wachtwoord voor het account – nooit delen.",
-      "desc": "De geheime sleutel is uw wachtwoord voor de account. Wie deze sleutel heeft, kan uw geld verplaatsen. Deel het nooit."
+      "desc": "De Secret Key is het wachtwoord van je account. Iedereen die deze sleutel heeft, kan je geld overmaken. Deel deze sleutel nooit met iemand."
     },
     "addressFederation": {
       "title": "Federatieadres",
@@ -899,7 +899,7 @@
       "desc": "Een subadres (M-adres, officieel een „Muxed Account“) verwijst naar een bestaande Stellar-rekening, maar heeft ook een eigen nummer (ID). Hierdoor kun je bijvoorbeeld onderscheid maken tussen meerdere personen of afdelingen die onder hetzelfde G-adres vallen. Technisch gezien behoren de middelen nog steeds tot de hoofdrekening."
     },
     "multisig": {
-      "title": "Multisignatuur",
+      "title": "Multisig",
       "original": "Multi‑Sig",
       "short": "Belangrijke acties vereisen meer dan alleen een handtekening.",
       "desc": "Multi-Sig staat voor meerdere handtekeningen. Een belangrijke actie vereist meer dan één sleutel. Bijvoorbeeld, jij en een tweede sleutel moeten beiden akkoord gaan voordat iets wordt verzonden. Dit maakt diefstal moeilijker."
@@ -941,7 +941,7 @@
       "desc": "Een openbaar praktijknetwerk. Tokens hebben geen echte waarde. Ideaal voor leren en experimenteren zonder risico."
     },
     "memo": {
-      "title": "Notitie",
+      "title": "Memo",
       "original": "Memo",
       "short": "Korte notitie bij een transactie.",
       "desc": "Een memo is een kleine notitie die je kunt meesturen met een transactie. Vaak vereist een beurs een specifiek memo om te weten aan wie het geld toebehoort."
@@ -949,7 +949,7 @@
     "transaction": {
       "title": "Transactie",
       "original": "Transaction",
-      "short": "Actie op de blockchain, bijvoorbeeld betaling of trustlijn.",
+      "short": "Actie op de blockchain, bijvoorbeeld een betaling of trustline.",
       "desc": "Een transactie is een actie op de blockchain, zoals het verzenden van geld of het opzetten van een trustline. Een transactie wordt permanent opgeslagen zodra deze is bevestigd."
     },
     "fee": {
@@ -1031,20 +1031,20 @@
       "success": "Succes: {{count}} Trustline(s) verwijderd."
     },
     "destination": {
-      "label": "Voer de doelsleutel voor openbaar gebruik in:",
+      "label": "Voer de doelwaarde Public-Key in:",
       "placeholder": "bijv."
     },
     "noDuplicates": "Geen dubbele Trustlines(s) gevonden.",
     "nonZeroBalance": "Deze trustline kan niet worden verwijderd omdat er nog een saldo op staat.",
     "notFound": "Geen Trustline(s) gevonden.",
-    "onlyZeroBalanceInfo": "Alleen vertrouwenslijnen met een saldo van 0 kunnen worden verwijderd.",
-    "showSecret": "Sleutel weergeven"
+    "onlyZeroBalanceInfo": "Alleen trustlines met een saldo van 0 kan worden verwijderd.",
+    "showSecret": "Toon Secret Key"
   },
   "deleted": {
     "deletingProgress": "Verwijderen bezig: {{current}} / {{total}}",
     "success": "Succes: {{count}} Trustline(s) verwijderd."
   },
-  "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (er is nog krediet beschikbaar).",
+  "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (resterend saldo).",
   "xlmByMemo": {
     "action": {
       "calculate": "Berekenen",
@@ -1076,7 +1076,7 @@
     "overviewLine": "Betalingsbewijzen: {{total}} • betrokken portemonnees: {{unique}}",
     "page": {
       "noPublicKey": "Voer eerst een openbare sleutel in of laad de account opnieuw.",
-      "title": "XLM-saldo volgens notitie"
+      "title": "XLM-saldo volgens memo"
     },
     "result": {
       "label": "Totaalbedrag:",
@@ -1120,7 +1120,7 @@
         "amount": "Bedrag",
         "created_at": "Gemaakt op",
         "from": "Vanaf",
-        "memo": "Notitie",
+        "memo": "Memo",
         "tx_hash": "Transactiehash"
       },
       "csv": "CSV downloaden",
@@ -1174,9 +1174,9 @@
     },
     "lesson5": {
       "title": "Send & Receive",
-      "goal": "Inzicht in de werking van transacties en vertrouwenslijnen",
+      "goal": "Inzicht in de werking van transacties en trustlines",
       "task": "Voer een testverzending uit en bekijk de kosten.",
-      "learningOutcome": "Elke transactie brengt een kleine vergoeding met zich mee; trustlijn = toestemming om te ontvangen.",
+      "learningOutcome": "Voor elke transactie worden geringe kosten in rekening gebracht; trustline = toestemming om te ontvangen.",
       "reward": "⭐ 2 – Trustline Starter"
     },
     "lesson6": {
@@ -1242,5 +1242,11 @@
     "switchToBase": "Overstappen naar het basisaccount",
     "guardTitle": "De Muxed-identiteit is alleen-lezen",
     "guardText": "Voor deze handeling is een Basis-G-account vereist. Schakel over naar het basisaccount om door te gaan."
+  },
+  "xlmPrice": {
+    "source": "Bron: CoinGecko",
+    "updated": "Bijgewerkt op {{time}}",
+    "pair": "Valuta voor de XLM-wisselkoers",
+    "unavailable": "Cursus niet beschikbaar"
   }
 }

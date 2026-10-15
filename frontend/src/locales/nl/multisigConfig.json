@@ -1,31 +1,31 @@
 {
-  "signersTitle": "Ondertekenaar (ed25519)",
-  "signersInfo": "Voeg extra ondertekenaars toe en stel passende drempels in.",
-  "signersCount": "Aantal ondertekenaars",
-  "signersCountLimit": "Opmerking: Netwerkgrens (Stellar): maximaal 20 extra ondertekenaars.",
+  "signersTitle": "Signer (ed25519)",
+  "signersInfo": "Voeg meer Signer toe en stel de juiste waarden voor Thresholds in.",
+  "signersCount": "Nummer Signer",
+  "signersCountLimit": "Opmerking: Netwerkbeperking (Stellar): max. 20 extra Signer.",
   "bestPractices": {
     "title": "Best practices",
     "text": "Houd geheime sleutels veilig en verspreid ze niet onnodig."
   },
-  "signerTypeNote": "Opmerking: SKM gebruikt alleen ed25519-ondertekenaars. Voor hashX/preAuthTx, gebruik",
+  "signerTypeNote": "Opmerking: SKM gebruikt uitsluitend ed25519-Signer. Gebruik voor hashX/preAuthTx",
   "signerTypeLink": "lab.stellar.org",
   "masterWeight": "Meestergewicht",
-  "threshold": "Drempel (niedrig/mittel/hoch)",
+  "threshold": "Threshold (laag/gemiddeld/hoog)",
   "thresholdLow": "laag",
   "thresholdMed": "medium",
   "thresholdHigh": "hoog",
-  "thresholdLevelsHint": "Typisch sind niedrig = einfache Änderungen (e.g., memo, price), mittel = Zahlungen/Handel, hoch = sicherheitskritische Änderungen (e.g., signer/threshholds). Niedrig/Mittel/Hoch definieren das erforderliche minimale Unterschriftsgewicht für eine Operation.",
+  "thresholdLevelsHint": "Doorgaans geldt: laag = eenvoudige wijzigingen (bijv. Memo, prijs); gemiddeld = betalingen/handel; hoog = beveiligingskritische wijzigingen (bijv. Signer/thresholds). Laag / Gemiddeld / Hoog bepalen het vereiste minimale Signer-gewicht voor een bewerking.",
   "thresholdSum": "Totale gewicht: {{sum}}",
-  "thresholdTooHigh": "Opmerking: Een drempel mag de som van de gewichten niet overschrijden. Pas de waarden dienovereenkomstig aan.",
+  "thresholdTooHigh": "Opmerking: Een threshold mag niet groter zijn dan de som van de gewichten. Pas de waarden dienovereenkomstig aan.",
   "hints": {
     "byteRange": "(0–255)"
   },
   "tooltips": {
     "low": "Laag: eenvoudige veranderingen (e.g., memo, price).",
     "med": "Betalingen en handelsacties.",
-    "high": "Hoog: veiligheidskritische wijzigingen (e.g., signatories/thresholds).",
-    "signerWeight": "Gewicht van de ondertekenaars (0–255): Daarnaast hebben ondertekenaars ook stemrechten. Het gewicht bepaalt hoeveel stemmen hun handtekening bijdraagt. Wanneer een transactie wordt verzonden, worden alle uitgebrachte stemmen opgeteld. Als het vooraf bepaalde minimum aantal stemmen (Threshold) is bereikt, wordt de transactie als geautoriseerd beschouwd.",
-    "masterWeight": "Gewicht van de rekeninghouder (Master) (0-255): De belangrijkste sleutel van de rekening heeft stemrecht. Hoe hoger het gewicht, des te meer stemmen tellen voor de handtekening. Deze stemmen worden samengeteld met de stemmen van andere ondertekenaars om te bepalen of de vereiste meerderheid is behaald."
+    "high": "Hoog: wijzigingen die van cruciaal belang zijn voor de beveiliging (bijv. Signer/thresholds).",
+    "signerWeight": "Gewicht van Signer (0–255): Ook de overige Signer hebben stemrecht. Het gewicht bepaalt hoeveel stemmen een handtekening oplevert. Wanneer een transactie wordt verzonden, worden alle uitgebrachte stemmen bij elkaar opgeteld. Als het opgegeven minimumaantal stemmen (Threshold) wordt bereikt, wordt de transactie als geautoriseerd beschouwd.",
+    "masterWeight": "Gewicht van de accounthouder (Master) (0-255): De primaire sleutel van de account heeft één stem. Hoe hoger het gewicht, hoe meer stemmen de handtekening van de accounthouder telt. Deze stemmen worden samen met de stemmen van andere Signer geteld om te bepalen of de vereiste meerderheid is bereikt."
   },
   "units": {
     "signatures": "Minimum gewicht"

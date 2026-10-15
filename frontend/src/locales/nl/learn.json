@@ -88,18 +88,18 @@
     "reward": "⭐ 1 – Privacy Detective"
   },
   "lesson4": {
-    "title": "Je account",
-    "goal": "Inzicht in de structuur en betekenis van publieke/private sleutels.",
+    "title": "Sleutels, kosten en Trustlines",
+    "goal": "Zorg dat je het verschil begrijpt tussen Public Key en Secret Key, evenals de kosten en Trustlines.",
     "task": "Matchspel: Wat is openbaar, wat is geheim",
-    "learningOutcome": "Alleen de geheime sleutel biedt toegang; de publieke sleutel mag worden gedeeld.",
+    "learningOutcome": "Public Key = Ontvangstadres. Secret Key = Geheim houden! Trustline = Toestemming om een Token te bezitten.",
     "reward": "⭐ 1 – Sleutelbewaarder"
   },
   "lesson5": {
     "title": "Verzenden & Ontvangen",
-    "goal": "Begrijpen hoe transacties en trustlijnen werken",
-    "task": "Voer testtransmissie uit en bekijk de kosten.",
-    "learningOutcome": "Elke transactie brengt een kleine vergoeding met zich mee; Trustline = toestemming om te ontvangen.",
-    "reward": "⭐ 2 – Vertrouwenslijn Starter"
+    "goal": "Inzicht in de werking van transacties en Trustlines",
+    "task": "Beantwoord vragen over Trustlines, kosten, het activeren van de account en Memos.",
+    "learningOutcome": "Voor elke transactie worden minimale kosten in rekening gebracht. Een Memo is te vergelijken met een betalingsreferentie.",
+    "reward": "⭐ 2 – Trustline Beginnerspakket"
   },
   "lesson6": {
     "title": "Token & Trading",
@@ -132,7 +132,7 @@
   "lesson10": {
     "title": "Oefen met SKM",
     "goal": "Pas geleerde kennis in de praktijk toe.",
-    "task": "Maak een account aan in de testnet, activeer het, stel een trustlijn in, verstuur tokens.",
+    "task": "Maak een account aan in de testnet, activeer deze, stel een trustline in en verstuur tokens.",
     "learningOutcome": "Volg de technische processen van een transactie.",
     "reward": "⭐ 3 – Blockchain Pilot"
   },
@@ -153,8 +153,8 @@
   "lesson13": {
     "title": "Multisig voor Beginners",
     "goal": "Inzicht in de fundamentele principes van multisig",
-    "task": "Vergelijk Single-Sig met Multisig en onderzoek een voorbeeldproces.",
-    "learningOutcome": "Meerdere handtekeningen verhogen de veiligheid; drempels bepalen hoeveel handtekeningen er nodig zijn.",
+    "task": "Beantwoord vragen over single-sig versus Multisig, Thresholds en Signers.",
+    "learningOutcome": "Met Multisig zijn meerdere handtekeningen vereist. Dit voorkomt dat iemand op eigen houtje actie onderneemt.",
     "reward": "⭐ 2 – Multisig Starter"
   },
   "lesson14": {
@@ -167,7 +167,7 @@
   "cashback-loyalty": {
     "title": "Cashback & loyaliteitstoken",
     "goal": "Ontdek hoe Custom Assets op Stellar als loyaliteitsmunten werken.",
-    "task": "Beantwoord vragen over loyaliteitsmunten, vertrouwenslijnen en verificatie van uitgevers.",
+    "task": "Beantwoord vragen over Loyalty Token, Trustlines en de verificatie van de uitgever.",
     "learningOutcome": "Dezelfde naam van een token betekent niet dat het om hetzelfde token gaat — het is de uitgever die het verschil maakt.",
     "reward": "⭐ 2 – Loyaliteitsexpert"
   },

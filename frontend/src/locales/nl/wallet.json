@@ -10,5 +10,92 @@
     "deactivated": "Opmerking: Deze portemonnee is als uitgeschakeld gemarkeerd in uw Vertrouwenslijst."
   },
   "xlmBalance": "XLM",
-  "unfunded": "Niet geactiveerd"
+  "unfunded": "Niet geactiveerd",
+  "home": {
+    "balance": "Saldo",
+    "refresh": "Vernieuwen",
+    "available": "Beschikbaar",
+    "reserved": "Gereserveerd",
+    "reservedHint": "Netwerkreserve (per Token-uitgifte, -aanbod of Signer) plus XLM in openstaande verkooporders. Dit bedrag kan niet worden overgemaakt.",
+    "muxedNote": "Muxed Identity: Het saldo van de basisrekening wordt weergegeven.",
+    "loadError": "De accountgegevens konden niet worden geladen.",
+    "actions": {
+      "send": "Verzenden",
+      "swap": "Wisselkantoor",
+      "details": "Accountgegevens",
+      "receive": "Ontvangen"
+    },
+    "assets": "Assets",
+    "manageTrustlines": "Token-shares beheren",
+    "poolShares": "Aandelen in de liquiditeitspool",
+    "pool": "Zwembad",
+    "issuer": "Uitgever",
+    "noTrustlines": "Er zijn nog geen Token-goedkeuringen. Om andere Tokens te behouden, heb je eerst een goedkeuring nodig (Trustline).",
+    "tokenNote": "Alleen voor XLM wordt een equivalente waarde weergegeven. SKM evalueert Token niet en doet geen uitspraak over de vraag of een Token authentiek is.",
+    "notFound": {
+      "title": "Account nog niet geactiveerd",
+      "text": "Dit account bestaat nog niet op {{net}}. Het wordt actief zodra de eerste storting in XLM is ontvangen."
+    },
+    "empty": {
+      "title": "Er is nog geen account geladen",
+      "text": "Voer hierboven je Public Key of een federatieadres in. De Public Key is voldoende om de gegevens te bekijken; voor transacties heb je later je Secret Key nodig.",
+      "learn": "Maak kennis met Stellar"
+    }
+  },
+  "receive": {
+    "title": "Ontvangen",
+    "intro": "Voer dit adres in om XLM of Token op deze rekening te ontvangen.",
+    "noAccount": "Voeg eerst bovenaan een account toe. Vervolgens zie je hier het adres en de QR-code ervan.",
+    "testnet": "Je bevindt je in Testnet. Saldi op Testnet hebben geen waarde.",
+    "variantLabel": "Adressoort",
+    "muxed": "Muxed-adres (M…)",
+    "base": "Basisaccount (G…)",
+    "qrLabel": "QR-code voor het adres {{address}}",
+    "addressLabel": "Je Stellar-adres",
+    "muxedAddressLabel": "Muxed-adres",
+    "copy": "Adres kopiëren",
+    "copied": "Gekopieerd",
+    "hintCompare": "Laat de afzender het eerste en laatste teken van het adres controleren. Oplichters gebruiken opzettelijk adressen die op elkaar lijken.",
+    "hintTrustline": "Andere Tokens dan XLM kun je pas ontvangen als je er een Token-machtiging (Trustline) voor hebt.",
+    "hintActivate": "Een nieuwe account wordt pas geactiveerd nadat een eerste storting van ten minste 1 XLM is gedaan.",
+    "hintMuxed": "Betalingen die naar een M-adres worden gestuurd, worden op je basisrekening gestort en voorzien van de Muxed-ID. Niet elke Wallet of beurs ondersteunt M-adressen."
+  },
+  "activity": {
+    "title": "Laatste activiteit",
+    "showAll": "Alles weergeven",
+    "loadError": "De activiteit kon niet worden geladen.",
+    "empty": "Er zijn nog geen betalingen ontvangen.",
+    "failed": "Mislukt",
+    "lookalike": "Vergelijkbaar adres",
+    "lookalikeHint": "Dit adres begint en eindigt net als een adres waarnaar je al eens iets hebt gestuurd, maar het is een ander adres. Kopieer nooit ontvangers uit je geschiedenis.",
+    "lookalikeWarning": "Waarschuwing: ten minste één afzender lijkt op een adres waarnaar je eerder iets hebt verzonden. Kopieer ontvangers nooit uit je geschiedenis; kopieer ze altijd vanuit een betrouwbare bron.",
+    "dust": "Kleine hoeveelheid",
+    "showDust": "Advertenties",
+    "hideDust": "Verbergen",
+    "from": "door",
+    "to": "naar",
+    "memoHint": "Memo van de afzender. Inhoud niet geverifieerd door SKM.",
+    "explorer": "Details",
+    "kind": {
+      "received": "Ontvangen",
+      "sent": "Verzonden",
+      "self": "Aan jezelf",
+      "pathIn": "Ontvangen (geruild)",
+      "pathOut": "Verzonden (uitgewisseld)",
+      "accountCreated": "Account geactiveerd",
+      "createdAccount": "Account aangemaakt",
+      "mergeIn": "Account samengevoegd",
+      "mergeOut": "Account gesloten"
+    },
+    "dustHidden_one": "{{count}} kleine betalingen verborgen (vaak spam).",
+    "dustHidden_other": "{{count}} kleine betalingen verborgen (vaak spam).",
+    "dustShown_one": "Er wordt een microbetaling van {{count}} weergegeven.",
+    "dustShown_other": "Er worden {{count}} kleine betalingen weergegeven.",
+    "memoLabel": "Memo",
+    "onlyDust": "Er zijn alleen zeer kleine bedragen beschikbaar.",
+    "url": "Bevat een webadres",
+    "urlHint": "Het bestand Memo bevat een webadres. Bij legitieme betalingen is dit niet nodig. Open het niet.",
+    "fakeNative": "Token, geen native XML",
+    "fakeNativeHint": "Dit is een Token van een uitgever, niet de eigen XLM van het netwerk."
+  }
 }

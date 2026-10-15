@@ -14,7 +14,7 @@
   "debug": {
     "incoming": "Entrante – para: {{toMe}}, crear→me: {{createToMe}}, nativo→me: {{nativeInToMe}}",
     "incomingOverview": "Entradas: {{total}} • Carteras involucradas: {{unique}}",
-    "memo": "Memorandos en ventana: {{any}} • memorandos exactos: {{exact}}",
+    "memo": "Memos en la ventana: {{any}} • valor exacto de memos: {{exact}}",
     "types": "Tipos – pago: {{pay}}, ruta: {{path}}, crear: {{create}}, otro: {{other}}"
   },
   "export": {
@@ -37,10 +37,10 @@
   },
   "summary": {
     "amount": "Total: {{amount}} XLM",
-    "correctCount": "Entradas con memorando correcto: {{n}}",
+    "correctCount": "Entradas con el valor correcto de memo: {{n}}",
     "count": "Cantidad: {{n}}",
     "label": "Comparación (all inputs)",
-    "otherCount": "Entradas con memorando incorrecto/faltante: {{n}}",
+    "otherCount": "Entradas con memo incorrecto o que no lo incluyen: {{n}}",
     "unique": "Carteras únicas (todas): {{n}}",
     "uniqueWallets": "Monederos únicos: {{n}}"
   },
@@ -78,9 +78,9 @@
     },
     "csv": "Descargar CSV",
     "failed": "Error al cargar pagos con un memo incorrecto/vacío.",
-    "hint": "Filtra los pagos entrantes dentro del período y muestra los remitentes con memorandos incorrectos o vacíos.",
+    "hint": "Filtra los pagos recibidos durante el periodo y muestra los remitentes con un valor incorrecto o vacío en memo.",
     "scanning": "… escaneando memos incorrectos/vacíos",
     "summary": "Cuenta: {{count}} • Total: {{sum}} XLM • Carteras Únicas: {{unique}}",
-    "title": "Memorandos falsos/vacíos durante el período"
+    "title": "memos falso/vacío durante el periodo"
   }
 }

@@ -5,9 +5,9 @@
   "hint": "Maak een nieuw account aan, activeer het en configureer eventueel multisig.",
   "generateKeys": "Sleutel genereren",
   "enableMultisig": "Schakel multisig in",
-  "signersTitle": "Ondertekenaar",
-  "signersInfo": "Voeg extra ondertekenaars toe en stel passende drempels in.",
-  "signersCount": "Aantal ondertekenaars",
+  "signersTitle": "Signer",
+  "signersInfo": "Voeg meer Signer toe en stel de juiste waarden voor Thresholds in.",
+  "signersCount": "Nummer Signer",
   "bestPractices": {
     "title": "Beste praktijken",
     "text": "Houd geheime sleutels veilig en verspreid ze niet onnodig."
@@ -17,7 +17,7 @@
     "secret": "Houd deze geheime sleutel veilig; deel hem nooit."
   },
   "generateFirst": "Maak alstublieft eerst een sleutelpaar aan.",
-  "confirmLowBalance": "Startsaldo {bal} XLM ligt onder de aanbevolen reserve {req} XLM (Ondertekenaars: {count}). Doorgaan?",
+  "confirmLowBalance": "Het beginsaldo {bal} XLM ligt onder de aanbevolen reserve {req} XLM (Signer: {count}). Wilt u doorgaan?",
   "activated": "Account is geactiveerd. Hash: {hash}",
   "activatedTestnet": "Account werd geactiveerd op het testnet via Friendbot.",
   "alreadyActive": "Account is al geactiveerd.",
@@ -27,16 +27,16 @@
     "more": "Meer informatie",
     "keysOnPage": {
       "title": "Sleutel op deze pagina",
-      "text": "⚠️ BELANGRIJK: Deze website slaat je geheime sleutel NOOIT op!\n\nDe hier weergegeven geheime sleutel bestaat alleen in je browser (lokaal in het geheugen). Zodra je de pagina vernieuwt of verlaat, gaat deze onherroepelijk verloren.\n\nKopieer of noteer de geheime sleutel onmiddellijk nadat u deze hebt gegenereerd, voordat u de pagina sluit.\n\nControle: U kunt de ontwikkelaarstools van uw browser (F12 → Netwerk) gebruiken om te controleren of er geen geheime sleutel naar buiten wordt verzonden. Alleen ondertekende transacties worden verzonden – nooit uw geheime sleutel."
+      "text": "⚠️ BELANGRIJK: Deze website slaat je Secret Key NOOIT op!\n\nDe hier weergegeven Secret Key bestaat alleen in je browser (lokaal in het geheugen). Zodra je de pagina vernieuwt of verlaat, gaat deze onherroepelijk verloren.\n\nKopieer of noteer de Secret Key onmiddellijk nadat deze is gegenereerd, voordat je de pagina sluit.\n\nControle: Je kunt de ontwikkelaarstools van je browser (F12 → Netwerk) gebruiken om te controleren of er geen Secret Key extern wordt verzonden. Alleen ondertekende transacties worden verzonden – nooit je Secret Key."
     },
     "title": "Belangrijke informatie",
     "secureKeys": {
-      "title": "Beveilig geheime sleutel",
+      "title": "Maak een back-up van Secret Key",
       "text": "De openbare sleutel kun je veilig delen – het is net als een rekeningnummer.\n\nDe geheime sleutel is de sleutel tot je account. Behandel deze als een wachtwoord:\n• Sla hem NOOIT op in clouddiensten, e-mails of onbeveiligde notities\n• Schrijf hem op papier op of gebruik een hardware-wallet\n• Maak meerdere back-ups en bewaar deze op veilige, afzonderlijke locaties\n• Als je je geheime sleutel kwijtraakt, is de toegang tot je account onherstelbaar verloren"
     },
     "multisigSection": {
-      "title": "Multisig (Meervoudige handtekening)",
-      "text": "Met multisig kun je meerdere ondertekenaars voor je account definiëren. Transacties vereisen vervolgens handtekeningen van meerdere sleutels (multisig).\n\nVoordelen:\n• Verbeterde beveiliging (security)\n• Gedeelde accounts (shared accounts)\n• Noodherstel (emergency recovery)\n\nLET OP: Test multisig eerst op het testnet voordat je het op het mainnet implementeert! Onjuiste configuratie kan leiden tot verlies van toegang tot het account."
+      "title": "Multisig (Multi-signature)",
+      "text": "Met Multisig kun je meerdere Signer voor je account instellen. Voor transacties zijn dan handtekeningen van meerdere sleutels vereist (bijvoorbeeld 2 van de 3).\n\nVoordelen:\n• Verhoogde beveiliging (één gecompromitteerde sleutel is niet voldoende)\n• Gezamenlijke rekeningen (bijv. bedrijven, partnerschappen)\n• Herstel in noodgevallen (meerdere back-ups in het bezit van verschillende personen)\n\nWAARSCHUWING: Test Multisig eerst in de Testnet voordat u het op de Mainnet gebruikt! Een onjuiste configuratie kan leiden tot verlies van toegang tot de account."
     },
     "diagram": {
       "title": "Handtekening vervaldatum"
@@ -45,7 +45,7 @@
   "activateHint": "Activering is noodzakelijk voor het bestaan van de account. In de Testnet via Friendbot; in de Mainnet via \"Account maken\" vanuit een bestaande wallet.",
   "activateNow": "Account onmiddellijk activeren",
   "activateOnly": "Gewoon activeren",
-  "balanceWarning": "Het initiële saldo is waarschijnlijk te laag om de {{count}} extra ondertekenaars toe te voegen (minimale reserve: {{req}} XLM)",
+  "balanceWarning": "Het beginsaldo is waarschijnlijk te laag om de {{count}} extra signers toe te voegen (minimumreserve: {{req}} XLM)",
   "createButton": "Multisig maken / instellen",
   "mainnetActivateNote": "Opmerking: Voor Multisig zijn extra reserves vereist. 1 XLM is vaak niet voldoende.",
   "reserve": {
@@ -54,7 +54,7 @@
     "required": "Vereiste minimumreserve (nieuw): {{val}} XLM"
   },
   "signersCountHint": "Je stelt het minimum aantal handtekeningen hieronder in onder \"Vereiste Handtekeningen\" (niedrig/mittel/hoch).",
-  "signersCountLimit": "Opmerking: Netwerkgrens (Stellar): maximaal 20 extra ondertekenaars.",
+  "signersCountLimit": "Opmerking: Netwerkbeperking (Stellar): max. 20 extra Signer.",
   "startingBalance": "Beginsaldo (XLM)",
   "keyWarning": {
     "title": "⚠️ Beveilig de sleutel nu!",

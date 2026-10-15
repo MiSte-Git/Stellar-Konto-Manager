@@ -1,6 +1,6 @@
 {
   "page": {
-    "title": "Suodata XLM muistiolla",
+    "title": "Suodata XLM:ää termillä Memo",
     "noPublicKey": "Ei julkista avainta ladattu. Syötä ensin julkinen avain."
   },
   "action": {
@@ -14,7 +14,7 @@
   "debug": {
     "incoming": "Saapuva – vastaanottaja: {{toMe}}, luo→minulle: {{createToMe}}, alkuperäinen→minulle: {{nativeInToMe}}",
     "incomingOverview": "Merkinnät: {{total}} • Mukana olevat lompakot: {{unique}}",
-    "memo": "Muistiinpanoja ikkunassa: {{any}} • tarkkoja muistiinpanoja: {{exact}}",
+    "memo": "Memos ikkunassa: {{any}} • tarkka memos: {{exact}}",
     "types": "Tyypit – maksu: {{pay}}, polku: {{path}}, luo: {{create}}, muu: {{other}}"
   },
   "export": {
@@ -27,8 +27,8 @@
     "failed": "CSV-vienti epäonnistui: {{detail}}"
   },
   "memo": {
-    "label": "Muistion hakuteksti (substring, case-sensitive)",
-    "placeholder": "Muistio (substring, case-sensitive)"
+    "label": "Memo hakuteksti (osajono, kirjainkokoa erottava)",
+    "placeholder": "Memo (osamerkkijono, kirjainkokoa erottava)"
   },
   "overviewLine": "Maksukuittaukset: {{total}} • mukana olevat lompakot: {{unique}}",
   "result": {
@@ -37,10 +37,10 @@
   },
   "summary": {
     "amount": "Yhteensä: {{amount}} XLM",
-    "correctCount": "Merkinnät oikealla muistiolla: {{n}}",
+    "correctCount": "Vastaukset, joissa on oikea memo: {{n}}",
     "count": "Määrä: {{n}}",
     "label": "Vertailu (all inputs)",
-    "otherCount": "Merkintöjä, joissa on virheellinen/puuttuva muistiinpano: {{n}}",
+    "otherCount": "Tietueet, joissa memo on virheellinen tai puuttuu: {{n}}",
     "unique": "Ainutlaatuiset lompakot (kaikki): {{n}}",
     "uniqueWallets": "Uniikit lompakot: {{n}}"
   },
@@ -48,13 +48,13 @@
     "setToNow": "Aseta nykyinen aika",
     "setToNowHint": "Aseta aika-kenttä nykyiseen aikaan."
   },
-  "title": "XLM-saldo muistion mukaan",
+  "title": "XLM-saldo memo:n mukaan",
   "topLargest": {
     "button": "Top 20 Entrances (Memo)",
     "clipboard": "Kopioi leikepöydälle",
     "csv": "Lataa CSV",
     "scanning": "… skannaa suurimpia saapuvia",
-    "title": "Muistion aikajakson 20 parasta merkintää"
+    "title": "Kauden 20 parasta tulosta lajissa Memo"
   },
   "tz": {
     "cdt": "CDT (UTC−5) auf Finnisch wird geschrieben als CDT (UTC−5).",
@@ -67,20 +67,20 @@
     "window": "Käytetty UTC-aikaväli: {{from}} → {{to}} (loppuaikaa lukuun ottamatta)"
   },
   "wrongMemos": {
-    "button": "Näytä lompakot, joissa on virheellinen/tyhjä muistio.",
+    "button": "Näytä wallets, kun memo on virheellinen tai tyhjä",
     "clipboard": "Kopioi leikepöydälle",
     "columns": {
       "amount": "Määrä",
       "created_at": "Luotu",
       "from": "Alkaen",
-      "memo": "Muistio",
+      "memo": "Memo",
       "tx_hash": "Tapahtuman tiiviste"
     },
     "csv": "Lataa CSV",
-    "failed": "Virhe maksujen lataamisessa, kun muistio on virheellinen tai tyhjä.",
-    "hint": "Suodattaa saapuvat maksut ajanjaksolla ja näyttää lähettäjät, joiden muistiinpano on virheellinen/tyhjä.",
-    "scanning": "… skannaa vääriä/tyhjiä muistiinpanoja",
+    "failed": "Virhe maksujen lataamisessa: memo on virheellinen tai tyhjä.",
+    "hint": "Suodattaa kyseisen ajanjakson aikana saapuneet maksut ja näyttää lähettäjät, joiden memo-kenttä on virheellinen tai tyhjä.",
+    "scanning": "… skannaus virheellinen/tyhjä memos",
     "summary": "Lukumäärä: {{count}} • Yhteensä: {{sum}} XLM • Uniikit lompakot: {{unique}}",
-    "title": "Väärät/tyhjät muistiot ajanjakson aikana"
+    "title": "Virheellinen/tyhjä memos kyseisenä ajanjaksona"
   }
 }

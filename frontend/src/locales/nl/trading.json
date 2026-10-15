@@ -22,7 +22,7 @@
       "columns": {
         "code": "Code",
         "issuer": "Uitgever",
-        "numAccounts": "Accounts",
+        "numAccounts": "Trustlines",
         "amount": "Totaalbedrag",
         "domain": "Domein",
         "toml": "TOML",
@@ -72,7 +72,7 @@
       "authorization": "Bij assets waarvoor authenticatie vereist is (auth_required), moet de uitgever uw trustline goedkeuren voordat u het token kunt ontvangen of verhandelen.",
       "homeDomain": "Domein dat is opgeslagen op het account van de uitgever. Dit helpt bij het vinden van het bestand stellar.toml.",
       "issuerMasterWeight": "Gewicht van de hoofdcode van de uitgever. Een waarde van 0 betekent dat de hoofdcode alleen niet meer kan ondertekenen.",
-      "issuerLocked": "Geeft aan of de hoofdsleutel van de uitgever nog actief is. \"Actief beheerd\" is normaal voor doorlopend beheerde projecten zoals stablecoins en is geen waarschuwing. \"Volledig vergrendeld\" is een positief signaal bij activa die onveranderlijkheid beloven. \"Schijnbaar vergrendeld\" betekent dat de hoofdsleutel is uitgeschakeld, maar andere ondertekenaars nog steeds controle over de rekening kunnen uitoefenen.",
+      "issuerLocked": "Geeft aan of de masterkey van de uitgever nog steeds actief is. „Actief beheerd” is normaal voor lopende projecten zoals stablecoins en vormt geen waarschuwing. \"Volledig vergrendeld\" is een positief signaal voor tokens die onveranderbaarheid beloven. \"Lijkt vergrendeld\" betekent dat de hoofdsleutel is uitgeschakeld, maar dat andere signers nog steeds controle over de rekening kunnen uitoefenen.",
       "tomlStatus": "Status van het bestand stellar.toml onder het thuisdomein van de uitgever.",
       "tomlUrl": "Adres van het gevonden bestand stellar.toml.",
       "tomlAssetListed": "Geeft aan of dit activum is opgenomen in de CURRENCIES-vermeldingen van het bestand stellar.toml.",
@@ -347,7 +347,7 @@
       "issuerUnlocked": "De hoofdcode van de uitgever is niet vergrendeld.",
       "authRequired": "Voor dit bestand is toestemming van de uitgever vereist.",
       "clawbackEnabled": "Voor dit activum is clawback ingeschakeld.",
-      "issuerAppearsLocked": "Let op: de hoofdsleutel is uitgeschakeld, maar andere sleutels kunnen de rekening van de uitgever nog steeds beheersen. De rekening is dus niet echt vergrendeld.",
+      "issuerAppearsLocked": "Waarschuwing: de hoofdsleutel is uitgeschakeld, maar andere signers kunnen nog steeds de controle over de uitgeversrekening uitoefenen. Deze is namelijk niet daadwerkelijk vergrendeld.",
       "authRevocable": "De uitgever kan een reeds verleende machtiging intrekken en jouw tegoed van dit token bevriezen.",
       "expertFlagged": "Let op: deze uitgever is in het StellarExpert-register als schadelijk gemarkeerd ({{tags}}). Het toevoegen van een trustline, kopen of wisselen wordt sterk afgeraden."
     },
@@ -359,13 +359,13 @@
     },
     "exchangeRate": {
       "title": "XLM-koers",
-      "quickLabel": "Marktprijs (midden van het orderboek)",
+      "quickLabel": "Marktprijs (middenkoers uit het orderboek)",
       "executionLabel": "Uitoefenprijs (referentiehoeveelheid 1)",
-      "loading": "De koers wordt geladen...",
+      "loading": "Het tarief wordt geladen...",
       "noLiquidity": "Er is geen actieve orderdiepte in het eigen orderboek.",
       "noRoute": "Er is geen betalingsroute gevonden.",
       "failed": "Het orderboek kon niet worden geladen.",
-      "quoteAge": "Leeftijd van de koers",
+      "quoteAge": "Leeftijd beoordelen",
       "disclaimer": "Dit is slechts een prijsindicatie; het is geen offerte. Bij grotere bedragen kan de daadwerkelijke prijs afwijken (slippage)."
     }
   }

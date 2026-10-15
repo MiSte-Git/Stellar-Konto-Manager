@@ -1,6 +1,6 @@
 {
   "title": "Cashback i Loyalty Tokeni",
-  "introText": "Testiraj svoje znanje o loyalty tokenima, linijama povjerenja i provjeri izdavatelja na Stellaru.",
+  "introText": "Testirajte svoje znanje o Loyalty Token, Trustlines i provjeri izdavatelja na Stellaru.",
   "q1": {
     "question": "Što je loyalty token?",
     "hint": "Razmisli o prilagođenim sredstvima na blockchainu.",
@@ -14,12 +14,12 @@
   "q2": {
     "question": "Što kupac treba prije primanja loyalty tokena?",
     "hint": "Stellar zahtijeva izričito povjerenje prije nego što se token može primiti.",
-    "a1": "Liniju povjerenja prema izdavatelju tokena.",
-    "a1fb": "Točno: Bez linije povjerenja prema izdavatelju nije moguće primiti nijedan token.",
+    "a1": "Trustline izdavatelju Tokens.",
+    "a1fb": "Ispravno: Bez Trustline od izdavatelja, Token se ne može primiti.",
     "a2": "Verificirani račun.",
     "a2fb": "Netočno: Stellar računi ne zahtijevaju vanjsku verifikaciju za prilagođena sredstva.",
     "a3": "Najmanje 10 XLM u novčaniku.",
-    "a3fb": "Netočno: Za linije povjerenja nema minimalnog zahtjeva za XLM."
+    "a3fb": "Netočno: Za Trustlines nije potrebna minimalna količina XLM-a."
   },
   "q3": {
     "question": "Marco naziva svoj token \"BERRY\". Druga tvrtka čini isto. Jesu li tokeni isti?",
@@ -46,8 +46,8 @@
     "hint": "Tko je stvarni kreator ovog tokena?",
     "a1": "Usporediti adresu izdavatelja sa službenom adresom tvrtke.",
     "a1fb": "Točno: Samo usporedba adrese izdavatelja štiti od bezvrijednih lažnih tokena.",
-    "a2": "Odmah dodati liniju povjerenja.",
-    "a2fb": "Netočno: Dodavanje linije povjerenja neverificiranom izdavatelju može rezultirati bezvrijednim tokenima.",
+    "a2": "Dodajte Trustline odmah.",
+    "a2fb": "Neispravno: Trustline povezan s neoverenim izdavačem može rezultirati bezvrijednim Tokens.",
     "a3": "Potražiti naziv tokena na Internetu.",
     "a3fb": "Netočno: Sam naziv ne govori ništa – tko god može nazvati token \"BERRY\"."
   },

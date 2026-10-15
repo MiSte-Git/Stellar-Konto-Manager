@@ -7,7 +7,7 @@
     "destination": "Ciljani novčanik",
     "issuer": "Izdavatelj",
     "label": "Oznaka",
-    "memo": "Memorandum",
+    "memo": "Memo",
     "payments": "Plaćanja",
     "date": "Datum",
     "token": "Token"
@@ -17,7 +17,7 @@
     "label": "Decimalna mjesta:"
   },
   "filter": {
-    "memoPlaceholder": "Filtriraj po bilješci, adresi novčanika ili oznaci.",
+    "memoPlaceholder": "Filtriraj po memo, wallet adresi ili oznaci",
     "tokenPlaceholder": "Filtriraj prema tokenu (CODE:ISSUER)"
   },
   "item": {

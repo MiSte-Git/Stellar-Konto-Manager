@@ -1,9 +1,9 @@
 {
-  "all": "Elenca tutte le linee di fiducia.",
+  "all": "Elenca tutti i trustlines.",
   "compare": "Confronta Trustlines",
-  "delete": "Elimina le linee di fiducia",
-  "onlyZeroBalanceInfo": "Solo le linee di fiducia con un saldo di 0 possono essere eliminate.",
-  "nonZeroBalance": "Questa linea di fiducia ha un saldo diverso da zero e non può essere eliminata.",
+  "delete": "Elimina trustlines",
+  "onlyZeroBalanceInfo": "È possibile eliminare solo trustlines con un saldo pari a 0.",
+  "nonZeroBalance": "Questo trustline presenta un saldo diverso da zero e non può essere eliminato.",
   "destination": {
     "label": "Indirizzo di destinazione",
     "placeholder": "Chiave pubblica di destinazione o indirizzo di federazione",
@@ -15,13 +15,13 @@
     "mode": {
       "simulation": "Simulazione",
       "real": "Operazione dal vivo",
-      "realWarning": "Attenzione! Questo eliminerà definitivamente le linee di credito sulla blockchain."
+      "realWarning": "Attenzione! Questa operazione eliminerà definitivamente trustlines dalla blockchain."
     },
-    "notFound": "Nessuna linea di fiducia corrispondente trovata da eliminare.",
-    "simulated": "Simulazione: verrebbero eliminate {count} linee di fiducia.",
-    "success": "Rimosse con successo {count} linee di fiducia."
+    "notFound": "Non è stato trovato alcun elemento trustlines corrispondente da eliminare.",
+    "simulated": "Simulazione: {count} trustlines verrebbe eliminato.",
+    "success": "{count} trustlines è stato rimosso con successo."
   },
-  "noDuplicates": "Nessuna linea di fiducia duplicata trovata.",
+  "noDuplicates": "Non è stato trovato alcun duplicato di trustlines.",
   "showSecret": "Visualizza Chiave Segreta",
   "notFound": "Nessuna Trustline(s) trovata.",
   "add": {
@@ -32,12 +32,12 @@
     "assetCodeHelp": "Nome breve dell'asset (1–12 caratteri, ad esempio, TESTUSD).",
     "issuerLabel": "Emittente (Public Key)",
     "issuerPlaceholder": "ad esempio, Emittente",
-    "issuerHelp": "Chiave pubblica (indirizzo G) dell'account dell'emittente che emette l'asset.",
+    "issuerHelp": "Public Key (indirizzo G) del conto dell'emittente che emette il Asset.",
     "limitLabel": "Limite",
     "limitPlaceholder": "ad es., 1.000.000 (un milione)",
     "limitHelp": "Il limite è la quantità massima di questo bene che questo conto può accettare. In pratica, dovrebbe essere impostato tanto quanto il saldo massimo previsto in questo bene.",
-    "submit": "Crea una linea di fiducia",
+    "submit": "Crea un trustline",
     "cancel": "Annulla",
-    "success": "La linea di fiducia per {{code}} è stata stabilita con successo."
+    "success": "Trustline per {{code}} è stato creato con successo."
   }
 }

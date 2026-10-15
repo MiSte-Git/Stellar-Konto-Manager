@@ -1,18 +1,18 @@
 {
-  "title": "Multifirma para principiantes",
+  "title": "Multisig para principiantes",
   "menuTitle": "Comprensión de Multisig",
-  "teaser": "Por qué múltiples firmas, cómo funcionan los umbrales y cómo ayuda SKM.",
+  "teaser": "Por qué se utilizan varias firmas, cómo funciona thresholds y cómo ayuda SKM.",
   "why": {
     "title": "¿Por qué Multisig?",
     "text": "Múltiples firmas reducen el riesgo de errores individuales o robos."
   },
   "singleVsMulti": {
-    "title": "Firma única vs. multifirma",
-    "text": "Firma única = Basta con una clave. Firma múltiple = Se requieren varias firmas (por ejemplo, 2 de 3)."
+    "title": "Single-sig frente a Multisig",
+    "text": "Firma única = Basta con una clave. Multisig = Se requieren varias firmas (por ejemplo, 2 de 3)."
   },
   "stellarHow": {
     "title": "Cómo Stellar implementa Multisig",
-    "text": "Stellar utiliza firmantes con pesos y umbrales. Cada operación requiere un peso umbral."
+    "text": "Stellar utiliza signers con pesos y thresholds. Cada operación requiere un peso de threshold."
   },
   "examples": {
     "title": "Ejemplos prácticos",
@@ -26,7 +26,7 @@
   },
   "diagram": {
     "singleVsMulti": "Diagrama: Firma única vs. Multisig",
-    "stellarHow": "Diagrama: Firmante, Peso, Umbral",
+    "stellarHow": "Diagrama: Signer, Peso, Threshold",
     "skmFlow": "Diagrama: Preparación de flujo SKM → Firma → Envío"
   }
 }

@@ -5,9 +5,9 @@
   "hint": "Create a new account, activate it, and optionally configure multisig.",
   "generateKeys": "Generate key",
   "enableMultisig": "Enable multisig",
-  "signersTitle": "Signatory",
-  "signersInfo": "Add additional signatories and set appropriate thresholds.",
-  "signersCount": "Number of signatories",
+  "signersTitle": "Signer",
+  "signersInfo": "Add more Signer and set appropriate Thresholds values.",
+  "signersCount": "Number Signer",
   "bestPractices": {
     "title": "Best Practices",
     "text": "Keep secret keys secure and do not distribute them unnecessarily."
@@ -17,7 +17,7 @@
     "secret": "Keep this secret key secure; never share it."
   },
   "generateFirst": "Please generate a key pair first.",
-  "confirmLowBalance": "Starting balance {bal} XLM is below the recommended reserve {req} XLM (Signers: {count}). Proceed?",
+  "confirmLowBalance": "The initial balance {bal} XLM is below the recommended reserve {req} XLM (Signer: {count}). Continue?",
   "activated": "Account has been activated. Hash: {hash}",
   "activatedTestnet": "Account was activated on the testnet via Friendbot.",
   "alreadyActive": "Account is already activated.",
@@ -27,16 +27,16 @@
     "more": "More information",
     "keysOnPage": {
       "title": "Key on this page",
-      "text": "⚠️ IMPORTANT: This website NEVER stores your secret key!\n\nThe secret key displayed here exists only in your browser (locally in memory). As soon as you reload or leave the page, it is irretrievably lost.\n\nCopy or write down the secret key immediately after generating it, before you close the page.\n\nVerification: You can use your browser’s developer tools (F12 → Network) to verify that no secret key is being transmitted externally. Only signed transactions are sent—never your secret key."
+      "text": "⚠️ IMPORTANT: This website NEVER stores your Secret Key!\n\nThe Secret Key displayed here exists only in your browser (locally in memory). As soon as you reload or leave the page, it is irretrievably lost.\n\nCopy or write down the Secret Key immediately after it is generated, before you close the page.\n\nVerification: You can use your browser’s developer tools (F12 → Network) to verify that no Secret Key is transmitted externally. Only signed transactions are sent—never your Secret Key."
     },
     "title": "Important information",
     "secureKeys": {
-      "title": "Secure secret key",
+      "title": "Back up Secret Key",
       "text": "The public key can be shared safely—it’s like an account number.\n\nThe secret key is the key to your account. Treat it like a password:\n• NEVER store it in cloud services, emails, or unsecured notes\n• Write it down on paper or use a hardware wallet\n• Create multiple backups and store them in secure, separate locations\n• If you lose your secret key, access to your account is irretrievably lost"
     },
     "multisigSection": {
       "title": "Multisig (Multi-signature)",
-      "text": "With multisig, you can define multiple signatories for your account. Transactions then require signatures from multiple keys (multisig).\n\nAdvantages:\n• Enhanced security (security)\n• Shared accounts (shared accounts)\n• Emergency recovery (emergency recovery)\n\nCAUTION: Test multisig on the testnet first before deploying it on the mainnet! Incorrect configuration can result in losing access to the account."
+      "text": "With Multisig, you can define multiple Signer for your account. Transactions then require signatures from multiple keys (e.g., 2 out of 3).\n\nAdvantages:\n• Increased security (a single compromised key is not enough)\n• Joint accounts (e.g., companies, partnerships)\n• Emergency recovery (multiple backups held by different people)\n\nWARNING: Test Multisig first in the Testnet before using it on the Mainnet! Incorrect configuration may result in loss of access to the account."
     },
     "diagram": {
       "title": "Signature expiration"
@@ -54,7 +54,7 @@
     "required": "Required minimum reserve (new): {{val}} XLM"
   },
   "signersCountHint": "You set the minimum number of signatures below under \"Required Signatures\" (niedrig/mittel/hoch).",
-  "signersCountLimit": "Note: Network Boundary (Stellar): max. 20 additional signatories.",
+  "signersCountLimit": "Note: Network limit (Stellar): max. 20 additional Signer.",
   "startingBalance": "Starting balance (XLM)",
   "keyWarning": {
     "title": "⚠️ Secure key now!",

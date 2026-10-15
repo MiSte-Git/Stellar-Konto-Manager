@@ -5,7 +5,7 @@
     }
   },
   "asset": {
-    "balance": "Saldo del credito",
+    "balance": "Saldo",
     "code": "Codice asset",
     "creationDate": "Creato il",
     "issuer": "Emittente"
@@ -18,7 +18,7 @@
     },
     "current": "Saldo attuale",
     "details": "Dettagli nei Block Explorer",
-    "empty": "Nessun credito trovato.",
+    "empty": "Non sono stati trovati saldi.",
     "explorer": {
       "expert": "stellar.expert",
       "stellarchain": "Stellarchain.io",
@@ -36,7 +36,7 @@
         "counterparty": "Conto beneficiario",
         "date": "Data",
         "direction": "Direzione",
-        "memo": "Memorandum",
+        "memo": "Memo",
         "tx": "Tx",
         "txLabel": "Tx",
         "type": "Digita"
@@ -44,7 +44,7 @@
       "empty": "Nessuna operazione trovata.",
       "filter": {
         "memo": "Filtro memo",
-        "memoPlaceholder": "Ricerca del promemoria...",
+        "memoPlaceholder": "Ricerca di memo...",
         "counterparty": "Conto del destinatario",
         "counterpartyPlaceholder": "Filtra per indirizzo del destinatario/mittente…"
       },
@@ -203,7 +203,7 @@
       "trustlines": "Visualizza Trustline(s)",
       "trustlineCompare": "Confronta Trustline(s)",
       "balance": "Mostra informazioni sull'account",
-      "xlmByMemo": "Filtra per promemoria",
+      "xlmByMemo": "Filtra per memo",
       "sendPayment": "Invia pagamento",
       "investedTokens": "Filtrare token/asset",
       "createAccount": "Crea un account",
@@ -250,7 +250,7 @@
   "badges": {
     "testnet": "Testnet"
   },
-  "noIssuerTrustlinesFound": "Nessuna linea di fiducia trovata per l'emittente {{issuer}}.",
+  "noIssuerTrustlinesFound": "Non è stato trovato alcun trustlines per l'emittente {{issuer}}.",
   "option": {
     "add": "Aggiungi",
     "cancel": "Annulla",
@@ -387,7 +387,7 @@
       "deletingProgress": "Cancellazione in corso: {{current}} / {{total}}",
       "success": "Successo: {{count}} Trustline(s) eliminato."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) saltate (credito ancora disponibile)."
+    "skippedDueToBalance": "{{count}} Trustline(s) saltati (saldo residuo)."
   },
   "payment": {
     "send": {
@@ -395,16 +395,16 @@
       "recipient": "Destinatario",
       "amount": "Quantità",
       "asset": "Bene patrimoniale",
-      "memo": "Memorandum",
-      "memoType": "Tipo di promemoria",
+      "memo": "Memo",
+      "memoType": "tipo Memo",
       "memoTypes": {
-        "none": "Nota (nessuna nota)",
-        "text": "Testo del promemoria",
+        "none": "Memo (non c'è memo)",
+        "text": "Memo testo",
         "id": "ID Memo",
         "hash": "Memo Hash",
-        "return": "Promemoria di ritorno",
+        "return": "Memo Ritorno",
         "info": {
-          "none": "Nessun promemoria. Usa questo se il destinatario non si aspetta un promemoria.",
+          "none": "Nessun memo. Utilizzare questa opzione se il destinatario non si aspetta un memo.",
           "text": "Testo libero fino a 28 byte. Spesso utilizzato per l'assegnazione in pagamenti semplici.",
           "id": "ID numerico (uint64). Molti scambi utilizzano l'ID memo per assegnare i depositi.",
           "hash": "Hash SHA-256 da 32 byte (sotto forma di stringa esadecimale di 64 caratteri). Utilizzato dai servizi a scopo di riferimento.",
@@ -417,10 +417,10 @@
       "baseReserve": "Riserva di base",
       "extra": "Inoltre",
       "xlmInOffers": "Vincolato dalle offerte",
-      "trustlines": "Linee di fiducia ({{n}})",
+      "trustlines": "Trustlines ({{n}})",
       "lpTrustlines": "LP‑Trustlines",
       "offers": "Offerte aperte",
-      "signers": "Firmatari aggiuntivi",
+      "signers": "Ulteriore Signer",
       "accountData": "Account‑Daten",
       "sponsoring": "Sponsorizzazione",
       "sponsored": "Sponsorizzato",
@@ -450,18 +450,18 @@
         "body": "Il server non ha potuto confermare in modo univoco la transazione (timeout o errore del server). Verifica l'hash della transazione in un explorer prima di riprovare.",
         "acknowledge": "Stato verificato – sblocca di nuovo l'invio"
       },
-      "memoFederationHint": "Appunti tratti dal server della federazione – è possibile modificarli se necessario.",
+      "memoFederationHint": "Memo prelevato dal server della federazione – è possibile modificarlo se necessario.",
       "memoMismatch": {
-        "title": "Controlla la nota della federazione",
+        "title": "Verifica federazione memo",
         "textMappable": "Il server della federazione si aspetta il memo \"{{expected}}\", ma il tuo memo attuale è \"{{current}}\".",
-        "textUnmappable": "Il server della federazione richiede una nota che non è stato possibile applicare automaticamente. La nota attuale è \"{{current}}\".",
+        "textUnmappable": "Il server della federazione richiede un valore memo che non è stato possibile applicare automaticamente. Il tuo attuale valore memo è \"{{current}}\".",
         "empty": "(vuoto)",
         "sendAnyway": "Invia comunque",
-        "applyExpected": "Applicare la circolare sulla federazione"
+        "applyExpected": "Applica la federazione memo"
       },
       "trustlineError": {
-        "noTrustline": "Il destinatario non dispone ancora di una linea di fiducia per {{asset}}: il pagamento non andrebbe a buon fine.",
-        "notAuthorized": "Il destinatario dispone di una linea di credito per {{asset}}, ma l'emittente non l'ha ancora autorizzata: il pagamento non andrebbe a buon fine."
+        "noTrustline": "Il destinatario non dispone ancora di un trustline per {{asset}}: il pagamento non andrebbe a buon fine.",
+        "notAuthorized": "Il destinatario possiede un trustline per {{asset}}, ma l'emittente non lo ha ancora autorizzato: il pagamento non andrebbe a buon fine."
       },
       "muxedActivationCapture": "L'account è stato attivato; è stata applicata una commissione minima aggiuntiva per registrare anche l'ID muxed sulla blockchain.",
       "muxedActivationCaptureXdr": "Questa transazione prevede due operazioni (attivazione dell'account + allocazione muxed) e comporta quindi il pagamento di due commissioni di transazione.",
@@ -636,11 +636,11 @@
         "oldestFailed": "Impossibile determinare la data più antica."
       },
       "indexIterFailed": "Iterazione dell'indice nella cache non riuscita.",
-      "memoNormBackfillFailed": "Il caricamento iniziale dei pagamenti per le note normalizzate non è riuscito.",
+      "memoNormBackfillFailed": "Caricamento iniziale dei pagamenti per memos normalizzato non riuscito",
       "openFailed": "Non è stato possibile aprire la cache locale.",
       "readFailed": "Impossibile leggere dalla cache",
-      "rehydrateFailed": "Impossibile caricare i promemoria mancanti",
-      "rehydrateWriteFailed": "Impossibile scrivere i promemoria nella cache.",
+      "rehydrateFailed": "Impossibile caricare memos mancante",
+      "rehydrateWriteFailed": "Impossibile scrivere il valore memos nella cache.",
       "writeFailed": "Errore nella scrittura nella cache"
     },
     "connection": {
@@ -652,11 +652,11 @@
     "horizon": {
       "paymentsFetch": "Errore nel caricamento dei pagamenti da Horizon"
     },
-    "loadTrustlines": "Le linee di fiducia non possono essere caricate. Per favore riprova.",
+    "loadTrustlines": "Impossibile caricare Trustlines. Riprovare.",
     "loadTrustlinesFailed": "Caricamento delle trustlines non riuscito.",
     "loadTrustlinesNotFound": "Account nella rete '{{network}}' non trovato.",
     "accountNotFoundInNetwork": "Non trovato in '{{net}}'!",
-    "op_invalid_limit": "La linea di fiducia non può essere eliminata. Potrebbe avere ancora un saldo o obblighi in sospeso.",
+    "op_invalid_limit": "Trustline non può essere cancellato. Potrebbe esserci ancora un saldo o degli obblighi in sospeso.",
     "query": {
       "invalidMemo": "Memo non valido",
       "invalidRange": "La finestra temporale non è valida (Da > A)",
@@ -678,8 +678,8 @@
       "title": "Errore di transazione"
     },
     "trustline": {
-      "submitFailed": "Errore durante l'eliminazione della linea di fiducia.",
-      "unknown": "Errore sconosciuto durante l'eliminazione della linea di fiducia."
+      "submitFailed": "Errore durante l'eliminazione di trustline.",
+      "unknown": "Errore sconosciuto durante l'eliminazione di trustline."
     },
     "xlmByMemo": {
       "aborted": "Operazione annullata dall'utente",
@@ -687,7 +687,7 @@
       "dateInvalid": "Data non valida",
       "dateRange": "Intervallo di date non valido",
       "failedUnknown": "Errore sconosciuto",
-      "memoInvalid": "Memorandum non valido",
+      "memoInvalid": "memo non valido",
       "paymentsFetch": "Errore durante il caricamento dei pagamenti",
       "serverInvalid": "Server non valido"
     },
@@ -701,7 +701,7 @@
       "destination": "Portafoglio target",
       "issuer": "Emettitore",
       "label": "Etichetta",
-      "memo": "Promemoria",
+      "memo": "Memo",
       "payments": "Pagamenti",
       "date": "Data",
       "token": "Token"
@@ -731,7 +731,7 @@
     },
     "view": {
       "label": "Filtra per:",
-      "memo": "Promemoria",
+      "memo": "Memos",
       "token": "Token (quantità acquistata)"
     },
     "toggles": {
@@ -757,55 +757,55 @@
   },
   "multisigEdit": {
     "confirm": {
-      "removeSigner": "Vuoi davvero rimuovere il firmatario?"
+      "removeSigner": "Signer Vuoi davvero eliminarlo?"
     },
     "currentConfig": "Configurazione attuale / pianificata",
     "error": {
-      "thresholdTooHigh": "Le soglie non devono superare la somma dei pesi.",
+      "thresholdTooHigh": "Thresholds non deve superare la somma dei pesi.",
       "safetyTitle": "Controllo di sicurezza bloccato",
       "safetyBlocked": "Controllo di sicurezza bloccato: Si prega di risolvere gli avvisi sopraindicati.",
-      "noActiveSigners": "È necessario almeno un firmatario attivo. Suggerimento: Imposta un peso principale > 0 oppure aggiungi un firmatario con peso > 0.",
-      "noEd25519Signers": "È necessario almeno un firmatario con peso > 0. Suggerimento: aumentare il peso del master o aggiungere un firmatario.",
-      "masterZeroInsufficientHigh": "Il peso master è 0 e la somma dei pesi dei firmatari non raggiunge la soglia alta (Somma: {{sum}}, Alta: {{high}}). Suggerimento: Abbassare le soglie o aumentare i pesi/i firmatari.",
-      "thresholdHighUnreachable": "Soglia alta non raggiungibile (Somma: {{sum}}, Alto: {{high}}). Suggerimento: abbassare la soglia o aumentare i pesi/firmatari.",
-      "thresholdMedUnreachable": "Soglia media non raggiungibile (Somma: {{sum}}, Media: {{med}}). Suggerimento: Abbassare la soglia o aumentare i pesi/firme.",
-      "specialSignerLastHigh": "Special-Signer (hashX/preAuthTx) non dovrebbe essere l'unica autorità superiore. Suggerimento: aggiungere firmatari con un peso >= alto.",
-      "setOptionsNotSignable": "SetOptions non sarà firmabile dopo la modifica (Somma dei firmatari: {{sum}}, Alto: {{high}}). Suggerimento: aumentare il peso del firmatario o abbassare il valore alto."
+      "noActiveSigners": "È richiesto almeno un Signer attivo. Suggerimento: impostare il peso del master su un valore > 0 oppure aggiungere un Signer con un peso > 0.",
+      "noEd25519Signers": "È richiesto almeno un Signer con un peso superiore a 0. Suggerimento: aumentare il peso principale oppure aggiungere Signer.",
+      "masterZeroInsufficientHigh": "Il peso principale è 0 e la somma dei pesi di signer non raggiunge il valore massimo di threshold (Somma: {{sum}}, Massimo: {{high}}). Suggerimento: ridurre il valore di thresholds oppure aumentare i pesi/signers.",
+      "thresholdHighUnreachable": "Valore massimo di threshold non raggiungibile (Somma: {{sum}}, Massimo: {{high}}). Suggerimento: ridurre il valore di threshold oppure aumentare i pesi/signers.",
+      "thresholdMedUnreachable": "Med-threshold non raggiungibile (Somma: {{sum}}, Med: {{med}}). Suggerimento: ridurre il valore di threshold oppure aumentare i pesi/signers.",
+      "specialSignerLastHigh": "Special-Signer (hashX/preAuthTx) non dovrebbe essere l'unica fonte ad alta autorità. Suggerimento: aggiungere Signer con un peso >= Alto.",
+      "setOptionsNotSignable": "SetOptions non sarebbe firmabile dopo la modifica (Signer somma: {{sum}}, valore massimo: {{high}}). Suggerimento: aumentare il peso di Signer o ridurre il valore massimo."
     },
     "warning": {
       "safetyTitle": "Avvisi di sicurezza",
-      "highSingleSigner": "Solo un firmatario raggiunge la soglia elevata. Raccomandazione: almeno due firmatari indipendenti.",
-      "medSingleSigner": "Soglia media > 0, ma è presente solo un firmatario. Raccomandazione: aggiungere un secondo firmatario."
+      "highSingleSigner": "Solo un Signer soddisfa l'elevato threshold. Raccomandazione: almeno due Signer indipendenti.",
+      "medSingleSigner": "Med threshold > 0, ma è presente un solo Signer. Raccomandazione: aggiungere un secondo Signer."
     },
     "securityGuarantee": {
       "title": "🔒 Garanzia di Sicurezza SKM (Multisig)",
-      "text": "Stellar Account Manager impedisce tutti i blocchi dell'account causati da problemi tecnici che potrebbero derivare da una configurazione multisig errata.\n\nIn particolare, SKM blocca:\n- La disattivazione della chiave master quando nessun firmatario è raggiungibile\n- Soglie irraggiungibili (bassa / media / alta)\n- Errori di ordinamento durante la modifica dei firmatari o delle soglie\n- La rimozione dell’ultimo firmatario di livello alto valido\n- Configurazioni multisig in cui SetOptions non può più essere firmato\n- Vicoli ciechi causati da hashX o preAuthTx come ultimo firmatario\n\nSKM utilizza esclusivamente firmatari ed25519. Per altri tipi di firmatari, utilizzare {link}.\n\nSKM garantisce:\n- Ogni modifica confermata lascia aperto almeno un percorso valido per l’ulteriore gestione dell’account\n- SetOptions rimane accessibile dopo la modifica\n\nNon può essere garantito (a causa di limitazioni del sistema):\n- La perdita di chiavi segrete o portafogli hardware\n- L’indisponibilità o il malfunzionamento dei firmatari esterni\n\nConclusione:\nSKM offre una protezione affidabile contro i blocchi di configurazione.\nI rischi organizzativi vengono visualizzati in modo trasparente, ma non possono essere tecnicamente prevenuti.",
+      "text": "Lo Stellar Account Manager impedisce tutti i blocchi dell'account causati da problemi tecnici che potrebbero derivare da una configurazione errata di Multisig.\n\nIn particolare, SKM blocca:\n- La disattivazione della chiave master senza un Signer raggiungibile\n- Un thresholds irraggiungibile (basso / medio / alto)\n- Errori di ordinamento nelle modifiche di Signer e Threshold\n- Rimozione dell’ultimo Signers alto valido\n- Configurazioni di Multisig in cui SetOptions non può più essere firmato\n- Vicoli ciechi causati da hashX o preAuthTx come ultimo Signer\n\nSKM imposta solo ed25519-Signer. Per altri tipi di Signer, utilizzare {link}.\n\nSKM garantisce:\n- Ogni modifica confermata lascia aperto almeno un percorso valido per l’ulteriore gestione dell’account\n- SetOptions rimane accessibile dopo la modifica\n\nNon può essere garantito (a causa di limitazioni del sistema):\n- La perdita di Secret Keys o di Wallets hardware\n- L’indisponibilità o il malfunzionamento di Signer esterni\n\nConclusione:\nSKM offre una protezione affidabile contro i blocchi di configurazione.\nI rischi organizzativi vengono visualizzati in modo trasparente, ma non possono essere tecnicamente prevenuti.",
       "linkLabel": "lab.stellar.org"
     },
-    "hint": "Carica un account esistente, regola i firmatari, i pesi, il peso principale e le soglie, e salva le modifiche.",
+    "hint": "Caricare un account esistente, modificare signers, i pesi, il peso principale e thresholds, quindi salvare le modifiche.",
     "load": "Caricamento",
-    "loaded": "Caricato. Firmatari aggiuntivi: {{count}}",
+    "loaded": "Caricato. signers aggiuntivo: {{count}}",
     "menu": "Modifica account multisig",
-    "menuHint": "Regolare i firmatari/la soglia di un account esistente",
-    "noteMaxSigners": "Nota: Stellar consente un massimo di 20 firmatari aggiuntivi per account.",
-    "signerTypeNote": "Hinweis: SKM verwendet nur ed25519-Signierer. Für hashX/preAuthTx verwenden Sie",
+    "menuHint": "Modifica dei valori signers/thresholds di un account esistente",
+    "noteMaxSigners": "Nota: Stellar consente un massimo di 20 Signer aggiuntivi per account.",
+    "signerTypeNote": "Nota: SKM utilizza esclusivamente ed25519-Signer. Per hashX/preAuthTx, utilizzare",
     "signerTypeLink": "lab.stellar.org",
     "reload": "Ricarica",
     "save": "Salva le modifiche",
     "saved": "Modifiche salvate. TX: {{hash}}",
-    "signers": "Firmatario (ed25519)",
+    "signers": "Signer (ed25519)",
     "weight": "Pesatura",
     "masterWeight": "Peso principale",
     "title": "Modifica l'account multisig",
     "validation": {
-      "signerKeyHint": "Nota: I firmatari devono iniziare con \"G\" (ed25519 public key).",
-      "signerKeyInvalid": "Indirizzo del firmatario non valido. È previsto un indirizzo G… (ed25519)."
+      "signerKeyHint": "Nota: Signer deve iniziare con la lettera \"G\" (ed25519 Public Key).",
+      "signerKeyInvalid": "Indirizzo Signer non valido. È previsto un indirizzo G… (ed25519)."
     }
   },
   "navigation": {
     "back": "Indietro",
     "backToMainMenu": "Torna al menu",
-    "backToPublicKey": "Torna all'inserimento della chiave pubblica.",
+    "backToPublicKey": "Torna alla voce Public-Key",
     "backToTop": "Torna in alto"
   },
   "publicKey": {
@@ -814,11 +814,11 @@
       "error": "Chiave di destinazione non valida.",
       "input": "Inserisci l'indirizzo del portafoglio di destinazione"
     },
-    "label": "Si prega di inserire l'indirizzo della federazione di origine o la chiave pubblica:",
+    "label": "Inserisci l'indirizzo della Federazione di origine o il valore Public Key:",
     "load": "Laden…",
     "placeholder": "ad esempio",
     "source": "Indirizzo del portafoglio di origine",
-    "invalid": "Chiave pubblica non valida.",
+    "invalid": "Public Key non valido.",
     "submit": {
       "button": "Invia"
     },
@@ -827,16 +827,16 @@
     "historyPlaceholder": "Seleziona l'ultimo portafoglio utilizzato."
   },
   "secretKey": {
-    "cleared": "La chiave segreta è stata eliminata.",
-    "empty": "Il campo della chiave segreta è vuoto.",
-    "info": "⚠️ IMPORTANTE: Questo sito web non memorizza MAI la tua chiave segreta!\n\nLa chiave segreta qui visualizzata esiste solo nel tuo browser (localmente nella memoria). Non appena ricarichi o esci dalla pagina, va irrimediabilmente persa.\n\nCopia o annota la chiave segreta immediatamente dopo la sua generazione, prima di chiudere la pagina.\n\nVerifica: puoi utilizzare gli strumenti di sviluppo del tuo browser (F12 → Rete) per verificare che nessuna chiave segreta venga trasmessa all’esterno. Vengono inviate solo le transazioni firmate, mai la tua chiave segreta.",
-    "invalid": "Chiave segreta non valida.",
-    "label": "Geben Sie den geheimen Quellschlüssel ein (S-Key)",
-    "mismatch": "La chiave segreta non corrisponde all'indirizzo pubblico.",
+    "cleared": "Secret Key è stato eliminato.",
+    "empty": "Il campo Secret Key è vuoto.",
+    "info": "⚠️ IMPORTANTE: Questo sito web non memorizza MAI il tuo Secret Key!\n\nIl Secret Key visualizzato qui esiste solo nel tuo browser (localmente nella memoria). Non appena ricarichi o esci dalla pagina, va irrimediabilmente perso.\n\nCopia o annota il Secret Key immediatamente dopo la sua generazione, prima di chiudere la pagina.\n\nVerifica: puoi utilizzare gli strumenti di sviluppo del tuo browser (F12 → Rete) per verificare che nessun Secret Key venga trasmesso all’esterno. Vengono inviate solo le transazioni firmate, mai il tuo Secret Key.",
+    "invalid": "Secret Key non valido.",
+    "label": "Inserisci la chiave sorgente Secret-Key (S-Key)",
+    "mismatch": "Secret Key non corrisponde all'indirizzo pubblico.",
     "placeholder": "ad es.",
     "valid": "✅ La chiave segreta è valida.",
     "remember": {
-      "label": "Ricorda la chiave segreta per questa sessione.",
+      "label": "Secret Key Ricordate questo per questa sessione",
       "hint": "Quando è abilitata, la chiave verrà salvata fino a quando la scheda non verrà chiusa e riutilizzata per ulteriori pagamenti."
     }
   },
@@ -860,7 +860,7 @@
       "title": "Portafoglio",
       "original": "Wallet",
       "short": "Portafoglio digitale che gestisce le tue chiavi.",
-      "desc": "Un portafoglio è la tua borsa digitale. Gestisce le chiavi di cui hai bisogno per accedere al tuo conto e inviare transazioni. Un portafoglio può essere un programma o un'app, o anche solo un pezzo di carta con la tua chiave privata."
+      "desc": "Un Wallet è il tuo wallet digitale. Gestisce le chiavi necessarie per accedere al tuo account e inviare transazioni. Un Wallet può essere un programma, un’app o anche semplicemente un foglio di carta su cui è scritto il tuo Secret Key."
     },
     "account": {
       "title": "Account",
@@ -875,16 +875,16 @@
       "desc": "L'indirizzo G è l'indirizzo principale di un account Stellar. Inizia con la lettera G. Lo fornisci ad altri affinché possano inviarti qualcosa."
     },
     "publicKey": {
-      "title": "Chiave pubblica",
+      "title": "Public Key",
       "original": "Public Key",
       "short": "Indirizzo che puoi condividere; su Stellar di solito l'indirizzo G.",
-      "desc": "La chiave pubblica è l'indirizzo che puoi mostrare. In Stellar, questo è l'indirizzo G. Altri lo utilizzano per inviarti denaro."
+      "desc": "Il Public Key è l'indirizzo che puoi condividere. Su Stellar, si tratta dell'indirizzo G. Gli altri lo utilizzano per inviarti denaro."
     },
     "privateKey": {
-      "title": "Chiave segreta",
+      "title": "Secret Key",
       "original": "Secret Key",
       "short": "Password for the account – never share.",
-      "desc": "La chiave segreta è la tua password per l'account. Chiunque abbia questa chiave può spostare il tuo denaro. Non condividerla mai."
+      "desc": "Il codice Secret Key è la password del tuo account. Chiunque possieda questo codice può trasferire il tuo denaro. Non rivelarlo mai a nessuno."
     },
     "addressFederation": {
       "title": "Indirizzo della Federazione",
@@ -899,13 +899,13 @@
       "desc": "Un sottoindirizzo (indirizzo M, ufficialmente denominato “Muxed Account”) rimanda a un conto Stellar esistente, ma dispone anche di un proprio numero (ID). Ciò consente, ad esempio, di distinguere tra più persone o reparti che fanno capo allo stesso indirizzo G. Dal punto di vista tecnico, i fondi continuano ad appartenere al conto principale."
     },
     "multisig": {
-      "title": "Multifirma",
+      "title": "Multisig",
       "original": "Multi‑Sig",
       "short": "Azioni importanti richiedono più di una firma.",
       "desc": "Multi-Sig sta per firme multiple. Un'azione importante richiede più di una chiave. Ad esempio, tu e una seconda chiave dovete entrambi essere d'accordo prima che qualcosa venga inviato. Questo rende il furto più difficile."
     },
     "trustline": {
-      "title": "Linea di credito",
+      "title": "Trustline",
       "original": "Trustline",
       "short": "Consenso a detenere un token da un emittente specifico.",
       "desc": "Una trustline è come un \"Sì, accetto questo token\". Impostando una trustline, indichi che il tuo account è preparato a detenere un token specifico da un particolare emittente. Senza una trustline, non puoi ricevere quel token.\n\nEsempio: Una trustline è specificata come CODICE:EMITTENTE. Per EURT dall'emittente GDUKMGUGDZQK6Y…, è EURT:GDUKMGUGDZQK6Y…."
@@ -941,16 +941,16 @@
       "desc": "Una rete di pratica pubblica. I token non hanno valore reale. Ideale per apprendere e sperimentare senza rischi."
     },
     "memo": {
-      "title": "Promemoria",
+      "title": "Memo",
       "original": "Memo",
       "short": "Breve nota in una transazione.",
-      "desc": "Un promemoria è una piccola nota che si può inviare insieme a una transazione. Spesso, una piattaforma di scambio richiede un promemoria specifico per sapere a chi appartiene il denaro."
+      "desc": "Un memo è una breve nota che è possibile inviare insieme a una transazione. Spesso, un exchange richiede uno specifico memo per sapere a chi appartiene il denaro."
     },
     "transaction": {
       "title": "Transazione",
       "original": "Transaction",
-      "short": "Azione sulla blockchain, ad esempio, pagamento o linea di credito.",
-      "desc": "Una transazione è un'azione sulla blockchain, come l'invio di denaro o l'istituzione di una linea di fiducia. Una transazione viene memorizzata in modo permanente una volta che viene confermata."
+      "short": "Operazione sulla blockchain, ad esempio un pagamento o trustline.",
+      "desc": "Una transazione è un'operazione sulla blockchain, come l'invio di denaro o la creazione di un trustline. Una volta confermata, la transazione viene archiviata in modo permanente."
     },
     "fee": {
       "title": "Tariffa",
@@ -1027,24 +1027,24 @@
       "notFound": "Nessuna Trustline eliminabile trovata: contengono tutte ancora un saldo.",
       "resultText": "Conteggio: {{count}} • Modalità: {{mode}}",
       "resultTitle": "Trustline eliminato(s)",
-      "simulated": "Simulazione: verrebbero eliminate {{count}} linee di fiducia.",
+      "simulated": "Simulazione: {{count}} Trustlines verrebbe eliminato.",
       "success": "Successo: {{count}} Trustline(s) eliminata."
     },
     "destination": {
-      "label": "Inserisci la chiave pubblica di destinazione:",
+      "label": "Inserisci il valore di destinazione Public-Key:",
       "placeholder": "ad es. (ad esempio)"
     },
     "noDuplicates": "Keine Trustlines(s) duplicate trovate.",
-    "nonZeroBalance": "Questa linea di fiducia non può essere eliminata perché mantiene ancora un saldo.",
+    "nonZeroBalance": "Questo trustline non può essere eliminato perché presenta ancora un saldo.",
     "notFound": "Nessuna Trustline(s) trovata.",
     "onlyZeroBalanceInfo": "Solo le trustline con un saldo di 0 possono essere eliminate.",
-    "showSecret": "Visualizza chiave segreta"
+    "showSecret": "Mostra Secret Key"
   },
   "deleted": {
     "deletingProgress": "Eliminazione in corso: {{current}} / {{total}}",
     "success": "Successo: {{count}} Trustline(s) eliminato."
   },
-  "skippedDueToBalance": "{{count}} Trustline(s) saltate (credito ancora disponibile).",
+  "skippedDueToBalance": "{{count}} Trustline (s) saltati (saldo rimanente).",
   "xlmByMemo": {
     "action": {
       "calculate": "Calcolare",
@@ -1071,7 +1071,7 @@
     },
     "memo": {
       "label": "Ricerca memo (substring, case sensitive)",
-      "placeholder": "Promemoria (substring, case-sensitive)"
+      "placeholder": "Memo (sottostringa, distingue tra maiuscole e minuscole)"
     },
     "overviewLine": "Ricevute di pagamento: {{total}} • portafogli coinvolti: {{unique}}",
     "page": {
@@ -1084,7 +1084,7 @@
     },
     "summary": {
       "amount": "Totale: {{amount}} XLM",
-      "correctCount": "Voci con promemoria corretto: {{n}}",
+      "correctCount": "Risultati con memo corretto: {{n}}",
       "count": "Quantità: {{n}}",
       "label": "Confronto (all inputs)",
       "otherCount": "Voci con memo errato/mancante: {{n}}",
@@ -1101,7 +1101,7 @@
       "clipboard": "Copia negli appunti",
       "csv": "Scarica CSV",
       "scanning": "… scansione top entrate",
-      "title": "I 20 migliori voci per promemoria durante il periodo"
+      "title": "Le prime 20 voci relative a memo nel periodo"
     },
     "tz": {
       "cdt": "CDT (UTC−5)",
@@ -1120,7 +1120,7 @@
         "amount": "Quantità",
         "created_at": "Creato il",
         "from": "Da",
-        "memo": "Promemoria",
+        "memo": "Memo",
         "tx_hash": "Hash della transazione"
       },
       "csv": "Scarica CSV",
@@ -1128,7 +1128,7 @@
       "hint": "Filtra i pagamenti in entrata nel periodo e visualizza i mittenti con memo errati o vuoti.",
       "scanning": "… scansione memo errati/vuoti",
       "summary": "Conteggio: {{count}} • Totale: {{sum}} XLM • Portafogli unici: {{unique}}",
-      "title": "Promemoria false/vuote nel periodo di tempo"
+      "title": "Valore errato/vuoto per Memos nel periodo di tempo"
     }
   },
   "wallet": {
@@ -1174,7 +1174,7 @@
     },
     "lesson5": {
       "title": "Send & Receive",
-      "goal": "Comprendere il funzionamento delle transazioni e delle linee di credito",
+      "goal": "Comprendere il funzionamento delle transazioni e trustlines",
       "task": "Esegui spedizione di prova e visualizza la tariffa",
       "learningOutcome": "Ogni transazione comporta una piccola commissione; trustline = autorizzazione a ricevere.",
       "reward": "⭐ 2 – Iniziale Trustline"
@@ -1242,5 +1242,11 @@
     "switchToBase": "Passa all'account di base",
     "guardTitle": "L'identità Muxed è di sola lettura",
     "guardText": "Per eseguire questa operazione è necessario un account G di base. Passa all'account di base per continuare."
+  },
+  "xlmPrice": {
+    "source": "Fonte: CoinGecko",
+    "updated": "Aggiornato alle {{time}}",
+    "pair": "Valuta per il tasso di cambio XLM",
+    "unavailable": "Corso non disponibile"
   }
 }

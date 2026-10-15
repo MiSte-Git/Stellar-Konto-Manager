@@ -16,5 +16,19 @@
   "tokenPurchases": "Token aankopen",
   "learn": "Sterrenquiz voor beginners",
   "unknown": "Onbekende menu-optie",
-  "swap": "Tokens zoeken en verhandelen"
+  "swap": "Tokens zoeken en verhandelen",
+  "wallet": "Wallet",
+  "sidebarLabel": "Hoofdnavigatie",
+  "openNavigation": "Navigatie openen",
+  "closeNavigation": "Navigatie sluiten",
+  "language": "Taal",
+  "sections": {
+    "account": "Account",
+    "trade": "Handel",
+    "reports": "Verslagen",
+    "trustlines": "Token-Goedkeuringen",
+    "advanced": "Gevorderd",
+    "learn": "Leren"
+  },
+  "receive": "Ontvangen"
 }

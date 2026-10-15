@@ -1,6 +1,6 @@
 {
   "title": "Cashback et Tokens de Fidélité",
-  "introText": "Teste tes connaissances sur les tokens de fidélité, les lignes de confiance et la vérification des émetteurs sur Stellar.",
+  "introText": "Testez vos connaissances sur Loyalty Token, Trustlines et la vérification de l'émetteur sur Stellar.",
   "q1": {
     "question": "Qu'est-ce qu'un token de fidélité ?",
     "hint": "Pense aux actifs personnalisés sur la blockchain.",
@@ -14,12 +14,12 @@
   "q2": {
     "question": "De quoi a besoin un client avant de recevoir des tokens de fidélité ?",
     "hint": "Stellar exige une confiance explicite avant qu'un token puisse être reçu.",
-    "a1": "Une ligne de confiance vers l'émetteur du token.",
-    "a1fb": "Correct : Sans ligne de confiance vers l'émetteur, aucun token ne peut être reçu.",
+    "a1": "Un Trustline à l'émetteur du Tokens.",
+    "a1fb": "Correct : Sans Trustline de la part de l'émetteur, il n'est pas possible de recevoir Token.",
     "a2": "Un compte vérifié.",
     "a2fb": "Faux : Les comptes Stellar ne nécessitent pas de vérification externe pour les actifs personnalisés.",
     "a3": "Au moins 10 XLM dans le portefeuille.",
-    "a3fb": "Faux : Il n'y a pas de minimum XLM requis pour les lignes de confiance."
+    "a3fb": "Faux : il n'y a pas de montant minimum de XLM requis pour Trustlines."
   },
   "q3": {
     "question": "Marco appelle son token \"BERRY\". Une autre entreprise fait de même. Les tokens sont-ils identiques ?",
@@ -46,8 +46,8 @@
     "hint": "Qui est le véritable créateur de ce token ?",
     "a1": "Comparer l'adresse de l'émetteur avec l'adresse officielle de l'entreprise.",
     "a1fb": "Correct : Seule la comparaison de l'adresse de l'émetteur protège contre les faux tokens sans valeur.",
-    "a2": "Ajouter la ligne de confiance immédiatement.",
-    "a2fb": "Faux : Ajouter une ligne de confiance à un émetteur non vérifié peut mener à des tokens sans valeur.",
+    "a2": "Ajoutez immédiatement le Trustline.",
+    "a2fb": "Incorrect : un Trustline associé à un émetteur non vérifié peut entraîner la perte de valeur du Tokens.",
     "a3": "Chercher le nom du token sur Internet.",
     "a3fb": "Faux : Le nom seul ne dit rien – n'importe qui peut appeler un token \"BERRY\"."
   },

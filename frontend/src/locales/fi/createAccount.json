@@ -1,13 +1,13 @@
 {
   "title": "Luo tili + multisig",
-  "menu": "Luo tili + Moniallekirjoitus",
+  "menu": "Luo tili + Multisig",
   "menuHint": "Luo uusi tili ja asenna halutessasi multisig.",
   "hint": "Luo uusi tili, aktivoi se ja määritä halutessasi multisig.",
   "generateKeys": "Luo avain",
   "enableMultisig": "Ota multisig käyttöön.",
-  "signersTitle": "Allekirjoittaja",
-  "signersInfo": "Lisää lisää allekirjoittajia ja aseta sopivat kynnysarvot.",
-  "signersCount": "Allekirjoittajien lukumäärä",
+  "signersTitle": "Signer",
+  "signersInfo": "Lisää lisää Signer-määriä ja aseta sopivat Thresholds-arvot.",
+  "signersCount": "Luku Signer",
   "bestPractices": {
     "title": "Parhaat käytännöt",
     "text": "Pidä salaiset avaimet turvassa äläkä jaa niitä tarpeettomasti."
@@ -17,26 +17,26 @@
     "secret": "Pidä tämä salausavain turvassa; älä koskaan jaa sitä."
   },
   "generateFirst": "Luo ensin avainpari.",
-  "confirmLowBalance": "Alkusaldo {bal} XLM on alle suositellun varauksen {req} XLM (Allekirjoittajat: {count}). Jatketaanko?",
+  "confirmLowBalance": "XLM-saldo {bal} on alle suositellun varannon {req} XLM (Signer: {count}). Haluatko jatkaa?",
   "activated": "Tili on aktivoitu. Tiiviste: {hash}",
   "activatedTestnet": "Tili aktivoitiin testiverkossa Friendbotin kautta.",
   "alreadyActive": "Tili on jo aktivoitu.",
-  "createdNoSigners": "Tili luotu, multisignature ei ole määritetty.",
+  "createdNoSigners": "Tili on luotu, multisig ei ole määritetty.",
   "createdAndConfigured": "Tili luotu ja multisig määritetty. Tiiviste: {hash}",
   "info": {
     "more": "Lisätietoa",
     "keysOnPage": {
       "title": "Avain tällä sivulla",
-      "text": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto ei KOSKAAN tallenna salaisaa avainta!\n\nTäällä näkyvä salainen avain on olemassa vain selaimessasi (paikallisesti muistissa). Heti kun päivität sivun tai poistut sivulta, se katoaa lopullisesti.\n\nKopioi tai kirjoita salainen avain muistiin heti sen luomisen jälkeen, ennen kuin suljet sivun.\n\nTarkistus: Voit käyttää selaimesi kehittäjätyökaluja (F12 → Verkko) varmistaaksesi, ettei salainen avain lähetetä ulkoisesti. Vain allekirjoitetut transaktiot lähetetään – salainen avaimesi ei koskaan."
+      "text": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto ei KOSKAAN tallenna Secret Key-tunnustasi!\n\nTäällä näkyvä Secret Key on olemassa vain selaimessasi (paikallisesti muistissa). Heti kun päivität sivun tai poistut sivulta, se katoaa lopullisesti.\n\nKopioi tai kirjoita muistiin Secret Key heti sen luomisen jälkeen, ennen kuin suljet sivun.\n\nVarmistus: Voit käyttää selaimesi kehittäjätyökaluja (F12 → Verkko) varmistaaksesi, ettei Secret Key-arvoa lähetetä ulkoisesti. Vain allekirjoitetut transaktiot lähetetään – Secret Key-arvoasi ei koskaan lähetetä."
     },
     "title": "Tärkeää tietoa",
     "secureKeys": {
-      "title": "Turvallinen salausavain",
+      "title": "Varmuuskopioi Secret Key",
       "text": "Julkista avainta voi jakaa turvallisesti – se on kuin tilinumero.\n\nSalainen avain on avain tilillesi. Käsittele sitä kuin salasanaa:\n• ÄLÄ KOSKAAN tallenna sitä pilvipalveluihin, sähköposteihin tai suojaamattomiin muistiinpanoihin\n• Kirjoita se paperille tai käytä laitteistolompakkoa\n• Luo useita varmuuskopioita ja säilytä ne turvallisissa, erillisissä paikoissa\n• Jos menetät salaisen avaimesi, pääsy tilillesi menetetään lopullisesti"
     },
     "multisigSection": {
-      "title": "Multisig (Moniallekirjoitus)",
-      "text": "Moniallekirjoituksen avulla voit määrittää useita allekirjoittajia tilillesi. Tapahtumat vaativat sitten allekirjoituksia useilta avaimilta (multisig).\n\nEdut:\n• Parannettu turvallisuus (security)\n• Jaetut tilit (shared accounts)\n• Hätäpalautus (emergency recovery)\n\nHUOMIO: Testaa moniallekirjoitus ensin testnetissä ennen kuin otat sen käyttöön pääverkossa! Väärä kokoonpano voi johtaa tilin käyttöoikeuden menettämiseen."
+      "title": "Multisig (Multi-signature)",
+      "text": "Multisig:n avulla voit määrittää tilillesi useita Signer-arvoja. Tällöin transaktiot edellyttävät allekirjoituksia useilta avaimilta (esim. 2 kolmesta).\n\nEdut:\n• Parempi turvallisuus (yhden avaimen vaarantuminen ei riitä)\n• Yhteistilit (esim. yritykset, kumppanuudet)\n• Hätätilanteiden palautus (useita varmuuskopioita eri henkilöillä)\n\nVAROITUS: Testaa Multisig ensin Testnet:ssä ennen kuin otat sen käyttöön Mainnet:ssä! Virheellinen konfigurointi voi johtaa tilin käyttöoikeuden menettämiseen."
     },
     "diagram": {
       "title": "Allekirjoituksen vanhentuminen"
@@ -45,7 +45,7 @@
   "activateHint": "Aktivointi on välttämätöntä tilin olemassaololle. Testnetissä Friendbotin kautta; Mainnetissä \"Luo tili\" olemassa olevasta lompakosta.",
   "activateNow": "Aktivoi tili välittömästi",
   "activateOnly": "Aktivoi vain",
-  "balanceWarning": "Alkusaldo on todennäköisesti liian alhainen lisätäksesi {{count}} lisäallekirjoittajaa (vähimmäisvaranto: {{req}} XLM)",
+  "balanceWarning": "Alkusaldo on todennäköisesti liian pieni, jotta voitaisiin lisätä {{count}} uutta signers:tä (vähimmäisvaraus: {{req}} XLM)",
   "createButton": "Luo / Aseta Multisig",
   "mainnetActivateNote": "Huomaa: Multisig vaatii lisää varantoja. 1 XLM ei usein riitä.",
   "reserve": {
@@ -54,7 +54,7 @@
     "required": "Vaadittu vähimmäisvaranto (uusi): {{val}} XLM"
   },
   "signersCountHint": "Määritä allekirjoitusten vähimmäismäärä alla kohdassa \"Required Signatures\" (niedrig/mittel/hoch).",
-  "signersCountLimit": "Huom: Verkon raja (Stellar): enintään 20 ylimääräistä allekirjoittajaa.",
+  "signersCountLimit": "Huomautus: Verkon rajoitus (Stellar): enintään 20 ylimääräistä Signer.",
   "startingBalance": "Aloitussaldo (XLM)",
   "keyWarning": {
     "title": "⚠️ Hanki turva-avain nyt!",

@@ -8,13 +8,27 @@
   "muxed": "Управление субадресами",
   "glossary": "Глоссарий",
   "createAccount": "Создать новую учетную запись",
-  "multisigEdit": "Редактировать мультиподпись",
-  "multisigJobs": "Транзакции с открытой мультиподписью",
+  "multisigEdit": "Редактировать multisig",
+  "multisigJobs": "Открыть транзакции Multisig",
   "listAll": "Права доступа к моим токенам",
   "compareTrustlines": "Сравнение авторизаций токенов",
   "settings": "Настройки",
   "tokenPurchases": "Покупка токенов",
   "learn": "Звездная викторина для начинающих",
   "unknown": "Неизвестный выбор в меню",
-  "swap": "Найти и обменять токены"
+  "swap": "Найти и обменять токены",
+  "wallet": "Wallet",
+  "sidebarLabel": "Главная навигация",
+  "openNavigation": "Открыть навигацию",
+  "closeNavigation": "Закрыть панель навигации",
+  "language": "Язык",
+  "sections": {
+    "account": "Учётная запись",
+    "trade": "Торговля",
+    "reports": "Отчеты",
+    "trustlines": "Token-Утверждения",
+    "advanced": "Для опытных пользователей",
+    "learn": "Обучение"
+  },
+  "receive": "Получить"
 }

@@ -160,7 +160,7 @@
     }
   },
   "l4": {
-    "title": "Sleutels, kosten en vertrouwenslijnen",
+    "title": "Sleutels, kosten en trustlines",
     "q1": {
       "question": "Wat is een publieke sleutel?",
       "hint": "Zoals je postadres.",
@@ -194,14 +194,14 @@
       "d.fb": "Dat zou leuk zijn 😄—maar iedereen die je geheime sleutel kent, kan je saldo stelen."
     },
     "q4": {
-      "question": "Wat is een trustlijn?",
+      "question": "Wat is een trustline?",
       "hint": "Het is als een toestemming.",
       "a": "Een toestemming om een token van een uitgever te houden.",
       "b": "Een geheime chatlijn tussen twee accounts.",
       "c": "Een speciale korting op handelskosten.",
       "a.fb": "Ja. U kiest welke uitgevers/tokens u vertrouwt.",
       "b.fb": "Nee. Het is geen chat, maar een verblijfsvergunning.",
-      "c.fb": "Nee. Vertrouwenslijnen houden in dat er activa worden aangehouden.",
+      "c.fb": "Nr. Trustlines houdt het aanhouden van assets in.",
       "d": "Een truc om sneller rijk te worden.",
       "d.fb": "Dat zou leuk zijn 😄—maar cryptovaluta’s werken volgens technische regels, niet volgens goocheltrucs."
     },
@@ -620,7 +620,7 @@
   },
   "meta": {
     "estimatedMinutes": "Geschatte minuten",
-    "passThreshold": "Drempelwaarde overschrijden",
+    "passThreshold": "Doorgeven van threshold",
     "threeStarThreshold": "3★ Grens"
   },
   "landing": {
@@ -628,8 +628,8 @@
     "description": "Korte introductie tot de les. Test je kennis en verzamel sterren.",
     "questionsLabel": "Vragen",
     "estimatedMinutesLabel": "Geschatte minuten",
-    "passThresholdLabel": "Drempelwaarde passeren",
-    "threeStarThresholdLabel": "3★ drempel",
+    "passThresholdLabel": "Doorgeven van threshold",
+    "threeStarThresholdLabel": "3★ threshold",
     "start": "Quiz starten",
     "startPractice": "Start de oefenmodus.",
     "settings": "Instellingen",
@@ -651,10 +651,10 @@
   "result": {
     "score": "Je resultaat: {{score}}%",
     "summary": "{{correct}}/{{total}} correct",
-    "passInfo": "Drempel overschreden: {{pass}}% — Status: {{status}}",
+    "passInfo": "Doorgegeven threshold: {{pass}}% — Status: {{status}}",
     "passed": "Geslaagd",
     "failed": "Mislukt",
-    "threeStarThreshold": "3★ drempel: {{value}}%",
+    "threeStarThreshold": "3★ threshold: {{value}}%",
     "stars": "Sterren: {{stars}}",
     "newAchievementsTitle": "Nieuw verworven insignes",
     "noNewAchievements": "Geen nieuwe badges in deze ronde.",

@@ -1,6 +1,6 @@
 {
   "singleVsMulti": {
-    "ariaLabel": "Diagramme : Signature unique vs. Multisignature",
+    "ariaLabel": "Schéma comparatif : Single-Sig vs. Multisig",
     "singleTitle": "Signature unique (Single-Sig)",
     "multiTitle": "Multisig",
     "account": "Compte",
@@ -12,7 +12,7 @@
     "multiNote": "Au moins 2 signatures sur 3"
   },
   "weights": {
-    "ariaLabel": "Poids et seuils du diagramme",
+    "ariaLabel": "Poids du diagramme et thresholds",
     "title": "Weights & Thresholds",
     "sA": "Signer A",
     "sB": "Signer B",
@@ -27,10 +27,10 @@
   },
   "flow": {
     "ariaLabel": "Diagramme de flux Multisig",
-    "title": "Processus multisignature",
+    "title": "Processus Multisig",
     "step1": "Le coordinateur crée une transaction.",
     "step2": "SKM stocke un travail en attente.",
-    "step3": "Signature B/C",
+    "step3": "Signer Signe B/C",
     "step4": "SKM envoie la transaction complétée."
   }
 }

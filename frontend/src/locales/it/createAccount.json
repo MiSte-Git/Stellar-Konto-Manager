@@ -1,13 +1,13 @@
 {
   "title": "Crea un account + multisig",
   "menu": "Crea account + Multisig",
-  "menuHint": "Crea un nuovo account e opzionalmente configura la multisignatura.",
-  "hint": "Crea un nuovo account, attivalo e configura opzionalmente la firma multipla.",
+  "menuHint": "Crea un nuovo account e, se lo desideri, configura multisig",
+  "hint": "Crea un nuovo account, attivalo e, se lo desideri, configura multisig.",
   "generateKeys": "Genera chiave",
   "enableMultisig": "Abilita multisig",
-  "signersTitle": "Firmatario",
-  "signersInfo": "Aggiungi firmatari aggiuntivi e imposta soglie appropriate.",
-  "signersCount": "Numero di firmatari",
+  "signersTitle": "Signer",
+  "signersInfo": "Aggiungere altri valori di Signer e impostare valori appropriati per Thresholds.",
+  "signersCount": "Numero Signer",
   "bestPractices": {
     "title": "Migliori Pratiche",
     "text": "Tieni le chiavi segrete al sicuro e non distribuirle inutilmente."
@@ -17,7 +17,7 @@
     "secret": "Mantieni questa chiave segreta al sicuro; non condividerla mai."
   },
   "generateFirst": "Genera prima una coppia di chiavi, per favore.",
-  "confirmLowBalance": "Il saldo iniziale {bal} XLM è inferiore alla riserva raccomandata {req} XLM (Firmatari: {count}). Procedere?",
+  "confirmLowBalance": "Il saldo iniziale {bal} in XLM è inferiore alla riserva raccomandata {req} in XLM (Signer: {count}). Procedere?",
   "activated": "L'account è stato attivato. Hash: {hash}",
   "activatedTestnet": "L'account è stato attivato sul testnet tramite Friendbot.",
   "alreadyActive": "L'account è già attivato.",
@@ -27,16 +27,16 @@
     "more": "Più informazioni",
     "keysOnPage": {
       "title": "Chiave su questa pagina",
-      "text": "⚠️ IMPORTANTE: Questo sito web non memorizza MAI la tua chiave segreta!\n\nLa chiave segreta qui visualizzata esiste solo nel tuo browser (localmente nella memoria). Non appena ricarichi o esci dalla pagina, va irrimediabilmente persa.\n\nCopia o annota la chiave segreta immediatamente dopo averla generata, prima di chiudere la pagina.\n\nVerifica: puoi utilizzare gli strumenti di sviluppo del tuo browser (F12 → Rete) per verificare che nessuna chiave segreta venga trasmessa all’esterno. Vengono inviate solo le transazioni firmate, mai la tua chiave segreta."
+      "text": "⚠️ IMPORTANTE: Questo sito web non memorizza MAI il tuo Secret Key!\n\nIl Secret Key visualizzato qui esiste solo nel tuo browser (localmente nella memoria). Non appena ricarichi o esci dalla pagina, va irrimediabilmente perso.\n\nCopia o annota il Secret Key immediatamente dopo la sua generazione, prima di chiudere la pagina.\n\nVerifica: puoi utilizzare gli strumenti di sviluppo del tuo browser (F12 → Rete) per verificare che nessun Secret Key venga trasmesso all’esterno. Vengono inviate solo le transazioni firmate, mai il tuo Secret Key."
     },
     "title": "Informazioni importanti",
     "secureKeys": {
-      "title": "Chiave segreta sicura",
+      "title": "Esegui il backup di Secret Key",
       "text": "La chiave pubblica può essere condivisa in tutta sicurezza: è come un numero di conto.\n\nLa chiave segreta è la chiave di accesso al tuo account. Trattala come una password:\n• NON conservarla MAI su servizi cloud, nelle e-mail o in appunti non protetti\n• Annotala su carta o utilizza un portafoglio hardware\n• Crea più copie di backup e conservale in luoghi sicuri e separati\n• Se perdi la tua chiave segreta, l’accesso al tuo conto andrà irrimediabilmente perso"
     },
     "multisigSection": {
-      "title": "Multisig (Firma multipla)",
-      "text": "Con il multisig, puoi definire più firmatari per il tuo account. Le transazioni richiedono quindi firme da più chiavi (multisig).\n\nVantaggi:\n• Maggiore sicurezza (security)\n• Conti condivisi (shared accounts)\n• Recupero di emergenza (emergency recovery)\n\nATTENZIONE: Testa il multisig prima sulla testnet prima di implementarlo sulla mainnet! Una configurazione errata può comportare la perdita dell'accesso all'account."
+      "title": "Multisig (Multi-signature)",
+      "text": "Con Multisig, è possibile definire più valori di Signer per il proprio account. Le transazioni richiedono quindi la firma di più chiavi (ad esempio, 2 su 3).\n\nVantaggi:\n• Maggiore sicurezza (non è sufficiente che venga compromessa una sola chiave)\n• Conti congiunti (ad es. aziende, società di persone)\n• Ripristino di emergenza (più copie di backup conservate da persone diverse)\n\nATTENZIONE: testare prima Multisig nel Testnet prima di utilizzarlo sul Mainnet! Una configurazione errata potrebbe comportare la perdita dell’accesso all’account."
     },
     "diagram": {
       "title": "Scadenza della firma"
@@ -45,7 +45,7 @@
   "activateHint": "L'attivazione è necessaria affinché l'account esista. Nel Testnet, tramite Friendbot; nel Mainnet, tramite \"Crea Account\" da un wallet esistente.",
   "activateNow": "Attiva immediatamente l'account",
   "activateOnly": "Basta attivare",
-  "balanceWarning": "Il saldo iniziale è probabilmente troppo basso per aggiungere i {{count}} firmatari aggiuntivi (riserva minima: {{req}} XLM).",
+  "balanceWarning": "Il saldo iniziale è probabilmente troppo basso per aggiungere i {{count}} signers aggiuntivi (riserva minima: {{req}} XLM)",
   "createButton": "Crea / Imposta Multisig",
   "mainnetActivateNote": "Nota: Sono necessarie riserve aggiuntive per Multisig. 1 XLM spesso non è sufficiente.",
   "reserve": {
@@ -54,7 +54,7 @@
     "required": "Riserva minima richiesta (nuova): {{val}} XLM"
   },
   "signersCountHint": "Imposti il numero minimo di firme di seguito sotto \"Required Signatures\" (niedrig/mittel/hoch).",
-  "signersCountLimit": "Nota: Limite di Rete (Stellar): max. 20 firmatari aggiuntivi.",
+  "signersCountLimit": "Nota: limite di rete (Stellar): max. 20 Signer aggiuntivi.",
   "startingBalance": "Saldo iniziale (XLM)",
   "keyWarning": {
     "title": "⚠️ Acquisisci la chiave sicura ora!",

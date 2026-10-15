@@ -6,9 +6,9 @@
     "title": "Cuenta"
   },
   "accountConfig": {
-    "desc": "La configuración de la cuenta define qué firmantes existen con qué ponderaciones y qué umbrales se aplican. Los cambios en los firmantes o umbrales son críticos para la seguridad porque determinan cuántas firmas se requieren.",
+    "desc": "La configuración de la cuenta define qué valores de signers existen y con qué ponderaciones, así como qué valores de thresholds se aplican. Los cambios en signers o thresholds son fundamentales para la seguridad, ya que determinan cuántas firmas se requieren.",
     "original": "Account Configuration",
-    "short": "La interacción entre los firmantes y los umbrales determina la seguridad de la cuenta.",
+    "short": "La interacción entre signers y thresholds determina la seguridad de la cuenta.",
     "title": "Configuración de la cuenta"
   },
   "addressFederation": {
@@ -24,7 +24,7 @@
     "title": "Dirección G"
   },
   "addressMuxed": {
-    "desc": "Una subdirección (dirección M, oficialmente «cuenta Muxed») apunta a una cuenta Stellar ya existente, pero también tiene su propio número (ID).\n\nSubdirección = cuenta G + ID (dirección M)\nSirve para identificar, pero no separa las cuentas.\nEl saldo, las líneas de confianza, los firmantes y los indicadores se mantienen siempre en la cuenta G.\n\nFundación para el Desarrollo de Stellar\n\nEsto permite, por ejemplo, distinguir entre varias personas o departamentos bajo la misma dirección G. Técnicamente, los fondos siguen perteneciendo a la cuenta principal.",
+    "desc": "Una subdirección (dirección M, oficialmente «Muxed Account») apunta a una cuenta de Stellar ya existente, pero también tiene su propio número (ID).\n\nSubdirección = cuenta G + ID (dirección M)\nSirve para identificar, pero no separa las cuentas.\nEl saldo, trustlines, signers y los indicadores se mantienen siempre en la cuenta G.\n\nFundación para el Desarrollo de Stellar\n\nEsto permite, por ejemplo, distinguir entre varias personas o departamentos bajo la misma dirección G. Técnicamente, los fondos siguen perteneciendo a la cuenta principal.",
     "original": "Muxed Account",
     "short": "Dirección M con identificador adicional: comparte una cuenta base.",
     "title": "Subdirección"
@@ -66,7 +66,7 @@
     "title": "Saldo reclamable"
   },
   "baseReserve": {
-    "desc": "En Stellar, cada cuenta debe mantener un saldo mínimo en XLM. Este se compone de la reserva base (actualmente 0.5 XLM) multiplicada por el número de 'entradas' en la cuenta (p. ej. trustlines, firmantes, ofertas de datos). Una cuenta vacía necesita al menos 1 XLM (2 × 0.5 XLM). Cada trustline aumenta el saldo mínimo en 0.5 XLM adicionales. Este saldo queda bloqueado mientras las entradas estén activas.",
+    "desc": "En Stellar, todas las cuentas deben mantener un saldo mínimo en XLM. Este se calcula a partir de la reserva base (actualmente 0,5 XLM) multiplicada por el número de «entradas» de la cuenta (por ejemplo, trustlines, signers, ofertas de datos). Una cuenta vacía requiere al menos 1 XLM (2 × 0,5 XLM). Cada trustline aumenta el saldo mínimo en 0,5 XLM adicionales. Este saldo permanece bloqueado mientras las entradas estén activas.",
     "original": "Base Reserve",
     "short": "La cantidad mínima de XLM que debe permanecer en una cuenta Stellar y no puede gastarse.",
     "title": "Reserva base"
@@ -449,7 +449,7 @@
     "title": "Orden de mercado"
   },
   "masterWeight": {
-    "desc": "El peso maestro es el peso de la clave principal de una cuenta. Un peso maestro alto permite que la clave maestra firme muchas acciones por sí sola; un valor bajo requiere firmantes adicionales.",
+    "desc": "El peso maestro es el peso de la clave principal de una cuenta. Un peso maestro elevado permite que la clave principal firme muchas acciones por sí sola; un valor bajo requiere un signers adicional.",
     "original": "master_weight",
     "short": "Peso de la llave maestra; controla cuánta importancia tiene la llave maestra.",
     "title": "Peso maestro"
@@ -464,7 +464,7 @@
     "desc": "Un memo es una pequeña nota que puedes enviar junto con una transacción. A menudo, un intercambio requiere un memo específico para saber a quién pertenece el dinero.",
     "original": "Memo",
     "short": "Nota breve en una transacción.",
-    "title": "Memorando"
+    "title": "Memo"
   },
   "mining": {
     "desc": "El mining es el corazón de las blockchains Proof‑of‑Work como Bitcoin. Los mineros compiten para resolver primero un problema matemático complejo. El ganador añade el siguiente bloque y recibe nuevas coins como recompensa. El mining consume muchísima electricidad y hardware especializado. Stellar no necesita mining: el consenso SCP es eficiente y confirma transacciones en segundos.",
@@ -480,39 +480,39 @@
     "title": "Dinero"
   },
   "multiSignature": {
-    "desc": "En una configuración de firma múltiple, varias claves deben firmar antes de que una acción se vuelva válida. Cada firmante tiene un peso, y la suma debe cumplir con el umbral requerido. Esto aumenta la seguridad porque una sola clave robada no es suficiente.",
+    "desc": "Con Multisig, es necesario que varias claves firmen para que una acción sea válida. Cada Signer tiene un peso, y la suma debe alcanzar el valor requerido de Threshold. Esto aumenta la seguridad, ya que no basta con que se robe una sola clave.",
     "original": "Multi-Signature",
-    "short": "Se requieren varias firmas; los pesos + el umbral determinan la aprobación.",
-    "title": "Multifirma"
+    "short": "Se requieren varias firmas; las ponderaciones + threshold determinan la versión.",
+    "title": "Multi-Signature"
   },
   "multisig": {
     "desc": "Multi-Sig significa múltiples firmas. Una acción importante requiere más de una clave. Ejemplo: Tú y una segunda clave deben estar de acuerdo antes de que se envíe algo. Esto hace que el robo sea más difícil.",
     "help": {
-      "behavior": "Con esta configuración, los pagos pueden ser realizados por cualquiera de las tres personas elegibles por sí sola, ya que el peso de cada individuo cumple con el umbral medio. Para cambios estructurales como eliminar un firmante, ajustar los umbrales/pesos, o fusionar o cerrar la cuenta, se requiere el umbral alto. Este valor solo se puede alcanzar cuando al menos dos de los tres firmantes firman juntos. Este arreglo mantiene la cuenta flexible para el uso diario mientras proporciona una fuerte protección contra el mal uso.",
+      "behavior": "Con esta configuración, cualquiera de las tres personas autorizadas puede realizar los pagos por su cuenta, ya que la ponderación individual en cada caso cumple con la media de Threshold/ponderación. Sin embargo, para cambios estructurales como la eliminación de un Signers, el ajuste de los Thresholds/ponderaciones, o la fusión o el cierre de la cuenta, se aplica la ponderación elevada Threshold/ponderación (umbral alto). Este valor solo puede alcanzarse si al menos dos de las tres personas con Signer firman conjuntamente. De este modo, se garantiza que la cuenta siga siendo flexible para el uso diario, al tiempo que queda bien protegida contra un uso indebido.",
       "closeLabel": "Cerrar",
       "glossaryLinkLabel": "Ver en el glosario",
-      "intro": "Una empresa puede usar una cuenta de blockchain compartida en la que participan varias personas autorizadas. Normalmente, se incluyen al menos tres signatarios (Signer), por ejemplo, la gerencia, el responsable financiero y cumplimiento/copias de seguridad. El objetivo es que las personas individuales puedan ejecutar pagos de manera independiente, sin permitir que una sola persona controle o se apropie de la cuenta por sí sola.",
+      "intro": "Una empresa puede utilizar una cuenta compartida en una cadena de bloques en la que participen varias personas autorizadas. Por lo general, intervienen al menos tres Signer, como la dirección, el responsable financiero y el representante de cumplimiento normativo o suplente. El objetivo es permitir que cada persona pueda realizar pagos de forma independiente, sin que ninguna de ellas pueda controlar o hacerse con el control de la cuenta por sí sola.",
       "linkLabel": "¿Qué significa Multi-Signature?",
-      "problem": "Si un firmante (Signer) tiene suficiente peso para ejecutar pagos y simultáneamente tiene suficiente peso para realizar cambios en la cuenta, esa persona podría eliminar a otros firmantes (Signer) o ajustar el umbral/peso (Thresholds) y así tomar el control de la cuenta. Por el contrario, el propietario original tampoco debería poder excluir fácilmente a otros firmantes (Signer) sin controles y equilibrios. Una estructura de firmas múltiples asegura que las decisiones importantes siempre sean tomadas colectivamente por varias personas.",
-      "removal": "Si una persona deja la empresa o ya no es confiable, dos de los firmantes restantes (Signer) pueden conjuntamente eliminar los derechos de firma de esa persona. Ningún firmante individual (Signer) –ni un empleado ni la dirección– puede excluir a otros de la cuenta de manera independiente. La revocación de permisos se realiza siempre de manera controlada y comprensible por al menos dos responsables.",
-      "setupThresholds": "Los umbrales/pesos apropiados se establecen de la siguiente manera:\n- Bajo (low_threshold): 1\n- Medio (med_threshold): 2 (for payments and other medium actions)\n- Alto (high_threshold): 4 (para cambios estructurales como agregar/eliminar firmantes (Signer) o cambiar el umbral/peso (Thresholds))\nEsto asegura que cada persona autorizada pueda ejecutar pagos, pero ninguna persona individual pueda alterar la estructura de la cuenta por sí sola.",
-      "setupTitle": "Ejemplo de una estructura de firma múltiple segura con tres firmantes",
-      "setupWeights": "En un ejemplo con tres roles iguales, todos reciben la misma fuerza de firma:\n- Firmante (Signer) A (Management): Peso 2\n- Firmante (Signer) B (Finanzen): Peso 2\n- Firmante (Signer) C (Compliance/Backup): Peso 2",
+      "problem": "Si un Signer tiene suficiente peso para ejecutar pagos y también tiene suficiente peso para realizar cambios en la cuenta, esa persona podría eliminar a otros Signers o ajustar el Threshold/ponderación (Thresholds), tomando así el control de la cuenta. Por el contrario, el titular original no debería poder excluir simplemente a otros Signer sin realizar una verificación cruzada. Una estructura de firma múltiple garantiza que las decisiones importantes siempre se tomen de forma conjunta por varias personas.",
+      "removal": "Si una persona abandona la empresa o deja de considerarse de confianza, dos de los Signer restantes pueden revocar conjuntamente los derechos de firma de dicha persona. Ningún Signer —ya sea un empleado o un miembro de la dirección— puede eliminar de forma independiente a otras personas de la cuenta. Por lo tanto, la revocación de permisos se lleva a cabo siempre de forma controlada y trazable por al menos dos personas autorizadas.",
+      "setupThresholds": "Para ello, configura los valores adecuados de Thresholds/ponderaciones:\n- Bajo (low_threshold): 1\n- Medio (med_threshold): 2 (para pagos y otras acciones de nivel medio)\n- Alto (high_threshold): 4 (para cambios estructurales, como añadir o eliminar Signer o modificar la ponderación de Threshold (Thresholds))\nEsto permite que cada persona autorizada pueda realizar pagos, pero ninguna persona por sí sola pueda modificar la estructura de la cuenta.",
+      "setupTitle": "Ejemplo de una estructura segura multi-signature con tres signers",
+      "setupWeights": "En un ejemplo con tres funciones de igual rango, a todas se les asigna la misma intensidad de firma:\n- Signer A (Gestión): Ponderación 2\n- Signer B (Finanzas): Ponderación 2\n- Signer C (Cumplimiento normativo/Soporte): Ponderación 2",
       "summary": "Este tipo de estructura multi-firma permite a las partes individuales procesar pagos de manera eficiente mientras mantienen el control de la cuenta entre múltiples participantes. Reduce el riesgo de apropiaciones de cuentas, protege contra decisiones unilaterales y es particularmente adecuada para cuentas corporativas donde tanto la seguridad como la flexibilidad operativa son importantes.",
-      "title": "Explicación general de una cuenta de empresa multisignature (Multi-Signature)"
+      "title": "Declaración general relativa a una cuenta empresarial Multisig"
     },
     "original": "Multi‑Sig",
     "short": "Las acciones importantes requieren más que una firma.",
-    "title": "Multifirma"
+    "title": "Multisig"
   },
   "multisigCorporate": {
     "original": "Multi-Signature - Example",
-    "short": "Ejemplo de una estructura de firmas múltiples para cuentas corporativas con roles, pesos y umbrales.",
-    "title": "Multifirma - Ejemplo",
-    "desc": "Ejemplo: Una empresa configura una cuenta Stellar con tres firmantes: CEO (peso 2), CFO (peso 2) y un miembro de la junta (peso 1). Los umbrales se configuran de modo que las operaciones de baja seguridad requieran peso 1, las operaciones medias (por ejemplo, pagos) requieran peso 3 y las operaciones altas (por ejemplo, cambiar firmantes) requieran peso 4. Esto significa que el CEO puede ver la cuenta solo, pero debe cooperar con el CFO o ambos firmantes para pagos y cambios de configuración."
+    "short": "Ejemplo de una estructura multi-signature para cuentas corporativas con funciones, ponderaciones y thresholds.",
+    "title": "Multisig - Ejemplo",
+    "desc": "Ejemplo: Una empresa crea una cuenta en Stellar con tres Signers: el director general (ponderación 2), el director financiero (ponderación 2) y un miembro del consejo de administración (ponderación 1). Los Thresholds se configuran de tal forma que las operaciones de baja seguridad requieren una ponderación de 1, las operaciones de seguridad media (por ejemplo, pagos) requieran una ponderación de 3, y las operaciones de alta seguridad (por ejemplo, modificar los Signer) requieran una ponderación de 4. De este modo, el director general puede consultar la cuenta por sí solo, pero debe colaborar con el director financiero o con los otros dos Signers para realizar pagos y cambios de configuración."
   },
   "muxedAccountsUseCases": {
-    "desc": "Empresa - Ejemplo\n\nConfiguración:\n- Una cuenta G de la empresa\n- Una dirección M por cliente/caso de uso (ID)\n\nProceso:\n- El cliente realiza el pago a su dirección M\n- Todos los fondos se ingresan en la cuenta G de la empresa\n- El departamento de contabilidad lee el ID -> asignación única\n\nAdecuado para:\n- Tiendas online, proveedores de pagos, plataformas de intercambio\n- Referencias internas sin riesgo de errores en los conceptos\n\nClub - Ejemplo\n\nConfiguración:\n- Una cuenta G del club\n- Direcciones M para socios, secciones y fines\n\nProceso:\n- Las cuotas o donaciones se envían a la dirección M correspondiente\n- Asignación mediante el ID, sin errores en los conceptos\n\nAdecuado para:\n- Cuotas de afiliación\n- Ingresos destinados a fines específicos\n- Auditoría sencilla\n\nVentajas de las subdirecciones:\n- Asignación fiable de los pagos entrantes\n- Una sola cuenta, múltiples identidades\n- No se requiere nota explicativa\n- Menos errores de los usuarios\n\nLo que las subdirecciones no son:\n- No son una cuenta independiente\n- No tienen saldo independiente\n- No tienen líneas de fideicomiso independientes\n- No tienen firmantes ni permisos independientes\n\nCasos de uso que suelen no ser adecuados:\n- Pagos de nóminas o cuentas salariales (requieren una cuenta G independiente)\n- Fideicomiso o custodia para terceros (sin separación legal de activos)\n- Seguridad basada en roles (sin firmantes ni umbrales independientes)\n- Segregación presupuestaria o de límites (sin saldos ni límites de activos independientes)\n- Cuentas segregadas por motivos de cumplimiento normativo (el KYC y la presentación de informes no pueden separarse claramente)\n\nComparación (resumida):\nAsignar pagos: Sí\nSegregar activos: No\nDelegar acceso: No\nCuenta separada legalmente: No\nContabilidad interna: Sí\n\nNota:\nLas subdirecciones canalizan los pagos, pero no sustituyen a las cuentas.\nSi se requiere control, titularidad o segregación -> cuenta G independiente.",
+    "desc": "Empresa - Ejemplo\n\nConfiguración:\n- Una cuenta G de la empresa\n- Una dirección M por cliente/caso de uso (ID)\n\nProceso:\n- El cliente realiza el pago a su dirección M\n- Todos los fondos se ingresan en la cuenta G de la empresa\n- El departamento de contabilidad lee el ID -> asignación única\n\nAdecuado para:\n- Tiendas online, proveedores de pagos, plataformas de intercambio\n- Referencias internas sin riesgos de memo\n\nClub - Ejemplo\n\nConfiguración:\n- Una cuenta G del club\n- Direcciones M para socios, secciones y fines\n\nProceso:\n- Las cuotas o donaciones se envían a la dirección M correspondiente\n- Asignación mediante ID, sin errores de memo\n\nAdecuado para:\n- Cuotas de socio\n- Ingresos destinados a fines específicos\n- Auditoría sencilla\n\nVentajas de las subdirecciones:\n- Asignación fiable de los pagos entrantes\n- Una sola cuenta, múltiples identidades\n- Sin necesidad de memo\n- Menos errores de los usuarios\n\nLo que no son las subdirecciones:\n- No son una cuenta independiente\n- No tienen saldo propio\n- No tienen un trustlines independiente\n- No tienen un signers ni permisos independientes\n\nCasos de uso que suelen ser inadecuados:\n- Pagos de nóminas/cuentas salariales (requieren una cuenta G independiente)\n- Fideicomisos o custodia para terceros (sin separador legal asset)\n- Seguridad basada en roles (sin signers/thresholds independientes)\n- Segregación de presupuestos o límites (sin saldos/límites asset independientes)\n- Cuentas segregadas por cumplimiento normativo (no se puede separar claramente el KYC ni la presentación de informes)\n\nComparación (Kurz):\nAsignar pagos: Sí\nSegregar assets: No\nDelegar acceso: No\nCuenta legalmente separada: No\nContabilidad interna: Sí\n\nNota:\nLas subdirecciones redirigen los pagos; no sustituyen a las cuentas.\nSi se requiere control, titularidad o segregación -> cuenta G independiente.",
     "original": "Muxed accounts use cases",
     "short": "Ejemplos, beneficios y limitaciones de las direcciones M como una ayuda para mapeo.",
     "title": "Subdirecciones: ejemplos de uso"
@@ -647,10 +647,10 @@
     "title": "Blockchain privada"
   },
   "privateKey": {
-    "desc": "La clave secreta es tu contraseña para la cuenta. Quien tenga esta clave puede mover tu dinero. Nunca la compartas.",
+    "desc": "El Secret Key es la contraseña de tu cuenta. Cualquiera que tenga esta clave puede mover tu dinero. No la compartas nunca con nadie.",
     "original": "Secret Key",
     "short": "Password for the account – never share it.",
-    "title": "Clave secreta"
+    "title": "Secret Key"
   },
   "programmableLogic": {
     "desc": "Como una regla de si-entonces en un autómata. Esto permite que los procesos se controlen sin intervención manual cada vez. Así es como se crean los contratos digitales simples.",
@@ -683,10 +683,10 @@
     "title": "Blockchain pública"
   },
   "publicKey": {
-    "desc": "La clave pública es la dirección que puedes compartir. En Stellar, esta es la dirección G. Otros la usan para enviarte dinero.",
+    "desc": "El Public Key es la dirección que puedes compartir. En Stellar, se trata de la dirección G. Los demás la utilizan para enviarte dinero.",
     "original": "Public Key",
     "short": "Dirección que puedes compartir; en Stellar suele ser la dirección G.",
-    "title": "Clave pública"
+    "title": "Public Key"
   },
   "publicKeyCryptography": {
     "desc": "El principio: lo que se cifra con la clave pública solo puede descifrarse con la clave privada, y viceversa. Puedes compartir libremente tu clave pública (= la dirección de tu billetera). Tu clave privada la mantienes en secreto. Quien conozca tu clave privada tiene acceso total a tu cuenta. Por eso: ¡nunca compartas tu clave privada!",
@@ -746,16 +746,16 @@
     "title": "Autocustodia"
   },
   "sequenceNumber": {
-    "desc": "Cada cuenta de Stellar tiene un número de secuencia que aumenta en 1 con cada transacción. Una transacción solo se acepta si su número de secuencia corresponde exactamente a la secuencia actual de la cuenta +1. Esto evita que la misma transacción se ejecute dos veces. Si envías varias transacciones a la vez, deben procesarse en el orden correcto.",
+    "desc": "Cada cuenta de Stellar tiene un Sequence Number que aumenta en 1 con cada transacción. Una transacción solo se acepta si su Sequence Number es exactamente la secuencia actual de la cuenta +1. Esto evita que la misma transacción se ejecute dos veces. Si envías varias transacciones a la vez, deben procesarse en el orden correcto.",
     "original": "Sequence Number",
     "short": "Un número consecutivo que identifica de forma única cada transacción de una cuenta y previene el doble gasto.",
     "title": "Número de secuencia"
   },
   "signer": {
-    "desc": "Un firmante es una clave pública asociada a una cuenta que tiene un peso. Su firma cuenta para alcanzar el umbral requerido. Varios firmantes pueden aprobar conjuntamente una transacción.\n\nTipos de firmantes:\n- ed25519 (clave normal)\n- hashX (plantilla de hash)\n- preAuthTx (transacción preautorizada)\n\nSKM solo admite ed25519. Para conocer otras opciones, consulta https://lab.stellar.org.",
+    "desc": "Un Signer es un Public Key asociado a una cuenta y al que se le ha asignado un peso. Su firma cuenta para el Threshold requerido. Varios Signers pueden autorizar conjuntamente una transacción.\n\nTipos de Signer:\n- ed25519 (clave normal)\n- hashX (plantilla de hash)\n- preAuthTx (transacción preautorizada)\n\nSKM solo admite ed25519. Para conocer otras opciones, consulta https://lab.stellar.org.",
     "original": "Signer",
-    "short": "Clave pública con peso, parte de la configuración de la cuenta.",
-    "title": "Signatario"
+    "short": "Public Key con peso, parte de la configuración de la cuenta.",
+    "title": "Signer"
   },
   "signing": {
     "desc": "Antes de que una transacción se ejecute en la red Stellar, debe ser firmada. Con la clave privada se genera una firma digital que demuestra que el titular legítimo de la cuenta ha aprobado la transacción. Sin una firma válida, la red rechaza la transacción. En cuentas multisig se requieren varias firmas.",
@@ -842,10 +842,10 @@
     "title": "Red de prueba"
   },
   "thresholds": {
-    "desc": "Los umbrales definen cuántas firmas ponderadas se requieren para realizar acciones: bajo para operaciones simples, medio para pagos y alto para cambios críticos. La suma de los pesos de los firmantes debe cumplir con el umbral respectivo.",
+    "desc": "Thresholds define el número de firmas ponderadas necesarias para las acciones: «low» para operaciones sencillas, «med» para pagos y «high» para cambios críticos. La suma de las ponderaciones de Signer debe ser igual al valor correspondiente de Threshold.",
     "original": "Thresholds",
     "short": "Límites (low/med/high) que establecen el peso total requerido.",
-    "title": "Umbrales"
+    "title": "Thresholds"
   },
   "token": {
     "desc": "Un token es una unidad digital en la cadena de bloques. Un token puede representar dinero, puntos o créditos para un servicio.",
@@ -854,9 +854,9 @@
     "title": "Ficha"
   },
   "transaction": {
-    "desc": "Una transacción es una acción en la blockchain, como enviar dinero o establecer una línea de confianza. Una vez confirmada, una transacción se registra de manera permanente.",
+    "desc": "Una transacción es una acción que se realiza en la cadena de bloques. Por ejemplo, enviar dinero o crear un Trustline. Una vez confirmada una transacción, queda almacenada de forma permanente.",
     "original": "Transaction",
-    "short": "Acción en la cadena de bloques, por ejemplo, pago o línea de confianza.",
+    "short": "Acción en la cadena de bloques, por ejemplo, un pago o trustline.",
     "title": "Transacción"
   },
   "transactionStatus": {
@@ -866,10 +866,10 @@
     "title": "Estado de la transacción"
   },
   "trustline": {
-    "desc": "Una línea de confianza es como un \"Sí, acepto este token\". Al configurarla, estás indicando que tu cuenta está lista para recibir un token específico de un emisor específico. Sin una línea de confianza, no puedes recibir este token.\n\nEjemplo: Una línea de confianza se especifica como CÓDIGO:EMISOR. Para EURT del emisor GDUKMGUGDZQK6Y…, sería EURT:GDUKMGUGDZQK6Y…",
+    "desc": "Un trustline equivale a decir «Sí, acepto este token». Al configurarlo, estás indicando que tu cuenta está preparada para mantener un token específico de un emisor concreto. Sin un trustline, no puedes recibir este token.\n\nEjemplo: Un trustline se especifica como CODE:ISSUER. Para un EURT del emisor GDUKMGUGDZQK6Y…, sería EURT:GDUKMGUGDZQK6Y…",
     "original": "Trustline",
     "short": "Acuerdo para mantener un token de un emisor específico.",
-    "title": "Línea de confianza"
+    "title": "Trustline"
   },
   "tvl": {
     "desc": "TVL es una métrica importante en DeFi. Muestra cuánto capital está bloqueado en un protocolo, una dApp o un pool de liquidez. Un TVL alto sugiere confianza y uso activo. En Stellar, TVL mide el valor de todos los assets en pools de liquidez. Plataformas como DeFiLlama rastrean TVL en muchas blockchains y protocolos.",
@@ -902,7 +902,7 @@
     "title": "Volatilidad"
   },
   "wallet": {
-    "desc": "Un monedero es tu cartera digital. Gestiona las claves que necesitas para acceder a tu cuenta y enviar transacciones. Un monedero puede ser un programa, una aplicación o incluso un simple trozo de papel con tu clave privada.",
+    "desc": "Un Wallet es tu wallet digital. Gestiona las claves que necesitas para acceder a tu cuenta y enviar transacciones. Un Wallet puede ser un programa, una aplicación o incluso simplemente un trozo de papel en el que hayas escrito tu Secret Key.",
     "original": "Wallet",
     "short": "Monedero digital que gestiona tus llaves.",
     "title": "Cartera"
@@ -994,20 +994,20 @@
   "trustlineLimit": {
     "title": "Límite de Trustline",
     "original": "Trustline Limit",
-    "short": "Saldo máximo de un activo concreto en una línea de crédito fiduciaria.",
-    "desc": "El límite de la línea de crédito define el número máximo de unidades de un activo concreto que puede tener tu cuenta. No se trata de una orden de compra y no reserva tokens. Un límite bajo puede evitar pagos excesivos accidentales, pero un límite demasiado bajo puede impedir una recepción o un intercambio previstos."
+    "short": "Saldo máximo de un asset específico en un trustline.",
+    "desc": "El límite trustline define el número máximo de unidades de un asset concreto que puede tener tu cuenta. No se trata de una orden de compra y no reserva tokens. Un límite bajo puede evitar pagos excesivos accidentales, pero un límite demasiado bajo puede bloquear una recepción o un intercambio previstos."
   },
   "authorizationFlags": {
     "title": "Indicadores de autorización",
     "original": "Authorization Flags",
     "short": "Reglas del emisor como «auth_required», «auth_revocable» o «immutable».",
-    "desc": "Los indicadores de autorización son ajustes de la cuenta del emisor. «auth_required» significa que el emisor debe aprobar primero una línea de confianza. «auth_revocable» significa que la aprobación puede revocarse posteriormente. «auth_immutable» significa que estos indicadores ya no pueden modificarse. Estos indicadores son importantes porque determinan si puedes recibir, conservar o transferir un token."
+    "desc": "Los indicadores de autorización son ajustes de la cuenta del emisor. «auth_required» significa que el emisor debe aprobar primero un trustline. «auth_revocable» significa que la aprobación puede revocarse posteriormente. «auth_immutable» significa que estos indicadores ya no pueden modificarse. Estos indicadores son importantes porque determinan si puedes recibir, mantener o transferir un token."
   },
   "issuerMasterKey": {
     "title": "Clave maestra del emisor",
     "original": "Issuer Master Key",
     "short": "Clave principal de la cuenta del emisor.",
-    "desc": "La clave maestra del emisor es la clave principal de la cuenta que emite un activo. Si su peso se establece en 0, la clave maestra por sí sola ya no podrá firmar nuevas acciones. Esto puede ser una buena señal, ya que dificulta que el emisor modifique las reglas de forma silenciosa. La configuración completa de la cuenta, incluidos otros firmantes y los indicadores, sigue siendo importante."
+    "desc": "La clave maestra del emisor es la clave principal de la cuenta que emite un asset. Si su peso se establece en 0, la clave maestra por sí sola ya no podrá firmar nuevas acciones. Esto puede ser una buena señal, ya que dificulta que el emisor modifique las reglas de forma silenciosa. La configuración completa de la cuenta, incluidos otros signers y indicadores, sigue siendo importante."
   },
   "assetCode": {
     "title": "Código de activo",

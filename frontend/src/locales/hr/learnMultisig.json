@@ -1,7 +1,7 @@
 {
   "title": "Multisig za početnike",
   "menuTitle": "Razumijevanje multisignature (multisig) sistema",
-  "teaser": "Zašto više potpisa, kako pragovi funkcioniraju i kako SKM pomaže.",
+  "teaser": "Zašto više potpisa, kako thresholds funkcionira i kako SKM pomaže.",
   "why": {
     "title": "Zašto multisig?",
     "text": "Višestruki potpisi smanjuju rizik od pojedinačnih grešaka ili krađe."
@@ -11,8 +11,8 @@
     "text": "Single-sig = Jedan potpis je dovoljan.   Multisig = Potrebno je više potpisa (npr. 2 od 3)."
   },
   "stellarHow": {
-    "title": "Kako Stellar implementira višestruki potpis",
-    "text": "Stellar koristi potpisnike s težinama i pragovima. Svaka operacija zahtijeva težinsku vrijednost praga."
+    "title": "Kako Stellar implementira Multisig",
+    "text": "Stellar koristi signers s težinama i thresholds. Svaka operacija zahtijeva threshold težinu."
   },
   "examples": {
     "title": "Praktični primjeri",
@@ -26,7 +26,7 @@
   },
   "diagram": {
     "singleVsMulti": "Dijagram: Jednostruki potpis (Single-Sig) naspram višestrukog potpisa (Multisig)",
-    "stellarHow": "Dijagram: Potpisnik, Težina, Prag",
+    "stellarHow": "Dijagram: Signer, Težina, Threshold",
     "skmFlow": "Dijagram: Priprema SKM toka → Potpisivanje → Slanje"
   }
 }

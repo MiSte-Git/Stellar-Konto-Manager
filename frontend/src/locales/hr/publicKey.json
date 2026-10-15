@@ -11,7 +11,7 @@
     "label": "Ciljani javni ključ",
     "placeholder": "Unesite ciljani javni ključ"
   },
-  "invalid": "Nevažeći javni ključ.",
+  "invalid": "Neispravno Public Key.",
   "submit": {
     "button": "Pošalji"
   },

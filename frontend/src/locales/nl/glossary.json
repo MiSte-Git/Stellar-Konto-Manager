@@ -31,7 +31,7 @@
     "title": "Portemonnee",
     "original": "Wallet",
     "short": "Digitale portemonnee die je sleutels beheert.",
-    "desc": "Een portemonnee is je digitale beurs. Het beheert de sleutels die je nodig hebt om toegang te krijgen tot je account en transacties te verzenden. Een portemonnee kan een programma zijn, een app, of zelfs gewoon een stuk papier met je privésleutel."
+    "desc": "Een Wallet is je digitale wallet. Hiermee beheer je de sleutels die je nodig hebt om toegang te krijgen tot je account en transacties te versturen. Een Wallet kan een programma, een app of zelfs gewoon een stukje papier zijn waarop je Secret Key staat geschreven."
   },
   "account": {
     "title": "Account",
@@ -46,16 +46,16 @@
     "desc": "Het G-adres is het hoofdadres van een Stellar-account. Het begint met de letter G. Je geeft het aan anderen zodat ze je iets kunnen sturen."
   },
   "publicKey": {
-    "title": "Openbare sleutel",
+    "title": "Public Key",
     "original": "Public Key",
     "short": "Adres dat je mag delen; bij Stellar meestal het G-adres.",
-    "desc": "De openbare sleutel is het adres dat je mag delen. In Stellar is dit het G-adres. Anderen gebruiken het om je geld te sturen."
+    "desc": "Het Public Key is het adres dat je mag delen. Op Stellar is dit het G-adres. Anderen gebruiken dit adres om je geld te sturen."
   },
   "privateKey": {
-    "title": "Geheime sleutel",
+    "title": "Secret Key",
     "original": "Secret Key",
     "short": "Wachtwoord voor het account – deel het nooit.",
-    "desc": "De geheime sleutel is je wachtwoord voor de account. Wie deze sleutel heeft, kan je geld verplaatsen. Deel het nooit."
+    "desc": "De Secret Key is het wachtwoord van je account. Iedereen die deze sleutel heeft, kan je geld overmaken. Deel deze sleutel nooit met iemand."
   },
   "addressFederation": {
     "title": "Federatieadres",
@@ -67,28 +67,28 @@
     "title": "Subadres",
     "original": "Muxed Account",
     "short": "M-adres met extra ID – maakt gebruik van hetzelfde basisaccount.",
-    "desc": "Een subadres (M-adres, officieel „Muxed Account“) verwijst naar een bestaand Stellar-account, maar heeft ook een eigen nummer (ID).\n\nSubadres = G-account + ID (M-adres)\nHet dient ter identificatie, maar maakt geen onderscheid tussen accounts.\nHet saldo, de trustlines, de ondertekenaars en de vlaggen worden altijd in de G-account bewaard.\n\nStellar Development Foundation\n\nHierdoor kunnen bijvoorbeeld meerdere personen of afdelingen onder hetzelfde G-adres worden onderscheiden. Technisch gezien behoren de middelen nog steeds toe aan de hoofdaccount."
+    "desc": "Een subadres (M-adres, officieel “Muxed Account”) verwijst naar een bestaande Stellar-rekening, maar heeft ook een eigen nummer (ID).\n\nSubadres = G-rekening + ID (M-adres)\nHet dient ter identificatie, maar maakt geen onderscheid tussen rekeningen.\nHet saldo, trustlines, signers en vlaggen worden altijd in de G-rekening bewaard.\n\nStellar Development Foundation\n\nHierdoor kunnen bijvoorbeeld meerdere personen of afdelingen onder hetzelfde G-adres worden onderscheiden. Technisch gezien behoren de middelen nog steeds tot de hoofdrekening."
   },
   "muxedAccountsUseCases": {
     "title": "Subadressen – Gebruiksvoorbeelden",
     "original": "Muxed accounts use cases",
     "short": "Voorbeelden, voordelen en beperkingen van M-adressen als hulpmiddel bij het in kaart brengen.",
-    "desc": "Bedrijf - Voorbeeld\n\nOpzet:\n- Eén G-rekening voor het bedrijf\n- Eén M-adres per klant/gebruikssituatie (ID)\n\nProces:\n- De klant betaalt naar zijn M-adres\n- Alle gelden gaan naar de G-rekening van het bedrijf\n- De boekhouding leest de ID -> unieke toewijzing\n\nGeschikt voor:\n- Webwinkels, betalingsproviders, beurzen\n- Interne referenties zonder risico op fouten in de mededeling\n\nClub - Voorbeeld\n\nOpzet:\n- Eén G-rekening voor de club\n- M-adressen voor leden, afdelingen en doeleinden\n\nProces:\n- Contributies/donaties worden naar het juiste M-adres gestuurd\n- Toewijzing via ID, geen fouten in de mededeling\n\nGeschikt voor:\n- Lidmaatschapsbijdragen\n- Bestemde inkomsten\n- Eenvoudige controle\n\nVoordelen van subadressen:\n- Robuuste toewijzing van inkomende betalingen\n- Eén rekening, vele identiteiten\n- Geen memoveld vereist\n- Minder gebruikersfouten\n\nWat subadressen niet zijn:\n- Geen zelfstandige rekening\n- Geen afzonderlijk saldo\n- Geen afzonderlijke trustlijnen\n- Geen afzonderlijke ondertekenaars/machtigingen\n\nDoorgaans ongeschikte gebruikssituaties:\n- Loonbetalingen/salarisrekeningen (vereisen een afzonderlijke G-rekening)\n- Trust/bewaring voor derden (geen juridische scheiding van activa)\n- Op rollen gebaseerde beveiliging (geen afzonderlijke ondertekenaars/drempels)\n- Scheiding van budgetten of limieten (geen afzonderlijke saldi/activalimieten)\n- Accounts gescheiden voor compliance (KYC/rapportage kan niet duidelijk worden gescheiden)\n\nVergelijking (Kurz):\nBetalingen toewijzen: Ja\nActiva scheiden: Nee\nToegang delegeren: Nee\nJuridisch gescheiden rekening: Nee\nInterne boekhouding: Ja\n\nOpmerking:\nSubadressen leiden betalingen door — ze vervangen geen rekeningen.\nAls controle, eigendom of scheiding vereist is -> aparte G-rekening."
+    "desc": "Bedrijf - Voorbeeld\n\nOpzet:\n- Eén G-rekening voor het bedrijf\n- Eén M-adres per klant/gebruikssituatie (ID)\n\nProces:\n- De klant betaalt naar zijn M-adres\n- Alle gelden gaan naar de G-rekening van het bedrijf\n- De boekhouding leest de ID -> unieke toewijzing\n\nGeschikt voor:\n- Webwinkels, betalingsproviders, beurzen\n- Interne referenties zonder memo-risico’s\n\nClub - Voorbeeld\n\nOpzet:\n- Eén G-account voor de club\n- M-adressen voor leden, afdelingen en doeleinden\n\nProces:\n- Contributies/donaties worden naar het juiste M-adres gestuurd\n- Toewijzing via ID, geen memo-fouten\n\nGeschikt voor:\n- Lidmaatschapsbijdragen\n- Bestemde inkomsten\n- Eenvoudige controle\n\nWaarin subadressen uitblinken:\n- Robuuste toewijzing van inkomende betalingen\n- Eén rekening, vele identiteiten\n- Geen memo vereist\n- Minder gebruikersfouten\n\nWat subadressen niet zijn:\n- Geen zelfstandige rekening\n- Geen apart saldo\n- Geen aparte trustlines\n- Geen aparte signers/machtigingen\n\nGebruikssituaties waarvoor dit doorgaans niet geschikt is:\n- Loonbetalingen/salarisrekeningen (vereisen een aparte G-rekening)\n- Trust/bewaring voor derden (geen wettelijke asset-scheiding)\n- Op rollen gebaseerde beveiliging (geen afzonderlijke signers/thresholds)\n- Scheiding van budgetten of limieten (geen afzonderlijke saldi/asset-limieten)\n- Accounts gescheiden omwille van compliance (KYC/rapportage kan niet duidelijk worden gescheiden)\n\nVergelijking (Kurz):\nBetalingen toewijzen: Ja\nassets scheiden: Nee\nToegang delegeren: Nee\nJuridisch gescheiden rekening: Nee\nInterne boekhouding: Ja\n\nOpmerking:\nSubadressen leiden betalingen door – ze vervangen geen rekeningen.\nAls controle, eigendom of scheiding vereist is -> aparte G-rekening."
   },
   "multisig": {
-    "title": "Multihandtekening",
+    "title": "Multisig",
     "original": "Multi‑Sig",
     "short": "Belangrijke acties vereisen meer dan alleen een handtekening.",
     "desc": "Multi-Sig staat voor meerdere handtekeningen. Een belangrijke actie vereist meer dan één sleutel. Voorbeeld: Jij en een tweede sleutel moeten beide instemmen voordat iets wordt verzonden. Dit maakt diefstal moeilijker.",
     "help": {
-      "title": "Algemene uitleg van een multisignature (Multi-Signature) bedrijfsrekening",
-      "intro": "Een bedrijf kan gebruikmaken van een gedeelde blockchain-account waarin meerdere bevoegde personen betrokken zijn. Typisch zijn er ten minste drie ondertekenaars (Signer) opgenomen, bijvoorbeeld het management, de financieel directeur en compliance/backup. Het doel is dat individuele personen zelfstandig betalingen kunnen uitvoeren zonder dat één persoon alleen de account kan controleren of overnemen.",
-      "problem": "Als een ondertekenaar (Signer) voldoende gewicht heeft om betalingen uit te voeren en tegelijkertijd voldoende gewicht heeft voor wijzigingen in het account, kan die persoon andere ondertekenaars (Signer) verwijderen of de drempel/weging aanpassen (Thresholds) en zo de controle over het account overnemen. Omgekeerd zou de oorspronkelijke eigenaar ook niet gemakkelijk andere ondertekenaars (Signer) moeten kunnen uitsluiten zonder controles en balansen. Een multi-handtekeningstructuur zorgt ervoor dat belangrijke beslissingen altijd collectief door meerdere mensen worden genomen.",
-      "setupTitle": "Voorbeeld van een veilige multi-handtekeningstructuur met drie ondertekenaars.",
-      "setupWeights": "In een voorbeeld met drie gelijke rollen, ontvangen allen dezelfde ondertekeningssterkte:\n- Ondertekenaar (Signer) A (Management): Gewicht 2\n- Ondertekenaar (Signer) B (Finanzen): Gewicht 2\n- Ondertekenaar (Signer) C (Compliance/Backup): Gewicht 2",
-      "setupThresholds": "Geschikte drempels/gewichten zijn als volgt ingesteld:\n- Laag (low_threshold): 1\n- Medium (med_threshold): 2 (for payments and other medium actions)\n- Hoog (high_threshold): 4 (voor structurele wijzigingen zoals het toevoegen/verwijderen van ondertekenaars (Signer) of het wijzigen van de drempel/gewicht (Thresholds))\n\nDit zorgt ervoor dat elke bevoegde persoon betalingen kan uitvoeren, maar dat geen enkele persoon alleen de accountstructuur kan wijzigen.",
-      "behavior": "Met deze configuratie kunnen betalingen door elk van de drie bevoegde personen alleen worden uitgevoerd, omdat het gewicht van elk individu aan de middelhoge drempel voldoet. Voor structurele wijzigingen, zoals het verwijderen van een ondertekenaar, het aanpassen van de drempels/gewichten of het samenvoegen of sluiten van de rekening, is de hoge drempel vereist. Deze waarde kan alleen worden bereikt wanneer ten minste twee van de drie ondertekenaars samen ondertekenen. Deze opstelling houdt de rekening flexibel voor dagelijks gebruik en biedt tegelijkertijd sterke bescherming tegen misbruik.",
-      "removal": "Als een persoon het bedrijf verlaat of niet langer betrouwbaar is, kunnen twee van de resterende ondertekenaars (Signer) samen de ondertekeningsrechten van die persoon intrekken. Geen enkele individuele ondertekenaar (Signer) – noch een medewerker, noch de directie – kan anderen op eigen houtje van het account uitsluiten. Het intrekken van rechten gebeurt dus altijd gecontroleerd en traceerbaar, met minstens twee verantwoordelijke personen.",
+      "title": "Algemene verklaring met betrekking tot een Multisig-zakelijke rekening",
+      "intro": "Een bedrijf kan gebruikmaken van een gedeelde blockchain-rekening waarbij meerdere bevoegde personen betrokken zijn. Meestal zijn er ten minste drie Signer bij betrokken, zoals het management, de financieel directeur en de vertegenwoordiger voor compliance/back-up. Het doel is om individuele personen in staat te stellen zelfstandig betalingen uit te voeren, zonder dat één persoon in zijn eentje de rekening kan beheren of overnemen.",
+      "problem": "Als een Signer voldoende gewicht heeft om betalingen uit te voeren en tevens voldoende gewicht heeft om wijzigingen aan de rekening aan te brengen, zou die persoon andere Signers kunnen verwijderen of de Threshold/weging (Thresholds) kunnen aanpassen, waardoor hij de controle over de rekening zou overnemen. Omgekeerd zou de oorspronkelijke eigenaar niet zomaar andere Signer mogen uitsluiten zonder dit te controleren. Een multi-sig-structuur zorgt ervoor dat belangrijke beslissingen altijd gezamenlijk door meerdere personen worden genomen.",
+      "setupTitle": "Voorbeeld van een beveiligde multi-signature-structuur met drie signers",
+      "setupWeights": "In een voorbeeld met drie rollen van gelijke status krijgen ze allemaal dezelfde ondertekeningsbevoegdheid toegewezen:\n- Signer A (Management): Gewicht 2\n- Signer B (Financiën): Gewicht 2\n- Signer C (Compliance/Back-up): Gewicht 2",
+      "setupThresholds": "Stel hiervoor de juiste Thresholds/gewichten in:\n- Laag (low_threshold): 1\n- Gemiddeld (med_threshold): 2 (voor betalingen en andere acties van gemiddeld niveau)\n- Hoog (high_threshold): 4 (voor structurele wijzigingen, zoals het toevoegen of verwijderen van Signer of het wijzigen van de Threshold/weging (Thresholds))\nHierdoor kan elke bevoegde persoon betalingen uitvoeren, maar kan geen enkele persoon op eigen houtje de accountstructuur wijzigen.",
+      "behavior": "Met deze configuratie kunnen betalingen worden uitgevoerd door elk van de drie bevoegde personen afzonderlijk, omdat het individuele gewicht in elk geval voldoet aan het gemiddelde Threshold/weging. Voor structurele wijzigingen, zoals het verwijderen van een Signers, het aanpassen van de Thresholds/wegingen, of het samenvoegen of sluiten van de rekening, geldt echter de hoge Threshold/weging (high_threshold). Deze waarde kan alleen worden bereikt als ten minste twee van de drie Signer gezamenlijk ondertekenen. Dit zorgt ervoor dat de rekening flexibel blijft voor dagelijks gebruik en tegelijkertijd goed beschermd is tegen misbruik.",
+      "removal": "Als iemand het bedrijf verlaat of niet langer als betrouwbaar wordt beschouwd, kunnen twee willekeurige van de overgebleven Signer gezamenlijk de ondertekeningsrechten van die persoon intrekken. Geen enkele Signer – of het nu een medewerker of een lid van het management is – kan zelfstandig anderen uit het account verwijderen. Het intrekken van rechten gebeurt daarom altijd op een gecontroleerde en traceerbare manier door ten minste twee bevoegde personen.",
       "summary": "Dit type multisig-structuur stelt individuele partijen in staat om efficiënt betalingen te verwerken terwijl de controle over de rekening behouden blijft onder meerdere deelnemers. Het vermindert het risico op accountovernames, beschermt tegen unilaterale beslissingen, en is bijzonder geschikt voor zakelijke rekeningen waar zowel veiligheid als operationele flexibiliteit belangrijk zijn.",
       "closeLabel": "Dichtbij",
       "linkLabel": "Wat betekent Multi-Signature?",
@@ -96,10 +96,10 @@
     }
   },
   "multisigCorporate": {
-    "title": "Multisignatuur - Voorbeeld",
+    "title": "Multisig - Voorbeeld",
     "original": "Multi-Signature - Example",
-    "short": "Voorbeeld van een multi-handtekeningstructuur voor bedrijfsrekeningen met rollen, gewichten en drempels.",
-    "desc": "Voorbeeld: Een bedrijf stelt een Stellar-account in met drie ondertekenaars: CEO (gewicht 2), CFO (gewicht 2) en een bestuurslid (gewicht 1). De drempels worden zo geconfigureerd dat bewerkingen met lage beveiliging gewicht 1 vereisen, gemiddelde bewerkingen (bijv. betalingen) gewicht 3 en hoge bewerkingen (bijv. wijzigen van ondertekenaars) gewicht 4. Dit betekent dat de CEO het account alleen kan bekijken, maar moet samenwerken met de CFO of beide andere ondertekenaars voor betalingen en configuratiewijzigingen."
+    "short": "Voorbeeld van een multi-signature-structuur voor bedrijfsrekeningen met rollen, wegingsfactoren en thresholds.",
+    "desc": "Voorbeeld: Een bedrijf opent een Stellar-account met drie Signers: de CEO (gewicht 2), de CFO (gewicht 2) en een bestuurslid (gewicht 1). De Thresholds zijn zo ingesteld dat transacties met een laag beveiligingsniveau een gewicht van 1 vereisen, transacties met een gemiddeld beveiligingsniveau (bijv. betalingen) een gewicht van 3 vereisen en transacties met een hoog beveiligingsniveau (bijv. het wijzigen van de Signer) een gewicht van 4 vereisen. Op deze manier kan de CEO de rekening alleen inzien, maar moet hij samenwerken met de CFO of beide andere Signers voor betalingen en configuratiewijzigingen."
   },
   "trustline": {
     "title": "Trustline",
@@ -146,8 +146,8 @@
   "transaction": {
     "title": "Transactie",
     "original": "Transaction",
-    "short": "Actie op de blockchain, bijvoorbeeld betaling of vertrouwenlijn.",
-    "desc": "Een transactie is een actie op de blockchain, zoals het verzenden van geld of het opzetten van een vertrouwenslijn. Zodra deze is bevestigd, wordt een transactie permanent vastgelegd."
+    "short": "Actie op de blockchain, bijvoorbeeld een betaling of trustline.",
+    "desc": "Een transactie is een handeling op de blockchain. Bijvoorbeeld het overmaken van geld of het aanmaken van een Trustline. Zodra een transactie is bevestigd, wordt deze permanent opgeslagen."
   },
   "fee": {
     "title": "Kosten",
@@ -405,34 +405,34 @@
     "desc": "Soroban is het smart contract systeem van Stellar. Een smart contract is programmacode op de blockchain. De code kan onafhankelijk regels verifiëren en acties activeren zonder de noodzaak van een tussenkomst van een bank."
   },
   "multiSignature": {
-    "title": "Multisignatuur",
+    "title": "Multi-Signature",
     "original": "Multi-Signature",
-    "short": "Meerdere handtekeningen vereist; gewichten + drempel bepalen de vrijgave.",
-    "desc": "In een multi-handtekening setup moeten meerdere sleutels tekenen voordat een actie geldig wordt. Elke ondertekenaar heeft een gewicht, en de som moet aan de vereiste drempelwaarde voldoen. Dit verhoogt de beveiliging omdat één gestolen sleutel niet voldoende is."
+    "short": "Er zijn meerdere handtekeningen vereist; de wegingsfactoren + threshold bepalen of de release wordt vrijgegeven.",
+    "desc": "Bij Multisig moeten meerdere sleutels ondertekenen voordat een actie geldig wordt. Elke Signer heeft een gewicht, en de som daarvan moet de vereiste Threshold bereiken. Dit verhoogt de veiligheid, omdat één gestolen sleutel niet voldoende is."
   },
   "signer": {
-    "title": "Ondertekenaar",
+    "title": "Signer",
     "original": "Signer",
-    "short": "Openbare sleutel met gewicht, onderdeel van de accountconfiguratie.",
-    "desc": "Een ondertekenaar is een openbare sleutel die is gekoppeld aan een account met een gewicht. Zijn handtekening telt mee voor de vereiste drempelwaarde. Meerdere ondertekenaars kunnen gezamenlijk een transactie goedkeuren.\n\nSoorten ondertekenaars:\n- ed25519 (normale sleutel)\n- hashX (hash-sjabloon)\n- preAuthTx (vooraf geautoriseerde transactie)\n\nSKM ondersteunt alleen ed25519. Zie https://lab.stellar.org voor aanvullende opties."
+    "short": "Public Key met gewicht, onderdeel van de accountconfiguratie.",
+    "desc": "Een Signer is een Public Key die aan een account is gekoppeld en waaraan een gewicht is toegekend. De handtekening ervan telt mee voor de vereiste Threshold. Meerdere Signers kunnen gezamenlijk een transactie autoriseren.\n\nSigner-typen:\n- ed25519 (normale sleutel)\n- hashX (hash-sjabloon)\n- preAuthTx (vooraf geautoriseerde transactie)\n\nSKM ondersteunt alleen ed25519. Zie https://lab.stellar.org voor aanvullende opties."
   },
   "thresholds": {
-    "title": "Drempels",
+    "title": "Thresholds",
     "original": "Thresholds",
     "short": "Limieten (low/med/high) die het vereiste totale gewicht bepalen.",
-    "desc": "Drempels bepalen hoeveel gewogen handtekeningen nodig zijn voor acties: laag voor eenvoudige handelingen, middel voor betalingen en hoog voor kritische veranderingen. De som van de ondertekenaarsgewichten moet voldoen aan de respectieve drempelwaarde."
+    "desc": "Thresholds bepaalt hoeveel gewogen handtekeningen er nodig zijn voor acties: \"low\" voor eenvoudige bewerkingen, \"med\" voor betalingen en \"high\" voor cruciale wijzigingen. De som van de Signer-gewichten moet gelijk zijn aan de bijbehorende Threshold."
   },
   "masterWeight": {
     "title": "Meestergewicht",
     "original": "master_weight",
     "short": "Gewicht van de hoofdsleutel; bepaalt hoeveel belang de hoofdsleutel heeft.",
-    "desc": "Het meestergewicht is het gewicht van de hoofdssleutel van een account. Een hoog meestergewicht stelt de hoofdssleutel in staat om veel acties zelfstandig te ondertekenen; een lage waarde vereist aanvullende ondertekenaars."
+    "desc": "Het mastergewicht is het gewicht van de hoofdsleutel van een account. Bij een hoog mastergewicht kan de hoofdsleutel zelfstandig veel acties ondertekenen; bij een lage waarde is een extra signers vereist."
   },
   "accountConfig": {
     "title": "Accountconfiguratie",
     "original": "Account Configuration",
-    "short": "De interactie tussen ondertekenaars en drempels bepaalt de veiligheid van de rekening.",
-    "desc": "De accountconfiguratie bepaalt welke ondertekenaars bestaan met welke gewichten en welke drempels van toepassing zijn. Wijzigingen aan ondertekenaars of drempels zijn van cruciaal belang voor de beveiliging, omdat zij bepalen hoeveel handtekeningen vereist zijn."
+    "short": "De wisselwerking tussen signers en thresholds bepaalt de veiligheid van de account.",
+    "desc": "De accountconfiguratie bepaalt welke signers er zijn, met welke wegingsfactoren, en welke thresholds van toepassing zijn. Wijzigingen in signers of thresholds zijn van cruciaal belang voor de beveiliging, omdat ze bepalen hoeveel handtekeningen er vereist zijn."
   },
   "distributedNetwork": {
     "title": "Gedistribueerd netwerk",
@@ -870,13 +870,13 @@
     "title": "Volgnummer",
     "original": "Sequence Number",
     "short": "Een oplopend nummer dat elke transactie van een account uniek identificeert en dubbele uitgaven voorkomt.",
-    "desc": "Elk Stellar-account heeft een volgnummer dat bij elke transactie met 1 wordt verhoogd. Een transactie wordt alleen geaccepteerd als het volgnummer exact overeenkomt met de huidige accountsequentie +1. Dit voorkomt dat dezelfde transactie twee keer wordt uitgevoerd. Als je meerdere transacties tegelijk verstuurt, moeten ze in de juiste volgorde worden verwerkt."
+    "desc": "Elke Stellar-rekening heeft een Sequence Number, die bij elke transactie met 1 wordt verhoogd. Een transactie wordt alleen geaccepteerd als de Sequence Number ervan precies gelijk is aan de huidige rekeningvolgorde +1. Dit voorkomt dat dezelfde transactie twee keer wordt uitgevoerd. Als je meerdere transacties tegelijk verstuurt, moeten deze in de juiste volgorde worden verwerkt."
   },
   "baseReserve": {
     "title": "Basisreserve",
     "original": "Base Reserve",
     "short": "Het minimumbedrag aan XLM dat op een Stellar-account moet blijven en niet kan worden uitgegeven.",
-    "desc": "Op Stellar moet elk account een minimumsaldo in XLM aanhouden. Dit wordt berekend uit de basisreserve (momenteel 0,5 XLM) vermenigvuldigd met het aantal 'vermeldingen' op het account (bijv. trustlines, ondertekenaars, data-aanbiedingen). Een leeg account vereist minimaal 1 XLM (2 × 0,5 XLM). Elke trustline verhoogt het minimumsaldo met nog eens 0,5 XLM. Dit saldo is vergrendeld zolang de vermeldingen actief zijn."
+    "desc": "Op Stellar moet elke rekening een minimumsaldo in XLM hebben. Dit wordt berekend op basis van de basisreserve (momenteel 0,5 XLM) vermenigvuldigd met het aantal 'vermeldingen' op de rekening (bijv. trustlines, signers, data-aanbiedingen). Een leeg account vereist minimaal 1 XLM (2 × 0,5 XLM). Elke trustline verhoogt het minimumsaldo met nog eens 0,5 XLM. Dit saldo wordt geblokkeerd zolang de vermeldingen actief zijn."
   },
   "coin": {
     "title": "Coin",
@@ -990,7 +990,7 @@
   "trustlineLimit": {
     "title": "Trustline-limiet",
     "original": "Trustline Limit",
-    "short": "Maximaal saldo van een bepaald activum op een trustlijn.",
+    "short": "Maximaal saldo van een specifieke asset op een trustline.",
     "desc": "De trustline-limiet bepaalt hoeveel eenheden van een bepaald activum je account maximaal mag bevatten. Het is geen kooporder en er worden geen tokens gereserveerd. Een lage limiet kan onbedoelde te hoge betalingen voorkomen, maar een te lage limiet kan een beoogde ontvangst of ruil blokkeren."
   },
   "authorizationFlags": {
@@ -1003,7 +1003,7 @@
     "title": "Hoofdsleutel van de uitgever",
     "original": "Issuer Master Key",
     "short": "Hoofdsleutel van de rekening van de uitgever.",
-    "desc": "De hoofdcode van de uitgever is de hoofdcode van het account dat een asset uitgeeft. Als het gewicht ervan op 0 is ingesteld, kan de hoofdcode alleen geen nieuwe acties meer ondertekenen. Dit kan een positief teken zijn, omdat het voor de uitgever hierdoor moeilijker wordt om regels stilletjes te wijzigen. De volledige accountconfiguratie, inclusief andere ondertekenaars en vlaggen, blijft echter van belang."
+    "desc": "De hoofdsleutel van de uitgever is de hoofdsleutel van het account dat een asset uitgeeft. Als het gewicht ervan op 0 is ingesteld, kan de hoofdsleutel alleen geen nieuwe acties meer ondertekenen. Dit kan een goed teken zijn, omdat het voor de uitgever hierdoor moeilijker wordt om stilletjes regels te wijzigen. De volledige accountconfiguratie, inclusief andere signers en vlaggen, blijft echter van belang."
   },
   "assetCode": {
     "title": "Activacode",

@@ -1,6 +1,6 @@
 {
   "title": "Cashback y Tokens de Fidelidad",
-  "introText": "Pon a prueba tu conocimiento sobre tokens de fidelidad, líneas de confianza y verificación de emisores en Stellar.",
+  "introText": "Pon a prueba tus conocimientos sobre Loyalty Token, Trustlines y la verificación del emisor en Stellar.",
   "q1": {
     "question": "¿Qué es un token de fidelidad?",
     "hint": "Piensa en activos personalizados en la blockchain.",
@@ -14,12 +14,12 @@
   "q2": {
     "question": "¿Qué necesita un cliente antes de recibir tokens de fidelidad?",
     "hint": "Stellar requiere confianza explícita antes de que se pueda recibir un token.",
-    "a1": "Una línea de confianza hacia el emisor del token.",
-    "a1fb": "Correcto: Sin una línea de confianza al emisor, no se puede recibir ningún token.",
+    "a1": "Un Trustline al emisor del Tokens.",
+    "a1fb": "Correcto: Sin Trustline por parte del emisor, no se puede recibir Token.",
     "a2": "Una cuenta verificada.",
     "a2fb": "Incorrecto: Las cuentas de Stellar no requieren verificación externa para activos personalizados.",
     "a3": "Al menos 10 XLM en la billetera.",
-    "a3fb": "Incorrecto: No hay requisito mínimo de XLM para las líneas de confianza."
+    "a3fb": "Incorrecto: No hay una cantidad mínima de XLM requerida para Trustlines."
   },
   "q3": {
     "question": "Marco llama a su token \"BERRY\". Otra empresa hace lo mismo. ¿Son iguales los tokens?",
@@ -46,8 +46,8 @@
     "hint": "¿Quién es el creador real de este token?",
     "a1": "Comparar la dirección del emisor con la dirección oficial de la empresa.",
     "a1fb": "Correcto: Solo comparar la dirección del emisor protege contra tokens falsos sin valor.",
-    "a2": "Añadir la línea de confianza de inmediato.",
-    "a2fb": "Incorrecto: Añadir una línea de confianza a un emisor no verificado puede resultar en tokens sin valor.",
+    "a2": "Añade el Trustline inmediatamente.",
+    "a2fb": "Incorrecto: Un Trustline asociado a un emisor no verificado puede dar lugar a un Tokens sin valor.",
     "a3": "Buscar el nombre del token en Internet.",
     "a3fb": "Incorrecto: El nombre por sí solo no dice nada – cualquiera puede llamar a un token \"BERRY\"."
   },

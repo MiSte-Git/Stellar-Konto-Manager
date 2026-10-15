@@ -7,7 +7,7 @@
     "destination": "Billetera objetivo",
     "issuer": "Emisor",
     "label": "Etiqueta",
-    "memo": "Memorándum",
+    "memo": "Memo",
     "payments": "Pagos",
     "date": "Fecha",
     "token": "Ficha"
@@ -21,7 +21,7 @@
     "tokenPlaceholder": "Filtrar por token (CODE:ISSUER)"
   },
   "item": {
-    "memo": "Nota: \"{{memo}}\" (Pagos: {{occurrences}})",
+    "memo": "Memo: «{{memo}}» (Pagos: {{occurrences}})",
     "token": "Token: {{token}} (Pagos: {{occurrences}})",
     "tokenShort": "Token: {{token}}"
   },
@@ -47,7 +47,7 @@
     "qsiListSet": "Nota: Puedes encontrar la lista de GF en Ajustes → Billeteras de confianza (QSI).",
     "pageTime": "Cargar una página tarda aproximadamente 0,2 segundos → 100 páginas ≈ 20 segundos → 1000 páginas ≈ 200 segundos (≈ 3 minutos y 20 segundos)."
   },
-  "walletCapInfo": "Nota: Una billetera puede albergar un máximo de 1000 líneas de confianza.",
+  "walletCapInfo": "Nota: Un wallet puede contener un máximo de 1000 trustlines.",
   "action": {
     "load": "Tienda"
   },

@@ -1,6 +1,6 @@
 {
   "page": {
-    "title": "Filtrirajte XLM po Memu.",
+    "title": "Filtriraj XLM po Memo",
     "noPublicKey": "Nije učitan javan ključ. Molimo vas da prvo unesete javan ključ."
   },
   "action": {
@@ -14,7 +14,7 @@
   "debug": {
     "incoming": "Dolazno – za: {{toMe}}, stvoreno→meni: {{createToMe}}, izvorno→meni: {{nativeInToMe}}",
     "incomingOverview": "Unosi: {{total}} • Uključeni novčanici: {{unique}}",
-    "memo": "Memorije u prozoru: {{any}} • točne memorije: {{exact}}",
+    "memo": "Memos u prozoru: {{any}} • točno memos: {{exact}}",
     "types": "Vrste – plaćanje: {{pay}}, putanja: {{path}}, kreirati: {{create}}, ostalo: {{other}}"
   },
   "export": {
@@ -27,8 +27,8 @@
     "failed": "Izvoz CSV-a nije uspio: {{detail}}"
   },
   "memo": {
-    "label": "Pretraži tekst dopisnice (substring, case-sensitive)",
-    "placeholder": "Memorandum (substring, case-sensitive)"
+    "label": "Memo tekst za pretraživanje (podnizor, s osjetljivošću na velika i mala slova)",
+    "placeholder": "Memo (podnizak, osjetljivo na velika i mala slova)"
   },
   "overviewLine": "Potvrde o plaćanju: {{total}} • uključeni novčanici: {{unique}}",
   "result": {
@@ -37,10 +37,10 @@
   },
   "summary": {
     "amount": "Ukupno: {{amount}} XLM",
-    "correctCount": "Unosi s točnim memorandumom: {{n}}",
+    "correctCount": "Unosi s ispravnim memo: {{n}}",
     "count": "Količina: {{n}}",
     "label": "Poređenje (all inputs)",
-    "otherCount": "Unosi s netočnim/nedostajućim zapisom: {{n}}",
+    "otherCount": "Unosi s netočnim/nepostojećim memo: {{n}}",
     "unique": "Jedinstveni novčanici (svi): {{n}}",
     "uniqueWallets": "Jedinstveni novčanici: {{n}}"
   },
@@ -48,7 +48,7 @@
     "setToNow": "Postavi trenutno vrijeme.",
     "setToNowHint": "Postavite polje za vrijeme na trenutno vrijeme."
   },
-  "title": "XLM stanje prema bilješci",
+  "title": "Saldo XLM-a prema memo",
   "topLargest": {
     "button": "Top 20 ulaza (Memo)",
     "clipboard": "Kopiraj u međuspremnik",
@@ -67,20 +67,20 @@
     "window": "UTC vremenski prozor korišten: {{from}} → {{to}} (kraj isključivo)"
   },
   "wrongMemos": {
-    "button": "Prikaži novčanike s netočnom/praznom porukom",
+    "button": "Prikaži wallets s netočnim/praznim memo",
     "clipboard": "Kopiraj u međuspremnik",
     "columns": {
       "amount": "Iznos",
       "created_at": "Kreirano dana",
       "from": "Od",
-      "memo": "Memorandum",
+      "memo": "Memo",
       "tx_hash": "Hash transakcije"
     },
     "csv": "Preuzmi CSV",
-    "failed": "Pogreška pri učitavanju uplata s netočnom/praznom zabilješkom.",
-    "hint": "Filtrira dolazne uplate unutar razdoblja i prikazuje pošiljatelje s netočnim/praznim opisom.",
-    "scanning": "… skenira pogrešne/prazne memoe",
+    "failed": "Greška pri učitavanju plaćanja s netočnim/praznim memo.",
+    "hint": "Filtrira dolazna plaćanja unutar razdoblja i prikazuje pošiljatelje s netočnim/praznim memo.",
+    "scanning": "… skeniranje pogrešno/prazno memos",
     "summary": "Broj: {{count}} • Ukupno: {{sum}} XLM • Jedinstveni novčanici: {{unique}}",
-    "title": "Lažne/prazne bilješke tijekom razdoblja"
+    "title": "Lažni/prazni memos tijekom razdoblja"
   }
 }

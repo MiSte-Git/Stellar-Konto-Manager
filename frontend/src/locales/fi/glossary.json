@@ -31,7 +31,7 @@
     "title": "Lompakko",
     "original": "Wallet",
     "short": "Digitaalinen lompakko, joka hallitsee avaimesi.",
-    "desc": "Lompakko on digitaalinen kukkarosi. Se hallitsee avaimia, joita tarvitset tilisi käyttämiseen ja tapahtumien lähettämiseen. Lompakko voi olla ohjelma, sovellus tai jopa vain paperi, jossa on yksityinen avaimesi."
+    "desc": "Wallet on digitaalinen wallet. Se hallinnoi avaimia, joita tarvitset tilillesi pääsemiseksi ja tapahtumien lähettämiseksi. Wallet voi olla ohjelma, sovellus tai jopa pelkkä paperilappu, johon on kirjoitettu Secret Key."
   },
   "account": {
     "title": "Tili",
@@ -46,16 +46,16 @@
     "desc": "G-osoite on Stellarin tilin pääosoite. Se alkaa kirjaimella G. Annat sen toisille, jotta he voivat lähettää sinulle jotain."
   },
   "publicKey": {
-    "title": "Julkinen avain",
+    "title": "Public Key",
     "original": "Public Key",
     "short": "Osoite, jonka voit jakaa; Stellarissa yleensä G-osoite.",
-    "desc": "Julkinen avain on osoite, jonka saat jakaa. Stellarissa tämä on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
+    "desc": "Public Key on osoite, jonka voit jakaa. Stellar-verkossa tämä on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
   },
   "privateKey": {
-    "title": "Salainen avain",
+    "title": "Secret Key",
     "original": "Secret Key",
     "short": "Tilin salasana – älä koskaan jaa sitä.",
-    "desc": "Salainen avain on tilisi salasana. Kenellä tahansa on tämä avain, voi siirtää rahasi. Älä koskaan jaa sitä."
+    "desc": "Secret Key on tilisi salasana. Kuka tahansa, jolla on tämä avain, voi siirtää rahojasi. Älä koskaan paljasta sitä kenellekään."
   },
   "addressFederation": {
     "title": "Liiton osoite",
@@ -67,28 +67,28 @@
     "title": "Aliosoite",
     "original": "Muxed Account",
     "short": "M-osoite, jossa on lisätunniste – käyttää samaa perustiliä.",
-    "desc": "Aliosoite (M-osoite, virallisesti ”Muxed Account”) viittaa olemassa olevaan Stellar-tiliin, mutta sillä on myös oma numeronsa (tunnus).\n\nAliosoite = G-tili + tunnus (M-osoite)\nSe toimii tunnisteena, mutta ei erota tilejä toisistaan.\nSaldot, trustlines, allekirjoittajat ja liput säilytetään aina G-tilillä.\n\nStellar Development Foundation\n\nTämän ansiosta esimerkiksi useita henkilöitä tai osastoja voidaan erottaa toisistaan saman G-osoitteen alla. Teknisesti varat kuuluvat edelleen päätilille."
+    "desc": "Aliosoite (M-osoite, virallisesti ”Muxed Account”) viittaa olemassa olevaan Stellar-tiliin, mutta sillä on myös oma numeronsa (tunnus).\n\nAliosoite = G-tili + tunnus (M-osoite)\nSe toimii tunnisteena, mutta ei erota tilejä toisistaan.\nSaldot, trustlines, signers ja liput säilytetään aina G-tilillä.\n\nStellar Development Foundation\n\nTämän ansiosta esimerkiksi useita henkilöitä tai osastoja voidaan erottaa toisistaan saman G-osoitteen alla. Teknisesti varat kuuluvat edelleen päätilille."
   },
   "muxedAccountsUseCases": {
     "title": "Aliosoitteet – käyttöesimerkkejä",
     "original": "Muxed accounts use cases",
     "short": "Esimerkit, edut ja rajoitukset M-osoitteista kartoitusapuna.",
-    "desc": "Yritys – Esimerkki\n\nAsetukset:\n- Yksi yrityksen G-tili\n- Yksi M-osoite asiakasta/käyttötapausta (ID) kohti\n\nProsessi:\n- Asiakas maksaa omalle M-osoitteelleen\n- Kaikki varat menevät yrityksen G-tilille\n- Kirjanpito lukee tunnuksen (ID) -> yksilöllinen kohdistus\n\nSopii:\n- Verkkokaupoille, maksupalveluntarjoajille, pörsseille\n- Sisäisiin viittauksiin ilman viestikentän virheriskejä\n\nKlubi – Esimerkki\n\nJärjestely:\n- Yksi klubin G-tili\n- M-osoitteet jäsenille, osastoille ja käyttötarkoituksille\n\nProsessi:\n- Jäsenmaksut/lahjoitukset lähetetään oikeaan M-osoitteeseen\n- Kohdentaminen tunnuksen perusteella, ei viestivirheitä\n\nSopii:\n- Jäsenmaksut\n- Kohdennetut tulot\n- Yksinkertainen tilintarkastus\n\nMihin aliosoitteet sopivat hyvin:\n- Vankka saapuvien maksujen kohdentaminen\n- Yksi tili, useita identiteettejä\n- Ei muistilappuvaatimusta\n- Vähemmän käyttäjävirheitä\n\nMitä aliosoitteet eivät ole:\n- Ei erillistä tiliä\n- Ei erillistä saldoa\n- Ei erillisiä luottolimiittejä\n- Ei erillisiä allekirjoittajia/käyttöoikeuksia\n\nTyypillisesti sopimattomat käyttötapaukset:\n- Palkkamaksut/palkkatilit (vaativat erillisen G-tilin)\n- Kolmansien osapuolten varainhoito/säilytys (ei oikeudellista varojen erottelua)\n- Roolipohjainen tietoturva (ei erillisiä allekirjoittajia/kynnysarvoja)\n- Budjetin tai rajoitusten erottelu (ei erillisiä saldoja/vararajoja)\n- Säännösten mukaisesti erotetut tilit (KYC/raportointia ei voida selvästi erottaa)\n\nVertailu (lyhyesti):\nMaksujen osoittaminen: Kyllä\nVarojen erottelu: Ei\nKäyttöoikeuksien delegointi: Ei\nOikeudellisesti erillinen tili: Ei\nSisäinen kirjanpito: Kyllä\n\nHuomautus:\nAliosoitteet ohjaavat maksuja – ne eivät korvaa tilejä.\nJos hallintaa, omistajuutta tai erottelua vaaditaan -> erillinen G-tili."
+    "desc": "Yritys – Esimerkki\n\nJärjestely:\n- Yksi yrityksen G-tili\n- Yksi M-osoite asiakasta/käyttötapausta (tunnus) kohti\n\nProsessi:\n- Asiakas maksaa omaan M-osoitteeseensa\n- Kaikki varat menevät yrityksen G-tilille\n- Kirjanpito lukee tunnisteen (ID) -> yksilöllinen kohdistus\n\nSopii:\n- Verkkokaupoille, maksupalveluntarjoajille, pörsseille\n- Sisäisiin viittauksiin ilman memo-riskejä\n\nKlubi – Esimerkki\n\nJärjestely:\n- Yksi klubin G-tili\n- M-osoitteet jäsenille, osastoille ja käyttötarkoituksille\n\nProsessi:\n- Jäsenmaksut/lahjoitukset lähetetään oikeaan M-osoitteeseen\n- Kohdentaminen tunnuksen perusteella, ei memo-virheitä\n\nSopii:\n- Jäsenmaksut\n- Kohdennetut tulot\n- Yksinkertainen tilintarkastus\n\nMissä alaosoitteet toimivat hyvin:\n- Vakaa saapuvien maksujen kohdentaminen\n- Yksi tili, useita identiteettejä\n- Ei memo-vaatimusta\n- Vähemmän käyttäjävirheitä\n\nMitä alaosoitteet eivät ole:\n- Ei erillistä tiliä\n- Ei erillistä saldoa\n- Ei erillistä trustlines:ää\n- Ei erillisiä signers:iä/käyttöoikeuksia\n\nTyypillisesti sopimattomat käyttötapaukset:\n- Palkkamaksut/palkkatilit (vaativat erillisen G-tilin)\n- Kolmansien osapuolten luottamus- tai säilytystilit (ei laillista asset-erottelijaa)\n- Roolipohjainen tietoturva (ei erillisiä signers/thresholds)\n- Budjetin tai rajoitusten erottelu (ei erillisiä saldoja/asset-rajoituksia)\n- Säännösten mukaisesti erotellut tilit (KYC/raportointia ei voida selvästi erottaa)\n\nVertailu (lyhyt):\nMaksujen kohdentaminen: Kyllä\nassets:n erottelu: Ei\nKäyttöoikeuksien delegointi: Ei\nOikeudellisesti erillinen tili: Ei\nSisäinen kirjanpito: Kyllä\n\nHuomautus:\nAliosoitteet ohjaavat maksuja – ne eivät korvaa tilejä.\nJos hallintaa, omistajuutta tai erottelua vaaditaan -> erillinen G-tili."
   },
   "multisig": {
-    "title": "Moniallekirjoitus",
+    "title": "Multisig",
     "original": "Multi‑Sig",
     "short": "Tärkeät toimenpiteet vaativat enemmän kuin pelkän allekirjoituksen.",
     "desc": "Multi-Sig tarkoittaa useita allekirjoituksia. Tärkeä toimenpide vaatii useamman kuin yhden avaimen. Esimerkki: Sinun ja toisen avaimen on molempien suostuttava ennen kuin jotain lähetetään. Tämä tekee varkaudesta vaikeampaa.",
     "help": {
-      "title": "Moniallekirjoitus (Multi-Signature) yritystilin yleinen selitys",
-      "intro": "Yritys voi käyttää jaettua blockchain-tiliä, johon osallistuu useita valtuutettuja henkilöitä. Tyypillisesti tilillä on vähintään kolme allekirjoittajaa (Signer), esimerkiksi johto, talousjohtaja ja säännösten noudattamisesta/varajärjestelmästä vastaava henkilö. Tavoitteena on, että yksittäiset henkilöt voivat suorittaa maksuja itsenäisesti ilman että yksittäinen henkilö voi hallita tai ottaa tiliä haltuunsa yksin.",
-      "problem": "Jos allekirjoittajalla (Signer) on riittävästi painoarvoa maksujen suorittamiseen ja samalla riittävästi painoarvoa tilin muutoksiin, hän voi poistaa muita allekirjoittajia (Signer) tai säätää kynnystä/painotusta (Thresholds) ja siten ottaa tilin haltuunsa. Vastaavasti alkuperäisen omistajan ei tulisi myöskään pystyä helposti sulkemaan muita allekirjoittajia (Signer) pois ilman tarkastuksia ja tasapainotuksia. Moniallekirjoitusrakenne varmistaa, että tärkeät päätökset tehdään aina kollektiivisesti useiden ihmisten toimesta.",
-      "setupTitle": "Esimerkki turvallisesta moni-allekirjoitusrakenteesta, jossa on kolme allekirjoittajaa",
-      "setupWeights": "Esimerkissä, jossa on kolme samanarvoista roolia, kaikki saavat saman allekirjoitusvoimakkuuden:\n- Allekirjoittaja (Signer) A (Management): Paino 2\n- Allekirjoittaja (Signer) B (Finanzen): Paino 2\n- Allekirjoittaja (Signer) C (Compliance/Backup): Paino 2",
-      "setupThresholds": "Sopivat kynnykset/painot asetetaan seuraavasti:\n- Matalat (low_threshold): 1\n- Keskitaso (med_threshold): 2 (for payments and other medium actions)\n- Korkea (high_threshold): 4 (rakenneuudistuksille, kuten allekirjoittajien lisääminen/poistaminen (Signer) tai kynnyksen/painon muuttaminen (Thresholds))\nTämä varmistaa, että jokainen valtuutettu henkilö voi suorittaa maksuja, mutta yksittäinen henkilö ei voi muuttaa tilin rakennetta yksin.",
-      "behavior": "Tässä kokoonpanossa maksut voivat tehdä kuka tahansa kolmesta oikeutetusta henkilöstä yksin, koska kunkin henkilön painoarvo täyttää keskitason kynnyksen/kynnysarvon. Rakenneuudistuksia varten, kuten allekirjoittajan poistaminen, kynnysten/painoarvojen säätäminen tai tilin yhdistäminen tai sulkeminen, vaaditaan korkea kynnys/korkea_kynnysarvo. Tämä arvo voidaan saavuttaa vain, kun vähintään kaksi kolmesta allekirjoittajasta allekirjoittaa yhdessä. Tämä järjestely pitää tilin joustavana päivittäiseen käyttöön, tarjoten samalla vahvan suojan väärinkäytöksiä vastaan.",
-      "removal": "Jos henkilö lähtee yrityksestä tai ei ole enää luotettava, kaksi jäljelle jäävää allekirjoittajaa (Signer) voivat yhdessä poistaa kyseisen henkilön allekirjoitusoikeudet. Kukaan yksittäinen allekirjoittaja (Signer) – ei työntekijä eikä johto – voi itsenäisesti estää muita tilin käytöstä. Oikeuksien poisto tapahtuu siis aina valvotusti ja läpinäkyvästi vähintään kahden vastuuhenkilön toimesta.",
+      "title": "Yleinen selvitys Multisig-yritystilistä",
+      "intro": "Yritys voi käyttää jaettua lohkoketjutiliä, johon kuuluu useita valtuutettuja henkilöitä. Tyypillisesti mukana on vähintään kolme Signer, kuten johto, talousjohtaja sekä sääntöjen noudattamisesta vastaava tai varahenkilö. Tavoitteena on mahdollistaa se, että yksittäiset henkilöt voivat suorittaa maksuja itsenäisesti ilman, että kukaan yksittäinen henkilö pystyy hallitsemaan tiliä tai ottamaan sitä yksin haltuunsa.",
+      "problem": "Jos Signer:llä on riittävä painoarvo maksujen suorittamiseen ja myös riittävä painoarvo tilin muutosten tekemiseen, kyseinen henkilö voisi poistaa muita Signers:ita tai muuttaa Threshold:n/painotusta (Thresholds), ja siten ottaa tilin hallintaansa. Toisaalta alkuperäisen omistajan ei pitäisi pystyä yksinkertaisesti sulkemaan muita Signer-käyttäjiä pois ilman ristiintarkistusta. Monen allekirjoituksen rakenne varmistaa, että tärkeät päätökset tehdään aina yhteisesti useamman henkilön toimesta.",
+      "setupTitle": "Esimerkki turvallisesta multi-signature-rakenteesta, jossa on kolme signers-elementtiä",
+      "setupWeights": "Esimerkissä, jossa on kolme tasavertaista roolia, kaikille annetaan sama allekirjoitusvoimakkuus:\n- Signer A (Johto): Painotus 2\n- Signer B (Talous): Painotus 2\n- Signer C (säännösten noudattaminen/varahenkilö): Painotus 2",
+      "setupThresholds": "Tätä varten määritä sopivat Thresholds/painotukset:\n- Matala (low_threshold): 1\n- Keskitaso (med_threshold): 2 (maksuille ja muille keskitason toimille)\n- Korkea (high_threshold): 4 (rakenteellisiin muutoksiin, kuten Signer:n lisäämiseen tai poistamiseen tai Threshold/painotuksen (Thresholds) muuttamiseen)\nTämä mahdollistaa sen, että jokainen valtuutettu henkilö voi suorittaa maksuja, mutta kukaan ei voi yksin muuttaa tilin rakennetta.",
+      "behavior": "Tällä asetuksella maksut voi suorittaa kuka tahansa kolmesta valtuutetusta henkilöstä yksin, koska kunkin henkilön painotus täyttää kussakin tapauksessa keskiarvon Threshold/painotus. Rakenteellisten muutosten, kuten Signers:n poistamisen, Thresholds/painotusten säätämisen tai tilin yhdistämisen tai sulkemisen, osalta vaaditaan kuitenkin korkea Threshold/painotus (high_threshold). Tämä arvo voidaan saavuttaa vain, jos vähintään kaksi kolmesta Signer:stä allekirjoittaa yhdessä. Tämä varmistaa, että tili pysyy joustavana päivittäisessä käytössä ja on samalla hyvin suojattu väärinkäytöltä.",
+      "removal": "Jos henkilö lähtee yrityksestä tai häntä ei enää pidetä luotettavana, kaksi mitä tahansa jäljellä olevista Signer:stä voi yhdessä peruuttaa kyseisen henkilön allekirjoitusoikeudet. Yksikään yksittäinen Signer – olipa kyseessä sitten työntekijä tai johtoryhmän jäsen – ei voi yksin poistaa muita käyttäjiä tililtä. Käyttöoikeuksien peruuttaminen tapahtuu siten aina hallitusti ja jäljitettävästi vähintään kahden valtuutetun henkilön toimesta.",
       "summary": "Tällainen monisignatuurirakenne mahdollistaa yksittäisten osapuolten tehokkaan maksujen käsittelyn samalla, kun tilin hallinta säilyy useilla osallistujilla. Se vähentää tilikaappausten riskiä, suojaa yksipuolisilta päätöksiltä ja on erityisen sopiva yritystileille, joissa sekä turvallisuus että operatiivinen joustavuus ovat tärkeitä.",
       "closeLabel": "Sulje",
       "linkLabel": "Mitä tarkoittaa Multi-Signature?",
@@ -96,16 +96,16 @@
     }
   },
   "multisigCorporate": {
-    "title": "Moniallekirjoitus - Esimerkki",
+    "title": "Multisig – Esimerkki",
     "original": "Multi-Signature - Example",
-    "short": "Esimerkki yritystilien moniallekirjoitusrakenteesta, jossa on rooleja, painotuksia ja kynnysarvoja.",
-    "desc": "Esimerkki: Yritys perustaa Stellar-tilin kolmella allekirjoittajalla: toimitusjohtaja (paino 2), talousjohtaja (paino 2) ja hallituksen jäsen (paino 1). Kynnysarvot on määritetty niin, että matalan turvallisuuden toiminnot vaativat painon 1, keskitason toiminnot (esim. maksut) painon 3 ja korkean tason toiminnot (esim. allekirjoittajien muuttaminen) painon 4. Tämä tarkoittaa, että toimitusjohtaja voi yksin tarkastella tiliä, mutta hänen on tehtävä yhteistyötä talousjohtajan tai molempien muiden allekirjoittajien kanssa maksujen ja kokoonpanomuutosten osalta."
+    "short": "Esimerkki multi-signature-rakenteesta yritystileille, joissa on roolit, painotukset ja thresholds.",
+    "desc": "Esimerkki: Yritys avaa Stellar-tilin, jossa on kolme Signers: toimitusjohtaja (painoarvo 2), talousjohtaja (painoarvo 2) ja hallituksen jäsen (painoarvo 1). Thresholds on määritetty siten, että matalan turvallisuustason toiminnot vaativat painoarvoa 1, keskitason turvallisuustason toiminnot (esim. maksut) vaativat painoarvon 3 ja korkean turvallisuustason toiminnot (esim. Signer:n muuttaminen) vaativat painoarvon 4. Tällä tavoin toimitusjohtaja voi tarkastella tiliä yksin, mutta hänen on tehtävä yhteistyötä talousjohtajan tai molempien muiden Signers:n kanssa maksujen ja asetusten muutosten yhteydessä."
   },
   "trustline": {
-    "title": "Luottolimiitti",
+    "title": "Trustline",
     "original": "Trustline",
     "short": "Sopimus tokenin hallussapidosta tietyn liikkeeseenlaskijan kanssa.",
-    "desc": "Luottolimiitti on kuin \"Kyllä, hyväksyn tämän tokenin.\" Kun asetat sen, ilmoitat, että tilisi on valmis vastaanottamaan tietyn tokenin tietystä liikkeellelaskijasta. Ilman luottolimiittiä et voi vastaanottaa tätä tokenia.\n\nEsimerkki: Luottolimiitti määritellään muodossa KOODI:LIIKKEEELLELASKEJA. EURT, jolla on liikkeellelaskija GDUKMGUGDZQK6Y…, olisi EURT:GDUKMGUGDZQK6Y…"
+    "desc": "trustline on kuin ”Kyllä, hyväksyn tämän token:n.” Määrittämällä sen ilmoitat, että tilisi on valmis vastaanottamaan tietyn token:n tietyn liikkeeseenlaskijan toimesta. Ilman trustline:ää et voi vastaanottaa tätä token:tä.\n\nEsimerkki: trustline määritetään muodossa CODE:ISSUER. Liikkeeseenlaskijan GDUKMGUGDZQK6Y… EURT-arvopaperin tapauksessa se olisi EURT:GDUKMGUGDZQK6Y…"
   },
   "token": {
     "title": "Merkki",
@@ -138,16 +138,16 @@
     "desc": "Julkinen käytäntöverkosto. Tokeneilla ei ole todellista arvoa. Ihanteellinen oppimiseen ja kokeilemiseen ilman riskiä."
   },
   "memo": {
-    "title": "Muistio",
+    "title": "Memo",
     "original": "Memo",
     "short": "Lyhyt huomautus tapahtumassa.",
-    "desc": "Muistio on pieni huomautus, jonka voi lähettää tapahtuman mukana. Usein pörssi vaatii tietyn muistion tietääkseen, kenelle rahat kuuluvat."
+    "desc": "memo on lyhyt viesti, jonka voi lähettää transaktion mukana. Usein pörssi vaatii tietyn memo:n selvittääkseen, kenelle rahat kuuluvat."
   },
   "transaction": {
     "title": "Tapahtuma",
     "original": "Transaction",
-    "short": "Toiminto lohkoketjussa, esim. maksu tai luottolimiitti.",
-    "desc": "Tapahtuma on toimenpide lohkoketjussa, kuten rahan lähettäminen tai luottorajan perustaminen. Kun se on vahvistettu, tapahtuma tallennetaan pysyvästi."
+    "short": "Lohkoketjussa suoritettava toiminto, esim. maksu tai trustline.",
+    "desc": "Transaktio on lohkoketjussa suoritettu toiminto. Esimerkkejä ovat rahan lähettäminen tai Trustline:n luominen. Kun transaktio on vahvistettu, se tallennetaan pysyvästi."
   },
   "fee": {
     "title": "Maksu",
@@ -405,34 +405,34 @@
     "desc": "Soroban on Stellarin älysopimusjärjestelmä. Älysopimus on lohkoketjussa olevaa ohjelmakoodia. Koodi voi itsenäisesti varmistaa sääntöjen noudattamisen ja käynnistää toimia ilman pankin välittäjää."
   },
   "multiSignature": {
-    "title": "Moniallekirjoitus",
+    "title": "Multi-Signature",
     "original": "Multi-Signature",
-    "short": "Useita allekirjoituksia vaaditaan; painot + kynnysarvo määrittävät hyväksynnän.",
-    "desc": "Moniallekirjoitusjärjestelyssä useiden avainten on allekirjoitettava ennen kuin toiminto tulee päteväksi. Jokaisella allekirjoittajalla on painoarvo, ja summan on täytettävä vaadittu kynnysarvo. Tämä lisää turvallisuutta, koska yksi varastettu avain ei riitä."
+    "short": "Vaaditaan useita allekirjoituksia; painotukset + threshold määrittävät julkaisun.",
+    "desc": "Multisig-asetuksella toiminnon voimaantulo edellyttää useiden avainten allekirjoitusta. Jokaisella Signer-arvolla on painoarvo, ja niiden summan on oltava vähintään vaadittu Threshold. Tämä parantaa turvallisuutta, koska yhden varastetun avaimen käyttö ei riitä."
   },
   "signer": {
-    "title": "Allekirjoittaja",
+    "title": "Signer",
     "original": "Signer",
-    "short": "Julkinen avain painotuksella, osa tilin kokoonpanoa.",
-    "desc": "Allekirjoittaja on painoarvon omaavaan tiliin liitetty julkinen avain. Sen allekirjoitus lasketaan mukaan vaadittuun kynnykseen. Useat allekirjoittajat voivat hyväksyä tapahtuman yhdessä.\n\nAllekirjoittajatyypit:\n- ed25519 (normaali avain)\n- hashX (hash-malli)\n- preAuthTx (ennakkovaltuutettu transaktio)\n\nSKM tukee vain ed25519-tyyppiä. Lisätietoja muista vaihtoehdoista on osoitteessa https://lab.stellar.org."
+    "short": "Public Key painotettuna, osa tilin asetuksia.",
+    "desc": "Signer on tiliin liitetty ja painotettu Public Key. Sen allekirjoitus lasketaan mukaan vaadittavaan Threshold:een. Useat Signers:t voivat yhdessä hyväksyä transaktion.\n\nSigner-tyypit:\n- ed25519 (normaali avain)\n- hashX (hash-malli)\n- preAuthTx (ennakkovaltuutettu transaktio)\n\nSKM tukee vain ed25519-tyyppiä. Lisätietoja vaihtoehdoista löytyy osoitteesta https://lab.stellar.org."
   },
   "thresholds": {
-    "title": "Kynnykset",
+    "title": "Thresholds",
     "original": "Thresholds",
     "short": "Rajat (low/med/high), jotka asettavat vaaditun kokonaispainon.",
-    "desc": "Kynnysarvot määrittävät, kuinka monta painotettua allekirjoitusta tarvitaan toimenpiteisiin: matala yksinkertaisille toiminnoille, keskitaso maksuille ja korkea kriittisille muutoksille. Allekirjoittajien painojen summan on täytettävä kyseinen kynnysarvo."
+    "desc": "Thresholds määrittää, kuinka monta painotettua allekirjoitusta toimille vaaditaan: ”low” yksinkertaisille toiminnoille, ”med” maksuille ja ”high” kriittisille muutoksille. Signer-painojen summan on oltava yhtä suuri kuin vastaava Threshold-arvo."
   },
   "masterWeight": {
     "title": "Mestari paino",
     "original": "master_weight",
     "short": "Pääavaimen paino; määrittää, kuinka paljon merkitystä pääavaimella on.",
-    "desc": "Pääpaino on tilin pääavaimen paino. Korkea pääpaino mahdollistaa pääavaimen allekirjoittaa monia toimia itsenäisesti; matala arvo vaatii lisäallekirjoittajia."
+    "desc": "Pääpainotus on tilin pääavaimen painotus. Suuri pääpainotus mahdollistaa sen, että pääavain voi allekirjoittaa monia toimintoja yksinään; pieni arvo edellyttää lisäavaimia signers."
   },
   "accountConfig": {
     "title": "Tilin määritykset",
     "original": "Account Configuration",
-    "short": "Allekirjoittajien ja kynnysten välinen vuorovaikutus määrittää tilin turvallisuuden.",
-    "desc": "Tilin kokoonpano määrittelee, mitkä allekirjoittajat ovat olemassa millä painoarvoilla ja mitkä kynnykset ovat voimassa. Muutokset allekirjoittajiin tai kynnysarvoihin ovat turvallisuuskriittisiä, koska ne määrittävät, kuinka monta allekirjoitusta vaaditaan."
+    "short": "signers:n ja thresholds:n välinen vuorovaikutus määrää tilin turvallisuuden.",
+    "desc": "Tilin asetuksissa määritetään, mitkä signers ovat voimassa ja millä painotuksilla sekä mitkä thresholds ovat voimassa. Muutokset signers:een tai thresholds:ään ovat turvallisuuden kannalta kriittisiä, koska ne määrittävät, kuinka monta allekirjoitusta vaaditaan."
   },
   "distributedNetwork": {
     "title": "Hajautettu verkko",
@@ -870,13 +870,13 @@
     "title": "Järjestysnumero",
     "original": "Sequence Number",
     "short": "Juokseva numero, joka yksilöi tilin jokaisen tapahtuman ja estää kaksinkertaisen kulutuksen.",
-    "desc": "Jokaisella Stellar-tilillä on järjestysnumero, joka kasvaa yhdellä jokaisen tapahtuman myötä. Tapahtuma hyväksytään vain, jos sen järjestysnumero vastaa tarkasti tilin nykyistä sekvenssiä +1. Tämä estää saman tapahtuman suorittamisen kahdesti. Jos lähetät useita tapahtumia samanaikaisesti, ne on käsiteltävä oikeassa järjestyksessä."
+    "desc": "Jokaisella Stellar-tilillä on Sequence Number, jota korotetaan yhdellä jokaisen transaktion yhteydessä. Transaktio hyväksytään vain, jos sen Sequence Number vastaa tarkalleen tilin nykyistä järjestysnumeroa +1. Tämä estää saman transaktion suorittamisen kahdesti. Jos lähetät useita transaktioita samanaikaisesti, ne on käsiteltävä oikeassa järjestyksessä."
   },
   "baseReserve": {
     "title": "Perusvaranto",
     "original": "Base Reserve",
     "short": "XLM:n vähimmäismäärä, joka Stellar-tilillä on säilytettävä eikä sitä voi käyttää.",
-    "desc": "Stellarissa jokaisen tilin on pidettävä vähimmäissaldo XLM:ssä. Tämä lasketaan perusvarannosta (tällä hetkellä 0,5 XLM) kerrottuna tilin 'merkintöjen' lukumäärällä (esim. trustlinet, allekirjoittajat, datatarjoukset). Tyhjä tili tarvitsee vähintään 1 XLM (2 × 0,5 XLM). Jokainen trustline nostaa vähimmäissaldoa 0,5 XLM:llä. Tämä saldo on lukittu niin kauan kuin merkinnät ovat aktiivisia."
+    "desc": "Stellar-verkostossa jokaisella tilillä on oltava vähimmäissaldo XLM-valuutassa. Tämä lasketaan perusvarannosta (tällä hetkellä 0,5 XLM) kerrottuna tilillä olevien ”merkintöjen” määrällä (esim. trustlines, signers, datatarjoukset). Tyhjällä tilillä on oltava vähintään 1 XLM (2 × 0,5 XLM). Jokainen trustline nostaa vähimmäissaldoa 0,5 XLM:llä. Tämä saldo on lukittu niin kauan kuin merkinnät ovat aktiivisia."
   },
   "coin": {
     "title": "Kolikko",
@@ -990,20 +990,20 @@
   "trustlineLimit": {
     "title": "Trustline-raja",
     "original": "Trustline Limit",
-    "short": "Tiettyä omaisuuserää koskeva enimmäissaldo luottolimiitillä.",
+    "short": "Tiettyyn asset-termiin liittyvä enimmäissaldo trustline-termiin.",
     "desc": "Trustline-raja määrittää, kuinka monta yksikköä tiettyä omaisuutta tililläsi voi olla enintään. Se ei ole ostotilaus eikä se varaa tokeneita. Alhainen raja voi estää tahattomia ylimaksuja, mutta liian alhainen raja voi estää aiotun vastaanoton tai vaihdon."
   },
   "authorizationFlags": {
     "title": "Valtuutusmerkit",
     "original": "Authorization Flags",
     "short": "Liikkeeseenlaskijan säännöt, kuten auth_required, auth_revocable tai immutable.",
-    "desc": "Valtuutusliput ovat myöntäjän tilillä olevia asetuksia. auth_required tarkoittaa, että myöntäjän on ensin hyväksyttävä luottolinjat. auth_revocable tarkoittaa, että hyväksyntä voidaan myöhemmin peruuttaa. auth_immutable tarkoittaa, että näitä lippuja ei voi enää muuttaa. Näillä lipuilla on merkitystä, koska ne vaikuttavat siihen, voitko vastaanottaa, pitää hallussasi tai siirtää tunnusta."
+    "desc": "Valtuutusliput ovat myöntäjän tilillä olevia asetuksia. auth_required tarkoittaa, että myöntäjän on ensin hyväksyttävä trustline. auth_revocable tarkoittaa, että hyväksyntä voidaan myöhemmin peruuttaa. auth_immutable tarkoittaa, että näitä lippuja ei voi enää muuttaa. Näillä lippuilla on merkitystä, koska ne vaikuttavat siihen, voitko vastaanottaa, pitää hallussasi tai siirtää token:ta."
   },
   "issuerMasterKey": {
     "title": "Liikkeeseenlaskijan pääavain",
     "original": "Issuer Master Key",
     "short": "Liikkeeseenlaskijan tilin pääavain.",
-    "desc": "Liikkeeseenlaskijan pääavain on sen tilin pääavain, joka laskee liikkeeseen omaisuuserän. Jos sen painoarvo asetetaan arvoon 0, pääavain yksinään ei voi enää allekirjoittaa uusia toimia. Tämä voi olla hyvä merkki, koska se vaikeuttaa liikkeeseenlaskijan mahdollisuutta muuttaa sääntöjä huomaamatta. Tilin koko kokoonpano, mukaan lukien muut allekirjoittajat ja asetukset, on edelleen merkityksellinen."
+    "desc": "Liikkeeseenlaskijan pääavain on sen tilin pääavain, joka laskee liikkeeseen asset:n. Jos sen painoarvo asetetaan arvoon 0, pääavaimella ei enää yksinään voi allekirjoittaa uusia toimintoja. Tämä voi olla hyvä merkki, koska se vaikeuttaa liikkeeseenlaskijan mahdollisuutta muuttaa sääntöjä huomaamatta. Tilin koko kokoonpano, mukaan lukien muut signers-arvot ja liput, on edelleen merkityksellinen."
   },
   "assetCode": {
     "title": "Omaisuuskoodi",

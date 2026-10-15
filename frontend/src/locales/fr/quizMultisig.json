@@ -1,6 +1,6 @@
 {
   "title": "Multisig & Sécurité",
-  "introText": "Mettez à l'épreuve vos connaissances sur les signatures, les seuils et le stockage sécurisé.",
+  "introText": "Testez vos connaissances sur les signatures, thresholds et le stockage sécurisé.",
   "q1": {
     "question": "Pourquoi utiliser le multisig ?",
     "hint": "Réfléchissez à la responsabilité partagée.",
@@ -12,34 +12,34 @@
     "a3fb": "Incorrect : Le multisig n'est pas conçu pour la rapidité."
   },
   "q2": {
-    "question": "Quand une transaction sur un compte multisignature est-elle valide ?",
+    "question": "À quel moment une transaction effectuée sur un compte multisig est-elle valide ?",
     "hint": "Regardez les signatures pondérées.",
-    "a1": "Si les signatures atteignent le seuil requis.",
-    "a1fb": "Correct : La somme des poids doit atteindre le seuil.",
+    "a1": "Si le nombre de signatures atteint le seuil requis de threshold.",
+    "a1fb": "Correct : La somme des poids doit respecter la condition threshold.",
     "a2": "Dès qu'une signature est présente.",
-    "a2fb": "Incorrect: Une seule signature n'est pas suffisante lorsque le seuil est plus élevé.",
-    "a3": "Seulement avec la clé principale, quel que soit le seuil.",
-    "a3fb": "Incorrect : La clé maîtresse est également soumise aux seuils."
+    "a2fb": "Incorrect : une seule signature ne suffit pas lorsque la valeur de threshold est supérieure.",
+    "a3": "Uniquement avec la clé principale, quelle que soit la valeur de threshold.",
+    "a3fb": "Incorrect : La clé principale est également soumise à la règle thresholds."
   },
   "q3": {
-    "question": "Que se passe-t-il si les seuils sont mal définis ?",
+    "question": "Que se passe-t-il si les paramètres thresholds sont mal configurés ?",
     "hint": "Des valeurs trop élevées ou trop basses ont des conséquences.",
     "a1": "Les transactions pourraient être bloquées ou autorisées trop facilement.",
-    "a1fb": "Corriger : Des seuils incorrects entraînent des verrouillages ou une sécurité insuffisante.",
-    "a2": "Pas du tout, les seuils sont juste des informations.",
-    "a2fb": "Incorrect : Les seuils déterminent combien de signatures sont requises.",
-    "a3": "Le numéro de séquence du compte est en cours de réinitialisation.",
-    "a3fb": "Incorrect : Les seuils n'ont aucun impact sur la séquence."
+    "a1fb": "Correct : Une utilisation incorrecte de thresholds entraîne des blocages ou une sécurité insuffisante.",
+    "a2": "Pas du tout, les thresholds ne sont que des informations.",
+    "a2fb": "Incorrect : Thresholds détermine le nombre de signatures requises.",
+    "a3": "La valeur Sequence Number du compte est réinitialisée.",
+    "a3fb": "Faux : Thresholds n'a aucune incidence sur la séquence."
   },
   "q4": {
-    "question": "Combien de signatures une transaction nécessite-t-elle au seuil médian ?",
+    "question": "Combien de signatures une transaction nécessite-t-elle à Threshold mois ?",
     "hint": "med threshold = seuil moyen.",
-    "a1": "Les poids des signatures doivent au moins atteindre le seuil médian.",
-    "a1fb": "Correct : Le seuil intermédiaire s'applique aux paiements.",
+    "a1": "Les poids des signatures doivent au moins atteindre la valeur med-threshold.",
+    "a1fb": "Correct : le threshold du milieu s'applique aux paiements.",
     "a2": "Une seule signature à la fois.",
-    "a2fb": "Incorrect : Cela dépend des poids et des seuils.",
-    "a3": "Toujours tous les signataires.",
-    "a3fb": "Incorrect : Seulement suffisamment de signatures pour atteindre le seuil."
+    "a2fb": "Incorrect : Cela dépend des poids et de thresholds.",
+    "a3": "Toujours signers.",
+    "a3fb": "Incorrect : Il n'y a que suffisamment de signatures pour respecter le threshold."
   },
   "q5": {
     "question": "Comment les clés secrètes doivent-elles être stockées dans des configurations multisig réelles ?",

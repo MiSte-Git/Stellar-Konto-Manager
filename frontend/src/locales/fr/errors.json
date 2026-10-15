@@ -17,11 +17,11 @@
       "oldestFailed": "Impossible de déterminer la date la plus ancienne."
     },
     "indexIterFailed": "L'itération de l'index dans le cache a échoué.",
-    "memoNormBackfillFailed": "Le chargement initial des paiements pour les mémos normalisés a échoué.",
+    "memoNormBackfillFailed": "L'importation initiale des paiements pour memos normalisé a échoué.",
     "openFailed": "Le cache local n'a pas pu être ouvert.",
     "readFailed": "Échec de la lecture à partir du cache",
-    "rehydrateFailed": "Échec du chargement des mémos manquants.",
-    "rehydrateWriteFailed": "Échec d'écriture des mémos dans le cache.",
+    "rehydrateFailed": "Impossible de charger le fichier memos, qui est manquant.",
+    "rehydrateWriteFailed": "Échec de l'écriture de memos dans le cache",
     "writeFailed": "Échec de l'écriture dans le cache",
     "insecureContext": "Impossible d'enregistrer : cette fonctionnalité nécessite une connexion sécurisée (HTTPS)."
   },
@@ -34,13 +34,13 @@
   "horizon": {
     "paymentsFetch": "Erreur lors du chargement des paiements depuis Horizon"
   },
-  "loadTrustlines": "Les lignes de confiance n'ont pas pu être chargées. Veuillez réessayer.",
-  "loadTrustlinesFailed": "Le chargement des lignes de confiance a échoué.",
+  "loadTrustlines": "Impossible de charger Trustlines. Veuillez réessayer.",
+  "loadTrustlinesFailed": "Échec du chargement de trustlines",
   "loadTrustlinesNotFound": "Compte non trouvé sur le réseau '{{network}}'.",
   "accountNotFoundInNetwork": "Introuvable dans '{{net}}' !",
-  "op_invalid_limit": "La ligne de confiance ne peut pas être supprimée. Elle peut encore avoir un solde ou des obligations en suspens.",
+  "op_invalid_limit": "Trustline ne peut pas être supprimé. Il se peut qu’il reste un solde ou des obligations non réglées.",
   "query": {
-    "invalidMemo": "Note de service invalide",
+    "invalidMemo": "memo non valide",
     "invalidRange": "La fenêtre temporelle est invalide (Début > Fin)",
     "invalidTime": "Spécification de temps invalide"
   },
@@ -52,12 +52,12 @@
       "signingFailed": "Une ou plusieurs signatures n'ont pas pu être créées. Veuillez réessayer.",
       "multisig": {
         "invalidSecret": "L'une des clés secrètes saisies est invalide.",
-        "notASigner": "L'une des clés secrètes saisies n'appartient pas aux signataires enregistrés.",
+        "notASigner": "L'une des valeurs saisies pour secret keys n'appartient pas à la valeur enregistrée pour signers.",
         "noKeysProvided": "Aucune clé secrète valide n'a été entrée.",
         "insufficientWeight": "Les signatures collectées sont insuffisantes pour autoriser ce changement. Requis : {{required}}, disponibles : {{current}}.",
         "txBadAuth": "Transaction refusée : Les signatures ne sont pas suffisantes (tx_bad_auth).",
-        "zeroWeightSigner": "La clé secrète saisie appartient à un signataire avec un poids de 0 et ne peut pas autoriser une transaction.",
-        "invalidConfig": "La configuration prévue des signataires et des seuils ne peut pas être signée. Veuillez vérifier les poids et les seuils.",
+        "zeroWeightSigner": "Le secret key saisi appartient à un signer de poids 0 et ne permet pas d'autoriser une transaction.",
+        "invalidConfig": "La configuration prévue pour signers et thresholds ne peut pas être signée. Veuillez vérifier les poids et thresholds.",
         "trustlines": {
           "invalidInput": "Veuillez vérifier le code de l'actif, l'émetteur et la limite. Au moins un des champs est invalide."
         }
@@ -73,8 +73,8 @@
     "title": "Erreur de transaction"
   },
   "trustline": {
-    "submitFailed": "Erreur lors de la suppression de la ligne de confiance.",
-    "unknown": "Erreur inconnue lors de la suppression de la ligne de crédit."
+    "submitFailed": "Erreur lors de la suppression de trustline.",
+    "unknown": "Erreur inconnue lors de la suppression de trustline."
   },
   "xlmByMemo": {
     "aborted": "Opération annulée par l'utilisateur",
@@ -82,7 +82,7 @@
     "dateInvalid": "Date invalide",
     "dateRange": "Plage de dates non valide",
     "failedUnknown": "Erreur inconnue",
-    "memoInvalid": "Note de service non valide",
+    "memoInvalid": "memo non valide",
     "paymentsFetch": "Erreur de chargement des paiements",
     "serverInvalid": "Serveur non valide"
   },

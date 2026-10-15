@@ -14,7 +14,7 @@
   "thresholdLow": "niedrig",
   "thresholdMed": "mittel",
   "thresholdHigh": "hoch",
-  "thresholdLevelsHint": "Typischerweise gilt: niedrig = einfache Änderungen (z. B. Memo, Preis), mittel = Zahlungen/Handel, hoch = sicherheitskritische Änderungen (z. B. Signer/Schwellen). Low / Med / High definieren das erforderliche Mindest-Signer-Gewicht für eine Operation.",
+  "thresholdLevelsHint": "Typischerweise gilt: niedrig = einfache Änderungen (z. B. Memo, Preis), mittel = Zahlungen/Handel, hoch = sicherheitskritische Änderungen (z. B. Signer/Thresholds). Low / Med / High definieren das erforderliche Mindest-Signer-Gewicht für eine Operation.",
   "thresholdSum": "Summe Gewichte: {{sum}}",
   "thresholdTooHigh": "Hinweis: Eine Schwelle darf die Summe der Gewichte nicht überschreiten. Bitte Werte anpassen.",
   "hints": {

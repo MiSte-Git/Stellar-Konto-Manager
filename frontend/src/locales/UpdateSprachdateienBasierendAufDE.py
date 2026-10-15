@@ -356,6 +356,11 @@ def _looks_like_kept_english_term(inner: str) -> bool:
         return False
     if not re.search(r"[0-9A-Z_:/]", inner):
         return False
+    # Reine Kleinwort-Aufzählungen mit Schrägstrich ("niedrig/mittel/hoch") sind
+    # gewöhnlicher Text, kein Fachbegriff - der "/" allein ist hier kein Signal.
+    # Konkret beobachtet: "Threshold (niedrig/mittel/hoch)" blieb in en/fr deutsch.
+    if re.fullmatch(r"[a-zäöüß]+(?:/[a-zäöüß]+)+", inner):
+        return False
     if "-" in inner:
         tail = inner.rsplit("-", 1)[-1]
         if tail.lower() in GERMAN_COMPOUND_TAILS_NOT_KEPT:

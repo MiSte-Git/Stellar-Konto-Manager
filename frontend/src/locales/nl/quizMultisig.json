@@ -1,6 +1,6 @@
 {
   "title": "Multisig & Beveiliging",
-  "introText": "Test je kennis over handtekeningen, drempelwaarden en beveiligde opslag.",
+  "introText": "Test je kennis over handtekeningen, thresholds en veilige opslag.",
   "q1": {
     "question": "Waarom multisig gebruiken?",
     "hint": "Denk na over gedeelde verantwoordelijkheid.",
@@ -14,32 +14,32 @@
   "q2": {
     "question": "Wanneer is een transactie op een multisig-account geldig?",
     "hint": "Bekijk de gewogen handtekeningen.",
-    "a1": "Als de handtekeningen de vereiste drempel bereiken.",
-    "a1fb": "Correct: De som van de gewichten moet aan de drempel voldoen.",
+    "a1": "Als het aantal handtekeningen de vereiste threshold bereikt.",
+    "a1fb": "Juist: De som van de gewichten moet voldoen aan de threshold.",
     "a2": "Zodra er een handtekening aanwezig is.",
-    "a2fb": "Onjuist: Een enkele handtekening is niet voldoende wanneer de drempel hoger is.",
-    "a3": "Alleen met hoofdsleutel, ongeacht de drempel.",
-    "a3fb": "Onjuist: De hoofdsleutel is ook onderworpen aan de drempels."
+    "a2fb": "Onjuist: Eén handtekening is niet voldoende wanneer de threshold hoger is.",
+    "a3": "Alleen met de hoofdsleutel, ongeacht de threshold.",
+    "a3fb": "Onjuist: Ook voor de hoofdsleutel geldt de thresholds."
   },
   "q3": {
-    "question": "Wat gebeurt er als de drempelwaarden verkeerd zijn ingesteld?",
+    "question": "Wat gebeurt er als thresholds verkeerd is ingesteld?",
     "hint": "Waarden die te hoog of te laag zijn, hebben gevolgen.",
     "a1": "Transacties kunnen worden geblokkeerd of te gemakkelijk worden geautoriseerd.",
-    "a1fb": "Correct: Onjuiste drempelwaarden leiden tot vergrendelingen of onvoldoende beveiliging.",
-    "a2": "Helemaal niet, drempels zijn gewoon informatie.",
-    "a2fb": "Onjuist: Drempels bepalen hoeveel handtekeningen er nodig zijn.",
-    "a3": "Het volgnummer van de rekening wordt gereset.",
-    "a3fb": "Onjuist: Drempels hebben geen invloed op de volgorde."
+    "a1fb": "Juist: Onjuist thresholds leidt tot blokkades of onvoldoende beveiliging.",
+    "a2": "Helemaal niet, thresholds is slechts informatie.",
+    "a2fb": "Onjuist: Thresholds bepaalt hoeveel handtekeningen er nodig zijn.",
+    "a3": "De waarde Sequence Number van het account is gereset.",
+    "a3fb": "Onjuist: Thresholds heeft geen invloed op de volgorde."
   },
   "q4": {
-    "question": "Hoeveel handtekeningen vereist een transactie bij federale med?",
-    "hint": "gemiddelde drempelwaarde = gemiddelde drempelwaarde.",
-    "a1": "Gewichten van de handtekeningen moeten ten minste voldoen aan de med-drempel.",
-    "a1fb": "Correctie: De middelste drempel is van toepassing op betalingen.",
+    "question": "Hoeveel handtekeningen zijn er nodig voor een transactie bij Threshold med?",
+    "hint": "med threshold = gemiddelde threshold.",
+    "a1": "De gewichten van de handtekeningen moeten ten minste voldoen aan de med-threshold.",
+    "a1fb": "Juist: De middelste threshold is van toepassing op betalingen.",
     "a2": "Slechts één handtekening tegelijk.",
-    "a2fb": "Onjuist: Het hangt af van gewichten en drempels.",
-    "a3": "Altijd alle ondertekenaars.",
-    "a3fb": "Onjuist: Alleen genoeg handtekeningen om de drempel te halen."
+    "a2fb": "Onjuist: Het hangt af van de gewichten en thresholds.",
+    "a3": "Altijd alleen signers.",
+    "a3fb": "Onjuist: Er zijn slechts voldoende handtekeningen om aan de threshold te voldoen."
   },
   "q5": {
     "question": "Hoe moeten geheime sleutels worden opgeslagen in echte multisig-opstellingen?",

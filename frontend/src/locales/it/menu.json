@@ -16,5 +16,19 @@
   "tokenPurchases": "Acquisti di token",
   "learn": "Quiz stellare per principianti",
   "unknown": "Selezione del menu sconosciuta",
-  "swap": "Trova e scambia token"
+  "swap": "Trova e scambia token",
+  "wallet": "Wallet",
+  "sidebarLabel": "Navigazione principale",
+  "openNavigation": "Apri la navigazione",
+  "closeNavigation": "Chiudi la navigazione",
+  "language": "Lingua",
+  "sections": {
+    "account": "Account",
+    "trade": "Commercio",
+    "reports": "Rapporti",
+    "trustlines": "Token-Approvazioni",
+    "advanced": "Avanzato",
+    "learn": "Apprendimento"
+  },
+  "receive": "Ricevi"
 }

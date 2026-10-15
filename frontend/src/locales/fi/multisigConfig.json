@@ -1,31 +1,31 @@
 {
-  "signersTitle": "Allekirjoittaja (ed25519)",
-  "signersInfo": "Lisää lisäallekirjoittajia ja aseta sopivat kynnykset.",
-  "signersCount": "Allekirjoittaneiden lukumäärä",
-  "signersCountLimit": "Huomautus: Verkoston rajat (Stellar): enintään 20 lisäallekirjoittajaa.",
+  "signersTitle": "Signer (ed25519)",
+  "signersInfo": "Lisää lisää Signer-määritteitä ja aseta sopivat Thresholds-arvot.",
+  "signersCount": "Luku Signer",
+  "signersCountLimit": "Huomautus: Verkon rajoitus (Stellar): enintään 20 ylimääräistä Signer.",
   "bestPractices": {
     "title": "Parhaat käytännöt",
     "text": "Pidä salausavaimet turvassa äläkä jaa niitä tarpeettomasti."
   },
-  "signerTypeNote": "Huomautus: SKM käyttää vain ed25519-allekirjoittajia. HashX/preAuthTx:lle käytä",
+  "signerTypeNote": "Huomautus: SKM käyttää ainoastaan ed25519-Signer:tä. HashX/preAuthTx:n yhteydessä käytä",
   "signerTypeLink": "lab.stellar.org",
   "masterWeight": "Mestari paino",
-  "threshold": "Kynnys (niedrig/mittel/hoch)",
+  "threshold": "Threshold (matala/keskitasoinen/korkea)",
   "thresholdLow": "matala",
   "thresholdMed": "keskikokoinen",
   "thresholdHigh": "korkea",
-  "thresholdLevelsHint": "Tyypillisesti, matala = yksinkertaiset muutokset (e.g., memo, price), keskitaso = maksut/kauppa, korkea = turvallisuuskriittiset muutokset (e.g., signer/threshholds). Matala / Keskitaso / Korkea määrittää tarvittavan vähimmäiskirjoittajan painoarvon operaatioon.",
+  "thresholdLevelsHint": "Tyypillisesti: matala = yksinkertaiset muutokset (esim. Memo, hinta); keskitaso = maksut/kaupankäynti; korkea = turvallisuuden kannalta kriittiset muutokset (esim. Signer/thresholds). Matala / Keskitaso / Korkea määrittelevät toiminnolle vaadittavan vähimmäispainon Signer.",
   "thresholdSum": "Kokonaispaino: {{sum}}",
-  "thresholdTooHigh": "Huomaa: Kynnysarvo ei saa ylittää painojen summaa. Säädä arvot tarvittaessa.",
+  "thresholdTooHigh": "Huomautus: threshold:n arvo ei saa ylittää painojen summaa. Säädä arvoja tämän mukaisesti.",
   "hints": {
     "byteRange": "(0–255)"
   },
   "tooltips": {
     "low": "Matala: yksinkertaiset muutokset (e.g., memo, price).",
     "med": "Tarkoitus: Maksut ja kauppatoimet.",
-    "high": "Korkea: turvallisuuskriittiset muutokset (e.g., signatories/thresholds).",
-    "signerWeight": "Allekirjoittajien paino (0–255): Lisäksi allekirjoittajilla on myös äänestysoikeudet. Paino määräää, kuinka monta ääntä allekirjoittajan allekirjoitus tuo mukanaan. Kun tapahtuma lähetetään, kaikki annetut äänet lasketaan yhteen. Jos ennalta määrätty vähimmäisäänimäärä (Threshold) saavutetaan, tapahtuma katsotaan valtuutetuksi.",
-    "masterWeight": "Tilinhaltijan paino (Master) (0-255): Tilin pääavain on äänioikeutettu. Mitä suurempi sen paino on, sitä enemmän ääniä sen allekirjoitus vastaa. Nämä äänet lasketaan yhteen muiden allekirjoittajien äänien kanssa sen määrittämiseksi, onko vaadittu enemmistö saavutettu."
+    "high": "Korkea: turvallisuuden kannalta kriittiset muutokset (esim. Signer/thresholds).",
+    "signerWeight": "Signer:n painoarvo (0–255): Myös muilla Signer:lla on äänioikeus. Painoarvo määrittää, kuinka monta ääntä allekirjoitus tuo mukanaan. Kun transaktio lähetetään, kaikki annetut äänet lasketaan yhteen. Jos määritetty vähimmäisäänimäärä (Threshold) saavutetaan, transaktio katsotaan hyväksytyksi.",
+    "masterWeight": "Tilin haltijan painotus (Master) (0–255): Tilin ensisijaisella avaimella on yksi ääni. Mitä suurempi painotus on, sitä useampana äänenä tilin haltijan allekirjoitus lasketaan. Nämä äänet lasketaan yhteen muiden Signer:n äänien kanssa sen määrittämiseksi, onko vaadittu enemmistö saavutettu."
   },
   "units": {
     "signatures": "Vähimmäispaino"

@@ -160,7 +160,7 @@
     }
   },
   "l4": {
-    "title": "Avaimet, maksut ja luottolinjat",
+    "title": "Avaimet, maksut ja trustlines",
     "q1": {
       "question": "Mikä on julkinen avain?",
       "hint": "Kuin postiosoitteesi.",
@@ -226,8 +226,8 @@
       "a": "Lupa vastaanottaa tietty token liikkeeseenlaskijalta.",
       "b": "Salasana nopeampia siirtoja varten.",
       "c": "Maksu kansainvälisistä maksuista.",
-      "a.fb": "Oikein. Ilman trustlinea et voi vastaanottaa tokenia.",
-      "b.fb": "Väärin. Trustlineilla ei ole mitään tekemistä salasanojen kanssa.",
+      "a.fb": "Aivan. Ilman trustline:tä et voi saada token:ta.",
+      "b.fb": "Väärin. Trustlines:llä ei ole mitään tekemistä salasanojen kanssa.",
       "c.fb": "Väärin. Trustline on lupa, ei kustannus.",
       "d": "Vinkki, jolla rikastut nopeammin.",
       "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
@@ -253,14 +253,14 @@
       "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
     "q4": {
-      "question": "Mihin memoa käytetään siirrossa?",
+      "question": "Mihin memo:tä käytetään transaktiossa?",
       "hint": "Ajattele pankkisiirtoa viitteellä.",
       "a": "Lisätietojen, kuten viitenumeron, lähettämiseen.",
       "b": "Maksun pienentämiseen.",
       "c": "Siirron salaamiseen.",
-      "a.fb": "Oikein. Pörssit käyttävät memoja esimerkiksi talletusten tunnistamiseen.",
-      "b.fb": "Väärin. Memot eivät vaikuta maksuun.",
-      "c.fb": "Väärin. Memot ovat julkisesti luettavissa.",
+      "a.fb": "Aivan. Pörssit käyttävät esimerkiksi Memos-tunnisteita talletusten tunnistamiseen.",
+      "b.fb": "Väärin. Memos ei vaikuta palkkioon.",
+      "c.fb": "Väärin. Memos ovat julkisesti luettavissa.",
       "d": "Vinkki, jolla rikastut nopeammin.",
       "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     }
@@ -513,8 +513,8 @@
       "a": "Perustaa trustline USDC:lle.",
       "b": "Ladata erityinen USDC-lompakko.",
       "c": "Suorittaa KYC Stellarissa.",
-      "a.fb": "Oikein. Ilman trustlinea et voi vastaanottaa ulkoisia varoja.",
-      "b.fb": "Väärin. Stellar Account Manager tukee kaikkia varoja trustlinella.",
+      "a.fb": "Aivan. Ilman trustline:tä et voi vastaanottaa ulkomaista assets:ta.",
+      "b.fb": "Väärin. Stellar-tilinhallintaohjelma tukee kaikkia assets-arvoja, joissa on trustline.",
       "c.fb": "Väärin. Stellar itsessään ei vaadi KYC:tä.",
       "d": "Vinkki, jolla rikastut nopeammin.",
       "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
@@ -598,10 +598,10 @@
       "hint": "Kryptoturvallisuuden kultainen sääntö.",
       "a": "Jakaa salainen avain tai syöttää se tuntemattomille sivustoille.",
       "b": "Käyttää testnettiä.",
-      "c": "Perustaa trustlineja.",
+      "c": "Määritä trustlines.",
       "a.fb": "Oikein. Salainen avain on pyhin – älä koskaan jaa sitä!",
       "b.fb": "Väärin. Testnetin käyttö on jopa suositeltua harjoitteluun.",
-      "c.fb": "Väärin. Trustlinet ovat normaaleja ja tarpeellisia toimia.",
+      "c.fb": "Väärin. Trustlines ovat tavallisia ja välttämättömiä toimia.",
       "d": "Vinkki, jolla rikastut nopeammin.",
       "d.fb": "Se olisi kivaa 😄—mutta kryptovaluutat toimivat teknisten sääntöjen mukaan, eivät taikatemppujen."
     },
@@ -620,7 +620,7 @@
   },
   "meta": {
     "estimatedMinutes": "Arvioidut minuutit",
-    "passThreshold": "Läpäisykynnys",
+    "passThreshold": "Ohitetaan threshold",
     "threeStarThreshold": "3★ Borderi"
   },
   "landing": {
@@ -628,8 +628,8 @@
     "description": "Lyhyt johdanto oppituntiin. Testaa tietosi ja kerää tähtiä.",
     "questionsLabel": "Kysymykset",
     "estimatedMinutesLabel": "Arvioidut minuutit",
-    "passThresholdLabel": "Läpäisyraja",
-    "threeStarThresholdLabel": "3★ kynnysarvo",
+    "passThresholdLabel": "Ohitetaan threshold",
+    "threeStarThresholdLabel": "3★ threshold",
     "start": "Aloita tietovisa",
     "startPractice": "Aloita harjoittelutila.",
     "settings": "Asetukset",
@@ -651,10 +651,10 @@
   "result": {
     "score": "Tuloksesi: {{score}}%",
     "summary": "{{oikein}}/{{yhteensä}} oikein",
-    "passInfo": "Läpäisykynnys: {{pass}} % — Tila: {{status}}",
+    "passInfo": "threshold:n läpäisy: {{pass}} % — Tila: {{status}}",
     "passed": "Läpäissyt",
     "failed": "Epäonnistui",
-    "threeStarThreshold": "3★ kynnysarvo: {{value}}%",
+    "threeStarThreshold": "3★ threshold: {{value}} %",
     "stars": "Tähdet: {{stars}}",
     "newAchievementsTitle": "Äskettäin saadut merkit",
     "noNewAchievements": "Ei uusia merkkejä tällä kierroksella.",

@@ -160,7 +160,7 @@
     }
   },
   "l4": {
-    "title": "Claves, tarifas y líneas de confianza",
+    "title": "Claves, comisiones y trustlines",
     "q1": {
       "question": "¿Qué es una clave pública?",
       "hint": "Como tu dirección postal.",
@@ -194,14 +194,14 @@
       "d.fb": "Eso estaría bien 😄, pero cualquiera que conozca tu clave secreta podría robarte el saldo."
     },
     "q4": {
-      "question": "¿Qué es una línea de confianza?",
+      "question": "¿Qué es un trustline?",
       "hint": "Es como un permiso.",
       "a": "Un permiso para poseer un token de un emisor.",
       "b": "Una línea de chat secreta entre dos cuentas.",
       "c": "Un descuento especial en las tarifas de trading.",
       "a.fb": "Sí. Tú eliges qué emisores/tokens confías.",
       "b.fb": "No. No es un chat, sino un permiso de retención.",
-      "c.fb": "No. Las líneas de confianza implican la tenencia de activos.",
+      "c.fb": "El n.º Trustlines implica la tenencia de assets.",
       "d": "Un truco para hacerse rico más rápido.",
       "d.fb": "Eso estaría bien 😄, pero las criptomonedas funcionan según reglas técnicas, no a base de trucos de magia."
     },
@@ -620,7 +620,7 @@
   },
   "meta": {
     "estimatedMinutes": "Minutos estimados",
-    "passThreshold": "Umbral de aprobación",
+    "passThreshold": "Aprobado: threshold",
     "threeStarThreshold": "3★ Frontera"
   },
   "landing": {
@@ -628,8 +628,8 @@
     "description": "Breve introducción a la lección. Pon a prueba tu conocimiento y recoge estrellas.",
     "questionsLabel": "Preguntas",
     "estimatedMinutesLabel": "Minutos estimados",
-    "passThresholdLabel": "Umbral de aprobación",
-    "threeStarThresholdLabel": "Umbral de 3★",
+    "passThresholdLabel": "Aprobado: threshold",
+    "threeStarThresholdLabel": "3★ threshold",
     "start": "Iniciar cuestionario",
     "startPractice": "Iniciar modo de práctica.",
     "settings": "Ajustes",
@@ -651,10 +651,10 @@
   "result": {
     "score": "Tu resultado: {{score}}%",
     "summary": "{{correct}}/{{total}} correctas",
-    "passInfo": "Umbral de aprobación: {{pass}}% — Estado: {{status}}",
+    "passInfo": "Superando threshold: {{pass}} % — Estado: {{status}}",
     "passed": "Pasado",
     "failed": "Fallido",
-    "threeStarThreshold": "Umbral de 3★: {{value}}%",
+    "threeStarThreshold": "3★ threshold: {{value}} %",
     "stars": "Estrellas: {{stars}}",
     "newAchievementsTitle": "Insignias recién adquiridas",
     "noNewAchievements": "No hay nuevas insignias en esta ejecución.",

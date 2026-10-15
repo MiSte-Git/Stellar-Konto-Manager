@@ -88,17 +88,17 @@
     "reward": "⭐ 1 – Detektiv Privatnosti"
   },
   "lesson4": {
-    "title": "Vaš račun",
-    "goal": "Razumijevanje strukture i značaja javnih/privatnih ključeva.",
+    "title": "Ključevi, naknade i Trustlines",
+    "goal": "Razumite razliku između Public Key i Secret Key, kao i naknade i Trustlines.",
     "task": "Igra spajanja: Što je javno, što je tajno",
-    "learningOutcome": "Samo tajni ključ omogućuje pristup; javni ključ može se dijeliti.",
+    "learningOutcome": "Public Key = Adresa primatelja.   Secret Key = Drži tajno!   Trustline = Dozvolu za držanje Token.",
     "reward": "⭐ 1 – Čuvar ključa"
   },
   "lesson5": {
     "title": "Send & Receive",
-    "goal": "Razumijevanje kako transakcije i povjereničke linije funkcioniraju",
-    "task": "Izvrši testni prijenos i pregledaj naknadu.",
-    "learningOutcome": "Svaka transakcija podliježe maloj naknadi; Povjerenička linija = dopuštenje za primanje.",
+    "goal": "Razumijevanje načina na koji transakcije i Trustlines funkcioniraju",
+    "task": "Odgovorite na pitanja o Trustlines, naknadama, aktivaciji računa i Memos.",
+    "learningOutcome": "Svaka transakcija podliježe maloj naknadi. Memo je poput opisa plaćanja.",
     "reward": "⭐ 2 – Trustline početni nivo"
   },
   "lesson6": {
@@ -152,9 +152,9 @@
   },
   "lesson13": {
     "title": "Multisig za početnike",
-    "goal": "Razumijevanje temeljnih principa multisiga",
-    "task": "Usporedite Single-Sig i Multisig te ispitajte primjer procesa.",
-    "learningOutcome": "Višestruki potpisi povećavaju sigurnost; pragovi određuju koliko potpisa je potrebno.",
+    "goal": "Razumijevanje temeljnih načela Multisig",
+    "task": "Odgovorite na pitanja o single-sig naspram Multisig, Thresholds i Signers.",
+    "learningOutcome": "Za Multisig potrebna su višestruka potpisa. To sprječava bilo koga da djeluje samostalno.",
     "reward": "⭐ 2 – Početnik za multisig"
   },
   "lesson14": {
@@ -167,7 +167,7 @@
   "cashback-loyalty": {
     "title": "Cashback & Loyalty Token",
     "goal": "Razumite kako prilagođena sredstva funkcioniraju kao tokeni lojalnosti na Stellaru.",
-    "task": "Odgovorite na pitanja o žetonima lojalnosti, linijama povjerenja i provjeri izdavatelja.",
+    "task": "Odgovorite na pitanja o Loyalty Token, Trustlines i provjeri izdavatelja.",
     "learningOutcome": "Isto ime tokena ne znači isti token—razliku čini izdavač.",
     "reward": "⭐ 2 – Stručnjak za lojalnost"
   },

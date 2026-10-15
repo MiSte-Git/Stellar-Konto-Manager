@@ -1,6 +1,6 @@
 {
   "title": "Cashback e Token Fedeltà",
-  "introText": "Metti alla prova le tue conoscenze sui token fedeltà, le linee di fiducia e la verifica degli emittenti su Stellar.",
+  "introText": "Metti alla prova le tue conoscenze su Loyalty Token, Trustlines e sulla verifica dell'emittente su Stellar.",
   "q1": {
     "question": "Cos'è un token fedeltà?",
     "hint": "Pensa agli asset personalizzati sulla blockchain.",
@@ -14,12 +14,12 @@
   "q2": {
     "question": "Di cosa ha bisogno un cliente prima di ricevere token fedeltà?",
     "hint": "Stellar richiede fiducia esplicita prima che un token possa essere ricevuto.",
-    "a1": "Una linea di fiducia verso l'emittente del token.",
-    "a1fb": "Corretto: Senza una linea di fiducia verso l'emittente, non si può ricevere nessun token.",
+    "a1": "Un Trustline all'emittente del Tokens.",
+    "a1fb": "Corretto: senza Trustline da parte dell'emittente, non è possibile ricevere Token.",
     "a2": "Un account verificato.",
     "a2fb": "Sbagliato: Gli account Stellar non richiedono verifica esterna per gli asset personalizzati.",
     "a3": "Almeno 10 XLM nel portafoglio.",
-    "a3fb": "Sbagliato: Non c'è un minimo XLM richiesto per le linee di fiducia."
+    "a3fb": "Errato: non è previsto un importo minimo di XLM richiesto per Trustlines."
   },
   "q3": {
     "question": "Marco chiama il suo token \"BERRY\". Un'altra azienda fa lo stesso. I token sono uguali?",
@@ -46,8 +46,8 @@
     "hint": "Chi è il vero creatore di questo token?",
     "a1": "Confrontare l'indirizzo dell'emittente con l'indirizzo ufficiale dell'azienda.",
     "a1fb": "Corretto: Solo il confronto dell'indirizzo dell'emittente protegge dai token falsi senza valore.",
-    "a2": "Aggiungere subito la linea di fiducia.",
-    "a2fb": "Sbagliato: Aggiungere una linea di fiducia a un emittente non verificato può portare a token senza valore.",
+    "a2": "Aggiungere immediatamente Trustline.",
+    "a2fb": "Errato: un Trustline associato a un emittente non verificato può rendere il Tokens privo di valore.",
     "a3": "Cercare il nome del token su Internet.",
     "a3fb": "Sbagliato: Il solo nome non dice nulla – chiunque può chiamare un token \"BERRY\"."
   },

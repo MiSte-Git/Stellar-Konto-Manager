@@ -1,18 +1,18 @@
 {
   "title": "Multisig Aloittelijoille",
-  "menuTitle": "Monisignatuurin ymmärtäminen",
-  "teaser": "Miksi useita allekirjoituksia, miten kynnysarvot toimivat ja miten SKM auttaa.",
+  "menuTitle": "Multisig:n ymmärtäminen",
+  "teaser": "Miksi tarvitaan useita allekirjoituksia, miten thresholds toimii ja miten SKM auttaa.",
   "why": {
     "title": "Miksi multisig?",
     "text": "Usean allekirjoituksen käyttö vähentää yksittäisten virheiden tai varkauksien riskiä."
   },
   "singleVsMulti": {
     "title": "Single-sig vs. Multisig",
-    "text": "Yksiallekirjoitus = Yksi avain riittää. Moniallekirjoitus = Vaaditaan useita allekirjoituksia (esim. 2 kolmesta)."
+    "text": "Single-sig = Yksi avain riittää. Multisig = Vaaditaan useita allekirjoituksia (esim. 2 kolmesta)."
   },
   "stellarHow": {
-    "title": "Kuinka Stellar toteuttaa moniallekirjoituksen",
-    "text": "Stellar käyttää allekirjoittajia, joilla on painot ja kynnykset. Jokainen toiminto vaatii kynnysarvon mukaisen painon."
+    "title": "Miten Stellar toteuttaa Multisig:n",
+    "text": "Stellar käyttää signers-painotusta ja thresholds-painotusta. Jokainen operaatio vaatii threshold-painotuksen."
   },
   "examples": {
     "title": "Käytännön esimerkkejä",
@@ -25,8 +25,8 @@
     "text": "SKM rakentaa multisig-transaktioita, kerää allekirjoituksia ja tallentaa valmistellut tehtävät."
   },
   "diagram": {
-    "singleVsMulti": "Kaavio: Yksi-allekirjoitus vs. Moniallekirjoitus",
-    "stellarHow": "Kaavio: Allekirjoittaja, Paino, Kynnysarvo",
+    "singleVsMulti": "Kaavio: Single-Sig vs. Multisig",
+    "stellarHow": "Kaavio: Signer, painoarvo, Threshold",
     "skmFlow": "Kaavio: SKM Flow Valmistelu → Allekirjoittaminen → Lähettäminen"
   }
 }

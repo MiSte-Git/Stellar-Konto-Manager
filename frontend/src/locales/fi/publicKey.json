@@ -11,7 +11,7 @@
     "label": "Kohdejulkinen avain",
     "placeholder": "Anna kohdeyleisön julkinen avain"
   },
-  "invalid": "Virheellinen julkinen avain.",
+  "invalid": "Public Key on virheellinen.",
   "submit": {
     "button": "Lähetä"
   },

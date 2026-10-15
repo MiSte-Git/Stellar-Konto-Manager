@@ -8,7 +8,7 @@
   "muxed": "Gestionar subdirecciones",
   "glossary": "Glosario",
   "createAccount": "Crear una nueva cuenta",
-  "multisigEdit": "Editar multifirma",
+  "multisigEdit": "Editar multisig",
   "multisigJobs": "Transacciones multisig abiertas",
   "listAll": "Permisos de mi token",
   "compareTrustlines": "Comparar autorizaciones de tokens",
@@ -16,5 +16,19 @@
   "tokenPurchases": "Compras de tokens",
   "learn": "Cuestionario estelar para principiantes",
   "unknown": "Selección de menú desconocida",
-  "swap": "Buscar e intercambiar tokens"
+  "swap": "Buscar e intercambiar tokens",
+  "wallet": "Wallet",
+  "sidebarLabel": "Navegación principal",
+  "openNavigation": "Abrir navegación",
+  "closeNavigation": "Cerrar navegación",
+  "language": "Idioma",
+  "sections": {
+    "account": "Cuenta",
+    "trade": "Comercio",
+    "reports": "Informes",
+    "trustlines": "Token-Autorizaciones",
+    "advanced": "Avanzado",
+    "learn": "Aprendizaje"
+  },
+  "receive": "Recibir"
 }

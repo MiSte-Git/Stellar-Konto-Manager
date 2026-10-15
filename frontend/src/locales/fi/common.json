@@ -5,7 +5,7 @@
     }
   },
   "asset": {
-    "balance": "Luottosaldo",
+    "balance": "Tase",
     "code": "Omaisuuskoodi",
     "creationDate": "Luotu",
     "issuer": "Liikkeeseenlaskija"
@@ -18,7 +18,7 @@
     },
     "current": "Nykyinen saldo",
     "details": "Yksityiskohdat lohkoketjunselaimissa",
-    "empty": "Ei löytynyt saldoa.",
+    "empty": "Saldoja ei löytynyt.",
     "explorer": {
       "expert": "stellar.expert",
       "stellarchain": "Stellarchain.io",
@@ -36,15 +36,15 @@
         "counterparty": "Vastaanottajan tili",
         "date": "Päivämäärä",
         "direction": "Suunta",
-        "memo": "Muistio",
+        "memo": "Memo",
         "tx": "Tx",
         "txLabel": "Valitettavasti viestisi vaikuttaa olevan puutteellinen. Voisitko ystävällisesti antaa lisää kontekstia tai yksityiskohtia?",
         "type": "Kirjoita"
       },
       "empty": "Ei toimintoja löydetty.",
       "filter": {
-        "memo": "Muistisuodatin",
-        "memoPlaceholder": "Etsitään muistia...",
+        "memo": "Memo-suodatin",
+        "memoPlaceholder": "Etsitään memo...",
         "counterparty": "Vastaanottajan tili",
         "counterpartyPlaceholder": "Suodata vastaanottajan/lähettäjän osoitteen mukaan…"
       },
@@ -203,7 +203,7 @@
       "trustlines": "Näytä Trustline(s)",
       "trustlineCompare": "Vertaa Trustline(s)",
       "balance": "Näytä tilitiedot",
-      "xlmByMemo": "Suodata muistiolla",
+      "xlmByMemo": "Suodata memo:n mukaan",
       "sendPayment": "Lähetä maksu",
       "investedTokens": "Suodata rahakkeet/varat",
       "createAccount": "Luo tili",
@@ -250,7 +250,7 @@
   "badges": {
     "testnet": "Testiverkko"
   },
-  "noIssuerTrustlinesFound": "Ei löydetty luottolinjoja liikkeeseenlaskijalle {{issuer}}.",
+  "noIssuerTrustlinesFound": "Liikkeeseenlaskijalle {{issuer}} ei löytynyt trustlines-tietoa.",
   "option": {
     "add": "Lisää",
     "cancel": "Peruuttaa",
@@ -311,7 +311,7 @@
       "done": "Valmis"
     },
     "wrongMemos": {
-      "failed": "Virhe maksujen latauksessa virheellisellä/tyhjällä muistutuksella."
+      "failed": "Virhe maksujen lataamisessa: memo on virheellinen tai tyhjä."
     }
   },
   "settings": {
@@ -387,7 +387,7 @@
       "deletingProgress": "Poistetaan: {{current}} / {{total}}",
       "success": "Onnistui: {{count}} Trustline(s) poistettu."
     },
-    "skippedDueToBalance": "{{count}} Trustline-palvelua ohitettu (krediittiä on vielä jäljellä)."
+    "skippedDueToBalance": "{{count}} Trustline(s) ohitettu (jäljellä oleva aika)."
   },
   "payment": {
     "send": {
@@ -395,16 +395,16 @@
       "recipient": "Vastaanottaja",
       "amount": "Määrä",
       "asset": "Varallisuus",
-      "memo": "Muistio",
-      "memoType": "Muistion tyyppi",
+      "memo": "Memo",
+      "memoType": "Memo-tyyppi",
       "memoTypes": {
-        "none": "Muistio (ei muistiota)",
-        "text": "Muistion teksti",
-        "id": "Muistio ID",
-        "hash": "Muistiomuistio",
-        "return": "Muistion palautus",
+        "none": "Memo (ei memo)",
+        "text": "Memo teksti",
+        "id": "Memo ID",
+        "hash": "Memo Hash",
+        "return": "Memo Paluu",
         "info": {
-          "none": "Ei muistioita. Käytä tätä, jos vastaanottaja ei odota muistioa.",
+          "none": "Ei memo. Käytä tätä, jos vastaanottaja ei odota memo:ta.",
           "text": "Vapaa teksti enintään 28 tavua. Käytetään usein yksinkertaisissa maksujen kohdistuksissa.",
           "id": "Numeerinen tunniste (uint64). Useat pörssit käyttävät Memo ID:tä talletusten osoittamiseen.",
           "hash": "32 tavun SHA-256-tiiviste (64 merkin pituinen heksadesimaalimerkkijono). Palvelut käyttävät sitä viitteenä.",
@@ -417,10 +417,10 @@
       "baseReserve": "Perusvaraus",
       "extra": "Lisäksi",
       "xlmInOffers": "Sidottu tarjouksiin",
-      "trustlines": "Luottorajat ({{n}})",
+      "trustlines": "Trustlines ({{n}})",
       "lpTrustlines": "LP‑Trustlines",
       "offers": "Avoimet tarjoukset",
-      "signers": "Lisäallekirjoittajat",
+      "signers": "Lisäys Signer",
       "accountData": "Account‑Daten",
       "sponsoring": "Sponsorointi",
       "sponsored": "Sponsoroitu",
@@ -450,18 +450,18 @@
         "body": "Palvelin ei pystynyt vahvistamaan tapahtumaa yksiselitteisesti (aikakatkaisu tai palvelinvirhe). Tarkista tapahtuman tiiviste selaimessa ennen kuin yrität uudelleen.",
         "acknowledge": "Tila tarkistettu – vapauta lähetys uudelleen"
       },
-      "memoFederationHint": "Liiton palvelimelta kopioitu muistio – voit muokata sitä tarvittaessa.",
+      "memoFederationHint": "Memo on haettu federaatiopalvelimelta – voit muokata sitä tarvittaessa.",
       "memoMismatch": {
-        "title": "Tarkista liiton muistio",
-        "textMappable": "Liittovaltion palvelin odottaa muistiinpanoa ”{{expected}}”, mutta nykyinen muistiinpanosi on ”{{current}}”.",
-        "textUnmappable": "Liittovaltion palvelin odottaa muistiinpanoa, jota ei voitu ottaa käyttöön automaattisesti. Nykyinen muistiinpanosi on ”{{current}}”.",
+        "title": "Tarkista liitto memo",
+        "textMappable": "Liittovaltion palvelin odottaa arvon memo olevan \"{{expected}}\", mutta nykyinen memo-arvosi on \"{{current}}\".",
+        "textUnmappable": "Liittovaltion palvelin odottaa memo-arvoa, jota ei voitu soveltaa automaattisesti. Nykyinen memo-arvosi on \"{{current}}\".",
         "empty": "(tyhjä)",
         "sendAnyway": "Lähetä silti",
-        "applyExpected": "Käytä liittovaltion muistion ohjeita"
+        "applyExpected": "Käytä federaatiota memo"
       },
       "trustlineError": {
-        "noTrustline": "Vastaanottajalla ei ole vielä luottolinjaa kohteelle {{asset}} – maksu epäonnistuisi.",
-        "notAuthorized": "Vastaanottajalla on luottoraja {{asset}}:lle, mutta myöntäjä ei ole vielä hyväksynyt sitä – maksu epäonnistuisi."
+        "noTrustline": "Vastaanottajalla ei ole vielä trustline-avainta kohteelle {{asset}} – maksu epäonnistuisi.",
+        "notAuthorized": "Vastaanottajalla on trustline-oikeus kohteeseen {{asset}}, mutta myöntäjä ei ole vielä hyväksynyt sitä – maksu epäonnistuisi."
       },
       "muxedActivationCapture": "Tili on aktivoitu; lisäksi perittiin vähäinen lisämaksu, jotta myös yhdistetty tunnus (muxed ID) kirjattiin lohkoketjuun.",
       "muxedActivationCaptureXdr": "Tämä tapahtuma koostuu kahdesta toiminnosta (tilin aktivointi + muxed-allokaatio), minkä vuoksi siitä peritään kaksi transaktiomaksua.",
@@ -506,8 +506,8 @@
         "ex1": "Yritysmaksut: Jokainen työntekijä saa oman Muxed‑ID:n, jotta palkanmaksut voidaan yksiselitteisesti kohdistaa.",
         "ex2": "Pörssit tai alustat: jokainen käyttäjä saa oman Muxed-ID:n, jotta talletukset yhteisen lompakon kautta kirjataan automaattisesti oikein.",
         "ex3": "Hankkeet tai alatilit: Organisaatio voi kohdentaa budjetteja tai tuloja yksittäisille hankkeille.",
-        "ex4": "Asiakaskohdistus: yksi M-osoite asiakasta kohden; ID vastaa asiakas-ID:tä – maksut voidaan kohdistaa selkeästi myös ilman muistiinpanoa.",
-        "ex5": "Palvelut ilman muistiinpanoja: Erittele talletukset, kun palvelu ei tue muistiinpanoja.",
+        "ex4": "Asiakastiedot: Yksi M-osoite asiakasta kohti; tunniste vastaa asiakastunnusta – maksut voidaan kohdistaa selkeästi, vaikka memo puuttuisi.",
+        "ex5": "Palvelut, joissa ei ole memos: Erottele talletukset toisistaan, kun palvelu ei tue memos:ta.",
         "ex6": "Maksut/palkanmaksut: yksi M-osoite työntekijää/kumppania kohden sisäistä kirjanpitoa ja raportointia varten.",
         "ex7": "Kauppa/tilaukset: yksi M-osoite tilausta kohden; palautukset voidaan kohdistaa tilaukseen.",
         "ex8": "Osastot/Kustannuspaikat: Tunnukset kustannuspaikkoina; maksuja ryhmitellään automaattisesti alueittain.",
@@ -636,11 +636,11 @@
         "oldestFailed": "Epäonnistuttiin selvittämään vanhinta päivämäärää."
       },
       "indexIterFailed": "Välimuistin indeksin iteraatio epäonnistui.",
-      "memoNormBackfillFailed": "Alkuperäinen maksujen lataaminen normalisoiduille muistiinpanoille epäonnistui",
+      "memoNormBackfillFailed": "memos:n normalisoitujen maksujen alkuperäinen lataus epäonnistui",
       "openFailed": "Paikallista välimuistia ei voitu avata.",
       "readFailed": "Välimuistin lukeminen epäonnistui",
-      "rehydrateFailed": "Epäonnistui puuttuvien muistioiden lataaminen",
-      "rehydrateWriteFailed": "Muistilappujen kirjoittaminen välimuistiin epäonnistui.",
+      "rehydrateFailed": "Puuttuvaa memos-tiedostoa ei voitu ladata",
+      "rehydrateWriteFailed": "memos:n tallentaminen välimuistiin epäonnistui.",
       "writeFailed": "Välimuistiin kirjoittaminen epäonnistui"
     },
     "connection": {
@@ -652,13 +652,13 @@
     "horizon": {
       "paymentsFetch": "Virhe maksujen lataamisessa Horizonista"
     },
-    "loadTrustlines": "Trustlinesia ei voitu ladata. Yritä uudelleen.",
-    "loadTrustlinesFailed": "Luottolinjojen lataaminen epäonnistui.",
+    "loadTrustlines": "Trustlines:tä ei voitu ladata. Yritä uudelleen.",
+    "loadTrustlinesFailed": "trustlines:n lataaminen epäonnistui.",
     "loadTrustlinesNotFound": "Tili verkostossa '{{network}}' ei löydy.",
     "accountNotFoundInNetwork": "Ei löydy '{{net}}'istä!",
-    "op_invalid_limit": "Trustlinea ei voi poistaa. Sillä saattaa vielä olla saldoa tai avoimia velvoitteita.",
+    "op_invalid_limit": "Trustline:tä ei voi poistaa. Siinä saattaa vielä olla saldoa tai maksamattomia velvoitteita.",
     "query": {
-      "invalidMemo": "Virheellinen muistio",
+      "invalidMemo": "Virheellinen memo",
       "invalidRange": "Aikaväli on virheellinen (Alku > Loppu)",
       "invalidTime": "Virheellinen aikanmääritys"
     },
@@ -678,8 +678,8 @@
       "title": "Tapahtumavirhe"
     },
     "trustline": {
-      "submitFailed": "Virhe luottorajan poistamisessa.",
-      "unknown": "Tuntematon virhe luottolinjan poistamisen aikana."
+      "submitFailed": "Virhe poistettaessa trustline.",
+      "unknown": "Tuntematon virhe poistettaessa trustline-muuttujaa."
     },
     "xlmByMemo": {
       "aborted": "Toiminto peruutettu käyttäjän toimesta.",
@@ -687,7 +687,7 @@
       "dateInvalid": "Virheellinen päivämäärä",
       "dateRange": "Virheellinen päivämääräväli",
       "failedUnknown": "Tuntematon virhe",
-      "memoInvalid": "Virheellinen muistiinpano",
+      "memoInvalid": "Virheellinen memo",
       "paymentsFetch": "Virhe maksujen lataamisessa",
       "serverInvalid": "Virheellinen palvelin"
     },
@@ -701,7 +701,7 @@
       "destination": "Tavoitelompakko",
       "issuer": "Lähetin",
       "label": "Merkintä",
-      "memo": "Muistio",
+      "memo": "Memo",
       "payments": "Maksut",
       "date": "Päivämäärä",
       "token": "Poletin"
@@ -711,12 +711,12 @@
       "label": "Desimaalit:"
     },
     "filter": {
-      "memoPlaceholder": "Suodata muistiolla, lompakon osoitteella tai tunnisteella",
+      "memoPlaceholder": "Suodata memo:n, wallet:n osoitteen tai tunnisteen mukaan",
       "tokenPlaceholder": "Suodata tokenin mukaan (CODE:ISSUER)"
     },
     "hintEnterPublicKey": "Anna ensin julkinen avain.",
     "item": {
-      "memo": "Muistio: \"{{memo}}\" (Maksut: {{occurrences}})",
+      "memo": "Memo: \"{{memo}}\" (Maksut: {{occurrences}})",
       "token": "Token: {{token}} (Maksut: {{occurrences}})",
       "tokenShort": "Token: {{token}}"
     },
@@ -731,7 +731,7 @@
     },
     "view": {
       "label": "Suodata:",
-      "memo": "Muistiot",
+      "memo": "Memos",
       "token": "Token (ostettu määrä)"
     },
     "toggles": {
@@ -742,7 +742,7 @@
       "qsiListSet": "Huom: Löydät GF-listan kohdasta Asetukset → Luotetut lompakot (QSI).",
       "pageTime": "Sivun lataaminen kestää noin 0,2 sekuntia → 100 sivua ≈ 20 sekuntia → 1000 sivua ≈ 200 sekuntia (≈ 3:20 minuuttia)."
     },
-    "walletCapInfo": "Huomaa: Lompakko voi sisältää enintään 1000 luottolinjaa.",
+    "walletCapInfo": "Huomautus: Yksi wallet voi sisältää enintään 1000 trustlines:ta.",
     "action": {
       "load": "Ladataan"
     },
@@ -757,55 +757,55 @@
   },
   "multisigEdit": {
     "confirm": {
-      "removeSigner": "Poistetaanko allekirjoittaja todella?"
+      "removeSigner": "Signer Haluatko todella poistaa sen?"
     },
     "currentConfig": "Nykyinen / Suunniteltu kokoonpano",
     "error": {
-      "thresholdTooHigh": "Kynnykset eivät saa ylittää painojen summaa.",
+      "thresholdTooHigh": "Thresholds ei saa ylittää painojen summaa.",
       "safetyTitle": "Turvatarkastus estetty",
       "safetyBlocked": "Turvatarkistus estetty: Ratkaise yllä olevat varoitukset.",
-      "noActiveSigners": "Ainakin yksi aktiivinen allekirjoittaja vaaditaan. Ehdotus: Aseta master-paino > 0 tai lisää allekirjoittaja, jonka paino > 0.",
-      "noEd25519Signers": "Vähintään yksi allekirjoittaja, jonka painoarvo on > 0, vaaditaan. Ehdotus: Lisää pääpainoa tai lisää allekirjoittaja.",
-      "masterZeroInsufficientHigh": "Pääpaino on 0 eivätkä allekirjoittajien painotusten summa täytä korkeaa kynnystä (Summa: {{sum}}, Korkea: {{high}}). Ehdotus: Alenna kynnyksiä tai lisää painotuksia/allekirjoittajia.",
-      "thresholdHighUnreachable": "Korkea kynnys ei ole saavutettavissa (Summa: {{sum}}, Korkea: {{high}}). Suositus: alenna kynnystä tai lisää painoja/allekirjoittajia.",
-      "thresholdMedUnreachable": "Keskiraja ei saavutettavissa (Summa: {{sum}}, Keskiraja: {{med}}). Ehdotus: Laske kynnystä tai lisää painoja/allekirjoittajia.",
-      "specialSignerLastHigh": "Special-Signer (hashX/preAuthTx) ei saisi olla ainoa korkea auktoriteetti. Ehdotus: lisää allekirjoittajia, joiden painoarvo on >= korkea.",
-      "setOptionsNotSignable": "SetOptionsia ei voitaisi allekirjoittaa muutoksen jälkeen (Allekirjoittajan summa: {{sum}}, Korkea: {{high}}). Ehdotus: lisää allekirjoittajan painoarvoa tai alenna korkeaa arvoa."
+      "noActiveSigners": "Vaaditaan vähintään yksi aktiivinen Signer. Ehdotus: Aseta pääpainotusarvo suuremmaksi kuin 0 tai lisää Signer, jonka painotusarvo on suurempi kuin 0.",
+      "noEd25519Signers": "Vaaditaan vähintään yksi Signer, jonka painoarvo on suurempi kuin 0. Ehdotus: Lisää pääpainoa tai lisää Signer.",
+      "masterZeroInsufficientHigh": "Pääpaino on 0, eikä signer-painojen summa täytä korkeaa threshold-arvoa (Summa: {{sum}}, Korkein: {{high}}). Ehdotus: Laske thresholds-arvoa tai lisää painoja/signers.",
+      "thresholdHighUnreachable": "Korkea threshold -arvo, jota ei voida saavuttaa (Summa: {{sum}}, Korkein: {{high}}). Ehdotus: pienennä threshold -arvoa tai lisää painotuksia/signers -arvoa.",
+      "thresholdMedUnreachable": "Med-threshold ei ole saavutettavissa (Summa: {{sum}}, Med: {{med}}). Ehdotus: Pienennä threshold:ta tai lisää painoja/signers:a.",
+      "specialSignerLastHigh": "Special-Signer (hashX/preAuthTx) ei saisi olla ainoa korkean auktoriteetin lähde. Ehdotus: Lisätään Signer painotuksella >= High.",
+      "setOptionsNotSignable": "SetOptions-funktio ei olisi allekirjoitettavissa muutoksen jälkeen (Signer summa: {{sum}}, yläraja: {{high}}). Ehdotus: Lisää Signer-painoa tai laske ylärajaa."
     },
     "warning": {
       "safetyTitle": "Tietoturvavaroitukset",
-      "highSingleSigner": "Vain yksi allekirjoittaja saavuttaa korkean kynnyksen. Suositus: vähintään kaksi riippumatonta allekirjoittajaa.",
-      "medSingleSigner": "Kynnysarvo > 0, mutta vain yksi allekirjoittaja on läsnä. Suositus: lisää toinen allekirjoittaja."
+      "highSingleSigner": "Vain yksi Signer täyttää korkean threshold-vaatimuksen. Suositus: vähintään kaksi toisistaan riippumatonta Signer:a.",
+      "medSingleSigner": "Med threshold > 0, mutta Signer-arvoja on vain yksi. Suositus: Lisää toinen Signer-arvo."
     },
     "securityGuarantee": {
       "title": "🔒 SKM-turvatakuu (Multisig)",
-      "text": "Stellar Account Manager estää kaikki teknisistä syistä johtuvat tilin lukitukset, jotka voivat johtua virheellisestä monen allekirjoittajan (multisig) määrityksestä.\n\nErityisesti SKM estää seuraavat tilanteet:\n- Pääavaimen deaktivoitumisen, kun yhtään allekirjoittajaa ei tavoiteta\n- Tavoittamattomat kynnysarvot (matala / keskitaso / korkea)\n- Järjestysvirheet allekirjoittajia tai kynnysarvoja muutettaessa\n- Viimeisen kelvollisen korkean tason allekirjoittajan poistaminen\n- Monen allekirjoituksen asetukset, joissa SetOptions-komentoa ei enää voida allekirjoittaa\n- Umpikujat, jotka johtuvat siitä, että viimeisenä allekirjoittajana on hashX tai preAuthTx\n\nSKM käyttää ainoastaan ed25519-allekirjoittajia. Muita allekirjoittajatyyppejä varten käytä {linkki}.\n\nSKM takaa:\n- Jokainen vahvistettu muutos jättää vähintään yhden kelvollisen polun avoimeksi tilinhallinnan jatkamista varten\n- SetOptions-toimintoon pääsee edelleen käsiksi muutoksen jälkeen\n\nSeuraavia ei voida taata (järjestelmän rajoitusten vuoksi):\n- Salaisien avainten tai laitteistolompakoiden katoaminen\n- Ulkoisten allekirjoittajien saatavuuden puuttuminen tai toimintahäiriöt\n\nJohtopäätös:\nSKM tarjoaa luotettavan suojan konfiguraation lukkiutumista vastaan.\nOrganisaatiota koskevat riskit esitetään läpinäkyvästi, mutta niitä ei voida teknisesti estää.",
+      "text": "Stellar Account Manager estää kaikki teknisistä syistä johtuvat tilin lukitukset, jotka voivat johtua virheellisestä Multisig-määrityksestä.\n\nErityisesti SKM estää seuraavat:\n- Pääavaimen deaktivoinnin ilman saavutettavissa olevaa Signer-arvoa\n- Saavuttamaton thresholds (matala / keskitaso / korkea)\n- Järjestysvirheet Signer- ja Threshold-muutoksissa\n- Viimeisen voimassa olevan korkean Signers:n poistaminen\n- Multisig-asetukset, joissa SetOptions-komentoa ei voi enää allekirjoittaa\n- Umpikujat, jotka johtuvat siitä, että hashX tai preAuthTx on viimeinen Signer\n\nSKM asettaa vain ed25519-Signer. Muiden Signer-tyyppien osalta käytä {linkki}.\n\nSKM takaa:\n- Jokainen vahvistettu muutos jättää vähintään yhden kelvollisen polun auki tilinhallinnan jatkamista varten\n- SetOptions-toimintoon pääsee edelleen käsiksi muutoksen jälkeen\n\nEi voida taata (järjestelmän rajoitusten vuoksi):\n- Secret Keys:n tai laitteistopohjaisen Wallets:n menetys\n- Ulkoisen Signer:n saatavuuden puuttuminen tai vika\n\nJohtopäätös:\nSKM tarjoaa luotettavan suojan konfiguraation lukkiutumista vastaan.\nOrganisaatiolliset riskit esitetään läpinäkyvästi, mutta niitä ei voida teknisesti estää.",
       "linkLabel": "lab.stellar.org"
     },
-    "hint": "Lataa olemassa oleva tili, säädä allekirjoittajia, painotuksia, pääpainoa ja kynnysarvoja ja tallenna muutokset.",
+    "hint": "Lataa olemassa oleva tili, säädä signers, painot, pääpaino ja thresholds ja tallenna muutokset.",
     "load": "Ladataan",
-    "loaded": "Ladattu. Lisäallekirjoittajia: {{count}}",
+    "loaded": "Ladattu. Lisätty signers: {{count}}",
     "menu": "Muokkaa multisig-tiliä",
-    "menuHint": "Tietyn tilin allekirjoittajien/kynnyksien säätäminen",
-    "noteMaxSigners": "Huom: Stellar sallii enintään 20 ylimääräistä allekirjoittajaa tiliä kohti.",
-    "signerTypeNote": "Huomio: SKM käyttää vain ed25519-allekirjoittajia. HashX/preAuthTx varten, käytä",
+    "menuHint": "Olemassa olevan tilin signers/thresholds-asetusten muuttaminen",
+    "noteMaxSigners": "Huomautus: Stellar sallii enintään 20 ylimääräistä Signer-tunnusta tiliä kohden.",
+    "signerTypeNote": "Huomautus: SKM käyttää ainoastaan ed25519-Signer:tä. HashX/preAuthTx:n yhteydessä käytä",
     "signerTypeLink": "lab.stellar.org",
     "reload": "Lataa uudelleen",
     "save": "Tallenna muutokset",
     "saved": "Muutokset tallennettu. TX: {{hash}}",
-    "signers": "Allekirjoittaja (ed25519)",
+    "signers": "Signer (ed25519)",
     "weight": "Painotus",
     "masterWeight": "Painonhallinta",
     "title": "Muokkaa multisig-tiliä",
     "validation": {
-      "signerKeyHint": "Huom: allekirjoittajien on aloitettava kirjaimella \"G\" (ed25519 public key).",
-      "signerKeyInvalid": "Virheellinen allekirjoittajan osoite. Odotetaan G…-osoitetta (ed25519)."
+      "signerKeyHint": "Huomautus: Signer:n on alettava kirjaimella ”G” (ed25519 Public Key).",
+      "signerKeyInvalid": "Virheellinen Signer-osoite. Odotetaan G…-osoitetta (ed25519)."
     }
   },
   "navigation": {
     "back": "Takaisin",
     "backToMainMenu": "Takaisin valikkoon",
-    "backToPublicKey": "Paluu julkisen avaimen syöttöön",
+    "backToPublicKey": "Takaisin Public-Key-merkintään",
     "backToTop": "Takaisin alkuun"
   },
   "publicKey": {
@@ -814,11 +814,11 @@
       "error": "Virheellinen kohdeavain.",
       "input": "Syötä kohdelompakon osoite"
     },
-    "label": "Ole hyvä ja syötä federoinnin lähdeosoite tai julkinen avain:",
+    "label": "Syötä lähdefederaation osoite tai Public Key:",
     "load": "Laden…",
     "placeholder": "esim.",
     "source": "Lähdelompakon osoite",
-    "invalid": "Virheellinen julkinen avain.",
+    "invalid": "Public Key on virheellinen.",
     "submit": {
       "button": "Lähetä"
     },
@@ -827,16 +827,16 @@
     "historyPlaceholder": "Valitse viimeksi käytetty lompakko"
   },
   "secretKey": {
-    "cleared": "Salainen avain on poistettu.",
-    "empty": "Salainen avain -kenttä on tyhjä.",
-    "info": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto ei KOSKAAN tallenna salaisaa avainta!\n\nTäällä näkyvä salainen avain on olemassa vain selaimessasi (paikallisesti muistissa). Heti kun päivität sivun tai poistut sivulta, se katoaa lopullisesti.\n\nKopioi tai kirjoita salainen avain muistiin heti sen luomisen jälkeen, ennen kuin suljet sivun.\n\nTarkistus: Voit käyttää selaimesi kehittäjätyökaluja (F12 → Verkko) varmistaaksesi, ettei salainen avain lähetetä ulkoisesti. Vain allekirjoitetut transaktiot lähetetään – salainen avaimesi ei koskaan.",
-    "invalid": "Virheellinen salainen avain.",
-    "label": "Syötä lähteen salainen avain (S-Key)",
-    "mismatch": "Salainen avain ei vastaa julkista osoitetta.",
+    "cleared": "Secret Key on poistettu.",
+    "empty": "Secret Key-kenttä on tyhjä.",
+    "info": "⚠️ TÄRKEÄÄ: Tämä verkkosivusto ei KOSKAAN tallenna Secret Key-tunnustasi!\n\nTäällä näkyvä Secret Key on olemassa vain selaimessasi (paikallisesti muistissa). Heti kun päivität sivun tai poistut sivulta, se katoaa lopullisesti.\n\nKopioi tai kirjoita muistiin Secret Key heti sen luomisen jälkeen, ennen kuin suljet sivun.\n\nVarmistus: Voit käyttää selaimesi kehittäjätyökaluja (F12 → Verkko) varmistaaksesi, ettei Secret Key-arvoa lähetetä ulkoisesti. Vain allekirjoitetut transaktiot lähetetään – Secret Key-arvoasi ei koskaan lähetetä.",
+    "invalid": "Secret Key on virheellinen.",
+    "label": "Syötä lähdekoodi Secret-Key (S-avain)",
+    "mismatch": "Secret Key ei täsmää julkisen osoitteen kanssa.",
     "placeholder": "esim.",
     "valid": "✅ Salainen avain on voimassa.",
     "remember": {
-      "label": "Muista tämän istunnon salainen avain.",
+      "label": "Secret Key Muista tämä tämän oppitunnin osalta",
       "hint": "Kun ominaisuus on käytössä, avain tallennetaan, kunnes välilehti suljetaan, ja sitä käytetään uudelleen tuleviin maksuihin."
     }
   },
@@ -860,7 +860,7 @@
       "title": "Lompakko",
       "original": "Wallet",
       "short": "Digitaalinen lompakko, joka hallitsee avaimiasi.",
-      "desc": "Lompakko on digitaalinen kukkarosi. Se hallitsee avaimia, joita tarvitset tilillesi pääsyyn ja tapahtumien lähettämiseen. Lompakko voi olla ohjelma tai sovellus, tai jopa vain paperin pala, jossa on yksityinen avain."
+      "desc": "Wallet on digitaalinen wallet. Se hallinnoi avaimia, joita tarvitset tilillesi pääsemiseksi ja tapahtumien lähettämiseksi. Wallet voi olla ohjelma, sovellus tai jopa pelkkä paperilappu, johon on kirjoitettu Secret Key."
     },
     "account": {
       "title": "Tili",
@@ -875,16 +875,16 @@
       "desc": "G-osoite on Stellarin tilin pääosoite. Se alkaa kirjaimella G. Annat sen muille, jotta he voivat lähettää sinulle jotain."
     },
     "publicKey": {
-      "title": "Julkinen avain",
+      "title": "Public Key",
       "original": "Public Key",
       "short": "Osoite, jonka voit jakaa; Stellarissa yleensä G-osoite.",
-      "desc": "Julkinen avain on osoite, jonka voit näyttää. Stellarissa tämä on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
+      "desc": "Public Key on osoite, jonka voit jakaa. Stellar-verkossa tämä on G-osoite. Muut käyttävät sitä lähettääkseen sinulle rahaa."
     },
     "privateKey": {
-      "title": "Salainen avain",
+      "title": "Secret Key",
       "original": "Secret Key",
       "short": "Tilin salasana – älä koskaan jaa sitä.",
-      "desc": "Salainen avain on tilisi salasana. Kenellä tahansa, jolla on tämä avain, voi siirtää rahojasi. Älä koskaan jaa sitä."
+      "desc": "Secret Key on tilisi salasana. Kuka tahansa, jolla on tämä avain, voi siirtää rahojasi. Älä koskaan paljasta sitä kenellekään."
     },
     "addressFederation": {
       "title": "Liiton osoite",
@@ -899,16 +899,16 @@
       "desc": "Aliosoite (M-osoite, virallisesti ”Muxed Account”) viittaa olemassa olevaan Stellar-tiliin, mutta sillä on myös oma numeronsa (tunnus). Tämän ansiosta voit esimerkiksi erottaa toisistaan useita henkilöitä tai osastoja, jotka kuuluvat samaan G-osoitteeseen. Teknisesti varat kuuluvat edelleen päätilille."
     },
     "multisig": {
-      "title": "Moniallekirjoitus",
+      "title": "Multisig",
       "original": "Multi‑Sig",
       "short": "Tärkeät toimet vaativat enemmän kuin allekirjoituksen.",
       "desc": "Multi-Sig tarkoittaa useampia allekirjoituksia. Tärkeä toimenpide vaatii useamman kuin yhden avaimen. Esimerkiksi sinun ja toisen avaimen on molempien hyväksyttävä ennen kuin jotain lähetetään. Tämä tekee varkaudesta vaikeampaa."
     },
     "trustline": {
-      "title": "Luottolinja",
+      "title": "Trustline",
       "original": "Trustline",
       "short": "Suostumus pitää hallussaan tietyn liikkeeseenlaskijan tokenia.",
-      "desc": "Luottolimiitti on kuin \"Kyllä, hyväksyn tämän tokenin.\" Luomalla luottolimiitin osoitat, että tilisi on valmis vastaanottamaan tietyn tokenin tietyn liikkeeseenlaskijan kautta. Ilman luottolimiittiä et voi vastaanottaa kyseistä tokenia.\n\nEsimerkki: Luottolimiitti määritetään muodolla KOODI:LIKKEESEENLASKIJA. EURT-tokenille liikkeeseenlaskijalta GDUKMGUGDZQK6Y… se on EURT:GDUKMGUGDZQK6Y…."
+      "desc": "trustline on kuin ”Kyllä, hyväksyn tämän token:n”. Määrittämällä trustline:n ilmoitat, että tilisi on valmis pitämään hallussaan tietyn liikkeeseenlaskijan tiettyä token:ää. Ilman trustline:tä et voi vastaanottaa kyseistä token:ta.\n\nEsimerkki: trustline määritetään muodossa CODE:ISSUER. Liikkeeseenlaskijan GDUKMGUGDZQK6Y… EURT-arvopaperin kohdalla se on EURT:GDUKMGUGDZQK6Y…."
     },
     "token": {
       "title": "Tunnus",
@@ -941,16 +941,16 @@
       "desc": "Julkinen harjoitusverkko. Tokeneilla ei ole todellista arvoa. Ihanteellinen oppimiseen ja kokeilemiseen ilman riskiä."
     },
     "memo": {
-      "title": "Muistio",
+      "title": "Memo",
       "original": "Memo",
       "short": "Lyhyt huomautus tapahtumassa.",
-      "desc": "Muistio on pieni viesti, jonka voit lähettää yhdessä tapahtuman kanssa. Usein pörssi vaatii tietyn muistion tietääkseen, kenelle rahat kuuluvat."
+      "desc": "memo on lyhyt viesti, jonka voi lähettää transaktion mukana. Usein pörssi vaatii tietyn memo:n selvittääkseen, kenelle rahat kuuluvat."
     },
     "transaction": {
       "title": "Tapahtuma",
       "original": "Transaction",
-      "short": "Toiminta lohkoketjussa, esim. maksu tai luottolimiitti.",
-      "desc": "Tapahtuma on toiminto lohkoketjussa, kuten rahan lähettäminen tai luottolimiitin perustaminen. Tapahtuma tallennetaan pysyvästi, kun se on vahvistettu."
+      "short": "Lohkoketjussa suoritettava toiminto, esim. maksu tai trustline.",
+      "desc": "Transaktio on lohkoketjussa suoritettu toiminto, kuten rahan lähettäminen tai trustline:n luominen. Transaktio tallennetaan pysyvästi, kun se on vahvistettu."
     },
     "fee": {
       "title": "Maksu",
@@ -1016,7 +1016,7 @@
   },
   "trustline": {
     "all": "Näytä Trustline(s)",
-    "compare": "Vertaa Trustlinea(s)",
+    "compare": "Vertaa Trustline(s)",
     "delete": "Poista Trustline(s)",
     "deleted": {
       "mode": {
@@ -1024,27 +1024,27 @@
         "realWarning": "Huomio: Aito Trustline(s) poistetaan",
         "simulation": "Simulointitila"
       },
-      "notFound": "Poistettavia Trustlineja ei löytynyt – kaikilla on edelleen saldoa.",
+      "notFound": "Poistettavia trustlines-tilejä ei löytynyt – kaikilla on edelleen saldo.",
       "resultText": "Lukumäärä: {{count}} • Tila: {{mode}}",
-      "resultTitle": "Poistettu luottolinja (s)",
-      "simulated": "Simulaatio: {{count}} luottolinjaa poistettaisiin.",
+      "resultTitle": "Poistettuja Trustline(s)",
+      "simulated": "Simulointi: {{count}} Trustlines poistettaisiin.",
       "success": "Erfolg: {{count}} Trustline(s) poistettu."
     },
     "destination": {
-      "label": "Syötä kohdejulkinen avain:",
+      "label": "Syötä kohde Public-Key:",
       "placeholder": "esim."
     },
     "noDuplicates": "Ei löydetty päällekkäisiä Trustlines(s) -yhteyksiä.",
-    "nonZeroBalance": "Tätä luottorajaa ei voida poistaa, koska sillä on vielä saldoa.",
-    "notFound": "Ei Trustlinea(s) löydetty.",
+    "nonZeroBalance": "Tätä trustline:tä ei voi poistaa, koska sillä on vielä saldoa.",
+    "notFound": "Trustline-merkintöjä ei löytynyt.",
     "onlyZeroBalanceInfo": "Vain sellaiset trustlines, joiden saldo on 0, voidaan poistaa.",
-    "showSecret": "Näytä salainen avain."
+    "showSecret": "Näytä Secret Key"
   },
   "deleted": {
     "deletingProgress": "Poistetaan: {{current}} / {{total}}",
     "success": "Onnistui: {{count}} Trustline(s) poistettu."
   },
-  "skippedDueToBalance": "{{count}} Trustline-palvelua ohitettu (krediittiä on vielä jäljellä).",
+  "skippedDueToBalance": "{{count}} Trustline(s) ohitettu (jäljellä oleva aika).",
   "xlmByMemo": {
     "action": {
       "calculate": "Laskea",
@@ -1057,7 +1057,7 @@
     "debug": {
       "incoming": "Saapuva – kenelle: {{toMe}}, luo→minulle: {{createToMe}}, alkuperäinen→minulle: {{nativeInToMe}}",
       "incomingOverview": "Syötteet: {{total}} • Osallistuvat lompakot: {{unique}}",
-      "memo": "Muistiot ikkunassa: {{any}} • tarkat muistiot: {{exact}}",
+      "memo": "Memos ikkunassa: {{any}} • tarkka memos: {{exact}}",
       "types": "Tyypit – maksu: {{pay}}, polku: {{path}}, luo: {{create}}, muu: {{other}}"
     },
     "export": {
@@ -1070,13 +1070,13 @@
       "failed": "CSV-vienti epäonnistui: {{detail}}"
     },
     "memo": {
-      "label": "Muistion haun teksti (substring, case sensitive)",
-      "placeholder": "Muistio (substring, case-sensitive)"
+      "label": "Memo hakuteksti (osajono, kirjainkoko huomioidaan)",
+      "placeholder": "Memo (osamerkkijono, kirjainkokoa erottava)"
     },
     "overviewLine": "Maksutositteet: {{total}} • osalliset lompakot: {{unique}}",
     "page": {
       "noPublicKey": "Anna ensin julkinen avain tai lataa tili uudelleen.",
-      "title": "XLM-saldo muistiinpanon mukaan"
+      "title": "XLM-saldon määrä memo:n mukaan"
     },
     "result": {
       "label": "Kokonaissumma:",
@@ -1084,10 +1084,10 @@
     },
     "summary": {
       "amount": "Yhteensä: {{amount}} XLM",
-      "correctCount": "Merkinnät oikealla muistilapulla: {{n}}",
+      "correctCount": "Vastaukset, joissa on oikea memo: {{n}}",
       "count": "Määrä: {{n}}",
       "label": "Vertailu (all inputs)",
-      "otherCount": "Merkinnät, joiden muistiot ovat virheellisiä/puuttuvat: {{n}}",
+      "otherCount": "Tietueet, joissa memo on virheellinen tai puuttuu: {{n}}",
       "unique": "Ainutlaatuiset lompakot (kaikki): {{n}}",
       "uniqueWallets": "Ainutlaatuiset lompakot: {{n}}"
     },
@@ -1095,13 +1095,13 @@
       "setToNow": "Aseta nykyinen aika",
       "setToNowHint": "Aseta aika-kenttä nykyiseen aikaan."
     },
-    "title": "XLM yhteensä muistion mukaan",
+    "title": "XLM:n kokonaismäärä memo:n mukaan",
     "topLargest": {
       "button": "20 parasta merkintää (Memo)",
       "clipboard": "Kopioi leikepöydälle",
       "csv": "Lataa CSV",
       "scanning": "… skannaa suurimpia saapuvia",
-      "title": "Muistion 20 parasta merkintää ajanjaksolta"
+      "title": "memo:n 20 suosituinta hakutulosta kyseisellä ajanjaksolla"
     },
     "tz": {
       "cdt": "CDT (UTC−5)",
@@ -1114,21 +1114,21 @@
       "window": "Käytetty UTC-aikaväli: {{from}} → {{to}} (loppuaikaa lukuun ottamatta)"
     },
     "wrongMemos": {
-      "button": "Näytä lompakot, joissa on virheellinen/tyhjä muistiinpano",
+      "button": "Näytä wallets, kun memo on virheellinen tai tyhjä",
       "clipboard": "Kopioi leikepöydälle",
       "columns": {
         "amount": "Määrä",
         "created_at": "Luotu",
         "from": "Alkaen",
-        "memo": "Muistio",
+        "memo": "Memo",
         "tx_hash": "Tapahtuman tiiviste"
       },
       "csv": "Lataa CSV",
-      "failed": "Virhe maksujen lataamisessa väärillä/tyhjillä muistioilla.",
-      "hint": "Suodattaa saapuvat maksut ajanjakson aikana ja näyttää lähettäjät, joilla on virheellisiä/tyhjiä muistioita.",
-      "scanning": "… skannaa vääriä/tyhjiä muistioita",
+      "failed": "Virhe maksujen lataamisessa: memo on virheellinen tai tyhjä.",
+      "hint": "Suodattaa kyseisen ajanjakson aikana saapuneet maksut ja näyttää lähettäjät, joiden memos-kenttä on virheellinen tai tyhjä.",
+      "scanning": "… skannaus virheellinen/tyhjä memos",
       "summary": "Määrä: {{count}} • Yhteensä: {{sum}} XLM • Yksilölliset lompakot: {{unique}}",
-      "title": "Virheelliset/Tyhjänä olevat muistiot aikajakson aikana"
+      "title": "Virheellinen/tyhjä Memos ajanjaksossa"
     }
   },
   "wallet": {
@@ -1174,7 +1174,7 @@
     },
     "lesson5": {
       "title": "Send & Receive",
-      "goal": "Transaktioiden ja luottorajojen toiminnan ymmärtäminen",
+      "goal": "Transaktioiden toiminnan ymmärtäminen ja trustlines",
       "task": "Suorita testilähetys ja tarkastele maksua.",
       "learningOutcome": "Jokaisesta tapahtumasta aiheutuu pieni maksu; trustline = lupa vastaanottaa.",
       "reward": "⭐ 2 – Trustline-aloittelija"
@@ -1210,7 +1210,7 @@
     "lesson10": {
       "title": "Harjoittelu SKM:n kanssa",
       "goal": "Opittujen taitojen soveltaminen käytännössä",
-      "task": "Luo tili testiverkkoon, aktivoi se, aseta luottolimiitti ja lähetä tokeneja.",
+      "task": "Luo tili testnet:ssä, aktivoi se, aseta trustline ja lähetä tokens.",
       "learningOutcome": "Jäljitä tapahtuman tekniset prosessit.",
       "reward": "⭐ 3 – Blockchain-pilotti"
     },
@@ -1242,5 +1242,11 @@
     "switchToBase": "Vaihda perustiliin",
     "guardTitle": "Muxed-tunnus on vain luku -muotoinen",
     "guardText": "Tämän toiminnon suorittaminen edellyttää Perus-G-tiliä. Vaihda perustiliin jatkaaksesi."
+  },
+  "xlmPrice": {
+    "source": "Lähde: CoinGecko",
+    "updated": "Päivitetty {{time}}",
+    "pair": "XLM:n valuuttakurssin valuutta",
+    "unavailable": "Kurssia ei ole tarjolla"
   }
 }

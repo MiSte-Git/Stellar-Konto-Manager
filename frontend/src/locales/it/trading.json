@@ -22,7 +22,7 @@
       "columns": {
         "code": "Codice",
         "issuer": "Emittente",
-        "numAccounts": "Conti",
+        "numAccounts": "Trustlines",
         "amount": "Importo totale",
         "domain": "Dominio",
         "toml": "TOML",
@@ -31,11 +31,11 @@
       "count": "Gettoni trovati: {{count}}",
       "qualityHint": "Nota: le Trustlines, insieme al dominio e al TOML, sono più significative. L'importo totale è indicato nei dettagli, ma non costituisce un indicatore di autenticità.",
       "columnHelp": {
-        "numAccounts": "Numero di linee fiduciarie/conti secondo Horizon.",
+        "numAccounts": "Numero di trustlines/account secondo Horizon.",
         "amount": "Importo totale di questa voce di bilancio riportato da Horizon. Se Horizon restituisce dei \"buckets\" di autorizzazione, questi vengono sommati."
       },
       "sort": {
-        "numAccounts": "Ordina per linee di fiducia"
+        "numAccounts": "Ordina per trustlines"
       },
       "factLabels": {
         "domain": "L'account dell'emittente dispone di un dominio principale",
@@ -67,23 +67,23 @@
       "trustlines": "Numero di account che, secondo Horizon, presentano una “trustline” verso questo asset. Si tratta di un indicatore di utilizzo, non di una prova di autenticità.",
       "totalAmount": "Quantità totale di questa risorsa riportata da Horizon, somma di trustline, saldi rivendicabili, pool di liquidità e contratti. La disponibilità di per sé non dice nulla sulla qualità o sull'affidabilità.",
       "trustlineStatus": "Indica se il tuo conto corrente può già contenere questo asset.",
-      "trustlineBalance": "Saldo attuale di questa voce sul tuo conto fiduciario.",
-      "trustlineLimit": "Saldo massimo di questa attività che il tuo conto può detenere tramite questa linea di credito.",
+      "trustlineBalance": "Saldo attuale di questo asset sul tuo trustline.",
+      "trustlineLimit": "Il saldo massimo che il tuo conto può detenere per questo asset è valido per questo trustline.",
       "authorization": "Per gli asset di tipo \"auth_required\", l'emittente deve autorizzare la tua trustline prima che tu possa ricevere o scambiare il token.",
       "homeDomain": "Dominio memorizzato sull'account dell'emittente. Serve a individuare il file stellar.toml.",
       "issuerMasterWeight": "Peso della chiave principale dell'emittente. Il valore 0 indica che la chiave principale da sola non è più in grado di firmare.",
-      "issuerLocked": "\"Gestione attiva\" è normale per progetti gestiti in modo continuativo, come le stablecoin, e non è un segnale d'allarme. \"Completamente bloccata\" è un segnale positivo per asset che promettono immutabilità. \"Apparentemente bloccata\" significa che la chiave principale è disattivata, ma altri firmatari potrebbero comunque controllare il conto. Indica se la chiave principale dell'emittente è ancora attiva.",
+      "issuerLocked": "Indica se la chiave master dell'emittente è ancora attiva. La dicitura \"Gestita attivamente\" è normale per i progetti in corso, come le stablecoin, e non costituisce un avviso. \"Completamente bloccata\" è un segnale positivo per i tokens che promettono immutabilità. \"Sembra bloccata\" significa che la chiave master è disabilitata, ma altri signers potrebbero comunque controllare l'account.",
       "tomlStatus": "Stato del file stellar.toml nel dominio di origine dell'emittente.",
       "tomlUrl": "Indirizzo del file stellar.toml individuato.",
       "tomlAssetListed": "Indica se questa risorsa è presente nelle voci CURRENCIES del file stellar.toml.",
       "tomlCurrencyCount": "Numero di voci relative alle VALUTE nel file stellar.toml.",
-      "authRequired": "L'emittente deve autorizzare singolarmente le linee di credito.",
+      "authRequired": "L'emittente deve autorizzare trustlines singolarmente.",
       "authRevocable": "L'emittente può revocare in un secondo momento un'autorizzazione già concessa.",
       "authImmutable": "I flag di autorizzazione dell'emittente non possono più essere modificati.",
       "clawbackEnabled": "L'emittente può recuperare i token dai conti secondo determinate regole.",
       "liquidityRoute": "Indica se è stato trovato un percorso per la direzione di scambio corrente.",
       "reserveIncrease": "Riserva minima aggiuntiva in XLM bloccata tramite la creazione di una nuova trustline.",
-      "reserveAfter": "Saldo minimo stimato che deve rimanere sul conto dopo l'aggiunta della linea di credito fiduciaria.",
+      "reserveAfter": "Saldo minimo stimato che deve rimanere sul conto dopo l'aggiunta di trustline.",
       "spendableAfter": "Saldo stimato in XLM ancora liberamente disponibile al netto della riserva aggiuntiva.",
       "expected": "Importo stimato da ricevere in base al preventivo attuale.",
       "minimum": "Importo minimo al netto della tolleranza di slippage. Al di sotto di tale importo, l'operazione di swap viene interrotta.",
@@ -117,7 +117,7 @@
     "actions": {
       "details": "Dettagli",
       "trustline": "Trustline",
-      "trustlineAdd": "Aggiungi una linea di fiducia",
+      "trustlineAdd": "Aggiungi trustline",
       "trustlinePresent": "Trustline esiste",
       "trustlineNext": "Passo successivo: creare una \"trustline\" dai risultati della ricerca",
       "swap": "Scambio",
@@ -178,8 +178,8 @@
       "invalidSlippage": "Si prega di inserire uno slittamento compreso tra lo 0 e il 50 per cento.",
       "invalidTarget": "Cerca e seleziona un token di destinazione oppure inseriscilo esattamente nel formato CODE:ISSUER.",
       "sameAsset": "L'origine e la destinazione non devono essere lo stesso bene.",
-      "destinationTrustlineMissing": "In questo account manca ancora la stringa di fiducia del token di destinazione.",
-      "destinationTrustlineUnauthorized": "La linea di fiducia di destinazione non è ancora stata autorizzata dall'emittente.",
+      "destinationTrustlineMissing": "La destinazione token trustline non è ancora presente su questo conto.",
+      "destinationTrustlineUnauthorized": "La destinazione trustline non è ancora stata autorizzata dall'emittente.",
       "minimumMissing": "Non è stato possibile calcolare l'importo minimo.",
       "previewRequired": "Ti preghiamo di controllare prima il prezzo.",
       "noRoute": "Non è stato trovato alcun percorso di swap.",
@@ -251,13 +251,13 @@
       }
     },
     "trustlineConfirm": {
-      "title": "Conferma la linea di fiducia",
+      "title": "Conferma trustline",
       "limit": "Limite Trustline",
       "warning": "Una trustline consente di detenere questo asset nel proprio conto. Verificare i dettagli, in particolare l’emittente, il dominio di origine, il file stellar.toml, l’autorizzazione e il clawback prima di firmare.",
       "continue": "Vai alla firma"
     },
     "trustlineFlow": {
-      "title": "Preparare la linea di fiducia",
+      "title": "Preparare trustline",
       "limitHelp": "Il limite corrisponde al saldo massimo di token su questa trustline. Non si tratta di un ordine di acquisto e non comporta la prenotazione di token.",
       "reserveIncrease": "Riserva minima aggiuntiva",
       "reserveAfter": "Riserva minima dopo",
@@ -271,8 +271,8 @@
       "combinedOnlyXlm": "La transazione combinata è disponibile solo per XLM → token in questo caso.",
       "authRequiredCombinedBlocked": "La combinazione Trustline+Swap è disabilitata per gli asset con autorizzazione obbligatoria (auth_required), poiché l'emittente deve prima autorizzare la nuova Trustline.",
       "invalidLimit": "Si prega di inserire un limite Trustline valido superiore a 0.",
-      "limitBelowExpected": "Il limite della linea di credito è inferiore all'importo previsto in entrata.",
-      "alreadyPresent": "La linea di fiducia è già attiva. Si prega di ricaricare la pagina e utilizzare lo swap normale.",
+      "limitBelowExpected": "Il limite trustline è inferiore all'importo previsto in entrata.",
+      "alreadyPresent": "Il file trustline esiste già. Si prega di ricaricare la pagina e di utilizzare lo swap normale.",
       "combinedSuccess": "Sono state eseguite le operazioni Trustline e swap. Transazione:"
     },
     "facts": {
@@ -347,7 +347,7 @@
       "issuerUnlocked": "La chiave principale dell'emittente non è bloccata.",
       "authRequired": "Questa risorsa richiede l'autorizzazione dell'emittente.",
       "clawbackEnabled": "Per questo asset è attiva la clausola di recupero.",
-      "issuerAppearsLocked": "Attenzione: la chiave principale è disattivata, ma altre chiavi potrebbero comunque controllare il conto dell'emittente. Il conto non è quindi realmente bloccato.",
+      "issuerAppearsLocked": "Attenzione: la chiave principale è disabilitata, ma altri signers potrebbero comunque controllare l'account dell'emittente. In realtà non è bloccata.",
       "authRevocable": "L'emittente può revocare un'autorizzazione già concessa e bloccare il tuo saldo di questo token.",
       "expertFlagged": "Attenzione: questo emittente è contrassegnato come dannoso nella directory StellarExpert ({{tags}}). È fortemente sconsigliato aggiungere una trustline, acquistare o scambiare."
     },
@@ -359,13 +359,13 @@
     },
     "exchangeRate": {
       "title": "Prezzo dell'XLM",
-      "quickLabel": "Prezzo di mercato (al centro del libro degli ordini)",
+      "quickLabel": "Prezzo di mercato (prezzo medio del libro degli ordini)",
       "executionLabel": "Prezzo di esecuzione (Quantità di riferimento 1)",
-      "loading": "Il prezzo si sta caricando...",
+      "loading": "Si sta caricando il tasso...",
       "noLiquidity": "Nessuna profondità di ordine attiva nel libro degli ordini nativo.",
       "noRoute": "Non è stato trovato alcun percorso di pagamento.",
       "failed": "Impossibile caricare il registro degli ordini.",
-      "quoteAge": "Età del prezzo",
+      "quoteAge": "Età tariffaria",
       "disclaimer": "Si tratta solo di un prezzo indicativo; non è un preventivo. Per importi più elevati, il prezzo effettivo potrebbe variare (slippage)."
     }
   }
