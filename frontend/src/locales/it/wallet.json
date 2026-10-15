@@ -55,7 +55,7 @@
     "muxedAddressLabel": "Indirizzo multiplexato",
     "copy": "Copia indirizzo",
     "copied": "Copiato",
-    "hintCompare": "Chiedi al mittente di controllare il primo e l'ultimo carattere dell'indirizzo. I truffatori utilizzano deliberatamente indirizzi che sembrano simili.",
+    "hintCompare": "Chiedi al mittente di controllare i primi e gli ultimi 8 caratteri dell'indirizzo, evidenziati in grassetto. I truffatori utilizzano deliberatamente indirizzi che sembrano simili all'inizio e alla fine.",
     "hintTrustline": "Puoi ricevere Token diversi da XLM solo se hai un'autorizzazione Token (Trustline) per essi.",
     "hintActivate": "Un nuovo account viene attivato solo dopo un deposito iniziale di almeno 1 XLM.",
     "hintMuxed": "I pagamenti inviati a un indirizzo M vengono accreditati sul tuo conto principale e contrassegnati con l'ID Muxed. Non tutti i Wallet o le piattaforme di scambio supportano gli indirizzi M."

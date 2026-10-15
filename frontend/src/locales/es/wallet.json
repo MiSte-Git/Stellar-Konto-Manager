@@ -55,7 +55,7 @@
     "muxedAddressLabel": "Dirección multiplexada",
     "copy": "Copiar dirección",
     "copied": "Copiado",
-    "hintCompare": "Pide al remitente que compruebe el primer y el último carácter de la dirección. Los estafadores utilizan deliberadamente direcciones que parecen similares.",
+    "hintCompare": "Pide al remitente que compruebe los primeros y los últimos 8 caracteres de la dirección, marcados en negrita. Los estafadores utilizan deliberadamente direcciones que se parecen al principio y al final.",
     "hintTrustline": "Solo puedes recibir Tokens distintos de XLM si tienes una autorización de Token (Trustline) para ellos.",
     "hintActivate": "Una nueva cuenta solo se activa tras realizar un depósito inicial de al menos 1 XLM.",
     "hintMuxed": "Los pagos enviados a una dirección M se ingresan en tu cuenta principal y se identifican con el ID de Muxed. No todos los Wallet ni todas las plataformas de intercambio admiten direcciones M."

@@ -53,6 +53,34 @@ export function shortenAddress(value, head = 6, tail = 6) {
   return `${s.slice(0, head)}…${s.slice(-tail)}`;
 }
 
+/**
+ * Anzahl Zeichen am Anfang und Ende, die der Absender vergleichen soll.
+ * 8 statt 4: das G am Anfang ist immer gleich, mit 4/4 blieben nur 7 pruefende
+ * Zeichen (32^7, fuer Adress-Faelscher machbar). 8/8 ergibt 15 Zeichen (32^15).
+ */
+export const ADDRESS_COMPARE_CHARS = 8;
+
+/**
+ * Teilt eine Adresse in Gruppen und markiert die ersten und letzten `edge` Zeichen
+ * zeichengenau. Bei M-Adressen (69 Zeichen) ist die letzte Gruppe nur 1 Zeichen
+ * lang, deshalb nicht ganze Gruppen markieren.
+ * Ergebnis: [[{ text, strong }, ...], ...] pro Gruppe.
+ */
+export function splitAddressForCompare(address, { size = 4, edge = ADDRESS_COMPARE_CHARS } = {}) {
+  const s = String(address || '');
+  const isStrong = (i) => i < edge || i >= s.length - edge;
+  return groupAddress(s, size).map((group, gi) => {
+    const segments = [];
+    for (let j = 0; j < group.length; j += 1) {
+      const strong = isStrong(gi * size + j);
+      const last = segments[segments.length - 1];
+      if (last && last.strong === strong) last.text += group[j];
+      else segments.push({ text: group[j], strong });
+    }
+    return segments;
+  });
+}
+
 /** Teilt eine Adresse in 4er-Gruppen, damit sie sich leichter vergleichen laesst. */
 export function groupAddress(address, size = 4) {
   const s = String(address || '');

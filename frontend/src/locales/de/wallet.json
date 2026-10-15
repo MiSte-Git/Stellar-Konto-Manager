@@ -55,7 +55,7 @@
     "muxedAddressLabel": "Muxed-Adresse",
     "copy": "Adresse kopieren",
     "copied": "Kopiert",
-    "hintCompare": "Lass den Absender die ersten und letzten Zeichen der Adresse prüfen. Betrüger nutzen gezielt Adressen, die ähnlich aussehen.",
+    "hintCompare": "Lass den Absender die ersten und letzten 8 Zeichen der Adresse prüfen, sie sind fett markiert. Betrüger nutzen gezielt Adressen, die am Anfang und Ende ähnlich aussehen.",
     "hintTrustline": "Andere Token als XLM kannst du erst empfangen, wenn du eine Token-Freigabe (Trustline) dafür hast.",
     "hintActivate": "Ein neues Konto wird erst mit einer ersten Einzahlung von mindestens 1 XLM aktiviert.",
     "hintMuxed": "Zahlungen an die M-Adresse landen auf deinem Basiskonto und sind mit der Muxed-ID gekennzeichnet. Nicht jede Wallet oder Börse unterstützt M-Adressen."

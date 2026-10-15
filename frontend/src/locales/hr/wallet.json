@@ -55,7 +55,7 @@
     "muxedAddressLabel": "Muxed adresa",
     "copy": "Kopiraj adresu",
     "copied": "Kopirano",
-    "hintCompare": "Neka pošiljatelj provjeri prvi i zadnji znak adrese. Prevaranti namjerno koriste adrese koje izgledaju slično.",
+    "hintCompare": "Neka pošiljatelj provjeri prvih i zadnjih 8 znakova adrese, istaknutih podebljano. Prevaranti namjerno koriste adrese koje na početku i na kraju izgledaju slično.",
     "hintTrustline": "Tokene osim XLM-a možeš primati tek kada za njih imaš Token-odobrenje (Trustline).",
     "hintActivate": "Novi račun se aktivira tek nakon početnog depozita od najmanje 1 XLM.",
     "hintMuxed": "Uplate poslane na M-adresu uplaćuju se na vaš osnovni račun i označene su Muxed ID-om. Ne podržava svaki Wallet ili mjenjačnica M-adrese."

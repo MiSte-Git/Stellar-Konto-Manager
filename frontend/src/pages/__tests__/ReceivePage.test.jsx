@@ -55,6 +55,17 @@ describe('ReceivePage', () => {
     expect(screen.getByTestId('receive-address')).toHaveAttribute('aria-label', PK);
   });
 
+  it('markiert die ersten und letzten 8 Zeichen fett, auch bei M-Adressen', () => {
+    const strongText = () => Array.from(
+      screen.getByTestId('receive-address').querySelectorAll('[data-strong="true"]')
+    ).map((el) => el.textContent).join('');
+    renderPage({ publicKey: PK, muxedAddress: MUXED });
+    expect(strongText()).toBe(MUXED.slice(0, 8) + MUXED.slice(-8));
+    fireEvent.click(screen.getByRole('button', { name: /Basiskonto/ }));
+    expect(strongText()).toBe(PK.slice(0, 8) + PK.slice(-8));
+    expect(screen.getByTestId('receive-address').textContent.replace(/\s/g, '')).toBe(PK);
+  });
+
   it('warnt im Testnet', () => {
     window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
     renderPage({ publicKey: PK });

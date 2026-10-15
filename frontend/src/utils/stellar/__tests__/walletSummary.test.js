@@ -1,4 +1,4 @@
-import { computeWalletSummary, shortenAddress } from '../walletSummary.js';
+import { computeWalletSummary, shortenAddress, splitAddressForCompare } from '../walletSummary.js';
 
 describe('computeWalletSummary', () => {
   it('berechnet Reserve, Verfuegbar und sortiert Assets', () => {
@@ -24,6 +24,18 @@ describe('computeWalletSummary', () => {
     expect(computeWalletSummary(null)).toBeNull();
     const s = computeWalletSummary({ subentry_count: 10, balances: [{ asset_type: 'native', balance: '1' }] });
     expect(s.available).toBe(0);
+  });
+
+  it('markiert Anfang und Ende zeichengenau, auch ueber Gruppengrenzen', () => {
+    const groups = splitAddressForCompare('GABCDEFGHIJKLMNOPQRSTUVWXYZ', { edge: 6 });
+    expect(groups[0]).toEqual([{ text: 'GABC', strong: true }]);
+    expect(groups[1]).toEqual([{ text: 'DE', strong: true }, { text: 'FG', strong: false }]);
+    expect(groups[5]).toEqual([{ text: 'T', strong: false }, { text: 'UVW', strong: true }]);
+    expect(groups[6]).toEqual([{ text: 'XYZ', strong: true }]);
+    const flat = groups.flat();
+    expect(flat.map((s) => s.text).join('')).toBe('GABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    expect(flat.filter((s) => s.strong).map((s) => s.text).join('')).toBe('GABCDEUVWXYZ');
+    expect(splitAddressForCompare('')).toEqual([]);
   });
 
   it('kuerzt Adressen mit Anfang und Ende', () => {

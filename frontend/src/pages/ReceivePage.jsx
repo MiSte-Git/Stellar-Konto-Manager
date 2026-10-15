@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import NavIcon from '../components/layout/NavIcon.jsx';
 import QrCode from '../components/QrCode.jsx';
 import { copyText } from '../utils/clipboard.js';
-import { groupAddress } from '../utils/stellar/walletSummary.js';
+import { splitAddressForCompare } from '../utils/stellar/walletSummary.js';
 
 function readNetwork() {
   try {
@@ -68,7 +68,7 @@ export default function ReceivePage({ publicKey, muxedAddress }) {
     );
   }
 
-  const groups = groupAddress(address);
+  const groups = splitAddressForCompare(address);
   const segBtn = (active) =>
     `flex-1 rounded-lg border-0 px-3 py-1.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
       active
@@ -118,8 +118,12 @@ export default function ReceivePage({ publicKey, muxedAddress }) {
             aria-label={address}
             data-testid="receive-address"
           >
-            {groups.map((g, i) => (
-              <span key={i} className={i === 0 || i === groups.length - 1 ? 'font-semibold' : ''}>{g}</span>
+            {groups.map((segments, i) => (
+              <span key={i}>
+                {segments.map((seg, j) => (
+                  <span key={j} className={seg.strong ? 'font-semibold' : ''} data-strong={seg.strong ? 'true' : undefined}>{seg.text}</span>
+                ))}
+              </span>
             ))}
           </p>
         </div>
@@ -141,7 +145,7 @@ export default function ReceivePage({ publicKey, muxedAddress }) {
         <ul className="mt-6 space-y-2 border-t border-gray-200 pt-4 text-sm text-gray-600 dark:border-gray-700 dark:text-gray-300">
           <li className="flex gap-2">
             <span aria-hidden="true" className="text-gray-400">•</span>
-            <span>{t('wallet:receive.hintCompare', 'Lass den Absender die ersten und letzten Zeichen der Adresse prüfen. Betrüger nutzen gezielt Adressen, die ähnlich aussehen.')}</span>
+            <span>{t('wallet:receive.hintCompare', 'Lass den Absender die ersten und letzten 8 Zeichen der Adresse prüfen, sie sind fett markiert. Betrüger nutzen gezielt Adressen, die am Anfang und Ende ähnlich aussehen.')}</span>
           </li>
           <li className="flex gap-2">
             <span aria-hidden="true" className="text-gray-400">•</span>

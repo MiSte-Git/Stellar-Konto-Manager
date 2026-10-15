@@ -55,7 +55,7 @@
     "muxedAddressLabel": "Muxed-adres",
     "copy": "Adres kopiëren",
     "copied": "Gekopieerd",
-    "hintCompare": "Laat de afzender het eerste en laatste teken van het adres controleren. Oplichters gebruiken opzettelijk adressen die op elkaar lijken.",
+    "hintCompare": "Laat de afzender de eerste en laatste 8 tekens van het adres controleren, die vetgedrukt zijn. Oplichters gebruiken opzettelijk adressen die aan het begin en eind op elkaar lijken.",
     "hintTrustline": "Andere Tokens dan XLM kun je pas ontvangen als je er een Token-machtiging (Trustline) voor hebt.",
     "hintActivate": "Een nieuwe account wordt pas geactiveerd nadat een eerste storting van ten minste 1 XLM is gedaan.",
     "hintMuxed": "Betalingen die naar een M-adres worden gestuurd, worden op je basisrekening gestort en voorzien van de Muxed-ID. Niet elke Wallet of beurs ondersteunt M-adressen."

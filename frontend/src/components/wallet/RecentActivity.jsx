@@ -276,7 +276,7 @@ export default function RecentActivity({ publicKey, muxedAddress, network, reloa
                     {item.asset.code}
                     {!item.asset.isNative && item.asset.issuer && (
                       <span className="block font-mono text-[10px]" title={item.asset.issuer}>
-                        {shortenAddress(item.asset.issuer, 4, 4)}
+                        {shortenAddress(item.asset.issuer, 6, 6)}
                       </span>
                     )}
                   </div>

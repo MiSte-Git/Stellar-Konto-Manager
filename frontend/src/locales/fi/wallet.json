@@ -55,7 +55,7 @@
     "muxedAddressLabel": "Muxed-osoite",
     "copy": "Kopioi osoite",
     "copied": "Kopioitu",
-    "hintCompare": "Pyydä lähettäjää tarkistamaan osoitteen ensimmäinen ja viimeinen merkki. Huijarit käyttävät tarkoituksella osoitteita, jotka näyttävät samankaltaisilta.",
+    "hintCompare": "Pyydä lähettäjää tarkistamaan osoitteen 8 ensimmäistä ja 8 viimeistä merkkiä, jotka on lihavoitu. Huijarit käyttävät tarkoituksella osoitteita, jotka näyttävät alusta ja lopusta samankaltaisilta.",
     "hintTrustline": "Voit vastaanottaa muita Tokeneita kuin XLM:ää vasta, kun sinulla on niille Token-valtuutus (Trustline).",
     "hintActivate": "Uusi tili aktivoidaan vasta, kun tilille on tehty vähintään 1 XLM:n suuruinen ensitalletus.",
     "hintMuxed": "M-osoitteeseen lähetetyt maksut talletetaan perustilillesi, ja ne merkitään Muxed-tunnuksella. Kaikki Wallet-palvelut tai pörssit eivät tue M-osoitteita."

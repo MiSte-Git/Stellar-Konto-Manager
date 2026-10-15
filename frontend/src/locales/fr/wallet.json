@@ -55,7 +55,7 @@
     "muxedAddressLabel": "Adresse multiplexée",
     "copy": "Copier l'adresse",
     "copied": "Copié",
-    "hintCompare": "Demandez à l'expéditeur de vérifier le premier et le dernier caractère de l'adresse. Les escrocs utilisent délibérément des adresses qui se ressemblent.",
+    "hintCompare": "Demandez à l'expéditeur de vérifier les 8 premiers et les 8 derniers caractères de l'adresse, affichés en gras. Les escrocs utilisent délibérément des adresses qui se ressemblent au début et à la fin.",
     "hintTrustline": "Tu ne peux recevoir des Tokens autres que XLM que si tu disposes d'une autorisation de Token (Trustline) pour ceux-ci.",
     "hintActivate": "Un nouveau compte n'est activé qu'après un premier dépôt d'au moins 1 XLM.",
     "hintMuxed": "Les paiements envoyés à une adresse M sont crédités sur votre compte principal et sont identifiés par l'identifiant Muxed. Toutes les plateformes Wallet ou bourses ne prennent pas en charge les adresses M."
