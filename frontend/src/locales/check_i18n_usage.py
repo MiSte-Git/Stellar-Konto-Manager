@@ -146,6 +146,78 @@ RE_I18NKEY_JS = re.compile(rf'''i18nKey\s*=\s*\{{\s*["'`]({VALID_KEY})["'`]\s*\}
 # Dynamische Präfixe wie 'foo.bar:' + var
 RE_DYNAMIC_PREFIX = re.compile(r"""['"]([A-Za-z0-9_.:-]+:)['"]\s*\+""")
 
+# ==== Erkennung mit Namespace-Aufloesung ====
+# i18n.js: defaultNS 'common', fallbackNS ['common', 'menu']
+DEFAULT_NS = "common"
+FALLBACK_NS = ["common", "menu"]
+PLURAL_SUFFIXES = ("_zero", "_one", "_two", "_few", "_many", "_other")
+
+# t('key'), t('key', 'Fallback'), t('key', { ... }), i18n.t(...), auch ueber Zeilenumbrueche
+RE_T_CALL = re.compile(rf"""(?<![A-Za-z0-9_$])t\s*\(\s*(['"`])({VALID_KEY})\1\s*(?=[,)])""")
+RE_I18NKEY_ANY = re.compile(rf"""i18nKey\s*=\s*\{{?\s*(['"`])({VALID_KEY})\1""")
+# useTranslation('ns') oder useTranslation(['ns1', 'ns2']): erster Eintrag ist der Default
+RE_USE_TRANSLATION = re.compile(r"""useTranslation\s*\(\s*\[?\s*['"]([A-Za-z0-9_]+)['"]""")
+# Beliebige String-Literale, fuer indirekt genutzte Keys (z. B. labelKey: 'menu:foo')
+RE_STRING_LITERAL = re.compile(r"""(['"`])([A-Za-z][A-Za-z0-9_.:-]*[A-Za-z0-9_])\1""")
+
+
+def key_exists(full: str, de_keys: Set[str]) -> bool:
+    if full in de_keys:
+        return True
+    return any(f"{full}{suf}" in de_keys for suf in PLURAL_SUFFIXES)
+
+
+def resolve_key(raw: str, candidates: List[str], de_keys: Set[str]):
+    """Liefert (voller Key, gefunden?). Ohne ':' werden Datei-Namespace und Fallbacks probiert."""
+    raw = raw.strip()
+    if ":" in raw:
+        full = normalize_key(raw)
+        return full, key_exists(full, de_keys)
+    for ns in candidates:
+        full = f"{ns_map.get(ns.lower(), ns)}.{raw}"
+        if key_exists(full, de_keys):
+            return full, True
+    return f"{ns_map.get(candidates[0].lower(), candidates[0])}.{raw}", False
+
+
+def scan_file(path: str, de_keys: Set[str]):
+    """Liefert (direkt genutzte Keys mit Fundstellen, indirekt genutzte Keys, dynamische Praefixe)."""
+    try:
+        with open(path, encoding="utf-8", errors="ignore") as f:
+            content = f.read()
+    except Exception as e:
+        print(f"⚠️ Konnte Datei nicht lesen: {path} ({e})")
+        return {}, set(), set()
+
+    m = RE_USE_TRANSLATION.search(content)
+    if m:
+        first_ns = m.group(1)
+        candidates = [first_ns] + [ns for ns in FALLBACK_NS if ns != first_ns]
+    else:
+        # Kein useTranslation: Hilfsdatei, die t() uebergeben bekommt (Namespace des
+        # Aufrufers unbekannt). Default und Fallbacks zuerst, dann alle Namespaces.
+        candidates = [DEFAULT_NS] + [ns for ns in FALLBACK_NS if ns != DEFAULT_NS]
+        candidates += sorted(ns for ns in set(ns_map.values()) if ns not in candidates)
+    lines = content.splitlines()
+
+    direct = {}  # full key -> [(path, lineno, line), ...] (gefunden oder nicht)
+    for regex in (RE_T_CALL, RE_I18NKEY_ANY):
+        for match in regex.finditer(content):
+            full, _found = resolve_key(match.group(2), candidates, de_keys)
+            lineno = content.count("\n", 0, match.start()) + 1
+            text = lines[lineno - 1].strip() if lineno - 1 < len(lines) else ""
+            direct.setdefault(full, []).append((path, lineno, text))
+
+    indirect = set()
+    for match in RE_STRING_LITERAL.finditer(content):
+        full, found = resolve_key(match.group(2), candidates, de_keys)
+        if found:
+            indirect.add(full)
+
+    dynamic = set(RE_DYNAMIC_PREFIX.findall(content))
+    return direct, indirect, dynamic
+
+
 def extract_keys_with_locations(path: str):
     """
     Findet Keys NUR in Zeilen mit i18n-Kontext und liefert:
@@ -239,6 +311,7 @@ def main():
     dynamic_prefixes: Set[str] = set()
     files_scanned = 0
 
+    indirect_keys: Set[str] = set()
     for fp in iter_code_files(SRC_ROOT):
         norm = fp.replace("\\", "/")
         if "/locales/" in norm:
@@ -246,14 +319,11 @@ def main():
         if re.search(r"\.(test|spec)\.(js|jsx|ts|tsx)$", os.path.basename(fp), re.IGNORECASE):
             continue
         files_scanned += 1
-        # Normale Extraktion für dynamische Prefix-Erkennung
-        kset, dyn = extract_keys_from_file(fp)
-        used_keys.update(normalize_key(k) for k in kset if k.strip())
+        direct, indirect, dyn = scan_file(fp, de_keys)
+        used_keys.update(direct.keys())
+        indirect_keys.update(indirect)
         dynamic_prefixes.update(dyn)
-
-        # Neue Fundstellen-Erfassung
-        file_key_locs = extract_keys_with_locations(fp)
-        for k, locs in file_key_locs.items():
+        for k, locs in direct.items():
             key_locations.setdefault(k, []).extend(locs)
 
     # Keys, die mit whitelisted dynamischen Präfixen beginnen, nicht als 'missing' zählen
@@ -262,11 +332,20 @@ def main():
 
     filtered_used_keys = {k for k in used_keys if not has_whitelisted_dynamic_prefix(k)}
 
-    # Keys, die im Code genutzt werden, aber in de.json fehlen
-    missing_keys = sorted([k for k in filtered_used_keys if k not in de_keys])
+    # Keys, die im Code per t()/i18nKey genutzt werden, aber in de/*.json fehlen
+    missing_keys = sorted([k for k in filtered_used_keys if not key_exists(k, de_keys)])
 
-    # Keys, die in de.json stehen, aber nirgends im Code auftauchen
-    unused_keys = sorted([k for k in de_keys if k not in filtered_used_keys])
+    # Keys in de/*.json, die weder direkt noch indirekt (String-Literal) vorkommen.
+    # Plural-Varianten (_one, _other, ...) zaehlen als genutzt, wenn der Basis-Key genutzt wird.
+    all_used = used_keys | indirect_keys
+    def is_used(k: str) -> bool:
+        if k in all_used:
+            return True
+        for suf in PLURAL_SUFFIXES:
+            if k.endswith(suf) and k[: -len(suf)] in all_used:
+                return True
+        return False
+    unused_keys = sorted([k for k in de_keys if not is_used(k)])
 
     # Dynamische Präfixe (Hinweis)
     dynamic_candidates = sorted(dynamic_prefixes)
