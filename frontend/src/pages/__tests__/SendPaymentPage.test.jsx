@@ -448,7 +448,7 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
     await waitFor(() => expect(screen.getByRole('button', { name: 'Weiter' })).not.toBeDisabled());
     fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
 
-    const secretHeading = await screen.findByText('Geben Sie den Quell-Geheimschlüssel (S-Key) ein');
+    const secretHeading = await screen.findByText('Geben Sie den Quell-Secret-Key (S-Key) ein');
     const modal = secretHeading.parentElement;
     fireEvent.change(within(modal).getByPlaceholderText('z.B.'), { target: { value: SENDER.secret } });
     fireEvent.click(within(modal).getByRole('button', { name: 'Senden' }));
@@ -559,7 +559,7 @@ describe('pre-submit checks also cover the collect-locally multisig path (M1)', 
     fireEvent.click(screen.getByRole('radio', { name: /Alle Signaturen lokal eingeben/ }));
     await waitFor(() => expect(screen.getByRole('button', { name: 'Weiter' })).not.toBeDisabled());
     fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
-    const secretHeading = await screen.findByText('Geben Sie den Quell-Geheimschlüssel (S-Key) ein');
+    const secretHeading = await screen.findByText('Geben Sie den Quell-Secret-Key (S-Key) ein');
     const modal = secretHeading.parentElement;
     await waitFor(() => expect(within(modal).getByPlaceholderText('z.B.').value).toBe(SENDER.secret));
   });
