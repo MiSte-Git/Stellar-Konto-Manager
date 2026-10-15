@@ -44,10 +44,10 @@ describe('SigningStatus', () => {
   it('wechselt auf Signieren moeglich nach dem Change-Event und sperrt alle Konten', async () => {
     renderIt();
     act(() => publishActiveAccount(ACCOUNT));
-    await setSessionSecrets(ACCOUNT, { [ACCOUNT]: SECRET, [OTHER]: SECRET });
-    await setSessionSecrets(OTHER, { [OTHER]: SECRET });
-    act(() => {
-      window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: { publicKey: ACCOUNT } }));
+    // setSessionSecrets feuert das Change-Event selbst, kein manueller Dispatch noetig
+    await act(async () => {
+      await setSessionSecrets(ACCOUNT, { [ACCOUNT]: SECRET, [OTHER]: SECRET });
+      await setSessionSecrets(OTHER, { [OTHER]: SECRET });
     });
     const chip = screen.getByTestId('signing-status-chip');
     expect(chip).toHaveAttribute('data-state', 'canSign');
@@ -65,7 +65,7 @@ describe('SigningStatus', () => {
 
   it('bietet Sperren an, wenn nur ein anderes Konto Secrets hat', async () => {
     renderIt();
-    await setSessionSecrets(OTHER, { [OTHER]: SECRET });
+    await act(async () => { await setSessionSecrets(OTHER, { [OTHER]: SECRET }); });
     act(() => publishActiveAccount(ACCOUNT));
     expect(screen.getByTestId('signing-status-chip')).toHaveAttribute('data-state', 'viewOnly');
     expect(screen.getByTestId('signing-status-lock')).toBeInTheDocument();

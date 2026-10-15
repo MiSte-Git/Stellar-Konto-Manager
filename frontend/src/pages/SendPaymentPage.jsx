@@ -2746,8 +2746,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
               if (remember) {
                 try {
+                  // setSessionSecrets meldet die Aenderung selbst (stm-session-secret-changed)
                   await rememberSessionSecrets(publicKey, collected);
-                  try { window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: { publicKey } })); } catch { /* noop */ }
                 } catch (rememberErr) {
                   // Fail-closed: crypto.subtle is unavailable (non-secure origin),
                   // so the secret was NOT stored in plaintext - tell the user

@@ -125,6 +125,14 @@ function readEncryptedMap(accountPublicKey) {
   return {};
 }
 
+// Informs UI (status chip in the top bar, Main) that stored secrets changed.
+// The event never carries secret material - only the affected public key, if known.
+function emitSecretChanged(publicKey) {
+  try {
+    window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: publicKey ? { publicKey } : {} }));
+  } catch { /* noop */ }
+}
+
 export async function getSessionSecrets(accountPublicKey) {
   const encrypted = readEncryptedMap(accountPublicKey);
   const entries = await Promise.all(
@@ -157,6 +165,7 @@ export async function setSessionSecrets(accountPublicKey, secretsMap) {
     if (!entries.length) {
       sessionStorage.removeItem(mapKey);
       sessionStorage.removeItem(`${LEGACY_PREFIX}${accountPublicKey}`);
+      emitSecretChanged(accountPublicKey);
       return false;
     }
     const encryptedEntries = await Promise.all(
@@ -164,6 +173,7 @@ export async function setSessionSecrets(accountPublicKey, secretsMap) {
     );
     sessionStorage.setItem(mapKey, JSON.stringify(Object.fromEntries(encryptedEntries)));
     sessionStorage.removeItem(`${LEGACY_PREFIX}${accountPublicKey}`);
+    emitSecretChanged(accountPublicKey);
     return true;
   } catch (e) {
     // Fail-closed (no plaintext fallback): let the caller know encryption
@@ -187,14 +197,6 @@ export async function rememberSessionSecrets(accountPublicKey, collected) {
   return setSessionSecrets(accountPublicKey, { ...current, ...next });
 }
 
-// Informs UI (status chip in the top bar, Main) that stored secrets changed.
-// The event never carries secret material - only the affected public key, if known.
-function emitSecretChanged(publicKey) {
-  try {
-    window.dispatchEvent(new CustomEvent('stm-session-secret-changed', { detail: publicKey ? { publicKey } : {} }));
-  } catch { /* noop */ }
-}
-
 export function clearSessionSecrets(accountPublicKey) {
   if (!accountPublicKey) return false;
   try {
@@ -208,17 +210,21 @@ export function clearSessionSecrets(accountPublicKey) {
 }
 
 // Number of accounts that currently have at least one secret remembered in this
-// session. Reads only storage keys, never ciphertext or plaintext.
+// session. Counts an account only if its entry actually holds signer entries
+// (same check as hasSessionSecrets), so empty or malformed entries under the
+// same prefix don't fake a stored secret. Never decrypts anything.
 export function getSessionSecretAccountCount() {
   try {
-    const accounts = new Set();
+    const candidates = new Set();
     for (let i = 0; i < sessionStorage.length; i += 1) {
       const key = sessionStorage.key(i);
       if (!key) continue;
-      if (key.startsWith(MAP_PREFIX)) accounts.add(key.slice(MAP_PREFIX.length));
-      else if (key.startsWith(LEGACY_PREFIX)) accounts.add(key.slice(LEGACY_PREFIX.length));
+      if (key.startsWith(MAP_PREFIX)) candidates.add(key.slice(MAP_PREFIX.length));
+      else if (key.startsWith(LEGACY_PREFIX)) candidates.add(key.slice(LEGACY_PREFIX.length));
     }
-    return accounts.size;
+    let count = 0;
+    candidates.forEach((pk) => { if (pk && hasSessionSecrets(pk)) count += 1; });
+    return count;
   } catch {
     return 0;
   }
@@ -259,6 +265,11 @@ function armInactivityTimer() {
 
 function initInactivityWatcher() {
   if (typeof window === 'undefined' || typeof sessionStorage === 'undefined') return;
+  // Fresh in-memory key on every page load: anything already in sessionStorage
+  // now (reload, duplicated tab, legacy plaintext entries) can no longer be
+  // decrypted, or must not be used in plaintext. Remove it so the status chip
+  // never reports secrets that cannot actually sign.
+  clearAllSessionSecrets();
   const ACTIVITY_EVENTS = ['mousedown', 'keydown', 'touchstart', 'scroll'];
   let lastReset = 0;
   const onActivity = () => {

@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   clearSessionSecrets,
   getSessionSecret,
@@ -146,5 +146,45 @@ describe('sessionSecrets (lock / status helpers)', () => {
     window.removeEventListener('stm-session-secret-changed', handler);
     expect(seen).toEqual([{ publicKey: ACCOUNT }]);
     expect(JSON.stringify(seen)).not.toContain(SECRET);
+  });
+
+  it('setSessionSecrets and rememberSessionSecrets emit the change event themselves, without secrets', async () => {
+    const seen = [];
+    const handler = (e) => seen.push(e.detail);
+    window.addEventListener('stm-session-secret-changed', handler);
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    await rememberSessionSecrets(OTHER, [{ keypair: fakeKeypair(OTHER, SECRET) }]);
+    await setSessionSecrets(ACCOUNT, {});
+    window.removeEventListener('stm-session-secret-changed', handler);
+    expect(seen).toEqual([{ publicKey: ACCOUNT }, { publicKey: OTHER }, { publicKey: ACCOUNT }]);
+    expect(JSON.stringify(seen)).not.toContain(SECRET);
+  });
+
+  it('does not count empty or malformed entries that only share the prefix', async () => {
+    const { getSessionSecretAccountCount } = await import('../sessionSecrets.js');
+    sessionStorage.setItem('stm.session.secrets.GEMPTY', '{}');
+    sessionStorage.setItem('stm.session.secrets.GBROKEN', 'not-json');
+    sessionStorage.setItem('stm.session.secrets.', JSON.stringify({ [SIGNER]: 'enc1:x:y' }));
+    expect(getSessionSecretAccountCount()).toBe(0);
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    expect(getSessionSecretAccountCount()).toBe(1);
+  });
+});
+
+describe('sessionSecrets (page load)', () => {
+  afterEach(() => {
+    vi.resetModules();
+  });
+
+  it('purges leftover secrets from a previous load (reload, duplicated tab, legacy plaintext)', async () => {
+    sessionStorage.setItem(`stm.session.secrets.${ACCOUNT}`, JSON.stringify({ [SIGNER]: 'enc1:AAAA:BBBB' }));
+    sessionStorage.setItem(`stm.session.secret.${ACCOUNT}`, SECRET);
+    sessionStorage.setItem('SKM_PREV_PATH', '/de/');
+    vi.resetModules();
+    const fresh = await import('../sessionSecrets.js');
+    expect(fresh.hasSessionSecrets(ACCOUNT)).toBe(false);
+    expect(fresh.getSessionSecretAccountCount()).toBe(0);
+    expect(await fresh.getSessionSecret(ACCOUNT, ACCOUNT)).toBe('');
+    expect(sessionStorage.getItem('SKM_PREV_PATH')).toBe('/de/');
   });
 });
