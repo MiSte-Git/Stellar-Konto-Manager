@@ -848,9 +848,7 @@
     "remember": {
       "label": "Geheimschlüssel für diese Sitzung merken",
       "hint": "Wenn aktiviert, wird der Schlüssel bis zum Schließen des Tabs gespeichert und für weitere Zahlungen wiederverwendet."
-    },
-    "clearSession": "Sitzungs-Schlüssel löschen",
-    "clearSessionHint": "Entfernt den in dieser Sitzung gespeicherten Geheimschlüssel (wird beim Schließen des Tabs ohnehin gelöscht)."
+    }
   },
   "token": {
     "purchases": "Token/Assets filtern"

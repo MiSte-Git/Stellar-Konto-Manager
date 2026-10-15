@@ -838,9 +838,7 @@
     "remember": {
       "label": "Recuerda la clave secreta para esta sesión.",
       "hint": "Cuando está habilitada, la clave se guardará hasta que se cierre la pestaña y se reutilizará para pagos posteriores."
-    },
-    "clearSession": "Eliminar clave de sesión",
-    "clearSessionHint": "Eliminar la clave secreta almacenada en esta sesión (will be deleted anyway when the tab is closed)."
+    }
   },
   "token": {
     "purchases": "Filtrar tokens/activos"

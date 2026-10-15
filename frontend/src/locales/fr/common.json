@@ -838,9 +838,7 @@
     "remember": {
       "label": "Rappelez-vous la clé secrète pour cette session.",
       "hint": "Lorsque cette option est activée, la clé sera enregistrée jusqu'à ce que l'onglet soit fermé et réutilisée pour d'autres paiements."
-    },
-    "clearSession": "Supprimer la clé de session",
-    "clearSessionHint": "Supprime la clé secrète stockée dans cette session (will be deleted anyway when the tab is closed)."
+    }
   },
   "token": {
     "purchases": "Filtrer les jetons/actifs"

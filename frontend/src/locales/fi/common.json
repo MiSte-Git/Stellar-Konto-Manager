@@ -838,9 +838,7 @@
     "remember": {
       "label": "Muista tämän istunnon salainen avain.",
       "hint": "Kun ominaisuus on käytössä, avain tallennetaan, kunnes välilehti suljetaan, ja sitä käytetään uudelleen tuleviin maksuihin."
-    },
-    "clearSession": "Poista istunnon avain",
-    "clearSessionHint": "Poistaa tässä istunnossa tallennetun salaisen avaimen (will be deleted anyway when the tab is closed)."
+    }
   },
   "token": {
     "purchases": "Suodata tokeneita/varoja"

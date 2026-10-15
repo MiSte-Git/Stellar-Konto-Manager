@@ -838,9 +838,7 @@
     "remember": {
       "label": "Vergeet de geheime sleutel voor deze sessie niet.",
       "hint": "Wanneer ingeschakeld, wordt de sleutel opgeslagen totdat het tabblad wordt gesloten en hergebruikt voor verdere betalingen."
-    },
-    "clearSession": "Sessiesleutel verwijderen",
-    "clearSessionHint": "Verwijdert de geheime sleutel die in deze sessie is opgeslagen (will be deleted anyway when the tab is closed)."
+    }
   },
   "token": {
     "purchases": "Tokens/assets filteren"

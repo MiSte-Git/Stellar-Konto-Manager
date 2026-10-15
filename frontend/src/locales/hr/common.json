@@ -838,9 +838,7 @@
     "remember": {
       "label": "Zapamti tajni ključ za ovu sesiju.",
       "hint": "Kada je omogućeno, ključ će se spremiti dok se kartica ne zatvori i ponovno koristiti za daljnja plaćanja."
-    },
-    "clearSession": "Izbriši ključ sesije",
-    "clearSessionHint": "Uklanja tajni ključ pohranjen u ovoj sesiji (will be deleted anyway when the tab is closed)."
+    }
   },
   "token": {
     "purchases": "Filtiraj tokene/imovinu"

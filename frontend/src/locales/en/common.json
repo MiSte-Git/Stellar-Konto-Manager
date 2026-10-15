@@ -838,9 +838,7 @@
     "remember": {
       "label": "Remember the secret key for this session",
       "hint": "When enabled, the key will be saved until the tab is closed and reused for further payments."
-    },
-    "clearSession": "Delete session key",
-    "clearSessionHint": "Removes the secret key stored in this session (will be deleted anyway when the tab is closed)."
+    }
   },
   "token": {
     "purchases": "Filter tokens/assets"
