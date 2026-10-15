@@ -5,18 +5,20 @@ import { ACCOUNT_CHANGED_EVENT, getActiveAccount } from '../../utils/appNavigati
 import {
   clearAllSessionSecrets,
   getSessionSecretAccountCount,
-  getSessionSecretCount,
-  hasSessionSecrets,
+  getUsableSignerKeys,
 } from '../../utils/sessionSecrets.js';
 import NavIcon from './NavIcon.jsx';
 
 const SECRET_CHANGED_EVENT = 'stm-session-secret-changed';
 
+// Gleiche Suche wie getSessionSecret(): Signer des Kontos plus der eigene Key des
+// Kontos, auch wenn er unter einem anderen Konto gemerkt wurde (Multisig-Jobs).
 function readStatus(publicKey) {
   try {
+    const usable = getUsableSignerKeys(publicKey);
     return {
-      activeHas: !!publicKey && hasSessionSecrets(publicKey),
-      activeCount: publicKey ? getSessionSecretCount(publicKey) : 0,
+      activeHas: usable.length > 0,
+      activeCount: usable.length,
       anyAccounts: getSessionSecretAccountCount(),
     };
   } catch {
@@ -40,7 +42,7 @@ export default function SigningStatus() {
 
   React.useEffect(() => {
     const onAccount = (e) => {
-      const pk = typeof e?.detail === 'string' ? e.detail : '';
+      const pk = typeof e?.detail?.publicKey === 'string' ? e.detail.publicKey : '';
       setPublicKey(pk);
       setStatus(readStatus(pk));
     };
@@ -48,16 +50,12 @@ export default function SigningStatus() {
     return () => window.removeEventListener(ACCOUNT_CHANGED_EVENT, onAccount);
   }, []);
 
+  // sessionStorage gilt nur fuer diesen Tab, alle Aenderungen kommen ueber das
+  // Change-Event (Speichern, Sperren, Inaktivitaets-Timeout). Kein Focus-Polling noetig.
   React.useEffect(() => {
     const refresh = () => setStatus(readStatus(publicKey));
     window.addEventListener(SECRET_CHANGED_EVENT, refresh);
-    window.addEventListener('focus', refresh);
-    document.addEventListener('visibilitychange', refresh);
-    return () => {
-      window.removeEventListener(SECRET_CHANGED_EVENT, refresh);
-      window.removeEventListener('focus', refresh);
-      document.removeEventListener('visibilitychange', refresh);
-    };
+    return () => window.removeEventListener(SECRET_CHANGED_EVENT, refresh);
   }, [publicKey]);
 
   React.useEffect(() => () => clearTimeout(lockedTimer.current), []);

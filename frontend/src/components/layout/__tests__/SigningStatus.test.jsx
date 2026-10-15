@@ -63,6 +63,22 @@ describe('SigningStatus', () => {
     expect(screen.queryByTestId('signing-status-lock')).toBeNull();
   });
 
+  it('zeigt Signieren moeglich, wenn der eigene Key unter einem Multisig-Konto gemerkt wurde', async () => {
+    renderIt();
+    await act(async () => { await setSessionSecrets(OTHER, { [ACCOUNT]: SECRET }); });
+    act(() => publishActiveAccount(ACCOUNT));
+    expect(screen.getByTestId('signing-status-chip')).toHaveAttribute('data-state', 'canSign');
+  });
+
+  it('sendet den Kontowechsel als { publicKey }, wie das Secret-Event', () => {
+    const seen = [];
+    const handler = (e) => seen.push(e.detail);
+    window.addEventListener('stm:activeAccountChanged', handler);
+    act(() => publishActiveAccount(ACCOUNT));
+    window.removeEventListener('stm:activeAccountChanged', handler);
+    expect(seen).toEqual([{ publicKey: ACCOUNT }]);
+  });
+
   it('bietet Sperren an, wenn nur ein anderes Konto Secrets hat', async () => {
     renderIt();
     await act(async () => { await setSessionSecrets(OTHER, { [OTHER]: SECRET }); });

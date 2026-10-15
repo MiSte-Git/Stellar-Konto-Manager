@@ -57,11 +57,14 @@ export function getActiveMainView() {
   return activeMainView;
 }
 
-/** Von Main aufgerufen, wenn das geladene Konto wechselt (nur Public Key, nie Secrets). */
+/**
+ * Von Main aufgerufen, wenn das geladene Konto wechselt (nur Public Key, nie Secrets).
+ * Event-Detail hat dieselbe Form wie stm-session-secret-changed: { publicKey }.
+ */
 export function publishActiveAccount(publicKey) {
   activeAccount = String(publicKey || '');
   try {
-    window.dispatchEvent(new CustomEvent(ACCOUNT_CHANGED_EVENT, { detail: activeAccount }));
+    window.dispatchEvent(new CustomEvent(ACCOUNT_CHANGED_EVENT, { detail: { publicKey: activeAccount } }));
   } catch { /* noop */ }
 }
 

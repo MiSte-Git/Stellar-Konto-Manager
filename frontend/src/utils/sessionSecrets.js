@@ -133,6 +133,39 @@ function emitSecretChanged(publicKey) {
   } catch { /* noop */ }
 }
 
+/** Public keys of all accounts that have an entry in sessionStorage (names only, no content check). */
+function listStoredAccounts() {
+  const accounts = new Set();
+  try {
+    for (let i = 0; i < sessionStorage.length; i += 1) {
+      const key = sessionStorage.key(i);
+      if (!key) continue;
+      if (key.startsWith(MAP_PREFIX)) accounts.add(key.slice(MAP_PREFIX.length));
+      else if (key.startsWith(LEGACY_PREFIX)) accounts.add(key.slice(LEGACY_PREFIX.length));
+    }
+  } catch { /* noop */ }
+  accounts.delete('');
+  return [...accounts];
+}
+
+/**
+ * Looks up the encrypted secret of one signer. A signer's secret is the same
+ * whichever account it was remembered under (e.g. B's key remembered while
+ * paying from multisig account A), so the given account is checked first and
+ * every other account of this session after that. Never decrypts.
+ */
+function findEncryptedSignerSecret(accountPublicKey, signerPublicKey) {
+  if (!signerPublicKey) return '';
+  const direct = accountPublicKey ? readEncryptedMap(accountPublicKey)[signerPublicKey] : '';
+  if (direct) return direct;
+  for (const account of listStoredAccounts()) {
+    if (account === accountPublicKey) continue;
+    const enc = readEncryptedMap(account)[signerPublicKey];
+    if (enc) return enc;
+  }
+  return '';
+}
+
 export async function getSessionSecrets(accountPublicKey) {
   const encrypted = readEncryptedMap(accountPublicKey);
   const entries = await Promise.all(
@@ -152,9 +185,24 @@ export function getSessionSecretCount(accountPublicKey) {
 
 export async function getSessionSecret(accountPublicKey, signerPublicKey) {
   if (!accountPublicKey || !signerPublicKey) return '';
-  const encrypted = readEncryptedMap(accountPublicKey)[signerPublicKey];
+  const encrypted = findEncryptedSignerSecret(accountPublicKey, signerPublicKey);
   if (!encrypted) return '';
   return decryptSecret(encrypted);
+}
+
+/**
+ * Public keys of all signers whose secret can sign for this account right now:
+ * every signer remembered under the account itself, plus the account's own
+ * master key if it was remembered under another account. Sync, never decrypts.
+ * Used by the status chip so it agrees with what getSessionSecret() finds.
+ */
+export function getUsableSignerKeys(accountPublicKey) {
+  if (!accountPublicKey) return [];
+  const signers = new Set(Object.keys(readEncryptedMap(accountPublicKey)));
+  if (!signers.has(accountPublicKey) && findEncryptedSignerSecret(accountPublicKey, accountPublicKey)) {
+    signers.add(accountPublicKey);
+  }
+  return [...signers];
 }
 
 export async function setSessionSecrets(accountPublicKey, secretsMap) {
@@ -197,37 +245,12 @@ export async function rememberSessionSecrets(accountPublicKey, collected) {
   return setSessionSecrets(accountPublicKey, { ...current, ...next });
 }
 
-export function clearSessionSecrets(accountPublicKey) {
-  if (!accountPublicKey) return false;
-  try {
-    sessionStorage.removeItem(`${MAP_PREFIX}${accountPublicKey}`);
-    sessionStorage.removeItem(`${LEGACY_PREFIX}${accountPublicKey}`);
-    emitSecretChanged(accountPublicKey);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 // Number of accounts that currently have at least one secret remembered in this
 // session. Counts an account only if its entry actually holds signer entries
 // (same check as hasSessionSecrets), so empty or malformed entries under the
 // same prefix don't fake a stored secret. Never decrypts anything.
 export function getSessionSecretAccountCount() {
-  try {
-    const candidates = new Set();
-    for (let i = 0; i < sessionStorage.length; i += 1) {
-      const key = sessionStorage.key(i);
-      if (!key) continue;
-      if (key.startsWith(MAP_PREFIX)) candidates.add(key.slice(MAP_PREFIX.length));
-      else if (key.startsWith(LEGACY_PREFIX)) candidates.add(key.slice(LEGACY_PREFIX.length));
-    }
-    let count = 0;
-    candidates.forEach((pk) => { if (pk && hasSessionSecrets(pk)) count += 1; });
-    return count;
-  } catch {
-    return 0;
-  }
+  return listStoredAccounts().filter((pk) => hasSessionSecrets(pk)).length;
 }
 
 // Wipes every remembered secret across all accounts. Used by the global

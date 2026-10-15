@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  clearSessionSecrets,
   getSessionSecret,
   getSessionSecretCount,
   getSessionSecrets,
+  getUsableSignerKeys,
   hasSessionSecrets,
   InsecureCryptoContextError,
   rememberSessionSecrets,
@@ -54,13 +54,6 @@ describe('sessionSecrets (hardened storage)', () => {
     expect(getSessionSecretCount(ACCOUNT)).toBe(1);
   });
 
-  it('clearSessionSecrets removes the stored map', async () => {
-    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
-    expect(hasSessionSecrets(ACCOUNT)).toBe(true);
-    clearSessionSecrets(ACCOUNT);
-    expect(hasSessionSecrets(ACCOUNT)).toBe(false);
-    expect(await getSessionSecret(ACCOUNT, SIGNER)).toBe('');
-  });
 
   it('rememberSessionSecrets merges collected keypairs into the encrypted map', async () => {
     await rememberSessionSecrets(ACCOUNT, [{ keypair: fakeKeypair(SIGNER, SECRET) }]);
@@ -137,17 +130,6 @@ describe('sessionSecrets (lock / status helpers)', () => {
     expect(clearAllSessionSecrets()).toBe(false);
   });
 
-  it('clearSessionSecrets emits a change event carrying only the public key', async () => {
-    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
-    const seen = [];
-    const handler = (e) => seen.push(e.detail);
-    window.addEventListener('stm-session-secret-changed', handler);
-    clearSessionSecrets(ACCOUNT);
-    window.removeEventListener('stm-session-secret-changed', handler);
-    expect(seen).toEqual([{ publicKey: ACCOUNT }]);
-    expect(JSON.stringify(seen)).not.toContain(SECRET);
-  });
-
   it('setSessionSecrets and rememberSessionSecrets emit the change event themselves, without secrets', async () => {
     const seen = [];
     const handler = (e) => seen.push(e.detail);
@@ -168,6 +150,39 @@ describe('sessionSecrets (lock / status helpers)', () => {
     expect(getSessionSecretAccountCount()).toBe(0);
     await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
     expect(getSessionSecretAccountCount()).toBe(1);
+  });
+});
+
+describe('sessionSecrets (signer lookup across accounts)', () => {
+  const MULTI = 'GD5KJP276E7CZT43PAI5KAEXCUDZMFFMV4X5AGFKBR7Q7IAZZ5BXZVKM';
+
+  it('finds a signer key remembered under another account (multisig job of another account)', async () => {
+    // ACCOUNT's own key, remembered while ACCOUNT itself was loaded
+    await setSessionSecrets(ACCOUNT, { [ACCOUNT]: SECRET });
+    // job of MULTI, signed by ACCOUNT: lookup under MULTI must still find it
+    expect(await getSessionSecret(MULTI, ACCOUNT)).toBe(SECRET);
+  });
+
+  it('finds the own key of an account remembered under a multisig account', async () => {
+    await setSessionSecrets(MULTI, { [ACCOUNT]: SECRET });
+    expect(await getSessionSecret(ACCOUNT, ACCOUNT)).toBe(SECRET);
+    expect(getUsableSignerKeys(ACCOUNT)).toEqual([ACCOUNT]);
+  });
+
+  it('getUsableSignerKeys lists the account map plus the own key from elsewhere, without duplicates', async () => {
+    expect(getUsableSignerKeys(ACCOUNT)).toEqual([]);
+    expect(getUsableSignerKeys('')).toEqual([]);
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET });
+    await setSessionSecrets(MULTI, { [ACCOUNT]: SECRET });
+    expect(getUsableSignerKeys(ACCOUNT).sort()).toEqual([ACCOUNT, SIGNER].sort());
+    await setSessionSecrets(ACCOUNT, { [SIGNER]: SECRET, [ACCOUNT]: SECRET });
+    expect(getUsableSignerKeys(ACCOUNT).sort()).toEqual([ACCOUNT, SIGNER].sort());
+  });
+
+  it('does not borrow co-signer keys of other accounts for the account itself', async () => {
+    await setSessionSecrets(MULTI, { [SIGNER]: SECRET });
+    expect(getUsableSignerKeys(ACCOUNT)).toEqual([]);
+    expect(await getSessionSecret(ACCOUNT, ACCOUNT)).toBe('');
   });
 });
 
