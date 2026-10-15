@@ -133,21 +133,21 @@ export default function PracticePage() {
               onClick={() => runCheck('accountActivated')}
               className="px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
             >
-              {t('learn:practice.accountActivated', 'Check: Account activated')}
+              {t('learn:practice.accountActivated', 'Prüfen: Konto aktiviert')}
             </button>
             <button
               type="button"
               onClick={() => runCheck('trustline')}
               className="px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
             >
-              {t('learn:practice.trustline', 'Check: Trustline present')}
+              {t('learn:practice.trustline', 'Prüfen: Trustline vorhanden')}
             </button>
             <button
               type="button"
               onClick={() => runCheck('payment')}
               className="px-3 py-1.5 rounded text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
             >
-              {t('learn:practice.payment', 'Check: Payment received')}
+              {t('learn:practice.payment', 'Prüfen: Zahlung erhalten')}
             </button>
           </div>
 

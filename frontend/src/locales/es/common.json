@@ -46,7 +46,9 @@
         "memo": "Filtro de memos",
         "memoPlaceholder": "Buscando memo...",
         "counterparty": "Cuenta receptora",
-        "counterpartyPlaceholder": "Filtrar por dirección del destinatario/remitente…"
+        "counterpartyPlaceholder": "Filtrar por dirección del destinatario/remitente…",
+        "clear": "Borrar",
+        "resetAll": "Borrar todos los filtros"
       },
       "from": "Hasta",
       "incoming": "Entrada",
@@ -164,7 +166,8 @@
         "label": "Razón",
         "required": "Indica un motivo si el estado es \"Rechazado\"."
       },
-      "secretVisibilityToggle": "Mostrar/Ocultar Secreto de Administrador"
+      "secretVisibilityToggle": "Mostrar/Ocultar Secreto de Administrador",
+      "comment": "Comentario"
     }
   },
   "cache": {
@@ -387,7 +390,8 @@
       "deletingProgress": "Eliminación en progreso: {{current}} / {{total}}",
       "success": "Éxito: {{count}} Trustline(s) eliminado."
     },
-    "skippedDueToBalance": "{{count}} Trustline (s) omitidos (saldo restante)."
+    "skippedDueToBalance": "{{count}} Trustline (s) omitidos (saldo restante).",
+    "deleteConfirm": "¿Eliminar las trustlines seleccionadas?"
   },
   "payment": {
     "send": {
@@ -466,7 +470,8 @@
       "muxedActivationCapture": "La cuenta se ha activado; se ha aplicado una comisión mínima adicional por la transacción para registrar también el ID multiplexado en la cadena de bloques.",
       "muxedActivationCaptureXdr": "Esta transacción consta de dos operaciones (activación de la cuenta + asignación multiplexada) y, por lo tanto, conlleva dos comisiones de transacción.",
       "muxedActivationCaptureJob": "Esta operación conlleva dos pasos (activación de la cuenta + asignación multiplexada) y, por lo tanto, conlleva dos comisiones por operación.",
-      "txTooLateHint": "Esto puede deberse a que la hora del sistema no es correcta. Comprueba si la fecha y la hora de tu dispositivo son correctas; activa la sincronización automática de la hora si es necesario."
+      "txTooLateHint": "Esto puede deberse a que la hora del sistema no es correcta. Comprueba si la fecha y la hora de tu dispositivo son correctas; activa la sincronización automática de la hora si es necesario.",
+      "reviewTitle": "Confirmar transacción"
     }
   },
   "activation": {
@@ -1248,5 +1253,10 @@
     "updated": "Actualizado a las {{time}}",
     "pair": "Divisa para el tipo de cambio del XLM",
     "unavailable": "Curso no disponible"
+  },
+  "createdAt": "Creado",
+  "createdBy": "Creado por",
+  "externalDomain": {
+    "warning": "Escribe tú mismo esta dirección en tu navegador; nunca hagas clic en enlaces de una app o un mensaje."
   }
 }

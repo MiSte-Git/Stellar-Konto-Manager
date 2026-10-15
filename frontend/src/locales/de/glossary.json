@@ -1097,5 +1097,6 @@
     "original": "Federated Byzantine Agreement",
     "short": "Das Konsensprinzip hinter SCP: Jeder Validator wählt selbst, welchen anderen er vertraut – kein zentrales Komitee entscheidet das.",
     "desc": "FBA (Federated Byzantine Agreement) ist das Herzstück des Stellar Consensus Protocol. Im Gegensatz zu PoW oder PoS gibt es kein Mining und keine Stake-Abstimmung. Stattdessen wählt jeder Validator-Betreiber selbst, welchen anderen Validatoren er vertraut – das ergibt seinen Quorum Set. Damit eine Transaktion bestätigt wird, müssen sich überlappende Quorum Sets einigen (ca. 2/3 Mehrheit). Das Ergebnis: Ein dezentrales, energieeffizientes Netzwerk ohne zentrale Kontrollinstanz."
-  }
+  },
+  "toc": "Inhaltsverzeichnis"
 }

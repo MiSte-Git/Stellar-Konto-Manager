@@ -1088,5 +1088,6 @@
     "original": "Token Trading",
     "short": "Zoek tokens op het netwerk en koop, verkoop of ruil ze direct.",
     "desc": "Hier kun je zoeken naar tokens op het Stellar-netwerk en deze direct kopen, verkopen of inwisselen voor een ander token. Achter de schermen vinden deze transacties plaats via de ingebouwde gedecentraliseerde beurs (DEX) van Stellar. Meer informatie over de technologie hierachter vind je in het DEX-lemma in de woordenlijst."
-  }
+  },
+  "toc": "Inhoudsopgave"
 }

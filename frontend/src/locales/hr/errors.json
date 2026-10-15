@@ -61,6 +61,9 @@
         "trustlines": {
           "invalidInput": "Provjerite šifru imovine, izdavatelja i limit. Barem jedno od polja je nevažeće."
         }
+      },
+      "trustlines": {
+        "invalidInput": "Neispravan unos"
       }
     }
   },
@@ -87,5 +90,6 @@
     "serverInvalid": "Neispravan poslužitelj"
   },
   "backendConnectError": "Veza s pozadinskim sustavom nije uspjela: {{url}}",
-  "rateLimited": "Prekoračeno je ograničenje brzine za Horizon. Molimo sačekajte nekoliko sekundi i pokušajte ponovo."
+  "rateLimited": "Prekoračeno je ograničenje brzine za Horizon. Molimo sačekajte nekoliko sekundi i pokušajte ponovo.",
+  "unknown": "Nepoznata pogreška"
 }

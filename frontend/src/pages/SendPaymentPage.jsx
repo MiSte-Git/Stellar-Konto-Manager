@@ -521,7 +521,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   const buildSummaryItems = useCallback((summary) => {
     if (!summary) return [];
     const items = [
-      { label: t('common:account.source', 'Quelle'), value: summary.source },
+      { label: t('publicKey:source', 'Quelle'), value: summary.source },
     ];
     if (summary.sourceFederation) {
       items.push({ label: t('wallet:federationDisplay.label', 'Föderationsadresse'), value: summary.sourceFederation });
@@ -1743,7 +1743,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         <div className="text-sm bg-green-100 dark:bg-green-900/30 border border-green-300/60 text-green-800 dark:text-green-200 rounded p-3 max-w-4xl mx-auto">
           <div className="font-semibold mb-1">{t('common:payment.send.successShort', 'Erfolgreich gesendet')}</div>
           <div className="space-y-0.5">
-            <div><span className="text-gray-600 dark:text-gray-400">{t('common:account.source', 'Quelle')}:</span> <span className="font-mono break-all">{sentInfo.account}</span></div>
+            <div><span className="text-gray-600 dark:text-gray-400">{t('publicKey:source', 'Quelle')}:</span> <span className="font-mono break-all">{sentInfo.account}</span></div>
             {sentInfo.sourceFederation && (
               <div><span className="text-gray-600 dark:text-gray-400">{t('wallet:federationDisplay.label', 'Föderationsadresse')}:</span> <span className="font-mono break-all">{sentInfo.sourceFederation}</span></div>
             )}
@@ -2010,7 +2010,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 type="button"
                 className="px-2 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={closeConfirmDialogs}
-                aria-label={t('common:option.cancel', 'Cancel')}
+                aria-label={t('common:option.cancel', 'Abbrechen')}
               >
                 ×
               </button>
@@ -2125,7 +2125,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={closeConfirmDialogs}
               >
-                {t('common:option.cancel', 'Cancel')}
+                {t('common:option.cancel', 'Abbrechen')}
               </button>
               <button
                 className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
@@ -2157,7 +2157,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
             <div className="space-y-2 text-sm mb-3">
               <div className="flex items-start justify-between gap-2">
-                <span className="text-gray-600 dark:text-gray-400">{t('common:account.source', 'Quelle')}:</span>
+                <span className="text-gray-600 dark:text-gray-400">{t('publicKey:source', 'Quelle')}:</span>
                 <span className="font-mono break-all text-right">{reviewDialog.snapshot?.source}</span>
               </div>
               {reviewDialog.snapshot?.sourceFederation && (
@@ -2251,7 +2251,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 onClick={closeReviewDialog}
                 disabled={reviewProcessing}
               >
-                {t('common:option.cancel', 'Cancel')}
+                {t('common:option.cancel', 'Abbrechen')}
               </button>
               <button
                 type="button"
@@ -2298,7 +2298,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 className="px-3 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={closeMemoMismatchDialog}
               >
-                {t('common:option.cancel', 'Cancel')}
+                {t('common:option.cancel', 'Abbrechen')}
               </button>
               <button
                 type="button"
@@ -2489,7 +2489,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                     openSecretModal(false, 'job', 1, 'result');
                   }}
                 >
-                  {t('multisig:confirm.result.job.signNow', 'Jetzt signieren')}
+                  {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
                 </button>
               </div>
             )}

@@ -61,6 +61,9 @@
         "trustlines": {
           "invalidInput": "Por favor, verifica el código del activo, el emisor y el límite. Al menos uno de los campos es inválido."
         }
+      },
+      "trustlines": {
+        "invalidInput": "Entrada no válida"
       }
     }
   },
@@ -87,5 +90,6 @@
     "serverInvalid": "Servidor no válido"
   },
   "backendConnectError": "La conexión con el backend falló: {{url}}",
-  "rateLimited": "Límite de tasa de Horizon superado. Por favor, espera unos segundos e inténtalo de nuevo."
+  "rateLimited": "Límite de tasa de Horizon superado. Por favor, espera unos segundos e inténtalo de nuevo.",
+  "unknown": "Error desconocido"
 }

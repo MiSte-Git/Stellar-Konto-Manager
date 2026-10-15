@@ -46,7 +46,9 @@
         "memo": "Memo filter",
         "memoPlaceholder": "Searching for memo...",
         "counterparty": "Recipient account",
-        "counterpartyPlaceholder": "Filter by recipient/sender address…"
+        "counterpartyPlaceholder": "Filter by recipient/sender address…",
+        "clear": "Clear",
+        "resetAll": "Clear all filters"
       },
       "from": "From",
       "incoming": "Entrance",
@@ -164,7 +166,8 @@
         "label": "Reason",
         "required": "Please provide a reason if the status is \"Declined\"."
       },
-      "secretVisibilityToggle": "Show/Hide Admin Secret"
+      "secretVisibilityToggle": "Show/Hide Admin Secret",
+      "comment": "Comment"
     }
   },
   "cache": {
@@ -387,7 +390,8 @@
       "deletingProgress": "Deleting in progress: {{current}} / {{total}}",
       "success": "Success: {{count}} Trustline(s) deleted."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) skipped (balance remaining)."
+    "skippedDueToBalance": "{{count}} Trustline(s) skipped (balance remaining).",
+    "deleteConfirm": "Delete the selected trustlines?"
   },
   "payment": {
     "send": {
@@ -466,7 +470,8 @@
       },
       "muxedActivationCaptureXdr": "This transaction involves two operations (account activation + muxed allocation) and therefore incurs two transaction fees.",
       "muxedActivationCaptureJob": "This job involves two operations (account activation + muxed assignment) and therefore incurs two operation fees.",
-      "txTooLateHint": "This may be due to an incorrect system time. Please check whether the date and time on your device are correct – enable automatic time synchronization if necessary."
+      "txTooLateHint": "This may be due to an incorrect system time. Please check whether the date and time on your device are correct – enable automatic time synchronization if necessary.",
+      "reviewTitle": "Confirm transaction"
     }
   },
   "activation": {
@@ -1248,5 +1253,10 @@
     "updated": "Updated {{time}}",
     "pair": "Currency for the XLM exchange rate",
     "unavailable": "Course not available"
+  },
+  "createdAt": "Created",
+  "createdBy": "Created by",
+  "externalDomain": {
+    "warning": "Type this address into your browser yourself – never click links from an app or message."
   }
 }

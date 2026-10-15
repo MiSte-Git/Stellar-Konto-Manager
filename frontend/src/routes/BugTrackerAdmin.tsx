@@ -598,7 +598,7 @@ const BugTrackerAdmin: React.FC = () => {
     key === 'description' ? t('common:bugReport.admin.description') :
     key === 'category' ? t('common:bugReport.admin.category') :
     key === 'status' ? t('common:bugReport.admin.status') :
-    key === 'rejectionReason' ? t('common:bugReport.admin.rejectionReasonTitle', 'Ablehnungsgrund') :
+    key === 'rejectionReason' ? t('common:bugReport.admin.rejectedReasonTitle', 'Ablehnungsgrund') :
     key === 'comment' ? t('common:bugReport.admin.comment', 'Kommentar') :
     key === 'priority' ? t('common:bugReport.admin.priority') :
     key === 'appVersion' ? 'Version' : String(key)
@@ -720,9 +720,9 @@ const BugTrackerAdmin: React.FC = () => {
             type="button"
             className="px-3 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={() => { try { window.history.back(); } catch {} }}
-            title={t('common:back', 'Zurück')}
+            title={t('navigation:back', 'Zurück')}
           >
-            {t('common:back', 'Zurück')}
+            {t('navigation:back', 'Zurück')}
           </button>
           <h1 className="text-2xl font-semibold">{t('common:bugReport.admin.title')}</h1>
           <button
@@ -862,7 +862,7 @@ const BugTrackerAdmin: React.FC = () => {
                   key === 'description' ? t('common:bugReport.admin.description') :
                   key === 'category' ? t('common:bugReport.admin.category') :
                   key === 'status' ? t('common:bugReport.admin.status') :
-                  key === 'rejectionReason' ? t('common:bugReport.admin.rejectionReasonTitle', 'Ablehnungsgrund') :
+                  key === 'rejectionReason' ? t('common:bugReport.admin.rejectedReasonTitle', 'Ablehnungsgrund') :
                   key === 'comment' ? t('common:bugReport.admin.comment', 'Kommentar') :
                   key === 'priority' ? t('common:bugReport.admin.priority') :
                   key === 'appVersion' ? 'Version' : key
@@ -995,19 +995,19 @@ const BugTrackerAdmin: React.FC = () => {
                               onBlur={() => {
                                 const trimmed = String(value || '').trim();
                                 if (isRejected && !trimmed) {
-                                  setNotice(t('common:bugReport.admin.rejectionReasonRequired', 'Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist.'));
+                                  setNotice(t('common:bugReport.admin.rejectedReasonRequired', 'Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist.'));
                                   return;
                                 }
                                 const next = trimmed ? trimmed : null;
                                 saveReport(report.id, { ...(drafts[report.id] || {}), rejectionReason: next });
                               }}
                               className={(missing ? 'border-red-400 ' : '') + 'border rounded px-2 py-1 w-full disabled:bg-gray-100 dark:disabled:bg-gray-800'}
-                              placeholder={t('common:bugReport.admin.rejectionReasonTitle', 'Ablehnungsgrund')}
-                              title={t('common:bugReport.admin.rejectionReasonTitle', 'Ablehnungsgrund')}
+                              placeholder={t('common:bugReport.admin.rejectedReasonTitle', 'Ablehnungsgrund')}
+                              title={t('common:bugReport.admin.rejectedReasonTitle', 'Ablehnungsgrund')}
                             />
                             {missing && (
                               <div className="text-xs text-red-700 dark:text-red-300">
-                                {t('common:bugReport.admin.rejectionReasonRequired', 'Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist.')}
+                                {t('common:bugReport.admin.rejectedReasonRequired', 'Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist.')}
                               </div>
                             )}
                           </div>
@@ -1092,7 +1092,7 @@ const BugTrackerAdmin: React.FC = () => {
                      key === 'description' ? t('common:bugReport.admin.description') :
                      key === 'category' ? t('common:bugReport.admin.category') :
                      key === 'status' ? t('common:bugReport.admin.status') :
-                     key === 'rejectionReason' ? t('common:bugReport.admin.rejectionReasonTitle', 'Ablehnungsgrund') :
+                     key === 'rejectionReason' ? t('common:bugReport.admin.rejectedReasonTitle', 'Ablehnungsgrund') :
                      key === 'comment' ? t('common:bugReport.admin.comment', 'Kommentar') :
                      key === 'priority' ? t('common:bugReport.admin.priority') :
                      key === 'appVersion' ? 'Version' : key}

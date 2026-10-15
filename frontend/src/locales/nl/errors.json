@@ -61,6 +61,9 @@
         "trustlines": {
           "invalidInput": "Controleer de activacode, de uitgever en de limiet. Ten minste één van de velden is ongeldig."
         }
+      },
+      "trustlines": {
+        "invalidInput": "Ongeldige invoer"
       }
     }
   },
@@ -87,5 +90,6 @@
     "serverInvalid": "Ongeldige server"
   },
   "backendConnectError": "Verbinding met backend mislukt: {{url}}",
-  "rateLimited": "Horizon snelheidslimiet overschreden. Wacht een paar seconden en probeer het opnieuw."
+  "rateLimited": "Horizon snelheidslimiet overschreden. Wacht een paar seconden en probeer het opnieuw.",
+  "unknown": "Onbekende fout"
 }

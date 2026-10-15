@@ -46,7 +46,9 @@
         "memo": "Memo-suodatin",
         "memoPlaceholder": "Etsitään memo...",
         "counterparty": "Vastaanottajan tili",
-        "counterpartyPlaceholder": "Suodata vastaanottajan/lähettäjän osoitteen mukaan…"
+        "counterpartyPlaceholder": "Suodata vastaanottajan/lähettäjän osoitteen mukaan…",
+        "clear": "Tyhjennä",
+        "resetAll": "Tyhjennä kaikki suodattimet"
       },
       "from": "Alkaen",
       "incoming": "Sisäänkäynti",
@@ -164,7 +166,8 @@
         "label": "Syy",
         "required": "Anna syy, jos tila on \"Hylätty\"."
       },
-      "secretVisibilityToggle": "Näytä/piilota ylläpitäjän salaisuus"
+      "secretVisibilityToggle": "Näytä/piilota ylläpitäjän salaisuus",
+      "comment": "Kommentti"
     }
   },
   "cache": {
@@ -387,7 +390,8 @@
       "deletingProgress": "Poistetaan: {{current}} / {{total}}",
       "success": "Onnistui: {{count}} Trustline(s) poistettu."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) ohitettu (jäljellä oleva aika)."
+    "skippedDueToBalance": "{{count}} Trustline(s) ohitettu (jäljellä oleva aika).",
+    "deleteConfirm": "Poistetaanko valitut trustlinet?"
   },
   "payment": {
     "send": {
@@ -466,7 +470,8 @@
       "muxedActivationCapture": "Tili on aktivoitu; lisäksi perittiin vähäinen lisämaksu, jotta myös yhdistetty tunnus (muxed ID) kirjattiin lohkoketjuun.",
       "muxedActivationCaptureXdr": "Tämä tapahtuma koostuu kahdesta toiminnosta (tilin aktivointi + muxed-allokaatio), minkä vuoksi siitä peritään kaksi transaktiomaksua.",
       "muxedActivationCaptureJob": "Tähän tehtävään liittyy kaksi toimenpidettä (tilin aktivointi + muxed-määritys), minkä vuoksi siitä peritään kaksi käsittelymaksua.",
-      "txTooLateHint": "Tämä voi johtua virheellisestä järjestelmäajasta. Tarkista, ovatko laitteesi päivämäärä ja kellonaika oikein – ota tarvittaessa käyttöön automaattinen ajan synkronointi."
+      "txTooLateHint": "Tämä voi johtua virheellisestä järjestelmäajasta. Tarkista, ovatko laitteesi päivämäärä ja kellonaika oikein – ota tarvittaessa käyttöön automaattinen ajan synkronointi.",
+      "reviewTitle": "Vahvista transaktio"
     }
   },
   "activation": {
@@ -1248,5 +1253,10 @@
     "updated": "Päivitetty {{time}}",
     "pair": "XLM:n valuuttakurssin valuutta",
     "unavailable": "Kurssia ei ole tarjolla"
+  },
+  "createdAt": "Luotu",
+  "createdBy": "Luonut",
+  "externalDomain": {
+    "warning": "Kirjoita tämä osoite itse selaimeesi – älä koskaan napsauta sovelluksen tai viestin linkkejä."
   }
 }

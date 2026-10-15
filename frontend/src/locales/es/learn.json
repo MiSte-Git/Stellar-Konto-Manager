@@ -177,5 +177,10 @@
     "task": "",
     "learningOutcome": "Puedes reconocer los patrones típicos de las estafas, como el soporte técnico falso, la presión por el tiempo y las solicitudes de claves.",
     "reward": "🛡️ Detector de estafas"
+  },
+  "practice": {
+    "accountActivated": "Comprobar: cuenta activada",
+    "trustline": "Comprobar: trustline existente",
+    "payment": "Comprobar: pago recibido"
   }
 }

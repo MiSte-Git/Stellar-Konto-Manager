@@ -228,7 +228,7 @@ function ListTrustlines({
   const handlePrepareMultisig = async () => {
     try {
       if (deletableOverview.length === 0) {
-        setErrorMessage(t('common:trustlines.deleteConfirm', 'Delete the selected trustlines?'));
+        setErrorMessage(t('common:trustlines.deleteConfirm', 'Ausgewählte Trustlines löschen?'));
         return;
       }
       const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
@@ -284,9 +284,9 @@ function ListTrustlines({
           title: t('multisig:prepare.title'),
           subtitle: t('multisig:prepare.subtitle'),
           items: [
-            { label: t('common:account.source', 'Quelle'), value: publicKey },
+            { label: t('publicKey:source', 'Quelle'), value: publicKey },
             { label: t('trustline:delete'), value: `${deletableOverview.length}` },
-            { label: t('common:network', 'Netzwerk'), value: net },
+            { label: t('common:networkLabel', 'Netzwerk'), value: net },
             jobId ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: jobId } : null,
           ].filter(Boolean),
         },
@@ -670,7 +670,7 @@ function ListTrustlines({
               </h2>
             </div>
             <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">
-              {t('common:trustlines.deleteConfirm', 'Delete the selected trustlines?')}
+              {t('common:trustlines.deleteConfirm', 'Ausgewählte Trustlines löschen?')}
             </p>
 
             <table className="min-w-full text-sm mb-4">
@@ -708,14 +708,14 @@ function ListTrustlines({
             </table>
             <div className="mt-6">
               <p className="text-sm text-red-700 dark:text-red-300 mb-3">
-                {t('common:trustlines.deleteConfirm', 'Delete the selected trustlines?')}
+                {t('common:trustlines.deleteConfirm', 'Ausgewählte Trustlines löschen?')}
               </p>
               <div className="flex justify-end mb-3">
                 <button
                   onClick={() => { setShowOverviewModal(false); setPendingAction(null); }}
                   className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500"
                 >
-                  {t('common:option.cancel', 'Cancel')}
+                  {t('common:option.cancel', 'Abbrechen')}
                 </button>
               </div>
               <div className="grid gap-3">

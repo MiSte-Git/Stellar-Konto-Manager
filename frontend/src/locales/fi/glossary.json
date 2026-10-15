@@ -1088,5 +1088,6 @@
     "original": "Token Trading",
     "short": "Etsi verkosta tokeneita ja osta, myy tai vaihda niitä suoraan.",
     "desc": "Täällä voit etsiä Stellar-verkoston tokeneita ja ostaa, myydä tai vaihtaa niitä toiseen tokeneen heti. Taustalla nämä transaktiot tapahtuvat Stellarin sisäänrakennetun hajautetun pörssin (DEX) kautta. Lisätietoja tämän taustalla olevasta tekniikasta löydät DEX-sanastokohdasta."
-  }
+  },
+  "toc": "Sisällysluettelo"
 }

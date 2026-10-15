@@ -177,5 +177,10 @@
     "task": "",
     "learningOutcome": "È possibile riconoscere gli schemi tipici delle truffe, come il finto servizio di assistenza, la pressione temporale e le richieste di codici di accesso.",
     "reward": "🛡️ Rilevatore di truffe"
+  },
+  "practice": {
+    "accountActivated": "Verifica: account attivato",
+    "trustline": "Verifica: trustline presente",
+    "payment": "Verifica: pagamento ricevuto"
   }
 }

@@ -61,6 +61,9 @@
         "trustlines": {
           "invalidInput": "Tarkista varainimike, liikkeeseenlaskija ja raja. Ainakin yksi kentistä on virheellinen."
         }
+      },
+      "trustlines": {
+        "invalidInput": "Virheellinen syöte"
       }
     }
   },
@@ -87,5 +90,6 @@
     "serverInvalid": "Virheellinen palvelin"
   },
   "backendConnectError": "Yhteys taustapalvelimeen epäonnistui: {{url}}",
-  "rateLimited": "Horizon-rajoitus on ylitetty. Odota muutama sekunti ja yritä uudelleen."
+  "rateLimited": "Horizon-rajoitus on ylitetty. Odota muutama sekunti ja yritä uudelleen.",
+  "unknown": "Tuntematon virhe"
 }

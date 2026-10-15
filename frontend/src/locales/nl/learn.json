@@ -177,5 +177,10 @@
     "task": "",
     "learningOutcome": "Je kunt typische oplichtingspatronen herkennen, zoals nep-klantenservice, tijdsdruk en verzoeken om sleutels.",
     "reward": "🛡️ Oplichtingsdetector"
+  },
+  "practice": {
+    "accountActivated": "Controleren: account geactiveerd",
+    "trustline": "Controleren: trustline aanwezig",
+    "payment": "Controleren: betaling ontvangen"
   }
 }

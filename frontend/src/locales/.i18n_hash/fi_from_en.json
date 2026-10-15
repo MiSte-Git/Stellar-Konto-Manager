@@ -5173,5 +5173,20 @@
   "wallet.activity.urlHint": "2e5dccb2551b433ac6138519623b19a54b1138ebdd053ee05052c22a8da8b0ac",
   "wallet.activity.fakeNative": "08a7d91915746703bf5ab6e1d31850b5f112348a5039b36021e333a79e3d3860",
   "wallet.activity.fakeNativeHint": "6c1d670445abd28e3a0b4e705da6979d8b7104f35a2851111bedb1a2c217dc31",
-  "wallet.receive.hintTrustline": "76401d5103e7ea0778cab7e785186e4a0d0ae1d6272c48b94302b3b96787df5b"
+  "wallet.receive.hintTrustline": "76401d5103e7ea0778cab7e785186e4a0d0ae1d6272c48b94302b3b96787df5b",
+  "common.balance.payments.filter.clear": "83b12c2216efb4fdc924e1deb5182e905e4926ed0c1c324d467107f46d5a26a9",
+  "common.balance.payments.filter.resetAll": "de22447d91bbb54edb718c661ff961ca832ff4260ec61ea538be1fed4e688cd8",
+  "common.bugReport.admin.comment": "44f5e3fbec57be75ebfb2e42caf7f5ee1542f84748a0380b6f20238c4a257e1b",
+  "common.createdAt": "d70b9e24bca26b409b9458ceca6c9e5c2b5c3171c37ff050c6f6a0d7a4420d2a",
+  "common.createdBy": "374cd9d220fbeb7a793416ff812502e11f49c06070d2e730676daccd2b6a6b87",
+  "common.externalDomain.warning": "58d973f6d9d0f4b5be9edd1adb1a3b508c28cdd7b5ee73e0903122897bbe760f",
+  "common.payment.send.reviewTitle": "44a3e7d32d9bbf761910ae5623b0156658af503d8b563c6929c8533e65b993e5",
+  "common.trustlines.deleteConfirm": "7c20e96236ef71e50c940b4e5150b43128722cf6e889863131440812f96dc2b8",
+  "errors.submitTransaction.failed.trustlines.invalidInput": "c9bbbe8347222271664bede21651835a285b4ee792c929c6bc71557f3a29ca5b",
+  "errors.unknown": "27c2ccd962c2b8dccb52fe3688ab236f186f7a41fd57d810478712048e9ad3f8",
+  "glossary.toc": "437aea62a5bd6ad4762e494c81b88532809a231477c82bdecf6fd6636908b7ab",
+  "learn.practice.accountActivated": "5ec053bc53650b2ae62420fa8f6eb35d8f6dabc28a6185768067785a8456af9f",
+  "learn.practice.trustline": "f3234ce8eeff63a7f479747cd8e0f77c4424f3c8921550635ff96adfb32ce3b3",
+  "learn.practice.payment": "4518e852889b27d4a87830143e02a5afc26f4dc224c265969251f641442a8ed7",
+  "secretKey.errorMissing": "9ba19c2cfd7bb681a28b53df681c08909b9982a53c75781babca8c4d75c962d4"
 }

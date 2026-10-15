@@ -1209,7 +1209,7 @@ function Main() {
                 onClick={closeIdentityGuard}
                 className="px-4 py-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-800"
               >
-                {t('common:option.cancel', 'Cancel')}
+                {t('common:option.cancel', 'Abbrechen')}
               </button>
               <button
                 type="button"

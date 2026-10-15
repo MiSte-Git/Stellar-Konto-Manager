@@ -370,7 +370,7 @@ function SecretKeyModal({
             onClick={onCancel}
             className="px-4 py-2 bg-gray-400 text-black rounded hover:bg-gray-500"
           >
-            {t('common:option.cancel', 'Cancel')}
+            {t('common:option.cancel', 'Abbrechen')}
           </button>
           <button
             onClick={handleConfirm}

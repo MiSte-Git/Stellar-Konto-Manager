@@ -34,7 +34,7 @@ function MultisigPrepareDialog({ open, onClose, hash, xdr, summary }) {
             className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
             onClick={onClose}
           >
-            {t('common:option.cancel', 'Cancel')}
+            {t('common:option.cancel', 'Abbrechen')}
           </button>
         </div>
 

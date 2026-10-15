@@ -455,13 +455,13 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
           title: t('multisig:prepare.title'),
           subtitle: t('multisig:prepare.subtitle'),
           items: [
-            { label: t('common:account.source', 'Quelle'), value: (defaultPublicKey || '').trim() },
+            { label: t('publicKey:source', 'Quelle'), value: (defaultPublicKey || '').trim() },
             { label: t('multisigConfig:masterWeight'), value: String(plannedMaster) },
             { label: t('multisigConfig:thresholdLow'), value: String(plannedThresholds.low) },
             { label: t('multisigConfig:thresholdMed'), value: String(plannedThresholds.med) },
             { label: t('multisigConfig:thresholdHigh'), value: String(plannedThresholds.high) },
-            { label: t('common:signers', 'Signer'), value: String(plannedSigners.length) },
-            { label: t('common:network', 'Netzwerk'), value: network },
+            { label: t('multisigEdit:signers', 'Signer'), value: String(plannedSigners.length) },
+            { label: t('common:networkLabel', 'Netzwerk'), value: network },
             { label: t('multisig:detail.validUntil.label', 'Gültig bis'), value: formatValidUntil(tx?.timeBounds?.maxTime, i18n.language, t) },
             jobId ? { label: t('multisig:detail.idLabel', 'Job-ID'), value: jobId } : null,
           ].filter(Boolean),
@@ -633,7 +633,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
                 className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={() => { setShowConfirmModal(false); setPendingAction(null); }}
               >
-                {t('common:option.cancel', 'Cancel')}
+                {t('common:option.cancel', 'Abbrechen')}
               </button>
             </div>
             <div className="text-sm space-y-1 mb-4">

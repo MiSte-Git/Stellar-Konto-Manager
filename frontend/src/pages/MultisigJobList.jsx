@@ -214,7 +214,7 @@ function MultisigJobList({ onBack, publicKey, onOpenDetail }) {
               onClick={() => { setShowDeletePanel(false); setDeleteConfirm(''); }}
               disabled={loading}
             >
-              {t('common:cancel', 'Abbrechen')}
+              {t('common:option.cancel', 'Abbrechen')}
             </button>
             <button
               type="button"

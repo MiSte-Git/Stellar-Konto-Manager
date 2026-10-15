@@ -61,6 +61,9 @@
         "trustlines": {
           "invalidInput": "Si prega di controllare il codice dell'asset, l'emittente e il limite. Almeno uno dei campi non è valido."
         }
+      },
+      "trustlines": {
+        "invalidInput": "Input non valido"
       }
     }
   },
@@ -87,5 +90,6 @@
     "serverInvalid": "Server non valido"
   },
   "backendConnectError": "Connessione al backend fallita: {{url}}",
-  "rateLimited": "Limite di velocità di Horizon superato. Attendere alcuni secondi e riprovare."
+  "rateLimited": "Limite di velocità di Horizon superato. Attendere alcuni secondi e riprovare.",
+  "unknown": "Errore sconosciuto"
 }

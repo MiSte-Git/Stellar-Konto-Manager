@@ -177,5 +177,10 @@
     "task": "",
     "learningOutcome": "Du erkennst typische Scam-Muster wie Fake Support, Zeitdruck und Key-Abfragen.",
     "reward": "🛡️ Scam-Detektor"
+  },
+  "practice": {
+    "accountActivated": "Prüfen: Konto aktiviert",
+    "trustline": "Prüfen: Trustline vorhanden",
+    "payment": "Prüfen: Zahlung erhalten"
   }
 }

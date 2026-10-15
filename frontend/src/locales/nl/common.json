@@ -46,7 +46,9 @@
         "memo": "Memo filter",
         "memoPlaceholder": "Zoeken naar memo...",
         "counterparty": "Ontvangerrekening",
-        "counterpartyPlaceholder": "Filteren op ontvanger-/afzenderadres…"
+        "counterpartyPlaceholder": "Filteren op ontvanger-/afzenderadres…",
+        "clear": "Wissen",
+        "resetAll": "Alle filters wissen"
       },
       "from": "Vanaf",
       "incoming": "Toegang",
@@ -164,7 +166,8 @@
         "label": "Reden",
         "required": "Geef een reden op als de status \"Afgewezen\" is."
       },
-      "secretVisibilityToggle": "Admingeheim verbergen/weergeven"
+      "secretVisibilityToggle": "Admingeheim verbergen/weergeven",
+      "comment": "Opmerking"
     }
   },
   "cache": {
@@ -387,7 +390,8 @@
       "deletingProgress": "Bezig met verwijderen: {{current}} / {{total}}",
       "success": "Succes: {{count}} Trustline(s) verwijderd."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (resterend saldo)."
+    "skippedDueToBalance": "{{count}} Trustline(s) overgeslagen (resterend saldo).",
+    "deleteConfirm": "Geselecteerde trustlines verwijderen?"
   },
   "payment": {
     "send": {
@@ -466,7 +470,8 @@
       "muxedActivationCapture": "Het account is geactiveerd; er zijn minimale extra transactiekosten in rekening gebracht om ook de gemuxte ID op de blockchain vast te leggen.",
       "muxedActivationCaptureXdr": "Deze transactie omvat twee bewerkingen (rekeningactivering + muxed-toewijzing) en er worden daarom twee transactiekosten in rekening gebracht.",
       "muxedActivationCaptureJob": "Deze opdracht omvat twee handelingen (accountactivering + toewijzing via multiplex) en er worden daarom twee verwerkingskosten in rekening gebracht.",
-      "txTooLateHint": "Dit kan te wijten zijn aan een onjuiste systeemtijd. Controleer of de datum en tijd op uw apparaat correct zijn; schakel indien nodig de automatische tijdsynchronisatie in."
+      "txTooLateHint": "Dit kan te wijten zijn aan een onjuiste systeemtijd. Controleer of de datum en tijd op uw apparaat correct zijn; schakel indien nodig de automatische tijdsynchronisatie in.",
+      "reviewTitle": "Transactie bevestigen"
     }
   },
   "activation": {
@@ -1248,5 +1253,10 @@
     "updated": "Bijgewerkt op {{time}}",
     "pair": "Valuta voor de XLM-wisselkoers",
     "unavailable": "Cursus niet beschikbaar"
+  },
+  "createdAt": "Aangemaakt",
+  "createdBy": "Aangemaakt door",
+  "externalDomain": {
+    "warning": "Typ dit adres zelf in je browser – klik nooit op links uit een app of bericht."
   }
 }

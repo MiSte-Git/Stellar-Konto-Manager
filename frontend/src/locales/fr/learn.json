@@ -177,5 +177,10 @@
     "task": "",
     "learningOutcome": "Vous pouvez repérer les schémas d'arnaque classiques, tels que le faux service d'assistance, la pression temporelle et les demandes de clés.",
     "reward": "🛡️ Détecteur d'arnaques"
+  },
+  "practice": {
+    "accountActivated": "Vérifier : compte activé",
+    "trustline": "Vérifier : trustline présente",
+    "payment": "Vérifier : paiement reçu"
   }
 }

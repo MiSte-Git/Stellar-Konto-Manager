@@ -46,7 +46,9 @@
         "memo": "Memo filter",
         "memoPlaceholder": "Pretražuje memo...",
         "counterparty": "Račun primatelja",
-        "counterpartyPlaceholder": "Filtriraj prema adresi primatelja/pošiljatelja…"
+        "counterpartyPlaceholder": "Filtriraj prema adresi primatelja/pošiljatelja…",
+        "clear": "Očisti",
+        "resetAll": "Očisti sve filtre"
       },
       "from": "Od",
       "incoming": "Ulaz",
@@ -164,7 +166,8 @@
         "label": "Razum",
         "required": "Molim navedite razlog ako je status „Odbijeno“."
       },
-      "secretVisibilityToggle": "Prikaži/Sakrij administratorsku tajnu"
+      "secretVisibilityToggle": "Prikaži/Sakrij administratorsku tajnu",
+      "comment": "Komentar"
     }
   },
   "cache": {
@@ -387,7 +390,8 @@
       "deletingProgress": "Brisanje u tijeku: {{current}} / {{total}}",
       "success": "Uspješno: {{count}} Trustline(s) izbrisano."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) preskočeno (preostali saldo)."
+    "skippedDueToBalance": "{{count}} Trustline(s) preskočeno (preostali saldo).",
+    "deleteConfirm": "Izbrisati odabrane trustlineove?"
   },
   "payment": {
     "send": {
@@ -466,7 +470,8 @@
       "muxedActivationCapture": "Račun je aktiviran; naplaćena je dodatna minimalna naknada za transakciju kako bi se muxed ID zabilježio na lancu.",
       "muxedActivationCaptureXdr": "Ova transakcija uključuje dvije operacije (aktivaciju računa + muxed alokaciju) i stoga podliježe dvjema naknadama za transakciju.",
       "muxedActivationCaptureJob": "Ovaj posao uključuje dvije operacije (aktivaciju računa + dodjelu multipleksa) i stoga podliježe dvjema naknadama za operacije.",
-      "txTooLateHint": "Ovo može biti uzrokovano netočnim vremenom sustava. Molimo provjerite jesu li datum i vrijeme na vašem uređaju ispravni – po potrebi omogućite automatsku sinkronizaciju vremena."
+      "txTooLateHint": "Ovo može biti uzrokovano netočnim vremenom sustava. Molimo provjerite jesu li datum i vrijeme na vašem uređaju ispravni – po potrebi omogućite automatsku sinkronizaciju vremena.",
+      "reviewTitle": "Potvrdi transakciju"
     }
   },
   "activation": {
@@ -1248,5 +1253,10 @@
     "updated": "Ažurirano {{time}}",
     "pair": "Valuta za tečaj XLM-a",
     "unavailable": "Tečaj nije dostupan"
+  },
+  "createdAt": "Kreirano",
+  "createdBy": "Kreirao",
+  "externalDomain": {
+    "warning": "Sam upiši ovu adresu u preglednik – nikad ne klikaj na poveznice iz aplikacije ili poruke."
   }
 }

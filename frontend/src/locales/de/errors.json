@@ -61,6 +61,9 @@
         "trustlines": {
           "invalidInput": "Bitte Asset-Code, Issuer und Limit prüfen. Mindestens eines der Felder ist ungültig."
         }
+      },
+      "trustlines": {
+        "invalidInput": "Ungültige Eingabe"
       }
     }
   },
@@ -87,5 +90,6 @@
     "serverInvalid": "Ungültiger Server"
   },
   "backendConnectError": "Verbindung zum Backend fehlgeschlagen: {{url}}",
-  "rateLimited": "Horizon-Rate-Limit überschritten. Bitte ein paar Sekunden warten und erneut versuchen."
+  "rateLimited": "Horizon-Rate-Limit überschritten. Bitte ein paar Sekunden warten und erneut versuchen.",
+  "unknown": "Unbekannter Fehler"
 }

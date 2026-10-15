@@ -177,5 +177,10 @@
     "task": "",
     "learningOutcome": "Možete prepoznati tipične obrasce prijevare kao što su lažna podrška, pritisak na vrijeme i zahtjevi za ključevima.",
     "reward": "🛡️ Detektor prijevara"
+  },
+  "practice": {
+    "accountActivated": "Provjeri: račun aktiviran",
+    "trustline": "Provjeri: trustline postoji",
+    "payment": "Provjeri: plaćanje primljeno"
   }
 }

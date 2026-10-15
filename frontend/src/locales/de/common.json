@@ -49,7 +49,9 @@
         "memo": "Memo-Filter",
         "memoPlaceholder": "Memo suchen...",
         "counterparty": "Empfängerkonto",
-        "counterpartyPlaceholder": "Nach Empfänger/Absender-Adresse filtern…"
+        "counterpartyPlaceholder": "Nach Empfänger/Absender-Adresse filtern…",
+        "clear": "Leeren",
+        "resetAll": "Alle Filter löschen"
       },
       "from": "Von",
       "incoming": "Eingang",
@@ -164,7 +166,8 @@
         "label": "Grund",
         "required": "Bitte einen Grund angeben, wenn der Status „Abgelehnt“ ist."
       },
-      "secretVisibilityToggle": "Admin-Secret anzeigen/ausblenden"
+      "secretVisibilityToggle": "Admin-Secret anzeigen/ausblenden",
+      "comment": "Kommentar"
     }
   },
   "cache": {
@@ -397,7 +400,8 @@
       "deletingProgress": "Löschen läuft: {{current}} / {{total}}",
       "success": "Erfolg: {{count}} Trustline(s) gelöscht."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) übersprungen (noch Guthaben vorhanden)."
+    "skippedDueToBalance": "{{count}} Trustline(s) übersprungen (noch Guthaben vorhanden).",
+    "deleteConfirm": "Ausgewählte Trustlines löschen?"
   },
   "payment": {
     "send": {
@@ -476,7 +480,8 @@
         "title": "Status unklar – nicht erneut senden",
         "body": "Die Transaktion konnte serverseitig nicht eindeutig bestätigt werden (Zeitüberschreitung oder Serverfehler). Bitte prüfen Sie den Transaktions-Hash im Explorer, bevor Sie es erneut versuchen.",
         "acknowledge": "Status geprüft – Senden wieder freigeben"
-      }
+      },
+      "reviewTitle": "Transaktion bestätigen"
     }
   },
   "activation": {
@@ -1248,5 +1253,10 @@
     "updated": "aktualisiert {{time}}",
     "pair": "Währung für den XLM-Kurs",
     "unavailable": "Kurs nicht verfügbar"
+  },
+  "createdAt": "Angelegt",
+  "createdBy": "Erstellt von",
+  "externalDomain": {
+    "warning": "Tippe diese Adresse selbst in deinen Browser ein – klicke nie auf Links aus einer App oder Nachricht."
   }
 }

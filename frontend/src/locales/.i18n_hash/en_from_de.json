@@ -5173,5 +5173,20 @@
   "wallet.activity.url": "8b2d4a69ae7f25edc1879e5d5e51b4f726c2c8115c40c8ebf597a7225da12ccc",
   "wallet.activity.urlHint": "8f3db0686944fd09fa4628424a5e70d35efea6c6a87635f27885aa06dda3257c",
   "wallet.activity.fakeNative": "f456f324b1485845ce67bff95d59f2576813ae2d04e9759682e92abefb98521f",
-  "wallet.activity.fakeNativeHint": "c8049ed18c5ae9e1a99d1439f88e3a5a6c23e95b1f1f8af31f69de1452b87782"
+  "wallet.activity.fakeNativeHint": "c8049ed18c5ae9e1a99d1439f88e3a5a6c23e95b1f1f8af31f69de1452b87782",
+  "common.balance.payments.filter.clear": "9de63c78485ea94a51840a0ff886796dcee9b9449e7377950cff25deb22fc6dd",
+  "common.balance.payments.filter.resetAll": "5d201d97ef235566056b46b166ee61fefa15f738eb1be05987fd8ba936f4facd",
+  "common.bugReport.admin.comment": "7284227d681d1b176929754e2251edc17722f7643e419aaed268b75d90293f74",
+  "common.createdAt": "23ec7d7e6edfa554338222df8e8ad052ed990c053efa4b3542686820f67dffc9",
+  "common.createdBy": "edf061d48d58d2bf53cea90b76a216280da825a9183a52607eae4fdf7d9d696e",
+  "common.externalDomain.warning": "1634d2a41ec1f7a9f30b0393d3dcb33c5b22f8f73abdd084e1df14b99da580c5",
+  "common.payment.send.reviewTitle": "f3c9ddf736942d0e9273d4f5a34af333ecd6e5600fe41ebc5e270c0bc3ddc6f2",
+  "common.trustlines.deleteConfirm": "12fb9b947bf3e7c0c9870168aa2871b9e98739d58d46a1cb34ef71d4a8644c66",
+  "errors.submitTransaction.failed.trustlines.invalidInput": "5933f12cbf78f1ee503e852a3ebc3d17278f3ac739facc9cffc4f69637c1eb9b",
+  "errors.unknown": "617580f0f7efd75f9cfd18d4edcc09d76f65689cb5559c67a99bf6ff299100d6",
+  "glossary.toc": "a86956017d11697159c89dea60f4cbbfc8d6bb47066c8e09ff37168116dbb368",
+  "learn.practice.accountActivated": "02c5c4a177b0c0610288690d841f53d9045f345f4731bf22061135075e8de6dd",
+  "learn.practice.trustline": "8285bd2fd1bf290eeaf48c7c93d0b9754b821acd3a7a1a4390daacde981ddf08",
+  "learn.practice.payment": "5442bdadd320c16e3df1f36269d5d0fe136fb6df11ccb667fa5ea36b8c87ec9a",
+  "secretKey.errorMissing": "ae69823d8b9480f84b1822f17d15520b32088debc9758521db2b04df3e981d29"
 }

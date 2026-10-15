@@ -1092,5 +1092,6 @@
     "original": "Token Trading",
     "short": "Find tokens on the network and buy, sell, or trade them directly.",
     "desc": "Here, you can search for tokens on the Stellar network and buy, sell, or exchange them for another token right away. Behind the scenes, these transactions take place via Stellar’s built-in decentralized exchange (DEX). You can find more about the technology behind it in the DEX glossary entry."
-  }
+  },
+  "toc": "Contents"
 }

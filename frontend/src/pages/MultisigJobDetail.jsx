@@ -92,7 +92,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
       const data = await mergeSignedXdr({ jobId, signedXdr: importXdr.trim(), accessToken: token });
       setJob(data);
       setImportXdr('');
-      setInfo(t('multisig:job.detail.signedXdr.success.body', { status: data?.status || '' }));
+      setInfo(t('multisig:detail.signedXdr.success.body', { status: data?.status || '' }));
     } catch (e) {
       const raw = e?.message || 'merge_failed';
       if (e?.code === 'no_public_key') {
@@ -235,7 +235,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     }
     const secret = await getSessionSecret(job?.accountId || '', currentPublicKey);
     if (!secret) {
-      setError(t('multisig:detail.noSessionSecret', 'Kein Secret Key im Browser gespeichert. Bitte Secret eingeben oder signiertes XDR importieren.'));
+      setError(t('multisig:detail.signatures.noSessionSecret', 'Kein Secret Key im Browser gespeichert. Bitte Secret eingeben oder signiertes XDR importieren.'));
       setShowSecretPrompt(true);
       return;
     }
@@ -284,7 +284,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
             <div className="font-mono break-all text-xs text-gray-600 dark:text-gray-300">ID: {job.id}</div>
             <div className="flex flex-wrap gap-3 mt-2">
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.network', 'Netzwerk')}: {job.network}</span>
-              <span className="text-gray-700 dark:text-gray-200">{t('common:account.source', 'Quelle')}: <span className="font-mono break-all">{job.accountId}</span></span>
+              <span className="text-gray-700 dark:text-gray-200">{t('publicKey:source', 'Quelle')}: <span className="font-mono break-all">{job.accountId}</span></span>
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:prepare.hashLabel')}: <span className="font-mono break-all">{job.txHash}</span></span>
               <span className="text-gray-700 dark:text-gray-200">{t('multisig:detail.statusLabel', 'Status')}: {job.status}</span>
               <span className="text-gray-700 dark:text-gray-200">{t('common:createdAt', 'Angelegt')}: {job.createdAt}</span>
@@ -372,14 +372,14 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
 
           {canCurrentSign && !isFinalState && (
             <div className="flex items-center justify-between gap-3 border rounded p-3">
-              <div className="text-sm font-semibold">{t('multisig:detail.signers.signWithSession', 'Jetzt signieren')}</div>
+              <div className="text-sm font-semibold">{t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}</div>
               <button
                 type="button"
                 className="text-xs px-3 py-1 rounded border border-green-200 text-green-700 dark:text-green-200 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900"
                 onClick={handleSignWithSession}
                 disabled={loading || signingComplete}
               >
-                {t('multisig:detail.signers.signWithSession', 'Jetzt signieren')}
+                {t('multisig:detail.secretPrompt.signNow', 'Jetzt signieren')}
               </button>
             </div>
           )}
@@ -408,7 +408,7 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                   onClick={() => { setShowSecretPrompt(false); setSecretInput(''); }}
                   disabled={loading}
                 >
-                  {t('common:cancel', 'Abbrechen')}
+                  {t('common:option.cancel', 'Abbrechen')}
                 </button>
                 <button
                   type="button"

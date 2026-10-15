@@ -413,7 +413,7 @@ const muxedId = useMemo(() => {
                             type="button"
                             className="absolute right-1 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full text-sm border bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 flex items-center justify-center leading-none"
                             onClick={clearMemoFilter}
-                            aria-label={t('common:balance.payments.filter.clear', 'Löschen')}
+                            aria-label={t('common:balance.payments.filter.clear', 'Leeren')}
                           >
                             ×
                           </button>
@@ -435,7 +435,7 @@ const muxedId = useMemo(() => {
                             type="button"
                             className="absolute right-1 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full text-sm border bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 flex items-center justify-center leading-none"
                             onClick={clearCounterpartyFilter}
-                            aria-label={t('common:balance.payments.filter.clear', 'Löschen')}
+                            aria-label={t('common:balance.payments.filter.clear', 'Leeren')}
                           >
                             ×
                           </button>

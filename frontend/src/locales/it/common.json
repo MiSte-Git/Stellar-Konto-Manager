@@ -46,7 +46,9 @@
         "memo": "Filtro memo",
         "memoPlaceholder": "Ricerca di memo...",
         "counterparty": "Conto del destinatario",
-        "counterpartyPlaceholder": "Filtra per indirizzo del destinatario/mittente…"
+        "counterpartyPlaceholder": "Filtra per indirizzo del destinatario/mittente…",
+        "clear": "Cancella",
+        "resetAll": "Cancella tutti i filtri"
       },
       "from": "Da",
       "incoming": "Ingresso",
@@ -164,7 +166,8 @@
         "label": "Ragione",
         "required": "Indica un motivo se lo stato è \"Rifiutato\"."
       },
-      "secretVisibilityToggle": "Mostra/Nascondi Segreto Admin"
+      "secretVisibilityToggle": "Mostra/Nascondi Segreto Admin",
+      "comment": "Commento"
     }
   },
   "cache": {
@@ -387,7 +390,8 @@
       "deletingProgress": "Cancellazione in corso: {{current}} / {{total}}",
       "success": "Successo: {{count}} Trustline(s) eliminato."
     },
-    "skippedDueToBalance": "{{count}} Trustline(s) saltati (saldo residuo)."
+    "skippedDueToBalance": "{{count}} Trustline(s) saltati (saldo residuo).",
+    "deleteConfirm": "Eliminare le trustline selezionate?"
   },
   "payment": {
     "send": {
@@ -466,7 +470,8 @@
       "muxedActivationCapture": "L'account è stato attivato; è stata applicata una commissione minima aggiuntiva per registrare anche l'ID muxed sulla blockchain.",
       "muxedActivationCaptureXdr": "Questa transazione prevede due operazioni (attivazione dell'account + allocazione muxed) e comporta quindi il pagamento di due commissioni di transazione.",
       "muxedActivationCaptureJob": "Questa operazione prevede due fasi (attivazione dell'account + assegnazione multiplex) e comporta quindi il pagamento di due commissioni operative.",
-      "txTooLateHint": "Ciò potrebbe essere dovuto a un'ora di sistema errata. Verifica che la data e l'ora sul tuo dispositivo siano corrette; se necessario, attiva la sincronizzazione automatica dell'ora."
+      "txTooLateHint": "Ciò potrebbe essere dovuto a un'ora di sistema errata. Verifica che la data e l'ora sul tuo dispositivo siano corrette; se necessario, attiva la sincronizzazione automatica dell'ora.",
+      "reviewTitle": "Conferma transazione"
     }
   },
   "activation": {
@@ -1248,5 +1253,10 @@
     "updated": "Aggiornato alle {{time}}",
     "pair": "Valuta per il tasso di cambio XLM",
     "unavailable": "Corso non disponibile"
+  },
+  "createdAt": "Creato",
+  "createdBy": "Creato da",
+  "externalDomain": {
+    "warning": "Digita tu stesso questo indirizzo nel browser: non cliccare mai sui link di un'app o di un messaggio."
   }
 }

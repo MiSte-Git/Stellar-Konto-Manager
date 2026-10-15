@@ -177,5 +177,10 @@
     "task": "",
     "learningOutcome": "Voit tunnistaa tyypillisiä huijausmalleja, kuten valetukea, aikapaineita ja avainpyyntöjä.",
     "reward": "🛡️ Huijausilmaisin"
+  },
+  "practice": {
+    "accountActivated": "Tarkista: tili aktivoitu",
+    "trustline": "Tarkista: trustline olemassa",
+    "payment": "Tarkista: maksu vastaanotettu"
   }
 }

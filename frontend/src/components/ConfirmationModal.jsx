@@ -46,7 +46,7 @@ function ConfirmationModal({
             }}
             className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
           >
-            {t('common:option.cancel', 'Cancel')}
+            {t('common:option.cancel', 'Abbrechen')}
           </button>
         </div>
       </div>

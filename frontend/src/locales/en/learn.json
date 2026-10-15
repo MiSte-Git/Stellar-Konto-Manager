@@ -177,5 +177,10 @@
     "task": "",
     "learningOutcome": "You can recognize typical scam patterns such as fake support, time pressure, and requests for keys.",
     "reward": "🛡️ Scam Detector"
+  },
+  "practice": {
+    "accountActivated": "Check: Account activated",
+    "trustline": "Check: Trustline present",
+    "payment": "Check: Payment received"
   }
 }

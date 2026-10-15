@@ -1092,5 +1092,6 @@
     "original": "Token Trading",
     "short": "Encuentra tokens en la red y cómpralos, véndelos o intercambia directamente.",
     "desc": "Aquí puedes buscar tokens en la red Stellar y comprarlos, venderlos o cambiarlos por otro token al instante. En segundo plano, estas transacciones se llevan a cabo a través del intercambio descentralizado (DEX) integrado en Stellar. Puedes encontrar más información sobre la tecnología que hay detrás en la entrada del glosario dedicada al DEX."
-  }
+  },
+  "toc": "Índice"
 }

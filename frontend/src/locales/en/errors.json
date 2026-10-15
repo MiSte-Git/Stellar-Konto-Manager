@@ -61,6 +61,9 @@
         "trustlines": {
           "invalidInput": "Please check the asset code, issuer, and limit. At least one of the fields is invalid."
         }
+      },
+      "trustlines": {
+        "invalidInput": "Invalid input"
       }
     }
   },
@@ -87,5 +90,6 @@
     "serverInvalid": "Invalid server"
   },
   "backendConnectError": "Connection to backend failed: {{url}}",
-  "rateLimited": "Horizon rate limit exceeded. Please wait a few seconds and try again."
+  "rateLimited": "Horizon rate limit exceeded. Please wait a few seconds and try again.",
+  "unknown": "Unknown error"
 }

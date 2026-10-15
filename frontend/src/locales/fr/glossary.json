@@ -1092,5 +1092,6 @@
     "original": "Token Trading",
     "short": "Recherchez des jetons sur le réseau et achetez-les, vendez-les ou échangez-les directement.",
     "desc": "Ici, vous pouvez rechercher des jetons sur le réseau Stellar et les acheter, les vendre ou les échanger immédiatement contre un autre jeton. En coulisses, ces transactions s’effectuent via l’échange décentralisé (DEX) intégré à Stellar. Pour en savoir plus sur la technologie qui sous-tend ce système, consultez l’entrée correspondante dans le glossaire DEX."
-  }
+  },
+  "toc": "Sommaire"
 }

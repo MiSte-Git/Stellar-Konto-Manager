@@ -1092,5 +1092,6 @@
     "original": "Token Trading",
     "short": "Pronađite tokene na mreži i kupujte, prodajte ili ih izravno razmjenjujte.",
     "desc": "Ovdje možete pretraživati tokene na Stellar mreži i odmah ih kupiti, prodati ili zamijeniti za drugi token. Iza kulisa se te transakcije odvijaju putem ugrađene decentralizirane burze (DEX) Stellar mreže. Više o tehnologiji koja stoji iza toga možete pronaći u DEX unosu u rječniku."
-  }
+  },
+  "toc": "Sadržaj"
 }

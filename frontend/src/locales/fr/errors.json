@@ -61,6 +61,9 @@
         "trustlines": {
           "invalidInput": "Veuillez vérifier le code de l'actif, l'émetteur et la limite. Au moins un des champs est invalide."
         }
+      },
+      "trustlines": {
+        "invalidInput": "Saisie invalide"
       }
     }
   },
@@ -87,5 +90,6 @@
     "serverInvalid": "Serveur non valide"
   },
   "backendConnectError": "Échec de la connexion au backend : {{url}}",
-  "rateLimited": "Limite de taux d'Horizon dépassée. Veuillez attendre quelques secondes et réessayer."
+  "rateLimited": "Limite de taux d'Horizon dépassée. Veuillez attendre quelques secondes et réessayer.",
+  "unknown": "Erreur inconnue"
 }
