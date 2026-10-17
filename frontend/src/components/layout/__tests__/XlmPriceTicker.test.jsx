@@ -3,11 +3,17 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../../i18n.js';
 import XlmPriceTicker from '../XlmPriceTicker.jsx';
+import PriceCurrencyMenu from '../PriceCurrencyMenu.jsx';
 import { useXlmPrice } from '../../../utils/useXlmPrice.js';
 
 function Harness() {
   const price = useXlmPrice();
-  return <XlmPriceTicker price={price} />;
+  return (
+    <>
+      <XlmPriceTicker price={price} />
+      <PriceCurrencyMenu price={price} />
+    </>
+  );
 }
 
 describe('XlmPriceTicker', () => {
@@ -43,7 +49,11 @@ describe('XlmPriceTicker', () => {
     expect(xrpBox).toHaveTextContent('€');
     expect(xrpBox).toHaveTextContent('•');
 
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'CHF' } });
+    expect(screen.queryByRole('combobox')).toBeNull();
+    fireEvent.click(screen.getByTestId('price-currency-button'));
+    fireEvent.click(screen.getByRole('menuitemradio', { name: /CHF/ }));
+    expect(screen.queryByRole('menu')).toBeNull();
+    expect(screen.getByTestId('price-currency-button')).toHaveTextContent('CHF');
     expect(await screen.findByText(/▼/)).toBeInTheDocument();
     expect(screen.getByTestId('xrp-price-ticker')).toHaveTextContent('▲');
     expect(screen.getByTestId('xrp-price-ticker')).toHaveTextContent('CHF');

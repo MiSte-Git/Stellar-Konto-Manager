@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import NavIcon from './NavIcon.jsx';
 import Sidebar from './Sidebar.jsx';
 import TopBar from './TopBar.jsx';
+import PriceCurrencyMenu from './PriceCurrencyMenu.jsx';
 import XlmPriceTicker from './XlmPriceTicker.jsx';
 import { useXlmPrice } from '../../utils/useXlmPrice.js';
 import { XlmPriceContext } from '../../utils/xlmPriceContext.js';
@@ -124,8 +125,9 @@ export default function AppLayout({ children }) {
                 <NavIcon name="close" className="w-5 h-5" />
               </button>
             </div>
-            <div className="shrink-0 border-b border-gray-200 px-4 py-2.5 sm:hidden dark:border-gray-800">
+            <div className="flex shrink-0 flex-col gap-2 border-b border-gray-200 px-4 py-2.5 sm:hidden dark:border-gray-800">
               <XlmPriceTicker price={price} className="w-full" />
+              <PriceCurrencyMenu price={price} align="left" />
             </div>
             <div className="min-h-0 flex-1">
               <Sidebar onNavigate={closeDrawer} />

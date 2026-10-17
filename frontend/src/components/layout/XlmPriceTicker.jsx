@@ -34,15 +34,15 @@ function Quote({ label, loading, quote }) {
 }
 
 /**
- * Kompakte Kursanzeige (CoinGecko) mit Waehrungsauswahl: XLM plus ein zweites
- * Feld mit XRP in derselben Waehrung (Auswahl XLM/EUR -> XRP in EUR).
+ * Kompakte Kursanzeige (CoinGecko): XLM plus ein zweites Feld mit XRP in
+ * derselben Waehrung. Die Waehrung waehlt man ueber PriceCurrencyMenu.
  * Die Daten kommen aus useXlmPrice (einmal in AppLayout aufgerufen).
  * @param {{ price: ReturnType<typeof import('../../utils/useXlmPrice.js').useXlmPrice>, className?: string }} props
  */
 export default function XlmPriceTicker({ price, className = '' }) {
   const { t } = useTranslation(['common']);
   if (!price) return null;
-  const { pairs, selectedPair, setSelectedPair, loading, error, priceDisplay, changeDisplay, trend, updatedLabel, xrp } = price;
+  const { loading, error, priceDisplay, changeDisplay, trend, updatedLabel, xrp } = price;
 
   const source = t('common:xlmPrice.source', 'Quelle: CoinGecko');
   const tooltip = error
@@ -53,24 +53,8 @@ export default function XlmPriceTicker({ price, className = '' }) {
 
   return (
     <div data-testid="xlm-price-ticker" title={tooltip} className={`inline-flex items-center gap-2 ${className}`}>
-      <div className={`${BOX_CLASS} flex-1 pr-1`}>
+      <div className={`${BOX_CLASS} flex-1 pr-2.5`}>
         <Quote label="XLM" loading={loading} quote={{ priceDisplay, changeDisplay, trend }} />
-        <select
-          value={selectedPair}
-          onChange={(e) => setSelectedPair(e.target.value)}
-          aria-label={t('common:xlmPrice.pair', 'Währung für den XLM-Kurs')}
-          className="ml-auto h-7 cursor-pointer rounded-md border-0 bg-transparent px-1 text-xs font-medium text-gray-600 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-300 dark:[color-scheme:dark] dark:hover:bg-gray-800"
-        >
-          {pairs.map((pair) => (
-            <option
-              key={pair.key}
-              value={pair.key}
-              className="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100"
-            >
-              {pair.key}
-            </option>
-          ))}
-        </select>
       </div>
       {xrp && (
         <div data-testid="xrp-price-ticker" className={`${BOX_CLASS} flex-1 pr-2.5`}>

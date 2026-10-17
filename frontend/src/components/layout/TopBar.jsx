@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { openMainView } from '../../utils/appNavigation.js';
 import LanguageMenu from './LanguageMenu.jsx';
 import NavIcon from './NavIcon.jsx';
+import PriceCurrencyMenu from './PriceCurrencyMenu.jsx';
 import SigningStatus from './SigningStatus.jsx';
 import XlmPriceTicker from './XlmPriceTicker.jsx';
 
@@ -90,6 +91,7 @@ export default function TopBar({ onOpenMenu, menuOpen, menuButtonRef, price }) {
         <div className="ml-auto flex items-center gap-2">
           <SigningStatus />
           <XlmPriceTicker price={price} className="hidden sm:inline-flex" />
+          <PriceCurrencyMenu price={price} className="hidden sm:block" />
           <LanguageMenu />
           <button
             type="button"
