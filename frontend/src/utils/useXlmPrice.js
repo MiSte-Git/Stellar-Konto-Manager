@@ -1,4 +1,5 @@
-// XLM-Kurs von CoinGecko (Abruf jede Minute) inkl. 24h-Veraenderung.
+// XLM-Kurs (und XRP-Vergleichskurs in derselben Waehrung) von CoinGecko
+// (Abruf jede Minute) inkl. 24h-Veraenderung.
 // Wird von der Titelleiste genutzt und ist damit auf allen Seiten verfuegbar.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -12,6 +13,9 @@ export const XLM_PRICE_PAIRS = [
   { key: 'RUB', label: '₽/XLM', currency: 'rub', symbol: '₽' },
 ];
 
+// CoinGecko-IDs: XLM ist der Hauptkurs, XRP wird zum Vergleich mitgeladen.
+const COIN_IDS = { xlm: 'stellar', xrp: 'ripple' };
+
 const PAIR_STORAGE_KEY = 'SKM_XLM_PRICE_PAIR';
 const REFRESH_MS = 60000;
 
@@ -23,9 +27,26 @@ function readStoredPair() {
   return XLM_PRICE_PAIRS[0].key;
 }
 
+/** Formatiert Kurs, 24h-Veraenderung und Trend fuer eine Waehrung. */
+function buildQuote(rawValue, rawChange, pair, locale) {
+  const value = rawValue == null || Number.isNaN(Number(rawValue)) ? null : Number(rawValue);
+  const change = rawChange == null || Number.isNaN(Number(rawChange)) ? null : Number(rawChange);
+  const priceFmt = new Intl.NumberFormat(locale, { minimumFractionDigits: 4, maximumFractionDigits: 6 });
+  const changeFmt = new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  let trend = null;
+  if (change != null) trend = change > 0.05 ? 'up' : change < -0.05 ? 'down' : 'flat';
+  return {
+    value,
+    priceDisplay: value == null ? 'n/a' : `${pair.symbol}${priceFmt.format(value)}`,
+    changeDisplay: change == null ? null : `${change > 0 ? '+' : ''}${changeFmt.format(change)}%`,
+    trend,
+  };
+}
+
 export function useXlmPrice() {
   const { i18n } = useTranslation();
   const [selectedPair, setSelectedPairState] = useState(readStoredPair);
+  // { xlm: { eur: 0.25, ... }, xrp: { ... } }
   const [priceMap, setPriceMap] = useState({});
   const [changeMap, setChangeMap] = useState({});
   const [loading, setLoading] = useState(false);
@@ -49,18 +70,22 @@ export function useXlmPrice() {
       try {
         const currencies = XLM_PRICE_PAIRS.map((pair) => pair.currency).join(',');
         const res = await fetch(
-          `https://api.coingecko.com/api/v3/simple/price?ids=stellar&vs_currencies=${currencies}&include_24hr_change=true`,
+          `https://api.coingecko.com/api/v3/simple/price?ids=${Object.values(COIN_IDS).join(',')}&vs_currencies=${currencies}&include_24hr_change=true`,
           { signal: controller.signal }
         );
         if (!res.ok) throw new Error('price.fetchFailed');
         const data = await res.json();
         if (!isActive) return;
-        const raw = data?.stellar || {};
         const nextPrice = {};
         const nextChange = {};
-        XLM_PRICE_PAIRS.forEach((pair) => {
-          nextPrice[pair.currency] = raw?.[pair.currency];
-          nextChange[pair.currency] = raw?.[`${pair.currency}_24h_change`];
+        Object.entries(COIN_IDS).forEach(([coin, id]) => {
+          const raw = data?.[id] || {};
+          nextPrice[coin] = {};
+          nextChange[coin] = {};
+          XLM_PRICE_PAIRS.forEach((pair) => {
+            nextPrice[coin][pair.currency] = raw?.[pair.currency];
+            nextChange[coin][pair.currency] = raw?.[`${pair.currency}_24h_change`];
+          });
         });
         setPriceMap(nextPrice);
         setChangeMap(nextChange);
@@ -101,47 +126,34 @@ export function useXlmPrice() {
     return i18n?.language || 'de-DE';
   }, [i18n?.language]);
 
-  const value = priceMap?.[pair.currency];
-  const change = changeMap?.[pair.currency];
-
-  const priceDisplay = useMemo(() => {
-    if (value == null || Number.isNaN(Number(value))) return 'n/a';
-    const f = new Intl.NumberFormat(locale, { minimumFractionDigits: 4, maximumFractionDigits: 6 });
-    return `${pair.symbol}${f.format(Number(value))}`;
-  }, [locale, pair, value]);
-
-  const changeDisplay = useMemo(() => {
-    if (change == null || Number.isNaN(Number(change))) return null;
-    const f = new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return `${Number(change) > 0 ? '+' : ''}${f.format(Number(change))}%`;
-  }, [change, locale]);
-
-  const trend = useMemo(() => {
-    if (change == null || Number.isNaN(Number(change))) return null;
-    if (Number(change) > 0.05) return 'up';
-    if (Number(change) < -0.05) return 'down';
-    return 'flat';
-  }, [change]);
+  const xlm = useMemo(
+    () => buildQuote(priceMap?.xlm?.[pair.currency], changeMap?.xlm?.[pair.currency], pair, locale),
+    [changeMap, locale, pair, priceMap]
+  );
+  const xrp = useMemo(
+    () => buildQuote(priceMap?.xrp?.[pair.currency], changeMap?.xrp?.[pair.currency], pair, locale),
+    [changeMap, locale, pair, priceMap]
+  );
 
   const updatedLabel = useMemo(() => {
     if (!updatedAt) return '';
     return new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(updatedAt);
   }, [locale, updatedAt]);
 
-  const numericValue = value == null || Number.isNaN(Number(value)) ? null : Number(value);
-
   return {
     pairs: XLM_PRICE_PAIRS,
     selectedPair: pair.key,
     symbol: pair.symbol,
-    value: numericValue,
+    value: xlm.value,
     locale,
     setSelectedPair,
     loading,
     error,
-    priceDisplay,
-    changeDisplay,
-    trend,
+    priceDisplay: xlm.priceDisplay,
+    changeDisplay: xlm.changeDisplay,
+    trend: xlm.trend,
     updatedLabel,
+    // XRP in derselben Waehrung wie der gewaehlte XLM-Kurs.
+    xrp,
   };
 }

@@ -17,7 +17,10 @@ describe('XlmPriceTicker', () => {
     window.localStorage.clear();
     globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ stellar: { eur: 0.25, eur_24h_change: 1.5, chf: 0.23, chf_24h_change: -2 } }),
+      json: async () => ({
+        stellar: { eur: 0.25, eur_24h_change: 1.5, chf: 0.23, chf_24h_change: -2 },
+        ripple: { eur: 0.5, eur_24h_change: 0.01, chf: 0.47, chf_24h_change: 3 },
+      }),
     });
   });
 
@@ -34,9 +37,16 @@ describe('XlmPriceTicker', () => {
     expect(await screen.findByText(/▲/)).toBeInTheDocument();
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
     expect(String(globalThis.fetch.mock.calls[0][0])).toContain('api.coingecko.com');
+    expect(String(globalThis.fetch.mock.calls[0][0])).toContain('ripple');
+    const xrpBox = screen.getByTestId('xrp-price-ticker');
+    expect(xrpBox).toHaveTextContent('XRP');
+    expect(xrpBox).toHaveTextContent('€');
+    expect(xrpBox).toHaveTextContent('•');
 
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'CHF' } });
     expect(await screen.findByText(/▼/)).toBeInTheDocument();
+    expect(screen.getByTestId('xrp-price-ticker')).toHaveTextContent('▲');
+    expect(screen.getByTestId('xrp-price-ticker')).toHaveTextContent('CHF');
     expect(window.localStorage.getItem('SKM_XLM_PRICE_PAIR')).toBe('CHF');
   });
 
@@ -47,6 +57,6 @@ describe('XlmPriceTicker', () => {
         <Harness />
       </I18nextProvider>
     );
-    expect(await screen.findByText('n/a')).toBeInTheDocument();
+    expect(await screen.findAllByText('n/a')).toHaveLength(2);
   });
 });
