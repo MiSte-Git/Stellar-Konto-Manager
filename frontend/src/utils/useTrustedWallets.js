@@ -70,6 +70,13 @@ export function useTrustedWallets() {
       const incoming = Array.isArray(next) ? next : (next?.wallets ?? []);
       const annotated = await loadAccountsWithTestnetFlag(incoming);
       const shape = { wallets: annotated };
+      // Persist synchronously BEFORE emitting: every instance (this one
+      // included) re-reads localStorage on the event. The persist effect
+      // above only runs after the next render, so emitting first made all
+      // instances reload the old list and drop the new one (e.g. an import).
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify(shape));
+      } catch { /* noop */ }
       setData(shape);
       emitTrustedWalletsChanged();
     } catch (e) {
