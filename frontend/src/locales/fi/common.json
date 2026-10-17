@@ -752,8 +752,7 @@
       "load": "Ladataan"
     },
     "history": {
-      "availableFrom": "Server (Horizon) – Historia alkaen",
-      "hintFullHistory": "Huomio: Horizon-palvelimen ledger-historia ulottuu vain {{available}} asti. Vain siihen asti olevat tiedot näytetään. Valittu alkupäivä on siksi rajoitettu. Vanhempia tietoja varten tarvitaan (yleensä maksullinen) Full-History-palveluntarjoaja (ehkä tulevaisuudessa!)."
+      "availableFrom": "Server (Horizon) – Historia alkaen"
     }
   },
   "network": {

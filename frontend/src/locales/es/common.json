@@ -752,8 +752,7 @@
       "load": "Cargando"
     },
     "history": {
-      "availableFrom": "Servidor (Horizon) – Historia desde",
-      "hintFullHistory": "Nota: El historial del ledger del servidor Horizon solo se remonta hasta {{available}}. Solo se muestran datos hasta ese punto. La fecha \"desde\" seleccionada está por tanto limitada. Para datos más antiguos se necesita un proveedor de historial completo (normalmente de pago) (¡tal vez en el futuro!)."
+      "availableFrom": "Servidor (Horizon) – Historia desde"
     }
   },
   "network": {

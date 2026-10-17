@@ -752,8 +752,7 @@
       "load": "Caricamento"
     },
     "history": {
-      "availableFrom": "Server (Horizon) – Storia da",
-      "hintFullHistory": "Nota: La cronologia del registro del server Horizon risale solo a {{available}}. Pertanto, verranno visualizzati solo i dati fino a quella data. La data di inizio scelta è quindi limitata. Per dati più vecchi, è necessario un (meist kostenpflichtiger) Full‑History‑Provider (potrebbe arrivare in futuro!)."
+      "availableFrom": "Server (Horizon) – Storia da"
     }
   },
   "network": {

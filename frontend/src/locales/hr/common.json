@@ -752,8 +752,7 @@
       "load": "Učitavanje"
     },
     "history": {
-      "availableFrom": "Server (Horizon) – Povijest od",
-      "hintFullHistory": "Napomena: Povijest knjige iz Horizon servera dostupna je samo od {{available}}. Samo podaci do tog datuma će biti prikazani. Odabrani datum od je stoga ograničen. Za starije podatke potreban je (meist kostenpflichtiger) Full‑History‑Provider (Možda će biti dostupan u budućnosti!)."
+      "availableFrom": "Server (Horizon) – Povijest od"
     }
   },
   "network": {
