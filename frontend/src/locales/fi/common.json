@@ -1257,5 +1257,14 @@
   "createdBy": "Luonut",
   "externalDomain": {
     "warning": "Kirjoita tämä osoite itse selaimeesi – älä koskaan napsauta sovelluksen tai viestin linkkejä."
+  },
+  "accountPicker": {
+    "button": "Valitse tililuettelosta",
+    "title": "Tili-luettelo",
+    "filterPlaceholder": "Suodata tunnisteen tai osoitteen mukaan",
+    "empty": "Tilejä ei ole vielä tallennettu. Voit luoda tilejä kohdassa Asetukset → Tililuettelo.",
+    "noMatch": "Suodattimen kriteereihin ei löydy yhtään tiliä.",
+    "compromised": "vaarantunut",
+    "deactivated": "vammainen"
   }
 }

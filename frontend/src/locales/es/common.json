@@ -1257,5 +1257,14 @@
   "createdBy": "Creado por",
   "externalDomain": {
     "warning": "Escribe tú mismo esta dirección en tu navegador; nunca hagas clic en enlaces de una app o un mensaje."
+  },
+  "accountPicker": {
+    "button": "Selecciona una cuenta de la lista",
+    "title": "Lista de cuentas",
+    "filterPlaceholder": "Filtrar por etiqueta o dirección",
+    "empty": "Aún no se ha guardado ninguna cuenta. Puedes crear cuentas en «Configuración» → «Lista de cuentas».",
+    "noMatch": "No hay ninguna cuenta que se ajuste al filtro.",
+    "compromised": "comprometido",
+    "deactivated": "discapacitado"
   }
 }

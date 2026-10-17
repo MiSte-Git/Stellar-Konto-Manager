@@ -1257,5 +1257,14 @@
   "createdBy": "Aangemaakt door",
   "externalDomain": {
     "warning": "Typ dit adres zelf in je browser – klik nooit op links uit een app of bericht."
+  },
+  "accountPicker": {
+    "button": "Kies uit de lijst met accounts",
+    "title": "Lijst met rekeningen",
+    "filterPlaceholder": "Filter op label of adres",
+    "empty": "Er zijn nog geen accounts opgeslagen. Je kunt accounts aanmaken via Instellingen → Accountlijst.",
+    "noMatch": "Er is geen account dat aan de filtercriteria voldoet.",
+    "compromised": "aangetast",
+    "deactivated": "uitgeschakeld"
   }
 }

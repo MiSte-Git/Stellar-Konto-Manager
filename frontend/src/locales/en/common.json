@@ -1257,5 +1257,14 @@
   "createdBy": "Created by",
   "externalDomain": {
     "warning": "Type this address into your browser yourself – never click links from an app or message."
+  },
+  "accountPicker": {
+    "button": "Select from the list of accounts",
+    "title": "List of Accounts",
+    "filterPlaceholder": "Filter by label or address",
+    "empty": "No accounts have been saved yet. You can create accounts under Settings → Account List.",
+    "noMatch": "No account matches the filter.",
+    "compromised": "compromised",
+    "deactivated": "disabled"
   }
 }

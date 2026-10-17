@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import AccountListPicker from './AccountListPicker.jsx';
 
 export default function AddressDropdown({
   value,
@@ -15,6 +16,9 @@ export default function AddressDropdown({
   rightAdornment = null,
   disabled = false,
   inputProps = {},
+  // Shows a button next to the input that picks from the trusted wallet list
+  // (Konten-Liste) via onSelect, independent of the input history.
+  accountPicker = false,
 }) {
   const { t } = useTranslation(['common']);
   const [open, setOpen] = useState(false);
@@ -46,21 +50,35 @@ export default function AddressDropdown({
 
   return (
     <div className={['relative', className].filter(Boolean).join(' ')} ref={wrapperRef}>
-      <input
-        className={inputClassName}
-        value={value}
-        onChange={(e) => {
-          onChange?.(e.target.value);
-          setOpen(true);
-        }}
-        onFocus={() => setOpen(true)}
-        onBlur={onBlur}
-        placeholder={placeholder}
-        autoComplete="off"
-        disabled={disabled}
-        {...inputProps}
-      />
-      {rightAdornment}
+      <div className={accountPicker ? 'flex items-stretch gap-1' : ''}>
+        <div className={accountPicker ? 'relative min-w-0 flex-1' : ''}>
+          <input
+            className={inputClassName}
+            value={value}
+            onChange={(e) => {
+              onChange?.(e.target.value);
+              setOpen(true);
+            }}
+            onFocus={() => setOpen(true)}
+            onBlur={onBlur}
+            placeholder={placeholder}
+            autoComplete="off"
+            disabled={disabled}
+            {...inputProps}
+          />
+          {rightAdornment}
+        </div>
+        {accountPicker && (
+          <AccountListPicker
+            disabled={disabled}
+            onOpenChange={(isOpen) => { if (isOpen) setOpen(false); }}
+            onSelect={(address) => {
+              if (typeof onSelect === 'function') onSelect(address);
+              else onChange?.(address);
+            }}
+          />
+        )}
+      </div>
       {showDropdown && (
         <div className="absolute z-20 mt-1 w-full max-h-64 overflow-y-auto rounded border bg-white dark:bg-gray-900 shadow-lg">
           {filtered.map((entry, i) => (

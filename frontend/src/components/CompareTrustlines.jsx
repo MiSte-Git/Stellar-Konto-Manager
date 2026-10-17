@@ -110,6 +110,7 @@ function CompareTrustlines({
         onSelect={(next) => { setDestinationPublicKey(next); if (destNotFound) setDestNotFound(false); }}
         placeholder="e.g., GBZVTOY..."
         options={recentWalletOptions}
+        accountPicker
         onRemoveOption={(entry) => removeRecentWalletOption(entry.value)}
         onClearOptions={clearRecentWalletOptions}
         inputClassName={`wallet-input w-full p-2 border rounded pr-8 font-mono text-sm ${destNotFound ? 'border-red-500 ring-1 ring-red-400' : 'border-gray-300'}`}

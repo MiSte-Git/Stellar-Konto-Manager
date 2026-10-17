@@ -1257,5 +1257,14 @@
   "createdBy": "Creato da",
   "externalDomain": {
     "warning": "Digita tu stesso questo indirizzo nel browser: non cliccare mai sui link di un'app o di un messaggio."
+  },
+  "accountPicker": {
+    "button": "Seleziona dall'elenco degli account",
+    "title": "Elenco dei conti",
+    "filterPlaceholder": "Filtra per etichetta o indirizzo",
+    "empty": "Non è stato salvato alcun account. Puoi creare degli account da Impostazioni → Elenco account.",
+    "noMatch": "Nessun account corrisponde al filtro.",
+    "compromised": "compromesso",
+    "deactivated": "disabile"
   }
 }

@@ -30,7 +30,7 @@ function isoMin(a, b) { if (!a) return b; if (!b) return a; return a < b ? a : b
  */
 export async function backfillPayments({ server, accountId, sinceISO, onProgress, signal }) {
   try {
-    // UI: Start-Event (SourceInput zeigt Timer)
+    // UI: Start-Event (stm:cache-sync, aktuell ohne Listener)
     try { window.dispatchEvent(new CustomEvent('stm:cache-sync', { detail: { accountId, phase: 'start', kind: 'backfill', ts: Date.now() } })); } catch { /* noop */ }
 
     // Start bei neuesten Zahlungen und rückwärts laufen

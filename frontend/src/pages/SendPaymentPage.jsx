@@ -1805,6 +1805,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
             onBlur={() => pushHistory(PAYMENT_RECIPIENT_HISTORY_KEY, dest, setHistoryRecipients)}
             placeholder="G... oder user*domain"
             options={recipientSuggestions}
+            accountPicker
             inputClassName="border rounded w-full pr-8 px-2 py-1 text-base md:text-sm font-mono"
             rightAdornment={dest ? (
               <button

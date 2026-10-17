@@ -1257,5 +1257,14 @@
   "createdBy": "Kreirao",
   "externalDomain": {
     "warning": "Sam upiši ovu adresu u preglednik – nikad ne klikaj na poveznice iz aplikacije ili poruke."
+  },
+  "accountPicker": {
+    "button": "Odaberite s popisa računa",
+    "title": "Popis računa",
+    "filterPlaceholder": "Filtriraj po etiketi ili adresi",
+    "empty": "Još nisu spremljeni nikakvi računi. Račune možete kreirati pod Postavke → Popis računa.",
+    "noMatch": "Nijedan račun ne odgovara filtru.",
+    "compromised": "kompromitiran",
+    "deactivated": "osobe s invaliditetom"
   }
 }

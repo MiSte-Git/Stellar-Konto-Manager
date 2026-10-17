@@ -1247,6 +1247,15 @@
     "removeEntry": "Aus Verlauf entfernen",
     "clearField": "Verlauf dieses Feldes löschen"
   },
+  "accountPicker": {
+    "button": "Aus Konten-Liste wählen",
+    "title": "Konten-Liste",
+    "filterPlaceholder": "Nach Label oder Adresse filtern",
+    "empty": "Noch keine Konten gespeichert. Konten legst du unter Einstellungen → Konten-Liste an.",
+    "noMatch": "Kein Konto passt zum Filter.",
+    "compromised": "kompromittiert",
+    "deactivated": "deaktiviert"
+  },
   "xlmPrice": {
     "source": "Quelle: CoinGecko",
     "updated": "aktualisiert {{time}}",

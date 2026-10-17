@@ -87,7 +87,6 @@ import { confirmAutoClear } from './utils/confirmAutoClear.js';
 import ActivateAccountPrompt from './components/ActivateAccountPrompt.jsx';
 import { emitAccountSelected } from './utils/accountBus.js';
 
-import DestinationInput from './components/DestinationInput';
 import { consumePendingMainView, navigateToPath, publishActiveAccount, publishActiveMainView, setMainMounted } from './utils/appNavigation.js';
 import ListTrustlines from './components/ListTrustlines';
 import ResultDisplay from './components/ResultDisplay';
@@ -830,6 +829,7 @@ function Main() {
               onSelect={(next) => { setWalletHeaderInput(next); handleHeaderApply(next); }}
               placeholder={t('publicKey:placeholder')}
               options={recentWalletOptions}
+              accountPicker
               onRemoveOption={(entry) => handleRecentRemove(entry.value)}
               onClearOptions={handleRecentClear}
               inputClassName={`wallet-input w-full border ${notFound ? 'border-red-500 ring-1 ring-red-400' : (devTestnet ? 'border-yellow-500 ring-1 ring-yellow-400' : 'border-gray-300')} rounded p-2 pr-8 font-mono text-base md:text-sm`}

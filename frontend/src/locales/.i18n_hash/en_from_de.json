@@ -5192,5 +5192,12 @@
   "wallet.home.empty.discover.badge": "232c64ff1231529d9787e972aed55bcb6bc62e16026922ba9b511bef539923e0",
   "wallet.home.empty.discover.title": "200320992107954d3b5e503dd0a0aea72c89aaf24e9ea885a79c619cc69a5912",
   "wallet.home.empty.discover.text": "9c191707acb8c7340565c7c919179902e8bb1ab80f0a0df4b4e1e6f98b9cf653",
-  "wallet.home.empty.discover.cta": "ae0a8fd899db606187cbc29c087b37fbd3057f87d59c30f46cf092e099e7fb11"
+  "wallet.home.empty.discover.cta": "ae0a8fd899db606187cbc29c087b37fbd3057f87d59c30f46cf092e099e7fb11",
+  "common.accountPicker.button": "7b34da057a8eeb66dd98372b2b3330e6d4a5095438b66c70a31eb0f889be1386",
+  "common.accountPicker.title": "5331c739a305e72e89597bcc02a5c1ccc013fe02713ccb4c6a2f60a91829de05",
+  "common.accountPicker.filterPlaceholder": "f5678e9e3408983377e55ad6db15cb8e2ec855ace3053dd20bb2b292bbc52e7d",
+  "common.accountPicker.empty": "e18a705d2fb5200c6f736fd54b8a3f04f1db80eaf9d3a30b16ecfe102bd6d5eb",
+  "common.accountPicker.noMatch": "494d4f8a2bec2a228b008910e25178e22c8a8143c8e9577b22f3bc0223366835",
+  "common.accountPicker.compromised": "8fc2e5815dee411c247f037c27aadd81105d0b44ba77a39e6bfb90c9f4523681",
+  "common.accountPicker.deactivated": "10f33e562ffac7d76a6c0b41d5029092e851cc6217e8e24a8448c441b1cbb861"
 }

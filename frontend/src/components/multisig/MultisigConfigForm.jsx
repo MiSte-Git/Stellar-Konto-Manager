@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import AddressDropdown from '../AddressDropdown.jsx';
+import { useTrustedWallets } from '../../utils/useTrustedWallets.js';
+import { createWalletInfoMap, findWalletInfo } from '../../utils/walletInfo.js';
 
 export default function MultisigConfigForm({
   signersTitle = '',
@@ -62,6 +65,9 @@ export default function MultisigConfigForm({
   safetyErrorTitle = '',
   safetyWarningTitle = '',
 }) {
+  const { t } = useTranslation(['wallet']);
+  const { wallets: trustedWallets } = useTrustedWallets();
+  const walletInfoMap = useMemo(() => createWalletInfoMap(trustedWallets), [trustedWallets]);
   const TitleTag = titleAs;
   const signerList = Array.isArray(signers) ? signers : [];
   const hasRemove = typeof onRemoveSigner === 'function';
@@ -122,6 +128,7 @@ export default function MultisigConfigForm({
               onSelect={(next) => onSignerKeyChange && onSignerKeyChange(i, next)}
               placeholder={signerPlaceholder}
               options={signerOptions}
+              accountPicker
               onRemoveOption={onRemoveSignerOption ? (entry) => onRemoveSignerOption(entry.value) : undefined}
               onClearOptions={onClearSignerOptions || undefined}
               inputClassName="w-full border rounded px-2 py-1 font-mono text-sm"
@@ -160,6 +167,26 @@ export default function MultisigConfigForm({
                 </button>
               )}
             </div>
+            {(() => {
+              // Picking from the Konten-Liste never blocks flagged accounts,
+              // but a compromised/deactivated signer must be visible here.
+              const info = findWalletInfo(walletInfoMap, s?.key ?? '');
+              if (info?.compromised) {
+                return (
+                  <div className="sm:col-span-6 text-xs text-red-600 dark:text-red-400 font-semibold">
+                    {t('wallet:flag.compromised', 'Warning: This wallet is marked as compromised in your trusted list.')}
+                  </div>
+                );
+              }
+              if (info?.deactivated) {
+                return (
+                  <div className="sm:col-span-6 text-xs text-amber-600 dark:text-amber-400 font-medium">
+                    {t('wallet:flag.deactivated', 'Note: This wallet is marked as deactivated in your trusted list.')}
+                  </div>
+                );
+              }
+              return null;
+            })()}
           </div>
         ))}
       </div>
