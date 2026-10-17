@@ -39,7 +39,13 @@
     "empty": {
       "title": "Er is nog geen account geladen",
       "text": "Voer hierboven je Public Key of een federatieadres in. De Public Key is voldoende om de gegevens te bekijken; voor transacties heb je later je Secret Key nodig.",
-      "learn": "Maak kennis met Stellar"
+      "learn": "Maak kennis met Stellar",
+      "discover": {
+        "badge": "Ben je nieuw bij Stellar?",
+        "title": "Ontdek Stellar door te spelen",
+        "text": "Een quiz, een scam-simulator en een verhaal met Lumio in de hoofdrol – leer Stellar op je eigen tempo kennen, zonder risico en zonder dat er echt geld mee gemoeid is.",
+        "cta": "Aan de slag"
+      }
     }
   },
   "receive": {

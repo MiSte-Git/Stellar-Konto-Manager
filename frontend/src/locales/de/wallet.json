@@ -39,7 +39,13 @@
     "empty": {
       "title": "Noch kein Konto geladen",
       "text": "Gib oben deinen Public Key oder eine Föderationsadresse ein. Zum Ansehen reicht der Public Key, für Transaktionen brauchst du später deinen Secret Key.",
-      "learn": "Stellar kennenlernen"
+      "learn": "Stellar kennenlernen",
+      "discover": {
+        "badge": "Neu bei Stellar?",
+        "title": "Stellar spielerisch entdecken",
+        "text": "Quiz, Scam-Simulator und eine Story mit Lumio – lern Stellar ganz entspannt kennen, ohne Risiko und ohne echtes Geld.",
+        "cta": "Los geht’s"
+      }
     }
   },
   "receive": {

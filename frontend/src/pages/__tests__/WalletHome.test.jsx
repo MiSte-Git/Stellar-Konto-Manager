@@ -41,6 +41,16 @@ describe('WalletHome', () => {
     expect(loadAccount).not.toHaveBeenCalled();
   });
 
+  it('zeigt im Leerzustand den spielerischen Einstieg und oeffnet die Routen', () => {
+    const onOpenRoute = vi.fn();
+    renderHome({ publicKey: '', onOpenRoute });
+    const teaser = screen.getByTestId('wallet-home-discover');
+    expect(teaser).toHaveTextContent('Stellar spielerisch entdecken');
+    fireEvent.click(screen.getByRole('button', { name: /Los geht/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Gefahren erkennen' }));
+    expect(onOpenRoute.mock.calls).toEqual([['discover'], ['learn/scam-simulator']]);
+  });
+
   it('zeigt Guthaben, Fiat-Wert, Assets und loest Aktionen aus', async () => {
     loadAccount.mockResolvedValue({
       subentry_count: 1,

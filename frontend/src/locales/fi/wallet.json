@@ -39,7 +39,13 @@
     "empty": {
       "title": "Tiliä ei ole vielä ladattu",
       "text": "Syötä yllä oleva Public Key-osoitteesi tai federaatio-osoitteesi. Public Key riittää tietojen tarkasteluun; transaktioita varten tarvitset myöhemmin Secret Key-osoitteesi.",
-      "learn": "Tutustu Stellariin"
+      "learn": "Tutustu Stellariin",
+      "discover": {
+        "badge": "Oletko uusi Stellar-käyttäjä?",
+        "title": "Tutustu Stellariin leikin kautta",
+        "text": "Tietovisa, huijaussimulaattori ja Lumio-hahmoa esittelevä tarina – tutustu Stellariin omassa tahdissasi, ilman riskejä ja ilman oikeaa rahaa.",
+        "cta": "Aloitetaanpa"
+      }
     }
   },
   "receive": {

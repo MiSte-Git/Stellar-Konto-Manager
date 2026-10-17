@@ -5188,5 +5188,9 @@
   "learn.practice.accountActivated": "02c5c4a177b0c0610288690d841f53d9045f345f4731bf22061135075e8de6dd",
   "learn.practice.trustline": "8285bd2fd1bf290eeaf48c7c93d0b9754b821acd3a7a1a4390daacde981ddf08",
   "learn.practice.payment": "5442bdadd320c16e3df1f36269d5d0fe136fb6df11ccb667fa5ea36b8c87ec9a",
-  "secretKey.errorMissing": "ae69823d8b9480f84b1822f17d15520b32088debc9758521db2b04df3e981d29"
+  "secretKey.errorMissing": "ae69823d8b9480f84b1822f17d15520b32088debc9758521db2b04df3e981d29",
+  "wallet.home.empty.discover.badge": "232c64ff1231529d9787e972aed55bcb6bc62e16026922ba9b511bef539923e0",
+  "wallet.home.empty.discover.title": "200320992107954d3b5e503dd0a0aea72c89aaf24e9ea885a79c619cc69a5912",
+  "wallet.home.empty.discover.text": "9c191707acb8c7340565c7c919179902e8bb1ab80f0a0df4b4e1e6f98b9cf653",
+  "wallet.home.empty.discover.cta": "ae0a8fd899db606187cbc29c087b37fbd3057f87d59c30f46cf092e099e7fb11"
 }

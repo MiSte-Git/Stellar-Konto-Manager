@@ -98,6 +98,68 @@ function ActionButton({ icon, label, onClick, primary = false }) {
 const cardCls =
   'rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800/70';
 
+const DISCOVER_TILES = [
+  { id: 'quiz', to: 'quiz', emoji: '🧠', titleKey: 'home:learn.quiz_title', fallback: 'Wissen testen' },
+  { id: 'scam', to: 'learn/scam-simulator', emoji: '🛡️', titleKey: 'home:learn.scam_title', fallback: 'Gefahren erkennen' },
+  { id: 'story', to: 'story', emoji: '🌟', titleKey: 'home:learn.story_title', fallback: 'Lumios Abenteuer' },
+];
+
+/**
+ * Spielerischer Einstieg in "Stellar entdecken" fuer den Leerzustand der Startseite.
+ * @param {{ onOpenRoute: (path: string) => void }} props
+ */
+function DiscoverTeaser({ onOpenRoute }) {
+  const { t } = useTranslation(['wallet', 'home']);
+  return (
+    <section
+      data-testid="wallet-home-discover"
+      className="relative mt-4 overflow-hidden rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 via-sky-50 to-amber-50 p-6 shadow-sm sm:p-8 dark:border-violet-500/30 dark:from-violet-950/60 dark:via-gray-900 dark:to-sky-950/50"
+    >
+      <span aria-hidden="true" className="pointer-events-none absolute -right-4 -top-6 select-none text-8xl opacity-20 sm:text-9xl">✨</span>
+      <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
+        <div aria-hidden="true" className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white text-4xl shadow-sm motion-safe:animate-bounce dark:bg-gray-800" style={{ animationDuration: '2.5s' }}>
+          🚀
+        </div>
+        <div className="min-w-0 flex-1">
+          <span className="inline-block rounded-full bg-violet-600/10 px-2.5 py-0.5 text-xs font-semibold text-violet-700 dark:bg-violet-400/15 dark:text-violet-300">
+            {t('wallet:home.empty.discover.badge', 'Neu bei Stellar?')}
+          </span>
+          <h2 className="mt-2 text-xl font-semibold text-gray-900 dark:text-white">
+            {t('wallet:home.empty.discover.title', 'Stellar spielerisch entdecken')}
+          </h2>
+          <p className="mt-1 max-w-xl text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+            {t('wallet:home.empty.discover.text', 'Quiz, Scam-Simulator und eine Story mit Lumio – lern Stellar ganz entspannt kennen, ohne Risiko und ohne echtes Geld.')}
+          </p>
+        </div>
+      </div>
+      <div className="relative mt-5 grid grid-cols-1 gap-2 sm:grid-cols-3">
+        {DISCOVER_TILES.map((tile) => (
+          <button
+            key={tile.id}
+            type="button"
+            onClick={() => onOpenRoute(tile.to)}
+            className="group flex items-center gap-3 rounded-xl border border-white/70 bg-white/80 px-3 py-2.5 text-left text-sm font-semibold text-gray-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-100 dark:hover:bg-gray-800"
+          >
+            <span aria-hidden="true" className="text-2xl leading-none transition-transform group-hover:scale-125">{tile.emoji}</span>
+            <span className="min-w-0">{t(tile.titleKey, tile.fallback)}</span>
+          </button>
+        ))}
+      </div>
+      <div className="relative mt-5">
+        <button
+          type="button"
+          onClick={() => onOpenRoute('discover')}
+          className="inline-flex items-center gap-2 rounded-xl border-0 bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-violet-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 dark:hover:bg-violet-500 dark:focus-visible:ring-offset-gray-900"
+        >
+          <span aria-hidden="true">🎮</span>
+          {t('wallet:home.empty.discover.cta', 'Los geht’s')}
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+  );
+}
+
 /**
  * Wallet-Startseite: Guthaben, Aktionen und Asset-Liste des geladenen Kontos.
  * @param {{ publicKey?: string, muxedAddress?: string, onAction: (id: string) => void, onOpenRoute?: (path: string) => void }} props
@@ -151,11 +213,9 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             <ActionButton icon="plusCircle" label={t('menu:createAccount', 'Neues Konto erstellen')} onClick={() => onAction?.('createAccount')} />
-            {onOpenRoute && (
-              <ActionButton icon="compass" label={t('wallet:home.empty.learn', 'Stellar kennenlernen')} onClick={() => onOpenRoute('discover')} />
-            )}
           </div>
         </section>
+        {onOpenRoute && <DiscoverTeaser onOpenRoute={onOpenRoute} />}
       </div>
     );
   }

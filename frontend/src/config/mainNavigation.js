@@ -52,9 +52,11 @@ export const STATIC_FEEDBACK_AREAS = [
  * Seitenleisten-Navigation (App-Shell).
  * kind: 'main'  -> Ansicht innerhalb von Main (menuSelection), geoeffnet ueber stm:openMenu
  * kind: 'route' -> eigene Route (pushState auf buildPath(to))
+ * parent: id eines Eintrags im selben Abschnitt -> wird eingerueckt als Unterpunkt darunter gerendert
+ * badge: optionales dekoratives Emoji hinter dem Label (aria-hidden)
  * Abschnitte ohne titleKey werden ohne Ueberschrift gerendert.
  *
- * @typedef {{ id: string, kind: 'main'|'route', labelKey: string, fallback?: string, icon: string, to?: string, glossaryTerm?: string, activeFor?: string[], requiresFlag?: string }} SidebarItem
+ * @typedef {{ id: string, kind: 'main'|'route', labelKey: string, fallback?: string, icon: string, to?: string, glossaryTerm?: string, activeFor?: string[], requiresFlag?: string, parent?: string, badge?: string }} SidebarItem
  * @typedef {{ id: string, titleKey?: string, titleFallback?: string, items: SidebarItem[] }} SidebarSection
  */
 
@@ -117,10 +119,10 @@ export const SIDEBAR_SECTIONS = [
     titleKey: 'menu:sections.learn',
     titleFallback: 'Lernen',
     items: [
-      { id: 'discover', kind: 'route', to: 'discover', labelKey: 'home:learn.button', icon: 'compass' },
-      { id: 'quiz', kind: 'route', to: 'quiz', labelKey: 'navigation:quiz', fallback: 'Quiz', icon: 'quiz' },
-      { id: 'scamSimulator', kind: 'route', to: 'learn/scam-simulator', labelKey: 'scamSimulator:ui.title', icon: 'shieldAlert' },
-      { id: 'story', kind: 'route', to: 'story', labelKey: 'home:learn.story_title', icon: 'bookOpen' },
+      { id: 'discover', kind: 'route', to: 'discover', labelKey: 'home:learn.button', icon: 'compass', badge: '🎮' },
+      { id: 'quiz', kind: 'route', to: 'quiz', labelKey: 'navigation:quiz', fallback: 'Quiz', icon: 'quiz', parent: 'discover' },
+      { id: 'scamSimulator', kind: 'route', to: 'learn/scam-simulator', labelKey: 'scamSimulator:ui.title', icon: 'shieldAlert', parent: 'discover' },
+      { id: 'story', kind: 'route', to: 'story', labelKey: 'home:learn.story_title', icon: 'bookOpen', parent: 'discover' },
       { id: 'glossary', kind: 'route', to: 'glossar', labelKey: 'menu:glossary', icon: 'book', rememberPrevPath: true },
     ],
   },

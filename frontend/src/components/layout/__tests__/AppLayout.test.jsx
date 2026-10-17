@@ -77,6 +77,15 @@ describe('AppLayout / Sidebar', () => {
     expect(desktopNav().getByRole('button', { name: 'Quiz' })).toHaveAttribute('aria-current', 'page');
   });
 
+  it('zeigt Quiz, Scam-Simulator und Story als Unterpunkte von Stellar entdecken', () => {
+    renderLayout();
+    const discover = desktopNav().getByRole('button', { name: 'Stellar entdecken' });
+    const subList = within(discover.closest('li')).getByRole('list', { name: 'Stellar entdecken' });
+    expect(within(subList).getByRole('button', { name: 'Quiz' })).toBeInTheDocument();
+    expect(within(subList).getAllByRole('button')).toHaveLength(3);
+    expect(within(subList).queryByRole('button', { name: 'Glossar' })).toBeNull();
+  });
+
   it('Drawer: oeffnen, Fokus, Escape und Overlay schliessen', () => {
     renderLayout();
     const burger = screen.getByRole('button', { name: 'Navigation öffnen' });

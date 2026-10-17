@@ -35,17 +35,20 @@ function useActiveItemId() {
   return routeId || resolveMainItemId(mainView);
 }
 
-function NavItem({ item, active, compact, label, onSelect }) {
+function NavItem({ item, active, childActive = false, compact, nested = false, label, onSelect, children }) {
+  const small = compact || nested;
   const base =
     'group w-full flex items-center gap-3 rounded-lg border-0 text-left font-medium leading-snug ' +
     'transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ' +
-    (compact ? 'px-3 py-1 text-[13px]' : 'px-3 py-1.5 text-sm');
+    (small ? 'px-3 py-1 text-[13px]' : 'px-3 py-1.5 text-sm');
   const state = active
     ? 'bg-blue-50 text-blue-800 shadow-[inset_3px_0_0_0_#2563eb] hover:bg-blue-50 ' +
       'dark:bg-gray-800 dark:text-white dark:shadow-[inset_3px_0_0_0_#60a5fa] dark:hover:bg-gray-800'
-    : 'bg-transparent text-gray-700 hover:bg-gray-200/70 hover:text-gray-900 ' +
-      'dark:text-gray-300 dark:hover:bg-gray-800/70 dark:hover:text-white';
-  const iconState = active
+    : childActive
+      ? 'bg-transparent text-blue-800 hover:bg-gray-200/70 dark:text-white dark:hover:bg-gray-800/70'
+      : 'bg-transparent text-gray-700 hover:bg-gray-200/70 hover:text-gray-900 ' +
+        'dark:text-gray-300 dark:hover:bg-gray-800/70 dark:hover:text-white';
+  const iconState = active || childActive
     ? 'text-blue-600 dark:text-blue-400'
     : 'text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300';
 
@@ -58,9 +61,15 @@ function NavItem({ item, active, compact, label, onSelect }) {
         onClick={() => onSelect(item)}
         className={`${base} ${state}`}
       >
-        <NavIcon name={item.icon} className={`shrink-0 ${compact ? 'w-4 h-4' : 'w-[18px] h-[18px]'} ${iconState}`} />
-        <span className="min-w-0">{label}</span>
+        <NavIcon name={item.icon} className={`shrink-0 ${small ? 'w-4 h-4' : 'w-[18px] h-[18px]'} ${iconState}`} />
+        <span className="min-w-0 flex-1">{label}</span>
+        {item.badge && (
+          <span aria-hidden="true" className="shrink-0 text-base leading-none transition-transform group-hover:scale-125 group-hover:-rotate-12">
+            {item.badge}
+          </span>
+        )}
       </button>
+      {children}
     </li>
   );
 }
@@ -115,15 +124,37 @@ export default function Sidebar({ onNavigate }) {
                 </div>
               )}
               <ul className="space-y-0.5">
-                {items.map((item) => (
-                  <NavItem
-                    key={item.id}
-                    item={item}
-                    label={labelOf(item)}
-                    active={activeId === item.id}
-                    onSelect={handleSelect}
-                  />
-                ))}
+                {items.filter((item) => !item.parent).map((item) => {
+                  const subItems = items.filter((sub) => sub.parent === item.id);
+                  return (
+                    <NavItem
+                      key={item.id}
+                      item={item}
+                      label={labelOf(item)}
+                      active={activeId === item.id}
+                      childActive={subItems.some((sub) => sub.id === activeId)}
+                      onSelect={handleSelect}
+                    >
+                      {subItems.length > 0 && (
+                        <ul
+                          aria-label={labelOf(item)}
+                          className="ml-[21px] mt-0.5 mb-1 space-y-0.5 border-l-2 border-blue-100 pl-2 dark:border-gray-700"
+                        >
+                          {subItems.map((sub) => (
+                            <NavItem
+                              key={sub.id}
+                              item={sub}
+                              nested
+                              label={labelOf(sub)}
+                              active={activeId === sub.id}
+                              onSelect={handleSelect}
+                            />
+                          ))}
+                        </ul>
+                      )}
+                    </NavItem>
+                  );
+                })}
               </ul>
             </div>
           );

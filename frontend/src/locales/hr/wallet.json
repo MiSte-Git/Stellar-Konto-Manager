@@ -39,7 +39,13 @@
     "empty": {
       "title": "Još nije učitana nijedna računica.",
       "text": "Unesite svoju Public Key ili federacijsku adresu iznad. Public Key je dovoljan za pregled; za transakcije će vam kasnije trebati vaša Secret Key.",
-      "learn": "Upoznajte Stellar"
+      "learn": "Upoznajte Stellar",
+      "discover": {
+        "badge": "Novi na Stellaru?",
+        "title": "Otkrijte Stellar kroz igru",
+        "text": "Kviz, simulator prijevara i priča s Lumiom – upoznajte Stellar vlastitim tempom, bez rizika i bez stvarnog novca.",
+        "cta": "Počnimo"
+      }
     }
   },
   "receive": {

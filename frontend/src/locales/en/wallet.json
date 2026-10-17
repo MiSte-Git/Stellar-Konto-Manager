@@ -39,7 +39,13 @@
     "empty": {
       "title": "No account has been loaded yet",
       "text": "Enter your Public Key or a federation address above. The Public Key is sufficient for viewing; for transactions, you'll need your Secret Key later.",
-      "learn": "Get to Know Stellar"
+      "learn": "Get to Know Stellar",
+      "discover": {
+        "badge": "New to Stellar?",
+        "title": "Discover Stellar Through Play",
+        "text": "A quiz, a scam simulator, and a story featuring Lumio—get to know Stellar at your own pace, with no risk and no real money involved.",
+        "cta": "Let's get started"
+      }
     }
   },
   "receive": {

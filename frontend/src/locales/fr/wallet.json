@@ -39,7 +39,13 @@
     "empty": {
       "title": "Aucun compte n'a encore été chargé",
       "text": "Saisissez votre Public Key ou une adresse de fédération ci-dessus. Le Public Key suffit pour la consultation ; pour les transactions, vous aurez besoin de votre Secret Key ultérieurement.",
-      "learn": "Découvrez Stellar"
+      "learn": "Découvrez Stellar",
+      "discover": {
+        "badge": "Vous découvrez Stellar ?",
+        "title": "Découvrez Stellar en jouant",
+        "text": "Un quiz, un simulateur d'arnaques et une histoire mettant en scène Lumio : découvrez Stellar à votre rythme, sans aucun risque et sans argent réel.",
+        "cta": "C'est parti !"
+      }
     }
   },
   "receive": {
