@@ -74,7 +74,7 @@ export default function AccountListPicker({
   const title = t('common:accountPicker.button', 'Aus Konten-Liste wählen');
 
   return (
-    <div ref={rootRef} className="shrink-0">
+    <div ref={rootRef} className="shrink-0 self-stretch flex">
       <button
         type="button"
         disabled={disabled}
@@ -84,7 +84,7 @@ export default function AccountListPicker({
         aria-haspopup="listbox"
         aria-expanded={open}
         className={[
-          'h-full px-2 border rounded text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 disabled:opacity-50',
+          'flex items-center justify-center px-2 py-0 border rounded text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 disabled:opacity-50',
           open ? 'bg-gray-100 dark:bg-gray-800' : '',
           buttonClassName,
         ].filter(Boolean).join(' ')}

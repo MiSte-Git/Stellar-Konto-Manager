@@ -50,7 +50,10 @@ export default function AddressDropdown({
 
   return (
     <div className={['relative', className].filter(Boolean).join(' ')} ref={wrapperRef}>
-      <div className={accountPicker ? 'flex items-stretch gap-1' : ''}>
+      {/* items-start: the input wrapper keeps the input's own height, so a
+          rightAdornment centred via top-1/2 stays centred; the picker
+          stretches to the row height instead of defining it. */}
+      <div className={accountPicker ? 'flex items-start gap-1' : ''}>
         <div className={accountPicker ? 'relative min-w-0 flex-1' : ''}>
           <input
             className={inputClassName}
