@@ -59,7 +59,7 @@ export default function TopBar({ onOpenMenu, menuOpen, menuButtonRef, price }) {
     'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-800 dark:hover:text-white';
 
   return (
-    <header className="sticky top-0 z-30 h-14 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-gray-800 dark:bg-gray-950/95">
+    <header className="sticky top-0 z-40 h-14 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-gray-800 dark:bg-gray-950/95">
       <div className="flex h-full items-center gap-2 px-3 sm:gap-3 sm:px-4">
         <button
           ref={menuButtonRef}
@@ -80,18 +80,18 @@ export default function TopBar({ onOpenMenu, menuOpen, menuButtonRef, price }) {
           title={t('common:main.title')}
         >
           <img src={logoSrc} alt="" className="h-7 w-7 shrink-0 rounded-md" />
-          <span className="hidden truncate text-[15px] font-semibold tracking-tight lg:inline">
+          <span className="hidden truncate text-[15px] font-semibold tracking-tight xl:inline">
             {t('common:main.title')}
           </span>
-          <span className="hidden text-[15px] font-semibold tracking-tight sm:inline lg:hidden">SKM</span>
+          <span className="hidden text-[15px] font-semibold tracking-tight sm:inline xl:hidden">SKM</span>
         </button>
 
         <NetworkBadge />
 
         <div className="ml-auto flex items-center gap-2">
           <SigningStatus />
-          <XlmPriceTicker price={price} className="hidden sm:inline-flex" />
-          <PriceCurrencyMenu price={price} className="hidden sm:block" />
+          <XlmPriceTicker price={price} className="hidden lg:inline-flex" />
+          <PriceCurrencyMenu price={price} className="hidden lg:block" />
           <LanguageMenu />
           <button
             type="button"

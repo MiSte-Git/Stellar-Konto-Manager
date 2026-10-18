@@ -12,8 +12,8 @@ import { XlmPriceContext } from '../../utils/xlmPriceContext.js';
 const FOCUSABLE = 'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 /**
- * App-Shell: feste Titelleiste oben, Seitenleiste links (ab lg fest, darunter
- * als Drawer), Inhalt rechts.
+ * App-Shell: feste Titelleiste oben (unter lg darunter eine Kursleiste),
+ * Seitenleiste links (ab lg fest, darunter als Drawer), Inhalt rechts.
  */
 export default function AppLayout({ children }) {
   const { t } = useTranslation(['menu', 'common']);
@@ -86,9 +86,17 @@ export default function AppLayout({ children }) {
         menuButtonRef={menuButtonRef}
         price={price}
       />
+      {/* Kursleiste fuer Handy/Tablet; ab lg stehen die Kurse in der Titelleiste (dort gibt es die feste Seitenleiste). */}
+      <div
+        data-testid="price-bar"
+        className="flex h-10 items-center gap-3 border-b border-gray-200 bg-white px-3 sm:px-4 lg:hidden dark:border-gray-800 dark:bg-gray-950"
+      >
+        <XlmPriceTicker price={price} compact className="min-w-0" />
+        <PriceCurrencyMenu price={price} compact className="ml-auto shrink-0" />
+      </div>
       <div className="flex">
         <aside
-          className="hidden lg:block sticky top-14 self-start h-[calc(100vh-3.5rem)] w-64 shrink-0 border-r border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-950"
+          className="hidden lg:block sticky top-14 self-start h-[calc(100vh-3.5rem)] supports-[height:100dvh]:h-[calc(100dvh-3.5rem)] w-64 shrink-0 border-r border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-950"
           data-testid="sidebar-desktop"
         >
           <Sidebar />
@@ -124,10 +132,6 @@ export default function AppLayout({ children }) {
               >
                 <NavIcon name="close" className="w-5 h-5" />
               </button>
-            </div>
-            <div className="flex shrink-0 flex-col gap-2 border-b border-gray-200 px-4 py-2.5 sm:hidden dark:border-gray-800">
-              <XlmPriceTicker price={price} className="w-full" />
-              <PriceCurrencyMenu price={price} align="left" />
             </div>
             <div className="min-h-0 flex-1">
               <Sidebar onNavigate={closeDrawer} />

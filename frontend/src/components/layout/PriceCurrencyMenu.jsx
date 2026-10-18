@@ -6,9 +6,9 @@ import NavIcon from './NavIcon.jsx';
 /**
  * Waehrungsauswahl fuer die Kursanzeige (XLM und XRP), gestaltet wie die
  * Sprachauswahl. Die Daten kommen aus useXlmPrice (einmal in AppLayout aufgerufen).
- * @param {{ price: ReturnType<typeof import('../../utils/useXlmPrice.js').useXlmPrice>, align?: 'left'|'right', className?: string }} props
+ * @param {{ price: ReturnType<typeof import('../../utils/useXlmPrice.js').useXlmPrice>, align?: 'left'|'right', className?: string, compact?: boolean }} props
  */
-export default function PriceCurrencyMenu({ price, align = 'right', className = '' }) {
+export default function PriceCurrencyMenu({ price, align = 'right', className = '', compact = false }) {
   const { t } = useTranslation(['common']);
   const [open, setOpen] = React.useState(false);
   const rootRef = React.useRef(null);
@@ -57,7 +57,7 @@ export default function PriceCurrencyMenu({ price, align = 'right', className = 
         aria-label={`${label}: ${selectedPair}`}
         title={label}
         data-testid="price-currency-button"
-        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-gray-600 dark:hover:bg-gray-800"
+        className={`inline-flex ${compact ? 'h-7 px-2' : 'h-9 px-2.5'} items-center gap-1.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-gray-600 dark:hover:bg-gray-800`}
       >
         <span className="text-xs">{selectedPair}</span>
         <NavIcon name="chevronDown" className="w-3.5 h-3.5 text-gray-400" />
