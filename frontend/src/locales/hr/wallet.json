@@ -103,5 +103,32 @@
     "urlHint": "Memo sadrži web-adresu. Za legitimne uplate ovo nije potrebno. Nemojte ga otvarati.",
     "fakeNative": "Token, ne nativni XML",
     "fakeNativeHint": "Ovo je Token od izdavača, a ne mrežni izvorni XLM."
+  },
+  "claimable": {
+    "title": "Potraživanja",
+    "intro": "Uplate koje su dostupne na vašem računu, ali moraju biti potvrđene prije nego što se pojave na vašem stanju.",
+    "claim": "Iskoristiti",
+    "hide": "Sakrij",
+    "unhide": "Prikaži",
+    "showHidden": "Prikaži skrivene stavke ({{count}})",
+    "hideHidden": "Sakrij skrivene stavke",
+    "from": "Od {{account}}",
+    "issuer": "Izdavač {{issuer}}",
+    "until": "Važeće do {{date}}.",
+    "fromDate": "Iskoristivo od {{date}}.",
+    "notClaimable": "Trenutno se ne može iskoristiti.",
+    "withTrustline": "Kada se iskoristi, stvara Trustline za {{code}}.",
+    "noTrustTitle": "Za Assets bez Trustline ({{count}})",
+    "noTrustShow": "Oglasi",
+    "noTrustHide": "Sakrij",
+    "noTrustNote": "Otkupljivanje stvara Trustline i zaključava 0,5 XLM u rezervi. Nezatraženi Token često se koriste u pokušajima prijevare. SKM ne procjenjuje Token i ne donosi nikakvu odluku o tome je li Token autentičan. Ako je potrebno, provjerite činjenice o Token koristeći pretragu Token.",
+    "truncated": "Prikazuju se samo prva {{count}} unosa.",
+    "loadError": "Salda za naplatu nisu mogla biti učitana.",
+    "insufficientReserve": "Trustline zahtijeva {{reserve}} XLM u rezervi; {{available}} XLM je dostupan.",
+    "insufficientWeight": "Signers koje ste unijeli zajedno ne dostižu potrebnu težinu od {{required}}.",
+    "success": "{{amount}} {{code}} iskorišteno. Transakcija {{hash}}.",
+    "failed": "Otkupljenje nije uspjelo: {{reason}}",
+    "ambiguous": "Rezultat je nejasan (Netzwerkfehler). Molimo provjerite transakciju {{hash}} u istraživaču prije ponovnog pokušaja.",
+    "networkMismatch": "Poslužitelj Horizon nije dio odabrane mreže. Ništa nije potpisano niti poslano."
   }
 }

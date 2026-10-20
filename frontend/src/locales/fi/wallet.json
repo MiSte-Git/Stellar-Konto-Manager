@@ -103,5 +103,32 @@
     "urlHint": "Memo sisältää verkkosoitteen. Laillisissa maksuissa tätä ei vaadita. Älä avaa sitä.",
     "fakeNative": "Token, ei natiivi XML",
     "fakeNativeHint": "Tämä on julkaisijan Token, ei verkoston omaa XLM-muotoa."
+  },
+  "claimable": {
+    "title": "Korvattavat saldot",
+    "intro": "Maksut, jotka ovat tililläsi käytettävissä, mutta jotka on ensin kirjattava, ennen kuin ne näkyvät saldossasi.",
+    "claim": "Lunasta",
+    "hide": "Piilota",
+    "unhide": "Näytä",
+    "showHidden": "Näytä piilotetut kohteet ({{count}})",
+    "hideHidden": "Piilota piilotetut kohteet",
+    "from": "Lähettäjä: {{account}}",
+    "issuer": "Julkaisija {{issuer}}",
+    "until": "Voimassa {{date}} asti.",
+    "fromDate": "Lunastettavissa {{date}} alkaen.",
+    "notClaimable": "Tätä ei voi tällä hetkellä lunastaa.",
+    "withTrustline": "Lunastettaessa luo Trustline-kohteen koodille {{code}}.",
+    "noTrustTitle": "Kun Assets on olemassa mutta Trustline ei ({{count}})",
+    "noTrustShow": "Mainokset",
+    "noTrustHide": "Piilota",
+    "noTrustNote": "Lunastaminen luo Trustline-tunnuksen ja lukitsee 0,5 XLM:ää varantoon. Pyytämättömiä Token-tunnuksia käytetään usein petosyrityksissä. SKM ei arvioi Token:ta eikä tee päätöstä siitä, onko Token aito. Tarvittaessa tarkista Token:n tiedot käyttämällä Token-hakua.",
+    "truncated": "Vain ensimmäiset {{count}} tulosta näytetään.",
+    "loadError": "Korvattavia saldoja ei voitu ladata.",
+    "insufficientReserve": "Trustline edellyttää {{reserve}} XLM:n varantoa; käytettävissä on {{available}} XLM.",
+    "insufficientWeight": "Syöttämäsi Signers-arvot eivät yhteensä täytä vaadittua painoarvoa {{required}}.",
+    "success": "{{amount}} {{code}} on lunastettu. Tapahtuma {{hash}}.",
+    "failed": "Lunastus epäonnistui: {{reason}}",
+    "ambiguous": "Tulos on epäselvä (verkkovirhe). Tarkista transaktio {{hash}} explorerissa ennen kuin yrität uudelleen.",
+    "networkMismatch": "Horizon-palvelin ei kuulu valittuun verkkoon. Mitään ei allekirjoitettu eikä lähetetty."
   }
 }

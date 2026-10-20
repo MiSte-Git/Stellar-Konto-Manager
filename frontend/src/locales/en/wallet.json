@@ -103,5 +103,32 @@
     "urlHint": "The Memo contains a web address. Legitimate payments do not require this. Do not open it.",
     "fakeNative": "Token, not native XML",
     "fakeNativeHint": "This is a Token from a publisher, not the network's native XLM."
+  },
+  "claimable": {
+    "title": "Claimable Balances",
+    "intro": "Payments that are available for your account but must be cleared before they appear in your balance.",
+    "claim": "Redeem",
+    "hide": "Hide",
+    "unhide": "Show",
+    "showHidden": "Show hidden items ({{count}})",
+    "hideHidden": "Hide hidden items",
+    "from": "From {{account}}",
+    "issuer": "Publisher {{issuer}}",
+    "until": "Valid until {{date}}.",
+    "fromDate": "Redeemable starting {{date}}.",
+    "notClaimable": "Currently cannot be redeemed.",
+    "withTrustline": "When redeemed, creates a Trustline for {{code}}.",
+    "noTrustTitle": "For Assets without Trustline ({{count}})",
+    "noTrustShow": "Advertisements",
+    "noTrustHide": "Hide",
+    "noTrustNote": "Redeeming creates a Trustline and locks 0.5 XLM in reserve. Unsolicited Token are often used in fraud attempts. SKM does not evaluate Token and makes no determination as to whether a Token is genuine. If necessary, verify the facts about Token using the Token search.",
+    "truncated": "Only the first {{count}} entries are displayed.",
+    "loadError": "Claimable balances could not be loaded.",
+    "insufficientReserve": "Trustline requires {{reserve}} XLM in reserve; {{available}} XLM is available.",
+    "insufficientWeight": "The Signers you entered do not collectively meet the required weight of {{required}}.",
+    "success": "{{amount}} {{code}} redeemed. Transaction {{hash}}.",
+    "failed": "Redeem failed: {{reason}}",
+    "ambiguous": "The result is unclear (Netzwerkfehler). Please check the transaction {{hash}} in the explorer before trying again.",
+    "networkMismatch": "The Horizon server is not part of the selected network. Nothing was signed or sent."
   }
 }

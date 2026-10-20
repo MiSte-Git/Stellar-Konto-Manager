@@ -103,5 +103,32 @@
     "urlHint": "Het bestand Memo bevat een webadres. Bij legitieme betalingen is dit niet nodig. Open het niet.",
     "fakeNative": "Token, geen native XML",
     "fakeNativeHint": "Dit is een Token van een uitgever, niet de eigen XLM van het netwerk."
+  },
+  "claimable": {
+    "title": "Terugvorderbare saldi",
+    "intro": "Betalingen die op uw rekening zijn bijgeschreven, maar die eerst moeten worden verwerkt voordat ze in uw saldo worden weergegeven.",
+    "claim": "Inwisselen",
+    "hide": "Verbergen",
+    "unhide": "Weergeven",
+    "showHidden": "Verborgen items weergeven ({{count}})",
+    "hideHidden": "Verborgen items verbergen",
+    "from": "Van {{account}}",
+    "issuer": "Uitgever {{issuer}}",
+    "until": "Geldig tot {{date}}.",
+    "fromDate": "Inwisselbaar vanaf {{date}}.",
+    "notClaimable": "Kan momenteel niet worden ingewisseld.",
+    "withTrustline": "Bij inwisseling wordt een Trustline aangemaakt voor {{code}}.",
+    "noTrustTitle": "Voor Assets zonder Trustline ({{count}})",
+    "noTrustShow": "Advertenties",
+    "noTrustHide": "Verbergen",
+    "noTrustNote": "Bij het inwisselen wordt een Trustline aangemaakt en wordt 0,5 XLM in reserve geblokkeerd. Ongevraagde Token worden vaak gebruikt bij pogingen tot fraude. SKM beoordeelt Token niet en doet geen uitspraak over de echtheid van een Token. Controleer indien nodig de feiten over Token met behulp van de Token-zoekfunctie.",
+    "truncated": "Er worden slechts de eerste {{count}} vermeldingen weergegeven.",
+    "loadError": "De saldi waarvoor een vergoeding kan worden aangevraagd, konden niet worden geladen.",
+    "insufficientReserve": "Trustline vereist {{reserve}} XLM in reserve; {{available}} XLM is beschikbaar.",
+    "insufficientWeight": "De Signers die u hebt ingevoerd, voldoen samen niet aan het vereiste gewicht van {{required}}.",
+    "success": "{{amount}} {{code}} ingewisseld. Transactie {{hash}}.",
+    "failed": "Inwisselen is mislukt: {{reason}}",
+    "ambiguous": "Het resultaat is onduidelijk (netwerkfout). Controleer de transactie {{hash}} in de explorer voordat je het opnieuw probeert.",
+    "networkMismatch": "De Horizon-server maakt geen deel uit van het geselecteerde netwerk. Er is niets ondertekend of verzonden."
   }
 }

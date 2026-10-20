@@ -103,5 +103,32 @@
     "urlHint": "El archivo Memo contiene una dirección web. Los pagos legítimos no requieren esto. No lo abras.",
     "fakeNative": "Token, no es XML nativo",
     "fakeNativeHint": "Se trata de un Token de una editorial, no del XLM nativo de la red."
+  },
+  "claimable": {
+    "title": "Saldos reclamables",
+    "intro": "Pagos que están disponibles en tu cuenta, pero que deben liquidarse antes de que aparezcan en tu saldo.",
+    "claim": "Canjear",
+    "hide": "Ocultar",
+    "unhide": "Mostrar",
+    "showHidden": "Mostrar elementos ocultos ({{count}})",
+    "hideHidden": "Ocultar elementos ocultos",
+    "from": "De {{account}}",
+    "issuer": "Editor {{issuer}}",
+    "until": "Válido hasta el {{date}}.",
+    "fromDate": "Canjeable a partir del {{date}}.",
+    "notClaimable": "Por el momento no se puede canjear.",
+    "withTrustline": "Al canjearlo, se crea un Trustline para {{code}}.",
+    "noTrustTitle": "Para Assets sin Trustline ({{count}})",
+    "noTrustShow": "Anuncios",
+    "noTrustHide": "Ocultar",
+    "noTrustNote": "Al canjear se crea un Trustline y se bloquean 0,5 XLM en reserva. Los Token no solicitados suelen utilizarse en intentos de fraude. SKM no evalúa los Token y no determina si un Token es auténtico. Si es necesario, comprueba los datos sobre los Token mediante la búsqueda de Token.",
+    "truncated": "Solo se muestran las primeras {{count}} entradas.",
+    "loadError": "No se han podido cargar los saldos reclamables.",
+    "insufficientReserve": "Trustline requiere {{reserve}} XLM en reserva; hay {{available}} XLM disponibles.",
+    "insufficientWeight": "Los Signers que has introducido no alcanzan en conjunto el peso requerido de {{required}}.",
+    "success": "Se ha canjeado {{amount}} {{code}}. Transacción {{hash}}.",
+    "failed": "Error al canjear: {{motivo}}",
+    "ambiguous": "El resultado no es claro (error de red). Comprueba la transacción {{hash}} en el explorador antes de volver a intentarlo.",
+    "networkMismatch": "El servidor Horizon no forma parte de la red seleccionada. No se ha firmado ni enviado nada."
   }
 }

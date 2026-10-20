@@ -14,6 +14,7 @@ export function getRequiredThreshold(operationType, thresholds) {
   if (operationType === 'setOptions') return high || med || low || 0;
   // bumpSequence ist laut Protokoll eine Low-Threshold-Operation, 0 ist dort ein gueltiger Wert.
   if (operationType === 'bumpSequence') return low;
+  if (operationType === 'claimClaimableBalance') return low;
   if (operationType === 'payment') return med || high || low || 0;
 
   return med || low || high || 0;

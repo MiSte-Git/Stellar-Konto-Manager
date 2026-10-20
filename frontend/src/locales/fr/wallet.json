@@ -103,5 +103,32 @@
     "urlHint": "Le fichier Memo contient une adresse Web. Les paiements légitimes ne nécessitent pas cela. Ne l'ouvrez pas.",
     "fakeNative": "Token, pas du XML natif",
     "fakeNativeHint": "Il s'agit d'un Token provenant d'un éditeur, et non du format XLM natif du réseau."
+  },
+  "claimable": {
+    "title": "Soldes donnant droit à un remboursement",
+    "intro": "Paiements disponibles sur votre compte mais qui doivent être validés avant d'apparaître dans votre solde.",
+    "claim": "Utiliser",
+    "hide": "Masquer",
+    "unhide": "Afficher",
+    "showHidden": "Afficher les éléments masqués ({{count}})",
+    "hideHidden": "Masquer les éléments masqués",
+    "from": "De {{account}}",
+    "issuer": "Éditeur {{issuer}}",
+    "until": "Valable jusqu'au {{date}}.",
+    "fromDate": "Utilisable à partir du {{date}}.",
+    "notClaimable": "Ce bon ne peut pas être utilisé pour le moment.",
+    "withTrustline": "Une fois utilisé, cela crée un Trustline pour {{code}}.",
+    "noTrustTitle": "Pour Assets sans Trustline ({{count}})",
+    "noTrustShow": "Publicités",
+    "noTrustHide": "Masquer",
+    "noTrustNote": "L'opération d'échange génère un Trustline et bloque 0,5 XLM en réserve. Les Token non sollicités sont souvent utilisés dans le cadre de tentatives de fraude. SKM n'évalue pas les Token et ne se prononce pas sur l'authenticité d'un Token. Si nécessaire, vérifiez les informations relatives aux Token à l'aide de la recherche Token.",
+    "truncated": "Seules les {{count}} premières entrées sont affichées.",
+    "loadError": "Les soldes donnant droit à un remboursement n'ont pas pu être chargés.",
+    "insufficientReserve": "Trustline nécessite {{reserve}} XLM en réserve ; {{available}} XLM est disponible.",
+    "insufficientWeight": "Les Signers que vous avez saisis n'atteignent pas, pris dans leur ensemble, le poids requis de {{required}}.",
+    "success": "{{amount}} {{code}} a été utilisé. Transaction {{hash}}.",
+    "failed": "Échec de l'utilisation du bon : {{reason}}",
+    "ambiguous": "Le résultat n'est pas clair (erreur de réseau). Veuillez vérifier la transaction {{hash}} dans l'explorateur avant de réessayer.",
+    "networkMismatch": "Le serveur Horizon ne fait pas partie du réseau sélectionné. Aucun document n'a été signé ni envoyé."
   }
 }

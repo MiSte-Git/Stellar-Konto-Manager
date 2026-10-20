@@ -116,6 +116,7 @@ function SecretKeyModal({
     if (operationType === 'setOptions') return 'high';
     if (operationType === 'changeTrust') return 'med';
     if (operationType === 'bumpSequence') return 'low';
+    if (operationType === 'claimClaimableBalance') return 'low';
     return 'med';
   }, [operationType]);
 

@@ -103,5 +103,32 @@
     "urlHint": "Das Memo enthält eine Webadresse. Seriöse Zahlungen brauchen das nicht. Nicht öffnen.",
     "fakeNative": "Token, kein natives XLM",
     "fakeNativeHint": "Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks."
+  },
+  "claimable": {
+    "title": "Claimable Balances",
+    "intro": "Zahlungen, die für dein Konto bereitliegen und erst eingelöst werden müssen, bevor sie im Guthaben erscheinen.",
+    "claim": "Einlösen",
+    "hide": "Ausblenden",
+    "unhide": "Einblenden",
+    "showHidden": "Ausgeblendete anzeigen ({{count}})",
+    "hideHidden": "Ausgeblendete verbergen",
+    "from": "Von {{account}}",
+    "issuer": "Herausgeber {{issuer}}",
+    "until": "Einlösbar bis {{date}}.",
+    "fromDate": "Einlösbar ab {{date}}.",
+    "notClaimable": "Derzeit nicht einlösbar.",
+    "withTrustline": "Legt beim Einlösen eine Trustline für {{code}} an.",
+    "noTrustTitle": "Für Assets ohne Trustline ({{count}})",
+    "noTrustShow": "Anzeigen",
+    "noTrustHide": "Verbergen",
+    "noTrustNote": "Einlösen legt eine Trustline an und bindet 0.5 XLM Reserve. Unaufgefordert zugesandte Token werden oft für Betrugsversuche genutzt. SKM bewertet keine Token und trifft keine Aussage darüber, ob ein Token echt ist. Prüfe die Fakten zum Token bei Bedarf in der Token-Suche.",
+    "truncated": "Es werden nur die ersten {{count}} Einträge angezeigt.",
+    "loadError": "Claimable Balances konnten nicht geladen werden.",
+    "insufficientReserve": "Für die Trustline werden {{reserve}} XLM Reserve benötigt, verfügbar sind {{available}} XLM.",
+    "insufficientWeight": "Die eingegebenen Signer erreichen zusammen nicht das nötige Gewicht {{required}}.",
+    "success": "{{amount}} {{code}} eingelöst. Transaktion {{hash}}.",
+    "failed": "Einlösen fehlgeschlagen: {{reason}}",
+    "ambiguous": "Das Ergebnis ist unklar (Netzwerkfehler). Bitte prüfe die Transaktion {{hash}} im Explorer, bevor du es erneut versuchst.",
+    "networkMismatch": "Der Horizon-Server gehört nicht zum gewählten Netzwerk. Es wurde nichts signiert oder gesendet."
   }
 }
