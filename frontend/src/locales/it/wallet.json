@@ -129,6 +129,15 @@
     "success": "{{amount}} {{code}} riscattato. Transazione {{hash}}.",
     "failed": "Riscatto non riuscito: {{motivo}}",
     "ambiguous": "Il risultato non è chiaro (errore di rete). Si prega di controllare la transazione {{hash}} nell'explorer prima di riprovare.",
-    "networkMismatch": "Il server Horizon non fa parte della rete selezionata. Non è stato firmato né inviato nulla."
+    "networkMismatch": "Il server Horizon non fa parte della rete selezionata. Non è stato firmato né inviato nulla.",
+    "prepareJob": "Preparare come attività Multisig",
+    "insufficientWeightJob": "I Signers che hai inserito non soddisfano complessivamente il peso richiesto {{required}}. Prepara invece un lavoro Multisig, dopodiché gli altri Signers potranno registrarsi sul sito web.",
+    "tooLittleTime": "Il saldo riscattabile scadrà troppo presto per poter essere utilizzato come incarico Multisig.",
+    "jobSource": "Account",
+    "jobClaim": "Riscatta",
+    "jobTrustline": "Crea Trustline",
+    "jobNetwork": "Rete",
+    "jobNoteLabel": "Nota",
+    "jobHint": "Il saldo riscattabile potrebbe scadere o essere riscattato in altro modo prima che tutti abbiano firmato. In tal caso, l'incarico non andrà a buon fine al momento dell'invio, ma non andrà perso nulla. La validità dell'incarico termina al più tardi alla scadenza del saldo riscattabile."
   }
 }

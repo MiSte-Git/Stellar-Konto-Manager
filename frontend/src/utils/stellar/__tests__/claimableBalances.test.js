@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { Account, Keypair, Networks } from '@stellar/stellar-sdk';
 import {
-  buildClaimTx, classifyClaimableBalances, describePredicateWindow, evaluatePredicate, parseClaimableAsset,
+  buildClaimTx, claimJobTimeoutSeconds, classifyClaimableBalances, describePredicateWindow, evaluatePredicate, parseClaimableAsset,
 } from '../claimableBalances.js';
 
 const ME = Keypair.random().publicKey();
@@ -85,5 +85,19 @@ describe('buildClaimTx', () => {
     const tx = buildClaimTx({ ...base, account: new Account(ME, '1'), item });
     expect(tx.operations.map((o) => o.type)).toEqual(['changeTrust', 'claimClaimableBalance']);
     expect(tx.operations[0].line.code).toBe('BAR');
+  });
+});
+
+describe('claimJobTimeoutSeconds', () => {
+  it('nimmt die Einstellung, ohne Ablauf der Claimable Balance', () => {
+    expect(claimJobTimeoutSeconds({ window: null }, 86400, NOW)).toBe(86400);
+  });
+
+  it('kuerzt auf die Restlaufzeit der Claimable Balance', () => {
+    expect(claimJobTimeoutSeconds({ window: { until: NOW + 7200 } }, 86400, NOW)).toBe(7170);
+  });
+
+  it('liefert null, wenn fuer einen Job zu wenig Zeit bleibt', () => {
+    expect(claimJobTimeoutSeconds({ window: { until: NOW + 200 } }, 86400, NOW)).toBeNull();
   });
 });

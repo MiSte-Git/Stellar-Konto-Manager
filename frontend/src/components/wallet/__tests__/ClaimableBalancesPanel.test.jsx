@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
-import { Account, Keypair } from '@stellar/stellar-sdk';
+import { Account, Keypair, Networks, TransactionBuilder } from '@stellar/stellar-sdk';
 import i18n from '../../../i18n.js';
 import ClaimableBalancesPanel from '../ClaimableBalancesPanel.jsx';
 
@@ -34,11 +34,17 @@ vi.mock('../../../utils/sessionSecrets.js', async (importOriginal) => ({
   rememberSessionSecrets: vi.fn(async () => {}),
 }));
 
-function makeAccount() {
+const COSIGNER = Keypair.random().publicKey();
+
+function makeAccount({ multisig = false } = {}) {
   return Object.assign(new Account(ME.publicKey, '100'), {
     account_id: ME.publicKey,
-    thresholds: { low_threshold: 0, med_threshold: 0, high_threshold: 0 },
-    signers: [{ key: ME.publicKey, weight: 1, type: 'ed25519_public_key' }],
+    thresholds: multisig
+      ? { low_threshold: 2, med_threshold: 2, high_threshold: 2 }
+      : { low_threshold: 0, med_threshold: 0, high_threshold: 0 },
+    signers: multisig
+      ? [{ key: ME.publicKey, weight: 1, type: 'ed25519_public_key' }, { key: COSIGNER, weight: 1, type: 'ed25519_public_key' }]
+      : [{ key: ME.publicKey, weight: 1, type: 'ed25519_public_key' }],
     balances: [
       { asset_type: 'native', balance: '100.0000000' },
       { asset_type: 'credit_alphanum4', asset_code: 'FOO', asset_issuer: ISSUER, balance: '0' },
@@ -156,5 +162,51 @@ describe('ClaimableBalancesPanel (P1.5)', () => {
     renderPanel();
     await waitFor(() => expect(hoisted.recordsMock).toHaveBeenCalled());
     expect(screen.queryByTestId('wallet-home-claimable')).not.toBeInTheDocument();
+  });
+
+  it('bietet bei Einzelsignatur-Konten keinen Job an', async () => {
+    renderPanel();
+    await screen.findByText('Claimable Balances');
+    expect(screen.queryByRole('button', { name: 'Als Multisig-Job vorbereiten' })).not.toBeInTheDocument();
+  });
+
+  describe('Multisig-Konto', () => {
+    let fetchMock;
+    beforeEach(() => {
+      hoisted.loadAccountMock.mockImplementation(async () => makeAccount({ multisig: true }));
+      fetchMock = vi.fn(async (_url, opts) => ({
+        ok: true,
+        json: async () => ({ id: 'job-9', txHash: 'jobhash', txXdrCurrent: JSON.parse(opts.body).txXdr }),
+      }));
+      vi.stubGlobal('fetch', fetchMock);
+    });
+    afterEach(() => { vi.unstubAllGlobals(); });
+
+    it('legt einen Job mit unsignierter Claim-Transaktion, Schnell-Gebuehr und langer Gueltigkeit an', async () => {
+      renderPanel({ account: makeAccount({ multisig: true }) });
+      await screen.findByText('Claimable Balances');
+      fireEvent.click(within(itemById(1)).getByRole('button', { name: 'Als Multisig-Job vorbereiten' }));
+      await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+      const [url, opts] = fetchMock.mock.calls[0];
+      expect(String(url)).toContain('multisig/jobs');
+      const body = JSON.parse(opts.body);
+      expect(body).toMatchObject({ network: 'testnet', accountId: ME.publicKey, createdBy: 'local' });
+      const tx = TransactionBuilder.fromXDR(body.txXdr, Networks.TESTNET);
+      expect(tx.operations.map((o) => o.type)).toEqual(['claimClaimableBalance']);
+      expect(tx.signatures).toHaveLength(0);
+      expect(Number(tx.fee)).toBeGreaterThanOrEqual(1000);
+      expect(Number(tx.timeBounds.maxTime) - Math.floor(Date.now() / 1000)).toBeGreaterThan(3600);
+      await screen.findByText('Transaktion für Multisig vorbereitet');
+      expect(screen.getByText('job-9')).toBeInTheDocument();
+      expect(hoisted.submitMock).not.toHaveBeenCalled();
+    });
+
+    it('verweist bei zu wenig lokalem Gewicht auf den Job-Weg', async () => {
+      renderPanel({ account: makeAccount({ multisig: true }) });
+      await screen.findByText('Claimable Balances');
+      await claim(1);
+      await screen.findByText(/Bereite stattdessen einen Multisig-Job vor/);
+      expect(hoisted.submitMock).not.toHaveBeenCalled();
+    });
   });
 });

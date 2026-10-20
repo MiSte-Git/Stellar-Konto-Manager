@@ -129,6 +129,15 @@
     "success": "{{amount}} {{code}} redeemed. Transaction {{hash}}.",
     "failed": "Redeem failed: {{reason}}",
     "ambiguous": "The result is unclear (Netzwerkfehler). Please check the transaction {{hash}} in the explorer before trying again.",
-    "networkMismatch": "The Horizon server is not part of the selected network. Nothing was signed or sent."
+    "networkMismatch": "The Horizon server is not part of the selected network. Nothing was signed or sent.",
+    "prepareJob": "Prepare as a Multisig job",
+    "insufficientWeightJob": "The Signers you entered do not collectively meet the required weight {{required}}. Instead, prepare a Multisig job, and then the other Signers can sign on the website.",
+    "tooLittleTime": "The claimable balance will expire too soon to be redeemed as a Multisig job.",
+    "jobSource": "Account",
+    "jobClaim": "Redeem",
+    "jobTrustline": "Create Trustline",
+    "jobNetwork": "Network",
+    "jobNoteLabel": "Note",
+    "jobHint": "The Claimable Balance may expire or be redeemed in some other way before everyone has signed. The job will then fail upon submission, but nothing will be lost. The job's validity ends no later than when the Claimable Balance expires."
   }
 }

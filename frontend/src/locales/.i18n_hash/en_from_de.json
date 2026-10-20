@@ -5256,5 +5256,14 @@
   "wallet.claimable.success": "a842314eb76677d2f475119516e99e394ea0e70797a8fc6c8277239eb5ce6081",
   "wallet.claimable.failed": "1e88fe639b8c5bba9b0740a4e2938fff88c2be5e079e26817193326fb588e4ad",
   "wallet.claimable.ambiguous": "9bd78231714212049db3e465fe1adbf450e8352dc11f4c58984238313bef97f8",
-  "wallet.claimable.networkMismatch": "4aa1bebc69df541305396acb97e91f23ddaad4e716df36c94abcf53691a13fca"
+  "wallet.claimable.networkMismatch": "4aa1bebc69df541305396acb97e91f23ddaad4e716df36c94abcf53691a13fca",
+  "wallet.claimable.prepareJob": "018edfd28b3ea5356984770974a01114b27cbe30d85fb770eabb68372b9963e3",
+  "wallet.claimable.insufficientWeightJob": "f8e1443a3f982515f76ed0824c517bd3f2fbaea566b7d038a7beb8aaf189aa29",
+  "wallet.claimable.tooLittleTime": "cb076223f397e9b38facc605f319ba143899ffb05a7d256e9bdee1e7303cb4fd",
+  "wallet.claimable.jobSource": "df8525011f618f54a41da2ac9e08cbf57c8f4674244d601d41f0fa18d54c19d2",
+  "wallet.claimable.jobClaim": "a8e15c2dcf5f0e6b7231bfc8277cb3155cbd2f045a4e367d9af74536a5709601",
+  "wallet.claimable.jobTrustline": "334273af8c5389c7441fed2517072e761c1471dc840918799c64d4c7696191fd",
+  "wallet.claimable.jobNetwork": "7831c04124b640f8fe85ffeb9cdcfe30fd2156d1dc9ce1acccaadefb072b5c74",
+  "wallet.claimable.jobNoteLabel": "2e2011d96a4116985c5cfb35df7d4f59083c21b70c8a5ac927e41a1f92f89329",
+  "wallet.claimable.jobHint": "8a0c7478fc9fdd41d149a50e76ecdb7bab1f7c4e692a38427324a0903852f05b"
 }

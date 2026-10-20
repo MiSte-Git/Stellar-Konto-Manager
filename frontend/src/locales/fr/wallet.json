@@ -129,6 +129,15 @@
     "success": "{{amount}} {{code}} a été utilisé. Transaction {{hash}}.",
     "failed": "Échec de l'utilisation du bon : {{reason}}",
     "ambiguous": "Le résultat n'est pas clair (erreur de réseau). Veuillez vérifier la transaction {{hash}} dans l'explorateur avant de réessayer.",
-    "networkMismatch": "Le serveur Horizon ne fait pas partie du réseau sélectionné. Aucun document n'a été signé ni envoyé."
+    "networkMismatch": "Le serveur Horizon ne fait pas partie du réseau sélectionné. Aucun document n'a été signé ni envoyé.",
+    "prepareJob": "Préparer en tant que tâche Multisig",
+    "insufficientWeightJob": "Les Signers que vous avez saisis ne totalisent pas le poids requis {{required}}. Veuillez plutôt créer une offre d'emploi Multisig ; les autres Signers pourront alors postuler sur le site web.",
+    "tooLittleTime": "Le solde pouvant faire l'objet d'une demande d'indemnisation expirera trop tôt pour pouvoir être utilisé dans le cadre d'une mission Multisig.",
+    "jobSource": "Compte",
+    "jobClaim": "Utiliser",
+    "jobTrustline": "Créer Trustline",
+    "jobNetwork": "Réseau",
+    "jobNoteLabel": "Remarque",
+    "jobHint": "Le « solde à réclamer » peut expirer ou être utilisé d'une autre manière avant que tout le monde ait signé. La tâche échouera alors lors de sa soumission, mais aucune donnée ne sera perdue. La validité de la tâche prend fin au plus tard à l'expiration du « solde à réclamer »."
   }
 }

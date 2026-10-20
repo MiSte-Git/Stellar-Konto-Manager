@@ -129,6 +129,15 @@
     "success": "{{amount}} {{code}} ingewisseld. Transactie {{hash}}.",
     "failed": "Inwisselen is mislukt: {{reason}}",
     "ambiguous": "Het resultaat is onduidelijk (netwerkfout). Controleer de transactie {{hash}} in de explorer voordat je het opnieuw probeert.",
-    "networkMismatch": "De Horizon-server maakt geen deel uit van het geselecteerde netwerk. Er is niets ondertekend of verzonden."
+    "networkMismatch": "De Horizon-server maakt geen deel uit van het geselecteerde netwerk. Er is niets ondertekend of verzonden.",
+    "prepareJob": "Voorbereiden als een Multisig-taak",
+    "insufficientWeightJob": "De Signers die u hebt ingevoerd, voldoen samen niet aan het vereiste gewicht {{required}}. Maak in plaats daarvan een Multisig-opdracht aan, waarna de andere Signers zich op de website kunnen aanmelden.",
+    "tooLittleTime": "Het saldo waarop aanspraak kan worden gemaakt, verloopt te snel om te worden ingewisseld als een Multisig-opdracht.",
+    "jobSource": "Account",
+    "jobClaim": "Inwisselen",
+    "jobTrustline": "Maak Trustline aan",
+    "jobNetwork": "Netwerk",
+    "jobNoteLabel": "Opmerking",
+    "jobHint": "Het inwisselbare saldo kan verlopen of op een andere manier worden ingewisseld voordat iedereen heeft ondertekend. De opdracht zal dan bij het indienen mislukken, maar er gaat niets verloren. De geldigheid van de opdracht eindigt uiterlijk op het moment dat het inwisselbare saldo verloopt."
   }
 }

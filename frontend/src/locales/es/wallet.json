@@ -129,6 +129,15 @@
     "success": "Se ha canjeado {{amount}} {{code}}. Transacción {{hash}}.",
     "failed": "Error al canjear: {{motivo}}",
     "ambiguous": "El resultado no es claro (error de red). Comprueba la transacción {{hash}} en el explorador antes de volver a intentarlo.",
-    "networkMismatch": "El servidor Horizon no forma parte de la red seleccionada. No se ha firmado ni enviado nada."
+    "networkMismatch": "El servidor Horizon no forma parte de la red seleccionada. No se ha firmado ni enviado nada.",
+    "prepareJob": "Preparar como un trabajo Multisig",
+    "insufficientWeightJob": "Los Signers que has introducido no alcanzan en conjunto el peso requerido {{required}}. En su lugar, prepara un trabajo Multisig y, a continuación, los demás Signers podrán registrarse en la página web.",
+    "tooLittleTime": "El saldo reclamable caducará demasiado pronto como para poder canjearlo por un trabajo de Multisig.",
+    "jobSource": "Cuenta",
+    "jobClaim": "Canjear",
+    "jobTrustline": "Crear Trustline",
+    "jobNetwork": "Red",
+    "jobNoteLabel": "Nota",
+    "jobHint": "El saldo reclamable puede caducar o canjearse de alguna otra forma antes de que todos hayan firmado. En ese caso, la solicitud se rechazará al enviarla, pero no se perderá nada. La validez de la solicitud finaliza, a más tardar, cuando caduque el saldo reclamable."
   }
 }

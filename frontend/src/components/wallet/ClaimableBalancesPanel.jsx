@@ -3,6 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Networks } from '@stellar/stellar-sdk';
 
 import SecretKeyModal from '../SecretKeyModal.jsx';
+import MultisigPrepareDialog from '../MultisigPrepareDialog.jsx';
+import { createMultisigJobFromXdr } from '../../utils/multisigApi.js';
+import { isMultisigAccount } from '../../utils/stellar/isMultisigAccount.js';
+import { useSettings } from '../../utils/useSettings.js';
 import { getHorizonServer } from '../../utils/stellar/stellarUtils.js';
 import { shortenAddress } from '../../utils/stellar/walletSummary.js';
 import { looksLikeNativeCode } from '../../utils/stellar/activity.js';
@@ -14,6 +18,7 @@ import { getSessionSecrets, rememberSessionSecrets, InsecureCryptoContextError }
 import { assertHorizonNetwork, collectEffectiveSigners } from '../../utils/multisig/jobRevocation.js';
 import {
   buildClaimTx,
+  claimJobTimeoutSeconds,
   classifyClaimableBalances,
   fetchClaimableBalances,
   getHiddenClaimableIds,
@@ -55,6 +60,9 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const [claimError, setClaimError] = React.useState('');
   const [info, setInfo] = React.useState('');
   const inFlightRef = React.useRef(false);
+  const [preparedJob, setPreparedJob] = React.useState(null);
+  const { multisigTimeoutSeconds } = useSettings();
+  const multisig = isMultisigAccount(account);
 
   React.useEffect(() => {
     setHiddenIds(getHiddenClaimableIds(network, publicKey));
@@ -110,18 +118,75 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
     }
   };
 
+  const reserveOk = (item) => {
+    if (!needsTrustline(item) || Number(available || 0) >= TRUSTLINE_RESERVE_XLM) return true;
+    setClaimError(t('wallet:claimable.insufficientReserve', {
+      reserve: TRUSTLINE_RESERVE_XLM,
+      available: fmt ? fmt(Number(available || 0), { min: 2, max: 7 }) : String(available || 0),
+    }));
+    return false;
+  };
+
   const startClaim = (item) => {
     setInfo('');
     setClaimError('');
-    if (!item.claimableNow) return;
-    if (needsTrustline(item) && Number(available || 0) < TRUSTLINE_RESERVE_XLM) {
-      setClaimError(t('wallet:claimable.insufficientReserve', {
-        reserve: TRUSTLINE_RESERVE_XLM,
-        available: fmt ? fmt(Number(available || 0), { min: 2, max: 7 }) : String(available || 0),
-      }));
+    if (!item.claimableNow || !reserveOk(item)) return;
+    setClaimItem(item);
+  };
+
+  // Multisig: unsignierte Transaktion als Job anlegen, die anderen Signer signieren auf der Webseite.
+  const prepareJob = async (item) => {
+    if (inFlightRef.current) return;
+    setInfo('');
+    setClaimError('');
+    if (!item.claimableNow || !reserveOk(item)) return;
+    const timeoutSeconds = claimJobTimeoutSeconds(item, multisigTimeoutSeconds);
+    if (timeoutSeconds == null) {
+      setClaimError(t('wallet:claimable.tooLittleTime'));
       return;
     }
-    setClaimItem(item);
+    inFlightRef.current = true;
+    try {
+      setClaiming(true);
+      const server = getHorizonServer(horizonUrl);
+      await assertHorizonNetwork(server, networkPassphrase);
+      const fresh = await server.loadAccount(publicKey);
+      const [current] = classifyClaimableBalances(records.filter((r) => r.id === item.id), fresh);
+      if (!current || !current.claimableNow) {
+        setClaimError(t('wallet:claimable.notClaimable'));
+        return;
+      }
+      // Wird erst spaeter eingereicht: Gebuehrenstufe Schnell (siehe fees.js)
+      const fee = await resolveFeePerOp(server, { deferred: true });
+      const tx = buildClaimTx({ account: fresh, item: current, fee, networkPassphrase, timeoutSeconds });
+      const job = await createMultisigJobFromXdr({
+        network: isTestnet ? 'testnet' : 'public',
+        accountId: publicKey,
+        txXdr: tx.toXDR(),
+      });
+      setPreparedJob({
+        hash: job.hash || tx.hash().toString('hex'),
+        xdr: job.xdr,
+        summary: {
+          title: t('multisig:prepare.title'),
+          subtitle: t('multisig:prepare.subtitle'),
+          items: [
+            { label: t('wallet:claimable.jobSource'), value: publicKey },
+            { label: t('wallet:claimable.jobClaim'), value: `${current.amount} ${current.asset.code}` },
+            needsTrustline(current) ? { label: t('wallet:claimable.jobTrustline'), value: current.asset.code } : null,
+            { label: t('wallet:claimable.jobNetwork'), value: isTestnet ? 'Testnet' : 'Mainnet' },
+            { label: t('multisig:detail.idLabel', 'Job-ID'), value: job.id },
+            { label: t('wallet:claimable.jobNoteLabel'), value: t('wallet:claimable.jobHint') },
+          ].filter(Boolean),
+        },
+      });
+    } catch (e) {
+      console.error('[SKM] claimable balance job creation failed', e);
+      setClaimError(describeError(e));
+    } finally {
+      inFlightRef.current = false;
+      setClaiming(false);
+    }
   };
 
   const describeError = (e) => {
@@ -164,7 +229,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       );
       const { signers, weight } = collectEffectiveSigners(collected, fresh?.signers);
       if (!signers.length || weight < required) {
-        setClaimError(t('wallet:claimable.insufficientWeight', { required }));
+        setClaimError(t(multisig ? 'wallet:claimable.insufficientWeightJob' : 'wallet:claimable.insufficientWeight', { required }));
         return;
       }
       const fee = await resolveFeePerOp(server);
@@ -220,6 +285,16 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
           <button type="button" className={linkBtnCls} onClick={() => toggleHidden(item.id)}>
             {hidden ? t('wallet:claimable.unhide') : t('wallet:claimable.hide')}
           </button>
+          {multisig && (
+            <button
+              type="button"
+              onClick={() => { void prepareJob(item); }}
+              disabled={!item.claimableNow || claiming}
+              className="rounded-lg border border-blue-300 bg-white px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:border-blue-700 dark:bg-gray-900 dark:text-blue-200"
+            >
+              {t('wallet:claimable.prepareJob')}
+            </button>
+          )}
           <button
             type="button"
             onClick={() => startClaim(item)}
@@ -276,6 +351,16 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       <p className="mt-2 border-t border-gray-100 bg-gray-50 px-5 py-2.5 text-xs text-gray-500 dark:border-gray-700/70 dark:bg-gray-900/40 dark:text-gray-400">
         {t('wallet:home.tokenNote')}
       </p>
+
+      {preparedJob && (
+        <MultisigPrepareDialog
+          open={!!preparedJob}
+          onClose={() => setPreparedJob(null)}
+          hash={preparedJob.hash}
+          xdr={preparedJob.xdr}
+          summary={preparedJob.summary}
+        />
+      )}
 
       {claimItem && (
         <SecretKeyModal

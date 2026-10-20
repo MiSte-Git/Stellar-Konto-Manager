@@ -114,3 +114,22 @@ export async function mergeSignedXdr(payload) {
     throw new Error(msg);
   }
 }
+
+// Legt einen Multisig-Job aus einem unsignierten XDR an (gleicher Request wie in
+// ListTrustlines/SendPaymentPage). network: 'testnet' | 'public'.
+export async function createMultisigJobFromXdr({ network, accountId, txXdr }) {
+  const r = await fetch(apiUrl('multisig/jobs'), {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ network, accountId, txXdr, createdBy: 'local' }),
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data?.error || 'multisig.jobs.create_failed');
+  const id = data?.id || data?.jobId || '';
+  if (!id) throw new Error('multisig.jobs.create_failed');
+  return {
+    id,
+    hash: data?.txHash || data?.tx_hash || '',
+    xdr: data?.txXdrCurrent || data?.tx_xdr_current || txXdr,
+  };
+}

@@ -129,6 +129,15 @@
     "success": "{{amount}} {{code}} eingelöst. Transaktion {{hash}}.",
     "failed": "Einlösen fehlgeschlagen: {{reason}}",
     "ambiguous": "Das Ergebnis ist unklar (Netzwerkfehler). Bitte prüfe die Transaktion {{hash}} im Explorer, bevor du es erneut versuchst.",
-    "networkMismatch": "Der Horizon-Server gehört nicht zum gewählten Netzwerk. Es wurde nichts signiert oder gesendet."
+    "networkMismatch": "Der Horizon-Server gehört nicht zum gewählten Netzwerk. Es wurde nichts signiert oder gesendet.",
+    "prepareJob": "Als Multisig-Job vorbereiten",
+    "insufficientWeightJob": "Die eingegebenen Signer erreichen zusammen nicht das nötige Gewicht {{required}}. Bereite stattdessen einen Multisig-Job vor, dann können die anderen Signer auf der Webseite signieren.",
+    "tooLittleTime": "Die Claimable Balance läuft zu bald ab, um sie noch als Multisig-Job einzulösen.",
+    "jobSource": "Konto",
+    "jobClaim": "Einlösen",
+    "jobTrustline": "Trustline anlegen",
+    "jobNetwork": "Netzwerk",
+    "jobNoteLabel": "Hinweis",
+    "jobHint": "Die Claimable Balance kann ablaufen oder anderweitig eingelöst werden, bevor alle signiert haben. Der Job scheitert dann beim Einreichen, es geht nichts verloren. Die Gültigkeit des Jobs endet spätestens, wenn die Claimable Balance abläuft."
   }
 }

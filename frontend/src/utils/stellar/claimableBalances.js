@@ -99,13 +99,25 @@ export function classifyClaimableBalances(records, account, nowSec = Math.floor(
 }
 
 // Eine Transaktion: falls noetig zuerst die Trustline, dann das Einloesen.
-export function buildClaimTx({ account, item, fee, networkPassphrase }) {
+export function buildClaimTx({ account, item, fee, networkPassphrase, timeoutSeconds = CLAIM_TX_TIMEOUT_SECONDS }) {
   const builder = new TransactionBuilder(account, { fee: String(fee), networkPassphrase });
   if (!item.asset.isNative && !item.hasTrustline && !item.isIssuer) {
     builder.addOperation(Operation.changeTrust({ asset: new Asset(item.asset.code, item.asset.issuer) }));
   }
   builder.addOperation(Operation.claimClaimableBalance({ balanceId: item.id }));
-  return builder.setTimeout(CLAIM_TX_TIMEOUT_SECONDS).build();
+  return builder.setTimeout(timeoutSeconds).build();
+}
+
+// Gueltigkeit eines Multisig-Jobs zum Einloesen: Einstellung Multisig-Timeout, aber nicht
+// laenger als die Claimable Balance einloesbar ist. null = zu wenig Zeit fuer einen Job.
+export const MIN_JOB_WINDOW_SECONDS = 300;
+export function claimJobTimeoutSeconds(item, multisigTimeoutSeconds, nowSec = Math.floor(Date.now() / 1000)) {
+  const configured = Math.max(60, Number(multisigTimeoutSeconds || 0) || 86400);
+  const until = item?.window?.until;
+  if (until == null) return configured;
+  const remaining = Math.floor(until - nowSec) - 30;
+  if (remaining < MIN_JOB_WINDOW_SECONDS) return null;
+  return Math.min(configured, remaining);
 }
 
 // Ausgeblendete Eintraege pro Netzwerk und Konto (reine Ansichtsoption, kein Sicherheitsmerkmal).

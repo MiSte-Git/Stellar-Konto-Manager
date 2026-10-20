@@ -129,6 +129,15 @@
     "success": "{{amount}} {{code}} iskorišteno. Transakcija {{hash}}.",
     "failed": "Otkupljenje nije uspjelo: {{reason}}",
     "ambiguous": "Rezultat je nejasan (Netzwerkfehler). Molimo provjerite transakciju {{hash}} u istraživaču prije ponovnog pokušaja.",
-    "networkMismatch": "Poslužitelj Horizon nije dio odabrane mreže. Ništa nije potpisano niti poslano."
+    "networkMismatch": "Poslužitelj Horizon nije dio odabrane mreže. Ništa nije potpisano niti poslano.",
+    "prepareJob": "Pripremite se za posao Multisig",
+    "insufficientWeightJob": "Signers koje ste unijeli zajedno ne dosežu potrebnu težinu {{required}}. Umjesto toga pripremite Multisig posao, a zatim se drugi Signers mogu prijaviti na web stranici.",
+    "tooLittleTime": "Potraživani iznos isteći će prerano da bi se iskoristio kao Multisig posao.",
+    "jobSource": "Račun",
+    "jobClaim": "Iskoristiti",
+    "jobTrustline": "Stvorite Trustline",
+    "jobNetwork": "Mreža",
+    "jobNoteLabel": "Napomena",
+    "jobHint": "Potraživani iznos može isteći ili biti iskorišten na neki drugi način prije nego što svi potpišu. Tada će zadatak prilikom podnošenja propasti, ali ništa neće biti izgubljeno. Valjanost zadatka ne prestaje prije isteka potraživanog iznosa."
   }
 }
