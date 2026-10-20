@@ -425,6 +425,10 @@
         "noTrustline": "Der Empfänger hat noch keine Trustline für {{asset}} – die Zahlung würde fehlschlagen.",
         "notAuthorized": "Der Empfänger hat zwar eine Trustline für {{asset}}, diese ist aber vom Emittenten noch nicht autorisiert – die Zahlung würde fehlschlagen."
       },
+      "memoRequired": {
+        "hint": "Dieses Empfängerkonto verlangt ein Memo (SEP-29). Ohne Memo kann der Empfänger, z. B. eine Börse, die Zahlung nicht zuordnen.",
+        "error": "Das Empfängerkonto verlangt ein Memo (SEP-29). Bitte das Memo eintragen, das dir der Empfänger genannt hat, und erneut senden."
+      },
       "memoTypes": {
         "none": "Memo (kein Memo)",
         "text": "Memo Text",

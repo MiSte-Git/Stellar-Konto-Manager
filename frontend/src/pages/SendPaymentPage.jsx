@@ -28,6 +28,7 @@ import {
 } from '../utils/inputHistory.js';
 import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/stellar/submitTransactionSafely.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
+import { accountRequiresMemo, isAccountRequiresMemoError } from '../utils/stellar/memoRequired.js';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
 // submitted right away) expect a near-term Horizon confirmation, unlike a
@@ -366,6 +367,8 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   }, [memoType, memoVal, t]);
 
   const describeHorizonError = useCallback((err) => {
+    // Rueckfallnetz: stellar-sdk prueft SEP-29 beim Submit selbst noch einmal.
+    if (isAccountRequiresMemoError(err)) return t('common:payment.send.memoRequired.error');
     const extras = err?.response?.data?.extras;
     if (extras?.result_codes) {
       const tx = extras.result_codes.transaction;
@@ -891,22 +894,66 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     return { status: 'ok' };
   }, [assetKey, dest, server]);
 
-  // Runs both pre-submit guards - trustline (hard block, no override) then federation-memo
-  // (soft block via a confirmation dialog) - in the same order at every entry point that can
-  // actually move funds, so none of them can skip either check. `onTrustlineBlock(message)`
-  // is invoked (and this resolves to false without calling `proceed`) when the payment is
-  // protocol-guaranteed to fail. Otherwise `proceed` either runs immediately (both checks
+  // SEP-29: Das Ziel verlangt ein Memo (config.memo_required = 1, typisch Boersen). Ohne Memo
+  // kommt die Zahlung zwar an, kann beim Empfaenger aber keinem Kunden zugeordnet werden -
+  // daher harte Sperre wie bei der Trustline, ohne "trotzdem senden". Eine M-Adresse traegt
+  // die Zuordnung selbst und ist laut SEP-29 ausgenommen. Ein Horizon-Fehler blockiert nicht
+  // (gleiches Muster wie checkRecipientTrustlineStatus); beim Direktversand prueft stellar-sdk
+  // im submitTransaction() ohnehin noch einmal, siehe describeHorizonError.
+  const checkRecipientMemoRequired = useCallback(async () => {
+    const v = (dest || '').trim();
+    if (!v) return { status: 'ok' };
+
+    let resolved;
+    try {
+      resolved = await resolveOrValidateAccount(v);
+    } catch {
+      return { status: 'ok' }; // resolution failure is reported by buildPaymentTx's own error handling
+    }
+    if (resolved?.muxedAddress) return { status: 'ok' };
+
+    let hasMemo;
+    try {
+      hasMemo = !!buildMemoObject().memo;
+    } catch {
+      return { status: 'ok' }; // an invalid memo is already reported by buildMemoObject's own caller
+    }
+    if (hasMemo) return { status: 'ok' };
+
+    let account;
+    try {
+      account = await server.loadAccount(resolved.accountId);
+    } catch (e) {
+      if (e?.response?.status !== 404) {
+        console.warn('[SKM] memo_required preflight: could not load recipient account', e);
+      }
+      return { status: 'ok' }; // unfunded (activation path) or Horizon failure - never block
+    }
+    return accountRequiresMemo(account) ? { status: 'memo_required' } : { status: 'ok' };
+  }, [buildMemoObject, dest, server]);
+
+  // Runs all pre-submit guards - trustline and SEP-29 memo_required (hard blocks, no override),
+  // then federation-memo (soft block via a confirmation dialog) - in the same order at every
+  // entry point that can actually move funds, so none of them can skip a check.
+  // `onHardBlock(message)` is invoked (and this resolves to false without calling `proceed`)
+  // when the payment is protocol-guaranteed to fail or would not be attributable. Otherwise `proceed` either runs immediately (both checks
   // passed) or is captured in pendingMemoActionRef for the memo dialog's "send anyway" to
   // resume later - callers must give `proceed` its own try/catch/finally, since it may run
   // from that later, unguarded call instead of from here.
-  const runPreSubmitChecks = useCallback(async (proceed, onTrustlineBlock) => {
+  const runPreSubmitChecks = useCallback(async (proceed, onHardBlock) => {
     const trustlineStatus = await checkRecipientTrustlineStatus();
     if (trustlineStatus.status === 'no_trustline') {
-      onTrustlineBlock(t('common:payment.send.trustlineError.noTrustline', { asset: trustlineStatus.assetLabel }));
+      onHardBlock(t('common:payment.send.trustlineError.noTrustline', { asset: trustlineStatus.assetLabel }));
       return false;
     }
     if (trustlineStatus.status === 'not_authorized') {
-      onTrustlineBlock(t('common:payment.send.trustlineError.notAuthorized', { asset: trustlineStatus.assetLabel }));
+      onHardBlock(t('common:payment.send.trustlineError.notAuthorized', { asset: trustlineStatus.assetLabel }));
+      return false;
+    }
+
+    const memoRequiredStatus = await checkRecipientMemoRequired();
+    if (memoRequiredStatus.status === 'memo_required') {
+      onHardBlock(t('common:payment.send.memoRequired.error'));
       return false;
     }
 
@@ -918,7 +965,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
 
     await proceed();
     return true;
-  }, [checkRecipientTrustlineStatus, checkFederationMemoMismatch, t]);
+  }, [checkRecipientTrustlineStatus, checkRecipientMemoRequired, checkFederationMemoMismatch, t]);
 
   const submitPayment = useCallback(async (signerKeypairs) => {
     const signerList = Array.isArray(signerKeypairs) ? signerKeypairs : [signerKeypairs];
@@ -1263,6 +1310,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
   // Destination XLM balance state (resolved recipient account)
   const [destXlmBalance, setDestXlmBalance] = useState(undefined); // undefined = not resolved yet; null = unfunded/error; string = balance
   const [destXlmLoading, setDestXlmLoading] = useState(false);
+  const [destMemoRequired, setDestMemoRequired] = useState(false); // SEP-29, nur fuer den Hinweis am Formular
   useEffect(() => {
     let active = true;
     async function resolve() {
@@ -1333,6 +1381,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         if (!resolvedAccount) {
           setDestXlmLoading(false);
           setDestXlmBalance(undefined);
+          setDestMemoRequired(false);
           return;
         }
         setDestXlmLoading(true);
@@ -1341,8 +1390,12 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
           if (cancelled) return;
           const native = (acct?.balances || []).find(b => b.asset_type === 'native');
           setDestXlmBalance(native ? native.balance : null);
+          setDestMemoRequired(accountRequiresMemo(acct));
         } catch {
-          if (!cancelled) setDestXlmBalance(null);
+          if (!cancelled) {
+            setDestXlmBalance(null);
+            setDestMemoRequired(false);
+          }
         } finally {
           if (!cancelled) setDestXlmLoading(false);
         }
@@ -1983,6 +2036,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
               />
               {inputWasFederation && federationMemoApplied && (
                 <div className="text-xs text-amber-700 dark:text-amber-400 mt-1">{t('common:payment.send.memoFederationHint')}</div>
+              )}
+              {destMemoRequired && !StrKey.isValidMed25519PublicKey(trimmedRecipient) && (memoType === 'none' || !(memoVal || '').trim()) && (
+                <div role="alert" className="text-xs text-red-700 dark:text-red-400 mt-1">{t('common:payment.send.memoRequired.hint')}</div>
               )}
             </div>
           </div>

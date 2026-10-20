@@ -830,3 +830,112 @@ describe('muxedActivationCapture hint surfaces on every result path (G4)', () =>
     });
   });
 });
+
+describe('SEP-29 memo_required preflight before sending (P1.1)', () => {
+  const MEMO_REQUIRED_HINT = /Dieses Empfängerkonto verlangt ein Memo/;
+  const MEMO_REQUIRED_ERROR = /Bitte das Memo eintragen/;
+
+  function memoRequiredAccount(pk) {
+    const acct = makeFundedAccount(pk);
+    acct.data_attr = { 'config.memo_required': 'MQ==' };
+    return acct;
+  }
+
+  beforeEach(() => {
+    hoisted.resolveOrValidateAccountMock.mockImplementation(async (input) => {
+      if (input === MUXED_DEST) return { accountId: DEST_PK, muxedAddress: MUXED_DEST, address: input };
+      return { accountId: input, muxedAddress: null, address: input };
+    });
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      if (pk === DEST_PK) return memoRequiredAccount(pk);
+      return makeFundedAccount(pk);
+    });
+  });
+
+  async function fillAndConfirm({ dest = DEST_PK, memo = '' } = {}) {
+    renderPage();
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    fireEvent.change(destInput(), { target: { value: dest } });
+    if (memo) fireEvent.change(memoInput(), { target: { value: memo } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('Transaktion bestätigen');
+    fireEvent.click(screen.getByRole('button', { name: 'Bist du sicher?' }));
+  }
+
+  it('zeigt den Hinweis am Memo-Feld, solange kein Memo eingetragen ist', async () => {
+    renderPage();
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    await screen.findByText(MEMO_REQUIRED_HINT);
+    fireEvent.change(memoInput(), { target: { value: 'kunde-123' } });
+    await waitFor(() => expect(screen.queryByText(MEMO_REQUIRED_HINT)).not.toBeInTheDocument());
+  });
+
+  it('sperrt den Versand ohne Memo', async () => {
+    await fillAndConfirm();
+    await screen.findByText(MEMO_REQUIRED_ERROR);
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('laesst den Versand mit Memo durch', async () => {
+    await fillAndConfirm({ memo: 'kunde-123' });
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+    expect(screen.queryByText(MEMO_REQUIRED_ERROR)).not.toBeInTheDocument();
+  });
+
+  it('nimmt M-Adressen aus (SEP-29), kein Hinweis und keine Sperre', async () => {
+    await fillAndConfirm({ dest: MUXED_DEST });
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+    expect(screen.queryByText(MEMO_REQUIRED_HINT)).not.toBeInTheDocument();
+    expect(screen.queryByText(MEMO_REQUIRED_ERROR)).not.toBeInTheDocument();
+  });
+
+  it('blockiert nicht, wenn Horizon das Zielkonto beim Check nicht liefert', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) return makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+      const err = new Error('Service Unavailable');
+      err.response = { status: 503 };
+      throw err;
+    });
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    await fillAndConfirm();
+    await waitFor(() => expect(hoisted.submitTransactionSafelyMock).toHaveBeenCalledTimes(1));
+    expect(warn.mock.calls.some((c) => String(c[0]).includes('memo_required preflight'))).toBe(true);
+    warn.mockRestore();
+  });
+
+  it('zeigt den SEP-29-Text, wenn erst stellar-sdk beim Submit sperrt', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => (
+      pk === SENDER.publicKey ? makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] }) : makeFundedAccount(pk)
+    ));
+    const sdkErr = new Error('account requires memo');
+    sdkErr.name = 'AccountRequiresMemoError';
+    hoisted.submitTransactionSafelyMock.mockRejectedValueOnce(sdkErr);
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    await fillAndConfirm();
+    await waitFor(() => expect(screen.getAllByText(MEMO_REQUIRED_ERROR).length).toBeGreaterThan(0));
+    errSpy.mockRestore();
+  });
+
+  it('sperrt auch den XDR-Export ohne Memo', async () => {
+    hoisted.loadAccountMock.mockImplementation(async (pk) => {
+      if (pk === SENDER.publicKey) {
+        const acct = makeFundedAccount(pk, { extraBalances: [SENDER_FOO_BALANCE] });
+        acct.thresholds = { low_threshold: 0, med_threshold: 1, high_threshold: 2 };
+        return acct;
+      }
+      return memoRequiredAccount(pk);
+    });
+    renderPage();
+    await waitFor(() => expect(hoisted.loadAccountMock).toHaveBeenCalledWith(SENDER.publicKey));
+    fireEvent.change(amountInput(), { target: { value: '10' } });
+    fireEvent.change(destInput(), { target: { value: DEST_PK } });
+    fireEvent.click(screen.getByRole('button', { name: 'Senden' }));
+    await screen.findByText('XDR exportieren (nicht senden)');
+    fireEvent.click(screen.getByRole('radio', { name: /XDR exportieren/ }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Weiter' })).not.toBeDisabled());
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    await screen.findByText(MEMO_REQUIRED_ERROR);
+    expect(screen.queryByText('XDR vorbereitet (nicht gesendet)')).not.toBeInTheDocument();
+  });
+});
