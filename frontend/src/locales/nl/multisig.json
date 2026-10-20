@@ -225,6 +225,29 @@
       "label": "Status van de reeks",
       "valid": "momenteel geldig",
       "dead": "niet meer inwisselbaar"
+    },
+    "revoke": {
+      "title": "Taak annuleren",
+      "description": "Hiermee wordt deze opdracht definitief ongeldig gemaakt, zelfs als er al handtekeningen zijn verzameld. Hiervoor wordt een afzonderlijke transactie verzonden met behulp van `bumpSequence`.",
+      "button": "Taak annuleren",
+      "confirmTitle": "Heeft Job het echt teruggenomen?",
+      "confirmText": "Account {{account}} ({{network}}): De volgorde is ingesteld op {{sequence}}. Daarna kan deze taak niet meer worden ingediend. Deze handeling kan niet ongedaan worden gemaakt.",
+      "sideEffect": "Opmerking: Alle andere transacties en taken in de wachtrij voor deze rekening met een gelijke of lagere sequence numbers-waarde worden eveneens ongeldig verklaard.",
+      "thresholdInfo": "Vereist handtekeningen met een gewicht van {{required}} (Laag-Threshold).",
+      "continue": "Ga verder naar het ondertekenen",
+      "alreadyDead": "Deze opdracht is al ongeldig; de accountreeks is verder gegaan. Annulering is niet nodig.",
+      "success": "Taak ingetrokken. Transactie {{hash}}. De status verandert binnen ongeveer 30 seconden in ‘ongeldig’.",
+      "insufficientWeight": "De Signers die je hebt ingevoerd, komen samen niet uit op het vereiste gewicht {{required}}.",
+      "noTxData": "De transactie kon niet worden gelezen; deze kan niet worden ingetrokken.",
+      "failed": "Intrekking mislukt: {{reden}}",
+      "sequenceTooFar": "Het volgnummer van deze taak ligt ongewoon ver boven het huidige volgnummer van het account. Het intrekken ervan zou het account beschadigen en is daarom geblokkeerd. De taak is waarschijnlijk niet aangemaakt met behulp van SKM.",
+      "ambiguous": "Het resultaat is onduidelijk (netwerkfout). Controleer de transactie {{hash}} in de explorer voordat je het opnieuw probeert.",
+      "sequenceInvalid": "De opdracht- of rekeningreeks is onleesbaar; intrekking is niet mogelijk.",
+      "networkUnknown": "Het netwerk dat aan deze taak is gekoppeld, is onbekend; intrekking is om veiligheidsredenen uitgeschakeld.",
+      "hashMismatch": "De transactie komt niet overeen met de opgeslagen hash. Intrekking is om veiligheidsredenen uitgeschakeld.",
+      "accountMismatch": "De bronrekening voor de transactie verschilt van de rekening van de opdracht. Intrekking is om veiligheidsredenen uitgeschakeld.",
+      "networkMismatch": "De Horizon-server maakt geen deel uit van het netwerk van deze taak. Er is niets ondertekend of verzonden.",
+      "noThresholds": "De Thresholds van het account kon niet worden gelezen; intrekking is niet mogelijk."
     }
   },
   "secretModal": {

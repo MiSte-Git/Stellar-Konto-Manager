@@ -225,6 +225,29 @@
       "label": "Sequenz-Status",
       "valid": "aktuell gültig",
       "dead": "nicht mehr einlösbar"
+    },
+    "revoke": {
+      "title": "Job widerrufen",
+      "description": "Macht diesen Job dauerhaft ungültig, auch wenn schon Signaturen gesammelt wurden. Dafür wird eine eigene Transaktion mit bumpSequence gesendet.",
+      "button": "Job widerrufen",
+      "confirmTitle": "Job wirklich widerrufen?",
+      "confirmText": "Konto {{account}} ({{network}}): Die Sequenz wird auf {{sequence}} gesetzt. Danach kann dieser Job nicht mehr eingereicht werden. Das lässt sich nicht rückgängig machen.",
+      "sideEffect": "Achtung: Alle anderen vorbereiteten Transaktionen und Jobs dieses Kontos mit gleicher oder niedrigerer Sequenz werden ebenfalls ungültig.",
+      "thresholdInfo": "Benötigt Signaturen mit Gewicht {{required}} (Low-Threshold).",
+      "continue": "Weiter zum Signieren",
+      "alreadyDead": "Dieser Job ist bereits ungültig, die Sequenz des Kontos ist schon weiter. Ein Widerruf ist nicht nötig.",
+      "success": "Job widerrufen. Transaktion {{hash}}. Der Status wechselt innerhalb von etwa 30 Sekunden auf ungültig.",
+      "insufficientWeight": "Die eingegebenen Signer erreichen zusammen nicht das nötige Gewicht {{required}}.",
+      "noTxData": "Die Transaktion des Jobs konnte nicht gelesen werden, ein Widerruf ist nicht möglich.",
+      "failed": "Widerruf fehlgeschlagen: {{reason}}",
+      "sequenceTooFar": "Die Sequenz dieses Jobs liegt ungewöhnlich weit über der aktuellen Sequenz des Kontos. Ein Widerruf würde das Konto beschädigen und ist deshalb gesperrt. Der Job wurde vermutlich nicht mit SKM erstellt.",
+      "sequenceInvalid": "Die Sequenz des Jobs oder des Kontos ist nicht lesbar, ein Widerruf ist nicht möglich.",
+      "networkUnknown": "Das Netzwerk dieses Jobs ist unbekannt, ein Widerruf ist aus Sicherheitsgründen gesperrt.",
+      "hashMismatch": "Die Transaktion des Jobs passt nicht zum gespeicherten Hash. Ein Widerruf ist aus Sicherheitsgründen gesperrt.",
+      "accountMismatch": "Das Quellkonto der Transaktion weicht vom Konto des Jobs ab. Ein Widerruf ist aus Sicherheitsgründen gesperrt.",
+      "networkMismatch": "Der Horizon-Server gehört nicht zum Netzwerk dieses Jobs. Es wurde nichts signiert oder gesendet.",
+      "noThresholds": "Die Thresholds des Kontos konnten nicht gelesen werden, ein Widerruf ist nicht möglich.",
+      "ambiguous": "Das Ergebnis ist unklar (Netzwerkfehler). Bitte prüfe die Transaktion {{hash}} im Explorer, bevor du es erneut versuchst."
     }
   },
   "secretModal": {

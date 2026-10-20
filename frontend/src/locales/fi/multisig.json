@@ -225,6 +225,29 @@
       "label": "Järjestyksen tila",
       "valid": "tällä hetkellä voimassa oleva",
       "dead": "ei enää lunastettavissa"
+    },
+    "revoke": {
+      "title": "Peruuta työtehtävä",
+      "description": "Tämä mitätöi tämän tehtävän pysyvästi, vaikka allekirjoituksia olisi jo kerätty. Tätä varten lähetetään erillinen tapahtuma `bumpSequence`-komennolla.",
+      "button": "Peruuta työtehtävä",
+      "confirmTitle": "Oliko Job todella perunut sanansa?",
+      "confirmText": "Tili {{account}} ({{network}}): Järjestys on asetettu arvoon {{sequence}}. Tämän jälkeen tätä tehtävää ei voi enää lähettää. Tätä toimintoa ei voi peruuttaa.",
+      "sideEffect": "Huomautus: Myös kaikki muut tämän tilin jonossa olevat tapahtumat ja tehtävät, joiden sequence numbers-arvo on sama tai pienempi, mitätöidään.",
+      "thresholdInfo": "Vaatii painoltaan {{required}} olevia allekirjoituksia (Low-Threshold).",
+      "continue": "Jatka allekirjoittamiseen",
+      "alreadyDead": "Tämä työtehtävä on jo vanhentunut; tilisarja on edennyt eteenpäin. Peruuttamista ei tarvita.",
+      "success": "Tehtävä peruutettu. Tapahtuma {{hash}}. Tila muuttuu ”pätemättömäksi” noin 30 sekunnin kuluessa.",
+      "insufficientWeight": "Syöttämäsi Signers-arvot eivät yhteensä vastaa vaadittua painoarvoa {{required}}.",
+      "noTxData": "Työtehtävää koskevaa tapahtumaa ei voitu lukea; sitä ei voida peruuttaa.",
+      "failed": "Peruutus epäonnistui: {{reason}}",
+      "sequenceTooFar": "Tämän tehtävän järjestysnumero on poikkeuksellisen paljon suurempi kuin tilin nykyinen järjestysnumero. Sen peruuttaminen vahingoittaisi tiliä, minkä vuoksi se on estetty. Tehtävää ei todennäköisesti ole luotu SKM:n avulla.",
+      "ambiguous": "Tulos on epäselvä (verkkovirhe). Tarkista transaktio {{hash}} explorerissa ennen kuin yrität uudelleen.",
+      "sequenceInvalid": "Työ- tai tilitiedot ovat lukukelvottomia; peruuttaminen ei ole mahdollista.",
+      "networkUnknown": "Tähän tehtävään liittyvää verkkoa ei tunneta; peruuttaminen on poistettu käytöstä turvallisuussyistä.",
+      "hashMismatch": "Työskentelytapahtuma ei vastaa tallennettua hajautusarvoa. Peruuttaminen on poistettu käytöstä turvallisuussyistä.",
+      "accountMismatch": "Tapahtuman lähdetili eroaa työn tilistä. Peruuttaminen on poistettu käytöstä turvallisuussyistä.",
+      "networkMismatch": "Horizon-palvelin ei kuulu tämän työn verkkoon. Mitään ei allekirjoitettu eikä lähetetty.",
+      "noThresholds": "Tilin Thresholds -arvoa ei voitu lukea; peruuttaminen ei ole mahdollista."
     }
   },
   "secretModal": {

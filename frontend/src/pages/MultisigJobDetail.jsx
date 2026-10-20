@@ -7,6 +7,13 @@ import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { getMultisigJobToken } from '../utils/basePath.js';
 import { describeOperations } from '../utils/multisig/describeOperations.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
+import SecretKeyModal from '../components/SecretKeyModal.jsx';
+import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
+import { resolveFeePerOp } from '../utils/stellar/fees.js';
+import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/stellar/submitTransactionSafely.js';
+import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
+import { formatErrorForUi } from '../utils/formatErrorForUi.js';
+import { accountSequenceOf, assertHorizonNetwork, buildJobRevocationTx, checkRevocationSequence, collectEffectiveSigners, getJobSequenceInfo, parseJobNetwork } from '../utils/multisig/jobRevocation.js';
 
 function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const { t, i18n } = useTranslation(['multisig', 'common']);
@@ -18,6 +25,13 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
   const [importing, setImporting] = useState(false);
   const [showSecretPrompt, setShowSecretPrompt] = useState(false);
   const [secretInput, setSecretInput] = useState('');
+  // P2.3 Widerruf: revokePrep haelt die bestaetigten Eckdaten (Konto, Job-Sequence, Threshold)
+  const [revokePrep, setRevokePrep] = useState(null);
+  const [showRevokeSecretModal, setShowRevokeSecretModal] = useState(false);
+  const [revokeError, setRevokeError] = useState('');
+  const [revoking, setRevoking] = useState(false);
+  const [revokedHash, setRevokedHash] = useState('');
+  const revokeInFlightRef = useRef(false);
 
   // A job's access token may arrive as a prop (bookmarked/shared link handled
   // by App.jsx) or as a ?token= query parameter. The job list no longer hands
@@ -170,6 +184,138 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
     const s = String(job?.status || '').toLowerCase();
     return s !== 'expired' && s !== 'obsolete_seq';
   }, [job]);
+
+  const jobNetwork = parseJobNetwork(job?.network);
+  const jobIsTestnet = jobNetwork === 'testnet';
+
+  // Wechselt der Job (Neuladen, Signatur), gilt eine offene Bestaetigung nicht mehr.
+  useEffect(() => {
+    if (!revokePrep) return;
+    const sameJob = revokePrep.jobHash === (job?.txHash || null) && revokePrep.network === parseJobNetwork(job?.network);
+    if (sameJob) return;
+    setRevokePrep(null);
+    setShowRevokeSecretModal(false);
+  }, [job, revokePrep]);
+
+  const describeRevokeError = useCallback((e) => {
+    if (e instanceof AmbiguousSubmitResultError) {
+      return t('multisig:detail.revoke.ambiguous', { hash: e.hash });
+    }
+    const codes = e?.response?.data?.extras?.result_codes;
+    if (e?.code === 'network_mismatch') return t('multisig:detail.revoke.networkMismatch');
+    if (codes) return t('multisig:detail.revoke.failed', { reason: JSON.stringify(codes) });
+    return t('multisig:detail.revoke.failed', { reason: formatErrorForUi(t, e) });
+  }, [t]);
+
+  // Schritt 1: Konto laden, pruefen ob der Job noch lebt, Bestaetigung anzeigen.
+  const startRevoke = useCallback(async () => {
+    setRevokeError('');
+    setError('');
+    const seqInfo = getJobSequenceInfo(decodedTx);
+    if (!seqInfo) {
+      setRevokeError(t('multisig:detail.revoke.noTxData'));
+      return;
+    }
+    // Server-Daten nicht blind vertrauen: Netzwerk muss bekannt sein, das XDR muss zum
+    // gespeicherten Hash passen (der Hash haengt am Netzwerk) und zum Konto des Jobs.
+    if (!jobNetwork) {
+      setRevokeError(t('multisig:detail.revoke.networkUnknown'));
+      return;
+    }
+    if (job?.txHash && decodedTx.hash().toString('hex') !== String(job.txHash).toLowerCase()) {
+      setRevokeError(t('multisig:detail.revoke.hashMismatch'));
+      return;
+    }
+    if (job?.accountId && job.accountId !== seqInfo.sourceAccountId) {
+      setRevokeError(t('multisig:detail.revoke.accountMismatch'));
+      return;
+    }
+    const networkPassphrase = jobIsTestnet ? Networks.TESTNET : Networks.PUBLIC;
+    const horizonUrl = jobIsTestnet ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org';
+    try {
+      setRevoking(true);
+      const account = await getHorizonServer(horizonUrl).loadAccount(seqInfo.sourceAccountId);
+      const seqCheck = checkRevocationSequence(accountSequenceOf(account), seqInfo.sequence);
+      if (seqCheck === 'consumed') {
+        setInfo(t('multisig:detail.revoke.alreadyDead'));
+        return;
+      }
+      if (seqCheck !== 'ok') {
+        setRevokeError(t(seqCheck === 'too_far' ? 'multisig:detail.revoke.sequenceTooFar' : 'multisig:detail.revoke.sequenceInvalid'));
+        return;
+      }
+      const thresholds = account?.thresholds;
+      if (!thresholds || !Number.isFinite(Number(thresholds.low_threshold))) {
+        setRevokeError(t('multisig:detail.revoke.noThresholds'));
+        return;
+      }
+      // Alles, was signiert wird, ist ab hier eingefroren und genau so in der Bestaetigung sichtbar.
+      setRevokePrep({
+        ...seqInfo,
+        account,
+        network: jobNetwork,
+        networkPassphrase,
+        horizonUrl,
+        jobHash: job?.txHash || null,
+        requiredThreshold: getRequiredThreshold('bumpSequence', thresholds),
+      });
+    } catch (e) {
+      setRevokeError(describeRevokeError(e));
+    } finally {
+      setRevoking(false);
+    }
+  }, [decodedTx, describeRevokeError, job, jobIsTestnet, jobNetwork, t]);
+
+  // Schritt 2: mit den im SecretKeyModal gesammelten Signern signieren und senden.
+  // Die Secrets bleiben im Speicher dieses Aufrufs, sie werden weder gespeichert noch
+  // an das Backend geschickt - nur die signierte Transaktion geht an Horizon.
+  const executeRevoke = useCallback(async (collected) => {
+    if (!revokePrep || revokeInFlightRef.current) return;
+    revokeInFlightRef.current = true;
+    try {
+      setRevoking(true);
+      setRevokeError('');
+      const server = getHorizonServer(revokePrep.horizonUrl);
+      await assertHorizonNetwork(server, revokePrep.networkPassphrase);
+      // Frisch laden: Sequence und Signer koennen sich seit der Bestaetigung geaendert haben.
+      const account = await server.loadAccount(revokePrep.sourceAccountId);
+      const seqCheck = checkRevocationSequence(accountSequenceOf(account), revokePrep.sequence);
+      if (seqCheck !== 'ok') {
+        setShowRevokeSecretModal(false);
+        setRevokePrep(null);
+        if (seqCheck === 'consumed') setInfo(t('multisig:detail.revoke.alreadyDead'));
+        else setRevokeError(t(seqCheck === 'too_far' ? 'multisig:detail.revoke.sequenceTooFar' : 'multisig:detail.revoke.sequenceInvalid'));
+        return;
+      }
+      const required = getRequiredThreshold('bumpSequence', account?.thresholds);
+      const { signers, weight } = collectEffectiveSigners(collected, account?.signers);
+      if (!signers.length || weight < required) {
+        setRevokeError(t('multisig:detail.revoke.insufficientWeight', { required }));
+        return;
+      }
+      const fee = await resolveFeePerOp(server);
+      const tx = buildJobRevocationTx({
+        account,
+        jobSequence: revokePrep.sequence,
+        fee,
+        networkPassphrase: revokePrep.networkPassphrase,
+      });
+      signers.forEach((s) => tx.sign(s.keypair));
+      const res = await submitTransactionSafely(server, tx);
+      const hash = res?.hash || res?.id || tx.hash().toString('hex');
+      setRevokedHash(hash);
+      setShowRevokeSecretModal(false);
+      setRevokePrep(null);
+      await fetchJob();
+      setInfo(t('multisig:detail.revoke.success', { hash }));
+    } catch (e) {
+      console.error('[SKM] multisig job revocation failed', e);
+      setRevokeError(describeRevokeError(e));
+    } finally {
+      revokeInFlightRef.current = false;
+      setRevoking(false);
+    }
+  }, [describeRevokeError, fetchJob, revokePrep, t]);
 
   const signWithSecret = useCallback(async (secret) => {
     if (!job) return;
@@ -420,6 +566,72 @@ function MultisigJobDetail({ jobId, accessToken, onBack, currentPublicKey }) {
                 </button>
               </div>
             </div>
+          )}
+          {canCurrentSign && !isFinalState && sequenceLooksAlive && !revokedHash && decodedTx && (
+            <div className="border border-red-300 dark:border-red-700 rounded p-3 space-y-2">
+              <div className="text-sm font-semibold">{t('multisig:detail.revoke.title')}</div>
+              <p className="text-xs text-gray-700 dark:text-gray-300">{t('multisig:detail.revoke.description')}</p>
+              {!revokePrep ? (
+                <button
+                  type="button"
+                  className="text-xs px-3 py-1 rounded border border-red-300 text-red-700 dark:text-red-200 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900 disabled:opacity-50"
+                  onClick={startRevoke}
+                  disabled={revoking || loading}
+                >
+                  {revoking ? t('common:common.loading') : t('multisig:detail.revoke.button')}
+                </button>
+              ) : (
+                <div role="alertdialog" aria-label={t('multisig:detail.revoke.confirmTitle')} className="space-y-2 bg-red-50 dark:bg-red-900/30 rounded p-2">
+                  <div className="text-sm font-semibold text-red-900 dark:text-red-100">{t('multisig:detail.revoke.confirmTitle')}</div>
+                  <p className="text-xs text-gray-800 dark:text-gray-200 break-all">
+                    {t('multisig:detail.revoke.confirmText', {
+                      account: revokePrep.sourceAccountId,
+                      network: revokePrep.network === 'testnet' ? 'Testnet' : 'Mainnet',
+                      sequence: revokePrep.sequence,
+                    })}
+                  </p>
+                  <p className="text-xs font-medium text-red-800 dark:text-red-200">{t('multisig:detail.revoke.sideEffect')}</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-300">
+                    {t('multisig:detail.revoke.thresholdInfo', { required: revokePrep.requiredThreshold })}
+                  </p>
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      className="px-3 py-1 rounded border hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
+                      onClick={() => { setRevokePrep(null); setRevokeError(''); }}
+                      disabled={revoking}
+                    >
+                      {t('common:option.cancel', 'Abbrechen')}
+                    </button>
+                    <button
+                      type="button"
+                      className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 text-sm disabled:opacity-50"
+                      onClick={() => { setRevokeError(''); setShowRevokeSecretModal(true); }}
+                      disabled={revoking}
+                    >
+                      {t('multisig:detail.revoke.continue')}
+                    </button>
+                  </div>
+                </div>
+              )}
+              {revokeError && !showRevokeSecretModal && (
+                <p role="alert" className="text-xs text-red-700 dark:text-red-300">{revokeError}</p>
+              )}
+            </div>
+          )}
+          {showRevokeSecretModal && revokePrep && (
+            <SecretKeyModal
+              onConfirm={(collected) => { void executeRevoke(collected); }}
+              onCancel={() => { setShowRevokeSecretModal(false); setRevokeError(''); }}
+              errorMessage={revokeError}
+              thresholds={revokePrep.account?.thresholds}
+              signers={revokePrep.account?.signers || []}
+              operationType="bumpSequence"
+              requiredThreshold={revokePrep.requiredThreshold}
+              isProcessing={revoking}
+              account={revokePrep.account}
+              allowRememberSession={false}
+            />
           )}
           {submitError && (
             <div className="border border-red-400 bg-red-50 dark:bg-red-900/30 text-xs text-red-800 dark:text-red-200 rounded p-2 space-y-1">

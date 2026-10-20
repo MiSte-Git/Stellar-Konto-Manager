@@ -225,6 +225,29 @@
       "label": "Stato della sequenza",
       "valid": "attualmente in vigore",
       "dead": "non più riscattabile"
+    },
+    "revoke": {
+      "title": "Annulla lavoro",
+      "description": "Invalida definitivamente questo lavoro, anche se sono già state raccolte delle firme. A tal fine, viene inviata una transazione separata utilizzando `bumpSequence`.",
+      "button": "Annulla lavoro",
+      "confirmTitle": "Giobbe si è davvero rimesso in riga?",
+      "confirmText": "Account {{account}} ({{network}}): La sequenza è impostata su {{sequence}}. A questo punto, questo processo non potrà più essere inviato. Questa azione non può essere annullata.",
+      "sideEffect": "Nota: anche tutte le altre transazioni e attività in coda relative a questo account con un valore di sequence numbers uguale o inferiore verranno invalidate.",
+      "thresholdInfo": "Richiede firme con peso {{required}} (Basso-Threshold).",
+      "continue": "Vai alla pagina di registrazione",
+      "alreadyDead": "Questo incarico non è più valido; la sequenza contabile è proseguita. Non è necessaria alcuna cancellazione.",
+      "success": "Lavoro revocato. Transazione {{hash}}. Lo stato passerà a \"non valido\" entro circa 30 secondi.",
+      "insufficientWeight": "I valori Signers inseriti non raggiungono il peso richiesto {{required}}.",
+      "noTxData": "Non è stato possibile leggere la transazione di lavoro; non è possibile revocarla.",
+      "failed": "Revoca non riuscita: {{motivo}}",
+      "sequenceTooFar": "Il numero di sequenza di questo processo è insolitamente superiore a quello attuale dell'account. La sua revoca causerebbe un danneggiamento dell'account ed è pertanto bloccata. Probabilmente il processo non è stato creato utilizzando SKM.",
+      "ambiguous": "Il risultato non è chiaro (errore di rete). Si prega di controllare la transazione {{hash}} nell'explorer prima di riprovare.",
+      "sequenceInvalid": "La sequenza relativa all'incarico o al conto è illeggibile; non è possibile procedere alla revoca.",
+      "networkUnknown": "La rete associata a questo processo è sconosciuta; la revoca è disabilitata per motivi di sicurezza.",
+      "hashMismatch": "La transazione relativa al lavoro non corrisponde all'hash memorizzato. La revoca è disabilitata per motivi di sicurezza.",
+      "accountMismatch": "Il conto di origine della transazione è diverso dal conto del lavoro. La revoca è disabilitata per motivi di sicurezza.",
+      "networkMismatch": "Il server Horizon non fa parte della rete di questo processo. Non è stato firmato né inviato nulla.",
+      "noThresholds": "Impossibile leggere il valore Thresholds dell'account; la revoca non è possibile."
     }
   },
   "secretModal": {

@@ -27,6 +27,11 @@ describe('getRequiredThreshold', () => {
     expect(getRequiredThreshold('payment', { low_threshold: 1, med_threshold: 0, high_threshold: 0 })).toBe(1);
   });
 
+  it('bumpSequence requires exactly the low threshold, including 0', () => {
+    expect(getRequiredThreshold('bumpSequence', { low_threshold: 1, med_threshold: 2, high_threshold: 3 })).toBe(1);
+    expect(getRequiredThreshold('bumpSequence', { low_threshold: 0, med_threshold: 2, high_threshold: 3 })).toBe(0);
+  });
+
   it('falls back to the medium threshold for an unknown operation type', () => {
     expect(getRequiredThreshold('somethingElse', { low_threshold: 1, med_threshold: 2, high_threshold: 3 })).toBe(2);
   });

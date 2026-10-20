@@ -225,6 +225,29 @@
       "label": "Estado de la secuencia",
       "valid": "vigente actualmente",
       "dead": "ya no se puede canjear"
+    },
+    "revoke": {
+      "title": "Cancelar tarea",
+      "description": "Invalida de forma permanente esta tarea, incluso si ya se han recopilado firmas. Para ello, se envía una transacción independiente utilizando `bumpSequence`.",
+      "button": "Cancelar tarea",
+      "confirmTitle": "¿De verdad se lo quitó Job?",
+      "confirmText": "Cuenta {{account}} ({{network}}): La secuencia se ha establecido en {{sequence}}. A partir de ese momento, ya no se podrá enviar este trabajo. Esta acción no se puede deshacer.",
+      "sideEffect": "Nota: El resto de transacciones y tareas en cola de esta cuenta que tengan un valor de sequence numbers igual o inferior también quedarán invalidadas.",
+      "thresholdInfo": "Requiere firmas con un peso de {{required}} (Bajo-Threshold).",
+      "continue": "Continuar con la firma",
+      "alreadyDead": "Este encargo ya no es válido; la secuencia de cuentas ha avanzado. No es necesario cancelarlo.",
+      "success": "Tarea revocada. Transacción {{hash}}. El estado pasará a «no válido» en unos 30 segundos.",
+      "insufficientWeight": "Los valores de Signers que has introducido no suman el peso requerido {{required}}.",
+      "noTxData": "No se ha podido leer la transacción de trabajo; no se puede revocar.",
+      "failed": "Error en la revocación: {{motivo}}",
+      "sequenceTooFar": "El número de secuencia de esta tarea es inusualmente superior al número de secuencia actual de la cuenta. Revocarla dañaría la cuenta, por lo que está bloqueada. Es probable que la tarea no se haya creado mediante SKM.",
+      "ambiguous": "El resultado no es claro (error de red). Comprueba la transacción {{hash}} en el explorador antes de volver a intentarlo.",
+      "sequenceInvalid": "La secuencia de la operación o de la cuenta es ilegible; no es posible revocarla.",
+      "networkUnknown": "Se desconoce la red asociada a este trabajo; la revocación está desactivada por motivos de seguridad.",
+      "hashMismatch": "La transacción de trabajo no coincide con el hash almacenado. La revocación está desactivada por motivos de seguridad.",
+      "accountMismatch": "La cuenta de origen de la transacción es diferente de la cuenta del trabajo. La revocación está desactivada por motivos de seguridad.",
+      "networkMismatch": "El servidor Horizon no forma parte de la red de este trabajo. No se ha firmado ni enviado nada.",
+      "noThresholds": "No se ha podido leer el valor Thresholds de la cuenta; no es posible revocar la cuenta."
     }
   },
   "secretModal": {

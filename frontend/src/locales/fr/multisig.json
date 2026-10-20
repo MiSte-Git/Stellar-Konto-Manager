@@ -225,6 +225,29 @@
       "label": "État de la séquence",
       "valid": "actuellement en vigueur",
       "dead": "n'est plus valable"
+    },
+    "revoke": {
+      "title": "Annuler la tâche",
+      "description": "Annule définitivement cette tâche, même si des signatures ont déjà été recueillies. Pour ce faire, une transaction distincte est envoyée à l'aide de `bumpSequence`.",
+      "button": "Annuler la tâche",
+      "confirmTitle": "Job l'a-t-il vraiment repris ?",
+      "confirmText": "Compte {{account}} ({{network}}) : la séquence est définie sur {{sequence}}. À partir de ce moment, ce travail ne pourra plus être soumis. Cette action est irréversible.",
+      "sideEffect": "Remarque : toutes les autres transactions et tâches en attente pour ce compte dont la valeur sequence numbers est identique ou inférieure seront également invalidées.",
+      "thresholdInfo": "Nécessite des signatures d'un poids de {{required}} (faible - Threshold).",
+      "continue": "Passer à la signature",
+      "alreadyDead": "Cette commande n'est déjà plus valide ; la séquence comptable a évolué. Aucune annulation n'est nécessaire.",
+      "success": "Tâche annulée. Transaction {{hash}}. Le statut passera à « non valide » dans environ 30 secondes.",
+      "insufficientWeight": "Les valeurs Signers que vous avez saisies ne totalisent pas le poids requis {{required}}.",
+      "noTxData": "La transaction liée à la tâche n'a pas pu être lue ; elle ne peut pas être annulée.",
+      "failed": "Échec de la révocation : {{reason}}",
+      "sequenceTooFar": "Le numéro de séquence de cette tâche est nettement supérieur au numéro de séquence actuel du compte. Sa révocation endommagerait le compte et est donc bloquée. Cette tâche n'a probablement pas été créée à l'aide de SKM.",
+      "ambiguous": "Le résultat n'est pas clair (erreur de réseau). Veuillez vérifier la transaction {{hash}} dans l'explorateur avant de réessayer.",
+      "sequenceInvalid": "La séquence de l'opération ou du compte est illisible ; la révocation n'est pas possible.",
+      "networkUnknown": "Le réseau associé à cette tâche est inconnu ; la révocation est désactivée pour des raisons de sécurité.",
+      "hashMismatch": "La transaction de tâche ne correspond pas au hachage enregistré. La révocation est désactivée pour des raisons de sécurité.",
+      "accountMismatch": "Le compte d'origine de la transaction est différent du compte de la tâche. La révocation est désactivée pour des raisons de sécurité.",
+      "networkMismatch": "Le serveur Horizon ne fait pas partie du réseau de cette tâche. Rien n'a été signé ni envoyé.",
+      "noThresholds": "Impossible de lire le paramètre Thresholds du compte ; la révocation n'est pas possible."
     }
   },
   "secretModal": {

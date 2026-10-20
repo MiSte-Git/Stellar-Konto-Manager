@@ -20,6 +20,7 @@ function SecretKeyModal({
   onBackToSelection = null,
   secretContext = '',
   initialSecretValues = [],
+  allowRememberSession = true,
 }) {
   const { t } = useTranslation(['secretKey', 'trustline', 'common', 'publicKey']);
   const [secretInputs, setSecretInputs] = useState(
@@ -114,6 +115,7 @@ function SecretKeyModal({
     if (operationType === 'payment') return 'med';
     if (operationType === 'setOptions') return 'high';
     if (operationType === 'changeTrust') return 'med';
+    if (operationType === 'bumpSequence') return 'low';
     return 'med';
   }, [operationType]);
 
@@ -168,6 +170,8 @@ function SecretKeyModal({
           throw new Error('submitTransaction.failed:' + 'multisig.invalidSecret');
         }
         const pub = kp.publicKey();
+        // Derselbe Key in mehreren Feldern zaehlt nur einmal (sonst doppeltes Gewicht).
+        if (collected.some((c) => c.publicKey === pub)) continue;
         if (effectiveSigners.length > 0) {
           const signerMatch = effectiveSigners.find((s) => s.public_key === pub);
           if (!signerMatch) {
@@ -186,7 +190,7 @@ function SecretKeyModal({
         throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
       }
       setError('');
-      onConfirm(collected, rememberSession, { collectAllSignaturesLocally: initialCollectAllSignaturesLocally }); // Callback an Eltern-Komponente
+      onConfirm(collected, allowRememberSession && rememberSession, { collectAllSignaturesLocally: initialCollectAllSignaturesLocally }); // Callback an Eltern-Komponente
     } catch (err) {
       setError(formatErrorForUi(t, err));
     }
@@ -195,12 +199,15 @@ function SecretKeyModal({
   const currentWeight = useMemo(() => {
     if (!effectiveSigners.length) return 0;
     let sum = 0;
+    const counted = new Set();
     for (const raw of secretInputs) {
       const sec = (raw || '').trim();
       if (!sec) continue;
       try {
         const kp = Keypair.fromSecret(sec);
         const pub = kp.publicKey();
+        if (counted.has(pub)) continue;
+        counted.add(pub);
         const signerMatch = effectiveSigners.find((s) => s.public_key === pub);
         if (signerMatch) sum += Number(signerMatch.weight || 0);
       } catch { /* ignore invalid while typing */ }
@@ -335,6 +342,8 @@ function SecretKeyModal({
           />
           {t('trustline:showSecret', 'Show secret')}
         </label>
+        {allowRememberSession && (
+          <>
         <label className="flex items-center gap-2 mt-2 text-sm">
           <input
             type="checkbox"
@@ -354,6 +363,8 @@ function SecretKeyModal({
             ?
           </span>
         </p>
+          </>
+        )}
 
         <p className="text-xs text-gray-500 mt-2">{t('secretKey:info', 'Enter your secret key only if you want to sign transactions. Without it, you can only view data.')}</p>
 
@@ -374,7 +385,8 @@ function SecretKeyModal({
           </button>
           <button
             onClick={handleConfirm}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            disabled={isProcessing}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
           >
             {t('publicKey:submit.button', 'Submit')}
           </button>

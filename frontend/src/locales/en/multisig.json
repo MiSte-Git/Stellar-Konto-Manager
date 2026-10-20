@@ -225,6 +225,29 @@
       "label": "Sequence Status",
       "valid": "currently valid",
       "dead": "no longer redeemable"
+    },
+    "revoke": {
+      "title": "Cancel Job",
+      "description": "Permanently invalidates this job, even if signatures have already been collected. To do this, a separate transaction is sent using `bumpSequence`.",
+      "button": "Cancel Job",
+      "confirmTitle": "Did Job really take it back?",
+      "confirmText": "Account {{account}} ({{network}}): The sequence is set to {{sequence}}. After that, this job can no longer be submitted. This action cannot be undone.",
+      "sideEffect": "Note: All other queued transactions and jobs for this account with the same or lower sequence numbers will also be invalidated.",
+      "thresholdInfo": "Requires signatures with weight {{required}} (Low-Threshold).",
+      "continue": "Continue to Signing",
+      "alreadyDead": "This job is already invalid; the account sequence has moved on. No cancellation is necessary.",
+      "success": "Job revoked. Transaction {{hash}}. The status will change to invalid within about 30 seconds.",
+      "insufficientWeight": "The Signers you entered do not add up to the required weight {{required}}.",
+      "noTxData": "The job transaction could not be read; it cannot be revoked.",
+      "failed": "Revocation failed: {{reason}}",
+      "sequenceTooFar": "The sequence of this job is unusually far above the account's current sequence. Revoking it would corrupt the account and is therefore blocked. The job was likely not created using SKM.",
+      "ambiguous": "The result is unclear (Netzwerkfehler). Please check the transaction {{hash}} in the explorer before trying again.",
+      "sequenceInvalid": "The job or account sequence is illegible; revocation is not possible.",
+      "networkUnknown": "The network associated with this job is unknown; revocation is disabled for security reasons.",
+      "hashMismatch": "The job transaction does not match the stored hash. Revocation is disabled for security reasons.",
+      "accountMismatch": "The source account for the transaction is different from the job's account. Revocation is disabled for security reasons.",
+      "networkMismatch": "The Horizon server is not part of this job's network. Nothing was signed or sent.",
+      "noThresholds": "The account's Thresholds could not be read; revocation is not possible."
     }
   },
   "secretModal": {

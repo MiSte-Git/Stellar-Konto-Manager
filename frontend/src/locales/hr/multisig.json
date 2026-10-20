@@ -225,6 +225,29 @@
       "label": "Status sekvence",
       "valid": "trenutno važeći",
       "dead": "Više nije iskoristivo"
+    },
+    "revoke": {
+      "title": "Otkaži posao",
+      "description": "Trajno poništava ovaj posao, čak i ako su potpisi već prikupljeni. Da biste to učinili, šalje se zasebna transakcija koristeći `bumpSequence`.",
+      "button": "Otkaži posao",
+      "confirmTitle": "Je li Job doista vratio?",
+      "confirmText": "Račun {{account}} ({{network}}): Niz je postavljen na {{sequence}}. Nakon toga ovaj se posao više ne može predati. Ova se radnja ne može poništiti.",
+      "sideEffect": "Napomena: Sve ostale transakcije i zadaci za ovaj račun koji su na čekanju i imaju isti ili niži sequence numbers također će biti poništeni.",
+      "thresholdInfo": "Zahtijeva potpise s težinom {{required}} (Low-Threshold).",
+      "continue": "Nastavi s potpisivanjem",
+      "alreadyDead": "Ovaj je posao već nevažeći; slijed računa je prešao dalje. Nije potrebno otkazivanje.",
+      "success": "Poslovanje je opozvano. Transakcija {{hash}}. Status će se promijeniti na nevažeći za otprilike 30 sekundi.",
+      "insufficientWeight": "Signers koje ste unijeli ne dostižu potrebnu težinu {{required}}.",
+      "noTxData": "Transakcija posla nije mogla biti očitana; ne može se opozvati.",
+      "failed": "Opoziv nije uspio: {{reason}}",
+      "sequenceTooFar": "Redoslijed ovog zadatka je neuobičajeno visok u odnosu na trenutni redoslijed računa. Njegovo poništavanje bi oštetilo račun i stoga je blokirano. Zadatak vjerojatno nije stvoren pomoću SKM-a.",
+      "ambiguous": "Rezultat je nejasan (Netzwerkfehler). Molimo provjerite transakciju {{hash}} u istraživaču prije ponovnog pokušaja.",
+      "sequenceInvalid": "Redoslijed poslova ili računa je nečitljiv; opoziv nije moguć.",
+      "networkUnknown": "Mreža povezana s ovim zadatkom je nepoznata; opoziv je onemogućen iz sigurnosnih razloga.",
+      "hashMismatch": "Transakcija posla ne odgovara pohranjenom hash-u. Povlačenje je onemogućeno iz sigurnosnih razloga.",
+      "accountMismatch": "Izvorni račun za transakciju razlikuje se od računa posla. Povlačenje je onemogućeno iz sigurnosnih razloga.",
+      "networkMismatch": "Horizon poslužitelj nije dio mreže ovog posla. Ništa nije potpisano niti poslano.",
+      "noThresholds": "Thresholds računa nije moguće pročitati; opoziv nije moguć."
     }
   },
   "secretModal": {
