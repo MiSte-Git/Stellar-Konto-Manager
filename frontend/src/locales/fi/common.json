@@ -471,7 +471,11 @@
       "muxedActivationCaptureXdr": "Tämä tapahtuma koostuu kahdesta toiminnosta (tilin aktivointi + muxed-allokaatio), minkä vuoksi siitä peritään kaksi transaktiomaksua.",
       "muxedActivationCaptureJob": "Tähän tehtävään liittyy kaksi toimenpidettä (tilin aktivointi + muxed-määritys), minkä vuoksi siitä peritään kaksi käsittelymaksua.",
       "txTooLateHint": "Tämä voi johtua virheellisestä järjestelmäajasta. Tarkista, ovatko laitteesi päivämäärä ja kellonaika oikein – ota tarvittaessa käyttöön automaattinen ajan synkronointi.",
-      "reviewTitle": "Vahvista transaktio"
+      "reviewTitle": "Vahvista transaktio",
+      "memoRequired": {
+        "hint": "Tämä vastaanottajan tili edellyttää Memo:tä (29. syyskuuta). Ilman Memo:ta vastaanottaja – esimerkiksi pörssi – ei voi tunnistaa maksua.",
+        "error": "Vastaanottajan tilille tarvitaan Memo (29. syyskuuta). Syötä vastaanottajan antama Memo ja lähetä viesti uudelleen."
+      }
     }
   },
   "activation": {

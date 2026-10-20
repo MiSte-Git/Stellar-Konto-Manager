@@ -471,7 +471,11 @@
       "muxedActivationCaptureXdr": "Questa transazione prevede due operazioni (attivazione dell'account + allocazione muxed) e comporta quindi il pagamento di due commissioni di transazione.",
       "muxedActivationCaptureJob": "Questa operazione prevede due fasi (attivazione dell'account + assegnazione multiplex) e comporta quindi il pagamento di due commissioni operative.",
       "txTooLateHint": "Ciò potrebbe essere dovuto a un'ora di sistema errata. Verifica che la data e l'ora sul tuo dispositivo siano corrette; se necessario, attiva la sincronizzazione automatica dell'ora.",
-      "reviewTitle": "Conferma transazione"
+      "reviewTitle": "Conferma transazione",
+      "memoRequired": {
+        "hint": "Questo conto del destinatario richiede un Memo (29 settembre). In assenza di un Memo, il destinatario — ad esempio una piattaforma di scambio — non è in grado di abbinare il pagamento.",
+        "error": "L'account del destinatario richiede un Memo (29 settembre). Inserisci il Memo fornito dal destinatario e invia nuovamente."
+      }
     }
   },
   "activation": {

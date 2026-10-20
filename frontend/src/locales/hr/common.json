@@ -471,7 +471,11 @@
       "muxedActivationCaptureXdr": "Ova transakcija uključuje dvije operacije (aktivaciju računa + muxed alokaciju) i stoga podliježe dvjema naknadama za transakciju.",
       "muxedActivationCaptureJob": "Ovaj posao uključuje dvije operacije (aktivaciju računa + dodjelu multipleksa) i stoga podliježe dvjema naknadama za operacije.",
       "txTooLateHint": "Ovo može biti uzrokovano netočnim vremenom sustava. Molimo provjerite jesu li datum i vrijeme na vašem uređaju ispravni – po potrebi omogućite automatsku sinkronizaciju vremena.",
-      "reviewTitle": "Potvrdi transakciju"
+      "reviewTitle": "Potvrdi transakciju",
+      "memoRequired": {
+        "hint": "Ovaj račun primatelja zahtijeva Memo (SEP-29). Bez Memo primatelj — poput burze — ne može uskladiti uplatu.",
+        "error": "Račun primatelja zahtijeva Memo (SEP-29). Molimo unesite Memo koji je primatelj dostavio i ponovno pošaljite."
+      }
     }
   },
   "activation": {

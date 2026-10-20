@@ -471,7 +471,11 @@
       "muxedActivationCaptureXdr": "Cette transaction comporte deux opérations (activation du compte + allocation multiplexée) et entraîne donc deux frais de transaction.",
       "muxedActivationCaptureJob": "Cette opération comprend deux étapes (activation du compte + attribution multiplexée) et donne donc lieu à deux frais d'opération.",
       "txTooLateHint": "Cela peut être dû à une heure système incorrecte. Veuillez vérifier si la date et l'heure de votre appareil sont correctes ; activez la synchronisation automatique de l'heure si nécessaire.",
-      "reviewTitle": "Confirmer la transaction"
+      "reviewTitle": "Confirmer la transaction",
+      "memoRequired": {
+        "hint": "Ce compte destinataire nécessite un Memo (29 septembre). Sans Memo, le destinataire — par exemple une plateforme d'échange — ne peut pas associer le paiement.",
+        "error": "Le compte du destinataire nécessite un Memo (29 septembre). Veuillez saisir le Memo fourni par le destinataire, puis renvoyer le message."
+      }
     }
   },
   "activation": {

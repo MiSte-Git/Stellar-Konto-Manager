@@ -5199,5 +5199,7 @@
   "common.accountPicker.empty": "e18a705d2fb5200c6f736fd54b8a3f04f1db80eaf9d3a30b16ecfe102bd6d5eb",
   "common.accountPicker.noMatch": "494d4f8a2bec2a228b008910e25178e22c8a8143c8e9577b22f3bc0223366835",
   "common.accountPicker.compromised": "8fc2e5815dee411c247f037c27aadd81105d0b44ba77a39e6bfb90c9f4523681",
-  "common.accountPicker.deactivated": "10f33e562ffac7d76a6c0b41d5029092e851cc6217e8e24a8448c441b1cbb861"
+  "common.accountPicker.deactivated": "10f33e562ffac7d76a6c0b41d5029092e851cc6217e8e24a8448c441b1cbb861",
+  "common.payment.send.memoRequired.hint": "ff1b9e8bd5e423a21eeba201367384347487f8bc525e5da0abbd5cca521d1554",
+  "common.payment.send.memoRequired.error": "8a694e639676fda72902b630f81e53de9faf27def31d8249e47c9e0829388fa5"
 }

@@ -471,7 +471,11 @@
       "muxedActivationCaptureXdr": "Deze transactie omvat twee bewerkingen (rekeningactivering + muxed-toewijzing) en er worden daarom twee transactiekosten in rekening gebracht.",
       "muxedActivationCaptureJob": "Deze opdracht omvat twee handelingen (accountactivering + toewijzing via multiplex) en er worden daarom twee verwerkingskosten in rekening gebracht.",
       "txTooLateHint": "Dit kan te wijten zijn aan een onjuiste systeemtijd. Controleer of de datum en tijd op uw apparaat correct zijn; schakel indien nodig de automatische tijdsynchronisatie in.",
-      "reviewTitle": "Transactie bevestigen"
+      "reviewTitle": "Transactie bevestigen",
+      "memoRequired": {
+        "hint": "Voor deze ontvangersrekening is een Memo (SEP-29) vereist. Zonder een Memo kan de ontvanger – bijvoorbeeld een beurs – de betaling niet toewijzen.",
+        "error": "Voor de rekening van de ontvanger is een Memo (29 sep) vereist. Voer de door de ontvanger verstrekte Memo in en verstuur het bericht opnieuw."
+      }
     }
   },
   "activation": {

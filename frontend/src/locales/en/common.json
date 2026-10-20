@@ -471,7 +471,11 @@
       "muxedActivationCaptureXdr": "This transaction involves two operations (account activation + muxed allocation) and therefore incurs two transaction fees.",
       "muxedActivationCaptureJob": "This job involves two operations (account activation + muxed assignment) and therefore incurs two operation fees.",
       "txTooLateHint": "This may be due to an incorrect system time. Please check whether the date and time on your device are correct – enable automatic time synchronization if necessary.",
-      "reviewTitle": "Confirm transaction"
+      "reviewTitle": "Confirm transaction",
+      "memoRequired": {
+        "hint": "This recipient account requires a Memo (SEP-29). Without a Memo, the recipient—such as an exchange—cannot match the payment.",
+        "error": "The recipient's account requires a Memo (SEP-29). Please enter the Memo provided by the recipient and resend."
+      }
     }
   },
   "activation": {

@@ -471,7 +471,11 @@
       "muxedActivationCaptureXdr": "Esta transacción consta de dos operaciones (activación de la cuenta + asignación multiplexada) y, por lo tanto, conlleva dos comisiones de transacción.",
       "muxedActivationCaptureJob": "Esta operación conlleva dos pasos (activación de la cuenta + asignación multiplexada) y, por lo tanto, conlleva dos comisiones por operación.",
       "txTooLateHint": "Esto puede deberse a que la hora del sistema no es correcta. Comprueba si la fecha y la hora de tu dispositivo son correctas; activa la sincronización automática de la hora si es necesario.",
-      "reviewTitle": "Confirmar transacción"
+      "reviewTitle": "Confirmar transacción",
+      "memoRequired": {
+        "hint": "Esta cuenta del destinatario requiere un Memo (29 de septiembre). Sin un Memo, el destinatario —por ejemplo, una plataforma de intercambio— no puede asociar el pago.",
+        "error": "La cuenta del destinatario requiere un Memo (29 de septiembre). Introduce el Memo facilitado por el destinatario y vuelve a enviarlo."
+      }
     }
   },
   "activation": {
