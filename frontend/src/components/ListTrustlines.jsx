@@ -25,6 +25,7 @@ import { Networks, TransactionBuilder, Operation, Asset } from '@stellar/stellar
 import MultisigPrepareDialog from './MultisigPrepareDialog.jsx';
 import { apiUrl } from '../utils/apiBase.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
+import { getMultisigTxTimeout } from '../utils/getMultisigTxTimeout.js';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
@@ -53,7 +54,7 @@ function ListTrustlines({
   setInfoMessage,
 }) {
   const { t, i18n } = useTranslation(['common', 'trustline', 'errors', 'multisig']);
-  const { decimalsMode } = useSettings();
+  const { decimalsMode, multisigTimeoutSeconds } = useSettings();
   const [paginated, setPaginated] = useState([]);
   const [showOverviewModal, setShowOverviewModal] = useState(false);
   const [showSecretModal, setShowSecretModal] = useState(false);
@@ -246,7 +247,14 @@ function ListTrustlines({
           limit: '0',
         }));
       });
-      const tx = txb.setTimeout(60).build();
+      // Multisig-Job: muss so lange gueltig bleiben, bis die anderen Signer signiert haben
+      // (Einstellung Multisig-Timeout), nicht nur 60 Sekunden wie beim Direktversand.
+      const txTimeout = getMultisigTxTimeout({
+        immediateSubmit: false,
+        localSubmitTimeoutSeconds: 60,
+        multisigTimeoutSeconds,
+      });
+      const tx = txb.setTimeout(txTimeout).build();
       const hashHex = tx.hash().toString('hex');
       const xdr = tx.toXDR();
       let job = null;
