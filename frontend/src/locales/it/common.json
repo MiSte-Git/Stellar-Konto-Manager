@@ -475,7 +475,8 @@
       "memoRequired": {
         "hint": "Questo conto del destinatario richiede un Memo (29 settembre). In assenza di un Memo, il destinatario — ad esempio una piattaforma di scambio — non è in grado di abbinare il pagamento.",
         "error": "L'account del destinatario richiede un Memo (29 settembre). Inserisci il Memo fornito dal destinatario e invia nuovamente."
-      }
+      },
+      "insufficientFeeHint": "La rete è attualmente congestionata e la commissione era troppo bassa. Imposta la commissione su \"Veloce\" nelle impostazioni e prova a inviare nuovamente il pagamento."
     }
   },
   "activation": {

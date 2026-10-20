@@ -7,6 +7,7 @@ import { getHorizonServer } from '../utils/stellar/stellarUtils.js';
 import { getRequiredThreshold } from '../utils/getRequiredThreshold.js';
 import { getMultisigSafetyCheck } from '../utils/getMultisigSafetyCheck.js';
 import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
+import { resolveFeePerOp } from '../utils/stellar/fees.js';
 import {
   Keypair,
   Networks,
@@ -228,12 +229,7 @@ export default function MultisigCreatePage() {
   }
 
   async function getBaseFee(server) {
-    try {
-      const fs = await server.feeStats();
-      return Number(fs?.fee_charged?.mode || 100);
-    } catch {
-      return 100;
-    }
+    return Number(await resolveFeePerOp(server));
   }
 
   async function activateWithFunderSecret(funderSecret, destPub, startingBalanceXLM = '1') {

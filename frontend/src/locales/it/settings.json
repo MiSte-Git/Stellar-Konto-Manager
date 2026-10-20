@@ -165,5 +165,13 @@
     "clearAll": "Svuota la cache dei pagamenti",
     "confirm": "Svuotare davvero la cache locale dei pagamenti? I dati verranno risincronizzati quando necessario.",
     "done": "La cache dei pagamenti è stata svuotata."
+  },
+  "fees": {
+    "title": "Commissione di transazione",
+    "hint": "In caso di congestione della rete, tutte le transazioni sul registro pagano la stessa commissione. Il livello selezionato rappresenta un limite massimo; pagherai di più solo se la rete è effettivamente congestionata. In assenza di congestione della rete, ogni transazione costa 0,00001 XLM.",
+    "levelLabel": "Fascia tariffaria",
+    "normal": "Normale (come prima)",
+    "fast": "Veloce (offerta più alta quando la rete è sotto carico)",
+    "deferredNote": "Multisig Utilizzare sempre l'opzione \"Fast\" per i lavori e le esportazioni XDR, poiché vengono inviati in un secondo momento e la tariffa non può essere modificata dopo la firma."
   }
 }

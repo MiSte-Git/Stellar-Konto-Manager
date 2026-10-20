@@ -475,7 +475,8 @@
       "memoRequired": {
         "hint": "Ovaj račun primatelja zahtijeva Memo (SEP-29). Bez Memo primatelj — poput burze — ne može uskladiti uplatu.",
         "error": "Račun primatelja zahtijeva Memo (SEP-29). Molimo unesite Memo koji je primatelj dostavio i ponovno pošaljite."
-      }
+      },
+      "insufficientFeeHint": "Mreža je trenutno zauzeta, a naknada je bila preniska. Postavite naknadu na \"Brzo\" u postavkama i pokušajte ponovno poslati."
     }
   },
   "activation": {

@@ -7,6 +7,7 @@ import QuizSettings from '../components/quiz/QuizSettings.jsx';
 import QuizExportImport from '../components/settings/QuizExportImport.jsx';
 import GlossaryExportImport from '../components/settings/GlossaryExportImport.jsx';
 import { useSettings, MULTISIG_TIMEOUT_MAX_SECONDS } from '../utils/useSettings.js';
+import { FEE_LEVELS, getStoredFeeLevel, setStoredFeeLevel } from '../utils/stellar/fees.js';
 import { buildPath } from '../utils/basePath.js';
 import { clearAllTextInputHistories } from '../utils/inputHistory.js';
 import { clearAllCachedPayments } from '../utils/db/indexedDbClient.js';
@@ -26,6 +27,7 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
   } = useSettings();
   const [activeTab, setActiveTab] = useState('general');
   const [multisigTimeoutError, setMultisigTimeoutError] = useState('');
+  const [feeLevel, setFeeLevel] = useState(() => getStoredFeeLevel());
   const [typingSpeed, setTypingSpeed] = useState(() => {
     try { return localStorage.getItem('skm.scamSimulator.typingSpeed') || 'normal'; } catch { return 'normal'; }
   });
@@ -253,6 +255,22 @@ export default function SettingsPage({ publicKey, onBack: _onBack }) {
             {multisigTimeoutError && (
               <p className="text-sm text-red-600 dark:text-red-400">{multisigTimeoutError}</p>
             )}
+          </div>
+          <div className="border rounded p-3 space-y-2">
+            <h3 className="font-semibold">{t('settings:fees.title')}</h3>
+            <p className="text-sm text-gray-700 dark:text-gray-300">{t('settings:fees.hint')}</p>
+            <label className="block text-sm" htmlFor="settings-fee-level">{t('settings:fees.levelLabel')}</label>
+            <select
+              id="settings-fee-level"
+              value={feeLevel}
+              onChange={(e) => { setStoredFeeLevel(e.target.value); setFeeLevel(e.target.value); }}
+              className="border rounded px-2 py-1 text-sm"
+            >
+              {FEE_LEVELS.map((lvl) => (
+                <option key={lvl} value={lvl}>{t(`settings:fees.${lvl}`)}</option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{t('settings:fees.deferredNote')}</p>
           </div>
           <div className="border rounded p-3 space-y-2">
             <h3 className="font-semibold">{t('settings:inputHistory.title')}</h3>

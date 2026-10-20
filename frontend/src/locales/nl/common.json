@@ -475,7 +475,8 @@
       "memoRequired": {
         "hint": "Voor deze ontvangersrekening is een Memo (SEP-29) vereist. Zonder een Memo kan de ontvanger – bijvoorbeeld een beurs – de betaling niet toewijzen.",
         "error": "Voor de rekening van de ontvanger is een Memo (29 sep) vereist. Voer de door de ontvanger verstrekte Memo in en verstuur het bericht opnieuw."
-      }
+      },
+      "insufficientFeeHint": "Het netwerk is momenteel druk en de vergoeding was te laag. Stel de vergoeding in de instellingen in op „Snel“ en probeer het opnieuw te verzenden."
     }
   },
   "activation": {

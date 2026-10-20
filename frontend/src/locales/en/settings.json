@@ -165,5 +165,13 @@
     "clearAll": "Clear payment cache",
     "confirm": "Really clear the local payment cache? Data will be re-synced as needed.",
     "done": "Payment cache has been cleared."
+  },
+  "fees": {
+    "title": "Transaction Fee",
+    "hint": "When there is network congestion, all transactions on a ledger pay the same fee. The selected tier is a cap; you'll only pay more if the network is truly congested. Without network congestion, each transaction costs 0.00001 XLM.",
+    "levelLabel": "Fee Tier",
+    "normal": "Normal (as before)",
+    "fast": "Fast (higher bid when the grid is under load)",
+    "deferredNote": "Multisig Always use \"Fast\" for jobs and XDR exports, because they are submitted later, and the fee cannot be changed after signing."
   }
 }

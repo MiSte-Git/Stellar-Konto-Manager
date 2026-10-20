@@ -58,6 +58,7 @@ import useExchangeRate from './hooks/useExchangeRate.js';
 import useAssetSearch from './hooks/useAssetSearch.js';
 import useTradingAccount from './hooks/useTradingAccount.js';
 import useTradingSubmit from './hooks/useTradingSubmit.js';
+import { resolveFeePerOp } from '../../utils/stellar/fees.js';
 
 export default function AssetSearch() {
   const { t, i18n } = useTranslation(['trading', 'common']);
@@ -614,7 +615,7 @@ export default function AssetSearch() {
     if (!accountId) throw new Error('submitTransaction.failed:trustlines.invalidInput');
     const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
     const accountPromise = server.loadAccount(accountId);
-    const feeStatsPromise = server.feeStats();
+    const feePromise = resolveFeePerOp(server);
     const account = await accountPromise;
     const thresholds = account?.thresholds || {};
     const required = getRequiredThreshold('changeTrust', thresholds);
@@ -624,8 +625,7 @@ export default function AssetSearch() {
     if (current <= 0) throw new Error('submitTransaction.failed:multisig.noKeysProvided');
     if (current < required) throw new Error('submitTransaction.failed:multisig.insufficientWeight');
 
-    const feeStats = await feeStatsPromise;
-    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    const fee = await feePromise;
     const tx = buildChangeTrustTransaction({
       account,
       asset,
@@ -648,7 +648,7 @@ export default function AssetSearch() {
     if (pairError) throw new Error(pairError);
 
     const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
-    const feeStatsPromise = server.feeStats();
+    const feePromise = resolveFeePerOp(server);
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
     const required = getRequiredThreshold('payment', thresholds);
@@ -686,8 +686,7 @@ export default function AssetSearch() {
     setSwapPreview((current) => ({ ...current, loading: false, error: '', path: latestBest, loadedAt: Date.now(), refreshComparison }));
 
     const path = Array.isArray(latestBest.path) ? latestBest.path.map(assetFromPathRecord) : [];
-    const feeStats = await feeStatsPromise;
-    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    const fee = await feePromise;
     const tx = buildPathPaymentStrictSendTransaction({
       account,
       sendAsset: swapSourceAsset,
@@ -717,7 +716,7 @@ export default function AssetSearch() {
     }
 
     const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
-    const feeStatsPromise = server.feeStats();
+    const feePromise = resolveFeePerOp(server);
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
     const required = Math.max(
@@ -759,8 +758,7 @@ export default function AssetSearch() {
     setSwapPreview((current) => ({ ...current, loading: false, error: '', path: latestBest, loadedAt: Date.now(), refreshComparison }));
 
     const path = Array.isArray(latestBest.path) ? latestBest.path.map(assetFromPathRecord) : [];
-    const feeStats = await feeStatsPromise;
-    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    const fee = await feePromise;
     const tx = buildChangeTrustAndPathPaymentStrictSendTransaction({
       account,
       trustAsset: selectedStellarAsset,
@@ -780,7 +778,7 @@ export default function AssetSearch() {
   const submitManageSellOfferTx = async ({ selling, buying, amount, price, offerId = '0', collectedSigners }) => {
     if (!accountId || !selling || !buying) throw new Error('submitTransaction.failed:trustlines.invalidInput');
     const server = getHorizonServer(network === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
-    const feeStatsPromise = server.feeStats();
+    const feePromise = resolveFeePerOp(server);
     const account = await server.loadAccount(accountId);
     const thresholds = account?.thresholds || {};
     const required = getRequiredThreshold('manageOffer', thresholds);
@@ -790,8 +788,7 @@ export default function AssetSearch() {
     if (current <= 0) throw new Error('submitTransaction.failed:multisig.noKeysProvided');
     if (current < required) throw new Error('submitTransaction.failed:multisig.insufficientWeight');
 
-    const feeStats = await feeStatsPromise;
-    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    const fee = await feePromise;
     const tx = buildManageSellOfferTransaction({
       account,
       selling,

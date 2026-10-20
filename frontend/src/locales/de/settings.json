@@ -48,6 +48,14 @@
     "explorer": "Stellar Explorer",
     "glossary": "Glossar-Pflege"
   },
+  "fees": {
+    "title": "Transaktionsgebühr",
+    "hint": "Bei Netzlast zahlen alle Transaktionen eines Ledgers denselben Satz. Die gewählte Stufe ist eine Obergrenze, mehr zahlst du nur, wenn das Netz wirklich voll ist. Ohne Netzlast kostet jede Operation 0.00001 XLM.",
+    "levelLabel": "Gebührenstufe",
+    "normal": "Normal (wie bisher)",
+    "fast": "Schnell (höheres Gebot bei Netzlast)",
+    "deferredNote": "Multisig-Jobs und XDR-Exporte nutzen immer Schnell, weil sie erst später eingereicht werden und die Gebühr nach dem Signieren nicht mehr änderbar ist."
+  },
   "multisig": {
     "timeoutTitle": "Multisig-Timeout",
     "timeoutHint": "Gültigkeitsdauer für Multisig-Zahlungen in Sekunden (z. B. 86400 = 24 Stunden).",

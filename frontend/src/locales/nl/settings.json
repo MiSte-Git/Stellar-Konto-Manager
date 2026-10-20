@@ -165,5 +165,13 @@
     "clearAll": "Betalingscache wissen",
     "confirm": "Lokale betalingscache echt wissen? Gegevens worden indien nodig opnieuw gesynchroniseerd.",
     "done": "Betalingscache is gewist."
+  },
+  "fees": {
+    "title": "Transactiekosten",
+    "hint": "Bij netwerkcongestie betalen alle transacties in een grootboek dezelfde vergoeding. Het gekozen tariefniveau is een maximum; je betaalt alleen meer als het netwerk daadwerkelijk overbelast is. Zonder netwerkcongestie kost elke transactie 0,00001 XLM.",
+    "levelLabel": "Tariefcategorie",
+    "normal": "Normaal (zoals voorheen)",
+    "fast": "Snel (hoger bod wanneer het net onder belasting staat)",
+    "deferredNote": "Multisig Gebruik altijd „Fast” voor opdrachten en XDR-exporten, omdat deze pas later worden ingediend en de vergoeding na ondertekening niet meer kan worden gewijzigd."
   }
 }

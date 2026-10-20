@@ -29,6 +29,7 @@ import {
 import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/stellar/submitTransactionSafely.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import { accountRequiresMemo, isAccountRequiresMemoError } from '../utils/stellar/memoRequired.js';
+import { resolveFeePerOp } from '../utils/stellar/fees.js';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
 // submitted right away) expect a near-term Horizon confirmation, unlike a
@@ -379,7 +380,9 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         const opText = Array.isArray(ops) ? ops.join(', ') : ops;
         codes = codes ? `${codes} / ${opText}` : opText;
       }
-      const hint = tx === 'tx_too_late' ? ` ${t('common:payment.send.txTooLateHint')}` : '';
+      let hint = '';
+      if (tx === 'tx_too_late') hint = ` ${t('common:payment.send.txTooLateHint')}`;
+      else if (tx === 'tx_insufficient_fee') hint = ` ${t('common:payment.send.insufficientFeeHint')}`;
       return codes
         ? `${t('common:payment.send.horizonError')} (${codes})${hint}`
         : `${t('common:payment.send.horizonError')}${hint}`;
@@ -670,8 +673,7 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     const isTestnet = typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET';
     const net = isTestnet ? Networks.TESTNET : Networks.PUBLIC;
     const account = await server.loadAccount(publicKey);
-    const feeStats = await server.feeStats();
-    const fee = Number(feeStats?.fee_charged?.mode || 100);
+    const fee = await resolveFeePerOp(server, { deferred: !immediateSubmit });
     const { memo, display: memoDisplay } = buildMemoObject();
     let resolvedDest;
     let resolvedAccountId;

@@ -165,5 +165,13 @@
     "clearAll": "Vider le cache des paiements",
     "confirm": "Vraiment vider le cache local des paiements ? Les données seront resynchronisées si nécessaire.",
     "done": "Le cache des paiements a été vidé."
+  },
+  "fees": {
+    "title": "Frais de transaction",
+    "hint": "En cas d'encombrement du réseau, toutes les transactions enregistrées dans le registre sont soumises aux mêmes frais. Le niveau sélectionné correspond à un plafond ; vous ne paierez davantage que si le réseau est réellement encombré. En l'absence d'encombrement du réseau, chaque transaction coûte 0,00001 XLM.",
+    "levelLabel": "Tranche tarifaire",
+    "normal": "Normal (comme avant)",
+    "fast": "Rapide (offre plus élevée lorsque le réseau est en charge)",
+    "deferredNote": "Multisig Utilisez toujours l'option « Fast » pour les tâches et les exportations XDR, car celles-ci sont soumises ultérieurement et le montant des frais ne peut plus être modifié une fois la signature effectuée."
   }
 }

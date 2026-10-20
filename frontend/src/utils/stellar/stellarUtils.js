@@ -1,3 +1,4 @@
+import { resolveFeePerOp } from './fees.js';
 import {
   Horizon,
   StrKey,
@@ -536,8 +537,7 @@ export async function deleteTrustlinesInChunks({
 
     // Build and submit TX for this chunk using the loaded account as source
     const account = await server.loadAccount(targetAccount);
-    const feeStats = await server.feeStats();
-    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    const fee = await resolveFeePerOp(server);
     const txb = new TransactionBuilder(account, {
       fee,
       networkPassphrase: net === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,

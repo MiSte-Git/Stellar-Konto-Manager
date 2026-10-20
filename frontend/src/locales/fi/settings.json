@@ -165,5 +165,13 @@
     "clearAll": "Tyhjennä maksujen välimuisti",
     "confirm": "Tyhjennetäänkö paikallinen maksujen välimuisti? Tiedot synkronoidaan tarvittaessa uudelleen.",
     "done": "Maksujen välimuisti on tyhjennetty."
+  },
+  "fees": {
+    "title": "Transaktiomaksu",
+    "hint": "Kun verkossa on ruuhkaa, kaikista tilikirjaan kirjattavista tapahtumista peritään sama maksu. Valittu taso on yläraja; maksat enemmän vain, jos verkossa on todellista ruuhkaa. Ilman ruuhkaa jokainen tapahtuma maksaa 0,00001 XLM.",
+    "levelLabel": "Maksuluokka",
+    "normal": "Normaali (kuten aiemminkin)",
+    "fast": "Nopea (korkeampi tarjous, kun verkko on kuormitettuna)",
+    "deferredNote": "Multisig Käytä aina vaihtoehtoa ”Fast” töissä ja XDR-vienneissä, koska ne lähetetään myöhemmin, eikä maksua voi muuttaa allekirjoittamisen jälkeen."
   }
 }

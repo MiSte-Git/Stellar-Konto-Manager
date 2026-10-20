@@ -466,6 +466,7 @@
       "timeout": "Horizon-Timeout (504). Bitte versuche es gleich erneut.",
       "httpError": "Horizon-Fehler (Status {{status}}).",
       "horizonError": "Stellar hat die Transaktion abgelehnt",
+      "insufficientFeeHint": "Das Netzwerk ist gerade ausgelastet und die Gebühr war zu niedrig. Stelle in den Einstellungen die Gebühr auf Schnell und sende erneut.",
       "txTooLateHint": "Dies kann an einer falschen Systemzeit liegen. Bitte prüfe, ob Datum und Uhrzeit deines Geräts korrekt sind – aktiviere ggf. die automatische Zeitsynchronisation.",
       "destUnfundedNonNative": "Zielkonto ist nicht aktiv. Bitte zuerst XLM zur Aktivierung senden oder Asset auf XLM wechseln.",
       "activateConfirm": {

@@ -475,7 +475,8 @@
       "memoRequired": {
         "hint": "This recipient account requires a Memo (SEP-29). Without a Memo, the recipient—such as an exchange—cannot match the payment.",
         "error": "The recipient's account requires a Memo (SEP-29). Please enter the Memo provided by the recipient and resend."
-      }
+      },
+      "insufficientFeeHint": "The network is currently busy, and the fee was too low. Set the fee to \"Fast\" in the settings and try sending it again."
     }
   },
   "activation": {

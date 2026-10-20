@@ -475,7 +475,8 @@
       "memoRequired": {
         "hint": "Esta cuenta del destinatario requiere un Memo (29 de septiembre). Sin un Memo, el destinatario —por ejemplo, una plataforma de intercambio— no puede asociar el pago.",
         "error": "La cuenta del destinatario requiere un Memo (29 de septiembre). Introduce el Memo facilitado por el destinatario y vuelve a enviarlo."
-      }
+      },
+      "insufficientFeeHint": "La red está saturada en este momento y la comisión era demasiado baja. Configura la comisión en «Rápida» en los ajustes e intenta enviarlo de nuevo."
     }
   },
   "activation": {

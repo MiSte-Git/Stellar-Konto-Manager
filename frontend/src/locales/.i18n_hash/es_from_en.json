@@ -5201,5 +5201,12 @@
   "common.accountPicker.compromised": "28bd9de4d356be55efc3e39b4b27e7b7e5d4208492506d97072f7ebd2bbdf905",
   "common.accountPicker.deactivated": "17eb3c0168d0d7b21ede5481150f17233427d89833ec121b4dbc4fb96cfab71e",
   "common.payment.send.memoRequired.hint": "0305e830429db03c72780b3325ebff77499f2ed49adda3f6bae2bd2f42759fa5",
-  "common.payment.send.memoRequired.error": "fe28d8e38e1d92c2c1ed4d64fd34cd44f8f34586abe790b3a61ee9207df5f91a"
+  "common.payment.send.memoRequired.error": "fe28d8e38e1d92c2c1ed4d64fd34cd44f8f34586abe790b3a61ee9207df5f91a",
+  "common.payment.send.insufficientFeeHint": "9364287599296e622a7a275c0f8753d867c6dbf651bbbb6ba98c4b084f4a17b0",
+  "settings.fees.title": "2cab43d0dc4f5ec5bd42f9c068f9bb96686ebecc84c3b522b18d15b725976497",
+  "settings.fees.hint": "f342afcf356c33c460c2b86b954ad61f0b90acf9f6cff9a129c7b41d8d170ea5",
+  "settings.fees.levelLabel": "125de9a6815514c3d07162fd0206e153a1d55c41e6c0b4d7ae41a47bde51dc1a",
+  "settings.fees.normal": "f02efee3976fe88334856e9a660c1d29a7194e863c39e4073806a9d8737702c6",
+  "settings.fees.fast": "c140700fcc87cfb2a3fdb19869f86ef287d094d86e0a411e72354672ebeac087",
+  "settings.fees.deferredNote": "89776ebe54afe1ad87e158f8c3859911c3db8053bb662c90a1b59816b8a9f32a"
 }

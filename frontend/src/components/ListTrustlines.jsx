@@ -24,6 +24,7 @@ import AddTrustlineModal from './AddTrustlineModal.jsx';
 import { Networks, TransactionBuilder, Operation, Asset } from '@stellar/stellar-sdk';
 import MultisigPrepareDialog from './MultisigPrepareDialog.jsx';
 import { apiUrl } from '../utils/apiBase.js';
+import { resolveFeePerOp } from '../utils/stellar/fees.js';
 // import { refreshSinceCursor } from '../utils/stellar/syncUtils';
 
 function ListTrustlines({
@@ -134,8 +135,7 @@ function ListTrustlines({
     if (current <= 0) throw new Error('submitTransaction.failed:' + 'multisig.noKeysProvided');
     if (current < required) throw new Error('submitTransaction.failed:' + 'multisig.insufficientWeight');
 
-    const feeStats = await server.feeStats();
-    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    const fee = await resolveFeePerOp(server);
     const txb = new TransactionBuilder(account, {
       fee,
       networkPassphrase: net === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,
@@ -234,8 +234,8 @@ function ListTrustlines({
       const net = (typeof window !== 'undefined' && window.localStorage?.getItem('SKM_NETWORK') === 'TESTNET') ? 'TESTNET' : 'PUBLIC';
       const server = getHorizonServer(net === 'TESTNET' ? 'https://horizon-testnet.stellar.org' : 'https://horizon.stellar.org');
       const account = await server.loadAccount(publicKey);
-      const feeStats = await server.feeStats();
-      const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+      // Multisig-Job: wird erst spaeter eingereicht
+      const fee = await resolveFeePerOp(server, { deferred: true });
       const txb = new TransactionBuilder(account, {
         fee,
         networkPassphrase: net === 'TESTNET' ? Networks.TESTNET : Networks.PUBLIC,

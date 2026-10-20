@@ -15,6 +15,7 @@ import { useRecentWalletOptions } from '../utils/useRecentWalletOptions.js';
 import { getSessionSecret } from '../utils/sessionSecrets.js';
 import { useSettings } from '../utils/useSettings.js';
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
+import { resolveFeePerOp } from '../utils/stellar/fees.js';
 
 const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
@@ -228,8 +229,7 @@ export default function MultisigEditPage({ defaultPublicKey = '' }) {
     if (requireSigners && current < required) {
       throw new Error('submitTransaction.failed:' + 'multisig.insufficientWeight');
     }
-    const feeStats = await server.feeStats();
-    const fee = String(Number(feeStats?.fee_charged?.mode || 100));
+    const fee = await resolveFeePerOp(server, { deferred: !immediateSubmit });
 
     const currentMaster = (acct.signers || []).find(s => s.key === pk)?.weight ?? 1;
     const currentMap = new Map();

@@ -165,5 +165,13 @@
     "clearAll": "Borrar caché de pagos",
     "confirm": "¿Borrar realmente la caché local de pagos? Los datos se volverán a sincronizar cuando sea necesario.",
     "done": "La caché de pagos se ha borrado."
+  },
+  "fees": {
+    "title": "Comisión por transacción",
+    "hint": "Cuando hay congestión en la red, todas las transacciones del libro mayor pagan la misma comisión. El nivel seleccionado es un límite máximo; solo pagarás más si la red está realmente congestionada. Si no hay congestión en la red, cada transacción cuesta 0,00001 XLM.",
+    "levelLabel": "Nivel de tarifas",
+    "normal": "Normal (como antes)",
+    "fast": "Rápido (puja más alta cuando la red está sometida a carga)",
+    "deferredNote": "Multisig Utiliza siempre la opción «Rápido» para los trabajos y las exportaciones XDR, ya que se envían más tarde y la tarifa no se puede modificar una vez firmada."
   }
 }

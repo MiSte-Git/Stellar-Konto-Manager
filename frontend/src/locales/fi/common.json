@@ -475,7 +475,8 @@
       "memoRequired": {
         "hint": "Tämä vastaanottajan tili edellyttää Memo:tä (29. syyskuuta). Ilman Memo:ta vastaanottaja – esimerkiksi pörssi – ei voi tunnistaa maksua.",
         "error": "Vastaanottajan tilille tarvitaan Memo (29. syyskuuta). Syötä vastaanottajan antama Memo ja lähetä viesti uudelleen."
-      }
+      },
+      "insufficientFeeHint": "Verkko on tällä hetkellä ruuhkainen, ja maksu oli liian pieni. Aseta asetuksissa maksu tasolle ”Nopea” ja yritä lähettää viesti uudelleen."
     }
   },
   "activation": {

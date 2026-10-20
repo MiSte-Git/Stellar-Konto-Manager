@@ -165,5 +165,13 @@
     "clearAll": "Isprazni predmemoriju plaćanja",
     "confirm": "Stvarno isprazniti lokalnu predmemoriju plaćanja? Podaci će se prema potrebi ponovno sinkronizirati.",
     "done": "Predmemorija plaćanja je ispražnjena."
+  },
+  "fees": {
+    "title": "Naknada za transakciju",
+    "hint": "Kada je mreža zagušena, sve transakcije na ledžeru plaćaju istu naknadu. Odabrani razred je gornja granica; više ćete platiti samo ako je mreža zaista zagušena. Bez zagušenja mreže, svaka transakcija košta 0,00001 XLM.",
+    "levelLabel": "Razina naknade",
+    "normal": "Normalno (kao prije)",
+    "fast": "Brzo (viša ponuda kad je mreža opterećena)",
+    "deferredNote": "Multisig Uvijek koristite \"Fast\" za zadatke i XDR izvoze, jer se oni predaju kasnije, a naknada se ne može promijeniti nakon potpisivanja."
   }
 }
