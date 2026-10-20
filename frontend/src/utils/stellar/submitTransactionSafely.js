@@ -5,6 +5,8 @@
 // treat "we don't know if this went through" the same way instead of letting
 // the caller resubmit blindly and risk a duplicate operation.
 
+import { xdr } from '@stellar/stellar-sdk';
+
 export function isAmbiguousSubmitError(err) {
   const extras = err?.response?.data?.extras;
   if (extras?.result_codes) return false;
@@ -45,6 +47,34 @@ export class AmbiguousSubmitResultError extends Error {
   }
 }
 
+// Horizon fuehrt auch fehlgeschlagene Transaktionen im Ledger (Gebuehr bezahlt, Operationen
+// nicht ausgefuehrt, successful === false). Wird eine solche Transaktion nach einem
+// mehrdeutigen Submit-Fehler gefunden, ist das Ergebnis eindeutig: fehlgeschlagen.
+// Der Fehler bildet die Form einer normalen Horizon-Ablehnung nach (response.data.extras.
+// result_codes), damit die bestehenden Fehleranzeigen ihn ohne Sonderfall darstellen.
+export class SubmittedTransactionFailedError extends Error {
+  constructor(hash, record) {
+    super('submitTransaction.ledgerFailed');
+    this.name = 'SubmittedTransactionFailedError';
+    this.hash = hash;
+    this.record = record;
+    this.response = {
+      status: 400,
+      data: { extras: { result_codes: { transaction: txResultCodeFromXdr(record?.result_xdr) } } },
+    };
+  }
+}
+
+// result_xdr -> Horizon-Schreibweise, z. B. txFailed -> tx_failed
+export function txResultCodeFromXdr(resultXdr) {
+  try {
+    const name = xdr.TransactionResult.fromXDR(resultXdr, 'base64').result().switch().name;
+    return name.replace(/([A-Z])/g, '_$1').toLowerCase();
+  } catch {
+    return 'tx_failed';
+  }
+}
+
 export async function submitTransactionSafely(server, tx) {
   const hash = tx.hash().toString('hex');
   try {
@@ -52,7 +82,10 @@ export async function submitTransactionSafely(server, tx) {
   } catch (err) {
     if (!isAmbiguousSubmitError(err)) throw err;
     const confirmed = await findSubmittedTransaction(server, hash);
-    if (confirmed) return confirmed;
+    if (confirmed) {
+      if (confirmed.successful === false) throw new SubmittedTransactionFailedError(hash, confirmed);
+      return confirmed;
+    }
     throw new AmbiguousSubmitResultError(hash, err);
   }
 }

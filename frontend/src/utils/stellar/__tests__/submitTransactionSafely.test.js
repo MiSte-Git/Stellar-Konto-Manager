@@ -2,6 +2,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   AmbiguousSubmitResultError,
+  SubmittedTransactionFailedError,
+  txResultCodeFromXdr,
   findSubmittedTransaction,
   isAmbiguousSubmitError,
   submitTransactionSafely,
@@ -144,5 +146,46 @@ describe('submitTransactionSafely', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+// result_xdr-Werte aus echten xdr.TransactionResult-Objekten erzeugt (txFailed / txBadSeq).
+const RESULT_XDR_TX_FAILED = 'AAAAAAAAAGT/////AAAAAAAAAAA=';
+const RESULT_XDR_TX_BAD_SEQ = 'AAAAAAAAAGT////7AAAAAA==';
+
+describe('fehlgeschlagene Transaktion im Ledger nach mehrdeutigem Submit', () => {
+  it('wirft SubmittedTransactionFailedError statt Erfolg zu melden', async () => {
+    const record = { hash: 'abc123', successful: false, result_xdr: RESULT_XDR_TX_FAILED };
+    const server = fakeServer({
+      submitImpl: vi.fn().mockRejectedValue(httpError(504)),
+      transactionImpl: vi.fn().mockResolvedValue(record),
+    });
+    const err = await submitTransactionSafely(server, fakeTx('abc123')).catch((e) => e);
+    expect(err).toBeInstanceOf(SubmittedTransactionFailedError);
+    expect(err).not.toBeInstanceOf(AmbiguousSubmitResultError);
+    expect(err.hash).toBe('abc123');
+    expect(err.response.data.extras.result_codes.transaction).toBe('tx_failed');
+    expect(isAmbiguousSubmitError(err)).toBe(false);
+  });
+
+  it('meldet weiterhin Erfolg, wenn successful true ist', async () => {
+    const record = { hash: 'abc123', successful: true };
+    const server = fakeServer({
+      submitImpl: vi.fn().mockRejectedValue(httpError(504)),
+      transactionImpl: vi.fn().mockResolvedValue(record),
+    });
+    await expect(submitTransactionSafely(server, fakeTx('abc123'))).resolves.toBe(record);
+  });
+});
+
+describe('txResultCodeFromXdr', () => {
+  it('uebersetzt den Ergebniscode in die Horizon-Schreibweise', () => {
+    expect(txResultCodeFromXdr(RESULT_XDR_TX_FAILED)).toBe('tx_failed');
+    expect(txResultCodeFromXdr(RESULT_XDR_TX_BAD_SEQ)).toBe('tx_bad_seq');
+  });
+
+  it('faellt bei unlesbarem XDR auf tx_failed zurueck', () => {
+    expect(txResultCodeFromXdr('kaputt')).toBe('tx_failed');
+    expect(txResultCodeFromXdr(undefined)).toBe('tx_failed');
   });
 });
