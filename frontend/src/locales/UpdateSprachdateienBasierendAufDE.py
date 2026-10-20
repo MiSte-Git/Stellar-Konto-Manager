@@ -427,6 +427,8 @@ def protect_parenthesized_english_for_target(text: str, target_lang: str) -> tup
 # (Trustlines, Signern). Groß-/Kleinschreibung wird aus dem Quelltext übernommen.
 TECH_TERMS = [
     "Muxed Account",
+    "Claimable Balance",
+    "Batch-Convert",
     "Sequence Number",
     "Secret Key",
     "Public Key",

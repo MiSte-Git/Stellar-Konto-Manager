@@ -4,6 +4,7 @@ import { Networks } from '@stellar/stellar-sdk';
 
 import SecretKeyModal from '../SecretKeyModal.jsx';
 import MultisigPrepareDialog from '../MultisigPrepareDialog.jsx';
+import BatchConvertDialog from './BatchConvertDialog.jsx';
 import { createMultisigJobFromXdr } from '../../utils/multisigApi.js';
 import { isMultisigAccount } from '../../utils/stellar/isMultisigAccount.js';
 import { useSettings } from '../../utils/useSettings.js';
@@ -61,6 +62,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const [info, setInfo] = React.useState('');
   const inFlightRef = React.useRef(false);
   const [preparedJob, setPreparedJob] = React.useState(null);
+  const [showBatch, setShowBatch] = React.useState(false);
   const { multisigTimeoutSeconds } = useSettings();
   const multisig = isMultisigAccount(account);
 
@@ -103,6 +105,9 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
   const known = visible.filter((it) => !needsTrustline(it));
   const noTrust = visible.filter((it) => needsTrustline(it));
   const hiddenCount = items.filter((it) => hiddenIds.includes(it.id)).length;
+  // Batch-Convert lohnt sich erst ab mehreren Eintraegen; ausgeblendete zaehlen mit,
+  // gerade unerwuenschte Token sollen sich so in ein gewaehltes Asset umwandeln lassen.
+  const batchItems = items.filter((it) => it.claimableNow && !it.isIssuer);
 
   const toggleHidden = (id) => {
     const next = hiddenIds.includes(id) ? hiddenIds.filter((v) => v !== id) : [...hiddenIds, id];
@@ -317,11 +322,22 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
             {items.length}
           </span>
         </h2>
-        {hiddenCount > 0 && (
-          <button type="button" className={linkBtnCls} onClick={() => setShowHidden((v) => !v)}>
-            {showHidden ? t('wallet:claimable.hideHidden') : t('wallet:claimable.showHidden', { count: hiddenCount })}
-          </button>
-        )}
+        <div className="flex items-center gap-1">
+          {hiddenCount > 0 && (
+            <button type="button" className={linkBtnCls} onClick={() => setShowHidden((v) => !v)}>
+              {showHidden ? t('wallet:claimable.hideHidden') : t('wallet:claimable.showHidden', { count: hiddenCount })}
+            </button>
+          )}
+          {batchItems.length >= 2 && (
+            <button
+              type="button"
+              onClick={() => { setInfo(''); setClaimError(''); setShowBatch(true); }}
+              className="rounded-lg border-0 bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700"
+            >
+              {t('wallet:batchConvert.button', { count: batchItems.length })}
+            </button>
+          )}
+        </div>
       </div>
       <p className="px-5 pt-3 text-xs text-gray-600 dark:text-gray-300">{t('wallet:claimable.intro')}</p>
       {info && <p role="status" className="px-5 pt-2 text-xs text-green-700 dark:text-green-400 break-all">{info}</p>}
@@ -351,6 +367,21 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       <p className="mt-2 border-t border-gray-100 bg-gray-50 px-5 py-2.5 text-xs text-gray-500 dark:border-gray-700/70 dark:bg-gray-900/40 dark:text-gray-400">
         {t('wallet:home.tokenNote')}
       </p>
+
+      {showBatch && (
+        <BatchConvertDialog
+          publicKey={publicKey}
+          account={account}
+          network={network}
+          available={available}
+          items={batchItems}
+          multisig={multisig}
+          multisigTimeoutSeconds={multisigTimeoutSeconds}
+          fmt={fmt}
+          onClose={() => setShowBatch(false)}
+          onDone={() => onClaimed?.()}
+        />
+      )}
 
       {preparedJob && (
         <MultisigPrepareDialog
