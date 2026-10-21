@@ -690,7 +690,7 @@
     "trustline": {
       "submitFailed": "Virhe poistettaessa trustline.",
       "unknown": "Tuntematon virhe poistettaessa trustline-muuttujaa.",
-      "notFound": "Poistettavia Trustlines-merkintöjä ei löytynyt."
+      "notFound": "Poistettavaa vastaavaa Trustlines-merkintää ei löytynyt."
     },
     "xlmByMemo": {
       "aborted": "Toiminto peruutettu käyttäjän toimesta.",

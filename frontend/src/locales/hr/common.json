@@ -690,7 +690,7 @@
     "trustline": {
       "submitFailed": "Greška pri brisanju trustline.",
       "unknown": "Nepoznata pogreška tijekom brisanja trustline.",
-      "notFound": "Nije pronađen nijedan odgovarajući Trustlines unos za brisanje."
+      "notFound": "Nije pronađen nijedan odgovarajući Trustlines za brisanje."
     },
     "xlmByMemo": {
       "aborted": "Operacija otkazana od strane korisnika.",

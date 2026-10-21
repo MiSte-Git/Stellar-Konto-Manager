@@ -690,7 +690,7 @@
     "trustline": {
       "submitFailed": "Error al eliminar el archivo trustline.",
       "unknown": "Se ha producido un error desconocido al eliminar el archivo trustline.",
-      "notFound": "No se han encontrado entradas coincidentes con Trustlines que se puedan eliminar."
+      "notFound": "No se ha encontrado ningún elemento que coincida con Trustlines para eliminar."
     },
     "xlmByMemo": {
       "aborted": "Operación cancelada por el usuario",

@@ -690,7 +690,7 @@
     "trustline": {
       "submitFailed": "Error deleting the trustline.",
       "unknown": "Unknown error while deleting the trustline.",
-      "notFound": "No matching Trustlines entries were found to delete."
+      "notFound": "No matching Trustlines found to delete."
     },
     "xlmByMemo": {
       "aborted": "Operation canceled by the user",

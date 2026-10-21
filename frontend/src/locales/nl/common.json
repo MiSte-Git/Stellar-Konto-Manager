@@ -690,7 +690,7 @@
     "trustline": {
       "submitFailed": "Fout bij het verwijderen van de trustline.",
       "unknown": "Onbekende fout bij het verwijderen van de trustline.",
-      "notFound": "Er zijn geen overeenkomende Trustlines-vermeldingen gevonden om te verwijderen."
+      "notFound": "Er is geen overeenkomende Trustlines gevonden om te verwijderen."
     },
     "xlmByMemo": {
       "aborted": "Operatie geannuleerd door de gebruiker.",

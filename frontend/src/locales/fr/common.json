@@ -690,7 +690,7 @@
     "trustline": {
       "submitFailed": "Erreur lors de la suppression de trustline.",
       "unknown": "Erreur inconnue lors de la suppression de trustline.",
-      "notFound": "Aucune entrée correspondant à Trustlines n'a été trouvée pour être supprimée."
+      "notFound": "Aucun élément correspondant à Trustlines n'a été trouvé pour être supprimé."
     },
     "xlmByMemo": {
       "aborted": "Opération annulée par l'utilisateur.",

@@ -690,7 +690,7 @@
     "trustline": {
       "submitFailed": "Ошибка при удалении trustline.",
       "unknown": "Произошла неизвестная ошибка при удалении trustline.",
-      "notFound": "Не найдено подходящих записей Trustlines для удаления."
+      "notFound": "Не найдено ни одного совпадения с Trustlines для удаления."
     },
     "xlmByMemo": {
       "aborted": "Операция отменена пользователем",
