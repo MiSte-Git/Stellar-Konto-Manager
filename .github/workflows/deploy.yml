@@ -1,10 +1,9 @@
 name: CI • Pages Preview/Staging • cyon Deploy
 
+# Nur manueller Start (Actions > Run workflow). Ein Push auf main laedt
+# nichts mehr hoch; Produktion wird manuell per FileZilla deployt.
 on:
-  pull_request:
-    branches: [ main ]
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -42,6 +41,10 @@ jobs:
         run: |
           cd frontend
           npm run build
+          # dist/.htaccess muss vom Build kommen (SPA-Rewrite und Security-Header).
+          # Fehlt sie, bricht der Job ab statt ohne Header zu deployen.
+          test -f dist/.htaccess || (echo ".htaccess fehlt im Build" && exit 1)
+          if grep -q '__[A-Z_]*__' dist/.htaccess; then echo "Platzhalter in .htaccess nicht ersetzt" && exit 1; fi
           cd ..
           node scripts/gen-build-info.mjs
           node scripts/hash-dist.mjs
@@ -52,7 +55,7 @@ jobs:
           path: frontend/dist
 
   deploy_pages:
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -62,10 +65,10 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v4
         with:
-          preview: ${{ github.event_name == 'pull_request' }}
+          preview: false
 
   deploy_cyon:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -87,3 +90,15 @@ jobs:
           sftp_only: true
           exclude: ".git*,**/.DS_Store"
           args: "-r"
+
+      # dist/* erfasst keine Dotfiles - .htaccess deshalb separat hochladen
+      - name: Deploy .htaccess to cyon via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.CYON_HOST }}
+          username: ${{ secrets.CYON_USER }}
+          password: ${{ secrets.CYON_PASSWORD }}
+          ssh_private_key: ${{ secrets.CYON_SSH_KEY }}
+          local_path: "dist/.htaccess"
+          remote_path: ${{ secrets.CYON_REMOTE_PATH }}
+          sftp_only: true
