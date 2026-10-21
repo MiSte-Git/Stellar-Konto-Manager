@@ -66,7 +66,27 @@
     "hintCompare": "Chiedi al mittente di controllare i primi e gli ultimi 8 caratteri dell'indirizzo, evidenziati in grassetto. I truffatori utilizzano deliberatamente indirizzi che sembrano simili all'inizio e alla fine.",
     "hintTrustline": "Puoi ricevere Token diversi da XLM solo se hai un'autorizzazione Token (Trustline) per essi.",
     "hintActivate": "Un nuovo account viene attivato solo dopo un deposito iniziale di almeno 1 XLM.",
-    "hintMuxed": "I pagamenti inviati a un indirizzo M vengono accreditati sul tuo conto principale e contrassegnati con l'ID Muxed. Non tutti i Wallet o le piattaforme di scambio supportano gli indirizzi M."
+    "hintMuxed": "I pagamenti inviati a un indirizzo M vengono accreditati sul tuo conto principale e contrassegnati con l'ID Muxed. Non tutti i Wallet o le piattaforme di scambio supportano gli indirizzi M.",
+    "request": {
+      "toggle": "Crea una richiesta di pagamento indicando l'importo e Memo",
+      "intro": "Opzionale: l'importo, Asset e Memo sono incorporati nel codice QR (standard SEP-7). I sistemi che supportano lo standard SEP-7 inseriscono Wallets nel pagamento. Il mittente verifica e conferma personalmente tutti i dati.",
+      "amount": "Importo (facoltativo)",
+      "asset": "Asset",
+      "customAsset": "Altro Asset (CODE:Editore)",
+      "memoType": "tipo Memo",
+      "memoText": "Testo",
+      "memoId": "ID",
+      "memo": "Memo (facoltativo)",
+      "active": "Il codice QR qui sopra ora contiene questa richiesta di pagamento:",
+      "copyLink": "Copia il link",
+      "qrLabel": "Codice QR per la richiesta di pagamento a {{address}}",
+      "errors": {
+        "invalidAmount": "L'importo non è valido. Sono ammessi solo numeri positivi con un massimo di 7 cifre decimali.",
+        "invalidMemoId": "Un ID-Memo è composto esclusivamente da cifre (fino a 20).",
+        "memoTooLong": "Un testo Memo non può superare i 28 byte.",
+        "invalidAsset": "Asset non valido. Ci si aspettava: CODE:Publisher (G…)."
+      }
+    }
   },
   "activity": {
     "title": "Ultima attività",
@@ -207,5 +227,32 @@
     "slippageHigh": "Con uno slippage del {{value}}%, l'importo che riceverai potrebbe essere notevolmente inferiore a quello indicato nell'anteprima.",
     "targetOwnAsset": "L'ordine Asset è stato emesso dal tuo conto. Non è possibile effettuare alcuna conversione per questo ordine.",
     "targetLimit": "Il fatturato previsto supera il limite di Trustline per {{code}}. Aumenta il limite oppure seleziona un numero inferiore di voci."
+  },
+  "qrScan": {
+    "button": "Scansiona il codice QR",
+    "title": "Scansiona il codice QR",
+    "intro": "Avvicina alla fotocamera il codice QR relativo a un indirizzo o a una richiesta di pagamento. In alternativa, puoi incollare il link qui sotto.",
+    "videoLabel": "Immagine della fotocamera per la scansione del codice QR",
+    "starting": "La fotocamera si sta avviando…",
+    "denied": "L'accesso alla fotocamera è stato negato. Puoi modificare le autorizzazioni nelle impostazioni del browser oppure incollare il link qui sotto.",
+    "unavailable": "Su questo dispositivo non è disponibile alcuna fotocamera. Incolla il link o l'indirizzo qui sotto.",
+    "pasteLabel": "Oppure inserisci un link o un indirizzo",
+    "apply": "Candidati",
+    "applied": "Dati ricavati dal codice QR. Si prega di verificare il destinatario, l'importo, Asset e Memo prima dell'invio.",
+    "message": "Messaggio contenuto nella richiesta: {{msg}}",
+    "originDomain": "La richiesta indica {{domain}} come fonte. SKM non ha verificato tale informazione.",
+    "callbackIgnored": "La richiesta include un indirizzo di ricontatto. SKM non lo utilizza.",
+    "assetMissing": "La richiesta richiede {{code}}, ma non disponi di Trustline per farlo. Il Asset non è stato applicato.",
+    "errors": {
+      "empty": "Nessun contenuto rilevato.",
+      "unrecognized": "Questo non è né un indirizzo Stellar né una richiesta di pagamento (web+stellar:pay).",
+      "txUnsupported": "Questa richiesta tenta di firmare una transazione già completata (web+stellar:tx). SKM non supporta questa operazione per motivi di sicurezza.",
+      "invalid": "La richiesta di pagamento contiene un errore.",
+      "invalidDestination": "La richiesta di pagamento non contiene un indirizzo del destinatario valido.",
+      "invalidAmount": "La richiesta di pagamento contiene un importo non valido.",
+      "invalidAsset": "La richiesta di pagamento contiene un valore non valido per Asset.",
+      "invalidMemo": "La richiesta di pagamento contiene un valore non valido per Memo.",
+      "networkMismatch": "La richiesta di pagamento riguarda una rete diversa da quella selezionata. Si prega di cambiare prima la rete."
+    }
   }
 }

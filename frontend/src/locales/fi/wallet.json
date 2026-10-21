@@ -66,7 +66,27 @@
     "hintCompare": "Pyydä lähettäjää tarkistamaan osoitteen 8 ensimmäistä ja 8 viimeistä merkkiä, jotka on lihavoitu. Huijarit käyttävät tarkoituksella osoitteita, jotka näyttävät alusta ja lopusta samankaltaisilta.",
     "hintTrustline": "Voit vastaanottaa muita Tokeneita kuin XLM:ää vasta, kun sinulla on niille Token-valtuutus (Trustline).",
     "hintActivate": "Uusi tili aktivoidaan vasta, kun tilille on tehty vähintään 1 XLM:n suuruinen ensitalletus.",
-    "hintMuxed": "M-osoitteeseen lähetetyt maksut talletetaan perustilillesi, ja ne merkitään Muxed-tunnuksella. Kaikki Wallet-palvelut tai pörssit eivät tue M-osoitteita."
+    "hintMuxed": "M-osoitteeseen lähetetyt maksut talletetaan perustilillesi, ja ne merkitään Muxed-tunnuksella. Kaikki Wallet-palvelut tai pörssit eivät tue M-osoitteita.",
+    "request": {
+      "toggle": "Luo maksupyyntö, jossa on summa ja Memo",
+      "intro": "Valinnainen: Summa, Asset ja Memo on upotettu QR-koodiin (SEP-7-standardi). SEP-7-standardia tukevat järjestelmät täyttävät maksutiedot kentällä Wallets. Lähettäjä tarkistaa ja vahvistaa kaikki tiedot itse.",
+      "amount": "Määrä (valinnainen)",
+      "asset": "Asset",
+      "customAsset": "Muu Asset (CODE:Julkaisija)",
+      "memoType": "Memo-tyyppi",
+      "memoText": "Teksti",
+      "memoId": "ID",
+      "memo": "Memo (valinnainen)",
+      "active": "Yllä oleva QR-koodi sisältää nyt tämän maksupyynnön:",
+      "copyLink": "Kopioi linkki",
+      "qrLabel": "QR-koodi maksupyynnölle osoitteeseen {{address}}",
+      "errors": {
+        "invalidAmount": "Summa on virheellinen. Ainoastaan positiiviset luvut, joissa on enintään 7 desimaalia, ovat sallittuja.",
+        "invalidMemoId": "ID-Memo koostuu pelkästään numeroista (enintään 20).",
+        "memoTooLong": "Tekstin Memo pituus saa olla enintään 28 tavua.",
+        "invalidAsset": "Virheellinen Asset. Odotettu: CODE:Publisher (G…)."
+      }
+    }
   },
   "activity": {
     "title": "Viimeisin toiminta",
@@ -207,5 +227,32 @@
     "slippageHigh": "Kun hinnanvaihtelu on {{value}} %, saatat saada huomattavasti vähemmän kuin esikatselussa näkyy.",
     "targetOwnAsset": "Kohde Asset on annettu omalta tililtäsi. Tätä ei voi muuntaa.",
     "targetLimit": "Odotetut tulot ylittävät {{code}}:n Trustline-rajan. Korota rajaa tai valitse vähemmän merkintöjä."
+  },
+  "qrScan": {
+    "button": "Skannaa QR-koodi",
+    "title": "Skannaa QR-koodi",
+    "intro": "Pidä osoitteen tai maksupyynnön QR-koodia kameran edessä. Vaihtoehtoisesti voit liittää alla olevan linkin.",
+    "videoLabel": "Kuva QR-koodin skannausta varten",
+    "starting": "Kamera käynnistyy …",
+    "denied": "Kameran käyttöoikeutta ei myönnetty. Voit muuttaa käyttöoikeuksia selaimesi asetuksissa tai liittää alla olevan linkin.",
+    "unavailable": "Tässä laitteessa ei ole kameraa. Liitä linkki tai osoite alla olevaan kenttään.",
+    "pasteLabel": "Tai kirjoita linkki tai osoite",
+    "apply": "Hae",
+    "applied": "Tiedot on haettu QR-koodista. Tarkista vastaanottaja, summa, Asset ja Memo ennen lähettämistä.",
+    "message": "Pyynnön viesti: {{msg}}",
+    "originDomain": "Pyynnössä lähteeksi on ilmoitettu {{domain}}. SKM ei ole tarkistanut tätä tietoa.",
+    "callbackIgnored": "Pyynnössä on mukana takaisinsoitto-osoite. SKM ei käytä sitä.",
+    "assetMissing": "Pyyntö vaatii {{code}}:n, mutta sinulla ei ole siihen tarvittavaa Trustline:tä. Asset:ta ei sovellettu.",
+    "errors": {
+      "empty": "Sisältöä ei löytynyt.",
+      "unrecognized": "Tämä ei ole Stellar-osoite eikä maksupyyntö (web+stellar:pay).",
+      "txUnsupported": "Tässä pyynnössä yritetään allekirjoittaa jo suoritettu tapahtuma (web+stellar:tx). SKM ei tue tätä turvallisuussyistä.",
+      "invalid": "Maksupyynnössä on virhe.",
+      "invalidDestination": "Maksupyynnössä ei ole kelvollista vastaanottajan osoitetta.",
+      "invalidAmount": "Maksupyynnössä on virheellinen summa.",
+      "invalidAsset": "Maksupyynnössä on virheellinen Asset.",
+      "invalidMemo": "Maksupyynnössä on virheellinen Memo.",
+      "networkMismatch": "Maksupyyntö koskee muuta verkkoa kuin valittua. Vaihda ensin verkkoa."
+    }
   }
 }

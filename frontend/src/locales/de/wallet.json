@@ -66,7 +66,27 @@
     "hintCompare": "Lass den Absender die ersten und letzten 8 Zeichen der Adresse prüfen, sie sind fett markiert. Betrüger nutzen gezielt Adressen, die am Anfang und Ende ähnlich aussehen.",
     "hintTrustline": "Andere Token als XLM kannst du erst empfangen, wenn du eine Token-Freigabe (Trustline) dafür hast.",
     "hintActivate": "Ein neues Konto wird erst mit einer ersten Einzahlung von mindestens 1 XLM aktiviert.",
-    "hintMuxed": "Zahlungen an die M-Adresse landen auf deinem Basiskonto und sind mit der Muxed-ID gekennzeichnet. Nicht jede Wallet oder Börse unterstützt M-Adressen."
+    "hintMuxed": "Zahlungen an die M-Adresse landen auf deinem Basiskonto und sind mit der Muxed-ID gekennzeichnet. Nicht jede Wallet oder Börse unterstützt M-Adressen.",
+    "request": {
+      "toggle": "Zahlungsanfrage mit Betrag und Memo erstellen",
+      "intro": "Optional: Betrag, Asset und Memo werden in den QR-Code eingebettet (Standard SEP-7). Wallets, die SEP-7 unterstützen, füllen die Zahlung damit vor. Der Absender sieht und bestätigt alles selbst.",
+      "amount": "Betrag (optional)",
+      "asset": "Asset",
+      "customAsset": "Anderes Asset (CODE:Herausgeber)",
+      "memoType": "Memo-Typ",
+      "memoText": "Text",
+      "memoId": "ID",
+      "memo": "Memo (optional)",
+      "active": "Der QR-Code oben enthält jetzt diese Zahlungsanfrage:",
+      "copyLink": "Link kopieren",
+      "qrLabel": "QR-Code der Zahlungsanfrage an {{address}}",
+      "errors": {
+        "invalidAmount": "Der Betrag ist ungültig. Erlaubt sind positive Zahlen mit höchstens 7 Nachkommastellen.",
+        "invalidMemoId": "Ein ID-Memo besteht nur aus Ziffern (höchstens 20).",
+        "memoTooLong": "Ein Text-Memo darf höchstens 28 Bytes lang sein.",
+        "invalidAsset": "Ungültiges Asset. Erwartet wird CODE:Herausgeber (G…)."
+      }
+    }
   },
   "activity": {
     "title": "Letzte Aktivität",
@@ -206,6 +226,33 @@
       "quoteFailed": "Abfrage fehlgeschlagen",
       "trustlineNotAuthorized": "Trustline nicht freigegeben",
       "trustlineLimit": "Trustline-Limit reicht nicht"
+    }
+  },
+  "qrScan": {
+    "button": "QR-Code scannen",
+    "title": "QR-Code scannen",
+    "intro": "Halte den QR-Code einer Adresse oder Zahlungsanfrage vor die Kamera. Alternativ kannst du den Link unten einfügen.",
+    "videoLabel": "Kamerabild für den QR-Scan",
+    "starting": "Kamera wird gestartet …",
+    "denied": "Der Zugriff auf die Kamera wurde nicht erlaubt. Du kannst die Freigabe in den Browser-Einstellungen ändern oder den Link unten einfügen.",
+    "unavailable": "Auf diesem Gerät ist keine Kamera verfügbar. Füge den Link oder die Adresse unten ein.",
+    "pasteLabel": "Oder Link bzw. Adresse einfügen",
+    "apply": "Übernehmen",
+    "applied": "Aus dem QR-Code übernommen. Bitte prüfe Empfänger, Betrag, Asset und Memo, bevor du sendest.",
+    "message": "Nachricht der Anfrage: {{msg}}",
+    "originDomain": "Die Anfrage gibt als Herkunft {{domain}} an. Das hat SKM nicht geprüft.",
+    "callbackIgnored": "Die Anfrage enthält eine Rückruf-Adresse. SKM nutzt sie nicht.",
+    "assetMissing": "Die Anfrage verlangt {{code}}, dafür hast du keine Trustline. Das Asset wurde nicht übernommen.",
+    "errors": {
+      "empty": "Kein Inhalt erkannt.",
+      "unrecognized": "Das ist weder eine Stellar-Adresse noch eine Zahlungsanfrage (web+stellar:pay).",
+      "txUnsupported": "Diese Anfrage möchte eine fertige Transaktion signieren lassen (web+stellar:tx). Das unterstützt SKM aus Sicherheitsgründen nicht.",
+      "invalid": "Die Zahlungsanfrage ist fehlerhaft.",
+      "invalidDestination": "Die Zahlungsanfrage enthält keine gültige Empfängeradresse.",
+      "invalidAmount": "Die Zahlungsanfrage enthält einen ungültigen Betrag.",
+      "invalidAsset": "Die Zahlungsanfrage enthält ein ungültiges Asset.",
+      "invalidMemo": "Die Zahlungsanfrage enthält ein ungültiges Memo.",
+      "networkMismatch": "Die Zahlungsanfrage ist für ein anderes Netzwerk als das gewählte. Wechsle zuerst das Netzwerk."
     }
   }
 }

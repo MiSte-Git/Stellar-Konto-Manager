@@ -44,7 +44,7 @@ RewriteRule ^ __BASE__/index.html [L]
 # Nicht fuer api/ unterhalb des Document Root: die API setzt ihre eigenen
 # Header (api/securityHeaders.php). Ein unset in api/.htaccess ginge nicht,
 # da bei PHP-FPM auch die PHP-Header in der always-Tabelle liegen.
-# Permissions-Policy: camera=() bis Backlog P2.1 (QR-Scan), dann camera=(self).
+# Permissions-Policy: seit Backlog P2.1 (QR-Scan) camera=(self), nur fuer SKM selbst.
 # Bewusst ohne IfModule: fehlt mod_headers, soll Apache einen Fehler melden
 # statt die Seite still ohne CSP auszuliefern.
 <If "%{REQUEST_URI} !~ m#^__BASE_REGEX__/api(/|$)#">

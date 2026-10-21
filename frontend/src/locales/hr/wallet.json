@@ -66,7 +66,27 @@
     "hintCompare": "Neka pošiljatelj provjeri prvih i zadnjih 8 znakova adrese, istaknutih podebljano. Prevaranti namjerno koriste adrese koje na početku i na kraju izgledaju slično.",
     "hintTrustline": "Tokene osim XLM-a možeš primati tek kada za njih imaš Token-odobrenje (Trustline).",
     "hintActivate": "Novi račun se aktivira tek nakon početnog depozita od najmanje 1 XLM.",
-    "hintMuxed": "Uplate poslane na M-adresu uplaćuju se na vaš osnovni račun i označene su Muxed ID-om. Ne podržava svaki Wallet ili mjenjačnica M-adrese."
+    "hintMuxed": "Uplate poslane na M-adresu uplaćuju se na vaš osnovni račun i označene su Muxed ID-om. Ne podržava svaki Wallet ili mjenjačnica M-adrese.",
+    "request": {
+      "toggle": "Stvorite zahtjev za plaćanje s iznosom i Memo",
+      "intro": "Opcionalno: Iznos, Asset i Memo ugrađeni su u QR kod (SEP-7 standard). Sustavi koji podržavaju SEP-7 popunjavaju uplatu s Wallets. Pošiljatelj samostalno pregleda i potvrđuje sve.",
+      "amount": "Iznos (neobavezno)",
+      "asset": "Asset",
+      "customAsset": "Ostali Asset (CODE:Herausgeber)",
+      "memoType": "Memo tip",
+      "memoText": "Tekst",
+      "memoId": "ID",
+      "memo": "Memo (neobavezno)",
+      "active": "QR kod iznad sada sadrži ovaj zahtjev za plaćanje:",
+      "copyLink": "Kopiraj poveznicu",
+      "qrLabel": "QR kod za zahtjev za plaćanje {{address}}",
+      "errors": {
+        "invalidAmount": "Iznos je neispravan. Dozvoljeni su samo pozitivni brojevi s najviše 7 decimalnih mjesta.",
+        "invalidMemoId": "ID-Memo se sastoji samo od znamenki (do 20).",
+        "memoTooLong": "Tekst Memo ne smije biti duži od 28 bajtova.",
+        "invalidAsset": "Neispravno Asset. Očekivano: CODE:Publisher (G…)."
+      }
+    }
   },
   "activity": {
     "title": "Zadnja aktivnost",
@@ -207,5 +227,32 @@
     "slippageHigh": "Uz {{value}} % klizanja, možete dobiti znatno manje nego što je prikazano u pregledu.",
     "targetOwnAsset": "Cilj Asset izdan je s vašeg vlastitog računa. Za ovo nije moguća konverzija.",
     "targetLimit": "Očekivani prihod premašuje vaš Trustline limit za {{code}}. Povećajte limit ili odaberite manje stavki."
+  },
+  "qrScan": {
+    "button": "Skenirajte QR kod",
+    "title": "Skenirajte QR kod",
+    "intro": "Pridržite QR kod za adresu ili zahtjev za plaćanje pred kamerom. Alternativno, možete zalijepiti poveznicu ispod.",
+    "videoLabel": "Slika s kamere za skeniranje QR koda",
+    "starting": "Kamera se pokreće …",
+    "denied": "Pristup kameri je odbijen. Možete promijeniti dozvole u postavkama preglednika ili zalijepiti donju poveznicu.",
+    "unavailable": "Na ovom uređaju nije dostupna kamera. Zalijepite poveznicu ili adresu u nastavku.",
+    "pasteLabel": "Ili unesite poveznicu ili adresu",
+    "apply": "Prijaviti se",
+    "applied": "Preuzeto s QR koda. Molimo provjerite primatelja, iznos, Asset i Memo prije slanja.",
+    "message": "Poruka iz zahtjeva: {{msg}}",
+    "originDomain": "Zahtjev navodi {{domain}} kao izvor. SKM to nije provjerio.",
+    "callbackIgnored": "Zahtjev uključuje adresu povratnog poziva. SKM je ne koristi.",
+    "assetMissing": "Zahtjev zahtijeva {{code}}, ali za to nemate Trustline. Asset nije primijenjen.",
+    "errors": {
+      "empty": "Nije pronađen sadržaj.",
+      "unrecognized": "Ovo nije ni Stellar adresa ni zahtjev za plaćanje (web+stellar:pay).",
+      "txUnsupported": "Ovaj zahtjev pokušava potpisati dovršenu transakciju (web+stellar:tx). SKM to iz sigurnosnih razloga ne podržava.",
+      "invalid": "Zahtjev za plaćanje sadrži pogrešku.",
+      "invalidDestination": "Zahtjev za plaćanje ne sadrži valjanu adresu primatelja.",
+      "invalidAmount": "Zahtjev za plaćanje sadrži neispravan iznos.",
+      "invalidAsset": "Zahtjev za plaćanje sadrži neispravan Asset.",
+      "invalidMemo": "Zahtjev za plaćanje sadrži neispravan Memo.",
+      "networkMismatch": "Zahtjev za plaćanje je za mrežu koja nije odabrana. Molimo prvo promijenite mrežu."
+    }
   }
 }

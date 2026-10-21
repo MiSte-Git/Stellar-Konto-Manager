@@ -66,7 +66,27 @@
     "hintCompare": "Pide al remitente que compruebe los primeros y los últimos 8 caracteres de la dirección, marcados en negrita. Los estafadores utilizan deliberadamente direcciones que se parecen al principio y al final.",
     "hintTrustline": "Solo puedes recibir Tokens distintos de XLM si tienes una autorización de Token (Trustline) para ellos.",
     "hintActivate": "Una nueva cuenta solo se activa tras realizar un depósito inicial de al menos 1 XLM.",
-    "hintMuxed": "Los pagos enviados a una dirección M se ingresan en tu cuenta principal y se identifican con el ID de Muxed. No todos los Wallet ni todas las plataformas de intercambio admiten direcciones M."
+    "hintMuxed": "Los pagos enviados a una dirección M se ingresan en tu cuenta principal y se identifican con el ID de Muxed. No todos los Wallet ni todas las plataformas de intercambio admiten direcciones M.",
+    "request": {
+      "toggle": "Crea una solicitud de pago con el importe y Memo",
+      "intro": "Opcional: El importe, Asset y Memo se incluyen en el código QR (norma SEP-7). Los sistemas compatibles con SEP-7 completan el pago con Wallets. El remitente revisa y confirma todo por sí mismo.",
+      "amount": "Importe (opcional)",
+      "asset": "Asset",
+      "customAsset": "Otros Asset (CODE:Editor)",
+      "memoType": "Tipo Memo",
+      "memoText": "Texto",
+      "memoId": "ID",
+      "memo": "Memo (opcional)",
+      "active": "El código QR anterior contiene ahora esta solicitud de pago:",
+      "copyLink": "Copiar enlace",
+      "qrLabel": "Código QR para la solicitud de pago a {{address}}",
+      "errors": {
+        "invalidAmount": "El importe no es válido. Solo se admiten números positivos con un máximo de 7 decimales.",
+        "invalidMemoId": "Un ID-Memo está compuesto únicamente por dígitos (hasta 20).",
+        "memoTooLong": "Un texto Memo no puede tener más de 28 bytes de longitud.",
+        "invalidAsset": "Asset no es válido. Se esperaba: CODE:Publisher (G…)."
+      }
+    }
   },
   "activity": {
     "title": "Última actividad",
@@ -207,5 +227,32 @@
     "slippageHigh": "Con un deslizamiento del {{value}} %, es posible que recibas una cantidad considerablemente inferior a la que se muestra en la vista previa.",
     "targetOwnAsset": "La orden Asset se emite desde tu propia cuenta. No es posible realizar ninguna conversión en este caso.",
     "targetLimit": "Los ingresos previstos superan tu límite de Trustline para {{code}}. Aumenta el límite o selecciona menos entradas."
+  },
+  "qrScan": {
+    "button": "Escanea el código QR",
+    "title": "Escanea el código QR",
+    "intro": "Acerca el código QR de una dirección o una solicitud de pago a la cámara. También puedes pegar el enlace que aparece a continuación.",
+    "videoLabel": "Imagen de la cámara para escanear el código QR",
+    "starting": "La cámara se está encendiendo…",
+    "denied": "Se ha denegado el acceso a la cámara. Puedes modificar los permisos en la configuración de tu navegador o pegar el enlace que aparece a continuación.",
+    "unavailable": "Este dispositivo no dispone de cámara. Pega el enlace o la dirección a continuación.",
+    "pasteLabel": "O bien, introduce un enlace o una dirección",
+    "apply": "Solicitar",
+    "applied": "Datos extraídos del código QR. Comprueba el destinatario, el importe, Asset y Memo antes de realizar el envío.",
+    "message": "Mensaje de la solicitud: {{msg}}",
+    "originDomain": "La solicitud indica {{domain}} como origen. SKM no lo ha verificado.",
+    "callbackIgnored": "La solicitud incluye una dirección de respuesta. SKM no la utiliza.",
+    "assetMissing": "La solicitud requiere {{code}}, pero no dispones de Trustline para ello. No se ha aplicado el Asset.",
+    "errors": {
+      "empty": "No se ha detectado ningún contenido.",
+      "unrecognized": "Esto no es ni una dirección de Stellar ni una solicitud de pago (web+stellar:pay).",
+      "txUnsupported": "Esta solicitud intenta firmar una transacción ya completada (web+stellar:tx). SKM no admite esta operación por motivos de seguridad.",
+      "invalid": "La solicitud de pago contiene un error.",
+      "invalidDestination": "La solicitud de pago no contiene una dirección de destinatario válida.",
+      "invalidAmount": "La solicitud de pago contiene un importe no válido.",
+      "invalidAsset": "La solicitud de pago contiene un valor no válido para Asset.",
+      "invalidMemo": "La solicitud de pago contiene un valor no válido para Memo.",
+      "networkMismatch": "La solicitud de pago corresponde a una red distinta de la seleccionada. Por favor, cambia primero de red."
+    }
   }
 }

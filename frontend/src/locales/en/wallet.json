@@ -66,7 +66,27 @@
     "hintCompare": "Have the sender check the first and last 8 characters of the address, shown in bold. Scammers deliberately use addresses that look similar at the start and end.",
     "hintTrustline": "You can only receive Tokens other than XLM once you have a Token authorization (Trustline) for them.",
     "hintActivate": "A new account is activated only after an initial deposit of at least 1 XLM.",
-    "hintMuxed": "Payments sent to an M-address are deposited into your base account and are marked with the Muxed ID. Not every Wallet or exchange supports M-addresses."
+    "hintMuxed": "Payments sent to an M-address are deposited into your base account and are marked with the Muxed ID. Not every Wallet or exchange supports M-addresses.",
+    "request": {
+      "toggle": "Create a payment request with the amount and Memo",
+      "intro": "Optional: The amount, Asset, and Memo are embedded in the QR code (SEP-7 standard). Systems that support SEP-7 populate the payment with Wallets. The sender reviews and confirms everything themselves.",
+      "amount": "Amount (optional)",
+      "asset": "Asset",
+      "customAsset": "Other Asset (CODE:Herausgeber)",
+      "memoType": "Memo type",
+      "memoText": "Text",
+      "memoId": "ID",
+      "memo": "Memo (optional)",
+      "active": "The QR code above now contains this payment request:",
+      "copyLink": "Copy link",
+      "qrLabel": "QR code for the payment request to {{address}}",
+      "errors": {
+        "invalidAmount": "The amount is invalid. Only positive numbers with up to 7 decimal places are allowed.",
+        "invalidMemoId": "An ID-Memo consists only of digits (up to 20).",
+        "memoTooLong": "A text Memo may be no more than 28 bytes long.",
+        "invalidAsset": "Invalid Asset. Expected: CODE:Publisher (G…)."
+      }
+    }
   },
   "activity": {
     "title": "Last Activity",
@@ -207,5 +227,32 @@
     "slippageHigh": "With {{value}}% slippage, you may receive significantly less than what is shown in the preview.",
     "targetOwnAsset": "The target Asset is issued from your own account. No conversion is possible for this.",
     "targetLimit": "The expected revenue exceeds your Trustline limit for {{code}}. Increase the limit or select fewer entries."
+  },
+  "qrScan": {
+    "button": "Scan the QR code",
+    "title": "Scan the QR code",
+    "intro": "Hold the QR code for an address or payment request up to the camera. Alternatively, you can paste the link below.",
+    "videoLabel": "Camera image for the QR scan",
+    "starting": "Camera starting up …",
+    "denied": "Access to the camera was denied. You can change the permissions in your browser settings or paste the link below.",
+    "unavailable": "There is no camera available on this device. Paste the link or address below.",
+    "pasteLabel": "Or enter a link or address",
+    "apply": "Apply",
+    "applied": "Retrieved from the QR code. Please check the recipient, amount, Asset, and Memo before sending.",
+    "message": "Message from the request: {{msg}}",
+    "originDomain": "The request specifies {{domain}} as the source. SKM has not verified this.",
+    "callbackIgnored": "The request includes a callback address. SKM does not use it.",
+    "assetMissing": "The request requires {{code}}, but you don't have Trustline for that. The Asset was not applied.",
+    "errors": {
+      "empty": "No content detected.",
+      "unrecognized": "This is neither a Stellar address nor a payment request (web+stellar:pay).",
+      "txUnsupported": "This request attempts to sign a completed transaction (web+stellar:tx). SKM does not support this for security reasons.",
+      "invalid": "The payment request contains an error.",
+      "invalidDestination": "The payment request does not contain a valid recipient address.",
+      "invalidAmount": "The payment request contains an invalid amount.",
+      "invalidAsset": "The payment request contains an invalid Asset.",
+      "invalidMemo": "The payment request contains an invalid Memo.",
+      "networkMismatch": "The payment request is for a network other than the one selected. Please switch networks first."
+    }
   }
 }

@@ -80,7 +80,7 @@ test('other frontend headers: Referrer-Policy, nosniff, X-Frame-Options, Permiss
   assert.equal(h['Referrer-Policy'], 'strict-origin-when-cross-origin');
   assert.equal(h['X-Content-Type-Options'], 'nosniff');
   assert.equal(h['X-Frame-Options'], 'DENY');
-  assert.equal(h['Permissions-Policy'], 'camera=(), microphone=(), geolocation=()');
+  assert.equal(h['Permissions-Policy'], 'camera=(self), microphone=(), geolocation=()');
   assert.ok(h['Content-Security-Policy']);
   assert.equal(h['Content-Security-Policy-Report-Only'], undefined);
   const ro = sh.frontendHeaders({ reportOnly: true });
@@ -106,7 +106,7 @@ test('.htaccess template renders all placeholders for a root deploy', () => {
   assert.ok(out.includes('Header always set X-Content-Type-Options "nosniff"'));
   assert.ok(out.includes('Header always set X-Frame-Options "DENY"'));
   assert.ok(out.includes('Header always set Referrer-Policy "strict-origin-when-cross-origin"'));
-  assert.ok(out.includes('Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"'));
+  assert.ok(out.includes('Header always set Permissions-Policy "camera=(self), microphone=(), geolocation=()"'));
   assert.ok(out.includes(`Header always set Strict-Transport-Security "max-age=31536000" "expr=%{HTTPS} == 'on'"`));
   assert.equal(/SAMEORIGIN/.test(out), false);
 });

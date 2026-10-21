@@ -66,7 +66,27 @@
     "hintCompare": "Laat de afzender de eerste en laatste 8 tekens van het adres controleren, die vetgedrukt zijn. Oplichters gebruiken opzettelijk adressen die aan het begin en eind op elkaar lijken.",
     "hintTrustline": "Andere Tokens dan XLM kun je pas ontvangen als je er een Token-machtiging (Trustline) voor hebt.",
     "hintActivate": "Een nieuwe account wordt pas geactiveerd nadat een eerste storting van ten minste 1 XLM is gedaan.",
-    "hintMuxed": "Betalingen die naar een M-adres worden gestuurd, worden op je basisrekening gestort en voorzien van de Muxed-ID. Niet elke Wallet of beurs ondersteunt M-adressen."
+    "hintMuxed": "Betalingen die naar een M-adres worden gestuurd, worden op je basisrekening gestort en voorzien van de Muxed-ID. Niet elke Wallet of beurs ondersteunt M-adressen.",
+    "request": {
+      "toggle": "Maak een betalingsverzoek aan met het bedrag en Memo",
+      "intro": "Optioneel: Het bedrag, Asset en Memo worden in de QR-code opgenomen (SEP-7-standaard). Systemen die SEP-7 ondersteunen, vullen de betaling aan met Wallets. De afzender controleert en bevestigt alles zelf.",
+      "amount": "Bedrag (optioneel)",
+      "asset": "Asset",
+      "customAsset": "Overige Asset (CODE:uitgever)",
+      "memoType": "Memo type",
+      "memoText": "Tekst",
+      "memoId": "ID",
+      "memo": "Memo (optioneel)",
+      "active": "De bovenstaande QR-code bevat nu deze betalingsaanvraag:",
+      "copyLink": "Link kopiëren",
+      "qrLabel": "QR-code voor het betalingsverzoek aan {{address}}",
+      "errors": {
+        "invalidAmount": "Het bedrag is ongeldig. Alleen positieve getallen met maximaal 7 decimalen zijn toegestaan.",
+        "invalidMemoId": "Een ID-Memo bestaat uitsluitend uit cijfers (maximaal 20).",
+        "memoTooLong": "Een tekst Memo mag maximaal 28 bytes lang zijn.",
+        "invalidAsset": "Ongeldige Asset. Verwacht: CODE:Publisher (G…)."
+      }
+    }
   },
   "activity": {
     "title": "Laatste activiteit",
@@ -207,5 +227,32 @@
     "slippageHigh": "Bij een slippage van {{value}}% kan het zijn dat u aanzienlijk minder ontvangt dan in het voorbeeld wordt weergegeven.",
     "targetOwnAsset": "De opdracht Asset wordt vanuit uw eigen rekening gegeven. Hiervoor is geen omzetting mogelijk.",
     "targetLimit": "De verwachte omzet overschrijdt je Trustline-limiet voor {{code}}. Verhoog de limiet of selecteer minder items."
+  },
+  "qrScan": {
+    "button": "Scan de QR-code",
+    "title": "Scan de QR-code",
+    "intro": "Houd de QR-code voor een adres of betalingsverzoek voor de camera. Je kunt ook de onderstaande link plakken.",
+    "videoLabel": "Camera-opname voor het scannen van de QR-code",
+    "starting": "De camera wordt opgestart …",
+    "denied": "Toegang tot de camera werd geweigerd. Je kunt de machtigingen aanpassen in je browserinstellingen of de onderstaande link plakken.",
+    "unavailable": "Dit apparaat heeft geen camera. Plak de link of het adres hieronder.",
+    "pasteLabel": "Of voer een link of adres in",
+    "apply": "Solliciteren",
+    "applied": "Ontleend aan de QR-code. Controleer de ontvanger, het bedrag, Asset en Memo voordat u de betaling verstuurt.",
+    "message": "Bericht uit het verzoek: {{msg}}",
+    "originDomain": "In het verzoek wordt {{domain}} als bron vermeld. SKM heeft dit niet geverifieerd.",
+    "callbackIgnored": "Het verzoek bevat een adres voor terugbellen. SKM maakt hier geen gebruik van.",
+    "assetMissing": "Voor het verzoek is {{code}} vereist, maar je beschikt niet over Trustline daarvoor. De Asset is niet toegepast.",
+    "errors": {
+      "empty": "Er is geen inhoud gevonden.",
+      "unrecognized": "Dit is noch een Stellar-adres, noch een betalingsverzoek (web+stellar:pay).",
+      "txUnsupported": "Dit verzoek probeert een voltooide transactie (web+stellar:tx) te ondertekenen. SKM ondersteunt dit om veiligheidsredenen niet.",
+      "invalid": "Het betalingsverzoek bevat een fout.",
+      "invalidDestination": "De betalingsaanvraag bevat geen geldig adres van de ontvanger.",
+      "invalidAmount": "Het betalingsverzoek bevat een ongeldig bedrag.",
+      "invalidAsset": "Het betalingsverzoek bevat een ongeldige Asset.",
+      "invalidMemo": "Het betalingsverzoek bevat een ongeldige Memo.",
+      "networkMismatch": "De betalingsaanvraag heeft betrekking op een ander netwerk dan het geselecteerde netwerk. Schakel eerst over naar een ander netwerk."
+    }
   }
 }

@@ -30,6 +30,8 @@ import { submitTransactionSafely, AmbiguousSubmitResultError } from '../utils/st
 import { formatValidUntil } from '../utils/multisig/formatValidUntil.js';
 import { accountRequiresMemo, isAccountRequiresMemoError } from '../utils/stellar/memoRequired.js';
 import { resolveFeePerOp } from '../utils/stellar/fees.js';
+import QrScanDialog from '../components/wallet/QrScanDialog.jsx';
+import { networkMismatch, parsePaymentInput } from '../utils/stellar/sep7.js';
 
 // Immediate local submits (single-sig send, or a multisig job collected and
 // submitted right away) expect a near-term Horizon confirmation, unlike a
@@ -1749,6 +1751,42 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
     return opts;
   }, [trustlines]);
 
+  // QR-Scan / eingefuegter Link (SEP-7). Fuellt nur das Formular vor; alle Pruefungen beim
+  // Senden laufen danach unveraendert. Gibt einen Fehlertext zurueck, wenn nichts uebernommen wurde.
+  const [showQrScan, setShowQrScan] = useState(false);
+  const [qrInfo, setQrInfo] = useState(null); // { msg, originDomain, hasCallback, assetMissing }
+  const applyScannedPayment = useCallback((text) => {
+    const parsed = parsePaymentInput(text);
+    if (!parsed.ok) return t(`wallet:qrScan.errors.${parsed.error}`);
+    if (parsed.kind === 'pay' && networkMismatch(parsed, netLabel)) return t('wallet:qrScan.errors.networkMismatch');
+    clearSuccess();
+    setDest(parsed.destination);
+    let assetMissing = '';
+    if (parsed.kind === 'pay') {
+      if (parsed.amount) setAmount(parsed.amount);
+      if (parsed.asset.isNative) {
+        setAssetKey('XLM');
+      } else {
+        const key = `${parsed.asset.code}:${parsed.asset.issuer}`;
+        if (assetOptions.some((o) => o.key === key)) setAssetKey(key);
+        else assetMissing = parsed.asset.code;
+      }
+      if (parsed.memo) {
+        markMemoManuallyEdited();
+        setMemoType(parsed.memo.type);
+        setMemoVal(parsed.memo.value);
+      }
+    }
+    setQrInfo({
+      msg: parsed.msg || '',
+      originDomain: parsed.originDomain || '',
+      hasCallback: !!parsed.hasCallback,
+      assetMissing,
+    });
+    setShowQrScan(false);
+    return null;
+  }, [assetOptions, clearSuccess, markMemoManuallyEdited, netLabel, t]);
+
   // Update fields when donation is triggered again or initial changes
   useEffect(() => {
     try {
@@ -1831,6 +1869,14 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <label className="block text-sm">{t('common:payment.send.recipient')}</label>
+            <span className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setShowQrScan(true)}
+              className="rounded-md border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-gray-800 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+            >
+              {t('wallet:qrScan.button')}
+            </button>
             <button
               type="button"
               onClick={handleRecipientRefresh}
@@ -1847,7 +1893,21 @@ export default function SendPaymentPage({ publicKey, onBack: _onBack, initial })
                 ↻
               </span>
             </button>
+            </span>
           </div>
+          {qrInfo && (
+            <div className="rounded border border-blue-200 bg-blue-50 p-2 text-xs text-blue-900 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-100" role="status" data-testid="qr-info">
+              <div className="flex items-start justify-between gap-2">
+                <span className="font-medium">{t('wallet:qrScan.applied')}</span>
+                <button type="button" onClick={() => setQrInfo(null)} aria-label={t('common:close', 'Schließen')} className="border-0 bg-transparent px-1 text-blue-900 dark:text-blue-100">×</button>
+              </div>
+              {qrInfo.msg && <div className="mt-1 break-words">{t('wallet:qrScan.message', { msg: qrInfo.msg })}</div>}
+              {qrInfo.originDomain && <div className="mt-1">{t('wallet:qrScan.originDomain', { domain: qrInfo.originDomain })}</div>}
+              {qrInfo.hasCallback && <div className="mt-1">{t('wallet:qrScan.callbackIgnored')}</div>}
+              {qrInfo.assetMissing && <div className="mt-1 font-medium text-amber-900 dark:text-amber-200">{t('wallet:qrScan.assetMissing', { code: qrInfo.assetMissing })}</div>}
+            </div>
+          )}
+          {showQrScan && <QrScanDialog onResult={applyScannedPayment} onClose={() => setShowQrScan(false)} />}
           <AddressDropdown
             value={dest}
             onChange={(next) => { clearSuccess(); setDest(next); }}

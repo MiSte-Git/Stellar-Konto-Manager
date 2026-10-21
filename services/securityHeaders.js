@@ -30,9 +30,9 @@ const BASE_CONNECT_SRC = Object.freeze([
   'https://api.coingecko.com', // XLM price display (useXlmPrice.js)
 ]);
 
-// camera=() for now. Backlog P2.1 (QR scan) needs the camera:
-// change to camera=(self) then.
-const PERMISSIONS_POLICY = 'camera=(), microphone=(), geolocation=()';
+// Backlog P2.1 (QR scan): camera=(self), only SKM's own origin may use the camera
+// (no third-party frames). Microphone and geolocation stay disabled.
+const PERMISSIONS_POLICY = 'camera=(self), microphone=(), geolocation=()';
 const REFERRER_POLICY = 'strict-origin-when-cross-origin';
 // No includeSubDomains (other steei.de subdomains are not ours to pin), no preload.
 const HSTS = 'max-age=31536000';

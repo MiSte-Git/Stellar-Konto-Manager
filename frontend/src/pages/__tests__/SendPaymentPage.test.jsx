@@ -1005,3 +1005,48 @@ describe('reverse federation lookup display (P1.2)', () => {
     await waitFor(() => expect(screen.queryByTestId('reverse-federation')).not.toBeInTheDocument());
   });
 });
+
+describe('QR-Scan und SEP-7 beim Senden (P2.1)', () => {
+  async function openScanAndPaste(text) {
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'QR-Code scannen' }));
+    await screen.findByRole('dialog');
+    fireEvent.change(screen.getByLabelText('Oder Link bzw. Adresse einfügen'), { target: { value: text } });
+    fireEvent.click(screen.getByRole('button', { name: 'Übernehmen' }));
+  }
+
+  it('fuellt Empfaenger, Betrag, Asset und Memo aus einer Zahlungsanfrage', async () => {
+    await openScanAndPaste(`web+stellar:pay?destination=${DEST_PK}&amount=7.5&asset_code=${ASSET_CODE}&asset_issuer=${ISSUER_PK}&memo=4711&memo_type=MEMO_ID&msg=Danke&origin_domain=shop.example`);
+    await waitFor(() => expect(destInput().value).toBe(DEST_PK));
+    expect(amountInput().value).toMatch(/^7[.,]5$/);
+    await waitFor(() => expect(assetSelect().value).toBe(ASSET_KEY));
+    await waitFor(() => expect(memoInput().value).toBe('4711'));
+    expect(memoTypeSelect().value).toBe('id');
+    const info = screen.getByTestId('qr-info');
+    expect(info).toHaveTextContent('Nachricht der Anfrage: Danke');
+    expect(info).toHaveTextContent('shop.example an. Das hat SKM nicht geprüft.');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(hoisted.submitTransactionSafelyMock).not.toHaveBeenCalled();
+  });
+
+  it('uebernimmt eine reine Adresse', async () => {
+    await openScanAndPaste(DEST_PK);
+    await waitFor(() => expect(destInput().value).toBe(DEST_PK));
+  });
+
+  it('lehnt web+stellar:tx und ein falsches Netzwerk ab', async () => {
+    await openScanAndPaste('web+stellar:tx?xdr=AAAA');
+    expect(await screen.findByText(/web\+stellar:tx\). Das unterstützt SKM/)).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('Oder Link bzw. Adresse einfügen'), { target: { value: `web+stellar:pay?destination=${DEST_PK}&network_passphrase=${encodeURIComponent('Test SDF Network ; September 2015')}` } });
+    fireEvent.click(screen.getByRole('button', { name: 'Übernehmen' }));
+    expect(await screen.findByText(/für ein anderes Netzwerk/)).toBeInTheDocument();
+    expect(destInput().value).toBe('');
+  });
+
+  it('warnt, wenn fuer das verlangte Asset keine Trustline besteht', async () => {
+    await openScanAndPaste(`web+stellar:pay?destination=${DEST_PK}&amount=1&asset_code=OTHER&asset_issuer=${ISSUER_PK}`);
+    await waitFor(() => expect(screen.getByTestId('qr-info')).toHaveTextContent('verlangt OTHER, dafür hast du keine Trustline'));
+    expect(assetSelect().value).toBe('XLM');
+  });
+});
+

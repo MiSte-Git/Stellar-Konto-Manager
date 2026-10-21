@@ -71,4 +71,39 @@ describe('ReceivePage', () => {
     renderPage({ publicKey: PK });
     expect(screen.getByText(/Du bist im Testnet/)).toBeInTheDocument();
   });
+
+  it('erstellt eine SEP-7-Zahlungsanfrage mit Betrag und Memo', async () => {
+    renderPage({ publicKey: PK });
+    fireEvent.click(screen.getByRole('button', { name: /Zahlungsanfrage mit Betrag und Memo/ }));
+    fireEvent.change(screen.getByLabelText('Betrag (optional)'), { target: { value: '12,5' } });
+    fireEvent.change(screen.getByLabelText('Memo (optional)'), { target: { value: 'Rechnung 7' } });
+    const uri = screen.getByTestId('receive-request-uri').textContent;
+    expect(uri).toBe(`web+stellar:pay?destination=${PK}&amount=12.5&memo=Rechnung%207&memo_type=MEMO_TEXT`);
+    expect(screen.getByRole('img', { name: /QR-Code der Zahlungsanfrage/ })).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Link kopieren' }));
+    });
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(uri);
+  });
+
+  it('nimmt im Testnet die Netzwerk-Passphrase auf', () => {
+    window.localStorage.setItem('SKM_NETWORK', 'TESTNET');
+    renderPage({ publicKey: PK });
+    fireEvent.click(screen.getByRole('button', { name: /Zahlungsanfrage mit Betrag und Memo/ }));
+    fireEvent.change(screen.getByLabelText('Betrag (optional)'), { target: { value: '1' } });
+    expect(screen.getByTestId('receive-request-uri').textContent).toContain('network_passphrase=Test%20SDF%20Network');
+  });
+
+  it('meldet ungueltige Eingaben und zeigt dann nur die Adresse', () => {
+    renderPage({ publicKey: PK });
+    fireEvent.click(screen.getByRole('button', { name: /Zahlungsanfrage mit Betrag und Memo/ }));
+    fireEvent.change(screen.getByLabelText('Betrag (optional)'), { target: { value: '0' } });
+    expect(screen.getByText(/Der Betrag ist ungültig/)).toBeInTheDocument();
+    expect(screen.queryByTestId('receive-request-uri')).not.toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('Betrag (optional)'), { target: { value: '' } });
+    fireEvent.change(screen.getByLabelText('Memo-Typ'), { target: { value: 'id' } });
+    fireEvent.change(screen.getByLabelText('Memo (optional)'), { target: { value: 'abc' } });
+    expect(screen.getByText(/ID-Memo besteht nur aus Ziffern/)).toBeInTheDocument();
+  });
 });
+
