@@ -161,3 +161,29 @@ export function targetTrustlineStatus(account, target) {
   if (line.is_authorized === false) return 'notAuthorized';
   return 'ok';
 }
+
+export const SLIPPAGE_WARN_PERCENT = 5;
+
+// Freier Platz in der vorhandenen Ziel-Trustline in Stroops. null = kein Limit zu beachten
+// (natives XLM oder Trustline wird neu mit Hoechstlimit angelegt).
+export function targetRoomStroops(account, target) {
+  if (target.isNative) return null;
+  const line = (account?.balances || []).find((b) => b.asset_code === target.code && b.asset_issuer === target.issuer);
+  if (!line) return null;
+  const limit = toStroops(line.limit);
+  const balance = toStroops(line.balance || '0');
+  const buying = toStroops(line.buying_liabilities || '0') ?? 0n;
+  if (limit == null || balance == null) return null;
+  return limit - balance - buying;
+}
+
+export function sumStroops(values) {
+  return values.reduce((acc, v) => acc + (toStroops(v) ?? 0n), 0n);
+}
+
+// true, wenn der erwartete Erloes in die vorhandene Ziel-Trustline passt
+export function targetHasRoom(account, target, destAmounts) {
+  const room = targetRoomStroops(account, target);
+  return room == null || room >= sumStroops(destAmounts);
+}
+

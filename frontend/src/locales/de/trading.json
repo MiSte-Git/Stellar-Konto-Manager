@@ -302,7 +302,7 @@
         "label": "StellarExpert-Verzeichnis",
         "listed": "Im Verzeichnis eingetragen",
         "listedAs": "Im Verzeichnis eingetragen als „{{name}}“",
-        "notListed": "Nicht im Verzeichnis – das sagt nichts über die Echtheit aus; viele seriöse Assets sind dort nicht eingetragen.",
+        "notListed": "Nicht im Verzeichnis – das sagt nichts über die Echtheit aus; viele Assets sind dort nicht eingetragen.",
         "unavailable": "StellarExpert nicht erreichbar – Hinweis konnte nicht geladen werden.",
         "notChecked": "Nicht geprüft (Verzeichnis gilt nur für das öffentliche Netzwerk)."
       }

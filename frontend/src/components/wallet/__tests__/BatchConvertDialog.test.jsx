@@ -308,5 +308,34 @@ describe('BatchConvertDialog', () => {
     await loadPreview();
     expect(within(row(1)).getByText('ausgeblendet')).toBeInTheDocument();
   });
+
+  it('warnt ab 5 % Slippage', async () => {
+    renderDialog();
+    fireEvent.change(screen.getByLabelText('Maximale Kursabweichung (Slippage)'), { target: { value: '5' } });
+    expect(screen.getByText(/Bei 5 % Slippage kannst du deutlich weniger erhalten/)).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('Maximale Kursabweichung (Slippage)'), { target: { value: '2' } });
+    expect(screen.queryByText(/deutlich weniger erhalten/)).not.toBeInTheDocument();
+  });
+
+  it('lehnt ein selbst herausgegebenes Asset als Ziel ab', async () => {
+    renderDialog();
+    fireEvent.click(screen.getByRole('radio', { name: 'Anderes Asset (CODE:Herausgeber)' }));
+    fireEvent.change(screen.getByRole('textbox', { name: 'Anderes Asset (CODE:Herausgeber)' }), { target: { value: `MINE:${ME.publicKey}` } });
+    fireEvent.click(screen.getByRole('button', { name: 'Vorschau laden' }));
+    await screen.findByText(/von deinem eigenen Konto herausgegeben/);
+    expect(hoisted.pathsMock).not.toHaveBeenCalled();
+  });
+
+  it('sperrt den Start, wenn der Erloes nicht in das Limit der Ziel-Trustline passt', async () => {
+    const acct = makeAccount();
+    acct.balances = [...acct.balances, { asset_type: 'credit_alphanum4', asset_code: 'LDEX', asset_issuer: ISSUER, balance: '0', limit: '2', is_authorized: true }];
+    hoisted.loadAccountMock.mockImplementation(async (pk) => (pk === ME.publicKey ? acct : { flags: {} }));
+    renderDialog({ account: acct });
+    fireEvent.click(screen.getByRole('radio', { name: 'Aus meinen Trustlines (1)' }));
+    fireEvent.click(screen.getByRole('option'));
+    await loadPreview();
+    expect(screen.getByText(/passt nicht in das Limit deiner Trustline/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /einlösen & umwandeln/ })).toBeDisabled();
+  });
 });
 

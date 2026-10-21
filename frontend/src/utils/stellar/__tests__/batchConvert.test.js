@@ -2,7 +2,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { Account, Keypair, Networks } from '@stellar/stellar-sdk';
 import {
-  assetLabel, computeDestMin,
+  assetLabel, computeDestMin, targetHasRoom, targetRoomStroops,
   MAX_OPS_PER_TX, NATIVE_TARGET, buildBatchTx, chunkQuotes, parseTargetAsset, planItem, quoteItem, targetTrustlineStatus,
 } from '../batchConvert.js';
 
@@ -137,3 +137,18 @@ describe('quoteItem mit gesperrter Trustline', () => {
     expect(s.strictSendPaths).not.toHaveBeenCalled();
   });
 });
+
+describe('Limit der Ziel-Trustline', () => {
+  const acct = { balances: [{ asset_code: 'LDEX', asset_issuer: ISSUER, balance: '90', limit: '100', buying_liabilities: '5', is_authorized: true }] };
+  it('berechnet den freien Platz exakt', () => {
+    expect(targetRoomStroops(acct, LDEX)).toBe(50000000n);
+    expect(targetRoomStroops(acct, NATIVE_TARGET)).toBeNull();
+    expect(targetRoomStroops(acct, token('NEU'))).toBeNull();
+  });
+  it('prueft, ob der erwartete Erloes passt', () => {
+    expect(targetHasRoom(acct, LDEX, ['2', '3'])).toBe(true);
+    expect(targetHasRoom(acct, LDEX, ['2', '3.0000001'])).toBe(false);
+    expect(targetHasRoom(acct, NATIVE_TARGET, ['999999'])).toBe(true);
+  });
+});
+

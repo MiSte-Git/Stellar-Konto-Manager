@@ -17,7 +17,9 @@ import { claimJobTimeoutSeconds, classifyClaimableBalances, fetchClaimableBalanc
 import {
   DEFAULT_BATCH_SLIPPAGE,
   NATIVE_TARGET,
+  SLIPPAGE_WARN_PERCENT,
   assetLabel,
+  targetHasRoom,
   buildBatchTx,
   chunkQuotes,
   countOps,
@@ -109,6 +111,11 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
   const anyTempTrustline = selectedQuotes.some((q) => q.plan.tempTrustline);
   const reserveNeeded = (anyTempTrustline ? BASE_RESERVE_XLM : 0) + (needTargetTrustline ? BASE_RESERVE_XLM : 0) + feeTotalXlm;
   const reserveOk = Number(available || 0) >= reserveNeeded;
+  // Passt der erwartete Erloes in die vorhandene Ziel-Trustline? Sonst scheitert die Tauschzahlung (line_full).
+  const targetLimitOk = !quotedTarget || targetHasRoom(account, quotedTarget, selectedQuotes.map((q) => q.destAmount));
+  const canStart = chunks.length > 0 && reserveOk && targetLimitOk;
+  const slipNumber = Number(String(slippage).replace(',', '.'));
+  const slippageHigh = Number.isFinite(slipNumber) && slipNumber >= SLIPPAGE_WARN_PERCENT;
 
   const loadPreview = async () => {
     setError('');
@@ -128,6 +135,11 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
     const tStatus = targetTrustlineStatus(account, target);
     if (tStatus === 'notAuthorized') {
       setError(t('wallet:batchConvert.targetNotAuthorized', { code: target.code }));
+      return;
+    }
+    // Ein eigenes Asset als Ziel: Der Herausgeber kann keine Trustline zu sich selbst anlegen.
+    if (!target.isNative && target.issuer === publicKey) {
+      setError(t('wallet:batchConvert.targetOwnAsset'));
       return;
     }
     setPhase('quoting');
@@ -191,6 +203,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
     if (Date.now() - quotedAt > PREVIEW_MAX_AGE_MS) return { problem: 'previewTooOld' };
     const fresh = await server.loadAccount(publicKey);
     if (targetTrustlineStatus(fresh, quotedTarget) !== targetStatus) return { problem: 'changedSincePreview' };
+    if (!targetHasRoom(fresh, quotedTarget, quotesToCheck.map((q) => q.destAmount))) return { problem: 'targetLimit' };
     const { records } = await fetchClaimableBalances(server, publicKey);
     const ids = new Set(quotesToCheck.map((q) => q.item.id));
     const freshItems = new Map(classifyClaimableBalances(records.filter((r) => ids.has(r.id)), fresh).map((it) => [it.id, it]));
@@ -438,6 +451,9 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
                 className="mt-1 w-24 rounded border px-2 py-1.5 text-sm dark:bg-gray-900"
               />
               <span className="ml-1 text-sm text-gray-600 dark:text-gray-300">%</span>
+              {slippageHigh && (
+                <p role="alert" className="mt-1 text-xs text-amber-800 dark:text-amber-200">{t('wallet:batchConvert.slippageHigh', { value: slipNumber })}</p>
+              )}
             </div>
             <div className="flex justify-end gap-2">
               <button type="button" className={btnSecondary} onClick={onClose}>{t('common:option.cancel', 'Abbrechen')}</button>
@@ -495,6 +511,8 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
             )}
             {needTargetTrustline && <p className="text-xs text-gray-600 dark:text-gray-300">{t('wallet:batchConvert.targetTrustlineNote', { code: targetText })}</p>}
             {anyTempTrustline && <p className="text-xs text-gray-600 dark:text-gray-300">{t('wallet:batchConvert.tempTrustlineNote')}</p>}
+            {!targetLimitOk && <p role="alert" className="text-xs text-red-700 dark:text-red-300">{t('wallet:batchConvert.targetLimit', { code: targetText })}</p>}
+            {Number(quotedSlippage) >= SLIPPAGE_WARN_PERCENT && <p className="text-xs text-amber-800 dark:text-amber-200">{t('wallet:batchConvert.slippageHigh', { value: quotedSlippage })}</p>}
             {!reserveOk && <p role="alert" className="text-xs text-red-700 dark:text-red-300">{t('wallet:batchConvert.insufficientReserve', { needed: f(reserveNeeded), available: f(available) })}</p>}
             {jobCreated && <p role="status" className="text-xs text-green-700 dark:text-green-400">{t('wallet:batchConvert.jobCreated')}</p>}
             {multisig && chunks.length > 1 && <p className="text-xs text-amber-800 dark:text-amber-200">{t('wallet:batchConvert.jobFirstChunkOnly', { count: chunks[0].length })}</p>}
@@ -503,11 +521,11 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
               <button type="button" className={btnSecondary} onClick={() => setPhase('setup')}>{t('wallet:batchConvert.back')}</button>
               <button type="button" className={btnSecondary} onClick={() => { void loadPreview(); }}>{t('wallet:batchConvert.loadPreview')}</button>
               {multisig && (
-                <button type="button" className={btnSecondary} onClick={() => { void prepareJob(); }} disabled={!chunks.length || !reserveOk || jobCreated}>
+                <button type="button" className={btnSecondary} onClick={() => { void prepareJob(); }} disabled={!canStart || jobCreated}>
                   {t('wallet:claimable.prepareJob')}
                 </button>
               )}
-              <button type="button" className={btnPrimary} onClick={() => setShowSecretModal(true)} disabled={!chunks.length || !reserveOk}>
+              <button type="button" className={btnPrimary} onClick={() => setShowSecretModal(true)} disabled={!canStart}>
                 {t('wallet:batchConvert.start', { count: selectedQuotes.length })}
               </button>
             </div>

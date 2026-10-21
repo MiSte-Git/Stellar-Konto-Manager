@@ -102,7 +102,7 @@
     "memoLabel": "Memo",
     "onlyDust": "Nur Kleinstzahlungen vorhanden.",
     "url": "Enthält Webadresse",
-    "urlHint": "Das Memo enthält eine Webadresse. Seriöse Zahlungen brauchen das nicht. Nicht öffnen.",
+    "urlHint": "Das Memo enthält eine Webadresse. Für eine Zahlung ist das nicht nötig. Öffne den Link nicht.",
     "fakeNative": "Token, kein natives XLM",
     "fakeNativeHint": "Das ist ein Token eines Herausgebers, nicht das native XLM des Netzwerks."
   },
@@ -164,6 +164,9 @@
     "quoting": "Erzielbare Beträge werden ermittelt …",
     "invalidTarget": "Ungültiges Ziel-Asset. Erwartet wird XLM oder CODE:Herausgeber (G…).",
     "invalidSlippage": "Die Slippage muss zwischen 0 und 50 % liegen.",
+    "slippageHigh": "Bei {{value}} % Slippage kannst du deutlich weniger erhalten als in der Vorschau angezeigt.",
+    "targetOwnAsset": "Das Ziel-Asset wird von deinem eigenen Konto herausgegeben. Dafür ist keine Umwandlung möglich.",
+    "targetLimit": "Der erwartete Erlös passt nicht in das Limit deiner Trustline für {{code}}. Erhöhe das Limit oder wähle weniger Einträge aus.",
     "targetNotAuthorized": "Deine Trustline für {{code}} ist vom Herausgeber nicht freigegeben, ein Umwandeln in dieses Asset ist nicht möglich.",
     "targetAuthRequired": "Der Herausgeber von {{code}} verlangt eine Freigabe neuer Trustlines. Lege die Trustline zuerst an und lass sie freigeben.",
     "previewFailed": "Die Vorschau konnte nicht geladen werden: {{reason}}",
