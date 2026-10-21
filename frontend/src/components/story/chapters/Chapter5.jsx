@@ -10,6 +10,7 @@ import SceneRunner from "../SceneRunner";
 import ChapterSummary from "../ChapterSummary";
 import Lumio from "../../quiz/Lumio";
 import { sendPayment, friendbotFund } from "../TestnetAction";
+import "../storyCertificatePrint.css";
 
 // TESTNET ONLY – Lena's simulated address (same as Cosmo in Ch2)
 const LENA_PUBLIC_KEY = "GDTGA55CCRAMSW4KZFAIOCTYYS7H6UI7X7VWKOVPAYQSGEG6QI2ZCC4R";
@@ -267,20 +268,9 @@ function CertificateScreen({ t, i18n, keypair, onHome }) {
     setTimeout(() => fire({ origin: { x: 0.7, y: 0.6 } }), 250);
     setTimeout(() => fire({ origin: { x: 0.5, y: 0.3 }, particleCount: 160 }), 600);
 
-    const style = document.createElement("style");
-    style.id = "ch5-print-style";
-    style.textContent = `@media print {
-      body > * { visibility: hidden !important; }
-      #ch5-certificate { visibility: visible !important; position: fixed !important;
-        top: 0 !important; left: 0 !important; width: 100% !important;
-        background: white !important; color: #111 !important;
-        border: 2px solid #b8860b !important; border-radius: 0 !important;
-        padding: 40px !important; box-shadow: none !important; }
-      #ch5-certificate * { visibility: visible !important; color: #111 !important; }
-      #ch5-certificate .cert-xp-badge { background: #f5f0d0 !important; border: 1px solid #b8860b !important; }
-    }`;
-    document.head.appendChild(style);
-    return () => document.getElementById("ch5-print-style")?.remove();
+    // Druckregeln statisch in storyCertificatePrint.css (CSP: kein Inline-Style)
+    document.body.classList.add("story-cert-print");
+    return () => document.body.classList.remove("story-cert-print");
   }, []);
 
   const pubKey = keypair?.publicKey();

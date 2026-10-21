@@ -22,6 +22,7 @@ import { changeTrust, friendbotFund } from "../TestnetAction";
 import ExplorerConfirmDialog from "../ExplorerConfirmDialog";
 import { useSettings } from "../../../utils/useSettings";
 import Lumio from "../../quiz/Lumio";
+import "../storyCertificatePrint.css";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -878,20 +879,9 @@ function MasterCertificateScreen({ t, i18n, keypair, onHome }) {
     setTimeout(() => fire({ origin: { x: 0.3, y: 0.5 } }), 900);
     setTimeout(() => fire({ origin: { x: 0.7, y: 0.5 } }), 1100);
 
-    const style = document.createElement("style");
-    style.id = "ch11-print-style";
-    style.textContent = `@media print {
-      body > * { visibility: hidden !important; }
-      #ch11-certificate { visibility: visible !important; position: fixed !important;
-        top: 0 !important; left: 0 !important; width: 100% !important;
-        background: white !important; color: #111 !important;
-        border: 2px solid #b45309 !important; border-radius: 0 !important;
-        padding: 40px !important; box-shadow: none !important; }
-      #ch11-certificate * { visibility: visible !important; color: #111 !important; }
-      #ch11-certificate .cert-xp-badge { background: #fef3c7 !important; border: 1px solid #b45309 !important; }
-    }`;
-    document.head.appendChild(style);
-    return () => document.getElementById("ch11-print-style")?.remove();
+    // Druckregeln statisch in storyCertificatePrint.css (CSP: kein Inline-Style)
+    document.body.classList.add("story-cert-print");
+    return () => document.body.classList.remove("story-cert-print");
   }, []);
 
   const pubKey = keypair?.publicKey();

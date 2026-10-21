@@ -14,6 +14,7 @@ import ExplorerConfirmDialog from "../ExplorerConfirmDialog";
 import { useSettings } from "../../../utils/useSettings";
 import { renderWithGlossaryLinks } from "../parseGlossaryTerms";
 import Lumio from "../../quiz/Lumio";
+import "../storyCertificatePrint.css";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -1161,20 +1162,9 @@ function ExpertCertificateScreen({ t, i18n, keypair, onHome }) {
     setTimeout(() => fire({ origin: { x: 0.3, y: 0.5 } }), 900);
     setTimeout(() => fire({ origin: { x: 0.7, y: 0.5 } }), 1100);
 
-    const style = document.createElement("style");
-    style.id = "ch9-print-style";
-    style.textContent = `@media print {
-      body > * { visibility: hidden !important; }
-      #ch9-certificate { visibility: visible !important; position: fixed !important;
-        top: 0 !important; left: 0 !important; width: 100% !important;
-        background: white !important; color: #111 !important;
-        border: 2px solid #4a0080 !important; border-radius: 0 !important;
-        padding: 40px !important; box-shadow: none !important; }
-      #ch9-certificate * { visibility: visible !important; color: #111 !important; }
-      #ch9-certificate .cert-xp-badge { background: #f0e8ff !important; border: 1px solid #4a0080 !important; }
-    }`;
-    document.head.appendChild(style);
-    return () => document.getElementById("ch9-print-style")?.remove();
+    // Druckregeln statisch in storyCertificatePrint.css (CSP: kein Inline-Style)
+    document.body.classList.add("story-cert-print");
+    return () => document.body.classList.remove("story-cert-print");
   }, []);
 
   const pubKey = keypair?.publicKey();
