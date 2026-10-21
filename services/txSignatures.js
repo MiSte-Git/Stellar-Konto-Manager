@@ -14,13 +14,56 @@ const { Keypair } = require('@stellar/stellar-sdk');
 
 const MAX_TX_SIGNATURES = 20; // Stellar XDR: Signatures is DecoratedSignature<20>
 
+// --- SDK-Versionsunabhaengiger Zugriff auf DecoratedSignature -----------------
+// stellar-sdk bis v16: Feld-Getter hint()/signature() liefern einen Buffer.
+// Ab v17 (js-xdr v5): Felder sind Properties, Werte sind Wrapper-Klassen
+// (xdr.SignatureHint / xdr.Signature) mit toBytes(); deren toString() liefert
+// Hex statt base64, und ein .equals() vergleicht nur Wrapper untereinander.
+// Alles hier arbeitet deshalb auf rohen Bytes. Was sich nicht eindeutig als
+// Bytes lesen laesst, wirft - die Aufrufer behandeln das als ungueltige
+// Signatur (fail closed).
+
+function toBytes(value) {
+  if (value instanceof Uint8Array) return value; // Buffer ist ein Uint8Array
+  if (value && typeof value.toBytes === 'function') {
+    const bytes = value.toBytes();
+    if (bytes instanceof Uint8Array) return bytes;
+  }
+  throw new TypeError('expected bytes');
+}
+
+function readField(obj, name) {
+  const value = obj?.[name];
+  return typeof value === 'function' ? value.call(obj) : value;
+}
+
+/** @returns {{ hint: Uint8Array, signature: Uint8Array }} */
+function decoratedSignatureBytes(sig) {
+  const hint = toBytes(readField(sig, 'hint'));
+  const signature = toBytes(readField(sig, 'signature'));
+  if (hint.length !== 4 || signature.length > 64) throw new TypeError('malformed decorated signature');
+  return { hint, signature };
+}
+
+function bytesEqual(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
+/** Stabiler Schluessel fuer die Duplikaterkennung beim Signatur-Merge (hint:signature, base64). */
+function signatureKey(sig) {
+  const { hint, signature } = decoratedSignatureBytes(sig);
+  return `${Buffer.from(hint).toString('base64')}:${Buffer.from(signature).toString('base64')}`;
+}
+
 /**
  * @param {import('@stellar/stellar-sdk').Transaction} tx
  * @param {{ publicKey: string, weight: number }[]} signers
  * @returns {import('@stellar/stellar-sdk').xdr.DecoratedSignature[]}
  */
 function filterValidSignatures(tx, signers = []) {
-  const txHash = tx.hash();
+  const txHash = Buffer.from(toBytes(tx.hash()));
   const keypairs = signers
     .filter((s) => Number(s?.weight || 0) > 0 && s?.publicKey)
     .map((s) => {
@@ -34,7 +77,8 @@ function filterValidSignatures(tx, signers = []) {
 
   const kept = tx.signatures.filter((sig) => keypairs.some((kp) => {
     try {
-      return sig.hint().equals(kp.signatureHint()) && kp.verify(txHash, sig.signature());
+      const { hint, signature } = decoratedSignatureBytes(sig);
+      return bytesEqual(hint, toBytes(kp.signatureHint())) && kp.verify(txHash, Buffer.from(signature));
     } catch {
       return false;
     }
@@ -84,6 +128,8 @@ function requiredWeightForOperations(operations, thresholds) {
 
 module.exports = {
   filterValidSignatures,
+  signatureKey,
+  decoratedSignatureBytes,
   MAX_TX_SIGNATURES,
   operationThresholdCategory,
   requiredWeightForOperations,

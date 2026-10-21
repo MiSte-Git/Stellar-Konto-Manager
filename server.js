@@ -15,7 +15,7 @@ const { createApiSecurityHeadersMiddleware } = require('./services/securityHeade
 const { handleFederationRequest, HOP_HEADER: FEDERATION_HOP_HEADER } = require('./services/federationService.js');
 const { writeJsonFileLocked } = require('./services/jsonFileStore.js');
 const { createChallenge, consumeChallenge, verifyChallengeSignature } = require('./services/challengeStore.js');
-const { filterValidSignatures, requiredWeightForOperations } = require('./services/txSignatures.js');
+const { filterValidSignatures, requiredWeightForOperations, signatureKey } = require('./services/txSignatures.js');
 const { isLoopbackAddress } = require('./services/network.js');
 const { computeMultisigLifecycleStatus, extractMaxTimeUnix, mapSubmitResultCodeToLifecycleStatus, isMultisigTimeboundWithinCap, MULTISIG_JOB_MAX_TIMEBOUND_SECONDS } = require('./services/multisigLifecycle.js');
 const { expireStalePendingJobs } = require('./services/multisigJobsGuard.js');
@@ -946,12 +946,22 @@ app.post('/api/multisig/jobs/:id/merge-signed-xdr', async (req, res) => {
       return res.status(409).json({ ok: false, error: lifecycleStatus, job: dead });
     }
 
-    const existingKeys = new Set(
-      current.tx.signatures.map((s) => `${s.hint().toString('base64')}:${s.signature().toString('base64')}`)
-    );
+    // signatureKey arbeitet auf rohen Bytes (stellar-sdk v16 und v17). Eine
+    // eingehende Signatur, deren Bytes nicht lesbar sind, wird nicht uebernommen;
+    // gespeicherte Signaturen stammen aus geprueftem XDR und muessen lesbar sein.
+    // Bewusst OHNE try/catch fuer die gespeicherten Signaturen: Wirft signatureKey
+    // hier (z. B. falsche Annahme ueber die XDR-Form nach einem SDK-Update), bricht
+    // der Merge ab, bevor filterValidSignatures laeuft. Sonst wuerde der Filter
+    // alle gespeicherten Signaturen verwerfen und txXdrCurrent unwiderruflich leeren.
+    const existingKeys = new Set(current.tx.signatures.map((s) => signatureKey(s)));
     let added = 0;
     incoming.tx.signatures.forEach((sig) => {
-      const key = `${sig.hint().toString('base64')}:${sig.signature().toString('base64')}`;
+      let key;
+      try {
+        key = signatureKey(sig);
+      } catch {
+        return;
+      }
       if (!existingKeys.has(key)) {
         current.tx.signatures.push(sig);
         existingKeys.add(key);

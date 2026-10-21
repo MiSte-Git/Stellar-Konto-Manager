@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { Account, TransactionBuilder, Operation, Networks, Keypair, xdr } = require('@stellar/stellar-sdk');
-const { filterValidSignatures, MAX_TX_SIGNATURES, operationThresholdCategory, requiredWeightForOperations } = require('../services/txSignatures.js');
+const { filterValidSignatures, MAX_TX_SIGNATURES, operationThresholdCategory, requiredWeightForOperations, signatureKey, decoratedSignatureBytes } = require('../services/txSignatures.js');
 
 function buildTx(sourceKeypair) {
   const account = new Account(sourceKeypair.publicKey(), '100');
@@ -199,4 +199,98 @@ test('requiredWeightForOperations reads real .type values off SDK-built setOptio
     .setTimeout(60)
     .build();
   assert.equal(requiredWeightForOperations(paymentTx.operations, { low: 1, med: 2, high: 3 }), 2);
+});
+
+// --- stellar-sdk v17 Vorbereitung: Signatur-Bytes unabhaengig von der XDR-API ---
+
+// Nachbildung der v17-Form (js-xdr v5): Felder als Properties, Werte als Wrapper mit
+// toBytes(), deren toString() Hex liefert und die selbst kein Uint8Array sind.
+function v17Wrapper(bytes) {
+  const raw = Uint8Array.from(bytes);
+  return { toBytes: () => raw, toString: () => Buffer.from(raw).toString('hex') };
+}
+function v17Signature(sig) {
+  return { hint: v17Wrapper(sig.hint()), signature: v17Wrapper(sig.signature()) };
+}
+
+test('signatureKey entspricht unter v16 dem bisherigen hint:signature in base64', () => {
+  const kp = Keypair.random();
+  const tx = buildTx(kp);
+  tx.sign(kp);
+  const sig = tx.signatures[0];
+  assert.equal(signatureKey(sig), `${sig.hint().toString('base64')}:${sig.signature().toString('base64')}`);
+});
+
+test('signatureKey liefert fuer v16- und v17-Form denselben Schluessel', () => {
+  const kp = Keypair.random();
+  const tx = buildTx(kp);
+  tx.sign(kp);
+  const sig = tx.signatures[0];
+  assert.equal(signatureKey(v17Signature(sig)), signatureKey(sig));
+});
+
+test('decoratedSignatureBytes wirft bei unlesbaren oder falsch langen Feldern', () => {
+  assert.throws(() => decoratedSignatureBytes({}), TypeError);
+  assert.throws(() => decoratedSignatureBytes({ hint: 'abcd', signature: 'x' }), TypeError);
+  assert.throws(() => decoratedSignatureBytes({ hint: new Uint8Array(3), signature: new Uint8Array(64) }), TypeError);
+  assert.throws(() => decoratedSignatureBytes({ hint: new Uint8Array(4), signature: new Uint8Array(65) }), TypeError);
+});
+
+test('filterValidSignatures arbeitet mit v17-Form (Uint8Array-Hash, Wrapper-Felder)', () => {
+  const signer = Keypair.random();
+  const stranger = Keypair.random();
+  const tx = buildTx(signer);
+  tx.sign(signer);
+  tx.sign(stranger);
+  const fakeV17Tx = {
+    hash: () => Uint8Array.from(tx.hash()),
+    signatures: [v17Signature(tx.signatures[0]), v17Signature(tx.signatures[1]), v17Signature(garbageSignature())],
+  };
+  const kept = filterValidSignatures(fakeV17Tx, [signerEntry(signer)]);
+  assert.equal(kept.length, 1);
+  assert.equal(kept[0], fakeV17Tx.signatures[0]);
+});
+
+test('filterValidSignatures verwirft eine v17-Signatur mit passendem Hint, aber falscher Signatur', () => {
+  const signer = Keypair.random();
+  const tx = buildTx(signer);
+  tx.sign(signer);
+  const forged = { hint: v17Wrapper(signer.signatureHint()), signature: v17Wrapper(new Uint8Array(64)) };
+  const kept = filterValidSignatures({ hash: () => Uint8Array.from(tx.hash()), signatures: [forged] }, [signerEntry(signer)]);
+  assert.equal(kept.length, 0);
+});
+
+test('toBytes-Wrapper, die keine Bytes liefern, oder werfende Getter gelten als ungueltig', () => {
+  const bad = [
+    { hint: { toBytes: () => 'abcd' }, signature: v17Wrapper(new Uint8Array(64)) },
+    { hint: v17Wrapper(new Uint8Array(4)), signature: { toBytes: () => [1, 2, 3] } },
+    { hint() { throw new Error('boom'); }, signature: v17Wrapper(new Uint8Array(64)) },
+  ];
+  for (const sig of bad) assert.throws(() => decoratedSignatureBytes(sig));
+  const signer = Keypair.random();
+  const tx = buildTx(signer);
+  assert.equal(filterValidSignatures({ hash: () => Uint8Array.from(tx.hash()), signatures: bad }, [signerEntry(signer)]).length, 0);
+});
+
+test('filterValidSignatures begrenzt auch v17-Signaturen auf MAX_TX_SIGNATURES', () => {
+  const signers = Array.from({ length: MAX_TX_SIGNATURES + 3 }, () => Keypair.random());
+  const tx = buildTx(signers[0]);
+  signers.forEach((kp) => tx.sign(kp));
+  const fakeV17Tx = { hash: () => Uint8Array.from(tx.hash()), signatures: tx.signatures.map(v17Signature) };
+  const kept = filterValidSignatures(fakeV17Tx, signers.map((kp) => signerEntry(kp)));
+  assert.equal(kept.length, MAX_TX_SIGNATURES);
+});
+
+test('filterValidSignatures akzeptiert signatureHint() als v17-Wrapper', () => {
+  const signer = Keypair.random();
+  const tx = buildTx(signer);
+  tx.sign(signer);
+  const original = Keypair.prototype.signatureHint;
+  Keypair.prototype.signatureHint = function wrappedHint() { return v17Wrapper(original.call(this)); };
+  try {
+    const kept = filterValidSignatures({ hash: () => Uint8Array.from(tx.hash()), signatures: [v17Signature(tx.signatures[0])] }, [signerEntry(signer)]);
+    assert.equal(kept.length, 1);
+  } finally {
+    Keypair.prototype.signatureHint = original;
+  }
 });
