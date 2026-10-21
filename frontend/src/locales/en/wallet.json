@@ -3,7 +3,8 @@
     "label": "Federation address",
     "none": "No federation address defined",
     "account": "Account",
-    "accountLabel": "Label"
+    "accountLabel": "Label",
+    "reverseLabel": "Name as reported by the {{domain}} Federation Server"
   },
   "flag": {
     "compromised": "Warning: This wallet is marked as compromised in your TrustList.",
@@ -46,7 +47,8 @@
         "text": "A quiz, a scam simulator, and a story featuring Lumio—get to know Stellar at your own pace, with no risk and no real money involved.",
         "cta": "Let's get started"
       }
-    }
+    },
+    "assetsCollapsed": "XLM and {{count}} Token. Expand to view."
   },
   "receive": {
     "title": "Receive",
@@ -138,7 +140,8 @@
     "jobTrustline": "Create Trustline",
     "jobNetwork": "Network",
     "jobNoteLabel": "Note",
-    "jobHint": "The Claimable Balance may expire or be redeemed in some other way before everyone has signed. The job will then fail upon submission, but nothing will be lost. The job's validity ends no later than when the Claimable Balance expires."
+    "jobHint": "The Claimable Balance may expire or be redeemed in some other way before everyone has signed. The job will then fail upon submission, but nothing will be lost. The job's validity ends no later than when the Claimable Balance expires.",
+    "empty": "No Claimable Balances found."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -182,6 +185,11 @@
       "authRequired": "Publisher Requests Approval",
       "noMarket": "No market found",
       "quoteFailed": "Query failed"
-    }
+    },
+    "fromTrustlines": "From my Trustlines ({{count}})",
+    "trustlineSearch": "Search by code or publisher",
+    "trustlineNoMatch": "No matching Trustline.",
+    "selectTrustline": "Please select a Trustline as the target Asset.",
+    "trustlineMore": "{{count}} more; please refine your search."
   }
 }

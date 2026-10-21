@@ -3,7 +3,8 @@
     "label": "Adresse de la fédération",
     "none": "Aucune adresse de fédération définie",
     "account": "Compte",
-    "accountLabel": "Étiquette"
+    "accountLabel": "Étiquette",
+    "reverseLabel": "Nom tel qu'il apparaît sur le serveur de la Fédération {{domain}}"
   },
   "flag": {
     "compromised": "Avertissement : Ce portefeuille est marqué comme compromis dans votre TrustList.",
@@ -46,7 +47,8 @@
         "text": "Un quiz, un simulateur d'arnaques et une histoire mettant en scène Lumio : découvrez Stellar à votre rythme, sans aucun risque et sans argent réel.",
         "cta": "C'est parti !"
       }
-    }
+    },
+    "assetsCollapsed": "XLM et {{count}} Token. Développez pour afficher."
   },
   "receive": {
     "title": "Recevoir",
@@ -138,7 +140,8 @@
     "jobTrustline": "Créer Trustline",
     "jobNetwork": "Réseau",
     "jobNoteLabel": "Remarque",
-    "jobHint": "Le « solde à réclamer » peut expirer ou être utilisé d'une autre manière avant que tout le monde ait signé. La tâche échouera alors lors de sa soumission, mais aucune donnée ne sera perdue. La validité de la tâche prend fin au plus tard à l'expiration du « solde à réclamer »."
+    "jobHint": "Le « solde à réclamer » peut expirer ou être utilisé d'une autre manière avant que tout le monde ait signé. La tâche échouera alors lors de sa soumission, mais aucune donnée ne sera perdue. La validité de la tâche prend fin au plus tard à l'expiration du « solde à réclamer ».",
+    "empty": "Aucun Claimable Balances n'a été trouvé."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -182,6 +185,11 @@
       "authRequired": "L'éditeur demande une autorisation",
       "noMarket": "Aucun marché trouvé",
       "quoteFailed": "Échec de la requête"
-    }
+    },
+    "fromTrustlines": "Extrait de mon Trustlines ({{count}})",
+    "trustlineSearch": "Recherche par code ou par éditeur",
+    "trustlineNoMatch": "Aucune correspondance pour Trustline.",
+    "selectTrustline": "Veuillez sélectionner un Trustline comme cible Asset.",
+    "trustlineMore": "{{count}} résultats supplémentaires ; veuillez affiner votre recherche."
   }
 }

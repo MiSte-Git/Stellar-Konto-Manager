@@ -3,7 +3,8 @@
     "label": "Federatieadres",
     "none": "Geen federatieadres gedefinieerd",
     "account": "Account",
-    "accountLabel": "Label"
+    "accountLabel": "Label",
+    "reverseLabel": "Naam zoals gerapporteerd door de {{domain}} Federation Server"
   },
   "flag": {
     "compromised": "Waarschuwing: Deze portemonnee is gemarkeerd als gecompromitteerd in uw TrustList.",
@@ -46,7 +47,8 @@
         "text": "Een quiz, een scam-simulator en een verhaal met Lumio in de hoofdrol – leer Stellar op je eigen tempo kennen, zonder risico en zonder dat er echt geld mee gemoeid is.",
         "cta": "Aan de slag"
       }
-    }
+    },
+    "assetsCollapsed": "XLM en {{count}} Token. Klik om uit te vouwen."
   },
   "receive": {
     "title": "Ontvangen",
@@ -138,7 +140,8 @@
     "jobTrustline": "Maak Trustline aan",
     "jobNetwork": "Netwerk",
     "jobNoteLabel": "Opmerking",
-    "jobHint": "Het inwisselbare saldo kan verlopen of op een andere manier worden ingewisseld voordat iedereen heeft ondertekend. De opdracht zal dan bij het indienen mislukken, maar er gaat niets verloren. De geldigheid van de opdracht eindigt uiterlijk op het moment dat het inwisselbare saldo verloopt."
+    "jobHint": "Het inwisselbare saldo kan verlopen of op een andere manier worden ingewisseld voordat iedereen heeft ondertekend. De opdracht zal dan bij het indienen mislukken, maar er gaat niets verloren. De geldigheid van de opdracht eindigt uiterlijk op het moment dat het inwisselbare saldo verloopt.",
+    "empty": "Er is geen Claimable Balances gevonden."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -182,6 +185,11 @@
       "authRequired": "Uitgever vraagt om goedkeuring",
       "noMarket": "Er is geen markt gevonden",
       "quoteFailed": "De zoekopdracht is mislukt"
-    }
+    },
+    "fromTrustlines": "Van mijn Trustlines ({{count}})",
+    "trustlineSearch": "Zoeken op code of uitgever",
+    "trustlineNoMatch": "Er is geen overeenkomst met Trustline.",
+    "selectTrustline": "Kies een Trustline als doel Asset.",
+    "trustlineMore": "{{count}} meer; verfijn je zoekopdracht."
   }
 }

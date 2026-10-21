@@ -701,7 +701,8 @@
       "paymentsFetch": "Fout bij het laden van betalingen",
       "serverInvalid": "Ongeldige server"
     },
-    "rateLimited": "Horizon limiet overschreden. Wacht een paar seconden en probeer het opnieuw."
+    "rateLimited": "Horizon limiet overschreden. Wacht een paar seconden en probeer het opnieuw.",
+    "noFederationId": "Het adres van de federatie kon niet worden omgezet."
   },
   "investedTokens": {
     "columns": {

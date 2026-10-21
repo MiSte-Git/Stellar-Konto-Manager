@@ -701,7 +701,8 @@
       "paymentsFetch": "Errore durante il caricamento dei pagamenti",
       "serverInvalid": "Server non valido"
     },
-    "rateLimited": "Limite di velocità di Horizon superato. Attendere alcuni secondi e riprovare."
+    "rateLimited": "Limite di velocità di Horizon superato. Attendere alcuni secondi e riprovare.",
+    "noFederationId": "Non è stato possibile risolvere l'indirizzo della federazione."
   },
   "investedTokens": {
     "columns": {

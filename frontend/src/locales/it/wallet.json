@@ -3,7 +3,8 @@
     "label": "Indirizzo della federazione",
     "none": "Nessun indirizzo di federazione definito",
     "account": "Account",
-    "accountLabel": "Etichetta"
+    "accountLabel": "Etichetta",
+    "reverseLabel": "Nome riportato dal server della Federazione {{domain}}"
   },
   "flag": {
     "compromised": "Attenzione: Questo portafoglio è segnalato come compromesso nella tua TrustList.",
@@ -46,7 +47,8 @@
         "text": "Un quiz, un simulatore di truffe e una storia con protagonista Lumio: scopri Stellar al tuo ritmo, senza rischi e senza usare denaro reale.",
         "cta": "Cominciamo"
       }
-    }
+    },
+    "assetsCollapsed": "XLM e {{count}} Token. Espandi per visualizzare."
   },
   "receive": {
     "title": "Ricevi",
@@ -138,7 +140,8 @@
     "jobTrustline": "Crea Trustline",
     "jobNetwork": "Rete",
     "jobNoteLabel": "Nota",
-    "jobHint": "Il saldo riscattabile potrebbe scadere o essere riscattato in altro modo prima che tutti abbiano firmato. In tal caso, l'incarico non andrà a buon fine al momento dell'invio, ma non andrà perso nulla. La validità dell'incarico termina al più tardi alla scadenza del saldo riscattabile."
+    "jobHint": "Il saldo riscattabile potrebbe scadere o essere riscattato in altro modo prima che tutti abbiano firmato. In tal caso, l'incarico non andrà a buon fine al momento dell'invio, ma non andrà perso nulla. La validità dell'incarico termina al più tardi alla scadenza del saldo riscattabile.",
+    "empty": "Non è stato trovato alcun Claimable Balances."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -182,6 +185,11 @@
       "authRequired": "L'editore richiede l'approvazione",
       "noMarket": "Nessun mercato trovato",
       "quoteFailed": "Errore durante l'esecuzione della query"
-    }
+    },
+    "fromTrustlines": "Dal mio Trustlines ({{count}})",
+    "trustlineSearch": "Cerca per codice o editore",
+    "trustlineNoMatch": "Nessun risultato corrispondente a Trustline.",
+    "selectTrustline": "Seleziona un Trustline come destinazione Asset.",
+    "trustlineMore": "{{count}} in più; ti preghiamo di affinare la ricerca."
   }
 }

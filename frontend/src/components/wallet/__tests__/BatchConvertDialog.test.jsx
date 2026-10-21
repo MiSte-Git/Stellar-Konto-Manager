@@ -146,8 +146,8 @@ describe('BatchConvertDialog', () => {
 
   it('lehnt ein ungueltiges eigenes Ziel-Asset ab', async () => {
     renderDialog();
-    fireEvent.change(screen.getByLabelText('Ziel-Asset'), { target: { value: '__custom__' } });
-    fireEvent.change(screen.getByLabelText('Anderes Asset (CODE:Herausgeber)'), { target: { value: 'LDEX:kaputt' } });
+    fireEvent.click(screen.getByRole('radio', { name: 'Anderes Asset (CODE:Herausgeber)' }));
+    fireEvent.change(screen.getByRole('textbox', { name: 'Anderes Asset (CODE:Herausgeber)' }), { target: { value: 'LDEX:kaputt' } });
     fireEvent.click(screen.getByRole('button', { name: 'Vorschau laden' }));
     await screen.findByText(/Ungültiges Ziel-Asset/);
     expect(hoisted.pathsMock).not.toHaveBeenCalled();
@@ -176,5 +176,33 @@ describe('BatchConvertDialog', () => {
     await screen.findByText('job-7');
     expect(hoisted.submitMock).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
+  });
+
+  it('waehlt das Ziel aus den eigenen Trustlines per Suche', async () => {
+    const acct = makeAccount();
+    acct.balances = [
+      { asset_type: 'native', balance: '100.0000000' },
+      ...Array.from({ length: 60 }, (_, i) => ({ asset_type: 'credit_alphanum12', asset_code: `TOK${i}`, asset_issuer: ISSUER, balance: '0', is_authorized: true })),
+      { asset_type: 'credit_alphanum4', asset_code: 'LDEX', asset_issuer: ISSUER, balance: '1', is_authorized: true },
+    ];
+    renderDialog({ account: acct });
+    fireEvent.click(screen.getByRole('radio', { name: 'Aus meinen Trustlines (61)' }));
+    expect(screen.getByText(/11 weitere, bitte die Suche verfeinern/)).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'ldex' } });
+    const options = screen.getAllByRole('option');
+    expect(options).toHaveLength(1);
+    fireEvent.click(options[0]);
+    expect(options[0]).toHaveAttribute('aria-selected', 'true');
+    await loadPreview();
+    expect(screen.getAllByText(/≈ 1.5 LDEX/).length).toBeGreaterThan(0);
+  });
+
+  it('verlangt eine Auswahl, wenn Trustline als Ziel gewaehlt ist', async () => {
+    const acct = makeAccount();
+    acct.balances = [...acct.balances, { asset_type: 'credit_alphanum4', asset_code: 'LDEX', asset_issuer: ISSUER, balance: '1', is_authorized: true }];
+    renderDialog({ account: acct });
+    fireEvent.click(screen.getByRole('radio', { name: 'Aus meinen Trustlines (1)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Vorschau laden' }));
+    await screen.findByText('Bitte eine Trustline als Ziel-Asset auswählen.');
   });
 });

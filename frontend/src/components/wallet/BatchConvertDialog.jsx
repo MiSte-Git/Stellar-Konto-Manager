@@ -29,7 +29,7 @@ const HORIZON_MAIN = 'https://horizon.stellar.org';
 const HORIZON_TEST = 'https://horizon-testnet.stellar.org';
 const BASE_RESERVE_XLM = 0.5;
 const STROOPS_PER_XLM = 10000000;
-const CUSTOM = '__custom__';
+const TRUSTLINE_LIST_LIMIT = 50;
 
 const btnPrimary = 'rounded-lg border-0 bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50';
 const btnSecondary = 'rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100';
@@ -52,7 +52,10 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
     [account]
   );
 
-  const [targetChoice, setTargetChoice] = React.useState('XLM');
+  // Ziel: XLM, eine eigene Trustline (mit Suche) oder ein frei eingegebenes Asset
+  const [targetMode, setTargetMode] = React.useState('xlm'); // xlm | trustline | custom
+  const [trustlineKey, setTrustlineKey] = React.useState('');
+  const [trustlineFilter, setTrustlineFilter] = React.useState('');
   const [customTarget, setCustomTarget] = React.useState('');
   const [slippage, setSlippage] = React.useState(DEFAULT_BATCH_SLIPPAGE);
   const [phase, setPhase] = React.useState('setup'); // setup | quoting | preview | running | done
@@ -68,9 +71,17 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
   const [preparedJob, setPreparedJob] = React.useState(null);
   const inFlightRef = React.useRef(false);
 
-  const target = targetChoice === CUSTOM
-    ? parseTargetAsset(customTarget)
-    : (targetChoice === 'XLM' ? NATIVE_TARGET : trustlineTargets.find((a) => a.key === targetChoice) || null);
+  let target = NATIVE_TARGET;
+  if (targetMode === 'custom') target = parseTargetAsset(customTarget);
+  else if (targetMode === 'trustline') target = trustlineTargets.find((a) => a.key === trustlineKey) || null;
+
+  const filteredTrustlines = React.useMemo(() => {
+    const q = trustlineFilter.trim().toLowerCase();
+    const list = q
+      ? trustlineTargets.filter((a) => a.code.toLowerCase().includes(q) || a.issuer.toLowerCase().includes(q))
+      : trustlineTargets;
+    return [...list].sort((a, b) => a.code.localeCompare(b.code) || a.issuer.localeCompare(b.issuer));
+  }, [trustlineFilter, trustlineTargets]);
 
   React.useEffect(() => {
     if (!showSecretModal) return undefined;
@@ -93,6 +104,10 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
 
   const loadPreview = async () => {
     setError('');
+    if (targetMode === 'trustline' && !target) {
+      setError(t('wallet:batchConvert.selectTrustline'));
+      return;
+    }
     if (!target) {
       setError(t('wallet:batchConvert.invalidTarget'));
       return;
@@ -285,21 +300,65 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
 
         {(phase === 'setup' || phase === 'quoting') && (
           <div className="mt-4 space-y-3">
-            <div>
-              <label htmlFor="batch-target" className="block text-sm font-medium text-gray-800 dark:text-gray-200">{t('wallet:batchConvert.target')}</label>
-              <select
-                id="batch-target"
-                value={targetChoice}
-                onChange={(e) => setTargetChoice(e.target.value)}
-                className="mt-1 w-full rounded border px-2 py-1.5 text-sm dark:bg-gray-900"
-              >
-                <option value="XLM">XLM</option>
-                {trustlineTargets.map((a) => (
-                  <option key={a.key} value={a.key}>{`${a.code} (${shortenAddress(a.issuer)})`}</option>
-                ))}
-                <option value={CUSTOM}>{t('wallet:batchConvert.customTarget')}</option>
-              </select>
-              {targetChoice === CUSTOM && (
+            <fieldset>
+              <legend className="block text-sm font-medium text-gray-800 dark:text-gray-200">{t('wallet:batchConvert.target')}</legend>
+              <div className="mt-1 space-y-1 text-sm">
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="batch-target-mode" checked={targetMode === 'xlm'} onChange={() => setTargetMode('xlm')} />
+                  XLM
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="batch-target-mode"
+                    checked={targetMode === 'trustline'}
+                    onChange={() => setTargetMode('trustline')}
+                    disabled={trustlineTargets.length === 0}
+                  />
+                  {t('wallet:batchConvert.fromTrustlines', { count: trustlineTargets.length })}
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="batch-target-mode" checked={targetMode === 'custom'} onChange={() => setTargetMode('custom')} />
+                  {t('wallet:batchConvert.customTarget')}
+                </label>
+              </div>
+              {targetMode === 'trustline' && (
+                <div className="mt-2 space-y-1">
+                  <input
+                    type="search"
+                    value={trustlineFilter}
+                    onChange={(e) => setTrustlineFilter(e.target.value)}
+                    placeholder={t('wallet:batchConvert.trustlineSearch')}
+                    aria-label={t('wallet:batchConvert.trustlineSearch')}
+                    className="w-full rounded border px-2 py-1.5 text-sm dark:bg-gray-900"
+                    spellCheck="false"
+                    autoComplete="off"
+                  />
+                  <ul className="max-h-48 overflow-y-auto rounded border dark:border-gray-700" role="listbox" aria-label={t('wallet:batchConvert.target')}>
+                    {filteredTrustlines.slice(0, TRUSTLINE_LIST_LIMIT).map((a) => (
+                      <li key={a.key}>
+                        <button
+                          type="button"
+                          role="option"
+                          aria-selected={trustlineKey === a.key}
+                          onClick={() => setTrustlineKey(a.key)}
+                          className={`flex w-full items-center justify-between gap-2 border-0 px-2 py-1.5 text-left text-sm ${trustlineKey === a.key ? 'bg-blue-50 font-semibold text-blue-800 dark:bg-blue-900/40 dark:text-blue-100' : 'bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                        >
+                          <span>{a.code}</span>
+                          <span className="font-mono text-xs text-gray-500" title={a.issuer}>{shortenAddress(a.issuer)}</span>
+                        </button>
+                      </li>
+                    ))}
+                    {filteredTrustlines.length === 0 && (
+                      <li className="px-2 py-1.5 text-xs text-gray-500">{t('wallet:batchConvert.trustlineNoMatch')}</li>
+                    )}
+                  </ul>
+                  {filteredTrustlines.length > TRUSTLINE_LIST_LIMIT && (
+                    <p className="text-xs text-gray-500">{t('wallet:batchConvert.trustlineMore', { count: filteredTrustlines.length - TRUSTLINE_LIST_LIMIT })}</p>
+                  )}
+                </div>
+              )}
+              {targetMode === 'custom' && (
                 <input
                   type="text"
                   value={customTarget}
@@ -312,7 +371,7 @@ export default function BatchConvertDialog({ publicKey, account, network, availa
                 />
               )}
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{t('wallet:batchConvert.targetNote')}</p>
-            </div>
+            </fieldset>
             <div>
               <label htmlFor="batch-slippage" className="block text-sm font-medium text-gray-800 dark:text-gray-200">{t('wallet:batchConvert.slippage')}</label>
               <input

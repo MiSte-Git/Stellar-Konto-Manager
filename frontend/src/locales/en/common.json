@@ -701,7 +701,8 @@
       "paymentsFetch": "Error loading payments",
       "serverInvalid": "Invalid server"
     },
-    "rateLimited": "Horizon rate limit exceeded. Please wait a few seconds and try again."
+    "rateLimited": "Horizon rate limit exceeded. Please wait a few seconds and try again.",
+    "noFederationId": "The federation address could not be resolved."
   },
   "investedTokens": {
     "columns": {

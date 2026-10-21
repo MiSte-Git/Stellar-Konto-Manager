@@ -32,6 +32,7 @@
     "pool": "Pool",
     "issuer": "Herausgeber",
     "noTrustlines": "Noch keine Token-Freigaben. Um andere Token zu halten, brauchst du zuerst eine Freigabe (Trustline).",
+    "assetsCollapsed": "XLM und {{count}} Token. Zum Anzeigen aufklappen.",
     "tokenNote": "Ein Gegenwert wird nur für XLM angezeigt. SKM bewertet keine Token und trifft keine Aussage darüber, ob ein Token echt ist.",
     "notFound": {
       "title": "Konto noch nicht aktiviert",
@@ -107,6 +108,7 @@
   },
   "claimable": {
     "title": "Claimable Balances",
+    "empty": "Keine Claimable Balances vorhanden.",
     "intro": "Zahlungen, die für dein Konto bereitliegen und erst eingelöst werden müssen, bevor sie im Guthaben erscheinen.",
     "claim": "Einlösen",
     "hide": "Ausblenden",
@@ -147,6 +149,11 @@
     "intro": "Löst mehrere Claimable Balances auf einmal ein und wandelt sie in ein Ziel-Asset deiner Wahl um. Fehlende Trustlines werden dafür kurz angelegt und in derselben Transaktion wieder gelöscht, im Konto bleibt nur das Ziel-Asset.",
     "target": "Ziel-Asset",
     "customTarget": "Anderes Asset (CODE:Herausgeber)",
+    "fromTrustlines": "Aus meinen Trustlines ({{count}})",
+    "trustlineSearch": "Nach Code oder Herausgeber suchen",
+    "trustlineNoMatch": "Keine passende Trustline.",
+    "selectTrustline": "Bitte eine Trustline als Ziel-Asset auswählen.",
+    "trustlineMore": "{{count}} weitere, bitte die Suche verfeinern.",
     "targetNote": "XLM ist vorausgewählt, weil es das native Asset ist. Das ist keine Empfehlung. SKM bewertet keine Token, prüfe die Fakten zum Ziel-Asset bei Bedarf in der Token-Suche.",
     "slippage": "Maximale Kursabweichung (Slippage)",
     "loadPreview": "Vorschau laden",

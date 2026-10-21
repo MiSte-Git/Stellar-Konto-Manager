@@ -157,11 +157,14 @@ describe('ClaimableBalancesPanel (P1.5)', () => {
     expect(screen.getAllByTestId('claimable-item')).toHaveLength(2);
   });
 
-  it('rendert nichts, wenn keine Claimable Balances vorhanden sind', async () => {
+  it('zeigt den Abschnitt auch ohne Claimable Balances, mit Anzahl 0', async () => {
     hoisted.recordsMock.mockResolvedValue({ records: [] });
     renderPanel();
     await waitFor(() => expect(hoisted.recordsMock).toHaveBeenCalled());
-    expect(screen.queryByTestId('wallet-home-claimable')).not.toBeInTheDocument();
+    const section = await screen.findByTestId('wallet-home-claimable');
+    expect(within(section).getByText('0')).toBeInTheDocument();
+    expect(screen.getByTestId('claimable-empty')).toHaveTextContent('Keine Claimable Balances vorhanden.');
+    expect(screen.queryByRole('button', { name: /Batch-Convert/ })).not.toBeInTheDocument();
   });
 
   it('bietet bei Einzelsignatur-Konten keinen Job an', async () => {

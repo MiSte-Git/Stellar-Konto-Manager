@@ -701,7 +701,8 @@
       "paymentsFetch": "Pogreška pri učitavanju uplata",
       "serverInvalid": "Nevažeći poslužitelj"
     },
-    "rateLimited": "Prekoračili ste ograničenje brzine usluge Horizon. Pričekajte nekoliko sekundi i pokušajte ponovo."
+    "rateLimited": "Prekoračili ste ograničenje brzine usluge Horizon. Pričekajte nekoliko sekundi i pokušajte ponovo.",
+    "noFederationId": "Adresa federacije nije mogla biti riješena."
   },
   "investedTokens": {
     "columns": {

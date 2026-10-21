@@ -701,7 +701,8 @@
       "paymentsFetch": "Virhe maksujen lataamisessa",
       "serverInvalid": "Virheellinen palvelin"
     },
-    "rateLimited": "Horizon-rajoitus ylittyi. Odota muutama sekunti ja yritä uudelleen."
+    "rateLimited": "Horizon-rajoitus ylittyi. Odota muutama sekunti ja yritä uudelleen.",
+    "noFederationId": "Liiton osoitetta ei voitu selvittää."
   },
   "investedTokens": {
     "columns": {

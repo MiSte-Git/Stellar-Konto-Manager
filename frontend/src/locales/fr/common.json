@@ -701,7 +701,8 @@
       "paymentsFetch": "Erreur lors du chargement des paiements",
       "serverInvalid": "Serveur invalide"
     },
-    "rateLimited": "Limite de taux Horizon dépassée. Veuillez attendre quelques secondes et réessayer."
+    "rateLimited": "Limite de taux Horizon dépassée. Veuillez attendre quelques secondes et réessayer.",
+    "noFederationId": "L'adresse de la fédération n'a pas pu être résolue."
   },
   "investedTokens": {
     "columns": {

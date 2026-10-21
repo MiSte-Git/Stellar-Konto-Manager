@@ -3,7 +3,8 @@
     "label": "Adresa federacije",
     "none": "Nije definisana adresa federacije",
     "account": "Račun",
-    "accountLabel": "Oznaka"
+    "accountLabel": "Oznaka",
+    "reverseLabel": "Naziv kako ga je izvijestio poslužitelj Federacije {{domain}}"
   },
   "flag": {
     "compromised": "Upozorenje: Ovaj novčanik je označen kao kompromitiran na vašem TrustListu.",
@@ -46,7 +47,8 @@
         "text": "Kviz, simulator prijevara i priča s Lumiom – upoznajte Stellar vlastitim tempom, bez rizika i bez stvarnog novca.",
         "cta": "Počnimo"
       }
-    }
+    },
+    "assetsCollapsed": "XLM i {{count}} Token. Proširi za pregled."
   },
   "receive": {
     "title": "Primiti",
@@ -138,7 +140,8 @@
     "jobTrustline": "Stvorite Trustline",
     "jobNetwork": "Mreža",
     "jobNoteLabel": "Napomena",
-    "jobHint": "Potraživani iznos može isteći ili biti iskorišten na neki drugi način prije nego što svi potpišu. Tada će zadatak prilikom podnošenja propasti, ali ništa neće biti izgubljeno. Valjanost zadatka ne prestaje prije isteka potraživanog iznosa."
+    "jobHint": "Potraživani iznos može isteći ili biti iskorišten na neki drugi način prije nego što svi potpišu. Tada će zadatak prilikom podnošenja propasti, ali ništa neće biti izgubljeno. Valjanost zadatka ne prestaje prije isteka potraživanog iznosa.",
+    "empty": "Nije pronađen Claimable Balances."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -182,6 +185,11 @@
       "authRequired": "Izdavač traži odobrenje",
       "noMarket": "Nije pronađen nijedan tržište",
       "quoteFailed": "Upit je propao"
-    }
+    },
+    "fromTrustlines": "Od mog Trustlines ({{count}})",
+    "trustlineSearch": "Pretraži po kodu ili izdavaču",
+    "trustlineNoMatch": "Nema podudaranja za Trustline.",
+    "selectTrustline": "Molimo odaberite Trustline kao ciljni Asset.",
+    "trustlineMore": "{{count}} više; molimo precizirajte svoju pretragu."
   }
 }

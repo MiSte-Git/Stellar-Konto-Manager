@@ -254,7 +254,7 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
     }
   };
 
-  if (!publicKey || (items.length === 0 && !loadError && !info)) return null;
+  if (!publicKey) return null;
 
   const renderItem = (item) => {
     const hidden = hiddenIds.includes(item.id);
@@ -344,6 +344,10 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       {claimError && !claimItem && <p role="alert" className="px-5 pt-2 text-xs text-red-700 dark:text-red-300">{claimError}</p>}
       {loadError && <p className="px-5 pt-2 text-xs text-red-700 dark:text-red-300">{loadError}</p>}
 
+      {items.length === 0 && !loadError && (
+        <p className="px-5 py-3 text-xs text-gray-500 dark:text-gray-400" data-testid="claimable-empty">{t('wallet:claimable.empty')}</p>
+      )}
+
       {known.length > 0 && <ul className="mt-2 divide-y divide-gray-100 dark:divide-gray-700/70">{known.map(renderItem)}</ul>}
 
       {noTrust.length > 0 && (
@@ -364,9 +368,11 @@ export default function ClaimableBalancesPanel({ publicKey, account, network, av
       )}
 
       {truncated && <p className="px-5 py-2 text-xs text-gray-500 dark:text-gray-400">{t('wallet:claimable.truncated', { count: records.length })}</p>}
-      <p className="mt-2 border-t border-gray-100 bg-gray-50 px-5 py-2.5 text-xs text-gray-500 dark:border-gray-700/70 dark:bg-gray-900/40 dark:text-gray-400">
-        {t('wallet:home.tokenNote')}
-      </p>
+      {items.length > 0 && (
+        <p className="mt-2 border-t border-gray-100 bg-gray-50 px-5 py-2.5 text-xs text-gray-500 dark:border-gray-700/70 dark:bg-gray-900/40 dark:text-gray-400">
+          {t('wallet:home.tokenNote')}
+        </p>
+      )}
 
       {showBatch && (
         <BatchConvertDialog

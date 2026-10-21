@@ -701,7 +701,8 @@
       "paymentsFetch": "Error al cargar los pagos",
       "serverInvalid": "Servidor no válido"
     },
-    "rateLimited": "Límite de tasa de Horizon excedido. Por favor, espera unos segundos y vuelve a intentarlo."
+    "rateLimited": "Límite de tasa de Horizon excedido. Por favor, espera unos segundos y vuelve a intentarlo.",
+    "noFederationId": "No se ha podido resolver la dirección de la federación."
   },
   "investedTokens": {
     "columns": {

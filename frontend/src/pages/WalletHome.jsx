@@ -21,6 +21,8 @@ function readNetwork() {
   }
 }
 
+const ASSETS_OPEN_KEY = 'skm.wallet.assetsOpen';
+
 const EMPTY_STATE = { loading: false, error: '', notFound: false, account: null };
 
 /** Laedt das Konto (nur loadAccount, keine Zahlungsliste) und folgt Netzwechseln. */
@@ -170,6 +172,17 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
   const { decimalsMode } = useSettings();
   const price = useXlmPriceData();
   const [reloadToken, setReloadToken] = React.useState(0);
+  // Assets standardmaessig eingeklappt (bei vielen Trustlines sonst langes Scrollen); Wahl pro Browser merken.
+  const [assetsOpen, setAssetsOpen] = React.useState(() => {
+    try { return window.localStorage?.getItem(ASSETS_OPEN_KEY) === '1'; } catch { return false; }
+  });
+  const toggleAssets = () => {
+    setAssetsOpen((prev) => {
+      const next = !prev;
+      try { window.localStorage?.setItem(ASSETS_OPEN_KEY, next ? '1' : '0'); } catch { /* noop */ }
+      return next;
+    });
+  };
   const { loading, error, notFound, account, network } = useAccountOverview(publicKey, reloadToken);
   const summary = React.useMemo(() => computeWalletSummary(account), [account]);
 
@@ -320,10 +333,19 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
         <section className={`${cardCls} mt-4 overflow-hidden`} data-testid="wallet-home-assets">
           <div className="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-3 dark:border-gray-700">
             <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
-              {t('wallet:home.assets', 'Assets')}
-              <span className="ml-2 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                {summary.assets.length + 1}
-              </span>
+              <button
+                type="button"
+                onClick={toggleAssets}
+                aria-expanded={assetsOpen}
+                aria-controls="wallet-home-asset-list"
+                className="inline-flex items-center gap-2 rounded-md border-0 bg-transparent p-0 text-sm font-semibold text-gray-900 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-white dark:hover:text-blue-300"
+              >
+                <span aria-hidden="true" className={`inline-block transition-transform ${assetsOpen ? 'rotate-90' : ''}`}>▸</span>
+                {t('wallet:home.assets', 'Assets')}
+                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                  {summary.assets.length + 1}
+                </span>
+              </button>
             </h2>
             <button
               type="button"
@@ -333,7 +355,14 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
               {t('wallet:home.manageTrustlines', 'Token-Freigaben verwalten')}
             </button>
           </div>
-          <ul className="divide-y divide-gray-100 dark:divide-gray-700/70">
+          {!assetsOpen && (
+            <p className="px-5 py-3 text-xs text-gray-600 dark:text-gray-300" data-testid="wallet-home-assets-collapsed">
+              {t('wallet:home.assetsCollapsed', { count: summary.assets.length, defaultValue: 'XLM und {{count}} Token. Zum Anzeigen aufklappen.' })}
+            </p>
+          )}
+          {assetsOpen && (
+          <>
+          <ul id="wallet-home-asset-list" className="divide-y divide-gray-100 dark:divide-gray-700/70">
             <li className="flex items-center gap-3 px-5 py-3">
               <AssetAvatar label="XLM" native />
               <div className="min-w-0 flex-1">
@@ -382,6 +411,8 @@ export default function WalletHome({ publicKey, muxedAddress, onAction, onOpenRo
           <p className="border-t border-gray-100 bg-gray-50 px-5 py-2.5 text-xs text-gray-500 dark:border-gray-700/70 dark:bg-gray-900/40 dark:text-gray-400">
             {t('wallet:home.tokenNote', 'Ein Gegenwert wird nur für XLM angezeigt. SKM bewertet keine Token und trifft keine Aussage darüber, ob ein Token echt ist.')}
           </p>
+          </>
+          )}
         </section>
       )}
 

@@ -3,7 +3,8 @@
     "label": "Liiton osoite",
     "none": "Liittouman osoitetta ei ole määritelty",
     "account": "Tili",
-    "accountLabel": "Merkintä"
+    "accountLabel": "Merkintä",
+    "reverseLabel": "{{domain}}-liiton palvelimen ilmoittama nimi"
   },
   "flag": {
     "compromised": "Varoitus: Tämä lompakko on merkitty vaarantuneeksi TrustListissasi.",
@@ -46,7 +47,8 @@
         "text": "Tietovisa, huijaussimulaattori ja Lumio-hahmoa esittelevä tarina – tutustu Stellariin omassa tahdissasi, ilman riskejä ja ilman oikeaa rahaa.",
         "cta": "Aloitetaanpa"
       }
-    }
+    },
+    "assetsCollapsed": "XLM ja {{count}} Token. Laajenna nähdäksesi."
   },
   "receive": {
     "title": "Vastaanota",
@@ -138,7 +140,8 @@
     "jobTrustline": "Luo Trustline",
     "jobNetwork": "Verkko",
     "jobNoteLabel": "Huomautus",
-    "jobHint": "Lunastettavissa oleva saldo voi vanhentua tai tulla lunastetuksi jollain muulla tavalla ennen kuin kaikki ovat allekirjoittaneet. Tällöin työ epäonnistuu lähetettäessä, mutta mitään ei menetetä. Työn voimassaolo päättyy viimeistään silloin, kun lunastettavissa oleva saldo vanhenee."
+    "jobHint": "Lunastettavissa oleva saldo voi vanhentua tai tulla lunastetuksi jollain muulla tavalla ennen kuin kaikki ovat allekirjoittaneet. Tällöin työ epäonnistuu lähetettäessä, mutta mitään ei menetetä. Työn voimassaolo päättyy viimeistään silloin, kun lunastettavissa oleva saldo vanhenee.",
+    "empty": "Claimable Balances:tä ei löytynyt."
   },
   "batchConvert": {
     "button": "Batch-Convert ({{count}})",
@@ -182,6 +185,11 @@
       "authRequired": "Kustantaja pyytää hyväksyntää",
       "noMarket": "Markkinaa ei löytynyt",
       "quoteFailed": "Kysely epäonnistui"
-    }
+    },
+    "fromTrustlines": "Omat Trustlines ({{count}})",
+    "trustlineSearch": "Hae koodin tai julkaisijan mukaan",
+    "trustlineNoMatch": "Ei vastaavaa Trustline:tä.",
+    "selectTrustline": "Valitse Trustline kohteeksi Asset.",
+    "trustlineMore": "{{count}} lisää; tarkenna hakua."
   }
 }

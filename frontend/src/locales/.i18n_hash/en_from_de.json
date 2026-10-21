@@ -5304,5 +5304,14 @@
   "wallet.batchConvert.status.ownAsset": "fab1a12ded47e567399e6a015c7d98e56514ad8327b44a72cb2f6aaa2c79d444",
   "wallet.batchConvert.status.authRequired": "36c29c451d33db6d1559f51632c059b763d614ed5db49093c591bbec23e2336f",
   "wallet.batchConvert.status.noMarket": "6ee31497821884dd2ffbf549d5df1faa73c366f503e92c2af8cebab90f1ffb74",
-  "wallet.batchConvert.status.quoteFailed": "c948a9e0c8ec7de68671d0bcea655c23f417ef9e1cc9b2785d32755c3732848e"
+  "wallet.batchConvert.status.quoteFailed": "c948a9e0c8ec7de68671d0bcea655c23f417ef9e1cc9b2785d32755c3732848e",
+  "common.error.noFederationId": "c3a4cf1036720e27917514ecd761df801ad44818341f1f708575728f3ddbab4b",
+  "wallet.federationDisplay.reverseLabel": "6833447e12337aaee6b07665d2b3e679865d016b4334bedfbdd337be2a727e26",
+  "wallet.home.assetsCollapsed": "eee6f43588d9bccdb197e3e41068a94e744174a8bfd9f9860bd37f177d48fb43",
+  "wallet.claimable.empty": "7ac3656058c248d6fa41b4f1065d71292c77d2821835d377915e87b2782ded13",
+  "wallet.batchConvert.fromTrustlines": "4fdec02a845bf6aab7c98e3476d8a03d0e63b9562b170f9fb0295a9e9b1be956",
+  "wallet.batchConvert.trustlineSearch": "11569cc5c0fef7bc6c0ccd0a725e1304426cc78188608c881c1ef99d24268ca7",
+  "wallet.batchConvert.trustlineNoMatch": "573514cf57aeb23f1e13a6526608e4b5d3eb3f68f8414260e257174a59b2611c",
+  "wallet.batchConvert.selectTrustline": "867b65a1adc50c7fbdaa2cd7344a8119d24b52b92e47c30c8da33111186e94f6",
+  "wallet.batchConvert.trustlineMore": "dfb025c485453288d4689fda365258629946b750b307943ad0009aaaf3f2d8d6"
 }
